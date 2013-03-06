@@ -2079,6 +2079,8 @@ GUI_TEST_CLASS_DEFINITION(test_0016) {
 
     CHECK_SET_ERR(clipboardText == "CTT", "MSA part differs from expected");
     GTFile::restore(os, testDir + "_common_data/scenarios/msa/ma2_gapped.aln");
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Yes));
+    GTGlobals::sleep(5000);
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0016_1) {
@@ -2120,6 +2122,8 @@ GUI_TEST_CLASS_DEFINITION(test_0016_1) {
 
     CHECK_SET_ERR(clipboardText == "CTT", "MSA part differs from expected");
     GTFile::restore(os, testDir + "_common_data/scenarios/msa/ma2_gapped.aln");
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Yes));
+    GTGlobals::sleep(5000);
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0016_2) {
@@ -2691,7 +2695,7 @@ GUI_TEST_CLASS_DEFINITION(test_0026_1){//DIFFERENCE: context menu is used
 //    Expected state: image is exported
 }
 
-GUI_TEST_CLASS_DEFINITION(test_0026_2){
+GUI_TEST_CLASS_DEFINITION(test_0026_2_linux){
 //    1. open document samples/CLUSTALW/COI.aln
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
 //    2. press "export as image" on toolbar
@@ -2712,6 +2716,30 @@ GUI_TEST_CLASS_DEFINITION(test_0026_2){
     qint64 smallSize = GTFileDialog::getSize(os,testDir + "_common_data/scenarios/sandbox/","smallImage.jpeg");
 
     CHECK_SET_ERR(bigSize==716710 && smallSize==163637, QString().setNum(bigSize) + "  " + QString().setNum(smallSize));
+//    Expected state: image is exported
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0026_2_windows){
+//    1. open document samples/CLUSTALW/COI.aln
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
+//    2. press "export as image" on toolbar
+    GTUtilsDialog::waitForDialog(os, new ExportImage(os,testDir + "_common_data/scenarios/sandbox/bigImage.bmp",1,100));
+    //GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok));
+
+    QAbstractButton* saveImage = GTAction::button(os,"Export as image");
+    CHECK_SET_ERR(saveImage, "Save as image button not found");
+
+    GTWidget::click(os,saveImage);
+//    Expected state: export dialog appeared
+    GTUtilsDialog::waitForDialog(os, new ExportImage(os,testDir + "_common_data/scenarios/sandbox/smallImage.bmp",1,50));
+    GTWidget::click(os,saveImage);
+//    3. fill dialog:
+//    file name: test/_common_data/scenarios/sandbox/image.bmp
+//    press OK
+    qint64 bigSize = GTFileDialog::getSize(os,testDir + "_common_data/scenarios/sandbox/","bigImage.jpeg");
+    qint64 smallSize = GTFileDialog::getSize(os,testDir + "_common_data/scenarios/sandbox/","smallImage.jpeg");
+
+    CHECK_SET_ERR(bigSize==550938 && smallSize==111215, QString().setNum(bigSize) + "  " + QString().setNum(smallSize));
 //    Expected state: image is exported
 }
 
@@ -2749,7 +2777,7 @@ GUI_TEST_CLASS_DEFINITION(test_0027_1){
 //    Expected stste: area is moved,position 4-9 filled with gaps
 }
 
-GUI_TEST_CLASS_DEFINITION(test_0028){
+GUI_TEST_CLASS_DEFINITION(test_0028_linux){
 //    1. open document samples/CLUSTALW/COI.aln
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
 //    2. press "export as SVG" on toolbar
@@ -2765,6 +2793,26 @@ GUI_TEST_CLASS_DEFINITION(test_0028){
 //    press Save
     qint64 fileSize = GTFileDialog::getSize(os,testDir + "_common_data/scenarios/sandbox/", "test.svg");
     CHECK_SET_ERR(fileSize==860868, "Expected size: 630606, Current size: " + QString().setNum(fileSize));
+//    Expected state:  SVG is exported
+
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0028_windows){
+//    1. open document samples/CLUSTALW/COI.aln
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
+//    2. press "export as SVG" on toolbar
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os,QStringList()<<MSAE_MENU_EXPORT<<"Export as SVG"));
+    GTFileDialogUtils *ob = new GTFileDialogUtils(os, testDir + "_common_data/scenarios/sandbox/", "test.svg", "*.*", GTFileDialogUtils::Save);
+    GTUtilsDialog::waitForDialog(os,ob);
+
+    GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
+//    Expected state: save file appeared
+
+//    3. fill dialog:
+//    file name: test/_common_data/scenarios/sandbox/image.bmp
+//    press Save
+    qint64 fileSize = GTFileDialog::getSize(os,testDir + "_common_data/scenarios/sandbox/", "test.svg");
+    CHECK_SET_ERR(fileSize==555706, "Expected size: 555706, Current size: " + QString().setNum(fileSize));
 //    Expected state:  SVG is exported
 
 }

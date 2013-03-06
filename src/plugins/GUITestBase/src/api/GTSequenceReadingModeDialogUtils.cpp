@@ -28,7 +28,7 @@
 #include "api/GTWidget.h"
 #include <QtGui/QApplication>
 #include <QtGui/QWidget>
-#include <QRadioButton>
+#include "api/GTRadioButton.h"
 #include <QCheckBox>
 #include <QLineEdit>
 #include <QPushButton>
@@ -85,8 +85,7 @@ void GTSequenceReadingModeDialogUtils::selectMode()
     if (! radioButton->isChecked()) {
         switch (GTSequenceReadingModeDialog::useMethod) {
         case GTGlobals::UseMouse:
-            GTMouseDriver::moveTo(os, radioButton->mapToGlobal(radioButton->rect().topLeft()));
-            GTMouseDriver::click(os);
+            GTRadioButton::click(os, radioButton);
             break;
 
         case GTGlobals::UseKey:

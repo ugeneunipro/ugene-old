@@ -100,6 +100,7 @@ GUI_TEST_CLASS_DEFINITION(post_test_0001) {
 
         GTKeyboardDriver::keyClick(os, 'q', GTKeyboardDriver::key["ctrl"]);
         GTGlobals::sleep(100);
+        GTGlobals::sleep(500);
 
         GTUtilsDialog::cleanup(os, GTUtilsDialog::NoFailOnUnfinished);
         GTGlobals::sleep();

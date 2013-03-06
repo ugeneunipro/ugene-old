@@ -353,10 +353,17 @@ GUI_TEST_CLASS_DEFINITION(test_0008_1){
 //2. Place cursor on 4th column of alignment. Use msa editor context menu (at the column with gaps) {Edit->Remove column of gaps}.
     GTUtilsMSAEditorSequenceArea::click(os, QPoint(3,3));
 
+    // TODO: shift+delete doesn't work under windows
+
+//     QWidget* seq=GTWidget::findWidget(os, "msa_editor_sequence_area");
+//     GTUtilsDialog::waitForDialog(os,new DeleteGapsDialogFiller(os,1));
+//     GTWidget::click(os,seq);
+//    GTKeyboardDriver::keyClick(os,GTKeyboardDriver::key["delete"],GTKeyboardDriver::key["shift"]);
     QWidget* seq=GTWidget::findWidget(os, "msa_editor_sequence_area");
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "MSAE_MENU_EDIT" << "remove_columns_of_gaps"));
     GTUtilsDialog::waitForDialog(os,new DeleteGapsDialogFiller(os,1));
-    GTWidget::click(os,seq);
-    GTKeyboardDriver::keyClick(os,GTKeyboardDriver::key["delete"],GTKeyboardDriver::key["shift"]);
+    GTMenu::showContextMenu(os,seq);
+
     GTGlobals::sleep(1000);
 
     GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0,0), QPoint(12, 9));
