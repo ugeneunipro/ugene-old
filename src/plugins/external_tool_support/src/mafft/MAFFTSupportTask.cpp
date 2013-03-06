@@ -296,7 +296,7 @@ QList<Task*> MAFFTWithExtFileSpecifySupportTask::onSubTaskFinished(Task* subTask
         // Set the result alignment to the alignment object of the current document
         mAObject=qobject_cast<MAlignmentObject*>(currentDocument->getObjects().first());
         SAFE_POINT(mAObject != NULL, QString("MA object not found!: %1").arg(loadDocumentTask->getURLString()), res);
-        mAObject->setMAlignment(mAFFTSupportTask->resultMA);
+        mAObject->copyGapModel(mAFFTSupportTask->resultMA.getRows());
 
         // Save the current document
         saveDocumentTask = new SaveDocumentTask(currentDocument,

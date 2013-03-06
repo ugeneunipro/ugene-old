@@ -51,6 +51,7 @@
 #include <U2Core/U2SequenceUtils.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/GObjectRelationRoles.h>
+#include <U2Core/MSAUtils.h>
 
 #include <U2Algorithm/PhyTreeGeneratorTask.h>
 #include <U2Algorithm/PhyTreeGeneratorRegistry.h>
@@ -514,16 +515,8 @@ void MSAEditor::calcFontPixelToPointSizeCoef() {
 }
 
 void MSAEditor::copyRowFromSequence(U2SequenceObject *seqObj, U2OpStatus &os) {
-    U2Sequence seq = U2SequenceUtils::copySequence(seqObj->getEntityRef(), msaObject->getEntityRef().dbiRef, os);
-    CHECK_OP(os, );
-
-    U2MsaRow row;
-    row.rowId = -1; // set the ID automatically
-    row.sequenceId = seq.id;
-    row.gstart = 0;
-    row.gend = seq.length;
-
-    msaObject->addRow(row, seqObj->getWholeSequence());
+    MSAUtils::copyRowFromSequence(msaObject, seqObj, os);
+    msaObject->updateCachedMAlignment();
 }
 
 void MSAEditor::sl_onSeqOrderChanged( QStringList* order ){

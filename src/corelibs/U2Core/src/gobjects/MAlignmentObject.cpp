@@ -86,6 +86,7 @@ void MAlignmentObject::updateCachedMAlignment(MAlignmentModInfo mi) {
     U2OpStatus2Log os;
     MAlignmentExporter alExporter;
     cachedMAlignment = alExporter.getAlignment(entityRef.dbiRef, entityRef.entityId, os);
+    SAFE_POINT_OP(os, );
 
     setModified(true);
     if (mi.middleState == false) {
@@ -391,7 +392,7 @@ void MAlignmentObject::deleteGapsByAbsoluteVal(int val) {
         }
         msa = getMAlignment();
     }
-    setMAlignment(msa);
+    updateCachedMAlignment();
 }
 
 void MAlignmentObject::deleteAllGapColumn() {
@@ -413,7 +414,7 @@ void MAlignmentObject::deleteAllGapColumn() {
         }
     }
 
-    setMAlignment(msa);
+    updateCachedMAlignment();
 }
 
 void MAlignmentObject::updateGapModel(QMap<qint64, QList<U2MsaGap> > rowsGapModel, U2OpStatus& os) {
@@ -526,15 +527,17 @@ static bool _registerMeta() {
 bool MAlignmentModInfo::registerMeta = _registerMeta();
 
 void MAlignmentObject::sortRowsByList(const QStringList& order) {
+    GTIMER(c, t, "MAlignmentObject::sortRowsByList");
     SAFE_POINT(!isStateLocked(), "Alignment state is locked!", );
 
     MAlignment msa = getMAlignment();
-
     msa.sortRowsByList(order);
 
-    setMAlignment(msa);
+    U2OpStatusImpl os;
+    MsaDbiUtils::updateRowsOrder(entityRef, msa.getRowsIds(), os);
+    SAFE_POINT_OP(os, );
+
+    updateCachedMAlignment();
 }
 
 }//namespace
-
-

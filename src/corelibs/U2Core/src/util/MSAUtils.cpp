@@ -26,10 +26,12 @@
 #include <U2Core/GObject.h>
 #include <U2Core/MAlignment.h>
 #include <U2Core/MAlignmentImporter.h>
+#include <U2Core/MsaDbiUtils.h>
 #include <U2Core/TextUtils.h>
 #include <U2Core/U2AlphabetUtils.h>
 #include <U2Core/U2OpStatus.h>
 #include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/U2SequenceUtils.h>
 
 
 namespace U2 {
@@ -214,5 +216,36 @@ QList<qint64> MSAUtils::compareRowsAfterAlignment(const MAlignment& origMsa, MAl
     return rowsOrder;
 }
 
+U2MsaRow MSAUtils::copyRowFromSequence(U2SequenceObject *seqObj, const U2DbiRef &dstDbi, U2OpStatus &os) {
+    U2MsaRow row;
+    CHECK_EXT(NULL != seqObj, os.setError("NULL sequence object"), row);
+    row.rowId = -1; // set the ID automatically
+
+    DNASequence dnaSeq = seqObj->getWholeSequence();
+    QByteArray oldSeqData = dnaSeq.seq;
+    dnaSeq.seq.clear();
+    MsaDbiUtils::splitBytesToCharsAndGaps(oldSeqData, dnaSeq.seq, row.gaps);
+    U2Sequence seq = U2SequenceUtils::copySequence(dnaSeq, dstDbi, os);
+    CHECK_OP(os, row);
+
+    row.sequenceId = seq.id;
+    row.gstart = 0;
+    row.gend = seq.length;
+    return row;
+}
+
+void MSAUtils::copyRowFromSequence(MAlignmentObject *msaObj, U2SequenceObject *seqObj, U2OpStatus &os) {
+    CHECK_EXT(NULL != msaObj, os.setError("NULL msa object"), );
+
+    U2MsaRow row = copyRowFromSequence(seqObj, msaObj->getEntityRef().dbiRef, os);
+    CHECK_OP(os, );
+
+    U2EntityRef entityRef = msaObj->getEntityRef();
+    DbiConnection con(entityRef.dbiRef, os);
+    CHECK_OP(os, );
+    CHECK_EXT(NULL != con.dbi, os.setError("NULL root dbi"), );
+
+    con.dbi->getMsaDbi()->addRow(entityRef.entityId, -1, row, os);
+}
 
 }//namespace

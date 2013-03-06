@@ -169,7 +169,7 @@ QList<Task*> Kalign_Load_Align_Compare_Task::onSubTaskFinished(Task* subTask) {
         }
         KalignTask * localKalign = qobject_cast<KalignTask*>( subTask );
         assert( NULL != localKalign );
-        ma1->setMAlignment( localKalign->resultMA );
+        ma1->copyGapModel(localKalign->resultMA.getRows());
     }
     else if (subTask == loadTask2) {
         if (loadTask2->hasError()) {
@@ -424,7 +424,7 @@ QList<Task*> GTest_Kalign_Load_Align_QScore::onSubTaskFinished(Task* subTask) {
         }
         KalignTask * localKalign = qobject_cast<KalignTask*>( subTask );
         assert( NULL != localKalign );
-        ma1->setMAlignment( localKalign->resultMA );
+        ma1->copyGapModel(localKalign->resultMA.getRows());
     }
     else if (subTask == loadTask2) {
         if (loadTask2->hasError()) {

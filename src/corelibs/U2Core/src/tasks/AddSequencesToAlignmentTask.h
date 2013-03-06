@@ -22,6 +22,7 @@
 #ifndef _U2_ADD_SEQUENCES_TO_ALIGNMENT_TASK_H_
 #define _U2_ADD_SEQUENCES_TO_ALIGNMENT_TASK_H_
 
+#include <U2Core/DNASequenceObject.h>
 #include <U2Core/Task.h>
 #include <U2Core/MAlignmentObject.h>
 
@@ -43,9 +44,19 @@ public:
     ReportResult report();
 
     QPointer<MAlignmentObject>  maObj;
-    MAlignment                  bufMa;
     QStringList                 urls;
     StateLock*                  stateLock;
+
+private:
+    QList<U2SequenceObject*>    seqList;
+    QStringList                 errorList;
+
+    static const int maxErrorListSize;
+
+private:
+    QList<U2MsaRow> createRows();
+    void addRows(QList<U2MsaRow> &rows);
+    void setupError();
 };
 
 }// namespace

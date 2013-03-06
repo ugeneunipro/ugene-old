@@ -25,19 +25,21 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/LoadDocumentTask.h>
+#include <U2Core/MSAUtils.h>
 #include <U2Core/DocumentUtils.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/U2AlphabetUtils.h>
+#include <U2Core/U2DbiUtils.h>
+#include <U2Core/U2MsaDbi.h>
 
 namespace U2 {
 
+const int AddSequencesToAlignmentTask::maxErrorListSize = 5;
 
 AddSequencesToAlignmentTask::AddSequencesToAlignmentTask( MAlignmentObject* obj, const QStringList& fileWithSequencesUrls )
 : Task("Add sequences to alignment task", TaskFlag_NoRun), maObj(obj), urls(fileWithSequencesUrls), stateLock(NULL)
 {
     assert(!fileWithSequencesUrls.isEmpty());
-    bufMa = maObj->getMAlignment();
-   
 }
 
 void AddSequencesToAlignmentTask::prepare()
@@ -85,21 +87,19 @@ QList<Task*> AddSequencesToAlignmentTask::onSubTaskFinished( Task* subTask )
     assert(loadTask != NULL);
     Document* doc = loadTask->getDocument();
     QList<GObject*> seqObjects = doc->findGObjectByType(GObjectTypes::SEQUENCE);
-    
+
     foreach(GObject* obj, seqObjects) {
         U2SequenceObject* dnaObj = qobject_cast<U2SequenceObject*>(obj);
         assert(dnaObj != NULL);
-        DNAAlphabet* newAlphabet = U2AlphabetUtils::deriveCommonAlphabet(dnaObj->getAlphabet(), bufMa.getAlphabet());
+        DNAAlphabet* newAlphabet = U2AlphabetUtils::deriveCommonAlphabet(dnaObj->getAlphabet(), maObj->getAlphabet());
         if (newAlphabet != NULL) {
-            bufMa.setAlphabet(newAlphabet);
-            bufMa.addRow(dnaObj->getGObjectName(), dnaObj->getWholeSequenceData(), stateInfo);
+            seqList << dnaObj;
         } else {
-            stateInfo.setError(tr("Sequence %1 from %2 has different alphabet").arg(dnaObj->getGObjectName()).arg(loadTask->getDocument()->getURLString()));
+            errorList << dnaObj->getGObjectName();
         }
     }
-    
-    return subTasks;
 
+    return subTasks;
 }
 
 Task::ReportResult AddSequencesToAlignmentTask::report()
@@ -108,12 +108,54 @@ Task::ReportResult AddSequencesToAlignmentTask::report()
         maObj->unlockState(stateLock);
         delete stateLock;
     }
-    
-    maObj->setMAlignment(bufMa);
-    
+
+    QList<U2MsaRow> rows = createRows();
+    CHECK_OP(stateInfo, ReportResult_Finished);
+
+    addRows(rows);
+    CHECK_OP(stateInfo, ReportResult_Finished);
+
+    if (!errorList.isEmpty()) {
+        setupError();
+    }
     return ReportResult_Finished;
 }
 
+QList<U2MsaRow> AddSequencesToAlignmentTask::createRows() {
+    QList<U2MsaRow> rows;
+    U2EntityRef entityRef = maObj.data()->getEntityRef();
+    foreach (U2SequenceObject *seqObj, seqList) {
+        rows << MSAUtils::copyRowFromSequence(seqObj, entityRef.dbiRef, stateInfo);
+        CHECK_OP(stateInfo, rows);
+    }
+    return rows;
+}
 
+void AddSequencesToAlignmentTask::addRows(QList<U2MsaRow> &rows) {
+    // Open connection
+    U2EntityRef entityRef = maObj.data()->getEntityRef();
+    DbiConnection con(entityRef.dbiRef, stateInfo);
+    CHECK_OP(stateInfo, );
+    CHECK_EXT(NULL != con.dbi, setError("NULL root dbi"), );
+
+    // Add rows
+    con.dbi->getMsaDbi()->addRows(entityRef.entityId, rows, stateInfo);
+    CHECK_OP(stateInfo, );
+
+    // Update object
+    maObj->updateCachedMAlignment();
+}
+
+void AddSequencesToAlignmentTask::setupError() {
+    CHECK(!errorList.isEmpty(), );
+
+    QStringList smallList = errorList.mid(0, maxErrorListSize);
+    QString error = tr("Some sequences have wrong alphabet: ");
+    error += smallList.join(", ");
+    if (smallList.size() < errorList.size()) {
+        error += tr(" and others");
+    }
+    setError(error);
+}
 
 }

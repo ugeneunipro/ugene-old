@@ -1,9 +1,10 @@
 #include "MSACollapsibleModel.h"
 #include "MSAEditor.h"
 
-#include <U2Core/U2Region.h>
-#include <U2Core/MAlignmentObject.h>
 #include <U2Core/Log.h>
+#include <U2Core/MAlignmentObject.h>
+#include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/U2Region.h>
 
 
 namespace U2 {
@@ -164,6 +165,23 @@ void MSACollapsibleItemModel::tracePositions() {
     }
 }
 
+class UpdateHelper : public QObject {
+    MSACollapsibleItemModel *model;
+    MAlignmentObject *obj;
+public:
+    UpdateHelper(MSACollapsibleItemModel *_model, MAlignmentObject *_obj)
+        : model(_model), obj(_obj) {
+        model->blockSignals(true);
+        disconnect(obj, SIGNAL(si_alignmentChanged(const MAlignment&, const MAlignmentModInfo&)),
+            model, SLOT(sl_alignmentChanged(const MAlignment&, const MAlignmentModInfo&)));
+    }
+    ~UpdateHelper() {
+        connect(obj, SIGNAL(si_alignmentChanged(const MAlignment&, const MAlignmentModInfo&)),
+            model, SLOT(sl_alignmentChanged(const MAlignment&, const MAlignmentModInfo&)));
+        model->blockSignals(false);
+    }
+};
+
 void MSACollapsibleItemModel::sl_alignmentChanged(const MAlignment& maBefore, const MAlignmentModInfo& modInfo) {
     if (!ui->isCollapsibleMode() || modInfo.hints.value(MODIFIER) == MAROW_SIMILARITY_SORT) {
         return;
@@ -179,11 +197,8 @@ void MSACollapsibleItemModel::sl_alignmentChanged(const MAlignment& maBefore, co
             open.append(name);
         }
     }
-    
-    // prevent update of msa widgets on 'reset()' call
-    // they'll be updated on 'MSAObject::setMAlignment()'
-    blockSignals(true);
 
+    UpdateHelper updateHelper(this, obj);
     MAlignment ma = obj->getMAlignment();
     QVector<U2Region> unitedRows;
     ma.sortRowsBySimilarity(unitedRows);
@@ -198,12 +213,12 @@ void MSACollapsibleItemModel::sl_alignmentChanged(const MAlignment& maBefore, co
         }
     }
 
-    blockSignals(false);
+    U2OpStatus2Log os;
+    obj->updateRowsOrder(ma.getRowsIds(), os);
 
-    QVariantMap hints;
-    hints[MODIFIER] = MAROW_SIMILARITY_SORT;
     MAlignmentModInfo mi;
-    obj->setMAlignment(ma, mi, hints);
+    mi.hints[MODIFIER] = MAROW_SIMILARITY_SORT;
+    obj->updateCachedMAlignment(mi);
 }
 
 int MSACollapsibleItemModel::getLastPos() const {

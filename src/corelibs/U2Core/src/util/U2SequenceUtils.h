@@ -53,6 +53,7 @@ public:
 
     static qint64 length(const U2EntityRef& ref, U2OpStatus& os);
 
+    static U2Sequence copySequence(const DNASequence& srcSeq, const U2DbiRef& dstDbi, U2OpStatus& os);
     static U2Sequence copySequence(const U2EntityRef& srcSeq, const U2DbiRef& dstDbi, U2OpStatus& os);
 
     static U2EntityRef import(const U2DbiRef& dbiRef, const DNASequence& seq, U2OpStatus& os);

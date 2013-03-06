@@ -1524,17 +1524,18 @@ void MSAEditorSequenceArea::wheelEvent (QWheelEvent * we) {
 }
 
 void MSAEditorSequenceArea::sl_removeAllGaps() {
-    QBitArray gapMap(256);
-    gapMap[MAlignment_GapChar] = true;
     MAlignmentObject* msa = editor->getMSAObject();
     assert(!msa->isStateLocked());
+    QMap<qint64, QList<U2MsaGap> > noGapModel;
     MAlignment ma = msa->getMAlignment();
-    bool changed = ma.simplify();
-    if (changed) {
-        msa->setMAlignment(ma);
-        setFirstVisibleBase(0);
-        setFirstVisibleSequence(0);
+    foreach (qint64 rowId, ma.getRowsIds()) {
+        noGapModel[rowId] = QList<U2MsaGap>();
     }
+    U2OpStatusImpl os;
+    msa->updateGapModel(noGapModel, os);
+    setFirstVisibleBase(0);
+    setFirstVisibleSequence(0);
+    SAFE_POINT_OP(os, );
 }
 
 bool MSAEditorSequenceArea::checkState() const {
@@ -1900,22 +1901,15 @@ void MSAEditorSequenceArea::sl_addSeqFromProject()
 
     QList<GObject*> objects = ProjectTreeItemSelectorDialog::selectObjects(settings,this);
 
-    if (!objects.isEmpty()) {
-        foreach(GObject* obj, objects) {
-            if (obj->isUnloaded()) {
-                continue;
-            }
-            U2SequenceObject* seqObj = qobject_cast<U2SequenceObject*>(obj);
-            if (seqObj) {
-                U2MsaRow rowInDb;
-                rowInDb.rowId = -1; // set the ID automatically
-                rowInDb.sequenceId = seqObj->getEntityRef().entityId;
-                rowInDb.gstart = 0;
-                rowInDb.gend = seqObj->getSequenceLength();
-
-                msaObject->addRow(rowInDb, seqObj->getWholeSequence());
-                cancelSelection();
-            }
+    foreach(GObject* obj, objects) {
+        if (obj->isUnloaded()) {
+            continue;
+        }
+        U2SequenceObject *seqObj = qobject_cast<U2SequenceObject*>(obj);
+        if (seqObj) {
+            U2OpStatus2Log os;
+            editor->copyRowFromSequence(seqObj, os);
+            cancelSelection();
         }
     }
 }
@@ -1929,7 +1923,9 @@ void MSAEditorSequenceArea::sl_sortByName() {
     ma.sortRowsByName();
     QStringList rowNames = ma.getRowNames();
     if (rowNames != msaObject->getMAlignment().getRowNames()) {
-        msaObject->setMAlignment(ma);
+        U2OpStatusImpl os;
+        msaObject->updateRowsOrder(ma.getRowsIds(), os);
+        SAFE_POINT_OP(os, );
     }
 }
 
@@ -1948,10 +1944,14 @@ void MSAEditorSequenceArea::sl_setCollapsingMode(bool enabled) {
         QVector<U2Region> unitedRows;
         ma.sortRowsBySimilarity(unitedRows);
         m->reset(unitedRows);
-        QVariantMap hint;
-        hint[MODIFIER] = MAROW_SIMILARITY_SORT;
+
+        U2OpStatusImpl os;
+        msaObject->updateRowsOrder(ma.getRowsIds(), os);
+        SAFE_POINT_OP(os, );
+
         MAlignmentModInfo mi;
-        msaObject->setMAlignment(ma, mi, hint);
+        mi.hints[MODIFIER] = MAROW_SIMILARITY_SORT;
+        msaObject->updateCachedMAlignment(mi);
     } else {
         m->reset();
     }
@@ -2104,10 +2104,10 @@ void MSAEditorSequenceArea::sl_setCollapsingRegions(QVector<U2Region>* unitedRow
     if(ui->isCollapsibleMode()) {
         MAlignment ma = msaObject->getMAlignment();
         m->reset(*unitedRows);
-        QVariantMap hint;
-        hint[MODIFIER] = MAROW_SIMILARITY_SORT;
+
         MAlignmentModInfo mi;
-        msaObject->setMAlignment(ma, mi, hint);
+        mi.hints[MODIFIER] = MAROW_SIMILARITY_SORT;
+        msaObject->updateCachedMAlignment(mi);
     }
     else {
         m->reset();

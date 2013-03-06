@@ -294,7 +294,7 @@ QList<Task*> TCoffeeWithExtFileSpecifySupportTask::onSubTaskFinished(Task* subTa
         // Set the result alignment to the alignment object of the current document
         mAObject=qobject_cast<MAlignmentObject*>(currentDocument->getObjects().first());
         SAFE_POINT(mAObject != NULL, QString("MA object not found!: %1").arg(loadDocumentTask->getURLString()), res);
-        mAObject->setMAlignment(tCoffeeSupportTask->resultMA);
+        mAObject->copyGapModel(tCoffeeSupportTask->resultMA.getRows());
 
         // Save the current document
         saveDocumentTask = new SaveDocumentTask(currentDocument,
