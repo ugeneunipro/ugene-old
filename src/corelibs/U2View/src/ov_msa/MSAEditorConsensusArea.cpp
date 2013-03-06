@@ -476,7 +476,7 @@ void MSAEditorConsensusArea::mousePressEvent(QMouseEvent *e) {
         selecting = true;
         curPos = ui->seqArea->getColumnNumByX(x, selecting);
         if (curPos !=-1) {
-            int height = editor->getNumSequences();
+            int height = ui->getCollapseModel()->displayedRowsCount();
             // select current column
             MSAEditorSelection selection(curPos, 0, 1, height);
             ui->seqArea->setSelection(selection);
@@ -520,7 +520,7 @@ void MSAEditorConsensusArea::updateSelection(int newPos)
     }
 
     if (newPos != -1) {
-        int height = editor->getNumSequences();
+        int height = ui->getCollapseModel()->displayedRowsCount();
         int startPos = qMin(curPos,newPos);
         int width = qAbs(newPos - curPos) + 1;
         MSAEditorSelection selection(startPos, 0, width, height );

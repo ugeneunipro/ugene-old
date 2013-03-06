@@ -423,8 +423,18 @@ void MSAEditorNameList::mouseReleaseEvent( QMouseEvent *e )
             moveSelectedRegion(shift);
             shifting = false;
         } else {
-            curSeq = (startSelectingSeq < 0) ? 0 : startSelectingSeq;
-            updateSelection(newSeq);
+            int firstVisibleRow = ui->seqArea->getFirstVisibleSequence();
+            int lastVisibleRow = ui->getCollapseModel()->displayedRowsCount() + firstVisibleRow - 1;
+            bool selectionContainsSeqs = (startSelectingSeq <= lastVisibleRow || newSeq <= lastVisibleRow);
+            
+            if(selectionContainsSeqs) {
+                curSeq = (startSelectingSeq < firstVisibleRow) ? firstVisibleRow : startSelectingSeq;
+                curSeq = (startSelectingSeq > lastVisibleRow) ? lastVisibleRow : startSelectingSeq;
+                if (newSeq > lastVisibleRow || newSeq < firstVisibleRow) {
+                    newSeq = newSeq > 0 ? lastVisibleRow : 0;
+                }
+                updateSelection(newSeq);
+            }
         }
         scribbling = false;
     }

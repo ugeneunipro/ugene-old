@@ -894,6 +894,15 @@ void MSAEditorSequenceArea::mouseReleaseEvent(QMouseEvent *e)
     }
     if (scribbling) {
         QPoint newCurPos = coordToAbsolutePos(e->pos());
+
+        int firstVisibleSeq = ui->seqArea->getFirstVisibleSequence();
+        int visibleRowsNums = ui->getCollapseModel()->displayedRowsCount() - 1;
+
+        int yPosWithValidations = qMax(firstVisibleSeq, newCurPos.y());
+        yPosWithValidations     = qMin(yPosWithValidations, visibleRowsNums + firstVisibleSeq);
+
+        newCurPos.setY(yPosWithValidations);
+
         if (e->pos() == origin) {
             // special case: click but don't drag
             shifting = false;
