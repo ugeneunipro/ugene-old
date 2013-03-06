@@ -45,6 +45,8 @@ U2UseCommonUserModStep::U2UseCommonUserModStep(U2Dbi* _dbi, const U2DataId& mast
 : dbi(_dbi),
   valid(false)
 {
+    // No mutexes are needed because start/end of
+    // user mod steps are made only in main thread
     SAFE_POINT(NULL != dbi, "NULL dbi!", );
 
     dbi->getModDbi()->startCommonUserModStep(masterObjId, os);

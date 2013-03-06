@@ -114,6 +114,7 @@ DECLARE_MOD_TEST(ModDbiSQLiteSpecificUnitTests, createStep_start2MultiNoUser);
 DECLARE_MOD_TEST(ModDbiSQLiteSpecificUnitTests, createStep_startUser);
 DECLARE_MOD_TEST(ModDbiSQLiteSpecificUnitTests, createStep_oneUser2Multi);
 DECLARE_MOD_TEST(ModDbiSQLiteSpecificUnitTests, createStep_severalUser);
+DECLARE_MOD_TEST(ModDbiSQLiteSpecificUnitTests, createStep_separateThread);
 
 
 
@@ -167,6 +168,7 @@ DECLARE_METATYPE(ModDbiSQLiteSpecificUnitTests, createStep_start2MultiNoUser);
 DECLARE_METATYPE(ModDbiSQLiteSpecificUnitTests, createStep_startUser);
 DECLARE_METATYPE(ModDbiSQLiteSpecificUnitTests, createStep_oneUser2Multi);
 DECLARE_METATYPE(ModDbiSQLiteSpecificUnitTests, createStep_severalUser);
+DECLARE_METATYPE(ModDbiSQLiteSpecificUnitTests, createStep_separateThread);
 
 
 

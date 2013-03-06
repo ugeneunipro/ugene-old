@@ -48,12 +48,14 @@ public:
     /**
      * Starts a common user modifications step (can be only one at a time).
      * Do not use this method, create a "U2UseCommonUserModStep" instance instead!
+     * The method can be called only in the main thread.
      */
     virtual void startCommonUserModStep(const U2DataId& masterObjId, U2OpStatus& os) = 0;
 
     /**
      * Ends a common user modifications step (can be only one at a time).
      * Do not use this method, use "U2UseCommonUserModStep" instead!
+     * The method can be called only in the main thread.
      */
     virtual void endCommonUserModStep(U2OpStatus &os) = 0;
 };

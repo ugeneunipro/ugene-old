@@ -1919,5 +1919,29 @@ IMPLEMENT_MOD_TEST(ModDbiSQLiteSpecificUnitTests, createStep_severalUser) {
     CHECK_FALSE(userStepStarted, "User step must be ended!");
 }
 
+IMPLEMENT_MOD_TEST(ModDbiSQLiteSpecificUnitTests, createStep_separateThread) {
+    class TestThread : public QThread {
+        U2Dbi *dbi;
+        const U2DataId &objId;
+        U2OpStatus &os;
+    public:
+        TestThread(U2Dbi *_dbi, const U2DataId &_objId, U2OpStatus &_os)
+            : dbi(_dbi), objId(_objId), os(_os) {}
+        void run() {
+            U2UseCommonUserModStep(dbi, objId, os);
+        }
+    };
+
+    SQLiteDbi *sqliteDbi = ModSQLiteSpecificTestData::getSQLiteDbi();
+    U2OpStatusImpl os;
+    U2DataId masterObjId = ModSQLiteSpecificTestData::createObject(os);
+    CHECK_NO_ERROR(os);
+
+    TestThread t(sqliteDbi, masterObjId, os);
+    t.start();
+    bool finished = t.wait();
+    CHECK_TRUE(finished, "The thread is not finished");
+    CHECK_TRUE(os.hasError(), "No error");
+}
 
 } // namespace

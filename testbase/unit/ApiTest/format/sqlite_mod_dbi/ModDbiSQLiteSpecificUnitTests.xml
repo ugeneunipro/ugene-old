@@ -10,6 +10,7 @@ ModDbiSQLiteSpecificUnitTests
 + createStep_startUser
 + createStep_oneUser2Multi
 + createStep_severalUser
++ createStep_separateThread
 + updateMsaName_noModTrack
 + updateMsaName_severalSteps
 + updateMsaName_severalUndoThenAction

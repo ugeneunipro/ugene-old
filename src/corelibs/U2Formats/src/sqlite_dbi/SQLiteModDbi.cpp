@@ -38,6 +38,7 @@ U2UseCommonMultiModStep::U2UseCommonMultiModStep(SQLiteDbi* _sqliteDbi, const U2
   valid(false)
 {
     SAFE_POINT(NULL != sqliteDbi, "NULL sqliteDbi!", );
+    QMutexLocker m(&sqliteDbi->getDbRef()->lock);
 
     sqliteDbi->getSQLiteModDbi()->startCommonMultiModStep(_masterObjId, os);
     if (!os.hasError()) {
@@ -46,6 +47,8 @@ U2UseCommonMultiModStep::U2UseCommonMultiModStep(SQLiteDbi* _sqliteDbi, const U2
 }
 
 U2UseCommonMultiModStep::~U2UseCommonMultiModStep() {
+    SAFE_POINT(NULL != sqliteDbi, "NULL sqliteDbi!", );
+    QMutexLocker m(&sqliteDbi->getDbRef()->lock);
     if (valid) {
         U2OpStatus2Log os;
         sqliteDbi->getSQLiteModDbi()->endCommonMultiModStep(os);
