@@ -520,6 +520,7 @@ void SQLiteObjectDbi::redo(const U2DataId& objId, U2OpStatus& os) {
         if (U2ModType::isMsaModType(modStep.modType)) {
             dbi->getSQLiteMsaDbi()->redo(objId, modStep.modType, modStep.details, os);
         }
+
         else if (U2ModType::isSequenceModType(modStep.modType)) {
             dbi->getSQLiteSequenceDbi()->redo(objId, modStep.modType, modStep.details, os);
         }
@@ -546,8 +547,25 @@ void SQLiteObjectDbi::redo(const U2DataId& objId, U2OpStatus& os) {
             coreLog.trace("Can't increment an object version!");
             os.setError(errorDescr);
             return;
+
+        else if (U2ModType::isSequenceModType(modStep.modType)) {
+            dbi->getSQLiteSequenceDbi()->redo(objId, modStep.modType, modStep.details, os);
         }
-    }
+        else if (U2ModType::isObjectModType(modStep.modType)) {
+            if (U2ModType::objUpdatedName == modStep.modType) {
+                redoUpdateObjectName(objId, modStep.details, os);
+                CHECK_OP(os, );
+            }
+            else {
+                coreLog.trace(QString("Can't redo an unknown operation: '%1'!").arg(QString::number(modStep.modType)));
+                os.setError(errorDescr);
+                return;
+            }
+        }
+
+        if (!objectIds.contains(modStep.objectId)) {
+            objectIds.insert(modStep.objectId);
+
 }
 
 void SQLiteObjectDbi::undoUpdateObjectName(const U2DataId& id, const QByteArray& modDetails, U2OpStatus& os) {
