@@ -40,6 +40,7 @@ AddSequencesToAlignmentTask::AddSequencesToAlignmentTask( MAlignmentObject* obj,
 : Task("Add sequences to alignment task", TaskFlag_NoRun), maObj(obj), urls(fileWithSequencesUrls), stateLock(NULL)
 {
     assert(!fileWithSequencesUrls.isEmpty());
+    msaAlphabet = maObj->getAlphabet();
 }
 
 void AddSequencesToAlignmentTask::prepare()
@@ -91,9 +92,10 @@ QList<Task*> AddSequencesToAlignmentTask::onSubTaskFinished( Task* subTask )
     foreach(GObject* obj, seqObjects) {
         U2SequenceObject* dnaObj = qobject_cast<U2SequenceObject*>(obj);
         assert(dnaObj != NULL);
-        DNAAlphabet* newAlphabet = U2AlphabetUtils::deriveCommonAlphabet(dnaObj->getAlphabet(), maObj->getAlphabet());
+        DNAAlphabet* newAlphabet = U2AlphabetUtils::deriveCommonAlphabet(dnaObj->getAlphabet(), msaAlphabet);
         if (newAlphabet != NULL) {
             seqList << dnaObj;
+            msaAlphabet = newAlphabet;
         } else {
             errorList << dnaObj->getGObjectName();
         }
@@ -141,6 +143,13 @@ void AddSequencesToAlignmentTask::addRows(QList<U2MsaRow> &rows) {
     // Add rows
     con.dbi->getMsaDbi()->addRows(entityRef.entityId, rows, stateInfo);
     CHECK_OP(stateInfo, );
+
+    // Update alphabet
+    if (maObj->getAlphabet() != msaAlphabet) {
+        SAFE_POINT(NULL != msaAlphabet, "NULL result alphabet", );
+        con.dbi->getMsaDbi()->updateMsaAlphabet(entityRef.entityId, msaAlphabet->getId(), stateInfo);
+        CHECK_OP(stateInfo, );
+    }
 
     // Update object
     maObj->updateCachedMAlignment();

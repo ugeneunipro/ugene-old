@@ -306,7 +306,7 @@ void MAlignmentObject::setGObjectName(const QString& newName) {
     GObject::setGObjectName(newName);
 }
 
-void MAlignmentObject::removeRegion(int startPos, int startRow, int nBases, int nRows, bool removeEmptyRows, bool changeAlignment) {
+void MAlignmentObject::removeRegion(int startPos, int startRow, int nBases, int nRows, bool removeEmptyRows) {
     SAFE_POINT(!isStateLocked(), "Alignment state is locked!", );
     QList<qint64> rowIds;
     MAlignment msa = getMAlignment();
@@ -388,7 +388,7 @@ void MAlignmentObject::deleteGapsByAbsoluteVal(int val) {
             if (colNumber >= cachedMAlignment.getLength()) {
                 continue;
             }
-            removeRegion(colNumber, 0, 1, msa.getNumRows(), true, false);
+            removeRegion(colNumber, 0, 1, msa.getNumRows(), true);
         }
         msa = getMAlignment();
     }
@@ -407,7 +407,7 @@ void MAlignmentObject::deleteAllGapColumn() {
         }
 
         if(gapCount == msa.getNumRows()) {
-            removeRegion(i, 0, 1, msa.getNumRows(), true, false);
+            removeRegion(i, 0, 1, msa.getNumRows(), true);
             msa = getMAlignment();
             length--;
             i--;

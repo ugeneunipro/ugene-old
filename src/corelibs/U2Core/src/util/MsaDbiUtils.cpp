@@ -221,12 +221,12 @@ void MsaDbiUtils::cutOffTrailingGaps(QList<U2MsaRow>& rows, const qint64 msaLeng
         if (true == rows[i].gaps.isEmpty()) {
             continue;
         }
-        for (qint64 j = rows[i].gaps.length() - 1; j >= 0 && rows[i].gaps[j].offset >= msaLength - 1; --j) {
+        for (qint64 j = rows[i].gaps.length() - 1; j >= 0 && rows[i].gaps[j].offset > msaLength - 1; --j) {
             rows[i].gaps.removeAt(j);
             continue;
         }
-        if (false == rows[i].gaps.isEmpty() && rows[i].gaps.last().gap + rows[i].gaps.last().offset >= msaLength) {
-            rows[i].gaps.last().gap = msaLength - rows[i].gaps.last().offset - 1;
+        if (false == rows[i].gaps.isEmpty() && rows[i].gaps.last().gap + rows[i].gaps.last().offset > msaLength) {
+            rows[i].gaps.last().gap = msaLength - rows[i].gaps.last().offset;
         }
     }
 }

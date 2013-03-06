@@ -112,7 +112,7 @@ public:
 
 
     /** Method that affect the whole alignment, including sequences */
-    void removeRegion(int startPos, int startRow, int nBases, int nRows, bool removeEmptyRows, bool changeAlignment = true);
+    void removeRegion(int startPos, int startRow, int nBases, int nRows, bool removeEmptyRows);
     void crop(U2Region window, const QSet<QString>& rowNames);
     bool shiftRegion(int startPos, int startRow, int nBases, int nRows, int shift);
     void deleteGapsByAbsoluteVal(int val);
