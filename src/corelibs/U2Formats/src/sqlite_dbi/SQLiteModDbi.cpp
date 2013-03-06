@@ -121,7 +121,7 @@ U2SingleModStep SQLiteModDbi::getModStep(const U2DataId& objectId, qint64 trackV
 
 QList<U2SingleModStep> SQLiteModDbi::getModSteps(const U2DataId& objectId, qint64 version, U2OpStatus& os) {
     QList<U2SingleModStep> steps;
-    SQLiteTransaction(db, os);
+    SQLiteTransaction t(db, os);
     qint64 userStepId = -1;
     SQLiteQuery qGetUserStepId("SELECT userStepId FROM MultiModStep WHERE id = (SELECT multiStepId FROM SingleModStep WHERE object = ?1 AND version = ?2)", db, os);
     SAFE_POINT_OP(os, QList<U2SingleModStep>());
@@ -216,7 +216,7 @@ bool SQLiteModDbi::removeUserStepWithMulti = true;
 
 
 void SQLiteModDbi::startCommonUserModStep(const U2DataId& masterObjId, U2OpStatus& os) {
-    SQLiteTransaction(db, os);
+    SQLiteTransaction t(db, os);
 
     // Only one common step at a time
     if (isUserStepStarted()) {
@@ -238,7 +238,7 @@ void SQLiteModDbi::endCommonUserModStep() {
 }
 
 void SQLiteModDbi::startCommonMultiModStep(const U2DataId& userMasterObjId, U2OpStatus& os) {
-    SQLiteTransaction(db, os);
+    SQLiteTransaction t(db, os);
     if (!isUserStepStarted()) {
         startCommonUserModStep(userMasterObjId, os);
         SAFE_POINT_OP(os, );

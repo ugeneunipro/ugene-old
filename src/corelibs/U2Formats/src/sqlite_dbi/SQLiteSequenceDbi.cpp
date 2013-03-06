@@ -180,7 +180,7 @@ static QList<QByteArray> quantify(const QList<QByteArray>& input) {
 
 }
 void SQLiteSequenceDbi::updateSequenceData(const U2DataId& sequenceId, const U2Region& regionToReplace, const QByteArray& dataToInsert, const QVariantMap &hints, U2OpStatus& os) {
-    SQLiteTransaction(db, os);
+    SQLiteTransaction t(db, os);
 
     ModTrackAction updateAction(dbi, sequenceId);
     U2TrackModType trackMod = updateAction.prepareTracking(os);

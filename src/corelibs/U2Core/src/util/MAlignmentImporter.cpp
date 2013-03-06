@@ -165,8 +165,7 @@ void MAlignmentImporter::makeSequencesChildObjects(const DbiConnection& con, QLi
     U2ObjectDbi* objectDbi = con.dbi->getObjectDbi();
     SAFE_POINT(NULL != objectDbi, "NULL Object Dbi during importing an alignment!",);
 
-    for (int i = 0; i < sequences.count(); ++i) {
-        U2Sequence seq = sequences[i];
+    foreach (const U2Sequence &seq, sequences) {
         // The object becomes a child object (not top-level)
         objectDbi->removeObject(seq.id, os);
         CHECK_OP(os, );

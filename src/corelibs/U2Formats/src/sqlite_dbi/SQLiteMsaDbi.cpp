@@ -263,7 +263,7 @@ void SQLiteMsaDbi::addRows(const U2DataId& msaId, QList<U2MsaRow>& rows, U2OpSta
 }
 
 void SQLiteMsaDbi::updateRowName(const U2DataId& msaId, qint64 rowId, const QString& newName, U2OpStatus& os) {
-    SQLiteTransaction(db, os);
+    SQLiteTransaction t(db, os);
     ModTrackAction updateAction(dbi, msaId);
     U2TrackModType trackMod = updateAction.prepareTracking(os);
     CHECK_OP(os, );
@@ -288,7 +288,7 @@ void SQLiteMsaDbi::updateRowName(const U2DataId& msaId, qint64 rowId, const QStr
 }
 
 void SQLiteMsaDbi::updateRowContent(const U2DataId& msaId, qint64 rowId, const QByteArray& seqBytes, const QList<U2MsaGap>& gaps, U2OpStatus& os) {
-    SQLiteTransaction(db, os);
+    SQLiteTransaction t(db, os);
     ModTrackAction updateAction(dbi, msaId);
     U2TrackModType trackMod = updateAction.prepareTracking(os);
     CHECK_OP(os, );
@@ -852,7 +852,7 @@ void SQLiteMsaDbi::updateGapModelCore(const U2DataId &msaId, qint64 msaRowId, co
 }
 
 void SQLiteMsaDbi::updateRowContentCore(const U2DataId &msaId, qint64 rowId, const QByteArray &seqBytes, const QList<U2MsaGap> &gaps, U2OpStatus &os) {
-    SQLiteTransaction(db, os);
+    SQLiteTransaction t(db, os);
     // Get the row object
     U2MsaRow row = getRow(msaId, rowId, os);
     CHECK_OP(os, );

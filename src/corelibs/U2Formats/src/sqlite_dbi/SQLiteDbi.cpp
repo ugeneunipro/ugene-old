@@ -214,7 +214,7 @@ void SQLiteDbi::populateDefaultSchema(U2OpStatus& os) {
 }
 
 void SQLiteDbi::upgrade(U2OpStatus &os) {
-    SQLiteTransaction(db, os);
+    SQLiteTransaction t(db, os);
     objectDbi->upgrade(os);
 }
 
