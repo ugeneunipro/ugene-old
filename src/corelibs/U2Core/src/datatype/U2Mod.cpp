@@ -22,6 +22,7 @@
 #include "U2Mod.h"
 
 #include <U2Core/U2ModDbi.h>
+#include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
 
 namespace U2 {
@@ -54,7 +55,8 @@ U2UseCommonUserModStep::U2UseCommonUserModStep(U2Dbi* _dbi, const U2DataId& mast
 
 U2UseCommonUserModStep::~U2UseCommonUserModStep() {
     if (valid) {
-        dbi->getModDbi()->endCommonUserModStep();
+        U2OpStatus2Log os;
+        dbi->getModDbi()->endCommonUserModStep(os);
     }
 }
 

@@ -21,6 +21,9 @@
 
 #include "SQLiteModDbi.h"
 
+#include <QCoreApplication>
+
+#include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SqlHelpers.h>
 #include <U2Core/U2SafePoints.h>
 
@@ -44,7 +47,8 @@ U2UseCommonMultiModStep::U2UseCommonMultiModStep(SQLiteDbi* _sqliteDbi, const U2
 
 U2UseCommonMultiModStep::~U2UseCommonMultiModStep() {
     if (valid) {
-        sqliteDbi->getSQLiteModDbi()->endCommonMultiModStep();
+        U2OpStatus2Log os;
+        sqliteDbi->getSQLiteModDbi()->endCommonMultiModStep(os);
     }
 }
 
@@ -188,7 +192,7 @@ void SQLiteModDbi::createModStep(const U2DataId& masterObjId, U2SingleModStep& s
     step.multiStepId = currentMultiModStepId;
 
     if (closeMultiStep) {
-        endCommonMultiModStep();
+        endCommonMultiModStep(os);
     }
 }
 
@@ -214,8 +218,18 @@ qint64 SQLiteModDbi::currentMultiModStepId = -1;
 U2DataId SQLiteModDbi::currentMasterObjId;
 bool SQLiteModDbi::removeUserStepWithMulti = true;
 
+static void checkMainThread(U2OpStatus &os) {
+    QThread *mainThread = QCoreApplication::instance()->thread();
+    QThread *thisThread = QThread::currentThread();
+
+    if (mainThread != thisThread) {
+        os.setError("Not main thread");
+    }
+}
 
 void SQLiteModDbi::startCommonUserModStep(const U2DataId& masterObjId, U2OpStatus& os) {
+    checkMainThread(os);
+    CHECK_OP(os, );
     SQLiteTransaction t(db, os);
 
     // Only one common step at a time
@@ -231,7 +245,9 @@ void SQLiteModDbi::startCommonUserModStep(const U2DataId& masterObjId, U2OpStatu
     currentMasterObjId = masterObjId;
 }
 
-void SQLiteModDbi::endCommonUserModStep() {
+void SQLiteModDbi::endCommonUserModStep(U2OpStatus &os) {
+    checkMainThread(os);
+    CHECK_OP(os, );
     currentMultiModStepId = -1;
     currentUserModStepId = -1;
     currentMasterObjId = U2DataId();
@@ -255,7 +271,8 @@ void SQLiteModDbi::startCommonMultiModStep(const U2DataId& userMasterObjId, U2Op
     
     if (isMultiStepStarted()) {
         os.setError("Can't create a common multiple modifications step, previous one is not complete!");
-        endCommonUserModStep();
+        U2OpStatus2Log innerOs;
+        endCommonUserModStep(innerOs);
         return;
     }
 
@@ -264,9 +281,9 @@ void SQLiteModDbi::startCommonMultiModStep(const U2DataId& userMasterObjId, U2Op
     SAFE_POINT_OP(os, );
 }
 
-void SQLiteModDbi::endCommonMultiModStep() {
+void SQLiteModDbi::endCommonMultiModStep(U2OpStatus &os) {
     if (removeUserStepWithMulti) {
-        endCommonUserModStep();
+        endCommonUserModStep(os);
     }
     else {
         currentMultiModStepId = -1;

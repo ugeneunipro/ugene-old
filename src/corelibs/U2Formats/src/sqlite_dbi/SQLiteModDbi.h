@@ -79,7 +79,7 @@ public:
      * Ends a common user modifications step.
      * Do not use this method, use "U2UseCommonUserModStep" instead!
      */
-    virtual void endCommonUserModStep();
+    virtual void endCommonUserModStep(U2OpStatus &os);
 
     /**
      * Starts a common multiple modifications step.
@@ -93,7 +93,7 @@ public:
      * Ends a common multiple modifications step.
      * Do not use this method, use "U2UseCommonMultiModStep" instead!
      */
-    void endCommonMultiModStep();
+    void endCommonMultiModStep(U2OpStatus &os);
 
     /** Specifies whether a step has been started */
     static bool isUserStepStarted() { return currentUserModStepId != -1; }

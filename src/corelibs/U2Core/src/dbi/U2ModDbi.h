@@ -55,7 +55,7 @@ public:
      * Ends a common user modifications step (can be only one at a time).
      * Do not use this method, use "U2UseCommonUserModStep" instead!
      */
-    virtual void endCommonUserModStep() = 0;
+    virtual void endCommonUserModStep(U2OpStatus &os) = 0;
 };
 
 } //namespace
