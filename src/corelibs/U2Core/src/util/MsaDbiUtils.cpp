@@ -200,15 +200,22 @@ void MsaDbiUtils::calculateGapModelAfterInsert(QList<U2MsaGap>& gapModel, qint64
 }
 
 void MsaDbiUtils::cutOffLeadingGaps(QList<U2MsaRow>& rows) {
-    qint64 leadingGapsToRemove = 9223372036854775807;   //max of qint64
+    qint64 leadingGapsToRemove = LLONG_MAX;
     for (qint64 i = 0; i < rows.length(); ++i) {
-        if (leadingGapsToRemove == 0 || true == rows[i].gaps.isEmpty() || rows[i].gaps.first().offset != 0) {
+        // If some rows haven't any leading gaps,
+        // If some rows haven't any gaps
+        // If some rows first gap's offset isn't zero
+        // return
+        if (leadingGapsToRemove == 0 ||
+                true == rows[i].gaps.isEmpty() ||
+                rows[i].gaps.first().offset != 0) {
             leadingGapsToRemove = 0;
             return;
         }
         leadingGapsToRemove = qMin(leadingGapsToRemove, rows[i].gaps.first().gap);
     }
 
+    // If there is any leading gaps after all, they should be removed.
     if (leadingGapsToRemove != 0) {
         for (qint64  i = 0; i < rows.length(); ++i) {
             calculateGapModelAfterRemove(rows[i].gaps, 0, leadingGapsToRemove);
@@ -217,16 +224,23 @@ void MsaDbiUtils::cutOffLeadingGaps(QList<U2MsaRow>& rows) {
 }
 
 void MsaDbiUtils::cutOffTrailingGaps(QList<U2MsaRow>& rows, const qint64 msaLength) {
-    for (qint64 i = 0; i < rows.length(); ++i) {
-        if (true == rows[i].gaps.isEmpty()) {
+    for (QList<U2MsaRow>::iterator rowIt = rows.begin(); rowIt < rows.end(); ++rowIt) {
+        // If there are no gaps in the row, skip this row.
+        if (true == rowIt->gaps.isEmpty()) {
             continue;
         }
-        for (qint64 j = rows[i].gaps.length() - 1; j >= 0 && rows[i].gaps[j].offset > msaLength - 1; --j) {
-            rows[i].gaps.removeAt(j);
+
+        // Delete all gaps with offset after msa length.
+        for (QList<U2MsaGap>::iterator gapIt = --rowIt->gaps.end();
+             gapIt >= rowIt->gaps.begin() && gapIt->offset > msaLength - 1;
+             --gapIt) {
+            gapIt = rowIt->gaps.erase(gapIt);
             continue;
         }
-        if (false == rows[i].gaps.isEmpty() && rows[i].gaps.last().gap + rows[i].gaps.last().offset > msaLength) {
-            rows[i].gaps.last().gap = msaLength - rows[i].gaps.last().offset;
+
+        // Cut off all gaps with offset before msa length and end after msa length
+        if (false == rowIt->gaps.isEmpty() && rowIt->gaps.last().gap + rowIt->gaps.last().offset > msaLength) {
+            rowIt->gaps.last().gap = msaLength - rowIt->gaps.last().offset;
         }
     }
 }
