@@ -265,21 +265,6 @@ public:
      */
     void saveTrack(const U2DataId& masterObjId, qint64 modType, const QByteArray& modDetails, U2OpStatus& os);
 
-    /**
-        If modifications tracking is enabled, save a modification step to the database.
-     */
-    void saveTrack(const U2DataId& masterObjId, U2SingleModStep& singleModStep, U2OpStatus& os);
-
-    /**
-        Creates single mod step for delayed saving.
-      */
-    U2SingleModStep createModStep(qint64 modType, const QByteArray& modDetails) const;
-
-    /**
-        Returnes current tack mod type.
-      */
-    U2TrackModType getTrackModType() const;
-
 private:
     SQLiteDbi* dbi;
     U2DataId objectId;

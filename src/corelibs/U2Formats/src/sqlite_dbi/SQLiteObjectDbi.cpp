@@ -504,7 +504,7 @@ void SQLiteObjectDbi::redo(const U2DataId& objId, U2OpStatus& os) {
     }
 
     // Get all single modification steps
-    QList<U2SingleModStep> modSteps = dbi->getSQLiteModDbi()->getModSteps(objId, obj.version - 1, os);
+    QList<U2SingleModStep> modSteps = dbi->getSQLiteModDbi()->getModSteps(objId, obj.version, os);
     if (os.hasError()) {
         coreLog.trace("Error getting modSteps for an object: " + os.getError());
         os.setError(errorDescr);
