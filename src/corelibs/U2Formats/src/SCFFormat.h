@@ -49,8 +49,12 @@ public:
 protected:
     virtual Document* loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, U2OpStatus& os);
 
+    virtual DNASequence* loadSequence(IOAdapter *io, U2OpStatus &ti);
+
 private:
-    Document* parseSCF(const U2DbiRef& dbiRef, SeekableBuf*, IOAdapterFactory* io, const GUrl& url, const QVariantMap& fs, U2OpStatus& os);
+    Document* parseSCF(const U2DbiRef& dbiRef, IOAdapter* io, const QVariantMap& fs, U2OpStatus& os);
+
+    bool loadSCFObjects( IOAdapter* io,  DNASequence& dna, DNAChromatogram& cd, U2OpStatus& os );
 
     QString formatName;
 };
