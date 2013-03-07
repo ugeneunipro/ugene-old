@@ -3685,8 +3685,6 @@ p, li { white-space: pre-wrap; }
         </spacer>
        </item>
       </layout>
-      <zorder>spanIntronExonBox</zorder>
-      <zorder>verticalSpacer_7</zorder>
      </widget>
      <widget class="QWidget" name="tab_SequenceQuality">
       <attribute name="title">

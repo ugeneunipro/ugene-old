@@ -122,7 +122,7 @@ QRect GTUtilsQueryDesigner::getItemRect(U2OpStatus &os,QString itemName){
             }
         }
     }
-   // return QRect();
+   return QRect();
 }
 
 #undef GT_CLASS_NAME

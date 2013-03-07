@@ -133,8 +133,6 @@
        <height>0</height>
       </size>
      </property>
-     <zorder>groupBox</zorder>
-     <zorder>groupBox</zorder>
     </widget>
    </item>
    <item row="4" column="0" colspan="2">
