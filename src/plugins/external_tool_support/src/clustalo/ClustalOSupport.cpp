@@ -62,7 +62,7 @@ ClustalOSupport::ClustalOSupport(const QString& name, const QString& path) : Ext
     executableFileName="ClustalO";
     #endif
 #endif
-    validationArguments<<"-help";
+    validationArguments<<"--help";
     validMessage="Clustal Omega";
     description=tr("<i>Clustal Omega</i> is a free sequence alignment software for proteins.");
     versionRegExp=QRegExp("Clustal Omega - (\\d+\\.\\d+\\.\\d+).*");
