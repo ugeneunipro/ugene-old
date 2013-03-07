@@ -22,6 +22,11 @@
 #include "PluginModel.h"
 
 namespace U2 {
+Plugin::Plugin(const QString &_name, const QString &_desc, const bool _isFree, PluginState _state)
+    : name(_name), description(_desc), isFreeValue(_isFree), state(_state)
+{
+    isLicenseAcceptedValue=false;
+}
 void Plugin::setLicensePath(const QString & _licensePath){
     licensePath=GUrl(_licensePath);
 }

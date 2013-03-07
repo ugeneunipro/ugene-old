@@ -433,7 +433,7 @@ Task::ReportResult AddPluginTask::report() {
         }
         Settings* settings = AppContext::getSettings();
         QString pluginAcceptedLicenseSettingsDir = settings->toVersionKey(PLUGINS_ACCEPTED_LICENSE_LIST);
-        if(settings->getValue(pluginAcceptedLicenseSettingsDir + versionAppendix + desc.id + "license").toBool()){
+        if(settings->getValue(pluginAcceptedLicenseSettingsDir + versionAppendix + desc.id + "license",false).toBool()){
             p->acceptLicense();
         }
     }

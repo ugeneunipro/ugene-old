@@ -50,8 +50,7 @@ enum PluginState {
 class U2CORE_EXPORT Plugin : public QObject {
     Q_OBJECT
 public:
-    Plugin(const QString & _name, const QString& _desc, const bool _isFree = true, PluginState _state = PluginState_Loaded)
-        : name(_name), description(_desc), isFreeValue(_isFree), state(_state){}
+    Plugin(const QString & _name, const QString& _desc, const bool _isFree = true, PluginState _state = PluginState_Loaded);
     
     //plugin is deallocated by plugin_support service when it's removed or on application shutting down
     virtual ~Plugin(){}
