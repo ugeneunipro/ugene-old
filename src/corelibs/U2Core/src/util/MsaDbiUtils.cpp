@@ -554,27 +554,27 @@ void MsaDbiUtils::updateMsa(const U2EntityRef& msaRef, const MAlignment& al, U2O
 
         // Update data for rows with the same row and sequence IDs
         if (newRowsIds.contains(currentRow.rowId)) {
+            // Update sequence and row info
             U2MsaRow newRow = al.getRowByRowId(currentRow.rowId, os);
             CHECK_OP(os, );
 
-            if (newRow.sequenceId == currentRow.sequenceId){
-                // Update sequence and row info
-                DNASequence sequence = al.getSequenceByRowId(newRow.rowId, os);
-                CHECK_OP(os, );
-
-                msaDbi->updateRowName(msaRef.entityId, newRow.rowId, sequence.getName(), os);
-                CHECK_OP(os, );
-
-                msaDbi->updateRowContent(msaRef.entityId, newRow.rowId, sequence.seq, newRow.gaps, os);
-                CHECK_OP(os, );
-            }
-            else {
+            if (newRow.sequenceId != currentRow.sequenceId) {
+                // Kill the row from the current alignment, it is incorrect. New row with this ID will be created later.
                 MsaDbiUtils::removeRow(msaRef, currentRow.rowId, os);
                 CHECK_OP(os, );
 
-                MsaDbiUtils::addRow(msaRef, -1, newRow, os);
-                CHECK_OP(os, );
+                currentRowIds.removeOne(currentRow.rowId);
+                continue;
             }
+
+            DNASequence sequence = al.getSequenceByRowId(newRow.rowId, os);
+            CHECK_OP(os, );
+
+            msaDbi->updateRowName(msaRef.entityId, newRow.rowId, sequence.getName(), os);
+            CHECK_OP(os, );
+
+            msaDbi->updateRowContent(msaRef.entityId, newRow.rowId, sequence.seq, newRow.gaps, os);
+            CHECK_OP(os, );
         }
         // Remove rows that are no more present in the alignment
         else {
