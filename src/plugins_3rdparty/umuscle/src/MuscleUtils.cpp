@@ -103,7 +103,8 @@ void convertMAlignment2MSA(MSA& muscleMSA, const MAlignment& ma, bool fixAlpha) 
     for (int i=0, n = ma.getNumRows(); i<n; i++) {
         const MAlignmentRow& row = ma.getRow(i);
         
-		int coreLen = row.getCoreLength();
+        int coreLen = row.getCoreLength();
+        int maLen = ma.getLength();
         char* seq  = new char[coreLen + 1];
         memcpy(seq, row.getCore().constData(), coreLen);
         seq[row.getCoreLength()] = '\0';
@@ -112,7 +113,7 @@ void convertMAlignment2MSA(MSA& muscleMSA, const MAlignment& ma, bool fixAlpha) 
         memcpy(name, row.getName().toLocal8Bit().constData(), row.getName().length());
         name[row.getName().length()] = '\0';
         
-        muscleMSA.AppendSeq(seq, coreLen, name);
+        muscleMSA.AppendSeq(seq, maLen, name);
         ctx->tmp_uIds[i] = ctx->input_uIds[i];
     }
     if (fixAlpha) {
