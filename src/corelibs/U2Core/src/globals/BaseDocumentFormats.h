@@ -63,7 +63,6 @@ public:
     static const DocumentFormatId VCF4;
     static const DocumentFormatId BAM;
     static const DocumentFormatId UGENEDB;
-    static const DocumentFormatId WIG;
     static const DocumentFormatId DIFF;
 
     static DocumentFormat* get(const DocumentFormatId& formatId);
