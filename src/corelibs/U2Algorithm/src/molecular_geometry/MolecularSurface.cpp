@@ -155,6 +155,9 @@ Task::ReportResult MolecularSurfaceCalcTask::report() {
     return ReportResult_Finished;
 }
 
+MolecularSurfaceFactory::~MolecularSurfaceFactory() {
+
+}
 
 } // namespace
 

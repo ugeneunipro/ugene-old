@@ -298,8 +298,6 @@ QList<GObject*> U1SequenceUtils::mergeSequences(const QList<Document*> docs, con
     int mergeGap = hints[DocumentReadingMode_SequenceMergeGapSize].toInt();
     assert(mergeGap >= 0);
     QHash< U2SequenceObject*, QList<AnnotationTableObject*> > annotationsBySequenceObjectName;
-    DNAAlphabet* al = NULL;
-    
     GUrl newUrl(newStringUrl, GUrl_File);
 
     QMap<DNAAlphabetType, QList<U2SequenceObject*> > mapObjects2Alpabets;

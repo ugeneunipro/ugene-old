@@ -55,6 +55,7 @@ public:
 
 class DnaAssemblyGUIExtensionsFactory {
 public:
+    virtual ~DnaAssemblyGUIExtensionsFactory() {}
     virtual DnaAssemblyAlgorithmMainWidget* createMainWidget(QWidget* parent) = 0;
     virtual DnaAssemblyAlgorithmBuildIndexWidget* createBuildIndexWidget(QWidget* parent) = 0;
     virtual bool hasMainWidget() = 0;

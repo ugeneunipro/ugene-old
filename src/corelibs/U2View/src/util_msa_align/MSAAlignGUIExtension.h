@@ -42,6 +42,7 @@ public:
 
 class MSAAlignGUIExtensionsFactory {
 public:
+    virtual ~MSAAlignGUIExtensionsFactory() {}
     virtual MSAAlignAlgorithmMainWidget* createMainWidget(QWidget* parent) = 0;
     virtual bool hasMainWidget() = 0;
 };

@@ -601,7 +601,7 @@ int main(int argc, char **argv)
     }
 
     TmpDirChecker* tempDirChecker = new TmpDirChecker;
-    bool a = QObject::connect(tempDirChecker, SIGNAL(si_checkFailed(QString)), mw, SLOT(sl_tempDirPathCheckFailed(QString)));
+    QObject::connect(tempDirChecker, SIGNAL(si_checkFailed(QString)), mw, SLOT(sl_tempDirPathCheckFailed(QString)));
     ts->registerTopLevelTask(tempDirChecker);
 
     int rc = app.exec();

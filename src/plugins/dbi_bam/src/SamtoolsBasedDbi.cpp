@@ -663,7 +663,6 @@ U2IntegerAttribute SamtoolsBasedAttributeDbi::getIntegerAttribute(const U2DataId
     QString attrName = tokens[1];
     if (U2BaseAttributeName::reference_length == attrName) {
         U2DataId objIdStr = U2DataId(tokens[0].toAscii());
-        bool ok = false;
         int id = SamtoolsBasedAssemblyDbi::toSamtoolsId(objIdStr, os);
         CHECK_OP(os, result);
 

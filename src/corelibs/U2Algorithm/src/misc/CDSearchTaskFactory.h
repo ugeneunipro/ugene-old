@@ -54,6 +54,7 @@ class Task;
 
 class U2ALGORITHM_EXPORT CDSearchResultListener {
 public:
+    virtual ~CDSearchResultListener() {}
     virtual QList<SharedAnnotationData> getCDSResults() const = 0;
     virtual Task* getTask() const = 0;
 };
