@@ -133,20 +133,20 @@ public:
         U2DbiUtils::logNotSupported(U2DbiFeature_ChangeFolders, getRootDbi(), os);
     }
 
-    virtual U2TrackModType getTrackModType(const U2DataId& objectId, U2OpStatus& os) {
+    virtual U2TrackModType getTrackModType(const U2DataId&, U2OpStatus& os) {
         U2DbiUtils::logNotSupported(U2DbiFeature_ReadModifications, getRootDbi(), os);
         return NoTrack;
     }
 
-    virtual void setTrackModType(const U2DataId& objectId, U2TrackModType trackModType, U2OpStatus& os) {
+    virtual void setTrackModType(const U2DataId&, U2TrackModType, U2OpStatus& os) {
         U2DbiUtils::logNotSupported(U2DbiFeature_WriteModifications, getRootDbi(), os);
     }
 
-    virtual void undo(const U2DataId& msaId, U2OpStatus& os) {
+    virtual void undo(const U2DataId&, U2OpStatus& os) {
         U2DbiUtils::logNotSupported(U2DbiFeature_UndoRedo, getRootDbi(), os);
     }
 
-    virtual void redo(const U2DataId& objId, U2OpStatus& os) {
+    virtual void redo(const U2DataId&, U2OpStatus& os) {
         U2DbiUtils::logNotSupported(U2DbiFeature_UndoRedo, getRootDbi(), os);
     }
 
@@ -175,7 +175,7 @@ public:
         U2DbiUtils::logNotSupported(U2DbiFeature_WriteSequence, getRootDbi(), os);
     }
 
-    virtual void updateSequenceData(const U2DataId&, const U2Region&, const QByteArray&, const QVariantMap &hints, U2OpStatus& os) {
+    virtual void updateSequenceData(const U2DataId&, const U2Region&, const QByteArray&, const QVariantMap &, U2OpStatus& os) {
         U2DbiUtils::logNotSupported(U2DbiFeature_WriteSequence, getRootDbi(), os);
     }
 };
@@ -187,7 +187,7 @@ protected:
     U2SimpleMsaDbi(U2Dbi* rootDbi) : U2MsaDbi(rootDbi) {}
 
 public:
-    virtual U2DataId createMsaObject(const QString& folder, const QString& name, const U2AlphabetId& alphabet, U2OpStatus& os) {
+    virtual U2DataId createMsaObject(const QString&, const QString&, const U2AlphabetId&, U2OpStatus& os) {
         U2DbiUtils::logNotSupported(U2DbiFeature_WriteMsa, getRootDbi(), os);
     }
     
