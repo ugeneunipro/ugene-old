@@ -44,7 +44,9 @@ DbiDataHandler::~DbiDataHandler() {
     }
 }
 
-DbiDataHandler::DbiDataHandler(const DbiDataHandler &) {
+DbiDataHandler::DbiDataHandler(const DbiDataHandler & /*other*/)
+: QSharedData()
+{
 }
 
 DbiDataHandler &DbiDataHandler::operator=(const DbiDataHandler &) {
