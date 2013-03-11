@@ -100,14 +100,15 @@ void Port::setParameter(const QString& name, const QVariant& val) {
 }
 
 void Port::remap(const QMap<ActorId, ActorId>&) {
+    // nothing to do with the port
 }
 
 void Port::updateBindings(const QMap<ActorId, ActorId>&) {
-
+    // nothing to do with the port
 }
 
-void Port::replaceActor(Actor *oldActor, Actor *newActor, const QList<PortMapping> &mappings) {
-
+void Port::replaceActor(Actor * /*oldActor*/, Actor * /*newActor*/, const QList<PortMapping> & /*mappings*/) {
+    // nothing to do with the port
 }
 
 bool Port::canBind(const Port* other) const {

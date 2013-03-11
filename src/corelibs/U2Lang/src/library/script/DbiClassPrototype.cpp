@@ -36,7 +36,7 @@ ScriptDbiData::ScriptDbiData() {
 }
 
 ScriptDbiData::~ScriptDbiData() {
-    int a=1;
+
 }
 
 ScriptDbiData::ScriptDbiData(const Workflow::SharedDbiDataHandler &_seqId)

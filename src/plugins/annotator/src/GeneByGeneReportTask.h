@@ -91,8 +91,8 @@ private:
     QString                         outFile;
     QString                         existingMode;
     QMap<QString, QList<QString> >  mergedTable;
-    int                             mergedGenomesSize;
     IOAdapter*                      io;
+    int                             mergedGenomesSize;
 
 private:
     void readMergedTable(const QString& filePath, U2OpStatus& os);

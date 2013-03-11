@@ -60,7 +60,6 @@ const QString GeneByGeneCompareResult::IDENTICAL_NO = "No";
 GeneByGeneCompareResult GeneByGeneComparator::compareGeneAnnotation( const DNASequence& seq, const QList<SharedAnnotationData>& annData, const QString& annName, float identity ){
     GeneByGeneCompareResult result;
 
-    bool hasIdentity = false;
     float maxIdentity = -1.0F;
     foreach(const SharedAnnotationData& adata, annData){
         if(adata->name == annName){

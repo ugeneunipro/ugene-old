@@ -117,6 +117,8 @@ void HRWizardParser::parsePage(U2OpStatus &os) {
 }
 
 void HRWizardParser::finilizePagesOrder(U2OpStatus &os) {
+    // TODO: UGENE-1322
+    Q_UNUSED(os);
     pages = pagesMap.values();
     //QString lastId;
     //QList<QString> ids = nextIds.keys();

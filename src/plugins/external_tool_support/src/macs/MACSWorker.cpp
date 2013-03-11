@@ -161,7 +161,7 @@ void MACSWorker::sl_taskFinished() {
     }
 }
 
-U2::MACSSettings MACSWorker::createMACSSettings( U2OpStatus &os ){
+U2::MACSSettings MACSWorker::createMACSSettings( U2OpStatus & /*os*/ ){
     MACSSettings settings;
 
     settings.outDir = actor->getParameter(OUTPUT_DIR)->getAttributeValue<QString>(context);
@@ -258,8 +258,8 @@ public:
     }
 protected:
     QString sl1;
-    QString port;
     QString sl2;
+    QString port;
 };
 
 

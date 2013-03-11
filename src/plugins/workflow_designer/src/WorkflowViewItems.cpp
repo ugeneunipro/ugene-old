@@ -818,7 +818,7 @@ void WorkflowPortItem::paint(QPainter *painter,
     }
 }
 
-void WorkflowPortItem::focusOutEvent(QFocusEvent *event) {
+void WorkflowPortItem::focusOutEvent(QFocusEvent * /*event*/) {
     if(dragging) {
         dragging = false;
         scene()->update();

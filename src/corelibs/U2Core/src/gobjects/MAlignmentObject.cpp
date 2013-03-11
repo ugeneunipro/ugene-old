@@ -157,7 +157,6 @@ GObject* MAlignmentObject::clone(const U2DbiRef& dbiRef, U2OpStatus& os) const {
 void MAlignmentObject::insertGap(U2Region rows, int pos, int count) {
     SAFE_POINT(!isStateLocked(), "Alignment state is locked!", );
     MAlignment msa = getMAlignment();
-    int length = msa.getLength();
     int startSeq = rows.startPos;
     int endSeq = startSeq + rows.length;
 

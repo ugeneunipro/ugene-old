@@ -29,7 +29,7 @@ WorkerNameValidator::WorkerNameValidator(QObject *parent)
 
 }
 
-QValidator::State WorkerNameValidator::validate(QString &input, int &pos) const {
+QValidator::State WorkerNameValidator::validate(QString &input, int & /*pos*/) const {
     QRegExp rx("[^0-9\\s_\\-a-zA-Z]");
     if (-1 != rx.indexIn(input)) {
         return Invalid;

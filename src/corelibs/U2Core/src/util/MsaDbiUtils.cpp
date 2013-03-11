@@ -598,8 +598,8 @@ void MsaDbiUtils::updateMsa(const U2EntityRef& msaRef, const MAlignment& al, U2O
             sequence.circular = rowSeq.circular;
             sequence.length = rowSeq.length();
 
-            DNAAlphabet* alphabet;
-            if (NULL == rowSeq.alphabet) {
+            DNAAlphabet* alphabet = rowSeq.alphabet;
+            if (NULL == alphabet) {
                 alphabet = U2AlphabetUtils::findBestAlphabet(rowSeq.constData(), rowSeq.length());
             }
             SAFE_POINT(NULL != alphabet, "Failed to get alphabet for a sequence!", );
@@ -764,7 +764,6 @@ void MsaDbiUtils::insertGaps(const U2EntityRef& msaRef, const QList<qint64>& row
     // Get the MSA properties
     U2Msa msaObj = msaDbi->getMsaObject(msaRef.entityId, os);
     qint64 alLength = msaObj.length;
-    qint64 numRows = msaDbi->getNumOfRows(msaRef.entityId, os);
 
     // Validate the position
     if (pos < 0 || pos > alLength) {

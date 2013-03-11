@@ -131,13 +131,13 @@ void BaseDocReader::cleanup() {
 * BaseDocWriter
 **********************************/
 BaseDocWriter::BaseDocWriter(Actor* a, const DocumentFormatId& fid) 
-: BaseWorker(a), ch(NULL), format(NULL), append(true), fileMode(SaveDoc_Roll)
+: BaseWorker(a), format(NULL), ch(NULL), append(true), fileMode(SaveDoc_Roll)
 {
     format = AppContext::getDocumentFormatRegistry()->getFormatById(fid);
 }
 
-BaseDocWriter::BaseDocWriter( Actor * a ) 
-: BaseWorker(a), ch(NULL), format(NULL), append(true), fileMode(SaveDoc_Roll) 
+BaseDocWriter::BaseDocWriter(Actor *a)
+: BaseWorker(a), format(NULL), ch(NULL), append(true), fileMode(SaveDoc_Roll)
 {
 }
 

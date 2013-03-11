@@ -118,8 +118,8 @@ QList<U2Sequence> MAlignmentImporter::importSequences(const DbiConnection& con, 
         sequence.circular = dnaSeq.circular;
         sequence.length = dnaSeq.length();
         
-        DNAAlphabet* alphabet;
-        if (NULL == dnaSeq.alphabet) {
+        DNAAlphabet* alphabet = dnaSeq.alphabet;
+        if (NULL == alphabet) {
             alphabet = U2AlphabetUtils::findBestAlphabet(dnaSeq.constData(), dnaSeq.length());
         }
         SAFE_POINT(NULL != alphabet, "Failed to get alphabet for a sequence!", QList<U2Sequence>());

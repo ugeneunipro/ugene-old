@@ -114,7 +114,7 @@ SequenceScriptClass::SequenceScriptClass(QScriptEngine *engine)
     proto = engine->newQObject(new SequencePrototype(this));
 }
 
-QScriptValue SequenceScriptClass::constructor(QScriptContext *ctx, QScriptEngine *engine) {
+QScriptValue SequenceScriptClass::constructor(QScriptContext *ctx, QScriptEngine * /*engine*/) {
     SequenceScriptClass *sClass = qscriptvalue_cast<SequenceScriptClass*>(ctx->callee().data());
     if (!sClass) {
         return QScriptValue();

@@ -800,7 +800,7 @@ QScriptValue WorkflowScriptLibrary::getLocation(QScriptContext *ctx, QScriptEngi
     return calee.property("res");
 }
 
-QScriptValue WorkflowScriptLibrary::hasAnnotationName(QScriptContext *ctx, QScriptEngine *engine){
+QScriptValue WorkflowScriptLibrary::hasAnnotationName(QScriptContext *ctx, QScriptEngine * /*engine*/){
     if(ctx->argumentCount()!= 2) {
         return ctx->throwError(QObject::tr("Incorrect number of arguments"));
     }
@@ -827,7 +827,7 @@ QScriptValue WorkflowScriptLibrary::hasAnnotationName(QScriptContext *ctx, QScri
     return calee.property("res");
 }
 
-QScriptValue WorkflowScriptLibrary::writeFile(QScriptContext *ctx, QScriptEngine *engine){
+QScriptValue WorkflowScriptLibrary::writeFile(QScriptContext *ctx, QScriptEngine * /*engine*/){
     if(ctx->argumentCount()!= 2) {
         return ctx->throwError(QObject::tr("Incorrect number of arguments"));
     }
@@ -854,7 +854,7 @@ QScriptValue WorkflowScriptLibrary::writeFile(QScriptContext *ctx, QScriptEngine
     return 0;
 }
 
-QScriptValue WorkflowScriptLibrary::appendFile(QScriptContext *ctx, QScriptEngine *engine){
+QScriptValue WorkflowScriptLibrary::appendFile(QScriptContext *ctx, QScriptEngine * /*engine*/){
     if(ctx->argumentCount()!= 2) {
         return ctx->throwError(QObject::tr("Incorrect number of arguments"));
     }
@@ -880,7 +880,7 @@ QScriptValue WorkflowScriptLibrary::appendFile(QScriptContext *ctx, QScriptEngin
 
     return 0;
 }
-QScriptValue WorkflowScriptLibrary::readFile(QScriptContext *ctx, QScriptEngine *engine){
+QScriptValue WorkflowScriptLibrary::readFile(QScriptContext *ctx, QScriptEngine * /*engine*/){
     if(ctx->argumentCount()!= 1) {
         return ctx->throwError(QObject::tr("Incorrect number of arguments"));
     }

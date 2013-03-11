@@ -64,7 +64,7 @@ InUrlDatasetsController::~InUrlDatasetsController() {
     delete dsc;
 }
 
-QWidget * InUrlDatasetsController::createGUI(U2OpStatus & os) {
+QWidget * InUrlDatasetsController::createGUI(U2OpStatus & /*os*/) {
     if (NULL != dsc) {
         delete dsc;
     }

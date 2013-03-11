@@ -48,15 +48,15 @@ const QString Peak2GeneTask::TREAT_NAME("treatment");
 Peak2GeneTask::Peak2GeneTask(const Peak2GeneSettings& _settings, const QList<SharedAnnotationData>& _treatAnn)
 : Task("Peak2gene annotation", TaskFlag_None)
 , settings(_settings)
-, treatDoc(NULL)
-, treatTask(NULL)
-, etTask(NULL)
-, logParser(NULL)
 , treatAnn(_treatAnn)
-, geneTask(NULL)
-, peaksTask(NULL)
+, treatDoc(NULL)
 , geneDoc(NULL)
 , peaksDoc(NULL)
+, treatTask(NULL)
+, geneTask(NULL)
+, peaksTask(NULL)
+, etTask(NULL)
+, logParser(NULL)
 {
 
 }

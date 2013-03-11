@@ -163,7 +163,8 @@ void URLLineEdit::editingFinished(){
     emit si_finished();
 }
 
-GSuggestCompletion::GSuggestCompletion(QString fileFormat, URLLineEdit *parent): QObject(parent), editor(parent), fileFormat(fileFormat){
+GSuggestCompletion::GSuggestCompletion(QString fileFormat, URLLineEdit *parent)
+: QObject(parent), fileFormat(fileFormat), editor(parent) {
     popup = new QTreeWidget;
     popup->setWindowFlags(Qt::Popup);
     popup->setFocusPolicy(Qt::NoFocus);
@@ -243,8 +244,6 @@ void GSuggestCompletion::showCompletion(const QStringList &choices){
         popup->hide();
         return;
     }
-    const QPalette &pal = editor->palette();
-    QColor color = pal.color(QPalette::Disabled, QPalette::WindowText);
 
     popup->setUpdatesEnabled(false);
     popup->clear();
