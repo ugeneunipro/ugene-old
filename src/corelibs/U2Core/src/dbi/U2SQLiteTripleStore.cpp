@@ -196,11 +196,11 @@ void U2SQLiteTripleStore::addValue(const U2Triplet &value, U2OpStatus &os) {
     bool found = false;
 
     // find triplet
-    qint64 dataId = this->getTripletId(value, found, os);
+    this->getTripletId(value, found, os);
     CHECK_OP(os, );
 
     if (!found) { // insert triplet
-        dataId = this->insertTriplet(value, os);
+        this->insertTriplet(value, os);
         CHECK_OP(os, );
     }
 }

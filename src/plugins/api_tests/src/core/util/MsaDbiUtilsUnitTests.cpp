@@ -944,7 +944,8 @@ IMPLEMENT_TEST(MsaDbiUtilsUnitTests, moveRows_UnorderedList) {
 }
 
 IMPLEMENT_TEST(MsaDbiUtilsUnitTests, moveRows_InvalidRowList) {
-    U2MsaDbi* msaDbi = MsaDbiUtilsTestUtils::getMsaDbi();
+    // for init
+    MsaDbiUtilsTestUtils::getMsaDbi();
     U2OpStatusImpl os;
     int rowCount = 7;
 

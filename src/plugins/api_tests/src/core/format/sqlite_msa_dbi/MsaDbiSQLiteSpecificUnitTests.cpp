@@ -2315,8 +2315,6 @@ IMPLEMENT_TEST(MsaDbiSQLiteSpecificUnitTests, addRow_middlePos_undo) {
     row.gstart = 1;
     row.gend = 20;
     row.gaps = gaps;
-    qint64 rowLength = row.gend - row.gstart + gapLength;
-
     qint64 posInMsa = 3;
 
     // Call test function
@@ -2459,8 +2457,6 @@ IMPLEMENT_TEST(MsaDbiSQLiteSpecificUnitTests, addRow_lastRowPos_undo) {
     row.gstart = 1;
     row.gend = 20;
     row.gaps = gaps;
-    qint64 rowLength = row.gend - row.gstart + gapLength;
-
     qint64 posInMsa = baseNumOfRows;
 
     // Call test function
@@ -2597,8 +2593,6 @@ IMPLEMENT_TEST(MsaDbiSQLiteSpecificUnitTests, addRow_child_noModTrack) {
     row.gstart = 1;
     row.gend = 20;
     row.gaps = gaps;
-    qint64 rowLength = row.gend - row.gstart + gapLength;
-
     qint64 posInMsa = 5;
 
     // Prepare expected values
@@ -2637,8 +2631,6 @@ IMPLEMENT_TEST(MsaDbiSQLiteSpecificUnitTests, addRow_child_Track) {
     row.gstart = 1;
     row.gend = 20;
     row.gaps = gaps;
-    qint64 rowLength = row.gend - row.gstart + gapLength;
-
     qint64 posInMsa = 5;
 
     // Prepare expected values
