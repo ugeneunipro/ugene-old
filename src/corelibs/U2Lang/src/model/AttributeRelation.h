@@ -69,7 +69,7 @@ private:
  */
 class U2LANG_EXPORT FileExtensionRelation : public AttributeRelation {
 public:
-    FileExtensionRelation(const QString &relatedAttrId, const QString &currentFormatId)
+    FileExtensionRelation(const QString &relatedAttrId)
         : AttributeRelation(relatedAttrId){}
 
     virtual QVariant getAffectResult(const QVariant &influencingValue, const QVariant &dependentValue) const;

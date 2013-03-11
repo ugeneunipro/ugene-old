@@ -221,7 +221,7 @@ void WriteAnnotationsWorkerFactory::init() {
             WriteAnnotationsWorker::tr("Add names of sequences into CSV file"));
         attrs << new Attribute(writeNamesDesc, BaseTypes::BOOL_TYPE(), false, false);
 
-        docFormatAttr->addRelation(new FileExtensionRelation(urlAttr->getId(), docFormatAttr->getAttributePureValue().toString()));
+        docFormatAttr->addRelation(new FileExtensionRelation(urlAttr->getId()));
         nameAttr->addRelation(new VisibilityRelation(BaseAttributes::DOCUMENT_FORMAT_ATTRIBUTE().getId(),
             QVariantList()
             << CSV_FORMAT_ID

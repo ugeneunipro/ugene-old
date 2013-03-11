@@ -205,7 +205,7 @@ void CoreLib::init() {
             a << docFormatAttr;
             WriteDocActorProto *childProto = new WriteDocActorProto( acd, GObjectTypes::MULTIPLE_ALIGNMENT, p, pd.getId(), a );
             IntegralBusActorPrototype * proto = childProto;
-            docFormatAttr->addRelation(new FileExtensionRelation(childProto->getUrlAttr()->getId(), docFormatAttr->getAttributePureValue().toString()));
+            docFormatAttr->addRelation(new FileExtensionRelation(childProto->getUrlAttr()->getId()));
             
             QVariantMap m;
             foreach( const DocumentFormatId & fid, supportedFormats ) {
@@ -247,7 +247,7 @@ void CoreLib::init() {
             a << splitAttr;
             WriteDocActorProto *childProto = new WriteDocActorProto( acd, GObjectTypes::SEQUENCE, p, pd.getId(), a );
             IntegralBusActorPrototype * proto = childProto;
-            docFormatAttr->addRelation(new FileExtensionRelation(childProto->getUrlAttr()->getId(), docFormatAttr->getAttributePureValue().toString()));
+            docFormatAttr->addRelation(new FileExtensionRelation(childProto->getUrlAttr()->getId()));
             
             QVariantMap m;
             foreach( const DocumentFormatId & fid, supportedFormats ) {

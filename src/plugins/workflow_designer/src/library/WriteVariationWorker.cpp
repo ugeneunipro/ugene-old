@@ -119,7 +119,7 @@ void WriteVariationWorkerFactory::init() {
 
         WriteDocActorProto *childProto = new WriteDocActorProto(protoDesc, GObjectTypes::VARIANT_TRACK, portDescs, inDesc.getId(), attrs);
         IntegralBusActorPrototype *proto = childProto;
-        docFormatAttr->addRelation(new FileExtensionRelation(childProto->getUrlAttr()->getId(), docFormatAttr->getAttributePureValue().toString()));
+        docFormatAttr->addRelation(new FileExtensionRelation(childProto->getUrlAttr()->getId()));
 
         QVariantMap formatsMap;
         foreach (const DocumentFormatId &fid, supportedFormats) {

@@ -184,7 +184,7 @@ void WriteAssemblyWorkerFactory::init() {
 
     WriteDocActorProto *childProto = new WriteDocActorProto(protoDesc, GObjectTypes::ASSEMBLY, portDescs, inDesc.getId(), attrs);
     IntegralBusActorPrototype *proto = childProto;
-    docFormatAttr->addRelation(new FileExtensionRelation(childProto->getUrlAttr()->getId(), docFormatAttr->getAttributePureValue().toString()));
+    docFormatAttr->addRelation(new FileExtensionRelation(childProto->getUrlAttr()->getId()));
 
     // set up delegates
     {
