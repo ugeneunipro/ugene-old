@@ -44,7 +44,7 @@ protected:
 class SequenceSplitWorker : public BaseWorker {
     Q_OBJECT
 public:
-    SequenceSplitWorker( Actor * p ) : BaseWorker(p, /*auto transit*/false), 
+    SequenceSplitWorker( Actor * p ) : BaseWorker(p), 
         seqPort(NULL), outPort(NULL), useAcceptedOrFiltered(false) {};
 
     virtual void init();

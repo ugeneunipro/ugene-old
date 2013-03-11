@@ -116,6 +116,7 @@ void SequenceSplitWorker::init() {
 
 Task * SequenceSplitWorker::tick() {
     if (seqPort->hasMessage()) {
+        seqPort->getContext();
         Message inputMessage = getMessageAndSetupScriptValues(seqPort);
         if (inputMessage.isEmpty()) {
             outPort->transit();
@@ -178,6 +179,7 @@ void SequenceSplitWorker::cleanup() {
 void SequenceSplitWorker::sl_onTaskFinished( Task * ) {
     int count = 0;
 
+    QVariantMap channelContext = outPort->getContext();
     foreach( Task * t, ssTasks ) {
         ExtractAnnotatedRegionTask * ssT = qobject_cast<ExtractAnnotatedRegionTask *>(t);
         assert( ssT );
@@ -198,6 +200,7 @@ void SequenceSplitWorker::sl_onTaskFinished( Task * ) {
 
         DataTypePtr messageType = WorkflowEnv::getDataTypeRegistry()->getById( REGIONED_SEQ_TYPE );
         if( outPort ) {
+            outPort->setContext(channelContext);
             outPort->put( Message(messageType, messageData) );
         }
     }
