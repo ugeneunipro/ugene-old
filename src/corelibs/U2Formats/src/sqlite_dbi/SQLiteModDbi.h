@@ -53,8 +53,8 @@ public:
     /** Returns a modification step with the specified version for the object */
     virtual U2SingleModStep getModStep(const U2DataId& objectId, qint64 trackVersion, U2OpStatus& os);
 
-    /** Searches for a single step with the specified */
-    QList<U2SingleModStep> getModSteps(const U2DataId& objectId, qint64 version, U2OpStatus& os);
+    /** Returns all single steps of the master object ID of the specified version */
+    QList<U2SingleModStep> getModSteps(const U2DataId& masterObjId, qint64 version, U2OpStatus& os);
 
     /**
      * Adds a modification step into the database.
@@ -98,6 +98,10 @@ public:
     /** Specifies whether a step has been started */
     static bool isUserStepStarted() { return currentUserModStepId != -1; }
     static bool isMultiStepStarted() { return currentMultiModStepId != -1; }
+
+    /** Specifies whether there are user steps that can be undone/redone */
+    bool canUndo(const U2DataId& objectId, U2OpStatus& os);
+    bool canRedo(const U2DataId& objectId, U2OpStatus& os);
 
 private:
     /**

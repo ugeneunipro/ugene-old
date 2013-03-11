@@ -2,6 +2,7 @@ include (U2View.pri)
 
 # Input
 HEADERS += src/Init.h \
+           src/UndoRedoFramework.h \
            src/WebWindow.h \
            src/ov_assembly/AssemblyAnnotationsArea.h \
            src/ov_assembly/AssemblyBrowser.h \
@@ -186,6 +187,7 @@ FORMS += src/ov_assembly/ui/ExportConsensusDialog.ui \
     src/ui/LicenseDialog.ui \ 
     src/ov_msa/ui/PairwiseAlignmentOptionsPanelWidget.ui
 SOURCES += src/Init.cpp \
+           src/UndoRedoFramework.cpp \
            src/WebWindow.cpp \
            src/ov_assembly/AssemblyAnnotationsArea.cpp \
            src/ov_assembly/AssemblyBrowser.cpp \

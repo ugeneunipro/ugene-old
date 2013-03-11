@@ -13,7 +13,7 @@ ModDbiSQLiteSpecificUnitTests
 + createStep_separateThread
 + updateMsaName_noModTrack
 + updateMsaName_severalSteps
-+ updateMsaName_severalUndoThenAction
+- updateMsaName_severalUndoThenAction
 + updateMsaAlphabet_noModTrack
 + updateMsaAlphabet_severalSteps
 + updateMsaAlphabet_severalUndoThenAction

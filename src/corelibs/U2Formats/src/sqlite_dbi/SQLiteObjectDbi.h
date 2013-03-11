@@ -126,15 +126,15 @@ public:
     */
     virtual void moveObjects(const QList<U2DataId>& objectIds, const QString& fromFolder, const QString& toFolder, U2OpStatus& os);
 
-     /**
-        Undo the last update operation for the object.
-     */
+     /** Undo the last update operation for the object. */
     virtual void undo(const U2DataId& objId, U2OpStatus& os);
 
-    /**
-        Redo the last update operation for the object.
-     */
+    /** Redo the last update operation for the object. */
     virtual void redo(const U2DataId& objId, U2OpStatus& os);
+
+    /** Returns "true", if there are steps to undo/redo modifications of the object*/
+    virtual bool canUndo(const U2DataId& objId, U2OpStatus& os);
+    virtual bool canRedo(const U2DataId& objId, U2OpStatus& os);
    
 
     //////////////////////////////////////////////////////////////////////////

@@ -445,7 +445,7 @@ IMPLEMENT_TEST(ModDbiSQLiteSpecificUnitTests, updateMsaName_severalUndoThenActio
         CHECK_EQUAL(expectedModStepList[i].modType, finalModStepList[i].modType, "mod type");
         CHECK_EQUAL(expectedModStepList[i].objectId, finalModStepList[i].objectId, "object id");
         CHECK_EQUAL(expectedModStepList[i].version, finalModStepList[i].version, "version");
-        CHECK_EQUAL(expectedModStepList[i].details, finalModStepList[i].details, "details");
+        CHECK_EQUAL(QString(expectedModStepList[i].details), QString(finalModStepList[i].details), "details");
     }
 }
 

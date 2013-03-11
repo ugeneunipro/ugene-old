@@ -84,6 +84,7 @@
 #include <U2View/MSAEditorMultiTreeViewer.h>
 #include <U2View/MSAEditorTreeViewer.h>
 #include <U2View/TreeOptionsWidgetFactory.h>
+#include <U2View/UndoRedoFramework.h>
 
 #include <QtCore/QEvent>
 
@@ -642,6 +643,8 @@ void MSAEditor::addExistingTree() {
 MSAEditorUI::MSAEditorUI(MSAEditor* _editor)
 : editor(_editor), seqArea(NULL), offsetsView(NULL), statusWidget(NULL), collapsibleMode(false), multiTreeViewer(NULL), similarityStatistics(NULL) {
     undoFWK = new MSAEditorUndoFramework(this, editor->getMSAObject());
+//    undoFWK = new MsaUndoRedoFramework(this, editor->getMSAObject());
+
     collapseModel = new MSACollapsibleItemModel(this);
 
     copySelectionAction = new QAction(tr("Copy selection"), this);

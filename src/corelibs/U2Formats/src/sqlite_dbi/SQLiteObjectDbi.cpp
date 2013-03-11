@@ -422,6 +422,14 @@ void SQLiteObjectDbi::incrementVersion(const U2DataId& id, U2OpStatus& os) {
     q.update(1);
 }
 
+bool SQLiteObjectDbi::canUndo(const U2DataId& objId, U2OpStatus& os) {
+    return dbi->getSQLiteModDbi()->canUndo(objId, os);
+}
+
+bool SQLiteObjectDbi::canRedo(const U2DataId& objId, U2OpStatus& os) {
+    return dbi->getSQLiteModDbi()->canRedo(objId, os);
+}
+
 void SQLiteObjectDbi::undo(const U2DataId& objId, U2OpStatus& os) {
     QString errorDescr = SQLiteL10N::tr("Can't undo an operation for the object!");
 
@@ -548,42 +556,6 @@ void SQLiteObjectDbi::redo(const U2DataId& objId, U2OpStatus& os) {
             return;
         }
     }
-    
-
-
-
-    //// Get the modification step for the current version
-    //U2SingleModStep modStep = dbi->getModDbi()->getModStep(objId, obj.version, os);
-    //if (os.hasError()) {
-    //    coreLog.trace("Error getting the modStep for an object: " + os.getError());
-    //    os.setError(errorDescr);
-    //    return;
-    //}
-    //SAFE_POINT(modStep.version == obj.version, "Unexpected modStep version!", );
-
-    //// Call an appropriate "redo" depending on the object type
-    //if (U2ModType::isMsaModType(modStep.modType)) {
-    //    dbi->getSQLiteMsaDbi()->redo(objId, modStep.modType, modStep.details, os);
-    //}
-    //else if (U2ModType::isObjectModType(modStep.modType)) {
-    //    if (U2ModType::objUpdatedName == modStep.modType) {
-    //        redoUpdateObjectName(objId, modStep.details, os);
-    //        CHECK_OP(os, );
-    //    }
-    //    else {
-    //        coreLog.trace(QString("Can't redo an unknown operation: '%1'!").arg(QString::number(modStep.modType)));
-    //        os.setError(errorDescr);
-    //        return;
-    //    }
-    //}
-
-    //// increment the object version
-    //incrementVersion(objId, os);
-    //if (os.hasError()) {
-    //    coreLog.trace("Can't increment an object version!");
-    //    os.setError(errorDescr);
-    //    return;
-    //}
 }
 
 void SQLiteObjectDbi::undoUpdateObjectName(const U2DataId& id, const QByteArray& modDetails, U2OpStatus& os) {

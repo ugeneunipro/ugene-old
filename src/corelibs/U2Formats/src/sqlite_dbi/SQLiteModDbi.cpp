@@ -27,6 +27,8 @@
 #include <U2Core/U2SqlHelpers.h>
 #include <U2Core/U2SafePoints.h>
 
+#include <U2Formats/SQLiteObjectDbi.h>
+
 
 namespace U2 {
 
@@ -97,10 +99,12 @@ void SQLiteModDbi::initSqlSchema(U2OpStatus& os) {
     // UserModStep - user modification steps
     //   id                     - id of the user modifications step
     //   object, otype, oextra  - data id of the master object (i.e. object for which "undo/redo" was initiated)
+    //   version                - master object was modified from this version
     SQLiteQuery("CREATE TABLE UserModStep (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,"
         " object INTEGER NOT NULL,"
         " otype INTEGER NOT NULL,"
-        " oextra BLOB NOT NULL)", db, os).execute();
+        " oextra BLOB NOT NULL,"
+        " version INTEGER NOT NULL)", db, os).execute();
 }
 
 U2SingleModStep SQLiteModDbi::getModStep(const U2DataId& objectId, qint64 trackVersion, U2OpStatus& os) {
@@ -126,14 +130,14 @@ U2SingleModStep SQLiteModDbi::getModStep(const U2DataId& objectId, qint64 trackV
     return res;
 }
 
-QList<U2SingleModStep> SQLiteModDbi::getModSteps(const U2DataId& objectId, qint64 version, U2OpStatus& os) {
+QList<U2SingleModStep> SQLiteModDbi::getModSteps(const U2DataId& masterObjId, qint64 version, U2OpStatus& os) {
     QList<U2SingleModStep> steps;
     SQLiteTransaction t(db, os);
     qint64 userStepId = -1;
-    SQLiteQuery qGetUserStepId("SELECT userStepId FROM MultiModStep WHERE id = (SELECT multiStepId FROM SingleModStep WHERE object = ?1 AND version = ?2)", db, os);
+    SQLiteQuery qGetUserStepId("SELECT id FROM UserModStep WHERE object = ?1 AND version = ?2", db, os);
     SAFE_POINT_OP(os, QList<U2SingleModStep>());
 
-    qGetUserStepId.bindDataId(1, objectId);
+    qGetUserStepId.bindDataId(1, masterObjId);
     qGetUserStepId.bindInt64(2, version);
 
     if (qGetUserStepId.step()) {
@@ -141,7 +145,7 @@ QList<U2SingleModStep> SQLiteModDbi::getModSteps(const U2DataId& objectId, qint6
         qGetUserStepId.ensureDone();
     }
     else if (!os.hasError()) {
-        os.setError("Failed to find user step ID by single step ID!");
+        os.setError("Failed to find user step ID!");
         return steps;
     }
 
@@ -295,12 +299,16 @@ void SQLiteModDbi::endCommonMultiModStep(U2OpStatus &os) {
 
 
 void SQLiteModDbi::createUserModStep(const U2DataId& masterObjId, U2OpStatus& os) {
-    SQLiteQuery qUser("INSERT INTO UserModStep(object, otype, oextra) VALUES(?1, ?2, ?3)", db, os);
+    qint64 masterObjVersion = dbi->getSQLiteObjectDbi()->getObjectVersion(masterObjId, os);
+    SAFE_POINT_OP(os, );
+
+    SQLiteQuery qUser("INSERT INTO UserModStep(object, otype, oextra, version) VALUES(?1, ?2, ?3, ?4)", db, os);
     SAFE_POINT_OP(os, );
 
     qUser.bindDataId(1, masterObjId);
     qUser.bindType(2, SQLiteUtils::toType(masterObjId));
     qUser.bindBlob(3, SQLiteUtils::toDbExtra(masterObjId));
+    qUser.bindInt64(4, masterObjVersion);
 
     currentUserModStepId = qUser.insert();
     if (-1 == currentUserModStepId) {
@@ -323,6 +331,48 @@ void SQLiteModDbi::createMultiModStep(U2OpStatus& os) {
         os.setError("Failed to create a common multiple modifications step!");
         return;
     }
+}
+
+bool SQLiteModDbi::canUndo(const U2DataId& objectId, U2OpStatus& os) {
+    SQLiteTransaction t(db, os);
+
+    // Get current object version
+    qint64 objVersion = dbi->getSQLiteObjectDbi()->getObjectVersion(objectId, os);
+    SAFE_POINT_OP(os, false);
+
+    // Verify if there are steps
+    SQLiteQuery q("SELECT id FROM UserModStep WHERE object = ?1 AND version < ?2", db, os);
+    SAFE_POINT_OP(os, false);
+
+    q.bindDataId(1, objectId);
+    q.bindInt64(2, objVersion);
+
+    if (q.step()) {
+        return true;
+    }
+    
+    return false;
+}
+
+bool SQLiteModDbi::canRedo(const U2DataId& objectId, U2OpStatus& os) {
+    SQLiteTransaction t(db, os);
+
+    // Get current object version
+    qint64 objVersion = dbi->getSQLiteObjectDbi()->getObjectVersion(objectId, os);
+    SAFE_POINT_OP(os, false);
+
+    // Verify if there are steps
+    SQLiteQuery q("SELECT id FROM UserModStep WHERE object = ?1 AND version >= ?2", db, os);
+    SAFE_POINT_OP(os, false);
+
+    q.bindDataId(1, objectId);
+    q.bindInt64(2, objVersion);
+
+    if (q.step()) {
+        return true;
+    }
+
+    return false;
 }
 
 } // namespace

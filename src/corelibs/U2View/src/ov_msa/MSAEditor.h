@@ -31,6 +31,8 @@
 #include <U2Gui/ObjectViewModel.h>
 #include <U2Core/DNASequenceObject.h>
 
+#include <U2View/UndoRedoFramework.h>
+
 #include <QtCore/QVariantMap>
 
 #include <QtGui/QMenu>
@@ -315,6 +317,8 @@ private:
     QList<QWidget*>                 lw2Widgets;
     QList<QWidget*>                 treeAreaWidgets;
     MSAEditorUndoFramework*         undoFWK;
+    //MsaUndoRedoFramework*           undoFWK;
+
     MSACollapsibleItemModel*        collapseModel;
     bool                            collapsibleMode;
 
