@@ -158,8 +158,7 @@ void SmithWatermanAlgorithm::sortByScore( QList<PairAlignSequences> & res) {
 }
 
 void SmithWatermanAlgorithm::calculateMatrixForMultipleAlignmentResult() {
-
-	int subst, max, pos, max1;
+	int subst, max, max1;
 	int i, j, n, e1, f1, x; unsigned int xpos;
 	unsigned int src_n = searchSeq.length(), pat_n = patternSeq.length();
 	unsigned char *src = (unsigned char*)searchSeq.data(), *pat = (unsigned char*)patternSeq.data();
@@ -178,7 +177,10 @@ void SmithWatermanAlgorithm::calculateMatrixForMultipleAlignmentResult() {
 	for(i = 0; i < n; i++) {
 	    unsigned char ch = alphaCharsData[i];
 	    score = score1 + ch * pat_n;
-	    j = 0; do score[j] = substitutionMatrix.getScore(ch, pat[j]); while(++j < pat_n);
+	    j = 0;
+        do {
+            score[j] = substitutionMatrix.getScore(ch, pat[j]); 
+        } while(++j < static_cast<int>(pat_n));
 	}
 
 	PairAlignSequences p;
@@ -273,7 +275,7 @@ void SmithWatermanAlgorithm::calculateMatrixForMultipleAlignmentResult() {
 	    // printf("#%i-%i %i\n", (int)p.refSubseqInterval.startPos, (int)p.refSubseqInterval.length, (int)p.score);
 	    // printf("#%i-%i %s\n", xpos, xend - xpos, pairAlign.data());
 	    }
-	} while(++i <= src_n);
+	} while(++i <= static_cast<int>(src_n));
 
 	free(matrix);
 }
@@ -293,9 +295,12 @@ void SmithWatermanAlgorithm::calculateMatrixForAnnotationsResult() {
         QByteArray alphaChars = substitutionMatrix.getAlphabet()->getAlphabetChars();
 	char *alphaCharsData = alphaChars.data(); n = alphaChars.size();
 	for(i = 0; i < n; i++) {    
-	  unsigned char ch = alphaCharsData[i];
-	  score = score1 + ch * pat_n;
-	  j = 0; do score[j] = substitutionMatrix.getScore(ch, pat[j]); while(++j < pat_n);
+	    unsigned char ch = alphaCharsData[i];
+	    score = score1 + ch * pat_n;
+	    j = 0;
+        do {
+            score[j] = substitutionMatrix.getScore(ch, pat[j]);
+        } while(++j < static_cast<int>(pat_n));
 	}
 
 	PairAlignSequences p;
@@ -353,7 +358,7 @@ void SmithWatermanAlgorithm::calculateMatrixForAnnotationsResult() {
 	        // printf("#%i-%i %i\n", (int)p.refSubseqInterval.startPos, (int)p.refSubseqInterval.length, (int)p.score);
         #endif
 	    }
-	} while(++i <= src_n);
+	} while(++i <= static_cast<int>(src_n));
 
 #ifdef SW_FILT
 	if(p.score) {

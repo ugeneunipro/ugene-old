@@ -388,7 +388,7 @@ void SmithWatermanReportCallbackMAImpl::alignSequences(QList<U2MsaGap>& refSeque
     bool lastSymbolIsGapPtrn = false;
     quint32 intervalStart;
     quint32 intervalEnd;
-    for (quint32 i = 0; i < pairwiseAlignment.length(); ++i) {
+    for (quint32 i = 0; i < static_cast<quint32>(pairwiseAlignment.length()); ++i) {
         switch (pairwiseAlignment[i]) {
         case SmithWatermanResult::DIAG:
             if (lastSymbolIsGapRef == true) {
