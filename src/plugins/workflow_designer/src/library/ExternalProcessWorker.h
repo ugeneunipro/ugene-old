@@ -87,6 +87,9 @@ public:
     void run();
 
 private:
+    QStringList parseCombinedArgString(const QString &program);
+
+private:
     QString execString;
 };
 

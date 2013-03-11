@@ -424,9 +424,8 @@ void ExternalProcessWorker::cleanup() {
     }
 }
 
-#ifdef Q_OS_WIN32
 // a function from "qprocess.cpp"
-static QStringList parseCombinedArgString(const QString &program)
+QStringList LaunchExternalToolTask::parseCombinedArgString(const QString &program)
 {
     QStringList args;
     QString tmp;
@@ -465,7 +464,6 @@ static QStringList parseCombinedArgString(const QString &program)
 
     return args;
 }
-#endif
 
 #define WIN_LAUNCH_CMD_COMMAND "cmd /C "
 #define START_WAIT_MSEC 3000
@@ -486,11 +484,15 @@ void LaunchExternalToolTask::run() {
         execString = execString.split(">").first();
         externalProcess->setStandardOutputFile(output);
     }
+
+    QStringList execStringArgs = parseCombinedArgString(execString);
+    QString execStringProg = execStringArgs.takeAt(0);
+
     QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
     externalProcess->setProcessEnvironment(env);
     taskLog.details(tr("Running external process: %1").arg(execString));
 
-    bool startOk = WorkflowUtils::startExternalProcess(externalProcess, execString, QStringList());
+    bool startOk = WorkflowUtils::startExternalProcess(externalProcess, execStringProg, execStringArgs);
 
     if(!startOk) {
         stateInfo.setError(tr("Can't launch %1").arg(execString));
