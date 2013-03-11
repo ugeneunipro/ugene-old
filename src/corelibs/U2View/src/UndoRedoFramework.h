@@ -40,10 +40,11 @@ public:
     QAction* getUndoAction() const { return undoAction; }
     QAction* getRedoAction() const { return redoAction; }
 
-public slots:
-    void sl_alignmentChanged(const MAlignment& maBefore, const MAlignmentModInfo& modInfo);
-
 private slots:
+    void sl_alignmentChanged(const MAlignment& maBefore, const MAlignmentModInfo& modInfo);
+    void sl_lockedStateChanged();
+    void sl_completeStateChanged(bool _stateComplete);
+
     void sl_undo();
     void sl_redo();
 
@@ -51,6 +52,7 @@ private:
     void checkUndoRedoEnabled();
 
     MAlignmentObject*   maObj;
+    bool                stateComplete;
 
     QAction*   undoAction;
     QAction*   redoAction;

@@ -20,6 +20,7 @@
  */
 
 #include "UndoRedoFramework.h"
+#include "ov_msa/MSACollapsibleModel.h"
 
 #include <U2Core/MAlignmentObject.h>
 #include <U2Core/U2DbiUtils.h>
@@ -54,15 +55,33 @@ MsaUndoRedoFramework::MsaUndoRedoFramework(QObject *p, MAlignmentObject *_maObj)
 
     connect(maObj, SIGNAL(si_alignmentChanged(const MAlignment&, const MAlignmentModInfo&)), 
                    SLOT(sl_alignmentChanged(const MAlignment&, const MAlignmentModInfo&)));
+    connect(maObj, SIGNAL(si_completeStateChanged(bool)), SLOT(sl_completeStateChanged(bool)));
+    connect(maObj, SIGNAL(si_lockedStateChanged()), SLOT(sl_lockedStateChanged()));
     connect(undoAction, SIGNAL(triggered()), this, SLOT(sl_undo()));
     connect(redoAction, SIGNAL(triggered()), this, SLOT(sl_redo()));
 }
 
-void MsaUndoRedoFramework::sl_alignmentChanged(const MAlignment& /* maBefore*/ , const MAlignmentModInfo& /*modInfo */) {
+void MsaUndoRedoFramework::sl_completeStateChanged(bool _stateComplete) {
+    stateComplete = _stateComplete;
+}
+
+void MsaUndoRedoFramework::sl_lockedStateChanged() {
+    checkUndoRedoEnabled();
+}
+
+void MsaUndoRedoFramework::sl_alignmentChanged(const MAlignment& /* maBefore*/ , const MAlignmentModInfo& modInfo) {
     checkUndoRedoEnabled();
 }
 
 void MsaUndoRedoFramework::checkUndoRedoEnabled() {
+    SAFE_POINT(maObj != NULL, "NULL MSA Object!", );
+
+    if (maObj->isStateLocked() || !stateComplete) {
+        undoAction->setEnabled(false);
+        redoAction->setEnabled(false);
+        return;
+    }
+
     U2OpStatus2Log os;
     DbiConnection con(maObj->getEntityRef().dbiRef, os);
     SAFE_POINT_OP(os, );
@@ -80,8 +99,13 @@ void MsaUndoRedoFramework::checkUndoRedoEnabled() {
 }
 
 void MsaUndoRedoFramework::sl_undo() {
+    SAFE_POINT(maObj != NULL, "NULL MSA Object!", );
+
     U2OpStatus2Log os;
     U2EntityRef msaRef =  maObj->getEntityRef();
+
+    assert(stateComplete);
+    assert(!maObj->isStateLocked());
 
     DbiConnection con(msaRef.dbiRef, os);
     SAFE_POINT_OP(os, );
@@ -96,8 +120,13 @@ void MsaUndoRedoFramework::sl_undo() {
 }
 
 void MsaUndoRedoFramework::sl_redo() {
+    SAFE_POINT(maObj != NULL, "NULL MSA Object!", );
+
     U2OpStatus2Log os; 
     U2EntityRef msaRef =  maObj->getEntityRef();
+
+    assert(stateComplete);
+    assert(!maObj->isStateLocked());
 
     DbiConnection con(msaRef.dbiRef, os);
     SAFE_POINT_OP(os, );
