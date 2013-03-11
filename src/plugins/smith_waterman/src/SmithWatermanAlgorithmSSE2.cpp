@@ -131,7 +131,7 @@ void SmithWatermanAlgorithmSSE2::launch(const SMatrix& _substitutionMatrix, QByt
 void SmithWatermanAlgorithmSSE2::calculateMatrixForMultipleAlignmentResultWithShort() {
 
 	int i, j, n, k, max1;
-    __m128i f1 = {0, 0, 0, 0}, f2 = {0, 0, 0, 0}, f3 = {0, 0, 0, 0}, f4 = {0, 0, 0, 0}, e1 = {0, 0, 0, 0};
+    __m128i f1 = _mm_setzero_si128(), f2 = _mm_setzero_si128(), f3 = _mm_setzero_si128(), f4 = _mm_setzero_si128(), e1 = _mm_setzero_si128();
 	unsigned int src_n = searchSeq.length(), pat_n = patternSeq.length();
 	unsigned char *src = (unsigned char*)searchSeq.data(), *pat = (unsigned char*)patternSeq.data();
 	unsigned int iter = (pat_n + 7) >> 3;
@@ -169,10 +169,10 @@ void SmithWatermanAlgorithmSSE2::calculateMatrixForMultipleAlignmentResultWithSh
         }
 	}
 
-	__m128i xMax = {0, 0, 0, 0}, xPos = {0, 0, 0, 0};
-	__m128i xOpen = {0, 0, 0, 0};
+	__m128i xMax = _mm_setzero_si128(), xPos = _mm_setzero_si128();
+	__m128i xOpen = _mm_setzero_si128();
     xOpen = _mm_insert_epi16(xOpen, gapOpen, 0);
-	__m128i xExt = {0, 0, 0, 0};
+	__m128i xExt = _mm_setzero_si128();
     xExt = _mm_insert_epi16(xExt, gapExtension, 0);
 	xOpen = _mm_shufflelo_epi16(xOpen, 0);
 	xExt = _mm_shufflelo_epi16(xExt, 0);
@@ -329,7 +329,7 @@ void SmithWatermanAlgorithmSSE2::calculateMatrixForMultipleAlignmentResultWithSh
 
 void SmithWatermanAlgorithmSSE2::calculateMatrixForAnnotationsResultWithShort() {
 	int i, j, n, k, max1;
-	__m128i f1 = {0, 0, 0, 0}, f2 = {0, 0, 0, 0}, f3 = {0, 0, 0, 0}, f4 = {0, 0, 0, 0}, e1 = {0, 0, 0, 0};
+	__m128i f1 = _mm_setzero_si128(), f2 = _mm_setzero_si128(), f3 = _mm_setzero_si128(), f4 = _mm_setzero_si128(), e1 = _mm_setzero_si128();
 	unsigned int src_n = searchSeq.length(), pat_n = patternSeq.length();
 	unsigned char *src = (unsigned char*)searchSeq.data(), *pat = (unsigned char*)patternSeq.data();
 	unsigned int iter = (pat_n + 7) >> 3;
@@ -356,10 +356,10 @@ void SmithWatermanAlgorithmSSE2::calculateMatrixForAnnotationsResultWithShort() 
         }
 	}
 
-	__m128i xMax = {0, 0, 0, 0}, xPos = {0, 0, 0, 0};
-	__m128i xOpen = {0, 0, 0, 0};
+	__m128i xMax = _mm_setzero_si128(), xPos = _mm_setzero_si128();
+	__m128i xOpen = _mm_setzero_si128();
     xOpen = _mm_insert_epi16(xOpen, gapOpen, 0);
-	__m128i xExt = {0, 0, 0, 0};
+	__m128i xExt = _mm_setzero_si128();
     xExt = _mm_insert_epi16(xExt, gapExtension, 0);
 	xOpen = _mm_shufflelo_epi16(xOpen, 0);
 	xExt = _mm_shufflelo_epi16(xExt, 0);
@@ -505,7 +505,7 @@ void SmithWatermanAlgorithmSSE2::calculateMatrixForAnnotationsResultWithShort() 
 
 void SmithWatermanAlgorithmSSE2::calculateMatrixForMultipleAlignmentResultWithInt() {
 	int i, j, n, k, max1;
-	__m128i f1 = {0, 0, 0, 0}, f2 = {0, 0, 0, 0}, f3 = {0, 0, 0, 0}, f4 = {0, 0, 0, 0}, e1 = {0, 0, 0, 0};
+	__m128i f1 = _mm_setzero_si128(), f2 = _mm_setzero_si128(), f3 = _mm_setzero_si128(), f4 = _mm_setzero_si128(), e1 = _mm_setzero_si128();
 	unsigned int src_n = searchSeq.length(), pat_n = patternSeq.length();
 	unsigned char *src = (unsigned char*)searchSeq.data(), *pat = (unsigned char*)patternSeq.data();
 	unsigned int iter = (pat_n + 3) >> 2;
@@ -543,7 +543,7 @@ void SmithWatermanAlgorithmSSE2::calculateMatrixForMultipleAlignmentResultWithIn
         }
 	}
 
-	__m128i xMax = {0, 0, 0, 0}, xPos = {0, 0, 0, 0};
+	__m128i xMax = _mm_setzero_si128(), xPos = _mm_setzero_si128();
 	__m128i xOpen = _mm_cvtsi32_si128(gapOpen);
 	__m128i xExt = _mm_cvtsi32_si128(gapExtension);
 	xOpen = _mm_shuffle_epi32(xOpen, 0);
@@ -716,7 +716,7 @@ void SmithWatermanAlgorithmSSE2::calculateMatrixForMultipleAlignmentResultWithIn
 void SmithWatermanAlgorithmSSE2::calculateMatrixForAnnotationsResultWithInt() {
 
 	int i, j, n, k, max1;
-	__m128i f1 = {0, 0, 0, 0}, f2 = {0, 0, 0, 0}, f3 = {0, 0, 0, 0}, f4 = {0, 0, 0, 0}, e1 = {0, 0, 0, 0};
+	__m128i f1 = _mm_setzero_si128(), f2 = _mm_setzero_si128(), f3 = _mm_setzero_si128(), f4 = _mm_setzero_si128(), e1 = _mm_setzero_si128();
 	unsigned int src_n = searchSeq.length(), pat_n = patternSeq.length();
 	unsigned char *src = (unsigned char*)searchSeq.data(), *pat = (unsigned char*)patternSeq.data();
 	unsigned int iter = (pat_n + 3) >> 2;
@@ -744,10 +744,10 @@ void SmithWatermanAlgorithmSSE2::calculateMatrixForAnnotationsResultWithInt() {
         }
 	}
 
-	__m128i xMax = {0, 0, 0, 0}, xPos = {0, 0, 0, 0};
-	__m128i xOpen  = {0, 0, 0, 0};
+	__m128i xMax = _mm_setzero_si128(), xPos = _mm_setzero_si128();
+	__m128i xOpen  = _mm_setzero_si128();
     xOpen = _mm_cvtsi32_si128(gapOpen);
-	__m128i xExt  = {0, 0, 0, 0};
+	__m128i xExt  = _mm_setzero_si128();
     xExt = _mm_cvtsi32_si128(gapExtension);
 	xOpen = _mm_shuffle_epi32(xOpen, 0);
 	xExt = _mm_shuffle_epi32(xExt, 0);
