@@ -2079,7 +2079,7 @@ GUI_TEST_CLASS_DEFINITION(test_0016) {
 
     CHECK_SET_ERR(clipboardText == "CTT", "MSA part differs from expected");
     GTFile::restore(os, testDir + "_common_data/scenarios/msa/ma2_gapped.aln");
-    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Yes));
+    //GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Yes));
     GTGlobals::sleep(5000);
 }
 
@@ -2091,7 +2091,9 @@ GUI_TEST_CLASS_DEFINITION(test_0016_1) {
 // CHANGES: insert gaps in the beginning
     GTUtilsMSAEditorSequenceArea::click(os, QPoint(0, 0));
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["space"]);
+    GTGlobals::sleep(200);
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["space"]);
+    GTGlobals::sleep(200);
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["space"]);
     GTGlobals::sleep();
 
@@ -2122,7 +2124,7 @@ GUI_TEST_CLASS_DEFINITION(test_0016_1) {
 
     CHECK_SET_ERR(clipboardText == "CTT", "MSA part differs from expected");
     GTFile::restore(os, testDir + "_common_data/scenarios/msa/ma2_gapped.aln");
-    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Yes));
+    //GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Yes));
     GTGlobals::sleep(5000);
 }
 

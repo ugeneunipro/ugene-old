@@ -146,10 +146,10 @@ void SmithWatermanDialogFiller::run() {
         QSpinBox * spinScorePercent = qobject_cast<QSpinBox *>(GTWidget::findWidget(os, "spinScorePercent", dialog));
         spinScorePercent->setValue(RESULT_SCORE_PERCENTAGE);
 
-        QDoubleSpinBox * dblSpinGapOpen = qobject_cast<QDoubleSpinBox *>(GTWidget::findWidget(os, "dblSpinGapOpen", dialog));
+        QSpinBox * dblSpinGapOpen = qobject_cast<QSpinBox *>(GTWidget::findWidget(os, "spinGapOpen", dialog));
         dblSpinGapOpen->setValue(GAP_OPEN_PENALTY);
 
-        QDoubleSpinBox * dblSpinGapExtd = qobject_cast<QDoubleSpinBox *>(GTWidget::findWidget(os, "dblSpinGapExtd", dialog));
+        QSpinBox * dblSpinGapExtd = qobject_cast<QSpinBox *>(GTWidget::findWidget(os, "spinGapExtd", dialog));
         dblSpinGapExtd->setValue(GAP_EXTENDING_PENALTY);
     }
 
