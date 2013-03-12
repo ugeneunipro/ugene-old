@@ -90,5 +90,10 @@ private:
     QString                     url;
 };
 
+class BlastDbCmdSupportTask : public Task {
+    
+};
+
+
 }//namespace
 #endif // _U2_BLASTPLUS_SUPPORT_TASK_H

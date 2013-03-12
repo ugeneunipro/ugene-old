@@ -16,6 +16,9 @@ HEADERS += src/ETSProjectViewItemsContoller.h \
            src/blast/FormatDBSupport.h \
            src/blast/FormatDBSupportRunDialog.h \
            src/blast/FormatDBSupportTask.h \
+           src/blast_plus/BlastDBCmdDialog.h \
+           src/blast_plus/BlastDBCmdSupport.h \
+           src/blast_plus/BlastDBCmdSupportTask.h \
            src/blast_plus/BlastNPlusSupportTask.h \
            src/blast_plus/BlastPlusSupport.h \
            src/blast_plus/BlastPlusSupportCommonTask.h \
@@ -49,6 +52,14 @@ HEADERS += src/ETSProjectViewItemsContoller.h \
            src/clustalw/ClustalWSupportRunDialog.h \
            src/clustalw/ClustalWSupportTask.h \
            src/clustalw/ClustalWWorker.h \
+           src/conduct_go/ConductGOSettings.h \
+           src/conduct_go/ConductGOSupport.h \
+           src/conduct_go/ConductGOTask.h \
+           src/conduct_go/ConductGOWorker.h \
+           src/conservation_plot/ConservationPlotSettings.h \
+           src/conservation_plot/ConservationPlotSupport.h \
+           src/conservation_plot/ConservationPlotTask.h \
+           src/conservation_plot/ConservationPlotWorker.h \
            src/cufflinks/CuffdiffSupportTask.h \
            src/cufflinks/CuffdiffWorker.h \
            src/cufflinks/CufflinksSettings.h \
@@ -73,19 +84,11 @@ HEADERS += src/ETSProjectViewItemsContoller.h \
            src/peak2gene/Peak2GeneSupport.h \
            src/peak2gene/Peak2GeneTask.h \
            src/peak2gene/Peak2GeneWorker.h \
-		   src/conservation_plot/ConservationPlotSettings.h \
-           src/conservation_plot/ConservationPlotSupport.h \
-           src/conservation_plot/ConservationPlotTask.h \
-           src/conservation_plot/ConservationPlotWorker.h \
-           src/conduct_go/ConductGOSettings.h \
-           src/conduct_go/ConductGOSupport.h \
-           src/conduct_go/ConductGOTask.h \
-           src/conduct_go/ConductGOWorker.h \
-		   src/seqpos/SeqPosSettings.h \
+           src/samtools/SamToolsExtToolSupport.h \
+           src/seqpos/SeqPosSettings.h \
            src/seqpos/SeqPosSupport.h \
            src/seqpos/SeqPosTask.h \
            src/seqpos/SeqPosWorker.h \
-           src/samtools/SamToolsExtToolSupport.h \
            src/spidey/SpideySupport.h \
            src/spidey/SpideySupportTask.h \
            src/tcoffee/TCoffeeSupport.h \
@@ -104,6 +107,7 @@ HEADERS += src/ETSProjectViewItemsContoller.h \
            src/bowtie/bowtie_tests/bowtieTests.h \
            src/bwa/bwa_tests/bwaTests.h
 FORMS += src/ui/BlastAllSupportDialog.ui \
+         src/ui/BlastDBCmdDialog.ui \
          src/ui/BowtieBuildSettings.ui \
          src/ui/BowtieSettings.ui \
          src/ui/BwaBuildSettings.ui \
@@ -132,6 +136,9 @@ SOURCES += src/ETSProjectViewItemsContoller.cpp \
            src/blast/FormatDBSupport.cpp \
            src/blast/FormatDBSupportRunDialog.cpp \
            src/blast/FormatDBSupportTask.cpp \
+           src/blast_plus/BlastDBCmdDialog.cpp \
+           src/blast_plus/BlastDBCmdSupport.cpp \
+           src/blast_plus/BlastDBCmdSupportTask.cpp \
            src/blast_plus/BlastNPlusSupportTask.cpp \
            src/blast_plus/BlastPlusSupport.cpp \
            src/blast_plus/BlastPlusSupportCommonTask.cpp \
@@ -165,6 +172,14 @@ SOURCES += src/ETSProjectViewItemsContoller.cpp \
            src/clustalw/ClustalWSupportRunDialog.cpp \
            src/clustalw/ClustalWSupportTask.cpp \
            src/clustalw/ClustalWWorker.cpp \
+           src/conduct_go/ConductGOSettings.cpp \
+           src/conduct_go/ConductGOSupport.cpp \
+           src/conduct_go/ConductGOTask.cpp \
+           src/conduct_go/ConductGOWorker.cpp \
+           src/conservation_plot/ConservationPlotSettings.cpp \
+           src/conservation_plot/ConservationPlotSupport.cpp \
+           src/conservation_plot/ConservationPlotTask.cpp \
+           src/conservation_plot/ConservationPlotWorker.cpp \
            src/cufflinks/CuffdiffSupportTask.cpp \
            src/cufflinks/CuffdiffWorker.cpp \
            src/cufflinks/CufflinksSettings.cpp \
@@ -177,22 +192,6 @@ SOURCES += src/ETSProjectViewItemsContoller.cpp \
            src/macs/MACSSupport.cpp \
            src/macs/MACSTask.cpp \
            src/macs/MACSWorker.cpp \
-		   src/peak2gene/Peak2GeneSettings.cpp \
-           src/peak2gene/Peak2GeneSupport.cpp \
-           src/peak2gene/Peak2GeneTask.cpp \
-           src/peak2gene/Peak2GeneWorker.cpp \
-		   src/conservation_plot/ConservationPlotSettings.cpp \
-           src/conservation_plot/ConservationPlotSupport.cpp \
-           src/conservation_plot/ConservationPlotTask.cpp \
-           src/conservation_plot/ConservationPlotWorker.cpp \
-           src/conduct_go/ConductGOSettings.cpp \
-           src/conduct_go/ConductGOSupport.cpp \
-           src/conduct_go/ConductGOTask.cpp \
-           src/conduct_go/ConductGOWorker.cpp \
-           src/seqpos/SeqPosSettings.cpp \
-           src/seqpos/SeqPosSupport.cpp \
-           src/seqpos/SeqPosTask.cpp \
-           src/seqpos/SeqPosWorker.cpp \
            src/mafft/MAFFTSupport.cpp \
            src/mafft/MAFFTSupportRunDialog.cpp \
            src/mafft/MAFFTSupportTask.cpp \
@@ -201,7 +200,15 @@ SOURCES += src/ETSProjectViewItemsContoller.cpp \
            src/mrbayes/MrBayesSupport.cpp \
            src/mrbayes/MrBayesTask.cpp \
            src/mrbayes/MrBayesTests.cpp \
+           src/peak2gene/Peak2GeneSettings.cpp \
+           src/peak2gene/Peak2GeneSupport.cpp \
+           src/peak2gene/Peak2GeneTask.cpp \
+           src/peak2gene/Peak2GeneWorker.cpp \
            src/samtools/SamToolsExtToolSupport.cpp \
+           src/seqpos/SeqPosSettings.cpp \
+           src/seqpos/SeqPosSupport.cpp \
+           src/seqpos/SeqPosTask.cpp \
+           src/seqpos/SeqPosWorker.cpp \
            src/spidey/SpideySupport.cpp \
            src/spidey/SpideySupportTask.cpp \
            src/tcoffee/TCoffeeSupport.cpp \

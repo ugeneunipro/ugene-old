@@ -73,6 +73,7 @@
 #include "blast/BlastAllWorker.h"
 #include "blast_plus/BlastPlusSupport.h"
 #include "blast_plus/BlastPlusWorker.h"
+#include "blast_plus/BlastDBCmdSupport.h"
 #include "cap3/CAP3Support.h"
 #include "bowtie/BowtieSupport.h"
 #include "bowtie/BowtieTask.h"
@@ -228,6 +229,8 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin():Plugin(tr("External tool 
     etRegistry->registerEntry(tBlastXPlusTool);
     BlastPlusSupport* rpsblastTool = new BlastPlusSupport(RPSBLAST_TOOL_NAME);
     etRegistry->registerEntry(rpsblastTool);
+    BlastDbCmdSupport*  blastDbCmdSupport = new BlastDbCmdSupport();
+    etRegistry->registerEntry(blastDbCmdSupport);
 
     // CAP3
     CAP3Support* cap3Tool = new CAP3Support(CAP3_TOOL_NAME);
@@ -313,6 +316,7 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin():Plugin(tr("External tool 
         ExternalToolSupportAction* blastallAction= new ExternalToolSupportAction(tr("BLAST Search..."), this, QStringList(BLASTALL_TOOL_NAME));
         blastallAction->setObjectName("BLAST Search");
         connect(blastallAction, SIGNAL(triggered()), blastallTool, SLOT(sl_runWithExtFileSpecify()));
+        
 
         BlastPlusSupportContext* blastPlusViewCtx = new BlastPlusSupportContext(this);
         blastPlusViewCtx->setParent(this);//may be problems???
@@ -323,6 +327,12 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin():Plugin(tr("External tool 
         blastPlusAction->setObjectName("BLAST+ Search");
         connect(blastPlusAction, SIGNAL(triggered()), blastNPlusTool, SLOT(sl_runWithExtFileSpecify()));
         
+        ExternalToolSupportAction* blastPlusCmdAction= new ExternalToolSupportAction(tr("BLAST+ query DB"), this, QStringList(BLASTDBCMD_TOOL_NAME));
+        blastPlusCmdAction->setObjectName("BLAST+ query DB");
+        connect(blastPlusCmdAction, SIGNAL(triggered()), blastDbCmdSupport, SLOT(sl_runWithExtFileSpecify()));
+
+
+
         //Add to menu NCBI Toolkit
         QMenu* tools = AppContext::getMainWindow()->getTopLevelMenu(MWMENU_TOOLS);
         QMenu* blastSubmenu = tools->addMenu(tr("BLAST"));
@@ -332,6 +342,7 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin():Plugin(tr("External tool 
         blastSubmenu->addAction(blastallAction);
         blastSubmenu->addAction(makeBLASTDBAction);
         blastSubmenu->addAction(blastPlusAction);
+        blastSubmenu->addAction(blastPlusCmdAction);
         
         ExternalToolSupportAction* cap3Action = new ExternalToolSupportAction(QString("Contig assembly with %1").arg(cap3Tool->getName()), this, QStringList(cap3Tool->getName()));
         cap3Action->setObjectName(QString("Contig assembly with %1").arg(cap3Tool->getName()));
