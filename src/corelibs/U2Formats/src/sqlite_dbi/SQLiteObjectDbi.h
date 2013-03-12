@@ -155,7 +155,8 @@ public:
     void getObject(U2Object& object, const U2DataId& id, U2OpStatus& os);
 
     /**
-        Updates database entry for 'obj'. Increments its version.
+        Updates database entry for 'obj'.
+        Does NOT increment the object version!!
     */
     void updateObject(U2Object& obj, U2OpStatus& os);
 
@@ -248,9 +249,9 @@ public:
 };
 
 /** Helper class to track info about an object */
-class U2FORMATS_EXPORT ModTrackAction {
+class U2FORMATS_EXPORT ModificationAction {
 public:
-    ModTrackAction(SQLiteDbi* dbi, const U2DataId& objectId);
+    ModificationAction(SQLiteDbi* dbi, const U2DataId& masterObjId);
 
     /**
         Verifies if modification tracking is enabled for the object.
@@ -258,18 +259,30 @@ public:
         If there are tracking steps with greater or equal version (e.g. left from "undo"), removes these records.
         Returns the type of modifications  tracking for the object.
      */
-    U2TrackModType prepareTracking(U2OpStatus& os);
+    U2TrackModType prepare(U2OpStatus& os);
 
     /**
-        If modifications tracking is enabled, save a modification step to the database.
+        Adds the object ID to the object IDs set.
+        If tracking is enabled, adds a new single step to the list.
      */
-    void saveTrack(const U2DataId& masterObjId, qint64 modType, const QByteArray& modDetails, U2OpStatus& os);
+    void addModification(const U2DataId& objId, qint64 modType, const QByteArray& modDetails, U2OpStatus& os);
+
+    /**
+        If tracking is enabled, creates modification steps in the database.
+        Increments version of all objects in the set.
+     */
+    void complete(U2OpStatus& os);
+
+    /** Returns modification tracking type of the master object. */
+    U2TrackModType getTrackModType() const { return trackMod; }
 
 private:
     SQLiteDbi* dbi;
-    U2DataId objectId;
+    U2DataId masterObjId;
     U2TrackModType trackMod;
-    qint64 objectVersionToTrack;
+    qint64 masterObjVersionToTrack;
+    QSet<U2DataId> objIds;
+    QList<U2SingleModStep> singleSteps;
 };
 
 class SQLiteObjectDbiUtils {

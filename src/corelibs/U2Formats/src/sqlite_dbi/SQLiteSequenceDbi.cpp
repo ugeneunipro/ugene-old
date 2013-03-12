@@ -144,6 +144,10 @@ void SQLiteSequenceDbi::updateSequenceObject(U2Sequence& sequence, U2OpStatus& o
     SAFE_POINT_OP(os, );
 
     dbi->getSQLiteObjectDbi()->updateObject(sequence, os);
+    SAFE_POINT_OP(os, );
+
+    SQLiteObjectDbi::incrementVersion(sequence.id, db, os);
+    SAFE_POINT_OP(os, );
 }
 
 
@@ -177,28 +181,36 @@ static QList<QByteArray> quantify(const QList<QByteArray>& input) {
         res.append(currentChunk);
     }
     return res;
-
 }
+
 void SQLiteSequenceDbi::updateSequenceData(const U2DataId& sequenceId, const U2Region& regionToReplace, const QByteArray& dataToInsert, const QVariantMap &hints, U2OpStatus& os) {
     SQLiteTransaction t(db, os);
 
-    ModTrackAction updateAction(dbi, sequenceId);
-    U2TrackModType trackMod = updateAction.prepareTracking(os);
-    CHECK_OP(os, );
+    ModificationAction updateAction(dbi, sequenceId);
+    U2TrackModType trackMod = updateAction.prepare(os);
+    SAFE_POINT_OP(os, );
 
+    updateSequenceData(updateAction, sequenceId, regionToReplace, dataToInsert, hints, os);
+    SAFE_POINT_OP(os, );
+
+    updateAction.complete(os);
+    SAFE_POINT_OP(os, );
+}
+
+void SQLiteSequenceDbi::updateSequenceData(ModificationAction& updateAction, const U2DataId& sequenceId, const U2Region& regionToReplace, const QByteArray& dataToInsert, const QVariantMap &hints, U2OpStatus& os) {
     QByteArray modDetails;
-    if (TrackOnUpdate == trackMod) {
+    if (TrackOnUpdate == updateAction.getTrackModType()) {
         QByteArray oldSeq = dbi->getSequenceDbi()->getSequenceData(sequenceId, regionToReplace, os);
-        CHECK_OP(os, );
+        SAFE_POINT_OP(os, );
         modDetails = PackUtils::packSequenceDataDetails(regionToReplace, oldSeq, dataToInsert, hints);
     }
 
     updateSequenceDataCore(sequenceId, regionToReplace, dataToInsert, hints, os);
+    SAFE_POINT_OP(os, );
 
-    updateAction.saveTrack(sequenceId, U2ModType::sequenceUpdatedData, modDetails, os);
-    CHECK_OP(os, );
-
-    SQLiteObjectDbi::incrementVersion(sequenceId, db, os);
+    // Track the modification, if required; add the object to the list (versions of the objects will be incremented on the updateAction completion)
+    updateAction.addModification(sequenceId, U2ModType::sequenceUpdatedData, modDetails, os);
+    SAFE_POINT_OP(os, );
 }
 
 void SQLiteSequenceDbi::undo(const U2DataId& seqId, qint64 modType, const QByteArray& modDetails, U2OpStatus& os) {

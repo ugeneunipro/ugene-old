@@ -252,6 +252,10 @@ void SQLiteAssemblyDbi::updateAssemblyObject(U2Assembly& assembly, U2OpStatus& o
     SAFE_POINT_OP(os, );
 
     dbi->getSQLiteObjectDbi()->updateObject(assembly, os);
+    SAFE_POINT_OP(os, );
+
+    SQLiteObjectDbi::incrementVersion(assembly.id, db, os);
+    SAFE_POINT_OP(os, );
 }
 
 void SQLiteAssemblyDbi::removeReads(const U2DataId& assemblyId, const QList<U2DataId>& rowIds, U2OpStatus& os){

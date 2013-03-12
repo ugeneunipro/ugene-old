@@ -103,8 +103,8 @@ void SQLiteMsaDbi::updateMsaName(const U2DataId& msaId, const QString& name, U2O
 
 void SQLiteMsaDbi::updateMsaAlphabet(const U2DataId& msaId, const U2AlphabetId& alphabet, U2OpStatus& os) {
     SQLiteTransaction t(db, os);
-    ModTrackAction updateAction(dbi, msaId);
-    U2TrackModType trackMod = updateAction.prepareTracking(os);
+    ModificationAction updateAction(dbi, msaId);
+    U2TrackModType trackMod = updateAction.prepare(os);
     CHECK_OP(os, );
 
     // Get modDetails, if required
@@ -123,12 +123,12 @@ void SQLiteMsaDbi::updateMsaAlphabet(const U2DataId& msaId, const U2AlphabetId& 
     q.bindDataId(2, msaId);
     q.update(1);
 
-    // Track the modification, if required
-    updateAction.saveTrack(msaId, U2ModType::msaUpdatedAlphabet, modDetails, os);
+    // Increment version; track the modification, if required
+    updateAction.addModification(msaId, U2ModType::msaUpdatedAlphabet, modDetails, os);
+    SAFE_POINT_OP(os, );
 
-    // Increment the alignment version
-    SQLiteObjectDbi::incrementVersion(msaId, db, os);
-    CHECK_OP(os, );
+    updateAction.complete(os);
+    SAFE_POINT_OP(os, );
 }
 
 void SQLiteMsaDbi::updateMsaLength(const U2DataId& msaId, qint64 length, U2OpStatus& os) {
@@ -190,8 +190,8 @@ void SQLiteMsaDbi::addMsaRowAndGaps(const U2DataId& msaId, qint64 posInMsa, U2Ms
 }
 
 void SQLiteMsaDbi::addRow(const U2DataId& msaId, qint64 posInMsa, U2MsaRow& row, U2OpStatus& os) {
-    ModTrackAction updateAction(dbi, msaId);
-    U2TrackModType trackMod = updateAction.prepareTracking(os);
+    ModificationAction updateAction(dbi, msaId);
+    U2TrackModType trackMod = updateAction.prepare(os);
     CHECK_OP(os, );
 
     row.rowId = getMaximumRowId(msaId, os) + 1;
@@ -205,23 +205,24 @@ void SQLiteMsaDbi::addRow(const U2DataId& msaId, qint64 posInMsa, U2MsaRow& row,
         modDetails = PackUtils::packRow(posInMsa, row);
     }
 
-    updateAction.saveTrack(msaId, U2ModType::msaAddedRow, modDetails, os);
-    CHECK_OP(os, );
-
     // Update track mod type for child sequence object
     if (TrackOnUpdate == trackMod) {
         dbi->getObjectDbi()->setTrackModType(row.sequenceId, TrackOnUpdate, os);
         CHECK_OP(os, );
     }
 
-    // Increment the alignment version
-    SQLiteObjectDbi::incrementVersion(msaId, db, os);
+    // Increment version; track the modification, if required
+    updateAction.addModification(msaId, U2ModType::msaAddedRow, modDetails, os);
+    SAFE_POINT_OP(os, );
+
+    updateAction.complete(os);
+    SAFE_POINT_OP(os, );
 }
 
 void SQLiteMsaDbi::addRows(const U2DataId& msaId, QList<U2MsaRow>& rows, U2OpStatus& os) {
     SQLiteTransaction t(db, os);
-    ModTrackAction updateAction(dbi, msaId);
-    U2TrackModType trackMod = updateAction.prepareTracking(os);
+    ModificationAction updateAction(dbi, msaId);
+    U2TrackModType trackMod = updateAction.prepare(os);
     CHECK_OP(os, );
 
     // Add the rows
@@ -254,24 +255,19 @@ void SQLiteMsaDbi::addRows(const U2DataId& msaId, QList<U2MsaRow>& rows, U2OpSta
         }
     }
 
-    updateAction.saveTrack(msaId, U2ModType::msaAddedRows, modDetails, os);
-    CHECK_OP(os, );
+    // Increment version; track the modification, if required
+    updateAction.addModification(msaId, U2ModType::msaAddedRows, modDetails, os);
+    SAFE_POINT_OP(os, );
 
-    // Increment the alignment version
-    SQLiteObjectDbi::incrementVersion(msaId, db, os);
-    CHECK_OP(os, );
+    updateAction.complete(os);
+    SAFE_POINT_OP(os, );
 }
 
 void SQLiteMsaDbi::updateRowName(const U2DataId& msaId, qint64 rowId, const QString& newName, U2OpStatus& os) {
     SQLiteTransaction t(db, os);
-    ModTrackAction updateAction(dbi, msaId);
-    U2TrackModType trackMod = updateAction.prepareTracking(os);
+    ModificationAction updateAction(dbi, msaId);
+    U2TrackModType trackMod = updateAction.prepare(os);
     CHECK_OP(os, );
-
-    U2UseCommonMultiModStep* multiModStep = NULL;
-    if (TrackOnUpdate == trackMod) {
-        multiModStep = new U2UseCommonMultiModStep(dbi, msaId, os);
-    }
 
     U2DataId sequenceId = getSequenceIdByRowId(msaId, rowId, os);
     CHECK_OP(os, );
@@ -280,17 +276,16 @@ void SQLiteMsaDbi::updateRowName(const U2DataId& msaId, qint64 rowId, const QStr
     CHECK_OP(os, );
 
     SQLiteObjectDbiUtils::renameObject(db, dbi, seqObject, newName, os);
-    delete multiModStep;
+    SAFE_POINT_OP(os, );
 
-    // Increment the alignment version
-    SQLiteObjectDbi::incrementVersion(msaId, db, os);
-    CHECK_OP(os, );
+    updateAction.complete(os);
+    SAFE_POINT_OP(os, );
 }
 
 void SQLiteMsaDbi::updateRowContent(const U2DataId& msaId, qint64 rowId, const QByteArray& seqBytes, const QList<U2MsaGap>& gaps, U2OpStatus& os) {
     SQLiteTransaction t(db, os);
-    ModTrackAction updateAction(dbi, msaId);
-    U2TrackModType trackMod = updateAction.prepareTracking(os);
+    ModificationAction updateAction(dbi, msaId);
+    U2TrackModType trackMod = updateAction.prepare(os);
     CHECK_OP(os, );
 
     U2UseCommonMultiModStep* multiModStep = NULL;
@@ -318,8 +313,8 @@ QList<qint64> SQLiteMsaDbi::getRowsOrder(const U2DataId& msaId, U2OpStatus& os) 
 void SQLiteMsaDbi::setNewRowsOrder(const U2DataId& msaId, const QList<qint64>& rowIds, U2OpStatus& os) {
     // Init track info
     SQLiteTransaction t(db, os);
-    ModTrackAction updateAction(dbi, msaId);
-    U2TrackModType trackMod = updateAction.prepareTracking(os);
+    ModificationAction updateAction(dbi, msaId);
+    U2TrackModType trackMod = updateAction.prepare(os);
     CHECK_OP(os, );
 
     QByteArray modDetails;
@@ -338,13 +333,12 @@ void SQLiteMsaDbi::setNewRowsOrder(const U2DataId& msaId, const QList<qint64>& r
     setNewRowsOrderCore(msaId, rowIds, os);
     CHECK_OP(os, );
 
-    // Save track info
-    updateAction.saveTrack(msaId, U2ModType::msaSetNewRowsOrder, modDetails, os);
-    CHECK_OP(os, );
+    // Increment version; track the modification, if required
+    updateAction.addModification(msaId, U2ModType::msaSetNewRowsOrder, modDetails, os);
+    SAFE_POINT_OP(os, );
 
-    // Increment the alignment version
-    SQLiteObjectDbi::incrementVersion(msaId, db, os);
-    CHECK_OP(os, );
+    updateAction.complete(os);
+    SAFE_POINT_OP(os, );
 }
 
 void SQLiteMsaDbi::removeRecordFromMsaRow(const U2DataId& msaId, qint64 rowId, U2OpStatus& os) {
@@ -371,8 +365,8 @@ void SQLiteMsaDbi::removeRecordsFromMsaRowGap(const U2DataId& msaId, qint64 rowI
 
 void SQLiteMsaDbi::removeRow(const U2DataId& msaId, qint64 rowId, U2OpStatus& os) {
     SQLiteTransaction t(db, os);
-    ModTrackAction updateAction(dbi, msaId);
-    U2TrackModType trackMod = updateAction.prepareTracking(os);
+    ModificationAction updateAction(dbi, msaId);
+    U2TrackModType trackMod = updateAction.prepare(os);
     CHECK_OP(os, );
 
     QByteArray modDetails;
@@ -388,17 +382,18 @@ void SQLiteMsaDbi::removeRow(const U2DataId& msaId, qint64 rowId, U2OpStatus& os
     removeRowCore(msaId, rowId, removeSequence, os);
     CHECK_OP(os, );
 
-    updateAction.saveTrack(msaId, U2ModType::msaRemovedRow, modDetails, os);
-    CHECK_OP(os, );
+    // Increment version; track the modification, if required
+    updateAction.addModification(msaId, U2ModType::msaRemovedRow, modDetails, os);
+    SAFE_POINT_OP(os, );
 
-    // Increment the alignment version
-    SQLiteObjectDbi::incrementVersion(msaId, db, os);
+    updateAction.complete(os);
+    SAFE_POINT_OP(os, );
 }
 
 void SQLiteMsaDbi::removeRows(const U2DataId& msaId, const QList<qint64>& rowIds, U2OpStatus& os) {
     SQLiteTransaction t(db, os);
-    ModTrackAction updateAction(dbi, msaId);
-    U2TrackModType trackMod = updateAction.prepareTracking(os);
+    ModificationAction updateAction(dbi, msaId);
+    U2TrackModType trackMod = updateAction.prepare(os);
     CHECK_OP(os, );
 
     QByteArray modDetails;
@@ -417,11 +412,12 @@ void SQLiteMsaDbi::removeRows(const U2DataId& msaId, const QList<qint64>& rowIds
     bool removeSequence = (TrackOnUpdate == trackMod);
     removeRowsCore(msaId, rowIds, removeSequence, os);
 
-    updateAction.saveTrack(msaId, U2ModType::msaRemovedRows, modDetails, os);
-    CHECK_OP(os, );
+    // Increment version; track the modification, if required
+    updateAction.addModification(msaId, U2ModType::msaRemovedRows, modDetails, os);
+    SAFE_POINT_OP(os, );
 
-    // Increment the alignment version
-    SQLiteObjectDbi::incrementVersion(msaId, db, os);
+    updateAction.complete(os);
+    SAFE_POINT_OP(os, );
 }
 
 void SQLiteMsaDbi::removeMsaRowAndGaps(const U2DataId& msaId, qint64 rowId, bool removeSequence, U2OpStatus& os) {    
@@ -596,8 +592,8 @@ void SQLiteMsaDbi::updateNumOfRows(const U2DataId& msaId, qint64 numOfRows, U2Op
 
 void SQLiteMsaDbi::updateGapModel(const U2DataId& msaId, qint64 msaRowId, const QList<U2MsaGap>& gapModel, U2OpStatus& os) {
     SQLiteTransaction t(db, os);
-    ModTrackAction updateAction(dbi, msaId);
-    U2TrackModType trackMod = updateAction.prepareTracking(os);
+    ModificationAction updateAction(dbi, msaId);
+    U2TrackModType trackMod = updateAction.prepare(os);
     CHECK_OP(os, );
 
     QByteArray gapsDetails;
@@ -610,11 +606,12 @@ void SQLiteMsaDbi::updateGapModel(const U2DataId& msaId, qint64 msaRowId, const 
     updateGapModelCore(msaId, msaRowId, gapModel, os);
     CHECK_OP(os, );
 
-    updateAction.saveTrack(msaId, U2ModType::msaUpdatedGapModel, gapsDetails, os);
-    CHECK_OP(os, );
+    // Increment version; track the modification, if required
+    updateAction.addModification(msaId, U2ModType::msaUpdatedGapModel, gapsDetails, os);
+    SAFE_POINT_OP(os, );
 
-    // Increment the alignment version
-    SQLiteObjectDbi::incrementVersion(msaId, db, os);
+    updateAction.complete(os);
+    SAFE_POINT_OP(os, );
 }
 
 qint64 SQLiteMsaDbi::getMsaLength(const U2DataId& msaId, U2OpStatus& os) {

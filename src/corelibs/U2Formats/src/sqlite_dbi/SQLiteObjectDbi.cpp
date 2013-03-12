@@ -744,9 +744,6 @@ void SQLiteObjectDbi::updateObject(U2Object& obj, U2OpStatus& os) {
     updateObjectCore(obj, os);
     SAFE_POINT_OP(os, );
 
-    incrementVersion(obj.id, os);
-    SAFE_POINT_OP(os, );
-
     obj.version = getObjectVersion(obj.id, os);
 }
 
@@ -847,48 +844,87 @@ void SQLiteCrossDatabaseReferenceDbi::updateCrossReference(const U2CrossDatabase
 }
 
 
-ModTrackAction::ModTrackAction(SQLiteDbi* _dbi, const U2DataId& _objectId)
+ModificationAction::ModificationAction(SQLiteDbi* _dbi, const U2DataId& _masterObjId)
     : dbi(_dbi),
-      objectId(_objectId),
+      masterObjId(_masterObjId),
       trackMod(NoTrack)
 {
+    objIds.insert(masterObjId);
 }
 
-U2TrackModType ModTrackAction::prepareTracking(U2OpStatus& os) {
-    trackMod = dbi->getObjectDbi()->getTrackModType(objectId, os);
-    CHECK_OP(os, NoTrack);
+U2TrackModType ModificationAction::prepare(U2OpStatus& os) {
+    trackMod = dbi->getObjectDbi()->getTrackModType(masterObjId, os);
+    if (os.hasError()) {
+        trackMod = NoTrack;
+        FAIL("Failed to get trackMod!", NoTrack);
+    }
 
     if (TrackOnUpdate == trackMod) {
-        objectVersionToTrack = dbi->getObjectDbi()->getObjectVersion(objectId, os);
-        CHECK_OP(os, trackMod);
+        masterObjVersionToTrack = dbi->getObjectDbi()->getObjectVersion(masterObjId, os);
+        SAFE_POINT_OP(os, trackMod);
 
-        dbi->getModDbi()->removeModsWithGreaterVersion(objectId, objectVersionToTrack, os);
-        CHECK_OP(os, trackMod);
+        dbi->getModDbi()->removeModsWithGreaterVersion(masterObjId, masterObjVersionToTrack, os);
+        SAFE_POINT_OP(os, trackMod);
     }
 
     return trackMod;
 }
 
-void ModTrackAction::saveTrack(const U2DataId& masterObjId, qint64 modType, const QByteArray& modDetails, U2OpStatus& os) {
+void ModificationAction::addModification(const U2DataId& objId, qint64 modType, const QByteArray& modDetails, U2OpStatus& os) {
+    objIds.insert(objId);
+
     if (TrackOnUpdate == trackMod) {
         SAFE_POINT(!modDetails.isEmpty(), "Empty modification details!", );
+
+        qint64 objVersion = dbi->getObjectDbi()->getObjectVersion(objId, os);
+        SAFE_POINT_OP(os, );
+
         U2SingleModStep singleModStep;
-        singleModStep.objectId = objectId;
-        singleModStep.version = objectVersionToTrack;
+        singleModStep.objectId = objId;
+        singleModStep.version = objVersion;
         singleModStep.modType = modType;
         singleModStep.details = modDetails;
 
-        dbi->getSQLiteModDbi()->createModStep(masterObjId, singleModStep, os);
+        singleSteps.append(singleModStep);
     }
 }
+
+void ModificationAction::complete(U2OpStatus& os) {
+    // Save modification tracks, if required
+    if (TrackOnUpdate == trackMod) {
+        if (0 == singleSteps.size()) {
+            // do nothing
+        }
+        else if (1 == singleSteps.size()) {
+            dbi->getSQLiteModDbi()->createModStep(masterObjId, singleSteps.first(), os);
+            SAFE_POINT_OP(os, );
+        }
+        else {
+            U2UseCommonMultiModStep multi(dbi, masterObjId, os);
+            SAFE_POINT_OP(os, );
+
+            foreach (U2SingleModStep singleStep, singleSteps) {
+                dbi->getSQLiteModDbi()->createModStep(masterObjId, singleStep, os);
+                SAFE_POINT_OP(os, );
+            }
+        }
+    }
+
+    // Increment versions of all objects
+    foreach (const U2DataId& objId, objIds) {
+        SQLiteObjectDbi::incrementVersion(objId, dbi->getDbRef(), os);
+        SAFE_POINT_OP(os, );
+    }
+}
+
 
 /************************************************************************/
 /* SQLiteObjectDbiUtils */
 /************************************************************************/
 void SQLiteObjectDbiUtils::renameObject(DbRef *db, SQLiteDbi *dbi, U2Object &object, const QString &newName, U2OpStatus &os) {
     SQLiteTransaction t(db, os);
-    ModTrackAction updateAction(dbi, object.id);
-    U2TrackModType trackMod = updateAction.prepareTracking(os);
+    ModificationAction updateAction(dbi, object.id);
+    U2TrackModType trackMod = updateAction.prepare(os);
     CHECK_OP(os, );
 
     SQLiteObjectDbi *objectDbi = dbi->getSQLiteObjectDbi();
@@ -899,11 +935,15 @@ void SQLiteObjectDbiUtils::renameObject(DbRef *db, SQLiteDbi *dbi, U2Object &obj
     }
 
     object.visualName = newName;
-    objectDbi->updateObject(object, os); // increments the version of object
+    objectDbi->updateObject(object, os);
     CHECK_OP(os, );
 
-    updateAction.saveTrack(object.id, U2ModType::objUpdatedName, modDetails, os);
-    CHECK_OP(os, );
+    // Increment version; track the modification, if required
+    updateAction.addModification(object.id, U2ModType::objUpdatedName, modDetails, os);
+    SAFE_POINT_OP(os, );
+
+    updateAction.complete(os);
+    SAFE_POINT_OP(os, );
 }
 
 } //namespace
