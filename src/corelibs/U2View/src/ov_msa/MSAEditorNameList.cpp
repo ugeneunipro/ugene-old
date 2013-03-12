@@ -313,7 +313,12 @@ void MSAEditorNameList::keyPressEvent (QKeyEvent *e) {
                 newSeq = curSeq = ui->seqArea->getSelectedRows().startPos;
                 startSelectingSeq = curSeq;
             }
-
+            break;
+        case Qt::Key_Escape:
+            {
+                ui->seqArea->cancelSelection();
+            }
+            break;
   }
     QWidget::keyPressEvent(e);
 }
