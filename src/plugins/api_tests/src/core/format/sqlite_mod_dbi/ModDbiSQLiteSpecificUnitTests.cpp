@@ -350,9 +350,9 @@ IMPLEMENT_TEST(ModDbiSQLiteSpecificUnitTests, updateMsaName_severalSteps) {
     CHECK_EQUAL(expectedModStepList.length(), finalModStepList.length(), "mod steps table size");
     for (int i = 0; i < expectedModStepList.length(); ++i) {
         CHECK_EQUAL(expectedModStepList[i].modType, finalModStepList[i].modType, "mod type");
-        CHECK_EQUAL(expectedModStepList[i].objectId, finalModStepList[i].objectId, "object id");
+        CHECK_EQUAL(QString(expectedModStepList[i].objectId), QString(finalModStepList[i].objectId), "object id");
         CHECK_EQUAL(expectedModStepList[i].version, finalModStepList[i].version, "version");
-        CHECK_EQUAL(expectedModStepList[i].details, finalModStepList[i].details, "details");
+        CHECK_EQUAL(QString(expectedModStepList[i].details), QString(finalModStepList[i].details), "details");
     }
 }
 
@@ -443,7 +443,7 @@ IMPLEMENT_TEST(ModDbiSQLiteSpecificUnitTests, updateMsaName_severalUndoThenActio
     CHECK_EQUAL(expectedModStepList.length(), finalModStepList.length(), "mod steps table size");
     for (int i = 0; i < expectedModStepList.length(); ++i) {
         CHECK_EQUAL(expectedModStepList[i].modType, finalModStepList[i].modType, "mod type");
-        CHECK_EQUAL(expectedModStepList[i].objectId, finalModStepList[i].objectId, "object id");
+        CHECK_EQUAL(QString(expectedModStepList[i].objectId), QString(finalModStepList[i].objectId), "object id");
         CHECK_EQUAL(expectedModStepList[i].version, finalModStepList[i].version, "version");
         CHECK_EQUAL(QString(expectedModStepList[i].details), QString(finalModStepList[i].details), "details");
     }
@@ -539,9 +539,9 @@ IMPLEMENT_TEST(ModDbiSQLiteSpecificUnitTests, updateMsaAlphabet_severalSteps) {
     CHECK_EQUAL(expectedModStepList.length(), finalModStepList.length(), "mod steps table size");
     for (int i = 0; i < expectedModStepList.length(); ++i) {
         CHECK_EQUAL(expectedModStepList[i].modType, finalModStepList[i].modType, "mod type");
-        CHECK_EQUAL(expectedModStepList[i].objectId, finalModStepList[i].objectId, "object id");
+        CHECK_EQUAL(QString(expectedModStepList[i].objectId), QString(finalModStepList[i].objectId), "object id");
         CHECK_EQUAL(expectedModStepList[i].version, finalModStepList[i].version, "version");
-        CHECK_EQUAL(expectedModStepList[i].details, finalModStepList[i].details, "details");
+        CHECK_EQUAL(QString(expectedModStepList[i].details), QString(finalModStepList[i].details), "details");
     }
 }
 
@@ -635,9 +635,9 @@ IMPLEMENT_TEST(ModDbiSQLiteSpecificUnitTests, updateMsaAlphabet_severalUndoThenA
     CHECK_EQUAL(expectedModStepList.length(), finalModStepList.length(), "mod steps table size");
     for (int i = 0; i < expectedModStepList.length(); ++i) {
         CHECK_EQUAL(expectedModStepList[i].modType, finalModStepList[i].modType, "mod type");
-        CHECK_EQUAL(expectedModStepList[i].objectId, finalModStepList[i].objectId, "object id");
+        CHECK_EQUAL(QString(expectedModStepList[i].objectId), QString(finalModStepList[i].objectId), "object id");
         CHECK_EQUAL(expectedModStepList[i].version, finalModStepList[i].version, "version");
-        CHECK_EQUAL(expectedModStepList[i].details, finalModStepList[i].details, "details");
+        CHECK_EQUAL(QString(expectedModStepList[i].details), QString(finalModStepList[i].details), "details");
     }
 }
 
@@ -760,9 +760,9 @@ IMPLEMENT_TEST(ModDbiSQLiteSpecificUnitTests, updateGapModel_severalSteps) {
     CHECK_EQUAL(expectedModStepList.length(), finalModStepList.length(), "mod steps table size");
     for (int i = 0; i < expectedModStepList.length(); ++i) {
         CHECK_EQUAL(expectedModStepList[i].modType, finalModStepList[i].modType, "mod type");
-        CHECK_EQUAL(expectedModStepList[i].objectId, finalModStepList[i].objectId, "object id");
+        CHECK_EQUAL(QString(expectedModStepList[i].objectId), QString(finalModStepList[i].objectId), "object id");
         CHECK_EQUAL(expectedModStepList[i].version, finalModStepList[i].version, "version");
-        CHECK_EQUAL(expectedModStepList[i].details, finalModStepList[i].details, "details");
+        CHECK_EQUAL(QString(expectedModStepList[i].details), QString(finalModStepList[i].details), "details");
     }
 }
 
@@ -899,9 +899,9 @@ IMPLEMENT_TEST(ModDbiSQLiteSpecificUnitTests, updateGapModel_severalUndoThenActi
     CHECK_EQUAL(expectedModStepList.length(), finalModStepList.length(), "mod steps table size");
     for (int i = 0; i < expectedModStepList.length(); ++i) {
         CHECK_EQUAL(expectedModStepList[i].modType, finalModStepList[i].modType, "mod type");
-        CHECK_EQUAL(expectedModStepList[i].objectId, finalModStepList[i].objectId, "object id");
+        CHECK_EQUAL(QString(expectedModStepList[i].objectId), QString(finalModStepList[i].objectId), "object id");
         CHECK_EQUAL(expectedModStepList[i].version, finalModStepList[i].version, "version");
-        CHECK_EQUAL(expectedModStepList[i].details, finalModStepList[i].details, "details");
+        CHECK_EQUAL(QString(expectedModStepList[i].details), QString(finalModStepList[i].details), "details");
     }
 }
 
@@ -1007,9 +1007,9 @@ IMPLEMENT_TEST(ModDbiSQLiteSpecificUnitTests, updateRowContent_severalSteps) {
     CHECK_EQUAL(expectedModStepList.length(), finalModStepList.length(), "mod steps table size");
     for (int i = 0; i < expectedModStepList.length(); ++i) {
         CHECK_EQUAL(expectedModStepList[i].modType, finalModStepList[i].modType, "mod type");
-        CHECK_EQUAL(expectedModStepList[i].objectId, finalModStepList[i].objectId, "object id");
+        CHECK_EQUAL(QString(expectedModStepList[i].objectId), QString(finalModStepList[i].objectId), "object id");
         CHECK_EQUAL(expectedModStepList[i].version, finalModStepList[i].version, "version");
-        CHECK_EQUAL(expectedModStepList[i].details, finalModStepList[i].details, "details");
+        CHECK_EQUAL(QString(expectedModStepList[i].details), QString(finalModStepList[i].details), "details");
     }
 }
 
@@ -1113,9 +1113,9 @@ IMPLEMENT_TEST(ModDbiSQLiteSpecificUnitTests, updateRowContent_severalUndoThenAc
     CHECK_EQUAL(expectedModStepList.length(), finalModStepList.length(), "mod steps table size");
     for (int i = 0; i < expectedModStepList.length(); ++i) {
         CHECK_EQUAL(expectedModStepList[i].modType, finalModStepList[i].modType, "mod type");
-        CHECK_EQUAL(expectedModStepList[i].objectId, finalModStepList[i].objectId, "object id");
+        CHECK_EQUAL(QString(expectedModStepList[i].objectId), QString(finalModStepList[i].objectId), "object id");
         CHECK_EQUAL(expectedModStepList[i].version, finalModStepList[i].version, "version");
-        CHECK_EQUAL(expectedModStepList[i].details, finalModStepList[i].details, "details");
+        CHECK_EQUAL(QString(expectedModStepList[i].details), QString(finalModStepList[i].details), "details");
     }
 }
 
@@ -1249,9 +1249,9 @@ IMPLEMENT_TEST(ModDbiSQLiteSpecificUnitTests, setNewRowsOrder_severalSteps) {
     CHECK_EQUAL(expectedModStepList.length(), finalModStepList.length(), "mod steps table size");
     for (int i = 0; i < expectedModStepList.length(); ++i) {
         CHECK_EQUAL(expectedModStepList[i].modType, finalModStepList[i].modType, "mod type");
-        CHECK_EQUAL(expectedModStepList[i].objectId, finalModStepList[i].objectId, "object id");
+        CHECK_EQUAL(QString(expectedModStepList[i].objectId), QString(finalModStepList[i].objectId), "object id");
         CHECK_EQUAL(expectedModStepList[i].version, finalModStepList[i].version, "version");
-        CHECK_EQUAL(expectedModStepList[i].details, finalModStepList[i].details, "details");
+        CHECK_EQUAL(QString(expectedModStepList[i].details), QString(finalModStepList[i].details), "details");
     }
 }
 
@@ -1399,9 +1399,9 @@ IMPLEMENT_TEST(ModDbiSQLiteSpecificUnitTests, setNewRowsOrder_severalUndoThenAct
     CHECK_EQUAL(expectedModStepList.length(), finalModStepList.length(), "mod steps table size");
     for (int i = 0; i < expectedModStepList.length(); ++i) {
         CHECK_EQUAL(expectedModStepList[i].modType, finalModStepList[i].modType, "mod type");
-        CHECK_EQUAL(expectedModStepList[i].objectId, finalModStepList[i].objectId, "object id");
+        CHECK_EQUAL(QString(expectedModStepList[i].objectId), QString(finalModStepList[i].objectId), "object id");
         CHECK_EQUAL(expectedModStepList[i].version, finalModStepList[i].version, "version");
-        CHECK_EQUAL(expectedModStepList[i].details, finalModStepList[i].details, "details");
+        CHECK_EQUAL(QString(expectedModStepList[i].details), QString(finalModStepList[i].details), "details");
     }
 }
 
@@ -1508,9 +1508,9 @@ IMPLEMENT_TEST(ModDbiSQLiteSpecificUnitTests, updateRowName_severalSteps) {
     CHECK_EQUAL(expectedModStepList.length(), finalModStepList.length(), "mod steps table size");
     for (int i = 0; i < expectedModStepList.length(); ++i) {
         CHECK_EQUAL(expectedModStepList[i].modType, finalModStepList[i].modType, "mod type");
-        CHECK_EQUAL(expectedModStepList[i].objectId, finalModStepList[i].objectId, "object id");
+        CHECK_EQUAL(QString(expectedModStepList[i].objectId), QString(finalModStepList[i].objectId), "object id");
         CHECK_EQUAL(expectedModStepList[i].version, finalModStepList[i].version, "version");
-        CHECK_EQUAL(expectedModStepList[i].details, finalModStepList[i].details, "details");
+        CHECK_EQUAL(QString(expectedModStepList[i].details), QString(finalModStepList[i].details), "details");
     }
 }
 
@@ -1609,9 +1609,9 @@ IMPLEMENT_TEST(ModDbiSQLiteSpecificUnitTests, updateRowName_severalUndoThenActio
     CHECK_EQUAL(expectedModStepList.length(), finalModStepList.length(), "mod steps table size");
     for (int i = 0; i < expectedModStepList.length(); ++i) {
         CHECK_EQUAL(expectedModStepList[i].modType, finalModStepList[i].modType, "mod type");
-        CHECK_EQUAL(expectedModStepList[i].objectId, finalModStepList[i].objectId, "object id");
+        CHECK_EQUAL(QString(expectedModStepList[i].objectId), QString(finalModStepList[i].objectId), "object id");
         CHECK_EQUAL(expectedModStepList[i].version, finalModStepList[i].version, "version");
-        CHECK_EQUAL(expectedModStepList[i].details, finalModStepList[i].details, "details");
+        CHECK_EQUAL(QString(expectedModStepList[i].details), QString(finalModStepList[i].details), "details");
     }
 }
 
