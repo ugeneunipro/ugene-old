@@ -124,6 +124,7 @@ inline static void addNum(T num, int tSize, QByteArray &result) {
 }
 
 QList<U2AuxData> SamtoolsAdapter::samString2aux(const QByteArray &auxString) {
+    CHECK(!auxString.isEmpty(), QList<U2AuxData>());
     // Adapted samtools code:
     QList<U2AuxData> result;
     QList<QByteArray> tokens = auxString.split('\t');

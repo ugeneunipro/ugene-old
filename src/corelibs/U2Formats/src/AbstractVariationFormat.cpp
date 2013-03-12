@@ -98,10 +98,10 @@ Document *AbstractVariationFormat::loadDocument(IOAdapter *io, const U2DbiRef &d
                     seqName = columnData;
                     break;
                 case ColumnRole_StartPos:
-                    v.startPos = columnData.toInt();
+                    v.startPos = columnData.toInt() - 1;
                     break;
                 case ColumnRole_EndPos:
-                    v.endPos = columnData.toInt();
+                    v.endPos = columnData.toInt() - 1;
                     break;
                 case ColumnRole_RefData:
                     v.refData = columnData.toAscii();
@@ -223,10 +223,10 @@ void AbstractVariationFormat::storeTrack(IOAdapter *io, const VariantTrackObject
                         snpString += track.sequenceName;
                         break;
                     case ColumnRole_StartPos:
-                        snpString += QByteArray::number(variant.startPos);
+                        snpString += QByteArray::number(variant.startPos + 1);
                         break;
                     case ColumnRole_EndPos:
-                        snpString += QByteArray::number(variant.endPos);
+                        snpString += QByteArray::number(variant.endPos + 1);
                         break;
                     case ColumnRole_RefData:
                         snpString += variant.refData;
