@@ -105,9 +105,10 @@ void convertMAlignment2MSA(MSA& muscleMSA, const MAlignment& ma, bool fixAlpha) 
         
         int coreLen = row.getCoreLength();
         int maLen = ma.getLength();
-        char* seq  = new char[coreLen + 1];
+        char* seq  = new char[maLen + 1];
         memcpy(seq, row.getCore().constData(), coreLen);
-        seq[row.getCoreLength()] = '\0';
+        memset(seq + coreLen, '-', maLen - coreLen + 1);
+        seq[maLen] = 0;
 
         char* name = new char[row.getName().length() + 1];
         memcpy(name, row.getName().toLocal8Bit().constData(), row.getName().length());
