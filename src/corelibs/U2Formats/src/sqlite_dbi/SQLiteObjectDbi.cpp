@@ -461,14 +461,14 @@ void SQLiteObjectDbi::undo(const U2DataId& objId, U2OpStatus& os) {
     foreach (U2SingleModStep modStep, modSteps) {
         // Call an appropriate "undo" depending on the object type
         if (U2ModType::isMsaModType(modStep.modType)) {
-            dbi->getSQLiteMsaDbi()->undo(objId, modStep.modType, modStep.details, os);
+            dbi->getSQLiteMsaDbi()->undo(modStep.objectId, modStep.modType, modStep.details, os);
         }
         else if (U2ModType::isSequenceModType(modStep.modType)) {
-            dbi->getSQLiteSequenceDbi()->undo(objId, modStep.modType, modStep.details, os);
+            dbi->getSQLiteSequenceDbi()->undo(modStep.objectId, modStep.modType, modStep.details, os);
         }
         else if (U2ModType::isObjectModType(modStep.modType)) {
             if (U2ModType::objUpdatedName == modStep.modType) {
-                undoUpdateObjectName(objId, modStep.details, os);
+                undoUpdateObjectName(modStep.objectId, modStep.details, os);
                 CHECK_OP(os, );
             }
             else {
@@ -477,10 +477,9 @@ void SQLiteObjectDbi::undo(const U2DataId& objId, U2OpStatus& os) {
             }
         }
 
-        if (!objectIds.contains(modStep.objectId)) {
-            objectIds.insert(modStep.objectId);
-        }
+        objectIds.insert(modStep.objectId);
     }
+    objectIds.insert(objId);
 
     foreach (U2DataId objId, objectIds) {
         decrementVersion(objId, os);
@@ -520,20 +519,16 @@ void SQLiteObjectDbi::redo(const U2DataId& objId, U2OpStatus& os) {
     }
 
     QSet<U2DataId> objectIds;
-    QList<U2SingleModStep>::const_iterator i = modSteps.end();
-    while (i != modSteps.begin()) {
-        --i;
-        U2SingleModStep modStep = *i;
-
+    foreach (U2SingleModStep modStep, modSteps) {
         if (U2ModType::isMsaModType(modStep.modType)) {
-            dbi->getSQLiteMsaDbi()->redo(objId, modStep.modType, modStep.details, os);
+            dbi->getSQLiteMsaDbi()->redo(modStep.objectId, modStep.modType, modStep.details, os);
         }
         else if (U2ModType::isSequenceModType(modStep.modType)) {
-            dbi->getSQLiteSequenceDbi()->redo(objId, modStep.modType, modStep.details, os);
+            dbi->getSQLiteSequenceDbi()->redo(modStep.objectId, modStep.modType, modStep.details, os);
         }
         else if (U2ModType::isObjectModType(modStep.modType)) {
             if (U2ModType::objUpdatedName == modStep.modType) {
-                redoUpdateObjectName(objId, modStep.details, os);
+                redoUpdateObjectName(modStep.objectId, modStep.details, os);
                 CHECK_OP(os, );
             }
             else {
@@ -543,10 +538,9 @@ void SQLiteObjectDbi::redo(const U2DataId& objId, U2OpStatus& os) {
             }
         }
 
-        if (!objectIds.contains(modStep.objectId)) {
-            objectIds.insert(modStep.objectId);
-        }
+        objectIds.insert(modStep.objectId);
     }
+    objectIds.insert(objId);
 
     foreach (U2DataId objId, objectIds) {
         incrementVersion(objId, os);
