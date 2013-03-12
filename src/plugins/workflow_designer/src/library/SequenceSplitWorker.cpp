@@ -33,6 +33,8 @@
 
 #include <U2Core/TextUtils.h>
 
+#include <U2Formats/GenbankLocationParser.h>
+
 #include <U2Lang/ConfigurationEditor.h>
 #include <U2Lang/WorkflowEnv.h>
 #include <U2Lang/ActorPrototypeRegistry.h>
@@ -186,7 +188,7 @@ void SequenceSplitWorker::sl_onTaskFinished( Task * ) {
 
         DNASequence resSeq = ssT->getResultedSequence();
         SharedAnnotationData resAnn = ssT->getResultedAnnotation();
-        QString name = resSeq.getName() + "|" + resAnn->name + "|" + QString::number(++count);
+        QString name = resSeq.getName() + "|" + resAnn->name + "|" + Genbank::LocationParser::buildLocationString(resAnn.data());
         resSeq.info[DNAInfo::ID] = name;
 
         QList<SharedAnnotationData> annToPut;
@@ -251,7 +253,7 @@ void SequenceSplitWorkerFactory::init() {
                                   SequenceSplitWorker::tr("Insert gap of specified length between merged locations of annotation.") );
 
         attribs << new Attribute( translateDesc, BaseTypes::BOOL_TYPE(), /*required*/ false, QVariant(false) );
-        attribs << new Attribute( complementDesc, BaseTypes::BOOL_TYPE(), /*required*/ false, QVariant(true) );
+        attribs << new Attribute( complementDesc, BaseTypes::BOOL_TYPE(), /*required*/ false, QVariant(false) );
         attribs << new Attribute( extendLeftDesc, BaseTypes::NUM_TYPE(), /*required*/ false, QVariant(0) );
         attribs << new Attribute( extendRightDesc, BaseTypes::NUM_TYPE(), /*required*/ false, QVariant(0) );
         attribs << new Attribute( gapLengthDesc, BaseTypes::NUM_TYPE(), false, QVariant(1) );

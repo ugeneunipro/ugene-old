@@ -42,7 +42,7 @@ void ExtractAnnotatedRegionTask::prepare() {
 }
 
 void ExtractAnnotatedRegionTask::prepareTranslations() {
-    //TODO move these logic somewhere upstairs
+    //TODO move these logic somewhere above
     bool aminoSeq = inputSeq.alphabet->isAmino();
     if (aminoSeq) {
         return;
