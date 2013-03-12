@@ -71,9 +71,32 @@ private:
 DECLARE_TEST(SQLiteObjectDbiUnitTests, removeMsaObject);
 DECLARE_TEST(SQLiteObjectDbiUnitTests, setTrackModType);
 
+/**
+ * canUndoRedo: check canUndo() and canRedo() functions.
+ *  ^ noTrack                   - modification tracking is turned off: no undo, no redo.
+ *  ^ noAction                  - no action happened with object after creation: no undo, no redo.
+ *  ^ lastState                 - object is in the last state: undo, no redo.
+ *  ^ firstState                - object is in the first state: no undo, redo.
+ *  ^ midState                  - object is in the middle state: undo, redo.
+ *  ^ oneUserStep               - object gets two actions with one user step, then undo: no undo, redo.
+ */
+DECLARE_TEST(SQLiteObjectDbiUnitTests, canUndoRedo_noTrack);
+DECLARE_TEST(SQLiteObjectDbiUnitTests, canUndoRedo_noAction);
+DECLARE_TEST(SQLiteObjectDbiUnitTests, canUndoRedo_lastState);
+DECLARE_TEST(SQLiteObjectDbiUnitTests, canUndoRedo_firstState);
+DECLARE_TEST(SQLiteObjectDbiUnitTests, canUndoRedo_midState);
+DECLARE_TEST(SQLiteObjectDbiUnitTests, canUndoRedo_oneUserStep);
+
 } // namespace
 
 DECLARE_METATYPE(SQLiteObjectDbiUnitTests, removeMsaObject);
 DECLARE_METATYPE(SQLiteObjectDbiUnitTests, setTrackModType);
+
+DECLARE_METATYPE(SQLiteObjectDbiUnitTests, canUndoRedo_noTrack);
+DECLARE_METATYPE(SQLiteObjectDbiUnitTests, canUndoRedo_noAction);
+DECLARE_METATYPE(SQLiteObjectDbiUnitTests, canUndoRedo_lastState);
+DECLARE_METATYPE(SQLiteObjectDbiUnitTests, canUndoRedo_firstState);
+DECLARE_METATYPE(SQLiteObjectDbiUnitTests, canUndoRedo_midState);
+DECLARE_METATYPE(SQLiteObjectDbiUnitTests, canUndoRedo_oneUserStep);
 
 #endif

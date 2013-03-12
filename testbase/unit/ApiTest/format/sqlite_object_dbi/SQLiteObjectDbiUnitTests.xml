@@ -5,5 +5,11 @@
 SQLiteObjectDbiUnitTests
 + removeMsaObject
 + setTrackModType
++ canUndoRedo_noTrack
++ canUndoRedo_noAction
++ canUndoRedo_lastState
++ canUndoRedo_firstState
++ canUndoRedo_midState
+- canUndoRedo_oneUserStep
 
 </unittest>
