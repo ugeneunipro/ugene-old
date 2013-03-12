@@ -57,8 +57,10 @@ public:
 
     static U2EntityRef removeRegionTestAlignment(U2OpStatus &os);
 
-private:
+public:
     static const QString alignmentName;
+
+private:
     static TestDbiProvider dbiProvider;
     static const QString& MSA_DB_URL;
     static U2MsaDbi* msaDbi;
@@ -146,6 +148,31 @@ DECLARE_TEST(MsaDbiUtilsUnitTests, removeRegion_negativePos);
 DECLARE_TEST(MsaDbiUtilsUnitTests, removeRegion_wrongId);
 DECLARE_TEST(MsaDbiUtilsUnitTests, removeRegion_wrongCount);
 
+/**
+  * updateMsa - updates a Msa in a database with data from a MAlignment.
+  * The msa stored in the database is not empty by default.
+  *     ^   empty               - there is the empty msa stored in the database, the MAlignment contains new rows.
+  *     ^   nothingNew          - the MAlignment contains the same information.
+  *     ^   newOrder            - the MAlignment contains the same rows in other order.
+  *     ^   newName             - the MAlignment contains the same rows, the msa name changes.
+  *     ^   newAlphabet         - the MAlignment contains the same rows, the msa alphabet changes.
+  *     ^   newContent          - the MAlignment doesn't contain new rows, some rows data changes.
+  *     ^   newSequence         - the MAlignment doesn't contain new rows, some rows have new sequences.
+  *     ^   additionalRows      - the MAlignment contains new rows, no rows are deleted.
+  *     ^   removeRows          - the MAlignment doesn't contain some rows.
+  *     ^   clear               - the MAlignment is empty.
+  */
+DECLARE_TEST(MsaDbiUtilsUnitTests, updateMsa_empty);
+DECLARE_TEST(MsaDbiUtilsUnitTests, updateMsa_nothingNew);
+DECLARE_TEST(MsaDbiUtilsUnitTests, updateMsa_newOrder);
+DECLARE_TEST(MsaDbiUtilsUnitTests, updateMsa_newName);
+DECLARE_TEST(MsaDbiUtilsUnitTests, updateMsa_newAlphabet);
+DECLARE_TEST(MsaDbiUtilsUnitTests, updateMsa_newContent);
+DECLARE_TEST(MsaDbiUtilsUnitTests, updateMsa_newSequence);
+DECLARE_TEST(MsaDbiUtilsUnitTests, updateMsa_additionalRows);
+DECLARE_TEST(MsaDbiUtilsUnitTests, updateMsa_removeRows);
+DECLARE_TEST(MsaDbiUtilsUnitTests, updateMsa_clear);
+
 }   // namespace
 
 DECLARE_METATYPE(MsaDbiUtilsUnitTests, moveRows_oneLineInMiddle);
@@ -181,5 +208,16 @@ DECLARE_METATYPE(MsaDbiUtilsUnitTests, removeRegion_all);
 DECLARE_METATYPE(MsaDbiUtilsUnitTests, removeRegion_negativePos);
 DECLARE_METATYPE(MsaDbiUtilsUnitTests, removeRegion_wrongId);
 DECLARE_METATYPE(MsaDbiUtilsUnitTests, removeRegion_wrongCount);
+
+DECLARE_METATYPE(MsaDbiUtilsUnitTests, updateMsa_empty);
+DECLARE_METATYPE(MsaDbiUtilsUnitTests, updateMsa_nothingNew);
+DECLARE_METATYPE(MsaDbiUtilsUnitTests, updateMsa_newOrder);
+DECLARE_METATYPE(MsaDbiUtilsUnitTests, updateMsa_newName);
+DECLARE_METATYPE(MsaDbiUtilsUnitTests, updateMsa_newAlphabet);
+DECLARE_METATYPE(MsaDbiUtilsUnitTests, updateMsa_newContent);
+DECLARE_METATYPE(MsaDbiUtilsUnitTests, updateMsa_newSequence);
+DECLARE_METATYPE(MsaDbiUtilsUnitTests, updateMsa_additionalRows);
+DECLARE_METATYPE(MsaDbiUtilsUnitTests, updateMsa_removeRows);
+DECLARE_METATYPE(MsaDbiUtilsUnitTests, updateMsa_clear);
 
 #endif // _U2_MSA_DBI_UTILS_UNIT_TESTS_H_

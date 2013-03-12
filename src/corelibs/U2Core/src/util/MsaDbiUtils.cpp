@@ -29,6 +29,7 @@
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/U2SequenceDbi.h>
+#include <U2Core/U2AttributeDbi.h>
 
 
 namespace U2 {
@@ -525,6 +526,9 @@ void MsaDbiUtils::updateMsa(const U2EntityRef& msaRef, const MAlignment& al, U2O
     U2SequenceDbi* seqDbi = con.dbi->getSequenceDbi();
     SAFE_POINT(NULL != seqDbi, "NULL Sequence Dbi!", );
 
+    U2AttributeDbi* attrDbi = con.dbi->getAttributeDbi();
+    SAFE_POINT(NULL != attrDbi, "NULL Attribute Dbi!", );
+
     //// UPDATE MSA OBJECT
     DNAAlphabet* alphabet = al.getAlphabet();
     SAFE_POINT(NULL != alphabet, "The alignment alphabet is NULL!", );
@@ -627,6 +631,17 @@ void MsaDbiUtils::updateMsa(const U2EntityRef& msaRef, const MAlignment& al, U2O
 
     //// UPDATE ROWS POSITIONS
     msaDbi->setNewRowsOrder(msaRef.entityId, rowsOrder, os);
+
+    //// UPDATE MALIGNMENT ATTRIBUTES
+    QVariantMap alInfo = al.getInfo();
+
+    foreach (QString key, alInfo.keys()) {
+        QString val = qVariantValue<QString>(alInfo.value(key));
+        U2StringAttribute attr(msaRef.entityId, key, val);
+
+        attrDbi->createStringAttribute(attr, os);
+        CHECK_OP(os, );
+    }
 }
 
 void MsaDbiUtils::updateRowContent(const U2EntityRef& msaRef, qint64 rowId, const QByteArray& seqBytes, const QList<U2MsaGap>& gaps, U2OpStatus& os) {

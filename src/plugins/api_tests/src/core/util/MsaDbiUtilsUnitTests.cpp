@@ -29,6 +29,7 @@
 #include <U2Core/U2MsaDbi.h>
 #include <U2Core/MsaDbiUtils.h>
 #include <U2Core/MAlignmentExporter.h>
+#include <U2Core/U2AlphabetUtils.h>
 
 namespace U2 {
 
@@ -1371,6 +1372,682 @@ IMPLEMENT_TEST(MsaDbiUtilsUnitTests, removeRegion_wrongCount) {
 
     QByteArray row0 = al.getRow(0).toByteArray(al.getLength(), os);
     CHECK_EQUAL(QString("TAAGACTTCTAA--"), QString(row0), "Wrong msa row");
+}
+
+IMPLEMENT_TEST(MsaDbiUtilsUnitTests, updateMsa_empty) {
+    U2OpStatusImpl os;
+    U2MsaDbi* msaDbi = MsaDbiUtilsTestUtils::getMsaDbi();
+    U2SequenceDbi* seqDbi = MsaDbiUtilsTestUtils::getSequenceDbi();
+    U2DataId msaId = msaDbi->createMsaObject("", MsaDbiUtilsTestUtils::alignmentName, BaseDNAAlphabetIds::NUCL_DNA_DEFAULT(), os);
+    CHECK_NO_ERROR(os);
+    U2DbiRef dbiRef(msaDbi->getRootDbi()->getFactoryId(), msaDbi->getRootDbi()->getDbiId());
+    U2EntityRef msaRef(dbiRef, msaId);
+
+    // Prepare input data
+    DNAAlphabet* alphabet = U2AlphabetUtils::getById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT());
+    MAlignment ma(MsaDbiUtilsTestUtils::alignmentName, alphabet);
+    ma.addRow("1", "AAAA--AAA", -1, os);
+    CHECK_NO_ERROR(os);
+    ma.addRow("2", "C--CCCCCC", -1, os);
+    CHECK_NO_ERROR(os);
+    ma.addRow("3", "GG-GGGG-G", -1, os);
+    CHECK_NO_ERROR(os);
+    ma.addRow("4", "TTT-TTTT", -1, os);
+    CHECK_NO_ERROR(os);
+
+    QList<MAlignmentRow> maRows = ma.getRows();
+
+    // Call test function
+    MsaDbiUtils::updateMsa(msaRef, ma, os);
+    CHECK_NO_ERROR(os);
+
+    // Verify msa object
+    U2Msa msa = msaDbi->getMsaObject(msaId, os);
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT(), msa.alphabet.id, "msa alphabet");
+    CHECK_EQUAL(9, msa.length, "msa length");
+    CHECK_EQUAL(MsaDbiUtilsTestUtils::alignmentName, msa.visualName, "msa name");
+
+    // Verify rows and sequences
+    QList<U2MsaRow> rows = msaDbi->getRows(msaId, os);
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(maRows.count(), rows.count(), "rows count");
+    for (int i = 0; i < maRows.count(); ++i) {
+        // Verify row object
+        CHECK_EQUAL(maRows[i].getCoreStart(), rows[i].gstart, "row start");
+        CHECK_EQUAL(maRows[i].getUngappedLength(), rows[i].gend, "row end");
+        CHECK_EQUAL(maRows[i].getRowLengthWithoutTrailing(), rows[i].length, "row length");
+        CHECK_TRUE(maRows[i].getGapModel() == rows[i].gaps, "row gaps");
+
+        // Verify sequence object
+        U2Sequence seq = seqDbi->getSequenceObject(rows[i].sequenceId, os);
+        CHECK_NO_ERROR(os);
+        CHECK_EQUAL(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT(), seq.alphabet.id, "sequence alphabet");
+        CHECK_EQUAL(maRows[i].getUngappedLength(), seq.length, "sequence length");
+        CHECK_EQUAL(maRows[i].getSequence().getName(), seq.visualName, "sequence name");
+
+        // Verify sequence data
+        QByteArray seqData = seqDbi->getSequenceData(rows[i].sequenceId, U2_REGION_MAX, os);
+        CHECK_NO_ERROR(os);
+        CHECK_EQUAL(QString(maRows[i].getSequence().constSequence()), QString(seqData), "sequence data");
+    }
+}
+
+IMPLEMENT_TEST(MsaDbiUtilsUnitTests, updateMsa_nothingNew) {
+    U2OpStatusImpl os;
+    U2MsaDbi* msaDbi = MsaDbiUtilsTestUtils::getMsaDbi();
+    U2SequenceDbi* seqDbi = MsaDbiUtilsTestUtils::getSequenceDbi();
+    U2DataId msaId = msaDbi->createMsaObject("", MsaDbiUtilsTestUtils::alignmentName, BaseDNAAlphabetIds::NUCL_DNA_DEFAULT(), os);
+    CHECK_NO_ERROR(os);
+    U2DbiRef dbiRef(msaDbi->getRootDbi()->getFactoryId(), msaDbi->getRootDbi()->getDbiId());
+    U2EntityRef msaRef(dbiRef, msaId);
+
+    // Prepare input data
+    DNAAlphabet* alphabet = U2AlphabetUtils::getById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT());
+    MAlignment ma(MsaDbiUtilsTestUtils::alignmentName, alphabet);
+    ma.addRow("1", "AAAA--AAA", -1, os);
+    CHECK_NO_ERROR(os);
+    ma.addRow("2", "C--CCCCCC", -1, os);
+    CHECK_NO_ERROR(os);
+    ma.addRow("3", "GG-GGGG-G", -1, os);
+    CHECK_NO_ERROR(os);
+    ma.addRow("4", "TTT-TTTT", -1, os);
+    CHECK_NO_ERROR(os);
+
+    QList<MAlignmentRow> maRows = ma.getRows();
+
+    // The first call is correct (updateMsa_empty test)
+    MsaDbiUtils::updateMsa(msaRef, ma, os);
+    CHECK_NO_ERROR(os);
+
+    // Test call without new information
+    MsaDbiUtils::updateMsa(msaRef, ma, os);
+    CHECK_NO_ERROR(os);
+
+    // Verify msa object
+    U2Msa msa = msaDbi->getMsaObject(msaId, os);
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT(), msa.alphabet.id, "msa alphabet");
+    CHECK_EQUAL(9, msa.length, "msa length");
+    CHECK_EQUAL(MsaDbiUtilsTestUtils::alignmentName, msa.visualName, "msa name");
+
+    // Verify rows and sequences
+    QList<U2MsaRow> rows = msaDbi->getRows(msaId, os);
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(maRows.count(), rows.count(), "rows count");
+    for (int i = 0; i < maRows.count(); ++i) {
+        // Verify row object
+        CHECK_EQUAL(maRows[i].getCoreStart(), rows[i].gstart, "row start");
+        CHECK_EQUAL(maRows[i].getUngappedLength(), rows[i].gend, "row end");
+        CHECK_EQUAL(maRows[i].getRowLengthWithoutTrailing(), rows[i].length, "row length");
+        CHECK_TRUE(maRows[i].getGapModel() == rows[i].gaps, "row gaps");
+
+        // Verify sequence object
+        U2Sequence seq = seqDbi->getSequenceObject(rows[i].sequenceId, os);
+        CHECK_NO_ERROR(os);
+        CHECK_EQUAL(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT(), seq.alphabet.id, "sequence alphabet");
+        CHECK_EQUAL(maRows[i].getUngappedLength(), seq.length, "sequence length");
+        CHECK_EQUAL(maRows[i].getSequence().getName(), seq.visualName, "sequence name");
+
+        // Verify sequence data
+        QByteArray seqData = seqDbi->getSequenceData(rows[i].sequenceId, U2_REGION_MAX, os);
+        CHECK_NO_ERROR(os);
+        CHECK_EQUAL(QString(maRows[i].getSequence().constSequence()), QString(seqData), "sequence data");
+    }
+}
+
+IMPLEMENT_TEST(MsaDbiUtilsUnitTests, updateMsa_newOrder) {
+    U2OpStatusImpl os;
+    U2MsaDbi* msaDbi = MsaDbiUtilsTestUtils::getMsaDbi();
+    U2SequenceDbi* seqDbi = MsaDbiUtilsTestUtils::getSequenceDbi();
+    U2DataId msaId = msaDbi->createMsaObject("", MsaDbiUtilsTestUtils::alignmentName, BaseDNAAlphabetIds::NUCL_DNA_DEFAULT(), os);
+    CHECK_NO_ERROR(os);
+    U2DbiRef dbiRef(msaDbi->getRootDbi()->getFactoryId(), msaDbi->getRootDbi()->getDbiId());
+    U2EntityRef msaRef(dbiRef, msaId);
+
+    // Prepare input data
+    DNAAlphabet* alphabet = U2AlphabetUtils::getById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT());
+    MAlignment ma(MsaDbiUtilsTestUtils::alignmentName, alphabet);
+    ma.addRow("1", "AAAA--AAA", -1, os);
+    CHECK_NO_ERROR(os);
+    ma.addRow("2", "C--CCCCCC", -1, os);
+    CHECK_NO_ERROR(os);
+    ma.addRow("3", "GG-GGGG-G", -1, os);
+    CHECK_NO_ERROR(os);
+    ma.addRow("4", "TTT-TTTT", -1, os);
+    CHECK_NO_ERROR(os);
+
+    // The first call is correct
+    MsaDbiUtils::updateMsa(msaRef, ma, os);
+    CHECK_NO_ERROR(os);
+
+    // Change order of rows
+    ma.moveRowsBlock(1, 1, 1);
+
+    QList<MAlignmentRow> maRows = ma.getRows();
+
+    // Test call with new row order
+    MsaDbiUtils::updateMsa(msaRef, ma, os);
+    CHECK_NO_ERROR(os);
+
+    // Verify msa object
+    U2Msa msa = msaDbi->getMsaObject(msaId, os);
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT(), msa.alphabet.id, "msa alphabet");
+    CHECK_EQUAL(9, msa.length, "msa length");
+    CHECK_EQUAL(MsaDbiUtilsTestUtils::alignmentName, msa.visualName, "msa name");
+
+    // Verify rows and sequences
+    QList<U2MsaRow> rows = msaDbi->getRows(msaId, os);
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(maRows.count(), rows.count(), "rows count");
+    for (int i = 0; i < maRows.count(); ++i) {
+        // Verify row object
+        CHECK_EQUAL(maRows[i].getCoreStart(), rows[i].gstart, "row start");
+        CHECK_EQUAL(maRows[i].getUngappedLength(), rows[i].gend, "row end");
+        CHECK_EQUAL(maRows[i].getRowLengthWithoutTrailing(), rows[i].length, "row length");
+        CHECK_TRUE(maRows[i].getGapModel() == rows[i].gaps, "row gaps");
+
+        // Verify sequence object
+        U2Sequence seq = seqDbi->getSequenceObject(rows[i].sequenceId, os);
+        CHECK_NO_ERROR(os);
+        CHECK_EQUAL(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT(), seq.alphabet.id, "sequence alphabet");
+        CHECK_EQUAL(maRows[i].getUngappedLength(), seq.length, "sequence length");
+        CHECK_EQUAL(maRows[i].getSequence().getName(), seq.visualName, "sequence name");
+
+        // Verify sequence data
+        QByteArray seqData = seqDbi->getSequenceData(rows[i].sequenceId, U2_REGION_MAX, os);
+        CHECK_NO_ERROR(os);
+        CHECK_EQUAL(QString(maRows[i].getSequence().constSequence()), QString(seqData), "sequence data");
+    }
+}
+
+IMPLEMENT_TEST(MsaDbiUtilsUnitTests, updateMsa_newName) {
+    U2OpStatusImpl os;
+    U2MsaDbi* msaDbi = MsaDbiUtilsTestUtils::getMsaDbi();
+    U2SequenceDbi* seqDbi = MsaDbiUtilsTestUtils::getSequenceDbi();
+    U2DataId msaId = msaDbi->createMsaObject("", MsaDbiUtilsTestUtils::alignmentName, BaseDNAAlphabetIds::NUCL_DNA_DEFAULT(), os);
+    CHECK_NO_ERROR(os);
+    U2DbiRef dbiRef(msaDbi->getRootDbi()->getFactoryId(), msaDbi->getRootDbi()->getDbiId());
+    U2EntityRef msaRef(dbiRef, msaId);
+
+    // Prepare input data
+    DNAAlphabet* alphabet = U2AlphabetUtils::getById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT());
+    MAlignment ma(MsaDbiUtilsTestUtils::alignmentName, alphabet);
+    ma.addRow("1", "AAAA--AAA", -1, os);
+    CHECK_NO_ERROR(os);
+    ma.addRow("2", "C--CCCCCC", -1, os);
+    CHECK_NO_ERROR(os);
+    ma.addRow("3", "GG-GGGG-G", -1, os);
+    CHECK_NO_ERROR(os);
+    ma.addRow("4", "TTT-TTTT", -1, os);
+    CHECK_NO_ERROR(os);
+
+    QList<MAlignmentRow> maRows = ma.getRows();
+
+    // The first call is correct (updateMsa_empty test)
+    MsaDbiUtils::updateMsa(msaRef, ma, os);
+    CHECK_NO_ERROR(os);
+
+    // Change alignemnt name
+    ma.setName("New name");
+
+    // Test call with new alignment name
+    MsaDbiUtils::updateMsa(msaRef, ma, os);
+    CHECK_NO_ERROR(os);
+
+    // Verify msa object
+    U2Msa msa = msaDbi->getMsaObject(msaId, os);
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT(), msa.alphabet.id, "msa alphabet");
+    CHECK_EQUAL(9, msa.length, "msa length");
+    CHECK_EQUAL("New name", msa.visualName, "msa name");
+
+    // Verify rows and sequences
+    QList<U2MsaRow> rows = msaDbi->getRows(msaId, os);
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(maRows.count(), rows.count(), "rows count");
+    for (int i = 0; i < maRows.count(); ++i) {
+        // Verify row object
+        CHECK_EQUAL(maRows[i].getCoreStart(), rows[i].gstart, "row start");
+        CHECK_EQUAL(maRows[i].getUngappedLength(), rows[i].gend, "row end");
+        CHECK_EQUAL(maRows[i].getRowLengthWithoutTrailing(), rows[i].length, "row length");
+        CHECK_TRUE(maRows[i].getGapModel() == rows[i].gaps, "row gaps");
+
+        // Verify sequence object
+        U2Sequence seq = seqDbi->getSequenceObject(rows[i].sequenceId, os);
+        CHECK_NO_ERROR(os);
+        CHECK_EQUAL(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT(), seq.alphabet.id, "sequence alphabet");
+        CHECK_EQUAL(maRows[i].getUngappedLength(), seq.length, "sequence length");
+        CHECK_EQUAL(maRows[i].getSequence().getName(), seq.visualName, "sequence name");
+
+        // Verify sequence data
+        QByteArray seqData = seqDbi->getSequenceData(rows[i].sequenceId, U2_REGION_MAX, os);
+        CHECK_NO_ERROR(os);
+        CHECK_EQUAL(QString(maRows[i].getSequence().constSequence()), QString(seqData), "sequence data");
+    }
+}
+
+IMPLEMENT_TEST(MsaDbiUtilsUnitTests, updateMsa_newAlphabet) {
+    U2OpStatusImpl os;
+    U2MsaDbi* msaDbi = MsaDbiUtilsTestUtils::getMsaDbi();
+    U2SequenceDbi* seqDbi = MsaDbiUtilsTestUtils::getSequenceDbi();
+    U2DataId msaId = msaDbi->createMsaObject("", MsaDbiUtilsTestUtils::alignmentName, BaseDNAAlphabetIds::NUCL_DNA_DEFAULT(), os);
+    CHECK_NO_ERROR(os);
+    U2DbiRef dbiRef(msaDbi->getRootDbi()->getFactoryId(), msaDbi->getRootDbi()->getDbiId());
+    U2EntityRef msaRef(dbiRef, msaId);
+
+    // Prepare input data
+    DNAAlphabet* alphabet = U2AlphabetUtils::getById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT());
+    MAlignment ma(MsaDbiUtilsTestUtils::alignmentName, alphabet);
+    ma.addRow("1", "AAAA--AAA", -1, os);
+    CHECK_NO_ERROR(os);
+    ma.addRow("2", "C--CCCCCC", -1, os);
+    CHECK_NO_ERROR(os);
+    ma.addRow("3", "GG-GGGG-G", -1, os);
+    CHECK_NO_ERROR(os);
+    ma.addRow("4", "TTT-TTTT", -1, os);
+    CHECK_NO_ERROR(os);
+
+    QList<MAlignmentRow> maRows = ma.getRows();
+
+    // The first call is correct (updateMsa_empty test)
+    MsaDbiUtils::updateMsa(msaRef, ma, os);
+    CHECK_NO_ERROR(os);
+
+    // Change alignment alphabet
+    DNAAlphabet* newAlphabet = U2AlphabetUtils::getById(BaseDNAAlphabetIds::NUCL_DNA_EXTENDED());
+    ma.setAlphabet(newAlphabet);
+
+    // Test call with new alphabet
+    MsaDbiUtils::updateMsa(msaRef, ma, os);
+    CHECK_NO_ERROR(os);
+
+    // Verify msa object
+    U2Msa msa = msaDbi->getMsaObject(msaId, os);
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(BaseDNAAlphabetIds::NUCL_DNA_EXTENDED(), msa.alphabet.id, "msa alphabet");
+    CHECK_EQUAL(9, msa.length, "msa length");
+    CHECK_EQUAL(MsaDbiUtilsTestUtils::alignmentName, msa.visualName, "msa name");
+
+    // Verify rows and sequences
+    QList<U2MsaRow> rows = msaDbi->getRows(msaId, os);
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(maRows.count(), rows.count(), "rows count");
+    for (int i = 0; i < maRows.count(); ++i) {
+        // Verify row object
+        CHECK_EQUAL(maRows[i].getCoreStart(), rows[i].gstart, "row start");
+        CHECK_EQUAL(maRows[i].getUngappedLength(), rows[i].gend, "row end");
+        CHECK_EQUAL(maRows[i].getRowLengthWithoutTrailing(), rows[i].length, "row length");
+        CHECK_TRUE(maRows[i].getGapModel() == rows[i].gaps, "row gaps");
+
+        // Verify sequence object
+        U2Sequence seq = seqDbi->getSequenceObject(rows[i].sequenceId, os);
+        CHECK_NO_ERROR(os);
+        CHECK_EQUAL(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT(), seq.alphabet.id, "sequence alphabet");
+        CHECK_EQUAL(maRows[i].getUngappedLength(), seq.length, "sequence length");
+        CHECK_EQUAL(maRows[i].getSequence().getName(), seq.visualName, "sequence name");
+
+        // Verify sequence data
+        QByteArray seqData = seqDbi->getSequenceData(rows[i].sequenceId, U2_REGION_MAX, os);
+        CHECK_NO_ERROR(os);
+        CHECK_EQUAL(QString(maRows[i].getSequence().constSequence()), QString(seqData), "sequence data");
+    }
+}
+
+IMPLEMENT_TEST(MsaDbiUtilsUnitTests, updateMsa_newContent) {
+    U2OpStatusImpl os;
+    U2MsaDbi* msaDbi = MsaDbiUtilsTestUtils::getMsaDbi();
+    U2SequenceDbi* seqDbi = MsaDbiUtilsTestUtils::getSequenceDbi();
+    U2DataId msaId = msaDbi->createMsaObject("", MsaDbiUtilsTestUtils::alignmentName, BaseDNAAlphabetIds::NUCL_DNA_DEFAULT(), os);
+    CHECK_NO_ERROR(os);
+    U2DbiRef dbiRef(msaDbi->getRootDbi()->getFactoryId(), msaDbi->getRootDbi()->getDbiId());
+    U2EntityRef msaRef(dbiRef, msaId);
+
+    // Prepare input data
+    DNAAlphabet* alphabet = U2AlphabetUtils::getById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT());
+    MAlignment ma(MsaDbiUtilsTestUtils::alignmentName, alphabet);
+    ma.addRow("1", "AAAA--AAA", -1, os);
+    CHECK_NO_ERROR(os);
+    ma.addRow("2", "C--CCCCCC", -1, os);
+    CHECK_NO_ERROR(os);
+    ma.addRow("3", "GG-GGGG-G", -1, os);
+    CHECK_NO_ERROR(os);
+    ma.addRow("4", "TTT-TTTT", -1, os);
+    CHECK_NO_ERROR(os);
+
+    // The first call is correct (updateMsa_empty test)
+    MsaDbiUtils::updateMsa(msaRef, ma, os);
+    CHECK_NO_ERROR(os);
+
+    // Change sequence data in the second row
+    ma.setRowContent(1, "AA--AA--AA--AA");
+
+    QList<MAlignmentRow> maRows = ma.getRows();
+
+    // Test call with changed data in second row
+    MsaDbiUtils::updateMsa(msaRef, ma, os);
+    CHECK_NO_ERROR(os);
+
+    // Verify msa object
+    U2Msa msa = msaDbi->getMsaObject(msaId, os);
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT(), msa.alphabet.id, "msa alphabet");
+    CHECK_EQUAL(14, msa.length, "msa length");
+    CHECK_EQUAL(MsaDbiUtilsTestUtils::alignmentName, msa.visualName, "msa name");
+
+    // Verify rows and sequences
+    QList<U2MsaRow> rows = msaDbi->getRows(msaId, os);
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(maRows.count(), rows.count(), "rows count");
+    for (int i = 0; i < maRows.count(); ++i) {
+        // Verify row object
+        CHECK_EQUAL(maRows[i].getCoreStart(), rows[i].gstart, "row start");
+        CHECK_EQUAL(maRows[i].getUngappedLength(), rows[i].gend, "row end");
+        CHECK_EQUAL(maRows[i].getRowLengthWithoutTrailing(), rows[i].length, "row length");
+        CHECK_TRUE(maRows[i].getGapModel() == rows[i].gaps, "row gaps");
+
+        // Verify sequence object
+        U2Sequence seq = seqDbi->getSequenceObject(rows[i].sequenceId, os);
+        CHECK_NO_ERROR(os);
+        CHECK_EQUAL(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT(), seq.alphabet.id, "sequence alphabet");
+        CHECK_EQUAL(maRows[i].getUngappedLength(), seq.length, "sequence length");
+        CHECK_EQUAL(maRows[i].getSequence().getName(), seq.visualName, "sequence name");
+
+        // Verify sequence data
+        QByteArray seqData = seqDbi->getSequenceData(rows[i].sequenceId, U2_REGION_MAX, os);
+        CHECK_NO_ERROR(os);
+        CHECK_EQUAL(QString(maRows[i].getSequence().constSequence()), QString(seqData), "sequence data");
+    }
+}
+
+IMPLEMENT_TEST(MsaDbiUtilsUnitTests, updateMsa_newSequence) {
+    U2OpStatusImpl os;
+    U2MsaDbi* msaDbi = MsaDbiUtilsTestUtils::getMsaDbi();
+    U2SequenceDbi* seqDbi = MsaDbiUtilsTestUtils::getSequenceDbi();
+    U2DataId msaId = msaDbi->createMsaObject("", MsaDbiUtilsTestUtils::alignmentName, BaseDNAAlphabetIds::NUCL_DNA_DEFAULT(), os);
+    CHECK_NO_ERROR(os);
+    U2DbiRef dbiRef(msaDbi->getRootDbi()->getFactoryId(), msaDbi->getRootDbi()->getDbiId());
+    U2EntityRef msaRef(dbiRef, msaId);
+
+    // Prepare input data
+    DNAAlphabet* alphabet = U2AlphabetUtils::getById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT());
+    MAlignment ma(MsaDbiUtilsTestUtils::alignmentName, alphabet);
+    ma.addRow("1", "AAAA--AAA", -1, os);
+    CHECK_NO_ERROR(os);
+    ma.addRow("2", "C--CCCCCC", -1, os);
+    CHECK_NO_ERROR(os);
+    ma.addRow("3", "GG-GGGG-G", -1, os);
+    CHECK_NO_ERROR(os);
+    ma.addRow("4", "TTT-TTTT", -1, os);
+    CHECK_NO_ERROR(os);
+
+
+    // The first call is correct (updateMsa_empty test)
+    MsaDbiUtils::updateMsa(msaRef, ma, os);
+    CHECK_NO_ERROR(os);
+
+    // Export an alignment from the dbi to the memory (to set actual IDs)
+    MAlignmentExporter exporter;
+    MAlignment expMa;
+    expMa = exporter.getAlignment(dbiRef, msaId, os);
+    CHECK_NO_ERROR(os);
+
+    // Set a new sequence ID for the second row
+    U2Sequence newSeq;
+    newSeq.alphabet = BaseDNAAlphabetIds::NUCL_DNA_DEFAULT();
+    newSeq.circular = false;
+    seqDbi->createSequenceObject(newSeq, "", os);
+    CHECK_NO_ERROR(os);
+
+    U2MsaRow changedRow = expMa.getRow(1).getRowDBInfo();
+    changedRow.sequenceId = newSeq.id;
+    expMa.removeRow(1, os);
+    CHECK_NO_ERROR(os);
+    DNASequence newDnaSeq("New sequence", "CGCGCGAAT");
+    expMa.addRow(changedRow, newDnaSeq, os);
+    CHECK_NO_ERROR(os);
+
+    QList<MAlignmentRow> expMaRows = expMa.getRows();
+
+    // Test call with changed sequence ID
+    MsaDbiUtils::updateMsa(msaRef, expMa, os);
+    CHECK_NO_ERROR(os);
+
+    // Verify msa object
+    U2Msa msa = msaDbi->getMsaObject(msaId, os);
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT(), msa.alphabet.id, "msa alphabet");
+    CHECK_EQUAL(11, msa.length, "msa length");
+    CHECK_EQUAL(MsaDbiUtilsTestUtils::alignmentName, msa.visualName, "msa name");
+
+    // Verify rows and sequences
+    QList<U2MsaRow> rows = msaDbi->getRows(msaId, os);
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(expMaRows.count(), rows.count(), "rows count");
+    for (int i = 0; i < expMaRows.count(); ++i) {
+        // Verify row object
+        CHECK_EQUAL(expMaRows[i].getCoreStart(), rows[i].gstart, "row start");
+        CHECK_EQUAL(expMaRows[i].getUngappedLength(), rows[i].gend, "row end");
+        CHECK_EQUAL(expMaRows[i].getRowLengthWithoutTrailing(), rows[i].length, "row length");
+        CHECK_TRUE(expMaRows[i].getGapModel() == rows[i].gaps, "row gaps");
+
+        // Verify sequence object
+        U2Sequence seq = seqDbi->getSequenceObject(rows[i].sequenceId, os);
+        CHECK_NO_ERROR(os);
+        CHECK_EQUAL(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT(), seq.alphabet.id, "sequence alphabet");
+        CHECK_EQUAL(expMaRows[i].getUngappedLength(), seq.length, "sequence length");
+        CHECK_EQUAL(expMaRows[i].getSequence().getName(), seq.visualName, "sequence name");
+
+        // Verify sequence data
+        QByteArray seqData = seqDbi->getSequenceData(rows[i].sequenceId, U2_REGION_MAX, os);
+        CHECK_NO_ERROR(os);
+        CHECK_EQUAL(QString(expMaRows[i].getSequence().constSequence()), QString(seqData), "sequence data");
+    }
+}
+
+IMPLEMENT_TEST(MsaDbiUtilsUnitTests, updateMsa_additionalRows) {
+    U2OpStatusImpl os;
+    U2MsaDbi* msaDbi = MsaDbiUtilsTestUtils::getMsaDbi();
+    U2SequenceDbi* seqDbi = MsaDbiUtilsTestUtils::getSequenceDbi();
+    U2DataId msaId = msaDbi->createMsaObject("", MsaDbiUtilsTestUtils::alignmentName, BaseDNAAlphabetIds::NUCL_DNA_DEFAULT(), os);
+    CHECK_NO_ERROR(os);
+    U2DbiRef dbiRef(msaDbi->getRootDbi()->getFactoryId(), msaDbi->getRootDbi()->getDbiId());
+    U2EntityRef msaRef(dbiRef, msaId);
+
+    // Prepare input data
+    DNAAlphabet* alphabet = U2AlphabetUtils::getById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT());
+    MAlignment ma(MsaDbiUtilsTestUtils::alignmentName, alphabet);
+    ma.addRow("1", "AAAA--AAA", -1, os);
+    CHECK_NO_ERROR(os);
+    ma.addRow("2", "C--CCCCCC", -1, os);
+    CHECK_NO_ERROR(os);
+    ma.addRow("3", "GG-GGGG-G", -1, os);
+    CHECK_NO_ERROR(os);
+    ma.addRow("4", "TTT-TTTT", -1, os);
+    CHECK_NO_ERROR(os);
+
+    // The first call is correct (updateMsa_empty test)
+    MsaDbiUtils::updateMsa(msaRef, ma, os);
+    CHECK_NO_ERROR(os);
+
+    // Add new rows to the alignment
+    ma.addRow("5", "ATATATATAT", -1, os);
+    CHECK_NO_ERROR(os);
+    ma.addRow("6", "CGCG--CGCG", -1, os);
+    CHECK_NO_ERROR(os);
+
+    QList<MAlignmentRow> maRows = ma.getRows();
+
+    // Test call without new information
+    MsaDbiUtils::updateMsa(msaRef, ma, os);
+    CHECK_NO_ERROR(os);
+
+    // Verify msa object
+    U2Msa msa = msaDbi->getMsaObject(msaId, os);
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT(), msa.alphabet.id, "msa alphabet");
+    CHECK_EQUAL(10, msa.length, "msa length");
+    CHECK_EQUAL(MsaDbiUtilsTestUtils::alignmentName, msa.visualName, "msa name");
+
+    // Verify rows and sequences
+    QList<U2MsaRow> rows = msaDbi->getRows(msaId, os);
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(maRows.count(), rows.count(), "rows count");
+    for (int i = 0; i < maRows.count(); ++i) {
+        // Verify row object
+        CHECK_EQUAL(maRows[i].getCoreStart(), rows[i].gstart, "row start");
+        CHECK_EQUAL(maRows[i].getUngappedLength(), rows[i].gend, "row end");
+        CHECK_EQUAL(maRows[i].getRowLengthWithoutTrailing(), rows[i].length, "row length");
+        CHECK_TRUE(maRows[i].getGapModel() == rows[i].gaps, "row gaps");
+
+        // Verify sequence object
+        U2Sequence seq = seqDbi->getSequenceObject(rows[i].sequenceId, os);
+        CHECK_NO_ERROR(os);
+        CHECK_EQUAL(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT(), seq.alphabet.id, "sequence alphabet");
+        CHECK_EQUAL(maRows[i].getUngappedLength(), seq.length, "sequence length");
+        CHECK_EQUAL(maRows[i].getSequence().getName(), seq.visualName, "sequence name");
+
+        // Verify sequence data
+        QByteArray seqData = seqDbi->getSequenceData(rows[i].sequenceId, U2_REGION_MAX, os);
+        CHECK_NO_ERROR(os);
+        CHECK_EQUAL(QString(maRows[i].getSequence().constSequence()), QString(seqData), "sequence data");
+    }
+}
+
+IMPLEMENT_TEST(MsaDbiUtilsUnitTests, updateMsa_removeRows) {
+    U2OpStatusImpl os;
+    U2MsaDbi* msaDbi = MsaDbiUtilsTestUtils::getMsaDbi();
+    U2SequenceDbi* seqDbi = MsaDbiUtilsTestUtils::getSequenceDbi();
+    U2DataId msaId = msaDbi->createMsaObject("", MsaDbiUtilsTestUtils::alignmentName, BaseDNAAlphabetIds::NUCL_DNA_DEFAULT(), os);
+    CHECK_NO_ERROR(os);
+    U2DbiRef dbiRef(msaDbi->getRootDbi()->getFactoryId(), msaDbi->getRootDbi()->getDbiId());
+    U2EntityRef msaRef(dbiRef, msaId);
+
+    // Prepare input data
+    DNAAlphabet* alphabet = U2AlphabetUtils::getById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT());
+    MAlignment ma(MsaDbiUtilsTestUtils::alignmentName, alphabet);
+    ma.addRow("1", "AAAA--AAA", -1, os);
+    CHECK_NO_ERROR(os);
+    ma.addRow("2", "C--CCCCCC", -1, os);
+    CHECK_NO_ERROR(os);
+    ma.addRow("3", "GG-GGGG-G", -1, os);
+    CHECK_NO_ERROR(os);
+    ma.addRow("4", "TTT-TTTT", -1, os);
+    CHECK_NO_ERROR(os);
+
+    // The first call is correct (updateMsa_empty test)
+    MsaDbiUtils::updateMsa(msaRef, ma, os);
+    CHECK_NO_ERROR(os);
+
+    // Remove some rows from the alignment
+    ma.removeRow(1, os);
+    CHECK_NO_ERROR(os);
+    ma.removeRow(2, os);
+    CHECK_NO_ERROR(os);
+
+    QList<MAlignmentRow> maRows = ma.getRows();
+
+    // Test call without some rows
+    MsaDbiUtils::updateMsa(msaRef, ma, os);
+    CHECK_NO_ERROR(os);
+
+    // Verify msa object
+    U2Msa msa = msaDbi->getMsaObject(msaId, os);
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT(), msa.alphabet.id, "msa alphabet");
+    CHECK_EQUAL(9, msa.length, "msa length");
+    CHECK_EQUAL(MsaDbiUtilsTestUtils::alignmentName, msa.visualName, "msa name");
+
+    // Verify rows and sequences
+    QList<U2MsaRow> rows = msaDbi->getRows(msaId, os);
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(maRows.count(), rows.count(), "rows count");
+    for (int i = 0; i < maRows.count(); ++i) {
+        // Verify row object
+        CHECK_EQUAL(maRows[i].getCoreStart(), rows[i].gstart, "row start");
+        CHECK_EQUAL(maRows[i].getUngappedLength(), rows[i].gend, "row end");
+        CHECK_EQUAL(maRows[i].getRowLengthWithoutTrailing(), rows[i].length, "row length");
+        CHECK_TRUE(maRows[i].getGapModel() == rows[i].gaps, "row gaps");
+
+        // Verify sequence object
+        U2Sequence seq = seqDbi->getSequenceObject(rows[i].sequenceId, os);
+        CHECK_NO_ERROR(os);
+        CHECK_EQUAL(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT(), seq.alphabet.id, "sequence alphabet");
+        CHECK_EQUAL(maRows[i].getUngappedLength(), seq.length, "sequence length");
+        CHECK_EQUAL(maRows[i].getSequence().getName(), seq.visualName, "sequence name");
+
+        // Verify sequence data
+        QByteArray seqData = seqDbi->getSequenceData(rows[i].sequenceId, U2_REGION_MAX, os);
+        CHECK_NO_ERROR(os);
+        CHECK_EQUAL(QString(maRows[i].getSequence().constSequence()), QString(seqData), "sequence data");
+    }
+}
+
+IMPLEMENT_TEST(MsaDbiUtilsUnitTests, updateMsa_clear) {
+    U2OpStatusImpl os;
+    U2MsaDbi* msaDbi = MsaDbiUtilsTestUtils::getMsaDbi();
+    U2SequenceDbi* seqDbi = MsaDbiUtilsTestUtils::getSequenceDbi();
+    U2DataId msaId = msaDbi->createMsaObject("", MsaDbiUtilsTestUtils::alignmentName, BaseDNAAlphabetIds::NUCL_DNA_DEFAULT(), os);
+    CHECK_NO_ERROR(os);
+    U2DbiRef dbiRef(msaDbi->getRootDbi()->getFactoryId(), msaDbi->getRootDbi()->getDbiId());
+    U2EntityRef msaRef(dbiRef, msaId);
+
+    // Prepare input data
+    DNAAlphabet* alphabet = U2AlphabetUtils::getById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT());
+    MAlignment ma(MsaDbiUtilsTestUtils::alignmentName, alphabet);
+    ma.addRow("1", "AAAA--AAA", -1, os);
+    CHECK_NO_ERROR(os);
+    ma.addRow("2", "C--CCCCCC", -1, os);
+    CHECK_NO_ERROR(os);
+    ma.addRow("3", "GG-GGGG-G", -1, os);
+    CHECK_NO_ERROR(os);
+    ma.addRow("4", "TTT-TTTT", -1, os);
+    CHECK_NO_ERROR(os);
+
+    // The first call is correct (updateMsa_empty test)
+    MsaDbiUtils::updateMsa(msaRef, ma, os);
+    CHECK_NO_ERROR(os);
+
+    // Clear alignment
+    ma.clear();
+
+    QList<MAlignmentRow> maRows = ma.getRows();
+
+    // Test call with empty alignment
+    MsaDbiUtils::updateMsa(msaRef, ma, os);
+    CHECK_NO_ERROR(os);
+
+    // Verify msa object
+    U2Msa msa = msaDbi->getMsaObject(msaId, os);
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT(), msa.alphabet.id, "msa alphabet");
+    CHECK_EQUAL(0, msa.length, "msa length");
+    CHECK_EQUAL(MsaDbiUtilsTestUtils::alignmentName, msa.visualName, "msa name");
+
+    // Verify rows and sequences
+    QList<U2MsaRow> rows = msaDbi->getRows(msaId, os);
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(maRows.count(), rows.count(), "rows count");
+    for (int i = 0; i < maRows.count(); ++i) {
+        // Verify row object
+        CHECK_EQUAL(maRows[i].getCoreStart(), rows[i].gstart, "row start");
+        CHECK_EQUAL(maRows[i].getUngappedLength(), rows[i].gend, "row end");
+        CHECK_EQUAL(maRows[i].getRowLengthWithoutTrailing(), rows[i].length, "row length");
+        CHECK_TRUE(maRows[i].getGapModel() == rows[i].gaps, "row gaps");
+
+        // Verify sequence object
+        U2Sequence seq = seqDbi->getSequenceObject(rows[i].sequenceId, os);
+        CHECK_NO_ERROR(os);
+        CHECK_EQUAL(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT(), seq.alphabet.id, "sequence alphabet");
+        CHECK_EQUAL(maRows[i].getUngappedLength(), seq.length, "sequence length");
+        CHECK_EQUAL(maRows[i].getSequence().getName(), seq.visualName, "sequence name");
+
+        // Verify sequence data
+        QByteArray seqData = seqDbi->getSequenceData(rows[i].sequenceId, U2_REGION_MAX, os);
+        CHECK_NO_ERROR(os);
+        CHECK_EQUAL(QString(maRows[i].getSequence().constSequence()), QString(seqData), "sequence data");
+    }
 }
 
 }   // namespace
