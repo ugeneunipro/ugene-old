@@ -4,9 +4,9 @@
 
 MsaDbiSQLiteSpecificUnitTests
 + updateMsaName_noModTrack
-- updateMsaName_undo
-- updateMsaName_redo
-- updateMsaName_severalSteps
++ updateMsaName_undo
++ updateMsaName_redo
++ updateMsaName_severalSteps
 + updateMsaAlphabet_noModTrack
 + updateMsaAlphabet_undo
 + updateMsaAlphabet_redo
@@ -36,9 +36,9 @@ MsaDbiSQLiteSpecificUnitTests
 + setNewRowsOrder_redo
 + setNewRowsOrder_severalSteps
 + updateRowName_noModTrack
-- updateRowName_undo
-- updateRowName_redo
-- updateRowName_severalSteps
++ updateRowName_undo
++ updateRowName_redo
++ updateRowName_severalSteps
 + removeRow_noModTrack
 + removeRow_undo
 + removeRow_redo

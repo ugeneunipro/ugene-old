@@ -275,6 +275,9 @@ void SQLiteMsaDbi::updateRowName(const U2DataId& msaId, qint64 rowId, const QStr
     U2Sequence seqObject = dbi->getSequenceDbi()->getSequenceObject(sequenceId, os);
     CHECK_OP(os, );
 
+    U2UseCommonMultiModStep multiModStep(dbi, msaId, os);
+    CHECK_OP(os, );
+
     SQLiteObjectDbiUtils::renameObject(db, dbi, seqObject, newName, os);
     SAFE_POINT_OP(os, );
 
