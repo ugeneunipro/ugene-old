@@ -935,7 +935,7 @@ void MsaDbiUtils::crop(const U2EntityRef& msaRef, const QList<qint64> rowIds, qi
             CHECK_OP(os, );
         }
         else {
-            MsaDbiUtils::removeRow(msaRef, i, os);
+            MsaDbiUtils::removeRow(msaRef, row.getRowId(), os);
             CHECK_OP(os, );
         }
     }
