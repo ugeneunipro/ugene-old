@@ -39,9 +39,6 @@ public:
     /** Returns a modification step with the specified version for the object */
     virtual U2SingleModStep getModStep(const U2DataId& objectId, qint64 trackVersion, U2OpStatus& os) = 0;
 
-    /** Removes modification steps for the object with version EQUAL or GREATER than the specified version */
-    virtual void removeModsWithGreaterVersion(const U2DataId& objectId, qint64 version, U2OpStatus& os) = 0;
-
     /** Removes all modification tracks and steps for the object */
     virtual void removeObjectMods(const U2DataId& objectId, U2OpStatus& os) = 0;
 

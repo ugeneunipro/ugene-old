@@ -368,7 +368,7 @@ void SQLiteSequenceDbi::undoUpdateSequenceData(const U2DataId& sequenceId, const
     QVariantMap hints;
     bool ok = PackUtils::unpackSequenceDataDetails(modDetails, replacedRegion, oldData, newData, hints);
     if (!ok) {
-        os.setError("An error occurred during reverting replaceing sequence data!");
+        os.setError("An error occurred during reverting replacing sequence data!");
         return;
     }
     hints.remove(U2SequenceDbiHints::EMPTY_SEQUENCE);
@@ -386,7 +386,7 @@ void SQLiteSequenceDbi::redoUpdateSequenceData(const U2DataId& sequenceId, const
     QVariantMap hints;
     bool ok = PackUtils::unpackSequenceDataDetails(modDetails, replacedRegion, oldData, newData, hints);
     if (!ok) {
-        os.setError("An error occurred during replaceing sequence data!");
+        os.setError("An error occurred during replacing sequence data!");
         return;
     }
 

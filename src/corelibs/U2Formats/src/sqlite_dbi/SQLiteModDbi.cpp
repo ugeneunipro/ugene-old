@@ -203,13 +203,66 @@ void SQLiteModDbi::createModStep(const U2DataId& masterObjId, U2SingleModStep& s
     }
 }
 
-void SQLiteModDbi::removeModsWithGreaterVersion(const U2DataId& objectId, qint64 version, U2OpStatus& os) {
-    SQLiteQuery q("DELETE FROM SingleModStep WHERE object = ?1 AND version >= ?2", db, os);
-    CHECK_OP(os, );
+void SQLiteModDbi::removeModsWithGreaterVersion(const U2DataId &masterObjId, qint64 masterObjVersion, U2OpStatus &os) {
+    // Get user step IDs
+    QList<qint64> userStepIds;
+    SQLiteQuery qSelectUserSteps("SELECT id FROM UserModStep WHERE object = ?1 AND version >= ?2", db, os);
+    SAFE_POINT_OP(os, );
 
-    q.bindDataId(1, objectId);
-    q.bindInt64(2, version);
-    q.execute();
+    qSelectUserSteps.bindDataId(1, masterObjId);
+    qSelectUserSteps.bindInt64(2, masterObjVersion);
+
+    while (qSelectUserSteps.step()) {
+        qint64 userStepId = qSelectUserSteps.getInt64(0);
+        userStepIds.append(userStepId);
+    }
+    SAFE_POINT_OP(os, );
+
+    if (userStepIds.isEmpty()) {
+        return;
+    }
+
+    // Get multi step IDs
+    QList<qint64> multiStepIds;
+    SQLiteQuery qSelectMultiSteps("SELECT id FROM MultiModStep WHERE userStepId = ?1", db, os);
+    SAFE_POINT_OP(os, );
+    foreach (qint64 userStepId, userStepIds) {
+        qSelectMultiSteps.reset();
+        qSelectMultiSteps.bindInt64(1, userStepId);
+
+        while (qSelectMultiSteps.step()) {
+            qint64 multiStepId = qSelectMultiSteps.getInt64(0);
+            multiStepIds.append(multiStepId);
+        }
+    }
+    SAFE_POINT_OP(os, );
+
+    // Remove single steps
+    SQLiteQuery qDeleteSingleSteps("DELETE FROM SingleModStep WHERE multiStepId = ?1", db, os);
+    SAFE_POINT_OP(os, );
+    foreach (qint64 multiStepId, multiStepIds) {
+        qDeleteSingleSteps.reset();
+        qDeleteSingleSteps.bindInt64(1, multiStepId);
+        qDeleteSingleSteps.execute();
+    }
+    SAFE_POINT_OP(os, );
+
+    // Remove multi steps
+    SQLiteQuery qDeleteMultiSteps("DELETE FROM MultiModStep WHERE id = ?1", db, os);
+    SAFE_POINT_OP(os, );
+    foreach (qint64 multiStepId, multiStepIds) {
+        qDeleteMultiSteps.reset();
+        qDeleteMultiSteps.bindInt64(1, multiStepId);
+        qDeleteMultiSteps.execute();
+    }
+
+    // Remove user steps
+    SQLiteQuery qDeleteUserSteps("DELETE FROM UserModStep WHERE id = ?1", db, os);
+    foreach (qint64 userStepId, userStepIds) {
+        qDeleteUserSteps.reset();
+        qDeleteUserSteps.bindInt64(1, userStepId);
+        qDeleteUserSteps.execute();
+    }
 }
 
 void SQLiteModDbi::removeObjectMods(const U2DataId& objectId, U2OpStatus& os) {

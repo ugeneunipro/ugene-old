@@ -863,7 +863,7 @@ U2TrackModType ModificationAction::prepare(U2OpStatus& os) {
         masterObjVersionToTrack = dbi->getObjectDbi()->getObjectVersion(masterObjId, os);
         SAFE_POINT_OP(os, trackMod);
 
-        dbi->getModDbi()->removeModsWithGreaterVersion(masterObjId, masterObjVersionToTrack, os);
+        dbi->getSQLiteModDbi()->removeModsWithGreaterVersion(masterObjId, masterObjVersionToTrack, os);
         SAFE_POINT_OP(os, trackMod);
     }
 

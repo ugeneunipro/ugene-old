@@ -63,8 +63,11 @@ public:
      */
     void createModStep(const U2DataId& masterObjId, U2SingleModStep& step, U2OpStatus& os);
 
-    /** Removes modification steps for the object with version EQUAL or GREATER than the specified version */
-    virtual void removeModsWithGreaterVersion(const U2DataId& objectId, qint64 version, U2OpStatus& os);
+    /**
+     * Removes user steps for the object with version EQUAL or GREATER than the specified version.
+     * Removes all multi and single steps of the user steps.
+     */
+    void removeModsWithGreaterVersion(const U2DataId &masterObjId, qint64 masterObjVersion, U2OpStatus &os);
 
     /** Removes all modification tracks and steps for the object */
     virtual void removeObjectMods(const U2DataId& objectId, U2OpStatus& os);
