@@ -123,11 +123,11 @@ void ModifySequenceContentTask::fixAnnotations(){
                     }
                     else{
                         an->replaceRegions(newRegions[0]);
-
                         for (int i = 1; i < newRegions.size(); i++) {
-                            Annotation* copy = new Annotation(an->data());
+                            Annotation* splittedAnnotation = new Annotation(an->data());
                             QStringList groupNames = an->getFullGroupsNames();
-                            ato->addAnnotation(copy, groupNames);
+                            splittedAnnotation->replaceRegions(newRegions[i]);
+                            ato->addAnnotation(splittedAnnotation, groupNames);
                         }
                     }
                 }

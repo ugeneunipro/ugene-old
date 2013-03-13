@@ -121,32 +121,45 @@ Task::ReportResult GTest_AddPartToSequenceTask::report(){
     }
     if (annotationName.length()!=0)
     {
-        Document* loadedDocument = getContext<Document>(this, docName);
-        QList<GObject*> annotationTablesList = loadedDocument->findGObjectByType(GObjectTypes::ANNOTATION_TABLE);
-        foreach(GObject *table, annotationTablesList){
-            AnnotationTableObject *ato = (AnnotationTableObject*)table;
-            foreach(Annotation* curentAnnotation,ato->getAnnotations()){
-                if (curentAnnotation->getAnnotationName() == annotationName){
-                    int i=0;
-                    if(curentAnnotation->getRegions().size() != expectedRegions.size()){
-                        stateInfo.setError(GTest::tr("Regions is incorrect. Expected size:%1 Actual size:%2").arg(expectedRegions.size()).arg(curentAnnotation->getRegions().size()));
-                    }
-                    foreach(U2Region curRegion,curentAnnotation->getRegions()){
-                        if (curRegion!=expectedRegions.at(i)) {
-                            stateInfo.setError(GTest::tr("Regions is incorrect. Expected:%3,%4, but Actual:%1,%2")
-                                .arg(curRegion.startPos).arg(curRegion.endPos())
-                                .arg(expectedRegions.at(i).startPos).arg(expectedRegions.at(i).endPos()));
-                            return ReportResult_Finished;
+        if(strat != U1AnnotationUtils::AnnotationStrategyForResize_Split_To_Separate){
+            Document* loadedDocument = getContext<Document>(this, docName);
+            QList<GObject*> annotationTablesList = loadedDocument->findGObjectByType(GObjectTypes::ANNOTATION_TABLE);
+            foreach(GObject *table, annotationTablesList){
+                AnnotationTableObject *ato = (AnnotationTableObject*)table;
+                foreach(Annotation* curentAnnotation,ato->getAnnotations()){
+                    if (curentAnnotation->getAnnotationName() == annotationName){
+                        int i=0;
+                        if(curentAnnotation->getRegions().size() != expectedRegions.size()){
+                            stateInfo.setError(GTest::tr("Regions is incorrect. Expected size:%1 Actual size:%2").arg(expectedRegions.size()).arg(curentAnnotation->getRegions().size()));
                         }
-                        i++;
+                        foreach(const U2Region& curRegion,curentAnnotation->getRegions()){
+                            if (curRegion!=expectedRegions.at(i)) {
+                                stateInfo.setError(GTest::tr("Regions is incorrect. Expected:%3,%4, but Actual:%1,%2")
+                                    .arg(curRegion.startPos).arg(curRegion.endPos())
+                                    .arg(expectedRegions.at(i).startPos).arg(expectedRegions.at(i).endPos()));
+                            }
+                            i++;
+                        }
+                        return ReportResult_Finished;
+                    }
+                }
+            }
+        }else{
+            Document* loadedDocument = getContext<Document>(this, docName);
+            QList<GObject*> annotationTablesList = loadedDocument->findGObjectByType(GObjectTypes::ANNOTATION_TABLE);
+            foreach(GObject *table, annotationTablesList){
+                AnnotationTableObject *ato = (AnnotationTableObject*)table;
+                foreach(Annotation* curentAnnotation,ato->getAnnotations()){
+                    if (curentAnnotation->getAnnotationName() == annotationName){
+                        foreach(const U2Region& curRegion,curentAnnotation->getRegions()){
+                            if (!expectedRegions.contains(curRegion)) {
+                                stateInfo.setError(GTest::tr("Regions is incorrect. actual region didn't found in expected region list"));
+                            }
+                        }
                     }
                     return ReportResult_Finished;
                 }
             }
-        }
-        if(expectedRegions.size() != 0){
-            stateInfo.setError(GTest::tr("Regions is incorrect. Expected size:%1 Actual size:%2").arg(expectedRegions.size()).arg(0));
-            return ReportResult_Finished;
         }
     }
     
