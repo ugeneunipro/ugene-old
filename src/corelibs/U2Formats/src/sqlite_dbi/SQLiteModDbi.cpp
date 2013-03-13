@@ -299,13 +299,13 @@ void SQLiteModDbi::removeObjectMods(const U2DataId &objectId, U2OpStatus &os) {
 }
 
 void SQLiteModDbi::cleanUpAllStepsOnError() {
+    U2OpStatus2Log os;
     SQLiteTransaction t(db, os);
     Q_UNUSED(t);
 
-    U2OpStatus2Log os;
-    SQLiteQuery qSingle("DELETE FROM SingleModStep", db, os).execute();
-    SQLiteQuery qMulti("DELETE FROM MultiModStep", db, os).execute();
-    SQLiteQuery qUser("DELETE FROM UserModStep", db, os).execute();
+    SQLiteQuery("DELETE FROM SingleModStep", db, os).execute();
+    SQLiteQuery("DELETE FROM MultiModStep", db, os).execute();
+    SQLiteQuery("DELETE FROM UserModStep", db, os).execute();
 }
 
 qint64 SQLiteModDbi::currentUserModStepId = -1;
