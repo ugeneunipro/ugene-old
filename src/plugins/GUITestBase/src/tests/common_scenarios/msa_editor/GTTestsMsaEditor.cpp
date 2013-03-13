@@ -2057,12 +2057,12 @@ GUI_TEST_CLASS_DEFINITION(test_0016) {
 //    from 'AAG' to 'CTT' and save file.
 //CHANGES: backup old file, copy changed file
 //    GTFile::backup(os, testDir + "_common_data/scenarios/msa/ma2_gapped.aln");
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Yes));
     GTFile::copy(os, testDir + "_common_data/scenarios/msa/ma2_gapped.aln", testDir + "_common_data/scenarios/msa/ma2_gapped_old.aln");
     GTFile::copy(os, testDir + "_common_data/scenarios/msa/ma2_gapped_edited.aln", testDir + "_common_data/scenarios/msa/ma2_gapped.aln");
 
 //    Expected state: Dialog suggesting to reload modified document has appeared.
 // 3. Press 'Yes'.
-    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Yes));
     GTGlobals::sleep(5000);
 
 //    Expected state: document was reloaded, view activated.
@@ -2105,11 +2105,11 @@ GUI_TEST_CLASS_DEFINITION(test_0016_1) {
 //    from 'AAG' to 'CTT' and save file.
 //CHANGES: backup old file, copy changed file
     //GTFile::backup(os, testDir + "_common_data/scenarios/msa/ma2_gapped.aln");
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Yes));
     GTFile::copy(os, testDir + "_common_data/scenarios/msa/ma2_gapped.aln", testDir + "_common_data/scenarios/msa/ma2_gapped_old.aln");
     GTFile::copy(os, testDir + "_common_data/scenarios/msa/ma2_gapped_edited.aln", testDir + "_common_data/scenarios/msa/ma2_gapped.aln");
 //    Expected state: Dialog suggesting to reload modified document has appeared.
 // 3. Press 'Yes'.
-    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Yes));
     GTGlobals::sleep(5000);
 
 //    Expected state: document was reloaded, view activated.
@@ -2142,12 +2142,12 @@ GUI_TEST_CLASS_DEFINITION(test_0016_2) {
 // 2. Open same file in text editor. Change first 3 bases of 'Phaneroptera_falcata'
 //    from 'AAG' to 'CTT' and save file.
 //CHANGES: backup old file, copy changed file
-    GTFile::backup(os, testDir + "_common_data/scenarios/msa/ma2_gapped.aln");
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Yes));
+    GTFile::copy(os, testDir + "_common_data/scenarios/msa/ma2_gapped.aln", testDir + "_common_data/scenarios/msa/ma2_gapped_old.aln");
     GTFile::copy(os, testDir + "_common_data/scenarios/msa/ma2_gapped_edited.aln", testDir + "_common_data/scenarios/msa/ma2_gapped.aln");
 
 //    Expected state: Dialog suggesting to reload modified document has appeared.
 // 3. Press 'Yes'.
-    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Yes));
     GTGlobals::sleep(5000);
 
 //    Expected state: document was reloaded, view activated.
@@ -2169,7 +2169,9 @@ GUI_TEST_CLASS_DEFINITION(test_0016_2) {
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
     GTGlobals::sleep(5000);
 
-    GTFile::restore(os, testDir + "_common_data/scenarios/msa/ma2_gapped.aln");
+    GTFile::copy(os, testDir + "_common_data/scenarios/msa/ma2_gapped_old.aln", testDir + "_common_data/scenarios/msa/ma2_gapped.aln");
+    GTGlobals::sleep(5000);
+    QFile(testDir + "_common_data/scenarios/msa/ma2_gapped_old.aln").remove();
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0017) {
