@@ -292,7 +292,8 @@ public:
      * The changes are tracked if it is needed.
      * Applies all changes to @object too.
      */
-    static void renameObject(DbRef *db, SQLiteDbi *dbi, U2Object &object, const QString &newName, U2OpStatus &os);
+    static void renameObject(SQLiteDbi *dbi, U2Object &object, const QString &newName, U2OpStatus &os);
+    static void renameObject(ModificationAction& updateAction, SQLiteDbi *dbi, U2Object &object, const QString &newName, U2OpStatus &os);
 };
 
 } //namespace

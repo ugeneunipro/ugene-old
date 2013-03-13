@@ -98,7 +98,7 @@ void SQLiteMsaDbi::updateMsaName(const U2DataId& msaId, const QString& name, U2O
     dbi->getSQLiteObjectDbi()->getObject(msaObj, msaId, os);
     CHECK_OP(os, );
 
-    SQLiteObjectDbiUtils::renameObject(db, dbi, msaObj, name, os);
+    SQLiteObjectDbiUtils::renameObject(dbi, msaObj, name, os);
 }
 
 void SQLiteMsaDbi::updateMsaAlphabet(const U2DataId& msaId, const U2AlphabetId& alphabet, U2OpStatus& os) {
@@ -265,20 +265,18 @@ void SQLiteMsaDbi::addRows(const U2DataId& msaId, QList<U2MsaRow>& rows, U2OpSta
 
 void SQLiteMsaDbi::updateRowName(const U2DataId& msaId, qint64 rowId, const QString& newName, U2OpStatus& os) {
     SQLiteTransaction t(db, os);
+    Q_UNUSED(t);
     ModificationAction updateAction(dbi, msaId);
-    U2TrackModType trackMod = updateAction.prepare(os);
-    CHECK_OP(os, );
+    updateAction.prepare(os);
+    SAFE_POINT_OP(os, );
 
     U2DataId sequenceId = getSequenceIdByRowId(msaId, rowId, os);
-    CHECK_OP(os, );
+    SAFE_POINT_OP(os, );
 
     U2Sequence seqObject = dbi->getSequenceDbi()->getSequenceObject(sequenceId, os);
-    CHECK_OP(os, );
+    SAFE_POINT_OP(os, );
 
-    U2UseCommonMultiModStep multiModStep(dbi, msaId, os);
-    CHECK_OP(os, );
-
-    SQLiteObjectDbiUtils::renameObject(db, dbi, seqObject, newName, os);
+    SQLiteObjectDbiUtils::renameObject(updateAction, dbi, seqObject, newName, os);
     SAFE_POINT_OP(os, );
 
     updateAction.complete(os);

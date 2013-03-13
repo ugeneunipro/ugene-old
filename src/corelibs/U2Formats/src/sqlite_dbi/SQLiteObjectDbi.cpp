@@ -85,7 +85,6 @@ void SQLiteObjectDbi::initSqlSchema(U2OpStatus& os) {
     SQLiteQuery("CREATE TABLE FolderContent (folder INTEGER, object INTEGER, "
                         "FOREIGN KEY(folder) REFERENCES Folder(id),"
                         "FOREIGN KEY(object) REFERENCES Object(id) )", db, os).execute();
-
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -925,28 +924,38 @@ void ModificationAction::complete(U2OpStatus& os) {
 /************************************************************************/
 /* SQLiteObjectDbiUtils */
 /************************************************************************/
-void SQLiteObjectDbiUtils::renameObject(DbRef *db, SQLiteDbi *dbi, U2Object &object, const QString &newName, U2OpStatus &os) {
-    SQLiteTransaction t(db, os);
+void SQLiteObjectDbiUtils::renameObject(SQLiteDbi *dbi, U2Object &object, const QString &newName, U2OpStatus &os) {
+    SAFE_POINT(NULL != dbi, "NULL dbi!", );
+    SQLiteTransaction t(dbi->getDbRef(), os);
+    Q_UNUSED(t);
+
     ModificationAction updateAction(dbi, object.id);
     U2TrackModType trackMod = updateAction.prepare(os);
-    CHECK_OP(os, );
+    SAFE_POINT_OP(os, );
 
-    SQLiteObjectDbi *objectDbi = dbi->getSQLiteObjectDbi();
+    renameObject(updateAction, dbi, object, newName, os);
+    SAFE_POINT_OP(os, );
+
+    // Increment version; track the modification, if required
+    updateAction.complete(os);
+    SAFE_POINT_OP(os, );
+}
+
+void SQLiteObjectDbiUtils::renameObject(ModificationAction& updateAction, SQLiteDbi *dbi, U2Object &object, const QString &newName, U2OpStatus &os) {
+    SAFE_POINT(NULL != dbi, "NULL dbi!", );
+    SQLiteTransaction t(dbi->getDbRef(), os);
+    Q_UNUSED(t);
 
     QByteArray modDetails;
-    if (TrackOnUpdate == trackMod) {
+    if (TrackOnUpdate == updateAction.getTrackModType()) {
         modDetails = PackUtils::packObjectNameDetails(object.visualName, newName);
     }
 
     object.visualName = newName;
-    objectDbi->updateObject(object, os);
-    CHECK_OP(os, );
-
-    // Increment version; track the modification, if required
-    updateAction.addModification(object.id, U2ModType::objUpdatedName, modDetails, os);
+    dbi->getSQLiteObjectDbi()->updateObject(object, os);
     SAFE_POINT_OP(os, );
 
-    updateAction.complete(os);
+    updateAction.addModification(object.id, U2ModType::objUpdatedName, modDetails, os);
     SAFE_POINT_OP(os, );
 }
 
