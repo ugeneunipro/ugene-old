@@ -750,7 +750,7 @@ GUI_TEST_CLASS_DEFINITION(test_0011_4){//DIFFERENCE: lock document is checked
     CHECK_SET_ERR(clipboardText=="----TAAGAC", "Redo works wrong. Found text is: " + clipboardText);
 }
 
-GUI_TEST_CLASS_DEFINITION(test_0011_5){//DIFFERENCE: add sequence is checked
+GUI_TEST_CLASS_DEFINITION(test_0011_5){//DIFFERENCE: delete sequence is checked
 //Check Undo/Redo functional
 //1. Open document COI.aln
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
@@ -783,6 +783,42 @@ GUI_TEST_CLASS_DEFINITION(test_0011_5){//DIFFERENCE: add sequence is checked
 //Expected state: delition is redone
     GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(-10,3));
     GTUtilsDialog::waitForDialog(os, new RenameSequenceFiller(os, "Montana_montana", "Montana_montana"));
+    GTMouseDriver::doubleClick(os);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0011_6){//DIFFERENCE: add sequence is checked
+//Check Undo/Redo functional
+//1. Open document COI.aln
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+//2. add sequence to alignment
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<MSAE_MENU_LOAD<<"Sequence from file"));
+    GTFileDialogUtils *ob = new GTFileDialogUtils(os, dataDir + "/samples/Raw/", "raw.seq");
+    GTUtilsDialog::waitForDialog(os, ob);
+    GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
+
+// Expected state: raw sequence appeared in alignment
+    CHECK_SET_ERR(GTUtilsMSAEditorSequenceArea::getNameList(os).contains("raw"), "raw is not added");
+    GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(-10,18));
+    GTUtilsDialog::waitForDialog(os, new RenameSequenceFiller(os, "raw", "raw"));
+    GTMouseDriver::doubleClick(os);
+
+//3. undo adding
+    QAbstractButton *undo= GTAction::button(os,"msa_action_undo");
+    QAbstractButton *redo= GTAction::button(os,"msa_action_redo");
+
+    GTWidget::click(os, undo);
+
+//Expected state: raw doesn't present in namelist
+    QStringList nameList = GTUtilsMSAEditorSequenceArea::getNameList(os);
+    CHECK_SET_ERR(!nameList.contains("raw"), "adding raw is not undone");
+
+//4. Redo delition
+    GTWidget::click(os, redo);
+
+//Expected state: delition is redone
+    CHECK_SET_ERR(GTUtilsMSAEditorSequenceArea::getNameList(os).contains("raw"), "Adding raw is not redone");
+    GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(-10,18));
+    GTUtilsDialog::waitForDialog(os, new RenameSequenceFiller(os, "raw", "raw"));
     GTMouseDriver::doubleClick(os);
 }
 
