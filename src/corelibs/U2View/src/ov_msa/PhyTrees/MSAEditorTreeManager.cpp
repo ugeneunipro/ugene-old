@@ -51,16 +51,14 @@
 
 namespace U2 {
 MSAEditorTreeManager::MSAEditorTreeManager(MSAEditor* _editor )
- : QObject(_editor), editor(_editor) {
+ : QObject(_editor), editor(_editor), msaObject(NULL), treeGeneratorTask(NULL) {
      SAFE_POINT(NULL != editor, "Invlalid parameter were passed into constructor MSAEditorTreeManager",);
 }
 
 void MSAEditorTreeManager::loadRelatedTrees() {
     msaObject = editor->getMSAObject();
     QList<GObjectRelation> relatedTrees = editor->getMSAObject()->findRelatedObjectsByRole(GObjectRelationRole::PHYLOGENETIC_TREE); 
-    if(relatedTrees.isEmpty()) {
-        return;
-    }
+    CHECK(!relatedTrees.isEmpty(),);
     TaskScheduler* scheduler = AppContext::getTaskScheduler();
     foreach(const GObjectRelation rel, relatedTrees) {
         const QString& treeFileName = rel.getDocURL();
@@ -93,25 +91,52 @@ void MSAEditorTreeManager::buildTreeWithDialog() {
     CreatePhyTreeDialogController dlg(editor->getUI(), msaObject, settings);
 
     int rc = dlg.exec();
-    if (rc != QDialog::Accepted) {
-        return;
-    }
+    CHECK(rc == QDialog::Accepted, );
+    buildTree(settings);
+}
 
-    treeGeneratorTask = new PhyTreeGeneratorLauncherTask(msaObject->getMAlignment(), settings);
+void MSAEditorTreeManager::buildTree(const CreatePhyTreeSettings& buildSettings) {
+    const MAlignment& ma = msaObject->getMAlignment();
+
+    settings = buildSettings;
+
+    treeGeneratorTask = new PhyTreeGeneratorLauncherTask(ma, settings);
     connect(treeGeneratorTask, SIGNAL(si_stateChanged()), SLOT(sl_openTree()));
     TaskScheduler* scheduler = AppContext::getTaskScheduler();
     scheduler->registerTopLevelTask(treeGeneratorTask);
 }
+
+void MSAEditorTreeManager::refreshTree(MSAEditorTreeViewer* treeViewer) {
+    CHECK(canRefreshTree(treeViewer),);
+    refreshingTree = treeViewer;
+    const MAlignment& ma = msaObject->getMAlignment();
+    settings = treeViewer->getCreatePhyTreeSettings();
+
+    treeGeneratorTask = new PhyTreeGeneratorLauncherTask(ma, settings);
+    connect(treeGeneratorTask, SIGNAL(si_stateChanged()), SLOT(sl_refreshTree()));
+    TaskScheduler* scheduler = AppContext::getTaskScheduler();
+    scheduler->registerTopLevelTask(treeGeneratorTask);
+}
+void MSAEditorTreeManager::sl_refreshTree() {
+    bool taskFailed = treeGeneratorTask->getState() != Task::State_Finished || treeGeneratorTask->hasError() || treeGeneratorTask->isCanceled();
+    CHECK(!taskFailed, );
+    PhyTreeObject *treeObj = refreshingTree->getPhyObject();
+    PhyTree res = treeGeneratorTask->getResult();
+
+    treeObj->setTree(treeGeneratorTask->getResult());
+}
+
+bool MSAEditorTreeManager::canRefreshTree(MSAEditorTreeViewer* treeViewer) {
+    bool canRefresh = (treeViewer->getParentAlignmentName() == msaObject->getMAlignment().getName());
+    return canRefresh;
+}
+
 void MSAEditorTreeManager::sl_openTree() {
-    if (treeGeneratorTask->getState() != Task::State_Finished || treeGeneratorTask->hasError() || treeGeneratorTask->isCanceled()) {
-        return;
-    }
+    bool taskIsFailed = treeGeneratorTask->getState() != Task::State_Finished || treeGeneratorTask->hasError() || treeGeneratorTask->isCanceled();
+    CHECK(!taskIsFailed, )
 
     const GUrl& msaURL = msaObject->getDocument()->getURL();
     SAFE_POINT(!msaURL.isEmpty(), QString("Tree URL in MSAEditorTreeManager::sl_openTree() is empty"),);
-    if (msaURL.isEmpty()) {
-        return;
-    }
 
     Project* p = AppContext::getProject();
     Document *d;
@@ -164,18 +189,20 @@ void MSAEditorTreeManager::sl_openTreeTaskFinished(Task* t) {
             ui->addTreeView(w);
 
             treeView->setTreeVerticalSize(ui->getSequenceArea()->getHeight());
+            treeView->setCreatePhyTreeSettings(settings);
+            treeView->setParentAignmentName(msaObject->getMAlignment().getName());
 
-            connect(ui->getSequenceArea(), SIGNAL(si_selectionChanged(const QStringList&)), treeView->ui, SLOT(sl_selectionChanged(const QStringList&)));
+
+            connect(ui->getSequenceArea(),   SIGNAL(si_selectionChanged(const QStringList&)), treeView->ui, SLOT(sl_selectionChanged(const QStringList&)));
             connect(ui->getEditorNameList(), SIGNAL(si_sequenceNameChanged(QString, QString)), treeView->ui, SLOT(sl_sequenceNameChanged(QString, QString)));
-            connect(treeView->ui, SIGNAL(si_seqCollapsed(QVector<U2Region>*)), ui->getSequenceArea(), SLOT(sl_setCollapsingRegions(QVector<U2Region>*)));
+            connect(treeView->ui, SIGNAL(si_collapseModelChangedInTree(const QStringList*)), ui->getSequenceArea(), SLOT(sl_setCollapsingRegions(const QStringList*)));
             connect(treeView->ui, SIGNAL(si_seqOrderChanged(QStringList*)), editor, SLOT(sl_onSeqOrderChanged(QStringList*)));
             connect(treeView->ui, SIGNAL(si_groupColorsChanged(const GroupColorSchema&)), ui->getEditorNameList(), SLOT(sl_onGroupColorsChanged(const GroupColorSchema&)));
             connect(editor, SIGNAL(si_sizeChanged(int)), treeView->ui, SLOT(sl_onHeightChanged(int)));
 
-            connect(treeView->ui, SIGNAL(si_treeZoomedIn()),   editor, SLOT(sl_zoomIn()));
-            connect(editor, SIGNAL(si_refrenceSeqChanged(const QString &)), treeView->ui, SLOT(sl_onReferenceSeqChanged(const QString &)));
-            connect(treeView->ui, SIGNAL(si_treeZoomedOut()), editor, SLOT(sl_zoomOut()));
-            
+            connect(treeView->ui,   SIGNAL(si_treeZoomedIn()),                      editor,       SLOT(sl_zoomIn()));
+            connect(editor,         SIGNAL(si_refrenceSeqChanged(const QString &)), treeView->ui, SLOT(sl_onReferenceSeqChanged(const QString &)));
+            connect(treeView->ui,   SIGNAL(si_treeZoomedOut()),                     editor,       SLOT(sl_zoomOut()));
         }
         else {
             GObjectViewWindow* w = new GObjectViewWindow(task->getTreeViewer(), editor->getName(), !task->getStateData().isEmpty());
@@ -188,24 +215,17 @@ void MSAEditorTreeManager::sl_openTreeTaskFinished(Task* t) {
 
 void MSAEditorTreeManager::addTreeToMSA() {
     MSAEditorUpdatedTabWidget* tabWidget = dynamic_cast<MSAEditorUpdatedTabWidget*>(editor->getUI()->getMultiTreeViewer()->getCurrentTabWidget());
-    if(tabWidget) {
-        tabWidget->addExistingTree();
-    }
+    CHECK(NULL != tabWidget, );
+    tabWidget->addExistingTree();
 }
 
-void MSAEditorTreeManager::deleteTree()
-{
-
+void MSAEditorTreeManager::deleteTree() {
 }
 
-void MSAEditorTreeManager::refreshTree()
-{
-
+void MSAEditorTreeManager::refreshTree() {
 }
 
-void MSAEditorTreeManager::changeTreeSettings()
-{
-
+void MSAEditorTreeManager::changeTreeSettings() {
 }
 
 

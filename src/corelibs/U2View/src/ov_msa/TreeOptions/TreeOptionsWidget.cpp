@@ -105,7 +105,7 @@ void TreeOptionsWidget::updateAllWidgets()
 {
     showFontSettings = viewSettings.showFontSettings;
     showPenSettings = viewSettings.showPenSettings;
-    updateTreesSettings();
+    createGeneralSettingsWidgets();
     updateLabelsSettingsWidgets();
     updateBranchSettings();
 
@@ -122,13 +122,16 @@ void TreeOptionsWidget::connectSlots()
     connect(lblFontSettings, SIGNAL(linkActivated(const QString&)), SLOT(sl_onLblLinkActivated(const QString&)));
 
     // General settings widgets
-    connect(treeViewCombo, SIGNAL(currentIndexChanged(int)), this, SLOT(sl_onSettingsChanged()));
-    connect(layoutCombo,   SIGNAL(currentIndexChanged(int)), this, SLOT(sl_onLayoutChanged(int)));
+    connect(treeViewCombo, SIGNAL(currentIndexChanged(int)), SLOT(sl_onGeneralSettingsChanged()));
+    connect(layoutCombo,   SIGNAL(currentIndexChanged(int)), SLOT(sl_onLayoutChanged(int)));
+    if(NULL != msa) {
+        connect(getTreeViewer(), SIGNAL(si_settingsChanged()), SLOT(sl_onSettingsChanged()));
+    }
 
     //Labels settings widgets
-    connect(showNamesCheck,      SIGNAL(stateChanged(int)), this, SLOT(sl_onLabelsSettingsChanged()));
-    connect(showDistancesCheck,  SIGNAL(stateChanged(int)), this, SLOT(sl_onLabelsSettingsChanged()));
-    connect(alignLabelsCheck,    SIGNAL(stateChanged(int)), this, SLOT(sl_onLabelsSettingsChanged()));
+    connect(showNamesCheck,      SIGNAL(stateChanged(int)), SLOT(sl_onLabelsSettingsChanged()));
+    connect(showDistancesCheck,  SIGNAL(stateChanged(int)), SLOT(sl_onLabelsSettingsChanged()));
+    connect(alignLabelsCheck,    SIGNAL(stateChanged(int)), SLOT(sl_onLabelsSettingsChanged()));
 
     //Labels format widgets
     connect(labelsColorButton,   SIGNAL(clicked()),     SLOT(sl_labelsColorButton()));
@@ -139,21 +142,24 @@ void TreeOptionsWidget::connectSlots()
     connect(fontComboBox,        SIGNAL(currentIndexChanged(int)), SLOT(sl_textSettingsChanged()));
 
     //Branches settings widgets
-    connect(widthSlider,   SIGNAL(valueChanged(int)),        this, SLOT(sl_onSettingsChanged()));
-    connect(heightSlider,  SIGNAL(valueChanged(int)),        this, SLOT(sl_onSettingsChanged()));
+    connect(widthSlider,   SIGNAL(valueChanged(int)), SLOT(sl_onGeneralSettingsChanged()));
+    connect(heightSlider,  SIGNAL(valueChanged(int)), SLOT(sl_onGeneralSettingsChanged()));
 
     connect(branchesColorButton, SIGNAL(clicked()),         SLOT(sl_branchesColorButton()));
     connect(lineWeightSpinBox,   SIGNAL(valueChanged(int)), SLOT(sl_branchSettingsChanged()));
 }
 
-void TreeOptionsWidget::updateTreesSettings(){
+void TreeOptionsWidget::createGeneralSettingsWidgets(){
     QStringList items;
     items << tr("Rectangular") << tr("Circular") << tr("Unrooted");
     layoutCombo->addItems(items);
 
     treeViewCombo->addItem(TreeSettingsDialog::treePhylogramText());
     treeViewCombo->addItem(TreeSettingsDialog::treeCladogramText());
+    updateGeneralSettingsWidgets();
+}
 
+void TreeOptionsWidget::updateGeneralSettingsWidgets() {
     switch (treeSettings.type)
     {
     case TreeSettings::PHYLOGRAM:
@@ -166,15 +172,15 @@ void TreeOptionsWidget::updateTreesSettings(){
 
     TreeViewerUI::TreeLayout layout = getTreeViewer()->getTreeLayout();
     switch(layout) {
-        case TreeViewerUI::TreeLayout_Rectangular:
-            layoutCombo->setCurrentIndex(0);
-            break;
-        case TreeViewerUI::TreeLayout_Circular:
-            layoutCombo->setCurrentIndex(1);
-            break;
-        case TreeViewerUI::TreeLayout_Unrooted:
-            layoutCombo->setCurrentIndex(2);
-            break;
+    case TreeViewerUI::TreeLayout_Rectangular:
+        layoutCombo->setCurrentIndex(0);
+        break;
+    case TreeViewerUI::TreeLayout_Circular:
+        layoutCombo->setCurrentIndex(1);
+        break;
+    case TreeViewerUI::TreeLayout_Unrooted:
+        layoutCombo->setCurrentIndex(2);
+        break;
     };
 }
 
@@ -227,7 +233,7 @@ TreeViewerUI* TreeOptionsWidget::getTreeViewer() {
     return treeViewer != NULL ? treeViewer : msa->getUI()->getCurrentTree()->ui;
 }
 
-void TreeOptionsWidget::sl_onSettingsChanged()
+void TreeOptionsWidget::sl_onGeneralSettingsChanged()
 {
     treeSettings.height_coef = heightSlider->value();
     treeSettings.width_coef = widthSlider->value();
@@ -319,6 +325,14 @@ void TreeOptionsWidget::sl_onLblLinkActivated(const QString& link) {
         updateShowPenOpLabel(labelText);
         penGroup->setVisible(showPenSettings);
     }
+}
+
+void TreeOptionsWidget::sl_onSettingsChanged() {
+    treeSettings = getTreeViewer()->getTreeSettings();
+    updateGeneralSettingsWidgets();
+    updateLabelsSettingsWidgets();
+    updateBranchSettings();
+    updateButtonColor(branchesColorButton, branchSettings.branchColor);
 }
 
 void TreeOptionsWidget::updateButtonColor(QPushButton* button, const QColor& newColor ) {

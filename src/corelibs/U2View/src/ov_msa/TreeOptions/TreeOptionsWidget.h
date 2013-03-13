@@ -61,7 +61,7 @@ public:
 signals:
     void saveViewSettings(const TreeOpWidgetViewSettings&);
 private slots:
-    void sl_onSettingsChanged();
+    void sl_onGeneralSettingsChanged();
     void sl_onLabelsSettingsChanged();
     void sl_onLayoutChanged(int index);
     void sl_labelsColorButton();
@@ -70,12 +70,13 @@ private slots:
     void sl_branchSettingsChanged();
 
     void sl_onLblLinkActivated(const QString& link);
+    void sl_onSettingsChanged();
 private:
     void createGroups();
-    void updateTreesSettings();
+    void createGeneralSettingsWidgets();
+    void updateGeneralSettingsWidgets();
     void updateLabelsSettingsWidgets();
     void updateBranchSettings();
-    void createLabelsFormatSettings();
     void updateAllWidgets();
     void connectSlots();
 

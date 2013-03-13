@@ -37,15 +37,13 @@
 namespace U2 {
 
 GraphLabelsSelectDialog::GraphLabelsSelectDialog(int maxWindowSize, QWidget* parent )
-:QDialog(parent)
-{
+:QDialog(parent) {
     stepSpinBox = new QSpinBox(this);
     stepSpinBox->setRange(maxWindowSize/50, maxWindowSize);
     usedIntervalsCheck = new QCheckBox(this);
     QVBoxLayout* mainLayout = new QVBoxLayout();
     QHBoxLayout* buttonsLayout = new QHBoxLayout();
     QHBoxLayout* spinLayout = new QHBoxLayout();
-    QHBoxLayout* checkBoxLayout = new QHBoxLayout();
     buttonsLayout->addStretch(10);
 
     QPushButton* cancelButton = new QPushButton(tr("Cancel"), this);
@@ -73,24 +71,19 @@ GraphLabelsSelectDialog::GraphLabelsSelectDialog(int maxWindowSize, QWidget* par
 
     okButton->setDefault(true);
 }
-int GraphLabelsSelectDialog::getWindowSize()
-{
+int GraphLabelsSelectDialog::getWindowSize() {
     return stepSpinBox->value();
 }
-bool GraphLabelsSelectDialog::isUsedIntervals()
-{
-    if(Qt::Checked == usedIntervalsCheck->checkState())
-        return true;
+bool GraphLabelsSelectDialog::isUsedIntervals() {
+    CHECK(Qt::Checked != usedIntervalsCheck->checkState(), true);
     return false;
 }
 
-void GraphLabelsSelectDialog::sl_onCancelClicked()
-{
+void GraphLabelsSelectDialog::sl_onCancelClicked() {
     reject();
 }
 
-void GraphLabelsSelectDialog::sl_onOkClicked()
-{
+void GraphLabelsSelectDialog::sl_onOkClicked() {
     accept();
     return;
 }

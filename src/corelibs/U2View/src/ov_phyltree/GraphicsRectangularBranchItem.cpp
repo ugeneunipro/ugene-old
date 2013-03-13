@@ -85,9 +85,9 @@ void GraphicsRectangularBranchItem::collapse() {
                     GraphicsRectangularBranchItem* graphItem =  dynamic_cast<GraphicsRectangularBranchItem*>(items[i]);
                     if(graphItem) {
                         graphItem->collapse();
+                    }
                 }
             }
-        }
         }
         QList<QString> selection;
         setSelectedRecurs(true,true);

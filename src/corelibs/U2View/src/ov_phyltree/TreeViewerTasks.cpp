@@ -53,18 +53,18 @@ namespace U2 {
 /// open new view
 
 OpenTreeViewerTask::OpenTreeViewerTask(PhyTreeObject* _obj, QObject* _parent)
-: ObjectViewTask(TreeViewerFactory::ID), phyObject(_obj), parent(_parent) {
+: ObjectViewTask(TreeViewerFactory::ID), phyObject(_obj), createMDIWindow(false), parent(_parent) {
     assert(!phyObject.isNull());
 }
 
 OpenTreeViewerTask::OpenTreeViewerTask(UnloadedObject* _obj, QObject* _parent)
-: ObjectViewTask(TreeViewerFactory::ID), unloadedReference(_obj), parent(_parent) {
+: ObjectViewTask(TreeViewerFactory::ID), unloadedReference(_obj), createMDIWindow(false), parent(_parent) {
     assert(_obj->getLoadedObjectType() == GObjectTypes::PHYLOGENETIC_TREE);
     documentsToLoad.append(_obj->getDocument());
 }
 
 OpenTreeViewerTask::OpenTreeViewerTask(Document* doc, QObject* _parent) 
-: ObjectViewTask(TreeViewerFactory::ID), phyObject(NULL), parent(_parent)
+: ObjectViewTask(TreeViewerFactory::ID), phyObject(NULL), createMDIWindow(false), parent(_parent)
 {
     assert(!doc->isLoaded());
     documentsToLoad.append(doc);
@@ -214,7 +214,7 @@ void CreateMSAEditorTreeViewerTask::prepare() {
 
 Task::ReportResult CreateMSAEditorTreeViewerTask::report() {
     GraphicsRectangularBranchItem* root = dynamic_cast<GraphicsRectangularBranchItem*>(subTask->getResult());
-    view = new MSAEditorTreeViewer(viewName, phyObj, root, subTask->getScale(), settings);
+    view = new MSAEditorTreeViewer(viewName, phyObj, root, subTask->getScale());
     
     if (!stateData.isEmpty()) {
         OpenSavedTreeViewerTask::updateRanges(stateData, view);

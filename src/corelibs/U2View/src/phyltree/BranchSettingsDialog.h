@@ -22,10 +22,9 @@
 #ifndef _U2_PHYLTREE_BRANCH_SETTINGS_DIALOG_H_
 #define _U2_PHYLTREE_BRANCH_SETTINGS_DIALOG_H_
 
-#include <ui/ui_BranchSettingsDialog.h>
-
 #include <U2View/GraphicsBranchItem.h>
 #include <QtGui/QDialog>
+#include <ui/ui_BranchSettingsDialog.h>
 
 namespace U2 {
 

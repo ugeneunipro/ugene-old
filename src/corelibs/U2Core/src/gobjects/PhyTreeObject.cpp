@@ -35,6 +35,11 @@ PhyTreeObject* PhyTreeObject::clone() const {
     return cln;
 }
 
+void PhyTreeObject::setTree(const PhyTree& _tree) {
+    tree = _tree; 
+    emit si_phyTreeChanged();
+}
+
 bool PhyTreeObject::treesAreAlike( const PhyTree& tree1, const PhyTree& tree2 )
 {
     

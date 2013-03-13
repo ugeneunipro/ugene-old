@@ -887,11 +887,12 @@ void MSALabelWidget::paintEvent(QPaintEvent * e) {
 }
 
 SinchronizedObjectView::SinchronizedObjectView() 
+    : seqArea(NULL)
 {
     spliter = new QSplitter(Qt::Horizontal);
 }
 SinchronizedObjectView::SinchronizedObjectView(QSplitter *_spliter)
-: spliter(_spliter)
+    : seqArea(NULL), spliter(_spliter)
 {
 }
 

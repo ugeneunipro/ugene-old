@@ -24,7 +24,6 @@
 
 #include <U2View/TreeViewer.h>
 #include <U2Algorithm/CreatePhyTreeSettings.h>
-#include <U2View/MSAEditorTreeViewer.h>
 #include <QtGui/QGraphicsLineItem>
 #include <QtCore/QMap>
 #include <U2Algorithm/CreatePhyTreeSettings.h>
@@ -35,13 +34,6 @@ typedef QMap<QString, QColor> GroupColorSchema;
 
 class MSAEditorTreeViewerUI;
 
-struct PhyTreeBuildSettings {
-    PhyTreeBuildSettings() : alignmentName("(None)") {}
-    PhyTreeBuildSettings(const QString& _alignmentName, const CreatePhyTreeSettings& _algoSettings) 
-        : alignmentName(_alignmentName), algoSettings(_algoSettings) {}
-    QString alignmentName;
-    CreatePhyTreeSettings algoSettings;
-};
 
 class GroupColors {
 public:
@@ -54,21 +46,22 @@ private:
 class MSAEditorTreeViewer: public TreeViewer {
     Q_OBJECT
 public:
-    MSAEditorTreeViewer(const QString& viewName, GObject* obj, GraphicsRectangularBranchItem* root, qreal scale, const CreatePhyTreeSettings* _settings);
+    MSAEditorTreeViewer(const QString& viewName, GObject* obj, GraphicsRectangularBranchItem* root, qreal scale);
 
-    const CreatePhyTreeSettings* getSettings();
+    const CreatePhyTreeSettings& getCreatePhyTreeSettings() {return buildSettings;}
+    const QString& getParentAlignmentName() {return alignmentName;}
     virtual OptionsPanel* getOptionsPanel(){return 0;}
 
-    void setTreeBuildSettings(const PhyTreeBuildSettings& _buildSettings) {buildSettings = _buildSettings;}
-    const PhyTreeBuildSettings& getTreeBuildSettings() const;
+    void setCreatePhyTreeSettings(const CreatePhyTreeSettings& _buildSettings) {buildSettings = _buildSettings;}
+    void setParentAignmentName(const QString& _alignmentName) {alignmentName = _alignmentName;}
 
     void setTreeVerticalSize(int size);
 protected:
     virtual QWidget* createWidget();
 private:
-    const CreatePhyTreeSettings* settings;
-    QAction*             sortSeqAction;
-    PhyTreeBuildSettings buildSettings;
+    QAction*              sortSeqAction;
+    QString               alignmentName;
+    CreatePhyTreeSettings buildSettings;
 };
 
 class MSAEditorTreeViewerUI: public TreeViewerUI {
@@ -80,7 +73,7 @@ public:
 
     QStringList* getOrderedSeqNames();
 
-    QVector<U2Region>* getCollapsingRegions();
+    const QStringList* getVisibleSeqsList();
 
     U2Region getTreeSize(); 
     void setTreeVerticalSize(int size);
@@ -92,8 +85,10 @@ protected:
     virtual void wheelEvent(QWheelEvent *e);
     virtual void mouseMoveEvent(QMouseEvent *me);
     virtual void mouseReleaseEvent(QMouseEvent *e);
+
+    virtual void onLayoutChanged(const TreeLayout& layout);
 signals:
-    void si_seqCollapsed(QVector<U2Region>* collapsedRegions);
+    void si_collapseModelChangedInTree(const QStringList* visibleSeqs);
     void si_seqOrderChanged(QStringList* order);
     void si_treeZoomedIn();
     void si_treeZoomedOut();

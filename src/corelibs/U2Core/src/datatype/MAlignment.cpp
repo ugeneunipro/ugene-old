@@ -1223,8 +1223,8 @@ void MAlignment::check() const {
 #endif
 }
 
-void MAlignment::sortRowsByList(const QStringList& order) {
-    assert(getNumRows() == order.size());
+bool MAlignment::sortRowsByList(const QStringList& order) {
+    CHECK(getNumRows() == order.size(), false);
 
     MAStateCheck check(this);
 
@@ -1233,6 +1233,7 @@ void MAlignment::sortRowsByList(const QStringList& order) {
 
     for(int i = 0; i < size; i++) {
         int index = order.indexOf(rows.at(i).getName());
+        CHECK(index >= 0, false);
         if(rowsRefs.contains(&rows.at(i))) {
             index = 0;
         }
@@ -1241,10 +1242,12 @@ void MAlignment::sortRowsByList(const QStringList& order) {
     int num = 0;
     for (int i = 0; i < size; i++) {
         int index = rows.indexOf(*rowsRefs[i]);
-        if(index != i) 
+        if(index != i) {
             num++;
+        }
         rows.swap(rows.indexOf(*rowsRefs[i]), i);
     }
+    return true;
 }
 
 static bool _registerMeta() {

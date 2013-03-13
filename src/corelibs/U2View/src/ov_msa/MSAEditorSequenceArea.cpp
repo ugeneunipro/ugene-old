@@ -2092,8 +2092,35 @@ QPair<QString, int> MSAEditorSequenceArea::getGappedColumnInfo() const{
     }
 }
 
-void MSAEditorSequenceArea::sl_setCollapsingRegions(QVector<U2Region>* unitedRows) {
+void MSAEditorSequenceArea::sl_setCollapsingRegions(const QStringList* visibleSequences) {
     MAlignmentObject* msaObject = editor->getMSAObject();
+    QVector<int> seqIndexes;
+    MAlignment ma = msaObject->getMAlignment();
+    QStringList rowNames = ma.getRowNames();
+    foreach(QString seqName, *visibleSequences) {
+        int index = rowNames.indexOf(seqName);
+        if(index > 0) {
+            seqIndexes.append(index);
+        }
+    }
+
+    int seqNums = seqIndexes.size();
+    CHECK(seqNums > 0,);
+
+    qSort(seqIndexes.begin(), seqIndexes.end());
+
+    QVector<U2Region> collapsedRegions;
+    
+    int prevIndex = startPos;
+    for(int i = 0; i < seqNums; i++) {
+        int curIndex = seqIndexes.at(i);
+        
+        if(curIndex - prevIndex > 1) {
+            collapsedRegions.append(U2Region(prevIndex, curIndex - prevIndex));
+        }
+        prevIndex = curIndex;
+    }
+
     if (msaObject == NULL || msaObject->isStateLocked()) {
         if (viewModeAction->isChecked()) {
             viewModeAction->setChecked(false);
@@ -2102,8 +2129,7 @@ void MSAEditorSequenceArea::sl_setCollapsingRegions(QVector<U2Region>* unitedRow
     }
     MSACollapsibleItemModel* m = ui->getCollapseModel();
     if(ui->isCollapsibleMode()) {
-        MAlignment ma = msaObject->getMAlignment();
-        m->reset(*unitedRows);
+        m->reset(collapsedRegions);
 
         MAlignmentModInfo mi;
         mi.hints[MODIFIER] = MAROW_SIMILARITY_SORT;

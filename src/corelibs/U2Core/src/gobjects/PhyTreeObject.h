@@ -36,7 +36,7 @@ public:
         : GObject(GObjectTypes::PHYLOGENETIC_TREE, objectName, hintsMap), tree(_tree){};
 
     virtual const PhyTree& getTree() const {return tree;}
-    
+    void setTree(const PhyTree& _tree);
     // Warning!
     // PhyBranches can be accessed and modified!
     // TODO: move branches to private data, add getters and setters
@@ -51,7 +51,8 @@ public:
     
     // Compares number of nodes and nodes with names (how many nodes etc.)
     static bool treesAreAlike(const PhyTree& tree1, const PhyTree& tree2);
-
+signals:
+    void si_phyTreeChanged();
 protected:
     PhyTree tree;
 };

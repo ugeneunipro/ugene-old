@@ -29,23 +29,22 @@ TextLabel::TextLabel(void *_parentLabel, QWidget *parent) :
     parentLabel(_parentLabel), QLabel(parent)
 {
 }
-TextLabel::~TextLabel()
+TextLabel::~TextLabel() 
 {
 }
-void TextLabel::mouseMoveEvent(QMouseEvent *me)
-{
+void TextLabel::mouseMoveEvent(QMouseEvent *me) {
     this->raise();
-    if(Qt::ShiftModifier != me->modifiers())
+    if(Qt::ShiftModifier != me->modifiers()) {
         QWidget::mouseMoveEvent(me);
+    }
 }
-void TextLabel::mousePressEvent(QMouseEvent *me)
-{
-    if(Qt::ShiftModifier == me->modifiers()) 
+void TextLabel::mousePressEvent(QMouseEvent *me) {
+    if(Qt::ShiftModifier == me->modifiers()) {
         emit si_mousePressed(parentLabel);
+    }
 }
 
-void TextLabel::paintEvent(QPaintEvent *e)
-{
+void TextLabel::paintEvent(QPaintEvent *e) {
     QPainter paint; 
     paint.begin (this);
     paint.setBrush (QBrush (QColor (255, 255, 255, 200)));
@@ -56,16 +55,13 @@ void TextLabel::paintEvent(QPaintEvent *e)
 }
 
 RoundHint::RoundHint(QWidget *parent, QColor _borderColor, QColor _fillingColor) : 
-borderColor(_borderColor), fillingColor(_fillingColor), markedFillingColor(_borderColor),QWidget(parent)
-{
+borderColor(_borderColor), fillingColor(_fillingColor), markedFillingColor(_borderColor), QWidget(parent) {
     this->setGeometry(QRect(0, 0, 0, 0));
 }
-RoundHint::~RoundHint()
-{
+RoundHint::~RoundHint() {
 }
 
-void RoundHint::paintEvent(QPaintEvent *e)
-{
+void RoundHint::paintEvent(QPaintEvent *e) {
     QPainter paint; 
     paint.begin(this);
     paint.setPen(QPen(borderColor));
@@ -77,31 +73,24 @@ void RoundHint::paintEvent(QPaintEvent *e)
         paint.setBrush(QBrush (markedFillingColor));
         paint.drawEllipse (QRect(2, 2, this->geometry().width()-4, this->geometry().height()-4));
     }
-    //    paint.setBrush(QBrush (markedFillingColor));
-    //    paint.drawEllipse (QRect(1, 1, this->geometry().width()-2, this->geometry().height()-2));
-    //}
     paint.end();
 }
 
-void RoundHint::mark()
-{
+void RoundHint::mark() {
     isMarked = true;
 }
-void RoundHint::unmark()
-{
+void RoundHint::unmark() {
     isMarked = false;
 }
 
- GraphLabel::GraphLabel() :
-position(-1), coord(-1,-1), text(this), image(), radius(defaultRadius), attachedLabel(NULL)
-{
+GraphLabel::GraphLabel() :
+position(-1), coord(-1,-1), text(this), image(), radius(defaultRadius), attachedLabel(NULL), value(0.0) {
     text.setLineWidth(3);
     text.setAlignment(Qt::AlignCenter);
     text.setFrameStyle(QFrame::WinPanel | QFrame::Raised);
 }
 GraphLabel::GraphLabel(float pos, const QRect &hintRect, const QString &hintText, QWidget *parent, int _radius) :
-    position(pos), coord(0,0), text(this, parent), image(parent), radius(_radius), attachedLabel(NULL)
-{
+    position(pos), coord(0,0), text(this, parent), image(parent), radius(_radius), attachedLabel(NULL) {
     text.setLineWidth(3);
     text.setAlignment(Qt::AlignCenter);
     text.setFrameStyle(QFrame::WinPanel | QFrame::Raised);
@@ -111,122 +100,97 @@ GraphLabel::~GraphLabel()
 }
 
 
-void GraphLabel::setCoord(const QPoint &_coord) 
-{
+void GraphLabel::setCoord(const QPoint &_coord) {
     coord = _coord;
     image.setGeometry(QRect(coord.x()-radius - 1, coord.y()-radius - 1, radius*2 + 2, radius*2 + 2));
 }
 
-void GraphLabel::setHintRect(const QRect& _hintRect)
-{
+void GraphLabel::setHintRect(const QRect& _hintRect) {
     text.setGeometry(_hintRect);
 }
 
-bool GraphLabel::select(float pos) 
-{
+bool GraphLabel::select(float pos) {
     return qFuzzyCompare(pos, position);
 }
 
-void GraphLabel::show()
-{
+void GraphLabel::show() {
     image.show();
     text.show();
     text.setMouseTracking(true);
 }
-void GraphLabel::hide()
-{
+void GraphLabel::hide() {
     image.hide();
     text.hide();
     text.setMouseTracking(false);
 }
-void GraphLabel::raise()
-{
+void GraphLabel::raise() {
     text.raise();
 }
-void GraphLabel::mark()
-{
+void GraphLabel::mark() {
     image.mark();
 }
-void GraphLabel::unmark()
-{
+void GraphLabel::unmark() {
     image.unmark();
 }
-void GraphLabel::setColor(QColor color, QColor markingColor)
-{
+void GraphLabel::setColor(QColor color, QColor markingColor) {
     text.setStyleSheet(tr("QLabel {color : %1; }").arg(color.name()));
     image.setFillingColor(color);
     QColor invertingColor(255 - color.red(), 255 - color.green(), 255 - color.blue());
     image.setBorderColor(invertingColor);
     image.setMarkingColor(markingColor);
 }
-void GraphLabel::setParent(QWidget* parent)
-{
+void GraphLabel::setParent(QWidget* parent) {
     text.setParent(parent);
     image.setParent(parent);
 }
 
 
-MultiLabel::MultiLabel()
-{
+MultiLabel::MultiLabel() {
     movingLabel.setHintRect(QRect(0, 0, 0, 0));
     movingLabel.setColor(Qt::black, Qt::red);
 }
-MultiLabel::~MultiLabel()
-{
+MultiLabel::~MultiLabel() {
     foreach(GraphLabel* currentLabel, labels)
         removeLabel(currentLabel);
 }
-void MultiLabel::deleteAllLabels()
-{
+void MultiLabel::deleteAllLabels() {
     foreach(GraphLabel* currentLabel, labels)
         removeLabel(currentLabel);
 }
-void MultiLabel::getLabelPositions(QList<QVariant> &labelPositions)
-{
+void MultiLabel::getLabelPositions(QList<QVariant> &labelPositions) {
     foreach(GraphLabel* currentLabel, labels)
         labelPositions.append(currentLabel->getPosition());
 }
-void MultiLabel::addLabel(GraphLabel *pLabel) 
-{
-//    SAFE_POINT(_CrtIsValidPointer(pLabel, sizeof(GraphLabel), TRUE),
-//        "Pointer to GraphLabel is not valid",);
+void MultiLabel::addLabel(GraphLabel *pLabel)  {
     connect(&(pLabel->getTextLabel()), SIGNAL(si_mousePressed(void*)),
        this, SLOT(sl_deleteLabel(void*)));
     labels.push_back(pLabel);
 }
-void MultiLabel::removeLabel(GraphLabel *pLabel) 
-{
-//    SAFE_POINT(_CrtIsValidPointer(pLabel, sizeof(GraphLabel), TRUE),
-//        "Pointer to GraphLabel is not valid",);
+void MultiLabel::removeLabel(GraphLabel *pLabel) {
     labels.removeAll(pLabel);
     delete pLabel;
 }
 
-void MultiLabel::sl_deleteLabel(void *_parentLabel)
-{
+void MultiLabel::sl_deleteLabel(void *_parentLabel) {
     removeLabel(static_cast<GraphLabel *>(_parentLabel));
 }
 
-bool MultiLabel::removeLabel(float xPos)
-{
-    bool result = false;
+bool MultiLabel::removeLabel(float xPos) {
     GraphLabel *label = findLabelByPosition(xPos);
-    if(NULL == label)
-        return false;
+    CHECK(NULL != label, false)
     removeLabel(label);
     return true;
 }
 
-GraphLabel* MultiLabel::at(int i) const
-{
+GraphLabel* MultiLabel::at(int i) const {
     return labels.at(i); 
 }
 
-GraphLabel* MultiLabel::findLabelByPosition(float xPos) const
-{
+GraphLabel* MultiLabel::findLabelByPosition(float xPos) const {
     foreach(GraphLabel* currentLabel, labels) {
-        if (currentLabel->select(xPos))
+        if (currentLabel->select(xPos)) {
             return currentLabel;
+        }
     }
     return NULL;
 }

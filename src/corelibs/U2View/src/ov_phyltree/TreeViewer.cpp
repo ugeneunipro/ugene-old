@@ -25,6 +25,7 @@
 #include "TreeViewerUtils.h"
 #include "CreateBranchesTask.h"
 #include "CreateCircularBranchesTask.h"
+#include "CreateRectangularBranchesTask.h"
 #include "CreateUnrootedBranchesTask.h"
 #include "CreateRectangularBranchesTask.h"
 #include "GraphicsRectangularBranchItem.h"
@@ -41,6 +42,7 @@
 #include <U2Core/ProjectModel.h>
 #include <U2Core/L10n.h>
 #include <U2Core/U2Region.h>
+#include <U2Core/PhyTree.h>
 
 #include <U2Gui/GUIUtils.h>
 #include <U2Gui/ExportImageDialog.h>
@@ -96,6 +98,7 @@ TreeViewer::TreeViewer(const QString& viewName, GObject* obj, GraphicsRectangula
     objects.append(phyObject);
     requiredObjects.append(phyObject);
     onObjectAdded(phyObject);
+    connect(phyObject, SIGNAL(si_phyTreeChanged()), SLOT(sl_onPhyTreeChanged()));
 }
 
 QTransform TreeViewer::getTransform() const {
@@ -339,6 +342,10 @@ void TreeViewer::setAlignment( Qt::Alignment alignment ) {
     ui->setAlignment(alignment);
 }
 
+void TreeViewer::sl_onPhyTreeChanged() {
+    ui->onPhyTreeChanged();
+}
+
 
 ////////////////////////////
 // TreeViewerUI
@@ -450,20 +457,39 @@ TreeLabelsSettings TreeViewerUI::getLabelsSettings() const {
 }
 
 void TreeViewerUI::setTreeLayout(TreeLayout newLayout) {
+    QMenu* layoutMenu = curTreeViewer->getRectangularLayoutAction()->menu();
     switch(newLayout) {
         case TreeLayout_Rectangular:
+            if(layoutMenu) {
+                layoutMenu->setActiveAction(curTreeViewer->getRectangularLayoutAction());
+            }
             sl_rectangularLayoutTriggered();
             break;
         case TreeLayout_Circular:
+            if(layoutMenu) {
+                layoutMenu->setActiveAction(curTreeViewer->getCircularLayoutAction());
+            }
             sl_circularLayoutTriggered();
             break;
         case TreeLayout_Unrooted:
+            if(layoutMenu) {
+                layoutMenu->setActiveAction(curTreeViewer->getUnrootedLayoutAction());
+            }
             sl_unrootedLayoutTriggered();
             break;
     }
 }
-TreeViewerUI::TreeLayout TreeViewerUI::getTreeLayout() const {
+const TreeViewerUI::TreeLayout& TreeViewerUI::getTreeLayout() const {
     return layout;
+}
+
+void TreeViewerUI::onPhyTreeChanged() {
+    layoutTask = new CreateRectangularBranchesTask(phyObject->getTree()->getRootNode());
+
+    connect(layoutTask, SIGNAL(si_stateChanged()), SLOT(sl_rectLayoutRecomputed()));
+    TaskScheduler* scheduler = AppContext::getTaskScheduler();
+    scheduler->registerTopLevelTask(layoutTask);
+
 }
 
 void TreeViewerUI::updateSettings(const BranchSettings &settings) {
@@ -510,6 +536,7 @@ void TreeViewerUI::sl_branchSettings() {
     BranchSettingsDialog d(this, getBranchSettings());
     if (d.exec()) {
         updateSettings( d.getSettings() );
+        emit si_settingsChanged();
     }
 }
 
@@ -892,6 +919,7 @@ void TreeViewerUI::sl_exportTriggered() {
 void TreeViewerUI::sl_contTriggered(bool on) {
     if (on != labelsSettings.alignLabels) {
         labelsSettings.alignLabels = on;
+        //emit si_settingsChanged();
         TreeLayout curLayout = layout;
         QStack<GraphicsBranchItem*> stack;
        
@@ -933,6 +961,8 @@ void TreeViewerUI::sl_rectangularLayoutTriggered() {
         root->setSelectedRecurs(false, true); // clear selection
 
         layout = TreeLayout_Rectangular;
+        onLayoutChanged(layout);
+        emit si_settingsChanged();
         scene()->removeItem(root);
         if(!rectRoot){
             redrawRectangularLayout();
@@ -951,6 +981,8 @@ void TreeViewerUI::sl_circularLayoutTriggered() {
         root->setSelectedRecurs(false, true); // clear selection
 
         layout = TreeLayout_Circular;
+        onLayoutChanged(layout);
+        emit si_settingsChanged();
         updateTreeSettings();
         if(getScale() <= GraphicsRectangularBranchItem::DEFAULT_WIDTH){
             layoutTask = new CreateCircularBranchesTask(rectRoot, true);
@@ -968,11 +1000,38 @@ void TreeViewerUI::sl_unrootedLayoutTriggered() {
         root->setSelectedRecurs(false, true); // clear selection
 
         layout = TreeLayout_Unrooted;
+        onLayoutChanged(layout);
+        emit si_settingsChanged();
         updateTreeSettings();
         layoutTask = new CreateUnrootedBranchesTask(rectRoot);
         connect(layoutTask, SIGNAL(si_stateChanged()), SLOT(sl_layoutRecomputed()));
         TaskScheduler* scheduler = AppContext::getTaskScheduler();
         scheduler->registerTopLevelTask(layoutTask);
+    }
+}
+
+void TreeViewerUI::sl_rectLayoutRecomputed() {
+    bool taskIsFailed = layoutTask->getState() != Task::State_Finished || layoutTask->hasError();
+    CHECK(!taskIsFailed, );
+
+    GraphicsRectangularBranchItem* rootNode = dynamic_cast<GraphicsRectangularBranchItem*>(layoutTask->getResult());
+    CHECK(NULL != rootNode,);
+    rectRoot = rootNode;
+
+    switch (layout)
+    {
+    case TreeLayout_Circular:
+        sl_circularLayoutTriggered();
+        fitInView(scene()->sceneRect(), Qt::KeepAspectRatio);
+        break;
+
+    case TreeLayout_Unrooted:
+        sl_unrootedLayoutTriggered();
+        fitInView(scene()->sceneRect(), Qt::KeepAspectRatio);
+        break;
+    case TreeLayout_Rectangular:
+        show();
+        break;
     }
 }
 
@@ -1047,12 +1106,14 @@ void TreeViewerUI::sl_showNameLabelsTriggered(bool on) {
             }
         }
     }
+    //emit si_settingsChanged();
 }
 
 void TreeViewerUI::sl_showDistanceLabelsTriggered(bool on) {
     if (on != labelsSettings.showDistances) {
         labelsSettings.showDistances = on;
         showLabels(LabelType_Distance);
+        //emit si_settingsChanged();
     }
 }
 
@@ -1092,6 +1153,7 @@ void TreeViewerUI::sl_textSettingsTriggered(){
             updateRect();
             labelsSettings.alignLabels = false;
             sl_contTriggered(true);
+            emit si_settingsChanged();
          }
     }
 }
@@ -1100,6 +1162,7 @@ void TreeViewerUI::sl_treeSettingsTriggered(){
     TreeSettingsDialog dialog(this, getTreeSettings(), layout == TreeLayout_Rectangular);
     if(dialog.exec()){
         updateSettings(dialog.getSettings());
+        emit si_settingsChanged();
     }
 }
 

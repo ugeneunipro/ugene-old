@@ -63,7 +63,7 @@ CreatePhyTreeDialogController::CreatePhyTreeDialogController(QWidget* parent, co
             break;
         }
     }
-   
+    ui->displayWithAlignmentEditor->setChecked(true);
 }
 
 void CreatePhyTreeDialogController::sl_okClicked(){

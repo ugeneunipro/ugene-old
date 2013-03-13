@@ -41,7 +41,7 @@ GraphAction::GraphAction(GSequenceGraphFactory* _factory)
     : QAction(_factory->getGraphName(), NULL),
       factory(_factory),
       view(NULL),
-      isBookmarkUpdate(false)
+      isBookmarkUpdate(false) 
 {
     setObjectName(_factory->getGraphName());
     connect(this, SIGNAL(triggered()), SLOT(sl_handleGraphAction()));
@@ -51,11 +51,9 @@ GraphAction::GraphAction(GSequenceGraphFactory* _factory)
 /**
  * Shows/hides a graph depending on its state: checked/unchecked
  */
-void GraphAction::sl_handleGraphAction()
-{
+void GraphAction::sl_handleGraphAction() {
     GraphAction* graphAction = qobject_cast<GraphAction*>(sender());
-    if (graphAction->isChecked())
-    {
+    if (graphAction->isChecked()) {
         SAFE_POINT(graphAction->view == NULL, "Graph view is checked, but not available!",);
 
         // Getting the menu action
@@ -76,7 +74,7 @@ void GraphAction::sl_handleGraphAction()
         if(true == isBookmarkUpdate) {
             graphAction->view->createLabelsOnPositions(positions);
             isBookmarkUpdate = false;
-    }
+        }
     }
     else
     {
@@ -85,21 +83,18 @@ void GraphAction::sl_handleGraphAction()
         graphAction->view = NULL;
     }
 }
-void GraphAction::sl_updateGraphView(const QStringList &graphName, const QVariantMap &map)
-{
-    int startIndex = 0;
+void GraphAction::sl_updateGraphView(const QStringList &graphName, const QVariantMap &map) {
     foreach(const QString &name, graphName) {
         if(name == text()) {
-            if(view == NULL) {
-                isBookmarkUpdate = true;
-                positions = map[name].toList();
-                activate(QAction::Trigger);
-            }
-            return;
+            CHECK(view != NULL, );
+            isBookmarkUpdate = true;
+            positions = map[name].toList();
+            activate(QAction::Trigger);
         }
     }
-    if(view != NULL)
+    if(view != NULL) {
         activate(QAction::Trigger);
+    }
 }
 
 
@@ -110,8 +105,7 @@ const QString GraphMenuAction::ACTION_NAME("GraphMenuAction");
 /**
  * Creates a new graphs menu and adds it to toolbar
  */
-GraphMenuAction::GraphMenuAction() : ADVSequenceWidgetAction(ACTION_NAME, tr("Graphs"))
-{
+GraphMenuAction::GraphMenuAction() : ADVSequenceWidgetAction(ACTION_NAME, tr("Graphs")) {
     menu = new QMenu();
     this->setIcon(QIcon(":core/images/graphs.png"));
     this->setMenu(menu);
@@ -125,10 +119,8 @@ GraphMenuAction::GraphMenuAction() : ADVSequenceWidgetAction(ACTION_NAME, tr("Gr
  * @param ctx Sequence context.
  * @return The menu action with graphs.
  */
-GraphMenuAction* GraphMenuAction::findGraphMenuAction(ADVSequenceObjectContext* ctx)
-{
-    foreach(ADVSequenceWidget* sequenceWidget, ctx->getSequenceWidgets())
-    {
+GraphMenuAction* GraphMenuAction::findGraphMenuAction(ADVSequenceObjectContext* ctx) {
+    foreach(ADVSequenceWidget* sequenceWidget, ctx->getSequenceWidgets())     {
         ADVSequenceWidgetAction* advAction = sequenceWidget->getADVSequenceWidgetAction(
             GraphMenuAction::ACTION_NAME);
         if (advAction == NULL) {

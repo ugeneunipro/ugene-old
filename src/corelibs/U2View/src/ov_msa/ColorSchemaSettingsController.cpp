@@ -348,7 +348,6 @@ AppSettingsGUIPageState* ColorSchemaSettingsPageWidget::getState(QString& ) cons
     ColorSchemaSettingsPageState* state = new ColorSchemaSettingsPageState();
     state->colorsDir = colorsDirEdit->text();
     state->customSchemas = customSchemas;
-    int sz = customSchemas.size();
     return state;
 }
 
@@ -424,8 +423,6 @@ void ColorSchemaSettingsPageWidget::sl_onChangeColorSchema(){
 void ColorSchemaSettingsPageWidget::sl_onDeleteColorSchema(){
     QListWidgetItem* item = colorSchemas->currentItem();
     SAFE_POINT(item != NULL, "current item for deletion is NULL",);
-
-    int size1 = customSchemas.size(), size2 = colorSchemas->count();
 
     QString schemaName = item->text();
     for(int i = 0; i < customSchemas.size(); ++i){

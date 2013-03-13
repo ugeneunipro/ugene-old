@@ -504,7 +504,7 @@ public:
     void check() const;
 
     /** Arranges rows in lists order*/
-    void sortRowsByList(const QStringList& order);
+    bool sortRowsByList(const QStringList& order);
 
 private:
     /** Helper-method for adding a row to the alignment */

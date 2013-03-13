@@ -329,7 +329,7 @@ private slots:
     void sl_showCustomSettings();
     void sl_refrenceSeqChanged(const QString &str);
 
-    void sl_setCollapsingRegions(QVector<U2Region>* regions);
+    void sl_setCollapsingRegions(const QStringList* visibleSequences);
     void sl_useDots();
     void sl_fontChanged(QFont font);
 protected:

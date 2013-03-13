@@ -70,9 +70,8 @@ MSAEditorSimilarityColumn::MSAEditorSimilarityColumn(MSAEditorUI* ui, QScrollBar
 }
 
 MSAEditorSimilarityColumn::~MSAEditorSimilarityColumn() {
-    if(NULL != algo) {
-        delete algo;
-    }
+    CHECK(NULL != algo, );
+    delete algo;
 }
 
 QString MSAEditorSimilarityColumn::getTextForRow( int s ) {
@@ -87,9 +86,7 @@ QString MSAEditorSimilarityColumn::getTextForRow( int s ) {
     QString units = algo->areUsePercents() ? "%" : "";
 
     int sim = algo->getSimilarity(refSeqName, currentSeqName);
-    if(-1 == sim) {
-        return tr("(None)");
-    }
+    CHECK(-1 != sim, tr("(None)"));
     return QString("%1").arg(sim) + units;
 }
 
@@ -176,18 +173,15 @@ CreateDistanceMatrixTask::CreateDistanceMatrixTask(const SimilarityStatisticsSet
 
 void CreateDistanceMatrixTask::prepare() {
     MSADistanceAlgorithmFactory* factory = AppContext::getMSADistanceAlgorithmRegistry()->getAlgorithmFactory(s.algoName);
-    if(NULL == factory) {
-        return;
-    }
+    CHECK(NULL != factory,);
     if(s.excludeGaps){
         factory->setFlag(DistanceAlgorithmFlag_ExcludeGaps);
     }else{
         factory->resetFlag(DistanceAlgorithmFlag_ExcludeGaps);
     }
+
     MSADistanceAlgorithm* algo = factory->createAlgorithm(s.ma->getMAlignment());
-    if (algo == NULL) {
-        return;
-    }
+    CHECK(NULL != algo,);
     addSubTask(algo);
 }
 
@@ -411,7 +405,7 @@ void UpdatedTabWidget::sl_addVSplitterTriggered() {
     }
 }
 TabWidgetArea::TabWidgetArea(QWidget* parent) 
-: QWidget(parent), tabsCount(0) {
+: QWidget(parent), tabsCount(0), currentWidget(NULL), currentLayout(NULL) {
 }
 void TabWidgetArea::initialize() {
     currentWidget = createTabWidget();
@@ -441,9 +435,7 @@ void TabWidgetArea::sl_onTabCloseRequested(QWidget* page) {
     //emit si_tabCloseRequested(page);
 }
 void TabWidgetArea::deleteTab(QWidget *page) {
-    if(-1 == currentWidget->indexOf(page)) {
-        return;
-    }
+    CHECK(-1 != currentWidget->indexOf(page),);
     if(NULL != page) {
         delete page;
         tabsCount--;
@@ -517,9 +509,7 @@ void MSAEditorUpdatedTabWidget::addExistingTree() {
         foreach(doc, documents) {
             if(file == doc->getURLString()) {
                 isDocInProject = true;
-                if(doc->isLoaded()) {
-                    return;
-                }
+                CHECK(!doc->isLoaded(),);
                 break;
             }
         }
@@ -542,7 +532,7 @@ void MSAEditorUpdatedTabWidget::addExistingTree() {
 }
 
 MSAEditorTabWidgetArea::MSAEditorTabWidgetArea(MSAEditor* _msa, QWidget* parent )
-: msa(_msa), TabWidgetArea(parent) {
+: msa(_msa), TabWidgetArea(parent), addTabButton(NULL) {
     initialize();
 }
 

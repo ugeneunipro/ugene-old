@@ -40,8 +40,6 @@
 #include <U2View/ButtonSettingsDialog.h>
 #include <U2View/TextSettingsDialog.h>
 #include <U2View/TreeSettingsDialog.h>
-//#include <U2View/TreeOptionsWidget.h>
-
 
 #include <QtGui/QTransform>
 
@@ -122,7 +120,8 @@ public:
 protected:
     virtual QWidget* createWidget();
     virtual void onObjectRenamed(GObject* obj, const QString& oldName);
-
+private slots:
+    void sl_onPhyTreeChanged();
 private:
     QAction*            treeSettingsAction;
 
@@ -202,8 +201,10 @@ public:
     };
 
     virtual void setTreeLayout(TreeLayout newLayout);
-    TreeLayout getTreeLayout() const;
+    const TreeLayout& getTreeLayout() const;
     bool layoutIsRectangular() const {return TreeLayout_Rectangular == layout;}
+
+    void onPhyTreeChanged();
 
 protected:
     virtual void wheelEvent(QWheelEvent *e);
@@ -216,6 +217,10 @@ protected:
     void zooming(qreal newZoom);
     void zooming(qreal horizontalZoom, qreal verticalZoom);
     void defaultZoom();
+
+    virtual void onLayoutChanged(const TreeLayout& ) {}
+signals:
+    void si_settingsChanged();
 protected slots:
     virtual void sl_swapTriggered();
     virtual void sl_collapseTriggered();
@@ -232,6 +237,7 @@ private slots:
     void sl_circularLayoutTriggered();
     void sl_unrootedLayoutTriggered();
     void sl_layoutRecomputed();
+    void sl_rectLayoutRecomputed();
     void sl_chrootTriggered();
     void sl_textSettingsTriggered();
     void sl_treeSettingsTriggered();
