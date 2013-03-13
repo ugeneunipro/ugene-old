@@ -23,6 +23,7 @@
 #define _U2_SQLITE_MSA_DBI_H_
 
 #include "SQLiteDbi.h"
+#include "SQLiteObjectDbi.h"
 
 #include <U2Core/U2AbstractDbi.h>
 
@@ -191,9 +192,6 @@ private:
     /** Removes a record about the row from the database. */
     void removeRecordFromMsaRow(const U2DataId& msaId, qint64 rowId, U2OpStatus& os);
 
-    /** Updates a row record */
-    void updateRecordFromMsaRow(const U2DataId& msaId, const U2MsaRow& row, U2OpStatus& os);
-
     /** Updates "numOfRows" in the "Msa" table */
     void updateNumOfRows(const U2DataId& msaId, qint64 numOfRows, U2OpStatus& os);
 
@@ -233,7 +231,6 @@ private:
     ///////////////////////////////////////////////////////////
     // Core methods
     void updateGapModelCore(const U2DataId &msaId, qint64 msaRowId, const QList<U2MsaGap> &gapModel, U2OpStatus &os);
-    void updateRowContentCore(const U2DataId &msaId, qint64 rowId, const QByteArray &seqBytes, const QList<U2MsaGap> &gaps, U2OpStatus &os);
     void addRowSubcore(const U2DataId &msaId, qint64 numOfRows, qint64 maxRowLength, const QList<qint64> &rowsOrder, U2OpStatus &os);
     void addRowCore(const U2DataId& msaId, qint64 posInMsa, U2MsaRow& row, U2OpStatus& os);
     void addRowsCore(const U2DataId &msaId, const QList<qint64> &posInMsa, QList<U2MsaRow> &rows, U2OpStatus &os);
@@ -241,6 +238,7 @@ private:
     void removeRowCore(const U2DataId& msaId, qint64 rowId, bool removeSequence, U2OpStatus& os);
     void removeRowsCore(const U2DataId& msaId, const QList<qint64> &rowIds, bool removeSequence, U2OpStatus& os);
     void setNewRowsOrderCore(const U2DataId &msaId, const QList<qint64> rowIds, U2OpStatus &os);
+    void updateRowInfoCore(const U2DataId &msaId, const U2MsaRow &row, U2OpStatus& os);
 
     ///////////////////////////////////////////////////////////
     // Undo methods
@@ -249,9 +247,9 @@ private:
     void undoAddRow(const U2DataId& msaId, const QByteArray& modDetails, U2OpStatus& os);
     void undoRemoveRows(const U2DataId& msaId, const QByteArray& modDetails, U2OpStatus& os);
     void undoRemoveRow(const U2DataId& msaId, const QByteArray& modDetails, U2OpStatus& os);
-    void undoUpdateRowContent(const U2DataId& msaId, const QByteArray& modDetails, U2OpStatus& os);
     void undoUpdateGapModel(const U2DataId& msaId, const QByteArray& modDetails, U2OpStatus& os);
     void undoSetNewRowsOrder(const U2DataId& msaId, const QByteArray& modDetails, U2OpStatus& os);
+    void undoUpdateRowInfo(const U2DataId& msaId, const QByteArray& modDetails, U2OpStatus& os);
 
     ///////////////////////////////////////////////////////////
     // Redo methods
@@ -260,9 +258,14 @@ private:
     void redoAddRow(const U2DataId& msaId, const QByteArray& modDetails, U2OpStatus& os);
     void redoRemoveRows(const U2DataId& msaId, const QByteArray& modDetails, U2OpStatus& os);
     void redoRemoveRow(const U2DataId& msaId, const QByteArray& modDetails, U2OpStatus& os);
-    void redoUpdateRowContent(const U2DataId& msaId, const QByteArray& modDetails, U2OpStatus& os);
     void redoUpdateGapModel(const U2DataId& msaId, const QByteArray& modDetails, U2OpStatus& os);
     void redoSetNewRowsOrder(const U2DataId& msaId, const QByteArray& modDetails, U2OpStatus& os);
+    void redoUpdateRowInfo(const U2DataId& msaId, const QByteArray& modDetails, U2OpStatus& os);
+
+    ///////////////////////////////////////////////////////////
+    // Methods included into a multi-action
+    void updateRowInfo(ModificationAction &updateAction, const U2DataId &msaId, const U2MsaRow &row, U2OpStatus &os);
+    void updateGapModel(ModificationAction &updateAction, const U2DataId& msaId, qint64 msaRowId, const QList<U2MsaGap>& gapModel, U2OpStatus& os);
 };
 
 } //namespace

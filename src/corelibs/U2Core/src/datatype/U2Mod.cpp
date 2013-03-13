@@ -36,7 +36,7 @@ const qint64 U2ModType::msaAddedRows          = 3002;
 const qint64 U2ModType::msaAddedRow           = 3003;
 const qint64 U2ModType::msaRemovedRows        = 3004;
 const qint64 U2ModType::msaRemovedRow         = 3005;
-const qint64 U2ModType::msaUpdatedRowContent  = 3006;
+const qint64 U2ModType::msaUpdatedRowInfo     = 3006;
 const qint64 U2ModType::msaUpdatedGapModel    = 3007;
 const qint64 U2ModType::msaSetNewRowsOrder    = 3008;
 

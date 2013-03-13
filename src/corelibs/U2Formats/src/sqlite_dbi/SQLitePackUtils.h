@@ -40,13 +40,6 @@ public:
     static QByteArray packGapDetails(qint64 rowId, const QList<U2MsaGap> &oldGaps, const QList<U2MsaGap> &newGaps);
     static bool unpackGapDetails(const QByteArray &modDetails, qint64 &rowId, QList<U2MsaGap> &oldGaps, QList<U2MsaGap> &newGaps);
 
-    /** Row content details */
-    static QByteArray packRowContentDetails(qint64 rowId, const QByteArray &oldSeq, const QList<U2MsaGap> &oldGaps,
-        const QByteArray &newSeq, const QList<U2MsaGap> &newGaps);
-    static bool unpackRowContentDetails(const QByteArray &modDetails, qint64 &rowId,
-        QByteArray &oldSeq, QList<U2MsaGap> &oldGaps,
-        QByteArray &newSeq, QList<U2MsaGap> &newGaps);
-
     /** Row order */
     static QByteArray packRowOrder(const QList<qint64>& rowIds);
     static bool unpackRowOrder(const QByteArray& str, QList<qint64>& rowsIds);
@@ -62,6 +55,14 @@ public:
     /** Row */
     static QByteArray packRow(qint64 posInMsa, const U2MsaRow& row);
     static bool unpackRow(const QByteArray &modDetails, qint64& posInMsa, U2MsaRow& row);
+
+    /** Row info details */
+    static QByteArray packRowInfoDetails(const U2MsaRow &oldRow, const U2MsaRow &newRow);
+    static bool unpackRowInfoDetails(const QByteArray &modDetails, U2MsaRow &oldRow, U2MsaRow &newRow);
+
+    /** Row info */
+    static QByteArray packRowInfo(const U2MsaRow &row);
+    static bool unpackRowInfo(const QByteArray &str, U2MsaRow& row);
 
     /** Rows */
     static QByteArray packRows(const QList<qint64> &posInMsa, const QList<U2MsaRow> &rows);

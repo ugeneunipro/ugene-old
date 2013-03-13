@@ -43,7 +43,7 @@ public:
     static const qint64 msaAddedRow;
     static const qint64 msaRemovedRows;
     static const qint64 msaRemovedRow;
-    static const qint64 msaUpdatedRowContent;
+    static const qint64 msaUpdatedRowInfo;
     static const qint64 msaUpdatedGapModel;
     static const qint64 msaSetNewRowsOrder;
 

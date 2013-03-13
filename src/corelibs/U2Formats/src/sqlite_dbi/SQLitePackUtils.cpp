@@ -98,52 +98,6 @@ bool PackUtils::unpackGapDetails(const QByteArray &modDetails, qint64 &rowId, QL
     return true;
 }
 
-QByteArray PackUtils::packRowContentDetails(qint64 rowId, const QByteArray &oldSeq, const QList<U2MsaGap> &oldGaps,
-    const QByteArray &newSeq, const QList<U2MsaGap> &newGaps) {
-    QByteArray result = VERSION;
-    result += SEP;
-    result += QByteArray::number(rowId);
-    result += SEP;
-    result += oldSeq;
-    result += SEP;
-    result += packGaps(oldGaps);
-    result += SEP;
-    result += newSeq;
-    result += SEP;
-    result += packGaps(newGaps);
-    return result;
-}
-
-bool PackUtils::unpackRowContentDetails(const QByteArray &modDetails, qint64 &rowId,
-    QByteArray &oldSeq, QList<U2MsaGap> &oldGaps,
-    QByteArray &newSeq, QList<U2MsaGap> &newGaps) {
-    QList<QByteArray> tokens = modDetails.split(SEP);
-    SAFE_POINT(6 == tokens.size(), QString("Invalid row content modDetails string '%1'").arg(QString(modDetails)), false);
-    { // version
-        SAFE_POINT(VERSION == tokens[0], QString("Invalid modDetails version '%1'").arg(tokens[0].data()), false);
-    }
-    { // rowId
-        bool ok = false;
-        rowId = tokens[1].toLongLong(&ok);
-        SAFE_POINT(ok, QString("Invalid row content modDetails rowId '%1'").arg(tokens[1].data()), false);
-    }
-    { // oldSeq
-        oldSeq = tokens[2];
-    }
-    { // oldGaps
-        bool ok = unpackGaps(tokens[3], oldGaps);
-        SAFE_POINT(ok, QString("Invalid row content string '%1'").arg(tokens[3].data()), false);
-    }
-    { // newSeq
-        newSeq = tokens[4];
-    }
-    { // newGaps
-        bool ok = unpackGaps(tokens[5], newGaps);
-        SAFE_POINT(ok, QString("Invalid row content string '%1'").arg(tokens[5].data()), false);
-    }
-    return true;
-}
-
 QByteArray PackUtils::packRowOrder(const QList<qint64>& rowIds) {
     QByteArray result;
     foreach (qint64 rowId, rowIds) {
@@ -183,7 +137,7 @@ QByteArray PackUtils::packRowOrderDetails(const QList<qint64>& oldOrder, const Q
 bool PackUtils::unpackRowOrderDetails(const QByteArray &modDetails, QList<qint64>& oldOrder, QList<qint64>& newOrder) {
     QList<QByteArray> tokens = modDetails.split(SEP);
     SAFE_POINT(3 == tokens.size(), QString("Invalid rows order modDetails string '%1'").arg(QString(modDetails)), false);
-    { // vesrion
+    { // version
         SAFE_POINT(VERSION == tokens[0], QString("Invalid modDetails version '%1'").arg(tokens[0].data()), false);
     }
     { // oldOrder
@@ -282,6 +236,62 @@ bool PackUtils::unpackRow(const QByteArray &modDetails, qint64& posInMsa, U2MsaR
     return true;
 }
 
+QByteArray PackUtils::packRowInfo(const U2MsaRow &row) {
+    QByteArray result;
+    result += QByteArray::number(row.rowId);
+    result += SECOND_SEP;
+    result += row.sequenceId.toHex();
+    result += SECOND_SEP;
+    result += QByteArray::number(row.gstart);
+    result += SECOND_SEP;
+    result += QByteArray::number(row.gend);
+    result += SECOND_SEP;
+    result += QByteArray::number(row.length);
+    return result;
+}
+
+bool PackUtils::unpackRowInfo(const QByteArray &str, U2MsaRow& row) {
+    QList<QByteArray> tokens = str.split(SECOND_SEP);
+    CHECK(5 == tokens.count(), false);
+
+    bool ok = false;
+
+    row.rowId = tokens[0].toLongLong(&ok);
+    CHECK(ok, false);
+    row.sequenceId = QByteArray::fromHex(tokens[1]);
+    row.gstart = tokens[2].toLongLong(&ok);
+    CHECK(ok, false);
+    row.gend = tokens[3].toLongLong(&ok);
+    CHECK(ok, false);
+    row.length = tokens[4].toLongLong(&ok);
+    CHECK(ok, false);
+
+    return true;
+}
+
+QByteArray PackUtils::packRowInfoDetails(const U2MsaRow &oldRow, const U2MsaRow &newRow) {
+    QByteArray result = VERSION;
+    result += SEP;
+    result += packRowInfo(oldRow);
+    result += SEP;
+    result += packRowInfo(newRow);
+    return result;
+}
+
+bool PackUtils::unpackRowInfoDetails(const QByteArray &modDetails, U2MsaRow &oldRow, U2MsaRow &newRow) {
+    QList<QByteArray> tokens = modDetails.split(SEP);
+    SAFE_POINT(3 == tokens.count(), QString("Invalid modDetails '%1'!").arg(QString(modDetails)), false);
+    SAFE_POINT(VERSION == tokens[0], QString("Invalid modDetails version '%1'").arg(QString(tokens[0])), false);
+    
+    bool ok = false;
+    ok = unpackRowInfo(tokens[1], oldRow);
+    CHECK(ok, false);
+    ok = unpackRowInfo(tokens[2], newRow);
+    CHECK(ok, false);
+    
+    return true;
+}
+
 QByteArray PackUtils::packAlphabetDetails(const U2AlphabetId &oldAlphabet, const U2AlphabetId &newAlphabet) {
     QByteArray result = VERSION;
     result += SEP;
@@ -356,7 +366,7 @@ bool PackUtils::unpackRows(const QByteArray &modDetails, QList<qint64> &posInMsa
 
 QByteArray PackUtils::packSequenceDataDetails(const U2Region &replacedRegion, const QByteArray &oldData,
                                               const QByteArray &newData, const QVariantMap &hints) {
-    // replacedRegion length is used only for check, it is not storaged.
+    // replacedRegion length is used only for check, it is not stored
     SAFE_POINT(replacedRegion.length >= oldData.length(), "oldData length does not match to the region length.", QByteArray());
     QByteArray result = VERSION;
     result += SEP;

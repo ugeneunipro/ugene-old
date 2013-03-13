@@ -21,8 +21,8 @@
 
 #include "SQLiteMsaDbi.h"
 #include "SQLiteModDbi.h"
-#include "SQLiteObjectDbi.h"
 #include "SQLitePackUtils.h"
+#include "SQLiteSequenceDbi.h"
 
 #include <U2Core/U2SqlHelpers.h>
 #include <U2Core/U2SafePoints.h>
@@ -287,18 +287,56 @@ void SQLiteMsaDbi::updateRowName(const U2DataId& msaId, qint64 rowId, const QStr
 
 void SQLiteMsaDbi::updateRowContent(const U2DataId& msaId, qint64 rowId, const QByteArray& seqBytes, const QList<U2MsaGap>& gaps, U2OpStatus& os) {
     SQLiteTransaction t(db, os);
+    Q_UNUSED(t);
+
     ModificationAction updateAction(dbi, msaId);
     U2TrackModType trackMod = updateAction.prepare(os);
-    CHECK_OP(os, );
+    SAFE_POINT_OP(os, );
 
-    U2UseCommonMultiModStep* multiModStep = NULL;
-    if (TrackOnUpdate == trackMod) {
-        multiModStep = new U2UseCommonMultiModStep(dbi, msaId, os);
+    // Get the row object
+    U2MsaRow row = getRow(msaId, rowId, os);
+    SAFE_POINT_OP(os, );
+
+    // Update the sequence data
+    QVariantMap hints;
+    dbi->getSQLiteSequenceDbi()->updateSequenceData(updateAction,
+        row.sequenceId, U2_REGION_MAX, seqBytes, hints, os);
+    SAFE_POINT_OP(os, );
+
+    // Update the row object
+    U2MsaRow newRow(row);
+    qint64 seqLength = seqBytes.length();
+    newRow.gstart = 0;
+    newRow.gend = seqLength;
+    newRow.length = calculateRowLength(seqLength, gaps);
+    updateRowInfo(updateAction, msaId, newRow, os);
+    SAFE_POINT_OP(os, );
+
+    // Update the gap model
+    // WARNING: this update must go after the row info update to recalculate the msa length properly
+    updateGapModel(updateAction, msaId, rowId, gaps, os);
+    SAFE_POINT_OP(os, );
+
+    // Save tracks, if required; increment versions
+    updateAction.complete(os);
+    SAFE_POINT_OP(os, );
+}
+
+void SQLiteMsaDbi::updateRowInfo(ModificationAction &updateAction, const U2DataId &msaId, const U2MsaRow &row, U2OpStatus &os) {
+    QByteArray modDetails;
+    if (TrackOnUpdate == updateAction.getTrackModType()) {
+        U2MsaRow oldRow = getRow(msaId, row.rowId, os);
+        SAFE_POINT_OP(os, );
+
+        modDetails = PackUtils::packRowInfoDetails(oldRow, row);
     }
 
-    updateRowContentCore(msaId, rowId, seqBytes, gaps, os);
-    CHECK_OP(os, );
-    delete multiModStep;
+    updateRowInfoCore(msaId, row, os);
+    SAFE_POINT_OP(os, );
+
+    // Track the modification, if required; add the object to the list (versions of the objects will be incremented on the updateAction completion)
+    updateAction.addModification(msaId, U2ModType::msaUpdatedRowInfo, modDetails, os);
+    SAFE_POINT_OP(os, );
 }
 
 QList<qint64> SQLiteMsaDbi::getRowsOrder(const U2DataId& msaId, U2OpStatus& os) {
@@ -595,25 +633,32 @@ void SQLiteMsaDbi::updateNumOfRows(const U2DataId& msaId, qint64 numOfRows, U2Op
 
 void SQLiteMsaDbi::updateGapModel(const U2DataId& msaId, qint64 msaRowId, const QList<U2MsaGap>& gapModel, U2OpStatus& os) {
     SQLiteTransaction t(db, os);
+    Q_UNUSED(t);
+
     ModificationAction updateAction(dbi, msaId);
     U2TrackModType trackMod = updateAction.prepare(os);
-    CHECK_OP(os, );
+    SAFE_POINT_OP(os, );
 
+    updateGapModel(updateAction, msaId, msaRowId, gapModel, os);
+    SAFE_POINT_OP(os, );
+
+    updateAction.complete(os);
+    SAFE_POINT_OP(os, );
+}
+
+void SQLiteMsaDbi::updateGapModel(ModificationAction &updateAction, const U2DataId& msaId, qint64 msaRowId, const QList<U2MsaGap>& gapModel, U2OpStatus& os) {
     QByteArray gapsDetails;
-    if (TrackOnUpdate == trackMod) {
+    if (TrackOnUpdate == updateAction.getTrackModType()) {
         U2MsaRow row = getRow(msaId, msaRowId, os);
-        CHECK_OP(os, );
+        SAFE_POINT_OP(os, );
         gapsDetails = PackUtils::packGapDetails(msaRowId, row.gaps, gapModel);
     }
 
     updateGapModelCore(msaId, msaRowId, gapModel, os);
-    CHECK_OP(os, );
-
-    // Increment version; track the modification, if required
-    updateAction.addModification(msaId, U2ModType::msaUpdatedGapModel, gapsDetails, os);
     SAFE_POINT_OP(os, );
 
-    updateAction.complete(os);
+    // Track the modification, if required; add the object to the list (versions of the objects will be incremented on the updateAction completion)
+    updateAction.addModification(msaId, U2ModType::msaUpdatedGapModel, gapsDetails, os);
     SAFE_POINT_OP(os, );
 }
 
@@ -736,18 +781,6 @@ QByteArray SQLiteMsaDbi::getRemovedRowDetails(const U2MsaRow& row) {
     return res;
 }
 
-void SQLiteMsaDbi::updateRecordFromMsaRow(const U2DataId& msaId, const U2MsaRow& row, U2OpStatus& os) {
-    SQLiteQuery q("UPDATE MsaRow SET sequence = ?1, gstart = ?2, gend = ?3 WHERE msa = ?4 AND rowId = ?5", db, os);
-    CHECK_OP(os, );
-
-    q.bindDataId(1, row.sequenceId);
-    q.bindInt64(2, row.gstart);
-    q.bindInt64(3, row.gend);
-    q.bindDataId(4, msaId);
-    q.bindInt64(5, row.rowId);
-    q.update(1);
-}
-
 qint64 SQLiteMsaDbi::getPosInMsa(const U2DataId &msaId, qint64 rowId, U2OpStatus &os) {
     SQLiteQuery q("SELECT pos FROM MsaRow WHERE msa = ?1 AND rowId = ?2", db, os);
     CHECK_OP(os, -1);
@@ -778,8 +811,8 @@ void SQLiteMsaDbi::undo(const U2DataId& msaId, qint64 modType, const QByteArray&
     else if (U2ModType::msaRemovedRow == modType) {
         undoRemoveRow(msaId, modDetails, os);
     }
-    else if (U2ModType::msaUpdatedRowContent == modType) {
-        undoUpdateRowContent(msaId, modDetails, os);
+    else if (U2ModType::msaUpdatedRowInfo == modType) {
+        undoUpdateRowInfo(msaId, modDetails, os);
     }
     else if (U2ModType::msaUpdatedGapModel == modType) {
         undoUpdateGapModel(msaId, modDetails, os);
@@ -809,8 +842,8 @@ void SQLiteMsaDbi::redo(const U2DataId& msaId, qint64 modType, const QByteArray&
     else if (U2ModType::msaRemovedRow == modType) {
         redoRemoveRow(msaId, modDetails, os);
     }
-    else if (U2ModType::msaUpdatedRowContent == modType) {
-        redoUpdateRowContent(msaId, modDetails, os);
+    else if (U2ModType::msaUpdatedRowInfo == modType) {
+        redoUpdateRowInfo(msaId, modDetails, os);
     }
     else if (U2ModType::msaUpdatedGapModel == modType) {
         redoUpdateGapModel(msaId, modDetails, os);
@@ -849,30 +882,6 @@ void SQLiteMsaDbi::updateGapModelCore(const U2DataId &msaId, qint64 msaRowId, co
 
     // Re-calculate the alignment length
     recalculateMsaLength(msaId, os);
-}
-
-void SQLiteMsaDbi::updateRowContentCore(const U2DataId &msaId, qint64 rowId, const QByteArray &seqBytes, const QList<U2MsaGap> &gaps, U2OpStatus &os) {
-    SQLiteTransaction t(db, os);
-    // Get the row object
-    U2MsaRow row = getRow(msaId, rowId, os);
-    CHECK_OP(os, );
-
-    // Update the sequence data
-    QVariantMap hints;
-    dbi->getSequenceDbi()->updateSequenceData(row.sequenceId, U2_REGION_MAX, seqBytes, hints, os);
-    CHECK_OP(os, );
-
-    // Update the row object
-    qint64 seqLength = seqBytes.length();
-    row.gstart = 0;
-    row.gend = seqLength;
-    row.length = calculateRowLength(seqLength, gaps);
-
-    updateRecordFromMsaRow(msaId, row, os);
-    CHECK_OP(os, );
-
-    // Update row gap model
-    updateGapModel(msaId, rowId, gaps, os);
 }
 
 void SQLiteMsaDbi::addRowSubcore(const U2DataId &msaId, qint64 numOfRows, qint64 maxRowLength, const QList<qint64> &rowsOrder, U2OpStatus &os) {
@@ -1003,6 +1012,18 @@ void SQLiteMsaDbi::setNewRowsOrderCore(const U2DataId &msaId, const QList<qint64
         q.bindInt64(3, rowId);
         q.execute();
     }
+}
+
+void SQLiteMsaDbi::updateRowInfoCore(const U2DataId& msaId, const U2MsaRow& row, U2OpStatus& os) {
+    SQLiteQuery q("UPDATE MsaRow SET sequence = ?1, gstart = ?2, gend = ?3 WHERE msa = ?4 AND rowId = ?5", db, os);
+    SAFE_POINT_OP(os, );
+
+    q.bindDataId(1, row.sequenceId);
+    q.bindInt64(2, row.gstart);
+    q.bindInt64(3, row.gend);
+    q.bindDataId(4, msaId);
+    q.bindInt64(5, row.rowId);
+    q.update(1);
 }
 
 /************************************************************************/
@@ -1146,36 +1167,6 @@ void SQLiteMsaDbi::redoRemoveRow(const U2DataId& msaId, const QByteArray& modDet
     removeRowCore(msaId, row.rowId, false, os);
 }
 
-void SQLiteMsaDbi::undoUpdateRowContent(const U2DataId& msaId, const QByteArray& modDetails, U2OpStatus& os) {
-    qint64 rowId = 0;
-    QByteArray oldSeq;
-    QByteArray newSeq;
-    QList<U2MsaGap> oldGaps;
-    QList<U2MsaGap> newGaps;
-    bool ok = PackUtils::unpackRowContentDetails(modDetails, rowId, oldSeq, oldGaps, newSeq, newGaps);
-    if (!ok) {
-        os.setError("An error occurred during updating row content!");
-        return;
-    }
-
-    updateRowContentCore(msaId, rowId, oldSeq, oldGaps, os);
-}
-
-void SQLiteMsaDbi::redoUpdateRowContent(const U2DataId& msaId, const QByteArray& modDetails, U2OpStatus& os) {
-    qint64 rowId = 0;
-    QByteArray oldSeq;
-    QByteArray newSeq;
-    QList<U2MsaGap> oldGaps;
-    QList<U2MsaGap> newGaps;
-    bool ok = PackUtils::unpackRowContentDetails(modDetails, rowId, oldSeq, oldGaps, newSeq, newGaps);
-    if (!ok) {
-        os.setError("An error occurred during updating row content!");
-        return;
-    }
-
-    updateRowContentCore(msaId, rowId, newSeq, newGaps, os);
-}
-
 void SQLiteMsaDbi::undoUpdateGapModel(const U2DataId& msaId, const QByteArray& modDetails, U2OpStatus& os) {
     qint64 rowId = 0;
     QList<U2MsaGap> oldGaps;
@@ -1226,5 +1217,34 @@ void SQLiteMsaDbi::redoSetNewRowsOrder(const U2DataId& msaId, const QByteArray& 
 
     setNewRowsOrderCore(msaId, newOrder, os);
 }
+
+void SQLiteMsaDbi::undoUpdateRowInfo(const U2DataId& msaId, const QByteArray& modDetails, U2OpStatus& os) {
+    U2MsaRow oldRow;
+    U2MsaRow newRow;
+    bool ok = PackUtils::unpackRowInfoDetails(modDetails, oldRow, newRow);
+    if (!ok) {
+        os.setError("An error occurred during updating a row info!");
+        return;
+    }
+    SAFE_POINT(oldRow.rowId == newRow.rowId, "Incorrect rowId!", );
+    SAFE_POINT(oldRow.sequenceId == newRow.sequenceId, "Incorrect sequenceId!", );
+
+    updateRowInfoCore(msaId, oldRow, os);
+}
+
+void SQLiteMsaDbi::redoUpdateRowInfo(const U2DataId& msaId, const QByteArray& modDetails, U2OpStatus& os) {
+    U2MsaRow oldRow;
+    U2MsaRow newRow;
+    bool ok = PackUtils::unpackRowInfoDetails(modDetails, oldRow, newRow);
+    if (!ok) {
+        os.setError("An error occurred during updating a row info!");
+        return;
+    }
+    SAFE_POINT(oldRow.rowId == newRow.rowId, "Incorrect rowId!", );
+    SAFE_POINT(oldRow.sequenceId == newRow.sequenceId, "Incorrect sequenceId!", );
+
+    updateRowInfoCore(msaId, newRow, os);
+}
+
 
 } //namespace
