@@ -787,7 +787,7 @@ GUI_TEST_CLASS_DEFINITION(test_0011_5){//DIFFERENCE: delete sequence is checked
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0011_6){//DIFFERENCE: add sequence is checked
-//Check Undo/Redo functional
+    //Check Undo/Redo functional
 //1. Open document COI.aln
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
 //2. add sequence to alignment
@@ -820,6 +820,28 @@ GUI_TEST_CLASS_DEFINITION(test_0011_6){//DIFFERENCE: add sequence is checked
     GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(-10,18));
     GTUtilsDialog::waitForDialog(os, new RenameSequenceFiller(os, "raw", "raw"));
     GTMouseDriver::doubleClick(os);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0011_7){//DIFFERENCE: add sequence is checked
+//Check Undo/Redo functional
+//1. Open document COI.aln
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+//2. insert gap->undo->insert gap->undo->redo
+    QAbstractButton *undo= GTAction::button(os,"msa_action_undo");
+    QAbstractButton *redo= GTAction::button(os,"msa_action_redo");
+
+    GTUtilsMSAEditorSequenceArea::click(os, QPoint(0,0));
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["space"]);
+    GTWidget::click(os, undo);
+
+    GTUtilsMSAEditorSequenceArea::click(os, QPoint(0,0));
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["space"]);
+    GTWidget::click(os, undo);
+
+    GTWidget::click(os, redo);
+
+// Expected state: redo button is disabled
+    CHECK_SET_ERR(!redo->isEnabled(), "Redo button is enebled");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0012){
