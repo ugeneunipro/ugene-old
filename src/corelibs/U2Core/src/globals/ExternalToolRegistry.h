@@ -38,15 +38,17 @@ namespace U2 {
 class U2CORE_EXPORT ExternalToolValidation {
 public:
     
-    ExternalToolValidation(const QString& _executableFileName, const QStringList& _arguments, const QString& _expectedMsg, const QStrStrMap& _possibleErrorsDescr = QStrStrMap())
-        :executableFileName(_executableFileName)
+    ExternalToolValidation(const QString& _toolRunnerProgram, const QString& _executableFile, const QStringList& _arguments, const QString& _expectedMsg, const QStrStrMap& _possibleErrorsDescr = QStrStrMap())
+        :toolRunnerProgram(_toolRunnerProgram)
+        ,executableFile(_executableFile)
         ,arguments(_arguments)
         ,expectedMsg(_expectedMsg)
         ,possibleErrorsDescr(_possibleErrorsDescr)
     {}
 
 public:
-    QString executableFileName;
+    QString toolRunnerProgram;
+    QString executableFile;
     QStringList arguments;
     QString expectedMsg;
     QStrStrMap possibleErrorsDescr;
@@ -66,6 +68,7 @@ public:
     const QIcon&        getGrayIcon()  const { return grayIcon; }
     const QIcon&        getWarnIcon()  const { return warnIcon; }
     const QString&      getDescription()  const { return description; }
+    const QString&      getToolRunnerProgram()  const { return toolRunnerProgramm; }
     const QString&      getExecutableFileName()  const { return executableFileName; }
     const QStringList&  getValidationArguments()  const { return validationArguments; }
     const QString&      getValidMessage()  const { return validMessage; }
@@ -92,6 +95,7 @@ protected:
     QIcon       grayIcon;
     QIcon       warnIcon;
     QString     description;
+    QString     toolRunnerProgramm;
     QString     executableFileName;
     QStringList validationArguments;
     QString     validMessage;

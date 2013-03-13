@@ -67,6 +67,10 @@ ExternalToolRunTask::ExternalToolRunTask(const QString& _toolName, const QString
 //        return;
     }
     program=tool->getPath();
+    toolRunnerProgram = tool->getToolRunnerProgram();
+    if (!toolRunnerProgram.isEmpty()){
+        program = toolRunnerProgram + " " + program;
+    }
 
     processEnvironment = QProcessEnvironment::systemEnvironment();
     foreach (QString path, additionalPaths) {

@@ -47,6 +47,8 @@ void ConservationPlotSupport::initialize() {
 
     executableFileName = "conservation_plot.py";
 
+    toolRunnerProgramm = "python";
+
     validMessage = "conservation_plot.py";
     validationArguments << "--version";
 

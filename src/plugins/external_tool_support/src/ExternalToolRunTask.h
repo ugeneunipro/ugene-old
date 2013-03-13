@@ -51,6 +51,7 @@ public:
 private:
     QStringList             arguments;
     QString                 program;
+    QString                 toolRunnerProgram;
     ExternalToolLogParser*  logParser;
     QString                 toolName;
     QProcess*               externalToolProcess;

@@ -40,7 +40,12 @@ ExternalToolValidateTask::ExternalToolValidateTask(const QString& _toolName) :
         program=tool->getPath();
         assert(program!="");
         validations.append(tool->getToolAdditionalValidations());
-        validations.append(tool->getToolValidation());
+        ExternalToolValidation origianlValidation = tool->getToolValidation();
+        origianlValidation.executableFile = program;
+        if (!origianlValidation.toolRunnerProgram.isEmpty()){
+            origianlValidation.executableFile = origianlValidation.toolRunnerProgram+" "+origianlValidation.executableFile;
+        }
+        validations.append(origianlValidation);
         coreLog.trace("Creating validation task for: " + toolName);
         externalToolProcess=NULL;
         isValid=false;
@@ -60,7 +65,10 @@ ExternalToolValidateTask::ExternalToolValidateTask(const QString& _toolName, con
         assert(program!="");
         validations.append(tool->getToolAdditionalValidations());
         ExternalToolValidation origianlValidation = tool->getToolValidation();
-        origianlValidation.executableFileName = path;
+        origianlValidation.executableFile = path;
+        if (!origianlValidation.toolRunnerProgram.isEmpty()){
+            origianlValidation.executableFile = origianlValidation.toolRunnerProgram+" "+origianlValidation.executableFile;
+        }
         validations.append(origianlValidation);
         coreLog.trace("Creating validation task for: " + toolName);
         externalToolProcess=NULL;
@@ -89,7 +97,7 @@ void ExternalToolValidateTask::run(){
         QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
         externalToolProcess->setProcessEnvironment(env);
 
-        bool started = WorkflowUtils::startExternalProcess(externalToolProcess, validation.executableFileName, validation.arguments);
+        bool started = WorkflowUtils::startExternalProcess(externalToolProcess, validation.executableFile, validation.arguments);
 
         if(!started){
             stateInfo.setError(tr("Tool does not start.<br>It is possible that the specified executable file <i>%1</i> for %2 tool is invalid. You can change the path to the executable file in the external tool settings in the global preferences.").arg(program).arg(toolName));
@@ -141,6 +149,9 @@ bool ExternalToolValidateTask::parseLog(const ExternalToolValidation& validation
                 }
             }
         }
+    }
+    if (isValid){
+        return true;
     }
     QString errLog=QString(externalToolProcess->readAllStandardError());
     if(!errLog.isEmpty()){

@@ -47,6 +47,8 @@ void SeqPosSupport::initialize() {
 
     executableFileName = "MDSeqPos.py";
 
+    toolRunnerProgramm = "python";
+
     validMessage = "mdseqpos";
     validationArguments << "--version";
 

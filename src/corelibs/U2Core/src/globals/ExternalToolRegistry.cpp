@@ -53,7 +53,7 @@ void ExternalTool::setVersion(const QString& _version) {
 }
 
 ExternalToolValidation ExternalTool::getToolValidation() {
-    ExternalToolValidation result(executableFileName, validationArguments, validMessage, errorDescriptions);
+    ExternalToolValidation result(toolRunnerProgramm, executableFileName, validationArguments, validMessage, errorDescriptions);
     return result; 
 }
 
@@ -111,7 +111,7 @@ ExternalToolValidation DefaultExternalToolValidations::pythonValidation(){
     QStrStrMap perrMsgs;
     perrMsgs.insert(ExternalToolValidation::DEFAULT_DESCR_KEY, "Python 2 required for this tool. Please install Python or set your PATH variable if you have it installed.");
 
-    ExternalToolValidation pythonValidation(pythonExecutable, pythonArgs, pmsg, perrMsgs);
+    ExternalToolValidation pythonValidation("", pythonExecutable, pythonArgs, pmsg, perrMsgs);
     return pythonValidation;
 }
 
@@ -123,7 +123,7 @@ ExternalToolValidation DefaultExternalToolValidations::rValidation(){
     QStrStrMap rerrMsgs;
     rerrMsgs.insert(ExternalToolValidation::DEFAULT_DESCR_KEY, "R Script required for this tool. Please install R Script or set your PATH variable if you have it installed.");
 
-    ExternalToolValidation rValidation(rExecutable, rArgs, rmsg, rerrMsgs);
+    ExternalToolValidation rValidation("", rExecutable, rArgs, rmsg, rerrMsgs);
     return rValidation;
 }
 

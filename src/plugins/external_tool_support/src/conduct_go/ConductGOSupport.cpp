@@ -45,6 +45,8 @@ void ConductGOSupport::initialize() {
 
     executableFileName = "go_analysis.py";
 
+    toolRunnerProgramm = "python";
+
     validMessage = "Conduct GO";
     validationArguments << "--version";
 

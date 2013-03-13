@@ -54,6 +54,8 @@ void CEASSupport::initialize() {
 
     executableFileName = "ceas.py";
 
+    toolRunnerProgramm = "python";
+
     validMessage = "package version";
     validationArguments << "--version";
 
