@@ -692,6 +692,65 @@ GUI_TEST_CLASS_DEFINITION(test_0011_3){
 
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0011_4){//DIFFERENCE: lock document is checked
+//Check Undo/Redo functional
+//1. Open document COI.aln
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+//2. Insert seversl spaces somewhere
+    GTUtilsMSAEditorSequenceArea::click(os, QPoint(0,0));
+    for(int i=0; i<6; i++){
+        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["space"]);
+        GTGlobals::sleep(200);
+    }
+
+    QAbstractButton *undo= GTAction::button(os,"msa_action_undo");
+    QAbstractButton *redo= GTAction::button(os,"msa_action_redo");
+//3. Undo this
+    for (int i=0; i<3; i++){
+        GTWidget::click(os,undo);
+        GTGlobals::sleep(200);
+    }
+//4. lock document
+    GTMouseDriver::moveTo(os,GTUtilsProjectTreeView::getItemCenter(os,"COI.aln"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os,QStringList()<<ACTION_PROJECT__EDIT_MENU<<ACTION_DOCUMENT__LOCK));
+    GTMouseDriver::click(os, Qt::RightButton);
+
+//Expected state: Undo and redo buttons are disabled
+    CHECK_SET_ERR(!undo->isEnabled(),"Undo button is enebled after locking document");
+    CHECK_SET_ERR(!redo->isEnabled(),"Redo button is enebled after locking document");
+
+//5. Unlock document
+    GTMouseDriver::moveTo(os,GTUtilsProjectTreeView::getItemCenter(os,"COI.aln"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os,QStringList()<<ACTION_PROJECT__EDIT_MENU<<ACTION_DOCUMENT__UNLOCK));
+    GTMouseDriver::click(os, Qt::RightButton);
+
+//Expected state: undo and redo buttons are enebled and work properly
+    CHECK_SET_ERR(undo->isEnabled(),"Undo button is disabled after unlocking document");
+    CHECK_SET_ERR(redo->isEnabled(),"Redo button is disabled after unlocking document");
+
+    //check undo
+    GTWidget::click(os,GTUtilsMdi::activeWindow(os));
+    GTWidget::click(os, undo);
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0,0), QPoint(9,0));
+    GTKeyboardDriver::keyClick(os,'c',GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(500);
+    QString clipboardText = GTClipboard::text(os);
+    CHECK_SET_ERR(clipboardText=="--TAAGACTT","Undo works wrong. Found text is: " + clipboardText);
+
+    //check redo
+    GTWidget::click(os,GTUtilsMdi::activeWindow(os));
+    GTWidget::click(os, redo);
+    GTGlobals::sleep(200);
+    GTWidget::click(os, redo);
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0,0), QPoint(9,0));
+    GTKeyboardDriver::keyClick(os,'c',GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(500);
+    clipboardText = GTClipboard::text(os);
+    CHECK_SET_ERR(clipboardText=="----TAAGAC", "Redo works wrong. Found text is: " + clipboardText);
+}
+
+
+
 GUI_TEST_CLASS_DEFINITION(test_0012){
 //Check copy
 //1. Open document _common_data\scenarios\msa\ma2_gapped.aln
