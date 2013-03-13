@@ -36,8 +36,8 @@ namespace U2 {
 
 #define GT_METHOD_NAME "findTreeItem"
 QTreeWidgetItem* GTUtilsWorkflowDesigner::findTreeItem(U2OpStatus &os,QString itemName){
-    QString s;
-    QTreeWidgetItem* foundItem = NULL;
+
+    QTreeWidgetItem* foundItem=NULL;
     QTreeWidget *w=qobject_cast<QTreeWidget*>(GTWidget::findWidget(os,"WorkflowPaletteElements"));
     CHECK_SET_ERR_RESULT(w!=NULL,"WorkflowPaletteElements is null", NULL);
 
@@ -51,27 +51,46 @@ QTreeWidgetItem* GTUtilsWorkflowDesigner::findTreeItem(U2OpStatus &os,QString it
         }
 
         foreach(QTreeWidgetItem* item, innerList){
-            s.append(item->text(0));
-            if(item->text(0).contains(itemName)){
-                foundItem = item;
+            if(item->data(0,Qt::UserRole).value<QAction*>()->text()==itemName){
+                foundItem=item;
+                return foundItem;
             }
         }
-    }os.setError(s);
-    //CHECK_SET_ERR_RESULT(foundItem!=NULL,"Item is null", NULL);
-
-    return foundItem;
+    }
+    if(foundItem!=NULL){os.setError("error");}
+    GT_CHECK_RESULT(foundItem!=NULL,"Item \"" + itemName + "\" not found in treeWidget",NULL);
 }
 #undef GT_METHOD_NAME
 
+
+#define GT_METHOD_NAME "addAlgorithm"
 void GTUtilsWorkflowDesigner::addAlgorithm(U2OpStatus &os, QString algName){
-    QTreeWidgetItem *w = findTreeItem(os, algName);
+    QTreeWidgetItem *alg = findTreeItem(os, algName);
     GTGlobals::sleep(100);
-    CHECK_SET_ERR(w!=NULL,"algorithm is NULL");
+    CHECK_SET_ERR(alg!=NULL,"algorithm is NULL");
 
-    GTMouseDriver::moveTo(os,GTTreeWidget::getItemCenter(os,w));
-
+    selectAlgorithm(os,alg);
     GTWidget::click(os, GTWidget::findWidget(os,"sceneView"));
+    GTGlobals::sleep(1000);
 }
+#undef GT_METHOD_NAME
+
+
+#define GT_METHOD_NAME "selectAlgorithm"
+void GTUtilsWorkflowDesigner::selectAlgorithm(U2OpStatus &os, QTreeWidgetItem* algorithm){
+    GT_CHECK(algorithm!=NULL, "algorithm is NULL");
+    GTGlobals::sleep(500);
+
+    QTreeWidget *w=qobject_cast<QTreeWidget*>(GTWidget::findWidget(os,"WorkflowPaletteElements"));
+    QList<QTreeWidgetItem*> childrenList = w->findItems("",Qt::MatchContains);
+    foreach(QTreeWidgetItem* child,childrenList){
+        child->setExpanded(false);
+    }
+
+    algorithm->parent()->setExpanded(true);
+    GTMouseDriver::moveTo(os,GTTreeWidget::getItemCenter(os,algorithm));
+}
+#undef GT_METHOD_NAME
 
 QPoint GTUtilsWorkflowDesigner::getItemCenter(U2OpStatus &os,QString itemName){
     QRect r = getItemRect(os, itemName);

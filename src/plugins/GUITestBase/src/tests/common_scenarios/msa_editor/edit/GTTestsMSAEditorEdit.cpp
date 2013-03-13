@@ -42,6 +42,7 @@
 #include "runnables/ugene/corelibs/U2View/ov_msa/DeleteGapsDialogFiller.h"
 #include "runnables/ugene/corelibs/U2View/ov_msa/ConsensusSelectorDialogFiller.h"
 #include "runnables/ugene/corelibs/U2View/ov_msa/ExtractSelectedAsMSADialogFiller.h"
+#include "runnables/ugene/corelibs/U2Gui/util/RenameSequenceFiller.h"
 #include <U2View/MSAEditor.h>
 #include <U2View/MSAEditorSequenceArea.h>
 #include <QComboBox>
@@ -749,7 +750,41 @@ GUI_TEST_CLASS_DEFINITION(test_0011_4){//DIFFERENCE: lock document is checked
     CHECK_SET_ERR(clipboardText=="----TAAGAC", "Redo works wrong. Found text is: " + clipboardText);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0011_5){//DIFFERENCE: add sequence is checked
+//Check Undo/Redo functional
+//1. Open document COI.aln
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+//2. Delete 4-th sequence
+    GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(-10,3));
+    GTUtilsDialog::waitForDialog(os, new RenameSequenceFiller(os, "Roeseliana_roeseli", "Roeseliana_roeseli"));
+    GTMouseDriver::doubleClick(os);
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
 
+
+// Expected state: sequence deleted
+    GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(-10,3));
+    GTUtilsDialog::waitForDialog(os, new RenameSequenceFiller(os, "Montana_montana", "Montana_montana"));
+    GTMouseDriver::doubleClick(os);
+
+//3. undo deletion
+    QAbstractButton *undo= GTAction::button(os,"msa_action_undo");
+    QAbstractButton *redo= GTAction::button(os,"msa_action_redo");
+
+    GTWidget::click(os, undo);
+
+//Expected state: delition undone
+    GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(-10,3));
+    GTUtilsDialog::waitForDialog(os, new RenameSequenceFiller(os, "Roeseliana_roeseli", "Roeseliana_roeseli"));
+    GTMouseDriver::doubleClick(os);
+
+//4. Redo delition
+    GTWidget::click(os, redo);
+
+//Expected state: delition is redone
+    GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(-10,3));
+    GTUtilsDialog::waitForDialog(os, new RenameSequenceFiller(os, "Montana_montana", "Montana_montana"));
+    GTMouseDriver::doubleClick(os);
+}
 
 GUI_TEST_CLASS_DEFINITION(test_0012){
 //Check copy

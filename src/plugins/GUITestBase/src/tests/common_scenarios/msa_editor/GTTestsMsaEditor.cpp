@@ -50,6 +50,7 @@
 #include "runnables/ugene/corelibs/U2View/ov_msa/GenerateAlignmentProfileDialogFiller.h"
 #include "runnables/ugene/corelibs/U2View/ov_msa/DistanceMatrixDialogFiller.h"
 #include "runnables/ugene/corelibs/U2View/ov_msa/BuildTreeDialogFiller.h"
+#include "runnables/ugene/corelibs/U2View/ov_msa/LicenseAgreemntDialogFiller.h"
 
 
 #include <U2View/MSAEditor.h>
@@ -3176,6 +3177,7 @@ GUI_TEST_CLASS_DEFINITION(test_0036){
     GTGlobals::sleep(500);
 //2. Press "build tree" button on toolbar
     GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os, testDir + "_common_data/scenarios/sandbox/COI.nwk",0));
+    GTUtilsDialog::waitForDialog(os,new LicenseAgreemntDialogFiller(os));
     QAbstractButton *tree= GTAction::button(os,"Build Tree");
     GTWidget::click(os,tree);
     GTGlobals::sleep(500);
@@ -3195,6 +3197,7 @@ GUI_TEST_CLASS_DEFINITION(test_0036_1){
     GTGlobals::sleep(500);
 //2. Press "build tree" button on toolbar
     GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os, testDir + "_common_data/scenarios/sandbox/COI.nwk",1));
+    GTUtilsDialog::waitForDialog(os,new LicenseAgreemntDialogFiller(os));
     QAbstractButton *tree= GTAction::button(os,"Build Tree");
     GTWidget::click(os,tree);
     GTGlobals::sleep(500);
@@ -3214,6 +3217,7 @@ GUI_TEST_CLASS_DEFINITION(test_0036_2){
     GTGlobals::sleep(500);
 //2. Press "build tree" button on toolbar
     GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os, testDir + "_common_data/scenarios/sandbox/COI.nwk",2));
+    GTUtilsDialog::waitForDialog(os,new LicenseAgreemntDialogFiller(os));
     QAbstractButton *tree= GTAction::button(os,"Build Tree");
     GTWidget::click(os,tree);
     GTGlobals::sleep(500);
@@ -3233,6 +3237,7 @@ GUI_TEST_CLASS_DEFINITION(test_0036_3){
     GTGlobals::sleep(500);
 //2. Press "build tree" button on toolbar
     GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os, testDir + "_common_data/scenarios/sandbox/COI.nwk",3));
+    GTUtilsDialog::waitForDialog(os,new LicenseAgreemntDialogFiller(os));
     QAbstractButton *tree= GTAction::button(os,"Build Tree");
     GTWidget::click(os,tree);
     GTGlobals::sleep(500);
@@ -3251,6 +3256,7 @@ GUI_TEST_CLASS_DEFINITION(test_0037){
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
 //2. Press "build tree" button on toolbar
     GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os, testDir + "_common_data/scenarios/sandbox/COI.nwk",0,0.5));
+    GTUtilsDialog::waitForDialog(os,new LicenseAgreemntDialogFiller(os));
     QAbstractButton *tree= GTAction::button(os,"Build Tree");
     GTWidget::click(os,tree);
     GTGlobals::sleep(500);
@@ -3271,6 +3277,7 @@ GUI_TEST_CLASS_DEFINITION(test_0037_1){
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
 //2. Press "build tree" button on toolbar
     GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os, testDir + "_common_data/scenarios/sandbox/COI.nwk",0,50));
+    GTUtilsDialog::waitForDialog(os,new LicenseAgreemntDialogFiller(os));
     QAbstractButton *tree= GTAction::button(os,"Build Tree");
     GTWidget::click(os,tree);
     GTGlobals::sleep(500);
@@ -3291,6 +3298,7 @@ GUI_TEST_CLASS_DEFINITION(test_0037_2){
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
 //2. Press "build tree" button on toolbar
     GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os, testDir + "_common_data/scenarios/sandbox/COI.nwk",0,99));
+    GTUtilsDialog::waitForDialog(os,new LicenseAgreemntDialogFiller(os));
     QAbstractButton *tree= GTAction::button(os,"Build Tree");
     GTWidget::click(os,tree);
     GTGlobals::sleep(500);
@@ -3312,6 +3320,7 @@ GUI_TEST_CLASS_DEFINITION(test_0038){
 //2. Press "build tree" button on toolbar
     GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os,100,testDir + "_common_data/scenarios/sandbox/COI.nwk",
                                                                5,BuildTreeDialogFiller::MAJORITYEXT));
+    GTUtilsDialog::waitForDialog(os,new LicenseAgreemntDialogFiller(os));
     QAbstractButton *tree= GTAction::button(os,"Build Tree");
     GTWidget::click(os,tree);
     GTGlobals::sleep(5000);//some time is needed to build tree
@@ -3336,6 +3345,7 @@ GUI_TEST_CLASS_DEFINITION(test_0038_1){
 //2. Press "build tree" button on toolbar
     GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os,100,testDir + "_common_data/scenarios/sandbox/COI.nwk",
                                                                5,BuildTreeDialogFiller::STRICTCONSENSUS));
+    GTUtilsDialog::waitForDialog(os,new LicenseAgreemntDialogFiller(os));
     QAbstractButton *tree= GTAction::button(os,"Build Tree");
     GTWidget::click(os,tree);
     GTGlobals::sleep(5000);//some time is needed to build tree
@@ -3360,6 +3370,7 @@ GUI_TEST_CLASS_DEFINITION(test_0038_2){
 //2. Press "build tree" button on toolbar
     GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os,100,testDir + "_common_data/scenarios/sandbox/COI.nwk",
                                                                5,BuildTreeDialogFiller::MAJORITY));
+    GTUtilsDialog::waitForDialog(os,new LicenseAgreemntDialogFiller(os));
     QAbstractButton *tree= GTAction::button(os,"Build Tree");
     GTWidget::click(os,tree);
     GTGlobals::sleep(5000);//some time is needed to build tree
@@ -3384,6 +3395,7 @@ GUI_TEST_CLASS_DEFINITION(test_0038_3){
 //2. Press "build tree" button on toolbar
     GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os,100,testDir + "_common_data/scenarios/sandbox/COI.nwk",
                                                                5,BuildTreeDialogFiller::M1));
+    GTUtilsDialog::waitForDialog(os,new LicenseAgreemntDialogFiller(os));
     QAbstractButton *tree= GTAction::button(os,"Build Tree");
     GTWidget::click(os,tree);
     GTGlobals::sleep(5000);//some time is needed to build tree
@@ -3408,6 +3420,7 @@ GUI_TEST_CLASS_DEFINITION(test_0038_4){
 //2. Press "build tree" button on toolbar
     GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os,100,testDir + "_common_data/scenarios/sandbox/COI.nwk",
                                                                5,BuildTreeDialogFiller::M1,1));
+    GTUtilsDialog::waitForDialog(os,new LicenseAgreemntDialogFiller(os));
     QAbstractButton *tree= GTAction::button(os,"Build Tree");
     GTWidget::click(os,tree);
     GTGlobals::sleep(5000);//some time is needed to build tree

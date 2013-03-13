@@ -50,6 +50,7 @@ void RenameSequenceFiller::run(){
         GTLineEdit::setText(os, nameEdit, newName);
     }
  
+    GTGlobals::sleep(1000);
     //instead clicking OK we will send 'Enter'
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
 }

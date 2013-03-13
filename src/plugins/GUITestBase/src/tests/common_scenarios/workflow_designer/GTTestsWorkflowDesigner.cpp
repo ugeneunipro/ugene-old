@@ -44,38 +44,9 @@ namespace U2 {
 //65536 - frame without ports
 //65537 - frame with ports
 //65538 - ports
+
+
 namespace GUITest_common_scenarios_workflow_designer {
-
-QTreeWidgetItem* findTreeItem(U2OpStatus &os,QString itemName){
-
-    QString s;
-    QTreeWidgetItem* foundItem = NULL;
-    QTreeWidget *w=qobject_cast<QTreeWidget*>(GTWidget::findWidget(os,"WorkflowPaletteElements"));
-    CHECK_SET_ERR_RESULT(w!=NULL,"WorkflowPaletteElements is null", NULL);
-
-    QList<QTreeWidgetItem*> outerList = w->findItems("",Qt::MatchContains);
-
-    for (int i=0;i<outerList.count();i++){
-        QList<QTreeWidgetItem*> innerList;
-
-        for(int j=0;j<outerList.value(i)->childCount();j++ ){
-           innerList.append(outerList.value(i)->child(j));
-           //s.append(outerList.value(i)->child(j)->data(0,Qt::UserRole).value<QAction*>()->text());
-        }
-
-        foreach(QTreeWidgetItem* item, innerList){
-            if(item->data(0,Qt::UserRole).canConvert<QAction* >()){
-            s.append("\n" + item->data(0,Qt::UserRole).value<QAction*>()->text());}
-            //item->
-            if(item/*->data(0,Qt::UserRole).value<QAction*>()/*->text().contains(itemName)*/){
-                foundItem = item;
-            }
-        }
-    }os.setError(s);
-    //CHECK_SET_ERR_RESULT(foundItem!=NULL,"Item is null", NULL);
-
-    return foundItem;
-}
 GUI_TEST_CLASS_DEFINITION(test_0001){
     QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
     //GTMenu::clickMenuItem(os,)
@@ -83,7 +54,9 @@ GUI_TEST_CLASS_DEFINITION(test_0001){
     //GTFileDialog::openFile(os, testDir + "_common_data/workflow", "remoteDBReaderTest.uws");
     GTGlobals::sleep();
     //QMainWindow * = AppContext::getMainWindow()->getQMainWindow();
-    QTreeWidgetItem* item = findTreeItem(os,"ile");
+    GTUtilsWorkflowDesigner::addAlgorithm(os,"Create Alignment Example");
+
+    //CHECK_SET_ERR(false, item->data(0,Qt::UserRole).value<QAction*>()->text());
     QGraphicsView* scene=qobject_cast<QGraphicsView*>(GTWidget::findWidget(os,"sceneView"));
 
     CHECK_SET_ERR(scene!=NULL,"scene is NULL");

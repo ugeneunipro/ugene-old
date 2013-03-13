@@ -39,5 +39,5 @@ GUI_TEST_CLASS_DECLARATION(test_0001)
 } // namespace U2
 
 } //namespace
-Q_DECLARE_METATYPE( QAction* )
+
 #endif // GTTESTS_WORKFLOW_DESIGNER_H_

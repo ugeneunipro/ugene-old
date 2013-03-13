@@ -35,6 +35,7 @@ public:
     static void addAlgorithm(U2OpStatus &os, QString algName);
     static QPoint getItemCenter(U2OpStatus &os,QString itemName);
     static QRect getItemRect(U2OpStatus &os,QString itemName);
+    static void selectAlgorithm(U2OpStatus &os, QTreeWidgetItem *algorithm);
 
     static int getItemLeft(U2OpStatus &os, QString itemName);
     static int getItemRight(U2OpStatus &os, QString itemName);
@@ -43,4 +44,5 @@ public:
 };
 
 } // namespace
+Q_DECLARE_METATYPE( QAction* )
 #endif // GT_UTILS_WORKFLOW_DESIGNER_H
