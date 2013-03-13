@@ -56,6 +56,8 @@ public:
     void setParentAignmentName(const QString& _alignmentName) {alignmentName = _alignmentName;}
 
     void setTreeVerticalSize(int size);
+
+    QAction* getSortSeqsAction() const {return sortSeqAction;}
 protected:
     virtual QWidget* createWidget();
 private:
@@ -97,7 +99,6 @@ signals:
 private slots:
     void sl_selectionChanged(const QStringList& selection);
     void sl_sequenceNameChanged(QString prevName, QString newName);
-    virtual void sl_swapTriggered();
     virtual void sl_collapseTriggered();
     virtual void sl_zoomToSel();
     virtual void sl_zoomOut();
@@ -112,6 +113,11 @@ private:
     qreal              subgroupSelectorPos;
     bool               subgroupSelectionMode;
     GroupColors        groupColors;
+
+    bool isSinchronized;
+    bool curLayoutIsRectangular;
+
+    const MSAEditorTreeViewer* curMSATreeViewer;
 };
 
 }//namespace

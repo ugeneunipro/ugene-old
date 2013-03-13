@@ -32,7 +32,7 @@
 namespace U2 {
 
 MSAEditorTreeViewer::MSAEditorTreeViewer(const QString& viewName, GObject* obj, GraphicsRectangularBranchItem* _root, qreal s)
-    : TreeViewer(viewName, obj, _root, s){
+    : TreeViewer(viewName, obj, _root, s) {
 }
 
 QWidget* MSAEditorTreeViewer::createWidget() {
@@ -65,7 +65,7 @@ void MSAEditorTreeViewer::setTreeVerticalSize(int size) {
     msaUI->setTreeVerticalSize(size);
 } 
 MSAEditorTreeViewerUI::MSAEditorTreeViewerUI(MSAEditorTreeViewer* treeViewer) 
-    : TreeViewerUI(treeViewer), subgroupSelectorPos(0.0){
+    : TreeViewerUI(treeViewer), subgroupSelectorPos(0.0), isSinchronized(true), curLayoutIsRectangular(true), curMSATreeViewer(treeViewer){
     connect(scene(), SIGNAL(selectionChanged()), this, SLOT(sl_onSelectionChanged()));
 
     subgroupSelector = scene()->addLine(0.0, 0.0, 0.0, scene()->height(), QPen(Qt::blue));
@@ -114,7 +114,7 @@ void MSAEditorTreeViewerUI::mouseReleaseEvent(QMouseEvent *e) {
 }
 
 void MSAEditorTreeViewerUI::wheelEvent(QWheelEvent *we ) {
-    if(!layoutIsRectangular()) {
+    if(!curLayoutIsRectangular || !isSinchronized) {
         TreeViewerUI::wheelEvent(we);
         return;
     }
@@ -170,10 +170,6 @@ void MSAEditorTreeViewerUI::sl_zoomToSel() {
 void MSAEditorTreeViewerUI::sl_zoomOut() {
     emit si_treeZoomedOut();
 }
-void MSAEditorTreeViewerUI::sl_swapTriggered() {
-    TreeViewerUI::sl_swapTriggered();
-    emit si_seqOrderChanged(getOrderedSeqNames());
-}
 
 void MSAEditorTreeViewerUI::sl_collapseTriggered() {
     TreeViewerUI::sl_collapseTriggered();
@@ -225,7 +221,6 @@ void MSAEditorTreeViewerUI::sl_sequenceNameChanged(QString prevName, QString new
             nameItem->setText(newName);
         }
     }
-    getOrderedSeqNames();
     scene()->update();
 }
 
@@ -290,13 +285,17 @@ void MSAEditorTreeViewerUI::setTreeLayout(TreeLayout newLayout) {
 }
 
 void MSAEditorTreeViewerUI::onLayoutChanged(const TreeLayout& layout) {
-    if(TreeViewerUI::TreeLayout_Rectangular == layout) {
+    curLayoutIsRectangular = (TreeViewerUI::TreeLayout_Rectangular == layout);
+    curMSATreeViewer->getSortSeqsAction()->setEnabled(false);
+    if(curLayoutIsRectangular) {
         subgroupSelector->show();
+        if(isSinchronized) {
+            curMSATreeViewer->getSortSeqsAction()->setEnabled(true);
+        }
     }
     else {
         subgroupSelector->hide();
     }
-
 }
 
 const QStringList* MSAEditorTreeViewerUI::getVisibleSeqsList() {
@@ -321,6 +320,7 @@ const QStringList* MSAEditorTreeViewerUI::getVisibleSeqsList() {
 }
 
 void MSAEditorTreeViewerUI::sl_onHeightChanged(int height) {
+    CHECK(curLayoutIsRectangular && isSinchronized, );
     qreal zoomCoef = (qreal)(height - 5) / getTreeSize().length;
     zooming(zoomCoef, zoomCoef);
     updateSceneRect(sceneRect());
