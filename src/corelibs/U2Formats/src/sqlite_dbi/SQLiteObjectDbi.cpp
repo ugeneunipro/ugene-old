@@ -251,7 +251,8 @@ bool SQLiteObjectDbi::removeObjectImpl(const U2DataId& objectId, const QString& 
     }
     CHECK_OP(os, false);
 
-    // remove modifications history
+    // Remove modifications history
+    // Note: affected modification steps of child objects are also removed
     removeObjectModHistory(objectId, os);
     CHECK_OP(os, false);
 
@@ -864,7 +865,10 @@ U2TrackModType ModificationAction::prepare(U2OpStatus& os) {
         SAFE_POINT_OP(os, trackMod);
 
         dbi->getSQLiteModDbi()->removeModsWithGreaterVersion(masterObjId, masterObjVersionToTrack, os);
-        SAFE_POINT_OP(os, trackMod);
+        if (os.hasError()) {
+            dbi->getSQLiteModDbi()->cleanUpAllStepsOnError();
+            return trackMod;
+        }
     }
 
     return trackMod;
