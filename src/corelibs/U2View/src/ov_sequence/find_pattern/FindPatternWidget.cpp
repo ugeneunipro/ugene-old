@@ -55,7 +55,7 @@ namespace U2 {
 class FastaPatternsWalker {
 public:
     FastaPatternsWalker(const QString &_patternsString, int _cursor = 0)
-        : patternsString(_patternsString.toAscii()), cursor(_cursor)
+        : patternsString(_patternsString.toLatin1()), cursor(_cursor)
     {
         current = -1;
         header = false;
@@ -774,7 +774,7 @@ void FindPatternWidget::setCorrectPatternsString() {
         }
         if (character.isLetter()) {
             if(!character.isUpper()) {
-                walker.setCurrent(character.toUpper().toAscii());
+                walker.setCurrent(character.toUpper().toLatin1());
             }
         } else {
             if ('\n' != character) {

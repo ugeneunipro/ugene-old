@@ -767,7 +767,7 @@ void CreateExternalProcessDialog::accept() {
     cfg->filePath = dir + cfg->name + ".etc";
     QFile file(cfg->filePath);
     file.open(QIODevice::WriteOnly);
-    file.write(str.toAscii());
+    file.write(str.toLatin1());
     file.close();
 
     done(QDialog::Accepted);

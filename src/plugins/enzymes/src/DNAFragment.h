@@ -39,7 +39,7 @@ class GObject;
 
 struct DNAFragmentTerm {
     DNAFragmentTerm(const QString& eId, const QByteArray& seq, bool directStrand) 
-        : enzymeId(eId.toAscii()), overhang(seq), isDirect(directStrand) {}
+        : enzymeId(eId.toLatin1()), overhang(seq), isDirect(directStrand) {}
     DNAFragmentTerm() : isDirect(true) {}
     QByteArray enzymeId; 
     QByteArray overhang;

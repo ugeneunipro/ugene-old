@@ -62,7 +62,11 @@ bool DbiDataHandler::equals(const DbiDataHandler *other) const {
 }
 
 int DbiDataHandler::getReferenceCount() const {
+#if (QT_VERSION >= 0x050000)
+    return this->ref.load();
+#else
     return int(this->ref);
+#endif
 }
 
 U2DbiRef DbiDataHandler::getDbiRef() const {

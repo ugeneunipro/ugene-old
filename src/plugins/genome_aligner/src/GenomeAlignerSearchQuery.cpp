@@ -34,7 +34,7 @@ SearchQuery::SearchQuery(const DNASequence *shortRead, SearchQuery *revCompl) {
     seq = new char[seqLength+1];
     name = new char[nameLength+1];
     qstrcpy(seq, shortRead->constData());
-    qstrcpy(name, shortRead->getName().toAscii().constData());
+    qstrcpy(name, shortRead->getName().toLatin1().constData());
     if (shortRead->hasQualityScores()) {
         quality = new DNAQuality(shortRead->quality);
     } else {

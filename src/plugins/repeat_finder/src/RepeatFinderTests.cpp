@@ -285,7 +285,7 @@ void GTest_FindTandemRepeatsTask::prepare() {
     //new DNAAlphabetRegistryImpl(
 //    TaskResourceUsage* tru = AppContext::getTaskScheduler()->getTaskResources(NULL).constData();
     DNAAlphabet* alph = AppContext::getDNAAlphabetRegistry()->findById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT());
-    seqObj = new DNASequence(QString("sequence"), sequence.toAscii(), alph );
+    seqObj = new DNASequence(QString("sequence"), sequence.toLatin1(), alph );
     if (seqObj == NULL){
         stateInfo.setError("can't find sequence1");
         return;
@@ -591,7 +591,7 @@ void GTest_SArrayBasedFindTask::prepare() {
     }
     
     SArrayBasedSearchSettings s;
-    s.query = query.toAscii();
+    s.query = query.toLatin1();
     s.useBitMask = useBitMask;
     s.bitMask = bitMask;
     s.nMismatches = nMismatches;

@@ -373,11 +373,11 @@ void SAMFormat::storeEntry(IOAdapter * /* io */, const QMap< GObjectType, QList<
     ////Writing alignment section
     //foreach(const MAlignmentObject* maObj, maList) {
     //    const MAlignment &ma = maObj->getMAlignment();
-    //    QByteArray rname(ma.getName().replace(QRegExp("\\s|\\t"), "_").toAscii());
+    //    QByteArray rname(ma.getName().replace(QRegExp("\\s|\\t"), "_").toLatin1());
     //    foreach(MAlignmentRow row, ma.getRows()) {
     //        block.clear();
     //        //const QByteArray &core = row.getCore();
-    //        QByteArray qname = QString(row.getName()).replace(QRegExp("\\s|\\t"), "_").toAscii();
+    //        QByteArray qname = QString(row.getName()).replace(QRegExp("\\s|\\t"), "_").toLatin1();
     //        QByteArray flag("0"); // can contains strand, mapped/unmapped, etc.
     //        QByteArray pos = QByteArray::number(row.getCoreStart()+1);
     //        QByteArray mapq("255"); //255 indicating the mapping quality is not available
@@ -466,7 +466,7 @@ bool SAMFormat::storeAlignedRead(int offset, const DNASequence& read, IOAdapter*
         block.clear();
     }
     
-    QByteArray qname = QString(read.getName()).replace(QRegExp("\\s|\\t"), "_").toAscii();
+    QByteArray qname = QString(read.getName()).replace(QRegExp("\\s|\\t"), "_").toLatin1();
     if (qname.isEmpty()) {
         qname = "contig";
     }
@@ -494,7 +494,7 @@ bool SAMFormat::storeAlignedRead(int offset, const DNASequence& read, IOAdapter*
             .arg(qual.constData());
     }
 
-    if (io->writeBlock(row.toAscii()) != row.length()) {
+    if (io->writeBlock(row.toLatin1()) != row.length()) {
         return false;
     }
 

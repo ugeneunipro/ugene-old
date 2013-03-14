@@ -280,7 +280,7 @@ void PrepareInputForCAP3Task::run()
             return;
         }
         // avoid names dublicating
-        QByteArray seqName = seq->getName().toAscii();
+        QByteArray seqName = seq->getName().toLatin1();
         seqName.replace(' ','_');
         seq->setName(seqName);
         bool ok = seqWriter.writeNextSequence(*seq);

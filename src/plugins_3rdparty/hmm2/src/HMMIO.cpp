@@ -179,7 +179,7 @@ void HMMIO::writeHMM2(IOAdapterFactory* iof, const QString& url, TaskStateInfo& 
         si.setError(L10N::errorOpeningFileWrite(url));
         return;
     }
-    int len = io->writeBlock(res.toAscii());
+    int len = io->writeBlock(res.toLatin1());
     if (len != res.length()) {
         si.setError(L10N::errorWritingFile(url));
         return;

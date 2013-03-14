@@ -261,7 +261,7 @@ int PsiPassOne::getmtx()
     while (!stream.atEnd())
     {
         QByteArray line;
-        line = stream.readLine().toAscii();
+        line = stream.readLine().toLatin1();
         char* buf = line.data();
         if (!strncmp(buf, "-32768 ", 7))
         {
@@ -269,7 +269,7 @@ int PsiPassOne::getmtx()
             {
                 if (sscanf(buf, "%*d%d%*d%d%d%d%d%d%d%d%d%d%d%d%d%d%d%d%d%d%d%*d%d", &profile[j][ALA],  &profile[j][CYS], &profile[j][ASP],  &profile[j][GLU],  &profile[j][PHE],  &profile[j][GLY],  &profile[j][HIS],  &profile[j][ILE],  &profile[j][LYS],  &profile[j][LEU],  &profile[j][MET],  &profile[j][ASN],  &profile[j][PRO],  &profile[j][GLN],  &profile[j][ARG],  &profile[j][SER],  &profile[j][THR],  &profile[j][VAL],  &profile[j][TRP],  &profile[j][TYR]) != 20)
                     fail("Bad mtx format!");
-                line = stream.readLine().toAscii();
+                line = stream.readLine().toLatin1();
                 if (line.size() == 0)
                     break;
                 buf = line.data();

@@ -451,8 +451,8 @@ Task::ReportResult GTest_hmmCompare::report() {
             return ReportResult_Finished;
         }
         line1++;line2++;
-        QString s1 = QString::fromAscii(cbuff1, len1).trimmed();
-        QString s2 = QString::fromAscii(cbuff2, len2).trimmed();
+        QString s1 = QString::fromLatin1(cbuff1, len1).trimmed();
+        QString s2 = QString::fromLatin1(cbuff2, len2).trimmed();
 
         if(s1 != s2)
         {

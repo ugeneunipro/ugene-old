@@ -86,7 +86,7 @@ NetworkConfiguration::~NetworkConfiguration() {
         s->setValue( SETTINGS_HTTP_PROXY_HOST, httpP.hostName() );
         s->setValue( SETTINGS_HTTP_PROXY_PORT, httpP.port() );
         s->setValue( SETTINGS_HTTP_PROXY_USER, httpP.user());
-        s->setValue( SETTINGS_HTTP_PROXY_PASSWORD, httpP.password().toAscii().toBase64());
+        s->setValue( SETTINGS_HTTP_PROXY_PASSWORD, httpP.password().toLatin1().toBase64());
         s->setValue( SETTINGS_HTTP_PROXY_ENABLED, isProxyUsed(QNetworkProxy::HttpProxy) );
         
     }
@@ -161,7 +161,11 @@ QSsl::SslProtocol NetworkConfiguration::getSslProtocol() const
     } else if (sslConfig.currentProtocol == SslConfig::SSLV3) {
         return QSsl::SslV3;
     } else if (sslConfig.currentProtocol == SslConfig::TLSV1) {
+#if (QT_VERSION >= QT_VERSION_CHECK(5,0,0))
+        return QSsl::TlsV1_0;
+#else
         return QSsl::TlsV1;
+#endif
     } else {
         return QSsl::SslV3;
     }

@@ -267,7 +267,7 @@ U2SequenceObject* DocumentFormatUtils::addMergedSequenceObjectDeprecated(const U
         int gapSize = next.startPos - prev.endPos();
         assert(gapSize >= 0);
         if (gapSize > 0) {
-            qMemSet(mergedSequence.data() + prev.endPos(), defSym, (size_t)gapSize);
+            memset(mergedSequence.data() + prev.endPos(), defSym, (size_t)gapSize);
         }
     }
     ;

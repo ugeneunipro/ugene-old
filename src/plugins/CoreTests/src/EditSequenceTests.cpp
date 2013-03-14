@@ -99,7 +99,7 @@ void GTest_AddPartToSequenceTask::prepare(){
     }else{
         QList<Document*> docList;
         docList.append(loadedDocument);
-        DNASequence seqToIns("test", insertedSequence.toAscii(), U2AlphabetUtils::findBestAlphabet(insertedSequence.toAscii()));
+        DNASequence seqToIns("test", insertedSequence.toLatin1(), U2AlphabetUtils::findBestAlphabet(insertedSequence.toLatin1()));
         Task* t = new ModifySequenceContentTask(loadedDocument->getDocumentFormatId(), dnaso, U2Region(startPos, 0), seqToIns, strat);
         addSubTask(t);
     }
@@ -354,7 +354,7 @@ void GTest_ReplacePartOfSequenceTask::prepare(){
     }else{
         QList<Document*> docList;
         docList.append(loadedDocument);
-        DNASequence dna("Inserted DNA", insertedSequence.toAscii());
+        DNASequence dna("Inserted DNA", insertedSequence.toLatin1());
         addSubTask(new ModifySequenceContentTask(loadedDocument->getDocumentFormatId(), dnaso, U2Region(startPos, length), dna, strat));
     }
 }

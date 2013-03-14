@@ -120,14 +120,14 @@ static void getTagValue( const QByteArray& ln, QByteArray& tag, QByteArray& val 
     QStringList words = line.split( QRegExp( "\\s+" ), QString::SkipEmptyParts );
     
     if( 1 >= words.size() ) {
-        if( words.size() == 1 && getHeaderTagsMap().value(words.at(0).toAscii(), HMM3_BAD_TAG) == HMM3_NAME ) {
-            tag = words.at(0).toAscii();
+        if( words.size() == 1 && getHeaderTagsMap().value(words.at(0).toLatin1(), HMM3_BAD_TAG) == HMM3_NAME ) {
+            tag = words.at(0).toLatin1();
             val = "hmm_profile";
         } else {
             throw UHMMFormatReader::UHMMFormatReaderException(UHMMFormatReader::tr("bad_line_in_header_section:%1").arg(QString(ln)));
         }
     } else {
-        tag = words.first().toAscii();
+        tag = words.first().toLatin1();
         val = ln.mid( tag.size() ).trimmed();
         assert( !tag.isEmpty() );
         if( val.isEmpty() ) {
@@ -170,8 +170,8 @@ static void set2Floats( float& f1, float& f2, const QByteArray& str ) {
         throw UHMMFormatReader::UHMMFormatReaderException( 
             UHMMFormatReader::tr( "cannot_parse_2_float_numbers_in_str:%1" ).arg( QString(str) ) );
     }
-    setFloat( f1, words.at( 0 ).toAscii() );
-    setFloat( f2, words.at( 1 ).toAscii() );
+    setFloat( f1, words.at( 0 ).toLatin1() );
+    setFloat( f2, words.at( 1 ).toLatin1() );
 }
 
 static void setUInteger( uint32_t& num, const QByteArray& numStr ) {
@@ -232,7 +232,7 @@ static void setHmmStats( float* params, const QByteArray& s, uint32_t& statstrac
     switch( wordsSz ) {
     case ALPHA_VERSION_STATS_FIELDS_NUM: // this one is for backward compatibility with hmmer3 alpha version
         {
-            QByteArray  numStr = words.at( 2 ).toAscii();
+            QByteArray  numStr = words.at( 2 ).toLatin1();
             QString     tagStr = words.at( 1 ).toUpper();
             if( "VLAMBDA" == tagStr ) {
                 setFloat( params[p7_MLAMBDA], numStr );
@@ -255,8 +255,8 @@ static void setHmmStats( float* params, const QByteArray& s, uint32_t& statstrac
     case BETA_VERSION_STATS_FIELDS_NUM:
         {
             QString tagStr = words.at( 1 ).toUpper();
-            QByteArray num1Str = words.at( 2 ).toAscii();
-            QByteArray num2Str = words.at( 3 ).toAscii();
+            QByteArray num1Str = words.at( 2 ).toLatin1();
+            QByteArray num2Str = words.at( 3 ).toLatin1();
             if( "MSV" == tagStr ) {
                 setFloat( params[p7_MMU], num1Str );
                 setFloat( params[p7_MLAMBDA], num2Str );
@@ -285,7 +285,7 @@ static QByteArray getNextToken( QStringList& tokens ) {
     if( tokens.isEmpty() ) {
         throw UHMMFormatReader::UHMMFormatReaderException( UHMMFormatReader::tr( "unexpected_end_of_line" ) );
     }
-    return tokens.takeFirst().toAscii();
+    return tokens.takeFirst().toLatin1();
 }
 
 static void setMainModelFloatVal( float& num, const QByteArray& str ) {
@@ -752,7 +752,7 @@ P7_HMM * UHMMFormatReader::readHMMER2ASCII() {
                             throw UHMMFormatReaderException(tr("ALPH section must precede HMM"));
                         } else {
                             QString val(valueStr);
-                            DNAAlphabet* al = U2AlphabetUtils::findBestAlphabet(val.remove(QRegExp("\\s+")).toAscii());
+                            DNAAlphabet* al = U2AlphabetUtils::findBestAlphabet(val.remove(QRegExp("\\s+")).toLatin1());
                             if(al == NULL || !al->isNucleic()) {
                                 throw UHMMFormatReaderException(tr("Unknown alphabet"));
                             } else {

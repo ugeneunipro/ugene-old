@@ -360,7 +360,7 @@ void GenbankPlainTextFormat::readHeaderAttributes(QVariantMap& tags, DbiConnecti
     CHECK_OP(os, );
 
     if (tags.keys().contains(DNAInfo::SOURCE)) {
-        DNASourceInfo soi = qVariantValue<DNASourceInfo>(tags.value(DNAInfo::SOURCE));
+        DNASourceInfo soi = tags.value(DNAInfo::SOURCE).value<DNASourceInfo>();
         if (!soi.name.isEmpty()) {
             U2StringAttribute sourceAttr(so->getSequenceRef().entityId, DNAInfo::SOURCE, soi.name);
             con.dbi->getAttributeDbi()->createStringAttribute(sourceAttr, os);

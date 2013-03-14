@@ -165,7 +165,7 @@ static QStringList splitGffAttributes(const QString& line, char sep) {
 
     for ( int i = 0; i < len; ++i) {
 
-        char c = line.at(i).toAscii();
+        char c = line.at(i).toLatin1();
 
         if ( c == '\"' ) {
             insideOfQuotes = !insideOfQuotes;
@@ -538,7 +538,7 @@ void GFFFormat::storeDocument(Document* doc, IOAdapter* io, U2OpStatus& os){
                     }
                 }
                 row[8] = additionalQuals;
-                qbaRow = row.join("\t").toAscii() + "\n";
+                qbaRow = row.join("\t").toLatin1() + "\n";
                 qint64 len = io->writeBlock(qbaRow);
                 if (len!=qbaRow.size()) {
                     os.setError(L10N::errorWritingFile(doc->getURL()));
@@ -564,7 +564,7 @@ void GFFFormat::storeDocument(Document* doc, IOAdapter* io, U2OpStatus& os){
             }
             fastaHeader.prepend(">");
             fastaHeader.append( '\n' );
-            qbaRow = fastaHeader.toAscii();
+            qbaRow = fastaHeader.toLatin1();
             if (io->writeBlock(qbaRow) != qbaRow.size()) {
                 os.setError(L10N::errorWritingFile(doc->getURL()));
                 return;

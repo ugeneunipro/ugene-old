@@ -586,7 +586,7 @@ void DistanceMatrix::printPhyNode(PhyNode* node, int tab, QList<PhyNode*>& nodes
 		std::cout<<" ";
 	}
 	tab++;
-	std::cout<<"name: "<<node->getName().toAscii().constData()<<std::endl;
+	std::cout<<"name: "<<node->getName().toLatin1().constData()<<std::endl;
 	QList<PhyBranch* > blist = node->branches;
 	for(int i=0; i<blist.size(); i++){
 		printPhyNode(blist[i]->node2, tab, nodes);
@@ -690,7 +690,7 @@ void DistanceMatrix::printIndex(){
 		QList<QString> names = index_map.keys(i);
 		std::cout<<"Value :"<<i<<" Keys:";
 		for(int j=0; j<names.size(); j++){
-			std::cout<<" "<<names[j].toAscii().constData();
+			std::cout<<" "<<names[j].toLatin1().constData();
 		}
 		std::cout<<std::endl;
 	}

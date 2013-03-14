@@ -46,7 +46,7 @@ PWMatrix PWMConversionAlgorithmBVH::convert(const PFMatrix& matrix) {
     int size = (matrix.getType() == PFM_MONONUCLEOTIDE) ? 4 : 16;
     int length = matrix.getLength();
     QVarLengthArray<int> best(length);
-    qMemSet(best.data(), 0, length*sizeof(int));
+    memset(best.data(), 0, length*sizeof(int));
     for (int i = 0; i < size; i++) {
         for (int j = 0; j < length; j++) {
             if (best[j] < matrix.getValue(i, j)) {

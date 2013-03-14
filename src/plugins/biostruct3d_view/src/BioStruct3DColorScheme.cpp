@@ -261,12 +261,12 @@ SecStructColorScheme::SecStructColorScheme(const BioStruct3DObject *biostruct)
         QMapIterator<QString, QColor> i(secStrucColors);
         while (i.hasNext()) {
             i.next();
-            secStrucColorMap.insert(i.key().toAscii(), Color4f(i.value()));
+            secStrucColorMap.insert(i.key().toLatin1(), Color4f(i.value()));
         }
 
         foreach (const SharedSecondaryStructure& struc, biostruct->getBioStruct3D().secondaryStructures) {
             for (int index = struc->startSequenceNumber; index <= struc->endSequenceNumber; ++index ) {
-                QByteArray type = BioStruct3D::getSecStructTypeName(struc->type).toAscii();
+                QByteArray type = BioStruct3D::getSecStructTypeName(struc->type).toLatin1();
                 Q_ASSERT( secStrucColorMap.contains(type));
                 Q_ASSERT( struc->chainIndex != 0);
                 molMap[struc->chainIndex].strucResidueTable.insert(index, type);

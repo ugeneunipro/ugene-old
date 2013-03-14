@@ -267,7 +267,7 @@ void PDBFormat::PDBParser::parseHeader( BioStruct3D& biostruct, U2OpStatus&)
     */
 
     QString desc = currentPDBLine.mid(10,40).trimmed();
-    QByteArray pdbId = currentPDBLine.mid(62,4).toAscii();
+    QByteArray pdbId = currentPDBLine.mid(62,4).toLatin1();
     biostruct.descr = desc;
     biostruct.pdbId = pdbId;
 }
@@ -323,17 +323,17 @@ void PDBFormat::PDBParser::parseAtom( BioStruct3D& biostruct, U2OpStatus&)
     }
 
     int id = currentPDBLine.mid(6,5).toInt();
-    QByteArray atomName = currentPDBLine.mid(12,4).toAscii().trimmed();
-    QByteArray residueName = currentPDBLine.mid(17,3).toAscii().trimmed();
-    int resId = currentPDBLine.mid(22,4).toAscii().toInt();
-    char insCode = currentPDBLine.at(26).toAscii();
+    QByteArray atomName = currentPDBLine.mid(12,4).toLatin1().trimmed();
+    QByteArray residueName = currentPDBLine.mid(17,3).toLatin1().trimmed();
+    int resId = currentPDBLine.mid(22,4).toLatin1().toInt();
+    char insCode = currentPDBLine.at(26).toLatin1();
     char residueAcronym = PDBFormat::getAcronymByName(residueName);
-    char chainIdentifier = currentPDBLine.at(21).toAscii();
+    char chainIdentifier = currentPDBLine.at(21).toLatin1();
         
     ResidueIndex residueIndex(resId,insCode);
     bool atomIsInChain = !isHetero || seqResContains(chainIdentifier, residueIndex.toInt(), residueAcronym );
 
-    QByteArray elementName = currentPDBLine.mid(76,2).toAscii().trimmed();
+    QByteArray elementName = currentPDBLine.mid(76,2).toLatin1().trimmed();
     
     QByteArray element = elementName.isEmpty() ? atomName.mid(0,1) : elementName;
     int atomicNumber = PDBFormat::getElementNumberByName(element);
@@ -457,8 +457,8 @@ void PDBFormat::PDBParser::parseSecondaryStructure( BioStruct3D& biostruct, U2Op
         return;
     }
     
-    char startChainID = currentPDBLine.at(startChainIDIndex).toAscii();
-//    char endChainID = currentPDBLine.at(endChainIDIndex).toAscii();
+    char startChainID = currentPDBLine.at(startChainIDIndex).toLatin1();
+//    char endChainID = currentPDBLine.at(endChainIDIndex).toLatin1();
 
     int startSequenceNumber = currentPDBLine.mid(startIndex, 4).toInt();
     int endSequenceNumber = currentPDBLine.mid(endIndex, 4).toInt();
@@ -489,7 +489,7 @@ void PDBFormat::PDBParser::parseSecondaryStructure( BioStruct3D& biostruct, U2Op
 //     const char* savedTag = "SAVED_LINE";
 //     const char* delimiterTag = ";";
 //     const char* transitionTag = "-";
-//     QByteArray specLine = currentPDBLine.mid(10).trimmed().toAscii();
+//     QByteArray specLine = currentPDBLine.mid(10).trimmed().toLatin1();
 // 
 //     //Q_UNUSED(engTag);
 //     
@@ -501,7 +501,7 @@ void PDBFormat::PDBParser::parseSecondaryStructure( BioStruct3D& biostruct, U2Op
 //     }
 // 
 //     if (currentMoleculeDescr.contains(savedTag)) {
-//         specLine.prepend(currentMoleculeDescr.value(savedTag).toString().toAscii());
+//         specLine.prepend(currentMoleculeDescr.value(savedTag).toString().toLatin1());
 //         currentMoleculeDescr.remove(savedTag);
 //     }
 //     
@@ -598,7 +598,7 @@ void PDBFormat::PDBParser::parseSequence( BioStruct3D& biostruct, U2OpStatus& ti
         return;
     }
     
-    char chainIdentifier = currentPDBLine.at(11).toAscii();
+    char chainIdentifier = currentPDBLine.at(11).toLatin1();
     if (!seqResMap.contains(chainIdentifier)) {
         seqResMap.insert(chainIdentifier, QByteArray());
     }
@@ -607,7 +607,7 @@ void PDBFormat::PDBParser::parseSequence( BioStruct3D& biostruct, U2OpStatus& ti
     QByteArray sequencePart;
     foreach (QString name, residues ) {
         SharedResidue residue( new ResidueData );
-        char acronym = PDBFormat::getAcronymByName(name.toAscii());
+        char acronym = PDBFormat::getAcronymByName(name.toLatin1());
         sequencePart.append(acronym);        
     }
     seqResMap[chainIdentifier].append(sequencePart);

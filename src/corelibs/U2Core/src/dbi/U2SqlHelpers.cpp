@@ -34,7 +34,7 @@ void SQLiteUtils::addLimit(QString& sql, qint64 offset, qint64 count) {
     if (count == -1) {
         return;
     }
-    sql = sql + QString(" LIMIT %1, %2").arg(offset).arg(count).toAscii();
+    sql = sql + QString(" LIMIT %1, %2").arg(offset).arg(count).toLatin1();
 }
 
 #define DB_ID_OFFSET    0
@@ -62,7 +62,7 @@ U2DataId SQLiteUtils::toU2DataId(qint64 id, U2DataType type, const QByteArray& d
     ((qint64*)(data + DB_ID_OFFSET))[0] = id;
     ((U2DataType*)(data + TYPE_OFFSET))[0] = type;
     if (extraLen > 0) {
-        qMemCopy(data + DB_EXTRA_OFFSET, dbExtra.constData(), dbExtra.size());
+        memcpy(data + DB_EXTRA_OFFSET, dbExtra.constData(), dbExtra.size());
     }
     return res;
 }

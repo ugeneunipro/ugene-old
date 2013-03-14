@@ -76,7 +76,7 @@ void SamtoolsBasedDbi::init(const QHash<QString, QString> &properties, const QVa
         if(!url.isLocalFile()) {
             throw Exception(BAMDbiPlugin::tr("Non-local files are not supported"));
         }
-        QByteArray urlBA = url.getURLString().toAscii();
+        QByteArray urlBA = url.getURLString().toLatin1();
         bool sorted = BAMUtils::isSortedBam(GUrl(urlBA), os);
         CHECK_OP_EXT(os, throw Exception(os.getError()), );
         if (!sorted) {
@@ -642,9 +642,9 @@ QStringList SamtoolsBasedAttributeDbi::getAvailableAttributeNames(U2OpStatus &/*
 QList<U2DataId> SamtoolsBasedAttributeDbi::getObjectAttributes(const U2DataId &objectId, const QString &attributeName, U2OpStatus &/*os*/) {
     QList<U2DataId> result;
     if (attributeName.isEmpty()) {
-        result << objectId + ATTRIBUTE_SEP + U2BaseAttributeName::reference_length.toAscii();
+        result << objectId + ATTRIBUTE_SEP + U2BaseAttributeName::reference_length.toLatin1();
     } else if (U2BaseAttributeName::reference_length == attributeName) {
-        result << objectId + ATTRIBUTE_SEP + U2BaseAttributeName::reference_length.toAscii();
+        result << objectId + ATTRIBUTE_SEP + U2BaseAttributeName::reference_length.toLatin1();
     }
 
     return result;
@@ -662,7 +662,7 @@ U2IntegerAttribute SamtoolsBasedAttributeDbi::getIntegerAttribute(const U2DataId
 
     QString attrName = tokens[1];
     if (U2BaseAttributeName::reference_length == attrName) {
-        U2DataId objIdStr = U2DataId(tokens[0].toAscii());
+        U2DataId objIdStr = U2DataId(tokens[0].toLatin1());
         int id = SamtoolsBasedAssemblyDbi::toSamtoolsId(objIdStr, os);
         CHECK_OP(os, result);
 

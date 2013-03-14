@@ -113,7 +113,7 @@ QList<Task*> SpideyAlignmentTask::onSubTaskFinished(Task* subTask) {
         location->op = U2LocationOperator_Join;
 
         while (!inStream.atEnd()) {
-            QByteArray buf = inStream.readLine().toAscii();
+            QByteArray buf = inStream.readLine().toLatin1();
             if (buf.startsWith("Strand")) {
                 strandDirect = buf.contains("plus");
             }

@@ -195,7 +195,7 @@ void GTest_RemoteBLAST::init(XMLTestFormat *tf, const QDomElement& el) {
 }
 
 void GTest_RemoteBLAST::prepare() {
-    QByteArray query(sequence.toAscii());
+    QByteArray query(sequence.toLatin1());
     ao = new AnnotationTableObject("aaa");
     RemoteBLASTTaskSettings cfg;
     cfg.dbChoosen = algoritm;

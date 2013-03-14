@@ -53,12 +53,12 @@ void DinucleotitePropertyRegistry::registerProperty(const QString& str) {
     QStringList lines = str.split('\n', QString::SkipEmptyParts);
     bool dimode = false;
     foreach(QString line, lines) {
-        //printf("line=%s\n",line.toAscii().constData());
+        //printf("line=%s\n",line.toLatin1().constData());
         if (dimode) {
             line = line.trimmed();
             assert(line.length() >= 4);
-            char c1 = line[0].toAscii();
-            char c2 = line[1].toAscii();
+            char c1 = line[0].toLatin1();
+            char c2 = line[1].toLatin1();
             int index = DiPropertySitecon::index(c1, c2);
             bool ok = true;
             float val = line.mid(3).toFloat(&ok);
@@ -69,7 +69,7 @@ void DinucleotitePropertyRegistry::registerProperty(const QString& str) {
             if (line.length() < 3) {
                 continue;
             }
-            char c =  line[2].toAscii();
+            char c =  line[2].toLatin1();
             if (c == ' ') {
                 keys[line.left(2)] = line.mid(3);
                 continue;

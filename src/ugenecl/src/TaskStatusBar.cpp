@@ -144,7 +144,7 @@ void TaskStatusBarCon::updateState() {
     }
 #ifdef Q_OS_WIN32
     //TO DO: Need refactoring this place for linux
-    printf("%s\r", emptyLine.toAscii().constData());//80 spaces
+    printf("%s\r", emptyLine.toLatin1().constData());//80 spaces
     //printf("                                                                               \r");//80 spaces
 #endif
     if(!AppContext::getSettings()->getValue(LOG_SETTINGS_ROOT + "colorOut", false).toBool()){

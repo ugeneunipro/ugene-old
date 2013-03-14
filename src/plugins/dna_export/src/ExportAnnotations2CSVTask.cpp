@@ -62,7 +62,7 @@ static void writeCSVLine(const QStringList& container, IOAdapter *ioAdapter, con
     bool first = true;
     foreach(QString value, container) {
         if (!first) {
-            if (0 == ioAdapter->writeBlock(separator.toAscii())) {
+            if (0 == ioAdapter->writeBlock(separator.toLatin1())) {
                 os.setError(L10N::errorWritingFile(ioAdapter->getURL()));
                 return;
             }
@@ -128,7 +128,7 @@ void ExportAnnotations2CSVTask::run() {
                 values << tr("no");
             }
             if(exportSequenceName){
-                values << seqName.toAscii();
+                values << seqName.toLatin1();
             }
             if (exportSequence) {
                 QByteArray sequencePart = sequence.mid(region.startPos, region.length);

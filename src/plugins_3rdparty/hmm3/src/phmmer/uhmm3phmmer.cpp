@@ -176,62 +176,62 @@ UHMM3SearchResult UHMM3Phmmer::phmmer( const char * p_querySq, int querySqLen, c
     try {
         abc = esl_alphabet_Create( eslAMINO );
         if( NULL == abc ) {
-            errStr = tr( "no_memory:cannot_create_alphabet" ).toAscii();
+            errStr = tr( "no_memory:cannot_create_alphabet" ).toLatin1();
             throwUHMMER3Exception( errStr.data() );
         }
         bg = p7_bg_Create( abc );
         if( NULL == bg ) {
-            errStr = tr( "no_memory:cannot_create_null_model" ).toAscii();
+            errStr = tr( "no_memory:cannot_create_null_model" ).toLatin1();
             throwUHMMER3Exception( errStr.data() );
         }
         
         UHMM3BuildSettings bldSettings = settings.getBuildSettings();
         bld = p7_builder_Create( &bldSettings, abc );
         if( NULL == bld ) {
-            errStr = tr( "no_memory:cannot_create_builder" ).toAscii();
+            errStr = tr( "no_memory:cannot_create_builder" ).toLatin1();
             throwUHMMER3Exception( errStr.data() );
         }
         
         ESL_SCOREMATRIX * hmmer3SubstMatr = UHMM3Utilities::convertScoreMatrix( settings.substMatr );
         status = p7_builder_SetScoreSystem( bld, hmmer3SubstMatr, settings.popen, settings.pextend );
         if( status != eslOK ) {
-            errStr = tr( "failed_to_set_scoring_system_with_error:%1" ).arg( bld->errbuf ).toAscii();
+            errStr = tr( "failed_to_set_scoring_system_with_error:%1" ).arg( bld->errbuf ).toLatin1();
             throwUHMMER3Exception( errStr.data() );
         }
         
         dbSq = esl_sq_CreateFrom( NULL, p_dbSq, dbSqLen, NULL, NULL, NULL );
         esl_sq_Digitize( abc, dbSq );
         if( NULL == dbSq || NULL == dbSq->dsq ) {
-            errStr = tr( "cannot_convert_sequence:sequence_to_search_in" ).toAscii();
+            errStr = tr( "cannot_convert_sequence:sequence_to_search_in" ).toLatin1();
             throwUHMMER3Exception( errStr.data() );
         }
         
         querySq = esl_sq_CreateFrom( NULL, p_querySq, querySqLen, NULL, NULL, NULL );
         esl_sq_Digitize( abc, querySq );
         if( NULL == querySq || NULL == querySq->dsq ) {
-            errStr = tr( "cannot_convert_sequence:query_sequence" ).toAscii();
+            errStr = tr( "cannot_convert_sequence:query_sequence" ).toLatin1();
             throwUHMMER3Exception( errStr.data() );
         }
         
         /* bypass HMM - only need model */
         status = p7_SingleBuilder( bld, querySq, bg, NULL, NULL, NULL, &om, PHMMER_SINGLE_BUILDER_PROGRESS, ti );
         if( eslCANCELED == status ) {
-            errStr = tr( HMMER3_CANCELED_ERROR ).toAscii();
+            errStr = tr( HMMER3_CANCELED_ERROR ).toLatin1();
             throwUHMMER3Exception( errStr.data() );
         } else if( eslOK != status ) {
-            errStr = tr( "cannot_create_optimized_profile_for_query_sequence" ).toAscii();
+            errStr = tr( "cannot_create_optimized_profile_for_query_sequence" ).toLatin1();
             throwUHMMER3Exception( errStr.data() );
         }
         
         th   = p7_tophits_Create();
         if( NULL == th ) {
-            errStr = tr( "no_memory:cannot_create_top_hits_list" ).toAscii();
+            errStr = tr( "no_memory:cannot_create_top_hits_list" ).toLatin1();
             throwUHMMER3Exception( errStr.data() );
         }
         UHMM3SearchSettings searchSettings = settings.getSearchSettings();
         pli  = p7_pipeline_Create( &searchSettings, om->M, 400, p7_SEARCH_SEQS );  /* 400 is a dummy length for now */
         if( NULL == pli ) {
-            errStr = tr( "no_memory:cannot_create_pipeline" ).toAscii();
+            errStr = tr( "no_memory:cannot_create_pipeline" ).toLatin1();
             throwUHMMER3Exception( errStr.data() );
         }
         
@@ -241,7 +241,7 @@ UHMM3SearchResult UHMM3Phmmer::phmmer( const char * p_querySq, int querySqLen, c
         p7_oprofile_ReconfigLength( om, dbSq->n, wholeSeqSz );
         int ret = p7_Pipeline( pli, om, bg, dbSq, th, PHMMER_PERCENT_PER_FILTER, ti, wholeSeqSz );
         if( eslCANCELED == ret ) {
-            errStr = tr( HMMER3_CANCELED_ERROR ).toAscii();
+            errStr = tr( HMMER3_CANCELED_ERROR ).toLatin1();
             throwUHMMER3Exception( errStr.data() );
         }
         assert( eslOK == ret );

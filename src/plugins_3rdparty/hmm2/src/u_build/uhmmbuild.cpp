@@ -152,7 +152,7 @@ plan7_s* UHMMBuild::build(msa_struct* msa, int atype, const UHMMBuildSettings& s
     if (name.isEmpty()) {
         name = msa->name;
     }
-    QByteArray nameArr = name.toAscii();
+    QByteArray nameArr = name.toLatin1();
     Plan7SetName(hmm, nameArr.constData());
     
     // Transfer other information from the alignment to

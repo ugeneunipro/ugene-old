@@ -72,7 +72,7 @@ void HttpRequestBLAST::sendRequest(const QString &params,const QString &query) {
     buf.open(QIODevice::ReadOnly);
 
     QByteArray b = buf.readLine();
-    while(b!=QString("<!--QBlastInfoBegin\n").toAscii()) {
+    while(b!=QString("<!--QBlastInfoBegin\n").toLatin1()) {
         if(task->isCanceled()) {
             return;
         }

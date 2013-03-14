@@ -104,13 +104,13 @@ Document *AbstractVariationFormat::loadDocument(IOAdapter *io, const U2DbiRef &d
                     v.endPos = columnData.toInt() - 1;
                     break;
                 case ColumnRole_RefData:
-                    v.refData = columnData.toAscii();
+                    v.refData = columnData.toLatin1();
                     break;
                 case ColumnRole_ObsData:
-                    v.obsData = columnData.toAscii();
+                    v.obsData = columnData.toLatin1();
                     break;
                 case ColumnRole_PublicId:
-                    v.publicId = columnData.toAscii();
+                    v.publicId = columnData.toLatin1();
                     break;
                 default:
                     coreLog.trace("Warning: unknown column role (%, line %, column %)");
@@ -120,7 +120,7 @@ Document *AbstractVariationFormat::loadDocument(IOAdapter *io, const U2DbiRef &d
         
         if (v.publicId.isEmpty()) {
             QString prefix = seqName.contains(CHR_PREFIX) ? seqName : seqName.prepend(CHR_PREFIX);
-            v.publicId = QString("%1v%2").arg(prefix).arg(snpsMap[seqName].count() + 1).toAscii();
+            v.publicId = QString("%1v%2").arg(prefix).arg(snpsMap[seqName].count() + 1).toLatin1();
         }
 
         snpsMap[seqName].append(v);

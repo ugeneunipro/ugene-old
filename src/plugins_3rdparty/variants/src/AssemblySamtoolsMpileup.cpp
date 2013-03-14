@@ -158,7 +158,7 @@ static char ** createArgv(QByteArray& firstElement, QByteArray& secElement, QLis
     SAFE_POINT(urls.size()>=1, "no assembly urls", res);
 
     res[1] = new char [urls.first().size()+1];
-    QByteArray arr = urls.first().toAscii();
+    QByteArray arr = urls.first().toLatin1();
     strncpy(res[1], arr.data(), urls.first().size());
     res[1][urls.first().size()] = '\0';
 
@@ -220,8 +220,8 @@ void SamtoolsMpileupTask::run(){
     }
 
     int argc1 = 3;
-    QByteArray mpileupArr = QString("mpileup").toAscii();
-    QByteArray seqArr = settings.refSeqUrl.toAscii();
+    QByteArray mpileupArr = QString("mpileup").toLatin1();
+    QByteArray seqArr = settings.refSeqUrl.toLatin1();
     char** argv1 = createArgv(mpileupArr, seqArr, settings.assemblyUrls);
 
     UGENE_mpileup_settings mpileupSettings;
@@ -243,11 +243,11 @@ void SamtoolsMpileupTask::run(){
     mpileupSettings.openq = settings.openq;
     mpileupSettings.pl_list = settings.pl_list.data();
 
-    bam_mpileup(argc1-1, argv1, &mpileupSettings, tmpMpileupOutputFile.toAscii().constData());
+    bam_mpileup(argc1-1, argv1, &mpileupSettings, tmpMpileupOutputFile.toLatin1().constData());
 
     deleteArgv(argv1, argc1);
 
-    QByteArray ba = tmpMpileupOutputFile.toAscii();
+    QByteArray ba = tmpMpileupOutputFile.toLatin1();
     char* ar11 = "bcfview";
     char* ar12 = ba.data();
     char* bcfViewArgv[] = {ar11, ar12, (char*)0};
@@ -272,7 +272,7 @@ void SamtoolsMpileupTask::run(){
     bcfSettings.min_perm_p = settings.min_perm_p;
 
    
-    bcfview(2, bcfViewArgv, &bcfSettings, tmpBcfViewOutputFile.toAscii().constData());
+    bcfview(2, bcfViewArgv, &bcfSettings, tmpBcfViewOutputFile.toLatin1().constData());
 
 }
 

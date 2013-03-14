@@ -228,7 +228,7 @@ void DigestSequenceTask::run()
         int leftCutPos = pos1 + qMax(leftCutDirect, leftCutCompl);
         int leftOverhangStart = pos1 + qMin(leftCutDirect, leftCutCompl);
         leftTerm.overhang = dnaObj->getSequenceData(U2Region(leftOverhangStart, leftCutPos - leftOverhangStart));
-        leftTerm.enzymeId = enzyme1->id.toAscii();
+        leftTerm.enzymeId = enzyme1->id.toLatin1();
         leftTerm.isDirect = leftStrandDirect ? leftCutDirect < leftCutCompl : leftCutDirect > leftCutCompl; 
 
         DNAFragmentTerm rightTerm;
@@ -238,7 +238,7 @@ void DigestSequenceTask::run()
         int rightCutPos = pos2 + qMin(rightCutDirect, rightCutCompl );
         int rightOverhangStart = pos2 + qMax(rightCutDirect, rightCutCompl );
         rightTerm.overhang = dnaObj->getSequenceData(U2Region(rightCutPos, rightOverhangStart - rightCutPos));
-        rightTerm.enzymeId = enzyme2->id.toAscii();
+        rightTerm.enzymeId = enzyme2->id.toLatin1();
         rightTerm.isDirect = rightStrandDirect ? rightCutDirect > rightCutCompl : rightCutDirect < rightCutCompl;
         if (rightOverhangStart > seqLen) {
             int leftCutPos = rightOverhangStart - seqLen;

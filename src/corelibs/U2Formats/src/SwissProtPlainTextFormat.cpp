@@ -311,7 +311,7 @@ SharedAnnotationData SwissProtPlainTextFormat::readAnnotation(IOAdapter* io, cha
     Q_UNUSED(seqLen);
     AnnotationData* a = new AnnotationData();
     SharedAnnotationData f(a);
-    QString key = QString::fromAscii(cbuff+5, 10).trimmed();
+    QString key = QString::fromLatin1(cbuff+5, 10).trimmed();
     if (key.isEmpty()) {
         si.setError(EMBLGenbankAbstractDocument::tr("Annotation name is empty"));
         return SharedAnnotationData();
@@ -320,12 +320,12 @@ SharedAnnotationData SwissProtPlainTextFormat::readAnnotation(IOAdapter* io, cha
     if(key == "STRAND" || key == "HELIX" || key == "TURN"){
         a->qualifiers.append(U2Qualifier(GBFeatureUtils::QUALIFIER_GROUP, "Secondary structure"));
     }
-    QString start= QString::fromAscii(cbuff+15, 5).trimmed();
+    QString start= QString::fromLatin1(cbuff+15, 5).trimmed();
     if(start.isEmpty()){
         si.setError(EMBLGenbankAbstractDocument::tr("Annotation start position is empty"));
         return SharedAnnotationData();
     }
-    QString end= QString::fromAscii(cbuff+22, 5).trimmed();
+    QString end= QString::fromLatin1(cbuff+22, 5).trimmed();
     if(end.isEmpty()){
         si.setError(EMBLGenbankAbstractDocument::tr("Annotation end position is empty"));
         return SharedAnnotationData();
@@ -348,7 +348,7 @@ SharedAnnotationData SwissProtPlainTextFormat::readAnnotation(IOAdapter* io, cha
     }
 
 
-    QString valQStr = QString::fromAscii(cbuff).split(QRegExp("\\n")).first().mid(34);
+    QString valQStr = QString::fromLatin1(cbuff).split(QRegExp("\\n")).first().mid(34);
     QString nameQStr = "Description";
     bool isDescription=true;
 
@@ -373,7 +373,7 @@ SharedAnnotationData SwissProtPlainTextFormat::readAnnotation(IOAdapter* io, cha
         //parse line
         if(cbuff[A_COL] != '/'){//continue of description
             valQStr.append(" ");
-            valQStr.append(QString::fromAscii(cbuff).split(QRegExp("\\n")).takeAt(0).mid(34));
+            valQStr.append(QString::fromLatin1(cbuff).split(QRegExp("\\n")).takeAt(0).mid(34));
         }else{
             for (; QN_COL < len && TextUtils::LINE_BREAKS[(uchar)cbuff[len-1]]; len--){}; //remove line breaks
             int flen = len + readMultilineQualifier(io, cbuff, READ_BUFF_SIZE-len, len == maxAnnotationLineLen, len);

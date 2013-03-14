@@ -74,7 +74,7 @@ RemoteServiceMachine::RemoteServiceMachine(const RemoteServiceSettingsPtr& s)
     sslProtocol = nc->getSslProtocol();
 #endif //QT_NO_OPENSSL
 
-    QByteArray sid = s->getSessionId().toAscii();
+    QByteArray sid = s->getSessionId().toLatin1();
     if (!sid.isEmpty() ) {
         session.reset(new UctpSession(sid));    
     }
@@ -156,10 +156,10 @@ static QString getElementValueByNameAttr(const QString& name, const QList<UctpEl
     }
 
     QList<UctpElementData> propertyList = replyData.values(UctpElements::PROPERTY);
-    QByteArray stateText = getElementValueByNameAttr(UctpElements::TASK_STATE, propertyList).toAscii(); 
+    QByteArray stateText = getElementValueByNameAttr(UctpElements::TASK_STATE, propertyList).toLatin1(); 
     if (stateText == UctpValues::UCTP_STATE_FINISHED) {
         state = Task::State_Finished;
-        QByteArray errorText = getElementValueByNameAttr(UctpElements::TASK_ERROR, propertyList).toAscii();
+        QByteArray errorText = getElementValueByNameAttr(UctpElements::TASK_ERROR, propertyList).toLatin1();
         if (!errorText.isEmpty()) {
             si.setError(errorText);
         }
@@ -209,7 +209,7 @@ void RemoteServiceMachine::getTaskResult(TaskStateInfo& si, qint64 taskId, const
         if (!elements.isEmpty()) {
             foreach( const GUrl& url, urls ) {
                 QString dataName = urlPrefix + url.fileName();
-                const QByteArray data = getElementValueByNameAttr(dataName, elements).toAscii();
+                const QByteArray data = getElementValueByNameAttr(dataName, elements).toLatin1();
                 if (data.isEmpty()) {
                     si.setError(tr("Result {%1} is not found.").arg(dataName));
                     return;
@@ -375,12 +375,12 @@ void RemoteServiceMachine::initSession(TaskStateInfo& si) {
     if (session.get() != NULL) {
         return;
     }
-    QByteArray userName = settings->getUserName().toAscii();
-    QByteArray pass = settings->getPasswd().toAscii();
+    QByteArray userName = settings->getUserName().toLatin1();
+    QByteArray pass = settings->getPasswd().toLatin1();
 
     if (userName == RemoteServiceMachineSettings::GUEST_ACCOUNT) {
         // in this case we set the password
-        pass = RemoteServiceMachineSettings::GUEST_ACCOUNT.toAscii();
+        pass = RemoteServiceMachineSettings::GUEST_ACCOUNT.toLatin1();
     }
 
     InitSessionRequest request(userName, pass);

@@ -67,7 +67,7 @@ int ugene_printf(FILE *f, const char *format, ...) {
     Q_UNUSED(n);
 
     FILEStub* s = (FILEStub*)f;
-    s->tsi.setDescription(QString::fromAscii(str));
+    s->tsi.setDescription(QString::fromLatin1(str));
     return 0;
 }
 

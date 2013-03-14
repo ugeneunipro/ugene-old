@@ -19,7 +19,7 @@
  * MA 02110-1301, USA.
  */
 
-#include <QApplication>
+#include <QtGui/QApplication>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/IOAdapter.h>

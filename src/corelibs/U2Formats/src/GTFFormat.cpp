@@ -655,7 +655,7 @@ void GTFFormat::storeDocument(Document* doc, IOAdapter* io, U2OpStatus& os)
                     transcriptIdAttributeStr +
                     otherAttributesStr;
 
-                lineData = lineFields.join("\t").toAscii() + "\n";
+                lineData = lineFields.join("\t").toLatin1() + "\n";
                 qint64 len = io->writeBlock(lineData);
                 if (len != lineData.size()) {
                     os.setError(L10N::errorWritingFile(doc->getURL()));

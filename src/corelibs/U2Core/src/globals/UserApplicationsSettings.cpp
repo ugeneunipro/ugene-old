@@ -34,6 +34,10 @@
 #include <QtGui/QApplication>
 #include <QtGui/QStyle>
 #include <QtGui/QStyleFactory>
+#if (QT_VERSION >= 0x050000)
+#include <QStandardPaths>
+#endif
+
 
 namespace U2 {
     
@@ -147,7 +151,12 @@ void UserAppsSettings::setRecentlyDownloadedFileNames(const QStringList& fileNam
 }
 
 QString UserAppsSettings::getUserTemporaryDirPath() const {
+#if (QT_VERSION >= 0x050000)
+    return AppContext::getSettings()->getValue(SETTINGS_ROOT + TEMPORARY_DIR, QStandardPaths::writableLocation(QStandardPaths::TempLocation)).toString();
+#else
     return AppContext::getSettings()->getValue(SETTINGS_ROOT + TEMPORARY_DIR, QDesktopServices::storageLocation(QDesktopServices::TempLocation)).toString();
+#endif
+
 }
 
 void UserAppsSettings::setUserTemporaryDirPath(const QString& newPath) {
@@ -156,7 +165,11 @@ void UserAppsSettings::setUserTemporaryDirPath(const QString& newPath) {
 }
 
 QString UserAppsSettings::getDefaultDataDirPath() const{
+#if (QT_VERSION >= 0x050000)
+    return AppContext::getSettings()->getValue(SETTINGS_ROOT + DATA_DIR, QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation)+"/UGENE_Data").toString();
+#else
     return AppContext::getSettings()->getValue(SETTINGS_ROOT + DATA_DIR, QDesktopServices::storageLocation(QDesktopServices::DocumentsLocation)+"/UGENE_Data").toString();
+#endif
 }
 
 void UserAppsSettings::setDefaultDataDirPath( const QString& newPath ){

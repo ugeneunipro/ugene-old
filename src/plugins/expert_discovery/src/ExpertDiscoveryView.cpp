@@ -844,7 +844,7 @@ U2SequenceObject* ExpertDiscoveryView::getSeqObjectFromEDSequence(EDPISequence* 
             default:
                 return NULL;
         }
-        QByteArray seqarray  = QByteArray(sItem->getSequenceCode().toAscii());
+        QByteArray seqarray  = QByteArray(sItem->getSequenceCode().toLatin1());
         DNASequence dnaseq (sItem->getSequenceName(), seqarray);
         dnaseq.alphabet = AppContext::getDNAAlphabetRegistry()->findById(BaseDNAAlphabetIds::NUCL_DNA_EXTENDED());
         TaskStateInfo stateInfo;

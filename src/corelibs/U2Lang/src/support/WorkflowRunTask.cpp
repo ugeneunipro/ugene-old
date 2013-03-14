@@ -124,9 +124,16 @@ QString WorkflowRunTask::generateReport() const {
     res+="<table width='75%'>";
     res+=QString("<tr><th>%1</th><th>%2</th><th>%3</th></tr>").arg(tr("Iterations")).arg(tr("Status")).arg(tr("Details"));
     foreach(Task* sub, getSubtasks()) {
+#if (QT_VERSION >= 0x050000)
+        QString name = sub->getTaskName().toHtmlEscaped();
+        QString status = sub->hasError() ? tr("Failed") : sub->isCanceled() ? tr("Canceled") : tr("Finished");
+        QString error = (sub->getError().toHtmlEscaped()).replace("\n", "<br>");
+#else
         QString name = Qt::escape(sub->getTaskName());
         QString status = sub->hasError() ? tr("Failed") : sub->isCanceled() ? tr("Canceled") : tr("Finished");
         QString error = Qt::escape(sub->getError()).replace("\n", "<br>");
+#endif
+
             //AppContext::getTaskScheduler()->getStateName(sub);
         if (sub->hasError()) {
             name = "<font color='red'>"+name+"</font>";
@@ -447,9 +454,15 @@ QString WorkflowRunInProcessTask::generateReport() const {
     res+="<table width='75%'>";
     res+=QString("<tr><th>%1</th><th>%2</th><th>%3</th></tr>").arg(tr("Iterations")).arg(tr("Status")).arg(tr("Details"));
     foreach(Task* sub, getSubtasks()) {
+#if (QT_VERSION >= 0x050000)
+        QString name = sub->getTaskName().toHtmlEscaped();
+        QString status = sub->hasError() ? tr("Failed") : sub->isCanceled() ? tr("Canceled") : tr("Finished");
+        QString error = (sub->getError().toHtmlEscaped()).replace("\n", "<br>");
+#else
         QString name = Qt::escape(sub->getTaskName());
         QString status = sub->hasError() ? tr("Failed") : sub->isCanceled() ? tr("Canceled") : tr("Finished");
         QString error = Qt::escape(sub->getError()).replace("\n", "<br>");
+#endif
         if (sub->hasError()) {
             name = "<font color='red'>"+name+"</font>";
             status = "<font color='red'>"+status+"</font>";

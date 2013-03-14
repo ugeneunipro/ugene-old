@@ -93,7 +93,7 @@ int runGORIV( QFile& seqDb, QFile& strucDb , char* inputSeq, int numResidues, ch
   QTextStream stream(&seqDb);
 
   while(!stream.atEnd()) {
-    QByteArray buf = stream.readLine().toAscii();
+    QByteArray buf = stream.readLine().toLatin1();
     if (buf[0] == '>' || buf[0] == '!') {
         nprot_dbase++;
     }
@@ -204,7 +204,7 @@ void readFile(QFile& file, int nprot, char **obs, char **title, int *pnter)
 
     for(ip = 1; ip <= nprot; ip++) {
 
-        QByteArray title_ip = stream.readLine().toAscii();
+        QByteArray title_ip = stream.readLine().toLatin1();
         title_ip.push_back("\n");
         strncpy(title[ip], title_ip.constData(), title_ip.length() + 1);
         nres = 0;

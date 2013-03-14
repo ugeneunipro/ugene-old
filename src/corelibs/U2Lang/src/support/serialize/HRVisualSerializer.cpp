@@ -187,7 +187,7 @@ QPointF HRVisualParser::string2Point(const QString &str, U2OpStatus &os) {
 
 QColor HRVisualParser::string2Color(const QString &str, U2OpStatus &os) {
     int r = 0, g = 0, b = 0, a = 0;
-    QTextStream stream(str.toAscii());
+    QTextStream stream(str.toLatin1());
     stream >> r >> g >> b >> a;
     if (QTextStream::Ok != stream.status()) {
         os.setError(HRVisualParser::tr("Cannot parse 4 integer numbers from '%1'").arg(str));

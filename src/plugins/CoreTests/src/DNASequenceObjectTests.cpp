@@ -134,7 +134,7 @@ void GTest_DNASequencePart::init(XMLTestFormat *tf, const QDomElement& el) {
         return;
     }
 
-    subseq = el.attribute(VALUE_ATTR).toAscii();
+    subseq = el.attribute(VALUE_ATTR).toLatin1();
     if (subseq.isEmpty()) {
         failMissingValue(VALUE_ATTR);
         return;
@@ -571,7 +571,7 @@ void GTest_DNAMulSequencePart::init(XMLTestFormat *tf, const QDomElement& el) {
         return;
     }
 
-    subseq = el.attribute(VALUE_ATTR).toAscii();
+    subseq = el.attribute(VALUE_ATTR).toLatin1();
     if (subseq.isEmpty()) {
         failMissingValue(VALUE_ATTR);
         return;
@@ -653,7 +653,7 @@ void GTest_DNAMulSequenceQuality::init(XMLTestFormat *tf, const QDomElement& el)
         return;
     } 
 
-    expectedQuality = el.attribute(QUALITY_ATTR).toAscii();
+    expectedQuality = el.attribute(QUALITY_ATTR).toLatin1();
     if (expectedQuality.isEmpty()) {
         failMissingValue(QUALITY_ATTR);
         return;
@@ -922,7 +922,7 @@ void GTest_DNASequenceQualityScores::init(XMLTestFormat* tf, const QDomElement& 
         return;
     }
     
-    qualityScores = el.attribute(QUALITY_ATTR).toAscii();
+    qualityScores = el.attribute(QUALITY_ATTR).toLatin1();
     if (qualityScores.isEmpty()) {
         failMissingValue(QUALITY_ATTR);
 
@@ -970,7 +970,7 @@ void GTest_DNASequenceQualityValue::init(XMLTestFormat* tf, const QDomElement& e
 
     QString buf;
     bool ok = false;    
-    buf = el.attribute(POSITION_ATTR).toAscii();
+    buf = el.attribute(POSITION_ATTR).toLatin1();
     if (buf.isEmpty()) {
         failMissingValue(POSITION_ATTR);
     }
@@ -982,7 +982,7 @@ void GTest_DNASequenceQualityValue::init(XMLTestFormat* tf, const QDomElement& e
     }
 
     ok = false;
-    buf = el.attribute(VALUE_ATTR).toAscii();
+    buf = el.attribute(VALUE_ATTR).toLatin1();
     if (buf.isEmpty()) {
         failMissingValue(VALUE_ATTR);
     }

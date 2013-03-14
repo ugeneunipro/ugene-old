@@ -77,7 +77,7 @@ static void writeNode(IOAdapter* io, const PhyNode* node) {
         }
         io->writeBlock(")", 1);
     } else {
-        io->writeBlock(QString(node->getName()).replace(' ', '_').toAscii());
+        io->writeBlock(QString(node->getName()).replace(' ', '_').toLatin1());
     }
 }
 

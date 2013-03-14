@@ -319,7 +319,7 @@ const QString Marker::toString() const {
 /* SequencerMarker */
 /************************************************************************/
 QString SequenceMarker::getMarkingResult(const QVariant &object) {
-    DNASequence seq = qVariantValue<DNASequence>(object);
+    DNASequence seq = object.value<DNASequence>();
 
     if (MarkerTypes::SEQ_LENGTH_MARKER_ID == type) {
         return Marker::getMarkingResult(seq.length());

@@ -21,6 +21,7 @@
 
 #include <U2Core/U2Region.h>
 #include <U2Core/FormatUtils.h>
+#include <QDataStream>
 
 namespace U2 {
 
@@ -151,7 +152,9 @@ static bool _registerMeta() {
 bool U2Region::registerMeta = _registerMeta();
 
 QDataStream &operator<<(QDataStream &out, const U2Region &myObj) {
-    out << myObj.startPos << myObj.length;
+    qint64 startPos=myObj.startPos;
+    qint64 length=myObj.length;
+    out << startPos << length;
     return out;
 }
 

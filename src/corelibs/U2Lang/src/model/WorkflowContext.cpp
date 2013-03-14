@@ -19,8 +19,8 @@
  * MA 02110-1301, USA.
  */
 
-#include <QApplication>
-#include <QMutexLocker>
+#include <QtGui/QApplication>
+#include <QtCore/QMutexLocker>
 
 #include <U2Core/AppContext.h>
 #include <U2Core/AppFileStorage.h>

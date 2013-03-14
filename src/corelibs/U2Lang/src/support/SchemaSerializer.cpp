@@ -223,10 +223,10 @@ void SchemaSerializer::readIterations(QList<Iteration>& lst, const QDomElement& 
             it.id = el.attribute(ID_ATTR).toInt();
         }
         QVariant var = QVariantUtils::String2Var(el.text());
-        if (qVariantCanConvert<CfgMap>(var)) {
+        if (var.canConvert<CfgMap>()) {
             it.cfg = var.value<CfgMap>();
         }
-        if (qVariantCanConvert<IterationCfg>(var)) {
+        if (var.canConvert<IterationCfg>()) {
             IterationCfg tmp = var.value<IterationCfg>();
             QMapIterator<IterationCfgKey, QVariant> tit(tmp);
             while (tit.hasNext())

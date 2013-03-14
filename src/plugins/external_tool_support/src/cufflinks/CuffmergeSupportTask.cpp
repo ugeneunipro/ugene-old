@@ -130,7 +130,7 @@ void CuffmergeSupportTask::writeFileList() {
     foreach (Document *doc, docs) {
         data += doc->getURLString() + "\n";
     }
-    file.write(data.toAscii());
+    file.write(data.toLatin1());
     file.close();
 }
 

@@ -176,7 +176,7 @@ private:
 class UctpError : public std::runtime_error
 {
 public:
-    UctpError(QString message) : std::runtime_error(message.toAscii().constData()) {}
+    UctpError(QString message) : std::runtime_error(message.toLatin1().constData()) {}
     const QString getErrorMessage() {return QString( what() ); }
     ~UctpError() throw();
 private:

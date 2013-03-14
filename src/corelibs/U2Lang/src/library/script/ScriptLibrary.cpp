@@ -352,7 +352,7 @@ QScriptValue WorkflowScriptLibrary::sequenceFromText(QScriptContext *ctx, QScrip
 
     QString text = ctx->argument(0).toString();
     //QString name = ctx->argument(1).toString();
-    DNASequence seq("sequence", text.toAscii());
+    DNASequence seq("sequence", text.toLatin1());
     seq.alphabet = U2AlphabetUtils::findBestAlphabet(seq.seq);
     if(seq.alphabet->getId() == BaseDNAAlphabetIds::RAW()) {
         seq.seq = QByteArray();

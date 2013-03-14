@@ -31,7 +31,7 @@ LIBS += -L../../_release -lU2Core -lU2Algorithm -lU2Formats -lU2Gui -lU2View -lU
         }
     }
 
-    include (../../ugene_plugin_descriptor.pri)
+    include (./ugene_plugin_descriptor.pri)
 }
 
 win32 {

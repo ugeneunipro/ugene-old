@@ -66,7 +66,7 @@ QString QDFindActor::getText() const {
 Task* QDFindActor::getAlgorithmTask(const QVector<U2Region>& location) {
     Task* t = new Task(tr("Find"), TaskFlag_NoRun);
     settings.sequence = scheme->getSequence().seq;
-    settings.pattern = cfg->getParameter(PATTERN_ATTR)->getAttributeValueWithoutScript<QString>().toAscii().toUpper();
+    settings.pattern = cfg->getParameter(PATTERN_ATTR)->getAttributeValueWithoutScript<QString>().toLatin1().toUpper();
 
     switch(getStrandToRun()) {
         case QDStrand_Both:

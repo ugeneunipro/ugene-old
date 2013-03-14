@@ -386,7 +386,7 @@ void CrashHandler::runMonitorProcess(const QString &exceptionType)
     char pid_buf[30];
     sprintf(pid_buf, "%d", getpid());
     char name_buf[512];
-    name_buf[readlink(path.toAscii().data(), name_buf, 511)]=0;
+    name_buf[readlink(path.toLatin1().data(), name_buf, 511)]=0;
     FILE *fp;
     fp = freopen ("/tmp/UGENEstacktrace.txt","w+",stdout);
     void * stackTrace[1024];

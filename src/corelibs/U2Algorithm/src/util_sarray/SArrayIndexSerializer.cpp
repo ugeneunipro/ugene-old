@@ -35,8 +35,8 @@ void SArrayIndexSerializer::serialize(const SArrayIndex *index, const QString &i
         return;
     }
     QByteArray data;
-    data = SARRAY_HEADER.toAscii();
-    data += SARRAY_PARAMETERS.arg(refFileName).arg(index->seqLen).arg(index->w).arg(index->gapOffset).toAscii();
+    data = SARRAY_HEADER.toLatin1();
+    data += SARRAY_PARAMETERS.arg(refFileName).arg(index->seqLen).arg(index->w).arg(index->gapOffset).toLatin1();
 
     data += QByteArray::number(index->w, 10) + ", ";
     data += QByteArray::number(index->w4, 10) + ", ";

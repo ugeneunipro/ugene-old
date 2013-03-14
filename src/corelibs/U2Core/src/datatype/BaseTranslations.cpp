@@ -143,12 +143,12 @@ static bool parseCutFile(const QString& url, char* amino, int* prob, char* n1, c
             parsedData = line.split(QRegExp("\\s"), QString::SkipEmptyParts);
             if ( parsedData.size() != 5 ) return false;
             if ( parsedData[0].length() != 3 ) return false;
-            buf = parsedData[0].toAscii();
+            buf = parsedData[0].toLatin1();
             n1[pos] = buf[0];
             n2[pos] = buf[1];
             n3[pos] = buf[2];
             if ( parsedData[1].length() != 1 ) return false;
-            buf = parsedData[1].toAscii();
+            buf = parsedData[1].toLatin1();
             amino[pos] = buf[0];
             double pr = parsedData[2].toDouble(&ok);
             if (!ok) return false;

@@ -539,13 +539,13 @@ void BlastAllSupportTask::parseXMLHsp(const QDomNode &xml,const QString &id, con
     // parse alignment
     {
         elem = xml.lastChildElement("Hsp_qseq");
-        QByteArray qSeq = elem.text().toAscii();
+        QByteArray qSeq = elem.text().toLatin1();
 
         elem = xml.lastChildElement("Hsp_hseq");
-        QByteArray hSeq = elem.text().toAscii();
+        QByteArray hSeq = elem.text().toLatin1();
 
         elem = xml.lastChildElement("Hsp_midline");
-        QByteArray midline = elem.text().toAscii();
+        QByteArray midline = elem.text().toLatin1();
 
         QByteArray cigar;
         int length = midline.length();

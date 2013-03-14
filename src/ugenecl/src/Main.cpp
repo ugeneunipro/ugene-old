@@ -240,7 +240,7 @@ int main(int argc, char **argv)
             "Hint: Use 'ugene -ui' command to run GUI version of UGENE\n"
             "Hint: Run 'ugene --usage', 'ugene --help' or 'ugene --help=<sectionName>' for more information\n"
 #endif
-            , version.text.toAscii().constData());
+            , version.text.toLatin1().constData());
         return -1;   
     }
 
@@ -290,7 +290,7 @@ int main(int argc, char **argv)
             continue;
         }
         if (!translator.load(transFile[i], QCoreApplication::applicationDirPath())) {
-            fprintf(stderr, "Translation not found: %s\n", transFile[i].toAscii().constData());
+            fprintf(stderr, "Translation not found: %s\n", transFile[i].toLatin1().constData());
         } else {
             trOK = true;
             break;

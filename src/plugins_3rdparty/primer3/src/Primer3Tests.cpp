@@ -183,12 +183,12 @@ void GTest_Primer3::init(XMLTestFormat *tf, const QDomElement& el){
 //1
     buf = elInput.attribute("PRIMER_SEQUENCE_ID");
     if (!buf.isEmpty()){
-        settings.setSequenceName(buf.toAscii());
+        settings.setSequenceName(buf.toLatin1());
     }
 //2
     buf = elInput.attribute("SEQUENCE");
     if (!buf.isEmpty()){
-        settings.setSequence(buf.toAscii());
+        settings.setSequence(buf.toLatin1());
     }
 //3
     buf = elInput.attribute("TARGET");
@@ -259,22 +259,22 @@ void GTest_Primer3::init(XMLTestFormat *tf, const QDomElement& el){
 //32
     buf = elInput.attribute("PRIMER_LEFT_INPUT");
     if (!buf.isEmpty()){
-        settings.setLeftInput(buf.toAscii());
+        settings.setLeftInput(buf.toLatin1());
     }
 //33
     buf = elInput.attribute("PRIMER_RIGHT_INPUT");
     if (!buf.isEmpty()){
-        settings.setRightInput(buf.toAscii());
+        settings.setRightInput(buf.toLatin1());
     }
 //34
     buf = elInput.attribute("PRIMER_INTERNAL_OLIGO_INPUT");
     if (!buf.isEmpty()){
-        settings.setInternalInput(buf.toAscii());
+        settings.setInternalInput(buf.toLatin1());
     }
 //35
     buf = elInput.attribute("MARKER_NAME");
     if (!buf.isEmpty()){
-        settings.setSequenceName(buf.toAscii());
+        settings.setSequenceName(buf.toLatin1());
     }
 //37
     buf = elInput.attribute("PRIMER_DEFAULT_PRODUCT");
@@ -374,12 +374,12 @@ void GTest_Primer3::init(XMLTestFormat *tf, const QDomElement& el){
 //121
     buf = elInput.attribute("PRIMER_MISPRIMING_LIBRARY");
     if (!buf.isEmpty()){
-        settings.setRepeatLibrary((getEnv()->getVar("COMMON_DATA_DIR") + "/primer3/" + buf).toAscii());
+        settings.setRepeatLibrary((getEnv()->getVar("COMMON_DATA_DIR") + "/primer3/" + buf).toLatin1());
     }
 //122
     buf = elInput.attribute("PRIMER_INTERNAL_OLIGO_MISHYB_LIBRARY");
     if (!buf.isEmpty()){
-        settings.setMishybLibrary((getEnv()->getVar("COMMON_DATA_DIR") + "/primer3/" + buf).toAscii());
+        settings.setMishybLibrary((getEnv()->getVar("COMMON_DATA_DIR") + "/primer3/" + buf).toLatin1());
     }
     }
 

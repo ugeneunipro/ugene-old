@@ -22,6 +22,8 @@
 #include "GUITestService.h"
 #include "GUITestBase.h"
 #include "GUITestTeamcityLogger.h"
+#include <QtGui/QFileDialog>
+#include <QtGui/QMainWindow>
 
 #include <U2Core/AppContext.h>
 #include <U2Core/CMDLineRegistry.h>

@@ -1263,7 +1263,7 @@ void WorkflowView::sl_importSchemaToElement() {
                 + typeName + "." + WorkflowUtils::WD_FILE_EXTENSIONS.first();
             QFile file(path);
             file.open(QIODevice::WriteOnly);
-            file.write(text.toAscii());
+            file.write(text.toLatin1());
             file.close();
 
             ActorPrototype *proto = IncludedProtoFactory::getSchemaActorProto(s, typeName, path);
@@ -1395,7 +1395,7 @@ void WorkflowView::sl_pasteItems(const QString& s) {
         pasteCount = 0;
         lastPaste = tmp;
     }
-    QByteArray lpt = lastPaste.toAscii();
+    QByteArray lpt = lastPaste.toLatin1();
     DocumentFormat* wf = AppContext::getDocumentFormatRegistry()->getFormatById(WorkflowDocFormat::FORMAT_ID);
     if (wf->checkRawData(lpt).score != FormatDetection_Matched) {
         return;

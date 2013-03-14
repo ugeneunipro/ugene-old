@@ -46,7 +46,7 @@ static QString map2String(const QVariantMap& map) {
 static QVariantMap string2Map(const QString& string, bool emptyMapIfError) {
     Q_UNUSED(emptyMapIfError);
 
-    QDataStream s(QByteArray::fromBase64(string.toAscii()));
+    QDataStream s(QByteArray::fromBase64(string.toLatin1()));
     QVariant res(QVariant::Map);
     s >> res;
     if (res.type() == QVariant::Map) {

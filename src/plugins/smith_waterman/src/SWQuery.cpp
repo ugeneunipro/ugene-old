@@ -71,7 +71,7 @@ QDSWActor::QDSWActor(QDActorPrototype const* proto) : QDActor(proto), algo(0) {
 }
 
 int QDSWActor::getMinResultLen() const {
-    return cfg->getParameter(PATTERN_ATTR)->getAttributeValueWithoutScript<QString>().toAscii().size()/2;
+    return cfg->getParameter(PATTERN_ATTR)->getAttributeValueWithoutScript<QString>().toLatin1().size()/2;
 }
 
 int QDSWActor::getMaxResultLen() const {
@@ -81,7 +81,7 @@ int QDSWActor::getMaxResultLen() const {
 QString QDSWActor::getText() const {
     QMap<QString, Attribute*> params = cfg->getParameters();
 
-    QString pattern = params.value(PATTERN_ATTR)->getAttributeValueWithoutScript<QString>().toAscii().toUpper();
+    QString pattern = params.value(PATTERN_ATTR)->getAttributeValueWithoutScript<QString>().toLatin1().toUpper();
     if (pattern.isEmpty()) {
         pattern = "unset";
     }
@@ -142,7 +142,7 @@ Task* QDSWActor::getAlgorithmTask(const QVector<U2Region>& searchLocation) {
         QString err = tr("%1: incorrect result filter.").arg(getParameters()->getLabel());
         return new FailTask(err);
     }
-    settings.ptrn = params.value(PATTERN_ATTR)->getAttributeValueWithoutScript<QString>().toAscii().toUpper();
+    settings.ptrn = params.value(PATTERN_ATTR)->getAttributeValueWithoutScript<QString>().toLatin1().toUpper();
     if(settings.ptrn.isEmpty()) {
         QString err = tr("%1: pattern is empty.").arg(getParameters()->getLabel());
         return new FailTask(err);

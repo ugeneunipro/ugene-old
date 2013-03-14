@@ -47,7 +47,7 @@ PWMatrix PWMConversionAlgorithmLOD::convert(const PFMatrix& matrix) {
     int length = matrix.getLength();
     float bj = 1.0 / size;
     int sum[16];
-    qMemSet(sum, 0, size*sizeof(int));
+    memset(sum, 0, size*sizeof(int));
     int all_hits = 0;
     for (int i = 0; i < size; i++) {
         for (int j = 0; j < length; j++) {

@@ -20,33 +20,35 @@
  */
 
 #include "SynchHttp.h"
+#include <QtNetwork/QNetworkRequest>
 
 namespace U2 {
 
-SyncHTTP::SyncHTTP(const QString& hostName, quint16 port, QObject* parent)
-: QHttp(hostName,port,parent), requestID(-1)
+SyncHTTP::SyncHTTP(QObject* parent)
+: QNetworkAccessManager(parent)
 {
-    connect(this,SIGNAL(requestFinished(int,bool)),SLOT(finished(int,bool)));
+    connect(this,SIGNAL(finished(QNetworkReply*)),SLOT(finished(QNetworkReply*)));
 }
 
-QString SyncHTTP::syncGet(const QString& path) {
-    assert(requestID == -1);
-    QBuffer to;
-    requestID = get(path, &to);
+QString SyncHTTP::syncGet(const QUrl& url) {
+    QNetworkRequest request = QNetworkRequest(url);
+    QNetworkReply *reply = get(request);
     loop.exec();
-    return QString(to.data());
+    err=reply->error();
+    errString=reply->errorString();
+    return QString(reply->readAll());
 }
 
-QString SyncHTTP::syncPost(const QString & path, QIODevice * data) {
-    assert(requestID == -1);
-    QBuffer to;
-    requestID = post(path, data, &to);
+QString SyncHTTP::syncPost(const QUrl & url, QIODevice * data) {
+    QNetworkRequest request = QNetworkRequest(url);
+    QNetworkReply *reply = post(request, data);
     loop.exec();
-    return QString(to.data());
+    err=reply->error();
+    errString=reply->errorString();
+    return QString(reply->readAll());
 }
 
-void SyncHTTP::finished(int idx, bool err) {
-    assert(idx = requestID);Q_UNUSED(err); Q_UNUSED(idx);
+void SyncHTTP::finished(QNetworkReply*) {
     loop.exit();
 }
 

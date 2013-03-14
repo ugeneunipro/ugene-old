@@ -59,7 +59,7 @@ void createPhyTreeFromPhylipTree(const MAlignment &ma, node *p, double m, boolea
     if(p){
         if (p->tip) {
             if(bootstrap_repl != 0){
-                current->setName(QString::fromAscii(p->nayme));
+                current->setName(QString::fromLatin1(p->nayme));
             }else{
                 assert(p->index - 1 < ma.getNumRows());
                 current->setName(QString(ma.getRow(p->index - 1).getName()));
@@ -185,7 +185,7 @@ void NeighborJoinCalculateTreeTask::run(){
                 naym* nayme = getNayme();
                 for (int i = 0; i < sz; ++i) {
                     const MAlignmentRow& row = inputMA.getRow(i);
-                    QByteArray name = row.getName().toAscii();
+                    QByteArray name = row.getName().toLatin1();
                     replacePhylipRestrictedSymbols(name);
                     qstrncpy(nayme[i], name.constData(), sizeof(naym));
 
@@ -261,7 +261,7 @@ void NeighborJoinCalculateTreeTask::run(){
             naym* nayme = getNayme();
             for (int i = 0; i < sz; ++i) {
                 const MAlignmentRow& row = inputMA.getRow(i);
-                QByteArray name = row.getName().toAscii();
+                QByteArray name = row.getName().toLatin1();
                 replacePhylipRestrictedSymbols(name);
                 qstrncpy(nayme[i], name.constData(), sizeof(naym));
             }

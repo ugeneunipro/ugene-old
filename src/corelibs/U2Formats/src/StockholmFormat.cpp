@@ -534,7 +534,7 @@ static bool loadOneMsa( IOAdapter* io, U2OpStatus& tsi, MAlignment& msa, Annotat
 
 static void setMsaInfoCutoffs( QVariantMap& info, const QString& string, MAlignmentInfo::Cutoffs cof1, 
                                MAlignmentInfo::Cutoffs cof2 ) {
-    QByteArray str = string.toAscii();
+    QByteArray str = string.toLatin1();
     QTextStream txtStream( str );
     float val1 = .0f;
     float val2 = .0f;
@@ -640,7 +640,7 @@ static void save( IOAdapter* io, const MAlignment& msa, const QString& name ) {
     QByteArray unimark = StockholmFormat::UNI_ANNOTATION_MARK + "\n\n";
     ret = io->writeBlock( unimark );
     checkValThrowException<int>( true, unimark.size(), ret, StockholmFormat::WriteError(io->getURL()) );
-    QByteArray idAnn = StockholmFormat::FILE_ANNOTATION_ID + " " + name.toAscii() + "\n\n";
+    QByteArray idAnn = StockholmFormat::FILE_ANNOTATION_ID + " " + name.toLatin1() + "\n\n";
     ret = io->writeBlock( idAnn );
     checkValThrowException<int>( true, idAnn.size(), ret, StockholmFormat::WriteError(io->getURL()) );
     
@@ -656,7 +656,7 @@ static void save( IOAdapter* io, const MAlignment& msa, const QString& name ) {
         int nRows = msa.getNumRows();
         for( int i = 0; i < nRows; ++i ) {
             const MAlignmentRow& row = msa.getRow(i);
-            QByteArray name = row.getName().toAscii();
+            QByteArray name = row.getName().toLatin1();
             TextUtils::replace(name.data(), name.length(), TextUtils::WHITES, '_');
             name += getNameSeqGap( name_max_len - row.getName().size() );
             ret = io->writeBlock( name );

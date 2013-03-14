@@ -79,7 +79,7 @@ void DNAQualityIOUtils::writeDNAQuality( const QString& seqName, const DNAQualit
 
     QByteArray data;
     data.append(">");
-    data.append(seqName.toAscii());
+    data.append(seqName.toLatin1());
     data.append("\n");
     data.append( decode ? getDecodedQuality(seqQuality) : seqQuality.qualCodes );
     data.append("\n");

@@ -29,6 +29,7 @@
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QTextEdit>
 #include <QtGui/QStandardItemModel>
+#include <QtGui/QPrinter>
 #include <QtGui/QLineEdit>
 #include <QtGui/QToolButton>
 

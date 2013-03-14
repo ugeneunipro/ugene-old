@@ -291,9 +291,9 @@ void DNAFragment::updateTerms() {
 void DNAFragment::updateLeftTerm()
 {
     assert(annotatedFragment != NULL);
-    leftTerm.enzymeId = annotatedFragment->findFirstQualifierValue(QUALIFIER_LEFT_TERM).toAscii();
-    leftTerm.overhang = annotatedFragment->findFirstQualifierValue(QUALIFIER_LEFT_OVERHANG).toAscii();
-    leftTerm.type = annotatedFragment->findFirstQualifierValue(QUALIFIER_LEFT_TYPE).toAscii();
+    leftTerm.enzymeId = annotatedFragment->findFirstQualifierValue(QUALIFIER_LEFT_TERM).toLatin1();
+    leftTerm.overhang = annotatedFragment->findFirstQualifierValue(QUALIFIER_LEFT_OVERHANG).toLatin1();
+    leftTerm.type = annotatedFragment->findFirstQualifierValue(QUALIFIER_LEFT_TYPE).toLatin1();
     leftTerm.isDirect = 
         annotatedFragment->findFirstQualifierValue(QUALIFIER_LEFT_STRAND) == OVERHANG_STRAND_DIRECT;
 }
@@ -301,9 +301,9 @@ void DNAFragment::updateLeftTerm()
 void DNAFragment::updateRightTerm()
 {
     assert(annotatedFragment != NULL);
-    rightTerm.enzymeId = annotatedFragment->findFirstQualifierValue(QUALIFIER_RIGHT_TERM).toAscii();
-    rightTerm.overhang = annotatedFragment->findFirstQualifierValue(QUALIFIER_RIGHT_OVERHANG).toAscii();
-    rightTerm.type = annotatedFragment->findFirstQualifierValue(QUALIFIER_RIGHT_TYPE).toAscii();
+    rightTerm.enzymeId = annotatedFragment->findFirstQualifierValue(QUALIFIER_RIGHT_TERM).toLatin1();
+    rightTerm.overhang = annotatedFragment->findFirstQualifierValue(QUALIFIER_RIGHT_OVERHANG).toLatin1();
+    rightTerm.type = annotatedFragment->findFirstQualifierValue(QUALIFIER_RIGHT_TYPE).toLatin1();
     rightTerm.isDirect = 
         annotatedFragment->findFirstQualifierValue(QUALIFIER_RIGHT_STRAND) == OVERHANG_STRAND_DIRECT;
 

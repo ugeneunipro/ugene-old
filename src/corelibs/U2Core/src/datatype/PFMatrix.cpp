@@ -71,7 +71,7 @@ PFMatrix::PFMatrix(const MAlignment &align, PFMatrixType _type): type(_type) {
     assert (length > 0);
     int size = (type == PFM_MONONUCLEOTIDE) ? 4 : 16;
     data.resize(size * length);
-    qMemSet(data.data(), 0, size*length*sizeof(int));
+    memset(data.data(), 0, size*length*sizeof(int));
     U2OpStatus2Log os;
     if (type == PFM_MONONUCLEOTIDE) {
         for (int i = 0, n = align.getNumRows(); i < n; i++) {
@@ -104,7 +104,7 @@ PFMatrix::PFMatrix(const QList<DNASequence *> &seq, PFMatrixType _type) : type(_
     int size = (type == PFM_MONONUCLEOTIDE) ? 4 : 16;
     length = (type == PFM_MONONUCLEOTIDE) ? seq[0]->length() : seq[0]->length() - 1;
     data.resize(size * length);
-    qMemSet(data.data(), 0, size*length*sizeof(int));
+    memset(data.data(), 0, size*length*sizeof(int));
     if (type == PFM_MONONUCLEOTIDE) {
         for (int i = 0, n = seq.size(); i < n; i++) {
             const QByteArray& row = seq[i]->seq;
@@ -140,7 +140,7 @@ PFMatrix PFMatrix::convertDi2Mono(const PFMatrix& source) {
     int size = 4;
     int len = source.getLength();
     QVarLengthArray<int> matrix(size*(len+1));
-    qMemSet(matrix.data(), 0, size*(len+1)*sizeof(int));
+    memset(matrix.data(), 0, size*(len+1)*sizeof(int));
     
     for (int i = 0; i < size; i++) {
         for (int j = 0; j < len; j++) {

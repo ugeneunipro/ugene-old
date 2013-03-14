@@ -251,7 +251,7 @@ void ClustalWAlnFormat::storeEntry(IOAdapter *io, const QMap< GObjectType, QList
     for(int i = 0; i < aliLen; i+=seqPerPage) {
         int partLen = i + seqPerPage > aliLen ? aliLen - i : seqPerPage;
         foreach(const MAlignmentRow& row, ma.getRows()) {
-            QByteArray line = row.getName().toAscii();
+            QByteArray line = row.getName().toLatin1();
             if (line.length() > MAX_NAME_LEN) {
                 line = line.left(MAX_NAME_LEN);
             }

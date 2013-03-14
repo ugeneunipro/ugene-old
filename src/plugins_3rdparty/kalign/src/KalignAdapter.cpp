@@ -125,9 +125,9 @@ void KalignAdapter::alignUnsafe(const MAlignment& ma, MAlignment& res, TaskState
 	int aacode[26] = {0,1,2,3,4,5,6,7,8,-1,9,10,11,12,23,13,14,15,16,17,17,18,19,20,21,22};
 	for(quint32 i = 0; i < numseq; i++) {
 		const MAlignmentRow& row= ma.getRow(i);
-		qstrncpy(aln->sn[i], row.getName().toAscii(), row.getName().length() + 1); //+1 to include '\0'
+		qstrncpy(aln->sn[i], row.getName().toLatin1(), row.getName().length() + 1); //+1 to include '\0'
 		QString gapless = QString(row.getCore()).remove('-');
-		qstrncpy(aln->seq[i], gapless.toAscii(), gapless.length() + 1);	//+1 to include '\0'
+		qstrncpy(aln->seq[i], gapless.toLatin1(), gapless.length() + 1);	//+1 to include '\0'
 		for (quint32 j = 0; j < aln->sl[i]; j++) {
 			if (isalpha((int)aln->seq[i][j])){
 				aln->s[i][j] = aacode[toupper(aln->seq[i][j])-65];
@@ -399,7 +399,7 @@ void KalignAdapter::alignUnsafe(const MAlignment& ma, MAlignment& res, TaskState
 		}
 		seq += QString(aln->s[f][aln->sl[f]],'-');
         U2OpStatus2Log os;
-		res.addRow(QString(aln->sn[f]), seq.toAscii(), os);
+		res.addRow(QString(aln->sn[f]), seq.toLatin1(), os);
 	}
 
 

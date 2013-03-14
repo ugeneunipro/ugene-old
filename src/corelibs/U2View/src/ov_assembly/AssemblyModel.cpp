@@ -59,7 +59,7 @@ namespace U2 {
 // AssemblyModel
 //==============================================================================
 
-const QByteArray AssemblyModel::COVERAGE_STAT_ATTRIBUTE_NAME(U2BaseAttributeName::coverage_statistics.toAscii());
+const QByteArray AssemblyModel::COVERAGE_STAT_ATTRIBUTE_NAME(U2BaseAttributeName::coverage_statistics.toLatin1());
 
 AssemblyModel::AssemblyModel(const DbiConnection& dbiCon_) : 
 cachedModelLength(NO_VAL), cachedModelHeight(NO_VAL), assemblyDbi(0), dbiHandle(dbiCon_),

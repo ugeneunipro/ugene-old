@@ -200,7 +200,7 @@ void ChromatogramView::sl_onPopupMenuCkicked(QAction* a) {
         QMessageBox::critical(this, tr("error"), tr("sequence_object_was_locked"));
         return;
     }
-    char newBase = a->text().at(0).toAscii();
+    char newBase = a->text().at(0).toLatin1();
     char curBase = currentBaseCalls.at(selIndex);
     U2OpStatus2Log os;
     if (newBase != curBase) {

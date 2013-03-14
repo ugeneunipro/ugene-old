@@ -62,42 +62,42 @@ P7_HMM * UHMM3Build::build( const MAlignment & malignment, const UHMM3BuildSetti
     try {
         int alType = UHMM3Utilities::convertAlphabetType( malignment.getAlphabet() );
         if( UHMM3Utilities::BAD_ALPHABET == alType ) {
-            errStr = tr( "cannot_convert_alphabet" ).toAscii();
+            errStr = tr( "cannot_convert_alphabet" ).toLatin1();
             throwUHMMER3Exception( errStr.data() );
         }
         ESL_ALPHABET* abc = esl_alphabet_Create( alType );
         if( NULL == abc ) {
-            errStr = tr( "no_memory: cannot_create_alphabet" ).toAscii();
+            errStr = tr( "no_memory: cannot_create_alphabet" ).toLatin1();
             throwUHMMER3Exception( errStr.data() );
         }
         
         P7_BG* bg = p7_bg_Create( abc );
         if( NULL == bg ) {
-            errStr = tr( "no_memory: cannot_create_null_model" ).toAscii();
+            errStr = tr( "no_memory: cannot_create_null_model" ).toLatin1();
             throwUHMMER3Exception( errStr.data() );
         }
         P7_BUILDER* bld = p7_builder_Create( &settings, abc );
         if( NULL == bld ) {
-            errStr = tr( "no_memory: cannot_create_builder" ).toAscii();
+            errStr = tr( "no_memory: cannot_create_builder" ).toLatin1();
             throwUHMMER3Exception( errStr.data() );
         }
         
         ESL_MSA* msa = UHMM3Utilities::convertMSA( malignment );
         if( NULL == msa ) {
-            errStr = tr( "no_memory: cannot_convert_msa" ).toAscii();
+            errStr = tr( "no_memory: cannot_convert_msa" ).toLatin1();
             throwUHMMER3Exception( errStr.data() );
         }
         int ret = esl_msa_Digitize( abc, msa, NULL );
         if( eslOK != ret ) {
-            errStr = tr( "no_memory: cannot_digitize_msa" ).toAscii();
+            errStr = tr( "no_memory: cannot_digitize_msa" ).toLatin1();
             throwUHMMER3Exception( errStr.data() );
         }
         ret = p7_Builder( bld, msa, bg, &hmm, NULL, NULL, NULL, NULL, ti );
         if ( eslOK != ret ) {
             if( eslCANCELED == ret ) {
-                errStr = tr( HMMER3_CANCELED_ERROR ).toAscii();
+                errStr = tr( HMMER3_CANCELED_ERROR ).toLatin1();
             } else {
-                errStr = tr( "builder_error_occurred" ).toAscii();
+                errStr = tr( "builder_error_occurred" ).toLatin1();
             }
             assert( !errStr.isEmpty() );
             throwUHMMER3Exception( errStr.data() );

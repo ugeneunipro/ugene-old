@@ -352,12 +352,16 @@ void GTestState::setPassed() {
 GTestLogHelper::GTestLogHelper()
     : statusWasVerified(false)
 {
+    //LogServer::getInstance()->addListner(this);
 }
 
+GTestLogHelper::~GTestLogHelper(){
+    //LogServer::getInstance()->removeListner(this);
+}
 
 void GTestLogHelper::initMessages(const QStringList& expectedList, const QStringList& unexpectedList)
 {
-    LogServer::getInstance()->addListner(this);
+
     logHelperStartTime = GTimer::currentTimeMicros();
 
 
@@ -389,7 +393,6 @@ GTestLogHelperStatus GTestLogHelper::verifyStatus()
         }
     }
 
-    LogServer::getInstance()->removeListner(this);
     statusWasVerified = true;
     logHelperEndTime = GTimer::currentTimeMicros();
 

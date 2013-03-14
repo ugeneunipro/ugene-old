@@ -414,7 +414,7 @@ Task* SWWorker::tick() {
         }
         ptrnStr.remove(" ");
         ptrnStr = ptrnStr.toUpper();
-        QByteArray ptrnBytes = QString(ptrnStr).remove(PATTERN_DELIMITER).toAscii();
+        QByteArray ptrnBytes = QString(ptrnStr).remove(PATTERN_DELIMITER).toLatin1();
         
         if(!cfg.pSm.getAlphabet()->containsAll(ptrnBytes.constData(), ptrnBytes.length())) {
             algoLog.error(tr("Incorrect value: pattern alphabet doesn't match sequence alphabet "));
@@ -485,7 +485,7 @@ Task* SWWorker::tick() {
         foreach(const QString & p, ptrnStrList) {
             assert(!p.isEmpty());
             SmithWatermanSettings config(cfg);
-            config.ptrn = p.toAscii();
+            config.ptrn = p.toLatin1();
 
             SmithWatermanReportCallbackAnnotImpl* rcb = new SmithWatermanReportCallbackAnnotImpl( NULL, resultName, QString());
             config.resultCallback = rcb;

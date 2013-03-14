@@ -269,7 +269,7 @@ void GTFileDialogUtils::clickButton(Button btn)
     case GTGlobals::UseKey:
         key_pos = button_to_click->text().indexOf('&');
         if (key_pos != -1) {
-            key = (button_to_click->text().at(key_pos + 1)).toAscii();
+            key = (button_to_click->text().at(key_pos + 1)).toLatin1();
             GTKeyboardDriver::keyClick(os, key, GTKeyboardDriver::key["alt"]);
             break;
         }

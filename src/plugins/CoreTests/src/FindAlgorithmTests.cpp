@@ -63,7 +63,7 @@ void GTest_FindAlgorithmTest::init(XMLTestFormat *tf, const QDomElement& el){
         stateInfo.setError(GTest::tr("value not set %1").arg(PATTERN_ATTR));
         return;
     }
-    settings.pattern = buf.toAscii();
+    settings.pattern = buf.toLatin1();
 
     buf = el.attribute(SOURCE_ATTR);
     if(buf == "translation"){

@@ -44,7 +44,7 @@ QString PWMConversionAlgorithmFactoryNLG::getDescription() const {
 PWMatrix PWMConversionAlgorithmNLG::convert(const PFMatrix& matrix) {
     int size = (matrix.getType() == PFM_MONONUCLEOTIDE) ? 4 : 16;
     int sum[16];
-    qMemSet(sum, 0, size*sizeof(int));
+    memset(sum, 0, size*sizeof(int));
     int all_hits = 0;
     for (int i = 0; i < size; i++) {
         for (int j = 0, n = matrix.getLength(); j < n; j++) {

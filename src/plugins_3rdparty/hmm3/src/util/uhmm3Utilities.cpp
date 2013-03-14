@@ -68,7 +68,7 @@ static bool convertMalignmentInfo( const QVariantMap& info, ESL_MSA* msa ) {
     }
     QString name = MAlignmentInfo::getName( info );
     assert( !name.isEmpty() );
-    ok = allocAndCopyData( name.toAscii(), &msa->name );
+    ok = allocAndCopyData( name.toLatin1(), &msa->name );
     if( !ok ) {
         return false;
     }
@@ -76,7 +76,7 @@ static bool convertMalignmentInfo( const QVariantMap& info, ESL_MSA* msa ) {
     if( MAlignmentInfo::hasAccession( info ) ) {
         QString acc = MAlignmentInfo::getAccession( info );
         assert( !acc.isEmpty() );
-        ok = allocAndCopyData( acc.toAscii(), &msa->acc );
+        ok = allocAndCopyData( acc.toLatin1(), &msa->acc );
         if( !ok ) {
             return false;
         }
@@ -84,7 +84,7 @@ static bool convertMalignmentInfo( const QVariantMap& info, ESL_MSA* msa ) {
     if( MAlignmentInfo::hasDescription( info ) ) {
         QString desc = MAlignmentInfo::getDescription( info );
         assert( !desc.isEmpty() );
-        ok = allocAndCopyData( desc.toAscii(), &msa->desc );
+        ok = allocAndCopyData( desc.toLatin1(), &msa->desc );
         if( !ok ) {
             return false;
         }
@@ -92,7 +92,7 @@ static bool convertMalignmentInfo( const QVariantMap& info, ESL_MSA* msa ) {
     if( MAlignmentInfo::hasSSConsensus( info ) ) {
         QString cs = MAlignmentInfo::getSSConsensus( info );
         assert( !cs.isEmpty() );
-        ok = allocAndCopyData( cs.toAscii(), &msa->ss_cons );
+        ok = allocAndCopyData( cs.toLatin1(), &msa->ss_cons );
         if( !ok ) {
             return false;
         }
@@ -100,7 +100,7 @@ static bool convertMalignmentInfo( const QVariantMap& info, ESL_MSA* msa ) {
     if( MAlignmentInfo::hasReferenceLine( info ) ) {
         QString rf = MAlignmentInfo::getReferenceLine( info );
         assert( !rf.isEmpty() );
-        ok = allocAndCopyData( rf.toAscii(), &msa->rf );
+        ok = allocAndCopyData( rf.toLatin1(), &msa->rf );
         if( !ok ) {
             return false;
         }
@@ -174,7 +174,7 @@ ESL_MSA * UHMM3Utilities::convertMSA( const MAlignment & ma ) {
     msa->nseq = nseq;
     for (i = 0; i < nseq; i++) {
 		const MAlignmentRow& row = ma.getRow(i);
-        ok = allocAndCopyData( row.getName().toAscii(), &msa->sqname[i] );
+        ok = allocAndCopyData( row.getName().toLatin1(), &msa->sqname[i] );
         if( !ok ) {
             esl_msa_Destroy( msa );
             return NULL;

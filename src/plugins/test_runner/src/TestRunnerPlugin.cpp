@@ -94,7 +94,7 @@ void TestRunnerPlugin::sl_startTestRunner() {
             QString error;
             GTestSuite *suite = GTestSuite::readTestSuite(dir,error);
             if(error!="") {
-                printf("%s\n",tr("Can't load suite %1").arg(param).toAscii().constData());
+                printf("%s\n",tr("Can't load suite %1").arg(param).toLatin1().constData());
                 AppContext::getTaskScheduler()->cancelAllTasks();
                 AppContext::getMainWindow()->getQMainWindow()->close();
                 return;
@@ -105,7 +105,7 @@ void TestRunnerPlugin::sl_startTestRunner() {
                 QStringList errs;
                 QList<GTestSuite*> lst = GTestSuite::readTestSuiteList(dir, errs);
                 if (!errs.isEmpty()) {
-                    printf("%s\n",tr("Can't load suite %1").arg(param).toAscii().constData());
+                    printf("%s\n",tr("Can't load suite %1").arg(param).toLatin1().constData());
                     AppContext::getTaskScheduler()->cancelAllTasks();
                     AppContext::getMainWindow()->getQMainWindow()->close();
 

@@ -328,7 +328,7 @@ void HMMBuildTask::_run() {
         QByteArray seq = row.toByteArray(ma.getLength(), os);
 		free(msa->aseq[i]);
         msa->aseq[i] = sre_strdup(seq.constData(), seq.size());
-        QByteArray name = row.getName().toAscii();
+        QByteArray name = row.getName().toLatin1();
         msa->sqname[i] = sre_strdup(name.constData(), name.size());
         msa->wgt[i] = 1.0; // default weights 
     }

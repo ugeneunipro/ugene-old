@@ -51,7 +51,7 @@ Annotation::~Annotation() {
 }
 
 bool Annotation::isValidQualifierName(const QString& s) {
-    return !s.isEmpty() && s.length() < 20 && TextUtils::fits(TextUtils::QUALIFIER_NAME_CHARS, s.toAscii().data(), s.length());
+    return !s.isEmpty() && s.length() < 20 && TextUtils::fits(TextUtils::QUALIFIER_NAME_CHARS, s.toLatin1().data(), s.length());
 }
 
 bool Annotation::isValidQualifierValue(const QString& s) {
@@ -90,7 +90,7 @@ static QList<U2CigarToken> parceCigar(const QString& cigar) {
 
     int pos = 0;
     while ((pos = rx.indexIn(cigar, pos)) != -1) {
-        if (rx.numCaptures() != 2) {
+        if (rx.captureCount() != 2) {
             break;
         }
         int count = rx.cap(1).toInt();
@@ -191,7 +191,11 @@ QString Annotation::getQualifiersTip(int maxRows, U2SequenceObject* seq, DNATran
             } else {
                 tip +=  "<br>";
             }
+#if (QT_VERSION >= 0x050000)
+            tip += "<b>" + q.name.toHtmlEscaped() + "</b> = " + val.toHtmlEscaped();
+#else
             tip += "<b>" + Qt::escape(q.name) + "</b> = " + Qt::escape(val);
+#endif
         }
         tip += "</nobr>";
     }
@@ -264,12 +268,20 @@ QString Annotation::getQualifiersTip(int maxRows, U2SequenceObject* seq, DNATran
             tip+="<br>";
         }
         assert(seqVal.length() > 0);
+#if (QT_VERSION >= 0x050000)
+        tip += "<nobr><b>" + U2::AnnotationTableObject::tr("Sequence") + "</b> = " + seqVal.toHtmlEscaped() + "</nobr>";
+#else
         tip += "<nobr><b>" + U2::AnnotationTableObject::tr("Sequence") + "</b> = " + Qt::escape(seqVal) + "</nobr>";
+#endif
         rows++;
         
         if (rows <= maxRows && aminoTT!=NULL) {
             tip+="<br>";
+#if (QT_VERSION >= 0x050000)
+            tip += "<nobr><b>" + U2::AnnotationTableObject::tr("Translation") + "</b> = " + aminoVal.toHtmlEscaped() + "</nobr>";
+#else
             tip += "<nobr><b>" + U2::AnnotationTableObject::tr("Translation") + "</b> = " + Qt::escape(aminoVal) + "</nobr>";
+#endif
         }
     }
     return tip;

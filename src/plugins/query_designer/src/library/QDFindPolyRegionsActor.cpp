@@ -170,7 +170,7 @@ Task* QDFindPolyActor::getAlgorithmTask( const QVector<U2Region>& location ) {
         return new FailTask(err);
     }
 
-    settings.ch = baseStr.at(0).toAscii();
+    settings.ch = baseStr.at(0).toLatin1();
 
     int percent = cfg->getParameter(PERCENT_ATTR)->getAttributeValueWithoutScript<int>();
     if (percent < 50 || percent > 100) {

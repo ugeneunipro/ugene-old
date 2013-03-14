@@ -48,7 +48,7 @@ DumpVersionTask::DumpVersionTask() : Task(tr("Dump version information task"), T
 }
 
 void DumpVersionTask::run() {
-    fprintf(stdout, "%s", DumpHelpTask::VERSION_INFO.toAscii().constData());
+    fprintf(stdout, "%s", DumpHelpTask::VERSION_INFO.toLatin1().constData());
     fprintf(stdout, "Using Qt %s\n", qVersion());
 }
 

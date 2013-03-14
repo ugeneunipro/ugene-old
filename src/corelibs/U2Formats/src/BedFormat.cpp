@@ -823,7 +823,7 @@ void BedFormat::storeDocument(Document* doc, IOAdapter* io, U2OpStatus& os)
                     }
                     else {
                         QString headerStr = QString("track name=\"%1\" description=\"%2\"\n").arg(trackNameQualValue).arg(trackDescrQualValue);
-                        QByteArray header = headerStr.toAscii();
+                        QByteArray header = headerStr.toLatin1();
                         qint64 len = io->writeBlock(header);
                         if (len != header.size()) {
                             os.setError(L10N::errorWritingFile(doc->getURLString()));
@@ -961,7 +961,7 @@ void BedFormat::storeDocument(Document* doc, IOAdapter* io, U2OpStatus& os)
                 }
 
                 // Write the line
-                lineData = lineFields.join("\t").toAscii() + "\n";
+                lineData = lineFields.join("\t").toLatin1() + "\n";
                 qint64 len = io->writeBlock(lineData);
                 if (len != lineData.size()) {
                     os.setError(L10N::errorWritingFile(doc->getURLString()));

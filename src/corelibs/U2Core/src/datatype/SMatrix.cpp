@@ -109,8 +109,8 @@ SMatrix SMatrix::fromQVariant(const QVariant& v) {
     m.description = list.at(n++).toString();
     QString alphabetId = list.at(n++).toString();
     m.alphabet = AppContext::getDNAAlphabetRegistry()->findById(alphabetId);
-    m.minChar = list.at(n++).toChar().toAscii();
-    m.maxChar = list.at(n++).toChar().toAscii();
+    m.minChar = list.at(n++).toChar().toLatin1();
+    m.maxChar = list.at(n++).toChar().toLatin1();
     m.charsInRow = list.at(n++).toInt();
     m.validCharacters = list.at(n++).toByteArray();
     m.minScore = (float)list.at(n++).toDouble();

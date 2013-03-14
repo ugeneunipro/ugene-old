@@ -22,26 +22,29 @@
 #ifndef __SYNC_HTTP_H__
 #define __SYNC_HTTP_H__
 
-#include <QtNetwork/QHttp>
+#include <QtNetwork/QNetworkAccessManager>
+#include <QtNetwork/QNetworkReply>
 #include <QtCore/QEventLoop>
-#include <QtCore/QBuffer>
 
 #include <U2Core/global.h>
 
 namespace U2 {
 
-class U2REMOTE_EXPORT SyncHTTP : public QHttp {
+class U2REMOTE_EXPORT SyncHTTP : public QNetworkAccessManager {
     Q_OBJECT
 public:
-    SyncHTTP(const QString& hostName, quint16 port=80, QObject* parent=0);
-    QString syncGet(const QString& path);
-    QString syncPost(const QString & path, QIODevice * data);
+    SyncHTTP(QObject* parent=0);
+    QString syncGet(const QUrl& url);
+    QString syncPost(const QUrl & url, QIODevice * data);
+    QNetworkReply::NetworkError error() {return err;}
+    QString errorString() {return errString;}
 protected slots:
-    virtual void finished(int idx, bool err);
+    virtual void finished(QNetworkReply*);
 
 private:
-    int requestID;
     QEventLoop loop;
+    QNetworkReply::NetworkError err;
+    QString errString;
 };
 
 } // U2

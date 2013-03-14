@@ -49,7 +49,7 @@ void GTKeyboardDriver::keySequence(U2::U2OpStatus &os, const QString &str, int m
     }
 
     foreach(QChar ch, str) {
-        char asciiChar = ch.toAscii();
+        char asciiChar = ch.toLatin1();
         if(isalpha(asciiChar) && !islower(asciiChar)) {
             keyClick(os, asciiChar, key["shift"]);
         } else {

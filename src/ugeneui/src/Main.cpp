@@ -309,7 +309,6 @@ int main(int argc, char **argv)
 
     bool trOK = false;
     QTranslator translator;
-
     QStringList envList = QProcess::systemEnvironment();
     QString envTranslation = findKey(envList, "UGENE_TRANSLATION");
     if (!envTranslation.isEmpty()) {
@@ -325,7 +324,7 @@ int main(int argc, char **argv)
         };
         for (int i = transFile[0].isEmpty() ? 1 : 0; i < 3; ++i) {
             if (!translator.load(transFile[i], QCoreApplication::applicationDirPath())) {
-                fprintf(stderr, "Translation not found: %s\n", transFile[i].toAscii().constData());
+                fprintf(stderr, "Translation not found: %s\n", transFile[i].toLatin1().constData());
             } else {
                 trOK = true;
                 break;

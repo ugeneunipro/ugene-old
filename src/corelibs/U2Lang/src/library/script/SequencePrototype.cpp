@@ -98,7 +98,7 @@ void SequencePrototype::splice() {
         return;
     }
     QString data = context()->argument(0).toString();
-    DNASequence seq(data.toAscii());
+    DNASequence seq(data.toLatin1());
     U2OpStatus2Log os;
     seqObj->replaceRegion(getRegion(1, 2), seq, os);
     SCRIPT_CHECK(!os.isCoR(), context(), "Can not replace a substring", );
@@ -158,7 +158,7 @@ Workflow::SharedDbiDataHandler SequenceScriptClass::copySequence(const ScriptDbi
 
 QScriptValue SequenceScriptClass::newInstance(const QString &data, const QString &name) {
     Workflow::DbiDataStorage *storage = workflowEngine()->getWorkflowContext()->getDataStorage();
-    Workflow::SharedDbiDataHandler id = storage->putSequence(DNASequence(name, data.toAscii()));
+    Workflow::SharedDbiDataHandler id = storage->putSequence(DNASequence(name, data.toLatin1()));
     return newInstance(id);
 }
 

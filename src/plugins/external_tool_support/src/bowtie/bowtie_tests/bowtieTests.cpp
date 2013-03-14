@@ -397,8 +397,8 @@ void GTest_Bowtie::parseBowtieOutput( MAlignment& result, QString text ) {
     while ((pos = rx.indexIn(text, pos)) != -1) {
         QString name = rx.cap(1);
         int offset = rx.cap(3).toInt();
-        QByteArray sequence = rx.cap(4).toAscii();
-        QByteArray quality = rx.cap(5).toAscii();
+        QByteArray sequence = rx.cap(4).toLatin1();
+        QByteArray quality = rx.cap(5).toLatin1();
 
         U2OpStatus2Log os;
         QByteArray offsetGaps;

@@ -119,7 +119,7 @@ static void setSchemaColors(const CustomColorSchema& customSchema){
 
 static bool lineValid(const QStringList& properties, const QMap<char, QColor> & alphColors){
     if(properties.size() != 2){return false;}
-    if(properties[0].size() != 1 || (!alphColors.contains(properties[0][0].toAscii()))){return false;}
+    if(properties[0].size() != 1 || (!alphColors.contains(properties[0][0].toLatin1()))){return false;}
     if(!QColor(properties[1]).isValid()){return false;}
 
     return true;
@@ -260,7 +260,7 @@ static bool getSchemaColors(CustomColorSchema& customSchema){
             coreLog.info(QString("%1: schema is not valid").arg(customSchema.name));
             return false;
         }
-        tmpHelper[properties.first().at(0).toAscii()] = QColor(properties[1]); 
+        tmpHelper[properties.first().at(0).toLatin1()] = QColor(properties[1]); 
     }
     QMapIterator<char, QColor> it(tmpHelper);
     while(it.hasNext()){

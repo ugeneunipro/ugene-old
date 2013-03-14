@@ -31,8 +31,8 @@
 #include <U2Gui/OpenViewTask.h>
 #include <U2Gui/MainWindow.h>
 
-#include <QMainWindow>
-#include <QMessageBox>
+#include <QtGui/QMainWindow>
+#include <QtGui/QMessageBox>
 
 namespace U2 {
 

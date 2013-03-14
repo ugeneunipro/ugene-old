@@ -71,8 +71,8 @@ void GenomeAlignerIndex::serialize(const QString &refFileName) {
     }
 
     QByteArray data;
-    data = HEADER.toAscii();
-    data += PARAMETERS.arg(refFileName).arg(seqLength).arg(w).toAscii();
+    data = HEADER.toLatin1();
+    data += PARAMETERS.arg(refFileName).arg(seqLength).arg(w).toLatin1();
     data += COMMENT1 + COMMENT2 + COMMENT3 + COMMENT4;
     data += QByteArray::number(seqLength, 10) + ", ";
     data += QByteArray::number(w, 10) + ", ";

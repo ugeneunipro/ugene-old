@@ -166,7 +166,7 @@ GenomeAlignerDbiReader::GenomeAlignerDbiReader(U2AssemblyDbi *_rDbi, U2Assembly 
 
     readsInAssembly = rDbi->countReads(assembly.id, wholeAssembly, status);
     if (readsInAssembly <= 0 || status.hasError()) {
-        uiLog.error(QString("Genome Aligner -> Database Error: " + status.getError()).toAscii().data());
+        uiLog.error(QString("Genome Aligner -> Database Error: " + status.getError()).toLatin1().data());
         end = true;
         return;
     }
@@ -236,7 +236,7 @@ GenomeAlignerDbiWriter::GenomeAlignerDbiWriter(QString dbiFilePath, QString refN
 void GenomeAlignerDbiWriter::write(SearchQuery *seq, SAType offset) {
     U2AssemblyRead read(new U2AssemblyReadData());
 
-    read->name = seq->getName().toAscii();
+    read->name = seq->getName().toLatin1();
     read->leftmostPos = offset;
     read->effectiveLen = seq->length();
     read->readSequence = seq->constSequence();

@@ -117,7 +117,7 @@ void HttpRequestCDD::sendRequest(const QString &params,const QString &query) {
 void HttpRequestCDD::parseResult(ResponseBuffer &buf) {
     QByteArray b = buf.readLine();
     int fl = 0;
-    while(b!= QString("</html>\n").toAscii()&&fl<2) {
+    while(b!= QString("</html>\n").toLatin1()&&fl<2) {
         if(task->isCanceled()) {
             return;
         }

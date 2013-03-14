@@ -371,7 +371,7 @@ Task* FindWorker::tick() {
         foreach(const QString & p, ptrnStrs) {
             assert(!p.isEmpty());
             FindAlgorithmTaskSettings config(cfg);
-            config.pattern = p.toUpper().toAscii();
+            config.pattern = p.toUpper().toLatin1();
             Task * findTask = new FindAlgorithmTask(config);
             patterns.insert(findTask, config.pattern);
             subs << findTask;
@@ -381,7 +381,7 @@ Task* FindWorker::tick() {
         typedef QPair<QString, QString> NamePattern;
         foreach(const NamePattern& np, namesPatterns){
             FindAlgorithmTaskSettings config(cfg);
-            config.pattern = np.second.toUpper().toAscii();
+            config.pattern = np.second.toUpper().toLatin1();
             Task * findTask = new FindAlgorithmTask(config);
             filePatterns.insert(findTask, qMakePair(np.first,config.pattern));
             subs << findTask;

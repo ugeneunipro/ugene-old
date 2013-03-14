@@ -48,7 +48,7 @@ QColor FeatureColors::genLightColor(const QString& name) {
     static QList<QColor> colors = prepareColors();
 
     int hash = 0;
-    QByteArray a = name.toAscii();
+    QByteArray a = name.toLatin1();
     for (int i=0;i<a.size(); i++) {
         hash+=a[i];
     }

@@ -312,8 +312,8 @@ static QStringList removeQuotes(const QStringList& tokens) {
             result.append(token);
             continue;
         }
-        char c1 = token.at(0).toAscii();
-        char c2 = token.at(token.length()-1).toAscii();
+        char c1 = token.at(0).toLatin1();
+        char c2 = token.at(token.length()-1).toLatin1();
         if (c1!=c2 || !CSVParsingConfig::QUOTES.testBit(quint8(c1))) {
             result.append(token);
             continue;

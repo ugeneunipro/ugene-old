@@ -781,7 +781,7 @@ void SmithWatermanDialog::loadDialogConfig()
 
 void SmithWatermanDialog::saveDialogConfig()
 {
-    dialogConfig->ptrn = teditPattern->toPlainText().toAscii();
+    dialogConfig->ptrn = teditPattern->toPlainText().toLatin1();
     
     dialogConfig->algVersion = comboRealization->currentText();
     dialogConfig->scoringMatrix = comboMatrix->currentText();

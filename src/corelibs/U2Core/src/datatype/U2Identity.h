@@ -23,6 +23,7 @@
 #define _U2_IDENTITY_H_
 
 #include <QtCore/QHash>
+#include <QtCore/QString>
 
 namespace U2 {
 

@@ -68,7 +68,7 @@ void GTest_SecStructPredictAlgorithm::prepare() {
         return;
     }
     SecStructPredictTaskFactory* factory = sspr->getAlgorithm(algName);
-    task = factory->createTaskInstance(inputSeq.toAscii());
+    task = factory->createTaskInstance(inputSeq.toLatin1());
     addSubTask(task);
 
 }

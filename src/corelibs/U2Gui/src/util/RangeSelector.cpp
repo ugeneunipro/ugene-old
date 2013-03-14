@@ -294,7 +294,7 @@ void MultipleRangeSelector::accept(){
         }    
         QDialog::accept();
     }else{
-        QByteArray locEditText = ui->multipleRegionEdit->text().toAscii();
+        QByteArray locEditText = ui->multipleRegionEdit->text().toLatin1();
         U2Location currentLocation;
         Genbank::LocationParser::parseLocation(	locEditText.constData(), ui->multipleRegionEdit->text().length(), currentLocation, seqLen);
         if(currentLocation->isEmpty()){
@@ -333,7 +333,7 @@ QVector<U2Region> MultipleRangeSelector::getSelectedRegions(){
         currentRegions.append(r);
 
     }else{
-        QByteArray locEditText = ui->multipleRegionEdit->text().toAscii();
+        QByteArray locEditText = ui->multipleRegionEdit->text().toLatin1();
         U2Location currentLocation;
         Genbank::LocationParser::parseLocation(	locEditText.constData(), ui->multipleRegionEdit->text().length(), currentLocation, seqLen);
 

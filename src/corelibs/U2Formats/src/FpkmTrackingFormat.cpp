@@ -530,7 +530,7 @@ QStringList FpkmTrackingFormat::writeHeader(QList<GObject*> annotTables, Documen
             }
 
             // Write the line
-            QByteArray lineData = columns.join("\t").toAscii() + "\n";
+            QByteArray lineData = columns.join("\t").toLatin1() + "\n";
             qint64 len = io->writeBlock(lineData);
             if (len != lineData.size()) {
                 os.setError(L10N::errorWritingFile(doc->getURL()));
@@ -648,7 +648,7 @@ void FpkmTrackingFormat::storeDocument(Document* doc, IOAdapter* io, U2OpStatus&
                 }
 
                 // Write the line
-                lineData = lineFields.join("\t").toAscii() + "\n";
+                lineData = lineFields.join("\t").toLatin1() + "\n";
                 qint64 len = io->writeBlock(lineData);
                 if (len != lineData.size()) {
                     os.setError(L10N::errorWritingFile(doc->getURL()));

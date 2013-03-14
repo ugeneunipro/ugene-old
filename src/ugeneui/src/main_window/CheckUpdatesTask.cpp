@@ -33,6 +33,7 @@
 #include <QtGui/QMessageBox>
 #include <QtGui/QPushButton>
 #include <QtGui/QMainWindow>
+#include <QtNetwork/QNetworkReply>
 
 namespace U2 {
 
@@ -55,15 +56,15 @@ void CheckUpdatesTask::run() {
 
     bool isProxy = nc->isProxyUsed(QNetworkProxy::HttpProxy);
     bool isException = nc->getExceptionsList().contains(SITE_URL);
-    SyncHTTP http(SITE_URL);
+    SyncHTTP http(this);
     if (isProxy && !isException) {
         http.setProxy(nc->getProxy(QNetworkProxy::HttpProxy));
     }
-    QString siteVersionText = http.syncGet(PAGE_NAME);
+    QString siteVersionText = http.syncGet(QUrl("http://"+SITE_URL + PAGE_NAME));
     siteVersion = Version::parseVersion(siteVersionText);
     stateInfo.setDescription(QString());
 
-    if (http.error() != QHttp::NoError) {
+    if (http.error() != QNetworkReply::NoError) {
         if(!runOnStartup){
             stateInfo.setError(  tr("Connection error while checking for updates: %1").arg(http.errorString()) );
         }else{

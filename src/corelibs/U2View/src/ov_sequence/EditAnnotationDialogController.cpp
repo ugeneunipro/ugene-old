@@ -53,7 +53,7 @@ EditAnnotationDialogController::EditAnnotationDialogController( Annotation* a, U
 }
 
 void EditAnnotationDialogController::sl_onTextChanged(const QString& changedText){
-    QByteArray locEditText = changedText.toAscii();
+    QByteArray locEditText = changedText.toLatin1();
     Genbank::LocationParser::parseLocation(locEditText.constData(), changedText.length(), location);
     if (location->isEmpty()) {
         if(changedText.isEmpty()){
@@ -67,7 +67,7 @@ void EditAnnotationDialogController::sl_onTextChanged(const QString& changedText
 }
 
 void EditAnnotationDialogController::accept(){
-    QByteArray locEditText = locationEdit->text().toAscii();
+    QByteArray locEditText = locationEdit->text().toLatin1();
     Genbank::LocationParser::parseLocation(locEditText.constData(), locationEdit->text().length(), location);
 
     if ( location->isEmpty()) {

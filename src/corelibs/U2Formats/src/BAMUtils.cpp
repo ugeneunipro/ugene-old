@@ -59,8 +59,8 @@ static void closeFiles(samfile_t *in, samfile_t *out) {
 }
 
 void BAMUtils::convertSamToBam(const GUrl &samUrl, const GUrl &bamUrl, U2OpStatus &os) {
-    QByteArray samFileName = samUrl.getURLString().toAscii();
-    QByteArray bamFileName = bamUrl.getURLString().toAscii();
+    QByteArray samFileName = samUrl.getURLString().toLatin1();
+    QByteArray bamFileName = bamUrl.getURLString().toLatin1();
 
     samfile_t *in = NULL;
     samfile_t *out = NULL;
@@ -135,7 +135,7 @@ static bool isSorted(const QString &headerText) {
 }
 
 bool BAMUtils::isSortedBam(const GUrl &bamUrl, U2OpStatus &os) {
-    const QByteArray &bamFileName = bamUrl.getURLString().toAscii();
+    const QByteArray &bamFileName = bamUrl.getURLString().toLatin1();
 
     bamFile bamHandler = NULL;
     bam_header_t *header = NULL;
@@ -198,9 +198,9 @@ inline static qint64 mB2bytes(int mb) {
 #define SAMTOOLS_MEM_BOOST 5
 
 GUrl BAMUtils::sortBam(const GUrl &bamUrl, const QString &sortedBamBaseName, U2OpStatus &os) {
-    const QByteArray &bamFileName = bamUrl.getURLString().toAscii();
+    const QByteArray &bamFileName = bamUrl.getURLString().toLatin1();
 
-    QByteArray sortedFileName = sortedBamBaseName.toAscii() + ".bam";
+    QByteArray sortedFileName = sortedBamBaseName.toLatin1() + ".bam";
 
     // get memory resource
     AppSettings *appSettings = AppContext::getAppSettings();
@@ -226,7 +226,7 @@ GUrl BAMUtils::sortBam(const GUrl &bamUrl, const QString &sortedBamBaseName, U2O
         coreLog.details(BAMUtils::tr("Sort bam file: \"%1\" using %2 Mb of memory. Result sorted file is: \"%3\"")
             .arg(bamFileName.constData()).arg(maxMemMB).arg(sortedFileName.constData()));
         size_t maxMemBytes = (size_t)(mB2bytes(maxMemMB)); // maxMemMB < 500 Mb, so the conversation is correct!
-        bam_sort_core(0, bamFileName.constData(), sortedBamBaseName.toAscii().constData(), maxMemBytes);
+        bam_sort_core(0, bamFileName.constData(), sortedBamBaseName.toLatin1().constData(), maxMemBytes);
     }
     memory->release(maxMemMB);
 
@@ -234,7 +234,7 @@ GUrl BAMUtils::sortBam(const GUrl &bamUrl, const QString &sortedBamBaseName, U2O
 }
 
 bool BAMUtils::hasValidBamIndex(const GUrl &bamUrl) {
-    const QByteArray &bamFileName = bamUrl.getURLString().toAscii();
+    const QByteArray &bamFileName = bamUrl.getURLString().toLatin1();
 
     bam_index_t *index = bam_index_load(bamFileName.constData());
     
@@ -247,7 +247,7 @@ bool BAMUtils::hasValidBamIndex(const GUrl &bamUrl) {
 }
 
 void BAMUtils::createBamIndex(const GUrl &bamUrl, U2OpStatus &os) {
-    const QByteArray &bamFileName = bamUrl.getURLString().toAscii();
+    const QByteArray &bamFileName = bamUrl.getURLString().toLatin1();
 
     coreLog.details(BAMUtils::tr("Build index for bam file: \"%1\"").arg(bamFileName.constData()));
 
@@ -303,7 +303,7 @@ static void createHeader(bam_header_t *header, const QList<GObject*> &objects, U
         qint64 seqLength = getSequenceLength(con.dbi, obj->getEntityRef().entityId, os);
         CHECK_OP(os, );
 
-        QByteArray seqName = obj->getGObjectName().toAscii();
+        QByteArray seqName = obj->getGObjectName().toLatin1();
         header->target_name[objIdx] = new char[seqName.length() + 1];
         {
             char *name = header->target_name[objIdx];
@@ -373,7 +373,7 @@ static void writeObjects(samfile_t *out, const QList<GObject*> &objects, U2OpSta
 void BAMUtils::writeDocument(Document *doc, U2OpStatus &os) {
     CHECK_EXT(NULL != doc, os.setError("NULL document"), );
 
-    QByteArray url = doc->getURLString().toAscii();
+    QByteArray url = doc->getURLString().toLatin1();
     CHECK_EXT(!url.isEmpty(), os.setError("Empty file url"), );
 
     QByteArray openMode("w");

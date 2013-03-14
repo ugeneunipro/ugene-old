@@ -367,25 +367,25 @@ QByteArray SQLiteAssemblyUtils::packData(SQLiteAssemblyDataMethod method, const 
     pos++;
 
     // name
-    qMemCopy(data + pos, name.constData(), name.length());
+    memcpy(data + pos, name.constData(), name.length());
     pos+=name.length();
     data[pos] = '\n';
     pos++;
 
     // sequence
-    qMemCopy(data + pos, seq.constData(), seq.length());
+    memcpy(data + pos, seq.constData(), seq.length());
     pos+=seq.length();
     data[pos] = '\n';
     pos++;
 
     // cigar
-    qMemCopy(data + pos, cigarText.constData(), cigarText.length());
+    memcpy(data + pos, cigarText.constData(), cigarText.length());
     pos+=cigarText.length();
     data[pos] = '\n';
     pos++;
 
     // quality
-    qMemCopy(data + pos, qualityString.constData(), qualityString.length());
+    memcpy(data + pos, qualityString.constData(), qualityString.length());
     pos+=qualityString.length();
     data[pos] = '\n';
     pos++;

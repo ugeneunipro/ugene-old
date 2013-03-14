@@ -131,8 +131,8 @@ void PhyNode::dumpBranches() const{
         if(branches[i]->node2!=0){
             node2name = branches[i]->node2->name;
         }
-        std::cout<<"branch from node "<<node1name.toAscii().constData()
-            <<" to "<<node2name.toAscii().constData()
+        std::cout<<"branch from node "<<node1name.toLatin1().constData()
+            <<" to "<<node2name.toLatin1().constData()
             <<" with distance "<<branches[i]->distance<<std::endl;
     }
 
@@ -189,7 +189,7 @@ void PhyNode::print(QList<PhyNode*>& nodes, int tab, int distance){
         std::cout<<" ";
     }
     tab++;
-    std::cout<<"name: "<<this->name.toAscii().constData() <<" distance: "<<distance<<std::endl;
+    std::cout<<"name: "<<this->name.toLatin1().constData() <<" distance: "<<distance<<std::endl;
     QList<PhyBranch* > blist = this->branches;
     int s = blist.size();
     for(int i=0; i<s; i++){

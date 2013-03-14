@@ -35,12 +35,12 @@ namespace U2 {
 class U2CORE_EXPORT QVariantUtils {
 public:
     static QVariant String2Var(const QString& string) {
-        QDataStream s(QByteArray::fromBase64(string.toAscii()));
+        QDataStream s(QByteArray::fromBase64(string.toLatin1()));
         return QVariant(s);
     }
 
     static QVariantMap string2Map(const QString& string, bool emptyMapIfError) {
-        QDataStream s(QByteArray::fromBase64(string.toAscii()));
+        QDataStream s(QByteArray::fromBase64(string.toLatin1()));
         QVariant res(QVariant::Map);
         s >> res;
         if (res.type() == QVariant::Map) {
@@ -65,7 +65,7 @@ public:
     static QList<SharedAnnotationData> var2ftl(const QVariantList& lst) {
         QList<SharedAnnotationData> atl;
         foreach(QVariant v, lst) {
-            atl += qVariantValue<QList<SharedAnnotationData> >(v);
+            atl += v.value<QList<SharedAnnotationData> >();
         }
         return atl;
     }

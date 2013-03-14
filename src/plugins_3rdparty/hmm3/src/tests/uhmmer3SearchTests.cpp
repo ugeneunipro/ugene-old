@@ -361,7 +361,7 @@ static QByteArray getNextToken( QStringList& tokens ) {
     if( tokens.isEmpty() ) {
         throw QString( "unexpected_end_of_line:token_is_missing" );
     }
-    return tokens.takeFirst().toAscii();
+    return tokens.takeFirst().toLatin1();
 }
 
 static double getDouble( const QByteArray& numStr ) {

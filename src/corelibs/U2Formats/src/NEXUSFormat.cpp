@@ -419,7 +419,7 @@ bool NEXUSParser::readDataContents(Context &ctx) {
                 }
 
                 U2OpStatus2Log os;
-                QByteArray bytes = value.toAscii();
+                QByteArray bytes = value.toLatin1();
 
                 if (rows.contains(name)) {
                     rows[name].append(bytes);
@@ -440,7 +440,7 @@ bool NEXUSParser::readDataContents(Context &ctx) {
 
             // Determine alphabet & replace missing chars
             if (ctx.contains("missing")) {
-                char missing = ctx["missing"].toAscii()[0];
+                char missing = ctx["missing"].toLatin1()[0];
                 U2AlphabetUtils::assignAlphabet(ma, missing);
                 CHECK_EXT(ma.getAlphabet() != NULL, errors.append("Unknown alphabet"), false);
                 
@@ -834,7 +834,7 @@ static void writeNode(const PhyNode* node, IOAdapter* io) {
         if (quotes) {
             io->writeBlock("'", 1);
         }
-        io->writeBlock(node->getName().toAscii());
+        io->writeBlock(node->getName().toLatin1());
         if (quotes) {
             io->writeBlock("'", 1);
         }

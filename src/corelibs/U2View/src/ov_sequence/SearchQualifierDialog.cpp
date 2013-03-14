@@ -147,7 +147,7 @@ void SearchQualifierDialog::clearPrevResults(){
 void SearchQualifierDialog::search( bool searchAll /*= false*/ ){
     QString name = simplify(ui->nameEdit->text());
     QString val = simplify(ui->valueEdit->text());
-    if (!(name.length() < 20 && TextUtils::fits(TextUtils::QUALIFIER_NAME_CHARS, name.toAscii().data(), name.length()))) {
+    if (!(name.length() < 20 && TextUtils::fits(TextUtils::QUALIFIER_NAME_CHARS, name.toLatin1().data(), name.length()))) {
         QMessageBox::critical(this, tr("Error!"), tr("Illegal qualifier name"));
         return;
     }

@@ -28,6 +28,8 @@
 #include <QtGui/QMessageBox>
 #include <QtGui/QApplication>
 
+#include <QtNetwork/QNetworkReply>
+
 #include <U2Core/AppContext.h>
 #include <U2Core/Settings.h>
 #include <U2Core/Version.h>
@@ -269,8 +271,8 @@ Task("Shtirlitz task", TaskFlag_None), report(_report) {
 void ShtirlitzTask::run() {
     stateInfo.setDescription( tr("Connecting to remote server") );
 
-    //Creating QHttp object and enabling proxy if needed.
-    SyncHTTP http( QUrl(DESTINATION_URL_KEEPER_SRV).host() );
+    //Creating SyncHttp object and enabling proxy if needed.
+    SyncHTTP http(this);
     NetworkConfiguration * nc = AppContext::getAppSettings()->getNetworkConfiguration();
     bool isProxy = nc->isProxyUsed( QNetworkProxy::HttpProxy );
     bool isException = nc->getExceptionsList().contains( QUrl(DESTINATION_URL_KEEPER_SRV).host() );
@@ -281,29 +283,28 @@ void ShtirlitzTask::run() {
 
     QByteArray preparedReport("data=");
     preparedReport += QUrl::toPercentEncoding(report);
-    QBuffer reportBuf(&preparedReport);
 
     // Get actual location of the reports receiver
     //FIXME: error handling
-    QString reportsPath = http.syncGet( DESTINATION_URL_KEEPER_PAGE );
+    QString reportsPath = http.syncGet( QUrl(QString(DESTINATION_URL_KEEPER_SRV) + QString(DESTINATION_URL_KEEPER_PAGE)) );
     if( reportsPath.isEmpty() ) {
         stateInfo.setError( tr("Cannot resolve destination path for statistical reports") );
         return;
     } 
-    if( QHttp::NoError != http.error() ) {
+    if( QNetworkReply::NoError != http.error() ) {
         stateInfo.setError( tr("Network error while resolving destination URL: ") + http.errorString() );
         return;
     }
 
     //Checking proxy again, for the new url
-    SyncHTTP http2( QUrl(reportsPath).host() );
+    SyncHTTP http2(this);
     isException = nc->getExceptionsList().contains( QUrl(reportsPath).host() );
     if( isProxy && !isException ) {
         http2.setProxy( nc->getProxy(QNetworkProxy::HttpProxy) );
     }
     QString fullPath = reportsPath + "?" + preparedReport;
-    QString res = http2.syncGet(fullPath); //TODO: consider using POST method?
-    if( QHttp::NoError != http.error() ) {
+    http2.syncGet(fullPath); //TODO: consider using POST method?
+    if( QNetworkReply::NoError != http.error() ) {
         stateInfo.setError( tr("Network error while sending report: ") + http2.errorString() );
         return;
     }

@@ -50,7 +50,7 @@ EditFragmentDialog::EditFragmentDialog( DNAFragment& fragment, QWidget* p )
     
     seq = dnaFragment.getSequence();
     transl = AppContext::getDNATranslationRegistry()->lookupComplementTranslation(dnaFragment.getAlphabet());
-    QByteArray data(seq.toAscii());
+    QByteArray data(seq.toLatin1());
     transl->translate(data.data(), data.length());
     trseq = QString(data);
 
@@ -133,7 +133,7 @@ void EditFragmentDialog::accept()
             return;
         }
 
-        QByteArray bLeftOverhang = leftOverhang.toUpper().toAscii();
+        QByteArray bLeftOverhang = leftOverhang.toUpper().toLatin1();
         if ( lComplRadioButton->isChecked() ) {
             transl->translate(bLeftOverhang.data(), bLeftOverhang.size());
         }
@@ -157,7 +157,7 @@ void EditFragmentDialog::accept()
             return;
         }
         
-        QByteArray bRightOverhang = rightOverhang.toUpper().toAscii();
+        QByteArray bRightOverhang = rightOverhang.toUpper().toLatin1();
         if ( rComplRadioButton->isChecked() ) {
             transl->translate(bRightOverhang.data(), bRightOverhang.size());
         }
@@ -220,7 +220,7 @@ void EditFragmentDialog::sl_onRightResetClicked() {
 }
 
 bool EditFragmentDialog::isValidOverhang( const QString& text ) {
-    QByteArray seq(text.toAscii());
+    QByteArray seq(text.toLatin1());
     DNAAlphabet *alph = U2AlphabetUtils::findBestAlphabet(seq);
     return alph != NULL && alph->isNucleic() ? true : false;
 }

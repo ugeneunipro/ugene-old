@@ -397,7 +397,7 @@ void AttributeScriptDelegate::sl_comboActivated(int itemId ) {
         {
             QComboBox * combo = qobject_cast<QComboBox*>(sender());
             assert(combo != NULL);
-            AttributeScript attrScript = combo->property(SCRIPT_PROPERTY.toAscii().constData()).value<AttributeScript>();
+            AttributeScript attrScript = combo->property(SCRIPT_PROPERTY.toLatin1().constData()).value<AttributeScript>();
             
             ScriptEditorDialog dlg(editor, createScriptHeader(attrScript));
             dlg.setScriptText(attrScript.getScriptText());
@@ -435,7 +435,7 @@ void AttributeScriptDelegate::setEditorData(QWidget *editor, const QModelIndex &
     } else {
         combo->setCurrentIndex(USER_SCRIPT_ITEM_STR.second);
     }
-    combo->setProperty(SCRIPT_PROPERTY.toAscii().constData(), qVariantFromValue<AttributeScript>(attrScript));
+    combo->setProperty(SCRIPT_PROPERTY.toLatin1().constData(), qVariantFromValue<AttributeScript>(attrScript));
 }
 
 void AttributeScriptDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const {

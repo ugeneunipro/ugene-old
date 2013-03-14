@@ -64,7 +64,7 @@ QMenu* GTMenu::showMainMenu(U2OpStatus &os, const QString &menuName, GTGlobals::
     case GTGlobals::UseKey:
         menuText = menu->text();
         key_pos = menuText.indexOf('&');
-        key = (menuText.at(key_pos + 1)).toAscii();
+        key = (menuText.at(key_pos + 1)).toLatin1();
 
         GTKeyboardDriver::keyClick(os, key, GTKeyboardDriver::key["alt"]);
         break;

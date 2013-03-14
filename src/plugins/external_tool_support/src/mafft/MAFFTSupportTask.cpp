@@ -332,7 +332,7 @@ MAFFTLogParser::MAFFTLogParser(int _countSequencesInMSA, int _countRefinementIte
 }
 
 void MAFFTLogParser::parseOutput(const QString& partOfLog){
-    outFile.write(partOfLog.toAscii());
+    outFile.write(partOfLog.toLatin1());
 }
 
 void MAFFTLogParser::parseErrOutput(const QString& partOfLog){

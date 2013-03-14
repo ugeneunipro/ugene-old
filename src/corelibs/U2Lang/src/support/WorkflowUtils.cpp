@@ -121,7 +121,7 @@ void WorkflowUtils::setQObjectProperties(QObject &o , const QVariantMap & params
     while (i.hasNext()) {
         i.next();
         //log.debug("set param " + i.key() + "="+i.value().toString());
-        o.setProperty(i.key().toAscii(), i.value());
+        o.setProperty(i.key().toLatin1(), i.value());
     }
 }
 
@@ -653,7 +653,7 @@ void WorkflowUtils::print(const QString &slotString, const QVariant &data, DataT
         || BaseTypes::ANNOTATION_TABLE_LIST_TYPE() == type) {
         QList<SharedAnnotationData> anns;
         if (BaseTypes::ANNOTATION_TABLE_TYPE() == type) {
-            anns = qVariantValue<QList<SharedAnnotationData> >(data);
+            anns = data.value<QList<SharedAnnotationData> >();
         } else {
             anns = QVariantUtils::var2ftl(data.toList());
         }
@@ -665,7 +665,7 @@ void WorkflowUtils::print(const QString &slotString, const QVariant &data, DataT
     } else {
         text += "Can not print data of this type: " + type->getDisplayName();
     }
-    printf("\n%s\n", text.toAscii().data());
+    printf("\n%s\n", text.toLatin1().data());
 }
 
 bool WorkflowUtils::validateSchemaForIncluding(const Schema &s, QString &error) {

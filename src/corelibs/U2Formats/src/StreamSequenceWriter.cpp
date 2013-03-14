@@ -36,7 +36,7 @@ namespace U2 {
 StreamShortReadsWriter::StreamShortReadsWriter(const GUrl& url, const QString& refName , int refLength ) 
 : numSeqWritten(0), refSeqLength(refLength)
 {
-    refSeqName = QString(refName).replace(QRegExp("\\s|\\t"), "_").toAscii();
+    refSeqName = QString(refName).replace(QRegExp("\\s|\\t"), "_").toLatin1();
 
     IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
     io = iof->createIOAdapter();

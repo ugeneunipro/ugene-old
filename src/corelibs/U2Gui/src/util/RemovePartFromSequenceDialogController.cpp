@@ -69,7 +69,7 @@ RemovePartFromSequenceDialogController::RemovePartFromSequenceDialogController(U
 void RemovePartFromSequenceDialogController::accept(){
     QString genbankRegion = ui->removeLocationEdit->text();
     U2Location location;
-    Genbank::LocationParser::parseLocation(genbankRegion.toAscii().constData(), genbankRegion.length(), location);
+    Genbank::LocationParser::parseLocation(genbankRegion.toLatin1().constData(), genbankRegion.length(), location);
     if (location->isMultiRegion()){
         QMessageBox::critical(this, this->windowTitle(), tr("There must be only one region to delete"));
         return;

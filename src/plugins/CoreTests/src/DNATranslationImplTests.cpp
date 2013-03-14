@@ -114,7 +114,7 @@ Task::ReportResult GTest_DNATranslation3to1Test::report() {
     int n = aminoTransl->translate(myByteArray, myByteArray.length(), rezult.data(), rezult.length());    
     assert(n == rezult.length()); Q_UNUSED(n);
 
-    if(rezult != stringValue.toAscii()){
+    if(rezult != stringValue.toLatin1()){
         stateInfo.setError(QString("translated sequence not matched: %1, expected %2 ").arg(rezult.data()).arg(stringValue));
         return ReportResult_Finished;
     }

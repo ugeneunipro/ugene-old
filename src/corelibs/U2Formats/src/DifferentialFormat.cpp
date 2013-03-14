@@ -223,7 +223,7 @@ void DifferentialFormat::writeHeader(IOAdapter *io, const QList<ColumnDataParser
         first = false;
     }
     headerLine += "\n";
-    io->writeBlock(headerLine.toAscii());
+    io->writeBlock(headerLine.toLatin1());
 }
 
 QString DifferentialFormat::createLocus(SharedAnnotationData data, U2OpStatus &os) {
@@ -323,7 +323,7 @@ void DifferentialFormat::storeDocument(Document *d, IOAdapter *io, U2OpStatus &o
                 continue;
             }
             line += "\n";
-            io->writeBlock(line.toAscii());
+            io->writeBlock(line.toLatin1());
         }
     }
 }

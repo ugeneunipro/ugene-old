@@ -70,7 +70,7 @@ void ScriptWorkerTask::run() {
         if(!(script->getScriptVars().value(key)).isNull()) {
             scriptVars[key.getId()] = engine->newVariant(script->getScriptVars().value(key));
         } else {
-            scriptVars[key.getId()] = engine->newVariant(engine->globalObject().property(key.getId().toAscii().data()).toVariant());
+            scriptVars[key.getId()] = engine->newVariant(engine->globalObject().property(key.getId().toLatin1().data()).toVariant());
         }
     }
 
@@ -269,7 +269,7 @@ void ScriptWorker::sl_taskFinished() {
     bool hasSeqArray = false;
     foreach(const Descriptor &desc, ptr->getAllDescriptors()) {
         QString varName = "out_" + desc.getId();
-        QScriptValue value = t->getEngine()->globalObject().property(varName.toAscii().data());
+        QScriptValue value = t->getEngine()->globalObject().property(varName.toLatin1().data());
         if (BaseSlots::DNA_SEQUENCE_SLOT().getId() == desc.getId()) {
             if (value.isArray()) {
                 hasSeqArray = true;
@@ -288,7 +288,7 @@ void ScriptWorker::sl_taskFinished() {
     if (output) {
         if (hasSeqArray) {
             QString varName = "out_" + BaseSlots::DNA_SEQUENCE_SLOT().getId();
-            QScriptValue value = t->getEngine()->globalObject().property(varName.toAscii().data());
+            QScriptValue value = t->getEngine()->globalObject().property(varName.toLatin1().data());
             for (int i=0; i<value.property("length").toInt32(); i++) {
                 SharedDbiDataHandler seqId = ScriptEngineUtils::getDbiId(t->getEngine(), value.property(i),
                     SequenceScriptClass::CLASS_NAME);

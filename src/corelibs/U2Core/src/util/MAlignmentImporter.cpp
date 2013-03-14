@@ -95,7 +95,7 @@ void MAlignmentImporter::importMsaInfo(const DbiConnection& con, const U2DataId&
     SAFE_POINT(NULL != attrDbi, "NULL Attribute Dbi during importing an alignment!",);
 
     foreach (QString key, alInfo.keys()) {
-        QString val = qVariantValue<QString>(alInfo.value(key));
+        QString val =  alInfo.value(key).value<QString>();
         U2StringAttribute attr(msaId, key, val);
 
         attrDbi->createStringAttribute(attr, os);

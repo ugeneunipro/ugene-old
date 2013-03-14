@@ -162,7 +162,7 @@ bool UctpReplyHandler::endElement(const QString &namespaceURI, const QString &lo
     for (int i = 0; i < currentAttributes.length(); ++i) {
         QString aName = currentAttributes.qName(i);
         QString aValue = currentAttributes.value(i);
-        data.attributesMap.insert(aName.toAscii(),aValue.toAscii());
+        data.attributesMap.insert(aName.toLatin1(),aValue.toLatin1());
     }
     replyData.insertMulti(qName, data);
     

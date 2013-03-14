@@ -88,7 +88,7 @@ private:
 GzipUtil::GzipUtil(IOAdapter* io, bool doCompression) : io(io), doCompression(doCompression), curPos( 0 )
 {
 //#ifdef _DEBUG
-    qMemSet(buf, 0xDD, CHUNK);
+    memset(buf, 0xDD, CHUNK);
 //#endif
 
     /* allocate inflate state */

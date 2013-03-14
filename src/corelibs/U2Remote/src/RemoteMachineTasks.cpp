@@ -137,7 +137,7 @@ RetrievePublicMachinesTask::~RetrievePublicMachinesTask() {
 void RetrievePublicMachinesTask::run() {
     rsLog.details(tr("Retrieving public machines..."));
 
-    SyncHTTP http( QUrl( PUBLIC_MACHINES_KEEPER_SERVER ).host() );
+    SyncHTTP http(this);
     NetworkConfiguration * nc = AppContext::getAppSettings()->getNetworkConfiguration();
     assert( NULL != nc );
     bool proxyUsed = nc->isProxyUsed( QNetworkProxy::HttpProxy );
@@ -146,7 +146,7 @@ void RetrievePublicMachinesTask::run() {
     if( proxyUsed && !srvIsException ) {
         http.setProxy( nc->getProxy( QNetworkProxy::HttpProxy ) );
     }
-    processEncodedMachines( http.syncGet( PUBLIC_MACHINES_KEEPER_PAGE ) );
+    processEncodedMachines( http.syncGet( QUrl( PUBLIC_MACHINES_KEEPER_SERVER + PUBLIC_MACHINES_KEEPER_PAGE ) ) );
 
     if (hasError()) {
         rsLog.error(tr("Failed to retrieve public machines, error: %1").arg(getError()));
@@ -190,7 +190,7 @@ SaveRemoteMachineSettings::SaveRemoteMachineSettings(const RemoteMachineSettings
         setError(tr("Nothing to write: empty remote machine settings"));
         return;
     }
-    data = SerializeUtils::serializeRemoteMachineSettings(machineSettings).toAscii();
+    data = SerializeUtils::serializeRemoteMachineSettings(machineSettings).toLatin1();
 }
 
 void SaveRemoteMachineSettings::run() {

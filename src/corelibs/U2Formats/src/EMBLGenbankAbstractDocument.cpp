@@ -382,7 +382,7 @@ int EMBLGenbankAbstractDocument::readMultilineQualifier(IOAdapter* io, char* cbu
             cbuff[len] = ' ';
             len++;
         }
-        qMemCopy(cbuff + len, lineBuf + A_COL, lineLen - A_COL);
+        memcpy(cbuff + len, lineBuf + A_COL, lineLen - A_COL);
         len+=lineLen-A_COL;
         breakWords = breakWords || lineLen < maxAnnotationLineLen;
     } while (true);
@@ -443,7 +443,7 @@ SharedAnnotationData EMBLGenbankAbstractDocument::readAnnotation(IOAdapter* io, 
 {
     AnnotationData* a = new AnnotationData();
     SharedAnnotationData f(a);
-    QString key = QString::fromAscii(cbuff+5, 15).trimmed();
+    QString key = QString::fromLatin1(cbuff+5, 15).trimmed();
     if (key.isEmpty()) {
         si.setError(EMBLGenbankAbstractDocument::tr("Annotation name is empty"));
         return SharedAnnotationData();

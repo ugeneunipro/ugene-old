@@ -606,7 +606,7 @@ void WorkflowPaletteElements::mouseMoveEvent(QMouseEvent * event) {
         ActorPrototype* proto = action->data().value<ActorPrototype*>();
         assert(proto);
         QMimeData* mime = new QMimeData();
-        mime->setData(WorkflowPalette::MIME_TYPE, proto->getId().toAscii());
+        mime->setData(WorkflowPalette::MIME_TYPE, proto->getId().toLatin1());
         mime->setText(proto->getId());
         QDrag *drag = new QDrag(this);
         drag->setMimeData(mime);

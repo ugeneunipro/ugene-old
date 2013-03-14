@@ -68,7 +68,7 @@ MSADistanceAlgorithm::MSADistanceAlgorithm(MSADistanceAlgorithmFactory* _factory
 {    
     for (int i = 0; i < ma.getNumRows(); i++) {
         distanceTable.append(QVarLengthArray<int>(ma.getNumRows()));
-        qMemSet(distanceTable[i].data(), 0, ma.getNumRows() * sizeof(int));
+        memset(distanceTable[i].data(), 0, ma.getNumRows() * sizeof(int));
     }    
 }
 

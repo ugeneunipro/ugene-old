@@ -920,9 +920,9 @@ inline QString scf_version_float2str(float f) {
      scf->header.magic_number = SCF_MAGIC;
  
      if (scf_version == 3) {
-         memcpy(scf->header.version, scf_version_float2str(SCF_VERSION).toAscii().constData(), 4);
+         memcpy(scf->header.version, scf_version_float2str(SCF_VERSION).toLatin1().constData(), 4);
      } else {
-         memcpy(scf->header.version, scf_version_float2str(SCF_VERSION_OLD).toAscii().constData(), 4);
+         memcpy(scf->header.version, scf_version_float2str(SCF_VERSION_OLD).toLatin1().constData(), 4);
      }
  
      /* Write header */

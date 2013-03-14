@@ -119,7 +119,7 @@ MSAConsensusAlgorithmLevitsky::MSAConsensusAlgorithmLevitsky(MSAConsensusAlgorit
 : MSAConsensusAlgorithm(f, p)
 {
     globalFreqs.resize(256);
-    qMemSet(globalFreqs.data(), 0, globalFreqs.size() * 4);
+    memset(globalFreqs.data(), 0, globalFreqs.size() * 4);
 
     int* freqsData = globalFreqs.data();
     int len = ma.getLength();
@@ -135,7 +135,7 @@ MSAConsensusAlgorithmLevitsky::MSAConsensusAlgorithmLevitsky(MSAConsensusAlgorit
 char MSAConsensusAlgorithmLevitsky::getConsensusChar(const MAlignment& msa, int column) const {
     // count local freqs first
     QVarLengthArray<int> localFreqs(256);
-    qMemSet(localFreqs.data(), 0, localFreqs.size() * 4);
+    memset(localFreqs.data(), 0, localFreqs.size() * 4);
 
     int* freqsData = localFreqs.data();
     int nSeq = msa.getNumRows();

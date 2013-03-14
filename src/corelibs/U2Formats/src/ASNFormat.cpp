@@ -630,12 +630,12 @@ bool ASNFormat::AsnParser::readRootElement()
         int start = line.indexOf("::=")+ 4;
         int finish = line.indexOf("{", start) - 1;
         QString mimeType = line.mid(start, finish - start);
-        curElementName = mimeType.toAscii();
+        curElementName = mimeType.toLatin1();
         // initial state
         insideRoot = true;
         fileAtEnd = false;
         haveErrors = false;
-        initState(mimeType.toAscii());
+        initState(mimeType.toLatin1());
 
         return true;
     } else {

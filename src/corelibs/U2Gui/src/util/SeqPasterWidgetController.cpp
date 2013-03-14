@@ -81,7 +81,7 @@ QString SeqPasterWidgetController::validate(){
     }
  
     QByteArray seq = ((ui->sequenceEdit->document())->toPlainText()).toUtf8();
-    seq = QString(seq).remove(QRegExp("\\s")).toAscii();
+    seq = QString(seq).remove(QRegExp("\\s")).toLatin1();
     DNAAlphabet *alph = NULL;
     if(ui->groupBox->isChecked()){
         alph = U2AlphabetUtils::getById((ui->alphabetBox->itemData(ui->alphabetBox->currentIndex())).toString());
@@ -101,7 +101,7 @@ QString SeqPasterWidgetController::validate(){
         if(ui->symbolToReplaceEdit->text().isEmpty()){
             return tr("Replace symbol is empty");
         }
-        char cc = ui->symbolToReplaceEdit->text().at(0).toAscii();
+        char cc = ui->symbolToReplaceEdit->text().at(0).toLatin1();
         if(!alph->contains(cc)){
             return tr("Replace symbol is not belongs to selected alphabet");
         }        

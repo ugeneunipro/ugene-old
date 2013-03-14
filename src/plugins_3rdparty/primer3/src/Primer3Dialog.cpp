@@ -64,7 +64,7 @@ Primer3Dialog::Primer3Dialog(const Primer3TaskSettings &defaultSettings, ADVSequ
     for(int i=0;i < repeatLibraries.size();i++)
     {
         if(!repeatLibraries[i].second.isEmpty())
-        repeatLibraries[i].second = QFileInfo(QString(PATH_PREFIX_DATA) + ":" + repeatLibraries[i].second).absoluteFilePath().toAscii();
+        repeatLibraries[i].second = QFileInfo(QString(PATH_PREFIX_DATA) + ":" + repeatLibraries[i].second).absoluteFilePath().toLatin1();
     }
 
     {
@@ -490,7 +490,7 @@ bool Primer3Dialog::doDataExchange()
     }
     if(ui.checkbox_PICK_LEFT->isChecked())
     {
-        settings.setLeftInput(ui.edit_PRIMER_LEFT_INPUT->text().toAscii());
+        settings.setLeftInput(ui.edit_PRIMER_LEFT_INPUT->text().toLatin1());
     }
     else
     {
@@ -498,7 +498,7 @@ bool Primer3Dialog::doDataExchange()
     }
     if(ui.checkbox_PICK_RIGHT->isChecked())
     {
-        settings.setRightInput(ui.edit_PRIMER_RIGHT_INPUT->text().toAscii());
+        settings.setRightInput(ui.edit_PRIMER_RIGHT_INPUT->text().toLatin1());
     }
     else
     {
@@ -506,7 +506,7 @@ bool Primer3Dialog::doDataExchange()
     }
     if(ui.checkbox_PICK_HYBRO->isChecked())
     {
-        settings.setInternalInput(ui.edit_PRIMER_INTERNAL_OLIGO_INPUT->text().toAscii());
+        settings.setInternalInput(ui.edit_PRIMER_INTERNAL_OLIGO_INPUT->text().toLatin1());
     }
     else
     {

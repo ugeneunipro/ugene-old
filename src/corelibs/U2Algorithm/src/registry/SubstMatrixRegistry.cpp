@@ -160,7 +160,7 @@ SMatrix SubstMatrixRegistry::parseMatrix(const QString& name, const QByteArray& 
                     error = tr("Invalid character token '%1' , line %2").arg(token).arg(i+1);
                     return SMatrix();
                 }
-                char c = token.at(0).toUpper().toAscii();
+                char c = token.at(0).toUpper().toLatin1();
                 if (alphaRow.contains(c)) {
                     error = tr("Duplicate character '%1' , line %2").arg(token).arg(i+1);
                     return SMatrix();
@@ -184,7 +184,7 @@ SMatrix SubstMatrixRegistry::parseMatrix(const QString& name, const QByteArray& 
                 error = tr("Invalid character token '%1' , line %2").arg(token).arg(i+1);
                 return SMatrix();
             }
-            char c1 = token.at(0).toUpper().toAscii();
+            char c1 = token.at(0).toUpper().toLatin1();
             if (!alphaRow.contains(c1)) {
                 error = tr("Invalid character row '%1' , line %2").arg(token).arg(i+1);
                 return SMatrix();

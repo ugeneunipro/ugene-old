@@ -54,12 +54,12 @@ void GTest_SubstMatrix::init(XMLTestFormat *tf, const QDomElement& el){
 
     buf = el.attribute(COL_ATTR);
     if (!buf.isEmpty()){
-        col = buf.at(0).toAscii();
+        col = buf.at(0).toLatin1();
     }
 
     buf = el.attribute(ROW_ATTR);
     if (!buf.isEmpty()){
-        row = buf.at(0).toAscii();
+        row = buf.at(0).toLatin1();
     }
     
     buf = el.attribute(VALUE_ATTR);

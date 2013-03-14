@@ -402,7 +402,7 @@ QColor GraphUtils::proposeLightColorByKey(const QString& key) {
     int hash =0;
     uint len = key.length();
     for (int j=len-1; j>=0; j--) {
-        hash+=key.at(j).toAscii();
+        hash+=key.at(j).toLatin1();
     }
     return colors.at((hash*hash)%colors.size());
 }

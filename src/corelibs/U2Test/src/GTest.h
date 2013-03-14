@@ -209,6 +209,7 @@ class U2TEST_EXPORT GTestLogHelper : public LogListener {
     Q_OBJECT
 public:
     GTestLogHelper();
+    ~GTestLogHelper();
 
     void initMessages(const QStringList& expectedMessages, const QStringList& unexpectedMessages);
 

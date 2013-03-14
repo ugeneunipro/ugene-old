@@ -417,8 +417,8 @@ Task::ReportResult GTest_CompareHmmFiles::report() {
             return ReportResult_Finished;
         }
 
-        QString s1 = QString::fromAscii( buf1.data(), bytes1 );
-        QString s2 = QString::fromAscii( buf2.data(), bytes2 );
+        QString s1 = QString::fromLatin1( buf1.data(), bytes1 );
+        QString s2 = QString::fromLatin1( buf2.data(), bytes2 );
         if( !compareStr( s1, s2 ) ) {
             stateInfo.setError( tr( "files_not_equal: \"%1\" and \"%2\"" ).arg( s1 ).arg( s2 ) );
             return ReportResult_Finished;

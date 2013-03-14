@@ -587,8 +587,8 @@ Task* CallVariantsWorker::tick() {
         settings.capq_thres = actor->getParameter(CAPQ_THRES)->getAttributeValue<int>(context);
         settings.max_depth = actor->getParameter(MAX_DEPTH)->getAttributeValue<int>(context);
         settings.ext_baq = actor->getParameter(EXT_BAQ)->getAttributeValue<bool>(context);
-        settings.bed = actor->getParameter(BED)->getAttributeValue<QString>(context).toAscii();
-        settings.reg = actor->getParameter(REG)->getAttributeValue<QString>(context).toAscii();
+        settings.bed = actor->getParameter(BED)->getAttributeValue<QString>(context).toLatin1();
+        settings.reg = actor->getParameter(REG)->getAttributeValue<QString>(context).toLatin1();
         settings.min_mq = actor->getParameter(MIN_MQ)->getAttributeValue<int>(context);
         settings.min_baseq = actor->getParameter(MIN_BASEQ)->getAttributeValue<int>(context);
         settings.extq = actor->getParameter(EXTQ)->getAttributeValue<int>(context);
@@ -596,23 +596,23 @@ Task* CallVariantsWorker::tick() {
         settings.no_indel = actor->getParameter(NO_INDEL)->getAttributeValue<bool>(context);
         settings.max_indel_depth = actor->getParameter(MAX_INDEL_DEPTH)->getAttributeValue<int>(context);
         settings.openq = actor->getParameter(OPENQ)->getAttributeValue<int>(context);
-        settings.pl_list = actor->getParameter(PL_LIST)->getAttributeValue<QString>(context).toAscii();
+        settings.pl_list = actor->getParameter(PL_LIST)->getAttributeValue<QString>(context).toLatin1();
 
         //bcf view
         settings.keepalt = actor->getParameter(KEEPALT)->getAttributeValue<bool>(context);
         settings.fix_pl = actor->getParameter(FIX_PL)->getAttributeValue<bool>(context);
         settings.no_geno = actor->getParameter(NO_GENO)->getAttributeValue<bool>(context);
         settings.acgt_only = actor->getParameter(ACGT_ONLY)->getAttributeValue<bool>(context);
-        settings.bcf_bed = actor->getParameter(BCF_BED)->getAttributeValue<QString>(context).toAscii();
+        settings.bcf_bed = actor->getParameter(BCF_BED)->getAttributeValue<QString>(context).toLatin1();
         settings.qcall = actor->getParameter(QCALL)->getAttributeValue<bool>(context);
-        settings.samples = actor->getParameter(SAMPLES)->getAttributeValue<QString>(context).toAscii();
+        settings.samples = actor->getParameter(SAMPLES)->getAttributeValue<QString>(context).toLatin1();
         settings.min_smpl_frac = actor->getParameter(MIN_SMPL_FRAC)->getAttributeValue<float>(context);
         settings.call_gt = actor->getParameter(CALL_GT)->getAttributeValue<bool>(context);
         settings.indel_frac = actor->getParameter(INDEL_FRAC)->getAttributeValue<float>(context);
         settings.pref = actor->getParameter(PREF)->getAttributeValue<float>(context);
-        settings.ptype = actor->getParameter(PTYPE)->getAttributeValue<QString>(context).toAscii();
+        settings.ptype = actor->getParameter(PTYPE)->getAttributeValue<QString>(context).toLatin1();
         settings.theta = actor->getParameter(THETA)->getAttributeValue<float>(context);
-        settings.ccall = actor->getParameter(CCALL)->getAttributeValue<QString>(context).toAscii();
+        settings.ccall = actor->getParameter(CCALL)->getAttributeValue<QString>(context).toLatin1();
         settings.n1 = actor->getParameter(N1)->getAttributeValue<int>(context);
         settings.n_perm = actor->getParameter(N_PERM)->getAttributeValue<int>(context);
         settings.min_perm_p = actor->getParameter(MIN_PERM_P)->getAttributeValue<float>(context);

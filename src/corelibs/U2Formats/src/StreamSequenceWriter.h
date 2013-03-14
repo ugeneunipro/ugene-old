@@ -51,7 +51,7 @@ public:
     ~StreamShortReadsWriter();
     bool writeNextAlignedRead(int offset, const DNASequence& seq);
     void setRefSeqLength(int l) { refSeqLength = l;}
-    void setRefSeqName(const QString& name ) { refSeqName = QString(name).replace(QRegExp("\\s|\\t"), "_").toAscii(); }
+    void setRefSeqName(const QString& name ) { refSeqName = QString(name).replace(QRegExp("\\s|\\t"), "_").toLatin1(); }
     int getNumSeqWritten() { return numSeqWritten; }
     void close();
 };

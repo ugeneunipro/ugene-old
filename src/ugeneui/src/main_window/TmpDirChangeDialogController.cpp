@@ -6,7 +6,7 @@ TmpDirChangeDialogController::TmpDirChangeDialogController(QString path, QWidget
     setupUi(this);
     QString message = "You do not have permission to write to \"" + tmpDirPath +
                          "\" directory. Please, set the valid temp directory:";
-    messageText->setText(tr(message.toAscii()));
+    messageText->setText(tr(message.toLatin1()));
     tmpDirPathEdit->setText(tmpDirPath);
     tmpDirChecker = new TmpDirChecker;
 
@@ -35,7 +35,7 @@ void TmpDirChangeDialogController::sl_okButtonClicked() {
     if (!tmpDirChecker->checkPath(tmpDirPath)) {
         QString message = "You do not have permission to write to \"" + tmpDirPath +
                              "\" directory. Please, set the valid temp directory:";
-        messageText->setText(tr(message.toAscii()));
+        messageText->setText(tr(message.toLatin1()));
     }
     else {
         QDialog::accept();
