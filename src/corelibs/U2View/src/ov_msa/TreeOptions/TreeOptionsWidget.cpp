@@ -61,7 +61,7 @@ TreeOptionsWidget::TreeOptionsWidget(MSAEditor* m, const TreeOpWidgetViewSetting
 }
 
 TreeOptionsWidget::TreeOptionsWidget(TreeViewer* tree, const TreeOpWidgetViewSettings& _viewSettings)
-    : msa(NULL), treeViewer(tree->ui), viewSettings(_viewSettings), settings(NULL), showFontSettings(false), showPenSettings(false)
+    : msa(NULL), treeViewer(tree->getTreeViewerUI()), viewSettings(_viewSettings), settings(NULL), showFontSettings(false), showPenSettings(false)
 {
     SAFE_POINT(NULL != treeViewer, QString("Invalid parameter were passed into constructor TreeOptionsWidget"), );
 
@@ -230,7 +230,7 @@ void TreeOptionsWidget::updateBranchSettings() {
 
 TreeViewerUI* TreeOptionsWidget::getTreeViewer() {
     SAFE_POINT(msa != NULL || treeViewer != NULL, QString("Invalid parameter in constructor TreeOptionsWidget"), NULL);
-    return treeViewer != NULL ? treeViewer : msa->getUI()->getCurrentTree()->ui;
+    return treeViewer != NULL ? treeViewer : msa->getUI()->getCurrentTree()->getTreeViewerUI();
 }
 
 void TreeOptionsWidget::sl_onGeneralSettingsChanged()

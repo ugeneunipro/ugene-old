@@ -53,19 +53,18 @@ namespace U2 {
 /// open new view
 
 OpenTreeViewerTask::OpenTreeViewerTask(PhyTreeObject* _obj, QObject* _parent)
-: ObjectViewTask(TreeViewerFactory::ID), phyObject(_obj), createMDIWindow(false), parent(_parent) {
+: ObjectViewTask(TreeViewerFactory::ID), phyObject(_obj), parent(_parent), createMDIWindow(false) {
     assert(!phyObject.isNull());
 }
 
 OpenTreeViewerTask::OpenTreeViewerTask(UnloadedObject* _obj, QObject* _parent)
-: ObjectViewTask(TreeViewerFactory::ID), unloadedReference(_obj), createMDIWindow(false), parent(_parent) {
+: ObjectViewTask(TreeViewerFactory::ID), unloadedReference(_obj), parent(_parent), createMDIWindow(false) {
     assert(_obj->getLoadedObjectType() == GObjectTypes::PHYLOGENETIC_TREE);
     documentsToLoad.append(_obj->getDocument());
 }
 
 OpenTreeViewerTask::OpenTreeViewerTask(Document* doc, QObject* _parent) 
-: ObjectViewTask(TreeViewerFactory::ID), phyObject(NULL), createMDIWindow(false), parent(_parent)
-{
+: ObjectViewTask(TreeViewerFactory::ID), phyObject(NULL), parent(_parent), createMDIWindow(false) {
     assert(!doc->isLoaded());
     documentsToLoad.append(doc);
 }

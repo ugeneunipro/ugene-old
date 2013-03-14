@@ -52,7 +52,7 @@ public:
     const QString& getParentAlignmentName() {return alignmentName;}
     virtual OptionsPanel* getOptionsPanel(){return 0;}
 
-    void setCreatePhyTreeSettings(const CreatePhyTreeSettings& _buildSettings) {buildSettings = _buildSettings;}
+    void setCreatePhyTreeSettings(const CreatePhyTreeSettings& _buildSettings);
     void setParentAignmentName(const QString& _alignmentName) {alignmentName = _alignmentName;}
 
     void setTreeVerticalSize(int size);
@@ -60,7 +60,12 @@ public:
     QAction* getSortSeqsAction() const {return sortSeqAction;}
 protected:
     virtual QWidget* createWidget();
+private slots:
+    void sl_refreshTree();
+signals:
+    void si_refreshTree(MSAEditorTreeViewer& treeViewer);
 private:
+    QAction*              refreshTreeAction;
     QAction*              sortSeqAction;
     QString               alignmentName;
     CreatePhyTreeSettings buildSettings;
@@ -105,6 +110,7 @@ private slots:
     void sl_onHeightChanged(int height);
     void sl_onReferenceSeqChanged(const QString &str);
     void sl_sortAlignment();
+    void sl_onSceneRectChanged(const QRectF&);
 
 private:
     void highlightBranches();

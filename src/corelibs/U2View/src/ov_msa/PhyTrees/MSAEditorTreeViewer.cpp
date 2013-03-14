@@ -47,7 +47,14 @@ QWidget* MSAEditorTreeViewer::createWidget() {
     sortSeqAction->setObjectName("Sort Alignment");
     connect(sortSeqAction, SIGNAL(triggered()), ui, SLOT(sl_sortAlignment()));
 
+    refreshTreeAction = new QAction(QIcon(":core/images/arrow_rotate_clockwise.png"), tr("Refresh tree"), ui);
+    refreshTreeAction->setObjectName("Refresh tree");
+    refreshTreeAction->setEnabled(false);
+    connect(refreshTreeAction, SIGNAL(triggered()), SLOT(sl_refreshTree()));
+
+
     toolBar->addSeparator();
+    toolBar->addAction(refreshTreeAction);
     toolBar->addAction(sortSeqAction);
 
     vLayout->setSpacing(0);
@@ -64,9 +71,20 @@ void MSAEditorTreeViewer::setTreeVerticalSize(int size) {
     CHECK(NULL != msaUI, );
     msaUI->setTreeVerticalSize(size);
 } 
+
+void MSAEditorTreeViewer::setCreatePhyTreeSettings(const CreatePhyTreeSettings& _buildSettings) {
+    buildSettings = _buildSettings;
+    refreshTreeAction->setEnabled(true);
+}
+
+void MSAEditorTreeViewer::sl_refreshTree() {
+    emit si_refreshTree(*this);
+}
+
 MSAEditorTreeViewerUI::MSAEditorTreeViewerUI(MSAEditorTreeViewer* treeViewer) 
     : TreeViewerUI(treeViewer), subgroupSelectorPos(0.0), isSinchronized(true), curLayoutIsRectangular(true), curMSATreeViewer(treeViewer){
-    connect(scene(), SIGNAL(selectionChanged()), this, SLOT(sl_onSelectionChanged()));
+    connect(scene(), SIGNAL(selectionChanged()), SLOT(sl_onSelectionChanged()));
+    connect(scene(), SIGNAL(sceneRectChanged(const QRectF&)), SLOT(sl_onSceneRectChanged(const QRectF&)));
 
     subgroupSelector = scene()->addLine(0.0, 0.0, 0.0, scene()->height(), QPen(Qt::blue));
 }
@@ -162,6 +180,10 @@ void MSAEditorTreeViewerUI::mouseMoveEvent(QMouseEvent *me) {
         TreeViewerUI::mouseMoveEvent(me);
     }
     me->accept();
+}
+
+void MSAEditorTreeViewerUI::sl_onSceneRectChanged( const QRectF& ) {
+    subgroupSelector->setLine(subgroupSelectorPos, 0, subgroupSelectorPos, scene()->height());
 }
 void MSAEditorTreeViewerUI::sl_zoomToSel() {
     emit si_treeZoomedIn();
@@ -417,7 +439,5 @@ void MSAEditorTreeViewerUI::highlightBranches() {
     }
     emit si_groupColorsChanged(groupColorSchema);
 }
-
-
 }//namespace
 

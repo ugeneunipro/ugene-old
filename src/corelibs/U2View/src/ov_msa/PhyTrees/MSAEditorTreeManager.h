@@ -52,11 +52,11 @@ private slots:
     void sl_openTree();
     void sl_openTreeTaskFinished(Task* t);
     void sl_onWindowClosed(GObjectViewWindow* viewWindow);
-    void sl_refreshTree();
+    void sl_treeRebuildingFinished();
+    void sl_refreshTree(MSAEditorTreeViewer& treeViewer);
 
 private:
     void buildTree(const CreatePhyTreeSettings& buildSettings);
-    void refreshTree(MSAEditorTreeViewer* treeViewer);
     bool canRefreshTree(MSAEditorTreeViewer* treeViewer);
 
     MSAEditor*                    editor;
@@ -64,6 +64,7 @@ private:
     CreatePhyTreeSettings         settings;
     PhyTreeGeneratorLauncherTask* treeGeneratorTask; 
     MSAEditorTreeViewer*          refreshingTree;
+    bool                          addExistingTree;
 };
 
 }//namespace

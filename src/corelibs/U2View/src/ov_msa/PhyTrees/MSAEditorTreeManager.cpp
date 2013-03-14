@@ -51,7 +51,7 @@
 
 namespace U2 {
 MSAEditorTreeManager::MSAEditorTreeManager(MSAEditor* _editor )
- : QObject(_editor), editor(_editor), msaObject(NULL), treeGeneratorTask(NULL) {
+ : QObject(_editor), editor(_editor), msaObject(NULL), treeGeneratorTask(NULL), addExistingTree(false) {
      SAFE_POINT(NULL != editor, "Invlalid parameter were passed into constructor MSAEditorTreeManager",);
 }
 
@@ -69,6 +69,7 @@ void MSAEditorTreeManager::loadRelatedTrees() {
         Document *d = df->loadDocument(iof, treeFileName, QVariantMap(), os);
 
         const QList<GObject*>& objects = d->getObjects();
+        addExistingTree = true;
         foreach(GObject* obj, objects) {
             if(GObjectTypes::PHYLOGENETIC_TREE == obj->getGObjectType()) {
                 PhyTreeObject* treeObject = qobject_cast<PhyTreeObject*>(obj);
@@ -83,6 +84,7 @@ void MSAEditorTreeManager::buildTreeWithDialog() {
     msaObject = editor->getMSAObject();
     PhyTreeGeneratorRegistry* registry = AppContext::getPhyTreeGeneratorRegistry();
     QStringList list = registry->getNameList();
+    addExistingTree = false;
     if (list.size() == 0){
         QMessageBox::information(editor->getUI(), tr("Calculate phy tree"),
             tr("No algorithms for building phylogenetic tree are available.") );
@@ -106,18 +108,18 @@ void MSAEditorTreeManager::buildTree(const CreatePhyTreeSettings& buildSettings)
     scheduler->registerTopLevelTask(treeGeneratorTask);
 }
 
-void MSAEditorTreeManager::refreshTree(MSAEditorTreeViewer* treeViewer) {
-    CHECK(canRefreshTree(treeViewer),);
-    refreshingTree = treeViewer;
+void MSAEditorTreeManager::sl_refreshTree(MSAEditorTreeViewer& treeViewer) {
+    CHECK(canRefreshTree(&treeViewer),);
+    refreshingTree = &treeViewer;
     const MAlignment& ma = msaObject->getMAlignment();
-    settings = treeViewer->getCreatePhyTreeSettings();
+    settings = treeViewer.getCreatePhyTreeSettings();
 
     treeGeneratorTask = new PhyTreeGeneratorLauncherTask(ma, settings);
-    connect(treeGeneratorTask, SIGNAL(si_stateChanged()), SLOT(sl_refreshTree()));
+    connect(treeGeneratorTask, SIGNAL(si_stateChanged()), SLOT(sl_treeRebuildingFinished()));
     TaskScheduler* scheduler = AppContext::getTaskScheduler();
     scheduler->registerTopLevelTask(treeGeneratorTask);
 }
-void MSAEditorTreeManager::sl_refreshTree() {
+void MSAEditorTreeManager::sl_treeRebuildingFinished() {
     bool taskFailed = treeGeneratorTask->getState() != Task::State_Finished || treeGeneratorTask->hasError() || treeGeneratorTask->isCanceled();
     CHECK(!taskFailed, );
     PhyTreeObject *treeObj = refreshingTree->getPhyObject();
@@ -185,24 +187,29 @@ void MSAEditorTreeManager::sl_openTreeTaskFinished(Task* t) {
             connect(w, SIGNAL(si_windowClosed(GObjectViewWindow*)), this, SLOT(sl_onWindowClosed(GObjectViewWindow*)));
 
             treeView->setAlignment(Qt::AlignTop);
-            MSAEditorUI* ui = editor->getUI();
-            ui->addTreeView(w);
+            MSAEditorUI* msaUI = editor->getUI();
+            msaUI->addTreeView(w);
 
-            treeView->setTreeVerticalSize(ui->getSequenceArea()->getHeight());
-            treeView->setCreatePhyTreeSettings(settings);
-            treeView->setParentAignmentName(msaObject->getMAlignment().getName());
+            if(!addExistingTree) {
+                treeView->setTreeVerticalSize(msaUI->getSequenceArea()->getHeight());
+                treeView->setCreatePhyTreeSettings(settings);
+                treeView->setParentAignmentName(msaObject->getMAlignment().getName());
+            }
 
+            const TreeViewerUI* treeUI = treeView->getTreeViewerUI();
 
-            connect(ui->getSequenceArea(),   SIGNAL(si_selectionChanged(const QStringList&)), treeView->ui, SLOT(sl_selectionChanged(const QStringList&)));
-            connect(ui->getEditorNameList(), SIGNAL(si_sequenceNameChanged(QString, QString)), treeView->ui, SLOT(sl_sequenceNameChanged(QString, QString)));
-            connect(treeView->ui, SIGNAL(si_collapseModelChangedInTree(const QStringList*)), ui->getSequenceArea(), SLOT(sl_setCollapsingRegions(const QStringList*)));
-            connect(treeView->ui, SIGNAL(si_seqOrderChanged(QStringList*)), editor, SLOT(sl_onSeqOrderChanged(QStringList*)));
-            connect(treeView->ui, SIGNAL(si_groupColorsChanged(const GroupColorSchema&)), ui->getEditorNameList(), SLOT(sl_onGroupColorsChanged(const GroupColorSchema&)));
-            connect(editor, SIGNAL(si_sizeChanged(int)), treeView->ui, SLOT(sl_onHeightChanged(int)));
+            connect(msaUI->getSequenceArea(),   SIGNAL(si_selectionChanged(const QStringList&)), treeUI, SLOT(sl_selectionChanged(const QStringList&)));
+            connect(msaUI->getEditorNameList(), SIGNAL(si_sequenceNameChanged(QString, QString)), treeUI, SLOT(sl_sequenceNameChanged(QString, QString)));
+            connect(treeUI, SIGNAL(si_collapseModelChangedInTree(const QStringList*)), msaUI->getSequenceArea(), SLOT(sl_setCollapsingRegions(const QStringList*)));
+            connect(treeUI, SIGNAL(si_seqOrderChanged(QStringList*)), editor, SLOT(sl_onSeqOrderChanged(QStringList*)));
+            connect(treeUI, SIGNAL(si_groupColorsChanged(const GroupColorSchema&)), msaUI->getEditorNameList(), SLOT(sl_onGroupColorsChanged(const GroupColorSchema&)));
+            connect(editor, SIGNAL(si_sizeChanged(int)), treeUI, SLOT(sl_onHeightChanged(int)));
 
-            connect(treeView->ui,   SIGNAL(si_treeZoomedIn()),                      editor,       SLOT(sl_zoomIn()));
-            connect(editor,         SIGNAL(si_refrenceSeqChanged(const QString &)), treeView->ui, SLOT(sl_onReferenceSeqChanged(const QString &)));
-            connect(treeView->ui,   SIGNAL(si_treeZoomedOut()),                     editor,       SLOT(sl_zoomOut()));
+            connect(treeUI,   SIGNAL(si_treeZoomedIn()),                      editor,       SLOT(sl_zoomIn()));
+            connect(editor,         SIGNAL(si_refrenceSeqChanged(const QString &)), treeUI, SLOT(sl_onReferenceSeqChanged(const QString &)));
+            connect(treeUI,   SIGNAL(si_treeZoomedOut()),                     editor,       SLOT(sl_zoomOut()));
+            
+            connect(treeView, SIGNAL(si_refreshTree(MSAEditorTreeViewer&)), SLOT(sl_refreshTree(MSAEditorTreeViewer&)));
         }
         else {
             GObjectViewWindow* w = new GObjectViewWindow(task->getTreeViewer(), editor->getName(), !task->getStateData().isEmpty());

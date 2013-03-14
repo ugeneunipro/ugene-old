@@ -90,9 +90,9 @@ TreeViewer::TreeViewer(const QString& viewName, GObject* obj, GraphicsRectangula
     printAction(NULL),
     captureTreeAction(NULL),
     exportAction(NULL),
-    ui(NULL),
     root(_root),
-    scale(s)
+    scale(s),
+    ui(NULL)
 {
     phyObject = qobject_cast<PhyTreeObject*>(obj);
     objects.append(phyObject);
@@ -357,7 +357,7 @@ const int TreeViewerUI::MARGIN = 10;
 const qreal TreeViewerUI::SIZE_COEF = 0.1;
 
 
-TreeViewerUI::TreeViewerUI(TreeViewer* treeViewer): phyObject(treeViewer->getPhyObject()), root(treeViewer->getRoot()), rectRoot(treeViewer->getRoot()), layout(TreeLayout_Rectangular), curTreeViewer(NULL) {
+TreeViewerUI::TreeViewerUI(TreeViewer* treeViewer): phyObject(treeViewer->getPhyObject()), root(treeViewer->getRoot()), layout(TreeLayout_Rectangular), curTreeViewer(NULL), rectRoot(treeViewer->getRoot()) {
     curTreeViewer = treeViewer;
     labelsSettings.alignLabels = false;
     labelsSettings.showDistances = true;
@@ -1021,16 +1021,36 @@ void TreeViewerUI::sl_rectLayoutRecomputed() {
     switch (layout)
     {
     case TreeLayout_Circular:
+        layout = TreeViewerUI::TreeLayout_Rectangular;
         sl_circularLayoutTriggered();
         fitInView(scene()->sceneRect(), Qt::KeepAspectRatio);
         break;
 
     case TreeLayout_Unrooted:
+        layout = TreeViewerUI::TreeLayout_Rectangular;
         sl_unrootedLayoutTriggered();
         fitInView(scene()->sceneRect(), Qt::KeepAspectRatio);
         break;
     case TreeLayout_Rectangular:
+        scene()->removeItem(root);
+        root = rootNode;
+        scene()->addItem(root);
+        defaultZoom();
+        updateRect();
+
+        if (!labelsSettings.showNames || !labelsSettings.showDistances) {
+            LabelTypes lt;
+            if (!labelsSettings.showDistances) {
+                lt |= LabelType_Distance;
+            }
+            if (!labelsSettings.showNames) {
+                lt |= LabelType_SequnceName;
+            }
+            showLabels(lt);
+        }
         show();
+
+        fitInView(scene()->sceneRect(), Qt::KeepAspectRatio);
         break;
     }
 }

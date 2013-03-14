@@ -115,7 +115,7 @@ public:
 
     void setAlignment(Qt::Alignment alignment);
 
-    TreeViewerUI*       ui;
+    TreeViewerUI* getTreeViewerUI() {return ui;}
 
 protected:
     virtual QWidget* createWidget();
@@ -153,6 +153,9 @@ private:
     void setupLayoutSettingsMenu(QMenu* m);
     void setupShowLabelsMenu(QMenu* m);
     void setupCameraMenu(QMenu* m);
+protected:
+    TreeViewerUI*       ui;
+
 };
 
 class TreeViewerUI: public QGraphicsView {
