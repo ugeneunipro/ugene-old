@@ -863,6 +863,12 @@ U2TrackModType ModificationAction::prepare(U2OpStatus& os) {
         masterObjVersionToTrack = dbi->getObjectDbi()->getObjectVersion(masterObjId, os);
         SAFE_POINT_OP(os, trackMod);
 
+        // If a user mod step has already been created for this action
+        // then it can not be deleted. The version must be incremented.
+        if (dbi->getSQLiteModDbi()->isUserStepStarted()) {
+            masterObjVersionToTrack++;
+        }
+
         dbi->getSQLiteModDbi()->removeModsWithGreaterVersion(masterObjId, masterObjVersionToTrack, os);
         if (os.hasError()) {
             dbi->getSQLiteModDbi()->cleanUpAllStepsOnError();

@@ -1853,6 +1853,9 @@ void MSAEditorSequenceArea::deleteCurrentSelection()
     }
 
     const U2Region& sel = getSelectedRows();
+    U2OpStatusImpl os;
+    U2UseCommonUserModStep modeStep(maObj->getEntityRef(), os);
+    SAFE_POINT_OP(os, );
     maObj->removeRegion(selection.x(), sel.startPos, selection.width(), sel.length, true);
 
     if (selection.height() == 1 && selection.width() == 1) {
@@ -1880,7 +1883,7 @@ void MSAEditorSequenceArea::sl_addSeqFromFile()
     if (!urls.isEmpty()) {
         lod.url = urls.first();
         cancelSelection();
-        AddSequencesToAlignmentTask * task = new AddSequencesToAlignmentTask(msaObject, urls);    
+        AddSequencesToAlignmentTask * task = new AddSequencesToAlignmentTask(msaObject, urls);
         AppContext::getTaskScheduler()->registerTopLevelTask(task);
     }
     

@@ -134,20 +134,20 @@ QList<U2MsaRow> AddSequencesToAlignmentTask::createRows() {
 }
 
 void AddSequencesToAlignmentTask::addRows(QList<U2MsaRow> &rows) {
-    // Open connection
     U2EntityRef entityRef = maObj.data()->getEntityRef();
-    DbiConnection con(entityRef.dbiRef, stateInfo);
+    // Create user mod step
+    U2UseCommonUserModStep modStep(entityRef, stateInfo);
     CHECK_OP(stateInfo, );
-    CHECK_EXT(NULL != con.dbi, setError("NULL root dbi"), );
+    U2MsaDbi *dbi = modStep.getDbi()->getMsaDbi();
 
     // Add rows
-    con.dbi->getMsaDbi()->addRows(entityRef.entityId, rows, stateInfo);
+    dbi->addRows(entityRef.entityId, rows, stateInfo);
     CHECK_OP(stateInfo, );
 
     // Update alphabet
     if (maObj->getAlphabet() != msaAlphabet) {
         SAFE_POINT(NULL != msaAlphabet, "NULL result alphabet", );
-        con.dbi->getMsaDbi()->updateMsaAlphabet(entityRef.entityId, msaAlphabet->getId(), stateInfo);
+        dbi->updateMsaAlphabet(entityRef.entityId, msaAlphabet->getId(), stateInfo);
         CHECK_OP(stateInfo, );
     }
 

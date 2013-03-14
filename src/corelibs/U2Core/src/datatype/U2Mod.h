@@ -85,13 +85,21 @@ public:
  * WARNING!: you should limit the scope of the created instance to as small as possible,
  * as it "blocks" database!!
  */
+class DbiConnection;
 class U2CORE_EXPORT U2UseCommonUserModStep {
 public:
     U2UseCommonUserModStep(U2Dbi* _dbi, const U2DataId& _masterObjId, U2OpStatus& os);
+    U2UseCommonUserModStep(const U2EntityRef &masterObjEntity, U2OpStatus &os);
     ~U2UseCommonUserModStep();
+
+    U2Dbi * getDbi() const;
 private:
     U2Dbi* dbi;
     bool valid;
+    QScopedPointer<DbiConnection> con;
+
+private:
+    void init(const U2DataId &masterObjId, U2OpStatus &os);
 };
 
 } // namespace

@@ -417,7 +417,7 @@ void SQLiteMsaDbi::removeRow(const U2DataId& msaId, qint64 rowId, U2OpStatus& os
         modDetails = PackUtils::packRow(posInMsa, removedRow);
     }
 
-    bool removeSequence = (TrackOnUpdate == trackMod);
+    bool removeSequence = (TrackOnUpdate != trackMod);
     removeRowCore(msaId, rowId, removeSequence, os);
     CHECK_OP(os, );
 
@@ -448,7 +448,7 @@ void SQLiteMsaDbi::removeRows(const U2DataId& msaId, const QList<qint64>& rowIds
         modDetails = PackUtils::packRows(posInMsa, rows);
     }
 
-    bool removeSequence = (TrackOnUpdate == trackMod);
+    bool removeSequence = (TrackOnUpdate != trackMod);
     removeRowsCore(msaId, rowIds, removeSequence, os);
 
     // Increment version; track the modification, if required
