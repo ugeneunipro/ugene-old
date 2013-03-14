@@ -40,7 +40,9 @@ namespace U2 {
 static const int CROSS_SIZE = 9;
 #define CHILDREN_OFFSET 8
 
-MSAEditorNameList::MSAEditorNameList(MSAEditorUI* _ui, QScrollBar* _nhBar) : labels(NULL), editor(_ui->editor), ui(_ui), nhBar(_nhBar) {
+MSAEditorNameList::MSAEditorNameList(MSAEditorUI* _ui, QScrollBar* _nhBar) 
+    : labels(NULL), ui(_ui), nhBar(_nhBar), editor(_ui->editor) 
+{
     setObjectName("msa_editor_name_list");
     setFocusPolicy(Qt::WheelFocus);
     cachedView = new QPixmap();
@@ -583,7 +585,6 @@ int MSAEditorNameList::getRefSeqPos() {
         MSACollapsibleItemModel* m = ui->getCollapseModel();
         QVector<U2Region> range;
         m->getVisibleRows(startSeq, lastSeq, range);
-        U2Region yRange = ui->seqArea->getSequenceYRange(startSeq, true);
         int numRows = editor->getNumSequences();
 
         foreach(const U2Region& r, range) {

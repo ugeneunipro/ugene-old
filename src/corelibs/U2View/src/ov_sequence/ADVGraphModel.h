@@ -114,7 +114,7 @@ protected:
 
     void calculateCutoffPoints(GSequenceGraphData* d, PairVector& points, int alignedFirst, int alignedLast);
 
-    int calculateLabelData(const QRect& rect, const PairVector& points, GraphLabel* label, QColor textColor);
+    int calculateLabelData(const QRect& rect, const PairVector& points, GraphLabel* label);
     void calculatePositionOfLabel(GraphLabel *label, int nPoints);
     float calculateLabelValue(int nPoints, const PairVector &points, GraphLabel *label, int xcoordInRect);
     int updateStaticLabels(GSequenceGraphData* graph, GraphLabel* label, const QRect& rect);

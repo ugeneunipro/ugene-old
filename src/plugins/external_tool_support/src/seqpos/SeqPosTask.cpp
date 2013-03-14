@@ -49,11 +49,11 @@ const QString SeqPosTask::TREAT_NAME("treatment");
 SeqPosTask::SeqPosTask(const SeqPosSettings& _settings, const QList<SharedAnnotationData>& _treatAnn)
 : Task("SeqPos annotation", TaskFlag_None)
 , settings(_settings)
+, treatAnn(_treatAnn)
 , treatDoc(NULL)
 , treatTask(NULL)
 , etTask(NULL)
 , logParser(NULL)
-, treatAnn(_treatAnn)
 {
 
 }

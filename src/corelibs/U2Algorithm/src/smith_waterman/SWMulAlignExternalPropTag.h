@@ -45,7 +45,7 @@ private:
 
 
 inline SWMulAlignExternalPropTag::SWMulAlignExternalPropTag(const QString _shorthand, const QString _label, Type _type)
-    : SWMulAlignResultNamesTag(_shorthand, _label), type(_type), counter(0) {
+    : SWMulAlignResultNamesTag(_shorthand, _label), counter(0), type(_type) {
     acceptableForSubseqNamesOnly = false;
 }
 

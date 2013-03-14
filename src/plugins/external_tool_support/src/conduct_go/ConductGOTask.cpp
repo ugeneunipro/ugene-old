@@ -49,11 +49,11 @@ const QString ConductGOTask::TREAT_NAME("treatment");
 ConductGOTask::ConductGOTask(const ConductGOSettings& _settings, const QList<SharedAnnotationData>& _treatAnn)
 : Task("ConductGO annotation", TaskFlag_None)
 , settings(_settings)
+, treatAnn(_treatAnn)
 , treatDoc(NULL)
 , treatTask(NULL)
 , etTask(NULL)
 , logParser(NULL)
-, treatAnn(_treatAnn)
 {
 
 }

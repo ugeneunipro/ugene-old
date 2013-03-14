@@ -144,7 +144,7 @@ const int GSequenceGraphDrawer::UNKNOWN_VAL = -1;
 
 GSequenceGraphDrawer::GSequenceGraphDrawer(GSequenceGraphView* v, const GSequenceGraphWindowData& wd, 
                                            QMap<QString,QColor> colors)
-: QObject(v), view(v), lineColors(colors), wdata(wd), globalMin(0), globalMax(0)
+: QObject(v), view(v), lineColors(colors), globalMin(0), globalMax(0), wdata(wd)
 {
     connect(v, SIGNAL(si_frameRangeChanged(GSequenceGraphData*, const QRect&)),
             this, SLOT(sl_frameRangeChanged(GSequenceGraphData*, const QRect&)));
@@ -438,11 +438,11 @@ void GSequenceGraphDrawer::selectExtremumPoints(GSequenceGraphData *graph, const
                 posOfMin = pos;
             }
         }
-        GraphLabel* maxLabel = new GraphLabel(posOfMax, QRect(0,0,0,0), "", view);
+        GraphLabel* maxLabel = new GraphLabel(posOfMax, view);
         maxLabel->show();
         graph->graphLabels.addLabel(maxLabel);
         updateStaticLabels(graph, maxLabel, graphRect);
-        GraphLabel* minLabel = new GraphLabel(posOfMin, QRect(0,0,0,0), "", view);
+        GraphLabel* minLabel = new GraphLabel(posOfMin, view);
         minLabel->show();
         graph->graphLabels.addLabel(minLabel);
         updateStaticLabels(graph, minLabel, graphRect);
@@ -468,7 +468,7 @@ int GSequenceGraphDrawer::updateStaticLabels(GSequenceGraphData *graph, GraphLab
     if(position < 0 || position >= nPoints)
         return 1;
 
-    int errorCode = calculateLabelData(rect, points, label, color);
+    int errorCode = calculateLabelData(rect, points, label);
     if(0 != errorCode)
         return errorCode;
 
@@ -543,8 +543,7 @@ void GSequenceGraphDrawer::updateMovingLabels(GSequenceGraphData *graph, GraphLa
     label->setHintRect(textRect);
 }
 
-int GSequenceGraphDrawer::calculateLabelData(const QRect &rect, const PairVector &points, GraphLabel *label, QColor textColor)
-{
+int GSequenceGraphDrawer::calculateLabelData(const QRect &rect, const PairVector &points, GraphLabel *label) {
     int graphHeight = rect.bottom() - rect.top() - 2;
     const U2Region& visibleRange = view->getVisibleRange();
     int xcoordInRect;

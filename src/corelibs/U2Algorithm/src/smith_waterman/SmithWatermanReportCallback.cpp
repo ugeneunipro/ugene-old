@@ -90,16 +90,15 @@ SmithWatermanReportCallbackMAImpl::SmithWatermanReportCallbackMAImpl(const QStri
     const QString & _mobjectNamesTemplate, const QString & _refSubseqTemplate, const QString & _ptrnSubseqTemplate,
     const QByteArray & _refSequence, const QByteArray & _pattern, const QString & _refSeqName, const QString & _patternName,
     DNAAlphabet * _alphabet, WhatDoYouWantFromMe _plan)
-    : resultDirPath(_resultFolderName), mobjectNamesTemplate(_mobjectNamesTemplate), refSubseqTemplate(_refSubseqTemplate),
-    ptrnSubseqTemplate(_ptrnSubseqTemplate), refSequenceData(_refSequence), ptrnSequenceData(_pattern), expansionInfo(_refSeqName, _patternName),
-      alphabet(_alphabet), plan(_plan) {
+    : plan(_plan), resultDirPath(_resultFolderName), mobjectNamesTemplate(_mobjectNamesTemplate), refSubseqTemplate(_refSubseqTemplate),
+    ptrnSubseqTemplate(_ptrnSubseqTemplate), refSequenceData(_refSequence), ptrnSequenceData(_pattern), alphabet(_alphabet), expansionInfo(_refSeqName, _patternName) {
 }
 
 SmithWatermanReportCallbackMAImpl::SmithWatermanReportCallbackMAImpl(const QString & _resultDirPath, const QString & _mobjectName,
                                                                      const U2EntityRef& _firstSequenceRef, const U2EntityRef& _secondSequenceRef,
                                                                      const U2EntityRef& _sourceMsaRef, WhatDoYouWantFromMe _plan) :
-        resultDirPath(_resultDirPath), mobjectName(_mobjectName), firstSequenceRef(_firstSequenceRef), secondSequenceRef(_secondSequenceRef),
-        sourceMsaRef(_sourceMsaRef), plan(_plan) {
+        plan(_plan), resultDirPath(_resultDirPath), firstSequenceRef(_firstSequenceRef), secondSequenceRef(_secondSequenceRef),
+        sourceMsaRef(_sourceMsaRef), mobjectName(_mobjectName) {
     U2OpStatus2Log os;
 
     sourceMsaConnection.open(sourceMsaRef.dbiRef, os);
@@ -113,7 +112,7 @@ SmithWatermanReportCallbackMAImpl::SmithWatermanReportCallbackMAImpl(const QStri
 
 SmithWatermanReportCallbackMAImpl::SmithWatermanReportCallbackMAImpl(const U2EntityRef& _firstSequenceRef, const U2EntityRef& _secondSequenceRef,
                                                                      const U2EntityRef& _sourceMsaRef, WhatDoYouWantFromMe _plan) :
-        firstSequenceRef(_firstSequenceRef), secondSequenceRef(_secondSequenceRef), sourceMsaRef(_sourceMsaRef), plan(_plan) {
+        plan(_plan), firstSequenceRef(_firstSequenceRef), secondSequenceRef(_secondSequenceRef), sourceMsaRef(_sourceMsaRef) {
     U2OpStatus2Log os;
 
     sourceMsaConnection.open(sourceMsaRef.dbiRef, os);
@@ -386,8 +385,8 @@ void SmithWatermanReportCallbackMAImpl::alignSequences(QList<U2MsaGap>& refSeque
                                                               const QByteArray& pairwiseAlignment) {
     bool lastSymbolIsGapRef = false;
     bool lastSymbolIsGapPtrn = false;
-    quint32 intervalStart;
-    quint32 intervalEnd;
+    quint32 intervalStart = 0;
+    quint32 intervalEnd = 0;
     for (quint32 i = 0; i < static_cast<quint32>(pairwiseAlignment.length()); ++i) {
         switch (pairwiseAlignment[i]) {
         case SmithWatermanResult::DIAG:

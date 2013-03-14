@@ -34,11 +34,11 @@ public:
     GenerateAlignmentProfileDialogFiller(U2OpStatus &os, bool _counts=true, saveFormat _format=NONE,
                                          QString _filePath = "") : Filler(os, "DNAStatMSAProfileDialog"),
         counts(_counts),
-        format(_format),
-        filePath(_filePath),
         gapScore(false),
         symdolScore(false),
-        skipGaps(false)
+        skipGaps(false),
+        format(_format),
+        filePath(_filePath)
     {
         checkBoxItems[NONE] = "NONE";
         checkBoxItems[HTML] = "htmlRB";
@@ -47,10 +47,10 @@ public:
 
     GenerateAlignmentProfileDialogFiller(U2OpStatus &os, bool _gapsScore, bool _symbolScore, bool _skipGaps) : Filler(os, "DNAStatMSAProfileDialog"),
         counts(true),
-        format(NONE),
         gapScore(_gapsScore),
         symdolScore(_symbolScore),
-        skipGaps(_skipGaps)
+        skipGaps(_skipGaps),
+        format(NONE)
         {}
 
     virtual void run();

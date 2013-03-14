@@ -40,7 +40,7 @@ const int AssemblyVariantRow::TOP_OFFSET = 13;
 /* AssemblyVariantRow */
 /************************************************************************/
 AssemblyVariantRow::AssemblyVariantRow(QWidget *parent, VariantTrackObject *_trackObj, AssemblyBrowser *_browser)
-: QWidget(parent), trackObj(_trackObj), browser(_browser), redraw(true), hint(this), contextMenu(new QMenu(this))
+: QWidget(parent), trackObj(_trackObj), browser(_browser), redraw(true), contextMenu(new QMenu(this)), hint(this)
 {
     this->setFixedHeight(FIXED_HEIGHT+TOP_OFFSET);
     this->setMouseTracking(true);

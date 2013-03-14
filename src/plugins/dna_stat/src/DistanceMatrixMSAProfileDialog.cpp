@@ -156,7 +156,6 @@ QList<Task*> DistanceMatrixMSAProfileTask::onSubTaskFinished(Task* subTask){
             return res;
         }
         if (s.outFormat == DistanceMatrixMSAProfileOutputFormat_Show || s.outFormat == DistanceMatrixMSAProfileOutputFormat_HTML) {
-            int maxVal = s.usePercents ? 100 : s.ma.getLength();
             QString colors[] = {"#ff5555", "#ff9c00", "#60ff00", "#a1d1e5", "#dddddd"};
 
             //setup style
@@ -176,9 +175,8 @@ QList<Task*> DistanceMatrixMSAProfileTask::onSubTaskFinished(Task* subTask){
             resultText+="<br><br>\n";
 
             bool isSimilarity = algo->isSimilarityMeasure();
-            int minLen = s.ma.getLength();
-
-            createDistanceTable(algo, resultText, s.ma.getRows());
+            
+            createDistanceTable(algo, s.ma.getRows());
 
             resultText+="<br><br>\n";
 
@@ -203,7 +201,7 @@ QList<Task*> DistanceMatrixMSAProfileTask::onSubTaskFinished(Task* subTask){
                     }
                 resultText+= "</table>\n";
                 resultText+="<br><br>\n";
-                createDistanceTable(algo, resultText, rows);
+                createDistanceTable(algo, rows);
                         }
 
 
@@ -258,7 +256,7 @@ QList<Task*> DistanceMatrixMSAProfileTask::onSubTaskFinished(Task* subTask){
     return res;
 }
 
-void DistanceMatrixMSAProfileTask::createDistanceTable(MSADistanceAlgorithm* algo, QString &result, const QList<MAlignmentRow> &rows)
+void DistanceMatrixMSAProfileTask::createDistanceTable(MSADistanceAlgorithm* algo, const QList<MAlignmentRow> &rows)
 {
     int maxVal = s.usePercents ? 100 : s.ma.getLength();
     QString colors[] = {"#ff5555", "#ff9c00", "#60ff00", "#a1d1e5", "#dddddd"};

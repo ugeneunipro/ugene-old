@@ -33,7 +33,7 @@ class U2SequenceObject;
 
 class ImportQualityScoresConfig {
 public:
-    ImportQualityScoresConfig() : createNewDocument(false), type(DNAQualityType_Sanger), format(DNAQuality::QUAL_FORMAT) {}
+    ImportQualityScoresConfig() : type(DNAQualityType_Sanger), format(DNAQuality::QUAL_FORMAT), createNewDocument(false) {}
     QString             fileName;
     DNAQualityType      type; 
     DNAQualityFormat    format;

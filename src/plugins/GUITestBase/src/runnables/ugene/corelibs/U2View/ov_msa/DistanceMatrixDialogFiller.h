@@ -37,12 +37,12 @@ public:
 
     DistanceMatrixDialogFiller(U2OpStatus &os, SaveFormat _format,QString _path) :
         Filler(os,"DistanceMatrixMSAProfileDialog"),
-        saveToFile(true),
-        format(_format),
-        path(_path),
         hamming(true),
         counts(true),
-        excludeGaps(true){}
+        excludeGaps(true),
+        saveToFile(true),
+        format(_format),
+        path(_path){}
     virtual void run();
 private:
     bool hamming,counts,excludeGaps,saveToFile;

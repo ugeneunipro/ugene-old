@@ -50,9 +50,9 @@ ConservationPlotTask::ConservationPlotTask(const ConservationPlotSettings& _sett
 , treatDoc(NULL)
 , treatTask(NULL)
 , plotData(_plotData)
+, activeSubtasks(0)
 , etTask(NULL)
 , logParser(NULL)
-, activeSubtasks(0)
 {
 
 }

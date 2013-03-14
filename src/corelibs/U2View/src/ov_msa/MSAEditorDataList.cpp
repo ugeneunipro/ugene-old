@@ -532,7 +532,7 @@ void MSAEditorUpdatedTabWidget::addExistingTree() {
 }
 
 MSAEditorTabWidgetArea::MSAEditorTabWidgetArea(MSAEditor* _msa, QWidget* parent )
-: msa(_msa), TabWidgetArea(parent), addTabButton(NULL) {
+: TabWidgetArea(parent), addTabButton(NULL), msa(_msa) {
     initialize();
 }
 

@@ -485,7 +485,6 @@ void MSAEditor::sl_onContextMenuRequested(const QPoint & pos) {
     addExportMenu(&m);
     addAdvancedMenu(&m);
 
-    QPoint curpos = QCursor::pos();
     m.addSeparator();
     m.addAction(setAsRefrenceSequenceAction);
     m.addSeparator();

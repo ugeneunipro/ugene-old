@@ -26,7 +26,7 @@
 namespace U2 {
 
 TextLabel::TextLabel(void *_parentLabel, QWidget *parent) : 
-    parentLabel(_parentLabel), QLabel(parent)
+    QLabel(parent), parentLabel(_parentLabel)
 {
 }
 TextLabel::~TextLabel() 
@@ -54,14 +54,15 @@ void TextLabel::paintEvent(QPaintEvent *e) {
     QLabel::paintEvent(e);
 }
 
-RoundHint::RoundHint(QWidget *parent, QColor _borderColor, QColor _fillingColor) : 
-borderColor(_borderColor), fillingColor(_fillingColor), markedFillingColor(_borderColor), QWidget(parent) {
+RoundHint::RoundHint(QWidget *parent, QColor _borderColor, QColor _fillingColor) 
+    : QWidget(parent), borderColor(_borderColor), fillingColor(_fillingColor), markedFillingColor(_borderColor), isMarked(false) 
+{
     this->setGeometry(QRect(0, 0, 0, 0));
 }
 RoundHint::~RoundHint() {
 }
 
-void RoundHint::paintEvent(QPaintEvent *e) {
+void RoundHint::paintEvent(QPaintEvent *) {
     QPainter paint; 
     paint.begin(this);
     paint.setPen(QPen(borderColor));
@@ -83,14 +84,16 @@ void RoundHint::unmark() {
     isMarked = false;
 }
 
-GraphLabel::GraphLabel() :
-position(-1), coord(-1,-1), text(this), image(), radius(defaultRadius), attachedLabel(NULL), value(0.0) {
+GraphLabel::GraphLabel() 
+    : attachedLabel(NULL), text(this), image(), position(-1), value(0.0), coord(-1,-1), radius(defaultRadius)
+{
     text.setLineWidth(3);
     text.setAlignment(Qt::AlignCenter);
     text.setFrameStyle(QFrame::WinPanel | QFrame::Raised);
 }
-GraphLabel::GraphLabel(float pos, const QRect &hintRect, const QString &hintText, QWidget *parent, int _radius) :
-    position(pos), coord(0,0), text(this, parent), image(parent), radius(_radius), attachedLabel(NULL) {
+GraphLabel::GraphLabel(float pos, QWidget *parent, int _radius) 
+    : attachedLabel(NULL), text(this, parent), image(parent), position(pos), value(0.0), coord(0,0), radius(_radius)
+{
     text.setLineWidth(3);
     text.setAlignment(Qt::AlignCenter);
     text.setFrameStyle(QFrame::WinPanel | QFrame::Raised);

@@ -128,7 +128,7 @@ void GSequenceGraphView::addLabel(float xPos) {
     foreach (GSequenceGraphData* graph, graphs) {
         if(NULL != graph->graphLabels.findLabelByPosition(xPos))
             continue;
-        GraphLabel* newLabel = new GraphLabel(xPos, QRect(0,0,0,0), "", this);
+        GraphLabel* newLabel = new GraphLabel(xPos, this);
         newLabel->show();
 
         graph->graphLabels.addLabel(newLabel);

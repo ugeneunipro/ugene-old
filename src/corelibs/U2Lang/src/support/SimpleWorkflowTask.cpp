@@ -131,9 +131,9 @@ QList<Task*> SimpleInOutWorkflowTask::onSubTaskFinished(Task* subTask) {
 // RunSimpleMSAWorkflow4GObject
 SimpleMSAWorkflow4GObjectTask::SimpleMSAWorkflow4GObjectTask(const QString& taskName, MAlignmentObject* _maObj, const SimpleMSAWorkflowTaskConfig& _conf) 
 : Task(taskName, TaskFlags_NR_FOSCOE),
-  conf(_conf),
   obj(_maObj),
-  lock(NULL)
+  lock(NULL),
+  conf(_conf)
 {
     SAFE_POINT(NULL != obj, "NULL MAlignmentObject!",);
 

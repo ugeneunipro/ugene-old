@@ -440,7 +440,7 @@ void ColorSchemaSettingsPageWidget::sl_onDeleteColorSchema(){
 
 /*Create MSA scheme dialog*/
 
-CreateColorSchemaDialog::CreateColorSchemaDialog(CustomColorSchema* _newSchema, QStringList _usedNames) : newSchema(_newSchema), usedNames(_usedNames){
+CreateColorSchemaDialog::CreateColorSchemaDialog(CustomColorSchema* _newSchema, QStringList _usedNames) : usedNames(_usedNames), newSchema(_newSchema) {
     setupUi(this);
 
     alphabetComboBox->insertItem(0, QString(tr("Amino acid")), DNAAlphabet_AMINO);
@@ -520,13 +520,10 @@ void CreateColorSchemaDialog::sl_createSchema(){
     int index = alphabetComboBox->currentIndex();
     if(index < 0 || index >= alphabetComboBox->count()){return;}
 
-    DNAAlphabetType type;
+    DNAAlphabetType type = DNAAlphabet_AMINO;
     bool defaultAlpType = true;
 
-    if(static_cast<DNAAlphabetType>(alphabetComboBox->itemData(index).toInt()) == DNAAlphabet_AMINO){
-        type = DNAAlphabet_AMINO;
-    }
-    else if(static_cast<DNAAlphabetType>(alphabetComboBox->itemData(index).toInt()) == DNAAlphabet_NUCL){
+    if(static_cast<DNAAlphabetType>(alphabetComboBox->itemData(index).toInt()) == DNAAlphabet_NUCL){
         type = DNAAlphabet_NUCL;
         if(extendedModeBox->isChecked()){
             defaultAlpType = false;

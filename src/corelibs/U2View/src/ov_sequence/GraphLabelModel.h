@@ -82,7 +82,7 @@ class GraphLabel: public QObject{
 public:
 
     GraphLabel();
-    GraphLabel(float pos, const QRect &hintRect, const QString &hintText, QWidget *parent = NULL, int _radius = defaultRadius);
+    GraphLabel(float pos, QWidget *parent = NULL, int _radius = defaultRadius);
     ~GraphLabel();
 
     bool select(float _position);
