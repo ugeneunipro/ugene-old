@@ -43,28 +43,38 @@ static errmod_coef_t *cal_coef(double depcorr, double eta)
 		double le = log(e);
 		double le1 = log(1.0 - e);
 		for (n = 1; n <= 255; ++n) {
-			double *beta = ec->beta + (q<<16|n<<8);
+            double *beta = ec->beta + (q<<16|n<<8);
+            sum1 = sum = 0.0;
+            for (k = n; k >= 0; --k, sum1 = sum) {
+                sum = sum1 + expl(lC[n<<8|k] + k*le + (n-k)*le1);
+                beta[k] = -10. / M_LN10 * logl(sum1 / sum);
+            }
+        }
+        //TODO: consider returning the following hack
 
-			static const double zero = 0;
-			sum1 = sum = 0.0;
-			exponent = exponent1 = -1./zero; // cross-platform infinity :)
-			for (k = n; k >= 0; --k, sum1 = sum, exponent1 = exponent) {
-				exponent = lC[n<<8|k] + k*le + (n-k)*le1;
-				sum = sum1 + expl(exponent);
-// In Visual Studio, long double is equivalent to double, so its precision is not enough
-// So workaround is replace -log[ sum1/sum ] = -log[ exp(exponent1)/{exp(exponent1) + exp(exponent)} ]
-// = -log[ 1/{1 + exp(exponent - exponent1)} ] = log[ 1 + expl(exponent - exponent1) ]
-#ifndef Q_OS_WIN32
-				if(sum1 != 0. && ! isinf(exponent1)) {
-					beta[k] = 10. / M_LN10 * logl(1 + expl(exponent - exponent1));
-				} else {
-					beta[k] = 1./zero; // cross-platform infinity :)
-				}
-#else
-				beta[k] = -10. / M_LN10 * logl(sum1 / sum);
-#endif
-			}
-		}
+// 			double *beta = ec->beta + (q<<16|n<<8);
+// 
+// 			static const double zero = 0;
+// 			sum1 = sum = 0.0;
+// 			exponent = exponent1 = -1./zero; // cross-platform infinity :)
+// 			for (k = n; k >= 0; --k, sum1 = sum, exponent1 = exponent) {
+// 				exponent = lC[n<<8|k] + k*le + (n-k)*le1;
+// 				sum = sum1 + expl(exponent);
+// // In Visual Studio, long double is equivalent to double, so its precision is not enough
+// // So workaround is replace -log[ sum1/sum ] = -log[ exp(exponent1)/{exp(exponent1) + exp(exponent)} ]
+// // = -log[ 1/{1 + exp(exponent - exponent1)} ] = log[ 1 + expl(exponent - exponent1) ]
+// #ifndef Q_OS_WIN32
+// 				if(sum1 != 0. && ! isinf(exponent1)) {
+// 					beta[k] = 10. / M_LN10 * logl(1 + expl(exponent - exponent1));
+// 				} else {
+// 					beta[k] = 1./zero; // cross-platform infinity :)
+// 				}
+// #else
+// 				beta[k] = -10. / M_LN10 * logl(sum1 / sum);
+// #endif
+// 			}
+// 		}
+        
 	}
 	// initialize ->lhet
 	ec->lhet = (double*)calloc(256 * 256, sizeof(double));
@@ -110,10 +120,12 @@ int errmod_cal(const errmod_t *em, int n, int m, uint16_t *bases, float *q)
 	for (j = n - 1; j >= 0; --j) { // calculate esum and fsum
 		uint16_t b = bases[j];
 		int q = b>>5 < 4? 4 : b>>5;
+        int idx = 0;
 		if (q > 63) q = 63;
 		k = b&0x1f;
 		aux.fsum[k&0xf] += em->coef->fk[w[k]];
-		aux.bsum[k&0xf] += em->coef->fk[w[k]] * em->coef->beta[q<<16|n<<8|aux.c[k&0xf]];
+        idx = (q<<16)|(n<<8)|(aux.c[k&0xf]);
+		aux.bsum[k&0xf] += ((em->coef->fk[(w[k])]) * (em->coef->beta[idx]));
 		++aux.c[k&0xf];
 		++w[k];
 	}

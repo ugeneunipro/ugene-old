@@ -306,8 +306,8 @@ void CallVariantsWorkerFactory::init() {
         CallVariantsWorker::tr("Number of permutations for association test (effective only with -1). (bcf view)(-U)"));
 
     Descriptor min_perm_p(MIN_PERM_P,
-        CallVariantsWorker::tr("Max P(chi^2)"),
-        CallVariantsWorker::tr("Only perform permutations for P(chi^2)<FLOAT (N permutations) . (bcf view)(-X)"));
+        CallVariantsWorker::tr("Min P(chi^2)"),
+        CallVariantsWorker::tr("Only perform permutations for P(chi^2)<FLOAT (N permutations). (bcf view)(-X)"));
 
     attributes << new Attribute(illumina13Encoding, BaseTypes::BOOL_TYPE(), false, QVariant(false));
     attributes << new Attribute(useOrphan, BaseTypes::BOOL_TYPE(), false, QVariant(false));
@@ -336,7 +336,7 @@ void CallVariantsWorkerFactory::init() {
     attributes << new Attribute(qcall, BaseTypes::BOOL_TYPE(), false, QVariant(false));
     attributes << new Attribute(attrSamples, BaseTypes::STRING_TYPE(), false, QVariant(""));
     attributes << new Attribute(minSmpl, BaseTypes::NUM_TYPE(), false, QVariant(0));
-    attributes << new Attribute(callGt, BaseTypes::BOOL_TYPE(), false, QVariant(false));
+    attributes << new Attribute(callGt, BaseTypes::BOOL_TYPE(), false, QVariant(true));
     attributes << new Attribute(indelFrac, BaseTypes::NUM_TYPE(), false, QVariant(0.15));
     attributes << new Attribute(pref, BaseTypes::NUM_TYPE(), false, QVariant(0.5));
     attributes << new Attribute(ptype, BaseTypes::STRING_TYPE(), false, QVariant(""));
@@ -344,7 +344,7 @@ void CallVariantsWorkerFactory::init() {
     attributes << new Attribute(ccall, BaseTypes::STRING_TYPE(), false, QVariant(""));
     attributes << new Attribute(n1, BaseTypes::NUM_TYPE(), false, QVariant(0));
     attributes << new Attribute(n_perm, BaseTypes::NUM_TYPE(), false, QVariant(0));
-    attributes << new Attribute(min_perm_p, BaseTypes::NUM_TYPE(), false, QVariant(0.1));
+    attributes << new Attribute(min_perm_p, BaseTypes::NUM_TYPE(), false, QVariant(0.01));
  
     //prototype
     ActorPrototype* proto = new IntegralBusActorPrototype(desc, p, attributes);
