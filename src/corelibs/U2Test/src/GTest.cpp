@@ -352,11 +352,11 @@ void GTestState::setPassed() {
 GTestLogHelper::GTestLogHelper()
     : statusWasVerified(false)
 {
-    //LogServer::getInstance()->addListner(this);
+    LogServer::getInstance()->addListner(this);
 }
 
 GTestLogHelper::~GTestLogHelper(){
-    //LogServer::getInstance()->removeListner(this);
+    LogServer::getInstance()->removeListner(this);
 }
 
 void GTestLogHelper::initMessages(const QStringList& expectedList, const QStringList& unexpectedList)
