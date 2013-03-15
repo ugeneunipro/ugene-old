@@ -24,6 +24,7 @@
 
 #include <QtCore/QObject>
 #include <U2Algorithm/CreatePhyTreeSettings.h>
+#include <U2Core/PhyTree.h>
 
 namespace U2 {
 
@@ -33,7 +34,6 @@ class PhyTreeGeneratorLauncherTask;
 class Task;
 class GObjectViewWindow;
 class MSAEditorTreeViewer;
-
 
 class MSAEditorTreeManager : public QObject {
     Q_OBJECT
@@ -54,6 +54,7 @@ private slots:
     void sl_onWindowClosed(GObjectViewWindow* viewWindow);
     void sl_treeRebuildingFinished();
     void sl_refreshTree(MSAEditorTreeViewer& treeViewer);
+    void sl_onPhyTreeDocLoaded(Task*);
 
 private:
     void buildTree(const CreatePhyTreeSettings& buildSettings);
@@ -65,6 +66,7 @@ private:
     PhyTreeGeneratorLauncherTask* treeGeneratorTask; 
     MSAEditorTreeViewer*          refreshingTree;
     bool                          addExistingTree;
+    PhyTree                       phyTree;
 };
 
 }//namespace

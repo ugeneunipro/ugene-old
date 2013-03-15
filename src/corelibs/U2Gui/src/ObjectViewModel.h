@@ -252,6 +252,7 @@ protected:
     virtual bool onCloseEvent();
 signals:
     void si_persistentStateChanged(GObjectViewWindow* thiz);
+    void si_windowClosed(GObjectViewWindow* viewWindow);
 
 private:
     void updateDocumentConnections(Document* o, bool added);

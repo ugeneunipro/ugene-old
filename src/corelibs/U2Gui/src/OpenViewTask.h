@@ -26,6 +26,7 @@
 #include <U2Core/GUrl.h>
 #include <U2Core/AddDocumentTask.h>
 
+
 namespace U2 {
 
 class Document;
@@ -39,6 +40,7 @@ class U2GUI_EXPORT LoadUnloadedDocumentAndOpenViewTask : public Task {
 public:
     LoadUnloadedDocumentAndOpenViewTask(Document* d);
     
+    Document* getDocument();
 protected:
     virtual QList<Task*> onSubTaskFinished(Task* subTask);
 

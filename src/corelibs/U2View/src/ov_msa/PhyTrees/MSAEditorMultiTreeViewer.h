@@ -51,7 +51,7 @@ public:
     const QStringList& getTreeNames() const;
 signals:
     void si_tabsCountChanged(int tabsCount);
-private slots:
+public slots:
     void sl_onTabCloseRequested(QWidget*);
 private:
     MSAEditorTabWidgetArea*         treeTabs;

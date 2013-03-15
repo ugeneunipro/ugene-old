@@ -102,7 +102,7 @@ void MSAEditorSimilarityColumn::sl_referenceSequenceChanged( const MAlignmentRow
 
 void MSAEditorSimilarityColumn::setSettings(const UpdatedWidgetSettings* _settings) {
     const SimilarityStatisticsSettings* set= static_cast<const SimilarityStatisticsSettings*>(_settings);
-    SAFE_POINT(NULL != set, QString("Argument is NULL in MSAEditorSimilarityColumn::setSettings()"),);
+    CHECK(NULL != set,);
     autoUpdate = set->autoUpdate;
     state = DataIsValid; 
     if(curSettings.algoName != set->algoName) {
@@ -118,9 +118,7 @@ void MSAEditorSimilarityColumn::setSettings(const UpdatedWidgetSettings* _settin
         }
         curSettings.usePercents = set->usePercents;
     }
-    if(NULL != set) {
-        newSettings = *set;
-    }
+    newSettings = *set;
     if(autoUpdate && DataIsOutdated == state) {
         state = DataIsBeingUpdated;
         emit si_dataStateChanged(state);

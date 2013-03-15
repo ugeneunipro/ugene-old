@@ -65,8 +65,6 @@ public:
     PhyNode* node1;
     PhyNode* node2;
     double   distance;
-signals:
-    void si_onAdressChanged(PhyBranch* );
 };
 
 class U2CORE_EXPORT PhyNode {

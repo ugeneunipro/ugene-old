@@ -312,6 +312,7 @@ void GObjectViewWindow::setPersistent(bool v)  {
 
 void GObjectViewWindow::closeView() {
     AppContext::getMainWindow()->getMDIManager()->closeMDIWindow(this);
+    emit si_windowClosed(this);
 }
 
 bool GObjectViewWindow::onCloseEvent() {

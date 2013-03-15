@@ -93,6 +93,10 @@ static Task* createOpenViewTask(const MultiGSelection& ms) {
     return NULL;
 }
 
+Document* LoadUnloadedDocumentAndOpenViewTask::getDocument() {
+    return loadUnloadedTask->getDocument();
+}
+
 QList<Task*> LoadUnloadedDocumentAndOpenViewTask::onSubTaskFinished(Task* subTask) {
     QList<Task*> res;
     if (subTask != loadUnloadedTask || hasError() || isCanceled()) {

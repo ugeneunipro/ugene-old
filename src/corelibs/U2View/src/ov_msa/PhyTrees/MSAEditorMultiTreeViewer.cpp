@@ -65,6 +65,7 @@ void MSAEditorMultiTreeViewer::sl_onTabCloseRequested(QWidget* page) {
     if(NULL != viewWindow) {
         int i =  tabsNames.indexOf(viewWindow->getViewName());
         tabsNames.removeAt(i);
+        si_tabsCountChanged(tabsNames.count());
     }
 }
 

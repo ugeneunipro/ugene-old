@@ -33,6 +33,8 @@
 #include <U2Core/GUrlUtils.h>
 #include <U2Core/SaveDocumentTask.h>
 #include <U2Core/PhyTreeObject.h>
+#include <U2Core/LoadDocumentTask.h>
+#include <U2Core/TaskSignalMapper.h>
 
 #include <U2View/CreatePhyTreeDialogController.h>
 #include <U2View/TreeViewer.h>
@@ -48,6 +50,7 @@
 #include <U2Algorithm/PhyTreeGeneratorRegistry.h>
 
 #include <QtGui/QMessageBox>
+#include <U2Gui/OpenViewTask.h>
 
 namespace U2 {
 MSAEditorTreeManager::MSAEditorTreeManager(MSAEditor* _editor )
@@ -85,7 +88,7 @@ void MSAEditorTreeManager::buildTreeWithDialog() {
     PhyTreeGeneratorRegistry* registry = AppContext::getPhyTreeGeneratorRegistry();
     QStringList list = registry->getNameList();
     addExistingTree = false;
-    if (list.size() == 0){
+    if (list.size() == 0) {
         QMessageBox::information(editor->getUI(), tr("Calculate phy tree"),
             tr("No algorithms for building phylogenetic tree are available.") );
         return;
@@ -141,7 +144,7 @@ void MSAEditorTreeManager::sl_openTree() {
     SAFE_POINT(!msaURL.isEmpty(), QString("Tree URL in MSAEditorTreeManager::sl_openTree() is empty"),);
 
     Project* p = AppContext::getProject();
-    Document *d;
+    Document *d = NULL;
     PhyTreeObject *newObj;
     TaskScheduler* scheduler = AppContext::getTaskScheduler();
     QString treeFileName = settings.fileUrl.getURLString();
@@ -151,17 +154,56 @@ void MSAEditorTreeManager::sl_openTree() {
 
     DocumentFormat* df = AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::NEWICK);
     IOAdapterFactory *iof = IOAdapterUtils::get(BaseIOAdapters::LOCAL_FILE);
-    U2OpStatus2Log os;
-    d = df->createNewLoadedDocument(iof, treeFileName, os);
-    CHECK_OP(os, );
 
-    newObj = new PhyTreeObject(treeGeneratorTask->getResult(), "Tree");
-    d->addObject(newObj);
-    p->addDocument(d);
+    const QList<Document *> documents = AppContext::getProject()->getDocuments();
+    bool isNewDocument = true;
+    foreach(Document *doc, documents) {
+        if(treeFileName == doc->getURLString()) {
+            d = doc;
+            isNewDocument = false;
+            break;
+        }
+    }
 
-    GObjectReference treeRef(treeFileName, "", GObjectTypes::PHYLOGENETIC_TREE);
-    treeRef.objName = newObj->getGObjectName();
-    msaObject->addObjectRelation(GObjectRelation(treeRef, GObjectRelationRole::PHYLOGENETIC_TREE));
+    if(NULL == d) {
+        U2OpStatus2Log os;
+        d = df->createNewLoadedDocument(iof, treeFileName, os);
+        CHECK_OP(os, );
+    }
+
+    if(isNewDocument) {
+        newObj = new PhyTreeObject(treeGeneratorTask->getResult(), "Tree");
+        d->addObject(newObj);
+    }
+    else {
+        if(!d->isLoaded()) {
+            phyTree = treeGeneratorTask->getResult();
+            LoadUnloadedDocumentAndOpenViewTask* t = new LoadUnloadedDocumentAndOpenViewTask(d);
+            connect(new TaskSignalMapper(t), SIGNAL(si_taskSucceeded(Task*)), SLOT(sl_onPhyTreeDocLoaded(Task*)));
+            AppContext::getTaskScheduler()->registerTopLevelTask(t);
+            return;
+        }
+        else {
+            const QList<GObject*>& objects = d->getObjects();
+            foreach(GObject* obj, objects) {
+                PhyTreeObject* treeObj = qobject_cast<PhyTreeObject*>(obj);
+                if(treeObj) {
+                    treeObj->setTree(treeGeneratorTask->getResult());
+                    newObj = treeObj;
+                }
+            }
+        }
+    }
+
+    if(!p->getDocuments().contains(d)) {
+        p->addDocument(d);
+    }
+
+    if(isNewDocument) {
+        GObjectReference treeRef(treeFileName, "", GObjectTypes::PHYLOGENETIC_TREE);
+        treeRef.objName = newObj->getGObjectName();
+        msaObject->addObjectRelation(GObjectRelation(treeRef, GObjectRelationRole::PHYLOGENETIC_TREE));
+    }
 
     Task* saveTask = new SaveDocumentTask(d);
     scheduler->registerTopLevelTask(saveTask);
@@ -174,6 +216,17 @@ void MSAEditorTreeManager::sl_openTree() {
         task = new OpenTreeViewerTask(newObj, this);
     }
     scheduler->registerTopLevelTask(task);
+}
+
+void MSAEditorTreeManager::sl_onPhyTreeDocLoaded(Task* task) {
+    LoadUnloadedDocumentAndOpenViewTask* loadTask = qobject_cast<LoadUnloadedDocumentAndOpenViewTask*>(task);
+    const QList<GObject*>& objects = loadTask->getDocument()->getObjects();
+    foreach(GObject* obj, objects) {
+        PhyTreeObject* treeObj = qobject_cast<PhyTreeObject*>(obj);
+        if(treeObj) {
+            treeObj->setTree(phyTree);
+        }
+    }
 }
 
 void MSAEditorTreeManager::sl_openTreeTaskFinished(Task* t) {
@@ -205,9 +258,9 @@ void MSAEditorTreeManager::sl_openTreeTaskFinished(Task* t) {
             connect(treeUI, SIGNAL(si_groupColorsChanged(const GroupColorSchema&)), msaUI->getEditorNameList(), SLOT(sl_onGroupColorsChanged(const GroupColorSchema&)));
             connect(editor, SIGNAL(si_sizeChanged(int)), treeUI, SLOT(sl_onHeightChanged(int)));
 
-            connect(treeUI,   SIGNAL(si_treeZoomedIn()),                      editor,       SLOT(sl_zoomIn()));
-            connect(editor,         SIGNAL(si_refrenceSeqChanged(const QString &)), treeUI, SLOT(sl_onReferenceSeqChanged(const QString &)));
-            connect(treeUI,   SIGNAL(si_treeZoomedOut()),                     editor,       SLOT(sl_zoomOut()));
+            connect(treeUI,   SIGNAL(si_treeZoomedIn()),                      editor,  SLOT(sl_zoomIn()));
+            connect(editor,   SIGNAL(si_refrenceSeqChanged(const QString &)), treeUI,  SLOT(sl_onReferenceSeqChanged(const QString &)));
+            connect(treeUI,   SIGNAL(si_treeZoomedOut()),                     editor,  SLOT(sl_treeZoomOut()));
             
             connect(treeView, SIGNAL(si_refreshTree(MSAEditorTreeViewer&)), SLOT(sl_refreshTree(MSAEditorTreeViewer&)));
         }
@@ -235,9 +288,8 @@ void MSAEditorTreeManager::refreshTree() {
 void MSAEditorTreeManager::changeTreeSettings() {
 }
 
-
 void MSAEditorTreeManager::sl_onWindowClosed(GObjectViewWindow* viewWindow) {
-    delete viewWindow;
+    editor->getUI()->getMultiTreeViewer()->sl_onTabCloseRequested(viewWindow);
 }
 
 }//namespace
