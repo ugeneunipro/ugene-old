@@ -73,12 +73,13 @@ void GTSpinBox::setValue(U2OpStatus& os, QSpinBox *spinBox, int v, GTGlobals::Us
         case GTGlobals::UseKeyBoard:
             QString s = QString::number(v);
             GTWidget::setFocus(os, spinBox);
-
             GTGlobals::sleep(100);
-            GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["up"]);
+            GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
             GTGlobals::sleep(100);
-            GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["down"]);
+            GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+            GTGlobals::sleep(100);
             GTKeyboardDriver::keySequence(os,s);
+            GTGlobals::sleep(100);
         }
     }
 

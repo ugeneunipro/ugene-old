@@ -70,10 +70,10 @@ void BuildTreeDialogFiller::run() {
         BootstrapGroupBox->setChecked(true);
 
         QSpinBox* repsSpinBox = dialog->findChild<QSpinBox*>("repsSpinBox");
-        GTSpinBox::setValue(os,repsSpinBox,replicates);
+        GTSpinBox::setValue(os,repsSpinBox,replicates, GTGlobals::UseKeyBoard);
 
         QSpinBox* seedSpinBox = dialog->findChild<QSpinBox*>("seedSpinBox");
-        GTSpinBox::setValue(os,seedSpinBox,seed);
+        GTSpinBox::setValue(os,seedSpinBox,seed, GTGlobals::UseKeyBoard);
 
         QComboBox* ConsModeComboBox = dialog->findChild<QComboBox*>("ConsModeComboBox");
         GTComboBox::setCurrentIndex(os,ConsModeComboBox,type);
