@@ -21,8 +21,8 @@ ModDbiSQLiteSpecificUnitTests
 + updateGapModel_severalSteps
 + updateGapModel_severalUndoThenAction
 + updateRowContent_noModTrack
-- updateRowContent_severalSteps
-- updateRowContent_severalUndoThenAction
++ updateRowContent_severalSteps
++ updateRowContent_severalUndoThenAction
 + setNewRowsOrder_noModTrack
 + setNewRowsOrder_severalSteps
 + setNewRowsOrder_severalUndoThenAction

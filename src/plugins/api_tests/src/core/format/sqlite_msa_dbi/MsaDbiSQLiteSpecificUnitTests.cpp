@@ -29,6 +29,7 @@
 #include <U2Formats/SQLiteDbi.h>
 #include <U2Formats/SQLiteObjectDbi.h>
 #include <U2Formats/SQLiteModDbi.h>
+#include <U2Formats/SQLitePackUtils.h>
 
 
 namespace U2 {
@@ -830,10 +831,6 @@ IMPLEMENT_TEST(MsaDbiSQLiteSpecificUnitTests, updateRowContent_undo) {
     CHECK_NO_ERROR(os);
     qint64 rowId = rows[1];
 
-    // Get current version
-    int oldVersion = sqliteDbi->getObjectDbi()->getObjectVersion(msaId, os);
-    CHECK_NO_ERROR(os);
-
     // Update row content
     U2MsaRow oldRow = sqliteDbi->getMsaDbi()->getRow(msaId, rowId, os);
     CHECK_NO_ERROR(os);
@@ -841,6 +838,16 @@ IMPLEMENT_TEST(MsaDbiSQLiteSpecificUnitTests, updateRowContent_undo) {
     CHECK_NO_ERROR(os);
     QByteArray newSeq = "GGGGGTTTTTCCCCCAAAAA";
     QList<U2MsaGap> newGaps; newGaps << U2MsaGap(0, 1) << U2MsaGap(2, 1); // -G-GGGGTTTTTCCCCCAAAAA
+
+    // Get current version
+    int oldMsaVersion = sqliteDbi->getObjectDbi()->getObjectVersion(msaId, os);
+    CHECK_NO_ERROR(os);
+    int oldSeqVersion = sqliteDbi->getObjectDbi()->getObjectVersion(oldRow.sequenceId, os);
+    CHECK_NO_ERROR(os);
+    qint64 msaModStepsNum = MsaSQLiteSpecificTestData::getModStepsNum(msaId, os);
+    CHECK_NO_ERROR(os);
+
+    // Call test function
     sqliteDbi->getMsaDbi()->updateRowContent(msaId, rowId, newSeq, newGaps, os);
     CHECK_NO_ERROR(os);
 
@@ -861,16 +868,32 @@ IMPLEMENT_TEST(MsaDbiSQLiteSpecificUnitTests, updateRowContent_undo) {
     // Verify version
     int newVersion = sqliteDbi->getObjectDbi()->getObjectVersion(msaId, os);
     CHECK_NO_ERROR(os);
-    CHECK_EQUAL(oldVersion + 1, newVersion, "version");
+    CHECK_EQUAL(oldMsaVersion + 1, newVersion, "version");
 
-    // Verify the single modification step
-    QString expectedModDetails = "0\t" + QByteArray::number(newRow.rowId) + "\t\"5,2\"\t\"0,1;2,1\"";
-    U2SingleModStep modStep = sqliteDbi->getModDbi()->getModStep(msaId, oldVersion, os);
+    // Verify single modification steps
+    QString expectedSeqModDetails = SQLite::PackUtils::packSequenceDataDetails(U2_REGION_MAX, oldSeq, newSeq, QVariantMap());
+    QString expectedRowModDetails = SQLite::PackUtils::packRowInfoDetails(oldRow, newRow);
+    QString expectedGapModDetails = SQLite::PackUtils::packGapDetails(oldRow.rowId, oldRow.gaps, newRow.gaps);
+
+    QList<U2SingleModStep> msaSingleModSteps = sqliteDbi->getSQLiteModDbi()->getModSteps(msaId, oldMsaVersion, os);
     CHECK_NO_ERROR(os);
-    CHECK_EQUAL(QString(msaId), QString(modStep.objectId), "object id");
-    CHECK_EQUAL(oldVersion, modStep.version, "version in mod step");
-    CHECK_EQUAL(U2ModType::msaUpdatedGapModel, modStep.modType, "mod step type");
-    CHECK_EQUAL(expectedModDetails, QString(modStep.details), "mod step details");
+    CHECK_EQUAL(msaModStepsNum + 3, msaSingleModSteps.count(), "msa single mod steps count");
+
+    CHECK_EQUAL(QString(oldRow.sequenceId), QString(msaSingleModSteps[0].objectId), "seq object id");
+    CHECK_EQUAL(oldSeqVersion, msaSingleModSteps[0].version, "seq version in mod step");
+    CHECK_EQUAL(U2ModType::sequenceUpdatedData, msaSingleModSteps[0].modType, "seq mod step type");
+    CHECK_EQUAL(expectedSeqModDetails, QString(msaSingleModSteps[0].details), "seq mod step details");
+
+    CHECK_EQUAL(QString(msaId), QString(msaSingleModSteps[1].objectId), "msa object id");
+    CHECK_EQUAL(oldMsaVersion, msaSingleModSteps[1].version, "msa version in mod step");
+    CHECK_EQUAL(U2ModType::msaUpdatedRowInfo, msaSingleModSteps[1].modType, "msa row mod step type");
+    CHECK_EQUAL(expectedRowModDetails, QString(msaSingleModSteps[1].details), "msa row mod step details");
+
+    CHECK_EQUAL(QString(msaId), QString(msaSingleModSteps[2].objectId), "msa object id");
+    CHECK_EQUAL(oldMsaVersion, msaSingleModSteps[2].version, "msa version in mod step");
+    CHECK_EQUAL(U2ModType::msaUpdatedGapModel, msaSingleModSteps[2].modType, "msa gaps mod step type");
+    CHECK_EQUAL(expectedGapModDetails, QString(msaSingleModSteps[2].details), "msa gaps mod step details");
+
 
     // Undo
     sqliteDbi->getSQLiteObjectDbi()->undo(msaId, os);
@@ -893,7 +916,7 @@ IMPLEMENT_TEST(MsaDbiSQLiteSpecificUnitTests, updateRowContent_undo) {
     // Verify version
     int undoVersion = sqliteDbi->getObjectDbi()->getObjectVersion(msaId, os);
     CHECK_NO_ERROR(os);
-    CHECK_EQUAL(oldVersion, undoVersion, "version after undo");
+    CHECK_EQUAL(oldMsaVersion, undoVersion, "version after undo");
 }
 
 IMPLEMENT_TEST(MsaDbiSQLiteSpecificUnitTests, updateRowContent_redo) {
@@ -906,17 +929,30 @@ IMPLEMENT_TEST(MsaDbiSQLiteSpecificUnitTests, updateRowContent_redo) {
     qint64 rowId = rows.first();
 
     // Get current version
-    int oldVersion = sqliteDbi->getObjectDbi()->getObjectVersion(msaId, os);
+    int oldMsaVersion = sqliteDbi->getObjectDbi()->getObjectVersion(msaId, os);
     CHECK_NO_ERROR(os);
 
     // Update row content
     U2MsaRow oldRow = sqliteDbi->getMsaDbi()->getRow(msaId, rowId, os);
     CHECK_NO_ERROR(os);
     QByteArray oldSeq = sqliteDbi->getSequenceDbi()->getSequenceData(oldRow.sequenceId, U2_REGION_MAX, os);
+    int oldSeqVersion = sqliteDbi->getObjectDbi()->getObjectVersion(oldRow.sequenceId, os);
+    CHECK_NO_ERROR(os);
     CHECK_NO_ERROR(os);
     QByteArray newSeq = "";
-    QList<U2MsaGap> newGaps;
-    sqliteDbi->getMsaDbi()->updateRowContent(msaId, rowId, newSeq, newGaps, os);
+    U2MsaRow newRow;
+    newRow.gstart = 0;
+    newRow.gend = 0;
+    newRow.length = 0;
+    newRow.rowId = rowId;
+    newRow.sequenceId = oldRow.sequenceId;
+    qint64 msaModStepsNum = MsaSQLiteSpecificTestData::getModStepsNum(msaId, os);
+    CHECK_NO_ERROR(os);
+    qint64 seqModStepsNum = MsaSQLiteSpecificTestData::getModStepsNum(oldRow.sequenceId, os);
+    CHECK_NO_ERROR(os);
+
+    // Call test function
+    sqliteDbi->getMsaDbi()->updateRowContent(msaId, rowId, newSeq, newRow.gaps, os);
     CHECK_NO_ERROR(os);
 
     // Undo
@@ -930,7 +966,7 @@ IMPLEMENT_TEST(MsaDbiSQLiteSpecificUnitTests, updateRowContent_redo) {
     // Verify gaps
     U2MsaRow redoRow = sqliteDbi->getMsaDbi()->getRow(msaId, rowId, os);
     CHECK_NO_ERROR(os);
-    CHECK_TRUE(newGaps == redoRow.gaps, "gaps after undo");
+    CHECK_TRUE(newRow.gaps == redoRow.gaps, "gaps after undo");
 
     // Verify seq
     QByteArray redoSeq = sqliteDbi->getSequenceDbi()->getSequenceData(redoRow.sequenceId, U2_REGION_MAX, os);
@@ -944,16 +980,31 @@ IMPLEMENT_TEST(MsaDbiSQLiteSpecificUnitTests, updateRowContent_redo) {
     // Verify version
     int redoVersion = sqliteDbi->getObjectDbi()->getObjectVersion(msaId, os);
     CHECK_NO_ERROR(os);
-    CHECK_EQUAL(oldVersion + 1, redoVersion, "version after undo");
+    CHECK_EQUAL(oldMsaVersion + 1, redoVersion, "version after undo");
 
-    // Verify the modification step
-    QString expectedModDetails = "0\t" + QByteArray::number(redoRow.rowId) + "\t\"1,1;7,1\"\t\"\"";
-    U2SingleModStep modStep = sqliteDbi->getModDbi()->getModStep(msaId, oldVersion, os);
+    // Verify single modification steps
+    QString expectedSeqModDetails = SQLite::PackUtils::packSequenceDataDetails(U2_REGION_MAX, oldSeq, newSeq, QVariantMap());
+    QString expectedRowModDetails = SQLite::PackUtils::packRowInfoDetails(oldRow, newRow);
+    QString expectedGapModDetails = SQLite::PackUtils::packGapDetails(oldRow.rowId, oldRow.gaps, newRow.gaps);
+
+    QList<U2SingleModStep> msaSingleModSteps = sqliteDbi->getSQLiteModDbi()->getModSteps(msaId, oldMsaVersion, os);
     CHECK_NO_ERROR(os);
-    CHECK_EQUAL(QString(msaId), QString(modStep.objectId), "object id");
-    CHECK_EQUAL(oldVersion, modStep.version, "version in mod step");
-    CHECK_EQUAL(U2ModType::msaUpdatedGapModel, modStep.modType, "mod step type");
-    CHECK_EQUAL(expectedModDetails, QString(modStep.details), "mod step details");
+    CHECK_EQUAL(msaModStepsNum + 3, msaSingleModSteps.count(), "msa single mod steps count");
+
+    CHECK_EQUAL(QString(oldRow.sequenceId), QString(msaSingleModSteps[0].objectId), "seq object id");
+    CHECK_EQUAL(oldSeqVersion, msaSingleModSteps[0].version, "seq version in mod step");
+    CHECK_EQUAL(U2ModType::sequenceUpdatedData, msaSingleModSteps[0].modType, "seq mod step type");
+    CHECK_EQUAL(expectedSeqModDetails, QString(msaSingleModSteps[0].details), "seq mod step details");
+
+    CHECK_EQUAL(QString(msaId), QString(msaSingleModSteps[1].objectId), "msa object id");
+    CHECK_EQUAL(oldMsaVersion, msaSingleModSteps[1].version, "msa version in mod step");
+    CHECK_EQUAL(U2ModType::msaUpdatedRowInfo, msaSingleModSteps[1].modType, "msa row mod step type");
+    CHECK_EQUAL(expectedRowModDetails, QString(msaSingleModSteps[1].details), "msa row mod step details");
+
+    CHECK_EQUAL(QString(msaId), QString(msaSingleModSteps[2].objectId), "msa object id");
+    CHECK_EQUAL(oldMsaVersion, msaSingleModSteps[2].version, "msa version in mod step");
+    CHECK_EQUAL(U2ModType::msaUpdatedGapModel, msaSingleModSteps[2].modType, "msa gaps mod step type");
+    CHECK_EQUAL(expectedGapModDetails, QString(msaSingleModSteps[2].details), "msa gaps mod step details");
 }
 
 IMPLEMENT_TEST(MsaDbiSQLiteSpecificUnitTests, updateRowContent_severalSteps) {
