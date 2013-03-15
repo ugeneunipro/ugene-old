@@ -43,7 +43,9 @@ ExternalToolValidateTask::ExternalToolValidateTask(const QString& _toolName) :
         ExternalToolValidation origianlValidation = tool->getToolValidation();
         origianlValidation.executableFile = program;
         if (!origianlValidation.toolRunnerProgram.isEmpty()){
-            origianlValidation.executableFile = origianlValidation.toolRunnerProgram+" "+origianlValidation.executableFile;
+            //origianlValidation.executableFile = origianlValidation.toolRunnerProgram+" "+origianlValidation.executableFile;
+            origianlValidation.arguments.prepend(origianlValidation.executableFile);
+            origianlValidation.executableFile = origianlValidation.toolRunnerProgram;
         }
         validations.append(origianlValidation);
         coreLog.trace("Creating validation task for: " + toolName);
@@ -67,7 +69,9 @@ ExternalToolValidateTask::ExternalToolValidateTask(const QString& _toolName, con
         ExternalToolValidation origianlValidation = tool->getToolValidation();
         origianlValidation.executableFile = path;
         if (!origianlValidation.toolRunnerProgram.isEmpty()){
-            origianlValidation.executableFile = origianlValidation.toolRunnerProgram+" "+origianlValidation.executableFile;
+            //origianlValidation.executableFile = origianlValidation.toolRunnerProgram+" "+origianlValidation.executableFile;
+            origianlValidation.arguments.prepend(origianlValidation.executableFile);
+            origianlValidation.executableFile = origianlValidation.toolRunnerProgram;
         }
         validations.append(origianlValidation);
         coreLog.trace("Creating validation task for: " + toolName);
@@ -100,7 +104,12 @@ void ExternalToolValidateTask::run(){
         bool started = WorkflowUtils::startExternalProcess(externalToolProcess, validation.executableFile, validation.arguments);
 
         if(!started){
-            stateInfo.setError(tr("Tool does not start.<br>It is possible that the specified executable file <i>%1</i> for %2 tool is invalid. You can change the path to the executable file in the external tool settings in the global preferences.").arg(program).arg(toolName));
+            errorMsg = validation.possibleErrorsDescr.value(ExternalToolValidation::DEFAULT_DESCR_KEY, "");
+            if(!errorMsg.isEmpty()){
+                stateInfo.setError(errorMsg);
+            }else{
+                stateInfo.setError(tr("Tool does not start.<br>It is possible that the specified executable file <i>%1</i> for %2 tool is invalid. You can change the path to the executable file in the external tool settings in the global preferences.").arg(program).arg(toolName));
+            }
             isValid=false;
             return;
         }
@@ -135,24 +144,6 @@ void ExternalToolValidateTask::cancelProcess(){
 bool ExternalToolValidateTask::parseLog(const ExternalToolValidation& validation){
     errorMsg = validation.possibleErrorsDescr.value(ExternalToolValidation::DEFAULT_DESCR_KEY, "");
 
-    QString log=QString(externalToolProcess->readAllStandardOutput());
-    if(!log.isEmpty()){
-        if(log.contains(validation.expectedMsg)){
-            isValid=true;
-            checkVersion(log);
-        }else{
-            isValid=false;
-            foreach(const QString& errStr, validation.possibleErrorsDescr.keys()){
-                if(log.contains(errStr)){
-                    errorMsg = validation.possibleErrorsDescr[errStr];
-                    return false;
-                }
-            }
-        }
-    }
-    if (isValid){
-        return true;
-    }
     QString errLog=QString(externalToolProcess->readAllStandardError());
     if(!errLog.isEmpty()){
         if(errLog.contains(validation.expectedMsg)){
@@ -162,6 +153,21 @@ bool ExternalToolValidateTask::parseLog(const ExternalToolValidation& validation
             isValid=false;
             foreach(const QString& errStr, validation.possibleErrorsDescr.keys()){
                 if(errLog.contains(errStr)){
+                    errorMsg = validation.possibleErrorsDescr[errStr];
+                    return false;
+                }
+            }
+        }
+    }
+    QString log=QString(externalToolProcess->readAllStandardOutput());
+    if(!log.isEmpty()){
+        if(log.contains(validation.expectedMsg)){
+            isValid=true;
+            checkVersion(log);
+        }else{
+            isValid=false;
+            foreach(const QString& errStr, validation.possibleErrorsDescr.keys()){
+                if(log.contains(errStr)){
                     errorMsg = validation.possibleErrorsDescr[errStr];
                     return false;
                 }

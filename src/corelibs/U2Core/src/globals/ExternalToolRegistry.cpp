@@ -116,7 +116,7 @@ ExternalToolValidation DefaultExternalToolValidations::pythonValidation(){
 }
 
 ExternalToolValidation DefaultExternalToolValidations::rValidation(){
-    QString rExecutable = "rscript";
+    QString rExecutable = "Rscript";
     QStringList rArgs;
     rArgs << "--version";
     QString rmsg = "R";
