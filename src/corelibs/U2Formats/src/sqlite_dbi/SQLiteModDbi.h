@@ -53,8 +53,11 @@ public:
     /** Returns a modification step with the specified version for the object */
     virtual U2SingleModStep getModStep(const U2DataId &objectId, qint64 trackVersion, U2OpStatus &os);
 
-    /** Returns all single steps of the master object ID of the specified version */
-    QList<U2SingleModStep> getModSteps(const U2DataId &masterObjId, qint64 version, U2OpStatus &os);
+    /** Returns single steps of the master object ID of the specified version, divided bu multi steps */
+    QList< QList<U2SingleModStep> > getModSteps(const U2DataId &masterObjId, qint64 version, U2OpStatus &os);
+
+    /** Gets version of the user step equal or less than the specified version (the maximum of them) */
+    qint64 getNearestUserModStepVersion(const U2DataId &masterObjId, qint64 version, U2OpStatus &os);
 
     /**
      * Adds a modification step into the database.

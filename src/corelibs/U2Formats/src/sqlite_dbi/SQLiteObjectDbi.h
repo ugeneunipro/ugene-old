@@ -206,11 +206,11 @@ private:
     /** Updates versions */
     void onFolderUpdated(const QString& folder);
 
-    /** Decrements an object version by 1 */
-    void decrementVersion(const U2DataId& id, U2OpStatus& os);
-
     /** Increments an object version by 1 */
     void incrementVersion(const U2DataId& id, U2OpStatus& os);
+
+    /** Sets an object version to the specified value */
+    void setVersion(const U2DataId& id, qint64 version, U2OpStatus& os);
 
     ///////////////////////////////////////////////////////////
     // Undo methods does not modify object version

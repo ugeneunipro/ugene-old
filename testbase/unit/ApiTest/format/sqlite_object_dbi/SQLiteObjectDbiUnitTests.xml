@@ -10,6 +10,9 @@ SQLiteObjectDbiUnitTests
 + canUndoRedo_lastState
 + canUndoRedo_firstState
 + canUndoRedo_midState
-- canUndoRedo_oneUserStep
++ canUndoRedo_oneUserStep
++ commonUndoRedo_user3Multi
++ commonUndoRedo_actionAfterUndo
++ commonUndoRedo_user3Single6
 
 </unittest>

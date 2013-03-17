@@ -28,6 +28,7 @@
 #include <U2Core/MSAUtils.h>
 #include <U2Core/U2AlphabetUtils.h>
 #include <U2Core/U2MsaDbi.h>
+#include <U2Core/U2Mod.h>
 #include <U2Core/U2ObjectDbi.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
@@ -285,6 +286,9 @@ void MAlignmentObject::updateRow(int rowIdx, const QString& name, const QByteArr
     SAFE_POINT(rowIdx >= 0 && rowIdx < cachedMAlignment.getNumRows(), "Invalid row index!", );
     const MAlignmentRow& row = cachedMAlignment.getRow(rowIdx);
     qint64 rowId = row.getRowDBInfo().rowId;
+
+    U2UseCommonUserModStep modStep(entityRef, os);
+    SAFE_POINT_OP(os, );
 
     MsaDbiUtils::updateRowContent(entityRef, rowId, seqBytes, gapModel, os);
     CHECK_OP(os, );

@@ -130,12 +130,26 @@ U2SingleModStep SQLiteModDbi::getModStep(const U2DataId &objectId, qint64 trackV
     return res;
 }
 
-QList<U2SingleModStep> SQLiteModDbi::getModSteps(const U2DataId &masterObjId, qint64 version, U2OpStatus &os) {
-    QList<U2SingleModStep> steps;
+qint64 SQLiteModDbi::getNearestUserModStepVersion(const U2DataId &masterObjId, qint64 version, U2OpStatus &os) {
+    SQLiteQuery qVersion("SELECT MAX(version) FROM UserModStep WHERE object = ?1 AND version <= ?2", db, os);    
+    qVersion.bindDataId(1, masterObjId);
+    qVersion.bindInt64(2, version);
+
+    qint64 userStepVersion = version;
+    if (qVersion.step()) {
+        userStepVersion = qVersion.getInt64(0);
+    }
+    SAFE_POINT_OP(os, userStepVersion);
+    return userStepVersion;
+}
+
+QList< QList<U2SingleModStep> > SQLiteModDbi::getModSteps(const U2DataId &masterObjId, qint64 version, U2OpStatus &os) {
+    QList< QList<U2SingleModStep> > steps;
     SQLiteTransaction t(db, os);
+
     qint64 userStepId = -1;
     SQLiteQuery qGetUserStepId("SELECT id FROM UserModStep WHERE object = ?1 AND version = ?2", db, os);
-    SAFE_POINT_OP(os, QList<U2SingleModStep>());
+    SAFE_POINT_OP(os, QList< QList<U2SingleModStep> >());
 
     qGetUserStepId.bindDataId(1, masterObjId);
     qGetUserStepId.bindInt64(2, version);
@@ -159,6 +173,8 @@ QList<U2SingleModStep> SQLiteModDbi::getModSteps(const U2DataId &masterObjId, qi
         qSingleStep.reset();
         qSingleStep.bindInt64(1, multiStepId);
 
+        QList<U2SingleModStep> currentMultiStepSingleSteps;
+
         while (qSingleStep.step()) {
             U2SingleModStep step;
             step.id = qSingleStep.getInt64(0);
@@ -167,9 +183,10 @@ QList<U2SingleModStep> SQLiteModDbi::getModSteps(const U2DataId &masterObjId, qi
             step.modType = qSingleStep.getInt64(5);
             step.details = qSingleStep.getBlob(6);
 
-            SAFE_POINT_OP(os, QList<U2SingleModStep>());
-            steps.append(step);
+            SAFE_POINT_OP(os, QList< QList<U2SingleModStep> >());
+            currentMultiStepSingleSteps.append(step);
         }
+        steps.append(currentMultiStepSingleSteps);
     }
     return steps;
 }
