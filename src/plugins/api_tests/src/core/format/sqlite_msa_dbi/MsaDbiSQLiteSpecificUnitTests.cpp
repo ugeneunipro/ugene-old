@@ -875,7 +875,13 @@ IMPLEMENT_TEST(MsaDbiSQLiteSpecificUnitTests, updateRowContent_undo) {
     QString expectedRowModDetails = SQLite::PackUtils::packRowInfoDetails(oldRow, newRow);
     QString expectedGapModDetails = SQLite::PackUtils::packGapDetails(oldRow.rowId, oldRow.gaps, newRow.gaps);
 
-    QList<U2SingleModStep> msaSingleModSteps = sqliteDbi->getSQLiteModDbi()->getModSteps(msaId, oldMsaVersion, os);
+    QList< QList<U2SingleModStep> > modSteps = sqliteDbi->getSQLiteModDbi()->getModSteps(msaId, oldMsaVersion, os);
+    QList<U2SingleModStep> msaSingleModSteps;
+    foreach (QList<U2SingleModStep> multiStep, modSteps) {
+        foreach (U2SingleModStep singleStep, multiStep) {
+            msaSingleModSteps.append(singleStep);
+        }
+    }
     CHECK_NO_ERROR(os);
     CHECK_EQUAL(msaModStepsNum + 3, msaSingleModSteps.count(), "msa single mod steps count");
 
@@ -987,7 +993,14 @@ IMPLEMENT_TEST(MsaDbiSQLiteSpecificUnitTests, updateRowContent_redo) {
     QString expectedRowModDetails = SQLite::PackUtils::packRowInfoDetails(oldRow, newRow);
     QString expectedGapModDetails = SQLite::PackUtils::packGapDetails(oldRow.rowId, oldRow.gaps, newRow.gaps);
 
-    QList<U2SingleModStep> msaSingleModSteps = sqliteDbi->getSQLiteModDbi()->getModSteps(msaId, oldMsaVersion, os);
+    QList< QList<U2SingleModStep> > modSteps = sqliteDbi->getSQLiteModDbi()->getModSteps(msaId, oldMsaVersion, os);
+    QList<U2SingleModStep> msaSingleModSteps;
+    foreach (QList<U2SingleModStep> multiStep, modSteps) {
+        foreach (U2SingleModStep singleStep, multiStep) {
+            msaSingleModSteps.append(singleStep);
+        }
+    }
+
     CHECK_NO_ERROR(os);
     CHECK_EQUAL(msaModStepsNum + 3, msaSingleModSteps.count(), "msa single mod steps count");
 
