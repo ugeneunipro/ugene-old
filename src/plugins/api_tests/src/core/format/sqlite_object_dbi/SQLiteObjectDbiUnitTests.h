@@ -92,17 +92,27 @@ DECLARE_TEST(SQLiteObjectDbiUnitTests, canUndoRedo_oneUserStep);
 
 /**
  * Common tests for undo/redo and modification steps.
- *   ^ user2MultiVersions - verify the master object version, version in the userModStep and
- *                          canUndo/canRedo when there is one user mod step with 3 multi steps.
- *   ^ actionAfterUndo    - verify that modification steps are removed properly when an action is
- *                          done after undo. Verify undo/redo after this.
- *   ^ user3Single6       - create a user step manually (with 2 multi/single steps), create a user step
- *                          automatically (with 1 multi/step step), create 3rd user step manually
- *                          with 2 multi steps and 3 single steps (i.e. add row + update row content).
- *                          Do undo/redo. Verify versions and canUndo/canRedo.
+ *   ^ user2MultiVersions    - verify the master object version, version in the userModStep and
+ *                             canUndo/canRedo when there is one user mod step with 3 multi steps.
+ *   ^ actionAfterUndo       - verify that modification steps are removed properly when an action is
+ *                             done after undo. Verify undo/redo after this.
+ *   ^ actionUndoActionUndo1 - do an action, undo it, do another action, undo it. User steps are created manually.
+ *   ^ actionUndoActionUndo2 - do an action, undo it, do another action, undo it. User steps are created automatically.
+ *   ^ actionUndoActionUndo3 - do an action (userModStep is created automatically), undo, do an action (userModStep
+ *                             is created manually), undo
+ *   ^ actionUndoActionUndo4 - do an action (userModStep is created manually), undo, do an action (userModStep
+ *                             is created automatically), undo
+ *   ^ user3Single6          - create a user step manually (with 2 multi/single steps), create a user step
+ *                             automatically (with 1 multi/step step), create 3rd user step manually
+ *                             with 2 multi steps and 3 single steps (i.e. add row + update row content).
+ *                             Do undo/redo. Verify versions and canUndo/canRedo.
  */
 DECLARE_TEST(SQLiteObjectDbiUnitTests, commonUndoRedo_user3Multi);
 DECLARE_TEST(SQLiteObjectDbiUnitTests, commonUndoRedo_actionAfterUndo);
+DECLARE_TEST(SQLiteObjectDbiUnitTests, commonUndoRedo_actionUndoActionUndo1);
+DECLARE_TEST(SQLiteObjectDbiUnitTests, commonUndoRedo_actionUndoActionUndo2);
+DECLARE_TEST(SQLiteObjectDbiUnitTests, commonUndoRedo_actionUndoActionUndo3);
+DECLARE_TEST(SQLiteObjectDbiUnitTests, commonUndoRedo_actionUndoActionUndo4);
 DECLARE_TEST(SQLiteObjectDbiUnitTests, commonUndoRedo_user3Single6);
 
 
@@ -120,6 +130,10 @@ DECLARE_METATYPE(SQLiteObjectDbiUnitTests, canUndoRedo_oneUserStep);
 
 DECLARE_METATYPE(SQLiteObjectDbiUnitTests, commonUndoRedo_user3Multi);
 DECLARE_METATYPE(SQLiteObjectDbiUnitTests, commonUndoRedo_actionAfterUndo);
+DECLARE_METATYPE(SQLiteObjectDbiUnitTests, commonUndoRedo_actionUndoActionUndo1);
+DECLARE_METATYPE(SQLiteObjectDbiUnitTests, commonUndoRedo_actionUndoActionUndo2);
+DECLARE_METATYPE(SQLiteObjectDbiUnitTests, commonUndoRedo_actionUndoActionUndo3);
+DECLARE_METATYPE(SQLiteObjectDbiUnitTests, commonUndoRedo_actionUndoActionUndo4);
 DECLARE_METATYPE(SQLiteObjectDbiUnitTests, commonUndoRedo_user3Single6);
 
 #endif

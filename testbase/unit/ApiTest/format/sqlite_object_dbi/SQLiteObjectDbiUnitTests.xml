@@ -13,6 +13,10 @@ SQLiteObjectDbiUnitTests
 + canUndoRedo_oneUserStep
 + commonUndoRedo_user3Multi
 + commonUndoRedo_actionAfterUndo
++ commonUndoRedo_actionUndoActionUndo1
++ commonUndoRedo_actionUndoActionUndo2
++ commonUndoRedo_actionUndoActionUndo3
++ commonUndoRedo_actionUndoActionUndo4
 + commonUndoRedo_user3Single6
 
 </unittest>

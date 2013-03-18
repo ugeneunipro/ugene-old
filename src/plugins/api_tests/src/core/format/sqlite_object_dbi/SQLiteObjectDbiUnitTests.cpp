@@ -691,6 +691,273 @@ IMPLEMENT_TEST(SQLiteObjectDbiUnitTests, commonUndoRedo_actionAfterUndo) {
     CHECK_FALSE(redoState, "redo state after undo, action and undo/redo");
 }
 
+IMPLEMENT_TEST(SQLiteObjectDbiUnitTests, commonUndoRedo_actionUndoActionUndo1) {
+    U2OpStatusImpl os;
+    U2ObjectDbi *objDbi = SQLiteObjectDbiTestData::getSQLiteObjectDbi();
+    SQLiteDbi *sqliteDbi = SQLiteObjectDbiTestData::getSQLiteDbi();
+
+    // Create test msa
+    U2DataId msaId = SQLiteObjectDbiTestData::createTestMsa(true, os);
+    CHECK_NO_ERROR(os);
+
+    // Get msa version
+    qint64 msaVersion = objDbi->getObjectVersion(msaId, os);
+    CHECK_NO_ERROR(os);
+
+    // Do an action
+    {
+        U2UseCommonUserModStep userStep(objDbi->getRootDbi(), msaId, os);
+        CHECK_NO_ERROR(os);
+        Q_UNUSED(userStep);
+
+        SQLiteObjectDbiTestData::addTestRow(msaId, os);
+        CHECK_NO_ERROR(os);
+    }
+
+    // Undo
+    objDbi->undo(msaId, os);
+    CHECK_NO_ERROR(os);
+
+    // Do an action
+    {
+        U2UseCommonUserModStep userStep(objDbi->getRootDbi(), msaId, os);
+        CHECK_NO_ERROR(os);
+        Q_UNUSED(userStep);
+
+        SQLiteObjectDbiTestData::addTestRow(msaId, os);
+        CHECK_NO_ERROR(os);
+    }
+
+    // Check there is no obsolete steps
+    SQLiteQuery qUser("SELECT COUNT(*) FROM UserModStep WHERE object = ?1", sqliteDbi->getDbRef(), os); 
+    qUser.bindDataId(1, msaId);
+    if (qUser.step()) {
+        CHECK_EQUAL(1, qUser.getInt64(0), "number of user steps");
+    }
+    else {
+        CHECK_TRUE(false, "Unexpected error!");
+    }
+    CHECK_NO_ERROR(os);
+
+    SQLiteQuery qSingle("SELECT COUNT(*) FROM SingleModStep WHERE object = ?1", sqliteDbi->getDbRef(), os); 
+    qSingle.bindDataId(1, msaId);
+    if (qSingle.step()) {
+        CHECK_EQUAL(1, qSingle.getInt64(0), "number of single steps");
+    }
+    else {
+        CHECK_TRUE(false, "Unexpected error!");
+    }
+    CHECK_NO_ERROR(os);
+
+    // Undo
+    objDbi->undo(msaId, os);
+    CHECK_NO_ERROR(os);
+
+    // Verify msa version
+    qint64 msaVersionAfter = objDbi->getObjectVersion(msaId, os);
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(msaVersion, msaVersionAfter, "msa version after action, undo, action, undo");
+
+    // Verify canUndo/canRedo
+    bool undoState = objDbi->canUndo(msaId, os); CHECK_NO_ERROR(os);
+    bool redoState = objDbi->canRedo(msaId, os); CHECK_NO_ERROR(os);
+    CHECK_FALSE(undoState, "undo state after undo, action and undo/redo");
+    CHECK_TRUE(redoState, "redo state after undo, action and undo/redo");
+}
+
+IMPLEMENT_TEST(SQLiteObjectDbiUnitTests, commonUndoRedo_actionUndoActionUndo2) {
+    U2OpStatusImpl os;
+    U2ObjectDbi *objDbi = SQLiteObjectDbiTestData::getSQLiteObjectDbi();
+    SQLiteDbi *sqliteDbi = SQLiteObjectDbiTestData::getSQLiteDbi();
+
+    // Create test msa
+    U2DataId msaId = SQLiteObjectDbiTestData::createTestMsa(true, os);
+    CHECK_NO_ERROR(os);
+
+    // Get msa version
+    qint64 msaVersion = objDbi->getObjectVersion(msaId, os);
+    CHECK_NO_ERROR(os);
+
+    // Do an action
+    SQLiteObjectDbiTestData::addTestRow(msaId, os);
+
+    // Undo
+    objDbi->undo(msaId, os);
+    CHECK_NO_ERROR(os);
+
+    // Do an action
+    SQLiteObjectDbiTestData::addTestRow(msaId, os);
+
+    // Check there is no obsolete steps
+    SQLiteQuery qUser("SELECT COUNT(*) FROM UserModStep WHERE object = ?1", sqliteDbi->getDbRef(), os); 
+    qUser.bindDataId(1, msaId);
+    if (qUser.step()) {
+        CHECK_EQUAL(1, qUser.getInt64(0), "number of user steps");
+    }
+    else {
+        CHECK_TRUE(false, "Unexpected error!");
+    }
+    CHECK_NO_ERROR(os);
+
+    SQLiteQuery qSingle("SELECT COUNT(*) FROM SingleModStep WHERE object = ?1", sqliteDbi->getDbRef(), os); 
+    qSingle.bindDataId(1, msaId);
+    if (qSingle.step()) {
+        CHECK_EQUAL(1, qSingle.getInt64(0), "number of single steps");
+    }
+    else {
+        CHECK_TRUE(false, "Unexpected error!");
+    }
+    CHECK_NO_ERROR(os);
+
+    // Undo
+    objDbi->undo(msaId, os);
+    CHECK_NO_ERROR(os);
+
+    // Verify msa version
+    qint64 msaVersionAfter = objDbi->getObjectVersion(msaId, os);
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(msaVersion, msaVersionAfter, "msa version after action, undo, action, undo");
+
+    // Verify canUndo/canRedo
+    bool undoState = objDbi->canUndo(msaId, os); CHECK_NO_ERROR(os);
+    bool redoState = objDbi->canRedo(msaId, os); CHECK_NO_ERROR(os);
+    CHECK_FALSE(undoState, "undo state after undo, action and undo/redo");
+    CHECK_TRUE(redoState, "redo state after undo, action and undo/redo");
+}
+
+IMPLEMENT_TEST(SQLiteObjectDbiUnitTests, commonUndoRedo_actionUndoActionUndo3) {
+    U2OpStatusImpl os;
+    U2ObjectDbi *objDbi = SQLiteObjectDbiTestData::getSQLiteObjectDbi();
+    SQLiteDbi *sqliteDbi = SQLiteObjectDbiTestData::getSQLiteDbi();
+
+    // Create test msa
+    U2DataId msaId = SQLiteObjectDbiTestData::createTestMsa(true, os);
+    CHECK_NO_ERROR(os);
+
+    // Get msa version
+    qint64 msaVersion = objDbi->getObjectVersion(msaId, os);
+    CHECK_NO_ERROR(os);
+
+    // Do an action
+    SQLiteObjectDbiTestData::addTestRow(msaId, os);
+
+    // Undo
+    objDbi->undo(msaId, os);
+    CHECK_NO_ERROR(os);
+
+    // Do an action
+    {
+        U2UseCommonUserModStep userStep(objDbi->getRootDbi(), msaId, os);
+        CHECK_NO_ERROR(os);
+        Q_UNUSED(userStep);
+
+        SQLiteObjectDbiTestData::addTestRow(msaId, os);
+        CHECK_NO_ERROR(os);
+    }
+
+    // Check there is no obsolete steps
+    SQLiteQuery qUser("SELECT COUNT(*) FROM UserModStep WHERE object = ?1", sqliteDbi->getDbRef(), os); 
+    qUser.bindDataId(1, msaId);
+    if (qUser.step()) {
+        CHECK_EQUAL(1, qUser.getInt64(0), "number of user steps");
+    }
+    else {
+        CHECK_TRUE(false, "Unexpected error!");
+    }
+    CHECK_NO_ERROR(os);
+
+    SQLiteQuery qSingle("SELECT COUNT(*) FROM SingleModStep WHERE object = ?1", sqliteDbi->getDbRef(), os); 
+    qSingle.bindDataId(1, msaId);
+    if (qSingle.step()) {
+        CHECK_EQUAL(1, qSingle.getInt64(0), "number of single steps");
+    }
+    else {
+        CHECK_TRUE(false, "Unexpected error!");
+    }
+    CHECK_NO_ERROR(os);
+
+    // Undo
+    objDbi->undo(msaId, os);
+    CHECK_NO_ERROR(os);
+
+    // Verify msa version
+    qint64 msaVersionAfter = objDbi->getObjectVersion(msaId, os);
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(msaVersion, msaVersionAfter, "msa version after action, undo, action, undo");
+
+    // Verify canUndo/canRedo
+    bool undoState = objDbi->canUndo(msaId, os); CHECK_NO_ERROR(os);
+    bool redoState = objDbi->canRedo(msaId, os); CHECK_NO_ERROR(os);
+    CHECK_FALSE(undoState, "undo state after undo, action and undo/redo");
+    CHECK_TRUE(redoState, "redo state after undo, action and undo/redo");
+}
+
+IMPLEMENT_TEST(SQLiteObjectDbiUnitTests, commonUndoRedo_actionUndoActionUndo4) {
+    U2OpStatusImpl os;
+    U2ObjectDbi *objDbi = SQLiteObjectDbiTestData::getSQLiteObjectDbi();
+    SQLiteDbi *sqliteDbi = SQLiteObjectDbiTestData::getSQLiteDbi();
+
+    // Create test msa
+    U2DataId msaId = SQLiteObjectDbiTestData::createTestMsa(true, os);
+    CHECK_NO_ERROR(os);
+
+    // Get msa version
+    qint64 msaVersion = objDbi->getObjectVersion(msaId, os);
+    CHECK_NO_ERROR(os);
+
+    // Do an action
+    {
+        U2UseCommonUserModStep userStep(objDbi->getRootDbi(), msaId, os);
+        CHECK_NO_ERROR(os);
+        Q_UNUSED(userStep);
+
+        SQLiteObjectDbiTestData::addTestRow(msaId, os);
+        CHECK_NO_ERROR(os);
+    }
+
+    // Undo
+    objDbi->undo(msaId, os);
+    CHECK_NO_ERROR(os);
+
+    // Do an action
+    SQLiteObjectDbiTestData::addTestRow(msaId, os);
+
+    // Check there is no obsolete steps
+    SQLiteQuery qUser("SELECT COUNT(*) FROM UserModStep WHERE object = ?1", sqliteDbi->getDbRef(), os); 
+    qUser.bindDataId(1, msaId);
+    if (qUser.step()) {
+        CHECK_EQUAL(1, qUser.getInt64(0), "number of user steps");
+    }
+    else {
+        CHECK_TRUE(false, "Unexpected error!");
+    }
+    CHECK_NO_ERROR(os);
+
+    SQLiteQuery qSingle("SELECT COUNT(*) FROM SingleModStep WHERE object = ?1", sqliteDbi->getDbRef(), os); 
+    qSingle.bindDataId(1, msaId);
+    if (qSingle.step()) {
+        CHECK_EQUAL(1, qSingle.getInt64(0), "number of single steps");
+    }
+    else {
+        CHECK_TRUE(false, "Unexpected error!");
+    }
+    CHECK_NO_ERROR(os);
+
+    // Undo
+    objDbi->undo(msaId, os);
+    CHECK_NO_ERROR(os);
+
+    // Verify msa version
+    qint64 msaVersionAfter = objDbi->getObjectVersion(msaId, os);
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(msaVersion, msaVersionAfter, "msa version after action, undo, action, undo");
+
+    // Verify canUndo/canRedo
+    bool undoState = objDbi->canUndo(msaId, os); CHECK_NO_ERROR(os);
+    bool redoState = objDbi->canRedo(msaId, os); CHECK_NO_ERROR(os);
+    CHECK_FALSE(undoState, "undo state after undo, action and undo/redo");
+    CHECK_TRUE(redoState, "redo state after undo, action and undo/redo");
+}
 
 IMPLEMENT_TEST(SQLiteObjectDbiUnitTests, commonUndoRedo_user3Single6) {
     U2OpStatusImpl os;

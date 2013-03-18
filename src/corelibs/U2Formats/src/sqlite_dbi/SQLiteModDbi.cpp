@@ -255,29 +255,22 @@ void SQLiteModDbi::removeDuplicateUserStep(const U2DataId &masterObjId, qint64 m
     qSelect.bindDataId(1, masterObjId);
     qSelect.bindInt64(2, masterObjVersion);
 
-    qint64 stepsNum = 0;
-    qint64 lastStepId;
     while (qSelect.step()) {
-        lastStepId = qSelect.getInt64(0);
-        stepsNum++;
+        qint64 id = qSelect.getInt64(0);
+        userStepIds.append(id);
     }
     SAFE_POINT_OP(os, );
 
-    if (stepsNum < 2) {
+    if (userStepIds.count() < 2) {
         return;
     }
-    assert(2 == stepsNum);
+    assert(2 == userStepIds.count());
+
+    // Don't take into account user step with the greatest id
+    userStepIds.removeLast();
 
     // Remove user step with lower ID
-    SQLiteQuery qDelete("DELETE FROM UserModStep WHERE object = ?1 AND version = ?2 AND id != ?3", db, os);
-    SAFE_POINT_OP(os, );
-
-    qDelete.bindDataId(1, masterObjId);
-    qDelete.bindInt64(2, masterObjVersion);
-    qDelete.bindInt64(3, lastStepId);
-    qDelete.execute();
-
-    SAFE_POINT_OP(os, );
+    removeSteps(userStepIds, os);
 }
 
 void SQLiteModDbi::removeSteps(QList<qint64> userStepIds, U2OpStatus &os) {
