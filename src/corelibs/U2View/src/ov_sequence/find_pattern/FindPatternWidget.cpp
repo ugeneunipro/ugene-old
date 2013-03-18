@@ -157,6 +157,156 @@ private:
     }
 };
 
+class RegExpPatternsWalker {
+public:
+    RegExpPatternsWalker(const QString &_patternsString, int _cursor = 0)
+        : patternsString(_patternsString.toLatin1()), cursor(_cursor), current(-1) {
+        // RegExp alphabet:
+        regExpSlashedSymbols.insert('a');
+        regExpSlashedSymbols.insert('b');
+        regExpSlashedSymbols.insert('B');
+        regExpSlashedSymbols.insert('f');
+        regExpSlashedSymbols.insert('n');
+        regExpSlashedSymbols.insert('r');
+        regExpSlashedSymbols.insert('t');
+        regExpSlashedSymbols.insert('v');
+        regExpSlashedSymbols.insert('x');
+        regExpSlashedSymbols.insert('0');
+        regExpSlashedSymbols.insert('d');
+        regExpSlashedSymbols.insert('D');
+        regExpSlashedSymbols.insert('s');
+        regExpSlashedSymbols.insert('S');
+        regExpSlashedSymbols.insert('w');
+        regExpSlashedSymbols.insert('W');
+
+        regExpUnslashedSymbols.insert('^');
+        regExpUnslashedSymbols.insert('$');
+        regExpUnslashedSymbols.insert('.');
+        regExpUnslashedSymbols.insert(',');
+        regExpUnslashedSymbols.insert('+');
+        regExpUnslashedSymbols.insert('*');
+        regExpUnslashedSymbols.insert('{');
+        regExpUnslashedSymbols.insert('}');
+        regExpUnslashedSymbols.insert('[');
+        regExpUnslashedSymbols.insert(']');
+        regExpUnslashedSymbols.insert('(');
+        regExpUnslashedSymbols.insert(')');
+        regExpUnslashedSymbols.insert('?');
+        regExpUnslashedSymbols.insert('!');
+        regExpUnslashedSymbols.insert('-');
+        regExpUnslashedSymbols.insert('|');
+        regExpUnslashedSymbols.insert('&');
+        regExpUnslashedSymbols.insert('\\');
+        regExpUnslashedSymbols.insert(':');
+        regExpUnslashedSymbols.insert('=');
+    }
+
+    bool hasNext() const {
+        return (current < patternsString.size() - 1);
+    }
+
+    char next() {
+        if (!hasNext()) {
+            return 0;
+        }
+        current++;
+        return patternsString[current];
+    }
+
+    bool isSequenceChar() const {
+        CHECK(-1 != current, false);
+        return !isRegExpChar();
+    }
+
+    bool isRegExpChar() const {
+        CHECK(-1 != current, false);
+        if (0 == current) {
+            if (regExpUnslashedSymbols.contains(patternsString[current])) {
+                return true;
+            }
+        }
+        else {
+            // current > 0
+            if (regExpUnslashedSymbols.contains(patternsString[current])) {
+                return true;
+            }
+            if (regExpSlashedSymbols.contains(patternsString[current]) &&
+                    '\\' == patternsString[current - 1]) {
+                return true;
+            }
+            if (QChar(patternsString[current]).isDigit() &&
+                    QChar(patternsString[current - 1]).isDigit()) {
+                return true;
+            }
+            // It is backreference:
+            if (QChar(patternsString[current]).isDigit() &&
+                '\\' == patternsString[current - 1]) {
+                return true;
+            }
+            // \0ooo (i.e., \zero ooo)
+            if (QChar(patternsString[current]).isDigit() &&
+                    '0' == patternsString[current - 1]) {
+                return true;
+            }
+            // \xhhhh
+            if (current > 1) {
+                if (QChar(patternsString[current]).isDigit() &&
+                        'x' == patternsString[current - 1] &&
+                        '\\' == patternsString[current - 2]) {
+                    return true;
+                }
+            }
+
+        }
+        return false;
+    }
+
+    /** moves current place to the previous */
+    void removeCurrent() {
+        CHECK(-1 != current, );
+        CHECK(current < patternsString.size(), );
+        patternsString.remove(current, 1);
+        if (current < cursor) {
+            cursor--;
+        }
+        current--;
+    }
+
+    bool isCorrect() const {
+        if (!isSequenceChar()) {
+            return true;
+        }
+        QChar c(patternsString[current]);
+        if (c.isLetter()) {
+            return c.isUpper();
+        } else {
+            return ('\n' == c);
+        }
+    }
+
+    void setCurrent(char value) {
+        CHECK(-1 != current, );
+        CHECK(current < patternsString.size(), );
+        patternsString[current] = value;
+    }
+
+    int getCursor() const {
+        return cursor;
+    }
+
+    QString getString() const {
+        return patternsString;
+    }
+
+private:
+    QByteArray patternsString;
+    int cursor;
+    int current;
+    QSet<QChar> regExpSlashedSymbols;
+    QSet<QChar> regExpUnslashedSymbols;
+};
+
+
 typedef QPair<QString, QString> NamePattern;
 
 FindPatternEventFilter::FindPatternEventFilter(QObject* parent)
@@ -455,7 +605,9 @@ void FindPatternWidget::sl_showLessClicked(const QString& link)
 
 void FindPatternWidget::sl_onAlgorithmChanged(int index)
 {
+    int previousAlgorithm = selectedAlgorithm;
     selectedAlgorithm = boxAlgorithm->itemData(index).toInt();
+    updatePatternText(previousAlgorithm);
     updateLayout();
     verifyPatternAlphabet();
 }
@@ -765,28 +917,53 @@ void FindPatternWidget::sl_onSearchPatternChanged()
 
 void FindPatternWidget::setCorrectPatternsString() {
     QTextCursor cursorInTextEdit = textPattern->textCursor();
-    FastaPatternsWalker walker(textPattern->toPlainText(), cursorInTextEdit.position());
 
-    while (walker.hasNext()) {
-        QChar character(walker.next());
-        if (walker.isCorrect()) {
-            continue;
-        }
-        if (character.isLetter()) {
-            if(!character.isUpper()) {
-                walker.setCurrent(character.toUpper().toLatin1());
+    if (FindAlgorithmPatternSettings_RegExp != selectedAlgorithm) {
+        FastaPatternsWalker walker(textPattern->toPlainText(), cursorInTextEdit.position());
+        // Delete all non-alphabet symbols.
+        while (walker.hasNext()) {
+            QChar character(walker.next());
+            if (walker.isCorrect()) {
+                continue;
             }
-        } else {
-            if ('\n' != character) {
+            if (character.isLetter()) {
+                if(!character.isUpper()) {
+                    walker.setCurrent(character.toUpper().toLatin1());
+                }
+            } else {
+                if ('\n' != character) {
+                    walker.removeCurrent();
+                }
+            }
+        }
+
+        if (textPattern->toPlainText() != walker.getString()) {
+            textPattern->setText(walker.getString());
+            cursorInTextEdit.setPosition(walker.getCursor());
+            textPattern->setTextCursor(cursorInTextEdit);
+        }
+    } else {
+        // Allow the alphabet and regexp symbols only.
+        RegExpPatternsWalker walker(textPattern->toPlainText(), cursorInTextEdit.position());
+        while (walker.hasNext()) {
+            QChar character(walker.next());
+            if (walker.isCorrect()) {
+                continue;
+            }
+            if (character.isLetter()) {
+                if(!character.isUpper()) {
+                    walker.setCurrent(character.toUpper().toLatin1());
+                }
+            } else {
                 walker.removeCurrent();
             }
         }
-    }
 
-    if (textPattern->toPlainText() != walker.getString()) {
-        textPattern->setText(walker.getString());
-        cursorInTextEdit.setPosition(walker.getCursor());
-        textPattern->setTextCursor(cursorInTextEdit);
+        if (textPattern->toPlainText() != walker.getString()) {
+            textPattern->setText(walker.getString());
+            cursorInTextEdit.setPosition(walker.getCursor());
+            textPattern->setTextCursor(cursorInTextEdit);
+        }
     }
 }
 
@@ -866,17 +1043,20 @@ void FindPatternWidget::checkState()
     }
     if(!loadFromFileGroupBox->isChecked()){
         // Disable if the length of the pattern is greater than the search region length
-        bool regionOk = checkPatternRegion(textPattern->toPlainText());
-        
-        if (!regionOk) {
-            btnSearch->setDisabled(true);
-            highlightBackground(textPattern);
-            showHideMessage(true, PatternIsTooLong);
-            return;
-        }
-        else {
-            doNotHighlightBackground(textPattern);
-            showHideMessage(false, PatternIsTooLong);
+        // Not for RegExp algorithm
+        if (FindAlgorithmPatternSettings_RegExp != selectedAlgorithm) {
+            bool regionOk = checkPatternRegion(textPattern->toPlainText());
+
+            if (!regionOk) {
+                btnSearch->setDisabled(true);
+                highlightBackground(textPattern);
+                showHideMessage(true, PatternIsTooLong);
+                return;
+            }
+            else {
+                doNotHighlightBackground(textPattern);
+                showHideMessage(false, PatternIsTooLong);
+            }
         }
     }
 
@@ -1268,6 +1448,25 @@ void FindPatternWidget::sl_onAnotationNameEdited(){
 void FindPatternWidget::sl_onUsePatternNamesClicked(){
     bool isAnnotNamesEnabled = !usePatternNamesCheckBox->isChecked();
     annotController->setEnabledNameEdit(isAnnotNamesEnabled);
+}
+
+void FindPatternWidget::updatePatternText(int previousAlgorithm) {
+    // Save a previous state.
+    if (FindAlgorithmPatternSettings_RegExp == previousAlgorithm) {
+        patternRegExp = textPattern->toPlainText();
+    }
+    else {
+        patternString = textPattern->toPlainText();
+    }
+
+    // Set a new state.
+    if (FindAlgorithmPatternSettings_RegExp == selectedAlgorithm) {
+        textPattern->setText(patternRegExp);
+    }
+    else {
+        textPattern->setText(patternString);
+    }
+    setCorrectPatternsString();
 }
 
 } // namespace

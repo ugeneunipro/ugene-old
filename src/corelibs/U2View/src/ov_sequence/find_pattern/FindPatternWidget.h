@@ -183,6 +183,8 @@ private:
     void changeColorOfMessageText(const QString &colorName);
     QString currentColorOfMessageText() const;
 
+    void updatePatternText(int previousAlgorithm);
+
     AnnotatedDNAView* annotatedDnaView;
     CreateAnnotationWidgetController* annotController;
     bool annotModelPrepared;
@@ -191,6 +193,8 @@ private:
     bool showMore;
     bool regionIsCorrect;
     int selectedAlgorithm;
+    QString patternString;
+    QString patternRegExp;
 
     QList<MessageFlag> messageFlags;
 
