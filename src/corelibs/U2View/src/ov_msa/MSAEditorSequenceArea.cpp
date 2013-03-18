@@ -1455,6 +1455,11 @@ void MSAEditorSequenceArea::sl_delCol() {
         DeleteMode deleteMode = dlg.getDeleteMode();
         int value = dlg.getValue();
         MAlignmentObject* msaObj = editor->getMSAObject();
+
+        U2OpStatus2Log os;
+        U2UseCommonUserModStep userModStep(msaObj->getEntityRef(), os);
+        SAFE_POINT_OP(os, );
+
         switch(deleteMode) {
         case DeleteByAbsoluteVal: msaObj->deleteGapsByAbsoluteVal(value);
             break;
@@ -1525,13 +1530,19 @@ void MSAEditorSequenceArea::wheelEvent (QWheelEvent * we) {
 
 void MSAEditorSequenceArea::sl_removeAllGaps() {
     MAlignmentObject* msa = editor->getMSAObject();
+    SAFE_POINT(NULL != msa, "NULL msa object!", );
     assert(!msa->isStateLocked());
+
+    U2OpStatus2Log os;
+    U2UseCommonUserModStep userModStep(msa->getEntityRef(), os);
+    SAFE_POINT_OP(os, );
+
     QMap<qint64, QList<U2MsaGap> > noGapModel;
     MAlignment ma = msa->getMAlignment();
     foreach (qint64 rowId, ma.getRowsIds()) {
         noGapModel[rowId] = QList<U2MsaGap>();
     }
-    U2OpStatusImpl os;
+
     msa->updateGapModel(noGapModel, os);
     setFirstVisibleBase(0);
     setFirstVisibleSequence(0);
