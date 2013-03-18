@@ -34,10 +34,11 @@
 
 
 namespace U2 {
+class SeqNamesConvertor;
 
 class MrBayesPrepareDataForCalculation :public Task{
 public:
-    MrBayesPrepareDataForCalculation(const MAlignment& _ma, const CreatePhyTreeSettings& s, const QString& url);
+    MrBayesPrepareDataForCalculation(const MAlignment& _ma, const CreatePhyTreeSettings& s, const QString& url, SeqNamesConvertor& _namesConvertor);
     void prepare();
     QList<Task*> onSubTaskFinished(Task* subTask);
     QString getInputFileUrl() {return inputFileForMrBayes;}
@@ -47,6 +48,7 @@ private:
     QString                     tmpDirUrl;
     SaveAlignmentTask*          saveDocumentTask;
     QString                     inputFileForMrBayes;
+    SeqNamesConvertor&          namesConvertor;
 };
 
 class MrBayesLogParser : public ExternalToolLogParser {
@@ -77,6 +79,20 @@ private:
 
 };
 
+class SeqNamesConvertor {
+public:
+    SeqNamesConvertor() : lastIdStr("a") {}
+
+    void replaceNamesWithAlphabeticIds(MAlignment& ma);
+    void restoreNames(const PhyTree& tree);
+
+private:
+    const QString& generateNewAlphabeticId();
+
+    QString lastIdStr;
+    QMap<QString, QString> namesMap;
+};
+
 class MrBayesSupportTask : public PhyTreeGeneratorTask{
 public:
     MrBayesSupportTask(const MAlignment& _ma, const CreatePhyTreeSettings& s);
@@ -90,7 +106,7 @@ private:
     ExternalToolRunTask*                mrBayesTask;
     MrBayesGetCalculatedTreeTask*       getTreeTask;
     MrBayesLogParser*                   logParser;
-
+    SeqNamesConvertor                   namesConvertor;
 };
 
 

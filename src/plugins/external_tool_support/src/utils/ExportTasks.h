@@ -42,6 +42,8 @@ public:
 
     virtual Document* getDocument() const {return doc.get();}
 
+    MAlignment& getMAlignment() {return ma;}
+
 private:
     MAlignment              ma;
     QString                 fileName;
