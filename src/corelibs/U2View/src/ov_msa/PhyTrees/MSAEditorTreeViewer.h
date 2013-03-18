@@ -107,7 +107,7 @@ private slots:
     virtual void sl_collapseTriggered();
     virtual void sl_zoomToSel();
     virtual void sl_zoomOut();
-    void sl_onHeightChanged(int height);
+    void sl_onHeightChanged(int height, bool isMinimumSize, bool isMaximumSize);
     void sl_onReferenceSeqChanged(const QString &str);
     void sl_sortAlignment();
     void sl_onSceneRectChanged(const QRectF&);

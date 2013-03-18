@@ -90,7 +90,7 @@ MSAEditorTreeViewerUI::MSAEditorTreeViewerUI(MSAEditorTreeViewer* treeViewer)
 }
 
 void MSAEditorTreeViewerUI::setTreeVerticalSize(int size) {
-    sl_onHeightChanged(size);
+    sl_onHeightChanged(size, false, false);
 }
 
 GroupColors::GroupColors() {
@@ -341,11 +341,13 @@ const QStringList* MSAEditorTreeViewerUI::getVisibleSeqsList() {
     return result;
 }
 
-void MSAEditorTreeViewerUI::sl_onHeightChanged(int height) {
+void MSAEditorTreeViewerUI::sl_onHeightChanged(int height, bool isMinimumSize, bool isMaximumSize) {
     CHECK(curLayoutIsRectangular && isSinchronized, );
     qreal zoomCoef = (qreal)(height - 5) / getTreeSize().length;
     zooming(zoomCoef, zoomCoef);
     updateSceneRect(sceneRect());
+    curMSATreeViewer->getZoomOutAction()->setEnabled(!isMinimumSize);
+    curMSATreeViewer->getZoomToSelAction()->setEnabled(!isMaximumSize);
 }
 
 void MSAEditorTreeViewerUI::sl_onReferenceSeqChanged(const QString &) {

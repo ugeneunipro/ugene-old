@@ -256,11 +256,11 @@ void MSAEditorTreeManager::sl_openTreeTaskFinished(Task* t) {
             connect(treeUI, SIGNAL(si_collapseModelChangedInTree(const QStringList*)), msaUI->getSequenceArea(), SLOT(sl_setCollapsingRegions(const QStringList*)));
             connect(treeUI, SIGNAL(si_seqOrderChanged(QStringList*)), editor, SLOT(sl_onSeqOrderChanged(QStringList*)));
             connect(treeUI, SIGNAL(si_groupColorsChanged(const GroupColorSchema&)), msaUI->getEditorNameList(), SLOT(sl_onGroupColorsChanged(const GroupColorSchema&)));
-            connect(editor, SIGNAL(si_sizeChanged(int)), treeUI, SLOT(sl_onHeightChanged(int)));
+            connect(editor, SIGNAL(si_sizeChanged(int, bool, bool)), treeUI, SLOT(sl_onHeightChanged(int, bool, bool)));
 
             connect(treeUI,   SIGNAL(si_treeZoomedIn()),                      editor,  SLOT(sl_zoomIn()));
             connect(editor,   SIGNAL(si_refrenceSeqChanged(const QString &)), treeUI,  SLOT(sl_onReferenceSeqChanged(const QString &)));
-            connect(treeUI,   SIGNAL(si_treeZoomedOut()),                     editor,  SLOT(sl_treeZoomOut()));
+            connect(treeUI,   SIGNAL(si_treeZoomedOut()),                     editor,  SLOT(sl_zoomOut()));
             
             connect(treeView, SIGNAL(si_refreshTree(MSAEditorTreeViewer&)), SLOT(sl_refreshTree(MSAEditorTreeViewer&)));
         }

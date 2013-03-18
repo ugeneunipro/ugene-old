@@ -164,7 +164,7 @@ signals:
     void si_fontChanged(const QFont& f);
     void si_zoomOperationPerformed(bool resizeModeChanged);
     void si_refrenceSeqChanged(const QString &str);
-    void si_sizeChanged(int newHeight);
+    void si_sizeChanged(int newHeight, bool isMinimumSize, bool isMaximumSize);
 
 protected slots:
     void sl_onContextMenuRequested(const QPoint & pos);
