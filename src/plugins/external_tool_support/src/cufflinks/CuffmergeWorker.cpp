@@ -184,7 +184,7 @@ QString CuffmergePrompter::composeRichDoc()
  * CuffmergeWorker
  *****************************/
 CuffmergeWorker::CuffmergeWorker(Actor* actor)
-    : BaseWorker(actor),
+    : BaseWorker(actor, false /*autoTransit*/),
       input(NULL),
       output(NULL)
 {

@@ -132,7 +132,7 @@ void TopHatWorkerFactory::init()
 
     portDescriptors << new PortDescriptor(inputPortDescriptor,
                                           DataTypePtr(new MapDataType("in.sequences", inputMap)),
-                                          true /* input */);
+                                          true /* input */, false, IntegralBusPort::BLIND_INPUT);
 
     QMap<Descriptor, DataTypePtr> outputMap;
 
@@ -480,7 +480,7 @@ QString TopHatPrompter::composeRichDoc()
  * TopHatWorker
  *****************************/
 TopHatWorker::TopHatWorker(Actor* actor)
-    : BaseWorker(actor),
+    : BaseWorker(actor, false /*autoTransit*/),
       input(NULL),
       output(NULL),
       datasetsData(false)
