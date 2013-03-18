@@ -615,7 +615,7 @@ Task * TopHatWorker::tick()
     }
 
     if (input->hasMessage()) {
-        Message inputMessage = getMessageAndSetupScriptValues(input);
+        Message inputMessage = input->get();
         SAFE_POINT(!inputMessage.isEmpty(), "Internal error: message can't be NULL!", NULL);
         QVariantMap data = inputMessage.getData().toMap();
 

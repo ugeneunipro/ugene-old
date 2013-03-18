@@ -121,6 +121,7 @@ void TopHatSupportTask::prepare()
     DocumentFormat* docFormat = AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::FASTQ);
     tmpDoc = docFormat->createNewLoadedDocument(IOAdapterUtils::get(BaseIOAdapters::LOCAL_FILE), GUrl(url), stateInfo);
     CHECK_OP(stateInfo, );
+    tmpDoc->setDocumentOwnsDbiResources(false);
 
     // Verify the storage
     if (NULL == settings.storage) {
@@ -152,6 +153,7 @@ void TopHatSupportTask::prepare()
 
         tmpDocPaired = docFormat->createNewLoadedDocument(IOAdapterUtils::get(BaseIOAdapters::LOCAL_FILE), GUrl(urlPaired), stateInfo);
         CHECK_OP(stateInfo, );
+        tmpDocPaired->setDocumentOwnsDbiResources(false);
 
         foreach (Workflow::SharedDbiDataHandler pairedSeqId, settings.pairedSeqIds) {
             U2SequenceObject* pairedSeqObj(Workflow::StorageUtils::getSequenceObject(settings.storage, pairedSeqId));

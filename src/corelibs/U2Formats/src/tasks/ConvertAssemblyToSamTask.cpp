@@ -72,6 +72,7 @@ ConvertAssemblyToSamTask::ConvertAssemblyToSamTask(const U2EntityRef& entityRef,
 
 
 void ConvertAssemblyToSamTask::run() {
+    taskLog.details("Start converting assemblies to SAM");
     // Init assembly objects
     QSharedPointer<DbiConnection> dbiHandle;
 
@@ -116,6 +117,7 @@ void ConvertAssemblyToSamTask::run() {
     }
 
     BAMUtils::writeDocument(doc.data(), stateInfo);
+    taskLog.details("Finish converting assemblies to SAM");
 }
 
 QString ConvertAssemblyToSamTask::generateReport() const {
