@@ -280,7 +280,6 @@ private:
     SQLiteDbi* dbi;
     U2DataId masterObjId;
     U2TrackModType trackMod;
-    qint64 masterObjVersionToTrack;
     QSet<U2DataId> objIds;
     QList<U2SingleModStep> singleSteps;
 };

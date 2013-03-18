@@ -243,6 +243,43 @@ void SQLiteModDbi::removeModsWithGreaterVersion(const U2DataId &masterObjId, qin
     SAFE_POINT_OP(os, );
 }
 
+void SQLiteModDbi::removeDuplicateUserStep(const U2DataId &masterObjId, qint64 masterObjVersion, U2OpStatus& os) {
+    SQLiteTransaction t(db, os);
+    Q_UNUSED(t);
+
+    // Get user step IDs
+    QList<qint64> userStepIds;
+    SQLiteQuery qSelect("SELECT id FROM UserModStep WHERE object = ?1 AND version = ?2", db, os);
+    SAFE_POINT_OP(os, );
+
+    qSelect.bindDataId(1, masterObjId);
+    qSelect.bindInt64(2, masterObjVersion);
+
+    qint64 stepsNum = 0;
+    qint64 lastStepId;
+    while (qSelect.step()) {
+        lastStepId = qSelect.getInt64(0);
+        stepsNum++;
+    }
+    SAFE_POINT_OP(os, );
+
+    if (stepsNum < 2) {
+        return;
+    }
+    assert(2 == stepsNum);
+
+    // Remove user step with lower ID
+    SQLiteQuery qDelete("DELETE FROM UserModStep WHERE object = ?1 AND version = ?2 AND id != ?3", db, os);
+    SAFE_POINT_OP(os, );
+
+    qDelete.bindDataId(1, masterObjId);
+    qDelete.bindInt64(2, masterObjVersion);
+    qDelete.bindInt64(3, lastStepId);
+    qDelete.execute();
+
+    SAFE_POINT_OP(os, );
+}
+
 void SQLiteModDbi::removeSteps(QList<qint64> userStepIds, U2OpStatus &os) {
     if (userStepIds.isEmpty()) {
         return;
