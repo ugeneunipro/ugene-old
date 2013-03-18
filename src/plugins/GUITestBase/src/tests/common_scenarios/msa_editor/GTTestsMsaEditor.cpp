@@ -3470,6 +3470,18 @@ GUI_TEST_CLASS_DEFINITION(test_0039){
 //Expected state: transl.aln appeared in project
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0040){//UGENE crashes when opening several files
+    QFile human_T1(dataDir + "/samples/FASTA/human_T1.fa");
+    human_T1.copy(dataDir + "/samples/CLUSTALW/human_T1.fa");
+    GTFileDialog::openFileList(os,dataDir + "samples/CLUSTALW/",QStringList()<<"COI.aln"<<"human_T1.fa");
+    QFile(dataDir + "/samples/CLUSTALW/human_T1.fa").remove();
+
+    QTreeWidgetItem* human = GTUtilsProjectTreeView::findItem(os,"human_T1.fa");
+    CHECK_SET_ERR(human, "human_T1.fa not added to project");
+    QTreeWidgetItem* COI = GTUtilsProjectTreeView::findItem(os,"COI.aln");
+    CHECK_SET_ERR(COI, "COI.aln not added to project");
+
+}
 
 } // namespace GUITest_common_scenarios_msa_editor
 } // namespace U2

@@ -28,6 +28,7 @@
 namespace U2 {
 
 class GTFileDialogUtils : public Filler {
+friend class GTFileDialogUtils_list;
 public:
     enum Button {Open, Cancel, Save};
     enum ViewMode {List, Detail};
@@ -38,6 +39,7 @@ public:
     void run();
 
 private:
+
     void setFilter();
     void setPath();
     void setName();
@@ -53,13 +55,23 @@ private:
     bool isForGetSize;
     qint64* size;
 };
-
+class GTFileDialogUtils_list : public GTFileDialogUtils{
+public:
+    GTFileDialogUtils_list(U2OpStatus&, const QString&, const QStringList&);
+    void setNameList(U2OpStatus &, const QStringList &);
+    void run();
+private:
+    QString path;
+    QStringList fileNameList;
+    void selectFile();
+};
 
 class GTFileDialog {
 public:
     enum Button {Open, Cancel};
     static void openFile(U2OpStatus &os, const QString &path, const QString &fileName,
         const QString &filters = "*.*", Button button = Open, GTGlobals::UseMethod m = GTGlobals::UseMouse);
+    static void openFileList(U2OpStatus &, const QString &, const QStringList &);
     static qint64 getSize(U2OpStatus &os, const QString &path, const QString &fileName);
 };
 

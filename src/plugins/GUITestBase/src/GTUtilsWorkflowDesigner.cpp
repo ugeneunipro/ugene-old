@@ -39,7 +39,7 @@ QTreeWidgetItem* GTUtilsWorkflowDesigner::findTreeItem(U2OpStatus &os,QString it
 
     QTreeWidgetItem* foundItem=NULL;
     QTreeWidget *w=qobject_cast<QTreeWidget*>(GTWidget::findWidget(os,"WorkflowPaletteElements"));
-    CHECK_SET_ERR_RESULT(w!=NULL,"WorkflowPaletteElements is null", NULL);
+    GT_CHECK_RESULT(w!=NULL,"WorkflowPaletteElements is null", NULL);
 
     QList<QTreeWidgetItem*> outerList = w->findItems("",Qt::MatchContains);
 
@@ -57,8 +57,8 @@ QTreeWidgetItem* GTUtilsWorkflowDesigner::findTreeItem(U2OpStatus &os,QString it
             }
         }
     }
-    if(foundItem!=NULL){os.setError("error");}
     GT_CHECK_RESULT(foundItem!=NULL,"Item \"" + itemName + "\" not found in treeWidget",NULL);
+    return foundItem;//added to fix a warning
 }
 #undef GT_METHOD_NAME
 
