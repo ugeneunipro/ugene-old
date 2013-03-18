@@ -1973,6 +1973,10 @@ void MSAEditorSequenceArea::fillSelectionWithGaps( )
         return;
     }
 
+    U2OpStatus2Log os;
+    U2UseCommonUserModStep userModStep(maObj->getEntityRef(), os);
+    SAFE_POINT_OP(os, );
+
     const MAlignment& msa = maObj->getMAlignment();
     if (selection.width() == msa.getLength() && selection.height() == msa.getNumRows()) {
         return;
@@ -1982,10 +1986,8 @@ void MSAEditorSequenceArea::fillSelectionWithGaps( )
     maObj->insertGap(sequences,  selection.x() , selection.width());
     if (selection.height() > 1 && selection.width() > 1) {
         cancelSelection();
-    }
-    
+    }   
 }
-
 
 void MSAEditorSequenceArea::reverseComplementModification(ModificationType& type) {
     if (type == ModificationType::NoType)
