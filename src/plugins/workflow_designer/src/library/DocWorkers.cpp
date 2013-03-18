@@ -168,6 +168,10 @@ bool TextWriter::isStreamingSupport() const {
     return false;
 }
 
+bool TextWriter::isSupportedSeveralMessages() const {
+    return true;
+}
+
 /**
  * It can change sequence name for setting unique object name
  */

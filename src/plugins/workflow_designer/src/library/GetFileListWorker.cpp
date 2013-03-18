@@ -28,6 +28,8 @@
 #include <U2Lang/BasePorts.h>
 #include <U2Lang/BaseSlots.h>
 #include <U2Lang/BaseTypes.h>
+#include <U2Lang/Dataset.h>
+#include <U2Lang/URLAttribute.h>
 #include <U2Lang/WorkflowEnv.h>
 
 #include <U2Designer/DelegateEditors.h>
@@ -40,96 +42,40 @@ namespace LocalWorkflow {
 
 const QString GetFileListWorkerFactory::ACTOR_ID("get-file-list");
 static const QString OUT_PORT_ID("out-url");
-static const QString INPUT_PATH("in-path");
-static const QString ABSOLUTE_PATH("absolute");
-static const QString RECURSIVE("recursive");
-static const QString INCLUDE_NAME_FILTER("include-name-filter");
-static const QString EXCLUDE_NAME_FILTER("exclude-name-filter");
 
+static const QString URL_ATTR("url-in");
 
 /************************************************************************/
 /* Worker */
 /************************************************************************/
 GetFileListWorker::GetFileListWorker(Actor *p)
-: BaseWorker(p), outChannel(NULL)
+: BaseWorker(p), outChannel(NULL), files(NULL)
 {
-    absolute = false;
-    recursive = false;
+
 }
 
 void GetFileListWorker::init() {
     outChannel = ports.value(OUT_PORT_ID);
-    mtype = outChannel->getBusType();
 
-    dirUrls = WorkflowUtils::expandToUrls(actor->getParameter(INPUT_PATH)->getAttributeValue<QString>(context));
-    absolute = actor->getParameter(ABSOLUTE_PATH)->getAttributeValue<bool>(context);
-    recursive = actor->getParameter(RECURSIVE)->getAttributeValue<bool>(context);
-    includeFilter = actor->getParameter(INCLUDE_NAME_FILTER)->getAttributeValue<QString>(context);
-    excludeFilter = actor->getParameter(EXCLUDE_NAME_FILTER)->getAttributeValue<QString>(context);
+    QList<Dataset> sets = getValue< QList<Dataset> >(BaseAttributes::URL_IN_ATTRIBUTE().getId());
+    files = new DatasetFilesIterator(sets);
 }
 
-Task *GetFileListWorker::tick() {
-    if (cache.isEmpty() && !dirUrls.isEmpty()) {
-        Task *t = new ScanDirectoryTask(dirUrls.takeFirst(), includeFilter, excludeFilter, absolute, recursive);
-        connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
-        return t;
-    }
-    while (!cache.isEmpty()) {
-        outChannel->put(cache.takeFirst());
-    }
-    if (dirUrls.isEmpty()) {
+Task * GetFileListWorker::tick() {
+    if (files->hasNext()) {
+        QVariantMap m;
+        m[BaseSlots::URL_SLOT().getId()] = files->getNextFile();
+        m[BaseSlots::DATASET_SLOT().getId()] = files->getLastDatasetName();
+        outChannel->put(Message(outChannel->getBusType(), m));
+    } else {
         setDone();
         outChannel->setEnded();
     }
     return NULL;
 }
 
-bool GetFileListWorker::isDone() {
-    return BaseWorker::isDone() && cache.isEmpty();
-}
-
-void GetFileListWorker::sl_taskFinished() {
-    ScanDirectoryTask *t = qobject_cast<ScanDirectoryTask*>(sender());
-    if (!t->isFinished() || t->hasError()) {
-        return;
-    }
-    foreach(const QString &url, t->getResults()) {
-        QVariantMap m;
-        m.insert(BaseSlots::URL_SLOT().getId(), url);
-        cache.append(Message(mtype, m));
-    }
-}
-
-/************************************************************************/
-/* Task */
-/************************************************************************/
-ScanDirectoryTask::ScanDirectoryTask(const QString &dirPath, const QString &incFilter, const QString &excFilter, bool absolute, bool recursive)
-: Task(tr("Scan directory %1").arg(dirPath), TaskFlag_None), dirPath(dirPath), includeFilter(incFilter),
-excludeFilter(excFilter), absolute(absolute), recursive(recursive)
-{
-
-}
-
-void ScanDirectoryTask::run() {
-    QDir rootDir(dirPath);
-    QString rootPath = rootDir.absolutePath();
-    if (!rootPath.endsWith("/")) {
-        rootPath += "/";
-    }
-
-    QScopedPointer<FilesIterator> iter(FilesIteratorFactory::createDirectoryScanner(
-        QStringList() << dirPath, includeFilter, excludeFilter, recursive));
-
-    QString fileName = iter->getNextFile();
-    while (!fileName.isEmpty()) {
-        if (absolute) {
-            results << fileName;
-        } else {
-            results << fileName.replace(rootPath, "");
-        }
-
-        fileName = iter->getNextFile();
-    }
+void GetFileListWorker::cleanup() {
+    delete files;
 }
 
 /************************************************************************/
@@ -140,6 +86,7 @@ void GetFileListWorkerFactory::init() {
     {
         QMap<Descriptor, DataTypePtr> outTypeMap;
         outTypeMap[BaseSlots::URL_SLOT()] = BaseTypes::STRING_TYPE();
+        outTypeMap[BaseSlots::DATASET_SLOT()] = BaseTypes::STRING_TYPE();
         DataTypePtr outTypeSet(new MapDataType(BasePorts::OUT_TEXT_PORT_ID(), outTypeMap));
 
         portDescs << new PortDescriptor(OUT_PORT_ID, outTypeSet, false, true);
@@ -147,34 +94,11 @@ void GetFileListWorkerFactory::init() {
 
     QList<Attribute*> attrs;
     {
-        Descriptor inPath(INPUT_PATH,
-            GetFileListWorker::tr("Input directory"),
-            GetFileListWorker::tr("Input directory"));
-        Descriptor isAbsolute(ABSOLUTE_PATH,
-            GetFileListWorker::tr("Absolute output paths"),
-            GetFileListWorker::tr("Produce absolute or relative paths"));
-        Descriptor isRecursive(RECURSIVE,
-            GetFileListWorker::tr("Recursive reading"),
-            GetFileListWorker::tr("Get files from all nested directories or just from the current one"));
-        Descriptor includeFilter(INCLUDE_NAME_FILTER,
-            GetFileListWorker::tr("Relative path include filter"),
-            GetFileListWorker::tr("Filter files by relative path using this regular expression. "
-            "<p><i>Set it empty to switch off this filter. Use <b>*</b> and <b>?</b> to mask some symbols.</i></p>"));
-        Descriptor excludeFilter(EXCLUDE_NAME_FILTER,
-            GetFileListWorker::tr("Relative path exclude filter"),
-            GetFileListWorker::tr("Exclude files which relative paths are matched by this regular expression. "
-            "<p><i>Set it empty to switch off this filter. Use <b>*</b> and <b>?</b> to mask some symbols.</i></p>"));
+        Descriptor inUrl(URL_ATTR,
+            GetFileListWorker::tr("Input urls"),
+            GetFileListWorker::tr("Input urls"));
 
-        attrs << new Attribute(inPath, BaseTypes::STRING_TYPE(), true);
-        attrs << new Attribute(isAbsolute, BaseTypes::BOOL_TYPE(), false, true);
-        attrs << new Attribute(isRecursive, BaseTypes::BOOL_TYPE(), false, false);
-        attrs << new Attribute(includeFilter, BaseTypes::STRING_TYPE());
-        attrs << new Attribute(excludeFilter, BaseTypes::STRING_TYPE());
-    }
-
-    QMap<QString, PropertyDelegate*> delegates;
-    {
-        delegates[INPUT_PATH] = new URLDelegate(QString(), QString(), true, true);
+        attrs << new URLAttribute(BaseAttributes::URL_IN_ATTRIBUTE(), BaseTypes::URL_DATASETS_TYPE(), true);
     }
 
     Descriptor protoDesc(GetFileListWorkerFactory::ACTOR_ID,
@@ -182,7 +106,7 @@ void GetFileListWorkerFactory::init() {
         GetFileListWorker::tr("Produces ulrs to files from specified directories"));
 
     ActorPrototype *proto = new IntegralBusActorPrototype(protoDesc, portDescs, attrs);
-    proto->setEditor(new DelegateEditor(delegates));
+    proto->setEditor(new DelegateEditor(QMap<QString, PropertyDelegate*>()));
     proto->setPrompter(new GetFileListPrompter());
     if(AppContext::isGUIMode()) {
         proto->setIcon( GUIUtils::createRoundIcon(QColor(85,85,255), 22));
@@ -200,26 +124,9 @@ Worker *GetFileListWorkerFactory::createWorker(Actor *a) {
 /* Prompter */
 /************************************************************************/
 QString GetFileListPrompter::composeRichDoc() {
-    bool absolute = getParameter(ABSOLUTE_PATH).toBool();
-    QString relativity;
-    if (absolute) {
-        relativity = tr("<u>absolute</u>");
-    } else {
-        relativity = tr("<u>relative</u>");
-    }
-
-    bool recursive = getParameter(RECURSIVE).toBool();
-    QString recursivity;
-    if (recursive) {
-        recursivity = tr(" <u>recursively</u> ");
-    } else {
-        recursivity = tr(" ");
-    }
-
-    QString url = getHyperlink(INPUT_PATH, getURL(INPUT_PATH));
-
-    return tr("Gets%1the %2 paths of files from the <u>%3</u> directory")
-        .arg(recursivity).arg(relativity).arg(url);
+    QString url = getHyperlink(URL_ATTR, getURL(URL_ATTR));
+    return tr("Gets the paths of files: <u>%1</u>")
+        .arg(url);
 }
 
 } // LocalWorkflow

@@ -76,6 +76,7 @@ public:
 protected:
     virtual void data2doc(Document*, const QVariantMap&) = 0;
     virtual bool isStreamingSupport() const;
+    virtual bool isSupportedSeveralMessages() const;
     virtual void storeEntry(IOAdapter *, const QVariantMap &, int) {}
     virtual Task * getWriteDocTask(Document *doc, const SaveDocFlags &flags);
     virtual void takeParameters(U2OpStatus &os);

@@ -89,6 +89,7 @@ public:
 protected:
     virtual void data2doc(Document*, const QVariantMap&);
     virtual bool isStreamingSupport() const;
+    virtual bool isSupportedSeveralMessages() const;
 };
 
 class FastaWriter : public SeqWriter {

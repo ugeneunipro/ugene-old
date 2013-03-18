@@ -26,6 +26,9 @@
 #include <U2Lang/WorkflowUtils.h>
 
 namespace U2 {
+
+class DatasetFilesIterator;
+
 namespace LocalWorkflow {
 
 class GetFileListPrompter : public PrompterBase<GetFileListPrompter> {
@@ -44,23 +47,15 @@ public:
     GetFileListWorker(Actor *p);
 
     virtual void init();
-    virtual Task *tick();
-    virtual bool isDone();
-    virtual void cleanup() {}
-
-private slots:
-    void sl_taskFinished();
+    virtual Task * tick();
+    virtual void cleanup();
 
 private:
     IntegralBus *outChannel;
-    QList<Message> cache;
-    DataTypePtr mtype;
+    DatasetFilesIterator *files;
 
-    QList<QString> dirUrls;
-    bool absolute;
-    bool recursive;
-    QString includeFilter;
-    QString excludeFilter;
+private:
+    QString getNextUrl();
 }; // GetFileListWorker
 
 class GetFileListWorkerFactory : public DomainFactory {
@@ -72,23 +67,6 @@ public:
     virtual Worker *createWorker(Actor *a);
 
 }; // GetFileListWorkerFactory
-
-class ScanDirectoryTask : public Task {
-    Q_OBJECT
-public:
-    ScanDirectoryTask(const QString &dirPath, const QString &includeFilter, const QString &excludeFilter, bool absolute, bool recursive);
-    virtual void run();
-
-    const QStringList &getResults() {return results;}
-
-private:
-    QString dirPath;
-    QString includeFilter;
-    QString excludeFilter;
-    bool absolute;
-    bool recursive;
-    QStringList results;
-};
 
 } // LocalWorkflow
 } // U2

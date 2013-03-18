@@ -205,12 +205,19 @@ QStringList BaseDocWriter::takeUrlList(const QVariantMap &data, U2OpStatus &os) 
     return urls;
 }
 
-bool BaseDocWriter::ifCreateAdapter(const QString &url) const {
-    // if the format can contain only one object then adapters must be created for each object
+bool BaseDocWriter::isSupportedSeveralMessages() const {
+    // if the format can contain only one object then adapters must be created for each message
     if (format->checkFlags(DocumentFormatFlag_SingleObjectFormat)) {
-        return true;
+        return false;
     }
     if (format->checkFlags(DocumentFormatFlag_OnlyOneObject)) {
+        return false;
+    }
+    return true;
+}
+
+bool BaseDocWriter::ifCreateAdapter(const QString &url) const {
+    if (!isSupportedSeveralMessages()) {
         return true;
     }
 
