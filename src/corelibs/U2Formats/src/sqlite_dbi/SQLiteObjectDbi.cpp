@@ -474,11 +474,7 @@ void SQLiteObjectDbi::undo(const U2DataId& objId, U2OpStatus& os) {
         --multiIt;
         QList<U2SingleModStep> multiStepSingleSteps = *multiIt;
 
-        QList<U2SingleModStep>::const_iterator singleIt = multiStepSingleSteps.end();
-        while (singleIt != multiStepSingleSteps.begin()) {
-            --singleIt;
-            U2SingleModStep modStep = *singleIt;
-
+        foreach (U2SingleModStep modStep, multiStepSingleSteps) {
             // Call an appropriate "undo" depending on the object type
             if (U2ModType::isMsaModType(modStep.modType)) {
                 dbi->getSQLiteMsaDbi()->undo(modStep.objectId, modStep.modType, modStep.details, os);
