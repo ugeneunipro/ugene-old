@@ -23,6 +23,7 @@
 #include "GTKeyboardDriver.h"
 #include "api/GTGlobals.h"
 #include <QtGui/QApplication>
+#include <QtGui/QClipboard>
 
 #ifdef _WIN32
     #include <windows.h>
@@ -129,6 +130,12 @@ void GTKeyboardDriver::keyPress(U2::U2OpStatus &os, char key, int modifiers)
                 }
             keyPress(os, '4', GTKeyboardDriver::key["shift"]);
             break;
+        case '"':
+            if (modifiers != 0) {
+                keyPress(os, modifiers);
+            }
+            keyPress(os, VK_OEM_7, GTKeyboardDriver::key["shift"]);
+            break;
         default:
             keyPress(os, (int)key, modifiers);
             break;
@@ -221,6 +228,12 @@ void GTKeyboardDriver::keyRelease(U2OpStatus &os, char key, int modifiers)
             if (modifiers != 0) {
                 keyRelease(os, modifiers);
                 }
+            break;
+        case '"':
+            keyRelease(os, VK_OEM_7, GTKeyboardDriver::key["shift"]);
+            if (modifiers != 0) {
+                keyRelease(os, modifiers);
+            }
             break;
         default:
             keyRelease(os, (int)key, modifiers);

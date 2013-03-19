@@ -55,7 +55,7 @@ namespace U2 {
 { \
     GT_DEBUG_MESSAGE(condition, errorMessage, result); \
     if (os.hasError()) { return result; } \
-    CHECK_EXT(condition, if (!os.hasError()) { uiLog.trace("\nGT_DEBUG_MESSAGE !!!FIRST FAIL"); os.setError(errorMessage);}, result) \
+    CHECK_EXT(condition, if (!os.hasError()) { GTGlobals::GUITestFail(); os.setError(errorMessage);}, result) \
 }
 
 #define GT_CHECK(condition, errorMessage) \
@@ -78,6 +78,7 @@ public:
 
     static void sleep(int msec = 2000);
     static void sendEvent(QObject *obj, QEvent *e);
+    static void GUITestFail(){uiLog.trace("\nGT_DEBUG_MESSAGE !!!FIRST FAIL");};
 };
 
 } //namespace
