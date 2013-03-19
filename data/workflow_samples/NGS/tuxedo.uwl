@@ -2,7 +2,7 @@
 
 
 
-workflow tuxedo{
+workflow Tuxedo{
 
     tophat {
         type:tophat;
@@ -21,15 +21,15 @@ workflow tuxedo{
         name:"Test for Diff. Expression with Cuffdiff";
     }
     read-sequence {
-        type:read-sequence;
+        type:get-file-list;
         name:"Read paired reads";
         url-in {
             dataset:Dataset;
         }
     }
     read-assembly {
-        type:read-assembly;
-        name:"Read Assembly";
+        type:get-file-list;
+        name:"Read BAM/SAM";
         url-in {
             dataset:Dataset;
         }
@@ -37,24 +37,23 @@ workflow tuxedo{
 
 
     .actor-bindings {
-        read-sequence.out-sequence->tophat.in-sequence
-        cuffmerge.out-annotations->cuffdiff.in-annotations
-        cufflinks.out-annotations->cuffmerge.in-annotations
-        read-assembly.out-assembly->cuffdiff.in-assembly
         tophat.out-assembly->cufflinks.in-assembly
+        cuffmerge.out-annotations->cuffdiff.in-annotations
+        read-assembly.out-url->cuffdiff.in-assembly
+        read-sequence.out-url->tophat.in-sequence
+        cufflinks.out-annotations->cuffmerge.in-annotations
     }
 
-    read-sequence.dataset->tophat.in-sequence.dataset
-    read-sequence.sequence->tophat.in-sequence.first.in
-    tophat.accepted.hits->cufflinks.in-assembly.assembly
+    read-sequence.url->tophat.in-sequence.in-url
+    tophat.hits-url->cufflinks.in-assembly.url
     cufflinks.isolevel.slot->cuffmerge.in-annotations.annotations
     cuffmerge.annotations->cuffdiff.in-annotations.annotations
-    read-assembly.assembly->cuffdiff.in-assembly.assembly
+    read-assembly.dataset->cuffdiff.in-assembly.url
 
     .meta {
         visual {
             cuffdiff {
-                pos:"406 -374.333";
+                pos:"-360 -345";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 bounds:"-30 -30 121.25 79";
@@ -62,7 +61,7 @@ workflow tuxedo{
                 in-assembly.angle:214.346;
             }
             cufflinks {
-                pos:"407 -703.333";
+                pos:"-360 -675";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 bounds:"-30 -30 116.875 74";
@@ -70,7 +69,7 @@ workflow tuxedo{
                 out-annotations.angle:299.796;
             }
             cuffmerge {
-                pos:"406 -538.333";
+                pos:"-360 -510";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 bounds:"-30 -30 118.625 73";
@@ -78,21 +77,19 @@ workflow tuxedo{
                 out-annotations.angle:301.382;
             }
             read-assembly {
-                pos:"152 -374.333";
+                pos:"-570 -330";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
-                bounds:"-30 -30 119.25 78";
-                out-assembly.angle:350.16;
+                out-url.angle:360;
             }
             read-sequence {
-                pos:"-72.667 -703.667";
+                pos:"-765 -675";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
-                bounds:"-30 -30 118.25 74";
-                out-sequence.angle:360;
+                out-url.angle:360;
             }
             tophat {
-                pos:"151 -703.333";
+                pos:"-615 -675";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 bounds:"-30 -30 120.75 75";
@@ -105,11 +102,11 @@ workflow tuxedo{
             cuffmerge.out-annotations->cuffdiff.in-annotations {
                 text-pos:"-46.5 -20";
             }
-            read-assembly.out-assembly->cuffdiff.in-assembly {
-                text-pos:"-30 -24";
+            read-assembly.out-url->cuffdiff.in-assembly {
+                text-pos:"-20 -24";
             }
-            read-sequence.out-sequence->tophat.in-sequence {
-                text-pos:"-25.5 -28";
+            read-sequence.out-url->tophat.in-sequence {
+                text-pos:"-20 -24";
             }
             tophat.out-assembly->cufflinks.in-assembly {
                 text-pos:"-35 -29";
@@ -120,10 +117,21 @@ workflow tuxedo{
             page {
                 id:1;
                 next:2;
-                title:"Input RNA short-reads";
+                title:"Input data";
                 parameters-area {
-                    read-sequence.url-in {
-                        type:datasets;
+                    group {
+                        title:"RNA short-reads";
+                        label-size:200;
+                        read-sequence.url-in {
+                            label:"Fasta/Fastq file(s)";
+                        }
+                    }
+                    group {
+                        title:"Cuffdiff data. Requires at least two files";
+                        label-size:200;
+                        read-assembly.url-in {
+                            label:"BAM/SAM files";
+                        }
                     }
                 }
             }
@@ -305,16 +313,6 @@ workflow tuxedo{
             }
             page {
                 id:6;
-                next:7;
-                title:"Cuffdiff input data. Requires at least two datasets";
-                parameters-area {
-                    read-assembly.url-in {
-                        type:datasets;
-                    }
-                }
-            }
-            page {
-                id:7;
                 title:"Output data";
                 parameters-area {
                     group {

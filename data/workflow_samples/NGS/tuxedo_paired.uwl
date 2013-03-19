@@ -2,7 +2,7 @@
 
 
 
-workflow tuxedo_paired{
+workflow "Tuxedo: paired reads"{
 
     tophat {
         type:tophat;
@@ -20,55 +20,54 @@ workflow tuxedo_paired{
         type:cuffdiff;
         name:"Test for Diff. Expression with Cuffdiff";
     }
+    multiplexer {
+        type:multiplexer;
+        name:Multiplexer;
+    }
     read-sequence {
-        type:read-sequence;
+        type:get-file-list;
         name:"Read paired reads 1";
         url-in {
             dataset:Dataset;
         }
     }
-    read-assembly {
-        type:read-assembly;
-        name:"Read Assembly";
-        url-in {
-            dataset:Dataset;
-        }
-    }
     read-sequence-1 {
-        type:read-sequence;
+        type:get-file-list;
         name:"Read paired reads 2";
         url-in {
             dataset:Dataset;
         }
     }
-    multiplexer {
-        type:multiplexer;
-        name:Multiplexer;
+    read-assembly {
+        type:get-file-list;
+        name:"Read Assembly";
+        url-in {
+            dataset:Dataset;
+        }
     }
 
 
     .actor-bindings {
-        read-sequence-1.out-sequence->multiplexer.input-data-2
-        read-assembly.out-assembly->cuffdiff.in-assembly
-        multiplexer.output-data->tophat.in-sequence
-        tophat.out-assembly->cufflinks.in-assembly
-        cufflinks.out-annotations->cuffmerge.in-annotations
-        read-sequence.out-sequence->multiplexer.input-data-1
+        read-sequence-1.out-url->multiplexer.input-data-2
         cuffmerge.out-annotations->cuffdiff.in-annotations
+        read-assembly.out-url->cuffdiff.in-assembly
+        tophat.out-assembly->cufflinks.in-assembly
+        read-sequence.out-url->multiplexer.input-data-1
+        cufflinks.out-annotations->cuffmerge.in-annotations
+        multiplexer.output-data->tophat.in-sequence
     }
 
-    read-sequence-1.dataset->tophat.in-sequence.dataset
-    read-sequence.sequence->tophat.in-sequence.first.in
-    read-sequence-1.sequence->tophat.in-sequence.second.in
-    tophat.accepted.hits->cufflinks.in-assembly.assembly
+    read-sequence.url->tophat.in-sequence.in-url
+    read-sequence-1.url->tophat.in-sequence.paired-url
+    tophat.hits-url->cufflinks.in-assembly.url
     cufflinks.isolevel.slot->cuffmerge.in-annotations.annotations
     cuffmerge.annotations->cuffdiff.in-annotations.annotations
-    read-assembly.assembly->cuffdiff.in-assembly.assembly
+    read-assembly.url->cuffdiff.in-assembly.url
 
     .meta {
         visual {
             cuffdiff {
-                pos:"-434 -283.333";
+                pos:"-495 -255";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 bounds:"-30 -30 147.25 89";
@@ -76,7 +75,7 @@ workflow tuxedo_paired{
                 in-assembly.angle:222.732;
             }
             cufflinks {
-                pos:"-150 -464.333";
+                pos:"-210 -435";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 bounds:"-30 -30 149.875 89";
@@ -84,15 +83,36 @@ workflow tuxedo_paired{
                 out-annotations.angle:304.042;
             }
             cuffmerge {
-                pos:"-148 -282.333";
+                pos:"-210 -255";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 bounds:"-30 -30 150.625 89";
                 in-annotations.angle:27.3821;
                 out-annotations.angle:222.797;
             }
+            read-sequence {
+                pos:"-747 -613";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                bounds:"-30 -30 147 87";
+                out-url.angle:351.506;
+            }
+            read-sequence-1 {
+                pos:"-493 -443";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                bounds:"-30 -30 148 90";
+                out-url.angle:27.1497;
+            }
+            read-assembly {
+                pos:"-754 -253";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                bounds:"-30 -30 148 86";
+                out-url.angle:350.478;
+            }
             multiplexer {
-                pos:"-433 -643.667";
+                pos:"-495 -613";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 bounds:"-30 -30 149 88";
@@ -100,29 +120,8 @@ workflow tuxedo_paired{
                 input-data-2.angle:303.941;
                 output-data.angle:351.68;
             }
-            read-assembly {
-                pos:"-689 -283.333";
-                style:ext;
-                bg-color-ext:"0 128 128 64";
-                bounds:"-30 -30 149.25 88";
-                out-assembly.angle:349.547;
-            }
-            read-sequence {
-                pos:"-688 -644";
-                style:ext;
-                bg-color-ext:"0 128 128 64";
-                bounds:"-30 -30 147.25 88";
-                out-sequence.angle:351.254;
-            }
-            read-sequence-1 {
-                pos:"-433 -464.333";
-                style:ext;
-                bg-color-ext:"0 128 128 64";
-                bounds:"-30 -30 148.25 89";
-                out-sequence.angle:27.1732;
-            }
             tophat {
-                pos:"-149 -645.333";
+                pos:"-210 -615";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 bounds:"-30 -30 149.75 89";
@@ -135,248 +134,189 @@ workflow tuxedo_paired{
             cuffmerge.out-annotations->cuffdiff.in-annotations {
                 text-pos:"-45.5 -34";
             }
+            read-sequence-1.out-url->multiplexer.input-data-2 {
+                text-pos:"-20 -24";
+            }
+            read-assembly.out-url->cuffdiff.in-assembly {
+                text-pos:"-20 -24";
+            }
+            read-sequence.out-url->multiplexer.input-data-1 {
+                text-pos:"-20 -24";
+            }
             multiplexer.output-data->tophat.in-sequence {
                 text-pos:"-44.5 -42";
-            }
-            read-assembly.out-assembly->cuffdiff.in-assembly {
-                text-pos:"-28 -16";
-            }
-            read-sequence-1.out-sequence->multiplexer.input-data-2 {
-                text-pos:"-29.5 -9";
-            }
-            read-sequence.out-sequence->multiplexer.input-data-1 {
-                text-pos:"-26.5 -30";
             }
             tophat.out-assembly->cufflinks.in-assembly {
                 text-pos:"-39 -14";
             }
         }
+
         wizard {
-            name:"Tuxedo wizard";
+            name : "Tuxedo wizard";
             page {
                 id:1;
-                next:25;
-                title:"First files of input paired RNA short-reads";
-                parameters-area {
-                    read-sequence.url-in {
-                        type:datasets;
-                    }
-                }
-            }
-            page {
-                id:2;
-                next:3;
-                title:"Tophat settings";
-                parameters-area {
-                    group {
-                        title:"Input reference";
-                        label-size:200;
-                        tophat.bowtie-index-dir {
-                        }
-                        tophat.bowtie-index-basename {
-                        }
-                    }
-                    group {
-                        title:Parameters;
-                        label-size:200;
-                        tophat.known-transcript {
-                        }
-                        tophat.raw-junctions {
-                        }
-                    }
-                    group {
-                        title:Additional;
-                        label-size:200;
-                        type:hideable;
-                        tophat.mate-inner-distance {
-                        }
-                        tophat.mate-standard-deviation {
-                        }
-                        tophat.library-type {
-                        }
-                        tophat.no-novel-junctions {
-                        }
-                        tophat.max-multihits {
-                        }
-                        tophat.segment-length {
-                        }
-                        tophat.fusion-search {
-                        }
-                        tophat.transcriptome-only {
-                        }
-                        tophat.transcriptome-max-hits {
-                        }
-                        tophat.prefilter-multihits {
-                        }
-                        tophat.min-anchor-length {
-                        }
-                        tophat.splice-mismatches {
-                        }
-                        tophat.read-mismatches {
-                        }
-                        tophat.segment-mismatches {
-                        }
-                        tophat.solexa-1-3-quals {
-                        }
-                        tophat.bowtie-version {
-                        }
-                        tophat.bowtie-n-mode {
-                        }
-                        tophat.bowtie-tool-path {
-                        }
-                        tophat.samtools-tool-path {
-                        }
-                        tophat.path {
-                        }
-                        tophat.temp-dir {
-                        }
-                    }
-                }
-            }
-            page {
-                id:25;
                 next:2;
-                title:"Second files of input paired RNA short-reads. Set up the same datasets structure";
-                parameters-area {
-                    read-sequence-1.url-in {
-                        type:datasets;
-                    }
-                }
-            }
-            page {
-                id:3;
-                next:4;
-                title:"Cufflinks settings";
+                title:"Input data";
                 parameters-area {
                     group {
-                        title:Parameters;
+                        title:"Paired RNA short-reads";
                         label-size:200;
-                        cufflinks.ref-annotation {
+                        read-sequence.url-in {
+                            label:"First Fasta/Fastq file(s)";
                         }
-                        cufflinks.rabt-annotation {
-                        }
-                        cufflinks.library-type {
-                        }
-                        cufflinks.mask-file {
-                        }
-                        cufflinks.multi-read-correct {
-                        }
-                        cufflinks.min-isoform-fraction {
-                        }
-                        cufflinks.frag-bias-correct {
-                        }
-                        cufflinks.pre-mrna-fraction {
+                        read-sequence-1.url-in {
+                            label:"Second Fasta/Fastq file(s)";
                         }
                     }
                     group {
-                        title:Additional;
+                        title:"Cuffdiff data. Requires at least two files";
                         label-size:200;
-                        type:hideable;
-                        cufflinks.path {
-                        }
-                        cufflinks.tmp-dir {
+                        read-assembly.url-in {
+                            label:"BAM/SAM files";
                         }
                     }
                 }
             }
             page {
-                id:4;
-                next:5;
-                title:"Cuffmerge settings";
+                id : 2;
+                next : 3;
+                title : "Tophat settings";
                 parameters-area {
                     group {
-                        title:Parameters;
-                        label-size:200;
-                        cuffmerge.min-isoform-fraction {
-                        }
-                        cuffmerge.ref-annotation {
-                        }
-                        cuffmerge.ref-seq {
-                        }
+                        title : "Input reference";
+                        label-size : 200;
+                        tophat.bowtie-index-dir {}
+                        tophat.bowtie-index-basename {}
                     }
                     group {
-                        title:Additional;
-                        label-size:200;
-                        type:hideable;
-                        cuffmerge.cuffcompare-tool-path {
-                        }
-                        cuffmerge.path {
-                        }
-                        cuffmerge.tmp-dir {
-                        }
+                        title : "Parameters";
+                        label-size : 200;
+                        tophat.known-transcript {}
+                        tophat.raw-junctions {}
+                    }
+                    group {
+                        title : "Additional";
+                        label-size : 200;
+                        type : hideable;
+                        tophat.mate-inner-distance {}
+                        tophat.mate-standard-deviation {}
+                        tophat.library-type {}
+                        tophat.no-novel-junctions {}
+                        tophat.max-multihits {}
+                        tophat.segment-length {}
+                        tophat.fusion-search {}
+                        tophat.transcriptome-only {}
+                        tophat.transcriptome-max-hits {}
+                        tophat.prefilter-multihits {}
+                        tophat.min-anchor-length {}
+                        tophat.splice-mismatches {}
+                        tophat.read-mismatches {}
+                        tophat.segment-mismatches {}
+                        tophat.solexa-1-3-quals {}
+                        tophat.bowtie-version {}
+                        tophat.bowtie-n-mode {}
+                        tophat.bowtie-tool-path {}
+                        tophat.samtools-tool-path {}
+                        tophat.path {}
+                        tophat.temp-dir {}
                     }
                 }
             }
             page {
-                id:5;
-                next:6;
-                title:"Cuffdiff settings";
+                id : 3;
+                next : 4;
+                title : "Cufflinks settings";
                 parameters-area {
                     group {
-                        title:Parameters;
-                        label-size:200;
-                        cuffdiff.time-series-analysis {
-                        }
-                        cuffdiff.upper-quartile-norm {
-                        }
-                        cuffdiff.hits-norm {
-                        }
-                        cuffdiff.frag-bias-correct {
-                        }
-                        cuffdiff.multi-read-correct {
-                        }
-                        cuffdiff.library-type {
-                        }
+                        title : "Parameters";
+                        label-size : 200;
+                        cufflinks.ref-annotation {}
+                        cufflinks.rabt-annotation {}
+                        cufflinks.library-type {}
+                        cufflinks.mask-file {}
+                        cufflinks.multi-read-correct {}
+                        cufflinks.min-isoform-fraction {}
+                        cufflinks.frag-bias-correct {}
+                        cufflinks.pre-mrna-fraction {}
                     }
                     group {
-                        title:Additional;
-                        label-size:200;
-                        type:hideable;
-                        cuffdiff.mask-file {
-                        }
-                        cuffdiff.min-alignment-count {
-                        }
-                        cuffdiff.fdr {
-                        }
-                        cuffdiff.max-mle-iterations {
-                        }
-                        cuffdiff.emit-count-tables {
-                        }
-                        cuffdiff.path {
-                        }
-                        cuffdiff.tmp-dir {
-                        }
+                        title : "Additional";
+                        label-size : 200;
+                        type : hideable;
+                        cufflinks.path {}
+                        cufflinks.tmp-dir {}
                     }
                 }
             }
             page {
-                id:6;
-                next:7;
-                title:"Cuffdiff input data. Requires at least two datasets";
+                id : 4;
+                next : 5;
+                title : "Cuffmerge settings";
                 parameters-area {
-                    read-assembly.url-in {
-                        type:datasets;
+                    group {
+                        title : "Parameters";
+                        label-size : 200;
+                        cuffmerge.min-isoform-fraction {}
+                        cuffmerge.ref-annotation {}
+                        cuffmerge.ref-seq {}
+                    }
+                    group {
+                        title : "Additional";
+                        label-size : 200;
+                        type : hideable;
+                        cuffmerge.cuffcompare-tool-path {}
+                        cuffmerge.path {}
+                        cuffmerge.tmp-dir {}
                     }
                 }
             }
             page {
-                id:7;
-                title:"Output data";
+                id : 5;
+                next : 6;
+                title : "Cuffdiff settings";
                 parameters-area {
                     group {
-                        title:"Tools output directories";
-                        label-size:100;
+                        title : "Parameters";
+                        label-size : 200;
+                        cuffdiff.time-series-analysis {}
+                        cuffdiff.upper-quartile-norm {}
+                        cuffdiff.hits-norm {}
+                        cuffdiff.frag-bias-correct {}
+                        cuffdiff.multi-read-correct {}
+                        cuffdiff.library-type {}
+                    }
+                    group {
+                        title : "Additional";
+                        label-size : 200;
+                        type : hideable;
+                        cuffdiff.mask-file {}
+                        cuffdiff.min-alignment-count {}
+                        cuffdiff.fdr {}
+                        cuffdiff.max-mle-iterations {}
+                        cuffdiff.emit-count-tables {}
+                        cuffdiff.path {}
+                        cuffdiff.tmp-dir {}
+                    }
+                }
+            }
+            page {
+                id : 6;
+                title : "Output data";
+                parameters-area {
+                    group {
+                        title : "Tools output directories";
+                        label-size : 100;
                         tophat.out-dir {
-                            label:Tophat;
+                            label : "Tophat";
                         }
                         cufflinks.out-dir {
-                            label:Cufflinks;
+                            label : "Cufflinks";
                         }
                         cuffmerge.out-dir {
-                            label:Cuffmerge;
+                            label : "Cuffmerge";
                         }
                         cuffdiff.out-dir {
-                            label:Cuffdiff;
+                            label : "Cuffdiff";
                         }
                     }
                 }
