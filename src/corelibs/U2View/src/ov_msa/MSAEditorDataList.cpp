@@ -430,7 +430,6 @@ TabWidgetArea::~TabWidgetArea() {
 }
 void TabWidgetArea::sl_onTabCloseRequested(QWidget* page) {
     deleteTab(page);
-    //emit si_tabCloseRequested(page);
 }
 void TabWidgetArea::deleteTab(QWidget *page) {
     CHECK(-1 != currentWidget->indexOf(page),);

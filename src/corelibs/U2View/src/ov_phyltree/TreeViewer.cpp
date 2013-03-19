@@ -55,6 +55,7 @@
 #include <U2Algorithm/PhyTreeGeneratorRegistry.h>
 
 #include <QtCore/QStack>
+#include <QtCore/QQueue>
 
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QMouseEvent>
@@ -600,17 +601,30 @@ void TreeViewerUI::updateTextSettings(){
 void TreeViewerUI::updateTreeSettings(){
 
     qreal avgW = 0;
-    if(treeSettings.type == TreeSettings::CLADOGRAM){
+    if(treeSettings.type != TreeSettings::PHYLOGRAM){
         avgW = avgWidth(); 
         legend->setVisible(false);
     }else{
          legend->setVisible(true);
+    }
+
+    if(treeSettings.type == TreeSettings::DEFAULT) {
+        determineBranchLengths();
     }
     
     QStack<GraphicsBranchItem*> stack;
     stack.push(rectRoot);
     while (!stack.empty()) {
         GraphicsBranchItem *item = stack.pop();
+
+        foreach (QGraphicsItem* ci, item->childItems()) {
+            GraphicsBranchItem* gbi = dynamic_cast<GraphicsBranchItem*>(ci);
+            if (gbi != NULL) {
+                stack.push(gbi);
+                gbi->setLenghtCoef(qMax(1, item->getBranchLength() - gbi->getBranchLength()));
+            }
+        }
+
         if(item!=rectRoot){
          
             if(layout == TreeLayout_Rectangular){
@@ -624,6 +638,14 @@ void TreeViewerUI::updateTreeSettings(){
 
             switch (treeSettings.type)
             {
+            case TreeSettings::DEFAULT:
+                if(item->getDistanceText() != NULL){
+                    if(item->getDistanceText()->text() == ""){
+                        item->setDistanceText("0");
+                    }
+                }
+                item->setWidth(avgW * getScale()* coef * item->getLengthCoef());
+                break;
             case TreeSettings::PHYLOGRAM:
                 if(item->getDistanceText() != NULL){
                     if(item->getDistanceText()->text() == "0"){
@@ -643,12 +665,6 @@ void TreeViewerUI::updateTreeSettings(){
             default:
                 assert(false && "Unexpected tree type value");
                 break;
-            }
-        }
-        foreach (QGraphicsItem* ci, item->childItems()) {
-            GraphicsBranchItem* gbi = dynamic_cast<GraphicsBranchItem*>(ci);
-            if (gbi != NULL) {
-                stack.push(gbi);
             }
         }
     }
@@ -682,6 +698,44 @@ void TreeViewerUI::updateTreeSettings(){
     fitInView(scene()->sceneRect(), Qt::KeepAspectRatio);
 }
 
+void TreeViewerUI::determineBranchLengths() {
+    QStack<GraphicsBranchItem*> stack;
+    QQueue<GraphicsBranchItem*> childQueue;
+    stack.push(rectRoot);
+    while (!stack.empty()) {
+        GraphicsBranchItem *item = stack.pop();
+        int childsCounter = 0;
+
+        foreach (QGraphicsItem* ci, item->childItems()) {
+            GraphicsBranchItem* gbi = dynamic_cast<GraphicsBranchItem*>(ci);
+            if (gbi != NULL) {
+                stack.push(gbi);
+                childsCounter++;
+            }
+        }
+
+        if(item == rectRoot) { 
+            continue;
+        }
+
+        if(0 == childsCounter) {
+            childQueue.enqueue(item);
+            item->setBranchLength(0);
+            continue;
+        }
+    }
+    while(!childQueue.isEmpty()) {
+        GraphicsBranchItem *item = childQueue.dequeue();
+        GraphicsBranchItem *parentItem = dynamic_cast<GraphicsBranchItem *>(item->getParentItem());
+        if(NULL == parentItem) {
+            continue;
+        }
+
+        parentItem->setBranchLength(qMax(parentItem->getBranchLength(), item->getBranchLength() + 1));
+
+        childQueue.enqueue(parentItem);
+    }
+}
 
 #define BRANCH_COLOR        QString("branch_color")
 #define BRANCH_THICKNESS    QString("branch_thickness")

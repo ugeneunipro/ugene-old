@@ -215,13 +215,13 @@ protected:
     void initialize();
 
     QList<UpdatedTabWidget*>            tabWidgets;
+
 private slots:
     void sl_onWidgetSelected(UpdatedTabWidget*);
-    void sl_onTabCloseRequested(QWidget*);
     void sl_addSplitter(Qt::Orientation splitterOrientation, QWidget* page, const QString &label);
+    void sl_onTabCloseRequested(QWidget* page);
 signals:
     void si_tabsCountChanged(int curTabsNumber);
-    void si_tabCloseRequested(QWidget* page);
 private:
     int                                 tabsCount;
     QMap<QWidget*, UpdatedTabWidget*>   widgetLocations;

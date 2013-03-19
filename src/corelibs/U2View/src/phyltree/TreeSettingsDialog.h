@@ -31,7 +31,7 @@ struct TreeSettings
 public:
     TreeSettings();
 
-    enum TREE_TYPE { PHYLOGRAM, CLADOGRAM };
+    enum TREE_TYPE { PHYLOGRAM, CLADOGRAM, DEFAULT };
 
     TREE_TYPE type;
     int width_coef;
@@ -49,6 +49,7 @@ public:
     virtual void accept();
     TreeSettings getSettings() const;
 
+    static QString treeDefaultText() { return tr("Default"); }
     static QString treePhylogramText() { return tr("Phylogram"); }
     static QString treeCladogramText() { return tr("Cladogram"); }
 

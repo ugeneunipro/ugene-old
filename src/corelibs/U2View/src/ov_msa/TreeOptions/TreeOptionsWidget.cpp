@@ -154,6 +154,7 @@ void TreeOptionsWidget::createGeneralSettingsWidgets(){
     items << tr("Rectangular") << tr("Circular") << tr("Unrooted");
     layoutCombo->addItems(items);
 
+    treeViewCombo->addItem(TreeSettingsDialog::treeDefaultText());
     treeViewCombo->addItem(TreeSettingsDialog::treePhylogramText());
     treeViewCombo->addItem(TreeSettingsDialog::treeCladogramText());
     updateGeneralSettingsWidgets();
@@ -162,6 +163,9 @@ void TreeOptionsWidget::createGeneralSettingsWidgets(){
 void TreeOptionsWidget::updateGeneralSettingsWidgets() {
     switch (treeSettings.type)
     {
+    case TreeSettings::DEFAULT:
+        treeViewCombo->setCurrentIndex(treeViewCombo->findText(TreeSettingsDialog::treeDefaultText()));
+        break;
     case TreeSettings::PHYLOGRAM:
         treeViewCombo->setCurrentIndex(treeViewCombo->findText(TreeSettingsDialog::treePhylogramText()));
         break;
@@ -237,8 +241,12 @@ void TreeOptionsWidget::sl_onGeneralSettingsChanged()
 {
     treeSettings.height_coef = heightSlider->value();
     treeSettings.width_coef = widthSlider->value();
-
-    if (treeViewCombo->currentText() == TreeSettingsDialog::treePhylogramText())
+    
+    if (treeViewCombo->currentText() == TreeSettingsDialog::treeDefaultText())
+    {
+        treeSettings.type = TreeSettings::DEFAULT;
+    }
+    else if (treeViewCombo->currentText() == TreeSettingsDialog::treePhylogramText())
     {
         treeSettings.type = TreeSettings::PHYLOGRAM;
     } else {

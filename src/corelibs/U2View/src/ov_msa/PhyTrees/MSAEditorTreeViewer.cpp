@@ -175,6 +175,7 @@ void MSAEditorTreeViewerUI::mouseMoveEvent(QMouseEvent *me) {
 
         subgroupSelector->setLine(subgroupSelectorPos, 0, subgroupSelectorPos, scene()->height());
         highlightBranches();
+        scene()->update();
     }
     else {
         TreeViewerUI::mouseMoveEvent(me);

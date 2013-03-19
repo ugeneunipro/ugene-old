@@ -280,6 +280,10 @@ private:
     qreal avgWidth();
 
     void updateLabelsAlignment(bool on);
+
+    void determineBranchLengths();
+
+    int getBranchLength();
     
     PhyTreeObject*      phyObject;
     GraphicsBranchItem* root;

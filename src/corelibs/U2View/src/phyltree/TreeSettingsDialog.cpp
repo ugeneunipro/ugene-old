@@ -43,11 +43,15 @@ TreeSettingsDialog::TreeSettingsDialog(QWidget *parent, const TreeSettings &tree
 
     heightSlider->setEnabled(isRectLayout);
 
+    treeViewCombo->addItem(treeDefaultText());
     treeViewCombo->addItem(treePhylogramText());
     treeViewCombo->addItem(treeCladogramText());
 
     switch ( settings.type )
     {
+    case TreeSettings::DEFAULT:
+        treeViewCombo->setCurrentIndex(treeViewCombo->findText(treeDefaultText()));
+        break;
     case TreeSettings::PHYLOGRAM:
         treeViewCombo->setCurrentIndex(treeViewCombo->findText(treePhylogramText()));
         break;
@@ -65,7 +69,11 @@ void TreeSettingsDialog::accept() {
     changedSettings.height_coef = heightSlider->value();
     changedSettings.width_coef = widthlSlider->value();
 
-    if (treeViewCombo->currentText() == treePhylogramText())
+    if (treeViewCombo->currentText() == treeDefaultText())
+    {
+        changedSettings.type = TreeSettings::DEFAULT;
+    }
+    else if (treeViewCombo->currentText() == treePhylogramText())
     {
         changedSettings.type = TreeSettings::PHYLOGRAM;
     } else if (treeViewCombo->currentText() == treeCladogramText()) {

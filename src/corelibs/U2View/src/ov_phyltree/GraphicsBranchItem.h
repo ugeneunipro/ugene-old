@@ -51,6 +51,7 @@ private:
     GraphicsBranchItem* correspondingItem;
     GraphicsButtonItem* buttonItem;
     void initText(qreal d);
+    int branchLength;
 
 protected:
 
@@ -60,6 +61,7 @@ protected:
     qreal dist;
     bool collapsed;
     BranchSettings settings;
+    int lengthCoef;
 
     GraphicsBranchItem(const QString& name);
     GraphicsBranchItem(qreal d, bool withButton = true);
@@ -90,6 +92,14 @@ public:
     void setCorrespondingItem(GraphicsBranchItem* cItem) {correspondingItem = cItem;}
 
     const QList<QGraphicsItem*> getChildItems() {return childItems();}
+
+    void setBranchLength(int newLength) {branchLength = newLength;}
+    int getBranchLength() {return branchLength;}
+
+    QGraphicsItem* getParentItem() {return parentItem();}
+
+    void setLenghtCoef(int newCoef) {lengthCoef = newCoef;}
+    int getLengthCoef() {return lengthCoef;}
 };
 
 }//namespace;
