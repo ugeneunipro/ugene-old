@@ -19,10 +19,21 @@
  * MA 02110-1301, USA.
  */
 
+#include <U2Core/U2SafePoints.h>
+
 #include "TopHatSettings.h"
 
-
 namespace U2 {
+
+TopHatInputData::TopHatInputData()
+: paired(false), fromFiles(false), workflowContext(NULL)
+{
+}
+
+void TopHatInputData::cleanupReads() {
+    seqIds.clear();
+    pairedSeqIds.clear();
+}
 
 TopHatSettings::TopHatSettings()
     : noNovelJunctions(false),
@@ -31,15 +42,21 @@ TopHatSettings::TopHatSettings()
       prefilterMultihits(false),
       solexa13quals(false),
       bowtieMode(vMode),
-      useBowtie1(false),
-      workflowContext(NULL),
-      storage(NULL)
+      useBowtie1(false)
 {
 }
 
 void TopHatSettings::cleanupReads() {
-    seqIds.clear();
-    pairedSeqIds.clear();
+    data.cleanupReads();
+}
+
+Workflow::WorkflowContext * TopHatSettings::workflowContext() const {
+    return data.workflowContext;
+}
+
+Workflow::DbiDataStorage * TopHatSettings::storage() const {
+    CHECK(NULL != workflowContext(), NULL);
+    return workflowContext()->getDataStorage();
 }
 
 }

@@ -81,9 +81,11 @@ const QString TopHatWorkerFactory::SAMTOOLS_TOOL_PATH("samtools-tool-path");
 const QString TopHatWorkerFactory::EXT_TOOL_PATH("path");
 const QString TopHatWorkerFactory::TMP_DIR_PATH("temp-dir");
 
-const QString TopHatWorkerFactory::FIRST_IN_SLOT_ID("first.in");
-const QString TopHatWorkerFactory::SECOND_IN_SLOT_ID("second.in");
-const QString TopHatWorkerFactory::DATASET_IN_SLOT_ID("dataset");
+static const QString DATASET_SLOT_ID("dataset");
+static const QString IN_DATA_SLOT_ID("first.in");
+static const QString IN_URL_SLOT_ID("in-url");
+static const QString PAIRED_IN_DATA_SLOT_ID("second.in");
+static const QString PAIRED_IN_URL_SLOT_ID("paired-url");
 
 const QString TopHatWorkerFactory::OUT_MAP_DESCR_ID("out.tophat");
 const QString TopHatWorkerFactory::ACCEPTED_HITS_SLOT_ID("accepted.hits");
@@ -106,28 +108,41 @@ void TopHatWorkerFactory::init()
 
     QMap<Descriptor, DataTypePtr> inputMap;
 
-    Descriptor firstInDescriptor =
-            Descriptor(FIRST_IN_SLOT_ID,
-                       TopHatWorker::tr("Input reads"),
-                       TopHatWorker::tr("TopHat input reads. When running TopHat"
-                                        " with paired-end reads, this should be"
-                                        " the *_1 (\"left\") set of reads."));
-    Descriptor secondInDescriptor =
-            Descriptor(SECOND_IN_SLOT_ID,
-                       TopHatWorker::tr("Input reads"),
-                       TopHatWorker::tr("Only used when running TopHat with paired"
-                                        " end reads, and contains the *_2 (\"right\")"
-                                        " set of reads. Reads MUST appear in the same order"
-                                        " as the *_1 reads."));
+    Descriptor inDataDesc(IN_DATA_SLOT_ID,
+        TopHatWorker::tr("Input reads"),
+        TopHatWorker::tr("TopHat input reads. Set this slot empty if you want"
+        " to align reads directly from a file and specify the \"Input reads url\" slot."
+        " When running TopHat with paired-end reads, this should be"
+        " the *_1 (\"left\") set of reads."));
+    Descriptor inUrlDesc(IN_URL_SLOT_ID,
+        TopHatWorker::tr("Input reads url"),
+        TopHatWorker::tr("TopHat input reads url. When running TopHat"
+        " with paired-end reads, this should be"
+        " the *_1 (\"left\") set of reads."));
+    Descriptor pairedInDataDesc(PAIRED_IN_DATA_SLOT_ID,
+        TopHatWorker::tr("Input paired reads"),
+        TopHatWorker::tr(" Set this slot empty if you want"
+        " to align reads directly from a file and specify the \"Input reads url\" slot."
+        " Only used when running TopHat with paired"
+        " end reads, and contains the *_2 (\"right\")"
+        " set of reads. Reads MUST appear in the same order"
+        " as the *_1 reads."));
+    Descriptor pairedInUrlDesc(PAIRED_IN_URL_SLOT_ID,
+        TopHatWorker::tr("Input paired reads url"),
+        TopHatWorker::tr("Only used when running TopHat with paired"
+        " end reads, and contains the *_2 (\"right\")"
+        " set of reads."));
     Descriptor datasetDescriptor =
-        Descriptor(DATASET_IN_SLOT_ID,
+        Descriptor(DATASET_SLOT_ID,
         TopHatWorker::tr("Dataset name"),
-        TopHatWorker::tr("Group input reads into chunks for several Tophat"
-        "runs.\nSet it empty if you want to run Tophat once for all input"
-        "reads"));
+        TopHatWorker::tr("Use it only when sequences slot(or slots) is specified."
+        " Group input reads into chunks for several Tophat runs.\n"
+        "Set it empty if you want to run Tophat once for all input reads"));
 
-    inputMap[firstInDescriptor] = BaseTypes::DNA_SEQUENCE_TYPE();
-    inputMap[secondInDescriptor] = BaseTypes::DNA_SEQUENCE_TYPE();
+    inputMap[inDataDesc] = BaseTypes::DNA_SEQUENCE_TYPE();
+    inputMap[inUrlDesc] = BaseTypes::STRING_TYPE();
+    inputMap[pairedInDataDesc] = BaseTypes::DNA_SEQUENCE_TYPE();
+    inputMap[pairedInUrlDesc] = BaseTypes::STRING_TYPE();
     inputMap[datasetDescriptor] = BaseTypes::STRING_TYPE();
 
     portDescriptors << new PortDescriptor(inputPortDescriptor,
@@ -448,6 +463,7 @@ void TopHatWorkerFactory::init()
     // Init and register the actor prototype
     proto->setEditor(new DelegateEditor(delegates));
     proto->setPrompter(new TopHatPrompter());
+    proto->setPortValidator(BasePorts::IN_SEQ_PORT_ID(), new InputSlotsValidator());
 
     WorkflowEnv::getProtoRegistry()->registerProto(
         BaseActorCategories::CATEGORY_RNA_SEQ(),
@@ -485,11 +501,11 @@ TopHatWorker::TopHatWorker(Actor* actor)
       output(NULL),
       datasetsData(false)
 {
-    bindedToSecondSlot = false;
+
 }
 
-QList<Actor*> TopHatWorker::getProducers(const QString &portId, const QString &slotId) const {
-    Port *port = actor->getPort(portId);
+QList<Actor*> TopHatWorker::getProducers(const QString &slotId) const {
+    Port *port = actor->getPort(BasePorts::IN_SEQ_PORT_ID());
     SAFE_POINT(NULL != port,"Internal error during initializing TopHatWorker: port is NULL!",
         QList<Actor*>());
 
@@ -500,32 +516,33 @@ QList<Actor*> TopHatWorker::getProducers(const QString &portId, const QString &s
     return bus->getProducers(slotId);
 }
 
+void TopHatWorker::initInputData() {
+    QList<Actor*> inDataProducers = getProducers(IN_DATA_SLOT_ID);
+    settings.data.fromFiles = (inDataProducers.isEmpty());
+}
+
+void TopHatWorker::initPairedReads() {
+    QList<Actor*> pairedProducers;;
+    if (settings.data.fromFiles) {
+        pairedProducers = getProducers(PAIRED_IN_URL_SLOT_ID);
+    } else {
+        pairedProducers = getProducers(PAIRED_IN_DATA_SLOT_ID);
+    }
+    settings.data.paired = (!pairedProducers.isEmpty());
+}
+
 void TopHatWorker::initDatasetData() {
-    QList<Actor*> producers = getProducers(BasePorts::IN_SEQ_PORT_ID(),
-        TopHatWorkerFactory::DATASET_IN_SLOT_ID);
+    QList<Actor*> producers = getProducers(DATASET_SLOT_ID);
     datasetsData = DatasetData(!producers.isEmpty());
 }
 
-void TopHatWorker::init()
-{
-    input = ports.value(BasePorts::IN_SEQ_PORT_ID());
-    output = ports.value(BasePorts::OUT_ASSEMBLY_PORT_ID());
-
-    initDatasetData();
-
-    // Verify if the second slot is connected
-    QList<Actor*> producers = getProducers(BasePorts::IN_SEQ_PORT_ID(), TopHatWorkerFactory::SECOND_IN_SLOT_ID);
-    bindedToSecondSlot = !producers.isEmpty();
-
-    // Init the parameters
+void TopHatWorker::initSettings() {
     settingsAreCorrect = true;
-
-    settings.workflowContext = context;
-    settings.storage = context->getDataStorage();
+    settings.data.workflowContext = context;
 
     settings.outDir = getValue<QString>(TopHatWorkerFactory::OUT_DIR);
     settings.bowtieIndexPathAndBasename = getValue<QString>(TopHatWorkerFactory::BOWTIE_INDEX_DIR) +
-            "/" + getValue<QString>(TopHatWorkerFactory::BOWTIE_INDEX_BASENAME);
+        "/" + getValue<QString>(TopHatWorkerFactory::BOWTIE_INDEX_BASENAME);
 
     settings.mateInnerDistance = getValue<int>(TopHatWorkerFactory::MATE_INNER_DISTANCE);
     settings.mateStandardDeviation = getValue<int>(TopHatWorkerFactory::MATE_STANDARD_DEVIATION);
@@ -561,8 +578,8 @@ void TopHatWorker::init()
             settings.bowtieMode = nMode;
             break;
         default:
-           algoLog.error(tr("Unrecognized value of the Bowtie mode option!"));
-           settingsAreCorrect = false;
+            algoLog.error(tr("Unrecognized value of the Bowtie mode option!"));
+            settingsAreCorrect = false;
     }
 
     // Set version (Bowtie1 or Bowtie2) and the path to the corresponding external tool
@@ -578,7 +595,9 @@ void TopHatWorker::init()
 
     QString samtools = getValue<QString>(TopHatWorkerFactory::SAMTOOLS_TOOL_PATH);
     settings.samtoolsPath = WorkflowUtils::updateExternalToolPath(SAMTOOLS_EXT_TOOL_NAME, samtools);
+}
 
+void TopHatWorker::initPathes() {
     QString tmpDirPath = actor->getParameter(TopHatWorkerFactory::TMP_DIR_PATH)->getAttributeValue<QString>(context);
     if (QString::compare(tmpDirPath, "default", Qt::CaseInsensitive) != 0) {
         AppContext::getAppSettings()->getUserAppsSettings()->setUserTemporaryDirPath(tmpDirPath);
@@ -590,6 +609,17 @@ void TopHatWorker::init()
     }
 }
 
+void TopHatWorker::init() {
+    input = ports.value(BasePorts::IN_SEQ_PORT_ID());
+    output = ports.value(BasePorts::OUT_ASSEMBLY_PORT_ID());
+
+    initInputData();
+    initPairedReads();
+    initDatasetData();
+    initSettings();
+    initPathes();
+}
+
 Task * TopHatWorker::runTophat() {
     Task * topHatSupportTask = new TopHatSupportTask(settings);
     connect(topHatSupportTask, SIGNAL(si_stateChanged()), SLOT(sl_topHatTaskFinished()));
@@ -599,7 +629,7 @@ Task * TopHatWorker::runTophat() {
 
 Task * TopHatWorker::checkDatasets(const QVariantMap &data) {
     if (datasetsData.isGroup()) {
-        QString dataset = data[TopHatWorkerFactory::DATASET_IN_SLOT_ID].toString();
+        QString dataset = data[DATASET_SLOT_ID].toString();
         if (!datasetsData.isCurrent(dataset)) {
             datasetsData.replaceCurrent(dataset);
             return runTophat();
@@ -608,8 +638,7 @@ Task * TopHatWorker::checkDatasets(const QVariantMap &data) {
     return NULL;
 }
 
-Task * TopHatWorker::tick()
-{
+Task * TopHatWorker::tick() {
     if (!settingsAreCorrect) {
         return NULL;
     }
@@ -619,20 +648,23 @@ Task * TopHatWorker::tick()
         SAFE_POINT(!inputMessage.isEmpty(), "Internal error: message can't be NULL!", NULL);
         QVariantMap data = inputMessage.getData().toMap();
 
-        Task *result = checkDatasets(data);
-
-        // Get the sequence ID
-        SharedDbiDataHandler seqId = data[TopHatWorkerFactory::FIRST_IN_SLOT_ID].value<SharedDbiDataHandler>();
-        settings.seqIds.append(seqId);
-
-        // If the second slot is connected, expect the sequence of the paired read
-        if (bindedToSecondSlot) {
-            SharedDbiDataHandler pairedSeqId = data[TopHatWorkerFactory::SECOND_IN_SLOT_ID].value<SharedDbiDataHandler>();
-            settings.pairedSeqIds.append(pairedSeqId);
+        if (settings.data.fromFiles) {
+            settings.data.url = data[IN_URL_SLOT_ID].toString();
+            if (settings.data.paired) {
+                settings.data.pairedUrl = data[PAIRED_IN_URL_SLOT_ID].toString();
+            }
+            return runTophat();
+        } else {
+            Task *result = checkDatasets(data);
+            settings.data.seqIds << data[IN_DATA_SLOT_ID].value<SharedDbiDataHandler>();
+            // If the second slot is connected, expect the sequence of the paired read
+            if (settings.data.paired) {
+                settings.data.pairedSeqIds << data[PAIRED_IN_DATA_SLOT_ID].value<SharedDbiDataHandler>();
+            }
+            return result;
         }
-        return result;
     } else if (input->isEnded()) {
-        if (!settings.seqIds.isEmpty()) {
+        if (!settings.data.fromFiles && !settings.data.seqIds.isEmpty()) {
             return runTophat();
         } else {
             setDone();
@@ -699,6 +731,39 @@ bool DatasetData::isCurrent(const QString &dataset) {
 void DatasetData::replaceCurrent(const QString &dataset) {
     currentDataset = dataset;
     inited = true;
+}
+
+/************************************************************************/
+/* Validator */
+/************************************************************************/
+static QString sn(const IntegralBusPort *port, const QString &slotId) {
+    return port->getType()->getDatatypeDescriptor(slotId).getDisplayName();
+}
+bool InputSlotsValidator::validate(const Configuration *cfg, QStringList &l) const {
+    const IntegralBusPort *port = static_cast<const IntegralBusPort*>(cfg);
+    SAFE_POINT(NULL != port, "NULL port", false);
+
+    QStrStrMap bm = port->getParameter(IntegralBusPort::BUS_MAP_ATTR_ID)->getAttributeValueWithoutScript<QStrStrMap>();
+    bool data = (!bm[IN_DATA_SLOT_ID].isEmpty());
+    bool pairedData = (!bm[PAIRED_IN_DATA_SLOT_ID].isEmpty());
+    bool url = (!bm[IN_URL_SLOT_ID].isEmpty());
+    bool pairedUrl = (!bm[PAIRED_IN_URL_SLOT_ID].isEmpty());
+
+    if (!data && !url) {
+        QString dataName = sn(port, IN_DATA_SLOT_ID);
+        QString urlName = sn(port, IN_URL_SLOT_ID);
+        l.append(IntegralBusPort::tr("Error! One of these slots must be not empty: '%1', '%2'").arg(dataName).arg(urlName));
+        return false;
+    }
+
+    if ((data && pairedUrl) || (url && pairedData)) {
+        if (pairedUrl) {
+            l.append(IntegralBusPort::tr("Error! You can not bind one of sequences slots and one of url slots simultaneously"));
+            return false;
+        }
+    }
+
+    return true;
 }
 
 } // namespace LocalWorkflow

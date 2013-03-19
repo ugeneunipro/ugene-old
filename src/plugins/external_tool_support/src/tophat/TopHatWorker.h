@@ -79,21 +79,20 @@ private slots:
 protected:
     IntegralBus* input;
     IntegralBus* output;
+    TopHatInputData data;
     TopHatSettings settings;
     QStringList outputFiles;
 
     bool settingsAreCorrect;
-
-    /**
-     * If the second slot is binded the reads are considered to be paired
-     * and are input from both slots (1:1).
-     */
-    bool bindedToSecondSlot;
     DatasetData datasetsData;
 
 private:
+    void initInputData();
+    void initPairedReads();
     void initDatasetData();
-    QList<Actor*> getProducers(const QString &portId, const QString &slotId) const;
+    void initSettings();
+    void initPathes();
+    QList<Actor*> getProducers(const QString &slotId) const;
     Task * runTophat();
     /** Returns Tophat task is the dataset is changed */
     Task * checkDatasets(const QVariantMap &data);
@@ -137,12 +136,13 @@ public:
     static const QString EXT_TOOL_PATH;
     static const QString TMP_DIR_PATH;
 
-    static const QString FIRST_IN_SLOT_ID;
-    static const QString SECOND_IN_SLOT_ID;
-    static const QString DATASET_IN_SLOT_ID;
-
     static const QString OUT_MAP_DESCR_ID;
     static const QString ACCEPTED_HITS_SLOT_ID;
+};
+
+class InputSlotsValidator : public ConfigurationValidator {
+public:
+    virtual bool validate(const Configuration *cfg, QStringList &l) const;
 };
 
 } // namespace LocalWorkflow

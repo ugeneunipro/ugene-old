@@ -58,8 +58,6 @@ private:
     QPointer<Document>                  tmpDoc;
     QPointer<Document>                  tmpDocPaired;
     QString                             workingDirectory;
-    QString                             url;
-    QString                             urlPaired;
 
     SaveDocumentTask*                   saveTmpDocTask;
     SaveDocumentTask*                   savePairedTmpDocTask;
@@ -74,6 +72,11 @@ private:
     QStringList                             outputFiles;
 
     static const QString outSubDirBaseName;
+
+private:
+    QString setupTmpDir();
+    SaveDocumentTask * createSaveTask(const QString &url, QPointer<Document> &doc, const QList<Workflow::SharedDbiDataHandler> &seqs);
+    ExternalToolRunTask * runTophat();
 };
 
 

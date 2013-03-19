@@ -33,6 +33,24 @@
 
 namespace U2 {
 
+class TopHatInputData {
+public:
+    TopHatInputData();
+
+    bool paired;
+    bool fromFiles;
+    QString url;
+    QString pairedUrl;
+
+    QList<Workflow::SharedDbiDataHandler>   seqIds;
+    QList<Workflow::SharedDbiDataHandler>   pairedSeqIds;
+
+    Workflow::WorkflowContext*              workflowContext;
+
+public:
+    void cleanupReads();
+};
+
 class TopHatSettings
 {
 public:
@@ -64,18 +82,12 @@ public:
     /** Working directory for the TopHat tool */
     QString             outDir;
 
-    /**
-     * Input reads: if reads are paired both lists are filled.
-     * Otherwise only seqIds list is filled.
-     * Note that the pairedSeqIds list is used to detect whether paired reads were input (empty/not empty).
-     */
-    Workflow::WorkflowContext*              workflowContext;
-    Workflow::DbiDataStorage*               storage;
-    QList<Workflow::SharedDbiDataHandler>   seqIds;
-    QList<Workflow::SharedDbiDataHandler>   pairedSeqIds;
+    TopHatInputData     data;
 
 public:
     void cleanupReads();
+    Workflow::WorkflowContext * workflowContext() const;
+    Workflow::DbiDataStorage * storage() const;
 };
 
 }

@@ -62,30 +62,20 @@ TopHatSupportTask::TopHatSupportTask(const TopHatSettings& _settings)
 
 TopHatSupportTask::~TopHatSupportTask()
 {
-    if (NULL != tmpDoc) {
-        delete tmpDoc;
-    }
-
-    if (NULL != tmpDocPaired) {
-        delete tmpDocPaired;
-    }
-
-    if (NULL != logParser) {
-        delete logParser;
-    }
+    delete tmpDoc;
+    delete tmpDocPaired;
+    delete logParser;
 }
 
-
-void TopHatSupportTask::prepare()
-{
+QString TopHatSupportTask::setupTmpDir() {
     // Add a new subdirectory for temporary files
     QString tmpDirName = "TopHat_" + QString::number(this->getTaskId()) + "_" +
-            QDate::currentDate().toString("dd.MM.yyyy") + "_" +
-            QTime::currentTime().toString("hh.mm.ss.zzz") + "_" +
-            QString::number(QCoreApplication::applicationPid()) + "/";
+        QDate::currentDate().toString("dd.MM.yyyy") + "_" +
+        QTime::currentTime().toString("hh.mm.ss.zzz") + "_" +
+        QString::number(QCoreApplication::applicationPid()) + "/";
 
     QString topHatTmpDirName =
-            AppContext::getAppSettings()->getUserAppsSettings()->getCurrentProcessTemporaryDirPath(TOPHAT_TMP_DIR);
+        AppContext::getAppSettings()->getUserAppsSettings()->getCurrentProcessTemporaryDirPath(TOPHAT_TMP_DIR);
 
     // Create the tmp dir
     QDir tmpDir(topHatTmpDirName + "/" + tmpDirName);
@@ -97,101 +87,139 @@ void TopHatSupportTask::prepare()
 
         if (!tmpDir.rmdir(tmpDir.absolutePath())) {
             stateInfo.setError(ExternalToolSupportL10N::errorRemovingTmpSubdir(tmpDir.absolutePath()));
-            return;
+            return "";
         }
     }
-
     if (!tmpDir.mkpath(tmpDir.absolutePath())) {
         stateInfo.setError(ExternalToolSupportL10N::errorCreatingTmpSubrir(tmpDir.absolutePath()));
-        return;
+        return "";
     }
+    return tmpDir.absolutePath();
+}
 
+void TopHatSupportTask::prepare() {
     settings.outDir = GUrlUtils::createDirectory(
-                settings.outDir + "/" + outSubDirBaseName,
-                "_", stateInfo);
+        settings.outDir + "/" + outSubDirBaseName,
+        "_", stateInfo);
     CHECK_OP(stateInfo, );
 
-    workingDirectory = tmpDir.absolutePath();
-    url = workingDirectory + "/tmp_1.fq";
-
-    taskLog.trace(tr("Preparing TopHatSupportTask: created a temporary directory '%1'.").arg(workingDirectory));
-
-
-    // Create the tmp multi-fastq document
-    DocumentFormat* docFormat = AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::FASTQ);
-    tmpDoc = docFormat->createNewLoadedDocument(IOAdapterUtils::get(BaseIOAdapters::LOCAL_FILE), GUrl(url), stateInfo);
+    workingDirectory = setupTmpDir();
     CHECK_OP(stateInfo, );
-    tmpDoc->setDocumentOwnsDbiResources(false);
 
-    // Verify the storage
-    if (NULL == settings.storage) {
-        stateInfo.setError(tr("An unexpected error has occurred during preparing the TopHat task!"));
-        taskLog.trace(tr("Preparing TopHatSupportTask internal error: workflow dbi data storage is NULL!"));
+    if (settings.data.fromFiles) {
+        topHatExtToolTask = runTophat();
+        addSubTask(topHatExtToolTask);
         return;
     }
 
-    // Add all sequence objects (from the first slot) to the document
-    foreach (Workflow::SharedDbiDataHandler seqId, settings.seqIds) {
-        U2SequenceObject* seqObj(Workflow::StorageUtils::getSequenceObject(settings.storage, seqId));
-
-        if (NULL == seqObj) {
-            stateInfo.setError(tr("An unexpected error has occurred during preparing the TopHat task!"));
-            taskLog.trace(tr("Preparing TopHatSupportTask internal error: unable to get a sequence object!"));
-            return;
-        }
-
-        tmpDoc->addObject(seqObj);
-    }
-
-    // Create a task to save the document
-    saveTmpDocTask = new SaveDocumentTask(tmpDoc, AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE), url);
+    /************************************************************************/
+    /* Create save tasks */
+    /************************************************************************/
+    settings.data.url = workingDirectory + "/tmp_1.fq";
+    saveTmpDocTask = createSaveTask(settings.data.url, tmpDoc, settings.data.seqIds);
     addSubTask(saveTmpDocTask);
 
-    // If there are sequences from the second slot, write them to another document
-    if (!settings.pairedSeqIds.isEmpty()) {
-        urlPaired = workingDirectory + "/tmp_2.fq";
-
-        tmpDocPaired = docFormat->createNewLoadedDocument(IOAdapterUtils::get(BaseIOAdapters::LOCAL_FILE), GUrl(urlPaired), stateInfo);
-        CHECK_OP(stateInfo, );
-        tmpDocPaired->setDocumentOwnsDbiResources(false);
-
-        foreach (Workflow::SharedDbiDataHandler pairedSeqId, settings.pairedSeqIds) {
-            U2SequenceObject* pairedSeqObj(Workflow::StorageUtils::getSequenceObject(settings.storage, pairedSeqId));
-
-            if (NULL == pairedSeqObj) {
-                stateInfo.setError(tr("An unexpected error has occurred during preparing the TopHat task!"));
-                taskLog.trace(tr("Preparing TopHatSupportTask internal error: unable to get a paired sequence object!"));
-                return;
-            }
-
-            tmpDocPaired->addObject(pairedSeqObj);
-        }
-
-        // Create a task to save the document
-        savePairedTmpDocTask = new SaveDocumentTask(tmpDocPaired, AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE), urlPaired);
+    if (settings.data.paired) {
+        settings.data.pairedUrl = workingDirectory + "/tmp_2.fq";
+        savePairedTmpDocTask = createSaveTask(settings.data.pairedUrl, tmpDocPaired, settings.data.pairedSeqIds);
         addSubTask(savePairedTmpDocTask);
     }
 }
 
+SaveDocumentTask * TopHatSupportTask::createSaveTask(const QString &url, QPointer<Document> &doc, const QList<Workflow::SharedDbiDataHandler> &seqs) {
+    DocumentFormat* docFormat = AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::FASTQ);
+    doc = docFormat->createNewLoadedDocument(IOAdapterUtils::get(BaseIOAdapters::LOCAL_FILE), GUrl(url), stateInfo);
+    CHECK_OP(stateInfo, NULL);
+    doc->setDocumentOwnsDbiResources(false);
 
-void addOptionIfBoolParamIsSet(QStringList& arguments, bool optionIsSet, const QString& optionName)
-{
+    // Add all sequence objects to the document
+    foreach (Workflow::SharedDbiDataHandler seqId, seqs) {
+        U2SequenceObject* seqObj(Workflow::StorageUtils::getSequenceObject(settings.storage(), seqId));
+
+        if (NULL == seqObj) {
+            stateInfo.setError(tr("An unexpected error has occurred during preparing the TopHat task!"));
+            taskLog.trace(tr("Preparing TopHatSupportTask internal error: unable to get a sequence object!"));
+            return NULL;
+        }
+
+        doc->addObject(seqObj);
+    }
+
+    return new SaveDocumentTask(doc, AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE), url);
+}
+
+void addOptionIfBoolParamIsSet(QStringList& arguments, bool optionIsSet, const QString& optionName) {
     if (optionIsSet) {
         arguments << optionName;
     }
 }
 
-
-void addOptionIfStringParamIsSet(QStringList& arguments, const QString& strValue, const QString& optionName)
-{
+void addOptionIfStringParamIsSet(QStringList& arguments, const QString& strValue, const QString& optionName) {
     if (!strValue.isEmpty()) {
         arguments << optionName << strValue;
     }
 }
 
+ExternalToolRunTask * TopHatSupportTask::runTophat() {
+    // Init the arguments list
+    QStringList arguments;
 
-QList<Task*> TopHatSupportTask::onSubTaskFinished(Task *subTask)
-{
+    arguments << "--output-dir" << settings.outDir;
+    arguments << "--mate-inner-dist" << QString::number(settings.mateInnerDistance);
+    arguments << "--mate-std-dev" << QString::number(settings.mateStandardDeviation);
+    arguments << "--library-type" << settings.libraryType.getLibraryTypeAsStr();
+
+    addOptionIfBoolParamIsSet(arguments, settings.noNovelJunctions, "--no-novel-juncs");
+
+    addOptionIfStringParamIsSet(arguments, settings.rawJunctions, "--raw-juncs");
+    addOptionIfStringParamIsSet(arguments, settings.knownTranscript, "-G");
+
+    arguments << "--max-multihits" << QString::number(settings.maxMultihits);
+    arguments << "--segment-length" << QString::number(settings.segmentLength);
+
+    addOptionIfBoolParamIsSet(arguments, settings.fusionSearch, "--fusion-search");
+    addOptionIfBoolParamIsSet(arguments, settings.transcriptomeOnly, "--transcriptome-only");
+
+    arguments << "--transcriptome-max-hits" << QString::number(settings.transcriptomeMaxHits);
+
+    addOptionIfBoolParamIsSet(arguments, settings.prefilterMultihits, "--prefilter-multihits");
+
+    arguments << "--min-anchor-length" << QString::number(settings.minAnchorLength);
+    arguments << "--splice-mismatches" << QString::number(settings.spliceMismatches);
+    arguments << "--read-mismatches" << QString::number(settings.readMismatches);
+    arguments << "--segment-mismatches" << QString::number(settings.segmentMismatches);
+
+    addOptionIfBoolParamIsSet(arguments, settings.solexa13quals, "--solexa1.3-quals");
+
+    if (settings.bowtieMode == nMode) {
+        arguments << "--bowtie-n";
+    }
+
+    addOptionIfBoolParamIsSet(arguments, settings.useBowtie1, "--bowtie1");
+
+    // Index base and reads
+    arguments << settings.bowtieIndexPathAndBasename;
+    arguments << settings.data.url;
+    if (settings.data.paired) {
+        arguments << settings.data.pairedUrl;
+    }
+
+    // Create a log parser
+    logParser = new ExternalToolLogParser();
+
+    // Add Bowtie and samtools to the PATH environment variable
+    QStringList additionalPaths;
+    additionalPaths << QFileInfo(settings.bowtiePath).dir().absolutePath();
+    additionalPaths << QFileInfo(settings.samtoolsPath).dir().absolutePath();
+
+    return new ExternalToolRunTask(TOPHAT_TOOL_NAME,
+        arguments,
+        logParser,
+        workingDirectory,
+        additionalPaths);
+}
+
+QList<Task*> TopHatSupportTask::onSubTaskFinished(Task *subTask) {
     QList<Task*> result;
 
     if (subTask->hasError()) {
@@ -212,66 +240,8 @@ QList<Task*> TopHatSupportTask::onSubTaskFinished(Task *subTask)
             tmpDocPairedSaved = true;
         }
 
-        if (tmpDocSaved && (tmpDocPairedSaved || settings.pairedSeqIds.isEmpty()))
-        {
-            // Init the arguments list
-            QStringList arguments;
-
-            arguments << "--output-dir" << settings.outDir;
-            arguments << "--mate-inner-dist" << QString::number(settings.mateInnerDistance);
-            arguments << "--mate-std-dev" << QString::number(settings.mateStandardDeviation);
-            arguments << "--library-type" << settings.libraryType.getLibraryTypeAsStr();
-
-            addOptionIfBoolParamIsSet(arguments, settings.noNovelJunctions, "--no-novel-juncs");
-
-            addOptionIfStringParamIsSet(arguments, settings.rawJunctions, "--raw-juncs");
-            addOptionIfStringParamIsSet(arguments, settings.knownTranscript, "-G");
-
-            arguments << "--max-multihits" << QString::number(settings.maxMultihits);
-            arguments << "--segment-length" << QString::number(settings.segmentLength);
-
-            addOptionIfBoolParamIsSet(arguments, settings.fusionSearch, "--fusion-search");
-            addOptionIfBoolParamIsSet(arguments, settings.transcriptomeOnly, "--transcriptome-only");
-
-            arguments << "--transcriptome-max-hits" << QString::number(settings.transcriptomeMaxHits);
-
-            addOptionIfBoolParamIsSet(arguments, settings.prefilterMultihits, "--prefilter-multihits");
-
-            arguments << "--min-anchor-length" << QString::number(settings.minAnchorLength);
-            arguments << "--splice-mismatches" << QString::number(settings.spliceMismatches);
-            arguments << "--read-mismatches" << QString::number(settings.readMismatches);
-            arguments << "--segment-mismatches" << QString::number(settings.segmentMismatches);
-
-            addOptionIfBoolParamIsSet(arguments, settings.solexa13quals, "--solexa1.3-quals");
-
-            if (settings.bowtieMode == nMode) {
-                arguments << "--bowtie-n";
-            }
-
-            addOptionIfBoolParamIsSet(arguments, settings.useBowtie1, "--bowtie1");
-
-            // Index base and reads
-            arguments << settings.bowtieIndexPathAndBasename;
-            arguments << url;
-            if (!settings.pairedSeqIds.isEmpty()) {
-                arguments << urlPaired;
-            }
-
-            // Create a log parser
-            logParser = new ExternalToolLogParser();
-
-            // Add Bowtie and samtools to the PATH environment variable
-            QStringList additionalPaths;
-            additionalPaths << QFileInfo(settings.bowtiePath).dir().absolutePath();
-            additionalPaths << QFileInfo(settings.samtoolsPath).dir().absolutePath();
-
-            // Create the TopHat task
-            topHatExtToolTask = new ExternalToolRunTask(TOPHAT_TOOL_NAME,
-                arguments,
-                logParser,
-                workingDirectory,
-                additionalPaths);
-
+        if (tmpDocSaved && (tmpDocPairedSaved || settings.data.pairedSeqIds.isEmpty())) {
+            topHatExtToolTask = runTophat();
             result.append(topHatExtToolTask);
         }
     } else if (subTask == topHatExtToolTask) {
@@ -286,9 +256,9 @@ QList<Task*> TopHatSupportTask::onSubTaskFinished(Task *subTask)
         Workflow::ReadDocumentTaskFactory* factory = registry->getReadDocumentTaskFactory(Workflow::ReadFactories::READ_ASSEMBLY);
         SAFE_POINT(NULL != factory, QString("Internal error during parsing TopHat output:"
                                             " NULL WorkflowTasksRegistry: %1").arg(Workflow::ReadFactories::READ_ASSEMBLY), result);
-        SAFE_POINT(NULL != settings.workflowContext, "Internal error during parsing TopHat output: NULL workflow context!", result);
+        SAFE_POINT(NULL != settings.workflowContext(), "Internal error during parsing TopHat output: NULL workflow context!", result);
 
-        readAssemblyOutputTask = factory->createTask(settings.outDir + "/accepted_hits.bam", QVariantMap(), settings.workflowContext);
+        readAssemblyOutputTask = factory->createTask(settings.outDir + "/accepted_hits.bam", QVariantMap(), settings.workflowContext());
         result.append(readAssemblyOutputTask);
     } else if (subTask == readAssemblyOutputTask) {
         Workflow::ReadDocumentTask* readDocTask = qobject_cast<Workflow::ReadDocumentTask*>(subTask);
