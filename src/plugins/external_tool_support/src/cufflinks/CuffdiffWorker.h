@@ -58,10 +58,14 @@ private slots:
 private:
     CommunicationChannel *inAssembly;
     CommunicationChannel *inTranscript;
-    QList<SharedDbiDataHandler> assemblies;
     QStringList outputFiles;
 
+    bool fromFiles;
+    QList<SharedDbiDataHandler> assemblies;
+    QStringList assemblyUrls;
+
 private:
+    void initSlotsState();
     CuffdiffSettings scanParameters() const;
     CuffdiffSettings takeSettings();
     void takeAssembly();

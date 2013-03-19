@@ -646,5 +646,30 @@ bool IntegralBusSlot::operator==( const IntegralBusSlot& ibs) const{
     return false;
 }
 
+/************************************************************************/
+/* PortValidator */
+/************************************************************************/
+bool PortValidator::validate(const Configuration *cfg, QStringList &errors) const {
+    const IntegralBusPort *port = static_cast<const IntegralBusPort*>(cfg);
+    SAFE_POINT(NULL != port, "NULL port", false);
+    return validate(port, errors);
+}
+
+QStrStrMap PortValidator::getBusMap(const IntegralBusPort *port) {
+    return port->getParameter(IntegralBusPort::BUS_MAP_ATTR_ID)->getAttributeValueWithoutScript<QStrStrMap>();
+}
+
+QString PortValidator::slotName(const IntegralBusPort *port, const QString &slotId) {
+    return port->getType()->getDatatypeDescriptor(slotId).getDisplayName();
+}
+
+bool PortValidator::isBinded(const IntegralBusPort *port, const QString &slotId) {
+    return isBinded(getBusMap(port), slotId);
+}
+
+bool PortValidator::isBinded(const QStrStrMap &busMap, const QString &slotId) {
+    return (!busMap.value(slotId, "").isEmpty());
+}
+
 }//Workflow namespace
 }//GB2namespace

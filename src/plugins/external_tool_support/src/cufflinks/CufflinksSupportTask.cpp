@@ -60,18 +60,11 @@ CufflinksSupportTask::CufflinksSupportTask(const CufflinksSettings& _settings)
 
 CufflinksSupportTask::~CufflinksSupportTask()
 {
-    if (NULL != tmpDoc) {
-        delete tmpDoc;
-    }
-
-    if (NULL != logParser) {
-        delete logParser;
-    }
+    delete tmpDoc;
+    delete logParser;
 }
 
-
-void CufflinksSupportTask::prepare()
-{
+QString CufflinksSupportTask::initTmpDir() {
     // Add a new subdirectory for temporary files
     QString tmpDirName = "Cufflinks_"+QString::number(this->getTaskId())+"_"+
         QDate::currentDate().toString("dd.MM.yyyy")+"_"+
@@ -90,25 +83,36 @@ void CufflinksSupportTask::prepare()
 
         if (!tmpDir.rmdir(tmpDir.absolutePath())){
             stateInfo.setError(ExternalToolSupportL10N::errorRemovingTmpSubdir(tmpDir.absolutePath()));
-            return;
+            return "";
         }
     }
 
     if (!tmpDir.mkpath(tmpDir.absolutePath())) {
         stateInfo.setError(ExternalToolSupportL10N::errorCreatingTmpSubrir(tmpDir.absolutePath()));
+        return "";
+    }
+    return tmpDir.absolutePath();
+}
+
+void CufflinksSupportTask::prepare()
+{
+    settings.outDir = GUrlUtils::createDirectory(
+        settings.outDir + "/" + outSubDirBaseName,
+        "_", stateInfo);
+    CHECK_OP(stateInfo, );
+
+    workingDirectory = initTmpDir();
+    CHECK_OP(stateInfo, );
+
+    if (settings.fromFile) {
+        cufflinksExtToolTask = runCufflinks();
+        addSubTask(cufflinksExtToolTask);
         return;
     }
 
-    workingDirectory = tmpDir.absolutePath();
-    url = workingDirectory + "/tmp.sam";
-
-    settings.outDir = GUrlUtils::createDirectory(
-                settings.outDir + "/" + outSubDirBaseName,
-                "_", stateInfo);
-    CHECK_OP(stateInfo, );
-
+    settings.url = workingDirectory + "/tmp.sam";
     DocumentFormat* docFormat = AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::SAM);
-    tmpDoc = docFormat->createNewLoadedDocument(IOAdapterUtils::get(BaseIOAdapters::LOCAL_FILE), GUrl(url), stateInfo);
+    tmpDoc = docFormat->createNewLoadedDocument(IOAdapterUtils::get(BaseIOAdapters::LOCAL_FILE), GUrl(settings.url), stateInfo);
     CHECK_OP(stateInfo, );
 
     std::auto_ptr<AssemblyObject> assObj(
@@ -119,8 +123,52 @@ void CufflinksSupportTask::prepare()
         return;
     }
 
-    convertAssToSamTask = new ConvertAssemblyToSamTask(assObj->getEntityRef(), url);
+    convertAssToSamTask = new ConvertAssemblyToSamTask(assObj->getEntityRef(), settings.url);
     addSubTask(convertAssToSamTask);
+}
+
+ExternalToolRunTask * CufflinksSupportTask::runCufflinks() {
+    // Init the arguments list
+    QStringList arguments;
+
+    arguments << "--output-dir" << settings.outDir;
+
+    if (!settings.referenceAnnotation.isEmpty()) {
+        arguments << "-G" << settings.referenceAnnotation;
+    }
+
+    if (!settings.rabtAnnotation.isEmpty()) {
+        arguments << "-g" << settings.rabtAnnotation;
+    }
+
+    arguments << "--library-type" << settings.libraryType.getLibraryTypeAsStr();
+
+    if (!settings.maskFile.isEmpty()) {
+        arguments << "-M" << settings.maskFile;
+    }
+
+    if (true == settings.multiReadCorrect) {
+        arguments << "--multi-read-correct";
+    }
+
+    arguments << "--min-isoform-fraction" << QString::number(settings.minIsoformFraction);
+
+    if (!settings.fragBiasCorrect.isEmpty()) {
+        arguments << "--frag-bias-correct" << settings.fragBiasCorrect;
+    }
+
+    arguments << "--pre-mrna-fraction" << QString::number(settings.preMrnaFraction);
+
+    arguments << settings.url;
+
+    // Create a log parser
+    logParser = new ExternalToolLogParser();
+
+    // Create the Cufflinks task
+    return new ExternalToolRunTask(CUFFLINKS_TOOL_NAME,
+        arguments,
+        logParser,
+        workingDirectory);
 }
 
 
@@ -138,49 +186,7 @@ QList<Task*> CufflinksSupportTask::onSubTaskFinished(Task* subTask)
     }
 
     if (subTask == convertAssToSamTask) {
-
-        // Init the arguments list
-        QStringList arguments;
-
-        arguments << "--output-dir" << settings.outDir;
-
-        if (!settings.referenceAnnotation.isEmpty()) {
-            arguments << "-G" << settings.referenceAnnotation;
-        }
-
-        if (!settings.rabtAnnotation.isEmpty()) {
-            arguments << "-g" << settings.rabtAnnotation;
-        }
-
-        arguments << "--library-type" << settings.libraryType.getLibraryTypeAsStr();
-
-        if (!settings.maskFile.isEmpty()) {
-            arguments << "-M" << settings.maskFile;
-        }
-
-        if (true == settings.multiReadCorrect) {
-            arguments << "--multi-read-correct";
-        }
-
-        arguments << "--min-isoform-fraction" << QString::number(settings.minIsoformFraction);
-
-        if (!settings.fragBiasCorrect.isEmpty()) {
-            arguments << "--frag-bias-correct" << settings.fragBiasCorrect;
-        }
-
-        arguments << "--pre-mrna-fraction" << QString::number(settings.preMrnaFraction);
-
-        arguments << url;
-
-        // Create a log parser
-        logParser = new ExternalToolLogParser();
-
-        // Create the Cufflinks task
-        cufflinksExtToolTask = new ExternalToolRunTask(CUFFLINKS_TOOL_NAME,
-            arguments,
-            logParser,
-            workingDirectory);
-
+        cufflinksExtToolTask = runCufflinks();
         result.append(cufflinksExtToolTask);
     }
     else if (subTask == cufflinksExtToolTask) {
@@ -211,20 +217,11 @@ QList<SharedAnnotationData> CufflinksSupportTask::getAnnotationsFromFile(QString
 
 Task::ReportResult CufflinksSupportTask::report()
 {
-    if (url.isEmpty()) {
+    if (settings.url.isEmpty()) {
         return ReportResult_Finished;
     }
 
-    // Remove the subdirectory for temporary files created in prepare()
-    QDir tmpDir(QFileInfo(url).absoluteDir());
-    foreach (QString file, tmpDir.entryList(QDir::Files | QDir::Hidden)) {
-        tmpDir.remove(file);
-    }
-
-    if (!tmpDir.rmdir(tmpDir.absolutePath())) {
-        stateInfo.setError("Can not remove directory for temporary files.");
-        emit si_stateChanged();
-    }
+    GUrlUtils::removeDir(workingDirectory, stateInfo);
     return ReportResult_Finished;
 }
 

@@ -43,6 +43,30 @@
 namespace U2 {
 namespace LocalWorkflow {
 
+/************************************************************************/
+/* Validator */
+/************************************************************************/
+class InputSlotValidator : public PortValidator {
+public:
+    virtual bool validate(const IntegralBusPort *port, QStringList &l) const {
+        bool data = isBinded(port, BaseSlots::ASSEMBLY_SLOT().getId());
+        bool url = isBinded(port, BaseSlots::URL_SLOT().getId());
+
+        QString dataName = slotName(port, BaseSlots::ASSEMBLY_SLOT().getId());
+        QString urlName = slotName(port, BaseSlots::URL_SLOT().getId());
+        if (!data && !url) {
+            l.append(IntegralBusPort::tr("Error! One of these slots must be not empty: '%1', '%2'").arg(dataName).arg(urlName));
+            return false;
+        }
+
+        if (data && url) {
+            l.append(IntegralBusPort::tr("Error! Only one of these slots must be binded: '%1', '%2'").arg(dataName).arg(urlName));
+            return false;
+        }
+        return true;
+    }
+};
+
 /*****************************
  * CuffdiffWorkerFactory
  *****************************/
@@ -191,6 +215,7 @@ void CuffdiffWorkerFactory::init()
 
         QMap<Descriptor, DataTypePtr> assemblyTypeMap;
         assemblyTypeMap[BaseSlots::ASSEMBLY_SLOT()] = BaseTypes::ASSEMBLY_TYPE();
+        assemblyTypeMap[BaseSlots::URL_SLOT()] = BaseTypes::STRING_TYPE();
         DataTypePtr assemblyType(new MapDataType(BasePorts::IN_ASSEMBLY_PORT_ID(), assemblyTypeMap));
 
         QMap<Descriptor, DataTypePtr> annotationsTypeMap;
@@ -246,6 +271,7 @@ void CuffdiffWorkerFactory::init()
     // Init and register the actor prototype
     proto->setEditor(new DelegateEditor(delegates));
     proto->setPrompter(new CuffdiffPrompter());
+    proto->setPortValidator(BasePorts::IN_ASSEMBLY_PORT_ID(), new InputSlotValidator());
 
     WorkflowEnv::getProtoRegistry()->registerProto(
         BaseActorCategories::CATEGORY_RNA_SEQ(),
@@ -279,8 +305,14 @@ QString CuffdiffPrompter::composeRichDoc()
  * CuffdiffWorker
  *****************************/
 CuffdiffWorker::CuffdiffWorker(Actor *actor)
-: BaseWorker(actor, false), inAssembly(NULL), inTranscript(NULL)
+: BaseWorker(actor, false), inAssembly(NULL), inTranscript(NULL), fromFiles(false)
 {
+}
+
+void CuffdiffWorker::initSlotsState() {
+    Port *port = actor->getPort(BasePorts::IN_ASSEMBLY_PORT_ID());
+    IntegralBusPort *bus = dynamic_cast<IntegralBusPort*>(port);
+    fromFiles = bus->getProducers(BaseSlots::ASSEMBLY_SLOT().getId()).isEmpty();
 }
 
 void CuffdiffWorker::init() {
@@ -288,6 +320,8 @@ void CuffdiffWorker::init() {
 
     inAssembly = ports[BasePorts::IN_ASSEMBLY_PORT_ID()];
     inTranscript = ports[BasePorts::IN_ANNOTATIONS_PORT_ID()];
+
+    initSlotsState();
 }
 
 bool CuffdiffWorker::isReady() {
@@ -364,6 +398,8 @@ CuffdiffSettings CuffdiffWorker::takeSettings() {
         "No annotations in a message", result);
     QVariant annsVar = data[BaseSlots::ANNOTATION_TABLE_SLOT().getId()];
 
+    result.fromFiles = fromFiles;
+    result.assemblyUrls = assemblyUrls;
     result.assemblies = assemblies;
     result.transcript = annsVar.value<QList<SharedAnnotationData> >();
     result.storage = context->getDataStorage();
@@ -374,10 +410,16 @@ CuffdiffSettings CuffdiffWorker::takeSettings() {
 void CuffdiffWorker::takeAssembly() {
     Message m = getMessageAndSetupScriptValues(inAssembly);
     QVariantMap data = m.getData().toMap();
-    SAFE_POINT(data.contains(BaseSlots::ASSEMBLY_SLOT().getId()),
-        "No assembly in a message", );
-    SharedDbiDataHandler id = data[BaseSlots::ASSEMBLY_SLOT().getId()].value<SharedDbiDataHandler>();
-    assemblies << id;
+
+    if (fromFiles) {
+        SAFE_POINT(data.contains(BaseSlots::URL_SLOT().getId()),
+            "No url in a message", );
+        assemblyUrls << data[BaseSlots::URL_SLOT().getId()].toString();
+    } else {
+        SAFE_POINT(data.contains(BaseSlots::ASSEMBLY_SLOT().getId()),
+            "No assembly in a message", );
+        assemblies << data[BaseSlots::ASSEMBLY_SLOT().getId()].value<SharedDbiDataHandler>();
+    }
 }
 
 } // namespace LocalWorkflow

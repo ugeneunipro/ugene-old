@@ -174,10 +174,17 @@ private:
     static const QString INNER_SEP;
 };
 
-//class U2LANG_EXPORT BindingPath {
-//public:
-//    BindingPath();
-//};
+class U2LANG_EXPORT PortValidator : public ConfigurationValidator {
+public:
+    virtual bool validate(const Configuration *cfg, QStringList &errors) const;
+    virtual bool validate(const IntegralBusPort *port, QStringList &errors) const = 0;
+
+public:
+    static QStrStrMap getBusMap(const IntegralBusPort *port);
+    static QString slotName(const IntegralBusPort *port, const QString &slotId);
+    static bool isBinded(const IntegralBusPort *port, const QString &slotId);
+    static bool isBinded(const QStrStrMap &busMap, const QString &slotId);
+};
 
 }//namespace Workflow
 }//namespace U2

@@ -43,6 +43,30 @@
 namespace U2 {
 namespace LocalWorkflow {
 
+/************************************************************************/
+/* Validator */
+/************************************************************************/
+class InputSlotValidator : public PortValidator {
+public:
+    virtual bool validate(const IntegralBusPort *port, QStringList &l) const {
+        bool data = isBinded(port, BaseSlots::ASSEMBLY_SLOT().getId());
+        bool url = isBinded(port, BaseSlots::URL_SLOT().getId());
+
+        QString dataName = slotName(port, BaseSlots::ASSEMBLY_SLOT().getId());
+        QString urlName = slotName(port, BaseSlots::URL_SLOT().getId());
+        if (!data && !url) {
+            l.append(IntegralBusPort::tr("Error! One of these slots must be not empty: '%1', '%2'").arg(dataName).arg(urlName));
+            return false;
+        }
+
+        if (data && url) {
+            l.append(IntegralBusPort::tr("Error! Only one of these slots must be binded: '%1', '%2'").arg(dataName).arg(urlName));
+            return false;
+        }
+        return true;
+    }
+};
+
 /*****************************
  * CufflinksWorkerFactory
  *****************************/
@@ -80,6 +104,7 @@ void CufflinksWorkerFactory::init()
 
     QMap<Descriptor, DataTypePtr> inputMap;
     inputMap[BaseSlots::ASSEMBLY_SLOT()] = BaseTypes::ASSEMBLY_TYPE();
+    inputMap[BaseSlots::URL_SLOT()] = BaseTypes::STRING_TYPE();
     portDescriptors << new PortDescriptor(inputPortDescriptor,
         DataTypePtr(new MapDataType("in.assembly", inputMap)),
         true /* input */);
@@ -237,6 +262,7 @@ void CufflinksWorkerFactory::init()
     // Init and register the actor prototype
     proto->setEditor(new DelegateEditor(delegates));
     proto->setPrompter(new CufflinksPrompter());
+    proto->setPortValidator(BasePorts::IN_ASSEMBLY_PORT_ID(), new InputSlotValidator());
 
     WorkflowEnv::getProtoRegistry()->registerProto(
         BaseActorCategories::CATEGORY_RNA_SEQ(),
@@ -274,10 +300,17 @@ CufflinksWorker::CufflinksWorker(Actor* actor)
 {
 }
 
+void CufflinksWorker::initSlotsState() {
+    Port *port = actor->getPort(BasePorts::IN_ASSEMBLY_PORT_ID());
+    IntegralBusPort *bus = dynamic_cast<IntegralBusPort*>(port);
+    settings.fromFile = bus->getProducers(BaseSlots::ASSEMBLY_SLOT().getId()).isEmpty();
+}
 
 void CufflinksWorker::init() {
     input = ports.value(BasePorts::IN_ASSEMBLY_PORT_ID());
     output = ports.value(BasePorts::OUT_ANNOTATIONS_PORT_ID());
+
+    initSlotsState();
 
     // Init the parameters
     settingsAreCorrect = true;
@@ -306,6 +339,7 @@ void CufflinksWorker::init() {
     settings.minIsoformFraction = getValue<double>(CufflinksWorkerFactory::MIN_ISOFORM_FRACTION);
     settings.fragBiasCorrect = getValue<QString>(CufflinksWorkerFactory::FRAG_BIAS_CORRECT);
     settings.preMrnaFraction = getValue<double>(CufflinksWorkerFactory::PRE_MRNA_FRACTION);
+    settings.storage = context->getDataStorage();
 }
 
 Task * CufflinksWorker::tick() {
@@ -316,12 +350,13 @@ Task * CufflinksWorker::tick() {
     if (input->hasMessage()) {
         Message inputMessage = getMessageAndSetupScriptValues(input);
         SAFE_POINT(!inputMessage.isEmpty(), "Internal error: message can't be NULL!", NULL);
+        QVariantMap data = inputMessage.getData().toMap();
 
-        // Get the assembly ID
-        SharedDbiDataHandler assemblyId = inputMessage.getData().toMap().value(BaseSlots::ASSEMBLY_SLOT().getId()).value<SharedDbiDataHandler>();
-
-        settings.assemblyId = assemblyId;
-        settings.storage = context->getDataStorage();
+        if (settings.fromFile) {
+            settings.url = data[BaseSlots::URL_SLOT().getId()].toString();
+        } else {
+            settings.assemblyId = data[BaseSlots::ASSEMBLY_SLOT().getId()].value<SharedDbiDataHandler>();
+        }
 
         // Create the task
         Task* cufflinksSupportTask = new CufflinksSupportTask(settings);
@@ -364,7 +399,6 @@ void CufflinksWorker::cleanup() {
 QStringList CufflinksWorker::getOutputFiles() {
     return outputFiles;
 }
-
 
 } // namespace LocalWorkflow
 } // namespace U2

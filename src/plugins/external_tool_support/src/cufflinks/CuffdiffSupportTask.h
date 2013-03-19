@@ -61,6 +61,8 @@ struct CuffdiffSettings {
     bool emitCountTables;
     QString outDir;
 
+    bool fromFiles;
+    QStringList assemblyUrls;
     QList<Workflow::SharedDbiDataHandler> assemblies;
     QList<SharedAnnotationData> transcript;
     Workflow::DbiDataStorage *storage;
@@ -87,7 +89,6 @@ public:
 private:
     CuffdiffSettings settings;
     QString workingDir;
-    QStringList assemblyUrls;
     QString transcriptUrl;
 
     QScopedPointer<Document> transcriptDoc;

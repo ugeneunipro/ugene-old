@@ -51,7 +51,10 @@ public:
 
     // Input assembly
     Workflow::DbiDataStorage*           storage;
+    bool                                fromFile;
+    QString                             url;
     Workflow::SharedDbiDataHandler      assemblyId;
+
 };
 
 

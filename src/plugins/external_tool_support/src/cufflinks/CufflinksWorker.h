@@ -67,6 +67,9 @@ protected:
     QStringList outputFiles;
 
     bool settingsAreCorrect;
+
+private:
+    void initSlotsState();
 };
 
 

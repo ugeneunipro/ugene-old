@@ -308,17 +308,16 @@ Task::ReportResult TopHatSupportTask::report()
         return ReportResult_Finished;
     }
 
-    // Remove the subdirectory for temporary files created in prepare()
-    if (!removeTmpDir(workingDirectory)) {
-        stateInfo.setError("Can not remove directory for temporary files.");
-        emit si_stateChanged();
-    }
-
+    removeTmpDir(workingDirectory);
     return ReportResult_Finished;
 }
 
 QStringList TopHatSupportTask::getOutputFiles() const {
     return outputFiles;
+}
+
+QString TopHatSupportTask::getOutBamUrl() const {
+    return settings.outDir + "/accepted_hits.bam";
 }
 
 }

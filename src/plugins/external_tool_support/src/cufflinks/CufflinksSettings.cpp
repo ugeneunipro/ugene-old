@@ -25,6 +25,7 @@
 namespace U2 {
 
 CufflinksSettings::CufflinksSettings()
+: fromFile(false)
 {
 }
 

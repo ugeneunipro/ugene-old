@@ -49,6 +49,7 @@ public:
     QList<Task*> onSubTaskFinished(Task* subTask);
     Task::ReportResult report();
     QStringList getOutputFiles() const;
+    QString getOutBamUrl() const;
 
     Workflow::SharedDbiDataHandler getAcceptedHits() const { return acceptedHits; }
 private:

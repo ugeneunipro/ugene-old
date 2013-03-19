@@ -135,14 +135,11 @@ public:
     static const QString SAMTOOLS_TOOL_PATH;
     static const QString EXT_TOOL_PATH;
     static const QString TMP_DIR_PATH;
-
-    static const QString OUT_MAP_DESCR_ID;
-    static const QString ACCEPTED_HITS_SLOT_ID;
 };
 
-class InputSlotsValidator : public ConfigurationValidator {
+class InputSlotsValidator : public PortValidator {
 public:
-    virtual bool validate(const Configuration *cfg, QStringList &l) const;
+    virtual bool validate(const IntegralBusPort *port, QStringList &l) const;
 };
 
 } // namespace LocalWorkflow

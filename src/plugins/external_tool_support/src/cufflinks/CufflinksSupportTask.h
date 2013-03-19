@@ -73,6 +73,10 @@ private:
     QStringList                         outputFiles;
 
     static const QString outSubDirBaseName;
+
+private:
+    QString initTmpDir();
+    ExternalToolRunTask * runCufflinks();
 };
 
 

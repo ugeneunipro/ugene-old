@@ -87,8 +87,9 @@ static const QString IN_URL_SLOT_ID("in-url");
 static const QString PAIRED_IN_DATA_SLOT_ID("second.in");
 static const QString PAIRED_IN_URL_SLOT_ID("paired-url");
 
-const QString TopHatWorkerFactory::OUT_MAP_DESCR_ID("out.tophat");
-const QString TopHatWorkerFactory::ACCEPTED_HITS_SLOT_ID("accepted.hits");
+static const QString OUT_MAP_DESCR_ID("out.tophat");
+static const QString ACCEPTED_HITS_SLOT_ID("accepted.hits");
+static const QString OUT_BAM_URL_SLOT_ID("hits-url");
 
 void TopHatWorkerFactory::init()
 {
@@ -96,12 +97,12 @@ void TopHatWorkerFactory::init()
     QList<Attribute*> attributes;
 
     // Define ports and slots
-    Descriptor inputPortDescriptor(
+    Descriptor inPortDesc(
                 BasePorts::IN_SEQ_PORT_ID(),
                 TopHatWorker::tr("Input reads"),
                 TopHatWorker::tr("Input RNA-Seq reads"));
 
-    Descriptor outputPortDescriptor(
+    Descriptor outPortDesc(
                 BasePorts::OUT_ASSEMBLY_PORT_ID(),
                 TopHatWorker::tr("TopHat output"),
                 TopHatWorker::tr("Accepted hits, junctions, insertions and deletions"));
@@ -145,30 +146,27 @@ void TopHatWorkerFactory::init()
     inputMap[pairedInUrlDesc] = BaseTypes::STRING_TYPE();
     inputMap[datasetDescriptor] = BaseTypes::STRING_TYPE();
 
-    portDescriptors << new PortDescriptor(inputPortDescriptor,
+    portDescriptors << new PortDescriptor(inPortDesc,
                                           DataTypePtr(new MapDataType("in.sequences", inputMap)),
                                           true /* input */, false, IntegralBusPort::BLIND_INPUT);
 
     QMap<Descriptor, DataTypePtr> outputMap;
 
-    Descriptor acceptedHitsDescriptor =
-            Descriptor(ACCEPTED_HITS_SLOT_ID,
-                       TopHatWorker::tr("Accepted hits"),
-                       TopHatWorker::tr("A list of read alignments"));
+    Descriptor assemblyDesc(ACCEPTED_HITS_SLOT_ID,
+        TopHatWorker::tr("Accepted hits"),
+        TopHatWorker::tr("Accepted hits found by TopHat"));
+    Descriptor outUrlDesc(OUT_BAM_URL_SLOT_ID,
+        TopHatWorker::tr("Accepted hits url"),
+        TopHatWorker::tr("The url to the assembly file with the accepted hits"));
 
-    outputMap[acceptedHitsDescriptor] = BaseTypes::ASSEMBLY_TYPE();
+    outputMap[assemblyDesc] = BaseTypes::ASSEMBLY_TYPE();
+    outputMap[outUrlDesc] = BaseTypes::STRING_TYPE();
 
     DataTypeRegistry* registry = WorkflowEnv::getDataTypeRegistry();
     assert(registry);
 
     DataTypePtr mapDataType(new MapDataType(OUT_MAP_DESCR_ID, outputMap));
-    registry->registerEntry(mapDataType);
-
-    portDescriptors << new PortDescriptor(
-                           outputPortDescriptor,
-                           mapDataType,
-                           false /* input */,
-                           true /* multi */);
+    portDescriptors << new PortDescriptor(outPortDesc, mapDataType, false /* input */, true /* multi */);
 
     // Description of the element
     Descriptor topHatDescriptor(ACTOR_ID,
@@ -676,22 +674,17 @@ Task * TopHatWorker::tick() {
 
 void TopHatWorker::sl_topHatTaskFinished()
 {
-    TopHatSupportTask* topHatSupportTask = qobject_cast<TopHatSupportTask*>(sender());
-    if (Task::State_Finished != topHatSupportTask->getState()) {
+    TopHatSupportTask *t = qobject_cast<TopHatSupportTask*>(sender());
+    if (!t->isFinished()) {
         return;
     }
 
     if (output) {
-        DataTypePtr outputMapDataType =
-                WorkflowEnv::getDataTypeRegistry()->getById(TopHatWorkerFactory::OUT_MAP_DESCR_ID);
-        SAFE_POINT(0 != outputMapDataType, "Internal error: can't get DataTypePtr for TopHat output map!",);
-
-        QVariantMap messageData;
-        messageData[TopHatWorkerFactory::ACCEPTED_HITS_SLOT_ID] =
-                qVariantFromValue<SharedDbiDataHandler>(topHatSupportTask->getAcceptedHits());
-
-        output->put(Message(outputMapDataType, messageData));
-        outputFiles << topHatSupportTask->getOutputFiles();
+        QVariantMap m;
+        m[ACCEPTED_HITS_SLOT_ID] = qVariantFromValue<SharedDbiDataHandler>(t->getAcceptedHits());
+        m[OUT_BAM_URL_SLOT_ID] = t->getOutBamUrl();
+        output->put(Message(output->getBusType(), m));
+        outputFiles << t->getOutputFiles();
     }
 }
 
@@ -736,22 +729,16 @@ void DatasetData::replaceCurrent(const QString &dataset) {
 /************************************************************************/
 /* Validator */
 /************************************************************************/
-static QString sn(const IntegralBusPort *port, const QString &slotId) {
-    return port->getType()->getDatatypeDescriptor(slotId).getDisplayName();
-}
-bool InputSlotsValidator::validate(const Configuration *cfg, QStringList &l) const {
-    const IntegralBusPort *port = static_cast<const IntegralBusPort*>(cfg);
-    SAFE_POINT(NULL != port, "NULL port", false);
-
+bool InputSlotsValidator::validate(const IntegralBusPort *port, QStringList &l) const {
     QStrStrMap bm = port->getParameter(IntegralBusPort::BUS_MAP_ATTR_ID)->getAttributeValueWithoutScript<QStrStrMap>();
-    bool data = (!bm[IN_DATA_SLOT_ID].isEmpty());
-    bool pairedData = (!bm[PAIRED_IN_DATA_SLOT_ID].isEmpty());
-    bool url = (!bm[IN_URL_SLOT_ID].isEmpty());
-    bool pairedUrl = (!bm[PAIRED_IN_URL_SLOT_ID].isEmpty());
+    bool data = isBinded(bm, IN_DATA_SLOT_ID);
+    bool pairedData = isBinded(bm, PAIRED_IN_DATA_SLOT_ID);
+    bool url = isBinded(bm, IN_URL_SLOT_ID);
+    bool pairedUrl = isBinded(bm, PAIRED_IN_URL_SLOT_ID);
 
     if (!data && !url) {
-        QString dataName = sn(port, IN_DATA_SLOT_ID);
-        QString urlName = sn(port, IN_URL_SLOT_ID);
+        QString dataName = slotName(port, IN_DATA_SLOT_ID);
+        QString urlName = slotName(port, IN_URL_SLOT_ID);
         l.append(IntegralBusPort::tr("Error! One of these slots must be not empty: '%1', '%2'").arg(dataName).arg(urlName));
         return false;
     }
