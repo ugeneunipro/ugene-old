@@ -819,6 +819,9 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_undo_redo::test_0003);
     REGISTER_TEST(GUITest_common_scenarios_undo_redo::test_0004);
     REGISTER_TEST(GUITest_common_scenarios_undo_redo::test_0005);
+    REGISTER_TEST(GUITest_common_scenarios_undo_redo::test_0006);
+    REGISTER_TEST(GUITest_common_scenarios_undo_redo::test_0006_1);
+    REGISTER_TEST(GUITest_common_scenarios_undo_redo::test_0006_2);
 }
 
 void GUITestBasePlugin::registerAdditionalChecks(GUITestBase *guiTestBase) {
