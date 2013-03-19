@@ -467,6 +467,8 @@ void FindPatternWidget::initLayout()
 
     layoutSearchButton->setAlignment(Qt::AlignTop);
     this->layout()->setAlignment(Qt::AlignTop);
+
+    this->layout()->setMargin(0);
 }
 
 
