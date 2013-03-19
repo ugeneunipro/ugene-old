@@ -37,6 +37,8 @@
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/AddDocumentTask.h>
 #include <U2Core/U2SafePoints.h>
+#include <U2Core/U2Mod.h>
+#include <U2Core/U2OpStatusUtils.h>
 
 #include <U2Gui/OpenViewTask.h>
 
@@ -197,10 +199,22 @@ QList<Task*> MAFFTSupportTask::onSubTaskFinished(Task* subTask) {
                     rowsGapModel.insert(rowId, newGapModel);
                 }
 
-                alObj->updateGapModel(rowsGapModel, stateInfo);
+                // Save data to the database
+                {
+                    U2OpStatus2Log os;
+                    U2UseCommonUserModStep userModStep(obj->getEntityRef(), os);
+                    if (os.hasError()) {
+                        stateInfo.setError("Failed to apply the result of the alignment!");
+                        return res;
+                    }
 
-                if (rowsOrder != inputMsa.getRowsIds()) {
-                    alObj->updateRowsOrder(rowsOrder, stateInfo);
+                    alObj->updateGapModel(rowsGapModel, stateInfo);
+                    SAFE_POINT_OP(stateInfo, res);
+
+                    if (rowsOrder != inputMsa.getRowsIds()) {
+                        alObj->updateRowsOrder(rowsOrder, stateInfo);
+                        SAFE_POINT_OP(stateInfo, res);
+                    }    
                 }
 
                 Document* currentDocument = alObj->getDocument();

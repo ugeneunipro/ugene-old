@@ -45,6 +45,7 @@
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/U2AlphabetUtils.h>
 #include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/U2Mod.h>
 
 #include <U2Lang/WorkflowSettings.h>
 #include <U2Lang/SimpleWorkflowTask.h>
@@ -425,6 +426,14 @@ Task::ReportResult MuscleGObjectTask::report() {
     }
     if (config.op == MuscleTaskOp_AddUnalignedToProfile) {
         assert((muscleTask->inputMA.getNumRows() + config.profile.getNumRows()) == muscleTask->resultMA.getNumRows());
+
+        U2OpStatus2Log os;
+        U2UseCommonUserModStep userModStep(obj->getEntityRef(), os);
+        if (os.hasError()) {
+            stateInfo.setError("Failed to apply the result of the alignment!");
+            return ReportResult_Finished;
+        }
+
         obj->setMAlignment(muscleTask->resultMA);    
     }
     else if (config.op == MuscleTaskOp_Align || config.op == MuscleTaskOp_Refine) {
@@ -443,6 +452,13 @@ Task::ReportResult MuscleGObjectTask::report() {
             rowsGapModel.insert(rowId, newGapModel);
         }
 
+        U2OpStatus2Log os;
+        U2UseCommonUserModStep userModStep(obj->getEntityRef(), os);
+        if (os.hasError()) {
+            stateInfo.setError("Failed to apply the result of the alignment!");
+            return ReportResult_Finished;
+        }
+
         obj->updateGapModel(rowsGapModel, stateInfo);
 
         if (rowsOrder != muscleTask->inputMA.getRowsIds()) {
@@ -451,6 +467,14 @@ Task::ReportResult MuscleGObjectTask::report() {
     }
     else if (config.op == MuscleTaskOp_ProfileToProfile) {
         assert(muscleTask->inputMA.getNumRows() + config.profile.getNumRows() == muscleTask->resultMA.getNumRows());
+
+        U2OpStatus2Log os;
+        U2UseCommonUserModStep userModStep(obj->getEntityRef(), os);
+        if (os.hasError()) {
+            stateInfo.setError("Failed to apply the result of the alignment!");
+            return ReportResult_Finished;
+        }
+
         obj->setMAlignment(muscleTask->resultMA);    
     }
 

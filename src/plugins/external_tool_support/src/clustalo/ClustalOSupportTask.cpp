@@ -36,6 +36,8 @@
 #include <U2Core/IOAdapterUtils.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/AddDocumentTask.h>
+#include <U2Core/U2Mod.h>
+#include <U2Core/U2OpStatusUtils.h>
 
 #include <U2Gui/OpenViewTask.h>
 
@@ -191,28 +193,40 @@ QList<Task*> ClustalOSupportTask::onSubTaskFinished(Task* subTask) {
                 QList<qint64> rowsOrder = MSAUtils::compareRowsAfterAlignment(inputMsa, resultMA, stateInfo);
                 CHECK_OP(stateInfo, res);
 
-                if (rowsOrder.count() != inputMsa.getNumRows()) {
-                    // Find rows that were removed by ClustalO and remove them from MSA
-                    for (int i = inputMsa.getNumRows() - 1; i >= 0; i--) {
-                        const MAlignmentRow& alRow = inputMsa.getRow(i);
-                        qint64 rowId = alRow.getRowDBInfo().rowId;
-                        if (!rowsOrder.contains(rowId)) {
-                            alObj->removeRow(i);
+                // Save data to the database
+                {
+                    U2OpStatus2Log os;
+                    U2UseCommonUserModStep userModStep(obj->getEntityRef(), os);
+                    if (os.hasError()) {
+                        stateInfo.setError("Failed to apply the result of the alignment!");
+                        return res;
+                    }
+
+                    if (rowsOrder.count() != inputMsa.getNumRows()) {
+                        // Find rows that were removed by ClustalO and remove them from MSA
+                        for (int i = inputMsa.getNumRows() - 1; i >= 0; i--) {
+                            const MAlignmentRow& alRow = inputMsa.getRow(i);
+                            qint64 rowId = alRow.getRowDBInfo().rowId;
+                            if (!rowsOrder.contains(rowId)) {
+                                alObj->removeRow(i);
+                            }
                         }
                     }
-                }
 
-                QMap<qint64, QList<U2MsaGap> > rowsGapModel;
-                for (int i = 0, n = resultMA.getNumRows(); i < n; ++i) {
-                    qint64 rowId = resultMA.getRow(i).getRowDBInfo().rowId;
-                    const QList<U2MsaGap>& newGapModel = resultMA.getRow(i).getGapModel();
-                    rowsGapModel.insert(rowId, newGapModel);
-                }
+                    QMap<qint64, QList<U2MsaGap> > rowsGapModel;
+                    for (int i = 0, n = resultMA.getNumRows(); i < n; ++i) {
+                        qint64 rowId = resultMA.getRow(i).getRowDBInfo().rowId;
+                        const QList<U2MsaGap>& newGapModel = resultMA.getRow(i).getGapModel();
+                        rowsGapModel.insert(rowId, newGapModel);
+                    }
 
-                alObj->updateGapModel(rowsGapModel, stateInfo);
+                    alObj->updateGapModel(rowsGapModel, stateInfo);
+                    SAFE_POINT_OP(stateInfo, res);
 
-                if (rowsOrder != inputMsa.getRowsIds()) {
-                    alObj->updateRowsOrder(rowsOrder, stateInfo);
+                    if (rowsOrder != inputMsa.getRowsIds()) {
+                        alObj->updateRowsOrder(rowsOrder, stateInfo);
+                        SAFE_POINT_OP(stateInfo, res);
+                    }
                 }
 
                 Document* currentDocument = alObj->getDocument();

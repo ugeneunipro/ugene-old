@@ -44,6 +44,8 @@ extern "C" {
 #include <U2Core/MSAUtils.h>
 #include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/U2SafePoints.h>
+#include <U2Core/U2Mod.h>
+#include <U2Core/U2OpStatusUtils.h>
 
 #include <U2Lang/WorkflowSettings.h>
 #include <U2Lang/SimpleWorkflowTask.h>
@@ -186,13 +188,23 @@ Task::ReportResult KalignGObjectTask::report() {
         rowsGapModel.insert(rowId, newGapModel);
     }
 
-    obj->updateGapModel(rowsGapModel, stateInfo);
+    // Save data to the database
+    {
+        U2OpStatus2Log os;
+        U2UseCommonUserModStep userModStep(obj->getEntityRef(), os);
+        if (os.hasError()) {
+            stateInfo.setError("Failed to apply the result of the alignment!");
+            return ReportResult_Finished;
+        }
 
-    if (rowsOrder != inputMA.getRowsIds()) {
-        obj->updateRowsOrder(rowsOrder, stateInfo);
+        obj->updateGapModel(rowsGapModel, stateInfo);
+        SAFE_POINT_OP(stateInfo, ReportResult_Finished);
+
+        if (rowsOrder != inputMA.getRowsIds()) {
+            obj->updateRowsOrder(rowsOrder, stateInfo);
+            SAFE_POINT_OP(stateInfo, ReportResult_Finished);
+        }
     }
-    /*assert(kalignTask->inputMA.getNumRows() == kalignTask->resultMA.getNumRows());
-    obj->setMAlignment(kalignTask->resultMA);    */
 
     return ReportResult_Finished;
 }
