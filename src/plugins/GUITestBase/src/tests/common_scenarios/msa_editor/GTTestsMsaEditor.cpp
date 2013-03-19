@@ -3483,5 +3483,8 @@ GUI_TEST_CLASS_DEFINITION(test_0040){//UGENE crashes when opening several files
 
 }
 
+GUI_TEST_CLASS_DEFINITION(test_fake) {
+}
+
 } // namespace GUITest_common_scenarios_msa_editor
 } // namespace U2

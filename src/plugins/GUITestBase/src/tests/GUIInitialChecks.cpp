@@ -116,6 +116,40 @@ GUI_TEST_CLASS_DEFINITION(post_test_0002) {
     GTFile::restore(os, testDir + "_common_data/scenarios/project/proj5.uprj");
 }
 
+GUI_TEST_CLASS_DEFINITION(post_test_0003) {
+#ifdef Q_OS_WIN 
+    QProcess *svnProcess = new QProcess();
+
+    QStringList dirs;
+    dirs.append(testDir + "_common_data/");
+    dirs.append(dataDir + "samples/");
+
+    foreach(QString workingDir, dirs){
+        QDir d;
+        svnProcess->setWorkingDirectory(d.absoluteFilePath(workingDir));
+        svnProcess->start("svn", QStringList()<<"st");
+        //CHECK_SET_ERR(!svnProcess->waitForStarted(2000), "SVN process wont start");
+        while(!svnProcess->waitForFinished(30000));
+        //CHECK_SET_ERR(svnProcess->exitCode() != EXIT_FAILURE, "SVN process finished wrong");
+        QStringList output = QString(svnProcess->readAllStandardOutput()).split('\n');
+        bool needUpdate = false;
+        foreach(QString str, output){
+            QStringList byWords = str.split(QRegExp("\\s+"));
+            if (byWords[0][0] == '?' || byWords[0][0] == 'M'){
+                if(byWords[0][0] == 'M'){
+                    needUpdate = true;
+                }
+                QFile::remove(workingDir + QDir::separator() + byWords[1]);
+            }
+        }
+        if (needUpdate){
+            svnProcess->start("svn", QStringList()<<"up");
+            while(!svnProcess->waitForFinished(30000));
+        }                
+    }
+#endif
+}
+
 } // GUITest_initial_checks namespace
 
 } // U2 namespace
