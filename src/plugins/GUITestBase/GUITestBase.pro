@@ -112,6 +112,7 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/tests/common_scenarios/workflow_designer/GTTestsWorkflowDesigner.h \
             src/tests/common_scenarios/tree_viewer/GTTestsCommonScenariousTreeviewer.h \
             src/tests/common_scenarios/repeat_finder/GTTestsRepeatFinder.h \
+            src/tests/common_scenarios/undo_redo/GTTestsUndoRedo.h \
 #   UGENE primitives
             src/api/GTMSAEditorStatusWidget.h \
             src/api/GTRegionSelector.h \
@@ -256,6 +257,7 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/tests/common_scenarios/workflow_designer/GTTestsWorkflowDesigner.cpp \
             src/tests/common_scenarios/tree_viewer/GTTestsCommonScenariousTreeviewer.cpp \
             src/tests/common_scenarios/repeat_finder/GTTestsRepeatFinder.cpp \
+            src/tests/common_scenarios/undo_redo/GTTestsUndoRedo.cpp \
 #   UGENE primitives
             src/api/GTMSAEditorStatusWidget.cpp \
             src/api/GTRegionSelector.cpp \

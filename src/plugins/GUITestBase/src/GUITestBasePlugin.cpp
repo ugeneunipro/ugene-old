@@ -56,6 +56,7 @@
 #include "tests/common_scenarios/workflow_designer/GTTestsWorkflowDesigner.h"
 #include "tests/common_scenarios/tree_viewer/GTTestsCommonScenariousTreeviewer.h"
 #include "tests/common_scenarios/repeat_finder/GTTestsRepeatFinder.h"
+#include "tests/common_scenarios/undo_redo/GTTestsUndoRedo.h"
 
 
 #define REGISTER_TEST(X) if (guiTestBase) guiTestBase->registerTest(new X())
@@ -484,7 +485,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST_IGNORED_LINUX(GUITest_common_scenarios_msa_editor::test_0038_4, "https://ugene.unipro.ru/tracker/browse/UGENE-1519");
 
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0039);
-    REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0040);
+    REGISTER_TEST_IGNORED(GUITest_common_scenarios_msa_editor::test_0040, "https://ugene.unipro.ru/tracker/browse/UGENE-1521");
 /////////////////////////////////////////////////////////////////////////
 // Common scenarios/msa_editor/colors
 /////////////////////////////////////////////////////////////////////////
@@ -550,10 +551,6 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST_IGNORED_WINDOWS(GUITest_common_scenarios_msa_editor_edit::test_0011_1, "https://ugene.unipro.ru/tracker/browse/UGENE-1494");
     REGISTER_TEST(GUITest_common_scenarios_msa_editor_edit::test_0011_2);
     REGISTER_TEST(GUITest_common_scenarios_msa_editor_edit::test_0011_3);
-    REGISTER_TEST(GUITest_common_scenarios_msa_editor_edit::test_0011_4);
-    REGISTER_TEST(GUITest_common_scenarios_msa_editor_edit::test_0011_5);
-    REGISTER_TEST(GUITest_common_scenarios_msa_editor_edit::test_0011_6);
-    REGISTER_TEST(GUITest_common_scenarios_msa_editor_edit::test_0011_7);
 
     REGISTER_TEST(GUITest_common_scenarios_msa_editor_edit::test_0012);
 
@@ -813,6 +810,15 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 // Common scenarios/Repeat Finder
 /////////////////////////////////////////////////////////////////////////
     REGISTER_TEST(GUITest_common_scenarios_repeat_finder::test_0001);
+
+/////////////////////////////////////////////////////////////////////////
+// Common scenarios/Undo_Redo
+/////////////////////////////////////////////////////////////////////////
+    REGISTER_TEST(GUITest_common_scenarios_undo_redo::test_0001);
+    REGISTER_TEST(GUITest_common_scenarios_undo_redo::test_0002);
+    REGISTER_TEST(GUITest_common_scenarios_undo_redo::test_0003);
+    REGISTER_TEST(GUITest_common_scenarios_undo_redo::test_0004);
+    REGISTER_TEST(GUITest_common_scenarios_undo_redo::test_0005);
 }
 
 void GUITestBasePlugin::registerAdditionalChecks(GUITestBase *guiTestBase) {
