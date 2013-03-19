@@ -45,6 +45,8 @@ cp -v ../../_common_data/README "$TARGET_APP_DIR"
 
 echo copying LICENSE file
 cp -v ../../source/LICENSE "$TARGET_APP_DIR"
+echo copying LICENSE.3rd_party file
+cp -v ../../source/LICENSE.3rd_party "$TARGET_APP_DIR"
 
 
 mkdir "${TARGET_APP_DIR}/plugins"
