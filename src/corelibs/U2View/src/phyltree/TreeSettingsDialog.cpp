@@ -30,7 +30,7 @@ int TreeSettings::default_height_coef = 1;
 TreeSettings::TreeSettings() {
     width_coef = default_width_coef;
     height_coef = default_height_coef;
-    type = PHYLOGRAM;
+    type = DEFAULT;
 }
 
 TreeSettingsDialog::TreeSettingsDialog(QWidget *parent, const TreeSettings &treeSettings, bool isRectLayout)

@@ -427,6 +427,7 @@ TreeViewerUI::TreeViewerUI(TreeViewer* treeViewer): phyObject(treeViewer->getPhy
 
     updateActionsState();
     this->setObjectName("treeView");
+    updateTreeSettings();
 }
 
 TreeViewerUI::~TreeViewerUI() {
