@@ -55,18 +55,19 @@ MAlignment MAlignmentExporter::getAlignment(const U2DbiRef& dbiRef, const U2Data
         CHECK_OP(os, MAlignment());
     }
 
-    // Alphabet
-    U2Msa msa = exportAlignmentObject(msaId, os);
-    CHECK_OP(os, MAlignment());
-
-    DNAAlphabet* alphabet = U2AlphabetUtils::getById(msa.alphabet);
-    al.setAlphabet(alphabet);
-
     // Info
     QVariantMap alInfo = exportAlignmentInfo(msaId, os);
     CHECK_OP(os, MAlignment());
 
     al.setInfo(alInfo);
+
+    // Alphabet and name
+    U2Msa msa = exportAlignmentObject(msaId, os);
+    CHECK_OP(os, MAlignment());
+
+    DNAAlphabet* alphabet = U2AlphabetUtils::getById(msa.alphabet);
+    al.setAlphabet(alphabet);
+    al.setName(msa.visualName);
 
     return al;
 }

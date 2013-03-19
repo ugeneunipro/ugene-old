@@ -83,6 +83,7 @@ MAlignment MAlignmentObject::getMAlignment() const {
 
 void MAlignmentObject::updateCachedMAlignment(MAlignmentModInfo mi) {
     MAlignment maBefore = cachedMAlignment;
+    QString oldName = maBefore.getName();
 
     U2OpStatus2Log os;
     MAlignmentExporter alExporter;
@@ -92,6 +93,11 @@ void MAlignmentObject::updateCachedMAlignment(MAlignmentModInfo mi) {
     setModified(true);
     if (mi.middleState == false) {
         emit si_alignmentChanged(maBefore, mi);
+
+        QString newName = cachedMAlignment.getName();
+        if (newName != oldName) {
+            GObject::setGObjectName(cachedMAlignment.getName());
+        }
     }
 }
 
