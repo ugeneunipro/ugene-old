@@ -591,10 +591,14 @@ GUI_TEST_CLASS_DEFINITION(test_0011_1){
     GTWidget::click(os,GTWidget::findWidget(os, "msa_editor_sequence_area"));
     CHECK_SET_ERR(clipboardText=="TTAGATTATTAA","\nExpected: TTAGATTATTAA\nFound:\n"+clipboardText);
 
-//4.DIFFERENCE: 3. Click ctrl+shift+z
+//4.DIFFERENCE: 3. Click ctrl+y or ctrl+shift+z
+#ifdef Q_OS_WIN
+    GTKeyboardDriver::keyClick(os, 'y', GTKeyboardDriver::key["ctrl"]);
+#else
     GTKeyboardDriver::keyPress(os, GTKeyboardDriver::key["shift"]);
     GTKeyboardDriver::keyClick(os, 'z', GTKeyboardDriver::key["ctrl"]);
     GTKeyboardDriver::keyRelease(os, GTKeyboardDriver::key["shift"]);
+#endif
 //Expected state: Zychia_baranovi TTAA
     GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0,8), QPoint(11,8));
     GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
