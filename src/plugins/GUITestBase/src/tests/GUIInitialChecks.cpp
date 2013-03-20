@@ -115,7 +115,7 @@ GUI_TEST_CLASS_DEFINITION(post_test_0002) {
     GTFile::restore(os, testDir + "_common_data/scenarios/project/proj4.uprj");
     GTFile::restore(os, testDir + "_common_data/scenarios/project/proj5.uprj");
 }
-
+/*
 GUI_TEST_CLASS_DEFINITION(post_test_0003) {
 #ifdef Q_OS_WIN 
     QProcess *svnProcess = new QProcess();
@@ -149,6 +149,7 @@ GUI_TEST_CLASS_DEFINITION(post_test_0003) {
     }
 #endif
 }
+**/
 
 } // GUITest_initial_checks namespace
 
