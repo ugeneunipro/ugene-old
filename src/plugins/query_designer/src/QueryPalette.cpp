@@ -64,7 +64,7 @@ public:
             buttonOption.features = QStyleOptionButton::None;
             m_view->style()->drawControl(QStyle::CE_PushButton, &buttonOption, painter, m_view);
 
-            QStyleOption branchOption;
+            QStyleOptionViewItemV2 branchOption;
             static const int i = 9; // ### hardcoded in qcommonstyle.cpp
             QRect r = option.rect;
             branchOption.rect = QRect(r.left() + i/2, r.top() + (r.height() - i)/2, i, i);
