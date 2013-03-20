@@ -809,9 +809,11 @@ void MsaDbiUtils::insertGaps(const U2EntityRef& msaRef, const QList<qint64>& row
 
         // Trim trailing gap (if any)
         qint64 seqLength = row.gend - row.gstart;
+        qint64 gapsLength = 0;
         for (int i = 0, n = row.gaps.count(); i < n; ++i) {
             const U2MsaGap& gap = row.gaps[i];
-            if ((i == n - 1) && (gap.offset >= seqLength)) {
+            gapsLength += gap.gap;
+            if ((i == n - 1) && (gap.offset >= seqLength + gapsLength)) {
                 row.gaps.removeAt(i);
                 break;
             }
