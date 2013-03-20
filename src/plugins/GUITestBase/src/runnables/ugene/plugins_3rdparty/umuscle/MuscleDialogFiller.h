@@ -29,8 +29,16 @@ namespace U2 {
 //for now it just a stub, which can only press 'align' button
 class MuscleDialogFiller : public Filler {
 public:
-    MuscleDialogFiller(U2OpStatus &_os) : Filler(_os, "MuscleAlignmentDialog") {};
+    enum Mode {
+        Default = 0,
+        Large = 1,
+        Refine = 2
+    };
+    MuscleDialogFiller(U2OpStatus &os, Mode mode = Default);
     virtual void run();
+
+private:
+    Mode mode;
 };
 
 }
