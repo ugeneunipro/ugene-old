@@ -56,6 +56,7 @@ public:
     U2UserModStep4Test(qint64 _id, const U2DataId& _masterObjId) : id(_id), masterObjId(_masterObjId) {}
     qint64      id;
     U2DataId    masterObjId;
+    qint64      version;
 };
 
 
@@ -117,6 +118,39 @@ DECLARE_MOD_TEST(ModDbiSQLiteSpecificUnitTests, createStep_severalUser);
 DECLARE_MOD_TEST(ModDbiSQLiteSpecificUnitTests, createStep_separateThread);
 
 
+/**
+  * Verify user steps: versions after actions, undo and redo functions.
+  *     ^ oneAct_auto                   - one action, user step created automatically
+  *     ^ severalAct_auto               - several actions, user step created automatically
+  *     ^ severalActUndo_auto           - several actions and undo, user step created automatically
+  *     ^ severalActUndoRedo_auto       - several actions, undo and redo, user step created automatically
+  *     ^ severalActUndoRedoAct_auto    - several actions, undo, redo then action, user step created automatically
+  *     ^ oneAct_man                    - one action, user step created manually
+  *     ^ severalAct_man                - several actions, user step created manually
+  *     ^ severalActUndo_man            - several actions and undo, user step created manually
+  *     ^ severalActUndoRedo_man        - several actions, undo and redo, user step created manually
+  *     ^ severalActUndoRedoAct_man     - several actions, undo, redo then action, user step created manually
+  *     ^ oneAct_diffObj                - one action, user step created manually, it contains actions with different objects
+  *     ^ severalAct_diffObj            - several actions, user step created manually, it contains actions with different objects
+  *     ^ severalActUndo_diffObj        - several actions and undo, user step created manually, it contains actions with different objects
+  *     ^ severalActUndoRedo_diffObj    - several actions, undo and redo, user step created manually, it contains actions with different objects
+  *     ^ severalActUndoRedoAct_diffObj - several actions, undo, redo then actions, user step created manually, it contains actions with different objects
+  */
+DECLARE_MOD_TEST(ModDbiSQLiteSpecificUnitTests, userSteps_oneAct_auto);
+DECLARE_MOD_TEST(ModDbiSQLiteSpecificUnitTests, userSteps_severalAct_auto);
+DECLARE_MOD_TEST(ModDbiSQLiteSpecificUnitTests, userSteps_severalActUndo_auto);
+DECLARE_MOD_TEST(ModDbiSQLiteSpecificUnitTests, userSteps_severalActUndoRedo_auto);
+DECLARE_MOD_TEST(ModDbiSQLiteSpecificUnitTests, userSteps_severalActUndoRedoAct_auto);
+DECLARE_MOD_TEST(ModDbiSQLiteSpecificUnitTests, userSteps_oneAct_man);
+DECLARE_MOD_TEST(ModDbiSQLiteSpecificUnitTests, userSteps_severalAct_man);
+DECLARE_MOD_TEST(ModDbiSQLiteSpecificUnitTests, userSteps_severalActUndo_man);
+DECLARE_MOD_TEST(ModDbiSQLiteSpecificUnitTests, userSteps_severalActUndoRedo_man);
+DECLARE_MOD_TEST(ModDbiSQLiteSpecificUnitTests, userSteps_severalActUndoRedoAct_man);
+DECLARE_MOD_TEST(ModDbiSQLiteSpecificUnitTests, userSteps_oneAct_diffObj);
+DECLARE_MOD_TEST(ModDbiSQLiteSpecificUnitTests, userSteps_severalAct_diffObj);
+DECLARE_MOD_TEST(ModDbiSQLiteSpecificUnitTests, userSteps_severalActUndo_diffObj);
+DECLARE_MOD_TEST(ModDbiSQLiteSpecificUnitTests, userSteps_severalActUndoRedo_diffObj);
+DECLARE_MOD_TEST(ModDbiSQLiteSpecificUnitTests, userSteps_severalActUndoRedoAct_diffObj);
 
 ///////////////////////////////////////////////////////////////
 // Tests for U2ModDbi that assume that SQLiteDbi was used.
@@ -171,7 +205,21 @@ DECLARE_METATYPE(ModDbiSQLiteSpecificUnitTests, createStep_severalUser);
 DECLARE_METATYPE(ModDbiSQLiteSpecificUnitTests, createStep_separateThread);
 
 
-
+DECLARE_METATYPE(ModDbiSQLiteSpecificUnitTests, userSteps_oneAct_auto);
+DECLARE_METATYPE(ModDbiSQLiteSpecificUnitTests, userSteps_severalAct_auto);
+DECLARE_METATYPE(ModDbiSQLiteSpecificUnitTests, userSteps_severalActUndo_auto);
+DECLARE_METATYPE(ModDbiSQLiteSpecificUnitTests, userSteps_severalActUndoRedo_auto);
+DECLARE_METATYPE(ModDbiSQLiteSpecificUnitTests, userSteps_severalActUndoRedoAct_auto);
+DECLARE_METATYPE(ModDbiSQLiteSpecificUnitTests, userSteps_oneAct_man);
+DECLARE_METATYPE(ModDbiSQLiteSpecificUnitTests, userSteps_severalAct_man);
+DECLARE_METATYPE(ModDbiSQLiteSpecificUnitTests, userSteps_severalActUndo_man);
+DECLARE_METATYPE(ModDbiSQLiteSpecificUnitTests, userSteps_severalActUndoRedo_man);
+DECLARE_METATYPE(ModDbiSQLiteSpecificUnitTests, userSteps_severalActUndoRedoAct_man);
+DECLARE_METATYPE(ModDbiSQLiteSpecificUnitTests, userSteps_oneAct_diffObj);
+DECLARE_METATYPE(ModDbiSQLiteSpecificUnitTests, userSteps_severalAct_diffObj);
+DECLARE_METATYPE(ModDbiSQLiteSpecificUnitTests, userSteps_severalActUndo_diffObj);
+DECLARE_METATYPE(ModDbiSQLiteSpecificUnitTests, userSteps_severalActUndoRedo_diffObj);
+DECLARE_METATYPE(ModDbiSQLiteSpecificUnitTests, userSteps_severalActUndoRedoAct_diffObj);
 
 
 DECLARE_METATYPE(ModDbiSQLiteSpecificUnitTests, updateMsaName_noModTrack);

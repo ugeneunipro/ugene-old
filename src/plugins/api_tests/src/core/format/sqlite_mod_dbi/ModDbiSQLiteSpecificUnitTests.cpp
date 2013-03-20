@@ -129,12 +129,13 @@ void ModSQLiteSpecificTestData::getAllSteps(QList<U2SingleModStep>& singleSteps,
         multiSteps.append(multiStep);
     }
 
-    SQLiteQuery qUser("SELECT id, object, otype, oextra FROM UserModStep", sqliteDbi->getDbRef(), os);
+    SQLiteQuery qUser("SELECT id, object, otype, oextra, version FROM UserModStep", sqliteDbi->getDbRef(), os);
     SAFE_POINT_OP(os, );
     while (qUser.step()) {
         U2UserModStep4Test userStep;
         userStep.id = qUser.getInt64(0);
         userStep.masterObjId = qUser.getDataIdExt(1);
+        userStep.version = qUser.getInt64(4);
         userSteps.append(userStep);
     }
 }
@@ -1801,7 +1802,7 @@ IMPLEMENT_MOD_TEST(ModDbiSQLiteSpecificUnitTests, createStep_noMultiAndUser2Step
 
     CHECK_EQUAL(actualSingleSteps[0].multiStepId, actualMultiSteps[0].id, "multi step id 1");
     CHECK_EQUAL(actualMultiSteps[0].userStepId, actualUserSteps[0].id, "user step id 1");
-    CHECK_EQUAL(actualSingleSteps[0].objectId, actualUserSteps[0].masterObjId, "user step master object 1");
+    CHECK_EQUAL(QString(actualSingleSteps[0].objectId), QString(actualUserSteps[0].masterObjId), "user step master object 1");
 
     CHECK_EQUAL(actualSingleSteps[1].multiStepId, actualMultiSteps[1].id, "multi step id 2");
     CHECK_EQUAL(actualMultiSteps[1].userStepId, actualUserSteps[1].id, "user step id 2");
@@ -2074,6 +2075,682 @@ IMPLEMENT_MOD_TEST(ModDbiSQLiteSpecificUnitTests, createStep_separateThread) {
     bool finished = t.wait();
     CHECK_TRUE(finished, "The thread is not finished");
     CHECK_TRUE(os.hasError(), "No error");
+}
+
+IMPLEMENT_MOD_TEST(ModDbiSQLiteSpecificUnitTests, userSteps_oneAct_auto) {
+    SQLiteDbi *sqliteDbi = ModSQLiteSpecificTestData::getSQLiteDbi();
+    U2OpStatusImpl os;
+
+    U2DataId msaId = ModSQLiteSpecificTestData::createTestMsa(true, os);
+    CHECK_NO_ERROR(os);
+    qint64 baseVersion = sqliteDbi->getObjectDbi()->getObjectVersion(msaId, os);
+    CHECK_NO_ERROR(os);
+
+    // Action
+    sqliteDbi->getMsaDbi()->updateMsaAlphabet(msaId, BaseDNAAlphabetIds::NUCL_DNA_EXTENDED(), os);
+    CHECK_NO_ERROR(os);
+
+    QList<U2SingleModStep> actualSingleSteps;
+    QList<U2MultiModStep4Test> actualMultiSteps;
+    QList<U2UserModStep4Test> actualUserSteps;
+    ModSQLiteSpecificTestData::getAllSteps(actualSingleSteps, actualMultiSteps, actualUserSteps, os);
+    CHECK_NO_ERROR(os);
+
+    CHECK_EQUAL(1, actualUserSteps.count(), "user steps count");
+    CHECK_EQUAL(baseVersion, actualUserSteps[0].version, "user step version");
+}
+
+IMPLEMENT_MOD_TEST(ModDbiSQLiteSpecificUnitTests, userSteps_severalAct_auto) {
+    SQLiteDbi *sqliteDbi = ModSQLiteSpecificTestData::getSQLiteDbi();
+    U2OpStatusImpl os;
+
+    U2DataId msaId = ModSQLiteSpecificTestData::createTestMsa(true, os);
+    CHECK_NO_ERROR(os);
+    qint64 baseVersion = sqliteDbi->getObjectDbi()->getObjectVersion(msaId, os);
+    CHECK_NO_ERROR(os);
+
+    // Three actions
+    sqliteDbi->getMsaDbi()->updateMsaAlphabet(msaId, BaseDNAAlphabetIds::NUCL_DNA_EXTENDED(), os);
+    CHECK_NO_ERROR(os);
+    sqliteDbi->getMsaDbi()->updateMsaAlphabet(msaId, BaseDNAAlphabetIds::NUCL_DNA_EXTENDED(), os);
+    CHECK_NO_ERROR(os);
+    sqliteDbi->getMsaDbi()->updateMsaAlphabet(msaId, BaseDNAAlphabetIds::NUCL_DNA_EXTENDED(), os);
+    CHECK_NO_ERROR(os);
+
+    QList<U2SingleModStep> actualSingleSteps;
+    QList<U2MultiModStep4Test> actualMultiSteps;
+    QList<U2UserModStep4Test> actualUserSteps;
+    ModSQLiteSpecificTestData::getAllSteps(actualSingleSteps, actualMultiSteps, actualUserSteps, os);
+    CHECK_NO_ERROR(os);
+
+    CHECK_EQUAL(3, actualUserSteps.count(), "user steps count");
+    CHECK_EQUAL(baseVersion, actualUserSteps[0].version, "user step version");
+    CHECK_EQUAL(baseVersion + 1, actualUserSteps[1].version, "user step version");
+    CHECK_EQUAL(baseVersion + 2, actualUserSteps[2].version, "user step version");
+}
+
+IMPLEMENT_MOD_TEST(ModDbiSQLiteSpecificUnitTests, userSteps_severalActUndo_auto) {
+    SQLiteDbi *sqliteDbi = ModSQLiteSpecificTestData::getSQLiteDbi();
+    U2OpStatusImpl os;
+
+    U2DataId msaId = ModSQLiteSpecificTestData::createTestMsa(true, os);
+    CHECK_NO_ERROR(os);
+    qint64 baseVersion = sqliteDbi->getObjectDbi()->getObjectVersion(msaId, os);
+    CHECK_NO_ERROR(os);
+
+    // Three actions
+    sqliteDbi->getMsaDbi()->updateMsaAlphabet(msaId, BaseDNAAlphabetIds::NUCL_DNA_EXTENDED(), os);
+    CHECK_NO_ERROR(os);
+    sqliteDbi->getMsaDbi()->updateMsaAlphabet(msaId, BaseDNAAlphabetIds::NUCL_DNA_EXTENDED(), os);
+    CHECK_NO_ERROR(os);
+    sqliteDbi->getMsaDbi()->updateMsaAlphabet(msaId, BaseDNAAlphabetIds::NUCL_DNA_EXTENDED(), os);
+    CHECK_NO_ERROR(os);
+
+    // Undo twice
+    sqliteDbi->getObjectDbi()->undo(msaId, os);
+    CHECK_NO_ERROR(os);
+    sqliteDbi->getObjectDbi()->undo(msaId, os);
+    CHECK_NO_ERROR(os);
+
+    QList<U2SingleModStep> actualSingleSteps;
+    QList<U2MultiModStep4Test> actualMultiSteps;
+    QList<U2UserModStep4Test> actualUserSteps;
+    ModSQLiteSpecificTestData::getAllSteps(actualSingleSteps, actualMultiSteps, actualUserSteps, os);
+    CHECK_NO_ERROR(os);
+
+    CHECK_EQUAL(3, actualUserSteps.count(), "user steps count");
+    CHECK_EQUAL(baseVersion, actualUserSteps[0].version, "user step version");
+    CHECK_EQUAL(baseVersion + 1, actualUserSteps[1].version, "user step version");
+    CHECK_EQUAL(baseVersion + 2, actualUserSteps[2].version, "user step version");
+}
+
+IMPLEMENT_MOD_TEST(ModDbiSQLiteSpecificUnitTests, userSteps_severalActUndoRedo_auto) {
+    SQLiteDbi *sqliteDbi = ModSQLiteSpecificTestData::getSQLiteDbi();
+    U2OpStatusImpl os;
+
+    U2DataId msaId = ModSQLiteSpecificTestData::createTestMsa(true, os);
+    CHECK_NO_ERROR(os);
+    qint64 baseVersion = sqliteDbi->getObjectDbi()->getObjectVersion(msaId, os);
+    CHECK_NO_ERROR(os);
+
+    // Three actions
+    sqliteDbi->getMsaDbi()->updateMsaAlphabet(msaId, BaseDNAAlphabetIds::NUCL_DNA_EXTENDED(), os);
+    CHECK_NO_ERROR(os);
+    sqliteDbi->getMsaDbi()->updateMsaAlphabet(msaId, BaseDNAAlphabetIds::NUCL_DNA_EXTENDED(), os);
+    CHECK_NO_ERROR(os);
+    sqliteDbi->getMsaDbi()->updateMsaAlphabet(msaId, BaseDNAAlphabetIds::NUCL_DNA_EXTENDED(), os);
+    CHECK_NO_ERROR(os);
+
+    // Undo twice
+    sqliteDbi->getObjectDbi()->undo(msaId, os);
+    CHECK_NO_ERROR(os);
+    sqliteDbi->getObjectDbi()->undo(msaId, os);
+    CHECK_NO_ERROR(os);
+
+    // Redo once
+    sqliteDbi->getObjectDbi()->redo(msaId, os);
+    CHECK_NO_ERROR(os);
+
+    QList<U2SingleModStep> actualSingleSteps;
+    QList<U2MultiModStep4Test> actualMultiSteps;
+    QList<U2UserModStep4Test> actualUserSteps;
+    ModSQLiteSpecificTestData::getAllSteps(actualSingleSteps, actualMultiSteps, actualUserSteps, os);
+    CHECK_NO_ERROR(os);
+
+    CHECK_EQUAL(3, actualUserSteps.count(), "user steps count");
+    CHECK_EQUAL(baseVersion, actualUserSteps[0].version, "user step version");
+    CHECK_EQUAL(baseVersion + 1, actualUserSteps[1].version, "user step version");
+    CHECK_EQUAL(baseVersion + 2, actualUserSteps[2].version, "user step version");
+}
+
+IMPLEMENT_MOD_TEST(ModDbiSQLiteSpecificUnitTests, userSteps_severalActUndoRedoAct_auto) {
+    SQLiteDbi *sqliteDbi = ModSQLiteSpecificTestData::getSQLiteDbi();
+    U2OpStatusImpl os;
+
+    U2DataId msaId = ModSQLiteSpecificTestData::createTestMsa(true, os);
+    CHECK_NO_ERROR(os);
+    qint64 baseVersion = sqliteDbi->getObjectDbi()->getObjectVersion(msaId, os);
+    CHECK_NO_ERROR(os);
+
+    // Three actions
+    sqliteDbi->getMsaDbi()->updateMsaAlphabet(msaId, BaseDNAAlphabetIds::NUCL_DNA_EXTENDED(), os);
+    CHECK_NO_ERROR(os);
+    sqliteDbi->getMsaDbi()->updateMsaAlphabet(msaId, BaseDNAAlphabetIds::NUCL_DNA_EXTENDED(), os);
+    CHECK_NO_ERROR(os);
+    sqliteDbi->getMsaDbi()->updateMsaAlphabet(msaId, BaseDNAAlphabetIds::NUCL_DNA_EXTENDED(), os);
+    CHECK_NO_ERROR(os);
+
+    // Undo thrice
+    sqliteDbi->getObjectDbi()->undo(msaId, os);
+    CHECK_NO_ERROR(os);
+    sqliteDbi->getObjectDbi()->undo(msaId, os);
+    CHECK_NO_ERROR(os);
+    sqliteDbi->getObjectDbi()->undo(msaId, os);
+    CHECK_NO_ERROR(os);
+
+    // Redo once
+    sqliteDbi->getObjectDbi()->redo(msaId, os);
+    CHECK_NO_ERROR(os);
+
+    // One action
+    sqliteDbi->getMsaDbi()->updateMsaAlphabet(msaId, BaseDNAAlphabetIds::NUCL_DNA_DEFAULT(), os);
+    CHECK_NO_ERROR(os);
+
+    QList<U2SingleModStep> actualSingleSteps;
+    QList<U2MultiModStep4Test> actualMultiSteps;
+    QList<U2UserModStep4Test> actualUserSteps;
+    ModSQLiteSpecificTestData::getAllSteps(actualSingleSteps, actualMultiSteps, actualUserSteps, os);
+    CHECK_NO_ERROR(os);
+
+    CHECK_EQUAL(2, actualUserSteps.count(), "user steps count");
+    CHECK_EQUAL(baseVersion, actualUserSteps[0].version, "user step version");
+    CHECK_EQUAL(baseVersion + 1, actualUserSteps[1].version, "user step version");
+}
+
+IMPLEMENT_MOD_TEST(ModDbiSQLiteSpecificUnitTests, userSteps_oneAct_man) {
+    SQLiteDbi *sqliteDbi = ModSQLiteSpecificTestData::getSQLiteDbi();
+    U2OpStatusImpl os;
+
+    U2DataId msaId = ModSQLiteSpecificTestData::createTestMsa(true, os);
+    CHECK_NO_ERROR(os);
+    qint64 baseVersion = sqliteDbi->getObjectDbi()->getObjectVersion(msaId, os);
+    CHECK_NO_ERROR(os);
+
+    // Create user step
+    {
+        U2UseCommonUserModStep userModStep(sqliteDbi, msaId, os);
+        CHECK_NO_ERROR(os);
+        Q_UNUSED(userModStep);
+
+        // Action
+        sqliteDbi->getMsaDbi()->updateMsaAlphabet(msaId, BaseDNAAlphabetIds::NUCL_DNA_EXTENDED(), os);
+        CHECK_NO_ERROR(os);
+        sqliteDbi->getMsaDbi()->updateMsaName(msaId, "New name", os);
+        CHECK_NO_ERROR(os);
+    }
+
+    QList<U2SingleModStep> actualSingleSteps;
+    QList<U2MultiModStep4Test> actualMultiSteps;
+    QList<U2UserModStep4Test> actualUserSteps;
+    ModSQLiteSpecificTestData::getAllSteps(actualSingleSteps, actualMultiSteps, actualUserSteps, os);
+    CHECK_NO_ERROR(os);
+
+    CHECK_EQUAL(1, actualUserSteps.count(), "user steps count");
+    CHECK_EQUAL(baseVersion, actualUserSteps[0].version, "user step version");
+}
+
+IMPLEMENT_MOD_TEST(ModDbiSQLiteSpecificUnitTests, userSteps_severalAct_man) {
+    SQLiteDbi *sqliteDbi = ModSQLiteSpecificTestData::getSQLiteDbi();
+    U2OpStatusImpl os;
+
+    U2DataId msaId = ModSQLiteSpecificTestData::createTestMsa(true, os);
+    CHECK_NO_ERROR(os);
+    qint64 baseVersion = sqliteDbi->getObjectDbi()->getObjectVersion(msaId, os);
+    CHECK_NO_ERROR(os);
+
+    for (int i = 0; i < 3; ++i) {
+        // Create user step
+        U2UseCommonUserModStep userModStep(sqliteDbi, msaId, os);
+        CHECK_NO_ERROR(os);
+        Q_UNUSED(userModStep);
+
+        // Some actions
+        sqliteDbi->getMsaDbi()->updateMsaAlphabet(msaId, BaseDNAAlphabetIds::NUCL_DNA_EXTENDED(), os);
+        CHECK_NO_ERROR(os);
+        sqliteDbi->getMsaDbi()->updateMsaName(msaId, QString("New name ") + QString::number(i), os);
+        CHECK_NO_ERROR(os);
+    }
+
+    QList<U2SingleModStep> actualSingleSteps;
+    QList<U2MultiModStep4Test> actualMultiSteps;
+    QList<U2UserModStep4Test> actualUserSteps;
+    ModSQLiteSpecificTestData::getAllSteps(actualSingleSteps, actualMultiSteps, actualUserSteps, os);
+    CHECK_NO_ERROR(os);
+
+    CHECK_EQUAL(3, actualUserSteps.count(), "user steps count");
+    CHECK_EQUAL(baseVersion, actualUserSteps[0].version, "user step version");
+    CHECK_EQUAL(baseVersion + 2, actualUserSteps[1].version, "user step version");
+    CHECK_EQUAL(baseVersion + 4, actualUserSteps[2].version, "user step version");
+}
+
+IMPLEMENT_MOD_TEST(ModDbiSQLiteSpecificUnitTests, userSteps_severalActUndo_man) {
+    SQLiteDbi *sqliteDbi = ModSQLiteSpecificTestData::getSQLiteDbi();
+    U2OpStatusImpl os;
+
+    U2DataId msaId = ModSQLiteSpecificTestData::createTestMsa(true, os);
+    CHECK_NO_ERROR(os);
+    qint64 baseVersion = sqliteDbi->getObjectDbi()->getObjectVersion(msaId, os);
+    CHECK_NO_ERROR(os);
+
+    for (int i = 0; i < 3; ++i) {
+        // Create user step
+        U2UseCommonUserModStep userModStep(sqliteDbi, msaId, os);
+        CHECK_NO_ERROR(os);
+        Q_UNUSED(userModStep);
+
+        // Some actions
+        sqliteDbi->getMsaDbi()->updateMsaAlphabet(msaId, BaseDNAAlphabetIds::NUCL_DNA_EXTENDED(), os);
+        CHECK_NO_ERROR(os);
+        sqliteDbi->getMsaDbi()->updateMsaName(msaId, QString("New name ") + QString::number(i), os);
+        CHECK_NO_ERROR(os);
+    }
+
+    // Undo twice
+    sqliteDbi->getObjectDbi()->undo(msaId, os);
+    CHECK_NO_ERROR(os);
+    sqliteDbi->getObjectDbi()->undo(msaId, os);
+    CHECK_NO_ERROR(os);
+
+    QList<U2SingleModStep> actualSingleSteps;
+    QList<U2MultiModStep4Test> actualMultiSteps;
+    QList<U2UserModStep4Test> actualUserSteps;
+    ModSQLiteSpecificTestData::getAllSteps(actualSingleSteps, actualMultiSteps, actualUserSteps, os);
+    CHECK_NO_ERROR(os);
+
+    CHECK_EQUAL(3, actualUserSteps.count(), "user steps count");
+    CHECK_EQUAL(baseVersion, actualUserSteps[0].version, "user step version");
+    CHECK_EQUAL(baseVersion + 2, actualUserSteps[1].version, "user step version");
+    CHECK_EQUAL(baseVersion + 4, actualUserSteps[2].version, "user step version");
+}
+
+IMPLEMENT_MOD_TEST(ModDbiSQLiteSpecificUnitTests, userSteps_severalActUndoRedo_man) {
+    SQLiteDbi *sqliteDbi = ModSQLiteSpecificTestData::getSQLiteDbi();
+    U2OpStatusImpl os;
+
+    U2DataId msaId = ModSQLiteSpecificTestData::createTestMsa(true, os);
+    CHECK_NO_ERROR(os);
+    qint64 baseVersion = sqliteDbi->getObjectDbi()->getObjectVersion(msaId, os);
+    CHECK_NO_ERROR(os);
+
+    for (int i = 0; i < 3; ++i) {
+        // Create user step
+        U2UseCommonUserModStep userModStep(sqliteDbi, msaId, os);
+        CHECK_NO_ERROR(os);
+        Q_UNUSED(userModStep);
+
+        // Some actions
+        sqliteDbi->getMsaDbi()->updateMsaAlphabet(msaId, BaseDNAAlphabetIds::NUCL_DNA_EXTENDED(), os);
+        CHECK_NO_ERROR(os);
+        sqliteDbi->getMsaDbi()->updateMsaName(msaId, QString("New name ") + QString::number(i), os);
+        CHECK_NO_ERROR(os);
+    }
+
+    // Undo twice
+    sqliteDbi->getObjectDbi()->undo(msaId, os);
+    CHECK_NO_ERROR(os);
+    sqliteDbi->getObjectDbi()->undo(msaId, os);
+    CHECK_NO_ERROR(os);
+
+    // Redo once
+    sqliteDbi->getObjectDbi()->redo(msaId, os);
+    CHECK_NO_ERROR(os);
+
+    QList<U2SingleModStep> actualSingleSteps;
+    QList<U2MultiModStep4Test> actualMultiSteps;
+    QList<U2UserModStep4Test> actualUserSteps;
+    ModSQLiteSpecificTestData::getAllSteps(actualSingleSteps, actualMultiSteps, actualUserSteps, os);
+    CHECK_NO_ERROR(os);
+
+    CHECK_EQUAL(3, actualUserSteps.count(), "user steps count");
+    CHECK_EQUAL(baseVersion, actualUserSteps[0].version, "user step version");
+    CHECK_EQUAL(baseVersion + 2, actualUserSteps[1].version, "user step version");
+    CHECK_EQUAL(baseVersion + 4, actualUserSteps[2].version, "user step version");
+}
+
+IMPLEMENT_MOD_TEST(ModDbiSQLiteSpecificUnitTests, userSteps_severalActUndoRedoAct_man) {
+    SQLiteDbi *sqliteDbi = ModSQLiteSpecificTestData::getSQLiteDbi();
+    U2OpStatusImpl os;
+
+    U2DataId msaId = ModSQLiteSpecificTestData::createTestMsa(true, os);
+    CHECK_NO_ERROR(os);
+    qint64 baseVersion = sqliteDbi->getObjectDbi()->getObjectVersion(msaId, os);
+    CHECK_NO_ERROR(os);
+
+    for (int i = 0; i < 3; ++i) {
+        // Create user step
+        U2UseCommonUserModStep userModStep(sqliteDbi, msaId, os);
+        CHECK_NO_ERROR(os);
+        Q_UNUSED(userModStep);
+
+        // Some actions
+        sqliteDbi->getMsaDbi()->updateMsaAlphabet(msaId, BaseDNAAlphabetIds::NUCL_DNA_EXTENDED(), os);
+        CHECK_NO_ERROR(os);
+        sqliteDbi->getMsaDbi()->updateMsaName(msaId, QString("New name ") + QString::number(i), os);
+        CHECK_NO_ERROR(os);
+    }
+
+    // Undo thrice
+    sqliteDbi->getObjectDbi()->undo(msaId, os);
+    CHECK_NO_ERROR(os);
+    sqliteDbi->getObjectDbi()->undo(msaId, os);
+    CHECK_NO_ERROR(os);
+    sqliteDbi->getObjectDbi()->undo(msaId, os);
+    CHECK_NO_ERROR(os);
+
+    // Redo once
+    sqliteDbi->getObjectDbi()->redo(msaId, os);
+    CHECK_NO_ERROR(os);
+
+    // One action
+    {
+        // Create user step
+        U2UseCommonUserModStep userModStep(sqliteDbi, msaId, os);
+        CHECK_NO_ERROR(os);
+        Q_UNUSED(userModStep);
+
+        // Some actions
+        sqliteDbi->getMsaDbi()->updateMsaAlphabet(msaId, BaseDNAAlphabetIds::NUCL_DNA_DEFAULT(), os);
+        CHECK_NO_ERROR(os);
+        sqliteDbi->getMsaDbi()->updateMsaName(msaId, QString("The newest name"), os);
+        CHECK_NO_ERROR(os);
+    }
+
+    QList<U2SingleModStep> actualSingleSteps;
+    QList<U2MultiModStep4Test> actualMultiSteps;
+    QList<U2UserModStep4Test> actualUserSteps;
+    ModSQLiteSpecificTestData::getAllSteps(actualSingleSteps, actualMultiSteps, actualUserSteps, os);
+    CHECK_NO_ERROR(os);
+
+    CHECK_EQUAL(2, actualUserSteps.count(), "user steps count");
+    CHECK_EQUAL(baseVersion, actualUserSteps[0].version, "user step version");
+    CHECK_EQUAL(baseVersion + 2, actualUserSteps[1].version, "user step version");
+}
+
+IMPLEMENT_MOD_TEST(ModDbiSQLiteSpecificUnitTests, userSteps_oneAct_diffObj) {
+    SQLiteDbi *sqliteDbi = ModSQLiteSpecificTestData::getSQLiteDbi();
+    U2OpStatusImpl os;
+
+    U2DataId msaId1 = ModSQLiteSpecificTestData::createTestMsa(true, os);
+    CHECK_NO_ERROR(os);
+    U2DataId msaId2 = ModSQLiteSpecificTestData::createTestMsa(true, os);
+    CHECK_NO_ERROR(os);
+    qint64 baseVersion1 = sqliteDbi->getObjectDbi()->getObjectVersion(msaId1, os);
+    CHECK_NO_ERROR(os);
+    qint64 baseVersion2 = sqliteDbi->getObjectDbi()->getObjectVersion(msaId2, os);
+    CHECK_NO_ERROR(os);
+
+    // Create user step, msaId1 - master
+    {
+        U2UseCommonUserModStep userModStep(sqliteDbi, msaId1, os);
+        CHECK_NO_ERROR(os);
+        Q_UNUSED(userModStep);
+
+        // Action for msaId1
+        sqliteDbi->getMsaDbi()->updateMsaAlphabet(msaId1, BaseDNAAlphabetIds::NUCL_DNA_EXTENDED(), os);
+        CHECK_NO_ERROR(os);
+        sqliteDbi->getMsaDbi()->updateMsaName(msaId1, "New name", os);
+        CHECK_NO_ERROR(os);
+
+        // Action for msaId2
+        sqliteDbi->getMsaDbi()->updateMsaAlphabet(msaId2, BaseDNAAlphabetIds::NUCL_DNA_EXTENDED(), os);
+        CHECK_NO_ERROR(os);
+        sqliteDbi->getMsaDbi()->updateMsaName(msaId2, "New name", os);
+        CHECK_NO_ERROR(os);
+    }
+
+    qint64 finalVersion1 = sqliteDbi->getObjectDbi()->getObjectVersion(msaId1, os);
+    CHECK_NO_ERROR(os);
+    qint64 finalVersion2 = sqliteDbi->getObjectDbi()->getObjectVersion(msaId2, os);
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(baseVersion1 - baseVersion2, finalVersion1 - finalVersion2, "objects versions");
+
+    QList<U2SingleModStep> actualSingleSteps;
+    QList<U2MultiModStep4Test> actualMultiSteps;
+    QList<U2UserModStep4Test> actualUserSteps;
+    ModSQLiteSpecificTestData::getAllSteps(actualSingleSteps, actualMultiSteps, actualUserSteps, os);
+    CHECK_NO_ERROR(os);
+
+    CHECK_EQUAL(1, actualUserSteps.count(), "user steps count");
+    CHECK_EQUAL(baseVersion1, actualUserSteps[0].version, "user step version");
+}
+
+IMPLEMENT_MOD_TEST(ModDbiSQLiteSpecificUnitTests, userSteps_severalAct_diffObj) {
+    SQLiteDbi *sqliteDbi = ModSQLiteSpecificTestData::getSQLiteDbi();
+    U2OpStatusImpl os;
+
+    U2DataId msaId1 = ModSQLiteSpecificTestData::createTestMsa(true, os);
+    CHECK_NO_ERROR(os);
+    U2DataId msaId2 = ModSQLiteSpecificTestData::createTestMsa(true, os);
+    CHECK_NO_ERROR(os);
+    qint64 baseVersion1 = sqliteDbi->getObjectDbi()->getObjectVersion(msaId1, os);
+    CHECK_NO_ERROR(os);
+    qint64 baseVersion2 = sqliteDbi->getObjectDbi()->getObjectVersion(msaId2, os);
+    CHECK_NO_ERROR(os);
+
+    for (int i = 0; i < 3; ++i) {
+        // Create user step, msaId1 - master
+        U2UseCommonUserModStep userModStep(sqliteDbi, msaId1, os);
+        CHECK_NO_ERROR(os);
+        Q_UNUSED(userModStep);
+
+        // Action for msaId1
+        sqliteDbi->getMsaDbi()->updateMsaAlphabet(msaId1, BaseDNAAlphabetIds::NUCL_DNA_EXTENDED(), os);
+        CHECK_NO_ERROR(os);
+        sqliteDbi->getMsaDbi()->updateMsaName(msaId1, QString("New name ") + QString::number(i), os);
+        CHECK_NO_ERROR(os);
+
+        // Action for msaId2
+        sqliteDbi->getMsaDbi()->updateMsaAlphabet(msaId2, BaseDNAAlphabetIds::NUCL_DNA_EXTENDED(), os);
+        CHECK_NO_ERROR(os);
+        sqliteDbi->getMsaDbi()->updateMsaName(msaId2, QString("New name ") + QString::number(i), os);
+        CHECK_NO_ERROR(os);
+    }
+
+    qint64 finalVersion1 = sqliteDbi->getObjectDbi()->getObjectVersion(msaId1, os);
+    CHECK_NO_ERROR(os);
+    qint64 finalVersion2 = sqliteDbi->getObjectDbi()->getObjectVersion(msaId2, os);
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(baseVersion1 - baseVersion2, finalVersion1 - finalVersion2, "objects versions");
+
+    QList<U2SingleModStep> actualSingleSteps;
+    QList<U2MultiModStep4Test> actualMultiSteps;
+    QList<U2UserModStep4Test> actualUserSteps;
+    ModSQLiteSpecificTestData::getAllSteps(actualSingleSteps, actualMultiSteps, actualUserSteps, os);
+    CHECK_NO_ERROR(os);
+
+    CHECK_EQUAL(3, actualUserSteps.count(), "user steps count");
+    CHECK_EQUAL(baseVersion1, actualUserSteps[0].version, "user step version");
+    CHECK_EQUAL(baseVersion1 + 1, actualUserSteps[1].version, "user step version");
+    CHECK_EQUAL(baseVersion1 + 2, actualUserSteps[2].version, "user step version");
+}
+
+IMPLEMENT_MOD_TEST(ModDbiSQLiteSpecificUnitTests, userSteps_severalActUndo_diffObj) {
+    SQLiteDbi *sqliteDbi = ModSQLiteSpecificTestData::getSQLiteDbi();
+    U2OpStatusImpl os;
+
+    U2DataId msaId1 = ModSQLiteSpecificTestData::createTestMsa(true, os);
+    CHECK_NO_ERROR(os);
+    U2DataId msaId2 = ModSQLiteSpecificTestData::createTestMsa(true, os);
+    CHECK_NO_ERROR(os);
+    qint64 baseVersion1 = sqliteDbi->getObjectDbi()->getObjectVersion(msaId1, os);
+    CHECK_NO_ERROR(os);
+    qint64 baseVersion2 = sqliteDbi->getObjectDbi()->getObjectVersion(msaId2, os);
+    CHECK_NO_ERROR(os);
+
+    for (int i = 0; i < 3; ++i) {
+        // Create user step, msaId1 - master
+        U2UseCommonUserModStep userModStep(sqliteDbi, msaId1, os);
+        CHECK_NO_ERROR(os);
+        Q_UNUSED(userModStep);
+
+        // Action for msaId1
+        sqliteDbi->getMsaDbi()->updateMsaAlphabet(msaId1, BaseDNAAlphabetIds::NUCL_DNA_EXTENDED(), os);
+        CHECK_NO_ERROR(os);
+        sqliteDbi->getMsaDbi()->updateMsaName(msaId1, QString("New name ") + QString::number(i), os);
+        CHECK_NO_ERROR(os);
+
+        // Action for msaId2
+        sqliteDbi->getMsaDbi()->updateMsaAlphabet(msaId2, BaseDNAAlphabetIds::NUCL_DNA_EXTENDED(), os);
+        CHECK_NO_ERROR(os);
+        sqliteDbi->getMsaDbi()->updateMsaName(msaId2, QString("New name ") + QString::number(i), os);
+        CHECK_NO_ERROR(os);
+    }
+
+    // Undo twice (for master object)
+    sqliteDbi->getObjectDbi()->undo(msaId1, os);
+    CHECK_NO_ERROR(os);
+    sqliteDbi->getObjectDbi()->undo(msaId1, os);
+    CHECK_NO_ERROR(os);
+
+    qint64 finalVersion1 = sqliteDbi->getObjectDbi()->getObjectVersion(msaId1, os);
+    CHECK_NO_ERROR(os);
+    qint64 finalVersion2 = sqliteDbi->getObjectDbi()->getObjectVersion(msaId2, os);
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(baseVersion1 - baseVersion2, finalVersion1 - finalVersion2, "objects versions");
+
+    QList<U2SingleModStep> actualSingleSteps;
+    QList<U2MultiModStep4Test> actualMultiSteps;
+    QList<U2UserModStep4Test> actualUserSteps;
+    ModSQLiteSpecificTestData::getAllSteps(actualSingleSteps, actualMultiSteps, actualUserSteps, os);
+    CHECK_NO_ERROR(os);
+
+    CHECK_EQUAL(3, actualUserSteps.count(), "user steps count");
+    CHECK_EQUAL(baseVersion1, actualUserSteps[0].version, "user step version");
+    CHECK_EQUAL(baseVersion1 + 1, actualUserSteps[1].version, "user step version");
+    CHECK_EQUAL(baseVersion1 + 2, actualUserSteps[2].version, "user step version");
+}
+
+IMPLEMENT_MOD_TEST(ModDbiSQLiteSpecificUnitTests, userSteps_severalActUndoRedo_diffObj) {
+    SQLiteDbi *sqliteDbi = ModSQLiteSpecificTestData::getSQLiteDbi();
+    U2OpStatusImpl os;
+
+    U2DataId msaId1 = ModSQLiteSpecificTestData::createTestMsa(true, os);
+    CHECK_NO_ERROR(os);
+    U2DataId msaId2 = ModSQLiteSpecificTestData::createTestMsa(true, os);
+    CHECK_NO_ERROR(os);
+    qint64 baseVersion1 = sqliteDbi->getObjectDbi()->getObjectVersion(msaId1, os);
+    CHECK_NO_ERROR(os);
+    qint64 baseVersion2 = sqliteDbi->getObjectDbi()->getObjectVersion(msaId2, os);
+    CHECK_NO_ERROR(os);
+
+    for (int i = 0; i < 3; ++i) {
+        // Create user step, msaId1 - master
+        U2UseCommonUserModStep userModStep(sqliteDbi, msaId1, os);
+        CHECK_NO_ERROR(os);
+        Q_UNUSED(userModStep);
+
+        // Action for msaId1
+        sqliteDbi->getMsaDbi()->updateMsaAlphabet(msaId1, BaseDNAAlphabetIds::NUCL_DNA_EXTENDED(), os);
+        CHECK_NO_ERROR(os);
+        sqliteDbi->getMsaDbi()->updateMsaName(msaId1, QString("New name ") + QString::number(i), os);
+        CHECK_NO_ERROR(os);
+
+        // Action for msaId2
+        sqliteDbi->getMsaDbi()->updateMsaAlphabet(msaId2, BaseDNAAlphabetIds::NUCL_DNA_EXTENDED(), os);
+        CHECK_NO_ERROR(os);
+        sqliteDbi->getMsaDbi()->updateMsaName(msaId2, QString("New name ") + QString::number(i), os);
+        CHECK_NO_ERROR(os);
+    }
+
+    // Undo thrice (for master object)
+    sqliteDbi->getObjectDbi()->undo(msaId1, os);
+    CHECK_NO_ERROR(os);
+    sqliteDbi->getObjectDbi()->undo(msaId1, os);
+    CHECK_NO_ERROR(os);
+    sqliteDbi->getObjectDbi()->undo(msaId1, os);
+    CHECK_NO_ERROR(os);
+
+    // Redo once (for master object)
+    sqliteDbi->getObjectDbi()->redo(msaId1, os);
+    CHECK_NO_ERROR(os);
+
+    qint64 finalVersion1 = sqliteDbi->getObjectDbi()->getObjectVersion(msaId1, os);
+    CHECK_NO_ERROR(os);
+    qint64 finalVersion2 = sqliteDbi->getObjectDbi()->getObjectVersion(msaId2, os);
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(baseVersion1 - baseVersion2, finalVersion1 - finalVersion2, "objects versions");
+
+    QList<U2SingleModStep> actualSingleSteps;
+    QList<U2MultiModStep4Test> actualMultiSteps;
+    QList<U2UserModStep4Test> actualUserSteps;
+    ModSQLiteSpecificTestData::getAllSteps(actualSingleSteps, actualMultiSteps, actualUserSteps, os);
+    CHECK_NO_ERROR(os);
+
+    CHECK_EQUAL(3, actualUserSteps.count(), "user steps count");
+    CHECK_EQUAL(baseVersion1, actualUserSteps[0].version, "user step version");
+    CHECK_EQUAL(baseVersion1 + 1, actualUserSteps[1].version, "user step version");
+    CHECK_EQUAL(baseVersion1 + 2, actualUserSteps[2].version, "user step version");
+}
+
+IMPLEMENT_MOD_TEST(ModDbiSQLiteSpecificUnitTests, userSteps_severalActUndoRedoAct_diffObj) {
+    SQLiteDbi *sqliteDbi = ModSQLiteSpecificTestData::getSQLiteDbi();
+    U2OpStatusImpl os;
+
+    U2DataId msaId1 = ModSQLiteSpecificTestData::createTestMsa(true, os);
+    CHECK_NO_ERROR(os);
+    U2DataId msaId2 = ModSQLiteSpecificTestData::createTestMsa(true, os);
+    CHECK_NO_ERROR(os);
+    qint64 baseVersion1 = sqliteDbi->getObjectDbi()->getObjectVersion(msaId1, os);
+    CHECK_NO_ERROR(os);
+    qint64 baseVersion2 = sqliteDbi->getObjectDbi()->getObjectVersion(msaId2, os);
+    CHECK_NO_ERROR(os);
+
+    for (int i = 0; i < 3; ++i) {
+        // Create user step, msaId1 - master
+        U2UseCommonUserModStep userModStep(sqliteDbi, msaId1, os);
+        CHECK_NO_ERROR(os);
+        Q_UNUSED(userModStep);
+
+        // Action for msaId1
+        sqliteDbi->getMsaDbi()->updateMsaAlphabet(msaId1, BaseDNAAlphabetIds::NUCL_DNA_EXTENDED(), os);
+        CHECK_NO_ERROR(os);
+        sqliteDbi->getMsaDbi()->updateMsaName(msaId1, QString("New name ") + QString::number(i), os);
+        CHECK_NO_ERROR(os);
+
+        // Action for msaId2
+        sqliteDbi->getMsaDbi()->updateMsaAlphabet(msaId2, BaseDNAAlphabetIds::NUCL_DNA_EXTENDED(), os);
+        CHECK_NO_ERROR(os);
+        sqliteDbi->getMsaDbi()->updateMsaName(msaId2, QString("New name ") + QString::number(i), os);
+        CHECK_NO_ERROR(os);
+    }
+
+    // Undo thrice (for master object)
+    sqliteDbi->getObjectDbi()->undo(msaId1, os);
+    CHECK_NO_ERROR(os);
+    sqliteDbi->getObjectDbi()->undo(msaId1, os);
+    CHECK_NO_ERROR(os);
+    sqliteDbi->getObjectDbi()->undo(msaId1, os);
+    CHECK_NO_ERROR(os);
+
+    // Redo once (for master object)
+    sqliteDbi->getObjectDbi()->redo(msaId1, os);
+    CHECK_NO_ERROR(os);
+
+    // One action
+    {
+        // Create user step, msaId1 - master
+        U2UseCommonUserModStep userModStep(sqliteDbi, msaId1, os);
+        CHECK_NO_ERROR(os);
+        Q_UNUSED(userModStep);
+
+        // Action for msaId1
+        sqliteDbi->getMsaDbi()->updateMsaAlphabet(msaId1, BaseDNAAlphabetIds::NUCL_DNA_DEFAULT(), os);
+        CHECK_NO_ERROR(os);
+        sqliteDbi->getMsaDbi()->updateMsaName(msaId1, QString("The newest name 1"), os);
+        CHECK_NO_ERROR(os);
+
+        // Action for msaId2
+        sqliteDbi->getMsaDbi()->updateMsaAlphabet(msaId2, BaseDNAAlphabetIds::NUCL_DNA_DEFAULT(), os);
+        CHECK_NO_ERROR(os);
+        sqliteDbi->getMsaDbi()->updateMsaName(msaId2, QString("The newest name 2"), os);
+        CHECK_NO_ERROR(os);
+    }
+
+    qint64 finalVersion1 = sqliteDbi->getObjectDbi()->getObjectVersion(msaId1, os);
+    CHECK_NO_ERROR(os);
+    qint64 finalVersion2 = sqliteDbi->getObjectDbi()->getObjectVersion(msaId2, os);
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(baseVersion1 - baseVersion2, finalVersion1 - finalVersion2, "objects versions");
+
+    QList<U2SingleModStep> actualSingleSteps;
+    QList<U2MultiModStep4Test> actualMultiSteps;
+    QList<U2UserModStep4Test> actualUserSteps;
+    ModSQLiteSpecificTestData::getAllSteps(actualSingleSteps, actualMultiSteps, actualUserSteps, os);
+    CHECK_NO_ERROR(os);
+
+    CHECK_EQUAL(2, actualUserSteps.count(), "user steps count");
+    CHECK_EQUAL(baseVersion1, actualUserSteps[0].version, "user step version");
+    CHECK_EQUAL(baseVersion1 + 1, actualUserSteps[1].version, "user step version");
 }
 
 } // namespace
