@@ -126,6 +126,12 @@ void GTest_FindSingleSequenceRepeatsTask::init(XMLTestFormat *tf, const QDomElem
     inverted = el.attribute("invert") == "true";
     reflect = el.attribute("reflect", "true") == "true";
     filterNested = el.attribute("filterNested", "false") == "true";
+    filterUnique = el.attribute("filterUnique", "false") == "true";
+
+    if (filterNested && filterUnique){
+        stateInfo.setError(QString("Filter unique and filter nested cannot go together"));
+        return;
+    }
 
     resultFile = el.attribute(RESULT_ATTR);
     if (resultFile.isEmpty()) {
@@ -186,8 +192,15 @@ void GTest_FindSingleSequenceRepeatsTask::prepare() {
     s.seqRegion = region; 
     s.seq2Region = region;
     s.reportReflected = reflect;
-    s.filterNested = filterNested;
     s.nThreads = 1;//todo: add to settings 
+
+    if (filterNested == true){
+        s.filter = DisjointRepeats;
+    }else if(filterUnique == true){
+        s.filter = UniqueRepeats;
+    }else{
+        s.filter = NoFiltering;
+    }
     
     foreach(RFAlgorithm algo, algos) {
         QString algName = getAlgName(algo);
@@ -272,6 +285,12 @@ void GTest_FindTandemRepeatsTask::init(XMLTestFormat *tf, const QDomElement& el)
     inverted = el.attribute("invert") == "true";
     reflect = el.attribute("reflect", "true") == "true";
     filterNested = el.attribute("filterNested", "false") == "true";
+    filterUnique = el.attribute("filterUnique", "false") == "true";
+
+    if (filterNested && filterUnique){
+        stateInfo.setError(QString("Filter unique and filter nested cannot go together"));
+        return;
+    }
 
     results = el.attribute(RESULT_ATTR);
     sequence = el.attribute("sequence");
@@ -401,6 +420,12 @@ void GTest_FindRealTandemRepeatsTask::init(XMLTestFormat *tf, const QDomElement&
     inverted = el.attribute("invert") == "true";
     reflect = el.attribute("reflect", "true") == "true";
     filterNested = el.attribute("filterNested", "false") == "true";
+    filterUnique = el.attribute("filterUnique", "false") == "true";
+
+    if (filterNested && filterUnique){
+        stateInfo.setError(QString("Filter unique and filter nested cannot go together"));
+        return;
+    }
 
     results = el.attribute(RESULT_ATTR);
     if (results.isEmpty()) {

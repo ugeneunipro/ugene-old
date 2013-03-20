@@ -33,6 +33,7 @@
 #include <U2Core/DNASequence.h>
 #include <U2Core/AppContext.h>
 #include <U2Algorithm/BitsTable.h>
+#include <U2Algorithm/RepeatFinderSettings.h>
 
 
 #include <QtXml/QDomElement>
@@ -61,6 +62,8 @@ public:
     bool        inverted;
     bool        reflect;
     bool        filterNested;
+    bool        filterUnique;
+    RepeatsFilterAlgorithm	filter;
     QStringList excludeList;
 
     QString     resultFile;
@@ -84,6 +87,8 @@ public:
     bool            inverted;
     bool            reflect;
     bool            filterNested;
+    bool            filterUnique;
+    RepeatsFilterAlgorithm	filter;
     DNASequence*    seqObj;
     QString         sequence;
     QString         results;
@@ -107,6 +112,8 @@ public:
     bool            inverted;
     bool            reflect;
     bool            filterNested;
+    bool            filterUnique;
+    RepeatsFilterAlgorithm	filter;
     DNASequence*    seqObj;
     QString         sequence;
     QString         results;

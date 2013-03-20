@@ -38,7 +38,7 @@ static const QString IDENTITY_ATTR("identity");
 static const QString MIN_DIST_ATTR("min_dist");
 static const QString MAX_DIST_ATTR("max_dist");
 static const QString INVERT_ATTR("invert");
-static const QString NESTED_ATTR("filter-nested");
+static const QString NESTED_ATTR("filter-algorithm");
 static const QString ALGO_ATTR("algorithm");
 static const QString THREADS_ATTR("threads");
 static const QString MAX_LEN_ATTR("max-length");
@@ -56,14 +56,23 @@ static const QString ALGO_SUFFIX = "suffix";
 static const QString ALGO_DIAG = "diagonals";
 static const QString ALGO_AUTO = "auto";
 
-QList< QPair<QString,QString> > QDRepeatActor::saveConfiguration() const {
+static const QString FA_DISJOINT = "Disjoint repeats";
+static const QString FA_NOFILTERING = "NoFiltering";
+static const QString FA_UNIQUE = "UniqueRepeats";
+
+
+QList< QPair<QString,QString> > QDRepeatActor::saveConfiguration() const 
+{
     QList< QPair<QString,QString> > res = QDActor::saveConfiguration();
     Attribute* a = cfg->getParameter(ALGO_ATTR);
-    for (int i=0; i<res.size(); i++) {
+    for (int i=0; i<res.size(); i++) 
+	{
         QPair<QString, QString>& attr = res[i];
-        if (attr.first==a->getId()) {
+        if (attr.first==a->getId()) 
+		{
             RFAlgorithm alg = RFAlgorithm(a->getAttributeValueWithoutScript<int>());
-            switch (alg) {
+            switch (alg) 
+			{
             case RFAlgorithm_Auto:
                 attr.second = ALGO_AUTO;
                 break;
@@ -72,6 +81,30 @@ QList< QPair<QString,QString> > QDRepeatActor::saveConfiguration() const {
                 break;
             case RFAlgorithm_Suffix:
                 attr.second = ALGO_SUFFIX;
+                break;
+            default:
+                break;
+            }
+        }
+    }
+
+    Attribute* fa = cfg->getParameter(NESTED_ATTR);
+    for (int i=0; i<res.size(); i++) 
+	{
+        QPair<QString, QString>& attr = res[i];
+        if (attr.first==a->getId()) 
+		{
+            RepeatsFilterAlgorithm falg = RepeatsFilterAlgorithm(a->getAttributeValueWithoutScript<int>());
+            switch (falg) 
+			{
+            case DisjointRepeats:
+                attr.second = FA_DISJOINT;
+                break;
+            case NoFiltering:
+                attr.second = FA_NOFILTERING;
+                break;
+            case UniqueRepeats:
+                attr.second = FA_UNIQUE;
                 break;
             default:
                 break;
@@ -89,27 +122,55 @@ QList< QPair<QString,QString> > QDRepeatActor::saveConfiguration() const {
     return res;
 }
 
-void QDRepeatActor::loadConfiguration(const QList< QPair<QString,QString> >& strMap) {
+void QDRepeatActor::loadConfiguration(const QList< QPair<QString,QString> >& strMap) 
+{
     QDActor::loadConfiguration(strMap);
     QString minDistStr;
     QString maxDistStr;
-    foreach(const StringAttribute& attr, strMap) {
-        if (attr.first==ALGO_ATTR) {
+    foreach(const StringAttribute& attr, strMap) 
+	{
+        if (attr.first==ALGO_ATTR) 
+		{
             int alg;
             const QString& strandVal = attr.second;
-            if (strandVal==ALGO_AUTO) {
+            if (strandVal==ALGO_AUTO) 
+			{
                 alg = 0;
             }
-            else if (strandVal==ALGO_DIAG) {
+            else if (strandVal==ALGO_DIAG) 
+			{
                 alg = 1;
             }
-            else if (strandVal==ALGO_SUFFIX) {
+            else if (strandVal==ALGO_SUFFIX) 
+			{
                 alg = 2;
             }
             cfg->setParameter(ALGO_ATTR, qVariantFromValue(alg));
-        }else if (attr.first == MIN_DIST_ATTR){
+        }
+		else if (attr.first==NESTED_ATTR)
+		{
+            int falg;
+            const QString& strandVal = attr.second;
+            if (strandVal==FA_DISJOINT) 
+			{
+                falg = 0;
+            }
+            else if (strandVal==FA_NOFILTERING) 
+			{
+                falg = 1;
+            }
+            else if (strandVal==FA_UNIQUE) 
+			{
+                falg = 2;
+            }
+            cfg->setParameter(NESTED_ATTR, qVariantFromValue(falg));
+		}
+		else if (attr.first == MIN_DIST_ATTR)
+		{
             minDistStr = attr.second;
-        }else if (attr.first == MAX_DIST_ATTR){
+        }
+		else if (attr.first == MAX_DIST_ATTR)
+		{
             maxDistStr = attr.second;
         }
     }
@@ -169,7 +230,7 @@ Task* QDRepeatActor::getAlgorithmTask(const QVector<U2Region>& location) {
     settings.setIdentity(identity);
     settings.nThreads = cfg->getParameter(THREADS_ATTR)->getAttributeValueWithoutScript<int>();
     settings.inverted = cfg->getParameter(INVERT_ATTR)->getAttributeValueWithoutScript<bool>();
-    settings.filterNested = cfg->getParameter(NESTED_ATTR)->getAttributeValueWithoutScript<bool>();
+    settings.filter = RepeatsFilterAlgorithm(cfg->getParameter(NESTED_ATTR)->getAttributeValueWithoutScript<int>());
     settings.excludeTandems = cfg->getParameter(TANMEDS_ATTR)->getAttributeValueWithoutScript<bool>();
 
     QDDistanceConstraint* dc = static_cast<QDDistanceConstraint*>(paramConstraints.first());
@@ -268,7 +329,7 @@ QDRepeatActorPrototype::QDRepeatActorPrototype() {
     Descriptor idd(IDENTITY_ATTR, QDRepeatActor::tr("Identity"), QDRepeatActor::tr("Repeats identity."));
     Descriptor ld(LEN_ATTR, QDRepeatActor::tr("Min length"), QDRepeatActor::tr("Minimum length of repeats."));
     Descriptor ind(INVERT_ATTR, QDRepeatActor::tr("Inverted"), QDRepeatActor::tr("Search for inverted repeats."));
-    Descriptor nsd(NESTED_ATTR, QDRepeatActor::tr("Filter nested"), QDRepeatActor::tr("Filter nested repeats."));
+    Descriptor nsd(NESTED_ATTR, QDRepeatActor::tr("Filter algorithm"), QDRepeatActor::tr("Filter nested repeats algorithm."));
     Descriptor ald(ALGO_ATTR, QDRepeatActor::tr("Algorithm"), QDRepeatActor::tr("Control over variations of algorithm."));
     Descriptor thd(THREADS_ATTR, QDRepeatActor::tr("Parallel threads"), QDRepeatActor::tr("Number of parallel threads used for the task."));
     Descriptor mld(MAX_LEN_ATTR, QDRepeatActor::tr("Max length"), QDRepeatActor::tr("Maximum length of repeats."));
@@ -279,7 +340,7 @@ QDRepeatActorPrototype::QDRepeatActorPrototype() {
     attributes << new Attribute(ld, BaseTypes::NUM_TYPE(), true, stngs.minLen);
     attributes << new Attribute(idd, BaseTypes::NUM_TYPE(), false, stngs.getIdentity());
     attributes << new Attribute(ind, BaseTypes::BOOL_TYPE(), false, stngs.inverted);
-    attributes << new Attribute(nsd, BaseTypes::BOOL_TYPE(), false, stngs.filterNested);
+    attributes << new Attribute(nsd, BaseTypes::NUM_TYPE(), false, stngs.filter);
     attributes << new Attribute(ald, BaseTypes::NUM_TYPE(), false, stngs.algo);
     attributes << new Attribute(thd, BaseTypes::NUM_TYPE(), false, stngs.nThreads);
     attributes << new Attribute(mld, BaseTypes::NUM_TYPE(), true, QDActor::DEFAULT_MAX_RESULT_LENGTH);
@@ -305,6 +366,13 @@ QDRepeatActorPrototype::QDRepeatActorPrototype() {
         m["Diagonals"] = RFAlgorithm_Diagonal;
         m["Suffix index"] = RFAlgorithm_Suffix;
         delegates[ALGO_ATTR] = new ComboBoxDelegate(m);
+    }
+    {
+        QVariantMap m; 
+        m["Disjoint repeats"] = DisjointRepeats;
+        m["No filtering"] = NoFiltering;
+        m["Unique repeats"] = UniqueRepeats;
+        delegates[NESTED_ATTR] = new ComboBoxDelegate(m);
     }
 
     editor = new DelegateEditor(delegates);

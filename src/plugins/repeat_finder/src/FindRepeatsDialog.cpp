@@ -61,6 +61,7 @@ FindRepeatsTaskSettings FindRepeatsDialog::defaultSettings()
     res.maxDist = !maxDistCheck ? 0 : (s->getValue(SETTINGS_ROOT + MAX_DIST_SETTINGS, 5000).toInt());
     res.inverted = (s->getValue(SETTINGS_ROOT + INVERT_CHECK_SETTINGS, false).toBool());
     res.excludeTandems = (s->getValue(SETTINGS_ROOT + TANDEMS_CHECK_SETTINGS, false).toBool());
+	res.filter = DisjointRepeats;
     return res;
 }
 
@@ -89,6 +90,10 @@ FindRepeatsDialog::FindRepeatsDialog(ADVSequenceObjectContext* _sc)
     algoCombo->addItem(tr("Auto"), RFAlgorithm_Auto);
     algoCombo->addItem(tr("Suffix index"), RFAlgorithm_Suffix);
     algoCombo->addItem(tr("Diagonals"), RFAlgorithm_Diagonal);
+
+	filterAlgorithms->addItem(tr("Disjoint repeats"), DisjointRepeats);
+	filterAlgorithms->addItem(tr("No filtering"), NoFiltering);
+	filterAlgorithms->addItem(tr("Unique repeats"), UniqueRepeats);
 
     qint64 seqLen = sc->getSequenceLength();
 
@@ -239,7 +244,9 @@ void FindRepeatsDialog::accept() {
     }
     
     RFAlgorithm algo = algoCheck->isChecked() ? RFAlgorithm(algoCombo->itemData(algoCombo->currentIndex()).toInt()) : RFAlgorithm_Auto;
-     
+
+    RepeatsFilterAlgorithm locFilter = RepeatsFilterAlgorithm(filterAlgorithms->itemData(filterAlgorithms->currentIndex()).toInt());
+
     bool objectPrepared = ac->prepareAnnotationObject();
     if (!objectPrepared){
         QMessageBox::warning(this, tr("Error"), tr("Cannot create an annotation object. Please check settings"));
@@ -255,11 +262,11 @@ void FindRepeatsDialog::accept() {
     settings.minDist = minDist;
     settings.seqRegion = range;
     settings.algo = algo;
+    settings.filter = locFilter;
     settings.allowedRegions = fitRegions;
     settings.midRegionsToInclude = aroundRegions;
     settings.midRegionsToExclude = filterRegions;
     settings.reportReflected = false;
-    settings.filterNested = !allowNestedCheck->isChecked();
     settings.excludeTandems = excludeTandemsBox->isChecked();
     
     FindRepeatsToAnnotationsTask* t = new FindRepeatsToAnnotationsTask(settings, sc->getSequenceObject()->getWholeSequence(), 

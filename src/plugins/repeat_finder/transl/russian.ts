@@ -95,6 +95,16 @@
         <translation>Исключить из поиска повторы, содержащие аннотированный регион</translation>
     </message>
     <message>
+        <location filename="../src/ui/FindRepeatsDialog.ui" line="603"/>
+        <source>Nested repeats filter algorithm</source>
+        <translation>Алгоритм исключения вложенных повторов</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/FindRepeatsDialog.ui" line="563"/>
+        <source>Exclude tandems areas</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Search only repeats inside of annotated region</source>
         <translation type="obsolete">Искать повторы только внутри аннотированных регионов</translation>
     </message>
@@ -114,12 +124,11 @@
         <translation type="obsolete">Исключать повторы с аннотированными регионами</translation>
     </message>
     <message>
-        <location filename="../src/ui/FindRepeatsDialog.ui" line="543"/>
         <source>Do not filter nested repeats</source>
-        <translation>Не исключать вложенные повторы</translation>
+        <translation type="obsolete">Не исключать вложенные повторы</translation>
     </message>
     <message>
-        <location filename="../src/ui/FindRepeatsDialog.ui" line="563"/>
+        <location filename="../src/ui/FindRepeatsDialog.ui" line="543"/>
         <source>Search for inverted repeats</source>
         <translation>Искать инвертированные повторы</translation>
     </message>
@@ -151,12 +160,12 @@
         <translation type="obsolete">Указанный</translation>
     </message>
     <message>
-        <location filename="../src/ui/FindRepeatsDialog.ui" line="632"/>
+        <location filename="../src/ui/FindRepeatsDialog.ui" line="659"/>
         <source>Start</source>
         <translation>Искать</translation>
     </message>
     <message>
-        <location filename="../src/ui/FindRepeatsDialog.ui" line="642"/>
+        <location filename="../src/ui/FindRepeatsDialog.ui" line="669"/>
         <source>Cancel</source>
         <translation>Отменить</translation>
     </message>
@@ -235,8 +244,12 @@
     </message>
     <message>
         <location filename="../src/ui/FindTandemsDialog.ui" line="376"/>
+        <source>Show overlapped tandems</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Search for overlapped tandems</source>
-        <translation>Показать перекрывающиеся тандемы</translation>
+        <translation type="obsolete">Показать перекрывающиеся тандемы</translation>
     </message>
     <message>
         <location filename="../src/ui/FindTandemsDialog.ui" line="166"/>
@@ -279,7 +292,7 @@
 <context>
     <name>U2::ExactSizedTandemFinder</name>
     <message>
-        <location filename="../src/RF_SArray_TandemFinder.cpp" line="252"/>
+        <location filename="../src/RF_SArray_TandemFinder.cpp" line="266"/>
         <source>Find %1-period tandems</source>
         <translation>Поиск %1-периодных тандемов</translation>
     </message>
@@ -287,38 +300,59 @@
 <context>
     <name>U2::FindRepeatsDialog</name>
     <message>
-        <location filename="../src/FindRepeatsDialog.cpp" line="86"/>
+        <location filename="../src/FindRepeatsDialog.cpp" line="90"/>
         <source>Auto</source>
         <translation>Автовыбор</translation>
     </message>
     <message>
-        <location filename="../src/FindRepeatsDialog.cpp" line="87"/>
+        <location filename="../src/FindRepeatsDialog.cpp" line="91"/>
         <source>Suffix index</source>
         <translation>Суффиксный индекс</translation>
     </message>
     <message>
-        <location filename="../src/FindRepeatsDialog.cpp" line="88"/>
+        <location filename="../src/FindRepeatsDialog.cpp" line="92"/>
         <source>Diagonals</source>
         <translation>Диагональный</translation>
     </message>
     <message>
-        <location filename="../src/FindRepeatsDialog.cpp" line="204"/>
-        <location filename="../src/FindRepeatsDialog.cpp" line="226"/>
+        <location filename="../src/FindRepeatsDialog.cpp" line="94"/>
+        <source>Disjoint repeats</source>
+        <translation>Непересекающиеся повторы</translation>
+    </message>
+    <message>
+        <location filename="../src/FindRepeatsDialog.cpp" line="95"/>
+        <source>No filtering</source>
+        <translation>Без фильтрации</translation>
+    </message>
+    <message>
+        <location filename="../src/FindRepeatsDialog.cpp" line="96"/>
+        <source>Unique repeats</source>
+        <translation>Уникальные повторы</translation>
+    </message>
+    <message>
+        <location filename="../src/FindRepeatsDialog.cpp" line="213"/>
+        <location filename="../src/FindRepeatsDialog.cpp" line="235"/>
+        <location filename="../src/FindRepeatsDialog.cpp" line="252"/>
         <source>Error</source>
         <translation>Проблема</translation>
     </message>
     <message>
-        <location filename="../src/FindRepeatsDialog.cpp" line="204"/>
+        <location filename="../src/FindRepeatsDialog.cpp" line="213"/>
         <source>No annotations found: %1</source>
         <translation>Аннотации не найдены: %1</translation>
     </message>
     <message>
-        <location filename="../src/FindRepeatsDialog.cpp" line="339"/>
+        <location filename="../src/FindRepeatsDialog.cpp" line="252"/>
+        <source>Cannot create an annotation object. Please check settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/FindRepeatsDialog.cpp" line="357"/>
         <source>Estimated repeats count: %1</source>
         <translation>Оценка возможного кол-ва результатов: %1</translation>
     </message>
     <message>
-        <location filename="../src/FindRepeatsDialog.cpp" line="340"/>
+        <location filename="../src/FindRepeatsDialog.cpp" line="358"/>
         <source>Estimated repeats count hint is based on the active settings and random sequence model</source>
         <translation>Оценка основана на текущих параметрах поиска и модели случайной последовательности</translation>
     </message>
@@ -331,27 +365,37 @@
         <translation>Поиск повторов в одиночной последовательности</translation>
     </message>
     <message>
-        <location filename="../src/FindRepeatsTask.cpp" line="84"/>
+        <location filename="../src/FindRepeatsTask.cpp" line="109"/>
         <source>Rev-complementing sequence</source>
         <translation>Перевод последовательности к комплементарной</translation>
     </message>
     <message>
-        <location filename="../src/FindRepeatsTask.cpp" line="109"/>
+        <location filename="../src/FindRepeatsTask.cpp" line="155"/>
         <source>Searching repeats ...</source>
         <translation>Поиск повторов ...</translation>
     </message>
     <message>
-        <location filename="../src/FindRepeatsTask.cpp" line="129"/>
+        <location filename="../src/FindRepeatsTask.cpp" line="179"/>
+        <source>Filtering unique results</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/FindRepeatsTask.cpp" line="184"/>
         <source>Filtering nested results</source>
         <translation>Фильтрация результатов</translation>
     </message>
     <message>
-        <location filename="../src/FindRepeatsTask.cpp" line="140"/>
+        <location filename="../src/FindRepeatsTask.cpp" line="196"/>
         <source>Repeat search time %1 sec</source>
         <translation>Время поиска повторов: %1 сек</translation>
     </message>
     <message>
-        <location filename="../src/FindRepeatsTask.cpp" line="200"/>
+        <location filename="../src/FindRepeatsTask.cpp" line="242"/>
+        <source>Unique repeats filtering time %1 sec, results before: %2, filtered: %3, after %4</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/FindRepeatsTask.cpp" line="303"/>
         <source>Nested repeats filtering time %1 sec, results before: %2, filtered: %3, after %4</source>
         <translation>Время фильтрации вложенных повторов: %1 сек. Результатов было %2, отброшено %3, осталось %4</translation>
     </message>
@@ -359,12 +403,12 @@
 <context>
     <name>U2::FindRepeatsToAnnotationsTask</name>
     <message>
-        <location filename="../src/FindRepeatsTask.cpp" line="319"/>
+        <location filename="../src/FindRepeatsTask.cpp" line="444"/>
         <source>Find repeats to annotations</source>
         <translation>Сохранение повторов в аннотации</translation>
     </message>
     <message>
-        <location filename="../src/FindRepeatsTask.cpp" line="339"/>
+        <location filename="../src/FindRepeatsTask.cpp" line="464"/>
         <source>Found %1 repeat regions</source>
         <translation>Найдено повторов: %1</translation>
     </message>
@@ -372,50 +416,62 @@
 <context>
     <name>U2::FindTandemsDialog</name>
     <message>
-        <location filename="../src/FindTandemsDialog.cpp" line="80"/>
+        <location filename="../src/FindTandemsDialog.cpp" line="81"/>
         <source>Suffix array</source>
         <translation>Суффиксный массив</translation>
     </message>
     <message>
-        <location filename="../src/FindTandemsDialog.cpp" line="81"/>
+        <location filename="../src/FindTandemsDialog.cpp" line="82"/>
         <source>Suffix array (optimized)</source>
         <translation>Суффиксный массив (оптимизированный)</translation>
     </message>
     <message>
-        <location filename="../src/FindTandemsDialog.cpp" line="84"/>
+        <location filename="../src/FindTandemsDialog.cpp" line="85"/>
         <source>All</source>
         <translation>Все</translation>
     </message>
     <message>
-        <location filename="../src/FindTandemsDialog.cpp" line="85"/>
+        <location filename="../src/FindTandemsDialog.cpp" line="86"/>
         <source>Micro-satellites</source>
         <translation>Микро-сателлиты</translation>
     </message>
     <message>
-        <location filename="../src/FindTandemsDialog.cpp" line="86"/>
+        <location filename="../src/FindTandemsDialog.cpp" line="87"/>
         <source>Mini-satellites</source>
         <translation>Мини-сателлиты</translation>
     </message>
     <message>
-        <location filename="../src/FindTandemsDialog.cpp" line="87"/>
+        <location filename="../src/FindTandemsDialog.cpp" line="88"/>
         <source>Big-period tandems</source>
         <translation>Танемы с большим периодом</translation>
     </message>
     <message>
-        <location filename="../src/FindTandemsDialog.cpp" line="88"/>
+        <location filename="../src/FindTandemsDialog.cpp" line="89"/>
         <source>Custom</source>
         <translation>Особые</translation>
     </message>
     <message>
-        <location filename="../src/FindTandemsDialog.cpp" line="188"/>
-        <location filename="../src/FindTandemsDialog.cpp" line="212"/>
+        <location filename="../src/FindTandemsDialog.cpp" line="189"/>
+        <location filename="../src/FindTandemsDialog.cpp" line="213"/>
+        <location filename="../src/FindTandemsDialog.cpp" line="219"/>
+        <location filename="../src/FindTandemsDialog.cpp" line="224"/>
         <source>Error</source>
         <translation>Проблема</translation>
     </message>
     <message>
-        <location filename="../src/FindTandemsDialog.cpp" line="188"/>
+        <location filename="../src/FindTandemsDialog.cpp" line="189"/>
         <source>No annotations found: %1</source>
         <translation>Аннотации не найдены: %1</translation>
+    </message>
+    <message>
+        <location filename="../src/FindTandemsDialog.cpp" line="219"/>
+        <source>Not enough memory error ocurred while preparing data.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/FindTandemsDialog.cpp" line="224"/>
+        <source>Cannot create an annotation object. Please check settings</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Estimated repeats count: %1</source>
@@ -430,11 +486,12 @@
     <name>U2::FindTandemsToAnnotationsTask</name>
     <message>
         <location filename="../src/RF_SArray_TandemFinder.cpp" line="38"/>
+        <location filename="../src/RF_SArray_TandemFinder.cpp" line="50"/>
         <source>Find repeats to annotations</source>
         <translation>Сохранение повторов в аннотации</translation>
     </message>
     <message>
-        <location filename="../src/RF_SArray_TandemFinder.cpp" line="57"/>
+        <location filename="../src/RF_SArray_TandemFinder.cpp" line="68"/>
         <source>Found %1 repeat regions</source>
         <translation>Найдено повторов: %1</translation>
     </message>
@@ -442,7 +499,7 @@
 <context>
     <name>U2::LargeSizedTandemFinder</name>
     <message>
-        <location filename="../src/RF_SArray_TandemFinder.cpp" line="444"/>
+        <location filename="../src/RF_SArray_TandemFinder.cpp" line="461"/>
         <source>Find big-period tandems</source>
         <translation>Поиск тандемов с большим периодом</translation>
     </message>
@@ -454,27 +511,27 @@
         <translation type="obsolete"> из %1</translation>
     </message>
     <message>
-        <location filename="../src/RepeatWorker.cpp" line="149"/>
+        <location filename="../src/RepeatWorker.cpp" line="161"/>
         <source>unset</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/RepeatWorker.cpp" line="150"/>
+        <location filename="../src/RepeatWorker.cpp" line="162"/>
         <source> from &lt;u&gt;%1&lt;/u&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/RepeatWorker.cpp" line="154"/>
+        <location filename="../src/RepeatWorker.cpp" line="166"/>
         <source>inverted</source>
         <translation>инвертированные</translation>
     </message>
     <message>
-        <location filename="../src/RepeatWorker.cpp" line="154"/>
+        <location filename="../src/RepeatWorker.cpp" line="166"/>
         <source>direct</source>
         <translation>прямые</translation>
     </message>
     <message>
-        <location filename="../src/RepeatWorker.cpp" line="156"/>
+        <location filename="../src/RepeatWorker.cpp" line="168"/>
         <source>For each sequence%1, find &lt;u&gt;%2&lt;/u&gt; repeats.&lt;br&gt;Detect &lt;u&gt;%3% identical&lt;/u&gt; repeats &lt;u&gt;not shorter than %4 bps&lt;/u&gt;.&lt;br&gt;Output the list of found regions annotated as &lt;u&gt;%5&lt;/u&gt;.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -486,122 +543,140 @@
 <context>
     <name>U2::LocalWorkflow::RepeatWorker</name>
     <message>
-        <location filename="../src/RepeatWorker.cpp" line="71"/>
+        <location filename="../src/RepeatWorker.cpp" line="72"/>
         <source>Input sequences</source>
         <translation>Входные последовательности</translation>
     </message>
     <message>
-        <location filename="../src/RepeatWorker.cpp" line="72"/>
+        <location filename="../src/RepeatWorker.cpp" line="73"/>
         <source>A nucleotide sequence to search repeats in.</source>
         <translation>Входные нуклеотидные последовательности для поиска повторов.</translation>
     </message>
     <message>
-        <location filename="../src/RepeatWorker.cpp" line="73"/>
+        <location filename="../src/RepeatWorker.cpp" line="74"/>
         <source>Repeat annotations</source>
         <translation>Аннотированные повторы</translation>
     </message>
     <message>
-        <location filename="../src/RepeatWorker.cpp" line="74"/>
+        <location filename="../src/RepeatWorker.cpp" line="75"/>
         <source>A set of annotations marking repeats found in the sequence.</source>
         <translation>Список аннотаций маркирующих найденные повторы.</translation>
     </message>
     <message>
-        <location filename="../src/RepeatWorker.cpp" line="83"/>
+        <location filename="../src/RepeatWorker.cpp" line="84"/>
         <source>Annotate as</source>
         <translation>Аннотации</translation>
     </message>
     <message>
-        <location filename="../src/RepeatWorker.cpp" line="83"/>
+        <location filename="../src/RepeatWorker.cpp" line="84"/>
         <source>Name of the result annotations marking found repeats.</source>
         <translation>Имя аннотации для разметки найденных повторов.</translation>
     </message>
     <message>
-        <location filename="../src/RepeatWorker.cpp" line="84"/>
+        <location filename="../src/RepeatWorker.cpp" line="85"/>
         <source>Identity</source>
         <translation>Идентичность</translation>
     </message>
     <message>
-        <location filename="../src/RepeatWorker.cpp" line="84"/>
+        <location filename="../src/RepeatWorker.cpp" line="85"/>
         <source>Repeats identity.</source>
         <translation>Идентичность повторов.</translation>
     </message>
     <message>
-        <location filename="../src/RepeatWorker.cpp" line="85"/>
+        <location filename="../src/RepeatWorker.cpp" line="86"/>
         <source>Min length</source>
         <translation>Мин длина</translation>
     </message>
     <message>
-        <location filename="../src/RepeatWorker.cpp" line="85"/>
+        <location filename="../src/RepeatWorker.cpp" line="86"/>
         <source>Minimum length of repeats.</source>
         <translation>Мин длина повторов.</translation>
     </message>
     <message>
-        <location filename="../src/RepeatWorker.cpp" line="86"/>
+        <location filename="../src/RepeatWorker.cpp" line="87"/>
         <source>Min distance</source>
         <translation>Мин дистанция</translation>
     </message>
     <message>
-        <location filename="../src/RepeatWorker.cpp" line="86"/>
+        <location filename="../src/RepeatWorker.cpp" line="87"/>
         <source>Minimum distance between repeats.</source>
         <translation>Мин дистанция между повторами.</translation>
     </message>
     <message>
-        <location filename="../src/RepeatWorker.cpp" line="87"/>
+        <location filename="../src/RepeatWorker.cpp" line="88"/>
         <source>Max distance</source>
         <translation>Макс дистанция</translation>
     </message>
     <message>
-        <location filename="../src/RepeatWorker.cpp" line="87"/>
+        <location filename="../src/RepeatWorker.cpp" line="88"/>
         <source>Maximum distance between repeats.</source>
         <translation>Макс дистанция между повторами.</translation>
     </message>
     <message>
-        <location filename="../src/RepeatWorker.cpp" line="88"/>
+        <location filename="../src/RepeatWorker.cpp" line="89"/>
         <source>Inverted</source>
         <translation>Инвертированные</translation>
     </message>
     <message>
-        <location filename="../src/RepeatWorker.cpp" line="88"/>
+        <location filename="../src/RepeatWorker.cpp" line="89"/>
         <source>Search for inverted repeats.</source>
         <translation>Искать инвертированные повторы.</translation>
     </message>
     <message>
-        <location filename="../src/RepeatWorker.cpp" line="89"/>
-        <source>Filter nested</source>
-        <translation>Исключать вложенные</translation>
-    </message>
-    <message>
-        <location filename="../src/RepeatWorker.cpp" line="89"/>
-        <source>Filter nested repeats.</source>
-        <translation>Не исключать вложенные повторы.</translation>
+        <location filename="../src/RepeatWorker.cpp" line="90"/>
+        <source>Filter algorithm</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/RepeatWorker.cpp" line="90"/>
+        <source>Filter nested repeats algorithm.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Filter nested</source>
+        <translation type="obsolete">Исключать вложенные</translation>
+    </message>
+    <message>
+        <source>Filter nested repeats.</source>
+        <translation type="obsolete">Не исключать вложенные повторы.</translation>
+    </message>
+    <message>
+        <location filename="../src/RepeatWorker.cpp" line="91"/>
         <source>Algorithm</source>
         <translation>Алгоритм</translation>
     </message>
     <message>
-        <location filename="../src/RepeatWorker.cpp" line="90"/>
+        <location filename="../src/RepeatWorker.cpp" line="91"/>
         <source>Control over variations of algorithm.</source>
         <translation>Выбор алгоритма.</translation>
     </message>
     <message>
-        <location filename="../src/RepeatWorker.cpp" line="91"/>
+        <location filename="../src/RepeatWorker.cpp" line="92"/>
         <source>Parallel threads</source>
         <translation>Параллельные потоки</translation>
     </message>
     <message>
-        <location filename="../src/RepeatWorker.cpp" line="91"/>
+        <location filename="../src/RepeatWorker.cpp" line="92"/>
         <source>Number of parallel threads used for the task.</source>
         <translation>Кол-во параллельных потоков для задачи.</translation>
     </message>
     <message>
-        <location filename="../src/RepeatWorker.cpp" line="105"/>
+        <location filename="../src/RepeatWorker.cpp" line="93"/>
+        <source>Exclude tandems</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/RepeatWorker.cpp" line="93"/>
+        <source>Exclude tandems areas before find repeat task is run.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/RepeatWorker.cpp" line="108"/>
         <source>Find Repeats</source>
         <translation>Поиск повторов</translation>
     </message>
     <message>
-        <location filename="../src/RepeatWorker.cpp" line="106"/>
+        <location filename="../src/RepeatWorker.cpp" line="109"/>
         <source>Finds repeats in each supplied sequence, stores found regions as annotations.</source>
         <translation>Ищет повторы в нуклеотидных последовательностях, выдаёт найденные регионы как аннотации.</translation>
     </message>
@@ -610,34 +685,34 @@
         <translation type="obsolete">нк</translation>
     </message>
     <message>
-        <location filename="../src/RepeatWorker.cpp" line="113"/>
+        <location filename="../src/RepeatWorker.cpp" line="118"/>
         <source>Any</source>
         <translation>Не ограничивать</translation>
     </message>
     <message>
-        <location filename="../src/RepeatWorker.cpp" line="197"/>
+        <location filename="../src/RepeatWorker.cpp" line="211"/>
         <source>result name is empty, default name used</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/RepeatWorker.cpp" line="200"/>
-        <location filename="../src/RepeatWorker.cpp" line="201"/>
+        <location filename="../src/RepeatWorker.cpp" line="214"/>
+        <location filename="../src/RepeatWorker.cpp" line="215"/>
         <source>Incorrect value: identity value must be between 0 and 100</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/RepeatWorker.cpp" line="212"/>
-        <location filename="../src/RepeatWorker.cpp" line="213"/>
+        <location filename="../src/RepeatWorker.cpp" line="226"/>
+        <location filename="../src/RepeatWorker.cpp" line="227"/>
         <source>Incorrect value: minimal distance must be greater then zero</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/RepeatWorker.cpp" line="217"/>
+        <location filename="../src/RepeatWorker.cpp" line="231"/>
         <source>Sequence alphabet is not nucleic!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/RepeatWorker.cpp" line="240"/>
+        <location filename="../src/RepeatWorker.cpp" line="256"/>
         <source>Found %1 repeats</source>
         <translation>Найдено повторов: %1</translation>
     </message>
@@ -645,109 +720,127 @@
 <context>
     <name>U2::QDRepeatActor</name>
     <message>
-        <location filename="../src/RepeatQuery.cpp" line="113"/>
+        <location filename="../src/RepeatQuery.cpp" line="204"/>
         <source>inverted</source>
         <translation>инвертированные</translation>
     </message>
     <message>
-        <location filename="../src/RepeatQuery.cpp" line="113"/>
+        <location filename="../src/RepeatQuery.cpp" line="204"/>
         <source>direct</source>
         <translation>прямые</translation>
     </message>
     <message>
-        <location filename="../src/RepeatQuery.cpp" line="123"/>
+        <location filename="../src/RepeatQuery.cpp" line="214"/>
         <source>Finds &lt;u&gt;%1&lt;/u&gt; repeats.&lt;br&gt;Detects &lt;u&gt;%2 identical&lt;/u&gt; repeats &lt;u&gt;not shorter than %3 bps&lt;/u&gt;.</source>
         <translation>Искать &lt;u&gt;%1&lt;/u&gt; повторы.&lt;br&gt;Учитывать &lt;u&gt;%2 идентичные&lt;/u&gt; повторы &lt;u&gt;не короче %3 нк&lt;/u&gt;.</translation>
     </message>
     <message>
-        <location filename="../src/RepeatQuery.cpp" line="152"/>
+        <location filename="../src/RepeatQuery.cpp" line="244"/>
         <source>Sequence should be nucleic</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/RepeatQuery.cpp" line="155"/>
+        <location filename="../src/RepeatQuery.cpp" line="247"/>
         <source>RepeatQDTask</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/RepeatQuery.cpp" line="234"/>
+        <location filename="../src/RepeatQuery.cpp" line="326"/>
         <source>Repeats</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/RepeatQuery.cpp" line="235"/>
+        <location filename="../src/RepeatQuery.cpp" line="327"/>
         <source>Finds repeats in supplied sequence, stores found regions as annotations.</source>
         <translation> Ищет повторы в нуклеотидных последовательностях, выдаёт найденные регионы как аннотации.</translation>
     </message>
     <message>
-        <location filename="../src/RepeatQuery.cpp" line="237"/>
+        <location filename="../src/RepeatQuery.cpp" line="329"/>
         <source>Identity</source>
         <translation>Идентичность</translation>
     </message>
     <message>
-        <location filename="../src/RepeatQuery.cpp" line="237"/>
+        <location filename="../src/RepeatQuery.cpp" line="329"/>
         <source>Repeats identity.</source>
         <translation>Идентичность повторов.</translation>
     </message>
     <message>
-        <location filename="../src/RepeatQuery.cpp" line="238"/>
+        <location filename="../src/RepeatQuery.cpp" line="330"/>
         <source>Min length</source>
         <translation>Мин длина</translation>
     </message>
     <message>
-        <location filename="../src/RepeatQuery.cpp" line="238"/>
+        <location filename="../src/RepeatQuery.cpp" line="330"/>
         <source>Minimum length of repeats.</source>
         <translation>Мин длина повторов.</translation>
     </message>
     <message>
-        <location filename="../src/RepeatQuery.cpp" line="239"/>
+        <location filename="../src/RepeatQuery.cpp" line="331"/>
         <source>Inverted</source>
         <translation>Инвертированные</translation>
     </message>
     <message>
-        <location filename="../src/RepeatQuery.cpp" line="239"/>
+        <location filename="../src/RepeatQuery.cpp" line="331"/>
         <source>Search for inverted repeats.</source>
         <translation>Искать инвертированные повторы.</translation>
     </message>
     <message>
-        <location filename="../src/RepeatQuery.cpp" line="240"/>
+        <location filename="../src/RepeatQuery.cpp" line="332"/>
+        <source>Filter algorithm</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/RepeatQuery.cpp" line="332"/>
+        <source>Filter nested repeats algorithm.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Filter nested</source>
-        <translation>Исключать вложенные</translation>
+        <translation type="obsolete">Исключать вложенные</translation>
     </message>
     <message>
-        <location filename="../src/RepeatQuery.cpp" line="240"/>
         <source>Filter nested repeats.</source>
-        <translation>Не исключать вложенные повторы.</translation>
+        <translation type="obsolete">Не исключать вложенные повторы.</translation>
     </message>
     <message>
-        <location filename="../src/RepeatQuery.cpp" line="241"/>
+        <location filename="../src/RepeatQuery.cpp" line="333"/>
         <source>Algorithm</source>
         <translation>Алгоритм</translation>
     </message>
     <message>
-        <location filename="../src/RepeatQuery.cpp" line="241"/>
+        <location filename="../src/RepeatQuery.cpp" line="333"/>
         <source>Control over variations of algorithm.</source>
         <translation>Выбор алгоритма.</translation>
     </message>
     <message>
-        <location filename="../src/RepeatQuery.cpp" line="242"/>
+        <location filename="../src/RepeatQuery.cpp" line="334"/>
         <source>Parallel threads</source>
         <translation>Параллельные потоки</translation>
     </message>
     <message>
-        <location filename="../src/RepeatQuery.cpp" line="242"/>
+        <location filename="../src/RepeatQuery.cpp" line="334"/>
         <source>Number of parallel threads used for the task.</source>
         <translation>Кол-во параллельных потоков для задачи.</translation>
     </message>
     <message>
-        <location filename="../src/RepeatQuery.cpp" line="243"/>
+        <location filename="../src/RepeatQuery.cpp" line="335"/>
         <source>Max length</source>
         <translation>Макс длина</translation>
     </message>
     <message>
-        <location filename="../src/RepeatQuery.cpp" line="243"/>
+        <location filename="../src/RepeatQuery.cpp" line="335"/>
         <source>Maximum length of repeats.</source>
         <translation>Макс. длина повторов.</translation>
+    </message>
+    <message>
+        <location filename="../src/RepeatQuery.cpp" line="336"/>
+        <source>Exclude tandems</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/RepeatQuery.cpp" line="336"/>
+        <source>Exclude tandems areas before find repeat task is run.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source> bp</source>
@@ -833,8 +926,14 @@
     </message>
     <message>
         <location filename="../src/TandemQuery.cpp" line="178"/>
-        <source>If this parameter is set to &lt;i&gt;True &lt;/i&gt; then overlapped tandems should be included into the result.</source>
+        <source>If this parameter is set to &lt;i&gt;True&lt;/i&gt; then overlapped tandems should be included into the result.</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/TandemQuery.cpp" line="199"/>
+        <location filename="../src/TandemQuery.cpp" line="206"/>
+        <source> bp</source>
+        <translation type="unfinished">нк</translation>
     </message>
     <message>
         <location filename="../src/TandemQuery.cpp" line="179"/>
@@ -847,10 +946,8 @@
         <translation type="unfinished">Кол-во параллельных потоков для задачи.</translation>
     </message>
     <message>
-        <location filename="../src/TandemQuery.cpp" line="199"/>
-        <location filename="../src/TandemQuery.cpp" line="206"/>
         <source> n</source>
-        <translation type="unfinished"> н</translation>
+        <translation type="obsolete"> н</translation>
     </message>
     <message>
         <location filename="../src/TandemQuery.cpp" line="225"/>
@@ -861,12 +958,12 @@
 <context>
     <name>U2::RFAlgorithmBase</name>
     <message>
-        <location filename="../src/RFBase.cpp" line="79"/>
+        <location filename="../src/RFBase.cpp" line="83"/>
         <source>Find Repeats</source>
         <translation>Поиск повторов</translation>
     </message>
     <message>
-        <location filename="../src/RFBase.cpp" line="135"/>
+        <location filename="../src/RFBase.cpp" line="139"/>
         <source>Repeat length is too large: %1, sequence size: %2</source>
         <translation>Длина повтора слишком велика: %1, размер последовательности: %2</translation>
     </message>
@@ -898,7 +995,7 @@
 <context>
     <name>U2::RFSArrayWSubtask</name>
     <message>
-        <location filename="../src/RFSArray.cpp" line="350"/>
+        <location filename="../src/RFSArray.cpp" line="395"/>
         <source>Find repeats subtask (suffix)</source>
         <translation>Подзазадача поискв повторов (суффиксный алгоритм)</translation>
     </message>
@@ -928,7 +1025,7 @@
     </message>
     <message>
         <source>Find Repeats</source>
-        <translation>Поиск повторов</translation>
+        <translation type="obsolete">Поиск повторов</translation>
     </message>
     <message>
         <source>Finds &lt;u&gt;%1&lt;/u&gt; repeats.&lt;br&gt;Detects &lt;u&gt;%2 identical&lt;/u&gt; repeats &lt;u&gt;not shorter than %3 bps&lt;/u&gt;.&lt;br&gt;Outputs the list of found regions annotated as &lt;u&gt;%4&lt;/u&gt;.</source>
@@ -1015,7 +1112,7 @@
         <translation>Поиск повторов...</translation>
     </message>
     <message>
-        <location filename="../src/RepeatFinderPlugin.cpp" line="97"/>
+        <location filename="../src/RepeatFinderPlugin.cpp" line="98"/>
         <source>Find tandems...</source>
         <translation>Поиск тандемов...</translation>
     </message>
@@ -1023,12 +1120,12 @@
 <context>
     <name>U2::RevComplSequenceTask</name>
     <message>
-        <location filename="../src/FindRepeatsTask.cpp" line="42"/>
+        <location filename="../src/FindRepeatsTask.cpp" line="43"/>
         <source>Reverse complement sequence</source>
         <translation>Перевод последовательности к комплементарной</translation>
     </message>
     <message>
-        <location filename="../src/FindRepeatsTask.cpp" line="49"/>
+        <location filename="../src/FindRepeatsTask.cpp" line="50"/>
         <source>Can&apos;t find complement translation for alphabet: %1</source>
         <translation>Не найдена комплементарная трансляция для алфавита: %1</translation>
     </message>
@@ -1036,13 +1133,13 @@
 <context>
     <name>U2::TandemFinder</name>
     <message>
-        <location filename="../src/RF_SArray_TandemFinder.cpp" line="129"/>
+        <location filename="../src/RF_SArray_TandemFinder.cpp" line="143"/>
         <source>Find tandems finished %1</source>
         <translation>Поиск тандемов завершен %1</translation>
     </message>
     <message>
-        <location filename="../src/RF_SArray_TandemFinder.cpp" line="92"/>
-        <location filename="../src/RF_SArray_TandemFinder.cpp" line="122"/>
+        <location filename="../src/RF_SArray_TandemFinder.cpp" line="106"/>
+        <location filename="../src/RF_SArray_TandemFinder.cpp" line="136"/>
         <source>Find tandems</source>
         <translation>Поиск тандемов</translation>
     </message>
@@ -1050,7 +1147,7 @@
 <context>
     <name>U2::TandemFinder_Region</name>
     <message>
-        <location filename="../src/RF_SArray_TandemFinder.h" line="116"/>
+        <location filename="../src/RF_SArray_TandemFinder.h" line="123"/>
         <source>Find tandems in %1 region</source>
         <translation>Поиск тандемов в %1 регионе</translation>
     </message>

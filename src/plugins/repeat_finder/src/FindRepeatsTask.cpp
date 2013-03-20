@@ -170,10 +170,20 @@ RFAlgorithmBase* FindRepeatsTask::createRFTask() {
     return t;
 }
 
-void FindRepeatsTask::run() {
-    if (settings.filterNested) {
-        stateInfo.setDescription(tr("Filtering nested results"));
-        filterNestedRepeats();
+void FindRepeatsTask::run() 
+{
+	if (settings.filter != NoFiltering) 
+	{
+		if (settings.filter == UniqueRepeats) 
+		{
+	        stateInfo.setDescription(tr("Filtering unique results"));
+			filterUniqueRepeats();
+		}
+		if (settings.filter == DisjointRepeats) 
+		{
+	        stateInfo.setDescription(tr("Filtering nested results"));
+			filterNestedRepeats();
+		}
     }
 }
 
@@ -187,11 +197,58 @@ Task::ReportResult FindRepeatsTask::report() {
     return ReportResult_Finished;
 }
 
+bool CompareResultLen(RFResult r1, RFResult r2) 
+{
+	return r1.l < r2.l;
+}
+
+void FindRepeatsTask::filterUniqueRepeats() 
+{
+    quint64 t1 = GTimer::currentTimeMicros();
+
+	qSort(results.begin(), results.end(), CompareResultLen);
+
+	bool changed = false;
+    for (int i=0, n = results.size(); i < n; i++) 
+	{
+        RFResult& ri = results[i];
+
+		for (int j = i+1; j < results.size(); j++)
+		{
+			int Index = results[j].fragment.indexOf(ri.fragment);
+			if (Index != -1)
+			{
+				changed = true;
+				ri.l = -1;
+				break;
+			}
+		}
+    }
+    int nBefore = results.size();
+    if (changed) 
+	{
+        QVector<RFResult> prev = results;
+        results.clear();
+        foreach(const RFResult& r, prev) 
+		{
+            if (r.l!=-1) 
+			{
+                results.append(r);
+            }
+        }
+    }
+    int nAfter = results.size();
+    quint64 t2 = GTimer::currentTimeMicros();
+    perfLog.details(tr("Unique repeats filtering time %1 sec, results before: %2, filtered: %3, after %4")
+        .arg(double((t2-t1))/(1000*1000)).arg(nBefore).arg(nBefore - nAfter).arg(nAfter));
+}
+
 void FindRepeatsTask::filterNestedRepeats() {
     //if one repeats fits into another repeat -> filter it
     quint64 t1 = GTimer::currentTimeMicros();
 
     qSort(results);
+
     bool changed = false;
     int extraLen = settings.mismatches; //extra len added to repeat region to search for duplicates
     for (int i=0, n = results.size(); i < n; i++) {
@@ -252,7 +309,8 @@ void FindRepeatsTask::cleanup() {
     results.clear();
 }
 
-void FindRepeatsTask::addResult(const RFResult& r) {
+void FindRepeatsTask::addResult(const RFResult& r) 
+{
     int x = r.x + settings.seqRegion.startPos;
     int y = settings.inverted ? settings.seqRegion.endPos() - r.y - r.l : r.y + settings.seq2Region.startPos;
     int l = r.l;
@@ -261,30 +319,50 @@ void FindRepeatsTask::addResult(const RFResult& r) {
     assert(y >= settings.seq2Region.startPos && y + r.l <= settings.seq2Region.endPos());
 
     int dist = qAbs(x - y) - l;
-    if (dist < settings.minDist || dist > settings.maxDist) {
-        // dist < 0 -> overlapping repeat. Try to reduce its length to fit min/max constraints if possible
-        if (dist < 0) { 
-            // match if prefixes fits dist
-            int plen = qAbs(x - y) - settings.minDist;
-            if (plen  >= settings.minLen) {
-                _addResult(x, y, plen, plen);
-            }
-            // match if suffixes fits dist
-            int dlen = settings.minDist - dist;
-            if (l - dlen >= settings.minLen) {
-                _addResult(x + dlen, y + dlen, l - dlen, l - dlen);
-            }
+    if (dist < settings.minDist || dist > settings.maxDist) 
+	{
+        if (dist < 0) 
+		{ 
+			if (settings.filter == DisjointRepeats) 
+			{
+		        // dist < 0 -> overlapping repeat. Try to reduce its length to fit min/max constraints if possible
+
+				// match if prefixes fits dist
+				int plen = qAbs(x - y) - settings.minDist;
+				if (plen  >= settings.minLen) 
+				{
+					_addResult(x, y, plen, plen);
+				}
+				// match if suffixes fits dist
+				int dlen = settings.minDist - dist;
+				if (l - dlen >= settings.minLen) 
+				{
+					_addResult(x + dlen, y + dlen, l - dlen, l - dlen);
+				}
+			}
+			else
+			{
+				_addResult(x, y, l, c);
+			}
         }
         return;
     }
     _addResult(x, y, l, c);
 }
 
-void FindRepeatsTask::_addResult(int x, int y, int l, int c) {
-    if (settings.reportReflected || x <= y) {
-        results.append(RFResult(x, y, l, c));
-    } else {
-        results.append(RFResult(y, x, l, c));
+void FindRepeatsTask::_addResult(int x, int y, int l, int c) 
+{
+	const QByteArray& locDNA = seq1.constSequence();
+
+	if (settings.reportReflected || x <= y) 
+	{
+		QString locFragment = QString(locDNA.mid(x,l));
+        results.append(RFResult(x, y, l, c, locFragment));
+    } 
+	else 
+	{
+		QString locFragment = QString(locDNA.mid(y,l));
+        results.append(RFResult(y, x, l, c, locFragment));
     }
 }
 

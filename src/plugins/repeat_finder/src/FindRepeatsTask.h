@@ -38,8 +38,9 @@ namespace U2 {
 class FindRepeatsTaskSettings {
 public:
     FindRepeatsTaskSettings() : minLen(2), mismatches(0), minDist(0), maxDist(0), 
-        inverted(false), reportReflected(false), filterNested(true), maxResults(10*1000*100), 
-        algo(RFAlgorithm_Auto), nThreads(MAX_PARALLEL_SUBTASKS_AUTO), excludeTandems(false) {}
+        inverted(false), reportReflected(false), maxResults(10*1000*100), 
+        algo(RFAlgorithm_Auto), nThreads(MAX_PARALLEL_SUBTASKS_AUTO), excludeTandems(false)
+        ,filter(DisjointRepeats){}
 
     int                 minLen;
     int                 mismatches;
@@ -47,7 +48,6 @@ public:
     int                 maxDist;
     bool                inverted;
     bool                reportReflected;
-    bool                filterNested;
     int                 maxResults;
     U2Region            seqRegion, seq2Region;
     
@@ -57,6 +57,7 @@ public:
     QVector<U2Region>    allowedRegions;       //reported repeat must fit one of these regions
 
     RFAlgorithm         algo;
+	RepeatsFilterAlgorithm	filter;
     int                 nThreads;
     bool                excludeTandems;
 
@@ -93,6 +94,7 @@ protected:
     bool isFilteredByRegions(const RFResult& r);
     RFAlgorithmBase* createRFTask();
     void filterNestedRepeats();
+    void filterUniqueRepeats();
     Task *createRepeatFinderTask();
     void filterTandems(const QList<SharedAnnotationData> &tandems, DNASequence &se);
 

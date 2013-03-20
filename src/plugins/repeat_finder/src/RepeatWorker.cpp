@@ -58,7 +58,7 @@ static const QString IDENTITY_ATTR("identity");
 static const QString MIN_DIST_ATTR("min-distance");
 static const QString MAX_DIST_ATTR("max-distance");
 static const QString INVERT_ATTR("inverted");
-static const QString NESTED_ATTR("filter-nested");
+static const QString NESTED_ATTR("filter-algorithm");
 static const QString ALGO_ATTR("algorithm");
 static const QString THREADS_ATTR("threads");
 static const QString TANMEDS_ATTR("exclude-tandems");
@@ -87,7 +87,7 @@ void RepeatWorkerFactory::init() {
         Descriptor mid(MIN_DIST_ATTR, RepeatWorker::tr("Min distance"), RepeatWorker::tr("Minimum distance between repeats."));
         Descriptor mad(MAX_DIST_ATTR, RepeatWorker::tr("Max distance"), RepeatWorker::tr("Maximum distance between repeats."));
         Descriptor ind(INVERT_ATTR, RepeatWorker::tr("Inverted"), RepeatWorker::tr("Search for inverted repeats."));
-        Descriptor nsd(NESTED_ATTR, RepeatWorker::tr("Filter nested"), RepeatWorker::tr("Filter nested repeats."));
+        Descriptor nsd(NESTED_ATTR, RepeatWorker::tr("Filter algorithm"), RepeatWorker::tr("Filter nested repeats algorithm."));
         Descriptor ald(ALGO_ATTR, RepeatWorker::tr("Algorithm"), RepeatWorker::tr("Control over variations of algorithm."));
         Descriptor thd(THREADS_ATTR, RepeatWorker::tr("Parallel threads"), RepeatWorker::tr("Number of parallel threads used for the task."));
         Descriptor tan(TANMEDS_ATTR, RepeatWorker::tr("Exclude tandems"), RepeatWorker::tr("Exclude tandems areas before find repeat task is run."));
@@ -99,7 +99,7 @@ void RepeatWorkerFactory::init() {
         a << new Attribute(mid, BaseTypes::NUM_TYPE(), false, cfg.minDist);
         a << new Attribute(mad, BaseTypes::NUM_TYPE(), false, cfg.maxDist);
         a << new Attribute(ind, BaseTypes::BOOL_TYPE(), false, cfg.inverted);
-        a << new Attribute(nsd, BaseTypes::BOOL_TYPE(), false, cfg.filterNested);
+        a << new Attribute(nsd, BaseTypes::NUM_TYPE(), false, cfg.filter);
         a << new Attribute(ald, BaseTypes::NUM_TYPE(), false, cfg.algo);
         a << new Attribute(thd, BaseTypes::NUM_TYPE(), false, cfg.nThreads);
         a << new Attribute(tan, BaseTypes::BOOL_TYPE(), false, cfg.excludeTandems);
@@ -134,6 +134,13 @@ void RepeatWorkerFactory::init() {
         m["Diagonals"] = RFAlgorithm_Diagonal;
         m["Suffix index"] = RFAlgorithm_Suffix;
         delegates[ALGO_ATTR] = new ComboBoxDelegate(m);
+    }
+    {
+        QVariantMap m; 
+        m["Disjoint repeats"] = DisjointRepeats;
+        m["No filtering"] = NoFiltering;
+        m["Unique repeats"] = UniqueRepeats;
+        delegates[NESTED_ATTR] = new ComboBoxDelegate(m);
     }
 
     proto->setPrompter(new RepeatPrompter());
@@ -196,7 +203,7 @@ Task* RepeatWorker::tick() {
         cfg.setIdentity(identity);
         cfg.nThreads = actor->getParameter(THREADS_ATTR)->getAttributeValue<int>(context);
         cfg.inverted = actor->getParameter(INVERT_ATTR)->getAttributeValue<bool>(context);
-        cfg.filterNested = actor->getParameter(NESTED_ATTR)->getAttributeValue<bool>(context);
+        cfg.filter = RepeatsFilterAlgorithm(actor->getParameter(NESTED_ATTR)->getAttributeValue<int>(context));
         cfg.excludeTandems = actor->getParameter(TANMEDS_ATTR)->getAttributeValue<bool>(context);
         resultName = actor->getParameter(NAME_ATTR)->getAttributeValue<QString>(context);
         if(resultName.isEmpty()){
