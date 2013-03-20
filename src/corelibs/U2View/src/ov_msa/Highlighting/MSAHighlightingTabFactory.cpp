@@ -29,7 +29,7 @@
 namespace U2 {
 
 const QString MSAHighlightningFactory::GROUP_ID = "OP_MSA_HIGHLIGHTNING";
-const QString MSAHighlightningFactory::GROUP_ICON_STR = ":core/images/todo.png";
+const QString MSAHighlightningFactory::GROUP_ICON_STR = ":core/images/highlight.png";
 const QString MSAHighlightningFactory::GROUP_TITLE = QString(tr("Highlightning"));
 
 
