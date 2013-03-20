@@ -62,7 +62,8 @@ QStringList ConservationPlotSettings::getArguments(const QList<QString>& bedFile
     //labels
     result << "--bed-label=" + GUrlUtils::getQuotedString(label);
 
-    foreach(const QString& bedFile, bedFiles){
+    foreach(QString bedFile, bedFiles){
+        bedFile = bedFile.replace(' ', '_');
         result << GUrlUtils::getQuotedString(bedFile);
     }
 

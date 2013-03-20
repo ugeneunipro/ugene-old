@@ -243,9 +243,14 @@ void SamtoolsMpileupTask::run(){
     mpileupSettings.openq = settings.openq;
     mpileupSettings.pl_list = settings.pl_list.data();
 
-    bam_mpileup(argc1-1, argv1, &mpileupSettings, tmpMpileupOutputFile.toLatin1().constData());
+    int ret = bam_mpileup(argc1-1, argv1, &mpileupSettings, tmpMpileupOutputFile.toLatin1().constData());
 
     deleteArgv(argv1, argc1);
+    if (ret == -1){
+        setError("mpileup finished with an error");
+        return;
+    }
+    
 
     QByteArray ba = tmpMpileupOutputFile.toLatin1();
     char* ar11 = "bcfview";
@@ -272,7 +277,12 @@ void SamtoolsMpileupTask::run(){
     bcfSettings.min_perm_p = settings.min_perm_p;
 
    
-    bcfview(2, bcfViewArgv, &bcfSettings, tmpBcfViewOutputFile.toLatin1().constData());
+    ret = bcfview(2, bcfViewArgv, &bcfSettings, tmpBcfViewOutputFile.toLatin1().constData());
+    if (ret == -1){
+        setError("bcf view finished with an error");
+        return;
+    }
+
 
 }
 

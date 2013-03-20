@@ -279,7 +279,13 @@ void CEASReportWorkerFactory::init() {
         if (dataPath){
             const QList<QString>& dataNames = dataPath->getDataNames();
             if (!dataNames.isEmpty()){
-                annGrAttr = new Attribute(gdbDesc, BaseTypes::STRING_TYPE(), true, dataPath->getPathByName(dataNames.first()));
+                int hg19Idx = dataNames.indexOf("hg19");
+                if (hg19Idx == -1){
+                    annGrAttr = new Attribute(gdbDesc, BaseTypes::STRING_TYPE(), true, dataPath->getPathByName(dataNames.first()));
+                }else{
+                    annGrAttr = new Attribute(gdbDesc, BaseTypes::STRING_TYPE(), true, dataPath->getPathByName(dataNames.at(hg19Idx)));
+                }
+                
             }else{
                 annGrAttr = new Attribute(gdbDesc, BaseTypes::STRING_TYPE(), true);
             }

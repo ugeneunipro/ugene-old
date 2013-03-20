@@ -87,7 +87,7 @@ void RepeatWorkerFactory::init() {
         Descriptor mid(MIN_DIST_ATTR, RepeatWorker::tr("Min distance"), RepeatWorker::tr("Minimum distance between repeats."));
         Descriptor mad(MAX_DIST_ATTR, RepeatWorker::tr("Max distance"), RepeatWorker::tr("Maximum distance between repeats."));
         Descriptor ind(INVERT_ATTR, RepeatWorker::tr("Inverted"), RepeatWorker::tr("Search for inverted repeats."));
-        Descriptor nsd(NESTED_ATTR, RepeatWorker::tr("Filter algorithm"), RepeatWorker::tr("Filter nested repeats algorithm."));
+        Descriptor nsd(NESTED_ATTR, RepeatWorker::tr("Filter algorithm"), RepeatWorker::tr("Filter repeats algorithm."));
         Descriptor ald(ALGO_ATTR, RepeatWorker::tr("Algorithm"), RepeatWorker::tr("Control over variations of algorithm."));
         Descriptor thd(THREADS_ATTR, RepeatWorker::tr("Parallel threads"), RepeatWorker::tr("Number of parallel threads used for the task."));
         Descriptor tan(TANMEDS_ATTR, RepeatWorker::tr("Exclude tandems"), RepeatWorker::tr("Exclude tandems areas before find repeat task is run."));

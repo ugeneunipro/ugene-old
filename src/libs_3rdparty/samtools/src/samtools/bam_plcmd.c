@@ -182,7 +182,7 @@ static void group_smpl(mplp_pileup_t *m, bam_sample_t *sm, kstring_t *buf,
 			if (id < 0 || id >= m->n) {
 				assert(q); // otherwise a bug
 				fprintf(stderr, "[%s] Read group %s used in file %s but absent from the header or an alignment missing read group.\n", __func__, (char*)q+1, fn[i]);
-				exit(1);
+				return -1;
 			}
 			if (m->n_plp[id] == m->m_plp[id]) {
 				m->m_plp[id] = m->m_plp[id]? m->m_plp[id]<<1 : 8;
@@ -239,11 +239,11 @@ static int mpileup(mplp_conf_t *conf, int n, char **fn, const char* bcfOut)
 			idx = bam_index_load(fn[i]);
 			if (idx == 0) {
 				fprintf(stderr, "[%s] fail to load index for %d-th input.\n", __func__, i+1);
-				exit(1);
+				return -1;
 			}
 			if (bam_parse_region(h_tmp, conf->reg, &tid, &beg, &end) < 0) {
 				fprintf(stderr, "[%s] malformatted region or wrong seqname for %d-th input.\n", __func__, i+1);
-				exit(1);
+				return -1;
 			}
 			if (i == 0) tid0 = tid, beg0 = beg, end0 = end;
 			data[i]->iter = bam_iter_query(idx, tid, beg, end);
@@ -451,6 +451,7 @@ static int read_file_list(const char *file_list,int *n,char **argv[])
 
 int bam_mpileup(int argc, char *argv[], UGENE_mpileup_settings* settings, const char* outBcf)
 {
+    int ret = 0;
 	int c;
     const char *file_list = NULL;
     char **fn = NULL;
@@ -579,13 +580,15 @@ int bam_mpileup(int argc, char *argv[], UGENE_mpileup_settings* settings, const 
 	}
     if (file_list) {
         if ( read_file_list(file_list,&nfiles,&fn) ) return 1;
-        mpileup(&mplp,nfiles,fn, outBcf);
+        ret = mpileup(&mplp,nfiles,fn, outBcf);
         for (c=0; c<nfiles; c++) free(fn[c]);
         free(fn);
-    } else mpileup(&mplp, argc - optind, argv + optind, outBcf);
+    } else {
+       ret = mpileup(&mplp, argc - optind, argv + optind, outBcf);
+    }
 	if (mplp.rghash) bcf_str2id_thorough_destroy(mplp.rghash);
 	free(mplp.reg); free(mplp.pl_list);
 	if (mplp.fai) fai_destroy(mplp.fai);
 	if (mplp.bed) bed_destroy(mplp.bed);
-	return 0;
+	return ret;
 }

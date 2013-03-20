@@ -211,7 +211,7 @@ void ConservationPlotWorkerFactory::init() {
 
         attrs << new Attribute(outFile, BaseTypes::STRING_TYPE(), true, QVariant(""));
         attrs << new Attribute(titleDescr, BaseTypes::STRING_TYPE(), true, QVariant("Average Phastcons around the Center of Sites"));
-        attrs << new Attribute(labelDescr, BaseTypes::STRING_TYPE(), true, QVariant("Conservation at peak summits"));
+        attrs << new Attribute(labelDescr, BaseTypes::STRING_TYPE(), true, QVariant("Conservation_at_peak_summits"));
         Attribute* assemblyVerAttr = NULL;
         if (dataPath){
             const QList<QString>& dataNames = dataPath->getDataNames();

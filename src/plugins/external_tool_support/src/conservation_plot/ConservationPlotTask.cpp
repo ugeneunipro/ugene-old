@@ -93,6 +93,7 @@ void ConservationPlotTask::prepare() {
         SaveDocumentTask *saveTask = NULL;
 
         QString name = getSettings().label;
+        name = name.replace(' ','_');
         if (activeSubtasks != 0){
             name += QString("_%1").arg(activeSubtasks);
         }
