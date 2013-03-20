@@ -41,21 +41,12 @@ static inline QVBoxLayout * initVBoxLayout(QWidget * w) {
     return layout;
 }
 
-static inline QHBoxLayout * initHBoxLayout(QWidget * w) {
-    QHBoxLayout * layout = new QHBoxLayout;
-    layout->setContentsMargins(0, 0, 0, 0);
-    layout->setSpacing(5);
-    layout->setAlignment(Qt::AlignTop);
-
-    w->setLayout(layout);
-    return layout;
-}
-
 QWidget* MSAHighlightingTab::createColorGroup(){
     QWidget * group = new QWidget(this);
 
     QVBoxLayout * layout = initVBoxLayout(group);
     colorScheme = new QComboBox();
+    colorScheme->setSizeAdjustPolicy(QComboBox::AdjustToMinimumContentsLength);
     
     layout->addSpacing(TITLE_SPACING);  
     layout->addWidget(colorScheme);
@@ -69,6 +60,7 @@ QWidget* MSAHighlightingTab::createHighlightingGroup() {
 
     QVBoxLayout * layout = initVBoxLayout(group);
     highlightingScheme = new QComboBox();
+    highlightingScheme->setSizeAdjustPolicy(QComboBox::AdjustToMinimumContentsLength);
 
     hint = new QLabel("");
 
