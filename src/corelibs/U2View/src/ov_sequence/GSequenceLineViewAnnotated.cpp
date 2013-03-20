@@ -492,11 +492,14 @@ void GSequenceLineViewAnnotatedRenderArea::drawAnnotation(QPainter& p, DrawAnnot
                                 hasC = hasD;
                             }
                         }
+
                         if (hasD) {
-                            drawCutSite(p, annotationRect, r.startPos + cutD, true);
+                            int cutPosDirect = a->getStrand().isDirect() ? r.startPos + cutD : r.startPos + cutC;
+                            drawCutSite(p, annotationRect, as->color, cutPosDirect , true);
                         }
                         if (hasC) {
-                            drawCutSite(p, annotationRect, r.endPos() - cutC, false);
+                            int cutPosCompl = a->getStrand().isDirect() ? r.endPos() - cutC : r.endPos() - cutD ;
+                            drawCutSite(p, annotationRect, as->color, cutPosCompl, false);
                         }
                     }
                 }
@@ -558,19 +561,23 @@ void GSequenceLineViewAnnotatedRenderArea::drawBoundedText(QPainter& p, const QR
 
 #define CUT_SITE_HALF_WIDTH  4
 #define CUT_SITE_HALF_HEIGHT 2
-void GSequenceLineViewAnnotatedRenderArea::drawCutSite(QPainter& p, const QRect& rect, int pos, bool direct) {
+void GSequenceLineViewAnnotatedRenderArea::drawCutSite(QPainter& p, const QRect& rect, const QColor& color, int pos, bool direct ) {
     int xCenter = posToCoord(pos, true);
-    if (xCenter < rect.left() || xCenter > rect.right()) {
-        return; // drawing cut sites out of the annotation region is not supported
-    }
+
     int xLeft = xCenter - CUT_SITE_HALF_WIDTH;
     int xRight= xCenter + CUT_SITE_HALF_WIDTH;
     int yFlat = direct ? rect.top() - CUT_SITE_HALF_HEIGHT : rect.bottom() + CUT_SITE_HALF_HEIGHT;
     int yPeak = direct ? rect.top() + CUT_SITE_HALF_HEIGHT : rect.bottom() - CUT_SITE_HALF_HEIGHT;
     
-    p.drawLine(xLeft, yFlat, xRight, yFlat);
-    p.drawLine(xLeft, yFlat, xCenter, yPeak);
-    p.drawLine(xRight, yFlat, xCenter, yPeak);
+    QPolygon triangle;
+    triangle << QPoint(xLeft, yFlat) << QPoint(xCenter, yPeak) << QPoint(xRight,yFlat) << QPoint(xLeft,yFlat);
+
+    QPainterPath path;
+    path.addPolygon(triangle);
+
+    p.fillPath(path,color);
+    p.drawPath(path);
+
 }
 
 

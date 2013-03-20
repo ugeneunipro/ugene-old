@@ -99,7 +99,7 @@ protected:
     virtual void drawBoundedText(QPainter& p, const QRect& r, const QString& text) const;
     virtual void drawAnnotationConnections(QPainter& p, Annotation* a, const AnnotationSettings* as);
     virtual void drawAnnotationsSelection(QPainter& p);
-    virtual void drawCutSite(QPainter& p, const QRect& r, int pos, bool direct);
+    virtual void drawCutSite(QPainter& p, const QRect& r, const QColor& color, int pos, bool direct);
 
     bool isAnnotationSelectionInVisibleRange() const;
 
