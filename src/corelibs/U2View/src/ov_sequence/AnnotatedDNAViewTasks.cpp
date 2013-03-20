@@ -207,6 +207,7 @@ void OpenAnnotatedDNAViewTask::open() {
         }
         return;
     }
+    qSort(seqObjects.begin(), seqObjects.end(), U2SequenceObject::lessThan);
     QString viewName = deriveViewName(seqObjects);
     AnnotatedDNAView* v = new AnnotatedDNAView(viewName, seqObjects);
     GObjectViewWindow* w = new GObjectViewWindow(v, viewName, false);

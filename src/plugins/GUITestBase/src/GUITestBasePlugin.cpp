@@ -217,9 +217,9 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 //////////////////////////////////////////////////////////////////////////
 // Common scenarios/Sequence view/
 //////////////////////////////////////////////////////////////////////////
-    REGISTER_TEST_IGNORED(GUITest_common_scenarios_sequence_view::test_0002,"https://ugene.unipro.ru/tracker/browse/UGENE-1472");
-    REGISTER_TEST_IGNORED(GUITest_common_scenarios_sequence_view::test_0002_1,"https://ugene.unipro.ru/tracker/browse/UGENE-1472");
-    REGISTER_TEST_IGNORED(GUITest_common_scenarios_sequence_view::test_0002_2,"https://ugene.unipro.ru/tracker/browse/UGENE-1472");
+    REGISTER_TEST(GUITest_common_scenarios_sequence_view::test_0002);
+    REGISTER_TEST(GUITest_common_scenarios_sequence_view::test_0002_1);
+    REGISTER_TEST(GUITest_common_scenarios_sequence_view::test_0002_2);
     REGISTER_TEST(GUITest_common_scenarios_sequence_view::test_0003);
     REGISTER_TEST(GUITest_common_scenarios_sequence_view::test_0003_1);
     REGISTER_TEST(GUITest_common_scenarios_sequence_view::test_0003_2);
