@@ -553,7 +553,7 @@ GUI_TEST_CLASS_DEFINITION(test_0008){
                 i++;
             }
         }
-    CHECK_SET_ERR(i==32, "distances are not shown" + QString().setNum(i) + s1);
+    CHECK_SET_ERR(i==31, "distances are not shown" + QString().setNum(i) + s1);
 //Expected state: distance labels appers
 }
 
@@ -620,7 +620,7 @@ GUI_TEST_CLASS_DEFINITION(test_0008_1){//difference: main menu is used
                 i++;
             }
         }
-    CHECK_SET_ERR(i==32, "distances are not shown");
+    CHECK_SET_ERR(i==31, "distances are not shown");
 //Expected state: distance labels appers
 }
 

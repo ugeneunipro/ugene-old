@@ -799,7 +799,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST_IGNORED_LINUX(GUITest_common_scenarios_tree_viewer::test_0004, "https://ugene.unipro.ru/tracker/browse/UGENE-1519");
     REGISTER_TEST_IGNORED_LINUX(GUITest_common_scenarios_tree_viewer::test_0005, "https://ugene.unipro.ru/tracker/browse/UGENE-1519");
     //REGISTER_TEST(GUITest_common_scenarios_tree_viewer::test_0006);
-    REGISTER_TEST(GUITest_common_scenarios_tree_viewer::test_0007);
+    REGISTER_TEST_IGNORED(GUITest_common_scenarios_tree_viewer::test_0007, "https://ugene.unipro.ru/tracker/browse/UGENE-1535");
     REGISTER_TEST(GUITest_common_scenarios_tree_viewer::test_0008);
     REGISTER_TEST(GUITest_common_scenarios_tree_viewer::test_0008_1);
     REGISTER_TEST(GUITest_common_scenarios_tree_viewer::test_0009);
