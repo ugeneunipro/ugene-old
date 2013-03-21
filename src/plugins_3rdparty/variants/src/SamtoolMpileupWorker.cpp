@@ -276,16 +276,16 @@ void CallVariantsWorkerFactory::init() {
         CallVariantsWorker::tr("Ratio of INDEL-to-SNP mutation rate. (bcf view)(-i)"));
 
     Descriptor pref(PREF,
-        CallVariantsWorker::tr("Gap open error"),
-        CallVariantsWorker::tr("Phred-scaled gap open sequencing error probability. Reducing INT leads to more indel calls. (bcf view)(-o)"));
-
-    Descriptor ptype(PTYPE,
         CallVariantsWorker::tr("Max P(ref|D)"),
         CallVariantsWorker::tr("A site is considered to be a variant if P(ref|D)<FLOAT. (bcf view)(-p)"));
 
+    Descriptor ptype(PTYPE,
+        CallVariantsWorker::tr("Prior allele frequency spectrum."),
+        CallVariantsWorker::tr("If STR can be full, cond2, flat or the file consisting of error output from a previous variant calling run. (bcf view)(-P)"));
+
     Descriptor theta(THETA,
-        CallVariantsWorker::tr("Muttion rate"),
-        CallVariantsWorker::tr("Scaled muttion rate for variant calling. (bcf view)(-t)"));
+        CallVariantsWorker::tr("Mutation rate"),
+        CallVariantsWorker::tr("Scaled mutation rate for variant calling. (bcf view)(-t)"));
 
     Descriptor ccall(CCALL,
         CallVariantsWorker::tr("Pair/trio calling"),
