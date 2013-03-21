@@ -286,6 +286,7 @@ MuscleAddSequencesToProfileTask::MuscleAddSequencesToProfileTask(MAlignmentObjec
     QList<FormatDetectionResult> detectedFormats = DocumentUtils::detectFormat(fileWithSequencesOrProfile);    
     if (detectedFormats.isEmpty()) {
         setError("Unknown format");
+        return;
     }
     DocumentFormat* format = detectedFormats.first().format;
     IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(fileWithSequencesOrProfile));
