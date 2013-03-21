@@ -661,7 +661,7 @@ QHash<QString, QList<SharedAnnotationData> > BedFormat::parseDocument(
 
         // If file is invalid, but can be parsed an error is written to the log,
         // all details are written to the trace log.
-        if (validationStatus.isFileInvalid()) {
+        if (validationStatus.isFileInvalid() && !noHeader) {
             fileIsValid = false;
         }
 
@@ -742,7 +742,7 @@ QHash<QString, QList<SharedAnnotationData> > BedFormat::parseDocument(
     }
 
     if (false == fileIsValid) {
-        ioLog.error("BED parsing error: one or more errors occurred while parsing the input file,"
+        ioLog.info("BED parsing warning: one or more errors occurred while parsing the input file,"
             " see TRACE log for details!");
     }
 
