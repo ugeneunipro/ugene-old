@@ -645,7 +645,12 @@ void TreeViewerUI::updateTreeSettings(){
                         item->setDistanceText("0");
                     }
                 }
-                item->setWidth(avgW * getScale()* coef * item->getLengthCoef());
+                if(item->getNameText() == NULL) {
+                    item->setWidth(avgW * getScale()* coef * item->getLengthCoef());
+                }
+                else {
+                    item->setWidth(0);
+                }
                 break;
             case TreeSettings::PHYLOGRAM:
                 if(item->getDistanceText() != NULL){
@@ -661,7 +666,12 @@ void TreeViewerUI::updateTreeSettings(){
                         item->setDistanceText("0");
                     }
                 }
-                item->setWidth(avgW * getScale()* coef);
+                if(item->getNameText() == NULL) {
+                    item->setWidth(avgW * getScale()* coef);
+                }
+                else {
+                    item->setWidth(0);
+                }
                 break;
             default:
                 assert(false && "Unexpected tree type value");
