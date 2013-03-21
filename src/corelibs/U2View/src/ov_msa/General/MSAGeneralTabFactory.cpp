@@ -29,7 +29,7 @@
 namespace U2 {
 
 const QString MSAGeneralTabFactory::GROUP_ID = "OP_MSA_GENERAL";
-const QString MSAGeneralTabFactory::GROUP_ICON_STR = ":core/images/msa_general.png";
+const QString MSAGeneralTabFactory::GROUP_ICON_STR = ":core/images/settings2.png";
 const QString MSAGeneralTabFactory::GROUP_TITLE = QString(tr("General"));
 
 

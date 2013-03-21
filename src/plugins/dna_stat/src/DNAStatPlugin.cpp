@@ -158,6 +158,7 @@ void DNAViewStatsContext::initViewContext( GObjectView* view )
 
     GObjectViewAction* dnaStatsAction = new GObjectViewAction(this, view, tr("Statistics"));
     dnaStatsAction->setObjectName("Statistics");
+    dnaStatsAction->setIcon(QIcon(":core/images/chart_bar.png"));
     connect(dnaStatsAction, SIGNAL(triggered()), SLOT(sl_showDnaStats()));
     addViewAction(dnaStatsAction);
 }

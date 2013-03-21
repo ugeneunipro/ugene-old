@@ -1899,7 +1899,7 @@ Do you want to replace it?</source>
     </message>
     <message>
         <location filename="../src/ov_msa/SeqStatistics/SeqStatisticsWidgetFactory.cpp" line="33"/>
-        <source>Sequences statistics</source>
+        <source>Statistics</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

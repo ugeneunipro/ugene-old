@@ -45,21 +45,24 @@ void Init::initOptionsPanels()
     OPWidgetFactoryRegistry* opWidgetFactoryRegistry = AppContext::getOPWidgetFactoryRegistry();
 
     // Sequence View groups
-    opWidgetFactoryRegistry->registerFactory(new SequenceInfoFactory());
     opWidgetFactoryRegistry->registerFactory(new FindPatternWidgetFactory());
     opWidgetFactoryRegistry->registerFactory(new AnnotHighlightWidgetFactory());
+    opWidgetFactoryRegistry->registerFactory(new SequenceInfoFactory());
+
 
     // Assembly Browser groups
     opWidgetFactoryRegistry->registerFactory(new AssemblyNavigationWidgetFactory());
-    opWidgetFactoryRegistry->registerFactory(new AssemblySettingsWidgetFactory());
     opWidgetFactoryRegistry->registerFactory(new AssemblyInfoWidgetFactory());
+    opWidgetFactoryRegistry->registerFactory(new AssemblySettingsWidgetFactory());
+
 
     //MSA groups
-    opWidgetFactoryRegistry->registerFactory(new MSAGeneralTabFactory());
-    opWidgetFactoryRegistry->registerFactory(new SeqStatisticsWidgetFactory());
-    opWidgetFactoryRegistry->registerFactory(new PairAlignFactory());
     opWidgetFactoryRegistry->registerFactory(new MSAHighlightingFactory());
+    opWidgetFactoryRegistry->registerFactory(new PairAlignFactory());
     opWidgetFactoryRegistry->registerFactory(new MSATreeOptionsWidgetFactory());
+    opWidgetFactoryRegistry->registerFactory(new SeqStatisticsWidgetFactory());
+    opWidgetFactoryRegistry->registerFactory(new MSAGeneralTabFactory());
+
 
     //Tree View groups
     opWidgetFactoryRegistry->registerFactory(new TreeOptionsWidgetFactory());

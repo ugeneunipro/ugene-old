@@ -932,6 +932,7 @@ ADVSingleSequenceHeaderWidget::ADVSingleSequenceHeaderWidget(ADVSingleSequenceWi
     toolBar->setObjectName("tool_bar_" + ctx->getSequenceObject()->getGObjectName());
     toolBar->layout()->setSpacing(0);
     toolBar->layout()->setMargin(0);
+    toolBar->setFixedHeight(ADV_HEADER_HEIGHT);
    
     setLayout(l);
 

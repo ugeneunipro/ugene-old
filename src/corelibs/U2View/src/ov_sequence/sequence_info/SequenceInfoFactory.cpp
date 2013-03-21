@@ -30,8 +30,8 @@
 namespace U2 {
 
 const QString SequenceInfoFactory::GROUP_ID = "OP_SEQ_INFO";
-const QString SequenceInfoFactory::GROUP_ICON_STR = ":core/images/info.png";
-const QString SequenceInfoFactory::GROUP_TITLE = QString(tr("Information"));
+const QString SequenceInfoFactory::GROUP_ICON_STR = ":core/images/chart_bar.png";
+const QString SequenceInfoFactory::GROUP_TITLE = QString(tr("Statistics"));
 
 
 SequenceInfoFactory::SequenceInfoFactory()
