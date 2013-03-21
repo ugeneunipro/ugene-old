@@ -5,7 +5,7 @@
 workflow "Call Variants with SAMTools"{
     read-assembly {
         type:read-assembly;
-        name:"Read Assembly";
+        name:"Read Assembly (BAM/SAM)";
         url-in {
             dataset:Dataset;
         }
@@ -20,7 +20,7 @@ workflow "Call Variants with SAMTools"{
     write-variations {
         type:write-variations;
         name:"Write Variations";
-        document-format:vcf;
+        document-format:snp;
         write-mode:0;
     }
     call_variants {
@@ -56,7 +56,7 @@ workflow "Call Variants with SAMTools"{
 							label : "Reference sequence file";
 						}
 						read-assembly.url-in{
-							label : "Sorted BAM file";
+							label : "BAM/SAM file";
 						}
                     }
 			      }

@@ -331,6 +331,7 @@ void ExternalToolSupportSettingsPageWidget::sl_onPathEditWidgetClick(){
         }
     }
 }
+//looks in selected folder +1 level 1 subfolders
 void ExternalToolSupportSettingsPageWidget::sl_onBrowseToolKitPath(){
     LastUsedDirHelper lod("toolkit path");
     QString dir;
@@ -342,7 +343,8 @@ void ExternalToolSupportSettingsPageWidget::sl_onBrowseToolKitPath(){
         QList<QTreeWidgetItem*> listOfItems=treeWidget->findItems("",Qt::MatchContains|Qt::MatchRecursive);
         assert(listOfItems.length()!=0);
         foreach(QTreeWidgetItem* item, listOfItems){
-            if(AppContext::getExternalToolRegistry()->getByName(item->text(0)) != NULL){
+            QString toolItemText = item->text(0);
+            if(AppContext::getExternalToolRegistry()->getByName(toolItemText) != NULL){
                 if(AppContext::getExternalToolRegistry()->getByName(item->text(0))->getToolKitName() == toolKitName){
                     QWidget* itemWid=treeWidget->itemWidget(item,1);
                     PathLineEdit* lineEdit=itemWid->findChild<PathLineEdit*>("PathLineEdit");
@@ -352,9 +354,11 @@ void ExternalToolSupportSettingsPageWidget::sl_onBrowseToolKitPath(){
                         QString executableFileName=AppContext::getExternalToolRegistry()->getByName(item->text(0))->getExecutableFileName();
                         while (it.hasNext()&&fileNotFound) {
                             it.next();
-                            QFileInfo info(it.filePath()+"/"+executableFileName);
-                            if(info.exists() && info.isFile() && info.isExecutable()){
-                                QString path=QDir::toNativeSeparators(it.filePath()+"/"+executableFileName);
+                            QString fpath = it.filePath()+"/"+executableFileName;
+                            QFileInfo info(fpath);
+                            //if(info.exists() && info.isFile() && info.isExecutable()){
+                            if(info.exists() && info.isFile()){
+                                QString path=QDir::toNativeSeparators(fpath);
                                 lineEdit->setText(path);
                                 lineEdit->setModified(false);
                                 externalToolsInfo[item->text(0)].path=path;
