@@ -41,7 +41,6 @@ MSAEditorMultiTreeViewer::MSAEditorMultiTreeViewer(QString _title, MSAEditor* _e
 
     this->setLayout(treeAreaLayout);
 
-    connect(treeTabs, SIGNAL(si_tabCloseRequested(QWidget*)), SLOT(sl_onTabCloseRequested(QWidget*))); 
     connect(treeTabs, SIGNAL(si_tabsCountChanged(int)), SIGNAL(si_tabsCountChanged(int)));
 }
 

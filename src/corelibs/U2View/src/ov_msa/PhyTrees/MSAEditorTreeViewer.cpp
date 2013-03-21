@@ -83,10 +83,10 @@ void MSAEditorTreeViewer::sl_refreshTree() {
 
 MSAEditorTreeViewerUI::MSAEditorTreeViewerUI(MSAEditorTreeViewer* treeViewer) 
     : TreeViewerUI(treeViewer), subgroupSelectorPos(0.0), isSinchronized(true), curLayoutIsRectangular(true), curMSATreeViewer(treeViewer){
-    connect(scene(), SIGNAL(selectionChanged()), SLOT(sl_onSelectionChanged()));
     connect(scene(), SIGNAL(sceneRectChanged(const QRectF&)), SLOT(sl_onSceneRectChanged(const QRectF&)));
 
-    subgroupSelector = scene()->addLine(0.0, 0.0, 0.0, scene()->height(), QPen(Qt::blue));
+    QRectF rect = scene()->sceneRect();
+    subgroupSelector = scene()->addLine(0.0, rect.bottom(), 0.0, rect.top(), QPen(Qt::blue));
 }
 
 void MSAEditorTreeViewerUI::setTreeVerticalSize(int size) {
@@ -172,8 +172,8 @@ void MSAEditorTreeViewerUI::mouseMoveEvent(QMouseEvent *me) {
                 subgroupSelectorPos = boundingRect.right() - 1;
             }
         }
-
-        subgroupSelector->setLine(subgroupSelectorPos, 0, subgroupSelectorPos, scene()->height());
+        QRectF rect = scene()->sceneRect();
+        subgroupSelector->setLine(subgroupSelectorPos, rect.bottom(), subgroupSelectorPos, rect.top());
         highlightBranches();
         scene()->update();
     }
@@ -184,7 +184,8 @@ void MSAEditorTreeViewerUI::mouseMoveEvent(QMouseEvent *me) {
 }
 
 void MSAEditorTreeViewerUI::sl_onSceneRectChanged( const QRectF& ) {
-    subgroupSelector->setLine(subgroupSelectorPos, 0, subgroupSelectorPos, scene()->height());
+    QRectF rect = scene()->sceneRect();
+    subgroupSelector->setLine(subgroupSelectorPos, rect.bottom(), subgroupSelectorPos, rect.top());
 }
 void MSAEditorTreeViewerUI::sl_zoomToSel() {
     emit si_treeZoomedIn();
