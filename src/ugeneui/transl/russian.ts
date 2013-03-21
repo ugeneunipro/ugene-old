@@ -506,7 +506,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/project_support/ui/SequenceReadingModeSelectorDialog.ui" line="14"/>
         <source>Sequence reading options</source>
-        <translation type="unfinished"></translation>
+        <translation>Способы отображения последовательностей</translation>
     </message>
     <message>
         <location filename="../src/project_support/ui/SequenceReadingModeSelectorDialog.ui" line="20"/>
@@ -517,17 +517,23 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;The document selected contains multiple sequence instances. &lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Please select the way UGENE will read these sequences:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+          &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+          p, li { white-space: pre-wrap; }
+          &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+          &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Документ содержит несколько последовательностей. &lt;/span&gt;&lt;/p&gt;
+          &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;/p&gt;
+          &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Выберите способ отображения этих последовательностей:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/project_support/ui/SequenceReadingModeSelectorDialog.ui" line="39"/>
         <source> As separate sequences in sequence viewer</source>
-        <translation type="unfinished"></translation>
+        <translation>Как отдельные последовательности</translation>
     </message>
     <message>
         <location filename="../src/project_support/ui/SequenceReadingModeSelectorDialog.ui" line="65"/>
         <source>Merge sequences into a single sequence to show in sequence viewer</source>
-        <translation type="unfinished"></translation>
+        <translation>Соединить все последовательности в одну последовательность</translation>
     </message>
     <message>
         <location filename="../src/project_support/ui/SequenceReadingModeSelectorDialog.ui" line="90"/>
@@ -536,7 +542,11 @@ p, li { white-space: pre-wrap; }
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Number of &apos;unknown&apos; symbols &lt;/span&gt;&lt;span style=&quot; font-size:8pt; font-style:italic;&quot;&gt;(&apos;N &apos;for nucleic or &apos;X&apos; for amino)&lt;/span&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt; between parts:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+          &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+          p, li { white-space: pre-wrap; }
+          &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+          &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Число &apos;неизвестных&apos; символов &lt;/span&gt;&lt;span style=&quot; font-size:8pt; font-style:italic;&quot;&gt;(&apos;N &apos;для нуклеотидных или &apos;X&apos; для аминных)&lt;/span&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt; между частями:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/project_support/ui/SequenceReadingModeSelectorDialog.ui" line="110"/>
@@ -546,17 +556,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/project_support/ui/SequenceReadingModeSelectorDialog.ui" line="141"/>
         <source>Join sequences into alignment and open in multiple alignment viewer</source>
-        <translation type="unfinished"></translation>
+        <translation>Соединить последовательности во множественное выравнивание</translation>
     </message>
     <message>
         <location filename="../src/project_support/ui/SequenceReadingModeSelectorDialog.ui" line="167"/>
         <source>Align reads to reference sequence</source>
-        <translation type="unfinished"></translation>
+        <translation>Выровнять на референсную последовательность</translation>
     </message>
     <message>
         <location filename="../src/project_support/ui/SequenceReadingModeSelectorDialog.ui" line="193"/>
         <source>File preview:</source>
-        <translation type="unfinished"></translation>
+        <translation>Просмотр:</translation>
     </message>
 </context>
 <context>
@@ -1394,8 +1404,8 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="165"/>
-        <source>Select files to open...</source>
-        <translation type="unfinished"></translation>
+        <source>Select files to open</source>
+        <translation>Открыть файлы</translation>
     </message>
     <message>
         <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="268"/>
@@ -1606,8 +1616,8 @@ Do you wish to create this folder?</source>
     </message>
     <message>
         <location filename="../src/project_view/ProjectViewImpl.cpp" line="563"/>
-        <source>Select files to open...</source>
-        <translation type="unfinished"></translation>
+        <source>Select files to open</source>
+        <translation>Открыть файлы</translation>
     </message>
     <message>
         <location filename="../src/project_view/ProjectViewImpl.cpp" line="632"/>

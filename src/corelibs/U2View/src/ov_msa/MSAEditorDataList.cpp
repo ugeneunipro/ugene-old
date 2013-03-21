@@ -485,7 +485,7 @@ void MSAEditorUpdatedTabWidget::sl_addTabTriggered() {
 void MSAEditorUpdatedTabWidget::addExistingTree() {
     LastUsedDirHelper h;
     QString filter = DialogUtils::prepareDocumentsFileFilter(BaseDocumentFormats::NEWICK, false, QStringList());
-    QString file = QFileDialog::getOpenFileName(QApplication::activeWindow(), tr("Select files to open..."), h.dir,  filter);
+    QString file = QFileDialog::getOpenFileName(QApplication::activeWindow(), tr("Select files to open"), h.dir,  filter);
     if (file.isEmpty()) {
         return;
     }

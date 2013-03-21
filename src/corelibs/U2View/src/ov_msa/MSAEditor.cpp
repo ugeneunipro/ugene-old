@@ -442,7 +442,7 @@ QWidget* MSAEditor::createWidget() {
     alignAction->setObjectName("Align");
     connect(alignAction, SIGNAL(triggered()), this, SLOT(sl_align()));
 
-    setAsRefrenceSequenceAction = new QAction(tr("Set this sequence as refrence"), this);
+    setAsRefrenceSequenceAction = new QAction(tr("Set this sequence as reference"), this);
     setAsRefrenceSequenceAction->setObjectName("set_seq_as_refrence");
     connect(setAsRefrenceSequenceAction, SIGNAL(triggered()), SLOT(sl_setSeqAsRefrence()));
 

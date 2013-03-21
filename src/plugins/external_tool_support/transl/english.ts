@@ -318,7 +318,7 @@
     <message>
         <location filename="../src/ui/BowtieSettings.ui" line="41"/>
         <source>Parameters</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/ui/BowtieSettings.ui" line="74"/>
@@ -435,7 +435,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/BowtieSettings.ui" line="382"/>
         <source>Flags</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/ui/BowtieSettings.ui" line="396"/>
@@ -1140,37 +1140,37 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/MrBayesDialog.ui" line="41"/>
         <source>MrBayes Settings</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/ui/MrBayesDialog.ui" line="47"/>
         <source>Model</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/ui/MrBayesDialog.ui" line="56"/>
         <source>ModelType</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/ui/MrBayesDialog.ui" line="66"/>
         <source>Rate</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/ui/MrBayesDialog.ui" line="73"/>
         <source>Gamma</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/ui/MrBayesDialog.ui" line="96"/>
         <source>MCMC</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/ui/MrBayesDialog.ui" line="102"/>
         <source>Chain length</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/ui/MrBayesDialog.ui" line="122"/>
@@ -1180,22 +1180,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/MrBayesDialog.ui" line="129"/>
         <source>Burn-in length</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/ui/MrBayesDialog.ui" line="136"/>
         <source>Heated chains</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/ui/MrBayesDialog.ui" line="143"/>
         <source>Heated chain temp</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/ui/MrBayesDialog.ui" line="150"/>
         <source>Random seed</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>

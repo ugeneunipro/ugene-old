@@ -19,8 +19,8 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_MSA_HIGHLIGHTNING_TAB_H_
-#define _U2_MSA_HIGHLIGHTNING_TAB_H_
+#ifndef _U2_MSA_HIGHLIGHTING_TAB_H_
+#define _U2_MSA_HIGHLIGHTING_TAB_H_
 
 #include <QtGui/QtGui>
 #include <U2View/MSAEditor.h>

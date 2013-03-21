@@ -36,7 +36,7 @@
     <message>
         <location filename="../src/ui/KalignDialog.ui" line="198"/>
         <source>Translate to amino when aligning</source>
-        <translation type="unfinished"></translation>
+        <translation>Транслировать в амины в процессе выравнивания</translation>
     </message>
     <message>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
@@ -105,7 +105,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/KalignPlugin.cpp" line="188"/>
         <source>Align with Kalign...</source>
-        <translation type="unfinished"></translation>
+        <translation>Выравнивание Kalign</translation>
     </message>
 </context>
 <context>

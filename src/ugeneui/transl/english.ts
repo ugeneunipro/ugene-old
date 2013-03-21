@@ -1347,8 +1347,8 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="165"/>
-        <source>Select files to open...</source>
-        <translation type="unfinished"></translation>
+        <source>Select files to open</source>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="268"/>
@@ -1535,8 +1535,8 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../src/project_view/ProjectViewImpl.cpp" line="563"/>
-        <source>Select files to open...</source>
-        <translation type="unfinished"></translation>
+        <source>Select files to open</source>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/project_view/ProjectViewImpl.cpp" line="632"/>

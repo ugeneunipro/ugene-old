@@ -63,13 +63,13 @@ DnaAssemblySupport::DnaAssemblySupport()
     refAlignSub->menuAction()->setObjectName("Align to reference");
     refAlignSub->setObjectName(MWMENU_TOOLS_REF_ALIGN);
 
-    QAction* dnaAssemblyAction = new QAction( tr("Align short reads..."), this );
+    QAction* dnaAssemblyAction = new QAction( tr("Align short reads"), this );
     dnaAssemblyAction->setObjectName("Align short reads");
     dnaAssemblyAction->setIcon(QIcon(":core/images/align.png"));
     connect( dnaAssemblyAction, SIGNAL( triggered() ), SLOT( sl_showDnaAssemblyDialog() ) );
     refAlignSub->addAction( dnaAssemblyAction );
 
-    QAction* buildIndexAction = new QAction( tr("Build index..."), this );
+    QAction* buildIndexAction = new QAction( tr("Build index"), this );
     buildIndexAction->setObjectName("Build index");
     buildIndexAction->setIcon(QIcon(":core/images/align.png"));
     connect( buildIndexAction, SIGNAL( triggered() ), SLOT( sl_showBuildIndexDialog() ) );

@@ -318,7 +318,7 @@
     <message>
         <location filename="../src/ui/BowtieSettings.ui" line="41"/>
         <source>Parameters</source>
-        <translation type="unfinished"></translation>
+        <translation>Параметры</translation>
     </message>
     <message>
         <location filename="../src/ui/BowtieSettings.ui" line="74"/>
@@ -435,7 +435,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/BowtieSettings.ui" line="382"/>
         <source>Flags</source>
-        <translation type="unfinished"></translation>
+        <translation>Флаги</translation>
     </message>
     <message>
         <location filename="../src/ui/BowtieSettings.ui" line="396"/>
@@ -1103,7 +1103,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/MAFFTSupportRunDialog.ui" line="14"/>
         <source>Align with MAFFT</source>
-        <translation>Выровнять с MAFFT</translation>
+        <translation>Выравнивание MAFFT</translation>
     </message>
     <message>
         <location filename="../src/ui/MAFFTSupportRunDialog.ui" line="20"/>
@@ -1141,27 +1141,27 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/MrBayesDialog.ui" line="41"/>
         <source>MrBayes Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Настройки метода MrBayes</translation>
     </message>
     <message>
         <location filename="../src/ui/MrBayesDialog.ui" line="47"/>
         <source>Model</source>
-        <translation type="unfinished"></translation>
+        <translation>Настройки</translation>
     </message>
     <message>
         <location filename="../src/ui/MrBayesDialog.ui" line="56"/>
         <source>ModelType</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/ui/MrBayesDialog.ui" line="66"/>
         <source>Rate</source>
-        <translation type="unfinished"></translation>
+        <translation>Показатель</translation>
     </message>
     <message>
         <location filename="../src/ui/MrBayesDialog.ui" line="73"/>
         <source>Gamma</source>
-        <translation type="unfinished"></translation>
+        <translation>Гамма</translation>
     </message>
     <message>
         <location filename="../src/ui/MrBayesDialog.ui" line="96"/>
@@ -1171,32 +1171,32 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/MrBayesDialog.ui" line="102"/>
         <source>Chain length</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/ui/MrBayesDialog.ui" line="122"/>
         <source>Subsampling frequence</source>
-        <translation type="unfinished"></translation>
+        <translation>Размер выборки</translation>
     </message>
     <message>
         <location filename="../src/ui/MrBayesDialog.ui" line="129"/>
         <source>Burn-in length</source>
-        <translation type="unfinished"></translation>
+        <translation>Длина прожига</translation>
     </message>
     <message>
         <location filename="../src/ui/MrBayesDialog.ui" line="136"/>
         <source>Heated chains</source>
-        <translation type="unfinished"></translation>
+        <translation>Подогретые цепи</translation>
     </message>
     <message>
         <location filename="../src/ui/MrBayesDialog.ui" line="143"/>
         <source>Heated chain temp</source>
-        <translation type="unfinished"></translation>
+        <translation>Температура подогрева цепей</translation>
     </message>
     <message>
         <location filename="../src/ui/MrBayesDialog.ui" line="150"/>
         <source>Random seed</source>
-        <translation type="unfinished"></translation>
+        <translation>Затравка</translation>
     </message>
 </context>
 <context>
@@ -1256,7 +1256,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/TCoffeeSupportRunDialog.ui" line="14"/>
         <source>Align with T-Coffee</source>
-        <translation>Выровнять с T-Coffee</translation>
+        <translation>Выравнивание T-Coffee</translation>
     </message>
     <message>
         <location filename="../src/ui/TCoffeeSupportRunDialog.ui" line="20"/>
@@ -1710,7 +1710,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/clustalw/ClustalWSupport.cpp" line="139"/>
         <source>Align with ClustalW...</source>
-        <translation type="unfinished"></translation>
+        <translation>Выравнивание ClustalW</translation>
     </message>
     <message>
         <location filename="../src/clustalw/ClustalWSupport.cpp" line="162"/>
@@ -2465,7 +2465,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/cap3/CAP3Worker.cpp" line="69"/>
         <source>Align with CAP3</source>
-        <translation type="unfinished"></translation>
+        <translation>Выравнивание CAP3</translation>
     </message>
     <message>
         <location filename="../src/cap3/CAP3Worker.cpp" line="132"/>
@@ -2723,7 +2723,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/mafft/MAFFTWorker.cpp" line="86"/>
         <source>Align with MAFFT</source>
-        <translation>Выровнять с MAFFT</translation>
+        <translation>Выравнивание MAFFT</translation>
     </message>
     <message>
         <location filename="../src/mafft/MAFFTWorker.cpp" line="164"/>
@@ -2829,7 +2829,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/tcoffee/TCoffeeWorker.cpp" line="86"/>
         <source>Align with T-Coffee</source>
-        <translation>Выровнять с T-Coffee</translation>
+        <translation>Выравнивание T-Coffee</translation>
     </message>
     <message>
         <location filename="../src/tcoffee/TCoffeeWorker.cpp" line="87"/>
@@ -2870,7 +2870,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/mafft/MAFFTSupport.cpp" line="138"/>
         <source>Align with MAFFT...</source>
-        <translation>Выровнять с MAFFT...</translation>
+        <translation>Выравнивание MAFFT...</translation>
     </message>
     <message>
         <location filename="../src/mafft/MAFFTSupport.cpp" line="159"/>
@@ -3013,7 +3013,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/mrbayes/MrBayesDialogWidget.cpp" line="64"/>
         <source>Substitution model</source>
-        <translation type="unfinished"></translation>
+        <translation>Модель замен</translation>
     </message>
     <message>
         <location filename="../src/mrbayes/MrBayesDialogWidget.cpp" line="68"/>
@@ -3119,7 +3119,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/tcoffee/TCoffeeSupport.cpp" line="141"/>
         <source>Align with T-Coffee...</source>
-        <translation></translation>
+        <translation>Выравнивание T-Coffee</translation>
     </message>
     <message>
         <location filename="../src/tcoffee/TCoffeeSupport.cpp" line="162"/>

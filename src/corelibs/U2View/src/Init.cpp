@@ -58,7 +58,7 @@ void Init::initOptionsPanels()
     opWidgetFactoryRegistry->registerFactory(new MSAGeneralTabFactory());
     opWidgetFactoryRegistry->registerFactory(new SeqStatisticsWidgetFactory());
     opWidgetFactoryRegistry->registerFactory(new PairAlignFactory());
-    opWidgetFactoryRegistry->registerFactory(new MSAHighlightningFactory());
+    opWidgetFactoryRegistry->registerFactory(new MSAHighlightingFactory());
     opWidgetFactoryRegistry->registerFactory(new MSATreeOptionsWidgetFactory());
 
     //Tree View groups

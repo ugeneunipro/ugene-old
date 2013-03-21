@@ -339,7 +339,7 @@ void WorkflowView::createActions() {
     saveAsAction->setIcon(QIcon(":workflow_designer/images/filesaveas.png"));
     connect(saveAsAction, SIGNAL(triggered()), SLOT(sl_saveSceneAs()));
 
-    showWizard = new QAction("Show wizard", this);
+    showWizard = new QAction(tr("Show wizard"), this);
     connect(showWizard, SIGNAL(triggered()), SLOT(sl_showWizard()));
 
     loadAction = new QAction(tr("&Load schema"), this);

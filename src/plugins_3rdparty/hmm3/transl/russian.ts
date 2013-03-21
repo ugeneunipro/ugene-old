@@ -618,7 +618,7 @@
     <message>
         <location filename="../src/uHMM3Plugin.cpp" line="99"/>
         <source>HMMER tools</source>
-        <translation type="unfinished"></translation>
+        <translation>HMMER (Скрытые модели Маркова)</translation>
     </message>
     <message>
         <location filename="../src/uHMM3Plugin.cpp" line="103"/>

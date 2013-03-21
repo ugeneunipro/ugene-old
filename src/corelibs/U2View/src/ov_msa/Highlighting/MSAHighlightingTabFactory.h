@@ -19,8 +19,8 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_MSA_HIGHLIGHTNING_FACTORY_TAB_H_
-#define _U2_MSA_HIGHLIGHTNING_FACTORY_TAB_H_
+#ifndef _U2_MSA_HIGHLIGHTING_FACTORY_TAB_H_
+#define _U2_MSA_HIGHLIGHTING_FACTORY_TAB_H_
 
 #include <U2Core/global.h>
 
@@ -33,12 +33,12 @@
 
 namespace U2 {
 
-class U2VIEW_EXPORT MSAHighlightningFactory : public OPWidgetFactory
+class U2VIEW_EXPORT MSAHighlightingFactory : public OPWidgetFactory
 {
     Q_OBJECT
 public:
-    MSAHighlightningFactory();
-    virtual ~MSAHighlightningFactory(){}
+    MSAHighlightingFactory();
+    virtual ~MSAHighlightingFactory(){}
 
     virtual QWidget* createWidget(GObjectView* objView);
 

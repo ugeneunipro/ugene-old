@@ -13,7 +13,7 @@
     </message>
     <message>
         <source>Show counters</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>

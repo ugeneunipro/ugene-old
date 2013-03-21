@@ -539,8 +539,8 @@
     <message>
         <location filename="../src/DotPlotPlugin.cpp" line="79"/>
         <location filename="../src/DotPlotPlugin.cpp" line="223"/>
-        <source>Build dotplot...</source>
-        <translation>Построить dotplot...</translation>
+        <source>Build dotplot</source>
+        <translation>Построить dotplot</translation>
     </message>
 </context>
 <context>

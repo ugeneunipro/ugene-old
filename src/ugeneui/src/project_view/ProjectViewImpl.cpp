@@ -640,7 +640,7 @@ void ProjectViewImpl::sl_onViewPersistentStateChanged(GObjectViewWindow* v) {
 void ProjectViewImpl::sl_onAddExistingDocument() {
     LastUsedDirHelper h;
     QString filter = DialogUtils::prepareDocumentsFileFilter(true);
-    QString file = QFileDialog::getOpenFileName(QApplication::activeWindow(), tr("Select files to open..."), h.dir,  filter);
+    QString file = QFileDialog::getOpenFileName(QApplication::activeWindow(), tr("Select files to open"), h.dir,  filter);
     if (file.isEmpty()) {
         return;
     }

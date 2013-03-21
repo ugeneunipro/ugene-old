@@ -28,17 +28,17 @@
 
 namespace U2 {
 
-const QString MSAHighlightningFactory::GROUP_ID = "OP_MSA_HIGHLIGHTNING";
-const QString MSAHighlightningFactory::GROUP_ICON_STR = ":core/images/highlight.png";
-const QString MSAHighlightningFactory::GROUP_TITLE = QString(tr("Highlightning"));
+const QString MSAHighlightingFactory::GROUP_ID = "OP_MSA_HIGHLIGHTING";
+const QString MSAHighlightingFactory::GROUP_ICON_STR = ":core/images/highlight.png";
+const QString MSAHighlightingFactory::GROUP_TITLE = QString(MSAHighlightingFactory::tr("Highlighting"));
 
 
-MSAHighlightningFactory::MSAHighlightningFactory(){
+MSAHighlightingFactory::MSAHighlightingFactory(){
     objectViewOfWidget = ObjViewType_AlignmentEditor;
 }
 
 
-QWidget* MSAHighlightningFactory::createWidget(GObjectView* objView){
+QWidget* MSAHighlightingFactory::createWidget(GObjectView* objView){
     SAFE_POINT(NULL != objView,
         QString("Internal error: unable to create widget for group '%1', object view is NULL.").arg(GROUP_ID),
         NULL);
@@ -53,7 +53,7 @@ QWidget* MSAHighlightningFactory::createWidget(GObjectView* objView){
 }
 
 
-OPGroupParameters MSAHighlightningFactory::getOPGroupParameters(){
+OPGroupParameters MSAHighlightingFactory::getOPGroupParameters(){
     return OPGroupParameters(GROUP_ID, QPixmap(GROUP_ICON_STR), GROUP_TITLE);
 }
 

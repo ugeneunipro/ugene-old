@@ -13,7 +13,7 @@
     </message>
     <message>
         <source>Show counters</source>
-        <translation type="unfinished"></translation>
+        <translation>Включить счетчики</translation>
     </message>
 </context>
 <context>

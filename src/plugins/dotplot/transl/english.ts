@@ -491,7 +491,7 @@
     <message>
         <location filename="../src/DotPlotPlugin.cpp" line="79"/>
         <location filename="../src/DotPlotPlugin.cpp" line="223"/>
-        <source>Build dotplot...</source>
+        <source>Build dotplot</source>
         <translation></translation>
     </message>
 </context>
