@@ -171,7 +171,7 @@ private:
     /**
      *  Returns true if all right
      */
-    bool initBamStructures(const QByteArray &fileName);
+    bool initBamStructures(const GUrl &fileName);
 }; // SamtoolsBasedDbi
 
 class SamtoolsBasedDbiFactory : public U2DbiFactory {

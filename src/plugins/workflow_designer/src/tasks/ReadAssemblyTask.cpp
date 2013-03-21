@@ -223,7 +223,8 @@ void ReadAssemblyTask::run() {
             SAFE_POINT(NULL != dbiFactory, QString("Unknown dbi factory id: %").arg(fId), );
 
             U2OpStatusImpl os;
-            U2DbiRef dbiRef(dbiFactory->getId(), U2DataId(url.toLatin1()));
+            U2DbiRef dbiRef(dbiFactory->getId());
+            dbiRef.dbiId = QString::fromLocal8Bit(url.toLocal8Bit().constData());
             ctx->getDataStorage()->openDbi(dbiRef, os);
             CHECK_OP(os, );
 

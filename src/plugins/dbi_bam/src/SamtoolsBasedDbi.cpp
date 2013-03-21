@@ -76,18 +76,15 @@ void SamtoolsBasedDbi::init(const QHash<QString, QString> &properties, const QVa
         if(!url.isLocalFile()) {
             throw Exception(BAMDbiPlugin::tr("Non-local files are not supported"));
         }
-        QByteArray urlBA = url.getURLString().toLatin1();
-        bool sorted = BAMUtils::isSortedBam(GUrl(urlBA), os);
+        bool sorted = BAMUtils::isSortedBam(url, os);
         CHECK_OP_EXT(os, throw Exception(os.getError()), );
         if (!sorted) {
             throw Exception("Only indexed sorted BAM files could be used by this DBI");
         }
 
-        QByteArray sortedFileUrl = urlBA;
-
-        bool ok = this->initBamStructures(sortedFileUrl);
+        bool ok = this->initBamStructures(url);
         if (!ok) {
-            throw Exception(BAMDbiPlugin::tr("Can't build index for: %1").arg(sortedFileUrl.constData()));
+            throw Exception(BAMDbiPlugin::tr("Can't build index for: %1").arg(url.getURLString()));
         }
 
         assembliesCount = header->n_targets;
@@ -106,25 +103,27 @@ void SamtoolsBasedDbi::init(const QHash<QString, QString> &properties, const QVa
     }
 }
 
-bool SamtoolsBasedDbi::initBamStructures(const QByteArray &fileName) {
-    bamHandler = bam_open(fileName.constData(), "r");
+bool SamtoolsBasedDbi::initBamStructures(const GUrl &fileName) {
+    QByteArray urlBA = fileName.getURLString().toLocal8Bit();
+    const char *url = urlBA.constData();
+    bamHandler = bam_open(url, "r");
     if (NULL == bamHandler) {
-        throw IOException(BAMDbiPlugin::tr("Can't open file '%1'").arg(fileName.constData()));
+        throw IOException(BAMDbiPlugin::tr("Can't open file '%1'").arg(url));
     }
 
-    bool indexed = BAMUtils::hasValidBamIndex(GUrl(fileName));
+    bool indexed = BAMUtils::hasValidBamIndex(fileName);
     if (indexed) {
-        index = bam_index_load(fileName.constData());
+        index = bam_index_load(url);
     } else {
         throw Exception("Only indexed sorted BAM files could be used by this DBI");
     }
     if (NULL == index) {
-        throw IOException(BAMDbiPlugin::tr("Can't load index file for '%1'").arg(fileName.constData()));
+        throw IOException(BAMDbiPlugin::tr("Can't load index file for '%1'").arg(url));
     }
 
     header = bam_header_read(bamHandler);
     if (NULL == header) {
-        throw IOException(BAMDbiPlugin::tr("Can't read header from file '%1'").arg(fileName.constData()));
+        throw IOException(BAMDbiPlugin::tr("Can't read header from file '%1'").arg(url));
     }
     return true;
 }
