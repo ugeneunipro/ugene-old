@@ -93,23 +93,30 @@ void MSAEditorTreeViewerUI::setTreeVerticalSize(int size) {
     sl_onHeightChanged(size, false, false);
 }
 
-GroupColors::GroupColors() {
-    colors.append(Qt::cyan);
-    colors.append(Qt::yellow);
-    colors.append(Qt::green);
-    colors.append(Qt::magenta);
-    colors.append(Qt::darkYellow);
-    colors.append(Qt::gray);
+GroupColors::GroupColors(): baseColor(255, 255, 255) {
+    generateRandomColor();
+    srand(QDateTime::currentDateTime().toTime_t());
 }
 QColor GroupColors::getColor(int index) {
     if(index >= 0 && index < colors.size()) {
         return colors.at(index);
     }
     else {
-        srand(QDateTime::currentDateTime().toTime_t());
-        QColor randomColor(qrand() % 255, qrand() % 255, qrand() % 255);
-        return randomColor;
+        QColor resColor = generateRandomColor();
+        colors.append(resColor);
+        return resColor;
     }
+}
+QColor GroupColors::generateRandomColor() {
+    int red = qrand() % 255;
+    int green = qrand() % 255;
+    int blue = qrand() % 255;
+
+    red = (red + baseColor.red()) / 2;
+    green = (green + baseColor.green()) / 2;
+    blue = (blue + baseColor.blue()) / 2;
+
+    return QColor(red, green, blue);
 }
 void MSAEditorTreeViewerUI::mouseDoubleClickEvent(QMouseEvent *e) {
     QGraphicsView::mouseDoubleClickEvent(e);

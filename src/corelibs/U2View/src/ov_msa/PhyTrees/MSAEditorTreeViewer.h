@@ -40,7 +40,10 @@ public:
     GroupColors();
     QColor getColor(int index);
 private:
+    QColor generateRandomColor();
     QList<QColor> colors;
+    QColor baseColor;
+    int colorsNum;
 };
 
 class MSAEditorTreeViewer: public TreeViewer {
