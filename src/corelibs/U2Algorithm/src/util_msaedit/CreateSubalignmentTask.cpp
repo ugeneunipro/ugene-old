@@ -31,6 +31,8 @@
 #include <U2Core/GObjectUtils.h>
 #include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/U2SafePoints.h>
+#include <U2Core/GObjectRelationRoles.h>
+
 
 namespace U2{
 
@@ -71,6 +73,10 @@ void CreateSubalignmentTask::prepare() {
 
         resultDocument->addObject(resultMAObj);
         GObjectUtils::updateRelationsURL(resultMAObj, origDoc->getURL(), cfg.url);
+        QList<GObjectRelation> phyTreeRelations = resultMAObj->findRelatedObjectsByRole(GObjectRelationRole::PHYLOGENETIC_TREE); 
+        foreach(GObjectRelation phyTreeRel, phyTreeRelations) {
+            resultMAObj->removeObjectRelation(phyTreeRel);
+        }
     } else {
         CHECK_EXT(origDoc->isStateLocked(), setError(tr("Document is locked: %1").arg(origDoc->getURLString())), );
         resultDocument = origDoc;
