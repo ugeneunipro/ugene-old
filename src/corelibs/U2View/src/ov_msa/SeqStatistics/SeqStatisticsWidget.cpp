@@ -44,7 +44,6 @@ static inline QVBoxLayout * initLayout(QWidget * w) {
 }
 
 SeqStatisticsWidget::SeqStatisticsWidget(MSAEditor* m):msa(m){
-    connect(msa, SIGNAL(si_refrenceSeqChanged(const QString &)), SLOT(sl_refSetChangedOutside(const QString &)));
     SAFE_POINT(NULL != m, QString("Invalid parameter were passed into constructor SeqStatisticsWidget"), );
 
     copySettings();
@@ -121,6 +120,9 @@ void SeqStatisticsWidget::restoreSettings() {
     if(!statisticsIsShown) {
         hideSimilaritySettings();
     }
+    else {
+        sl_onRefSeqChanged(msa->getRefSeqName());
+    }
 }
 
 void SeqStatisticsWidget::sl_onAlgoChanged(const QString &algoName) {
@@ -173,6 +175,7 @@ void SeqStatisticsWidget::showSimilaritySettings() {
     ui.optionsWidget->setEnabled(true);
     ui.refSeqWarning->show();
     msaUI->showSimilarity();
+    sl_onRefSeqChanged(msa->getRefSeqName());
 }
 
 }
