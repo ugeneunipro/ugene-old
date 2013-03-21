@@ -812,11 +812,11 @@ void MsaDbiUtils::insertGaps(const U2EntityRef& msaRef, const QList<qint64>& row
         qint64 gapsLength = 0;
         for (int i = 0, n = row.gaps.count(); i < n; ++i) {
             const U2MsaGap& gap = row.gaps[i];
-            gapsLength += gap.gap;
             if ((i == n - 1) && (gap.offset >= seqLength + gapsLength)) {
                 row.gaps.removeAt(i);
                 break;
             }
+            gapsLength += gap.gap;
         }
 
         // Put the new gap model into the database
