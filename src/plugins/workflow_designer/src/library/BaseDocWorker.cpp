@@ -156,8 +156,15 @@ void BaseDocWriter::init() {
 
 QStringList BaseDocWriter::getOutputFiles(){
     QStringList files = BaseWorker::getOutputFiles();
+    QStringList urls;
+    foreach (const QString &url, files) {
+        urls << GUrl(url).getURLString();
+    }
+    foreach (const QString &url, usedUrls) {
+        urls << GUrl(url).getURLString();
+    }
 
-    QSet<QString> urlSet = files.toSet() + usedUrls;
+    QSet<QString> urlSet = urls.toSet();
     return urlSet.toList();
 }
 
