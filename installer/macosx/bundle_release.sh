@@ -87,38 +87,40 @@ echo Copying plugins
 add-plugin annotator
 add-plugin ball
 add-plugin biostruct3d_view
-#add-plugin bowtie
 add-plugin chroma_view
 add-plugin circular_view
-add-plugin remote_service
+add-plugin dbi_bam
 add-plugin dna_export
+add-plugin dna_flexibility
 add-plugin dna_graphpack
 add-plugin dna_stat
 add-plugin dotplot
 add-plugin enzymes
+add-plugin expert_discovery
 add-plugin external_tool_support
 add-plugin genome_aligner
 add-plugin gor4
 add-plugin hmm2
 add-plugin hmm3
 add-plugin kalign
+add-plugin linkdata_support
+add-plugin opencl_support
 add-plugin orf_marker
+add-plugin perf_monitor
 add-plugin phylip
 add-plugin primer3
 add-plugin psipred
+add-plugin ptools
 add-plugin query_designer
 add-plugin remote_blast
+add-plugin remote_service
 add-plugin repeat_finder
 add-plugin sitecon
 add-plugin smith_waterman
 add-plugin umuscle
+add-plugin variants
 add-plugin weight_matrix
 add-plugin workflow_designer
-add-plugin opencl_support
-add-plugin dbi_bam
-#add-plugin dbi_file
-add-plugin ptools
-add-plugin dna_flexibility
 
 if [ "$1" == "-test" ]
    then
