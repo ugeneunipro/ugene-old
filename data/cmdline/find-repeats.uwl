@@ -1,5 +1,5 @@
 #@UGENE_WORKFLOW
-#Find repeat units in supplied sequence 
+#Find repeat units in supplied sequence
 
 
 
@@ -20,6 +20,7 @@ workflow find-repeats{
     write-sequence {
         type:write-sequence;
         name:"Write Sequence";
+        document-format:genbank;
     }
 
 
@@ -70,20 +71,20 @@ workflow find-repeats{
         }
         visual {
             read-sequence {
-                pos:"-600 -585";
+                pos:"-570 -555";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 out-sequence.angle:360;
             }
             repeats-search {
-                pos:"-435 -585";
+                pos:"-405 -555";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 in-sequence.angle:180;
                 out-annotations.angle:360;
             }
             write-sequence {
-                pos:"-150 -585";
+                pos:"-120 -555";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 in-sequence.angle:180;
