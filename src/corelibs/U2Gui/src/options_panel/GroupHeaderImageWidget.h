@@ -23,14 +23,14 @@
 #define _U2_GROUP_HEADER_IMAGE_WIDGET_H_
 
 #include <QtGui/QtGui>
-
+#include <U2Core/global.h>
 
 namespace U2 {
 
 /**
  * Widget with image that represents a group header.
  */
-class GroupHeaderImageWidget : public QLabel
+class U2GUI_EXPORT GroupHeaderImageWidget : public QLabel
 {
     Q_OBJECT
 public:
@@ -40,6 +40,8 @@ public:
 
     void setHeaderSelected();
     void setHeaderDeselected();
+
+    void changeState() {emit si_groupHeaderPressed(groupId, false);}
 
 signals:
     /** Emitted when the widget has been pressed */

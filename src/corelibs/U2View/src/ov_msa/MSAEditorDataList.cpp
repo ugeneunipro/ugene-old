@@ -22,6 +22,7 @@
 #include "MSAEditorDataList.h"
 #include "MSAEditor.h"
 #include "MSAEditorSequenceArea.h"
+#include "PhyTrees/MSAEditorTreeManager.h"
 
 #include <U2Core/AppContext.h>
 #include <U2Core/MAlignmentObject.h>
@@ -29,31 +30,18 @@
 #include <U2Core/TaskSignalMapper.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/GObjectRelationRoles.h>
+#include <U2Core/PhyTreeObject.h>
 #include <U2Gui/GUIUtils.h>
 
 #include <QtGui/QApplication>
 #include <QtGui/QClipboard>
 #include <QtGui/QPainter>
 #include <QtGui/QMouseEvent>
-#include <QtGui/QInputDialog>
 #include <QtGui/QSplitter>
-#include <QtGui/QFileDialog>
 
-#include <U2Core/BaseDocumentFormats.h>
-#include <U2Gui/LastUsedDirHelper.h>
-#include <U2Gui/DialogUtils.h>
-#include <U2Gui/ExportDocumentDialogController.h>
-#include <U2Core/ProjectModel.h>
-#include <U2Core/U2OpStatusUtils.h>
-#include <U2Core/IOAdapterUtils.h>
-#include <U2Core/PhyTreeObject.h>
 
 #include <U2Algorithm/MSADistanceAlgorithmRegistry.h>
 #include <U2Algorithm/MSADistanceAlgorithm.h>
-
-#include <ov_phyltree/TreeViewerTasks.h>
-
-#include "PhyTrees/AddTreeDialog.h"
 
 namespace U2 
 {
@@ -478,54 +466,11 @@ MSAEditorUpdatedTabWidget::MSAEditorUpdatedTabWidget(MSAEditor* _msa, QWidget* p
 void MSAEditorUpdatedTabWidget::sl_addTabTriggered() {
     emit si_widgetSelected(this);
 
-    AddTreeDialog dlg(this, msa);
-    dlg.exec();
+    msa->getTreeManager()->showAddTreeDialog();
 }
 
 void MSAEditorUpdatedTabWidget::addExistingTree() {
-    LastUsedDirHelper h;
-    QString filter = DialogUtils::prepareDocumentsFileFilter(BaseDocumentFormats::NEWICK, false, QStringList());
-    QString file = QFileDialog::getOpenFileName(QApplication::activeWindow(), tr("Select files to open"), h.dir,  filter);
-    if (file.isEmpty()) {
-        return;
-    }
-    if (QFileInfo(file).exists()) {
-        h.url = file;
-    }
-
-    if(!file.isEmpty()) {
-        TaskScheduler* scheduler = AppContext::getTaskScheduler();
-
-        DocumentFormat* df = AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::NEWICK);
-        IOAdapterFactory *iof = IOAdapterUtils::get(BaseIOAdapters::LOCAL_FILE);
-        U2OpStatus2Log os;
-
-        const QList<Document *> documents = AppContext::getProject()->getDocuments();
-        bool isDocInProject = false;
-        Document *doc = NULL;
-        foreach(doc, documents) {
-            if(file == doc->getURLString()) {
-                isDocInProject = true;
-                CHECK(!doc->isLoaded(),);
-                break;
-            }
-        }
-
-        Document *d = df->loadDocument(iof, file, QVariantMap(), os);
-        if(isDocInProject) {
-            AppContext::getProject()->removeDocument(doc);
-        }
-        AppContext::getProject()->addDocument(d);
-
-        const QList<GObject*>& objects = d->getObjects();
-        foreach(GObject* obj, objects) {
-            if(GObjectTypes::PHYLOGENETIC_TREE == obj->getGObjectType()) {
-                PhyTreeObject* treeObject = qobject_cast<PhyTreeObject*>(obj);
-                Task* task = new MSAEditorOpenTreeViewerTask(treeObject, NULL, msa->getTreeManager());
-                scheduler->registerTopLevelTask(task);
-            }
-        }
-    }
+    msa->getTreeManager()->addTreeToMSA();
 }
 
 MSAEditorTabWidgetArea::MSAEditorTabWidgetArea(MSAEditor* _msa, QWidget* parent )

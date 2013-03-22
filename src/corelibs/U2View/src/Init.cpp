@@ -60,6 +60,7 @@ void Init::initOptionsPanels()
     opWidgetFactoryRegistry->registerFactory(new MSAHighlightingFactory());
     opWidgetFactoryRegistry->registerFactory(new PairAlignFactory());
     opWidgetFactoryRegistry->registerFactory(new MSATreeOptionsWidgetFactory());
+    opWidgetFactoryRegistry->registerFactory(new AddTreeWidgetFactory());
     opWidgetFactoryRegistry->registerFactory(new SeqStatisticsWidgetFactory());
     opWidgetFactoryRegistry->registerFactory(new MSAGeneralTabFactory());
 

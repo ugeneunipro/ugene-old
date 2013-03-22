@@ -365,4 +365,30 @@ void TreeOptionsWidget::updateShowPenOpLabel(QString newText) {
     lblPenSettings->setText(newText);
     lblPenSettings->setTextInteractionFlags(Qt::LinksAccessibleByKeyboard | Qt::LinksAccessibleByMouse);
 }
+
+
+
+AddTreeWidget::AddTreeWidget(MSAEditor* msa): editor(msa), addTreeButton(NULL), addTreeHint(NULL) {
+    QVBoxLayout* mainLayout = initLayout(this);
+    mainLayout->setSpacing(0);
+
+    addTreeHint = new QLabel(tr("There are no available tree views. \n Please, press 'Add tree' button."), this);
+
+    mainLayout->addWidget(addTreeHint);
+
+    QHBoxLayout* buttonLayout = new QHBoxLayout(this);
+    buttonLayout->setSpacing(0);
+    QSpacerItem* horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+    buttonLayout->addSpacerItem(horizontalSpacer);
+    addTreeButton = new QPushButton(tr("Add tree"), this);
+    buttonLayout->addWidget(addTreeButton);
+
+    mainLayout->addLayout(buttonLayout);
+
+    connect(addTreeButton, SIGNAL(clicked()), SLOT(sl_onAddTreeTriggered()));
+}
+void AddTreeWidget::sl_onAddTreeTriggered() {
+    editor->getTreeManager()->showAddTreeDialog();
+}
+
 }

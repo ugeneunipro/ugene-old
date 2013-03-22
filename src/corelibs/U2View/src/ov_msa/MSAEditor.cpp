@@ -528,8 +528,22 @@ void MSAEditor::sl_showTreeOP() {
     if(NULL == opWidget) {
         return;
     }
-    QWidget* header = opWidget->findHeaderWidgetByGroupId("OP_MSA_TREES_WIDGET");
-    header->show();
+    
+    QWidget* addTreeGroupWidget = opWidget->findOptionsWidgetByGroupId("OP_MSA_ADD_TREE_WIDGET");
+    if(NULL != addTreeGroupWidget) {
+        addTreeGroupWidget->hide();
+        opWidget->closeOptionsPanel();
+    }
+    QWidget* addTreeHeader = opWidget->findHeaderWidgetByGroupId("OP_MSA_ADD_TREE_WIDGET");
+    if(NULL != addTreeHeader) {
+        addTreeHeader->hide();
+    }
+
+    GroupHeaderImageWidget* header = opWidget->findHeaderWidgetByGroupId("OP_MSA_TREES_WIDGET");
+    if(NULL != header) {
+        header->show();
+        header->changeState();
+    }
 }
 
 void MSAEditor::sl_hideTreeOP() {
@@ -537,13 +551,22 @@ void MSAEditor::sl_hideTreeOP() {
     if(NULL == opWidget) {
         return;
     }
+    GroupHeaderImageWidget* header = opWidget->findHeaderWidgetByGroupId("OP_MSA_TREES_WIDGET");
     QWidget* groupWidget = opWidget->findOptionsWidgetByGroupId("OP_MSA_TREES_WIDGET");
-    if(NULL != groupWidget) {
-        groupWidget->hide();
-        opWidget->closeOptionsPanel();
+    bool openAddTreeGroup = (NULL != groupWidget);
+    if(openAddTreeGroup) {
+        //header->changeState();
     }
-    QWidget* header = opWidget->findHeaderWidgetByGroupId("OP_MSA_TREES_WIDGET");
+    
     header->hide();
+
+    GroupHeaderImageWidget* addTreeHeader = opWidget->findHeaderWidgetByGroupId("OP_MSA_ADD_TREE_WIDGET");
+    if(NULL != addTreeHeader) {
+        addTreeHeader->show();
+        if(openAddTreeGroup) {
+            addTreeHeader->changeState();
+        }
+    }
 }
 
 

@@ -106,6 +106,23 @@ private:
 
     QWidget* contentWidget;
 };
+
+class U2VIEW_EXPORT AddTreeWidget : public QWidget
+{
+    Q_OBJECT
+public:
+    AddTreeWidget(MSAEditor* msa);
+    ~AddTreeWidget(){}
+
+private slots:
+    void sl_onAddTreeTriggered();
+private:
+    MSAEditor*   editor;
+
+    QPushButton* addTreeButton;
+    QLabel*      addTreeHint;
+};
+
 } // namespace
 
 #endif

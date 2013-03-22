@@ -77,6 +77,23 @@ private:
     TreeOpWidgetViewSettings viewSettings;
 };
 
+class U2VIEW_EXPORT AddTreeWidgetFactory : public OPWidgetFactory
+{
+    Q_OBJECT
+public:
+    AddTreeWidgetFactory();
+    virtual ~AddTreeWidgetFactory(){}
+
+    virtual QWidget* createWidget(GObjectView* objView);
+
+    virtual OPGroupParameters getOPGroupParameters();
+
+private:
+    static const QString GROUP_ID;
+    static const QString GROUP_ICON_STR;
+    static const QString GROUP_TITLE;
+};
+
 } // namespace
 
 #endif

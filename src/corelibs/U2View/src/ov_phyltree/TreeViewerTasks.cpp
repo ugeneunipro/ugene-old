@@ -40,6 +40,7 @@
 
 #include <U2View/MSAEditorTreeViewer.h>
 #include <U2View/MSAEditor.h>
+#include <U2View/MSAEditorTreeManager.h>
 
 #include <QtCore/QSet>
 
@@ -203,8 +204,8 @@ void UpdateTreeViewerTask::update() {
 //////////////////////////////////////////////////////////////////////////
 /// create view
 
-CreateMSAEditorTreeViewerTask::CreateMSAEditorTreeViewerTask(const QString& name, const QPointer<PhyTreeObject>& obj, const QVariantMap& sData, const CreatePhyTreeSettings* _settings)
-: Task("Open tree viewer", TaskFlag_NoRun), viewName(name), phyObj(obj), subTask(NULL), stateData(sData), view(NULL), settings(_settings) {}
+CreateMSAEditorTreeViewerTask::CreateMSAEditorTreeViewerTask(const QString& name, const QPointer<PhyTreeObject>& obj, const QVariantMap& sData)
+: Task("Open tree viewer", TaskFlag_NoRun), viewName(name), phyObj(obj), subTask(NULL), stateData(sData), view(NULL) {}
 
 void CreateMSAEditorTreeViewerTask::prepare() {
     subTask = new CreateRectangularBranchesTask(phyObj->getTree()->getRootNode());
@@ -249,18 +250,18 @@ Task::ReportResult CreateTreeViewerTask::report() {
 }
 
 
-MSAEditorOpenTreeViewerTask::MSAEditorOpenTreeViewerTask( PhyTreeObject* obj, const CreatePhyTreeSettings* _settings, QObject* _parent /*= NULL*/ )
-: OpenTreeViewerTask(obj, _parent), settings(_settings) {}
+MSAEditorOpenTreeViewerTask::MSAEditorOpenTreeViewerTask( PhyTreeObject* obj, MSAEditorTreeManager* _parent)
+: OpenTreeViewerTask(obj), treeManager(_parent) {}
 
-MSAEditorOpenTreeViewerTask::MSAEditorOpenTreeViewerTask( UnloadedObject* obj, const CreatePhyTreeSettings* _settings, QObject* _parent /*= NULL*/ )
-: OpenTreeViewerTask(obj, _parent), settings(_settings) {}
+MSAEditorOpenTreeViewerTask::MSAEditorOpenTreeViewerTask( UnloadedObject* obj, MSAEditorTreeManager* _parent)
+: OpenTreeViewerTask(obj), treeManager(_parent) {}
 
-MSAEditorOpenTreeViewerTask::MSAEditorOpenTreeViewerTask( Document* doc, const CreatePhyTreeSettings* _settings, QObject* _parent /*= NULL*/)
-: OpenTreeViewerTask(doc, _parent), settings(_settings) {}
+MSAEditorOpenTreeViewerTask::MSAEditorOpenTreeViewerTask( Document* doc, MSAEditorTreeManager* _parent)
+: OpenTreeViewerTask(doc), treeManager(_parent) {}
 
 void MSAEditorOpenTreeViewerTask::createTreeViewer() {
-    Task* createTask = new CreateMSAEditorTreeViewerTask(viewName, phyObject, stateData, settings);
-    connect(new TaskSignalMapper(createTask), SIGNAL(si_taskFinished(Task*)), parent, SLOT(sl_openTreeTaskFinished(Task*)));
+    Task* createTask = new CreateMSAEditorTreeViewerTask(viewName, phyObject, stateData);
+    connect(new TaskSignalMapper(createTask), SIGNAL(si_taskFinished(Task*)), treeManager, SLOT(sl_openTreeTaskFinished(Task*)));
     TaskScheduler* scheduler = AppContext::getTaskScheduler();
     scheduler->registerTopLevelTask(createTask);
 }

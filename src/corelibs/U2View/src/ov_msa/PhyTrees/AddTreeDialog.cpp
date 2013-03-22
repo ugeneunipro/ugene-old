@@ -32,13 +32,8 @@ AddTreeDialog::AddTreeDialog(QWidget* p, MSAEditor* _msa)
 }
 
 void AddTreeDialog::accept() {
-    if(buildTreeCheck->isChecked()) {
-        msa->getTreeManager()->buildTreeWithDialog();
-    }
-    else {
-        msa->getTreeManager()->addTreeToMSA();
-    }
     hide();
+    QDialog::accept();
 }
 
 }//namespace

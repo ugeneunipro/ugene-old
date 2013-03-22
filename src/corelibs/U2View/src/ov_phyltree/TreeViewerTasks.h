@@ -35,6 +35,7 @@ class TreeViewer;
 class CreateRectangularBranchesTask;
 class OpenTreeViewerTask;
 class MSAEditor;
+class MSAEditorTreeManager;
 
 
 
@@ -62,15 +63,14 @@ protected:
 class MSAEditorOpenTreeViewerTask : public OpenTreeViewerTask {
     Q_OBJECT
 public:
-    MSAEditorOpenTreeViewerTask(PhyTreeObject* obj, const CreatePhyTreeSettings* _settings,  QObject* _parent = NULL);
-    MSAEditorOpenTreeViewerTask(UnloadedObject* obj, const CreatePhyTreeSettings* _settings, QObject* _parent = NULL);
-    MSAEditorOpenTreeViewerTask(Document* doc, const CreatePhyTreeSettings* _settings, QObject* _parent = NULL);
+    MSAEditorOpenTreeViewerTask(PhyTreeObject* obj, MSAEditorTreeManager* _parent);
+    MSAEditorOpenTreeViewerTask(UnloadedObject* obj, MSAEditorTreeManager* _parent);
+    MSAEditorOpenTreeViewerTask(Document* doc, MSAEditorTreeManager* _parent);
     virtual ~MSAEditorOpenTreeViewerTask(){}
 
     virtual void createTreeViewer();
-
 private:
-    const CreatePhyTreeSettings* settings;
+    MSAEditorTreeManager* treeManager;
 };
 
 class OpenSavedTreeViewerTask : public ObjectViewTask {
@@ -96,9 +96,8 @@ class CreateMSAEditorTreeViewerTask: public Task {
     CreateRectangularBranchesTask* subTask;
     QVariantMap stateData;
     TreeViewer* view;
-    const CreatePhyTreeSettings* settings;
 public:
-    CreateMSAEditorTreeViewerTask(const QString& name, const QPointer<PhyTreeObject>& obj, const QVariantMap& stateData, const CreatePhyTreeSettings* _settings);
+    CreateMSAEditorTreeViewerTask(const QString& name, const QPointer<PhyTreeObject>& obj, const QVariantMap& stateData);
     virtual void prepare();
     virtual ReportResult report();
     TreeViewer* getTreeViewer();

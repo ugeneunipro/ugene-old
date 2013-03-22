@@ -34,11 +34,14 @@ class PhyTreeGeneratorLauncherTask;
 class Task;
 class GObjectViewWindow;
 class MSAEditorTreeViewer;
+class Document;
+class PhyTreeObject;
 
 class MSAEditorTreeManager : public QObject {
     Q_OBJECT
 public:
     MSAEditorTreeManager(MSAEditor* _editor);
+    ~MSAEditorTreeManager(){}
 
     void loadRelatedTrees();
 
@@ -48,6 +51,8 @@ public:
     void changeTreeSettings();
 
     void buildTreeWithDialog();
+
+    void showAddTreeDialog();
 private slots:
     void sl_openTree();
     void sl_openTreeTaskFinished(Task* t);
@@ -59,6 +64,7 @@ private slots:
 private:
     void buildTree(const CreatePhyTreeSettings& buildSettings);
     bool canRefreshTree(MSAEditorTreeViewer* treeViewer);
+    void openTreeViewer(PhyTreeObject* treeObj);
 
     MSAEditor*                    editor;
     MAlignmentObject*             msaObject;
@@ -67,6 +73,7 @@ private:
     MSAEditorTreeViewer*          refreshingTree;
     bool                          addExistingTree;
     PhyTree                       phyTree;
+    Document                      *d;
 };
 
 }//namespace
