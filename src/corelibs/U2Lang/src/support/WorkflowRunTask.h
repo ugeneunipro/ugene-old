@@ -183,7 +183,9 @@ private:
     QMap<QString, int>                      msgPassed;
     QString                                 processLogPrefix;
     QStringList                             createdFilesUlrs;
-    
+
+private:
+    QString readStdout();
 }; // WorkflowRunInProcessMonitorTask
 
 

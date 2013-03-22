@@ -725,8 +725,19 @@ void RunCmdlineWorkflowTask::writeLog(QStringList &lines) {
     }
 }
 
+QString RunCmdlineWorkflowTask::readStdout() {
+    QByteArray charSet;
+#ifdef Q_OS_WIN32
+    charSet = "CP866";
+#else
+    charSet = "UTF-8";
+#endif
+    QTextCodec *codec = QTextCodec::codecForName(charSet);
+    return codec->toUnicode(proc->readAllStandardOutput());
+}
+
 void RunCmdlineWorkflowTask::sl_onReadStandardOutput() {
-    QString data(proc->readAllStandardOutput());
+    QString data = readStdout();
     QStringList lines = data.split(QChar('\n'));
     writeLog(lines);
 
