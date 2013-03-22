@@ -192,7 +192,7 @@ Section "Build"
     # Chrome extension
     !define PRODUCT_VERSION "0.2"
     !define CRXNAME "Ugene.crx"
-    !define CRXID "haokaafkabiknjdgbimfacmeknakkaoc"
+    !define CRXID "homeeagodacmgholgcjpjhpdakdffgbm"
 
     SetOutPath $INSTDIR
     File "C:\Stavropol\${CRXNAME}"  
