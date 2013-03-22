@@ -1632,6 +1632,7 @@ void WorkflowView::sl_updateUi() {
     propertyEditor->setIterated(iterated);
     iterationModeAction->setChecked(iterated);
     scene->setModified(false);
+    showWizard->setDisabled(schema->getWizards().isEmpty());
 }
 
 void WorkflowView::saveState() {
