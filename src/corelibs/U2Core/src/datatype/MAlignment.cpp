@@ -1228,25 +1228,16 @@ bool MAlignment::sortRowsByList(const QStringList& order) {
 
     MAStateCheck check(this);
 
+    QList<MAlignmentRow> sortedRows;
+    QStringList rowsNames = getRowNames();
     int size = rows.size();
-    QVector<const MAlignmentRow*> rowsRefs(size);
-
     for(int i = 0; i < size; i++) {
-        int index = order.indexOf(rows.at(i).getName());
-        CHECK(index >= 0, false);
-        if(rowsRefs.contains(&rows.at(i))) {
-            index = 0;
-        }
-        rowsRefs[index] = &rows.at(i);
+        int rowIndex = rowsNames.indexOf(order.at(i));
+        CHECK(rowIndex >= 0, false);
+        const MAlignmentRow& curRow = rows.at(rowIndex);
+        sortedRows.append(curRow);
     }
-    int num = 0;
-    for (int i = 0; i < size; i++) {
-        int index = rows.indexOf(*rowsRefs[i]);
-        if(index != i) {
-            num++;
-        }
-        rows.swap(rows.indexOf(*rowsRefs[i]), i);
-    }
+    rows = sortedRows;
     return true;
 }
 
