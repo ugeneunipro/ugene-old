@@ -6,17 +6,17 @@
     <message>
         <location filename="../src/ov_msa/ui/AddPhyTreeDialog.ui" line="14"/>
         <source>Add phylogenetic tree</source>
-        <translation type="unfinished"></translation>
+        <translation>Add phylogenetic tree</translation>
     </message>
     <message>
         <location filename="../src/ov_msa/ui/AddPhyTreeDialog.ui" line="20"/>
         <source>Build tree</source>
-        <translation type="unfinished"></translation>
+        <translation>Build tree</translation>
     </message>
     <message>
         <location filename="../src/ov_msa/ui/AddPhyTreeDialog.ui" line="27"/>
         <source>Add existing tree from file</source>
-        <translation type="unfinished"></translation>
+        <translation>Add existing tree from file</translation>
     </message>
 </context>
 <context>
@@ -25,22 +25,22 @@
         <location filename="../src/util_dna_assembly/ui/AssemblyToRefDialog.ui" line="82"/>
         <location filename="../src/util_dna_assembly/ui/AssemblyToRefDialog.ui" line="106"/>
         <source>...</source>
-        <translation></translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../src/util_dna_assembly/ui/AssemblyToRefDialog.ui" line="181"/>
         <source>Path</source>
-        <translation type="unfinished"></translation>
+        <translation>Path</translation>
     </message>
     <message>
         <location filename="../src/util_dna_assembly/ui/AssemblyToRefDialog.ui" line="186"/>
         <source>Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Type</translation>
     </message>
     <message>
         <location filename="../src/util_dna_assembly/ui/AssemblyToRefDialog.ui" line="191"/>
         <source>Order</source>
-        <translation type="unfinished"></translation>
+        <translation>Order</translation>
     </message>
     <message>
         <location filename="../src/util_dna_assembly/ui/AssemblyToRefDialog.ui" line="214"/>
@@ -65,82 +65,82 @@
     <message>
         <location filename="../src/util_dna_assembly/ui/AssemblyToRefDialog.ui" line="20"/>
         <source>Align sequencing reads</source>
-        <translation type="unfinished"></translation>
+        <translation>Align sequencing reads</translation>
     </message>
     <message>
         <location filename="../src/util_dna_assembly/ui/AssemblyToRefDialog.ui" line="28"/>
         <source>Select a method to align short reads.</source>
-        <translation type="unfinished"></translation>
+        <translation>Select a method to align short reads.</translation>
     </message>
     <message>
         <location filename="../src/util_dna_assembly/ui/AssemblyToRefDialog.ui" line="31"/>
         <source>Alignment method</source>
-        <translation type="unfinished"></translation>
+        <translation>Alignment method</translation>
     </message>
     <message>
         <location filename="../src/util_dna_assembly/ui/AssemblyToRefDialog.ui" line="38"/>
         <source>Select required align short reads method</source>
-        <translation type="unfinished"></translation>
+        <translation>Select required align short reads method</translation>
     </message>
     <message>
         <location filename="../src/util_dna_assembly/ui/AssemblyToRefDialog.ui" line="65"/>
         <source>Select a DNA sequence to align short reads to. This parameter is &lt;b&gt;required&lt;/b&gt;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Select a DNA sequence to align short reads to. This parameter is &lt;b&gt;required&lt;/b&gt;.</translation>
     </message>
     <message>
         <location filename="../src/util_dna_assembly/ui/AssemblyToRefDialog.ui" line="68"/>
         <source>Reference sequence</source>
-        <translation type="unfinished"></translation>
+        <translation>Reference sequence</translation>
     </message>
     <message>
         <location filename="../src/util_dna_assembly/ui/AssemblyToRefDialog.ui" line="89"/>
         <source>File in UGENE database format or SAM format (if the box SAM output check), to write the result of the alignment into. This parameter is &lt;b&gt;required&lt;/b&gt;.</source>
-        <translation type="unfinished"></translation>
+        <translation>File in UGENE database format or SAM format (if the box SAM output check), to write the result of the alignment into. This parameter is &lt;b&gt;required&lt;/b&gt;.</translation>
     </message>
     <message>
         <location filename="../src/util_dna_assembly/ui/AssemblyToRefDialog.ui" line="92"/>
         <source>Result file name</source>
-        <translation type="unfinished"></translation>
+        <translation>Result file name</translation>
     </message>
     <message>
         <location filename="../src/util_dna_assembly/ui/AssemblyToRefDialog.ui" line="117"/>
         <source>Library</source>
-        <translation type="unfinished"></translation>
+        <translation>Library</translation>
     </message>
     <message>
         <location filename="../src/util_dna_assembly/ui/AssemblyToRefDialog.ui" line="125"/>
         <source>Single-end</source>
-        <translation type="unfinished"></translation>
+        <translation>Single-end</translation>
     </message>
     <message>
         <location filename="../src/util_dna_assembly/ui/AssemblyToRefDialog.ui" line="130"/>
         <source>Paired-end</source>
-        <translation type="unfinished"></translation>
+        <translation>Paired-end</translation>
     </message>
     <message>
         <location filename="../src/util_dna_assembly/ui/AssemblyToRefDialog.ui" line="138"/>
         <source>Use an index file instead of a reference sequence.</source>
-        <translation type="unfinished"></translation>
+        <translation>Use an index file instead of a reference sequence.</translation>
     </message>
     <message>
         <location filename="../src/util_dna_assembly/ui/AssemblyToRefDialog.ui" line="141"/>
         <source>Prebuilt index</source>
-        <translation type="unfinished"></translation>
+        <translation>Prebuilt index</translation>
     </message>
     <message>
         <location filename="../src/util_dna_assembly/ui/AssemblyToRefDialog.ui" line="161"/>
         <source>SAM output</source>
-        <translation type="unfinished"></translation>
+        <translation>SAM output</translation>
     </message>
     <message>
         <location filename="../src/util_dna_assembly/ui/AssemblyToRefDialog.ui" line="170"/>
         <source>Add short reads here. &lt;b&gt;At least one read&lt;/b&gt; should be presented.</source>
-        <translation type="unfinished"></translation>
+        <translation>Add short reads here. &lt;b&gt;At least one read&lt;/b&gt; should be presented.</translation>
     </message>
     <message>
         <location filename="../src/util_dna_assembly/ui/AssemblyToRefDialog.ui" line="173"/>
         <source>Short reads</source>
-        <translation type="unfinished"></translation>
+        <translation>Short reads</translation>
     </message>
 </context>
 <context>
@@ -148,33 +148,33 @@
     <message>
         <location filename="../src/util_dna_assembly/ui/AssemblyToSamDialog.ui" line="29"/>
         <source>Convert UGENE assembly data base to SAM format</source>
-        <translation type="unfinished"></translation>
+        <translation>Convert UGENE assembly data base to SAM format</translation>
     </message>
     <message>
         <location filename="../src/util_dna_assembly/ui/AssemblyToSamDialog.ui" line="37"/>
         <source>Assembly data base:</source>
-        <translation type="unfinished"></translation>
+        <translation>Assembly data base:</translation>
     </message>
     <message>
         <location filename="../src/util_dna_assembly/ui/AssemblyToSamDialog.ui" line="47"/>
         <location filename="../src/util_dna_assembly/ui/AssemblyToSamDialog.ui" line="64"/>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../src/util_dna_assembly/ui/AssemblyToSamDialog.ui" line="54"/>
         <source>Result SAM file:</source>
-        <translation type="unfinished"></translation>
+        <translation>Result SAM file:</translation>
     </message>
     <message>
         <location filename="../src/util_dna_assembly/ui/AssemblyToSamDialog.ui" line="88"/>
         <source>Convert</source>
-        <translation type="unfinished"></translation>
+        <translation>Convert</translation>
     </message>
     <message>
         <location filename="../src/util_dna_assembly/ui/AssemblyToSamDialog.ui" line="95"/>
         <source>Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation>Cancel</translation>
     </message>
 </context>
 <context>
@@ -210,56 +210,56 @@
     <message>
         <location filename="../src/util_dna_assembly/ui/BuildIndexFromRefDialog.ui" line="32"/>
         <source>Build Index</source>
-        <translation type="unfinished"></translation>
+        <translation>Build Index</translation>
     </message>
     <message>
         <location filename="../src/util_dna_assembly/ui/BuildIndexFromRefDialog.ui" line="42"/>
         <location filename="../src/util_dna_assembly/ui/BuildIndexFromRefDialog.ui" line="52"/>
         <source>Select a method that would be used to align short reads.</source>
-        <translation type="unfinished"></translation>
+        <translation>Select a method that would be used to align short reads.</translation>
     </message>
     <message>
         <location filename="../src/util_dna_assembly/ui/BuildIndexFromRefDialog.ui" line="45"/>
         <source>Align short reads method</source>
-        <translation type="unfinished"></translation>
+        <translation>Align short reads method</translation>
     </message>
     <message>
         <location filename="../src/util_dna_assembly/ui/BuildIndexFromRefDialog.ui" line="76"/>
         <location filename="../src/util_dna_assembly/ui/BuildIndexFromRefDialog.ui" line="86"/>
         <source>Select a DNA sequence that would be used to align short reads to. This parameter is &lt;b&gt;required&lt;/b&gt;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Select a DNA sequence that would be used to align short reads to. This parameter is &lt;b&gt;required&lt;/b&gt;.</translation>
     </message>
     <message>
         <location filename="../src/util_dna_assembly/ui/BuildIndexFromRefDialog.ui" line="79"/>
         <source>Reference sequence</source>
-        <translation type="unfinished"></translation>
+        <translation>Reference sequence</translation>
     </message>
     <message>
         <location filename="../src/util_dna_assembly/ui/BuildIndexFromRefDialog.ui" line="103"/>
         <location filename="../src/util_dna_assembly/ui/BuildIndexFromRefDialog.ui" line="113"/>
         <source>Specify the index to build for the reference sequence. This parameter is &lt;b&gt;required&lt;/b&gt;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Specify the index to build for the reference sequence. This parameter is &lt;b&gt;required&lt;/b&gt;.</translation>
     </message>
     <message>
         <location filename="../src/util_dna_assembly/ui/BuildIndexFromRefDialog.ui" line="106"/>
         <source>Index file name</source>
-        <translation type="unfinished"></translation>
+        <translation>Index file name</translation>
     </message>
     <message>
         <location filename="../src/util_dna_assembly/ui/BuildIndexFromRefDialog.ui" line="160"/>
         <source>Start</source>
-        <translation type="unfinished"></translation>
+        <translation>Start</translation>
     </message>
     <message>
         <location filename="../src/util_dna_assembly/ui/BuildIndexFromRefDialog.ui" line="96"/>
         <location filename="../src/util_dna_assembly/ui/BuildIndexFromRefDialog.ui" line="123"/>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../src/util_dna_assembly/ui/BuildIndexFromRefDialog.ui" line="167"/>
         <source>Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation>Cancel</translation>
     </message>
 </context>
 <context>
@@ -295,17 +295,17 @@
     <message>
         <location filename="../src/ov_msa/ui/ColorSchemaDialog.ui" line="17"/>
         <source>Color Scheme </source>
-        <translation type="unfinished"></translation>
+        <translation>Color Scheme </translation>
     </message>
     <message>
         <location filename="../src/ov_msa/ui/ColorSchemaDialog.ui" line="43"/>
         <source>Clear</source>
-        <translation type="unfinished"></translation>
+        <translation>Clear</translation>
     </message>
     <message>
         <location filename="../src/ov_msa/ui/ColorSchemaDialog.ui" line="50"/>
         <source>Restore last state</source>
-        <translation type="unfinished"></translation>
+        <translation>Restore last state</translation>
     </message>
 </context>
 <context>
@@ -313,37 +313,37 @@
     <message>
         <location filename="../src/ov_msa/ui/ColorSchemaSettingsWidget.ui" line="17"/>
         <source>MSA Color Schemes Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>MSA Color Schemes Settings</translation>
     </message>
     <message>
         <location filename="../src/ov_msa/ui/ColorSchemaSettingsWidget.ui" line="23"/>
         <source>Create and modify custom color schemes</source>
-        <translation type="unfinished"></translation>
+        <translation>Create and modify custom color schemes</translation>
     </message>
     <message>
         <location filename="../src/ov_msa/ui/ColorSchemaSettingsWidget.ui" line="35"/>
         <source>Directory to save color scheme:</source>
-        <translation type="unfinished"></translation>
+        <translation>Directory to save color scheme:</translation>
     </message>
     <message>
         <location filename="../src/ov_msa/ui/ColorSchemaSettingsWidget.ui" line="47"/>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../src/ov_msa/ui/ColorSchemaSettingsWidget.ui" line="66"/>
         <source>Change color scheme</source>
-        <translation type="unfinished"></translation>
+        <translation>Change color scheme</translation>
     </message>
     <message>
         <location filename="../src/ov_msa/ui/ColorSchemaSettingsWidget.ui" line="73"/>
         <source>Create color scheme</source>
-        <translation type="unfinished"></translation>
+        <translation>Create color scheme</translation>
     </message>
     <message>
         <location filename="../src/ov_msa/ui/ColorSchemaSettingsWidget.ui" line="80"/>
         <source>Delete</source>
-        <translation type="unfinished"></translation>
+        <translation>Delete</translation>
     </message>
 </context>
 <context>
@@ -395,32 +395,32 @@
     <message>
         <location filename="../src/ov_msa/ui/CreateMSAScheme.ui" line="17"/>
         <source>Create Alignment Color Scheme</source>
-        <translation type="unfinished"></translation>
+        <translation>Create Alignment Color Scheme</translation>
     </message>
     <message>
         <location filename="../src/ov_msa/ui/CreateMSAScheme.ui" line="32"/>
         <source>New scheme name</source>
-        <translation type="unfinished"></translation>
+        <translation>New scheme name</translation>
     </message>
     <message>
         <location filename="../src/ov_msa/ui/CreateMSAScheme.ui" line="42"/>
         <source>Alphabet</source>
-        <translation type="unfinished"></translation>
+        <translation>Alphabet</translation>
     </message>
     <message>
         <location filename="../src/ov_msa/ui/CreateMSAScheme.ui" line="63"/>
         <source>Use extended mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Use extended mode</translation>
     </message>
     <message>
         <location filename="../src/ov_msa/ui/CreateMSAScheme.ui" line="100"/>
         <source>Create</source>
-        <translation type="unfinished"></translation>
+        <translation>Create</translation>
     </message>
     <message>
         <location filename="../src/ov_msa/ui/CreateMSAScheme.ui" line="107"/>
         <source>Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation>Cancel</translation>
     </message>
 </context>
 <context>
@@ -491,7 +491,7 @@
     <message>
         <location filename="../src/ov_sequence/ui/CreateRulerDialog.ui" line="48"/>
         <source>Ruler start</source>
-        <translation type="unfinished"></translation>
+        <translation>Ruler start</translation>
     </message>
     <message>
         <location filename="../src/ov_sequence/ui/CreateRulerDialog.ui" line="68"/>
@@ -524,7 +524,7 @@
     <message>
         <location filename="../src/ov_msa/ui/CreateSubalignimentDialog.ui" line="14"/>
         <source>Extract selected as MSA</source>
-        <translation type="unfinished"></translation>
+        <translation>Extract selected as MSA</translation>
     </message>
     <message>
         <location filename="../src/ov_msa/ui/CreateSubalignimentDialog.ui" line="73"/>
@@ -544,22 +544,22 @@
     <message>
         <location filename="../src/ov_msa/ui/CreateSubalignimentDialog.ui" line="22"/>
         <source>From </source>
-        <translation type="unfinished"></translation>
+        <translation>From </translation>
     </message>
     <message>
         <location filename="../src/ov_msa/ui/CreateSubalignimentDialog.ui" line="48"/>
         <source> to </source>
-        <translation type="unfinished"></translation>
+        <translation> to </translation>
     </message>
     <message>
         <location filename="../src/ov_msa/ui/CreateSubalignimentDialog.ui" line="102"/>
         <source>Invert selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Invert selection</translation>
     </message>
     <message>
         <location filename="../src/ov_msa/ui/CreateSubalignimentDialog.ui" line="127"/>
         <source>File name</source>
-        <translation type="unfinished"></translation>
+        <translation>File name</translation>
     </message>
     <message>
         <location filename="../src/ov_msa/ui/CreateSubalignimentDialog.ui" line="137"/>
@@ -608,7 +608,7 @@
     <message>
         <location filename="../src/ov_msa/ui/DeleteGapsDialog.ui" line="52"/>
         <source>Remove all gap-only columns</source>
-        <translation type="unfinished"></translation>
+        <translation>Remove all gap-only columns</translation>
     </message>
     <message>
         <location filename="../src/ov_msa/ui/DeleteGapsDialog.ui" line="76"/>
@@ -660,57 +660,57 @@
     <message>
         <location filename="../src/ov_assembly/ui/ExportConsensusDialog.ui" line="14"/>
         <source>Export Consensus</source>
-        <translation type="unfinished"></translation>
+        <translation>Export Consensus</translation>
     </message>
     <message>
         <location filename="../src/ov_assembly/ui/ExportConsensusDialog.ui" line="22"/>
         <source>Export to file</source>
-        <translation type="unfinished"></translation>
+        <translation>Export to file</translation>
     </message>
     <message>
         <location filename="../src/ov_assembly/ui/ExportConsensusDialog.ui" line="32"/>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../src/ov_assembly/ui/ExportConsensusDialog.ui" line="42"/>
         <source>Sequence name</source>
-        <translation type="unfinished"></translation>
+        <translation>Sequence name</translation>
     </message>
     <message>
         <location filename="../src/ov_assembly/ui/ExportConsensusDialog.ui" line="52"/>
         <source>Keep gaps</source>
-        <translation type="unfinished"></translation>
+        <translation>Keep gaps</translation>
     </message>
     <message>
         <location filename="../src/ov_assembly/ui/ExportConsensusDialog.ui" line="59"/>
         <source>Consensus algorithm</source>
-        <translation type="unfinished"></translation>
+        <translation>Consensus algorithm</translation>
     </message>
     <message>
         <location filename="../src/ov_assembly/ui/ExportConsensusDialog.ui" line="69"/>
         <source>File format</source>
-        <translation type="unfinished"></translation>
+        <translation>File format</translation>
     </message>
     <message>
         <location filename="../src/ov_assembly/ui/ExportConsensusDialog.ui" line="76"/>
         <source>Mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Mode</translation>
     </message>
     <message>
         <location filename="../src/ov_assembly/ui/ExportConsensusDialog.ui" line="90"/>
         <source>Add to project</source>
-        <translation type="unfinished"></translation>
+        <translation>Add to project</translation>
     </message>
     <message>
         <location filename="../src/ov_assembly/ui/ExportConsensusDialog.ui" line="113"/>
         <source>Export</source>
-        <translation type="unfinished"></translation>
+        <translation>Export</translation>
     </message>
     <message>
         <location filename="../src/ov_assembly/ui/ExportConsensusDialog.ui" line="120"/>
         <source>Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation>Cancel</translation>
     </message>
 </context>
 <context>
@@ -718,37 +718,37 @@
     <message>
         <location filename="../src/ov_assembly/ui/ExportReadsDialog.ui" line="14"/>
         <source>Export Reads</source>
-        <translation type="unfinished"></translation>
+        <translation>Export Reads</translation>
     </message>
     <message>
         <location filename="../src/ov_assembly/ui/ExportReadsDialog.ui" line="22"/>
         <source>Export to file</source>
-        <translation type="unfinished"></translation>
+        <translation>Export to file</translation>
     </message>
     <message>
         <location filename="../src/ov_assembly/ui/ExportReadsDialog.ui" line="32"/>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../src/ov_assembly/ui/ExportReadsDialog.ui" line="39"/>
         <source>File format</source>
-        <translation type="unfinished"></translation>
+        <translation>File format</translation>
     </message>
     <message>
         <location filename="../src/ov_assembly/ui/ExportReadsDialog.ui" line="51"/>
         <source>Add to project</source>
-        <translation type="unfinished"></translation>
+        <translation>Add to project</translation>
     </message>
     <message>
         <location filename="../src/ov_assembly/ui/ExportReadsDialog.ui" line="76"/>
         <source>Export</source>
-        <translation type="unfinished"></translation>
+        <translation>Export</translation>
     </message>
     <message>
         <location filename="../src/ov_assembly/ui/ExportReadsDialog.ui" line="83"/>
         <source>Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation>Cancel</translation>
     </message>
 </context>
 <context>
@@ -756,78 +756,78 @@
     <message>
         <location filename="../src/ov_sequence/find_pattern/ui/FindPatternForm.ui" line="75"/>
         <source>Search for:</source>
-        <translation type="unfinished"></translation>
+        <translation>Search for:</translation>
     </message>
     <message>
         <location filename="../src/ov_sequence/find_pattern/ui/FindPatternForm.ui" line="100"/>
         <source>Search</source>
-        <translation type="unfinished"></translation>
+        <translation>Search</translation>
     </message>
     <message>
         <location filename="../src/ov_sequence/find_pattern/ui/FindPatternForm.ui" line="141"/>
         <location filename="../src/ov_sequence/find_pattern/ui/FindPatternForm.ui" line="200"/>
         <source>Search in</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/ov_sequence/find_pattern/ui/FindPatternForm.ui" line="162"/>
         <source>-</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/ov_sequence/find_pattern/ui/FindPatternForm.ui" line="183"/>
         <source>Strand</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/ov_sequence/find_pattern/ui/FindPatternForm.ui" line="217"/>
         <source>Region</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/ov_sequence/find_pattern/ui/FindPatternForm.ui" line="245"/>
         <source>Other settings</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/ov_sequence/find_pattern/ui/FindPatternForm.ui" line="260"/>
         <source>Remove overlapped results</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/ov_sequence/find_pattern/ui/FindPatternForm.ui" line="280"/>
         <source>Limit results number to:</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/ov_sequence/find_pattern/ui/FindPatternForm.ui" line="290"/>
         <source>Find file with newline-separated patterns</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/ov_sequence/find_pattern/ui/FindPatternForm.ui" line="293"/>
         <source>Load patterns from file</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/ov_sequence/find_pattern/ui/FindPatternForm.ui" line="308"/>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../src/ov_sequence/find_pattern/ui/FindPatternForm.ui" line="315"/>
         <source>Path:</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/ov_sequence/find_pattern/ui/FindPatternForm.ui" line="331"/>
         <source>Search algorithm</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/ov_sequence/find_pattern/ui/FindPatternForm.ui" line="340"/>
         <source>Algorithm</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -835,22 +835,22 @@
     <message>
         <location filename="../src/ui/LicenseDialog.ui" line="14"/>
         <source>License Agreement</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/ui/LicenseDialog.ui" line="20"/>
         <source>To use this algorithm need accept following license agreement:</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/ui/LicenseDialog.ui" line="45"/>
         <source>Accept</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/ui/LicenseDialog.ui" line="52"/>
         <source>Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -858,47 +858,47 @@
     <message>
         <location filename="../src/ov_msa/ui/MSADistancesColumnSettingsWidget.ui" line="23"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/ov_msa/ui/MSADistancesColumnSettingsWidget.ui" line="62"/>
         <source>Show distances column</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/ov_msa/ui/MSADistancesColumnSettingsWidget.ui" line="84"/>
         <source>Distance algorithm:</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/ov_msa/ui/MSADistancesColumnSettingsWidget.ui" line="94"/>
         <source>Automatic updating</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/ov_msa/ui/MSADistancesColumnSettingsWidget.ui" line="101"/>
         <source>Profile mode</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/ov_msa/ui/MSADistancesColumnSettingsWidget.ui" line="110"/>
         <source>Counts</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/ov_msa/ui/MSADistancesColumnSettingsWidget.ui" line="117"/>
         <source>Percents</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/ov_msa/ui/MSADistancesColumnSettingsWidget.ui" line="124"/>
         <source>Exclude gaps</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/ov_msa/ui/MSADistancesColumnSettingsWidget.ui" line="134"/>
         <source>&lt;empty&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -906,7 +906,7 @@
     <message>
         <location filename="../src/ov_sequence/AnnotatedDNAViewTasks.cpp" line="256"/>
         <source>No sequence info found!</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -914,87 +914,87 @@
     <message>
         <location filename="../src/ov_msa/ui/PairwiseAlignmentOptionsPanelWidget.ui" line="20"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/ov_msa/ui/PairwiseAlignmentOptionsPanelWidget.ui" line="73"/>
         <location filename="../src/ov_msa/ui/PairwiseAlignmentOptionsPanelWidget.ui" line="152"/>
         <source>Add selected sequence</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/ov_msa/ui/PairwiseAlignmentOptionsPanelWidget.ui" line="76"/>
         <location filename="../src/ov_msa/ui/PairwiseAlignmentOptionsPanelWidget.ui" line="155"/>
         <source>&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/ov_msa/ui/PairwiseAlignmentOptionsPanelWidget.ui" line="101"/>
         <location filename="../src/ov_msa/ui/PairwiseAlignmentOptionsPanelWidget.ui" line="177"/>
         <source>Select and add</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/ov_msa/ui/PairwiseAlignmentOptionsPanelWidget.ui" line="120"/>
         <location filename="../src/ov_msa/ui/PairwiseAlignmentOptionsPanelWidget.ui" line="196"/>
         <source>Clear</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/ov_msa/ui/PairwiseAlignmentOptionsPanelWidget.ui" line="123"/>
         <location filename="../src/ov_msa/ui/PairwiseAlignmentOptionsPanelWidget.ui" line="199"/>
         <source>x</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/ov_msa/ui/PairwiseAlignmentOptionsPanelWidget.ui" line="247"/>
         <source>Similarity:</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/ov_msa/ui/PairwiseAlignmentOptionsPanelWidget.ui" line="260"/>
         <source>Not defined</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/ov_msa/ui/PairwiseAlignmentOptionsPanelWidget.ui" line="295"/>
         <source>Algorithm:</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/ov_msa/ui/PairwiseAlignmentOptionsPanelWidget.ui" line="332"/>
         <source>Open the alignment result in the new editor</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/ov_msa/ui/PairwiseAlignmentOptionsPanelWidget.ui" line="335"/>
         <source>In new window</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/ov_msa/ui/PairwiseAlignmentOptionsPanelWidget.ui" line="364"/>
         <source>Output file:</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/ov_msa/ui/PairwiseAlignmentOptionsPanelWidget.ui" line="382"/>
         <source>Select file to save result of the alignment. If it is not defined, default file name will be used.</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/ov_msa/ui/PairwiseAlignmentOptionsPanelWidget.ui" line="385"/>
         <source>Default</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/ov_msa/ui/PairwiseAlignmentOptionsPanelWidget.ui" line="392"/>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../src/ov_msa/ui/PairwiseAlignmentOptionsPanelWidget.ui" line="419"/>
         <source>Align</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -1034,30 +1034,30 @@
         <location filename="../src/ov_phyltree/TreeViewerUtils.cpp" line="62"/>
         <source>%1 already exists.
 Do you want to replace it?</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/ov_sequence/AnnotatedDNAViewTasks.cpp" line="142"/>
         <source>The following sequences contain unrecognizable symbols:
 </source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/ov_sequence/AnnotatedDNAViewTasks.cpp" line="152"/>
         <source>and others...
 </source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/ov_sequence/AnnotatedDNAViewTasks.cpp" line="156"/>
         <source>Some algorithms will not work for these sequences.</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/ov_sequence/AnnotatedDNAViewTasks.cpp" line="159"/>
         <location filename="../src/ov_sequence/AnnotatedDNAViewTasks.cpp" line="173"/>
         <source>Warning</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -1065,42 +1065,42 @@ Do you want to replace it?</source>
     <message>
         <location filename="../src/ov_sequence/ui/SaveGraphCutoffsDialog.ui" line="20"/>
         <source>Save Graph Cutoffs as Annotations</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/ov_sequence/ui/SaveGraphCutoffsDialog.ui" line="38"/>
         <source>Maximum cutoff</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/ov_sequence/ui/SaveGraphCutoffsDialog.ui" line="89"/>
         <source>Minimum cutoff</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/ov_sequence/ui/SaveGraphCutoffsDialog.ui" line="166"/>
         <source>Save</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/ov_sequence/ui/SaveGraphCutoffsDialog.ui" line="185"/>
         <source>Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/ov_sequence/ui/SaveGraphCutoffsDialog.ui" line="204"/>
         <source>Area to annotate</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/ov_sequence/ui/SaveGraphCutoffsDialog.ui" line="222"/>
         <source>Around cutoff values</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/ov_sequence/ui/SaveGraphCutoffsDialog.ui" line="241"/>
         <source>Between cutoff values</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -1108,68 +1108,68 @@ Do you want to replace it?</source>
     <message>
         <location filename="../src/ov_sequence/ui/SearchQualifierDialog.ui" line="14"/>
         <source>Find Qualifier</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/ov_sequence/ui/SearchQualifierDialog.ui" line="35"/>
         <source>Select All</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/ov_sequence/ui/SearchQualifierDialog.ui" line="42"/>
         <source>Next</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/ov_sequence/ui/SearchQualifierDialog.ui" line="52"/>
         <source>Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/ov_sequence/ui/SearchQualifierDialog.ui" line="61"/>
         <source>Qualifier</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/ov_sequence/ui/SearchQualifierDialog.ui" line="67"/>
         <source>Name:</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/ov_sequence/ui/SearchQualifierDialog.ui" line="77"/>
         <source>Value:</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/ov_sequence/ui/SearchQualifierDialog.ui" line="90"/>
         <source>Match Parameter</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/ov_sequence/ui/SearchQualifierDialog.ui" line="96"/>
         <source>Contains substring</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/ov_sequence/ui/SearchQualifierDialog.ui" line="102"/>
         <location filename="../src/ov_sequence/ui/SearchQualifierDialog.ui" line="112"/>
         <source>buttonGroup</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/ov_sequence/ui/SearchQualifierDialog.ui" line="109"/>
         <source>Exact match</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/ov_sequence/ui/SearchQualifierDialog.ui" line="128"/>
         <source>Group Name</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/ov_sequence/ui/SearchQualifierDialog.ui" line="141"/>
         <source>Search in:</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -1345,7 +1345,7 @@ Do you want to replace it?</source>
     <message>
         <location filename="../src/util_smith_waterman/ui/SmithWatermanDialogBase.ui" line="510"/>
         <source>Save results as</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/util_smith_waterman/ui/SmithWatermanDialogBase.ui" line="559"/>
@@ -1360,7 +1360,7 @@ Do you want to replace it?</source>
     <message>
         <location filename="../src/util_smith_waterman/ui/SmithWatermanDialogBase.ui" line="611"/>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">...</translation>
     </message>
     <message>
         <location filename="../src/util_smith_waterman/ui/SmithWatermanDialogBase.ui" line="621"/>
@@ -4824,7 +4824,7 @@ Please select file to align.</source>
     <message>
         <location filename="../src/ov_msa/ui/SaveSelectedSequenceFromMSADialog.ui" line="35"/>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">...</translation>
     </message>
     <message>
         <location filename="../src/ov_msa/ui/SaveSelectedSequenceFromMSADialog.ui" line="42"/>
@@ -4923,12 +4923,12 @@ Please select file to align.</source>
 <context>
     <name>U2::SeqStatisticsWidget</name>
     <message>
-        <location filename="../src/ov_msa/SeqStatistics/SeqStatisticsWidget.cpp" line="57"/>
+        <location filename="../src/ov_msa/SeqStatistics/SeqStatisticsWidget.cpp" line="56"/>
         <source>Distances column</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/SeqStatistics/SeqStatisticsWidget.cpp" line="91"/>
+        <location filename="../src/ov_msa/SeqStatistics/SeqStatisticsWidget.cpp" line="90"/>
         <source>Please, select reference sequence</source>
         <translation type="unfinished"></translation>
     </message>
@@ -5414,7 +5414,7 @@ Please select file to align.</source>
     <message>
         <location filename="../src/util_msa_align/ui/PerformAlignmentDialog.ui" line="44"/>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">...</translation>
     </message>
     <message>
         <location filename="../src/util_msa_align/ui/PerformAlignmentDialog.ui" line="53"/>

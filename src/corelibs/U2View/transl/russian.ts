@@ -6,29 +6,21 @@
     <message>
         <location filename="../src/ov_msa/ui/AddPhyTreeDialog.ui" line="14"/>
         <source>Add phylogenetic tree</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавить дерево</translation>
     </message>
     <message>
         <location filename="../src/ov_msa/ui/AddPhyTreeDialog.ui" line="20"/>
         <source>Build tree</source>
-        <translation type="unfinished"></translation>
+        <translation>Построить дерево</translation>
     </message>
     <message>
         <location filename="../src/ov_msa/ui/AddPhyTreeDialog.ui" line="27"/>
         <source>Add existing tree from file</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавить дерево из файла</translation>
     </message>
 </context>
 <context>
     <name>AssemblyToRefDialog</name>
-    <message>
-        <source>Reference sequence:</source>
-        <translation type="obsolete">Референсная последовательность:</translation>
-    </message>
-    <message>
-        <source>Result file name:</source>
-        <translation type="obsolete">Имя результата:</translation>
-    </message>
     <message>
         <location filename="../src/util_dna_assembly/ui/AssemblyToRefDialog.ui" line="82"/>
         <location filename="../src/util_dna_assembly/ui/AssemblyToRefDialog.ui" line="106"/>
@@ -63,7 +55,7 @@
     <message>
         <location filename="../src/util_dna_assembly/ui/AssemblyToRefDialog.ui" line="28"/>
         <source>Select a method to align short reads.</source>
-        <translation>Выберите метод выраввнивания.</translation>
+        <translation>Выберите метод выравнивания.</translation>
     </message>
     <message>
         <location filename="../src/util_dna_assembly/ui/AssemblyToRefDialog.ui" line="31"/>
@@ -103,12 +95,12 @@
     <message>
         <location filename="../src/util_dna_assembly/ui/AssemblyToRefDialog.ui" line="125"/>
         <source>Single-end</source>
-        <translation></translation>
+        <translation>Single-end</translation>
     </message>
     <message>
         <location filename="../src/util_dna_assembly/ui/AssemblyToRefDialog.ui" line="130"/>
         <source>Paired-end</source>
-        <translation></translation>
+        <translation>Paired-end</translation>
     </message>
     <message>
         <location filename="../src/util_dna_assembly/ui/AssemblyToRefDialog.ui" line="138"/>
@@ -118,7 +110,7 @@
     <message>
         <location filename="../src/util_dna_assembly/ui/AssemblyToRefDialog.ui" line="141"/>
         <source>Prebuilt index</source>
-        <translation>Построить индекс</translation>
+        <translation>Использовать индекс</translation>
     </message>
     <message>
         <location filename="../src/util_dna_assembly/ui/AssemblyToRefDialog.ui" line="161"/>
@@ -156,33 +148,33 @@
     <message>
         <location filename="../src/util_dna_assembly/ui/AssemblyToSamDialog.ui" line="29"/>
         <source>Convert UGENE assembly data base to SAM format</source>
-        <translation type="unfinished"></translation>
+        <translation>Конвертировать данные UGENE  в SAM формат</translation>
     </message>
     <message>
         <location filename="../src/util_dna_assembly/ui/AssemblyToSamDialog.ui" line="37"/>
         <source>Assembly data base:</source>
-        <translation type="unfinished"></translation>
+        <translation>База данных:</translation>
     </message>
     <message>
         <location filename="../src/util_dna_assembly/ui/AssemblyToSamDialog.ui" line="47"/>
         <location filename="../src/util_dna_assembly/ui/AssemblyToSamDialog.ui" line="64"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../src/util_dna_assembly/ui/AssemblyToSamDialog.ui" line="54"/>
         <source>Result SAM file:</source>
-        <translation type="unfinished"></translation>
+        <translation>Выходной SAM файл:</translation>
     </message>
     <message>
         <location filename="../src/util_dna_assembly/ui/AssemblyToSamDialog.ui" line="88"/>
         <source>Convert</source>
-        <translation type="unfinished"></translation>
+        <translation>Конвертировать</translation>
     </message>
     <message>
         <location filename="../src/util_dna_assembly/ui/AssemblyToSamDialog.ui" line="95"/>
         <source>Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation>Отмена</translation>
     </message>
 </context>
 <context>
@@ -218,56 +210,56 @@
     <message>
         <location filename="../src/util_dna_assembly/ui/BuildIndexFromRefDialog.ui" line="32"/>
         <source>Build Index</source>
-        <translation type="unfinished">Построить индекс</translation>
+        <translation>Построить индекс</translation>
     </message>
     <message>
         <location filename="../src/util_dna_assembly/ui/BuildIndexFromRefDialog.ui" line="42"/>
         <location filename="../src/util_dna_assembly/ui/BuildIndexFromRefDialog.ui" line="52"/>
         <source>Select a method that would be used to align short reads.</source>
-        <translation type="unfinished">Выберите метод выравнивания.</translation>
+        <translation>Выберите метод выравнивания.</translation>
     </message>
     <message>
         <location filename="../src/util_dna_assembly/ui/BuildIndexFromRefDialog.ui" line="45"/>
         <source>Align short reads method</source>
-        <translation type="unfinished">Метод выравнивания</translation>
+        <translation>Метод выравнивания</translation>
     </message>
     <message>
         <location filename="../src/util_dna_assembly/ui/BuildIndexFromRefDialog.ui" line="76"/>
         <location filename="../src/util_dna_assembly/ui/BuildIndexFromRefDialog.ui" line="86"/>
         <source>Select a DNA sequence that would be used to align short reads to. This parameter is &lt;b&gt;required&lt;/b&gt;.</source>
-        <translation type="unfinished">Выберните последовательность на которую будут выравнены ваш риды. </translation>
+        <translation>Выберите последовательность на которую будут выравнены ваш риды. </translation>
     </message>
     <message>
         <location filename="../src/util_dna_assembly/ui/BuildIndexFromRefDialog.ui" line="79"/>
         <source>Reference sequence</source>
-        <translation type="unfinished">Референтная последовательность</translation>
+        <translation>Референсная последовательность</translation>
     </message>
     <message>
         <location filename="../src/util_dna_assembly/ui/BuildIndexFromRefDialog.ui" line="103"/>
         <location filename="../src/util_dna_assembly/ui/BuildIndexFromRefDialog.ui" line="113"/>
         <source>Specify the index to build for the reference sequence. This parameter is &lt;b&gt;required&lt;/b&gt;.</source>
-        <translation type="unfinished">Индеск для референтной последовательности.</translation>
+        <translation>Индекс для референсной последовательности.</translation>
     </message>
     <message>
         <location filename="../src/util_dna_assembly/ui/BuildIndexFromRefDialog.ui" line="106"/>
         <source>Index file name</source>
-        <translation type="unfinished">Имя индекс файла</translation>
+        <translation>Имя индекс файла</translation>
     </message>
     <message>
         <location filename="../src/util_dna_assembly/ui/BuildIndexFromRefDialog.ui" line="160"/>
         <source>Start</source>
-        <translation type="unfinished">Собрать</translation>
+        <translation>Собрать</translation>
     </message>
     <message>
         <location filename="../src/util_dna_assembly/ui/BuildIndexFromRefDialog.ui" line="96"/>
         <location filename="../src/util_dna_assembly/ui/BuildIndexFromRefDialog.ui" line="123"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../src/util_dna_assembly/ui/BuildIndexFromRefDialog.ui" line="167"/>
         <source>Cancel</source>
-        <translation type="unfinished">Отмена</translation>
+        <translation>Отмена</translation>
     </message>
 </context>
 <context>
@@ -275,7 +267,7 @@
     <message>
         <location filename="../src/phyltree/ui/ButtonSettingsDialog.ui" line="14"/>
         <source>Button settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Настройки</translation>
     </message>
     <message>
         <location filename="../src/phyltree/ui/ButtonSettingsDialog.ui" line="22"/>
@@ -285,7 +277,7 @@
     <message>
         <location filename="../src/phyltree/ui/ButtonSettingsDialog.ui" line="61"/>
         <source>Radius:</source>
-        <translation type="unfinished">Радиус:</translation>
+        <translation>Радиус:</translation>
     </message>
     <message>
         <location filename="../src/phyltree/ui/ButtonSettingsDialog.ui" line="88"/>
@@ -303,17 +295,17 @@
     <message>
         <location filename="../src/ov_msa/ui/ColorSchemaDialog.ui" line="17"/>
         <source>Color Scheme </source>
-        <translation type="unfinished"></translation>
+        <translation>Цветовая схема</translation>
     </message>
     <message>
         <location filename="../src/ov_msa/ui/ColorSchemaDialog.ui" line="43"/>
         <source>Clear</source>
-        <translation type="unfinished"></translation>
+        <translation>Очистить</translation>
     </message>
     <message>
         <location filename="../src/ov_msa/ui/ColorSchemaDialog.ui" line="50"/>
         <source>Restore last state</source>
-        <translation type="unfinished"></translation>
+        <translation>Вернуть последнее состояние</translation>
     </message>
 </context>
 <context>
@@ -321,37 +313,37 @@
     <message>
         <location filename="../src/ov_msa/ui/ColorSchemaSettingsWidget.ui" line="17"/>
         <source>MSA Color Schemes Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Настройки цветовых схем</translation>
     </message>
     <message>
         <location filename="../src/ov_msa/ui/ColorSchemaSettingsWidget.ui" line="23"/>
         <source>Create and modify custom color schemes</source>
-        <translation type="unfinished"></translation>
+        <translation>Создание пользовательских цветовых схем</translation>
     </message>
     <message>
         <location filename="../src/ov_msa/ui/ColorSchemaSettingsWidget.ui" line="35"/>
         <source>Directory to save color scheme:</source>
-        <translation type="unfinished"></translation>
+        <translation>Директория для сохранения цветовой схемы:</translation>
     </message>
     <message>
         <location filename="../src/ov_msa/ui/ColorSchemaSettingsWidget.ui" line="47"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../src/ov_msa/ui/ColorSchemaSettingsWidget.ui" line="66"/>
         <source>Change color scheme</source>
-        <translation type="unfinished"></translation>
+        <translation>Изменить цветовую схему</translation>
     </message>
     <message>
         <location filename="../src/ov_msa/ui/ColorSchemaSettingsWidget.ui" line="73"/>
         <source>Create color scheme</source>
-        <translation type="unfinished"></translation>
+        <translation>Создать цветовую схему</translation>
     </message>
     <message>
         <location filename="../src/ov_msa/ui/ColorSchemaSettingsWidget.ui" line="80"/>
         <source>Delete</source>
-        <translation type="unfinished"></translation>
+        <translation>Удалить</translation>
     </message>
 </context>
 <context>
@@ -399,81 +391,26 @@
     </message>
 </context>
 <context>
-    <name>CreateFileIndexDialog</name>
-    <message>
-        <source>File(s) to index:</source>
-        <translation type="obsolete">Файл(ы) для индексирования:</translation>
-    </message>
-    <message>
-        <source>File(s) to index separated by semicolon</source>
-        <translation type="obsolete">Файл(ы) для индексирования, разделённые точкой с запятой</translation>
-    </message>
-    <message>
-        <source>File to store index:</source>
-        <translation type="obsolete">Файл индекса:</translation>
-    </message>
-    <message>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Path to output index file&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="obsolete">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Путь к создаваемому файлу индекса&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-    <message>
-        <source>Ok</source>
-        <translation type="obsolete">Готово</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">Отмена</translation>
-    </message>
-    <message>
-        <source>Create index file</source>
-        <translation type="obsolete">Создание индекса</translation>
-    </message>
-    <message>
-        <source>File to index</source>
-        <translation type="obsolete">Файл для индексирования</translation>
-    </message>
-    <message>
-        <source>File to store index</source>
-        <translation type="obsolete">Файл индекса</translation>
-    </message>
-    <message>
-        <source>Compress</source>
-        <translation type="obsolete">Сжать индекс</translation>
-    </message>
-    <message>
-        <source>Add to project</source>
-        <translation type="obsolete">Добавить в проект</translation>
-    </message>
-</context>
-<context>
     <name>CreateMSAScheme</name>
     <message>
         <location filename="../src/ov_msa/ui/CreateMSAScheme.ui" line="17"/>
         <source>Create Alignment Color Scheme</source>
-        <translation type="unfinished"></translation>
+        <translation>Новая цветовая схема</translation>
     </message>
     <message>
         <location filename="../src/ov_msa/ui/CreateMSAScheme.ui" line="32"/>
         <source>New scheme name</source>
-        <translation type="unfinished"></translation>
+        <translation>Имя новой схемы</translation>
     </message>
     <message>
         <location filename="../src/ov_msa/ui/CreateMSAScheme.ui" line="42"/>
         <source>Alphabet</source>
-        <translation type="unfinished">Алфавит</translation>
+        <translation>Алфавит</translation>
     </message>
     <message>
         <location filename="../src/ov_msa/ui/CreateMSAScheme.ui" line="63"/>
         <source>Use extended mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Использовать расширенный режим</translation>
     </message>
     <message>
         <location filename="../src/ov_msa/ui/CreateMSAScheme.ui" line="100"/>
@@ -483,7 +420,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ov_msa/ui/CreateMSAScheme.ui" line="107"/>
         <source>Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation>Отмена</translation>
     </message>
 </context>
 <context>
@@ -552,13 +489,9 @@ p, li { white-space: pre-wrap; }
         <translation>Имя шкалы</translation>
     </message>
     <message>
-        <source>Ruler offset</source>
-        <translation type="obsolete">Сдвиг шкалы</translation>
-    </message>
-    <message>
         <location filename="../src/ov_sequence/ui/CreateRulerDialog.ui" line="48"/>
         <source>Ruler start</source>
-        <translation type="unfinished"></translation>
+        <translation>Начало шкалы</translation>
     </message>
     <message>
         <location filename="../src/ov_sequence/ui/CreateRulerDialog.ui" line="68"/>
@@ -591,7 +524,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ov_msa/ui/CreateSubalignimentDialog.ui" line="14"/>
         <source>Extract selected as MSA</source>
-        <translation type="unfinished">Извлечь выделенное</translation>
+        <translation>Извлечь выделенное</translation>
     </message>
     <message>
         <location filename="../src/ov_msa/ui/CreateSubalignimentDialog.ui" line="73"/>
@@ -601,17 +534,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ov_msa/ui/CreateSubalignimentDialog.ui" line="22"/>
         <source>From </source>
-        <translation type="unfinished">От </translation>
+        <translation>От </translation>
     </message>
     <message>
         <location filename="../src/ov_msa/ui/CreateSubalignimentDialog.ui" line="48"/>
         <source> to </source>
-        <translation type="unfinished"> до </translation>
+        <translation> до </translation>
     </message>
     <message>
         <location filename="../src/ov_msa/ui/CreateSubalignimentDialog.ui" line="102"/>
         <source>Invert selection</source>
-        <translation type="unfinished">Инвертировать выбор</translation>
+        <translation>Инвертировать выбор</translation>
     </message>
     <message>
         <location filename="../src/ov_msa/ui/CreateSubalignimentDialog.ui" line="109"/>
@@ -626,7 +559,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ov_msa/ui/CreateSubalignimentDialog.ui" line="127"/>
         <source>File name</source>
-        <translation type="unfinished">Имя файла</translation>
+        <translation>Имя файла</translation>
     </message>
     <message>
         <location filename="../src/ov_msa/ui/CreateSubalignimentDialog.ui" line="137"/>
@@ -657,13 +590,9 @@ p, li { white-space: pre-wrap; }
         <translation>Удаление Пропусков</translation>
     </message>
     <message>
-        <source>Remove columns with number of gaps more than</source>
-        <translation type="obsolete">Удалить столбцы с числом пропусков</translation>
-    </message>
-    <message>
         <location filename="../src/ov_msa/ui/DeleteGapsDialog.ui" line="22"/>
         <source>Remove columns with number of gaps</source>
-        <translation type="unfinished"></translation>
+        <translation>Удалить столбцы с числом пропусков</translation>
     </message>
     <message>
         <location filename="../src/ov_msa/ui/DeleteGapsDialog.ui" line="32"/>
@@ -679,11 +608,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ov_msa/ui/DeleteGapsDialog.ui" line="52"/>
         <source>Remove all gap-only columns</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Remove all columns of gaps</source>
-        <translation type="obsolete">Удалить все столбцы пропусков</translation>
+        <translation>Удалить все пустые столбцы</translation>
     </message>
     <message>
         <location filename="../src/ov_msa/ui/DeleteGapsDialog.ui" line="76"/>
@@ -717,7 +642,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ov_sequence/ui/EditAnnotationDialog.ui" line="52"/>
         <location filename="../src/ov_sequence/ui/EditAnnotationDialog.ui" line="63"/>
         <source>...</source>
-        <translation></translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../src/ov_sequence/ui/EditAnnotationDialog.ui" line="91"/>
@@ -735,57 +660,57 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ov_assembly/ui/ExportConsensusDialog.ui" line="14"/>
         <source>Export Consensus</source>
-        <translation type="unfinished"></translation>
+        <translation>Экспорт консенсуса</translation>
     </message>
     <message>
         <location filename="../src/ov_assembly/ui/ExportConsensusDialog.ui" line="22"/>
         <source>Export to file</source>
-        <translation type="unfinished"></translation>
+        <translation>Экспорт в файл</translation>
     </message>
     <message>
         <location filename="../src/ov_assembly/ui/ExportConsensusDialog.ui" line="32"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../src/ov_assembly/ui/ExportConsensusDialog.ui" line="42"/>
         <source>Sequence name</source>
-        <translation type="unfinished"></translation>
+        <translation>Имя последовательности</translation>
     </message>
     <message>
         <location filename="../src/ov_assembly/ui/ExportConsensusDialog.ui" line="52"/>
         <source>Keep gaps</source>
-        <translation type="unfinished"></translation>
+        <translation>Наличие пропусков</translation>
     </message>
     <message>
         <location filename="../src/ov_assembly/ui/ExportConsensusDialog.ui" line="59"/>
         <source>Consensus algorithm</source>
-        <translation type="unfinished"></translation>
+        <translation>Алгоритм консенсуса</translation>
     </message>
     <message>
         <location filename="../src/ov_assembly/ui/ExportConsensusDialog.ui" line="69"/>
         <source>File format</source>
-        <translation type="unfinished"></translation>
+        <translation>Формат файла</translation>
     </message>
     <message>
         <location filename="../src/ov_assembly/ui/ExportConsensusDialog.ui" line="76"/>
         <source>Mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Мода</translation>
     </message>
     <message>
         <location filename="../src/ov_assembly/ui/ExportConsensusDialog.ui" line="90"/>
         <source>Add to project</source>
-        <translation type="unfinished">Добавить в проект</translation>
+        <translation>Добавить в проект</translation>
     </message>
     <message>
         <location filename="../src/ov_assembly/ui/ExportConsensusDialog.ui" line="113"/>
         <source>Export</source>
-        <translation type="unfinished">Экспорт</translation>
+        <translation>Экспорт</translation>
     </message>
     <message>
         <location filename="../src/ov_assembly/ui/ExportConsensusDialog.ui" line="120"/>
         <source>Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation>Отмена</translation>
     </message>
 </context>
 <context>
@@ -793,184 +718,37 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ov_assembly/ui/ExportReadsDialog.ui" line="14"/>
         <source>Export Reads</source>
-        <translation type="unfinished"></translation>
+        <translation>Экспорт ридов</translation>
     </message>
     <message>
         <location filename="../src/ov_assembly/ui/ExportReadsDialog.ui" line="22"/>
         <source>Export to file</source>
-        <translation type="unfinished"></translation>
+        <translation>Экспорт в файл</translation>
     </message>
     <message>
         <location filename="../src/ov_assembly/ui/ExportReadsDialog.ui" line="32"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../src/ov_assembly/ui/ExportReadsDialog.ui" line="39"/>
         <source>File format</source>
-        <translation type="unfinished"></translation>
+        <translation>Формат файла</translation>
     </message>
     <message>
         <location filename="../src/ov_assembly/ui/ExportReadsDialog.ui" line="51"/>
         <source>Add to project</source>
-        <translation type="unfinished">Добавить в проект</translation>
+        <translation>Добавить в проект</translation>
     </message>
     <message>
         <location filename="../src/ov_assembly/ui/ExportReadsDialog.ui" line="76"/>
         <source>Export</source>
-        <translation type="unfinished">Экспорт</translation>
+        <translation>Экспорт</translation>
     </message>
     <message>
         <location filename="../src/ov_assembly/ui/ExportReadsDialog.ui" line="83"/>
         <source>Cancel</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>FindDialogBase</name>
-    <message>
-        <source>Find in sequence</source>
-        <translation type="obsolete">Поиск подстрок в последовательности</translation>
-    </message>
-    <message>
-        <source>Find text pattern in sequence</source>
-        <translation type="obsolete">Поиск подстрок в последовательности по алгоритму Смита-Ватермана</translation>
-    </message>
-    <message>
-        <source>Pattern</source>
-        <translation type="obsolete">Паттерн</translation>
-    </message>
-    <message>
-        <source>A text pattern to find</source>
-        <translation type="obsolete">Паттерн для поиска в последовательности</translation>
-    </message>
-    <message>
-        <source>Search in</source>
-        <translation type="obsolete">Искать в последовательности</translation>
-    </message>
-    <message>
-        <source>Search pattern  in sequence</source>
-        <translation type="obsolete">Искать совпадения в исходной нуклеотидной последовательности</translation>
-    </message>
-    <message>
-        <source>Sequence</source>
-        <translation type="obsolete">нуклеотидной</translation>
-    </message>
-    <message>
-        <source>Search pattern in translation</source>
-        <translation type="obsolete">Искать совпадения в транслированной аминокислотной последовательности</translation>
-    </message>
-    <message>
-        <source>Translation</source>
-        <translation type="obsolete">аминокислотной</translation>
-    </message>
-    <message>
-        <source>Strand</source>
-        <translation type="obsolete">Направление поиска</translation>
-    </message>
-    <message>
-        <source>Both</source>
-        <translation type="obsolete">Оба</translation>
-    </message>
-    <message>
-        <source>Search pattern in direct strand only</source>
-        <translation type="obsolete">Искать только в прямой последовательности</translation>
-    </message>
-    <message>
-        <source>Direct</source>
-        <translation type="obsolete">Прямой</translation>
-    </message>
-    <message>
-        <source>Search pattern in complement strand only</source>
-        <translation type="obsolete">Искать только в комплементированной последовательности</translation>
-    </message>
-    <message>
-        <source>Complement</source>
-        <translation type="obsolete">Комплементарный</translation>
-    </message>
-    <message>
-        <source>Algorithm</source>
-        <translation type="obsolete">Алгоритм</translation>
-    </message>
-    <message>
-        <source>Match percent:</source>
-        <translation type="obsolete">Строгость совпадения:</translation>
-    </message>
-    <message>
-        <source>A minimal percent to match pattern</source>
-        <translation type="obsolete">Минимально допустимый процент совпадения с паттерном</translation>
-    </message>
-    <message>
-        <source>Allow mismatches only</source>
-        <translation type="obsolete">Допускать только замены</translation>
-    </message>
-    <message>
-        <source>Substitute</source>
-        <translation type="obsolete">Замены</translation>
-    </message>
-    <message>
-        <source>Allow insertions and deletions</source>
-        <translation type="obsolete">Допускать инсерции и делеции</translation>
-    </message>
-    <message>
-        <source>InsDel</source>
-        <translation type="obsolete">Инсерции/делеции</translation>
-    </message>
-    <message>
-        <source>Find next result</source>
-        <translation type="obsolete">Искать одно ближайшее совпадение</translation>
-    </message>
-    <message>
-        <source>Find next</source>
-        <translation type="obsolete">Искать</translation>
-    </message>
-    <message>
-        <source>Find all results</source>
-        <translation type="obsolete">Найти все возможные совпадения</translation>
-    </message>
-    <message>
-        <source>Find All</source>
-        <translation type="obsolete">Найти все</translation>
-    </message>
-    <message>
-        <source>Close</source>
-        <translation type="obsolete">Закрыть</translation>
-    </message>
-    <message>
-        <source>Save results as annotations</source>
-        <translation type="obsolete">Сохранить найденные совпадения как аннотации</translation>
-    </message>
-    <message>
-        <source>Save as annotations</source>
-        <translation type="obsolete">Сохранить как аннотации</translation>
-    </message>
-    <message>
-        <source>Remove overlaps</source>
-        <translation type="obsolete">Исключить перекрытия</translation>
-    </message>
-    <message>
-        <source>Clear results</source>
-        <translation type="obsolete">Очистить</translation>
-    </message>
-    <message>
-        <source>Range start:</source>
-        <translation type="obsolete">Начало региона:</translation>
-    </message>
-    <message>
-        <source>Position:</source>
-        <translation type="obsolete">Текущая позиция:</translation>
-    </message>
-    <message>
-        <source>Range end:</source>
-        <translation type="obsolete">Конец региона:</translation>
-    </message>
-    <message>
-        <source>Selection range</source>
-        <translation type="obsolete">Селектированный регион</translation>
-    </message>
-    <message>
-        <source>Sequence range</source>
-        <translation type="obsolete">Вся последовательность</translation>
+        <translation>Отмена</translation>
     </message>
 </context>
 <context>
@@ -978,78 +756,78 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ov_sequence/find_pattern/ui/FindPatternForm.ui" line="75"/>
         <source>Search for:</source>
-        <translation type="unfinished"></translation>
+        <translation>Искать для:</translation>
     </message>
     <message>
         <location filename="../src/ov_sequence/find_pattern/ui/FindPatternForm.ui" line="100"/>
         <source>Search</source>
-        <translation type="unfinished">Искать</translation>
+        <translation>Искать</translation>
     </message>
     <message>
         <location filename="../src/ov_sequence/find_pattern/ui/FindPatternForm.ui" line="141"/>
         <location filename="../src/ov_sequence/find_pattern/ui/FindPatternForm.ui" line="200"/>
         <source>Search in</source>
-        <translation type="unfinished"></translation>
+        <translation>Искать в</translation>
     </message>
     <message>
         <location filename="../src/ov_sequence/find_pattern/ui/FindPatternForm.ui" line="162"/>
         <source>-</source>
-        <translation type="unfinished"></translation>
+        <translation>-</translation>
     </message>
     <message>
         <location filename="../src/ov_sequence/find_pattern/ui/FindPatternForm.ui" line="183"/>
         <source>Strand</source>
-        <translation type="unfinished"></translation>
+        <translation>Прямая</translation>
     </message>
     <message>
         <location filename="../src/ov_sequence/find_pattern/ui/FindPatternForm.ui" line="217"/>
         <source>Region</source>
-        <translation type="unfinished">Регион</translation>
+        <translation>Регион</translation>
     </message>
     <message>
         <location filename="../src/ov_sequence/find_pattern/ui/FindPatternForm.ui" line="245"/>
         <source>Other settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Другие настройки</translation>
     </message>
     <message>
         <location filename="../src/ov_sequence/find_pattern/ui/FindPatternForm.ui" line="260"/>
         <source>Remove overlapped results</source>
-        <translation type="unfinished"></translation>
+        <translation>Удалить перекрывающиеся результаты</translation>
     </message>
     <message>
         <location filename="../src/ov_sequence/find_pattern/ui/FindPatternForm.ui" line="280"/>
         <source>Limit results number to:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ограничить число результатов:</translation>
     </message>
     <message>
         <location filename="../src/ov_sequence/find_pattern/ui/FindPatternForm.ui" line="290"/>
         <source>Find file with newline-separated patterns</source>
-        <translation type="unfinished"></translation>
+        <translation>Искать файл с разделенными паттернами</translation>
     </message>
     <message>
         <location filename="../src/ov_sequence/find_pattern/ui/FindPatternForm.ui" line="293"/>
         <source>Load patterns from file</source>
-        <translation type="unfinished"></translation>
+        <translation>Загрузить паттерны с файла</translation>
     </message>
     <message>
         <location filename="../src/ov_sequence/find_pattern/ui/FindPatternForm.ui" line="308"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../src/ov_sequence/find_pattern/ui/FindPatternForm.ui" line="315"/>
         <source>Path:</source>
-        <translation type="unfinished"></translation>
+        <translation>Путь:</translation>
     </message>
     <message>
         <location filename="../src/ov_sequence/find_pattern/ui/FindPatternForm.ui" line="331"/>
         <source>Search algorithm</source>
-        <translation type="unfinished"></translation>
+        <translation>Алгоритм поиска</translation>
     </message>
     <message>
         <location filename="../src/ov_sequence/find_pattern/ui/FindPatternForm.ui" line="340"/>
         <source>Algorithm</source>
-        <translation type="unfinished">Алгоритм</translation>
+        <translation>Алгоритм</translation>
     </message>
 </context>
 <context>
@@ -1057,22 +835,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/LicenseDialog.ui" line="14"/>
         <source>License Agreement</source>
-        <translation type="unfinished"></translation>
+        <translation>Лицензионное соглашение</translation>
     </message>
     <message>
         <location filename="../src/ui/LicenseDialog.ui" line="20"/>
         <source>To use this algorithm need accept following license agreement:</source>
-        <translation type="unfinished"></translation>
+        <translation>Чтобы использовать этот алгоритм необходимо принять следующее лицензионное соглашение:</translation>
     </message>
     <message>
         <location filename="../src/ui/LicenseDialog.ui" line="45"/>
         <source>Accept</source>
-        <translation type="unfinished"></translation>
+        <translation>Принять</translation>
     </message>
     <message>
         <location filename="../src/ui/LicenseDialog.ui" line="52"/>
         <source>Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation>Отменить</translation>
     </message>
 </context>
 <context>
@@ -1080,47 +858,47 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ov_msa/ui/MSADistancesColumnSettingsWidget.ui" line="23"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Форма</translation>
     </message>
     <message>
         <location filename="../src/ov_msa/ui/MSADistancesColumnSettingsWidget.ui" line="62"/>
         <source>Show distances column</source>
-        <translation type="unfinished"></translation>
+        <translation>Показать колонки расстояний</translation>
     </message>
     <message>
         <location filename="../src/ov_msa/ui/MSADistancesColumnSettingsWidget.ui" line="84"/>
         <source>Distance algorithm:</source>
-        <translation type="unfinished"></translation>
+        <translation>Алгоритм построения:</translation>
     </message>
     <message>
         <location filename="../src/ov_msa/ui/MSADistancesColumnSettingsWidget.ui" line="94"/>
         <source>Automatic updating</source>
-        <translation type="unfinished"></translation>
+        <translation>Автоматическое обновление</translation>
     </message>
     <message>
         <location filename="../src/ov_msa/ui/MSADistancesColumnSettingsWidget.ui" line="101"/>
         <source>Profile mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Способ профилирования</translation>
     </message>
     <message>
         <location filename="../src/ov_msa/ui/MSADistancesColumnSettingsWidget.ui" line="110"/>
         <source>Counts</source>
-        <translation type="unfinished"></translation>
+        <translation>Значения</translation>
     </message>
     <message>
         <location filename="../src/ov_msa/ui/MSADistancesColumnSettingsWidget.ui" line="117"/>
         <source>Percents</source>
-        <translation type="unfinished"></translation>
+        <translation>Проценты</translation>
     </message>
     <message>
         <location filename="../src/ov_msa/ui/MSADistancesColumnSettingsWidget.ui" line="124"/>
         <source>Exclude gaps</source>
-        <translation type="unfinished"></translation>
+        <translation>Исключить пропуски</translation>
     </message>
     <message>
         <location filename="../src/ov_msa/ui/MSADistancesColumnSettingsWidget.ui" line="134"/>
         <source>&lt;empty&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;empty&gt;</translation>
     </message>
 </context>
 <context>
@@ -1128,7 +906,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ov_sequence/AnnotatedDNAViewTasks.cpp" line="256"/>
         <source>No sequence info found!</source>
-        <translation type="unfinished">Информация о последовательности не найдена!</translation>
+        <translation>Информация о последовательности не найдена!</translation>
     </message>
 </context>
 <context>
@@ -1136,87 +914,87 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ov_msa/ui/PairwiseAlignmentOptionsPanelWidget.ui" line="20"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Форма</translation>
     </message>
     <message>
         <location filename="../src/ov_msa/ui/PairwiseAlignmentOptionsPanelWidget.ui" line="73"/>
         <location filename="../src/ov_msa/ui/PairwiseAlignmentOptionsPanelWidget.ui" line="152"/>
         <source>Add selected sequence</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавить выбранную последовательность</translation>
     </message>
     <message>
         <location filename="../src/ov_msa/ui/PairwiseAlignmentOptionsPanelWidget.ui" line="76"/>
         <location filename="../src/ov_msa/ui/PairwiseAlignmentOptionsPanelWidget.ui" line="155"/>
         <source>&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&gt;</translation>
     </message>
     <message>
         <location filename="../src/ov_msa/ui/PairwiseAlignmentOptionsPanelWidget.ui" line="101"/>
         <location filename="../src/ov_msa/ui/PairwiseAlignmentOptionsPanelWidget.ui" line="177"/>
         <source>Select and add</source>
-        <translation type="unfinished"></translation>
+        <translation>Выбрать и добавить</translation>
     </message>
     <message>
         <location filename="../src/ov_msa/ui/PairwiseAlignmentOptionsPanelWidget.ui" line="120"/>
         <location filename="../src/ov_msa/ui/PairwiseAlignmentOptionsPanelWidget.ui" line="196"/>
         <source>Clear</source>
-        <translation type="unfinished"></translation>
+        <translation>Очистить</translation>
     </message>
     <message>
         <location filename="../src/ov_msa/ui/PairwiseAlignmentOptionsPanelWidget.ui" line="123"/>
         <location filename="../src/ov_msa/ui/PairwiseAlignmentOptionsPanelWidget.ui" line="199"/>
         <source>x</source>
-        <translation type="unfinished"></translation>
+        <translation>x</translation>
     </message>
     <message>
         <location filename="../src/ov_msa/ui/PairwiseAlignmentOptionsPanelWidget.ui" line="247"/>
         <source>Similarity:</source>
-        <translation type="unfinished"></translation>
+        <translation>Схожесть:</translation>
     </message>
     <message>
         <location filename="../src/ov_msa/ui/PairwiseAlignmentOptionsPanelWidget.ui" line="260"/>
         <source>Not defined</source>
-        <translation type="unfinished"></translation>
+        <translation>Не найдено</translation>
     </message>
     <message>
         <location filename="../src/ov_msa/ui/PairwiseAlignmentOptionsPanelWidget.ui" line="295"/>
         <source>Algorithm:</source>
-        <translation type="unfinished"></translation>
+        <translation>Алгоритм:</translation>
     </message>
     <message>
         <location filename="../src/ov_msa/ui/PairwiseAlignmentOptionsPanelWidget.ui" line="332"/>
         <source>Open the alignment result in the new editor</source>
-        <translation type="unfinished"></translation>
+        <translation>Открыть результат в новом окне</translation>
     </message>
     <message>
         <location filename="../src/ov_msa/ui/PairwiseAlignmentOptionsPanelWidget.ui" line="335"/>
         <source>In new window</source>
-        <translation type="unfinished"></translation>
+        <translation>В новом окне</translation>
     </message>
     <message>
         <location filename="../src/ov_msa/ui/PairwiseAlignmentOptionsPanelWidget.ui" line="364"/>
         <source>Output file:</source>
-        <translation type="unfinished"></translation>
+        <translation>Выходной файл:</translation>
     </message>
     <message>
         <location filename="../src/ov_msa/ui/PairwiseAlignmentOptionsPanelWidget.ui" line="382"/>
         <source>Select file to save result of the alignment. If it is not defined, default file name will be used.</source>
-        <translation type="unfinished"></translation>
+        <translation>Выберите  файл для сохранения результатов. Если не указан, то будет использовано имя по умолчанию.</translation>
     </message>
     <message>
         <location filename="../src/ov_msa/ui/PairwiseAlignmentOptionsPanelWidget.ui" line="385"/>
         <source>Default</source>
-        <translation type="unfinished"></translation>
+        <translation>Значение по умолчанию</translation>
     </message>
     <message>
         <location filename="../src/ov_msa/ui/PairwiseAlignmentOptionsPanelWidget.ui" line="392"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../src/ov_msa/ui/PairwiseAlignmentOptionsPanelWidget.ui" line="419"/>
         <source>Align</source>
-        <translation type="unfinished">Выровнять</translation>
+        <translation>Выровнять</translation>
     </message>
 </context>
 <context>
@@ -1224,7 +1002,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ov_phyltree/CreateBranchesTask.h" line="36"/>
         <source>Generating tree view</source>
-        <translation type="unfinished"></translation>
+        <translation>Создание дерева</translation>
     </message>
     <message>
         <location filename="../src/ov_phyltree/TreeViewer.cpp" line="409"/>
@@ -1256,31 +1034,31 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ov_phyltree/TreeViewerUtils.cpp" line="62"/>
         <source>%1 already exists.
 Do you want to replace it?</source>
-        <translation type="unfinished">%1 уже существует.
+        <translation>%1 уже существует.
 Вы уверены, что хотите заменить его?</translation>
     </message>
     <message>
         <location filename="../src/ov_sequence/AnnotatedDNAViewTasks.cpp" line="142"/>
         <source>The following sequences contain unrecognizable symbols:
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Следующие последовательности содержат символы, которые невозможно распознать:</translation>
     </message>
     <message>
         <location filename="../src/ov_sequence/AnnotatedDNAViewTasks.cpp" line="152"/>
         <source>and others...
 </source>
-        <translation type="unfinished"></translation>
+        <translation>и другие...</translation>
     </message>
     <message>
         <location filename="../src/ov_sequence/AnnotatedDNAViewTasks.cpp" line="156"/>
         <source>Some algorithms will not work for these sequences.</source>
-        <translation type="unfinished"></translation>
+        <translation>Некоторые алгоритмы не будут работать для этих последовательностей.</translation>
     </message>
     <message>
         <location filename="../src/ov_sequence/AnnotatedDNAViewTasks.cpp" line="159"/>
         <location filename="../src/ov_sequence/AnnotatedDNAViewTasks.cpp" line="173"/>
         <source>Warning</source>
-        <translation type="unfinished">Внимание</translation>
+        <translation>Внимание</translation>
     </message>
 </context>
 <context>
@@ -1288,42 +1066,42 @@ Do you want to replace it?</source>
     <message>
         <location filename="../src/ov_sequence/ui/SaveGraphCutoffsDialog.ui" line="20"/>
         <source>Save Graph Cutoffs as Annotations</source>
-        <translation type="unfinished"></translation>
+        <translation>Сохранить график порогов как аннотации</translation>
     </message>
     <message>
         <location filename="../src/ov_sequence/ui/SaveGraphCutoffsDialog.ui" line="38"/>
         <source>Maximum cutoff</source>
-        <translation type="unfinished"></translation>
+        <translation>Максимальный порог</translation>
     </message>
     <message>
         <location filename="../src/ov_sequence/ui/SaveGraphCutoffsDialog.ui" line="89"/>
         <source>Minimum cutoff</source>
-        <translation type="unfinished"></translation>
+        <translation>Минимальный порог</translation>
     </message>
     <message>
         <location filename="../src/ov_sequence/ui/SaveGraphCutoffsDialog.ui" line="166"/>
         <source>Save</source>
-        <translation type="unfinished">Сохранить</translation>
+        <translation>Сохранить</translation>
     </message>
     <message>
         <location filename="../src/ov_sequence/ui/SaveGraphCutoffsDialog.ui" line="185"/>
         <source>Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation>Отмена</translation>
     </message>
     <message>
         <location filename="../src/ov_sequence/ui/SaveGraphCutoffsDialog.ui" line="204"/>
         <source>Area to annotate</source>
-        <translation type="unfinished"></translation>
+        <translation>Область аннотирования</translation>
     </message>
     <message>
         <location filename="../src/ov_sequence/ui/SaveGraphCutoffsDialog.ui" line="222"/>
         <source>Around cutoff values</source>
-        <translation type="unfinished"></translation>
+        <translation>Близкие к пороговым значения</translation>
     </message>
     <message>
         <location filename="../src/ov_sequence/ui/SaveGraphCutoffsDialog.ui" line="241"/>
         <source>Between cutoff values</source>
-        <translation type="unfinished"></translation>
+        <translation>Значения между пороговыми</translation>
     </message>
 </context>
 <context>
@@ -1331,68 +1109,68 @@ Do you want to replace it?</source>
     <message>
         <location filename="../src/ov_sequence/ui/SearchQualifierDialog.ui" line="14"/>
         <source>Find Qualifier</source>
-        <translation type="unfinished"></translation>
+        <translation>Поиск квалификатора</translation>
     </message>
     <message>
         <location filename="../src/ov_sequence/ui/SearchQualifierDialog.ui" line="35"/>
         <source>Select All</source>
-        <translation type="unfinished"></translation>
+        <translation>Выбрать все</translation>
     </message>
     <message>
         <location filename="../src/ov_sequence/ui/SearchQualifierDialog.ui" line="42"/>
         <source>Next</source>
-        <translation type="unfinished"></translation>
+        <translation>Следующий</translation>
     </message>
     <message>
         <location filename="../src/ov_sequence/ui/SearchQualifierDialog.ui" line="52"/>
         <source>Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation>Отмена</translation>
     </message>
     <message>
         <location filename="../src/ov_sequence/ui/SearchQualifierDialog.ui" line="61"/>
         <source>Qualifier</source>
-        <translation type="unfinished"></translation>
+        <translation>Квалификатор</translation>
     </message>
     <message>
         <location filename="../src/ov_sequence/ui/SearchQualifierDialog.ui" line="67"/>
         <source>Name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Имя:</translation>
     </message>
     <message>
         <location filename="../src/ov_sequence/ui/SearchQualifierDialog.ui" line="77"/>
         <source>Value:</source>
-        <translation type="unfinished"></translation>
+        <translation>Значение:</translation>
     </message>
     <message>
         <location filename="../src/ov_sequence/ui/SearchQualifierDialog.ui" line="90"/>
         <source>Match Parameter</source>
-        <translation type="unfinished"></translation>
+        <translation>Параметры совпадения</translation>
     </message>
     <message>
         <location filename="../src/ov_sequence/ui/SearchQualifierDialog.ui" line="96"/>
         <source>Contains substring</source>
-        <translation type="unfinished"></translation>
+        <translation>Содержит подстроку</translation>
     </message>
     <message>
         <location filename="../src/ov_sequence/ui/SearchQualifierDialog.ui" line="102"/>
         <location filename="../src/ov_sequence/ui/SearchQualifierDialog.ui" line="112"/>
         <source>buttonGroup</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/ov_sequence/ui/SearchQualifierDialog.ui" line="109"/>
         <source>Exact match</source>
-        <translation type="unfinished"></translation>
+        <translation>Точное совпадение</translation>
     </message>
     <message>
         <location filename="../src/ov_sequence/ui/SearchQualifierDialog.ui" line="128"/>
         <source>Group Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Имя группы</translation>
     </message>
     <message>
         <location filename="../src/ov_sequence/ui/SearchQualifierDialog.ui" line="141"/>
         <source>Search in:</source>
-        <translation type="unfinished"></translation>
+        <translation>Искать в:</translation>
     </message>
 </context>
 <context>
@@ -1533,7 +1311,7 @@ Do you want to replace it?</source>
     <message>
         <location filename="../src/util_smith_waterman/ui/SmithWatermanDialogBase.ui" line="510"/>
         <source>Save results as</source>
-        <translation type="unfinished"></translation>
+        <translation>Сохранить результаты как</translation>
     </message>
     <message>
         <location filename="../src/util_smith_waterman/ui/SmithWatermanDialogBase.ui" line="559"/>
@@ -2991,7 +2769,7 @@ annotations.</source>
     <message>
         <location filename="../src/ov_assembly/AssemblyConsensusArea.cpp" line="164"/>
         <source>Consensus algorithm</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Алгоритм консенсуса</translation>
     </message>
 </context>
 <context>
@@ -3808,7 +3586,7 @@ It could cause an error. Do you want to continue?</source>
     <message>
         <location filename="../src/util_dna_assembly/DnaAssemblyDialog.cpp" line="185"/>
         <source>Align short reads</source>
-        <translation>Выравнинвание на геном</translation>
+        <translation>Выравнивание на геном</translation>
     </message>
     <message>
         <location filename="../src/util_dna_assembly/DnaAssemblyDialog.cpp" line="191"/>
@@ -3850,12 +3628,12 @@ It could cause an error. Do you want to continue?</source>
     <message>
         <location filename="../src/util_dna_assembly/DnaAssemblyUtils.cpp" line="62"/>
         <source>Align to reference</source>
-        <translation>Выравнивание на референсную последовательность</translation>
+        <translation>Выравнивание на референс</translation>
     </message>
     <message>
         <location filename="../src/util_dna_assembly/DnaAssemblyUtils.cpp" line="66"/>
         <source>Align short reads</source>
-        <translation>Выравнинвание на геном</translation>
+        <translation type="unfinished">Выравнивание на геном</translation>
     </message>
     <message>
         <location filename="../src/util_dna_assembly/DnaAssemblyUtils.cpp" line="72"/>
@@ -4207,7 +3985,7 @@ Please, check your plugin list.</source>
     <message>
         <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="521"/>
         <source>Direct</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Прямое</translation>
     </message>
     <message>
         <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="522"/>
@@ -4217,12 +3995,12 @@ Please, check your plugin list.</source>
     <message>
         <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="528"/>
         <source>Sequence</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Последовательности</translation>
     </message>
     <message>
         <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="529"/>
         <source>Translation</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Трансляции</translation>
     </message>
     <message>
         <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="535"/>
@@ -4590,7 +4368,7 @@ Please select file to align.</source>
     <message>
         <location filename="../src/ov_msa/MSAEditor.cpp" line="445"/>
         <source>Set this sequence as reference</source>
-        <translation>Установить эту последовательность в качестве референсной</translation>
+        <translation>Сделать референсной</translation>
     </message>
     <message>
         <source>Export alignment image</source>
@@ -4812,12 +4590,12 @@ Please select file to align.</source>
     <message>
         <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="1419"/>
         <source>Custom schemes</source>
-        <translation type="unfinished"></translation>
+        <translation>Пользовательские схемы</translation>
     </message>
     <message>
         <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="1426"/>
         <source>Create new color scheme</source>
-        <translation type="unfinished"></translation>
+        <translation>Создать новую цветовую схему</translation>
     </message>
     <message>
         <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="1434"/>
@@ -4827,12 +4605,12 @@ Please select file to align.</source>
     <message>
         <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="1622"/>
         <source>Warning!</source>
-        <translation type="unfinished">Внимание</translation>
+        <translation>Внимание</translation>
     </message>
     <message>
         <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="1622"/>
         <source>You must select only one sequence for export.</source>
-        <translation type="unfinished"></translation>
+        <translation>Необходимо выбрать только одну последовательность для экспорта.</translation>
     </message>
     <message>
         <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="1662"/>
@@ -4842,7 +4620,7 @@ Please select file to align.</source>
     <message>
         <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="1662"/>
         <source>The document already in the project</source>
-        <translation type="unfinished"></translation>
+        <translation>Документ уже содержится в проекте</translation>
     </message>
     <message>
         <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="1892"/>
@@ -5417,7 +5195,7 @@ Please select file to align.</source>
     <message>
         <location filename="../src/ov_msa/ui/SaveSelectedSequenceFromMSADialog.ui" line="25"/>
         <source>Export to file</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Экспорт в файл</translation>
     </message>
     <message>
         <location filename="../src/ov_msa/ui/SaveSelectedSequenceFromMSADialog.ui" line="35"/>
@@ -5521,12 +5299,12 @@ Please select file to align.</source>
 <context>
     <name>U2::SeqStatisticsWidget</name>
     <message>
-        <location filename="../src/ov_msa/SeqStatistics/SeqStatisticsWidget.cpp" line="57"/>
+        <location filename="../src/ov_msa/SeqStatistics/SeqStatisticsWidget.cpp" line="56"/>
         <source>Distances column</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/SeqStatistics/SeqStatisticsWidget.cpp" line="91"/>
+        <location filename="../src/ov_msa/SeqStatistics/SeqStatisticsWidget.cpp" line="90"/>
         <source>Please, select reference sequence</source>
         <translation type="unfinished"></translation>
     </message>
