@@ -62,6 +62,7 @@ SUBDIRS += \
           src/plugins/CoreTests \
           src/plugins/api_tests \
           src/plugins/GUITestBase \
+          src/plugins/browser_support \
           src/plugins/linkdata_support
 
 use_cuda() {

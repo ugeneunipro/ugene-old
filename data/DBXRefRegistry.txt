@@ -46,7 +46,7 @@ dictyBase|http://dictybase.org/db/cgi-bin/gene_page.pl?primary_id=%1||Dictyostel
 
 EcoGene|http://ecogene.org/geneInfo.php?eg_id=%1||Database of Escherichia coli Sequence and Function
 
-ENSEMBL|||Database of automatically annotated genomic data
+ENSEMBL|http://beta.rest.ensembl.org/sequence/id/%1?content-type=text/x-fasta|http://beta.rest.ensembl.org/sequence/id/%1?content-type=text/x-fasta|Database of automatically annotated genomic data
 
 ERIC|http://www.ericbrc.org/asap/feature_info.php?FeatureID=%1||Enteropathogen Resource Integration Center
 

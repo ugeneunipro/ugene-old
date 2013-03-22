@@ -39,6 +39,7 @@
 namespace U2 {
 
 // Entrez tools variables
+#define ENSEBL_ID "ensembl"
 #define GENBANK_NUCLEOTIDE_ID "nucleotide"
 #define GENBANK_PROTEIN_ID "protein"
 #define GENBANK_FORMAT "gb"
@@ -65,6 +66,7 @@ public:
     static RemoteDBRegistry& getRemoteDBRegistry();
 
 public:
+    static const QString ENSEMBL;
     static const QString GENBANK_DNA;
     static const QString GENBANK_PROTEIN;
     static const QString PDB;

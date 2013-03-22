@@ -50,6 +50,7 @@ namespace U2 {
 
 const QString NCBI_ESEARCH_URL("http://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=%1&term=%2&tool=UGENE");
 const QString NCBI_EFETCH_URL("http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=%1&id=%2&retmode=text&rettype=%3&tool=UGENE");
+const QString RemoteDBRegistry::ENSEMBL("ENSEMBL");
 const QString RemoteDBRegistry::GENBANK_DNA("NCBI GenBank (DNA sequence)");
 const QString RemoteDBRegistry::GENBANK_PROTEIN("NCBI protein sequence database");
 const QString RemoteDBRegistry::PDB("PDB");
@@ -433,6 +434,7 @@ RemoteDBRegistry::RemoteDBRegistry() {
     queryDBs.insert(GENBANK_DNA,  GENBANK_NUCLEOTIDE_ID);
     queryDBs.insert(GENBANK_PROTEIN, GENBANK_PROTEIN_ID);
 
+    aliases.insert("ENSEMBL", ENSEMBL);
     aliases.insert("genbank", GENBANK_DNA);
     aliases.insert("genbank-protein", GENBANK_PROTEIN);
     aliases.insert("pdb", PDB);
@@ -448,6 +450,7 @@ RemoteDBRegistry::RemoteDBRegistry() {
         }
     }
 
+    hints.insert(ENSEMBL, QObject::tr("Use Ensembl ID. For example: ENSG00000258664 or ENSG00000146463"));
     hints.insert(GENBANK_DNA, QObject::tr("Use Genbank DNA accession number. For example: NC_001363 or D11266"));
     hints.insert(GENBANK_PROTEIN, QObject::tr("Use Genbank protein accession number. For example: AAA59172.1"));
     hints.insert(PDB, QObject::tr("Use PDB molecule four-letter identifier. For example: 3INS or 1CRN"));

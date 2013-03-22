@@ -164,6 +164,7 @@ Section "Build"
     !insertmacro AddPlugin ptools
     !insertmacro AddPlugin dna_flexibility
     !insertmacro AddPlugin variants
+    !insertmacro AddPlugin browser_support
     
     SetOutPath $INSTDIR\tools
     File /r /x .svn "includes\tools\*.*"

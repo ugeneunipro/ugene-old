@@ -142,6 +142,14 @@ static QString path(const GUrl* url) {
     if( url->isVFSFile() ) {
         return result;
     }
+    if( url->isHyperLink() ) {
+        result = url->getURLString();
+
+        int parametersStartPosition = result.indexOf('?');
+        result = result.left(parametersStartPosition); // returns full string if int<0
+        return result;
+    }
+
     result = url->getURLString();
     return result;
 }
