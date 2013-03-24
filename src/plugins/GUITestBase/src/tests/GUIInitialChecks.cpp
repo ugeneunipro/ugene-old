@@ -115,7 +115,7 @@ GUI_TEST_CLASS_DEFINITION(post_test_0002) {
     GTFile::restore(os, testDir + "_common_data/scenarios/project/proj4.uprj");
     GTFile::restore(os, testDir + "_common_data/scenarios/project/proj5.uprj");
 }
-/*
+
 GUI_TEST_CLASS_DEFINITION(post_test_0003) {
 #ifdef Q_OS_WIN 
     QProcess *svnProcess = new QProcess();
@@ -123,7 +123,7 @@ GUI_TEST_CLASS_DEFINITION(post_test_0003) {
     QStringList dirs;
     dirs.append(testDir + "_common_data/");
     dirs.append(dataDir + "samples/");
-
+    bool SVNCorrupted = false;
     foreach(QString workingDir, dirs){
         QDir d;
         svnProcess->setWorkingDirectory(d.absoluteFilePath(workingDir));
@@ -137,6 +137,7 @@ GUI_TEST_CLASS_DEFINITION(post_test_0003) {
             QStringList byWords = str.split(QRegExp("\\s+"));
             if (byWords[0][0] == '?' || byWords[0][0] == 'M'){
                 if(byWords[0][0] == 'M'){
+                    SVNCorrupted = true;
                     needUpdate = true;
                 }
                 QFile::remove(workingDir + QDir::separator() + byWords[1]);
@@ -145,11 +146,12 @@ GUI_TEST_CLASS_DEFINITION(post_test_0003) {
         if (needUpdate){
             svnProcess->start("svn", QStringList()<<"up");
             while(!svnProcess->waitForFinished(30000));
-        }                
+        }
     }
+    CHECK_SET_ERR(!SVNCorrupted, "SVN corrupted by this test");
 #endif
 }
-**/
+
 
 } // GUITest_initial_checks namespace
 
