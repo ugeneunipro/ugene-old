@@ -124,14 +124,15 @@ void BrowserSupportPlugin::sl_clipboardCheck() {
             }
         }
 
+        QString fullPath = LoadRemoteDocumentTask::getDefaultDownloadDirectory();
+        LoadRemoteDocumentTask::prepareDownloadDirectory(fullPath);
+        fullPath = QDir::toNativeSeparators(fullPath);
+
         if (clipboardText.startsWith("open/Ensembl;")) {
 
             int idLength = noOpen.indexOf("\n");
             QString ensId = noOpen.left(idLength);
             ensId = ensId.simplified();
-
-            QString fullPath = LoadRemoteDocumentTask::getDefaultDownloadDirectory();
-            fullPath = QDir::toNativeSeparators(fullPath);
 
             Task* task = new LoadRemoteDocumentAndOpenViewTask(ensId, "ENSEMBL", fullPath);
             AppContext::getTaskScheduler()->registerTopLevelTask(task);
@@ -142,9 +143,6 @@ void BrowserSupportPlugin::sl_clipboardCheck() {
             int idLength = noOpen.indexOf("\n");
             QString ensId = noOpen.left(idLength);
             ensId = ensId.simplified();
-
-            QString fullPath = LoadRemoteDocumentTask::getDefaultDownloadDirectory();
-            fullPath = QDir::toNativeSeparators(fullPath);
 
             Task* task = new LoadRemoteDocumentAndOpenViewTask(ensId, "PDB", fullPath);
             AppContext::getTaskScheduler()->registerTopLevelTask(task);

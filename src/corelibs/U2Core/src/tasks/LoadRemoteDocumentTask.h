@@ -98,7 +98,7 @@ class U2CORE_EXPORT LoadRemoteDocumentTask : public DocumentProviderTask {
 public:
     static QString getFileFormat(const QString & dbName);
 
-    bool prepareDownloadDirectory(QString &path);
+    static bool prepareDownloadDirectory(QString &path);
     static QString getDefaultDownloadDirectory();
     
 public:
