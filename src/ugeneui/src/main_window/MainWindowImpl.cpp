@@ -450,7 +450,10 @@ FixedMdiArea::FixedMdiArea(QWidget * parent) : QMdiArea(parent)
     setDocumentMode(true);
     setTabShape(QTabWidget::Rounded);
     setFrameStyle(QFrame::StyledPanel | QFrame::Raised);
+#ifndef Q_OS_MAC
+    // This icon looks terrible on Mac. The standart one is better.
     setStyleSheet("QTabBar::close-button {background-image: url(\":/core/images/close_tab.png\"); }");
+#endif
 }
 
 void FixedMdiArea::setViewMode( QMdiArea::ViewMode mode )
