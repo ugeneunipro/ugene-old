@@ -35,6 +35,21 @@ private:
     int radioButNum;
 };
 
+class RemoveGapColsDialogFiller : public Filler {
+public:
+    enum Radio {Number, Percent, Column};
+    RemoveGapColsDialogFiller(U2OpStatus &os, Radio _button, int _spinValue=1) : Filler(os, "DeleteGapsDialog"),
+        button(_button), spinValue(_spinValue){
+        radioMap[Number] = "absoluteRadioButton";
+        radioMap[Percent] = "relativeRadioButton";
+        radioMap[Column] = "allRadioButton";
+    }
+    virtual void run();
+private:
+    Radio button;
+    int spinValue;
+    QMap<Radio,QString> radioMap;
+};
 }
 
 #endif

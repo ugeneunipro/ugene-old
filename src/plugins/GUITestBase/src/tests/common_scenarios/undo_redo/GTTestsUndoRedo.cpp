@@ -420,6 +420,136 @@ GUI_TEST_CLASS_DEFINITION(test_0006_2){//undo replace_selected_rows_with_complem
     CHECK_SET_ERR((nameList[0] == "L") && (nameList[1] == "compl"), "There are no 'L|compl' in nameList");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0007){
+    //Open file
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gap_col.aln");
+
+    //save initial state
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0,0), QPoint(14,10));
+    GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(500);
+    QString initAln = GTClipboard::text(os);
+    QString expectedChangedAln = "AAGCTTCTTT\nAAGTTACTAA\nTAG---TTAT\nAAGC---TAT\n"
+                                 "TAGTTATTAA\nTAGTTATTAA\nTAGTTATTAA\nAAGCTTT---\n"
+                                 "A--AGAATAA\nAAGCTTTTAA";
+
+    //fill remove columns of gaps dialog
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_EDIT << "remove_columns_of_gaps",GTGlobals::UseMouse));
+    GTUtilsDialog::waitForDialog(os, new RemoveGapColsDialogFiller(os, RemoveGapColsDialogFiller::Number,3));
+    GTMenu::showContextMenu(os,GTUtilsMdi::activeWindow(os));
+
+    GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(500);
+    QString changedAln = GTClipboard::text(os);
+    CHECK_SET_ERR(changedAln == expectedChangedAln,"remove gaps option works wrong");
+
+    //undo
+    QAbstractButton *undo= GTAction::button(os,"msa_action_undo");
+    GTWidget::click(os, undo);
+
+    GTWidget::click(os, GTUtilsMdi::activeWindow(os));
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0,0), QPoint(14,10));
+    GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(500);
+    QString clipboardText = GTClipboard::text(os);
+    CHECK_SET_ERR(clipboardText==initAln, "undo works wrong");
+
+    //redo
+    QAbstractButton *redo= GTAction::button(os,"msa_action_redo");
+    GTWidget::click(os, redo);
+
+    GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(500);
+    clipboardText = GTClipboard::text(os);
+    CHECK_SET_ERR(clipboardText==expectedChangedAln, "redo works wrong");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0007_1){
+    //Open file
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gap_col.aln");
+
+    //save initial state
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0,0), QPoint(14,10));
+    GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(500);
+    QString initAln = GTClipboard::text(os);
+    QString expectedChangedAln = "AAGCCTTT\nAAGTCTAA\nTAG-TTAT\nAAGC-TAT\nTAGTTTAA\nTAGTTTAA\n"
+                                 "TAGTTTAA\nAAGCT---\nA--AATAA\nAAGCTTAA";
+
+    //fill remove columns of gaps dialog
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_EDIT << "remove_columns_of_gaps",GTGlobals::UseMouse));
+    GTUtilsDialog::waitForDialog(os, new RemoveGapColsDialogFiller(os, RemoveGapColsDialogFiller::Percent,15));
+    GTMenu::showContextMenu(os,GTUtilsMdi::activeWindow(os));
+
+    GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(500);
+    QString changedAln = GTClipboard::text(os);
+    CHECK_SET_ERR(changedAln == expectedChangedAln,"remove gaps option works wrong\n" + changedAln + '\n' + expectedChangedAln);
+
+    //undo
+    QAbstractButton *undo= GTAction::button(os,"msa_action_undo");
+    GTWidget::click(os, undo);
+
+    GTWidget::click(os, GTUtilsMdi::activeWindow(os));
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0,0), QPoint(14,10));
+    GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(500);
+    QString clipboardText = GTClipboard::text(os);
+    CHECK_SET_ERR(clipboardText==initAln, "undo works wrong");
+
+    //redo
+    QAbstractButton *redo= GTAction::button(os,"msa_action_redo");
+    GTWidget::click(os, redo);
+
+    GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(500);
+    clipboardText=GTClipboard::text(os);
+    CHECK_SET_ERR(clipboardText==expectedChangedAln, "redo works wrong");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0007_2){
+    //Open file
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gap_col.aln");
+
+    //save initial state
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0,0), QPoint(14,10));
+    GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(500);
+    QString initAln = GTClipboard::text(os);
+    QString expectedChangedAln = "AAGCTTCTTTTAA\nAAGTTACTAA---\nTAG---TTATTAA\nAAGC---TATTAA\nTAGTTATTAA---\n"
+                                 "TAGTTATTAA---\nTAGTTATTAA---\nAAGCTTT---TAA\nA--AGAATAATTA\nAAGCTTTTAA---";
+
+    //fill remove columns of gaps dialog
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_EDIT << "remove_columns_of_gaps",GTGlobals::UseMouse));
+    GTUtilsDialog::waitForDialog(os, new RemoveGapColsDialogFiller(os, RemoveGapColsDialogFiller::Column));
+    GTMenu::showContextMenu(os,GTUtilsMdi::activeWindow(os));
+
+    GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(500);
+    QString changedAln = GTClipboard::text(os);
+    CHECK_SET_ERR(changedAln == expectedChangedAln,"remove gaps option works wrong\n" + changedAln + '\n' + expectedChangedAln);
+
+    //undo
+    QAbstractButton *undo= GTAction::button(os,"msa_action_undo");
+    GTWidget::click(os, undo);
+
+    GTWidget::click(os, GTUtilsMdi::activeWindow(os));
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0,0), QPoint(14,10));
+    GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(500);
+    QString clipboardText = GTClipboard::text(os);
+    CHECK_SET_ERR(clipboardText==initAln, "undo works wrong");
+
+    //redo
+    QAbstractButton *redo= GTAction::button(os,"msa_action_redo");
+    GTWidget::click(os, redo);
+
+    GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(500);
+    clipboardText=GTClipboard::text(os);
+    CHECK_SET_ERR(clipboardText==expectedChangedAln, "redo works wrong\n" + clipboardText);
+}
+
 }//namespace GUITest_common_scenarios_undo_redo
 
 }//namespace U2

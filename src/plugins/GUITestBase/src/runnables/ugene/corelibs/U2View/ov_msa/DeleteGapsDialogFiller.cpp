@@ -22,9 +22,11 @@
 #include "DeleteGapsDialogFiller.h"
 #include "api/GTWidget.h"
 #include "api/GTRadioButton.h"
+#include "api/GTSpinBox.h"
 
 #include <QtGui/QApplication>
 #include <QtGui/QAbstractButton>
+#include <QtGui/QSpinBox>
 
 namespace U2 {
 
@@ -49,4 +51,27 @@ void DeleteGapsDialogFiller::run() {
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME
 
+#define GT_CLASS_NAME "GTUtilsDialog::RemoveGapColsDialogFiller"
+#define GT_METHOD_NAME "run"
+void RemoveGapColsDialogFiller::run() {
+
+    QWidget* dialog = QApplication::activeModalWidget();
+    GT_CHECK(dialog, "activeModalWidget is NULL");
+
+    QRadioButton* radio = dialog->findChild<QRadioButton*>(radioMap[button]);
+    GTRadioButton::click(os, radio);
+
+    if (button==Number){
+        QSpinBox* box = dialog->findChild<QSpinBox*>("absoluteSpinBox");
+        GTSpinBox::setValue(os, box, spinValue);
+    }else if (button==Percent){
+        QSpinBox* box = dialog->findChild<QSpinBox*>("relativeSpinBox");
+        GTSpinBox::setValue(os, box, spinValue);
+    }
+
+    QAbstractButton *removeButton = dialog->findChild<QAbstractButton*>("deleteButton");
+    GTWidget::click(os, removeButton);
+}
+#undef GT_METHOD_NAME
+#undef GT_CLASS_NAME
 }

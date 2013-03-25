@@ -159,7 +159,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_project::test_0011);
     REGISTER_TEST(GUITest_common_scenarios_project::test_0012);
     REGISTER_TEST(GUITest_common_scenarios_project::test_0013);
-    REGISTER_TEST(GUITest_common_scenarios_project::test_0014);
+    REGISTER_TEST_IGNORED(GUITest_common_scenarios_project::test_0014, "https://ugene.unipro.ru/tracker/browse/UGENE-1550");
     REGISTER_TEST(GUITest_common_scenarios_project::test_0016);
     REGISTER_TEST(GUITest_common_scenarios_project::test_0017);
     REGISTER_TEST(GUITest_common_scenarios_project::test_0018);
@@ -251,7 +251,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 //////////////////////////////////////////////////////////////////////////
 // Common scenarios/remote request/
 //////////////////////////////////////////////////////////////////////////
-    REGISTER_TEST(GUITest_common_scenarios_project_remote_request::test_0001);
+    REGISTER_TEST_IGNORED(GUITest_common_scenarios_project_remote_request::test_0001, "https://ugene.unipro.ru/tracker/browse/UGENE-1550");
     REGISTER_TEST(GUITest_common_scenarios_project_remote_request::test_0002);
 
 //////////////////////////////////////////////////////////////////////////
@@ -822,9 +822,14 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_undo_redo::test_0003);
     REGISTER_TEST(GUITest_common_scenarios_undo_redo::test_0004);
     REGISTER_TEST(GUITest_common_scenarios_undo_redo::test_0005);
+
     REGISTER_TEST(GUITest_common_scenarios_undo_redo::test_0006);
     REGISTER_TEST(GUITest_common_scenarios_undo_redo::test_0006_1);
     REGISTER_TEST(GUITest_common_scenarios_undo_redo::test_0006_2);
+
+    REGISTER_TEST_IGNORED(GUITest_common_scenarios_undo_redo::test_0007, "https://ugene.unipro.ru/tracker/browse/UGENE-1553");
+    REGISTER_TEST_IGNORED(GUITest_common_scenarios_undo_redo::test_0007_1, "https://ugene.unipro.ru/tracker/browse/UGENE-1553");
+    REGISTER_TEST(GUITest_common_scenarios_undo_redo::test_0007_2);
 }
 
 void GUITestBasePlugin::registerAdditionalChecks(GUITestBase *guiTestBase) {
