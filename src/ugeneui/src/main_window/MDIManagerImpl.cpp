@@ -356,9 +356,8 @@ void MWMDIManagerImpl::sl_onSubWindowActivated(QMdiSubWindow *w) {
     MDIItem* mdiItem = getMDIItem(w);
     assert(mdiItem != NULL); // we already know about this window
     uiLog.trace(QString("Switching active MDI window from '%1' to '%2'").arg(getWindowName(mdiContentOwner)).arg(getWindowName(mdiItem)));
-    
     // clear old windows menu/tb content
-	clearMDIContent(false);
+        clearMDIContent(false);
 
     // add new content to menu/tb
 	QToolBar* tb = mw->getToolbar(MWTOOLBAR_ACTIVEMDI);
