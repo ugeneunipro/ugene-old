@@ -120,6 +120,7 @@ ProjectTreeController::ProjectTreeController(QObject* parent, QTreeWidget* _tree
 
     renameAction = new QAction(tr("Rename..."), this);
     connect(renameAction, SIGNAL(triggered()), SLOT(sl_onRename()));
+    renameAction->setObjectName("Rename");
 
     groupByDocumentAction = new QAction(tr("Group by document"), this);
     groupByDocumentAction->setObjectName("Group_by_document_action");

@@ -420,7 +420,7 @@ GUI_TEST_CLASS_DEFINITION(test_0006_2){//undo replace_selected_rows_with_complem
     CHECK_SET_ERR((nameList[0] == "L") && (nameList[1] == "compl"), "There are no 'L|compl' in nameList");
 }
 
-GUI_TEST_CLASS_DEFINITION(test_0007){
+GUI_TEST_CLASS_DEFINITION(test_0007){//remove columns with 3 or more gaps
     //Open file
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gap_col.aln");
 
@@ -464,7 +464,7 @@ GUI_TEST_CLASS_DEFINITION(test_0007){
     CHECK_SET_ERR(clipboardText==expectedChangedAln, "redo works wrong");
 }
 
-GUI_TEST_CLASS_DEFINITION(test_0007_1){
+GUI_TEST_CLASS_DEFINITION(test_0007_1){//remove columns with 15 percents of gaps
     //Open file
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gap_col.aln");
 
@@ -507,7 +507,7 @@ GUI_TEST_CLASS_DEFINITION(test_0007_1){
     CHECK_SET_ERR(clipboardText==expectedChangedAln, "redo works wrong");
 }
 
-GUI_TEST_CLASS_DEFINITION(test_0007_2){
+GUI_TEST_CLASS_DEFINITION(test_0007_2){//remove columns of gaps is tested
     //Open file
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gap_col.aln");
 
@@ -550,7 +550,7 @@ GUI_TEST_CLASS_DEFINITION(test_0007_2){
     CHECK_SET_ERR(clipboardText==expectedChangedAln, "redo works wrong\n" + clipboardText);
 }
 
-GUI_TEST_CLASS_DEFINITION(test_0008){
+GUI_TEST_CLASS_DEFINITION(test_0008){//remove all gaps is tested
     //Open file
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gap_col.aln");
 
@@ -590,6 +590,35 @@ GUI_TEST_CLASS_DEFINITION(test_0008){
     GTGlobals::sleep(500);
     clipboardText=GTClipboard::text(os);
     CHECK_SET_ERR(clipboardText==expectedChangedAln, "redo works wrong\n" + clipboardText);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0009){//rename msa is tested
+    //Open file
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gap_col.aln");
+
+    //rename msa
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<ACTION_PROJECT__EDIT_MENU<<"Rename"));
+    GTMouseDriver::moveTo(os,GTUtilsProjectTreeView::getItemCenter(os, "ma2_gap_col"));
+    GTMouseDriver::click(os,Qt::RightButton);
+    GTKeyboardDriver::keySequence(os, "some_name");
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
+
+    //Expected state: msa renamed
+    GTMouseDriver::moveTo(os,GTUtilsProjectTreeView::getItemCenter(os, "some_name"));
+
+    //undo
+    QAbstractButton *undo= GTAction::button(os,"msa_action_undo");
+    QAbstractButton *redo= GTAction::button(os,"msa_action_redo");
+    GTWidget::click(os, undo);
+
+    //Expected state: rename undone
+    GTMouseDriver::moveTo(os,GTUtilsProjectTreeView::getItemCenter(os, "ma2_gap_col"));
+
+    //redo
+    GTWidget::click(os, redo);
+
+    //Expected state: rename redone
+    GTMouseDriver::moveTo(os,GTUtilsProjectTreeView::getItemCenter(os, "some_name"));
 }
 
 }//namespace GUITest_common_scenarios_undo_redo
