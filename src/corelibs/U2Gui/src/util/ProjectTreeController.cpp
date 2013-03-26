@@ -157,6 +157,8 @@ ProjectTreeController::ProjectTreeController(QObject* parent, QTreeWidget* _tree
     MWMDIManager* mdi = AppContext::getMainWindow()->getMDIManager();
     connect(mdi, SIGNAL(si_windowActivated(MWMDIWindow*)), SLOT(sl_windowActivated(MWMDIWindow*)));
 
+    connect(tree, SIGNAL(itemChanged ( QTreeWidgetItem *, int)), SLOT(sl_updateAfterItemchange(QTreeWidgetItem *, int)));
+
     connectModel();
 
     updateSettings(mode);
@@ -1196,6 +1198,12 @@ void ProjectTreeController::sl_onRemoveSelectedObjects() {
         assert(doc != NULL);
         doc->removeObject(obj);
     }
+}
+
+void ProjectTreeController::sl_updateAfterItemchange( QTreeWidgetItem * item, int column ){
+    Q_UNUSED(item);
+    Q_UNUSED(column);
+    updateActions();
 }
 
 

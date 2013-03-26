@@ -180,6 +180,8 @@ private slots:
     void sl_objectRemovedFromActiveView(GObjectView*, GObject*);
     void sl_onCloseEditor(QWidget*,QAbstractItemDelegate::EndEditHint);
 
+    void sl_updateAfterItemchange( QTreeWidgetItem * item, int column );
+
 private:
 	void updateActions();
 	void updateSelection();
