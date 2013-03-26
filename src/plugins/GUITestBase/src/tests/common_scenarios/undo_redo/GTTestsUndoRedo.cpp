@@ -550,6 +550,48 @@ GUI_TEST_CLASS_DEFINITION(test_0007_2){
     CHECK_SET_ERR(clipboardText==expectedChangedAln, "redo works wrong\n" + clipboardText);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0008){
+    //Open file
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gap_col.aln");
+
+    //save initial state
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0,0), QPoint(14,10));
+    GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(500);
+    QString initAln = GTClipboard::text(os);
+    QString expectedChangedAln = "AAGCTTCTTTTAA\nAAGTTACTAA---\nTAGTTATTAA---\nAAGCTATTAA---\nTAGTTATTAA---\n"
+                                 "TAGTTATTAA---\nTAGTTATTAA---\nAAGCTTTTAA---\nAAGAATAATTA--\nAAGCTTTTAA---";
+
+    //fill remove columns of gaps dialog
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_EDIT << "Remove all gaps",GTGlobals::UseMouse));
+    GTMenu::showContextMenu(os,GTUtilsMdi::activeWindow(os));
+
+    GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(500);
+    QString changedAln = GTClipboard::text(os);
+    CHECK_SET_ERR(changedAln == expectedChangedAln,"remove gaps option works wrong\n" + changedAln + '\n' + expectedChangedAln);
+
+    //undo
+    QAbstractButton *undo= GTAction::button(os,"msa_action_undo");
+    GTWidget::click(os, undo);
+
+    GTWidget::click(os, GTUtilsMdi::activeWindow(os));
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0,0), QPoint(14,10));
+    GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(500);
+    QString clipboardText = GTClipboard::text(os);
+    CHECK_SET_ERR(clipboardText==initAln, "undo works wrong");
+
+    //redo
+    QAbstractButton *redo= GTAction::button(os,"msa_action_redo");
+    GTWidget::click(os, redo);
+
+    GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(500);
+    clipboardText=GTClipboard::text(os);
+    CHECK_SET_ERR(clipboardText==expectedChangedAln, "redo works wrong\n" + clipboardText);
+}
+
 }//namespace GUITest_common_scenarios_undo_redo
 
 }//namespace U2
