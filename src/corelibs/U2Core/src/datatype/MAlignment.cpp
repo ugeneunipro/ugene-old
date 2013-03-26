@@ -667,7 +667,7 @@ public:
 };
 
 MAlignment::MAlignment(const QString& _name, DNAAlphabet* al, const QList<MAlignmentRow>& r) 
-: alphabet(al), rows(r), referenceSequence(NULL)
+: alphabet(al), rows(r)
 {
     MAStateCheck check(this);
 
@@ -910,10 +910,6 @@ void MAlignment::removeRow(int rowIndex, U2OpStatus& os) {
         return;
     }
     MAStateCheck check(this);
-
-    if(referenceSequence == &rows.at(rowIndex)) {
-        referenceSequence = NULL;
-    }
 
     rows.removeAt(rowIndex);
 
@@ -1239,6 +1235,18 @@ bool MAlignment::sortRowsByList(const QStringList& order) {
     }
     rows = sortedRows;
     return true;
+}
+
+const MAlignmentRow& MAlignment::getRow( QString name ) const{
+    static MAlignmentRow emptyRow;
+    for(int i = 0;i < rows.count();i++){
+        if(rows.at(i).getName() == name){
+            return rows.at(i);
+        }
+    }
+    SAFE_POINT(false,
+        "Internal error: row name passed to MAlignmnet::getRow function not exists!",
+        emptyRow);
 }
 
 static bool _registerMeta() {

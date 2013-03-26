@@ -368,6 +368,8 @@ public:
     /** Returns row of the alignment */
     inline const MAlignmentRow& getRow(int row) const;
 
+    const MAlignmentRow& getRow(QString name) const;
+
     /** Returns all rows in the alignment */
     const QList<MAlignmentRow>& getRows() const { return rows; }
 
@@ -524,8 +526,6 @@ private:
 
     /** Additional alignment info */
     QVariantMap             info;
-
-    const MAlignmentRow*    referenceSequence;
 
 private:
     static bool registerMeta;

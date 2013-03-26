@@ -475,6 +475,12 @@ void MSAEditorSequenceArea::drawContent(QPainter& p) {
     }
 
     int refSeq = ui->getEditorNameList()->getRefSeqPos()/*, curSeq =0*/;
+    QString refSeqName = ui->getEditor()->getRefSeqName();
+    const MAlignmentRow *r = NULL;
+    if (refSeqName != "(None)"){
+        r = &(msa.getRow(refSeqName));
+    }
+
     
     foreach(const U2Region& region, range) {
         int start = region.startPos;
@@ -504,7 +510,7 @@ void MSAEditorSequenceArea::drawContent(QPainter& p) {
                     if (editor->getResizeMode() == MSAEditor::ResizeMode_FontAndContent) {
                         p.drawText(cr, Qt::AlignCenter, QString(c));
                     }
-                }else if(seq == refSeq || cname == "U2::MSAHighlightingSchemeEmpty" || refSeq == -1){
+                }else if(seq == refSeq || cname == "U2::MSAHighlightingSchemeEmpty" || refSeqName == "(None)"){
                     if (color.isValid()) {
                         p.fillRect(cr, color);
                     }
@@ -512,7 +518,7 @@ void MSAEditorSequenceArea::drawContent(QPainter& p) {
                         p.drawText(cr, Qt::AlignCenter, QString(c));
                     }
                 }else{
-                    const char refChar = msa.charAt(refSeq, pos);              
+                    const char refChar = r->charAt(pos);              
                     bool drawColor = false;
                     highlitingScheme->setUseDots(useDotsAction->isChecked());
                     highlitingScheme->process(refChar, c, drawColor);
