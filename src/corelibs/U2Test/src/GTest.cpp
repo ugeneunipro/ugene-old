@@ -291,6 +291,9 @@ QList<GTestSuite*> GTestSuite::readTestSuiteList( const QString& url, QStringLis
         QStringList suiteNamesList = suiteFileContent.split(QRegExp("\\s+"));
         QString suiteName;
         foreach(suiteName,suiteNamesList){
+            if(suiteName.isEmpty()){
+                continue;
+            }
             suiteName = suiteName.trimmed();
             if (suiteName.startsWith("#")) { //this is a comment line
                 continue;
