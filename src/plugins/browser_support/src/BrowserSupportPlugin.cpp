@@ -68,8 +68,11 @@ using namespace std;
 namespace U2 {
 
 extern "C" Q_DECL_EXPORT Plugin* U2_PLUGIN_INIT_FUNC() {
-    BrowserSupportPlugin* plug = new BrowserSupportPlugin();
-    return plug;
+    if (AppContext::getMainWindow()) {
+        BrowserSupportPlugin* plug = new BrowserSupportPlugin();
+        return plug;
+    }
+    return NULL;
 }
 
 BrowserSupportPlugin::BrowserSupportPlugin() : Plugin(tr("BrowserSupport"), tr("Browser support")) {
