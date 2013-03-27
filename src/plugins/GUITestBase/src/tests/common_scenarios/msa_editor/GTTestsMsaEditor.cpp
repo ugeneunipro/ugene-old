@@ -2749,7 +2749,7 @@ GUI_TEST_CLASS_DEFINITION(test_0026_2_windows){
     qint64 bigSize = GTFileDialog::getSize(os,testDir + "_common_data/scenarios/sandbox/","bigImage.jpeg");
     qint64 smallSize = GTFileDialog::getSize(os,testDir + "_common_data/scenarios/sandbox/","smallImage.jpeg");
 
-    CHECK_SET_ERR(bigSize==665485 && smallSize==153598, QString().setNum(bigSize) + "  " + QString().setNum(smallSize));
+    CHECK_SET_ERR(bigSize==837052 && smallSize==170097, QString().setNum(bigSize) + "  " + QString().setNum(smallSize));
 //    Expected state: image is exported
 }
 
@@ -2802,7 +2802,7 @@ GUI_TEST_CLASS_DEFINITION(test_0028_linux){
 //    file name: test/_common_data/scenarios/sandbox/image.bmp
 //    press Save
     qint64 fileSize = GTFileDialog::getSize(os,testDir + "_common_data/scenarios/sandbox/", "test.svg");
-    CHECK_SET_ERR(fileSize==860868, "Expected size: 630606, Current size: " + QString().setNum(fileSize));
+    CHECK_SET_ERR(fileSize==911901, "Expected size: 630606, Current size: " + QString().setNum(fileSize));
 //    Expected state:  SVG is exported
 
 }
@@ -2822,7 +2822,7 @@ GUI_TEST_CLASS_DEFINITION(test_0028_windows){
 //    file name: test/_common_data/scenarios/sandbox/image.bmp
 //    press Save
     qint64 fileSize = GTFileDialog::getSize(os,testDir + "_common_data/scenarios/sandbox/", "test.svg");
-    CHECK_SET_ERR(fileSize==740745, "Current size: " + QString().setNum(fileSize));
+    CHECK_SET_ERR(fileSize==911901, "Current size: " + QString().setNum(fileSize));
 //    Expected state:  SVG is exported
 
 }
