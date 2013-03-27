@@ -2,7 +2,7 @@
 #Call variants for an input assembly and a reference sequence using SAMTools mpileup and bcftool
 
 
-workflow "Call Variants with SAMTools"{
+workflow "Call variants with SAMTools"{
     read-assembly {
         type:read-assembly;
         name:"Read Assembly (BAM/SAM)";

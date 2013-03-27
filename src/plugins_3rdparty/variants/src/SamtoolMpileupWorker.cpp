@@ -152,8 +152,8 @@ void CallVariantsWorkerFactory::init() {
 
     }
 
-    Descriptor desc(ACTOR_ID, CallVariantsWorker::tr("Call Variants with SAMTools"), 
-        CallVariantsWorker::tr("Call SNPs and INDELS with samtools mpileup and bcftools")
+    Descriptor desc(ACTOR_ID, CallVariantsWorker::tr("Call Variants with SAMtools"), 
+        CallVariantsWorker::tr("Call SNPs and INDELS with SAMtools mpileup and bcftools")
         );
 
 
@@ -508,7 +508,7 @@ QString CallVariantsPrompter::composeRichDoc() {
 
     QString unsetStr = "<font color='red'>"+tr("unset")+"</font>";
     QString seqName = tr("For reference sequence from <u>%1</u>,").arg(seqProducer ? seqProducer->getLabel() : unsetStr);
-    QString assemblyName = tr("with assembly data provided by <u>%1</u>,").arg(assemblyProducer ? assemblyProducer->getLabel() : unsetStr);
+    QString assemblyName = tr("with assembly data provided by <u>%1</u>").arg(assemblyProducer ? assemblyProducer->getLabel() : unsetStr);
 
     QString doc = tr("%1 call variants %2.")
         .arg(seqName)
