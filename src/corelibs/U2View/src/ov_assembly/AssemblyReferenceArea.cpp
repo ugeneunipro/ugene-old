@@ -122,7 +122,7 @@ void AssemblySequenceArea::drawSequence(QPainter & p) {
             // TODO: not hard-coded
             if(c != skipChar) {
                 QPixmap cellImage;
-                if(referenceFragment.isEmpty()) {
+                if(referenceFragment.isEmpty() || i >= referenceFragment.length()) {
                     cellImage = cellRenderer->cellImage(c);
                 } else {
                     cellImage = cellRenderer->cellImage(U2AssemblyRead(), c, referenceFragment.at(i));
