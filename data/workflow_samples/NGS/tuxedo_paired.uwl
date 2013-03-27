@@ -2,7 +2,7 @@
 
 
 
-workflow "Tuxedo: paired reads"{
+workflow "Tuxedo: paired-end reads"{
 
     tophat {
         type:tophat;
@@ -152,24 +152,24 @@ workflow "Tuxedo: paired reads"{
         }
 
         wizard {
-            name : "Tuxedo wizard";
+            name : "Tuxedo Wizard";
             page {
                 id:1;
                 next:2;
                 title:"Input data";
                 parameters-area {
                     group {
-                        title:"Paired RNA short-reads";
+                        title:"TopHat input: paired RNA-seq short reads";
                         label-size:200;
                         read-sequence.url-in {
-                            label:"First Fasta/Fastq file(s)";
+                            label:"First FASTA or FASTQ file(s)";
                         }
                         read-sequence-1.url-in {
-                            label:"Second Fasta/Fastq file(s)";
+                            label:"Second FASTA or FASTQ file(s)";
                         }
                     }
                     group {
-                        title:"Cuffdiff data. Requires at least two files";
+                        title:"Cuffdiff input: fragment alignments (at least two files are required)";
                         label-size:200;
                         read-assembly.url-in {
                             label:"BAM/SAM files";

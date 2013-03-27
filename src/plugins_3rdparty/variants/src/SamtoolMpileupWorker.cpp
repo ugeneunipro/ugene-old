@@ -153,7 +153,7 @@ void CallVariantsWorkerFactory::init() {
     }
 
     Descriptor desc(ACTOR_ID, CallVariantsWorker::tr("Call Variants with SAMtools"), 
-        CallVariantsWorker::tr("Call SNPs and INDELS with SAMtools mpileup and bcftools")
+        CallVariantsWorker::tr("Calls SNPs and INDELS with SAMtools mpileup and bcftools")
         );
 
 

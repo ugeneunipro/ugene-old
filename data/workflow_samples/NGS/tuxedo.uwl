@@ -2,7 +2,7 @@
 
 
 
-workflow Tuxedo{
+workflow "Tuxedo: single-end reads"{
 
     tophat {
         type:tophat;
@@ -113,21 +113,21 @@ workflow Tuxedo{
             }
         }
         wizard {
-            name:"Tuxedo wizard";
+            name:"Tuxedo Wizard";
             page {
                 id:1;
                 next:2;
                 title:"Input data";
                 parameters-area {
                     group {
-                        title:"RNA short-reads";
+                        title:"TopHat input: RNA-seq short reads";
                         label-size:200;
                         read-sequence.url-in {
-                            label:"Fasta/Fastq file(s)";
+                            label:"FASTA/FASTQ file(s)";
                         }
                     }
                     group {
-                        title:"Cuffdiff data. Requires at least two files";
+                        title:"Cuffdiff input: fragment alignments (at least two files are required)";
                         label-size:200;
                         read-assembly.url-in {
                             label:"BAM/SAM files";

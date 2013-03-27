@@ -1,8 +1,8 @@
 #@UGENE_WORKFLOW
-#Call variants for an input assembly and a reference sequence using SAMTools mpileup and bcftool
+#Call variants for an input assembly and a reference sequence using SAMtools mpileup and bcftool
 
 
-workflow "Call variants with SAMTools"{
+workflow "Call variants with SAMtools"{
     read-assembly {
         type:read-assembly;
         name:"Read Assembly (BAM/SAM)";
@@ -47,7 +47,7 @@ workflow "Call variants with SAMTools"{
 			page {
 				 id : 1;
 				 next : 2;
-				 title: "Input reference sequence and BAM file";
+				 title: "Input reference sequence and assembly";
 				  parameters-area {
 					group {
 						title : "Input files";
@@ -64,7 +64,7 @@ workflow "Call variants with SAMTools"{
 			page {
 				id : 2;
 				next : 3;
-				title: "SAMTools mpileup parameters";
+				title: "SAMtools <i>mpileup</i> parameters";
 				  parameters-area {
 					group {
 						title : "Parameters";
@@ -128,7 +128,7 @@ workflow "Call variants with SAMTools"{
 			page {
 				id : 3;
 				next : 4;
-				title: "SAMTools bcfview parameters";
+				title: "SAMtools <i>bcftools view</i> parameters";
 				  parameters-area {
 					group {
 						title : "Parameters";
@@ -196,7 +196,7 @@ workflow "Call variants with SAMTools"{
 			}
 			page {
 				id : 4;
-				title: "Output variations file";
+				title: "Output variations";
 				  parameters-area {
 					group {
 						title : "Output file";
