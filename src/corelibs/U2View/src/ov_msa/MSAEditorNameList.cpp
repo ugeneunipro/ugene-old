@@ -799,7 +799,9 @@ void MSAEditorNameList::sl_editSequenceName()
 void MSAEditorNameList::mouseDoubleClickEvent( QMouseEvent *e )
 {
     Q_UNUSED(e);
-    sl_editSequenceName();
+    if (e->button() == Qt::LeftButton) {
+        sl_editSequenceName();
+    }
 }
 
 void MSAEditorNameList::moveSelectedRegion( int shift )
