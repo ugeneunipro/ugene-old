@@ -63,6 +63,7 @@ QWidget* MSAHighlightingTab::createHighlightingGroup() {
     highlightingScheme->setSizeAdjustPolicy(QComboBox::AdjustToMinimumContentsLength);
 
     hint = new QLabel("");
+    hint->setWordWrap(true);
 
     useDots = new QCheckBox(tr("Use dots"));
 
