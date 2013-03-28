@@ -177,5 +177,18 @@ private:
 
 };
 
+class GTest_Compare_PDF_Files : public GTest {
+    Q_OBJECT
+    SIMPLE_XML_TEST_BODY_WITH_FACTORY(GTest_Compare_PDF_Files, "compare-pdf-docs");
+
+    ReportResult report();
+
+private:
+    QString doc1Path;
+    QString doc2Path;
+    bool byLines;
+
+};
+
 }//namespace
 #endif
