@@ -392,7 +392,11 @@ void PageContentCreator::visit(DefaultPageContent *content) {
     { // create page title
         pageTitle = new QLabel();
         pageTitle->setWordWrap(true);
+#ifdef Q_OS_MAC
         pageTitle->setStyleSheet("QLabel {font-size: 20pt; padding-bottom: 10px; color: #0c3762}");
+#elif
+        pageTitle->setStyleSheet("QLabel {font-size: 16pt; padding-bottom: 10px; color: #0c3762}");
+#endif
         pageTitle->resize(0, 0);
         pageTitle->hide();
         contentLayout->addWidget(pageTitle);
@@ -459,6 +463,7 @@ GroupBox::GroupBox(bool collapsible, const QString &title)
     QGroupBox::setLayout(layout);
     layout->setContentsMargins(0, 0, 0, 0);
 
+#ifdef Q_OS_MAC
     QString style = "QGroupBox  {"
                     "margin-top: 30px;" // leave space at the top for the title
                     "padding: 5 5 5 5px;"
@@ -469,6 +474,7 @@ GroupBox::GroupBox(bool collapsible, const QString &title)
                     "padding-top: 12px;"
                     "}";
     setStyleSheet(style);
+#endif
 
     if (collapsible) {
         hLayout = new QHBoxLayout();
