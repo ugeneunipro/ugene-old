@@ -60,10 +60,10 @@ void WizardPageController::applyLayout(WDWizardPage *wPage) {
         setError(wPage);
         return;
     }
+    pcc.setPageTitle(page->getTitle());
     wPage->setLayout(pcc.getResult());
     controllers << pcc.getControllers();
 
-    wPage->setTitle(page->getTitle());
     wPage->setFinalPage(page->isFinal());
 }
 

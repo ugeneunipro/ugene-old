@@ -282,7 +282,11 @@ void WidgetCreator::visit(WidgetsArea *wa) {
     layout->setContentsMargins(0, 0, 0, 0);
     scrollContent->setLayout(layout);
     foreach (WizardWidget *w, wa->getWidgets()) {
-        WidgetCreator wcr(wc, wa->getLabelSize());
+        int labelSize = wa->getLabelSize();
+#ifdef Q_OS_MAC
+        labelSize *= 1.3;
+#endif
+        WidgetCreator wcr(wc, labelSize);
         w->accept(&wcr);
         if (NULL != wcr.getResult()) {
             wcr.getResult()->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Maximum);
@@ -328,7 +332,7 @@ void WidgetCreator::visit(LogoWidget *lw) {
     } else {
         pix = QPixmap(lw->getLogoPath());
     }
-    pix = pix.scaled(191, 338, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+    pix = pix.scaled(255, 450, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
     label->setPixmap(pix);
     layout->addWidget(label);
     result->setFixedSize(pix.size());
@@ -363,7 +367,7 @@ void WidgetCreator::setGroupBoxLayout(GroupBox *gb) {
 /* PageContentCreator */
 /************************************************************************/
 PageContentCreator::PageContentCreator(WizardController *_wc)
-: wc(_wc), result(NULL)
+    : wc(_wc), result(NULL), pageTitle(NULL)
 {
 
 }
@@ -371,6 +375,8 @@ PageContentCreator::PageContentCreator(WizardController *_wc)
 void PageContentCreator::visit(DefaultPageContent *content) {
     QHBoxLayout *layout = new QHBoxLayout();
     layout->setContentsMargins(0, 0, 0, 0);
+    QVBoxLayout *contentLayout = new QVBoxLayout();
+    contentLayout->setContentsMargins(0, 0, 0, 0);
     int paramsHeight = content->getPageDefaultHeight();
     int paramsWidth = content->getPageWidth();
     { // create logo
@@ -383,6 +389,23 @@ void PageContentCreator::visit(DefaultPageContent *content) {
             controllers << logoWC.getControllers();
         }
     }
+    { // create page title
+        pageTitle = new QLabel();
+        pageTitle->setWordWrap(true);
+        pageTitle->setStyleSheet("QLabel {font-size: 20pt; padding-bottom: 10px; color: #0c3762}");
+        pageTitle->resize(0, 0);
+        pageTitle->hide();
+        contentLayout->addWidget(pageTitle);
+        //TODO: compute real title and subtitle height
+        paramsHeight = 0;
+    }
+    { // create page subtitle
+        pageSubtitle = new QLabel();
+        pageSubtitle->setWordWrap(true);
+        pageSubtitle->resize(0, 0);
+        pageSubtitle->hide();
+        contentLayout->addWidget(pageSubtitle);
+    }
     { // create parameters
         WidgetCreator paramsWC(wc);
         content->getParamsArea()->accept(&paramsWC);
@@ -391,13 +414,28 @@ void PageContentCreator::visit(DefaultPageContent *content) {
                 QSpacerItem *spacer = new QSpacerItem(0, 0, QSizePolicy::Maximum, QSizePolicy::MinimumExpanding);
                 paramsWC.getLayout()->addSpacerItem(spacer);
             }
-            layout->addWidget(paramsWC.getResult());
+            contentLayout->addWidget(paramsWC.getResult());
             paramsWC.getResult()->setMinimumSize(paramsWidth, paramsHeight);
             controllers << paramsWC.getControllers();
         }
     }
+    layout->addLayout(contentLayout);
     layout->setAlignment(Qt::AlignBottom);
     result = layout;
+}
+
+void PageContentCreator::setPageTitle(const QString& title) {
+    if (NULL != pageTitle && false == title.isEmpty()) {
+        pageTitle->setText(title);
+        pageTitle->show();
+    }
+}
+
+void PageContentCreator::setPageSubtitle(const QString& subtitle) {
+    if (NULL != pageSubtitle && false == subtitle.isEmpty()) {
+        pageSubtitle->setText(subtitle);
+        pageSubtitle->show();
+    }
 }
 
 QLayout * PageContentCreator::getResult() {
@@ -411,7 +449,6 @@ QList<WidgetController*> & PageContentCreator::getControllers() {
 /************************************************************************/
 /* GroupBox */
 /************************************************************************/
-const int GroupBox::MARGIN = 5;
 
 GroupBox::GroupBox(bool collapsible, const QString &title)
 : QGroupBox(title), hLayout(NULL), tip(NULL), showHideButton(NULL)
@@ -420,7 +457,18 @@ GroupBox::GroupBox(bool collapsible, const QString &title)
     ui->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Maximum);
     QVBoxLayout *layout = new QVBoxLayout();
     QGroupBox::setLayout(layout);
-    layout->setContentsMargins(MARGIN, MARGIN, MARGIN, MARGIN);
+    layout->setContentsMargins(0, 0, 0, 0);
+
+    QString style = "QGroupBox  {"
+                    "margin-top: 30px;" // leave space at the top for the title
+                    "padding: 5 5 5 5px;"
+                    "}"
+
+                    "QGroupBox::title  {"
+                    "subcontrol-origin: margin;"
+                    "padding-top: 12px;"
+                    "}";
+    setStyleSheet(style);
 
     if (collapsible) {
         hLayout = new QHBoxLayout();

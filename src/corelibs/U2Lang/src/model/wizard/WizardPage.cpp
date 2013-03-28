@@ -132,7 +132,7 @@ TemplatedPageContent * PageContentFactory::createContent(const QString &id, U2Op
 const QString DefaultPageContent::ID("default");
 const QString DefaultPageContent::PARAMETERS("parameters-area");
 const int DefaultPageContent::HEIGHT = 400;
-const int DefaultPageContent::WIDTH = 700;
+const int DefaultPageContent::WIDTH = 720;
 
 DefaultPageContent::DefaultPageContent()
 : TemplatedPageContent(ID)

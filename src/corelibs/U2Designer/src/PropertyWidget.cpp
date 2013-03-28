@@ -167,7 +167,14 @@ ComboBoxWithUrlWidget::ComboBoxWithUrlWidget(const QVariantMap &items, bool _isP
     foreach (const QString &key, items.keys()) {
         comboBox->addItem(key, items[key]);
     }
-
+#ifdef Q_OS_MAC
+    QString style = "QComboBox {"
+                    "height: 24px;"
+                    "min-height: 24px;"
+                    "max-height: 24px;"
+                    "}";
+    comboBox->setStyleSheet(style);
+#endif
     QToolButton * toolButton = new QToolButton(this);
     toolButton->setText("...");
     toolButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred);
@@ -235,7 +242,7 @@ ComboBoxWithChecksWidget::ComboBoxWithChecksWidget(const QVariantMap& _items, QW
     comboBox = new QComboBox(this);
     cm = NULL;
     addMainWidget(comboBox);
-    
+
     setValue(value());
 
     connect(comboBox, SIGNAL(activated(const QString &)),

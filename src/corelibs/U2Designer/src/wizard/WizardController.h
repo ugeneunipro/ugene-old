@@ -135,6 +135,8 @@ public:
     PageContentCreator(WizardController *wc);
 
     virtual void visit(DefaultPageContent *content);
+    void setPageTitle(const QString& title);
+    void setPageSubtitle(const QString& subtitle);
 
     QLayout * getResult();
     QList<WidgetController*> & getControllers();
@@ -143,6 +145,8 @@ private:
     WizardController *wc;
     QLayout *result;
     QList<WidgetController*> controllers;
+    QLabel *pageTitle;
+    QLabel *pageSubtitle;
 };
 
 /************************************************************************/
@@ -154,8 +158,6 @@ public:
     GroupBox(bool collapsible, const QString &title);
 
     void setLayout(QLayout *l);
-
-    static const int MARGIN;
 
 private slots:
     void sl_collapse();

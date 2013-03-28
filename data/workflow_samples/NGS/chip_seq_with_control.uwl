@@ -157,11 +157,11 @@ workflow "ChIP-seq analyses with control"{
             }
         }
         wizard {
-            name:"ChIP-seq analyses Wizard";
+            name:"ChIP-seq Analyses Wizard";
             page {
                 id:1;
                 next:2;
-                title:"MACS - Model-based Analysis for ChIP-Seq";
+                title:"MACS";
                 parameters-area {
                     group {
                         title:"Input files";
@@ -175,7 +175,7 @@ workflow "ChIP-seq analyses with control"{
 
                     }
                     group {
-                        title:"MACS Parameters";
+                        title:"Parameters";
                         label-size:120;
                         macs-id.output-dir {
                         }
@@ -222,11 +222,11 @@ workflow "ChIP-seq analyses with control"{
             page {
                 id:2;
                 next:3;
-                title:"CEAS - Enrichment on chromosome and annotation";
+                title:"CEAS";
                 parameters-area {
                     group {
-                        title:"CEAS Parameters";
-                        label-size:120;
+                        title:"Parameters";
+                        label-size:150;
                         ceas-report.image-file {
                         }
                         ceas-report.anns-file {
@@ -246,7 +246,7 @@ workflow "ChIP-seq analyses with control"{
                     }
                     group {
                         title:Advanced;
-                        label-size:120;
+                        label-size:150;
                         type:hideable;
                         ceas-report.group-files {
                         }
@@ -258,10 +258,10 @@ workflow "ChIP-seq analyses with control"{
             page {
                 id:3;
                 next:4;
-                title:"Conservation Plot - Calculates the PhastCons scores in several intervals sets";
+                title:"Conservation Plot";
                 parameters-area {
                     group {
-                        title:"Conservation Plot Parameters";
+                        title:"Parameters";
                         label-size:120;
                         conservation_plot-id.output-file {
                         }
@@ -283,11 +283,11 @@ workflow "ChIP-seq analyses with control"{
             page {
                 id:4;
                 next:5;
-                title:"SeqPos motif tool - Find motifs from given regions enriched near the centers";
+                title:"SeqPos motif tool";
                 parameters-area {
                     group {
-                        title:"SeqPos Parameters";
-                        label-size:120;
+                        title:"Parameters";
+                        label-size:130;
                         seqpos-id.output-dir {
                         }
                         seqpos-id.output-dir {
@@ -309,7 +309,7 @@ workflow "ChIP-seq analyses with control"{
             }
             page {
                 id:5;
-                title:"Peak2Gene and Gene Ontology - Find genes near peaks, and GO terms using Bioconductor (GO, GOstats) and DAVID at NIH";
+                title:"Peak2Gene and Gene Ontology";
                 parameters-area {
                     group {
                         title:"Peak2Gene Parameters";
