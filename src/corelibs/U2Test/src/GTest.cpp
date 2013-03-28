@@ -364,10 +364,7 @@ GTestLogHelper::~GTestLogHelper(){
 
 void GTestLogHelper::initMessages(const QStringList& expectedList, const QStringList& unexpectedList)
 {
-    LogServer::getInstance()->addListner(this);
-    logHelperStartTime = GTimer::currentTimeMicros();
-
-
+    statusWasVerified = false;
     foreach (QString message, expectedList) {
         expectedMessages[message] = false; // i.e. not detected yet
     }
@@ -375,11 +372,15 @@ void GTestLogHelper::initMessages(const QStringList& expectedList, const QString
     foreach (QString message, unexpectedList) {
         unexpectedMessages[message] = false;
     }
+
+    logHelperStartTime = GTimer::currentTimeMicros();
+    LogServer::getInstance()->addListner(this);
 }
 
 
 GTestLogHelperStatus GTestLogHelper::verifyStatus()
 {
+    LogServer::getInstance()->removeListner(this);
     GTestLogHelperStatus status = GTest_LogHelper_Valid;
 
     foreach (const QString& str, expectedMessages.keys()) {
@@ -396,7 +397,6 @@ GTestLogHelperStatus GTestLogHelper::verifyStatus()
         }
     }
 
-    LogServer::getInstance()->removeListner(this);
     statusWasVerified = true;
     logHelperEndTime = GTimer::currentTimeMicros();
 
@@ -407,6 +407,19 @@ GTestLogHelperStatus GTestLogHelper::verifyStatus()
 void GTestLogHelper::onMessage(const LogMessage& logMessage)
 {
     qint64 currentTime = GTimer::currentTimeMicros();
+    if(logMessage.time >= logHelperStartTime){
+        return;
+    }
+
+    if (statusWasVerified) {
+        FAIL(QString("Internal error in GTestLogHelper (got a message after verifying the status):"
+            " message '%1' with time '%2' appeared"
+            " in log at time '%3'. GTestLogHelper end time is '%4'.").arg(logMessage.text)
+            .arg(logMessage.time)
+            .arg(currentTime)
+            .arg(logHelperEndTime),
+            );
+    }
 
     foreach (const QString& str, expectedMessages.keys()) {
         if (logMessage.text.contains(str)) {
@@ -418,24 +431,6 @@ void GTestLogHelper::onMessage(const LogMessage& logMessage)
         if (logMessage.text.contains(str)) {
             unexpectedMessages[str] = true;
         }
-    }
-
-    SAFE_POINT(logMessage.time >= logHelperStartTime,
-        QString("Internal error in GTestLogHelper (incorrect start time): message '%1' with time '%2' appeared"
-            " in log at time '%3'. GTestLogHelper start time is '%4'.").arg(logMessage.text)
-                .arg(logMessage.time)
-                .arg(currentTime)
-                .arg(logHelperStartTime),
-                );
-
-    if (statusWasVerified) {
-        FAIL(QString("Internal error in GTestLogHelper (got a message after verifying the status):"
-            " message '%1' with time '%2' appeared"
-            " in log at time '%3'. GTestLogHelper end time is '%4'.").arg(logMessage.text)
-            .arg(logMessage.time)
-            .arg(currentTime)
-            .arg(logHelperEndTime),
-            );
     }
 }
 
