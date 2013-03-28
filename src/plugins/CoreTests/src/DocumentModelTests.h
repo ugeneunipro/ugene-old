@@ -57,6 +57,8 @@ private:
     QString expectedLogMessage;
     QString expectedLogMessage2;
     QString unexpectedLogMessage;
+
+    bool                needVerifyLog;
 };
 
 class GTest_SaveDocument : public GTest {

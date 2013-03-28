@@ -61,6 +61,7 @@ void GTest_LoadDocument::init(XMLTestFormat*, const QDomElement& el) {
     loadTask = NULL;
     contextAdded = false;
     docContextName = el.attribute("index");
+    needVerifyLog = false;
 
     if (NULL != el.attribute("message")) {
         expectedLogMessage = el.attribute("message");
@@ -128,8 +129,10 @@ void GTest_LoadDocument::prepare() {
     if (!unexpectedLogMessage.isEmpty()){
         unexpectedMessages << unexpectedLogMessage;
     }
-
-    logHelper.initMessages(expectedMessages, unexpectedMessages);
+    if(expectedLogMessage.length()!=0 || unexpectedMessages.length()!=0){
+        needVerifyLog=true;
+        logHelper.initMessages(expectedMessages, unexpectedMessages);
+    }
 }
 
 Task::ReportResult GTest_LoadDocument::report() {
@@ -139,7 +142,7 @@ Task::ReportResult GTest_LoadDocument::report() {
         addContext(docContextName, loadTask->getDocument());
         contextAdded = true;
 
-        if (GTest_LogHelper_Invalid == logHelper.verifyStatus()) {
+        if (needVerifyLog && GTest_LogHelper_Invalid == logHelper.verifyStatus()) {
             stateInfo.setError("Log is incorrect!");
         }
     }

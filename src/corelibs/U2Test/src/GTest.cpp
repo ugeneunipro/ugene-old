@@ -407,9 +407,14 @@ GTestLogHelperStatus GTestLogHelper::verifyStatus()
 void GTestLogHelper::onMessage(const LogMessage& logMessage)
 {
     qint64 currentTime = GTimer::currentTimeMicros();
-    if(logMessage.time >= logHelperStartTime){
-        return;
-    }
+
+    SAFE_POINT(logMessage.time >= logHelperStartTime,
+        QString("Internal error in GTestLogHelper (incorrect start time): message '%1' with time '%2' appeared"
+            " in log at time '%3'. GTestLogHelper start time is '%4'.").arg(logMessage.text)
+                .arg(logMessage.time)
+                .arg(currentTime)
+                .arg(logHelperStartTime),
+                );
 
     if (statusWasVerified) {
         FAIL(QString("Internal error in GTestLogHelper (got a message after verifying the status):"
