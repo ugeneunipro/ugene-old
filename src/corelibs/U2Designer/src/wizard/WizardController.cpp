@@ -394,7 +394,7 @@ void PageContentCreator::visit(DefaultPageContent *content) {
         pageTitle->setWordWrap(true);
 #ifdef Q_OS_MAC
         pageTitle->setStyleSheet("QLabel {font-size: 20pt; padding-bottom: 10px; color: #0c3762}");
-#elif
+#else
         pageTitle->setStyleSheet("QLabel {font-size: 16pt; padding-bottom: 10px; color: #0c3762}");
 #endif
         pageTitle->resize(0, 0);
