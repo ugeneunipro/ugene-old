@@ -1467,17 +1467,17 @@ void MSAEditorSequenceArea::sl_delCol() {
         SAFE_POINT_OP(os, );
 
         switch(deleteMode) {
-        case DeleteByAbsoluteVal: msaObj->deleteGapsByAbsoluteVal(value);
+        case DeleteByAbsoluteVal: msaObj->deleteColumnWithGaps(value);
             break;
         case DeleteByRelativeVal: {
             int absoluteValue = ( msaObj->getNumRows()*value ) / 100;
             if (absoluteValue < 1) {
                 absoluteValue = 1;
             }
-            msaObj->deleteGapsByAbsoluteVal(absoluteValue);
+            msaObj->deleteColumnWithGaps(absoluteValue);
             break;
         }
-        case DeleteAll: msaObj->deleteAllGapColumn();
+        case DeleteAll: msaObj->deleteColumnWithGaps();
             break;
         default:
             assert(0);

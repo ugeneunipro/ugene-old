@@ -28,6 +28,8 @@
 
 #include "GObjectTypes.h"
 
+const int GAP_COLUMN_ONLY = -1;
+
 namespace U2 {
 
 class GHints;
@@ -87,7 +89,6 @@ public:
     void insertGap(U2Region rows, int pos, int nGaps);
     int deleteGap(int seqNum, int pos, int maxGaps);
     int deleteGap(int pos, int maxGaps);
-    void deleteAllGapColumn();
 
     /**
      * Updates a gap model of the alignment.
@@ -112,10 +113,10 @@ public:
 
 
     /** Method that affect the whole alignment, including sequences */
-    void removeRegion(int startPos, int startRow, int nBases, int nRows, bool removeEmptyRows);
+    void removeRegion(int startPos, int startRow, int nBases, int nRows, bool removeEmptyRows, bool track = true);
     void crop(U2Region window, const QSet<QString>& rowNames);
     bool shiftRegion(int startPos, int startRow, int nBases, int nRows, int shift);
-    void deleteGapsByAbsoluteVal(int val);
+    void deleteColumnWithGaps(int requiredGapCount = GAP_COLUMN_ONLY);
     void updateCachedMAlignment(MAlignmentModInfo mi = MAlignmentModInfo());
     void sortRowsByList(const QStringList& order);
 

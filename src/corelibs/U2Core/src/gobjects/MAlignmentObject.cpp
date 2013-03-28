@@ -33,7 +33,6 @@
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
 
-
 namespace U2 {
 
 MSAMemento::MSAMemento():lastState(MAlignment()){}
@@ -315,7 +314,7 @@ void MAlignmentObject::setGObjectName(const QString& newName) {
     GObject::setGObjectName(newName);
 }
 
-void MAlignmentObject::removeRegion(int startPos, int startRow, int nBases, int nRows, bool removeEmptyRows) {
+void MAlignmentObject::removeRegion(int startPos, int startRow, int nBases, int nRows, bool removeEmptyRows, bool track) {
     SAFE_POINT(!isStateLocked(), "Alignment state is locked!", );
     QList<qint64> rowIds;
     MAlignment msa = getMAlignment();
@@ -336,8 +335,9 @@ void MAlignmentObject::removeRegion(int startPos, int startRow, int nBases, int 
     if (removeEmptyRows) {
         MsaDbiUtils::removeEmptyRows(entityRef, rowIds, os);
     }
-
-    updateCachedMAlignment();
+    if (track) {
+        updateCachedMAlignment();
+    }
 }
 
 void MAlignmentObject::renameRow(int rowIdx, const QString& newName) {
@@ -374,10 +374,13 @@ void MAlignmentObject::crop(U2Region window, const QSet<QString>& rowNames) {
     updateCachedMAlignment();
 }
 
-void MAlignmentObject::deleteGapsByAbsoluteVal(int val) {
+void MAlignmentObject::deleteColumnWithGaps(int requiredGapCount) {
     MAlignment msa = getMAlignment();
-    int length = msa.getLength();
-    QList<int> colsForDelete;
+    const int length = msa.getLength();
+    if (GAP_COLUMN_ONLY == requiredGapCount) {
+        requiredGapCount = length;
+    }
+    QList<qint64> colsForDelete;
     for(int i = 0; i < length; i++) { //columns
         int gapCount = 0;
         for(int j = 0; j < msa.getNumRows(); j++) { //sequences
@@ -386,43 +389,23 @@ void MAlignmentObject::deleteGapsByAbsoluteVal(int val) {
             }
         }
 
-        if(gapCount >= val) {
-            colsForDelete.prepend(i);               //invert order
+        if(gapCount >= requiredGapCount) {
+            colsForDelete.prepend(i); //invert order
         }
     }
-    if (msa.getLength() == colsForDelete.count()) {
+    if (length == colsForDelete.count()) {
         return;
-    } else {
-        foreach (int colNumber, colsForDelete) {
-            if (colNumber >= cachedMAlignment.getLength()) {
-                continue;
-            }
-            removeRegion(colNumber, 0, 1, msa.getNumRows(), true);
-        }
-        msa = getMAlignment();
     }
-    updateCachedMAlignment();
-}
-
-void MAlignmentObject::deleteAllGapColumn() {
-    MAlignment msa = getMAlignment();
-    int length = msa.getLength();
-    for(int i = 0; i < length; i++) { //columns
-        int gapCount = 0;
-        for(int j = 0; j < msa.getNumRows(); j++) { //sequences
-            if(charAt(j,i) == '-') {
-                gapCount++;
-            }
+    QList<qint64>::const_iterator column = colsForDelete.constBegin();
+    const QList<qint64>::const_iterator end = colsForDelete.constEnd();
+    for ( ; column != end; ++column) {
+        if (*column >= cachedMAlignment.getLength()) {
+            continue;
         }
-
-        if(gapCount == msa.getNumRows()) {
-            removeRegion(i, 0, 1, msa.getNumRows(), true);
-            msa = getMAlignment();
-            length--;
-            i--;
-        }
+        removeRegion(*column, 0, 1, msa.getNumRows(), true, (end - 1 == column));
     }
-
+    //removeColumns(colsForDelete, true);
+    msa = getMAlignment();
     updateCachedMAlignment();
 }
 
