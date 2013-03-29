@@ -461,9 +461,9 @@ GroupBox::GroupBox(bool collapsible, const QString &title)
     ui->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Maximum);
     QVBoxLayout *layout = new QVBoxLayout();
     QGroupBox::setLayout(layout);
-    layout->setContentsMargins(0, 0, 0, 0);
 
 #ifdef Q_OS_MAC
+    layout->setContentsMargins(0, 0, 0, 0);
     QString style = "QGroupBox  {"
                     "margin-top: 30px;" // leave space at the top for the title
                     "padding: 5 5 5 5px;"
@@ -474,6 +474,8 @@ GroupBox::GroupBox(bool collapsible, const QString &title)
                     "padding-top: 12px;"
                     "}";
     setStyleSheet(style);
+#else
+    layout->setContentsMargins(5, 5, 5, 5);
 #endif
 
     if (collapsible) {
