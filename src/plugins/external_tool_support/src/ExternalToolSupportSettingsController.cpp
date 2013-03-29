@@ -235,12 +235,22 @@ void ExternalToolSupportSettingsPageWidget::sl_validateTaskStateChanged(){
     assert(s);
     if(s->isFinished()){
         QList<QTreeWidgetItem*> listOfItems=treeWidget->findItems(s->getToolName(),Qt::MatchExactly|Qt::MatchRecursive);
-        assert(listOfItems.length()==1);
-        if(s->isValidTool()){
-            listOfItems.at(0)->setIcon(0, AppContext::getExternalToolRegistry()->getByName(s->getToolName())->getIcon());
+        QTreeWidgetItem* item;
+        if(listOfItems.length()!=1){
+            foreach(QTreeWidgetItem* i, listOfItems){
+                if(i->childCount()==0){
+                    item=i;
+                }
+            }
+        }else{
+            item=listOfItems.at(0);
+        }
+        assert(item!=NULL);
+         if(s->isValidTool()){
+            item->setIcon(0, AppContext::getExternalToolRegistry()->getByName(s->getToolName())->getIcon());
             externalToolsInfo[s->getToolName()].valid=true;
         }else{
-            listOfItems.at(0)->setIcon(0, AppContext::getExternalToolRegistry()->getByName(s->getToolName())->getWarnIcon());
+            item->setIcon(0, AppContext::getExternalToolRegistry()->getByName(s->getToolName())->getWarnIcon());
             externalToolsInfo[s->getToolName()].valid=false;
         }
         externalToolsInfo[s->getToolName()].version=s->getToolVersion();

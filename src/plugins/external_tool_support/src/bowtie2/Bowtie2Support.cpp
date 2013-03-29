@@ -37,7 +37,7 @@ Bowtie2Support::Bowtie2Support(const QString& name, const QString& path /* = */ 
         warnIcon = QIcon(":external_tool_support/images/cmdline_warn.png");
     }
 
-    toolKitName = "Bowtie 2 Tools";
+    toolKitName = "Bowtie2";
 
     // Bowtie2-align
     if (name == BOWTIE2_ALIGN_TOOL_NAME) {

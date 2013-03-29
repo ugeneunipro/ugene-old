@@ -37,7 +37,7 @@ CufflinksSupport::CufflinksSupport(const QString& name, const QString& path)
         warnIcon = QIcon(":external_tool_support/images/cmdline_warn.png");
     }
 
-    toolKitName = "Cufflinks Tools";
+    toolKitName = "Cufflinks";
 
     // Cuffcompare
     if (name == CUFFCOMPARE_TOOL_NAME) {
