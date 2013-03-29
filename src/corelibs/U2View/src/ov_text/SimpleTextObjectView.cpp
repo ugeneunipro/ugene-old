@@ -107,7 +107,12 @@ QWidget* SimpleTextObjectView::createWidget() {
     textEdit = new QPlainTextEdit();
     textEdit->setLineWrapMode(QPlainTextEdit::NoWrap);
     textEdit->setWordWrapMode(QTextOption::NoWrap);
-    textEdit->setPlainText(textObject->getText());
+    try {
+        textEdit->setPlainText(textObject->getText());
+    } catch(std::bad_alloc &) {
+        coreLog.error("Not enough memory for loading text data");
+        return NULL;
+    }
     if (textObject->isStateLocked()) {
         textEdit->setReadOnly(true);
     }

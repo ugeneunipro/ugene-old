@@ -92,6 +92,12 @@ void OpenSimpleTextObjectViewTask::open() {
         QString viewName = GObjectViewUtils::genUniqueViewName(doc, to);
         SimpleTextObjectView* v = new SimpleTextObjectView(viewName, to, stateData);
         GObjectViewWindow* w = new GObjectViewWindow(v, viewName, !stateData.isEmpty());
+        if (NULL == v->parent()) {
+            stateInfo.setError("Could not open view");
+            delete v;
+            delete w;
+            continue;
+        }
         MWMDIManager* mdiManager =  AppContext::getMainWindow()->getMDIManager();
         mdiManager->addMDIWindow(w);
     }

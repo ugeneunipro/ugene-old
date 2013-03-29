@@ -270,15 +270,18 @@ GObjectViewWindow::GObjectViewWindow(GObjectView* v, const QString& _viewName, b
 {
     v->setParent(this);
     v->setClosingInterface(this);
-
+    // Get the GObject widget and options panel
+    QWidget* viewWidget = v->getWidget();
+    if (NULL == viewWidget) {
+        coreLog.error("Internal error: Object View widget is not initialized");
+        v->setClosingInterface(NULL);
+        v->setParent(NULL);
+        return;
+    }
     // Initialize the layout of the whole windows
     QHBoxLayout *windowLayout = new QHBoxLayout();
     windowLayout->setContentsMargins(0, 0, 0, 0);
     windowLayout->setSpacing(0);
-
-    // Get the GObject widget and options panel
-    QWidget* viewWidget = v->getWidget();
-    SAFE_POINT((viewWidget != 0), "Internal error: not initialized GObjectView widget.",);
 
     OptionsPanel* optionsPanel = v->getOptionsPanel();
 
