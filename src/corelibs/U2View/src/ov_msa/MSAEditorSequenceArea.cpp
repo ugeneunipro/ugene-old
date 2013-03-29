@@ -1470,7 +1470,7 @@ void MSAEditorSequenceArea::sl_delCol() {
         case DeleteByAbsoluteVal: msaObj->deleteColumnWithGaps(value);
             break;
         case DeleteByRelativeVal: {
-            int absoluteValue = ( msaObj->getNumRows()*value ) / 100;
+            int absoluteValue = qRound(( msaObj->getNumRows() * value ) / 100.0);
             if (absoluteValue < 1) {
                 absoluteValue = 1;
             }

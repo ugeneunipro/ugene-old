@@ -378,7 +378,7 @@ void MAlignmentObject::deleteColumnWithGaps(int requiredGapCount) {
     MAlignment msa = getMAlignment();
     const int length = msa.getLength();
     if (GAP_COLUMN_ONLY == requiredGapCount) {
-        requiredGapCount = length;
+        requiredGapCount = msa.getNumRows();
     }
     QList<qint64> colsForDelete;
     for(int i = 0; i < length; i++) { //columns
