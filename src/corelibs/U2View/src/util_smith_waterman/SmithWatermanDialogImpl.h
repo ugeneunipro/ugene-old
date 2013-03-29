@@ -61,13 +61,7 @@ private slots:
     void sl_resultViewChanged(const QString & text);
     void sl_browseAlignFilesDir();
     void sl_templateButtonPressed(); // suppose that template buttons have the following label: "[tag] tag_name"
-    void sl_templateEditInFocus();
-    void sl_templateEditLostFocus();
     void sl_cancelButton();
-
-signals:
-    void templateEditInFocus();
-    void templateEditLostFocus();
 
 private:
     void clearAll();
@@ -86,6 +80,8 @@ private:
     void setParameters();
     void connectGUI();
     void addAnnotationWidget();
+    void templateEditInFocus();
+    void templateEditLostFocus();
 
     void changeResultSavingWidgets(const QString & currentText);
     void initResultDirPath();

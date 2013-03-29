@@ -130,9 +130,6 @@ void SmithWatermanDialog::connectGUI()
     connect(browseResultDirBtn, SIGNAL(clicked()), SLOT(sl_browseAlignFilesDir()));
 
     connectTemplateButtonsGui();
-    
-    connect(this, SIGNAL(templateEditInFocus()), SLOT(sl_templateEditInFocus()));
-    connect(this, SIGNAL(templateEditLostFocus()), SLOT(sl_templateEditLostFocus()));
 }
 
 void SmithWatermanDialog::connectTemplateButtonsGui()
@@ -149,22 +146,21 @@ SmithWatermanDialog::~SmithWatermanDialog()
 
 bool SmithWatermanDialog::eventFilter(QObject * object, QEvent * event)
 {
-    if(object == mObjectNameTmpl || object == refSubseqNameTmpl || object == patternSubseqNameTmpl) {
+    if(object == mObjectNameTmpl || object == refSubseqNameTmpl || object == patternSubseqNameTmpl)
+    {
         if(QEvent::FocusIn == event->type()) {
-            emit templateEditInFocus();
-            return true;
+            templateEditInFocus();
         } else if(QEvent::FocusOut == event->type()) {
-            if(advOptions != QApplication::focusWidget())
-                emit templateEditLostFocus();
-            else
+            if(advOptions != QApplication::focusWidget()
+                || (Qt::BacktabFocusReason == dynamic_cast<QFocusEvent *>(event)->reason())) {
+                templateEditLostFocus();
+            } else {
                 qobject_cast<QLineEdit *>(object)->setFocus();
-
-            return true;
+                return true;
+            }
         }
-
         return false;
     }
-
     return QDialog::eventFilter(object, event);
 }
 
@@ -377,24 +373,25 @@ void SmithWatermanDialog::initResultDirPath()
     alignmentFilesPath->setText(lastDir + '/');
 }
 
-void SmithWatermanDialog::sl_templateEditInFocus()
+void SmithWatermanDialog::templateEditInFocus()
 {
     quint8 counter = 0;
     foreach(QPushButton * button, *templateButtons) {
         if((!templateButtonsApplicability->at(counter)
             && mObjectNameTmpl == QApplication::focusWidget())
-            || mObjectNameTmpl != QApplication::focusWidget())
+            || mObjectNameTmpl != QApplication::focusWidget()) {
             button->setEnabled(true);
-
+        }
         ++counter;
     }
 }
 
-void SmithWatermanDialog::sl_templateEditLostFocus()
+void SmithWatermanDialog::templateEditLostFocus()
 {
     foreach(QPushButton * button, *templateButtons) {
-        if(button->isEnabled())
+        if(button->isEnabled()) {
             button->setDisabled(true);
+        }
     }
 }
 
