@@ -650,6 +650,13 @@ void WorkflowView::removeProcessItem(WorkflowProcessItem *item) {
     scene->setModified();
     schema->removeProcess(actor);
     delete actor;
+
+    removeWizards();
+}
+
+void WorkflowView::removeWizards() {
+    qDeleteAll(schema->takeWizards());
+    sl_updateUi();
 }
 
 void WorkflowView::removeBusItem(WorkflowBusItem *item) {

@@ -101,7 +101,7 @@ signals:
     void processDblClicked();
     void configurationChanged();
 
-protected:    
+protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent);
     void mouseDoubleClickEvent(QGraphicsSceneMouseEvent * mouseEvent);
     void contextMenuEvent(QGraphicsSceneContextMenuEvent * contextMenuEvent);
@@ -236,6 +236,7 @@ private:
     void recreateScene();
     void localHostLaunch();
     void remoteLaunch();
+    void removeWizards();
 
     bool sceneRecreation;
     WorkflowGObject* go;
