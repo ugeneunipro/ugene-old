@@ -28,6 +28,7 @@
 namespace U2 {
 
 class Document;
+class GObject;
 
 class U2FORMATS_EXPORT BAMUtils : public QObject {
 public:
@@ -49,6 +50,8 @@ public:
     static void createBamIndex(const GUrl &bamUrl, U2OpStatus &os);
 
     static void writeDocument(Document *doc, U2OpStatus &os);
+
+    static void writeObjects(const QList<GObject*> &objects, const GUrl &url, const DocumentFormatId &formatId, U2OpStatus &os);
 };
 
 } // U2

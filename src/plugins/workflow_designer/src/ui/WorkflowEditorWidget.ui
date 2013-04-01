@@ -61,11 +61,6 @@ QGroupBox::indicator:checked {
    </property>
    <item>
     <widget class="QGroupBox" name="editorBox">
-     <property name="font">
-      <font>
-       <pointsize>13</pointsize>
-      </font>
-     </property>
      <property name="title">
       <string>Property Editor</string>
      </property>

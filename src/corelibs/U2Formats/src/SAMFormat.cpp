@@ -39,6 +39,8 @@
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/U2AlphabetUtils.h>
 
+#include <U2Formats/BAMUtils.h>
+
 #include <QtCore/QRegExp>
 
 namespace U2 {
@@ -325,16 +327,19 @@ Document* SAMFormat::loadDocument(IOAdapter* /* io */, const U2DbiRef& /* dbiRef
 }
 
 
-void SAMFormat::storeDocument(Document* /* d */, IOAdapter* /* io */, U2OpStatus& /* os */) {
-    FAIL("Not implemented", );
-    ////TODO: sorting options?
-    //CHECK_EXT(d!=NULL, os.setError(L10N::badArgument("doc")), );
-    //CHECK_EXT(io != NULL && io->isOpen(), os.setError(L10N::badArgument("IO adapter")), );
+void SAMFormat::storeDocument(Document *d, IOAdapter *io, U2OpStatus &os) {
+    CHECK_EXT(d != NULL, os.setError(L10N::badArgument("doc")), );
+    CHECK_EXT(io != NULL && io->isOpen(), os.setError(L10N::badArgument("IO adapter")), );
 
-    //QMap< GObjectType, QList<GObject*> > objectsMap;
-    //QList<GObject*> als; als << d->findGObjectByType(GObjectTypes::MULTIPLE_ALIGNMENT);
-    //objectsMap[GObjectTypes::MULTIPLE_ALIGNMENT] = als;
-    //storeEntry(io, objectsMap, os);
+    QList<GObject*> als = d->findGObjectByType(GObjectTypes::ASSEMBLY);
+    GUrl url = io->getURL();
+    io->close();
+
+    BAMUtils::writeObjects(
+        d->findGObjectByType(GObjectTypes::ASSEMBLY),
+        url,
+        getFormatId(),
+        os);
 }
 
 void SAMFormat::storeEntry(IOAdapter * /* io */, const QMap< GObjectType, QList<GObject*> > & /* objectsMap */, U2OpStatus &/*os*/) {

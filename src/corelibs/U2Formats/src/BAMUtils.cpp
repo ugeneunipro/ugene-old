@@ -342,7 +342,7 @@ static QMap<QString, int> getNumMap(const QList<GObject*> &objects, U2OpStatus &
     return result;
 }
 
-static void writeObjects(samfile_t *out, const QList<GObject*> &objects, U2OpStatus &os) {
+static void writeObjectsWithSamtools(samfile_t *out, const QList<GObject*> &objects, U2OpStatus &os) {
     foreach (GObject *obj, objects) {
         AssemblyObject *assemblyObj = dynamic_cast<AssemblyObject*>(obj);
         SAFE_POINT_EXT(NULL != assemblyObj, os.setError("NULL assembly object"), );
@@ -373,13 +373,20 @@ static void writeObjects(samfile_t *out, const QList<GObject*> &objects, U2OpSta
 }
 
 void BAMUtils::writeDocument(Document *doc, U2OpStatus &os) {
-    CHECK_EXT(NULL != doc, os.setError("NULL document"), );
+    writeObjects(
+        doc->findGObjectByType(GObjectTypes::ASSEMBLY),
+        doc->getURL(),
+        doc->getDocumentFormatId(),
+        os);
+}
 
-    QByteArray url = doc->getURLString().toLocal8Bit();
+void BAMUtils::writeObjects(const QList<GObject*> &objects, const GUrl &urlStr, const DocumentFormatId &formatId, U2OpStatus &os) {
+    CHECK_EXT(!objects.isEmpty(), os.setError("No assembly objects"), );
+
+    QByteArray url = urlStr.getURLString().toLocal8Bit();
     CHECK_EXT(!url.isEmpty(), os.setError("Empty file url"), );
 
     QByteArray openMode("w");
-    DocumentFormatId formatId = doc->getDocumentFormatId();
     if (BaseDocumentFormats::BAM == formatId) {
         openMode += "b"; // BAM output
     } else if (BaseDocumentFormats::SAM == formatId) {
@@ -388,9 +395,6 @@ void BAMUtils::writeDocument(Document *doc, U2OpStatus &os) {
         os.setError("Only BAM or SAM files could be written");
         return;
     }
-
-    QList<GObject*> objects = doc->findGObjectByType(GObjectTypes::ASSEMBLY);
-    CHECK_EXT(!objects.isEmpty(), os.setError("No assembly objects"), );
 
     bam_header_t *header = bam_header_init();
     createHeader(header, objects, os);
@@ -403,7 +407,7 @@ void BAMUtils::writeDocument(Document *doc, U2OpStatus &os) {
     bam_header_destroy(header);
     CHECK_EXT(NULL != out, os.setError(QString("Can not open file for writing: %1").arg(url.constData())), );
 
-    writeObjects(out, objects, os);
+    writeObjectsWithSamtools(out, objects, os);
     samclose(out);
 }
 
