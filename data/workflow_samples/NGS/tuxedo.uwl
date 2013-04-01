@@ -22,7 +22,7 @@ workflow "Tuxedo: single-end reads"{
     }
     read-sequence {
         type:get-file-list;
-        name:"Read paired reads";
+        name:"Read RNA-seq short reads";
         url-in {
             dataset:Dataset;
         }
@@ -37,11 +37,11 @@ workflow "Tuxedo: single-end reads"{
 
 
     .actor-bindings {
-        cuffmerge.out-annotations->cuffdiff.in-annotations
-        tophat.out-assembly->cufflinks.in-assembly
-        read-sequence.out-url->tophat.in-sequence
-        read-assembly.out-url->cuffdiff.in-assembly
         cufflinks.out-annotations->cuffmerge.in-annotations
+        read-sequence.out-url->tophat.in-sequence
+        cuffmerge.out-annotations->cuffdiff.in-annotations
+        read-assembly.out-url->cuffdiff.in-assembly
+        tophat.out-assembly->cufflinks.in-assembly
     }
 
     read-sequence.url->tophat.in-sequence.in-url
@@ -53,63 +53,63 @@ workflow "Tuxedo: single-end reads"{
     .meta {
         visual {
             cuffdiff {
-                pos:"-360 -345";
+                pos:"-538 -298";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
-                bounds:"-30 -30 121.25 79";
-                in-annotations.angle:33.4303;
-                in-assembly.angle:214.346;
+                bounds:"-30 -30 119.25 136";
+                in-annotations.angle:32.9052;
+                in-assembly.angle:221.424;
             }
             cufflinks {
-                pos:"-360 -675";
+                pos:"-535 -716";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
-                bounds:"-30 -30 116.875 74";
+                bounds:"-30 -30 116.875 119";
                 in-assembly.angle:180;
-                out-annotations.angle:299.796;
+                out-annotations.angle:289.911;
             }
             cuffmerge {
-                pos:"-360 -510";
+                pos:"-536 -486";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
-                bounds:"-30 -30 118.625 73";
-                in-annotations.angle:34.6767;
-                out-annotations.angle:301.382;
+                bounds:"-30 -30 118.625 85";
+                in-annotations.angle:33.9765;
+                out-annotations.angle:297.3;
             }
             read-assembly {
-                pos:"-570 -330";
+                pos:"-776 -283";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
-                out-url.angle:360;
+                out-url.angle:351.469;
             }
             read-sequence {
-                pos:"-765 -675";
+                pos:"-1064 -715";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 out-url.angle:360;
             }
             tophat {
-                pos:"-615 -675";
+                pos:"-822 -714";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
-                bounds:"-30 -30 120.75 75";
+                bounds:"-30 -30 120.75 102";
                 in-sequence.angle:180;
                 out-assembly.angle:360;
             }
             cufflinks.out-annotations->cuffmerge.in-annotations {
-                text-pos:"-44.5 -18";
+                text-pos:"-46.5 -21";
             }
             cuffmerge.out-annotations->cuffdiff.in-annotations {
-                text-pos:"-46.5 -20";
+                text-pos:"-44.5 -26";
             }
             read-assembly.out-url->cuffdiff.in-assembly {
-                text-pos:"-20 -24";
+                text-pos:"-42 -24";
             }
             read-sequence.out-url->tophat.in-sequence {
-                text-pos:"-20 -24";
+                text-pos:"-44 -24";
             }
             tophat.out-assembly->cufflinks.in-assembly {
-                text-pos:"-35 -29";
+                text-pos:"-50 -40";
             }
         }
         wizard {
@@ -120,17 +120,21 @@ workflow "Tuxedo: single-end reads"{
                 title:"Input data";
                 parameters-area {
                     group {
-                        title:"TopHat input: RNA-seq short reads";
-                        label-size:200;
+                        title:"TopHat input";
+                        label-size:180;
                         read-sequence.url-in {
-                            label:"FASTA/FASTQ file(s)";
+                            label:"RNA-seq short reads";
+                        }
+                        tophat.bowtie-index-dir {
+                        }
+                        tophat.bowtie-index-basename {
                         }
                     }
                     group {
-                        title:"Cuffdiff input: fragment alignments (at least two files are required)";
-                        label-size:200;
+                        title:"Cuffdiff input";
+                        label-size:180;
                         read-assembly.url-in {
-                            label:"BAM/SAM files";
+                            label:"Fragment alignments (at least 2)";
                         }
                     }
                 }
@@ -141,16 +145,8 @@ workflow "Tuxedo: single-end reads"{
                 title:"Tophat settings";
                 parameters-area {
                     group {
-                        title:"Input reference";
-                        label-size:200;
-                        tophat.bowtie-index-dir {
-                        }
-                        tophat.bowtie-index-basename {
-                        }
-                    }
-                    group {
                         title:Parameters;
-                        label-size:200;
+                        label-size:170;
                         tophat.known-transcript {
                         }
                         tophat.raw-junctions {
@@ -158,7 +154,7 @@ workflow "Tuxedo: single-end reads"{
                     }
                     group {
                         title:Additional;
-                        label-size:200;
+                        label-size:170;
                         type:hideable;
                         tophat.mate-inner-distance {
                         }
@@ -212,7 +208,7 @@ workflow "Tuxedo: single-end reads"{
                 parameters-area {
                     group {
                         title:Parameters;
-                        label-size:200;
+                        label-size:170;
                         cufflinks.ref-annotation {
                         }
                         cufflinks.rabt-annotation {
@@ -232,7 +228,7 @@ workflow "Tuxedo: single-end reads"{
                     }
                     group {
                         title:Additional;
-                        label-size:200;
+                        label-size:170;
                         type:hideable;
                         cufflinks.path {
                         }
@@ -276,7 +272,7 @@ workflow "Tuxedo: single-end reads"{
                 parameters-area {
                     group {
                         title:Parameters;
-                        label-size:200;
+                        label-size:170;
                         cuffdiff.time-series-analysis {
                         }
                         cuffdiff.upper-quartile-norm {
@@ -292,7 +288,7 @@ workflow "Tuxedo: single-end reads"{
                     }
                     group {
                         title:Additional;
-                        label-size:200;
+                        label-size:170;
                         type:hideable;
                         cuffdiff.mask-file {
                         }
