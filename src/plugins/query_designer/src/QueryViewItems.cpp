@@ -37,16 +37,26 @@
 #include <QtGui/QInputDialog>
 #include <QtGui/QMenu>
 
+#define ANNOTATION_MIN_SIZE GRID_STEP
+#define ANNOTATION_MAX_SIZE 4 * GRID_STEP
+#define MARGIN 4
+#define ARR_W 15
+
 namespace U2 {
     
 /************************************************************************/
 /* Annotation Item                                                      */
 /************************************************************************/
 
-#define ANNOTATION_MIN_SIZE GRID_STEP
-#define ANNOTATION_MAX_SIZE 4*GRID_STEP
-#define MARGIN 4
-#define ARR_W 15
+inline qreal round(qreal val, int step) {
+    if (0 > val) {
+        step *= -1;
+    }
+    int tmp = int(val) + step /2;
+    tmp -= tmp % step;
+    return qreal(tmp);
+}
+
 QDElement::QDElement(QDSchemeUnit* _unit)
 : highlighted(false), unit(_unit), font(QFont()), bound(0,0,3*ANNOTATION_MIN_SIZE,ANNOTATION_MIN_SIZE),
 dragging(false), extendedHeight(ANNOTATION_MIN_SIZE), itemResizeFlags(0) {
@@ -321,9 +331,9 @@ void QDElement::mouseMoveEvent(QGraphicsSceneMouseEvent *event) {
         QPointF newPos = scenePos();
         const QPointF& mousePos = event->pos();
         const QPointF& p = mousePos - dragPoint;
-        newPos.rx()+=p.x();
-        if (qAbs(p.y())>=GRID_STEP/2) {
-            newPos.ry()+=p.y();
+        newPos.rx() += p.x();
+        if (qAbs(p.y()) >= GRID_STEP/2) {
+            newPos.ry() += p.y();
         }
         setPos(newPos);
     } else {

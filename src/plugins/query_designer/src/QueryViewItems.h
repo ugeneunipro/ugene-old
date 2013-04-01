@@ -35,20 +35,14 @@
 
 #include <QtCore/QFlag>
 
+#define GRID_STEP 40
+
 class QTextDocument;
 
 namespace U2 {
 
 class QueryViewController;
 class QueryScene;
-
-#define GRID_STEP 40
-
-inline qreal round(qreal val, int step) {
-    int tmp = int(val) + step /2;
-    tmp -= tmp % step;
-    return qreal(tmp);
-}
 
 enum {
     QDElementType = QGraphicsItem::UserType + 1,
