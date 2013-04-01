@@ -43,6 +43,7 @@
 #include <QtCore/QMimeData>
 #include <QtCore/QMap>
 #include <QtGui/QDrag>
+#include <QtGui/QLineEdit>
 #include <QtGui/QMenu>
 #include <QtGui/QMessageBox>
 #include <QtGui/QKeyEvent>
@@ -80,10 +81,13 @@ ProjectTreeController::ProjectTreeController(QObject* parent, QTreeWidget* _tree
 
     tree = _tree;
     tree->setSelectionMode(mode.allowMultipleSelection ? QAbstractItemView::ExtendedSelection : QAbstractItemView::SingleSelection);
-	tree->headerItem()->setHidden(true);
-	tree->setContextMenuPolicy(Qt::CustomContextMenu);
-    connect(tree->itemDelegate(), SIGNAL(closeEditor(QWidget*,QAbstractItemDelegate::EndEditHint)), SLOT(sl_onCloseEditor(QWidget*,QAbstractItemDelegate::EndEditHint)));
-    
+    tree->headerItem()->setHidden(true);
+    tree->setContextMenuPolicy(Qt::CustomContextMenu);
+    ProjItemDelegate *delegate = new ProjItemDelegate(tree);
+    tree->setItemDelegate(delegate);
+    connect(delegate, SIGNAL(closeEditor(QWidget *, QAbstractItemDelegate::EndEditHint)),
+        SLOT(sl_onCloseEditor(QWidget *, QAbstractItemDelegate::EndEditHint)));
+
     documentIcon.addFile(":/core/images/document.png");
     roDocumentIcon.addFile(":/core/images/ro_document.png");
     
@@ -92,7 +96,7 @@ ProjectTreeController::ProjectTreeController(QObject* parent, QTreeWidget* _tree
     connect(addObjectToDocumentAction, SIGNAL(triggered()), SLOT(sl_onAddObjectToSelectedDocument()));
     
     removeSelectedDocumentsAction = new QAction(QIcon(":core/images/remove_selected_documents.png"), tr("Remove selected documents"), this);
-	removeSelectedDocumentsAction->setShortcut(QKeySequence::Delete);
+    removeSelectedDocumentsAction->setShortcut(QKeySequence::Delete);
     removeSelectedDocumentsAction->setShortcutContext(Qt::WidgetWithChildrenShortcut);
     tree->addAction(removeSelectedDocumentsAction);
     connect(removeSelectedDocumentsAction, SIGNAL(triggered()), SLOT(sl_onRemoveSelectedDocuments()));
@@ -100,12 +104,12 @@ ProjectTreeController::ProjectTreeController(QObject* parent, QTreeWidget* _tree
     removeSelectedObjectsAction = new QAction(QIcon(":core/images/remove_gobject.png"), tr("Remove object from document"), this);
     connect(removeSelectedObjectsAction, SIGNAL(triggered()), SLOT(sl_onRemoveSelectedObjects()));
 
-	loadSelectedDocumentsAction = new QAction(QIcon(":core/images/load_selected_documents.png"), tr("Load selected documents"), this);
-	loadSelectedDocumentsAction->setObjectName("action_load_selected_documents");
+    loadSelectedDocumentsAction = new QAction(QIcon(":core/images/load_selected_documents.png"), tr("Load selected documents"), this);
+    loadSelectedDocumentsAction->setObjectName("action_load_selected_documents");
     loadSelectedDocumentsAction->setShortcuts(QList<QKeySequence>() << Qt::Key_Enter << Qt::Key_Return);
     loadSelectedDocumentsAction->setShortcutContext(Qt::WidgetWithChildrenShortcut);
     tree->addAction(loadSelectedDocumentsAction);
-	connect(loadSelectedDocumentsAction, SIGNAL(triggered()), SLOT(sl_onLoadSelectedDocuments()));
+    connect(loadSelectedDocumentsAction, SIGNAL(triggered()), SLOT(sl_onLoadSelectedDocuments()));
 
     addReadonlyFlagAction = new QAction(tr("Lock document for editing"), this);
     addReadonlyFlagAction->setObjectName(ACTION_DOCUMENT__LOCK);
@@ -145,14 +149,14 @@ ProjectTreeController::ProjectTreeController(QObject* parent, QTreeWidget* _tree
     ag->addAction(groupByTypeAction);
     ag->addAction(groupFlatAction);
 
-	connect(tree, SIGNAL(itemSelectionChanged()), SLOT(sl_onTreeSelectionChanged()));
-	connect(tree, SIGNAL(customContextMenuRequested(const QPoint &)), SLOT(sl_onContextMenuRequested(const QPoint &)));
-	connect(tree, SIGNAL(itemDoubleClicked(QTreeWidgetItem*, int)), SLOT(sl_onItemDoubleClicked(QTreeWidgetItem*, int )));
+    connect(tree, SIGNAL(itemSelectionChanged()), SLOT(sl_onTreeSelectionChanged()));
+    connect(tree, SIGNAL(customContextMenuRequested(const QPoint &)), SLOT(sl_onContextMenuRequested(const QPoint &)));
+    connect(tree, SIGNAL(itemDoubleClicked(QTreeWidgetItem*, int)), SLOT(sl_onItemDoubleClicked(QTreeWidgetItem*, int )));
     tree->installEventFilter(this);
 
-	Project* pr = AppContext::getProject();
-	connect(pr, SIGNAL(si_documentAdded(Document*)), SLOT(sl_onDocumentAddedToProject(Document*)));
-	connect(pr, SIGNAL(si_documentRemoved(Document*)), SLOT(sl_onDocumentRemovedFromProject(Document*)));
+    Project* pr = AppContext::getProject();
+    connect(pr, SIGNAL(si_documentAdded(Document*)), SLOT(sl_onDocumentAddedToProject(Document*)));
+    connect(pr, SIGNAL(si_documentRemoved(Document*)), SLOT(sl_onDocumentRemovedFromProject(Document*)));
 
     MWMDIManager* mdi = AppContext::getMainWindow()->getMDIManager();
     connect(mdi, SIGNAL(si_windowActivated(MWMDIWindow*)), SLOT(sl_windowActivated(MWMDIWindow*)));
@@ -191,34 +195,34 @@ void ProjectTreeController::connectToResourceTracker() {
 }
 
 void ProjectTreeController::connectModel() {
-	Project* p = AppContext::getProject();
-	const QList<Document*>& docs = p->getDocuments();
-	foreach(Document* d, docs) {
-		connectDocument(d);
-	}
+    Project* p = AppContext::getProject();
+    const QList<Document*>& docs = p->getDocuments();
+    foreach(Document* d, docs) {
+        connectDocument(d);
+    }
 }
 
 void ProjectTreeController::connectDocument(Document* d) {
-	connect(d, SIGNAL(si_modifiedStateChanged()), SLOT(sl_onDocumentModifiedStateChanged()));
-	connect(d, SIGNAL(si_loadedStateChanged()), SLOT(sl_onDocumentLoadedStateChanged()));
-	connect(d, SIGNAL(si_objectAdded(GObject*)), SLOT(sl_onObjectAdded(GObject*)));
-	connect(d, SIGNAL(si_objectRemoved(GObject*)), SLOT(sl_onObjectRemoved(GObject*)));
+    connect(d, SIGNAL(si_modifiedStateChanged()), SLOT(sl_onDocumentModifiedStateChanged()));
+    connect(d, SIGNAL(si_loadedStateChanged()), SLOT(sl_onDocumentLoadedStateChanged()));
+    connect(d, SIGNAL(si_objectAdded(GObject*)), SLOT(sl_onObjectAdded(GObject*)));
+    connect(d, SIGNAL(si_objectRemoved(GObject*)), SLOT(sl_onObjectRemoved(GObject*)));
     connect(d, SIGNAL(si_lockedStateChanged()), SLOT(sl_onLockedStateChanged()));
     connect(d, SIGNAL(si_urlChanged()), SLOT(sl_onDocumentURLorNameChanged()));
     connect(d, SIGNAL(si_nameChanged()), SLOT(sl_onDocumentURLorNameChanged()));
-	
-	const QList<GObject*>& objects = d->getObjects();
-	foreach(GObject* o, objects) {
-		connectGObject(o);
-	}
+    
+    const QList<GObject*>& objects = d->getObjects();
+    foreach(GObject* o, objects) {
+        connectGObject(o);
+    }
 }
 
 void ProjectTreeController::disconnectDocument(Document* d) {
-	d->disconnect(this);
-	const QList<GObject*>& objects = d->getObjects();
-	foreach(GObject* o, objects) {
-		o->disconnect(this);
-	}
+    d->disconnect(this);
+    const QList<GObject*>& objects = d->getObjects();
+    foreach(GObject* o, objects) {
+        o->disconnect(this);
+    }
     Task* t = LoadUnloadedDocumentTask::findActiveLoadingTask(d);
     if (t) {
         t->disconnect(this);
@@ -227,15 +231,15 @@ void ProjectTreeController::disconnectDocument(Document* d) {
 }
 
 void ProjectTreeController::connectGObject(GObject* o) {
-	connect(o, SIGNAL(si_modifiedStateChanged()), SLOT(sl_onObjectModifiedStateChanged()));
+    connect(o, SIGNAL(si_modifiedStateChanged()), SLOT(sl_onObjectModifiedStateChanged()));
     connect(o, SIGNAL(si_nameChanged(const QString&)), SLOT(sl_onObjectNameChanged(const QString&)));
 }
 
 void ProjectTreeController::buildTree() {
-	const QList<Document*>& docs = AppContext::getProject()->getDocuments();
-	foreach(Document* d, docs) {
-		buildDocumentTree(d);
-	}
+    const QList<Document*>& docs = AppContext::getProject()->getDocuments();
+    foreach(Document* d, docs) {
+        buildDocumentTree(d);
+    }
 }
 
 GObjectType ProjectTreeController::getLoadedObjectType(GObject* obj) const {
@@ -251,13 +255,10 @@ GObjectType ProjectTreeController::getLoadedObjectType(GObject* obj) const {
     return t;
 }
 
-
 // if objects number in document < MAX_OBJECTS_TO_AUTOEXPAND - document content will be automatically expanded on loading
 #define MAX_OBJECTS_TO_AUTOEXPAND 20
 // if documents number in project < MAX_DOCUMENTS_TO_AUTOEXPAND - document content will be automatically expanded on loading
 #define MAX_DOCUMENTS_TO_AUTOEXPAND 20
-
-
 
 void ProjectTreeController::buildDocumentTree(Document* d) {
     TreeUpdateHelper h(itemsToUpdate);
@@ -268,8 +269,8 @@ void ProjectTreeController::buildDocumentTree(Document* d) {
         topItem = findDocumentItem(d, true);
     } 
     
-	const QList<GObject*>& objs = d->getObjects();
-	foreach(GObject* obj, objs) {
+    const QList<GObject*>& objs = d->getObjects();
+    foreach(GObject* obj, objs) {
         assert(obj->getDocument() == d);
         if (mode.isObjectShown(obj)) {
             if (mode.groupMode == ProjectTreeGroupMode_ByType) {
@@ -288,9 +289,8 @@ void ProjectTreeController::buildDocumentTree(Document* d) {
                 }
             }
         } 
-	}
+    }
 
-    
     if (topItem!=NULL && topItem->childCount() > 0) {
         insertTreeItemSorted(NULL, topItem);
         if (docIsShown && d->isLoaded() && topItem->childCount() < MAX_OBJECTS_TO_AUTOEXPAND) { 
@@ -345,7 +345,7 @@ ProjViewDocumentItem* ProjectTreeController::findDocumentItem(Document* doc, boo
         res = new ProjViewDocumentItem(doc, this);
         tree->addTopLevelItem(res);
     }
-	return res;
+    return res;
 }
 
 ProjViewObjectItem* ProjectTreeController::findGObjectItem(GObject* obj) const {
@@ -355,7 +355,7 @@ ProjViewObjectItem* ProjectTreeController::findGObjectItem(GObject* obj) const {
 ProjViewObjectItem* ProjectTreeController::findGObjectItem(Document* doc, GObject* obj) const {
     assert(doc == obj->getDocument() || obj->getDocument() == NULL);
     assert(doc != NULL);
-	ProjViewItem* topItem = NULL;
+    ProjViewItem* topItem = NULL;
     if (mode.groupMode == ProjectTreeGroupMode_ByDocument) {
         topItem = findDocumentItem(doc);
     } else if (mode.groupMode == ProjectTreeGroupMode_ByType) {
@@ -388,8 +388,8 @@ ProjViewObjectItem* ProjectTreeController::findGObjectItem(ProjViewItem* topItem
 }
 
 void ProjectTreeController::sl_onTreeSelectionChanged() {
-	updateSelection();
-	updateActions();
+    updateSelection();
+    updateActions();
 }
 
 bool ProjectTreeController::eventFilter(QObject* o, QEvent* e) {
@@ -419,8 +419,6 @@ bool ProjectTreeController::eventFilter(QObject* o, QEvent* e) {
     return false;
 }
 
-
-
 void ProjectTreeController::sl_onCloseEditor(QWidget*,QAbstractItemDelegate::EndEditHint) {
     QTreeWidgetItem* item = tree->currentItem();
     SAFE_POINT(item != NULL, "Unexpected current item on edit!",);
@@ -428,29 +426,32 @@ void ProjectTreeController::sl_onCloseEditor(QWidget*,QAbstractItemDelegate::End
     SAFE_POINT(pvi->isObjectItem(), "Not an object type item on edit!",);
     ProjViewObjectItem* objItem = static_cast<ProjViewObjectItem*>(pvi);
     if (!AppContext::getProject()->isStateLocked()) {
-		int maxNameLength = 50;
-		static QRegExp invalidCharactersRegExp("[\\\\|/+;=*]"); // \\\\ is a simple backslash	
-		QString invalidCharacters = invalidCharactersRegExp.pattern();
-		invalidCharacters.remove(0, 2).chop(1); // getting rid of the brackets and duplicate backslashes
-
+        int maxNameLength = 50;
+        static QRegExp invalidCharactersRegExp("[\\\\|/+;=*]"); // \\\\ is a simple backslash    
+        QString invalidCharacters = invalidCharactersRegExp.pattern();
+        invalidCharacters.remove(0, 2).chop(1); // getting rid of the brackets and duplicate backslashes
 
         QString newName = item->text(0).trimmed();
 
-		if (newName == objItem->obj->getGObjectName()) {
-			return;
-		} else if (newName.length() == 0  || newName.length() > maxNameLength) {
-			
-			QMessageBox::critical(0, "Error", tr("The name must be not empty and not longer than %1 characters").arg(maxNameLength));
-			return;
+        if (newName == objItem->obj->getGObjectName()) {
+            if (objItem->isBeingEdited) {
+                objItem->isBeingEdited = false;
+                objItem->updateVisual();
+            }
+            return;
+        } else if (newName.length() == 0  || newName.length() > maxNameLength) {
+            
+            QMessageBox::critical(0, "Error", tr("The name must be not empty and not longer than %1 characters").arg(maxNameLength));
+            return;
 
-		} else if (objItem->obj->getDocument()->findGObjectByName(newName) != NULL) {
-			QMessageBox::critical(0, "Error", tr("Duplicate object names are not allowed"));
-			return;
+        } else if (objItem->obj->getDocument()->findGObjectByName(newName) != NULL) {
+            QMessageBox::critical(0, "Error", tr("Duplicate object names are not allowed"));
+            return;
 
-		} else if (newName.contains(invalidCharactersRegExp) != NULL) {
-			QMessageBox::critical(0, "Error", tr("The name can't contain any of the following characters: %1").arg(invalidCharacters));
-			return;
-		}
+        } else if (newName.contains(invalidCharactersRegExp) != NULL) {
+            QMessageBox::critical(0, "Error", tr("The name can't contain any of the following characters: %1").arg(invalidCharacters));
+            return;
+        }
 
         coreLog.trace(QString("Renaming object %1 to %2").arg(objItem->obj->getGObjectName()).arg(newName));
         objItem->obj->setGObjectName(newName);
@@ -461,37 +462,37 @@ void ProjectTreeController::sl_onCloseEditor(QWidget*,QAbstractItemDelegate::End
 
 void ProjectTreeController::updateSelection() {
     SAFE_POINT(tree, "ProjectTreeController::no project tree", );
-	QList<QTreeWidgetItem*> items = tree->selectedItems();
-	if (items.isEmpty()) {
-		objectSelection.clear();
-		documentSelection.clear();
-		return;
-	} 
-	QList<Document*> selectedDocs;
-	QList<GObject*> selectedObjs;
-	foreach(QTreeWidgetItem* item , items) {
-		ProjViewItem* pvi = static_cast<ProjViewItem*>(item);
+    QList<QTreeWidgetItem*> items = tree->selectedItems();
+    if (items.isEmpty()) {
+        objectSelection.clear();
+        documentSelection.clear();
+        return;
+    } 
+    QList<Document*> selectedDocs;
+    QList<GObject*> selectedObjs;
+    foreach(QTreeWidgetItem* item , items) {
+        ProjViewItem* pvi = static_cast<ProjViewItem*>(item);
         SAFE_POINT(pvi, "ProjectTreeController::cannot cast to ProjViewItem", );
-		if (pvi->isDocumentItem()) {
-			ProjViewDocumentItem* di = static_cast<ProjViewDocumentItem*>(pvi);
+        if (pvi->isDocumentItem()) {
+            ProjViewDocumentItem* di = static_cast<ProjViewDocumentItem*>(pvi);
             SAFE_POINT(di, "ProjectTreeController::cannot cast to ProjViewDocumentItem", );
-			selectedDocs.push_back(di->doc);
+            selectedDocs.push_back(di->doc);
         } else if (pvi->isObjectItem()) {
-			ProjViewObjectItem* oi = static_cast<ProjViewObjectItem*>(pvi);
+            ProjViewObjectItem* oi = static_cast<ProjViewObjectItem*>(pvi);
             SAFE_POINT(oi, "ProjectTreeController::cannot cast to ProjViewObjectItem", );
-			selectedObjs.push_back(oi->obj);
-		}
-	}
-	objectSelection.setSelection(selectedObjs);
-	documentSelection.setSelection(selectedDocs);
+            selectedObjs.push_back(oi->obj);
+        }
+    }
+    objectSelection.setSelection(selectedObjs);
+    documentSelection.setSelection(selectedDocs);
 }
 
 
 void ProjectTreeController::sl_onItemDoubleClicked(QTreeWidgetItem * item, int) {
     ProjViewItem* pvi = static_cast<ProjViewItem*>(item);
-	if (pvi->isObjectItem()) {
-		emit si_doubleClicked((static_cast<ProjViewObjectItem*>(pvi))->obj);
-	} else if (pvi->isDocumentItem()) {
+    if (pvi->isObjectItem()) {
+        emit si_doubleClicked((static_cast<ProjViewObjectItem*>(pvi))->obj);
+    } else if (pvi->isDocumentItem()) {
         Document* d = (static_cast<ProjViewDocumentItem*>(pvi))->doc;
         SAFE_POINT(d, "ProjectTreeController::sl_onItemDoubleClicked::No document for an item", );
         if (!d->isLoaded() && pvi->childCount() == 0) { 
@@ -503,10 +504,10 @@ void ProjectTreeController::sl_onItemDoubleClicked(QTreeWidgetItem * item, int) 
             emit si_doubleClicked(d);
         }
     } else {
-		assert(pvi->isTypeItem());
+        assert(pvi->isTypeItem());
         bool isExapanded = pvi->isExpanded();
         pvi->setExpanded(!isExapanded);
-	}
+    }
 }
 
 void ProjectTreeController::sl_onContextMenuRequested(const QPoint&) {
@@ -555,7 +556,7 @@ void ProjectTreeController::sl_onContextMenuRequested(const QPoint&) {
         m.addAction(unloadSelectedDocumentsAction);
     }
     m.setObjectName("popMenu");
-	m.exec(QCursor::pos());
+    m.exec(QCursor::pos());
 }
 
 QSet<Document*>  ProjectTreeController::getDocsInSelection(bool deriveFromObjects) {
@@ -571,14 +572,14 @@ QSet<Document*>  ProjectTreeController::getDocsInSelection(bool deriveFromObject
 }
 
 void ProjectTreeController::updateActions() {
-	bool hasUnloadedDocumentInSelection = false;
+    bool hasUnloadedDocumentInSelection = false;
     bool hasLoadedDocumentInSelection = false;
     QSet<Document*> docsItemsInSelection = getDocsInSelection(false);
     QSet<Document*> docsInSelection = getDocsInSelection(true);//mode.groupMode != ProjectTreeGroupMode_ByDocument);
     foreach(Document* d, docsInSelection) {
-		if (!d->isLoaded()) {
-			hasUnloadedDocumentInSelection = true;
-			break;
+        if (!d->isLoaded()) {
+            hasUnloadedDocumentInSelection = true;
+            break;
         } else {
             hasLoadedDocumentInSelection = true;
         }
@@ -630,7 +631,7 @@ void ProjectTreeController::updateActions() {
 }
 
 void ProjectTreeController::sl_onRemoveSelectedDocuments() {
-	Project* p = AppContext::getProject();
+    Project* p = AppContext::getProject();
     QSet<Document*> docsInSelection = getDocsInSelection(mode.groupMode != ProjectTreeGroupMode_ByDocument);
     if (!docsInSelection.isEmpty()) {
         AppContext::getTaskScheduler()->registerTopLevelTask(new RemoveMultipleDocumentsTask(p, docsInSelection.toList(), true, true));
@@ -676,11 +677,11 @@ void ProjectTreeController::runLoadDocumentTasks(const QList<Document*>& docs) {
 }
 
 void ProjectTreeController::sl_onDocumentAddedToProject(Document* d) {
-	//todo: sort?
-	buildDocumentTree(d);
-	connectDocument(d);
+    //todo: sort?
+    buildDocumentTree(d);
+    connectDocument(d);
 
-	updateActions();
+    updateActions();
 }
 
 void ProjectTreeController::sl_onDocumentRemovedFromProject(Document* d) {
@@ -768,14 +769,15 @@ void ProjectTreeController::sl_onRename() {
     if (selItems.size() != 1) {
         return;
     }
-	
+    
     ProjViewItem *item = static_cast<ProjViewItem *>(selItems.last());
     if (item != NULL && item->isObjectItem() && !AppContext::getProject()->isStateLocked()) {
         ProjViewObjectItem *objItem = static_cast<ProjViewObjectItem*>(item);
-		
+        
         objItem->setFlags(objItem->flags() | Qt::ItemIsEditable);
         objItem->setText(0, objItem->obj->getGObjectName());
-		tree->editItem(objItem);
+        tree->editItem(objItem);
+        objItem->isBeingEdited = true;
     }
 }
 
@@ -811,7 +813,7 @@ void ProjectTreeController::sl_onDocumentLoadedStateChanged() {
     if (docItem != NULL && d->getObjects().size() < MAX_OBJECTS_TO_AUTOEXPAND && AppContext::getProject()->getDocuments().size() < MAX_DOCUMENTS_TO_AUTOEXPAND) {
         docItem->setExpanded(d->isLoaded());
     }
-	updateActions();
+    updateActions();
 }
 
 
@@ -822,7 +824,7 @@ void ProjectTreeController::sl_onDocumentModifiedStateChanged() {
         return;
     }
     updateActions();
-	ProjViewDocumentItem* di = findDocumentItem(d);
+    ProjViewDocumentItem* di = findDocumentItem(d);
     if (di!=NULL) {
         di->updateVisual();
     }
@@ -853,8 +855,8 @@ void ProjectTreeController::sl_onObjectAdded(GObject* obj) {
         return;
     }
     Document* doc = obj->getDocument();
-	assert(doc!=NULL);
-	ProjViewItem* topItem = NULL;
+    assert(doc!=NULL);
+    ProjViewItem* topItem = NULL;
     if (mode.groupMode == ProjectTreeGroupMode_ByType) {
         topItem = findTypeItem(getLoadedObjectType(obj), true);
     } else if (mode.isDocumentShown(doc)) {
@@ -867,7 +869,7 @@ void ProjectTreeController::sl_onObjectAdded(GObject* obj) {
     }
     connectGObject(obj);
 
-	ProjViewObjectItem* objItem = new ProjViewObjectItem(obj, this);
+    ProjViewObjectItem* objItem = new ProjViewObjectItem(obj, this);
     
     if (mode.groupMode != ProjectTreeGroupMode_ByDocument || topItem == NULL) {
         insertTreeItemSorted(topItem, objItem);
@@ -877,24 +879,24 @@ void ProjectTreeController::sl_onObjectAdded(GObject* obj) {
     if (topItem != NULL && topItem->childCount() == 1) {
         topItem->updateVisual();
     }
-	updateActions();
+    updateActions();
 }
 
 void ProjectTreeController::sl_onObjectRemoved(GObject* obj) {
     Document* doc = qobject_cast<Document*>(sender());
     assert(doc!=NULL);
-	ProjViewObjectItem* objItem = findGObjectItem(doc, obj);
+    ProjViewObjectItem* objItem = findGObjectItem(doc, obj);
     if (objItem == NULL) {
         assert(!objectSelection.contains(obj));
         return;
     }
     ProjViewItem* pi = static_cast<ProjViewItem*>(objItem->parent());
-	delete objItem;
+    delete objItem;
     if (pi!=NULL && pi->isTypeItem()) {
         pi->updateVisual();
     }
     objectSelection.removeFromSelection(obj);
-	updateActions();
+    updateActions();
 }
 
 void ProjectTreeController::sl_onResourceUserRegistered(const QString& res, Task* t) {
@@ -1226,7 +1228,7 @@ void ProjViewItem::updateActive() {
 ProjViewDocumentItem::ProjViewDocumentItem(Document* _doc, ProjectTreeController* c) 
 : ProjViewItem(c), doc(_doc) 
 {
-	updateVisual();
+    updateVisual();
 }
 
 bool ProjViewDocumentItem::operator< ( const QTreeWidgetItem & other ) const {
@@ -1243,16 +1245,16 @@ bool ProjViewDocumentItem::operator< ( const QTreeWidgetItem & other ) const {
 
 #define MODIFIED_ITEM_COLOR "#0032a0"
 void ProjViewDocumentItem::updateVisual(bool recursive) {
-	if (recursive) {
-		for (int i = 0, n = childCount(); i < n ; i++ ) {
-			ProjViewObjectItem* oi = static_cast<ProjViewObjectItem*>(child(i));
-			oi->updateVisual(recursive);
-		}
-	}
+    if (recursive) {
+        for (int i = 0, n = childCount(); i < n ; i++ ) {
+            ProjViewObjectItem* oi = static_cast<ProjViewObjectItem*>(child(i));
+            oi->updateVisual(recursive);
+        }
+    }
 
     //update text
-	QString text;
-	if (doc->isModified()) {
+    QString text;
+    if (doc->isModified()) {
         setData(0, Qt::TextColorRole, QColor(MODIFIED_ITEM_COLOR));
     } else {
         setData(0, Qt::TextColorRole, QVariant());
@@ -1266,17 +1268,17 @@ void ProjViewDocumentItem::updateVisual(bool recursive) {
         setData(0, Qt::FontRole, QVariant());
     }
 
-	if (!doc->isLoaded()) {
+    if (!doc->isLoaded()) {
         LoadUnloadedDocumentTask* t = LoadUnloadedDocumentTask::findActiveLoadingTask(doc);
         if (t == NULL) {
             text+="[unloaded]";
         } else {
             text+=ProjectTreeController::tr("[loading %1%]").arg(t->getProgress());
         }
-	}
-	text+=doc->getName();
-	setData(0, Qt::DisplayRole, text);
-	
+    }
+    text+=doc->getName();
+    setData(0, Qt::DisplayRole, text);
+    
     //update icon
     bool showLockedIcon = doc->isStateLocked();
     if (!doc->isLoaded() && doc->getStateLocks().size() == 1 && doc->getDocumentModLock(DocumentModLock_UNLOADED_STATE)!=NULL) {
@@ -1312,9 +1314,9 @@ bool ProjViewDocumentItem::isActive() const {
 
 
 ProjViewObjectItem::ProjViewObjectItem(GObject* _obj, ProjectTreeController* c) 
-: ProjViewItem(c), obj(_obj) 
+: ProjViewItem(c), obj(_obj), isBeingEdited(false)
 {
-	updateVisual();
+    updateVisual();
 }
 
 bool ProjViewObjectItem::operator< ( const QTreeWidgetItem & other ) const {
@@ -1330,15 +1332,19 @@ bool ProjViewObjectItem::operator< ( const QTreeWidgetItem & other ) const {
 }
 
 void ProjViewObjectItem::updateVisual(bool ) {
+    if (isBeingEdited) {
+        isBeingEdited = false;
+        return;
+    }
     QString text;
     GObjectType t = obj->getGObjectType();
-	bool unloaded = t == GObjectTypes::UNLOADED;
-	bool allowSelectUnloaded = controller->getModeSettings().allowSelectUnloaded;
+    bool unloaded = t == GObjectTypes::UNLOADED;
+    bool allowSelectUnloaded = controller->getModeSettings().allowSelectUnloaded;
     if (unloaded) {
-		if(!allowSelectUnloaded){
-			setDisabled(true);
-		}
-		t = qobject_cast<UnloadedObject*>(obj)->getLoadedObjectType();		
+        if(!allowSelectUnloaded){
+            setDisabled(true);
+        }
+        t = qobject_cast<UnloadedObject*>(obj)->getLoadedObjectType();        
     }
     const GObjectTypeInfo& ti = GObjectTypes::getTypeInfo(t);
     text+="[" + ti.treeSign + "] ";
@@ -1372,7 +1378,7 @@ void ProjViewObjectItem::updateVisual(bool ) {
     }
 
 
-	setData(0, Qt::DisplayRole, text);
+    setData(0, Qt::DisplayRole, text);
     setIcon(0, ti.icon);
 
 
@@ -1414,6 +1420,44 @@ void ProjViewTypeItem::updateVisual(bool recursive) {
     setIcon(0, groupIcon);
 }
 
+ProjItemDelegate::ProjItemDelegate(QObject *parent) : QItemDelegate(parent) {
+
+}
+
+QWidget * ProjItemDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &option,
+    const QModelIndex &index) const
+{
+    QLineEdit *editor = new QLineEdit(parent);
+    return editor;
+}
+
+void ProjItemDelegate::setEditorData(QWidget *editor, const QModelIndex &index) const {
+    const QString value = index.model()->data(index).toString();
+    QLineEdit *lineEdit = static_cast<QLineEdit *>(editor);
+    lineEdit->setText(value);
+}
+
+void ProjItemDelegate::setModelData(QWidget *editor, QAbstractItemModel *model,
+    const QModelIndex &index) const
+{
+    QLineEdit *lineEdit = static_cast<QLineEdit *>(editor);
+    const QString value = lineEdit->text();
+    model->setData(index, value, Qt::DisplayRole);
+}
+
+const float TEXT_EDITOR_HEIGHT_ADDITION = 1.1f;
+const float TEXT_EDITOR_WIDTH_ADDITION = 2.0f;
+
+void ProjItemDelegate::updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option,
+    const QModelIndex &index) const
+{
+    QRect textRect = option.rect;
+    textRect.setHeight(option.rect.height() * TEXT_EDITOR_HEIGHT_ADDITION);
+    const QFontMetrics fontMetrics(editor->font());
+    textRect.setWidth(qMin(static_cast<int>(fontMetrics.width(index.data().toString())
+        * TEXT_EDITOR_WIDTH_ADDITION), option.rect.width()));
+    editor->setGeometry(textRect);
+}
 
 //////////////////////////////////////////////////////////////////////////
 // settings

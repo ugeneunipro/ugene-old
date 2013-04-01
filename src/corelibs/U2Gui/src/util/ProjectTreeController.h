@@ -33,6 +33,7 @@
 #include <QtCore/QPointer>
 #include <QtGui/QTreeWidget>
 #include <QtGui/QIcon>
+#include <QtGui/QItemDelegate>
 
 namespace U2 {
 
@@ -40,7 +41,7 @@ class Task;
 class GObjectConstraints;
 class MWMDIWindow;
 class ProjViewItem;
-class ProjViewDocumentItem;	
+class ProjViewDocumentItem;
 class ProjViewTypeItem;
 class ProjViewObjectItem;
 class GObjectView;
@@ -98,7 +99,7 @@ public:
     TriState                    readOnlyFilter;     // unknown->all, true->filter(exclude) readonly, false -> keep only readonly
     LoadDocumentTaskProvider*   loadTaskProvider;   // use custom LoadDocumentTask factory instead of default
     ProjectTreeGroupMode        groupMode;          // group mode for objects
-	bool						allowSelectUnloaded; // ability to select unloaded objects
+    bool                        allowSelectUnloaded; // ability to select unloaded objects
 
     //Note that objectFilter and documentFilter are called only on object add/remove ops!
     //WARN: object and document filters live-range is controlled by the side created these objects
@@ -114,12 +115,12 @@ public:
 };
 
 class U2GUI_EXPORT ProjectTreeController : public QObject {
-	Q_OBJECT
+    Q_OBJECT
 public:
-	ProjectTreeController(QObject* parent, QTreeWidget* tree, const ProjectTreeControllerModeSettings& mode);
-	
-	const DocumentSelection* getDocumentSelection() const {return &documentSelection;}
-	const GObjectSelection* getGObjectSelection() const {return &objectSelection;}
+    ProjectTreeController(QObject* parent, QTreeWidget* tree, const ProjectTreeControllerModeSettings& mode);
+    
+    const DocumentSelection* getDocumentSelection() const {return &documentSelection;}
+    const GObjectSelection* getGObjectSelection() const {return &objectSelection;}
 
     void updateSettings(const ProjectTreeControllerModeSettings& mode);
 
@@ -135,34 +136,34 @@ protected:
     bool virtual eventFilter(QObject* o, QEvent* e);
 
 signals:
-	void si_onPopupMenuRequested(QMenu& popup);
-	void si_doubleClicked(GObject*);
+    void si_onPopupMenuRequested(QMenu& popup);
+    void si_doubleClicked(GObject*);
     void si_returnPressed(GObject*);
 
     void si_doubleClicked(Document*);
     void si_returnPressed(Document*);
 
 private slots:
-	void sl_onTreeSelectionChanged();
-	void sl_onContextMenuRequested(const QPoint & pos);
-	void sl_onRemoveSelectedDocuments();
+    void sl_onTreeSelectionChanged();
+    void sl_onContextMenuRequested(const QPoint & pos);
+    void sl_onRemoveSelectedDocuments();
     void sl_onRemoveSelectedObjects();
     void sl_onAddObjectToSelectedDocument();
-	void sl_onLoadSelectedDocuments();
+    void sl_onLoadSelectedDocuments();
     void sl_onUnloadSelectedDocuments();
 
-	void sl_onDocumentAddedToProject(Document* d);
-	void sl_onDocumentRemovedFromProject(Document* d);
-	void sl_onDocumentModifiedStateChanged();
-	void sl_onDocumentLoadedStateChanged();
+    void sl_onDocumentAddedToProject(Document* d);
+    void sl_onDocumentRemovedFromProject(Document* d);
+    void sl_onDocumentModifiedStateChanged();
+    void sl_onDocumentLoadedStateChanged();
     void sl_onDocumentURLorNameChanged();
     
-	void sl_onObjectAdded(GObject* o);
-	void sl_onObjectRemoved(GObject* o);
-	void sl_onObjectModifiedStateChanged();
+    void sl_onObjectAdded(GObject* o);
+    void sl_onObjectRemoved(GObject* o);
+    void sl_onObjectModifiedStateChanged();
     void sl_onObjectNameChanged(const QString&);
 
-	void sl_onItemDoubleClicked(QTreeWidgetItem * item, int column);
+    void sl_onItemDoubleClicked(QTreeWidgetItem * item, int column);
 
     void sl_onResourceUserRegistered(const QString& res, Task* t);
     void sl_onResourceUserUnregistered(const QString& res, Task* t);
@@ -183,15 +184,15 @@ private slots:
     void sl_updateAfterItemchange( QTreeWidgetItem * item, int column );
 
 private:
-	void updateActions();
-	void updateSelection();
-	void connectModel();
-	void connectDocument(Document* d);
-	void disconnectDocument(Document* d);
+    void updateActions();
+    void updateSelection();
+    void connectModel();
+    void connectDocument(Document* d);
+    void disconnectDocument(Document* d);
     void connectToResourceTracker();
-	void connectGObject(GObject* d);
-	void buildTree();
-	void buildDocumentTree(Document* d);
+    void connectGObject(GObject* d);
+    void buildTree();
+    void buildDocumentTree(Document* d);
     void flattenDocumentItem(ProjViewDocumentItem* docItem);
     void runLoadDocumentTasks(const QList<Document*>& docs);
     GObjectType getLoadedObjectType(GObject* obj) const;
@@ -212,11 +213,11 @@ private:
     ProjViewTypeItem*   findTypeItem(const GObjectType& t, bool create);
 
 
-	QTreeWidget* tree;
+    QTreeWidget* tree;
 
-	QAction* removeSelectedDocumentsAction;
+    QAction* removeSelectedDocumentsAction;
     QAction* removeSelectedObjectsAction;
-	QAction* loadSelectedDocumentsAction;
+    QAction* loadSelectedDocumentsAction;
     QAction* addObjectToDocumentAction;
     QAction* removeObjectFromDocument;
     QAction* unloadSelectedDocumentsAction;
@@ -228,36 +229,36 @@ private:
     QAction* groupByTypeAction;
     QAction* groupFlatAction;
 
-	GObjectSelection                    objectSelection;
-	DocumentSelection                   documentSelection;
+    GObjectSelection                    objectSelection;
+    DocumentSelection                   documentSelection;
     ProjectTreeControllerModeSettings   mode;
     QSet<ProjViewItem*>                 itemsToUpdate;
     GObjectView*                        markActiveView;
 
 public: 
-	QIcon documentIcon;
+    QIcon documentIcon;
     QIcon roDocumentIcon;
 };
 
-class U2GUI_EXPORT ProjViewItem : public QTreeWidgetItem , public QObject{
+class U2GUI_EXPORT ProjViewItem : public QTreeWidgetItem {
 public:
-	ProjViewItem(ProjectTreeController* c) :  QObject(NULL), controller(c), markedAsActive(false) {}
+    ProjViewItem(ProjectTreeController* c) :  controller(c), markedAsActive(false) {}
     bool isRootItem() {return QTreeWidgetItem::parent() == NULL;}
-	virtual bool isDocumentItem() const {return false;}
+    virtual bool isDocumentItem() const {return false;}
     virtual bool isTypeItem() const {return false;}
-	virtual bool isObjectItem() const {return false;}
+    virtual bool isObjectItem() const {return false;}
 
     // checks if item must be marked as active
     virtual bool isActive() const {return false;}
     
     // updates item visual state
-	virtual void updateVisual(bool recursive = false) = 0;
+    virtual void updateVisual(bool recursive = false) = 0;
 
     // updates active item visual state only
     virtual void updateActive();
 
     virtual QTreeWidgetItem *parent() {return QTreeWidgetItem::parent();}
-	
+    
     ProjectTreeController*  controller;
     bool                    markedAsActive;
 };
@@ -275,9 +276,9 @@ public:
 
 class U2GUI_EXPORT ProjViewDocumentItem : public ProjViewItem {
 public:
-	ProjViewDocumentItem(Document* _doc, ProjectTreeController* c);
-	virtual bool isDocumentItem() const {return true;}
-	virtual void updateVisual(bool recursive = false);
+    ProjViewDocumentItem(Document* _doc, ProjectTreeController* c);
+    virtual bool isDocumentItem() const {return true;}
+    virtual void updateVisual(bool recursive = false);
     bool isActive() const;
     virtual bool operator< ( const QTreeWidgetItem & other ) const;
     Document* doc;
@@ -285,13 +286,28 @@ public:
 
 class U2GUI_EXPORT ProjViewObjectItem : public ProjViewItem {
 public: 
-	ProjViewObjectItem(GObject* _obj, ProjectTreeController* c);
-	virtual bool isObjectItem() const {return true;}
-	virtual void updateVisual(bool recursive = false);
+    ProjViewObjectItem(GObject* _obj, ProjectTreeController* c);
+    virtual bool isObjectItem() const {return true;}
+    virtual void updateVisual(bool recursive = false);
     bool isActive() const;
     virtual bool operator< ( const QTreeWidgetItem & other ) const;
     GObject* obj;
-	
+    bool isBeingEdited;
+};
+
+class ProjItemDelegate : public QItemDelegate {
+    Q_OBJECT
+public:
+    ProjItemDelegate(QObject *parent = NULL);
+
+    QWidget * createEditor(QWidget *parent, const QStyleOptionViewItem &option,
+        const QModelIndex &index) const;
+
+    void setEditorData(QWidget *editor, const QModelIndex &index) const;
+    void setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const;
+
+    void updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option,
+        const QModelIndex &index) const;
 };
 
 }//namespace
