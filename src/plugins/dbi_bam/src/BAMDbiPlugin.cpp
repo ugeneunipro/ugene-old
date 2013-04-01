@@ -68,11 +68,7 @@ extern "C" Q_DECL_EXPORT Plugin* U2_PLUGIN_INIT_FUNC() {
 
 BAMDbiPlugin::BAMDbiPlugin() : Plugin(tr("BAM format support"), tr("Interface for indexed read-only access to BAM files"))
 {
-    DocumentFormatFlags flags = DocumentFormatFlags(DocumentFormatFlag_NoPack)
-        | DocumentFormatFlag_NoFullMemoryLoad
-        | DocumentFormatFlag_Hidden
-        | DocumentFormatFlag_SupportWriting;
-    DocumentFormat *bamDbi = new DbiDocumentFormat(SamtoolsBasedDbiFactory::ID, BaseDocumentFormats::BAM, tr("BAM File"), QStringList("bam"), flags);
+    DocumentFormat *bamDbi = new BAMFormat();
     AppContext::getDocumentFormatRegistry()->registerFormat(bamDbi);
     AppContext::getDbiRegistry()->registerDbiFactory(new SamtoolsBasedDbiFactory());
     //AppContext::getDbiRegistry()->registerDbiFactory(new DbiFactory());

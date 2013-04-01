@@ -27,13 +27,15 @@
 #endif
 
 #include <U2Core/DocumentModel.h>
-
-
-#include <U2Formats/DocumentFormatUtils.h>
+#include <U2Core/L10n.h>
 #include <U2Core/MAlignmentObject.h>
 #include <U2Core/Task.h>
 #include <U2Core/Version.h>
 #include <U2Core/U2AlphabetUtils.h>
+#include <U2Core/U2DbiRegistry.h>
+
+#include <U2Formats/BAMUtils.h>
+#include <U2Formats/DocumentFormatUtils.h>
 
 #include "Reader.h"
 #include "BAMDbiPlugin.h"
@@ -42,6 +44,34 @@
 
 
 namespace U2 {
+
+BAMFormat::BAMFormat()
+: DbiDocumentFormat(
+    BAM_DBI_ID,
+    BaseDocumentFormats::BAM,
+    tr("BAM File"),
+    QStringList("bam"),
+    DocumentFormatFlags(DocumentFormatFlag_NoPack) | DocumentFormatFlag_NoFullMemoryLoad
+    | DocumentFormatFlag_Hidden | DocumentFormatFlag_SupportWriting)
+{
+
+}
+
+void BAMFormat::storeDocument(Document *d, IOAdapter *io, U2OpStatus &os) {
+    CHECK_EXT(d != NULL, os.setError(L10N::badArgument("doc")), );
+    CHECK_EXT(io != NULL && io->isOpen(), os.setError(L10N::badArgument("IO adapter")), );
+
+    QList<GObject*> als = d->findGObjectByType(GObjectTypes::ASSEMBLY);
+    GUrl url = io->getURL();
+    io->close();
+
+    BAMUtils::writeObjects(
+        d->findGObjectByType(GObjectTypes::ASSEMBLY),
+        url,
+        getFormatId(),
+        os);
+}
+
 namespace BAM {
 
 BAMFormatUtils::BAMFormatUtils(QObject *parent)

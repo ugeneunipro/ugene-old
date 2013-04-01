@@ -22,6 +22,7 @@
 #ifndef _U2_BAM_FORMAT_H_
 #define _U2_BAM_FORMAT_H_
 
+#include <U2Core/DbiDocumentFormat.h>
 #include <U2Core/GUrl.h>
 #include <U2Core/U2FormatCheckResult.h>
 
@@ -29,6 +30,14 @@
 
 
 namespace U2 {
+
+class BAMFormat : public DbiDocumentFormat {
+public:
+    BAMFormat();
+
+    void storeDocument(Document *d, IOAdapter *io, U2OpStatus &os);
+};
+
 namespace BAM {
 
 class BAMFormatUtils : public QObject
