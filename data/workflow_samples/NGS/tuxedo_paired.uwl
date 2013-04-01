@@ -26,14 +26,14 @@ workflow "Tuxedo: paired-end reads"{
     }
     read-sequence {
         type:get-file-list;
-        name:"Read paired reads 1";
+        name:"Read Paired Reads 1";
         url-in {
             dataset:Dataset;
         }
     }
     read-sequence-1 {
         type:get-file-list;
-        name:"Read paired reads 2";
+        name:"Read Paired Reads 2";
         url-in {
             dataset:Dataset;
         }
@@ -50,11 +50,11 @@ workflow "Tuxedo: paired-end reads"{
     .actor-bindings {
         multiplexer.output-data->tophat.in-sequence
         cufflinks.out-annotations->cuffmerge.in-annotations
+        tophat.out-assembly->cufflinks.in-assembly
+        cuffmerge.out-annotations->cuffdiff.in-annotations
         read-assembly.out-url->cuffdiff.in-assembly
         read-sequence-1.out-url->multiplexer.input-data-2
-        tophat.out-assembly->cufflinks.in-assembly
         read-sequence.out-url->multiplexer.input-data-1
-        cuffmerge.out-annotations->cuffdiff.in-annotations
     }
 
     read-sequence.url->tophat.in-sequence.in-url
