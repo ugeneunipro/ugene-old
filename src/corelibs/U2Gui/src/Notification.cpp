@@ -22,6 +22,7 @@
 #include "Notification.h"
 
 #include <QtCore/QTime>
+#include <QtGui/QStatusBar>
 
 namespace U2 {
 
@@ -286,7 +287,7 @@ void NotificationStack::addNotification(Notification *t) {
     emit si_changed();
     
     connect(t, SIGNAL(si_delete()), this, SLOT(sl_delete()), Qt::DirectConnection);
-    QPoint pos = AppContext::getMainWindow()->getQMainWindow()->geometry().bottomRight();
+    QPoint pos = getBottomRightOfMainWindow();
     t->showNotification(pos.x() - TT_WIDTH, pos.y() - 50 - notificationPosition);
     notificationNumber++;
     notificationPosition += TT_HEIGHT;
@@ -329,7 +330,8 @@ QList <Notification *> NotificationStack::getItems() const {
 }
 
 void NotificationStack::showStack() {
-    QPoint pos = AppContext::getMainWindow()->getQMainWindow()->geometry().bottomRight();
+    QPoint pos = getBottomRightOfMainWindow();
+
     w->move(pos.x() - w->width(), pos.y() - w->height());
     w->show();
     w->setWindowState(Qt::WindowActive);
@@ -339,5 +341,19 @@ void NotificationStack::setFixed(bool val) {
     w->setFixed(val);
 }
 
+QPoint NotificationStack::getBottomRightOfMainWindow() {
+    QPoint pos;
+#ifndef Q_OS_MAC
+    // This behavior is correct.
+    pos = AppContext::getMainWindow()->getQMainWindow()->geometry().bottomRight();
+#else
+    // Widget's rect doesn't know its real position on the screen. Lets calculate it manually.
+    QPoint topLeft = AppContext::getMainWindow()->getQMainWindow()->mapToGlobal(QPoint(0,0));
+    QSize mainWindowSize = AppContext::getMainWindow()->getQMainWindow()->geometry().size();
+    pos = QPoint(topLeft.x() + mainWindowSize.width(), topLeft.y() + mainWindowSize.height());  // bottom right
+    pos -= QPoint(4, 27);  // Some space for the statusbar and window's edge.
+#endif
+    return pos;
+}
 
 }

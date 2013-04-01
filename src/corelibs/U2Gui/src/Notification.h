@@ -127,6 +127,8 @@ signals:
     void si_changed();
 
 private:
+    QPoint getBottomRightOfMainWindow();    // because of Mac's strange behavior
+
     NotificationWidget *w;
 
     QList<Notification *> notifications;
