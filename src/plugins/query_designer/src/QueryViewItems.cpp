@@ -499,20 +499,20 @@ bool QDElement::sceneEvent(QEvent *event) {
             if(itemResizeFlags) {
                 QueryScene* qs = qobject_cast<QueryScene*>(scene());
                 QGraphicsSceneMouseEvent* me = static_cast<QGraphicsSceneMouseEvent *>(event);
-                if(me->buttons()&Qt::LeftButton) {
+                if(me->buttons() & Qt::LeftButton) {
                     QPointF p = me->pos();
                     p.setY(round(p.y(), GRID_STEP));
 
                     QRectF newBound(bound);
 
-                    if(itemResizeFlags&ResizeRight) {
+                    if(itemResizeFlags & ResizeRight) {
                         newBound.setRight(p.x());
-                    } else if (itemResizeFlags&ResizeLeft && me->scenePos().x()>0) {
+                    } else if (itemResizeFlags & ResizeLeft && me->scenePos().x() > 0) {
                         newBound.setWidth(newBound.width() - p.x());
                     }
-                    if(itemResizeFlags&ResizeTop) {
+                    if(itemResizeFlags & ResizeTop && (0 <= (scenePos().y() - GRID_STEP) || 0 <= p.y())) {
                         newBound.setHeight(newBound.height() - p.y() + newBound.top());
-                    } else if(itemResizeFlags&ResizeBottom) {
+                    } else if(itemResizeFlags & ResizeBottom) {
                         newBound.setBottom(p.y());
                     }
 
