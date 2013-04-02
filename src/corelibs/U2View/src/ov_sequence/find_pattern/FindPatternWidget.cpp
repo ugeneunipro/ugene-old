@@ -392,7 +392,10 @@ FindPatternWidget::FindPatternWidget(AnnotatedDNAView* _annotatedDnaView)
         textPattern->installEventFilter(findPatternEventFilter);
         connect(findPatternEventFilter, SIGNAL(si_tabPressed()), SLOT(sl_onTabInPatternFieldPressed()));
         connect(findPatternEventFilter, SIGNAL(si_enterPressed()), SLOT(sl_onEnterInPatternFieldPressed()));
-
+        
+        setFocusProxy(textPattern);
+        QWidget::setTabOrder(btnSearch, lblShowMoreLess);
+        
         currentSelection = NULL;
         showHideMessage(true, UseMultiplePatternsTip);
     }
@@ -410,8 +413,8 @@ void FindPatternWidget::updateShowOptions()
     lblShowMoreLess->setText(linkText);
     lblShowMoreLess->setTextInteractionFlags(Qt::LinksAccessibleByKeyboard | Qt::LinksAccessibleByMouse);
     
-    QWidget * bottomFocus = (btnSearch->isEnabled()) ? dynamic_cast<QWidget *>(btnSearch) :
-                                                       dynamic_cast<QWidget *>(lblShowMoreLess);
+    QWidget * bottomFocus = (btnSearch->isEnabled()) ? static_cast<QWidget *>(btnSearch) :
+                                                       static_cast<QWidget *>(lblShowMoreLess);
     // Show/hide the additional options
     if (showMore) {
         groupAlgorithm->hide();
@@ -437,6 +440,7 @@ void FindPatternWidget::updateShowOptions()
         
         QWidget::setTabOrder(annotsWidget, bottomFocus);
         QWidget::setTabOrder(usePatternNamesCheckBox, bottomFocus);
+        boxAlgorithm->setFocus();
     }
     QWidget::setTabOrder(bottomFocus, lblShowMoreLess);
     // Change the mode
@@ -1148,8 +1152,10 @@ void FindPatternWidget::sl_onTabInPatternFieldPressed()
 {
     if (btnSearch->isEnabled()) {
         btnSearch->setFocus(Qt::TabFocusReason);
-    } else {
+    } else if (!showMore) {
         lblShowMoreLess->setFocus(Qt::TabFocusReason);
+    } else {
+        boxAlgorithm->setFocus(Qt::TabFocusReason);
     }
     return;
 }
