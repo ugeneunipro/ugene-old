@@ -472,6 +472,7 @@ GroupBox::GroupBox(bool collapsible, const QString &title)
                     "QGroupBox::title  {"
                     "subcontrol-origin: margin;"
                     "padding-top: 12px;"
+                    "padding-left: 15px;"
                     "}";
     setStyleSheet(style);
 #else
