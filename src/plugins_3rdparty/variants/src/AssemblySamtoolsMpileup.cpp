@@ -148,8 +148,7 @@ Task::ReportResult CallVariantsTask::report(){
 
 static char ** createArgv(QByteArray& firstElement, QByteArray& secElement, QList<QString>& urls){
     char ** res;
-    //int size = urls.size() + 2;
-    int size = 3;
+    int size = urls.size() + 2;
     res = new char *[size];
     res[0] = new char [firstElement.size()+1];
     strncpy(res[0], firstElement.data(), firstElement.size());
@@ -157,20 +156,17 @@ static char ** createArgv(QByteArray& firstElement, QByteArray& secElement, QLis
 
     SAFE_POINT(urls.size()>=1, "no assembly urls", res);
 
-    res[1] = new char [urls.first().size()+1];
-    QByteArray arr = urls.first().toLocal8Bit();
-    strncpy(res[1], arr.data(), urls.first().size());
-    res[1][urls.first().size()] = '\0';
+    res[1] = new char [secElement.size()+1];
+    strncpy(res[1], secElement.data(), secElement.size());
+    res[1][secElement.size()] = '\0';
 
-    res[2] = new char [secElement.size()+1];
-    strncpy(res[2], secElement.data(), secElement.size());
-    res[2][secElement.size()] = '\0';
-    //     for (int i = 2; i < size; i++){
-    //         res[i] = new char [urls[i-2].size()+1];
-    //         strncpy(res[i], urls[i-2].data(), urls[i-2].size());
-    //         res[i][urls[i-2].size()] = '\0';        
-    //     }
-
+    for (int i = 2; i < size; i++){
+        res[i] = new char [urls[i-2].size()+1];
+        QByteArray arr = urls[i-2].toLocal8Bit();
+        strncpy(res[i], arr.data(), arr.size());
+        res[i][urls[i-2].size()] = '\0';        
+    }
+      
     return res;    
 }
 
@@ -219,9 +215,10 @@ void SamtoolsMpileupTask::run(){
         return;
     }
 
-    int argc1 = 3;
+    
     QByteArray mpileupArr = QString("mpileup").toLatin1();
     QByteArray seqArr = settings.refSeqUrl.toLocal8Bit();
+    int argc1 = settings.assemblyUrls.size() + 2;
     char** argv1 = createArgv(mpileupArr, seqArr, settings.assemblyUrls);
 
     UGENE_mpileup_settings mpileupSettings;

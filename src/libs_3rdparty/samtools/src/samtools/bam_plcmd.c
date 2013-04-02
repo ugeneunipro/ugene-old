@@ -468,7 +468,7 @@ int bam_mpileup(int argc, char *argv[], UGENE_mpileup_settings* settings, const 
 	mplp.flag = MPLP_NO_ORPHAN | MPLP_REALN;
 
     mplp.flag |= MPLP_NO_COMP | MPLP_GLF;
-    mplp.fai = fai_load(argv[2]);
+    mplp.fai = fai_load(argv[1]);
     if (mplp.fai == 0) return 1;
 
     //from UGENE
@@ -584,7 +584,7 @@ int bam_mpileup(int argc, char *argv[], UGENE_mpileup_settings* settings, const 
         for (c=0; c<nfiles; c++) free(fn[c]);
         free(fn);
     } else {
-       ret = mpileup(&mplp, argc - optind, argv + optind, outBcf);
+       ret = mpileup(&mplp, argc - optind, argv + optind + 1, outBcf);
     }
 	if (mplp.rghash) bcf_str2id_thorough_destroy(mplp.rghash);
 	free(mplp.reg); free(mplp.pl_list);

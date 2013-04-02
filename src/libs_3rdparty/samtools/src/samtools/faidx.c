@@ -136,6 +136,10 @@ void fai_save(const faidx_t *fai, FILE *fp)
 {
 	khint_t k;
 	int i;
+    if (fai == NULL){
+        return;
+    }
+    
 	for (i = 0; i < fai->n; ++i) {
 		faidx1_t x;
 		k = kh_get(s, fai->hash, fai->name[i]);
