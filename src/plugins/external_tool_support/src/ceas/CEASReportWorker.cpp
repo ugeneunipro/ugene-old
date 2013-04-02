@@ -218,13 +218,13 @@ void CEASReportWorkerFactory::init() {
     QList<Attribute*> attrs;
     {
         Descriptor imageFileDesc(IMAGE_FILE_ATTR_ID,
-            CEASReportWorker::tr("Output Report file"),
+            CEASReportWorker::tr("Output report file"),
             CEASReportWorker::tr("Path to the report output file. Result for CEAS analysis"));
 //         Descriptor formatDesc(IMAGE_FORMAT_ATTR_ID,
 //             CEASReportWorker::tr("Image format"),
 //             CEASReportWorker::tr("Output image format."));
         Descriptor annsDesc(OUT_ANNS_ATTR_ID,
-            CEASReportWorker::tr("Output Annotations file"),
+            CEASReportWorker::tr("Output annotations file"),
             CEASReportWorker::tr("Name of tab-delimited output text file,"
             " containing a row of annotations for every RefSeq gene. (file is not generated if no peak location data is supplied)"));
         Descriptor gdbDesc(ANNS_TABLE_ATTR_ID,
