@@ -770,7 +770,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 /////////////////////////////////////////////////////////////////////////
 // Common scenarios/Assembling/Assembly browser
 /////////////////////////////////////////////////////////////////////////
-    REGISTER_TEST_IGNORED(GUITest_Assembly_browser::test_0001,"https://ugene.unipro.ru/tracker/browse/UGENE-1450");
+    REGISTER_TEST(GUITest_Assembly_browser::test_0001);
     REGISTER_TEST(GUITest_Assembly_browser::test_0002);
     REGISTER_TEST(GUITest_Assembly_browser::test_0004);
 
