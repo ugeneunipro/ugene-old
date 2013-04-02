@@ -1346,7 +1346,7 @@ void WorkflowView::sl_pasteSample(const QString& s) {
         {
             lastPaste.clear();
         }
-        sl_pasteItems(s);
+        sl_pasteItems(s, true);
         sl_setRunMode();
         sl_updateTitle();
         scene->setIterated(false);
@@ -1394,7 +1394,7 @@ static void renamePastedSchemaActors(Schema &pasted, Metadata &meta, Schema *ori
     meta.renameActors(mapping);
 }
 
-void WorkflowView::sl_pasteItems(const QString& s) {
+void WorkflowView::sl_pasteItems(const QString &s, bool updateSchemaInfo) {
     QString tmp = s.isNull() ? QApplication::clipboard()->text() : s;
     if (tmp == lastPaste) {
         ++pasteCount;
@@ -1426,6 +1426,10 @@ void WorkflowView::sl_pasteItems(const QString& s) {
     schema->merge(pastedS);
     updateMeta();
     meta.mergeVisual(pastedM);
+    if (updateSchemaInfo) {
+        meta.name = pastedM.name;
+        meta.comment = pastedM.comment;
+    }
     pastedS.setDeepCopyFlag(false);
     recreateScene();
     scene->connectConfigurationEditors();

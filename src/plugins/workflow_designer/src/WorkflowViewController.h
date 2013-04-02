@@ -193,7 +193,7 @@ private slots:
 
     void sl_copyItems();
     void sl_cutItems();
-    void sl_pasteItems(const QString& = QString());
+    void sl_pasteItems(const QString& = QString(), bool updateSchemaInfo = false);
     void sl_pasteSample(const QString&);
 
     void sl_setStyle();
