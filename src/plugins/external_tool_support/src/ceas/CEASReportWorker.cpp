@@ -357,7 +357,7 @@ Worker *CEASReportWorkerFactory::createWorker(Actor *a) {
 QString CEASReportPrompter::composeRichDoc() {
     QString file = getHyperlink(IMAGE_FILE_ATTR_ID, getURL(IMAGE_FILE_ATTR_ID));
     return tr("Creates summary statistics on ChIP enrichment"
-        " and saves it to %1 ").arg(file);
+        " and saves it to %1.").arg(file);
 }
 
 } // LocalWorkflow

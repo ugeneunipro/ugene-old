@@ -39,11 +39,11 @@ workflow "ChIP-seq analyses"{
 
 
     .actor-bindings {
+        read-annotations.out-annotations->macs-id.in-data
         macs-id.out-data->ceas-report.in-data
         macs-id.out-data->conservation_plot-id.in-data
         macs-id.out-data->seqpos-id.in-data
         macs-id.out-data->peak2gene-id.in-data
-        read-annotations.out-annotations->macs-id.in-data
         peak2gene-id.out-data->conduct-go-id.in-data
     }
 
@@ -58,67 +58,68 @@ workflow "ChIP-seq analyses"{
     .meta {
         visual {
             ceas-report {
-                pos:"-544 -571";
+                pos:"-779 -629";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
+                bounds:"-30 -30 148.25 84";
                 in-data.angle:49.2892;
             }
             conduct-go-id {
-                pos:"-192 -289";
+                pos:"-418 -252";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
-                in-data.angle:41.3785;
+                in-data.angle:26.5651;
             }
             conservation_plot-id {
-                pos:"-208 -787";
+                pos:"-418 -884";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 in-data.angle:180;
             }
             macs-id {
-                pos:"-565 -879";
+                pos:"-778 -883";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 in-data.angle:180;
-                out-data.angle:300.069;
+                out-data.angle:322.481;
             }
             peak2gene-id {
-                pos:"-208 -475";
+                pos:"-419 -479";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 in-data.angle:180;
-                out-data.angle:302.005;
+                out-data.angle:297.854;
             }
             read-annotations {
-                pos:"-780 -879";
+                pos:"-1017 -884";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
-                bounds:"-30 -30 66.25 79";
+                bounds:"-30 -30 85.25 90";
                 out-annotations.angle:360;
             }
             seqpos-id {
-                pos:"-209 -635";
+                pos:"-418 -688";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 in-data.angle:180;
             }
             macs-id.out-data->ceas-report.in-data {
-                text-pos:"-45 -16";
+                text-pos:"-54 -10";
             }
             macs-id.out-data->conservation_plot-id.in-data {
-                text-pos:"8 -34";
+                text-pos:"-43 -28";
             }
             macs-id.out-data->peak2gene-id.in-data {
-                text-pos:"-45 -37";
+                text-pos:"-55 -24";
             }
             macs-id.out-data->seqpos-id.in-data {
-                text-pos:"-45 -37";
+                text-pos:"-27 -16";
             }
             peak2gene-id.out-data->conduct-go-id.in-data {
-                text-pos:"-43 -21";
+                text-pos:"-32 -23";
             }
             read-annotations.out-annotations->macs-id.in-data {
-                text-pos:"-33 -24";
+                text-pos:"-47 -25";
             }
         }
         wizard {
@@ -136,15 +137,14 @@ workflow "ChIP-seq analyses"{
                         }
                     }
                 }
-                
             }
             page {
                 id:2;
                 next:3;
-                title:"MACS";
+                title:MACS;
                 parameters-area {
                     group {
-                        title:"Parameters";
+                        title:Parameters;
                         label-size:120;
                         macs-id.genome-size {
                         }
@@ -158,15 +158,19 @@ workflow "ChIP-seq analyses"{
                         }
                         macs-id.model-fold {
                         }
-                        macs-id.shift-size {
+                        macs-id.wiggle-output {
                         }
-                        macs-id.band-width {
+                        macs-id.wiggle-space {
                         }
                     }
                     group {
                         title:Advanced;
                         label-size:120;
                         type:hideable;
+                        macs-id.shift-size {
+                        }
+                        macs-id.band-width {
+                        }
                         macs-id.use-lambda {
                         }
                         macs-id.small-nearby {
@@ -183,10 +187,10 @@ workflow "ChIP-seq analyses"{
             page {
                 id:3;
                 next:4;
-                title:"CEAS";
+                title:CEAS;
                 parameters-area {
                     group {
-                        title:"Parameters";
+                        title:Parameters;
                         label-size:150;
                         ceas-report.anns-table {
                         }
@@ -218,7 +222,7 @@ workflow "ChIP-seq analyses"{
                 title:"Conservation Plot";
                 parameters-area {
                     group {
-                        title:"Parameters";
+                        title:Parameters;
                         label-size:120;
                         conservation_plot-id.title {
                         }
@@ -241,7 +245,7 @@ workflow "ChIP-seq analyses"{
                 title:"SeqPos motif tool";
                 parameters-area {
                     group {
-                        title:"Parameters";
+                        title:Parameters;
                         label-size:130;
                         seqpos-id.assembly {
                         }
@@ -284,24 +288,20 @@ workflow "ChIP-seq analyses"{
                 }
             }
             page {
-                id:6;
+                id:7;
                 title:"Output data";
                 parameters-area {
                     group {
                         title:"MACS output";
-                        label-size:100;
+                        label-size:130;
                         macs-id.output-dir {
                         }
                         macs-id.file-names {
                         }
-                        macs-id.wiggle-output {
-                        }
-                        macs-id.wiggle-space {
-                        }
                     }
                     group {
                         title:"CEAS output";
-                        label-size:150;
+                        label-size:130;
                         ceas-report.image-file {
                         }
                         ceas-report.anns-file {
@@ -309,7 +309,7 @@ workflow "ChIP-seq analyses"{
                     }
                     group {
                         title:"Conservation Plot output";
-                        label-size:120;
+                        label-size:130;
                         conservation_plot-id.output-file {
                         }
                     }
@@ -323,10 +323,10 @@ workflow "ChIP-seq analyses"{
                     }
                     group {
                         title:"Conduct GO output";
-                        label-size:120;
+                        label-size:130;
                         conduct-go-id.output-dir {
                         }
-                    }    
+                    }
                 }
             }
         }
