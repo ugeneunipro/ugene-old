@@ -147,7 +147,9 @@ QWidget *ComboBoxDelegate::createEditor(QWidget *parent,
 {
     ComboBoxWidget *editor = new ComboBoxWidget(items, parent);
     connect(editor, SIGNAL(valueChanged(const QString &)),
-        this, SIGNAL(si_valueChanged(const QString &)));
+        SLOT(sl_commit()));
+    connect(editor, SIGNAL(valueChanged(const QString &)),
+        SIGNAL(si_valueChanged(const QString &)));
 
     return editor;
 }
@@ -171,6 +173,14 @@ QVariant ComboBoxDelegate::getDisplayValue(const QVariant& val) const {
     QString display = items.key(val);
     emit si_valueChanged( display );
     return QVariant( display );
+}
+
+void ComboBoxDelegate::sl_commit() {
+    ComboBoxWidget *editor = static_cast<ComboBoxWidget*>(sender());
+
+    if (editor) {
+        emit commitData(editor);
+    }
 }
 
 /********************************

@@ -83,7 +83,9 @@ QVariant FileExtensionRelation::getAffectResult(const QVariant &influencingValue
     }
 
     bool foundExt = false;
-    if (NULL == currentFormat) {
+    if (0 == QString::compare(lastSuffix, "csv", Qt::CaseInsensitive)) {
+        foundExt = true;
+    }else if (NULL == currentFormat) {
         foundExt = (lastSuffix == currentFormatId);
     } else {
         QStringList extensions(currentFormat->getSupportedDocumentFileExtensions());
