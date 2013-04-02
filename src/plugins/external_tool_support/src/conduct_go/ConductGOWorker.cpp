@@ -157,7 +157,7 @@ void ConductGOWorkerFactory::init() {
     QList<Attribute*> attrs;
     {
          Descriptor outDir(OUTPUT_DIR,
-             ConductGOWorker::tr("Output dir"),
+             ConductGOWorker::tr("Output directory"),
              ConductGOWorker::tr("The directory to store Conduct GO results."));
          Descriptor titleDescr(TITLE,
              ConductGOWorker::tr("Title"),
