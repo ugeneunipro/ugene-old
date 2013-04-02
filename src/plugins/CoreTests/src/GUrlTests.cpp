@@ -26,6 +26,7 @@
 #include <U2Core/GHints.h>
 #include <U2Core/GUrl.h>
 #include <U2Core/U2SafePoints.h>
+#include <U2Core/AppFileStorage.h>
 
 namespace U2 {
 
@@ -154,6 +155,44 @@ Task::ReportResult GTest_CheckTmpFile::report() {
     return ReportResult_Finished;
 }
 
+/************************************************************************/
+/* GTest_CheckStorageFile */
+/************************************************************************/
+void GTest_CheckStorageFile::init(XMLTestFormat *tf, const QDomElement &el) {
+    Q_UNUSED(tf);
+    storageUrl = AppContext::getAppFileStorage()->getStorageDir();
+    fileName = el.attribute(URL_ATTR);
+    exists = bool(el.attribute(EXISTS_ATTR).toInt());
+}
+
+Task::ReportResult GTest_CheckStorageFile::report() {
+    bool actual = findRecursive(storageUrl);
+    if (exists != actual) {
+        setError(QString("File exist state failed. Expected: %1. Actual: %2").arg(exists).arg(actual));
+    }
+    return ReportResult_Finished;
+}
+
+bool GTest_CheckStorageFile::findRecursive(const QString& currentDirUrl) {
+    QDir currentDir(currentDirUrl);
+    QFileInfoList subDirList = currentDir.entryInfoList(QDir::Dirs | QDir::NoDotAndDotDot);
+    QFileInfoList fileList = currentDir.entryInfoList(QDir::Files);
+
+    foreach (QFileInfo fileInfo, fileList) {
+        if (fileName == fileInfo.fileName()) {
+            return true;
+        }
+    }
+
+    foreach (QFileInfo dirInfo, subDirList) {
+        if (true == findRecursive(dirInfo.filePath())) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 /*******************************
 * GUrlTests
 *******************************/
@@ -164,6 +203,7 @@ QList<XMLTestFactory*> GUrlTests::createTestFactories() {
     res.append(GTest_RemoveTmpFile::createFactory());
     res.append(GTest_CreateTmpFile::createFactory());
     res.append(GTest_CheckTmpFile::createFactory());
+    res.append(GTest_CheckStorageFile::createFactory());
     return res;
 }
 

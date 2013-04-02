@@ -88,6 +88,21 @@ private:
     bool exists;
 };
 
+class GTest_CheckStorageFile : public GTest {
+    Q_OBJECT
+public:
+    SIMPLE_XML_TEST_BODY_WITH_FACTORY(GTest_CheckStorageFile, "check-storage-file");
+
+    ReportResult report();
+
+private:
+    bool findRecursive(const QString& currentDirUrl);
+
+    QString storageUrl;
+    QString fileName;
+    bool exists;
+};
+
 class GUrlTests {
 public:
     static QList<XMLTestFactory*> createTestFactories();
