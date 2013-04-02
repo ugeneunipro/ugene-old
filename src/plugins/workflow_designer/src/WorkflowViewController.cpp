@@ -409,6 +409,8 @@ void WorkflowView::createActions() {
     sceneScaleCombo->addItems(scales);
     sceneScaleCombo->setCurrentIndex(3);
     connect(sceneScaleCombo, SIGNAL(currentIndexChanged(const QString &)), SLOT(sl_rescaleScene(const QString &)));
+    // Some visual modifications for Mac:
+    sceneScaleCombo->lineEdit()->setStyleSheet("QLineEdit {margin-right: 1px;}");
 
     QAction* simpleStyle = new QAction(tr("Minimal"), this);
     simpleStyle->setData(QVariant(ItemStyles::SIMPLE));
