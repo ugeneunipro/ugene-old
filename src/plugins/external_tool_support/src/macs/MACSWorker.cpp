@@ -118,7 +118,7 @@ Task *MACSWorker::tick() {
             conVar = data[CONTROL_SLOT_ID];
         }
         const QList<SharedAnnotationData>& treatData = QVariantUtils::var2ftl(treatVar.toList());
-        const QList<SharedAnnotationData>& conData = QVariantUtils::var2ftl(conVar.toList());
+        const QList<SharedAnnotationData>& conData = conVar.value<QList<SharedAnnotationData> >();
 
         MACSSettings settings = createMACSSettings(os);
         if (os.hasError()) {
