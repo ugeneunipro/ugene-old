@@ -207,6 +207,7 @@ const qint64 GenomeAlignerDbiWriter::readBunchSize = 10000;
 
 inline void checkOperationStatus(const U2OpStatus &status) {
     if (status.hasError()) {
+        coreLog.error(status.getError());
         throw status.getError();
     }
 }
@@ -218,8 +219,12 @@ GenomeAlignerDbiWriter::GenomeAlignerDbiWriter(QString dbiFilePath, QString refN
     sqliteDbi = dbiHandle->dbi;
     wDbi = sqliteDbi->getAssemblyDbi();
 
-    sqliteDbi->getObjectDbi()->createFolder("/", status);
+    QStringList folders = sqliteDbi->getObjectDbi()->getFolders(status);
     checkOperationStatus(status);
+    if (!folders.contains("/")) {
+        sqliteDbi->getObjectDbi()->createFolder("/", status);
+        checkOperationStatus(status);
+    }
     assembly.visualName = refName;
     U2AssemblyReadsImportInfo importInfo;
     wDbi->createAssemblyObject(assembly, "/", NULL, importInfo, status);

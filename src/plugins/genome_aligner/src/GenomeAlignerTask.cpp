@@ -175,6 +175,9 @@ QList<Task*> GenomeAlignerTask::onSubTaskFinished( Task* subTask ) {
         if (seqReader->isEnd()) {
             if (!hasError()){
                 setError(tr("Can not init short reads loader."));
+                if (NULL != pWriteTask) {
+                    pWriteTask->setFinished();
+                }
             }
             return subTasks;
         }
@@ -189,6 +192,9 @@ QList<Task*> GenomeAlignerTask::onSubTaskFinished( Task* subTask ) {
                     seqWriter = new GenomeAlignerDbiWriter(settings.resultFileName.getURLString(), index->getSeqName(), index->getSeqLength());
                 } catch (QString exeptionMessage) {
                     setError(exeptionMessage);
+                    if (NULL != pWriteTask) {
+                        pWriteTask->setFinished();
+                    }
                     return subTasks;
                 }
             }
