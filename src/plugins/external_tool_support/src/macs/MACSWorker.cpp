@@ -337,18 +337,18 @@ void MACSWorkerFactory::init() {
             MACSWorker::tr("Q-value"),
             MACSWorker::tr("Minimum FDR (q-value) cutoff for peak detection."));
         Descriptor useModelDesc(USE_MODEL_ATTR_ID,
-            MACSWorker::tr("Use Model"),
+            MACSWorker::tr("Use model"),
             MACSWorker::tr("Whether or not to use MACS paired peaks model. (--nomodel)"));
         Descriptor modelFoldDesc(MODEL_FOLD_ATTR_ID,
             MACSWorker::tr("Model fold"),
             MACSWorker::tr("Select the regions within MFOLD range of high-confidence enrichment ratio against."
-            " <b>Model fold</b> is available when <b>Use Model</b> is true, which is the foldchange"
+            " <b>Model fold</b> is available when <b>Use model</b> is true, which is the foldchange"
             " to chose paired peaks to build paired peaks model. Users need to set a lower(smaller)"
             " and upper(larger) number for fold change so that MACS will only use the peaks within these foldchange range to build model. (--mfold)"));
         Descriptor shiftSizeDesc(SHIFT_SIZE_ATTR_ID,
             MACSWorker::tr("Shift size"),
             MACSWorker::tr("An arbitrary shift value used as a half of the fragment size when model is not built."
-            " <b>Shift size</b> is available when <b>Use Model</b> is false, which will represent the HALF of the fragment size of your sample."
+            " <b>Shift size</b> is available when <b>Use model</b> is false, which will represent the HALF of the fragment size of your sample."
             " If your sonication and size selection size is 300 bps, after you trim out nearly 100 bps adapters,"
             " the fragment size is about 200 bps, so you can specify 100 here. (--shiftsize)"));
         Descriptor keepDupDesc(KEEP_DUBLICATES_ATTR_ID,
@@ -434,7 +434,7 @@ void MACSWorkerFactory::init() {
 
         Attribute* shiftAttr = new Attribute(shiftSizeDesc, BaseTypes::NUM_TYPE(), false, QVariant(100));
         foldAttr ->addRelation(new VisibilityRelation(USE_MODEL_ATTR_ID, "False"));
-        //TODO:Available if: “Use Model” is False OR building model by MACSis failed
+        //TODO:Available if: “Use model” is False OR building model by MACSis failed
         attrs << shiftAttr;
 
         
