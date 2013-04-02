@@ -52,6 +52,11 @@ customWidget(NULL), subject(NULL), actor(NULL)
 {
     setupUi(this);
 
+#ifdef Q_OS_MAC
+    QString style("QGroupBox::title {margin-top: 1px; margin-left: 15px;}");
+    editorBox->setStyleSheet(style);
+#endif
+
     inputPortWidget << table2;
     outputPortWidget << table3;
     inputPortBox->setEnabled(false);
