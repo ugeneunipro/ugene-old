@@ -216,21 +216,21 @@ QStringList MACSWorker::getOutputFiles() {
 /* Factory */
 /************************************************************************/
 
-class MACSAnnotationsValidator : public ConfigurationValidator {
-public:
-    MACSAnnotationsValidator(const QString& _sl1, const QString& _port, const QString& _sl2):sl1(_sl1),sl2(_sl2),port(_port){
+class MACSInputSlotsValidator : public PortValidator {
+    public:
+
+    bool validate(const IntegralBusPort *port, QStringList &l) const {
+        QVariant busMap = port->getParameter(Workflow::IntegralBusPort::BUS_MAP_ATTR_ID)->getAttributePureValue();
+        bool data = isBinded(busMap.value<QStrStrMap>(), TREATMENT_SLOT_ID);
+        if (!data){
+            QString dataName = slotName(port, TREATMENT_SLOT_ID);
+            l.append(IntegralBusPort::tr("Error! The slot must be not empty: '%1'").arg(dataName));
+            return false;
+        }
+
         
-    }
-    virtual bool validate(const Configuration* cfg, QStringList& output) const {
-        const Workflow::Actor* a = dynamic_cast<const Workflow::Actor*>(cfg);
-        assert(a);
-
-        Workflow::Port* p = a->getPort(port);
-        assert(p->isInput());
-
-        QVariant busMap = p->getParameter(Workflow::IntegralBusPort::BUS_MAP_ATTR_ID)->getAttributePureValue();
-        QString slot1Val = busMap.value<QStrStrMap>().value(sl1);
-        QString slot2Val = busMap.value<QStrStrMap>().value(sl2);
+        QString slot1Val = busMap.value<QStrStrMap>().value(TREATMENT_SLOT_ID);
+        QString slot2Val = busMap.value<QStrStrMap>().value(CONTROL_SLOT_ID);
         U2OpStatusImpl os;
         const QList<IntegralBusSlot>& slots1 = IntegralBusSlot::listFromString(slot1Val, os);
         const QList<IntegralBusSlot>& slots2 = IntegralBusSlot::listFromString(slot2Val, os);
@@ -250,18 +250,13 @@ public:
         }
 
         if (hasCommonElements){
-            output.append(MACSWorker::tr("Error: Input control and treatment annotations are the same"));
+            l.append(MACSWorker::tr("Error: Input control and treatment annotations are the same"));
             return false;
         }
 
         return true;
     }
-protected:
-    QString sl1;
-    QString sl2;
-    QString port;
-};
-
+    };
 
 void MACSWorkerFactory::init() {
     QList<PortDescriptor*> portDescs;
@@ -545,7 +540,7 @@ void MACSWorkerFactory::init() {
     ActorPrototype *proto = new IntegralBusActorPrototype(protoDesc, portDescs, attrs);
     proto->setPrompter(new MACSPrompter());
     proto->setEditor(new DelegateEditor(delegates));
-    proto->setValidator(new MACSAnnotationsValidator(treatDesc.getId(), portDescs.first()->getId(), conDesc.getId()));
+    proto->setPortValidator(IN_PORT_DESCR, new MACSInputSlotsValidator());
     WorkflowEnv::getProtoRegistry()->registerProto(BaseActorCategories::CATEGORY_CHIP_SEQ(), proto);
     WorkflowEnv::getDomainRegistry()->getById(LocalDomainFactory::ID)->registerEntry(new MACSWorkerFactory());
 }
