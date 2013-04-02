@@ -299,8 +299,6 @@ QString Peak2GenePrompter::composeRichDoc() {
 
     res.append(tr("Uses annotations from <u>%1</u> as peak regions ").arg(treatUrl));
     res.append(tr(" to annotate with genes nearby from <u>%1</u>.").arg(dbUrl));
- 
-    res.append(".");
 
     return res;
 }
