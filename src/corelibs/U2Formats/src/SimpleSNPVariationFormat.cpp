@@ -34,6 +34,8 @@ SimpleSNPVariationFormat::SimpleSNPVariationFormat(QObject *p)
     columnRoles.insert(3, ColumnRole_ObsData);
 
     maxColumnNumber = columnRoles.keys().last();
+
+    indexing = AbstractVariationFormat::ZeroBased;
 }
 
 bool SimpleSNPVariationFormat::checkFormatByColumnCount(int columnCount) const {

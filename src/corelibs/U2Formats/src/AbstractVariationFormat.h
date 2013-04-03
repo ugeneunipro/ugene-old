@@ -41,6 +41,11 @@ public:
         ColumnRole_Comment
     };
 
+    enum PositionIndexing{
+        ZeroBased = 0,
+        OneBased
+    };
+
     AbstractVariationFormat(QObject *p, const QStringList &fileExts);
 
     virtual const QString &getFormatName() const {return formatName;}
@@ -54,6 +59,8 @@ protected:
     QMap<int,ColumnRole> columnRoles;
     QString sep;
     int maxColumnNumber;
+
+    PositionIndexing indexing;
 
     virtual Document *loadDocument(IOAdapter *io, const U2DbiRef &dbiRef, const QVariantMap &fs, U2OpStatus &os);
     virtual bool checkFormatByColumnCount(int columnCount) const = 0;

@@ -35,6 +35,8 @@ VCF4VariationFormat::VCF4VariationFormat(QObject *p)
     columnRoles.insert(4, ColumnRole_ObsData);
 
     maxColumnNumber = columnRoles.keys().last();
+
+    indexing = AbstractVariationFormat::OneBased;
 }
 
 bool VCF4VariationFormat::checkFormatByColumnCount(int columnCount) const {

@@ -42,6 +42,7 @@ AbstractVariationFormat::AbstractVariationFormat(QObject *p, const QStringList &
 {
     supportedObjectTypes += GObjectTypes::VARIANT_TRACK;
     formatDescription = tr("SNP formats are used to store single-nucleotide polymorphism data");
+    indexing = AbstractVariationFormat::ZeroBased;
 }
 
 #define READ_BUFF_SIZE 4095
@@ -98,10 +99,16 @@ Document *AbstractVariationFormat::loadDocument(IOAdapter *io, const U2DbiRef &d
                     seqName = columnData;
                     break;
                 case ColumnRole_StartPos:
-                    v.startPos = columnData.toInt() - 1;
+                    v.startPos = columnData.toInt();
+                    if (indexing == AbstractVariationFormat::OneBased){
+                        v.startPos -= 1;
+                    }
                     break;
                 case ColumnRole_EndPos:
-                    v.endPos = columnData.toInt() - 1;
+                    v.endPos = columnData.toInt();
+                    if (indexing == AbstractVariationFormat::OneBased){
+                        v.startPos -= 1;
+                    }
                     break;
                 case ColumnRole_RefData:
                     v.refData = columnData.toLatin1();
@@ -223,10 +230,23 @@ void AbstractVariationFormat::storeTrack(IOAdapter *io, const VariantTrackObject
                         snpString += track.sequenceName;
                         break;
                     case ColumnRole_StartPos:
-                        snpString += QByteArray::number(variant.startPos + 1);
+                        if (indexing == AbstractVariationFormat::OneBased){
+                            snpString += QByteArray::number(variant.startPos + 1);
+                        }else if (indexing == AbstractVariationFormat::ZeroBased){
+                            snpString += QByteArray::number(variant.startPos);
+                        }else{
+                            assert(0);
+                        }
+                        
                         break;
                     case ColumnRole_EndPos:
-                        snpString += QByteArray::number(variant.endPos + 1);
+                        if (indexing == AbstractVariationFormat::OneBased){
+                            snpString += QByteArray::number(variant.endPos + 1);
+                        }else if (indexing == AbstractVariationFormat::ZeroBased){
+                            snpString += QByteArray::number(variant.endPos);
+                        }else{
+                            assert(0);
+                        }
                         break;
                     case ColumnRole_RefData:
                         snpString += variant.refData;
