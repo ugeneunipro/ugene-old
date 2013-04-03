@@ -38,12 +38,16 @@ class ReadAssemblyWorker : public GenericDocReader {
 public:
     ReadAssemblyWorker(Actor *p);
     virtual void init() ;
+    virtual QStringList getOutputFiles();
 
 protected slots:
     virtual void sl_taskFinished();
 
 protected:
     virtual Task * createReadTask(const QString &url, const QString &datasetName);
+
+private:
+    QStringList outputFiles;
 }; // ReadAssemblyWorker
 
 class ReadAssemblyProto : public GenericReadDocProto {

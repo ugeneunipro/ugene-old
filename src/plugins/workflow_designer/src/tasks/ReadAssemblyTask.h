@@ -58,12 +58,17 @@ public:
 
     virtual void run();
     GUrl getResultUrl() const;
+    const QStringList & getConvertedFiles() const;
 
 private:
     DocumentFormatId formatId;
     GUrl url;
     GUrl result;
     WorkflowContext *ctx;
+    QStringList convertedFiles;
+
+private:
+    void addConvertedFile(const GUrl &url);
 };
 
 class ReadAssemblyTaskFactory : public ReadDocumentTaskFactory {

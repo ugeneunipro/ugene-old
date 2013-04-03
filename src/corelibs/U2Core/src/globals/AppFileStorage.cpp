@@ -240,12 +240,12 @@ void AppFileStorage::cleanup(U2OpStatus &os) {
     QList<U2Triplet> data = storage->getTriplets(os);
     CHECK_OP(os, );
 
+    QList<U2Triplet> newData;
     QStringList unremovedFiles;
     //2. Remove triplets' files
-    for (QList<U2Triplet>::iterator i = data.begin(); i != data.end(); i++) {
-        FileInfo info(*i);
+    foreach (const U2Triplet &triplet, data) {
+        FileInfo info(triplet);
         if (info.isFileToFileInfo()) {
-            data.erase(i);
             QString url = info.getValue();
             bool inTheStorage = url.startsWith(storageDir);
             bool removed = removeFile(url);
@@ -259,11 +259,13 @@ void AppFileStorage::cleanup(U2OpStatus &os) {
                 unremovedFiles << url;
                 unremovedFiles << info.getKey(); // source url for hash
             }
+        } else {
+            newData << triplet;
         }
     }
 
     //3. Remove triplets' data
-    foreach (const U2Triplet &t, data) {
+    foreach (const U2Triplet &t, newData) {
         if (unremovedFiles.contains(t.getKey())) {
             continue;
         }

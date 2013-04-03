@@ -46,10 +46,13 @@ public:
     virtual const QString & getUrl() const;
     virtual const QString & getDatasetName() const;
 
+    const QStringList & getConvertedFiles() const;
+
 protected:
     QList<SharedDbiDataHandler> result;
     QString url;
     QString datasetName;
+    QStringList convertedFiles;
 };
 
 class U2LANG_EXPORT ReadDocumentTaskFactory {

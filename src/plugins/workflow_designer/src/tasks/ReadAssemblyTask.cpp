@@ -84,6 +84,7 @@ void ConvertToIndexedBamTask::run() {
             BAMUtils::convertSamToBam(url, bamUrl, stateInfo);
             CHECK_OP(stateInfo, );
 
+            addConvertedFile(bamUrl);
             FileStorageUtils::addSamToBamConvertInfo(url.getURLString(), bamUrl.getURLString(), ctx->getWorkflowProcess());
         } else {
             bamUrl = bam;
@@ -107,6 +108,7 @@ void ConvertToIndexedBamTask::run() {
         baseName +=  ".sorted";
         sortedBamUrl = BAMUtils::sortBam(bamUrl, baseName, stateInfo);
         CHECK_OP(stateInfo, );
+        addConvertedFile(sortedBamUrl);
     }
 
     bool indexed = sorted && BAMUtils::hasValidBamIndex(sortedBamUrl);
@@ -129,6 +131,17 @@ GUrl ConvertToIndexedBamTask::getResultUrl() const {
     return result;
 }
 
+const QStringList & ConvertToIndexedBamTask::getConvertedFiles() const {
+    return convertedFiles;
+}
+
+void ConvertToIndexedBamTask::addConvertedFile(const GUrl &url) {
+    convertedFiles << url.getURLString();
+}
+
+/************************************************************************/
+/* ReadAssemblyTask */
+/************************************************************************/
 ReadAssemblyTask::ReadAssemblyTask(const QString &url, const QString &datasetName, WorkflowContext *_ctx)
 : ReadDocumentTask(url, tr("Read assembly from %1").arg(url), datasetName, TaskFlag_None),
 ctx(_ctx), format(NULL), doc(NULL), convertTask(NULL), importTask(NULL)
@@ -194,6 +207,7 @@ QList<Task*> ReadAssemblyTask::onSubTaskFinished(Task *subTask) {
     } else if (convertTask == subTask) {
         url = convertTask->getResultUrl().getURLString();
         format = AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::BAM);
+        convertedFiles << convertTask->getConvertedFiles();
     }
     return result;
 }

@@ -99,6 +99,11 @@ void ReadAssemblyWorker::sl_taskFinished() {
 
         cache.append(Message(mtype, m));
     }
+    outputFiles << t->getConvertedFiles();
+}
+
+QStringList ReadAssemblyWorker::getOutputFiles() {
+    return outputFiles;
 }
 
 /************************************************************************/
