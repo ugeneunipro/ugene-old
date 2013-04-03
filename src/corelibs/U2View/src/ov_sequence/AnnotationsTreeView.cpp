@@ -184,19 +184,19 @@ AnnotationsTreeView::AnnotationsTreeView(AnnotatedDNAView* _ctx) : ctx(_ctx){
 
     renameAction = new QAction(tr("Rename item"), this);
     renameAction->setShortcut(QKeySequence(Qt::Key_F2));
-    renameAction->setShortcutContext(Qt::WidgetShortcut);
+    renameAction->setShortcutContext(Qt::WindowShortcut);
     connect(renameAction, SIGNAL(triggered()), SLOT(sl_rename()));
     tree->addAction(renameAction);
 
     editAction = new QAction(tr("Edit qualifier"), this);
     editAction->setShortcut(QKeySequence(Qt::Key_F4));
-    editAction->setShortcutContext(Qt::WidgetShortcut);
+    editAction->setShortcutContext(Qt::WindowShortcut);
     connect(editAction, SIGNAL(triggered()), SLOT(sl_edit()));
     tree->addAction(editAction);
 
     viewAction = new QAction(tr("View qualifier"), this);
     viewAction->setShortcut(QKeySequence(Qt::Key_F3));
-    viewAction->setShortcutContext(Qt::WidgetShortcut);
+    viewAction->setShortcutContext(Qt::WindowShortcut);
     connect(viewAction, SIGNAL(triggered()), SLOT(sl_edit()));
     tree->addAction(viewAction);
 
