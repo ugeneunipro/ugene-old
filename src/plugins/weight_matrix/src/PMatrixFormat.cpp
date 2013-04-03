@@ -62,6 +62,7 @@ U2::FormatCheckResult PFMatrixFormat::checkRawData( const QByteArray& rawData, c
 
     QString dataStr(rawData);
     QStringList qsl = dataStr.split("\n");
+    qsl.removeAll(QString());
     if(qsl.size() > 5 || qsl.size() < 4){ //actually can be 4 or 5
         return FormatDetection_NotMatched;
     }
@@ -184,7 +185,8 @@ U2::FormatCheckResult PWMatrixFormat::checkRawData( const QByteArray& rawData, c
 
     QString dataStr(rawData);
     QStringList qsl = dataStr.split("\n");
-    if(qsl.size() > 6 || qsl.size() < 5){ //actually can be 5 or 6
+    qsl.removeAll(QString());
+    if(qsl.size() > 5 || qsl.size() < 4){ //actually can be 5 or 6
         return FormatDetection_NotMatched;
     }
     qsl.pop_front(); //skip first line
