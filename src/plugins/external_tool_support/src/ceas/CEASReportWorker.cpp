@@ -305,14 +305,15 @@ void CEASReportWorkerFactory::init() {
 
     QMap<QString, PropertyDelegate*> delegates;
     {
-        delegates[IMAGE_FILE_ATTR_ID] = new URLDelegate(DialogUtils::prepareDocumentsFileFilter(true), "", false);
+        
+        delegates[IMAGE_FILE_ATTR_ID] = new URLDelegate(DialogUtils::prepareFileFilter(CEASReportWorker::tr("Report file"), QStringList("pdf"), true), "", false);
 //         {
 //             QVariantMap vm;
 //             vm[CEASTaskSettings::PDF_FORMAT] = CEASTaskSettings::PDF_FORMAT;
 //             vm[CEASTaskSettings::PNG_FORMAT] = CEASTaskSettings::PNG_FORMAT;
 //             delegates[IMAGE_FORMAT_ATTR_ID] = new ComboBoxDelegate(vm);
 //         }
-        delegates[OUT_ANNS_ATTR_ID] = new URLDelegate(DialogUtils::prepareDocumentsFileFilter(true), "", false);
+        delegates[OUT_ANNS_ATTR_ID] = new URLDelegate(DialogUtils::prepareFileFilter(CEASReportWorker::tr("Annotations file"), QStringList("xls"), true), "", false);
         {
             QVariantMap vm;
             if (dataPath){

@@ -61,9 +61,13 @@ MAlignment MSAUtils::seq2ma(const QList<DNASequence>& list, U2OpStatus& os) {
         } else {
             al = U2AlphabetUtils::deriveCommonAlphabet(al, seq.alphabet);
             if (al == NULL) {
-                if (ma.getAlphabet()->getType() == DNAAlphabet_AMINO && seq.alphabet->isNucleic()) {
+                if (ma.getAlphabet() == NULL && seq.alphabet == NULL){
+                    os.setError(tr("Alphabets of the alignment and the sequence cannot be derived"));
+                    break;
+                }
+                if (ma.getAlphabet() != NULL && ma.getAlphabet()->getType() == DNAAlphabet_AMINO && (seq.alphabet == NULL || seq.alphabet->isNucleic())) {
                     al = ma.getAlphabet();
-                } else if (ma.getAlphabet()->getId() == BaseDNAAlphabetIds::NUCL_DNA_EXTENDED()) {
+                } else if (ma.getAlphabet() != NULL && ma.getAlphabet()->getId() == BaseDNAAlphabetIds::NUCL_DNA_EXTENDED()) {
                     al = seq.alphabet;
                 } else {
                     os.setError(tr("Sequences have different alphabets."));

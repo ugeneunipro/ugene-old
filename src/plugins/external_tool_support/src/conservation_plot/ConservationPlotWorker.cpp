@@ -231,7 +231,7 @@ void ConservationPlotWorkerFactory::init() {
 
     QMap<QString, PropertyDelegate*> delegates;
     {
-          delegates[OUTPUT_FILE] = new URLDelegate("", "", false, false);
+          delegates[OUTPUT_FILE] = new URLDelegate(DialogUtils::prepareFileFilter(ConservationPlotWorker::tr("Conservation plot file"), QStringList("bmp"), true), "", false, false);
          {
             QVariantMap vm;
             vm["minimum"] = QVariant(0);

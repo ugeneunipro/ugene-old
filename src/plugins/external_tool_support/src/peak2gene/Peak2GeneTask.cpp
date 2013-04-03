@@ -67,7 +67,6 @@ Peak2GeneTask::~Peak2GeneTask() {
 
 void Peak2GeneTask::cleanup() {
     treatAnn.clear();
-    conAnn.clear();
 
     delete treatDoc; treatDoc = NULL;
     delete logParser; logParser = NULL;

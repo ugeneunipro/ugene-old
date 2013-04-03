@@ -56,7 +56,6 @@ private:
     QString workingDir;
 
     QList<SharedAnnotationData> treatAnn;
-    QList<SharedAnnotationData> conAnn;
 
     Document *treatDoc;
 
