@@ -137,6 +137,19 @@ Document *AbstractVariationFormat::loadDocument(IOAdapter *io, const U2DbiRef &d
     QList<GObject*> objects;
     QSet<QString> names;
 
+    //create empty track
+    if (snpsMap.isEmpty()){
+        U2VariantTrack track;
+        track.sequenceName = "unknown";
+        dbi->getVariantDbi()->createVariantTrack(track, "", os);
+
+        U2EntityRef trackRef(dbiRef, track.id);
+        QString objName = TextUtils::variate(track.sequenceName, "_", names);
+        names.insert(objName);
+        VariantTrackObject *trackObj = new VariantTrackObject(objName, trackRef);
+        objects << trackObj;
+    }
+
     foreach (const QString &seqName, snpsMap.keys().toSet()) {
         U2VariantTrack track;
         track.sequenceName = seqName;
