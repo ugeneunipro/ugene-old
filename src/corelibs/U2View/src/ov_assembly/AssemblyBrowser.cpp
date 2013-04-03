@@ -803,6 +803,7 @@ void AssemblyBrowser::sl_zoomOut(const QPoint & pos) {
 void AssemblyBrowser::sl_zoomToReads() {
     if(!areReadsVisible()) {
         zoomInFromSize(0);
+        updateZoomingActions();
         emit si_zoomOperationPerformed();
     }
 }
