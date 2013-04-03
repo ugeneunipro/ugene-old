@@ -389,26 +389,10 @@ void PageContentCreator::visit(DefaultPageContent *content) {
             controllers << logoWC.getControllers();
         }
     }
-    { // create page title
-        pageTitle = new QLabel();
-        pageTitle->setWordWrap(true);
-#ifdef Q_OS_MAC
-        pageTitle->setStyleSheet("QLabel {font-size: 20pt; padding-bottom: 10px; color: #0c3762}");
-#else
-        pageTitle->setStyleSheet("QLabel {font-size: 16pt; padding-bottom: 10px; color: #0c3762}");
-#endif
-        pageTitle->resize(0, 0);
-        pageTitle->hide();
-        contentLayout->addWidget(pageTitle);
-        //TODO: compute real title and subtitle height
+    createTitle(contentLayout);
+    createSubTitle(contentLayout);
+    { //TODO: compute real title and subtitle height
         paramsHeight = 0;
-    }
-    { // create page subtitle
-        pageSubtitle = new QLabel();
-        pageSubtitle->setWordWrap(true);
-        pageSubtitle->resize(0, 0);
-        pageSubtitle->hide();
-        contentLayout->addWidget(pageSubtitle);
     }
     { // create parameters
         WidgetCreator paramsWC(wc);
@@ -450,9 +434,31 @@ QList<WidgetController*> & PageContentCreator::getControllers() {
     return controllers;
 }
 
+void PageContentCreator::createTitle(QVBoxLayout *contentLayout) {
+    pageTitle = new QLabel();
+    pageTitle->setWordWrap(true);
+#ifdef Q_OS_MAC
+    pageTitle->setStyleSheet("QLabel {font-size: 20pt; padding-bottom: 10px; color: #0c3762}");
+#else
+    pageTitle->setStyleSheet("QLabel {font-size: 16pt; padding-bottom: 10px; color: #0c3762}");
+#endif
+    pageTitle->resize(0, 0);
+    pageTitle->hide();
+    contentLayout->addWidget(pageTitle);
+}
+
+void PageContentCreator::createSubTitle(QVBoxLayout *contentLayout) {
+    pageSubtitle = new QLabel();
+    pageSubtitle->setWordWrap(true);
+    pageSubtitle->resize(0, 0);
+    pageSubtitle->hide();
+    contentLayout->addWidget(pageSubtitle);
+}
+
 /************************************************************************/
 /* GroupBox */
 /************************************************************************/
+const int GroupBox::MARGIN = 5;
 
 GroupBox::GroupBox(bool collapsible, const QString &title)
 : QGroupBox(title), hLayout(NULL), tip(NULL), showHideButton(NULL)
@@ -476,7 +482,7 @@ GroupBox::GroupBox(bool collapsible, const QString &title)
                     "}";
     setStyleSheet(style);
 #else
-    layout->setContentsMargins(5, 5, 5, 5);
+    layout->setContentsMargins(MARGIN, MARGIN, MARGIN, MARGIN);
 #endif
 
     if (collapsible) {

@@ -19,6 +19,8 @@
  * MA 02110-1301, USA.
  */
 
+#include <U2Core/U2SafePoints.h>
+
 #include <QHBoxLayout>
 #include <QLineEdit>
 #include <QSpinBox>
@@ -55,6 +57,7 @@ LabeledPropertyWidget::LabeledPropertyWidget(const QString &labelText, PropertyW
 }
 
 void LabeledPropertyWidget::setLabelWidth(int width) {
+    SAFE_POINT(NULL != label, "NULL label", );
     label->setFixedWidth(width);
 }
 

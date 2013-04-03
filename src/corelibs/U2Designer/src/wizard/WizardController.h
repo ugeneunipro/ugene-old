@@ -147,6 +147,10 @@ private:
     QList<WidgetController*> controllers;
     QLabel *pageTitle;
     QLabel *pageSubtitle;
+
+private:
+    void createTitle(QVBoxLayout *contentLayout);
+    void createSubTitle(QVBoxLayout *contentLayout);
 };
 
 /************************************************************************/
@@ -169,6 +173,8 @@ private:
     QHBoxLayout *hLayout;
     QLabel *tip;
     QToolButton *showHideButton;
+
+    static const int MARGIN;
 
 private:
     void changeView(const QString &buttonText, const QString &showHide);
