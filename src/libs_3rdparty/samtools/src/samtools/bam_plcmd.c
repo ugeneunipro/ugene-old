@@ -230,6 +230,10 @@ static int mpileup(mplp_conf_t *conf, int n, char **fn, const char* bcfOut)
 		data[i]->fp = strcmp(fn[i], "-") == 0? bam_dopen(fileno(stdin), "r") : bam_open(fn[i], "r");
 		data[i]->conf = conf;
 		h_tmp = bam_header_read(data[i]->fp);
+        if (h_tmp == NULL){
+            return -1;
+        }
+        
 		data[i]->h = i? h : h_tmp; // for i==0, "h" has not been set yet
 		bam_smpl_add(sm, fn[i], (conf->flag&MPLP_IGNORE_RG)? 0 : h_tmp->text);
 		rghash = bcf_call_add_rg(rghash, h_tmp->text, conf->pl_list);
