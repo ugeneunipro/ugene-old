@@ -117,6 +117,13 @@ public:
     qint64 taskId;
     QTextEdit* textEdit;
     bool eventFilter(QObject *o, QEvent *e);
+
+private slots:
+    void sl_openDir();
+
+private:
+    void showContextMenu(const QPoint &pos, const QString &url);
+    QAction * createDirAction(const QString &url, QObject *parent);
 };
 
 

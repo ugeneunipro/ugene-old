@@ -26,7 +26,9 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/Log.h>
 #include <U2Core/Timer.h>
+#include <U2Core/U2SafePoints.h>
 
+#include <QtGui/QDesktopServices>
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QHeaderView>
 #include <QtGui/QMenu>
@@ -473,13 +475,15 @@ QString TVReportWindow::prepareReportHTML(Task* t) {
 bool TVReportWindow::eventFilter(QObject *, QEvent *e) {
     if(e->type() == QEvent::MouseButtonPress) {
         QMouseEvent *me = static_cast<QMouseEvent*>(e);
-        if(me->button() == Qt::LeftButton) {
-            QString url = textEdit->anchorAt(me->pos());
-            if(!url.isEmpty()) {
+        QString url = textEdit->anchorAt(me->pos());
+        if (!url.isEmpty()) {
+            if(me->button() == Qt::LeftButton) {
                 Task *t = AppContext::getProjectLoader()->openWithProjectTask(url);
-                if(t) {
+                if (t) {
                     AppContext::getTaskScheduler()->registerTopLevelTask(t);
                 }
+            } else if (me->button() == Qt::RightButton) {
+                showContextMenu(me->globalPos(), url);
             }
         }
     } else if(e->type() == QEvent::MouseMove) {
@@ -493,6 +497,30 @@ bool TVReportWindow::eventFilter(QObject *, QEvent *e) {
     return false;
 }
 
+void TVReportWindow::showContextMenu(const QPoint &pos, const QString &url) {
+    QScopedPointer<QMenu> menu(textEdit->createStandardContextMenu());
+    menu->addAction(createDirAction(url, menu.data()));
+    menu->exec(pos);
+}
+
+QAction * TVReportWindow::createDirAction(const QString &url, QObject *parent) {
+    QAction *dirAction = new QAction(
+        QIcon(":ugene/images/project_open.png"),
+        tr("Open containing folder"), parent);
+    dirAction->setData(url);
+    connect(dirAction, SIGNAL(triggered()), SLOT(sl_openDir()));
+    return dirAction;
+}
+
+void TVReportWindow::sl_openDir() {
+    QAction *dirAction = qobject_cast<QAction*>(sender());
+    CHECK(NULL != dirAction, );
+    QString url = dirAction->data().toString();
+    QFileInfo info(url);
+    CHECK(info.exists(), );
+
+    QDesktopServices::openUrl(QUrl("file:///" + info.dir().absolutePath()));
+}
 
 //////////////////////////////////////////////////////////////////////////
 // Tree Items
