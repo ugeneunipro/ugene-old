@@ -148,6 +148,7 @@ void MuscleMSAEditorContext::initViewContext(GObjectView* view) {
     MuscleAction* addSequencesAction = new MuscleAction(this, view, tr("Align sequences to profile with MUSCLE..."), 1001);
     addSequencesAction->setIcon(QIcon(":umuscle/images/muscle_16.png"));
     addSequencesAction->setEnabled(!objLocked);
+    addSequencesAction->setObjectName("Align sequences to profile with MUSCLE");
     connect(addSequencesAction, SIGNAL(triggered()), SLOT(sl_alignSequencesToProfile()));
     connect(msaed->getMSAObject(), SIGNAL(si_lockedStateChanged()), addSequencesAction, SLOT(sl_lockedStateChanged()));
     addViewAction(addSequencesAction);
@@ -155,6 +156,7 @@ void MuscleMSAEditorContext::initViewContext(GObjectView* view) {
     MuscleAction* alignProfilesAction = new MuscleAction(this, view, tr("Align profile to profile with MUSCLE..."), 1002);
     alignProfilesAction->setIcon(QIcon(":umuscle/images/muscle_16.png"));
     alignProfilesAction->setEnabled(!objLocked);
+    alignProfilesAction->setObjectName("Align profile to profile with MUSCLE");
     connect(alignProfilesAction, SIGNAL(triggered()), SLOT(sl_alignProfileToProfile()));
     connect(msaed->getMSAObject(), SIGNAL(si_lockedStateChanged()), alignProfilesAction, SLOT(sl_lockedStateChanged()));
     addViewAction(alignProfilesAction);

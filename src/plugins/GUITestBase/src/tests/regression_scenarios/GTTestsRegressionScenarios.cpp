@@ -994,6 +994,30 @@ GUI_TEST_CLASS_DEFINITION(test_1508) {
     GTGlobals::sleep();
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1527) {
+    //1. Open COI2.aln as an alignment
+    GTFileDialog::openFile(os, dataDir+"samples/CLUSTALW/", "COI.aln");
+    GTGlobals::sleep();
+
+    //2. {MSA Editor context menu} -> Align -> Align profile to profile with MUSCLE
+    //3. Select empty "test.aln" in the profile browsing dialog.
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_ALIGN << "Align profile to profile with MUSCLE", GTGlobals::UseMouse));
+    GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, testDir + "_common_data/regression/1527/", "test.aln"));
+    GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
+}
+
+GUI_TEST_CLASS_DEFINITION(test_1527_1) {
+    //1. Open COI2.aln as an alignment
+    GTFileDialog::openFile(os, dataDir+"samples/CLUSTALW/", "COI.aln");
+    GTGlobals::sleep();
+
+    //2. {MSA Editor context menu} -> Align -> Align sequences to profile with MUSCLE
+    //3. Select empty "test.aln" in the profile browsing dialog.
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_ALIGN << "Align sequences to profile with MUSCLE", GTGlobals::UseMouse));
+    GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, testDir + "_common_data/regression/1527/", "test.aln"));
+    GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
+}
+
 } // GUITest_regression_scenarios namespace
 
 } // U2 namespace
