@@ -119,11 +119,14 @@ public:
     bool eventFilter(QObject *o, QEvent *e);
 
 private slots:
-    void sl_openDir();
+    void sl_open();
 
 private:
     void showContextMenu(const QPoint &pos, const QString &url);
     QAction * createDirAction(const QString &url, QObject *parent);
+    QAction * createFileAction(const QString &url, QObject *parent);
+    QAction * createOpenAction(const QString &name, const QString &url,
+        QObject *parent, const QString &icon = QString());
 };
 
 

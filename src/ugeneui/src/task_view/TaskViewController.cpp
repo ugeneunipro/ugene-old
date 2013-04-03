@@ -498,28 +498,44 @@ bool TVReportWindow::eventFilter(QObject *, QEvent *e) {
 }
 
 void TVReportWindow::showContextMenu(const QPoint &pos, const QString &url) {
-    QScopedPointer<QMenu> menu(textEdit->createStandardContextMenu());
+    QScopedPointer<QMenu> menu(new QMenu());
     menu->addAction(createDirAction(url, menu.data()));
+    menu->addAction(createFileAction(url, menu.data()));
     menu->exec(pos);
 }
 
-QAction * TVReportWindow::createDirAction(const QString &url, QObject *parent) {
-    QAction *dirAction = new QAction(
-        QIcon(":ugene/images/project_open.png"),
-        tr("Open containing folder"), parent);
-    dirAction->setData(url);
-    connect(dirAction, SIGNAL(triggered()), SLOT(sl_openDir()));
-    return dirAction;
+QAction * TVReportWindow::createOpenAction(const QString &name, const QString &url, QObject *parent, const QString &icon) {
+    QAction *action = NULL;
+    if (icon.isEmpty()) {
+        action = new QAction(name, parent);
+    } else {
+        action = new QAction(QIcon(icon), name, parent);
+    }
+    connect(action, SIGNAL(triggered()), SLOT(sl_open()));
+
+    action->setData(url);
+    return action;
 }
 
-void TVReportWindow::sl_openDir() {
+QAction * TVReportWindow::createDirAction(const QString &url, QObject *parent) {
+    QFileInfo info(url);
+    return createOpenAction(
+        tr("Open containing folder"),
+        info.dir().absolutePath(),
+        parent,
+        ":ugene/images/project_open.png");
+}
+
+QAction * TVReportWindow::createFileAction(const QString &url, QObject *parent) {
+    return createOpenAction(tr("Open by operating system"), url, parent);
+}
+
+void TVReportWindow::sl_open() {
     QAction *dirAction = qobject_cast<QAction*>(sender());
     CHECK(NULL != dirAction, );
-    QString url = dirAction->data().toString();
-    QFileInfo info(url);
-    CHECK(info.exists(), );
 
-    QDesktopServices::openUrl(QUrl("file:///" + info.dir().absolutePath()));
+    QString url = dirAction->data().toString();
+    QDesktopServices::openUrl(QUrl("file:///" + url));
 }
 
 //////////////////////////////////////////////////////////////////////////
