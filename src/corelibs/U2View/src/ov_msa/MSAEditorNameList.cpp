@@ -41,7 +41,7 @@ static const int CROSS_SIZE = 9;
 #define CHILDREN_OFFSET 8
 
 MSAEditorNameList::MSAEditorNameList(MSAEditorUI* _ui, QScrollBar* _nhBar) 
-    : labels(NULL), ui(_ui), nhBar(_nhBar), editor(_ui->editor) 
+    : labels(NULL), ui(_ui), nhBar(_nhBar), editor(_ui->editor), singleSelecting(false)
 {
     setObjectName("msa_editor_name_list");
     setFocusPolicy(Qt::WheelFocus);
@@ -336,7 +336,6 @@ void MSAEditorNameList::mousePressEvent(QMouseEvent *e) {
         curSeq = ui->seqArea->getSequenceNumByY(e->y());
         if (ui->isCollapsibleMode()) {
             MSACollapsibleItemModel* m = ui->getCollapseModel();
-            //int dbg = m->displayedRowsCount(), repchikDbg = m->getLastPos();
             if(curSeq >= m->displayedRowsCount()){
                 QWidget::mousePressEvent(e);
                 return;
@@ -373,6 +372,7 @@ void MSAEditorNameList::mousePressEvent(QMouseEvent *e) {
             scribbling = true;
         }
         if ( ui->seqArea->isSeqInRange(curSeq) ) {
+            singleSelecting = true;
             scribbling = true;
         }
     }
@@ -386,6 +386,9 @@ void MSAEditorNameList::mouseMoveEvent( QMouseEvent* e )
         int newSeqNum = ui->seqArea->getSequenceNumByY(e->pos().y());
         if (ui->seqArea->isSeqInRange(newSeqNum)) {
             ui->seqArea->updateVBarPosition(newSeqNum);
+            if (singleSelecting) {
+                singleSelecting = false;
+            }
         }
         if (shifting) {
             assert(!ui->isCollapsibleMode());
@@ -435,10 +438,15 @@ void MSAEditorNameList::mouseReleaseEvent( QMouseEvent *e )
             bool selectionContainsSeqs = (startSelectingSeq <= lastVisibleRow || newSeq <= lastVisibleRow);
             
             if(selectionContainsSeqs) {
-                curSeq = (startSelectingSeq < firstVisibleRow) ? firstVisibleRow : startSelectingSeq;
-                curSeq = (startSelectingSeq > lastVisibleRow) ? lastVisibleRow : startSelectingSeq;
-                if (newSeq > lastVisibleRow || newSeq < firstVisibleRow) {
-                    newSeq = newSeq > 0 ? lastVisibleRow : 0;
+                if (singleSelecting) {
+                    curSeq = newSeq;
+                    singleSelecting = false;
+                } else {
+                    curSeq = (startSelectingSeq < firstVisibleRow) ? firstVisibleRow : startSelectingSeq;
+                    curSeq = (startSelectingSeq > lastVisibleRow) ? lastVisibleRow : startSelectingSeq;
+                    if (newSeq > lastVisibleRow || newSeq < firstVisibleRow) {
+                        newSeq = newSeq > 0 ? lastVisibleRow : 0;
+                    }
                 }
                 updateSelection(newSeq);
             }
