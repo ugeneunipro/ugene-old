@@ -821,8 +821,9 @@ int MSAEditorSequenceArea::getSequenceNumByY(int y) const {
     if (seq < 0) {
         seq = 0;
     }
-    if (seq >= editor->getNumSequences()) {
-        seq = editor->getNumSequences() - 1;
+    int countOfVisibleSeqs = ui->getCollapseModel()->displayedRowsCount();
+    if (seq >= countOfVisibleSeqs) {
+        seq = countOfVisibleSeqs - 1;
     }
 }
     return seq;
