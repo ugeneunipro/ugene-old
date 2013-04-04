@@ -461,6 +461,14 @@ QStrStrMap ActorPrototype::getSlotRelations() const {
     return slotRelations;
 }
 
+void ActorPrototype::addExternalTool(const QString &toolId, const QString &paramId) {
+    externalTools[toolId] = paramId;
+}
+
+const QStrStrMap & ActorPrototype::getExternalTools() const {
+    return externalTools;
+}
+
 ActorPrototype::ActorPrototype(const Descriptor& d, 
                                const QList<PortDescriptor*>& ports, 
                                const QList<Attribute*>& attrs)

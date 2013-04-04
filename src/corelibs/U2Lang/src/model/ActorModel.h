@@ -98,7 +98,9 @@ public:
 
     void addSlotRelation(const QString &headPortId, const QString headSlot, const QString &depPortId, const QString &depSlot);
     QStrStrMap getSlotRelations() const;
-    
+
+    void addExternalTool(const QString &toolId, const QString &paramId = "");
+    const QStrStrMap & getExternalTools() const;
 protected:
     // create port and sets p as owner of new port
     // caller should add created port to actor's ports see createInstance
@@ -137,7 +139,12 @@ protected:
     // Map< Dependent slotid, Head slotid >
     // slotid is "port.slot"
     QStrStrMap slotRelations;
-    
+
+    // toolId <-> parameterId (optional)
+    // The actor could use external tools. The map shows what tools are used.
+    // Also the path to a tool can be set in a parameter. In this case the value of map is the parameter's id;
+    // otherwise the value is empty string.
+    QStrStrMap externalTools;
 }; // ActorPrototype
 
 /**

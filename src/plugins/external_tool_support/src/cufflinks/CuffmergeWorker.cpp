@@ -154,6 +154,11 @@ void CuffmergeWorkerFactory::init()
     proto->setEditor(new DelegateEditor(delegates));
     proto->setPrompter(new CuffmergePrompter());
 
+    { // external tools
+        proto->addExternalTool(CUFFMERGE_TOOL_NAME, EXT_TOOL_PATH);
+        proto->addExternalTool(CUFFCOMPARE_TOOL_NAME, CUFFCOMPARE_TOOL_PATH);
+    }
+
     WorkflowEnv::getProtoRegistry()->registerProto(
         BaseActorCategories::CATEGORY_RNA_SEQ(),
         proto);

@@ -134,7 +134,6 @@ QString WorkflowRunTask::generateReport() const {
         QString error = Qt::escape(sub->getError()).replace("\n", "<br>");
 #endif
 
-            //AppContext::getTaskScheduler()->getStateName(sub);
         if (sub->hasError()) {
             name = "<font color='red'>"+name+"</font>";
             status = "<font color='red'>"+status+"</font>";

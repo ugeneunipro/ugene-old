@@ -183,6 +183,23 @@ static bool validateParameters(const Schema &schema, QList<QListWidgetItem*>* in
     return good;
 }
 
+static bool validateExternalTools(Actor *actor, QStringList &invalidTools) {
+    invalidTools.clear();
+    QStrStrMap tools = actor->getProto()->getExternalTools();
+    foreach (const QString &toolId, tools.keys()) {
+        Attribute *attr = actor->getParameter(tools[toolId]);
+        ExternalTool *tool = AppContext::getExternalToolRegistry()->getByName(toolId);
+        SAFE_POINT(NULL != tool, "NULL tool", false);
+
+        bool fromAttr = (NULL != attr) && !attr->isDefaultValue();
+        bool valid = fromAttr ? !attr->isEmpty() : tool->isValid();
+        if (!valid) {
+            invalidTools << tool->getName();
+        }
+    }
+    return invalidTools.isEmpty();
+}
+
 bool WorkflowUtils::validate(const Schema& schema, QList<QListWidgetItem*>* infoList) {
     bool good = true;
     std::auto_ptr<WorkflowScriptEngine> engine(new WorkflowScriptEngine(NULL));
@@ -215,6 +232,15 @@ bool WorkflowUtils::validate(const Schema& schema, QList<QListWidgetItem*>* info
                 }
                 good = false;
             }
+        }
+        QStringList invalidTools;
+        good &= validateExternalTools(a, invalidTools);
+        foreach (const QString &toolName, invalidTools) {
+            static const QString error = QObject::tr("external tool is not set");
+            QListWidgetItem* item = new QListWidgetItem(a->getProto()->getIcon(), 
+                QString("%1 : %2 \"%3\"").arg(a->getLabel()).arg(error).arg(toolName));
+            item->setData(ACTOR_REF, a->getId());
+            infoList->append(item);
         }
     }
 
@@ -297,6 +323,15 @@ bool WorkflowUtils::validate(const Schema& schema, QList<QMap<int, QVariant> >* 
                 good = false;
             }
         }
+        QStringList invalidTools;
+        good &= validateExternalTools(a, invalidTools);
+        foreach (const QString &toolName, invalidTools) {
+            static const QString error = QObject::tr("external tool is not set");
+            QMap<int, QVariant> item;
+            item[TEXT_REF] = QString("%1 : \"%3\"").arg(a->getLabel()).arg(error).arg(toolName);
+            item[ACTOR_REF] = a->getId();
+            infoList->append(item);
+        }
     }
 
     if (0 == schema.getIterations().size()) {
@@ -369,6 +404,12 @@ bool WorkflowUtils::validate( const Workflow::Schema& schema, QStringList & errs
                     .arg(syntaxResult.errorMessage());
                 good = false;
             }
+        }
+        QStringList invalidTools;
+        good &= validateExternalTools(a, invalidTools);
+        foreach (const QString &toolName, invalidTools) {
+            static const QString error = QObject::tr("external tool is not set");
+            errs << QString("%1 : %2 \"%3\"").arg(a->getLabel()).arg(error).arg(toolName);
         }
     }
 

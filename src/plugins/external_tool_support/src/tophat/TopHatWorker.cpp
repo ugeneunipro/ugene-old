@@ -91,6 +91,9 @@ static const QString OUT_MAP_DESCR_ID("out.tophat");
 static const QString ACCEPTED_HITS_SLOT_ID("accepted.hits");
 static const QString OUT_BAM_URL_SLOT_ID("hits-url");
 
+static const QString BOWTIE1("Bowtie1");
+static const QString BOWTIE2("Bowtie2");
+
 void TopHatWorkerFactory::init()
 {
     QList<PortDescriptor*> portDescriptors;
@@ -379,8 +382,8 @@ void TopHatWorkerFactory::init()
     }
     {
         QVariantMap vm;
-        vm[TopHatWorker::tr("Bowtie2")] = 0;
-        vm[TopHatWorker::tr("Bowtie1")] = 1;
+        vm[BOWTIE2] = 0;
+        vm[BOWTIE1] = 1;
         delegates[BOWTIE_VERSION] = new ComboBoxDelegate(vm);
     }
     {
@@ -462,6 +465,12 @@ void TopHatWorkerFactory::init()
     proto->setEditor(new DelegateEditor(delegates));
     proto->setPrompter(new TopHatPrompter());
     proto->setPortValidator(BasePorts::IN_SEQ_PORT_ID(), new InputSlotsValidator());
+    proto->setValidator(new BowtieToolsValidator());
+
+    { // external tools
+        proto->addExternalTool(SAMTOOLS_EXT_TOOL_NAME, SAMTOOLS_TOOL_PATH);
+        proto->addExternalTool(TOPHAT_TOOL_NAME, EXT_TOOL_PATH);
+    }
 
     WorkflowEnv::getProtoRegistry()->registerProto(
         BaseActorCategories::CATEGORY_RNA_SEQ(),
@@ -727,7 +736,7 @@ void DatasetData::replaceCurrent(const QString &dataset) {
 }
 
 /************************************************************************/
-/* Validator */
+/* Validators */
 /************************************************************************/
 bool InputSlotsValidator::validate(const IntegralBusPort *port, QStringList &l) const {
     QStrStrMap bm = port->getParameter(IntegralBusPort::BUS_MAP_ATTR_ID)->getAttributeValueWithoutScript<QStrStrMap>();
@@ -751,6 +760,30 @@ bool InputSlotsValidator::validate(const IntegralBusPort *port, QStringList &l) 
     }
 
     return true;
+}
+
+bool BowtieToolsValidator::validate(const Configuration *cfg, QStringList &output) const {
+    const Actor *actor = dynamic_cast<const Actor*>(cfg);
+    SAFE_POINT(NULL != actor, "NULL actor", false);
+    Attribute *attr = actor->getParameter(TopHatWorkerFactory::BOWTIE_TOOL_PATH);
+    SAFE_POINT(NULL != attr, "NULL attribute", false);
+
+    ExternalTool *tool = NULL;
+    {
+        int version = actor->getParameter(TopHatWorkerFactory::BOWTIE_VERSION)->getAttributePureValue().toInt();
+        if (1 == version) {
+            tool = AppContext::getExternalToolRegistry()->getByName(BOWTIE_TOOL_NAME);
+        } else {
+            tool = AppContext::getExternalToolRegistry()->getByName(BOWTIE2_ALIGN_TOOL_NAME);
+        }
+        SAFE_POINT(NULL != tool, "NULL bowtie tool", false);
+    }
+
+    bool valid = !attr->isDefaultValue() ? !attr->isEmpty() : tool->isValid();
+    if (!valid) {
+        output << QObject::tr("external tool is not set") + QString(" \"%1\"").arg(tool->getName());
+    }
+    return valid;
 }
 
 } // namespace LocalWorkflow

@@ -273,6 +273,10 @@ void CuffdiffWorkerFactory::init()
     proto->setPrompter(new CuffdiffPrompter());
     proto->setPortValidator(BasePorts::IN_ASSEMBLY_PORT_ID(), new InputSlotValidator());
 
+    { // external tools
+        proto->addExternalTool(CUFFDIFF_TOOL_NAME, EXT_TOOL_PATH);
+    }
+
     WorkflowEnv::getProtoRegistry()->registerProto(
         BaseActorCategories::CATEGORY_RNA_SEQ(),
         proto);

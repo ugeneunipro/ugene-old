@@ -264,6 +264,10 @@ void CufflinksWorkerFactory::init()
     proto->setPrompter(new CufflinksPrompter());
     proto->setPortValidator(BasePorts::IN_ASSEMBLY_PORT_ID(), new InputSlotValidator());
 
+    { // external tools
+        proto->addExternalTool(CUFFLINKS_TOOL_NAME, EXT_TOOL_PATH);
+    }
+
     WorkflowEnv::getProtoRegistry()->registerProto(
         BaseActorCategories::CATEGORY_RNA_SEQ(),
         proto);
