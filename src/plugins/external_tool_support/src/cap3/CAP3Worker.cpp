@@ -76,6 +76,7 @@ void CAP3WorkerFactory::init() {
     proto->setEditor(new DelegateEditor(delegates));
     proto->setPrompter(new CAP3Prompter());
     proto->setIconPath(":external_tool_support/images/clustalx.png");
+    proto->addExternalTool(CAP3_TOOL_NAME);
     WorkflowEnv::getProtoRegistry()->registerProto(BaseActorCategories::CATEGORY_ASSEMBLY(), proto);
 
     DomainFactory* localDomain = WorkflowEnv::getDomainRegistry()->getById(LocalDomainFactory::ID);

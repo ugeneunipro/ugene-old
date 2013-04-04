@@ -283,6 +283,7 @@ void BlastAllWorkerFactory::init() {
     proto->setEditor(new DelegateEditor(delegates));
     proto->setPrompter(new BlastAllPrompter());
     proto->setIconPath(":external_tool_support/images/ncbi.png");
+    proto->addExternalTool(BLASTALL_TOOL_NAME, BLASTALL_EXT_TOOL_PATH);
     WorkflowEnv::getProtoRegistry()->registerProto(BaseActorCategories::CATEGORY_BASIC(), proto);
 
     DomainFactory* localDomain = WorkflowEnv::getDomainRegistry()->getById(LocalDomainFactory::ID);

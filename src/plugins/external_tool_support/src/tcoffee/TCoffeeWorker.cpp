@@ -106,6 +106,7 @@ void TCoffeeWorkerFactory::init() {
     proto->setEditor(new DelegateEditor(delegates));
     proto->setPrompter(new TCoffeePrompter());
     proto->setIconPath(":external_tool_support/images/tcoffee.png");
+    proto->addExternalTool(TCOFFEE_TOOL_NAME, EXT_TOOL_PATH);
     WorkflowEnv::getProtoRegistry()->registerProto(BaseActorCategories::CATEGORY_ALIGNMENT(), proto);
 
     DomainFactory* localDomain = WorkflowEnv::getDomainRegistry()->getById(LocalDomainFactory::ID);

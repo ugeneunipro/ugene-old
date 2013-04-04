@@ -120,6 +120,7 @@ void ClustalOWorkerFactory::init() {
     proto->setEditor(new DelegateEditor(delegates));
     proto->setPrompter(new ClustalOPrompter());
     proto->setIconPath(":external_tool_support/images/clustalo.png");
+    proto->addExternalTool(CLUSTALO_TOOL_NAME, EXT_TOOL_PATH);
     WorkflowEnv::getProtoRegistry()->registerProto(BaseActorCategories::CATEGORY_ALIGNMENT(), proto);
 
     DomainFactory* localDomain = WorkflowEnv::getDomainRegistry()->getById(LocalDomainFactory::ID);
