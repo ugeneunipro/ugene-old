@@ -87,7 +87,7 @@ public:
 
     /** Methods that modify the gap model only */
     void insertGap(U2Region rows, int pos, int nGaps);
-    int deleteGap(int seqNum, int pos, int maxGaps);
+    int deleteGap(const U2Region &rows, int pos, int maxGaps);
     int deleteGap(int pos, int maxGaps);
 
     /**

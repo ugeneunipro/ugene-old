@@ -1319,7 +1319,7 @@ void MSAEditorSequenceArea::del(const QPoint& p, bool columnMode) {
     } else {
         const U2Region& range = getRowsAt(p.y());
         for (int row = range.startPos; row < range.endPos(); row++) {
-            maObj->deleteGap(row, p.x(), 1);
+            maObj->deleteGap(U2Region(row, 1), p.x(), 1);
         }
     }
 }
@@ -1828,7 +1828,6 @@ void MSAEditorSequenceArea::sl_copyCurrentSelection()
     
 }
 
-
 void MSAEditorSequenceArea::shiftSelectedRegion( int shift )
 {
     if (shift == 0) {
@@ -1837,21 +1836,21 @@ void MSAEditorSequenceArea::shiftSelectedRegion( int shift )
   
     MAlignmentObject* maObj = editor->getMSAObject();
     if ( !maObj->isStateLocked() ) {
-        int x = selection.x(); 
-        int y = selection.y();
-        int width = selection.width();
-        int height = selection.height();
+        const U2Region rows = getSelectedRows();
+        const int x = selection.x();
+        const int y = rows.startPos;
+        const int width = selection.width();
+        const int height = rows.length;
         if (maObj->isRegionEmpty(x,y,width,height)) {
             return;
         }
-        bool shiftOk = maObj->shiftRegion(x,y,width,height,shift);
+        const bool shiftOk = maObj->shiftRegion(x,y,width,height,shift);
         if (shiftOk) {
             cursorPos.setX(cursorPos.x() + shift);
             moveSelection(shift,0);
         }
     }
 }
-
 
 void MSAEditorSequenceArea::deleteCurrentSelection()
 {

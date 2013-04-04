@@ -190,28 +190,31 @@ void MAlignmentObject::insertGap(U2Region rows, int pos, int count) {
     updateCachedMAlignment(mi);
 }
 
-int MAlignmentObject::deleteGap(int seqNum, int pos, int maxGaps) {
+int MAlignmentObject::deleteGap(const U2Region &rows, int pos, int maxGaps) {
     SAFE_POINT(!isStateLocked(), "Alignment state is locked!", 0);
 
     MAlignment msa = getMAlignment();
 
     int n = 0, max = qBound(0, maxGaps, msa.getLength() - pos);
-    while (n < max) {
-        char c = msa.charAt(seqNum, pos + n);
-        if (c != MAlignment_GapChar) { //not a gap
-            break;
+    int rowCount = rows.startPos;
+    while (rowCount < rows.endPos()) {
+        while (n < max) {
+            char c = msa.charAt(rowCount, pos + n);
+            if (c != MAlignment_GapChar) { //not a gap
+                break;
+            }
+            n++;
         }
-        n++;
+        if (n == 0 && (rows.endPos() - 1 == rowCount)) {
+            return 0;
+        }
+        U2OpStatus2Log os;
+        msa.removeChars(rowCount, pos, n, os);
+        const MAlignmentRow &row = msa.getRow(rowCount);
+        MsaDbiUtils::updateRowGapModel(entityRef, row.getRowId(), row.getGapModel(), os);
+        SAFE_POINT_OP(os, 0);
+        ++rowCount;
     }
-    if (n == 0) {
-        return 0;
-    }
-    U2OpStatus2Log os;
-    msa.removeChars(seqNum, pos, n, os);
-    const MAlignmentRow &row = msa.getRow(seqNum);
-    MsaDbiUtils::updateRowGapModel(entityRef, row.getRowId(), row.getGapModel(), os);
-    SAFE_POINT_OP(os, 0);
-
     updateCachedMAlignment();
     return n;
 }
@@ -467,10 +470,7 @@ bool MAlignmentObject::shiftRegion( int startPos, int startRow, int nBases, int 
         if (startPos + shift < 0) {
             return false;
         }
-        int endRow = startRow + nRows;
-        for (int row = startRow; row < endRow; ++row) {
-            n += deleteGap(row, startPos + shift, ~shift + 1 /*equivalent to shift * (-1)*/);
-        }
+        n = deleteGap(U2Region(startRow, nRows), startPos + shift, -shift);
     }    
 
     return n > 0;
