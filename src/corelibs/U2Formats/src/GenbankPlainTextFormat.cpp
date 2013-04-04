@@ -574,6 +574,7 @@ static QString genLocusString(QList<GObject*> aos, U2SequenceObject* so, QString
         }
         loc = padToLen(loc.replace(QChar(' '), QChar('_')), qMax(0, 28 - len.length()));
         loc.append(len).append(" bp ");
+        loc = padToLen(loc, 35);
         if (so->getSequenceInfo().contains(DNAInfo::LOCUS)) {
             DNALocusInfo loi = so->getSequenceInfo().value(DNAInfo::LOCUS).value<DNALocusInfo>();
             assert(!loi.name.isEmpty());
