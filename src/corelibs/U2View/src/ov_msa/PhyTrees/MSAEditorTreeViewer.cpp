@@ -393,8 +393,9 @@ void MSAEditorTreeViewerUI::highlightBranches() {
     
     do {
         GraphicsRectangularBranchItem* node = graphicsItems.pop();
-        qreal nodePos = node->sceneBoundingRect().left();
-        if(nodePos > subgroupSelectorPos) {
+        qreal node1Pos = node->sceneBoundingRect().left();
+        qreal node2Pos = node->sceneBoundingRect().right();
+        if(node2Pos > subgroupSelectorPos && node1Pos < subgroupSelectorPos) {
             groupRoots.append(node);
             continue;
         }
@@ -410,24 +411,25 @@ void MSAEditorTreeViewerUI::highlightBranches() {
 
     int colorIndex = 0;
     QMap<PhyNode*, QColor> colorSchema;
+
     foreach(GraphicsRectangularBranchItem* branchItem, groupRoots) {
-        PhyNode* firstNode = NULL;
+        PhyNode* secondNode = NULL;
         if(NULL != branchItem->getPhyBranch()) {
-            firstNode = branchItem->getPhyBranch()->node1;
+            secondNode = branchItem->getPhyBranch()->node2;
         }
         else {
             continue;
         }
-        if(colorSchema.contains(firstNode)) {
+        if(colorSchema.contains(secondNode)) {
             BranchSettings settings = branchItem->getBranchSettings();
-            settings.branchColor = colorSchema[firstNode];
+            settings.branchColor = colorSchema[secondNode];
             branchItem->updateSettings(settings);
             branchItem->updateChildSettings(settings);
         }
         else {
-            colorSchema[firstNode] = groupColors.getColor(colorIndex);
+            colorSchema[secondNode] = groupColors.getColor(colorIndex);
             BranchSettings settings = branchItem->getBranchSettings();
-            settings.branchColor = colorSchema[firstNode];
+            settings.branchColor = colorSchema[secondNode];
             branchItem->updateSettings(settings);
             branchItem->updateChildSettings(settings);
             colorIndex++;
