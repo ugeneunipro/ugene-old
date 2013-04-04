@@ -354,7 +354,7 @@ void ExternalToolSupportSettingsPageWidget::sl_onBrowseToolKitPath(){
         assert(listOfItems.length()!=0);
         foreach(QTreeWidgetItem* item, listOfItems){
             QString toolItemText = item->text(0);
-            if(AppContext::getExternalToolRegistry()->getByName(toolItemText) != NULL){
+            if(item->childCount()==0 && AppContext::getExternalToolRegistry()->getByName(toolItemText) != NULL){
                 if(AppContext::getExternalToolRegistry()->getByName(item->text(0))->getToolKitName() == toolKitName){
                     QWidget* itemWid=treeWidget->itemWidget(item,1);
                     PathLineEdit* lineEdit=itemWid->findChild<PathLineEdit*>("PathLineEdit");
