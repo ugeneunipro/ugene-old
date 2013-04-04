@@ -113,6 +113,8 @@ public:
     /** if path == "default" then nothing is changed. Returns the new path */
     static QString updateExternalToolPath(const QString &toolName, const QString &path);
 
+    static QString externalToolError(const QString &toolName);
+
 private:
     static QStringList initExtensions();
     

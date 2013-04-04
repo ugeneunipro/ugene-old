@@ -501,5 +501,14 @@ ActorConfigurationEditor::ActorConfigurationEditor(const ActorConfigurationEdito
     cfg = other.cfg;
 }
 
+/************************************************************************/
+/* ActorValidator */
+/************************************************************************/
+bool ActorValidator::validate(const Configuration *cfg, QStringList &errors) const {
+    const Actor *actor = static_cast<const Actor*>(cfg);
+    SAFE_POINT(NULL != actor, "NULL actor", false);
+    return validate(actor, errors);
+}
+
 }//Workflow namespace
 }//GB2namespace

@@ -143,20 +143,7 @@ QList<Task*> BlastPlusSupportCommonTask::onSubTaskFinished(Task* subTask) {
         delete logParser;
         if(settings.outputType == 5 || settings.outputType == 6){
             if(!QFileInfo(settings.outputOriginalFile).exists()){
-                QString curToolName;
-                if(settings.programName == "blastn"){
-                    curToolName=BLASTN_TOOL_NAME;
-                }else if(settings.programName == "blastp"){
-                    curToolName=BLASTP_TOOL_NAME;
-                }else if(settings.programName == "blastx"){
-                    curToolName=BLASTX_TOOL_NAME;
-                }else if(settings.programName == "tblastn"){
-                    curToolName=TBLASTN_TOOL_NAME;
-                }else if(settings.programName == "tblastx"){
-                    curToolName=TBLASTX_TOOL_NAME;
-                } else if(settings.programName == "rpsblast") {
-                    curToolName = RPSBLAST_TOOL_NAME;
-                }
+                QString curToolName = toolNameByProgram(settings.programName);
                 if(AppContext::getExternalToolRegistry()->getByName(curToolName)->isValid()){
                     stateInfo.setError(tr("Output file not found"));
                 }else{
@@ -608,6 +595,24 @@ QString BlastPlusSupportMultiTask::generateReport() const {
     res+="<tr><td width=200><b>" + tr("No any results found") + "</b></td><td></td></tr>";
     res+="</table>";
     return res;
+}
+
+QString BlastPlusSupportCommonTask::toolNameByProgram(const QString &program) {
+    QString result;
+    if("blastn" == program){
+        result = BLASTN_TOOL_NAME;
+    } else if ("blastp" == program){
+        result = BLASTP_TOOL_NAME;
+    } else if ("blastx" == program){
+        result = BLASTX_TOOL_NAME;
+    } else if ("tblastn" == program){
+        result = TBLASTN_TOOL_NAME;
+    } else if ("tblastx" == program){
+        result = TBLASTX_TOOL_NAME;
+    } else if ("rpsblast" == program) {
+        result = RPSBLAST_TOOL_NAME;
+    }
+    return result;
 }
 
 }//namespace

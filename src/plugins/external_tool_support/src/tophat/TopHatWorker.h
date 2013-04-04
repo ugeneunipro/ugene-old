@@ -142,9 +142,9 @@ public:
     virtual bool validate(const IntegralBusPort *port, QStringList &l) const;
 };
 
-class BowtieToolsValidator : public ConfigurationValidator {
+class BowtieToolsValidator : public ActorValidator {
 public:
-    virtual bool validate(const Configuration *actor, QStringList &output) const;
+    virtual bool validate(const Actor *actor, QStringList &output) const;
 };
 
 } // namespace LocalWorkflow

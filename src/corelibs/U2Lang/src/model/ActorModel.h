@@ -291,6 +291,25 @@ protected:
     Actor *cfg;
 }; // ActorConfigurationEditor
 
+class U2LANG_EXPORT ActorValidator : public ConfigurationValidator {
+public:
+    virtual bool validate(const Configuration *cfg, QStringList &errors) const;
+    virtual bool validate(const Actor *actor, QStringList &errors) const = 0;
+
+protected:
+    template<class T>
+    T getValue(const Actor *actor, const QString &attrId) const;
+};
+
+template<class T>
+T ActorValidator::getValue(const Actor *actor, const QString &attrId) const {
+    Attribute *attr = actor->getParameter(attrId);
+    if (NULL == attr) {
+        return T();
+    }
+    return attr->getAttributePureValue().value<T>();
+}
+
 }//Workflow namespace
 
 }//GB2 namespace

@@ -56,6 +56,9 @@ public:
     BlastTaskSettings           getSettings() const;
 
     virtual ExternalToolRunTask* createBlastPlusTask() = 0;
+
+    static QString toolNameByProgram(const QString &program);
+
 protected:
     BlastTaskSettings               settings;
     ExternalToolLogParser*          logParser;

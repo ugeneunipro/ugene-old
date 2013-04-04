@@ -762,15 +762,13 @@ bool InputSlotsValidator::validate(const IntegralBusPort *port, QStringList &l) 
     return true;
 }
 
-bool BowtieToolsValidator::validate(const Configuration *cfg, QStringList &output) const {
-    const Actor *actor = dynamic_cast<const Actor*>(cfg);
-    SAFE_POINT(NULL != actor, "NULL actor", false);
+bool BowtieToolsValidator::validate(const Actor *actor, QStringList &output) const {
     Attribute *attr = actor->getParameter(TopHatWorkerFactory::BOWTIE_TOOL_PATH);
     SAFE_POINT(NULL != attr, "NULL attribute", false);
 
     ExternalTool *tool = NULL;
     {
-        int version = actor->getParameter(TopHatWorkerFactory::BOWTIE_VERSION)->getAttributePureValue().toInt();
+        int version = getValue<int>(actor, TopHatWorkerFactory::BOWTIE_VERSION);
         if (1 == version) {
             tool = AppContext::getExternalToolRegistry()->getByName(BOWTIE_TOOL_NAME);
         } else {
@@ -779,9 +777,9 @@ bool BowtieToolsValidator::validate(const Configuration *cfg, QStringList &outpu
         SAFE_POINT(NULL != tool, "NULL bowtie tool", false);
     }
 
-    bool valid = !attr->isDefaultValue() ? !attr->isEmpty() : tool->isValid();
+    bool valid = attr->isDefaultValue() ? !tool->getPath().isEmpty() : !attr->isEmpty();
     if (!valid) {
-        output << QObject::tr("external tool is not set") + QString(" \"%1\"").arg(tool->getName());
+        output << WorkflowUtils::externalToolError(tool->getName());
     }
     return valid;
 }

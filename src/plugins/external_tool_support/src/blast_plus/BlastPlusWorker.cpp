@@ -112,7 +112,6 @@ void BlastPlusWorkerFactory::init() {
     Attribute* gaAttr= new Attribute(ga, BaseTypes::BOOL_TYPE(), false, QVariant(true));
     gaAttr->addRelation(new VisibilityRelation(BLASTPLUS_PROGRAM_NAME,"blastn"));
     gaAttr->addRelation(new VisibilityRelation(BLASTPLUS_PROGRAM_NAME,"blastp"));
-    gaAttr->addRelation(new VisibilityRelation(BLASTPLUS_PROGRAM_NAME,"gpu-blastp"));
     gaAttr->addRelation(new VisibilityRelation(BLASTPLUS_PROGRAM_NAME,"blastx"));
     gaAttr->addRelation(new VisibilityRelation(BLASTPLUS_PROGRAM_NAME,"tblastn"));
     a << gaAttr;
@@ -132,7 +131,6 @@ void BlastPlusWorkerFactory::init() {
         QVariantMap m;
         m["blastn"] = "blastn";
         m["blastp"] = "blastp";
-        m["gpu-blastp"] = "gpu-blastp";
         m["blastx"] = "blastx";
         m["tblastn"] = "tblastn";
         m["tblastx"] = "tblastx";
@@ -177,6 +175,7 @@ void BlastPlusWorkerFactory::init() {
     proto->setEditor(new DelegateEditor(delegates));
     proto->setPrompter(new BlastPlusPrompter());
     proto->setIconPath(":external_tool_support/images/ncbi.png");
+    proto->setValidator(new ToolsValidator());
     WorkflowEnv::getProtoRegistry()->registerProto(BaseActorCategories::CATEGORY_BASIC(), proto);
 
     DomainFactory* localDomain = WorkflowEnv::getDomainRegistry()->getById(LocalDomainFactory::ID);
@@ -271,7 +270,7 @@ Task* BlastPlusWorker::tick() {
             }
         }
         else {
-            if(cfg.programName == "blastp" || cfg.programName == "gpu-blastp" || cfg.programName == "tblastn") {
+            if(cfg.programName == "blastp" || cfg.programName == "tblastn") {
                 return new FailTask(tr("Selected BLAST search with amino acid input sequence"));
             }
         }
@@ -309,7 +308,7 @@ Task* BlastPlusWorker::tick() {
         Task * t=NULL;
         if(cfg.programName == "blastn"){
             t = new BlastNPlusSupportTask(cfg);
-        }else if(cfg.programName == "blastp" || cfg.programName == "gpu-blastp"){
+        }else if(cfg.programName == "blastp"){
             t = new BlastPPlusSupportTask(cfg);
         }else if(cfg.programName == "blastx"){
             t = new BlastXPlusSupportTask(cfg);
@@ -345,6 +344,28 @@ void BlastPlusWorker::sl_taskFinished() {
 }
 
 void BlastPlusWorker::cleanup() {
+}
+
+/************************************************************************/
+/* Validator */
+/************************************************************************/
+bool ToolsValidator::validate(const Actor *actor, QStringList &output) const {
+    ExternalTool *tool = getTool(getValue<QString>(actor, BLASTPLUS_PROGRAM_NAME));
+    SAFE_POINT(NULL != tool, "NULL blast plus tool", false);
+
+    Attribute *attr = actor->getParameter(BLASTPLUS_EXT_TOOL_PATH);
+    SAFE_POINT(NULL != attr, "NULL blastplus path attribute", false);
+
+    bool valid = attr->isDefaultValue() ? !tool->getPath().isEmpty() : !attr->isEmpty();
+    if (!valid) {
+        output << WorkflowUtils::externalToolError(tool->getName());
+    }
+    return valid;
+}
+
+ExternalTool * ToolsValidator::getTool(const QString &program) const {
+    QString toolId = BlastPlusSupportCommonTask::toolNameByProgram(program);
+    return AppContext::getExternalToolRegistry()->getByName(toolId);
 }
 
 } //namespace LocalWorkflow

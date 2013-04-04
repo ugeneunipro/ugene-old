@@ -28,6 +28,8 @@
 
 namespace U2 {
 
+class ExternalTool;
+
 namespace LocalWorkflow {
 
 class BlastPlusPrompter : public PrompterBase<BlastPlusPrompter> {
@@ -63,6 +65,14 @@ public:
     static void init();
     BlastPlusWorkerFactory() : DomainFactory(ACTOR_ID) {}
     virtual Worker* createWorker(Actor* a) {return new BlastPlusWorker(a);}
+};
+
+class ToolsValidator : public ActorValidator {
+public:
+    virtual bool validate(const Actor *actor, QStringList &output) const;
+
+private:
+    ExternalTool * getTool(const QString &program) const;
 };
 
 } // Workflow namespace
