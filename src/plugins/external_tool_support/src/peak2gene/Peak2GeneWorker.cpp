@@ -36,8 +36,9 @@
 #include <U2Lang/BaseTypes.h>
 #include <U2Lang/WorkflowEnv.h>
 
-#include "Peak2GeneWorker.h"
 #include "Peak2GeneSupport.h"
+#include "Peak2GeneWorker.h"
+
 
 namespace U2 {
 namespace LocalWorkflow {
@@ -279,6 +280,7 @@ void Peak2GeneWorkerFactory::init() {
     ActorPrototype *proto = new IntegralBusActorPrototype(protoDesc, portDescs, attrs);
     proto->setPrompter(new Peak2GenePrompter());
     proto->setEditor(new DelegateEditor(delegates));
+    proto->addExternalTool(Peak2GeneSupport::TOOL_NAME);
     WorkflowEnv::getProtoRegistry()->registerProto(BaseActorCategories::CATEGORY_CHIP_SEQ(), proto);
     WorkflowEnv::getDomainRegistry()->getById(LocalDomainFactory::ID)->registerEntry(new Peak2GeneWorkerFactory());
 }

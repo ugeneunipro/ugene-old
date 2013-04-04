@@ -34,6 +34,7 @@
 #include <U2Lang/BaseTypes.h>
 #include <U2Lang/WorkflowEnv.h>
 
+#include "ConductGOSupport.h"
 #include "ConductGOWorker.h"
 
 namespace U2 {
@@ -205,6 +206,7 @@ void ConductGOWorkerFactory::init() {
     ActorPrototype *proto = new IntegralBusActorPrototype(protoDesc, portDescs, attrs);
     proto->setPrompter(new ConductGOPrompter());
     proto->setEditor(new DelegateEditor(delegates));
+    proto->addExternalTool(ConductGOSupport::TOOL_NAME);
     WorkflowEnv::getProtoRegistry()->registerProto(BaseActorCategories::CATEGORY_CHIP_SEQ(), proto);
     WorkflowEnv::getDomainRegistry()->getById(LocalDomainFactory::ID)->registerEntry(new ConductGOWorkerFactory());
 }

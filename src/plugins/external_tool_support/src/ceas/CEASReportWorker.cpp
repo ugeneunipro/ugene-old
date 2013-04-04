@@ -347,6 +347,7 @@ void CEASReportWorkerFactory::init() {
     ActorPrototype *proto = new IntegralBusActorPrototype(protoDesc, portDescs, attrs);
     proto->setPrompter(new CEASReportPrompter());
     proto->setEditor(new DelegateEditor(delegates));
+    proto->addExternalTool(CEASSupport::TOOL_NAME);
     WorkflowEnv::getProtoRegistry()->registerProto(BaseActorCategories::CATEGORY_CHIP_SEQ(), proto);
     WorkflowEnv::getDomainRegistry()->getById(LocalDomainFactory::ID)->registerEntry(new CEASReportWorkerFactory());
 }

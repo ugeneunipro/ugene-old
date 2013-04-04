@@ -34,6 +34,7 @@
 #include <U2Lang/BaseTypes.h>
 #include <U2Lang/WorkflowEnv.h>
 
+#include "MACSSupport.h"
 #include "MACSWorker.h"
 
 namespace U2 {
@@ -541,6 +542,7 @@ void MACSWorkerFactory::init() {
     proto->setPrompter(new MACSPrompter());
     proto->setEditor(new DelegateEditor(delegates));
     proto->setPortValidator(IN_PORT_DESCR, new MACSInputSlotsValidator());
+    proto->addExternalTool(MACSSupport::TOOL_NAME);
     WorkflowEnv::getProtoRegistry()->registerProto(BaseActorCategories::CATEGORY_CHIP_SEQ(), proto);
     WorkflowEnv::getDomainRegistry()->getById(LocalDomainFactory::ID)->registerEntry(new MACSWorkerFactory());
 }
