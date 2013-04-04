@@ -56,7 +56,7 @@ void CheckUpdatesTask::run() {
 
     bool isProxy = nc->isProxyUsed(QNetworkProxy::HttpProxy);
     bool isException = nc->getExceptionsList().contains(SITE_URL);
-    SyncHTTP http(this);
+    SyncHTTP http;
     if (isProxy && !isException) {
         http.setProxy(nc->getProxy(QNetworkProxy::HttpProxy));
     }
