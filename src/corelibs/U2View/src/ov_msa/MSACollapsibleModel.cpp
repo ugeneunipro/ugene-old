@@ -222,18 +222,23 @@ void MSACollapsibleItemModel::sl_alignmentChanged(const MAlignment& maBefore, co
 }
 
 int MSACollapsibleItemModel::getLastPos() const {
+    MSAEditor* ed = ui->getEditor();
+    MAlignmentObject* o = ed->getMSAObject();
+    const MAlignment& ma = o->getMAlignment();
+
     if (items.isEmpty()) {
-        MSAEditor* ed = ui->getEditor();
-        MAlignmentObject* o = ed->getMSAObject();
-        const MAlignment& ma = o->getMAlignment();
         return ma.getNumRows() - 1;
     }
 
-    int lastIdx = items.size() - 1;
-    int res = positions.at(lastIdx);
-    const MSACollapsableItem& i = items.at(lastIdx);
-    if (!i.isCollapsed) {
-        res += i.numRows - 1;
+    const MSACollapsableItem& lastItem = items.last();
+    int res = lastItem.row;
+    if (!lastItem.isCollapsed) {
+        res += lastItem.numRows - 1;
+    }
+    // determine if last collapsible item is last in MSA sequence list
+    int lastPos = lastItem.row + lastItem.numRows - 1;
+    if (lastPos < ma.getNumRows() - 1) {
+        res += ma.getNumRows() -1 - res;
     }
     return res;
 }
