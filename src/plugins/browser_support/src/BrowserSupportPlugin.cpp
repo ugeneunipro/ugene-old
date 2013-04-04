@@ -76,7 +76,7 @@ extern "C" Q_DECL_EXPORT Plugin* U2_PLUGIN_INIT_FUNC() {
 }
 
 BrowserSupportPlugin::BrowserSupportPlugin() : Plugin(tr("BrowserSupport"), tr("Browser support")) {
-    clipboardTimer.start(250);
+    clipboardTimer.start(100);
     connect(&clipboardTimer, SIGNAL(timeout()), this, SLOT(sl_clipboardCheck()));
 }
 
@@ -124,6 +124,7 @@ void BrowserSupportPlugin::sl_clipboardCheck() {
             Task* openTask = AppContext::getProjectLoader()->openWithProjectTask(urls, hints);
             if (openTask != NULL) {
                 AppContext::getTaskScheduler()->registerTopLevelTask(openTask);	
+                QApplication::clipboard()->setText("");
             }
         }
 
@@ -139,6 +140,7 @@ void BrowserSupportPlugin::sl_clipboardCheck() {
 
             Task* task = new LoadRemoteDocumentAndOpenViewTask(ensId, "ENSEMBL", fullPath);
             AppContext::getTaskScheduler()->registerTopLevelTask(task);
+            QApplication::clipboard()->setText("");
         }
 
         if (clipboardText.startsWith("open/PDB;")) {
@@ -149,6 +151,7 @@ void BrowserSupportPlugin::sl_clipboardCheck() {
 
             Task* task = new LoadRemoteDocumentAndOpenViewTask(ensId, "PDB", fullPath);
             AppContext::getTaskScheduler()->registerTopLevelTask(task);
+            QApplication::clipboard()->setText("");
         }
     }
     prevClipboard = clipboardText;
