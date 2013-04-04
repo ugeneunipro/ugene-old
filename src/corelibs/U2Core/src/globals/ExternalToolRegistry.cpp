@@ -33,7 +33,7 @@ const QString ExternalToolValidation::DEFAULT_DESCR_KEY = "DEFAULT_DESCR";
 
 ////////////////////////////////////////
 //ExternalTool
-ExternalTool::ExternalTool(QString _name, QString _path) : name(_name), path(_path){
+ExternalTool::ExternalTool(QString _name, QString _path) : name(_name), path(_path), isValidTool(false) {
 }
 
 ExternalTool::~ExternalTool() {
