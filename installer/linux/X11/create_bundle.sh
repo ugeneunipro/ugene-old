@@ -75,10 +75,12 @@ cp -v "$RELEASE_DIR/libU2Test.so" "${TARGET_APP_DIR}"
 cp -v "$RELEASE_DIR/libU2View.so" "${TARGET_APP_DIR}"
 cp -v "$RELEASE_DIR/libugenedb.so" "${TARGET_APP_DIR}"
 ##dirty hack for creation .so.1 files
+CUR_DIR=`pwd`
 cd "${TARGET_APP_DIR}"
 for i in `ls *.so`; do
     ln -s $i $i.1
 done
+cd $CUR_DIR
 
 echo
 echo copying qt libraries
