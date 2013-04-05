@@ -304,19 +304,19 @@ Task * BaseDocWriter::tick() {
         }
 
         this->takeParameters(os);
-        SAFE_POINT_OP(os, new FailTask(os.getError()));
+        CHECK_OP(os, new FailTask(os.getError()));
         QStringList urls = this->takeUrlList(data, os);
-        SAFE_POINT_OP(os, new FailTask(os.getError()));
+        CHECK_OP(os, new FailTask(os.getError()));
 
         foreach (const QString &anUrl, urls) {
             IOAdapter *io = getAdapter(anUrl, os);
-            SAFE_POINT_OP(os, new FailTask(os.getError()));
+            CHECK_OP(os, new FailTask(os.getError()));
             if (isStreamingSupport()) {
                 // TODO: make it in separate thread!
                 storeEntry(io, data, ch->takenMessages());
             } else {
                 Document *doc = getDocument(io, os);
-                SAFE_POINT_OP(os, new FailTask(os.getError()));
+                CHECK_OP(os, new FailTask(os.getError()));
                 data2doc(doc, data);
             }
         }
