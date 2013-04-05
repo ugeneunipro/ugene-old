@@ -435,7 +435,7 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin():Plugin(tr("External tool 
                  it.next();
                  QString toolPath(it.filePath() + "/" + exeName);
                  QFileInfo info(toolPath);
-                 if(info.exists() && info.isFile() && info.isExecutable()){
+                 if(info.exists() && info.isFile()){
                      QString path = QDir::toNativeSeparators(toolPath);
                      ExternalToolValidateTask* validateTask=new ExternalToolValidateTask(curTool->getName(), path);
                      connect(validateTask,SIGNAL(si_stateChanged()),SLOT(sl_validateTaskStateChanged()));
