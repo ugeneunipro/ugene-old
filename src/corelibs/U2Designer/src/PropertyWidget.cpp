@@ -144,6 +144,7 @@ void ComboBoxWidget::setValue(const QVariant &value) {
 
 void ComboBoxWidget::sl_valueChanged(int) {
     emit valueChanged(value().toString());
+    emit si_valueChanged(value());
 }
 
 ComboBoxWidget * ComboBoxWidget::createBooleanWidget(QWidget *parent) {
