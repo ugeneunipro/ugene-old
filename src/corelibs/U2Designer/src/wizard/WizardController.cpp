@@ -283,7 +283,7 @@ void WidgetCreator::visit(WidgetsArea *wa) {
     scrollContent->setLayout(layout);
     foreach (WizardWidget *w, wa->getWidgets()) {
         int labelSize = wa->getLabelSize();
-#ifdef Q_OS_MAC
+#if defined(Q_OS_LINUX) || defined(Q_OS_MAC)
         labelSize *= 1.3;
 #endif
         WidgetCreator wcr(wc, labelSize);
