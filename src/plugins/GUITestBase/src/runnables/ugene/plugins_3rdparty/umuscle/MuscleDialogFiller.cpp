@@ -22,18 +22,20 @@
 #include "MuscleDialogFiller.h"
 #include "api/GTComboBox.h"
 #include "api/GTWidget.h"
+#include "api/GTCheckBox.h"
 
 #include <QtGui/QApplication>
 #include <QtGui/QComboBox>
 #include <QtGui/QPushButton>
+#include <QtGui/QCheckBox>
 
 namespace U2 {
 
 #define GT_CLASS_NAME "GTUtilsDialog::MuscleDialogFiller"
 #define GT_METHOD_NAME "run"
 
-MuscleDialogFiller::MuscleDialogFiller(U2OpStatus &os, Mode _mode)
-: Filler(os, "MuscleAlignmentDialog"), mode(_mode)
+MuscleDialogFiller::MuscleDialogFiller(U2OpStatus &os, Mode _mode, bool _doNotReArr)
+    : Filler(os, "MuscleAlignmentDialog"), mode(_mode), doNotReArr(_doNotReArr)
 {
 
 }
@@ -45,6 +47,9 @@ void MuscleDialogFiller::run(){
     QComboBox *modeBox = dialog->findChild<QComboBox*>("confBox");
     GT_CHECK(modeBox != NULL, "combobox not found");
     GTComboBox::setCurrentIndex(os, modeBox, mode);
+
+    QCheckBox *stableCB = dialog->findChild<QCheckBox*>("stableCB");
+    GTCheckBox::setChecked(os, stableCB, doNotReArr);
 
     QPushButton *alignButton = dialog->findChild<QPushButton*>(QString::fromUtf8("alignButton"));
     GT_CHECK(alignButton != NULL, "export button not found");

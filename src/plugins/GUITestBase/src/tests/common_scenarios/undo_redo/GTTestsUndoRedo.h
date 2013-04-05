@@ -49,6 +49,8 @@ GUI_TEST_CLASS_DECLARATION(test_0008)
 
 GUI_TEST_CLASS_DECLARATION(test_0009)
 
+GUI_TEST_CLASS_DECLARATION(test_0010)
+
 #undef GUI_TEST_PREFIX
 
 }//namespace GUITest_common_scenarios_undo_redo

@@ -34,11 +34,12 @@ public:
         Large = 1,
         Refine = 2
     };
-    MuscleDialogFiller(U2OpStatus &os, Mode mode = Default);
+    MuscleDialogFiller(U2OpStatus &os, Mode mode = Default, bool _doNotReArr=true);
     virtual void run();
 
 private:
     Mode mode;
+    bool doNotReArr;
 };
 
 }

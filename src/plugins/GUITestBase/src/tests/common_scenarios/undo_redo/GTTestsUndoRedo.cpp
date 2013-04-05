@@ -40,6 +40,7 @@ k
 #include "runnables/ugene/corelibs/U2View/ov_msa/ConsensusSelectorDialogFiller.h"
 #include "runnables/ugene/corelibs/U2View/ov_msa/ExtractSelectedAsMSADialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/util/RenameSequenceFiller.h"
+#include "runnables/ugene/plugins_3rdparty/umuscle/MuscleDialogFiller.h"
 #include <U2View/MSAEditor.h>
 
 namespace U2{
@@ -619,6 +620,56 @@ GUI_TEST_CLASS_DEFINITION(test_0009){//rename msa is tested
 
     //Expected state: rename redone
     GTMouseDriver::moveTo(os,GTUtilsProjectTreeView::getItemCenter(os, "some_name"));
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0010){//MUSCLE aligner undo test
+    //Open file
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0,0), QPoint(14,10));
+    GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(500);
+    QString initAln = GTClipboard::text(os);
+    QString expectedAln("AAG---AATAATTA\n"
+                        "AAG---TCTATTAA\n"
+                        "AAGACTTCTTTTAA\n"
+                        "AAG---TCTTTTAA\n"
+                        "AAG---CCTTTTAA\n"
+                        "AAG---CTTACTAA\n"
+                        "TAG---TTTATTAA\n"
+                        "TAG---CTTATTAA\n"
+                        "TAG---CTTATTAA\n"
+                        "TAG---CTTATTAA");
+
+    //Use context {Edit->Align with MUSCLE}
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<MSAE_MENU_ALIGN<<"Align with muscle", GTGlobals::UseMouse));
+    GTUtilsDialog::waitForDialog(os, new MuscleDialogFiller(os,MuscleDialogFiller::Default,false));
+    GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
+
+    GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(500);
+    QString changedAln = GTClipboard::text(os);
+    CHECK_SET_ERR(changedAln==expectedAln, "Unexpected alignment" + changedAln);
+
+    QAbstractButton *undo= GTAction::button(os,"msa_action_undo");
+    QAbstractButton *redo= GTAction::button(os,"msa_action_redo");
+
+    //undo
+    GTWidget::click(os,undo);
+    GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(500);
+    changedAln = GTClipboard::text(os);
+
+    CHECK_SET_ERR(changedAln==initAln, "Undo works wrong\n" + changedAln);
+
+    //redo
+    GTWidget::click(os,redo);
+    GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(500);
+    changedAln = GTClipboard::text(os);
+
+    CHECK_SET_ERR(changedAln==expectedAln, "Undo works wrong\n" + changedAln);
+
 }
 
 }//namespace GUITest_common_scenarios_undo_redo
