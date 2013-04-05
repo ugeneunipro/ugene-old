@@ -260,7 +260,7 @@ MSAEditorOpenTreeViewerTask::MSAEditorOpenTreeViewerTask( Document* doc, MSAEdit
 : OpenTreeViewerTask(doc), treeManager(_parent) {}
 
 void MSAEditorOpenTreeViewerTask::createTreeViewer() {
-    Task* createTask = new CreateMSAEditorTreeViewerTask(viewName, phyObject, stateData);
+    Task* createTask = new CreateMSAEditorTreeViewerTask(phyObject->getDocument()->getName(), phyObject, stateData);
     connect(new TaskSignalMapper(createTask), SIGNAL(si_taskFinished(Task*)), treeManager, SLOT(sl_openTreeTaskFinished(Task*)));
     TaskScheduler* scheduler = AppContext::getTaskScheduler();
     scheduler->registerTopLevelTask(createTask);

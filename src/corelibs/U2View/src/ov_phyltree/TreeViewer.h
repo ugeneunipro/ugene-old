@@ -113,8 +113,6 @@ public:
     QVariantMap getSettingsState() const;
     void setSettingsState(const QVariantMap& m);
 
-    void setAlignment(Qt::Alignment alignment);
-
     TreeViewerUI* getTreeViewerUI() {return ui;}
 
 protected:
@@ -180,7 +178,7 @@ public:
     void updateSettings(const BranchSettings &settings);
     void updateSettings(const ButtonSettings &settings);
     void updateSettings(const TextSettings &settings);
-    void updateSettings(const TreeSettings &settings);
+    virtual void updateSettings(const TreeSettings &settings);
     void updateSettings(const TreeLabelsSettings &settings);
 
     //qreal getZoom() const {return zoom;}

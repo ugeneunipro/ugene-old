@@ -46,9 +46,6 @@ public:
     void loadRelatedTrees();
 
     void addTreeToMSA();
-    void deleteTree();
-    void refreshTree();
-    void changeTreeSettings();
 
     void buildTreeWithDialog();
 
@@ -65,6 +62,7 @@ private:
     void buildTree(const CreatePhyTreeSettings& buildSettings);
     bool canRefreshTree(MSAEditorTreeViewer* treeViewer);
     void openTreeViewer(PhyTreeObject* treeObj);
+    void loadTreeFromFile(const QString& treeFileName);
 
     MSAEditor*                    editor;
     MAlignmentObject*             msaObject;

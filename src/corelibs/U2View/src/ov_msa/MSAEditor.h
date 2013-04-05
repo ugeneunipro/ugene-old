@@ -158,8 +158,6 @@ public:
 
     void buildTree();
 
-    void addExistingTree();
-
 signals:
     void si_fontChanged(const QFont& f);
     void si_zoomOperationPerformed(bool resizeModeChanged);

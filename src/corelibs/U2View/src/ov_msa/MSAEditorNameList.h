@@ -93,6 +93,7 @@ public:
     int getRefSeqPos(); //returns -1 if refseq is not visible
     void drawContent(QPainter& p);
     QString sequenceAtPos(QPoint p);
+    void clearGroupsSelections();
 
 signals:
     void si_sequenceNameChanged(QString prevName, QString newName);

@@ -78,22 +78,7 @@ void MSAEditorTreeManager::loadRelatedTrees() {
     TaskScheduler* scheduler = AppContext::getTaskScheduler();
     foreach(const GObjectRelation rel, relatedTrees) {
         const QString& treeFileName = rel.getDocURL();
-
-        DocumentFormat* df = AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::NEWICK);
-        IOAdapterFactory *iof = IOAdapterUtils::get(BaseIOAdapters::LOCAL_FILE);
-        U2OpStatus2Log os;
-        Document *d = df->loadDocument(iof, treeFileName, QVariantMap(), os);
-
-        const QList<GObject*>& objects = d->getObjects();
-        addExistingTree = true;
-        foreach(GObject* obj, objects) {
-            if(GObjectTypes::PHYLOGENETIC_TREE == obj->getGObjectType()) {
-                PhyTreeObject* treeObject = qobject_cast<PhyTreeObject*>(obj);
-                CreatePhyTreeSettings settings;
-                Task* task = new MSAEditorOpenTreeViewerTask(treeObject, this);
-                scheduler->registerTopLevelTask(task);
-            }
-        }
+        loadTreeFromFile(treeFileName);
     }
 }
 
@@ -261,28 +246,18 @@ void MSAEditorTreeManager::sl_openTreeTaskFinished(Task* t) {
 
             connect(w, SIGNAL(si_windowClosed(GObjectViewWindow*)), this, SLOT(sl_onWindowClosed(GObjectViewWindow*)));
 
-            treeView->setAlignment(Qt::AlignTop);
             MSAEditorUI* msaUI = editor->getUI();
             msaUI->addTreeView(w);
 
             if(!addExistingTree) {
-                treeView->setTreeVerticalSize(msaUI->getSequenceArea()->getHeight());
                 treeView->setCreatePhyTreeSettings(settings);
                 treeView->setParentAignmentName(msaObject->getMAlignment().getName());
             }
 
             const TreeViewerUI* treeUI = treeView->getTreeViewerUI();
 
-            connect(msaUI->getSequenceArea(),   SIGNAL(si_selectionChanged(const QStringList&)), treeUI, SLOT(sl_selectionChanged(const QStringList&)));
-            connect(msaUI->getEditorNameList(), SIGNAL(si_sequenceNameChanged(QString, QString)), treeUI, SLOT(sl_sequenceNameChanged(QString, QString)));
-            connect(treeUI, SIGNAL(si_collapseModelChangedInTree(const QStringList*)), msaUI->getSequenceArea(), SLOT(sl_setCollapsingRegions(const QStringList*)));
-            connect(treeUI, SIGNAL(si_seqOrderChanged(QStringList*)), editor, SLOT(sl_onSeqOrderChanged(QStringList*)));
-            connect(treeUI, SIGNAL(si_groupColorsChanged(const GroupColorSchema&)), msaUI->getEditorNameList(), SLOT(sl_onGroupColorsChanged(const GroupColorSchema&)));
-            connect(editor, SIGNAL(si_sizeChanged(int, bool, bool)), treeUI, SLOT(sl_onHeightChanged(int, bool, bool)));
-
-            connect(treeUI,   SIGNAL(si_treeZoomedIn()),                      editor,  SLOT(sl_zoomIn()));
-            connect(editor,   SIGNAL(si_refrenceSeqChanged(const QString &)), treeUI,  SLOT(sl_onReferenceSeqChanged(const QString &)));
-            connect(treeUI,   SIGNAL(si_treeZoomedOut()),                     editor,  SLOT(sl_zoomOut()));
+            treeView->setMSAEditor(editor);
+            treeView->setSynchronizationMode(FullSynchronization);
             
             connect(treeView, SIGNAL(si_refreshTree(MSAEditorTreeViewer&)), SLOT(sl_refreshTree(MSAEditorTreeViewer&)));
         }
@@ -302,8 +277,11 @@ void MSAEditorTreeManager::addTreeToMSA() {
     CHECK(!file.isEmpty(),);
     if (QFileInfo(file).exists()) {
         h.url = file;
+        loadTreeFromFile(file);
     }
+}
 
+void MSAEditorTreeManager::loadTreeFromFile(const QString& treeFileName) {
     TaskScheduler* scheduler = AppContext::getTaskScheduler();
 
     DocumentFormat* df = AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::NEWICK);
@@ -311,22 +289,23 @@ void MSAEditorTreeManager::addTreeToMSA() {
     U2OpStatus2Log os;
 
     const QList<Document *> documents = AppContext::getProject()->getDocuments();
-    bool isDocInProject = false;
+    addExistingTree = true;
+    bool isNewDocument = true;
     Document *doc = NULL;
     foreach(doc, documents) {
-        if(file == doc->getURLString()) {
-            isDocInProject = true;
+        if(treeFileName == doc->getURLString()) {
+            isNewDocument = false;
             break;
         }
     }
 
-    if(!isDocInProject || !doc->isLoaded()) {
-        if(isDocInProject && !doc->isLoaded()) {
+    if(isNewDocument || !doc->isLoaded()) {
+        if(!isNewDocument && !doc->isLoaded()) {
             if(AppContext::getProject()->getDocuments().contains(doc)) {
                 AppContext::getProject()->removeDocument(doc);
             }
         }
-        doc = df->loadDocument(iof, file, QVariantMap(), os);
+        doc = df->loadDocument(iof, treeFileName, QVariantMap(), os);
         AppContext::getProject()->addDocument(doc);
     }
 
@@ -339,7 +318,7 @@ void MSAEditorTreeManager::addTreeToMSA() {
                 continue;
             }
             if(NULL != mtv) {
-                CHECK(mtv->getTreeNames().contains(treeObject->getGObjectName()),);
+                CHECK(!mtv->getTreeNames().contains(doc->getName()),);
             }
             Task* task = new MSAEditorOpenTreeViewerTask(treeObject, this);
             scheduler->registerTopLevelTask(task);
@@ -357,15 +336,6 @@ void MSAEditorTreeManager::showAddTreeDialog() {
     else {
         addTreeToMSA();
     }
-}
-
-void MSAEditorTreeManager::deleteTree() {
-}
-
-void MSAEditorTreeManager::refreshTree() {
-}
-
-void MSAEditorTreeManager::changeTreeSettings() {
 }
 
 void MSAEditorTreeManager::sl_onWindowClosed(GObjectViewWindow* viewWindow) {

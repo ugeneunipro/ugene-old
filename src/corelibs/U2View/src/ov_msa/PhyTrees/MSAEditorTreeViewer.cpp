@@ -20,19 +20,24 @@
 */
 #include "MSAEditorTreeViewer.h"
 #include <U2View/GraphicsRectangularBranchItem.h>
+#include <U2View/GraphicsButtonItem.h>
 #include <QtGui/QWheelEvent>
 #include <QtGui/QMouseEvent>
+#include <QtGui/QResizeEvent>
 #include <QtGui/QCursor>
 #include <QtCore/QStack>
 #include <U2Core/PhyTree.h>
 #include <U2Core/U2SafePoints.h>
 #include <QDateTime>
-
+#include <U2View/MSAEditor.h>
+#include <U2View/MSAEditorSequenceArea.h>
+#include <U2View/MSAEditorNameList.h>
+#include <U2View/MSAEditorDataList.h>
 
 namespace U2 {
 
 MSAEditorTreeViewer::MSAEditorTreeViewer(const QString& viewName, GObject* obj, GraphicsRectangularBranchItem* _root, qreal s)
-    : TreeViewer(viewName, obj, _root, s) {
+    : TreeViewer(viewName, obj, _root, s), msa(NULL), syncMode(WithoutSynchronization) {
 }
 
 QWidget* MSAEditorTreeViewer::createWidget() {
@@ -80,43 +85,84 @@ void MSAEditorTreeViewer::setCreatePhyTreeSettings(const CreatePhyTreeSettings& 
 void MSAEditorTreeViewer::sl_refreshTree() {
     emit si_refreshTree(*this);
 }
+void MSAEditorTreeViewer::setSynchronizationMode(SynchronizationMode newSyncMode) {
+    CHECK(NULL != msa,);
+    syncMode = newSyncMode;
+    MSAEditorUI* msaUI = msa->getUI();
+    MSAEditorTreeViewerUI* treeViewerUI = dynamic_cast<MSAEditorTreeViewerUI*>(ui);
+    CHECK(NULL != treeViewerUI, );
+    treeViewerUI->setSynchronizeMode(syncMode);
+    if(!treeViewerUI->canSynchronizeWithMSA(msa)) {
+        syncMode = WithoutSynchronization;
+        sortSeqAction->setEnabled(false);
+        return;
+    }
+    if(FullSynchronization == syncMode) {
+        connect(treeViewerUI, SIGNAL(si_collapseModelChangedInTree(const QStringList*)), msaUI->getSequenceArea(), SLOT(sl_setCollapsingRegions(const QStringList*)));
+        connect(treeViewerUI, SIGNAL(si_seqOrderChanged(QStringList*)), msa, SLOT(sl_onSeqOrderChanged(QStringList*)));
+        connect(treeViewerUI, SIGNAL(si_groupColorsChanged(const GroupColorSchema&)), msaUI->getEditorNameList(), SLOT(sl_onGroupColorsChanged(const GroupColorSchema&)));
+        connect(msa, SIGNAL(si_sizeChanged(int, bool, bool)), treeViewerUI, SLOT(sl_onHeightChanged(int, bool, bool)));
+
+        connect(treeViewerUI,   SIGNAL(si_treeZoomedIn()),                      msa,  SLOT(sl_zoomIn()));
+        connect(msa,   SIGNAL(si_refrenceSeqChanged(const QString &)), treeViewerUI,  SLOT(sl_onReferenceSeqChanged(const QString &)));
+        connect(treeViewerUI,   SIGNAL(si_treeZoomedOut()),                     msa,  SLOT(sl_zoomOut()));
+        sortSeqAction->setEnabled(true);
+        treeViewerUI->setTreeVerticalSize(msaUI->getSequenceArea()->getHeight());
+    }
+    connect(msaUI->getSequenceArea(),   SIGNAL(si_selectionChanged(const QStringList&)), treeViewerUI, SLOT(sl_selectionChanged(const QStringList&)));
+    connect(msaUI->getEditorNameList(), SIGNAL(si_sequenceNameChanged(QString, QString)), treeViewerUI, SLOT(sl_sequenceNameChanged(QString, QString)));
+}
 
 MSAEditorTreeViewerUI::MSAEditorTreeViewerUI(MSAEditorTreeViewer* treeViewer) 
-    : TreeViewerUI(treeViewer), subgroupSelectorPos(0.0), isSinchronized(true), curLayoutIsRectangular(true), curMSATreeViewer(treeViewer){
+    : TreeViewerUI(treeViewer), subgroupSelectorPos(0.0), groupColors(1, 0.86), isSinchronized(true), curLayoutIsRectangular(true), curMSATreeViewer(treeViewer), syncMode(WithoutSynchronization){
     connect(scene(), SIGNAL(sceneRectChanged(const QRectF&)), SLOT(sl_onSceneRectChanged(const QRectF&)));
 
     QRectF rect = scene()->sceneRect();
     subgroupSelector = scene()->addLine(0.0, rect.bottom(), 0.0, rect.top(), QPen(Qt::blue));
+    setAlignment(Qt::AlignTop | Qt::AlignLeft);
 }
 
 void MSAEditorTreeViewerUI::setTreeVerticalSize(int size) {
     sl_onHeightChanged(size, false, false);
 }
 
-GroupColors::GroupColors(): baseColor(255, 255, 255) {
-    generateRandomColor();
-    srand(QDateTime::currentDateTime().toTime_t());
+ColorGenerator::ColorGenerator(int _countOfColors, qreal _lightness): countOfColors(_countOfColors), delta(0.1), hue(0.0), lightness(_lightness){
+    satValues << 0.4 << 0.8 << 0.6 << 1.0;
+    SAFE_POINT(lightness >= 0 && lightness <= 1.0, "ColorGenerator::ColorGenerator(int _countOfColors, qreal _lightness) _lightness must be in range (0.0, 1.0)",);
+    CHECK(0 < countOfColors, );
+    generateColors();
 }
-QColor GroupColors::getColor(int index) {
+void ColorGenerator::setCountOfColors(int counts) {
+    CHECK(0 < countOfColors, );
+    countOfColors = counts;
+    delta = (1.0 / countOfColors);
+    generateColors();
+}
+QColor ColorGenerator::getColor(int index) {
     if(index >= 0 && index < colors.size()) {
         return colors.at(index);
     }
     else {
-        QColor resColor = generateRandomColor();
-        colors.append(resColor);
-        return resColor;
+        return Qt::white;
     }
 }
-QColor GroupColors::generateRandomColor() {
-    int red = qrand() % 255;
-    int green = qrand() % 255;
-    int blue = qrand() % 255;
-
-    red = (red + baseColor.red()) / 2;
-    green = (green + baseColor.green()) / 2;
-    blue = (blue + baseColor.blue()) / 2;
-
-    return QColor(red, green, blue);
+void ColorGenerator::generateColors() {
+    srand(QDateTime::currentDateTime().toTime_t());
+    int countOfAddedColors = countOfColors - colors.size();
+    for(int i = 0; i < countOfAddedColors; i++) {
+        QColor color;
+        qreal saturation = satValues.at(i%satValues.size());
+        color.setHslF(hue, saturation , lightness);
+        int size = colors.size();
+        if(size > 2) {
+            colors.insert(qrand()%size, color);
+        }
+        else {
+            colors.append(color);
+        }
+        hue += delta;
+        hue = (hue > 1) ? hue - 1 : hue;
+    }
 }
 void MSAEditorTreeViewerUI::mouseDoubleClickEvent(QMouseEvent *e) {
     QGraphicsView::mouseDoubleClickEvent(e);
@@ -125,7 +171,8 @@ void MSAEditorTreeViewerUI::mouseDoubleClickEvent(QMouseEvent *e) {
 
 
 void MSAEditorTreeViewerUI::mousePressEvent(QMouseEvent *e) {
-    if(abs(mapFromScene(subgroupSelectorPos, 0.0).x() - e->pos().x()) < 5) {
+    bool isLeftButton = e->button() == Qt::LeftButton;
+    if(isLeftButton && abs(mapFromScene(subgroupSelectorPos, 0.0).x() - e->pos().x()) < 5) {
         subgroupSelectionMode = true;
     }
     else {
@@ -139,7 +186,7 @@ void MSAEditorTreeViewerUI::mouseReleaseEvent(QMouseEvent *e) {
 }
 
 void MSAEditorTreeViewerUI::wheelEvent(QWheelEvent *we ) {
-    if(!curLayoutIsRectangular || !isSinchronized) {
+    if(!curLayoutIsRectangular || curMSATreeViewer->getSynchronizationMode() != FullSynchronization) {
         TreeViewerUI::wheelEvent(we);
         return;
     }
@@ -195,11 +242,19 @@ void MSAEditorTreeViewerUI::sl_onSceneRectChanged( const QRectF& ) {
     subgroupSelector->setLine(subgroupSelectorPos, rect.bottom(), subgroupSelectorPos, rect.top());
 }
 void MSAEditorTreeViewerUI::sl_zoomToSel() {
-    emit si_treeZoomedIn();
+    if(curMSATreeViewer->getSynchronizationMode() == FullSynchronization) {
+        emit si_treeZoomedIn();
+        return;
+    }
+    TreeViewerUI::sl_zoomToSel();
 }
 
 void MSAEditorTreeViewerUI::sl_zoomOut() {
-    emit si_treeZoomedOut();
+    if(curMSATreeViewer->getSynchronizationMode() == FullSynchronization) {
+        emit si_treeZoomedOut();
+        return;
+    }
+    TreeViewerUI::sl_zoomToSel();
 }
 
 void MSAEditorTreeViewerUI::sl_collapseTriggered() {
@@ -235,6 +290,27 @@ void MSAEditorTreeViewerUI::sl_selectionChanged(const QStringList& selection) {
             branchItem->setSelectedRecurs(false, false);
     }
     scene()->update();
+}
+
+bool MSAEditorTreeViewerUI::canSynchronizeWithMSA(MSAEditor* msa) {
+    QStringList seqsNames = msa->getMSAObject()->getMAlignment().getRowNames();
+    QList<QGraphicsItem*> items = scene()->items();
+
+    foreach(QGraphicsItem* item, items) {
+        GraphicsBranchItem *branchItem = dynamic_cast<GraphicsBranchItem *>(item);
+        if(NULL == branchItem) {
+            continue;
+        }
+        QGraphicsSimpleTextItem* nameItem = branchItem->getNameText();
+        if(NULL == nameItem) {
+            continue;
+        }
+        QString nodeName = QString(nameItem->text());
+        if(!seqsNames.contains(nodeName)) {
+            return false;
+        }
+    }
+    return true;
 }
 
 void MSAEditorTreeViewerUI::sl_sequenceNameChanged(QString prevName, QString newName) {
@@ -311,8 +387,8 @@ U2Region MSAEditorTreeViewerUI::getTreeSize() {
 }
 
 void MSAEditorTreeViewerUI::setTreeLayout(TreeLayout newLayout) {
-    onLayoutChanged(newLayout);
     TreeViewerUI::setTreeLayout(newLayout);
+    //onLayoutChanged(newLayout);
 }
 
 void MSAEditorTreeViewerUI::onLayoutChanged(const TreeLayout& layout) {
@@ -320,8 +396,10 @@ void MSAEditorTreeViewerUI::onLayoutChanged(const TreeLayout& layout) {
     curMSATreeViewer->getSortSeqsAction()->setEnabled(false);
     if(curLayoutIsRectangular) {
         subgroupSelector->show();
-        if(isSinchronized) {
-            curMSATreeViewer->getSortSeqsAction()->setEnabled(true);
+        if(FullSynchronization == syncMode) {
+            MSAEditor* msa = curMSATreeViewer->getMsaEditor();
+            CHECK(NULL != msa, );
+            setTreeVerticalSize(msa->getUI()->getSequenceArea()->getHeight());
         }
     }
     else {
@@ -352,9 +430,11 @@ const QStringList* MSAEditorTreeViewerUI::getVisibleSeqsList() {
 
 void MSAEditorTreeViewerUI::sl_onHeightChanged(int height, bool isMinimumSize, bool isMaximumSize) {
     CHECK(curLayoutIsRectangular && isSinchronized, );
-    qreal zoomCoef = (qreal)(height - 5) / getTreeSize().length;
-    zooming(zoomCoef, zoomCoef);
-    updateSceneRect(sceneRect());
+    int treeHeight = getTreeSize().length;
+    CHECK(0 != treeHeight  && 0 != height, );
+    qreal zoomCoef = (qreal)(height - 5) / treeHeight;
+    zooming(1.0, zoomCoef);
+    //updateSceneRect(sceneRect());
     curMSATreeViewer->getZoomOutAction()->setEnabled(!isMinimumSize);
     curMSATreeViewer->getZoomToSelAction()->setEnabled(!isMaximumSize);
 }
@@ -390,7 +470,11 @@ void MSAEditorTreeViewerUI::highlightBranches() {
     QStack<GraphicsRectangularBranchItem*> graphicsItems;
     QList<GraphicsRectangularBranchItem*> groupRoots;
     graphicsItems.push(getRectRoot());
-    
+
+    int countOfListNodes = getListNodesOfTree().size();
+    if(groupColors.getCountOfColors() < countOfListNodes) {
+        groupColors.setCountOfColors(countOfListNodes);
+    }
     do {
         GraphicsRectangularBranchItem* node = graphicsItems.pop();
         qreal node1Pos = node->sceneBoundingRect().left();
@@ -452,5 +536,63 @@ void MSAEditorTreeViewerUI::highlightBranches() {
     }
     emit si_groupColorsChanged(groupColorSchema);
 }
+
+void MSAEditorTreeViewerUI::resizeEvent(QResizeEvent *e) {
+    CHECK(curLayoutIsRectangular && isSinchronized, );
+
+    QGraphicsView::resizeEvent(e);
+    e->accept();
+}
+
+void MSAEditorTreeViewerUI::setSynchronizeMode(SynchronizationMode newSyncMode) {
+    CHECK(syncMode != newSyncMode,);
+    syncMode = newSyncMode;
+    bool fullSync = (FullSynchronization == syncMode);
+    QList<QGraphicsItem*> items = scene()->items();
+    foreach(QGraphicsItem* item, items) {
+        GraphicsButtonItem* buttonItem = dynamic_cast<GraphicsButtonItem*>(item);
+        if(NULL != buttonItem) {
+            buttonItem->setFlag(QGraphicsItem::ItemIgnoresTransformations);
+        }
+        GraphicsBranchItem *branchItem = dynamic_cast<GraphicsBranchItem*>(item);
+        if(NULL == branchItem) {
+            continue;
+        }
+        QGraphicsSimpleTextItem* nameItem = branchItem->getNameText();
+        if(NULL != nameItem) {
+            nameItem->setFlag(QGraphicsItem::ItemIgnoresTransformations, fullSync);
+        }
+        QGraphicsSimpleTextItem* distanceText = branchItem->getDistanceText();
+        if(NULL != distanceText) {
+            distanceText->setFlag(QGraphicsItem::ItemIgnoresTransformations, fullSync);
+        }
+    }
+}
+
+QList<GraphicsBranchItem*> MSAEditorTreeViewerUI::getListNodesOfTree() {
+    QList<QGraphicsItem*> items = scene()->items();
+    QList<GraphicsBranchItem*> result;
+    foreach(QGraphicsItem* item, items) {
+        GraphicsBranchItem *branchItem = dynamic_cast<GraphicsBranchItem*>(item);
+        if(NULL == branchItem) {
+            continue;
+        }
+        QGraphicsSimpleTextItem* nameItem = branchItem->getNameText();
+        if(NULL != nameItem) {
+            result.append(branchItem);
+        }
+    }
+    return result;
+}
+
+void MSAEditorTreeViewerUI::updateSettings(const TreeSettings &settings) {
+    TreeViewerUI::updateSettings(settings);
+    if(FullSynchronization == syncMode && curLayoutIsRectangular) {
+        MSAEditor* msa = curMSATreeViewer->getMsaEditor();
+        CHECK(NULL != msa, );
+        setTreeVerticalSize(msa->getUI()->getSequenceArea()->getHeight());
+    }
+}
+
 }//namespace
 

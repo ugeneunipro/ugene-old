@@ -32,6 +32,9 @@
       </sizepolicy>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_7">
+      <property name="spacing">
+       <number>4</number>
+      </property>
       <property name="leftMargin">
        <number>0</number>
       </property>
@@ -153,7 +156,7 @@
          <widget class="QWidget" name="fontSettingsWidget" native="true">
           <layout class="QVBoxLayout" name="verticalLayout_9">
            <property name="spacing">
-            <number>0</number>
+            <number>4</number>
            </property>
            <property name="leftMargin">
             <number>0</number>
@@ -316,6 +319,9 @@
       </sizepolicy>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_2">
+      <property name="spacing">
+       <number>4</number>
+      </property>
       <property name="leftMargin">
        <number>0</number>
       </property>
@@ -331,7 +337,7 @@
       <item>
        <layout class="QGridLayout" name="gridLayout">
         <property name="verticalSpacing">
-         <number>0</number>
+         <number>4</number>
         </property>
         <item row="0" column="1">
          <widget class="QSlider" name="widthSlider">
@@ -397,7 +403,7 @@
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_6">
          <property name="spacing">
-          <number>0</number>
+          <number>4</number>
          </property>
          <property name="leftMargin">
           <number>0</number>

@@ -339,10 +339,6 @@ void TreeViewer::onObjectRenamed(GObject*, const QString&) {
     OpenTreeViewerTask::updateTitle(this);
 }
 
-void TreeViewer::setAlignment( Qt::Alignment alignment ) {
-    ui->setAlignment(alignment);
-}
-
 void TreeViewer::sl_onPhyTreeChanged() {
     ui->onPhyTreeChanged();
 }
@@ -828,7 +824,7 @@ void TreeViewerUI::zooming(qreal horizontalZoom, qreal verticalZoom) {
     horizontalZoom = horizontalScale * horizontalZoom;
     
     verticalZoom = qMax(MINIMUM_ZOOM, verticalZoom);
-    verticalZoom  = qMin(MAXIMUM_ZOOM * qMax(treeSettings.width_coef*TreeViewerUI::SIZE_COEF, 1.0), verticalZoom);
+    verticalZoom  = qMin(MAXIMUM_ZOOM * qMax(treeSettings.height_coef*TreeViewerUI::SIZE_COEF, 1.0), verticalZoom);
     horizontalZoom = qMax(MINIMUM_ZOOM, horizontalZoom);
     horizontalZoom  = qMin(MAXIMUM_ZOOM * qMax(treeSettings.width_coef*TreeViewerUI::SIZE_COEF, 1.0), horizontalZoom);
 
@@ -1026,7 +1022,6 @@ void TreeViewerUI::sl_rectangularLayoutTriggered() {
         root->setSelectedRecurs(false, true); // clear selection
 
         layout = TreeLayout_Rectangular;
-        onLayoutChanged(layout);
         emit si_settingsChanged();
         scene()->removeItem(root);
         if(!rectRoot){
@@ -1038,6 +1033,7 @@ void TreeViewerUI::sl_rectangularLayoutTriggered() {
         updateRect();
         updateTreeSettings();
         fitInView(scene()->sceneRect(), Qt::KeepAspectRatio);
+        onLayoutChanged(layout);
     }
 }
 
@@ -1046,7 +1042,6 @@ void TreeViewerUI::sl_circularLayoutTriggered() {
         root->setSelectedRecurs(false, true); // clear selection
 
         layout = TreeLayout_Circular;
-        onLayoutChanged(layout);
         emit si_settingsChanged();
         updateTreeSettings();
         if(getScale() <= GraphicsRectangularBranchItem::DEFAULT_WIDTH){
@@ -1057,6 +1052,7 @@ void TreeViewerUI::sl_circularLayoutTriggered() {
         connect(layoutTask, SIGNAL(si_stateChanged()), SLOT(sl_layoutRecomputed()));
         TaskScheduler* scheduler = AppContext::getTaskScheduler();
         scheduler->registerTopLevelTask(layoutTask);
+        onLayoutChanged(layout);
     }
 }
 
@@ -1065,13 +1061,13 @@ void TreeViewerUI::sl_unrootedLayoutTriggered() {
         root->setSelectedRecurs(false, true); // clear selection
 
         layout = TreeLayout_Unrooted;
-        onLayoutChanged(layout);
         emit si_settingsChanged();
         updateTreeSettings();
         layoutTask = new CreateUnrootedBranchesTask(rectRoot);
         connect(layoutTask, SIGNAL(si_stateChanged()), SLOT(sl_layoutRecomputed()));
         TaskScheduler* scheduler = AppContext::getTaskScheduler();
         scheduler->registerTopLevelTask(layoutTask);
+        onLayoutChanged(layout);
     }
 }
 

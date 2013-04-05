@@ -24,6 +24,8 @@
 #include <U2View/MSAEditor.h>
 #include <U2Gui/ObjectViewModel.h>
 #include <QtGui/QVBoxLayout>
+#include <U2Core/DocumentModel.h>
+
 
 namespace U2 {
 
@@ -47,7 +49,14 @@ MSAEditorMultiTreeViewer::MSAEditorMultiTreeViewer(QString _title, MSAEditor* _e
 void MSAEditorMultiTreeViewer::addTreeView(GObjectViewWindow* treeView) {
     treeTabs->addTab(treeView, treeView->getViewName());
     treeViews.append(treeView);
-    tabsNames.append(treeView->getViewName());
+
+    const QList<GObject*>& objects = treeView->getObjects();
+    foreach(GObject* obj, objects) {
+        if(GObjectTypes::PHYLOGENETIC_TREE == obj->getGObjectType()) {
+            QString objName = obj->getDocument()->getName();
+            tabsNames.append(objName);
+        }
+    }
 }
 
 QWidget* MSAEditorMultiTreeViewer::getCurrentWidget() const {
@@ -64,7 +73,8 @@ void MSAEditorMultiTreeViewer::sl_onTabCloseRequested(QWidget* page) {
     if(NULL != viewWindow) {
         int i =  tabsNames.indexOf(viewWindow->getViewName());
         tabsNames.removeAt(i);
-        si_tabsCountChanged(tabsNames.count());
+        delete viewWindow;
+        emit si_tabsCountChanged(tabsNames.count());
     }
 }
 

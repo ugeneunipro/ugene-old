@@ -863,4 +863,8 @@ QString MSAEditorNameList::sequenceAtPos( QPoint p ){
     return result;
 }
 
+void MSAEditorNameList::clearGroupsSelections() {
+    groupColors.clear();
+}
+
 }//namespace

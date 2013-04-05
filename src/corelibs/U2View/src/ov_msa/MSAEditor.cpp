@@ -657,10 +657,6 @@ void MSAEditor::buildTree() {
     sl_buildTree();
 }
 
-void MSAEditor::addExistingTree() {
-    
-}
-
 //////////////////////////////////////////////////////////////////////////
 MSAEditorUI::MSAEditorUI(MSAEditor* _editor)
 : editor(_editor), seqArea(NULL), offsetsView(NULL), statusWidget(NULL), collapsibleMode(false), multiTreeViewer(NULL), similarityStatistics(NULL) {
@@ -801,6 +797,7 @@ void MSAEditorUI::sl_onTabsCountChanged(int curTabsNumber) {
         delete multiTreeViewer;
         multiTreeViewer = NULL;
         emit si_hideTreeOP();
+        nameList->clearGroupsSelections();
     }
 }
 

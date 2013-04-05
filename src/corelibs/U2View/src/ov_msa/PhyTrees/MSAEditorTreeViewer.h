@@ -33,17 +33,28 @@ namespace U2 {
 typedef QMap<QString, QColor> GroupColorSchema;
 
 class MSAEditorTreeViewerUI;
+class MSAEditor;
 
-
-class GroupColors {
+class ColorGenerator {
 public:
-    GroupColors();
+    ColorGenerator(int countOfColors, qreal lightness);
+    void setCountOfColors(int counts);
     QColor getColor(int index);
+    int getCountOfColors() {return countOfColors;}
 private:
-    QColor generateRandomColor();
+    void generateColors();
+    int countOfColors;
     QList<QColor> colors;
-    QColor baseColor;
-    int colorsNum;
+    QList<qreal> satValues;
+    qreal delta;
+    qreal hue;
+    qreal lightness;
+};
+
+enum SynchronizationMode {
+    FullSynchronization,
+    OnlySeqsSelection,
+    WithoutSynchronization,
 };
 
 class MSAEditorTreeViewer: public TreeViewer {
@@ -61,6 +72,12 @@ public:
     void setTreeVerticalSize(int size);
 
     QAction* getSortSeqsAction() const {return sortSeqAction;}
+    void setSynchronizationMode(SynchronizationMode newSyncMode);
+    SynchronizationMode getSynchronizationMode() const{return syncMode;}
+
+
+    void setMSAEditor(MSAEditor* _msa) {msa = _msa;}
+    MSAEditor* getMsaEditor() const{return msa;}
 protected:
     virtual QWidget* createWidget();
 private slots:
@@ -72,6 +89,8 @@ private:
     QAction*              sortSeqAction;
     QString               alignmentName;
     CreatePhyTreeSettings buildSettings;
+    MSAEditor*            msa;
+    SynchronizationMode   syncMode;
 };
 
 class MSAEditorTreeViewerUI: public TreeViewerUI {
@@ -89,14 +108,20 @@ public:
     void setTreeVerticalSize(int size);
 
     virtual void setTreeLayout(TreeLayout newLayout);
+
+    bool canSynchronizeWithMSA(MSAEditor* msa);
+    
+    void setSynchronizeMode(SynchronizationMode syncMode);
 protected:
     virtual void mouseDoubleClickEvent(QMouseEvent *e);
     virtual void mousePressEvent(QMouseEvent *e);
     virtual void wheelEvent(QWheelEvent *e);
     virtual void mouseMoveEvent(QMouseEvent *me);
     virtual void mouseReleaseEvent(QMouseEvent *e);
+    virtual void resizeEvent(QResizeEvent *e);
 
     virtual void onLayoutChanged(const TreeLayout& layout);
+    virtual void updateSettings(const TreeSettings &settings);
 signals:
     void si_collapseModelChangedInTree(const QStringList* visibleSeqs);
     void si_seqOrderChanged(QStringList* order);
@@ -117,16 +142,18 @@ private slots:
 
 private:
     void highlightBranches();
+    QList<GraphicsBranchItem*> getListNodesOfTree();
 
     QGraphicsLineItem* subgroupSelector;
     qreal              subgroupSelectorPos;
     bool               subgroupSelectionMode;
-    GroupColors        groupColors;
+    ColorGenerator        groupColors;
 
     bool isSinchronized;
     bool curLayoutIsRectangular;
 
     const MSAEditorTreeViewer* curMSATreeViewer;
+    SynchronizationMode syncMode;
 };
 
 }//namespace

@@ -41,6 +41,7 @@ GraphicsButtonItem::GraphicsButtonItem() {
     setAcceptedMouseButtons(Qt::LeftButton);
     setZValue(2);
     setFlag(QGraphicsItem::ItemIsSelectable);
+    setFlag(QGraphicsItem::ItemIgnoresTransformations);
 }
 
 QRectF GraphicsButtonItem::boundingRect() const {
