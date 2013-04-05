@@ -74,6 +74,11 @@ cp -v "$RELEASE_DIR/libU2Remote.so" "${TARGET_APP_DIR}"
 cp -v "$RELEASE_DIR/libU2Test.so" "${TARGET_APP_DIR}"
 cp -v "$RELEASE_DIR/libU2View.so" "${TARGET_APP_DIR}"
 cp -v "$RELEASE_DIR/libugenedb.so" "${TARGET_APP_DIR}"
+##dirty hack for creation .so.1 files
+cd "${TARGET_APP_DIR}"
+for i in `ls *.so`; do
+    ln -s $i $i.1
+done
 
 echo
 echo copying qt libraries
