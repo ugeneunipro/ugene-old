@@ -377,7 +377,6 @@ U2Region MSAEditorTreeViewerUI::getTreeSize() {
 
 void MSAEditorTreeViewerUI::setTreeLayout(TreeLayout newLayout) {
     TreeViewerUI::setTreeLayout(newLayout);
-    //onLayoutChanged(newLayout);
 }
 
 void MSAEditorTreeViewerUI::onLayoutChanged(const TreeLayout& layout) {
@@ -581,8 +580,9 @@ void MSAEditorTreeViewerUI::updateSettings(const TreeSettings &settings) {
     bool isSizeSynchronized = (FullSynchronization == syncMode && curLayoutIsRectangular);
 
     if(isSizeSynchronized){
-        updateTreeSettings(treeSettings.width_coef == settings.width_coef);
+        bool widthChanged = treeSettings.width_coef == settings.width_coef;
         treeSettings = settings;
+        updateTreeSettings(widthChanged);
     }else{
         MSAEditorTreeViewerUI::updateSettings(settings);
     }
