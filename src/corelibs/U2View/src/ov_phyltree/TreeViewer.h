@@ -68,7 +68,7 @@ public:
     TreeViewer(const QString& viewName, GObject* obj, GraphicsRectangularBranchItem* root, qreal scale);
 
     //from GObjectView
-    virtual void buildStaticToolbar(QToolBar* tb);
+    virtual void buildStaticToolbar(QToolBar* tb, bool showZoomButtons = true);
     virtual void buildStaticMenu(QMenu* m);
 
     void createActions();
@@ -220,13 +220,13 @@ protected:
     void defaultZoom();
 
     virtual void onLayoutChanged(const TreeLayout& ) {}
+    void updateTreeSettings(bool setDefaultZoom = true);
 signals:
     void si_settingsChanged();
 protected slots:
     virtual void sl_swapTriggered();
     virtual void sl_collapseTriggered();
-    virtual void sl_zoomToSel();
-    virtual void sl_zoomOut();
+    virtual void sl_rectLayoutRecomputed();
 private slots:
     void sl_printTriggered();
     void sl_captureTreeTriggered();
@@ -238,7 +238,6 @@ private slots:
     void sl_circularLayoutTriggered();
     void sl_unrootedLayoutTriggered();
     void sl_layoutRecomputed();
-    void sl_rectLayoutRecomputed();
     void sl_chrootTriggered();
     void sl_textSettingsTriggered();
     void sl_treeSettingsTriggered();
@@ -246,6 +245,8 @@ private slots:
     void sl_setSettingsTriggered();
     void sl_branchSettings();
     void sl_zoomToAll();
+    void sl_zoomToSel();
+    void sl_zoomOut();
 
 private:
     enum LabelType {
@@ -265,7 +266,6 @@ private:
     void updateLayout();
 
     void updateTextSettings();
-    void updateTreeSettings();
 
     void redrawRectangularLayout();
     bool isSelectedCollapsed();
@@ -308,10 +308,10 @@ private:
     BranchSettings      branchSettings;
     ButtonSettings      buttonSettings;
     TextSettings        textSettings;
-    TreeSettings        treeSettings;
     TreeLabelsSettings  labelsSettings;
 protected:
     GraphicsRectangularBranchItem* rectRoot;
+    TreeSettings        treeSettings;
 };
 
 

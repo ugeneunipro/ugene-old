@@ -220,7 +220,7 @@ void TreeViewer::setupCameraMenu(QMenu* m)
     m->addAction(exportAction);
 }
 
-void TreeViewer::buildStaticToolbar(QToolBar* tb) 
+void TreeViewer::buildStaticToolbar(QToolBar* tb, bool showZoomButtons) 
 {
     // Tree Settings
     tb->addAction(treeSettingsAction);
@@ -252,10 +252,12 @@ void TreeViewer::buildStaticToolbar(QToolBar* tb)
     tb->addAction(textSettingsAction);
     tb->addAction(contAction);
     // Zooming
-    tb->addSeparator();
-    tb->addAction(zoomToSelAction);
-    tb->addAction(zoomOutAction);
-    tb->addAction(zoomToAllAction);
+    if(showZoomButtons) {
+        tb->addSeparator();
+        tb->addAction(zoomToSelAction);
+        tb->addAction(zoomOutAction);
+        tb->addAction(zoomToAllAction);
+    }
 
     // Print and Capture
     tb->addSeparator();
@@ -595,7 +597,7 @@ void TreeViewerUI::updateTextSettings(){
     updateLayout();
     updateTreeSettings();
 }
-void TreeViewerUI::updateTreeSettings(){
+void TreeViewerUI::updateTreeSettings(bool setDefautZoom){
 
     qreal avgW = 0;
     if(treeSettings.type != TreeSettings::PHYLOGRAM){
@@ -679,30 +681,13 @@ void TreeViewerUI::updateTreeSettings(){
     scene()->update();
 
     if(labelsSettings.alignLabels){
-//         QStack<GraphicsBranchItem*> stack;
-//         stack.push(root);
-//         if (root != rectRoot) {
-//             stack.push(rectRoot);
-//         }
-//         while (!stack.empty()) {
-//             GraphicsBranchItem* item = stack.pop();
-//             if (item->getNameText() == NULL) {
-//                 foreach (QGraphicsItem* citem, item->childItems()) {
-//                     GraphicsBranchItem* gbi = dynamic_cast<GraphicsBranchItem*>(citem);
-//                     if (gbi != NULL) {
-//                         stack.push(gbi);
-//                     }
-//                 }
-//             } else {
-//                 item->setWidth(0);
-//             }
-//         }
-//         updateRect();
         updateLabelsAlignment(labelsSettings.alignLabels);
     }
 
     defaultZoom();
-    fitInView(scene()->sceneRect(), Qt::KeepAspectRatio);
+    if(setDefautZoom) {
+        fitInView(scene()->sceneRect(), Qt::KeepAspectRatio);
+    }
 }
 
 void TreeViewerUI::determineBranchLengths() {

@@ -26,6 +26,7 @@
 #include <QtGui/QGraphicsView>
 #include <QtGui/QGraphicsScene>
 #include <QtCore/QStack>
+#include <U2Core/U2SafePoints.h>
 
 namespace U2 {
 
@@ -117,7 +118,7 @@ void GraphicsBranchItem::setSelectedRecurs(bool sel, bool recursively) {
 
     int penWidth = settings.branchThickness;
     if (sel) {
-        penWidth = settings.branchThickness + SelectedPenWidth * (recursively ? 1 : 5);
+        penWidth = settings.branchThickness + SelectedPenWidth;
     }
 
     QPen thisPen = this->pen();
@@ -165,7 +166,7 @@ void GraphicsBranchItem::initText(qreal d) {
 }
 
 GraphicsBranchItem::GraphicsBranchItem(bool withButton)
-: correspondingItem(NULL), buttonItem(NULL), distanceText(NULL), nameText(NULL), collapsed(false), branchLength(0), lengthCoef(1) {
+: correspondingItem(NULL), buttonItem(NULL), distanceText(NULL), nameText(NULL), collapsed(false), branchLength(0), lengthCoef(1), nameItemSelection(NULL) {
 
     setFlag(QGraphicsItem::ItemIsSelectable);
     setAcceptHoverEvents(false);
@@ -183,7 +184,7 @@ GraphicsBranchItem::GraphicsBranchItem(bool withButton)
 }
 
 GraphicsBranchItem::GraphicsBranchItem(const QString& name)
-: correspondingItem(NULL), buttonItem(NULL), distanceText(NULL), collapsed(false), branchLength(0), lengthCoef(1) {
+: correspondingItem(NULL), buttonItem(NULL), distanceText(NULL), collapsed(false), branchLength(0), lengthCoef(1), nameItemSelection(NULL) {
 
     setFlag(QGraphicsItem::ItemIsSelectable);
     setAcceptHoverEvents(false);
@@ -207,7 +208,7 @@ GraphicsBranchItem::GraphicsBranchItem(const QString& name)
 }
 
 GraphicsBranchItem::GraphicsBranchItem(qreal d, bool withButton)
-: correspondingItem(NULL), buttonItem(NULL), distanceText(NULL), nameText(NULL), collapsed(false), branchLength(0), lengthCoef(1) {
+: correspondingItem(NULL), buttonItem(NULL), distanceText(NULL), nameText(NULL), collapsed(false), branchLength(0), lengthCoef(1), nameItemSelection(NULL) {
 
     setFlag(QGraphicsItem::ItemIsSelectable);
     setAcceptHoverEvents(false);
@@ -253,4 +254,30 @@ bool GraphicsBranchItem::isCollapsed(){
     return collapsed;
 }
 
+void GraphicsBranchItem::paint(QPainter* painter,const QStyleOptionGraphicsItem*, QWidget*) {
+    CHECK(NULL != nameText,);
+    if (isSelected()) {
+            qreal radius = settings.branchThickness + 1.5;
+            QRectF rect(-radius, -radius, radius*2, radius*2);
+            painter->setBrush(settings.branchColor);
+            if(NULL == nameItemSelection) {
+                nameItemSelection = scene()->addEllipse(rect, QPen(settings.branchColor), QBrush(settings.branchColor));
+                nameItemSelection->setParentItem(this);
+                nameItemSelection->setFlag(QGraphicsItem::ItemIgnoresTransformations);
+            }
+            else {
+                nameItemSelection->setRect(rect);
+                nameItemSelection->show();
+            }
+            nameItemSelection->setBrush(QBrush(settings.branchColor));
+            nameItemSelection->setPen(QPen(Qt::gray));
+    }
+    else {
+        if(NULL != nameItemSelection) {
+        nameItemSelection->hide();
+        }
+    }
+
+    scene()->update();
+}
 } //namespace

@@ -140,10 +140,11 @@ QRectF GraphicsRectangularBranchItem::boundingRect() const {
     return QRectF(- width - 0.5, direction == up ? -height: -0.5, width + 0.5, height + 0.5);
 }
 
-void GraphicsRectangularBranchItem::paint(QPainter *painter, const QStyleOptionGraphicsItem*, QWidget*) {
+void GraphicsRectangularBranchItem::paint(QPainter *painter, const QStyleOptionGraphicsItem* optionItem, QWidget*) {
     painter->setPen(pen());
     painter->drawLine(QPointF(0, 0), QPointF(-width, 0));
     painter->drawLine(QPointF(-width, 0), QPointF(-width, direction == up ? -height : height));
+    GraphicsBranchItem::paint(painter, optionItem);
 }
 
 void GraphicsRectangularBranchItem::setHeight(qreal h) {

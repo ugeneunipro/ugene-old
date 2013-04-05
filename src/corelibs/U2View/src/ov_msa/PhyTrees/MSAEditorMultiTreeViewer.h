@@ -55,7 +55,6 @@ public slots:
     void sl_onTabCloseRequested(QWidget*);
 private:
     MSAEditorTabWidgetArea*         treeTabs;
-    QToolBar*                       treeTollBar;
     QWidget*                        titleWidget;
     MSAEditor*                      editor;
     QList<QWidget*>                 treeViews;

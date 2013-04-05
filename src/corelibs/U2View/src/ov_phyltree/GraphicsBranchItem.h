@@ -52,6 +52,7 @@ private:
     GraphicsButtonItem* buttonItem;
     void initText(qreal d);
     int branchLength;
+    QGraphicsEllipseItem*    nameItemSelection;
 
 protected:
 
@@ -65,6 +66,7 @@ protected:
 
     GraphicsBranchItem(const QString& name);
     GraphicsBranchItem(qreal d, bool withButton = true);
+    virtual void paint(QPainter * painter,const QStyleOptionGraphicsItem* option, QWidget* widget = 0 );
 
 public:
     GraphicsBranchItem(bool withButton = true);

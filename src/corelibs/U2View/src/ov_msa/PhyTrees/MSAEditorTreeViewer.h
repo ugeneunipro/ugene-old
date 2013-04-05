@@ -91,6 +91,7 @@ private:
     CreatePhyTreeSettings buildSettings;
     MSAEditor*            msa;
     SynchronizationMode   syncMode;
+    bool                  slotsAreConnected;
 };
 
 class MSAEditorTreeViewerUI: public TreeViewerUI {
@@ -133,12 +134,11 @@ private slots:
     void sl_selectionChanged(const QStringList& selection);
     void sl_sequenceNameChanged(QString prevName, QString newName);
     virtual void sl_collapseTriggered();
-    virtual void sl_zoomToSel();
-    virtual void sl_zoomOut();
     void sl_onHeightChanged(int height, bool isMinimumSize, bool isMaximumSize);
     void sl_onReferenceSeqChanged(const QString &str);
     void sl_sortAlignment();
     void sl_onSceneRectChanged(const QRectF&);
+    virtual void sl_rectLayoutRecomputed();
 
 private:
     void highlightBranches();
@@ -152,8 +152,11 @@ private:
     bool isSinchronized;
     bool curLayoutIsRectangular;
 
-    const MSAEditorTreeViewer* curMSATreeViewer;
+    MSAEditorTreeViewer* curMSATreeViewer;
     SynchronizationMode syncMode;
+
+    bool hasMinSize;
+    bool hasMaxSize;
 };
 
 }//namespace
