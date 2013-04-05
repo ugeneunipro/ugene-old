@@ -27,13 +27,11 @@
 #include <U2Core/global.h>
 #include <QtGui>
 #include <QObject>
-
-class QLineEdit;
-class QTreeWidget;
+#include <U2Gui/SuggestCompleter.h>
 
 namespace U2 {
 
-class GSuggestCompletion;
+//class SuggestCompletion;
 
 class U2DESIGNER_EXPORT URLLineEdit : public QLineEdit {
     Q_OBJECT
@@ -45,9 +43,8 @@ public:
                 bool saveFile,
                 QWidget *parent,
                 const QString &format = "");
-
+    //~URLLineEdit(); destructor didnt neccessary for deleting completer
     bool isMulti();
-    void editingFinished();
 
 protected:
     void focusOutEvent(QFocusEvent *event);
@@ -55,6 +52,7 @@ protected:
 private slots:
     void sl_onBrowse();
     void sl_onBrowseWithAdding();
+    void sl_completionFinished();
 
 signals:
     void si_finished();
@@ -66,30 +64,13 @@ private:
     bool isPath;
     bool saveFile;
     QString fileFormat;
-    GSuggestCompletion *completer;
+    FilenameSuggestCompletion *completer;
 
 private:
     void browse(bool addFiles = false);
     void checkExtension(QString &name);
 };
 
-class GSuggestCompletion : public QObject{
-    Q_OBJECT
-public:
-    GSuggestCompletion(QString fileFormat, URLLineEdit *parent = 0);
-    ~GSuggestCompletion();
-    bool eventFilter(QObject *obj, QEvent *ev);
-    void showCompletion(const QStringList &choices);
-
-public slots:
-    void doneCompletion();
-    void sl_textEdited(const QString&);
-
-private:
-    QString fileFormat;
-    URLLineEdit *editor;
-    QTreeWidget *popup;
-};
 
 } // U2
 

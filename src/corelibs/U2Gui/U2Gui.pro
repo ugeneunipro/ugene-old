@@ -55,9 +55,10 @@ HEADERS += src/AppSettingsGUI.h \
            src/util/ScaleBar.h \
            src/util/ScriptEditorDialog.h \
            src/util/SeqPasterWidgetController.h \
+		   src/util/SuggestCompleter.h \
            src/util/TextEditorDialog.h \
            src/util/TreeWidgetUtils.h \
-           src/util/logview/LogView.h
+           src/util/logview/LogView.h 
 FORMS += src/util/ui/AddNewDocumentDialog.ui \
          src/util/ui/AuthentificationDialog.ui \
          src/util/ui/CreateDocumentFromTextDialog.ui \
@@ -124,6 +125,7 @@ SOURCES += src/MainWindow.cpp \
            src/util/ScaleBar.cpp \
            src/util/ScriptEditorDialog.cpp \
            src/util/SeqPasterWidgetController.cpp \
+		   src/util/SuggestCompleter.cpp \
            src/util/TextEditorDialog.cpp \
            src/util/TreeWidgetUtils.cpp \
            src/util/logview/LogView.cpp
