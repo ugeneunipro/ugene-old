@@ -24,6 +24,7 @@
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/DataBaseRegistry.h>
 #include <U2Core/ExternalToolRegistry.h>
+#include <U2Core/MultiTask.h>
 
 #include <U2View/MSAEditor.h>
 #include <U2View/MSAEditorFactory.h>
@@ -424,6 +425,7 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin():Plugin(tr("External tool 
     }    
 
     if (!toolsDir.isEmpty()) {
+        QList<Task*> tasks;
         foreach(ExternalTool* curTool, etRegistry->getAllEntries()){
              if(!curTool->getPath().isEmpty()){ 
                  continue;
@@ -439,11 +441,13 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin():Plugin(tr("External tool 
                      QString path = QDir::toNativeSeparators(toolPath);
                      ExternalToolValidateTask* validateTask=new ExternalToolValidateTask(curTool->getName(), path);
                      connect(validateTask,SIGNAL(si_stateChanged()),SLOT(sl_validateTaskStateChanged()));
-                     AppContext::getTaskScheduler()->registerTopLevelTask(validateTask);
+                     tasks.append(validateTask);
                      fileNotFound=false;
                  }
              }
         }
+        MultiTask* checkExternalToolsTask=new MultiTask(tr("Checking external tools for first time"), tasks);
+        AppContext::getTaskScheduler()->registerTopLevelTask(checkExternalToolsTask);
     }
 
     //Search for tools in path
