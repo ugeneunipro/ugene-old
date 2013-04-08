@@ -497,8 +497,11 @@ void FindPatternWidget::initAlgorithmLayout()
     spinMatch->setSingleStep(1);
     spinMatch->setValue(100);
 
+
     layoutMismatch->addWidget(lblMatch);
     layoutMismatch->addWidget(spinMatch);
+    lblMatch->hide();
+    spinMatch->hide();
 
     layoutAlgorithmSettings->addLayout(layoutMismatch);
 
@@ -516,6 +519,7 @@ void FindPatternWidget::initAlgorithmLayout()
     layoutAlgorithmSettings->addLayout(layoutRegExpLen);
 
     selectedAlgorithm = FindAlgorithmPatternSettings_InsDel;
+    boxAlgorithm->setCurrentIndex(selectedAlgorithm);
 }
 
 

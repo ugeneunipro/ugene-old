@@ -85,10 +85,10 @@ enum FindAlgorithmStrand {
 };
 
 enum FindAlgorithmPatternSettings {
+    FindAlgorithmPatternSettings_Exact,
     FindAlgorithmPatternSettings_InsDel,
     FindAlgorithmPatternSettings_Subst,
-    FindAlgorithmPatternSettings_RegExp,
-    FindAlgorithmPatternSettings_Exact
+    FindAlgorithmPatternSettings_RegExp
 };
 
 class U2ALGORITHM_EXPORT FindAlgorithmSettings {
