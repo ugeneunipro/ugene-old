@@ -75,17 +75,11 @@ void ReadAnnotationsWorker::init() {
 }
 
 Task * ReadAnnotationsWorker::createReadTask(const QString &url, const QString &datasetName) {
-    Task *t = new ReadAnnotationsTask(url, datasetName, mergeAnnotations);
-    connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
-    return t;
+    return new ReadAnnotationsTask(url, datasetName, mergeAnnotations);
 }
 
-void ReadAnnotationsWorker::sl_taskFinished() {
-    ReadAnnotationsTask *t = qobject_cast<ReadAnnotationsTask*>(sender());
-    if (!t->isFinished() || t->hasError()) {
-        return;
-    }
-
+void ReadAnnotationsWorker::onTaskFinished(Task *task) {
+    ReadAnnotationsTask *t = qobject_cast<ReadAnnotationsTask*>(task);
     foreach(const QVariantMap &m, t->takeResults()) {
         cache.append(Message(mtype, m));
     }

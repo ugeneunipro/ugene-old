@@ -84,11 +84,8 @@ Task * ReadAssemblyWorker::createReadTask(const QString &url, const QString &dat
     return factory->createTask(url, hints, context);
 }
 
-void ReadAssemblyWorker::sl_taskFinished() {
-    ReadDocumentTask *t = qobject_cast<ReadDocumentTask*>(sender());
-    if (!t->isFinished() || t->hasError()) {
-        return;
-    }
+void ReadAssemblyWorker::onTaskFinished(Task *task) {
+    ReadDocumentTask *t = qobject_cast<ReadDocumentTask*>(task);
     QList<SharedDbiDataHandler> result = t->takeResult();
     QString url = t->getUrl();
     foreach(const SharedDbiDataHandler &handler, result) {

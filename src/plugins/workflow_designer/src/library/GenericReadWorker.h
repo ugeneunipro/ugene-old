@@ -45,8 +45,11 @@ public:
     virtual bool isDone();
     virtual void cleanup() {}
 
-protected slots:
-    virtual void sl_taskFinished() = 0;
+protected:
+    virtual void onTaskFinished(Task *task) = 0;
+
+private slots:
+    void sl_taskFinished();
 
 protected:
     virtual Task * createReadTask(const QString &url, const QString &datasetName) = 0;
@@ -105,8 +108,8 @@ public:
     virtual void init() ;
     virtual void cleanup() {}
 
-protected slots:
-    virtual void sl_taskFinished();
+protected:
+    virtual void onTaskFinished(Task *task);
 
 protected:
     virtual Task *createReadTask(const QString &url, const QString &datasetName) {
@@ -120,8 +123,8 @@ public:
     GenericSeqReader(Actor *a) : GenericDocReader(a){}
     virtual void init() ;
 
-protected slots:
-    virtual void sl_taskFinished();
+protected:
+    virtual void onTaskFinished(Task *task);
 
 protected:
     virtual Task * createReadTask(const QString &url, const QString &datasetName);

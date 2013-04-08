@@ -40,8 +40,8 @@ public:
     virtual void init() ;
     virtual QStringList getOutputFiles();
 
-protected slots:
-    virtual void sl_taskFinished();
+protected:
+    virtual void onTaskFinished(Task *task);
 
 protected:
     virtual Task * createReadTask(const QString &url, const QString &datasetName);

@@ -69,12 +69,8 @@ Task * ReadVariationWorker::createReadTask(const QString &url, const QString &da
     return new ReadVariationTask(url, datasetName, context->getDataStorage());
 }
 
-void ReadVariationWorker::sl_taskFinished() {
-    ReadVariationTask *t = qobject_cast<ReadVariationTask*>(sender());
-    if (!t->isFinished() || t->hasError()) {
-        return;
-    }
-    
+void ReadVariationWorker::onTaskFinished(Task *task) {
+    ReadVariationTask *t = qobject_cast<ReadVariationTask*>(task);
     foreach(const QVariantMap &m, t->takeResults()) {
         cache.append(Message(mtype, m));
     }

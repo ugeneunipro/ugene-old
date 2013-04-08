@@ -22,6 +22,7 @@
 #include "GenericReadWorker.h"
 #include "GenericReadActor.h"
 #include "CoreLib.h"
+#include "util/NoFailTaskWrapper.h"
 
 #include <U2Core/AppContext.h>
 #include <U2Core/AppResources.h>
@@ -76,7 +77,7 @@ GenericDocReader::~GenericDocReader() {
 Task *GenericDocReader::tick() {
     if (cache.isEmpty() && files->hasNext()) {
         QString newUrl = files->getNextFile();
-        Task *t = createReadTask(newUrl, files->getLastDatasetName());
+        Task *t = new NoFailTaskWrapper(createReadTask(newUrl, files->getLastDatasetName()));
         connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
         return t;
     }
@@ -94,6 +95,18 @@ bool GenericDocReader::isDone() {
     return BaseWorker::isDone() && cache.isEmpty();
 }
 
+void GenericDocReader::sl_taskFinished() {
+    NoFailTaskWrapper *t = qobject_cast<NoFailTaskWrapper*>(sender());
+    SAFE_POINT(NULL != t, "NULL wrapper task", );
+    CHECK(t->isFinished() && !t->hasError(), );
+    Task *original = t->originalTask();
+    if (original->hasError()) {
+        coreLog.error(original->getError());
+        return;
+    }
+    onTaskFinished(original);
+}
+
 /**************************
  * GenericMSAReader
  **************************/
@@ -102,11 +115,8 @@ void GenericMSAReader::init() {
     mtype = WorkflowEnv::getDataTypeRegistry()->getById(GenericMAActorProto::TYPE);
 }
 
-void GenericMSAReader::sl_taskFinished() {
-    LoadMSATask* t = qobject_cast<LoadMSATask*>(sender());
-    if (!t->isFinished() || t->hasError()) {
-        return;
-    }
+void GenericMSAReader::onTaskFinished(Task *task) {
+    LoadMSATask *t = qobject_cast<LoadMSATask*>(task);
     foreach(const QVariant& msaHandler, t->results) {
         QVariantMap m;
         m[BaseSlots::URL_SLOT().getId()] = t->url;
@@ -219,11 +229,8 @@ Task * GenericSeqReader::createReadTask(const QString &url, const QString &datas
     return new LoadSeqTask(url, hints, &selector, context->getDataStorage());
 }
 
-void GenericSeqReader::sl_taskFinished() {
-    LoadSeqTask* t = qobject_cast<LoadSeqTask*>(sender());
-    if (!t->isFinished() || t->hasError()) {
-        return;
-    }
+void GenericSeqReader::onTaskFinished(Task *task) {
+    LoadSeqTask* t = qobject_cast<LoadSeqTask*>(task);
     int limit = cfg[GenericSeqActorProto::LIMIT_ATTR].toInt();
     int currentCount = 0;
     foreach(const QVariantMap& m, t->results) {

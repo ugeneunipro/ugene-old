@@ -34,8 +34,8 @@ public:
     ReadVariationWorker(Actor *p);
     virtual void init() ;
 
-protected slots:
-    virtual void sl_taskFinished();
+protected:
+    virtual void onTaskFinished(Task *task);
 
 protected:
     virtual Task * createReadTask(const QString &url, const QString &datasetName);
