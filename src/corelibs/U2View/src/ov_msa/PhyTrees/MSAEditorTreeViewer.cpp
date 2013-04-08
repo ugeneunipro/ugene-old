@@ -46,7 +46,7 @@ QWidget* MSAEditorTreeViewer::createWidget() {
     QVBoxLayout* vLayout = new QVBoxLayout();
     ui = new MSAEditorTreeViewerUI(this);
     QToolBar* toolBar = new QToolBar(tr("MSAEditor tree toolbar"));
-    buildStaticToolbar(toolBar, false);
+    buildMSAEditorStaticToolbar(toolBar);
 
     sortSeqAction = new QAction(QIcon(":core/images/sort_ascending.png"), tr("Sort alignment by tree"), ui);
     sortSeqAction->setObjectName("Sort Alignment");
@@ -107,6 +107,8 @@ void MSAEditorTreeViewer::setSynchronizationMode(SynchronizationMode newSyncMode
             connect(treeViewerUI,   SIGNAL(si_treeZoomedIn()),                      msa,  SLOT(sl_zoomIn()));
             connect(msa,   SIGNAL(si_refrenceSeqChanged(const QString &)), treeViewerUI,  SLOT(sl_onReferenceSeqChanged(const QString &)));
             connect(treeViewerUI,   SIGNAL(si_treeZoomedOut()),                     msa,  SLOT(sl_zoomOut()));
+            connect(msaUI->getSequenceArea(),   SIGNAL(si_visibleRangeChanged(QStringList)), treeViewerUI, SLOT(sl_onVisibleRangeChanged(QStringList)));
+
             slotsAreConnected = true;
         }
         sortSeqAction->setEnabled(true);
@@ -602,6 +604,36 @@ void MSAEditorTreeViewerUI::updateSettings(const TreeSettings &settings) {
 void MSAEditorTreeViewerUI::sl_rectLayoutRecomputed() {
     TreeViewerUI::sl_rectLayoutRecomputed();
     curMSATreeViewer->setSynchronizationMode(syncMode);
+}
+
+void MSAEditorTreeViewerUI::sl_onVisibleRangeChanged(QStringList visibleSeqs) {
+    QList<GraphicsBranchItem*> items = getListNodesOfTree();
+    QRectF rect;
+    zooming(1.0, 1.0/getVerticalZoom());
+    foreach(GraphicsBranchItem* item, items) {
+        if(visibleSeqs.contains(item->getNameText()->text())) {
+          if(rect.isNull()) {
+                rect = item->getNameText()->sceneBoundingRect();
+            }
+            else {
+                rect = rect.united(item->getNameText()->sceneBoundingRect());
+            }
+        }
+    }
+    QRectF viewRect = viewport()->rect();
+    CHECK(!viewRect.isEmpty(), );
+    
+    CHECK(rect.height() > 0, );
+    QRectF sceneRect = transform().mapRect(rect); 
+
+    MSAEditor* msa = curMSATreeViewer->getMsaEditor();
+    CHECK(NULL != msa, );
+    setTreeVerticalSize(msa->getUI()->getSequenceArea()->getHeight());
+    viewRect.setHeight(msa->getUI()->getSequenceArea()->getHeight());
+
+    qreal zoom = viewRect.height() / sceneRect.height();
+    zooming(1.0, zoom);
+    centerOn(rect.center());
 }
 
 

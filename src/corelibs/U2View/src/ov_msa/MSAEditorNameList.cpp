@@ -717,6 +717,14 @@ void MSAEditorNameList::drawSequenceItem(QPainter& p, int s, const QString& , bo
 
     textRect = QRect(textRect.left() + CROSS_SIZE*2 + delta, textRect.top(), textRect.width() - ((5*CROSS_SIZE)/2), textRect.height());
     QString seqName = getTextForRow(s);
+
+    p.fillRect(textRect, Qt::white);
+    if(groupColors.contains(seqName)) {
+        if(QColor(Qt::black) != groupColors[seqName]) {
+            p.fillRect(textRect, groupColors[seqName]);
+        }
+    }
+
     if(seqName == ui->getEditor()->getRefSeqName())
         drawRefSequence(p, textRect);
     p.drawText(textRect, Qt::AlignVCenter | Qt::AlignLeft, seqName);

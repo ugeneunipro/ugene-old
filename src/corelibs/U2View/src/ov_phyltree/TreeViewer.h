@@ -68,8 +68,10 @@ public:
     TreeViewer(const QString& viewName, GObject* obj, GraphicsRectangularBranchItem* root, qreal scale);
 
     //from GObjectView
-    virtual void buildStaticToolbar(QToolBar* tb, bool showZoomButtons = true);
+    virtual void buildStaticToolbar(QToolBar* tb);
     virtual void buildStaticMenu(QMenu* m);
+    
+    void buildMSAEditorStaticToolbar(QToolBar* tb);
 
     void createActions();
 

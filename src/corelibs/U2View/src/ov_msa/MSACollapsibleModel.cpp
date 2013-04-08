@@ -18,6 +18,9 @@ void MSACollapsibleItemModel::reset(const QVector<U2Region>& itemRegions) {
     items.clear();
     positions.clear();
     foreach(const U2Region& r, itemRegions) {
+        if(r.length <= 1) {
+            continue;
+        }
         items.append(MSACollapsableItem(r.startPos, r.length));
         positions.append(r.startPos);
     }

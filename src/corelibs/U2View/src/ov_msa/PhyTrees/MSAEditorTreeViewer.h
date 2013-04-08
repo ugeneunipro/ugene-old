@@ -139,6 +139,7 @@ private slots:
     void sl_sortAlignment();
     void sl_onSceneRectChanged(const QRectF&);
     virtual void sl_rectLayoutRecomputed();
+    void sl_onVisibleRangeChanged(QStringList visibleSeqs);
 
 private:
     void highlightBranches();

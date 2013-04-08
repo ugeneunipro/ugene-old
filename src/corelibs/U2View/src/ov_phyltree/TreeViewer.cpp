@@ -220,7 +220,7 @@ void TreeViewer::setupCameraMenu(QMenu* m)
     m->addAction(exportAction);
 }
 
-void TreeViewer::buildStaticToolbar(QToolBar* tb, bool showZoomButtons) 
+void TreeViewer::buildStaticToolbar(QToolBar* tb) 
 {
     // Tree Settings
     tb->addAction(treeSettingsAction);
@@ -252,12 +252,10 @@ void TreeViewer::buildStaticToolbar(QToolBar* tb, bool showZoomButtons)
     tb->addAction(textSettingsAction);
     tb->addAction(contAction);
     // Zooming
-    if(showZoomButtons) {
-        tb->addSeparator();
-        tb->addAction(zoomToSelAction);
-        tb->addAction(zoomOutAction);
-        tb->addAction(zoomToAllAction);
-    }
+    tb->addSeparator();
+    tb->addAction(zoomToSelAction);
+    tb->addAction(zoomOutAction);
+    tb->addAction(zoomToAllAction);
 
     // Print and Capture
     tb->addSeparator();
@@ -272,6 +270,13 @@ void TreeViewer::buildStaticToolbar(QToolBar* tb, bool showZoomButtons)
     cameraMenu->menuAction()->setObjectName("Export Tree Image");
     cameraButton->setObjectName("cameraMenu");
     tb->addWidget(cameraButton);
+}
+
+void TreeViewer::buildMSAEditorStaticToolbar(QToolBar* tb) {
+    buildStaticToolbar(tb);
+    tb->removeAction(zoomToSelAction);
+    tb->removeAction(zoomOutAction);
+    tb->removeAction(zoomToAllAction);
 }
 
 void TreeViewer::buildStaticMenu(QMenu* m)

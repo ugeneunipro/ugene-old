@@ -271,6 +271,7 @@ signals:
     void si_selectionChanged(const MSAEditorSelection& current, const MSAEditorSelection& prev);
     void si_selectionChanged(const QStringList& selectedRows);
     void si_highlightingChanged();
+    void si_visibleRangeChanged(QStringList visibleSequences);
 
 public slots:
     void sl_changeColorSchemeOutside(const QString &name);

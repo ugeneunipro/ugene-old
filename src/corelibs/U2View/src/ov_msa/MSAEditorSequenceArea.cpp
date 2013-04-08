@@ -687,6 +687,14 @@ void MSAEditorSequenceArea::sl_onHScrollMoved(int pos) {
 void MSAEditorSequenceArea::sl_onVScrollMoved(int seq) {
     assert(seq >=0 && seq <= editor->getNumSequences() - getNumVisibleSequences(false));    
     setFirstVisibleSequence(seq);
+
+    QStringList rowNames = editor->getMSAObject()->getMAlignment().getRowNames();
+    QStringList visibleSeqs;
+    int lastSeq = getNumVisibleSequences(false) + seq;
+    for(int i = seq; i < lastSeq; i++) {
+        visibleSeqs.append(rowNames.at(i));
+    }
+    emit si_visibleRangeChanged(visibleSeqs);
 }
 
 void MSAEditorSequenceArea::updateHScrollBar() {
@@ -2121,7 +2129,7 @@ void MSAEditorSequenceArea::sl_setCollapsingRegions(const QStringList* visibleSe
     QStringList rowNames = ma.getRowNames();
     foreach(QString seqName, *visibleSequences) {
         int index = rowNames.indexOf(seqName);
-        if(index > 0) {
+        if(index >= 0) {
             seqIndexes.append(index);
         }
     }
@@ -2133,14 +2141,24 @@ void MSAEditorSequenceArea::sl_setCollapsingRegions(const QStringList* visibleSe
 
     QVector<U2Region> collapsedRegions;
     
-    int prevIndex = startPos;
+    int prevIndex = -1;
+    int maxIndex = 0;
     for(int i = 0; i < seqNums; i++) {
         int curIndex = seqIndexes.at(i);
-        
+        maxIndex = qMax(maxIndex, curIndex);
+        if(-1 == prevIndex && curIndex > 0) {
+            collapsedRegions.append(U2Region(0, curIndex));
+            prevIndex = curIndex;
+            continue;
+        }
         if(curIndex - prevIndex > 1) {
-            collapsedRegions.append(U2Region(prevIndex, curIndex - prevIndex));
+            collapsedRegions.append(U2Region(prevIndex+1, curIndex - prevIndex - 1));
         }
         prevIndex = curIndex;
+    }
+    int endGroupSize = rowNames.size() - maxIndex - 1;
+    if(endGroupSize > 0) {
+        collapsedRegions.append(U2Region(maxIndex+1, endGroupSize));
     }
 
     if (msaObject == NULL || msaObject->isStateLocked()) {
