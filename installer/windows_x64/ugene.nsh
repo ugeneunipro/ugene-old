@@ -132,38 +132,40 @@ SetRegView 64
     !insertmacro AddPlugin annotator
     !insertmacro AddPlugin ball
     !insertmacro AddPlugin biostruct3d_view
+    !insertmacro AddPlugin browser_support
     !insertmacro AddPlugin chroma_view
     !insertmacro AddPlugin circular_view
-    !insertmacro AddPlugin remote_service
     !insertmacro AddPlugin cuda_support
-    !insertmacro AddPlugin opencl_support
+    !insertmacro AddPlugin dbi_bam
     !insertmacro AddPlugin dna_export
+    !insertmacro AddPlugin dna_flexibility
     !insertmacro AddPlugin dna_graphpack
     !insertmacro AddPlugin dna_stat
     !insertmacro AddPlugin dotplot
     !insertmacro AddPlugin enzymes
+    !insertmacro AddPlugin expert_discovery
     !insertmacro AddPlugin external_tool_support
     !insertmacro AddPlugin genome_aligner
     !insertmacro AddPlugin gor4
     !insertmacro AddPlugin hmm2
     !insertmacro AddPlugin hmm3
     !insertmacro AddPlugin kalign
+    !insertmacro AddPlugin linkdata_support
+    !insertmacro AddPlugin opencl_support
     !insertmacro AddPlugin orf_marker
     !insertmacro AddPlugin phylip
     !insertmacro AddPlugin primer3
     !insertmacro AddPlugin psipred
+    !insertmacro AddPlugin ptools
     !insertmacro AddPlugin query_designer
     !insertmacro AddPlugin remote_blast
+    !insertmacro AddPlugin remote_service
     !insertmacro AddPlugin repeat_finder
-    !insertmacro AddPlugin sitecon
     !insertmacro AddPlugin smith_waterman
+    !insertmacro AddPlugin sitecon
 #    !insertmacro AddPlugin umuscle
     !insertmacro AddPlugin weight_matrix
     !insertmacro AddPlugin workflow_designer
-    !insertmacro AddPlugin dbi_bam
-    !insertmacro AddPlugin expert_discovery
-    !insertmacro AddPlugin ptools
-    !insertmacro AddPlugin dna_flexibility
     !insertmacro AddPlugin variants
     
     SetOutPath $INSTDIR\tools

@@ -77,6 +77,7 @@ echo Copying plugins
 add-plugin annotator
 add-plugin ball
 add-plugin biostruct3d_view
+add-plugin browser_support
 add-plugin chroma_view
 add-plugin circular_view
 add-plugin dbi_bam
@@ -96,7 +97,7 @@ add-plugin kalign
 add-plugin linkdata_support
 add-plugin opencl_support
 add-plugin orf_marker
-add-plugin perf_monitor
+#add-plugin perf_monitor
 add-plugin phylip
 add-plugin primer3
 add-plugin psipred
