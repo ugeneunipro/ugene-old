@@ -106,6 +106,7 @@ Task *Peak2GeneWorker::tick() {
         return t;
     }else if (inChannel->isEnded()) {
         setDone();
+        output->setEnded();
     }
     return NULL;
 }
