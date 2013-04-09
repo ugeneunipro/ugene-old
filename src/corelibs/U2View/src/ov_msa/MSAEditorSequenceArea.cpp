@@ -202,11 +202,19 @@ MSAEditorSequenceArea::~MSAEditorSequenceArea() {
 
 void MSAEditorSequenceArea::prepareColorSchemeMenuActions() {
     Settings* s = AppContext::getSettings();
-    MAlignmentObject* maObj = editor->getMSAObject();
-    if (maObj == NULL)
+    if (!s || !editor){
         return;
+    }
+    MAlignmentObject* maObj = editor->getMSAObject();
+    if (!maObj){
+        return;
+    }
 
-    DNAAlphabetType atype = maObj->getAlphabet()->getType();
+    DNAAlphabet* al = maObj->getAlphabet();
+    if (!al){
+        return;
+    }
+    DNAAlphabetType atype = al->getType();
     MSAColorSchemeRegistry* csr = AppContext::getMSAColorSchemeRegistry();
     connect(csr, SIGNAL(si_customSettingsChanged()), SLOT(sl_customColorSettingsChanged()));
 

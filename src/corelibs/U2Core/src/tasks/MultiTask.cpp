@@ -23,6 +23,7 @@
 
 #include <U2Core/AppContext.h>
 #include <U2Core/ProjectModel.h>
+#include <U2Core/U2SafePoints.h>
 
 namespace U2
 {
@@ -40,6 +41,7 @@ Task(name, TaskFlags_NR_FOSCOE), tasks(taskz)
         addSubTask(t);
     }
     if(withLock){
+        SAFE_POINT(AppContext::getProject() != NULL, "MultiTask::no project", );
         l = new StateLock(getTaskName(), StateLockFlag_LiveLock);
         AppContext::getProject()->lockState(l);
     }else{
@@ -52,8 +54,9 @@ QList<Task*> MultiTask::getTasks() const {
 }
 
 Task::ReportResult MultiTask::report(){
-    if(l != NULL){
-        AppContext::getProject()->unlockState(l);
+    Project * p = AppContext::getProject();
+    if(l != NULL && p != NULL){
+        p->unlockState(l);
         delete l;
         l = NULL;
     }
