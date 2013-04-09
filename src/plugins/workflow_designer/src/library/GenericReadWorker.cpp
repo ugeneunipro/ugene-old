@@ -78,23 +78,23 @@ GenericDocReader::~GenericDocReader() {
 Task * GenericDocReader::tick() {
     files->tryEmitDatasetEnded();
 
-    if (!cache.isEmpty()) {
+    bool sendMessages = !cache.isEmpty();
+    if (sendMessages) {
         while (!cache.isEmpty()) {
             ch->put(cache.takeFirst());
         }
-        return NULL;
     }
 
-    if (files->hasNext()) {
+    if (!sendMessages && files->hasNext()) {
         QString newUrl = files->getNextFile();
         Task *t = new NoFailTaskWrapper(createReadTask(newUrl, files->getLastDatasetName()));
         connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
         return t;
+    } else if (!files->hasNext()) {
+        // the cache is empty and the no more URLs -> finish the worker
+        setDone();
+        ch->setEnded();
     }
-
-    // the cache is empty and the no more URLs -> finish the worker
-    setDone();
-    ch->setEnded();
     return NULL;
 }
 

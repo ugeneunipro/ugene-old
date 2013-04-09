@@ -83,7 +83,6 @@ void ReadAnnotationsWorker::onTaskFinished(Task *task) {
 }
 
 void ReadAnnotationsWorker::sl_datasetEnded() {
-    coreLog.info("Dataset ended anns");
     CHECK(datasetData.size() > 0, );
     QList<SharedAnnotationData> anns;
     foreach (const QVariantMap &m, datasetData) {
