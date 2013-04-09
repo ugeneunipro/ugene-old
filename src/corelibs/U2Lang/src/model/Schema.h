@@ -90,8 +90,8 @@ public:
     // in that case we need to configurate new schema with values from Iteration using actors mapping
     void applyConfiguration(const Iteration&, QMap<ActorId, ActorId>);
 
-    Actor* actorById(ActorId);
-    QList<Actor*> actorsByOwnerId(ActorId);
+    Actor* actorById(ActorId) const;
+    QList<Actor*> actorsByOwnerId(ActorId) const;
     int iterationById(int);
     
     QString getDomain() const;

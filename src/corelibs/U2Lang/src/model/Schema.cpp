@@ -80,11 +80,11 @@ void Schema::reset() {
     wizards.clear();
 }
 
-Actor * Schema::actorById( ActorId id) {
+Actor * Schema::actorById( ActorId id) const {
     return WorkflowUtils::actorById(procs, id);
 }
 
-QList<Actor*> Schema::actorsByOwnerId(ActorId id) {
+QList<Actor*> Schema::actorsByOwnerId(ActorId id) const {
     QList<Actor*> res;
     foreach (Actor *proc, procs) {
         if (proc->getOwner() == id) {

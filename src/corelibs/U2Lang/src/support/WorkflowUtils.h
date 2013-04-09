@@ -36,6 +36,7 @@ class QListWidgetItem;
 namespace U2 {
 class Descriptor;
 class DocumentFormat;
+typedef QMap<int, QVariant> ValidateError;
 
 using namespace Workflow;
 
@@ -56,11 +57,10 @@ public:
     #define ITERATION_REF (Qt::UserRole + 2)
     #define TEXT_REF (Qt::UserRole + 3)
 
-    //constructs fancy list widget items with icons, must be used only within UI (when icons can be constructed)
-    static bool validate(const Workflow::Schema&, QList<QListWidgetItem*>* = NULL);
-    //more common version of the above method. Uses *_REFs as keys. Does not create any icons
-    static bool validate(const Workflow::Schema& s, QList<QMap<int, QVariant> >* infoList );
-    static bool validate( const Workflow::Schema& s, QStringList & errs);
+    // used in GUI schema validating
+    static bool validate(const Workflow::Schema &s, QList<QListWidgetItem*> &errs);
+    // used in cmdline schema validating
+    static bool validate( const Workflow::Schema &s, QStringList &errs);
     
     static QList<Descriptor> findMatchingTypes(DataTypePtr set, DataTypePtr elementDataType);
     static QStringList findMatchingTypesAsStringList(DataTypePtr set, DataTypePtr elementDatatype);
@@ -117,6 +117,7 @@ public:
 
 private:
     static QStringList initExtensions();
+    static bool validate(const Workflow::Schema &s, QList<ValidateError> &infoList);
     
 }; // WorkflowUtils
 

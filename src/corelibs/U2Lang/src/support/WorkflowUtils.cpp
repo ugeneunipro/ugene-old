@@ -153,183 +153,97 @@ QStringList WorkflowUtils::expandToUrls(const QString& s) {
     return result;
 }
 
-static bool validateParameters(const Schema &schema, QList<QListWidgetItem*>* infoList, const Iteration *it, QMap<ActorId, ActorId> map) {
+static bool validateParameters(const Schema &schema, QList<ValidateError> &infoList, const Iteration *it, const QMap<ActorId, ActorId> &map) {
     bool good = true;
     foreach (Actor* a, schema.getProcesses()) {
         QStringList l;
-        bool ag = a->validate(l);
-        good &= ag;
-        if (infoList && !l.isEmpty()) {
-            foreach(QString s, l) {
-                QString error;
-                QString id;
-                if (NULL == it) {
-                    error = QObject::tr("%1 : %2").arg(a->getLabel()).arg(s);
-                    id = a->getId();
-                } else {
-                    error = QObject::tr("Iteration '%3', %1 : %2").arg(a->getLabel()).arg(s).arg(it->name);
-                    id = map.key(a->getId());
-                }
-                QListWidgetItem* item = new QListWidgetItem(a->getProto()->getIcon(), error);
-                item->setData(ACTOR_REF, id);
-                if (NULL != it) {
-                    item->setData(ITERATION_REF, it->id);
-                }
-                infoList->append(item);
+        good &= a->validate(l);
+        foreach(const QString &s, l) {
+            QString error = s;
+            QString id = a->getId();
+            if (NULL != it) {
+                error = QObject::tr("Iteration '%1': %2").arg(it->name).arg(s);
+                id = map.key(a->getId());
             }
+            ValidateError item;
+            item[TEXT_REF] = error;
+            item[ACTOR_REF] = id;
+            if (NULL != it) {
+                item[ITERATION_REF] = it->id;
+            }
+            infoList << item;
         }
     }
-
     return good;
 }
 
-static bool validateExternalTools(Actor *actor, QStringList &invalidTools) {
-    invalidTools.clear();
-    QStrStrMap tools = actor->getProto()->getExternalTools();
+static bool validateExternalTools(Actor *a, QList<ValidateError> &infoList) {
+    bool good = true;
+    QStrStrMap tools = a->getProto()->getExternalTools();
     foreach (const QString &toolId, tools.keys()) {
-        Attribute *attr = actor->getParameter(tools[toolId]);
+        Attribute *attr = a->getParameter(tools[toolId]);
         ExternalTool *tool = AppContext::getExternalToolRegistry()->getByName(toolId);
         SAFE_POINT(NULL != tool, "NULL tool", false);
 
         bool fromAttr = (NULL != attr) && !attr->isDefaultValue();
         bool valid = fromAttr ? !attr->isEmpty() : !tool->getPath().isEmpty();
         if (!valid) {
-            invalidTools << tool->getName();
-        }
-    }
-    return invalidTools.isEmpty();
-}
-
-bool WorkflowUtils::validate(const Schema& schema, QList<QListWidgetItem*>* infoList) {
-    bool good = true;
-    std::auto_ptr<WorkflowScriptEngine> engine(new WorkflowScriptEngine(NULL));
-    foreach (Actor* a, schema.getProcesses()) {
-        foreach(Port* p, a->getPorts()) {
-            QStringList l;
-            bool ag = p->validate(l);
-            good &= ag;
-            if (infoList && !l.isEmpty()) {
-                foreach(QString s, l) {
-                    QListWidgetItem* item = new QListWidgetItem(a->getProto()->getIcon(), 
-                        QString("%1 : %2").arg(a->getLabel()).arg(s));
-                    item->setData(PORT_REF, p->getId());
-                    item->setData(ACTOR_REF, a->getId());
-                    infoList->append(item);
-                }
-            }
-        }
-        if (a->getProto()->isScriptFlagSet()) {
-            QScriptSyntaxCheckResult syntaxResult = engine->checkSyntax(a->getScript()->getScriptText());
-            if (syntaxResult.state() != QScriptSyntaxCheckResult::Valid) {
-                if (infoList) {
-                    QListWidgetItem* item = new QListWidgetItem(a->getProto()->getIcon(), 
-                        tr("%1 : Script syntax check failed! Line: %2, error: %3")
-                        .arg(a->getLabel())
-                        .arg(syntaxResult.errorLineNumber())
-                        .arg(syntaxResult.errorMessage()));
-                    item->setData(ACTOR_REF, a->getId());
-                    infoList->append(item);
-                }
-                good = false;
-            }
-        }
-        QStringList invalidTools;
-        good &= validateExternalTools(a, invalidTools);
-        foreach (const QString &toolName, invalidTools) {
-            QListWidgetItem* item = new QListWidgetItem(a->getProto()->getIcon(), 
-                QString("%1 : %2").arg(a->getLabel()).arg(externalToolError(toolName)));
-            item->setData(ACTOR_REF, a->getId());
-            infoList->append(item);
-        }
-    }
-
-    if (0 == schema.getIterations().size()) {
-        good &= validateParameters(schema, infoList, NULL, QMap<ActorId, ActorId>());
-    }
-
-    foreach (const Iteration& it, schema.getIterations()) {
-        Schema sh;
-        U2OpStatusImpl os;
-        QMap<ActorId, ActorId> map = HRSchemaSerializer::deepCopy(schema, &sh, os);
-        SAFE_POINT_OP(os, false);
-        sh.applyConfiguration(it, map);
-
-        good &= validateParameters(sh, infoList, &it, map);
-    }
-    return good;
-}
-
-static bool validateParameters(const Schema &schema, QList<QMap<int, QVariant> >* infoList, const Iteration *it, QMap<ActorId, ActorId> map) {
-    bool good = true;
-    foreach (Actor* a, schema.getProcesses()) {
-        QStringList l;
-        bool ag = a->validate(l);
-        good &= ag;
-        if (infoList && !l.isEmpty()) {
-            foreach(QString s, l) {
-                QMap<int, QVariant> item;
-                QString error;
-                QString id;
-                if (NULL == it) {
-                    error = QObject::tr("%1 : %2").arg(a->getLabel()).arg(s);
-                    id = a->getId();
-                } else {
-                    error = QObject::tr("Iteration '%3', %1 : %2").arg(a->getLabel()).arg(s).arg(it->name);
-                    id = map.key(a->getId());
-                }
-                item[TEXT_REF] = error;
-                item[ACTOR_REF] = id;
-                if (NULL != it) {
-                    item[ITERATION_REF] = it->id;
-                }
-                infoList->append(item);
-            }
-        }
-    }
-    return good;
-}
-
-bool WorkflowUtils::validate(const Schema& schema, QList<QMap<int, QVariant> >* infoList) {
-    bool good = true;
-    std::auto_ptr<WorkflowScriptEngine> engine(new WorkflowScriptEngine(NULL));
-    foreach (Actor* a, schema.getProcesses()) {
-        foreach(Port* p, a->getPorts()) {
-            QStringList l;
-            bool ag = p->validate(l);
-            good &= ag;
-            if (infoList && !l.isEmpty()) {
-                foreach(QString s, l) {
-                    QMap<int, QVariant> item;
-                    item[TEXT_REF] = QString("%1 : %2").arg(a->getLabel()).arg(s);
-                    item[PORT_REF] = p->getId();
-                    item[ACTOR_REF] = a->getId();
-                    infoList->append(item);
-                }
-            }
-        }
-        if (a->getProto()->isScriptFlagSet()) {
-            QScriptSyntaxCheckResult syntaxResult = engine->checkSyntax(a->getScript()->getScriptText());
-            if (syntaxResult.state() != QScriptSyntaxCheckResult::Valid) {
-                if (infoList) {
-                    QMap<int, QVariant> item;
-                    item[TEXT_REF] = tr("%1 : Script syntax check failed! Line: %2, error: %3")
-                        .arg(a->getLabel())
-                        .arg(syntaxResult.errorLineNumber())
-                        .arg(syntaxResult.errorMessage());
-                    item[ACTOR_REF] = a->getId();
-                    infoList->append(item);
-                }
-                good = false;
-            }
-        }
-        QStringList invalidTools;
-        good &= validateExternalTools(a, invalidTools);
-        foreach (const QString &toolName, invalidTools) {
-            QMap<int, QVariant> item;
-            item[TEXT_REF] = QString("%1 : %2").arg(a->getLabel()).arg(externalToolError(toolName));
+            good = false;
+            ValidateError item;
+            item[TEXT_REF] = QString("%1 : %2").arg(a->getLabel()).arg(WorkflowUtils::externalToolError(tool->getName()));
             item[ACTOR_REF] = a->getId();
-            infoList->append(item);
+            infoList << item;
         }
+    }
+    return good;
+}
+
+static bool validatePorts(Actor *a, QList<ValidateError> &infoList) {
+    bool good = true;
+    foreach(Port *p, a->getPorts()) {
+        QStringList l;
+        good &= p->validate(l);
+        if (!l.isEmpty()) {
+            foreach(QString s, l) {
+                ValidateError item;
+                item[TEXT_REF] = QString("%1 : %2").arg(a->getLabel()).arg(s);
+                item[PORT_REF] = p->getId();
+                item[ACTOR_REF] = a->getId();
+                infoList << item;
+            }
+        }
+    }
+    return good;
+}
+
+static bool validateScript(Actor *a, QList<ValidateError> &infoList) {
+    QScopedPointer<WorkflowScriptEngine> engine(new WorkflowScriptEngine(NULL));
+    QScriptSyntaxCheckResult syntaxResult = engine->checkSyntax(a->getScript()->getScriptText());
+
+    if (syntaxResult.state() != QScriptSyntaxCheckResult::Valid) {
+        ValidateError item;
+        item[TEXT_REF] = QObject::tr("%1 : Script syntax check failed! Line: %2, error: %3")
+            .arg(a->getLabel())
+            .arg(syntaxResult.errorLineNumber())
+            .arg(syntaxResult.errorMessage());
+        item[ACTOR_REF] = a->getId();
+        infoList << item;
+        return false;
+    }
+    return true;
+}
+
+bool WorkflowUtils::validate(const Schema &schema, QList<ValidateError> &infoList) {
+    bool good = true;
+    std::auto_ptr<WorkflowScriptEngine> engine(new WorkflowScriptEngine(NULL));
+    foreach (Actor *a, schema.getProcesses()) {
+        good &= validatePorts(a, infoList);
+
+        if (a->getProto()->isScriptFlagSet()) {
+            good &= validateScript(a, infoList);
+        }
+
+        good &= validateExternalTools(a, infoList);
     }
 
     if (0 == schema.getIterations().size()) {
@@ -348,81 +262,53 @@ bool WorkflowUtils::validate(const Schema& schema, QList<QMap<int, QVariant> >* 
     return good;
 }
 
-static bool validateParameters(const Workflow::Schema &schema, QStringList & errs) {
-    bool good = true;
-    foreach (Actor* a, schema.getProcesses()) {
-        foreach( Attribute * attr, a->getParameters() ) {
-            assert(attr != NULL);
-            if( attr->isRequiredAttribute() && (attr->isEmpty() || attr->isEmptyString()) ) {
-                good = false;
-                errs.append(QObject::tr("%2: Required parameter is not set: %1 (use --%3 option)").
-                    arg(attr->getDisplayName()).arg(a->getLabel()).arg(a->getParamAliases().value(attr->getId())));
-            }
+// used in GUI schema validating
+bool WorkflowUtils::validate(const Schema &schema, QList<QListWidgetItem*> &infoList) {
+    QList<ValidateError> errors;
+    bool good = validate(schema, errors);
+
+    foreach (const ValidateError &error, errors) {
+        if (!error.contains(ACTOR_REF)) {
+            continue;
         }
-        ConfigurationValidator * baseValidator = a->getValidator();
-        ScreenedParamValidator * screenedParamValidator = dynamic_cast<ScreenedParamValidator*>(baseValidator);
-        if(screenedParamValidator != NULL) {
-            QString err = screenedParamValidator->validate(a);
-            if( !err.isEmpty() ) {
-                good = false;
-                errs.append( QString("%3: %1 (use --%2 option)").arg(err).arg(
-                    a->getParamAliases().value(a->getParameter(screenedParamValidator->getId())->getId())).arg(a->getLabel()));
-            }
-        } else if( baseValidator != NULL ) {
-            QStringList l;
-            good &= baseValidator->validate(a, l);
-            foreach(const QString & s, l) {
-                errs.append(QString("%1: %2").arg(a->getLabel()).arg(s));
-            }
+        Actor *a = schema.actorById(error[ACTOR_REF].toString());
+        QListWidgetItem *item = new QListWidgetItem(
+            a->getProto()->getIcon(),
+            QString("%1 : %2").arg(a->getLabel()).arg(error[TEXT_REF].toString()));
+        foreach (int ref, error.keys()) {
+            item->setData(ref, error[ref]);
         }
+        infoList << item;
     }
 
     return good;
 }
 
 // used in cmdline schema validating
-bool WorkflowUtils::validate( const Workflow::Schema& schema, QStringList & errs ) {
-    bool good = true;
-    std::auto_ptr<WorkflowScriptEngine> engine(new WorkflowScriptEngine(NULL));
-    foreach (Actor* a, schema.getProcesses()) {
-        foreach(Port* p, a->getPorts()) {
-            QStringList l;
-            good &= p->validate(l);
-            foreach(const QString & s, l) {
-                errs.append(QString("%1 : %2").arg(a->getLabel()).arg(s));
+bool WorkflowUtils::validate(const Workflow::Schema &schema, QStringList &errs) {
+    QList<ValidateError> errors;
+    bool good = validate(schema, errors);
+
+    foreach (const ValidateError &error, errors) {
+        if (!error.contains(ACTOR_REF)) {
+            continue;
+        }
+        Actor *a = schema.actorById(error[ACTOR_REF].toString());
+        QString message = error[TEXT_REF].toString();
+        QString res = QString("%1: %2").arg(a->getLabel()).arg(message);
+
+        QString option;
+        foreach (const Attribute *attr, a->getAttributes()) {
+            if (message.contains(attr->getDisplayName())) {
+                option = a->getParamAliases().value(attr->getId());
             }
         }
-        if (a->getProto()->isScriptFlagSet()) {
-            QScriptSyntaxCheckResult syntaxResult = engine->checkSyntax(a->getScript()->getScriptText());
-            if (syntaxResult.state() != QScriptSyntaxCheckResult::Valid) {
-                errs <<
-                    tr("%1 : Script syntax check failed! Line: %2, error: %3")
-                    .arg(a->getLabel())
-                    .arg(syntaxResult.errorLineNumber())
-                    .arg(syntaxResult.errorMessage());
-                good = false;
-            }
+        if (!option.isEmpty()) {
+            res += tr(" (use --%1 option)").arg(option);
         }
-        QStringList invalidTools;
-        good &= validateExternalTools(a, invalidTools);
-        foreach (const QString &toolName, invalidTools) {
-            errs << QString("%1 : %2").arg(a->getLabel()).arg(externalToolError(toolName));
-        }
+        errs << res;
     }
 
-    if (0 == schema.getIterations().size()) {
-        good &= validateParameters(schema, errs);
-    }
-    
-    foreach (const Iteration& it, schema.getIterations()) {
-        Schema sh;
-        U2OpStatusImpl os;
-        QMap<ActorId, ActorId> map = HRSchemaSerializer::deepCopy(schema, &sh, os);
-        SAFE_POINT_OP(os, false);
-        sh.applyConfiguration(it, map);
-        
-        good &= validateParameters(sh, errs);
-    }
     return good;
 }
 

@@ -1037,7 +1037,7 @@ bool WorkflowView::sl_validate(bool notify) {
     propertyEditor->commit();
     infoList->clear();
     QList<QListWidgetItem*> lst;
-    bool good = WorkflowUtils::validate(*schema, &lst);
+    bool good = WorkflowUtils::validate(*schema, lst);
 
     if (lst.count() != 0) {
         foreach(QListWidgetItem* wi, lst) {

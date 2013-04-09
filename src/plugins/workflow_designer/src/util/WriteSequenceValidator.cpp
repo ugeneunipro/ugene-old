@@ -51,7 +51,7 @@ bool WriteSequenceValidator::validate(const Configuration *cfg, QStringList &out
     if (!isAnnotationsSupported(format)) {
         QString warning = QObject::tr("Warning: The format %1 does not support annotations").arg(format->getFormatId().toUpper());
         output << warning;
-        cmdLog.details(warning);
+        cmdLog.trace(warning);
     }
 
     return result;
@@ -61,9 +61,7 @@ DocumentFormat * WriteSequenceValidator::getFormatSafe(const Actor *actor) const
     Attribute *attr = actor->getParameter(BaseAttributes::DOCUMENT_FORMAT_ATTRIBUTE().getId());
     SAFE_POINT(NULL != attr, "NULL format attribute", NULL);
     QString formatId = attr->getAttributePureValue().toString();
-    DocumentFormat *format = AppContext::getDocumentFormatRegistry()->getFormatById(formatId);
-    SAFE_POINT(NULL != format, "NULL format", NULL);
-    return format;
+    return AppContext::getDocumentFormatRegistry()->getFormatById(formatId);
 }
 
 bool WriteSequenceValidator::isAnnotationsBinded(const Actor *actor) const {
