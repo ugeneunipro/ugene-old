@@ -446,7 +446,7 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin():Plugin(tr("External tool 
                  }
              }
         }
-        MultiTask* checkExternalToolsTask=new MultiTask(tr("Checking external tools for first time"), tasks);
+        MultiTask* checkExternalToolsTask=new MultiTask(tr("Checking external tools for first time"), tasks,false,TaskFlag_NoRun);
         AppContext::getTaskScheduler()->registerTopLevelTask(checkExternalToolsTask);
     }
 

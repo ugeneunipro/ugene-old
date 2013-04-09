@@ -34,7 +34,7 @@ namespace U2
 class U2CORE_EXPORT MultiTask : public Task {
     Q_OBJECT
 public:
-    MultiTask( const QString & name, const QList<Task *>& taskz, bool withLock = false );
+    MultiTask( const QString & name, const QList<Task *>& taskz, bool withLock = false, TaskFlags f = TaskFlags_NR_FOSCOE);
 
     QList<Task*> getTasks() const;
 

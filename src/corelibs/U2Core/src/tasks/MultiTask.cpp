@@ -28,8 +28,8 @@
 namespace U2
 {
 
-MultiTask::MultiTask( const QString & name, const QList<Task *>& taskz, bool withLock) : 
-Task(name, TaskFlags_NR_FOSCOE), tasks(taskz)
+MultiTask::MultiTask( const QString & name, const QList<Task *>& taskz, bool withLock, TaskFlags f) :
+Task(name, f), tasks(taskz)
 {
     setMaxParallelSubtasks(1);
     if( taskz.empty() ) {
