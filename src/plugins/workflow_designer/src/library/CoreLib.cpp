@@ -51,6 +51,7 @@
 #include "library/WriteAssemblyWorkers.h"
 #include "library/WriteVariationWorker.h"
 #include "library/ReadAnnotationsWorker.h"
+#include "util/WriteSequenceValidator.h"
 
 #include "RemoteDBFetcherWorker.h"
 
@@ -245,7 +246,8 @@ void CoreLib::init() {
             Attribute* splitAttr = new Attribute(BaseAttributes::SPLIT_SEQ_ATTRIBUTE(), BaseTypes::NUM_TYPE(), false, 1);
             splitAttr ->addRelation(new VisibilityRelation(BaseAttributes::DOCUMENT_FORMAT_ATTRIBUTE().getId(), BaseDocumentFormats::FASTA));
             a << splitAttr;
-            WriteDocActorProto *childProto = new WriteDocActorProto( acd, GObjectTypes::SEQUENCE, p, pd.getId(), a );
+            WriteDocActorProto *childProto = new WriteDocActorProto( acd, GObjectTypes::SEQUENCE, p, pd.getId(), a, false );
+            childProto->setValidator(new WriteSequenceValidator(BaseAttributes::URL_OUT_ATTRIBUTE().getId(), BasePorts::IN_SEQ_PORT_ID(), BaseSlots::URL_SLOT().getId()));
             IntegralBusActorPrototype * proto = childProto;
             docFormatAttr->addRelation(new FileExtensionRelation(childProto->getUrlAttr()->getId()));
             

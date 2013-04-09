@@ -85,22 +85,22 @@ bool ReadDocActorProto::isAcceptableDrop(const QMimeData * md, QVariantMap * par
  * WriteDocActorProto
  *****************************/
 WriteDocActorProto::WriteDocActorProto(const DocumentFormatId& _fid, const Descriptor& _desc, const QList<PortDescriptor*>& _ports, 
-                                       const QString & portId, const QList<Attribute*>& _attrs)
+                                       const QString & portId, const QList<Attribute*>& _attrs, bool addValidator)
 : DocActorProto( _fid, _desc, _ports, _attrs ), outPortId(portId), urlDelegate(NULL) {
-    construct();
+    construct(addValidator);
 }
 
 WriteDocActorProto::WriteDocActorProto(const Descriptor& _desc, const GObjectType & t, const QList<PortDescriptor*>& _ports, 
-                                       const QString & portId, const QList<Attribute*>& _attrs)
+                                       const QString & portId, const QList<Attribute*>& _attrs, bool addValidator)
 : DocActorProto(_desc, t, _ports, _attrs), outPortId(portId), urlDelegate(NULL) {
-    construct();
+    construct(addValidator);
 }
 
 bool WriteDocActorProto::isAcceptableDrop(const QMimeData * md, QVariantMap * params ) const {
     return DocActorProto::isAcceptableDrop( md, params, BaseAttributes::URL_OUT_ATTRIBUTE().getId() );
 }
 
-void WriteDocActorProto::construct() {
+void WriteDocActorProto::construct(bool addValidator) {
     urlAttr = new Attribute(BaseAttributes::URL_OUT_ATTRIBUTE(), BaseTypes::STRING_TYPE(), false );
     attrs << urlAttr;
     attrs << new Attribute(BaseAttributes::FILE_MODE_ATTRIBUTE(), BaseTypes::NUM_TYPE(), false, SaveDoc_Roll);
@@ -111,8 +111,10 @@ void WriteDocActorProto::construct() {
     delegateMap[BaseAttributes::FILE_MODE_ATTRIBUTE().getId()] = new FileModeDelegate(attrs.size() > 2);
 
     setEditor(new DelegateEditor(delegateMap));
-    setValidator(new ScreenedParamValidator(BaseAttributes::URL_OUT_ATTRIBUTE().getId(), ports.first()->getId(), BaseSlots::URL_SLOT().getId()));
     setPortValidator(outPortId, new ScreenedSlotValidator(BaseSlots::URL_SLOT().getId()));
+    if (addValidator) {
+        setValidator(new ScreenedParamValidator(BaseAttributes::URL_OUT_ATTRIBUTE().getId(), ports.first()->getId(), BaseSlots::URL_SLOT().getId()));
+    }
 }
 
 URLDelegate *WriteDocActorProto::getUrlDelegate() {

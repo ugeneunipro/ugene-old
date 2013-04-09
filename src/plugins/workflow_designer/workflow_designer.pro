@@ -61,7 +61,8 @@ HEADERS += src/ActorCfgModel.h \
            src/util/GrouperActionUtils.h \
            src/util/NoFailTaskWrapper.h \
            src/util/SaveSchemaImageUtils.h \
-           src/util/WorkerNameValidator.h
+           src/util/WorkerNameValidator.h \
+           src/util/WriteSequenceValidator.h
 FORMS += src/ui/ChooseItemDialog.ui \
          src/ui/CreateScriptBlockDialog.ui \
          src/ui/ExternalProcessWorkerDialog.ui \
@@ -133,6 +134,7 @@ SOURCES += src/ActorCfgModel.cpp \
            src/util/GrouperActionUtils.cpp \
            src/util/NoFailTaskWrapper.cpp \
            src/util/SaveSchemaImageUtils.cpp \
-           src/util/WorkerNameValidator.cpp
+           src/util/WorkerNameValidator.cpp \
+           src/util/WriteSequenceValidator.cpp
 RESOURCES += workflow_designer.qrc
 TRANSLATIONS += transl/english.ts transl/russian.ts

@@ -61,15 +61,15 @@ public:
 class WriteDocActorProto : public DocActorProto {
 public:
     WriteDocActorProto( const DocumentFormatId& fid, const Descriptor& desc, const QList<PortDescriptor*>& ports, 
-        const QString & portId, const QList<Attribute*>& attrs = QList<Attribute*>() );
+        const QString & portId, const QList<Attribute*>& attrs = QList<Attribute*>(), bool addValidator = true );
     WriteDocActorProto(const Descriptor& desc, const GObjectType & t, const QList<PortDescriptor*>& ports, 
-        const QString & portId, const QList<Attribute*>& attrs = QList<Attribute*>() );
+        const QString & portId, const QList<Attribute*>& attrs = QList<Attribute*>(), bool addValidator = true );
 
     URLDelegate *getUrlDelegate();
     Attribute *getUrlAttr() {return urlAttr;}
 
 private:
-    void construct();
+    void construct(bool addValidator);
     virtual bool isAcceptableDrop(const QMimeData*, QVariantMap*) const;
     Attribute *urlAttr;
 
