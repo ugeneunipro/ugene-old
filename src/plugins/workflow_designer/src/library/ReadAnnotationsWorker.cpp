@@ -54,33 +54,51 @@ const QString ReadAnnotationsWorkerFactory::ACTOR_ID("read-annotations");
 /* Worker */
 /************************************************************************/
 ReadAnnotationsWorker::ReadAnnotationsWorker(Actor *p)
-: GenericDocReader(p)
-, mergeAnnotations(false)
+: GenericDocReader(p), mode(ReadAnnotationsProto::SPLIT)
 {
 
 }
 
 void ReadAnnotationsWorker::init() {
     GenericDocReader::init();
-    ReadAnnotationsProto::Mode mode = ReadAnnotationsProto::Mode(actor->getParameter(
-        ReadAnnotationsProto::MODE_ATTR)->getAttributeValue<int>(context));
-    if (ReadAnnotationsProto::MERGE == mode) {
-        mergeAnnotations = true;
-    }else{
-        mergeAnnotations = false;
-    }
+    mode = ReadAnnotationsProto::Mode(getValue<int>(ReadAnnotationsProto::MODE_ATTR));
     IntegralBus *outBus = dynamic_cast<IntegralBus*>(ch);
     assert(outBus);
     mtype = outBus->getBusType();
 }
 
 Task * ReadAnnotationsWorker::createReadTask(const QString &url, const QString &datasetName) {
+    bool mergeAnnotations = (mode != ReadAnnotationsProto::SPLIT);
     return new ReadAnnotationsTask(url, datasetName, mergeAnnotations);
 }
 
 void ReadAnnotationsWorker::onTaskFinished(Task *task) {
     ReadAnnotationsTask *t = qobject_cast<ReadAnnotationsTask*>(task);
-    foreach(const QVariantMap &m, t->takeResults()) {
+    if (ReadAnnotationsProto::MERGE_FILES == mode) {
+        datasetData << t->takeResults();
+        return;
+    }
+
+    sendData(t->takeResults());
+}
+
+void ReadAnnotationsWorker::sl_datasetEnded() {
+    coreLog.info("Dataset ended anns");
+    CHECK(datasetData.size() > 0, );
+    QList<SharedAnnotationData> anns;
+    foreach (const QVariantMap &m, datasetData) {
+        anns << m[BaseSlots::ANNOTATION_TABLE_SLOT().getId()].value< QList<SharedAnnotationData> >();
+    }
+    QVariantMap m;
+    m[BaseSlots::ANNOTATION_TABLE_SLOT().getId()] = qVariantFromValue< QList<SharedAnnotationData> >(anns);
+    m[BaseSlots::DATASET_SLOT().getId()] = datasetData.first()[BaseSlots::DATASET_SLOT().getId()];
+
+    sendData(QList<QVariantMap>() << m);
+    datasetData.clear();
+}
+
+void ReadAnnotationsWorker::sendData(const QList<QVariantMap> &data) {
+    foreach(const QVariantMap &m, data) {
         cache.append(Message(mtype, m));
     }
 }
@@ -88,7 +106,7 @@ void ReadAnnotationsWorker::onTaskFinished(Task *task) {
 /************************************************************************/
 /* Factory */
 /************************************************************************/
-const QString ReadAnnotationsProto::MODE_ATTR("mode.readannot");
+const QString ReadAnnotationsProto::MODE_ATTR("mode");
 ReadAnnotationsProto::ReadAnnotationsProto()
 : GenericReadDocProto(ReadAnnotationsWorkerFactory::ACTOR_ID)
 {
@@ -110,8 +128,9 @@ ReadAnnotationsProto::ReadAnnotationsProto()
     }
 
     Descriptor md(ReadAnnotationsProto::MODE_ATTR, ReadAnnotationsWorker::tr("Mode"),
-        ReadAnnotationsWorker::tr("If the file contains more than one annotation table, <i>Split</i> mode sends them \"as is\" to the output, " 
-        "while <i>Merge</i> appends all the annotation tables and outputs the sole merged annotation table."));
+        ReadAnnotationsWorker::tr("If the file contains more than one annotation table, <i>Split</i> mode sends them \"as is\" to the output, "
+        "while <i>Merge</i> appends all the annotation tables and outputs the sole merged annotation table."
+        "In <i>Merge files</i> is the same as <i>Merge</m> but it operates with all annotation tables from all files of one dataset."));
 
 
     attrs << new Attribute(md, BaseTypes::NUM_TYPE(), true, MERGE);
@@ -121,8 +140,10 @@ ReadAnnotationsProto::ReadAnnotationsProto()
         QVariantMap modeMap;
         QString splitStr = ReadAnnotationsWorker::tr("Split");
         QString mergeStr = ReadAnnotationsWorker::tr("Merge");
+        QString mergeFilesStr = ReadAnnotationsWorker::tr("Merge files");
         modeMap[splitStr] = SPLIT;
         modeMap[mergeStr] = MERGE;
+        modeMap[mergeFilesStr] = MERGE_FILES;
         getEditor()->addDelegate(new ComboBoxDelegate(modeMap), MODE_ATTR);
     }
 

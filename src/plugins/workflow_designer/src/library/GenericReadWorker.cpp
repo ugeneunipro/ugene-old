@@ -68,26 +68,33 @@ void GenericDocReader::init() {
     Attribute *urlAttr = actor->getParameter(BaseAttributes::URL_IN_ATTRIBUTE().getId());
     QList<Dataset> sets = urlAttr->getAttributeValue< QList<Dataset> >(context);
     files = new DatasetFilesIterator(sets);
+    connect(files, SIGNAL(si_datasetEnded()), SLOT(sl_datasetEnded()));
 }
 
 GenericDocReader::~GenericDocReader() {
     delete files;
 }
 
-Task *GenericDocReader::tick() {
-    if (cache.isEmpty() && files->hasNext()) {
+Task * GenericDocReader::tick() {
+    files->tryEmitDatasetEnded();
+
+    if (!cache.isEmpty()) {
+        while (!cache.isEmpty()) {
+            ch->put(cache.takeFirst());
+        }
+        return NULL;
+    }
+
+    if (files->hasNext()) {
         QString newUrl = files->getNextFile();
         Task *t = new NoFailTaskWrapper(createReadTask(newUrl, files->getLastDatasetName()));
         connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
         return t;
     }
-    while (!cache.isEmpty()) {
-        ch->put(cache.takeFirst());
-    }
-    if (!files->hasNext()) {
-        setDone();
-        ch->setEnded();
-    }
+
+    // the cache is empty and the no more URLs -> finish the worker
+    setDone();
+    ch->setEnded();
     return NULL;
 }
 
@@ -105,6 +112,10 @@ void GenericDocReader::sl_taskFinished() {
         return;
     }
     onTaskFinished(original);
+}
+
+void GenericDocReader::sl_datasetEnded() {
+
 }
 
 /**************************

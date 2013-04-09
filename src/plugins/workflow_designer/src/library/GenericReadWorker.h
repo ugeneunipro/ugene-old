@@ -45,19 +45,20 @@ public:
     virtual bool isDone();
     virtual void cleanup() {}
 
+protected slots:
+    virtual void sl_datasetEnded();
+
 protected:
     virtual void onTaskFinished(Task *task) = 0;
-
-private slots:
-    void sl_taskFinished();
-
-protected:
     virtual Task * createReadTask(const QString &url, const QString &datasetName) = 0;
 
     CommunicationChannel *ch;
     QList<Message> cache;
     DataTypePtr mtype;
     DatasetFilesIterator *files;
+
+private slots:
+    void sl_taskFinished();
 };
 
 /************************************************************************/

@@ -28,32 +28,39 @@
 namespace U2 {
 namespace LocalWorkflow {
 
-class ReadAnnotationsWorker : public GenericDocReader {
-    Q_OBJECT
-public:
-    ReadAnnotationsWorker(Actor *p);
-    virtual void init() ;
-
-protected:
-    virtual void onTaskFinished(Task *task);
-
-protected:
-    virtual Task * createReadTask(const QString &url, const QString &datasetName);
-
-protected:
-    bool mergeAnnotations;
-}; // ReadAnnotationsWorker
-
 class ReadAnnotationsProto : public GenericReadDocProto {
 public:
     enum Mode{
         SPLIT,
         MERGE,
+        MERGE_FILES
     };
     static const QString MODE_ATTR;
 
     ReadAnnotationsProto();
 }; // ReadAnnotationsProto
+
+class ReadAnnotationsWorker : public GenericDocReader {
+    Q_OBJECT
+public:
+    ReadAnnotationsWorker(Actor *p);
+    virtual void init();
+
+protected slots:
+    virtual void sl_datasetEnded();
+
+protected:
+    virtual void onTaskFinished(Task *task);
+    virtual Task * createReadTask(const QString &url, const QString &datasetName);
+
+private:
+    void sendData(const QList<QVariantMap> &data);
+
+private:
+    ReadAnnotationsProto::Mode mode;
+    QList<QVariantMap> datasetData;
+}; // ReadAnnotationsWorker
+
 
 class ReadAnnotationsWorkerFactory : public DomainFactory {
 public:

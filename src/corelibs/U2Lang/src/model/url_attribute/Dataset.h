@@ -54,7 +54,8 @@ private:
     QList<URLContainer*> urls;
 };
 
-class U2LANG_EXPORT DatasetFilesIterator : public FilesIterator {
+class U2LANG_EXPORT DatasetFilesIterator : public QObject, public FilesIterator {
+    Q_OBJECT
 public:
     DatasetFilesIterator(const QList<Dataset> &exps);
     virtual ~DatasetFilesIterator();
@@ -63,6 +64,10 @@ public:
     virtual bool hasNext();
 
     QString getLastDatasetName() const;
+    void tryEmitDatasetEnded();
+
+signals:
+    void si_datasetEnded();
 
 private:
     QList<Dataset> sets;

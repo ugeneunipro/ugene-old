@@ -119,6 +119,7 @@ bool DatasetFilesIterator::hasNext() {
         }
         while (!sets.isEmpty() && sets.first().getUrls().isEmpty()) {
             sets.removeFirst();
+            emit si_datasetEnded();
         }
         if (sets.isEmpty()) {
             return false;
@@ -134,6 +135,10 @@ bool DatasetFilesIterator::hasNext() {
 
 QString DatasetFilesIterator::getLastDatasetName() const {
     return lastDatasetName;
+}
+
+void DatasetFilesIterator::tryEmitDatasetEnded() {
+    hasNext();
 }
 
 } // U2
