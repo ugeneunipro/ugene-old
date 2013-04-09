@@ -51,7 +51,7 @@ bool WriteSequenceValidator::validate(const Configuration *cfg, QStringList &out
     if (!isAnnotationsSupported(format)) {
         QString warning = QObject::tr("Warning: The format %1 does not support annotations").arg(format->getFormatId().toUpper());
         output << warning;
-        cmdLog.trace(warning);
+        cmdLog.details(warning);
     }
 
     return result;
