@@ -1201,6 +1201,10 @@ bool AnnotationsTreeView::eventFilter(QObject* o, QEvent* e) {
         }
         case QEvent::DragMove: { // update current D&D state
             QDragMoveEvent *de = dynamic_cast<QDragMoveEvent*>(e);
+            if (de->source() != this) {
+                de->ignore();
+                return true;
+            }
             if (de->mimeData()->hasFormat(annotationMimeType)) {
                 QTreeWidgetItem *item = tree->itemAt(de->pos());
                 if (item == NULL) {
@@ -1253,6 +1257,10 @@ bool AnnotationsTreeView::eventFilter(QObject* o, QEvent* e) {
         case QEvent::Drop: {
             uiLog.trace("Drop event in Annotations view");
             QDropEvent *de = dynamic_cast<QDropEvent*>(e);
+            if (de->source() != this) {
+                de->ignore();
+                return true;
+            }
             const QMimeData *mime = de->mimeData();
             if (mime->hasFormat(annotationMimeType)) {
                 QTreeWidgetItem *item = tree->itemAt(de->pos());
@@ -1893,8 +1901,6 @@ void AnnotationsTreeView::sl_exportAutoAnnotationsGroup()
         AppContext::getTaskScheduler()->registerTopLevelTask(task);
     }
 }
-
-
 
 //////////////////////////////////////////////////////////////////////////
 /// Tree model
