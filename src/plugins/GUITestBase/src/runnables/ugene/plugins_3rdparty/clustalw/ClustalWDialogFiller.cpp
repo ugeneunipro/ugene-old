@@ -19,7 +19,7 @@
  * MA 02110-1301, USA.
  */
 
-#include "KalignDialogFiller.h"
+#include "ClustalWDialogFiller.h"
 #include "api/GTWidget.h"
 #include "api/GTCheckBox.h"
 #include "api/GTDoubleSpinBox.h"
@@ -31,13 +31,13 @@
 
 namespace U2 {
 
-#define GT_CLASS_NAME "GTUtilsDialog::KalignDialogFiller"
+#define GT_CLASS_NAME "GTUtilsDialog::ClustalWDialogFiller"
 
-KalignDialogFiller::KalignDialogFiller(U2OpStatus &_os, int _gapOpenVal) : Filler(_os, "KalignDialog"),
+ClustalWDialogFiller::ClustalWDialogFiller(U2OpStatus &_os, int _gapOpenVal) : Filler(_os, "ClustalWSupportRunDialog"),
     gapOpenVal(_gapOpenVal) {}
 
 #define GT_METHOD_NAME "run"
-void KalignDialogFiller::run()
+void ClustalWDialogFiller::run()
 {
     QWidget *dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog != NULL, "dialog not found");

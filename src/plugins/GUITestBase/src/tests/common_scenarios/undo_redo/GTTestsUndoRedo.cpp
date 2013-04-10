@@ -41,6 +41,8 @@ k
 #include "runnables/ugene/corelibs/U2View/ov_msa/ExtractSelectedAsMSADialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/util/RenameSequenceFiller.h"
 #include "runnables/ugene/plugins_3rdparty/umuscle/MuscleDialogFiller.h"
+#include "runnables/ugene/plugins_3rdparty/kalign/KalignDialogFiller.h"
+#include "runnables/ugene/plugins_3rdparty/clustalw/ClustalWDialogFiller.h"
 #include <U2View/MSAEditor.h>
 
 namespace U2{
@@ -670,6 +672,160 @@ GUI_TEST_CLASS_DEFINITION(test_0010){//MUSCLE aligner undo test
 
     CHECK_SET_ERR(changedAln==expectedAln, "Undo works wrong\n" + changedAln);
 
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0011){//Kalign undo test
+    //Open file
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0,0), QPoint(14,10));
+    GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(500);
+    QString initAln = GTClipboard::text(os);
+
+    QString expectedAln("AAGACTTCTTTTAA\n"
+                        "AAGCTTACT---AA\n"
+                        "TAGTTTATT---AA\n"
+                        "AAGTCTATT---AA\n"
+                        "TAGCTTATT---AA\n"
+                        "TAGCTTATT---AA\n"
+                        "TAGCTTATT---AA\n"
+                        "AAGTCTTTT---AA\n"
+                        "AAGAATAAT---TA\n"
+                        "AAGCCTTTT---AA");
+
+    //Use context {Edit->Align with Kalign}
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<MSAE_MENU_ALIGN<<"align_with_kalign", GTGlobals::UseMouse));
+    GTUtilsDialog::waitForDialog(os, new KalignDialogFiller(os));
+    GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
+
+    GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(500);
+    QString changedAln = GTClipboard::text(os);
+    CHECK_SET_ERR(changedAln==expectedAln, "Unexpected alignment" + changedAln);
+
+    QAbstractButton *undo= GTAction::button(os,"msa_action_undo");
+    QAbstractButton *redo= GTAction::button(os,"msa_action_redo");
+
+    //undo
+    GTWidget::click(os,undo);
+    GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(500);
+    changedAln = GTClipboard::text(os);
+
+    CHECK_SET_ERR(changedAln==initAln, "Undo works wrong\n" + changedAln);
+
+    //redo
+    GTWidget::click(os,redo);
+    GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(500);
+    changedAln = GTClipboard::text(os);
+
+    CHECK_SET_ERR(changedAln==expectedAln, "Undo works wrong\n" + changedAln);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0011_1){//Kalign undo test
+    //Open file
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0,0), QPoint(14,10));
+    GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(500);
+    QString initAln = GTClipboard::text(os);
+
+    QString expectedAln("AAGACTTCTTTTAA\n"
+                        "AAG-CTTACT--AA\n"
+                        "TAG-TTTATT--AA\n"
+                        "AAG-TCTATT--AA\n"
+                        "TAG-CTTATT--AA\n"
+                        "TAG-CTTATT--AA\n"
+                        "TAG-CTTATT--AA\n"
+                        "AAG-TCTTTT--AA\n"
+                        "AAG-AATAAT--TA\n"
+                        "AAG-CCTTTT--AA");
+
+    //Use context {Edit->Align with Kalign}
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<MSAE_MENU_ALIGN<<"align_with_kalign", GTGlobals::UseMouse));
+    GTUtilsDialog::waitForDialog(os, new KalignDialogFiller(os,100));
+    GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
+
+    GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(500);
+    QString changedAln = GTClipboard::text(os);
+    CHECK_SET_ERR(changedAln==expectedAln, "Unexpected alignment" + changedAln);
+
+    QAbstractButton *undo= GTAction::button(os,"msa_action_undo");
+    QAbstractButton *redo= GTAction::button(os,"msa_action_redo");
+
+    //undo
+    GTWidget::click(os,undo);
+    GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(500);
+    changedAln = GTClipboard::text(os);
+
+    CHECK_SET_ERR(changedAln==initAln, "Undo works wrong\n" + changedAln);
+
+    //redo
+    GTWidget::click(os,redo);
+    GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(500);
+    changedAln = GTClipboard::text(os);
+
+    CHECK_SET_ERR(changedAln==expectedAln, "Undo works wrong\n" + changedAln);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0012){//ClustalW aligner undo test
+    //Open file
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0,0), QPoint(14,10));
+    GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(500);
+    QString initAln = GTClipboard::text(os);
+
+    QString expectedAln("---AAGACTTCTTTTAA---\n"
+                        "---AAGCTT---ACTAA---\n"
+                        "---TAGT---TTATTAA---\n"
+                        "---AAGTC---TATTAA---\n"
+                        "---TAGCTT---ATTAA---\n"
+                        "---TAGCTT---ATTAA---\n"
+                        "---TAGCTT---ATTAA---\n"
+                        "---AAGTCTTT---TAA---\n"
+                        "A---AGAAT--AATTA----\n"
+                        "---AAGCCT---TTTAA---");
+
+    //Use context {Edit->Align with Kalign}
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<MSAE_MENU_ALIGN<<"Align with ClustalW", GTGlobals::UseMouse));
+    GTUtilsDialog::waitForDialog(os, new ClustalWDialogFiller(os));
+    GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
+
+    GTWidget::click(os, GTUtilsMdi::activeWindow(os));
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0,0), QPoint(20,10));
+    GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(500);
+    QString changedAln = GTClipboard::text(os);
+    CHECK_SET_ERR(changedAln==expectedAln, "Unexpected alignment\n" + changedAln);
+
+    QAbstractButton *undo= GTAction::button(os,"msa_action_undo");
+    QAbstractButton *redo= GTAction::button(os,"msa_action_redo");
+
+    //undo
+    GTWidget::click(os,undo);
+    GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(500);
+    changedAln = GTClipboard::text(os);
+
+    CHECK_SET_ERR(changedAln==initAln, "Undo works wrong\n" + changedAln);
+
+    //redo
+    GTWidget::click(os,redo);
+    GTWidget::click(os, GTUtilsMdi::activeWindow(os));
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0,0), QPoint(20,10));
+    GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(500);
+    changedAln = GTClipboard::text(os);
+
+    CHECK_SET_ERR(changedAln==expectedAln, "Redo works wrong\n" + changedAln);
 }
 
 }//namespace GUITest_common_scenarios_undo_redo

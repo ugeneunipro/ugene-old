@@ -19,16 +19,16 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_GT_RUNNABLES_PLUGINS_3RDPARTY_KALIGN_DIALOG_FILLER_H_
-#define _U2_GT_RUNNABLES_PLUGINS_3RDPARTY_KALIGN_DIALOG_FILLER_H_
+#ifndef _U2_GT_RUNNABLES_PLUGINS_3RDPARTY_CLUSTALW_DIALOG_FILLER_H_
+#define _U2_GT_RUNNABLES_PLUGINS_3RDPARTY_CLUSTALW_DIALOG_FILLER_H_
 
 #include "GTUtilsDialog.h"
 
 namespace U2 {
 
-class KalignDialogFiller : public Filler {
+class ClustalWDialogFiller : public Filler {
 public:
-    KalignDialogFiller(U2OpStatus &_os, int _gapOpenVal=0);
+    ClustalWDialogFiller(U2OpStatus &_os, int _gapOpenVal=0);
     virtual void run();
 private:
     int gapOpenVal;
@@ -36,4 +36,4 @@ private:
 
 }
 
-#endif
+#endif //_U2_GT_RUNNABLES_PLUGINS_3RDPARTY_CLUSTALW_DIALOG_FILLER_H_
