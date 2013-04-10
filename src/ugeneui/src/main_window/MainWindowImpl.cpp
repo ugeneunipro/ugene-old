@@ -85,6 +85,7 @@ protected:
 	virtual void closeEvent(QCloseEvent* e); 
     virtual void dragEnterEvent(QDragEnterEvent *event);
     virtual void dropEvent ( QDropEvent * event );
+    virtual void dragMoveEvent ( QDragMoveEvent * event );
     virtual bool focusNextPrevChild ( bool next );
 protected:
 	MainWindowImpl* owner;
@@ -125,11 +126,6 @@ void MWStub::dropEvent(QDropEvent *event)
             ds.setSelection(QList<Document*>() << docData->objPtr);
             MultiGSelection ms; 
             ms.addSelection(&ds);
-            const QList<GObjectViewFactory*> flist = AppContext::getObjectViewFactoryRegistry()->getAllFactories();
-            int sz = flist.size();
-            if(AppContext::getProject() == NULL) { //Workaround, for preventing crash with crossUGENE drag'n'drop
-                return;
-            }
             foreach(GObjectViewFactory *f, AppContext::getObjectViewFactoryRegistry()->getAllFactories()) {
                 if(f->canCreateView(ms)) {
                     AppContext::getTaskScheduler()->registerTopLevelTask(f->createViewTask(ms));
@@ -142,6 +138,17 @@ void MWStub::dropEvent(QDropEvent *event)
 
 bool MWStub::focusNextPrevChild(bool next) {
     return false;
+}
+
+void MWStub::dragMoveEvent( QDragMoveEvent * event ){
+    QObject *par = event->source()->parent();
+    while(par != NULL){
+        if(par == this) {
+            return;
+        }
+        par = par->parent();
+    }
+    event->ignore();
 }
 
 //////////////////////////////////////////////////////////////////////////
