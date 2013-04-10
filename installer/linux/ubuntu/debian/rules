@@ -21,7 +21,7 @@ build: build-arch build-indep
 
 build-arch: build-arch-stamp
 build-arch-stamp:
-	qmake-qt4 -r UGENE_EXCLUDE_LIST_ENABLED=1
+	qmake-qt4 -r UGENE_EXCLUDE_LIST_ENABLED=1 DEFINES+='UGENE_VERSION_SUFFIX=\\\"-ppa\\\"'
 	$(MAKE) -j 8	
 	touch $@
 

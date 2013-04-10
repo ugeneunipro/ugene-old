@@ -51,7 +51,12 @@ void ReportSender::parse(const QString &htmlReport) {
         report += getOSVersion() + "\n\n";
 
         report += "UGENE version: ";
+#ifdef UGENE_VERSION_SUFFIX
+        //Example of usage on linux: DEFINES+='UGENE_VERSION_SUFFIX=\\\"-ppa\\\"'
+        report += list.takeFirst() + QString(UGENE_VERSION_SUFFIX) +"\n\n";
+#else
         report += list.takeFirst() + "\n\n";
+#endif
 
         report += "ActiveWindow: ";
         report += list.takeFirst() + "\n\n";
