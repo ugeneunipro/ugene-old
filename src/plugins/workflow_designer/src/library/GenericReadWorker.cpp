@@ -193,8 +193,9 @@ void LoadMSATask::run() {
     ioLog.info(tr("Reading MSA from %1 [%2]").arg(url).arg(format->getFormatName()));
     IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(url));
 
-    cfg.insert(DocumentFormat::DBI_REF_HINT, qVariantFromValue(storage->getDbiRef()));
-    std::auto_ptr<Document> doc(format->loadDocument(iof, url, cfg, stateInfo));
+    cfg[DocumentFormat::DBI_REF_HINT] = qVariantFromValue(storage->getDbiRef());
+    cfg[DocumentReadingMode_DontMakeUniqueNames] = true;
+    QScopedPointer<Document> doc(format->loadDocument(iof, url, cfg, stateInfo));
     CHECK_OP(stateInfo, );
     doc->setDocumentOwnsDbiResources(false);
 
@@ -278,9 +279,9 @@ void LoadSeqTask::prepare() {
     }
 
     const QSet<GObjectType> &types = format->getSupportedObjectTypes();
-    if (1 == types.size() && types.contains(GObjectTypes::SEQUENCE)) {
+    if (!types.contains(GObjectTypes::ANNOTATION_TABLE)) {
         // no memory resources should be reserved for this file, because
-        // sequences are stored into the database
+        // sequences and alignments are stored into the database
         return;
     }
 
@@ -307,8 +308,9 @@ void LoadSeqTask::run() {
     CHECK(NULL != format, );
     ioLog.info(tr("Reading sequences from %1 [%2]").arg(url).arg(format->getFormatName()));
     IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(url));
-    cfg.insert(DocumentFormat::DBI_REF_HINT, qVariantFromValue(storage->getDbiRef()));
-    std::auto_ptr<Document> doc(format->loadDocument(iof, url, cfg, stateInfo));
+    cfg[DocumentFormat::DBI_REF_HINT] = qVariantFromValue(storage->getDbiRef());
+    cfg[DocumentReadingMode_DontMakeUniqueNames] = true;
+    QScopedPointer<Document> doc(format->loadDocument(iof, url, cfg, stateInfo));
     CHECK_OP(stateInfo, );
     doc->setDocumentOwnsDbiResources(false);
 

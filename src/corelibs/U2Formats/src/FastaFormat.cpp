@@ -175,8 +175,11 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, Q
         
         //read sequence
         if (sequenceNumber == 0 || !merge) {
-            QString objName = merge ? "Sequence" : TextUtils::variate(headerLine, "_", names);
-            names.insert(objName);
+            QString objName = headerLine;
+            if (!fs.value(DocumentReadingMode_DontMakeUniqueNames, false).toBool()) {
+                objName = (merge) ? "Sequence" : TextUtils::variate(headerLine, "_", names);
+                names.insert(objName);
+            }
             seqImporter.startSequence(dbiRef, objName, false, os);
             CHECK_OP(os, );
 

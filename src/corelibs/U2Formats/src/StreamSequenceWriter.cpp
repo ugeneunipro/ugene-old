@@ -25,7 +25,6 @@
 #include <U2Core/IOAdapter.h>
 #include <U2Core/U2OpStatusUtils.h>
 
-#include <U2Formats/SAMFormat.h>
 #include <U2Formats/FastaFormat.h>
 
 #include "StreamSequenceWriter.h"

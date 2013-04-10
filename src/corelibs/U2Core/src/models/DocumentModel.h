@@ -99,6 +99,7 @@ typedef QFlags<DocumentFormatFlag> DocumentFormatFlags;
 #define DocumentReadingMode_SequenceAsAlignmentHint         "sequences-are-msa"
 #define DocumentReadingMode_SequenceAsShortReadsHint        "sequences-are-short-reads"
 #define DocumentReadingMode_MaxObjectsInDoc                 "max-objects-in-doc"
+#define DocumentReadingMode_DontMakeUniqueNames             "no-unique-names"
 
 /** Set of hints that can be processed during document storing */
 #define DocumentWritingMode_SimpleNames                 "simple-names"

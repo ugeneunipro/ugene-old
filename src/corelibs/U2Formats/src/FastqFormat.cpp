@@ -238,8 +238,11 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& hints
         CHECK_OP(os,);
 
         if ((merge == false) || (seqNumber == 0)) {
-            QString objName = (merge) ? "Sequence" : TextUtils::variate(sequenceName, "_", names);
-            names.insert(objName);
+            QString objName = sequenceName;
+            if (!hints.value(DocumentReadingMode_DontMakeUniqueNames, false).toBool()) {
+                objName = (merge) ? "Sequence" : TextUtils::variate(sequenceName, "_", names);
+                names.insert(objName);
+            }
             seqImporter.startSequence(dbiRef,objName,false,os);
             CHECK_OP(os,);
             sequenceRef = GObjectReference(io->getURL().getURLString(), objName, GObjectTypes::SEQUENCE);
@@ -262,8 +265,9 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& hints
 
         QString qualSequenceName = readSequenceName(os, io, '+');
         if (!qualSequenceName.isEmpty()) {
-            static const QString err = U2::FastqFormat::tr("Not a valid FASTQ file: %1, sequence name differs from quality scores name").arg(docUrl.getURLString());
-            CHECK_EXT(sequenceName == qualSequenceName, os.setError(err), );
+            static const QString err = U2::FastqFormat::tr("Not a valid FASTQ file: %1, sequence name differs from quality scores name: %2 and %3");
+            CHECK_EXT(sequenceName == qualSequenceName,
+                os.setError(err.arg(docUrl.getURLString()).arg(sequenceName).arg(qualSequenceName)), );
         }
 
         // read qualities
