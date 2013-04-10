@@ -651,6 +651,7 @@ GUI_TEST_CLASS_DEFINITION(test_0009){
     p = GTUtilsBookmarksTreeView::getItemCenter(os, "start bookmark");
     GTMouseDriver::moveTo(os, p);
     GTMouseDriver::doubleClick(os);
+    GTGlobals::sleep(500);
 
     QWidget* treeView = GTWidget::findWidget(os,"treeView");
     CHECK_SET_ERR(treeView!=NULL, "treeView not found");
