@@ -125,6 +125,11 @@ void MWStub::dropEvent(QDropEvent *event)
             ds.setSelection(QList<Document*>() << docData->objPtr);
             MultiGSelection ms; 
             ms.addSelection(&ds);
+            const QList<GObjectViewFactory*> flist = AppContext::getObjectViewFactoryRegistry()->getAllFactories();
+            int sz = flist.size();
+            if(AppContext::getProject() == NULL) { //Workaround, for preventing crash with crossUGENE drag'n'drop
+                return;
+            }
             foreach(GObjectViewFactory *f, AppContext::getObjectViewFactoryRegistry()->getAllFactories()) {
                 if(f->canCreateView(ms)) {
                     AppContext::getTaskScheduler()->registerTopLevelTask(f->createViewTask(ms));
