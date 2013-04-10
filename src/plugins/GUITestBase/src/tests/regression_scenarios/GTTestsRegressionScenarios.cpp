@@ -45,6 +45,7 @@
 #include "runnables/ugene/corelibs/U2Gui/AlignShortReadsDialogFiller.h"
 #include "runnables/qt/MessageBoxFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/util/ProjectTreeItemSelectorDialogBaseFiller.h"
+#include "runnables/ugene/ugeneui/SelectDocumentFormatDialogFiller.h"
 #include "runnables/ugene/ugeneui/SequenceReadingModeSelectorDialogFiller.h"
 #include "runnables/ugene/plugins_3rdparty/umuscle/MuscleDialogFiller.h"
 #include "GTUtilsLog.h"
@@ -979,6 +980,11 @@ GUI_TEST_CLASS_DEFINITION(test_1262) {
     GTMouseDriver::click(os, Qt::RightButton);
 
 
+}
+
+GUI_TEST_CLASS_DEFINITION(test_1475) {
+    GTUtilsDialog::waitForDialog(os, new SelectDocumentFormatDialogFiller(os));
+    GTFileDialog::openFile(os, testDir + "_common_data/raw_sequence/", "NC_000117.txt");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1508) {

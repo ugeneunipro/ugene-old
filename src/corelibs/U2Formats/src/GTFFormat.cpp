@@ -353,7 +353,7 @@ FormatCheckResult GTFFormat::checkRawData(const QByteArray& rawData, const GUrl&
 
     int numToIterate;
     int HUGE_DATA = 65536;
-    if (size < HUGE_DATA) {
+    if ((size < HUGE_DATA) || (fileLines.size() == 1)) {
         numToIterate = fileLines.size(); 
     }
     else {

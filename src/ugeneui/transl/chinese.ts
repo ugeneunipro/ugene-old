@@ -102,7 +102,7 @@
     <name>DocumentFormatSelectorDialog</name>
     <message>
         <location filename="../src/project_support/ui/DocumentFormatSelectorDialog.ui" line="14"/>
-        <source>Select correct document format</source>
+        <source>Select Correct Document Format</source>
         <translation>选择正确的文件格式</translation>
     </message>
     <message>

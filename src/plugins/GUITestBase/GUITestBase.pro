@@ -12,6 +12,7 @@ HEADERS +=  src/GUITestBasePlugin.h \
 #   Runnables / UGENE / ugeneui
             src/runnables/ugene/ugeneui/CreateNewProjectWidgetFiller.h \
             src/runnables/ugene/ugeneui/ExportProjectDialogFiller.h \
+            src/runnables/ugene/ugeneui/SelectDocumentFormatDialogFiller.h \
             src/runnables/ugene/ugeneui/SequenceReadingModeSelectorDialogFiller.h \
 #   Runnables / UGENE / corelibs
 #   Runnables / UGENE / corelibs / U2Gui
@@ -159,6 +160,7 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
 #   Runnables / UGENE / ugeneui
             src/runnables/ugene/ugeneui/CreateNewProjectWidgetFiller.cpp \
             src/runnables/ugene/ugeneui/ExportProjectDialogFiller.cpp \
+            src/runnables/ugene/ugeneui/SelectDocumentFormatDialogFiller.cpp \
             src/runnables/ugene/ugeneui/SequenceReadingModeSelectorDialogFiller.cpp \
 #   Runnables / UGENE / corelibs
 #   Runnables / UGENE / corelibs / U2Gui

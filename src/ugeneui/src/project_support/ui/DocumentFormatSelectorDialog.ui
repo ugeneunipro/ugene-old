@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Select correct document format</string>
+   <string>Select Correct Document Format</string>
   </property>
   <property name="sizeGripEnabled">
    <bool>true</bool>

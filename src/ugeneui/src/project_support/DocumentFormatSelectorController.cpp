@@ -34,6 +34,7 @@ DocumentFormatSelectorController::DocumentFormatSelectorController(QList<FormatD
 : QDialog(p), formatDetectionResults(results)
 {
     setupUi(this);
+    setObjectName("DocumentFormatSelectorDialog");
 }
 
 
@@ -72,7 +73,7 @@ int DocumentFormatSelectorController::selectResult(const GUrl& url, QByteArray& 
         QRadioButton* rb = new QRadioButton();
         rb->setChecked(i == 0);
         QLabel* label = new QLabel(text);
-        label->setAlignment(Qt::AlignLeft);
+        label->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
         label->setSizePolicy(QSizePolicy::Expanding, label->sizePolicy().verticalPolicy());
         QToolButton* moreButton = new QToolButton();
         moreButton->setText("more..");
@@ -89,11 +90,11 @@ int DocumentFormatSelectorController::selectResult(const GUrl& url, QByteArray& 
     }
     //additional option: user selecting format
     {
-        QString text(tr("Choose format by myself"));
+        QString text(tr("Choose format manually"));
         QHBoxLayout* hbox = new QHBoxLayout();
         QRadioButton* rb = new QRadioButton();
         QLabel* label = new QLabel(text);
-        label->setAlignment(Qt::AlignLeft);
+        label->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
         label->setSizePolicy(QSizePolicy::Expanding, label->sizePolicy().verticalPolicy());
         d.userSelectedFormat = new QComboBox();
         foreach(DocumentFormatId id, AppContext::getDocumentFormatRegistry()->getRegisteredFormats()){

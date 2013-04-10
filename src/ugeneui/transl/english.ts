@@ -106,8 +106,8 @@
     <name>DocumentFormatSelectorDialog</name>
     <message>
         <location filename="../src/project_support/ui/DocumentFormatSelectorDialog.ui" line="14"/>
-        <source>Select correct document format</source>
-        <translation type="unfinished"></translation>
+        <source>Select Correct Document Format</source>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/project_support/ui/DocumentFormatSelectorDialog.ui" line="32"/>
