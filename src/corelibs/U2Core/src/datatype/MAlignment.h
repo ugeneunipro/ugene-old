@@ -508,6 +508,8 @@ public:
     /** Arranges rows in lists order*/
     bool sortRowsByList(const QStringList& order);
 
+    QList<QByteArray> toByteArrayList() const;
+
 private:
     /** Helper-method for adding a row to the alignment */
     void addRow(const MAlignmentRow& row, int rowIndex, U2OpStatus& os);

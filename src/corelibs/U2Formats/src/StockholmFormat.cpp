@@ -648,20 +648,22 @@ static void save( IOAdapter* io, const MAlignment& msa, const QString& name ) {
     int name_max_len = getMaxNameLen( msa );
     int seq_len = msa.getLength();
     int cur_seq_pos = 0;
+    QList<QByteArray> seqs = msa.toByteArrayList();
     while ( 0 < seq_len ) {
         int block_len = ( WRITE_BLOCK_LENGTH >= seq_len )? seq_len: WRITE_BLOCK_LENGTH;
 
         //write block
         U2OpStatus2Log os;
-        int nRows = msa.getNumRows();
-        for( int i = 0; i < nRows; ++i ) {
-            const MAlignmentRow& row = msa.getRow(i);
+        QList<QByteArray>::ConstIterator si = seqs.constBegin();
+        QList<MAlignmentRow>::ConstIterator ri = msa.getRows().constBegin();
+        for (; si != seqs.constEnd(); si++, ri++) {
+            const MAlignmentRow &row = *ri;
             QByteArray name = row.getName().toLatin1();
             TextUtils::replace(name.data(), name.length(), TextUtils::WHITES, '_');
             name += getNameSeqGap( name_max_len - row.getName().size() );
             ret = io->writeBlock( name );
             checkValThrowException<int>( true, name.size(), ret, StockholmFormat::WriteError(io->getURL()) );
-            QByteArray seq = row.mid( cur_seq_pos, block_len, os ).toByteArray(block_len, os) + NEW_LINE;
+            QByteArray seq = si->mid(cur_seq_pos, block_len).left(block_len) + NEW_LINE;
             ret = io->writeBlock( seq );
             checkValThrowException<int>( true, seq.size(), ret, StockholmFormat::WriteError(io->getURL()) );
         }

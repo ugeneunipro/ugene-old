@@ -369,8 +369,12 @@ void MegaFormat::storeEntry(IOAdapter *io, const QMap< GObjectType, QList<GObjec
     //write data
     int seqLength=ma.getLength();
     int writtenLength=0;
+    QList<QByteArray> seqs = ma.toByteArrayList();
     while (writtenLength<seqLength) {
-        foreach (const MAlignmentRow & item, ma.getRows()) {
+        QList<QByteArray>::ConstIterator si = seqs.constBegin();
+        QList<MAlignmentRow>::ConstIterator ri = ma.getRows().constBegin();
+        for (; si != seqs.constEnd(); si++, ri++) {
+            const MAlignmentRow &item = *ri;
             QByteArray line;
             line.append(MEGA_SEPARATOR).append(item.getName());
             TextUtils::replace(line.data(), line.length(), TextUtils::WHITES, '_');
@@ -380,8 +384,8 @@ void MegaFormat::storeEntry(IOAdapter *io, const QMap< GObjectType, QList<GObjec
             }
             
             U2OpStatus2Log os;
-            QByteArray currentBlock=item.mid(writtenLength, BLOCK_LENGTH, os).
-                toByteArray(writtenLength + BLOCK_LENGTH > seqLength ? seqLength - writtenLength : BLOCK_LENGTH, os);
+            QByteArray currentBlock=si->mid(writtenLength, BLOCK_LENGTH).
+                left(writtenLength + BLOCK_LENGTH > seqLength ? seqLength - writtenLength : BLOCK_LENGTH);
             line.append(currentBlock).append('\n');
             
             len = io->writeBlock(line);

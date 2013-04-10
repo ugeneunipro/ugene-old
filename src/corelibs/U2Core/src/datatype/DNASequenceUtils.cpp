@@ -27,7 +27,7 @@
 namespace U2 {
 
 void DNASequenceUtils::append(DNASequence& sequence, const DNASequence& appendedSequence, U2OpStatus& /* os */) {
-    sequence.seq = sequence.constSequence() + appendedSequence.constSequence();
+    sequence.seq += appendedSequence.constSequence();
 }
 
 DnaSequencesMatchStatus DNASequenceUtils::compare(const DNASequence& firstSeq, const DNASequence& secondSec) {

@@ -308,6 +308,7 @@ void MSFFormat::storeEntry(IOAdapter *io, const QMap< GObjectType, QList<GObject
         return;
     }
 
+    QList<QByteArray> seqs = ma.toByteArrayList();
     for (int i = 0; !os.isCoR() && i < maLen; i += CHARS_IN_ROW) {
         /* write numbers */ {
             QByteArray line(maxNameLen + 2, ' ');
@@ -327,7 +328,10 @@ void MSFFormat::storeEntry(IOAdapter *io, const QMap< GObjectType, QList<GObject
         }
 
         //write sequence
-        foreach(const MAlignmentRow& row, ma.getRows()) {
+        QList<QByteArray>::ConstIterator si = seqs.constBegin();
+        QList<MAlignmentRow>::ConstIterator ri = ma.getRows().constBegin();
+        for (; si != seqs.constEnd(); si++, ri++) {
+            const MAlignmentRow &row = *ri;
             QByteArray line = row.getName().toLocal8Bit();
             line.replace(' ', '_'); // since ' ' is a delimiter for MSF parser spaces in name not supported
             line = line.leftJustified(maxNameLen+1);
@@ -335,8 +339,7 @@ void MSFFormat::storeEntry(IOAdapter *io, const QMap< GObjectType, QList<GObject
             for (int j = 0; j < CHARS_IN_ROW && i + j < maLen; j += CHARS_IN_WORD) {
                 line += ' ';
                 int nChars = qMin(CHARS_IN_WORD, maLen - (i + j));
-                MAlignmentRow rowPart = row.mid(i + j, nChars, os);
-                QByteArray bytes = rowPart.toByteArray(nChars, os);
+                QByteArray bytes = si->mid(i + j, nChars);
                 bytes.replace(MAlignment_GapChar, '.');
                 line += bytes;
             }
