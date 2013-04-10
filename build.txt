@@ -33,6 +33,8 @@ Note: usually, 'make' builds the release version of UGENE which is correctly ins
 However, on certain platforms default target is the debug one. To ensure that release version will be built,
 use 'make release' or 'make all' targets.
 
+Some more information you can see in installer/_common_data/README file.
+
 **************************
 Build with CUDA
 **************************
