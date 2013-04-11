@@ -354,8 +354,13 @@ void WorkflowView::createActions() {
 
     deleteAction = new QAction(tr("Delete"), this);
     deleteAction->setIcon(QIcon(":workflow_designer/images/delete.png"));
-    deleteAction->setShortcuts(QKeySequence::Delete);
     connect(deleteAction, SIGNAL(triggered()), scene, SLOT(sl_deleteItem()));
+
+    QAction *deleteShortcut = new QAction(sceneView);
+    deleteShortcut->setShortcuts(QKeySequence::Delete);
+    deleteShortcut->setShortcutContext(Qt::WidgetShortcut);
+    connect(deleteShortcut, SIGNAL(triggered()), scene, SLOT(sl_deleteItem()));
+    sceneView->addAction(deleteShortcut);
 
     configureParameterAliasesAction = new QAction(tr("Configure parameter aliases..."), this);
     configureParameterAliasesAction->setIcon(QIcon(":workflow_designer/images/table_relationship.png"));

@@ -65,6 +65,13 @@ DatasetWidget::DatasetWidget(const QString &name, QWidget *parent)
     connect(renameButton, SIGNAL(clicked()), SLOT(sl_renameButton()));
 
     connect(itemsArea, SIGNAL(itemSelectionChanged()), SLOT(sl_itemChecked()));
+
+    QAction *deleteAction = new QAction(itemsArea);
+    deleteAction->setShortcut(QKeySequence::Delete);
+    deleteAction->setShortcutContext(Qt::WidgetShortcut);
+    connect(deleteAction, SIGNAL(triggered()), SLOT(sl_deleteButton()));
+
+    itemsArea->addAction(deleteAction);
 }
 
 void DatasetWidget::addUrlItem(UrlItem *urlItem) {
