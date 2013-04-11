@@ -48,17 +48,7 @@ void CreateSubalignmentTask::prepare() {
     QString ext = cfg.url.completeFileSuffix();
 
     DocumentFormatRegistry *dfr = AppContext::getDocumentFormatRegistry();
-    DocumentFormat *dfd = dfr->getFormatById(BaseDocumentFormats::CLUSTAL_ALN);
-
-    foreach(const DocumentFormatId &dfId, dfr->getRegisteredFormats()) {
-        DocumentFormat *df = dfr->getFormatById(dfId);
-        foreach(const QString &dfExt, df->getSupportedDocumentFileExtensions()) {
-            if (ext.endsWith(dfExt)) {
-                dfd = df;
-                break;
-            }
-        }
-    }
+    DocumentFormat *dfd = dfr->getFormatById(cfg.formatIdToSave);
 
     IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(cfg.url));
     if (createCopy) {

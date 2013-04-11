@@ -39,10 +39,18 @@
 #include <QtGui/QFileDialog>
 #include <QtGui/QMessageBox>
 
+#include <U2Core/BaseDocumentFormats.h>
+
+#include <U2Gui/DialogUtils.h>
+#include <U2Gui/SaveDocumentGroupController.h>
+#include <U2Core/GUrlUtils.h>
+#include <U2Core/DocumentUtils.h>
+
+
 namespace U2{
 
 CreateSubalignimentDialogController::CreateSubalignimentDialogController(MAlignmentObject *_mobj, const QRect& selection, QWidget *p)
-: QDialog(p), mobj(_mobj){
+: QDialog(p), mobj(_mobj), saveContoller(NULL){
     setupUi(this);
 
     connect(browseButton, SIGNAL(clicked()), SLOT(sl_browseButtonClicked()));
@@ -60,7 +68,21 @@ CreateSubalignimentDialogController::CreateSubalignimentDialogController(MAlignm
     sequencesTableWidget->horizontalHeader()->setHidden( true );
     sequencesTableWidget->setShowGrid(false);
     sequencesTableWidget->horizontalHeader()->setResizeMode( 0, QHeaderView::Stretch );
-    
+
+    SaveDocumentGroupControllerConfig conf;
+    conf.dfc.addFlagToExclude(DocumentFormatFlag_SingleObjectFormat);
+    conf.dfc.addFlagToSupport(DocumentFormatFlag_SupportWriting);
+    conf.dfc.supportedObjectTypes+=GObjectTypes::MULTIPLE_ALIGNMENT;
+    conf.fileDialogButton = browseButton;
+    conf.formatCombo = formatCombo;
+    conf.fileNameEdit = filepathEdit;
+    conf.parentWidget = this;
+    conf.defaultFormatId = BaseDocumentFormats::CLUSTAL_ALN;
+    QString fileName = GUrlUtils::rollFileName(_mobj->getDocument()->getURLString(), "_subalign", DocumentUtils::getNewDocFileNameExcludesHint());
+    conf.defaultFileName = fileName;
+
+    saveContoller = new SaveDocumentGroupController(conf, this);
+
     int startSeq = -1;
     int endSeq = -1;
     int startPos = -1;
@@ -92,24 +114,19 @@ CreateSubalignimentDialogController::CreateSubalignimentDialogController(MAlignm
         sequencesTableWidget->setCellWidget(i, 0, cb);
         sequencesTableWidget->setRowHeight(i, 15);
     }
-
-    QList<DocumentFormatId> dfIdList = AppContext::getDocumentFormatRegistry()->getRegisteredFormats(), supportedFormats;
-    
-    foreach(DocumentFormatId dfId, dfIdList){
-        DocumentFormat *df = AppContext::getDocumentFormatRegistry()->getFormatById(dfId);
-        if (df->getSupportedObjectTypes().contains(GObjectTypes::MULTIPLE_ALIGNMENT) && df->getFlags().testFlag(DocumentFormatFlag_SupportWriting)) {
-            foreach(QString ext, df->getSupportedDocumentFileExtensions()){
-                filter.append("*." + ext + " ");
-            }
-        }
-    }
 }
 
-void CreateSubalignimentDialogController::sl_browseButtonClicked(){
-    LastUsedDirHelper h;
-
-    QString newPath = QFileDialog::getSaveFileName(this, tr("Select file to save..."), h.dir, filter );
-    filepathEdit->setText(newPath);
+QString CreateSubalignimentDialogController::getSavePath(){ 
+    if(NULL == saveContoller) {
+        return QString();
+    }
+    return saveContoller->getSaveFileName(); 
+};
+DocumentFormatId CreateSubalignimentDialogController::getFormatId() {
+    if(NULL == saveContoller) {
+        return DocumentFormatId();
+    }
+    return saveContoller->getFormatIdToSave();
 }
 
 void CreateSubalignimentDialogController::sl_allButtonClicked(){

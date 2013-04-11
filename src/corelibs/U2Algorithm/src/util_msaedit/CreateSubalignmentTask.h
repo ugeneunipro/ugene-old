@@ -27,6 +27,7 @@
 #include <U2Core/U2Region.h>
 #include <U2Core/MAlignmentObject.h>
 #include <U2Core/LoadDocumentTask.h>
+#include <U2Core/BaseDocumentFormats.h>
 
 
 namespace U2{
@@ -34,14 +35,15 @@ namespace U2{
 
 class U2ALGORITHM_EXPORT CreateSubalignmentSettings {
 public:
-    CreateSubalignmentSettings(const U2Region& w, const QStringList& sNames, const GUrl& path, bool save, bool add) 
-        : window(w), seqNames(sNames), url(path), saveImmediately(save), addToProject(add) {}
+    CreateSubalignmentSettings(const U2Region& w, const QStringList& sNames, const GUrl& path, bool save, bool add, DocumentFormatId formatId) 
+        : window(w), seqNames(sNames), url(path), saveImmediately(save), addToProject(add), formatIdToSave(formatId) {}
     
-    U2Region    window;
-    QStringList seqNames;
-    GUrl        url;
-    bool        saveImmediately;
-    bool        addToProject;
+    U2Region         window;
+    QStringList      seqNames;
+    GUrl             url;
+    bool             saveImmediately;
+    bool             addToProject;
+    DocumentFormatId formatIdToSave;
 };
    
     

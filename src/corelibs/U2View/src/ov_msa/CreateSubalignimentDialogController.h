@@ -30,6 +30,8 @@
 
 namespace U2{
 
+class SaveDocumentGroupController;
+
 class U2VIEW_EXPORT CreateSubalignimentDialogController : public QDialog, Ui_CreateSubalignimentDialog {
     Q_OBJECT
 public:
@@ -38,12 +40,12 @@ public:
     void accept();
 
     bool getAddToProjFlag(){return addToProjBox->isChecked();};
-    QString getSavePath(){return filepathEdit->text();};
+    QString getSavePath();
+    DocumentFormatId getFormatId();
     U2Region getRegion(){return window;};
     QStringList getSelectedSeqNames(){return selectedNames;};
 
 private slots:
-    void sl_browseButtonClicked();
     void sl_allButtonClicked();
     void sl_invertButtonClicked();
     void sl_noneButtonClicked();
@@ -51,10 +53,10 @@ private slots:
 private:
     void selectSeqNames();
 
-    QString filter;
     MAlignmentObject *mobj;
     U2Region window;
     QStringList selectedNames;
+    SaveDocumentGroupController* saveContoller;
 };
 
 

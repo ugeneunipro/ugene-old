@@ -1632,7 +1632,7 @@ void MSAEditorSequenceArea::sl_createSubaligniment(){
         QString path = dialog.getSavePath();
         QStringList seqNames = dialog.getSelectedSeqNames();
         Task* csTask = new CreateSubalignmentAndOpenViewTask(editor->getMSAObject(), 
-            CreateSubalignmentSettings(window, seqNames, path, true, addToProject) );
+            CreateSubalignmentSettings(window, seqNames, path, true, addToProject, dialog.getFormatId()) );
         AppContext::getTaskScheduler()->registerTopLevelTask(csTask);
     }
 }
