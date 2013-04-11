@@ -57,9 +57,6 @@ public:
 
 protected slots:
     void sl_textEdited(const QString&);
-
-private:
-    QString fileFormat;
 };
 
 } // U2

@@ -43,7 +43,7 @@ URLLineEdit::URLLineEdit(const QString &filter,
 isPath(isPath), saveFile(saveFile), fileFormat(format){
     if(!fileFormat.isEmpty()){
         completer = new FilenameSuggestCompletion(fileFormat, this);
-        connect(completer, SLOT(si_finished()), SIGNAL(sl_completionFinished()));
+        connect(completer, SIGNAL(si_editingFinished()), SLOT(sl_completionFinished()));
     }
 }
 
