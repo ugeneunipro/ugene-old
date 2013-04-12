@@ -51,8 +51,8 @@ const QString & ReadDocumentTask::getDatasetName() const {
     return datasetName;
 }
 
-const QStringList & ReadDocumentTask::getConvertedFiles() const {
-    return convertedFiles;
+const QStringList & ReadDocumentTask::getProducedFiles() const {
+    return producedFiles;
 }
 
 ReadDocumentTaskFactory::ReadDocumentTaskFactory(const QString &_id)

@@ -19,6 +19,7 @@
  * MA 02110-1301, USA.
  */
 
+#include <U2Core/L10n.h>
 #include <U2Core/Log.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/DocumentModel.h>
@@ -527,6 +528,10 @@ QVariant StingListWidget::value() {
 
 void StingListWidget::setValue(const QVariant &value) {
     edit->setText(value.toString());
+}
+
+void StingListWidget::setRequired() {
+    edit->setPlaceholderText(L10N::required());
 }
 
 PropertyWidget * StringListDelegate::createWizardWidget(U2OpStatus & /*os*/, QWidget *parent) const {

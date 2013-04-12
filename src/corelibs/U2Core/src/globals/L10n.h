@@ -65,6 +65,7 @@ public:
     static QString directStrandStr() { return tr("Direct"); }
     static QString complementStrandStr() { return tr("Reverse-complementary"); }
 
+    static QString required() { return tr("Required"); }
 };
 
 }//ns

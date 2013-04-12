@@ -96,7 +96,7 @@ void ReadAssemblyWorker::onTaskFinished(Task *task) {
 
         cache.append(Message(mtype, m));
     }
-    outputFiles << t->getConvertedFiles();
+    outputFiles << t->getProducedFiles();
 }
 
 QStringList ReadAssemblyWorker::getOutputFiles() {

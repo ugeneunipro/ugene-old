@@ -115,6 +115,9 @@ QWidget * DefaultPropertyController::createGUI(U2OpStatus &os) {
     if (labelSize >= 0) {
         result->setLabelWidth(labelSize);
     }
+    if (attribute()->isRequiredAttribute()) {
+        propWidget->setRequired();
+    }
 
     result->setToolTip("<html>" + attribute()->getDocumentation() + "</html>");
     return result;

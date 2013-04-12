@@ -84,6 +84,7 @@ public:
 
     virtual QVariant value() = 0;
     virtual void setValue(const QVariant &value) = 0;
+    virtual void setRequired();
 
     /**
      * Returns the widget that can be registered as a field of wizard pages.

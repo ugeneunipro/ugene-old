@@ -48,6 +48,10 @@ QWidget * PropertyWidget::getField() {
     return NULL;
 }
 
+void PropertyWidget::setRequired() {
+
+}
+
 PropertyDelegate::PropertyDelegate(QObject *parent)
 : QItemDelegate(parent)
 {

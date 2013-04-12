@@ -207,7 +207,7 @@ QList<Task*> ReadAssemblyTask::onSubTaskFinished(Task *subTask) {
     } else if (convertTask == subTask) {
         url = convertTask->getResultUrl().getURLString();
         format = AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::BAM);
-        convertedFiles << convertTask->getConvertedFiles();
+        producedFiles << convertTask->getConvertedFiles();
     }
     return result;
 }

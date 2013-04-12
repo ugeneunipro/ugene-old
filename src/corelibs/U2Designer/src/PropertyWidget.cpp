@@ -22,6 +22,7 @@
 #include <QLayout>
 #include <QFileDialog>
 
+#include <U2Core/L10n.h>
 #include <U2Core/U2SafePoints.h>
 
 #include <U2Lang/URLContainer.h>
@@ -52,6 +53,10 @@ QVariant DefaultPropertyWidget::value() {
 
 void DefaultPropertyWidget::setValue(const QVariant &value) {
     lineEdit->setText(value.toString());
+}
+
+void DefaultPropertyWidget::setRequired() {
+    lineEdit->setPlaceholderText(L10N::required());
 }
 
 void DefaultPropertyWidget::sl_valueChanged(const QString &value) {
@@ -368,6 +373,10 @@ void URLWidget::setValue(const QVariant &value) {
         urlString = value.toString();
     }
     urlLine->setText(urlString);
+}
+
+void URLWidget::setRequired() {
+    urlLine->setPlaceholderText(L10N::required());
 }
 
 } // U2

@@ -46,6 +46,7 @@ public:
     DefaultPropertyWidget(int maxLength = NO_LIMIT, QWidget *parent = NULL);
     virtual QVariant value();
     virtual void setValue(const QVariant &value);
+    virtual void setRequired();
 
 private:
     QLineEdit *lineEdit;
@@ -172,6 +173,7 @@ public:
     URLWidget(URLLineEdit *urlLine, QWidget *parent = NULL);
     virtual QVariant value();
     virtual void setValue(const QVariant &value);
+    virtual void setRequired();
 
 signals:
     void finished();
