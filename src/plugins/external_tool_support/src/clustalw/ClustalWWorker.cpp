@@ -255,8 +255,10 @@ Task* ClustalWWorker::tick() {
         SAFE_POINT(NULL != msaObj.get(), "NULL MSA Object!", NULL);
         MAlignment msa = msaObj->getMAlignment();
         
-        if( msa.isEmpty() ) {
-            return new FailTask(tr("An empty MSA has been supplied to ClustalW."));
+        if(msa.isEmpty() || msa.getNumRows() < 2) {
+            send(msa);
+            algoLog.error(tr("'%1' can not be aligned by ClustalW. It has just been sent to the output.").arg(msa.getName()));
+            return NULL;
         }
         Task* t = new ClustalWSupportTask(msa, GObjectReference(), cfg);
         connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
@@ -273,14 +275,19 @@ void ClustalWWorker::sl_taskFinished() {
     if (t->getState() != Task::State_Finished) return;
 
     SAFE_POINT(NULL != output, "NULL output!", );
-    SharedDbiDataHandler msaId = context->getDataStorage()->putAlignment(t->resultMA);
-    QVariantMap msgData;
-    msgData[BaseSlots::MULTIPLE_ALIGNMENT_SLOT().getId()] = qVariantFromValue<SharedDbiDataHandler>(msaId);
-    output->put(Message(BaseTypes::MULTIPLE_ALIGNMENT_TYPE(), msgData));
+    send(t->resultMA);
     algoLog.info(tr("Aligned %1 with ClustalW").arg(t->resultMA.getName()));
 }
 
 void ClustalWWorker::cleanup() {
+}
+
+void ClustalWWorker::send(const MAlignment &msa) {
+    SAFE_POINT(NULL != output, "NULL output!", );
+    SharedDbiDataHandler msaId = context->getDataStorage()->putAlignment(msa);
+    QVariantMap m;
+    m[BaseSlots::MULTIPLE_ALIGNMENT_SLOT().getId()] = qVariantFromValue<SharedDbiDataHandler>(msaId);
+    output->put(Message(BaseTypes::MULTIPLE_ALIGNMENT_TYPE(), m));
 }
 
 } //namespace LocalWorkflow

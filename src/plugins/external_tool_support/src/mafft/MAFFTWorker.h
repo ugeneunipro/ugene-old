@@ -50,11 +50,13 @@ public:
 private slots:
     void sl_taskFinished();
 
-protected:
+private:
     IntegralBus *input, *output;
     QString resultName,transId;
     MAFFTSupportTaskSettings cfg;
-    
+
+private:
+    void send(const MAlignment &msa);
 }; 
 
 class MAFFTWorkerFactory : public DomainFactory {

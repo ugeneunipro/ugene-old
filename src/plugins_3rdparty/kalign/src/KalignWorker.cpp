@@ -155,8 +155,9 @@ Task* KalignWorker::tick() {
         SAFE_POINT(NULL != msaObj.get(), "NULL MSA Object!", NULL);
         MAlignment msa = msaObj->getMAlignment();
 
-        if( msa.isEmpty() ) {
-            algoLog.error( tr("An empty MSA has been supplied to Kalign.") );
+        if(msa.isEmpty() || msa.getNumRows() < 2) {
+            send(msa);
+            algoLog.error(tr("'%1' can not be aligned by Kalign. It has just been sent to the output.").arg(msa.getName()));
             return NULL;
         }
         Task* t = new KalignTask(msa, cfg);
@@ -174,14 +175,19 @@ void KalignWorker::sl_taskFinished() {
     if (t->getState() != Task::State_Finished) return;
 
     SAFE_POINT(NULL != output, "NULL output!", );
-    SharedDbiDataHandler msaId = context->getDataStorage()->putAlignment(t->resultMA);
-    QVariantMap msgData;
-    msgData[BaseSlots::MULTIPLE_ALIGNMENT_SLOT().getId()] = qVariantFromValue<SharedDbiDataHandler>(msaId);
-    output->put(Message(BaseTypes::MULTIPLE_ALIGNMENT_TYPE(), msgData));
+    send(t->resultMA);
     algoLog.info(tr("Aligned %1 with Kalign").arg(t->resultMA.getName()));
 }
 
 void KalignWorker::cleanup() {
+}
+
+void KalignWorker::send(const MAlignment &msa) {
+    SAFE_POINT(NULL != output, "NULL output!", );
+    SharedDbiDataHandler msaId = context->getDataStorage()->putAlignment(msa);
+    QVariantMap m;
+    m[BaseSlots::MULTIPLE_ALIGNMENT_SLOT().getId()] = qVariantFromValue<SharedDbiDataHandler>(msaId);
+    output->put(Message(BaseTypes::MULTIPLE_ALIGNMENT_TYPE(), m));
 }
 
 } //namespace LocalWorkflow

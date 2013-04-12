@@ -50,11 +50,13 @@ public:
 private slots:
     void sl_taskFinished();
 
-protected:
+private:
     IntegralBus *input, *output;
     QString resultName,transId;
     KalignTaskSettings cfg;
-    
+
+private:
+    void send(const MAlignment &msa);
 }; 
 
 class KalignWorkerFactory : public DomainFactory {

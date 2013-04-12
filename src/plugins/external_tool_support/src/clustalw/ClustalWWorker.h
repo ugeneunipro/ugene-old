@@ -50,11 +50,13 @@ public:
 private slots:
     void sl_taskFinished();
 
-protected:
+private:
     IntegralBus *input, *output;
     QString resultName,transId;
     ClustalWSupportTaskSettings cfg;
-    
+
+private:
+    void send(const MAlignment &msa);
 }; 
 
 class ClustalWWorkerFactory : public DomainFactory {
