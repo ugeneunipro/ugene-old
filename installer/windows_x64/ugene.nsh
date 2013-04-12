@@ -39,6 +39,15 @@ Function "checkInstDir"
 FunctionEnd
 
 !include ugene_extensions.nsh
+!include "x64.nsh"
+
+Function .onInit
+${IfNot} ${RunningX64}
+    MessageBox MB_OK|MB_ICONEXCLAMATION "This installer can only be run on 64-bit windows"
+    Abort
+${EndIf}
+FunctionEnd
+
 
 ################################################################
 # Installer options
