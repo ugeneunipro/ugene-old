@@ -89,15 +89,24 @@ int AppResourcePool::getTotalPhysicalMemory() {
     p.waitForFinished();
     QString memory = p.readAllStandardOutput();
     p.close();
-    totalPhysicalMemory = memory.toLong() / 1024;
+    bool ok = false;
+    qlonglong output_mem = memory.toLongLong(&ok);
+    if (ok) {
+        totalPhysicalMemory = output_mem / 1024;
+    }
 
 #elif defined(Q_OS_MAC)
 // TODO
-//     QProcess p;
-//     p.start("sysctl", QStringList() << "kern.version" << "hw.physmem");
-//     p.waitForFinished();
-//     QString system_info = p.readAllStandardOutput();
-//     p.close();
+     QProcess p;
+     p.start("sh", QStringList() << "-c" << "sysctl hw.memsize | awk -F ' ' '{print $2}'");
+     p.waitForFinished();
+     QString system_info = p.readAllStandardOutput();
+     p.close();
+     bool ok = false;
+     qlonglong output_mem = system_info.toLongLong(&ok);
+     if (ok) {
+         totalPhysicalMemory = output_mem / (1024 * 1024);
+     }
 #else
     coreLog.error("Total physical memory: Unsupported OS");
 #endif
