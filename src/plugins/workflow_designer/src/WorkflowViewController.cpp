@@ -330,9 +330,6 @@ void WorkflowView::createActions() {
     saveAction->setIcon(QIcon(":workflow_designer/images/filesave.png"));
     saveAction->setShortcut(QKeySequence::Save);
     saveAction->setShortcutContext(Qt::WindowShortcut);
-    if(AppContext::getProjectService()) {
-        AppContext::getProjectService()->enableSaveAction(false);
-    }
     connect(saveAction, SIGNAL(triggered()), SLOT(sl_saveScene()));
     
     saveAsAction = new QAction(tr("&Save schema as..."), this);
