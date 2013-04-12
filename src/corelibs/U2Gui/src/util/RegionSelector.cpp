@@ -22,6 +22,8 @@
 #include "RegionSelector.h"
 #include <U2Core/L10n.h>
 
+#include <U2Gui/GUIUtils.h>
+
 #include <QtGui/QHBoxLayout>
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QToolButton>
@@ -148,16 +150,8 @@ void RegionSelector::sl_onComboBoxIndexChanged(int index) {
 
 void RegionSelector::sl_onValueEdited(){
     if(startEdit->text().isEmpty() || endEdit->text().isEmpty()){
-        if(startEdit->text().isEmpty()){
-            QPalette p = startEdit->palette();
-            p.setColor(QPalette::Base, QColor(255,200,200));//pink color
-            startEdit->setPalette(p);
-        }
-        if(endEdit->text().isEmpty()){
-            QPalette p = endEdit->palette();
-            p.setColor(QPalette::Base, QColor(255,200,200));//pink color
-            endEdit->setPalette(p);
-        }
+        GUIUtils::setWidgetWarning(startEdit, startEdit->text().isEmpty());
+        GUIUtils::setWidgetWarning(endEdit, endEdit->text().isEmpty());
         // select "custom" in combobox
         comboBox->setCurrentIndex(customIndex);
         return;
@@ -171,21 +165,8 @@ void RegionSelector::sl_onValueEdited(){
     }
     comboBox->setCurrentIndex(currentIndex);
 
-    if(region.isEmpty()){
-        QPalette p = startEdit->palette();
-        p.setColor(QPalette::Base, QColor(255,200,200));//pink color
-        startEdit->setPalette(p);
-        p = endEdit->palette();
-        p.setColor(QPalette::Base, QColor(255,200,200));//pink color
-        endEdit->setPalette(p);
-    }else{
-        QPalette p = startEdit->palette();
-        p.setColor(QPalette::Base, QColor(255,255,255));//white color
-        startEdit->setPalette(p);
-        p = endEdit->palette();
-        p.setColor(QPalette::Base, QColor(255,255,255));//white color
-        endEdit->setPalette(p);
-    }
+    GUIUtils::setWidgetWarning(startEdit, region.isEmpty());
+    GUIUtils::setWidgetWarning(endEdit, region.isEmpty());
 }
 
 void RegionSelector::sl_onRegionChanged() {

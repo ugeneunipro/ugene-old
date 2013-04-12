@@ -36,6 +36,8 @@
 #include <U2Core/MultiTask.h>
 #include <U2Core/ProjectService.h>
 
+#include <U2Gui/GUIUtils.h>
+
 #include <QtGui/QFileDialog>
 #include <QtGui/QToolButton>
 #include <QtGui/QMessageBox>
@@ -77,34 +79,19 @@ BlastAllSupportRunDialog::BlastAllSupportRunDialog(U2SequenceObject* _dnaso, QSt
 }
 
 void BlastAllSupportRunDialog::sl_lineEditChanged(){
+    bool pathWarning = databasePathLineEdit->text().contains(' ');
+    QString pathTooltip = pathWarning ? tr("Database path contain space characters.") : "";
+    GUIUtils::setWidgetWarning(databasePathLineEdit, pathWarning);
+    databasePathLineEdit->setToolTip(pathTooltip);
+
+    bool nameWarning = baseNameLineEdit->text().contains(' ');
+    QString nameTooltip = nameWarning ? tr("Database name contain space characters.") : "";
+    GUIUtils::setWidgetWarning(baseNameLineEdit, nameWarning);
+    baseNameLineEdit->setToolTip(nameTooltip);
+
     bool isFilledDatabasePathLineEdit = !databasePathLineEdit->text().isEmpty();
     bool isFilledBaseNameLineEdit = !baseNameLineEdit->text().isEmpty();
-
-    bool hasSpacesInDBPath=false;
-    if(databasePathLineEdit->text().contains(' ')){
-        QPalette p = databasePathLineEdit->palette();
-        p.setColor(QPalette::Active, QPalette::Base, QColor(255,200,200));//pink color
-        databasePathLineEdit->setPalette(p);
-        databasePathLineEdit->setToolTip(tr("Database path contain space characters."));
-        hasSpacesInDBPath=true;
-    }else{
-        QPalette p = databasePathLineEdit->palette();
-        p.setColor(QPalette::Active, QPalette::Base, QColor(255,255,255));//white color
-        databasePathLineEdit->setPalette(p);
-        databasePathLineEdit->setToolTip("");
-    }
-    if(baseNameLineEdit->text().contains(' ')){
-        QPalette p = baseNameLineEdit->palette();
-        p.setColor(QPalette::Active, QPalette::Base, QColor(255,200,200));//pink color
-        baseNameLineEdit->setPalette(p);
-        baseNameLineEdit->setToolTip(tr("Database name contain space characters."));
-        hasSpacesInDBPath=true;
-    }else{
-        QPalette p = baseNameLineEdit->palette();
-        p.setColor(QPalette::Active, QPalette::Base, QColor(255,255,255));//white color
-        baseNameLineEdit->setPalette(p);
-        baseNameLineEdit->setToolTip("");
-    }
+    bool hasSpacesInDBPath = pathWarning || nameWarning;
     okButton->setEnabled(isFilledBaseNameLineEdit && isFilledDatabasePathLineEdit && !hasSpacesInDBPath);
 }
 
@@ -176,34 +163,20 @@ const QList<BlastTaskSettings> &BlastAllWithExtFileSpecifySupportRunDialog::getS
 }
 
 void BlastAllWithExtFileSpecifySupportRunDialog::sl_lineEditChanged(){
+    bool pathWarning = databasePathLineEdit->text().contains(' ');
+    QString pathTooltip = pathWarning ? tr("Database path contain space characters.") : "";
+    GUIUtils::setWidgetWarning(databasePathLineEdit, pathWarning);
+    databasePathLineEdit->setToolTip(pathTooltip);
+
+    bool nameWarning = baseNameLineEdit->text().contains(' ');
+    QString nameTooltip = nameWarning ? tr("Database name contain space characters.") : "";
+    GUIUtils::setWidgetWarning(baseNameLineEdit, nameWarning);
+    baseNameLineEdit->setToolTip(nameTooltip);
+
     bool isFilledDatabasePathLineEdit = !databasePathLineEdit->text().isEmpty();
     bool isFilledBaseNameLineEdit = !baseNameLineEdit->text().isEmpty();
     bool isInputFileLineEdit = !inputFileLineEdit->text().isEmpty();
-    bool hasSpacesInDBPath=false;
-    if(databasePathLineEdit->text().contains(' ')){
-        QPalette p = databasePathLineEdit->palette();
-        p.setColor(QPalette::Active, QPalette::Base, QColor(255,200,200));//pink color
-        databasePathLineEdit->setPalette(p);
-        databasePathLineEdit->setToolTip(tr("Database path contain space characters."));
-        hasSpacesInDBPath=true;
-    }else{
-        QPalette p = databasePathLineEdit->palette();
-        p.setColor(QPalette::Active, QPalette::Base, QColor(255,255,255));//white color
-        databasePathLineEdit->setPalette(p);
-        databasePathLineEdit->setToolTip("");
-    }
-    if(baseNameLineEdit->text().contains(' ')){
-        QPalette p = baseNameLineEdit->palette();
-        p.setColor(QPalette::Active, QPalette::Base, QColor(255,200,200));//pink color
-        baseNameLineEdit->setPalette(p);
-        baseNameLineEdit->setToolTip(tr("Database name contain space characters."));
-        hasSpacesInDBPath=true;
-    }else{
-        QPalette p = baseNameLineEdit->palette();
-        p.setColor(QPalette::Active, QPalette::Base, QColor(255,255,255));//white color
-        baseNameLineEdit->setPalette(p);
-        baseNameLineEdit->setToolTip("");
-    }
+    bool hasSpacesInDBPath = pathWarning || nameWarning;
     okButton->setEnabled(isFilledBaseNameLineEdit && isFilledDatabasePathLineEdit && isInputFileLineEdit && !hasSpacesInDBPath);
 }
 

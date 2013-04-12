@@ -208,4 +208,14 @@ void GUIUtils::setMutedLnF( QTreeWidgetItem* item, bool enableMute, bool recursi
     }
 }
 
+static const QColor warningColor(255,200,200);
+static const QColor okColor(255,255,255);
+
+void GUIUtils::setWidgetWarning(QWidget *widget, bool value) {
+    QColor color = value ? warningColor : okColor;
+    QPalette p = widget->palette();
+    p.setColor(QPalette::Active, QPalette::Base, color);
+    widget->setPalette(p);
+}
+
 } //endif

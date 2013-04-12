@@ -57,6 +57,8 @@ public:
     
 
     static bool runWebBrowser(const QString& url);
+
+    static void setWidgetWarning(QWidget *widget, bool value);
 };
 
 } //namespace

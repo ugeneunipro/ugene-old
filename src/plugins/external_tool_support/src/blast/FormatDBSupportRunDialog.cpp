@@ -23,6 +23,8 @@
 #include "FormatDBSupport.h"
 
 #include <U2Core/DNAAlphabet.h>
+
+#include <U2Gui/GUIUtils.h>
 #include <U2Gui/LastUsedDirHelper.h>
 
 #include <QtGui/QFileDialog>
@@ -111,58 +113,31 @@ void FormatDBSupportRunDialog::sl_lineEditChanged(){
     bool hasSpacesInOutputDBPath=false;
     if(name == FORMATDB_TOOL_NAME){
         if(inputFilesRadioButton->isChecked()){
-            if(inputFilesLineEdit->text().contains(' ')){
-                QPalette p = inputFilesLineEdit->palette();
-                p.setColor(QPalette::Active, QPalette::Base, QColor(255,200,200));//pink color
-                inputFilesLineEdit->setPalette(p);
-                inputFilesLineEdit->setToolTip(tr("Input files paths contain space characters."));
-                hasSpacesInInputFiles=true;
-            }else{
-                QPalette p = inputFilesLineEdit->palette();
-                p.setColor(QPalette::Active, QPalette::Base, QColor(255,255,255));//white color
-                inputFilesLineEdit->setPalette(p);
-                inputFilesLineEdit->setToolTip("");
-            }
+            bool warning = inputFilesLineEdit->text().contains(' ');
+            QString tooltip = warning ? tr("Input files paths contain space characters.") : "";
+            GUIUtils::setWidgetWarning(inputFilesLineEdit, warning);
+            inputFilesLineEdit->setToolTip(tooltip);
+            hasSpacesInInputFiles |= warning;
         }else{
-            if(inputDirLineEdit->text().contains(' ')){
-                QPalette p = inputDirLineEdit->palette();
-                p.setColor(QPalette::Active, QPalette::Base, QColor(255,200,200));//pink color
-                inputDirLineEdit->setPalette(p);
-                inputDirLineEdit->setToolTip(tr("Input files paths contain space characters."));
-                hasSpacesInInputFiles=true;
-            }else{
-                QPalette p = inputDirLineEdit->palette();
-                p.setColor(QPalette::Active, QPalette::Base, QColor(255,255,255));//white color
-                inputDirLineEdit->setPalette(p);
-                inputDirLineEdit->setToolTip("");
-            }
+            bool warning = inputDirLineEdit->text().contains(' ');
+            QString tooltip = warning ? tr("Input files paths contain space characters.") : "";
+            GUIUtils::setWidgetWarning(inputDirLineEdit, warning);
+            inputDirLineEdit->setToolTip(tooltip);
+            hasSpacesInInputFiles |= warning;
         }
     }
     if(name == MAKEBLASTDB_TOOL_NAME){
-        if(databasePathLineEdit->text().contains(' ')){
-            QPalette p = databasePathLineEdit->palette();
-            p.setColor(QPalette::Base, QColor(255,200,200));//pink color
-            databasePathLineEdit->setPalette(p);
-            databasePathLineEdit->setToolTip(tr("Output database path contain space characters."));
-            hasSpacesInOutputDBPath=true;
-        }else{
-            QPalette p = databasePathLineEdit->palette();
-            p.setColor(QPalette::Base, QColor(255,255,255));//white color
-            databasePathLineEdit->setPalette(p);
-            databasePathLineEdit->setToolTip("");
-        }
-        if(baseNamelineEdit->text().contains(' ')){
-            QPalette p = baseNamelineEdit->palette();
-            p.setColor(QPalette::Base, QColor(255,200,200));//pink color
-            baseNamelineEdit->setPalette(p);
-            baseNamelineEdit->setToolTip(tr("Output database path contain space characters."));
-            hasSpacesInOutputDBPath=true;
-        }else{
-            QPalette p = baseNamelineEdit->palette();
-            p.setColor(QPalette::Base, QColor(255,255,255));//white color
-            baseNamelineEdit->setPalette(p);
-            baseNamelineEdit->setToolTip("");
-        }
+        bool pathWarning = databasePathLineEdit->text().contains(' ');
+        QString pathTooltip = pathWarning ? tr("Output database path contain space characters.") : "";
+        GUIUtils::setWidgetWarning(databasePathLineEdit, pathWarning);
+        databasePathLineEdit->setToolTip(pathTooltip);
+
+        bool nameWarning = baseNamelineEdit->text().contains(' ');
+        QString nameTooltip = nameWarning ? tr("Output database path contain space characters.") : "";
+        GUIUtils::setWidgetWarning(baseNamelineEdit, nameWarning);
+        baseNamelineEdit->setToolTip(nameTooltip);
+
+        hasSpacesInOutputDBPath = pathWarning || nameWarning;
     }
     bool isFilledInputFilesOrDirLineEdit =
             (!inputFilesLineEdit->text().isEmpty() && inputFilesRadioButton->isChecked()) ||
