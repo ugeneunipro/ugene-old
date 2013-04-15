@@ -141,14 +141,16 @@ bool MWStub::focusNextPrevChild(bool next) {
 }
 
 void MWStub::dragMoveEvent( QDragMoveEvent * event ){
-    QObject *par = event->source()->parent();
-    while(par != NULL){
-        if(par == this) {
-            return;
+    if(event->source() != NULL){
+        QObject *par = event->source()->parent();
+        while(par != NULL){
+            if(par == this) {
+                return;
+            }
+            par = par->parent();
         }
-        par = par->parent();
+        event->ignore();
     }
-    event->ignore();
 }
 
 //////////////////////////////////////////////////////////////////////////
