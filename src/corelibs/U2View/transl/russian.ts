@@ -1672,7 +1672,7 @@ Do you want to replace it?</source>
     </message>
     <message>
         <location filename="../src/ov_msa/PairAlign/PairAlignFactory.cpp" line="33"/>
-        <source>Pairwise alignment</source>
+        <source>Pairwise Alignment</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1683,7 +1683,7 @@ Do you want to replace it?</source>
     <message>
         <location filename="../src/ov_msa/TreeOptions/TreeOptionsWidgetFactory.cpp" line="33"/>
         <location filename="../src/ov_msa/TreeOptions/TreeOptionsWidgetFactory.cpp" line="67"/>
-        <source>Tree settings</source>
+        <source>Tree Settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3924,7 +3924,7 @@ Please, check your plugin list.</source>
     <name>U2::FindPatternWidget</name>
     <message>
         <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="377"/>
-        <source>Use pattern names</source>
+        <source>Use pattern name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

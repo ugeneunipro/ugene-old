@@ -105,7 +105,7 @@ void FindWorkerFactory::init() {
             FindWorker::tr("Load pattern from file in any sequence format or in newline-delimited format"));
 
         Descriptor un(USE_NAMES_ATTR,
-            FindWorker::tr("Use pattern names"),
+            FindWorker::tr("Use pattern name"),
             FindWorker::tr("If patterns are loaded from a file, use names of pattern sequences as annotation names. The name from the parameters is used by default"));
 
         Descriptor ed(ERR_ATTR, FindWorker::tr("Max Mismatches"),

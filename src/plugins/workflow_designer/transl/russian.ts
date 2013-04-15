@@ -1515,7 +1515,7 @@ it is better to leave the list intact.</source>
     </message>
     <message>
         <location filename="../src/library/FindWorker.cpp" line="108"/>
-        <source>Use pattern names</source>
+        <source>Use pattern name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
