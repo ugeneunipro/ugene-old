@@ -48,6 +48,7 @@ BaseCompleter::BaseCompleter(QString fileFormat, QLineEdit *parent)
     popup->header()->hide();
 
     popup->installEventFilter(this);
+    editor->installEventFilter(this);
 
     connect(popup, SIGNAL(itemClicked(QTreeWidgetItem*,int)), SLOT(doneCompletion()));
     connect(editor, SIGNAL(textEdited(QString)), SLOT(sl_textEdited(QString)));
@@ -58,13 +59,21 @@ BaseCompleter::~BaseCompleter(){
 }
 
 bool BaseCompleter::eventFilter(QObject *obj, QEvent *ev){
+    if (obj == editor) {
+        if (QEvent::FocusOut == ev->type()) {
+            QFocusEvent *fe = static_cast<QFocusEvent*>(ev);
+            if (Qt::PopupFocusReason == fe->reason()) {
+                return true;
+            }
+        }
+        return false;
+    }
     if (obj != popup)
         return false;
 
     if (ev->type() == QEvent::MouseButtonPress) {
         popup->hide();
-        editor->setFocus();
-        return true;
+        return false;
     }
 
     if (ev->type() == QEvent::KeyPress) {
@@ -84,10 +93,6 @@ bool BaseCompleter::eventFilter(QObject *obj, QEvent *ev){
 
          case Qt::Key_Up:
          case Qt::Key_Down:
-             /*
-         case Qt::Key_Left:
-         case Qt::Key_Right:
-         */
          case Qt::Key_Home:
          case Qt::Key_End:
          case Qt::Key_PageUp:
