@@ -56,6 +56,7 @@ public:
     SWWorker(Actor* a);
     
     virtual void init();
+    virtual bool isReady();
     virtual Task* tick();
     virtual void cleanup();
 
@@ -66,8 +67,9 @@ private:
     QString readPatternsFromFile(const QString url);
 
 private:
-    IntegralBus *input, *output;
+    IntegralBus *input, *patternPort, *output;
     QMap<Task*, SmithWatermanReportCallbackAnnotImpl*> callbacks;
+    QList<QByteArray> patternList;
     QMap<Task*, QByteArray> patterns;
     QMap<QString, QString> patternNames;
     QMap<QString, QString> fastaHeaders;

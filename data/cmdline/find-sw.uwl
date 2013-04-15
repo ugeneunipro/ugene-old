@@ -1,83 +1,117 @@
 #@UGENE_WORKFLOW
 #Find pattern in supplied sequence using Smith-Waterman algorithm
 
+
+
 workflow find-sw{
+
     read-sequence {
         type:read-sequence;
-        name:"Read sequence";
-        merge-gap:10;
-        mode:0;
+        name:"Read Reference Sequence";
+        url-in {
+            dataset:Dataset;
+        }
+    }
+    read-sequence-1 {
+        type:read-sequence;
+        name:"Read Pattern Sequence";
+        url-in {
+            dataset:Dataset;
+        }
+    }
+    write-sequence {
+        type:write-sequence;
+        name:"Write Genbank";
+        document-format:genbank;
     }
     ssearch {
         type:ssearch;
-        name:"Smith-Waterman search";
+        name:"Smith-Waterman Search";
         algorithm:"Classic 2";
-        amino:false;
-        filter-strategy:filter-intersections;
-        gap-ext-score:-1;
-        gap-open-score:-10;
-        matrix:Auto;
-        min-score:90;
-        result-name:misc_feature;
-        strand:2;
-    }
-    write-genbank {
-        type:write-genbank;
-        name:"Write Genbank";
-        accumulate:true;
-        write-mode:2;
     }
 
+
+    .actor-bindings {
+        read-sequence.out-sequence->ssearch.in-sequence
+        read-sequence-1.out-sequence->ssearch.pattern
+        ssearch.out-annotations->write-sequence.in-sequence
+    }
+
+    read-sequence-1.annotations->write-sequence.in-sequence.annotations
+    read-sequence.annotations->write-sequence.in-sequence.annotations
+    ssearch.annotations->write-sequence.in-sequence.annotations
+    read-sequence.sequence->write-sequence.in-sequence.sequence
     read-sequence.sequence->ssearch.in-sequence.sequence
-    ssearch.annotations->write-genbank.in-sequence.annotations
-    read-sequence.annotations->write-genbank.in-sequence.annotations
-    read-sequence.sequence->write-genbank.in-sequence.sequence
+    read-sequence-1.sequence->ssearch.pattern.sequence
 
     .meta {
-        aliases {
-            read-sequence.url-in:in;
-            ssearch.filter-strategy:filter;
-            ssearch.matrix:matrix;
-            ssearch.min-score:score;
-            ssearch.pattern:ptrn;
-            ssearch.result-name:name;
-            write-genbank.url-out:out;
-        }
-        help {
-            in:"Input sequence";
-            filter:"Result filtering strategy";
-            matrix:"Scoring matrix";
-            score:"The minimum score of the result";
-            ptrn:"A subsequence pattern to look for";
-            name:"Name of the result annotations marking found regions";
-            out:"Output file with annotations";
+        parameter-aliases {
+            read-sequence.url-in {
+                alias:in;
+                description:"Input sequence";
+            }
+            read-sequence-1.url-in {
+                alias:ptrn;
+                description:"A subsequence pattern to look for";
+            }
+            write-sequence.url-out {
+                alias:out;
+                description:"Output file with annotations";
+            }
+            ssearch.filter-strategy {
+                alias:filter;
+                description:"Result filtering strategy";
+            }
+            ssearch.matrix {
+                alias:matrix;
+                description:"Scoring matrix";
+            }
+            ssearch.min-score {
+                alias:score;
+                description:"The minimum score of the result";
+            }
+            ssearch.result-name {
+                alias:name;
+                description:"Name of the result annotations marking found regions";
+            }
         }
         visual {
             read-sequence {
-                pos:"-750 -660";
+                pos:"-777 -517";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                out-sequence.angle:358.047;
+            }
+            read-sequence-1 {
+                pos:"-778 -370";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 out-sequence.angle:360;
             }
             ssearch {
-                pos:"-570 -660";
+                pos:"-572 -520";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
-                in-sequence.angle:180;
-                out-annotations.angle:360;
+                in-sequence.angle:189.782;
+                out-annotations.angle:329.243;
+                pattern.angle:258.69;
             }
-            write-genbank {
-                pos:"-300 -660";
+            write-sequence {
+                pos:"-262 -430";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 in-sequence.angle:180;
+            }
+            read-sequence-1.out-sequence->ssearch.pattern {
+                text-pos:"-29.8281 -28";
             }
             read-sequence.out-sequence->ssearch.in-sequence {
-                text-pos:"-27.5 -24";
+                text-pos:"-33.8281 -28";
             }
-            ssearch.out-annotations->write-genbank.in-sequence {
-                text-pos:"-45 -37";
+            ssearch.out-annotations->write-sequence.in-sequence {
+                text-pos:"-42 -42";
             }
         }
     }
 }
+

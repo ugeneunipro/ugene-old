@@ -79,6 +79,7 @@ static const QString GAPEXT_ATTR("gap-ext-score");
 
 const QString SWWorkerFactory::ACTOR_ID("ssearch");
 
+static const QString PATTERN_PORT("pattern");
 static const QString PATTERN_DELIMITER(";");
 
 void SWAlgoEditor::populate() {
@@ -101,13 +102,21 @@ void SWAlgoEditor::populate() {
 void SWWorkerFactory::init() {
     QList<PortDescriptor*> p;
     {
+        Descriptor patd(PATTERN_PORT,
+                       SWWorker::tr("Pattern Data"),
+                       SWWorker::tr("An input pattern sequence to search for."));
+
         Descriptor ind(BasePorts::IN_SEQ_PORT_ID(),
             SWWorker::tr("Input Data"),
-            SWWorker::tr("An input sequence to search in."));
+            SWWorker::tr("An input reference sequence to search in."));
 
         Descriptor oud(BasePorts::OUT_ANNOTATIONS_PORT_ID(),
             SWWorker::tr("Pattern Annotations"),
             SWWorker::tr("The regions found."));
+
+        QMap<Descriptor, DataTypePtr> patM;
+        patM[BaseSlots::DNA_SEQUENCE_SLOT()] = BaseTypes::DNA_SEQUENCE_TYPE();
+        p << new PortDescriptor(patd, DataTypePtr(new MapDataType("sw.pattern", patM)), true);
 
         QMap<Descriptor, DataTypePtr> inM;
         inM[BaseSlots::DNA_SEQUENCE_SLOT()] = BaseTypes::DNA_SEQUENCE_TYPE();
@@ -125,10 +134,6 @@ void SWWorkerFactory::init() {
         Descriptor nd(NAME_ATTR,
             SWWorker::tr("Annotate as"),
             SWWorker::tr("Name of the result annotations."));
-
-        Descriptor pd(PATTERN_ATTR,
-            SWWorker::tr("Pattern(s)"),
-            SWWorker::tr("Semicolon-separated list of patterns to search for. You can choose file with sequences for patterns or enter them manually"));
 
         Descriptor scd(SCORE_ATTR,
             SWWorker::tr("Min Score"),
@@ -164,7 +169,6 @@ void SWWorkerFactory::init() {
             SWWorker::tr("Penalty for extending a gap."));
 
         a << new Attribute(nd, BaseTypes::STRING_TYPE(), true, "misc_feature");
-        a << new Attribute(pd, BaseTypes::STRING_TYPE(), true);
         a << new Attribute(mxd, BaseTypes::STRING_TYPE(), true, QString("Auto"));
         a << new Attribute(ald, BaseTypes::STRING_TYPE(), true);
         a << new Attribute(frd, BaseTypes::STRING_TYPE(), false, filterLst.isEmpty() ? QString() : filterLst.first());
@@ -214,7 +218,6 @@ void SWWorkerFactory::init() {
         }
         delegates[MATRIX_ATTR] = new ComboBoxDelegate(m);
     }
-    delegates[PATTERN_ATTR] = new URLDelegate(DialogUtils::prepareDocumentsFileFilter(true), QString());
 
     SWAlgoEditor* aled = new SWAlgoEditor(proto);
     aled->connect(AppContext::getPluginSupport(), SIGNAL(si_allStartUpPluginsLoaded()), SLOT(populate()));
@@ -253,15 +256,19 @@ static StrandOption getStrand(const QString & s) {
 QString SWPrompter::composeRichDoc() {
     IntegralBusPort* input = qobject_cast<IntegralBusPort*>(target->getPort(BasePorts::IN_SEQ_PORT_ID()));
     Actor* seqProducer = input->getProducer(BaseSlots::DNA_SEQUENCE_SLOT().getId());
+    IntegralBusPort* patternPort = qobject_cast<IntegralBusPort*>(target->getPort(PATTERN_PORT));
+    Actor* ptrnProducer = patternPort->getProducer(BaseSlots::DNA_SEQUENCE_SLOT().getId());
     QString unsetStr = "<font color='red'>" + tr("unset") + "</font>";
 
     QString seqName;
     seqProducer ? (seqName = seqProducer->getLabel()) : (seqName = unsetStr);
 
+    QString ptrnName;
+    ptrnProducer ? (ptrnName = ptrnProducer->getLabel()) : (ptrnName = unsetStr);
+
     SmithWatermanSettings cfg;
     cfg.strand = getStrand(getParameter(BaseAttributes::STRAND_ATTRIBUTE().getId()).value<QString>());
     cfg.percentOfScore = getParameter(SCORE_ATTR).toInt();
-    QString pattern = getRequiredParam(PATTERN_ATTR);
 
     QString strandName;
     switch (cfg.strand) {
@@ -286,11 +293,11 @@ QString SWPrompter::composeRichDoc() {
     QString resultName = getRequiredParam(NAME_ATTR);
 
     QString doc = tr("Searches regions in each sequence from <u>%1</u>"
-        " similar to %2 pattern(s). <br/>Percent similarity between"
+        " similar to all pattern(s) taken from <u>%2</u>. <br/>Percent similarity between"
         " a sequence and a pattern is %3. <br/>Seaches in %4"
         " of a %5 sequence. <br/>Outputs the regions found annotated as %6.")
         .arg(seqName)
-        .arg(getHyperlink(PATTERN_ATTR, pattern))
+        .arg(ptrnName)
         .arg(getHyperlink(SCORE_ATTR, QString::number(cfg.percentOfScore) + "%"))
         .arg(getHyperlink(BaseAttributes::STRAND_ATTRIBUTE().getId(), strandName))
         .arg(getHyperlink(AMINO_ATTR, searchInTranslationSelected))
@@ -302,12 +309,27 @@ QString SWPrompter::composeRichDoc() {
 /**************************
  * SWWorker
  **************************/
-SWWorker::SWWorker(Actor* a) : BaseWorker(a), input(NULL), output(NULL) {
+SWWorker::SWWorker(Actor* a) : BaseWorker(a, false), input(NULL), output(NULL) {
 }
 
 void SWWorker::init() {
     input = ports.value(BasePorts::IN_SEQ_PORT_ID());
+    patternPort = ports.value(PATTERN_PORT);
     output = ports.value(BasePorts::OUT_ANNOTATIONS_PORT_ID());
+
+    input->addComplement(output);
+    output->addComplement(input);
+}
+
+bool SWWorker::isReady() {
+    if (isDone()) {
+        return false;
+    }
+    bool inputEnded = input->isEnded();
+    bool patternEnded = patternPort->isEnded();
+    int inputHasMes = input->hasMessage();
+    int patternHasMes = patternPort->hasMessage();
+    return patternHasMes || (patternEnded && (inputHasMes || inputEnded));
 }
 
 QString SWWorker::readPatternsFromFile(const QString url) {
@@ -359,6 +381,23 @@ QString SWWorker::readPatternsFromFile(const QString url) {
 }
 
 Task* SWWorker::tick() {
+    while (patternPort->hasMessage()) {
+        SharedDbiDataHandler ptrnId = patternPort->get().getData().toMap().value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<SharedDbiDataHandler>();
+        std::auto_ptr<U2SequenceObject> ptrnObj(StorageUtils::getSequenceObject(context->getDataStorage(), ptrnId));
+        if (NULL == ptrnObj.get()) {
+            return NULL;
+        }
+        DNASequence ptrn = ptrnObj->getWholeSequence();
+
+        if(ptrn.isNull()) {
+            return new FailTask(tr("Null pattern supplied to Smith-Waterman: %1").arg(ptrn.getName()));
+        }
+        patternList << ptrn.constData();
+    }
+    if (!patternPort->isEnded()) {
+        return NULL;
+    }
+
     if (input->hasMessage()) {
         Message inputMessage = getMessageAndSetupScriptValues(input);
         if (inputMessage.isEmpty()) {
@@ -407,19 +446,6 @@ Task* SWWorker::tick() {
             }
         }
 
-        // pattern
-        QString ptrnStr = actor->getParameter(PATTERN_ATTR)->getAttributeValue<QString>(context);
-        if(QFile::exists(ptrnStr)) {
-            ptrnStr = readPatternsFromFile(ptrnStr);
-        }
-        ptrnStr.remove(" ");
-        ptrnStr = ptrnStr.toUpper();
-        QByteArray ptrnBytes = QString(ptrnStr).remove(PATTERN_DELIMITER).toLatin1();
-        
-        if(!cfg.pSm.getAlphabet()->containsAll(ptrnBytes.constData(), ptrnBytes.length())) {
-            algoLog.error(tr("Incorrect value: pattern alphabet doesn't match sequence alphabet "));
-            return new FailTask(tr("Pattern symbols not matching to alphabet"));
-        }
         cfg.sqnc = QByteArray(seq.constData(), seq.length());
         cfg.globalRegion.length = seq.length();
 
@@ -476,16 +502,20 @@ Task* SWWorker::tick() {
         }
 
         // for each pattern run smith-waterman
-        QStringList ptrnStrList = ptrnStr.split(PATTERN_DELIMITER, QString::SkipEmptyParts);
-        if(ptrnStrList.isEmpty()) {
+        if(patternList.isEmpty()) {
             algoLog.error(tr("Incorrect value: search pattern, pattern is empty"));
             return new FailTask(tr("Incorrect value: search pattern, pattern is empty"));
         }
         QList<Task*> subs;
-        foreach(const QString & p, ptrnStrList) {
+        foreach(QByteArray p, patternList) {
+            if(!cfg.pSm.getAlphabet()->containsAll(p.constData(), p.length())) {
+                algoLog.error(tr("Incorrect value: pattern alphabet doesn't match sequence alphabet "));
+                return new FailTask(tr("Pattern symbols not matching to alphabet"));
+            }
+
             assert(!p.isEmpty());
             SmithWatermanSettings config(cfg);
-            config.ptrn = p.toLatin1();
+            config.ptrn = p;
 
             SmithWatermanReportCallbackAnnotImpl* rcb = new SmithWatermanReportCallbackAnnotImpl( NULL, resultName, QString());
             config.resultCallback = rcb;
