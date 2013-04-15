@@ -64,7 +64,7 @@ private:
     bool isPath;
     bool saveFile;
     QString fileFormat;
-    FilenameSuggestCompletion *completer;
+    BaseCompleter *completer;
 
 private:
     void browse(bool addFiles = false);

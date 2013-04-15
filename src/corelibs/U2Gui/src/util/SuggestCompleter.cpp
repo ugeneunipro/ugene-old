@@ -30,8 +30,8 @@
 
 namespace U2{
 
-BaseCompleter::BaseCompleter(QString fileFormat, QLineEdit *parent)
-: QObject(parent), fileFormat(fileFormat), editor(parent) {
+BaseCompleter::BaseCompleter( CompletionFiller *filler, QLineEdit *parent /*= 0*/ )
+: QObject(parent), filler(filler), editor(parent) {
     popup = new QTreeWidget;
     popup->setWindowFlags(Qt::Popup);
     popup->setFocusPolicy(Qt::NoFocus);
@@ -55,6 +55,7 @@ BaseCompleter::BaseCompleter(QString fileFormat, QLineEdit *parent)
 }
 
 BaseCompleter::~BaseCompleter(){
+    delete filler;
     delete popup;
 }
 
@@ -150,13 +151,16 @@ void BaseCompleter::doneCompletion(){
     }
 }
 
-void FilenameSuggestCompletion::sl_textEdited(const QString &fileName){
-    if (fileName.isEmpty()){
+void BaseCompleter::sl_textEdited( const QString& typedText){
+    if (typedText.isEmpty()){
         popup->hide();
         return;
     }
+    showCompletion(filler->getSuggestions(typedText));
+}
 
-    QString fName = fileName;
+QStringList FilenameCompletionFiller::getSuggestions( QString str ){
+    QString fName = str;
     if(fName.endsWith(".")){
         fName = fName.left(fName.size()-1);
     }
@@ -191,7 +195,7 @@ void FilenameSuggestCompletion::sl_textEdited(const QString &fileName){
         }
     }
 
-    showCompletion(choices);
+    return choices;
 }
 
 }

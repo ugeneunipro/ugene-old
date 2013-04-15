@@ -29,34 +29,40 @@ class QTreeWidget;
 
 namespace U2 {
 
+class U2GUI_EXPORT CompletionFiller : public QObject {
+    Q_OBJECT
+public:
+    CompletionFiller(){};
+    virtual QStringList getSuggestions(QString str) = 0;
+};
+
+class U2GUI_EXPORT FilenameCompletionFiller : public CompletionFiller {
+public:
+    FilenameCompletionFiller(QString _fileFormat):CompletionFiller(),fileFormat(_fileFormat){};
+
+    QStringList getSuggestions(QString str);
+private:
+    QString fileFormat;
+};
+
 class U2GUI_EXPORT BaseCompleter : public QObject{
     Q_OBJECT
 public:
-    BaseCompleter(QString fileFormat, QLineEdit *parent = 0);
+    BaseCompleter(CompletionFiller *filler, QLineEdit *parent = 0);
     ~BaseCompleter();
     bool eventFilter(QObject *obj, QEvent *ev);
     void showCompletion(const QStringList &choices);
 signals:
     void si_editingFinished();
 
-protected slots:
-    void doneCompletion();
-    virtual void sl_textEdited(const QString&) = 0;
+    protected slots:
+        void doneCompletion();
+        void sl_textEdited(const QString&);
 
-protected:
-    QString fileFormat;
+private:
+    CompletionFiller *filler;
     QLineEdit *editor;
     QTreeWidget *popup;
-};
-
-class U2GUI_EXPORT FilenameSuggestCompletion : public BaseCompleter{
-    Q_OBJECT
-public:
-    FilenameSuggestCompletion(QString fileFormat, QLineEdit *parent /* = 0 */):BaseCompleter(fileFormat, parent){};
-    ~FilenameSuggestCompletion(){};
-
-protected slots:
-    void sl_textEdited(const QString&);
 };
 
 } // U2
