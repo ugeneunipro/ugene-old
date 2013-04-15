@@ -30,7 +30,7 @@ namespace U2 {
  * The class is needed to wrap a task that can be failed
  * but the workflow process would not be stopped.
  */
-class NoFailTaskWrapper : public Task {
+class U2LANG_EXPORT NoFailTaskWrapper : public Task {
     Q_OBJECT
 public:
     NoFailTaskWrapper(Task *task);

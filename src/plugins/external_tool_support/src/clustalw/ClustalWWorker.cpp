@@ -30,6 +30,7 @@
 #include <U2Lang/BaseSlots.h>
 #include <U2Lang/BasePorts.h>
 #include <U2Lang/BaseActorCategories.h>
+#include <U2Lang/NoFailTaskWrapper.h>
 #include <U2Designer/DelegateEditors.h>
 #include <U2Lang/CoreLibConstants.h>
 #include <U2Core/AppContext.h>
@@ -255,12 +256,11 @@ Task* ClustalWWorker::tick() {
         SAFE_POINT(NULL != msaObj.get(), "NULL MSA Object!", NULL);
         MAlignment msa = msaObj->getMAlignment();
         
-        if(msa.isEmpty() || msa.getNumRows() < 2) {
-            send(msa);
-            algoLog.error(tr("'%1' can not be aligned by ClustalW. It has just been sent to the output.").arg(msa.getName()));
+        if (msa.isEmpty()) {
+            algoLog.error(tr("An empty MSA '%1' has been supplied to ClustalW.").arg(msa.getName()));
             return NULL;
         }
-        Task* t = new ClustalWSupportTask(msa, GObjectReference(), cfg);
+        Task *t = new NoFailTaskWrapper(new ClustalWSupportTask(msa, GObjectReference(), cfg));
         connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
         return t;
     } else if (input->isEnded()) {
@@ -271,8 +271,13 @@ Task* ClustalWWorker::tick() {
 }
 
 void ClustalWWorker::sl_taskFinished() {
-    ClustalWSupportTask* t = qobject_cast<ClustalWSupportTask*>(sender());
-    if (t->getState() != Task::State_Finished) return;
+    NoFailTaskWrapper *wrapper = qobject_cast<NoFailTaskWrapper*>(sender());
+    CHECK(wrapper->isFinished(), );
+    ClustalWSupportTask* t = qobject_cast<ClustalWSupportTask*>(wrapper->originalTask());
+    if (t->hasError()) {
+        coreLog.error(t->getError());
+        return;
+    }
 
     SAFE_POINT(NULL != output, "NULL output!", );
     send(t->resultMA);

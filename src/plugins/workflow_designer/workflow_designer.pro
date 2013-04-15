@@ -59,7 +59,6 @@ HEADERS += src/ActorCfgModel.h \
            src/library/WriteVariationWorker.h \
            src/tasks/ReadAssemblyTask.h \
            src/util/GrouperActionUtils.h \
-           src/util/NoFailTaskWrapper.h \
            src/util/SaveSchemaImageUtils.h \
            src/util/WorkerNameValidator.h \
            src/util/WriteSequenceValidator.h
@@ -132,7 +131,6 @@ SOURCES += src/ActorCfgModel.cpp \
            src/library/WriteVariationWorker.cpp \
            src/tasks/ReadAssemblyTask.cpp \
            src/util/GrouperActionUtils.cpp \
-           src/util/NoFailTaskWrapper.cpp \
            src/util/SaveSchemaImageUtils.cpp \
            src/util/WorkerNameValidator.cpp \
            src/util/WriteSequenceValidator.cpp

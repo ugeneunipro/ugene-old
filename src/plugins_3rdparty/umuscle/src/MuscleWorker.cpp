@@ -38,6 +38,7 @@
 #include <U2Lang/BasePorts.h>
 #include <U2Lang/BaseActorCategories.h>
 #include <U2Lang/CoreLibConstants.h>
+#include <U2Lang/NoFailTaskWrapper.h>
 
 
 /* TRANSLATOR U2::LocalWorkflow::MuscleWorker */
@@ -172,7 +173,7 @@ Task* MuscleWorker::tick() {
         MAlignment msa = msaObj->getMAlignment();
 
         if( msa.isEmpty() ) {
-            algoLog.error( tr("An empty MSA has been supplied to MUSCLE.") );
+            algoLog.error(tr("An empty MSA '%1' has been supplied to MUSCLE.").arg(msa.getName()));
             return NULL;
         }
         QString range = actor->getParameter(RANGE_ATTR)->getAttributeValue<QString>(context);
@@ -204,7 +205,7 @@ Task* MuscleWorker::tick() {
             cfg.regionToAlign = U2Region(start,  end - start + 1);
         }
         
-        Task* t = new MuscleTask(msa, cfg);
+        Task *t = new NoFailTaskWrapper(new MuscleTask(msa, cfg));
         connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
         return t;
     } else if (input->isEnded()) {
@@ -215,8 +216,13 @@ Task* MuscleWorker::tick() {
 }
 
 void MuscleWorker::sl_taskFinished() {
-    MuscleTask* t = qobject_cast<MuscleTask*>(sender());
-    if (t->getState() != Task::State_Finished) return;
+    NoFailTaskWrapper *wrapper = qobject_cast<NoFailTaskWrapper*>(sender());
+    CHECK(wrapper->isFinished(), );
+    MuscleTask* t = qobject_cast<MuscleTask*>(wrapper->originalTask());
+    if (t->hasError()) {
+        coreLog.error(t->getError());
+        return;
+    }
 
     SAFE_POINT(NULL != output, "NULL output!", );
     SharedDbiDataHandler msaId = context->getDataStorage()->putAlignment(t->resultMA);

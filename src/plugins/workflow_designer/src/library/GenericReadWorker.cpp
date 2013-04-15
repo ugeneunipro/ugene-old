@@ -22,7 +22,6 @@
 #include "GenericReadWorker.h"
 #include "GenericReadActor.h"
 #include "CoreLib.h"
-#include "util/NoFailTaskWrapper.h"
 
 #include <U2Core/AppContext.h>
 #include <U2Core/AppResources.h>
@@ -48,9 +47,11 @@
 
 #include <U2Lang/BaseSlots.h>
 #include <U2Lang/BaseAttributes.h>
-#include <U2Lang/Dataset.h>
-#include <U2Lang/WorkflowEnv.h>
 #include <U2Lang/CoreLibConstants.h>
+#include <U2Lang/Dataset.h>
+#include <U2Lang/NoFailTaskWrapper.h>
+#include <U2Lang/WorkflowEnv.h>
+
 #include <U2Formats/DocumentFormatUtils.h>
 
 #include <memory>

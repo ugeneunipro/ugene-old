@@ -45,6 +45,7 @@ HEADERS += src/library/BaseActorCategories.h \
            src/support/CoreLibConstants.h \
            src/support/MapDatatypeEditor.h \
            src/support/MarkerUtils.h \
+           src/support/NoFailTaskWrapper.h \
            src/support/SchemaSerializer.h \
            src/support/ScriptWorkerSerializer.h \
            src/support/SimpleWorkflowTask.h \
@@ -116,6 +117,7 @@ SOURCES += src/library/BaseActorCategories.cpp \
            src/support/CoreLibConstants.cpp \
            src/support/MapDatatypeEditor.cpp \
            src/support/MarkerUtils.cpp \
+           src/support/NoFailTaskWrapper.cpp \
            src/support/SchemaSerializer.cpp \
            src/support/ScriptWorkerSerializer.cpp \
            src/support/SimpleWorkflowTask.cpp \

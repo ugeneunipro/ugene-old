@@ -37,6 +37,7 @@
 #include <U2Lang/BasePorts.h>
 #include <U2Lang/BaseActorCategories.h>
 #include <U2Lang/CoreLibConstants.h>
+#include <U2Lang/NoFailTaskWrapper.h>
 
 /* TRANSLATOR U2::LocalWorkflow::KalignWorker */
 
@@ -155,12 +156,11 @@ Task* KalignWorker::tick() {
         SAFE_POINT(NULL != msaObj.get(), "NULL MSA Object!", NULL);
         MAlignment msa = msaObj->getMAlignment();
 
-        if(msa.isEmpty() || msa.getNumRows() < 2) {
-            send(msa);
-            algoLog.error(tr("'%1' can not be aligned by Kalign. It has just been sent to the output.").arg(msa.getName()));
+        if (msa.isEmpty()) {
+            algoLog.error(tr("An empty MSA '%1' has been supplied to Kalign.").arg(msa.getName()));
             return NULL;
         }
-        Task* t = new KalignTask(msa, cfg);
+        Task *t = new NoFailTaskWrapper(new KalignTask(msa, cfg));
         connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
         return t;
     } else if (input->isEnded()) {
@@ -171,8 +171,13 @@ Task* KalignWorker::tick() {
 }
 
 void KalignWorker::sl_taskFinished() {
-    KalignTask* t = qobject_cast<KalignTask*>(sender());
-    if (t->getState() != Task::State_Finished) return;
+    NoFailTaskWrapper *wrapper = qobject_cast<NoFailTaskWrapper*>(sender());
+    CHECK(wrapper->isFinished(), );
+    KalignTask *t = qobject_cast<KalignTask*>(wrapper->originalTask());
+    if (t->hasError()) {
+        coreLog.error(t->getError());
+        return;
+    }
 
     SAFE_POINT(NULL != output, "NULL output!", );
     send(t->resultMA);

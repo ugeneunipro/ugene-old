@@ -30,8 +30,10 @@
 #include <U2Lang/BaseSlots.h>
 #include <U2Lang/BasePorts.h>
 #include <U2Lang/BaseActorCategories.h>
-#include <U2Designer/DelegateEditors.h>
 #include <U2Lang/CoreLibConstants.h>
+#include <U2Lang/NoFailTaskWrapper.h>
+
+#include <U2Designer/DelegateEditors.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>
 #include <U2Core/UserApplicationsSettings.h>
@@ -167,12 +169,11 @@ Task* MAFFTWorker::tick() {
         SAFE_POINT(NULL != msaObj.get(), "NULL MSA Object!", NULL);
         MAlignment msa = msaObj->getMAlignment();
 
-        if (msa.isEmpty() || msa.getNumRows() < 2) {
-            send(msa);
-            algoLog.error(tr("'%1' can not be aligned by MAFFT. It has just been sent to the output.").arg(msa.getName()));
+        if (msa.isEmpty()) {
+            algoLog.error(tr("An empty MSA '%1' has been supplied to MAFFT.").arg(msa.getName()));
             return NULL;
         }
-        Task* t = new MAFFTSupportTask(msa, GObjectReference(), cfg);
+        Task *t = new NoFailTaskWrapper(new MAFFTSupportTask(msa, GObjectReference(), cfg));
         connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
         return t;
     } else if (input->isEnded()) {
@@ -183,9 +184,13 @@ Task* MAFFTWorker::tick() {
 }
 
 void MAFFTWorker::sl_taskFinished() {
-    MAFFTSupportTask* t = qobject_cast<MAFFTSupportTask*>(sender());
-    if (t->getState() != Task::State_Finished) return;
-    QVariant v = qVariantFromValue<MAlignment>(t->resultMA);
+    NoFailTaskWrapper *wrapper = qobject_cast<NoFailTaskWrapper*>(sender());
+    CHECK(wrapper->isFinished(), );
+    MAFFTSupportTask* t = qobject_cast<MAFFTSupportTask*>(wrapper->originalTask());
+    if (t->hasError()) {
+        coreLog.error(t->getError());
+        return;
+    }
 
     SAFE_POINT(NULL != output, "NULL output!", );
     send(t->resultMA);

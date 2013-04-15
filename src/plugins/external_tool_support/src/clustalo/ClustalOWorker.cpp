@@ -30,6 +30,7 @@
 #include <U2Lang/BaseSlots.h>
 #include <U2Lang/BasePorts.h>
 #include <U2Lang/BaseActorCategories.h>
+#include <U2Lang/NoFailTaskWrapper.h>
 #include <U2Designer/DelegateEditors.h>
 #include <U2Lang/CoreLibConstants.h>
 #include <U2Core/AppContext.h>
@@ -179,10 +180,11 @@ Task* ClustalOWorker::tick() {
         SAFE_POINT(NULL != msaObj.get(), "NULL MSA Object!", NULL);
         MAlignment msa = msaObj->getMAlignment();
         
-        if( msa.isEmpty() ) {
-            return new FailTask(tr("An empty MSA has been supplied to ClustalO."));
+        if (msa.isEmpty()) {
+            algoLog.error(tr("An empty MSA '%1' has been supplied to ClustalO.").arg(msa.getName()));
+            return NULL;
         }
-        Task* t = new ClustalOSupportTask(msa, GObjectReference(), cfg);
+        Task *t = new NoFailTaskWrapper(new ClustalOSupportTask(msa, GObjectReference(), cfg));
         connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
         return t;
     } else if (input->isEnded()) {
@@ -193,8 +195,13 @@ Task* ClustalOWorker::tick() {
 }
 
 void ClustalOWorker::sl_taskFinished() {
-    ClustalOSupportTask* t = qobject_cast<ClustalOSupportTask*>(sender());
-    if (t->getState() != Task::State_Finished) return;
+    NoFailTaskWrapper *wrapper = qobject_cast<NoFailTaskWrapper*>(sender());
+    CHECK(wrapper->isFinished(), );
+    ClustalOSupportTask* t = qobject_cast<ClustalOSupportTask*>(wrapper->originalTask());
+    if (t->hasError()) {
+        coreLog.error(t->getError());
+        return;
+    }
 
     SAFE_POINT(NULL != output, "NULL output!", );
     SharedDbiDataHandler msaId = context->getDataStorage()->putAlignment(t->resultMA);
