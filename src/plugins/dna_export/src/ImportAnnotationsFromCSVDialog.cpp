@@ -492,6 +492,9 @@ QString ImportAnnotationsFromCSVDialog::getHeaderItemText(int column) const {
                 text = tr("[complement if '%1']").arg(config.complementMark);
             }
             break;
+        case ColumnRole_Group:
+            text = tr("[group]");
+            break;
         default:
             assert(config.role == ColumnRole_Ignore);
     }

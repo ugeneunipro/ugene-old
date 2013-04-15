@@ -111,8 +111,7 @@ QList<Task*> ImportAnnotationsFromCSVTask::onSubTaskFinished(Task* subTask) {
     } 
     if (doc.isNull()) { //document is null -> save it and add to the project
         assert(subTask == readTask);
-        QList<Annotation*> annotations = prepareAnnotations();
-        doc = prepareNewDocument(annotations);
+        doc = prepareNewDocument(prepareAnnotations());
         writeTask = new SaveDocumentTask(doc);
         result.append(writeTask);
     } else if (writeTask != NULL && !inProject) { // document was saved -> add to the project
@@ -141,32 +140,38 @@ QList<Task*> ImportAnnotationsFromCSVTask::onSubTaskFinished(Task* subTask) {
                 adjustRelations(ao);
             }
             assert(ao != NULL);
-            QList<Annotation*> annotations = prepareAnnotations();
-            ao->addAnnotations(annotations);
+            QMap< QString, QList<Annotation*> > groups = prepareAnnotations();
+            foreach (const QString &groupName, groups.keys()) {
+                ao->addAnnotations(groups[groupName], groupName);
+            }
         }
     }
     return result;
 }
 
-QList<Annotation*> ImportAnnotationsFromCSVTask::prepareAnnotations() const {
+QMap< QString, QList<Annotation*> > ImportAnnotationsFromCSVTask::prepareAnnotations() const {
     assert(readTask != NULL && readTask->isFinished());
-    QList<SharedAnnotationData> datas = readTask->getResult();
-    QList<Annotation*> result;
-    foreach (const SharedAnnotationData& d, datas) {
-        Annotation* a = new Annotation(d);
-        result.append(a);
+    QMap< QString, QList<SharedAnnotationData> > datas = readTask->getResult();
+    QMap< QString, QList<Annotation*> > result;
+    foreach (const QString &groupName, datas.keys()) {
+        foreach (const SharedAnnotationData& d, datas[groupName]) {
+            Annotation* a = new Annotation(d);
+            result[groupName] << a;
+        }
     }
     return result;
 }
 
-Document* ImportAnnotationsFromCSVTask::prepareNewDocument(const QList<Annotation*>& annotations) const {
+Document* ImportAnnotationsFromCSVTask::prepareNewDocument(const QMap< QString, QList<Annotation*> > &groups) const {
     IOAdapterId ioId = IOAdapterUtils::url2io(config.dstFile);
     IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(ioId);
     U2OpStatus2Log os;
     Document* result = config.df->createNewLoadedDocument(iof, config.dstFile, os);
     CHECK_OP(os, NULL);
     AnnotationTableObject* ao = new AnnotationTableObject("Annotations");
-    ao->addAnnotations(annotations);
+    foreach (const QString &groupName, groups.keys()) {
+        ao->addAnnotations(groups[groupName], groupName);
+    }
     ao->setModified(false);
     result->addObject(ao);
 
@@ -218,7 +223,8 @@ void ReadCSVAsAnnotationsTask::run() {
         int startPosOffset = 0;
         int len = -1;
         int endPos = -1;
-        
+        QString groupName;
+
         for (int column = 0; column < lineTokens.size() && ok; column++) {
             if (column > config.columns.size()) {
                 break;
@@ -262,6 +268,9 @@ void ReadCSVAsAnnotationsTask::run() {
                 case ColumnRole_ComplMark:
                     a->location->strand = (columnConf.complementMark.isEmpty() || token == columnConf.complementMark) ? U2Strand::Complementary : U2Strand::Direct;
                     break;
+                case ColumnRole_Group:
+                    groupName = token;
+                    break;
                 default:
                     assert(columnConf.role == ColumnRole_Ignore);
             }
@@ -295,7 +304,7 @@ void ReadCSVAsAnnotationsTask::run() {
                     .arg(QString::number(location.startPos)).arg(QString::number(location.length)).arg(lineTokens.join(config.splitToken)));
             } else {
                 a->location->regions.append(location);
-                result.append(a);
+                result[groupName] << a;
             }
         } else {
             //TODO: make configurable to allow stop parsing on any error!

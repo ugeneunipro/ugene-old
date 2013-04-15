@@ -64,6 +64,9 @@ CSVColumnConfigurationDialog::CSVColumnConfigurationDialog(QWidget* w, const Col
             complValueEdit->setText(config.complementMark);
             complValueCheck->setChecked(!config.complementMark.isEmpty());
             break;
+        case ColumnRole_Group:
+            groupRB->setChecked(true);
+            break;
         default:
             assert(0);
     }
@@ -93,6 +96,8 @@ void CSVColumnConfigurationDialog::accept() {
     } else if (complMarkRB->isChecked()) {
         config.role = ColumnRole_ComplMark;
         config.complementMark = complValueCheck->isChecked() ? complValueEdit->text() : QString();
+    } else if (groupRB->isChecked()) {
+        config.role = ColumnRole_Group;
     } else {
         assert(ignoreRB->isChecked());
     }

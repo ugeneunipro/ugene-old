@@ -23,6 +23,13 @@
       <string>Column role</string>
      </property>
      <layout class="QGridLayout" name="gridLayout">
+      <item row="10" column="0">
+       <widget class="QRadioButton" name="ignoreRB">
+        <property name="text">
+         <string>Ignore this column</string>
+        </property>
+       </widget>
+      </item>
       <item row="0" column="0" colspan="2">
        <widget class="QRadioButton" name="startRB">
         <property name="text">
@@ -120,31 +127,24 @@
         </property>
        </widget>
       </item>
-      <item row="7" column="0">
+      <item row="8" column="0">
        <widget class="QRadioButton" name="qualifierRB">
         <property name="text">
          <string>Qualifier</string>
         </property>
        </widget>
       </item>
-      <item row="7" column="3" colspan="2">
+      <item row="8" column="3" colspan="2">
        <widget class="QLineEdit" name="qualifierNameEdit">
         <property name="enabled">
          <bool>false</bool>
         </property>
        </widget>
       </item>
-      <item row="8" column="0" colspan="5">
+      <item row="9" column="0" colspan="5">
        <widget class="Line" name="line_2">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
-        </property>
-       </widget>
-      </item>
-      <item row="9" column="0">
-       <widget class="QRadioButton" name="ignoreRB">
-        <property name="text">
-         <string>Ignore this column</string>
         </property>
        </widget>
       </item>
@@ -167,6 +167,13 @@
          </size>
         </property>
        </spacer>
+      </item>
+      <item row="7" column="0">
+       <widget class="QRadioButton" name="groupRB">
+        <property name="text">
+         <string>Annotation group</string>
+        </property>
+       </widget>
       </item>
      </layout>
     </widget>

@@ -33,7 +33,8 @@ enum ColumnRole {
     ColumnRole_StartPos,    // column will be mapped as start position
     ColumnRole_EndPos,      // column will be mapped as end position
     ColumnRole_Length,      // column will be mapped as length
-    ColumnRole_ComplMark    // column is a complement strand indicator
+    ColumnRole_ComplMark,   // column is a complement strand indicator
+    ColumnRole_Group        // group of the annotation
 };
 
 class ColumnConfig {
