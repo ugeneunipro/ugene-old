@@ -64,9 +64,6 @@ private slots:
     void sl_taskFinished(Task*);
 
 private:
-    QString readPatternsFromFile(const QString url);
-
-private:
     IntegralBus *input, *patternPort, *output;
     QMap<Task*, SmithWatermanReportCallbackAnnotImpl*> callbacks;
     QList<QByteArray> patternList;

@@ -76,6 +76,7 @@ static const QString ALGO_ATTR("algorithm");
 static const QString FILTER_ATTR("filter-strategy");
 static const QString GAPOPEN_ATTR("gap-open-score");
 static const QString GAPEXT_ATTR("gap-ext-score");
+static const QString USE_PATTERN_NAME_ATTR("use-pattern-names");
 
 const QString SWWorkerFactory::ACTOR_ID("ssearch");
 
@@ -168,7 +169,10 @@ void SWWorkerFactory::init() {
             SWWorker::tr("Gap Extension Score"),
             SWWorker::tr("Penalty for extending a gap."));
 
-        a << new Attribute(nd, BaseTypes::STRING_TYPE(), true, "misc_feature");
+        Descriptor pnd(USE_PATTERN_NAME_ATTR,
+                       SWWorker::tr("Use Pattern Names"),
+                       SWWorker::tr("Use a pattern name as an annotation name."));
+
         a << new Attribute(mxd, BaseTypes::STRING_TYPE(), true, QString("Auto"));
         a << new Attribute(ald, BaseTypes::STRING_TYPE(), true);
         a << new Attribute(frd, BaseTypes::STRING_TYPE(), false, filterLst.isEmpty() ? QString() : filterLst.first());
@@ -177,6 +181,8 @@ void SWWorkerFactory::init() {
         a << new Attribute(amd, BaseTypes::BOOL_TYPE(), false, false);
         a << new Attribute(god, BaseTypes::NUM_TYPE(), false, -10.);
         a << new Attribute(ged, BaseTypes::NUM_TYPE(), false, -1.);
+        a << new Attribute(pnd, BaseTypes::BOOL_TYPE(), false, true);
+        a << new Attribute(nd, BaseTypes::STRING_TYPE(), false, "misc_feature");
     }
 
     Descriptor desc(ACTOR_ID,
@@ -290,7 +296,12 @@ QString SWPrompter::composeRichDoc() {
         searchInTranslationSelected = "<u>" + tr("translated") + "</u>" + " ";
     }
 
-    QString resultName = getRequiredParam(NAME_ATTR);
+    QString resultName = getParameter(NAME_ATTR).toString();
+    if (resultName == "") {
+        resultName = "misc_feature";
+    }
+
+    bool usePatternNames = getParameter(USE_PATTERN_NAME_ATTR).toBool();
 
     QString doc = tr("Searches regions in each sequence from <u>%1</u>"
         " similar to all pattern(s) taken from <u>%2</u>. <br/>Percent similarity between"
@@ -301,7 +312,7 @@ QString SWPrompter::composeRichDoc() {
         .arg(getHyperlink(SCORE_ATTR, QString::number(cfg.percentOfScore) + "%"))
         .arg(getHyperlink(BaseAttributes::STRAND_ATTRIBUTE().getId(), strandName))
         .arg(getHyperlink(AMINO_ATTR, searchInTranslationSelected))
-        .arg(getHyperlink(NAME_ATTR, resultName));
+        .arg(usePatternNames ? "pattern names" : getHyperlink(NAME_ATTR, resultName));
 
     return doc;
 }
@@ -332,54 +343,6 @@ bool SWWorker::isReady() {
     return patternHasMes || (patternEnded && (inputHasMes || inputEnded));
 }
 
-QString SWWorker::readPatternsFromFile(const QString url) {
-    QFileInfo fi(url);
-    QString pattern;
-    CHECK(fi.exists(), pattern);
-    
-    QList<FormatDetectionResult> fs = DocumentUtils::detectFormat(url);
-    DocumentFormat* format = NULL;
-
-    foreach( const FormatDetectionResult& i, fs ) {
-        const QSet<GObjectType>& types = i.format->getSupportedObjectTypes();
-        if (types.contains(GObjectTypes::SEQUENCE) || types.contains(GObjectTypes::MULTIPLE_ALIGNMENT)) {
-            format = i.format;
-            break;
-        }
-    }
-
-    CHECK(format != NULL, pattern);
-    ioLog.info(tr("Reading sequences from %1 [%2]").arg(url).arg(format->getFormatName()));
-    IOAdapterId ioId = IOAdapterUtils::url2io(url);
-    IOAdapterFactory* iof = IOAdapterUtils::get(ioId);
-    U2OpStatus2Log os;
-    std::auto_ptr<Document> doc(format->loadDocument(iof, url, QVariantMap(), os));
-    CHECK_OP(os, pattern);
-
-    const QSet<GObjectType>& types = format->getSupportedObjectTypes();
-    if (types.contains(GObjectTypes::SEQUENCE)) {
-        QList<GObject*> seqObjs = doc->findGObjectByType(GObjectTypes::SEQUENCE);
-        QList<GObject*> annObjs = doc->findGObjectByType(GObjectTypes::ANNOTATION_TABLE);
-        foreach(GObject* go, seqObjs) {
-            assert(go != NULL);
-            const DNASequence& dna = ((U2SequenceObject*)go)->getWholeSequence();
-            pattern += QString(dna.constData()) + ";";
-            patternNames[dna.constData()] = dna.getName();
-            if(!dna.info[DNAInfo::FASTA_HDR].toString().isEmpty()) {
-                fastaHeaders[dna.constData()] = dna.info[DNAInfo::FASTA_HDR].toString();
-            }
-        }
-
-    } else {
-        foreach(GObject* go, doc->findGObjectByType(GObjectTypes::MULTIPLE_ALIGNMENT)) {
-            foreach(const DNASequence& s, MSAUtils::ma2seq(((MAlignmentObject*)go)->getMAlignment(), false)) {
-                pattern += QString(s.constData()) + ";";
-            }
-        }
-    }
-    return pattern;
-}
-
 Task* SWWorker::tick() {
     while (patternPort->hasMessage()) {
         SharedDbiDataHandler ptrnId = patternPort->get().getData().toMap().value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<SharedDbiDataHandler>();
@@ -393,6 +356,10 @@ Task* SWWorker::tick() {
             return new FailTask(tr("Null pattern supplied to Smith-Waterman: %1").arg(ptrn.getName()));
         }
         patternList << ptrn.constData();
+        patternNames.insert(ptrn.constData(), ptrn.getName());
+        if(!ptrn.info[DNAInfo::FASTA_HDR].toString().isEmpty()) {
+            fastaHeaders[ptrn.constData()] = ptrn.info[DNAInfo::FASTA_HDR].toString();
+        }
     }
     if (!patternPort->isEnded()) {
         return NULL;
@@ -468,10 +435,10 @@ Task* SWWorker::tick() {
         }
 
         // annotation name
-        QString resultName = actor->getParameter(NAME_ATTR)->getAttributeValue<QString>(context);
-        if(resultName.isEmpty()){
+        QString defaultName = actor->getParameter(NAME_ATTR)->getAttributeValue<QString>(context);
+        if(defaultName.isEmpty()){
             algoLog.error(tr("Incorrect value: result name is empty, default value used")); //details level won't work
-            resultName = "misc_feature";
+            defaultName = "misc_feature";
         }
 
         // translations
@@ -517,6 +484,9 @@ Task* SWWorker::tick() {
             SmithWatermanSettings config(cfg);
             config.ptrn = p;
 
+            QString resultName = actor->getParameter(USE_PATTERN_NAME_ATTR)->getAttributeValue<bool>(context) ?
+                                     patternNames.value(p, defaultName) :
+                                     defaultName;
             SmithWatermanReportCallbackAnnotImpl* rcb = new SmithWatermanReportCallbackAnnotImpl( NULL, resultName, QString());
             config.resultCallback = rcb;
             config.resultListener = new SmithWatermanResultListener(); //FIXME: where to delete?
