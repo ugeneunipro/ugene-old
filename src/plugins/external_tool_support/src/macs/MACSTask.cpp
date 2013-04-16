@@ -273,7 +273,7 @@ QString MACSTask::getWiggleUrl(){
 //////////////////////////////////////////////////////////////////////////
 //MACSLogParser
 MACSLogParser::MACSLogParser()
-:ExternalToolLogParser(){
+    :ExternalToolLogParser(), progress(-1) {
 
 }
 
@@ -286,7 +286,7 @@ int MACSLogParser::getProgress(){
         if(lastMessage.contains(rx)){
             SAFE_POINT(rx.indexIn(lastMessage) > -1, "bad progress index", 0);
             int step = rx.cap(1).toInt();
-            return  (100 * step)/ float(qMax(step, max_step));
+            return  progress = (100 * step)/ float(qMax(step, max_step));
         }
     }
     return progress;
