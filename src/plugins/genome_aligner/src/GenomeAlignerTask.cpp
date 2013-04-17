@@ -46,7 +46,6 @@
 #include "GenomeAlignerFindTask.h"
 #include "GenomeAlignerIndexTask.h"
 #include "GenomeAlignerIndex.h"
-#include "SuffixSearchCUDA.h"
 #include "GenomeAlignerTask.h"
 #include "ReadShortReadsSubTask.h"
 #include "WriteAlignedReadsSubTask.h"
@@ -58,7 +57,6 @@ const QString GenomeAlignerTask::OPTION_READS_READER("rreader");
 const QString GenomeAlignerTask::OPTION_READS_WRITER("rwriter");
 const QString GenomeAlignerTask::OPTION_ALIGN_REVERSED("align_reversed");
 const QString GenomeAlignerTask::OPTION_OPENCL("use_gpu_optimization");
-const QString GenomeAlignerTask::OPTION_USE_CUDA("use_cuda");
 const QString GenomeAlignerTask::OPTION_IF_ABS_MISMATCHES("if_absolute_mismatches_value");
 const QString GenomeAlignerTask::OPTION_MISMATCHES("mismatches_allowed");
 const QString GenomeAlignerTask::OPTION_PERCENTAGE_MISMATCHES("mismatches_percentage_allowed");
@@ -90,7 +88,6 @@ justBuildIndex(_justBuildIndex), bunchSize(0), index(NULL), lastQuery(NULL)
 
     alignReversed = settings.getCustomValue(OPTION_ALIGN_REVERSED, true).toBool();
     alignContext.openCL = settings.getCustomValue(OPTION_OPENCL, false).toBool();
-    alignContext.useCUDA = settings.getCustomValue(OPTION_USE_CUDA, false).toBool();
     alignContext.absMismatches = settings.getCustomValue(OPTION_IF_ABS_MISMATCHES, true).toBool();
     alignContext.nMismatches = settings.getCustomValue(OPTION_MISMATCHES, 0).toInt();
     alignContext.ptMismatches = settings.getCustomValue(OPTION_PERCENTAGE_MISMATCHES, 0).toInt();
@@ -126,8 +123,6 @@ justBuildIndex(_justBuildIndex), bunchSize(0), index(NULL), lastQuery(NULL)
     addTaskResource(TaskResourceUsage(RESOURCE_MEMORY, memUseMB, true));
     if (alignContext.openCL) {
         addTaskResource(TaskResourceUsage(RESOURCE_OPENCL_GPU, 1, true));
-    } else if (alignContext.useCUDA) {
-        addTaskResource(TaskResourceUsage(RESOURCE_CUDA_GPU, 1 ,true));
     }
 }
 

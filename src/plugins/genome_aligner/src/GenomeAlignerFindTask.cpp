@@ -29,7 +29,6 @@
 
 #include "GenomeAlignerIndex.h"
 #include "GenomeAlignerTask.h"
-#include "SuffixSearchCUDA.h"
 
 #include <time.h>
 
@@ -51,11 +50,6 @@ index(i), writeTask(w), alignContext(s)
 }
 
 void GenomeAlignerFindTask::prepare() {
-    if (alignContext->useCUDA) {
-        //proceed to run function
-        return;
-    }
-
     if(alignContext->openCL) {
         // no reason to have several parallel subtasks using openCL since they'll be waiting on the same mutex anyway
         waiterCount = 0;
@@ -78,25 +72,6 @@ void GenomeAlignerFindTask::prepare() {
 }
 
 void GenomeAlignerFindTask::run() {
-    if (alignContext->useCUDA) {
-        
-        GenomeAlignerCUDAHelper cudaHelper;
-        
-        cudaHelper.loadShortReads(alignContext->queries, stateInfo);
-        if (hasError()) {
-            return;
-        }
-
-        for (int part = 0; part < index->getPartCount(); ++part) {
-            if (!index->loadPart(part)) {
-                setError("Incorrect index file. Please, try to create a new index file.");
-            }
-            cudaHelper.alignReads(index->getLoadedPart(),alignContext, stateInfo);
-            if (hasError()) {
-                return;
-            }
-        }
-    }
 
     // TODO: this is a fastfix of reopened https://ugene.unipro.ru/tracker/browse/UGENE-1190
     // Problem:

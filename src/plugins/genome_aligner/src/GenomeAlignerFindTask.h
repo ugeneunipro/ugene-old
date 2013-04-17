@@ -47,14 +47,13 @@ class PrepareVectorsSubTask;
 class AlignContext {
 public:
     AlignContext(): w(-1), ptMismatches(0), nMismatches(0), absMismatches(0), bestMode(false),
-        openCL(false), useCUDA(0), minReadLength(-1), maxReadLength(-1), /*bitFilter(0),*/ isReadingFinished(false) {}
+        openCL(false), minReadLength(-1), maxReadLength(-1), /*bitFilter(0),*/ isReadingFinished(false) {}
     int w;
     int ptMismatches;
     int nMismatches;
     bool absMismatches;
     bool bestMode;
     bool openCL;
-    bool useCUDA;
     int minReadLength;
     int maxReadLength;
     QVector<SearchQuery*> queries;

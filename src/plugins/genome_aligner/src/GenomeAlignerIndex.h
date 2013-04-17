@@ -50,7 +50,6 @@ public:
 #ifdef OPENCL_SUPPORT
     BinarySearchResult *bitMaskBinarySearchOpenCL(const BMType *bitValues, int size, const int *windowSizes);
 #endif
-    BinarySearchResult *findBitValuesUsingCUDA(BMType *bitValues, int size, BMType filter);
     QString getSeqName() const {return seqObjName;}
     int getPartCount() const {return indexPart.partCount;}
     SAType getSArraySize() const {return indexPart.saLengths[currentPart];}

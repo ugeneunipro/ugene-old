@@ -27,7 +27,6 @@
 #include "GenomeAlignerFindTask.h"
 #include "GenomeAlignerTask.h"
 #include "GenomeAlignerIndex.h"
-#include "SuffixSearchCUDA.h"
 
 namespace U2 {
 
@@ -277,26 +276,6 @@ BinarySearchResult *GenomeAlignerIndex::bitMaskBinarySearchOpenCL(const BMType *
     return (BinarySearchResult*)ans;
 }
 #endif
-
-BinarySearchResult * GenomeAlignerIndex::findBitValuesUsingCUDA( BMType *bitValues, int size, BMType bitFilter )
-{
-    Q_UNUSED(bitValues);Q_UNUSED(size);Q_UNUSED(bitFilter);
-    BinarySearchResult* result = NULL;
-#ifdef GA_BUILD_WITH_CUDA 
-    taskLog.details(QString("Binary search using CUDA on GPU of %1 Mb search-values in %2 Mb base values")
-        .arg((8*size)/(1024*1024)).arg((8*indexPart.getLoadedPartSize())/(1024*1024)));
-
-    // estimate memory size?
-    SuffixSearchCUDA ss;
-    
-//     result = (BinarySearchResult*)ss.runSearch( indexPart.bitMask, 
-//         indexPart.getLoadedPartSize(), bitValues, size, bitFilter);
-         
-#endif // GA_BUILD_WITH_CUDA
-    
-    return result;
-
-}
 
 bool GenomeAlignerIndex::isValidPos(SAType offset, int startPos, int length, SAType &fisrtSymbol, SearchQuery *qu, SAType &loadedSeqStart) {
     assert(offset<objLens[objCount-1]);

@@ -15,7 +15,6 @@ HEADERS += src/BuildSArraySettingsWidget.h \
            src/GenomeAlignerTask.h \
            src/GenomeAlignerWorker.h \
            src/GenomeAlignerWriteTask.h \
-           src/SuffixSearchCUDA.h \
            src/ReadShortReadsSubTask.h \
            src/WriteAlignedReadsSubTask.h
 
@@ -36,7 +35,6 @@ SOURCES += src/BuildSArraySettingsWidget.cpp \
            src/GenomeAlignerTask.cpp \
            src/GenomeAlignerWorker.cpp \
            src/GenomeAlignerWriteTask.cpp \
-           src/SuffixSearchCUDA.cpp \
            src/ReadShortReadsSubTask.cpp \
            src/WriteAlignedReadsSubTask.cpp
 TRANSLATIONS += transl/english.ts transl/russian.ts

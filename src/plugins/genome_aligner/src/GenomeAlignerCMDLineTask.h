@@ -37,7 +37,7 @@ public:
     static QString getArgumentsDescritption();
 private:
     int mismatchCount, ptMismatchCount, memSize, refSize, qualityThreshold;
-    bool useCuda, useOpenCL;
+    bool useOpenCL;
     bool alignRevCompl, bestMode, samOutput;
     DnaAssemblyToRefTaskSettings settings;
     QString indexPath, resultPath, refPath;

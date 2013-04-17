@@ -35,7 +35,6 @@ namespace U2 {
 #define OPTION_BUILD_INDEX  "build-index"
 #define OPTION_REFERENCE    "reference"
 #define OPTION_MEMSIZE      "memsize"
-#define OPTION_CUDA         "use-cuda"
 #define OPTION_USE_OPENCL   "use-opencl"
 #define OPTION_REF_FRAG     "ref-size"
 #define OPTION_N_MISMATHES  "n-mis"
@@ -54,7 +53,6 @@ namespace U2 {
     memSize = 1000;
     refSize = 10;
     qualityThreshold = 0;
-    useCuda = false;
     useOpenCL = false;
     alignRevCompl = false;
     bestMode = false;
@@ -79,12 +77,8 @@ namespace U2 {
             foreach(const QString& url, urls) {
                 shortReadUrls.append(url);
             }
-        } else if (opt.first == OPTION_CUDA) {
-            useCuda = true;
-            useOpenCL = false;
         } else if (opt.first == OPTION_USE_OPENCL) {
             useOpenCL = true;
-            useCuda = false;
         } else if (opt.first == OPTION_REF_FRAG) {
             refSize = opt.second.toInt();
             assert(refSize != 0);
@@ -167,7 +161,6 @@ void GenomeAlignerCMDLineTask::prepare()
 
     settings.setCustomValue(GenomeAlignerTask::OPTION_READS_MEMORY_SIZE, memSize);
     settings.setCustomValue(GenomeAlignerTask::OPTION_ALIGN_REVERSED, alignRevCompl);
-    settings.setCustomValue(GenomeAlignerTask::OPTION_USE_CUDA, useCuda);
     settings.setCustomValue(GenomeAlignerTask::OPTION_OPENCL, useOpenCL);
     settings.setCustomValue(GenomeAlignerTask::OPTION_SEQ_PART_SIZE, refSize);
     settings.setCustomValue(GenomeAlignerTask::OPTION_IF_ABS_MISMATCHES, ptMismatchCount == 0);
