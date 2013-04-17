@@ -160,45 +160,11 @@ private:
 class RegExpPatternsWalker {
 public:
     RegExpPatternsWalker(const QString &_patternsString, int _cursor = 0)
-        : patternsString(_patternsString.toLatin1()), cursor(_cursor), current(-1) {
+        : patternsString(_patternsString.toLatin1()), cursor(_cursor), current(-1),
+          header(false), comment(false) {
         // RegExp alphabet:
-        regExpSlashedSymbols.insert('a');
-        regExpSlashedSymbols.insert('b');
-        regExpSlashedSymbols.insert('B');
-        regExpSlashedSymbols.insert('f');
-        regExpSlashedSymbols.insert('n');
-        regExpSlashedSymbols.insert('r');
-        regExpSlashedSymbols.insert('t');
-        regExpSlashedSymbols.insert('v');
-        regExpSlashedSymbols.insert('x');
-        regExpSlashedSymbols.insert('0');
-        regExpSlashedSymbols.insert('d');
-        regExpSlashedSymbols.insert('D');
-        regExpSlashedSymbols.insert('s');
-        regExpSlashedSymbols.insert('S');
-        regExpSlashedSymbols.insert('w');
-        regExpSlashedSymbols.insert('W');
-
-        regExpUnslashedSymbols.insert('^');
-        regExpUnslashedSymbols.insert('$');
-        regExpUnslashedSymbols.insert('.');
-        regExpUnslashedSymbols.insert(',');
-        regExpUnslashedSymbols.insert('+');
-        regExpUnslashedSymbols.insert('*');
-        regExpUnslashedSymbols.insert('{');
-        regExpUnslashedSymbols.insert('}');
-        regExpUnslashedSymbols.insert('[');
-        regExpUnslashedSymbols.insert(']');
-        regExpUnslashedSymbols.insert('(');
-        regExpUnslashedSymbols.insert(')');
-        regExpUnslashedSymbols.insert('?');
-        regExpUnslashedSymbols.insert('!');
-        regExpUnslashedSymbols.insert('-');
-        regExpUnslashedSymbols.insert('|');
-        regExpUnslashedSymbols.insert('&');
-        regExpUnslashedSymbols.insert('\\');
-        regExpUnslashedSymbols.insert(':');
-        regExpUnslashedSymbols.insert('=');
+        regExpSlashedSymbols = "abBfnrtvx0dDsSwW";
+        regExpUnslashedSymbols = "^$.,+*{}[]()?!-|&\\:=";
     }
 
     bool hasNext() const {
@@ -210,12 +176,19 @@ public:
             return 0;
         }
         current++;
+        if (!updateMetaStart()) {
+            if (isMetaChars() && '\n' == patternsString[current]) {
+                header = false;
+                comment = false;
+            }
+        }
+        return patternsString[current];
         return patternsString[current];
     }
 
     bool isSequenceChar() const {
         CHECK(-1 != current, false);
-        return !isRegExpChar();
+        return !isRegExpChar() && !isMetaChars();
     }
 
     bool isRegExpChar() const {
@@ -261,6 +234,14 @@ public:
         return false;
     }
 
+    bool isHeader() const {
+        return header;
+    }
+
+    bool isComment() const {
+        return comment;
+    }
+
     /** moves current place to the previous */
     void removeCurrent() {
         CHECK(-1 != current, );
@@ -302,8 +283,28 @@ private:
     QByteArray patternsString;
     int cursor;
     int current;
-    QSet<QChar> regExpSlashedSymbols;
-    QSet<QChar> regExpUnslashedSymbols;
+    bool comment;
+    bool header;
+    QString regExpSlashedSymbols;
+    QString regExpUnslashedSymbols;
+
+private:
+    bool updateMetaStart() {
+        char c = patternsString[current];
+        if (FastaFormat::FASTA_COMMENT_START_SYMBOL != c &&
+            FastaFormat::FASTA_HEADER_START_SYMBOL != c) {
+            return false;
+        }
+        if ((0 == current) || ('\n' == patternsString[current-1])) {
+            comment = (FastaFormat::FASTA_COMMENT_START_SYMBOL == c);
+            header = (FastaFormat::FASTA_HEADER_START_SYMBOL == c);
+            return true;
+        }
+        return false;
+    }
+    bool isMetaChars() const {
+        return header || comment;
+    }
 };
 
 
