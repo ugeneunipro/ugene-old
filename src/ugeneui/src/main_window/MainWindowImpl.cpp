@@ -119,6 +119,9 @@ void MWStub::dropEvent(QDropEvent *event)
             event->acceptProposedAction();
         }
     } else {
+        if (event->source() == NULL) {
+            return;
+        }
         if(event->mimeData()->hasFormat(DocumentMimeData::MIME_TYPE)) {
             const DocumentMimeData *docData = static_cast<const DocumentMimeData *>(event->mimeData());
             
