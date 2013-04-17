@@ -1258,13 +1258,13 @@ void DotPlotWidget::calcZooming(const QPointF &oldzoom, const QPointF &nZoom, co
 
     QPointF newzoom(nZoom);
     // limit maximum zoom
-    if (newzoom.x() > seqLenX) {
-        newzoom.setX(seqLenX);
+    if (newzoom.x() > seqLenX/2) {
+        newzoom.setX(seqLenX/2);
     }
-    if (newzoom.y() > seqLenY) {
-        newzoom.setY(seqLenY);
+    if (newzoom.y() > seqLenY/2) {
+        newzoom.setY(seqLenY/2);
     }
-    // dotplot has no zooming and the user tries zoom out
+    // dotplot has no zooming and the user tries to zoom out
     if (newzoom.x() < 1.0f) {
         newzoom.setX(1.0f);
     }
