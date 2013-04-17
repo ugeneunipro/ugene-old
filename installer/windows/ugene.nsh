@@ -2,7 +2,7 @@
 
 ################################################################
 # Modern UI
-!include "MUI.nsh"
+!include "MUI2.nsh"
 !verbose 4
 
 # Compressor
@@ -11,6 +11,7 @@
 
 # Interface Settings
     !define MUI_ABORTWARNING
+    !define MUI_LANGDLL_ALLLANGUAGES        
     !define MUI_HEADERIMAGE
     !define MUI_HEADERIMAGE_BITMAP "images\header.bmp"
     !define MUI_SPECIALIMAGE
@@ -30,6 +31,18 @@
 
 # Languages
     !insertmacro MUI_LANGUAGE "English"
+    !insertmacro MUI_LANGUAGE "Russian"
+    !insertmacro MUI_LANGUAGE "Czech"
+    !insertmacro MUI_LANGUAGE "SimpChinese"
+
+;--------------------------------
+;Reserve Files
+  
+  ;If you are using solid compression, files that are required before
+  ;the actual installation should be stored first in the data block,
+  ;because this will make your installer start faster.
+  
+  !insertmacro MUI_RESERVEFILE_LANGDLL
 
 Function "checkInstDir"
    CreateDirectory $INSTDIR
@@ -39,6 +52,10 @@ Function "checkInstDir"
 FunctionEnd
 
 !include ugene_extensions.nsh
+
+Function .onInit
+    !insertmacro MUI_LANGDLL_DISPLAY
+FunctionEnd
 
 ################################################################
 # Installer options
@@ -71,6 +88,25 @@ FunctionEnd
     !else
         OutFile "build/${UGENE_DISTRIB_FILE_NAME}"
     !endif
+
+
+Function languageUGENEIni
+    FileOpen $4 "$APPDATA\${CompanyName}\${ProductName}.ini" a
+    FileWrite $4 "[user_apps]$\r$\n"
+    FileWrite $4 "translation_file=transl_"
+
+        StrCmp $LANGUAGE ${LANG_RUSSIAN} 0 +2
+            FileWrite $4 "ru"
+        StrCmp $LANGUAGE ${LANG_ENGLISH} 0 +2
+            FileWrite $4 "en"
+        StrCmp $LANGUAGE ${LANG_SIMPCHINESE} 0 +2
+            FileWrite $4 "zh"
+        StrCmp $LANGUAGE ${LANG_CZECH} 0 +2
+            FileWrite $4 "cs"
+
+    FileWrite $4 "$\r$\n"
+    FileClose $4
+FunctionEnd
 
 
 ################################################################
@@ -197,6 +233,9 @@ Section "Build"
 
     Iferrors 0 +2
     StrCpy $warnText "$warnText$\r$\nWarning: cannot create uninstaller!"
+
+    # Write language param in ini file
+    Call languageUGENEIni
 
     # Remove old config
     # Delete $APPDATA\${CompanyName}\${ProductName}.ini
