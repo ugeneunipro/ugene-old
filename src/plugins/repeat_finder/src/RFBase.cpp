@@ -195,7 +195,7 @@ bool RFAlgorithmBase::checkResult(const RFResult& r) {
         }
         assert(c <= C);
     }
-   // assert(allMatches == r.c);
+    assert(allMatches == r.c);
     return true;
 }
 

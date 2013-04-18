@@ -176,13 +176,13 @@ void RFSArrayWAlgorithm::calculate(RFSArrayWSubtask* t) {
             // now extend result forward
             const char* lastS = edge->lastS;
             const char* lastA = dataA + (lastS-dataS) + edge->diag;
-            int allMatches = 0;
-            for (;lastS < dataSEnd && lastA < dataAEnd && PCHAR_MATCHES(lastS, lastA); lastS++, lastA++, allMatches++){};
+            for (;lastS < dataSEnd && lastA < dataAEnd && PCHAR_MATCHES(lastS, lastA); lastS++, lastA++){}
+
             int len = lastS - edge->posS;
             if (len >= W) {
                 int s = edge->posS - dataS;
                 int a = edge->diag + s;
-                addResult(a, s, len, allMatches, t);
+                addResult(a, s, len, 0, t); // 0 mismatches
             }
             edgePool.returnEdge(edge);
         }
