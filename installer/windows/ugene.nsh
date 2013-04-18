@@ -91,6 +91,9 @@ FunctionEnd
 
 
 Function languageUGENEIni
+    CreateDirectory "$APPDATA\${CompanyName}\"
+    ClearErrors
+
     FileOpen $4 "$APPDATA\${CompanyName}\${ProductName}.ini" a
     FileWrite $4 "[user_apps]$\r$\n"
     FileWrite $4 "translation_file=transl_"
