@@ -36,7 +36,7 @@ public:
     SequenceSelectorWidgetController(MSAEditor* _msa);
 
     QString text(){return seqLineEdit->text();};
-    void setText(QString &str){seqLineEdit->setText(str);};
+    void setText(QString str){seqLineEdit->setText(str);};
 
 signals:
     void si_textControllerChanged();    
