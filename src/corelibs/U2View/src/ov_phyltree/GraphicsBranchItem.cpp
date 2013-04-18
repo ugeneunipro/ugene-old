@@ -277,7 +277,5 @@ void GraphicsBranchItem::paint(QPainter* painter,const QStyleOptionGraphicsItem*
         nameItemSelection->hide();
         }
     }
-
-    scene()->update();
 }
 } //namespace
