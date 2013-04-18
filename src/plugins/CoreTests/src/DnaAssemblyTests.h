@@ -30,7 +30,6 @@
 namespace U2 {
 
 class DnaAssemblyMultiTask;
-class MAlignmentObject;
 class U2SequenceObject;
 class LoadDocumentTask;
 
@@ -47,11 +46,11 @@ private:
     QList<GUrl> shortReadUrls;
     QMap<QString,QString> customOptions;
     QString objName;
-    MAlignmentObject* expectedObj;
     QString algName;
     QString refSeqUrl;
     QString indexFileName;
     GUrl resultFileName;
+    QString pairedReads;
 };
 
 
