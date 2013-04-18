@@ -264,13 +264,13 @@ void GraphicsBranchItem::paint(QPainter* painter,const QStyleOptionGraphicsItem*
                 nameItemSelection = scene()->addEllipse(rect, QPen(settings.branchColor), QBrush(settings.branchColor));
                 nameItemSelection->setParentItem(this);
                 nameItemSelection->setFlag(QGraphicsItem::ItemIgnoresTransformations);
+                nameItemSelection->setPen(QPen(Qt::gray));
+                nameItemSelection->setBrush(QBrush(settings.branchColor));
             }
-            else {
+            else if (!nameItemSelection->isVisible()) {
                 nameItemSelection->setRect(rect);
                 nameItemSelection->show();
             }
-            nameItemSelection->setBrush(QBrush(settings.branchColor));
-            nameItemSelection->setPen(QPen(Qt::gray));
     }
     else {
         if(NULL != nameItemSelection) {
