@@ -1089,19 +1089,8 @@ void TreeViewerUI::sl_rectLayoutRecomputed() {
         defaultZoom();
         updateRect();
 
-        if (!labelsSettings.showNames || !labelsSettings.showDistances) {
-            LabelTypes lt;
-            if (!labelsSettings.showDistances) {
-                lt |= LabelType_Distance;
-            }
-            if (!labelsSettings.showNames) {
-                lt |= LabelType_SequnceName;
-            }
-            showLabels(lt);
-        }
-        show();
+        updateTreeSettings();
 
-        fitInView(scene()->sceneRect(), Qt::KeepAspectRatio);
         break;
     }
 }
