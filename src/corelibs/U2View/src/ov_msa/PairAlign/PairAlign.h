@@ -23,6 +23,7 @@
 #define _U2_PAIR_ALIGN_H
 
 #include "ui/ui_PairwiseAlignmentOptionsPanelWidget.h"
+#include "../SequenceSelectorWidgetController.h"
 
 #include <QtCore/QList>
 #include <QtCore/QString>
@@ -39,6 +40,8 @@
 #include <QtGui/QVBoxLayout>
 
 #include <U2View/MSAEditor.h>
+
+#include <U2Gui/SuggestCompleter.h>
 
 namespace U2 {
 
@@ -66,23 +69,15 @@ private:
     bool checkSequenceNames();
 
 private slots:
-    void sl_addFirstSequence();
-    void sl_addSecondSequence();
-    void sl_sequenceNameEdited(QString newName);
-    void sl_deleteFirstSequence();
-    void sl_deleteSecondSequence();
-
     void sl_algorithmSelected(const QString& algorithmName);
     void sl_subwidgetStateChanged(const QString& id);
     void sl_inNewWindowCheckBoxChangeState(bool newState);
     void sl_selectFileButtonClicked();
     void sl_alignButtonPressed();
 
-    void sl_sequenceSelected(const QStringList& sequenceNames);
-    void sl_sequenceNameChanged(const QString& prevName, const QString& newName);
-    void sl_alignmentChanged(const MAlignment& maBefore, const MAlignmentModInfo& mi);
     void sl_distanceCalculated();
     void sl_alignComplete();
+    void sl_selectorTextChanged();
 
 private:
     MSAEditor* msa;
@@ -94,6 +89,9 @@ private:
     ShowHideSubgroupWidget* showHideSequenceWidget;
     ShowHideSubgroupWidget* showHideSettingsWidget;
     ShowHideSubgroupWidget* showHideOutputWidget;
+
+    SequenceSelectorWidgetController *firstSeqSelectorWC;
+    SequenceSelectorWidgetController *secondSeqSelectorWC;
 
     bool showSequenceWidget;
     bool showAlgorithmWidget;

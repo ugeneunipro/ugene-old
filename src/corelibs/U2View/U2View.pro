@@ -68,6 +68,7 @@ HEADERS += src/Init.h \
                    src/ov_msa/PhyTrees/MSAEditorMultiTreeViewer.h \
                    src/ov_msa/PhyTrees/MSAEditorTreeManager.h \
                    src/ov_msa/PhyTrees/AddTreeDialog.h \
+		   src/ov_msa/SequenceSelectorWidgetController.h \	   
            src/ov_phyltree/CreateBranchesTask.h \
            src/ov_phyltree/CreateCircularBranchesTask.h \
            src/ov_phyltree/CreateRectangularBranchesTask.h \
@@ -166,6 +167,7 @@ FORMS += src/ov_assembly/ui/ExportConsensusDialog.ui \
          src/ov_msa/ui/AddPhyTreeDialog.ui \
          src/ov_msa/ui/TreeOptionsWidget.ui \
          src/ov_msa/ui/MSADistancesColumnSettingsWidget.ui \
+		 src/ov_msa/ui/SequenceSelectorWidget.ui \
          src/ov_sequence/annot_highlight/ui/AnnotHighlightSettings.ui \
          src/ov_sequence/find_pattern/ui/FindPatternForm.ui \
          src/ov_sequence/ui/CreateRulerDialog.ui \
@@ -253,6 +255,7 @@ SOURCES += src/Init.cpp \
                    src/ov_msa/PhyTrees/MSAEditorMultiTreeViewer.cpp \
                    src/ov_msa/PhyTrees/MSAEditorTreeManager.cpp \
                    src/ov_msa/PhyTrees/AddTreeDialog.cpp \
+		   src/ov_msa/SequenceSelectorWidgetController.cpp \	   
            src/ov_phyltree/CreateCircularBranchesTask.cpp \
            src/ov_phyltree/CreateRectangularBranchesTask.cpp \
            src/ov_phyltree/CreateUnrootedBranchesTask.cpp \

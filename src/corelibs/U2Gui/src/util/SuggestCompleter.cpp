@@ -23,6 +23,8 @@
 
 #include <U2Core/AppContext.h>
 #include <U2Core/DocumentModel.h>
+#include <U2Core/MAlignmentObject.h>
+#include <U2Core/MAlignment.h>
 
 #include <QTreeWidget>
 #include <QHeaderView>
@@ -141,11 +143,14 @@ void BaseCompleter::doneCompletion(){
     editor->setFocus();
     QTreeWidgetItem *item = popup->currentItem();
     if (item) {
-        QFileInfo f(editor->text());
-        QString absPath = f.absoluteDir().absolutePath();
-        if(!absPath.endsWith("/")){
-            absPath.append("/");
-        }
+        QString absPath("");
+        if( dynamic_cast<FilenameCompletionFiller*>(filler) ){
+            QFileInfo f(editor->text());
+            absPath = f.absoluteDir().absolutePath();
+            if(!absPath.endsWith("/")){
+                absPath.append("/");
+            }
+        }        
         editor->setText(absPath + item->text(0));
         emit si_editingFinished();
     }
@@ -159,7 +164,7 @@ void BaseCompleter::sl_textEdited( const QString& typedText){
     showCompletion(filler->getSuggestions(typedText));
 }
 
-QStringList FilenameCompletionFiller::getSuggestions( QString str ){
+QStringList FilenameCompletionFiller::getSuggestions(const QString &str){
     QString fName = str;
     if(fName.endsWith(".")){
         fName = fName.left(fName.size()-1);
@@ -196,6 +201,22 @@ QStringList FilenameCompletionFiller::getSuggestions( QString str ){
     }
 
     return choices;
+}
+
+
+QStringList MSACompletionFiller::getSuggestions(const QString &str){
+    QStringList result;
+    foreach(QString s, seqNameList){
+        if (s.startsWith(str)){
+            result.append(s);
+        }
+    }
+
+    if (result.isEmpty()){
+        result.append(defaultValue);
+    }
+
+    return  result;
 }
 
 }

@@ -29,20 +29,31 @@ class QTreeWidget;
 
 namespace U2 {
 
-class U2GUI_EXPORT CompletionFiller : public QObject {
-    Q_OBJECT
+class U2GUI_EXPORT CompletionFiller{
 public:
-    CompletionFiller(){};
-    virtual QStringList getSuggestions(QString str) = 0;
+    ~CompletionFiller(){};
+    virtual QStringList getSuggestions(const QString &str) = 0;
 };
 
 class U2GUI_EXPORT FilenameCompletionFiller : public CompletionFiller {
 public:
-    FilenameCompletionFiller(QString _fileFormat):CompletionFiller(),fileFormat(_fileFormat){};
+    FilenameCompletionFiller(const QString &_fileFormat):CompletionFiller(),fileFormat(_fileFormat){};
 
-    QStringList getSuggestions(QString str);
+    QStringList getSuggestions(const QString &str);
 private:
-    QString fileFormat;
+    const QString fileFormat;
+};
+
+class U2GUI_EXPORT MSACompletionFiller : public CompletionFiller {
+public:
+    MSACompletionFiller():CompletionFiller(),seqNameList(QStringList()), defaultValue(""){};
+    MSACompletionFiller(QStringList &_seqNameList, const QString &defVal = ""):CompletionFiller(),seqNameList(_seqNameList), defaultValue(defVal){};
+
+    QStringList getSuggestions(const QString &str);
+    void updateSeqList(QStringList &list){seqNameList = list;};
+private:
+    QStringList seqNameList;
+    const QString defaultValue;
 };
 
 class U2GUI_EXPORT BaseCompleter : public QObject{
@@ -55,9 +66,9 @@ public:
 signals:
     void si_editingFinished();
 
-    protected slots:
-        void doneCompletion();
-        void sl_textEdited(const QString&);
+protected slots:
+    void doneCompletion();
+    void sl_textEdited(const QString&);
 
 private:
     CompletionFiller *filler;

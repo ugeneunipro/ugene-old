@@ -1,0 +1,60 @@
+/**
+ * UGENE - Integrated Bioinformatics Tools.
+ * Copyright (C) 2008-2013 UniPro <ugene@unipro.ru>
+ * http://ugene.unipro.ru
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301, USA.
+ */
+
+#ifndef _U2_SEQUENCE_SELECT_WIDGET_CONTROLLER
+#define _U2_SEQUENCE_SELECT_WIDGET_CONTROLLER
+
+#include "ui/ui_SequenceSelectorWidget.h"
+
+#include <U2View/MSAEditor.h>
+
+#include <U2Gui/SuggestCompleter.h>
+
+namespace U2{
+
+class SequenceSelectorWidgetController : public QWidget, Ui_SequenceSelectorWidget{
+    Q_OBJECT
+public:
+    SequenceSelectorWidgetController(MSAEditor* _msa);
+
+    QString text(){return seqLineEdit->text();};
+    void setText(QString &str){seqLineEdit->setText(str);};
+
+signals:
+    void si_textControllerChanged();    
+
+private slots:
+    void sl_updateCompleter();
+    void sl_seqLineEditEditingFinished();
+    void sl_seqLineEditEditingFinished(const MAlignment& , const MAlignmentModInfo&);
+    void sl_addSeqClicked();
+    void sl_deleteSeqClicked();
+private:
+    MSAEditor* msa;
+    MSACompletionFiller *filler;
+    BaseCompleter *completer;
+    QString defaultSeqName;
+};
+   
+
+};
+
+#endif

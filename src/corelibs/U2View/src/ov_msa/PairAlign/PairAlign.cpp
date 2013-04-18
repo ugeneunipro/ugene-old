@@ -20,6 +20,8 @@
  */
 
 #include "PairAlign.h"
+#include "../SequenceSelectorWidgetController.h"
+
 
 #include <U2Core/MAlignmentObject.h>
 #include <U2Core/AppContext.h>
@@ -39,6 +41,7 @@
 #include <U2View/MSAEditorNameList.h>
 #include <U2View/MSAEditorSequenceArea.h>
 
+
 #include <U2Algorithm/PairwiseAlignmentRegistry.h>
 #include <U2Algorithm/PairwiseAlignmentTask.h>
 #include <U2Algorithm/MSADistanceAlgorithmRegistry.h>
@@ -46,7 +49,6 @@
 #include <U2Algorithm/BuiltInDistanceAlgorithms.h>
 
 #include <U2View/PairwiseAlignmentGUIExtension.h>
-#include <U2View/MSAEditorNameList.h>
 
 #include <U2Gui/ShowHideSubgroupWidget.h>
 
@@ -74,11 +76,17 @@ PairAlign::PairAlign(MSAEditor* _msa) : msa(_msa), pairwiseAlignmentWidgetsSetti
     showAlgorithmWidget(_msa->getPairwiseAlignmentWidgetsSettings()->showAlgorithmWidget),
     showOutputWidget(_msa->getPairwiseAlignmentWidgetsSettings()->showOutputWidget),
     firstSequenceSelectionOn(false), secondSequenceSelectionOn(false),
-    sequencesChanged(true), sequenceNamesIsOk(false), alphabetIsOk(false) {
+    sequencesChanged(true), sequenceNamesIsOk(false), alphabetIsOk(false){
     SAFE_POINT(NULL != msa, "MSA Editor is NULL.", );
     SAFE_POINT(NULL != pairwiseAlignmentWidgetsSettings, "pairwiseAlignmentWidgetsSettings is NULL.", );
 
     setupUi(this);
+    firstSeqSelectorWC = new SequenceSelectorWidgetController(msa);
+    secondSeqSelectorWC = new SequenceSelectorWidgetController(msa);
+
+    firstSequenceLayout->addWidget(firstSeqSelectorWC);
+    secondSequenceLayout->addWidget(secondSeqSelectorWC);;
+
     initLayout();
     connectSignals();
     initParameters();
@@ -102,13 +110,13 @@ void PairAlign::initLayout() {
 
 void PairAlign::initParameters() {
     if (msa->getCurrentSelection().height() > 1) {
-        secondSequenceLineEdit->setText(msa->getMSAObject()->getRow(msa->getCurrentSelection().y() + 1).getName());
+        secondSeqSelectorWC->setText(msa->getMSAObject()->getRow(msa->getCurrentSelection().y() + 1).getName());
     }
     if (msa->getCurrentSelection().height() > 0) {
-        firstSequenceLineEdit->setText(msa->getMSAObject()->getRow(msa->getCurrentSelection().y()).getName());
+        firstSeqSelectorWC->setText(msa->getMSAObject()->getRow(msa->getCurrentSelection().y()).getName());
     } else {
-        firstSequenceLineEdit->setText(pairwiseAlignmentWidgetsSettings->firstSequenceName);
-        secondSequenceLineEdit->setText(pairwiseAlignmentWidgetsSettings->secondSequenceName);
+        firstSeqSelectorWC->setText(pairwiseAlignmentWidgetsSettings->firstSequenceName);
+        secondSeqSelectorWC->setText(pairwiseAlignmentWidgetsSettings->secondSequenceName);
     }
 
     inNewWindowCheckBox->setChecked(pairwiseAlignmentWidgetsSettings->inNewWindow);
@@ -132,22 +140,6 @@ void PairAlign::initParameters() {
 }
 
 void PairAlign::connectSignals() {
-    connect(msa->getUI()->getSequenceArea(),
-            SIGNAL(si_selectionChanged(QStringList)),
-            SLOT(sl_sequenceSelected(QStringList)));
-    connect(msa->getUI()->getEditorNameList(),
-            SIGNAL(si_sequenceNameChanged(QString, QString)),
-            SLOT(sl_sequenceNameChanged(QString, QString)));
-    connect(msa->getMSAObject(),
-            SIGNAL(si_alignmentChanged(MAlignment, MAlignmentModInfo)),
-            SLOT(sl_alignmentChanged(MAlignment, MAlignmentModInfo)));
-
-    connect(addFirst, SIGNAL(clicked()), SLOT(sl_addFirstSequence()));
-    connect(firstSequenceLineEdit, SIGNAL(textEdited(QString)), SLOT(sl_sequenceNameEdited(QString)));
-    connect(deleteFirst, SIGNAL(clicked()), SLOT(sl_deleteFirstSequence()));
-    connect(addSecond, SIGNAL(clicked()), SLOT(sl_addSecondSequence()));
-    connect(secondSequenceLineEdit, SIGNAL(textEdited(QString)), SLOT(sl_sequenceNameEdited(QString)));
-    connect(deleteSecond, SIGNAL(clicked()), SLOT(sl_deleteSecondSequence()));
     connect(showHideSequenceWidget, SIGNAL(si_subgroupStateChanged(QString)), SLOT(sl_subwidgetStateChanged(QString)));
     connect(showHideSettingsWidget, SIGNAL(si_subgroupStateChanged(QString)), SLOT(sl_subwidgetStateChanged(QString)));
     connect(showHideOutputWidget, SIGNAL(si_subgroupStateChanged(QString)), SLOT(sl_subwidgetStateChanged(QString)));
@@ -155,6 +147,9 @@ void PairAlign::connectSignals() {
     connect(inNewWindowCheckBox, SIGNAL(clicked(bool)), SLOT(sl_inNewWindowCheckBoxChangeState(bool)));
     connect(alignButton, SIGNAL(clicked()), SLOT(sl_alignButtonPressed()));
     connect(outputFileSelectButton, SIGNAL(clicked()), SLOT(sl_selectFileButtonClicked()));
+
+    connect(firstSeqSelectorWC, SIGNAL(si_textControllerChanged()), SLOT(sl_selectorTextChanged()));
+    connect(secondSeqSelectorWC, SIGNAL(si_textControllerChanged()), SLOT(sl_selectorTextChanged()));
 }
 
 void PairAlign::checkState() {
@@ -162,12 +157,6 @@ void PairAlign::checkState() {
                tr("Either addFirstButton and addSecondButton are pressed. Sequence selection mode works incorrect."), );
 
     sequenceNamesIsOk = checkSequenceNames();
-
-    addFirst->setChecked(firstSequenceSelectionOn);
-    addSecond->setChecked(secondSequenceSelectionOn);
-
-    deleteFirst->setEnabled(!firstSequenceLineEdit->text().isEmpty());
-    deleteSecond->setEnabled(!secondSequenceLineEdit->text().isEmpty());
 
     outputFileLineEdit->setEnabled(inNewWindowCheckBox->isChecked());
     outputFileSelectButton->setEnabled(inNewWindowCheckBox->isChecked());
@@ -177,15 +166,15 @@ void PairAlign::checkState() {
         updatePercentOfSimilarity();
     }
 
-    canDoAlign = ((false == firstSequenceLineEdit->text().isEmpty()) &&
-                  (false == secondSequenceLineEdit->text().isEmpty()) &&
-                  (firstSequenceLineEdit->text() != secondSequenceLineEdit->text()) &&
+    canDoAlign = ((false == firstSeqSelectorWC->text().isEmpty()) &&
+                  (false == secondSeqSelectorWC->text().isEmpty()) &&
+                  (firstSeqSelectorWC->text() != secondSeqSelectorWC->text()) &&
                   sequenceNamesIsOk && alphabetIsOk);
 
     alignButton->setEnabled(canDoAlign);
 
-    pairwiseAlignmentWidgetsSettings->firstSequenceName = firstSequenceLineEdit->text();
-    pairwiseAlignmentWidgetsSettings->secondSequenceName = secondSequenceLineEdit->text();
+    pairwiseAlignmentWidgetsSettings->firstSequenceName = firstSeqSelectorWC->text();
+    pairwiseAlignmentWidgetsSettings->secondSequenceName = secondSeqSelectorWC->text();
     pairwiseAlignmentWidgetsSettings->algorithmName = algorithmListComboBox->currentText();
     pairwiseAlignmentWidgetsSettings->inNewWindow = inNewWindowCheckBox->isChecked();
     pairwiseAlignmentWidgetsSettings->resultFileName = outputFileLineEdit->text();
@@ -211,9 +200,9 @@ void PairAlign::updatePercentOfSimilarity() {
     U2OpStatusImpl os;
     MAlignment ma;
     QStringList rowsNames = msa->getMSAObject()->getMAlignment().getRowNames();
-    ma.addRow(firstSequenceLineEdit->text(),msa->getMSAObject()->getMAlignment().getRow(rowsNames.indexOf(firstSequenceLineEdit->text())).getCore(), -1, os);
+    ma.addRow(firstSeqSelectorWC->text(),msa->getMSAObject()->getMAlignment().getRow(rowsNames.indexOf(firstSeqSelectorWC->text())).getCore(), -1, os);
     CHECK_OP(os, );
-    ma.addRow(secondSequenceLineEdit->text(), msa->getMSAObject()->getMAlignment().getRow(rowsNames.indexOf(secondSequenceLineEdit->text())).getCore(), -1, os);
+    ma.addRow(secondSeqSelectorWC->text(), msa->getMSAObject()->getMAlignment().getRow(rowsNames.indexOf(secondSeqSelectorWC->text())).getCore(), -1, os);
     CHECK_OP(os, );
     distanceCalcTask = distanceFactory->createAlgorithm(ma);
     distanceCalcTask->setExcludeGaps(true);
@@ -223,55 +212,7 @@ void PairAlign::updatePercentOfSimilarity() {
 
 bool PairAlign::checkSequenceNames() {
     QStringList rowNames = msa->getMSAObject()->getMAlignment().getRowNames();
-    return rowNames.contains(firstSequenceLineEdit->text()) && rowNames.contains(secondSequenceLineEdit->text());
-}
-
-void PairAlign::sl_addFirstSequence() {
-    if (false == firstSequenceSelectionOn) {
-        firstSequenceSelectionOn = true;
-        secondSequenceSelectionOn = false;
-        if (false == msa->getCurrentSelection().isEmpty()) {
-            firstSequenceLineEdit->setText(msa->getMSAObject()->getRow(msa->getCurrentSelection().y()).getName());
-            firstSequenceSelectionOn = false;
-            sequencesChanged = true;
-        }
-    } else {
-        firstSequenceSelectionOn = false;
-    }
-    checkState();
-}
-
-void PairAlign::sl_addSecondSequence() {
-    if (false == secondSequenceSelectionOn) {
-        firstSequenceSelectionOn = false;
-        secondSequenceSelectionOn = true;
-        if (false == msa->getCurrentSelection().isEmpty()) {
-            secondSequenceLineEdit->setText(msa->getMSAObject()->getRow(msa->getCurrentSelection().y()).getName());
-            secondSequenceSelectionOn = false;
-            sequencesChanged = true;
-        }
-    } else {
-        secondSequenceSelectionOn = false;
-    }
-    checkState();
-}
-
-void PairAlign::sl_sequenceNameEdited(QString newName) {
-    Q_UNUSED(newName);
-    sequencesChanged = true;
-    checkState();
-}
-
-void PairAlign::sl_deleteFirstSequence() {
-    firstSequenceLineEdit->clear();
-    sequencesChanged = true;
-    checkState();
-}
-
-void PairAlign::sl_deleteSecondSequence() {
-    secondSequenceLineEdit->clear();
-    sequencesChanged = true;
-    checkState();
+    return rowNames.contains(firstSeqSelectorWC->text()) && rowNames.contains(secondSeqSelectorWC->text());
 }
 
 void PairAlign::sl_algorithmSelected(const QString& algorithmName) {
@@ -340,10 +281,10 @@ void PairAlign::sl_alignButtonPressed() {
     foreach(U2MsaRow row, rows) {
         U2Sequence sequence = con.dbi->getSequenceDbi()->getSequenceObject(row.sequenceId, os);
         CHECK_OP(os, );
-        if (sequence.visualName == firstSequenceLineEdit->text()) {
+        if (sequence.visualName == firstSeqSelectorWC->text()) {
             firstSequenceRef = U2EntityRef(msaRef.dbiRef, sequence.id);
         }
-        if (sequence.visualName == secondSequenceLineEdit->text()) {
+        if (sequence.visualName == secondSeqSelectorWC->text()) {
             secondSequenceRef = U2EntityRef(msaRef.dbiRef, sequence.id);
         }
     }
@@ -379,36 +320,6 @@ void PairAlign::sl_alignButtonPressed() {
     checkState();
 }
 
-void PairAlign::sl_sequenceSelected(const QStringList& sequenceNames) {
-    if (true == firstSequenceSelectionOn) {
-        firstSequenceLineEdit->setText(sequenceNames.first());
-        firstSequenceSelectionOn = false;
-        sequencesChanged = true;
-    }
-    if (true == secondSequenceSelectionOn) {
-        secondSequenceLineEdit->setText(sequenceNames.first());
-        secondSequenceSelectionOn = false;
-        sequencesChanged = true;
-    }
-    checkState();
-}
-
-void PairAlign::sl_sequenceNameChanged(const QString &prevName, const QString &newName) {
-    if (prevName == firstSequenceLineEdit->text()) {
-        firstSequenceLineEdit->setText(newName);
-    }
-    if (prevName == secondSequenceLineEdit->text()) {
-        secondSequenceLineEdit->setText(newName);
-    }
-    checkState();
-}
-
-void PairAlign::sl_alignmentChanged(const MAlignment &maBefore, const MAlignmentModInfo &mi) {
-    Q_UNUSED(maBefore);
-    sequencesChanged = mi.sequenceListChanged;
-    checkState();
-}
-
 void PairAlign::sl_distanceCalculated() {
     if (NULL == distanceCalcTask)
         return;
@@ -425,6 +336,11 @@ void PairAlign::sl_alignComplete() {
         msa->getMSAObject()->updateCachedMAlignment();
         pairwiseAlignmentWidgetsSettings->pairwiseAlignmentTask = NULL;
     }
+    checkState();
+}
+
+void PairAlign::sl_selectorTextChanged(){
+    sequencesChanged = true;
     checkState();
 }
 
