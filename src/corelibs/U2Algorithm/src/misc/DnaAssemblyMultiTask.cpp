@@ -37,7 +37,7 @@
 namespace U2 {
 
 DnaAssemblyMultiTask::DnaAssemblyMultiTask( const DnaAssemblyToRefTaskSettings& s, bool view, bool _justBuildIndex )
-: Task("DnaAssemblyMultiTask", TaskFlags_NR_FOSCOE | TaskFlag_ReportingIsSupported | TaskFlag_ReportingIsEnabled), settings(s),
+: Task("DnaAssemblyMultiTask", TaskFlags_FOSE_COSC | TaskFlag_ReportingIsSupported | TaskFlag_ReportingIsEnabled), settings(s),
 assemblyToRefTask(NULL), shortReadSets(s.shortReadSets), openView(view), justBuildIndex(_justBuildIndex)
 {
 
@@ -92,7 +92,7 @@ QList<Task*> DnaAssemblyMultiTask::onSubTaskFinished( Task* subTask ) {
 
 QString DnaAssemblyMultiTask::generateReport() const {
     QString res;
-    if (hasError() || isCanceled()) {
+    if (hasError()) {
         return QString("Alignment task finished with error: %1").arg(getError());
     }
 
