@@ -205,7 +205,6 @@ void CreateAnnotationWidgetController::commonWidgetUpdate(const CreateAnnotation
         existingObjectRB->setDisabled(false);
         existingObjectCombo->setDisabled(false);
         existingObjectButton->setDisabled(false);
-        existingObjectRB->setChecked(true);
     }
 
     if (model.hideAutoAnnotationsOption) {
