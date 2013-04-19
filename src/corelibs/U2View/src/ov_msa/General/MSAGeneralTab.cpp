@@ -65,29 +65,23 @@ QWidget* MSAGeneralTab::createRefrenceGroup(){
     QWidget * group = new QWidget(this);
     QVBoxLayout * layout = initVBoxLayout(group);
 
-    refrenceLabel = new QLabel();  
-    clearButton = new QPushButton("Clear");
+    reSeqSelector = new SequenceSelectorWidgetController(msa);  
 
-    refrenceLabel->setMaximumWidth(175);
-
-    connect(clearButton, SIGNAL(clicked(bool)), SLOT(sl_onClearButtonClicked(bool)));
-
-    refrenceLabel->setText(msa->getRefSeqName());
+    connect(reSeqSelector, SIGNAL(si_textControllerChanged()), SLOT(si_textControllerChanged()));
 
     layout->addSpacing(TITLE_SPACING);  
-    layout->addWidget(refrenceLabel);
-    layout->addWidget(clearButton);
+    layout->addWidget(reSeqSelector);
     layout->addSpacing(ITEMS_SPACING);
 
     return group;
 }
 
 void MSAGeneralTab::sl_refSeqChanged( const QString & str){
-    refrenceLabel->setText(str);
+    reSeqSelector->setText(str);
 }
 
-void MSAGeneralTab::sl_onClearButtonClicked(bool){
-    msa->setRefrence("(None)");
+void MSAGeneralTab::si_textControllerChanged(){
+        msa->setRefrence(reSeqSelector->text());
 }
 
 }

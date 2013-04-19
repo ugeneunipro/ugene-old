@@ -76,7 +76,7 @@ class PairwiseAlignmentTask;
 
 class SNPSettings {
 public:
-    SNPSettings():seqName(QString("(None)")){};
+    SNPSettings():seqName(QString("")){};
     QPoint clickPoint;
     QString seqName;
 };

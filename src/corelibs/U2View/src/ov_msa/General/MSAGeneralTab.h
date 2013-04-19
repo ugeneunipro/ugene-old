@@ -22,6 +22,8 @@
 #ifndef _U2_MSA_GENERAL_TAB_H_
 #define _U2_MSA_GENERAL_TAB_H_
 
+#include "../SequenceSelectorWidgetController.h"
+
 #include <QtGui/QtGui>
 #include <U2View/MSAEditor.h>
 
@@ -37,14 +39,13 @@ public:
 
 private slots:
     void sl_refSeqChanged(const QString &);
-    void sl_onClearButtonClicked(bool);
+    void si_textControllerChanged();
 
 private:
     QWidget *createRefrenceGroup();
 
     MSAEditor *msa;
-    QLabel *refrenceLabel;
-    QPushButton *clearButton;
+    SequenceSelectorWidgetController *reSeqSelector;
 };
 
 

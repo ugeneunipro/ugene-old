@@ -52,6 +52,10 @@ void SequenceSelectorWidgetController::sl_updateCompleter(){
 }
 
 void SequenceSelectorWidgetController::sl_seqLineEditEditingFinished(const MAlignment& , const MAlignmentModInfo&){
+    MAlignmentObject* maObj = msa->getMSAObject();
+    const MAlignment& ma = maObj->getMAlignment();
+    filler->updateSeqList(ma.getRowNames());
+    defaultSeqName = "";
     sl_seqLineEditEditingFinished();
 }
 

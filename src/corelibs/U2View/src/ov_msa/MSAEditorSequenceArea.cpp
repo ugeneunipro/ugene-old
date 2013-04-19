@@ -485,7 +485,7 @@ void MSAEditorSequenceArea::drawContent(QPainter& p) {
     int refSeq = ui->getEditorNameList()->getRefSeqPos()/*, curSeq =0*/;
     QString refSeqName = ui->getEditor()->getRefSeqName();
     const MAlignmentRow *r = NULL;
-    if (refSeqName != "(None)"){
+    if(!refSeqName.isEmpty()){
         r = &(msa.getRow(refSeqName));
     }
 
@@ -518,7 +518,7 @@ void MSAEditorSequenceArea::drawContent(QPainter& p) {
                     if (editor->getResizeMode() == MSAEditor::ResizeMode_FontAndContent) {
                         p.drawText(cr, Qt::AlignCenter, QString(c));
                     }
-                }else if(seq == refSeq || cname == "U2::MSAHighlightingSchemeEmpty" || refSeqName == "(None)"){
+                }else if(seq == refSeq || cname == "U2::MSAHighlightingSchemeEmpty" || refSeqName.isEmpty()){
                     if (color.isValid()) {
                         p.fillRect(cr, color);
                     }
