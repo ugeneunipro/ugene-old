@@ -579,28 +579,24 @@ QList<GraphicsBranchItem*> MSAEditorTreeViewerUI::getListNodesOfTree() {
 }
 
 void MSAEditorTreeViewerUI::updateSettings(const TreeSettings &settings) {
-    qreal oldHZoom = getHorizontalZoom();
-    //TreeViewerUI::updateSettings(settings);
-
     bool isSizeSynchronized = (FullSynchronization == syncMode && curLayoutIsRectangular);
-
-    if(isSizeSynchronized){
-        bool widthChanged = treeSettings.width_coef == settings.width_coef;
-        treeSettings = settings;
-        updateTreeSettings(widthChanged);
-    }else{
-        MSAEditorTreeViewerUI::updateSettings(settings);
+    if(!isSizeSynchronized) {
+        TreeViewerUI::updateSettings(settings);
+        return;
     }
 
-    if(isSizeSynchronized) {
-        MSAEditor* msa = curMSATreeViewer->getMsaEditor();
-        CHECK(NULL != msa, );
-        setTreeVerticalSize(msa->getUI()->getSequenceArea()->getHeight());
-        qreal newHZoom = getHorizontalZoom();
-        bool compareRes = qFuzzyCompare(oldHZoom, newHZoom);
-        if(!compareRes) {
-            zooming(oldHZoom/newHZoom, 1.0);
-        }
+    bool widthChanged = treeSettings.width_coef == settings.width_coef;
+    qreal oldHZoom = getHorizontalZoom();
+    treeSettings = settings;
+    updateTreeSettings(widthChanged);
+
+    MSAEditor* msa = curMSATreeViewer->getMsaEditor();
+    CHECK(NULL != msa, );
+    setTreeVerticalSize(msa->getUI()->getSequenceArea()->getHeight());
+    qreal newHZoom = getHorizontalZoom();
+    bool compareRes = qFuzzyCompare(oldHZoom, newHZoom);
+    if(!compareRes) {
+        zooming(oldHZoom/newHZoom, 1.0);
     }
 }
 
