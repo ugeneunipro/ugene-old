@@ -229,7 +229,7 @@ void GTest_FindSingleSequenceRepeatsTask::run() {
     while (!file.atEnd()) {
         QString line = file.readLine();
         QStringList hit = line.split(' ', QString::SkipEmptyParts);
-        if (hit.size()!=3) {
+        if (!(hit.size()==3 || hit.size()==4)) {
             stateInfo.setError(QString("Can't parse results line: %1").arg(line));
             return;
         }
@@ -237,7 +237,8 @@ void GTest_FindSingleSequenceRepeatsTask::run() {
         r.x = hit[0].toInt() - 1;
         r.y = hit[1].toInt() - 1;
         r.l = hit[2].toInt();
-        if (r.x < 0 || r.y < 0 || r.l < 0) {
+        r.c = hit.size()==4 ? hit[3].toInt() : -1;
+        if (r.x < 0 || r.y < 0 || r.l < 0 || (hit.size()==4 && r.c < 0)) {
             stateInfo.setError(QString("Can't parse results line: %1").arg(line));
             return;
         }
@@ -262,9 +263,16 @@ void GTest_FindSingleSequenceRepeatsTask::run() {
         for (int i=0, n = expectedResults.size(); i < n; i++) {
             RFResult re = expectedResults[i];
             RFResult rc = calcResults[i];
-            if (re!=rc) {
-                stateInfo.setError(QString("Results not matched, expected(%1, %2, %3), computed(%4, %5, %6), algo = %7")
-                    .arg(re.x).arg(re.y).arg(re.l).arg(rc.x).arg(rc.y).arg(rc.l).arg(getAlgName(sub->getSettings().algo)));
+            if (re!=rc || ((re.c>=0) && (re.c != rc.c))) {
+                QString errorString = QString("Results not matched, expected(%1, %2, %3), computed(%4, %5, %6), algo = %7")
+                    .arg(re.x).arg(re.y).arg(re.l).arg(rc.x).arg(rc.y).arg(rc.l).arg(getAlgName(sub->getSettings().algo));
+
+                if (re.c>=0) {
+                    errorString = QString("Results not matched, expected(%1, %2, %3, %4), computed(%5, %6, %7, %8), algo = %9")
+                        .arg(re.x).arg(re.y).arg(re.l).arg(re.c).arg(rc.x).arg(rc.y).arg(rc.l).arg(rc.c).arg(getAlgName(sub->getSettings().algo));
+                }
+
+                stateInfo.setError(errorString);
                 return;
             }
         }
