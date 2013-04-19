@@ -50,7 +50,7 @@ public:
     MSACompletionFiller(QStringList &_seqNameList, const QString &defVal = ""):CompletionFiller(),seqNameList(_seqNameList), defaultValue(defVal){};
 
     QStringList getSuggestions(const QString &str);
-    void updateSeqList(QStringList &list){seqNameList = list;};
+    void updateSeqList(QStringList list){seqNameList = list;};
 private:
     QStringList seqNameList;
     const QString defaultValue;
