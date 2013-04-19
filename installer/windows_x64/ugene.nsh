@@ -181,7 +181,7 @@ SetRegView 64
     !insertmacro AddPlugin browser_support
     !insertmacro AddPlugin chroma_view
     !insertmacro AddPlugin circular_view
-#    !insertmacro AddPlugin cuda_support
+    !insertmacro AddPlugin cuda_support
     !insertmacro AddPlugin dbi_bam
     !insertmacro AddPlugin dna_export
     !insertmacro AddPlugin dna_flexibility
