@@ -65,7 +65,7 @@ PairwiseAlignmentTask* PairwiseAlignmentSmithWatermanTaskFactory::getTaskInstanc
     }
     if (settings->inNewWindow == true) {
         settings->reportCallback = new SmithWatermanReportCallbackMAImpl(settings->resultFileName.dirPath() + "/",
-                                                                         settings->resultFileName.fileName(),
+                                                                         settings->resultFileName.baseFileName(),
                                                                          settings->firstSequenceRef,
                                                                          settings->secondSequenceRef,
                                                                          settings->msaRef);

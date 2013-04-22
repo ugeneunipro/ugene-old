@@ -261,7 +261,7 @@ QString SmithWatermanReportCallbackMAImpl::planFor_MSA_Alignment_InNewWindow(con
     assert(refSequenceData.length() > 0 && ptrnSequenceData.length() > 0);
     alignSequences(refSequenceData, ptrnSequenceData, pairAlignSeqs.pairAlignment);
 
-    MAlignment msa(mobjectName, alphabet);
+    MAlignment msa(refSequence->visualName + " vs. " + ptrnSequence->visualName, alphabet);
     msa.addRow(refSequence->visualName, refSequenceData, stateInfo);
     CHECK_OP(stateInfo, tr("Failed to add row to result msa."));
     msa.addRow(ptrnSequence->visualName, ptrnSequenceData, stateInfo);

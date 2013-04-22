@@ -95,7 +95,6 @@ PairAlign::PairAlign(MSAEditor* _msa) : msa(_msa), pairwiseAlignmentWidgetsSetti
 }
 
 PairAlign::~PairAlign() {
-    //save state
 }
 
 void PairAlign::initLayout() {
