@@ -247,12 +247,6 @@ void FindRepeatsDialog::accept() {
 
     RepeatsFilterAlgorithm locFilter = RepeatsFilterAlgorithm(filterAlgorithms->itemData(filterAlgorithms->currentIndex()).toInt());
 
-    bool objectPrepared = ac->prepareAnnotationObject();
-    if (!objectPrepared){
-        QMessageBox::warning(this, tr("Error"), tr("Cannot create an annotation object. Please check settings"));
-        return;
-    }
-    
     FindRepeatsTaskSettings settings;
     const CreateAnnotationModel& cam = ac->getModel();
     settings.minLen = minLen;
@@ -260,7 +254,7 @@ void FindRepeatsDialog::accept() {
     settings.inverted = inverted;
     settings.maxDist = maxDist;
     settings.minDist = minDist;
-    settings.seqRegion = range;
+//     settings.seqRegion = range;
     settings.algo = algo;
     settings.filter = locFilter;
     settings.allowedRegions = fitRegions;
@@ -268,8 +262,24 @@ void FindRepeatsDialog::accept() {
     settings.midRegionsToExclude = filterRegions;
     settings.reportReflected = false;
     settings.excludeTandems = excludeTandemsBox->isChecked();
+
+    DNASequence& seqPart = sc->getSequenceObject()->getSequence(range);
+    if (seqPart.isNull() || !seqPart.alphabet) {
+        QMessageBox::warning(this, tr("Error"), tr("Not enough memory error ocurred while preparing data. Try to set smaller region."));
+        return;
+    }
+    Q_ASSERT(seqPart.alphabet && seqPart.alphabet->isNucleic());
+
+    bool objectPrepared = ac->prepareAnnotationObject();
+    if (!objectPrepared){
+        QMessageBox::warning(this, tr("Error"), tr("Cannot create an annotation object. Please check settings"));
+        return;
+    }
     
-    FindRepeatsToAnnotationsTask* t = new FindRepeatsToAnnotationsTask(settings, sc->getSequenceObject()->getWholeSequence(), 
+    settings.seqRegion = U2Region(0, seqPart.length());
+    settings.reportSeqShift = settings.reportSeq2Shift = range.startPos;
+
+    FindRepeatsToAnnotationsTask* t = new FindRepeatsToAnnotationsTask(settings, seqPart, 
         cam.data->name, cam.groupName, cam.annotationObjectRef);
 
     AppContext::getTaskScheduler()->registerTopLevelTask(t);

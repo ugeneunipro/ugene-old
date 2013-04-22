@@ -107,7 +107,7 @@ void FindRepeatsTask::prepare() {
 Task *FindRepeatsTask::createRepeatFinderTask() {
     if (settings.inverted) {
         stateInfo.setDescription(tr("Rev-complementing sequence"));
-        assert(seq1.alphabet->isNucleic());
+        assert(seq1.alphabet && seq1.alphabet->isNucleic());
         revComplTask = new RevComplSequenceTask(seq1, settings.seqRegion);
         revComplTask->setSubtaskProgressWeight(0);
         return revComplTask;
@@ -394,6 +394,9 @@ bool FindRepeatsTask::isFilteredByRegions(const RFResult& r) {
     int x1 = r.x + settings.seqRegion.startPos;
     int y1 = settings.inverted ? settings.seqRegion.endPos() - r.y - 1 : r.y + settings.seqRegion.startPos;
     
+    x1 += settings.reportSeqShift;
+    y1 += settings.reportSeq2Shift;
+
     if (x1 > y1) {
         qSwap(x1, y1);
     }
@@ -475,8 +478,8 @@ QList<SharedAnnotationData> FindRepeatsToAnnotationsTask::importAnnotations() {
     foreach(const RFResult& r, findTask->getResults()) {
         SharedAnnotationData ad(new AnnotationData());
         ad->name = annName;
-        U2Region l1(r.x, r.l);
-        U2Region l2(r.y, r.l);
+        U2Region l1(r.x + settings.reportSeqShift, r.l);
+        U2Region l2(r.y + settings.reportSeq2Shift, r.l);
         if (l1.startPos <= l2.startPos) {
             ad->location->regions << l1 << l2;
         } else {

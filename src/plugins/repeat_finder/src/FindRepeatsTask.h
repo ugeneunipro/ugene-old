@@ -38,7 +38,7 @@ namespace U2 {
 class FindRepeatsTaskSettings {
 public:
     FindRepeatsTaskSettings() : minLen(2), mismatches(0), minDist(0), maxDist(0), 
-        inverted(false), reportReflected(false), maxResults(10*1000*100), 
+        inverted(false), reportReflected(false), maxResults(10*1000*100), reportSeqShift(0), reportSeq2Shift(0),
         algo(RFAlgorithm_Auto), nThreads(MAX_PARALLEL_SUBTASKS_AUTO), excludeTandems(false)
         ,filter(DisjointRepeats){}
 
@@ -50,7 +50,8 @@ public:
     bool                reportReflected;
     int                 maxResults;
     U2Region            seqRegion, seq2Region;
-    
+    qint64              reportSeqShift, reportSeq2Shift;
+
     //all these regions are in global sequence coordinates
     QVector<U2Region>    midRegionsToInclude;  //reported repeat must contain one of these regions
     QVector<U2Region>    midRegionsToExclude;  //reported repeat must not contain none of these regions

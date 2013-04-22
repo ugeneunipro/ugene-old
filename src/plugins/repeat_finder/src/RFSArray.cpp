@@ -125,7 +125,12 @@ void RFSArrayWAlgorithm::run(RFSArrayWSubtask* t) {
 } 
 
 void RFSArrayWAlgorithm::run() {
-    processBoundaryResults();
+    try {
+        processBoundaryResults();
+    }
+    catch(...) {
+        setError("Not enough memory");
+    }
 }
 
 void RFSArrayWAlgorithm::calculate(RFSArrayWSubtask* t) {
@@ -269,15 +274,14 @@ void RFSArrayWAlgorithm::calculate(RFSArrayWSubtask* t) {
             next = edge->next;
             const char* lastS = edge->lastS;
             const char* lastA = dataA + (lastS-dataS) + edge->diag;
-            int allMatches = 0;
-            for (;lastS < dataSEnd && lastA < dataAEnd && PCHAR_MATCHES(lastS, lastA); lastS++, lastA++, allMatches++){}
+            for (;lastS < dataSEnd && lastA < dataAEnd && PCHAR_MATCHES(lastS, lastA); lastS++, lastA++){}
             edge->lastS = lastS;
 
             int len = edge->lastS - edge->posS;
             int s = edge->posS - dataS;
             int a = edge->diag + s;
             if (len >= W) {
-                addResult(a, s, len, allMatches, t);
+                addResult(a, s, len, 0, t); // 0 mismatches
             }
             delete edge;
         }
@@ -346,12 +350,14 @@ void RFSArrayWAlgorithm::processBoundaryResults() {
 
             if (rirj) {
                 ri.l = rj.x + rj.l - ri.x;
+                ri.c = ri.l;
                 assert(ri.l >=0);
 
                 rj.l = -1;
                 break;
             } else if (rjri) {
                 rj.l = ri.x + ri.l - rj.x;
+                rj.c = rj.l;
                 assert(rj.l >=0);
 
                 ri.l = -1;
