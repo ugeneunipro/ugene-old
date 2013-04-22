@@ -122,7 +122,12 @@ void RFAlgorithmBase::addToResults(const QVector<RFResult>& results) {
     resultsListener->onResults(results);
     if (reflective && reportReflected) {
         QVector<RFResult> complResults;
-        complResults.reserve(results.size());
+        try {
+            complResults.reserve(results.size());
+        } catch(...) {
+            setError("Not enough memory");
+            return;
+        }
         foreach(const RFResult& r, results) {
             if (r.x == r.y) {
                 assert(r.l == qMin(SIZE_X, SIZE_Y));

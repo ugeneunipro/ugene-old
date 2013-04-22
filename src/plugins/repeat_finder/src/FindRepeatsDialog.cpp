@@ -263,7 +263,7 @@ void FindRepeatsDialog::accept() {
     settings.reportReflected = false;
     settings.excludeTandems = excludeTandemsBox->isChecked();
 
-    DNASequence& seqPart = sc->getSequenceObject()->getSequence(range);
+    DNASequence seqPart = sc->getSequenceObject()->getSequence(range);
     if (seqPart.isNull() || !seqPart.alphabet) {
         QMessageBox::warning(this, tr("Error"), tr("Not enough memory error ocurred while preparing data. Try to set smaller region."));
         return;
