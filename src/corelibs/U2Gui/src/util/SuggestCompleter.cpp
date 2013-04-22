@@ -206,8 +206,10 @@ QStringList FilenameCompletionFiller::getSuggestions(const QString &str){
 
 QStringList MSACompletionFiller::getSuggestions(const QString &str){
     QStringList result;
+    QString ss = str.toLower();
     foreach(QString s, seqNameList){
-        if (s.startsWith(str)){
+        QString podbor  = s.toLower();
+        if (podbor.startsWith(str)){
             result.append(s);
         }
     }
