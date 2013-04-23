@@ -921,14 +921,14 @@ QSplitter* SinchronizedObjectView::getSpliter() {
 
 void MSALabelWidget::mousePressEvent( QMouseEvent * e ){
     ui->getSequenceArea()->cancelSelection();
-    QMouseEvent eventForSequenceArea(e->type(), QPoint(e->x(), 0), e->globalPos(), e->button(), e->buttons(), e->modifiers());
-    QApplication::instance()->notify(ui->getEditorNameList(), &eventForSequenceArea);
+    QMouseEvent eventForNameListArea(e->type(), QPoint(e->x(), 0), e->globalPos(), e->button(), e->buttons(), e->modifiers());
+    QApplication::instance()->notify(ui->getEditorNameList(), &eventForNameListArea);
 }
 
 void MSALabelWidget::mouseReleaseEvent( QMouseEvent * e )
 {
-    QMouseEvent eventForSequenceArea(e->type(), QPoint(e->x(), e->y() - height()), e->globalPos(), e->button(), e->buttons(), e->modifiers());
-    QApplication::instance()->notify(ui->getEditorNameList(), &eventForSequenceArea);
+    QMouseEvent eventForNameListArea(e->type(), QPoint(e->x(), qMax(e->y() - height(), 0)), e->globalPos(), e->button(), e->buttons(), e->modifiers());
+    QApplication::instance()->notify(ui->getEditorNameList(), &eventForNameListArea);
 }
 
 void SinchronizedObjectView::addObject( QWidget *obj, int index, qreal coef)

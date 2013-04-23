@@ -49,7 +49,7 @@ MSAEditorNameList::MSAEditorNameList(MSAEditorUI* _ui, QScrollBar* _nhBar)
     completeRedraw = true;
     scribbling = false;
     shifting = false;
-    curSeq = -1;
+    curSeq = 0;
     startSelectingSeq = curSeq;
     rubberBand = new QRubberBand(QRubberBand::Rectangle, this);
     
@@ -405,7 +405,7 @@ void MSAEditorNameList::mouseReleaseEvent( QMouseEvent *e )
 {
     rubberBand->hide();
     if (scribbling) {
-        int newSeq = ui->seqArea->getSequenceNumByY(e->y());
+        int newSeq = ui->seqArea->getSequenceNumByY(qMax(e->y(), 0));
         if (!ui->seqArea->isSeqInRange(newSeq) ) {
             if (e->y() < origin.y()) {
                 newSeq = 0;
