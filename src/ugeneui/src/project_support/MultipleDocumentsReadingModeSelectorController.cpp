@@ -213,11 +213,13 @@ void MultipleDocumentsReadingModeDialog::sl_onMoveUp(){
     int row = listDocuments->row(item);
     if(row == 0){return;}
 
-    listDocuments->insertItem(row - 1, new QListWidgetItem(item->text()));
+    QListWidgetItem *newCurrent = new QListWidgetItem(item->text());
+    listDocuments->insertItem(row - 1, newCurrent);
     listDocuments->removeItemWidget(item);
     delete item;
 
     changeNumPrefix();
+    listDocuments->setCurrentItem(newCurrent);
 }
 
 void MultipleDocumentsReadingModeDialog::sl_onMoveDown(){
@@ -226,11 +228,13 @@ void MultipleDocumentsReadingModeDialog::sl_onMoveDown(){
     int row = listDocuments->row(item);
     if(row == listDocuments->count() - 1){return;}
 
-    listDocuments->insertItem(row + 2, new QListWidgetItem(item->text()));
+    QListWidgetItem *newCurrent = new QListWidgetItem(item->text());
+    listDocuments->insertItem(row + 2, newCurrent);
     listDocuments->removeItemWidget(item);
     delete item;
     
     changeNumPrefix();
+    listDocuments->setCurrentItem(newCurrent);
 }
 
 void MultipleDocumentsReadingModeDialog::changeNumPrefix(){
