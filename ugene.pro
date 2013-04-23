@@ -88,9 +88,6 @@ without_non_free() {
     SUBDIRS -= src/plugins_3rdparty/psipred
     SUBDIRS -= src/plugins_3rdparty/phylip
 }
-CONFIG(x64) {
-	SUBDIRS -= src/plugins_3rdparty/umuscle
-}
 
 #create target directories
 win32 {
@@ -188,6 +185,9 @@ unix {
 
     manual.files += installer/_common_data/ugene.1.gz
     manual.path = $$UGENE_INSTALL_MAN
+
+#    mime.files += 
+#    mime.path = /usr/share/mime/packages/
 
     INSTALLS += binscript ugene_starter transl plugins scripts data desktop icons manual
 }

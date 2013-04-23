@@ -62,6 +62,7 @@ REM copy plugins
 call %INSTALL_DIR%/copy_plugin.cmd annotator
 call %INSTALL_DIR%/copy_plugin.cmd ball
 call %INSTALL_DIR%/copy_plugin.cmd biostruct3d_view
+call %INSTALL_DIR%/copy_plugin.cmd browser_support
 call %INSTALL_DIR%/copy_plugin.cmd chroma_view
 call %INSTALL_DIR%/copy_plugin.cmd circular_view
 call %INSTALL_DIR%/copy_plugin.cmd cuda_support
@@ -87,7 +88,7 @@ call %INSTALL_DIR%/copy_plugin.cmd remote_service
 call %INSTALL_DIR%/copy_plugin.cmd repeat_finder
 call %INSTALL_DIR%/copy_plugin.cmd sitecon
 call %INSTALL_DIR%/copy_plugin.cmd smith_waterman
-REM call %INSTALL_DIR%/copy_plugin.cmd umuscle
+call %INSTALL_DIR%/copy_plugin.cmd umuscle
 call %INSTALL_DIR%/copy_plugin.cmd weight_matrix
 call %INSTALL_DIR%/copy_plugin.cmd workflow_designer
 call %INSTALL_DIR%/copy_plugin.cmd dbi_sqlite

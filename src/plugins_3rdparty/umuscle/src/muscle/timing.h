@@ -1,4 +1,4 @@
-#if	WIN32
+#if	TIMING
 
 typedef unsigned __int64 TICKS;
 

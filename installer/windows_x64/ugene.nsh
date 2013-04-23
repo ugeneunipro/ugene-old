@@ -209,7 +209,7 @@ SetRegView 64
     !insertmacro AddPlugin repeat_finder
     !insertmacro AddPlugin smith_waterman
     !insertmacro AddPlugin sitecon
-#    !insertmacro AddPlugin umuscle
+    !insertmacro AddPlugin umuscle
     !insertmacro AddPlugin weight_matrix
     !insertmacro AddPlugin workflow_designer
     !insertmacro AddPlugin variants
