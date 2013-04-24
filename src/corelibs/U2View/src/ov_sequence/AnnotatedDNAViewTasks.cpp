@@ -69,20 +69,36 @@ OpenAnnotatedDNAViewTask::OpenAnnotatedDNAViewTask(const QList<GObject*>& object
         if (!doc->isLoaded()) {
             docsToLoadSet.append(doc);
         }
+
+        QList<GObject*> objWithSeqRelation;
+        if(GObjectUtils::hasType(obj, GObjectTypes::SEQUENCE)){
+            QList<GObject*> allAnnotations = GObjectUtils::findAllObjects(UOF_LoadedAndUnloaded, GObjectTypes::ANNOTATION_TABLE);
+            QList<GObject*> annotations = GObjectUtils::findObjectsRelatedToObjectByRole(obj, 
+                GObjectTypes::ANNOTATION_TABLE, GObjectRelationRole::SEQUENCE, allAnnotations, UOF_LoadedAndUnloaded);
+            foreach(GObject* ao, annotations) {
+                objWithSeqRelation.append(ao);
+            }
+        }
+
         if (GObjectUtils::hasType(obj, GObjectTypes::SEQUENCE)) {
             sequenceObjectRefs.append(GObjectReference(doc->getURLString(), obj->getGObjectName(), GObjectTypes::SEQUENCE));
             refsAdded.insert(obj);
-            continue;
+            int sz = objWithSeqRelation.size();
+            if(objWithSeqRelation.size() == 0){
+                continue;
+            }
         }
         
     
         //look for sequence object using relations
-        QList<GObject*> objWithSeqRelation = GObjectUtils::selectRelations(obj, GObjectTypes::SEQUENCE, 
-                                        GObjectRelationRole::SEQUENCE, allSequenceObjects, UOF_LoadedAndUnloaded);
+        objWithSeqRelation.append(GObjectUtils::selectRelations(obj, GObjectTypes::SEQUENCE, 
+                                    GObjectRelationRole::SEQUENCE, allSequenceObjects, UOF_LoadedAndUnloaded));
 
         foreach(GObject* robj, objWithSeqRelation) {
             if (!GObjectUtils::hasType(robj, GObjectTypes::SEQUENCE)) {
-                continue;
+                if(!GObjectUtils::hasType(robj, GObjectTypes::ANNOTATION_TABLE)){
+                    continue;
+                }
             }
             if (refsAdded.contains(robj)) {
                 continue;
