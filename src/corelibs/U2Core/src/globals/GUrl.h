@@ -34,6 +34,9 @@ All oter fields are supplementary.
 
 Note: that 2 GUrls are considered equals if the urlStrings are equal.
 
+Warning: in the current state GUrl canonical form can contain symlinks.
+         2 GUrls with different symlinks to the same target are not equal!
+
 * Why not QUrl - QUrl is too error prone and requires a lot of external code to support valid state.
 * Why not QString - requires external utils to represent all urls in canonical form. Can't be to extended.
 */

@@ -214,7 +214,8 @@ QString GUrlUtils::prepareFileLocation(const QString& filePath, U2OpStatus& os) 
 }
 
 // checks that dir path is valid. Creates the directory if needed. 
-// Returns canonical directory path. Does not affect directory if already exists.
+// Returns absolute (without "." or ".." but with symlinks) directory path.
+// Does not affect directory if already exists.
 // Sample usage: processing URLs in "save dir" inputs
 QString GUrlUtils::prepareDirLocation(const QString& dirPath, U2OpStatus& os) {
     CHECK_EXT(!dirPath.isEmpty(), os.setError(tr("Directory is not specified")), QString());
@@ -231,7 +232,7 @@ QString GUrlUtils::prepareDirLocation(const QString& dirPath, U2OpStatus& os) {
             return QString();
         }
     }
-    QString result = targetDir.canonicalPath();
+    QString result = targetDir.absolutePath();
     return result;
 }
 
