@@ -85,9 +85,16 @@ static QString makeFilePathCanonical(const QString& originalUrl) {
                 canonicalParts.append(part);
             }
         }
-        result = prefix + "/" + canonicalParts.join("/");
-    }
 
+        // remove symlinks from the path and construct the result
+        result = prefix;
+        foreach(QString part, canonicalParts) {
+            result += "/" + part;
+            if (QFileInfo(result).isSymLink()) {
+                result = QFileInfo(result).symLinkTarget();
+            }
+        }
+    }
 
     return result;
 }
