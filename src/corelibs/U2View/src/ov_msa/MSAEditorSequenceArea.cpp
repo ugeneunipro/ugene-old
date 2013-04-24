@@ -1351,7 +1351,7 @@ void MSAEditorSequenceArea::sl_alignmentChanged(const MAlignment&, const MAlignm
     setFirstVisibleBase(qBound(0, startPos, aliLen-countWidthForBases(false)));
     setFirstVisibleSequence(qBound(0, startSeq, nSeq - countHeightForSequences(false)));
 
-    setCursorPos(qMin(cursorPos.x(), aliLen-1), qMin(cursorPos.y(), nSeq-1));
+    setCursorPos(qMin(cursorPos.x(), aliLen-1), qMin(cursorPos.y(), ui->getCollapseModel()->displayedRowsCount() - 1));
     
     QPoint selTopLeft( qMin(selection.x(), aliLen - 1),  qMin(selection.y(), nSeq - 1) );
     QPoint selBottomRight( qMin(selection.x() + selection.width() - 1, aliLen - 1), qMin(selection.y() + selection.height() - 1, nSeq -1 ) );
