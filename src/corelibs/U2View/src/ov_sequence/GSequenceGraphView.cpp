@@ -52,7 +52,7 @@ GSequenceGraphView::GSequenceGraphView(QWidget* p, ADVSequenceObjectContext* ctx
     assert(baseView);
 
     
-    visualPropertiesAction = new QAction(tr("Select all extremum points..."), this);
+    visualPropertiesAction = new QAction(tr("Graph settings..."), this);
     visualPropertiesAction->setObjectName("visual_properties_action");
 
     connect(visualPropertiesAction, SIGNAL(triggered(bool)), SLOT(sl_onShowVisualProperties(bool)));
