@@ -26,6 +26,7 @@ namespace U2{
 SequenceSelectorWidgetController::SequenceSelectorWidgetController(MSAEditor* _msa):msa(_msa), defaultSeqName(""){
     setupUi(this);
     filler = new MSACompletionFiller();
+    seqLineEdit->setText(msa->getRefSeqName());
     completer = new BaseCompleter(filler, seqLineEdit);
     sl_updateCompleter();
 
