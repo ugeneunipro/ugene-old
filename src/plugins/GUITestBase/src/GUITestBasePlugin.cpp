@@ -172,7 +172,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_project::test_0020);
     REGISTER_TEST(GUITest_common_scenarios_project::test_0021);
     REGISTER_TEST(GUITest_common_scenarios_project::test_0023);
-    REGISTER_TEST(GUITest_common_scenarios_project::test_0025);
+    REGISTER_TEST_IGNORED_LINUX(GUITest_common_scenarios_project::test_0025, "GUITest_common_scenarios_project_test_0025");
     REGISTER_TEST(GUITest_common_scenarios_project::test_0026);
     REGISTER_TEST(GUITest_common_scenarios_project::test_0028);
     REGISTER_TEST(GUITest_common_scenarios_project::test_0030);
