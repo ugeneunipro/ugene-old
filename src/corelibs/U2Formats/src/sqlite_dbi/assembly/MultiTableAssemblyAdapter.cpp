@@ -233,12 +233,15 @@ MTASingleTableAdapter* MultiTableAssemblyAdapter::createAdapter(int rowPos, int 
 }
 
 void MultiTableAssemblyAdapter::createReadsIndexes(U2OpStatus& os) {
+    SQLiteQuery("PRAGMA temp_store = FILE", db, os).execute();
+    CHECK_OP(os, );
     foreach(MTASingleTableAdapter* a, adapters) {
         a->singleTableAdapter->createReadsIndexes(os);
         if (os.hasError()) {
             break;
         }
     }
+    SQLiteQuery("PRAGMA temp_store = MEMORY", db, os).execute();
 }
 
 QByteArray MultiTableAssemblyAdapter::getIdExtra(int rowPos, int elenPos) {

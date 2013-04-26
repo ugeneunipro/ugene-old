@@ -306,7 +306,7 @@ void SQLiteDbi::init(const QHash<QString, QString>& props, const QVariantMap&, U
  
         SQLiteQuery("PRAGMA synchronous = OFF", db, os).execute();
         SQLiteQuery("PRAGMA main.locking_mode = EXCLUSIVE", db, os).execute();
-        SQLiteQuery("PRAGMA temp_store = FILE", db, os).execute();
+        SQLiteQuery("PRAGMA temp_store = MEMORY", db, os).execute();
         SQLiteQuery("PRAGMA journal_mode = MEMORY", db, os).execute();
         SQLiteQuery("PRAGMA cache_size = 50000", db, os).execute();
         //SQLiteQuery("PRAGMA page_size = 4096", db, os).execute();
