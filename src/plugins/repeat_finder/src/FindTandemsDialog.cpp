@@ -214,9 +214,9 @@ void FindTandemsDialog::accept() {
         return;
     }
 
-    DNASequence seq = sc->getSequenceObject()->getWholeSequence();
-    if (seq.isNull()) {
-        QMessageBox::warning(this, tr("Error"), tr("Not enough memory error ocurred while preparing data."));
+    DNASequence seq = sc->getSequenceObject()->getSequence(range);
+    if (seq.isNull() || !seq.alphabet) {
+        QMessageBox::warning(this, tr("Error"), tr("Not enough memory error ocurred while preparing data. Try to set smaller region."));
         return;
     }
     bool objectPrepared = ac->prepareAnnotationObject();
@@ -230,11 +230,14 @@ void FindTandemsDialog::accept() {
     settings.minPeriod = minPeriod;
     settings.maxPeriod = maxPeriod;
 //    settings.mismatches = (100-identPerc) * minPeriod / 100;
-    settings.seqRegion = range;
+//     settings.seqRegion = range;
     settings.algo = (TSConstants::TSAlgo)algoComboBox->currentIndex();
     settings.minRepeatCount = minRepeatsBox->value();
     settings.minTandemSize = qMax(FindTandemsTaskSettings::DEFAULT_MIN_TANDEM_SIZE, minTandemSizeBox->value());
     settings.showOverlappedTandems = overlappedTandemsCheckBox->isChecked();
+
+    settings.seqRegion = U2Region(0, seq.length());
+    settings.reportSeqShift = range.startPos;
 
     FindTandemsToAnnotationsTask* t = new FindTandemsToAnnotationsTask(settings, seq, cam.data->name, cam.groupName, cam.annotationObjectRef);
     AppContext::getTaskScheduler()->registerTopLevelTask(t);

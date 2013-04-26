@@ -53,7 +53,7 @@ public:
     static const TSConstants::TSAlgo DEFAULT_ALGO = TSConstants::AlgoSuffixBinary;
 public:
     FindTandemsTaskSettings() : minPeriod(1), maxPeriod(INT_MAX), minTandemSize(DEFAULT_MIN_TANDEM_SIZE), minRepeatCount(DEFAULT_MIN_REPEAT_COUNT),
-        accuracy(0), maxResults(10*1000*100), showOverlappedTandems(false), algo(DEFAULT_ALGO), nThreads(MAX_PARALLEL_SUBTASKS_AUTO) {}
+        accuracy(0), maxResults(10*1000*100), reportSeqShift(0), showOverlappedTandems(false), algo(DEFAULT_ALGO), nThreads(MAX_PARALLEL_SUBTASKS_AUTO) {}
 
     int         minPeriod;
     int         maxPeriod;
@@ -61,6 +61,7 @@ public:
     int         minRepeatCount;
     int         accuracy;
     int         maxResults;
+    qint64      reportSeqShift;
     U2Region    seqRegion;
     bool        showOverlappedTandems;
 
@@ -77,7 +78,7 @@ public:
     FindTandemsToAnnotationsTask(const FindTandemsTaskSettings& s, const DNASequence& seq);
 
     QList<Task*> onSubTaskFinished(Task* subTask);
-    QList<SharedAnnotationData> importTandemAnnotations(const QList<Tandem>& tandems, const quint32 seqStart, const bool showOverlapped);
+    QList<SharedAnnotationData> importTandemAnnotations(const QList<Tandem>& tandems, qint64 seqStart, const bool showOverlapped);
 
     QList<SharedAnnotationData> getResult() const {return result;}
 
@@ -89,6 +90,7 @@ private:
     GObjectReference    annObjRef;
 
     QList<SharedAnnotationData> result;
+    const FindTandemsTaskSettings& s;
 };
 
 class TandemFinder: public Task, public SequenceWalkerCallback {

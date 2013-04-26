@@ -35,7 +35,7 @@ const int FindTandemsTaskSettings::DEFAULT_MIN_REPEAT_COUNT = 0;
 const int FindTandemsTaskSettings::DEFAULT_MIN_TANDEM_SIZE = 9;
 
 FindTandemsToAnnotationsTask::FindTandemsToAnnotationsTask(const FindTandemsTaskSettings& s, const DNASequence& seq, const QString& _an, const QString& _gn, const GObjectReference& _aor):
-Task(tr("Find repeats to annotations"), TaskFlags_NR_FOSCOE), saveAnns(true), mainSeq(seq), annName(_an), annGroup(_gn), annObjRef(_aor)
+Task(tr("Find repeats to annotations"), TaskFlags_NR_FOSCOE), saveAnns(true), mainSeq(seq), annName(_an), annGroup(_gn), annObjRef(_aor), s(s)
 {
     GCOUNTER( cvar, tvar, "FindTandemsToAnnotationsTask" );
     setVerboseLogMode(true);
@@ -47,7 +47,7 @@ Task(tr("Find repeats to annotations"), TaskFlags_NR_FOSCOE), saveAnns(true), ma
 }
 
 FindTandemsToAnnotationsTask::FindTandemsToAnnotationsTask(const FindTandemsTaskSettings& s, const DNASequence& seq)
-: Task(tr("Find repeats to annotations"), TaskFlags_NR_FOSCOE), saveAnns(false), mainSeq(seq)
+: Task(tr("Find repeats to annotations"), TaskFlags_NR_FOSCOE), saveAnns(false), mainSeq(seq), s(s)
 {
     GCOUNTER( cvar, tvar, "FindTandemsToAnnotationsTask" );
     setVerboseLogMode(true);
@@ -62,7 +62,7 @@ QList<Task*> FindTandemsToAnnotationsTask::onSubTaskFinished(Task* subTask) {
 
     if (qobject_cast<TandemFinder*>(subTask)!=NULL){
         TandemFinder* tandemFinderTask = qobject_cast<TandemFinder*>(subTask);
-        QList<SharedAnnotationData> annotations = importTandemAnnotations( tandemFinderTask->getResults(), tandemFinderTask->getSettings().seqRegion.startPos,  tandemFinderTask->getSettings().showOverlappedTandems );
+        QList<SharedAnnotationData> annotations = importTandemAnnotations( tandemFinderTask->getResults(), tandemFinderTask->getSettings().seqRegion.startPos, tandemFinderTask->getSettings().showOverlappedTandems );
         if (saveAnns) {
             if (!annotations.isEmpty()) {
                 algoLog.info(tr("Found %1 repeat regions").arg(annotations.size()));
@@ -77,7 +77,10 @@ QList<Task*> FindTandemsToAnnotationsTask::onSubTaskFinished(Task* subTask) {
     return res;
 }
 
-QList<SharedAnnotationData> FindTandemsToAnnotationsTask::importTandemAnnotations(const QList<Tandem>& tandems, const quint32 seqStart, const bool showOverlapped) {
+QList<SharedAnnotationData> FindTandemsToAnnotationsTask::importTandemAnnotations(const QList<Tandem>& tandems, qint64 seqStart, const bool showOverlapped) {
+
+    seqStart += s.reportSeqShift;
+
     QList<SharedAnnotationData> res;
     foreach(const Tandem& tan, tandems) {
         unsigned offset = 0;
@@ -287,7 +290,12 @@ void ExactSizedTandemFinder::run(){
     int minPeriod = qMax(settings.minPeriod, prefixLength/2);
     int maxPeriod = qMin(settings.maxPeriod, prefixLength);
     if (index==NULL){
-        suffixArray = new SuffixArray(sequence, seqSize, prefixLength);
+        try {
+            suffixArray = new SuffixArray(sequence, seqSize, prefixLength);
+        } catch (...) {
+            setError("Not enough memory");
+            return;
+        }
         const BitMask& bitMask = suffixArray->getBitMask();
         const quint32* sArray = suffixArray->getArray();
         quint32* currentDiffPos = (quint32*)sArray;
@@ -471,7 +479,12 @@ void LargeSizedTandemFinder::run(){
     int minPeriod = qMax(settings.minPeriod, prefixLength);
     int maxPeriod = settings.maxPeriod;
     if (index==NULL){
-        suffixArray = new SuffixArray(sequence, seqSize, prefixLength);
+        try {
+            suffixArray = new SuffixArray(sequence, seqSize, prefixLength);
+        } catch (...) {
+            setError("Not enough memory");
+            return;
+        }
         const BitMask& bitMask = suffixArray->getBitMask();
         const quint32* sArray = suffixArray->getArray();
         quint32* currentDiffPos = (quint32*)sArray;
