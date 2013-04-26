@@ -183,7 +183,7 @@ void RFSArrayWKAlgorithm::calculate(RFSArrayWKSubtask* t) {
             while (len > W && !PCHAR_MATCHES(startS + len - 1, startA + len - 1)){len--;} 
 
             //save result
-            addResult(a, s, len, c);
+            addResult(a, s, len, len-c); // c is count of mismatches, not matches
             assert(len >= W);//a place for a break-point
         }
     }
