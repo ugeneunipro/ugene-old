@@ -203,6 +203,9 @@ void KalignMSAEditorContext::sl_align() {
     } else {
         AppContext::getTaskScheduler()->registerTopLevelTask(kalignTask);
     }
+
+    // Turn off rows collapsing
+    ed->resetCollapsibleModel();
 }
 
 }//namespace

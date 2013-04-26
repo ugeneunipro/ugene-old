@@ -197,6 +197,9 @@ void MAFFTSupportContext::sl_align_with_MAFFT() {
 
     MAFFTSupportTask* mAFFTSupportTask = new MAFFTSupportTask(alignmentObject->getMAlignment(), GObjectReference(alignmentObject), settings);
     AppContext::getTaskScheduler()->registerTopLevelTask(mAFFTSupportTask);
+
+    // Turn off rows collapsing
+    ed->resetCollapsibleModel();
 }
 
 }//namespace

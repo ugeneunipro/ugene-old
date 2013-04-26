@@ -657,11 +657,17 @@ void MSAEditor::buildTree() {
     sl_buildTree();
 }
 
+void MSAEditor::resetCollapsibleModel() {
+    MSACollapsibleItemModel *collapsibleModel = ui->getCollapseModel();
+    SAFE_POINT(NULL != collapsibleModel, "NULL collapsible model!", );
+    collapsibleModel->reset();
+}
+
 //////////////////////////////////////////////////////////////////////////
 MSAEditorUI::MSAEditorUI(MSAEditor* _editor)
 : editor(_editor), seqArea(NULL), offsetsView(NULL), statusWidget(NULL), collapsibleMode(false), multiTreeViewer(NULL), similarityStatistics(NULL) {
-    undoFWK = new MSAEditorUndoFramework(this, editor->getMSAObject());
-//    undoFWK = new MsaUndoRedoFramework(this, editor->getMSAObject());
+    //undoFWK = new MSAEditorUndoFramework(this, editor->getMSAObject());
+    undoFWK = new MsaUndoRedoFramework(this, editor->getMSAObject());
 
     collapseModel = new MSACollapsibleItemModel(this);
 

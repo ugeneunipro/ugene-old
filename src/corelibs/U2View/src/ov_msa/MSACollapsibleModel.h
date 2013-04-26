@@ -58,16 +58,17 @@ public:
     
     int displayedRowsCount();
 
+    /** If there is a collapsible item at 'pos' position, it is removed. */
+    void removeCollapsedForPosition(int pos);
+
+    bool isEmpty() { return 0 == items.size(); }
+
 signals:
     void toggled();
-
-private slots:
-    void sl_alignmentChanged(const MAlignment& maBefore, const MAlignmentModInfo& modInfo);
 
 private:
     void triggerItem(int index);
     int mapToRow(int lastItem, int pos) const;
-    void tracePositions();
 
 private:
     MSAEditorUI* ui;

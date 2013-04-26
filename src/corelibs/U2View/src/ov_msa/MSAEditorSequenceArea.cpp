@@ -158,10 +158,15 @@ MSAEditorSequenceArea::MSAEditorSequenceArea(MSAEditorUI* _ui, GScrollBar* hb, G
     sortByNameAction->setObjectName("action_sort_by_name");
     connect(sortByNameAction, SIGNAL(triggered()), SLOT(sl_sortByName()));
 
-    viewModeAction = new QAction(QIcon(":core/images/collapse.png"), tr("Enable collapsing"), this);
-    viewModeAction->setObjectName("Enable collapsing");
-    viewModeAction->setCheckable(true);
-    connect(viewModeAction, SIGNAL(toggled(bool)), SLOT(sl_setCollapsingMode(bool)));
+    collapseModeSwitchAction = new QAction(QIcon(":core/images/collapse.png"), tr("Switch on/off collapsing"), this);
+    collapseModeSwitchAction->setObjectName("Enable collapsing");
+    collapseModeSwitchAction->setCheckable(true);
+    connect(collapseModeSwitchAction, SIGNAL(toggled(bool)), SLOT(sl_setCollapsingMode(bool)));
+
+    collapseModeUpdateAction = new QAction(QIcon(":core/images/collapse_update.png"), tr("Update collapsed groups"), this);
+    collapseModeUpdateAction->setObjectName("Update collapsed groups");
+    collapseModeUpdateAction->setEnabled(false);
+    connect(collapseModeUpdateAction, SIGNAL(triggered()), SLOT(sl_updateCollapsingMode()));
 
     reverseComplementAction = new QAction(tr("Replace selected rows with reverse-complement"), this);
     reverseComplementAction->setObjectName("replace_selected_rows_with_reverse-complement");
@@ -187,8 +192,12 @@ MSAEditorSequenceArea::MSAEditorSequenceArea(MSAEditorUI* _ui, GScrollBar* hb, G
     connect(ui->getCollapseModel(), SIGNAL(toggled()), SLOT(sl_modelChanged()));
     connect(editor, SIGNAL(si_refrenceSeqChanged(const QString &)), SLOT(sl_refrenceSeqChanged(const QString &)));
     
-    addAction(ui->getUndoAction());
-    addAction(ui->getRedoAction());
+    QAction* undoAction = ui->getUndoAction();
+    QAction* redoAction = ui->getRedoAction();
+    addAction(undoAction);
+    addAction(redoAction);
+    connect(undoAction, SIGNAL(triggered()), SLOT(sl_resetCollapsibleModel()));
+    connect(redoAction, SIGNAL(triggered()), SLOT(sl_resetCollapsibleModel()));
 
     prepareColorSchemeMenuActions();
     prepareHighlightingMenuActions();
@@ -421,7 +430,7 @@ void MSAEditorSequenceArea::updateActions() {
     addSeqFromProjectAction->setEnabled(!readOnly);
     addSeqFromFileAction->setEnabled(!readOnly);
     sortByNameAction->setEnabled(!readOnly);
-    viewModeAction->setEnabled(!readOnly);
+    collapseModeSwitchAction->setEnabled(!readOnly);
     reverseComplementAction->setEnabled(!readOnly && maObj->getAlphabet()->isNucleic());
     reverseAction->setEnabled(!readOnly && maObj->getAlphabet()->isNucleic());
     complementAction->setEnabled(!readOnly && maObj->getAlphabet()->isNucleic());
@@ -1373,7 +1382,10 @@ void MSAEditorSequenceArea::sl_buildStaticToolbar(GObjectView*, QToolBar* t) {
     t->addAction(ui->getRedoAction());
     t->addAction(gotoAction);
     t->addAction(removeAllGapsAction);
-    t->addAction(viewModeAction);
+    t->addSeparator();
+    t->addAction(collapseModeSwitchAction);
+    t->addAction(collapseModeUpdateAction);
+    t->addSeparator();
 }
 
 void MSAEditorSequenceArea::sl_buildStaticMenu(GObjectView*, QMenu* m) {
@@ -1475,6 +1487,11 @@ void MSAEditorSequenceArea::sl_fontChanged(QFont font) {
 void MSAEditorSequenceArea::sl_delCol() {
     DeleteGapsDialog dlg(this, editor->getMSAObject()->getNumRows());
     if(dlg.exec() == QDialog::Accepted) {
+
+        MSACollapsibleItemModel *collapsibleModel = ui->getCollapseModel();
+        SAFE_POINT(NULL != collapsibleModel, "NULL collapsible model!", );
+        collapsibleModel->reset();
+
         DeleteMode deleteMode = dlg.getDeleteMode();
         int value = dlg.getValue();
         MAlignmentObject* msaObj = editor->getMSAObject();
@@ -1556,6 +1573,10 @@ void MSAEditorSequenceArea::sl_removeAllGaps() {
     SAFE_POINT(NULL != msa, "NULL msa object!", );
     assert(!msa->isStateLocked());
 
+    MSACollapsibleItemModel *collapsibleModel = ui->getCollapseModel();
+    SAFE_POINT(NULL != collapsibleModel, "NULL collapsible model!", );
+    collapsibleModel->reset();
+
     U2OpStatus2Log os;
     U2UseCommonUserModStep userModStep(msa->getEntityRef(), os);
     SAFE_POINT_OP(os, );
@@ -1602,8 +1623,15 @@ void MSAEditorSequenceArea::sl_zoomOperationPerformed( bool resizeModeChanged )
 }
 
 void MSAEditorSequenceArea::sl_modelChanged() {
-    MSACollapsibleItemModel* m = ui->getCollapseModel();
-    int startToLast = m->getLastPos() - getFirstVisibleSequence() + 1;
+    MSACollapsibleItemModel *collapsibleModel = ui->getCollapseModel();
+    SAFE_POINT(NULL != collapsibleModel, "NULL collapsible model!", );
+
+    if (collapsibleModel->isEmpty()) {
+        collapseModeSwitchAction->setChecked(false);
+        collapseModeUpdateAction->setEnabled(false);
+    }
+
+    int startToLast = collapsibleModel->getLastPos() - getFirstVisibleSequence() + 1;
     int availableNum = countHeightForSequences(false);
     if (startToLast < availableNum) {
         int newStartSeq = qMax(0, startSeq - availableNum + startToLast);
@@ -1886,6 +1914,15 @@ void MSAEditorSequenceArea::deleteCurrentSelection()
     }
 
     const U2Region& sel = getSelectedRows();
+
+    // Remove collapsible items (if any) for the rows
+    MSACollapsibleItemModel *collapsibleModel = ui->getCollapseModel();
+    SAFE_POINT(NULL != collapsibleModel, "NULL collapsible model!", );
+
+    for (int i = sel.startPos, n = sel.startPos + selection.width(); i < n; ++i) {
+        collapsibleModel->removeCollapsedForPosition(i);
+    }
+
     U2OpStatusImpl os;
     U2UseCommonUserModStep modeStep(maObj->getEntityRef(), os);
     SAFE_POINT_OP(os, );
@@ -1898,7 +1935,6 @@ void MSAEditorSequenceArea::deleteCurrentSelection()
     }
 
     cancelSelection();
-    
 }
 
 void MSAEditorSequenceArea::sl_addSeqFromFile()
@@ -1967,31 +2003,52 @@ void MSAEditorSequenceArea::sl_sortByName() {
 
 void MSAEditorSequenceArea::sl_setCollapsingMode(bool enabled) {
     MAlignmentObject* msaObject = editor->getMSAObject();
-    if (msaObject == NULL || msaObject->isStateLocked()) {
-        if (viewModeAction->isChecked()) {
-            viewModeAction->setChecked(false);
+    if (msaObject == NULL  || msaObject->isStateLocked() ) {
+        if (collapseModeSwitchAction->isChecked()) {
+            collapseModeSwitchAction->setChecked(false);
+            collapseModeUpdateAction->setEnabled(false);
         }
         return;
     }
-    MSACollapsibleItemModel* m = ui->getCollapseModel();
-    ui->setCollapsibleMode(enabled);
-    if (enabled) {
-        MAlignment ma = msaObject->getMAlignment();
-        QVector<U2Region> unitedRows;
-        ma.sortRowsBySimilarity(unitedRows);
-        m->reset(unitedRows);
 
-        U2OpStatusImpl os;
+    if (enabled) {
+        collapseModeUpdateAction->setEnabled(true);
+        sl_updateCollapsingMode();
+    }
+    else {
+        collapseModeUpdateAction->setEnabled(false);
+
+        MSACollapsibleItemModel *collapsibleModel = ui->getCollapseModel();
+        SAFE_POINT(NULL != collapsibleModel, "NULL collapsible model!", );
+        collapsibleModel->reset();
+    }
+
+    ui->setCollapsibleMode(enabled);
+    updateVScrollBar();
+}
+
+void MSAEditorSequenceArea::sl_updateCollapsingMode() {
+    MAlignmentObject *msaObject = editor->getMSAObject();
+    SAFE_POINT(NULL != msaObject, "NULL Msa Object!", );
+
+    MSACollapsibleItemModel *collapsibleModel = ui->getCollapseModel();
+
+    Document *doc = msaObject->getDocument();
+    SAFE_POINT(NULL != doc, "NULL document!", );
+
+    MAlignment ma = msaObject->getMAlignment();
+    QVector<U2Region> unitedRows;
+    bool sorted = ma.sortRowsBySimilarity(unitedRows);
+    collapsibleModel->reset(unitedRows);
+
+    U2OpStatusImpl os;
+    if (sorted) {
         msaObject->updateRowsOrder(ma.getRowsIds(), os);
         SAFE_POINT_OP(os, );
-
-        MAlignmentModInfo mi;
-        mi.hints[MODIFIER] = MAROW_SIMILARITY_SORT;
-        msaObject->updateCachedMAlignment(mi);
-    } else {
-        m->reset();
     }
-    updateVScrollBar();
+
+    MAlignmentModInfo mi;
+    msaObject->updateCachedMAlignment(mi);
 }
 
 void MSAEditorSequenceArea::fillSelectionWithGaps( )
@@ -2130,6 +2187,10 @@ QPair<QString, int> MSAEditorSequenceArea::getGappedColumnInfo() const{
     }
 }
 
+void MSAEditorSequenceArea::sl_resetCollapsibleModel() {
+    editor->resetCollapsibleModel();
+}
+
 void MSAEditorSequenceArea::sl_setCollapsingRegions(const QStringList* visibleSequences) {
     MAlignmentObject* msaObject = editor->getMSAObject();
     QVector<int> seqIndexes;
@@ -2170,8 +2231,8 @@ void MSAEditorSequenceArea::sl_setCollapsingRegions(const QStringList* visibleSe
     }
 
     if (msaObject == NULL || msaObject->isStateLocked()) {
-        if (viewModeAction->isChecked()) {
-            viewModeAction->setChecked(false);
+        if (collapseModeSwitchAction->isChecked()) {
+            collapseModeSwitchAction->setChecked(false);
         }
         return;
     }
@@ -2180,7 +2241,6 @@ void MSAEditorSequenceArea::sl_setCollapsingRegions(const QStringList* visibleSe
         m->reset(collapsedRegions);
 
         MAlignmentModInfo mi;
-        mi.hints[MODIFIER] = MAROW_SIMILARITY_SORT;
         msaObject->updateCachedMAlignment(mi);
     }
     else {

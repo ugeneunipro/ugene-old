@@ -10,8 +10,6 @@
 namespace U2 {
 
 MSACollapsibleItemModel::MSACollapsibleItemModel(MSAEditorUI* p) : QObject(p), ui(p) {
-    MAlignmentObject* obj = p->getEditor()->getMSAObject();
-    connect(obj, SIGNAL(si_alignmentChanged(const MAlignment&, const MAlignmentModInfo&)), SLOT(sl_alignmentChanged(const MAlignment&, const MAlignmentModInfo&)));
 }
 
 void MSACollapsibleItemModel::reset(const QVector<U2Region>& itemRegions) {
@@ -160,70 +158,6 @@ bool MSACollapsibleItemModel::isTopLevel(int pos) const {
     return true;
 }
 
-void MSACollapsibleItemModel::tracePositions() {
-    QVector<int>::ConstIterator iter = positions.constBegin();
-    while (iter != positions.constEnd()) {
-        uiLog.trace(tr("%1").arg(*iter));
-        iter++;
-    }
-}
-
-class UpdateHelper : public QObject {
-    MSACollapsibleItemModel *model;
-    MAlignmentObject *obj;
-public:
-    UpdateHelper(MSACollapsibleItemModel *_model, MAlignmentObject *_obj)
-        : model(_model), obj(_obj) {
-        model->blockSignals(true);
-        disconnect(obj, SIGNAL(si_alignmentChanged(const MAlignment&, const MAlignmentModInfo&)),
-            model, SLOT(sl_alignmentChanged(const MAlignment&, const MAlignmentModInfo&)));
-    }
-    ~UpdateHelper() {
-        connect(obj, SIGNAL(si_alignmentChanged(const MAlignment&, const MAlignmentModInfo&)),
-            model, SLOT(sl_alignmentChanged(const MAlignment&, const MAlignmentModInfo&)));
-        model->blockSignals(false);
-    }
-};
-
-void MSACollapsibleItemModel::sl_alignmentChanged(const MAlignment& maBefore, const MAlignmentModInfo& modInfo) {
-    if (!ui->isCollapsibleMode() || modInfo.hints.value(MODIFIER) == MAROW_SIMILARITY_SORT) {
-        return;
-    }
-
-    MAlignmentObject* obj = ui->getEditor()->getMSAObject();
-
-    QStringList open;
-    foreach(const MSACollapsableItem& i, items) {
-        if (!i.isCollapsed) {
-            const MAlignmentRow& row = maBefore.getRow(i.row);
-            const QString& name = row.getName();
-            open.append(name);
-        }
-    }
-
-    UpdateHelper updateHelper(this, obj);
-    MAlignment ma = obj->getMAlignment();
-    QVector<U2Region> unitedRows;
-    ma.sortRowsBySimilarity(unitedRows);
-    reset(unitedRows);
-
-    for (int i=0; i<items.size(); i++) {
-        int rowIdx = items.at(i).row;
-        const MAlignmentRow& row = ma.getRow(rowIdx);
-        const QString& name = row.getName();
-        if (open.contains(name)) {
-            triggerItem(i);
-        }
-    }
-
-    U2OpStatus2Log os;
-    obj->updateRowsOrder(ma.getRowsIds(), os);
-
-    MAlignmentModInfo mi;
-    mi.hints[MODIFIER] = MAROW_SIMILARITY_SORT;
-    obj->updateCachedMAlignment(mi);
-}
-
 int MSACollapsibleItemModel::getLastPos() const {
     MSAEditor* ed = ui->getEditor();
     MAlignmentObject* o = ed->getMSAObject();
@@ -282,6 +216,22 @@ int MSACollapsibleItemModel::displayedRowsCount(){
         }
     }
     return size;
+}
+
+void MSACollapsibleItemModel::removeCollapsedForPosition(int index) {
+    for (int i = 0, n = items.size(); i < n; ++i) {
+        MSACollapsableItem &collapsedItem = items[i];
+
+        int itemStart = collapsedItem.row;
+        int itemEnd = itemStart + collapsedItem.numRows;
+
+        if ((index >= itemStart) && (index < itemEnd)) {
+            items.remove(i);
+
+            int positionIndex = positions.indexOf(itemStart);
+            positions.remove(positionIndex);
+        }
+    }
 }
 
 } //namespace

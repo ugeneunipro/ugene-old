@@ -362,8 +362,11 @@ public:
     /** Sorts rows by name */
     void sortRowsByName(bool asc = true);
 
-    /** Sorts rows by similarity making identical rows sequential */
-    void sortRowsBySimilarity(QVector<U2Region>& united);
+    /**
+     * Sorts rows by similarity making identical rows sequential.
+     * Returns 'true' if the rows were resorted, and 'false' otherwise.
+     */
+    bool sortRowsBySimilarity(QVector<U2Region>& united);
 
     /** Returns row of the alignment */
     inline const MAlignmentRow& getRow(int row) const;

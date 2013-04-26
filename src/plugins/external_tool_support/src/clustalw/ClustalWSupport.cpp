@@ -202,6 +202,9 @@ void ClustalWSupportContext::sl_align_with_ClustalW() {
 
     ClustalWSupportTask* clustalWSupportTask = new ClustalWSupportTask(obj->getMAlignment(), GObjectReference(obj), settings);
     AppContext::getTaskScheduler()->registerTopLevelTask(clustalWSupportTask);
+
+    // Turn off rows collapsing
+    ed->resetCollapsibleModel();
 }
 
 }//namespace

@@ -202,6 +202,8 @@ void TCoffeeSupportContext::sl_align_with_TCoffee() {
     TCoffeeSupportTask* tCoffeeSupportTask = new TCoffeeSupportTask(obj->getMAlignment(), GObjectReference(obj), settings);
     AppContext::getTaskScheduler()->registerTopLevelTask(tCoffeeSupportTask);
 
+    // Turn off rows collapsing
+    ed->resetCollapsibleModel();
 }
 
 }//namespace

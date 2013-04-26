@@ -1090,7 +1090,8 @@ void MAlignment::sortRowsByName(bool asc) {
     qStableSort(rows.begin(), rows.end(), CompareMARowsByName(asc));
 }
 
-void MAlignment::sortRowsBySimilarity(QVector<U2Region>& united) {
+bool MAlignment::sortRowsBySimilarity(QVector<U2Region>& united) {
+    QList<MAlignmentRow> oldRows = rows;
     QList<MAlignmentRow> sortedRows;
     while (!rows.isEmpty()) {
         const MAlignmentRow& r = rows.takeFirst();
@@ -1110,7 +1111,11 @@ void MAlignment::sortRowsBySimilarity(QVector<U2Region>& united) {
             united.append(U2Region(start, len));
         }
     }
-    rows = sortedRows;
+    if (oldRows != sortedRows) {
+        rows = sortedRows;
+        return true;
+    }
+    return false;
 }
 
 void MAlignment::moveRowsBlock(int startRow, int numRows, int delta)

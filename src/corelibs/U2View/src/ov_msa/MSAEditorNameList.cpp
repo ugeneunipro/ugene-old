@@ -214,12 +214,13 @@ void MSAEditorNameList::sl_removeCurrentSequence() {
         assert(!maObj->isStateLocked());
         // UGENE cannot show empty alignment
         if (maObj->getNumRows() > 1) {
+            MSACollapsibleItemModel *collapsibleModel = ui->getCollapseModel();
+            SAFE_POINT(NULL != collapsibleModel, "NULL collapsible model!", );
+
+            collapsibleModel->removeCollapsedForPosition(n);
+
             maObj->removeRow(n);
         }
-        //MAlignment ma = maObj->getMAlignment();
-        //assert(ma.getNumSequences() > 1);
-        //ma.alignedSeqs.removeAt(n);
-        //maObj->setMAlignment(ma);
     }
 }
 void MSAEditorNameList::sl_selectReferenceSequence() {

@@ -208,6 +208,9 @@ void MuscleMSAEditorContext::sl_align() {
     } else {
         AppContext::getTaskScheduler()->registerTopLevelTask(muscleTask);
     }
+
+    // Turn off rows collapsing
+    ed->resetCollapsibleModel();
 }
 
 void MuscleMSAEditorContext::sl_alignSequencesToProfile() {
@@ -230,6 +233,9 @@ void MuscleMSAEditorContext::sl_alignSequencesToProfile() {
         return;
     }
     AppContext::getTaskScheduler()->registerTopLevelTask(new MuscleAddSequencesToProfileTask(obj, lod.url, MuscleAddSequencesToProfileTask::Sequences2Profile));
+
+    // Turn off rows collapsing
+    ed->resetCollapsibleModel();
 }
 
 void MuscleMSAEditorContext::sl_alignProfileToProfile() {
@@ -249,6 +255,9 @@ void MuscleMSAEditorContext::sl_alignProfileToProfile() {
         return;
     }
     AppContext::getTaskScheduler()->registerTopLevelTask(new MuscleAddSequencesToProfileTask(obj, lod.url, MuscleAddSequencesToProfileTask::Profile2Profile));
+
+    // Turn off rows collapsing
+    ed->resetCollapsibleModel();
 }
 
 }//namespace

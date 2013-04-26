@@ -308,6 +308,7 @@ private slots:
     void sl_removeAllGaps();
     void sl_sortByName();
     void sl_setCollapsingMode(bool enabled);
+    void sl_updateCollapsingMode();
     void sl_reverseComplementCurrentSelection();
     void sl_reverseCurrentSelection();
     void sl_complementCurrentSelection();
@@ -330,6 +331,7 @@ private slots:
     void sl_showCustomSettings();
     void sl_refrenceSeqChanged(const QString &str);
 
+    void sl_resetCollapsibleModel();
     void sl_setCollapsingRegions(const QStringList* visibleSequences);
     void sl_useDots();
     void sl_fontChanged(QFont font);
@@ -390,7 +392,8 @@ private:
     QAction*        addSeqFromFileAction;
     QAction*        addSeqFromProjectAction;
     QAction*        sortByNameAction;
-    QAction*        viewModeAction;
+    QAction*        collapseModeSwitchAction;
+    QAction*        collapseModeUpdateAction;
     QAction*        reverseComplementAction;
     QAction*        reverseAction;
     QAction*        complementAction;

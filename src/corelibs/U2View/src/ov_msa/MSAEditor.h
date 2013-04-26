@@ -158,6 +158,8 @@ public:
 
     void buildTree();
 
+    void resetCollapsibleModel();
+
 signals:
     void si_fontChanged(const QFont& f);
     void si_zoomOperationPerformed(bool resizeModeChanged);
@@ -314,8 +316,8 @@ private:
     QList<QWidget*>                 seqAreaWidgets;
     QList<QWidget*>                 lw2Widgets;
     QList<QWidget*>                 treeAreaWidgets;
-    MSAEditorUndoFramework*         undoFWK;
-    //MsaUndoRedoFramework*           undoFWK;
+    //MSAEditorUndoFramework*         undoFWK;
+    MsaUndoRedoFramework*           undoFWK;
 
     MSACollapsibleItemModel*        collapseModel;
     bool                            collapsibleMode;
