@@ -42,7 +42,27 @@
        <property name="text">
         <string>&gt;</string>
        </property>
+       <property name="icon">
+        <iconset resource="../../../../U2Gui/U2Gui.qrc">
+         <normaloff>:/core/images/navi_right.png</normaloff>:/core/images/navi_right.png</iconset>
+       </property>
       </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeType">
+        <enum>QSizePolicy::Fixed</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>4</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
      </item>
      <item>
       <widget class="QLineEdit" name="seqLineEdit">
@@ -58,6 +78,9 @@
          <height>22</height>
         </size>
        </property>
+       <property name="styleSheet">
+        <string notr="true">margin-top:1px;</string>
+       </property>
        <property name="text">
         <string/>
        </property>
@@ -65,6 +88,22 @@
         <string>Select and add</string>
        </property>
       </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer_2">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeType">
+        <enum>QSizePolicy::Fixed</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>4</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
      </item>
      <item>
       <widget class="QToolButton" name="deleteSeq">
@@ -86,12 +125,24 @@
        <property name="text">
         <string>x</string>
        </property>
+       <property name="icon">
+        <iconset resource="../../../../U2Gui/U2Gui.qrc">
+         <normaloff>:/core/images/close_small.png</normaloff>:/core/images/close_small.png</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>16</width>
+         <height>16</height>
+        </size>
+       </property>
       </widget>
      </item>
     </layout>
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="../../../../U2Gui/U2Gui.qrc"/>
+ </resources>
  <connections/>
 </ui>

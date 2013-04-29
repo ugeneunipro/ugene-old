@@ -116,5 +116,7 @@
         <file>images/pairwise.png</file>
         <file>images/highlight.png</file>
         <file>images/settings2.png</file>
+        <file>images/navi_right.png</file>
+        <file>images/close_small.png</file>
     </qresource>
 </RCC>
