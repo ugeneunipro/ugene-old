@@ -62,6 +62,8 @@ static const QString NESTED_ATTR("filter-algorithm");
 static const QString ALGO_ATTR("algorithm");
 static const QString THREADS_ATTR("threads");
 static const QString TANMEDS_ATTR("exclude-tandems");
+static const QString USE_MAX_DISTANCE_ATTR("use-maxdistance");
+static const QString USE_MIN_DISTANCE_ATTR("use-mindistance");
 
 const QString RepeatWorkerFactory::ACTOR_ID("repeats-search");
 
@@ -91,18 +93,27 @@ void RepeatWorkerFactory::init() {
         Descriptor ald(ALGO_ATTR, RepeatWorker::tr("Algorithm"), RepeatWorker::tr("Control over variations of algorithm."));
         Descriptor thd(THREADS_ATTR, RepeatWorker::tr("Parallel threads"), RepeatWorker::tr("Number of parallel threads used for the task."));
         Descriptor tan(TANMEDS_ATTR, RepeatWorker::tr("Exclude tandems"), RepeatWorker::tr("Exclude tandems areas before find repeat task is run."));
+        Descriptor umaxd(USE_MAX_DISTANCE_ATTR, RepeatWorker::tr("Apply 'Max distance' attribute"), RepeatWorker::tr("Apply 'Max distance' attribute."));
+        Descriptor umind(USE_MIN_DISTANCE_ATTR, RepeatWorker::tr("Apply 'Min distance' attribute"), RepeatWorker::tr("Apply 'Max distance' attribute."));
 
         FindRepeatsTaskSettings cfg = FindRepeatsDialog::defaultSettings();
         a << new Attribute(nd, BaseTypes::STRING_TYPE(), true, "repeat_unit");
         a << new Attribute(ld, BaseTypes::NUM_TYPE(), false, cfg.minLen);
         a << new Attribute(idd, BaseTypes::NUM_TYPE(), false, cfg.getIdentity());
-        a << new Attribute(mid, BaseTypes::NUM_TYPE(), false, cfg.minDist);
-        a << new Attribute(mad, BaseTypes::NUM_TYPE(), false, cfg.maxDist);
+        a << new Attribute(umind, BaseTypes::BOOL_TYPE(), false, true);
+        Attribute *minAttr = new Attribute(mid, BaseTypes::NUM_TYPE(), false, cfg.minDist);
+        a << minAttr;
+        a << new Attribute(umaxd, BaseTypes::BOOL_TYPE(), false, true);
+        Attribute *maxAttr = new Attribute(mad, BaseTypes::NUM_TYPE(), false, cfg.maxDist);
+        a << maxAttr;
         a << new Attribute(ind, BaseTypes::BOOL_TYPE(), false, cfg.inverted);
         a << new Attribute(nsd, BaseTypes::NUM_TYPE(), false, cfg.filter);
         a << new Attribute(ald, BaseTypes::NUM_TYPE(), false, cfg.algo);
         a << new Attribute(thd, BaseTypes::NUM_TYPE(), false, cfg.nThreads);
         a << new Attribute(tan, BaseTypes::BOOL_TYPE(), false, cfg.excludeTandems);
+
+        minAttr->addRelation(new VisibilityRelation(USE_MIN_DISTANCE_ATTR, true));
+        maxAttr->addRelation(new VisibilityRelation(USE_MAX_DISTANCE_ATTR, true));
     }
 
     Descriptor desc(ACTOR_ID, RepeatWorker::tr("Find Repeats"), 
@@ -197,8 +208,16 @@ Task* RepeatWorker::tick() {
         }
         cfg.algo = RFAlgorithm(actor->getParameter(ALGO_ATTR)->getAttributeValue<int>(context));
         cfg.minLen = actor->getParameter(LEN_ATTR)->getAttributeValue<int>(context);
-        cfg.minDist = actor->getParameter(MIN_DIST_ATTR)->getAttributeValue<int>(context);
-        cfg.maxDist = actor->getParameter(MAX_DIST_ATTR)->getAttributeValue<int>(context);
+        if(actor->getParameter(USE_MIN_DISTANCE_ATTR)->getAttributeValue<bool>(context)){
+            cfg.minDist = actor->getParameter(MIN_DIST_ATTR)->getAttributeValue<int>(context);
+        }else{
+            cfg.minDist = 0;
+        }
+        if(actor->getParameter(USE_MAX_DISTANCE_ATTR)->getAttributeValue<bool>(context)){
+            cfg.maxDist = actor->getParameter(MAX_DIST_ATTR)->getAttributeValue<int>(context);
+        }else{
+            cfg.maxDist = INT_MAX;
+        }
         int identity = actor->getParameter(IDENTITY_ATTR)->getAttributeValue<int>(context);
         cfg.setIdentity(identity);
         cfg.nThreads = actor->getParameter(THREADS_ATTR)->getAttributeValue<int>(context);
