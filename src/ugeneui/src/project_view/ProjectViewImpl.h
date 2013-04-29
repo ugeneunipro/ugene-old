@@ -56,6 +56,7 @@ private:
     void notifyUserAndReloadDocuments(const QList<Document*> &outdatedDocs);
     void notifyUserAndProcessRemovedDocuments(const QList<Document*> &removedDocs);
     bool isAnyDialogOpened() const;
+    bool makeDecision(Document *doc, QListIterator<Document*> &iter);
 
     Task* updateTask;
     bool recursion;

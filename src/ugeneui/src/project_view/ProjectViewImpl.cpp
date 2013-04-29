@@ -160,6 +160,45 @@ bool DocumentUpdater::isAnyDialogOpened() const
     return false;
 }
 
+bool DocumentUpdater::makeDecision(Document *doc, QListIterator<Document*> &iter) {
+    QMessageBox::StandardButton btn = QMessageBox::question(
+        dynamic_cast<QWidget *>(AppContext::getMainWindow()),
+        U2_APP_TITLE,
+        tr("Document '%1' was removed from its original directory. Do you wish to save it? "
+        "Otherwise it will be removed from current project.").arg(doc->getName()),
+        QMessageBox::Yes | QMessageBox::No | QMessageBox::NoToAll);
+
+    switch (btn) {
+    case QMessageBox::Yes: {
+        QString saveFileFilter = doc->getDocumentFormat()->getSupportedDocumentFileExtensions().join(" *.").prepend("*.");
+        QString newFileUrl = QFileDialog::getSaveFileName(dynamic_cast<QWidget*>(AppContext::getMainWindow()),
+            tr("Save as"), doc->getURLString(), saveFileFilter);
+        CHECK(!newFileUrl.isEmpty(), false);
+
+        Task *saveDoc = new SaveDocumentTask(doc, doc->getIOAdapterFactory(), newFileUrl);
+        AppContext::getTaskScheduler()->registerTopLevelTask(saveDoc);
+        doc->setURL(GUrl(newFileUrl));
+        break;
+    }
+
+    case QMessageBox::No:
+        AppContext::getProject()->removeDocument(doc);
+        break;
+
+    case QMessageBox::NoToAll:
+        AppContext::getProject()->removeDocument(doc);
+        while (iter.hasNext()) {
+            doc = iter.next();
+            AppContext::getProject()->removeDocument(doc);
+        }
+        break;
+
+    default:
+        assert(0);
+    }
+    return true;
+}
+
 void DocumentUpdater::notifyUserAndProcessRemovedDocuments(const QList<Document*> &removedDocs)
 {
     coreLog.trace(QString("Found %1 changed doc(s)!").arg(removedDocs.size()));
@@ -169,47 +208,12 @@ void DocumentUpdater::notifyUserAndProcessRemovedDocuments(const QList<Document*
     // query user what documents he wants to reload
     // reloaded document modification time will be updated in load task
     QListIterator<Document*> iter(removedDocs);
-    Project *curProject = AppContext::getProject();
-    TaskScheduler * taskScheduler = AppContext::getTaskScheduler();
-
-    QString newFileUrl;
-    Task *saveDoc = NULL;
-    QString saveFileFilter;
     while (iter.hasNext()) {
         Document* doc = iter.next();
-        QMessageBox::StandardButton btn = QMessageBox::question(
-            dynamic_cast<QWidget *>(AppContext::getMainWindow()),
-            U2_APP_TITLE,
-            tr("Document '%1' was removed from its original directory. Do you wish to save it? "
-            "Otherwise it will be removed from current project.").arg(doc->getName()),
-            QMessageBox::Yes | QMessageBox::No | QMessageBox::NoToAll);
-
-        switch (btn) {
-        case QMessageBox::Yes:
-            saveFileFilter = doc->getDocumentFormat()->getSupportedDocumentFileExtensions().join(" *.").prepend("*.");
-            newFileUrl = QFileDialog::getSaveFileName(dynamic_cast<QWidget *>(AppContext::getMainWindow()),
-                                                      tr("Save as"), doc->getURLString(), saveFileFilter);
-            
-            saveDoc = new SaveDocumentTask(doc, doc->getIOAdapterFactory(), newFileUrl);
-            taskScheduler->registerTopLevelTask(saveDoc);
-            doc->setURL(GUrl(newFileUrl));
-            break;
-
-        case QMessageBox::No:
-            curProject->removeDocument(doc);
-            break;
-
-        case QMessageBox::NoToAll:
-            curProject->removeDocument(doc);
-            while (iter.hasNext()) {
-                doc = iter.next();
-                curProject->removeDocument(doc);
-            }
-            break;
-
-        default:
-            assert(0);
-        }
+        bool decisionIsMade = false;
+        do {
+            decisionIsMade = makeDecision(doc, iter);
+        } while (!decisionIsMade);
     }
 }
 
