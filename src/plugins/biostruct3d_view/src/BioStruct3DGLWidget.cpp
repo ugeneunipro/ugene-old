@@ -107,7 +107,7 @@ BioStruct3DGLWidget::BioStruct3DGLWidget(BioStruct3DObject* obj, const Annotated
         rotAngle(0), spinAngle(0), rotAxis(), lastPos(),
         backgroundColor(DEFAULT_BACKGROUND_COLOR),
         selectionColor(DEFAULT_SELECTION_COLOR), animationTimer(0),
-        unselectedShadingLevel(DEFAULT_SHADING_LEVEL),
+        unselectedShadingLevel(DEFAULT_SHADING_LEVEL), imageRenderingMode(false),
 
         spinAction(0), settingsAction(0), closeAction(0), exportImageAction(0), selectModelsAction(0), alignWithAction(0),
         resetAlignmentAction(0), colorSchemeActions(0), rendererActions(0), molSurfaceRenderActions(0),
@@ -212,10 +212,12 @@ void BioStruct3DGLWidget::initializeGL() {
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     updateAllRenderers();
-
-    anaglyph->init();
-    if (!anaglyph->isAvailable()) {
-        anaglyphStatus = NOT_AVAILABLE;
+    
+    if (!imageRenderingMode) {
+        anaglyph->init();
+        if (!anaglyph->isAvailable()) {
+            anaglyphStatus = NOT_AVAILABLE;
+        }
     }
 }
 
@@ -242,7 +244,7 @@ void BioStruct3DGLWidget::paintGL() {
 
         gluLookAt(0.0, 0.0, glFrame->getCameraPosition().z, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
 
-        if (anaglyphStatus == ENABLED) {
+        if (anaglyphStatus == ENABLED && !imageRenderingMode) {
             // draw using anaglyph renderer
             anaglyph->draw();
         }

@@ -160,6 +160,8 @@ public:
     /** @returns scene bounding sphere radius */
     float getSceneRadius() const;
 
+    void setImageRenderingMode(bool status) { imageRenderingMode = status; }
+
 protected:
     /*!
     * QGlWidget virtual function, initializes OpenGL params. See, Qt docs "QGLWidget" for details. 
@@ -293,6 +295,8 @@ private:
     QTimer* animationTimer;
 
     int unselectedShadingLevel;
+    // Should be true when painting an image
+    bool imageRenderingMode;
 
     // controller logic
     QAction *spinAction;

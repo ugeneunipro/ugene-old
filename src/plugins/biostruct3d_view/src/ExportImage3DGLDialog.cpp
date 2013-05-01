@@ -54,7 +54,11 @@ bool ExportImage3DGLDialog::exportToPDF(){
     return false;
 }
 bool ExportImage3DGLDialog::exportToBitmap(){
+    
+    glWidget->setImageRenderingMode(true);
     QPixmap image = glWidget->renderPixmap(getWidth(), getHeight());
+    glWidget->setImageRenderingMode(false);
+
     if(hasQuality()){
         return image.save(getFilename(), qPrintable(getFormat()), getQuality());
     }else{
