@@ -97,23 +97,39 @@ void RepeatWorkerFactory::init() {
         Descriptor umind(USE_MIN_DISTANCE_ATTR, RepeatWorker::tr("Apply 'Min distance' attribute"), RepeatWorker::tr("Apply 'Max distance' attribute."));
 
         FindRepeatsTaskSettings cfg = FindRepeatsDialog::defaultSettings();
+        Attribute *aa;
         a << new Attribute(nd, BaseTypes::STRING_TYPE(), true, "repeat_unit");
-        a << new Attribute(ld, BaseTypes::NUM_TYPE(), false, cfg.minLen);
-        a << new Attribute(idd, BaseTypes::NUM_TYPE(), false, cfg.getIdentity());
+        aa = new Attribute(ld, BaseTypes::NUM_TYPE(), false);
+        aa->setAttributeValue(cfg.minLen);
+        a << aa;
+        aa = new Attribute(idd, BaseTypes::NUM_TYPE(), false);
+        aa->setAttributeValue(cfg.getIdentity());
+        a << aa;
         a << new Attribute(umind, BaseTypes::BOOL_TYPE(), false, true);
-        Attribute *minAttr = new Attribute(mid, BaseTypes::NUM_TYPE(), false, cfg.minDist);
-        a << minAttr;
+        aa = new Attribute(mid, BaseTypes::NUM_TYPE(), false);
+        aa->setAttributeValue(cfg.minDist);
+        aa->addRelation(new VisibilityRelation(USE_MIN_DISTANCE_ATTR, true));
+        a << aa;
         a << new Attribute(umaxd, BaseTypes::BOOL_TYPE(), false, true);
-        Attribute *maxAttr = new Attribute(mad, BaseTypes::NUM_TYPE(), false, cfg.maxDist);
-        a << maxAttr;
-        a << new Attribute(ind, BaseTypes::BOOL_TYPE(), false, cfg.inverted);
-        a << new Attribute(nsd, BaseTypes::NUM_TYPE(), false, cfg.filter);
-        a << new Attribute(ald, BaseTypes::NUM_TYPE(), false, cfg.algo);
-        a << new Attribute(thd, BaseTypes::NUM_TYPE(), false, cfg.nThreads);
-        a << new Attribute(tan, BaseTypes::BOOL_TYPE(), false, cfg.excludeTandems);
-
-        minAttr->addRelation(new VisibilityRelation(USE_MIN_DISTANCE_ATTR, true));
-        maxAttr->addRelation(new VisibilityRelation(USE_MAX_DISTANCE_ATTR, true));
+        aa = new Attribute(mad, BaseTypes::NUM_TYPE(), false);
+        aa->setAttributeValue(cfg.maxDist);
+        aa->addRelation(new VisibilityRelation(USE_MAX_DISTANCE_ATTR, true));
+        a << aa;
+        aa = new Attribute(ind, BaseTypes::BOOL_TYPE(), false);
+        aa->setAttributeValue(cfg.inverted);
+        a << aa;
+        aa = new Attribute(nsd, BaseTypes::NUM_TYPE(), false);
+        aa->setAttributeValue(cfg.filter);
+        a << aa;
+        aa = new Attribute(ald, BaseTypes::NUM_TYPE(), false);
+        aa->setAttributeValue(cfg.algo);
+        a << aa;
+        aa = new Attribute(thd, BaseTypes::NUM_TYPE(), false);
+        aa->setAttributeValue(cfg.nThreads);
+        a << aa;
+        aa = new Attribute(tan, BaseTypes::BOOL_TYPE(), false);
+        aa->setAttributeValue(cfg.excludeTandems);
+        a << aa;
     }
 
     Descriptor desc(ACTOR_ID, RepeatWorker::tr("Find Repeats"), 
