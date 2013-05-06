@@ -62,10 +62,10 @@ TCoffeeSupport::TCoffeeSupport(const QString& name, const QString& path) : Exter
     executableFileName="t_coffee";
     #endif
 #endif
-    validationArguments<<"-h";
+    validationArguments<<"-help";
     validMessage="PROGRAM: T-COFFEE";
     description=tr("<i>T-Coffee</i> is a multiple sequence alignment package.");
-    versionRegExp=QRegExp("PROGRAM: T-COFFEE \\(Version_(\\d+\\.\\d+)");
+    versionRegExp=QRegExp("PROGRAM: T-COFFEE Version_(\\d+\\.\\d+)");
     toolKitName="T-Coffee";
 }
 
