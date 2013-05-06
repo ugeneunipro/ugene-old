@@ -53,10 +53,10 @@ MAFFTSupport::MAFFTSupport(const QString& name, const QString& path) : ExternalT
         grayIcon = QIcon(":external_tool_support/images/cmdline_gray.png");
         warnIcon = QIcon(":external_tool_support/images/cmdline_warn.png");
     }
-#ifdef Q_OS_WIN
+#if defined(Q_OS_LINUX) || defined(Q_OS_WIN)
     executableFileName="mafft.bat";
 #else
-    #if defined(Q_OS_LINUX) || defined(Q_OS_MAC)
+    #if defined(Q_OS_MAC)
     executableFileName="mafft";
     #endif
 #endif

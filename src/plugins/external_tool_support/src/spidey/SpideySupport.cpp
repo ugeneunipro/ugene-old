@@ -75,7 +75,7 @@ SpideySupport::SpideySupport(const QString& name, const QString& path) : Externa
     description+=tr("<br>Spidey: a tool for mRNA-to-genomic alignments");
     description+=tr("<br>Genome Res. 2001 Nov;11(11):1952-7.");
     versionRegExp=QRegExp("VersionDate: (\\d+\\/\\d+\\/\\d+)");
-    toolKitName="Spidey";
+    toolKitName="spidey";
 
     AppContext::getSplicedAlignmentTaskRegistry()->registerTaskFactory(new SpideyAlignmentTaskFactory, SPIDEY_TOOL_NAME);
 
