@@ -71,6 +71,7 @@ public:
     SearchQuery *getRevCompl() {return revCompl;}
     void setRevCompl(SearchQuery *rc) {revCompl = rc;}
 
+    qint64 memoryHint() const;
 private:
     //U2AssemblyRead assRead;
     DNAQuality *quality;

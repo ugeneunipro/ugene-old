@@ -57,8 +57,6 @@ private:
 
     inline bool add(int &CMAX, int &W, int &q, int &readNum, SearchQuery *query, GenomeAlignerTask *parent);
     void readingFinishedWakeAll();
-
-    static const int ONE_SEARCH_QUERY_SIZE = 38; //~38 bytes for one search query?
 };
 
 } //namespace

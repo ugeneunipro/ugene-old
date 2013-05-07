@@ -66,6 +66,18 @@ public:
     bool isReadingStarted;
     QMutex listM, readingStatusMutex;
     QWaitCondition readShortReadsWait;
+
+    qint64 memoryHint() const {
+        qint64 m = sizeof(*this);
+
+        m += queries.capacity() * (qint64)sizeof(SearchQuery*);
+        m += bitValuesV.capacity() * (qint64)sizeof(BMType);
+        m += readNumbersV.capacity() * (qint64)sizeof(int);
+        m += positionsAtReadV.capacity() * (qint64)sizeof(int);
+        m += windowSizes.capacity() * (qint64)sizeof(int);
+
+        return m;
+    }
 };
 
 #define MAX_PERCENTAGE 100

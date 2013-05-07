@@ -40,7 +40,25 @@ SearchQuery::SearchQuery(const DNASequence *shortRead, SearchQuery *revCompl) {
     } else {
         quality = NULL;
     }
-    //assRead = NULL;
+
+    results.reserve(2);
+    mismatchCounts.reserve(2);
+    overlapResults.reserve(2);
+}
+
+qint64 SearchQuery::memoryHint() const {
+    qint64 m = sizeof(*this);
+
+    m += seqLength+1; // seq
+    m += nameLength+1; // name
+
+    m += results.capacity() * sizeof(SAType);
+    m += overlapResults.capacity() * sizeof(SAType);
+    m += mismatchCounts.capacity() * sizeof(quint32);
+
+    m += quality ? quality->memoryHint() : 0;
+
+    return m*2; // overhead due to many new calls of small regions
 }
 
 SearchQuery::SearchQuery(const U2AssemblyRead &, SearchQuery *revCompl) {
@@ -50,7 +68,6 @@ SearchQuery::SearchQuery(const U2AssemblyRead &, SearchQuery *revCompl) {
     seq = NULL;
     name = NULL;
     quality = NULL;
-    //assRead = shortRead;
 }
 
 SearchQuery::~SearchQuery() {
@@ -72,7 +89,7 @@ int SearchQuery::length() const {
     if (dna) {
         return seqLength;
     } else {
-        return 0;//assRead->readSequence.length();
+        return 0;
     }
 }
 
@@ -80,7 +97,7 @@ int SearchQuery::getNameLength() const {
     if (dna) {
         return nameLength;
     } else {
-        return 0;//assRead->readSequence.length();
+        return 0;
     }
 }
 
@@ -88,7 +105,7 @@ char *SearchQuery::data() {
     if (dna) {
         return seq;
     } else {
-        return NULL;//assRead->readSequence.data();
+        return NULL;
     }
 }
 
@@ -96,14 +113,15 @@ const char *SearchQuery::constData() const {
     if (dna) {
         return seq;
     } else {
-        return NULL;//assRead->readSequence.constData();
+        return NULL;
     }
 }
+
 const QByteArray SearchQuery::constSequence() const {
     if (dna) {
         return QByteArray(seq);
     } else {
-        return NULL;//assRead->readSequence;
+        return NULL;
     }
 }
 
@@ -129,12 +147,12 @@ bool SearchQuery::haveMCount() const {
 }
 
 void SearchQuery::addResult(SAType result, quint32 mCount) {
-    results.append(result);
-    mismatchCounts.append(mCount);
+    results.append(result); results.squeeze();
+    mismatchCounts.append(mCount); mismatchCounts.squeeze();
 }
 
 void SearchQuery::addOveplapResult(SAType result) {
-    overlapResults.append(result);
+    overlapResults.append(result); overlapResults.squeeze();
 }
 
 void SearchQuery::onPartChanged() {
@@ -144,8 +162,8 @@ void SearchQuery::onPartChanged() {
 }
 
 void SearchQuery::clear() {
-    results.clear();
-    mismatchCounts.clear();
+    results.clear(); results.squeeze();
+    mismatchCounts.clear(); mismatchCounts.squeeze();
 }
 
 SAType SearchQuery::firstResult() const {

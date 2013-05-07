@@ -342,13 +342,13 @@ void GenomeAlignerIndex::alignShortRead(SearchQuery *qu, BMType bitValue, int st
     }
 
     SAType fisrtSymbol = 0;
-    //SAType offset = 0;
-    const QByteArray &querySeq = qu->constSequence();
+    const char* querySeq = qu->constData();
+    const int queryLen = qu->length();
     char *refBuff = NULL;
 
     int CMAX = settings->nMismatches;
     if (!settings->absMismatches) {
-        CMAX = (querySeq.length() * settings->ptMismatches) / MAX_PERCENTAGE;
+        CMAX = (queryLen * settings->ptMismatches) / MAX_PERCENTAGE;
     }
 
     int bestC = CMAX + 1;
@@ -373,7 +373,7 @@ void GenomeAlignerIndex::alignShortRead(SearchQuery *qu, BMType bitValue, int st
         rightOverlapStart -= 2*overlapSize;
     }
     for (SAType k=firstResult; (k<loadedPartSize) && (bitValue&bitFilter)==(indexPart.bitMask[k]&bitFilter); k++) {
-        if (!isValidPos(indexPart.sArray[k] + loadedSeqStart, startPos, querySeq.length(),
+        if (!isValidPos(indexPart.sArray[k] + loadedSeqStart, startPos, queryLen,
             fisrtSymbol, qu, loadedSeqStart)) {
             continue;
         }
@@ -381,7 +381,7 @@ void GenomeAlignerIndex::alignShortRead(SearchQuery *qu, BMType bitValue, int st
         refBuff = &(indexPart.seq[fisrtSymbol - loadedSeqStart]);
 
         int c = 0;
-        if (compare(refBuff, querySeq.constData(), startPos, w, c, CMAX, querySeq.length())) {
+        if (compare(refBuff, querySeq, startPos, w, c, CMAX, queryLen)) {
             if (settings->bestMode) {
                 found = true;
                 bestC = c;

@@ -37,6 +37,13 @@ DNAQuality::DNAQuality( const QByteArray& qualScore, DNAQualityType t /* = DNAQu
 
 }
 
+qint64 DNAQuality::memoryHint() const {
+	qint64 m = sizeof(*this);
+	m += qualCodes.capacity();
+
+	return m;
+}
+
 int DNAQuality::getValue( int pos ) const
 {
     assert(pos >=0 && pos < qualCodes.count());

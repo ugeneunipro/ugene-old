@@ -25,10 +25,11 @@
 #include <U2Core/DNATranslation.h>
 #include <U2Core/TextUtils.h>
 #include <U2Core/Timer.h>
+#include <U2Core/U2SafePoints.h>
 
 namespace U2 {
 
-#define ALIGN_DATA_SIZE 1000
+#define ALIGN_DATA_SIZE 1000000
 
 static bool isDnaQualityAboveThreshold(const DNAQuality &dna, int threshold) {
     assert(!dna.isEmpty());
@@ -42,6 +43,62 @@ static bool isDnaQualityAboveThreshold(const DNAQuality &dna, int threshold) {
     return true;
 }
 
+static bool checkDnaQuality(SearchQuery* query, int qualityThreshold) {
+    if (!(qualityThreshold > 0 && query->hasQuality())) {
+        return true;
+    }
+
+    // simple quality filtering
+    return isDnaQualityAboveThreshold(query->getQuality(), qualityThreshold);
+}
+
+static void updateMinMaxReadLengths(AlignContext& alignContext, int l) {
+    if (GenomeAlignerTask::MIN_SHORT_READ_LENGTH <= l) {
+        if (alignContext.minReadLength > l) {
+            alignContext.minReadLength = l;
+        }
+        if (alignContext.maxReadLength < l) {
+            alignContext.maxReadLength = l;
+        }
+    }
+}
+
+static SearchQuery* createRevComplQuery(SearchQuery* query, DNATranslation* transl) {
+    SAFE_POINT(query != NULL, "Query is null", NULL);
+    SAFE_POINT(transl != NULL, "Transl is null", NULL);
+
+    QByteArray reversed(query->constSequence());
+    TextUtils::reverse(reversed.data(), reversed.count());
+
+    DNASequence dnaSeq(QString("%1_rev").arg(query->getName()), reversed, NULL);
+    SearchQuery *rQu = new SearchQuery(&dnaSeq, query);
+    transl->translate(const_cast<char*>(rQu->constData()), rQu->length());
+
+    if (rQu->constSequence() == query->constSequence()) {
+        delete rQu; rQu = NULL;
+        return NULL;
+    }
+
+    query->setRevCompl(rQu);
+    return rQu;
+}
+
+static void cleanAlignContextVectors(AlignContext& alignContext) {
+    foreach (SearchQuery *qu, alignContext.queries) {
+        delete qu;
+    }
+
+    {
+        // Noone can touch these vectors without sync
+        QMutexLocker lock(&alignContext.listM);
+        const int vectorsReserve = 2*1024*1024; // why realloc often; little optimization
+        alignContext.queries.resize(0); alignContext.queries.reserve(vectorsReserve);
+        alignContext.bitValuesV.resize(0); alignContext.bitValuesV.reserve(vectorsReserve);
+        alignContext.windowSizes.resize(0); alignContext.windowSizes.reserve(vectorsReserve);
+        alignContext.readNumbersV.resize(0); alignContext.readNumbersV.reserve(vectorsReserve);
+        alignContext.positionsAtReadV.resize(0); alignContext.positionsAtReadV.reserve(vectorsReserve);
+    }
+}
 
 ReadShortReadsSubTask::ReadShortReadsSubTask(SearchQuery **_lastQuery,
                                              GenomeAlignerReader *_seqReader,
@@ -57,6 +114,8 @@ freeMemorySize(m)
 }
 
 void ReadShortReadsSubTask::readingFinishedWakeAll() {
+    taskLog.trace("Wake all");
+
     QMutexLocker(&alignContext.readingStatusMutex);
     alignContext.isReadingFinished = true;
     alignContext.readShortReadsWait.wakeAll();
@@ -69,20 +128,8 @@ void ReadShortReadsSubTask::run() {
     if (!alignContext.bestMode) {
         parent->pWriteTask->flush();
     }
-    foreach (SearchQuery *qu, alignContext.queries) {
-        delete qu;
-    }
 
-    {
-        // Noone can touch these vectors without sync
-        QMutexLocker lock(&alignContext.listM);
-        const int vectorsReserve = 2*1024*1024; // why realloc often; little optimization
-        alignContext.queries.resize(0); alignContext.queries.reserve(vectorsReserve);
-        alignContext.bitValuesV.resize(0); alignContext.bitValuesV.reserve(vectorsReserve);
-        alignContext.windowSizes.resize(0); alignContext.windowSizes.reserve(vectorsReserve);
-        alignContext.readNumbersV.resize(0); alignContext.readNumbersV.reserve(vectorsReserve);
-        alignContext.positionsAtReadV.resize(0); alignContext.positionsAtReadV.reserve(vectorsReserve);
-    }
+    cleanAlignContextVectors(alignContext);
 
     if (isCanceled()) {
         readingFinishedWakeAll();
@@ -100,17 +147,12 @@ void ReadShortReadsSubTask::run() {
     int q = 0;
     int readNum = 0;
     int alignBunchSize = 0;
-
+ 
     DNATranslation* transl = AppContext::getDNATranslationRegistry()->
         lookupTranslation(BaseDNATranslationIds::NUCL_DNA_DEFAULT_COMPLEMENT);
     alignContext.isReadingStarted = true;
     while(!seqReader->isEnd()) {
-        SearchQuery *query = NULL;
-        if (NULL == *lastQuery) {
-            query = seqReader->read();
-        } else {
-            query = *lastQuery;
-        }
+        SearchQuery *query = seqReader->read();
         if (NULL == query) {
             if (!seqReader->isEnd()) {
                 setError("Short-reads object type must be a sequence, but not a multiple alignment");
@@ -119,77 +161,40 @@ void ReadShortReadsSubTask::run() {
             }
             break;
         }
-
-        if ( qualityThreshold > 0 && query->hasQuality() ) {
-            // simple quality filtering
-            bool ok = isDnaQualityAboveThreshold(query->getQuality(), qualityThreshold);
-            if (!ok) {
-                continue;
-            }
+        ++bunchSize;
+ 
+        if (!checkDnaQuality(query, qualityThreshold)) {
+            continue;
         }
-
-        if (GenomeAlignerTask::MIN_SHORT_READ_LENGTH <= query->length()) {
-            if (alignContext.minReadLength > query->length()) {
-                alignContext.minReadLength = query->length();
-            }
-            if (alignContext.maxReadLength < query->length()) {
-                alignContext.maxReadLength = query->length();
-            }
-        }
-
-        n = alignContext.absMismatches ? alignContext.nMismatches+1 : (query->length()*alignContext.ptMismatches/100)+1;
-
-        qint64 qualLength = 0;
-        if (query->hasQuality()){
-            qualLength = query->getQuality().qualCodes.length();
-        }
-        qint64 memoryRequiredForOneRead = n*24 +  // 2*(long long + int) == 24
-            sizeof(SearchQuery) +
-            ONE_SEARCH_QUERY_SIZE + query->length() +
-            query->getNameLength() +
-            qualLength;
-        memoryRequiredForOneRead *= 4; // FIXME: UGENE-1114
-
-
-        if (alignReversed) {
-            m -= 2*memoryRequiredForOneRead;
-            alignBunchSize += 2;
-        } else {
-            m -= memoryRequiredForOneRead;
-            alignBunchSize++;
-        }
-        if (m<=0) {
-            delete *lastQuery;
-            *lastQuery = query;
-            break;
-        }
+        updateMinMaxReadLengths(alignContext, query->length());
 
         if (!add(CMAX, W, q, readNum, query, parent)) {
             delete query;
             continue;
         }
-
-        ++bunchSize;
-        *lastQuery = NULL;
+        m -= query->memoryHint();
+        alignBunchSize++;
 
         if (alignReversed) {
-            QByteArray reversed(query->constSequence());
-            TextUtils::reverse(reversed.data(), reversed.count());
-            SearchQuery *rQu = new SearchQuery(new DNASequence(QString("%1_rev").arg(query->getName()), reversed, NULL), query);
-            transl->translate(const_cast<char*>(rQu->constData()), rQu->length());
-            if (rQu->constSequence() != query->constSequence()) {
-                query->setRevCompl(rQu);
+            SearchQuery *rQu = createRevComplQuery(query, transl);
+            if (rQu) {
                 add(CMAX, W, q, readNum, rQu, parent);
-            } else {
-                delete rQu;
+                m -= rQu->memoryHint();
+                alignBunchSize++;
             }
         }
 
-        if (!alignContext.openCL) {
-            if (alignBunchSize > ALIGN_DATA_SIZE) {
-                alignContext.readShortReadsWait.wakeAll();
-                alignBunchSize=0; // it's nice to have a warm computer in winter, but let aligner threads sleep more
-            }
+        qint64 alignContextMemoryHint = alignContext.memoryHint();
+        if (m - alignContextMemoryHint<=0) {
+            break;
+        }
+
+        if (alignBunchSize > ALIGN_DATA_SIZE && !alignContext.openCL) {
+            taskLog.trace("Wake up");
+            taskLog.trace(QString("Readed %1 reads").arg(bunchSize));
+
+            alignContext.readShortReadsWait.wakeOne();
+            alignBunchSize=0;
         }
     }
 
