@@ -56,8 +56,8 @@ MSAGeneralTab::MSAGeneralTab(MSAEditor* m):msa(m){
     QVBoxLayout* mainLayout = initVBoxLayout(this);
     mainLayout->setSpacing(0);
 
-    //Refrence sequence
-    QWidget * refrenceGroup = new ShowHideSubgroupWidget("REFRENCE", tr("Refrence sequence"), createRefrenceGroup(), true);
+    //Reference sequence
+    QWidget * refrenceGroup = new ShowHideSubgroupWidget("REFRENCE", tr("Reference sequence"), createRefrenceGroup(), true);
     mainLayout->addWidget(refrenceGroup);
 }
 

@@ -105,6 +105,8 @@ private:
     bool showPenSettings;
 
     QWidget* contentWidget;
+
+    static const QString COLOR_BOX_STYLE;
 };
 
 class U2VIEW_EXPORT AddTreeWidget : public QWidget

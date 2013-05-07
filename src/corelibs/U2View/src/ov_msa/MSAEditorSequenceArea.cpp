@@ -1874,6 +1874,7 @@ void MSAEditorSequenceArea::sl_copyCurrentSelection()
 
 void MSAEditorSequenceArea::shiftSelectedRegion( int shift )
 {
+    QMutexLocker m(&lock);
     if (shift == 0) {
         return;
     }
@@ -1888,6 +1889,8 @@ void MSAEditorSequenceArea::shiftSelectedRegion( int shift )
         if (maObj->isRegionEmpty(x,y,width,height)) {
             return;
         }
+        U2OpStatus2Log os;
+        U2UseCommonUserModStep userModStep(maObj->getEntityRef(), os);
         const bool shiftOk = maObj->shiftRegion(x,y,width,height,shift);
         if (shiftOk) {
             cursorPos.setX(cursorPos.x() + shift);

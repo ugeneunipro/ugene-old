@@ -49,6 +49,11 @@ static inline QVBoxLayout * initLayout(QWidget * w) {
     return layout;
 }
 
+const QString TreeOptionsWidget::COLOR_BOX_STYLE = "QPushButton {"
+                                                        "border: none;"
+                                                        "min-height: 20px;"
+                                                        "background-color : %1;}";
+
 TreeOptionsWidget::TreeOptionsWidget(MSAEditor* m, const TreeOpWidgetViewSettings& _viewSettings)
     : msa(m), treeViewer(NULL), viewSettings(_viewSettings), settings(NULL), showFontSettings(false), showPenSettings(false)
 {
@@ -298,8 +303,7 @@ void TreeOptionsWidget::sl_labelsColorButton() {
     QColor newColor = QColorDialog::getColor(textSettings.textColor, this);
     if (newColor.isValid()) {
        textSettings.textColor = newColor;
-        static const QString COLOR_STYLE("QPushButton { background-color : %1;}");
-        labelsColorButton->setStyleSheet(COLOR_STYLE.arg(textSettings.textColor.name()));
+        labelsColorButton->setStyleSheet(COLOR_BOX_STYLE.arg(textSettings.textColor.name()));
         sl_textSettingsChanged();
     }
 }
@@ -308,8 +312,7 @@ void TreeOptionsWidget::sl_branchesColorButton() {
     QColor newColor = QColorDialog::getColor(branchSettings.branchColor, this);
     if (newColor.isValid()) {
         branchSettings.branchColor = newColor;
-        static const QString COLOR_STYLE("QPushButton { background-color : %1;}");
-        branchesColorButton->setStyleSheet(COLOR_STYLE.arg(branchSettings.branchColor.name()));
+        branchesColorButton->setStyleSheet(COLOR_BOX_STYLE.arg(branchSettings.branchColor.name()));
         sl_branchSettingsChanged();
     }
 }
@@ -344,8 +347,7 @@ void TreeOptionsWidget::sl_onSettingsChanged() {
 }
 
 void TreeOptionsWidget::updateButtonColor(QPushButton* button, const QColor& newColor ) {
-    static const QString COLOR_STYLE("QPushButton { background-color : %1;}");
-    button->setStyleSheet(COLOR_STYLE.arg(newColor.name()));
+    button->setStyleSheet(COLOR_BOX_STYLE.arg(newColor.name()));
 }
 
 void TreeOptionsWidget::updateShowFontOpLabel(QString newText) {

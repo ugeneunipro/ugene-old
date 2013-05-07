@@ -410,6 +410,8 @@ private:
     QList<QAction*> colorSchemeMenuActions;
     QList<QAction* > customColorSchemeMenuActions;
     QList<QAction* > highlightingSchemeMenuActions;
+
+    QMutex lock;
 };
 
 }//namespace
