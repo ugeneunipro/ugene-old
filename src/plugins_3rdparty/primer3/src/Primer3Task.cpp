@@ -611,7 +611,7 @@ QList<Task *> Primer3ToAnnotationsTask::onSubTaskFinished(Task *subTask)
         const U2Region& firstRegion = regions.first();
         int intronStart = firstRegion.endPos() - settings.getSpanIntronExonBoundarySettings().minLeftOverlap;
         int intronEnd = firstRegion.endPos() + settings.getSpanIntronExonBoundarySettings().minRightOverlap;
-        if (regions.size() > 1 || settings.getSpanIntronExonBoundarySettings().spanIntron) {
+        if (regions.size() > 1 && settings.getSpanIntronExonBoundarySettings().spanIntron) {
             const U2Region& secondRegion = regions.at(1);
             intronEnd = secondRegion.startPos + settings.getSpanIntronExonBoundarySettings().minRightOverlap;
         }
