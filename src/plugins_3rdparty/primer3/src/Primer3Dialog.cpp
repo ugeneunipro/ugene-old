@@ -76,8 +76,19 @@ Primer3Dialog::Primer3Dialog(const Primer3TaskSettings &defaultSettings, ADVSequ
         }
     }
 
-    SplicedAlignmentTaskRegistry* sr = AppContext::getSplicedAlignmentTaskRegistry();
-    ui.spanIntronExonBox->setEnabled(sr->getAlgNameList().size() > 0);
+    int spanIntronExonIdx = -1;
+    
+    for (int i = 0; i < ui.tabWidget->count(); ++i) {
+        if ( ui.tabWidget->tabText(i).contains("Intron") ) {
+            spanIntronExonIdx = i;
+            break;
+        }
+    }
+    
+    if (spanIntronExonIdx != -1) {
+        SplicedAlignmentTaskRegistry* sr = AppContext::getSplicedAlignmentTaskRegistry();
+        ui.tabWidget->setTabEnabled(spanIntronExonIdx, sr->getAlgNameList().size() > 0);
+    }   
 
     reset();
 }

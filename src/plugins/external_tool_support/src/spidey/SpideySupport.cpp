@@ -77,8 +77,23 @@ SpideySupport::SpideySupport(const QString& name, const QString& path) : Externa
     versionRegExp=QRegExp("VersionDate: (\\d+\\/\\d+\\/\\d+)");
     toolKitName="spidey";
 
-    AppContext::getSplicedAlignmentTaskRegistry()->registerTaskFactory(new SpideyAlignmentTaskFactory, SPIDEY_TOOL_NAME);
+    connect(this, SIGNAL(si_toolValidationStatusChanged(bool)), SLOT(sl_validationStatusChanged(bool))); 
+    
 
+}
+
+void SpideySupport::sl_validationStatusChanged( bool isValid )
+{
+
+    SplicedAlignmentTaskRegistry* registry = AppContext::getSplicedAlignmentTaskRegistry();
+    if (isValid) 
+    {
+        if (!registry->hadRegistered(SPIDEY_TOOL_NAME)) {
+            registry->registerTaskFactory(new SpideyAlignmentTaskFactory, SPIDEY_TOOL_NAME);
+        }
+    } else {
+        registry->unregisterTaskFactory(SPIDEY_TOOL_NAME);
+    }
 }
 
 

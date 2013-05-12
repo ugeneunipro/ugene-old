@@ -3527,7 +3527,7 @@ p, li { white-space: pre-wrap; }
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="tab">
+     <widget class="QWidget" name="tab_spanIntronExon">
       <attribute name="title">
        <string>Span Intron/Exon</string>
       </attribute>

@@ -47,6 +47,7 @@ void ExternalTool::setPath(const QString& _path) {
 }
 void ExternalTool::setValid(bool _isValid){
     isValidTool=_isValid;
+    emit si_toolValidationStatusChanged(isValidTool);
 }
 void ExternalTool::setVersion(const QString& _version) {
     version=_version;

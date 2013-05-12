@@ -35,6 +35,8 @@ class SpideySupport : public ExternalTool {
 public:
     SpideySupport(const QString& name, const QString& path = "");
     GObjectViewWindowContext* getViewContext(){ return viewCtx; }
+private slots:
+    void sl_validationStatusChanged(bool newStatus);
 
 private:
     GObjectViewWindowContext* viewCtx;

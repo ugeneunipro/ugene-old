@@ -87,6 +87,7 @@ public:
     bool isValid() const { return isValidTool; }//may be not needed
 signals:
     void si_pathChanged();
+    void si_toolValidationStatusChanged(bool isValid);
 
 protected:
     QString     name;
