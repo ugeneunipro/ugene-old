@@ -108,6 +108,7 @@ void ConvertAssemblyToSamTask::run() {
     IOAdapterFactory *iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(samFileUrl));
     QScopedPointer<Document> doc(format->createNewLoadedDocument(iof, samFileUrl , stateInfo));
     CHECK_OP(stateInfo, );
+    doc->setDocumentOwnsDbiResources(false);
     foreach (const U2DataId &id, objectIds) {
         U2Assembly assembly = handle->dbi->getAssemblyDbi()->getAssemblyObject(id, stateInfo);
         CHECK_OP(stateInfo, );
