@@ -63,6 +63,10 @@ MSAEditorSimilarityColumn::~MSAEditorSimilarityColumn() {
 }
 
 QString MSAEditorSimilarityColumn::getTextForRow( int s ) {
+    if (NULL == algo) {
+        return tr("(None)");
+    }
+
     const MAlignment& ma = editor->getMSAObject()->getMAlignment();
     QString refSeqName = editor->getRefSeqName();
 
