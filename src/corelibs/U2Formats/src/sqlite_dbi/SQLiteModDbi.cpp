@@ -209,7 +209,7 @@ void SQLiteModDbi::createModStep(const U2DataId &masterObjId, U2SingleModStep &s
     qSingle.bindBlob(3, SQLiteUtils::toDbExtra(step.objectId));
     qSingle.bindInt64(4, step.version);
     qSingle.bindInt64(5, step.modType);
-    qSingle.bindString(6, step.details);
+    qSingle.bindBlob(6, step.details);
     qSingle.bindInt64(7, currentMultiModStepId);
 
     step.id = qSingle.insert();

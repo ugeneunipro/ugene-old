@@ -319,9 +319,9 @@ bool PackUtils::unpackAlphabetDetails(const QByteArray &modDetails, U2AlphabetId
 QByteArray PackUtils::packObjectNameDetails(const QString &oldName, const QString &newName) {
     QByteArray result = VERSION;
     result += SEP;
-    result += oldName.toLatin1();
+    result += oldName.toUtf8();
     result += SEP;
-    result += newName.toLatin1();
+    result += newName.toUtf8();
     return result;
 }
 
@@ -332,8 +332,8 @@ bool PackUtils::unpackObjectNameDetails(const QByteArray &modDetails, QString &o
     SAFE_POINT(!QString(tokens[1]).isEmpty(), "Invalid modDetails!", false);
     SAFE_POINT(!QString(tokens[2]).isEmpty(), "Invalid modDetails!", false);
 
-    oldName = tokens[1];
-    newName = tokens[2];
+    oldName = QString::fromUtf8(tokens[1]);
+    newName = QString::fromUtf8(tokens[2]);
     return true;
 }
 
