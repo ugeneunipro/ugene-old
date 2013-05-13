@@ -83,6 +83,10 @@ void GTest_RunCMDLine::setArgs(const QDomElement & el) {
             expectedMessage = node.nodeValue();
             continue;
         }
+        if(node.nodeName() == "nomessage"){
+            unexpectedMessage = node.nodeValue();
+            continue;
+        }
         QString argument = "--" + node.nodeName() + "=" + getVal(node.nodeValue());
          if( argument.startsWith("--task") ) {
             args.prepend(argument);
@@ -169,7 +173,13 @@ Task::ReportResult GTest_RunCMDLine::report() {
         }
         return ReportResult_Finished;
     }
-    
+    if(!unexpectedMessage.isEmpty()){
+        if(output.contains(unexpectedMessage, Qt::CaseSensitive)){
+            stateInfo.setError(QString("Unexpected message is found in output"));
+        }
+        return ReportResult_Finished;
+    }
+
     QString err = getErrorMsg(output);
     if( !err.isEmpty() ) {
         int eofIdx = err.indexOf("\n");

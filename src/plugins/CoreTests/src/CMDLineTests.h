@@ -55,6 +55,7 @@ private:
     
 private:
     QString expectedMessage;
+    QString unexpectedMessage;
     QStringList args;
     QProcess *  proc;
     QString     ugeneclPath;
