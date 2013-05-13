@@ -175,6 +175,7 @@ void SeqStatisticsWidget::showSimilaritySettings() {
     ui.optionsWidget->setEnabled(true);
     ui.refSeqWarning->show();
     msaUI->showSimilarity();
+    msaUI->setSimilaritySettings(settings);
     sl_onRefSeqChanged(msa->getRefSeqName());
 }
 
