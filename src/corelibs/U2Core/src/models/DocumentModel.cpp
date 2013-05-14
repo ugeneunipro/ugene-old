@@ -269,7 +269,7 @@ static void deallocateDbiResources(GObject* obj, DbiConnection &con, U2OpStatus 
         U2DbiRef dbiRef = objRef.dbiRef;
 
         if (dbiRef.isValid()) {
-            assert(NULL != con.dbi);
+            SAFE_POINT(NULL != con.dbi, "NULL Dbi during deallocating dbi resources!", );
             con.dbi->getObjectDbi()->removeObject(objRef.entityId, os);
         }
     }
@@ -349,7 +349,7 @@ void Document::_removeObject(GObject* obj, bool deleteObjects) {
     if (deleteObjects) {
         if (obj->entityRef.isValid()) {
             U2OpStatus2Log os;
-            DbiConnection con(dbiRef, os);
+            DbiConnection con(obj->getEntityRef().dbiRef, os);
             deallocateDbiResources(obj, con, os);
         }
         delete obj;
