@@ -105,24 +105,31 @@ private:
 /* Controller */
 /************************************************************************/
 DatasetsController::DatasetsController(URLAttribute *_attr)
-: QObject(), attr(_attr), sets(attr->getDatasets()), datasetsWidget(NULL)
+: QObject(), attr(_attr), datasetsWidget(NULL)
 {
+    initSets(attr->getDatasets());
     initialize();
 }
 
 DatasetsController::DatasetsController(QList<Dataset> &_sets)
-: QObject(), attr(NULL), sets(_sets), datasetsWidget(NULL)
+: QObject(), attr(NULL), datasetsWidget(NULL)
 {
+    initSets(_sets);
     initialize();
+}
+
+void DatasetsController::initSets(const QList<Dataset> &s) {
+    foreach (const Dataset &d, s) {
+        sets << new Dataset(d);
+    }
 }
 
 void DatasetsController::initialize() {
     SAFE_POINT(sets.size() > 0, "0 datasets count", );
     datasetsWidget = new DatasetsListWidget();
 
-    for (QList<Dataset>::iterator i = sets.begin();
-        i != sets.end(); i++) {
-            datasetsWidget->appendDataset(i->getName(), createDatasetWidget(*i));
+    foreach (Dataset *dSet, sets) {
+        datasetsWidget->appendDataset(dSet->getName(), createDatasetWidget(dSet));
     }
     connect(datasetsWidget, SIGNAL(si_addDataset(const QString &, U2OpStatus &)),
         SLOT(sl_addDataset(const QString &, U2OpStatus &)));
@@ -137,8 +144,12 @@ QWidget * DatasetsController::getWigdet() {
     return datasetsWidget;
 }
 
-QList<Dataset> & DatasetsController::getDatasets() {
-    return sets;
+QList<Dataset> DatasetsController::getDatasets() {
+    QList<Dataset> result;
+    foreach (Dataset *d, sets) {
+        result << Dataset(*d);
+    }
+    return result;
 }
 
 void DatasetsController::createItemWidget(URLContainer *url, DatasetWidget *inDataWidget) {
@@ -152,9 +163,9 @@ void DatasetsController::createItemWidget(URLContainer *url, DatasetWidget *inDa
     inDataWidget->addUrlItem(wc.getWidget());
 }
 
-DatasetWidget * DatasetsController::createDatasetWidget(Dataset &dSet) {
-    DatasetWidget *inDataWidget = new DatasetWidget(dSet.getName(), datasetsWidget);
-    setMap[inDataWidget] = &dSet;
+DatasetWidget * DatasetsController::createDatasetWidget(Dataset *dSet) {
+    DatasetWidget *inDataWidget = new DatasetWidget(dSet->getName(), datasetsWidget);
+    setMap[inDataWidget] = dSet;
     connect(inDataWidget, SIGNAL(si_datasetDeleted()), SLOT(sl_datasetDeleted()));
     connect(inDataWidget, SIGNAL(si_addUrl(const QString &, U2OpStatus &)),
         SLOT(sl_addUrl(const QString &, U2OpStatus &)));
@@ -162,7 +173,7 @@ DatasetWidget * DatasetsController::createDatasetWidget(Dataset &dSet) {
     connect(inDataWidget, SIGNAL(si_renameDataset(const QString &, U2OpStatus &)),
         SLOT(sl_renameDataset(const QString &, U2OpStatus &)));
 
-    foreach (URLContainer *url, dSet.getUrls()) {
+    foreach (URLContainer *url, dSet->getUrls()) {
         createItemWidget(url, inDataWidget);
     }
 
@@ -233,13 +244,7 @@ void DatasetsController::sl_datasetDeleted() {
     Dataset *dSet = setMap.take(inData);
     SAFE_POINT(NULL != dSet, "NULL dataset", );
 
-    for (QList<Dataset>::iterator i = sets.begin();
-        i != sets.end(); i++) {
-        if (&(*i) == dSet) {
-            sets.erase(i);
-            break;
-        }
-    }
+    sets.removeOne(dSet);
 
     QList<UrlItem*> items = itemSetMap.keys(dSet);
     foreach (UrlItem *item, items) {
@@ -249,8 +254,8 @@ void DatasetsController::sl_datasetDeleted() {
 
     // add empty default dataset is the last one is deleted
     if (sets.isEmpty()) {
-        sets << Dataset();
-        datasetsWidget->appendDataset(sets.first().getName(),
+        sets << new Dataset();
+        datasetsWidget->appendDataset(sets.first()->getName(),
             createDatasetWidget(sets.first()));
     }
     updateAttribute();
@@ -266,8 +271,8 @@ void DatasetsController::checkName(const QString &name, U2OpStatus &os) {
 void DatasetsController::sl_addDataset(const QString &name, U2OpStatus &os) {
     checkName(name, os);
     CHECK_OP(os, );
-    sets << Dataset(name);
-    datasetsWidget->appendDataset(sets.last().getName(),
+    sets << new Dataset(name);
+    datasetsWidget->appendDataset(sets.last()->getName(),
         createDatasetWidget(sets.last()));
     updateAttribute();
 }

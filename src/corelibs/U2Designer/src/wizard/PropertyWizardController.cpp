@@ -68,6 +68,7 @@ QWidget * InUrlDatasetsController::createGUI(U2OpStatus & /*os*/) {
     if (NULL != dsc) {
         delete dsc;
     }
+    QList<Dataset> sets;
     QVariant value = wc->getWidgetValue(widget);
     if (value.canConvert< QList<Dataset> >()) {
         sets = value.value< QList<Dataset> >();
@@ -82,7 +83,7 @@ QWidget * InUrlDatasetsController::createGUI(U2OpStatus & /*os*/) {
 }
 
 void InUrlDatasetsController::sl_datasetsChanged() {
-    sl_valueChanged(qVariantFromValue< QList<Dataset> >(sets));
+    sl_valueChanged(qVariantFromValue< QList<Dataset> >(dsc->getDatasets()));
 }
 
 /************************************************************************/

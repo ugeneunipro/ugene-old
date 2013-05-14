@@ -40,14 +40,14 @@ public:
     ~DatasetsController();
 
     QWidget * getWigdet();
-    QList<Dataset> & getDatasets();
+    QList<Dataset> getDatasets();
 
 signals:
     void si_attributeChanged();
 
 private:
     URLAttribute *attr;
-    QList<Dataset> &sets;
+    QList<Dataset*> sets;
 
     QMap<UrlItem*, URLContainer*> urlMap;
     QMap<UrlItem*, Dataset*> itemSetMap;
@@ -67,8 +67,9 @@ private slots:
     void sl_addDataset(const QString &name, U2OpStatus &os);
 
 private:
+    void initSets(const QList<Dataset> &sets);
     void initialize();
-    DatasetWidget * createDatasetWidget(Dataset &dSet);
+    DatasetWidget * createDatasetWidget(Dataset *dSet);
     void createItemWidget(URLContainer *url, DatasetWidget *inDataWidget);
     void checkName(const QString &name, U2OpStatus &os);
     void updateAttribute();

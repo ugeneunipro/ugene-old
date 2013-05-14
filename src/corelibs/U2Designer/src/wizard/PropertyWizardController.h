@@ -69,7 +69,6 @@ public:
 
 private:
     DatasetsController *dsc;
-    QList<Dataset> sets;
 
 private slots:
     void sl_datasetsChanged();
