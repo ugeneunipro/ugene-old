@@ -325,49 +325,56 @@ void FastaFormat::storeEntry(IOAdapter *io, const QMap< GObjectType, QList<GObje
 }
 
 DNASequence *FastaFormat::loadSequence(IOAdapter* io, U2OpStatus& os) {
-    static QBitArray fastaHeaderStart = TextUtils::createBitMap(FASTA_HEADER_START_SYMBOL);
-    static QBitArray nonWhites = ~TextUtils::WHITES;
+    try {
+        static QBitArray fastaHeaderStart = TextUtils::createBitMap(FASTA_HEADER_START_SYMBOL);
+        static QBitArray nonWhites = ~TextUtils::WHITES;
 
-    CHECK_EXT(io != NULL && io->isOpen(), os.setError(L10N::badArgument("IO adapter")), NULL);
-    
-    QByteArray readBuff(READ_BUFF_SIZE+1, 0);
-    char* buff = readBuff.data();
-    qint64 len = 0;
+        CHECK_EXT(io != NULL && io->isOpen(), os.setError(L10N::badArgument("IO adapter")), NULL);
 
-    //skip leading whites if present
-    bool lineOk = true;
-    io->readUntil(buff, READ_BUFF_SIZE, nonWhites, IOAdapter::Term_Exclude, &lineOk);
+        QByteArray readBuff(READ_BUFF_SIZE+1, 0);
+        char* buff = readBuff.data();
+        qint64 len = 0;
 
-    //read header
-    len = io->readUntil(buff, READ_BUFF_SIZE, TextUtils::LINE_BREAKS, IOAdapter::Term_Include, &lineOk);
-    CHECK(len > 0, NULL); //end of stream
-    CHECK_EXT(lineOk, os.setError(FastaFormat::tr("Line is too long")), NULL);
-    QByteArray headerLine = QByteArray(buff + 1, len-1).trimmed();
-    CHECK_EXT(buff[0] == FASTA_HEADER_START_SYMBOL, os.setError(FastaFormat::tr("First line is not a FASTA header")), NULL);
-    
-    //read sequence
-    QByteArray sequence;
-    int predictedSize = 1000;
-    sequence.reserve(predictedSize);
-    do {
-        len = io->readUntil(buff, READ_BUFF_SIZE, fastaHeaderStart, IOAdapter::Term_Exclude);
-        if (len <= 0) {
-            break;
+        //skip leading whites if present
+        bool lineOk = true;
+        io->readUntil(buff, READ_BUFF_SIZE, nonWhites, IOAdapter::Term_Exclude, &lineOk);
+
+        //read header
+        len = io->readUntil(buff, READ_BUFF_SIZE, TextUtils::LINE_BREAKS, IOAdapter::Term_Include, &lineOk);
+        CHECK(len > 0, NULL); //end of stream
+        CHECK_EXT(lineOk, os.setError(FastaFormat::tr("Line is too long")), NULL);
+        QByteArray headerLine = QByteArray(buff + 1, len-1).trimmed();
+        CHECK_EXT(buff[0] == FASTA_HEADER_START_SYMBOL, os.setError(FastaFormat::tr("First line is not a FASTA header")), NULL);
+
+        //read sequence
+        QByteArray sequence;
+        int predictedSize = 1000;
+        sequence.reserve(predictedSize);
+
+        do {
+            len = io->readUntil(buff, READ_BUFF_SIZE, fastaHeaderStart, IOAdapter::Term_Exclude);
+            if (len <= 0) {
+                break;
+            }
+            len = TextUtils::remove(buff, len, TextUtils::WHITES);
+            buff[len] = 0;
+            sequence.append(buff);
+        } while (!os.isCoR());
+        sequence.squeeze();
+
+        DNASequence *seq = new DNASequence(headerLine, sequence);
+        seq->alphabet = AppContext::getDNAAlphabetRegistry()->findById(BaseDNAAlphabetIds::NUCL_DNA_EXTENDED());
+        assert(seq->alphabet!=NULL);
+
+        if (!seq->alphabet->isCaseSensitive()) {
+            TextUtils::translate(TextUtils::UPPER_CASE_MAP, const_cast<char*>(seq->seq.constData()), seq->seq.length());
         }
-        len = TextUtils::remove(buff, len, TextUtils::WHITES);
-        buff[len] = 0;
-        sequence.append(buff);
-    } while (!os.isCoR());
-    
-    DNASequence *seq = new DNASequence(headerLine, sequence);
-    seq->alphabet = AppContext::getDNAAlphabetRegistry()->findById(BaseDNAAlphabetIds::NUCL_DNA_EXTENDED());
-    assert(seq->alphabet!=NULL);
 
-    if (!seq->alphabet->isCaseSensitive()) {
-        TextUtils::translate(TextUtils::UPPER_CASE_MAP, const_cast<char*>(seq->seq.constData()), seq->seq.length());
+        return seq;
+    } catch (...) {
+        os.setError("Memory error");
+        return NULL;
     }
-
-    return seq;
 }
 
 void FastaFormat::storeSequence(const DNASequence& sequence, IOAdapter* io, U2OpStatus& os) {

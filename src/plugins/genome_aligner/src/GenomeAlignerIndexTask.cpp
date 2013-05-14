@@ -210,7 +210,7 @@ void GenomeAlignerIndexTask::reformatSequence() {
     newRefFile.close();
 
     if (0 == objCount) {
-        setError(QString("Unsupported file format or empty reference in %1").arg(settings.refFileName));
+        setError(QString("Too large sequence, unsupported file format or empty reference in %1").arg(settings.refFileName));
         return;
     }
     index->objLens = new quint32[objCount];
