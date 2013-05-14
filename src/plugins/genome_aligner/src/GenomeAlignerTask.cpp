@@ -74,7 +74,7 @@ seqWriter(NULL),
 justBuildIndex(_justBuildIndex), bunchSize(0), index(NULL), lastQuery(NULL)
 {
     GCOUNTER(cvar,tvar, "GenomeAlignerTask");
-    setMaxParallelSubtasks(3);
+    setMaxParallelSubtasks(4);
     haveResults = true;
     readsCount = 0;
     readsAligned = 0;
@@ -127,7 +127,7 @@ justBuildIndex(_justBuildIndex), bunchSize(0), index(NULL), lastQuery(NULL)
 }
 
 GenomeAlignerTask::~GenomeAlignerTask() {
-    qDeleteAll(alignContext.queries);
+    qDeleteAll(alignContext.data);
     delete index;
 }
 
@@ -202,13 +202,12 @@ QList<Task*> GenomeAlignerTask::onSubTaskFinished( Task* subTask ) {
     }
 
     if (subTask == findTask) {
-        taskLog.details(QString("%1 reads with up to %2 mismatches aligned in %3 sec.")
-            .arg(alignContext.queries.size()).arg(alignContext.nMismatches).arg((double)time/(1000*1000)));
+        taskLog.details(QString("Aligned in %3 sec.").arg((double)time/(1000*1000)));
         indexLoadTime += findTask->getIndexLoadTime();
 
         if (alignContext.bestMode) {
             // ReadShortReadsSubTask can add new data what can lead to realloc. Noone can touch these vectors without sync
-            writeTask  = new WriteAlignedReadsSubTask(alignContext.listM, seqWriter, alignContext.queries, readsAligned);
+            writeTask  = new WriteAlignedReadsSubTask(alignContext.listM, seqWriter, alignContext.data, readsAligned);
             writeTask->setSubtaskProgressWeight(0.0f);
             subTasks.append(writeTask);
             return subTasks;
@@ -218,7 +217,7 @@ QList<Task*> GenomeAlignerTask::onSubTaskFinished( Task* subTask ) {
     if (subTask == readTask) {
         shortreadLoadTime += time;
         shortreadIOTime += time;
-        if (alignContext.queries.count() == 0) {
+        if (alignContext.data.count() == 0) {
             // no more reads to align
             if (!alignContext.bestMode) {
                 pWriteTask->setFinished();
@@ -239,19 +238,23 @@ QList<Task*> GenomeAlignerTask::onSubTaskFinished( Task* subTask ) {
             shortreadIOTime += time;
         }
         if (!noDataToAlign) {
-            alignContext.listM.lock();
+            alignContext.listM.lockForWrite();
             alignContext.isReadingStarted = false;
             alignContext.isReadingFinished = false;
             alignContext.listM.unlock();
 
             alignContext.minReadLength = INT_MAX;
             alignContext.maxReadLength = 0;
-            readTask = new ReadShortReadsSubTask(&lastQuery, seqReader, settings, alignContext, readMemSize*1024*1024);
+            readTask = new ReadShortReadsSubTask(&lastQuery, seqReader, settings, alignContext, readMemSize*1000*1000);
             readTask->setSubtaskProgressWeight(0.0f);
             subTasks.append(readTask);
             findTask = new GenomeAlignerFindTask(index, &alignContext, pWriteTask);
             findTask->setSubtaskProgressWeight(0.0f);
             subTasks.append(findTask);
+
+            Task* loadIndexTask = new LoadIndexTask(index, &alignContext);
+            loadIndexTask->setSubtaskProgressWeight(0.0f);
+            subTasks.append(loadIndexTask);
         }
         return subTasks;
     }

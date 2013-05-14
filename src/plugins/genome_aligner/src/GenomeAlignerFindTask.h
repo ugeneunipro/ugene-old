@@ -41,31 +41,17 @@
 namespace U2 {
 
 class GenomeAlignerIndex;
-class FindInPartSubTask;
-class PrepareVectorsSubTask;
 
-class AlignContext {
-public:
-    AlignContext(): w(-1), ptMismatches(0), nMismatches(0), absMismatches(0), bestMode(false),
-        openCL(false), minReadLength(-1), maxReadLength(-1), /*bitFilter(0),*/ isReadingFinished(false) {}
-    int w;
-    int ptMismatches;
-    int nMismatches;
-    bool absMismatches;
-    bool bestMode;
-    bool openCL;
-    int minReadLength;
-    int maxReadLength;
+struct DataBunch {
+    ~DataBunch() {
+        qDeleteAll(queries);
+    }
+
     QVector<SearchQuery*> queries;
     QVector<BMType> bitValuesV;
     QVector<int> windowSizes;
     QVector<int> readNumbersV;
     QVector<int> positionsAtReadV;
-
-    bool isReadingFinished;
-    bool isReadingStarted;
-    QMutex listM, readingStatusMutex;
-    QWaitCondition readShortReadsWait;
 
     qint64 memoryHint() const {
         qint64 m = sizeof(*this);
@@ -77,6 +63,91 @@ public:
         m += windowSizes.capacity() * (qint64)sizeof(int);
 
         return m;
+    }
+
+    void squeeze() {
+        queries.squeeze();
+        bitValuesV.squeeze();
+        readNumbersV.squeeze();
+        positionsAtReadV.squeeze();
+        windowSizes.squeeze();
+    }
+
+    bool empty() const {
+        return queries.empty() && bitValuesV.empty() && readNumbersV.empty() && positionsAtReadV.empty() && windowSizes.empty();
+    }
+};
+
+#define CHECK_LOG(a, b) CHECK_EXT(a, algoLog.trace("Check failed " #a), b)
+
+struct ShortReadData {
+    ShortReadData(DataBunch* dataBunch, int i): valid(false) {
+        CHECK_LOG(dataBunch,);
+        int length = dataBunch->bitValuesV.size();
+        CHECK_LOG(i>=0 && i<length,);
+
+        currentW = dataBunch->windowSizes.at(i);
+        CHECK_LOG(0 != currentW,);
+        currentBitFilter = ((quint64)0 - 1) << (62 - currentW * 2);
+
+        bv = dataBunch->bitValuesV.at(i);
+        rn = dataBunch->readNumbersV.at(i);
+        pos = dataBunch->positionsAtReadV.at(i);
+        nextRn = i < length - 1 ? dataBunch->readNumbersV.at(i + 1) : 0;
+
+        shortRead = dataBunch->queries.at(rn);
+        CHECK_LOG(shortRead,);
+        revCompl = shortRead->getRevCompl();
+
+        valid = true;
+    }
+
+    bool haveExactResult() const {
+        return ((0 == shortRead->firstMCount()) || (NULL != revCompl && 0 == revCompl->firstMCount()));
+    }
+
+    bool valid;
+
+    int currentW;
+    BMType currentBitFilter;
+    BMType bv;
+    int rn;
+    int pos;
+    int nextRn;
+    SearchQuery *shortRead;
+    SearchQuery *revCompl;
+};
+
+
+class AlignContext {
+public:
+    AlignContext(): w(-1), ptMismatches(0), nMismatches(0), absMismatches(0), bestMode(false),
+        openCL(false), minReadLength(-1), maxReadLength(-1), isReadingFinished(false), needIndex(true), indexLoaded(-1) {}
+    ~AlignContext() {
+        cleanVectors();
+    }
+    int w;
+    int ptMismatches;
+    int nMismatches;
+    bool absMismatches;
+    bool bestMode;
+    bool openCL;
+    int minReadLength;
+    int maxReadLength;
+
+    QList<DataBunch*> data;
+
+    bool isReadingFinished;
+    bool isReadingStarted;
+    bool needIndex;
+    int indexLoaded;
+    QMutex readingStatusMutex;
+    QReadWriteLock listM, indexLock;
+    QWaitCondition readShortReadsWait, loadIndexTaskWait, requireIndexWait;
+
+    void cleanVectors() {
+        qDeleteAll(data);
+        data.clear();
     }
 };
 
@@ -90,10 +161,11 @@ public:
     virtual void run();
     virtual void prepare();
 
-    void loadPartForAligning(int part);
-    void waitDataForAligning(int &first, int &length);
-
     qint64 getIndexLoadTime() const {return indexLoadTime;}
+
+protected:
+    void requirePartForAligning(int part);
+    DataBunch *waitForDataBunch();
 
 private:
     GenomeAlignerIndex *index;
@@ -104,17 +176,25 @@ private:
     int waiterCount;
     int nextElementToGive;
     qint64 indexLoadTime;
-    bool partLoaded;
 
     QMutex loadPartMutex;
     QMutex waitDataForAligningMutex;
     QMutex waitMutex;
     QWaitCondition waiter;
-
-    void unsafeGetData(int &first, int &length);
-
-    static const int ALIGN_DATA_SIZE;
 };
+
+class LoadIndexTask : public Task {
+    Q_OBJECT
+public:
+    LoadIndexTask(GenomeAlignerIndex *_index, AlignContext *_alignContext)
+        : Task("LoadIndexTask", TaskFlag_None), index(_index), alignContext(_alignContext), part(0) {}
+    virtual void run();
+private:
+    GenomeAlignerIndex *index;
+    AlignContext *alignContext;
+    int part;
+};
+
 
 typedef QVector<SearchQuery*>::iterator QueryIter;
 

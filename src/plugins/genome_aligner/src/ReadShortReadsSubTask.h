@@ -54,8 +54,12 @@ private:
     const DnaAssemblyToRefTaskSettings &settings;
     AlignContext &alignContext;
     quint64 freeMemorySize;
+    qint64 prevMemoryHint;
+
+    DataBunch* dataBunch;
 
     inline bool add(int &CMAX, int &W, int &q, int &readNum, SearchQuery *query, GenomeAlignerTask *parent);
+    void dropToAlignContext();
     void readingFinishedWakeAll();
 };
 

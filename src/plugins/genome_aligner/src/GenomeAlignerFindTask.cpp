@@ -36,13 +36,10 @@
 
 namespace U2 {
 
-const int GenomeAlignerFindTask::ALIGN_DATA_SIZE = 100000;
-
 GenomeAlignerFindTask::GenomeAlignerFindTask(U2::GenomeAlignerIndex *i, AlignContext *s, GenomeAlignerWriteTask *w)
 : Task("GenomeAlignerFindTask", TaskFlag_None),
 index(i), writeTask(w), alignContext(s)
 {
-    partLoaded = false;
     nextElementToGive = 0;
     indexLoadTime = 0;
     waiterCount = 0;
@@ -50,20 +47,14 @@ index(i), writeTask(w), alignContext(s)
 }
 
 void GenomeAlignerFindTask::prepare() {
-    if(alignContext->openCL) {
-        // no reason to have several parallel subtasks using openCL since they'll be waiting on the same mutex anyway
-        waiterCount = 0;
-        nextElementToGive = 0;
-        alignerTaskCount = 1;
+    alignerTaskCount = alignContext->openCL ? 1 : AppContext::getAppSettings()->getAppResourcePool()->getIdealThreadCount();
+    if (alignContext->openCL) {
         Task *subTask = new ShortReadAlignerOpenCL(0, index, alignContext, writeTask);
         subTask->setSubtaskProgressWeight(1.0f);
         addSubTask(subTask);
     } else {
-        alignerTaskCount = AppContext::getAppSettings()->getAppResourcePool()->getIdealThreadCount();
         setMaxParallelSubtasks(alignerTaskCount);
         for (int i = 0; i < alignerTaskCount; i++) {
-            waiterCount = 0;
-            nextElementToGive = 0;
             Task *subTask = new ShortReadAlignerCPU(i, index, alignContext, writeTask);
             subTask->setSubtaskProgressWeight(1.0f / alignerTaskCount);
             addSubTask(subTask);
@@ -80,111 +71,109 @@ void GenomeAlignerFindTask::run() {
 
     // Wait while ReadShortReadsSubTask finished reading.
     while (true) {
-        QMutexLocker(&alignContext->readingStatusMutex);
+        QMutexLocker(&(alignContext->readingStatusMutex));
         bool isReadingStarted = alignContext->isReadingStarted;
         bool isReadingFinished = alignContext->isReadingFinished;
         if (isReadingStarted && isReadingFinished) {
             break;
         }
 
-        alignContext->readShortReadsWait.wait(&alignContext->readingStatusMutex);
+        alignContext->readShortReadsWait.wait(&(alignContext->readingStatusMutex));
     }
+
+    alignContext->indexLock.lockForRead();
+    alignContext->needIndex = false;
+    alignContext->loadIndexTaskWait.wakeOne();
+    alignContext->indexLock.unlock();
 }
 
-void GenomeAlignerFindTask::loadPartForAligning(int part) {
+void LoadIndexTask::run() {
+
+    alignContext->indexLock.lockForWrite();
+    while (true) {
+        if (!alignContext->needIndex) {
+            alignContext->loadIndexTaskWait.wait(&alignContext->indexLock);
+        }
+        CHECK_EXT(alignContext->needIndex, alignContext->indexLock.unlock(), );
+
+        taskLog.trace(QString("Going to load index part %1").arg(part + 1));
+        if (!index->loadPart(part)) {
+            alignContext->indexLock.unlock();
+            setError("Incorrect index file. Please, try to create a new index file.");
+            return;
+        }
+        taskLog.trace(QString("finished loading index part %1").arg(part + 1));
+
+        alignContext->needIndex = false;
+        alignContext->indexLoaded = part;
+        part = part >= index->getPartCount() ? 0 : part+1;
+        alignContext->requireIndexWait.wakeAll();
+    }
+    alignContext->indexLock.unlock();
+}
+
+void GenomeAlignerFindTask::requirePartForAligning(int part) {
     waitMutex.lock();
     waiterCount++;
     if (waiterCount != alignerTaskCount) {
         waiter.wait(&waitMutex);
-        waiter.wakeOne();
     } else {
         waiterCount = 0;
-        partLoaded = false;
-        waiter.wakeOne();
     }
+    waiter.wakeOne();
     waitMutex.unlock();
 
     QMutexLocker lock(&loadPartMutex);
-    if (!partLoaded) {
-        taskLog.trace(QString("loading index part %1").arg(part + 1));
-        if (!index->loadPart(part)) {
-            setError("Incorrect index file. Please, try to create a new index file.");
-        }
-        partLoaded = true;
-        nextElementToGive = 0;
-        taskLog.trace(QString("finished loading index part %1").arg(part + 1));
+    alignContext->indexLock.lockForRead();
+    if (alignContext->indexLoaded == part) {
+        alignContext->indexLock.unlock();
+        return;
     }
+
+    alignContext->needIndex = true;
+    alignContext->loadIndexTaskWait.wakeOne();
+    alignContext->requireIndexWait.wait(&alignContext->indexLock);
+
+    nextElementToGive = 0;
+    alignContext->indexLock.unlock();
 }
 
-void GenomeAlignerFindTask::unsafeGetData(int &first, int &length) {
-    // ReadShortReadsSubTask can add new data what can lead to realloc. Noone can touch these vectors without sync
-    QMutexLocker lock(&alignContext->listM);
-
-    int bitValuesCount = alignContext->bitValuesV.size();
-    first = nextElementToGive;
-
-    if (first >= bitValuesCount) {
-        length = 0;
-    } else if (first + ALIGN_DATA_SIZE > bitValuesCount) {
-        length = bitValuesCount - first;
-    } else {
-        length = ALIGN_DATA_SIZE;
-    }
-
-    // must be const& if we want to use good const operator[] without QVector performing deep copy
-    const QVector<int> &rn = alignContext->readNumbersV;
-    int it = first + length;
-    for (int last=it-1; it<bitValuesCount; it++) {
-        if (rn[last] == rn[it]) {
-            length++;
-        } else {
-            int queriesSize = alignContext->queries.size();
-            SAFE_POINT((queriesSize > rn[last]) && (queriesSize > rn[it]), "unsafeGetData error",);
-
-            SearchQuery *lastQu = alignContext->queries.at(rn[last]);
-            SearchQuery *qu = alignContext->queries.at(rn[it]);
-            if (lastQu->getRevCompl() == qu) {
-                last = it;
-                length++;
-            } else {
-                break;
-            }
-        }
-    }
-
-    nextElementToGive += length;
-}
-
-void GenomeAlignerFindTask::waitDataForAligning(int &first, int &length) {
+DataBunch* GenomeAlignerFindTask::waitForDataBunch() {
     QMutexLocker lock(&waitDataForAligningMutex);
 
+    int lastDataBunchesIndex = -1;
     bool needToWait = false;
     do {
         QMutexLocker(&alignContext->readingStatusMutex);
-        bool isReadingStarted = alignContext->isReadingStarted;
         bool isReadingFinished = alignContext->isReadingFinished;
-        if (isReadingStarted && isReadingFinished) {
+        if (isReadingFinished) {
             break;
         }
-
         alignContext->readShortReadsWait.wait(&alignContext->readingStatusMutex);
 
-        if (alignContext->openCL) {
-            needToWait = true; // wait while all reads are read
-        }
-        else {
-            // ReadShortReadsSubTask can add new data what can lead to realloc. Noone can touch these vectors without sync
-            alignContext->listM.lock();
-            int bitValuesVSize = alignContext->bitValuesV.size();
-            alignContext->listM.unlock();
+        // ReadShortReadsSubTask can add new data
+        alignContext->listM.lockForRead();
+        lastDataBunchesIndex = alignContext->data.size()-1;
+        alignContext->listM.unlock();
 
-            needToWait = !(isReadingStarted && bitValuesVSize-nextElementToGive >= ALIGN_DATA_SIZE);  //while (not enough reads) wait
-        }
+        needToWait = nextElementToGive > lastDataBunchesIndex;
     }
     while (needToWait);
 
-    unsafeGetData(first, length);
+    alignContext->listM.lockForRead();
+    lastDataBunchesIndex = alignContext->data.size()-1;
+    alignContext->listM.unlock();
+
+    if (nextElementToGive > lastDataBunchesIndex) {
+        return NULL;
+    } else {
+        DataBunch* dataBunch = alignContext->data.at(nextElementToGive++);
+        return dataBunch;
+    }
 }
+
+#define CHECK_BREAK(a) {if (!(a)) {algoLog.trace("Break because of ![" #a "]"); break;}}
+#define CHECK_CONTINUE(a) {if (!(a)) {algoLog.trace("Continue because of ![" #a "]"); continue;}}
 
 ShortReadAlignerCPU::ShortReadAlignerCPU(int taskNo, GenomeAlignerIndex *i, AlignContext *s, GenomeAlignerWriteTask *w)
 : Task("ShortReadAlignerCPU", TaskFlag_None), taskNo(taskNo), index(i), alignContext(s), writeTask(w)
@@ -192,80 +181,56 @@ ShortReadAlignerCPU::ShortReadAlignerCPU(int taskNo, GenomeAlignerIndex *i, Alig
 }
 
 void ShortReadAlignerCPU::run() {
+    SAFE_POINT_EXT (NULL != alignContext, setError("Align context error"),);
     assert(!alignContext->openCL);
+
     GenomeAlignerFindTask *parent = static_cast<GenomeAlignerFindTask*>(getParentTask());
-    SearchQuery *shortRead = NULL;
-    SearchQuery *revCompl = NULL;
-    int first = 0;
-    int last = 0;
-    int length = 0;
-    BinarySearchResult bmr = 0;
+    SAFE_POINT_EXT(NULL != parent, setError("Aligner parent error"),);
 
-    //for thread safe:
-    BMType bv = 0;
-    int rn = 0;
-    int rn1 = 0;
-    int pos = 0;
-
+    SAFE_POINT_EXT (NULL != index, setError("Aligner index error"),);
     for (int part = 0; part < index->getPartCount(); part++) {
         stateInfo.setProgress(100*part/index->getPartCount());
-        parent->loadPartForAligning(part);
+        parent->requirePartForAligning(part);
         if (parent->hasError()) {
             return;
         }
+
         stateInfo.setProgress(stateInfo.getProgress() + 25/index->getPartCount());
-        if(0 == parent->index->getLoadedPart().getLoadedPartSize()) {
+        if (0 == index->getLoadedPart().getLoadedPartSize()) {
             algoLog.trace(tr("Index size for part %1/%2 is zero, skipping it.").arg(part + 1).arg(index->getPartCount()));
             continue;
         }
 
         do {
-            // fetch a batch of reads
-            parent->waitDataForAligning(first, length);
-            if(0 == length) {
-                break;
-            }
+            DataBunch *dataBunch = parent->waitForDataBunch();
+            CHECK_BREAK(dataBunch);
+            algoLog.trace(QString("[%1] Got for aligning").arg(taskNo));
 
-            // ReadShortReadsSubTask can add new data what can lead to realloc. Noone can touch these vectors without sync
-            QMutexLocker(&alignContext->listM);
+            int length = dataBunch->bitValuesV.size();
+            CHECK_BREAK(length);
 
-            last = first + length;
-            for (int i = first; i < last; i++) {
-                int currentW = alignContext->windowSizes.at(i);
-                if(0 == currentW) {
+            int skipped = 0;
+            for (int i = 0; i < length; i++) {
+                ShortReadData srData(dataBunch, i);
+                CHECK_CONTINUE(srData.valid);
+                if (alignContext->bestMode && srData.haveExactResult()) {
+                    skipped++;
                     continue;
                 }
-                BMType currentBitFilter = ((quint64)0 - 1) << (62 - currentW * 2);
-                bv = alignContext->bitValuesV.at(i);
-                rn = alignContext->readNumbersV.at(i);
-                pos = alignContext->positionsAtReadV.at(i);
-                if (i < last - 1) {
-                    rn1 = alignContext->readNumbersV.at(i + 1);
-                }
-                shortRead = alignContext->queries.at(rn);
 
-                revCompl = shortRead->getRevCompl();
-                if (alignContext->bestMode) {
-                    if (0 == shortRead->firstMCount()) {
-                        continue;
-                    }
-                    if (NULL != revCompl && 0 == revCompl->firstMCount()) {
-                        continue;
-                    }
-                }
-
-                bmr = index->bitMaskBinarySearch(bv, currentBitFilter);
-                index->alignShortRead(shortRead, bv, pos, bmr, alignContext, currentBitFilter, currentW);
+                BinarySearchResult bmr = index->bitMaskBinarySearch(srData.bv, srData.currentBitFilter);
+                index->alignShortRead(srData.shortRead, srData.bv, srData.pos, bmr, alignContext, srData.currentBitFilter, srData.currentW);
 
                 if (!alignContext->bestMode) {
-                    if ((i == last - 1) || (rn1 != rn)) {
-                        if (shortRead->haveResult()) {
-                            writeTask->addResult(shortRead);
+                    if ((i == length - 1) || (srData.nextRn != srData.rn)) {
+                        if (srData.shortRead->haveResult()) {
+                            writeTask->addResult(srData.shortRead);
                         }
-                        shortRead->onPartChanged();
+                        srData.shortRead->onPartChanged();
                     }
                 }
             }
+            algoLog.trace(QString("[%1] Skipped: %2, tried to align %3").arg(taskNo).arg(skipped).arg(length - skipped));
         } while(true);
     }
 }
@@ -278,98 +243,70 @@ ShortReadAlignerOpenCL::ShortReadAlignerOpenCL(int taskNo, GenomeAlignerIndex *i
 
 void ShortReadAlignerOpenCL::run() {
 #ifdef OPENCL_SUPPORT
-    assert(alignContext && alignContext->openCL);
+    SAFE_POINT_EXT (NULL != alignContext, setError("Align context error"),);
+    assert(alignContext->openCL);
 
     GenomeAlignerFindTask *parent = static_cast<GenomeAlignerFindTask*>(getParentTask());
-    SAFE_POINT_EXT(NULL != parent, setError("OpenCL aligner parent error"),);
+    SAFE_POINT_EXT(NULL != parent, setError("Aligner parent error"),);
 
-    SearchQuery *shortRead = NULL;
-    SearchQuery *revCompl = NULL;
-    int first = 0;
-    int length = 0;
-    BinarySearchResult bmr = 0;
-
-    //for thread safe:
-    BMType bv = 0;
-    int rn = 0;
-    int rn1 = 0;
-    int pos = 0;
-
-    SAFE_POINT_EXT (NULL != index, setError("OpenCL aligner index error"),);
+    SAFE_POINT_EXT (NULL != index, setError("Aligner index error"),);
     for (int part = 0; part < index->getPartCount(); part++) {
-        stateInfo.setProgress(100 * part / index->getPartCount());
         quint64 t0 = GTimer::currentTimeMicros();
-        parent->loadPartForAligning(part);
-        algoLog.trace(QString("Index part %1 loaded in %2 sec.").arg(part + 1).arg((GTimer::currentTimeMicros() - t0) / double(1000000), 0, 'f', 3));
+
+        stateInfo.setProgress(100 * part / index->getPartCount());
+        parent->requirePartForAligning(part);
         if (parent->hasError()) {
             return;
         }
+
+        algoLog.trace(QString("Index part %1 loaded in %2 sec.").arg(part + 1).arg((GTimer::currentTimeMicros() - t0) / double(1000000), 0, 'f', 3));
+
         stateInfo.setProgress(stateInfo.getProgress() + 25 / index->getPartCount());
-        if(0 == parent->index->getLoadedPart().getLoadedPartSize()) {
+        if (0 == index->getLoadedPart().getLoadedPartSize()) {
             algoLog.trace(tr("Index size for part %1/%2 is zero, skipping it.").arg(part + 1).arg(index->getPartCount()));
             continue;
         }
 
-        // wait until all short reads are loaded
-        t0 = GTimer::currentTimeMicros();
         do {
-            parent->waitDataForAligning(first, length);
-        } while(length > 0);
+            DataBunch *dataBunch = parent->waitForDataBunch();
+            CHECK_BREAK(dataBunch);
+            algoLog.trace(QString("[%1] Got for aligning").arg(taskNo));
 
-        // ReadShortReadsSubTask can add new data what can lead to realloc. Noone can touch these vectors without sync
-        SAFE_POINT_EXT (NULL != alignContext, setError("OpenCL aligner context error"),);
-        QMutexLocker(&alignContext->listM);
+            int length = dataBunch->bitValuesV.size();
+            CHECK_BREAK(length);
 
-        CHECK_EXT(0 != alignContext->bitValuesV.size(),,);
-        BinarySearchResult* binarySearchResults = index->bitMaskBinarySearchOpenCL(alignContext->bitValuesV.constData(), alignContext->bitValuesV.size(), 
-            alignContext->windowSizes.constData());
-        SAFE_POINT_EXT (NULL != binarySearchResults, setError("OpenCL binary find error"),);
+            BinarySearchResult* binarySearchResults = index->bitMaskBinarySearchOpenCL(dataBunch->bitValuesV.constData(), dataBunch->bitValuesV.size(), 
+                dataBunch->windowSizes.constData());
+            SAFE_POINT_EXT (NULL != binarySearchResults, {alignContext->listM.unlock(); setError("OpenCL binary find error");},);
 
-        stateInfo.setProgress(stateInfo.getProgress() + 50/index->getPartCount());
+            stateInfo.setProgress(stateInfo.getProgress() + 50/index->getPartCount());
+            t0 = GTimer::currentTimeMicros();
 
-        const int totalResults = alignContext->bitValuesV.size();
-        t0 = GTimer::currentTimeMicros();
-        for (int i = 0; i < totalResults; i++) {
-            int currentW = alignContext->windowSizes.at(i);
-            if(0 == currentW) {
-                continue;
-            }
-            BMType currentBitFilter = ((quint64)0 - 1) << (62 - currentW * 2);
-
-            bv = alignContext->bitValuesV.at(i);
-            rn = alignContext->readNumbersV.at(i);
-            pos = alignContext->positionsAtReadV.at(i);
-            if (i < totalResults - 1) {
-                rn1 = alignContext->readNumbersV.at(i + 1);
-            }
-            shortRead = alignContext->queries.at(rn);
-
-            revCompl = shortRead->getRevCompl();
-            if (alignContext->bestMode) {
-                if (0 == shortRead->firstMCount()) {
+            int skipped = 0;
+            for (int i = 0; i < length; i++) {
+                ShortReadData srData(dataBunch, i);
+                CHECK_CONTINUE(srData.valid);
+                if (alignContext->bestMode && srData.haveExactResult()) {
+                    skipped++;
                     continue;
                 }
-                if (NULL != revCompl && 0 == revCompl->firstMCount()) {
-                    continue;
-                }
-            }
 
-            SAFE_POINT_EXT (NULL != binarySearchResults, setError("OpenCL binary find error"),);
-            bmr = binarySearchResults[i];
-            index->alignShortRead(shortRead, bv, pos, bmr, alignContext, currentBitFilter, currentW);
+                SAFE_POINT_EXT (NULL != binarySearchResults, setError("OpenCL binary find error"),);
+                BinarySearchResult bmr = binarySearchResults[i];
+                index->alignShortRead(srData.shortRead, srData.bv, srData.pos, bmr, alignContext, srData.currentBitFilter, srData.currentW);
 
-            if (!alignContext->bestMode) {
-                if ((i == totalResults - 1) || (rn1 != rn)) {
-                    if (shortRead->haveResult()) {
-                        writeTask->addResult(shortRead);
+                if (!alignContext->bestMode) {
+                    if ((i == length - 1) || (srData.nextRn != srData.rn)) {
+                        if (srData.shortRead->haveResult()) {
+                            writeTask->addResult(srData.shortRead);
+                        }
+                        srData.shortRead->onPartChanged();
                     }
-                    shortRead->onPartChanged();
                 }
             }
-        }
-        algoLog.trace(QString("binary search results applied in %1 ms").arg((GTimer::currentTimeMicros() - t0) / double(1000), 0, 'f', 3));
-
-        delete[] binarySearchResults; binarySearchResults = NULL;
+            algoLog.trace(QString("[%1] Skipped: %2, tried to align %3 in %4 ms").arg(taskNo).arg(skipped).arg(length - skipped).arg((GTimer::currentTimeMicros() - t0) / double(1000), 0, 'f', 3));
+            delete[] binarySearchResults; binarySearchResults = NULL;
+        } while(true);
     }
 
 #endif

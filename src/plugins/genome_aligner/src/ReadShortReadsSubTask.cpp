@@ -29,7 +29,7 @@
 
 namespace U2 {
 
-#define ALIGN_DATA_SIZE 1000000
+#define DROP_BUNCH_DATA_SIZE 1000000
 
 static bool isDnaQualityAboveThreshold(const DNAQuality &dna, int threshold) {
     assert(!dna.isEmpty());
@@ -83,23 +83,6 @@ static SearchQuery* createRevComplQuery(SearchQuery* query, DNATranslation* tran
     return rQu;
 }
 
-static void cleanAlignContextVectors(AlignContext& alignContext) {
-    foreach (SearchQuery *qu, alignContext.queries) {
-        delete qu;
-    }
-
-    {
-        // Noone can touch these vectors without sync
-        QMutexLocker lock(&alignContext.listM);
-        const int vectorsReserve = 2*1024*1024; // why realloc often; little optimization
-        alignContext.queries.resize(0); alignContext.queries.reserve(vectorsReserve);
-        alignContext.bitValuesV.resize(0); alignContext.bitValuesV.reserve(vectorsReserve);
-        alignContext.windowSizes.resize(0); alignContext.windowSizes.reserve(vectorsReserve);
-        alignContext.readNumbersV.resize(0); alignContext.readNumbersV.reserve(vectorsReserve);
-        alignContext.positionsAtReadV.resize(0); alignContext.positionsAtReadV.reserve(vectorsReserve);
-    }
-}
-
 ReadShortReadsSubTask::ReadShortReadsSubTask(SearchQuery **_lastQuery,
                                              GenomeAlignerReader *_seqReader,
                                              const DnaAssemblyToRefTaskSettings &_settings,
@@ -107,7 +90,7 @@ ReadShortReadsSubTask::ReadShortReadsSubTask(SearchQuery **_lastQuery,
                                              quint64 m)
 : Task("ReadShortReadsSubTask", TaskFlag_None), lastQuery(_lastQuery),
 seqReader(_seqReader), settings(_settings), alignContext(_alignContext),
-freeMemorySize(m)
+freeMemorySize(m), prevMemoryHint(0), dataBunch(NULL)
 {
     minReadLength = INT_MAX;
     maxReadLength = 0;
@@ -116,10 +99,28 @@ freeMemorySize(m)
 void ReadShortReadsSubTask::readingFinishedWakeAll() {
     taskLog.trace("Wake all");
 
+    assert(dataBunch->bitValuesV.size() == 0);
+    delete dataBunch; dataBunch = NULL;
+
     QMutexLocker(&alignContext.readingStatusMutex);
     alignContext.isReadingFinished = true;
     alignContext.readShortReadsWait.wakeAll();
 }
+
+void ReadShortReadsSubTask::dropToAlignContext() {
+    alignContext.listM.lockForWrite();
+
+    algoLog.trace("ReadShortReadsSubTask::dropToAlignContext");
+    dataBunch->squeeze();
+    prevMemoryHint += dataBunch->memoryHint();
+    if (!dataBunch->empty()) {
+        alignContext.data.append(dataBunch);
+    }
+    dataBunch = new DataBunch();
+
+    alignContext.listM.unlock();
+}
+
 
 void ReadShortReadsSubTask::run() {
     stateInfo.setProgress(0);
@@ -129,28 +130,24 @@ void ReadShortReadsSubTask::run() {
         parent->pWriteTask->flush();
     }
 
-    cleanAlignContextVectors(alignContext);
+    alignContext.cleanVectors();
+    dataBunch = new DataBunch();
 
     if (isCanceled()) {
         readingFinishedWakeAll();
         return;
     }
-    bunchSize = 0;
     qint64 m = freeMemorySize;
     taskLog.details(QString("Memory size is %1").arg(m));
     bool alignReversed = settings.getCustomValue(GenomeAlignerTask::OPTION_ALIGN_REVERSED, true).toBool();
     int qualityThreshold = settings.getCustomValue(GenomeAlignerTask::OPTION_QUAL_THRESHOLD, 0).toInt();
-    //int s = sizeof(SearchQuery);
-    int n = 0;
-    int CMAX = alignContext.nMismatches;
-    int W = 0;
-    int q = 0;
-    int readNum = 0;
-    int alignBunchSize = 0;
- 
+
     DNATranslation* transl = AppContext::getDNATranslationRegistry()->
         lookupTranslation(BaseDNATranslationIds::NUCL_DNA_DEFAULT_COMPLEMENT);
+
     alignContext.isReadingStarted = true;
+    bunchSize = 0;
+    int readNum = 0;
     while(!seqReader->isEnd()) {
         SearchQuery *query = seqReader->read();
         if (NULL == query) {
@@ -162,59 +159,58 @@ void ReadShortReadsSubTask::run() {
             break;
         }
         ++bunchSize;
- 
+
         if (!checkDnaQuality(query, qualityThreshold)) {
             continue;
         }
         updateMinMaxReadLengths(alignContext, query->length());
 
+        int W = 0, q = 0;
+        int CMAX = alignContext.nMismatches;
         if (!add(CMAX, W, q, readNum, query, parent)) {
             delete query;
             continue;
         }
         m -= query->memoryHint();
-        alignBunchSize++;
 
         if (alignReversed) {
             SearchQuery *rQu = createRevComplQuery(query, transl);
             if (rQu) {
                 add(CMAX, W, q, readNum, rQu, parent);
                 m -= rQu->memoryHint();
-                alignBunchSize++;
             }
         }
 
-        qint64 alignContextMemoryHint = alignContext.memoryHint();
-        if (m - alignContextMemoryHint<=0) {
+        qint64 alignContextMemoryHint = dataBunch->memoryHint();
+        if (m <= alignContextMemoryHint + prevMemoryHint) {
             break;
         }
 
-        if (alignBunchSize > ALIGN_DATA_SIZE && !alignContext.openCL) {
-            taskLog.trace("Wake up");
-            taskLog.trace(QString("Readed %1 reads").arg(bunchSize));
-
+        SAFE_POINT(NULL != dataBunch, "No dataBunch",);
+        if (dataBunch->bitValuesV.size() > DROP_BUNCH_DATA_SIZE) {
+            dropToAlignContext();
+            readNum = 0;
             alignContext.readShortReadsWait.wakeOne();
-            alignBunchSize=0;
         }
     }
 
+    dropToAlignContext();
     readingFinishedWakeAll();
 }
 
 inline bool ReadShortReadsSubTask::add(int &CMAX, int &W, int &q, int &readNum, SearchQuery *query, GenomeAlignerTask *parent) {
-    // ReadShortReadsSubTask is adding new data what can lead to realloc. Noone can touch these vectors without sync
-    QMutexLocker lock(&alignContext.listM);
+    SAFE_POINT(NULL != dataBunch, "No dataBunch", false);
+    SAFE_POINT(NULL != query, "No query", false);
+
     W = query->length();
     if (!alignContext.absMismatches) {
         CMAX = (W * alignContext.ptMismatches) / MAX_PERCENTAGE;
     }
     q = W / (CMAX + 1);
-
-    if (0 == q) {
-        return false;
-    }
+    CHECK_EXT(0 != q,, false);
 
     const char* querySeq = query->constData();
+    SAFE_POINT(NULL != querySeq, "No querySeq", false);
 
     int win = query->length() < GenomeAlignerTask::MIN_SHORT_READ_LENGTH ?
         GenomeAlignerTask::calculateWindowSize(alignContext.absMismatches,
@@ -226,20 +222,13 @@ inline bool ReadShortReadsSubTask::add(int &CMAX, int &W, int &q, int &readNum, 
         const char *seq = querySeq + i;
         BMType bv = parent->index->getBitValue(seq, qMin(GenomeAlignerIndex::charsInMask, W - i));
 
-        alignContext.bitValuesV.append(bv);
-        alignContext.readNumbersV.append(readNum);
-        alignContext.positionsAtReadV.append(i);
-        alignContext.windowSizes.append(win);
+        dataBunch->bitValuesV.append(bv);
+        dataBunch->readNumbersV.append(readNum);
+        dataBunch->positionsAtReadV.append(i);
+        dataBunch->windowSizes.append(win);
     }
     readNum++;
-    alignContext.queries.append(query);
-
-//     // !!!Stress testing!!!
-//     alignContext.bitValuesV.squeeze();
-//     alignContext.readNumbersV.squeeze();
-//     alignContext.positionsAtReadV.squeeze();
-//     alignContext.windowSizes.squeeze();
-//     alignContext.queries.squeeze();
+    dataBunch->queries.append(query);
 
     return true;
 }

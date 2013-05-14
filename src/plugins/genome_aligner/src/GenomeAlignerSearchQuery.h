@@ -31,8 +31,6 @@
 namespace U2 {
 
 class GenomeAlignerIndex;
-class FindInPartSubTask;
-class PrepareVectorsSubTask;
 
 class CacheResult {
 public:

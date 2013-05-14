@@ -23,8 +23,8 @@
 
 namespace U2 {
 
-WriteAlignedReadsSubTask::WriteAlignedReadsSubTask(QMutex &_listM, GenomeAlignerWriter *_seqWriter, QVector<SearchQuery*> &_queries, quint64 &r)
-: Task("WriteAlignedReadsSubTask", TaskFlag_None), seqWriter(_seqWriter), queries(_queries), readsAligned(r), listM(_listM)
+WriteAlignedReadsSubTask::WriteAlignedReadsSubTask(QReadWriteLock &_listM, GenomeAlignerWriter *_seqWriter, QList<DataBunch*> &_data, quint64 &r)
+: Task("WriteAlignedReadsSubTask", TaskFlag_None), seqWriter(_seqWriter), data(_data), readsAligned(r), listM(_listM)
 {
 
 }
@@ -41,43 +41,52 @@ void WriteAlignedReadsSubTask::setReadWritten(SearchQuery *read, SearchQuery *re
 
 void WriteAlignedReadsSubTask::run() {
     // ReadShortReadsSubTask can add new data what can lead to realloc. Noone can touch these vectors without sync
-    QMutexLocker lock(&listM);
+    listM.lockForRead();
 
     stateInfo.setProgress(0);
-    SearchQuery *read = NULL;
-    SearchQuery *revCompl = NULL;
-    SearchQuery **q = queries.data();
-    int size = queries.size();
 
-    try {
-        for (int i=0; i<size; i++) {
-            read = q[i];
-            revCompl = read->getRevCompl();
+    foreach(DataBunch* d, data) {
 
-            if (i<size-1 && revCompl == q[i+1]) {
-                continue;
-            }
+        SAFE_POINT_EXT(NULL != d, listM.unlock(),);
 
-            if (NULL == revCompl && read->haveResult()) {
-                seqWriter->write(read, read->firstResult());
-                readsAligned++;
-            } else if (NULL != revCompl) {
-                int c = read->firstMCount();
-                int cRev = revCompl->firstMCount();
+        QVector<SearchQuery*> &queries = d->queries;
 
-                if (c <= cRev && c < INT_MAX) {
+        try {
+            SearchQuery *read = NULL;
+            SearchQuery *revCompl = NULL;
+            SearchQuery **q = queries.data();
+            int size = queries.size();
+
+            for (int i=0; i<size; i++) {
+                read = q[i];
+                revCompl = read->getRevCompl();
+
+                if (i<size-1 && revCompl == q[i+1]) {
+                    continue;
+                }
+
+                if (NULL == revCompl && read->haveResult()) {
                     seqWriter->write(read, read->firstResult());
                     readsAligned++;
-                } else if (cRev < INT_MAX) {
-                    seqWriter->write(revCompl, revCompl->firstResult());
-                    readsAligned++;
+                } else if (NULL != revCompl) {
+                    int c = read->firstMCount();
+                    int cRev = revCompl->firstMCount();
+
+                    if (c <= cRev && c < INT_MAX) {
+                        seqWriter->write(read, read->firstResult());
+                        readsAligned++;
+                    } else if (cRev < INT_MAX) {
+                        seqWriter->write(revCompl, revCompl->firstResult());
+                        readsAligned++;
+                    }
                 }
             }
+        } catch (QString exeptionMessage) {
+            setError(exeptionMessage);
         }
-    } catch (QString exeptionMessage) {
-        setError(exeptionMessage);
-        return;
     }
+
+    listM.unlock();
 }
 
 } // U2
