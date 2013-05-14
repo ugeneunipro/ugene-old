@@ -47,6 +47,10 @@ const QString BaseDNAAlphabetIds::AMINO_DEFAULT() {
     return "AMINO_DEFAULT_ALPHABET";
 }
 
+const QString BaseDNAAlphabetIds::AMINO_EXTENDED() {
+    return "AMINO_EXTENDED_ALPHABET";
+}
+
 DNAAlphabet::DNAAlphabet(const QString& _id, const QString& _name, DNAAlphabetType _t, const QBitArray& _map, 
                          Qt::CaseSensitivity cm, char _defSym) 
 : id(_id), name(_name), type(_t), map(_map), caseMode(cm), defSym(_defSym)

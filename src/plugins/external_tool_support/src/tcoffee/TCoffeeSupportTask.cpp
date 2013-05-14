@@ -38,6 +38,7 @@
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/U2Mod.h>
 #include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/DNAAlphabet.h>
 
 #include <U2Gui/OpenViewTask.h>
 
@@ -73,6 +74,12 @@ TCoffeeSupportTask::~TCoffeeSupportTask() {
 }
 
 void TCoffeeSupportTask::prepare(){
+    if (inputMsa.getAlphabet()->getId() == BaseDNAAlphabetIds::RAW() ||
+            inputMsa.getAlphabet()->getId() == BaseDNAAlphabetIds::AMINO_EXTENDED()) {
+        setError(tr("Unsupported alphabet: %1").arg(inputMsa.getAlphabet()->getName()));
+        return;
+    }
+
     algoLog.info(tr("T-Coffee alignment started"));
 
     //Add new subdir for temporary files

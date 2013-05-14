@@ -37,6 +37,7 @@
 #include <U2Core/AddDocumentTask.h>
 #include <U2Core/U2Mod.h>
 #include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/DNAAlphabet.h>
 
 #include <U2Gui/OpenViewTask.h>
 
@@ -79,6 +80,11 @@ ClustalWSupportTask::~ClustalWSupportTask() {
 }
 
 void ClustalWSupportTask::prepare(){
+    if (inputMsa.getAlphabet()->getId() == BaseDNAAlphabetIds::RAW() ||
+            inputMsa.getAlphabet()->getId() == BaseDNAAlphabetIds::AMINO_EXTENDED()) {
+        setError(tr("Unsupported alphabet: %1").arg(inputMsa.getAlphabet()->getName()));
+        return;
+    }
     algoLog.info(tr("ClustalW alignment started"));
 
     //Add new subdir for temporary files

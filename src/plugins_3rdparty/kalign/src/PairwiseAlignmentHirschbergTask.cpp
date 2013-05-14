@@ -114,6 +114,9 @@ QList<Task*> PairwiseAlignmentHirschbergTask::onSubTaskFinished(Task *subTask) {
     if (hasError() || isCanceled()) {
         return res;
     }
+    if (subTask->hasError() || subTask->isCanceled()) {
+        return res;
+    }
 
     if (subTask == kalignSubTask) {
         if (settings->inNewWindow == true) {

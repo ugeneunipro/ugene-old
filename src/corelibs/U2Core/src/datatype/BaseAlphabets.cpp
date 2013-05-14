@@ -116,6 +116,25 @@ void DNAAlphabetRegistryImpl::initBaseAlphabets() {
         registerAlphabet(a);
     }
 
+    //extended amino
+    {
+        QBitArray map(256, false);
+        //
+        // http://www.jbc.org/cgi/reprint/243/13/3557.pdf IUPAC-IUB Commission on Biochemical Nomenclature
+        fillBitArray(map, "ABCDEFGHIKLMNPQRSTVWXYZ*X-", Qt::CaseInsensitive);
+        // http://en.wikipedia.org/wiki/Genetic_code#Variations_to_the_standard_genetic_code
+        //O = pyrrolysine, U = selenocysteine
+        fillBitArray(map, "OU", Qt::CaseInsensitive);
+        //http://en.wikipedia.org/wiki/Amino_acid
+        //J = Leucine or Isoleucine
+        //Not recognized by some algorithms, some functions are turned off.
+        fillBitArray(map, "J", Qt::CaseInsensitive);
+
+        DNAAlphabet* a = new DNAAlphabet(BaseDNAAlphabetIds::AMINO_EXTENDED(), tr("Extended amino"),
+            DNAAlphabet_AMINO, map, Qt::CaseInsensitive, 'X');
+        registerAlphabet(a);
+    }
+
 }
 
 

@@ -46,6 +46,7 @@ extern "C" {
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/U2Mod.h>
 #include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/DNAAlphabet.h>
 
 #include <U2Lang/WorkflowSettings.h>
 #include <U2Lang/SimpleWorkflowTask.h>
@@ -85,6 +86,11 @@ KalignTask::KalignTask(const MAlignment& ma, const KalignTaskSettings& _config)
 }
 
 void KalignTask::_run() {
+    if (inputMA.getAlphabet()->getId() == BaseDNAAlphabetIds::RAW() ||
+            inputMA.getAlphabet()->getId() == BaseDNAAlphabetIds::AMINO_EXTENDED()) {
+        setError(tr("Unsupported alphabet: %1").arg(inputMA.getAlphabet()->getName()));
+        return;
+    }
     algoLog.info(tr("Kalign alignment started"));
     assert(!hasError());
     doAlign(); 

@@ -37,6 +37,7 @@ public:
     static const QString NUCL_RNA_DEFAULT();
     static const QString NUCL_RNA_EXTENDED();
     static const QString AMINO_DEFAULT();
+    static const QString AMINO_EXTENDED();
 };
 
 
