@@ -214,11 +214,7 @@ void MSAEditorNameList::sl_removeCurrentSequence() {
         assert(!maObj->isStateLocked());
         // UGENE cannot show empty alignment
         if (maObj->getNumRows() > 1) {
-            MSACollapsibleItemModel *collapsibleModel = ui->getCollapseModel();
-            SAFE_POINT(NULL != collapsibleModel, "NULL collapsible model!", );
-
-            collapsibleModel->removeCollapsedForPosition(n);
-
+            editor->resetCollapsibleModel();
             maObj->removeRow(n);
         }
     }

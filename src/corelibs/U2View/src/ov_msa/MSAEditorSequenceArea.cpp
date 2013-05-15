@@ -1918,14 +1918,6 @@ void MSAEditorSequenceArea::deleteCurrentSelection()
 
     const U2Region& sel = getSelectedRows();
 
-    // Remove collapsible items (if any) for the rows
-    MSACollapsibleItemModel *collapsibleModel = ui->getCollapseModel();
-    SAFE_POINT(NULL != collapsibleModel, "NULL collapsible model!", );
-
-    for (int i = sel.startPos, n = sel.startPos + selection.width(); i < n; ++i) {
-        collapsibleModel->removeCollapsedForPosition(i);
-    }
-
     U2OpStatusImpl os;
     U2UseCommonUserModStep modeStep(maObj->getEntityRef(), os);
     SAFE_POINT_OP(os, );
