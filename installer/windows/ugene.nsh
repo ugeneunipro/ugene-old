@@ -5,6 +5,12 @@
 !include "MUI2.nsh"
 !verbose 4
 
+!define CompanyName "Unipro"
+!define ProductName "UGENE"
+!define FullProductName "${CompanyName} ${ProductName}"
+!define TargetPlatform x86
+
+
 # Compressor
     SetCompressor /SOLID /FINAL lzma
     SetCompressorDictSize 64
@@ -17,6 +23,14 @@
     !define MUI_SPECIALIMAGE
     !define MUI_WELCOMEFINISHPAGE_BITMAP "images\welcome.bmp"
     !define MUI_FINISHPAGE_RUN "$INSTDIR\ugeneui.exe"
+
+;--------------------------------
+;Language Selection Dialog Settings
+
+  ;Remember the installer language
+  !define MUI_LANGDLL_REGISTRY_ROOT "HKCU" 
+  !define MUI_LANGDLL_REGISTRY_KEY "Software\${CompanyName}\${ProductName}" 
+  !define MUI_LANGDLL_REGISTRY_VALUENAME "Installer Language"
 
 # Pages
     !insertmacro MUI_PAGE_WELCOME
@@ -53,17 +67,14 @@ FunctionEnd
 
 !include ugene_extensions.nsh
 
+!define MUI_LANGDLL_WINDOWTITLE "Select Language"
+
 Function .onInit
     !insertmacro MUI_LANGDLL_DISPLAY
 FunctionEnd
 
 ################################################################
 # Installer options
-    !define CompanyName "Unipro"
-    !define ProductName "UGENE"
-    !define FullProductName "${CompanyName} ${ProductName}"
-    !define TargetPlatform x86
-
     !define ReleaseBuildDir "..\..\src\_release"
     !include ${ReleaseBuildDir}\version.nsis
     !ifndef ProductVersion
@@ -285,6 +296,7 @@ Section Uninstall
     Delete "$INSTDIR\Uninst.exe"
     RMDir /r "$INSTDIR"
     DeleteRegKey HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\${FullProductName}"
+    DeleteRegKey HKCU "Software\${CompanyName}\${ProductName}"
 SectionEnd
 
 ################################################################
@@ -293,3 +305,12 @@ SectionEnd
 
 
 ################################################################
+
+;--------------------------------
+;Uninstaller Functions
+
+Function un.onInit
+
+  !insertmacro MUI_UNGETLANGUAGE
+  
+FunctionEnd
