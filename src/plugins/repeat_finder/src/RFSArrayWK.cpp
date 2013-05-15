@@ -163,9 +163,11 @@ void RFSArrayWKAlgorithm::calculate(RFSArrayWKSubtask* t) {
             // have a hit! -> expand window forward as much as possible
             // posS/A points to the first unchecked base here
             assert(posS - startS == W);
+            int allMismatches = 0;
             for (; c <= CMAX && posA < dataAEnd && posS < dataSEnd; posA++, posS++) {
                 int popVal = PCHAR_MATCHES(posA - W, posS - W) ? 0 : 1;
                 int pushVal = PCHAR_MATCHES(posA, posS) ? 0 : 1;
+                allMismatches += pushVal;
                 assert(c>=0);
                 c += pushVal - popVal;
             }
@@ -180,10 +182,10 @@ void RFSArrayWKAlgorithm::calculate(RFSArrayWKSubtask* t) {
             diags[diag] = firstMismatchPosS - dataS; 
             
             //ensure that match with len > W ends with hit
-            while (len > W && !PCHAR_MATCHES(startS + len - 1, startA + len - 1)){len--;} 
+            while (len > W && !PCHAR_MATCHES(startS + len - 1, startA + len - 1)){len--; allMismatches--;} 
 
             //save result
-            addResult(a, s, len, len-c); // c is count of mismatches, not matches
+            addResult(a, s, len, len-allMismatches);
             assert(len >= W);//a place for a break-point
         }
     }
