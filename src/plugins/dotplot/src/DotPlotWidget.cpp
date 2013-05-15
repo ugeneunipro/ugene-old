@@ -245,6 +245,10 @@ QPointF DotPlotWidget::zoomTo(Qt::Axis axis, const U2Region &lr, bool emitSignal
             seqLen = sequenceX->getSequenceLength();
 
             zoom.setX(seqLen/(float)lr.length);
+            if (zoom.x() > seqLen/2) {
+                zoom.setX(seqLen/2);
+            }
+
             shiftX = -lr.startPos*w/(float)seqLen;
             shiftX*=zoom.x();
             break;
@@ -253,6 +257,10 @@ QPointF DotPlotWidget::zoomTo(Qt::Axis axis, const U2Region &lr, bool emitSignal
             seqLen = sequenceY->getSequenceLength();
 
             zoom.setY(seqLen/(float)lr.length);
+            if (zoom.y() > seqLen/2) {
+                zoom.setY(seqLen/2);
+            }
+
             shiftY = -lr.startPos*h/(float)seqLen;
             shiftY*=zoom.y();
             break;
