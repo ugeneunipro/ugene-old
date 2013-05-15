@@ -31,6 +31,8 @@ TopHatInputData::TopHatInputData()
 }
 
 void TopHatInputData::cleanupReads() {
+    urls.clear();
+    pairedUrls.clear();
     seqIds.clear();
     pairedSeqIds.clear();
 }

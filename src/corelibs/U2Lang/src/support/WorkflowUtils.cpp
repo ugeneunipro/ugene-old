@@ -895,7 +895,10 @@ QString PrompterBaseImpl::getURL(const QString& id, bool * empty ) {
     } else if (url.indexOf(";") != -1) {
         url = tr("the list of files");
     } else {
-        url = QFileInfo(url).fileName();
+        QString name = QFileInfo(url).fileName();
+        if (!name.isEmpty()) {
+            url = name;
+        }
     }
     return url;
 }

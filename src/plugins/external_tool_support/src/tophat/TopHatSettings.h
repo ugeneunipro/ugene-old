@@ -39,8 +39,8 @@ public:
 
     bool paired;
     bool fromFiles;
-    QString url;
-    QString pairedUrl;
+    QStringList urls;
+    QStringList pairedUrls;
 
     QList<Workflow::SharedDbiDataHandler>   seqIds;
     QList<Workflow::SharedDbiDataHandler>   pairedSeqIds;

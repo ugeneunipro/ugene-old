@@ -43,7 +43,6 @@
 #include <U2Lang/BaseTypes.h>
 #include <U2Lang/WorkflowEnv.h>
 
-
 namespace U2 {
 namespace LocalWorkflow {
 
@@ -164,9 +163,6 @@ void TopHatWorkerFactory::init()
 
     outputMap[assemblyDesc] = BaseTypes::ASSEMBLY_TYPE();
     outputMap[outUrlDesc] = BaseTypes::STRING_TYPE();
-
-    DataTypeRegistry* registry = WorkflowEnv::getDataTypeRegistry();
-    assert(registry);
 
     DataTypePtr mapDataType(new MapDataType(OUT_MAP_DESCR_ID, outputMap));
     portDescriptors << new PortDescriptor(outPortDesc, mapDataType, false /* input */, true /* multi */);
@@ -655,23 +651,22 @@ Task * TopHatWorker::tick() {
         SAFE_POINT(!inputMessage.isEmpty(), "Internal error: message can't be NULL!", NULL);
         QVariantMap data = inputMessage.getData().toMap();
 
+        Task *result = checkDatasets(data);
         if (settings.data.fromFiles) {
-            settings.data.url = data[IN_URL_SLOT_ID].toString();
+            settings.data.urls << data[IN_URL_SLOT_ID].toString();
             if (settings.data.paired) {
-                settings.data.pairedUrl = data[PAIRED_IN_URL_SLOT_ID].toString();
+                settings.data.pairedUrls << data[PAIRED_IN_URL_SLOT_ID].toString();
             }
-            return runTophat();
         } else {
-            Task *result = checkDatasets(data);
             settings.data.seqIds << data[IN_DATA_SLOT_ID].value<SharedDbiDataHandler>();
             // If the second slot is connected, expect the sequence of the paired read
             if (settings.data.paired) {
                 settings.data.pairedSeqIds << data[PAIRED_IN_DATA_SLOT_ID].value<SharedDbiDataHandler>();
             }
-            return result;
         }
+        return result;
     } else if (input->isEnded()) {
-        if (!settings.data.fromFiles && !settings.data.seqIds.isEmpty()) {
+        if (!settings.data.urls.isEmpty() || !settings.data.seqIds.isEmpty()) {
             return runTophat();
         } else {
             setDone();

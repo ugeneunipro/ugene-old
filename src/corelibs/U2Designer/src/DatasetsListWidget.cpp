@@ -100,6 +100,9 @@ void DatasetsListWidget::sl_newDataset() {
             QMessageBox::critical(this, tr("Error"), error);
         }
     } while (!error.isEmpty());
+
+    // activate the tab after adding
+    tabs->setCurrentIndex(tabs->count() - 1);
 }
 
 void DatasetsListWidget::sl_renameDataset(const QString &newName) {

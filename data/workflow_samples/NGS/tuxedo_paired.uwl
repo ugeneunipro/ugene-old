@@ -28,46 +28,46 @@ workflow "Tuxedo: paired-end reads"{
         type:get-file-list;
         name:"Read Paired Reads 1";
         url-in {
-            dataset:Dataset;
+            dataset:"Dataset 1";
+        }
+        url-in {
+            dataset:"Dataset 2";
         }
     }
     read-sequence-1 {
         type:get-file-list;
         name:"Read Paired Reads 2";
         url-in {
-            dataset:Dataset;
+            dataset:"Dataset 1";
         }
-    }
-    read-assembly {
-        type:get-file-list;
-        name:"Read Assembly";
         url-in {
-            dataset:Dataset;
+            dataset:"Dataset 2";
         }
     }
 
 
     .actor-bindings {
-        multiplexer.output-data->tophat.in-sequence
-        cufflinks.out-annotations->cuffmerge.in-annotations
         tophat.out-assembly->cufflinks.in-assembly
-        cuffmerge.out-annotations->cuffdiff.in-annotations
-        read-assembly.out-url->cuffdiff.in-assembly
+        tophat.out-assembly->cuffdiff.in-assembly
         read-sequence-1.out-url->multiplexer.input-data-2
         read-sequence.out-url->multiplexer.input-data-1
+        multiplexer.output-data->tophat.in-sequence
+        cufflinks.out-annotations->cuffmerge.in-annotations
+        cuffmerge.out-annotations->cuffdiff.in-annotations
     }
 
+    read-sequence.dataset->tophat.in-sequence.dataset
     read-sequence.url->tophat.in-sequence.in-url
     read-sequence-1.url->tophat.in-sequence.paired-url
     tophat.hits-url->cufflinks.in-assembly.url
     cufflinks.isolevel.slot->cuffmerge.in-annotations.annotations
     cuffmerge.annotations->cuffdiff.in-annotations.annotations
-    read-assembly.url->cuffdiff.in-assembly.url
+    tophat.hits-url->cuffdiff.in-assembly.url
 
     .meta {
         visual {
             cuffdiff {
-                pos:"-732 -299";
+                pos:"-705 -270";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 bounds:"-30 -30 147.25 118";
@@ -75,7 +75,7 @@ workflow "Tuxedo: paired-end reads"{
                 in-assembly.angle:222.732;
             }
             cufflinks {
-                pos:"-419 -507";
+                pos:"-390 -480";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 bounds:"-30 -30 149.875 89";
@@ -83,7 +83,7 @@ workflow "Tuxedo: paired-end reads"{
                 out-annotations.angle:304.042;
             }
             cuffmerge {
-                pos:"-421 -297";
+                pos:"-390 -270";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 bounds:"-30 -30 150.625 89";
@@ -91,7 +91,7 @@ workflow "Tuxedo: paired-end reads"{
                 out-annotations.angle:222.797;
             }
             multiplexer {
-                pos:"-733 -704";
+                pos:"-705 -675";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 bounds:"-30 -30 149 88";
@@ -99,29 +99,22 @@ workflow "Tuxedo: paired-end reads"{
                 input-data-2.angle:303.941;
                 output-data.angle:351.68;
             }
-            read-assembly {
-                pos:"-1039 -296";
-                style:ext;
-                bg-color-ext:"0 128 128 64";
-                bounds:"-30 -30 148 86";
-                out-url.angle:350.478;
-            }
             read-sequence {
-                pos:"-1045 -703";
+                pos:"-1020 -675";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 bounds:"-30 -30 147 61";
                 out-url.angle:351.506;
             }
             read-sequence-1 {
-                pos:"-733 -509";
+                pos:"-705 -480";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 bounds:"-30 -30 148 59";
                 out-url.angle:27.1497;
             }
             tophat {
-                pos:"-418 -705";
+                pos:"-390 -675";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 bounds:"-30 -30 149.75 89";
@@ -137,14 +130,14 @@ workflow "Tuxedo: paired-end reads"{
             multiplexer.output-data->tophat.in-sequence {
                 text-pos:"-48.5 -56";
             }
-            read-assembly.out-url->cuffdiff.in-assembly {
-                text-pos:"-42 -26";
-            }
             read-sequence-1.out-url->multiplexer.input-data-2 {
                 text-pos:"-40 -10";
             }
             read-sequence.out-url->multiplexer.input-data-1 {
                 text-pos:"-39 -25";
+            }
+            tophat.out-assembly->cuffdiff.in-assembly {
+                text-pos:"-38.5 -24";
             }
             tophat.out-assembly->cufflinks.in-assembly {
                 text-pos:"-44 -22";
@@ -158,24 +151,12 @@ workflow "Tuxedo: paired-end reads"{
                 title:"Input data";
                 parameters-area {
                     group {
-                        title:"TopHat input";
-                        label-size:180;
+                        title:"RNA-seq paired short reads";
                         read-sequence.url-in {
-                            label:"First RNA-seq short reads";
+                            type:datasets;
                         }
                         read-sequence-1.url-in {
-                            label:"Second RNA-seq short reads";
-                        }
-                        tophat.bowtie-index-dir {
-                        }
-                        tophat.bowtie-index-basename {
-                        }
-                    }
-                    group {
-                        title:"Cuffdiff input";
-                        label-size:180;
-                        read-assembly.url-in {
-                            label:"Fragment alignments (at least 2)";
+                            type:datasets;
                         }
                     }
                 }
@@ -185,6 +166,14 @@ workflow "Tuxedo: paired-end reads"{
                 next:3;
                 title:"Tophat settings";
                 parameters-area {
+                    group {
+                        title:"TopHat input";
+                        label-size:180;
+                        tophat.bowtie-index-dir {
+                        }
+                        tophat.bowtie-index-basename {
+                        }
+                    }
                     group {
                         title:Parameters;
                         label-size:170;

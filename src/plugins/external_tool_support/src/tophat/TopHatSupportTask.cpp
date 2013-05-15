@@ -115,13 +115,15 @@ void TopHatSupportTask::prepare() {
     /************************************************************************/
     /* Create save tasks */
     /************************************************************************/
-    settings.data.url = workingDirectory + "/tmp_1.fq";
-    saveTmpDocTask = createSaveTask(settings.data.url, tmpDoc, settings.data.seqIds);
+    QString url = workingDirectory + "/tmp_1.fq";
+    settings.data.urls << url;
+    saveTmpDocTask = createSaveTask(url, tmpDoc, settings.data.seqIds);
     addSubTask(saveTmpDocTask);
 
     if (settings.data.paired) {
-        settings.data.pairedUrl = workingDirectory + "/tmp_2.fq";
-        savePairedTmpDocTask = createSaveTask(settings.data.pairedUrl, tmpDocPaired, settings.data.pairedSeqIds);
+        QString pairedUrl = workingDirectory + "/tmp_2.fq";
+        settings.data.pairedUrls << pairedUrl;
+        savePairedTmpDocTask = createSaveTask(pairedUrl, tmpDocPaired, settings.data.pairedSeqIds);
         addSubTask(savePairedTmpDocTask);
     }
 }
@@ -199,9 +201,10 @@ ExternalToolRunTask * TopHatSupportTask::runTophat() {
 
     // Index base and reads
     arguments << settings.bowtieIndexPathAndBasename;
-    arguments << settings.data.url;
+    arguments << settings.data.urls.join(",");
     if (settings.data.paired) {
-        arguments << settings.data.pairedUrl;
+        SAFE_POINT(settings.data.urls.size() == settings.data.pairedUrls.size(), "Not equal files count", NULL);
+        arguments << settings.data.pairedUrls.join(",");
     }
 
     // Create a log parser
