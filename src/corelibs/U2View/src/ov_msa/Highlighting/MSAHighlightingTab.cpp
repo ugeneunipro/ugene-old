@@ -128,7 +128,7 @@ void MSAHighlightingTab::sl_sync(){
 void MSAHighlightingTab::sl_updateHint( const QString &str){
     Q_UNUSED(str);
 
-    if(msa->getRefSeqName() == "(None)"){
+    if(msa->getRefSeqName().isEmpty()){
         if(!seqArea->getCurrentHighlightingScheme()->getFactory()->isRefFree()){
             hint->setText(tr("Hint: choose refrence sequence first"));
             return;
