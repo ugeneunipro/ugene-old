@@ -1,5 +1,5 @@
 <RCC>
-    <qresource prefix="/U2Designer" >
+    <qresource prefix="/U2Designer">
         <file>images/add.png</file>
         <file>images/directory.png</file>
         <file>images/down.png</file>
@@ -7,5 +7,7 @@
         <file>images/file.png</file>
         <file>images/logo.png</file>
         <file>images/up.png</file>
+        <file>images/add_directory.png</file>
+        <file>images/add_file.png</file>
     </qresource>
 </RCC>

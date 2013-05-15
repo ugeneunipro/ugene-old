@@ -27,7 +27,6 @@ HEADERS += src/DatasetsController.h \
            src/wizard/WizardController.h \
            src/wizard/WizardPageController.h
 FORMS += src/ui/AnnsActionDialog.ui \
-         src/ui/DatasetsListWidget.ui \
          src/ui/DatasetWidget.ui \
          src/ui/DirectoryOptions.ui \
          src/ui/EditFloatMarkerWidget.ui \

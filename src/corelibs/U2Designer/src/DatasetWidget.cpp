@@ -19,6 +19,8 @@
  * MA 02110-1301, USA.
  */
 
+#include <QContextMenuEvent>
+#include <QDesktopWidget>
 #include <QFileDialog>
 #include <QInputDialog>
 #include <QMessageBox>
@@ -32,37 +34,30 @@
 
 namespace U2 {
 
-DatasetWidget::DatasetWidget(const QString &name, QWidget *parent)
+DatasetWidget::DatasetWidget(QWidget *parent)
 : QWidget(parent)
 {
     setupUi(this);
-    nameLabel->setText(name);
+    popup = new OptionsPopup(this);
 
-    addButton->hide();
     reset();
-    QIcon fileIcon = QIcon(QString(":U2Designer/images/file.png"));
-    QIcon dirIcon = QIcon(QString(":U2Designer/images/directory.png"));
-    QIcon addIcon = QIcon(QString(":U2Designer/images/add.png"));
+    QIcon fileIcon = QIcon(QString(":U2Designer/images/add_file.png"));
+    QIcon dirIcon = QIcon(QString(":U2Designer/images/add_directory.png"));
     QIcon deleteIcon = QIcon(QString(":U2Designer/images/exit.png"));
     QIcon upIcon = QIcon(QString(":U2Designer/images/up.png"));
     QIcon downIcon = QIcon(QString(":U2Designer/images/down.png"));
 
     addFileButton->setIcon(fileIcon);
     addDirButton->setIcon(dirIcon);
-    addButton->setIcon(addIcon);
     deleteButton->setIcon(deleteIcon);
     upButton->setIcon(upIcon);
     downButton->setIcon(downIcon);
 
-    connect(inputUrlEdit, SIGNAL(textChanged(const QString &)), SLOT(sl_textChanged(const QString &)));
     connect(addFileButton, SIGNAL(clicked()), SLOT(sl_addFileButton()));
     connect(addDirButton, SIGNAL(clicked()), SLOT(sl_addDirButton()));
-    connect(addButton, SIGNAL(clicked()), SLOT(sl_addButton()));
-    connect(inputUrlEdit, SIGNAL(returnPressed()), SLOT(sl_addButton()));
     connect(downButton, SIGNAL(clicked()), SLOT(sl_downButton()));
     connect(upButton, SIGNAL(clicked()), SLOT(sl_upButton()));
     connect(deleteButton, SIGNAL(clicked()), SLOT(sl_deleteButton()));
-    connect(renameButton, SIGNAL(clicked()), SLOT(sl_renameButton()));
 
     connect(itemsArea, SIGNAL(itemSelectionChanged()), SLOT(sl_itemChecked()));
 
@@ -70,8 +65,15 @@ DatasetWidget::DatasetWidget(const QString &name, QWidget *parent)
     deleteAction->setShortcut(QKeySequence::Delete);
     deleteAction->setShortcutContext(Qt::WidgetShortcut);
     connect(deleteAction, SIGNAL(triggered()), SLOT(sl_deleteButton()));
-
     itemsArea->addAction(deleteAction);
+
+    QAction *selectAction = new QAction(itemsArea);
+    selectAction->setShortcut(QKeySequence::SelectAll);
+    selectAction->setShortcutContext(Qt::WidgetShortcut);
+    connect(selectAction, SIGNAL(triggered()), SLOT(sl_selectAll()));
+    itemsArea->addAction(selectAction);
+
+    itemsArea->installEventFilter(this);
 }
 
 void DatasetWidget::addUrlItem(UrlItem *urlItem) {
@@ -81,10 +83,6 @@ void DatasetWidget::addUrlItem(UrlItem *urlItem) {
 
 void DatasetWidget::deleteDataset() {
     emit si_datasetDeleted();
-}
-
-void DatasetWidget::sl_addButton() {
-    addUrl(inputUrlEdit->text());
 }
 
 void DatasetWidget::sl_addFileButton() {
@@ -105,25 +103,11 @@ void DatasetWidget::sl_addDirButton() {
     }
 }
 
-void DatasetWidget::sl_textChanged(const QString &text) {
-    if (text.isEmpty()) {
-        addButton->hide();
-        addFileButton->show();
-        addDirButton->show();
-    } else {
-        addButton->show();
-        addFileButton->hide();
-        addDirButton->hide();
-    }
-}
-
 void DatasetWidget::addUrl(const QString &url) {
     U2OpStatusImpl os;
     emit si_addUrl(url, os);
     if (os.hasError()) {
         QMessageBox::critical(this, tr("Error"), os.getError());
-    } else {
-        inputUrlEdit->setText("");
     }
 }
 
@@ -136,36 +120,13 @@ void DatasetWidget::sl_itemChecked() {
         upButton->setEnabled(!firstSelected);
         downButton->setEnabled(!lastSelected);
     }
-    if (1 == itemsArea->selectedItems().size()) {
-        QListWidgetItem *item = itemsArea->selectedItems().first();
-        UrlItem *urlItem = dynamic_cast<UrlItem*>(item);
-        CHECK(NULL != urlItem, );
-        QWidget *options = urlItem->getOptionsWidget();
-        if (NULL != options) {
-            showOptions(options);
-        }
-    }
 }
 
 void DatasetWidget::reset() {
     deleteButton->setEnabled(false);
     upButton->setEnabled(false);
     downButton->setEnabled(false);
-    hideOptions();
-}
-
-void DatasetWidget::showOptions(QWidget *options) {
-    configLayout->insertWidget(1, options);
-    options->show();
-}
-
-void DatasetWidget::hideOptions() {
-    if (3 == configLayout->count()) {
-        QLayoutItem *item = configLayout->itemAt(1);
-        configLayout->removeItem(item);
-        item->widget()->hide();
-        delete item;
-    }
+    popup->hideOptions();
 }
 
 void DatasetWidget::sl_downButton() {
@@ -201,15 +162,22 @@ void DatasetWidget::sl_deleteButton() {
     }
 }
 
-void DatasetWidget::sl_renameButton() {
+void DatasetWidget::sl_selectAll() {
+    for (int i=0; i<itemsArea->count(); i++) {
+        itemsArea->item(i)->setSelected(true);
+    }
+}
+
+void DatasetWidget::renameDataset(const QString &current) {
     bool error = false;
+    QString text = current;
     do {
         bool ok = false;
-        QString text = QInputDialog::getText(this,
+        text = QInputDialog::getText(this,
             tr("Rename Dataset"),
             tr("New dataset name:"),
             QLineEdit::Normal,
-            nameLabel->text(), &ok);
+            text, &ok);
         if (!ok) {
             return;
         }
@@ -219,11 +187,79 @@ void DatasetWidget::sl_renameButton() {
         if (os.hasError()) {
             QMessageBox::critical(this, tr("Error"), os.getError());
         } else {
-            nameLabel->setText(text);
             emit si_datasetRenamed(text);
         }
         error = os.hasError();
     } while (error);
+}
+
+bool DatasetWidget::eventFilter(QObject *obj, QEvent *event) {
+    CHECK(itemsArea == obj, false);
+    if (event->type() == QEvent::ContextMenu) {
+        CHECK(1 == itemsArea->selectedItems().size(), false);
+
+        QContextMenuEvent *e = static_cast<QContextMenuEvent *>(event);
+        QListWidgetItem *item = itemsArea->itemAt(e->pos());
+        CHECK(NULL != item, false);
+        CHECK(item->isSelected(), false);
+
+        UrlItem *urlItem = static_cast<UrlItem*>(item);
+        CHECK(NULL != urlItem, false);
+
+        QWidget *options = urlItem->getOptionsWidget();
+        if (NULL != options) {
+            popup->showOptions(options, itemsArea->mapToGlobal(e->pos()));
+        }
+        return true;
+    }
+    return QWidget::eventFilter(obj, event);
+}
+
+/************************************************************************/
+/* OptionsPopup */
+/************************************************************************/
+OptionsPopup::OptionsPopup(QWidget *parent)
+: QFrame(parent)
+{
+    l = new QVBoxLayout(this);
+    l->setMargin(0);
+    setWindowFlags(Qt::Popup);
+    setFrameShape(QFrame::StyledPanel);
+}
+
+void OptionsPopup::closeEvent(QCloseEvent *event) {
+    removeOptions();
+    QWidget::closeEvent(event);
+}
+
+void OptionsPopup::showOptions(QWidget *options, const QPoint &p) {
+    l->insertWidget(0, options);
+    move(p);
+    show();
+
+    // if the popup is not fit in the screen, then move it
+    int maxWidth = QApplication::desktop()->width();
+    int maxHeight = QApplication::desktop()->height();
+    QPoint rightBottom = pos() + QPoint(width(), height());
+    if (rightBottom.x() > maxWidth) {
+        move(x() - (rightBottom.x() - maxWidth), y());
+    }
+    if (rightBottom.y() > maxHeight) {
+        move(x(), y() - (rightBottom.y() - maxHeight));
+    }
+}
+
+void OptionsPopup::removeOptions() {
+    QLayoutItem *child;
+    while (NULL != (child = l->takeAt(0))) {
+        child->widget()->setParent(NULL);
+        delete child;
+    }
+}
+
+void OptionsPopup::hideOptions() {
+    removeOptions();
+    hide();
 }
 
 } // U2

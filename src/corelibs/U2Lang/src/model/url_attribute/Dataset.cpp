@@ -25,7 +25,7 @@
 
 namespace U2 {
 
-const QString Dataset::DEFAULT_NAME("Dataset");
+const QString Dataset::DEFAULT_NAME("Dataset 1");
 
 Dataset::Dataset(const QString &_name)
 : name(_name)

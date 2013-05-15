@@ -193,8 +193,6 @@ scriptingMode(false) {
     infoSplitter = new QSplitter(Qt::Vertical, splitter);
     infoSplitter->addWidget(sceneView);
     {
-        SpecialParametersPanel *specialParameters = new SpecialParametersPanel(propertyEditor);
-        propertyEditor->setSpecialPanel(specialParameters);
         QGroupBox* w = new QGroupBox(infoSplitter);
         w->setFlat(true);
         w->setTitle(tr("Error list"));
@@ -204,9 +202,7 @@ scriptingMode(false) {
         vl->setContentsMargins(0,0,0,0);
         vl->addWidget(infoList);
         w->hide();
-        specialParameters->hide();
         infoSplitter->addWidget(w);
-        infoSplitter->addWidget(specialParameters);
     }
     splitter->addWidget(infoSplitter);
     splitter->addWidget(propertyEditor);
@@ -353,11 +349,21 @@ void WorkflowView::createActions() {
     deleteAction->setIcon(QIcon(":workflow_designer/images/delete.png"));
     connect(deleteAction, SIGNAL(triggered()), scene, SLOT(sl_deleteItem()));
 
-    QAction *deleteShortcut = new QAction(sceneView);
-    deleteShortcut->setShortcuts(QKeySequence::Delete);
-    deleteShortcut->setShortcutContext(Qt::WidgetShortcut);
-    connect(deleteShortcut, SIGNAL(triggered()), scene, SLOT(sl_deleteItem()));
-    sceneView->addAction(deleteShortcut);
+    { // Delete shortcut
+        QAction *deleteShortcut = new QAction(sceneView);
+        deleteShortcut->setShortcuts(QKeySequence::Delete);
+        deleteShortcut->setShortcutContext(Qt::WidgetShortcut);
+        connect(deleteShortcut, SIGNAL(triggered()), scene, SLOT(sl_deleteItem()));
+        sceneView->addAction(deleteShortcut);
+    }
+
+    { // Ctrl+A shortcut
+        QAction *selectShortcut = new QAction(sceneView);
+        selectShortcut->setShortcuts(QKeySequence::SelectAll);
+        selectShortcut->setShortcutContext(Qt::WidgetShortcut);
+        connect(selectShortcut, SIGNAL(triggered()), scene, SLOT(sl_selectAll()));
+        sceneView->addAction(selectShortcut);
+    }
 
     configureParameterAliasesAction = new QAction(tr("Configure parameter aliases..."), this);
     configureParameterAliasesAction->setIcon(QIcon(":workflow_designer/images/table_relationship.png"));
@@ -385,7 +391,6 @@ void WorkflowView::createActions() {
     connect(iterationModeAction, SIGNAL(toggled(bool)), configureIterationsAction, SLOT(setEnabled(bool)));
 
     selectAction = new QAction(tr("Select all elements"), this);
-    selectAction->setShortcuts(QKeySequence::SelectAll);
     connect(selectAction, SIGNAL(triggered()), scene, SLOT(sl_selectAll()));
 
     copyAction = new QAction(tr("&Copy"), this);

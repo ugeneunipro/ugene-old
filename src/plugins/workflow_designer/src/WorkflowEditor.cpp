@@ -47,10 +47,16 @@
 namespace U2 {
 
 WorkflowEditor::WorkflowEditor(WorkflowView *p) 
-: QWidget(p), specialParameters(NULL), owner(p), custom(NULL),
+: QWidget(p), owner(p), custom(NULL),
 customWidget(NULL), subject(NULL), actor(NULL)
 {
     setupUi(this);
+
+    specialParameters = new SpecialParametersPanel(this);
+    tableSplitter->insertWidget(0, specialParameters);
+    specialParameters->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Maximum);
+    table->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
+    specialParameters->hide();
 
 #ifdef Q_OS_MAC
     QString style("QGroupBox::title {margin-top: 1px; margin-left: 15px;}");
@@ -313,11 +319,8 @@ void WorkflowEditor::editActor(Actor* a) {
         nameEdit->show();
         setDescriptor(a->getProto(), tr("To configure the parameters of the element go to \"Parameters\" area below."));
         edit(a);
-
-        paramHeight = table->rowHeight(0) * (table->model()->rowCount() + 3);
-        paramBox->setTitle(tr("Parameters"));
-        if(paramBox->isChecked()) {
-            changeSizes(paramBox, paramHeight);
+        if (NULL != specialParameters) {
+            specialParameters->editActor(a);
         }
 
         if(!a->getInputPorts().isEmpty()) {
@@ -380,8 +383,13 @@ void WorkflowEditor::editActor(Actor* a) {
             outputPortBox->setVisible(false);
             outputPortBox->resize(0,0);
         }
-        if (NULL != specialParameters) {
-            specialParameters->editActor(a);
+        paramHeight = table->rowHeight(0) * (table->model()->rowCount() + 3);
+        if (NULL != specialParameters && specialParameters->isVisible()) {
+            paramHeight += specialParameters->contentHeight();
+        }
+        paramBox->setTitle(tr("Parameters"));
+        if(paramBox->isChecked()) {
+            changeSizes(paramBox, paramHeight);
         }
     }
 }
@@ -582,11 +590,6 @@ void WorkflowEditor::sl_linkActivated(const QString& url) {
     table->setCurrentIndex(modelIndex);
 }
 
-void WorkflowEditor::setSpecialPanel(SpecialParametersPanel *panel) {
-    assert(NULL == specialParameters);
-    specialParameters = panel;
-}
-
 void WorkflowEditor::setSpecialPanelEnabled(bool isEnabled) {
     if(NULL != specialParameters) {
         specialParameters->setDatasetsEnabled(isEnabled);
@@ -642,10 +645,12 @@ void SpecialParametersPanel::sl_datasetsChanged() {
     CHECK(NULL != ctrl, );
     CHECK(controllers.values().contains(ctrl), );
     QString attrId = controllers.key(ctrl);
+    sets[attrId] = ctrl->getDatasets();
     editor->commitDatasets(attrId, sets[attrId]);
 }
 
 void SpecialParametersPanel::reset() {
+    int h = height();
     foreach (DatasetsController *controller, controllers.values()) {
         removeWidget(controller);
         delete controller;
@@ -676,6 +681,15 @@ void SpecialParametersPanel::setDatasetsEnabled(bool isEnabled) {
     foreach(DatasetsController *dataset, controllers.values()) {
         dataset->getWigdet()->setEnabled(isEnabled);
     }
+}
+
+int SpecialParametersPanel::contentHeight() const {
+    int result = 0;
+    for (int i=0; i<layout()->count(); i++) {
+        QLayoutItem *item = layout()->itemAt(i);
+        result += item->widget()->height();
+    }
+    return result;
 }
 
 }//namespace

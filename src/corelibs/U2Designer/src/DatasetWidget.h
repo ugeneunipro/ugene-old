@@ -28,15 +28,20 @@
 
 #include "ui_DatasetWidget.h"
 
+class QVBoxLayout;
+
 namespace U2 {
+
+class OptionsPopup;
 
 class DatasetWidget : public QWidget, public Ui::DatasetWidget {
     Q_OBJECT
 public:
-    DatasetWidget(const QString &name, QWidget *parent = NULL);
+    DatasetWidget(QWidget *parent = NULL);
 
     void addUrlItem(UrlItem *urlItem);
     void deleteDataset();
+    void renameDataset(const QString &current);
 
 signals:
     void si_datasetDeleted();
@@ -45,22 +50,41 @@ signals:
     void si_renameDataset(const QString &newName, U2OpStatus &os);
     void si_datasetRenamed(const QString &newName);
 
+protected:
+    virtual bool eventFilter(QObject *obj, QEvent *event);
+
 private slots:
-    void sl_addButton();
     void sl_addFileButton();
     void sl_addDirButton();
     void sl_downButton();
     void sl_upButton();
     void sl_deleteButton();
-    void sl_textChanged(const QString &text);
     void sl_itemChecked();
-    void sl_renameButton();
+    void sl_selectAll();
 
 private:
     void addUrl(const QString &url);
     void reset();
-    void showOptions(QWidget *options);
+
+private:
+    OptionsPopup *popup;
+};
+
+class OptionsPopup : public QFrame {
+public:
+    OptionsPopup(QWidget *parent);
+
+    void showOptions(QWidget *options, const QPoint &pos);
     void hideOptions();
+
+protected:
+    virtual void closeEvent(QCloseEvent *event);
+
+private:
+    void removeOptions();
+
+private:
+    QVBoxLayout *l;
 };
 
 } // U2

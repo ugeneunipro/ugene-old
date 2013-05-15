@@ -138,6 +138,8 @@ void DatasetsController::initialize() {
 DatasetsController::~DatasetsController() {
     datasetsWidget->setParent(NULL);
     delete datasetsWidget;
+    qDeleteAll(sets);
+    sets.clear();
 }
 
 QWidget * DatasetsController::getWigdet() {
@@ -164,7 +166,7 @@ void DatasetsController::createItemWidget(URLContainer *url, DatasetWidget *inDa
 }
 
 DatasetWidget * DatasetsController::createDatasetWidget(Dataset *dSet) {
-    DatasetWidget *inDataWidget = new DatasetWidget(dSet->getName(), datasetsWidget);
+    DatasetWidget *inDataWidget = new DatasetWidget(datasetsWidget);
     setMap[inDataWidget] = dSet;
     connect(inDataWidget, SIGNAL(si_datasetDeleted()), SLOT(sl_datasetDeleted()));
     connect(inDataWidget, SIGNAL(si_addUrl(const QString &, U2OpStatus &)),
@@ -251,6 +253,7 @@ void DatasetsController::sl_datasetDeleted() {
         urlMap.remove(item);
         itemSetMap.remove(item);
     }
+    delete dSet;
 
     // add empty default dataset is the last one is deleted
     if (sets.isEmpty()) {
@@ -261,10 +264,16 @@ void DatasetsController::sl_datasetDeleted() {
     updateAttribute();
 }
 
-void DatasetsController::checkName(const QString &name, U2OpStatus &os) {
+void DatasetsController::checkName(const QString &name, U2OpStatus &os, Dataset *exception) {
     if (name.isEmpty()) {
         os.setError(tr("Dataset name is empty"));
         return;
+    }
+    foreach (Dataset *dSet, sets) {
+        if (dSet != exception && dSet->getName() == name) {
+            os.setError(tr("This dataset name already exists"));
+            return;
+        }
     }
 }
 
@@ -278,14 +287,14 @@ void DatasetsController::sl_addDataset(const QString &name, U2OpStatus &os) {
 }
 
 void DatasetsController::sl_renameDataset(const QString &newName, U2OpStatus &os) {
-    checkName(newName, os);
-    CHECK_OP(os, );
-
     DatasetWidget *inData = dynamic_cast<DatasetWidget*>(sender());
     SAFE_POINT(NULL != inData, "NULL input data widget", );
 
     Dataset *dSet = setMap.value(inData);
     SAFE_POINT(NULL != dSet, "NULL dataset", );
+
+    checkName(newName, os, dSet);
+    CHECK_OP(os, );
 
     dSet->setName(newName);
     updateAttribute();

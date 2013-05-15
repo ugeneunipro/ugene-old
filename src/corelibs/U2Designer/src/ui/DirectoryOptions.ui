@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>156</width>
-    <height>116</height>
+    <width>201</width>
+    <height>105</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -33,13 +33,13 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
    <property name="spacing">
-    <number>0</number>
+    <number>3</number>
    </property>
    <property name="sizeConstraint">
     <enum>QLayout::SetMaximumSize</enum>
    </property>
    <property name="margin">
-    <number>0</number>
+    <number>3</number>
    </property>
    <item>
     <widget class="QGroupBox" name="optionsGroupBox">
@@ -50,10 +50,13 @@
       </sizepolicy>
      </property>
      <property name="title">
-      <string>Directory</string>
+      <string>Directory options</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
      </property>
      <property name="flat">
-      <bool>false</bool>
+      <bool>true</bool>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout">
       <property name="margin">
@@ -63,6 +66,12 @@
        <layout class="QGridLayout" name="gridLayout">
         <item row="1" column="0">
          <widget class="QLabel" name="label_2">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
           <property name="text">
            <string>Exclude mask</string>
           </property>
@@ -76,10 +85,22 @@
             <verstretch>0</verstretch>
            </sizepolicy>
           </property>
+          <property name="minimumSize">
+           <size>
+            <width>111</width>
+            <height>0</height>
+           </size>
+          </property>
          </widget>
         </item>
         <item row="0" column="0">
          <widget class="QLabel" name="label">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
           <property name="text">
            <string>Inlude mask</string>
           </property>
@@ -92,6 +113,12 @@
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>111</width>
+            <height>0</height>
+           </size>
           </property>
          </widget>
         </item>
@@ -120,6 +147,11 @@
     </widget>
    </item>
   </layout>
+  <zorder>optionsGroupBox</zorder>
+  <zorder>recursiveBox</zorder>
+  <zorder></zorder>
+  <zorder>recursiveBox</zorder>
+  <zorder></zorder>
  </widget>
  <resources/>
  <connections/>

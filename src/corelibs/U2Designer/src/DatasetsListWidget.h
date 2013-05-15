@@ -22,13 +22,25 @@
 #ifndef _U2_DATASETS_LIST_WIDGET_H_
 #define _U2_DATASETS_LIST_WIDGET_H_
 
-#include "DatasetWidget.h"
+#include <QTabWidget>
 
-#include "ui_DatasetsListWidget.h"
+#include "DatasetWidget.h"
 
 namespace U2 {
 
-class DatasetsListWidget : public QWidget, public Ui::DatasetsListWidget {
+class DatasetsTabWidget : public QTabWidget {
+    Q_OBJECT
+public:
+    DatasetsTabWidget(QWidget *parent);
+
+signals:
+    void si_contextMenu(const QPoint &p, int idx);
+
+private slots:
+    void sl_contextMenu(const QPoint &p);
+};
+
+class DatasetsListWidget : public QWidget {
     Q_OBJECT
 public:
     DatasetsListWidget(QWidget *parent = NULL);
@@ -41,7 +53,15 @@ signals:
 private slots:
     void sl_deleteDataset(int idx);
     void sl_renameDataset(const QString &newName);
+    void sl_renameDataset();
     void sl_newDataset();
+    void sl_contextMenu(const QPoint &p, int idx);
+
+private:
+    QTabWidget *tabs;
+
+private:
+    QString getTip() const;
 };
 
 } // U2

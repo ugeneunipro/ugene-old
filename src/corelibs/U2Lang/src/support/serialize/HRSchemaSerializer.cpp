@@ -766,7 +766,7 @@ QList<Dataset> HRSchemaSerializer::parseUrlAttribute(const QString attrId, QList
     }
     foreach (const QString &block, setBlocks) {
         Tokenizer tokenizer;
-        tokenizer.tokenizeSchema(block);
+        tokenizer.tokenize(block);
 
         QString name;
         QList<URLContainer*> urls;

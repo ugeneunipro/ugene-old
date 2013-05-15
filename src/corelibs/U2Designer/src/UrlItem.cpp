@@ -19,6 +19,8 @@
  * MA 02110-1301, USA.
  */
 
+#include <QFileInfo>
+
 #include "DirectoryItem.h"
 
 #include "UrlItem.h"
@@ -28,7 +30,14 @@ namespace U2 {
 UrlItem::UrlItem(const QString &url, QListWidget *parent)
 : QListWidgetItem(url, parent)
 {
+    QFileInfo info(url);
+    QString name = info.fileName();
+    if (name.isEmpty()) {
+        name = url;
+    }
+    setText(name);
 
+    setToolTip(url);
 }
 
 QWidget * UrlItem::getOptionsWidget() {

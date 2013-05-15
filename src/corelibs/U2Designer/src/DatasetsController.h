@@ -71,7 +71,7 @@ private:
     void initialize();
     DatasetWidget * createDatasetWidget(Dataset *dSet);
     void createItemWidget(URLContainer *url, DatasetWidget *inDataWidget);
-    void checkName(const QString &name, U2OpStatus &os);
+    void checkName(const QString &name, U2OpStatus &os, Dataset *exception = NULL);
     void updateAttribute();
 };
 
