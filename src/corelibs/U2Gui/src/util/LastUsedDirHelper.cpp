@@ -40,10 +40,10 @@ LastUsedDirHelper::~LastUsedDirHelper() {
 
 void LastUsedDirHelper::saveLastUsedDir() {
     if (!url.isEmpty()) {
-        QString newDir = QFileInfo(url).absoluteDir().absolutePath();
-        if (dir != newDir) {
-            setLastUsedDir(newDir, domain);
-        }
+        dir = QFileInfo(url).absoluteDir().absolutePath();
+    }
+    if (!dir.isEmpty()) {
+        setLastUsedDir(dir, domain);
     }
 }
 

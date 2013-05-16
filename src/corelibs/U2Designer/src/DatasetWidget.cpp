@@ -81,10 +81,6 @@ void DatasetWidget::addUrlItem(UrlItem *urlItem) {
     itemsArea->addItem(urlItem);
 }
 
-void DatasetWidget::deleteDataset() {
-    emit si_datasetDeleted();
-}
-
 void DatasetWidget::sl_addFileButton() {
     LastUsedDirHelper lod("dataset_file");
     QStringList files = QFileDialog::getOpenFileNames(NULL, tr("Select file"), lod.dir);
@@ -166,31 +162,6 @@ void DatasetWidget::sl_selectAll() {
     for (int i=0; i<itemsArea->count(); i++) {
         itemsArea->item(i)->setSelected(true);
     }
-}
-
-void DatasetWidget::renameDataset(const QString &current) {
-    bool error = false;
-    QString text = current;
-    do {
-        bool ok = false;
-        text = QInputDialog::getText(this,
-            tr("Rename Dataset"),
-            tr("New dataset name:"),
-            QLineEdit::Normal,
-            text, &ok);
-        if (!ok) {
-            return;
-        }
-        U2OpStatusImpl os;
-        emit si_renameDataset(text, os);
-
-        if (os.hasError()) {
-            QMessageBox::critical(this, tr("Error"), os.getError());
-        } else {
-            emit si_datasetRenamed(text);
-        }
-        error = os.hasError();
-    } while (error);
 }
 
 bool DatasetWidget::eventFilter(QObject *obj, QEvent *event) {

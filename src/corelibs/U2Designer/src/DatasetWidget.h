@@ -40,15 +40,10 @@ public:
     DatasetWidget(QWidget *parent = NULL);
 
     void addUrlItem(UrlItem *urlItem);
-    void deleteDataset();
-    void renameDataset(const QString &current);
 
 signals:
-    void si_datasetDeleted();
     void si_addUrl(const QString &url, U2OpStatus &os);
     void si_replaceUrl(UrlItem *item, int newUrlPos);
-    void si_renameDataset(const QString &newName, U2OpStatus &os);
-    void si_datasetRenamed(const QString &newName);
 
 protected:
     virtual bool eventFilter(QObject *obj, QEvent *event);

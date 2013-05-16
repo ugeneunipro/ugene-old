@@ -49,10 +49,11 @@ public:
 
 signals:
     void si_addDataset(const QString &name, U2OpStatus &os);
+    void si_renameDataset(int dsNum, const QString &newName, U2OpStatus &os);
+    void si_deleteDataset(int dsNum);
 
 private slots:
     void sl_deleteDataset(int idx);
-    void sl_renameDataset(const QString &newName);
     void sl_renameDataset();
     void sl_newDataset();
     void sl_contextMenu(const QPoint &p, int idx);
@@ -61,6 +62,7 @@ private:
     QTabWidget *tabs;
 
 private:
+    QString askDatasetName(const QString &tip, const QString &title, bool &ok);
     QString getTip() const;
 };
 

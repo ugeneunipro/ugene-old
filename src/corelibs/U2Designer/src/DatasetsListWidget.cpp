@@ -22,6 +22,7 @@
 #include <QInputDialog>
 #include <QMenu>
 #include <QMessageBox>
+#include <QResizeEvent>
 
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
@@ -54,15 +55,11 @@ DatasetsListWidget::DatasetsListWidget(QWidget *parent)
 void DatasetsListWidget::appendDataset(const QString &name, DatasetWidget *page) {
     int lastPos = tabs->count();
     tabs->insertTab(lastPos, page, name);
-    connect(page, SIGNAL(si_datasetRenamed(const QString &)), SLOT(sl_renameDataset(const QString &)));
 }
 
 void DatasetsListWidget::sl_deleteDataset(int idx) {
-    DatasetWidget *page = dynamic_cast<DatasetWidget*>(tabs->widget(idx));
-    SAFE_POINT(NULL != page, "NULL page wigdet", );
-
     tabs->removeTab(idx);
-    page->deleteDataset();
+    emit si_deleteDataset(idx);
 }
 
 QString DatasetsListWidget::getTip() const {
@@ -105,21 +102,35 @@ void DatasetsListWidget::sl_newDataset() {
     tabs->setCurrentIndex(tabs->count() - 1);
 }
 
-void DatasetsListWidget::sl_renameDataset(const QString &newName) {
-    int idx = tabs->indexOf(dynamic_cast<DatasetWidget*>(sender()));
-    CHECK(-1 != idx, );
-    tabs->setTabText(idx, newName);
-}
-
 void DatasetsListWidget::sl_renameDataset() {
     QAction *a = dynamic_cast<QAction*>(sender());
     CHECK(NULL != a, );
 
     int idx = a->property("idx").toInt();
-    DatasetWidget *page = dynamic_cast<DatasetWidget*>(tabs->widget(idx));
-    CHECK(NULL != page, );
+    CHECK(idx < tabs->count(), );
 
-    page->renameDataset(tabs->tabText(idx));
+    bool error = false;
+    QString text = tabs->tabText(idx);
+    do {
+        bool ok = false;
+        text = QInputDialog::getText(this,
+            tr("Rename Dataset"),
+            tr("New dataset name:"),
+            QLineEdit::Normal,
+            text, &ok);
+        if (!ok) {
+            return;
+        }
+        U2OpStatusImpl os;
+        emit si_renameDataset(idx, text, os);
+
+        if (os.hasError()) {
+            QMessageBox::critical(this, tr("Error"), os.getError());
+        }
+        error = os.hasError();
+    } while (error);
+
+    tabs->setTabText(idx, text);
 }
 
 void DatasetsListWidget::sl_contextMenu(const QPoint &p, int idx) {

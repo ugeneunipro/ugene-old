@@ -59,9 +59,8 @@ private slots:
     void sl_itemChanged();
     void sl_replaceUrl(UrlItem *item, int newPos);
     void sl_itemDeleted();
-    void sl_renameDataset(const QString &newName, U2OpStatus &os);
-
-    void sl_datasetDeleted();
+    void sl_renameDataset(int dsNum, const QString &newName, U2OpStatus &os);
+    void sl_deleteDataset(int dsNum);
 
     void sl_addUrl(const QString &url, U2OpStatus &os);
     void sl_addDataset(const QString &name, U2OpStatus &os);

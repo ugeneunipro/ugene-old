@@ -133,6 +133,9 @@ void DatasetsController::initialize() {
     }
     connect(datasetsWidget, SIGNAL(si_addDataset(const QString &, U2OpStatus &)),
         SLOT(sl_addDataset(const QString &, U2OpStatus &)));
+    connect(datasetsWidget, SIGNAL(si_renameDataset(int, const QString &, U2OpStatus &)),
+        SLOT(sl_renameDataset(int, const QString &, U2OpStatus &)));
+    connect(datasetsWidget, SIGNAL(si_deleteDataset(int)), SLOT(sl_deleteDataset(int)));
 }
 
 DatasetsController::~DatasetsController() {
@@ -168,12 +171,9 @@ void DatasetsController::createItemWidget(URLContainer *url, DatasetWidget *inDa
 DatasetWidget * DatasetsController::createDatasetWidget(Dataset *dSet) {
     DatasetWidget *inDataWidget = new DatasetWidget(datasetsWidget);
     setMap[inDataWidget] = dSet;
-    connect(inDataWidget, SIGNAL(si_datasetDeleted()), SLOT(sl_datasetDeleted()));
     connect(inDataWidget, SIGNAL(si_addUrl(const QString &, U2OpStatus &)),
         SLOT(sl_addUrl(const QString &, U2OpStatus &)));
     connect(inDataWidget, SIGNAL(si_replaceUrl(UrlItem *, int)), SLOT(sl_replaceUrl(UrlItem *, int)));
-    connect(inDataWidget, SIGNAL(si_renameDataset(const QString &, U2OpStatus &)),
-        SLOT(sl_renameDataset(const QString &, U2OpStatus &)));
 
     foreach (URLContainer *url, dSet->getUrls()) {
         createItemWidget(url, inDataWidget);
@@ -239,11 +239,10 @@ void DatasetsController::sl_addUrl(const QString &url, U2OpStatus &os) {
     updateAttribute();
 }
 
-void DatasetsController::sl_datasetDeleted() {
-    DatasetWidget *inData = dynamic_cast<DatasetWidget*>(sender());
-    SAFE_POINT(NULL != inData, "NULL input data widget", );
+void DatasetsController::sl_deleteDataset(int dsNum) {
+    SAFE_POINT(dsNum < sets.size(), "Datasets: out of range", );
 
-    Dataset *dSet = setMap.take(inData);
+    Dataset *dSet = sets.at(dsNum);
     SAFE_POINT(NULL != dSet, "NULL dataset", );
 
     sets.removeOne(dSet);
@@ -286,11 +285,10 @@ void DatasetsController::sl_addDataset(const QString &name, U2OpStatus &os) {
     updateAttribute();
 }
 
-void DatasetsController::sl_renameDataset(const QString &newName, U2OpStatus &os) {
-    DatasetWidget *inData = dynamic_cast<DatasetWidget*>(sender());
-    SAFE_POINT(NULL != inData, "NULL input data widget", );
+void DatasetsController::sl_renameDataset(int dsNum, const QString &newName, U2OpStatus &os) {    
+    SAFE_POINT(dsNum < sets.size(), "Datasets: out of range", );
 
-    Dataset *dSet = setMap.value(inData);
+    Dataset *dSet = sets.at(dsNum);
     SAFE_POINT(NULL != dSet, "NULL dataset", );
 
     checkName(newName, os, dSet);
