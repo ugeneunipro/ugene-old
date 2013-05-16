@@ -374,11 +374,11 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0006_1);
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0006_2);
 
-    REGISTER_TEST_IGNORED(GUITest_common_scenarios_msa_editor::test_0007,"https://ugene.unipro.ru/tracker/browse/UGENE-1620");
-    REGISTER_TEST_IGNORED(GUITest_common_scenarios_msa_editor::test_0007_1,"https://ugene.unipro.ru/tracker/browse/UGENE-1620");
-    REGISTER_TEST_IGNORED(GUITest_common_scenarios_msa_editor::test_0007_2,"https://ugene.unipro.ru/tracker/browse/UGENE-1620");
-    REGISTER_TEST_IGNORED(GUITest_common_scenarios_msa_editor::test_0007_3,"https://ugene.unipro.ru/tracker/browse/UGENE-1620");
-    REGISTER_TEST_IGNORED(GUITest_common_scenarios_msa_editor::test_0007_4,"https://ugene.unipro.ru/tracker/browse/UGENE-1620");
+    REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0007);
+    REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0007_1);
+    REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0007_2);
+    REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0007_3);
+    REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0007_4);
 
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0008);
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0008_1);

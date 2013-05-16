@@ -59,6 +59,7 @@ MsaUndoRedoFramework::MsaUndoRedoFramework(QObject *p, MAlignmentObject *_maObj)
     connect(maObj, SIGNAL(si_lockedStateChanged()), SLOT(sl_lockedStateChanged()));
     connect(undoAction, SIGNAL(triggered()), this, SLOT(sl_undo()));
     connect(redoAction, SIGNAL(triggered()), this, SLOT(sl_redo()));
+    stateComplete = true;
 }
 
 void MsaUndoRedoFramework::sl_completeStateChanged(bool _stateComplete) {
@@ -76,6 +77,7 @@ void MsaUndoRedoFramework::sl_alignmentChanged(const MAlignment& /* maBefore*/ ,
 void MsaUndoRedoFramework::checkUndoRedoEnabled() {
     SAFE_POINT(maObj != NULL, "NULL MSA Object!", );
 
+    bool b = maObj->isStateLocked();
     if (maObj->isStateLocked() || !stateComplete) {
         undoAction->setEnabled(false);
         redoAction->setEnabled(false);
