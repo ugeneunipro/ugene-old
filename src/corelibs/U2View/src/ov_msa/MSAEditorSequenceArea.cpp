@@ -1017,7 +1017,7 @@ void MSAEditorSequenceArea::keyPressEvent(QKeyEvent *e) {
              cancelSelection();
              break;
         case Qt::Key_Left:
-            if(Qt::ShiftModifier != e->modifiers()) {
+            if(!(Qt::ShiftModifier & e->modifiers())) {
                 moveSelection(-1,0);
                 break;
             }
@@ -1033,7 +1033,7 @@ void MSAEditorSequenceArea::keyPressEvent(QKeyEvent *e) {
             }
             break;
         case Qt::Key_Right:
-            if(Qt::ShiftModifier != e->modifiers()) {
+            if(!(Qt::ShiftModifier & e->modifiers())) {
                 moveSelection(1,0);
                 break;
             }
@@ -1049,7 +1049,7 @@ void MSAEditorSequenceArea::keyPressEvent(QKeyEvent *e) {
             }
             break;
         case Qt::Key_Up:
-            if(Qt::ShiftModifier != e->modifiers()) {
+            if(!(Qt::ShiftModifier & e->modifiers())) {
                 moveSelection(0,-1);
                 break;
             }
@@ -1065,7 +1065,7 @@ void MSAEditorSequenceArea::keyPressEvent(QKeyEvent *e) {
             }
             break;
         case Qt::Key_Down:
-            if(Qt::ShiftModifier != e->modifiers()) {
+            if(!(Qt::ShiftModifier & e->modifiers())) {
                 moveSelection(0,1);
                 break;
             }
