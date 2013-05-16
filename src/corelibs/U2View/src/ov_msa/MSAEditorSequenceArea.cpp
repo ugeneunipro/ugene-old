@@ -1027,8 +1027,8 @@ void MSAEditorSequenceArea::keyPressEvent(QKeyEvent *e) {
                 if (endX != -1) {
                     int firstColumn = qMin(selectionStart.x(),endX);
                     int width = qAbs(endX - selectionStart.x()) + 1;
-                    MSAEditorSelection selection(firstColumn, selection.y(), width, selection.height());
-                    setSelection(selection);
+                    MSAEditorSelection _selection(firstColumn, selection.y(), width, selection.height());
+                    setSelection(_selection);
                 }
             }
             break;
@@ -1043,8 +1043,8 @@ void MSAEditorSequenceArea::keyPressEvent(QKeyEvent *e) {
                 if (endX != -1) {
                     int firstColumn = qMin(selectionStart.x(),endX);
                     int width = qAbs(endX - selectionStart.x()) + 1;
-                    MSAEditorSelection selection(firstColumn, selection.y(), width, selection.height());
-                    setSelection(selection);
+                    MSAEditorSelection _selection(firstColumn, selection.y(), width, selection.height());
+                    setSelection(_selection);
                 }
             }
             break;
@@ -1059,8 +1059,8 @@ void MSAEditorSequenceArea::keyPressEvent(QKeyEvent *e) {
                 if (endY != -1) {
                     int startSeq = qMin(selectionStart.y(),endY);
                     int height = qAbs(endY - selectionStart.y()) + 1;
-                    MSAEditorSelection selection(selection.x(), startSeq, selection.width(), height );
-                    setSelection(selection);
+                    MSAEditorSelection _selection(selection.x(), startSeq, selection.width(), height );
+                    setSelection(_selection);
                 }
             }
             break;
@@ -1075,8 +1075,8 @@ void MSAEditorSequenceArea::keyPressEvent(QKeyEvent *e) {
                 if (endY != -1) {
                     int startSeq = qMin(selectionStart.y(),endY);
                     int height = qAbs(endY - selectionStart.y()) + 1;
-                    MSAEditorSelection selection(selection.x(), startSeq, selection.width(), height );
-                    setSelection(selection);
+                    MSAEditorSelection _selection(selection.x(), startSeq, selection.width(), height );
+                    setSelection(_selection);
                 }
             }
             break;
@@ -1158,7 +1158,7 @@ void MSAEditorSequenceArea::keyPressEvent(QKeyEvent *e) {
             break;
         case Qt::Key_Shift:
             selectionStart = selection.topLeft();
-            selectionEnd = selection.topLeft();
+            selectionEnd = selection.getRect().bottomRight();
             break;
     }
     QWidget::keyPressEvent(e);
