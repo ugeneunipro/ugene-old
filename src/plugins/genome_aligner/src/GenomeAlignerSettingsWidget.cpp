@@ -60,7 +60,6 @@ GenomeAlignerSettingsWidget::GenomeAlignerSettingsWidget(QWidget* parent) : DnaA
 #endif
 
     systemSize = AppContext::getAppSettings()->getAppResourcePool()->getMaxMemorySizeInMB();
-    systemSize = systemSize < 2000 ? systemSize : 2000; // TODO: UGENE-1181
     partSlider->setEnabled(false);
     readSlider->setMinimum(MIN_READ_SIZE);
     readSlider->setMaximum(systemSize);
