@@ -518,7 +518,7 @@ void FindPatternWidget::initAlgorithmLayout()
     layoutRegExpLen->addWidget(boxMaxResultLen);
     layoutAlgorithmSettings->addLayout(layoutRegExpLen);
 
-    selectedAlgorithm = FindAlgorithmPatternSettings_InsDel;
+    selectedAlgorithm = boxAlgorithm->itemData(boxAlgorithm->currentIndex()).toInt();
 }
 
 
