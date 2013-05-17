@@ -1431,7 +1431,7 @@ bool FindPatternWidget::checkPatternRegion( const QString& pattern ){
     qint64 minMatch = patternLength - maxError;
     SAFE_POINT(minMatch > 0, "Search pattern length is greater than max error value!",false);
 
-    qint64 regionLength = editEnd->text().toLongLong() - editStart->text().toLongLong();
+    qint64 regionLength = editEnd->text().toLongLong() - editStart->text().toLongLong() + 1;
     SAFE_POINT(regionLength > 0, "Incorrect region length when enabling/disabling the pattern search button.", false);
 
     if (minMatch > regionLength) {
