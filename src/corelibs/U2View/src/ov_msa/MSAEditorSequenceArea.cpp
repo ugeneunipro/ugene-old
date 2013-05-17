@@ -1027,7 +1027,13 @@ void MSAEditorSequenceArea::keyPressEvent(QKeyEvent *e) {
                 if (endX != -1) {
                     int firstColumn = qMin(selectionStart.x(),endX);
                     int width = qAbs(endX - selectionStart.x()) + 1;
-                    MSAEditorSelection _selection(firstColumn, selection.y(), width, selection.height());
+                    int startSeq = selection.y();
+                    int height = selection.height();
+                    if (selection.isNull()) {
+                        startSeq = cursorPos.y();
+                        height = 1;
+                    }
+                    MSAEditorSelection _selection(firstColumn, startSeq, width, height);
                     setSelection(_selection);
                 }
             }
@@ -1043,7 +1049,13 @@ void MSAEditorSequenceArea::keyPressEvent(QKeyEvent *e) {
                 if (endX != -1) {
                     int firstColumn = qMin(selectionStart.x(),endX);
                     int width = qAbs(endX - selectionStart.x()) + 1;
-                    MSAEditorSelection _selection(firstColumn, selection.y(), width, selection.height());
+                    int startSeq = selection.y();
+                    int height = selection.height();
+                    if (selection.isNull()) {
+                        startSeq = cursorPos.y();
+                        height = 1;
+                    }
+                    MSAEditorSelection _selection(firstColumn, startSeq, width, height);
                     setSelection(_selection);
                 }
             }
@@ -1059,7 +1071,13 @@ void MSAEditorSequenceArea::keyPressEvent(QKeyEvent *e) {
                 if (endY != -1) {
                     int startSeq = qMin(selectionStart.y(),endY);
                     int height = qAbs(endY - selectionStart.y()) + 1;
-                    MSAEditorSelection _selection(selection.x(), startSeq, selection.width(), height );
+                    int firstColumn = selection.x();
+                    int width = selection.width();
+                    if (selection.isNull()) {
+                        firstColumn = cursorPos.x();
+                        width = 1;
+                    }
+                    MSAEditorSelection _selection(firstColumn, startSeq, width, height );
                     setSelection(_selection);
                 }
             }
@@ -1075,7 +1093,13 @@ void MSAEditorSequenceArea::keyPressEvent(QKeyEvent *e) {
                 if (endY != -1) {
                     int startSeq = qMin(selectionStart.y(),endY);
                     int height = qAbs(endY - selectionStart.y()) + 1;
-                    MSAEditorSelection _selection(selection.x(), startSeq, selection.width(), height );
+                    int firstColumn = selection.x();
+                    int width = selection.width();
+                    if (selection.isNull()) {
+                        firstColumn = cursorPos.x();
+                        width = 1;
+                    }
+                    MSAEditorSelection _selection(firstColumn, startSeq, width, height );
                     setSelection(_selection);
                 }
             }
@@ -1157,8 +1181,13 @@ void MSAEditorSequenceArea::keyPressEvent(QKeyEvent *e) {
             fillSelectionWithGaps();
             break;
         case Qt::Key_Shift:
-            selectionStart = selection.topLeft();
-            selectionEnd = selection.getRect().bottomRight();
+            if (!selection.isNull()) {
+                selectionStart = selection.topLeft();
+                selectionEnd = selection.getRect().bottomRight();
+            } else {
+                selectionStart = cursorPos;
+                selectionEnd = cursorPos;
+            }
             break;
     }
     QWidget::keyPressEvent(e);
