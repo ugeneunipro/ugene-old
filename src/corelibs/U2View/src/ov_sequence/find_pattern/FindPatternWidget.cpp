@@ -399,6 +399,8 @@ FindPatternWidget::FindPatternWidget(AnnotatedDNAView* _annotatedDnaView)
         
         currentSelection = NULL;
         showHideMessage(true, UseMultiplePatternsTip);
+
+        sl_onSearchPatternChanged();
     }
 }
 
