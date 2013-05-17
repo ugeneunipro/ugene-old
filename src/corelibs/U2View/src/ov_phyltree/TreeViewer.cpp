@@ -528,7 +528,7 @@ void TreeViewerUI::updateSettings(const TreeSettings &settings) {
 void TreeViewerUI::updateSettings(const TreeLabelsSettings &settings) {
     sl_showNameLabelsTriggered(settings.showNames);
     sl_showDistanceLabelsTriggered(settings.showDistances);
-    sl_contTriggered(settings.alignLabels);
+    sl_contTriggered(settings.alignLabels && settings.showNames);
 }
 
 void TreeViewerUI::sl_setSettingsTriggered() {
@@ -1166,7 +1166,6 @@ void TreeViewerUI::sl_showNameLabelsTriggered(bool on) {
             }
         }
     }
-    //emit si_settingsChanged();
 }
 
 void TreeViewerUI::sl_showDistanceLabelsTriggered(bool on) {
