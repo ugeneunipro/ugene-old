@@ -759,7 +759,9 @@ GUI_TEST_CLASS_DEFINITION(test_0007) {
     GTGlobals::sleep();
 
     //4. Rlick Undo button.
-    GTKeyboardDriver::keyClick(os, 'z', GTKeyboardDriver::key["ctrl"]);
+    QAbstractButton *undo= GTAction::button(os,"msa_action_undo");
+    GTWidget::click(os,undo);
+    //GTKeyboardDriver::keyClick(os, 'z', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep();
     
     //Expected state: Tettigonia_viridissima renamed back
