@@ -122,7 +122,6 @@ QList<Task*> PairwiseAlignmentHirschbergTask::onSubTaskFinished(Task *subTask) {
         if (settings->inNewWindow == true) {
             TaskStateInfo localStateInfo;
             Project * currentProject = AppContext::getProject();
-            TaskScheduler * taskScheduler = AppContext::getTaskScheduler();
 
             DocumentFormat * format = AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::CLUSTAL_ALN);
             Document * alignmentDoc = NULL;
@@ -140,14 +139,10 @@ QList<Task*> PairwiseAlignmentHirschbergTask::onSubTaskFinished(Task *subTask) {
 
             MAlignmentObject * docObject = new MAlignmentObject(resultMa.getName(), msaRef);
             alignmentDoc->addObject(docObject);
-            currentProject->addDocument(alignmentDoc);
 
             SaveDocFlags flags = SaveDoc_Overwrite;
-            Task * saveMADocument = NULL;
-
-            saveMADocument = new SaveDocumentTask(alignmentDoc, flags);
-
-            taskScheduler->registerTopLevelTask(saveMADocument);
+            flags |= SaveDoc_OpenAfter;
+            res << new SaveDocumentTask(alignmentDoc, flags);
         } else {        //in current window
             U2OpStatus2Log os;
             DbiConnection con(settings->msaRef.dbiRef, os);

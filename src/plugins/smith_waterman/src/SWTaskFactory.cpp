@@ -59,10 +59,8 @@ PairwiseAlignmentSmithWatermanTaskFactory::~PairwiseAlignmentSmithWatermanTaskFa
 
 PairwiseAlignmentTask* PairwiseAlignmentSmithWatermanTaskFactory::getTaskInstance(PairwiseAlignmentTaskSettings* _settings) const {
     PairwiseAlignmentSmithWatermanTaskSettings* settings = new PairwiseAlignmentSmithWatermanTaskSettings(*_settings);
-    if (settings->inNewWindow == true && settings->resultFileName.isEmpty()) {
-        settings->resultFileName = GUrl(AppContext::getAppSettings()->getUserAppsSettings()->getCurrentProcessTemporaryDirPath() +
-                                        "/" + PairwiseAlignmentSmithWatermanTaskSettings::PA_SW_DEFAULT_RESULT_FILE_NAME);
-    }
+    SAFE_POINT(false == settings->inNewWindow || false == settings->resultFileName.isEmpty(),
+               "Pairwise alignment: incorrect settings, empty output file name", NULL);
     if (settings->inNewWindow == true) {
         settings->reportCallback = new SmithWatermanReportCallbackMAImpl(settings->resultFileName.dirPath() + "/",
                                                                          settings->resultFileName.baseFileName(),

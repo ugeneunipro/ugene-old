@@ -272,9 +272,9 @@ QString SmithWatermanReportCallbackMAImpl::planFor_MSA_Alignment_InNewWindow(con
 
     MAlignmentObject * docObject = new MAlignmentObject(msa.getName(), msaRef);
     alignmentDoc->addObject(docObject);
-    currentProject->addDocument(alignmentDoc);
 
     SaveDocFlags flags = SaveDoc_Overwrite;
+    flags |= SaveDoc_OpenAfter;
     Task * saveMADocument = NULL;
 
     if(countOfLoadedDocs < SmithWatermanReportCallbackMAImpl::countOfSimultLoadedMADocs) {
@@ -284,7 +284,6 @@ QString SmithWatermanReportCallbackMAImpl::planFor_MSA_Alignment_InNewWindow(con
     }
 
     saveMADocument = new SaveDocumentTask(alignmentDoc, flags);
-
     taskScheduler->registerTopLevelTask(saveMADocument);
     return QString();
 }

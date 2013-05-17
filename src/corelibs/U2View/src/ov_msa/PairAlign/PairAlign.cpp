@@ -136,19 +136,21 @@ void PairAlign::initParameters() {
         algorithmListComboBox->setCurrentIndex(index);
     }
 
+    sl_outputFileChanged("");
 }
 
 void PairAlign::connectSignals() {
-    connect(showHideSequenceWidget, SIGNAL(si_subgroupStateChanged(QString)), SLOT(sl_subwidgetStateChanged(QString)));
-    connect(showHideSettingsWidget, SIGNAL(si_subgroupStateChanged(QString)), SLOT(sl_subwidgetStateChanged(QString)));
-    connect(showHideOutputWidget, SIGNAL(si_subgroupStateChanged(QString)), SLOT(sl_subwidgetStateChanged(QString)));
-    connect(algorithmListComboBox, SIGNAL(currentIndexChanged(QString)), SLOT(sl_algorithmSelected(QString)));
-    connect(inNewWindowCheckBox, SIGNAL(clicked(bool)), SLOT(sl_inNewWindowCheckBoxChangeState(bool)));
-    connect(alignButton, SIGNAL(clicked()), SLOT(sl_alignButtonPressed()));
-    connect(outputFileSelectButton, SIGNAL(clicked()), SLOT(sl_selectFileButtonClicked()));
+    connect(showHideSequenceWidget,     SIGNAL(si_subgroupStateChanged(QString)),   SLOT(sl_subwidgetStateChanged(QString)));
+    connect(showHideSettingsWidget,     SIGNAL(si_subgroupStateChanged(QString)),   SLOT(sl_subwidgetStateChanged(QString)));
+    connect(showHideOutputWidget,       SIGNAL(si_subgroupStateChanged(QString)),   SLOT(sl_subwidgetStateChanged(QString)));
+    connect(algorithmListComboBox,      SIGNAL(currentIndexChanged(QString)),       SLOT(sl_algorithmSelected(QString)));
+    connect(inNewWindowCheckBox,        SIGNAL(clicked(bool)),                      SLOT(sl_inNewWindowCheckBoxChangeState(bool)));
+    connect(alignButton,                SIGNAL(clicked()),                          SLOT(sl_alignButtonPressed()));
+    connect(outputFileSelectButton,     SIGNAL(clicked()),                          SLOT(sl_selectFileButtonClicked()));
+    connect(outputFileLineEdit,         SIGNAL(textChanged(QString)),               SLOT(sl_outputFileChanged(QString)));
 
-    connect(firstSeqSelectorWC, SIGNAL(si_textControllerChanged()), SLOT(sl_selectorTextChanged()));
-    connect(secondSeqSelectorWC, SIGNAL(si_textControllerChanged()), SLOT(sl_selectorTextChanged()));
+    connect(firstSeqSelectorWC,         SIGNAL(si_textControllerChanged()),         SLOT(sl_selectorTextChanged()));
+    connect(secondSeqSelectorWC,        SIGNAL(si_textControllerChanged()),         SLOT(sl_selectorTextChanged()));
 }
 
 void PairAlign::checkState() {
@@ -294,7 +296,8 @@ void PairAlign::sl_alignButtonPressed() {
     if (!outputFileLineEdit->text().isEmpty()) {
         settings.resultFileName = GUrl(outputFileLineEdit->text());
     } else {
-        settings.resultFileName = GUrl();
+        settings.resultFileName = GUrl(AppContext::getAppSettings()->getUserAppsSettings()->getCurrentProcessTemporaryDirPath() +
+                                       "/" + PairwiseAlignmentTaskSettings::PA_DEFAULT_NAME);
     }
     settings.inNewWindow = inNewWindowCheckBox->isChecked();
     settings.msaRef = msaRef;
@@ -311,12 +314,20 @@ void PairAlign::sl_alignButtonPressed() {
     SAFE_POINT(NULL != factory, QString("Task factory for algorithm %1, realization %2 not found.").arg(settings.algorithmName, settings.realizationName), );
 
     PairwiseAlignmentTask* task = factory->getTaskInstance(&settings);
+    SAFE_POINT(NULL != task, "Task is null!", );
     connect(task, SIGNAL(si_stateChanged()), SLOT(sl_alignComplete()));
     pairwiseAlignmentWidgetsSettings->pairwiseAlignmentTask = task;
     AppContext::getTaskScheduler()->registerTopLevelTask(task);
 
     con.close(os);
     checkState();
+}
+
+void PairAlign::sl_outputFileChanged(const QString& newText) {
+    if (newText.isEmpty()) {
+        outputFileLineEdit->setText(AppContext::getAppSettings()->getUserAppsSettings()->getCurrentProcessTemporaryDirPath() +
+                                    "/" + PairwiseAlignmentTaskSettings::PA_DEFAULT_NAME);
+    }
 }
 
 void PairAlign::sl_distanceCalculated() {

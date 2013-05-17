@@ -23,7 +23,7 @@
 
 namespace U2 {
 
-const QString PairwiseAlignmentTaskSettings::PA_DEFAULT_NAME("DefaultName");
+const QString PairwiseAlignmentTaskSettings::PA_DEFAULT_NAME("PairwiseAlignmentResult.aln");
 const QString PairwiseAlignmentTaskSettings::PA_RESULT_FILE_NAME("resultFileName");
 const QString PairwiseAlignmentTaskSettings::PA_ALGIRITHM_NAME("algorithmName");
 const QString PairwiseAlignmentTaskSettings::PA_REALIZATION_NAME("realizationName");

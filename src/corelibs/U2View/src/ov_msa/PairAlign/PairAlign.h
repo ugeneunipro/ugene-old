@@ -74,6 +74,7 @@ private slots:
     void sl_inNewWindowCheckBoxChangeState(bool newState);
     void sl_selectFileButtonClicked();
     void sl_alignButtonPressed();
+    void sl_outputFileChanged(const QString& newText);
 
     void sl_distanceCalculated();
     void sl_alignComplete();
