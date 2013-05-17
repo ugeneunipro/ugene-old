@@ -28,14 +28,16 @@
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
 
+#include <U2Designer/DatasetsController.h>
+
 #include <U2Gui/LastUsedDirHelper.h>
 
 #include "DatasetWidget.h"
 
 namespace U2 {
 
-DatasetWidget::DatasetWidget(QWidget *parent)
-: QWidget(parent)
+URLListWidget::URLListWidget(URLListController *_ctrl)
+: QWidget(), ctrl(_ctrl)
 {
     setupUi(this);
     popup = new OptionsPopup(this);
@@ -76,12 +78,13 @@ DatasetWidget::DatasetWidget(QWidget *parent)
     itemsArea->installEventFilter(this);
 }
 
-void DatasetWidget::addUrlItem(UrlItem *urlItem) {
+void URLListWidget::addUrlItem(UrlItem *urlItem) {
     urlItem->setParent(itemsArea);
     itemsArea->addItem(urlItem);
+    connect(urlItem, SIGNAL(si_dataChanged()), SLOT(sl_dataChanged()));
 }
 
-void DatasetWidget::sl_addFileButton() {
+void URLListWidget::sl_addFileButton() {
     LastUsedDirHelper lod("dataset_file");
     QStringList files = QFileDialog::getOpenFileNames(NULL, tr("Select file"), lod.dir);
     foreach (const QString &file, files) {
@@ -90,7 +93,7 @@ void DatasetWidget::sl_addFileButton() {
     }
 }
 
-void DatasetWidget::sl_addDirButton() {
+void URLListWidget::sl_addDirButton() {
     LastUsedDirHelper lod("dataset_dir");
     QString dir = QFileDialog::getExistingDirectory(NULL, tr("Select a directory"), lod.dir);
     if (!dir.isEmpty()) {
@@ -99,15 +102,15 @@ void DatasetWidget::sl_addDirButton() {
     }
 }
 
-void DatasetWidget::addUrl(const QString &url) {
+void URLListWidget::addUrl(const QString &url) {
     U2OpStatusImpl os;
-    emit si_addUrl(url, os);
+    ctrl->addUrl(url, os);
     if (os.hasError()) {
         QMessageBox::critical(this, tr("Error"), os.getError());
     }
 }
 
-void DatasetWidget::sl_itemChecked() {
+void URLListWidget::sl_itemChecked() {
     reset();
     if (itemsArea->selectedItems().size() > 0) {
         deleteButton->setEnabled(true);
@@ -118,14 +121,14 @@ void DatasetWidget::sl_itemChecked() {
     }
 }
 
-void DatasetWidget::reset() {
+void URLListWidget::reset() {
     deleteButton->setEnabled(false);
     upButton->setEnabled(false);
     downButton->setEnabled(false);
     popup->hideOptions();
 }
 
-void DatasetWidget::sl_downButton() {
+void URLListWidget::sl_downButton() {
     CHECK(itemsArea->selectedItems().size() > 0, );
 
     for (int pos=itemsArea->count() - 2; pos >= 0; pos--) { // without last item
@@ -133,12 +136,12 @@ void DatasetWidget::sl_downButton() {
             QListWidgetItem *item = itemsArea->takeItem(pos);
             itemsArea->insertItem(pos+1, item);
             item->setSelected(true);
-            emit si_replaceUrl(dynamic_cast<UrlItem*>(item), pos+1);
+            ctrl->replaceUrl(pos, pos+1);
         }
     }
 }
 
-void DatasetWidget::sl_upButton() {
+void URLListWidget::sl_upButton() {
     CHECK(itemsArea->selectedItems().size() > 0, );
 
     for (int pos=1; pos < itemsArea->count(); pos++) { // without first item
@@ -146,25 +149,30 @@ void DatasetWidget::sl_upButton() {
             QListWidgetItem *item = itemsArea->takeItem(pos);
             itemsArea->insertItem(pos-1, item);
             item->setSelected(true);
-            emit si_replaceUrl(dynamic_cast<UrlItem*>(item), pos-1);
+            ctrl->replaceUrl(pos, pos-1);
         }
     }
 }
 
-void DatasetWidget::sl_deleteButton() {
+void URLListWidget::sl_deleteButton() {
     foreach (QListWidgetItem *item, itemsArea->selectedItems()) {
-        dynamic_cast<UrlItem*>(item)->deleteItem();
-        itemsArea->takeItem(itemsArea->row(item));
+        int pos = itemsArea->row(item);
+        ctrl->deleteUrl(pos);
+        delete itemsArea->takeItem(pos);
     }
 }
 
-void DatasetWidget::sl_selectAll() {
+void URLListWidget::sl_selectAll() {
     for (int i=0; i<itemsArea->count(); i++) {
         itemsArea->item(i)->setSelected(true);
     }
 }
 
-bool DatasetWidget::eventFilter(QObject *obj, QEvent *event) {
+void URLListWidget::sl_dataChanged() {
+    ctrl->changedUrl(dynamic_cast<UrlItem*>(sender()));
+}
+
+bool URLListWidget::eventFilter(QObject *obj, QEvent *event) {
     CHECK(itemsArea == obj, false);
     if (event->type() == QEvent::ContextMenu) {
         CHECK(1 == itemsArea->selectedItems().size(), false);

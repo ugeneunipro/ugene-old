@@ -28,6 +28,8 @@
 
 namespace U2 {
 
+class DatasetsController;
+
 class DatasetsTabWidget : public QTabWidget {
     Q_OBJECT
 public:
@@ -43,14 +45,9 @@ private slots:
 class DatasetsListWidget : public QWidget {
     Q_OBJECT
 public:
-    DatasetsListWidget(QWidget *parent = NULL);
+    DatasetsListWidget(DatasetsController *ctrl);
 
-    void appendDataset(const QString &name, DatasetWidget *page);
-
-signals:
-    void si_addDataset(const QString &name, U2OpStatus &os);
-    void si_renameDataset(int dsNum, const QString &newName, U2OpStatus &os);
-    void si_deleteDataset(int dsNum);
+    void appendPage(const QString &name, QWidget *page);
 
 private slots:
     void sl_deleteDataset(int idx);
@@ -59,6 +56,7 @@ private slots:
     void sl_contextMenu(const QPoint &p, int idx);
 
 private:
+    DatasetsController *ctrl;
     QTabWidget *tabs;
 
 private:

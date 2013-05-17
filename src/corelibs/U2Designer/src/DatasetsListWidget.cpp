@@ -27,12 +27,14 @@
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
 
+#include <U2Designer/DatasetsController.h>
+
 #include "DatasetsListWidget.h"
 
 namespace U2 {
 
-DatasetsListWidget::DatasetsListWidget(QWidget *parent)
-: QWidget(parent)
+DatasetsListWidget::DatasetsListWidget(DatasetsController *_ctrl)
+: QWidget(), ctrl(_ctrl)
 {
     QVBoxLayout *l = new QVBoxLayout(this);
     l->setMargin(0);
@@ -52,14 +54,16 @@ DatasetsListWidget::DatasetsListWidget(QWidget *parent)
     connect(tabs, SIGNAL(si_contextMenu(const QPoint &, int)), SLOT(sl_contextMenu(const QPoint &, int)));
 }
 
-void DatasetsListWidget::appendDataset(const QString &name, DatasetWidget *page) {
+void DatasetsListWidget::appendPage(const QString &name, QWidget *page) {
     int lastPos = tabs->count();
     tabs->insertTab(lastPos, page, name);
 }
 
 void DatasetsListWidget::sl_deleteDataset(int idx) {
+    QWidget *w = tabs->widget(idx);
     tabs->removeTab(idx);
-    emit si_deleteDataset(idx);
+    ctrl->deleteDataset(idx);
+    delete w;
 }
 
 QString DatasetsListWidget::getTip() const {
@@ -91,7 +95,7 @@ void DatasetsListWidget::sl_newDataset() {
             return;
         }
         U2OpStatusImpl os;
-        emit si_addDataset(text, os);
+        ctrl->addDataset(text, os);
         error = os.getError();
         if (!error.isEmpty()) {
             QMessageBox::critical(this, tr("Error"), error);
@@ -122,8 +126,7 @@ void DatasetsListWidget::sl_renameDataset() {
             return;
         }
         U2OpStatusImpl os;
-        emit si_renameDataset(idx, text, os);
-
+        ctrl->renameDataset(idx, text, os);
         if (os.hasError()) {
             QMessageBox::critical(this, tr("Error"), os.getError());
         }

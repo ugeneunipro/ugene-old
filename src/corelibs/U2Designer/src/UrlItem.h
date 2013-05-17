@@ -37,10 +37,7 @@ public:
     virtual void accept(UrlItemVisitor *visitor) = 0;
     virtual QWidget * getOptionsWidget();
 
-    void deleteItem();
-
 signals:
-    void si_itemDeleted();
     void si_dataChanged();
 };
 

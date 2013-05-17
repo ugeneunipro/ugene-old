@@ -19,8 +19,8 @@
 * MA 02110-1301, USA.
 */
 
-#ifndef _U2_DATASET_WIDGET_H_
-#define _U2_DATASET_WIDGET_H_
+#ifndef _U2_URL_LIST_WIDGET_H_
+#define _U2_URL_LIST_WIDGET_H_
 
 #include <U2Core/U2OpStatus.h>
 
@@ -33,17 +33,14 @@ class QVBoxLayout;
 namespace U2 {
 
 class OptionsPopup;
+class URLListController;
 
-class DatasetWidget : public QWidget, public Ui::DatasetWidget {
+class URLListWidget : public QWidget, public Ui::DatasetWidget {
     Q_OBJECT
 public:
-    DatasetWidget(QWidget *parent = NULL);
+    URLListWidget(URLListController *ctrl);
 
     void addUrlItem(UrlItem *urlItem);
-
-signals:
-    void si_addUrl(const QString &url, U2OpStatus &os);
-    void si_replaceUrl(UrlItem *item, int newUrlPos);
 
 protected:
     virtual bool eventFilter(QObject *obj, QEvent *event);
@@ -56,12 +53,14 @@ private slots:
     void sl_deleteButton();
     void sl_itemChecked();
     void sl_selectAll();
+    void sl_dataChanged();
 
 private:
     void addUrl(const QString &url);
     void reset();
 
 private:
+    URLListController *ctrl;
     OptionsPopup *popup;
 };
 
@@ -84,4 +83,4 @@ private:
 
 } // U2
 
-#endif // _U2_DATASET_WIDGET_H_
+#endif // _U2_URL_LIST_WIDGET_H_

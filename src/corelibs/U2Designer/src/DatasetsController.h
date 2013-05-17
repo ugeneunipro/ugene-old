@@ -29,9 +29,12 @@
 namespace U2 {
 
 class DatasetsListWidget;
-class DatasetWidget;
+class URLListWidget;
 class UrlItem;
 
+/************************************************************************/
+/* DatasetsController */
+/************************************************************************/
 class U2DESIGNER_EXPORT DatasetsController : public QObject {
     Q_OBJECT
 public:
@@ -41,6 +44,11 @@ public:
 
     QWidget * getWigdet();
     QList<Dataset> getDatasets();
+    void updateAttribute();
+
+    void renameDataset(int dsNum, const QString &newName, U2OpStatus &os);
+    void deleteDataset(int dsNum);
+    void addDataset(const QString &name, U2OpStatus &os);
 
 signals:
     void si_attributeChanged();
@@ -49,29 +57,38 @@ private:
     URLAttribute *attr;
     QList<Dataset*> sets;
 
-    QMap<UrlItem*, URLContainer*> urlMap;
-    QMap<UrlItem*, Dataset*> itemSetMap;
-    QMap<DatasetWidget*, Dataset*> setMap;
-
     DatasetsListWidget *datasetsWidget;
-
-private slots:
-    void sl_itemChanged();
-    void sl_replaceUrl(UrlItem *item, int newPos);
-    void sl_itemDeleted();
-    void sl_renameDataset(int dsNum, const QString &newName, U2OpStatus &os);
-    void sl_deleteDataset(int dsNum);
-
-    void sl_addUrl(const QString &url, U2OpStatus &os);
-    void sl_addDataset(const QString &name, U2OpStatus &os);
 
 private:
     void initSets(const QList<Dataset> &sets);
     void initialize();
-    DatasetWidget * createDatasetWidget(Dataset *dSet);
-    void createItemWidget(URLContainer *url, DatasetWidget *inDataWidget);
+    URLListWidget * createDatasetWidget(Dataset *dSet);
     void checkName(const QString &name, U2OpStatus &os, Dataset *exception = NULL);
-    void updateAttribute();
+};
+
+/************************************************************************/
+/* URLListController */
+/************************************************************************/
+class URLListController : public QObject {
+public:
+    URLListController(DatasetsController *parent, Dataset *set);
+
+    URLListWidget * getWidget();
+    void addUrl(const QString &url, U2OpStatus &os);
+    void replaceUrl(int pos, int newPos);
+    void deleteUrl(int pos);
+    void changedUrl(UrlItem *item);
+
+private:
+    URLListWidget *widget;
+    DatasetsController *controller;
+    Dataset *set;
+    QMap<UrlItem*, URLContainer*> urlMap;
+
+private:
+    void addItemWidget(URLContainer *url);
+    void createWidget();
+    URLContainer * getUrl(int pos);
 };
 
 } // U2

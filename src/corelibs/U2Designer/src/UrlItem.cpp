@@ -44,8 +44,4 @@ QWidget * UrlItem::getOptionsWidget() {
     return NULL;
 }
 
-void UrlItem::deleteItem() {
-    emit si_itemDeleted();
-}
-
 } // U2

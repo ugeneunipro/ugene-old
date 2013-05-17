@@ -99,6 +99,19 @@ void URLAttribute::updateValue() {
     value = qVariantFromValue< QList<Dataset> >(res);
 }
 
+QStringList URLAttribute::emptyDatasetNames(bool &hasUrl) {
+    QStringList emptySets;
+    hasUrl = false;
+    foreach (const Dataset &dSet, sets) {
+        if (dSet.getUrls().isEmpty()) {
+            emptySets << dSet.getName();
+        } else {
+            hasUrl = true;
+        }
+    }
+    return emptySets;
+}
+
 bool URLAttribute::validate(QStringList &errorList) {
     if (!isRequiredAttribute()) {
         return true;
@@ -108,14 +121,16 @@ bool URLAttribute::validate(QStringList &errorList) {
         return false;
     }
     bool hasUrl = false;
-    foreach (const Dataset &dSet, sets) {
-        if (!dSet.getUrls().isEmpty()) {
-            hasUrl = true;
-            break;
-        }
-    }
+    QStringList emptySets = emptyDatasetNames(hasUrl);
+
     if (!hasUrl) {
         errorList << WorkflowUtils::tr("Required parameter has no input urls specified: %1").arg(getDisplayName());
+        return false;
+    }
+    if (!emptySets.isEmpty()) {
+        foreach (const QString &name, emptySets) {
+            errorList << WorkflowUtils::tr("Required parameter %1 has empty dataset: %2").arg(getDisplayName()).arg(name);
+        }
         return false;
     }
     return true;

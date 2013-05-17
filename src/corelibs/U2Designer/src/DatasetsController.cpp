@@ -126,16 +126,11 @@ void DatasetsController::initSets(const QList<Dataset> &s) {
 
 void DatasetsController::initialize() {
     SAFE_POINT(sets.size() > 0, "0 datasets count", );
-    datasetsWidget = new DatasetsListWidget();
+    datasetsWidget = new DatasetsListWidget(this);
 
     foreach (Dataset *dSet, sets) {
-        datasetsWidget->appendDataset(dSet->getName(), createDatasetWidget(dSet));
+        datasetsWidget->appendPage(dSet->getName(), createDatasetWidget(dSet));
     }
-    connect(datasetsWidget, SIGNAL(si_addDataset(const QString &, U2OpStatus &)),
-        SLOT(sl_addDataset(const QString &, U2OpStatus &)));
-    connect(datasetsWidget, SIGNAL(si_renameDataset(int, const QString &, U2OpStatus &)),
-        SLOT(sl_renameDataset(int, const QString &, U2OpStatus &)));
-    connect(datasetsWidget, SIGNAL(si_deleteDataset(int)), SLOT(sl_deleteDataset(int)));
 }
 
 DatasetsController::~DatasetsController() {
@@ -157,89 +152,12 @@ QList<Dataset> DatasetsController::getDatasets() {
     return result;
 }
 
-void DatasetsController::createItemWidget(URLContainer *url, DatasetWidget *inDataWidget) {
-    ItemWidgetCreator wc;
-    url->accept(&wc);
-    urlMap[wc.getWidget()] = url;
-    itemSetMap[wc.getWidget()] = setMap[inDataWidget];
-    connect(wc.getWidget(), SIGNAL(si_dataChanged()), SLOT(sl_itemChanged()));
-    connect(wc.getWidget(), SIGNAL(si_itemDeleted()), SLOT(sl_itemDeleted()));
-
-    inDataWidget->addUrlItem(wc.getWidget());
+URLListWidget * DatasetsController::createDatasetWidget(Dataset *dSet) {
+    URLListController *ctrl = new URLListController(this, dSet);
+    return ctrl->getWidget();
 }
 
-DatasetWidget * DatasetsController::createDatasetWidget(Dataset *dSet) {
-    DatasetWidget *inDataWidget = new DatasetWidget(datasetsWidget);
-    setMap[inDataWidget] = dSet;
-    connect(inDataWidget, SIGNAL(si_addUrl(const QString &, U2OpStatus &)),
-        SLOT(sl_addUrl(const QString &, U2OpStatus &)));
-    connect(inDataWidget, SIGNAL(si_replaceUrl(UrlItem *, int)), SLOT(sl_replaceUrl(UrlItem *, int)));
-
-    foreach (URLContainer *url, dSet->getUrls()) {
-        createItemWidget(url, inDataWidget);
-    }
-
-    return inDataWidget;
-}
-
-void DatasetsController::sl_itemChanged() {
-    UrlItem *item = dynamic_cast<UrlItem*>(sender());
-    SAFE_POINT(NULL != item, "NULL item widget", );
-
-    URLContainer *url = urlMap[item];
-    SAFE_POINT(NULL != url, "NULL url container", );
-
-    URLContainerUpdater updater(item);
-    url->accept(&updater);
-    updateAttribute();
-}
-
-void DatasetsController::sl_itemDeleted() {
-    UrlItem *item = dynamic_cast<UrlItem*>(sender());
-    SAFE_POINT(NULL != item, "NULL item widget", );
-
-    URLContainer *url = urlMap.take(item);
-    SAFE_POINT(NULL != url, "NULL url container", );
-
-    Dataset *dSet = itemSetMap.take(item);
-    SAFE_POINT(NULL != dSet, "NULL dataset", );
-
-    dSet->removeUrl(url);
-    delete url;
-    updateAttribute();
-}
-
-void DatasetsController::sl_replaceUrl(UrlItem *item, int newPos) {
-    URLContainer *url = urlMap.value(item);
-    SAFE_POINT(NULL != url, "NULL url container", );
-
-    Dataset *dSet = itemSetMap.value(item);
-    SAFE_POINT(NULL != dSet, "NULL dataset", );
-    SAFE_POINT(newPos >=0 && newPos < dSet->getUrls().size(),
-        "New url position is out of range", );
-
-    int pos = dSet->getUrls().indexOf(url);
-    dSet->getUrls().removeAt(pos);
-    dSet->getUrls().insert(newPos, url);
-    updateAttribute();
-}
-
-void DatasetsController::sl_addUrl(const QString &url, U2OpStatus &os) {
-    DatasetWidget *inData = dynamic_cast<DatasetWidget*>(sender());
-    SAFE_POINT(NULL != inData, "NULL input data widget", );
-
-    URLContainer *urlCont = URLContainerFactory::createUrlContainer(url);
-    if (NULL == urlCont) {
-        os.setError(tr("This file or directory does not exist: %1").arg(url));
-        return;
-    }
-
-    setMap[inData]->addUrl(urlCont);
-    createItemWidget(urlCont, inData);
-    updateAttribute();
-}
-
-void DatasetsController::sl_deleteDataset(int dsNum) {
+void DatasetsController::deleteDataset(int dsNum) {
     SAFE_POINT(dsNum < sets.size(), "Datasets: out of range", );
 
     Dataset *dSet = sets.at(dsNum);
@@ -247,17 +165,12 @@ void DatasetsController::sl_deleteDataset(int dsNum) {
 
     sets.removeOne(dSet);
 
-    QList<UrlItem*> items = itemSetMap.keys(dSet);
-    foreach (UrlItem *item, items) {
-        urlMap.remove(item);
-        itemSetMap.remove(item);
-    }
     delete dSet;
 
     // add empty default dataset is the last one is deleted
     if (sets.isEmpty()) {
         sets << new Dataset();
-        datasetsWidget->appendDataset(sets.first()->getName(),
+        datasetsWidget->appendPage(sets.first()->getName(),
             createDatasetWidget(sets.first()));
     }
     updateAttribute();
@@ -276,16 +189,16 @@ void DatasetsController::checkName(const QString &name, U2OpStatus &os, Dataset 
     }
 }
 
-void DatasetsController::sl_addDataset(const QString &name, U2OpStatus &os) {
+void DatasetsController::addDataset(const QString &name, U2OpStatus &os) {
     checkName(name, os);
     CHECK_OP(os, );
     sets << new Dataset(name);
-    datasetsWidget->appendDataset(sets.last()->getName(),
+    datasetsWidget->appendPage(sets.last()->getName(),
         createDatasetWidget(sets.last()));
     updateAttribute();
 }
 
-void DatasetsController::sl_renameDataset(int dsNum, const QString &newName, U2OpStatus &os) {    
+void DatasetsController::renameDataset(int dsNum, const QString &newName, U2OpStatus &os) {
     SAFE_POINT(dsNum < sets.size(), "Datasets: out of range", );
 
     Dataset *dSet = sets.at(dsNum);
@@ -303,6 +216,88 @@ void DatasetsController::updateAttribute() {
         attr->updateValue();
     }
     emit si_attributeChanged();
+}
+
+/************************************************************************/
+/* URLListController */
+/************************************************************************/
+URLListController::URLListController(DatasetsController *parent, Dataset *_set)
+: QObject(parent), widget(NULL), controller(parent), set(_set)
+{
+
+}
+
+URLListWidget * URLListController::getWidget() {
+    if (NULL == widget) {
+        createWidget();
+    }
+    return widget;
+}
+
+void URLListController::createWidget() {
+    widget = new URLListWidget(this);
+
+    foreach (URLContainer *url, set->getUrls()) {
+        addItemWidget(url);
+    }
+}
+
+void URLListController::addItemWidget(URLContainer *url) {
+    SAFE_POINT(NULL != widget, "NULL url list widget", );
+    ItemWidgetCreator wc;
+    url->accept(&wc);
+    urlMap[wc.getWidget()] = url;
+
+    widget->addUrlItem(wc.getWidget());
+}
+
+void URLListController::changedUrl(UrlItem *item) {
+    URLContainer *url = urlMap[item];
+    SAFE_POINT(NULL != url, "NULL url container", );
+
+    URLContainerUpdater updater(item);
+    url->accept(&updater);
+    controller->updateAttribute();
+}
+
+void URLListController::replaceUrl(int pos, int newPos) {
+    URLContainer *url = getUrl(pos);
+    CHECK(NULL != url, );
+
+    SAFE_POINT(newPos >=0 && newPos < set->getUrls().size(),
+        "New url position is out of range", );
+
+    set->getUrls().removeAt(pos);
+    set->getUrls().insert(newPos, url);
+    controller->updateAttribute();
+}
+
+void URLListController::addUrl(const QString &url, U2OpStatus &os) {
+    URLContainer *urlCont = URLContainerFactory::createUrlContainer(url);
+    if (NULL == urlCont) {
+        os.setError(tr("This file or directory does not exist: %1").arg(url));
+        return;
+    }
+
+    set->addUrl(urlCont);
+    addItemWidget(urlCont);
+    controller->updateAttribute();
+}
+
+void URLListController::deleteUrl(int pos) {
+    URLContainer *url = getUrl(pos);
+    CHECK(NULL != url, );
+
+    set->removeUrl(url);
+    delete url;
+    controller->updateAttribute();
+}
+
+URLContainer * URLListController::getUrl(int pos) {
+    SAFE_POINT(pos < set->getUrls().size(), "Urls: out of range", NULL);
+    URLContainer *url = set->getUrls().at(pos);
+    SAFE_POINT(NULL != url, "NULL url container", NULL);
+    return url;
 }
 
 } // U2

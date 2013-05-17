@@ -44,6 +44,9 @@ public:
 
 private:
     QList<Dataset> sets;
+
+private:
+    QStringList emptyDatasetNames(bool &hasUrls);
 };
 
 } // U2
