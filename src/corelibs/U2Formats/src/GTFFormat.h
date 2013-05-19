@@ -111,6 +111,7 @@ enum GTFLineFieldsIndeces {GTF_SEQ_NAME_INDEX = 0, GTF_SOURCE_INDEX = 1, GTF_FEA
 
 class IOAdapter;
 
+typedef QList<SharedAnnotationData> SharedAnnotationList;
 
 /**
  * The following GTF specification was used: http://mblab.wustl.edu/GTF22.html
@@ -144,7 +145,7 @@ private:
     * A common method for parsing and validating an input GTF file.
     * It is used during loading the file or just getting the annotations data from it.
     */
-    QMultiMap<QString, SharedAnnotationData> parseDocument(IOAdapter* io, U2OpStatus& os);
+    QMap<QString,SharedAnnotationList> parseDocument(IOAdapter* io, U2OpStatus& os);
 
     void load(IOAdapter* io, QList<GObject*>& objects, U2OpStatus& os);
 

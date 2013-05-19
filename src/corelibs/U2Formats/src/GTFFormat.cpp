@@ -144,13 +144,20 @@ QList<SharedAnnotationData> GTFFormat::getAnnotData(IOAdapter* io, U2OpStatus& o
 {
     std::auto_ptr<QObject> parent(new QObject());
     GTFFormat gtfFormat(parent.get());
-    return gtfFormat.parseDocument(io, os).values();
+    QMap<QString, SharedAnnotationList> annsMap = gtfFormat.parseDocument(io, os);
+
+    SharedAnnotationList result;
+    foreach(const SharedAnnotationList& annList, annsMap) {
+        result += annList;
+    }
+
+    return result;
 }
 
 
-QMultiMap<QString, SharedAnnotationData> GTFFormat::parseDocument(IOAdapter* io, U2OpStatus& os)
+QMap<QString,SharedAnnotationList> GTFFormat::parseDocument(IOAdapter* io, U2OpStatus& os)
 {
-    QMultiMap<QString, SharedAnnotationData> result;
+    QMap<QString,SharedAnnotationList> result;
 
     int length;
     gauto_array<char> buff = new char[READ_BUFF_SIZE];
@@ -272,7 +279,7 @@ QMultiMap<QString, SharedAnnotationData> GTFFormat::parseDocument(IOAdapter* io,
         }
 
         // Append the result
-        result.insert(gtfLineData.seqName, annotData);
+        result[gtfLineData.seqName].append(annotData);
 
         // Move to the next line
         lineNumber++;
@@ -289,13 +296,12 @@ QMultiMap<QString, SharedAnnotationData> GTFFormat::parseDocument(IOAdapter* io,
 
 void GTFFormat::load(IOAdapter* io, QList<GObject*>& objects, U2OpStatus& os)
 {
-    QMultiMap<QString, SharedAnnotationData> annotationsMap = parseDocument(io, os);
+    QMultiMap<QString, SharedAnnotationList> annotationsMap = parseDocument(io, os);
 
-    QMultiMap<QString, SharedAnnotationData>::const_iterator iter = annotationsMap.constBegin();
+    QMultiMap<QString, SharedAnnotationList>::const_iterator iter = annotationsMap.constBegin();
     while (iter != annotationsMap.constEnd()) {
-        const QString& sequenceName = iter.key();    
-        const SharedAnnotationData& annotData = iter.value();
-        
+        const QString& sequenceName = iter.key();
+       
         // Get or create the annotations table
         QString annotTableName = sequenceName + FEATURES_TAG;
         AnnotationTableObject* annotTable = NULL;
@@ -310,12 +316,14 @@ void GTFFormat::load(IOAdapter* io, QList<GObject*>& objects, U2OpStatus& os)
             objects.append(annotTable);
         }
 
-        QString groupName = annotData->name; // Assume that the group name is the same as the annotation name
-        if (!AnnotationGroup::isValidGroupName(groupName, false)) {
-            groupName = "Group"; // Or just a value if the name of the feature is not appropriate
+        const SharedAnnotationList& annotList = iter.value();
+        foreach( const SharedAnnotationData& annotData, annotList ) {
+            QString groupName = annotData->name; // Assume that the group name is the same as the annotation name
+            if (!AnnotationGroup::isValidGroupName(groupName, false)) {
+                groupName = "Group"; // Or just a value if the name of the feature is not appropriate
+            }
+            annotTable->addAnnotation(new Annotation(annotData), groupName);
         }
-
-        annotTable->addAnnotation(new Annotation(annotData), groupName);
         ++iter;
     }
 }
