@@ -36,6 +36,17 @@ class ChromatogramViewRenderArea;
 class GObjectView;
 class Task;
 
+
+struct ChromatogramViewSettings {
+    bool drawTraceA, drawTraceC, drawTraceG, drawTraceT;
+    ChromatogramViewSettings()  {
+        drawTraceA = true;
+        drawTraceC = true;
+        drawTraceG = true;
+        drawTraceT = true;
+    }
+};
+
 class ChromatogramView : public GSequenceLineView {
     Q_OBJECT
     friend class ChromatogramViewRenderArea;
@@ -47,6 +58,7 @@ public:
     virtual bool isWidgetOnlyObject(GObject* o) const;
 
     U2SequenceObject* getEditedSequence() const {return editDNASeq;}
+    const ChromatogramViewSettings&  getSettings() const { return settings; }
     bool showQV() const {return showQVAction->isChecked();}
 
 protected:
@@ -64,18 +76,22 @@ private slots:
 
 
     void sl_onObjectRemoved(GObjectView*, GObject*);
+    void sl_showHideTrace();
+    void sl_showAllTraces();
 
 
 private:
     bool checkObject(GObject* obj);
     int getEditSeqIndex(int bcIndex);
+    QAction* createToggleTraceAction(const QString& actionName);
 
-    U2SequenceObject*          editDNASeq;
+    U2SequenceObject*           editDNASeq;
     QByteArray                  currentBaseCalls;
     QSet<int>                   indexOfChangedChars;
     QList<int>                  gapIndexes;
 
     ScaleBar*                   scaleBar;
+    ChromatogramViewSettings    settings;
     ChromatogramViewRenderArea* ra;
     QMenu*                      mP;
     int                         selIndex;
@@ -84,7 +100,11 @@ private:
     QAction*                    clearEditableSequence;
     QAction*                    removeChanges;
     QAction*                    showQVAction;
+    QAction*                    showAllTraces;
+    QMenu*                      traceActionMenu;
 };
+
+
 
 
 class ChromatogramViewRenderArea : public GSequenceLineViewRenderArea {
@@ -110,10 +130,12 @@ protected:
 
 private:
     QColor getBaseColor(char base);
-    void drawChromatogramTrace(qreal x, qreal y, qreal w, qreal h, QPainter& p, const U2Region& visible);
+    void drawChromatogramTrace(qreal x, qreal y, qreal w, qreal h, QPainter& p, 
+        const U2Region& visible, const ChromatogramViewSettings& settings);
     void drawOriginalBaseCalls(qreal x, qreal y, qreal w, qreal h, QPainter& p, const U2Region& visible, const QByteArray& ba, bool is = true);
     void drawQualityValues(qreal x, qreal y, qreal w, qreal h, QPainter& p, const U2Region& visible, const QByteArray& ba);
-    void drawChromatogramBaseCallsLines(qreal x, qreal y, qreal w, qreal h, QPainter& p, const U2Region& visible, const QByteArray& ba);
+    void drawChromatogramBaseCallsLines(qreal x, qreal y, qreal w, qreal h, QPainter& p, 
+        const U2Region& visible, const QByteArray& ba, const ChromatogramViewSettings& settings);
 
     DNAChromatogram chroma;
     int             chromaMax;

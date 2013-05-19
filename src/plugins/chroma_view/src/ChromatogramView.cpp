@@ -68,6 +68,17 @@ ChromatogramView::ChromatogramView(QWidget* p, ADVSequenceObjectContext* v, GSeq
     showQVAction->setEnabled(chroma.hasQV);
     connect(showQVAction, SIGNAL(toggled(bool)), SLOT(completeUpdate()));
 
+    showAllTraces = new QAction(tr("Show all"), this);
+    connect(showAllTraces, SIGNAL(triggered()), SLOT(sl_showAllTraces()));
+
+    traceActionMenu = new QMenu(tr("Show/hide trace"), this);
+    traceActionMenu->addAction( createToggleTraceAction("A") );
+    traceActionMenu->addAction( createToggleTraceAction("C") );
+    traceActionMenu->addAction( createToggleTraceAction("G") );
+    traceActionMenu->addAction( createToggleTraceAction("T") ) ;
+    traceActionMenu->addSeparator();
+    traceActionMenu->addAction(showAllTraces);
+
     renderArea = new ChromatogramViewRenderArea(this, chroma);
 
     scaleBar = new ScaleBar();
@@ -138,8 +149,9 @@ void ChromatogramView::buildPopupMenu(QMenu& m) {
     }
     //todo: move to submenus?
     QAction* before = GUIUtils::findActionAfter(m.actions(), ADV_MENU_ZOOM);
-
+    
     m.insertAction(before, showQVAction);
+    m.insertMenu(before, traceActionMenu);
     m.insertSeparator(before);
     if (editDNASeq != NULL) {
         m.insertAction(before, clearEditableSequence);
@@ -365,6 +377,57 @@ void ChromatogramView::sl_onObjectRemoved(GObjectView* view, GObject* obj)  {
     update();
 }
 
+QAction* ChromatogramView::createToggleTraceAction(const QString& actionName)
+{
+    QAction* showTraceAction = new QAction(actionName, this);
+    showTraceAction->setCheckable(true);
+    showTraceAction->setChecked(true);
+    showTraceAction->setEnabled(true);
+    connect(showTraceAction, SIGNAL(triggered(bool)), SLOT(sl_showHideTrace()));
+
+    return showTraceAction;
+
+}
+
+void ChromatogramView::sl_showHideTrace()
+{
+    QAction* traceAction = qobject_cast<QAction*> (sender());
+
+    if (!traceAction) {
+        return;
+    }
+
+    if (traceAction->text() == "A") {
+        settings.drawTraceA = traceAction->isChecked();        
+    } else if (traceAction->text() == "C") {
+        settings.drawTraceC = traceAction->isChecked();        
+    } else if(traceAction->text() == "G") {
+        settings.drawTraceG = traceAction->isChecked();        
+    } else if(traceAction->text() == "T") {
+        settings.drawTraceT = traceAction->isChecked();        
+    } else {
+        assert(0);
+    }
+
+    completeUpdate();
+    
+
+}
+
+void ChromatogramView::sl_showAllTraces()
+{
+    settings.drawTraceA = true;
+    settings.drawTraceC = true;
+    settings.drawTraceG = true;
+    settings.drawTraceT = true;
+    QList<QAction*> actions = traceActionMenu->actions();
+    foreach(QAction* action, actions) {
+        action->setChecked(true);
+    }
+    completeUpdate();
+
+}
+
 //////////////////////////////////////
 ////render area
 ChromatogramViewRenderArea::ChromatogramViewRenderArea(ChromatogramView* p, const DNAChromatogram& _chroma)
@@ -453,9 +516,11 @@ void ChromatogramViewRenderArea::drawAll(QPaintDevice* pd) {
             }
         }
         if (pd->width()/charWidth>visible.length/dividerTraceOrBaseCallsLines) {
-            drawChromatogramTrace(0, heightAreaBC - addUpIfQVL, pd->width(), height() - heightAreaBC + addUpIfQVL, p, visible);
+            drawChromatogramTrace(0, heightAreaBC - addUpIfQVL, pd->width(), height() - heightAreaBC + addUpIfQVL, 
+                p, visible, chromaView->getSettings());
         } else {
-            drawChromatogramBaseCallsLines(0, heightAreaBC, pd->width(), height() - heightAreaBC, p, visible, seq);
+            drawChromatogramBaseCallsLines(0, heightAreaBC, pd->width(), height() - heightAreaBC, 
+                p, visible, seq, chromaView->getSettings());
         }
     }
     QPainter p(pd);
@@ -543,7 +608,8 @@ QRectF ChromatogramViewRenderArea::posToRect(int i) const {
 
 //draw functions
 
-void ChromatogramViewRenderArea::drawChromatogramTrace(qreal x, qreal y, qreal w, qreal h, QPainter& p, const U2Region& visible)
+void ChromatogramViewRenderArea::drawChromatogramTrace(qreal x, qreal y, qreal w, qreal h, QPainter& p, 
+                                                       const U2Region& visible, const ChromatogramViewSettings& settings)
 {
     if (chromaMax == 0) {
         //nothing to draw
@@ -591,15 +657,22 @@ void ChromatogramViewRenderArea::drawChromatogramTrace(qreal x, qreal y, qreal w
         polylineG[j-a1+mk1] = QPointF(x, yG);
         polylineT[j-a1+mk1] = QPointF(x, yT);
     }
-    p.setPen(colorForIds[0]);
-    p.drawPolyline(polylineA);
-    p.setPen(colorForIds[1]);
-    p.drawPolyline(polylineC);
-    p.setPen(colorForIds[2]);
-    p.drawPolyline(polylineG);
-    p.setPen(colorForIds[3]);
-    p.drawPolyline(polylineT);
-
+    if (settings.drawTraceA) {
+        p.setPen(colorForIds[0]);
+        p.drawPolyline(polylineA);
+    }
+    if (settings.drawTraceC) {
+        p.setPen(colorForIds[1]);
+        p.drawPolyline(polylineC);
+    }
+    if (settings.drawTraceG) {
+        p.setPen(colorForIds[2]);
+        p.drawPolyline(polylineG);
+    }
+    if (settings.drawTraceT) {
+        p.setPen(colorForIds[3]);
+        p.drawPolyline(polylineT);
+    }
     p.resetTransform();
 }
 
@@ -717,7 +790,9 @@ void ChromatogramViewRenderArea::drawQualityValues(qreal x, qreal y, qreal w, qr
      p.resetTransform();
 }
 
-void ChromatogramViewRenderArea::drawChromatogramBaseCallsLines(qreal x, qreal y, qreal w, qreal h, QPainter& p, const U2Region& visible, const QByteArray& ba)
+
+void ChromatogramViewRenderArea::drawChromatogramBaseCallsLines(qreal x, qreal y, qreal w, qreal h, QPainter& p, 
+                                                                const U2Region& visible, const QByteArray& ba, const ChromatogramViewSettings& settings)
 {
     static const QColor colorForIds[4] = {
         Qt::darkGreen, Qt::blue, Qt::black, Qt::red
@@ -749,27 +824,34 @@ void ChromatogramViewRenderArea::drawChromatogramBaseCallsLines(qreal x, qreal y
             break;
         }
         double x = kLinearTransformTrace*temp+bLinearTransformTrace;
+        bool drawBase = true;
         switch (ba[j])  {
             case 'A': 
                 yRes = -qMin<double>(chroma.A[temp]*areaHeight/chromaMax, h);
                 p.setPen(colorForIds[0]);
+                drawBase = settings.drawTraceA;
                 break;
             case 'C':
                 yRes = -qMin<double>(chroma.C[temp]*areaHeight/chromaMax, h);
                 p.setPen(colorForIds[1]);
+                drawBase = settings.drawTraceC;
                 break;
             case 'G':
                 yRes = -qMin<double>(chroma.G[temp]*areaHeight/chromaMax, h);
                 p.setPen(colorForIds[2]);
+                drawBase = settings.drawTraceG;
                 break;
             case 'T':
                 yRes = -qMin<double>(chroma.T[temp]*areaHeight/chromaMax, h);
                 p.setPen(colorForIds[3]);
+                drawBase = settings.drawTraceT;
                 break;
             case 'N':
                 continue;
-        };      
-        p.drawLine(x, 0, x, yRes);
+        };   
+        if (drawBase) {
+            p.drawLine(x, 0, x, yRes);
+        }
     }
     p.resetTransform();
 }
