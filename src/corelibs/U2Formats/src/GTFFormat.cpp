@@ -144,14 +144,13 @@ QList<SharedAnnotationData> GTFFormat::getAnnotData(IOAdapter* io, U2OpStatus& o
 {
     std::auto_ptr<QObject> parent(new QObject());
     GTFFormat gtfFormat(parent.get());
-    QString seqName;
-    return gtfFormat.parseDocument(io, seqName, os);
+    return gtfFormat.parseDocument(io, os).values();
 }
 
 
-QList<SharedAnnotationData> GTFFormat::parseDocument(IOAdapter* io, QString &sequenceName, U2OpStatus& os)
+QMultiMap<QString, SharedAnnotationData> GTFFormat::parseDocument(IOAdapter* io, U2OpStatus& os)
 {
-    QList<SharedAnnotationData> result;
+    QMultiMap<QString, SharedAnnotationData> result;
 
     int length;
     gauto_array<char> buff = new char[READ_BUFF_SIZE];
@@ -187,18 +186,7 @@ QList<SharedAnnotationData> GTFFormat::parseDocument(IOAdapter* io, QString &seq
         if (validationStatus.isFileInvalid()) {
             fileIsValid = false;
         }
-
-        // Verify the sequence name (error doesn't occur, just warning)
-        if (!sequenceName.isEmpty()) {
-            if (gtfLineData.seqName != sequenceName) {
-                ioLog.trace(tr("GTF parsing warning: different sequence names were detected"
-                    " in an input GTF file. Sequence name '%1' is used.").arg(sequenceName));
-            }
-        }
-        else {
-            sequenceName = gtfLineData.seqName;
-        }
-
+        
         // Verify the feature field
         if (validationStatus.isIncorrectFeatureField()) {
             ioLog.trace(tr("GTF parsing error: unexpected value of the \"feature\""
@@ -284,7 +272,7 @@ QList<SharedAnnotationData> GTFFormat::parseDocument(IOAdapter* io, QString &seq
         }
 
         // Append the result
-        result.append(annotData);
+        result.insert(gtfLineData.seqName, annotData);
 
         // Move to the next line
         lineNumber++;
@@ -301,17 +289,20 @@ QList<SharedAnnotationData> GTFFormat::parseDocument(IOAdapter* io, QString &seq
 
 void GTFFormat::load(IOAdapter* io, QList<GObject*>& objects, U2OpStatus& os)
 {
-    QString sequenceName;
-    QList<SharedAnnotationData> annotations = parseDocument(io, sequenceName, os);
+    QMultiMap<QString, SharedAnnotationData> annotationsMap = parseDocument(io, os);
 
-    foreach (SharedAnnotationData annotData, annotations) {
+    QMultiMap<QString, SharedAnnotationData>::const_iterator iter = annotationsMap.constBegin();
+    while (iter != annotationsMap.constEnd()) {
+        const QString& sequenceName = iter.key();    
+        const SharedAnnotationData& annotData = iter.value();
+        
         // Get or create the annotations table
-
         QString annotTableName = sequenceName + FEATURES_TAG;
         AnnotationTableObject* annotTable = NULL;
         foreach (GObject* object, objects) {
             if (object->getGObjectName() == annotTableName) {
                 annotTable = (AnnotationTableObject*) object;
+                break;
             }
         }
         if (!annotTable) {
@@ -325,6 +316,7 @@ void GTFFormat::load(IOAdapter* io, QList<GObject*>& objects, U2OpStatus& os)
         }
 
         annotTable->addAnnotation(new Annotation(annotData), groupName);
+        ++iter;
     }
 }
 

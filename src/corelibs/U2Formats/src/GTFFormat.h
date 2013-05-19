@@ -144,7 +144,7 @@ private:
     * A common method for parsing and validating an input GTF file.
     * It is used during loading the file or just getting the annotations data from it.
     */
-    QList<SharedAnnotationData> parseDocument(IOAdapter* io, QString &sequenceName, U2OpStatus& os);
+    QMultiMap<QString, SharedAnnotationData> parseDocument(IOAdapter* io, U2OpStatus& os);
 
     void load(IOAdapter* io, QList<GObject*>& objects, U2OpStatus& os);
 
