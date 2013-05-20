@@ -219,7 +219,7 @@ void ShortReadAlignerCPU::run() {
             binarySearchResults.resize(length);
             t0 = GTimer::currentTimeMicros();
             for (int i = 0; i < length; i++) {
-                int currentW = dataBunch->windowSizes.at(i);
+                int currentW = dataBunch->windowSizes.at(dataBunch->sortedIndexes[i]);
                 CHECK_LOG(0 != currentW,);
                 BMType currentBitFilter = ((quint64)0 - 1) << (62 - currentW * 2);
                 BMType bv = dataBunch->sortedBitValuesV.at(i);
