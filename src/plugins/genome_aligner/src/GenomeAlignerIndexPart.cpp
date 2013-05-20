@@ -25,6 +25,8 @@
 #include <U2Algorithm/BitsTable.h>
 
 #include "GenomeAlignerIndexPart.h"
+#include <U2Core/Log.h>
+#include <U2Core/U2SafePoints.h>
 
 namespace U2 {
 
@@ -80,26 +82,39 @@ bool isLittleEndian() {
 }
 
 bool IndexPart::load(int part) {
+
+    qint64 t0 = GTimer::currentTimeMicros();
+
     assert(part < partCount);
     if (part == currentPart) {
         return true;
     }
     currentPart = part;
-    //int elemSize = sizeof(SAType) + sizeof(BMType);
     qint64 size = 0;
-    saLengths[part] = (partFiles[part]->size() - 1 - seqLengths[currentPart]/4)/sizeof(SAType);
     if (!partFiles[part]->isOpen()) {
         partFiles[part]->open(QIODevice::ReadOnly);
     }
     partFiles[part]->seek(0);
 
-    char *buff = (char*)sArray;
-    size = partFiles[part]->read(buff, saLengths[currentPart]*sizeof(SAType));
-    assert(size == saLengths[currentPart]*sizeof(SAType));
-    qint64 cl = (qint64)(saLengths[currentPart]);
-    if (size != (cl * sizeof(SAType))) {
-        return false;
-    }
+    char *buff = NULL;
+
+    size_t needRead = 0;
+
+    needRead = 1*sizeof(SAType);
+    buff = (char*)&(saLengths[currentPart]);
+    size = partFiles[part]->read(buff, needRead);
+    SAFE_POINT(size == needRead, "Index format error", false);
+    SAFE_POINT(saLengths[currentPart] >= 0, "Index format error", false);
+
+    needRead = saLengths[currentPart]*sizeof(SAType);
+    buff = (char*)sArray;
+    size = partFiles[part]->read(buff, needRead);
+    SAFE_POINT(size == needRead, "Index format error", false);
+
+    needRead = saLengths[currentPart]*sizeof(BMType);
+    buff = (char*)bitMask;
+    size = partFiles[part]->read(buff, needRead);
+    SAFE_POINT(size == needRead, "Index format error", false);
 
     uchar *bitSeq = new uchar[1 + seqLengths[currentPart]/4];
     size = partFiles[part]->read((char*)bitSeq, 1 + seqLengths[currentPart]/4);
@@ -121,8 +136,11 @@ bool IndexPart::load(int part) {
         if (!isLittleEndian()) {
             sArray[i] = qFromLittleEndian<quint32>((uchar*)(sArray + i));
         }
-        bitMask[i] = getBitValue(bitSeq, sArray[i]);
     }
+
+    qint64 t1 = GTimer::currentTimeMicros();
+    algoLog.trace(QString("IndexPart::load time %1 ms").arg((t1 - t0) / double(1000), 0, 'f', 3));
+
     delete[] bitSeq;
     return true;
 }
@@ -143,11 +161,10 @@ SAType IndexPart::getLoadedSeqStart() {
     return seqStarts[currentPart];
 }
 
-void IndexPart::build(int) {
-
-}
-
 void IndexPart::writePart(int part, quint32 arrLen) {
+
+    qint64 t0 = GTimer::currentTimeMicros();
+
     partFiles[part]->open(QIODevice::ReadWrite);
     currentPart = part;
 
@@ -158,8 +175,12 @@ void IndexPart::writePart(int part, quint32 arrLen) {
         }
     }
 
-    partFiles[part]->write((char*)sArray, arrLen * sizeof(SAType));
+    partFiles[part]->write((char*)&arrLen, 1 * sizeof(SAType));
 
+    partFiles[part]->write((char*)sArray, arrLen * sizeof(SAType));
+    partFiles[part]->write((char*)bitMask, arrLen * sizeof(BMType));
+
+    qint64 t1 = GTimer::currentTimeMicros();
     uchar *values = new uchar[1 + seqLengths[currentPart]/4];
     int i = 0;
     int bitNum = 0;
@@ -182,9 +203,14 @@ void IndexPart::writePart(int part, quint32 arrLen) {
     if (bitNum > 0) {
         values[i] <<= 8-bitNum;
     }
+    algoLog.trace(QString("IndexPart::writePart some bits table time %1 ms").arg((GTimer::currentTimeMicros() - t1) / double(1000), 0, 'f', 3));
 
     partFiles[part]->write((char*)values, 1 + seqLengths[currentPart]/4);
+
     delete[] values;
+
+    qint64 t2 = GTimer::currentTimeMicros();
+    algoLog.trace(QString("IndexPart::writePart time %1 ms").arg((t2 - t0) / double(1000), 0, 'f', 3));
 }
 
 BMType IndexPart::getBitValue(uchar *seq, SAType idx) {

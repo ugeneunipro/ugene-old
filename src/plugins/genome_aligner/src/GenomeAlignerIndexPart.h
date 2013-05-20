@@ -47,7 +47,6 @@ public:
     SAType getLoadedSeqStart();
     int getCurrentPart() {return currentPart;}
     bool load(int part);
-    void build(int part);
     void writePart(int part, quint32 arrLen);
 private:
     int             partCount;
