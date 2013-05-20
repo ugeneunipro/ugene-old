@@ -41,11 +41,11 @@ public:
     void setHeaderSelected();
     void setHeaderDeselected();
 
-    void changeState() {emit si_groupHeaderPressed(groupId, false);}
+    void changeState() {emit si_groupHeaderPressed(groupId);}
 
 signals:
     /** Emitted when the widget has been pressed */
-    void si_groupHeaderPressed(QString groupId, bool ctrlHold);
+    void si_groupHeaderPressed(QString groupId);
 
 protected:
     virtual void mousePressEvent(QMouseEvent*);

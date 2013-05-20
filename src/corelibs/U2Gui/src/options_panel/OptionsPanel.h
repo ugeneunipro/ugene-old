@@ -55,19 +55,18 @@ public:
 
     /** Add a new options panel group instance and corresponding widgets*/
     void addGroup(OPWidgetFactory* factory);
-    //void addGroup(const QPixmap& headerImage, const QString& title, QWidget* optionsWidget);
 
     /** Returns the main Options Panel widget */
     QWidget* getMainWidget();
 
-    /** Open a group with the specified group ID */
+    /** Open a group with the specified group ID: only one at a time */
     void openGroupById(const QString& groupId);
 
 
 public slots:
     /** Catches signals that a group header has been pressed
-        and implements the behavior of groups selection (one or several groups at a time) */
-    void sl_groupHeaderPressed(QString groupId, bool ctrlHold);
+        and implements the behavior of groups selection (only one group at a time can be opened) */
+    void sl_groupHeaderPressed(QString groupId);
 
 
 private:
@@ -88,8 +87,8 @@ private:
     /** The widget that displays options groups */
     OptionsPanelWidget* widget;
 
-    /** IDs of opened groups */
-    QList<QString> activeGroupsIds;
+    /** IDs of the opened group */
+    QString activeGroupId;
 };
 
 } // namespace
