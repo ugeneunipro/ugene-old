@@ -22,6 +22,7 @@
 #include <U2Core/Timer.h>
 #include <U2Core/Counter.h>
 #include <U2Algorithm/BinaryFindOpenCL.h>
+#include <U2Algorithm/SyncSort.h>
 #include <QtCore/QFile>
 #include <QtEndian>
 #include "GenomeAlignerFindTask.h"
@@ -79,7 +80,7 @@ void GenomeAlignerIndex::serialize(const QString &refFileName) {
     data += QByteArray::number(seqPartSize, 10) + ", ";
     data += QByteArray::number(objCount, 10) + "\n";
     data += seqObjName + "\n";
-    for (int i=0; i<objCount; i++) {
+    for (size_t i=0; i<objCount; i++) {
         data += QByteArray::number(objLens[i], 10);
         if (objCount-1 == i) {
             data += "\n";
@@ -219,9 +220,18 @@ bool GenomeAlignerIndex::loadPart(int part) {
         buildPart(indexPart.seqStarts[part], indexPart.seqLengths[part], arrLen);
         indexPart.saLengths[part] = arrLen;
         indexPart.currentPart = part;
-        sort(bitMask, 0, arrLen);
+
+        qint64 t0=GTimer::currentTimeMicros();
+        SyncSort<BMType, SAType> s(bitMask, sArray, 0, arrLen);
+        s.sort();
+        qint64 t1=GTimer::currentTimeMicros();
+        algoLog.trace(QString("loadPart::build sort time %1 ms").arg((t1 - t0) / double(1000), 0, 'f', 3));
+
         GTIMER(c2, v2, "GenomeAlignerIndex::writePart");
         indexPart.writePart(part, arrLen);
+        qint64 t2=GTimer::currentTimeMicros();
+        algoLog.trace(QString("loadPart::build write time %1 ms").arg((t2 - t1) / double(1000), 0, 'f', 3));
+
         v2.stop();
         sArray = NULL;
         bitMask = NULL;
@@ -409,7 +419,11 @@ void GenomeAlignerIndex::alignShortRead(SearchQuery *qu, BMType bitValue, int st
 
 /*build index*/
 void GenomeAlignerIndex::buildPart(SAType start, SAType length, SAType &arrLen) {
+    qint64 t0 = GTimer::currentTimeMicros();
     initSArray(start, length, arrLen);
+    qint64 t1 = GTimer::currentTimeMicros();
+    algoLog.trace(QString("initSArray time %1 ms, len %2").arg((t1 - t0) / double(1000), 0, 'f', 3).arg(length));
+
     const char *seq = indexPart.seq;
     SAType *arunner = sArray;
     BMType *mrunner = bitMask;
@@ -433,6 +447,8 @@ void GenomeAlignerIndex::buildPart(SAType start, SAType length, SAType &arrLen) 
         expectedNext = (s + 1) - seq;
         *mrunner = bitValue;
     }
+    qint64 t2 = GTimer::currentTimeMicros();
+    algoLog.trace(QString("buildPart bitValue time %1 ms, len %2").arg((t2 - t1) / double(1000), 0, 'f', 3).arg(length));
 }
 
 void GenomeAlignerIndex::initSArray(SAType start, SAType length, SAType &arrLen) {
@@ -442,18 +458,6 @@ void GenomeAlignerIndex::initSArray(SAType start, SAType length, SAType &arrLen)
         //setError("Index .ref file is corrupted.");
         return;
     }
-
-// 	QString partFileName = indexPart.refFile->fileName();
-// 	partFileName.resize(partFileName.length() - 4);
-// 	partFileName += "_p%1";
-// 	QFile partFile(partFileName.arg(currentPart, 2, 10, QChar('0')));
-// 	algoLog.details(QString("Dumping part %1 to file %2").arg(currentPart).arg(partFile.fileName()));
-// 	if(partFile.exists()) {
-// 		partFile.remove();
-// 	}
-// 	partFile.open(QIODevice::WriteOnly);
-// 	partFile.write(indexPart.seq, length);
-// 	partFile.close();
 
     const char *seq = indexPart.seq;
 
@@ -527,99 +531,6 @@ void GenomeAlignerIndex::initSArray(SAType start, SAType length, SAType &arrLen)
         idx++;
         arunner++;
         seqIdx++;
-    }
-}
-
-//Stable sort of sequences
-void GenomeAlignerIndex::sort(BMType *x, int off, int len) {
-    // Insertion sort on smallest arrays
-    if (len < 7) {
-        for (int i=off; i<len+off; i++){
-            for (int j=i; j > off && compare(x+j-1,x+j)>0; j--) {
-                swap(x+j, x+j-1);
-            }
-        }
-        return;
-    }
-
-    // Choose a partition element, v
-    quint32 m = off + len / 2;       // Small arrays, middle element
-    if (len > 7) {
-        quint32 l = off;
-        quint32 n = off + len - 1;
-        if (len > 40) {        // Big arrays, pseudo median of 9
-            quint32 s = len / 8;
-            l = med3(x, l,     l+s, l+2*s);
-            m = med3(x, m-s,   m,   m+s);
-            n = med3(x, n-2*s, n-s, n);
-        }
-        m = med3(x, l, m, n); // Mid-size, med of 3
-    }
-    BMType *v = x + m;
-
-    // Establish Invariant: v* (<v)* (>v)* v*
-    int a = off, b = a, c = off + len - 1, d = c;
-    while(true) {
-        qint64 cr;
-        while (b <= c && (cr = compare(v, x+b)) >=0 ) {
-            if (cr == 0) {
-                (x+b==v) && (v=x+a);//save middle pos value
-                swap(x+a++,x+b);
-            }
-            b++;
-        }
-        while (c >= b && (cr = compare(x+c, v)) >=0 ) {
-            if (cr == 0) {
-                (x+c==v) && (v=x+d);//save middle pos value
-                swap(x+c, x+d--);
-            }
-            c--;
-        }
-        if (b > c) {
-            break;
-        }
-        swap(x+b++, x+c--);
-    }
-
-    // Swap partition elements back to middle
-    int s, n = off + len;
-    s = qMin(a-off, b-a  ); vecswap(x+off, x+b-s, s);
-    s = qMin(d-c,   n-d-1); vecswap(x+b,   x+n-s, s);
-
-    // Recursively sort non-partition-elements
-    if ((s = b-a) > 1) {
-        sort(x, off, s);
-    }
-    if ((s = d-c) > 1) {
-        sort(x, n-s, s);
-    }
-}
-
-qint64 GenomeAlignerIndex::compare(const BMType *x1, const BMType *x2) const {
-    return *x1-*x2;
-}
-
-void GenomeAlignerIndex::swap(BMType *x1, BMType *x2) const {
-    assert(x1 - bitMask >= 0 && x1 - bitMask < (qint64)indexPart.saLengths[indexPart.currentPart]);
-    assert(x2 - bitMask >= 0 && x2 - bitMask < (qint64)indexPart.saLengths[indexPart.currentPart]);
-
-    SAType *a1 = sArray+(x1-bitMask);
-    SAType *a2 = sArray+(x2-bitMask);
-    qSwap(*x1, *x2);
-    qSwap(*a1, *a2);
-}
-
-quint32 GenomeAlignerIndex::med3(BMType *x, quint32 a, quint32 b, quint32 c) {
-    qint64 bc = compare(x+b, x+c);
-    qint64 ac = compare(x+a, x+c);
-    return compare(x+a, x+b) < 0 ?
-        (bc < 0 ? b : ac < 0 ? c : a) :
-        (bc > 0 ? b : ac > 0 ? c : a);
-}
-
-void GenomeAlignerIndex::vecswap(BMType *x1, BMType *x2, quint32 n) {
-    for (quint32 i=0; i<n; i++) {
-        swap(x1+i, x2+i);
     }
 }
 

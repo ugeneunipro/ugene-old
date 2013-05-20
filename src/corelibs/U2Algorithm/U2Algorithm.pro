@@ -13,6 +13,7 @@ HEADERS += src/misc/BinaryFindOpenCL.h \
            src/misc/RepeatFinderTaskFactory.h \
            src/misc/RollingArray.h \
            src/misc/RollingMatrix.h \
+           src/misc/SyncSort.h \
            src/molecular_geometry/GeomUtils.h \
            src/molecular_geometry/MolecularSurface.h \
            src/molecular_geometry/MolecularSurfaceFactoryRegistry.h \
