@@ -27,6 +27,7 @@ SequenceSelectorWidgetController::SequenceSelectorWidgetController(MSAEditor* _m
     setupUi(this);
     filler = new MSACompletionFiller();
     seqLineEdit->setText(msa->getRefSeqName());
+    seqLineEdit->setCursorPosition(0);
     completer = new BaseCompleter(filler, seqLineEdit);
     sl_updateCompleter();
 
@@ -37,6 +38,13 @@ SequenceSelectorWidgetController::SequenceSelectorWidgetController(MSAEditor* _m
     connect(msa->getMSAObject(), SIGNAL(si_alignmentChanged(const MAlignment& , const MAlignmentModInfo&)), 
         SLOT(sl_seqLineEditEditingFinished(const MAlignment& , const MAlignmentModInfo&)));
     
+}
+
+void SequenceSelectorWidgetController::setText(QString str) {
+    if (seqLineEdit->text() != str) {
+        seqLineEdit->setText(str);
+        seqLineEdit->setCursorPosition(0);
+    }
 }
 
 void SequenceSelectorWidgetController::sl_updateCompleter(){
@@ -66,13 +74,17 @@ void SequenceSelectorWidgetController::sl_seqLineEditEditingFinished(){
     if(!ma.getRowNames().contains(seqLineEdit->text())){
         seqLineEdit->setText(defaultSeqName);
     }else{
-        defaultSeqName = seqLineEdit->text();
+        if (defaultSeqName != seqLineEdit->text()) {
+            defaultSeqName = seqLineEdit->text();
+            seqLineEdit->setCursorPosition(0);
+        }
     }
     emit si_textControllerChanged();
 } 
 
 void SequenceSelectorWidgetController::sl_addSeqClicked(){
     seqLineEdit->setText(msa->getMSAObject()->getRow(msa->getCurrentSelection().y()).getName());
+    seqLineEdit->setCursorPosition(0);
     emit si_textControllerChanged();
 }
 

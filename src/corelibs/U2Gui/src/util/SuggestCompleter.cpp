@@ -152,6 +152,7 @@ void BaseCompleter::doneCompletion(){
             }
         }        
         editor->setText(absPath + item->text(0));
+        editor->setCursorPosition(0);
         emit si_editingFinished();
     }
 }
