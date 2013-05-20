@@ -632,6 +632,8 @@ void FindPatternWidget::sl_onRegionOptionChanged(int index)
         editStart->hide();
         lblStartEndConnection->hide();
         editEnd->hide();
+        regionIsCorrect = true;
+        checkState();
     }
     else if (boxRegion->itemData(index).toInt() == RegionSelectionIndex_CustomRegion) {
         editStart->show();
@@ -639,6 +641,12 @@ void FindPatternWidget::sl_onRegionOptionChanged(int index)
         editEnd->show();
         editStart->setReadOnly(false);
         editEnd->setReadOnly(false);
+
+        ADVSequenceObjectContext* activeContext = annotatedDnaView->getSequenceInFocus();
+        SAFE_POINT(NULL != activeContext, "Internal error: there is no sequence in focus!",);
+        getCompleteSearchRegion(regionIsCorrect, activeContext->getSequenceLength());
+        checkState();
+
     }else if(boxRegion->itemData(index).toInt() == RegionSelectionIndex_CurrentSelectedRegion) {
         currentSelection = annotatedDnaView->getSequenceInFocus()->getSequenceSelection();
         connect(currentSelection, SIGNAL(si_selectionChanged(LRegionsSelection* , const QVector<U2Region>&, const QVector<U2Region>&)), 
@@ -1096,9 +1104,12 @@ void FindPatternWidget::enableDisableMatchSpin()
     }
 }
 
-
 U2Region FindPatternWidget::getCompleteSearchRegion(bool& regionIsCorrect, qint64 maxLen) const
 {
+    if (boxRegion->itemData(boxRegion->currentIndex()).toInt() == RegionSelectionIndex_WholeSequence) {
+        regionIsCorrect = true;
+        return U2Region(0, maxLen);
+    }
     bool ok = false;
     qint64 value1 = editStart->text().toLongLong(&ok) - 1;
     if (!ok || value1 < 0) {
@@ -1431,8 +1442,14 @@ bool FindPatternWidget::checkPatternRegion( const QString& pattern ){
     qint64 minMatch = patternLength - maxError;
     SAFE_POINT(minMatch > 0, "Search pattern length is greater than max error value!",false);
 
-    qint64 regionLength = editEnd->text().toLongLong() - editStart->text().toLongLong() + 1;
-    SAFE_POINT(regionLength > 0, "Incorrect region length when enabling/disabling the pattern search button.", false);
+    ADVSequenceObjectContext* activeContext = annotatedDnaView->getSequenceInFocus();
+    SAFE_POINT(NULL != activeContext, "Internal error: there is no sequence in focus!", false);
+    bool regionIsCorrect = false;
+    qint64 regionLength = getCompleteSearchRegion(regionIsCorrect, activeContext->getSequenceLength()).length;
+
+//    qint64 regionLength = editEnd->text().toLongLong() - editStart->text().toLongLong() + 1;
+    SAFE_POINT(regionLength > 0 && true == regionIsCorrect,
+               "Incorrect region length when enabling/disabling the pattern search button.", false);
 
     if (minMatch > regionLength) {
         return false;
@@ -1450,6 +1467,7 @@ void FindPatternWidget::sl_onSelectedRegionChanged( LRegionsSelection* thiz, con
         editStart->setText(QString::number(1));
         editEnd->setText(QString::number(annotatedDnaView->getSequenceInFocus()->getSequenceLength()));
     }
+    regionIsCorrect = true;
     checkState();
 }
 
