@@ -24,6 +24,7 @@
 
 #include "GenomeAlignerSearchQuery.h"
 #include "GenomeAlignerWriteTask.h"
+#include "DataBunch.h"
 
 #include <U2Core/Task.h>
 #include <U2Core/U2Region.h>
@@ -41,42 +42,6 @@
 namespace U2 {
 
 class GenomeAlignerIndex;
-
-struct DataBunch {
-    ~DataBunch() {
-        qDeleteAll(queries);
-    }
-
-    QVector<SearchQuery*> queries;
-    QVector<BMType> bitValuesV;
-    QVector<int> windowSizes;
-    QVector<int> readNumbersV;
-    QVector<int> positionsAtReadV;
-
-    qint64 memoryHint() const {
-        qint64 m = sizeof(*this);
-
-        m += queries.capacity() * (qint64)sizeof(SearchQuery*);
-        m += bitValuesV.capacity() * (qint64)sizeof(BMType);
-        m += readNumbersV.capacity() * (qint64)sizeof(int);
-        m += positionsAtReadV.capacity() * (qint64)sizeof(int);
-        m += windowSizes.capacity() * (qint64)sizeof(int);
-
-        return m;
-    }
-
-    void squeeze() {
-        queries.squeeze();
-        bitValuesV.squeeze();
-        readNumbersV.squeeze();
-        positionsAtReadV.squeeze();
-        windowSizes.squeeze();
-    }
-
-    bool empty() const {
-        return queries.empty() && bitValuesV.empty() && readNumbersV.empty() && positionsAtReadV.empty() && windowSizes.empty();
-    }
-};
 
 #define CHECK_LOG(a, b) CHECK_EXT(a, algoLog.trace("Check failed " #a), b)
 

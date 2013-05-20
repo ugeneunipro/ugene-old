@@ -16,7 +16,8 @@ HEADERS += src/BuildSArraySettingsWidget.h \
            src/GenomeAlignerWorker.h \
            src/GenomeAlignerWriteTask.h \
            src/ReadShortReadsSubTask.h \
-           src/WriteAlignedReadsSubTask.h
+           src/WriteAlignedReadsSubTask.h \
+           src/DataBunch.h
 
 FORMS += src/ui/BuildSuffixArraySettings.ui \
          src/ui/GenomeAlignerSettings.ui \
@@ -36,5 +37,7 @@ SOURCES += src/BuildSArraySettingsWidget.cpp \
            src/GenomeAlignerWorker.cpp \
            src/GenomeAlignerWriteTask.cpp \
            src/ReadShortReadsSubTask.cpp \
-           src/WriteAlignedReadsSubTask.cpp
+           src/WriteAlignedReadsSubTask.cpp \
+           src/DataBunch.cpp
+
 TRANSLATIONS += transl/english.ts transl/russian.ts

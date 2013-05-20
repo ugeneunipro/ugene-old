@@ -20,6 +20,7 @@
  */
 
 #include <U2Algorithm/BitsTable.h>
+#include <U2Algorithm/SyncSort.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>
 #include <U2Core/AppResources.h>
@@ -106,7 +107,7 @@ void LoadIndexTask::run() {
 
         alignContext->needIndex = false;
         alignContext->indexLoaded = part;
-        part = part >= index->getPartCount() ? 0 : part+1;
+        part = part >= index->getPartCount()-1 ? 0 : part+1;
         alignContext->requireIndexWait.wakeAll();
     }
     alignContext->indexLock.unlock();
@@ -187,6 +188,8 @@ void ShortReadAlignerCPU::run() {
     GenomeAlignerFindTask *parent = static_cast<GenomeAlignerFindTask*>(getParentTask());
     SAFE_POINT_EXT(NULL != parent, setError("Aligner parent error"),);
 
+    QVector<int> binarySearchResults;
+
     SAFE_POINT_EXT (NULL != index, setError("Aligner index error"),);
     for (int part = 0; part < index->getPartCount(); part++) {
         stateInfo.setProgress(100*part/index->getPartCount());
@@ -197,7 +200,7 @@ void ShortReadAlignerCPU::run() {
 
         stateInfo.setProgress(stateInfo.getProgress() + 25/index->getPartCount());
         if (0 == index->getLoadedPart().getLoadedPartSize()) {
-            algoLog.trace(tr("Index size for part %1/%2 is zero, skipping it.").arg(part + 1).arg(index->getPartCount()));
+            algoLog.trace(tr("[%1] Index size for part %2/%3 is zero, skipping it.").arg(taskNo).arg(part + 1).arg(index->getPartCount()));
             continue;
         }
 
@@ -206,9 +209,27 @@ void ShortReadAlignerCPU::run() {
             CHECK_BREAK(dataBunch);
             algoLog.trace(QString("[%1] Got for aligning").arg(taskNo));
 
+            quint64 t0=0, fullStart = GTimer::currentTimeMicros();
+
             int length = dataBunch->bitValuesV.size();
             CHECK_BREAK(length);
 
+            dataBunch->prepareSorted();
+            int binaryFound = 0;
+            binarySearchResults.resize(length);
+            t0 = GTimer::currentTimeMicros();
+            for (int i = 0; i < length; i++) {
+                int currentW = dataBunch->windowSizes.at(i);
+                CHECK_LOG(0 != currentW,);
+                BMType currentBitFilter = ((quint64)0 - 1) << (62 - currentW * 2);
+                BMType bv = dataBunch->sortedBitValuesV.at(i);
+
+                binarySearchResults[dataBunch->sortedIndexes[i]] = index->bitMaskBinarySearch(bv, currentBitFilter);
+                binaryFound += binarySearchResults[dataBunch->sortedIndexes[i]] == -1 ? 0 : 1;
+            }
+            algoLog.trace(QString("[%1] Binary search %2 results, found %3 in %4 ms.").arg(taskNo).arg(length).arg(binaryFound).arg((GTimer::currentTimeMicros() - t0) / double(1000), 0, 'f', 3));
+
+            t0 = GTimer::currentTimeMicros();
             int skipped = 0;
             for (int i = 0; i < length; i++) {
                 ShortReadData srData(dataBunch, i);
@@ -218,7 +239,7 @@ void ShortReadAlignerCPU::run() {
                     continue;
                 }
 
-                BinarySearchResult bmr = index->bitMaskBinarySearch(srData.bv, srData.currentBitFilter);
+                BinarySearchResult bmr = binarySearchResults[i];
                 index->alignShortRead(srData.shortRead, srData.bv, srData.pos, bmr, alignContext, srData.currentBitFilter, srData.currentW);
 
                 if (!alignContext->bestMode) {
@@ -230,7 +251,10 @@ void ShortReadAlignerCPU::run() {
                     }
                 }
             }
+            algoLog.trace(QString("[%1] Aligning took %2 ms").arg(taskNo).arg((GTimer::currentTimeMicros() - t0) / double(1000), 0, 'f', 3));
             algoLog.trace(QString("[%1] Skipped: %2, tried to align %3").arg(taskNo).arg(skipped).arg(length - skipped));
+            float msec = (GTimer::currentTimeMicros() - fullStart);
+            algoLog.trace(QString("[%1] Searching (%2) and aligning (%3) took %4 ms").arg(taskNo).arg(length).arg(binaryFound).arg(msec / double(1000), 0, 'f', 3));
         } while(true);
     }
 }
