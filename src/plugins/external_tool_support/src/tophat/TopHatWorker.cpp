@@ -489,7 +489,7 @@ TopHatPrompter::TopHatPrompter(Actor* parent)
 QString TopHatPrompter::composeRichDoc()
 {
     QString result = TopHatWorker::tr(
-        "Finds splice junctions using RNA-Seq data.");
+        "Aligns RNA-seq reads to a reference and finds splice junctions.");
 
     return result;
 }
