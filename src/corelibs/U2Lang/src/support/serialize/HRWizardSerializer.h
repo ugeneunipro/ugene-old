@@ -93,7 +93,8 @@ private:
 /************************************************************************/
 class WizardWidgetParser : public WizardWidgetVisitor {
 public:
-    WizardWidgetParser(const QString &data,
+    WizardWidgetParser(const QString &title,
+        const QString &data,
         const QMap<QString, Actor*> &actorMap,
         QMap<QString, Variable> &vars,
         U2OpStatus &os);
@@ -103,8 +104,10 @@ public:
     virtual void visit(LogoWidget *lw);
     virtual void visit(GroupWidget *gw);
     virtual void visit(ElementSelectorWidget *esw);
+    virtual void visit(PairedReadsWidget *dsw);
 
 private:
+    QString title;
     QString data;
     const QMap<QString, Actor*> &actorMap;
     QMap<QString, Variable> &vars;
@@ -113,7 +116,6 @@ private:
     HRSchemaSerializer::ParsedPairs pairs;
 
 private:
-    void validateAttributePairs();
     void getLabelSize(WidgetsArea *wa);
     void getTitle(WidgetsArea *wa);
     WizardWidget * createWidget(const QString &id);
@@ -121,6 +123,8 @@ private:
     PortMapping parsePortMapping(const QString &mappingDef);
     void parseSlotsMapping(PortMapping &pm, const QString &mappingDef);
     void addVariable(const Variable &v);
+
+    AttributeInfo parseInfo(const QString &attrStr, const QString &body);
 };
 
 class PageContentParser : public TemplatedPageVisitor {
@@ -151,6 +155,7 @@ public:
     virtual void visit(GroupWidget *gw);
     virtual void visit(LogoWidget *lw);
     virtual void visit(ElementSelectorWidget *esw);
+    virtual void visit(PairedReadsWidget *dsw);
 
     const QString & getResult();
 
@@ -163,6 +168,7 @@ private:
     QString serializeSlotsMapping(const QList<SlotMapping> &mappings, int depth) const;
     QString serializePortMapping(const PortMapping &mapping, int depth) const;
     QString serializeSelectorValue(const SelectorValue &value, int depth) const;
+    QString serializeInfo(const AttributeInfo &info, int depth) const;
 };
 
 class PageContentSerializer : public TemplatedPageVisitor {

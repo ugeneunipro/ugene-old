@@ -81,6 +81,15 @@ QList<Dataset> Dataset::getDefaultDatasetList() {
     return QList<Dataset>() << Dataset();
 }
 
+bool Dataset::contains(const QString &url) const {
+    foreach (URLContainer *cont, urls) {
+        if (cont->getUrl() == url) {
+            return true;
+        }
+    }
+    return false;
+}
+
 /************************************************************************/
 /* DatasetFilesIterator */
 /************************************************************************/

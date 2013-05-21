@@ -19,24 +19,33 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_WIZARDWIDGETVISITOR_H_
-#define _U2_WIZARDWIDGETVISITOR_H_
+#ifndef _U2_PAIREDDATASETSCONTROLLER_H_
+#define _U2_PAIREDDATASETSCONTROLLER_H_
 
-#include <U2Lang/ElementSelectorWidget.h>
+#include <U2Designer/DatasetsController.h>
+
 #include <U2Lang/WizardWidget.h>
+
+#include "WidgetController.h"
 
 namespace U2 {
 
-class U2LANG_EXPORT WizardWidgetVisitor {
+class PairedDatasetsController : public WidgetController {
+    Q_OBJECT
 public:
-    virtual void visit(AttributeWidget *) = 0;
-    virtual void visit(WidgetsArea *) = 0;
-    virtual void visit(GroupWidget *) = 0;
-    virtual void visit(LogoWidget *) = 0;
-    virtual void visit(ElementSelectorWidget *) = 0;
-    virtual void visit(PairedReadsWidget *) = 0;
+    PairedDatasetsController(WizardController *wc, PairedReadsWidget *widget);
+    virtual ~PairedDatasetsController();
+
+    virtual QWidget * createGUI(U2OpStatus &os);
+
+private slots:
+    void sl_datasetsChanged();
+
+private:
+    PairedReadsWidget *widget;
+    PairedReadsController *dsc;
 };
 
 } // U2
 
-#endif // _U2_WIZARDWIDGETVISITOR_H_
+#endif // _U2_PAIREDDATASETSCONTROLLER_H_

@@ -59,8 +59,8 @@ public:
     ApplyResult applyChanges(Metadata &meta);
     const QList<Actor*> & getCurrentActors() const;
 
-    QVariant getWidgetValue(AttributeWidget *widget) const;
-    void setWidgetValue(AttributeWidget *widget, const QVariant &value);
+    QVariant getWidgetValue(const AttributeInfo &info) const;
+    void setWidgetValue(const AttributeInfo &info, const QVariant &value);
 
     QVariant getSelectorValue(ElementSelectorWidget *widget);
     void setSelectorValue(ElementSelectorWidget *widget, const QVariant &value);
@@ -90,7 +90,7 @@ private:
 
 private:
     QWizardPage * createPage(WizardPage *page);
-    Attribute * getAttribute(AttributeWidget *widget, QString &attrId) const;
+    Attribute * getAttribute(const AttributeInfo &info, QString &attrId) const;
     Attribute * getAttributeById(const QString &attrId) const;
     QString getAttributeId(Actor *actor, Attribute *attr) const;
     void registerSelector(ElementSelectorWidget *widget);
@@ -112,6 +112,7 @@ public:
     virtual void visit(GroupWidget *gw);
     virtual void visit(LogoWidget *lw);
     virtual void visit(ElementSelectorWidget *esw);
+    virtual void visit(PairedReadsWidget *dsw);
 
     QWidget * getResult();
     QList<WidgetController*> & getControllers();

@@ -48,7 +48,7 @@ Attribute * PropertyWizardController::attribute() {
 }
 
 void PropertyWizardController::sl_valueChanged(const QVariant &newValue) {
-    wc->setWidgetValue(widget, newValue);
+    wc->setWidgetValue(widget->getInfo(), newValue);
 }
 
 /************************************************************************/
@@ -69,7 +69,7 @@ QWidget * InUrlDatasetsController::createGUI(U2OpStatus & /*os*/) {
         delete dsc;
     }
     QList<Dataset> sets;
-    QVariant value = wc->getWidgetValue(widget);
+    QVariant value = wc->getWidgetValue(widget->getInfo());
     if (value.canConvert< QList<Dataset> >()) {
         sets = value.value< QList<Dataset> >();
     } else {
@@ -77,7 +77,7 @@ QWidget * InUrlDatasetsController::createGUI(U2OpStatus & /*os*/) {
         sets.clear();
         sets << Dataset();
     }
-    dsc = new DatasetsController(sets);
+    dsc = new AttributeDatasetsController(sets);
     connect(dsc, SIGNAL(si_attributeChanged()), SLOT(sl_datasetsChanged()));
     return dsc->getWigdet();
 }
@@ -100,15 +100,15 @@ DefaultPropertyController::~DefaultPropertyController() {
 }
 
 QWidget * DefaultPropertyController::createGUI(U2OpStatus &os) {
-    CHECK_EXT(AttributeWidgetHints::DEFAULT == widget->getProperty(AttributeWidgetHints::TYPE),
+    CHECK_EXT(AttributeInfo::DEFAULT == widget->getProperty(AttributeInfo::TYPE),
         os.setError("Widget type is not default"), NULL);
 
     PropertyWidget *propWidget = createPropertyWidget(os);
     CHECK_OP(os, NULL);
     connect(propWidget, SIGNAL(si_valueChanged(const QVariant &)), SLOT(sl_valueChanged(const QVariant &)));
-    propWidget->setValue(wc->getWidgetValue(widget));
+    propWidget->setValue(wc->getWidgetValue(widget->getInfo()));
 
-    QString label = widget->getProperty(AttributeWidgetHints::LABEL);
+    QString label = widget->getProperty(AttributeInfo::LABEL);
     if (label.isEmpty()) {
         label = attribute()->getDisplayName();
     }

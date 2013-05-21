@@ -29,6 +29,7 @@
 namespace U2 {
 
 class DatasetsListWidget;
+class URLListController;
 class URLListWidget;
 class UrlItem;
 
@@ -38,32 +39,84 @@ class UrlItem;
 class U2DESIGNER_EXPORT DatasetsController : public QObject {
     Q_OBJECT
 public:
-    DatasetsController(URLAttribute *attr);
-    DatasetsController(QList<Dataset> &sets);
-    ~DatasetsController();
+    DatasetsController();
+    virtual ~DatasetsController();
 
-    QWidget * getWigdet();
-    QList<Dataset> getDatasets();
-    void updateAttribute();
-
-    void renameDataset(int dsNum, const QString &newName, U2OpStatus &os);
-    void deleteDataset(int dsNum);
-    void addDataset(const QString &name, U2OpStatus &os);
+    virtual void update();
+    virtual void renameDataset(int dsNum, const QString &newName, U2OpStatus &os) = 0;
+    virtual void deleteDataset(int dsNum) = 0;
+    virtual void addDataset(const QString &name, U2OpStatus &os) = 0;
+    virtual void onUrlAdded(URLListController *ctrl, URLContainer *url) = 0;
 
 signals:
     void si_attributeChanged();
 
+protected:
+    virtual QStringList names() const = 0;
+    void checkName(const QString &name, U2OpStatus &os, const QString &exception = "");
+};
+
+class U2DESIGNER_EXPORT AttributeDatasetsController : public DatasetsController {
+public:
+    AttributeDatasetsController(URLAttribute *attr);
+    AttributeDatasetsController(QList<Dataset> &sets);
+    virtual ~AttributeDatasetsController();
+
+    virtual void update();
+    virtual void renameDataset(int dsNum, const QString &newName, U2OpStatus &os);
+    virtual void deleteDataset(int dsNum);
+    virtual void addDataset(const QString &name, U2OpStatus &os);
+    virtual void onUrlAdded(URLListController *ctrl, URLContainer *url);
+
+    QWidget * getWigdet();
+    QList<Dataset> getDatasets();
+
+protected:
+    virtual QStringList names() const;
+
 private:
+    DatasetsListWidget *datasetsWidget;
     URLAttribute *attr;
     QList<Dataset*> sets;
 
+private:
+    void initSets(const QList<Dataset> &s);
+    void initialize();
+    URLListWidget * createDatasetWidget(Dataset *dSet);
+};
+
+class U2DESIGNER_EXPORT PairedReadsController : public DatasetsController {
+public:
+    PairedReadsController(const QList<Dataset> &sets1, const QList<Dataset> &sets2, const QString &label1, const QString &label2);
+    virtual ~PairedReadsController();
+
+    virtual void renameDataset(int dsNum, const QString &newName, U2OpStatus &os);
+    virtual void deleteDataset(int dsNum);
+    virtual void addDataset(const QString &name, U2OpStatus &os);
+    virtual void onUrlAdded(URLListController *ctrl, URLContainer *url);
+
+    QWidget * getWigdet();
+    /** num == 0 || num == 1*/
+    QList<Dataset> getDatasets(int num);
+
+protected:
+    virtual QStringList names() const;
+
+private:
+    QString label1;
+    QString label2;
+    typedef QPair<Dataset*, Dataset*> SetsPair;
+    typedef QPair<URLListController*, URLListController*> CtrlsPair;
+    QList<SetsPair> sets;
+    QList<CtrlsPair> ctrls;
     DatasetsListWidget *datasetsWidget;
 
 private:
-    void initSets(const QList<Dataset> &sets);
+    void initSets(const QList<Dataset> &sets1, const QList<Dataset> &sets2);
     void initialize();
-    URLListWidget * createDatasetWidget(Dataset *dSet);
-    void checkName(const QString &name, U2OpStatus &os, Dataset *exception = NULL);
+    QWidget * createDatasetWidget(const SetsPair &pair);
+    int pairNumByCtrl(URLListController *ctrl) const;
+    URLListController * pairedCtrl(URLListController *ctrl) const;
 };
 
 /************************************************************************/
@@ -73,11 +126,13 @@ class URLListController : public QObject {
 public:
     URLListController(DatasetsController *parent, Dataset *set);
 
-    URLListWidget * getWidget();
     void addUrl(const QString &url, U2OpStatus &os);
     void replaceUrl(int pos, int newPos);
     void deleteUrl(int pos);
-    void changedUrl(UrlItem *item);
+    void updateUrl(UrlItem *item);
+
+    URLListWidget * getWidget();
+    Dataset * dataset();
 
 private:
     URLListWidget *widget;

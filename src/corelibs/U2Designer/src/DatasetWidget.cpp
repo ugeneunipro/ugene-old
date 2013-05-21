@@ -169,7 +169,7 @@ void URLListWidget::sl_selectAll() {
 }
 
 void URLListWidget::sl_dataChanged() {
-    ctrl->changedUrl(dynamic_cast<UrlItem*>(sender()));
+    ctrl->updateUrl(dynamic_cast<UrlItem*>(sender()));
 }
 
 bool URLListWidget::eventFilter(QObject *obj, QEvent *event) {

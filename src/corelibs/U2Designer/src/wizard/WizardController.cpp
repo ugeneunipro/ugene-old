@@ -33,6 +33,7 @@
 #include <U2Lang/WorkflowUtils.h>
 
 #include "ElementSelectorController.h"
+#include "PairedDatasetsController.h"
 #include "PropertyWizardController.h"
 #include "WDWizardPage.h"
 #include "WizardPageController.h"
@@ -98,9 +99,9 @@ const QList<Actor*> & WizardController::getCurrentActors() const {
     return currentActors;
 }
 
-QVariant WizardController::getWidgetValue(AttributeWidget *widget) const {
+QVariant WizardController::getWidgetValue(const AttributeInfo &info) const {
     QString attrId;
-    Attribute *attr = getAttribute(widget, attrId);
+    Attribute *attr = getAttribute(info, attrId);
     CHECK(NULL != attr, QVariant());
 
     if (propValues.contains(attrId)) {
@@ -109,20 +110,20 @@ QVariant WizardController::getWidgetValue(AttributeWidget *widget) const {
     return attr->getAttributePureValue();
 }
 
-void WizardController::setWidgetValue(AttributeWidget *widget, const QVariant &value) {
+void WizardController::setWidgetValue(const AttributeInfo &info, const QVariant &value) {
     QString attrId;
-    Attribute *attr = getAttribute(widget, attrId);
+    Attribute *attr = getAttribute(info, attrId);
     CHECK(NULL != attr, );
 
     propValues[attrId] = value;
 }
 
-Attribute * WizardController::getAttribute(AttributeWidget *widget, QString &attrId) const {
+Attribute * WizardController::getAttribute(const AttributeInfo &info, QString &attrId) const {
     U2OpStatusImpl os;
-    widget->validate(currentActors, os);
+    info.validate(currentActors, os);
     CHECK_OP(os, NULL);
-    Actor *actor = WorkflowUtils::actorById(currentActors, widget->getActorId());
-    Attribute *attr = actor->getParameter(widget->getAttributeId());
+    Actor *actor = WorkflowUtils::actorById(currentActors, info.actorId);
+    Attribute *attr = actor->getParameter(info.attrId);
 
     attrId = getAttributeId(actor, attr);
     return attr;
@@ -259,12 +260,12 @@ WidgetCreator::WidgetCreator(WizardController *_wc, int _labelSize)
 }
 
 void WidgetCreator::visit(AttributeWidget *aw) {
-    QString type = aw->getProperty(AttributeWidgetHints::TYPE);
+    QString type = aw->getProperty(AttributeInfo::TYPE);
     PropertyWizardController *controller = NULL;
 
-    if (AttributeWidgetHints::DEFAULT == type) {
+    if (AttributeInfo::DEFAULT == type) {
         controller = new DefaultPropertyController(wc, aw, labelSize);
-    } else if (AttributeWidgetHints::DATASETS == type) {
+    } else if (AttributeInfo::DATASETS == type) {
         controller = new InUrlDatasetsController(wc, aw);
     } else {
         WIZARD_SAFE_POINT_EXT(false, QString("Unknown widget type: %1").arg(type), wc->setBroken(), );
@@ -302,11 +303,12 @@ void WidgetCreator::visit(WidgetsArea *wa) {
 }
 
 void WidgetCreator::setupScrollArea(QWidget *scrollContent) {
-    scrollContent->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Preferred);
+    scrollContent->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Preferred);
     widgetsArea = new QScrollArea();
     widgetsArea->setWidget(scrollContent);
     widgetsArea->setWidgetResizable(true);
     widgetsArea->setFrameShape(QFrame::NoFrame);
+    widgetsArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     result = widgetsArea;
 }
 
@@ -342,6 +344,13 @@ void WidgetCreator::visit(LogoWidget *lw) {
 
 void WidgetCreator::visit(ElementSelectorWidget *esw) {
     ElementSelectorController *controller = new ElementSelectorController(wc, esw, labelSize);
+    controllers << controller;
+    U2OpStatusImpl os;
+    result = controller->createGUI(os);
+}
+
+void WidgetCreator::visit(PairedReadsWidget *dsw) {
+    PairedDatasetsController *controller = new PairedDatasetsController(wc, dsw);
     controllers << controller;
     U2OpStatusImpl os;
     result = controller->createGUI(os);

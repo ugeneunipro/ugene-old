@@ -171,15 +171,36 @@ GroupWidget::Type GroupWidget::getType() const {
 }
 
 /**********************************
+* AttributeInfo
+*********************************/
+const QString AttributeInfo::TYPE("type");
+const QString AttributeInfo::DEFAULT("default");
+const QString AttributeInfo::DATASETS("datasets");
+const QString AttributeInfo::LABEL("label");
+
+AttributeInfo::AttributeInfo(const QString &_actorId, const QString &_attrId, const QVariantMap &_hints)
+: actorId(_actorId), attrId(_attrId), hints(_hints)
+{
+
+}
+
+void AttributeInfo::validate(const QList<Actor*> &actors, U2OpStatus &os) const {
+    Actor *actor = WorkflowUtils::actorById(actors, actorId);
+    if (NULL == actor) {
+        os.setError(QObject::tr("Unknown actor id: %1").arg(actorId));
+        return;
+    }
+    if (!actor->hasParameter(attrId)) {
+        os.setError(QObject::tr("Actor '%1' does not have this parameter: %2").arg(actorId).arg(attrId));
+        return;
+    }
+}
+
+/**********************************
 * AttributeWidget
 *********************************/
-const QString AttributeWidgetHints::TYPE("type");
-const QString AttributeWidgetHints::DEFAULT("default");
-const QString AttributeWidgetHints::DATASETS("datasets");
-const QString AttributeWidgetHints::LABEL("label");
-
-AttributeWidget::AttributeWidget(const QString &_actorId, const QString &_attrId)
-: WizardWidget(), actorId(_actorId), attrId(_attrId)
+AttributeWidget::AttributeWidget()
+: WizardWidget(), info("", "")
 {
 
 }
@@ -193,48 +214,74 @@ void AttributeWidget::accept(WizardWidgetVisitor *visitor) {
 }
 
 void AttributeWidget::validate(const QList<Actor*> &actors, U2OpStatus &os) const {
-    Actor *actor = WorkflowUtils::actorById(actors, actorId);
-    if (NULL == actor) {
-        os.setError(QObject::tr("Unknown actor id: %1").arg(actorId));
-        return;
-    }
-    if (!actor->hasParameter(attrId)) {
-        os.setError(QObject::tr("Actor '%1' does not have this parameter: %2").arg(actorId).arg(attrId));
-        return;
-    }
+    info.validate(actors, os);
 }
 
 QString AttributeWidget::getActorId() const {
-    return actorId;
+    return info.actorId;
 }
 
 QString AttributeWidget::getAttributeId() const {
-    return attrId;
+    return info.attrId;
 }
 
-void AttributeWidget::setWigdetHints(const QVariantMap &value) {
-    hints = value;
+void AttributeWidget::setInfo(const AttributeInfo &value) {
+    info = value;
+}
+
+const AttributeInfo & AttributeWidget::getInfo() const {
+    return info;
 }
 
 const QVariantMap & AttributeWidget::getWigdetHints() const {
-    return hints;
+    return info.hints;
 }
 
 QVariantMap AttributeWidget::getProperties() const {
-    QVariantMap extHints = hints;
-    extHints[AttributeWidgetHints::TYPE] = getProperty(AttributeWidgetHints::TYPE);
-    extHints[AttributeWidgetHints::LABEL] = getProperty(AttributeWidgetHints::LABEL);
+    QVariantMap extHints = info.hints;
+    extHints[AttributeInfo::TYPE] = getProperty(AttributeInfo::TYPE);
+    extHints[AttributeInfo::LABEL] = getProperty(AttributeInfo::LABEL);
     return extHints;
 }
 
 QString AttributeWidget::getProperty(const QString &id) const {
-    QString value = hints.value(id, "").toString();
-    if (AttributeWidgetHints::TYPE == id && value.isEmpty()) {
-        return AttributeWidgetHints::DEFAULT;
-    } else if (AttributeWidgetHints::LABEL == id && value.isEmpty()) {
+    QString value = info.hints.value(id, "").toString();
+    if (AttributeInfo::TYPE == id && value.isEmpty()) {
+        return AttributeInfo::DEFAULT;
+    } else if (AttributeInfo::LABEL == id && value.isEmpty()) {
         return "";
     }
     return value;
+}
+
+/************************************************************************/
+/* DatasetsWizardWidget */
+/************************************************************************/
+const QString PairedReadsWidget::ID = "paired-reads-datasets";
+
+PairedReadsWidget::PairedReadsWidget()
+: WizardWidget()
+{
+
+}
+
+void PairedReadsWidget::accept(WizardWidgetVisitor *visitor) {
+    visitor->visit(this);
+}
+
+void PairedReadsWidget::validate(const QList<Actor*> &actors, U2OpStatus &os) const {
+    foreach (const AttributeInfo &info, infos) {
+        info.validate(actors, os);
+        CHECK_OP(os, );
+    }
+}
+
+void PairedReadsWidget::addInfo(const AttributeInfo &value) {
+    infos << value;
+}
+
+QList<AttributeInfo> PairedReadsWidget::getInfos() const {
+    return infos;
 }
 
 } // U2

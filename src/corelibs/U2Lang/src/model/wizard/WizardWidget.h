@@ -129,7 +129,16 @@ private:
 /************************************************************************/
 typedef QString AttributeWidgetType;
 
-class U2LANG_EXPORT AttributeWidgetHints {
+class U2LANG_EXPORT AttributeInfo {
+public:
+    AttributeInfo(const QString &actorId, const QString &attrId, const QVariantMap &hints = QVariantMap());
+
+    void validate(const QList<Actor*> &actors, U2OpStatus &os) const;
+
+    QString actorId;
+    QString attrId;
+    QVariantMap hints;
+
 public:
     static const QString TYPE;
     static const QString DEFAULT;
@@ -140,7 +149,7 @@ public:
 
 class U2LANG_EXPORT AttributeWidget : public WizardWidget {
 public:
-    AttributeWidget(const QString &actorId, const QString &attrId);
+    AttributeWidget();
     virtual ~AttributeWidget();
 
     virtual void accept(WizardWidgetVisitor *visitor);
@@ -149,15 +158,36 @@ public:
     QString getActorId() const;
     QString getAttributeId() const;
 
-    void setWigdetHints(const QVariantMap &value);
+    void setInfo(const AttributeInfo &value);
+    const AttributeInfo & getInfo() const;
+
     const QVariantMap & getWigdetHints() const;
     QVariantMap getProperties() const;
     QString getProperty(const QString &id) const;
 
 private:
-    QString actorId;
-    QString attrId;
-    QVariantMap hints;
+    AttributeInfo info;
+};
+
+/************************************************************************/
+/* DatasetsWizardWidget */
+/************************************************************************/
+class U2LANG_EXPORT PairedReadsWidget : public WizardWidget {
+public:
+    PairedReadsWidget();
+
+    virtual void accept(WizardWidgetVisitor *visitor);
+    virtual void validate(const QList<Actor*> &actors, U2OpStatus &os) const;
+
+    void addInfo(const AttributeInfo &value);
+
+    QList<AttributeInfo> getInfos() const;
+
+    static const QString ID;
+
+private:
+    QList<AttributeInfo> infos;
+    QString behavior;
 };
 
 } // U2

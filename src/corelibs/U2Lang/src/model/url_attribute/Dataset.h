@@ -44,6 +44,8 @@ public:
     QList<URLContainer*> getUrls() const;
     QList<URLContainer*> & getUrls();
 
+    bool contains(const QString &url) const;
+
     static QList<Dataset> getDefaultDatasetList();
 
 public:

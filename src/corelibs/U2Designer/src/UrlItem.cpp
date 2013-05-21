@@ -37,7 +37,7 @@ UrlItem::UrlItem(const QString &url, QListWidget *parent)
     }
     setText(name);
 
-    setToolTip(url);
+    setToolTip("<p>" + url + "</p>");
 }
 
 QWidget * UrlItem::getOptionsWidget() {

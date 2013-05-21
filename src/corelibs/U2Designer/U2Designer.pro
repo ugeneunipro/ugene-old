@@ -20,6 +20,7 @@ HEADERS += src/DatasetsController.h \
            src/WorkflowGUIUtils.h \
            src/support/URLLineEdit.h \
            src/wizard/ElementSelectorController.h \
+           src/wizard/PairedDatasetsController.h \
            src/wizard/PropertyWizardController.h \
            src/wizard/SelectorActors.h \
            src/wizard/WDWizardPage.h \
@@ -59,6 +60,7 @@ SOURCES += src/DatasetsController.cpp \
            src/WorkflowGUIUtils.cpp \
            src/support/URLLineEdit.cpp \
            src/wizard/ElementSelectorController.cpp \
+           src/wizard/PairedDatasetsController.cpp \
            src/wizard/PropertyWizardController.cpp \
            src/wizard/SelectorActors.cpp \
            src/wizard/WDWizardPage.cpp \

@@ -192,24 +192,20 @@ void HRWizardParser::parseNextIds(HRSchemaSerializer::ParsedPairs &pairs, Wizard
 /************************************************************************/
 /* WizardWidgetParser */
 /************************************************************************/
-WizardWidgetParser::WizardWidgetParser(const QString &_data,
+WizardWidgetParser::WizardWidgetParser(const QString &_title,
+    const QString &_data,
     const QMap<QString, Actor*> &_actorMap,
     QMap<QString, Variable> &_vars,
     U2OpStatus &_os)
-: data(_data), actorMap(_actorMap), vars(_vars), os(_os)
+: title(_title), data(_data), actorMap(_actorMap), vars(_vars), os(_os)
 {
 
 }
 
 void WizardWidgetParser::visit(AttributeWidget *aw) {
-    pairs = HRSchemaSerializer::ParsedPairs(data, 0);
-    validateAttributePairs();
+    AttributeInfo info = parseInfo(title, data);
     CHECK_OP(os, );
-    QVariantMap hints;
-    foreach (const QString &id, pairs.equalPairs.keys()) {
-        hints[id] = pairs.equalPairs[id];
-    }
-    aw->setWigdetHints(hints);
+    aw->setInfo(info);
 }
 
 void WizardWidgetParser::visit(WidgetsArea *wa) {
@@ -219,7 +215,7 @@ void WizardWidgetParser::visit(WidgetsArea *wa) {
     getLabelSize(wa);
 
     foreach (const StringPair &pair, pairs.blockPairsList) {
-        WizardWidgetParser wParser(pair.second, actorMap, vars, os);
+        WizardWidgetParser wParser(pair.first, pair.second, actorMap, vars, os);
         QScopedPointer<WizardWidget> w(createWidget(pair.first));
         CHECK_OP(os, );
         w->accept(&wParser);
@@ -259,8 +255,8 @@ void WizardWidgetParser::visit(ElementSelectorWidget *esw) {
         return;
     }
     esw->setActorId(actorId);
-    if (pairs.equalPairs.contains(AttributeWidgetHints::LABEL)) {
-        esw->setLabel(pairs.equalPairs[AttributeWidgetHints::LABEL]);
+    if (pairs.equalPairs.contains(AttributeInfo::LABEL)) {
+        esw->setLabel(pairs.equalPairs[AttributeInfo::LABEL]);
     }
     ActorPrototype *srcProto = actorMap[actorId]->getProto();
     foreach (const StringPair &pair, pairs.blockPairsList) {
@@ -274,6 +270,14 @@ void WizardWidgetParser::visit(ElementSelectorWidget *esw) {
     }
     addVariable(Variable(actorId));
     CHECK_OP(os, );
+}
+
+void WizardWidgetParser::visit(PairedReadsWidget *dsw) {
+    pairs = HRSchemaSerializer::ParsedPairs(data, 0);
+    foreach (const StringPair &p, pairs.blockPairsList) {
+        dsw->addInfo(parseInfo(p.first, p.second));
+        CHECK_OP(os, );
+    }
 }
 
 SelectorValue WizardWidgetParser::parseSelectorValue(ActorPrototype *srcProto, const QString &valueDef) {
@@ -341,17 +345,6 @@ void WizardWidgetParser::parseSlotsMapping(PortMapping &pm, const QString &mappi
     }
 }
 
-void WizardWidgetParser::validateAttributePairs() {
-    if (pairs.equalPairs.contains(AttributeWidgetHints::TYPE)) {
-        QString typeStr = pairs.equalPairs[AttributeWidgetHints::TYPE];
-        if ((AttributeWidgetHints::DEFAULT != typeStr) &&
-            (AttributeWidgetHints::DATASETS != typeStr)) {
-            os.setError(HRWizardParser::tr("Unknown widget type: %1").arg(typeStr));
-            return;
-        }
-    }
-}
-
 void WizardWidgetParser::getLabelSize(WidgetsArea *wa) {
     if (pairs.equalPairs.contains(HRWizardParser::LABEL_SIZE)) {
         QString &sizeStr = pairs.equalPairs[HRWizardParser::LABEL_SIZE];
@@ -378,13 +371,10 @@ WizardWidget * WizardWidgetParser::createWidget(const QString &id) {
         return new GroupWidget();
     } else if (ElementSelectorWidget::ID == id) {
         return new ElementSelectorWidget();
+    } else if (PairedReadsWidget::ID == id) {
+        return new PairedReadsWidget();
     } else {
-        QStringList vals = id.split(HRSchemaSerializer::DOT, QString::SkipEmptyParts);
-        if (2 != vals.size()) {
-            os.setError(HRWizardParser::tr("Unknown widget name: %1").arg(id));
-            return NULL;
-        }
-        return new AttributeWidget(vals[0], vals[1]);
+        return new AttributeWidget();
     }
 }
 
@@ -394,6 +384,22 @@ void WizardWidgetParser::addVariable(const Variable &v) {
         return;
     }
     vars[v.getName()] = v;
+}
+
+AttributeInfo WizardWidgetParser::parseInfo(const QString &attrStr, const QString &body) {
+    QStringList vals = attrStr.split(HRSchemaSerializer::DOT, QString::SkipEmptyParts);
+    if (2 != vals.size()) {
+        os.setError(HRWizardParser::tr("Unknown widget name: %1").arg(attrStr));
+        return AttributeInfo("", "");
+    }
+
+    HRSchemaSerializer::ParsedPairs pairs = HRSchemaSerializer::ParsedPairs(body, 0);
+    QVariantMap hints;
+    foreach (const QString &id, pairs.equalPairs.keys()) {
+        hints[id] = pairs.equalPairs[id];
+    }
+
+    return AttributeInfo(vals[0], vals[1], hints);
 }
 
 /************************************************************************/
@@ -410,7 +416,7 @@ PageContentParser::PageContentParser(HRSchemaSerializer::ParsedPairs &_pairs,
 
 void PageContentParser::visit(DefaultPageContent *content) {
     foreach (const StringPair &pair, pairs.blockPairsList) {
-        WizardWidgetParser wParser(pair.second, actorMap, vars, os);
+        WizardWidgetParser wParser(pair.first, pair.second, actorMap, vars, os);
         if (LogoWidget::ID == pair.first) {
             content->getLogoArea()->accept(&wParser);
         } else if (DefaultPageContent::PARAMETERS == pair.first) {
@@ -487,21 +493,7 @@ WizardWidgetSerializer::WizardWidgetSerializer(int _depth)
 }
 
 void WizardWidgetSerializer::visit(AttributeWidget *aw) {
-    QString wData;
-
-    foreach (const QString &id, aw->getWigdetHints().keys()) {
-        bool writeData = true;
-        if (AttributeWidgetHints::TYPE == id) {
-            writeData = (AttributeWidgetHints::DEFAULT != aw->getProperty(id));
-        }
-        if (writeData) {
-            wData += HRSchemaSerializer::makeEqualsPair(id, aw->getProperty(id), depth + 1);
-        }
-    }
-
-    QString name = aw->getActorId() + HRSchemaSerializer::DOT + aw->getAttributeId();
-    result = HRSchemaSerializer::makeBlock(name, HRSchemaSerializer::NO_NAME,
-        wData, depth);
+    result = serializeInfo(aw->getInfo(), depth);
 }
 
 void WizardWidgetSerializer::visit(WidgetsArea *wa) {
@@ -552,7 +544,7 @@ void WizardWidgetSerializer::visit(ElementSelectorWidget *esw) {
     wData += HRSchemaSerializer::makeEqualsPair(HRWizardParser::ELEMENT_ID,
         esw->getActorId(), depth + 1);
     if (!esw->getLabel().isEmpty()) {
-        wData += HRSchemaSerializer::makeEqualsPair(AttributeWidgetHints::LABEL,
+        wData += HRSchemaSerializer::makeEqualsPair(AttributeInfo::LABEL,
             esw->getLabel(), depth + 1);
     }
     foreach (const SelectorValue &value, esw->getValues()) {
@@ -560,6 +552,15 @@ void WizardWidgetSerializer::visit(ElementSelectorWidget *esw) {
     }
     result = HRSchemaSerializer::makeBlock(ElementSelectorWidget::ID,
         HRSchemaSerializer::NO_NAME, wData, depth);
+}
+
+void WizardWidgetSerializer::visit(PairedReadsWidget *dsw) {
+    QString dData;
+    foreach (const AttributeInfo &info, dsw->getInfos()) {
+        dData += serializeInfo(info, depth + 1);
+    }
+    result = HRSchemaSerializer::makeBlock(PairedReadsWidget::ID,
+        HRSchemaSerializer::NO_NAME, dData, depth);
 }
 
 QString WizardWidgetSerializer::serializeSlotsMapping(const QList<SlotMapping> &mappings, int depth) const {
@@ -598,6 +599,21 @@ QString WizardWidgetSerializer::serializeSelectorValue(const SelectorValue &valu
     }
     return HRSchemaSerializer::makeBlock(HRWizardParser::VALUE,
         HRSchemaSerializer::NO_NAME, vData, depth);
+}
+
+QString WizardWidgetSerializer::serializeInfo(const AttributeInfo &info, int depth) const {
+    QString iData;
+
+    foreach (const QString &id, info.hints.keys()) {
+        QString value = info.hints[id].toString();
+        if (!value.isEmpty()) {
+            iData += HRSchemaSerializer::makeEqualsPair(id, value, depth + 1);
+        }
+    }
+
+    QString name = info.actorId + HRSchemaSerializer::DOT + info.attrId;
+    return HRSchemaSerializer::makeBlock(name, HRSchemaSerializer::NO_NAME,
+        iData, depth);
 }
 
 const QString & WizardWidgetSerializer::getResult() {

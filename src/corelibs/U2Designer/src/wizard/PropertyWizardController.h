@@ -68,7 +68,7 @@ public:
     virtual QWidget * createGUI(U2OpStatus &os);
 
 private:
-    DatasetsController *dsc;
+    AttributeDatasetsController *dsc;
 
 private slots:
     void sl_datasetsChanged();

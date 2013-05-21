@@ -152,11 +152,13 @@ workflow "Tuxedo: paired-end reads"{
                 parameters-area {
                     group {
                         title:"RNA-seq paired short reads";
-                        read-sequence.url-in {
-                            type:datasets;
-                        }
-                        read-sequence-1.url-in {
-                            type:datasets;
+                        paired-reads-datasets {
+                            read-sequence.url-in {
+                                label:"First short-reads files";
+                            }
+                            read-sequence-1.url-in {
+                                label:"Second short-reads files";
+                            }
                         }
                     }
                 }

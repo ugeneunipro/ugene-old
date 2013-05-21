@@ -31,6 +31,11 @@ DirectoryItem::DirectoryItem(const QString &url, QListWidget *parent)
 
     QIcon dirIcon = QIcon(QString(":U2Designer/images/directory.png"));
     this->setIcon(dirIcon);
+
+    setToolTip(
+        "<p>" + url + "</p><p>" +
+        tr("Use <i>right click</i> to set advanced options")
+        + "</p>");
 }
 
 DirectoryItem::~DirectoryItem() {
