@@ -210,7 +210,7 @@ QStringList MSACompletionFiller::getSuggestions(const QString &str){
     QString ss = str.toLower();
     foreach(QString s, seqNameList){
         QString podbor  = s.toLower();
-        if (podbor.startsWith(str)){
+        if (podbor.startsWith(ss)){
             result.append(s);
         }
     }
