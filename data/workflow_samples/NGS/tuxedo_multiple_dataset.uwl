@@ -173,6 +173,13 @@ workflow "Tuxedo for multiple datasets: single-end reads"{
                 title:"Cuffdiff settings";
                 parameters-area {
                     group {
+                        title:"Cuffdiff input";
+                        label-size:170;
+                        read-annotations.url-in {
+                            label:"Input transcripts annotations";
+                        }
+                    }
+                    group {
                         title:Parameters;
                         label-size:170;
                         cuffdiff.time-series-analysis {
