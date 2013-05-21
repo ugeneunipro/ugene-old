@@ -32,7 +32,7 @@
 namespace U2 {
 using namespace Workflow;
 class ActorCfgModel;
-class DatasetsController;
+class AttributeDatasetsController;
 class IterationListWidget;
 class SpecialParametersPanel;
 class WorkflowView;
@@ -128,12 +128,12 @@ private slots:
 
 private:
     WorkflowEditor *editor;
-    QMap<QString, DatasetsController*> controllers; // attrId <-> controller
+    QMap<QString, AttributeDatasetsController*> controllers; // attrId <-> controller
     QMap<QString, QList<Dataset> > sets; // attrId <-> datasets
 
 private:
-    void addWidget(DatasetsController *controller);
-    void removeWidget(DatasetsController *controller);
+    void addWidget(AttributeDatasetsController *controller);
+    void removeWidget(AttributeDatasetsController *controller);
 };
 
 

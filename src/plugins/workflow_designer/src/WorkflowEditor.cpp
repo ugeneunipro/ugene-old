@@ -629,7 +629,7 @@ void SpecialParametersPanel::editActor(Actor *a) {
         } else {
             sets[attrId] = Dataset::getDefaultDatasetList();
         }
-        controllers[attrId] = new DatasetsController(sets[attrId]);
+        controllers[attrId] = new AttributeDatasetsController(sets[attrId]);
         connect(controllers[attrId], SIGNAL(si_attributeChanged()), SLOT(sl_datasetsChanged()));
         addWidget(controllers[attrId]);
         visible = true;
@@ -641,7 +641,7 @@ void SpecialParametersPanel::editActor(Actor *a) {
 }
 
 void SpecialParametersPanel::sl_datasetsChanged() {
-    DatasetsController *ctrl = dynamic_cast<DatasetsController*>(sender());
+    AttributeDatasetsController *ctrl = dynamic_cast<AttributeDatasetsController*>(sender());
     CHECK(NULL != ctrl, );
     CHECK(controllers.values().contains(ctrl), );
     QString attrId = controllers.key(ctrl);
@@ -651,7 +651,7 @@ void SpecialParametersPanel::sl_datasetsChanged() {
 
 void SpecialParametersPanel::reset() {
     int h = height();
-    foreach (DatasetsController *controller, controllers.values()) {
+    foreach (AttributeDatasetsController *controller, controllers.values()) {
         removeWidget(controller);
         delete controller;
         controller = NULL;
@@ -661,7 +661,7 @@ void SpecialParametersPanel::reset() {
     this->hide();
 }
 
-void SpecialParametersPanel::addWidget(DatasetsController *controller) {
+void SpecialParametersPanel::addWidget(AttributeDatasetsController *controller) {
     CHECK(NULL != controller, );
     QWidget *newWidget = controller->getWigdet();
     if(!editor->isEnabled()) {
@@ -670,7 +670,7 @@ void SpecialParametersPanel::addWidget(DatasetsController *controller) {
     this->layout()->addWidget(newWidget);
 }
 
-void SpecialParametersPanel::removeWidget(DatasetsController *controller) {
+void SpecialParametersPanel::removeWidget(AttributeDatasetsController *controller) {
     CHECK(NULL != controller, );
     disconnect(controller, SIGNAL(si_attributeChanged()), this, SLOT(sl_datasetsChanged()));
     this->layout()->removeWidget(controller->getWigdet());
@@ -678,7 +678,7 @@ void SpecialParametersPanel::removeWidget(DatasetsController *controller) {
 
 void SpecialParametersPanel::setDatasetsEnabled(bool isEnabled) {
     setEnabled(isEnabled);
-    foreach(DatasetsController *dataset, controllers.values()) {
+    foreach(AttributeDatasetsController *dataset, controllers.values()) {
         dataset->getWigdet()->setEnabled(isEnabled);
     }
 }
