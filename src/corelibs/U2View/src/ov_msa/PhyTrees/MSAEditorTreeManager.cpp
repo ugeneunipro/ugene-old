@@ -306,6 +306,7 @@ void MSAEditorTreeManager::loadTreeFromFile(const QString& treeFileName) {
             }
         }
         doc = df->loadDocument(iof, treeFileName, QVariantMap(), os);
+        CHECK(NULL != doc,);
         AppContext::getProject()->addDocument(doc);
     }
 
