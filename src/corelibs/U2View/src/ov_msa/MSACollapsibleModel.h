@@ -44,6 +44,12 @@ public:
 
     U2Region mapToRows(int pos) const;
 
+    /**
+      *  Function converts the real row number into the visible position in the msa.
+      *  Returns -1 if the row is invisible.
+      */
+    int rowToMap(int row) const;
+
     void getVisibleRows(int startPos, int endPos, QVector<U2Region>& rows) const;
 
     bool isTopLevel(int pos) const;

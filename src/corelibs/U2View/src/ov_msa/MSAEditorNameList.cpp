@@ -254,20 +254,30 @@ void MSAEditorNameList::keyPressEvent (QKeyEvent *e) {
              ui->seqArea->deleteCurrentSelection();    
              break;
         case Qt::Key_Up:
-            if(Qt::ShiftModifier == e->modifiers()) {
-                if (ui->seqArea->isSeqInRange(--newSeq) ) 
+            if(Qt::ShiftModifier & e->modifiers()) {
+                if (ui->seqArea->isSeqInRange(newSeq - 1)) {
+                    newSeq--;
                     updateSelection(newSeq);
+                }
             }
-            else
+            else {
                 ui->seqArea->moveSelection(0, -1);
+                curSeq--;
+                startSelectingSeq--;
+            }
             break;
         case Qt::Key_Down:
-            if(Qt::ShiftModifier == e->modifiers()) {
-                if (ui->seqArea->isSeqInRange(++newSeq) ) 
+            if(Qt::ShiftModifier & e->modifiers()) {
+                if (ui->seqArea->isSeqInRange(newSeq + 1)) {
+                    newSeq++;
                     updateSelection(newSeq);
+                }
             }
-            else
+            else {
                 ui->seqArea->moveSelection(0, 1);
+                curSeq++;
+                startSelectingSeq++;
+            }
             break;
         case Qt::Key_Left:
             nhBar->triggerAction(QAbstractSlider::SliderSingleStepSub);
@@ -309,13 +319,19 @@ void MSAEditorNameList::keyPressEvent (QKeyEvent *e) {
             break;
         case Qt::Key_Shift:
             {
-                newSeq = curSeq = ui->seqArea->getSelectedRows().startPos;
-                startSelectingSeq = curSeq;
+                curSeq = startSelectingSeq;
+                if (startSelectingSeq == ui->getCollapseModel()->rowToMap(ui->seqArea->getSelectedRows().startPos)) {
+                    newSeq = ui->getCollapseModel()->rowToMap(ui->seqArea->getSelectedRows().endPos() - 1);
+                } else {
+                    newSeq = ui->getCollapseModel()->rowToMap(ui->seqArea->getSelectedRows().startPos);
+                }
             }
             break;
         case Qt::Key_Escape:
             {
                 ui->seqArea->cancelSelection();
+                curSeq = 0;
+                startSelectingSeq = 0;
             }
             break;
   }
