@@ -1,0 +1,231 @@
+#@UGENE_WORKFLOW
+
+
+
+workflow "Tuxedo for multiple datasets: single-end reads"{
+
+    tophat {
+        type:tophat;
+        name:"Find Splice Junctions with TopHat";
+    }
+    cuffdiff {
+        type:cuffdiff;
+        name:"Test for Diff. Expression with Cuffdiff";
+    }
+    read-sequence {
+        type:get-file-list;
+        name:"Read RNA-seq short reads";
+        url-in {
+            dataset:"Dataset 1";
+        }
+        url-in {
+            dataset:"Dataset 2";
+        }
+    }
+    read-annotations {
+        type:read-annotations;
+        name:"Read Transcript Annotations";
+        url-in {
+            dataset:"Dataset 1";
+        }
+    }
+
+
+    .actor-bindings {
+        tophat.out-assembly->cuffdiff.in-assembly
+        read-sequence.out-url->tophat.in-sequence
+        read-annotations.out-annotations->cuffdiff.in-annotations
+    }
+
+    read-sequence.dataset->tophat.in-sequence.dataset
+    read-sequence.url->tophat.in-sequence.in-url
+    read-annotations.annotations->cuffdiff.in-annotations.annotations
+    tophat.hits-url->cuffdiff.in-assembly.url
+
+    .meta {
+        visual {
+            cuffdiff {
+                pos:"-511 -479";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                bounds:"-30 -30 119.25 136";
+                in-annotations.angle:32.9052;
+                in-assembly.angle:221.424;
+            }
+            read-annotations {
+                pos:"-475 -694";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                out-annotations.angle:277.481;
+            }
+            read-sequence {
+                pos:"-1032 -454";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                out-url.angle:360;
+            }
+            tophat {
+                pos:"-792 -453";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                bounds:"-30 -30 120.75 102";
+                in-sequence.angle:180;
+                out-assembly.angle:360;
+            }
+            read-annotations.out-annotations->cuffdiff.in-annotations {
+                text-pos:"-33 -24";
+            }
+            read-sequence.out-url->tophat.in-sequence {
+                text-pos:"-44 -24";
+            }
+            tophat.out-assembly->cuffdiff.in-assembly {
+                text-pos:"-38.5 -24";
+            }
+        }
+        wizard {
+            name:"Tuxedo Wizard";
+            page {
+                id:1;
+                next:2;
+                title:"Input data";
+                parameters-area {
+                    group {
+                        title:"RNA-seq short reads";
+                        read-sequence.url-in {
+                            type:datasets;
+                        }
+                    }
+                }
+            }
+            page {
+                id:2;
+                next:5;
+                title:"Tophat settings";
+                parameters-area {
+                    group {
+                        title:"TopHat input";
+                        label-size:180;
+                        tophat.bowtie-index-dir {
+                        }
+                        tophat.bowtie-index-basename {
+                        }
+                    }
+                    group {
+                        title:Parameters;
+                        label-size:170;
+                        tophat.known-transcript {
+                        }
+                        tophat.raw-junctions {
+                        }
+                    }
+                    group {
+                        title:Additional;
+                        label-size:170;
+                        type:hideable;
+                        tophat.mate-inner-distance {
+                        }
+                        tophat.mate-standard-deviation {
+                        }
+                        tophat.library-type {
+                        }
+                        tophat.no-novel-junctions {
+                        }
+                        tophat.max-multihits {
+                        }
+                        tophat.segment-length {
+                        }
+                        tophat.fusion-search {
+                        }
+                        tophat.transcriptome-only {
+                        }
+                        tophat.transcriptome-max-hits {
+                        }
+                        tophat.prefilter-multihits {
+                        }
+                        tophat.min-anchor-length {
+                        }
+                        tophat.splice-mismatches {
+                        }
+                        tophat.read-mismatches {
+                        }
+                        tophat.segment-mismatches {
+                        }
+                        tophat.solexa-1-3-quals {
+                        }
+                        tophat.bowtie-version {
+                        }
+                        tophat.bowtie-n-mode {
+                        }
+                        tophat.bowtie-tool-path {
+                        }
+                        tophat.samtools-tool-path {
+                        }
+                        tophat.path {
+                        }
+                        tophat.temp-dir {
+                        }
+                    }
+                }
+            }
+            page {
+                id:5;
+                next:6;
+                title:"Cuffdiff settings";
+                parameters-area {
+                    group {
+                        title:Parameters;
+                        label-size:170;
+                        cuffdiff.time-series-analysis {
+                        }
+                        cuffdiff.upper-quartile-norm {
+                        }
+                        cuffdiff.hits-norm {
+                        }
+                        cuffdiff.frag-bias-correct {
+                        }
+                        cuffdiff.multi-read-correct {
+                        }
+                        cuffdiff.library-type {
+                        }
+                    }
+                    group {
+                        title:Additional;
+                        label-size:170;
+                        type:hideable;
+                        cuffdiff.mask-file {
+                        }
+                        cuffdiff.min-alignment-count {
+                        }
+                        cuffdiff.fdr {
+                        }
+                        cuffdiff.max-mle-iterations {
+                        }
+                        cuffdiff.emit-count-tables {
+                        }
+                        cuffdiff.path {
+                        }
+                        cuffdiff.tmp-dir {
+                        }
+                    }
+                }
+            }
+            page {
+                id:6;
+                title:"Output data";
+                parameters-area {
+                    group {
+                        title:"Tools output directories";
+                        label-size:100;
+                        tophat.out-dir {
+                            label:Tophat;
+                        }
+                        cuffdiff.out-dir {
+                            label:Cuffdiff;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+

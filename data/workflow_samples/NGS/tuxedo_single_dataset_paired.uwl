@@ -1,0 +1,252 @@
+#@UGENE_WORKFLOW
+
+
+
+workflow "Tuxedo for single dataset: paired-end reads"{
+
+    tophat {
+        type:tophat;
+        name:"Find Splice Junctions with TopHat";
+    }
+    cufflinks {
+        type:cufflinks;
+        name:"Assemble Transcripts with Cufflinks";
+    }
+    multiplexer {
+        type:multiplexer;
+        name:Multiplexer;
+    }
+    read-sequence {
+        type:get-file-list;
+        name:"Read Paired Reads 1";
+        url-in {
+            dataset:"Dataset 1";
+        }
+        url-in {
+            dataset:"Dataset 2";
+        }
+    }
+    read-sequence-1 {
+        type:get-file-list;
+        name:"Read Paired Reads 2";
+        url-in {
+            dataset:"Dataset 1";
+        }
+        url-in {
+            dataset:"Dataset 2";
+        }
+    }
+
+
+    .actor-bindings {
+        multiplexer.output-data->tophat.in-sequence
+        read-sequence.out-url->multiplexer.input-data-1
+        read-sequence-1.out-url->multiplexer.input-data-2
+        tophat.out-assembly->cufflinks.in-assembly
+    }
+
+    read-sequence.dataset->tophat.in-sequence.dataset
+    read-sequence.url->tophat.in-sequence.in-url
+    read-sequence-1.url->tophat.in-sequence.paired-url
+    tophat.hits-url->cufflinks.in-assembly.url
+
+    .meta {
+        visual {
+            cufflinks {
+                pos:"-447 -408";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                bounds:"-30 -30 149.875 89";
+                in-assembly.angle:25.5377;
+                out-annotations.angle:304.042;
+            }
+            multiplexer {
+                pos:"-737 -611";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                bounds:"-30 -30 149 88";
+                input-data-1.angle:188.13;
+                input-data-2.angle:237.319;
+                output-data.angle:351.68;
+            }
+            read-sequence {
+                pos:"-1020 -675";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                bounds:"-30 -30 147 61";
+                out-url.angle:351.506;
+            }
+            read-sequence-1 {
+                pos:"-1021 -523";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                bounds:"-30 -30 148 59";
+                out-url.angle:358.08;
+            }
+            tophat {
+                pos:"-447 -612";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                bounds:"-30 -30 149.75 89";
+                in-sequence.angle:218.589;
+                out-assembly.angle:305.172;
+            }
+            multiplexer.output-data->tophat.in-sequence {
+                text-pos:"-44.5 -46";
+            }
+            read-sequence-1.out-url->multiplexer.input-data-2 {
+                text-pos:"-36 -5";
+            }
+            read-sequence.out-url->multiplexer.input-data-1 {
+                text-pos:"-29 -12";
+            }
+            tophat.out-assembly->cufflinks.in-assembly {
+                text-pos:"-46 -9";
+            }
+        }
+        wizard {
+            name:"Tuxedo Wizard";
+            page {
+                id:1;
+                next:2;
+                title:"Input data";
+                parameters-area {
+                    group {
+                        title:"RNA-seq paired short reads";
+                        paired-reads-datasets {
+                            read-sequence.url-in {
+                                label:"First short-reads files";
+                            }
+                            read-sequence-1.url-in {
+                                label:"Second short-reads files";
+                            }
+                        }
+                    }
+                }
+            }
+            page {
+                id:2;
+                next:3;
+                title:"Tophat settings";
+                parameters-area {
+                    group {
+                        title:"TopHat input";
+                        label-size:180;
+                        tophat.bowtie-index-dir {
+                        }
+                        tophat.bowtie-index-basename {
+                        }
+                    }
+                    group {
+                        title:Parameters;
+                        label-size:170;
+                        tophat.known-transcript {
+                        }
+                        tophat.raw-junctions {
+                        }
+                    }
+                    group {
+                        title:Additional;
+                        label-size:170;
+                        type:hideable;
+                        tophat.mate-inner-distance {
+                        }
+                        tophat.mate-standard-deviation {
+                        }
+                        tophat.library-type {
+                        }
+                        tophat.no-novel-junctions {
+                        }
+                        tophat.max-multihits {
+                        }
+                        tophat.segment-length {
+                        }
+                        tophat.fusion-search {
+                        }
+                        tophat.transcriptome-only {
+                        }
+                        tophat.transcriptome-max-hits {
+                        }
+                        tophat.prefilter-multihits {
+                        }
+                        tophat.min-anchor-length {
+                        }
+                        tophat.splice-mismatches {
+                        }
+                        tophat.read-mismatches {
+                        }
+                        tophat.segment-mismatches {
+                        }
+                        tophat.solexa-1-3-quals {
+                        }
+                        tophat.bowtie-version {
+                        }
+                        tophat.bowtie-n-mode {
+                        }
+                        tophat.bowtie-tool-path {
+                        }
+                        tophat.samtools-tool-path {
+                        }
+                        tophat.path {
+                        }
+                        tophat.temp-dir {
+                        }
+                    }
+                }
+            }
+            page {
+                id:3;
+                next:4;
+                title:"Cufflinks settings";
+                parameters-area {
+                    group {
+                        title:Parameters;
+                        label-size:170;
+                        cufflinks.ref-annotation {
+                        }
+                        cufflinks.rabt-annotation {
+                        }
+                        cufflinks.library-type {
+                        }
+                        cufflinks.mask-file {
+                        }
+                        cufflinks.multi-read-correct {
+                        }
+                        cufflinks.min-isoform-fraction {
+                        }
+                        cufflinks.frag-bias-correct {
+                        }
+                        cufflinks.pre-mrna-fraction {
+                        }
+                    }
+                    group {
+                        title:Additional;
+                        label-size:170;
+                        type:hideable;
+                        cufflinks.path {
+                        }
+                        cufflinks.tmp-dir {
+                        }
+                    }
+                }
+            }
+            page {
+                id:4;
+                title:"Output data";
+                parameters-area {
+                    group {
+                        title:"Tools output directories";
+                        label-size:100;
+                        tophat.out-dir {
+                            label:Tophat;
+                        }
+                        cufflinks.out-dir {
+                            label:Cufflinks;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
