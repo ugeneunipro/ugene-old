@@ -49,7 +49,7 @@ public:
 
 //    virtual QAction* getAddNewDocumentAction() const = 0;
 
-    virtual QAction* getAddExistingDocumentAction() const = 0;
+//    virtual QAction* getAddExistingDocumentAction() const = 0;
 
     virtual void highlightItem(Document*) = 0;
 

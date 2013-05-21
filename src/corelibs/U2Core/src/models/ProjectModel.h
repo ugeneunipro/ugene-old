@@ -22,6 +22,7 @@
 #ifndef _U2_PROJECT_MODEL_H_
 #define _U2_PROJECT_MODEL_H_
 
+#include <QAction>
 #include "DocumentModel.h"
 #include "StateLockableDataModel.h"
 
@@ -68,6 +69,8 @@ public:
 
     /** Creates new project instance */
     virtual Project* createProject(const QString& name, const QString& url, QList<Document*>& documents, QList<GObjectViewState*>& states) = 0;
+
+    virtual QAction* getAddExistingDocumentAction() = 0;
 
     Task* openWithProjectTask(const GUrl& url, const QVariantMap& hints = QVariantMap()) {
         QList<GUrl> urls; urls << url;

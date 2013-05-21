@@ -51,6 +51,8 @@ public:
     virtual Task* createProjectLoadingTask(const GUrl& url, const QVariantMap& hints = QVariantMap());
     
     virtual Project* createProject(const QString& name, const QString& url, QList<Document*>& documents, QList<GObjectViewState*>& states);
+
+    virtual QAction* getAddExistingDocumentAction(){return addExistingDocumentAction;};
     
     static QString getLastProjectURL();
 
@@ -74,6 +76,7 @@ private slots:
     void sl_documentAdded(Document* doc);
     void sl_documentStateChanged();
     void sl_projectURLChanged(const QString& oldURL);
+    void sl_onAddExistingDocument();
     
 	void sl_downloadRemoteFile();
 
@@ -82,7 +85,7 @@ private slots:
     void sl_updateRecentItemsMenu();
     
 private:
-    
+    QAction* addExistingDocumentAction;
 	QAction* newProjectAction;
 	QAction* openProjectAction;
     QAction* downloadRemoteFileAction;

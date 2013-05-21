@@ -78,6 +78,12 @@ ProjectLoaderImpl::ProjectLoaderImpl() {
     newProjectAction->setShortcutContext(Qt::WindowShortcut);
     connect(newProjectAction, SIGNAL(triggered()), SLOT(sl_newProject()));
 
+    addExistingDocumentAction = new QAction(QIcon(":ugene/images/advanced_open.png"), tr("Open as..."), this);
+    addExistingDocumentAction->setObjectName(ACTION_PROJECTSUPPORT__OPEN_AS);
+    addExistingDocumentAction->setShortcut(QKeySequence(Qt::CTRL | Qt::SHIFT | Qt::Key_O));
+    addExistingDocumentAction->setShortcutContext(Qt::ApplicationShortcut);
+    connect(addExistingDocumentAction, SIGNAL(triggered()), SLOT(sl_onAddExistingDocument()));
+
     newDocumentFromtext = new QAction(QIcon(), tr("New document from text..."), this);
     newDocumentFromtext->setObjectName("NewDocumentFromText");
     newDocumentFromtext->setShortcutContext(Qt::WindowShortcut);
@@ -114,7 +120,7 @@ ProjectLoaderImpl::ProjectLoaderImpl() {
 
     QList<QAction*> actions;
     actions << newProjectAction << newDocumentFromtext << downloadRemoteFileAction 
-        << openProjectAction << separatorAction1 <<  recentItemsMenu->menuAction() 
+        << openProjectAction << addExistingDocumentAction << separatorAction1 <<  recentItemsMenu->menuAction() 
         << recentProjectsMenu->menuAction() << separatorAction2;
     
     fileMenu->insertActions(fileMenu->actions().first(), actions);
@@ -691,6 +697,25 @@ void ProjectDialogController::accept()
 Project* ProjectLoaderImpl::createProject(const QString& name, const QString& url, QList<Document*>& documents, QList<GObjectViewState*>& states) {
     ProjectImpl* pi = new ProjectImpl(name, url, documents, states);
     return pi;
+}
+
+void ProjectLoaderImpl::sl_onAddExistingDocument(){
+    LastUsedDirHelper h;
+    QString filter = DialogUtils::prepareDocumentsFileFilter(true);
+    QString file = QFileDialog::getOpenFileName(QApplication::activeWindow(), tr("Select files to open"), h.dir,  filter);
+    if (file.isEmpty()) {
+        return;
+    }
+    if (QFileInfo(file).exists()) {
+        h.url = file;
+    }
+    QList<GUrl> urls; urls << GUrl(file, GUrl_File);
+    QVariantMap hints;
+    hints[ProjectLoaderHint_ForceFormatOptions] = true;
+    Task* openTask = AppContext::getProjectLoader()->openWithProjectTask(urls, hints);
+    if (openTask != NULL) {
+        AppContext::getTaskScheduler()->registerTopLevelTask(openTask);	
+    }
 }
 
 

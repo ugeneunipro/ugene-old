@@ -168,7 +168,7 @@ Task::ReportResult ProjectServiceEnableTask::report() {
 
     MainWindow* mw = AppContext::getMainWindow();
     QMenu* fileMenu = mw->getTopLevelMenu(MWMENU_FILE);
-    QAction* beforeAction= GUIUtils::findActionAfter(fileMenu->actions(), ACTION_PROJECTSUPPORT__OPEN_PROJECT);
+    QAction* beforeAction= GUIUtils::findActionAfter(fileMenu->actions(), ACTION_PROJECTSUPPORT__OPEN_AS);
     fileMenu->insertAction(beforeAction,  psi->saveAction);
     fileMenu->insertAction(beforeAction,  psi->saveAsAction);
     fileMenu->insertAction(beforeAction,  psi->exportProjectAction);

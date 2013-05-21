@@ -391,7 +391,6 @@ ProjectViewImpl::ProjectViewImpl()
     w = NULL;
     projectTreeController = NULL;
     objectViewController = NULL;
-    addExistingDocumentAction = NULL;
 //    addNewDocumentAction = NULL;
     saveSelectedDocsAction = NULL;
     relocateDocumentAction = NULL;
@@ -429,13 +428,6 @@ void ProjectViewImpl::enable() {
         
     assert(w == NULL);
     w = new ProjectViewWidget();
-    
-    assert(addExistingDocumentAction == NULL);
-    addExistingDocumentAction = new QAction(QIcon(":ugene/images/advanced_open.png"), tr("Open as..."), w);
-    addExistingDocumentAction->setObjectName("Open as");
-    addExistingDocumentAction->setShortcut(QKeySequence(Qt::CTRL | Qt::SHIFT | Qt::Key_O));
-    addExistingDocumentAction->setShortcutContext(Qt::ApplicationShortcut);
-    connect(addExistingDocumentAction, SIGNAL(triggered()), SLOT(sl_onAddExistingDocument()));
 
     saveSelectedDocsAction = new QAction(QIcon(":ugene/images/save_selected_documents.png"), tr("save_selected_modified_docs_action"), w);
     connect(saveSelectedDocsAction, SIGNAL(triggered()), SLOT(sl_onSaveSelectedDocs()));
@@ -460,9 +452,6 @@ void ProjectViewImpl::enable() {
         AppContext::getSettings()->setValue(SETTINGS_ROOT + "firstShow", false);
     }
     
-    QMenu* fm = mw->getTopLevelMenu(MWMENU_FILE);
-    fm->insertAction(GUIUtils::findActionAfter(fm->actions(), ACTION_PROJECTSUPPORT__OPEN_PROJECT), addExistingDocumentAction);
-
     AppContextImpl::getApplicationContext()->setProjectView(this);
 
     updateMWTitle();
@@ -488,7 +477,6 @@ void ProjectViewImpl::disable() {
     //All these QObjects are autodeleted when 'w' is deleted;
     projectTreeController = NULL;
     objectViewController = NULL;
-    addExistingDocumentAction = NULL;
 //    addNewDocumentAction = NULL;
 
     AppContextImpl::getApplicationContext()->setProjectView(NULL);
@@ -639,26 +627,6 @@ void ProjectViewImpl::sl_onViewPersistentStateChanged(GObjectViewWindow* v) {
             AppContext::getProject()->removeGObjectViewState(s);
         }
     }
-}
-
-void ProjectViewImpl::sl_onAddExistingDocument() {
-    LastUsedDirHelper h;
-    QString filter = DialogUtils::prepareDocumentsFileFilter(true);
-    QString file = QFileDialog::getOpenFileName(QApplication::activeWindow(), tr("Select files to open"), h.dir,  filter);
-    if (file.isEmpty()) {
-        return;
-    }
-    if (QFileInfo(file).exists()) {
-        h.url = file;
-    }
-    QList<GUrl> urls; urls << GUrl(file, GUrl_File);
-    QVariantMap hints;
-    hints[ProjectLoaderHint_ForceFormatOptions] = true;
-    Task* openTask = AppContext::getProjectLoader()->openWithProjectTask(urls, hints);
-    if (openTask != NULL) {
-        AppContext::getTaskScheduler()->registerTopLevelTask(openTask);	
-    }
-
 }
 
 void ProjectViewImpl::sl_onDocTreePopupMenuRequested(QMenu& m) {

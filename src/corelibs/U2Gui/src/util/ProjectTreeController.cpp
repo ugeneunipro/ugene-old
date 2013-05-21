@@ -516,9 +516,10 @@ void ProjectTreeController::sl_onContextMenuRequested(const QPoint&) {
     m.addSeparator();
 
     ProjectView* pv = AppContext::getProjectView();
+    ProjectLoader* pl = AppContext::getProjectLoader();
     if (pv != NULL) {
-        QAction* addExistingDocumentAction = new QAction(pv->getAddExistingDocumentAction()->icon(), tr("Existing document"), &m);
-        connect(addExistingDocumentAction, SIGNAL(triggered()), pv->getAddExistingDocumentAction(), SLOT(trigger()));
+        QAction* addExistingDocumentAction = new QAction(pl->getAddExistingDocumentAction()->icon(), tr("Existing document"), &m);
+        connect(addExistingDocumentAction, SIGNAL(triggered()), pl->getAddExistingDocumentAction(), SLOT(trigger()));
 
         QMenu* addMenu = m.addMenu(tr("Add"));
         addMenu->menuAction()->setObjectName( ACTION_PROJECT__ADD_MENU);
