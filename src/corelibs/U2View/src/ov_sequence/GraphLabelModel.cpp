@@ -25,8 +25,8 @@
 
 namespace U2 {
 
-TextLabel::TextLabel(void *_parentLabel, QWidget *parent) : 
-    QLabel(parent), parentLabel(_parentLabel)
+TextLabel::TextLabel(QWidget *parent) : 
+    QLabel(parent)
 {
 }
 TextLabel::~TextLabel() 
@@ -36,11 +36,6 @@ void TextLabel::mouseMoveEvent(QMouseEvent *me) {
     this->raise();
     if(Qt::ShiftModifier != me->modifiers()) {
         QWidget::mouseMoveEvent(me);
-    }
-}
-void TextLabel::mousePressEvent(QMouseEvent *me) {
-    if(Qt::ShiftModifier == me->modifiers()) {
-        emit si_mousePressed(parentLabel);
     }
 }
 
@@ -85,21 +80,38 @@ void RoundHint::unmark() {
 }
 
 GraphLabel::GraphLabel() 
-    : attachedLabel(NULL), text(this), image(), position(-1), value(0.0), coord(-1,-1), radius(defaultRadius)
+    : attachedLabel(NULL), text(), image(), position(-1), value(0.0), coord(-1,-1), radius(defaultRadius)
 {
     text.setLineWidth(3);
     text.setAlignment(Qt::AlignCenter);
     text.setFrameStyle(QFrame::WinPanel | QFrame::Raised);
+    text.installEventFilter(this);
+    image.installEventFilter(this);
 }
 GraphLabel::GraphLabel(float pos, QWidget *parent, int _radius) 
-    : attachedLabel(NULL), text(this, parent), image(parent), position(pos), value(0.0), coord(0,0), radius(_radius)
+    : attachedLabel(NULL), text(parent), image(parent), position(pos), value(0.0), coord(0,0), radius(_radius)
 {
     text.setLineWidth(3);
     text.setAlignment(Qt::AlignCenter);
     text.setFrameStyle(QFrame::WinPanel | QFrame::Raised);
+    text.installEventFilter(this);
+    image.installEventFilter(this);
 }
 GraphLabel::~GraphLabel() 
 {
+}
+
+bool GraphLabel::eventFilter(QObject *target, QEvent* e)
+{
+    if (target == &text || target == &image) {
+        QMouseEvent *me = static_cast<QMouseEvent*>(e);
+        CHECK(me != NULL, false);
+        if(me->type() == QEvent::MouseButtonPress && me->button() == Qt::LeftButton) {
+            emit si_onHintDeleted(this);
+            return true;
+        }
+    }
+    return QObject::eventFilter(target, e);
 }
 
 
@@ -165,8 +177,8 @@ void MultiLabel::getLabelPositions(QList<QVariant> &labelPositions) {
         labelPositions.append(currentLabel->getPosition());
 }
 void MultiLabel::addLabel(GraphLabel *pLabel)  {
-    connect(&(pLabel->getTextLabel()), SIGNAL(si_mousePressed(void*)),
-       this, SLOT(sl_deleteLabel(void*)));
+    connect(pLabel, SIGNAL(si_onHintDeleted(GraphLabel *)),
+       this, SLOT(sl_deleteLabel(GraphLabel *)));
     labels.push_back(pLabel);
 }
 void MultiLabel::removeLabel(GraphLabel *pLabel) {
@@ -174,8 +186,8 @@ void MultiLabel::removeLabel(GraphLabel *pLabel) {
     delete pLabel;
 }
 
-void MultiLabel::sl_deleteLabel(void *_parentLabel) {
-    removeLabel(static_cast<GraphLabel *>(_parentLabel));
+void MultiLabel::sl_deleteLabel(GraphLabel *label) {
+    removeLabel(label);
 }
 
 bool MultiLabel::removeLabel(float xPos) {

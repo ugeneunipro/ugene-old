@@ -37,17 +37,12 @@ class TextLabel: public QLabel
 {
     Q_OBJECT
 public:
-    TextLabel(void *_parentLabel, QWidget *parent = NULL);
+    TextLabel(QWidget *parent = NULL);
     ~TextLabel();
 private:
-    void mousePressEvent(QMouseEvent *me);
     void mouseMoveEvent(QMouseEvent *me);
 
     void paintEvent(QPaintEvent *e);
-
-    void *parentLabel;
-signals:
-    void si_mousePressed(void *_parentLabel);
 };
 
 class RoundHint: public QWidget
@@ -120,8 +115,10 @@ public:
     QColor getFillingColor() {return image.getFillingColor();}
 
     GraphLabel *attachedLabel;
-
+signals:
+    void si_onHintDeleted(GraphLabel *label);
 private:
+    bool eventFilter(QObject *target, QEvent* e);
     TextLabel text;
     RoundHint image;
     float position;
@@ -161,7 +158,7 @@ private:
     Labels labels;
     GraphLabel movingLabel;
 private slots:
-    void sl_deleteLabel(void *_parentLabel);
+    void sl_deleteLabel(GraphLabel *label);
 };
 
 }//namespace
