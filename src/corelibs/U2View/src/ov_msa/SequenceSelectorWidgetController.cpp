@@ -37,6 +37,8 @@ SequenceSelectorWidgetController::SequenceSelectorWidgetController(MSAEditor* _m
     
     connect(msa->getMSAObject(), SIGNAL(si_alignmentChanged(const MAlignment& , const MAlignmentModInfo&)), 
         SLOT(sl_seqLineEditEditingFinished(const MAlignment& , const MAlignmentModInfo&)));
+
+    connect(completer, SIGNAL(si_editingFinished()), SLOT(sl_seqLineEditEditingFinished()));
     
 }
 
