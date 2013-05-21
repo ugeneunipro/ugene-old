@@ -2,7 +2,7 @@
 
 
 
-workflow "Tuxedo: single-end reads"{
+workflow "Main Tuxedo: single-end reads"{
 
     tophat {
         type:tophat;

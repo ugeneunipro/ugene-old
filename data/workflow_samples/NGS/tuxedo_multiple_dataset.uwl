@@ -2,7 +2,7 @@
 
 
 
-workflow "Tuxedo for multiple datasets: single-end reads"{
+workflow "Multiple datasets Tuxedo: single-end reads"{
 
     tophat {
         type:tophat;

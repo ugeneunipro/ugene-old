@@ -2,7 +2,7 @@
 
 
 
-workflow "Tuxedo for single dataset: paired-end reads"{
+workflow "Single dataset Tuxedo: paired-end reads"{
 
     tophat {
         type:tophat;
