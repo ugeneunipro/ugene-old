@@ -540,6 +540,9 @@ int main(int argc, char **argv)
     OPWidgetFactoryRegistry* opWidgetFactoryRegistry = new OPWidgetFactoryRegistry();
     appContext->setOPWidgetFactoryRegistry(opWidgetFactoryRegistry);
 
+    OPCommonWidgetFactoryRegistry *opCommonWidgetFactoryRegistry = new OPCommonWidgetFactoryRegistry();
+    appContext->setOPCommonWidgetFactoryRegistry(opCommonWidgetFactoryRegistry);
+
 	WorkflowScriptRegistry* workflowScriptRegistry = new WorkflowScriptRegistry();
 	appContext->setWorkflowScriptRegistry(workflowScriptRegistry);
 

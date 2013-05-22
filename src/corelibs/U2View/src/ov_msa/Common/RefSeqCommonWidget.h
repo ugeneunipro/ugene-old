@@ -19,25 +19,46 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_MSA_GENERAL_TAB_H_
-#define _U2_MSA_GENERAL_TAB_H_
+#ifndef _U2_MSA_REF_SEQ_COMMON_WIDGET_H_
+#define _U2_MSA_REF_SEQ_COMMON_WIDGET_H_
 
 #include "../SequenceSelectorWidgetController.h"
 
-#include <QtGui/QtGui>
+#include <U2Core/global.h>
+
+#include <U2Gui/OPWidgetFactory.h>
+
 #include <U2View/MSAEditor.h>
 
 
 namespace U2 {
 
-
-class U2VIEW_EXPORT MSAGeneralTab : public QWidget
+/** Reference Sequence is a common widget in the Alignment Editor */
+class RefSeqCommonWidget : public QWidget
 {
     Q_OBJECT
 public:
-    MSAGeneralTab();
+    RefSeqCommonWidget(MSAEditor *msaEditor);
+
+private slots:
+    void sl_refSeqChanged(const QString &);
+    void si_textControllerChanged();
+
+private:
+    QWidget* createReferenceGroup();
+    MSAEditor *msaEditor;
+    SequenceSelectorWidgetController *reSeqSelector;
 };
 
+class U2VIEW_EXPORT RefSeqCommonWidgetFactory : public OPCommonWidgetFactory
+{
+    Q_OBJECT
+public:
+    RefSeqCommonWidgetFactory(QList<QString> groups);
+    virtual ~RefSeqCommonWidgetFactory();
+
+    virtual QWidget* createWidget(GObjectView *objView);
+};
 
 } // namespace
 

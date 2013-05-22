@@ -28,8 +28,8 @@
 
 namespace U2{
 
-static const int ITEMS_SPACING = 10;
-static const int TITLE_SPACING = 5;
+static const int ITEMS_SPACING = 6;
+static const int TITLE_SPACING = 1;
 
 static inline QVBoxLayout * initVBoxLayout(QWidget * w) {
     QVBoxLayout * layout = new QVBoxLayout;
@@ -95,6 +95,8 @@ MSAHighlightingTab::MSAHighlightingTab(MSAEditor* m):msa(m){
     connect(useDots, SIGNAL(stateChanged(int)), seqArea, SLOT(sl_useDots(int)));
 
     connect(seqArea, SIGNAL(si_highlightingChanged()), SLOT(sl_sync()));
+
+    connect(m, SIGNAL(si_referenceSeqChanged(const QString &)), SLOT(sl_updateHint(const QString &)));
 }
 
 void MSAHighlightingTab::initColorCB(){
@@ -125,12 +127,15 @@ void MSAHighlightingTab::sl_sync(){
     sl_updateHint(QString(""));
 }
 
-void MSAHighlightingTab::sl_updateHint( const QString &str){
+void MSAHighlightingTab::sl_updateHint(const QString &str){
     Q_UNUSED(str);
 
     if(msa->getRefSeqName().isEmpty()){
         if(!seqArea->getCurrentHighlightingScheme()->getFactory()->isRefFree()){
-            hint->setText(tr("Hint: choose refrence sequence first"));
+            hint->setText(tr("Hint: select a reference above"));
+            hint->setStyleSheet(
+                "color: green;"
+                "font: bold;");
             return;
         }
     }

@@ -78,7 +78,7 @@ MSAEditorNameList::MSAEditorNameList(MSAEditorUI* _ui, QScrollBar* _nhBar)
         connect(ui->seqArea->getVBar(), SIGNAL(actionTriggered(int)), SLOT(sl_onScrollBarActionTriggered(int)));
     }
     connect(ui->getCollapseModel(), SIGNAL(toggled()), SLOT(sl_modelChanged()));
-    connect(editor, SIGNAL(si_refrenceSeqChanged(const QString &)), SLOT(sl_refrenceSeqChanged(const QString &)));
+    connect(editor, SIGNAL(si_referenceSeqChanged(const QString &)), SLOT(sl_refrenceSeqChanged(const QString &)));
     
     nhBar->setEnabled(false);
     updateActions();
@@ -227,7 +227,7 @@ void MSAEditorNameList::sl_selectReferenceSequence() {
             return;
         }
         assert(!maObj->isStateLocked());
-        editor->setRefrence(maObj->getRow(n).getName());
+        editor->setReference(maObj->getRow(n).getName());
     }
 }
 

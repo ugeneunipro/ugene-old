@@ -190,7 +190,7 @@ MSAEditorSequenceArea::MSAEditorSequenceArea(MSAEditorUI* _ui, GScrollBar* hb, G
     connect(editor, SIGNAL(si_zoomOperationPerformed(bool)), SLOT(sl_zoomOperationPerformed(bool)));
     connect(editor, SIGNAL(si_fontChanged(QFont)), SLOT(sl_fontChanged(QFont)));
     connect(ui->getCollapseModel(), SIGNAL(toggled()), SLOT(sl_modelChanged()));
-    connect(editor, SIGNAL(si_refrenceSeqChanged(const QString &)), SLOT(sl_refrenceSeqChanged(const QString &)));
+    connect(editor, SIGNAL(si_referenceSeqChanged(const QString &)), SLOT(sl_refrenceSeqChanged(const QString &)));
     
     QAction* undoAction = ui->getUndoAction();
     QAction* redoAction = ui->getRedoAction();

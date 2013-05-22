@@ -141,18 +141,33 @@ GroupHeaderImageWidget* OptionsPanelWidget::createHeaderImageWidget(const QStrin
 }
 
 
-GroupOptionsWidget* OptionsPanelWidget::createOptionsWidget(const QString& groupId, const QString& title, QWidget* _widget)
+GroupOptionsWidget* OptionsPanelWidget::createOptionsWidget(const QString& groupId, const QString& title, QWidget* _widget, QList<QWidget*> commonWidgets)
 {
-    GroupOptionsWidget* widget = new GroupOptionsWidget(groupId, title, _widget);
+    SAFE_POINT(NULL != _widget, "NULL main widget!",  NULL);
+    QWidget *innerWidgets = new QWidget;
+    QVBoxLayout *layout = new QVBoxLayout;
+    layout->setContentsMargins(0, 0, 0, 0);
+    layout->setMargin(0);
+
+    foreach (QWidget *commonWidget, commonWidgets) {
+        SAFE_POINT(NULL != commonWidget, "NULL common widget!",  NULL);
+        layout->addWidget(commonWidget);
+    }
+
+    layout->addWidget(_widget);
+
+    innerWidgets->setLayout(layout);
+
+    GroupOptionsWidget* groupWidget = new GroupOptionsWidget(groupId, title, innerWidgets);
 
     // Add widget to the layout and "parent" it
-    optionsLayout->insertWidget(0, widget);
+    optionsLayout->insertWidget(0, groupWidget);
 
-    optionsWidgets.insert(0, widget);
+    optionsWidgets.insert(0, groupWidget);
 
-    widget->setFocus();
+    groupWidget->setFocus();
 
-    return widget;
+    return groupWidget;
 }
 
 

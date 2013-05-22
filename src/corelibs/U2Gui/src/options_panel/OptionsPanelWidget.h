@@ -62,8 +62,11 @@ public:
     /** Creates a new header image widget and owns it by putting it into the layout. */
     GroupHeaderImageWidget* createHeaderImageWidget(const QString& groupId, const QPixmap& image);
 
-    /** Creates a new options widget and owns it by putting into the layout */
-    GroupOptionsWidget* createOptionsWidget(const QString& groupId, const QString& title, QWidget* widget);
+    /**
+     * Creates a new options widget and owns it by putting into the layout.
+     * Additional (common) widgets, if any, are put below the widget.
+     */
+    GroupOptionsWidget* createOptionsWidget(const QString& groupId, const QString& title, QWidget* widget, QList<QWidget*> commonWidgets);
 
     /** Shows/hides the options scroll area widget (the left part of the OP) */
     void openOptionsPanel();

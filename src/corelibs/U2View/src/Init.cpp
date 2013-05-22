@@ -23,6 +23,7 @@
 
 #include <U2Core/AppContext.h>
 
+#include <U2Gui/OPWidgetFactory.h>
 #include <U2Gui/OPWidgetFactoryRegistry.h>
 
 #include <U2View/AnnotHighlightWidgetFactory.h>
@@ -30,9 +31,10 @@
 #include <U2View/AssemblyNavigationWidget.h>
 #include <U2View/AssemblySettingsWidget.h>
 #include <U2View/FindPatternWidgetFactory.h>
+#include <U2View/PairAlignFactory.h>
+#include <U2View/RefSeqCommonWidget.h>
 #include <U2View/SequenceInfoFactory.h>
 #include <U2View/SeqStatisticsWidgetFactory.h>
-#include <U2View/PairAlignFactory.h>
 #include <U2View/MSAGeneralTabFactory.h>
 #include <U2View/MSAHighlightingTabFactory.h>
 #include <U2View/TreeOptionsWidgetFactory.h>
@@ -42,7 +44,8 @@ namespace U2 {
 
 void Init::initOptionsPanels()
 {
-    OPWidgetFactoryRegistry* opWidgetFactoryRegistry = AppContext::getOPWidgetFactoryRegistry();
+    OPWidgetFactoryRegistry *opWidgetFactoryRegistry = AppContext::getOPWidgetFactoryRegistry();
+    OPCommonWidgetFactoryRegistry *opCommonWidgetFactoryRegistry = AppContext::getOPCommonWidgetFactoryRegistry();
 
     // Sequence View groups
     opWidgetFactoryRegistry->registerFactory(new FindPatternWidgetFactory());
@@ -57,12 +60,27 @@ void Init::initOptionsPanels()
 
 
     //MSA groups
-    opWidgetFactoryRegistry->registerFactory(new MSAHighlightingFactory());
+    MSAHighlightingFactory *msaHighlightingFactory = new MSAHighlightingFactory();
+    QString msaHighlightingId = msaHighlightingFactory->getOPGroupParameters().getGroupId();
+    opWidgetFactoryRegistry->registerFactory(msaHighlightingFactory);
+
     opWidgetFactoryRegistry->registerFactory(new PairAlignFactory());
     opWidgetFactoryRegistry->registerFactory(new MSATreeOptionsWidgetFactory());
     opWidgetFactoryRegistry->registerFactory(new AddTreeWidgetFactory());
-    opWidgetFactoryRegistry->registerFactory(new SeqStatisticsWidgetFactory());
-    opWidgetFactoryRegistry->registerFactory(new MSAGeneralTabFactory());
+
+    SeqStatisticsWidgetFactory *msaSeqStatisticvsFactory = new SeqStatisticsWidgetFactory();
+    QString msaSeqStatisticsId = msaSeqStatisticvsFactory->getOPGroupParameters().getGroupId();
+    opWidgetFactoryRegistry->registerFactory(msaSeqStatisticvsFactory);
+
+    MSAGeneralTabFactory *msaGeneralTabFactory = new MSAGeneralTabFactory();
+    QString msaGeneralId = msaGeneralTabFactory->getOPGroupParameters().getGroupId();
+    opWidgetFactoryRegistry->registerFactory(msaGeneralTabFactory);
+
+    // MSA common widgets
+    QList<QString> groupIds;
+    groupIds << msaHighlightingId << msaSeqStatisticsId << msaGeneralId;
+    RefSeqCommonWidgetFactory *refSeqCommonWidget = new RefSeqCommonWidgetFactory(groupIds);
+    opCommonWidgetFactoryRegistry->registerFactory(refSeqCommonWidget);
 
 
     //Tree View groups

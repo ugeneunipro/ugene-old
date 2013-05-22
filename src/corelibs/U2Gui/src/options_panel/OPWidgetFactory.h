@@ -56,6 +56,7 @@ class U2GUI_EXPORT OPWidgetFactory : public QObject
 
 public:
     OPWidgetFactory();
+    virtual ~OPWidgetFactory();
 
     virtual QWidget* createWidget(GObjectView* objView) = 0;
 
@@ -66,6 +67,22 @@ public:
 protected:
     GObjectView*    objView;
     ObjectViewType  objectViewOfWidget;
+};
+
+
+class U2GUI_EXPORT OPCommonWidgetFactory : public QObject
+{
+    Q_OBJECT
+public:
+    OPCommonWidgetFactory(QList<QString> groupIds);
+    virtual ~OPCommonWidgetFactory();
+
+    virtual QWidget* createWidget(GObjectView *objView) = 0;
+
+    bool isInGroup(QString groupId) { return groupIds.contains(groupId); }
+
+protected:
+    QList<QString> groupIds; // groups where the common widget is placed
 };
 
 } // namespace

@@ -76,6 +76,7 @@ public:
         dataBaseRegistry = NULL;
         externalToolRegistry = NULL;
         splicedAlignmentTaskRegistry = NULL;
+        opCommonWidgetFactoryRegistry = NULL;
         opWidgetFactoryRegistry = NULL;
         workflowScriptRegistry = NULL;
         appFileStorage = NULL;
@@ -246,6 +247,11 @@ public:
         splicedAlignmentTaskRegistry = tr;
     }
 
+    void setOPCommonWidgetFactoryRegistry(OPCommonWidgetFactoryRegistry *_opCommonWidgetFactoryRegistry) {
+        assert((NULL == opCommonWidgetFactoryRegistry) || (NULL == _opCommonWidgetFactoryRegistry));
+        opCommonWidgetFactoryRegistry = _opCommonWidgetFactoryRegistry;
+    }
+
     void setOPWidgetFactoryRegistry(OPWidgetFactoryRegistry* _opWidgetFactoryRegistry) {
         assert((NULL == opWidgetFactoryRegistry) || (NULL == _opWidgetFactoryRegistry));
         opWidgetFactoryRegistry = _opWidgetFactoryRegistry;
@@ -341,6 +347,7 @@ protected:
     virtual U2DbiRegistry *                 _getDbiRegistry() const { return dbiRegistry; }
     virtual GUITestBase*                    _getGUITestBase() const {return tb;}
     virtual SplicedAlignmentTaskRegistry*   _getSplicedAlignmentTaskRegistry() const { return splicedAlignmentTaskRegistry; }
+    virtual OPCommonWidgetFactoryRegistry*  _getOPCommonWidgetFactoryRegistry() const { return opCommonWidgetFactoryRegistry; }
     virtual OPWidgetFactoryRegistry*        _getOPWidgetFactoryRegistry() const { return opWidgetFactoryRegistry; }
     virtual WorkflowScriptRegistry*         _getWorkflowScriptRegistry() const { return workflowScriptRegistry; }
     virtual AppFileStorage*                 _getAppFileStorage() const { return appFileStorage; }
@@ -409,6 +416,7 @@ private:
     U2DbiRegistry *dbiRegistry;
     GUITestBase *tb;
     SplicedAlignmentTaskRegistry* splicedAlignmentTaskRegistry;
+    OPCommonWidgetFactoryRegistry* opCommonWidgetFactoryRegistry;
     OPWidgetFactoryRegistry* opWidgetFactoryRegistry;
     WorkflowScriptRegistry* workflowScriptRegistry;
     AppFileStorage *appFileStorage;

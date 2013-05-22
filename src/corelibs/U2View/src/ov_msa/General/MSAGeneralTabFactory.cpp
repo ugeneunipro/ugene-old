@@ -48,7 +48,7 @@ QWidget* MSAGeneralTabFactory::createWidget(GObjectView* objView){
         QString("Internal error: unable to cast object view to MSAEditor for group '%1'.").arg(GROUP_ID),
         NULL);
 
-    MSAGeneralTab *widget = new MSAGeneralTab(msa);
+    MSAGeneralTab *widget = new MSAGeneralTab();
     return widget;
 }
 

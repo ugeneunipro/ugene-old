@@ -45,7 +45,7 @@ OPWidgetFactoryRegistry::~OPWidgetFactoryRegistry()
 
 bool OPWidgetFactoryRegistry::registerFactory(OPWidgetFactory* factory)
 {
-    QMutexLocker locker(&mutex);
+    QMutexLocker lock(&mutex);
 
     SAFE_POINT(!opWidgetFactories.contains(factory),
         "The registry already contains submitted Options Panel factory!", false);
@@ -57,7 +57,7 @@ bool OPWidgetFactoryRegistry::registerFactory(OPWidgetFactory* factory)
 
 QList<OPWidgetFactory*> OPWidgetFactoryRegistry::getRegisteredFactories(ObjectViewType objViewType)
 {
-    QMutexLocker locker(&mutex);
+    QMutexLocker lock(&mutex);
 
     QList<OPWidgetFactory*> factoriesForObjView;
 
@@ -69,6 +69,45 @@ QList<OPWidgetFactory*> OPWidgetFactoryRegistry::getRegisteredFactories(ObjectVi
 
     return factoriesForObjView;
 }
+
+
+OPCommonWidgetFactoryRegistry::OPCommonWidgetFactoryRegistry(QObject *parent)
+    : QObject(parent)
+{
+}
+
+
+OPCommonWidgetFactoryRegistry::~OPCommonWidgetFactoryRegistry()
+{
+    foreach (OPCommonWidgetFactory *factory, factories) {
+        delete factory;
+    }
+}
+
+bool OPCommonWidgetFactoryRegistry::registerFactory(OPCommonWidgetFactory *factory) {
+    QMutexLocker lock(&mutex);
+
+    SAFE_POINT(!factories.contains(factory), "OP common widget factory has been already registered!", false);
+    factories.append(factory);
+
+    return true;
+}
+
+QList<OPCommonWidgetFactory*> OPCommonWidgetFactoryRegistry::getRegisteredFactories(QString groupId) {
+    QMutexLocker lock(&mutex);
+    QList<OPCommonWidgetFactory*> result;
+
+    foreach (OPCommonWidgetFactory *factory, factories) {
+        SAFE_POINT(NULL != factory, "NULL factory!", result);
+        if (factory->isInGroup(groupId)) {
+            result.append(factory);
+        }
+    }
+
+    return result;
+}
+
+
 
 
 } // namespace

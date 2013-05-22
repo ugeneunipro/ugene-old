@@ -148,7 +148,7 @@ public:
     
     static const float zoomMult;
 
-    void setRefrence(QString ref);
+    void setReference(QString ref);
 
     QString getRefSeqName(){return snp.seqName;};
 
@@ -163,7 +163,7 @@ public:
 signals:
     void si_fontChanged(const QFont& f);
     void si_zoomOperationPerformed(bool resizeModeChanged);
-    void si_refrenceSeqChanged(const QString &str);
+    void si_referenceSeqChanged(const QString &str);
     void si_sizeChanged(int newHeight, bool isMinimumSize, bool isMaximumSize);
 
 protected slots:

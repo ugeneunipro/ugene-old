@@ -21,7 +21,10 @@
 
 #include "OptionsPanel.h"
 
+#include <U2Core/AppContext.h>
 #include <U2Core/U2SafePoints.h>
+
+#include <U2Gui/OPWidgetFactoryRegistry.h>
 
 
 namespace U2 {
@@ -127,7 +130,20 @@ void OptionsPanel::openOptionsGroup(const QString& groupId)
         QString("Internal error: can't find a header widget for group '%1'").arg(groupId),);
 
     OPGroupParameters parameters = opWidgetFactory->getOPGroupParameters();
-    widget->createOptionsWidget(groupId, parameters.getTitle(), opWidgetFactory->createWidget(objView));
+
+    // Get common widgets
+    OPCommonWidgetFactoryRegistry *opCommonWidgetFactoryRegistry = AppContext::getOPCommonWidgetFactoryRegistry();
+    QList<OPCommonWidgetFactory*> opCommonWidgetFactories = opCommonWidgetFactoryRegistry->getRegisteredFactories(groupId);
+
+    QList<QWidget*> commonWidgets;
+    foreach (OPCommonWidgetFactory *commonWidgetFactory, opCommonWidgetFactories) {
+        SAFE_POINT(NULL != commonWidgetFactory, "NULL OP common widget factory!", );
+        QWidget *commonWidget = commonWidgetFactory->createWidget(objView);
+        commonWidgets.append(commonWidget);
+    }
+
+    // Create the tab widget
+    widget->createOptionsWidget(groupId, parameters.getTitle(), opWidgetFactory->createWidget(objView), commonWidgets);
     headerWidget->setHeaderSelected();
     activeGroupId = groupId;
 }

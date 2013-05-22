@@ -48,6 +48,23 @@ private:
     QMutex mutex;
 };
 
+class U2GUI_EXPORT OPCommonWidgetFactoryRegistry : public QObject
+{
+    Q_OBJECT
+
+public:
+    OPCommonWidgetFactoryRegistry(QObject *parent = NULL);
+    ~OPCommonWidgetFactoryRegistry();
+
+    bool registerFactory(OPCommonWidgetFactory *factory);
+
+    QList<OPCommonWidgetFactory*> getRegisteredFactories(QString groupId);
+
+private:
+    QList<OPCommonWidgetFactory*> factories;
+    QMutex mutex;
+};
+
 } // namespace
 
 #endif

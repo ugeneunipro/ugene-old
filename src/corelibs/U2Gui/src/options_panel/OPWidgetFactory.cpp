@@ -33,8 +33,18 @@ OPGroupParameters::OPGroupParameters(QString _groupId, QPixmap headerImage, QStr
 {
 }
 
-OPWidgetFactory::OPWidgetFactory()
+OPWidgetFactory::OPWidgetFactory() {
+}
+
+OPWidgetFactory::~OPWidgetFactory() {
+}
+
+OPCommonWidgetFactory::OPCommonWidgetFactory(QList<QString> _groupIds)
+    : groupIds(_groupIds)
 {
+}
+
+OPCommonWidgetFactory::~OPCommonWidgetFactory() {
 }
 
 } // namespace

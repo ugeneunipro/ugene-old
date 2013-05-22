@@ -81,6 +81,7 @@ class AutoAnnotationsSupport;
 class CDSearchFactoryRegistry;
 class GUITestBase;
 class SplicedAlignmentTaskRegistry;
+class OPCommonWidgetFactoryRegistry;
 class OPWidgetFactoryRegistry;
 class WorkflowScriptRegistry;
 class AppFileStorage;
@@ -212,6 +213,8 @@ public:
 
     static SplicedAlignmentTaskRegistry* getSplicedAlignmentTaskRegistry() { return getInstance()->_getSplicedAlignmentTaskRegistry(); }
 
+    static OPCommonWidgetFactoryRegistry* getOPCommonWidgetFactoryRegistry() { return getInstance()->_getOPCommonWidgetFactoryRegistry(); }
+
     static OPWidgetFactoryRegistry* getOPWidgetFactoryRegistry() { return getInstance()->_getOPWidgetFactoryRegistry(); }
 
     static U2DbiRegistry *getDbiRegistry() { return getInstance()->_getDbiRegistry(); }
@@ -288,6 +291,7 @@ protected:
     virtual CDSearchFactoryRegistry* _getCDSFactoryRegistry() const = 0;
     virtual GUITestBase* _getGUITestBase() const = 0;
     virtual SplicedAlignmentTaskRegistry* _getSplicedAlignmentTaskRegistry() const = 0;
+    virtual OPCommonWidgetFactoryRegistry* _getOPCommonWidgetFactoryRegistry() const = 0;
     virtual OPWidgetFactoryRegistry* _getOPWidgetFactoryRegistry() const = 0;
     virtual WorkflowScriptRegistry* _getWorkflowScriptRegistry() const = 0;
     virtual AppFileStorage *_getAppFileStorage() const = 0;

@@ -53,7 +53,8 @@ HEADERS += src/Init.h \
            src/ov_msa/MSAEditorUndoFramework.h \
            src/ov_msa/SaveSelectedSequenceFromMSADialogController.h \
            src/ov_msa/ColorSchemaDialogController.h \
-		   src/ov_msa/ColorSchemaSettingsController.h \                      
+		   src/ov_msa/ColorSchemaSettingsController.h \
+                   src/ov_msa/Common/RefSeqCommonWidget.h \
 		   src/ov_msa/SeqStatistics/SeqStatisticsWidget.h \
 		   src/ov_msa/SeqStatistics/SeqStatisticsWidgetFactory.h \   
 		   src/ov_msa/Display/MSADisplayTab.h \
@@ -241,6 +242,7 @@ SOURCES += src/Init.cpp \
            src/ov_msa/SaveSelectedSequenceFromMSADialogController.cpp \
            src/ov_msa/ColorSchemaDialogController.cpp \           
            src/ov_msa/ColorSchemaSettingsController.cpp \
+                   src/ov_msa/Common/RefSeqCommonWidget.cpp \
 		   src/ov_msa/SeqStatistics/SeqStatisticsWidget.cpp \
 		   src/ov_msa/SeqStatistics/SeqStatisticsWidgetFactory.cpp \    
 		   src/ov_msa/Display/MSADisplayTab.cpp \

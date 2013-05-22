@@ -68,7 +68,7 @@ MSAEditorOffsetsViewController::MSAEditorOffsetsViewController(QObject* p, MSAEd
     viewAction->setCheckable(true);
     viewAction->setChecked(showOffsets);
     connect(viewAction, SIGNAL(triggered(bool)), SLOT(sl_showOffsets(bool)));
-    connect(editor, SIGNAL(si_refrenceSeqChanged(const QString &)), SLOT(sl_refSeqChanged(const QString &)));
+    connect(editor, SIGNAL(si_referenceSeqChanged(const QString &)), SLOT(sl_refSeqChanged(const QString &)));
 
     updateOffsets();
 }

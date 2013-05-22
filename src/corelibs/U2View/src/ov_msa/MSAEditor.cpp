@@ -447,11 +447,12 @@ QWidget* MSAEditor::createWidget() {
     connect(setAsRefrenceSequenceAction, SIGNAL(triggered()), SLOT(sl_setSeqAsRefrence()));
 
     optionsPanel = new OptionsPanel(this);
-    OPWidgetFactoryRegistry* opWidgetFactoryRegistry = AppContext::getOPWidgetFactoryRegistry();
-    QList<OPWidgetFactory*> opWidgetFactoriesForSeqView = opWidgetFactoryRegistry->getRegisteredFactories(ObjViewType_AlignmentEditor);
-    foreach (OPWidgetFactory* factory, opWidgetFactoriesForSeqView) {
+    OPWidgetFactoryRegistry *opWidgetFactoryRegistry = AppContext::getOPWidgetFactoryRegistry();
+    QList<OPWidgetFactory*> opWidgetFactories = opWidgetFactoryRegistry->getRegisteredFactories(ObjViewType_AlignmentEditor);
+    foreach (OPWidgetFactory *factory, opWidgetFactories) {
         optionsPanel->addGroup(factory);
     }
+
     connect(ui, SIGNAL(si_showTreeOP()), SLOT(sl_showTreeOP()));
     connect(ui, SIGNAL(si_hideTreeOP()), SLOT(sl_hideTreeOP()));
     sl_hideTreeOP();
@@ -641,15 +642,15 @@ void MSAEditor::sl_setSeqAsRefrence(){
         //clicked on sequence
         QString newName = ui->nameList->sequenceAtPos(nameMapped);
         if (!newName.isEmpty() && newName != snp.seqName){
-            setRefrence(newName);
-            emit si_refrenceSeqChanged(newName);
+            setReference(newName);
+            emit si_referenceSeqChanged(newName);
         }        
     }
 }
 
-void MSAEditor::setRefrence( QString ref ){
+void MSAEditor::setReference(QString ref) {
     snp.seqName = ref;
-    emit si_refrenceSeqChanged(ref);
+    emit si_referenceSeqChanged(ref);
     //REDRAW OTHER WIDGETS
 }
 

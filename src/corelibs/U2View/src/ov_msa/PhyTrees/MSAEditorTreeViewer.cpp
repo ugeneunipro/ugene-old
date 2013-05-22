@@ -105,7 +105,7 @@ void MSAEditorTreeViewer::setSynchronizationMode(SynchronizationMode newSyncMode
             connect(msa, SIGNAL(si_sizeChanged(int, bool, bool)), treeViewerUI, SLOT(sl_onHeightChanged(int, bool, bool)));
 
             connect(treeViewerUI,   SIGNAL(si_treeZoomedIn()),                      msa,  SLOT(sl_zoomIn()));
-            connect(msa,   SIGNAL(si_refrenceSeqChanged(const QString &)), treeViewerUI,  SLOT(sl_onReferenceSeqChanged(const QString &)));
+            connect(msa,   SIGNAL(si_referenceSeqChanged(const QString &)), treeViewerUI,  SLOT(sl_onReferenceSeqChanged(const QString &)));
             connect(treeViewerUI,   SIGNAL(si_treeZoomedOut()),                     msa,  SLOT(sl_zoomOut()));
             connect(msaUI->getSequenceArea(),   SIGNAL(si_visibleRangeChanged(QStringList)), treeViewerUI, SLOT(sl_onVisibleRangeChanged(QStringList)));
 

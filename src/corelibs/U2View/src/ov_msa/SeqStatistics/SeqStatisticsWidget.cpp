@@ -30,9 +30,6 @@
 
 namespace U2 {
 
-static const int ITEMS_SPACING = 10;
-static const int TITLE_SPACING = 5;
-
 static inline QVBoxLayout * initLayout(QWidget * w) {
     QVBoxLayout * layout = new QVBoxLayout;
     layout->setContentsMargins(0, 0, 0, 0);
@@ -53,7 +50,7 @@ SeqStatisticsWidget::SeqStatisticsWidget(MSAEditor* m):msa(m){
 
     distancesStatisticsGroup = new QWidget(this);
     ui.setupUi(distancesStatisticsGroup);
-    QWidget * similarityGroup = new ShowHideSubgroupWidget("REFRENCE", tr("Distances column"), distancesStatisticsGroup, true);
+    QWidget * similarityGroup = new ShowHideSubgroupWidget("REFERENCE", tr("Distances column"), distancesStatisticsGroup, true);
     updateWidgetsSettings();
     mainLayout->addWidget(similarityGroup);
 }
@@ -101,7 +98,7 @@ void SeqStatisticsWidget::connectSlots() {
     connect(ui.percentsButton,           SIGNAL(clicked(bool)),                         SLOT(sl_onUnitsChanged(bool)));
     connect(ui.showDistancesColumnCheck, SIGNAL(stateChanged (int)),                    SLOT(sl_onShowStatisticsChanged(int)));
     connect(ui.autoUpdateCheck,          SIGNAL(stateChanged (int)),                    SLOT(sl_onAutoUpdateChanged(int)));
-    connect(msa,                         SIGNAL(si_refrenceSeqChanged(const QString&)), SLOT(sl_onRefSeqChanged(const QString&)));
+    connect(msa,                         SIGNAL(si_referenceSeqChanged(const QString&)), SLOT(sl_onRefSeqChanged(const QString&)));
 }
 
 void SeqStatisticsWidget::restoreSettings() {
