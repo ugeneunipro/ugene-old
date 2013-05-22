@@ -350,8 +350,7 @@ void MSAEditorNameList::mousePressEvent(QMouseEvent *e) {
         if (ui->isCollapsibleMode()) {
             MSACollapsibleItemModel* m = ui->getCollapseModel();
             if(curSeq >= m->displayedRowsCount()){
-                QWidget::mousePressEvent(e);
-                return;
+                curSeq = m->getLastPos();
             }
             if (m->isTopLevel(curSeq)) {
                 const U2Region& yRange = ui->seqArea->getSequenceYRange(curSeq, true);
