@@ -272,8 +272,9 @@ public:
     void setCollapsibleMode(bool collapse) { collapsibleMode = collapse; }
     MSACollapsibleItemModel* getCollapseModel() const { return collapseModel; }
 
-    MSAEditorSequenceArea* getSequenceArea() {return seqArea;}
-    MSAEditorNameList*     getEditorNameList() {return nameList;}
+    MSAEditorSequenceArea*  getSequenceArea() {return seqArea;}
+    MSAEditorNameList*      getEditorNameList() {return nameList;}
+    MSAEditorConsensusArea* getConsensusArea() {return consArea;}
 
     void createDistanceColumn(MSADistanceMatrix* algo);
 

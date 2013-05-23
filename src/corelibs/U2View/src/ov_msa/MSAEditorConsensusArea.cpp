@@ -396,13 +396,15 @@ void MSAEditorConsensusArea::updateThresholdInfoInConsensusDialog() {
 }
 
 void MSAEditorConsensusArea::sl_changeConsensusAlgorithm(const QString& algoId) {
-    assert(consensusDialog!=NULL);
     MSAConsensusAlgorithmFactory* algoFactory = AppContext::getMSAConsensusAlgorithmRegistry()->getAlgorithmFactory(algoId);
     if (getConsensusAlgorithm()->getFactory() != algoFactory) {
         assert(algoFactory!=NULL);
         setConsensusAlgorithm(algoFactory);
     } 
-    updateThresholdInfoInConsensusDialog();
+    if (NULL != consensusDialog) {
+        updateThresholdInfoInConsensusDialog();
+    }
+    emit si_consensusAlgorithmChanged(algoId);
 }
 
 
@@ -467,6 +469,7 @@ MSAConsensusAlgorithm* MSAEditorConsensusArea::getConsensusAlgorithm() const {
 
 void MSAEditorConsensusArea::sl_changeConsensusThreshold(int val) {
     setConsensusAlgorithmConsensusThreshold(val);
+    emit si_consensusThresholdChanged(val);
 }
 
 

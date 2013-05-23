@@ -69,6 +69,10 @@ protected:
     void mouseMoveEvent(QMouseEvent *e);
     void mouseReleaseEvent(QMouseEvent *e);
 
+signals:
+    void si_consensusAlgorithmChanged(const QString& algoId);
+    void si_consensusThresholdChanged(int value);
+
 private slots:
     void sl_startChanged(const QPoint&, const QPoint&);
     void sl_selectionChanged(const MSAEditorSelection& current, const MSAEditorSelection& prev);

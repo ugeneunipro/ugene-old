@@ -60,6 +60,10 @@ void Init::initOptionsPanels()
 
 
     //MSA groups
+    MSAGeneralTabFactory *msaGeneralTabFactory = new MSAGeneralTabFactory();
+    QString msaGeneralId = msaGeneralTabFactory->getOPGroupParameters().getGroupId();
+    opWidgetFactoryRegistry->registerFactory(msaGeneralTabFactory);
+
     MSAHighlightingFactory *msaHighlightingFactory = new MSAHighlightingFactory();
     QString msaHighlightingId = msaHighlightingFactory->getOPGroupParameters().getGroupId();
     opWidgetFactoryRegistry->registerFactory(msaHighlightingFactory);
@@ -71,10 +75,6 @@ void Init::initOptionsPanels()
     SeqStatisticsWidgetFactory *msaSeqStatisticvsFactory = new SeqStatisticsWidgetFactory();
     QString msaSeqStatisticsId = msaSeqStatisticvsFactory->getOPGroupParameters().getGroupId();
     opWidgetFactoryRegistry->registerFactory(msaSeqStatisticvsFactory);
-
-    MSAGeneralTabFactory *msaGeneralTabFactory = new MSAGeneralTabFactory();
-    QString msaGeneralId = msaGeneralTabFactory->getOPGroupParameters().getGroupId();
-    opWidgetFactoryRegistry->registerFactory(msaGeneralTabFactory);
 
     // MSA common widgets
     QList<QString> groupIds;

@@ -188,7 +188,8 @@ FORMS += src/ov_assembly/ui/ExportConsensusDialog.ui \
          src/util_smith_waterman/ui/SmithWatermanDialogBase.ui \
          src/util_smith_waterman/ui/SubstMatrixDialogBase.ui \
     src/ui/LicenseDialog.ui \ 
-    src/ov_msa/ui/PairwiseAlignmentOptionsPanelWidget.ui
+    src/ov_msa/ui/PairwiseAlignmentOptionsPanelWidget.ui \
+    src/ov_msa/ui/GeneralTabOptionsPanelWidget.ui
 SOURCES += src/Init.cpp \
            src/UndoRedoFramework.cpp \
            src/WebWindow.cpp \
@@ -343,6 +344,7 @@ TRANSLATIONS += transl/chinese.ts \
                 transl/czech.ts \
                 transl/english.ts \
                 transl/russian.ts
+
 
 
 

@@ -23,19 +23,42 @@
 #define _U2_MSA_GENERAL_TAB_H_
 
 #include "../SequenceSelectorWidgetController.h"
+#include "ui/ui_GeneralTabOptionsPanelWidget.h"
 
 #include <QtGui/QtGui>
-#include <U2View/MSAEditor.h>
-
 
 namespace U2 {
 
+class MAlignment;
+class MAlignmentModInfo;
+class MSAEditor;
 
-class U2VIEW_EXPORT MSAGeneralTab : public QWidget
+class U2VIEW_EXPORT MSAGeneralTab : public QWidget, public Ui_GeneralTabOptionsPanelWidget
 {
     Q_OBJECT
 public:
-    MSAGeneralTab();
+    MSAGeneralTab(MSAEditor* _msa);
+
+signals:
+    void si_algorithmChanged(const QString& algoId);
+    void si_thresholdChanged(int val);
+
+public slots:
+    void sl_alignmentChanged(const MAlignment& al, const MAlignmentModInfo& modInfo);
+    void sl_algorithmChanged(const QString& algoId);
+    void sl_thresholdChanged(int value);
+    void sl_algorithmSelectionChanged(int index);
+    void sl_thresholdSliderChanged(int value);
+    void sl_thresholdSpinBoxChanged(int value);
+    void sl_thresholdResetClicked(bool newState);
+
+private:
+    void connectSignals();
+    void initializeParameters();
+    void updateState();
+    void updateThresholdState(bool enable, int minVal = 0, int maxVal = 0, int value = 0);
+
+    MSAEditor* msa;
 };
 
 
