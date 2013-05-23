@@ -30,5 +30,6 @@
 	<file>images/toggle.png</file>
 	<file>images/toggle_expand.png</file>
 	<file>images/wd.png</file>
+	<file>images/wizard.png</file>
     </qresource>
 </RCC>

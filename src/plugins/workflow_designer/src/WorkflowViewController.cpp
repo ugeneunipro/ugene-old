@@ -333,6 +333,8 @@ void WorkflowView::createActions() {
     connect(saveAsAction, SIGNAL(triggered()), SLOT(sl_saveSceneAs()));
 
     showWizard = new QAction(tr("Show wizard"), this);
+    QPixmap pm = QPixmap(":workflow_designer/images/wizard.png").scaled(16, 16);
+    showWizard->setIcon(QIcon(pm));
     connect(showWizard, SIGNAL(triggered()), SLOT(sl_showWizard()));
 
     loadAction = new QAction(tr("&Load schema"), this);
@@ -350,7 +352,7 @@ void WorkflowView::createActions() {
     connect(deleteAction, SIGNAL(triggered()), scene, SLOT(sl_deleteItem()));
 
     { // Delete shortcut
-        QAction *deleteShortcut = new QAction(sceneView);
+        deleteShortcut = new QAction(sceneView);
         deleteShortcut->setShortcuts(QKeySequence::Delete);
         deleteShortcut->setShortcutContext(Qt::WidgetShortcut);
         connect(deleteShortcut, SIGNAL(triggered()), scene, SLOT(sl_deleteItem()));
@@ -694,6 +696,7 @@ void WorkflowView::sl_toggleLock(bool b) {
     }
 
     deleteAction->setEnabled(b);
+    deleteShortcut->setEnabled(b);
     selectAction->setEnabled(b);
     copyAction->setEnabled(b);
     pasteAction->setEnabled(b);
@@ -835,6 +838,7 @@ void WorkflowView::setupMDIToolbar(QToolBar* tb) {
     tb->addAction(saveAction);
     tb->addAction(saveAsAction);
     tb->addSeparator();
+    tb->addAction(showWizard);
     tb->addAction(validateAction);
     tb->addAction(runAction);
     tb->addAction(stopAction);
@@ -887,7 +891,6 @@ void WorkflowView::setupMDIToolbar(QToolBar* tb) {
     scriptingMode->setDefaultAction( scriptingModeMenu->menuAction() );
     scriptingMode->setPopupMode( QToolButton::InstantPopup );
     tb->addWidget( scriptingMode );
-    tb->addAction(showWizard);
 }
 
 void WorkflowView::setupViewMenu(QMenu* m) {
@@ -1652,7 +1655,7 @@ void WorkflowView::sl_updateUi() {
     propertyEditor->setIterated(iterated);
     iterationModeAction->setChecked(iterated);
     scene->setModified(false);
-    showWizard->setDisabled(schema->getWizards().isEmpty());
+    showWizard->setVisible(!schema->getWizards().isEmpty());
 }
 
 void WorkflowView::saveState() {

@@ -248,6 +248,7 @@ private:
     Actor* currentActor;
 
     QAction* deleteAction;
+    QAction* deleteShortcut;
     QAction* selectAction;
     //QAction* bringToFrontAction;
     //QAction* sendToBackAction;
