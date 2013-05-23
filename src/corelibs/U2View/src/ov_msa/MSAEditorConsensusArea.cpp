@@ -445,7 +445,7 @@ void MSAEditorConsensusArea::setConsensusAlgorithmConsensusThreshold(int val) {
         return;
     }
     //store threshold as the last value 
-    AppContext::getSettings()->setValue(getThresholdSettingsKey(algo->getId()), algo->getThreshold());
+    AppContext::getSettings()->setValue(getThresholdSettingsKey(algo->getId()), val);
     algo->setThreshold(val);
 }
 
