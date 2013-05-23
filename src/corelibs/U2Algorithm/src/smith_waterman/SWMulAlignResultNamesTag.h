@@ -33,7 +33,7 @@ class U2ALGORITHM_EXPORT SWMulAlignResultNamesTag {
 public:
     inline SWMulAlignResultNamesTag(const QString _shorthand, const QString _label); 
     virtual ~SWMulAlignResultNamesTag() {}
-    virtual QString expandTag(const QVariant & argument = NULL) const = 0;
+    virtual QString expandTag(const QVariant & argument = QVariant ()) const = 0;
 
     inline const QString & getShorthand() const;
     inline const QString & getLabel() const;

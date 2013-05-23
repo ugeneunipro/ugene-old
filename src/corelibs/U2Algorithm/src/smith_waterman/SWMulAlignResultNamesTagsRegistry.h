@@ -79,7 +79,7 @@ public:
 
 private:
     bool registerTag(SWMulAlignResultNamesTag * tag);
-    QString tagExpansion(const QString & shorthand, const QVariant & argument = NULL) const;
+    QString tagExpansion(const QString & shorthand, const QVariant & argument = QVariant()) const;
     QList<SWMulAlignResultNamesTag *> * getTagsWithCorrectOrder() const;
 
     QMutex mutex;
