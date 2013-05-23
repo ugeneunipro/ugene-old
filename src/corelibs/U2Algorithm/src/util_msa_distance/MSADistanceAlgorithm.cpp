@@ -103,7 +103,15 @@ MSADistanceMatrix::MSADistanceMatrix(const MSADistanceAlgorithm *algo, bool _use
             int len1 = algo->ma.getRow(i).getUngappedLength();
             int len2 = algo->ma.getRow(j).getUngappedLength();
             int minLen = qMin(len1, len2);
-            percentsTable[i][j] = percentsTable[j][i] = qRound(distanceTable[i][j] * 100.0 / minLen);
+            // TODO: UGENE-1672 and UGENE-1374. Remove this code after fixing them:
+            int p = qRound(distanceTable[i][j] * 100.0 / minLen);
+            if (p > 100) {
+                p = 100;
+            } else if (p < 0) {
+                p = 0;
+            }
+            ////////////////////////////////
+            percentsTable[i][j] = percentsTable[j][i] = p;
         }
     }
 }
