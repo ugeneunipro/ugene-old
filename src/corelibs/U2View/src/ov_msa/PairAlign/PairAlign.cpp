@@ -63,12 +63,6 @@
 
 namespace U2 {
 
-const QString NEW_LINE_SYMBOL = "\n";
-const QString COLOR_NAME_FOR_INFO_MESSAGES = "green";
-const QString COLOR_NAME_FOR_WARNING_MESSAGES = "orange";
-const QString STYLESHEET_COLOR_DEFINITION = "color: ";
-const QString STYLESHEET_DEFINITIONS_SEPARATOR = ";";
-
 PairAlign::PairAlign(MSAEditor* _msa) : msa(_msa), pairwiseAlignmentWidgetsSettings(_msa->getPairwiseAlignmentWidgetsSettings()),
     distanceCalcTask(NULL), settingsWidget(NULL),
     showHideSequenceWidget(NULL), showHideSettingsWidget(NULL), showHideOutputWidget(NULL),
@@ -76,7 +70,7 @@ PairAlign::PairAlign(MSAEditor* _msa) : msa(_msa), pairwiseAlignmentWidgetsSetti
     showAlgorithmWidget(_msa->getPairwiseAlignmentWidgetsSettings()->showAlgorithmWidget),
     showOutputWidget(_msa->getPairwiseAlignmentWidgetsSettings()->showOutputWidget),
     firstSequenceSelectionOn(false), secondSequenceSelectionOn(false),
-    sequencesChanged(true), sequenceNamesIsOk(false), alphabetIsOk(false){
+    sequencesChanged(true), sequenceNamesIsOk(false), alphabetIsOk(false) {
     SAFE_POINT(NULL != msa, "MSA Editor is NULL.", );
     SAFE_POINT(NULL != pairwiseAlignmentWidgetsSettings, "pairwiseAlignmentWidgetsSettings is NULL.", );
 
@@ -108,11 +102,9 @@ void PairAlign::initLayout() {
 }
 
 void PairAlign::initParameters() {
-    if (msa->getCurrentSelection().height() > 1) {
-        secondSeqSelectorWC->setText(msa->getMSAObject()->getRow(msa->getCurrentSelection().y() + 1).getName());
-    }
-    if (msa->getCurrentSelection().height() > 0) {
+    if (2 == msa->getCurrentSelection().height()) {
         firstSeqSelectorWC->setText(msa->getMSAObject()->getRow(msa->getCurrentSelection().y()).getName());
+        secondSeqSelectorWC->setText(msa->getMSAObject()->getRow(msa->getCurrentSelection().y() + 1).getName());
     } else {
         firstSeqSelectorWC->setText(pairwiseAlignmentWidgetsSettings->firstSequenceName);
         secondSeqSelectorWC->setText(pairwiseAlignmentWidgetsSettings->secondSequenceName);
