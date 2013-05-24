@@ -899,14 +899,19 @@ U2TrackModType ModificationAction::prepare(U2OpStatus& os) {
         qint64 masterObjVersionToTrack = dbi->getObjectDbi()->getObjectVersion(masterObjId, os);
         SAFE_POINT_OP(os, trackMod);
 
-        // If a user mod step has already been created for this action
-        // then it can not be deleted. The version must be incremented.
-        // Obsolete duplicate step must be deleted
+        // If a userModStep has already been created for this action:
         if (dbi->getSQLiteModDbi()->isUserStepStarted()) {
+            // There can be two cases when there are several userModSteps with the same object version:
+            // Case 1: "action > undo > action" (in this case there will be 2 userModSteps)
+            // Case 2: empty userModSteps were started and ended, i.e. there are no multiModSteps for them
+            // Both these cases are checked by the function below, it removes the obsolete steps.
             dbi->getSQLiteModDbi()->removeDuplicateUserStep(masterObjId, masterObjVersionToTrack, os);
+
+            // Increment the object version
             masterObjVersionToTrack++;
         }
 
+        // A user pressed "Undo" (maybe several times), did another action => there is no more "Redo" history
         dbi->getSQLiteModDbi()->removeModsWithGreaterVersion(masterObjId, masterObjVersionToTrack, os);
         if (os.hasError()) {
             dbi->getSQLiteModDbi()->cleanUpAllStepsOnError();

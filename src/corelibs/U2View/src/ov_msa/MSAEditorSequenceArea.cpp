@@ -906,7 +906,8 @@ void MSAEditorSequenceArea::mouseMoveEvent( QMouseEvent* e )
         } 
 
         if (shifting) {
-            shiftSelectedRegion( newCurPos.x() - cursorPos.x() );
+            selectedRegionShifts.push(newCurPos.x() - cursorPos.x());
+            shiftSelectedRegion();
         } else if (selecting){
                 rubberBand->setGeometry(QRect(origin, e->pos()).normalized());
         }
@@ -941,7 +942,8 @@ void MSAEditorSequenceArea::mouseReleaseEvent(QMouseEvent *e)
         }
         if (shifting) {
             int shift = newCurPos.x() - cursorPos.x();
-            shiftSelectedRegion(shift);
+            selectedRegionShifts.push(shift);
+            shiftSelectedRegion();
         } else {
             updateSelection(newCurPos);
         }
@@ -1901,30 +1903,43 @@ void MSAEditorSequenceArea::sl_copyCurrentSelection()
     
 }
 
-void MSAEditorSequenceArea::shiftSelectedRegion( int shift )
+void MSAEditorSequenceArea::shiftSelectedRegion()
 {
-    QMutexLocker m(&lock);
-    if (shift == 0) {
-        return;
+    static bool alreadyShifting = false;
+    if (!alreadyShifting) {
+        alreadyShifting = true;
+
+        SAFE_POINT(!selectedRegionShifts.isEmpty(), "Shifts stack is empty unexpectedly!", );
+        int currShift = selectedRegionShifts.pop();
+
+        if (currShift != 0) {
+            MAlignmentObject* maObj = editor->getMSAObject();
+            if ( !maObj->isStateLocked() ) {
+                const U2Region rows = getSelectedRows();
+                const int x = selection.x();
+                const int y = rows.startPos;
+                const int width = selection.width();
+                const int height = rows.length;
+                if (!maObj->isRegionEmpty(x, y, width, height)) {
+                    U2OpStatus2Log os;
+                    U2UseCommonUserModStep userModStep(maObj->getEntityRef(), os);
+                    const bool shiftOk = maObj->shiftRegion(x, y, width, height, currShift);
+                    if (shiftOk) {
+                        setCursorPos(cursorPos.x() + currShift, cursorPos.y());
+                        moveSelection(currShift, 0);
+                    }
+                }
+            }   
+        }
+
+        alreadyShifting = false;
     }
-  
-    MAlignmentObject* maObj = editor->getMSAObject();
-    if ( !maObj->isStateLocked() ) {
-        const U2Region rows = getSelectedRows();
-        const int x = selection.x();
-        const int y = rows.startPos;
-        const int width = selection.width();
-        const int height = rows.length;
-        if (maObj->isRegionEmpty(x,y,width,height)) {
-            return;
-        }
-        U2OpStatus2Log os;
-        U2UseCommonUserModStep userModStep(maObj->getEntityRef(), os);
-        const bool shiftOk = maObj->shiftRegion(x,y,width,height,shift);
-        if (shiftOk) {
-            cursorPos.setX(cursorPos.x() + shift);
-            moveSelection(shift,0);
-        }
+    checkShifts();
+}
+
+void MSAEditorSequenceArea::checkShifts() {
+    if (!selectedRegionShifts.isEmpty()) {
+        shiftSelectedRegion();
     }
 }
 

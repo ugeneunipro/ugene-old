@@ -261,9 +261,29 @@ void SQLiteModDbi::removeDuplicateUserStep(const U2DataId &masterObjId, qint64 m
     }
     SAFE_POINT_OP(os, );
 
+    // Case 2
+    if (userStepIds.count() > 2) {
+        QList<qint64> userStepsToRemove;
+        SQLiteQuery qCheckMultiSteps("SELECT COUNT(*) FROM MultiModStep WHERE userStepId = ?1", db, os);
+        foreach (qint64 userStepId, userStepIds) {
+            qCheckMultiSteps.reset();
+            qCheckMultiSteps.bindInt64(1, userStepId);
+            qint64 count = qCheckMultiSteps.selectInt64();
+            if (0 == count) {
+                userStepsToRemove.append(userStepId);
+                bool status = userStepIds.removeOne(userStepId);
+                assert(true == status);
+            }
+        }
+        removeSteps(userStepsToRemove, os);
+    }
+
+    // No duplicates
     if (userStepIds.count() < 2) {
         return;
     }
+
+    // Case 1
     assert(2 == userStepIds.count());
 
     // Don't take into account user step with the greatest id
