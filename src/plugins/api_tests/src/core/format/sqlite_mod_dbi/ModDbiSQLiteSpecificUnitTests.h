@@ -104,9 +104,10 @@ private:
  *   ^ startMulti           - creates 2 single steps with one multi, "U2UseCommonMultiModStep" is used to start/end multi step
  *   ^ start2MultiNoUser    - creates 2 single steps in one multi, and one more single step in another multi,
                               there must be 2 different user steps.
- *   ^ startUser            - create a user step using "U2UseCommonUserStep"
- *   ^ oneUser2Multi        -
- *   ^ severalUser          -
+ *   ^ startUser            - creates a user step using "U2UseCommonUserStep".
+ *   ^ oneUser2Multi        - creates a user step with tho multi steps in it.
+ *   ^ severalUser          - creates several user steps with a multi step in every user step.
+ *   ^ separateThread       - creates a user step in an another thread.
  */
 DECLARE_MOD_TEST(ModDbiSQLiteSpecificUnitTests, createStep_noMultiAndUser);
 DECLARE_MOD_TEST(ModDbiSQLiteSpecificUnitTests, createStep_noMultiAndUser2Steps);
@@ -151,6 +152,14 @@ DECLARE_MOD_TEST(ModDbiSQLiteSpecificUnitTests, userSteps_severalAct_diffObj);
 DECLARE_MOD_TEST(ModDbiSQLiteSpecificUnitTests, userSteps_severalActUndo_diffObj);
 DECLARE_MOD_TEST(ModDbiSQLiteSpecificUnitTests, userSteps_severalActUndoRedo_diffObj);
 DECLARE_MOD_TEST(ModDbiSQLiteSpecificUnitTests, userSteps_severalActUndoRedoAct_diffObj);
+
+/**
+ * Verify removing duplicated user modifications steps.
+ *   ^ noDupNoEmpty                 - creates 2 user mod steps with multi steps for different versions of the master object.
+ *   ^ severalEmptyUser             - creates 3 empty user steps.
+ */
+DECLARE_MOD_TEST(ModDbiSQLiteSpecificUnitTests, removeDup_noDupNoEmpty);
+DECLARE_MOD_TEST(ModDbiSQLiteSpecificUnitTests, removeDup_severalEmptyUser);
 
 ///////////////////////////////////////////////////////////////
 // Tests for U2ModDbi that assume that SQLiteDbi was used.
@@ -245,5 +254,9 @@ DECLARE_METATYPE(ModDbiSQLiteSpecificUnitTests, setNewRowsOrder_severalUndoThenA
 DECLARE_METATYPE(ModDbiSQLiteSpecificUnitTests, updateRowName_noModTrack);
 DECLARE_METATYPE(ModDbiSQLiteSpecificUnitTests, updateRowName_severalSteps);
 DECLARE_METATYPE(ModDbiSQLiteSpecificUnitTests, updateRowName_severalUndoThenAction);
+
+
+DECLARE_METATYPE(ModDbiSQLiteSpecificUnitTests, removeDup_noDupNoEmpty);
+DECLARE_METATYPE(ModDbiSQLiteSpecificUnitTests, removeDup_severalEmptyUser);
 
 #endif

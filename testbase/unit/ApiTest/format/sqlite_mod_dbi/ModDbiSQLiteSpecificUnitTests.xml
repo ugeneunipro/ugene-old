@@ -44,5 +44,7 @@ ModDbiSQLiteSpecificUnitTests
 + updateRowName_noModTrack
 + updateRowName_severalSteps
 + updateRowName_severalUndoThenAction
++ removeDup_noDupNoEmpty
++ removeDup_severalEmptyUser
 
 </unittest>

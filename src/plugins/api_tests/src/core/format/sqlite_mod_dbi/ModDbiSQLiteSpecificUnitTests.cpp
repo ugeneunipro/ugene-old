@@ -2753,4 +2753,96 @@ IMPLEMENT_MOD_TEST(ModDbiSQLiteSpecificUnitTests, userSteps_severalActUndoRedoAc
     CHECK_EQUAL(baseVersion1 + 1, actualUserSteps[1].version, "user step version");
 }
 
+IMPLEMENT_MOD_TEST(ModDbiSQLiteSpecificUnitTests, removeDup_noDupNoEmpty) {
+    SQLiteDbi* sqliteDbi = ModSQLiteSpecificTestData::getSQLiteDbi();
+    U2OpStatusImpl os;
+
+    U2DataId masterObjId = ModSQLiteSpecificTestData::createTestMsa(true, os); CHECK_NO_ERROR(os);
+
+    QList<U2SingleModStep> single;
+    QList<U2MultiModStep4Test> multi;
+    QList<U2UserModStep4Test> user;
+
+    {
+        U2UseCommonUserModStep useUserStep(sqliteDbi, masterObjId, os); CHECK_NO_ERROR(os);
+        Q_UNUSED(useUserStep);
+        sqliteDbi->getMsaDbi()->updateMsaName(masterObjId, "renamed object #1", os); CHECK_NO_ERROR(os);
+    }
+    qint64 objVersion1 = sqliteDbi->getObjectDbi()->getObjectVersion(masterObjId, os); CHECK_NO_ERROR(os);
+
+    {
+        U2UseCommonUserModStep useUserStep(sqliteDbi, masterObjId, os); CHECK_NO_ERROR(os);
+        Q_UNUSED(useUserStep);
+        sqliteDbi->getMsaDbi()->updateMsaName(masterObjId, "renamed object #2", os); CHECK_NO_ERROR(os);
+    }
+    qint64 objVersion2 = sqliteDbi->getObjectDbi()->getObjectVersion(masterObjId, os); CHECK_NO_ERROR(os);
+
+    CHECK_FALSE(objVersion1 == objVersion2, "object version");
+
+    ModSQLiteSpecificTestData::getAllSteps(single, multi, user, os); CHECK_NO_ERROR(os);
+
+    CHECK_EQUAL(2, single.count(), "single steps num");
+    CHECK_EQUAL(2, multi.count(), "multi steps num");
+    CHECK_EQUAL(2, user.count(), "user steps num");
+
+    // Test function
+    sqliteDbi->getSQLiteModDbi()->removeDuplicateUserStep(masterObjId, objVersion1, os); CHECK_NO_ERROR(os);
+    sqliteDbi->getSQLiteModDbi()->removeDuplicateUserStep(masterObjId, objVersion2, os); CHECK_NO_ERROR(os);
+
+    // Verify the result
+    ModSQLiteSpecificTestData::getAllSteps(single, multi, user, os); CHECK_NO_ERROR(os);
+
+    CHECK_EQUAL(2, single.count(), "single steps num");
+    CHECK_EQUAL(2, multi.count(), "multi steps num");
+    CHECK_EQUAL(2, user.count(), "user steps num");
+}
+
+IMPLEMENT_MOD_TEST(ModDbiSQLiteSpecificUnitTests, removeDup_severalEmptyUser) {
+    SQLiteDbi* sqliteDbi = ModSQLiteSpecificTestData::getSQLiteDbi();
+    U2OpStatusImpl os;
+
+    U2DataId masterObjId = ModSQLiteSpecificTestData::createObject(os); CHECK_NO_ERROR(os);
+
+    QList<U2SingleModStep> single;
+    QList<U2MultiModStep4Test> multi;
+    QList<U2UserModStep4Test> user;
+
+    {
+        U2UseCommonUserModStep useUserStep(sqliteDbi, masterObjId, os); CHECK_NO_ERROR(os);
+        Q_UNUSED(useUserStep);
+    }
+    qint64 objVersion1 = sqliteDbi->getObjectDbi()->getObjectVersion(masterObjId, os); CHECK_NO_ERROR(os);
+
+    {
+        U2UseCommonUserModStep useUserStep(sqliteDbi, masterObjId, os); CHECK_NO_ERROR(os);
+        Q_UNUSED(useUserStep);
+    }
+    qint64 objVersion2 = sqliteDbi->getObjectDbi()->getObjectVersion(masterObjId, os); CHECK_NO_ERROR(os);
+
+    {
+        U2UseCommonUserModStep useUserStep(sqliteDbi, masterObjId, os); CHECK_NO_ERROR(os);
+        Q_UNUSED(useUserStep);
+    }
+    qint64 objVersion3 = sqliteDbi->getObjectDbi()->getObjectVersion(masterObjId, os); CHECK_NO_ERROR(os);
+
+    CHECK_TRUE(objVersion1 == objVersion2, "object version");
+    CHECK_TRUE(objVersion1 == objVersion3, "object version");
+
+    ModSQLiteSpecificTestData::getAllSteps(single, multi, user, os); CHECK_NO_ERROR(os);
+
+    CHECK_EQUAL(0, single.count(), "single steps num");
+    CHECK_EQUAL(0, multi.count(), "multi steps num");
+    CHECK_EQUAL(3, user.count(), "user steps num");
+
+    // Test function
+    sqliteDbi->getSQLiteModDbi()->removeDuplicateUserStep(masterObjId, objVersion1, os); CHECK_NO_ERROR(os);
+
+    // Verify the result
+    ModSQLiteSpecificTestData::getAllSteps(single, multi, user, os); CHECK_NO_ERROR(os);
+
+    CHECK_EQUAL(0, single.count(), "single steps num");
+    CHECK_EQUAL(0, multi.count(), "multi steps num");
+    CHECK_EQUAL(0, user.count(), "user steps num");
+}
+
 } // namespace
