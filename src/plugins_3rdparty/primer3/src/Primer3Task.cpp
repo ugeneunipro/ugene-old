@@ -543,6 +543,17 @@ void Primer3SWTask::prepare()
     }
 }
 
+inline int getIntersectingRegionIndex(const U2Region& reg, const QList<U2Region>& regions) {
+    for (int i = 0; i < regions.size(); ++i) {
+        const U2Region& targetRegion = regions.at(i);
+        if (targetRegion.contains(reg.startPos)) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+
 Task::ReportResult Primer3SWTask::report()
 {
     foreach(Primer3Task *task, regionTasks)
@@ -559,6 +570,7 @@ Task::ReportResult Primer3SWTask::report()
             setError("can't get PRIMER_NUM_RETURN property");
             return Task::ReportResult_Finished;
         }
+        
         bestPairs = bestPairs.mid(0, pairsCount);
     }
     return Task::ReportResult_Finished;
@@ -602,23 +614,24 @@ QList<Task *> Primer3ToAnnotationsTask::onSubTaskFinished(Task *subTask)
     if (subTask == findExonsTask) {
         QList<U2Region> regions = findExonsTask->getRegions();
         if (regions.isEmpty()) {
-            setError(tr("No exons are found in the sequence. Please, make sure corresponding RNA sequence id (%1) is selected correctly."));
+            setError(tr("No exons are found in the sequence. Please, make sure corresponding RNA sequence is selected correctly."));
             return res;
         }
 
         // TODO: think how to include other regions
 
-        const U2Region& firstRegion = regions.first();
-        int intronStart = firstRegion.endPos() - settings.getSpanIntronExonBoundarySettings().minLeftOverlap;
-        int intronEnd = firstRegion.endPos() + settings.getSpanIntronExonBoundarySettings().minRightOverlap;
-        if (regions.size() > 1 && settings.getSpanIntronExonBoundarySettings().spanIntron) {
-            const U2Region& secondRegion = regions.at(1);
-            intronEnd = secondRegion.startPos + settings.getSpanIntronExonBoundarySettings().minRightOverlap;
+        if (regions.size() > 1) {
+            QList<QPair<int,int> > excluded; 
+            for (int i = 1; i < regions.size(); ++i) {
+                const U2Region& firstRegion = regions.at(i-1);
+                int intronStart = firstRegion.endPos() - settings.getSpanIntronExonBoundarySettings().minLeftOverlap;
+                const U2Region& secondRegion = regions.at(i);
+                int intronEnd = secondRegion.startPos + settings.getSpanIntronExonBoundarySettings().minRightOverlap;
+                excluded.append(QPair<int,int>(intronStart,intronEnd));
+            }
+            settings.setInternalOligoExcludedRegion(excluded);
         }
-        QList<QPair<int,int> > targets = settings.getTarget();
-        targets.append(QPair<int,int>(intronStart,intronEnd));
-        settings.setTarget(targets);
-
+        
         searchTask = new Primer3SWTask(settings);
         res.append(searchTask);
 

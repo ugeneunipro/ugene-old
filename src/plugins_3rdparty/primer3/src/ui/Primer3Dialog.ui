@@ -3564,36 +3564,69 @@ p, li { white-space: pre-wrap; }
             <property name="title">
              <string>mRNA sequence</string>
             </property>
-            <layout class="QHBoxLayout" name="horizontalLayout_5">
+            <layout class="QVBoxLayout" name="verticalLayout_10">
              <item>
-              <widget class="QLabel" name="label_9">
-               <property name="text">
-                <string>Get from NCBI by GI or accsession:</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QLineEdit" name="rnaSeqIdEdit">
+              <widget class="QRadioButton" name="useExitingExonFeaturesButton">
                <property name="toolTip">
-                <string>Please provide here an NCBI identifier of mRNA refsequence, for example NM_000926.4</string>
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Use this option if the given sequence (DNA or mRNA ) already includes annotations of exonic regions. These annotations must have name &lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;exon&lt;/span&gt;.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>
-               <property name="whatsThis">
-                <string/>
+               <property name="text">
+                <string>Use existing exonic annotations</string>
+               </property>
+               <property name="checked">
+                <bool>true</bool>
                </property>
               </widget>
              </item>
              <item>
-              <spacer name="horizontalSpacer_9">
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
+              <widget class="QRadioButton" name="downloadFeaturesButton">
+               <property name="toolTip">
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;This option should be used if the given sequence is genomic. To find exon regions a corresponding mRNA sequence should be provided. &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>40</width>
-                 <height>20</height>
-                </size>
+               <property name="text">
+                <string>Download from NCBI </string>
                </property>
-              </spacer>
+              </widget>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_5">
+               <item>
+                <widget class="QLabel" name="rnaSeqIdLabel">
+                 <property name="enabled">
+                  <bool>false</bool>
+                 </property>
+                 <property name="text">
+                  <string>GenbankId or accsession:</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLineEdit" name="rnaSeqIdEdit">
+                 <property name="enabled">
+                  <bool>false</bool>
+                 </property>
+                 <property name="toolTip">
+                  <string>Please provide here an NCBI identifier of mRNA refsequence, for example NM_000926.4</string>
+                 </property>
+                 <property name="whatsThis">
+                  <string/>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <spacer name="horizontalSpacer_9">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+              </layout>
              </item>
             </layout>
            </widget>
@@ -3658,6 +3691,9 @@ p, li { white-space: pre-wrap; }
            <widget class="QCheckBox" name="spanIntronCheckBox">
             <property name="text">
              <string>Primer product must span at least one intron on the corresponding genomic DNA</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
             </property>
            </widget>
           </item>
@@ -4057,6 +4093,38 @@ p, li { white-space: pre-wrap; }
     <hint type="destinationlabel">
      <x>743</x>
      <y>583</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>downloadFeaturesButton</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>rnaSeqIdLabel</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>437</x>
+     <y>139</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>121</x>
+     <y>168</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>downloadFeaturesButton</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>rnaSeqIdEdit</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>437</x>
+     <y>139</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>356</x>
+     <y>168</y>
     </hint>
    </hints>
   </connection>

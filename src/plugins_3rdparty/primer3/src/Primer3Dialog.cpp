@@ -315,11 +315,15 @@ bool Primer3Dialog::doDataExchange()
     if (ui.spanIntronExonBox->isChecked()) {
         SpanIntronExonBoundarySettings s;
         s.enabled = true;
-        if (!ui.rnaSeqIdEdit->text().isEmpty()) {
-            s.mRnaSeqId = ui.rnaSeqIdEdit->text();
+        if (ui.downloadFeaturesButton->isChecked()){
+            if (!ui.rnaSeqIdEdit->text().isEmpty()) {
+                s.mRnaSeqId = ui.rnaSeqIdEdit->text();
+            } else {
+                showInvalidInputMessage(ui.rnaSeqIdEdit, "mRNA sequence ID");
+                return false;
+            }
         } else {
-            showInvalidInputMessage(ui.rnaSeqIdEdit, "mRNA sequence ID");
-            return false;
+            s.mRnaSeqId.clear();
         }
 
         s.minLeftOverlap = ui.leftOverlapSizeSpinBox->value();

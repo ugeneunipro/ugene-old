@@ -19,6 +19,7 @@ public:
 
     void prepare();
     QList<Task*> onSubTaskFinished(Task *subTask);
+    ReportResult report();
 
     void cleanup();
 

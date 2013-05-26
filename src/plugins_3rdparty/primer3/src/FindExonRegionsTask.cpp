@@ -5,7 +5,8 @@
 #include <U2Core/DocumentModel.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/AppContext.h>
-
+#include <U2Core/GObjectUtils.h>
+#include <U2Core/GObjectRelationRoles.h>
 
 #include "FindExonRegionsTask.h"
 
@@ -18,14 +19,21 @@ extern Logger log( "Span Exon/Intron Regions" );
 FindExonRegionsTask::FindExonRegionsTask(U2SequenceObject* dObj, const QString &rnaSeqId)
     :Task("FindExonRegionsTask", TaskFlags_NR_FOSCOE), dnaObj(dObj)
 {
-    loadDocumentTask = new LoadRemoteDocumentTask(rnaSeqId, "genbank");
+    if (!rnaSeqId.isEmpty()) {
+        loadDocumentTask = new LoadRemoteDocumentTask(rnaSeqId, "genbank");
+    } else {
+        loadDocumentTask = NULL;
+    }
+
     alignmentTask = NULL;
 
 }
 
 void FindExonRegionsTask::prepare()
 {
-    addSubTask(loadDocumentTask);
+    if (loadDocumentTask) {
+        addSubTask(loadDocumentTask);
+    }
 }
 
 QList<Task *> FindExonRegionsTask::onSubTaskFinished(Task *subTask)
@@ -80,6 +88,37 @@ void FindExonRegionsTask::cleanup()
         qDeleteAll(anns);
     }
 }
+
+Task::ReportResult FindExonRegionsTask::report()
+{
+    if (!loadDocumentTask) {
+        QList<GObject*> relAnns = GObjectUtils::findObjectsRelatedToObjectByRole(dnaObj, GObjectTypes::ANNOTATION_TABLE, 
+            GObjectRelationRole::SEQUENCE, dnaObj->getDocument()->getObjects(), UOF_LoadedOnly);
+        AnnotationTableObject* att = relAnns.isEmpty() ? NULL : qobject_cast<AnnotationTableObject*>(relAnns.first());
+        
+        if (!att) {
+            setError(tr("Failed to search for exon annotations. The sequence %1 doesn't have any related annotations.").arg(dnaObj->getSequenceName()));
+            return ReportResult_Finished;
+        }
+
+        const QList<Annotation*>& anns = att->getAnnotations();
+
+        foreach (const Annotation* ann, anns) {
+            if (ann->getAnnotationName() == "exon") {
+                foreach(const U2Region& r, ann->getRegions()) {
+                    exonRegions.append(r);
+                }
+            }
+        }
+
+        qSort(exonRegions);
+        
+
+    }
+
+    return ReportResult_Finished;
+}
+
 
 
 
