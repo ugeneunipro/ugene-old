@@ -108,6 +108,9 @@ private:
  *   ^ oneUser2Multi        - creates a user step with tho multi steps in it.
  *   ^ severalUser          - creates several user steps with a multi step in every user step.
  *   ^ separateThread       - creates a user step in an another thread.
+ *   ^ emptyUser            - creates an empty user mod step (without any multi steps).
+ *   ^ emptyMultiAutoUser   - creates an empty multi mod step (no single steps, user step creates automatically).
+ *   ^ emptyMultiManUser    - creates an empty multi mod step (no single steps, user step creates manually).
  */
 DECLARE_MOD_TEST(ModDbiSQLiteSpecificUnitTests, createStep_noMultiAndUser);
 DECLARE_MOD_TEST(ModDbiSQLiteSpecificUnitTests, createStep_noMultiAndUser2Steps);
@@ -117,6 +120,9 @@ DECLARE_MOD_TEST(ModDbiSQLiteSpecificUnitTests, createStep_startUser);
 DECLARE_MOD_TEST(ModDbiSQLiteSpecificUnitTests, createStep_oneUser2Multi);
 DECLARE_MOD_TEST(ModDbiSQLiteSpecificUnitTests, createStep_severalUser);
 DECLARE_MOD_TEST(ModDbiSQLiteSpecificUnitTests, createStep_separateThread);
+DECLARE_MOD_TEST(ModDbiSQLiteSpecificUnitTests, createStep_emptyUser);
+DECLARE_MOD_TEST(ModDbiSQLiteSpecificUnitTests, createStep_emptyMultiAutoUser);
+DECLARE_MOD_TEST(ModDbiSQLiteSpecificUnitTests, createStep_emptyMultiManUser);
 
 
 /**
@@ -152,14 +158,6 @@ DECLARE_MOD_TEST(ModDbiSQLiteSpecificUnitTests, userSteps_severalAct_diffObj);
 DECLARE_MOD_TEST(ModDbiSQLiteSpecificUnitTests, userSteps_severalActUndo_diffObj);
 DECLARE_MOD_TEST(ModDbiSQLiteSpecificUnitTests, userSteps_severalActUndoRedo_diffObj);
 DECLARE_MOD_TEST(ModDbiSQLiteSpecificUnitTests, userSteps_severalActUndoRedoAct_diffObj);
-
-/**
- * Verify removing duplicated user modifications steps.
- *   ^ noDupNoEmpty                 - creates 2 user mod steps with multi steps for different versions of the master object.
- *   ^ severalEmptyUser             - creates 3 empty user steps.
- */
-DECLARE_MOD_TEST(ModDbiSQLiteSpecificUnitTests, removeDup_noDupNoEmpty);
-DECLARE_MOD_TEST(ModDbiSQLiteSpecificUnitTests, removeDup_severalEmptyUser);
 
 ///////////////////////////////////////////////////////////////
 // Tests for U2ModDbi that assume that SQLiteDbi was used.
@@ -212,6 +210,9 @@ DECLARE_METATYPE(ModDbiSQLiteSpecificUnitTests, createStep_startUser);
 DECLARE_METATYPE(ModDbiSQLiteSpecificUnitTests, createStep_oneUser2Multi);
 DECLARE_METATYPE(ModDbiSQLiteSpecificUnitTests, createStep_severalUser);
 DECLARE_METATYPE(ModDbiSQLiteSpecificUnitTests, createStep_separateThread);
+DECLARE_METATYPE(ModDbiSQLiteSpecificUnitTests, createStep_emptyUser);
+DECLARE_METATYPE(ModDbiSQLiteSpecificUnitTests, createStep_emptyMultiAutoUser);
+DECLARE_METATYPE(ModDbiSQLiteSpecificUnitTests, createStep_emptyMultiManUser);
 
 
 DECLARE_METATYPE(ModDbiSQLiteSpecificUnitTests, userSteps_oneAct_auto);
@@ -255,8 +256,5 @@ DECLARE_METATYPE(ModDbiSQLiteSpecificUnitTests, updateRowName_noModTrack);
 DECLARE_METATYPE(ModDbiSQLiteSpecificUnitTests, updateRowName_severalSteps);
 DECLARE_METATYPE(ModDbiSQLiteSpecificUnitTests, updateRowName_severalUndoThenAction);
 
-
-DECLARE_METATYPE(ModDbiSQLiteSpecificUnitTests, removeDup_noDupNoEmpty);
-DECLARE_METATYPE(ModDbiSQLiteSpecificUnitTests, removeDup_severalEmptyUser);
 
 #endif

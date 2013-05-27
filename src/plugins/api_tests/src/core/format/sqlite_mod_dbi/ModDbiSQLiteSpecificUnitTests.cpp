@@ -2077,6 +2077,86 @@ IMPLEMENT_MOD_TEST(ModDbiSQLiteSpecificUnitTests, createStep_separateThread) {
     CHECK_TRUE(os.hasError(), "No error");
 }
 
+IMPLEMENT_MOD_TEST(ModDbiSQLiteSpecificUnitTests, createStep_emptyUser) {
+    SQLiteDbi *sqliteDbi = ModSQLiteSpecificTestData::getSQLiteDbi();
+    U2OpStatusImpl os;
+    U2DataId masterObjId = ModSQLiteSpecificTestData::createObject(os); CHECK_NO_ERROR(os);
+
+    QList<U2SingleModStep> actualSingleSteps;
+    QList<U2MultiModStep4Test> actualMultiSteps;
+    QList<U2UserModStep4Test> actualUserSteps;
+
+    {
+        U2UseCommonUserModStep userModStep(sqliteDbi, masterObjId, os); CHECK_NO_ERROR(os);
+        Q_UNUSED(userModStep);
+        ModSQLiteSpecificTestData::getAllSteps(actualSingleSteps, actualMultiSteps, actualUserSteps, os); CHECK_NO_ERROR(os);
+
+        CHECK_EQUAL(1, actualUserSteps.count(), "user steps count");
+        CHECK_EQUAL(0, actualMultiSteps.count(), "multi steps count");
+        CHECK_EQUAL(0, actualSingleSteps.count(), "single steps count");
+    }
+
+    ModSQLiteSpecificTestData::getAllSteps(actualSingleSteps, actualMultiSteps, actualUserSteps, os); CHECK_NO_ERROR(os);
+
+    CHECK_EQUAL(0, actualUserSteps.count(), "user steps count");
+    CHECK_EQUAL(0, actualMultiSteps.count(), "multi steps count");
+    CHECK_EQUAL(0, actualSingleSteps.count(), "single steps count");
+}
+
+IMPLEMENT_MOD_TEST(ModDbiSQLiteSpecificUnitTests, createStep_emptyMultiAutoUser) {
+    SQLiteDbi *sqliteDbi = ModSQLiteSpecificTestData::getSQLiteDbi();
+    U2OpStatusImpl os;
+    U2DataId masterObjId = ModSQLiteSpecificTestData::createObject(os); CHECK_NO_ERROR(os);
+
+    QList<U2SingleModStep> actualSingleSteps;
+    QList<U2MultiModStep4Test> actualMultiSteps;
+    QList<U2UserModStep4Test> actualUserSteps;
+
+    {
+        U2UseCommonMultiModStep multiModStep(sqliteDbi, masterObjId, os); CHECK_NO_ERROR(os);
+        Q_UNUSED(multiModStep);
+        ModSQLiteSpecificTestData::getAllSteps(actualSingleSteps, actualMultiSteps, actualUserSteps, os); CHECK_NO_ERROR(os);
+
+        CHECK_EQUAL(1, actualUserSteps.count(), "user steps count");
+        CHECK_EQUAL(1, actualMultiSteps.count(), "multi steps count");
+        CHECK_EQUAL(0, actualSingleSteps.count(), "single steps count");
+    }
+
+    ModSQLiteSpecificTestData::getAllSteps(actualSingleSteps, actualMultiSteps, actualUserSteps, os); CHECK_NO_ERROR(os);
+
+    CHECK_EQUAL(1, actualUserSteps.count(), "user steps count");
+    CHECK_EQUAL(1, actualMultiSteps.count(), "multi steps count");
+    CHECK_EQUAL(0, actualSingleSteps.count(), "single steps count");
+}
+
+IMPLEMENT_MOD_TEST(ModDbiSQLiteSpecificUnitTests, createStep_emptyMultiManUser) {
+    SQLiteDbi *sqliteDbi = ModSQLiteSpecificTestData::getSQLiteDbi();
+    U2OpStatusImpl os;
+    U2DataId masterObjId = ModSQLiteSpecificTestData::createObject(os); CHECK_NO_ERROR(os);
+
+    QList<U2SingleModStep> actualSingleSteps;
+    QList<U2MultiModStep4Test> actualMultiSteps;
+    QList<U2UserModStep4Test> actualUserSteps;
+
+    {
+        U2UseCommonUserModStep userModStep(sqliteDbi, masterObjId, os); CHECK_NO_ERROR(os);
+        Q_UNUSED(userModStep);
+        U2UseCommonMultiModStep multiModStep(sqliteDbi, masterObjId, os); CHECK_NO_ERROR(os);
+        Q_UNUSED(multiModStep);
+        ModSQLiteSpecificTestData::getAllSteps(actualSingleSteps, actualMultiSteps, actualUserSteps, os); CHECK_NO_ERROR(os);
+
+        CHECK_EQUAL(1, actualUserSteps.count(), "user steps count");
+        CHECK_EQUAL(1, actualMultiSteps.count(), "multi steps count");
+        CHECK_EQUAL(0, actualSingleSteps.count(), "single steps count");
+    }
+
+    ModSQLiteSpecificTestData::getAllSteps(actualSingleSteps, actualMultiSteps, actualUserSteps, os); CHECK_NO_ERROR(os);
+
+    CHECK_EQUAL(1, actualUserSteps.count(), "user steps count");
+    CHECK_EQUAL(1, actualMultiSteps.count(), "multi steps count");
+    CHECK_EQUAL(0, actualSingleSteps.count(), "single steps count");
+}
+
 IMPLEMENT_MOD_TEST(ModDbiSQLiteSpecificUnitTests, userSteps_oneAct_auto) {
     SQLiteDbi *sqliteDbi = ModSQLiteSpecificTestData::getSQLiteDbi();
     U2OpStatusImpl os;
@@ -2751,98 +2831,6 @@ IMPLEMENT_MOD_TEST(ModDbiSQLiteSpecificUnitTests, userSteps_severalActUndoRedoAc
     CHECK_EQUAL(2, actualUserSteps.count(), "user steps count");
     CHECK_EQUAL(baseVersion1, actualUserSteps[0].version, "user step version");
     CHECK_EQUAL(baseVersion1 + 1, actualUserSteps[1].version, "user step version");
-}
-
-IMPLEMENT_MOD_TEST(ModDbiSQLiteSpecificUnitTests, removeDup_noDupNoEmpty) {
-    SQLiteDbi* sqliteDbi = ModSQLiteSpecificTestData::getSQLiteDbi();
-    U2OpStatusImpl os;
-
-    U2DataId masterObjId = ModSQLiteSpecificTestData::createTestMsa(true, os); CHECK_NO_ERROR(os);
-
-    QList<U2SingleModStep> single;
-    QList<U2MultiModStep4Test> multi;
-    QList<U2UserModStep4Test> user;
-
-    {
-        U2UseCommonUserModStep useUserStep(sqliteDbi, masterObjId, os); CHECK_NO_ERROR(os);
-        Q_UNUSED(useUserStep);
-        sqliteDbi->getMsaDbi()->updateMsaName(masterObjId, "renamed object #1", os); CHECK_NO_ERROR(os);
-    }
-    qint64 objVersion1 = sqliteDbi->getObjectDbi()->getObjectVersion(masterObjId, os); CHECK_NO_ERROR(os);
-
-    {
-        U2UseCommonUserModStep useUserStep(sqliteDbi, masterObjId, os); CHECK_NO_ERROR(os);
-        Q_UNUSED(useUserStep);
-        sqliteDbi->getMsaDbi()->updateMsaName(masterObjId, "renamed object #2", os); CHECK_NO_ERROR(os);
-    }
-    qint64 objVersion2 = sqliteDbi->getObjectDbi()->getObjectVersion(masterObjId, os); CHECK_NO_ERROR(os);
-
-    CHECK_FALSE(objVersion1 == objVersion2, "object version");
-
-    ModSQLiteSpecificTestData::getAllSteps(single, multi, user, os); CHECK_NO_ERROR(os);
-
-    CHECK_EQUAL(2, single.count(), "single steps num");
-    CHECK_EQUAL(2, multi.count(), "multi steps num");
-    CHECK_EQUAL(2, user.count(), "user steps num");
-
-    // Test function
-    sqliteDbi->getSQLiteModDbi()->removeDuplicateUserStep(masterObjId, objVersion1, os); CHECK_NO_ERROR(os);
-    sqliteDbi->getSQLiteModDbi()->removeDuplicateUserStep(masterObjId, objVersion2, os); CHECK_NO_ERROR(os);
-
-    // Verify the result
-    ModSQLiteSpecificTestData::getAllSteps(single, multi, user, os); CHECK_NO_ERROR(os);
-
-    CHECK_EQUAL(2, single.count(), "single steps num");
-    CHECK_EQUAL(2, multi.count(), "multi steps num");
-    CHECK_EQUAL(2, user.count(), "user steps num");
-}
-
-IMPLEMENT_MOD_TEST(ModDbiSQLiteSpecificUnitTests, removeDup_severalEmptyUser) {
-    SQLiteDbi* sqliteDbi = ModSQLiteSpecificTestData::getSQLiteDbi();
-    U2OpStatusImpl os;
-
-    U2DataId masterObjId = ModSQLiteSpecificTestData::createObject(os); CHECK_NO_ERROR(os);
-
-    QList<U2SingleModStep> single;
-    QList<U2MultiModStep4Test> multi;
-    QList<U2UserModStep4Test> user;
-
-    {
-        U2UseCommonUserModStep useUserStep(sqliteDbi, masterObjId, os); CHECK_NO_ERROR(os);
-        Q_UNUSED(useUserStep);
-    }
-    qint64 objVersion1 = sqliteDbi->getObjectDbi()->getObjectVersion(masterObjId, os); CHECK_NO_ERROR(os);
-
-    {
-        U2UseCommonUserModStep useUserStep(sqliteDbi, masterObjId, os); CHECK_NO_ERROR(os);
-        Q_UNUSED(useUserStep);
-    }
-    qint64 objVersion2 = sqliteDbi->getObjectDbi()->getObjectVersion(masterObjId, os); CHECK_NO_ERROR(os);
-
-    {
-        U2UseCommonUserModStep useUserStep(sqliteDbi, masterObjId, os); CHECK_NO_ERROR(os);
-        Q_UNUSED(useUserStep);
-    }
-    qint64 objVersion3 = sqliteDbi->getObjectDbi()->getObjectVersion(masterObjId, os); CHECK_NO_ERROR(os);
-
-    CHECK_TRUE(objVersion1 == objVersion2, "object version");
-    CHECK_TRUE(objVersion1 == objVersion3, "object version");
-
-    ModSQLiteSpecificTestData::getAllSteps(single, multi, user, os); CHECK_NO_ERROR(os);
-
-    CHECK_EQUAL(0, single.count(), "single steps num");
-    CHECK_EQUAL(0, multi.count(), "multi steps num");
-    CHECK_EQUAL(3, user.count(), "user steps num");
-
-    // Test function
-    sqliteDbi->getSQLiteModDbi()->removeDuplicateUserStep(masterObjId, objVersion1, os); CHECK_NO_ERROR(os);
-
-    // Verify the result
-    ModSQLiteSpecificTestData::getAllSteps(single, multi, user, os); CHECK_NO_ERROR(os);
-
-    CHECK_EQUAL(0, single.count(), "single steps num");
-    CHECK_EQUAL(0, multi.count(), "multi steps num");
-    CHECK_EQUAL(0, user.count(), "user steps num");
 }
 
 } // namespace

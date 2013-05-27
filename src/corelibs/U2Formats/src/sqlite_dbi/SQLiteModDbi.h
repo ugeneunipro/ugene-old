@@ -73,9 +73,8 @@ public:
     void removeModsWithGreaterVersion(const U2DataId &masterObjId, qint64 masterObjVersion, U2OpStatus &os);
 
     /**
-     * Case 1: When there are two user steps that differs by ID only, removes user step with lower ID.
+     * When there are two user steps that differs by ID only, removes user step with lower ID.
      * This is required for the case "action > undo > action > undo", when the action uses "U2UseCommonUserModStep".
-     * Case 2: When there are empty user steps (without multi steps) they are removed.
      */
     void removeDuplicateUserStep(const U2DataId &masterObjId, qint64 masterObjVersion, U2OpStatus& os);
 
@@ -90,6 +89,7 @@ public:
 
     /**
      * Ends a common user modifications step.
+     * Deletes the user modifications step if it doesn't contain any multi modification steps.
      * Do not use this method, use "U2UseCommonUserModStep" instead!
      */
     virtual void endCommonUserModStep(U2OpStatus &os);

@@ -11,6 +11,9 @@ ModDbiSQLiteSpecificUnitTests
 + createStep_oneUser2Multi
 + createStep_severalUser
 + createStep_separateThread
++ createStep_emptyUser
++ createStep_emptyMultiAutoUser
++ createStep_emptyMultiManUser
 + userSteps_oneAct_auto
 + userSteps_severalAct_auto
 + userSteps_severalActUndo_auto
@@ -44,7 +47,5 @@ ModDbiSQLiteSpecificUnitTests
 + updateRowName_noModTrack
 + updateRowName_severalSteps
 + updateRowName_severalUndoThenAction
-+ removeDup_noDupNoEmpty
-+ removeDup_severalEmptyUser
 
 </unittest>

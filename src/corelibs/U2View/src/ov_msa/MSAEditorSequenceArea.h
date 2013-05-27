@@ -207,7 +207,7 @@ public:
 
     void moveSelection(int dx, int dy);
 
-    void shiftSelectedRegion();
+    void shiftSelectedRegion(int shift);
 
     void cancelSelection();
 
@@ -365,8 +365,6 @@ private:
 
     void reverseComplementModification(ModificationType& type);
 
-    void checkShifts();
-
     MSAEditor*      editor;
     MSAEditorUI*    ui;
     GScrollBar*     shBar;
@@ -412,8 +410,6 @@ private:
     QList<QAction*> colorSchemeMenuActions;
     QList<QAction* > customColorSchemeMenuActions;
     QList<QAction* > highlightingSchemeMenuActions;
-
-    QStack<int> selectedRegionShifts;
 };
 
 }//namespace
