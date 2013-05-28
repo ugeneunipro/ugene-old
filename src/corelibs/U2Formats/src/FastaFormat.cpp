@@ -137,7 +137,8 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, Q
     
     bool merge = gapSize != -1;
     QStringList headers;
-    QSet<QString> names;
+    QSet<QString> uniqueNames;
+    static const int objectsLimit = 20*1000;
     QVector<U2Region> mergedMapping;
 
     TmpDbiObjects dbiObjects(dbiRef, os);
@@ -156,7 +157,8 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, Q
     int sequenceNumber = 0;
     DbiConnection con(dbiRef, os);
     bool headerReaded = false;
-    
+
+    const bool settingsMakeUniqueName = !fs.value(DocumentReadingMode_DontMakeUniqueNames, false).toBool();
     while (!os.isCoR()) {
         //skip start comments and read header
         if(!headerReaded){
@@ -176,9 +178,9 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, Q
         //read sequence
         if (sequenceNumber == 0 || !merge) {
             QString objName = headerLine;
-            if (!fs.value(DocumentReadingMode_DontMakeUniqueNames, false).toBool()) {
-                objName = (merge) ? "Sequence" : TextUtils::variate(headerLine, "_", names);
-                names.insert(objName);
+            if (settingsMakeUniqueName) {
+                objName = (merge) ? "Sequence" : TextUtils::variate(headerLine, "_", uniqueNames);
+                uniqueNames.insert(objName);
             }
             seqImporter.startSequence(dbiRef, objName, false, os);
             CHECK_OP(os, );
@@ -233,9 +235,20 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, Q
             CHECK_OP(os, );
 
             U1AnnotationUtils::addAnnotations(objects, seqImporter.getCaseAnnotations(), sequenceRef, NULL);
+
+            if (objects.size() > objectsLimit) {
+                os.setError("Too much objects");
+            }
         }
         sequenceStart += sequenceLen;
         sequenceNumber++;
+    }
+    if (os.hasError()) {
+        foreach (GObject* o, objects) {
+            delete o;
+        }
+
+        objects.clear();
     }
     CHECK_OP(os, );
     CHECK_EXT(!objects.isEmpty() || merge, os.setError(Document::tr("Document is empty.")), );
