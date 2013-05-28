@@ -316,6 +316,10 @@ QString TaskSchedulerImpl::tryLockResources(Task* task, bool prepareStage, bool&
         }
         assert(!prepareStage || taskRes.resourceId!=RESOURCE_THREAD);
         AppResource* appRes = resourcePool->getResource(taskRes.resourceId);
+        if (!appRes) {
+            task->setError(tr("No required resources for the task, resource id: '%1'").arg(taskRes.resourceId));
+            return tr("Unable to run test because required resource not found");
+        }
         if (!appRes->isAvailable(taskRes.resourceUse)) {
             if (appRes->maxUse < taskRes.resourceUse) {
                 task->setError(tr("Not enough resources for the task, resource name: '%1' max: %2%3 requested: %4%5")
