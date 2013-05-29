@@ -210,7 +210,9 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& hints
     QByteArray sequence;
     QByteArray qualityScores;
     QStringList headers;
-    QSet<QString> names;
+    QSet<QString> uniqueNames;
+    static const int objectsLimit = 20*1000;
+
     QVector<U2Region> mergedMapping;
     QByteArray gapSequence((merge ? gapSize : 0), 0);
     sequence.reserve(predictedSize);
@@ -226,6 +228,7 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& hints
     int seqNumber = 0;
     int progressUpNum = 0;
 
+    const bool settingsMakeUniqueName = !hints.value(DocumentReadingMode_DontMakeUniqueNames, false).toBool();
     while (!os.isCoR()) {
         //read header
         readBuff.clear();
@@ -239,9 +242,9 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& hints
 
         if ((merge == false) || (seqNumber == 0)) {
             QString objName = sequenceName;
-            if (!hints.value(DocumentReadingMode_DontMakeUniqueNames, false).toBool()) {
-                objName = (merge) ? "Sequence" : TextUtils::variate(sequenceName, "_", names);
-                names.insert(objName);
+            if (settingsMakeUniqueName) {
+                objName = (merge) ? "Sequence" : TextUtils::variate(sequenceName, "_", uniqueNames);
+                uniqueNames.insert(objName);
             }
             seqImporter.startSequence(dbiRef,objName,false,os);
             CHECK_OP(os,);
@@ -295,11 +298,22 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& hints
             objects << seqObj;
 
             U1AnnotationUtils::addAnnotations(objects, seqImporter.getCaseAnnotations(), sequenceRef, NULL);
+
+            if (objects.size() > objectsLimit) {
+                os.setError("Too much objects");
+            }
         }
         if (PROGRESS_UPDATE_STEP == progressUpNum) {
             progressUpNum = 0;
             os.setProgress(io->getProgress());
         }
+    }
+    if (os.hasError()) {
+        foreach (GObject* o, objects) {
+            delete o;
+        }
+
+        objects.clear();
     }
 
     CHECK_OP(os,);
