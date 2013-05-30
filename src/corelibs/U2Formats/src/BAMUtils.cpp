@@ -217,7 +217,7 @@ GUrl BAMUtils::sortBam(const GUrl &bamUrl, const QString &sortedBamBaseName, U2O
 
     int fileSizeMB = bytes2MB(fileSizeBytes);
     int maxMemMB = qMin(SAMTOOLS_MEM_BOOST * fileSizeMB, INITIAL_SAMTOOLS_MEM_SIZE_MB);
-    while (!memory->isAvailable(maxMemMB)) {
+    while (memory->available() < maxMemMB) {
         // reduce used memory
         maxMemMB = maxMemMB * 2 / 3;
     }

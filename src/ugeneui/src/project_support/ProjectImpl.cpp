@@ -140,7 +140,7 @@ void ProjectImpl::addDocument(Document* d) {
 }
 
 bool ProjectImpl::lockResources(int sizeMB, const QString & url, QString& error) {
-    if(resourceTracker->isAvailable(sizeMB)) {
+    if(resourceTracker->available() >= sizeMB) {
         Document *doc = findDocumentByURL(url);
         if(doc) { 
             resourceUsage[doc->getName()] = sizeMB;
@@ -150,7 +150,7 @@ bool ProjectImpl::lockResources(int sizeMB, const QString & url, QString& error)
     }
     else {
         error = tr("Not enough resources for load document, resource name: '%1' available: %2%3 requested: %4%3").
-            arg(resourceTracker->name).arg(resourceTracker->maxUse - resourceTracker->currentUse).arg(resourceTracker->suffix).arg(sizeMB);
+            arg(resourceTracker->name).arg(resourceTracker->available()).arg(resourceTracker->suffix).arg(sizeMB);
         return false;
     }
 }

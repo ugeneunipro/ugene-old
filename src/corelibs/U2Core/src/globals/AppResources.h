@@ -23,7 +23,9 @@
 #define _U2_APPRESOURCES_H_
 
 #include <U2Core/global.h>
+#include <U2Core/U2SafePoints.h>
 #include <QtCore/QHash>
+#include <QtCore/QSemaphore>
 
 namespace U2 {
 
@@ -45,23 +47,40 @@ namespace U2 {
 */
 #define RESOURCE_PROJECT    5
 
-    
-class U2CORE_EXPORT AppResource {
+
+class U2CORE_EXPORT AppResource : public QSemaphore {
 public:
-    AppResource(): resourceId(9), currentUse(0), maxUse(0){}
-
     AppResource(int id, int _maxUse, const QString& _name, const QString& _suffix = QString()) 
-        : resourceId(id), currentUse(0), maxUse(_maxUse), name(_name), suffix(_suffix){};
-
+        : QSemaphore(_maxUse), _maxUse(_maxUse), resourceId(id), name(_name), suffix(_suffix){};
     virtual ~AppResource(){}
 
-    bool isAvailable(int n=1) const {return currentUse + n <= maxUse;}
-    void acquire(int n=1) {assert(isAvailable(n)); currentUse += n;}
-    void release(int n=1) {assert(currentUse-n>=0);currentUse -= n;}
+    void release(int n = 1) {
+        // QSemaphore allow to create resources by releasing, we do not want to get such behavior
+        SAFE_POINT(n>=0, QString("AppResource <%1> release %2 < 0 called").arg(name).arg(n), );
+        QSemaphore::release(n);
+    }
+    int maxUse() const { return _maxUse; }
+
+    void setMaxUse (int n) {
+        int diff = n - _maxUse;
+        if (diff > 0) {
+            // adding resources
+            QSemaphore::release(diff);
+            _maxUse += diff;
+        } else {
+            // safely remove resources
+            for (int i=n; i>0; i--) {
+                bool ok = tryAcquire(i, 0);
+                if (ok) {
+                    // successfully acquired i resources
+                    _maxUse -= i;
+                }
+            }
+        }
+    }
 
     int resourceId;
-    int currentUse;
-    int maxUse;
+    int _maxUse;
     QString name;
     QString suffix;
 };
@@ -77,10 +96,10 @@ public:
     int getIdealThreadCount() const {return idealThreadCount;}
     void setIdealThreadCount(int n);
     
-    int getMaxThreadCount() const {return threadResource->maxUse;}
+    int getMaxThreadCount() const {return threadResource->maxUse();}
     void setMaxThreadCount(int n);
     
-    int getMaxMemorySizeInMB() const {return memResource->maxUse;}
+    int getMaxMemorySizeInMB() const {return memResource->maxUse();}
     void setMaxMemorySizeInMB(int m);
     
     static bool getCurrentAppMemory(int& mb); //size in megabytes, false is estimation only is used
