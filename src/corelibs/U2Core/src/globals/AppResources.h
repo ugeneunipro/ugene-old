@@ -48,30 +48,71 @@ namespace U2 {
 #define RESOURCE_PROJECT    5
 
 
-class U2CORE_EXPORT AppResource : public QSemaphore {
+class U2CORE_EXPORT AppResource {
 public:
     AppResource(int id, int _maxUse, const QString& _name, const QString& _suffix = QString()) 
-        : QSemaphore(_maxUse), _maxUse(_maxUse), resourceId(id), name(_name), suffix(_suffix){};
-    virtual ~AppResource(){}
+        : _maxUse(_maxUse), resource(NULL), resourceId(id), name(_name), suffix(_suffix) {
+        resource = new QSemaphore(_maxUse);
+    }
+    virtual ~AppResource(){
+        delete resource; resource = NULL;
+    }
+
+    AppResource( const AppResource& other ) {
+        resourceId = other.resourceId;
+        _maxUse = other._maxUse;
+        name = other.name;
+        suffix = other.suffix;
+
+        resource = new QSemaphore(_maxUse);
+    }
+    AppResource& operator= (const AppResource& other) {
+        AppResource tmp(other);
+
+        qSwap(resourceId, tmp.resourceId);
+        qSwap(_maxUse, tmp._maxUse);
+        qSwap(name, tmp.name);
+        qSwap(suffix, tmp.suffix);
+        qSwap(resource, tmp.resource);
+
+        return *this;
+    }
+
+    void acquire(int n = 1) {
+        resource->acquire(n);
+    }
+
+    bool tryAcquire(int n = 1) {
+        return resource->tryAcquire(n);
+    }
+
+    bool tryAcquire(int n, int timeout) {
+        return resource->tryAcquire(n, timeout);
+    }
 
     void release(int n = 1) {
         // QSemaphore allow to create resources by releasing, we do not want to get such behavior
         SAFE_POINT(n>=0, QString("AppResource <%1> release %2 < 0 called").arg(name).arg(n), );
-        QSemaphore::release(n);
+        resource->release(n);
     }
+
+    int available() const {
+        return resource->available();
+    }
+
     int maxUse() const { return _maxUse; }
 
     void setMaxUse (int n) {
         int diff = n - _maxUse;
         if (diff > 0) {
             // adding resources
-            QSemaphore::release(diff);
+            resource->release(diff);
             _maxUse += diff;
         } else {
             diff = -diff;
             // safely remove resources
             for (int i=diff; i>0; i--) {
-                bool ok = tryAcquire(i, 0);
+                bool ok = resource->tryAcquire(i, 0);
                 if (ok) {
                     // successfully acquired i resources
                     _maxUse -= i;
@@ -85,6 +126,8 @@ public:
     int _maxUse;
     QString name;
     QString suffix;
+private:
+    QSemaphore *resource;
 };
 
 #define MIN_MEMORY_SIZE 200
