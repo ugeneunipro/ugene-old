@@ -57,7 +57,7 @@ void CudaSupportSettingsPageController::saveState( AppSettingsGUIPageState * _s 
     int totalEnabled = s->enabledGpus.count(true);
     AppResource * gpuResource = AppResourcePool::instance()->getResource( RESOURCE_CUDA_GPU );
     if( gpuResource ) {
-        gpuResource->maxUse = totalEnabled;
+        gpuResource->setMaxUse(totalEnabled);
     } //else - resource was not registered, nothing to do.
 }
 
