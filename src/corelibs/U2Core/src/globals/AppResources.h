@@ -68,12 +68,14 @@ public:
             QSemaphore::release(diff);
             _maxUse += diff;
         } else {
+            diff = -diff;
             // safely remove resources
-            for (int i=n; i>0; i--) {
+            for (int i=diff; i>0; i--) {
                 bool ok = tryAcquire(i, 0);
                 if (ok) {
                     // successfully acquired i resources
                     _maxUse -= i;
+                    break;
                 }
             }
         }
