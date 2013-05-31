@@ -114,6 +114,8 @@ LONG CrashHandler::CrashHandlerFunc(PEXCEPTION_POINTERS pExceptionInfo ) {
         return EXCEPTION_EXECUTE_HANDLER;
     }
     else {
+        releaseReserve();
+
         QString error;
         switch(pExceptionInfo->ExceptionRecord->ExceptionCode) {
         case EXCEPTION_ACCESS_VIOLATION: error = "Access violation";
@@ -301,14 +303,12 @@ LogCache* CrashHandler::crashLogCache = NULL;
 
 void CrashHandler::preallocateReservedSpace() {
     assert(buffer == NULL);
-    buffer = new char[1024*1024];
+    buffer = new char[10*1024*1024];
 }
 
 void CrashHandler::releaseReserve() {
     delete[] buffer;
     buffer = NULL;
-    delete crashLogCache;
-    crashLogCache = NULL;
 }
 
 void CrashHandler::setupHandler() {
@@ -418,6 +418,15 @@ void CrashHandler::runMonitorProcess(const QString &exceptionType)
     } else {
         messageLog += "None";
     }
+
+    size_t memoryBytes = AppResourcePool::instance()->getCurrentAppMemory();
+    QString memInfo = QString("AppMemory: %1Mb; ").arg(memoryBytes/(1000*1000));
+    AppResource *mem = AppResourcePool::instance()->getResource(RESOURCE_MEMORY);
+    if (mem) {
+        memInfo += QString("Locked memory AppResource: %1/%2").arg(mem->maxUse() - mem->available()).arg(mem->maxUse());
+    }
+
+    reportText += (memInfo + "\n");
     reportText += messageLog + " | ";
 
     QString taskList;

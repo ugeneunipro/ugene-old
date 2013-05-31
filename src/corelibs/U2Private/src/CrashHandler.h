@@ -107,7 +107,7 @@ protected slots:
     }
 
 private:
-    static const int logMemoryInfoEvery = 30;
+    static const int logMemoryInfoEvery = 10;
 
     QString formMemInfo() {
         size_t memoryBytes = AppResourcePool::instance()->getCurrentAppMemory();
