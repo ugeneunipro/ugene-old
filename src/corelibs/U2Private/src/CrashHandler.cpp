@@ -163,8 +163,7 @@ LONG CrashHandler::CrashHandlerFunc(PEXCEPTION_POINTERS pExceptionInfo ) {
             break;*/
         case CONTROL_C_EXIT: error = "Control C exit";
             break;
-        default: /*error = "Unknown exception";*/
-            break;
+        default: /*error = "Unknown exception";*/ return EXCEPTION_EXECUTE_HANDLER;
         }
         if(removeHandlerFunc != NULL) {
             removeHandlerFunc(handler);
