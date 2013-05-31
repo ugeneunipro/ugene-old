@@ -47,6 +47,8 @@ namespace U2 {
 */
 #define RESOURCE_PROJECT    5
 
+#define LOG_TRACE(METHOD) \
+    coreLog.trace(QString("AppResource %1 ::" #METHOD " %2, available %3").arg(name).arg(n).arg(available()));
 
 class U2CORE_EXPORT AppResource {
 public:
@@ -79,20 +81,24 @@ public:
     }
 
     void acquire(int n = 1) {
+        LOG_TRACE(acquire);
         resource->acquire(n);
     }
 
     bool tryAcquire(int n = 1) {
+        LOG_TRACE(tryAcquire);
         return resource->tryAcquire(n);
     }
 
     bool tryAcquire(int n, int timeout) {
+        LOG_TRACE(tryAcquire_timeout);
         return resource->tryAcquire(n, timeout);
     }
 
     void release(int n = 1) {
+        LOG_TRACE(release);
         // QSemaphore allow to create resources by releasing, we do not want to get such behavior
-        SAFE_POINT(n>=0, QString("AppResource <%1> release %2 < 0 called").arg(name).arg(n), );
+        SAFE_POINT(n>=0, QString("AppResource %1 release %2 < 0 called").arg(name).arg(n), );
         resource->release(n);
     }
 
@@ -103,6 +109,7 @@ public:
     int maxUse() const { return _maxUse; }
 
     void setMaxUse (int n) {
+        LOG_TRACE(setMaxUse);
         int diff = n - _maxUse;
         if (diff > 0) {
             // adding resources
