@@ -24,6 +24,8 @@
 #include "utils/ExternalToolValidateTask.h"
 
 #include <U2Core/AppContext.h>
+#include <U2Core/ScriptingToolRegistry.h>
+#include <U2Core/MultiTask.h>
 #include <U2Core/L10n.h>
 #include <U2Core/U2SafePoints.h>
 
@@ -210,23 +212,47 @@ void ExternalToolSupportSettingsPageWidget::sl_toolPathCanged(){
     s->setModified(false);
 
     QList<QTreeWidgetItem*> listOfItems=treeWidget->findItems("",Qt::MatchContains|Qt::MatchRecursive);
-    SAFE_POINT(listOfItems.length()!=0, "ExternalToolSupportSettings, NO items're selected", );
+    SAFE_POINT(listOfItems.length()!=0, "ExternalToolSupportSettings, NO items are selected", );
     treeWidget->clearSelection();
     foreach(QTreeWidgetItem* item, listOfItems){
         QWidget* itemWid=treeWidget->itemWidget(item,1);
         if(par == itemWid){//may be no good method for check QTreeWidgetItem
-            if(s->text().isEmpty()){
+            QList<Task*> validationTasks;
+            QString toolName = item->text(0);
+            bool isToolDisabled = s->text().isEmpty();
+            if(isToolDisabled){
                 item->setIcon(0, AppContext::getExternalToolRegistry()->getByName(item->text(0))->getGrayIcon());
                 externalToolsInfo[item->text(0)].path="";
                 externalToolsInfo[item->text(0)].valid=false;
                 externalToolsInfo[item->text(0)].version="";
-            }else{
-                ExternalToolValidateTask* validateTask=new ExternalToolValidateTask(item->text(0), path);
-                connect(validateTask,SIGNAL(si_stateChanged()),SLOT(sl_validateTaskStateChanged()));
-                AppContext::getTaskScheduler()->registerTopLevelTask(validateTask);
-                externalToolsInfo[item->text(0)].path=path;
-            }
 
+                AppContext::getExternalToolRegistry()->getByName(toolName)->setValid(false);
+                AppContext::getExternalToolRegistry()->getByName(toolName)->setVersion("");
+                AppContext::getExternalToolRegistry()->getByName(toolName)->setPath("");
+            }else{
+                //check script-defendant tools and validate them
+                externalToolsInfo[item->text(0)].path=path;
+                ExternalToolValidateTask* validateTask=new ExternalToolValidateTask(toolName, path);
+                connect(validateTask,SIGNAL(si_stateChanged()),SLOT(sl_validateTaskStateChanged()));
+                validationTasks.append(validateTask);
+
+               
+            }
+            ExternalToolRegistry* etr =  AppContext::getExternalToolRegistry();
+            if (etr){
+                foreach (ExternalTool* et, etr->getAllEntries()){
+                    if (((!et->getPath().isEmpty() && !et->isValid()) || isToolDisabled) && et->getToolRunnerProgram() == toolName){
+                        ExternalToolValidateTask* validateTask=new ExternalToolValidateTask(et->getName());
+                        connect(validateTask,SIGNAL(si_stateChanged()),SLOT(sl_validateTaskStateChanged()));
+                        validationTasks.append(validateTask);
+                    }
+                }
+            }
+            if (!validationTasks.isEmpty()){
+                SequentialMultiTask* checkExternalToolsTask=new SequentialMultiTask(tr("Checking external tool and its dependencies"), validationTasks, TaskFlags_NR_FOSCOE);
+                AppContext::getTaskScheduler()->registerTopLevelTask(checkExternalToolsTask);
+            }
+            
         }
     }
 }
@@ -257,6 +283,10 @@ void ExternalToolSupportSettingsPageWidget::sl_validateTaskStateChanged(){
         descriptionTextEdit->setText(AppContext::getExternalToolRegistry()->getByName(s->getToolName())->getDescription());
         descriptionTextEdit->setText(descriptionTextEdit->toHtml()+tr("<br>Version: ")+externalToolsInfo[s->getToolName()].version);
         descriptionTextEdit->setText(descriptionTextEdit->toHtml()+tr("<br>Binary path: ")+externalToolsInfo[s->getToolName()].path);
+
+        AppContext::getExternalToolRegistry()->getByName(s->getToolName())->setValid(s->isValidTool());
+        AppContext::getExternalToolRegistry()->getByName(s->getToolName())->setVersion(s->getToolVersion());
+        AppContext::getExternalToolRegistry()->getByName(s->getToolName())->setPath(s->getToolPath());
     }
 }
 void ExternalToolSupportSettingsPageWidget::sl_itemSelectionChanged(){

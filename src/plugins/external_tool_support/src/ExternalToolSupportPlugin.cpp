@@ -40,6 +40,7 @@
 #include <U2Core/DNASequenceSelection.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/U2SafePoints.h>
+#include <U2Core/ScriptingToolRegistry.h>
 #include <U2Gui/GUIUtils.h>
 
 #include <U2Test/XMLTestFormat.h>
@@ -435,7 +436,18 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin():Plugin(tr("External tool 
         QList<Task*> tasks;
         foreach(ExternalTool* curTool, etRegistry->getAllEntries()){
              if(!curTool->getPath().isEmpty()){ 
-                 continue;
+                 //check if runner exists otherwise run validation (for invalid external tools)
+
+                 QString runner = curTool->getToolRunnerProgram();
+                 if(runner.isEmpty()){
+                    continue;
+                 }
+
+                 
+                 ScriptingToolRegistry* str = AppContext::getScriptingToolRegistry();
+                 if (str && str->getByName(runner) && curTool->isValid()){
+                     continue;
+                 }
              }
              QString exeName = curTool->getExecutableFileName();
              bool fileNotFound = true;
@@ -454,7 +466,7 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin():Plugin(tr("External tool 
              }
         }
         if (!tasks.isEmpty()){
-            SequentialMultiTask* checkExternalToolsTask=new SequentialMultiTask(tr("Checking external tools for first time"), tasks, TaskFlag_NoRun);
+            SequentialMultiTask* checkExternalToolsTask=new SequentialMultiTask(tr("Checking external tools for first time"), tasks, TaskFlags_NR_FOSCOE);
             AppContext::getTaskScheduler()->registerTopLevelTask(checkExternalToolsTask);
         }
     }
@@ -523,7 +535,7 @@ ExternalToolSupportPlugin::~ExternalToolSupportPlugin(){
 void ExternalToolSupportPlugin::sl_validateTaskStateChanged(){
     ExternalToolValidateTask* s=qobject_cast<ExternalToolValidateTask*>(sender());
     assert(s);
-    if(s->isFinished() || s->isValidTool()){
+    if(s->isFinished()){
         AppContext::getExternalToolRegistry()->getByName(s->getToolName())->setValid(s->isValidTool());
         AppContext::getExternalToolRegistry()->getByName(s->getToolName())->setVersion(s->getToolVersion());
         AppContext::getExternalToolRegistry()->getByName(s->getToolName())->setPath(s->getToolPath());

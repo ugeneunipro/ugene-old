@@ -43,12 +43,18 @@ ExternalToolValidateTask::ExternalToolValidateTask(const QString& _toolName) :
     }else{
         program = "";
     }
+
+    externalToolProcess=NULL;
+    isValid=false;
 }
 
 ExternalToolValidateTask::ExternalToolValidateTask(const QString& _toolName, const QString& path) :
         Task(_toolName + " validate task", TaskFlag_None), toolName(_toolName), errorMsg("")
 {
     program=path;
+
+    externalToolProcess=NULL;
+    isValid=false;
 }
 ExternalToolValidateTask::~ExternalToolValidateTask(){
     delete externalToolProcess;
@@ -70,7 +76,8 @@ void ExternalToolValidateTask::run(){
             SAFE_POINT_EXT(stregister != NULL, setError("No scripting tool registry"), );
             ScriptingTool* stool = stregister->getByName(origianlValidation.toolRunnerProgram);
             if(!stool || stool->getPath().isEmpty()){
-                stateInfo.setError(QString("The tool %1 that runs %2 is not installed. Please set the path of the tool in the External Tools settings").arg(origianlValidation.toolRunnerProgram).arg(toolName));
+                stateInfo.setError(QString("The tool %1 that runs %2 is not installed. Please set the path to the executable file of the"
+                    " tool in the External Tools settings. Some of the tools may be located in UGENE/Tools directory").arg(origianlValidation.toolRunnerProgram).arg(toolName));
             }else{
                 origianlValidation.arguments.prepend(origianlValidation.executableFile);
                 origianlValidation.executableFile = stool->getPath();
@@ -78,8 +85,6 @@ void ExternalToolValidateTask::run(){
         }
         validations.append(origianlValidation);
         coreLog.trace("Creating validation task for: " + toolName);
-        externalToolProcess=NULL;
-        isValid=false;
         checkVersionRegExp=tool->getVersionRegExp();
         version="unknown";
 
