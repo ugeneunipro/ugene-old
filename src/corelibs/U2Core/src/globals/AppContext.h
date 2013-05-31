@@ -87,6 +87,8 @@ class WorkflowScriptRegistry;
 class AppFileStorage;
 class U2DataPathRegistry;
 class PairwiseAlignmentRegistry;
+class DASSourceRegistry;
+class ScriptingToolRegistry;
 
 class U2CORE_EXPORT AppContext  : public QObject {
     Q_OBJECT
@@ -233,6 +235,10 @@ public:
 
     static PairwiseAlignmentRegistry* getPairwiseAlignmentRegistry() { return getInstance()->_getPairwiseAlignmentRegistry(); }
 
+    static DASSourceRegistry* getDASSourceRegistry() { return getInstance()->_getDASSourceRegistry(); }
+
+    static ScriptingToolRegistry* getScriptingToolRegistry() { return getInstance()->_getScriptingToolRegistry(); }
+
 protected:
     static AppContext* getInstance() {assert(instance); return instance;}
 
@@ -297,6 +303,8 @@ protected:
     virtual AppFileStorage *_getAppFileStorage() const = 0;
     virtual PairwiseAlignmentRegistry* _getPairwiseAlignmentRegistry() const = 0;
     virtual U2DataPathRegistry* _getDataPathRegistry() const = 0; 
+    virtual DASSourceRegistry* _getDASSourceRegistry() const = 0; 
+    virtual ScriptingToolRegistry* _getScriptingToolRegistry() const = 0;
 
     virtual void _registerGlobalObject(AppGlobalObject* go) = 0;
     virtual void _unregisterGlobalObject(const QString& id) = 0;

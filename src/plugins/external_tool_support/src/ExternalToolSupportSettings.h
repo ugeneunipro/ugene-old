@@ -27,6 +27,8 @@
 #include <QtGui/QFont>
 
 #include <U2Core/global.h>
+#include <QtCore/QDirIterator>
+#include <QtCore/QStack>
 
 namespace U2 {
 
@@ -55,6 +57,34 @@ public:
 private:
     static int prevNumberExternalTools;
 };
+
+/**Helper class that iterates through subdirectories up to given deep level*/
+class LimitedDirIterator{
+public:
+    //deepLevel = 0 - returns only the root dir
+    //deepLevel = 1 - returns the root dir and its subdirs
+    //...
+    LimitedDirIterator(const QDir &dir, int deepLevel = DEFAULT_DEEP_LEVEL);
+
+    bool hasNext();
+
+    QString next();
+    QString filePath();
+
+    static const int DEFAULT_DEEP_LEVEL = 5;
+
+private:
+    void fetchNext();
+    
+private:
+    int deepLevel;
+    
+    QStack< QPair<QString, int> > data;
+
+    QString curPath;
+    
+};
+
 
 }//namespace
 

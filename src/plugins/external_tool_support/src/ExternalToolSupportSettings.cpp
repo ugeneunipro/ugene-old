@@ -132,4 +132,47 @@ void ExternalToolSupportSettings::checkTemporaryDir(U2OpStatus& os){
     }
 }
 
+//////////////////////////////////////////////////////////////////////////
+//LimitedDirIterator
+LimitedDirIterator::LimitedDirIterator( const QDir &dir, int deepLevels )
+:deepLevel(deepLevels)
+,curPath("")
+{
+    if (deepLevel < 0){
+        deepLevel = 0;
+    }
+    data.push(qMakePair(dir.absolutePath(), 0));
+    fetchNext();
+}
+
+bool LimitedDirIterator::hasNext(){
+    return !data.isEmpty();
+}
+
+QString LimitedDirIterator::next(){
+    QString res = curPath;
+
+    fetchNext();
+
+    return res;
+}
+
+QString LimitedDirIterator::filePath(){
+    return curPath;
+}
+
+void LimitedDirIterator::fetchNext(){
+    if (!data.isEmpty()){
+        QPair<QString, int> nextPath = data.pop();
+        curPath = nextPath.first;
+        if (deepLevel > nextPath.second){
+            QDir curDir(curPath);
+            QStringList subdirs = curDir.entryList(QDir::NoDotAndDotDot | QDir::Dirs);
+            foreach(const QString& subdir, subdirs){
+                data.push(qMakePair(curPath+ "/" + subdir, nextPath.second + 1));
+            }
+        }
+    }
+}
+
 }//namespace

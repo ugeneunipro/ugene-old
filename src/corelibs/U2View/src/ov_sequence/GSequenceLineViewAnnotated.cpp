@@ -235,7 +235,7 @@ void GSequenceLineViewAnnotated::mousePressEvent(QMouseEvent * me) {
                     const U2Region& r = location[qMax(0, as.locationIdx)];
                     QString text = as.annotation->getAnnotationName()
                                    + QString(" [%1, %2]").arg(QString::number(r.startPos+1)).arg(QString::number(r.endPos()));
-                    AnnotationSettings* asettings = asr->getAnnotationSettings(as.annotation->getAnnotationName());
+                    AnnotationSettings* asettings = asr->getAnnotationSettings(as.annotation);
                     QIcon icon = GUIUtils::createSquareIcon(asettings->color, 10);
                     popup.addAction(icon, text);
                 }
@@ -353,7 +353,7 @@ void GSequenceLineViewAnnotatedRenderArea::drawAnnotations(QPainter& p) {
     foreach(AnnotationTableObject* ao, ctx->getAnnotationObjects(true)) {
         foreach(Annotation* a, ao->getAnnotations()) {
             AnnotationSettingsRegistry* asr = AppContext::getAnnotationsSettingsRegistry();
-            AnnotationSettings* as = asr->getAnnotationSettings(a->getAnnotationName());
+            AnnotationSettings* as = asr->getAnnotationSettings(a);
             drawAnnotation(p, DrawAnnotationPass_DrawFill, a, pen1, false, as);
             drawAnnotation(p, DrawAnnotationPass_DrawBorder, a, pen1, false, as);
         }
@@ -414,7 +414,7 @@ void GSequenceLineViewAnnotatedRenderArea::drawAnnotation(QPainter& p, DrawAnnot
                                                           const AnnotationSettings* as, U2Region predefinedy) {
     if (as == NULL) {
         AnnotationSettingsRegistry* asr = AppContext::getAnnotationsSettingsRegistry();
-        as = asr->getAnnotationSettings(a->getAnnotationName());
+        as = asr->getAnnotationSettings(a);
     }
     if (!as->visible && (pass == DrawAnnotationPass_DrawFill || !selected)) {
         return;

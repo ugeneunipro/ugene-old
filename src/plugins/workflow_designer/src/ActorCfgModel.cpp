@@ -466,7 +466,7 @@ bool ActorCfgModel::setData( const QModelIndex & index, const QVariant & value, 
                         }
                     }
                     foreach (const AttributeRelation *relation, editingAttribute->getRelations()) {
-                        if (FILE_EXTENSION == relation->getType()) {
+                        if (FILE_EXTENSION == relation->getType() || CUSTOM_VALUE_CHANGER == relation->getType()) {
                             QModelIndex idx = modelIndexById(relation->getRelatedAttrId());
                             QVariant newValue = relation->getAffectResult(value, data(idx));
                             setData(idx, newValue);

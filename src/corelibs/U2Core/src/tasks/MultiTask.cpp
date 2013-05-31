@@ -63,4 +63,37 @@ Task::ReportResult MultiTask::report(){
     return Task::ReportResult_Finished;
 }
 
+//////////////////////////////////////////////////////////////////////////
+//SequentialMultiTask
+SequentialMultiTask::SequentialMultiTask( const QString & name, const QList<Task *>& taskz, TaskFlags f )
+:Task(name, f), tasks(taskz)
+{
+    setMaxParallelSubtasks(1);
+}
+
+void SequentialMultiTask::prepare(){
+    //run the first task
+    if (tasks.size() > 0){
+        addSubTask(tasks.first());
+    }
+    
+}
+
+QList<Task*> SequentialMultiTask::onSubTaskFinished( Task* subTask ){
+    QList<Task*> res;
+
+    int idx = tasks.indexOf(subTask);
+    if (( idx != -1 ) && (idx + 1 < tasks.size())){
+        res.append(tasks.at(idx+1));
+    }
+
+    return res;
+}
+
+QList<Task*> SequentialMultiTask::getTasks() const{
+    return tasks;
+}
+
+
+
 } //namespace

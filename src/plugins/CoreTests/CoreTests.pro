@@ -12,6 +12,7 @@ HEADERS += src/AnnotationTableObjectTest.h \
            src/DocumentModelTests.h \
            src/EditAlignmentTests.h \
            src/EditSequenceTests.h \
+           src/LoadDASDocumentTests.h \
            src/LoadRemoteDocumentTests.h \
            src/PhyTreeObjectTests.h \
            src/PWMatrixTests.h \
@@ -35,6 +36,7 @@ SOURCES += src/AnnotationTableObjectTest.cpp \
            src/DocumentModelTests.cpp \
            src/EditAlignmentTests.cpp \
            src/EditSequenceTests.cpp \
+           src/LoadDASDocumentTests.cpp \
            src/LoadRemoteDocumentTests.cpp \
            src/PhyTreeObjectTests.cpp \
            src/PWMatrixTests.cpp \

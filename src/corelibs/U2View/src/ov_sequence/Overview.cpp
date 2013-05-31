@@ -433,7 +433,7 @@ void OverviewRenderArea::setAnnotationsOnPos() {
     QSet<AnnotationTableObject*> aObjs = ctx->getAnnotationObjects(true);
     foreach(AnnotationTableObject* at, aObjs) {
         foreach(Annotation* a, at->getAnnotations()) {
-            AnnotationSettings* as = asr->getAnnotationSettings(a->getAnnotationName());
+            AnnotationSettings* as = asr->getAnnotationSettings(a);
             if(as->visible) {
                 foreach(const U2Region& r, a->getRegions()) {
                     U2Region innerRegion = r.intersect(sequenceRange);

@@ -25,13 +25,14 @@
 #include <U2Core/Task.h>
 #include <U2Core/GUrl.h>
 #include <U2Core/AddDocumentTask.h>
-
+#include <U2Core/DASSource.h>
 
 namespace U2 {
 
 class Document;
 class LoadDocumentTask;
 class LoadRemoteDocumentTask;
+class LoadDASDocumentTask;
 class DocumentProviderTask;
 
 
@@ -67,6 +68,21 @@ private:
 
 };
 
+class U2GUI_EXPORT LoadDASDocumentsAndOpenViewTask : public Task {
+    Q_OBJECT
+public:
+    LoadDASDocumentsAndOpenViewTask(const QString& accId, const QString& fullPath, const DASSource& referenceSource, const QList<DASSource>& featureSources);
+    virtual void prepare();
+protected:
+    QList<Task*> onSubTaskFinished(Task* subTask);
+private:
+    QString                 accNumber;
+    QString                 fullpath;
+    DASSource               referenceSource;
+    QList<DASSource>        featureSources;
+    LoadDASDocumentTask*    loadDasDocumentTask;
+};
+
 class U2GUI_EXPORT OpenViewTask : public Task {
     Q_OBJECT
 public:
@@ -86,7 +102,6 @@ public:
 protected:
     QList<Task*> onSubTaskFinished(Task* t);
 };
-
 
 }//namespace
 

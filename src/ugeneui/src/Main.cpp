@@ -44,6 +44,8 @@
 #include <U2Core/TmpDirChecker.h>
 #include <U2Core/AppFileStorage.h>
 #include <U2Core/DataPathRegistry.h>
+#include <U2Core/DASSource.h>
+#include <U2Core/ScriptingToolRegistry.h>
 
 #include <U2Formats/DocumentFormatUtils.h>
 
@@ -472,6 +474,9 @@ int main(int argc, char **argv)
     RepeatFinderTaskFactoryRegistry* rfr = new RepeatFinderTaskFactoryRegistry();
     appContext->setRepeatFinderTaskFactoryRegistry(rfr);
 
+    ScriptingToolRegistry* str = new ScriptingToolRegistry();
+    appContext->setScriptingToolRegistry(str);
+
     ExternalToolRegistry* etr = new ExternalToolRegistry();
     appContext->setExternalToolRegistry(etr);
 
@@ -562,6 +567,9 @@ int main(int argc, char **argv)
     U2DataPathRegistry* dpr = new U2DataPathRegistry();
     appContext->setDataPathRegistry(dpr);
 
+    DASSourceRegistry* dsr = new DASSourceRegistry();
+    appContext->setDASSourceRegistry(dsr);
+
     // Register all Options Panel groups on the required GObjectViews
     Init::initOptionsPanels();
     
@@ -629,6 +637,9 @@ int main(int argc, char **argv)
     delete vfsReg;
     appContext->setVirtualFileSystemRegistry( NULL );
 
+    appContext->setDASSourceRegistry( NULL );
+    delete dsr;
+
     appContext->setDataPathRegistry( NULL );
     delete dpr;
     
@@ -664,6 +675,9 @@ int main(int argc, char **argv)
 
     delete etr;
     appContext->setExternalToolRegistry(NULL);
+
+    delete str;
+    appContext->setScriptingToolRegistry(NULL);
 
     delete mw;
     appContext->setMainWindow(NULL);

@@ -61,6 +61,7 @@ ExternalToolValidation ExternalTool::getToolValidation() {
 ////////////////////////////////////////
 //ExternalToolRegistry
 ExternalToolRegistry::~ExternalToolRegistry() {
+    registryOrder.clear();
     qDeleteAll(registry.values());
 }
 
@@ -73,23 +74,33 @@ bool ExternalToolRegistry::registerEntry(ExternalTool *t){
     if (registry.contains(t->getName())) {
         return false;
     } else {
+        registryOrder.append(t);
         registry.insert(t->getName(), t);
         return true;
     }
 }
 
 void ExternalToolRegistry::unregisterEntry(const QString &id){
-    delete registry.take(id);
+    ExternalTool* et = registry.take(id);
+    if(et!=NULL){
+        int idx = registryOrder.indexOf(et);
+        if (idx!=-1){
+            registryOrder.removeAt(idx);
+        }
+
+        delete et;
+    }
+    
 }
 
 QList<ExternalTool*> ExternalToolRegistry::getAllEntries() const
 {
-    return registry.values();
+    return registryOrder;
 }
 QList< QList<ExternalTool*> > ExternalToolRegistry::getAllEntriesSortedByToolKits() const
 {
     QList< QList<ExternalTool*> > res;
-    QList<ExternalTool*> list=registry.values();
+    QList<ExternalTool*> list= registryOrder;
     while(!list.isEmpty()){
         QString name=list.first()->getToolKitName();
         QList<ExternalTool*> toolKitList;

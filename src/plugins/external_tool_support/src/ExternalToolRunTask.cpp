@@ -31,6 +31,8 @@
 #include <U2Core/Log.h>
 #include <U2Core/SaveDocumentTask.h>
 #include <U2Core/UserApplicationsSettings.h>
+#include <U2Core/ScriptingToolRegistry.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <U2Formats/DifferentialFormat.h>
 #include <U2Formats/FpkmTrackingFormat.h>
@@ -69,9 +71,16 @@ ExternalToolRunTask::ExternalToolRunTask(const QString& _toolName, const QString
     program=tool->getPath();
     toolRunnerProgram = tool->getToolRunnerProgram();
     if (!toolRunnerProgram.isEmpty()){
+        ScriptingToolRegistry* stregister = AppContext::getScriptingToolRegistry();
+        SAFE_POINT_EXT(stregister != NULL, setError("No scripting tool registry"), );
+        ScriptingTool* stool = stregister->getByName(toolRunnerProgram);
+        if(!stool || stool->getPath().isEmpty()){
+            setError(QString("The tool %1 that runs %2 is not installed. Please set the path of the tool in the External Tools settings").arg(toolRunnerProgram).arg(toolName));
+            return;
+        }
         //program = toolRunnerProgram + " " + program;
         arguments.prepend(program);
-        program = toolRunnerProgram;
+        program = stool->getPath();
     }
 
     processEnvironment = QProcessEnvironment::systemEnvironment();

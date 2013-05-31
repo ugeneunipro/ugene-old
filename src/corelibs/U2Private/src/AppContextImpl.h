@@ -91,6 +91,8 @@ public:
         tb = NULL;
         pairwiseAlignmentRegistry = NULL;
         dpr = NULL;
+        dsr = NULL;
+        str = NULL;
     }
 
     ~AppContextImpl();
@@ -164,6 +166,10 @@ public:
     void setRecentlyDownloadedCache( RecentlyDownloadedCache* _rdc) { assert( rdc == NULL || _rdc == NULL ); rdc = _rdc;}
 
     void setDataPathRegistry( U2DataPathRegistry* _dpr) { assert( dpr == NULL || _dpr == NULL ); dpr = _dpr;}
+
+    void setDASSourceRegistry( DASSourceRegistry* _dsr) { assert( dsr == NULL || _dsr == NULL ); dsr = _dsr;}
+
+    void setScriptingToolRegistry( ScriptingToolRegistry* _str) { assert( str == NULL || _str == NULL ); str = _str;}
 
     void setProtocolInfoRegistry( ProtocolInfoRegistry * pr ) { assert( NULL == protocolInfoRegistry || NULL == pr );
         protocolInfoRegistry = pr; }
@@ -353,6 +359,8 @@ protected:
     virtual AppFileStorage*                 _getAppFileStorage() const { return appFileStorage; }
     virtual PairwiseAlignmentRegistry*      _getPairwiseAlignmentRegistry() const { return pairwiseAlignmentRegistry; }
     virtual U2DataPathRegistry*             _getDataPathRegistry() const { return dpr; }
+    virtual DASSourceRegistry*              _getDASSourceRegistry() const { return dsr; }
+    virtual ScriptingToolRegistry*          _getScriptingToolRegistry() const { return str; }
 
     virtual void _registerGlobalObject(AppGlobalObject* go);
     virtual void _unregisterGlobalObject(const QString& id);
@@ -422,6 +430,8 @@ private:
     AppFileStorage *appFileStorage;
     PairwiseAlignmentRegistry* pairwiseAlignmentRegistry;
     U2DataPathRegistry *dpr;
+    DASSourceRegistry *dsr;
+    ScriptingToolRegistry *str;
     bool guiMode;
     QString activeWindow;
 

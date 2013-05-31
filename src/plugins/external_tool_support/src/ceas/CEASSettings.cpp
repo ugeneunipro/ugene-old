@@ -214,6 +214,9 @@ QStringList CEASSettings::getArgumentList() const {
 
 QString CEASSettings::getCorrectArgValue(const QString &value) const {
     if (value.contains(QRegExp("\\s"))) {
+        //QString res = value;
+        //res = res.replace(QRegExp("\\s"), "\\ ");
+        //return res;
         return "\"" + value + "\"";
     }
     return value;

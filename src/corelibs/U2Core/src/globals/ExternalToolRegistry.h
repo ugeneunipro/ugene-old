@@ -109,7 +109,8 @@ protected:
 
 }; // ExternalTool
 
-
+//this register keeps order of items added
+//entries are given in the same order as they are added
 class U2CORE_EXPORT ExternalToolRegistry : public QObject {
     Q_OBJECT
 public:
@@ -124,6 +125,7 @@ public:
     QList< QList<ExternalTool*> > getAllEntriesSortedByToolKits() const;
 
 protected:
+    QList<ExternalTool*>            registryOrder;
     QMap<QString, ExternalTool*>    registry;
     QString                         temporaryDirectory;
 

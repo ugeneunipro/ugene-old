@@ -37,27 +37,27 @@ class Ui_DownloadRemoteFileDialog;
 namespace U2 {
 
 
-class U2GUI_EXPORT DownloadRemoteFileDialog : public QDialog
-{
+class U2GUI_EXPORT DownloadRemoteFileDialog : public QDialog{
     Q_OBJECT
     bool isQueryDB;
     QString resUrl;
     static QString defaultDB;
     
 public slots:
-    void sl_updateHint(const QString& dbName);
+    void sl_updateDbId(int idx);
     void sl_saveFilenameButtonClicked();
     
 public:
     DownloadRemoteFileDialog(QWidget *p = NULL);  
     ~DownloadRemoteFileDialog();
-    QString getDBName() const;
+    QString getDBId() const;
     QString getResourceId() const;
     QString getFullpath() const;
     virtual void accept();
 
 private:
     void setSaveFilename();
+    bool isDefaultDb(const QString& dbId);
 
     Ui_DownloadRemoteFileDialog* ui;
     

@@ -48,6 +48,7 @@
 #include "BinaryFindOpenCLTests.h"
 
 #include "LoadRemoteDocumentTests.h"
+#include "LoadDASDocumentTests.h"
 #include "CMDLineTests.h"
 
 #include "GUrlTests.h"
@@ -129,6 +130,8 @@ void CoreTests::registerFactories() {
     registerFactory<CreateSubalignimentTests>(xmlTestFormat);
 
     registerFactory<LoadRemoteDocumentTests>(xmlTestFormat);
+
+    registerFactory<LoadDASDocumentTests>(xmlTestFormat);
 
     // PWMatrix tests
     registerFactory<PWMatrixTests>(xmlTestFormat);

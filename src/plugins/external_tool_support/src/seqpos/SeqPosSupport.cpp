@@ -60,7 +60,6 @@ void SeqPosSupport::initialize() {
         dpr->registerEntry(dp);
     }
 
-    additionalValidators<<DefaultExternalToolValidations::pythonValidation();
     additionalValidators<<DefaultExternalToolValidations::rValidation();
 
     errorDescriptions.insert("CRITICAL: numpy 1.3 or greater must be installed", SeqPosSupport::tr("Please, install numpy 1.3 or greater for your Python to run SeqPos"));

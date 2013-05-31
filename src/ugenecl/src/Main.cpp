@@ -43,6 +43,8 @@
 #include <U2Core/AppFileStorage.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/DataPathRegistry.h>
+#include <U2Core/DASSource.h>
+#include <U2Core/ScriptingToolRegistry.h>
 
 #include <U2Algorithm/CudaGpuRegistry.h>
 #include <U2Algorithm/DnaAssemblyAlgRegistry.h>
@@ -335,6 +337,9 @@ int main(int argc, char **argv)
     
     // unlike ugene's main.cpp we don't create MainWindowImpl, AppSettingsGUI and GObjectViewFactoryRegistry
 
+    ScriptingToolRegistry* str = new ScriptingToolRegistry();
+    appContext->setScriptingToolRegistry(str);
+
     ExternalToolRegistry* etr = new ExternalToolRegistry();
     appContext->setExternalToolRegistry(etr);
 
@@ -450,6 +455,9 @@ int main(int argc, char **argv)
     U2DataPathRegistry* dpr = new U2DataPathRegistry();
     appContext->setDataPathRegistry(dpr);
 
+    DASSourceRegistry* dsr = new DASSourceRegistry();
+    appContext->setDASSourceRegistry(dsr);
+
     TaskStatusBarCon* tsbc=new TaskStatusBarCon();
     
     // show help if need
@@ -500,6 +508,9 @@ int main(int argc, char **argv)
     delete tsbc;
     
     delete distrUtil;
+
+    appContext->setDASSourceRegistry(NULL);
+    delete dsr;
 
     appContext->setDataPathRegistry(NULL);
     delete dpr;
@@ -586,6 +597,10 @@ int main(int argc, char **argv)
 
     appContext->setExternalToolRegistry(NULL);
     delete etr;
+
+    appContext->setScriptingToolRegistry(NULL);
+    delete str;
+
 
     delete msaConsReg;
     appContext->setMSAConsensusAlgorithmRegistry(NULL);

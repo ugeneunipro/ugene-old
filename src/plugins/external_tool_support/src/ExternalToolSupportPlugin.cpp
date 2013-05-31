@@ -106,6 +106,7 @@
 #include "seqpos/SeqPosSupport.h"
 #include "conduct_go/ConductGOWorker.h"
 #include "conduct_go/ConductGOSupport.h"
+#include "python/PythonSupport.h"
 
 #include <U2Algorithm/CDSearchTaskFactoryRegistry.h>
 #include <U2Algorithm/DnaAssemblyAlgRegistry.h>
@@ -124,6 +125,12 @@ extern "C" Q_DECL_EXPORT Plugin * U2_PLUGIN_INIT_FUNC() {
 
 
 ExternalToolSupportPlugin::ExternalToolSupportPlugin():Plugin(tr("External tool support"),tr("Runs other external tools")) {
+    //External tools registry keeps order of items added
+    //it is important because there might be dependencies
+
+    //python
+    PythonSupport* pythonSupport = new PythonSupport(PYTHON_TOOL_NAME);
+    AppContext::getExternalToolRegistry()->registerEntry(pythonSupport);
 
     //Fill ExternalToolRegistry with supported tools
     //ClustalW
@@ -431,8 +438,8 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin():Plugin(tr("External tool 
                  continue;
              }
              QString exeName = curTool->getExecutableFileName();
-             QDirIterator it(toolsDir, QDirIterator::Subdirectories);
              bool fileNotFound = true;
+             LimitedDirIterator it (toolsDir);
              while (it.hasNext()&& fileNotFound) {
                  it.next();
                  QString toolPath(it.filePath() + "/" + exeName);
@@ -446,8 +453,10 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin():Plugin(tr("External tool 
                  }
              }
         }
-        MultiTask* checkExternalToolsTask=new MultiTask(tr("Checking external tools for first time"), tasks,false,TaskFlag_NoRun);
-        AppContext::getTaskScheduler()->registerTopLevelTask(checkExternalToolsTask);
+        if (!tasks.isEmpty()){
+            SequentialMultiTask* checkExternalToolsTask=new SequentialMultiTask(tr("Checking external tools for first time"), tasks, TaskFlag_NoRun);
+            AppContext::getTaskScheduler()->registerTopLevelTask(checkExternalToolsTask);
+        }
     }
 
     //Search for tools in path
@@ -514,10 +523,11 @@ ExternalToolSupportPlugin::~ExternalToolSupportPlugin(){
 void ExternalToolSupportPlugin::sl_validateTaskStateChanged(){
     ExternalToolValidateTask* s=qobject_cast<ExternalToolValidateTask*>(sender());
     assert(s);
-    if(s->isFinished()){
+    if(s->isFinished() || s->isValidTool()){
         AppContext::getExternalToolRegistry()->getByName(s->getToolName())->setValid(s->isValidTool());
         AppContext::getExternalToolRegistry()->getByName(s->getToolName())->setVersion(s->getToolVersion());
         AppContext::getExternalToolRegistry()->getByName(s->getToolName())->setPath(s->getToolPath());
+        
     }
 }
 //////////////////////////////////////////////////////////////////////////

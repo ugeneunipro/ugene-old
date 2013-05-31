@@ -22,19 +22,14 @@
 #ifndef _U2_LOAD_REMOTE_DOCUMENT_TASK_H_
 #define _U2_LOAD_REMOTE_DOCUMENT_TASK_H_
 
-
 #include <U2Core/DocumentProviderTask.h>
 #include <U2Core/GUrl.h>
+#include <U2Core/NetworkConfiguration.h>
 
 #include <QtCore/QEventLoop>
 #include <QtCore/QUrl>
-
-#include <QtNetwork/QNetworkAccessManager>
-#include <QtNetwork/QNetworkRequest>
 #include <QtNetwork/QNetworkReply>
-
-#include <QtXml/QXmlDefaultHandler>
-#include <QtXml/QXmlSimpleReader>
+#include <QtXml/QXmlReader>
 
 namespace U2 {
 
@@ -61,6 +56,7 @@ public:
     QString getDbEntrezName(const QString& dbName);
     void convertAlias(QString& dbName);
     QList<QString> getDBs();
+    bool hasDbId(const QString& dbId);
     QString getHint(const QString& dbName);
     //TODO: move this to AppContext
     static RemoteDBRegistry& getRemoteDBRegistry();
@@ -92,39 +88,67 @@ public:
 
 };
 
-
-class U2CORE_EXPORT LoadRemoteDocumentTask : public DocumentProviderTask {
+//Base class for loading documents
+class U2CORE_EXPORT BaseLoadRemoteDocumentTask : public DocumentProviderTask {
     Q_OBJECT
 public:
-    static QString getFileFormat(const QString & dbName);
+    BaseLoadRemoteDocumentTask(const QString& downloadPath = QString());
+    virtual void prepare();
+    QString getLocalUrl(){ return fullPath; }
+    
+    virtual ReportResult report();
 
     static bool prepareDownloadDirectory(QString &path);
     static QString getDefaultDownloadDirectory();
+
+protected:
+    virtual QString getFileFormat(const QString & dbid) = 0;
+    virtual GUrl getSourceURL() = 0;
+    virtual QString getFileName() = 0;
+
     
+protected:
+    bool isCached();
+    bool initLoadDocumentTask(); 
+    void createLoadedDocument(); 
+
+protected:
+    GUrl        sourceUrl;
+    QString     fileName;
+    QString     fullPath;
+    QString     downloadPath;
+    QString     format;
+
+    DocumentFormatId formatId;
+    CopyDataTask* copyDataTask;
+    LoadDocumentTask* loadDocumentTask;
+
+};
+
+class U2CORE_EXPORT LoadRemoteDocumentTask : public BaseLoadRemoteDocumentTask {
+    Q_OBJECT
 public:
     LoadRemoteDocumentTask(const GUrl& url);
     LoadRemoteDocumentTask(const QString & accId, const QString & dbName, const QString & fullPathDir = QString());
     virtual void prepare();
-    virtual ReportResult report();
-    QString getLocalUrl(){ return fullPath; }
-    
+
     QString getAccNumber() const { return accNumber; }
     QString getDBName() const { return dbName; }
 
 protected:
+    virtual QString getFileFormat(const QString & dbid);
+    virtual GUrl getSourceURL();
+    virtual QString getFileName();
     QList<Task*> onSubTaskFinished(Task* subTask);
 
 private:
+    GUrl fileUrl;
     bool openView;
-    bool initLoadDocumentTask(); 
-    DocumentFormatId formatId;
-    CopyDataTask* copyDataTask;
-    LoadDocumentTask* loadDocumentTask;
     LoadDataFromEntrezTask* loadDataFromEntrezTask;
-    GUrl    sourceUrl;
-    QString accNumber, dbName, format;
-    QString fileName, fullPath;
+    QString accNumber, dbName;
 };
+
+
 // This task makes queries to NCBI Entrez search engine, using eTools
 // First step: query eSearch to get global Entrez index
 // Second step: query eFetch to download file by index

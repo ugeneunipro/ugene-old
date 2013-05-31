@@ -28,7 +28,8 @@ namespace U2 {
 
 enum RelationType {
     VISIBILITY,
-    FILE_EXTENSION
+    FILE_EXTENSION,
+    CUSTOM_VALUE_CHANGER
 };
 
 /**

@@ -29,6 +29,7 @@ HEADERS += src/ActorCfgModel.h \
            src/library/CDSearchWorker.h \
            src/library/CoreLib.h \
            src/library/CreateExternalProcessDialog.h \
+           src/library/DASFetchWorker.h \
            src/library/DocActors.h \
            src/library/DocWorkers.h \
            src/library/ExternalProcessWorker.h \
@@ -101,6 +102,7 @@ SOURCES += src/ActorCfgModel.cpp \
            src/library/CDSearchWorker.cpp \
            src/library/CoreLib.cpp \
            src/library/CreateExternalProcessDialog.cpp \
+           src/library/DASFetchWorker.cpp \
            src/library/DocActors.cpp \
            src/library/DocWorkers.cpp \
            src/library/ExternalProcessWorker.cpp \

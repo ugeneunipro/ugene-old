@@ -601,7 +601,7 @@ QMap<QString, QIcon>& AVAnnotationItemL::getIconsCache() {
 void AVAnnotationItemL::updateVisual(ATVAnnUpdateFlags f) {
 
     const QString& name = annotation->getAnnotationName();
-    const AnnotationSettings* as = AppContext::getAnnotationsSettingsRegistry()->getAnnotationSettings(name);
+    const AnnotationSettings* as = AppContext::getAnnotationsSettingsRegistry()->getAnnotationSettings(annotation);
 
     if (f.testFlag(ATVAnnUpdateFlag_BaseColumns)) {
         QMap<QString, QIcon>& cache = getIconsCache();

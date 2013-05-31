@@ -54,6 +54,7 @@
 #include "util/WriteSequenceValidator.h"
 
 #include "RemoteDBFetcherWorker.h"
+#include "DASFetchWorker.h"
 
 #include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/DocumentModel.h>
@@ -273,6 +274,7 @@ void CoreLib::init() {
     DataWorkerFactory::init();
     FindWorkerFactory::init();
     RemoteDBFetcherFactory::init();
+    DASFetcherFactory::init();
     SequenceSplitWorkerFactory::init();
     Text2SequenceWorkerFactory::init();
     Alignment2SequenceWorkerFactory::init();

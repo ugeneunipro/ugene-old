@@ -30,7 +30,7 @@
 
 namespace U2
 {
-
+//runs all given tasks as subtasks
 class U2CORE_EXPORT MultiTask : public Task {
     Q_OBJECT
 public:
@@ -44,6 +44,20 @@ private:
     StateLock *l;
     QList<Task*> tasks;
     
+};
+
+//waits until each given task is finished and runs the next task after that
+class U2CORE_EXPORT SequentialMultiTask : public Task{
+    Q_OBJECT
+public:
+    SequentialMultiTask ( const QString & name, const QList<Task *>& taskz, TaskFlags f = TaskFlags_NR_FOSCOE);
+
+    void prepare();
+    virtual QList<Task*> onSubTaskFinished(Task* subTask);
+    QList<Task*> getTasks() const;
+
+private:
+    QList<Task*> tasks;
 };
 
 } //namespace

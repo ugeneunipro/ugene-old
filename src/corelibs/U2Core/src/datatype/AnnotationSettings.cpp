@@ -69,7 +69,12 @@ QStringList AnnotationSettingsRegistry::getAllSettings() const {
 }
 
 AnnotationSettings* AnnotationSettingsRegistry::getAnnotationSettings(Annotation* a) {
-    return getAnnotationSettings(a->getAnnotationName());
+    AnnotationSettings* s = getAnnotationSettings(a->getAnnotationName());
+    //don't show non-positional features that span the whole sequence
+    if (a->findFirstQualifierValue("non-positional") != QString::null){
+        s->visible = false;
+    }
+    return s;
 }
 
 AnnotationSettings* AnnotationSettingsRegistry::getAnnotationSettings(const QString& name) {

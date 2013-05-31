@@ -36,6 +36,7 @@
 #include <U2Core/MultiTask.h>
 #include <U2Core/Settings.h>
 #include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/DASSource.h>
 
 #include <U2Gui/LastUsedDirHelper.h>
 
@@ -52,21 +53,35 @@ QString DownloadRemoteFileDialog::defaultDB("");
 DownloadRemoteFileDialog::DownloadRemoteFileDialog(QWidget *p):QDialog(p), isQueryDB(false) {
     ui = new Ui_DownloadRemoteFileDialog;
     ui->setupUi(this);
-    
-    connect(ui->databasesBox, SIGNAL(currentIndexChanged ( const QString&)), SLOT( sl_updateHint(const QString&)));
-    connect(ui->saveFilenameToolButton, SIGNAL(clicked()), SLOT(sl_saveFilenameButtonClicked()));
+
+    ui->dasBox->hide();
+    adjustSize();
     
     RemoteDBRegistry& registry = RemoteDBRegistry::getRemoteDBRegistry();
     const QList<QString> dataBases = registry.getDBs(); 
     foreach(const QString& dbName, dataBases) {
-        ui->databasesBox->addItem(dbName);
+        ui->databasesBox->addItem(dbName, dbName);
+    }
+
+    DASSourceRegistry * dasRegistry = AppContext::getDASSourceRegistry();
+    if (dasRegistry){
+        const QList<DASSource>& dasSources = dasRegistry->getReferenceSources();
+        foreach(const DASSource& s, dasSources){
+            ui->databasesBox->addItem(s.getName(), s.getId());
+        }
     }
     
     if (!defaultDB.isEmpty()) {
-        int index = ui->databasesBox->findText(defaultDB);
-        Q_ASSERT(index < dataBases.count());
-        ui->databasesBox->setCurrentIndex(index);
+        int index = ui->databasesBox->findData(defaultDB);
+        if (index != -1){
+            ui->databasesBox->setCurrentIndex(index);
+        }
     }
+
+    connect(ui->databasesBox, SIGNAL(currentIndexChanged ( int)), SLOT( sl_updateDbId(int)));
+    connect(ui->saveFilenameToolButton, SIGNAL(clicked()), SLOT(sl_saveFilenameButtonClicked()));
+
+    sl_updateDbId(ui->databasesBox->currentIndex());
     
     setSaveFilename();
 }
@@ -97,9 +112,13 @@ QString DownloadRemoteFileDialog::getResourceId() const
     return ui->idLineEdit->text().trimmed();
 }
 
-QString DownloadRemoteFileDialog::getDBName() const
+QString DownloadRemoteFileDialog::getDBId() const
 {   
-    return ui->databasesBox->currentText();
+    int curIdx = ui->databasesBox->currentIndex();
+    if (curIdx == -1){
+        return QString("");
+    }
+    return ui->databasesBox->itemData(curIdx).toString();
 }
 
 QString DownloadRemoteFileDialog::getFullpath() const {
@@ -108,7 +127,7 @@ QString DownloadRemoteFileDialog::getFullpath() const {
 
 void DownloadRemoteFileDialog::accept()
 {
-    defaultDB = getDBName();
+    defaultDB = getDBId();
     
     QString resourceId = getResourceId();
     if( resourceId.isEmpty() ) {
@@ -132,30 +151,90 @@ void DownloadRemoteFileDialog::accept()
         return;
     }        
     
-    QString dbName = getDBName();
+    QString dbId = getDBId();
     QStringList resIds = resourceId.split(QRegExp("[\\s,;]+"));
-
     QList<Task*> tasks;
-    foreach (const QString& resId, resIds) {
-        tasks.append( new LoadRemoteDocumentAndOpenViewTask(resId, dbName, fullPath) );
+
+    if (isDefaultDb(dbId)){
+        foreach (const QString& resId, resIds) {
+            tasks.append( new LoadRemoteDocumentAndOpenViewTask(resId, dbId, fullPath) );
+        }
+
+        AppContext::getTaskScheduler()->registerTopLevelTask( new MultiTask("DownloadRemoteDocuments", tasks) );
+    }else{ //DAS ID
+        DASSourceRegistry * dasRegistry = AppContext::getDASSourceRegistry();
+        if (dasRegistry){
+            //get features
+            QList<DASSource> featureSources;
+            for(int i = 0; i < ui->dasfeaturesWidget->count(); i++){
+                QListWidgetItem* item = ui->dasfeaturesWidget->item(i);
+                if (item->checkState() == Qt::Checked){
+                    QString featureId = item->data(Qt::UserRole).toString();
+                    DASSource fSource = dasRegistry->findById(featureId);
+                    if (fSource.isValid()){
+                        featureSources.append(fSource);
+                    }
+                }
+            }
+            //get sequence
+            DASSource refSource = dasRegistry->findById(dbId);
+            if (refSource.isValid()){
+                foreach (const QString& resId, resIds) {
+                    tasks.append( new LoadDASDocumentsAndOpenViewTask(resId, fullPath, refSource, featureSources));
+                }
+                AppContext::getTaskScheduler()->registerTopLevelTask( new MultiTask("LoadDASDocuments", tasks) );
+            }
+        }
     }
 
-    AppContext::getTaskScheduler()->registerTopLevelTask( new MultiTask("DownloadRemoteDocuments", tasks) );
-
     QDialog::accept();
-
-}
-
-void DownloadRemoteFileDialog::sl_updateHint(const QString& dbName) {
-    RemoteDBRegistry& registry = RemoteDBRegistry::getRemoteDBRegistry();
-    QString hint = registry.getHint(dbName);
-    ui->hintLabel->setText(hint);
-    ui->idLineEdit->setToolTip(hint);
 }
 
 DownloadRemoteFileDialog::~DownloadRemoteFileDialog() {
     AppContext::getSettings()->setValue(SAVE_DIR, ui->saveFilenameLineEdit->text());
     delete ui;
+}
+
+bool DownloadRemoteFileDialog::isDefaultDb(const QString& dbId){
+    RemoteDBRegistry& registry = RemoteDBRegistry::getRemoteDBRegistry();
+
+    return registry.hasDbId(dbId);       
+}
+
+void DownloadRemoteFileDialog::sl_updateDbId( int idx ){
+    QString dbId = getDBId();
+    QString hint;
+    QString description;
+    if (isDefaultDb(dbId)){
+        RemoteDBRegistry& registry = RemoteDBRegistry::getRemoteDBRegistry();
+        hint = description = registry.getHint(dbId);
+        ui->dasBox->hide();
+    }else{
+        DASSourceRegistry * dasRegistry = AppContext::getDASSourceRegistry();
+        if (dasRegistry){
+            const DASSource& dasSource = dasRegistry->findById(dbId);
+            if (dasSource.isValid()){
+                description = dasSource.getDescription();
+                hint = dasSource.getHint();
+
+                ui->dasfeaturesWidget->clear();
+                const QList<DASSource>& featureSources = dasRegistry->getFeatureSourcesByType(dasSource.getReferenceType());
+                foreach(const DASSource& s, featureSources){
+                    QListWidgetItem* item = new QListWidgetItem(s.getName());
+                    item->setData(Qt::UserRole, s.getId());
+                    item->setToolTip(s.getHint());
+                    item->setCheckState(Qt::Checked);
+                    ui->dasfeaturesWidget->addItem(item);
+                }
+            }
+        }
+        ui->dasBox->show();
+    }
+
+    adjustSize();
+
+    ui->hintLabel->setText(hint);
+    ui->idLineEdit->setToolTip(description);
 }
 
 } //namespace 

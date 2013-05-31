@@ -60,7 +60,6 @@ void ConservationPlotSupport::initialize() {
         dpr->registerEntry(dp);
     }
 
-    additionalValidators<<DefaultExternalToolValidations::pythonValidation();
     additionalValidators<<DefaultExternalToolValidations::rValidation();
 }
 

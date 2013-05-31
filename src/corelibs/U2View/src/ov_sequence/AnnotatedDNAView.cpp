@@ -663,7 +663,7 @@ void AnnotatedDNAView::sl_onContextMenuRequested(const QPoint & scrollAreaPos) {
     if (annotationSelection->getSelection().size() == 1) {
         Annotation* a = annotationSelection->getSelection().first().annotation;
         QString name = a->getAnnotationName();
-        AnnotationSettings* as = AppContext::getAnnotationsSettingsRegistry()->getAnnotationSettings(name);
+        AnnotationSettings* as = AppContext::getAnnotationsSettingsRegistry()->getAnnotationSettings(a);
         if (as->visible) {
             toggleHLAction->setText(tr("Disable '%1' highlighting").arg(a->getAnnotationName()));
         } else {   
@@ -701,8 +701,9 @@ void AnnotatedDNAView::sl_toggleHL() {
     if (annotationSelection->isEmpty()) {
         return;
     }
-    QString name = annotationSelection->getSelection().first().annotation->getAnnotationName();
-    AnnotationSettings* as = AppContext::getAnnotationsSettingsRegistry()->getAnnotationSettings(name);
+    Annotation* a= annotationSelection->getSelection().first().annotation;
+    QString name = a->getAnnotationName();
+    AnnotationSettings* as = AppContext::getAnnotationsSettingsRegistry()->getAnnotationSettings(a);
     as->visible = !as->visible;
     AppContext::getAnnotationsSettingsRegistry()->changeSettings(QList<AnnotationSettings*>()<<as, true);
 }

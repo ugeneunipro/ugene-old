@@ -84,6 +84,7 @@ HEADERS += src/ETSProjectViewItemsContoller.h \
            src/peak2gene/Peak2GeneSupport.h \
            src/peak2gene/Peak2GeneTask.h \
            src/peak2gene/Peak2GeneWorker.h \
+           src/python/PythonSupport.h \
            src/samtools/SamToolsExtToolSupport.h \
            src/seqpos/SeqPosSettings.h \
            src/seqpos/SeqPosSupport.h \
@@ -204,6 +205,7 @@ SOURCES += src/ETSProjectViewItemsContoller.cpp \
            src/peak2gene/Peak2GeneSupport.cpp \
            src/peak2gene/Peak2GeneTask.cpp \
            src/peak2gene/Peak2GeneWorker.cpp \
+           src/python/PythonSupport.cpp \
            src/samtools/SamToolsExtToolSupport.cpp \
            src/seqpos/SeqPosSettings.cpp \
            src/seqpos/SeqPosSupport.cpp \

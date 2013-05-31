@@ -64,8 +64,6 @@ void Peak2GeneSupport::initialize() {
         dpr->registerEntry(dp1);
     }
 
-    additionalValidators<<DefaultExternalToolValidations::pythonValidation();
-
 }
 
 } // U2

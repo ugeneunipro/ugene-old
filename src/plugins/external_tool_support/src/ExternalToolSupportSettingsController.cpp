@@ -359,7 +359,7 @@ void ExternalToolSupportSettingsPageWidget::sl_onBrowseToolKitPath(){
                     QWidget* itemWid=treeWidget->itemWidget(item,1);
                     PathLineEdit* lineEdit=itemWid->findChild<PathLineEdit*>("PathLineEdit");
                     if(lineEdit->text().isEmpty()){
-                        QDirIterator it(dir,QDirIterator::Subdirectories);
+                        LimitedDirIterator it(dir);
                         bool fileNotFound=true;
                         QString executableFileName=AppContext::getExternalToolRegistry()->getByName(item->text(0))->getExecutableFileName();
                         while (it.hasNext()&&fileNotFound) {
@@ -410,7 +410,8 @@ void ExternalToolSupportSettingsPageWidget::sl_onBrowseToolPackPath(){
                         PathLineEdit* lineEdit=itemWid->findChild<PathLineEdit*>("PathLineEdit");
                         if(lineEdit->text().isEmpty()){
                             QString toolPath = dirPath + "/" + dirName;
-                            QDirIterator it(toolPath,QDirIterator::Subdirectories);
+                            QDir toolDir(toolPath);
+                            LimitedDirIterator it(toolDir);
                             bool fileNotFound=true;
                             QString executableFileName = AppContext::getExternalToolRegistry()->getByName(item->text(0))->getExecutableFileName();
                             while (it.hasNext()&&fileNotFound) {

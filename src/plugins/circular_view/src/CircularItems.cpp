@@ -68,7 +68,7 @@ CircularAnnotationItem::~CircularAnnotationItem()
 void CircularAnnotationItem::paint(QPainter *p,const QStyleOptionGraphicsItem *item,QWidget *widget) {
     Q_UNUSED(item);
     AnnotationSettingsRegistry* asr = AppContext::getAnnotationsSettingsRegistry();
-    AnnotationSettings* as = asr->getAnnotationSettings(annotation->getAnnotationName());
+    AnnotationSettings* as = asr->getAnnotationSettings(annotation);
     this->color = as->color;
     foreach(CircurlarAnnotationRegionItem* item, regions) {
         item->paint(p, NULL, widget);
@@ -208,7 +208,7 @@ annotation(ann), labelFont(font), region(_region), ra(renderArea), hasPosition(f
     setVisible(false);
 
     AnnotationSettingsRegistry* asr = AppContext::getAnnotationsSettingsRegistry();
-    AnnotationSettings* as = asr->getAnnotationSettings(annotation->getAnnotationName());
+    AnnotationSettings* as = asr->getAnnotationSettings(annotation);
     labelText=GSequenceLineViewAnnotated::prepareAnnotationText(annotation, as);
 }
 

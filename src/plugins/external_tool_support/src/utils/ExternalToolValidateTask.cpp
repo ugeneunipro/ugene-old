@@ -23,6 +23,8 @@
 
 #include <U2Core/AppContext.h>
 #include <U2Core/ExternalToolRegistry.h>
+#include <U2Core/ScriptingToolRegistry.h>
+#include <U2Core/U2SafePoints.h>
 #include <U2Core/Log.h>
 
 #include <U2Lang/WorkflowUtils.h>
@@ -38,59 +40,56 @@ ExternalToolValidateTask::ExternalToolValidateTask(const QString& _toolName) :
     assert(tool);
     if (tool){
         program=tool->getPath();
-        assert(program!="");
-        validations.append(tool->getToolAdditionalValidations());
-        ExternalToolValidation origianlValidation = tool->getToolValidation();
-        origianlValidation.executableFile = program;
-        if (!origianlValidation.toolRunnerProgram.isEmpty()){
-            //origianlValidation.executableFile = origianlValidation.toolRunnerProgram+" "+origianlValidation.executableFile;
-            origianlValidation.arguments.prepend(origianlValidation.executableFile);
-            origianlValidation.executableFile = origianlValidation.toolRunnerProgram;
-        }
-        validations.append(origianlValidation);
-        coreLog.trace("Creating validation task for: " + toolName);
-        externalToolProcess=NULL;
-        isValid=false;
-        checkVersionRegExp=tool->getVersionRegExp();
-        version="unknown";
+    }else{
+        program = "";
     }
-    
 }
 
 ExternalToolValidateTask::ExternalToolValidateTask(const QString& _toolName, const QString& path) :
         Task(_toolName + " validate task", TaskFlag_None), toolName(_toolName), errorMsg("")
 {
-    ExternalTool* tool = AppContext::getExternalToolRegistry()->getByName(toolName);
-    assert(tool);
-    if (tool){
-        program=path;
-        assert(program!="");
-        validations.append(tool->getToolAdditionalValidations());
-        ExternalToolValidation origianlValidation = tool->getToolValidation();
-        origianlValidation.executableFile = path;
-        if (!origianlValidation.toolRunnerProgram.isEmpty()){
-            //origianlValidation.executableFile = origianlValidation.toolRunnerProgram+" "+origianlValidation.executableFile;
-            origianlValidation.arguments.prepend(origianlValidation.executableFile);
-            origianlValidation.executableFile = origianlValidation.toolRunnerProgram;
-        }
-        validations.append(origianlValidation);
-        coreLog.trace("Creating validation task for: " + toolName);
-        externalToolProcess=NULL;
-        isValid=false;
-        checkVersionRegExp=tool->getVersionRegExp();
-        version="unknown";
-    }
+    program=path;
 }
 ExternalToolValidateTask::~ExternalToolValidateTask(){
     delete externalToolProcess;
     externalToolProcess=NULL;
 }
 void ExternalToolValidateTask::prepare(){
+    
+}
+void ExternalToolValidateTask::run(){
+    ExternalTool* tool = AppContext::getExternalToolRegistry()->getByName(toolName);
+    assert(tool);
+    if (tool){
+        assert(program!="");
+        validations.append(tool->getToolAdditionalValidations());
+        ExternalToolValidation origianlValidation = tool->getToolValidation();
+        origianlValidation.executableFile = program;
+        if (!origianlValidation.toolRunnerProgram.isEmpty()){
+            ScriptingToolRegistry* stregister = AppContext::getScriptingToolRegistry();
+            SAFE_POINT_EXT(stregister != NULL, setError("No scripting tool registry"), );
+            ScriptingTool* stool = stregister->getByName(origianlValidation.toolRunnerProgram);
+            if(!stool || stool->getPath().isEmpty()){
+                stateInfo.setError(QString("The tool %1 that runs %2 is not installed. Please set the path of the tool in the External Tools settings").arg(origianlValidation.toolRunnerProgram).arg(toolName));
+            }else{
+                origianlValidation.arguments.prepend(origianlValidation.executableFile);
+                origianlValidation.executableFile = stool->getPath();
+            }
+        }
+        validations.append(origianlValidation);
+        coreLog.trace("Creating validation task for: " + toolName);
+        externalToolProcess=NULL;
+        isValid=false;
+        checkVersionRegExp=tool->getVersionRegExp();
+        version="unknown";
+
+    }
     algoLog.trace("Program executable: "+program);
     assert(!validations.isEmpty());
     algoLog.trace("Program arguments: "+validations.last().arguments.join(" "));
-}
-void ExternalToolValidateTask::run(){
+    if (stateInfo.hasError()){
+        return;
+    }
     foreach(const ExternalToolValidation& validation, validations){
         if(externalToolProcess != NULL){
             delete externalToolProcess;

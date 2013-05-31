@@ -754,7 +754,7 @@ void CircularViewRenderArea::drawAnnotations(QPainter& p) {
     QSet<AnnotationTableObject*> anns = ctx->getAnnotationObjects(true);   
     foreach(AnnotationTableObject* ao, anns) {
         foreach(Annotation* a, ao->getAnnotations()) {
-            AnnotationSettings* as = asr->getAnnotationSettings(a->getAnnotationName());
+            AnnotationSettings* as = asr->getAnnotationSettings(a);
             buildAnnotationItem(DrawAnnotationPass_DrawFill, a, false, as);
             buildAnnotationLabel(p.font(), a, as);
         }

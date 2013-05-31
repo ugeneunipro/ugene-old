@@ -24,6 +24,7 @@
 #include <U2Core/UserApplicationsSettings.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/IOAdapter.h>
+#include <U2Core/IOAdapterUtils.h>
 #include <U2Core/Log.h>
 #include <U2Core/ProjectModel.h>
 #include <U2Core/NetworkConfiguration.h>
@@ -34,14 +35,14 @@
 #include <U2Core/CopyDataTask.h>
 #include <U2Core/LoadDocumentTask.h>
 #include <U2Core/U2SafePoints.h>
+#include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/DocumentModel.h>
+#include <U2Core/BaseDocumentFormats.h>
 
 
 #include <QtCore/QFileInfo>
 #include <QtCore/QFile>
 #include <QtCore/QUrl>
-
-#include <QtNetwork/QNetworkProxy>
-
 
 
 #include "LoadRemoteDocumentTask.h"
@@ -58,6 +59,226 @@ const QString RemoteDBRegistry::SWISS_PROT("SWISS-PROT");
 const QString RemoteDBRegistry::UNIPROTKB_SWISS_PROT("UniProtKB/Swiss-Prot");
 const QString RemoteDBRegistry::UNIPROTKB_TREMBL("UniProtKB/TrEMBL");
 
+
+////////////////////////////////////////////////////////////////////////////
+//BaseLoadRemoteDocumentTask
+BaseLoadRemoteDocumentTask::BaseLoadRemoteDocumentTask(const QString& _downloadPath)
+:DocumentProviderTask(tr("Load remote document"), TaskFlags_NR_FOSCOE | TaskFlag_MinimizeSubtaskErrorText)
+{
+    downloadPath = _downloadPath;
+    sourceUrl = GUrl("");
+    fullPath = "";
+    fileName = "";
+}
+
+void BaseLoadRemoteDocumentTask::prepare(){
+    sourceUrl = getSourceURL();
+    fileName = getFileName();
+
+    if (!downloadPath.isEmpty()) {
+        fullPath = QDir::cleanPath(downloadPath);
+        fullPath = !fullPath.endsWith("/") ? fullPath + "/" : fullPath;
+    }
+
+    if (fileName.isEmpty()) {
+        stateInfo.setError("Incorrect key identifier!");
+        return;
+    }
+
+    if (fullPath.isEmpty()) {
+        fullPath = getDefaultDownloadDirectory();
+    }
+
+    if (!prepareDownloadDirectory(fullPath)) {
+        setError(QString("Directory %1 does not exist").arg(fullPath));
+        return;
+    }
+
+    fullPath += "/" + fileName;
+
+}
+
+Task::ReportResult BaseLoadRemoteDocumentTask::report()
+{
+    return ReportResult_Finished;
+}
+
+bool BaseLoadRemoteDocumentTask::prepareDownloadDirectory( QString &path ){
+    if (!QDir(path).exists()) {
+        if (path == getDefaultDownloadDirectory()) {
+            // Creating default directory if it doesn't exist
+            if (!QDir().mkpath(path)) {
+                return false;
+            }
+        }
+        else {
+            // We do not touch user specified directories from here
+            return false;
+        }
+    }
+
+    return true;
+}
+
+QString BaseLoadRemoteDocumentTask::getDefaultDownloadDirectory(){
+    QString path = AppContext::getAppSettings()->getUserAppsSettings()->getDownloadDirPath();
+    return path;
+}
+
+bool BaseLoadRemoteDocumentTask::initLoadDocumentTask(){
+    // Check if the document has been loaded 
+    Project* proj = AppContext::getProject();
+    if (proj != NULL) {
+        resultDocument = proj->findDocumentByURL(fullPath);
+        if (resultDocument != NULL) {
+            docOwner = false;
+            return false;
+        }
+    }
+
+    // Detect format
+    if (formatId.isEmpty()) {
+        QList<FormatDetectionResult> formats = DocumentUtils::detectFormat(fullPath);
+        CHECK_EXT(!formats.isEmpty(), setError(tr("Unknown file format!")), false)
+            formatId = formats.first().format->getFormatId();
+    }
+    IOAdapterFactory * iow = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
+    loadDocumentTask = new LoadDocumentTask(formatId, fullPath, iow);
+
+    return true;
+}
+
+bool BaseLoadRemoteDocumentTask::isCached(){
+    // Check if the file has already been downloaded
+    RecentlyDownloadedCache* cache = AppContext::getRecentlyDownloadedCache();
+    if( cache != NULL && cache->contains(fileName)) {
+        QString cachedUrl = cache->getFullPath(fileName);
+        if( fullPath == cachedUrl ) {
+            if (initLoadDocumentTask() ) {
+                addSubTask(loadDocumentTask);
+            } 
+            return true;
+        } // else: user wants to save doc to new file -> download it from db
+    }
+
+    return false;
+}
+
+void BaseLoadRemoteDocumentTask::createLoadedDocument(){
+    GUrl url(fullPath);
+    // Detect format
+    if (formatId.isEmpty()) {
+        formatId = BaseDocumentFormats::PLAIN_GENBANK;
+    }
+    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(url));
+    DocumentFormat* dformat = AppContext::getDocumentFormatRegistry()->getFormatById(formatId);
+    U2OpStatus2Log os;
+    resultDocument = dformat->createNewLoadedDocument(iof, url, os);
+}
+
+//////////////////////////////////////////////////////////////////////////
+//LoadRemoteDocumentTask
+LoadRemoteDocumentTask::LoadRemoteDocumentTask( const GUrl& url )
+:BaseLoadRemoteDocumentTask()
+{
+    fileUrl = url;
+    GCOUNTER( cvar, tvar, "LoadRemoteDocumentTask" );
+}
+
+LoadRemoteDocumentTask::LoadRemoteDocumentTask( const QString & accId, const QString & dbName, const QString & fullPathDir)
+:BaseLoadRemoteDocumentTask(fullPathDir)
+,accNumber(accId)
+,dbName(dbName)
+{
+    GCOUNTER( cvar, tvar, "LoadRemoteDocumentTask" );
+
+}
+
+void LoadRemoteDocumentTask::prepare(){
+    BaseLoadRemoteDocumentTask::prepare();
+    if (!isCached()){
+        if (sourceUrl.isHyperLink()) {
+            IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::HTTP_FILE);
+            IOAdapterFactory * iow = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
+            copyDataTask = new CopyDataTask(iof, sourceUrl, iow, fullPath);
+            addSubTask(copyDataTask);
+        } else {
+            assert(sourceUrl.isLocalFile());
+            QString dbId = RemoteDBRegistry::getRemoteDBRegistry().getDbEntrezName(dbName);
+            if(dbId.isEmpty()) {
+                setError(tr("Undefined database: '%1'").arg(dbName));
+                return;
+            } else {
+                loadDataFromEntrezTask = new LoadDataFromEntrezTask(dbId, accNumber,format,fullPath);
+                addSubTask(loadDataFromEntrezTask);
+            }
+        }
+    }
+}
+
+QString LoadRemoteDocumentTask::getFileFormat( const QString & dbid ){
+    QString dbId = RemoteDBRegistry::getRemoteDBRegistry().getDbEntrezName(dbid);
+    if (dbId == GENBANK_NUCLEOTIDE_ID || dbId == GENBANK_PROTEIN_ID) {
+        return GENBANK_FORMAT;
+    } else {
+        return FASTA_FORMAT;
+    }
+}
+
+GUrl LoadRemoteDocumentTask::getSourceURL(){
+    if (!fileUrl.isEmpty()){
+        return fileUrl;
+    }else{
+        RemoteDBRegistry::getRemoteDBRegistry().convertAlias(dbName);
+        return GUrl(RemoteDBRegistry::getRemoteDBRegistry().getURL(accNumber, dbName));    
+    }
+}
+
+QString LoadRemoteDocumentTask::getFileName(){
+    
+    if( sourceUrl.isHyperLink() ) {
+        return sourceUrl.fileName();
+    } else {
+        format = getFileFormat(dbName);
+        accNumber.replace(";",",");
+        QStringList accIds = accNumber.split(",");
+        if (accIds.size() == 1 ) {
+            return accNumber + "." + format;
+        } else if (accIds.size() > 1) {
+            return accIds.first() + "_misc." + format;
+        }
+    }
+
+    return "";
+}
+
+QList<Task*> LoadRemoteDocumentTask::onSubTaskFinished( Task* subTask ){
+    QList<Task*> subTasks;
+    if (subTask->hasError()) {
+        if( subTask == copyDataTask || subTask == loadDataFromEntrezTask ) {
+            setError(tr("Cannot find %1 in %2 database").arg(accNumber).arg(dbName) + ": " + subTask->getError());
+        }
+        return subTasks;
+    }
+    if (subTask == copyDataTask || subTask == loadDataFromEntrezTask) {
+        if (initLoadDocumentTask()) {
+            subTasks.append(loadDocumentTask);
+            if (!subTask->isCanceled()) {
+                RecentlyDownloadedCache * cache = AppContext::getRecentlyDownloadedCache();
+                if(cache != NULL) {
+                    cache->append(fullPath);
+                }
+            } else if (subTask == copyDataTask) {
+                QFile notLoadedFile(fullPath);
+                notLoadedFile.remove();
+            }
+        }
+    } else if ( subTask == loadDocumentTask) {
+        resultDocument = loadDocumentTask->takeDocument();
+    }
+    return subTasks;
+}
+/*
 LoadRemoteDocumentTask::LoadRemoteDocumentTask( const GUrl& fileUrl) 
 : DocumentProviderTask(tr("Load remote document"), TaskFlags_NR_FOSCOE | TaskFlag_MinimizeSubtaskErrorText), copyDataTask(NULL),
 loadDocumentTask(NULL) 
@@ -228,7 +449,7 @@ bool LoadRemoteDocumentTask::initLoadDocumentTask() {
 
     return true;
 }
-
+*/
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 RecentlyDownloadedCache::RecentlyDownloadedCache() {
     QStringList fileNames = AppContext::getAppSettings()->getUserAppsSettings()->getRecentlyDownloadedFileNames();
@@ -494,6 +715,10 @@ void RemoteDBRegistry::convertAlias( QString& dbName ) {
     if (aliases.contains(dbName)) {
         dbName = aliases.value(dbName);
     }
+}
+
+bool RemoteDBRegistry::hasDbId(const QString& dbId){
+    return queryDBs.contains(dbId) || httpDBs.contains(dbId);
 }
 
 } //namespace

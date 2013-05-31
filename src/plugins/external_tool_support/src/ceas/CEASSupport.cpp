@@ -63,11 +63,10 @@ void CEASSupport::initialize() {
 
     U2DataPathRegistry* dpr = AppContext::getDataPathRegistry();
     if (dpr){
-        U2DataPath* dp = new U2DataPath(REF_GENES_DATA_NAME, QString(PATH_PREFIX_DATA)+QString(":")+"cistrome/refGene");
+        U2DataPath* dp = new U2DataPath(REF_GENES_DATA_NAME, QString(PATH_PREFIX_DATA)+QString(":")+"cistrome/refGene 1");
         dpr->registerEntry(dp);
     }
 
-    additionalValidators<<DefaultExternalToolValidations::pythonValidation();
     additionalValidators<<DefaultExternalToolValidations::rValidation();
 
 }

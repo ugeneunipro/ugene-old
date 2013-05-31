@@ -39,6 +39,7 @@ DNAAlphabetRegistryImpl::~DNAAlphabetRegistryImpl() {
     foreach(DNAAlphabet* a, alphabets) {
         delete a;
     }
+    alphabets.clear();
 }
 
 static bool alphabetComplexityComparator(const DNAAlphabet* a1, const DNAAlphabet* a2) {

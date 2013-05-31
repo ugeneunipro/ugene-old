@@ -22,10 +22,10 @@
 #include "OpenViewTask.h"
 
 #include <U2Core/LoadDocumentTask.h>
-#include <U2Core/LoadRemoteDocumentTask.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/ProjectModel.h>
 #include <U2Core/Log.h>
+#include <U2Core/DASSource.h>
 #include <U2Core/ResourceTracker.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/GObjectReference.h>
@@ -40,6 +40,8 @@
 #include <U2Core/GObjectUtils.h>
 #include <U2Core/GObjectRelationRoles.h>
 #include <U2Core/AnnotationTableObject.h>
+#include <U2Core/LoadRemoteDocumentTask.h>
+#include <U2Core/LoadDASDocumentTask.h>
 
 #include <U2Gui/ObjectViewModel.h>
 
@@ -296,5 +298,60 @@ QList<Task*> AddDocumentAndOpenViewTask::onSubTaskFinished(Task* t) {
     return res;
 }
 
+
+//////////////////////////////////////////////////////////////////////////
+//LoadDASDocumentsAndOpenViewTask
+LoadDASDocumentsAndOpenViewTask::LoadDASDocumentsAndOpenViewTask( const QString& accId, const QString& _fullPath, const DASSource& _referenceSource, const QList<DASSource>& _featureSources )
+: Task(tr("Load DAS documents and open view"), TaskFlags_NR_FOSCOE | TaskFlag_MinimizeSubtaskErrorText)
+,accNumber(accId)
+,fullpath(_fullPath)
+,featureSources(_featureSources)
+,referenceSource(_referenceSource)
+,loadDasDocumentTask(NULL)
+{
+
+}
+
+void LoadDASDocumentsAndOpenViewTask::prepare(){
+    loadDasDocumentTask = new LoadDASDocumentTask(accNumber, fullpath, referenceSource, featureSources);
+
+    addSubTask(loadDasDocumentTask);
+}
+
+QList<Task*> LoadDASDocumentsAndOpenViewTask::onSubTaskFinished( Task* subTask ){
+    QList<Task*> subTasks;
+
+    if (subTask->hasError()) {
+        return subTasks;
+    }
+
+    if (subTask->isCanceled()) {
+        return subTasks;
+    }
+
+    if (subTask == loadDasDocumentTask ) {
+        QString fullPath = loadDasDocumentTask->getLocalUrl();
+        Project* proj = AppContext::getProject();
+        if (proj == NULL) {
+            subTasks.append(AppContext::getProjectLoader()->openWithProjectTask(fullPath));
+        } else {
+            Document* doc = loadDasDocumentTask->takeDocument();
+            SAFE_POINT(doc != NULL, "loadRemoteDocTask->takeDocument() returns NULL!", subTasks);
+            if (proj->getDocuments().contains(doc)) {
+                if (doc->isLoaded()) {
+                    subTasks.append(new OpenViewTask(doc));
+                } else {
+                    subTasks.append(new LoadUnloadedDocumentAndOpenViewTask(doc));
+                }
+            } else {
+                // Add document to project
+                subTasks.append(new AddDocumentTask(doc));
+                subTasks.append(new LoadUnloadedDocumentAndOpenViewTask(doc));
+            }    
+        }
+    }
+
+    return subTasks;
+}
 
 }//namespace

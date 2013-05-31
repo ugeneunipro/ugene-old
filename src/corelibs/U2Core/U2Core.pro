@@ -8,6 +8,7 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/datatype/AnnotationData.h \
            src/datatype/AnnotationSettings.h \
            src/datatype/BioStruct3D.h \
+           src/datatype/DASSource.h \
            src/datatype/DIProperties.h \
            src/datatype/DNAAlphabet.h \
            src/datatype/DNAAlphabetRegistryImpl.h \
@@ -87,6 +88,7 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/globals/PluginModel.h \
            src/globals/ProjectService.h \
            src/globals/ResourceTracker.h \
+           src/globals/ScriptingToolRegistry.h \
            src/globals/ServiceModel.h \
            src/globals/ServiceTypes.h \
            src/globals/Settings.h \
@@ -145,6 +147,7 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/tasks/ExtractAnnotatedRegionTask.h \
            src/tasks/FailTask.h \
            src/tasks/LoadDocumentTask.h \
+           src/tasks/LoadDASDocumentTask.h \
            src/tasks/LoadRemoteDocumentTask.h \
            src/tasks/ModifySequenceObjectTask.h \
            src/tasks/MultiTask.h \
@@ -192,6 +195,7 @@ SOURCES += src/cmdline/CMDLineCoreOptions.cpp \
            src/datatype/BaseAlphabets.cpp \
            src/datatype/BaseTranslations.cpp \
            src/datatype/BioStruct3D.cpp \
+           src/datatype/DASSource.cpp \
            src/datatype/DNAAlphabet.cpp \
            src/datatype/DNAAlphabetRegistryImpl.cpp \
            src/datatype/DNAInfo.cpp \
@@ -237,6 +241,7 @@ SOURCES += src/cmdline/CMDLineCoreOptions.cpp \
            src/globals/PluginModel.cpp \
            src/globals/ProjectService.cpp \
            src/globals/ResourceTracker.cpp \
+           src/globals/ScriptingToolRegistry.cpp \
            src/globals/ServiceModel.cpp \
            src/globals/Task.cpp \
            src/globals/Timer.cpp \
@@ -286,6 +291,7 @@ SOURCES += src/cmdline/CMDLineCoreOptions.cpp \
            src/tasks/DocumentProviderTask.cpp \
            src/tasks/ExtractAnnotatedRegionTask.cpp \
            src/tasks/LoadDocumentTask.cpp \
+           src/tasks/LoadDASDocumentTask.cpp \
            src/tasks/LoadRemoteDocumentTask.cpp \
            src/tasks/ModifySequenceObjectTask.cpp \
            src/tasks/MultiTask.cpp \
