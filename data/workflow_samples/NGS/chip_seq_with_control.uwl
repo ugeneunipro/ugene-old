@@ -3,11 +3,11 @@
 
 
 
-workflow "ChIP-seq analyses"{
+workflow "ChIP-seq analyses with control"{
 
     read-annotations {
         type:read-annotations;
-        name:"Read Tags";
+        name:"Treatment Tags";
         url-in {
             dataset:Dataset;
         }
@@ -22,7 +22,7 @@ workflow "ChIP-seq analyses"{
     }
     conservation_plot-id {
         type:conservation_plot-id;
-        name:"Build Conservation Plot";
+        name:"Build conservation plot";
     }
     seqpos-id {
         type:seqpos-id;
@@ -30,24 +30,38 @@ workflow "ChIP-seq analyses"{
     }
     peak2gene-id {
         type:peak2gene-id;
-        name:"Annotate Peaks with peak2gene";
+        name:"Annotate peaks with peak2gene";
     }
     conduct-go-id {
         type:conduct-go-id;
         name:"Conduct GO";
     }
+    read-annotations-1 {
+        type:read-annotations;
+        name:"Control Tags";
+        url-in {
+            dataset:Dataset;
+        }
+    }
+    multiplexer {
+        type:multiplexer;
+        name:Multiplexer;
+    }
 
 
     .actor-bindings {
-        read-annotations.out-annotations->macs-id.in-data
+        peak2gene-id.out-data->conduct-go-id.in-data
         macs-id.out-data->ceas-report.in-data
         macs-id.out-data->conservation_plot-id.in-data
         macs-id.out-data->seqpos-id.in-data
         macs-id.out-data->peak2gene-id.in-data
-        peak2gene-id.out-data->conduct-go-id.in-data
+        read-annotations.out-annotations->multiplexer.input-data-1
+        read-annotations-1.out-annotations->multiplexer.input-data-2
+        multiplexer.output-data->macs-id.in-data
     }
 
     read-annotations.annotations->macs-id.in-data._treatment-ann
+    read-annotations-1.annotations->macs-id.in-data.control-ann
     macs-id.wiggle-treat->ceas-report.in-data.enrichment-signal
     macs-id.peak-regions->ceas-report.in-data.peak-regions
     macs-id.peak-regions->conservation_plot-id.in-data.cp_treat-ann
@@ -58,68 +72,88 @@ workflow "ChIP-seq analyses"{
     .meta {
         visual {
             ceas-report {
-                pos:"-779 -629";
+                pos:"-449 -565";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
-                bounds:"-30 -30 148.25 84";
                 in-data.angle:49.2892;
             }
             conduct-go-id {
-                pos:"-418 -252";
+                pos:"-145 -294";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
-                in-data.angle:26.5651;
+                in-data.angle:41.3785;
             }
             conservation_plot-id {
-                pos:"-418 -884";
+                pos:"-160 -769";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 in-data.angle:180;
             }
             macs-id {
-                pos:"-778 -883";
+                pos:"-489 -880";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 in-data.angle:180;
-                out-data.angle:322.481;
+                out-data.angle:300.069;
+            }
+            multiplexer {
+                pos:"-778 -879";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                input-data-1.angle:150;
+                input-data-2.angle:210;
+                output-data.angle:360;
             }
             peak2gene-id {
-                pos:"-419 -479";
+                pos:"-161 -480";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 in-data.angle:180;
-                out-data.angle:297.854;
+                out-data.angle:302.005;
             }
             read-annotations {
-                pos:"-1017 -884";
+                pos:"-968 -937";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
-                bounds:"-30 -30 85.25 90";
+                bounds:"-30 -30 66.25 79";
+                out-annotations.angle:360;
+            }
+            read-annotations-1 {
+                pos:"-968 -797";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                bounds:"-30 -30 76.25 74";
                 out-annotations.angle:360;
             }
             seqpos-id {
-                pos:"-418 -688";
+                pos:"-162 -640";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 in-data.angle:180;
             }
             macs-id.out-data->ceas-report.in-data {
-                text-pos:"-54 -10";
+                text-pos:"-45 -16";
             }
             macs-id.out-data->conservation_plot-id.in-data {
-                text-pos:"-43 -28";
+                text-pos:"8 -34";
             }
             macs-id.out-data->peak2gene-id.in-data {
-                text-pos:"-55 -24";
+                text-pos:"-45 -37";
             }
             macs-id.out-data->seqpos-id.in-data {
-                text-pos:"-27 -16";
+                text-pos:"-45 -37";
+            }
+            multiplexer.output-data->macs-id.in-data {
+                text-pos:"-45 -37";
             }
             peak2gene-id.out-data->conduct-go-id.in-data {
-                text-pos:"-32 -23";
+                text-pos:"-43 -21";
             }
-            read-annotations.out-annotations->macs-id.in-data {
-                text-pos:"-47 -25";
+            read-annotations-1.out-annotations->multiplexer.input-data-2 {
+                text-pos:"-36 -23";
+            }
+            read-annotations.out-annotations->multiplexer.input-data-1 {
+                text-pos:"-33 -20";
             }
         }
         wizard {
@@ -127,25 +161,30 @@ workflow "ChIP-seq analyses"{
             page {
                 id:1;
                 next:2;
-                title:"Input data";
+                title:"MACS";
                 parameters-area {
                     group {
-                        title:"MACS input";
+                        title:"Input files";
                         label-size:120;
                         read-annotations.url-in {
-                            label:"Treatment tags";
+                            label:"Treatment Tags";
                         }
+                        read-annotations-1.url-in {
+                            label:"Control Tags";
+                        }
+
                     }
-                }
-            }
-            page {
-                id:2;
-                next:3;
-                title:MACS;
-                parameters-area {
                     group {
-                        title:Parameters;
+                        title:"Parameters";
                         label-size:120;
+                        macs-id.output-dir {
+                        }
+                        macs-id.file-names {
+                        }
+                        macs-id.wiggle-output {
+                        }
+                        macs-id.wiggle-space {
+                        }
                         macs-id.genome-size {
                         }
                         macs-id.p-value {
@@ -158,19 +197,15 @@ workflow "ChIP-seq analyses"{
                         }
                         macs-id.model-fold {
                         }
-                        macs-id.wiggle-output {
+                        macs-id.shift-size {
                         }
-                        macs-id.wiggle-space {
+                        macs-id.band-width {
                         }
                     }
                     group {
                         title:Advanced;
                         label-size:120;
                         type:hideable;
-                        macs-id.shift-size {
-                        }
-                        macs-id.band-width {
-                        }
                         macs-id.use-lambda {
                         }
                         macs-id.small-nearby {
@@ -185,13 +220,17 @@ workflow "ChIP-seq analyses"{
                 }
             }
             page {
-                id:3;
-                next:4;
-                title:CEAS;
+                id:2;
+                next:3;
+                title:"CEAS";
                 parameters-area {
                     group {
-                        title:Parameters;
+                        title:"Parameters";
                         label-size:150;
+                        ceas-report.image-file {
+                        }
+                        ceas-report.anns-file {
+                        }
                         ceas-report.anns-table {
                         }
                         ceas-report.span {
@@ -217,13 +256,15 @@ workflow "ChIP-seq analyses"{
                 }
             }
             page {
-                id:4;
-                next:5;
+                id:3;
+                next:4;
                 title:"Conservation Plot";
                 parameters-area {
                     group {
-                        title:Parameters;
+                        title:"Parameters";
                         label-size:120;
+                        conservation_plot-id.output-file {
+                        }
                         conservation_plot-id.title {
                         }
                         conservation_plot-id.label {
@@ -240,18 +281,24 @@ workflow "ChIP-seq analyses"{
                 }
             }
             page {
-                id:5;
-                next:6;
+                id:4;
+                next:5;
                 title:"SeqPos motif tool";
                 parameters-area {
                     group {
-                        title:Parameters;
+                        title:"Parameters";
                         label-size:130;
+                        seqpos-id.output-dir {
+                        }
+                        seqpos-id.output-dir {
+                        }
                         seqpos-id.assembly {
                         }
                         seqpos-id.de_novo {
                         }
                         seqpos-id.motif_db {
+                        }
+                        seqpos-id.out_name {
                         }
                         seqpos-id.reg_width {
                         }
@@ -261,8 +308,7 @@ workflow "ChIP-seq analyses"{
                 }
             }
             page {
-                id:6;
-                next:7;
+                id:5;
                 title:"Peak2Gene and Gene Ontology";
                 parameters-area {
                     group {
@@ -280,51 +326,11 @@ workflow "ChIP-seq analyses"{
                     group {
                         title:"Conduct GO Parameters";
                         label-size:120;
+                        conduct-go-id.output-dir {
+                        }
                         conduct-go-id.title {
                         }
                         conduct-go-id.gene-universe {
-                        }
-                    }
-                }
-            }
-            page {
-                id:7;
-                title:"Output data";
-                parameters-area {
-                    group {
-                        title:"MACS output";
-                        label-size:130;
-                        macs-id.output-dir {
-                        }
-                        macs-id.file-names {
-                        }
-                    }
-                    group {
-                        title:"CEAS output";
-                        label-size:130;
-                        ceas-report.image-file {
-                        }
-                        ceas-report.anns-file {
-                        }
-                    }
-                    group {
-                        title:"Conservation Plot output";
-                        label-size:130;
-                        conservation_plot-id.output-file {
-                        }
-                    }
-                    group {
-                        title:"SeqPos motif tool output";
-                        label-size:130;
-                        seqpos-id.output-dir {
-                        }
-                        seqpos-id.out_name {
-                        }
-                    }
-                    group {
-                        title:"Conduct GO output";
-                        label-size:130;
-                        conduct-go-id.output-dir {
                         }
                     }
                 }
