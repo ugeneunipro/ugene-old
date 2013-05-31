@@ -27,7 +27,6 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/Task.h>
 #include <U2Core/Log.h>
-#include <U2Core/LogCache.h>
 #include <U2Core/Timer.h>
 #include <U2Core/Version.h>
 
@@ -316,7 +315,7 @@ void CrashHandler::releaseReserve() {
 void CrashHandler::setupHandler() {
     // setup cached messages first
     assert(crashLogCache == NULL);
-    crashLogCache = new LogCache();
+    crashLogCache = new CrashLogCache();
     crashLogCache->filter.filters.append(LogFilterItem(ULOG_CAT_TASKS, LogLevel_TRACE));
     crashLogCache->filter.filters.append(LogFilterItem(ULOG_CAT_CORE_SERVICES, LogLevel_TRACE));
     crashLogCache->filter.filters.append(LogFilterItem(ULOG_CAT_IO, LogLevel_TRACE));

@@ -30,6 +30,11 @@
 #include <QtCore/QThread>
 #include <QtCore/QProcess>
 
+#ifdef Q_OS_LINUX
+#include <stdio.h>
+#include <proc/readproc.h>
+#endif
+
 #ifdef Q_OS_WIN
 #include <windows.h>
 #include <Psapi.h>
@@ -136,19 +141,18 @@ void AppResourcePool::setMaxMemorySizeInMB(int n) {
     AppContext::getSettings()->setValue(SETTINGS_ROOT + "maxMem", memResource->maxUse());
 }
 
-bool AppResourcePool::getCurrentAppMemory(int& mb) {
-#ifdef Q_OS_WIN
-    HANDLE procHandle = GetCurrentProcess();
-    PROCESS_MEMORY_COUNTERS pmc;
-    BOOL ok = GetProcessMemoryInfo(procHandle, &pmc, sizeof(procHandle));
-    if (!ok) {
-        return false;
-    }
-    mb = (int)(pmc.WorkingSetSize/(1024*1024));
-    return true;    
+size_t AppResourcePool::getCurrentAppMemory() {
+
+#ifdef Q_OS_LINUX
+    struct proc_t usage;
+    look_up_our_self(&usage);
+    return usage.vsize;
 #endif
-    mb = MIN_MEMORY_SIZE;
-    return false;
+#ifdef Q_OS_WIN32
+    PROCESS_MEMORY_COUNTERS memCounter;
+    bool result = GetProcessMemoryInfo(GetCurrentProcess(), &memCounter, sizeof( memCounter ));
+    return memCounter.WorkingSetSize;
+#endif
 }
 
 bool AppResourcePool::isSSE2Enabled() {

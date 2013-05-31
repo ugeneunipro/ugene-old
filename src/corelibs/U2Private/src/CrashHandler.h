@@ -26,6 +26,8 @@
 #include "StackWalker.h"
 
 #include <U2Core/global.h>
+#include <U2Core/LogCache.h>
+#include <U2Core/AppResources.h>
 
 #include <QtCore/QString>
 #include <QtCore/QStringList>
@@ -91,6 +93,33 @@ public:
     static char*            buffer;
     static LogCache*        crashLogCache;
 };
+
+class CrashLogCache : public LogCache {
+    Q_OBJECT
+protected slots:
+    virtual void sl_onMessage(const LogMessage& msg) {
+        static int count=0;
+        if (!(count++ % logMemoryInfoEvery)) {
+            cmdLog.trace(formMemInfo());
+        }
+
+        LogCache::sl_onMessage(msg);
+    }
+
+private:
+    static const int logMemoryInfoEvery = 30;
+
+    QString formMemInfo() {
+        size_t memoryBytes = AppResourcePool::instance()->getCurrentAppMemory();
+        QString memInfo = QString("AppMemory: %1Mb; ").arg(memoryBytes/(1000*1000));
+        AppResource *mem = AppResourcePool::instance()->getResource(RESOURCE_MEMORY);
+        if (mem) {
+            memInfo += QString("Locked memory AppResource: %1/%2").arg(mem->maxUse() - mem->available()).arg(mem->maxUse());
+        }
+        return memInfo;
+    }
+};
+
 
 } //namespace
 

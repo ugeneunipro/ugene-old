@@ -51,7 +51,7 @@ namespace U2 {
 class U2CORE_EXPORT AppResource {
 public:
     AppResource(int id, int _maxUse, const QString& _name, const QString& _suffix = QString()) 
-        : _maxUse(_maxUse), resource(NULL), resourceId(id), name(_name), suffix(_suffix) {
+        : resourceId(id), _maxUse(_maxUse), name(_name), suffix(_suffix), resource(NULL) {
         resource = new QSemaphore(_maxUse);
     }
     virtual ~AppResource(){
@@ -147,7 +147,7 @@ public:
     int getMaxMemorySizeInMB() const {return memResource->maxUse();}
     void setMaxMemorySizeInMB(int m);
     
-    static bool getCurrentAppMemory(int& mb); //size in megabytes, false is estimation only is used
+    static size_t getCurrentAppMemory();
     
     static bool isSSE2Enabled();
     

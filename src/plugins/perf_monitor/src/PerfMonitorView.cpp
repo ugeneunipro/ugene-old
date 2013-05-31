@@ -36,13 +36,13 @@
 
 namespace U2 {
 
-static GCounter updateCounter("PerfMoninor::updateCounters", TimeCounter::getCounterSuffix(), TimeCounter::getCounterScale());
+static GCounter updateCounter("PerfMonitor::updateCounters", TimeCounter::getCounterSuffix(), TimeCounter::getCounterScale());
 #ifdef Q_OS_LINUX
-static GCounter rssMemoryCounter("PerfMoninor::RSSmemoryUsage", "mbytes", 256);
-static GCounter virtMemoryCounter("PerfMoninor::VIRTmemoryUsage", "mbytes", 1048576);
+static GCounter rssMemoryCounter("PerfMonitor::RSSmemoryUsage", "mbytes", 256);
+static GCounter virtMemoryCounter("PerfMonitor::VIRTmemoryUsage", "mbytes", 1048576);
 #endif
 #ifdef Q_OS_WIN32
-static GCounter memoryCounter("PerfMoninor::memoryUsage", "mbytes", 1048576);
+static GCounter memoryCounter("PerfMonitor::memoryUsage", "mbytes", 1048576);
 #endif
 
 PerfMonitorView::PerfMonitorView() : MWMDIWindow(tr("Application counters")){
