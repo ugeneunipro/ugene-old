@@ -421,10 +421,6 @@ void CrashHandler::runMonitorProcess(const QString &exceptionType)
 
     size_t memoryBytes = AppResourcePool::instance()->getCurrentAppMemory();
     QString memInfo = QString("AppMemory: %1Mb; ").arg(memoryBytes/(1000*1000));
-    AppResource *mem = AppResourcePool::instance()->getResource(RESOURCE_MEMORY);
-    if (mem) {
-        memInfo += QString("Locked memory AppResource: %1/%2").arg(mem->maxUse() - mem->available()).arg(mem->maxUse());
-    }
 
     reportText += (memInfo + "\n");
     reportText += messageLog + " | ";
