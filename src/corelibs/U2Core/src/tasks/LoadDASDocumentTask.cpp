@@ -30,7 +30,7 @@
 #include <U2Core/U2SequenceUtils.h>
 #include <U2Core/GObjectRelationRoles.h>
 
-#include <QtXML/QDomDocument>
+#include <QtXml/QDomDocument>
 
 namespace U2 {
 
@@ -65,7 +65,7 @@ QString LoadDASDocumentTask::getFileFormat( const QString & dbid ){
 }
 
 GUrl LoadDASDocumentTask::getSourceURL(){
-    return "";
+    return GUrl();
 }
 
 QString LoadDASDocumentTask::getFileName(){
