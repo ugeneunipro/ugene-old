@@ -131,6 +131,10 @@ static void drawAtomsBonds(const Color4f &viewAtomColor, float renderDetailLevel
 
 void BallAndStickGLRenderer::createDisplayList()
 {
+    if (glIsList(dl)) {
+        glDeleteLists(dl, 1);
+    }
+
     dl = glGenLists(1);
     float renderDetailLevel = settings->detailLevel;
 
