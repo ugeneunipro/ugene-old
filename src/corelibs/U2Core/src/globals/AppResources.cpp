@@ -145,7 +145,7 @@ size_t AppResourcePool::getCurrentAppMemory() {
 
 #ifdef Q_OS_LINUX
     struct proc_t usage;
-    look_up_our_self(&usage);
+    //look_up_our_self(&usage);
     return usage.vsize;
 #endif
 #ifdef Q_OS_WIN32
