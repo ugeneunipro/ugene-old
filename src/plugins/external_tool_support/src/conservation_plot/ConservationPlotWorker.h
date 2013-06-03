@@ -42,13 +42,9 @@ public:
     virtual Task *tick();
     virtual void cleanup();
 
-    //for files in the report
-    virtual QStringList getOutputFiles();
-
 private:
     IntegralBus *inChannel;
     QList<QList<SharedAnnotationData> > plotData;
-    QStringList outFiles;
 
 private:
     ConservationPlotSettings createConservationPlotSettings(U2OpStatus &os);

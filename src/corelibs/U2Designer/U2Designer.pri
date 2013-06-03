@@ -5,7 +5,7 @@ include( ../../ugene_lib_common.pri )
 
 UGENE_RELATIVE_DESTDIR = ''
 
-QT += svg
+QT += svg webkit
 DEFINES+= QT_FATAL_ASSERT BUILDING_U2DESIGNER_DLL
 
 LIBS += -L../../_release -lU2Core -lU2Lang -lU2Gui

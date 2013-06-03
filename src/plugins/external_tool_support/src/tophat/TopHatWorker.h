@@ -71,7 +71,6 @@ public:
     void init();
     Task *tick();
     void cleanup();
-    QStringList getOutputFiles();
 
 private slots:
     void sl_topHatTaskFinished();
@@ -81,7 +80,6 @@ protected:
     IntegralBus* output;
     TopHatInputData data;
     TopHatSettings settings;
-    QStringList outputFiles;
 
     bool settingsAreCorrect;
     DatasetData datasetsData;

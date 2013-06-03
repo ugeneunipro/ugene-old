@@ -42,12 +42,8 @@ public:
     virtual Task *tick();
     virtual void cleanup();
 
-    //for files in the report
-    virtual QStringList getOutputFiles();
-
 private:
     IntegralBus *inChannel;
-    QStringList outFiles;
 
 private:
     ConductGOSettings createConductGOSettings(U2OpStatus &os);

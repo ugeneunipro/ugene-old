@@ -33,7 +33,7 @@ namespace LocalWorkflow {
  * seeks the nearest to the end of the workflow worker and ticks it
  * uses workflow's actors bindings graph
  */
-class U2LANG_EXPORT LastReadyScheduler : public Scheduler {
+class LastReadyScheduler : public Scheduler {
 public:
     LastReadyScheduler(Schema *sh);
     virtual ~LastReadyScheduler();
@@ -54,6 +54,10 @@ private:
     Task *lastTask;
 
     WorkerState getWorkerState(Actor* a);
+    ActorId actorId() const;
+    bool hasValidFinishedTask() const;
+    qint64 lastTaskTimeSec() const;
+    void measuredTick();
 };
 
 } // LocalWorkflow

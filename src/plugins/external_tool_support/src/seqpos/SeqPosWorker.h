@@ -42,9 +42,6 @@ public:
     virtual Task *tick();
     virtual void cleanup();
 
-    //for files in the report
-    virtual QStringList getOutputFiles();
-
 private:
     IntegralBus *inChannel;
 

@@ -135,7 +135,7 @@ Task * WriteAnnotationsWorker::tick() {
         return NULL;
     }
 
-    setDone();    
+    setDone();
     QList<Task*> taskList;
     QSet<QString> excludeFileNames = DocumentUtils::getNewDocFileNameExcludesHint();
     foreach (QString filepath, annotationsByUrl.keys()) {

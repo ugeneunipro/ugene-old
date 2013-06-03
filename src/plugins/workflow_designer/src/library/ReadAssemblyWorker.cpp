@@ -46,6 +46,7 @@
 #include <U2Lang/BaseTypes.h>
 #include <U2Lang/ReadDocumentTaskFactory.h>
 #include <U2Lang/WorkflowEnv.h>
+#include <U2Lang/WorkflowMonitor.h>
 #include <U2Lang/WorkflowTasksRegistry.h>
 
 #include "DocActors.h"
@@ -96,11 +97,9 @@ void ReadAssemblyWorker::onTaskFinished(Task *task) {
 
         cache.append(Message(mtype, m));
     }
-    outputFiles << t->getProducedFiles();
-}
-
-QStringList ReadAssemblyWorker::getOutputFiles() {
-    return outputFiles;
+    foreach (const QString &url, t->getProducedFiles()) {
+        context->getMonitor()->addOutputFile(url, getActor()->getId());
+    }
 }
 
 /************************************************************************/

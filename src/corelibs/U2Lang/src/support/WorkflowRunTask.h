@@ -23,11 +23,12 @@
 #define _U2_FLOWTASK_H_
 
 #include <U2Core/Task.h>
+
+#include <U2Lang/CoreLibConstants.h>
 #include <U2Lang/DbiDataStorage.h>
 #include <U2Lang/Schema.h>
 #include <U2Lang/WorkflowManager.h>
 #include <U2Lang/WorkflowIOTasks.h>
-#include <U2Lang/CoreLibConstants.h>
 
 #include <QtCore/QUrl>
 #include <QtCore/QTemporaryFile>
@@ -39,17 +40,38 @@ namespace U2 {
 
 namespace Workflow {
     class CommunicationChannel;
+    class SeparateProcessMonitor;
+    class WorkflowMonitor;
 }
 using namespace Workflow;
 
 class U2LANG_EXPORT WorkflowAbstractRunner : public Task {
     Q_OBJECT
 public:
-    WorkflowAbstractRunner(const QString& n, TaskFlags f) : Task(n, f) {}
+    WorkflowAbstractRunner(const QString &name, TaskFlags flags);
     virtual QList<WorkerState> getState(Actor*) = 0;
     virtual int getMsgNum(Link*) = 0;
     virtual int getMsgPassed(Link*) = 0;
+
+    const QList<WorkflowMonitor*> & getMonitors() const;
+
+protected:
+    QList<WorkflowMonitor*> monitors;
 }; // WorkflowAbstractRunner
+
+class U2LANG_EXPORT WorkflowAbstractIterationRunner : public Task {
+    Q_OBJECT
+public:
+    WorkflowAbstractIterationRunner(const QString& n, TaskFlags f) : Task(n, f) {}
+    virtual WorkerState getState(const ActorId &actor) = 0;
+    virtual int getMsgNum(Link *l) = 0;
+    virtual int getMsgPassed(Link *l) = 0;
+
+    virtual int getDataProduced(const ActorId &actor) = 0;
+
+signals:
+    void si_updateProducers();
+};
 
 
 typedef QMap<ActorId,ActorId> ActorMap;
@@ -76,7 +98,7 @@ private:
     
 }; // WorkflowRunTask
 
-class WorkflowIterationRunTask : public Task {
+class WorkflowIterationRunTask : public WorkflowAbstractIterationRunner {
     Q_OBJECT
 public:
     WorkflowIterationRunTask(const Schema&, const Iteration&);
@@ -84,16 +106,21 @@ public:
     virtual void prepare();
     virtual ReportResult report();
 
+    virtual WorkerState getState(const ActorId &actor);
+    virtual int getMsgNum(Link *l);
+    virtual int getMsgPassed(Link *l);
+    virtual int getDataProduced(const ActorId &actor);
+
+    WorkflowMonitor * getMonitor() const;
+
 signals:
     void si_ticked();
-public:
-    WorkerState getState(const ActorId& id);
-    int getMsgNum(Link*);
-    int getMsgPassed(Link*);
-    QStringList getFiles() const;
 
 protected:
     virtual QList<Task*> onSubTaskFinished(Task* subTask);
+
+private:
+    QList<CommunicationChannel*> getActorLinks(const QString &actor);
 
 private:
     WorkflowContext *context;
@@ -101,7 +128,6 @@ private:
     Scheduler* scheduler;
     QMap<ActorId, ActorId> rmap;
     QMap<QString, CommunicationChannel*> lmap;
-    QStringList fileLinks;
 };
 
 class U2LANG_EXPORT WorkflowRunInProcessTask : public WorkflowAbstractRunner {
@@ -121,7 +147,7 @@ signals:
 
 class RunCmdlineWorkflowTask;
 
-class WorkflowIterationRunInProcessTask : public Task {
+class WorkflowIterationRunInProcessTask : public WorkflowAbstractIterationRunner {
     Q_OBJECT
 public:
     WorkflowIterationRunInProcessTask(const Schema & sc, const Iteration & it);
@@ -130,10 +156,11 @@ public:
     virtual ReportResult report();
     virtual QList<Task*> onSubTaskFinished(Task* subTask);
     
-    WorkerState getState(Actor*);
-    int getMsgNum(Link * l);
-    int getMsgPassed(Link * l);
-    QStringList getFiles();
+    virtual WorkerState getState(const ActorId &actor);
+    virtual int getMsgNum(Link * l);
+    virtual int getMsgPassed(Link * l);
+    virtual int getDataProduced(const ActorId &actor);
+    WorkflowMonitor * getMonitor() const;
     
 private:
     Schema* schema;
@@ -141,8 +168,7 @@ private:
     SaveWorkflowTask * saveSchemaTask;
     RunCmdlineWorkflowTask * monitor;
     QMap<ActorId, ActorId> rmap;
-    QStringList createdFilesUlrs;
-    
+    SeparateProcessMonitor *wfMonitor;
 }; // WorkflowIterationRunInProcessTask
 
 class RunCmdlineWorkflowTaskConfig {
@@ -158,7 +184,7 @@ public:
 class RunCmdlineWorkflowTask : public Task {
     Q_OBJECT
 public:
-    RunCmdlineWorkflowTask(const RunCmdlineWorkflowTaskConfig& conf);
+    RunCmdlineWorkflowTask(const RunCmdlineWorkflowTaskConfig& conf, SeparateProcessMonitor *monitor = NULL);
     
     void prepare();
     virtual ReportResult report();
@@ -166,10 +192,6 @@ public:
     int getMsgNum(const QString & ids);
     int getMsgPassed(const QString & ids);
     void writeLog(QStringList &lines);
-    QStringList getCreatedFilesUrls() const;
-
-    static QString createOutputFileLog(const QString &url);
-    static QString parseOutputFile(const QString &logLine);
 
 private slots:
     void sl_onError(QProcess::ProcessError);
@@ -182,7 +204,7 @@ private:
     QMap<QString, int>                      msgNums;
     QMap<QString, int>                      msgPassed;
     QString                                 processLogPrefix;
-    QStringList                             createdFilesUlrs;
+    SeparateProcessMonitor*                 monitor;
 
 private:
     QString readStdout();

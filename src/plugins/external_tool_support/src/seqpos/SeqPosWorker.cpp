@@ -134,11 +134,6 @@ U2::SeqPosSettings SeqPosWorker::createSeqPosSettings( U2OpStatus &os ){
     return settings;
 }
 
-
-QStringList SeqPosWorker::getOutputFiles() {
-    return QStringList();
-}
-
 /************************************************************************/
 /* Factory */
 /************************************************************************/

@@ -33,6 +33,8 @@ namespace U2 {
 
 class AppFileStorage;
 
+namespace FileStorage {
+
 class U2CORE_EXPORT FileInfo : public U2Triplet {
 public:
     FileInfo(const QString &url, const QString &role, const QString &info);
@@ -62,6 +64,8 @@ private:
     void unuseFiles();
 };
 
+} // FileStorage
+
 /** A triplestore for information about files produced by UGENE */
 class U2CORE_EXPORT AppFileStorage {
 public:
@@ -75,17 +79,17 @@ public:
      * It is impossible to delete file and corresponding data if it is used by some owner.
      * One file could have several owners (see addFileOwner)
      */
-    void addFileInfo(const FileInfo &info, WorkflowProcess &process, U2OpStatus &os);
-    void addFileOwner(const FileInfo &info, WorkflowProcess &process, U2OpStatus &os);
+    void addFileInfo(const FileStorage::FileInfo &info, FileStorage::WorkflowProcess &process, U2OpStatus &os);
+    void addFileOwner(const FileStorage::FileInfo &info, FileStorage::WorkflowProcess &process, U2OpStatus &os);
 
     bool contains(const QString &url, const QString &role, U2OpStatus &os) const;
-    QString getFileInfo(const QString &url, const QString &role, WorkflowProcess &process, U2OpStatus &os) const;
+    QString getFileInfo(const QString &url, const QString &role, FileStorage::WorkflowProcess &process, U2OpStatus &os) const;
 
     QString getStorageDir() const;
 
     /** Sets tempDirectory for the @process*/
-    void registerWorkflowProcess(WorkflowProcess &process, U2OpStatus &os);
-    void unregisterWorkflowProcess(WorkflowProcess &process, U2OpStatus &os);
+    void registerWorkflowProcess(FileStorage::WorkflowProcess &process, U2OpStatus &os);
+    void unregisterWorkflowProcess(FileStorage::WorkflowProcess &process, U2OpStatus &os);
 
     /**
      * Removes all files from the storage directory and all records from the storage

@@ -32,6 +32,7 @@
 #include <U2Lang/Datatype.h>
 #include <U2Lang/GrouperOutSlot.h>
 #include <U2Lang/IntegralBus.h>
+#include <U2Lang/WorkflowMonitor.h>
 
 #include "WorkflowContext.h"
 
@@ -46,8 +47,8 @@ static QString getWorkflowId(WorkflowContext *ctx) {
     return wId;
 }
 
-WorkflowContext::WorkflowContext(const QList<Actor*> &procs)
-: storage(NULL), process("")
+WorkflowContext::WorkflowContext(const QList<Actor*> &procs, WorkflowMonitor *_monitor)
+: monitor(_monitor), storage(NULL), process("")
 {
     foreach (Actor *p, procs) {
         procMap.insert(p->getId(), p);
@@ -85,8 +86,12 @@ bool WorkflowContext::init() {
     return storage->init();
 }
 
-DbiDataStorage *WorkflowContext::getDataStorage() {
+DbiDataStorage * WorkflowContext::getDataStorage() {
     return storage;
+}
+
+WorkflowMonitor * WorkflowContext::getMonitor() {
+    return monitor;
 }
 
 void WorkflowContext::addExternalProcessFile(const QString &url) {

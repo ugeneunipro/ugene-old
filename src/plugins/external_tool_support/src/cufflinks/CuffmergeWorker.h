@@ -53,7 +53,6 @@ public:
     void init();
     Task * tick();
     void cleanup();
-    QStringList getOutputFiles();
 
 private slots:
     void sl_taskFinished();
@@ -61,7 +60,6 @@ private slots:
 protected:
     IntegralBus *input;
     IntegralBus *output;
-    QStringList outputFiles;
 
     QList< QList<SharedAnnotationData> > anns;
 

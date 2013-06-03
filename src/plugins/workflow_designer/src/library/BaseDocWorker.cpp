@@ -27,6 +27,7 @@
 #include <U2Lang/BaseSlots.h>
 #include <U2Lang/CoreLibConstants.h>
 #include <U2Lang/WorkflowEnv.h>
+#include <U2Lang/WorkflowMonitor.h>
 #include <U2Lang/WorkflowUtils.h>
 
 #include <U2Core/AppContext.h>
@@ -154,20 +155,6 @@ void BaseDocWriter::init() {
     ch = ports.values().first();
 }
 
-QStringList BaseDocWriter::getOutputFiles(){
-    QStringList files = BaseWorker::getOutputFiles();
-    QStringList urls;
-    foreach (const QString &url, files) {
-        urls << GUrl(url).getURLString();
-    }
-    foreach (const QString &url, usedUrls) {
-        urls << GUrl(url).getURLString();
-    }
-
-    QSet<QString> urlSet = urls.toSet();
-    return urlSet.toList();
-}
-
 #define GZIP_SUFFIX ".gz"
 
 void BaseDocWriter::takeParameters(U2OpStatus &os) {
@@ -269,8 +256,10 @@ IOAdapter * BaseDocWriter::getAdapter(const QString &url, U2OpStatus &os) {
     openAdapter(io.data(), url, SaveDocFlags(fileMode), os);
     CHECK_OP(os, NULL);
 
-    adapters[io->getURL().getURLString()] = io.data();
-    usedUrls << io->getURL().getURLString();
+    QString resultUrl = io->getURL().getURLString();
+    adapters[resultUrl] = io.data();
+    usedUrls << resultUrl;
+    context->getMonitor()->addOutputFile(resultUrl, getActor()->getId());
 
     return io.take();
 }

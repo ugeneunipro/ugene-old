@@ -34,6 +34,7 @@
 #include <U2Lang/BaseActorCategories.h>
 #include <U2Lang/BaseTypes.h>
 #include <U2Lang/WorkflowEnv.h>
+#include <U2Lang/WorkflowMonitor.h>
 
 #include "CEASReportWorker.h"
 #include "CEASSupport.h"
@@ -101,8 +102,10 @@ void CEASReportWorker::sl_taskFinished() {
         return;
     }
 
-    outFiles << t->getSettings().getCeasSettings().getImageFilePath();
-    outFiles << t->getSettings().getCeasSettings().getAnnsFilePath();
+    QString imageUrl = t->getSettings().getCeasSettings().getImageFilePath();
+    QString annsUrl = t->getSettings().getCeasSettings().getAnnsFilePath();
+    context->getMonitor()->addOutputFile(imageUrl, getActor()->getId());
+    context->getMonitor()->addOutputFile(annsUrl, getActor()->getId());
 
     if (inChannel->isEnded() && !inChannel->hasMessage()) {
         setDone();
@@ -174,10 +177,6 @@ CEASSettings CEASReportWorker::createCEASSettings(U2OpStatus &/*os*/) {
     }
 
     return settings;
-}
-
-QStringList CEASReportWorker::getOutputFiles() {
-    return outFiles;
 }
 
 /************************************************************************/

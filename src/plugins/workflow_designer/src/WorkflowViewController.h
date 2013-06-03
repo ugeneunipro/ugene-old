@@ -39,6 +39,7 @@ class QDomDocument;
 class QListWidget;
 class QListWidgetItem;
 class QTabWidget;
+class QGroupBox;
 
 namespace U2 {
 using namespace Workflow;
@@ -51,6 +52,7 @@ class WorkflowBusItem;
 class WorkflowPortItem;
 class WorkflowProcessItem;
 class WorkflowRunTask;
+class WorkflowTabView;
 
 class WorkflowScene : public QGraphicsScene {
     Q_OBJECT
@@ -175,13 +177,14 @@ public:
     }; // RunMode
 public slots:
     void sl_updateUi();
+    void sl_rescaleScene(const QString &scale);
+
 private slots:
     void sl_editItem();
     void sl_onSelectionChanged();
     void sl_showEditor();
     void sl_selectPrototype(Workflow::ActorPrototype*);
     void sl_procItemAdded();
-    void sl_rescaleScene(const QString &scale);
     void sl_exportScene();
     void sl_saveScene();
     void sl_saveSceneAs();
@@ -226,6 +229,9 @@ private slots:
 
     void sl_updateSchema();
     void sl_showWizard();
+    void sl_toggleDashboard();
+    void sl_dashboardCountChanged();
+
 protected:
     bool onCloseEvent();
 
@@ -238,41 +244,58 @@ private:
     void remoteLaunch();
     void removeWizards();
 
+    // setup ui
+    void setupScene();
+    void setupPalette();
+    void setupPropertyEditor();
+    void setupErrorList();
+    void setupMainSplitter();
+    void loadSceneFromObject();
+    void loadUiSettings();
+
+    // dashboards
+    void setupActions();
+    void hideDashboards();
+    void showDashboards();
+    void setDashboardActionVisible(bool visible);
+
+    void runWizard(const Wizard *w);
+    void checkAutoRunWizard();
+
+
+private:
+    bool running;
     bool sceneRecreation;
     WorkflowGObject* go;
-    QGraphicsView* sceneView;
-    WorkflowScene* scene;
     Schema *schema;
     Workflow::Metadata meta;
     ActorPrototype* currentProto;
     Actor* currentActor;
 
-    QAction* deleteAction;
-    QAction* deleteShortcut;
-    QAction* selectAction;
-    //QAction* bringToFrontAction;
-    //QAction* sendToBackAction;
-    QComboBox* sceneScaleCombo;
-    QMenu *elementsMenu;
-    QAction* copyAction;
-    QAction* pasteAction;
-    QAction* cutAction;
-
     QString lastPaste;
     int pasteCount;
 
+    bool scriptingMode;
+    RunMode runMode;
+
+    QMenu *elementsMenu;
+
+    QAction* deleteAction;
+    QAction* deleteShortcut;
+    QAction* selectAction;
+    QAction* copyAction;
+    QAction* pasteAction;
+    QAction* cutAction;
     QAction* exportAction;
     QAction* saveAction;
     QAction* saveAsAction;
     QAction* loadAction;
     QAction* newAction;
-
     QAction* createScriptAcction;
     QAction* editScriptAction;
     QAction* externalToolAction;
     QAction* appendExternalTool;
     QAction* editExternalToolAction;
-    
     QAction* iterationModeAction;
     QAction* configureIterationsAction;
     QAction* configureParameterAliasesAction;
@@ -281,25 +304,35 @@ private:
     QAction* runAction;
     QAction* stopAction;
     QAction* validateAction;
-
     QAction* findPrototypeAction;
-
+    QAction* unlockAction;
+    QAction* showWizard;
+    QAction* toggleDashboard;
+    QAction* loadSep;
+    QAction* runSep;
+    QAction* confSep;
+    QAction* scriptSep;
+    QAction* extSep;
+    QAction* editSep;
+    QAction* scaleSep;
+    QAction* scaleAction;
+    QAction* styleAction;
+    QAction* runModeAction;
+    QAction* scriptAction;
     QList<QAction*> styleActions;
     QList<QAction*> runModeActions;
     QList<QAction*> scriptingActions;
 
-    QAction* unlockAction;
-
-    QAction* showWizard;
-
-    QSplitter*      splitter;
-    WorkflowPalette* palette;
-    WorkflowEditor* propertyEditor;
-    QListWidget*    infoList;
-    QSplitter*      infoSplitter;
-    QTabWidget*     tabs;
-    bool            scriptingMode;
-    RunMode runMode;
+    WorkflowTabView*        tabView;
+    WorkflowScene*          scene;
+    QGraphicsView*          sceneView;
+    WorkflowPalette*        palette;
+    QTabWidget*             tabs;
+    WorkflowEditor*         propertyEditor;
+    QGroupBox*              errorList;
+    QSplitter*              splitter;
+    QListWidget*            infoList;
+    QSplitter*              infoSplitter;
 };
 
 class SceneCreator {

@@ -35,6 +35,7 @@
 #include <U2Lang/BaseSlots.h>
 #include <U2Lang/BaseTypes.h>
 #include <U2Lang/WorkflowEnv.h>
+#include <U2Lang/WorkflowMonitor.h>
 
 #include "CuffmergeWorker.h"
 
@@ -228,16 +229,14 @@ void CuffmergeWorker::sl_taskFinished() {
     Message m(output->getBusType(), data);
     output->put(m);
     output->setEnded();
-    outputFiles << t->getOutputFiles();
+    foreach (const QString &url, t->getOutputFiles()) {
+        context->getMonitor()->addOutputFile(url, getActor()->getId());
+    }
     setDone();
 }
 
 void CuffmergeWorker::cleanup() {
     anns.clear();
-}
-
-QStringList CuffmergeWorker::getOutputFiles() {
-    return outputFiles;
 }
 
 void CuffmergeWorker::takeAnnotations() {

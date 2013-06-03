@@ -32,22 +32,22 @@ public:
      * Returns the url to the sorted BAM file for the source @bamUrl.
      * If this BAM file is not in the file storage then returns empty string.
      */
-    static QString getSortedBamUrl(const QString &bamUrl, WorkflowProcess &process);
+    static QString getSortedBamUrl(const QString &bamUrl, FileStorage::WorkflowProcess &process);
 
     /**
      * Adds to the file storage information about sorted BAM: url and hash
      */
-    static void addSortedBamUrl(const QString &bamUrl, const QString &sortedBamUrl, WorkflowProcess &process);
+    static void addSortedBamUrl(const QString &bamUrl, const QString &sortedBamUrl, FileStorage::WorkflowProcess &process);
 
     /**
      * Returns the url to the converted BAM file for the source @samUrl.
      * If this BAM file is not in the file storage then returns empty string.
      */
-    static QString getSamToBamConvertInfo(const QString &samUrl, WorkflowProcess &process);
+    static QString getSamToBamConvertInfo(const QString &samUrl, FileStorage::WorkflowProcess &process);
     /**
      * Adds to the file storage information about converted SAM file: url and hash
      */
-    static void addSamToBamConvertInfo(const QString &samUrl, const QString &bamUrl, WorkflowProcess &process);
+    static void addSamToBamConvertInfo(const QString &samUrl, const QString &bamUrl, FileStorage::WorkflowProcess &process);
 };
 
 } // U2

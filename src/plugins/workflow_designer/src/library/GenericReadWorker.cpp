@@ -51,6 +51,7 @@
 #include <U2Lang/Dataset.h>
 #include <U2Lang/NoFailTaskWrapper.h>
 #include <U2Lang/WorkflowEnv.h>
+#include <U2Lang/WorkflowMonitor.h>
 
 #include <U2Formats/DocumentFormatUtils.h>
 
@@ -88,7 +89,7 @@ Task * GenericDocReader::tick() {
 
     if (!sendMessages && files->hasNext()) {
         QString newUrl = files->getNextFile();
-        Task *t = new NoFailTaskWrapper(createReadTask(newUrl, files->getLastDatasetName()));
+        Task *t = createReadTask(newUrl, files->getLastDatasetName());
         connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
         return t;
     } else if (!files->hasNext()) {
@@ -104,15 +105,10 @@ bool GenericDocReader::isDone() {
 }
 
 void GenericDocReader::sl_taskFinished() {
-    NoFailTaskWrapper *t = qobject_cast<NoFailTaskWrapper*>(sender());
+    Task *t = qobject_cast<Task*>(sender());
     SAFE_POINT(NULL != t, "NULL wrapper task", );
     CHECK(t->isFinished() && !t->hasError(), );
-    Task *original = t->originalTask();
-    if (original->hasError()) {
-        coreLog.error(original->getError());
-        return;
-    }
-    onTaskFinished(original);
+    onTaskFinished(t);
 }
 
 void GenericDocReader::sl_datasetEnded() {

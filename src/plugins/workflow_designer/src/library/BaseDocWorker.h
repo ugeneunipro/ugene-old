@@ -69,7 +69,6 @@ public:
     virtual void init() ;
     virtual Task* tick() ;
     virtual void cleanup() ;
-    virtual QStringList getOutputFiles();
 
     static QString getUniqueObjectName(const Document *doc, const QString &name);
 

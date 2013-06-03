@@ -30,20 +30,23 @@
 #include <U2Lang/DbiDataStorage.h>
 
 namespace U2 {
+using namespace FileStorage;
 namespace Workflow {
 
 class Actor;
+class WorkflowMonitor;
 
 /**
  * Contains a common data for whole workflow running process
  */
 class U2LANG_EXPORT WorkflowContext {
 public:
-    WorkflowContext(const QList<Actor*> &procs);
+    WorkflowContext(const QList<Actor*> &procs, WorkflowMonitor *monitor);
     virtual ~WorkflowContext();
 
     bool init();
-    DbiDataStorage *getDataStorage();
+    DbiDataStorage * getDataStorage();
+    WorkflowMonitor * getMonitor();
 
     /**
      * @slotStr = "actor.slot>actor_path1,actor_path1,..."
@@ -66,6 +69,7 @@ public:
     WorkflowProcess &getWorkflowProcess();
 
 private:
+    WorkflowMonitor *monitor;
     DbiDataStorage *storage;
     QMap<QString, Actor*> procMap;
 

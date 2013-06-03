@@ -42,11 +42,8 @@ public:
     virtual Task *tick();
     virtual void cleanup();
 
-    virtual QStringList getOutputFiles();
-
 private:
     CommunicationChannel *inChannel;
-    QStringList outFiles;
 
 private:
     CEASSettings createCEASSettings(U2OpStatus &os);

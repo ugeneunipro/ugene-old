@@ -38,7 +38,7 @@
 #include <U2Lang/BaseSlots.h>
 #include <U2Lang/BaseTypes.h>
 #include <U2Lang/WorkflowEnv.h>
-
+#include <U2Lang/WorkflowMonitor.h>
 
 namespace U2 {
 namespace LocalWorkflow {
@@ -392,16 +392,14 @@ void CufflinksWorker::sl_cufflinksTaskFinished() {
             qVariantFromValue< QList<SharedAnnotationData> >(cufflinksSupportTask->getIsoformAnnots());
 
         output->put(Message(outputMapDataType, messageData));
-        outputFiles << cufflinksSupportTask->getOutputFiles();
+        foreach (const QString &url, cufflinksSupportTask->getOutputFiles()) {
+            context->getMonitor()->addOutputFile(url, getActor()->getId());
+        }
     }
 }
 
 void CufflinksWorker::cleanup() {
 
-}
-
-QStringList CufflinksWorker::getOutputFiles() {
-    return outputFiles;
 }
 
 } // namespace LocalWorkflow

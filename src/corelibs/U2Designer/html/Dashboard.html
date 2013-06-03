@@ -1,0 +1,85 @@
+<!--
+ UGENE - Integrated Bioinformatics Tools.
+ Copyright (C) 2008-2013 UniPro <ugene@unipro.ru>
+ http://ugene.unipro.ru
+ 
+ This program is free software; you can redistribute it and/or
+ modify it under the terms of the GNU General Public License
+ as published by the Free Software Foundation; either version 2
+ of the License, or (at your option) any later version.
+ 
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ GNU General Public License for more details.
+ 
+ You should have received a copy of the GNU General Public License
+ along with this program; if not, write to the Free Software
+ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ MA 02110-1301, USA.
+-->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard</title>
+    <link rel="stylesheet" type="text/css" href="qrc:javascript/bootstrap/css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="qrc:U2Designer/html/Dashboard.css"/>
+    <script type="text/javascript" language="javascript">
+        var sec = 0;
+        var min = 0;
+        var hour = 0;
+        var paused = true;
+        function startTimer() {
+            if (paused) {
+                paused = false;
+                tickTimer();
+                document.getElementById("progressBar").className += " progress-striped active";
+            }
+        }
+        function pauseTimer() {
+            paused = true;
+            var classes = document.getElementById("progressBar").className;
+            document.getElementById("progressBar").className = classes.replace(/ progress-striped active/, "");
+        }
+        function timeToString(h, m, s) {
+            var ss = (s < 10) ? "0" + s : s;
+            var ms = (m < 10) ? "0" + m : m;
+            var hs = (h < 10) ? "0" + h : h;
+            return hs + ":" + ms + ":" + ss;
+        }
+        function tickTimer() {
+            if (!paused) {
+                setTimeout(tickTimer, 1000);
+            }
+            if (60 == sec) {
+                sec = 0;
+                min++;
+            }
+            if (60 == min) {
+                min = 0;
+                hour++;
+            }
+
+            document.getElementById("timer").innerHTML = timeToString(hour, min, sec);
+            sec++;
+        }
+    </script>
+</head>
+<body>
+
+<div id="wrapper">
+    <div id="widgets-container">
+        <div id="left-container">
+            
+        </div>
+        <div id="right-container">
+            
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript" src="qrc:javascript/jquery/jquery.js"></script>
+<script type="text/javascript" src="qrc:javascript/bootstrap/js/bootstrap.js"></script>
+
+</body>
+</html>

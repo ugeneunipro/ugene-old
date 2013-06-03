@@ -132,7 +132,9 @@ enum TaskFlag {
 
     TaskFlag_SuppressErrorNotification = 1 << 24, //for top level tasks only: if task fails, tells if notification is shown
 
-    TaskFlag_VerboseOnTaskCancel = 1 << 25 // when a task is cancelled, it is dumped to the log ('info' category)
+    TaskFlag_VerboseOnTaskCancel = 1 << 25, // when a task is cancelled, it is dumped to the log ('info' category)
+
+    TaskFlag_OnlyNotificationReport = 1 << 26 // task is asked to generate report
 
 };
 
@@ -252,10 +254,14 @@ public:
     virtual Task* getTopLevelParentTask() {return isTopLevelTask() ? this : parentTask->getTopLevelParentTask();}
 
     virtual bool isReportingSupported() const {return flags.testFlag(TaskFlag_ReportingIsSupported);}
-    
+
     virtual bool isReportingEnabled() const {return flags.testFlag(TaskFlag_ReportingIsEnabled);}
 
+    virtual bool isNotificationReport() const {return flags.testFlag(TaskFlag_OnlyNotificationReport);}
+
     virtual void setReportingEnabled(bool v) {assert(isReportingSupported()); setFlag(TaskFlag_ReportingIsEnabled, v);}
+
+    virtual void setNotificationReport(bool v) {assert(isReportingSupported()); setFlag(TaskFlag_ReportingIsEnabled, v);}
 
     virtual void setNoAutoDelete( bool v ) { setFlag( TaskFlag_NoAutoDelete, v ); }
 

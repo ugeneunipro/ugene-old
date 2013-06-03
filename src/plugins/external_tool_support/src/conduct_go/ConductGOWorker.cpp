@@ -33,6 +33,7 @@
 #include <U2Lang/BaseActorCategories.h>
 #include <U2Lang/BaseTypes.h>
 #include <U2Lang/WorkflowEnv.h>
+#include <U2Lang/WorkflowMonitor.h>
 
 #include "ConductGOSupport.h"
 #include "ConductGOWorker.h"
@@ -110,7 +111,8 @@ void ConductGOWorker::sl_taskFinished() {
 
     const QStringList& resFileNames = t->getResultFileNames();
     foreach(const QString& fn, resFileNames){
-        outFiles << t->getSettings().outDir + "/" + fn;
+        QString url = t->getSettings().outDir + "/" + fn;
+        context->getMonitor()->addOutputFile(url, getActor()->getId());
     }
 
     if (inChannel->isEnded() && !inChannel->hasMessage()) {
@@ -126,11 +128,6 @@ U2::ConductGOSettings ConductGOWorker::createConductGOSettings( U2OpStatus &os )
     settings.geneUniverse = actor->getParameter(GENE_UNIVERSE)->getAttributeValue<QString>(context);
 
     return settings;
-}
-
-
-QStringList ConductGOWorker::getOutputFiles() {
-    return outFiles;
 }
 
 /************************************************************************/

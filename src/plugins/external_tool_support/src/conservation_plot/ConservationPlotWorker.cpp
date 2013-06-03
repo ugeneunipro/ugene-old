@@ -35,6 +35,7 @@
 #include <U2Lang/BaseActorCategories.h>
 #include <U2Lang/BaseTypes.h>
 #include <U2Lang/WorkflowEnv.h>
+#include <U2Lang/WorkflowMonitor.h>
 
 #include "ConservationPlotSupport.h"
 #include "ConservationPlotWorker.h"
@@ -126,7 +127,7 @@ void ConservationPlotWorker::sl_taskFinished() {
         return;
     }
 
-    outFiles << t->getSettings().outFile;
+    context->getMonitor()->addOutputFile(t->getSettings().outFile, getActor()->getId());
 
     if (inChannel->isEnded() && !inChannel->hasMessage()) {
         setDone();
@@ -145,11 +146,6 @@ U2::ConservationPlotSettings ConservationPlotWorker::createConservationPlotSetti
     settings.width = actor->getParameter(WIDTH)->getAttributeValue<int>(context);
 
     return settings;
-}
-
-
-QStringList ConservationPlotWorker::getOutputFiles() {
-    return outFiles;
 }
 
 /************************************************************************/

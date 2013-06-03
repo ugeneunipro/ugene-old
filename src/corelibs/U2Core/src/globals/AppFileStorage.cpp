@@ -32,6 +32,8 @@
 
 namespace U2 {
 
+using namespace FileStorage;
+
 const QString StorageRoles::SORTED_BAM("SORTED_BAM");
 const QString StorageRoles::IMPORTED_BAM("IMPORTED_BAM");
 const QString StorageRoles::HASH("HASH");

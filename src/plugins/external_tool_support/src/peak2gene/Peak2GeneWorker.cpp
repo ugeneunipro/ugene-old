@@ -144,11 +144,6 @@ U2::Peak2GeneSettings Peak2GeneWorker::createPeak2GeneSettings( U2OpStatus &os )
     return settings;
 }
 
-
-QStringList Peak2GeneWorker::getOutputFiles() {
-    return QStringList();
-}
-
 /************************************************************************/
 /* Factory */
 /************************************************************************/

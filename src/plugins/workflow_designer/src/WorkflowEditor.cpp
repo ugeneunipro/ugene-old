@@ -650,7 +650,6 @@ void SpecialParametersPanel::sl_datasetsChanged() {
 }
 
 void SpecialParametersPanel::reset() {
-    int h = height();
     foreach (AttributeDatasetsController *controller, controllers.values()) {
         removeWidget(controller);
         delete controller;

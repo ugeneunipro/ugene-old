@@ -55,7 +55,6 @@ public:
     void init();
     Task *tick();
     void cleanup();
-    QStringList getOutputFiles();
 
 private slots:
     void sl_cufflinksTaskFinished();
@@ -64,7 +63,6 @@ protected:
     IntegralBus* input;
     IntegralBus* output;
     CufflinksSettings settings;
-    QStringList outputFiles;
 
     bool settingsAreCorrect;
 

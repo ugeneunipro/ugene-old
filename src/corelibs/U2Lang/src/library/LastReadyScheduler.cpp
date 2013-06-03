@@ -19,6 +19,10 @@
  * MA 02110-1301, USA.
  */
 
+#include <U2Core/Timer.h>
+
+#include <U2Lang/WorkflowMonitor.h>
+
 #include "LastReadyScheduler.h"
 
 namespace U2 {
@@ -57,12 +61,45 @@ bool LastReadyScheduler::isReady() {
     return false;
 }
 
-Task *LastReadyScheduler::tick() {
+inline ActorId LastReadyScheduler::actorId() const {
+    CHECK(NULL != lastWorker, "");
+    return lastWorker->getActor()->getId();
+}
+
+inline bool LastReadyScheduler::hasValidFinishedTask() const {
+    return (NULL != lastWorker) && (NULL != lastTask) && (lastTask->isFinished());
+}
+
+inline qint64 LastReadyScheduler::lastTaskTimeSec() const {
+    qint64 startMks = lastTask->getTimeInfo().startTime;
+    qint64 endMks = lastTask->getTimeInfo().finishTime;
+    return endMks - startMks;
+}
+
+inline void LastReadyScheduler::measuredTick() {
+    CHECK(NULL != lastWorker, );
+
+    qint64 startTimeMks = GTimer::currentTimeMicros();
+    lastTask = lastWorker->tick();
+    qint64 endTimeMks = GTimer::currentTimeMicros();
+
+    context->getMonitor()->addTick(endTimeMks - startTimeMks, actorId());
+
+    if (NULL != lastTask) {
+        context->getMonitor()->registerTask(lastTask, actorId());
+    }
+}
+
+Task * LastReadyScheduler::tick() {
+    if (hasValidFinishedTask()) {
+        context->getMonitor()->addTime(lastTaskTimeSec(), actorId());
+    }
     for (int vertexLabel=0; vertexLabel<topologicSortedGraph.size(); vertexLabel++) {
         foreach (Actor *a, topologicSortedGraph.value(vertexLabel)) {
             if (a->castPeer<BaseWorker>()->isReady()) {
                 lastWorker = a->castPeer<BaseWorker>();
-                return lastTask = lastWorker->tick();
+                measuredTick();
+                return lastTask;
             }
         }
     }

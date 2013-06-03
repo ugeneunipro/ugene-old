@@ -42,6 +42,8 @@ HEADERS += src/library/BaseActorCategories.h \
            src/model/WorkflowManager.h \
            src/model/WorkflowScriptEngine.h \
            src/model/WorkflowTransport.h \
+           src/run/SeparateProcessMonitor.h \
+           src/run/WorkflowMonitor.h \
            src/support/CoreLibConstants.h \
            src/support/MapDatatypeEditor.h \
            src/support/MarkerUtils.h \
@@ -114,6 +116,8 @@ SOURCES += src/library/BaseActorCategories.cpp \
            src/model/WorkflowEnv.cpp \
            src/model/WorkflowScriptEngine.cpp \
            src/model/WorkflowTransport.cpp \
+           src/run/SeparateProcessMonitor.cpp \
+           src/run/WorkflowMonitor.cpp \
            src/support/CoreLibConstants.cpp \
            src/support/MapDatatypeEditor.cpp \
            src/support/MarkerUtils.cpp \

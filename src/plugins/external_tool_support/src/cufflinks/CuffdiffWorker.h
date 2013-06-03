@@ -50,7 +50,6 @@ public:
     bool isReady();
     Task * tick();
     void cleanup();
-    QStringList getOutputFiles();
 
 private slots:
     void sl_onTaskFinished();
@@ -58,7 +57,6 @@ private slots:
 private:
     CommunicationChannel *inAssembly;
     CommunicationChannel *inTranscript;
-    QStringList outputFiles;
 
     bool fromFiles;
     QList<SharedDbiDataHandler> assemblies;

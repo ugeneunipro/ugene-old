@@ -42,6 +42,7 @@
 #include <U2Core/ExternalToolRegistry.h>
 #include <U2Core/GObject.h>
 #include <U2Core/IOAdapter.h>
+#include <U2Core/L10N.h>
 #include <U2Core/MAlignment.h>
 #include <U2Core/MAlignmentImporter.h>
 #include <U2Core/MAlignmentObject.h>
@@ -864,6 +865,23 @@ QString WorkflowUtils::updateExternalToolPath(const QString &toolName, const QSt
 
 QString WorkflowUtils::externalToolError(const QString &toolName) {
     return tr("External tool \"%1\" is not set. You can set it in Settings -> Preferences -> External Tools").arg(toolName);
+}
+
+void WorkflowUtils::schemaFromFile(const QString &url, Schema *schema, Metadata *meta, U2OpStatus &os) {
+    QFile file(url);
+    if(!file.open(QIODevice::ReadOnly)) {
+        os.setError(L10N::errorOpeningFileRead(url));
+        return;
+    }
+    QTextStream in(&file);
+    in.setCodec("UTF-8");
+    QString rawData = in.readAll();
+    file.close();
+
+    QString error = HRSchemaSerializer::string2Schema(rawData, schema, meta);
+    if (!error.isEmpty()) {
+        os.setError(error);
+    }
 }
 
 /*****************************

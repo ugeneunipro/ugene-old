@@ -37,6 +37,7 @@
 #include <U2Lang/BaseSlots.h>
 #include <U2Lang/BaseTypes.h>
 #include <U2Lang/WorkflowEnv.h>
+#include <U2Lang/WorkflowMonitor.h>
 
 #include "CuffdiffWorker.h"
 
@@ -364,15 +365,13 @@ void CuffdiffWorker::sl_onTaskFinished() {
         return;
     }
 
-    outputFiles << task->getOutputFiles();
+    foreach (const QString &url, task->getOutputFiles()) {
+        context->getMonitor()->addOutputFile(url, getActor()->getId());
+    }
 }
 
 void CuffdiffWorker::cleanup() {
     assemblies.clear();
-}
-
-QStringList CuffdiffWorker::getOutputFiles() {
-    return outputFiles;
 }
 
 CuffdiffSettings CuffdiffWorker::scanParameters() const {

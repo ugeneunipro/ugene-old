@@ -209,11 +209,6 @@ U2::MACSSettings MACSWorker::createMACSSettings( U2OpStatus & /*os*/ ){
     return settings;
 }
 
-
-QStringList MACSWorker::getOutputFiles() {
-    return QStringList();
-}
-
 /************************************************************************/
 /* Factory */
 /************************************************************************/

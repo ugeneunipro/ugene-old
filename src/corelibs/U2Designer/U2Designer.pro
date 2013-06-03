@@ -18,6 +18,12 @@ HEADERS += src/DatasetsController.h \
            src/QDScheduler.h \
            src/UrlItem.h \
            src/WorkflowGUIUtils.h \
+           src/dashboard/Dashboard.h \
+           src/dashboard/OutputFilesWidget.h \
+           src/dashboard/ProblemsWidget.h \
+           src/dashboard/ResourcesWidget.h \
+           src/dashboard/StatisticsWidget.h \
+           src/dashboard/TableWidget.h \
            src/support/URLLineEdit.h \
            src/wizard/ElementSelectorController.h \
            src/wizard/PairedDatasetsController.h \
@@ -28,6 +34,7 @@ HEADERS += src/DatasetsController.h \
            src/wizard/WizardController.h \
            src/wizard/WizardPageController.h
 FORMS += src/ui/AnnsActionDialog.ui \
+         src/ui/DashboardWidget.ui \
          src/ui/DatasetWidget.ui \
          src/ui/DirectoryOptions.ui \
          src/ui/EditFloatMarkerWidget.ui \
@@ -58,6 +65,12 @@ SOURCES += src/DatasetsController.cpp \
            src/QDScheduler.cpp \
            src/UrlItem.cpp \
            src/WorkflowGUIUtils.cpp \
+           src/dashboard/Dashboard.cpp \
+           src/dashboard/OutputFilesWidget.cpp \
+           src/dashboard/ProblemsWidget.cpp \
+           src/dashboard/ResourcesWidget.cpp \
+           src/dashboard/StatisticsWidget.cpp \
+           src/dashboard/TableWidget.cpp \
            src/support/URLLineEdit.cpp \
            src/wizard/ElementSelectorController.cpp \
            src/wizard/PairedDatasetsController.cpp \

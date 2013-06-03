@@ -115,6 +115,8 @@ public:
 
     static QString externalToolError(const QString &toolName);
 
+    static void schemaFromFile(const QString &url, Schema *schema, Metadata *meta, U2OpStatus &os);
+
 private:
     static QStringList initExtensions();
     static bool validate(const Workflow::Schema &s, QList<ValidateError> &infoList);

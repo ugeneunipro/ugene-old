@@ -42,6 +42,7 @@
 #include <U2Lang/BaseSlots.h>
 #include <U2Lang/BaseTypes.h>
 #include <U2Lang/WorkflowEnv.h>
+#include <U2Lang/WorkflowMonitor.h>
 
 namespace U2 {
 namespace LocalWorkflow {
@@ -688,16 +689,14 @@ void TopHatWorker::sl_topHatTaskFinished()
         m[ACCEPTED_HITS_SLOT_ID] = qVariantFromValue<SharedDbiDataHandler>(t->getAcceptedHits());
         m[OUT_BAM_URL_SLOT_ID] = t->getOutBamUrl();
         output->put(Message(output->getBusType(), m));
-        outputFiles << t->getOutputFiles();
+        foreach (const QString &url, t->getOutputFiles()) {
+            context->getMonitor()->addOutputFile(url, getActor()->getId());
+        }
     }
 }
 
 void TopHatWorker::cleanup()
 {
-}
-
-QStringList TopHatWorker::getOutputFiles() {
-    return outputFiles;
 }
 
 /************************************************************************/

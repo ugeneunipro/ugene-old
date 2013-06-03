@@ -20,6 +20,7 @@ HEADERS += src/ActorCfgModel.h \
            src/WorkflowSamples.h \
            src/WorkflowSceneIOTasks.h \
            src/WorkflowSettingsController.h \
+           src/WorkflowTabView.h \
            src/WorkflowViewController.h \
            src/WorkflowViewItems.h \
            src/cmdline/WorkflowCMDLineTasks.h \
@@ -93,6 +94,7 @@ SOURCES += src/ActorCfgModel.cpp \
            src/WorkflowSamples.cpp \
            src/WorkflowSceneIOTasks.cpp \
            src/WorkflowSettingsController.cpp \
+           src/WorkflowTabView.cpp \
            src/WorkflowViewController.cpp \
            src/WorkflowViewItems.cpp \
            src/cmdline/WorkflowCMDLineTasks.cpp \

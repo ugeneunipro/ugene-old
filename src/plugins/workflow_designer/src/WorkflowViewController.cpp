@@ -99,12 +99,13 @@
 #include "WorkflowPalette.h"
 #include "WorkflowSamples.h"
 #include "WorkflowSceneIOTasks.h"
+#include "WorkflowTabView.h"
 #include "WorkflowViewController.h"
 #include "WorkflowViewItems.h"
 #include "WorkflowViewItems.h"
 #include "library/CreateExternalProcessDialog.h"
 #include "library/ExternalProcessWorker.h"
-#include "library/ScriptWorker.h" 
+#include "library/ScriptWorker.h"
 
 
 /* TRANSLATOR U2::LocalWorkflow::WorkflowView*/
@@ -122,11 +123,15 @@ enum {ElementsTab,SamplesTab};
 #define WS 1000
 #define MAX_FILE_SIZE 1000000
 
-static QString percentStr = WorkflowView::tr("%");
+static const QString XML_SCHEMA_WARNING = WorkflowView::tr("You opened obsolete schema in XML format. It is strongly recommended"
+                                                           " to clear working space and create schema from scratch.");
 
-/********************************
-* PercentValidator
-********************************/
+static const QString XML_SCHEMA_APOLOGIZE = WorkflowView::tr("Sorry! This schema is obsolete and cannot be opened.");
+
+/************************************************************************/
+/* Utilities */
+/************************************************************************/
+static QString percentStr = WorkflowView::tr("%");
 class PercentValidator : public QRegExpValidator {
 public:
     PercentValidator(QObject* parent) : QRegExpValidator(QRegExp("[1-9][0-9]*"+percentStr), parent) {}
@@ -137,142 +142,98 @@ public:
     }
 }; // PercentValidator
 
-static const QString XML_SCHEMA_WARNING = WorkflowView::tr("You opened obsolete schema in XML format. It is strongly recommended"
-                                                           " to clear working space and create schema from scratch.");
+static QComboBox * scaleCombo(WorkflowView *parent) {
+    QComboBox *sceneScaleCombo = new QComboBox(parent);
+    sceneScaleCombo->setEditable(true);
+    sceneScaleCombo->setValidator(new PercentValidator(parent));
+    QStringList scales;
+    scales << "25%" << "50%" << "75%" << "100%" << "125%" << "150%" << "200%";
+    sceneScaleCombo->addItems(scales);
+    sceneScaleCombo->setCurrentIndex(3);
+    QObject::connect(sceneScaleCombo, SIGNAL(currentIndexChanged(const QString &)), parent, SLOT(sl_rescaleScene(const QString &)));
+    // Some visual modifications for Mac:
+    sceneScaleCombo->lineEdit()->setStyleSheet("QLineEdit {margin-right: 1px;}");
+    return sceneScaleCombo;
+}
 
-static const QString XML_SCHEMA_APOLOGIZE = WorkflowView::tr("Sorry! This schema is obsolete and cannot be opened.");
+static void addToggleDashboardAction(QToolBar *toolBar, QAction *action) {
+    QWidget *spacer = new QWidget();
+    spacer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    toolBar->addWidget(spacer);
+
+    toolBar->addAction(action);
+    QToolButton *b = dynamic_cast<QToolButton*>(toolBar->widgetForAction(action));
+    CHECK(NULL != b, );
+    b->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+    b->setAutoRaise(false);
+}
+
+static QToolButton * styleMenu(WorkflowView *parent, const QList<QAction*> &actions) {
+    QToolButton *tt = new QToolButton(parent);
+    QMenu *ttMenu = new QMenu( QObject::tr("Element style"), parent );
+    foreach(QAction *a, actions) {
+        ttMenu->addAction( a );
+    }
+    tt->setDefaultAction(ttMenu->menuAction());
+    tt->setPopupMode(QToolButton::InstantPopup);
+    return tt;
+}
+
+static QToolButton * runMenu(WorkflowView *parent, const QList<QAction*> &runModeActions) {
+    QToolButton *runModeToolButton = new QToolButton(parent);
+    QMenu *runModeMenu = new QMenu( QObject::tr( "Run mode" ), parent );
+    foreach(QAction * a, runModeActions) {
+        runModeMenu->addAction( a );
+    }
+    runModeToolButton->setDefaultAction( runModeMenu->menuAction() );
+    runModeToolButton->setPopupMode( QToolButton::InstantPopup );
+    return runModeToolButton;
+}
+
+static QToolButton * scriptMenu(WorkflowView *parent, const QList<QAction*> &scriptingActions) {
+    QToolButton *scriptingModeButton = new QToolButton(parent);
+    QMenu *scriptingModeMenu = new QMenu( QObject::tr( "Scripting mode" ), parent );
+    foreach( QAction * a, scriptingActions ) {
+        scriptingModeMenu->addAction( a );
+    }
+    scriptingModeButton->setDefaultAction( scriptingModeMenu->menuAction() );
+    scriptingModeButton->setPopupMode( QToolButton::InstantPopup );
+    return scriptingModeButton;
+}
 
 /********************************
 * WorkflowView
 ********************************/
 WorkflowView::WorkflowView(WorkflowGObject* go) 
-: MWMDIWindow(tr("Workflow Designer")), sceneRecreation(false), go(go), currentProto(NULL), currentActor(NULL), pasteCount(0), 
-scriptingMode(false) {
+: MWMDIWindow(tr("Workflow Designer")), sceneRecreation(false), go(go), currentProto(NULL), currentActor(NULL), pasteCount(0), running(false)
+{
+    runMode = (RunMode)WorkflowSettings::getRunMode();
+    scriptingMode = WorkflowSettings::getScriptingMode();
     elementsMenu = NULL;
     schema = new Schema();
     schema->setDeepCopyFlag(true);
 
-    SceneCreator sc(schema, meta);
-    scene = sc.createScene(this);
-    connect(scene, SIGNAL(processItemAdded()), SLOT(sl_procItemAdded()));
-    connect(scene, SIGNAL(processDblClicked()), SLOT(sl_toggleStyle()));
-    connect(scene, SIGNAL(selectionChanged()), SLOT(sl_editItem()));
-    connect(scene, SIGNAL(selectionChanged()), SLOT(sl_onSelectionChanged()));
+    setupScene();
+    setupPalette();
+    setupPropertyEditor();
+    setupErrorList();
 
-    runMode = (RunMode)WorkflowSettings::getRunMode();
-    scriptingMode = WorkflowSettings::getScriptingMode();
-
-    palette = new WorkflowPalette(WorkflowEnv::getProtoRegistry()/*, this*/);
-    palette->setSizePolicy(QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Ignored));
-    connect(palette, SIGNAL(processSelected(Workflow::ActorPrototype*)), SLOT(sl_selectPrototype(Workflow::ActorPrototype*)));
-    connect(palette, SIGNAL(si_protoDeleted(const QString&)), SLOT(sl_protoDeleted(const QString&)));
-    connect(palette, SIGNAL(si_protoListModified()), SLOT(sl_protoListModified()));
-    connect(palette, SIGNAL(si_protoChanged()), scene, SLOT(sl_updateDocs()));
-    
-    infoList = new QListWidget(this);
-    connect(infoList, SIGNAL(itemDoubleClicked(QListWidgetItem*)), SLOT(sl_pickInfo(QListWidgetItem*)));
-    splitter = new QSplitter(this);
-
-    tabs = new QTabWidget(this);
-    tabs->insertTab(ElementsTab, palette, tr("Elements"));
-    SamplesWidget* samples = new SamplesWidget(scene);
-    tabs->insertTab(SamplesTab, samples, tr("Samples"));
-    splitter->addWidget(tabs);
-    sceneView = new GlassView(scene);
-    sceneView->setObjectName("sceneView");
-    connect(samples, SIGNAL(setupGlass(GlassPane*)), sceneView, SLOT(setGlass(GlassPane*)));
-    connect(samples, SIGNAL(sampleSelected(QString)), this, SLOT(sl_pasteSample(QString)));
-    connect(tabs, SIGNAL(currentChanged(int)), samples, SLOT(cancelItem()));
-    connect(tabs, SIGNAL(currentChanged(int)), palette, SLOT(resetSelection()));
-    connect(tabs, SIGNAL(currentChanged(int)), scene, SLOT(setHint(int)));
-
-    propertyEditor = new WorkflowEditor(this);
-    propertyEditor->setIterated(scene->isIterated());
-
-    sceneView->setAlignment(Qt::AlignCenter);
-    infoSplitter = new QSplitter(Qt::Vertical, splitter);
+    infoSplitter = new QSplitter(Qt::Vertical);
     infoSplitter->addWidget(sceneView);
-    {
-        QGroupBox* w = new QGroupBox(infoSplitter);
-        w->setFlat(true);
-        w->setTitle(tr("Error list"));
-        QVBoxLayout* vl = new QVBoxLayout(w);
-        vl->setSpacing(0);
-        vl->setMargin(0);
-        vl->setContentsMargins(0,0,0,0);
-        vl->addWidget(infoList);
-        w->hide();
-        infoSplitter->addWidget(w);
-    }
-    splitter->addWidget(infoSplitter);
-    splitter->addWidget(propertyEditor);
+    infoSplitter->addWidget(errorList);
+    setupMainSplitter();
 
-    Settings* settings = AppContext::getSettings();
-    if (settings->contains(SPLITTER_STATE)) {
-        splitter->restoreState(settings->getValue(SPLITTER_STATE).toByteArray());
-    }
-    if (settings->contains(PALETTE_STATE)) {
-        palette->restoreState(settings->getValue(PALETTE_STATE));
-    }
-    tabs->setCurrentIndex(settings->getValue(TABS_STATE, SamplesTab).toInt());
-
-    scene->views().at(0)->setDragMode(QGraphicsView::RubberBandDrag);
-
-    QHBoxLayout *layout = new QHBoxLayout;
-    layout->addWidget(splitter);
-    layout->setSpacing(0);
-    layout->setMargin(0);
-    layout->setContentsMargins(0, 0, 0, 0);
-    setLayout(layout);
+    loadUiSettings();
 
     createActions();
     sl_changeScriptMode();
 
     if(go) {
-        LoadWorkflowTask::FileFormat format = LoadWorkflowTask::detectFormat(go->getSceneRawData());
-        go->setView(this);
-        QString err;
-        if(format == LoadWorkflowTask::HR) {
-            err = HRSchemaSerializer::string2Schema(go->getSceneRawData(), schema, &meta);
-        } else if(format == LoadWorkflowTask::XML) {
-            QDomDocument xml;
-            QMap<ActorId, ActorId> remapping;
-            xml.setContent(go->getSceneRawData().toUtf8());
-            err = SchemaSerializer::xml2schema(xml.documentElement(), schema, remapping);
-            SchemaSerializer::readMeta(&meta, xml.documentElement());
-            scene->setModified(false);
-            if(err.isEmpty()) {
-                QMessageBox::warning(this, tr("Warning!"), XML_SCHEMA_WARNING);
-            } else {
-                QMessageBox::warning(this, tr("Warning!"), XML_SCHEMA_APOLOGIZE);
-            }
-        } else {
-            coreLog.error(tr("Undefined workflow format for %1").arg(go->getDocument() ? go->getDocument()->getURLString() : tr("file")));
-            sl_newScene();
-        }
-        scene->connectConfigurationEditors();
-
-        if (!err.isEmpty()) {
-            sl_newScene();
-            coreLog.error(err);
-        } else {
-            SceneCreator sc(schema, meta);
-            sc.recreateScene(scene);
-            if (go->getDocument()) {
-                meta.url = go->getDocument()->getURLString();
-            }
-            sl_updateTitle();
-            propertyEditor->resetIterations();
-            scene->setModified(false);
-            sl_refreshActorDocs();
-        }
+        loadSceneFromObject();
     } else {
         sl_newScene();
     }
 
-    connect(scene, SIGNAL(configurationChanged()), SLOT(sl_refreshActorDocs()));
-    connect(propertyEditor, SIGNAL(iterationSelected()), SLOT(sl_refreshActorDocs()));
-    connect(WorkflowSettings::watcher, SIGNAL(changed()), scene, SLOT(update()));
     propertyEditor->reset();
 }
 
@@ -283,6 +244,143 @@ WorkflowView::~WorkflowView() {
     }
     WorkflowSettings::setRunMode((int)runMode);
     WorkflowSettings::setScriptingMode(scriptingMode);
+}
+
+void WorkflowView::setupScene() {
+    SceneCreator sc(schema, meta);
+    scene = sc.createScene(this);
+
+    sceneView = new GlassView(scene);
+    sceneView->setObjectName("sceneView");
+    sceneView->setAlignment(Qt::AlignCenter);
+
+    scene->views().at(0)->setDragMode(QGraphicsView::RubberBandDrag);
+
+    connect(scene, SIGNAL(processItemAdded()), SLOT(sl_procItemAdded()));
+    connect(scene, SIGNAL(processDblClicked()), SLOT(sl_toggleStyle()));
+    connect(scene, SIGNAL(selectionChanged()), SLOT(sl_editItem()));
+    connect(scene, SIGNAL(selectionChanged()), SLOT(sl_onSelectionChanged()));
+    connect(scene, SIGNAL(configurationChanged()), SLOT(sl_refreshActorDocs()));
+    connect(WorkflowSettings::watcher, SIGNAL(changed()), scene, SLOT(update()));
+}
+
+void WorkflowView::setupPalette() {
+    palette = new WorkflowPalette(WorkflowEnv::getProtoRegistry());
+    palette->setSizePolicy(QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Ignored));
+    connect(palette, SIGNAL(processSelected(Workflow::ActorPrototype*)), SLOT(sl_selectPrototype(Workflow::ActorPrototype*)));
+    connect(palette, SIGNAL(si_protoDeleted(const QString&)), SLOT(sl_protoDeleted(const QString&)));
+    connect(palette, SIGNAL(si_protoListModified()), SLOT(sl_protoListModified()));
+    connect(palette, SIGNAL(si_protoChanged()), scene, SLOT(sl_updateDocs()));
+
+    tabs = new QTabWidget(this);
+    tabs->insertTab(ElementsTab, palette, tr("Elements"));
+    SamplesWidget* samples = new SamplesWidget(scene);
+    tabs->insertTab(SamplesTab, samples, tr("Samples"));
+    tabs->setTabPosition(QTabWidget::North);
+
+    connect(samples, SIGNAL(setupGlass(GlassPane*)), sceneView, SLOT(setGlass(GlassPane*)));
+    connect(samples, SIGNAL(sampleSelected(QString)), this, SLOT(sl_pasteSample(QString)));
+    connect(tabs, SIGNAL(currentChanged(int)), samples, SLOT(cancelItem()));
+    connect(tabs, SIGNAL(currentChanged(int)), palette, SLOT(resetSelection()));
+    connect(tabs, SIGNAL(currentChanged(int)), scene, SLOT(setHint(int)));
+}
+
+void WorkflowView::setupErrorList() {
+    infoList = new QListWidget(this);
+    connect(infoList, SIGNAL(itemDoubleClicked(QListWidgetItem*)), SLOT(sl_pickInfo(QListWidgetItem*)));
+    errorList = new QGroupBox();
+    {
+        errorList->setFlat(true);
+        errorList->setTitle(tr("Error list"));
+        QVBoxLayout* vl = new QVBoxLayout(errorList);
+        vl->setSpacing(0);
+        vl->setMargin(0);
+        vl->setContentsMargins(0,0,0,0);
+        vl->addWidget(infoList);
+    }
+    errorList->hide();
+}
+
+void WorkflowView::setupPropertyEditor() {
+    propertyEditor = new WorkflowEditor(this);
+    propertyEditor->setIterated(scene->isIterated());
+
+    connect(propertyEditor, SIGNAL(iterationSelected()), SLOT(sl_refreshActorDocs()));
+}
+
+void WorkflowView::loadSceneFromObject() {
+    LoadWorkflowTask::FileFormat format = LoadWorkflowTask::detectFormat(go->getSceneRawData());
+    go->setView(this);
+    QString err;
+    if(format == LoadWorkflowTask::HR) {
+        err = HRSchemaSerializer::string2Schema(go->getSceneRawData(), schema, &meta);
+    } else if(format == LoadWorkflowTask::XML) {
+        QDomDocument xml;
+        QMap<ActorId, ActorId> remapping;
+        xml.setContent(go->getSceneRawData().toUtf8());
+        err = SchemaSerializer::xml2schema(xml.documentElement(), schema, remapping);
+        SchemaSerializer::readMeta(&meta, xml.documentElement());
+        scene->setModified(false);
+        if(err.isEmpty()) {
+            QMessageBox::warning(this, tr("Warning!"), XML_SCHEMA_WARNING);
+        } else {
+            QMessageBox::warning(this, tr("Warning!"), XML_SCHEMA_APOLOGIZE);
+        }
+    } else {
+        coreLog.error(tr("Undefined workflow format for %1").arg(go->getDocument() ? go->getDocument()->getURLString() : tr("file")));
+        sl_newScene();
+    }
+    scene->connectConfigurationEditors();
+
+    if (!err.isEmpty()) {
+        sl_newScene();
+        coreLog.error(err);
+    } else {
+        SceneCreator sc(schema, meta);
+        sc.recreateScene(scene);
+        if (go->getDocument()) {
+            meta.url = go->getDocument()->getURLString();
+        }
+        sl_updateTitle();
+        propertyEditor->resetIterations();
+        scene->setModified(false);
+        sl_refreshActorDocs();
+    }
+}
+
+void WorkflowView::loadUiSettings() {
+    Settings* settings = AppContext::getSettings();
+    if (settings->contains(SPLITTER_STATE)) {
+        splitter->restoreState(settings->getValue(SPLITTER_STATE).toByteArray());
+    }
+    if (settings->contains(PALETTE_STATE)) {
+        palette->restoreState(settings->getValue(PALETTE_STATE));
+    }
+    tabs->setCurrentIndex(settings->getValue(TABS_STATE, SamplesTab).toInt());
+}
+
+void WorkflowView::setupMainSplitter() {
+    splitter = new QSplitter(this);
+    {
+        splitter->addWidget(tabs);
+        splitter->addWidget(infoSplitter);
+        splitter->addWidget(propertyEditor);
+
+        splitter->setStretchFactor(0, 0);
+        splitter->setStretchFactor(1, 1);
+        splitter->setStretchFactor(2, 0);
+    }
+
+    tabView = new WorkflowTabView(this);
+    connect(tabView, SIGNAL(si_countChanged()), SLOT(sl_dashboardCountChanged()));
+
+    QHBoxLayout *layout = new QHBoxLayout();
+    layout->addWidget(tabView);
+    layout->addWidget(splitter);
+    layout->setSpacing(0);
+    layout->setMargin(0);
+    layout->setContentsMargins(0, 0, 0, 0);
+    setLayout(layout);
 }
 
 void WorkflowView::sl_rescaleScene(const QString &scale)
@@ -336,6 +434,11 @@ void WorkflowView::createActions() {
     QPixmap pm = QPixmap(":workflow_designer/images/wizard.png").scaled(16, 16);
     showWizard->setIcon(QIcon(pm));
     connect(showWizard, SIGNAL(triggered()), SLOT(sl_showWizard()));
+
+    { // toggle dashboard action
+        toggleDashboard = new QAction(this);
+        connect(toggleDashboard, SIGNAL(triggered()), SLOT(sl_toggleDashboard()));
+    }
 
     loadAction = new QAction(tr("&Load schema"), this);
     loadAction->setIcon(QIcon(":workflow_designer/images/fileopen.png"));
@@ -410,50 +513,45 @@ void WorkflowView::createActions() {
     pasteAction->setShortcuts(QKeySequence::Paste);
     connect(pasteAction, SIGNAL(triggered()), SLOT(sl_pasteItems()));
 
-    sceneScaleCombo = new QComboBox(this);
-    sceneScaleCombo->setEditable(true);
-    sceneScaleCombo->setValidator(new PercentValidator(this));
-    QStringList scales;
-    scales << "25%" << "50%" << "75%" << "100%" << "125%" << "150%" << "200%";
-    sceneScaleCombo->addItems(scales);
-    sceneScaleCombo->setCurrentIndex(3);
-    connect(sceneScaleCombo, SIGNAL(currentIndexChanged(const QString &)), SLOT(sl_rescaleScene(const QString &)));
-    // Some visual modifications for Mac:
-    sceneScaleCombo->lineEdit()->setStyleSheet("QLineEdit {margin-right: 1px;}");
+    { // style
+        QAction* simpleStyle = new QAction(tr("Minimal"), this);
+        simpleStyle->setData(QVariant(ItemStyles::SIMPLE));
+        styleActions << simpleStyle;
+        connect(simpleStyle, SIGNAL(triggered()), SLOT(sl_setStyle()));
 
-    QAction* simpleStyle = new QAction(tr("Minimal"), this);
-    simpleStyle->setData(QVariant(ItemStyles::SIMPLE));
-    styleActions << simpleStyle;
-    connect(simpleStyle, SIGNAL(triggered()), SLOT(sl_setStyle()));
+        QAction* extStyle = new QAction(tr("Extended"), this);
+        extStyle->setData(QVariant(ItemStyles::EXTENDED));
+        styleActions << extStyle;
+        connect(extStyle, SIGNAL(triggered()), SLOT(sl_setStyle()));
+    }
 
-    QAction* extStyle = new QAction(tr("Extended"), this);
-    extStyle->setData(QVariant(ItemStyles::EXTENDED));
-    styleActions << extStyle;
-    connect(extStyle, SIGNAL(triggered()), SLOT(sl_setStyle()));
+    { // run mode
+        QAction * localHostRunMode = new QAction( tr( "Local host" ), this );
+        localHostRunMode->setCheckable( true );
+        localHostRunMode->setChecked( LOCAL_HOST == runMode );
+        runModeActions << localHostRunMode;
+        connect( localHostRunMode, SIGNAL( triggered() ), SLOT( sl_setRunMode() ) );
 
-    QAction * localHostRunMode = new QAction( tr( "Local host" ), this );
-    localHostRunMode->setCheckable( true );
-    localHostRunMode->setChecked( LOCAL_HOST == runMode );
-    runModeActions << localHostRunMode;
-    connect( localHostRunMode, SIGNAL( triggered() ), SLOT( sl_setRunMode() ) );
+        QAction * remoteMachineRunMode = new QAction( tr( "Remote machine" ), this );
+        remoteMachineRunMode->setCheckable( true );
+        remoteMachineRunMode->setChecked( REMOTE_MACHINE == runMode );
+        runModeActions << remoteMachineRunMode;
+        connect( remoteMachineRunMode, SIGNAL( triggered() ), SLOT( sl_setRunMode() ) );
+    }
 
-    QAction * remoteMachineRunMode = new QAction( tr( "Remote machine" ), this );
-    remoteMachineRunMode->setCheckable( true );
-    remoteMachineRunMode->setChecked( REMOTE_MACHINE == runMode );
-    runModeActions << remoteMachineRunMode;
-    connect( remoteMachineRunMode, SIGNAL( triggered() ), SLOT( sl_setRunMode() ) );
+    { // scripting mode
+        QAction * notShowScriptAction = new QAction( tr( "Hide scripting options" ), this );
+        notShowScriptAction->setCheckable( true );
+        scriptingActions << notShowScriptAction;
+        notShowScriptAction->setChecked(!scriptingMode);
+        connect( notShowScriptAction, SIGNAL( triggered() ), SLOT( sl_changeScriptMode() ) );
 
-    QAction * notShowScriptAction = new QAction( tr( "Hide scripting options" ), this );
-    notShowScriptAction->setCheckable( true );
-    scriptingActions << notShowScriptAction;
-    notShowScriptAction->setChecked(!scriptingMode);
-    connect( notShowScriptAction, SIGNAL( triggered() ), SLOT( sl_changeScriptMode() ) );
-
-    QAction * showScriptAction = new QAction( tr( "Show scripting options" ), this );
-    showScriptAction->setCheckable( true );
-    showScriptAction->setChecked(scriptingMode);
-    scriptingActions << showScriptAction;
-    connect( showScriptAction, SIGNAL( triggered() ), SLOT( sl_changeScriptMode() ) );
+        QAction * showScriptAction = new QAction( tr( "Show scripting options" ), this );
+        showScriptAction->setCheckable( true );
+        showScriptAction->setChecked(scriptingMode);
+        scriptingActions << showScriptAction;
+        connect( showScriptAction, SIGNAL( triggered() ), SLOT( sl_changeScriptMode() ) );
+    }
 
     unlockAction = new QAction(tr("Unlock Scene"), this);
     unlockAction->setCheckable(true);
@@ -686,36 +784,39 @@ void WorkflowView::onBusRemoved(Link *link) {
 }
 
 void WorkflowView::sl_toggleLock(bool b) {
+    running = !b;
     if (sender() != unlockAction) {
-        unlockAction->setChecked(b);
+        unlockAction->setChecked(!running);
         return;
     }
 
-    if (b) {
+    if (!running) {
         scene->setRunner(NULL);
     }
 
-    deleteAction->setEnabled(b);
-    deleteShortcut->setEnabled(b);
-    selectAction->setEnabled(b);
-    copyAction->setEnabled(b);
-    pasteAction->setEnabled(b);
-    cutAction->setEnabled(b);
-    loadAction->setEnabled(b);
+    newAction->setEnabled(!running);
+    loadAction->setEnabled(!running);
+    deleteAction->setEnabled(!running);
+    deleteShortcut->setEnabled(!running);
+    selectAction->setEnabled(!running);
+    copyAction->setEnabled(!running);
+    pasteAction->setEnabled(!running);
+    cutAction->setEnabled(!running);
 
-    iterationModeAction->setEnabled(b);
-    configureIterationsAction->setEnabled(b);
-    runAction->setEnabled(b);
-    validateAction->setEnabled(b);
-    configureParameterAliasesAction->setEnabled(b);
-    configurePortAliasesAction->setEnabled(b);
-    importSchemaToElement->setEnabled(b);
+    iterationModeAction->setEnabled(!running);
+    configureIterationsAction->setEnabled(!running);
+    runAction->setEnabled(!running);
+    validateAction->setEnabled(!running);
+    configureParameterAliasesAction->setEnabled(!running);
+    configurePortAliasesAction->setEnabled(!running);
+    importSchemaToElement->setEnabled(!running);
 
-    propertyEditor->setEnabled(b);
-    propertyEditor->setSpecialPanelEnabled(b);
-    palette->setEnabled(b);
+    propertyEditor->setEnabled(!running);
+    propertyEditor->setSpecialPanelEnabled(!running);
+    palette->setEnabled(!running);
 
-    scene->setLocked(!b);
+    setupActions();
+    scene->setLocked(running);
     scene->update();
 }
 
@@ -837,60 +938,81 @@ void WorkflowView::setupMDIToolbar(QToolBar* tb) {
     tb->addAction(loadAction);
     tb->addAction(saveAction);
     tb->addAction(saveAsAction);
-    tb->addSeparator();
+    loadSep = tb->addSeparator();
     tb->addAction(showWizard);
     tb->addAction(validateAction);
     tb->addAction(runAction);
     tb->addAction(stopAction);
-    tb->addSeparator();
+    runSep = tb->addSeparator();
     tb->addAction(configureParameterAliasesAction);
-    tb->addAction(configurePortAliasesAction);
-    tb->addAction(importSchemaToElement);
-    tb->addSeparator();
     tb->addAction(iterationModeAction);
     tb->addAction(configureIterationsAction);
-    tb->addSeparator();
+    confSep = tb->addSeparator();
     tb->addAction(createScriptAcction);
     tb->addAction(editScriptAction);
-    tb->addSeparator();
+    scriptSep = tb->addSeparator();
     tb->addAction(externalToolAction);
     tb->addAction(appendExternalTool);
-    tb->addSeparator();
+    extSep = tb->addSeparator();
     tb->addAction(copyAction);
     tb->addAction(pasteAction);
     pasteAction->setEnabled(!lastPaste.isEmpty());
     tb->addAction(cutAction);
     tb->addAction(deleteAction);
-    tb->addSeparator();
-    tb->addWidget(sceneScaleCombo);
-    tb->addSeparator();
+    editSep = tb->addSeparator();
+    scaleAction = tb->addWidget(scaleCombo(this));
+    scaleSep = tb->addSeparator();
+    styleAction = tb->addWidget(styleMenu(this, styleActions));
+    runModeAction = tb->addWidget(runMenu(this, runModeActions));
+    scriptAction = tb->addWidget(scriptMenu(this, scriptingActions));
 
-    QToolButton* tt = new QToolButton(tb);
-    QMenu* ttMenu = new QMenu(tr("Element style"), this);
-    foreach(QAction* a, styleActions) {
-        ttMenu->addAction(a);
-    }
-    tt->setDefaultAction(ttMenu->menuAction());
-    tt->setPopupMode(QToolButton::InstantPopup);
-    tb->addWidget(tt);
-    
-    QToolButton * runModeToolButton = new QToolButton(tb);
-    QMenu * runModeMenu = new QMenu( tr( "Run mode" ), this );
-    foreach( QAction * a, runModeActions ) {
-        runModeMenu->addAction( a );
-    }
-    runModeToolButton->setDefaultAction( runModeMenu->menuAction() );
-    runModeToolButton->setPopupMode( QToolButton::InstantPopup );
-    tb->addWidget( runModeToolButton );
+    addToggleDashboardAction(tb, toggleDashboard);
 
-    QToolButton * scriptingMode = new QToolButton(tb);
-    QMenu * scriptingModeMenu = new QMenu( tr( "Scripting mode" ), this );
-    foreach( QAction * a, scriptingActions ) {
-        scriptingModeMenu->addAction( a );
-    }
-    scriptingMode->setDefaultAction( scriptingModeMenu->menuAction() );
-    scriptingMode->setPopupMode( QToolButton::InstantPopup );
-    tb->addWidget( scriptingMode );
+    sl_dashboardCountChanged();
+    setupActions();
+}
+
+void WorkflowView::setupActions() {
+    bool dashboard = tabView->isVisible();
+    bool editMode = !running && !dashboard;
+
+    newAction->setVisible(!dashboard);
+    loadAction->setVisible(!dashboard);
+    saveAction->setVisible(!dashboard);
+    saveAsAction->setVisible(!dashboard);
+    loadSep->setVisible(!dashboard);
+
+    showWizard->setVisible(editMode && !schema->getWizards().isEmpty());
+    validateAction->setVisible(editMode);
+    runAction->setVisible(!running);
+    stopAction->setVisible(running);
+    runSep->setVisible(editMode);
+
+    configureParameterAliasesAction->setVisible(editMode);
+    iterationModeAction->setVisible(editMode);
+    configureIterationsAction->setVisible(editMode);
+    confSep->setVisible(editMode);
+
+    createScriptAcction->setVisible(editMode);
+    editScriptAction->setVisible(editMode);
+    scriptSep->setVisible(editMode);
+
+    externalToolAction->setVisible(editMode);
+    appendExternalTool->setVisible(editMode);
+    extSep->setVisible(editMode);
+
+    copyAction->setVisible(editMode);
+    pasteAction->setVisible(editMode);
+    cutAction->setVisible(editMode);
+    deleteAction->setVisible(editMode);
+    editSep->setVisible(editMode);
+
+    scaleAction->setVisible(!dashboard);
+    scaleSep->setVisible(!dashboard);
+
+    styleAction->setVisible(!dashboard);
+    runModeAction->setVisible(editMode);
+    scriptAction->setVisible(editMode);
 }
 
 void WorkflowView::setupViewMenu(QMenu* m) {
@@ -902,7 +1024,6 @@ void WorkflowView::setupViewMenu(QMenu* m) {
     m->addAction(cutAction);
     m->addAction(deleteAction);
     m->addAction(selectAction);
-    m->addSeparator();
     m->addSeparator();
     m->addAction(newAction);
     m->addAction(loadAction);
@@ -1099,6 +1220,10 @@ void WorkflowView::localHostLaunch() {
         connect(new TaskSignalMapper(t), SIGNAL(si_taskFinished(Task*)), SLOT(sl_toggleLock()));
     }
     AppContext::getTaskScheduler()->registerTopLevelTask(t);
+    foreach (WorkflowMonitor *m, t->getMonitors()) {
+        tabView->addDashboard(m);
+        showDashboards();
+    }
 }
 
 void WorkflowView::remoteLaunch() {
@@ -1373,6 +1498,7 @@ void WorkflowView::sl_pasteSample(const QString& s) {
         }
         scene->sl_deselectAll();
         scene->update();
+        checkAutoRunWizard();
     } else {
         scene->clearScene();
         propertyEditor->resetIterations();
@@ -1565,22 +1691,76 @@ void WorkflowView::sl_saveSceneAs() {
     connect(t, SIGNAL(si_stateChanged()), SLOT(sl_onSceneSaved()));
 }
 
+void WorkflowView::runWizard(const Wizard *w) {
+    WizardController controller(schema, w);
+    QWizard *gui = controller.createGui();
+    if (gui->exec() && !controller.isBroken()) {
+        updateMeta();
+        WizardController::ApplyResult res = controller.applyChanges(meta);
+        if (WizardController::ACTORS_REPLACED == res) {
+            recreateScene();
+            schema->setWizards(QList<Wizard*>());
+        }
+        propertyEditor->resetIterations();
+        scene->sl_updateDocs();
+        scene->setModified();
+    }
+}
+
+void WorkflowView::checkAutoRunWizard() {
+    foreach (Wizard *w, schema->getWizards()) {
+        if (w->isAutoRun()) {
+            runWizard(w);
+            break;
+        }
+    }
+}
+
 void WorkflowView::sl_showWizard() {
     if (schema->getWizards().size() > 0) {
-        Wizard *w = schema->getWizards().first();
-        WizardController controller(schema, w);
-        QWizard *gui = controller.createGui();
-        if (gui->exec() && !controller.isBroken()) {
-            updateMeta();
-            WizardController::ApplyResult res = controller.applyChanges(meta);
-            if (WizardController::ACTORS_REPLACED == res) {
-                recreateScene();
-                schema->setWizards(QList<Wizard*>());
-            }
-            propertyEditor->resetIterations();
-            scene->sl_updateDocs();
-            scene->setModified();
-        }
+        runWizard(schema->getWizards().first());
+    }
+}
+
+static QIcon getToolbarIcon(const QString &srcPath) {
+    QPixmap pm = QPixmap(":workflow_designer/images/" + srcPath).scaled(16, 16);
+    return QIcon(pm);
+}
+
+void WorkflowView::hideDashboards() {
+    toggleDashboard->setIconText("Dashboard");
+    toggleDashboard->setIcon(getToolbarIcon("dashboard.png"));
+    toggleDashboard->setToolTip(tr("Show dashboard"));
+    tabView->setVisible(false);
+    splitter->setVisible(true);
+    setupActions();
+}
+
+void WorkflowView::showDashboards() {
+    toggleDashboard->setIconText("Workflow");
+    toggleDashboard->setIcon(getToolbarIcon("wd.png"));
+    toggleDashboard->setToolTip(tr("Show workflow"));
+    splitter->setVisible(false);
+    tabView->setVisible(true);
+    setupActions();
+}
+
+void WorkflowView::setDashboardActionVisible(bool visible) {
+    toggleDashboard->setVisible(visible);
+}
+
+void WorkflowView::sl_toggleDashboard() {
+    if (tabView->isVisible()) {
+        hideDashboards();
+    } else {
+        showDashboards();
+    }
+}
+
+void WorkflowView::sl_dashboardCountChanged() {
+    setDashboardActionVisible(tabView->hasDashboards());
+    if (!tabView->hasDashboards()) {
+        hideDashboards();
     }
 }
 
@@ -1636,6 +1816,7 @@ void WorkflowView::sl_onSceneLoaded() {
     propertyEditor->resetIterations();
 
     scene->setModified(false);
+    checkAutoRunWizard();
 }
 
 void WorkflowView::sl_onSceneSaved() {
@@ -1913,11 +2094,13 @@ void WorkflowScene::sl_deleteItem() {
                 break;
             case WorkflowBusItemType:
                 controller->removeBusItem(bus);
+                setModified();
                 break;
         }
     }
     foreach(WorkflowProcessItem *it, items) {
         controller->removeProcessItem(it);
+        setModified();
     }
     controller->propertyEditor->resetIterations();
 

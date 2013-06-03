@@ -1,0 +1,148 @@
+/**
+ * UGENE - Integrated Bioinformatics Tools.
+ * Copyright (C) 2008-2013 UniPro <ugene@unipro.ru>
+ * http://ugene.unipro.ru
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301, USA.
+ */
+
+body {
+    -webkit-user-select: none;
+}
+
+#wrapper {
+    width: 1060px;
+    margin: 0px auto;
+}
+
+#widgets-container{
+    width: 100%;
+}
+
+#left-container {
+    width: 525px;
+    float: left;
+}
+
+#right-container {
+    width: 525px;
+    float: right;
+}
+
+.widget {
+    width: 500px;
+    height: auto;
+
+    position: relative;
+    margin: 15px 0;
+    padding: 39px 10px 14px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    -webkit-border-radius: 6px;
+}
+
+.widget .title {
+    position: absolute;
+    top: -1px;
+    left: -1px;
+    right: -1px;
+    background-color: rgb(239, 239, 239);
+    border: 1px solid #ddd;
+    -webkit-border-radius: 6px 6px 0 0;
+}
+
+.widget .title .title-content {
+    padding: 3px 10px;
+    font-size: 13px;
+    font-weight: bold;
+    color: rgb(85, 85, 85);
+}
+
+.widget-content > :last-child {
+    margin-bottom: 0px;
+}
+
+.table-scroll {
+    height: auto;
+    overflow: auto;
+}
+
+.table {
+    width: 100%;
+    margin-bottom: 0px;
+}
+
+.table th {
+    background-color: rgb(101, 101, 101);
+    color: rgb(255, 255, 255);
+}
+
+table.table-fixed {
+    table-layout: fixed;
+}
+
+.progress-wrapper {
+    width: 200px;
+    margin: 0px auto;
+}
+
+.progress-container {
+    width: 100%;
+    overflow: hidden;
+}
+
+.small-bar {
+    width: 100%;
+    margin-bottom: 0px;
+}
+
+.file-button-ctn {
+    margin-right: 25px;
+}
+
+.file-btn-group {
+    padding-right: 25px;
+}
+
+.full-width {
+    width: 100%;
+}
+
+#status-bar {
+    padding: 8px 0px;
+    margin-bottom: 0px;
+}
+
+#status-message {
+    text-align: center;
+    font-weight: bold;
+    margin: 0;
+    padding: 0;
+}
+
+.vlayout-item {
+    margin-bottom: 10px;
+}
+
+.left-align {
+    text-align: left;
+}
+
+.long-text {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
