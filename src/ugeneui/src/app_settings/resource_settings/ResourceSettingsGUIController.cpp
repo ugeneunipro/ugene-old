@@ -48,8 +48,8 @@ void ResourceSettingsGUIPageController::saveState(AppSettingsGUIPageState* _stat
     ResourceSettingsGUIPageState* state = qobject_cast<ResourceSettingsGUIPageState*>(_state);
     AppResourcePool* s = AppContext::getAppSettings()->getAppResourcePool();
     assert(state->nCpus <= state->nThreads);
-    s->setIdealThreadCount(state->nCpus);
     s->setMaxThreadCount(state->nThreads);
+    s->setIdealThreadCount(state->nCpus);
     s->setMaxMemorySizeInMB(state->maxMem);
 }
 
