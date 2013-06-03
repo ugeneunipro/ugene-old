@@ -47,7 +47,7 @@ public:
 };
 
 class U2CORE_EXPORT WorkflowProcess {
-    friend class AppFileStorage;
+    friend class U2::AppFileStorage;
 public:
     WorkflowProcess(const QString &id);
     virtual ~WorkflowProcess();
