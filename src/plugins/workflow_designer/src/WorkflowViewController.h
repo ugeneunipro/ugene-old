@@ -259,7 +259,7 @@ private:
     void showDashboards();
     void setDashboardActionVisible(bool visible);
 
-    void runWizard(const Wizard *w);
+    void runWizard(Wizard *w);
     void checkAutoRunWizard();
 
 

@@ -1691,7 +1691,7 @@ void WorkflowView::sl_saveSceneAs() {
     connect(t, SIGNAL(si_stateChanged()), SLOT(sl_onSceneSaved()));
 }
 
-void WorkflowView::runWizard(const Wizard *w) {
+void WorkflowView::runWizard(Wizard *w) {
     WizardController controller(schema, w);
     QWizard *gui = controller.createGui();
     if (gui->exec() && !controller.isBroken()) {
