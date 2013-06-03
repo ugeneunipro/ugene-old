@@ -1708,12 +1708,12 @@ void WorkflowView::runWizard(Wizard *w) {
 }
 
 void WorkflowView::checkAutoRunWizard() {
-    foreach (Wizard *w, schema->getWizards()) {
+    /*foreach (Wizard *w, schema->getWizards()) {
         if (w->isAutoRun()) {
             runWizard(w);
             break;
         }
-    }
+    }*/
 }
 
 void WorkflowView::sl_showWizard() {
