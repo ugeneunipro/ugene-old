@@ -32,8 +32,6 @@
 
 namespace U2 {
 
-using namespace FileStorage;
-
 const QString StorageRoles::SORTED_BAM("SORTED_BAM");
 const QString StorageRoles::IMPORTED_BAM("IMPORTED_BAM");
 const QString StorageRoles::HASH("HASH");
@@ -42,6 +40,7 @@ const QString StorageRoles::SAM_TO_BAM("SAM_TO_BAM");
 static const QString DB_FILE_NAME("fileinfo.ugenedb");
 static const QString WD_DIR_NAME("workflow_data");
 
+namespace FileStorage {
 /************************************************************************/
 /* FileInfo */
 /************************************************************************/
@@ -118,6 +117,8 @@ void WorkflowProcess::unuseFiles() {
     usedFiles.clear();
 }
 
+} // FileStorage
+
 /************************************************************************/
 /* AppFileStorage */
 /************************************************************************/
@@ -159,7 +160,7 @@ QString AppFileStorage::getStorageDir() const {
     return storageDir;
 }
 
-void AppFileStorage::addFileInfo(const FileInfo &info, WorkflowProcess &process, U2OpStatus &os) {
+void AppFileStorage::addFileInfo(const FileStorage::FileInfo &info, FileStorage::WorkflowProcess &process, U2OpStatus &os) {
     storage->addValue(info, os);
     CHECK_OP(os, );
 
@@ -172,10 +173,10 @@ bool AppFileStorage::contains(const QString &url, const QString &role, U2OpStatu
     return storage->contains(url, role, os);
 }
 
-QString AppFileStorage::getFileInfo(const QString &url, const QString &role, WorkflowProcess &process, U2OpStatus &os) const {
+QString AppFileStorage::getFileInfo(const QString &url, const QString &role, FileStorage::WorkflowProcess &process, U2OpStatus &os) const {
     QString info = storage->getValue(url, role, os);
     if (!info.isEmpty()) {
-        FileInfo i(url, role, info);
+        FileStorage::FileInfo i(url, role, info);
         if (i.isFileToFileInfo()) {
             process.addFile(info);
         }
@@ -183,7 +184,7 @@ QString AppFileStorage::getFileInfo(const QString &url, const QString &role, Wor
     return info;
 }
 
-void AppFileStorage::addFileOwner(const FileInfo &info, WorkflowProcess &process, U2OpStatus &os) {
+void AppFileStorage::addFileOwner(const FileStorage::FileInfo &info, FileStorage::WorkflowProcess &process, U2OpStatus &os) {
     bool exists = storage->contains(info, os);
     CHECK_OP(os, );
     if (exists) {
@@ -195,7 +196,7 @@ void AppFileStorage::addFileOwner(const FileInfo &info, WorkflowProcess &process
     }
 }
 
-void AppFileStorage::registerWorkflowProcess(WorkflowProcess &process, U2OpStatus &os) {
+void AppFileStorage::registerWorkflowProcess(FileStorage::WorkflowProcess &process, U2OpStatus &os) {
     QString wdDirPath = storageDir + "/" + WD_DIR_NAME + "/" + process.getId();
     QDir wdDir(wdDirPath);
     bool created = wdDir.mkpath(wdDirPath);
@@ -230,7 +231,7 @@ void removeDirIfEmpty(const QString &url) {
     }
 }
 
-void AppFileStorage::unregisterWorkflowProcess(WorkflowProcess &process, U2OpStatus & /*os*/) {
+void AppFileStorage::unregisterWorkflowProcess(FileStorage::WorkflowProcess &process, U2OpStatus & /*os*/) {
     process.unuseFiles();
 
     removeDirIfEmpty(process.tempDirectory);
@@ -246,7 +247,7 @@ void AppFileStorage::cleanup(U2OpStatus &os) {
     QStringList unremovedFiles;
     //2. Remove triplets' files
     foreach (const U2Triplet &triplet, data) {
-        FileInfo info(triplet);
+        FileStorage::FileInfo info(triplet);
         if (info.isFileToFileInfo()) {
             QString url = info.getValue();
             bool inTheStorage = url.startsWith(storageDir);
