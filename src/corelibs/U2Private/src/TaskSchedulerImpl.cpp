@@ -28,7 +28,6 @@
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/L10n.h>
 
-#include <QtCore/QVector>
 #include <QtCore/QCoreApplication>
 
 /* TRANSLATOR U2::TaskSchedulerImpl */
@@ -299,23 +298,17 @@ void TaskSchedulerImpl::runThread(TaskInfo* ti) {
 }
 
 QString TaskSchedulerImpl::tryLockResources(Task* task, bool prepareStage, bool& hasLockedResourcesAfterCall) {
-
-    QString errorString = QString::null;
-
     if (prepareStage) { //task must be New
         SAFE_POINT(task->getState() == Task::State_New, "Attempt to lock prepare-stage resources for non-NEW task!", L10N::internalError());
     } else { //task must be Prepared or Running. Task can be 'Running' if it has subtasks
         SAFE_POINT(task->getState() == Task::State_Running || task->getState() == Task::State_Prepared, QString("Attempt to lock run-stage for task in state: %1!").arg(task->getState()), L10N::internalError());
     }
-    if (!prepareStage && !threadsResource->tryAcquire()) {
+    if (!prepareStage && !threadsResource->available()) {
         return tr("Waiting for resource '%1', count: %2").arg(threadsResource->name).arg(1);
     }
-
     TaskResources& tres = getTaskResources(task);
-    QVector<int> lockedResourceCount(tres.size());
-
     for (int i=0, n = tres.size(); i<n; i++) {
-        TaskResourceUsage& taskRes = tres[i];
+        const TaskResourceUsage& taskRes = tres[i];
         if (taskRes.prepareStageLock != prepareStage) {
             assert(prepareStage ? !taskRes.locked : taskRes.locked);
             continue;
@@ -324,41 +317,36 @@ QString TaskSchedulerImpl::tryLockResources(Task* task, bool prepareStage, bool&
         AppResource* appRes = resourcePool->getResource(taskRes.resourceId);
         if (!appRes) {
             task->setError(tr("No required resources for the task, resource id: '%1'").arg(taskRes.resourceId));
-            errorString = tr("Unable to run test because required resource not found");
-            break;
+            return tr("Unable to run test because required resource not found");
         }
-
-        bool resourceAcquired = appRes->tryAcquire(taskRes.resourceUse);
-        if (!resourceAcquired) {
-            task->setError(tr("Not enough resources for the task, resource name: '%1' max: %2%3 requested: %4%5")
-                .arg(appRes->name).arg(appRes->maxUse()).arg(appRes->suffix).arg(taskRes.resourceUse).arg(appRes->suffix));
-            errorString = tr("Waiting for resource '%1', count: %2%3").arg(appRes->name).arg(taskRes.resourceUse).arg(appRes->suffix);
-            break;
-        } else {
-            taskRes.locked = true;
-            lockedResourceCount[i] = taskRes.resourceUse;
+        if (appRes->available() < taskRes.resourceUse) {
+            if (appRes->maxUse() < taskRes.resourceUse) {
+                task->setError(tr("Not enough resources for the task, resource name: '%1' max: %2%3 requested: %4%5")
+                    .arg(appRes->name).arg(appRes->maxUse()).arg(appRes->suffix).arg(taskRes.resourceUse).arg(appRes->suffix));
+            }
+            return tr("Waiting for resource '%1', count: %2%3").arg(appRes->name).arg(taskRes.resourceUse).arg(appRes->suffix);
         }
     }
-
-    if (errorString.isNull()) {
-        hasLockedResourcesAfterCall = true;
-        return errorString;
+    //ok there are all task resources available -> lock it
+    int nLocked = 0;
+    if (!prepareStage) {
+        threadsResource->acquire();
+        taskLog.trace(QString("Acquiring resource: '%1':%2, state: %3/%4").arg(threadsResource->name).arg(1).arg(threadsResource->maxUse() - threadsResource->available()).arg(threadsResource->maxUse()));
+        nLocked++;
     }
-
-    // releasing all locked resources
-    for (int i=0; i<tres.size(); i++) {
+    for (int i=0, n = tres.size(); i<n; i++) {
         TaskResourceUsage& taskRes = tres[i];
-        taskRes.locked = false;
-
-        AppResource* appRes = resourcePool->getResource(taskRes.resourceId);
-        if (appRes) {
-            appRes->release(lockedResourceCount[i]);
+        if (taskRes.prepareStageLock != prepareStage) {
+            continue;
         }
+        AppResource* appRes = resourcePool->getResource(taskRes.resourceId);
+        appRes->acquire(taskRes.resourceUse);
+        taskRes.locked = true;
+        nLocked++;
+        taskLog.trace(QString("Acquiring resource: '%1':%2, state: %3/%4").arg(appRes->name).arg(taskRes.resourceUse).arg(appRes->maxUse() - appRes->available()).arg(appRes->maxUse()));
     }
-    threadsResource->release();
-
-    hasLockedResourcesAfterCall = false;
-    return errorString;
+    hasLockedResourcesAfterCall = nLocked > 0;
+    return QString::null;
 }
 
 void TaskSchedulerImpl::releaseResources(TaskInfo* ti, bool prepareStage) {
@@ -369,6 +357,7 @@ void TaskSchedulerImpl::releaseResources(TaskInfo* ti, bool prepareStage) {
     if (!prepareStage) {
         threadsResource->release();
     }
+    taskLog.trace(QString("Releasing resource: '%1':%2, state: %3/%4").arg(threadsResource->name).arg(1).arg(threadsResource->maxUse() - threadsResource->available()).arg(threadsResource->maxUse()));
     TaskResources& tres = getTaskResources(ti->task);
     for (int i=0, n = tres.size(); i<n; i++) {
         TaskResourceUsage& taskRes = tres[i];
@@ -379,6 +368,7 @@ void TaskSchedulerImpl::releaseResources(TaskInfo* ti, bool prepareStage) {
         AppResource* appRes = resourcePool->getResource(taskRes.resourceId);
         appRes->release(taskRes.resourceUse);
         taskRes.locked = false;
+        taskLog.trace(QString("Releasing resource: '%1':%2, state: %3/%4").arg(appRes->name).arg(taskRes.resourceUse).arg(appRes->maxUse() - appRes->available()).arg(appRes->maxUse()));
     }
     if (prepareStage) {
         ti->hasLockedPrepareResources = false;
