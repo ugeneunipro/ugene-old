@@ -97,9 +97,11 @@ public:
 
     void release(int n = 1) {
         LOG_TRACE(release);
-        // QSemaphore allow to create resources by releasing, we do not want to get such behavior
         SAFE_POINT(n>=0, QString("AppResource %1 release %2 < 0 called").arg(name).arg(n), );
         resource->release(n);
+
+        // QSemaphore allow to create resources by releasing, we do not want to get such behavior
+        SAFE_POINT_EXT(resource->available() <= _maxUse,,);
     }
 
     int available() const {
