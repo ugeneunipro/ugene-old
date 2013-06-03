@@ -47,7 +47,7 @@ PythonSupport::PythonSupport(const QString& name, const QString& path) : Externa
     executableFileName="python.exe";
 #else
     #if defined(Q_OS_LINUX) || defined(Q_OS_MAC)
-    executableFileName="python";
+    executableFileName="python2.7";
     #endif
 #endif
     validMessage="Python ";
