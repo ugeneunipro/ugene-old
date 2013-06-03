@@ -42,7 +42,7 @@
 #include <U2Core/ExternalToolRegistry.h>
 #include <U2Core/GObject.h>
 #include <U2Core/IOAdapter.h>
-#include <U2Core/L10N.h>
+#include <U2Core/L10n.h>
 #include <U2Core/MAlignment.h>
 #include <U2Core/MAlignmentImporter.h>
 #include <U2Core/MAlignmentObject.h>
