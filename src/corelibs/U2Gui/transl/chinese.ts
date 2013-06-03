@@ -304,7 +304,7 @@
     <name>DownloadRemoteFileDialog</name>
     <message>
         <location filename="../src/util/ui/DownloadRemoteFileDialog.ui" line="14"/>
-        <source>Fetch data from remote database</source>
+        <source>Fetch Data from Remote Database</source>
         <translation>从远程数据库中获取数据</translation>
     </message>
     <message>
