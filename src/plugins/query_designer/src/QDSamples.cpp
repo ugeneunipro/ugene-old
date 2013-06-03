@@ -60,10 +60,12 @@ QList<Task*> QDLoadSamplesTask::onSubTaskFinished(Task* subTask) {
     assert(loadTask);
     QDSample sample;
     sample.content = loadTask->getDocument();
-    sample.d.setId(idMap.value(loadTask));
-    sample.d.setDisplayName(sample.content->getName());
-    sample.d.setDocumentation(sample.content->getDocDesc());
-    result.append(sample);
+    if (sample.content) {
+        sample.d.setId(idMap.value(loadTask));
+        sample.d.setDisplayName(sample.content->getName());
+        sample.d.setDocumentation(sample.content->getDocDesc());
+        result.append(sample);
+    }
     return st;
 }
 

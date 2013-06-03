@@ -217,13 +217,13 @@ GUrl BAMUtils::sortBam(const GUrl &bamUrl, const QString &sortedBamBaseName, U2O
 
     int fileSizeMB = bytes2MB(fileSizeBytes);
     int maxMemMB = qMin(SAMTOOLS_MEM_BOOST * fileSizeMB, INITIAL_SAMTOOLS_MEM_SIZE_MB);
-    while (memory->available() < maxMemMB) {
+    while (!memory->tryAcquire(maxMemMB)) {
         // reduce used memory
         maxMemMB = maxMemMB * 2 / 3;
+        CHECK_EXT(maxMemMB > 0, os.setError("Failed to lock enough memory resource"), QString());
     }
 
     // sort bam
-    memory->acquire(maxMemMB);
     {
         coreLog.details(BAMUtils::tr("Sort bam file: \"%1\" using %2 Mb of memory. Result sorted file is: \"%3\"")
             .arg(QString(bamFileName)).arg(maxMemMB).arg(QString(sortedFileName)));

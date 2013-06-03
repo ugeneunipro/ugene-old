@@ -140,12 +140,11 @@ void ProjectImpl::addDocument(Document* d) {
 }
 
 bool ProjectImpl::lockResources(int sizeMB, const QString & url, QString& error) {
-    if(resourceTracker->available() >= sizeMB) {
-        Document *doc = findDocumentByURL(url);
-        if(doc) { 
-            resourceUsage[doc->getName()] = sizeMB;
-            resourceTracker->acquire(sizeMB);
-        }
+    Document *doc = findDocumentByURL(url);
+    SAFE_POINT_EXT(NULL != doc, error = tr("Find document failed during resource locking"), false);
+
+    if (resourceTracker->tryAcquire(sizeMB)) {
+        resourceUsage[doc->getName()] = sizeMB;
         return true;
     }
     else {
@@ -156,6 +155,7 @@ bool ProjectImpl::lockResources(int sizeMB, const QString & url, QString& error)
 }
 
 void ProjectImpl::removeDocument(Document* d, bool autodelete) {
+    SAFE_POINT(NULL != d, tr("No document provided for removeDocument"), );
     coreLog.details(tr("Removing document from the project: %1").arg(d->getURLString()));
 
 	setParentStateLockItem_static(d, NULL);
