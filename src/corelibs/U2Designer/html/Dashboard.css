@@ -21,6 +21,7 @@
 
 body {
     -webkit-user-select: none;
+    background: url("qrc:U2Designer/images/background.png") repeat scroll 0% 0% transparent;
 }
 
 #wrapper {
