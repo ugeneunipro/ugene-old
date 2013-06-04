@@ -1,9 +1,9 @@
 #@UGENE_WORKFLOW
-#ChIP-seq analyses are started from MACS tool. CEAS then takes peak regions and signal wiggle file to check which chromosome is enriched with binding/modification sites, whether bindings events are significant at gene features like promoters, gene bodies, exons, introns or UTRs, and the signal aggregation at gene transcription start/end sites or meta-gene bodies (average all genes). Then peaks are investigated in these ways: 1. to check which genes are nearby so can be regarded as potential regulated genes, then perform GO analysis; 2. to check the conservation scores at the binding sites;3 the DNA motifs at binding sites.
+#ChIP-seq analysis is started from MACS tool. CEAS then takes peak regions and signal wiggle file to check which chromosome is enriched with binding/modification sites, whether bindings events are significant at gene features like promoters, gene bodies, exons, introns or UTRs, and the signal aggregation at gene transcription start/end sites or meta-gene bodies (average all genes). Then peaks are investigated in these ways: 1. to check which genes are nearby so can be regarded as potential regulated genes, then perform GO analysis; 2. to check the conservation scores at the binding sites;3 the DNA motifs at binding sites.
 
 
 
-workflow "ChIP-seq analyses with control"{
+workflow "ChIP-seq analysis with control"{
 
     read-annotations {
         type:read-annotations;
@@ -157,7 +157,7 @@ workflow "ChIP-seq analyses with control"{
             }
         }
         wizard {
-            name:"ChIP-seq Analyses Wizard";
+            name:"ChIP-seq Analysis Wizard";
             page {
                 id:1;
                 next:2;
