@@ -62,7 +62,8 @@ protected:
 class U2LANG_EXPORT WorkflowAbstractIterationRunner : public Task {
     Q_OBJECT
 public:
-    WorkflowAbstractIterationRunner(const QString& n, TaskFlags f) : Task(n, f) {}
+    WorkflowAbstractIterationRunner(const QString &name, TaskFlags flags);
+    virtual ~WorkflowAbstractIterationRunner() {}
     virtual WorkerState getState(const ActorId &actor) = 0;
     virtual int getMsgNum(Link *l) = 0;
     virtual int getMsgPassed(Link *l) = 0;
@@ -80,7 +81,6 @@ class U2LANG_EXPORT WorkflowRunTask : public WorkflowAbstractRunner {
     Q_OBJECT
 public:
     WorkflowRunTask(const Schema&, QList<Iteration>, const ActorMap& rmap = ActorMap());
-    virtual QString generateReport() const;
     virtual ReportResult report(); 
     virtual QList<WorkerState> getState(Actor*);
     virtual int getMsgNum(Link*);
@@ -134,7 +134,6 @@ class U2LANG_EXPORT WorkflowRunInProcessTask : public WorkflowAbstractRunner {
     Q_OBJECT
 public:
     WorkflowRunInProcessTask(const Schema & sc, const QList<Iteration> & its);
-    virtual QString generateReport() const;
     virtual ReportResult report();
     virtual QList<WorkerState> getState(Actor*);
     virtual int getMsgNum(Link*);
@@ -192,6 +191,10 @@ public:
     int getMsgNum(const QString & ids);
     int getMsgPassed(const QString & ids);
     void writeLog(QStringList &lines);
+    QStringList getActorLinks(const ActorId &id);
+
+signals:
+    void si_logRead();
 
 private slots:
     void sl_onError(QProcess::ProcessError);

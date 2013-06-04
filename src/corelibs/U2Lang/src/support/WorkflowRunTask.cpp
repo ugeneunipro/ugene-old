@@ -62,16 +62,20 @@ static const QString STATE_KEYWORD("#%&state#%&");
 static const QString MSG_NUM_KEYWORD("#%$msgnum#%$");
 static const QString MSG_PASSED_KEYWORD("#%$msgpassed#%$");
 
+WorkflowAbstractRunner::WorkflowAbstractRunner(const QString &name, TaskFlags flags)
+: Task(name, flags)
+{
+
+}
+
 const QList<WorkflowMonitor*> & WorkflowAbstractRunner::getMonitors() const {
     return monitors;
 }
 
-WorkflowAbstractRunner::WorkflowAbstractRunner(const QString &name, TaskFlags flags)
+WorkflowAbstractIterationRunner::WorkflowAbstractIterationRunner(const QString &name, TaskFlags flags)
 : Task(name, flags)
 {
-    /*QTimer *timer = new QTimer(this);
-    connect(timer, SIGNAL(timeout()), SIGNAL(si_updateProducers()));
-    timer->start(UPDATE_PROGRESS_INTERVAL);*/
+
 }
 
 /*******************************************
@@ -137,58 +141,6 @@ inline bool isValidFile(const QString &link, const qint64 &processStartTime) {
     return false;
 }
 
-static QString worfklowReport(const Task *task, const QMap<Task*, WorkflowMonitor*> &monitors) {
-    QString res;
-    res+="<table width='75%'>";
-    res+=QString("<tr><th>%1</th><th>%2</th><th>%3</th></tr>").arg(WorkflowRunTask::tr("Iterations")).arg(WorkflowRunTask::tr("Status")).arg(WorkflowRunTask::tr("Details"));
-    foreach(Task* sub, task->getSubtasks()) {
-#if (QT_VERSION >= 0x050000)
-        QString name = sub->getTaskName().toHtmlEscaped();
-        QString status = sub->hasError() ? WorkflowRunTask::tr("Failed") : sub->isCanceled() ? WorkflowRunTask::tr("Canceled") : WorkflowRunTask::tr("Finished");
-        QString error = (sub->getError().toHtmlEscaped()).replace("\n", "<br>");
-#else
-        QString name = Qt::escape(sub->getTaskName());
-        QString status = sub->hasError() ? WorkflowRunTask::tr("Failed") : sub->isCanceled() ? WorkflowRunTask::tr("Canceled") : WorkflowRunTask::tr("Finished");
-        QString error = Qt::escape(sub->getError()).replace("\n", "<br>");
-#endif
-        if (sub->hasError()) {
-            name = "<font color='red'>"+name+"</font>";
-            status = "<font color='red'>"+status+"</font>";
-        } else if (sub->isCanceled()) {
-            status = "<font color='blue'>"+status+"</font>";
-        } else {
-            status = "<font color='green'>"+status+"</font>";
-        }
-        res+=QString("<tr><td>%1</td><td>%2</td><td>%3</td></tr>").arg(name).arg(status).arg(error);
-        WorkflowMonitor *m = monitors[sub];
-        if(!m->getOutputFiles().isEmpty() && !sub->hasError()) {
-            res += QString("<tr><td><i>%1</i></td></tr>").arg(WorkflowRunTask::tr("Output files:"));
-
-            qint64 startTimeSec = task->getTimeInfo().startTime/1000000;
-            foreach(const Monitor::FileInfo &info, m->getOutputFiles()) {
-                QStringList rolledLinks = GUrlUtils::getRolledFilesList(info.url, "_oldcopy");
-                foreach (const QString &rolledLink, rolledLinks) {
-                    if (isValidFile(rolledLink, startTimeSec)) {
-                        res += QString("<tr><td><a href=\"%1\">%2</a></td></tr>").arg(rolledLink).arg(rolledLink);
-                    }
-                }
-            }
-        }
-        res+="<tr><td></td></tr>";
-    }
-    res+="</table>";
-    return res;
-}
-
-QString WorkflowRunTask::generateReport() const {
-    QMap<Task*, WorkflowMonitor*> monitors;
-    foreach(Task* sub, getSubtasks()) {
-        WorkflowMonitor *m = static_cast<WorkflowIterationRunTask*>(sub)->getMonitor();
-        monitors[sub] = m;
-    }
-    return worfklowReport(this, monitors);
-}
-
 QList<WorkerState> WorkflowRunTask::getState( Actor* actor) {
     QList<WorkerState> ret;
     foreach(Task* t, getSubtasks()) {
@@ -220,6 +172,9 @@ Task::ReportResult WorkflowRunTask::report() {
     if(hasError() && AppContext::getCMDLineRegistry()->hasParameter(OUTPUT_ERROR_OPTION)) {
         coreLog.info(QString("%1%2%1").arg(ERROR_KEYWORD).arg(getError()));
     }
+    if(AppContext::getCMDLineRegistry()->hasParameter(OUTPUT_PROGRESS_OPTION)) {
+        sl_outputProgressAndState();
+    }
     return ReportResult_Finished;
 }
 
@@ -246,11 +201,14 @@ context(NULL), schema(new Schema()), scheduler(NULL) {
 
     WorkflowMonitor *m = new WorkflowMonitor(this, schema->getProcesses());
     context = new WorkflowContext(schema->getProcesses(), m);
-    connect(this, SIGNAL(si_progressChanged()), m, SLOT(sl_progressChanged()));
-    connect(this, SIGNAL(si_stateChanged()), m, SLOT(sl_taskStateChanged()));
+
+    QTimer * timer = new QTimer(this);
+    connect(timer, SIGNAL(timeout()), SIGNAL(si_updateProducers()));
+    timer->start(UPDATE_PROGRESS_INTERVAL);
 }
 
 WorkflowIterationRunTask::~WorkflowIterationRunTask() {
+    emit si_updateProducers();
     lmap.clear();
     DomainFactory* df = WorkflowEnv::getDomainRegistry()->getById(schema->getDomain());
     if (df) {
@@ -443,8 +401,9 @@ QList<CommunicationChannel*> WorkflowIterationRunTask::getActorLinks(const QStri
 int WorkflowIterationRunTask::getDataProduced(const ActorId &actor) {
     int result = 0;
     foreach (CommunicationChannel *cc, getActorLinks(actor)) {
-        
+        result += cc->hasMessage();
         result += cc->takenMessages();
+        break;
     }
     return result;
 }
@@ -504,15 +463,6 @@ int WorkflowRunInProcessTask::getMsgPassed(Link * l) {
     return ret;
 }
 
-QString WorkflowRunInProcessTask::generateReport() const {
-    QMap<Task*, WorkflowMonitor*> monitors;
-    foreach(Task* sub, getSubtasks()) {
-        WorkflowMonitor *m = static_cast<WorkflowIterationRunInProcessTask*>(sub)->getMonitor();
-        monitors[sub] = m;
-    }
-    return worfklowReport(this, monitors);
-}
-
 /*******************************************
  * WorkflowIterationRunInProcessTask
  *******************************************/
@@ -533,13 +483,13 @@ saveSchemaTask(NULL), monitor(NULL), wfMonitor(NULL) {
     schema->applyConfiguration(it, rmap);
     schema->setIterations(QList<Iteration>());
     wfMonitor = new SeparateProcessMonitor(this, schema->getProcesses());
-    connect(this, SIGNAL(si_progressChanged()), wfMonitor, SLOT(sl_progressChanged()));
     saveSchemaTask = new SaveWorkflowTask(schema, meta, true);
     saveSchemaTask->setSubtaskProgressWeight(0);
     addSubTask(saveSchemaTask);
 }
 
 WorkflowIterationRunInProcessTask::~WorkflowIterationRunInProcessTask() {
+    emit si_progressChanged();
     delete wfMonitor;
     delete schema;
 }
@@ -552,6 +502,7 @@ QList<Task*> WorkflowIterationRunInProcessTask::onSubTaskFinished(Task* subTask)
     }
     if(saveSchemaTask == subTask) {
         monitor = new RunCmdlineWorkflowTask(tempFile.fileName(), wfMonitor);
+        connect(monitor, SIGNAL(si_logRead()), SIGNAL(si_updateProducers()));
         monitor->setSubtaskProgressWeight(1);
         res << monitor;
     } else if(monitor == subTask) {
@@ -593,7 +544,14 @@ int WorkflowIterationRunInProcessTask::getMsgPassed(Link * l) {
 }
 
 int WorkflowIterationRunInProcessTask::getDataProduced(const ActorId &actor) {
-    return 0;
+    CHECK(NULL != monitor, 0);
+    int result = 0;
+    foreach (const QString &link, monitor->getActorLinks(actor)) {
+        result += monitor->getMsgNum(link);
+        result += monitor->getMsgPassed(link);
+        break;
+    }
+    return result;
 }
 
 WorkflowMonitor * WorkflowIterationRunInProcessTask::getMonitor() const {
@@ -827,6 +785,7 @@ void RunCmdlineWorkflowTask::sl_onReadStandardOutput() {
             }
         }
     }
+    emit si_logRead();
 }
 
 Task::ReportResult RunCmdlineWorkflowTask::report() {
@@ -855,6 +814,20 @@ int RunCmdlineWorkflowTask::getMsgNum(const QString & ids) {
 
 int RunCmdlineWorkflowTask::getMsgPassed(const QString & ids) {
     return msgPassed.value(ids, 0);
+}
+
+QStringList RunCmdlineWorkflowTask::getActorLinks(const ActorId &id) {
+    QStringList result;
+    foreach (const QString &ids, msgNums.keys()) {
+        QStringList link = ids.split(":");
+        if (2 != link.size()) {
+            continue;
+        }
+        if (link[0] == id) {
+            result << ids;
+        }
+    }
+    return result;
 }
 
 }//namespace

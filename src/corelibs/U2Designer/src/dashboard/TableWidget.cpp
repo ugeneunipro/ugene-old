@@ -23,7 +23,7 @@
 
 namespace U2 {
 
-static const int MIN_ROW_COUNT = 5;
+static const int MIN_ROW_COUNT = 3;
 
 TableWidget::TableWidget(const QWebElement &container, Dashboard *parent)
 : DashboardWidget(container, parent), useEmptyRows(true)

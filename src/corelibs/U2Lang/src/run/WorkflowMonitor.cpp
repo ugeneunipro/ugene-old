@@ -37,7 +37,9 @@ WorkflowMonitor::WorkflowMonitor(WorkflowAbstractIterationRunner *_task, const Q
         procMap[p->getId()] = p;
         addTime(0, p->getId());
     }
-    connect(task, SIGNAL(si_updateProducers()), SIGNAL(si_updateProducers()));
+    connect(task.data(), SIGNAL(si_updateProducers()), SIGNAL(si_updateProducers()));
+    connect(task.data(), SIGNAL(si_progressChanged()), SLOT(sl_progressChanged()));
+    connect(task.data(), SIGNAL(si_stateChanged()), SLOT(sl_taskStateChanged()));
 }
 
 QString WorkflowMonitor::getName() const {
@@ -117,19 +119,17 @@ void WorkflowMonitor::registerTask(Task *task, const QString &actor) {
 }
 
 void WorkflowMonitor::sl_progressChanged() {
-    Task *t = dynamic_cast<Task*>(sender());
-    CHECK(NULL != t, );
-    emit si_progressChanged(t->getProgress());
+    CHECK(!task.isNull(), );
+    emit si_progressChanged(task->getProgress());
 }
 
 void WorkflowMonitor::sl_taskStateChanged() {
-    Task *t = dynamic_cast<Task*>(sender());
-    CHECK(NULL != t, );
-    if (t->isFinished()) {
+    CHECK(!task.isNull(), );
+    if (task->isFinished()) {
         TaskState state = SUCCESS;
-        if (t->isCanceled()) {
+        if (task->isCanceled()) {
             state = CANCELLED;
-        } else if (t->hasError()) {
+        } else if (task->hasError()) {
             state = FAILED;
         }
         emit si_taskStateChanged(state);

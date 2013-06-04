@@ -56,7 +56,7 @@ QList<int> StatisticsWidget::widths() {
 }
 
 QStringList StatisticsWidget::header() {
-    return QStringList() << tr("Element") << tr("Working time") << tr("Runs");
+    return QStringList() << tr("Element") << tr("Elapsed time") << tr("Produced data");
 }
 
 inline static QString timeStr(qint64 timeMks) {
@@ -85,7 +85,7 @@ QStringList StatisticsWidget::createRow(const QString &actor, const WorkerInfo &
 
     result << wrapLongText(m->actorName(actor));
     result << timeStr(info.timeMks);
-    result << QString::number(info.ticks);
+    result << QString::number(m->getDataProduced(actor));
     return result;
 }
 
