@@ -154,10 +154,11 @@ DNAAlphabet* U2SequenceObject::getAlphabet() const {
     if (cachedAlphabet == NULL) {
         U2OpStatus2Log os;
         DbiConnection con(entityRef.dbiRef, os);
-        CHECK_OP(os, NULL);
+        SAFE_POINT(!os.isCoR(), "U2SequenceObject::getAlphabet() :: Connection error", NULL);
         U2AlphabetId alphaId = con.dbi->getSequenceDbi()->getSequenceObject(entityRef.entityId, os).alphabet;
-        CHECK_OP(os, NULL);
+        SAFE_POINT(!os.isCoR(), "U2SequenceObject::getAlphabet() :: getSequenceObject error", NULL);
         cachedAlphabet = U2AlphabetUtils::getById(alphaId);
+        SAFE_POINT(cachedAlphabet != NULL, "U2SequenceObject::getAlphabet() :: getById error", NULL);
     }
     return cachedAlphabet;
 }

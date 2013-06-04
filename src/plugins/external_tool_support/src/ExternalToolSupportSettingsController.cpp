@@ -241,7 +241,7 @@ void ExternalToolSupportSettingsPageWidget::sl_toolPathCanged(){
             ExternalToolRegistry* etr =  AppContext::getExternalToolRegistry();
             if (etr){
                 foreach (ExternalTool* et, etr->getAllEntries()){
-                    if (((!et->getPath().isEmpty() && !et->isValid()) || isToolDisabled) && et->getToolRunnerProgram() == toolName){
+                    if (!et->getPath().isEmpty() && (!et->isValid() || isToolDisabled) && et->getToolRunnerProgram() == toolName){
                         ExternalToolValidateTask* validateTask=new ExternalToolValidateTask(et->getName());
                         connect(validateTask,SIGNAL(si_stateChanged()),SLOT(sl_validateTaskStateChanged()));
                         validationTasks.append(validateTask);

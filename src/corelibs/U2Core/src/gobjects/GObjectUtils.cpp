@@ -192,7 +192,8 @@ DNATranslation* GObjectUtils::findAminoTT(U2SequenceObject* so, bool fromHintsOn
 }
 
 DNATranslation* GObjectUtils::findBackTranslationTT(U2SequenceObject* so, const QString& table) {
-    if (!so->getAlphabet()->isAmino()) {
+
+    if (!so || !so->getAlphabet() || !so->getAlphabet()->isAmino()) {
         return NULL;
     }
     DNATranslationRegistry* tr = AppContext::getDNATranslationRegistry();
