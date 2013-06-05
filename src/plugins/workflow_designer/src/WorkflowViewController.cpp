@@ -438,6 +438,11 @@ void WorkflowView::createActions() {
     { // toggle dashboard action
         toggleDashboard = new QAction(this);
         connect(toggleDashboard, SIGNAL(triggered()), SLOT(sl_toggleDashboard()));
+#ifdef Q_OS_MAC
+        QFont font = toggleDashboard->font();
+        font.setPointSize(15);
+        toggleDashboard->setFont(font);
+#endif
     }
 
     loadAction = new QAction(tr("&Load schema"), this);
