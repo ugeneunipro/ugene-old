@@ -28,6 +28,7 @@
 #include <U2Core/global.h>
 #include <U2Core/LogCache.h>
 #include <U2Core/AppResources.h>
+#include <U2Core/U2SqlHelpers.h>
 
 #include <QtCore/QString>
 #include <QtCore/QStringList>
@@ -111,11 +112,17 @@ private:
 
     QString formMemInfo() {
         size_t memoryBytes = AppResourcePool::instance()->getCurrentAppMemory();
-        QString memInfo = QString("AppMemory: %1Mb; ").arg(memoryBytes/(1000*1000));
+        QString memInfo = QString("AppMemory: %1Mb").arg(memoryBytes/(1000*1000));
         AppResource *mem = AppResourcePool::instance()->getResource(RESOURCE_MEMORY);
         if (mem) {
-            memInfo += QString("Locked memory AppResource: %1/%2").arg(mem->maxUse() - mem->available()).arg(mem->maxUse());
+            memInfo += QString("; Locked memory AppResource: %1/%2").arg(mem->maxUse() - mem->available()).arg(mem->maxUse());
         }
+
+        int currentMemory=0, maxMemory=0;
+        if (SQLiteUtils::getMemoryHint(currentMemory, maxMemory, 0)) {
+            memInfo += QString("; SQLite memory %1Mb, max %2Mb").arg(currentMemory/(1000*1000)).arg(maxMemory/(1000*1000));
+        }
+
         return memInfo;
     }
 };

@@ -108,6 +108,12 @@ bool SQLiteUtils::isTableExists(const QString& tableName, DbRef* db, U2OpStatus&
     return q.step();
 }
 
+bool SQLiteUtils::getMemoryHint(int& currentMemory, int &maxMemory, int resetMax) {
+
+    return SQLITE_OK == sqlite3_status(SQLITE_STATUS_MEMORY_USED, &currentMemory, &maxMemory, resetMax);
+}
+
+
 //////////////////////////////////////////////////////////////////////////
 // L10N
 QString SQLiteL10n::queryError(const QString& err) {

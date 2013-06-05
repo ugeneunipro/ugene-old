@@ -78,6 +78,9 @@ public:
     
     /** Checks if the table exists in database */
     static bool isTableExists(const QString& tableName, DbRef* db, U2OpStatus& os);
+
+    /** Writes Memory counters */
+    static bool getMemoryHint(int& currentMemory, int &maxMemory, int resetMax);
 };
 
 /** Common localization messages for SQLiteDBI*/

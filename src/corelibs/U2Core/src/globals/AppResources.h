@@ -26,6 +26,7 @@
 #include <U2Core/U2SafePoints.h>
 #include <QtCore/QHash>
 #include <QtCore/QSemaphore>
+#include <U2Core/U2OpStatus.h>
 
 namespace U2 {
 
@@ -182,6 +183,83 @@ private:
     AppResource* phyTreeResource;
     AppResource* listenLogInGTest;
 };
+
+
+class MemoryLocker {
+public:
+    MemoryLocker(U2OpStatus& os, int preLockMB = 10)
+        : os(&os), preLockMB(preLockMB), lockedMB(0), needBytes(0), resource(NULL) {
+        resource = AppResourcePool::instance()->getResource(RESOURCE_MEMORY);
+
+        preLockMB = preLockMB>0?preLockMB : 0;
+        tryAcquire(0);
+    }
+    MemoryLocker(int preLockMB = 10)
+        : os(NULL), preLockMB(preLockMB), lockedMB(0), needBytes(0), resource(NULL) {
+        resource = AppResourcePool::instance()->getResource(RESOURCE_MEMORY);
+
+        preLockMB = preLockMB>0?preLockMB : 0;
+        tryAcquire(0);
+    }
+
+    MemoryLocker(MemoryLocker& other) {
+        os = other.os;
+        preLockMB = other.preLockMB;
+        lockedMB = other.lockedMB; other.lockedMB = 0;
+        needBytes = other.needBytes; other.needBytes = 0;
+    }
+
+    MemoryLocker& MemoryLocker::operator=(MemoryLocker& other) {
+        MemoryLocker tmp(other);
+        qSwap(os, tmp.os);
+        qSwap(preLockMB, tmp.preLockMB);
+        qSwap(lockedMB, tmp.lockedMB);
+        qSwap(needBytes, tmp.needBytes);
+
+        return *this;
+    }
+
+    virtual ~MemoryLocker() {
+        release();
+    }
+
+    bool tryAcquire(qint64 bytes) {
+        needBytes += bytes;
+
+        int needMB = needBytes/(1000*1000) + preLockMB;
+        if (needMB > lockedMB) {
+            int diff = needMB - lockedMB;
+            CHECK_EXT(NULL != resource, if (os) os->setError("MemoryLocker - Resource error"), false);
+            bool ok = resource->tryAcquire(diff);
+            if (ok) {
+                lockedMB = needMB;
+            } else {
+                if (os) {
+                    os->setError("MemoryLocker - Not enough memory error");
+                }
+            }
+            return ok;
+        }
+        return true;
+    }
+
+    void release() {
+        CHECK_EXT(NULL != resource, if (os) os->setError("MemoryLocker - Resource error"), );
+        if (lockedMB > 0) {
+            resource->release(lockedMB);
+        }
+        lockedMB = 0;
+        needBytes = 0;
+    }
+
+private:
+    U2OpStatus* os;
+    int preLockMB;
+    int lockedMB;
+    qint64 needBytes;
+    AppResource* resource;
+};
+
 
 }//namespace
 #endif
