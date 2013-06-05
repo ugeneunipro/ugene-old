@@ -54,6 +54,8 @@ DownloadRemoteFileDialog::DownloadRemoteFileDialog(QWidget *p):QDialog(p), isQue
     ui = new Ui_DownloadRemoteFileDialog;
     ui->setupUi(this);
 
+    
+    ui->dasfeaturesWidget->setResizeMode(QListView::Adjust);
     ui->dasBox->hide();
     adjustSize();
     
@@ -209,6 +211,7 @@ void DownloadRemoteFileDialog::sl_updateDbId( int idx ){
         RemoteDBRegistry& registry = RemoteDBRegistry::getRemoteDBRegistry();
         hint = description = registry.getHint(dbId);
         ui->dasBox->hide();
+        adjustSize();
     }else{
         DASSourceRegistry * dasRegistry = AppContext::getDASSourceRegistry();
         if (dasRegistry){
@@ -231,8 +234,8 @@ void DownloadRemoteFileDialog::sl_updateDbId( int idx ){
         ui->dasBox->show();
     }
 
-    adjustSize();
-
+   // 
+    
     ui->hintLabel->setText(hint);
     ui->idLineEdit->setToolTip(description);
 }
