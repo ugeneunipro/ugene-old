@@ -197,6 +197,7 @@ int MAlignmentObject::deleteGap(const U2Region &rows, int pos, int maxGaps) {
 
     int n = 0, max = qBound(0, maxGaps, msa.getLength() - pos);
     int rowCount = rows.startPos;
+
     while (rowCount < rows.endPos()) {
         while (n < max) {
             char c = msa.charAt(rowCount, pos + n);
@@ -205,14 +206,23 @@ int MAlignmentObject::deleteGap(const U2Region &rows, int pos, int maxGaps) {
             }
             n++;
         }
-        if (n == 0 && (rows.endPos() - 1 == rowCount)) {
-            return 0;
+
+        if (n == 0) {
+            if (rows.endPos() - 1 == rowCount) {
+                return 0;
+            }
+            ++rowCount;
+            continue;
         }
+
         U2OpStatus2Log os;
         msa.removeChars(rowCount, pos, n, os);
+        SAFE_POINT_OP(os, 0);
+
         const MAlignmentRow &row = msa.getRow(rowCount);
         MsaDbiUtils::updateRowGapModel(entityRef, row.getRowId(), row.getGapModel(), os);
         SAFE_POINT_OP(os, 0);
+
         ++rowCount;
     }
     updateCachedMAlignment();

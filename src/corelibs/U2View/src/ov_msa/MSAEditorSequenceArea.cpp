@@ -1924,7 +1924,8 @@ void MSAEditorSequenceArea::shiftSelectedRegion( int shift )
 
         const bool shiftOk = maObj->shiftRegion(x, y, width, height, shift);
         if (shiftOk) {
-            setCursorPos(cursorPos.x() + shift);
+            int newCursorPosX = cursorPos.x() + shift >= 0 ? cursorPos.x() + shift : 0;
+            setCursorPos(newCursorPosX);
             moveSelection(shift, 0);
         }
     }
