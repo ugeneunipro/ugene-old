@@ -82,6 +82,8 @@ public:
 
     virtual void removeRelations(const QString& docUrl);
 
+    virtual void updateDocInRelations(const QString& oldDocUrl, const QString& newDocUrl);
+
 private slots:
     void sl_onStateModified(GObjectViewState*);
     void sl_onObjectAdded(GObject*);

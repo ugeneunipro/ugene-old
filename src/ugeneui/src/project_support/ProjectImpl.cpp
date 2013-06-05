@@ -311,5 +311,13 @@ void ProjectImpl::removeRelations(const QString& removedDocUrl) {
     }
 }
 
+void ProjectImpl::updateDocInRelations(const QString& oldDocUrl, const QString& newDocUrl) {
+    foreach(Document* d, getDocuments()) {
+        foreach(GObject* obj, d->getObjects()) {
+            obj->updateDocInRelations(oldDocUrl, newDocUrl);
+        }
+    }
+}
+
 } //namespace
 

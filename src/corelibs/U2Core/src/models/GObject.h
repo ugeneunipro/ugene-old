@@ -96,6 +96,8 @@ public:
 
     void removeRelations(const QString& removedDocUrl);
 
+    void updateDocInRelations(const QString& oldDocUrl, const QString& newDocUrl);
+
     bool hasObjectRelation(const GObject* obj, const QString& role) const;
     
     bool hasObjectRelation(const GObjectRelation& r) const;

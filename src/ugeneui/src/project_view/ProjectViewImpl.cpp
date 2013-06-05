@@ -175,8 +175,11 @@ bool DocumentUpdater::makeDecision(Document *doc, QListIterator<Document*> &iter
             tr("Save as"), doc->getURLString(), saveFileFilter);
         CHECK(!newFileUrl.isEmpty(), false);
 
+        AppContext::getProject()->updateDocInRelations(doc->getURLString(), newFileUrl);
+
         Task *saveDoc = new SaveDocumentTask(doc, doc->getIOAdapterFactory(), newFileUrl);
         AppContext::getTaskScheduler()->registerTopLevelTask(saveDoc);
+
         doc->setURL(GUrl(newFileUrl));
         break;
     }

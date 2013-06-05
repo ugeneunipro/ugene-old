@@ -125,6 +125,8 @@ public:
     static void setupToEngine(QScriptEngine *engine);
 
     virtual void removeRelations(const QString& docUrl) = 0;
+
+    virtual void updateDocInRelations(const QString& oldDocUrl, const QString& newDocUrl) = 0;
 private:
     static QScriptValue toScriptValue(QScriptEngine *engine, Project* const &in);
     static void fromScriptValue(const QScriptValue &object, Project* &out);

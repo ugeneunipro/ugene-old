@@ -167,6 +167,21 @@ void GObject::removeRelations(const QString& removedDocUrl) {
 
 }
 
+void GObject::updateDocInRelations(const QString& oldDocUrl, const QString& newDocUrl) {
+    QList<GObjectRelation> rels = getObjectRelations();
+    bool changed = false;
+    for (int i = 0; i < rels.size(); i++) {
+        GObjectRelation& rel = rels[i];
+        if (rel.ref.docUrl == oldDocUrl) {
+            rel.ref.docUrl = newDocUrl;
+            changed = true;
+        }
+    }
+    if (changed) {
+        setObjectRelations(rels);
+    }
+}
+
 
 //////////////////////////////////////////////////////////////////////////
 // GObjectReference
