@@ -152,10 +152,43 @@ DatasetsTabWidget::DatasetsTabWidget(QWidget *parent)
 : QTabWidget(parent)
 {
     setUsesScrollButtons(true);
-    setDocumentMode(true);
     setTabsClosable(true);
     tabBar()->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(tabBar(), SIGNAL(customContextMenuRequested(const QPoint &)), SLOT(sl_contextMenu(const QPoint &)));
+#ifdef Q_OS_MACX
+    QString style = "QTabWidget::pane {"
+                    "border-top: 1px solid #9B9B9B;"
+                    "}"
+
+                    "QTabWidget::tab-bar {"
+                    "left: 0px;"
+                    "}"
+
+                    "QTabBar::tab {"
+                    "background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,"
+                    "stop: 0 #E1E1E1, stop: 0.4 #DDDDDD,"
+                    "stop: 0.5 #D8D8D8, stop: 1.0 #D3D3D3);"
+                    "border: 1px solid #9B9B9B;"
+                    "border-bottom: 0px;"
+                    "border-top-left-radius: 0px;"
+                    "border-top-right-radius: 0px;"
+                    "min-width: 10ex;"
+                    "padding: 2px;"
+                    "}"
+
+                    "QTabBar::tab:selected, QTabBar::tab:hover {"
+                    "background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,"
+                    "stop: 0 #fafafa, stop: 0.4 #f4f4f4,"
+                    "stop: 0.5 #e7e7e7, stop: 1.0 #fafafa);"
+                    "}"
+
+                    "QTabBar::tab:selected {"
+                    "border-color: #9B9B9B;"
+                    "}";
+    setStyleSheet(style);
+#elif
+    setDocumentMode(true);
+#endif
 }
 
 void DatasetsTabWidget::sl_contextMenu(const QPoint &p) {
