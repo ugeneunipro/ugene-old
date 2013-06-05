@@ -123,6 +123,8 @@ public:
     virtual void setObjectIdCounter(quint64 c) = 0;
 
     static void setupToEngine(QScriptEngine *engine);
+
+    virtual void removeRelations(const QString& docUrl) = 0;
 private:
     static QScriptValue toScriptValue(QScriptEngine *engine, Project* const &in);
     static void fromScriptValue(const QScriptValue &object, Project* &out);

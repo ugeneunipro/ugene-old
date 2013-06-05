@@ -94,6 +94,8 @@ public:
     
     void updateRefInRelations(const GObjectReference& oldRef, const GObjectReference& newRef);
 
+    void removeRelations(const QString& removedDocUrl);
+
     bool hasObjectRelation(const GObject* obj, const QString& role) const;
     
     bool hasObjectRelation(const GObjectRelation& r) const;

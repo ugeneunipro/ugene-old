@@ -56,41 +56,41 @@ ProjectImpl::ProjectImpl(const QString& _name, const QString& _url, const QList<
         connect(mdi, SIGNAL(si_windowAdded(MWMDIWindow*)), SLOT(sl_onMdiWindowAdded(MWMDIWindow*)));
         connect(mdi, SIGNAL(si_windowClosing(MWMDIWindow*)), SLOT(sl_onMdiWindowClosing(MWMDIWindow*)));
     }
-    	
+        
 }
 
 ProjectImpl::~ProjectImpl() {
-	//delete all docs
-	while (!docs.isEmpty()) {
-		Document* d = docs.takeLast();
-		delete d;
-	}
+    //delete all docs
+    while (!docs.isEmpty()) {
+        Document* d = docs.takeLast();
+        delete d;
+    }
 
-	//delete all views
-	while (!objectViewStates.isEmpty()) {
-		GObjectViewState* s = objectViewStates.takeLast();
-		delete s;
-	}
+    //delete all views
+    while (!objectViewStates.isEmpty()) {
+        GObjectViewState* s = objectViewStates.takeLast();
+        delete s;
+    }
 }
 
 void ProjectImpl::makeClean() {
-	if (!isTreeItemModified()) {
-		return;
-	}
-	setModified(false);
-	foreach(Document* d, docs) {
-		d->makeClean();
-	}
-	assert(!isTreeItemModified());
+    if (!isTreeItemModified()) {
+        return;
+    }
+    setModified(false);
+    foreach(Document* d, docs) {
+        d->makeClean();
+    }
+    assert(!isTreeItemModified());
 }
 
 void ProjectImpl::setProjectName(const QString& newName) {
-	if (name==newName) {
-		return;
-	}
-	setModified(true);
-	name = newName;
-	emit si_projectRenamed(this);
+    if (name==newName) {
+        return;
+    }
+    setModified(true);
+    name = newName;
+    emit si_projectRenamed(this);
 }
 
 void ProjectImpl::setProjectURL(const QString& newURL) {
@@ -107,30 +107,30 @@ void ProjectImpl::setProjectURL(const QString& newURL) {
 }
 
 Document* ProjectImpl::findDocumentByURL(const QString & url) const {
-	foreach(Document* d, docs) {
-		if (d->getURLString() == url) {
-			return d;
-		}
-	}
-	return NULL;
+    foreach(Document* d, docs) {
+        if (d->getURLString() == url) {
+            return d;
+        }
+    }
+    return NULL;
 }
 
 void ProjectImpl::addDocument(Document* d) {
     coreLog.details(tr("Adding document to the project: %1").arg(d->getURLString()));
 
-	assert(findDocumentByURL(d->getURL())==NULL);
-	setParentStateLockItem_static(d, this);
+    assert(findDocumentByURL(d->getURL())==NULL);
+    setParentStateLockItem_static(d, this);
 
     d->setGHints(new ModTrackHints(this, d->getGHintsMap(), true));
 
-	docs.push_back(d);
+    docs.push_back(d);
 
     /*QFileInfo file(d->getURLString());
     qint64 memUseMB = file.size()/(1024*1024);
     resourseUsage[d->getName()] = memUseMB;
     resourceTracker->acquire(memUseMB);*/
-	emit si_documentAdded(d);
-	setModified(true);
+    emit si_documentAdded(d);
+    setModified(true);
     
     connect(d, SIGNAL(si_objectAdded(GObject*)), SLOT(sl_onObjectAdded(GObject*)));
     connect(d, SIGNAL(si_objectRemoved(GObject*)), SLOT(sl_onObjectRemoved(GObject*)));
@@ -158,27 +158,27 @@ void ProjectImpl::removeDocument(Document* d, bool autodelete) {
     SAFE_POINT(NULL != d, tr("No document provided for removeDocument"), );
     coreLog.details(tr("Removing document from the project: %1").arg(d->getURLString()));
 
-	setParentStateLockItem_static(d, NULL);
-	docs.removeOne(d);
+    setParentStateLockItem_static(d, NULL);
+    docs.removeOne(d);
     
     d->disconnect(this);
 
     d->setGHints(new GHintsDefaultImpl(d->getGHints()->getMap()));
 
-	emit si_documentRemoved(d);
-	if (autodelete) {
+    emit si_documentRemoved(d);
+    if (autodelete) {
         if(resourceUsage.contains(d->getName())) {
             resourceTracker->release(resourceUsage[d->getName()]);
             resourceUsage.remove(d->getName());
         }
-		delete d;
-	}
+        delete d;
+    }
     setModified(true);
 } 
 
 
 void ProjectImpl::sl_onStateModified(GObjectViewState*) {
-	setModified(true);
+    setModified(true);
 }
 
 void ProjectImpl::sl_onMdiWindowAdded(MWMDIWindow* w) {
@@ -196,24 +196,24 @@ void ProjectImpl::sl_onMdiWindowClosing(MWMDIWindow* w) {
 }
 
 void ProjectImpl::addState(GObjectViewState* s) {
-	assert(!objectViewStates.contains(s));
-	connect(s, SIGNAL(si_stateModified(GObjectViewState*)), SLOT(sl_onStateModified(GObjectViewState*)));
-	objectViewStates.append(s);
-	setModified(true);
+    assert(!objectViewStates.contains(s));
+    connect(s, SIGNAL(si_stateModified(GObjectViewState*)), SLOT(sl_onStateModified(GObjectViewState*)));
+    objectViewStates.append(s);
+    setModified(true);
 }
 
 void ProjectImpl::addGObjectViewState(GObjectViewState* s) {
-	assert(GObjectViewUtils::findStateInList(s->getViewName(), s->getStateName(), objectViewStates) == NULL);
-	addState(s);
-	emit si_objectViewStateAdded(s);
+    assert(GObjectViewUtils::findStateInList(s->getViewName(), s->getStateName(), objectViewStates) == NULL);
+    addState(s);
+    emit si_objectViewStateAdded(s);
 }
 
 void ProjectImpl::removeGObjectViewState(GObjectViewState* s) {
-	int i = objectViewStates.removeAll(s);
+    int i = objectViewStates.removeAll(s);
     Q_UNUSED(i);
     assert(i == 1);
-	emit si_objectViewStateRemoved(s);
-	setModified(true);
+    emit si_objectViewStateRemoved(s);
+    setModified(true);
 }
 
 void ProjectImpl::sl_onObjectAdded(GObject* obj) {
@@ -300,6 +300,13 @@ void ProjectImpl::updateObjectRelations(const GObjectReference& oldRef, const GO
     foreach(Document* d, getDocuments()) {
         foreach(GObject* obj, d->getObjects()) {
             obj->updateRefInRelations(oldRef, newRef);
+        }
+    }
+}
+void ProjectImpl::removeRelations(const QString& removedDocUrl) {
+    foreach(Document* d, getDocuments()) {
+        foreach(GObject* obj, d->getObjects()) {
+            obj->removeRelations(removedDocUrl);
         }
     }
 }

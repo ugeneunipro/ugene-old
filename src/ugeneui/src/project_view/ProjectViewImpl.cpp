@@ -182,13 +182,16 @@ bool DocumentUpdater::makeDecision(Document *doc, QListIterator<Document*> &iter
     }
 
     case QMessageBox::No:
+        AppContext::getProject()->removeRelations(doc->getURLString());
         AppContext::getProject()->removeDocument(doc);
         break;
 
     case QMessageBox::NoToAll:
+        AppContext::getProject()->removeRelations(doc->getURLString());
         AppContext::getProject()->removeDocument(doc);
         while (iter.hasNext()) {
             doc = iter.next();
+            AppContext::getProject()->removeRelations(doc->getURLString());
             AppContext::getProject()->removeDocument(doc);
         }
         break;
@@ -437,7 +440,7 @@ void ProjectViewImpl::enable() {
     connect(relocateDocumentAction, SIGNAL(triggered()), SLOT(sl_relocate()));
 
     exportDocumentAction = new QAction(tr("Export document..."), w);
-	exportDocumentAction->setObjectName("Export document");
+    exportDocumentAction->setObjectName("Export document");
     exportDocumentAction->setIcon(QIcon(":ugene/images/save_copy.png"));
     connect(exportDocumentAction, SIGNAL(triggered()), SLOT(sl_exportDocument()));
 
@@ -469,7 +472,7 @@ void ProjectViewImpl::disable() {
     if (w!=NULL) {
         saveWidgetState(w);
         saveGroupMode(projectTreeController->getModeSettings().groupMode);
-    }	
+    }    
 
     Project* pr = AppContext::getProject();
     pr->disconnect(this);
@@ -534,7 +537,7 @@ void ProjectViewImpl::initView() {
     assert(objectViewController == NULL);
     objectViewController = new ObjectViewTreeController(w->viewTreeWidget);
 
-    restoreWidgetState(w);	
+    restoreWidgetState(w);    
 }
 
 
@@ -779,7 +782,7 @@ QList<QAction*> ProjectViewImpl::selectOpenViewActions(GObjectViewFactory* f, co
             if (!contains) {
                 continue;
             }
-            QAction* action = new QAction(tr("activate_view_action_%1").arg(ov->getViewName()), actionsParent);		
+            QAction* action = new QAction(tr("activate_view_action_%1").arg(ov->getViewName()), actionsParent);        
             OpenViewContext* c = new OpenViewContext(action, ov->getViewName());
             action->setData(QVariant::fromValue((void*)c));
             connect(action, SIGNAL(triggered()), SLOT(sl_activateView()));
@@ -808,7 +811,7 @@ QList<QAction*> ProjectViewImpl::selectOpenViewActions(GObjectViewFactory* f, co
     //check saved state can be activated
     QList<GObjectViewState*> viewStates = GObjectViewUtils::selectStates(f, ms, AppContext::getProject()->getGObjectViewStates());
     foreach(GObjectViewState* s, viewStates) {
-        QAction* action = new QAction(tr("open_state_%1_%2").arg(s->getViewName()).arg(s->getStateName()), actionsParent);		
+        QAction* action = new QAction(tr("open_state_%1_%2").arg(s->getViewName()).arg(s->getStateName()), actionsParent);        
         OpenViewContext* c = new OpenViewContext(action, s, f);
         action->setData(QVariant::fromValue((void*)c));
         connect(action, SIGNAL(triggered()), SLOT(sl_openStateView()));
@@ -856,7 +859,7 @@ void ProjectViewImpl::buildAddToViewMenu(const MultiGSelection& ms, QMenu* m) {
             return;
         }
     }
-    QAction* action = new QAction(tr("add_to_view_action_%1").arg(ow->getViewName()), m);		
+    QAction* action = new QAction(tr("add_to_view_action_%1").arg(ow->getViewName()), m);        
     AddToViewContext* ac = new AddToViewContext(action, ow->getObjectView(), objects);
     action->setData(QVariant::fromValue((void*)ac));
     action->setObjectName("action_add_view");
@@ -1020,7 +1023,7 @@ void ProjectViewImpl::sl_relocate() {
     if (h.url.isEmpty()) {
         return;
     }
-	AppContext::getTaskScheduler()->registerTopLevelTask(new RelocateDocumentTask(d->getURL(), GUrl(h.url, GUrl_File)));    
+    AppContext::getTaskScheduler()->registerTopLevelTask(new RelocateDocumentTask(d->getURL(), GUrl(h.url, GUrl_File)));    
 }
 
 void ProjectViewImpl::sl_exportDocument() {

@@ -75,8 +75,8 @@ class ProjectViewImpl: public ProjectView , public LoadDocumentTaskProvider {
     Q_OBJECT
 
     friend class ProjectViewWidgetFactory;
-	friend class EnableProjectViewTask;
-	friend class DisableProjectViewTask;
+    friend class EnableProjectViewTask;
+    friend class DisableProjectViewTask;
 public:
     ProjectViewImpl();
     ~ProjectViewImpl();
@@ -84,10 +84,10 @@ public:
     virtual const DocumentSelection* getDocumentSelection() const {return projectTreeController->getDocumentSelection();}
     
     virtual const GObjectSelection* getGObjectSelection() const  {return projectTreeController->getGObjectSelection();};
-	
-	void initView();
+    
+    void initView();
 
-	//QAction* getAddExistingDocumentAction() const {return NULL;}
+    //QAction* getAddExistingDocumentAction() const {return NULL;}
 
     virtual QList<Task*> createLoadDocumentTasks(const QList<Document*>& docs) const;
 
@@ -96,33 +96,33 @@ public:
     void setSaveProjectOnCloseEnabled(bool enabled) { saveProjectOnClose = enabled; }
 
 protected:
-	/// returns NULL if no actions are required to enable service
-	virtual Task* createServiceEnablingTask();
+    /// returns NULL if no actions are required to enable service
+    virtual Task* createServiceEnablingTask();
 
-	/// returns NULL if no actions are required to disable service
-	virtual Task* createServiceDisablingTask();
-
-
-	void enable();
-	void disable();
+    /// returns NULL if no actions are required to disable service
+    virtual Task* createServiceDisablingTask();
 
 
-	bool eventFilter(QObject *obj, QEvent *event);
+    void enable();
+    void disable();
+
+
+    bool eventFilter(QObject *obj, QEvent *event);
 
 private slots: 
     void sl_onDocumentAdded(Document* d);
     
-	void sl_onProjectModifiedStateChanged();
-	void sl_onDocumentRemoved(Document* d);
-	void sl_onSaveSelectedDocs();
-	void sl_onDocTreePopupMenuRequested(QMenu& popup);
-	void sl_openNewView();
-	void sl_openStateView();
-	void sl_activateView();
-	void sl_addToView();
-	void sl_onMDIWindowAdded(MWMDIWindow*);
-	void sl_onViewPersistentStateChanged(GObjectViewWindow* thiz);
-	void sl_onActivated(GObject*);
+    void sl_onProjectModifiedStateChanged();
+    void sl_onDocumentRemoved(Document* d);
+    void sl_onSaveSelectedDocs();
+    void sl_onDocTreePopupMenuRequested(QMenu& popup);
+    void sl_openNewView();
+    void sl_openStateView();
+    void sl_activateView();
+    void sl_addToView();
+    void sl_onMDIWindowAdded(MWMDIWindow*);
+    void sl_onViewPersistentStateChanged(GObjectViewWindow* thiz);
+    void sl_onActivated(GObject*);
     void sl_onActivated(Document*);
     void sl_filterTextChanged(const QString& t);
     void sl_relocate();
@@ -138,7 +138,7 @@ private:
     QList<QAction*> selectOpenViewActions(GObjectViewFactory* f, const MultiGSelection& ms, QObject* actionsParent, bool tryActivate = false);
     void saveViewState(GObjectViewWindow* v, const QString& stateName);
     void updateMWTitle();
-	
+    
     //todo: find a better place to do this
     void registerBuiltInObjectViews();
     void unregisterBuiltInObjectViews();
@@ -149,10 +149,10 @@ private:
     QAction*    exportDocumentAction;
     bool saveProjectOnClose;
 
-	ProjectViewWidget* w;
-	ProjectViewWidgetFactory* f;
-	ProjectTreeController* projectTreeController;
-	ObjectViewTreeController* objectViewController;
+    ProjectViewWidget* w;
+    ProjectViewWidgetFactory* f;
+    ProjectTreeController* projectTreeController;
+    ObjectViewTreeController* objectViewController;
 };
 
 
@@ -160,22 +160,22 @@ class EnableProjectViewTask : public Task {
     Q_OBJECT
 
 public:
-	EnableProjectViewTask(ProjectViewImpl* pvi);
+    EnableProjectViewTask(ProjectViewImpl* pvi);
 
-	ReportResult report();
+    ReportResult report();
 private:
-	ProjectViewImpl* pvi;
+    ProjectViewImpl* pvi;
 };
 
 class DisableProjectViewTask : public Task {
     Q_OBJECT
 
 public:
-	DisableProjectViewTask(ProjectViewImpl* pvi, bool saveProjectOnClose);
+    DisableProjectViewTask(ProjectViewImpl* pvi, bool saveProjectOnClose);
     void prepare();
-	ReportResult report();
+    ReportResult report();
 private:
-	ProjectViewImpl* pvi;
+    ProjectViewImpl* pvi;
     bool saveProject;
 };
 
