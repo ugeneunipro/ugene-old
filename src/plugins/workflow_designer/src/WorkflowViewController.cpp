@@ -1728,7 +1728,7 @@ static QIcon getToolbarIcon(const QString &srcPath) {
 }
 
 void WorkflowView::hideDashboards() {
-    toggleDashboard->setIconText("Dashboard");
+    toggleDashboard->setIconText("Go to Dashboard");
     toggleDashboard->setIcon(getToolbarIcon("dashboard.png"));
     toggleDashboard->setToolTip(tr("Show dashboard"));
     tabView->setVisible(false);
@@ -1737,7 +1737,7 @@ void WorkflowView::hideDashboards() {
 }
 
 void WorkflowView::showDashboards() {
-    toggleDashboard->setIconText("Workflow");
+    toggleDashboard->setIconText("Return to Workflow");
     toggleDashboard->setIcon(getToolbarIcon("wd.png"));
     toggleDashboard->setToolTip(tr("Show workflow"));
     splitter->setVisible(false);
