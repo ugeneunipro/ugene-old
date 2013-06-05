@@ -209,7 +209,7 @@ public:
         needBytes = other.needBytes; other.needBytes = 0;
     }
 
-    MemoryLocker& MemoryLocker::operator=(MemoryLocker& other) {
+    MemoryLocker& operator=(MemoryLocker& other) {
         MemoryLocker tmp(other);
         qSwap(os, tmp.os);
         qSwap(preLockMB, tmp.preLockMB);
