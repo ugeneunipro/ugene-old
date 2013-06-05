@@ -186,7 +186,7 @@ DatasetsTabWidget::DatasetsTabWidget(QWidget *parent)
                     "border-color: #9B9B9B;"
                     "}";
     setStyleSheet(style);
-#elif
+#else
     setDocumentMode(true);
 #endif
 }
