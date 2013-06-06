@@ -211,7 +211,6 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& hints
     QByteArray qualityScores;
     QStringList headers;
     QSet<QString> uniqueNames;
-    static const int objectsLimit = 20*1000;
 
     QVector<U2Region> mergedMapping;
     QByteArray gapSequence((merge ? gapSize : 0), 0);
@@ -298,10 +297,6 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& hints
             objects << seqObj;
 
             U1AnnotationUtils::addAnnotations(objects, seqImporter.getCaseAnnotations(), sequenceRef, NULL);
-
-            if (objects.size() > objectsLimit) {
-                os.setError("Too much objects");
-            }
         }
         if (PROGRESS_UPDATE_STEP == progressUpNum) {
             progressUpNum = 0;
