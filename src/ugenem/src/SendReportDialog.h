@@ -36,6 +36,8 @@ public:
     bool send(const QString &additionalInfo);
     QString getOSVersion();
     QString getReport() const {return report;}
+    int getTotalPhysicalMemory();
+    QString getCPUInfo();
 private slots:
     void sl_replyFinished(QNetworkReply*);
 

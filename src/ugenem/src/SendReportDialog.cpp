@@ -26,6 +26,7 @@
 #include <QtCore/QTime>
 #include <QtCore/QDate>
 #include <QtCore/QEventLoop>
+#include <QtCore/QProcess>
 
 #include <QtNetwork/QNetworkAccessManager>
 #include <QtNetwork/QNetworkProxy>
@@ -34,6 +35,11 @@
 
 #include <QMessageBox>
 #include <QFile>
+
+#ifdef Q_OS_WIN
+#include <intrin.h>
+#endif
+
 #define HOST_URL "http://ugene.unipro.ru"
 //#define HOST_URL "http://127.0.0.1"
 #define DESTINATION_URL_KEEPER_PAGE "/crash_reports_dest.html"
@@ -49,6 +55,11 @@ void ReportSender::parse(const QString &htmlReport) {
 
         report += "Operation system: ";
         report += getOSVersion() + "\n\n";
+        report += "CPU Info: ";
+        report += getCPUInfo() + "\n\n";
+
+        report += "Memory Info: ";
+        report += QString::number(getTotalPhysicalMemory()) + "Mb\n\n";
 
         report += "UGENE version: ";
 #ifdef UGENE_VERSION_SUFFIX
@@ -196,6 +207,108 @@ QString ReportSender::getOSVersion() {
 #else
     result += " x86";
 #endif
+
+    return result;
+}
+
+int ReportSender::getTotalPhysicalMemory() {
+    int totalPhysicalMemory = 0;
+
+#if defined(Q_OS_WIN32)
+    MEMORYSTATUSEX memory_status;
+    ZeroMemory(&memory_status, sizeof(MEMORYSTATUSEX));
+    memory_status.dwLength = sizeof(memory_status);
+    if (GlobalMemoryStatusEx(&memory_status)) {
+        totalPhysicalMemory = memory_status.ullTotalPhys / (1024 * 1024);
+    } else {
+        coreLog.error("Total physical memory: getting info error");
+    }
+
+#elif defined(Q_OS_LINUX)
+    QProcess p;
+    p.start("awk", QStringList() << "/MemTotal/ {print $2}" << "/proc/meminfo");
+    p.waitForFinished();
+    QString memory = p.readAllStandardOutput();
+    p.close();
+    bool ok = false;
+    qlonglong output_mem = memory.toLongLong(&ok);
+    if (ok) {
+        totalPhysicalMemory = output_mem / 1024;
+    }
+
+#elif defined(Q_OS_MAC)
+// TODO
+     QProcess p;
+     p.start("sh", QStringList() << "-c" << "sysctl hw.memsize | awk -F ' ' '{print $2}'");
+     p.waitForFinished();
+     QString system_info = p.readAllStandardOutput();
+     p.close();
+     bool ok = false;
+     qlonglong output_mem = system_info.toLongLong(&ok);
+     if (ok) {
+         totalPhysicalMemory = output_mem / (1024 * 1024);
+     }
+#else
+    coreLog.error("Total physical memory: Unsupported OS");
+#endif
+
+    return totalPhysicalMemory;
+}
+
+void cpuID(unsigned i, unsigned regs[4]) {
+#ifdef _WIN32
+  __cpuid((int *)regs, (int)i);
+
+#else
+  asm volatile
+    ("cpuid" : "=a" (regs[0]), "=b" (regs[1]), "=c" (regs[2]), "=d" (regs[3])
+     : "a" (i), "c" (0));
+  // ECX is set to zero for CPUID function 4
+#endif
+}
+
+QString ReportSender::getCPUInfo() {
+    QString result;
+
+    unsigned regs[4];
+
+    // Get vendor
+    char vendor[12];
+    cpuID(0, regs);
+    ((unsigned *)vendor)[0] = regs[1]; // EBX
+    ((unsigned *)vendor)[1] = regs[3]; // EDX
+    ((unsigned *)vendor)[2] = regs[2]; // ECX
+    QString cpuVendor=QString(vendor);
+    result+= "\n  Vendor :"+ cpuVendor;
+
+    // Get CPU features
+    cpuID(1, regs);
+    unsigned cpuFeatures = regs[3]; // EDX
+
+    // Logical core count per CPU
+    cpuID(1, regs);
+    unsigned logical = (regs[1] >> 16) & 0xff; // EBX[23:16]
+
+    result+= "\n  logical cpus: " + QString::number(logical);
+    unsigned cores = logical;
+
+    if (cpuVendor == "GenuineIntel") {
+      // Get DCP cache info
+      cpuID(4, regs);
+      cores = ((regs[0] >> 26) & 0x3f) + 1; // EAX[31:26] + 1
+
+    } else if (cpuVendor == "AuthenticAMD") {
+      // Get NC: Number of CPU cores - 1
+      cpuID(0x80000008, regs);
+      cores = ((unsigned)(regs[2] & 0xff)) + 1; // ECX[7:0] + 1
+    }
+
+    result+= "\n  cpu cores: " + QString::number(cores);
+
+    // Detect hyper-threads..
+    bool hyperThreads = cpuFeatures & (1 << 28) && cores < logical;
+
+    result+= "\n  hyper-threads: " + QString(hyperThreads ? "true" : "false");
 
     return result;
 }
