@@ -1,0 +1,36 @@
+#@UGENE_WORKFLOW
+#ChIP-seq analysis is started from MACS tool. CEAS then takes peak regions and signal wiggle file to check which chromosome is enriched with binding/modification sites, whether bindings events are significant at gene features like promoters, gene bodies, exons, introns or UTRs, and the signal aggregation at gene transcription start/end sites or meta-gene bodies (average all genes). Then peaks are investigated in these ways: 1. to check which genes are nearby so can be regarded as potential regulated genes, then perform GO analysis; 2. to check the conservation scores at the binding sites;3 the DNA motifs at binding sites.
+
+workflow "ChIP-seq analysis with Cistrome tools" {
+    .meta {
+        wizard {
+            auto-run: true;
+            name: "Cistrome pipeline";
+            finish-label: "Setup pipeline";
+            result {
+                NGS/cistrome/chip_seq.uwl: pipeline.no-control;
+                NGS/cistrome/chip_seq_with_control.uwl: pipeline.control;
+            }
+            page {
+                id: 1;
+                title: "Cistrome pipeline settings";
+                parameters-area {
+                    group {
+                        title:"Pipeline type";
+                        radio {
+                            id: pipeline;
+                            value {
+                                id: no-control;
+                                label: "Treatment tags only";
+                            }
+                            value {
+                                id: control;
+                                label: "Treatment and control tags";
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
