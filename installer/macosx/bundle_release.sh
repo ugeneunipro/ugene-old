@@ -39,6 +39,12 @@ echo copying data dir
 cp -R "$RELEASE_DIR/../../data" "${TARGET_EXE_DIR}/"
 find $TARGET_EXE_DIR -name ".svn" | xargs rm -rf
 
+#include external tools package if applicable
+if [ -e "$RELEASE_DIR/../../tools" ]; then
+    cp -R "$RELEASE_DIR/../../tools" "${TARGET_EXE_DIR}/"
+    find $TARGET_EXE_DIR -name ".svn" | xargs rm -rf
+fi
+
 echo copying ugenem
 cp "$RELEASE_DIR/ugenem.app/Contents/MacOS/ugenem" "$TARGET_EXE_DIR"
 
@@ -138,6 +144,7 @@ mv "$TARGET_APP_DIR" "$TARGET_APP_DIR_RENAMED"
 
 cd  $BUILD_DIR 
 ln -s ./Unipro\ UGENE.app/Contents/MacOS/data/samples ./Samples
+ln -s ./Unipro\ UGENE.app/Contents/MacOS/data ./Data
 cd ..
 
 if [ ! "$1" ] 
