@@ -114,6 +114,7 @@ private:
 protected:
     void setWorkerInfo(const QString &actorId, const Monitor::WorkerInfo &info);
     void setRunState(bool paused);
+    void addProblem(const Monitor::Problem &problem);
 };
 
 class U2LANG_EXPORT MonitorUtils {

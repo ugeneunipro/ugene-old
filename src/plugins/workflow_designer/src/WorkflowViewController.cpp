@@ -205,7 +205,7 @@ static QToolButton * scriptMenu(WorkflowView *parent, const QList<QAction*> &scr
 * WorkflowView
 ********************************/
 WorkflowView::WorkflowView(WorkflowGObject* go) 
-: MWMDIWindow(tr("Workflow Designer")), sceneRecreation(false), go(go), currentProto(NULL), currentActor(NULL), pasteCount(0), running(false)
+: MWMDIWindow(tr("Workflow Designer")), running(false), sceneRecreation(false), go(go), currentProto(NULL), currentActor(NULL), pasteCount(0)
 {
     runMode = (RunMode)WorkflowSettings::getRunMode();
     scriptingMode = WorkflowSettings::getScriptingMode();

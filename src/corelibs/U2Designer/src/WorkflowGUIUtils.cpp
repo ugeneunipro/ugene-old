@@ -114,11 +114,14 @@ void DesignerGUIUtils::paintSamplesDocument(QPainter* painter, QTextDocument* do
 }
 
 void DesignerGUIUtils::setupSamplesDocument(const Descriptor& d, const QIcon& ico, QTextDocument* doc) {
+    bool hasIcon = (ico.availableSizes().size() > 0);
     QString text = 
         "<html>"
         "<table align='center' border='0' cellpadding='3' cellspacing='3'>"
         "<tr><td colspan='2'><h1 align='center'>%1</h1></td></tr>"
-        "<tr><td valign='middle' width='20%'><img src=\"%2\"/></td><td valign='bottom'><br>%3</td></tr>"
+        "<tr>"
+            "<td valign='middle' width='20%'>" + QString(hasIcon? "<img src=\"%2\"/>" : "%2") + "</td>"
+            "<td valign='bottom'><br>%3</td></tr>"
         "<tr><td colspan='2' valign='top'>%4<br></td></tr>"
         "<tr><td colspan='2' bgcolor='gainsboro' align='center'><font color='maroon' size='+2' face='Courier'><b>%5</b></font></td></tr>"
         "</table>"
@@ -138,7 +141,7 @@ void DesignerGUIUtils::setupSamplesDocument(const Descriptor& d, const QIcon& ic
         body2 = body.mid(brk + shift);
         body = body.left(brk);
     }
-    text = text.arg(d.getDisplayName()).arg(img).arg(body).arg(body2)
+    text = text.arg(d.getDisplayName()).arg(hasIcon ? img : "").arg(body).arg(body2)
         .arg(QObject::tr("Double click to load the sample"));
     doc->setHtml(text);
     QFont f;

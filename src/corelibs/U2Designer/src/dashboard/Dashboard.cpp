@@ -121,6 +121,10 @@ void Dashboard::sl_runStateChanged(bool paused) {
     page()->mainFrame()->evaluateJavaScript(script);
 }
 
+void Dashboard::contextMenuEvent(QContextMenuEvent * /*ev*/) {
+
+}
+
 /************************************************************************/
 /* DashboardWidget */
 /************************************************************************/

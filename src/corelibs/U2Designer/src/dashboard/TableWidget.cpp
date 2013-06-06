@@ -106,7 +106,7 @@ QString TableWidget::createRow(const QStringList &ds) {
 }
 
 QString TableWidget::wrapLongText(const QString &text) {
-    return "<div class=\"long-text\">" + text + "</div>";
+    return "<div class=\"long-text\" title=\"" + text + "\">" + text + "</div>";
 }
 
 } // U2

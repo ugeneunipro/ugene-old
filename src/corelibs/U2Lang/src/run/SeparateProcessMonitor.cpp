@@ -53,7 +53,7 @@ void SeparateProcessMonitor::parseLog(const QStringList &lines) {
         } else if (line.contains(PROMLEM_TAG)) {
             Problem info("", "");
             if (PackUtils::unpackProblem(cutLogStart(line, PROMLEM_TAG), info)) {
-                addError(info.message, info.actor);
+                addProblem(info);
             }
         } else if (line.contains(WORKER_TAG)) {
             WorkerInfo info;

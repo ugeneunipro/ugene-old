@@ -73,16 +73,8 @@ void WorkflowMonitor::addOutputFile(const QString &url, const QString &producer)
 }
 
 void WorkflowMonitor::addError(const QString &message, const QString &actor) {
-    if (problems.isEmpty()) {
-        emit si_firstProblem();
-    }
-    Problem info(message, actor);
-    problems << info;
-    cmdLog.trace(PackUtils::packProblem(info));
-    emit si_newProblem(info);
-    if (1 == problems.size()) {
-        emit si_taskStateChanged(RUNNING_WITH_PROBLEMS);
-    }
+    addProblem(Problem(message, actor));
+    coreLog.error(message);
 }
 
 void WorkflowMonitor::addTaskError(Task *task, const QString &message) {
@@ -149,6 +141,16 @@ void WorkflowMonitor::setRunState(bool paused) {
 int WorkflowMonitor::getDataProduced(const QString &actor) const {
     CHECK(!task.isNull(), 0);
     return task->getDataProduced(actor);
+}
+
+void WorkflowMonitor::addProblem(const Monitor::Problem &problem) {
+    if (problems.isEmpty()) {
+        emit si_firstProblem();
+        emit si_taskStateChanged(RUNNING_WITH_PROBLEMS);
+    }
+    problems << problem;
+    emit si_newProblem(problem);
+    cmdLog.trace(PackUtils::packProblem(problem));
 }
 
 /************************************************************************/

@@ -40,6 +40,9 @@ public:
     const WorkflowMonitor * monitor();
     QWebElement getDocument();
 
+protected:
+    virtual void contextMenuEvent(QContextMenuEvent *ev);
+
 private slots:
     void sl_runStateChanged(bool paused);
     void sl_loaded(bool ok);
