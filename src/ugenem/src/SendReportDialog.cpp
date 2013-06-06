@@ -223,8 +223,6 @@ int ReportSender::getTotalPhysicalMemory() {
     memory_status.dwLength = sizeof(memory_status);
     if (GlobalMemoryStatusEx(&memory_status)) {
         totalPhysicalMemory = memory_status.ullTotalPhys / (1024 * 1024);
-    } else {
-        coreLog.error("Total physical memory: getting info error");
     }
 
 #elif defined(Q_OS_LINUX)
@@ -251,8 +249,6 @@ int ReportSender::getTotalPhysicalMemory() {
      if (ok) {
          totalPhysicalMemory = output_mem / (1024 * 1024);
      }
-#else
-    coreLog.error("Total physical memory: Unsupported OS");
 #endif
 
     return totalPhysicalMemory;
