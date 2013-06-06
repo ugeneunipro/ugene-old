@@ -28,6 +28,7 @@
 #include <U2Core/SaveDocumentTask.h>
 #include <U2Core/TLSTask.h>
 #include <U2Algorithm/MAlignmentUtilTasks.h>
+#include <U2Core/U2Mod.h>
 
 
 #define KALIGN_CONTEXT_ID "kalign"
@@ -112,8 +113,10 @@ class KalignGObjectRunFromSchemaTask : public AlignGObjectTask {
     Q_OBJECT
 public:
     KalignGObjectRunFromSchemaTask(MAlignmentObject * obj, const KalignTaskSettings & config);
+    Task::ReportResult report();
 private:
     KalignTaskSettings      config;
+    U2UseCommonUserModStep  *userModStep;
 };
 
 

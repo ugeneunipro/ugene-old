@@ -27,6 +27,7 @@
 #include <U2Core/MAlignmentObject.h>
 #include <U2Core/SaveDocumentTask.h>
 #include <U2Algorithm/MAlignmentUtilTasks.h>
+#include <U2Core/U2Mod.h>
 
 class MuscleContext;
 
@@ -166,8 +167,10 @@ class MuscleGObjectRunFromSchemaTask : public AlignGObjectTask {
     Q_OBJECT
 public:
     MuscleGObjectRunFromSchemaTask(MAlignmentObject * obj, const MuscleTaskSettings & config);
+    Task::ReportResult report();
 private:
     MuscleTaskSettings config;
+    U2UseCommonUserModStep  *userModStep;
 };
 
 
