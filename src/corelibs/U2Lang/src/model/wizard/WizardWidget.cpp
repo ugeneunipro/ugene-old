@@ -196,6 +196,23 @@ void AttributeInfo::validate(const QList<Actor*> &actors, U2OpStatus &os) const 
     }
 }
 
+bool AttributeInfo::operator== (const AttributeInfo &other) const {
+    return toString() == other.toString();
+}
+
+QString AttributeInfo::toString() const {
+    return actorId + ":" + attrId;
+}
+
+AttributeInfo AttributeInfo::fromString(const QString &value, U2OpStatus &os) {
+    QStringList tokens = value.split(":");
+    if (2 != tokens.size()) {
+        os.setError("Bad attribute value: " + value);
+        return AttributeInfo("", "");
+    }
+    return AttributeInfo(tokens[0], tokens[1]);
+}
+
 /**********************************
 * AttributeWidget
 *********************************/
@@ -282,6 +299,43 @@ void PairedReadsWidget::addInfo(const AttributeInfo &value) {
 
 QList<AttributeInfo> PairedReadsWidget::getInfos() const {
     return infos;
+}
+
+/************************************************************************/
+/* RadioWidget */
+/************************************************************************/
+const QString RadioWidget::ID("radio");
+RadioWidget::Value::Value(QString _id, QString _label)
+: id(_id), label(_label)
+{
+
+}
+
+RadioWidget::RadioWidget()
+: WizardWidget()
+{
+
+}
+
+
+void RadioWidget::accept(WizardWidgetVisitor *visitor) {
+    visitor->visit(this);
+}
+
+const QString & RadioWidget::var() const {
+    return _var;
+}
+
+void RadioWidget::setVar(const QString &value) {
+    _var = value;
+}
+
+const QList<RadioWidget::Value> & RadioWidget::values() const {
+    return _values;
+}
+
+void RadioWidget::add(const Value &value) {
+    _values << value;
 }
 
 } // U2

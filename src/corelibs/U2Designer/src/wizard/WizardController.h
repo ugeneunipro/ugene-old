@@ -52,15 +52,18 @@ public:
         BROKEN
     };
 public:
-    WizardController(Schema *s, Wizard *w);
+    WizardController(Schema *s, const Wizard *w);
     virtual ~WizardController();
 
     QWizard * createGui();
     ApplyResult applyChanges(Metadata &meta);
     const QList<Actor*> & getCurrentActors() const;
 
-    QVariant getWidgetValue(const AttributeInfo &info) const;
+    QVariant getAttributeValue(const AttributeInfo &info) const;
     void setWidgetValue(const AttributeInfo &info, const QVariant &value);
+
+    QVariant getVariableValue(const QString &var);
+    void setVariableValue(const QString &var, const QString &value);
 
     QVariant getSelectorValue(ElementSelectorWidget *widget);
     void setSelectorValue(ElementSelectorWidget *widget, const QVariant &value);
@@ -80,19 +83,17 @@ public:
 private:
     bool broken;
     Schema *schema;
-    Wizard *wizard;
+    const Wizard *wizard;
     QList<WizardPageController*> pageControllers;
-    QVariantMap propValues; // protoId.actorId.attrId <-> value
     QList<Actor*> currentActors;
     QMap<QString, int> pageIdMap; // hr-id <-> qt-id
     QMap<QString, Variable> vars;
     QMap<QString, SelectorActors> selectors; // varName <-> actors
+    QVariantMap values;
 
 private:
     QWizardPage * createPage(WizardPage *page);
-    Attribute * getAttribute(const AttributeInfo &info, QString &attrId) const;
-    Attribute * getAttributeById(const QString &attrId) const;
-    QString getAttributeId(Actor *actor, Attribute *attr) const;
+    Attribute * getAttribute(const AttributeInfo &info) const;
     void registerSelector(ElementSelectorWidget *widget);
     void replaceCurrentActor(const QString &actorId, const QString &selectorValue);
     void assignParameters();
@@ -113,6 +114,7 @@ public:
     virtual void visit(LogoWidget *lw);
     virtual void visit(ElementSelectorWidget *esw);
     virtual void visit(PairedReadsWidget *dsw);
+    virtual void visit(RadioWidget *rw);
 
     QWidget * getResult();
     QList<WidgetController*> & getControllers();

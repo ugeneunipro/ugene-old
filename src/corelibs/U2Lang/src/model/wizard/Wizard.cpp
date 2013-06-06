@@ -65,4 +65,42 @@ QMap<QString, Variable> Wizard::getVariables() const {
     return vars;
 }
 
+bool Wizard::isAutoRun() const {
+    return autoRun;
+}
+
+void Wizard::setAutoRun(bool value) {
+    autoRun = value;
+}
+
+void Wizard::addResult(const QList<Predicate> &preds, const QString &result) {
+    results[result] = preds;
+}
+
+QMap<QString, QList<Predicate> > Wizard::getResults() const {
+    return results;
+}
+
+QString Wizard::getResult(const QMap<QString, Variable> &vars) const {
+    foreach (const QString &result, results.keys()) {
+        const QList<Predicate> &preds = results[result];
+        bool match = true;
+        foreach (const Predicate &p, preds) {
+            match &= p.isTrue(vars);
+        }
+        if (match) {
+            return result;
+        }
+    }
+    return "";
+}
+
+QString Wizard::getFinishLabel() const {
+    return finishLabel;
+}
+
+void Wizard::setFinishLabel(const QString &value) {
+    finishLabel = value;
+}
+
 } // U2

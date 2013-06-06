@@ -1,0 +1,57 @@
+#@UGENE_WORKFLOW
+
+workflow "RNA-seq analysis with Tuxedo tools" {
+    .meta {
+        wizard {
+            auto-run: true;
+            name: "Tuxedo pipeline";
+            finish-label: "Setup pipeline";
+            result {
+                NGS/tuxedo/tuxedo_main.uwl: "pipeline.full reads.single";
+                NGS/tuxedo/tuxedo_main_paired.uwl: "pipeline.full reads.paired";
+                NGS/tuxedo/tuxedo_single_dataset.uwl: "pipeline.single reads.single";
+                NGS/tuxedo/tuxedo_single_dataset_paired.uwl: "pipeline.single reads.paired";
+                NGS/tuxedo/tuxedo_multiple_dataset.uwl: "pipeline.multiple reads.single";
+                NGS/tuxedo/tuxedo_multiple_dataset_paired.uwl: "pipeline.multiple reads.paired";
+            }
+            page {
+                id: 1;
+                title: "Tuxedo pipeline settings";
+                parameters-area {
+                    group {
+                        title:"Pipeline type";
+                        radio {
+                            id: pipeline;
+                            value {
+                                id: full;
+                                label: "Full Tuxedo";
+                            }
+                            value {
+                                id: single;
+                                label: "Simplified Tuxedo: single dataset";
+                            }
+                            value {
+                                id: multiple;
+                                label: "Simplified Tuxedo: multiple datasets";
+                            }
+                        }
+                    }
+                    group {
+                        title:"Short reads type";
+                        radio {
+                            id: reads;
+                            value {
+                                id: single;
+                                label: "Single-end reads";
+                            }
+                            value {
+                                id: paired;
+                                label: "Paired-end reads";
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

@@ -209,6 +209,7 @@ void SamplePane::paint(QPainter* painter)
     }
 }
 
+const int LoadSamplesTask::maxDepth = 1;
 
 LoadSamplesTask::LoadSamplesTask( const QStringList& lst) 
 : Task(tr("Load workflow samples"), TaskFlag_None), dirs(lst) {}
@@ -219,7 +220,7 @@ void LoadSamplesTask::run() {
     }
 }
 
-void LoadSamplesTask::scanDir( const QString& s) {
+void LoadSamplesTask::scanDir( const QString& s, int depth) {
     QDir dir(s);
     if (!dir.exists()) {
         ioLog.error(tr("Sample dir does not exist: %1").arg(s));
@@ -260,8 +261,10 @@ void LoadSamplesTask::scanDir( const QString& s) {
     if (!category.items.isEmpty()) {
         result << category;
     }
-    foreach(const QFileInfo& fi, dir.entryInfoList(QStringList(), QDir::AllDirs|QDir::NoSymLinks|QDir::NoDotAndDotDot)) {
-        scanDir(fi.absoluteFilePath());
+    if (depth < maxDepth) {
+        foreach(const QFileInfo& fi, dir.entryInfoList(QStringList(), QDir::AllDirs|QDir::NoSymLinks|QDir::NoDotAndDotDot)) {
+            scanDir(fi.absoluteFilePath(), depth + 1);
+        }
     }
 }
 

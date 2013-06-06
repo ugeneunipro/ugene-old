@@ -261,7 +261,7 @@ private:
 
     void runWizard(Wizard *w);
     void checkAutoRunWizard();
-
+    void loadWizardResult(const QString &result);
 
 private:
     bool running;

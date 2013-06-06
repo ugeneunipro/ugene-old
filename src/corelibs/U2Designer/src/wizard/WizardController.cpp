@@ -35,6 +35,7 @@
 #include "ElementSelectorController.h"
 #include "PairedDatasetsController.h"
 #include "PropertyWizardController.h"
+#include "RadioController.h"
 #include "WDWizardPage.h"
 #include "WizardPageController.h"
 
@@ -58,8 +59,8 @@
 
 namespace U2 {
 
-WizardController::WizardController(Schema *s, Wizard *w)
-: schema(s), wizard(w)
+WizardController::WizardController(Schema *s, const Wizard *w)
+: QObject(), schema(s), wizard(w)
 {
     broken = false;
     currentActors = s->getProcesses();
@@ -82,16 +83,21 @@ QWizard * WizardController::createGui() {
     result->setModal(true);
     result->setAutoFillBackground(true);
     result->setWindowTitle(wizard->getName());
+    if (!wizard->getFinishLabel().isEmpty()) {
+        result->setButtonText(QWizard::FinishButton, wizard->getFinishLabel());
+    }
     return result;
 }
 
 void WizardController::assignParameters() {
-    foreach (const QString &attrId, propValues.keys()) {
-        Attribute *attr = getAttributeById(attrId);
+    foreach (const QString &attrId, values.keys()) {
+        U2OpStatus2Log os;
+        AttributeInfo info = AttributeInfo::fromString(attrId, os);
+        Attribute *attr = getAttribute(info);
         if (NULL == attr) {
             continue;
         }
-        attr->setAttributeValue(propValues[attrId]);
+        attr->setAttributeValue(values[attrId]);
     }
 }
 
@@ -99,50 +105,27 @@ const QList<Actor*> & WizardController::getCurrentActors() const {
     return currentActors;
 }
 
-QVariant WizardController::getWidgetValue(const AttributeInfo &info) const {
+QVariant WizardController::getAttributeValue(const AttributeInfo &info) const {
+    if (values.contains(info.toString())) {
+        return values[info.toString()];
+    }
     QString attrId;
-    Attribute *attr = getAttribute(info, attrId);
+    Attribute *attr = getAttribute(info);
     CHECK(NULL != attr, QVariant());
 
-    if (propValues.contains(attrId)) {
-        return propValues[attrId];
-    }
     return attr->getAttributePureValue();
 }
 
 void WizardController::setWidgetValue(const AttributeInfo &info, const QVariant &value) {
-    QString attrId;
-    Attribute *attr = getAttribute(info, attrId);
-    CHECK(NULL != attr, );
-
-    propValues[attrId] = value;
+    values[info.toString()] = value;
 }
 
-Attribute * WizardController::getAttribute(const AttributeInfo &info, QString &attrId) const {
+Attribute * WizardController::getAttribute(const AttributeInfo &info) const {
     U2OpStatusImpl os;
     info.validate(currentActors, os);
     CHECK_OP(os, NULL);
     Actor *actor = WorkflowUtils::actorById(currentActors, info.actorId);
-    Attribute *attr = actor->getParameter(info.attrId);
-
-    attrId = getAttributeId(actor, attr);
-    return attr;
-}
-
-QString WizardController::getAttributeId(Actor *actor, Attribute *attr) const {
-    ActorPrototype *proto = actor->getProto();
-    return proto->getId() + "." + actor->getId() + "." + attr->getId();
-}
-
-Attribute * WizardController::getAttributeById(const QString &attrId) const {
-    QStringList tokens = attrId.split("."); // protoId.actorId.attrId
-    CHECK(3 == tokens.size(), NULL);
-    Actor *actor = WorkflowUtils::actorById(currentActors, tokens[1]);
-    CHECK(NULL != actor, NULL);
-    ActorPrototype *proto = actor->getProto();
-    CHECK(tokens[0] == proto->getId(), NULL);
-
-    return actor->getParameter(tokens[2]);
+    return actor->getParameter(info.attrId);
 }
 
 QWizardPage * WizardController::createPage(WizardPage *page) {
@@ -160,6 +143,18 @@ int WizardController::getQtPageId(const QString &hrId) const {
 
 const QMap<QString, Variable> & WizardController::getVariables() const {
     return vars;
+}
+
+QVariant WizardController::getVariableValue(const QString &var) {
+    WIZARD_SAFE_POINT(vars.contains(var),
+        QObject::tr("Undefined variable: %1").arg(var), QVariant());
+    return vars[var].getValue();
+}
+
+void WizardController::setVariableValue(const QString &var, const QString &value) {
+    WIZARD_SAFE_POINT(vars.contains(var),
+        QObject::tr("Undefined variable: %1").arg(var), );
+    vars[var].setValue(value);
 }
 
 QVariant WizardController::getSelectorValue(ElementSelectorWidget *widget) {
@@ -351,6 +346,13 @@ void WidgetCreator::visit(ElementSelectorWidget *esw) {
 
 void WidgetCreator::visit(PairedReadsWidget *dsw) {
     PairedDatasetsController *controller = new PairedDatasetsController(wc, dsw);
+    controllers << controller;
+    U2OpStatusImpl os;
+    result = controller->createGUI(os);
+}
+
+void WidgetCreator::visit(RadioWidget *rw) {
+    RadioController *controller = new RadioController(wc, rw);
     controllers << controller;
     U2OpStatusImpl os;
     result = controller->createGUI(os);

@@ -74,6 +74,10 @@ Predicate::Predicate(const Variable &v, const QString &value)
     var.setValue(value);
 }
 
+Variable Predicate::variable() const {
+    return var;
+}
+
 bool Predicate::isTrue(const QMap<QString, Variable> &vars) const {
     SAFE_POINT(vars.contains(var.getName()), QObject::tr("Undefined variable: %1").arg(var.getName()), false);
     return (var == vars[var.getName()]);

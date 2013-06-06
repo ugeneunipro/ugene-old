@@ -43,8 +43,8 @@ QWidget * PairedDatasetsController::createGUI(U2OpStatus &os) {
 
     AttributeInfo info1 = widget->getInfos().at(0);
     AttributeInfo info2 = widget->getInfos().at(1);
-    QVariant value1 = wc->getWidgetValue(info1);
-    QVariant value2 = wc->getWidgetValue(info2);
+    QVariant value1 = wc->getAttributeValue(info1);
+    QVariant value2 = wc->getAttributeValue(info2);
     QList<Dataset> sets1 = value1.value< QList<Dataset> >();
     QList<Dataset> sets2 = value2.value< QList<Dataset> >();
 

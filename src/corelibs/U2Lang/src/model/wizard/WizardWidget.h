@@ -127,13 +127,15 @@ private:
 /************************************************************************/
 /* AttributeWidget */
 /************************************************************************/
-typedef QString AttributeWidgetType;
-
 class U2LANG_EXPORT AttributeInfo {
 public:
     AttributeInfo(const QString &actorId, const QString &attrId, const QVariantMap &hints = QVariantMap());
 
     void validate(const QList<Actor*> &actors, U2OpStatus &os) const;
+    bool operator== (const AttributeInfo &other) const;
+    QString toString() const;
+
+    static AttributeInfo fromString(const QString &value, U2OpStatus &os);
 
     QString actorId;
     QString attrId;
@@ -188,6 +190,35 @@ public:
 private:
     QList<AttributeInfo> infos;
     QString behavior;
+};
+
+/************************************************************************/
+/* Radio */
+/************************************************************************/
+class U2LANG_EXPORT RadioWidget : public WizardWidget {
+public:
+    class U2LANG_EXPORT Value {
+    public:
+        Value(QString id, QString label);
+        QString id;
+        QString label;
+    };
+
+    RadioWidget();
+
+    virtual void accept(WizardWidgetVisitor *visitor);
+
+    const QString & var() const;
+    void setVar(const QString &value);
+
+    const QList<Value> & values() const;
+    void add(const Value &value);
+
+    static const QString ID;
+
+private:
+    QString _var;
+    QList<Value> _values;
 };
 
 } // U2

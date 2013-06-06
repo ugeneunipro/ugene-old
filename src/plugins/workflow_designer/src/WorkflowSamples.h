@@ -59,9 +59,10 @@ public:
     void run();
     ReportResult report();
 private:
-    void scanDir(const QString&);
+    void scanDir(const QString&, int depth = 0);
     QStringList dirs;
     QList<SampleCategory> result;
+    static const int maxDepth;
 };
 
 class SampleRegistry {

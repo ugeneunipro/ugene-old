@@ -28,6 +28,7 @@ HEADERS += src/DatasetsController.h \
            src/wizard/ElementSelectorController.h \
            src/wizard/PairedDatasetsController.h \
            src/wizard/PropertyWizardController.h \
+           src/wizard/RadioController.h \
            src/wizard/SelectorActors.h \
            src/wizard/WDWizardPage.h \
            src/wizard/WidgetController.h \
@@ -74,6 +75,7 @@ SOURCES += src/DatasetsController.cpp \
            src/wizard/ElementSelectorController.cpp \
            src/wizard/PairedDatasetsController.cpp \
            src/wizard/PropertyWizardController.cpp \
+           src/wizard/RadioController.cpp \
            src/wizard/SelectorActors.cpp \
            src/wizard/WDWizardPage.cpp \
            src/wizard/WidgetController.cpp \

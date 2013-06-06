@@ -69,7 +69,7 @@ QWidget * InUrlDatasetsController::createGUI(U2OpStatus & /*os*/) {
         delete dsc;
     }
     QList<Dataset> sets;
-    QVariant value = wc->getWidgetValue(widget->getInfo());
+    QVariant value = wc->getAttributeValue(widget->getInfo());
     if (value.canConvert< QList<Dataset> >()) {
         sets = value.value< QList<Dataset> >();
     } else {
@@ -106,7 +106,7 @@ QWidget * DefaultPropertyController::createGUI(U2OpStatus &os) {
     PropertyWidget *propWidget = createPropertyWidget(os);
     CHECK_OP(os, NULL);
     connect(propWidget, SIGNAL(si_valueChanged(const QVariant &)), SLOT(sl_valueChanged(const QVariant &)));
-    propWidget->setValue(wc->getWidgetValue(widget->getInfo()));
+    propWidget->setValue(wc->getAttributeValue(widget->getInfo()));
 
     QString label = widget->getProperty(AttributeInfo::LABEL);
     if (label.isEmpty()) {

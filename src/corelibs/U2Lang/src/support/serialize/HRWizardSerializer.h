@@ -45,14 +45,17 @@ private:
     HRSchemaSerializer::Tokenizer &tokenizer;
     const QMap<QString, Actor*> &actorMap;
     QString wizardName;
+    QString finishLabel;
     QList<WizardPage*> pages;
     QMap<QString, Variable> vars;
 
     QMap<QString, QString> nextIds; // id <-> nextId
     QMap<QString, WizardPage*> pagesMap; // id <-> page
+    QMap<QString, QList<Predicate> > results;
 
 private:
     void parsePage(U2OpStatus &os);
+    void parseResult(U2OpStatus &os);
     void finilizePagesOrder(U2OpStatus &os);
     Wizard * takeResult();
     void parseNextIds(HRSchemaSerializer::ParsedPairs &pairs, WizardPage *page, U2OpStatus &os);
@@ -60,6 +63,7 @@ private:
 public:
     static const QString WIZARD;
     static const QString NAME;
+    static const QString AUTORUN;
     static const QString PAGE;
     static const QString ID;
     static const QString NEXT;
@@ -69,6 +73,7 @@ public:
     static const QString LOGO_PATH;
     static const QString DEFAULT;
     static const QString HIDEABLE;
+    static const QString LABEL;
     static const QString LABEL_SIZE;
     static const QString ELEMENT_ID;
     static const QString PROTOTYPE;
@@ -77,6 +82,8 @@ public:
     static const QString SLOTS_MAPPRING;
     static const QString SRC_PORT;
     static const QString DST_PORT;
+    static const QString RESULT;
+    static const QString FINISH_LABEL;
 };
 
 class U2LANG_EXPORT HRWizardSerializer {
@@ -85,6 +92,7 @@ public:
 
 private:
     QString serializePage(WizardPage *page, int depth);
+    QString serializeResults(const QMap<QString, QList<Predicate> > results, int depth);
     QString serializeNextId(WizardPage *page, int depth);
 };
 
@@ -105,6 +113,7 @@ public:
     virtual void visit(GroupWidget *gw);
     virtual void visit(ElementSelectorWidget *esw);
     virtual void visit(PairedReadsWidget *dsw);
+    virtual void visit(RadioWidget *rw);
 
 private:
     QString title;
@@ -156,6 +165,7 @@ public:
     virtual void visit(LogoWidget *lw);
     virtual void visit(ElementSelectorWidget *esw);
     virtual void visit(PairedReadsWidget *dsw);
+    virtual void visit(RadioWidget *rw);
 
     const QString & getResult();
 

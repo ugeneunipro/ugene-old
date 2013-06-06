@@ -1700,6 +1700,11 @@ void WorkflowView::runWizard(Wizard *w) {
     WizardController controller(schema, w);
     QWizard *gui = controller.createGui();
     if (gui->exec() && !controller.isBroken()) {
+        QString result = w->getResult(controller.getVariables());
+        if (!result.isEmpty()) {
+            loadWizardResult(result);
+            return;
+        }
         updateMeta();
         WizardController::ApplyResult res = controller.applyChanges(meta);
         if (WizardController::ACTORS_REPLACED == res) {
@@ -1712,13 +1717,30 @@ void WorkflowView::runWizard(Wizard *w) {
     }
 }
 
+void WorkflowView::loadWizardResult(const QString &result) {
+    QString url = QDir::searchPaths( PATH_PREFIX_DATA ).first() + "/workflow_samples/" + result;
+    if (!QFile::exists(url)) {
+        coreLog.error(tr("File is not found: %1").arg(url));
+        return;
+    }
+    schema->reset();
+    meta.reset();
+    U2OpStatus2Log os;
+    WorkflowUtils::schemaFromFile(url, schema, &meta, os);
+    recreateScene();
+    sl_onSceneLoaded();
+    if (!schema->getWizards().isEmpty()) {
+        runWizard(schema->getWizards().first());
+    }
+}
+
 void WorkflowView::checkAutoRunWizard() {
-    /*foreach (Wizard *w, schema->getWizards()) {
+    foreach (Wizard *w, schema->getWizards()) {
         if (w->isAutoRun()) {
             runWizard(w);
             break;
         }
-    }*/
+    }
 }
 
 void WorkflowView::sl_showWizard() {

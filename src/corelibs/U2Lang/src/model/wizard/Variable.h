@@ -50,6 +50,7 @@ public:
     Predicate();
     Predicate(const Variable &v, const QString &value);
 
+    Variable variable() const;
     bool isTrue(const QMap<QString, Variable> &vars) const;
     bool operator < (const Predicate &other) const;
     QString toString() const;

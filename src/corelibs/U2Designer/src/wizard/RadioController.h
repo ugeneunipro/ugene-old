@@ -19,25 +19,32 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_WIZARDWIDGETVISITOR_H_
-#define _U2_WIZARDWIDGETVISITOR_H_
+#ifndef _U2_RADIOCONTROLLER_H_
+#define _U2_RADIOCONTROLLER_H_
 
-#include <U2Lang/ElementSelectorWidget.h>
+#include <U2Designer/WizardController.h>
+
 #include <U2Lang/WizardWidget.h>
+
+#include "WidgetController.h"
 
 namespace U2 {
 
-class U2LANG_EXPORT WizardWidgetVisitor {
+class RadioController : public WidgetController {
+    Q_OBJECT
 public:
-    virtual void visit(AttributeWidget *) = 0;
-    virtual void visit(WidgetsArea *) = 0;
-    virtual void visit(GroupWidget *) = 0;
-    virtual void visit(LogoWidget *) = 0;
-    virtual void visit(ElementSelectorWidget *) = 0;
-    virtual void visit(PairedReadsWidget *) = 0;
-    virtual void visit(RadioWidget *) = 0;
+    RadioController(WizardController *wc, RadioWidget *rw);
+    virtual ~RadioController();
+
+    virtual QWidget * createGUI(U2OpStatus &os);
+
+private slots:
+    void sl_buttonClicked(QAbstractButton *button);
+
+private:
+    RadioWidget *rw;
 };
 
 } // U2
 
-#endif // _U2_WIZARDWIDGETVISITOR_H_
+#endif // _U2_RADIOCONTROLLER_H_

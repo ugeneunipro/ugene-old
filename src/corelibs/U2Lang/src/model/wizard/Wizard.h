@@ -40,9 +40,19 @@ public:
     void validate(const Workflow::Schema *schema, U2OpStatus &os) const;
     void addVariable(const Variable &v);
     QMap<QString, Variable> getVariables() const;
+    QString getResult(const QMap<QString, Variable> &vars) const;
 
     const QString & getName() const;
     const QList<WizardPage*> & getPages() const;
+
+    void addResult(const QList<Predicate> &preds, const QString &result);
+    QMap<QString, QList<Predicate> > getResults() const;
+
+    QString getFinishLabel() const;
+    void setFinishLabel(const QString &value);
+
+    bool isAutoRun() const;
+    void setAutoRun(bool value);
 
     static const QString DEFAULT_NAME;
 
@@ -50,6 +60,9 @@ private:
     QString name;
     QList<WizardPage*> pages;
     QMap<QString, Variable> vars;
+    bool autoRun;
+    QMap<QString, QList<Predicate> > results;
+    QString finishLabel;
 };
 
 } // U2
