@@ -393,10 +393,9 @@ void ExternalToolSupportSettingsPageWidget::sl_onBrowseToolKitPath(){
                         bool fileNotFound=true;
                         QString executableFileName=AppContext::getExternalToolRegistry()->getByName(item->text(0))->getExecutableFileName();
                         while (it.hasNext()&&fileNotFound) {
-                            it.next();
                             QString fpath = it.filePath()+"/"+executableFileName;
+                            it.next();
                             QFileInfo info(fpath);
-                            //if(info.exists() && info.isFile() && info.isExecutable()){
                             if(info.exists() && info.isFile()){
                                 QString path=QDir::toNativeSeparators(fpath);
                                 lineEdit->setText(path);
@@ -426,45 +425,75 @@ void ExternalToolSupportSettingsPageWidget::sl_onBrowseToolPackPath(){
         QDir dir = QDir(dirPath);
         QList<QTreeWidgetItem*> listOfItems=treeWidget->findItems("",Qt::MatchContains|Qt::MatchRecursive);
         assert(listOfItems.length()!=0);
-        foreach(QString dirName, dir.entryList(QDir::Dirs | QDir::NoDotAndDotDot)){
-            foreach(QTreeWidgetItem* item, listOfItems){
+        foreach(ExternalTool* et, AppContext::getExternalToolRegistry()->getAllEntries()){
+            QList<QTreeWidgetItem*> listOfItems=treeWidget->findItems(et->getName(),Qt::MatchExactly|Qt::MatchRecursive);
+            QTreeWidgetItem* item;
+            if(listOfItems.length()!=1){
+                foreach(QTreeWidgetItem* i, listOfItems){
+                    if(i->childCount()==0){
+                        item=i;
+                    }
+                }
+            }else{
+                item=listOfItems.at(0);
+            }
+            if (!item || item->childCount() > 0) {
+                // those items are only for grouping
+                continue;
+            }
+            foreach(QString dirName, dir.entryList(QDir::Dirs | QDir::NoDotAndDotDot)){
                 if (item->childCount() > 0) {
                     // those items are only for grouping
                     continue;
                 }
-                if(AppContext::getExternalToolRegistry()->getByName(item->text(0)) != NULL){
-                    QString toolKitName=AppContext::getExternalToolRegistry()->getByName(item->text(0))->getToolKitName();
-                    if(dirName.contains(toolKitName,Qt::CaseInsensitive)){
-                        isPathValid=true;
-                        QWidget* itemWid=treeWidget->itemWidget(item,1);
-                        PathLineEdit* lineEdit=itemWid->findChild<PathLineEdit*>("PathLineEdit");
-                        if(lineEdit->text().isEmpty()){
-                            QString toolPath = dirPath + "/" + dirName;
-                            QDir toolDir(toolPath);
-                            LimitedDirIterator it(toolDir);
-                            bool fileNotFound=true;
-                            QString executableFileName = AppContext::getExternalToolRegistry()->getByName(item->text(0))->getExecutableFileName();
-                            while (it.hasNext()&&fileNotFound) {
-                                it.next();
-                                QFileInfo info(it.filePath()+"/"+executableFileName);
-                                if(info.exists() && info.isFile() && info.isExecutable()){
-                                    QString path=QDir::toNativeSeparators(it.filePath()+"/"+executableFileName);
-                                    lineEdit->setText(path);
-                                    lineEdit->setModified(false);
-                                    externalToolsInfo[item->text(0)].path=path;
-                                    QToolButton* clearToolPathButton = itemWid->findChild<QToolButton*>("ClearToolPathButton");
-                                    assert(clearToolPathButton);
-                                    clearToolPathButton->setEnabled(true);
-                                    ExternalToolValidateTask* validateTask=new ExternalToolValidateTask(item->text(0), path);
-                                    connect(validateTask,SIGNAL(si_stateChanged()),SLOT(sl_validateTaskStateChanged()));
-                                    AppContext::getTaskScheduler()->registerTopLevelTask(validateTask);
-                                    fileNotFound=false;
+                QString toolKitName = et->getToolKitName();
+                if(dirName.contains(toolKitName,Qt::CaseInsensitive)){
+                    isPathValid=true;
+                    QWidget* itemWid=treeWidget->itemWidget(item,1);
+                    PathLineEdit* lineEdit=itemWid->findChild<PathLineEdit*>("PathLineEdit");
+                    if(lineEdit->text().isEmpty()){
+                        QString toolPath = dirPath + "/" + dirName;
+                        QDir toolDir(toolPath);
+                        LimitedDirIterator it(toolDir);
+                        bool fileNotFound=true;
+                        QString executableFileName = AppContext::getExternalToolRegistry()->getByName(item->text(0))->getExecutableFileName();
+                        while (it.hasNext()&&fileNotFound) {
+                            QString fName = it.filePath()+"/"+executableFileName;
+                            it.next();
+                            QFileInfo info(fName);
+                            if(info.exists() && info.isFile()){
+                                QString path=QDir::toNativeSeparators(fName);
+                                lineEdit->setText(path);
+                                lineEdit->setModified(false);
+                                externalToolsInfo[item->text(0)].path=path;
+                                QToolButton* clearToolPathButton = itemWid->findChild<QToolButton*>("ClearToolPathButton");
+                                assert(clearToolPathButton);
+                                clearToolPathButton->setEnabled(true);
+                                QList<Task*> validationTasks;
+                                QString toolName = item->text(0);
+                                ExternalToolValidateTask* validateTask=new ExternalToolValidateTask(item->text(0), path);
+                                connect(validateTask,SIGNAL(si_stateChanged()),SLOT(sl_validateTaskStateChanged()));
+                                validationTasks.append(validateTask);
+                                ExternalToolRegistry* etr =  AppContext::getExternalToolRegistry();
+                                if (etr){
+                                    foreach (ExternalTool* et, etr->getAllEntries()){
+                                        if (!et->getPath().isEmpty() && !et->isValid() && (et->getToolRunnerProgram() == toolName)){
+                                            ExternalToolValidateTask* validateTask=new ExternalToolValidateTask(et->getName());
+                                            connect(validateTask,SIGNAL(si_stateChanged()),SLOT(sl_validateTaskStateChanged()));
+                                            validationTasks.append(validateTask);
+                                        }
+                                    }
                                 }
-
+                                if (!validationTasks.isEmpty()){
+                                    SequentialMultiTask* checkExternalToolsTask=new SequentialMultiTask(tr("Checking external tool and its dependencies"), validationTasks, TaskFlags_NR_FOSCOE);
+                                    AppContext::getTaskScheduler()->registerTopLevelTask(checkExternalToolsTask);
+                                }
+                                fileNotFound=false;
                             }
+
                         }
                     }
-                }
+                 }
             }
         }
         if(!isPathValid){
