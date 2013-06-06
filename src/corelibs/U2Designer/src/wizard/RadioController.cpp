@@ -54,6 +54,15 @@ QWidget * RadioController::createGUI(U2OpStatus &os) {
 
         b->setChecked(value.id == id);
         b->setProperty(VAR_ID, value.id);
+        if (!value.tooltip.isEmpty()) {
+            QLabel *label = new QLabel(value.tooltip);
+            label->setWordWrap(true);
+            label->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
+            label->setMinimumSize(0, 0);
+            label->setMargin(0);
+            l->addWidget(label);
+            //b->setToolTip(value.tooltip);
+        }
     }
 
     return result;

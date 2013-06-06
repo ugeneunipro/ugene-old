@@ -202,6 +202,7 @@ public:
         Value(QString id, QString label);
         QString id;
         QString label;
+        QString tooltip;
     };
 
     RadioWidget();

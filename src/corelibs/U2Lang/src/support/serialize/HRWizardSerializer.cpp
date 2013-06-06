@@ -48,6 +48,7 @@ const QString HRWizardParser::SRC_PORT("src-port");
 const QString HRWizardParser::DST_PORT("dst-port");
 const QString HRWizardParser::RESULT("result");
 const QString HRWizardParser::FINISH_LABEL("finish-label");
+const QString HRWizardParser::TOOLTIP("tooltip");
 
 HRWizardParser::HRWizardParser(HRSchemaSerializer::Tokenizer &_tokenizer,
                                        const QMap<QString, Actor*> &_actorMap)
@@ -323,14 +324,21 @@ static RadioWidget::Value parseValue(const QString &valueDef, U2OpStatus &os) {
     }
     QString id = pairs.equalPairs[HRWizardParser::ID];
     QString label = pairs.equalPairs.value(HRWizardParser::LABEL, id);
+    RadioWidget::Value result(id, label);
 
-    return RadioWidget::Value(id, label);
+    result.tooltip = pairs.equalPairs.value(HRWizardParser::TOOLTIP, "");
+    return result;
 }
 
 static QString serializeValue(const RadioWidget::Value &value, int depth) {
     QString vData;
     vData += HRSchemaSerializer::makeEqualsPair(HRWizardParser::ID, value.id, depth + 1);
-    vData += HRSchemaSerializer::makeEqualsPair(HRWizardParser::LABEL, value.label, depth + 1);
+    if (!value.label.isEmpty()) {
+        vData += HRSchemaSerializer::makeEqualsPair(HRWizardParser::LABEL, value.label, depth + 1);
+    }
+    if (!value.tooltip.isEmpty()) {
+        vData += HRSchemaSerializer::makeEqualsPair(HRWizardParser::TOOLTIP, value.tooltip, depth + 1);
+    }
 
     return HRSchemaSerializer::makeBlock(HRWizardParser::VALUE, HRSchemaSerializer::NO_NAME, vData, depth);
 }

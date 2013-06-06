@@ -84,6 +84,7 @@ public:
     static const QString DST_PORT;
     static const QString RESULT;
     static const QString FINISH_LABEL;
+    static const QString TOOLTIP;
 };
 
 class U2LANG_EXPORT HRWizardSerializer {
