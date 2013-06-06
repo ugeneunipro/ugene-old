@@ -228,6 +228,9 @@ void WorkflowSettings::setScriptingMode(bool md) {
 }
 
 bool WorkflowSettings::runInSeparateProcess() {
+#ifdef Q_OS_MAC
+    return false;
+#endif
     if (!AppContext::isGUIMode()) {
         return false; //for command line mode ugene runs workflows in threads
     }
