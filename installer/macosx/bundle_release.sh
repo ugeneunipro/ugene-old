@@ -2,7 +2,7 @@ PRODUCT_NAME="ugeneui"
 PRODUCT_DISPLAY_NAME="Unipro UGENE"
 
 VERSION=`cat ../../src/ugene_version.pri | grep UGENE_VERSION | awk -F'=' '{print $2}'`
-ARCHITECTURE=`uname -u`
+ARCHITECTURE=`uname -m`
 BUILD_DIR=./release_bundle
 RELEASE_DIR=../../src/_release
 TARGET_APP_DIR="$BUILD_DIR/${PRODUCT_NAME}.app/"
