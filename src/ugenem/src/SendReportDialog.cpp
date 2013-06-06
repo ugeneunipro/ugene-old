@@ -38,6 +38,9 @@
 
 #ifdef Q_OS_WIN
 #include <intrin.h>
+#include <windows.h>
+#include <Psapi.h>
+#include <Winbase.h> //for IsProcessorFeaturePresent
 #endif
 
 #define HOST_URL "http://ugene.unipro.ru"
