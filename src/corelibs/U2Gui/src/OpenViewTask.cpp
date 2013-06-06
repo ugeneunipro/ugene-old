@@ -252,19 +252,23 @@ QList<Task*> LoadRemoteDocumentAndOpenViewTask::onSubTaskFinished( Task* subTask
         if (proj == NULL) {
             subTasks.append(AppContext::getProjectLoader()->openWithProjectTask(fullPath));
         } else {
-            Document* doc = loadRemoteDocTask->takeDocument();
+            Document* doc = loadRemoteDocTask->getDocument();
             SAFE_POINT(doc != NULL, "loadRemoteDocTask->takeDocument() returns NULL!", subTasks);
-            if (proj->getDocuments().contains(doc)) {
-                if (doc->isLoaded()) {
-                    subTasks.append(new OpenViewTask(doc));
+            QString url = doc->getURLString();
+            Document* loadedDoc = proj->findDocumentByURL(url);
+            if (loadedDoc != NULL){
+                if (loadedDoc->isLoaded()) {
+                    subTasks.append(new OpenViewTask(loadedDoc));
                 } else {
-                    subTasks.append(new LoadUnloadedDocumentAndOpenViewTask(doc));
+                    subTasks.append(new LoadUnloadedDocumentAndOpenViewTask(loadedDoc));
                 }
             } else {
                 // Add document to project
+                doc = loadRemoteDocTask->takeDocument();
+                SAFE_POINT(doc != NULL, "loadRemoteDocTask->takeDocument() returns NULL!", subTasks);
                 subTasks.append(new AddDocumentTask(doc));
                 subTasks.append(new LoadUnloadedDocumentAndOpenViewTask(doc));
-            }    
+           }
         }
     }
 
@@ -335,19 +339,24 @@ QList<Task*> LoadDASDocumentsAndOpenViewTask::onSubTaskFinished( Task* subTask )
         if (proj == NULL) {
             subTasks.append(AppContext::getProjectLoader()->openWithProjectTask(fullPath));
         } else {
-            Document* doc = loadDasDocumentTask->takeDocument();
+            Document* doc = loadDasDocumentTask->getDocument();
             SAFE_POINT(doc != NULL, "loadRemoteDocTask->takeDocument() returns NULL!", subTasks);
-            if (proj->getDocuments().contains(doc)) {
-                if (doc->isLoaded()) {
-                    subTasks.append(new OpenViewTask(doc));
+            QString url = doc->getURLString();
+            Document* loadedDoc = proj->findDocumentByURL(url);
+            if (loadedDoc != NULL){
+                if (loadedDoc->isLoaded()) {
+                    subTasks.append(new OpenViewTask(loadedDoc));
                 } else {
-                    subTasks.append(new LoadUnloadedDocumentAndOpenViewTask(doc));
+                    subTasks.append(new LoadUnloadedDocumentAndOpenViewTask(loadedDoc));
                 }
             } else {
                 // Add document to project
+                doc = loadDasDocumentTask->takeDocument();
+                SAFE_POINT(doc != NULL, "loadRemoteDocTask->takeDocument() returns NULL!", subTasks);
                 subTasks.append(new AddDocumentTask(doc));
                 subTasks.append(new LoadUnloadedDocumentAndOpenViewTask(doc));
-            }    
+            }
+
         }
     }
 
