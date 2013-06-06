@@ -287,7 +287,7 @@ void LoadDocumentTask::prepare() {
 
     if(!format->getFlags().testFlag(DocumentFormatFlag_NoFullMemoryLoad) && isLoadToMem(format->getFormatId())) { // document is fully loaded to memory
         QFileInfo file(url.getURLString());
-        memUseMB = file.size() / (1024*1024);
+        memUseMB = file.size() / (1000*1000);
 
         double DEFAULT_COMPRESS_RATIO = 2.5;
         if (iof->getAdapterId() == BaseIOAdapters::GZIPPED_LOCAL_FILE) {
@@ -295,7 +295,7 @@ void LoadDocumentTask::prepare() {
             if (fileSizeInBytes < 0) {
                 memUseMB *= DEFAULT_COMPRESS_RATIO; //Need to calculate compress level
             } else {
-                memUseMB = fileSizeInBytes / (1024*1024);
+                memUseMB = fileSizeInBytes / (1000*1000);
             }
         } else if (iof->getAdapterId() == BaseIOAdapters::GZIPPED_HTTP_FILE) {
             memUseMB *= DEFAULT_COMPRESS_RATIO; //Need to calculate compress level  
@@ -304,15 +304,7 @@ void LoadDocumentTask::prepare() {
     }
 
     if (memUseMB > 0) {
-        QString error;
-        Project *p = AppContext::getProject();
-        if (p) {
-            if (!p->lockResources(memUseMB, url.getURLString(), error)) {
-                stateInfo.setError(error);
-            }
-        } else {
-            addTaskResource(TaskResourceUsage(RESOURCE_MEMORY, memUseMB, false));
-        }
+        addTaskResource(TaskResourceUsage(RESOURCE_MEMORY, memUseMB, false));
     }
 }
 
