@@ -478,6 +478,13 @@ bool ESearchResultHandler::fatalError( const QXmlParseException &exception )
 }
 
 //////////////////////////////////////////////////////////////////////////
+static QString makeIDLink(const QString& id){
+    QString res = "<a href=\"%1\"><span style=\" text-decoration: underline;\">%1</span></a>";
+
+    res = res.arg(id);
+
+    return res;
+}
 
 RemoteDBRegistry::RemoteDBRegistry() {
     queryDBs.insert(GENBANK_DNA,  GENBANK_NUCLEOTIDE_ID);
@@ -499,13 +506,13 @@ RemoteDBRegistry::RemoteDBRegistry() {
         }
     }
 
-    hints.insert(ENSEMBL, QObject::tr("Use Ensembl ID. For example: ENSG00000258664 or ENSG00000146463"));
-    hints.insert(GENBANK_DNA, QObject::tr("Use Genbank DNA accession number. For example: NC_001363 or D11266"));
-    hints.insert(GENBANK_PROTEIN, QObject::tr("Use Genbank protein accession number. For example: AAA59172.1"));
-    hints.insert(PDB, QObject::tr("Use PDB molecule four-letter identifier. For example: 3INS or 1CRN"));
-    hints.insert(SWISS_PROT, QObject::tr("Use SWISS-PROT accession number. For example: Q9IGQ6 or A0N8V2"));
-    hints.insert(UNIPROTKB_SWISS_PROT, QObject::tr("Use UniProtKB/Swiss-Prot accession number. For example: P16152"));
-    hints.insert(UNIPROTKB_TREMBL, QObject::tr("Use UniProtKB/TrEMBL accession number. For example: D0VTW9"));
+    hints.insert(ENSEMBL, QObject::tr("Use Ensembl ID. For example: %1 or %2").arg(makeIDLink("ENSG00000258664")).arg(makeIDLink("ENSG00000146463")));
+    hints.insert(GENBANK_DNA, QObject::tr("Use Genbank DNA accession number. For example: %1 or %2").arg(makeIDLink("NC_001363")).arg(makeIDLink("D11266")));
+    hints.insert(GENBANK_PROTEIN, QObject::tr("Use Genbank protein accession number. For example: %1").arg(makeIDLink("AAA59172.1")));
+    hints.insert(PDB, QObject::tr("Use PDB molecule four-letter identifier. For example: %1 or %2").arg(makeIDLink("3INS")).arg(makeIDLink("1CRN")));
+    hints.insert(SWISS_PROT, QObject::tr("Use SWISS-PROT accession number. For example: %1 or %2").arg(makeIDLink("Q9IGQ6")).arg(makeIDLink("A0N8V2")));
+    hints.insert(UNIPROTKB_SWISS_PROT, QObject::tr("Use UniProtKB/Swiss-Prot accession number. For example: %1").arg(makeIDLink("P16152")));
+    hints.insert(UNIPROTKB_TREMBL, QObject::tr("Use UniProtKB/TrEMBL accession number. For example: %1").arg(makeIDLink("D0VTW9")));
 }
 
 RemoteDBRegistry& RemoteDBRegistry::getRemoteDBRegistry() {

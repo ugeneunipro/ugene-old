@@ -82,6 +82,7 @@ DownloadRemoteFileDialog::DownloadRemoteFileDialog(QWidget *p):QDialog(p), isQue
 
     connect(ui->databasesBox, SIGNAL(currentIndexChanged ( int)), SLOT( sl_updateDbId(int)));
     connect(ui->saveFilenameToolButton, SIGNAL(clicked()), SLOT(sl_saveFilenameButtonClicked()));
+    connect(ui->hintLabel, SIGNAL(linkActivated(const QString&)), SLOT(sl_linkActivated(const QString& )));
 
     sl_updateDbId(ui->databasesBox->currentIndex());
     
@@ -238,6 +239,12 @@ void DownloadRemoteFileDialog::sl_updateDbId( int idx ){
     
     ui->hintLabel->setText(hint);
     ui->idLineEdit->setToolTip(description);
+}
+
+void DownloadRemoteFileDialog::sl_linkActivated( const QString& link ){
+    if (!link.isEmpty()){
+        ui->idLineEdit->setText(link);
+    }
 }
 
 } //namespace 

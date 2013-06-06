@@ -94,6 +94,15 @@ QList<DASSource> DASSourceRegistry::getFeatureSourcesByType( DASReferenceType rT
     return res;
 }
 
+static QString makeIDLink(const QString& id){
+    QString res = "<a href=\"%1\"><span style=\" text-decoration: underline;\">%1</span></a>";
+
+    res = res.arg(id);
+
+    return res;
+}
+
+
 #define DAS_UNIPROT "dasuniprot"
 #define DAS_ENSEMBL "dasensembl"
 void DASSourceRegistry::initDefaultSources(){
@@ -104,7 +113,7 @@ void DASSourceRegistry::initDefaultSources(){
                          tr("UniProt (DAS)"), 
                          tr("http://www.ebi.ac.uk/das-srv/uniprot/das/uniprot/"), 
                          DASProteinSequence,
-                         tr("Use Swiss-Prot, TrEMBL, UniProt, IPI or UniParc accession number. For example: P05067"),
+                         tr("Use Swiss-Prot, TrEMBL, UniProt, IPI or UniParc accession number. For example: %1").arg(makeIDLink("P05067")),
                          tr("UniProt database of protein sequences and features."));
 
     referenceSources.append(uniprotRef);
@@ -170,7 +179,7 @@ void DASSourceRegistry::initDefaultSources(){
         tr("Ensembl Human Genes (DAS)"), 
         tr("http://www.ebi.ac.uk/das-srv/genedas/das/Homo_sapiens.Gene_ID.reference/"), 
         DASDNASequence,
-        tr("Use Ensemble Gene IDs. For example: ENSG00000139618"),
+        tr("Use Ensemble Gene IDs. For example: %1").arg(makeIDLink("ENSG00000139618")),
         tr("The Ensembl human Gene_ID reference source, serving sequences and non-location features."));
 
     referenceSources.append(ensemblRef);
