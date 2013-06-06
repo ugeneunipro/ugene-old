@@ -2,6 +2,7 @@ PRODUCT_NAME="ugeneui"
 PRODUCT_DISPLAY_NAME="Unipro UGENE"
 
 VERSION=`cat ../../src/ugene_version.pri | grep UGENE_VERSION | awk -F'=' '{print $2}'`
+ARCHITECTURE=`uname -u`
 BUILD_DIR=./release_bundle
 RELEASE_DIR=../../src/_release
 TARGET_APP_DIR="$BUILD_DIR/${PRODUCT_NAME}.app/"
@@ -151,6 +152,6 @@ if [ ! "$1" ]
    then
       echo
       echo pkg-dmg running...
-      ./pkg-dmg --source $BUILD_DIR --target ugene-${VERSION}-mac-x86-r${BUILD_VCS_NUMBER_new_trunk} --license ./LICENSE.with_3rd_party --volname "Unipro UGENE $VERSION" --symlink /Applications
+      ./pkg-dmg --source $BUILD_DIR --target ugene-${VERSION}-mac-${ARCHITECTURE}-r${BUILD_VCS_NUMBER_new_trunk} --license ./LICENSE.with_3rd_party --volname "Unipro UGENE $VERSION" --symlink /Applications
 fi
 
