@@ -4,8 +4,8 @@ workflow "RNA-seq analysis with Tuxedo tools" {
     .meta {
         wizard {
             auto-run: true;
-            name: "Tuxedo pipeline";
-            finish-label: "Setup pipeline";
+            name: "Configure Tuxedo Pipeline";
+            finish-label: "Setup";
             result {
                 NGS/tuxedo/tuxedo_main.uwl: "pipeline.full reads.single";
                 NGS/tuxedo/tuxedo_main_paired.uwl: "pipeline.full reads.paired";
@@ -16,23 +16,26 @@ workflow "RNA-seq analysis with Tuxedo tools" {
             }
             page {
                 id: 1;
-                title: "Tuxedo pipeline settings";
+                title: "Tuxedo Pipeline Settings";
                 parameters-area {
                     group {
-                        title:"Pipeline type";
+                        title:"Analysis type";
                         radio {
                             id: pipeline;
                             value {
                                 id: full;
-                                label: "Full Tuxedo";
+                                label: "Full Tuxedo Pipeline";
+                                tooltip: "Use this pipeline to analyze multiple samples with TopHat, Cufflinks, Cuffmerge and Cuffdiff tools.";
                             }
                             value {
                                 id: single;
-                                label: "Simplified Tuxedo: single dataset";
+                                label: "Single-sample Tuxedo Pipeline";
+                                tooltip: "Use this pipeline to analyze a single sample with TopHat and Cufflinks tools."
                             }
                             value {
                                 id: multiple;
-                                label: "Simplified Tuxedo: multiple datasets";
+                                label: "No-new-transcripts Tuxedo Pipeline";
+                                tooltip: "Use this pipeline to analyze multiple samples with TopHat and Cuffdiff tools only, i.e. without producing new transcripts."
                             }
                         }
                     }

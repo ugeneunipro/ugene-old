@@ -5,18 +5,18 @@ workflow "ChIP-seq analysis with Cistrome tools" {
     .meta {
         wizard {
             auto-run: true;
-            name: "Cistrome pipeline";
-            finish-label: "Setup pipeline";
+            name: "Configure Cistrome Pipeline";
+            finish-label: "Setup";
             result {
                 NGS/cistrome/chip_seq.uwl: pipeline.no-control;
                 NGS/cistrome/chip_seq_with_control.uwl: pipeline.control;
             }
             page {
                 id: 1;
-                title: "Cistrome pipeline settings";
+                title: "Cistrome Pipeline Settings";
                 parameters-area {
                     group {
-                        title:"Pipeline type";
+                        title:"Analysis type";
                         radio {
                             id: pipeline;
                             value {

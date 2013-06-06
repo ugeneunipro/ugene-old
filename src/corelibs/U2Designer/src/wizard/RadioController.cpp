@@ -59,9 +59,11 @@ QWidget * RadioController::createGUI(U2OpStatus &os) {
             label->setWordWrap(true);
             label->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
             label->setMinimumSize(0, 0);
-            label->setMargin(0);
+
+            label->setStyleSheet("padding: 0px 0px 10px 15px;");
             l->addWidget(label);
-            //b->setToolTip(value.tooltip);
+
+            b->setToolTip(value.tooltip);
         }
     }
 
