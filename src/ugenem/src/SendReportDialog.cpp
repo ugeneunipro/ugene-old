@@ -229,9 +229,11 @@ QString ReportSender::getOSVersion() {
     case QSysInfo::WV_WINDOWS7:
         result += "7, Server 2008 R2 (operating system version 6.1)";
         break;
-/*    case QSysInfo::WV_WINDOWS8: //unsupported by Qt 4.8
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
+    case QSysInfo::WV_WINDOWS8:
         result += "8 (operating system version 6.2)";
-        break;*/
+        break;
+#endif
     default:
         result += "unknown";
         break;
@@ -266,12 +268,14 @@ QString ReportSender::getOSVersion() {
     case QSysInfo::MV_10_6:
         result += "OS X 10.6";
         break;
+#if (QT_VERSION >= QT_VERSION_CHECK(4, 8, 0))
     case QSysInfo::MV_10_7:
         result += "OS X 10.7";
         break;
     case QSysInfo::MV_10_8:
         result += "OS X 10.8";
         break;
+#endif
     default:
         result += "unknown";
         break;
@@ -329,6 +333,7 @@ int ReportSender::getTotalPhysicalMemory() {
     return totalPhysicalMemory;
 }
 
+#ifndef Q_OS_MAC
 void cpuID(unsigned i, unsigned regs[4]) {
 #ifdef _WIN32
   __cpuid((int *)regs, (int)i);
@@ -340,6 +345,7 @@ void cpuID(unsigned i, unsigned regs[4]) {
   // ECX is set to zero for CPUID function 4
 #endif
 }
+#endif
 
 QString ReportSender::getCPUInfo() {
     QString result;
@@ -384,7 +390,7 @@ QString ReportSender::getCPUInfo() {
 
     result+= "\n  hyper-threads: " + QString(hyperThreads ? "true" : "false");
 #else
-    result="unknown"
+    result="unknown";
 #endif
     return result;
 }
