@@ -198,7 +198,7 @@ QString ReportSender::getOSVersion() {
     QString result;
 #if defined(Q_OS_WIN32)
     result = "Windows ";
-    switch (QSysInfo::windowsVersion()){
+    switch (QSysInfo::WindowsVersion){
     case QSysInfo::WV_32s:
         result += "3.1 with Win 32s";
         break;
@@ -243,7 +243,7 @@ QString ReportSender::getOSVersion() {
     result = "Linux";
 #elif defined(Q_OS_MAC)
     result = "Mac ";
-    switch (QSysInfo::windowsVersion()){
+    switch (QSysInfo::MacintoshVersion){
     case QSysInfo::MV_9:
         result += "Mac OS 9 (unsupported)";
         break;
