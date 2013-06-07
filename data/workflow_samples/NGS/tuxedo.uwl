@@ -1,4 +1,5 @@
 #@UGENE_WORKFLOW
+#Pipeline for comparing the gene expression of samples from different conditions, optionally with replicates. Uses the Tuxedo suite (TopHat, Cufflinks, CuffMerge, Cuffdiff). Gives an analysis of differentially expressed genes and splice isoforms.
 
 workflow "RNA-seq analysis with Tuxedo tools" {
     .meta {
