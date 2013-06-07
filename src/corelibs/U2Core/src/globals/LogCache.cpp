@@ -57,7 +57,7 @@ bool LogFilter::matches(const LogMessage& msg) const {
 // LogCache
 
 LogCache::LogCache() {
-    connect(LogServer::getInstance(), SIGNAL(si_message(const LogMessage&)), SLOT(sl_onMessage(const LogMessage&)));
+    connect(LogServer::getInstance(), SIGNAL(si_message(LogMessage)), SLOT(sl_onMessage(LogMessage)));
 }
 
 LogCache::~LogCache() {
@@ -67,7 +67,7 @@ LogCache::~LogCache() {
     }
 }
 
-void LogCache::sl_onMessage(const LogMessage& msg) {
+void LogCache::sl_onMessage(LogMessage msg) {
     if (!filter.isEmpty() && !filter.matches(msg)) {
         return;
     }

@@ -256,7 +256,7 @@ void LogViewWidget::resetView() {
     searchEdit->setFocus();
 }
 
-void LogViewWidget::sl_onMessage(const LogMessage& msg) {
+void LogViewWidget::sl_onMessage(LogMessage msg) {
     checkThread();
     if (isVisible()) {
         addMessage(msg);
