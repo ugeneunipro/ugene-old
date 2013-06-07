@@ -27,6 +27,7 @@
 #include <QtCore/QDate>
 #include <QtCore/QEventLoop>
 #include <QtCore/QProcess>
+#include <QtCore/QSysInfo>
 
 #include <QtNetwork/QNetworkAccessManager>
 #include <QtNetwork/QNetworkProxy>
@@ -196,11 +197,85 @@ void SendReportDialog::sl_onOKclicked() {
 QString ReportSender::getOSVersion() {
     QString result;
 #if defined(Q_OS_WIN32)
-    result = "Windows";
+    result = "Windows ";
+    switch (QSysInfo::windowsVersion()){
+    case QSysInfo::WV_32s:
+        result += "3.1 with Win 32s";
+        break;
+    case QSysInfo::WV_95:
+        result += "95";
+        break;
+    case QSysInfo::WV_98:
+        result += "98";
+        break;
+    case QSysInfo::WV_Me:
+        result += "Me";
+        break;
+    case QSysInfo::WV_NT:
+        result += "NT (operating system version 4.0)";
+        break;
+    case QSysInfo::WV_2000:
+        result += "2000 (operating system version 5.0)";
+        break;
+    case QSysInfo::WV_XP:
+        result += "XP (operating system version 5.1)";
+        break;
+    case QSysInfo::WV_2003:
+        result += "Server 2003, Server 2003 R2, Home Server, XP Professional x64 Edition (operating system version 5.2)";
+        break;
+    case QSysInfo::WV_VISTA:
+        result += "Vista, Server 2008 (operating system version 6.0)";
+        break;
+    case QSysInfo::WV_WINDOWS7:
+        result += "7, Server 2008 R2 (operating system version 6.1)";
+        break;
+/*    case QSysInfo::WV_WINDOWS8: //unsupported by Qt 4.8
+        result += "8 (operating system version 6.2)";
+        break;*/
+    default:
+        result += "unknown";
+        break;
+    }
+
 #elif defined(Q_OS_LINUX)
     result = "Linux";
 #elif defined(Q_OS_MAC)
-    result = "MACOS";
+    result = "Mac ";
+    switch (QSysInfo::windowsVersion()){
+    case QSysInfo::MV_9:
+        result += "Mac OS 9 (unsupported)";
+        break;
+    case QSysInfo::MV_10_0:
+        result += "OS X 10.0 (unsupported)";
+        break;
+    case QSysInfo::MV_10_1:
+        result += "OS X 10.1 (unsupported)";
+        break;
+    case QSysInfo::MV_10_2:
+        result += "OS X 10.2 (unsupported)";
+        break;
+    case QSysInfo::MV_10_3:
+        result += "OS X 10.3";
+        break;
+    case QSysInfo::MV_10_4:
+        result += "OS X 10.4";
+        break;
+    case QSysInfo::MV_10_5:
+        result += "OS X 10.5";
+        break;
+    case QSysInfo::MV_10_6:
+        result += "OS X 10.6";
+        break;
+    case QSysInfo::MV_10_7:
+        result += "OS X 10.7";
+        break;
+    case QSysInfo::MV_10_8:
+        result += "OS X 10.8";
+        break;
+    default:
+        result += "unknown";
+        break;
+    }
 #else
     result = "Unsupported OS";
 #endif
@@ -268,7 +343,7 @@ void cpuID(unsigned i, unsigned regs[4]) {
 
 QString ReportSender::getCPUInfo() {
     QString result;
-
+#ifndef Q_OS_MAC
     unsigned regs[4];
 
     // Get vendor
@@ -308,6 +383,8 @@ QString ReportSender::getCPUInfo() {
     bool hyperThreads = cpuFeatures & (1 << 28) && cores < logical;
 
     result+= "\n  hyper-threads: " + QString(hyperThreads ? "true" : "false");
-
+#else
+    result="unknown"
+#endif
     return result;
 }
