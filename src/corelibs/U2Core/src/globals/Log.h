@@ -106,7 +106,7 @@ private:
 
 
 signals:
-    void si_message(LogMessage);
+    void si_message(const LogMessage& m);
 };
 
 

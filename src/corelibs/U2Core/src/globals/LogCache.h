@@ -57,7 +57,7 @@ public:
     static LogCache* getAppGlobalInstance() {return appGlobalCache;}
     
 protected slots:
-    virtual void sl_onMessage(LogMessage msg);
+    virtual void sl_onMessage(const LogMessage& msg);
 
 private:
     static LogCache* appGlobalCache;

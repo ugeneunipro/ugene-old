@@ -81,7 +81,7 @@ protected:
 
 private slots:
 
-    void sl_onMessage(LogMessage msg);
+    void sl_onMessage(const LogMessage& msg);
     void sl_onTextEdited(const QString& text);
     void popupMenu(const QPoint &pos);
     void sl_openSettingsDialog();
