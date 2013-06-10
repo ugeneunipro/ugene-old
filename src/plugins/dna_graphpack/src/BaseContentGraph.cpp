@@ -129,7 +129,7 @@ void BaseContentGraphAlgorithm::calculate(QVector<float>& res, U2SequenceObject*
     assert(d!=NULL);
     int nSteps = GSequenceGraphUtils::getNumSteps(vr, d->window, d->step);
     res.reserve(nSteps);
-    QByteArray seq = o->getWholeSequenceData();
+    const QByteArray& seq = getSequenceData(o);
     int startPos = vr.startPos;
 
 

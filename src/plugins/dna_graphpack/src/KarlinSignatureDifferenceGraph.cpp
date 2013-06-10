@@ -108,7 +108,7 @@ void KarlinGraphAlgorithm::calculate(QVector<float>& res, U2SequenceObject* o, c
     DNATranslation* complTrans = complT;
     mapTrans = complTrans->getOne2OneMapper();
     
-    QByteArray seq = o->getWholeSequenceData();
+    const QByteArray& seq = getSequenceData(o);
     int seqLen = seq.size();
     const char* seqc = seq.constData();
     if (global_relative_abundance_values == NULL) {

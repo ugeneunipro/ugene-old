@@ -111,7 +111,7 @@ void CumulativeSkewGraphAlgorithm::calculate(QVector<float>& res, U2SequenceObje
     int nSteps = GSequenceGraphUtils::getNumSteps(vr, d->window, d->step);
     res.reserve(nSteps);
 
-    QByteArray seq = o->getWholeSequenceData();
+    const QByteArray& seq = getSequenceData(o);
 
     for (int i = 0; i < nSteps; i++)    {
         int start = vr.startPos + i * d->step;

@@ -42,6 +42,12 @@ class U2VIEW_EXPORT GSequenceGraphAlgorithm {
 public:
     virtual ~GSequenceGraphAlgorithm(){}
     virtual void calculate(QVector<float>& res, U2SequenceObject* o, const U2Region& r, const GSequenceGraphWindowData* d) = 0;
+protected:
+    const QByteArray& getSequenceData(U2SequenceObject* seqObj);
+    GSequenceGraphAlgorithm() : lastSeqObj(NULL) {}
+private:
+    U2SequenceObject* lastSeqObj;
+    QByteArray lastSeqData;
 };
 
 class U2VIEW_EXPORT GSequenceGraphWindowData {

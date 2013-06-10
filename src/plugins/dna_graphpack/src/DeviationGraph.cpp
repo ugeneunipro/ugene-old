@@ -151,7 +151,7 @@ void DeviationGraphAlgorithm::calculate(QVector<float>& res, U2SequenceObject* o
     int nSteps = GSequenceGraphUtils::getNumSteps(vr, d->window, d->step);
     res.reserve(nSteps);
 
-    QByteArray seq = o->getWholeSequenceData();
+    const QByteArray& seq = getSequenceData(o);
     int startPos = vr.startPos;
     if (d->window % d->step != 0) {
         windowStrategyWithoutMemorize(res, seq, startPos, d, nSteps);

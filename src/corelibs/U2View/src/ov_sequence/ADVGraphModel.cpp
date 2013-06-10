@@ -29,6 +29,14 @@
 
 namespace U2 {
 
+const QByteArray& GSequenceGraphAlgorithm::getSequenceData(U2SequenceObject* seqObj) {
+    if(seqObj != lastSeqObj) {
+        lastSeqObj = seqObj;
+        lastSeqData = seqObj->getWholeSequenceData();
+    }
+    return lastSeqData;
+}
+
 GSequenceGraphData::GSequenceGraphData(const QString& _graphName) : graphName(_graphName), ga(NULL)
 {
     cachedFrom = cachedLen = cachedW = cachedS = 0;;

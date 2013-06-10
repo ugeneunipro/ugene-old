@@ -85,7 +85,7 @@ void EntropyGraphAlgorithm::calculate(QVector<float>& res, U2SequenceObject* o, 
     int nSteps = GSequenceGraphUtils::getNumSteps(vr, d->window, d->step);
     res.reserve(nSteps);
 
-    QByteArray seq = o->getWholeSequenceData();
+    const QByteArray& seq = getSequenceData(o);
     const DNAAlphabet* al = o->getAlphabet();
     
     // prepare index -> TODO: make it once and cache!

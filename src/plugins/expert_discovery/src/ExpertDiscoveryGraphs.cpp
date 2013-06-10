@@ -60,7 +60,7 @@ void ExpertDiscoveryScoreGraphAlgorithm::calculate(
     assert(windowData !=NULL);
 
     
-    QByteArray sequence = sequenceObject->getWholeSequenceData();
+    //QByteArray sequence = sequenceObject->getWholeSequenceData();
 
     int windowSize = windowData->window;
     int windowStep = windowData->step;
