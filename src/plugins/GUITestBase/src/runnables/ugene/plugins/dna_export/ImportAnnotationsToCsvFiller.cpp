@@ -73,6 +73,7 @@ public:
         QLineEdit *markValueLineEdit = dialog->findChild<QLineEdit*>("complValueEdit");
         QLineEdit *qualifierLineEdit = dialog->findChild<QLineEdit*>("qualifierNameEdit");
 
+        GTGlobals::sleep(300);
         ImportAnnotationsToCsvFiller::StartParameter* startP = dynamic_cast<ImportAnnotationsToCsvFiller::StartParameter*>(parameter);
         if (startP) {
             GTRadioButton::click(os, dialog->findChild<QRadioButton*>("startRB"));
