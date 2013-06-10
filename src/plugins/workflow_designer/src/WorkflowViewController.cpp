@@ -166,6 +166,17 @@ static void addToggleDashboardAction(QToolBar *toolBar, QAction *action) {
     CHECK(NULL != b, );
     b->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
     b->setAutoRaise(false);
+
+#ifdef Q_OS_MAC
+    b->setStyleSheet("QToolButton {"
+                     "font-size: 13px;"
+                     "border: 1px solid gray;"
+                     "border-radius: 6px;"
+                     "margin-right: 5px;"
+                     "height: 25px;"
+                     "width: 152px;"
+                     "}");
+#endif
 }
 
 static QToolButton * styleMenu(WorkflowView *parent, const QList<QAction*> &actions) {
@@ -438,11 +449,6 @@ void WorkflowView::createActions() {
     { // toggle dashboard action
         toggleDashboard = new QAction(this);
         connect(toggleDashboard, SIGNAL(triggered()), SLOT(sl_toggleDashboard()));
-#ifdef Q_OS_MAC
-        QFont font = toggleDashboard->font();
-        font.setPointSize(15);
-        toggleDashboard->setFont(font);
-#endif
     }
 
     loadAction = new QAction(tr("&Load schema"), this);
