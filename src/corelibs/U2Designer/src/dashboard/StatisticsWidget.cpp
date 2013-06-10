@@ -56,7 +56,7 @@ QList<int> StatisticsWidget::widths() {
 }
 
 QStringList StatisticsWidget::header() {
-    return QStringList() << tr("Element") << tr("Elapsed time") << tr("Produced data");
+    return QStringList() << tr("Element") << tr("Elapsed time") << tr("Output messages");
 }
 
 inline static QString timeStr(qint64 timeMks) {
