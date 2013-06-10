@@ -86,7 +86,7 @@ QString OutputFilesWidget::createActionsSubMenu(const QString &url, bool fullWid
         )
         .arg(fullWidth ? "full-width" : "")
         .arg(info.dir().absolutePath())
-        .arg(tr("Open containing folder"))
+        .arg(tr("Open containing directory"))
         .arg(url)
         .arg(tr("Open by operating system"));
 }
