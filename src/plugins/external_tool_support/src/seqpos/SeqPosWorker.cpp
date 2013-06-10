@@ -35,6 +35,7 @@
 #include <U2Lang/BaseActorCategories.h>
 #include <U2Lang/BaseTypes.h>
 #include <U2Lang/WorkflowEnv.h>
+#include <U2Lang/WorkflowMonitor.h>
 
 #include "SeqPosSupport.h"
 
@@ -113,6 +114,11 @@ void SeqPosWorker::sl_taskFinished() {
     SeqPosTask *t = dynamic_cast<SeqPosTask*>(sender());
     if (!t->isFinished() || t->hasError()) {
         return;
+    }
+    
+    const QStringList& resFileNames = t->getOutputFiles();
+    foreach(const QString& fn, resFileNames){
+        context->getMonitor()->addOutputFile(fn, getActor()->getId());
     }
 
     if (inChannel->isEnded() && !inChannel->hasMessage()) {

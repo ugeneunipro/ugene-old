@@ -33,6 +33,7 @@
 #include <U2Lang/BaseActorCategories.h>
 #include <U2Lang/BaseTypes.h>
 #include <U2Lang/WorkflowEnv.h>
+#include <U2Lang/WorkflowMonitor.h>
 
 #include "MACSSupport.h"
 #include "MACSWorker.h"
@@ -156,6 +157,12 @@ void MACSWorker::sl_taskFinished() {
     }
     
     output->put(Message(output->getBusType(), data));
+
+    const QStringList& resFileNames = t->getOutputFiles();
+    foreach(const QString& fn, resFileNames){
+        QString url = t->getSettings().outDir + "/" + fn;
+        context->getMonitor()->addOutputFile(url, getActor()->getId());
+    }
 
     if (inChannel->isEnded() && !inChannel->hasMessage()) {
         setDone();

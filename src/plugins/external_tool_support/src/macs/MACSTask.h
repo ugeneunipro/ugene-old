@@ -51,6 +51,7 @@ public:
     QList<SharedAnnotationData> getPeaks();
     QList<SharedAnnotationData> getPeakSummits();
     QString getWiggleUrl();
+    QStringList getOutputFiles();
 
 private:
     MACSSettings settings;

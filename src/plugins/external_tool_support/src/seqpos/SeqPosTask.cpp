@@ -148,6 +148,24 @@ const SeqPosSettings& SeqPosTask::getSettings(){
     return settings;
 }
 
+QStringList SeqPosTask::getOutputFiles(){
+    QStringList result;
+
+    QString current;
+
+    current = getSettings().outDir + "/results/" + "mdseqpos_index.html";
+    if (QFile::exists(current)){
+        result << current;
+    }
+    current = getSettings().outDir + "/results/" + "table.html";
+    if (QFile::exists(current)){
+        result << current;
+    }
+
+
+    return result;
+}
+
 //////////////////////////////////////////////////////////////////////////
 //SeqPosLogParser
 SeqPosLogParser::SeqPosLogParser()

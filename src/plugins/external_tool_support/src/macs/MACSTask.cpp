@@ -270,6 +270,24 @@ QString MACSTask::getWiggleUrl(){
     return res;
 }
 
+QStringList MACSTask::getOutputFiles(){
+    QStringList result;
+
+    QString current;
+
+    current = getSettings().fileNames + "_peaks.bed";
+    if (QFile::exists(getSettings().outDir+"/"+current)){
+        result << current;
+    }
+    current = getSettings().fileNames + "_summits.bed";
+    if (QFile::exists(getSettings().outDir+"/"+current)){
+        result << current;
+    }
+
+
+    return result;
+}
+
 //////////////////////////////////////////////////////////////////////////
 //MACSLogParser
 MACSLogParser::MACSLogParser()

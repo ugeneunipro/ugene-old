@@ -47,6 +47,7 @@ public:
     virtual void cleanup();
 
     const SeqPosSettings & getSettings();
+    QStringList getOutputFiles();
 
 private:
     SeqPosSettings settings;
