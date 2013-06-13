@@ -29,6 +29,7 @@
 #include <U2Core/Log.h>
 #include <U2Core/Settings.h>
 #include <U2Core/U2SafePoints.h>
+#include <U2Core/Counter.h>
 
 #include <U2Designer/DatasetsController.h>
 
@@ -50,6 +51,7 @@ WorkflowEditor::WorkflowEditor(WorkflowView *p)
 : QWidget(p), owner(p), custom(NULL),
 customWidget(NULL), subject(NULL), actor(NULL)
 {
+    GCOUNTER( cvar, tvar, "WorkflowEditor" );
     setupUi(this);
 
     specialParameters = new SpecialParametersPanel(this);

@@ -46,6 +46,7 @@
 #include <U2Core/DataPathRegistry.h>
 #include <U2Core/DASSource.h>
 #include <U2Core/ScriptingToolRegistry.h>
+#include <U2Core/Counter.h>
 
 #include <U2Formats/DocumentFormatUtils.h>
 
@@ -346,6 +347,7 @@ int main(int argc, char **argv)
     initLogsCache(logsCache, envList);
     LogCache::setAppGlobalInstance(&logsCache);
     coreLog.details(AppContextImpl::tr("UGENE initialization started"));
+    GCOUNTER( cvar, tvar, "ugeneui" );
 
     coreLog.trace(QString("UGENE run at dir %1 with parameters %2").arg(app.applicationDirPath()).arg(app.arguments().join(" ")));
 

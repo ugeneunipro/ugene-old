@@ -45,6 +45,7 @@
 #include <U2Core/DataPathRegistry.h>
 #include <U2Core/DASSource.h>
 #include <U2Core/ScriptingToolRegistry.h>
+#include <U2Core/Counter.h>
 
 #include <U2Algorithm/CudaGpuRegistry.h>
 #include <U2Algorithm/DnaAssemblyAlgRegistry.h>
@@ -309,6 +310,7 @@ int main(int argc, char **argv)
     // 2 create functional components of congene
     LogDriver logs;
     coreLog.details(AppContextImpl::tr("UGENE initialization started"));
+    GCOUNTER( cvar, tvar, "ugenecl" );
 
     ResourceTracker* resTrack = new ResourceTracker();
     appContext->setResourceTracker(resTrack);

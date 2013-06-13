@@ -26,6 +26,7 @@
 #include <U2Core/DNASequenceSelection.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/AppContext.h>
+#include <U2Core/Counter.h>
 
 #include <U2Gui/GScrollBar.h>
 #include <U2Gui/ObjectViewModel.h>
@@ -42,6 +43,7 @@ GSequenceLineView::GSequenceLineView(QWidget* p, ADVSequenceObjectContext* _ctx)
 lastUpdateFlags(GSLV_UF_ViewResized), featureFlags(GSLV_FF_SupportsCustomRange),
 frameView(NULL), coherentRangeView(NULL), ignoreMouseSelectionEvents(false)
 {
+    GCOUNTER( cvar, tvar, "SequenceLineView" );
     seqLen = ctx->getSequenceLength();
     setFocusPolicy(Qt::WheelFocus);
 

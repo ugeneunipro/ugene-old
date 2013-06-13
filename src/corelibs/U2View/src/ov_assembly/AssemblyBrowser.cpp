@@ -96,7 +96,7 @@ cellRendererRegistry(new AssemblyCellRendererFactoryRegistry(this)),
 zoomInAction(0), zoomOutAction(0), posSelectorAction(0), posSelector(0), showCoordsOnRulerAction(0), saveScreenShotAction(0),
 showInfoAction(0), exportToSamAction(0)
 {
-    GCOUNTER( cvar, tvar, "AssemblyBrowser:open" );
+    GCOUNTER( cvar, tvar, "AssemblyBrowser" );
     initFont();
     setupActions();
 

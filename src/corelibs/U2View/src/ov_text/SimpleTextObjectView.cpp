@@ -26,6 +26,7 @@
 #include <U2Core/ProjectModel.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/DocumentModel.h>
+#include <U2Core/Counter.h>
 
 #include <U2Core/TextObject.h>
 #include <U2Core/SelectionUtils.h>
@@ -95,6 +96,7 @@ Task* SimpleTextObjectViewFactory::createViewTask(const QString& viewName, const
 SimpleTextObjectView::SimpleTextObjectView(const QString& name, TextObject* to, const QVariantMap& _state)  
 : GObjectView(SimpleTextObjectViewFactory::ID, name), textObject(to), openState(_state), selection(to)
 {
+    GCOUNTER( cvar, tvar, "SimpleTextView" );
     textEdit = NULL;
     firstShow = true;
     assert(to);

@@ -43,6 +43,7 @@
 #include <U2Core/L10n.h>
 #include <U2Core/U2Region.h>
 #include <U2Core/PhyTree.h>
+#include <U2Core/Counter.h>
 
 #include <U2Gui/GUIUtils.h>
 #include <U2Gui/ExportImageDialog.h>
@@ -95,6 +96,7 @@ TreeViewer::TreeViewer(const QString& viewName, GObject* obj, GraphicsRectangula
     scale(s),
     ui(NULL)
 {
+    GCOUNTER( cvar, tvar, "PhylTreeViewer" );
     phyObject = qobject_cast<PhyTreeObject*>(obj);
     objects.append(phyObject);
     requiredObjects.append(phyObject);
