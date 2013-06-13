@@ -84,7 +84,11 @@ void SeqStatisticsWidget::updateWidgetsSettings(){
     ui.algoComboBox->addItems(algoList);
     ui.algoComboBox->setSizeAdjustPolicy(QComboBox::AdjustToMinimumContentsLength);
 
-    ui.refSeqWarning->setText(QString("<FONT COLOR=#FF0000>%1</FONT>").arg(tr("Please, select reference sequence")));
+    ui.refSeqWarning->setText(tr("Hint: select a reference above"));
+    ui.refSeqWarning->setStyleSheet(
+        "color: green;"
+        "font: bold;");
+    ui.refSeqWarning->setWordWrap(true);
 
     restoreSettings();
 
@@ -143,7 +147,7 @@ void SeqStatisticsWidget::sl_onAutoUpdateChanged(int state) {
 }
 
 void SeqStatisticsWidget::sl_onRefSeqChanged(const QString& str) {
-    if(str == "(None)") {
+    if(str.isEmpty()) {
         ui.refSeqWarning->show();
     }
     else {

@@ -816,7 +816,7 @@ void MSAEditorUI::createDistanceColumn(MSADistanceMatrix* algo )
     dataList->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::MinimumExpanding);
     MSAEditorAlignmentDependentWidget* statisticsWidget = new MSAEditorAlignmentDependentWidget(dataList);
 
-    view.addObject(nameAreaContainer, statisticsWidget, 0.1, 1);
+    view.addObject(nameAreaContainer, statisticsWidget, 0.04, 1);
 }
 
 void MSAEditorUI::addTreeView(GObjectViewWindow* treeView) {
@@ -847,7 +847,7 @@ void MSAEditorUI::showSimilarity() {
         dataList->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::MinimumExpanding);
         similarityStatistics = new MSAEditorAlignmentDependentWidget(dataList);
 
-        view.addObject(nameAreaContainer, similarityStatistics, 0.1, 1);
+        view.addObject(nameAreaContainer, similarityStatistics, 0.04, 1);
     }
     else {
         similarityStatistics->show();

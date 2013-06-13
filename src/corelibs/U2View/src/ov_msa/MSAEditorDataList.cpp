@@ -64,21 +64,21 @@ MSAEditorSimilarityColumn::~MSAEditorSimilarityColumn() {
 
 QString MSAEditorSimilarityColumn::getTextForRow( int s ) {
     if (NULL == algo) {
-        return tr("(None)");
+        return tr("-");
     }
 
     const MAlignment& ma = editor->getMSAObject()->getMAlignment();
     QString refSeqName = editor->getRefSeqName();
 
-    if(QString("(None)") == refSeqName) {
-        return tr("(None)");
+    if(refSeqName.isEmpty()) {
+        return tr("-");
     }
 
     QString currentSeqName = ma.getRowNames().at(s);
     QString units = algo->areUsePercents() ? "%" : "";
 
     int sim = algo->getSimilarity(refSeqName, currentSeqName);
-    CHECK(-1 != sim, tr("(None)"));
+    CHECK(-1 != sim, tr("-"));
     return QString("%1").arg(sim) + units;
 }
 
