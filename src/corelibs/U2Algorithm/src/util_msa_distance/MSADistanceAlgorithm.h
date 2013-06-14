@@ -97,6 +97,8 @@ public:
 
     MSADistanceAlgorithmFactory* getFactory() const {return factory;}
 
+    bool getExcludeGapsFlag() const {return excludeGaps;}
+
 private:
     MSADistanceAlgorithmFactory*    factory;
 
@@ -116,16 +118,18 @@ public:
     ~MSADistanceMatrix() {}
     bool isEmpty(){ return distanceTable.isEmpty();}
     int getSimilarity(int row1, int row2);
-    int getSimilarity(const QString& firstSeqName, const QString& secondSeqName);
+    int getSimilarity(const QString& refSeqName, const QString& secondSeqName);
     void showSimilarityInPercents(bool _usePercents) {usePercents = _usePercents;}
     bool areUsePercents() {return usePercents;}
 public slots:
     void sl_onSequenceNameChanged(QString oldSeqName, QString newSeqName);
 protected:
     varLengthMatrix                             distanceTable;
-    varLengthMatrix                             percentsTable;
     bool                                        usePercents;
+    bool                                        excludeGaps;
     QMap<QString, int>                          namesAndIndexes;
+    QVector<int>                                seqsUngappedLenghts;
+    int                                         alignmentLength;
 };
 
 

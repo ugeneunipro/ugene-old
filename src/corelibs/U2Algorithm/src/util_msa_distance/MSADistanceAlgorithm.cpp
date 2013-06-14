@@ -92,42 +92,34 @@ void MSADistanceAlgorithm::fillTable() {
 
 
 MSADistanceMatrix::MSADistanceMatrix(const MSADistanceAlgorithm *algo, bool _usePercents) 
-: distanceTable(algo->distanceTable), percentsTable(algo->distanceTable), usePercents(_usePercents) {
+: distanceTable(algo->distanceTable), usePercents(_usePercents), excludeGaps(false) {
     int i = 0;
     foreach(QString seqName, algo->ma.getRowNames()) {
         namesAndIndexes[seqName] = i++;
     }
+    excludeGaps = algo->getExcludeGapsFlag();
     int nSeq = algo->ma.getNumRows();
+    alignmentLength = algo->ma.getLength();
     for (int i = 0; i < nSeq; i++) {
-        for (int j = i; j < nSeq; j++) {
-            int len1 = algo->ma.getRow(i).getUngappedLength();
-            int len2 = algo->ma.getRow(j).getUngappedLength();
-            int minLen = qMin(len1, len2);
-            // TODO: UGENE-1672 and UGENE-1374. Remove this code after fixing them:
-            int p = qRound(distanceTable[i][j] * 100.0 / minLen);
-            if (p > 100) {
-                p = 100;
-            } else if (p < 0) {
-                p = 0;
-            }
-            ////////////////////////////////
-            percentsTable[i][j] = percentsTable[j][i] = p;
-        }
+        const MAlignmentRow& row = algo->ma.getRow(i);
+        seqsUngappedLenghts.append(row.getUngappedLength());
+
     }
 }
 
-int MSADistanceMatrix::getSimilarity(int row1, int row2) {    
+int MSADistanceMatrix::getSimilarity(int refRow, int row) {    
     if(usePercents) {
-        return percentsTable[row1][row2];
+        int refSeqLength = excludeGaps ? seqsUngappedLenghts.at(refRow) : alignmentLength;
+        return distanceTable[refRow][row] * 100 / refSeqLength;
     }
     else {
-        return distanceTable[row1][row2];
+        return distanceTable[refRow][row];
     }
 }
 
-int MSADistanceMatrix::getSimilarity(const QString& firstSeqName, const QString& secondSeqName) {
-    if(namesAndIndexes.contains(firstSeqName) && namesAndIndexes.contains(secondSeqName)) {
-        return getSimilarity(namesAndIndexes[firstSeqName], namesAndIndexes[secondSeqName]);
+int MSADistanceMatrix::getSimilarity(const QString& refSeqName, const QString& secondSeqName) {
+    if(namesAndIndexes.contains(refSeqName) && namesAndIndexes.contains(secondSeqName)) {
+        return getSimilarity(namesAndIndexes[refSeqName], namesAndIndexes[secondSeqName]);
     }
     else {
         return -1;
