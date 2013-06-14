@@ -64,12 +64,13 @@ Document *AbstractVariationFormat::loadDocument(IOAdapter *io, const U2DbiRef &d
     QMap<QString, QList<U2Variant> > snpsMap;
 
     do {
-        bool lineOk = true;
+        bool eolFound = true;
         os.setProgress(io->getProgress());
-        qint64 len = io->readUntil(buff, READ_BUFF_SIZE, TextUtils::LINE_BREAKS, IOAdapter::Term_Include, &lineOk);
+        qint64 len = io->readUntil(buff, READ_BUFF_SIZE, TextUtils::LINE_BREAKS, IOAdapter::Term_Include, &eolFound);
         if (len == 0) { //end of stream
             break;
         }
+        bool lineOk = eolFound || io->isEof();
         if (!lineOk) {
             os.setError(L10N::tr("Line is too long"));
             return NULL;
@@ -175,8 +176,8 @@ FormatCheckResult AbstractVariationFormat::checkRawData(const QByteArray &dataPr
     QStringList lines = QString(dataPrefix).split("\n");
     int idx = 0;
     foreach (const QString &l, lines) {
-        bool lastLine = (idx == lines.size()-1);
-        if (lastLine) {
+        bool skipLastLine = (1 != lines.size()) && (idx == lines.size()-1);
+        if (skipLastLine) {
             continue;
         }
 
