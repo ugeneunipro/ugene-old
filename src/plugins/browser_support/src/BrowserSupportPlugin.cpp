@@ -24,6 +24,7 @@
 #include <U2Gui/OpenViewTask.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/DocumentUtils.h>
+#include <U2Core/Counter.h>
 
 
 #include <QtGui/QClipboard>
@@ -115,7 +116,7 @@ void BrowserSupportPlugin::sl_clipboardCheck() {
         }
 
         if (clipboardText.startsWith("open/selection;")) {
-
+            GCOUNTER( cvar, tvar, "BrowserSupport:open/selection" );
             QString file = saveToTmp(noOpen);
 
             QList<GUrl> urls; urls << GUrl(file, GUrl_File);
@@ -133,7 +134,7 @@ void BrowserSupportPlugin::sl_clipboardCheck() {
         fullPath = QDir::toNativeSeparators(fullPath);
 
         if (clipboardText.startsWith("open/Ensembl;")) {
-
+            GCOUNTER( cvar, tvar, "BrowserSupport:open/Ensembl" );
             int idLength = noOpen.indexOf("\n");
             QString ensId = noOpen.left(idLength);
             ensId = ensId.simplified();
@@ -144,7 +145,7 @@ void BrowserSupportPlugin::sl_clipboardCheck() {
         }
 
         if (clipboardText.startsWith("open/PDB;")) {
-
+            GCOUNTER( cvar, tvar, "BrowserSupport:open/PDB" );
             int idLength = noOpen.indexOf("\n");
             QString ensId = noOpen.left(idLength);
             ensId = ensId.simplified();
