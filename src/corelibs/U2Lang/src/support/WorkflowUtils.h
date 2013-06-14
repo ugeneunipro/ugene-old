@@ -114,6 +114,7 @@ public:
     static QString updateExternalToolPath(const QString &toolName, const QString &path);
 
     static QString externalToolError(const QString &toolName);
+    static QString externalToolInvalidError(const QString &toolName);
 
     static void schemaFromFile(const QString &url, Schema *schema, Metadata *meta, U2OpStatus &os);
 

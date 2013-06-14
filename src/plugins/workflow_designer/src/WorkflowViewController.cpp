@@ -1200,8 +1200,13 @@ bool WorkflowView::sl_validate(bool notify) {
             tr("Please fix issues listed in the error list (located under schema)."));
     } else {
         if (notify) {
-            QMessageBox::information(this, tr("Schema is valid"), 
-                tr("Schema is valid.\nWell done!"));
+            QString message = tr("Schema is valid.\n");
+            if (lst.isEmpty()) {
+                message += tr("Well done!");
+            } else {
+                message += tr("There are non-critical warnings.");
+            }
+            QMessageBox::information(this, tr("Schema is valid"), message);
         }
     }
     return good;

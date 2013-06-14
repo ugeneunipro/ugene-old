@@ -191,7 +191,12 @@ static bool validateExternalTools(Actor *a, QList<ValidateError> &infoList) {
         if (!valid) {
             good = false;
             ValidateError item;
-            item[TEXT_REF] = QString("%1 : %2").arg(a->getLabel()).arg(WorkflowUtils::externalToolError(tool->getName()));
+            item[TEXT_REF] = WorkflowUtils::externalToolError(tool->getName());
+            item[ACTOR_REF] = a->getId();
+            infoList << item;
+        } else if (!fromAttr && !tool->isValid()) {
+            ValidateError item;
+            item[TEXT_REF] = WorkflowUtils::externalToolInvalidError(tool->getName());
             item[ACTOR_REF] = a->getId();
             infoList << item;
         }
@@ -865,6 +870,10 @@ QString WorkflowUtils::updateExternalToolPath(const QString &toolName, const QSt
 
 QString WorkflowUtils::externalToolError(const QString &toolName) {
     return tr("External tool \"%1\" is not set. You can set it in Settings -> Preferences -> External Tools").arg(toolName);
+}
+
+QString WorkflowUtils::externalToolInvalidError(const QString &toolName) {
+    return tr("External tool \"%1\" is invalid. UGENE may not support this version of the tool or a wrong path to the tools is selected").arg(toolName);
 }
 
 void WorkflowUtils::schemaFromFile(const QString &url, Schema *schema, Metadata *meta, U2OpStatus &os) {
