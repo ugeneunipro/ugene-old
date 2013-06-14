@@ -548,7 +548,8 @@ qint64 GSequenceLineViewRenderArea::coordToPos(int _x) const {
     const U2Region& vr = view->getVisibleRange();
     double scale = getCurrentScale();
     qint64 pos = vr.startPos + (x/scale+0.5f);
-    assert(pos >= vr.startPos && pos <= vr.endPos());
+    pos = qMax(pos, vr.startPos + 1);
+    pos = qMin(pos, vr.endPos() - 1);
     return pos;
 }
 
