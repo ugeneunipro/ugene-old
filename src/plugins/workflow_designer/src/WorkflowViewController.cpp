@@ -285,7 +285,7 @@ void WorkflowView::setupPalette() {
 
     tabs = new QTabWidget(this);
     tabs->insertTab(ElementsTab, palette, tr("Elements"));
-    SamplesWidget* samples = new SamplesWidget(scene);
+    samples = new SamplesWidget(scene);
     tabs->insertTab(SamplesTab, samples, tr("Samples"));
     tabs->setTabPosition(QTabWidget::North);
 
@@ -825,6 +825,7 @@ void WorkflowView::sl_toggleLock(bool b) {
     propertyEditor->setEnabled(!running);
     propertyEditor->setSpecialPanelEnabled(!running);
     palette->setEnabled(!running);
+    samples->setEnabled(!running);
 
     setupActions();
     scene->setLocked(running);

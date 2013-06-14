@@ -43,6 +43,7 @@ class QGroupBox;
 
 namespace U2 {
 using namespace Workflow;
+class SamplesWidget;
 class WorkflowView;
 class WorkflowScene;
 class WorkflowPalette;
@@ -327,6 +328,7 @@ private:
     WorkflowScene*          scene;
     QGraphicsView*          sceneView;
     WorkflowPalette*        palette;
+    SamplesWidget*          samples;
     QTabWidget*             tabs;
     WorkflowEditor*         propertyEditor;
     QGroupBox*              errorList;
