@@ -198,24 +198,21 @@ void CoreLib::init() {
         QList<DocumentFormatId> supportedFormats = AppContext::getDocumentFormatRegistry()->selectFormats( constr );
 
         if( !supportedFormats.isEmpty() ) {
+            DocumentFormatId format = supportedFormats.contains( BaseDocumentFormats::CLUSTAL_ALN ) ? BaseDocumentFormats::CLUSTAL_ALN : supportedFormats.first();
             QList<PortDescriptor*> p; QList<Attribute*> a;
             Descriptor acd(CoreLibConstants::WRITE_MSA_PROTO_ID, tr("Write Alignment"), tr("Writes all supplied alignments to file(s) in selected format"));
             Descriptor pd(BasePorts::IN_MSA_PORT_ID(), tr("Multiple sequence alignment"), tr("Multiple sequence alignment"));
             p << new PortDescriptor(pd, writeMAType, true);
-            Attribute *docFormatAttr = new Attribute(BaseAttributes::DOCUMENT_FORMAT_ATTRIBUTE(), BaseTypes::STRING_TYPE(), false, 
-                supportedFormats.contains( BaseDocumentFormats::CLUSTAL_ALN ) ? BaseDocumentFormats::CLUSTAL_ALN : supportedFormats.first() );
+            Attribute *docFormatAttr = new Attribute(BaseAttributes::DOCUMENT_FORMAT_ATTRIBUTE(), BaseTypes::STRING_TYPE(), false, format);
             a << docFormatAttr;
-            WriteDocActorProto *childProto = new WriteDocActorProto( acd, GObjectTypes::MULTIPLE_ALIGNMENT, p, pd.getId(), a );
-            IntegralBusActorPrototype * proto = childProto;
-            docFormatAttr->addRelation(new FileExtensionRelation(childProto->getUrlAttr()->getId()));
+            WriteDocActorProto *proto = new WriteDocActorProto(format, acd, p, pd.getId(), a);
+            docFormatAttr->addRelation(new FileExtensionRelation(proto->getUrlAttr()->getId()));
             
             QVariantMap m;
             foreach( const DocumentFormatId & fid, supportedFormats ) {
                 m[fid] = fid;
             }
-            ComboBoxDelegate *comboDelegate = new ComboBoxDelegate(m);
-            connect(comboDelegate, SIGNAL(si_valueChanged(const QString &)), childProto->getUrlDelegate(), SLOT(sl_formatChanged(const QString &)));
-            proto->getEditor()->addDelegate(comboDelegate, BaseAttributes::DOCUMENT_FORMAT_ATTRIBUTE().getId());
+            proto->getEditor()->addDelegate(new ComboBoxDelegate(m), BaseAttributes::DOCUMENT_FORMAT_ATTRIBUTE().getId());
             proto->setPrompter(new WriteDocPrompter(tr("Save all MSAs from <u>%1</u> to <u>%2</u>."), BaseSlots::MULTIPLE_ALIGNMENT_SLOT().getId()));
             r->registerProto(BaseActorCategories::CATEGORY_DATASINK(), proto);
         }
@@ -229,6 +226,7 @@ void CoreLib::init() {
         QList<DocumentFormatId> supportedFormats = AppContext::getDocumentFormatRegistry()->selectFormats( constr );
         
         if( !supportedFormats.isEmpty() ) {
+            DocumentFormatId format = supportedFormats.contains( BaseDocumentFormats::FASTA ) ? BaseDocumentFormats::FASTA : supportedFormats.first();
             QMap<Descriptor, DataTypePtr> typeMap;
             typeMap[writeUrlD] = BaseTypes::STRING_TYPE();
             typeMap[BaseSlots::DNA_SEQUENCE_SLOT()] = BaseTypes::DNA_SEQUENCE_TYPE();
@@ -240,17 +238,15 @@ void CoreLib::init() {
             Descriptor pd(BasePorts::IN_SEQ_PORT_ID(), tr("Sequence"), tr("Sequence"));
             p << new PortDescriptor(pd, typeSet, true);
             a << new Attribute(BaseAttributes::ACCUMULATE_OBJS_ATTRIBUTE(), BaseTypes::BOOL_TYPE(), false, true);
-            Attribute *docFormatAttr = new Attribute(BaseAttributes::DOCUMENT_FORMAT_ATTRIBUTE(), BaseTypes::STRING_TYPE(), true, 
-                supportedFormats.contains( BaseDocumentFormats::FASTA ) ? BaseDocumentFormats::FASTA : supportedFormats.first() );
+            Attribute *docFormatAttr = new Attribute(BaseAttributes::DOCUMENT_FORMAT_ATTRIBUTE(), BaseTypes::STRING_TYPE(), true, format);
             a << docFormatAttr;
             QMap <QString, PropertyDelegate*> delegates;    
             Attribute* splitAttr = new Attribute(BaseAttributes::SPLIT_SEQ_ATTRIBUTE(), BaseTypes::NUM_TYPE(), false, 1);
             splitAttr ->addRelation(new VisibilityRelation(BaseAttributes::DOCUMENT_FORMAT_ATTRIBUTE().getId(), BaseDocumentFormats::FASTA));
             a << splitAttr;
-            WriteDocActorProto *childProto = new WriteDocActorProto( acd, GObjectTypes::SEQUENCE, p, pd.getId(), a, false );
-            childProto->setValidator(new WriteSequenceValidator(BaseAttributes::URL_OUT_ATTRIBUTE().getId(), BasePorts::IN_SEQ_PORT_ID(), BaseSlots::URL_SLOT().getId()));
-            IntegralBusActorPrototype * proto = childProto;
-            docFormatAttr->addRelation(new FileExtensionRelation(childProto->getUrlAttr()->getId()));
+            WriteDocActorProto *proto = new WriteDocActorProto(format, acd, p, pd.getId(), a, false);
+            proto->setValidator(new WriteSequenceValidator(BaseAttributes::URL_OUT_ATTRIBUTE().getId(), BasePorts::IN_SEQ_PORT_ID(), BaseSlots::URL_SLOT().getId()));
+            docFormatAttr->addRelation(new FileExtensionRelation(proto->getUrlAttr()->getId()));
             
             QVariantMap m;
             foreach( const DocumentFormatId & fid, supportedFormats ) {
@@ -263,8 +259,7 @@ void CoreLib::init() {
             lenMap["maximum"] = QVariant(100); 
             SpinBoxDelegate* spinDelegate  = new SpinBoxDelegate(lenMap);
 
-            connect(comboDelegate, SIGNAL(si_valueChanged(const QString &)), childProto->getUrlDelegate(), SLOT(sl_formatChanged(const QString &)));
-            proto->getEditor()->addDelegate(comboDelegate, BaseAttributes::DOCUMENT_FORMAT_ATTRIBUTE().getId());
+            proto->getEditor()->addDelegate(new ComboBoxDelegate(m), BaseAttributes::DOCUMENT_FORMAT_ATTRIBUTE().getId());
             proto->getEditor()->addDelegate(spinDelegate, BaseAttributes::SPLIT_SEQ_ATTRIBUTE().getId());
             proto->setPrompter(new WriteDocPrompter(tr("Save all sequences from <u>%1</u> to <u>%2</u>."), BaseSlots::DNA_SEQUENCE_SLOT().getId()));
             r->registerProto(BaseActorCategories::CATEGORY_DATASINK(), proto);

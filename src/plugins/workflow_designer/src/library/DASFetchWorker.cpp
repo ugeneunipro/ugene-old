@@ -239,7 +239,8 @@ public:
     DASSourceTypeRelation(const QString &relatedAttrId)
         : AttributeRelation(relatedAttrId){}
 
-    virtual QVariant getAffectResult(const QVariant &influencingValue, const QVariant &dependentValue) const{
+    virtual QVariant getAffectResult(const QVariant &influencingValue, const QVariant &dependentValue,
+        DelegateTags *, DelegateTags *) const{
         DASSourceRegistry * dasRegistry = AppContext::getDASSourceRegistry();
         if (dasRegistry){
             DASSource refsource = dasRegistry->findById(influencingValue.toString());

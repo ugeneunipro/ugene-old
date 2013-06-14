@@ -101,6 +101,23 @@ void WizardController::assignParameters() {
     }
 }
 
+void WizardController::saveDelegateTags() {
+    foreach (const QString &attrId, propertyControllers.keys()) {
+        U2OpStatus2Log os;
+        AttributeInfo info = AttributeInfo::fromString(attrId, os);
+        DelegateTags *tags = propertyControllers[attrId]->tags();
+        if (NULL == tags) {
+            continue;
+        }
+        Actor *actor = WorkflowUtils::actorById(currentActors, info.actorId);
+        PropertyDelegate *delegate = actor->getEditor()->getDelegate(info.attrId);
+        if (NULL == delegate) {
+            continue;
+        }
+        delegate->tags()->set(*tags);
+    }
+}
+
 const QList<Actor*> & WizardController::getCurrentActors() const {
     return currentActors;
 }
@@ -116,8 +133,28 @@ QVariant WizardController::getAttributeValue(const AttributeInfo &info) const {
     return attr->getAttributePureValue();
 }
 
-void WizardController::setWidgetValue(const AttributeInfo &info, const QVariant &value) {
+DelegateTags * WizardController::getTags(const AttributeInfo &info) {
+    CHECK(propertyControllers.contains(info.toString()), NULL);
+    return propertyControllers[info.toString()]->tags();
+}
+
+void WizardController::setAttributeValue(const AttributeInfo &info, const QVariant &value) {
     values[info.toString()] = value;
+
+    // Check attribute relations
+    Attribute *attr = getAttribute(info);
+    CHECK(NULL != attr, );
+    foreach (const AttributeRelation *relation, attr->getRelations()) {
+        if (!relation->valueChangingRelation()) {
+            continue;
+        }
+        AttributeInfo related(info.actorId, relation->getRelatedAttrId());
+        QVariant newValue = relation->getAffectResult(value, getAttributeValue(related), getTags(info), getTags(related));
+        setAttributeValue(related, newValue);
+        if (propertyControllers.contains(related.toString())) {
+            propertyControllers[related.toString()]->updateGUI(newValue);
+        }
+    }
 }
 
 Attribute * WizardController::getAttribute(const AttributeInfo &info) const {
@@ -218,6 +255,7 @@ WizardController::ApplyResult WizardController::applyChanges(Metadata &meta) {
         return BROKEN;
     }
     assignParameters();
+    saveDelegateTags();
     if (selectors.isEmpty()) {
         return OK;
     }
@@ -237,6 +275,10 @@ WizardController::ApplyResult WizardController::applyChanges(Metadata &meta) {
         }
     }
     return result;
+}
+
+void WizardController::addPropertyController(const AttributeInfo &info, PropertyWizardController *ctrl) {
+    propertyControllers[info.toString()] = ctrl;
 }
 
 /************************************************************************/

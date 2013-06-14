@@ -57,12 +57,13 @@ class U2DESIGNER_EXPORT DelegateEditor : public ConfigurationEditor {
 public:
     DelegateEditor(const QMap<QString, PropertyDelegate*>& map) : delegates(map) {}
     DelegateEditor(const QString& s, PropertyDelegate* d) {delegates.insert(s,d);}
+    DelegateEditor(const DelegateEditor &other);
     virtual ~DelegateEditor() {qDeleteAll(delegates.values());}
     virtual PropertyDelegate* getDelegate(const QString& name) {return delegates.value(name);}
     virtual PropertyDelegate* removeDelegate( const QString & name ) {return delegates.take( name );}
     virtual void addDelegate( PropertyDelegate * del, const QString & name ) { delegates.insert( name, del ); }
     virtual void commit() {}
-    virtual ConfigurationEditor *clone() {return new ConfigurationEditor(*this);}
+    virtual ConfigurationEditor *clone() {return new DelegateEditor(*this);}
 protected:
     QMap<QString, PropertyDelegate*> delegates;
     
@@ -71,10 +72,7 @@ protected:
 class U2DESIGNER_EXPORT URLDelegate : public PropertyDelegate {
     Q_OBJECT
 public:
-    URLDelegate(const QString& filter, const QString& type, bool multi = false, bool isPath = false, bool saveFile = true, QObject *parent = 0, const QString &format = "")
-        : PropertyDelegate(parent), FileFilter(filter), type(type), multi(multi), isPath(isPath), saveFile(saveFile),
-        currentEditor(NULL), fileFormat(format) {
-    }
+    URLDelegate(const QString& filter, const QString& type, bool multi = false, bool isPath = false, bool saveFile = true, QObject *parent = 0, const QString &format = "");
     virtual ~URLDelegate() {}
 
     virtual QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option,
@@ -86,24 +84,19 @@ public:
         const QModelIndex &index) const;
 
     virtual PropertyDelegate *clone() {
-        return new URLDelegate(FileFilter, type, multi, isPath, saveFile, parent(), fileFormat);
+        return new URLDelegate(tags()->get("filter").toString(), type, multi, isPath, saveFile, parent(), tags()->get("format").toString());
     }
-
-public slots:
-    void sl_formatChanged(const QString &newFormat);
 
 private slots:
     void sl_commit();
-    
+
 protected:
-    QString FileFilter;
     QString type;
     bool    multi;
     bool    isPath;
     bool    saveFile; // sets when you need only 1 file for reading (is set with multi=false)
     mutable URLWidget *currentEditor;
     QString text;
-    QString fileFormat;
 
 private:
     URLWidget * createWidget(QWidget *parent) const;

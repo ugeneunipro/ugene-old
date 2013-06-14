@@ -170,7 +170,7 @@ private slots:
 class URLWidget : public PropertyWidget {
     Q_OBJECT
 public:
-    URLWidget(URLLineEdit *urlLine, QWidget *parent = NULL);
+    URLWidget(const QString &type, bool multi, bool isPath, bool saveFile, DelegateTags *tags, QWidget *parent = NULL);
     virtual QVariant value();
     virtual void setValue(const QVariant &value);
     virtual void setRequired();

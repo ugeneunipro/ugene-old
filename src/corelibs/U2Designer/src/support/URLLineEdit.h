@@ -27,23 +27,19 @@
 #include <U2Core/global.h>
 #include <QtGui>
 #include <QObject>
-#include <U2Gui/SuggestCompleter.h>
 
 namespace U2 {
 
-//class SuggestCompletion;
+class URLWidget;
 
-class U2DESIGNER_EXPORT URLLineEdit : public QLineEdit {
+class URLLineEdit : public QLineEdit {
     Q_OBJECT
 public:
-    URLLineEdit(const QString &filter,
-                const QString &type,
+    URLLineEdit(const QString &type,
                 bool multi,
                 bool isPath,
                 bool saveFile,
-                QWidget *parent,
-                const QString &format = "");
-    //~URLLineEdit(); destructor didnt neccessary for deleting completer
+                URLWidget *parent);
     bool isMulti();
 
 protected:
@@ -58,19 +54,16 @@ signals:
     void si_finished();
     
 private:
-    QString FileFilter;
     QString type;
     bool multi;
     bool isPath;
     bool saveFile;
-    QString fileFormat;
-    BaseCompleter *completer;
+    URLWidget *parent;
 
 private:
     void browse(bool addFiles = false);
     void checkExtension(QString &name);
 };
-
 
 } // U2
 

@@ -31,17 +31,9 @@ namespace U2 {
 
 class U2GUI_EXPORT CompletionFiller{
 public:
-    ~CompletionFiller(){};
+    virtual ~CompletionFiller(){};
     virtual QStringList getSuggestions(const QString &str) = 0;
-};
-
-class U2GUI_EXPORT FilenameCompletionFiller : public CompletionFiller {
-public:
-    FilenameCompletionFiller(const QString &_fileFormat):CompletionFiller(),fileFormat(_fileFormat){};
-
-    QStringList getSuggestions(const QString &str);
-private:
-    const QString fileFormat;
+    virtual QString finalyze(const QString &editorText, const QString &suggestion) = 0;
 };
 
 class U2GUI_EXPORT MSACompletionFiller : public CompletionFiller {
@@ -51,6 +43,7 @@ public:
 
     QStringList getSuggestions(const QString &str);
     void updateSeqList(QStringList list){seqNameList = list;};
+    QString finalyze(const QString &editorText, const QString &suggestion);
 private:
     QStringList seqNameList;
     const QString defaultValue;

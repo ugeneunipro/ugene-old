@@ -466,9 +466,12 @@ bool ActorCfgModel::setData( const QModelIndex & index, const QVariant & value, 
                         }
                     }
                     foreach (const AttributeRelation *relation, editingAttribute->getRelations()) {
-                        if (FILE_EXTENSION == relation->getType() || CUSTOM_VALUE_CHANGER == relation->getType()) {
+                        if (relation->valueChangingRelation()) {
+                            ConfigurationEditor *editor = subject->getEditor();
+                            DelegateTags *inf = editor ? editor->getDelegate(editingAttribute->getId())->tags() : NULL;
+                            DelegateTags *dep = editor ? editor->getDelegate(relation->getRelatedAttrId())->tags() : NULL;
                             QModelIndex idx = modelIndexById(relation->getRelatedAttrId());
-                            QVariant newValue = relation->getAffectResult(value, data(idx));
+                            QVariant newValue = relation->getAffectResult(value, data(idx), inf, dep);
                             setData(idx, newValue);
                         }
                     }

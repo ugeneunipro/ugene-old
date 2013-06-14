@@ -89,6 +89,8 @@ void WriteVariationWorkerFactory::init() {
     QList<DocumentFormatId> supportedFormats = AppContext::getDocumentFormatRegistry()->selectFormats(constr);
 
     if(!supportedFormats.isEmpty()) {
+        DocumentFormatId format = supportedFormats.contains(BaseDocumentFormats::SNP) ? BaseDocumentFormats::SNP : supportedFormats.first();
+
         Descriptor inDesc(BasePorts::IN_VARIATION_TRACK_PORT_ID(),
             WriteVariationWorker::tr("Variation track"),
             WriteVariationWorker::tr("Variation track"));
@@ -112,12 +114,11 @@ void WriteVariationWorkerFactory::init() {
         QList<Attribute*> attrs;
         Attribute *docFormatAttr = NULL;
         {
-            docFormatAttr = new Attribute(BaseAttributes::DOCUMENT_FORMAT_ATTRIBUTE(), BaseTypes::STRING_TYPE(), false, 
-                supportedFormats.contains(BaseDocumentFormats::SNP) ? BaseDocumentFormats::SNP : supportedFormats.first());
+            docFormatAttr = new Attribute(BaseAttributes::DOCUMENT_FORMAT_ATTRIBUTE(), BaseTypes::STRING_TYPE(), false, format);
             attrs << docFormatAttr;
         }
 
-        WriteDocActorProto *childProto = new WriteDocActorProto(protoDesc, GObjectTypes::VARIANT_TRACK, portDescs, inDesc.getId(), attrs);
+        WriteDocActorProto *childProto = new WriteDocActorProto(format, protoDesc, portDescs, inDesc.getId(), attrs);
         IntegralBusActorPrototype *proto = childProto;
         docFormatAttr->addRelation(new FileExtensionRelation(childProto->getUrlAttr()->getId()));
 
@@ -125,9 +126,7 @@ void WriteVariationWorkerFactory::init() {
         foreach (const DocumentFormatId &fid, supportedFormats) {
             formatsMap[fid] = fid;
         }
-        ComboBoxDelegate *comboDelegate = new ComboBoxDelegate(formatsMap);
-        QObject::connect(comboDelegate, SIGNAL(si_valueChanged(const QString &)), childProto->getUrlDelegate(), SLOT(sl_formatChanged(const QString &)));
-        proto->getEditor()->addDelegate(comboDelegate, BaseAttributes::DOCUMENT_FORMAT_ATTRIBUTE().getId());
+        proto->getEditor()->addDelegate(new ComboBoxDelegate(formatsMap), BaseAttributes::DOCUMENT_FORMAT_ATTRIBUTE().getId());
         proto->setPrompter(new WriteDocPrompter(WriteVariationWorker::tr("Save all variations from <u>%1</u> to <u>%2</u>."),
             BaseSlots::VARIATION_TRACK_SLOT().getId()));
 

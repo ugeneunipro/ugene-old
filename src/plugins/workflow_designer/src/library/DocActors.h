@@ -65,7 +65,6 @@ public:
     WriteDocActorProto(const Descriptor& desc, const GObjectType & t, const QList<PortDescriptor*>& ports, 
         const QString & portId, const QList<Attribute*>& attrs = QList<Attribute*>(), bool addValidator = true );
 
-    URLDelegate *getUrlDelegate();
     Attribute *getUrlAttr() {return urlAttr;}
 
 private:

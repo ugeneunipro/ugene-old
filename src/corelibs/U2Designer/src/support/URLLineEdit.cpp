@@ -23,26 +23,88 @@
 #include <QFocusEvent>
 #include <QLayout>
 
-#include <U2Core/GUrlUtils.h>
-#include <U2Core/DocumentModel.h>
 #include <U2Core/AppContext.h>
+#include <U2Core/DocumentModel.h>
+#include <U2Core/GUrlUtils.h>
+
 #include <U2Gui/LastUsedDirHelper.h>
+#include <U2Gui/SuggestCompleter.h>
+
+#include "PropertyWidget.h"
 
 #include "URLLineEdit.h"
 
 namespace U2 {
 
-URLLineEdit::URLLineEdit(const QString &filter,
-                         const QString &type,
+class FilenameCompletionFiller : public CompletionFiller {
+public:
+    FilenameCompletionFiller(URLWidget *_widget)
+        :CompletionFiller(), widget(_widget)
+    {
+
+    }
+
+    virtual QStringList getSuggestions(const QString &str) {
+        QString fileFormat = DelegateTags::getString(widget->tags(), "format");
+        QString fName = str;
+        if(fName.endsWith(".")){
+            fName = fName.left(fName.size()-1);
+        }
+
+        QStringList choices, hits;
+        QFileInfo f(fName);
+        QString curExt = f.suffix(), baseName = f.completeBaseName(), completeFileName = f.fileName();
+        DocumentFormat *format = AppContext::getDocumentFormatRegistry()->getFormatById(fileFormat);
+        CHECK(NULL != format, QStringList());
+        QStringList formats = format->getSupportedDocumentFileExtensions();
+        CHECK(formats.size() > 0, QStringList());
+        formats.append("gz");
+        choices.append(completeFileName);
+        foreach(QString ext, formats){
+            if(!curExt.isEmpty()){
+                if (ext.startsWith(curExt, Qt::CaseInsensitive)){
+                    choices.append(baseName + "." + ext);
+                    if (ext != "gz"){
+                        choices.append(baseName + "." + ext + ".gz");
+                    }
+                }
+            }  
+        }
+
+        if(choices.size() == 1){
+            foreach(QString ext, formats){
+                choices.append(completeFileName + "." + ext);
+                if (ext != "gz"){
+                    choices.append(completeFileName + "." + ext + ".gz");
+                }
+            }
+        }
+
+        return choices;
+    }
+
+    virtual QString finalyze(const QString &editorText, const QString &suggestion) {
+        QFileInfo f(editorText);
+        QString absPath = f.absoluteDir().absolutePath();
+        if(!absPath.endsWith("/")){
+            absPath.append("/");
+        }
+        return absPath + suggestion;
+    }
+
+private:
+    URLWidget *widget;
+};
+
+URLLineEdit::URLLineEdit(const QString &type,
                          bool multi,
                          bool isPath,
                          bool saveFile,
-                         QWidget *parent,
-                         const QString &format)
-: QLineEdit(parent), FileFilter(filter), type(type), multi(multi),
-isPath(isPath), saveFile(saveFile), fileFormat(format){
-    if(!fileFormat.isEmpty()){
-        completer = new BaseCompleter(new FilenameCompletionFiller(fileFormat), this);
+                         URLWidget *_parent)
+: QLineEdit(_parent), type(type), multi(multi),
+isPath(isPath), saveFile(saveFile), parent(_parent) {
+    if (saveFile && NULL != parent) {
+        BaseCompleter *completer = new BaseCompleter(new FilenameCompletionFiller(parent), this);
         connect(completer, SIGNAL(si_editingFinished()), SLOT(sl_completionFinished()));
     }
 }
@@ -56,6 +118,10 @@ void URLLineEdit::sl_onBrowseWithAdding() {
 }
 
 void URLLineEdit::browse(bool addFiles) {
+    QString FileFilter;
+    if (NULL != parent) {
+        FileFilter = DelegateTags::getString(parent->tags(), "filter");
+    }
     LastUsedDirHelper lod(type);
     QString lastDir = lod.dir;
     if(!text().isEmpty()) {
@@ -107,22 +173,16 @@ void URLLineEdit::browse(bool addFiles) {
     setFocus();
 }
 
-void URLLineEdit::focusOutEvent (QFocusEvent *event) {
+void URLLineEdit::focusOutEvent(QFocusEvent *event) {
     QLineEdit::focusOutEvent(event);
-    // TODO: fix this low level code. It is made for fixing UGENE-577
-//     if (Qt::MouseFocusReason == event->reason()) {
-//         QLayout *layout = this->parentWidget()->layout();
-//         for (int i=1; i<layout->count(); i++) { //for each QToolButton in the layout
-//             QWidget *w = layout->itemAt(i)->widget();
-//             if (w->underMouse()) {
-//                 return;
-//             }
-//         }
-//     }
-    emit si_finished();
+    sl_completionFinished();
 }
 
 void URLLineEdit::checkExtension(QString &name) {
+    QString fileFormat;
+    if (NULL != parent) {
+        fileFormat = DelegateTags::getString(parent->tags(), "format");
+    }
     DocumentFormat *format = AppContext::getDocumentFormatRegistry()->getFormatById(fileFormat);
     if (NULL != format && !name.isEmpty()) {
         QString newName(name);
@@ -133,7 +193,7 @@ void URLLineEdit::checkExtension(QString &name) {
             if ((dotPos >= 0) && (QChar('.') == newName[dotPos])) {
                 newName = url.getURLString().left(dotPos);
                 GUrl tmp(newName);
-                lastSuffix = tmp.lastFileSuffix(); 
+                lastSuffix = tmp.lastFileSuffix();
             }
         }
         bool foundExt = false;
@@ -159,8 +219,6 @@ bool URLLineEdit::isMulti() {
 }
 
 void URLLineEdit::sl_completionFinished(){
-    QKeyEvent *event = new QKeyEvent ( QEvent::KeyPress, Qt::Key_Enter, Qt::NoModifier);
-    QCoreApplication::postEvent (this, event);
     emit si_finished();
 }
 

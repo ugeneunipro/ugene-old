@@ -19,6 +19,10 @@
  * MA 02110-1301, USA.
  */
 
+#include <U2Core/AppContext.h>
+#include <U2Core/DocumentImport.h>
+#include <U2Core/DocumentModel.h>
+
 #include "FormatUtils.h"
 
 namespace U2 {
@@ -113,6 +117,87 @@ QString FormatUtils::getShortMonthName( int num )
         default:
             return QString();
     }
+}
+
+static QString getAllFilesFilter() {
+    // UGENE-1248
+    return "*";
+}
+
+QString FormatUtils::prepareFileFilter(const QString& name, const QStringList& exts, bool any, const QStringList& extra) {
+    QString line = name + " (";
+    foreach(QString ext, exts) {
+        line+=" *."+ext;
+    }
+    foreach(QString ext, exts) {
+        foreach(QString s, extra) {
+            line+=" *."+ext+s;
+        }
+    }
+    line+=" )";
+    if (any) {
+        line += ";;" + QObject::tr("All files") + " ( "+getAllFilesFilter()+" )";
+    }
+    return line;
+}
+
+static QStringList getExtra(DocumentFormat* df, const QStringList& originalExtra) {
+    bool useExtra = !df->getFlags().testFlag(DocumentFormatFlag_NoPack);
+    if (useExtra) {
+        return originalExtra;
+    }
+    return QStringList();
+}
+
+QString FormatUtils::prepareDocumentsFileFilter(const DocumentFormatId &fid, bool any, const QStringList &extra) {
+    DocumentFormat* df = AppContext::getDocumentFormatRegistry()->getFormatById(fid);
+    QStringList effectiveExtra = getExtra(df, extra);
+    QString result = prepareFileFilter(df->getFormatName(), df->getSupportedDocumentFileExtensions(), any, effectiveExtra);
+    return result;
+}
+
+QString FormatUtils::prepareDocumentsFileFilter(bool any, const QStringList& extra) {
+    DocumentFormatRegistry* fr = AppContext::getDocumentFormatRegistry();
+    QList<DocumentFormatId> ids = fr->getRegisteredFormats();
+    QStringList result;
+    foreach(DocumentFormatId id , ids) {
+        DocumentFormat* df = fr->getFormatById(id);
+        QStringList effectiveExtra = getExtra(df, extra);
+        result << prepareFileFilter(df->getFormatName(), df->getSupportedDocumentFileExtensions(), false, effectiveExtra);
+    }
+    foreach(DocumentImporter* importer, fr->getImportSupport()->getImporters()) {
+        QStringList importerExts = importer->getSupportedFileExtensions();
+        result << prepareFileFilter(importer->getImporterName(), importerExts, false, QStringList());
+    }
+
+    result.sort();
+    if (any) {
+        result.prepend(QObject::tr("All files") + " ( " + getAllFilesFilter() + " )");
+    }
+    return result.join(";;");
+}
+
+QString FormatUtils::prepareDocumentsFileFilter(const DocumentFormatConstraints& c, bool any) {
+    QStringList result;
+
+    QList<DocumentFormatId> ids = AppContext::getDocumentFormatRegistry()->getRegisteredFormats();
+    foreach(const DocumentFormatId& id, ids) {
+        DocumentFormat* df = AppContext::getDocumentFormatRegistry()->getFormatById(id);
+        if (df->checkConstraints(c)) {
+            result.append(prepareDocumentsFileFilter(id, false));
+        }
+    }
+    result.sort();
+    if (any) {
+        result.prepend(QObject::tr("All files") + " (" + getAllFilesFilter() + " )");
+    }
+    return result.join(";;");
+}
+
+QString FormatUtils::prepareDocumentsFileFilterByObjType(const GObjectType& t, bool any) {
+    DocumentFormatConstraints c;
+    c.supportedObjectTypes += t;
+    return prepareDocumentsFileFilter(c, any);
 }
 
 }

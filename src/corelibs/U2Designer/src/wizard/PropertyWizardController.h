@@ -35,7 +35,7 @@
 namespace U2 {
 
 /************************************************************************/
-/* WizardAttributeController */
+/* PropertyWizardController */
 /************************************************************************/
 class PropertyWizardController : public WidgetController {
     Q_OBJECT
@@ -45,9 +45,17 @@ public:
 
     virtual QWidget * createGUI(U2OpStatus &os) = 0;
 
+    void updateGUI(const QVariant &newValue);
+
+    DelegateTags * tags() const;
+
+signals:
+    void si_updateGUI(const QVariant &newValue);
+
 protected:
     Actor *actor;
     AttributeWidget *widget;
+    DelegateTags *_tags;
 
 protected:
     Attribute * attribute();

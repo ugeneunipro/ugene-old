@@ -192,17 +192,16 @@ void WriteAnnotationsWorkerFactory::init() {
             WriteAnnotationsWorker::tr("Input annotations which will be written to output file"));
         portDescs << new PortDescriptor(inPortDesc, inSet, true);
     }
-    QList<DocumentFormatId> supportedFormats;
+    DocumentFormatConstraints constr;
+    constr.supportedObjectTypes.insert( GObjectTypes::ANNOTATION_TABLE );
+    constr.addFlagToSupport(DocumentFormatFlag_SupportWriting);
+    QList<DocumentFormatId> supportedFormats = AppContext::getDocumentFormatRegistry()->selectFormats( constr );
+    supportedFormats.append(CSV_FORMAT_ID);
+    DocumentFormatId format = supportedFormats.contains(BaseDocumentFormats::PLAIN_GENBANK) ? BaseDocumentFormats::PLAIN_GENBANK : supportedFormats.first();
     // attributes description
     QList<Attribute*> attrs;
     {
-        DocumentFormatConstraints constr;
-        constr.supportedObjectTypes.insert( GObjectTypes::ANNOTATION_TABLE );
-        constr.addFlagToSupport(DocumentFormatFlag_SupportWriting);
-        supportedFormats = AppContext::getDocumentFormatRegistry()->selectFormats( constr );
-        supportedFormats.append(CSV_FORMAT_ID);
-        Attribute *docFormatAttr = new Attribute(BaseAttributes::DOCUMENT_FORMAT_ATTRIBUTE(), BaseTypes::STRING_TYPE(), false,
-            supportedFormats.contains(BaseDocumentFormats::PLAIN_GENBANK) ? BaseDocumentFormats::PLAIN_GENBANK : supportedFormats.first());
+        Attribute *docFormatAttr = new Attribute(BaseAttributes::DOCUMENT_FORMAT_ATTRIBUTE(), BaseTypes::STRING_TYPE(), false, format);
         Attribute *urlAttr = new Attribute(BaseAttributes::URL_OUT_ATTRIBUTE(), BaseTypes::STRING_TYPE(), false );
         attrs << docFormatAttr;
         attrs << urlAttr;
@@ -235,7 +234,7 @@ void WriteAnnotationsWorkerFactory::init() {
         WriteAnnotationsWorker::tr("Write Annotations"), 
         WriteAnnotationsWorker::tr("Writes all supplied annotations to file(s) in selected formatId."));
     ActorPrototype * proto = new IntegralBusActorPrototype(protoDesc, portDescs, attrs);
-    
+
     // proto delegates
     QMap<QString, PropertyDelegate*> delegates;
     {
@@ -243,12 +242,9 @@ void WriteAnnotationsWorkerFactory::init() {
         foreach( const DocumentFormatId & fid, supportedFormats ) {
             m[fid] = fid;
         }
-        ComboBoxDelegate *comboDelegate = new ComboBoxDelegate(m);
-        URLDelegate *urlDelegate = new URLDelegate(
-            DialogUtils::prepareDocumentsFileFilterByObjType(GObjectTypes::ANNOTATION_TABLE, true), QString(), false );
-        QObject::connect(comboDelegate, SIGNAL(si_valueChanged(const QString &)), urlDelegate, SLOT(sl_formatChanged(const QString &)));
-        delegates[BaseAttributes::DOCUMENT_FORMAT_ATTRIBUTE().getId()] = comboDelegate;
-        delegates[BaseAttributes::URL_OUT_ATTRIBUTE().getId()] = urlDelegate;
+        delegates[BaseAttributes::DOCUMENT_FORMAT_ATTRIBUTE().getId()] = new ComboBoxDelegate(m);
+        delegates[BaseAttributes::URL_OUT_ATTRIBUTE().getId()] =
+            new URLDelegate(DialogUtils::prepareDocumentsFileFilter(format, true), QString(), false, false, true, NULL, format);
         delegates[BaseAttributes::FILE_MODE_ATTRIBUTE().getId()] = new FileModeDelegate(attrs.size() > 2);
     }
     proto->setEditor(new DelegateEditor(delegates));

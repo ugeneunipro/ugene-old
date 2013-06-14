@@ -31,12 +31,13 @@
 namespace U2 {
 
 /************************************************************************/
-/* WizardAttributeController */
+/* PropertyWizardController */
 /************************************************************************/
 PropertyWizardController::PropertyWizardController(WizardController *wc, AttributeWidget *_widget)
-: WidgetController(wc), widget(_widget)
+: WidgetController(wc), widget(_widget), _tags(NULL)
 {
     actor = WorkflowUtils::actorById(wc->getCurrentActors(), widget->getActorId());
+    wc->addPropertyController(widget->getInfo(), this);
 }
 
 PropertyWizardController::~PropertyWizardController() {
@@ -48,7 +49,15 @@ Attribute * PropertyWizardController::attribute() {
 }
 
 void PropertyWizardController::sl_valueChanged(const QVariant &newValue) {
-    wc->setWidgetValue(widget->getInfo(), newValue);
+    wc->setAttributeValue(widget->getInfo(), newValue);
+}
+
+void PropertyWizardController::updateGUI(const QVariant &newValue) {
+    emit si_updateGUI(newValue);
+}
+
+DelegateTags * PropertyWizardController::tags() const {
+    return _tags;
 }
 
 /************************************************************************/
@@ -87,7 +96,7 @@ void InUrlDatasetsController::sl_datasetsChanged() {
 }
 
 /************************************************************************/
-/* SimpleAttributeController */
+/* DefaultPropertyController */
 /************************************************************************/
 DefaultPropertyController::DefaultPropertyController(WizardController *wc, AttributeWidget *widget, int _labelSize)
 : PropertyWizardController(wc, widget), labelSize(_labelSize)
@@ -106,6 +115,7 @@ QWidget * DefaultPropertyController::createGUI(U2OpStatus &os) {
     PropertyWidget *propWidget = createPropertyWidget(os);
     CHECK_OP(os, NULL);
     connect(propWidget, SIGNAL(si_valueChanged(const QVariant &)), SLOT(sl_valueChanged(const QVariant &)));
+    connect(this, SIGNAL(si_updateGUI(const QVariant &)), propWidget, SLOT(setValue(const QVariant &)));
     propWidget->setValue(wc->getAttributeValue(widget->getInfo()));
 
     QString label = widget->getProperty(AttributeInfo::LABEL);
@@ -130,12 +140,13 @@ PropertyWidget * DefaultPropertyController::createPropertyWidget(U2OpStatus &os)
 
     if (NULL != delegate) {
         result = delegate->createWizardWidget(os, NULL);
+        _tags = new DelegateTags(*delegate->tags());
+        result->setDelegateTags(tags());
         CHECK_OP(os, NULL);
     } else if (BaseTypes::BOOL_TYPE() == attribute()->getAttributeType()) {
         result = ComboBoxWidget::createBooleanWidget();
     } else if (BaseTypes::URL_DATASETS_TYPE() == attribute()->getAttributeType()) {
-        URLLineEdit *lineEdit = new URLLineEdit("", "", true, false, false, NULL);
-        result = new URLWidget(lineEdit);
+        result = new URLWidget("", true, false, false, new DelegateTags());
     } else {
         result = new DefaultPropertyWidget();
     }

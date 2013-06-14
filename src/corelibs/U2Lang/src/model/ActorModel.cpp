@@ -418,7 +418,7 @@ Actor* ActorPrototype::createInstance(const ActorId &actorId, AttributeScript *s
             editor->setConfiguration(proc);
             proc->setEditor(editor);
         } else {
-            proc->setEditor(ed);
+            proc->setEditor(ed->clone());
         }
     }
     return proc;

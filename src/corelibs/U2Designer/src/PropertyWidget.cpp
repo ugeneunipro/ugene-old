@@ -321,10 +321,10 @@ void ComboBoxWithChecksWidget::sl_itemChanged( QStandardItem * item ){
 /************************************************************************/
 /* URLWidget */
 /************************************************************************/
-URLWidget::URLWidget(URLLineEdit *_urlLine, QWidget *parent)
-: PropertyWidget(parent), urlLine(_urlLine)
+URLWidget::URLWidget(const QString &type, bool multi, bool isPath, bool saveFile, DelegateTags *tags, QWidget *parent)
+: PropertyWidget(parent, tags)
 {
-    SAFE_POINT(NULL != urlLine, "NULL url line widget", );
+    urlLine = new URLLineEdit(type, multi, isPath, saveFile, this);
     urlLine->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
     connect(urlLine, SIGNAL(si_finished()), SIGNAL(finished()));
     connect(urlLine, SIGNAL(textChanged(const QString &)), SLOT(sl_textChanged(const QString &)));

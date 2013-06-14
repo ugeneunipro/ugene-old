@@ -144,6 +144,7 @@ void WriteAssemblyWorkerFactory::init() {
     constr.addFlagToSupport(DocumentFormatFlag_SupportWriting);
     QList<DocumentFormatId> supportedFormats = AppContext::getDocumentFormatRegistry()->selectFormats(constr);
     CHECK(!supportedFormats.isEmpty(), );
+    DocumentFormatId format = supportedFormats.contains(BaseDocumentFormats::BAM) ? BaseDocumentFormats::BAM : supportedFormats.first();
 
     Descriptor inDesc(BasePorts::IN_ASSEMBLY_PORT_ID(),
         WriteBAMWorker::tr("Assembly"),
@@ -168,9 +169,7 @@ void WriteAssemblyWorkerFactory::init() {
     QList<Attribute*> attrs;
     Attribute *docFormatAttr = NULL;
     {
-        SAFE_POINT(!supportedFormats.isEmpty(), "No assembly formats", );
-        docFormatAttr = new Attribute(BaseAttributes::DOCUMENT_FORMAT_ATTRIBUTE(), BaseTypes::STRING_TYPE(), false, 
-            supportedFormats.contains(BaseDocumentFormats::BAM) ? BaseDocumentFormats::BAM : supportedFormats.first());
+        docFormatAttr = new Attribute(BaseAttributes::DOCUMENT_FORMAT_ATTRIBUTE(), BaseTypes::STRING_TYPE(), false, format);
         attrs << docFormatAttr;
 
         Descriptor indexDescr(INDEX_ATTRIBUTE_ID,
@@ -182,9 +181,8 @@ void WriteAssemblyWorkerFactory::init() {
         attrs << indexAttr;
     }
 
-    WriteDocActorProto *childProto = new WriteDocActorProto(protoDesc, GObjectTypes::ASSEMBLY, portDescs, inDesc.getId(), attrs);
-    IntegralBusActorPrototype *proto = childProto;
-    docFormatAttr->addRelation(new FileExtensionRelation(childProto->getUrlAttr()->getId()));
+    WriteDocActorProto *proto = new WriteDocActorProto(format, protoDesc, portDescs, inDesc.getId(), attrs);
+    docFormatAttr->addRelation(new FileExtensionRelation(proto->getUrlAttr()->getId()));
 
     // set up delegates
     {
@@ -192,10 +190,7 @@ void WriteAssemblyWorkerFactory::init() {
         foreach (const DocumentFormatId &fid, supportedFormats) {
             formatsMap[fid] = fid;
         }
-
-        ComboBoxDelegate *formatComboDelegate = new ComboBoxDelegate(formatsMap);
-        QObject::connect(formatComboDelegate, SIGNAL(si_valueChanged(const QString &)), childProto->getUrlDelegate(), SLOT(sl_formatChanged(const QString &)));
-        proto->getEditor()->addDelegate(formatComboDelegate, BaseAttributes::DOCUMENT_FORMAT_ATTRIBUTE().getId());
+        proto->getEditor()->addDelegate(new ComboBoxDelegate(formatsMap), BaseAttributes::DOCUMENT_FORMAT_ATTRIBUTE().getId());
     }
     proto->setPrompter(new WriteDocPrompter(WriteBAMWorker::tr("Save all assemblies from <u>%1</u> to <u>%2</u>."),
         BaseSlots::ASSEMBLY_SLOT().getId()));

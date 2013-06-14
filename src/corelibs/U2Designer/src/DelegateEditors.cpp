@@ -39,6 +39,12 @@
 
 namespace U2 {
 
+DelegateEditor::DelegateEditor(const DelegateEditor &other) {
+    foreach (const QString &id, other.delegates.keys()) {
+        delegates[id] = other.delegates[id]->clone();
+    }
+}
+
 /********************************
  * SpinBoxDelegate
  ********************************/
@@ -269,9 +275,16 @@ QVariant ComboBoxWithChecksDelegate::getDisplayValue(const QVariant& val) const 
 /********************************
 * URLDelegate
 ********************************/
+URLDelegate::URLDelegate(const QString& filter, const QString& type, bool multi, bool isPath, bool saveFile, QObject *parent, const QString &format)
+: PropertyDelegate(parent), type(type), multi(multi), isPath(isPath), saveFile(saveFile),
+currentEditor(NULL)
+{
+    tags()->set("filter", filter);
+    tags()->set("format", format);
+}
+
 URLWidget * URLDelegate::createWidget(QWidget *parent) const {
-    URLLineEdit *documentURLEdit = new URLLineEdit(FileFilter, type, multi, isPath, saveFile, NULL, fileFormat);
-    return new URLWidget(documentURLEdit, parent);
+    return new URLWidget(type, multi, isPath, saveFile, tags(), parent);
 }
 
 PropertyWidget * URLDelegate::createWizardWidget(U2OpStatus & /*os*/, QWidget *parent) const {
@@ -321,21 +334,6 @@ void URLDelegate::setModelData(QWidget *editor, QAbstractItemModel *model,
         }
         model->setData(index, vl, ConfigurationEditor::ItemListValueRole);
     }
-}
-
-void URLDelegate::sl_formatChanged(const QString &newFormat) {
-    if (newFormat.isEmpty()) {
-        return;
-    }
-
-    DocumentFormat *format = AppContext::getDocumentFormatRegistry()->getFormatById(newFormat);
-    QString fileFilter;
-    if (NULL != format) {
-        FileFilter = DialogUtils::prepareDocumentsFileFilter(newFormat, true);
-    } else {
-        FileFilter = newFormat + " files (*." + newFormat + ")";
-    }
-    fileFormat = newFormat;
 }
 
 /********************************

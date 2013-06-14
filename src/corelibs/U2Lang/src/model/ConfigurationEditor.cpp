@@ -25,8 +25,8 @@
 
 namespace U2 {
 
-PropertyWidget::PropertyWidget(QWidget *parent)
-    : QWidget(parent)
+PropertyWidget::PropertyWidget(QWidget *parent, DelegateTags *_tags)
+    : QWidget(parent), _tags(_tags)
 {
     QHBoxLayout *l = new QHBoxLayout();
     l->setContentsMargins(0, 0, 0, 0);
@@ -52,10 +52,19 @@ void PropertyWidget::setRequired() {
 
 }
 
+const DelegateTags * PropertyWidget::tags() const {
+    return _tags;
+}
+
+void PropertyWidget::setDelegateTags(const DelegateTags *value) {
+    _tags = value;
+}
+
 PropertyDelegate::PropertyDelegate(QObject *parent)
 : QItemDelegate(parent)
 {
-
+    _tags = new DelegateTags();
+    _tags->setParent(this);
 }
 
 PropertyDelegate::~PropertyDelegate() {
@@ -73,6 +82,37 @@ PropertyDelegate * PropertyDelegate::clone() {
 PropertyWidget * PropertyDelegate::createWizardWidget(U2OpStatus &os, QWidget * /*parent*/) const {
     os.setError("Unsupported operation");
     return NULL;
+}
+
+DelegateTags * PropertyDelegate::tags() const {
+    return _tags;
+}
+
+DelegateTags::DelegateTags(QObject *parent)
+: QObject(parent)
+{
+
+}
+
+DelegateTags::DelegateTags(const DelegateTags &other) {
+    tags = other.tags;
+}
+
+QVariant DelegateTags::get(const QString &name) const {
+    return tags.value(name);
+}
+
+void DelegateTags::set(const QString &name, const QVariant &value) {
+    tags[name] = value;
+}
+
+void DelegateTags::set(const DelegateTags &other) {
+    tags = other.tags;
+}
+
+QString DelegateTags::getString(const DelegateTags *tags, const QString &name) {
+    CHECK(NULL != tags, "");
+    return tags->get(name).toString();
 }
 
 } // U2

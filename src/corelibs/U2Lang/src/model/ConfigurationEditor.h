@@ -33,6 +33,7 @@ class QWidget;
 namespace U2 {
 
 class ConfigurationEditor;
+class DelegateTags;
 class PropertyDelegate;
 
 /**
@@ -79,11 +80,10 @@ signals:
 class U2LANG_EXPORT PropertyWidget : public QWidget {
     Q_OBJECT
 public:
-    PropertyWidget(QWidget *parent = NULL);
+    PropertyWidget(QWidget *parent = NULL, DelegateTags *tags = NULL);
     virtual ~PropertyWidget();
 
     virtual QVariant value() = 0;
-    virtual void setValue(const QVariant &value) = 0;
     virtual void setRequired();
 
     /**
@@ -92,11 +92,20 @@ public:
      */
     virtual QWidget * getField();
 
+    void setDelegateTags(const DelegateTags *value);
+    const DelegateTags * tags() const;
+
+public slots:
+    virtual void setValue(const QVariant &value) = 0;
+
 signals:
     void si_valueChanged(const QVariant &value);
 
 protected:
     void addMainWidget(QWidget *w);
+
+protected:
+    const DelegateTags *_tags;
 };
 
 /**
@@ -110,7 +119,24 @@ public:
     virtual QVariant getDisplayValue(const QVariant &v) const;
     virtual PropertyDelegate * clone();
     virtual PropertyWidget * createWizardWidget(U2OpStatus &os, QWidget *parent) const;
+    DelegateTags * tags() const;
+protected:
+    DelegateTags *_tags;
 }; // PropertyDelegate
+
+class U2LANG_EXPORT DelegateTags : public QObject {
+public:
+    DelegateTags(QObject *parent = NULL);
+    DelegateTags(const DelegateTags &other);
+
+    QVariant get(const QString &name) const;
+    void set(const QString &name, const QVariant &value);
+    void set(const DelegateTags &other);
+
+    static QString getString(const DelegateTags *tags, const QString &name);
+private:
+    QVariantMap tags;
+};
 
 }//GB2 namespace
 

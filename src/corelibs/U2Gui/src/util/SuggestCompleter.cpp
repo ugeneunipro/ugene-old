@@ -143,15 +143,8 @@ void BaseCompleter::doneCompletion(){
     editor->setFocus();
     QTreeWidgetItem *item = popup->currentItem();
     if (item) {
-        QString absPath("");
-        if( dynamic_cast<FilenameCompletionFiller*>(filler) ){
-            QFileInfo f(editor->text());
-            absPath = f.absoluteDir().absolutePath();
-            if(!absPath.endsWith("/")){
-                absPath.append("/");
-            }
-        }        
-        editor->setText(absPath + item->text(0));
+        QString result = filler->finalyze(editor->text(), item->text(0));
+        editor->setText(result);
         editor->setCursorPosition(0);
         emit si_editingFinished();
     }
@@ -164,46 +157,6 @@ void BaseCompleter::sl_textEdited( const QString& typedText){
     }
     showCompletion(filler->getSuggestions(typedText));
 }
-
-QStringList FilenameCompletionFiller::getSuggestions(const QString &str){
-    QString fName = str;
-    if(fName.endsWith(".")){
-        fName = fName.left(fName.size()-1);
-    }
-
-    QStringList choices, hits;
-    QFileInfo f(fName);
-    QString curExt = f.suffix(), baseName = f.completeBaseName(), completeFileName = f.fileName();
-    DocumentFormat *format = AppContext::getDocumentFormatRegistry()->getFormatById(fileFormat);
-    QStringList formats;
-    if(format){
-        formats = format->getSupportedDocumentFileExtensions();
-    }
-    formats.append("gz");
-    choices.append(completeFileName);
-    foreach(QString ext, formats){
-        if(!curExt.isEmpty()){
-            if (ext.startsWith(curExt, Qt::CaseInsensitive)){
-                choices.append(baseName + "." + ext);
-                if (ext != "gz"){
-                    choices.append(baseName + "." + ext + ".gz");
-                }
-            }
-        }  
-    }
-
-    if(choices.size() == 1){
-        foreach(QString ext, formats){
-            choices.append(completeFileName + "." + ext);
-            if (ext != "gz"){
-                choices.append(completeFileName + "." + ext + ".gz");
-            }
-        }
-    }
-
-    return choices;
-}
-
 
 QStringList MSACompletionFiller::getSuggestions(const QString &str){
     QStringList result;
@@ -220,6 +173,10 @@ QStringList MSACompletionFiller::getSuggestions(const QString &str){
     }
 
     return  result;
+}
+
+QString MSACompletionFiller::finalyze(const QString & /*editorText*/, const QString &suggestion) {
+    return suggestion;
 }
 
 }

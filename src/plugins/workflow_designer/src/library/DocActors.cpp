@@ -29,8 +29,8 @@
 #include <U2Lang/BaseAttributes.h>
 #include <U2Lang/URLAttribute.h>
 #include <U2Core/DocumentModel.h>
+#include <U2Core/FormatUtils.h>
 #include <U2Core/SaveDocumentTask.h>
-#include <U2Gui/DialogUtils.h>
 
 namespace U2 {
 namespace Workflow {
@@ -62,10 +62,10 @@ bool DocActorProto::isAcceptableDrop(const QMimeData * md, QVariantMap * params,
 
 QString DocActorProto::prepareDocumentFilter() {
     if( !fid.isEmpty() ) {
-        return DialogUtils::prepareDocumentsFileFilter( fid, true );
+        return FormatUtils::prepareDocumentsFileFilter( fid, true );
     } else {
         assert( !type.isEmpty() );
-        return DialogUtils::prepareDocumentsFileFilterByObjType( type, true );
+        return FormatUtils::prepareDocumentsFileFilterByObjType( type, true );
     }
 }
 
@@ -86,13 +86,13 @@ bool ReadDocActorProto::isAcceptableDrop(const QMimeData * md, QVariantMap * par
  *****************************/
 WriteDocActorProto::WriteDocActorProto(const DocumentFormatId& _fid, const Descriptor& _desc, const QList<PortDescriptor*>& _ports, 
                                        const QString & portId, const QList<Attribute*>& _attrs, bool addValidator)
-: DocActorProto( _fid, _desc, _ports, _attrs ), outPortId(portId), urlDelegate(NULL) {
+: DocActorProto( _fid, _desc, _ports, _attrs ), outPortId(portId) {
     construct(addValidator);
 }
 
 WriteDocActorProto::WriteDocActorProto(const Descriptor& _desc, const GObjectType & t, const QList<PortDescriptor*>& _ports, 
                                        const QString & portId, const QList<Attribute*>& _attrs, bool addValidator)
-: DocActorProto(_desc, t, _ports, _attrs), outPortId(portId), urlDelegate(NULL) {
+: DocActorProto(_desc, t, _ports, _attrs), outPortId(portId) {
     construct(addValidator);
 }
 
@@ -106,8 +106,7 @@ void WriteDocActorProto::construct(bool addValidator) {
     attrs << new Attribute(BaseAttributes::FILE_MODE_ATTRIBUTE(), BaseTypes::NUM_TYPE(), false, SaveDoc_Roll);
 
     QMap< QString, PropertyDelegate* > delegateMap;
-    urlDelegate = new URLDelegate(prepareDocumentFilter(), QString(), false, false, true, 0, fid);
-    delegateMap[BaseAttributes::URL_OUT_ATTRIBUTE().getId()] = urlDelegate;
+    delegateMap[BaseAttributes::URL_OUT_ATTRIBUTE().getId()] = new URLDelegate(prepareDocumentFilter(), QString(), false, false, true, 0, fid);
     delegateMap[BaseAttributes::FILE_MODE_ATTRIBUTE().getId()] = new FileModeDelegate(attrs.size() > 2);
 
     setEditor(new DelegateEditor(delegateMap));
@@ -115,10 +114,6 @@ void WriteDocActorProto::construct(bool addValidator) {
     if (addValidator) {
         setValidator(new ScreenedParamValidator(BaseAttributes::URL_OUT_ATTRIBUTE().getId(), ports.first()->getId(), BaseSlots::URL_SLOT().getId()));
     }
-}
-
-URLDelegate *WriteDocActorProto::getUrlDelegate() {
-    return urlDelegate;
 }
 
 /****************************

@@ -40,6 +40,7 @@
 
 namespace U2 {
 
+class PropertyWizardController;
 class WidgetController;
 class WizardPageController;
 
@@ -60,7 +61,7 @@ public:
     const QList<Actor*> & getCurrentActors() const;
 
     QVariant getAttributeValue(const AttributeInfo &info) const;
-    void setWidgetValue(const AttributeInfo &info, const QVariant &value);
+    void setAttributeValue(const AttributeInfo &info, const QVariant &value);
 
     QVariant getVariableValue(const QString &var);
     void setVariableValue(const QString &var, const QString &value);
@@ -80,6 +81,8 @@ public:
     void setBroken();
     bool isBroken() const;
 
+    void addPropertyController(const AttributeInfo &info, PropertyWizardController *ctrl);
+
 private:
     bool broken;
     Schema *schema;
@@ -90,6 +93,7 @@ private:
     QMap<QString, Variable> vars;
     QMap<QString, SelectorActors> selectors; // varName <-> actors
     QVariantMap values;
+    QMap<QString, PropertyWizardController*> propertyControllers;
 
 private:
     QWizardPage * createPage(WizardPage *page);
@@ -97,6 +101,8 @@ private:
     void registerSelector(ElementSelectorWidget *widget);
     void replaceCurrentActor(const QString &actorId, const QString &selectorValue);
     void assignParameters();
+    void saveDelegateTags();
+    DelegateTags * getTags(const AttributeInfo &info);
 };
 
 /************************************************************************/

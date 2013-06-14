@@ -20,9 +20,12 @@
  */
 
 #include "AttributeRelation.h"
+#include <U2Core/FormatUtils.h>
 #include <U2Core/GUrl.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/AppContext.h>
+
+#include <U2Lang/ConfigurationEditor.h>
 
 namespace U2 {
 
@@ -38,7 +41,8 @@ VisibilityRelation::VisibilityRelation(const QString &relatedAttrId, const QVari
     visibilityValues << visibilityValue;
 }
 
-QVariant VisibilityRelation::getAffectResult(const QVariant &influencingValue, const QVariant &) const {
+QVariant VisibilityRelation::getAffectResult(const QVariant &influencingValue, const QVariant &,
+    DelegateTags *, DelegateTags *) const {
     foreach (const QVariant &v, visibilityValues) {
         if (v == influencingValue) {
             return true;
@@ -47,15 +51,26 @@ QVariant VisibilityRelation::getAffectResult(const QVariant &influencingValue, c
     return false;
 }
 
-QVariant FileExtensionRelation::getAffectResult(const QVariant &influencingValue, const QVariant &dependentValue) const {
+QVariant FileExtensionRelation::getAffectResult(const QVariant &influencingValue, const QVariant &dependentValue,
+    DelegateTags * /*infTags*/, DelegateTags *depTags) const {
+
+    QString newFormatId = influencingValue.toString();
+    DocumentFormat *newFormat = AppContext::getDocumentFormatRegistry()->getFormatById(newFormatId);
+    if (NULL != depTags) {
+        depTags->set("format", newFormatId);
+        QString filter = newFormatId + " files (*." + newFormatId + ")";
+        if (NULL != newFormat) {
+            filter = FormatUtils::prepareDocumentsFileFilter(newFormatId, true);
+        }
+        depTags->set("filter", filter);
+    }
+
     QString urlStr = dependentValue.toString();
     if (urlStr.isEmpty()) {
         return "";
     }
-    QString newFormatId = influencingValue.toString();
     GUrl url(urlStr);
 
-    DocumentFormat *newFormat = AppContext::getDocumentFormatRegistry()->getFormatById(newFormatId);
     QString extension;
     if (NULL == newFormat) {
         extension = newFormatId;

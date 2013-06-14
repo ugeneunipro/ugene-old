@@ -26,6 +26,8 @@
 
 namespace U2 {
 
+class DelegateTags;
+
 enum RelationType {
     VISIBILITY,
     FILE_EXTENSION,
@@ -40,9 +42,19 @@ public:
     AttributeRelation(const QString &relatedAttrId)
         : relatedAttrId(relatedAttrId) {}
 
-    virtual QVariant getAffectResult(const QVariant &influencingValue, const QVariant &dependentValue) const = 0;
+    /**
+     * Updates tags of delegates
+     */
+    virtual QVariant getAffectResult(const QVariant &influencingValue, const QVariant &dependentValue,
+        DelegateTags *infTags = NULL, DelegateTags *depTags = NULL) const = 0;
     virtual RelationType getType() const = 0;
     QString getRelatedAttrId() const {return relatedAttrId;}
+
+    /**
+     * Some relations changes value of the dependent attribute,
+     * other relations changes only some properties of attributes (e.g. visibility)
+     */
+    virtual bool valueChangingRelation() const {return true;}
 
     virtual ~AttributeRelation() {}
 
@@ -58,8 +70,10 @@ public:
     VisibilityRelation(const QString &relatedAttrId, const QVariantList &visibilityValues);
     VisibilityRelation(const QString &relatedAttrId, const QVariant &visibilityValue);
 
-    virtual QVariant getAffectResult(const QVariant &influencingValue, const QVariant &dependentValue) const;
+    virtual QVariant getAffectResult(const QVariant &influencingValue, const QVariant &dependentValue,
+        DelegateTags *infTags, DelegateTags *depTags) const;
     virtual RelationType getType() const {return VISIBILITY;}
+    virtual bool valueChangingRelation() const {return false;}
 
 private:
     QVariantList visibilityValues;
@@ -73,7 +87,8 @@ public:
     FileExtensionRelation(const QString &relatedAttrId)
         : AttributeRelation(relatedAttrId){}
 
-    virtual QVariant getAffectResult(const QVariant &influencingValue, const QVariant &dependentValue) const;
+    virtual QVariant getAffectResult(const QVariant &influencingValue, const QVariant &dependentValue,
+        DelegateTags *infTags, DelegateTags *depTags) const;
     virtual RelationType getType() const {return FILE_EXTENSION;}
 };
 
