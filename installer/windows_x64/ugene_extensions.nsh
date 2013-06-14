@@ -57,7 +57,7 @@ SectionGroup "${un}Associate file extensions"
   !insertmacro AssociateExtSection "${un}" ".genbank" "Genbank plain text file"     "1"
 
 ;GFF format
-  !insertmacro AssociateExtSection "${un}" ".gff"     "GFF firmat"                  "1"
+  !insertmacro AssociateExtSection "${un}" ".gff"     "GFF format"                  "1"
 
 ;MSF format
   !insertmacro AssociateExtSection "${un}" ".msf"     "MSF multiple sequence file"  "1"

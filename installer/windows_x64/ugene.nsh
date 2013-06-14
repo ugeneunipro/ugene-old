@@ -59,9 +59,11 @@
 
 Function "checkInstDir"
    CreateDirectory $INSTDIR
+   ClearErrors
+   CreateDirectory $INSTDIR
    Iferrors 0 +3
    MessageBox MB_ICONEXCLAMATION 'The directory "$INSTDIR" is not available for writing. Please choose another directory.'
-   abort
+   Abort
 FunctionEnd
 
 !include ugene_extensions.nsh
@@ -183,8 +185,8 @@ SetRegView 64
 
     SetOutPath $INSTDIR\plugins
     File /r /x .svn "includes\plugins\*.*"
-
-    !insertmacro AddPlugin annotator
+	
+	!insertmacro AddPlugin annotator
     !insertmacro AddPlugin ball
     !insertmacro AddPlugin biostruct3d_view
     !insertmacro AddPlugin browser_support
@@ -222,7 +224,7 @@ SetRegView 64
     !insertmacro AddPlugin weight_matrix
     !insertmacro AddPlugin workflow_designer
     !insertmacro AddPlugin variants
-    
+  
     SetOutPath $INSTDIR\tools
     File /r /x .svn "includes\tools\*.*"
     
@@ -301,6 +303,7 @@ Section Uninstall
     # Delete Uninstaller And Unistall Registry Entries
     Delete "$INSTDIR\Uninst.exe"
     RMDir /r "$INSTDIR"
+	SetRegView 64
     DeleteRegKey HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\${FullProductName}"
     DeleteRegKey HKCU "Software\${CompanyName}\${ProductName}"
 SectionEnd
