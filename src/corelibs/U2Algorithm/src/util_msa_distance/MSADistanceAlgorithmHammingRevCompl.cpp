@@ -86,6 +86,7 @@ void MSADistanceAlgorithmHammingRevCompl::run() {
             distanceTable[i][j] = distanceTable[j][i] = sim;
             lock.unlock();
         }
+        stateInfo.setProgress(i * 100 / nSeq);
     }
 }
 
