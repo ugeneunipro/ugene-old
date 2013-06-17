@@ -332,6 +332,19 @@ void Actor::replaceActor(Actor *oldActor, Actor *newActor, const QList<PortMappi
     }
 }
 
+void Actor::updateDelegateTags() {
+    CHECK(NULL != editor, );
+    foreach (Attribute *influencing, getAttributes()) {
+        foreach (const AttributeRelation *rel, influencing->getRelations()) {
+            PropertyDelegate *dependentDelegate = editor->getDelegate(rel->getRelatedAttrId());
+            if (NULL == dependentDelegate) {
+                continue;
+            }
+            rel->updateDelegateTags(influencing->getAttributePureValue(), dependentDelegate->tags());
+        }
+    }
+}
+
 /**************************
  * ActorPrototype
  **************************/

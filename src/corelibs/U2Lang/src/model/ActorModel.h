@@ -209,7 +209,9 @@ public:
 
     void update(const QMap<ActorId, ActorId> &actorsMapping);
     void replaceActor(Actor *oldActor, Actor *newActor, const QList<PortMapping> &mappings);
-    
+
+    void updateDelegateTags();
+
 signals:
     void si_labelChanged();
     void si_modified();

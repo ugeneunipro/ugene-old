@@ -29,6 +29,10 @@
 
 namespace U2 {
 
+void AttributeRelation::updateDelegateTags(const QVariant & /*influencingValue*/, DelegateTags * /*dependentTags*/) const {
+
+}
+
 VisibilityRelation::VisibilityRelation(const QString &relatedAttrId, const QVariantList &_visibilityValues)
 : AttributeRelation(relatedAttrId), visibilityValues(_visibilityValues)
 {
@@ -56,14 +60,7 @@ QVariant FileExtensionRelation::getAffectResult(const QVariant &influencingValue
 
     QString newFormatId = influencingValue.toString();
     DocumentFormat *newFormat = AppContext::getDocumentFormatRegistry()->getFormatById(newFormatId);
-    if (NULL != depTags) {
-        depTags->set("format", newFormatId);
-        QString filter = newFormatId + " files (*." + newFormatId + ")";
-        if (NULL != newFormat) {
-            filter = FormatUtils::prepareDocumentsFileFilter(newFormatId, true);
-        }
-        depTags->set("filter", filter);
-    }
+    updateDelegateTags(influencingValue, depTags);
 
     QString urlStr = dependentValue.toString();
     if (urlStr.isEmpty()) {
@@ -129,6 +126,19 @@ QVariant FileExtensionRelation::getAffectResult(const QVariant &influencingValue
         urlString += ".gz";
     }
     return urlString;
+}
+
+void FileExtensionRelation::updateDelegateTags(const QVariant &influencingValue, DelegateTags *dependentTags) const {
+    QString newFormatId = influencingValue.toString();
+    DocumentFormat *newFormat = AppContext::getDocumentFormatRegistry()->getFormatById(newFormatId);
+    if (NULL != dependentTags) {
+        dependentTags->set("format", newFormatId);
+        QString filter = newFormatId + " files (*." + newFormatId + ")";
+        if (NULL != newFormat) {
+            filter = FormatUtils::prepareDocumentsFileFilter(newFormatId, true);
+        }
+        dependentTags->set("filter", filter);
+    }
 }
 
 } // U2

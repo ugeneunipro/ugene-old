@@ -48,6 +48,7 @@ public:
     virtual QVariant getAffectResult(const QVariant &influencingValue, const QVariant &dependentValue,
         DelegateTags *infTags = NULL, DelegateTags *depTags = NULL) const = 0;
     virtual RelationType getType() const = 0;
+    virtual void updateDelegateTags(const QVariant &influencingValue, DelegateTags *dependentTags) const;
     QString getRelatedAttrId() const {return relatedAttrId;}
 
     /**
@@ -89,6 +90,7 @@ public:
 
     virtual QVariant getAffectResult(const QVariant &influencingValue, const QVariant &dependentValue,
         DelegateTags *infTags, DelegateTags *depTags) const;
+    virtual void updateDelegateTags(const QVariant &influencingValue, DelegateTags *dependentTags) const;
     virtual RelationType getType() const {return FILE_EXTENSION;}
 };
 

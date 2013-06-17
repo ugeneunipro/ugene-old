@@ -1539,6 +1539,7 @@ static void parseBody(WorkflowSchemaReaderData & data) {
             tokenizer.take();
             Actor * proc = HRSchemaSerializer::parseElementsDefinition(tokenizer, tok, data.actorMap, data.idMap);
             data.schema->addProcess(proc);
+            proc->updateDelegateTags();
             tokenizer.assertToken(HRSchemaSerializer::BLOCK_END);
         } else {
             throw HRSchemaSerializer::ReadFailed(HRSchemaSerializer::UNDEFINED_CONSTRUCT.arg(tok).arg(next));
