@@ -21,7 +21,9 @@
 
 #include "U2SqlHelpers.h"
 
+#include <U2Core/Counter.h>
 #include <U2Core/Log.h>
+#include <U2Core/Timer.h>
 #include <U2Core/U2SafePoints.h>
 
 #include <sqlite3.h>
@@ -220,6 +222,26 @@ bool SQLiteQuery::reset(bool clearBindings) {
 }
 
 bool SQLiteQuery::step() {
+    //static QMap<QString, GCounter*> timers;
+    //GCounter *timer = NULL;
+    //if (timers.contains(sql)) {
+    //    timer = timers[sql];
+    //} else {
+    //    timer = new GCounter(sql, TimeCounter::getCounterSuffix(), TimeCounter::getCounterScale());
+    //    timers[sql] = timer;
+    //}
+    //TimeCounter tvar(timer, true);
+
+    //static QMap<QString, GReportableCounter*> ctrs;
+    //GReportableCounter *ctr = NULL;
+    //if (ctrs.contains(sql)) {
+    //    ctr = ctrs[sql];
+    //} else {
+    //    ctr = new GReportableCounter(sql, "", 1);
+    //    ctrs[sql] = ctr;
+    //}
+    //SimpleEventCounter cvar(ctr);
+
     if (hasError()) {
         return false;
     }

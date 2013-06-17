@@ -64,6 +64,7 @@ QString WorkflowMonitor::actorName(const QString &id) const {
 }
 
 void WorkflowMonitor::addOutputFile(const QString &url, const QString &producer) {
+    CHECK(!url.isEmpty(), );
     FileInfo info(url, producer);
     CHECK(!outputFiles.contains(info), );
 
