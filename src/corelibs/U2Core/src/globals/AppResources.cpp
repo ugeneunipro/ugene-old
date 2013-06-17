@@ -206,7 +206,7 @@ AppResource* AppResourcePool::getResource(int id) const {
 
 
 AppResourcePool* AppResourcePool::instance() {
-    return AppContext::getAppSettings()->getAppResourcePool();
+    return AppContext::getAppSettings() ? AppContext::getAppSettings()->getAppResourcePool() : NULL;
 }
 
 }//namespace

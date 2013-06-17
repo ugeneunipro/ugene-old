@@ -111,9 +111,12 @@ private:
     static const int logMemoryInfoEvery = 20;
 
     QString formMemInfo() {
-        size_t memoryBytes = AppResourcePool::instance()->getCurrentAppMemory();
+        AppResourcePool* pool = AppResourcePool::instance();
+        CHECK(pool, QString());
+
+        size_t memoryBytes = pool->getCurrentAppMemory();
         QString memInfo = QString("AppMemory: %1Mb").arg(memoryBytes/(1000*1000));
-        AppResource *mem = AppResourcePool::instance()->getResource(RESOURCE_MEMORY);
+        AppResource *mem = pool->getResource(RESOURCE_MEMORY);
         if (mem) {
             memInfo += QString("; Locked memory AppResource: %1/%2").arg(mem->maxUse() - mem->available()).arg(mem->maxUse());
         }
