@@ -28,7 +28,7 @@
 namespace U2 {
 
 
-LogServer::LogServer() {
+LogServer::LogServer() : listenerMutex(QMutex::Recursive) {
     qRegisterMetaType<LogMessage>("LogMessage");
 }
 
@@ -70,7 +70,7 @@ void LogServer::removeListner(LogListener* listener)
 
 void LogServer::message(const LogMessage& m)
 {
-    emit si_message(m);
+    QMutexLocker l(&listenerMutex);
     foreach (LogListener* listner, listeners)
     {
         listner->onMessage(m);

@@ -27,7 +27,7 @@
 
 namespace U2 {
 
-class GTLogTracer : public QObject {
+class GTLogTracer : public QObject, public LogListener {
     Q_OBJECT
 public:
     GTLogTracer();
@@ -35,8 +35,7 @@ public:
     void reset() { wasError = false; }
     bool hasError() const { return wasError; }
 
-protected slots:
-    void sl_onMessage(const LogMessage& msg);
+    void onMessage(const LogMessage& msg);
 
 private:
     bool wasError;

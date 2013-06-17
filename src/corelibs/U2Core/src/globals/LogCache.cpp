@@ -27,8 +27,6 @@
 
 #include <stdio.h>
 
-#define MAX_CACHE_SIZE 5000
-
 namespace U2 {
 
 LogCache* LogCache::appGlobalCache = NULL;
@@ -56,27 +54,31 @@ bool LogFilter::matches(const LogMessage& msg) const {
 //////////////////////////////////////////////////////////////////////////
 // LogCache
 
-LogCache::LogCache() {
-    connect(LogServer::getInstance(), SIGNAL(si_message(const LogMessage&)), SLOT(sl_onMessage(const LogMessage&)));
+LogCache::LogCache(int maxLogMessages) : maxLogMessages(maxLogMessages) {
+    LogServer::getInstance()->addListner(this);
 }
 
 LogCache::~LogCache() {
+    LogServer::getInstance()->removeListner(this);
     while (!messages.empty()) {
         LogMessage* m = messages.takeFirst();
         delete m;
     }
 }
 
-void LogCache::sl_onMessage(const LogMessage& msg) {
+void LogCache::onMessage(const LogMessage& msg) {
+    lock.lockForWrite();
     if (!filter.isEmpty() && !filter.matches(msg)) {
+        lock.unlock();
         return;
     }
     messages.append(new LogMessage(msg.categories, msg.level, msg.text));
     updateSize();
+    lock.unlock();
 }
 
 void LogCache::updateSize() {
-    while (messages.size() > MAX_CACHE_SIZE) {
+    while (messages.size() > maxLogMessages) {
         LogMessage* m = messages.takeFirst();
         delete m;
     }
@@ -87,7 +89,23 @@ void LogCache::setAppGlobalInstance(LogCache* cache) {
     appGlobalCache = cache;
 }
 
+QList<LogMessage> LogCache::getLastMessages(int count) {
+    lock.lockForRead();
+    int cacheSize = messages.size();
+    if (count<0) {
+        count = cacheSize;
+    }
+    int lastToAdd = qMax(0, cacheSize-count);
 
+    QList<LogMessage> lastMessages;
+    for (int i = cacheSize; --i>=lastToAdd;) {
+        LogMessage* m = messages.at(i);
+        lastMessages.prepend(*m);
+    }
+    lock.unlock();
+
+    return lastMessages;
+}
 
 //////////////////////////////////////////////////////////////////////////
 // Cache EXT
@@ -117,7 +135,7 @@ bool LogCacheExt::setFileOutputEnabled(const QString& fileName) {
     return true;
 }
 
-void LogCacheExt::sl_onMessage(const LogMessage& msg) {
+void LogCacheExt::onMessage(const LogMessage& msg) {
     if (!filter.isEmpty() && !filter.matches(msg)) {
         return;
     }
@@ -139,7 +157,7 @@ void LogCacheExt::sl_onMessage(const LogMessage& msg) {
         file.flush();
     }
 
-    LogCache::sl_onMessage(msg);
+    LogCache::onMessage(msg);
 }
 
 void LogCacheExt::setFileOutputDisabled(){

@@ -80,8 +80,7 @@ private:
     QStringList categoryNames;
 };
 
-class U2CORE_EXPORT LogListener : public QObject {
-    Q_OBJECT
+class U2CORE_EXPORT LogListener {
 public:
     virtual void onMessage(const LogMessage& m) = 0;
 };
@@ -101,12 +100,10 @@ public:
 
 private:
     void message(const LogMessage& m);
+
     QList<Logger*> loggers;
     QList<LogListener*> listeners;
-
-
-signals:
-    void si_message(const LogMessage& m);
+    QMutex listenerMutex;
 };
 
 

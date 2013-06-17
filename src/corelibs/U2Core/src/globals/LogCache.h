@@ -26,8 +26,11 @@
 
 #include <QtCore/QFile>
 #include <QtCore/QFileInfo>
+#include <QtCore/QReadWriteLock>
 
 namespace U2 {
+
+#define MAX_CACHE_SIZE 5000
 
 class U2CORE_EXPORT LogFilterItem {
 public:
@@ -47,22 +50,24 @@ public:
 };
 
 
-class U2CORE_EXPORT LogCache : public QObject {
+class U2CORE_EXPORT LogCache : public QObject, public LogListener {
     Q_OBJECT
 public:
-    LogCache();
+    LogCache(int maxLogMessages = MAX_CACHE_SIZE);
     virtual ~LogCache();
 
     static void setAppGlobalInstance(LogCache* cache);
     static LogCache* getAppGlobalInstance() {return appGlobalCache;}
-    
-protected slots:
-    virtual void sl_onMessage(const LogMessage& msg);
+
+    virtual void onMessage(const LogMessage& msg);
+    QList<LogMessage> getLastMessages(int count = -1);
 
 private:
     static LogCache* appGlobalCache;
     void updateSize();
 
+    QReadWriteLock lock;
+    int maxLogMessages;
 public:
     QList<LogMessage*> messages;
     LogFilter filter;
@@ -82,8 +87,8 @@ public:
     void setFileOutputDisabled();
     bool isFileOutputEnabled() const {return fileEnabled;}
     QString getFileOutputPath() const {return QFileInfo(file).canonicalFilePath();}
-protected slots:
-    virtual void sl_onMessage(const LogMessage& msg);
+
+    virtual void onMessage(const LogMessage& msg);
 
 
 private:
