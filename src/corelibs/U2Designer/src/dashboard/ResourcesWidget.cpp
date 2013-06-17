@@ -82,7 +82,7 @@ void ResourcesWidget::runningWithProblems() {
 void ResourcesWidget::failed() {
     statusBar().removeClass("alert-info");
     statusBar().addClass("alert-error");
-    statusMessage().setPlainText(tr("The workflow task is failed!"));
+    statusMessage().setPlainText(tr("The workflow task has been finished with errors!"));
 }
 
 void ResourcesWidget::success() {

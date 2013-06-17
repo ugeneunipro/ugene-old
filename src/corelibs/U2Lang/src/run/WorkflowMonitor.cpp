@@ -121,7 +121,7 @@ void WorkflowMonitor::sl_taskStateChanged() {
         TaskState state = SUCCESS;
         if (task->isCanceled()) {
             state = CANCELLED;
-        } else if (task->hasError()) {
+        } else if (task->hasError() || !problems.isEmpty()) {
             state = FAILED;
         }
         emit si_taskStateChanged(state);
