@@ -531,13 +531,14 @@ int bcfview(int argc, char *argv[], UGENE_bcf_view_settings* settings, const cha
 		}
 	}
 	while (vcf_read(bp, hin, b) > 0) {
-        if (*(settings->cancelFlag)) {
-            break;
-        }
 		int is_indel, cons_llr = -1;
 		int64_t cons_gt = -1;
 		double em[10];
-		if ((vc.flag & VC_VARONLY) && strcmp(b->alt, "X") == 0) continue;
+        if (*(settings->cancelFlag)) {
+            break;
+        }
+
+        if ((vc.flag & VC_VARONLY) && strcmp(b->alt, "X") == 0) continue;
 		if ((vc.flag & VC_VARONLY) && vc.min_smpl_frac > 0.) {
 			extern int bcf_smpl_covered(const bcf1_t *b);
 			int n = bcf_smpl_covered(b);
