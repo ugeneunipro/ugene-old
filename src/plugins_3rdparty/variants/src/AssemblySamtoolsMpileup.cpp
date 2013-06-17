@@ -215,7 +215,7 @@ void SamtoolsMpileupTask::run(){
         return;
     }
 
-    
+    try {
     QByteArray mpileupArr = QString("mpileup").toLatin1();
     QByteArray seqArr = settings.refSeqUrl.toLocal8Bit();
     int argc1 = settings.assemblyUrls.size() + 2;
@@ -239,15 +239,19 @@ void SamtoolsMpileupTask::run(){
     mpileupSettings.max_indel_depth = settings.max_indel_depth;
     mpileupSettings.openq = settings.openq;
     mpileupSettings.pl_list = settings.pl_list.data();
+    mpileupSettings.cancelFlag = &(stateInfo.cancelFlag);
 
     int ret = bam_mpileup(argc1-1, argv1, &mpileupSettings, tmpMpileupOutputFile.toLocal8Bit().constData());
+    taskLog.details("mpileup has been finished");
 
     deleteArgv(argv1, argc1);
     if (ret == -1){
         setError("mpileup finished with an error");
         return;
     }
-    
+    if (stateInfo.cancelFlag) {
+        return;
+    }
 
     QByteArray ba = tmpMpileupOutputFile.toLocal8Bit();
     char* ar11 = "bcfview";
@@ -272,15 +276,18 @@ void SamtoolsMpileupTask::run(){
     bcfSettings.n1 = settings.n1;
     bcfSettings.n_perm = settings.n_perm;
     bcfSettings.min_perm_p = settings.min_perm_p;
+    bcfSettings.cancelFlag = &(stateInfo.cancelFlag);
 
    
     ret = bcfview(2, bcfViewArgv, &bcfSettings, tmpBcfViewOutputFile.toLocal8Bit().constData());
+    taskLog.details("bcf view has been finished");
     if (ret == -1){
         setError("bcf view finished with an error");
         return;
     }
-
-
+    } catch (...) {
+        setError("Samtools has been finished with an error");
+    }
 }
 
 Task::ReportResult SamtoolsMpileupTask::report(){

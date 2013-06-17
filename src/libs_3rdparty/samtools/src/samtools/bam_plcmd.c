@@ -120,6 +120,7 @@ typedef struct {
     int     max_indel_depth;
     int     openq;
     char*   pl_list;
+    int*    cancelFlag;
 } UGENE_mpileup_settings;
 
 static int mplp_func(void *data, bam1_t *b)
@@ -193,7 +194,7 @@ static void group_smpl(mplp_pileup_t *m, bam_sample_t *sm, kstring_t *buf,
 	}
 }
 
-static int mpileup(mplp_conf_t *conf, int n, char **fn, const char* bcfOut)
+static int mpileup(mplp_conf_t *conf, int n, char **fn, const char* bcfOut, UGENE_mpileup_settings* settings)
 {
 	extern void *bcf_call_add_rg(void *rghash, const char *hdtext, const char *list);
 	extern void bcf_call_del_rghash(void *rghash);
@@ -314,6 +315,9 @@ static int mpileup(mplp_conf_t *conf, int n, char **fn, const char* bcfOut)
 	max_indel_depth = conf->max_indel_depth * sm->n;
 	bam_mplp_set_maxcnt(iter, max_depth);
 	while (bam_mplp_auto(iter, &tid, &pos, n_plp, plp) > 0) {
+        if (*(settings->cancelFlag)) {
+            break;
+        }
 		if (conf->reg && (pos < beg0 || pos >= end0)) continue; // out of the region requested
 		if (conf->bed && tid >= 0 && !bed_overlap(conf->bed, h->target_name[tid], pos, pos+1)) continue;
 		if (tid != ref_tid) {
@@ -584,11 +588,11 @@ int bam_mpileup(int argc, char *argv[], UGENE_mpileup_settings* settings, const 
 	}
     if (file_list) {
         if ( read_file_list(file_list,&nfiles,&fn) ) return 1;
-        ret = mpileup(&mplp,nfiles,fn, outBcf);
+        ret = mpileup(&mplp,nfiles,fn, outBcf, settings);
         for (c=0; c<nfiles; c++) free(fn[c]);
         free(fn);
     } else {
-       ret = mpileup(&mplp, argc - optind, argv + optind + 1, outBcf);
+       ret = mpileup(&mplp, argc - optind, argv + optind + 1, outBcf, settings);
     }
 	if (mplp.rghash) bcf_str2id_thorough_destroy(mplp.rghash);
 	free(mplp.reg); free(mplp.pl_list);

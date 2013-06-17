@@ -61,6 +61,7 @@ typedef struct {
     int     n1;
     int     n_perm;
     float   min_perm_p;
+    int*    cancelFlag;
 } UGENE_bcf_view_settings;
 
 void *bed_read(const char *fn);
@@ -530,6 +531,9 @@ int bcfview(int argc, char *argv[], UGENE_bcf_view_settings* settings, const cha
 		}
 	}
 	while (vcf_read(bp, hin, b) > 0) {
+        if (*(settings->cancelFlag)) {
+            break;
+        }
 		int is_indel, cons_llr = -1;
 		int64_t cons_gt = -1;
 		double em[10];
