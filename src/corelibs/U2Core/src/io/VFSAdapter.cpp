@@ -120,5 +120,9 @@ qint64 VFSAdapter::bytesRead() const {
     return buffer->pos();
 }
 
+QString VFSAdapter::errorString() const{
+    return buffer->errorString();
+}
+
 
 };//namespace

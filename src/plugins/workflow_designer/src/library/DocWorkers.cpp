@@ -107,6 +107,9 @@ Task * TextReader::tick() {
             buf.fill(0);
             do {
                 read = io->readBlock( buf.data() + offs, READ_BLOCK_SZ );
+                if (read == -1){
+                    return new FailTask(tr("Can't load file %1. %2").arg(url).arg(io->errorString()));
+                }
                 if( read != READ_BLOCK_SZ ) {
                     assert(read < READ_BLOCK_SZ);
                     buf.resize(buf.size() - READ_BLOCK_SZ + read);

@@ -54,7 +54,7 @@ void CopyDataTask::run() {
     QByteArray buff( BUFFSIZE, 0 );
     
     count = from->readBlock( buff.data(), BUFFSIZE );
-    if (count == 0) {
+    if (count == 0 || count == -1) {
         stateInfo.setError(tr("Cannot get data from: '%1'").arg(urlFrom.getURLString()));
         return;
     }
@@ -74,7 +74,7 @@ void CopyDataTask::run() {
     }
     if( count < 0 || count_w < 0 ) {
         if (!stateInfo.hasError()) {
-            stateInfo.setError(tr("IO adapter error"));
+            stateInfo.setError(tr("IO adapter error. %1").arg(from->errorString()));
         }
     }
 }

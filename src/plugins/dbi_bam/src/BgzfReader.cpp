@@ -58,9 +58,10 @@ qint64 BgzfReader::read(char *buff, qint64 maxSize) {
         if(0 == stream.avail_in) {
             qint64 returnedValue = ioAdapter.readBlock(buffer, sizeof(buffer));
             if(-1 == returnedValue) {
-                coreLog.error(QString("in BgzfReader::read, failed to read %1 bytes from ioAdapter, after %2 bytes already read")
+                coreLog.error(QString("in BgzfReader::read, failed to read %1 bytes from ioAdapter, after %2 bytes already read. %3")
                               .arg(sizeof(buffer))
-                              .arg(ioAdapter.bytesRead()));
+                              .arg(ioAdapter.bytesRead())
+                              .arg(ioAdapter.errorString()));
                 throw IOException(BAMDbiPlugin::tr("Can't read input"));
             } else if(0 == returnedValue) {
                 endOfFile = true;
@@ -152,9 +153,10 @@ void BgzfReader::nextBlock() {
         if(0 == stream.avail_in) {
             qint64 returnedValue = ioAdapter.readBlock(buffer, sizeof(buffer));
             if(-1 == returnedValue) {
-                coreLog.error(QString("in BgzfReader::nextBlock, failed to read %1 bytes from ioAdapter, after %2 bytes already read")
+                coreLog.error(QString("in BgzfReader::nextBlock, failed to read %1 bytes from ioAdapter, after %2 bytes already read. %3")
                               .arg(sizeof(buffer))
-                              .arg(ioAdapter.bytesRead()));
+                              .arg(ioAdapter.bytesRead())
+                              .arg(ioAdapter.errorString()));
                 throw IOException(BAMDbiPlugin::tr("Can't read input"));
             } else if(0 == returnedValue) {
                 endOfFile = true;

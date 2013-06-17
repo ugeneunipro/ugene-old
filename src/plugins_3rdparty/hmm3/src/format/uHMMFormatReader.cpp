@@ -305,7 +305,7 @@ static void skipBlankLines( IOAdapter* io ) {
     while( skip ) {
         int ret = io->readBlock( &c, 1 );
         checkReadThrowException( ret );
-        if( 0 == ret ) { return; }
+        if( 0 == ret  || -1 == ret) { return; }
         skip = TextUtils::LINE_BREAKS[(uchar)c] || TextUtils::WHITES[(uchar)c];
     }
     io->skip( -1 );

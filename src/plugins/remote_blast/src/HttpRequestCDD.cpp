@@ -55,7 +55,7 @@ void HttpRequestCDD::sendRequest(const QString &params,const QString &query) {
     io->close();
     if(read<0){
         connectionError = true;
-        error = QObject::tr("Cannot load page");
+        error = QObject::tr("Cannot load page. %1").arg(io->errorString());
         return;
     }
 
@@ -90,7 +90,7 @@ void HttpRequestCDD::sendRequest(const QString &params,const QString &query) {
         io->close();
         if(read<0){
             connectionError = true;
-            error = QObject::tr("Cannot load page");
+            error = QObject::tr("Cannot load page. %1").arg(io->errorString());
             return;
         }
     }

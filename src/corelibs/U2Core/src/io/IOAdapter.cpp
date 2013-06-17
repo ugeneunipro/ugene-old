@@ -47,6 +47,10 @@ qint64 IOAdapter::readUntil(char* buf, qint64 maxSize,
     do {
         chunk_start = buf;
         len = readBlock(buf, qMin(CHUNK, (qint64)end - (qint64)buf));
+        if (len == -1){
+            //error
+            return -1;
+        }
         if (len < CHUNK) {
             // last chunk, no more data or buffer space
             end = buf + len;

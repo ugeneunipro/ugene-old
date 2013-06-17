@@ -78,6 +78,8 @@ public:
 
     virtual GUrl getURL() const {return url;}
 
+    virtual QString errorString() const;
+
 private:
     GUrl        url;
     QBuffer*    buffer;

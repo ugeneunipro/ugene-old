@@ -457,4 +457,8 @@ GUrl ZlibAdapter::getURL() const {
     return io->getURL();
 }
 
+QString ZlibAdapter::errorString() const{
+    return io->errorString();
+}
+
 };//namespace

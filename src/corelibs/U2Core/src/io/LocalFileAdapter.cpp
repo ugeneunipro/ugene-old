@@ -97,6 +97,10 @@ qint64 LocalFileAdapter::readBlock(char* data, qint64 size) {
         while (l < size) {
             if (currentPos == bufLen) {
                 bufLen = f->read(bufData, BUF_SIZE);
+                if (bufLen == -1){
+                    //error
+                    return -1;
+                }
                 currentPos = 0;
             }
             copySize = qMin(bufLen - currentPos, size - l);
@@ -165,6 +169,10 @@ qint64 LocalFileAdapter::bytesRead() const {
 
 GUrl LocalFileAdapter::getURL() const {
     return GUrl(f->fileName(), GUrl_File);
+}
+
+QString LocalFileAdapter::errorString() const{
+    return f->errorString();
 }
 
 };//namespace

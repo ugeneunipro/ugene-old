@@ -138,8 +138,8 @@ bool ReadQualityScoresTask::checkRawData()
         return false;
     }
     int len =  io->readBlock(buf.data(), RAW_BUF_SIZE);
-    if (len == 0) {
-        setError(tr("Failed to read data from quality file %1, probably it is empty").arg(fileName));         
+    if (len == 0 || len == -1) {
+        setError(tr("Failed to read data from quality file %1, probably it is empty. %2").arg(fileName).arg(io->errorString()));         
         return false;
     }
     if (buf[0] != '>') {

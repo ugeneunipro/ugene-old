@@ -57,7 +57,7 @@ void HttpRequestBLAST::sendRequest(const QString &params,const QString &query) {
     io->close();
     if(read<0) {
         connectionError = true; 
-        error = QObject::tr("Cannot load a page");
+        error = QObject::tr("Cannot load a page. %1").arg(io->errorString());
         return;
     }
 
@@ -148,7 +148,7 @@ void HttpRequestBLAST::sendRequest(const QString &params,const QString &query) {
 
         if(read<0) {
             connectionError = true; 
-            error = QObject::tr("Cannot load a page");
+            error = QObject::tr("Cannot load a page. %1").arg(io->errorString());
             return;
         }
         

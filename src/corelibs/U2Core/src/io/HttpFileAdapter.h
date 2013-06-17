@@ -91,6 +91,8 @@ public:
 
     virtual GUrl getURL() const {return gurl;}
 
+    virtual QString errorString() const;
+
 private:
     void        init();
     qint64      stored() const; 
@@ -126,6 +128,7 @@ private slots:
     void add_data();
     void done();
     void progress( qint64 done, qint64 total );
+
 };
 
 

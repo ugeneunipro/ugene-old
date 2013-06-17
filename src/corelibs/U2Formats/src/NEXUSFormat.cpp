@@ -74,7 +74,7 @@ QString Tokenizer::get() {
             QByteArray tmp(BUFF_SIZE, '\0');
             int len = io->readBlock(tmp.data(), BUFF_SIZE);
 
-            if (len == 0) {
+            if (len == 0 || len == -1) {
                 break;
             }
 
@@ -238,7 +238,7 @@ QString Tokenizer::readUntil(QRegExp rwhat)
             QByteArray tmp(BUFF_SIZE, '\0');
             int len = io->readBlock(tmp.data(), BUFF_SIZE);
 
-            if (len == 0) {
+            if (len == 0 || len == -1) {
                 break;
             }
 

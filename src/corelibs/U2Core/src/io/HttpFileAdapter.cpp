@@ -318,4 +318,11 @@ void HttpFileAdapter::progress( qint64 done_, qint64 total_ )
     total = total_;
 }
 
+QString HttpFileAdapter::errorString() const{
+    if (reply){
+        return reply->errorString();
+    }
+    return "";
+}
+
 }//namespace

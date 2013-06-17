@@ -77,6 +77,8 @@ public:
 
     const QString &getBuffer() {return buffer;}
 
+    virtual QString errorString() const;
+
 private:
     bool opened;
     QString buffer;

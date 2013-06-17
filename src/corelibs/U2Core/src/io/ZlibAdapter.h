@@ -72,7 +72,9 @@ public:
      * returns -1 if a file is failed to open
      */
     static qint64 getUncompressedFileSizeInBytes(const GUrl &url);
-    
+
+    virtual QString errorString() const;
+
 private:
     static const int BUFLEN = 32768;
     IOAdapter* io;

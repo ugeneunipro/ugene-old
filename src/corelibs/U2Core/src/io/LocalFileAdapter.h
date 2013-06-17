@@ -83,7 +83,10 @@ public:
     virtual qint64 bytesRead() const;
     
     virtual GUrl getURL() const;
-    
+
+    virtual QString errorString() const;
+
+
 private:
     QFile* f;
 

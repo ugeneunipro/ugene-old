@@ -115,6 +115,9 @@ public:
     virtual GUrl getURL() const = 0;
 
     virtual QString toString() const {return getURL().getURLString();}
+
+    /* Returns a human-readable description of the last device error that occurred */
+    virtual QString errorString() const = 0;
     
 private:
     IOAdapterFactory* factory;

@@ -91,7 +91,7 @@ Index BaiReader::readIndex() {
 void BaiReader::readBytes(char *buff, qint64 size) {
     qint64 returnedValue = ioAdapter.readBlock(buff, size);
     if(-1 == returnedValue) {
-        throw IOException(BAMDbiPlugin::tr("Can't read input"));
+        throw IOException(BAMDbiPlugin::tr("Can't read input. %1").arg(ioAdapter.errorString()));
     } else if(returnedValue < size) {
         throw InvalidFormatException(BAMDbiPlugin::tr("Unexpected end of file"));
     }

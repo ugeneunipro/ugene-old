@@ -80,4 +80,9 @@ qint64 StringAdapter::bytesRead() const {
     return -1;
 }
 
+QString StringAdapter::errorString() const{
+    // toso
+    return "";
+}
+
 } // U2
