@@ -419,10 +419,13 @@ void CrashHandler::runMonitorProcess(const QString &exceptionType)
         messageLog += "None";
     }
 
-    size_t memoryBytes = AppResourcePool::instance()->getCurrentAppMemory();
-    QString memInfo = QString("AppMemory: %1Mb; ").arg(memoryBytes/(1000*1000));
+    AppResourcePool* pool = AppResourcePool::instance();
+    if (pool) {
+        size_t memoryBytes = pool->getCurrentAppMemory();
+        QString memInfo = QString("AppMemory: %1Mb; ").arg(memoryBytes/(1000*1000));
 
-    reportText += (memInfo + "\n");
+        reportText += (memInfo + "\n");
+    }
     reportText += messageLog + " | ";
 
     QString taskList;
