@@ -201,10 +201,10 @@ workflow "Call variants with SAMtools"{
 					group {
 						title : "Output file";
 						label-size: 100;
-						write-variations.document-format{
+						write-variations.url-out{
 						
 						}
-						write-variations.url-out{
+						write-variations.document-format{
 						
 						}
 						

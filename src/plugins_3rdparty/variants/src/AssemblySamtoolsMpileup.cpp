@@ -215,7 +215,7 @@ void SamtoolsMpileupTask::run(){
         return;
     }
 
-    try {
+    
     QByteArray mpileupArr = QString("mpileup").toLatin1();
     QByteArray seqArr = settings.refSeqUrl.toLocal8Bit();
     int argc1 = settings.assemblyUrls.size() + 2;
@@ -279,9 +279,8 @@ void SamtoolsMpileupTask::run(){
         setError("bcf view finished with an error");
         return;
     }
-    } catch (...) {
-        setError("Samtools has been finished with a error");
-    }
+
+
 }
 
 Task::ReportResult SamtoolsMpileupTask::report(){
