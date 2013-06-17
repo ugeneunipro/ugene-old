@@ -61,26 +61,6 @@ public:
         delete resource; resource = NULL;
     }
 
-    AppResource( const AppResource& other ) {
-        resourceId = other.resourceId;
-        _maxUse = other._maxUse;
-        name = other.name;
-        suffix = other.suffix;
-
-        resource = new QSemaphore(_maxUse);
-    }
-    AppResource& operator= (const AppResource& other) {
-        AppResource tmp(other);
-
-        qSwap(resourceId, tmp.resourceId);
-        qSwap(_maxUse, tmp._maxUse);
-        qSwap(name, tmp.name);
-        qSwap(suffix, tmp.suffix);
-        qSwap(resource, tmp.resource);
-
-        return *this;
-    }
-
     void acquire(int n = 1) {
         LOG_TRACE(acquire);
         resource->acquire(n);
@@ -137,6 +117,9 @@ public:
     QString name;
     QString suffix;
 private:
+    AppResource( const AppResource& other );
+    AppResource& operator= (const AppResource& other);
+
     QSemaphore *resource;
 };
 
@@ -203,7 +186,8 @@ public:
     }
 
     MemoryLocker(MemoryLocker& other) {
-        os = other.os;
+        resource = other.resource;
+        os = NULL;
         preLockMB = other.preLockMB;
         lockedMB = other.lockedMB; other.lockedMB = 0;
         needBytes = other.needBytes; other.needBytes = 0;

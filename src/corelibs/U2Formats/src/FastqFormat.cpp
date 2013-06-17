@@ -31,6 +31,7 @@
 #include <U2Core/U2DbiUtils.h>
 #include <U2Core/U2SequenceUtils.h>
 #include <U2Core/U1AnnotationUtils.h>
+#include <U2Core/AppResources.h>
 
 #include "DocumentFormatUtils.h"
 #include "FastqFormat.h"
@@ -120,6 +121,7 @@ FormatCheckResult FastqFormat::checkRawData(const QByteArray& rawData, const GUr
 
 static QString readSequenceName(U2OpStatus& os, IOAdapter *io, char beginWith = '@') {
 
+    MemoryLocker l(os);
     QByteArray buffArray(BUFF_SIZE+1, 0);
     char* buff = buffArray.data();
 
@@ -147,6 +149,7 @@ static bool checkFirstSymbol(const QByteArray& b, char symbol) {
 
 static void readSequence(U2OpStatus& os, IOAdapter *io, QByteArray &sequence, char readUntil = '+') {
 
+    MemoryLocker l(os);
     QByteArray buffArray(BUFF_SIZE+1, 0);
     char* buff = buffArray.data();
 
@@ -166,11 +169,14 @@ static void readSequence(U2OpStatus& os, IOAdapter *io, QByteArray &sequence, ch
         }
 
         sequence.append(trimmed);
+        l.tryAcquire(trimmed.size());
+        CHECK_OP(os,);
     }
 }
 
 static void readQuality(U2OpStatus& os, IOAdapter *io, QByteArray &sequence, int count) {
 
+    MemoryLocker l(os);
     QByteArray buffArray(BUFF_SIZE+1, 0);
     char* buff = buffArray.data();
 
@@ -192,6 +198,8 @@ static void readQuality(U2OpStatus& os, IOAdapter *io, QByteArray &sequence, int
         }
 
         sequence.append(trimmed);
+        l.tryAcquire(trimmed.size());
+        CHECK_OP(os,);
     }
 }
 
@@ -203,8 +211,6 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& hints
     DbiOperationsBlock opBlock(dbiRef, os);
     CHECK_OP(os, );
     writeLockReason.clear();
-
-    QByteArray readBuff(BUFF_SIZE+1, 0), secondBuff;
 
     bool merge = gapSize!=-1;
     QByteArray sequence;
@@ -227,10 +233,10 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& hints
     int seqNumber = 0;
     int progressUpNum = 0;
 
+    MemoryLocker memoryLocker(os);
     const bool settingsMakeUniqueName = !hints.value(DocumentReadingMode_DontMakeUniqueNames, false).toBool();
     while (!os.isCoR()) {
         //read header
-        readBuff.clear();
         QString sequenceName = readSequenceName(os, io, '@');
         // check for eof while trying to read another FASTQ block
         if (io->isEof()) {
@@ -243,6 +249,8 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& hints
             QString objName = sequenceName;
             if (settingsMakeUniqueName) {
                 objName = (merge) ? "Sequence" : TextUtils::variate(sequenceName, "_", uniqueNames);
+                objName.squeeze();
+                memoryLocker.tryAcquire(2*objName.size());
                 uniqueNames.insert(objName);
             }
             seqImporter.startSequence(dbiRef,objName,false,os);
@@ -260,6 +268,7 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& hints
 
         sequence.clear();  
         readSequence(os, io, sequence);
+        MemoryLocker lSequence(os, qCeil(sequence.size()/(1000*1000)));
         CHECK_OP(os,);
 
         seqImporter.addBlock(sequence.data(),sequence.length(),os);
@@ -275,6 +284,7 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& hints
         // read qualities
         qualityScores.clear();
         readQuality(os, io, qualityScores, sequence.size());
+        MemoryLocker lQuality(os, qCeil(qualityScores.size()/(1000*1000)));
         CHECK_OP(os,);
 
         static const QString err = U2::FastqFormat::tr("Not a valid FASTQ file: %1. Bad quality scores: inconsistent size.").arg(docUrl.getURLString());
@@ -283,10 +293,12 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& hints
         seqNumber++;
         progressUpNum++;
         if (merge) {
+            memoryLocker.tryAcquire(sequenceName.size());
             headers.append(sequenceName);
             mergedMapping.append(U2Region(sequenceStart, sequence.length() ));
         }
         else {
+            memoryLocker.tryAcquire(1000);
             U2Sequence u2seq = seqImporter.finalizeSequence(os);
             dbiObjects.objects << u2seq.id;
             CHECK_OP(os,);
