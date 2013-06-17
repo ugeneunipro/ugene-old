@@ -46,7 +46,7 @@ public:
         data->location->regions << region;
         data->setStrand(strand);
         if (!modelInfo.isEmpty()) {
-            data->qualifiers.append(U2Qualifier("Weight matrix model", modelInfo));
+            data->qualifiers.append(U2Qualifier("Weight_matrix_model", modelInfo));
         }
         data->qualifiers.append(U2Qualifier("Score", QString::number(score)));
         QMapIterator<QString, QString> iter(qual);

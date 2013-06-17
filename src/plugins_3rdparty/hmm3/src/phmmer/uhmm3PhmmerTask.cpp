@@ -196,7 +196,7 @@ QList< SharedAnnotationData > UHMM3PhmmerTask::getResultsAsAnnotations( const QS
         annData->name = name;
         annData->setStrand(U2Strand::Direct);
         annData->location->regions << domain.seqRegion;
-        annData->qualifiers << U2Qualifier( "Query sequence", query.getName() );
+        annData->qualifiers << U2Qualifier( "Query_sequence", query.getName() );
         domain.writeQualifiersToAnnotation( annData );
         
         annotations << SharedAnnotationData( annData );
@@ -382,7 +382,7 @@ UHMM3SWPhmmerTask::getResultsAsAnnotations( const QString & name ) const {
         annData->name = name;
         annData->setStrand(res.onCompl ? U2Strand::Complementary : U2Strand::Direct);
         annData->location->regions << res.generalResult.seqRegion;
-        annData->qualifiers << U2Qualifier( "Query sequence", querySeq.getName() );
+        annData->qualifiers << U2Qualifier( "Query_sequence", querySeq.getName() );
         res.generalResult.writeQualifiersToAnnotation( annData );
         annotations << SharedAnnotationData( annData );
     }

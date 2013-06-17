@@ -812,6 +812,7 @@ static void writeSequence(IOAdapter* io, U2SequenceObject* ao, QList<U2Region> l
 // and '\n' to the end of every new line
 static void prepareMultiline(QString& line, int spacesOnLineStart, bool newLineAtTheEnd, int maxLineLen) {
     Q_ASSERT(spacesOnLineStart < maxLineLen);
+    line.replace('\n', ';');
     const int len = line.length() ;
     if (spacesOnLineStart + len > maxLineLen) {
         QByteArray spacesPrefix(spacesOnLineStart, ' ');

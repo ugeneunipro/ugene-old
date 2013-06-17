@@ -48,13 +48,13 @@ namespace U2 {
 
 void UHMM3SearchSeqDomainResult::writeQualifiersToAnnotation( AnnotationData * annData ) const {
     assert( NULL != annData );
-    annData->qualifiers << U2Qualifier( "Independent e-value", QString().sprintf( "%.5e", ival ) );
-    annData->qualifiers << U2Qualifier( "Conditional e-value", QString().sprintf( "%.5e", cval ) );
+    annData->qualifiers << U2Qualifier( "Independent_e-value", QString().sprintf( "%.5e", ival ) );
+    annData->qualifiers << U2Qualifier( "Conditional_e-value", QString().sprintf( "%.5e", cval ) );
     annData->qualifiers << U2Qualifier( "Score", QString().sprintf( "%1.f", score ) );
     annData->qualifiers << U2Qualifier( "Bias", QString().sprintf( "%.5e", bias ) );
-    annData->qualifiers << U2Qualifier( "Accuracy per residue", QString().sprintf( "%.5e", acc ) );
-    annData->qualifiers << U2Qualifier( "HMM region", QString().sprintf( "%d...%d", queryRegion.startPos, queryRegion.endPos()) );
-    annData->qualifiers << U2Qualifier( "Envelope of domain location", QString().sprintf( "%d...%d", 
+    annData->qualifiers << U2Qualifier( "Accuracy_per_residue", QString().sprintf( "%.5e", acc ) );
+    annData->qualifiers << U2Qualifier( "HMM_region", QString().sprintf( "%d...%d", queryRegion.startPos, queryRegion.endPos()) );
+    annData->qualifiers << U2Qualifier( "Envelope_of_domain_location", QString().sprintf( "%d...%d",
         envRegion.startPos, envRegion.endPos() ) );
 }
 

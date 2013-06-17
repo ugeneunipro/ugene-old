@@ -401,7 +401,7 @@ UHMM3SWSearchTask::getResultsAsAnnotations( const QList<UHMM3SWSearchTaskDomainR
             hmmInfo += QString().sprintf( "\n Description: %s", hmm->desc );
         }
         assert( !hmmInfo.isEmpty() );
-        annData->qualifiers << U2Qualifier( "HMM model", hmmInfo );
+        annData->qualifiers << U2Qualifier( "HMM_model", hmmInfo );
         res.generalResult.writeQualifiersToAnnotation( annData );
         
         annotations << SharedAnnotationData( annData );
