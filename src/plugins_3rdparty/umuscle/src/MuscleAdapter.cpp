@@ -50,6 +50,10 @@ void MuscleAdapter::align(const MAlignment& ma, MAlignment& res, TaskStateInfo& 
         if (!ti.cancelFlag) {
             ti.setError(  tr("Internal MUSCLE error: %1").arg(e.str) );
         }
+    } catch (...) {
+        if (!ti.cancelFlag) {
+            ti.setError(  tr("Undefined internal MUSCLE error") );
+        }
     }
 }
 
@@ -198,6 +202,10 @@ void MuscleAdapter::refine(const MAlignment& ma, MAlignment& res, TaskStateInfo&
         if (!ti.cancelFlag) {
             ti.setError(  tr("Internal MUSCLE error: %1").arg(e.str) );
         }
+    } catch (...) {
+        if (!ti.cancelFlag) {
+            ti.setError(  tr("Undefined internal MUSCLE error") );
+        }
     }
 }
 
@@ -282,6 +290,10 @@ void MuscleAdapter::align2Profiles(const MAlignment& ma1, const MAlignment& ma2,
     } catch (MuscleException e) {
         if (!ti.cancelFlag) {
             ti.setError(  tr("Internal MUSCLE error: %1").arg(e.str) );
+        }
+    } catch (...) {
+        if (!ti.cancelFlag) {
+            ti.setError(  tr("Undefined internal MUSCLE error") );
         }
     }
 }
@@ -463,6 +475,10 @@ void MuscleAdapter::addUnalignedSequencesToProfile(const MAlignment& ma, const M
     } catch (MuscleException e) {
         if (!ti.cancelFlag) {
             ti.setError(  tr("Internal MUSCLE error: %1").arg(e.str) );
+        }
+    } catch (...) {
+        if (!ti.cancelFlag) {
+            ti.setError(  tr("Undefined internal MUSCLE error") );
         }
     }
 }
