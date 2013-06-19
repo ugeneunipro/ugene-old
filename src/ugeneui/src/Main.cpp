@@ -616,7 +616,9 @@ int main(int argc, char **argv)
     QObject::connect(tempDirChecker, SIGNAL(si_checkFailed(QString)), mw, SLOT(sl_tempDirPathCheckFailed(QString)));
     ts->registerTopLevelTask(tempDirChecker);
 
+    MemoryLocker l(160); // 100Mb on UGENE start, ~60Mb SQLite cache
     int rc = app.exec();
+    l.release();
 
     //4 deallocate resources
     if ( !envList.contains(ENV_UGENE_DEV+QString("=1")) ) {

@@ -243,7 +243,7 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& hints
             break;
         }
 
-        CHECK_OP(os,);
+        CHECK_OP_BREAK(os);
 
         if ((merge == false) || (seqNumber == 0)) {
             QString objName = sequenceName;
@@ -254,7 +254,7 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& hints
                 uniqueNames.insert(objName);
             }
             seqImporter.startSequence(dbiRef,objName,false,os);
-            CHECK_OP(os,);
+            CHECK_OP_BREAK(os);
             sequenceRef = GObjectReference(io->getURL().getURLString(), objName, GObjectTypes::SEQUENCE);
         }
 
@@ -263,32 +263,32 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& hints
             seqImporter.addDefaultSymbolsBlock(gapSize,os);
             sequenceStart += sequence.length();
             sequenceStart+=gapSize;
-            CHECK_OP(os,);
+            CHECK_OP_BREAK(os);
         }
 
         sequence.clear();  
         readSequence(os, io, sequence);
         MemoryLocker lSequence(os, qCeil(sequence.size()/(1000*1000)));
-        CHECK_OP(os,);
+        CHECK_OP_BREAK(os);
 
         seqImporter.addBlock(sequence.data(),sequence.length(),os);
-        CHECK_OP(os,);
+        CHECK_OP_BREAK(os);
 
         QString qualSequenceName = readSequenceName(os, io, '+');
         if (!qualSequenceName.isEmpty()) {
             static const QString err = U2::FastqFormat::tr("Not a valid FASTQ file: %1, sequence name differs from quality scores name: %2 and %3");
-            CHECK_EXT(sequenceName == qualSequenceName,
-                os.setError(err.arg(docUrl.getURLString()).arg(sequenceName).arg(qualSequenceName)), );
+            CHECK_EXT_BREAK(sequenceName == qualSequenceName,
+                os.setError(err.arg(docUrl.getURLString()).arg(sequenceName).arg(qualSequenceName)));
         }
 
         // read qualities
         qualityScores.clear();
         readQuality(os, io, qualityScores, sequence.size());
         MemoryLocker lQuality(os, qCeil(qualityScores.size()/(1000*1000)));
-        CHECK_OP(os,);
+        CHECK_OP_BREAK(os);
 
         static const QString err = U2::FastqFormat::tr("Not a valid FASTQ file: %1. Bad quality scores: inconsistent size.").arg(docUrl.getURLString());
-        CHECK_EXT(sequence.length() == qualityScores.length(), os.setError(err),);
+        CHECK_EXT_BREAK(sequence.length() == qualityScores.length(), os.setError(err));
 
         seqNumber++;
         progressUpNum++;
@@ -298,13 +298,14 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& hints
             mergedMapping.append(U2Region(sequenceStart, sequence.length() ));
         }
         else {
-            memoryLocker.tryAcquire(1000);
+            memoryLocker.tryAcquire(800);
+            memoryLocker.tryAcquire(qualityScores.capacity());
             U2Sequence u2seq = seqImporter.finalizeSequence(os);
             dbiObjects.objects << u2seq.id;
-            CHECK_OP(os,);
+            CHECK_OP_BREAK(os);
 
             U2SequenceObject* seqObj = new U2SequenceObject(u2seq.visualName, U2EntityRef(dbiRef, u2seq.id));
-            CHECK_EXT(seqObj != NULL, os.setError("U2SequenceObject is NULL"),);
+            CHECK_EXT_BREAK(seqObj != NULL, os.setError("U2SequenceObject is NULL"));
             seqObj->setQuality(DNAQuality(qualityScores));
             objects << seqObj;
 
