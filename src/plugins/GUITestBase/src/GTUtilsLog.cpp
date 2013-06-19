@@ -25,7 +25,7 @@ namespace U2 {
 
 GTLogTracer::GTLogTracer()
 : wasError(false) {
-    LogServer::getInstance()->addListner(this);
+    LogServer::getInstance()->addListener(this);
 }
 
 void GTLogTracer::onMessage(const LogMessage &msg) {

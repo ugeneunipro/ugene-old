@@ -54,7 +54,7 @@ const QString LogDriver::LOG_SETTINGS_ACTIVE_FLAG           = "activeFlagLevel";
 bool LogDriver::helpRegistered = false;
 
 LogDriver::LogDriver() : printToConsole (true) {
-    LogServer::getInstance()->addListner(this);
+    LogServer::getInstance()->addListener(this);
 
     if( !helpRegistered ) {
         setLogCmdlineHelp();
@@ -65,7 +65,7 @@ LogDriver::LogDriver() : printToConsole (true) {
 }
 
 LogDriver::~LogDriver() {
-    LogServer::getInstance()->removeListner(this);
+    LogServer::getInstance()->removeListener(this);
 }
 
 void LogDriver::setLogCmdlineHelp() {

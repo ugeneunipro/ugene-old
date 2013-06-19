@@ -95,8 +95,8 @@ public:
     const QList<Logger*>& getLoggers() const {return loggers;}
     QStringList getCategories() const;
 
-    void addListner(LogListener* listner);
-    void removeListner(LogListener* listener);
+    void addListener(LogListener* listner);
+    void removeListener(LogListener* listener);
 
 private:
     void message(const LogMessage& m);

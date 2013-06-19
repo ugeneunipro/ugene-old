@@ -222,7 +222,7 @@ void LogViewWidget::showEvent(QShowEvent *e) {
     Q_UNUSED(e);
     if (!connected) {
         updateViewTimer.start(500);
-        LogServer::getInstance()->addListner(this);
+        LogServer::getInstance()->addListener(this);
         connected = !connected;
     }
 
@@ -234,7 +234,7 @@ void LogViewWidget::hideEvent(QHideEvent *e) {
 
     if (connected) {
         updateViewTimer.stop();
-        LogServer::getInstance()->removeListner(this);
+        LogServer::getInstance()->removeListener(this);
         connected = !connected;
     }
 

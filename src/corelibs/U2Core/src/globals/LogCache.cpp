@@ -55,11 +55,11 @@ bool LogFilter::matches(const LogMessage& msg) const {
 // LogCache
 
 LogCache::LogCache(int maxLogMessages) : maxLogMessages(maxLogMessages) {
-    LogServer::getInstance()->addListner(this);
+    LogServer::getInstance()->addListener(this);
 }
 
 LogCache::~LogCache() {
-    LogServer::getInstance()->removeListner(this);
+    LogServer::getInstance()->removeListener(this);
     while (!messages.empty()) {
         LogMessage* m = messages.takeFirst();
         delete m;

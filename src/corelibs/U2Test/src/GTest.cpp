@@ -374,13 +374,13 @@ void GTestLogHelper::initMessages(const QStringList& expectedList, const QString
     }
 
     logHelperStartTime = GTimer::currentTimeMicros();
-    LogServer::getInstance()->addListner(this);
+    LogServer::getInstance()->addListener(this);
 }
 
 
 GTestLogHelperStatus GTestLogHelper::verifyStatus()
 {
-    LogServer::getInstance()->removeListner(this);
+    LogServer::getInstance()->removeListener(this);
     GTestLogHelperStatus status = GTest_LogHelper_Valid;
 
     foreach (const QString& str, expectedMessages.keys()) {

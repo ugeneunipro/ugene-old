@@ -53,16 +53,20 @@ QStringList LogServer::getCategories() const {
     return result;
 }
 
-void LogServer::addListner(LogListener* listner)
+void LogServer::addListener(LogListener* listner)
 {
+    QMutexLocker l(&listenerMutex);
+
     SAFE_POINT(NULL != listner, "Internal error during adding a log listner: NULL listner!",);
     SAFE_POINT(!listeners.contains(listner),
         "Internal error during adding a log listner: the listener is already added!",);
     listeners.append(listner);
 }
 
-void LogServer::removeListner(LogListener* listener)
+void LogServer::removeListener(LogListener* listener)
 {
+    QMutexLocker l(&listenerMutex);
+
     int numOfListenersRemoved = listeners.removeAll(listener);
     SAFE_POINT(1 == numOfListenersRemoved, QString("Internal error during removing a log listener:"
         " unexpected number '%1' of listeners!").arg(numOfListenersRemoved),);
