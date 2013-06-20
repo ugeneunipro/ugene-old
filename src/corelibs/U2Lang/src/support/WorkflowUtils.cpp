@@ -222,6 +222,15 @@ static bool validatePorts(Actor *a, QList<ValidateError> &infoList) {
     return good;
 }
 
+static bool isReadElement( Actor *a ) {
+    foreach ( Port *p, a->getPorts( ) ) {
+        if ( p->isInput( ) ) {
+            return false;
+        }
+    }
+    return true;
+}
+
 static bool validateScript(Actor *a, QList<ValidateError> &infoList) {
     QScopedPointer<WorkflowScriptEngine> engine(new WorkflowScriptEngine(NULL));
     QScriptSyntaxCheckResult syntaxResult = engine->checkSyntax(a->getScript()->getScriptText());
@@ -242,14 +251,24 @@ static bool validateScript(Actor *a, QList<ValidateError> &infoList) {
 bool WorkflowUtils::validate(const Schema &schema, QList<ValidateError> &infoList) {
     bool good = true;
     std::auto_ptr<WorkflowScriptEngine> engine(new WorkflowScriptEngine(NULL));
+    bool hasInputElements = false;
     foreach (Actor *a, schema.getProcesses()) {
         good &= validatePorts(a, infoList);
+        if ( !hasInputElements ) {
+            hasInputElements = isReadElement( a );
+        }
 
         if (a->getProto()->isScriptFlagSet()) {
             good &= validateScript(a, infoList);
         }
 
         good &= validateExternalTools(a, infoList);
+    }
+    if ( !hasInputElements ) {
+        good = false;
+        ValidateError item;
+        item[TEXT_REF] = QObject::tr( "The scheme contains no read element" );
+        infoList.append( item );
     }
 
     if (0 == schema.getIterations().size()) {
@@ -274,13 +293,14 @@ bool WorkflowUtils::validate(const Schema &schema, QList<QListWidgetItem*> &info
     bool good = validate(schema, errors);
 
     foreach (const ValidateError &error, errors) {
+        QListWidgetItem *item = NULL;
         if (!error.contains(ACTOR_REF)) {
-            continue;
+            item = new QListWidgetItem( QString( error[TEXT_REF].toString( ) ) );
+        } else {
+            Actor *a = schema.actorById(error[ACTOR_REF].toString());
+            item = new QListWidgetItem( a->getProto()->getIcon(),
+                QString("%1 : %2").arg(a->getLabel()).arg(error[TEXT_REF].toString()));
         }
-        Actor *a = schema.actorById(error[ACTOR_REF].toString());
-        QListWidgetItem *item = new QListWidgetItem(
-            a->getProto()->getIcon(),
-            QString("%1 : %2").arg(a->getLabel()).arg(error[TEXT_REF].toString()));
         foreach (int ref, error.keys()) {
             item->setData(ref, error[ref]);
         }
@@ -296,21 +316,23 @@ bool WorkflowUtils::validate(const Workflow::Schema &schema, QStringList &errs) 
     bool good = validate(schema, errors);
 
     foreach (const ValidateError &error, errors) {
+        QString res = QString( );
         if (!error.contains(ACTOR_REF)) {
-            continue;
-        }
-        Actor *a = schema.actorById(error[ACTOR_REF].toString());
-        QString message = error[TEXT_REF].toString();
-        QString res = QString("%1: %2").arg(a->getLabel()).arg(message);
+            res = error[TEXT_REF].toString();
+        } else {
+            Actor *a = schema.actorById(error[ACTOR_REF].toString());
+            QString message = error[TEXT_REF].toString();
+            res = QString("%1: %2").arg(a->getLabel()).arg(message);
 
-        QString option;
-        foreach (const Attribute *attr, a->getAttributes()) {
-            if (message.contains(attr->getDisplayName())) {
-                option = a->getParamAliases().value(attr->getId());
+            QString option;
+            foreach (const Attribute *attr, a->getAttributes()) {
+                if (message.contains(attr->getDisplayName())) {
+                    option = a->getParamAliases().value(attr->getId());
+                }
             }
-        }
-        if (!option.isEmpty()) {
-            res += tr(" (use --%1 option)").arg(option);
+            if (!option.isEmpty()) {
+                res += tr(" (use --%1 option)").arg(option);
+            }
         }
         errs << res;
     }
