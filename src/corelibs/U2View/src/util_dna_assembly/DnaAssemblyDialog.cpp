@@ -151,9 +151,6 @@ void DnaAssemblyDialog::sl_onAddShortReadsButtonClicked() {
         item->setLibraryType( libraryComboBox->currentIndex() == 0 ? LIBRARY_TYPE_SINGLE : LIBRARY_TYPE_PAIRED);
         ShortReadsTableItem::addItemToTable(item, shortReadsTable);
     }
-
-
-
 }
 
 void DnaAssemblyDialog::sl_onAddRefButtonClicked() {
@@ -174,6 +171,7 @@ void DnaAssemblyDialog::sl_onAddRefButtonClicked() {
         if (!customGUI->buildIndexUrl(lod.url, prebuiltIndex, error)) {
             QMessageBox::information(this, "DNA Assembly", error);
         }
+        customGUI->validateReferenceSequence( GUrl( lod.url ) );
     }
 } 
 
@@ -365,6 +363,7 @@ void DnaAssemblyDialog::addGuiExtension() {
         if (!refSeqEdit->text().isEmpty()) {
             QString error;
             customGUI->buildIndexUrl(refSeqEdit->text(), prebuiltIndex, error);
+            customGUI->validateReferenceSequence( GUrl( refSeqEdit->text( ) ) );
         }
         customGUI->show();
         adjustSize();

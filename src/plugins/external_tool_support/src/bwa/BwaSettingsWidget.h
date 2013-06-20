@@ -36,6 +36,15 @@ public:
     QMap<QString, QVariant> getDnaAssemblyCustomSettings();
     void buildIndexUrl(const GUrl &url);
     bool isParametersOk(QString &);
+    void validateReferenceSequence( const GUrl &url );
+
+private slots:
+    void sl_IndexAlgorithmChanged( int index );
+
+private:
+    void setupInfoLabel( );
+
+    GUrl referenceSequencePath;
 };
 
 class BwaSwSettingsWidget : public DnaAssemblyAlgorithmMainWidget, Ui_BwaSwSettings {

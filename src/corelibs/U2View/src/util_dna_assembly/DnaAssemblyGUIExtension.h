@@ -43,6 +43,7 @@ public:
     virtual bool buildIndexUrl(const GUrl&, bool, QString &) {return true;};
     virtual void prebuiltIndex(bool) {};
     virtual bool isIndexOk(QString &, GUrl) {return true;};
+    virtual void validateReferenceSequence( const GUrl & ) { }
 };
 
 class DnaAssemblyAlgorithmBuildIndexWidget : public QWidget {

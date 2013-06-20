@@ -22,22 +22,51 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>
 #include <U2Core/AppResources.h>
+#include <U2Core/L10n.h>
 
 #include "BwaSettingsWidget.h"
 #include "BwaTask.h"
+
+const qint64 MAX_REFERENCE_SIZE_FOR_IS_METHOD =     2.147e+9;
+const qint64 MIN_REFERENCE_SIZE_FOR_BWTSW_METHOD =  1.049e+7;
+const QString STYLE_SHEET_COLOR_ATTRIBUTE =         "color";
+const QString STYLE_SHEET_FONT_WEIGHT_ATTRIBUTE =   "font-weight";
+const QString INFO_MESSAGE_FONT =                   "bold";
+const QString STYLE_SHEET_ATTRIBUTE_EQUALS_SIGN =   ": ";
+const QString STYLE_SHEET_ATTRIBUTES_SEPARATOR =     ";";
+
+void setStylesheetAttributeValue( const QString &attributeName, const QString &attributeValue,
+    QString &stylesheet )
+{
+    int attributeDescriptionStart = stylesheet.indexOf( attributeName );
+    if ( -1 != attributeDescriptionStart ) {
+        attributeDescriptionStart += attributeName.length( )
+            + STYLE_SHEET_ATTRIBUTE_EQUALS_SIGN.length( );
+        int attributeDescriptionEnd = stylesheet.indexOf( STYLE_SHEET_ATTRIBUTES_SEPARATOR,
+            attributeDescriptionStart );
+        stylesheet.replace( attributeDescriptionStart,
+            attributeDescriptionEnd - attributeDescriptionStart, attributeValue );
+    } else {
+        stylesheet.append( " " + attributeName + STYLE_SHEET_ATTRIBUTE_EQUALS_SIGN
+            + attributeValue + STYLE_SHEET_ATTRIBUTES_SEPARATOR );
+    }
+}
 
 namespace U2 {
 
 // BwaSettingsWidget
 
 BwaSettingsWidget::BwaSettingsWidget(QWidget *parent):
-    DnaAssemblyAlgorithmMainWidget(parent)
+    DnaAssemblyAlgorithmMainWidget(parent), referenceSequencePath( )
 {
     setupUi(this);
     layout()->setContentsMargins(0,0,0,0);
 
     threadsSpinBox->setMaximum(AppContext::getAppSettings()->getAppResourcePool()->getIdealThreadCount());
     threadsSpinBox->setValue(AppContext::getAppSettings()->getAppResourcePool()->getIdealThreadCount());
+    connect( indexAlgorithmComboBox, SIGNAL( currentIndexChanged ( int ) ),
+        SLOT( sl_IndexAlgorithmChanged( int ) ) );
+    setupInfoLabel( );
 }
 
 QMap<QString,QVariant> BwaSettingsWidget::getDnaAssemblyCustomSettings() {
@@ -95,6 +124,39 @@ void BwaSettingsWidget::buildIndexUrl(const GUrl &) {
 
 bool BwaSettingsWidget::isParametersOk(QString &) {
     return true;
+}
+
+void BwaSettingsWidget::validateReferenceSequence( const GUrl &url ) {
+    referenceSequencePath = url;
+    sl_IndexAlgorithmChanged( indexAlgorithmComboBox->currentIndex( ) );
+}
+
+void BwaSettingsWidget::sl_IndexAlgorithmChanged( int index ) {
+    QFile referenceSequenceFile( referenceSequencePath.getURLString( ) );
+    QString infoText = QString( );
+    if ( 2 == index ) {
+        if ( MAX_REFERENCE_SIZE_FOR_IS_METHOD < referenceSequenceFile.size( ) ) {
+            infoText = tr( "NOTE: \"is\" index algorithm is not supposed to work with reference sequences\n"
+                "having size larger than 2 GB. In order to achieve stable BWA performance\n"
+                "it is strongly recommend to set the index algorithm to \"bwtsw\"" );
+        }
+    } else if ( 0 == index ) {
+        if ( MIN_REFERENCE_SIZE_FOR_BWTSW_METHOD > referenceSequenceFile.size( ) ) {
+            infoText = tr( "NOTE: \"bwtsw\" index algorithm is not supposed to work with reference sequences\n"
+                "having size smaller than 10 MB. In order to achieve stable BWA performance\n"
+                "it is strongly recommend to set the index algorithm to \"is\"" );
+        }
+    }
+    infoLabel->setText( infoText );
+}
+
+void BwaSettingsWidget::setupInfoLabel( ) {
+    QString infoLabelStyleSheet = infoLabel->styleSheet( );
+    setStylesheetAttributeValue( STYLE_SHEET_COLOR_ATTRIBUTE, U2::L10N::errorColorLabelStr( ),
+        infoLabelStyleSheet );
+    setStylesheetAttributeValue( STYLE_SHEET_FONT_WEIGHT_ATTRIBUTE, INFO_MESSAGE_FONT,
+        infoLabelStyleSheet );
+    infoLabel->setStyleSheet( infoLabelStyleSheet );
 }
 
 // BwaBuildSettingsWidget
