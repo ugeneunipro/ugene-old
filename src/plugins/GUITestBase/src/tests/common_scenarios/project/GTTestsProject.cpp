@@ -370,16 +370,11 @@ GUI_TEST_CLASS_DEFINITION(test_0025) {
     GTGlobals::sleep(1000);
     GTMouseDriver::click(os, Qt::RightButton);
 
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "action_load_selected_documents", GTGlobals::UseMouse));
-    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "2.gb"));
-    GTGlobals::sleep(1000);
-    GTMouseDriver::click(os, Qt::RightButton);
-
+    GTGlobals::sleep(500);
     GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, true, "<auto>", "misc_feature", "complement(1.. 20)"));
     GTKeyboardDriver::keyClick(os, 'n', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep();
 
-    GTGlobals::sleep(2000);
 /*
     GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::No));
     GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), ACTION__EXIT);
