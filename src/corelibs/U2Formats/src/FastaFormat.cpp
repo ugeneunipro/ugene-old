@@ -129,7 +129,7 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, Q
     static char fastaCommentStartChar = FastaFormat::FASTA_COMMENT_START_SYMBOL;
     static QBitArray fastaHeaderStart = TextUtils::createBitMap(FastaFormat::FASTA_HEADER_START_SYMBOL);
 
-    MemoryLocker memoryLocker(os);
+    MemoryLocker memoryLocker(os, 1);
 
     writeLockReason.clear();
     GUrl docUrl = io->getURL();

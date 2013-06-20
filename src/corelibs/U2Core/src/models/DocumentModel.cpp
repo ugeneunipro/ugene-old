@@ -270,7 +270,9 @@ static void deallocateDbiResources(GObject* obj, DbiConnection &con, U2OpStatus 
 
         if (dbiRef.isValid()) {
             SAFE_POINT(NULL != con.dbi, "NULL Dbi during deallocating dbi resources!", );
-            con.dbi->getObjectDbi()->removeObject(objRef.entityId, os);
+            if (con.dbi->getFeatures().contains(U2DbiFeature_RemoveObjects)) {
+                con.dbi->getObjectDbi()->removeObject(objRef.entityId, os);
+            }
         }
     }
 }

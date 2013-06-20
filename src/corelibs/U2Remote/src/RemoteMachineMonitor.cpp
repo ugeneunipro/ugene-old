@@ -73,8 +73,9 @@ QVariant RemoteMachineMonitor::serializeMachines() const {
     QVariantList res;
     foreach( const RemoteMachineSettingsPtr& item, items ) {
         QVariantList itemRes;
-        QString data = SerializeUtils::serializeRemoteMachineSettings(item);
-        itemRes << data;
+        // call leads to FAIL("Obsolete! Not implemented!", "");
+//         QString data = SerializeUtils::serializeRemoteMachineSettings(item);
+//         itemRes << data;
         res << QVariant( itemRes );
     }
     return res;
