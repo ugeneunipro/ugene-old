@@ -193,9 +193,6 @@ void SWWorkerFactory::init() {
             " sequence alignment."));
 
     ActorPrototype* proto = new IntegralBusActorPrototype(desc, p, a);
-    proto->addSlotRelation(BasePorts::IN_SEQ_PORT_ID(), BaseSlots::DNA_SEQUENCE_SLOT().getId(),
-        BasePorts::OUT_ANNOTATIONS_PORT_ID(), BaseSlots::ANNOTATION_TABLE_SLOT().getId());
-
     // delegates
     QMap<QString, PropertyDelegate*> delegates;
     {

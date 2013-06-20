@@ -146,8 +146,6 @@ void FindWorkerFactory::init() {
             " sequence. Outputs a set of annotations."));
 
     ActorPrototype* proto = new IntegralBusActorPrototype(desc, p, a);
-    proto->addSlotRelation(BasePorts::IN_SEQ_PORT_ID(), BaseSlots::DNA_SEQUENCE_SLOT().getId(),
-        BasePorts::OUT_ANNOTATIONS_PORT_ID(), BaseSlots::ANNOTATION_TABLE_SLOT().getId());
     
     QMap<QString, PropertyDelegate*> delegates;
     {

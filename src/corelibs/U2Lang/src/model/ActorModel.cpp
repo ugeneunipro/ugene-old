@@ -464,16 +464,6 @@ void ActorPrototype::setSchema(const QString &path) {
     actorFilePath = path;
 }
 
-void ActorPrototype::addSlotRelation(const QString &headPortId, const QString headSlot, const QString &depPortId, const QString &depSlot) {
-    QString dep = depPortId + "." + depSlot;
-    QString head = headPortId + "." + headSlot;
-    slotRelations[dep] = head;
-}
-
-QStrStrMap ActorPrototype::getSlotRelations() const {
-    return slotRelations;
-}
-
 void ActorPrototype::addExternalTool(const QString &toolId, const QString &paramId) {
     externalTools[toolId] = paramId;
 }

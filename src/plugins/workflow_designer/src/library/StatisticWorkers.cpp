@@ -57,9 +57,6 @@ void DNAStatWorkerFactory::init() {
         DNAStatWorker::tr("DNA Statistics"), 
         DNAStatWorker::tr("Evaluates statistics for DNA sequences") );
     ActorPrototype * proto = new IntegralBusActorPrototype( desc, portDescs, attribs );
-    proto->addSlotRelation(BasePorts::IN_SEQ_PORT_ID(), BaseSlots::DNA_SEQUENCE_SLOT().getId(),
-        BasePorts::OUT_ANNOTATIONS_PORT_ID(), BaseSlots::ANNOTATION_TABLE_SLOT().getId());
-
     proto->setPrompter( new DNAStatWorkerPrompter() );
     proto->setEditor(new DelegateEditor(QMap<QString, PropertyDelegate*>()));
     WorkflowEnv::getProtoRegistry()->registerProto( BaseActorCategories::CATEGORY_STATISTIC(), proto );

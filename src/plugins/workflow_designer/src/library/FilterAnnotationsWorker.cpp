@@ -122,8 +122,6 @@ void FilterAnnotationsWorkerFactory::init() {
         FilterAnnotationsWorker::tr("Filters annotations by name") );
     ActorPrototype * proto = new IntegralBusActorPrototype( desc, portDescs, attribs );
 
-    proto->addSlotRelation(BasePorts::IN_ANNOTATIONS_PORT_ID(), BaseSlots::ANNOTATION_TABLE_SLOT().getId(),
-        BasePorts::OUT_ANNOTATIONS_PORT_ID(), BaseSlots::ANNOTATION_TABLE_SLOT().getId());
     proto->setPrompter( new FilterAnnotationsPrompter() );
     {
         QMap<QString, PropertyDelegate*> delegateMap;

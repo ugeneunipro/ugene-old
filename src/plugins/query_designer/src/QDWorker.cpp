@@ -101,9 +101,6 @@ void QDWorkerFactory::init() {
                      " on the positional relationship of the results."));
 
     ActorPrototype* proto = new IntegralBusActorPrototype(desc, p, a);
-    proto->addSlotRelation(BasePorts::IN_SEQ_PORT_ID(), BaseSlots::DNA_SEQUENCE_SLOT().getId(),
-        BasePorts::OUT_ANNOTATIONS_PORT_ID(), BaseSlots::ANNOTATION_TABLE_SLOT().getId());
-
     QMap<QString, PropertyDelegate*> delegates;
     {
         delegates[SCHEMA_ATTR] = new URLDelegate(

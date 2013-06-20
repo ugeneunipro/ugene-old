@@ -81,8 +81,6 @@ void HMMSearchWorkerFactory::init() {
         HMMSearchWorker::tr("Searches each input sequence for significantly similar sequence matches to all specified HMM profiles."
         " In case several profiles were supplied, searches with all profiles one by one and outputs united set of annotations for each sequence"));
     ActorPrototype* proto = new IntegralBusActorPrototype(desc, p, a);
-    proto->addSlotRelation(BasePorts::IN_SEQ_PORT_ID(), BaseSlots::DNA_SEQUENCE_SLOT().getId(),
-        BasePorts::OUT_ANNOTATIONS_PORT_ID(), BaseSlots::ANNOTATION_TABLE_SLOT().getId());
     QMap<QString, PropertyDelegate*> delegates;    
     
     {

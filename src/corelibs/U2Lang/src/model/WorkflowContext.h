@@ -54,11 +54,6 @@ public:
      */
     DataTypePtr getOutSlotType(const QString &slotStr);
     /**
-     * Frequently sequence annotations are associated with some sequence slot.
-     * Returns this slot. If annotations are free then returns empty string.
-     */
-    QString getCorrespondingSeqSlot(const QString &annsSlot);
-    /**
      * Files created by external tools workers could be used by some other scheme elements.
      * In that case, it is needed to add these files to the context and remove them after
      * the whole scheme performing is finished.

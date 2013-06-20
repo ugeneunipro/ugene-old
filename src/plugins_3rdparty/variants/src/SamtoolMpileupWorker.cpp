@@ -348,13 +348,6 @@ void CallVariantsWorkerFactory::init() {
  
     //prototype
     ActorPrototype* proto = new IntegralBusActorPrototype(desc, p, attributes);
-    proto->addSlotRelation(BasePorts::IN_SEQ_PORT_ID(), BaseSlots::DNA_SEQUENCE_SLOT().getId(),
-        BasePorts::OUT_VARIATION_TRACK_PORT_ID(), BaseSlots::VARIATION_TRACK_SLOT().getId());
-    proto->addSlotRelation(BasePorts::IN_ASSEMBLY_PORT_ID(), BaseSlots::ASSEMBLY_SLOT().getId(),
-        BasePorts::OUT_VARIATION_TRACK_PORT_ID(), BaseSlots::VARIATION_TRACK_SLOT().getId());
-
-
-
     QMap<QString, PropertyDelegate*> delegates;
     {
         QVariantMap vm;

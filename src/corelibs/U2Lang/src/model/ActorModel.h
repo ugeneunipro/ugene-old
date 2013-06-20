@@ -96,9 +96,6 @@ public:
     bool getInfluenceOnPathFlag() const {return influenceOnPathFlag;}
     void setInfluenceOnPathFlag(bool value) {influenceOnPathFlag = value;}
 
-    void addSlotRelation(const QString &headPortId, const QString headSlot, const QString &depPortId, const QString &depSlot);
-    QStrStrMap getSlotRelations() const;
-
     void addExternalTool(const QString &toolId, const QString &paramId = "");
     const QStrStrMap & getExternalTools() const;
 protected:
@@ -135,10 +132,6 @@ protected:
 
     bool allowsEmptyPorts;
     bool influenceOnPathFlag;
-
-    // Map< Dependent slotid, Head slotid >
-    // slotid is "port.slot"
-    QStrStrMap slotRelations;
 
     // toolId <-> parameterId (optional)
     // The actor could use external tools. The map shows what tools are used.

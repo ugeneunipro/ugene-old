@@ -90,8 +90,6 @@ void CDSearchWorkerFactory::init() {
     Descriptor desc( ACTOR_ID, CDSearchWorker::tr("CD-Search"),
         CDSearchWorker::tr("Finds conserved domains in protein sequences. In case conserved domains database is downloaded the search can be executed on local machine. The search also can be submitted to the NCBI for remote execution.") );
     ActorPrototype* proto = new IntegralBusActorPrototype(desc, p, a);
-    proto->addSlotRelation(BasePorts::IN_SEQ_PORT_ID(), BaseSlots::DNA_SEQUENCE_SLOT().getId(),
-        BasePorts::OUT_ANNOTATIONS_PORT_ID(), BaseSlots::ANNOTATION_TABLE_SLOT().getId());
     QMap<QString, PropertyDelegate*> delegates; 
 
     {
