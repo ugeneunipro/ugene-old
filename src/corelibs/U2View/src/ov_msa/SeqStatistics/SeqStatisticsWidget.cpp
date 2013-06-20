@@ -90,7 +90,7 @@ void SeqStatisticsWidget::updateWidgetsSettings(){
         "font: bold;");
     ui.refSeqWarning->setWordWrap(true);
 
-    ui.dataState->setText(tr("Distances are correct"));
+    ui.dataState->setText(tr("Press button to update"));
 
     restoreSettings();
 
