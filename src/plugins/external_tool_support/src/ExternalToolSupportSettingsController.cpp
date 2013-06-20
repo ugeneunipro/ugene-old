@@ -393,8 +393,9 @@ void ExternalToolSupportSettingsPageWidget::sl_onBrowseToolKitPath(){
                         bool fileNotFound=true;
                         QString executableFileName=AppContext::getExternalToolRegistry()->getByName(item->text(0))->getExecutableFileName();
                         while (it.hasNext()&&fileNotFound) {
-                            QString fpath = it.filePath()+"/"+executableFileName;
                             it.next();
+                            QString fpath = it.filePath()+"/"+executableFileName;
+                            
                             QFileInfo info(fpath);
                             if(info.exists() && info.isFile()){
                                 QString path=QDir::toNativeSeparators(fpath);
@@ -458,8 +459,8 @@ void ExternalToolSupportSettingsPageWidget::sl_onBrowseToolPackPath(){
                         bool fileNotFound=true;
                         QString executableFileName = AppContext::getExternalToolRegistry()->getByName(item->text(0))->getExecutableFileName();
                         while (it.hasNext()&&fileNotFound) {
-                            QString fName = it.filePath()+"/"+executableFileName;
                             it.next();
+                            QString fName = it.filePath()+"/"+executableFileName;
                             QFileInfo info(fName);
                             if(info.exists() && info.isFile()){
                                 QString path=QDir::toNativeSeparators(fName);

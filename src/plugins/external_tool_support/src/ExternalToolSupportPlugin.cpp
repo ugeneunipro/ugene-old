@@ -453,8 +453,8 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin():Plugin(tr("External tool 
              bool fileNotFound = true;
              LimitedDirIterator it (toolsDir);
              while (it.hasNext()&& fileNotFound) {
-                 QString toolPath(it.filePath() + "/" + exeName);
                  it.next();
+                 QString toolPath(it.filePath() + "/" + exeName);
                  QFileInfo info(toolPath);
                  if(info.exists() && info.isFile()){
                      QString path = QDir::toNativeSeparators(toolPath);

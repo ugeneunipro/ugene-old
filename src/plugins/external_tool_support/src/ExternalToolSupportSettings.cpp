@@ -142,7 +142,7 @@ LimitedDirIterator::LimitedDirIterator( const QDir &dir, int deepLevels )
         deepLevel = 0;
     }
     data.push(qMakePair(dir.absolutePath(), 0));
-    fetchNext();
+    //fetchNext();
 }
 
 bool LimitedDirIterator::hasNext(){
