@@ -25,11 +25,11 @@ namespace U2 {
 
 GTLogTracer::GTLogTracer()
 : wasError(false) {
-    LogServer::getInstance()->addListner(this);
+    LogServer::getInstance()->addListener(this);
 }
 
 GTLogTracer::~GTLogTracer(){
-    LogServer::getInstance()->removeListner(this);
+    LogServer::getInstance()->removeListener(this);
 }
 
 void GTLogTracer::onMessage(const LogMessage &msg) {
