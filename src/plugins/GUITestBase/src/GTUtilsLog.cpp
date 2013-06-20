@@ -28,6 +28,10 @@ GTLogTracer::GTLogTracer()
     LogServer::getInstance()->addListener(this);
 }
 
+GTLogTracer::~GTLogTracer(){
+    LogServer::getInstance()->removeListner(this);
+}
+
 void GTLogTracer::onMessage(const LogMessage &msg) {
 
     if (msg.level == LogLevel_ERROR) {

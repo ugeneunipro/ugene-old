@@ -31,6 +31,7 @@ class GTLogTracer : public QObject, public LogListener {
     Q_OBJECT
 public:
     GTLogTracer();
+    ~GTLogTracer();
 
     void reset() { wasError = false; }
     bool hasError() const { return wasError; }
