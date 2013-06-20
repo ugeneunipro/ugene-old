@@ -64,6 +64,10 @@ LogViewWidget::LogViewWidget(LogCache* c) : messageCounter(0), connected(false) 
     connect(&updateViewTimer, SIGNAL(timeout()), this, SLOT(sl_showNewMessages()));
 }
 
+LogViewWidget::~LogViewWidget() {
+    updateViewTimer.stop();
+}
+
 void LogViewWidget::init() {
     caseSensitive = true;
     useRegexp = true;

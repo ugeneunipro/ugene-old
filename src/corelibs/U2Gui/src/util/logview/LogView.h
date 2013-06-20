@@ -62,6 +62,7 @@ public:
      */
     LogViewWidget(LogCache* c);
     LogViewWidget(const LogFilter& filter);
+    ~LogViewWidget();
 
     bool isShown(const LogMessage& msg);
     bool isShown(const QString& txt);
