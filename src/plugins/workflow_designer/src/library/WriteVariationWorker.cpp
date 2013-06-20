@@ -59,8 +59,7 @@ void WriteVariationWorker::data2doc(Document *doc, const QVariantMap &data) {
 }
 
 void WriteVariationWorker::storeEntry(IOAdapter *io, const QVariantMap &data, int) {
-    SAFE_POINT(data.contains(BaseSlots::VARIATION_TRACK_SLOT().getId()),
-        tr("Write variation worker: no variation track"), );
+    CHECK(hasDataToWrite(data), );
     U2OpStatusImpl os;
     QScopedPointer<VariantTrackObject> trackObj(NULL);
     {
@@ -77,6 +76,10 @@ void WriteVariationWorker::storeEntry(IOAdapter *io, const QVariantMap &data, in
     }
     format->storeEntry(io, objectsMap, os);
     SAFE_POINT_OP(os, );
+}
+
+bool WriteVariationWorker::hasDataToWrite(const QVariantMap &data) const {
+    return data.contains(BaseSlots::VARIATION_TRACK_SLOT().getId());
 }
 
 /************************************************************************/

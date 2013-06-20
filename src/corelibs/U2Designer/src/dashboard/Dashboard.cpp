@@ -71,6 +71,10 @@ void Dashboard::sl_loaded(bool ok) {
     StatisticsWidget *stat = new StatisticsWidget(addWidget(tr("Common Statistics"), 1), this);
 
     sl_runStateChanged(false);
+    if (!monitor()->getProblems().isEmpty()) {
+        sl_addProblemsWidget();
+    }
+
     connect(monitor(), SIGNAL(si_runStateChanged(bool)), SLOT(sl_runStateChanged(bool)));
     connect(monitor(), SIGNAL(si_firstProblem()), SLOT(sl_addProblemsWidget()));
 }

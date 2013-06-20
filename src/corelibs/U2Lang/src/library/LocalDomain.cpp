@@ -24,6 +24,7 @@
 #include <U2Lang/LastReadyScheduler.h>
 #include <U2Lang/Schema.h>
 #include <U2Lang/IntegralBusType.h>
+#include <U2Lang/WorkflowMonitor.h>
 #include <U2Lang/WorkflowSettings.h>
 #include <U2Lang/BaseAttributes.h>
 
@@ -173,6 +174,16 @@ bool BaseWorker::isReady() {
     }
 
     return false;
+}
+
+WorkflowMonitor * BaseWorker::monitor() const {
+    CHECK(NULL != context, NULL);
+    return context->getMonitor();
+}
+
+void BaseWorker::reportError(const QString &message) {
+    CHECK(NULL != monitor(), );
+    monitor()->addError(message, getActorId());
 }
 
 /*****************************

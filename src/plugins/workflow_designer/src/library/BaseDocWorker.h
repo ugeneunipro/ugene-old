@@ -74,6 +74,7 @@ public:
 
 protected:
     virtual void data2doc(Document*, const QVariantMap&) = 0;
+    virtual bool hasDataToWrite(const QVariantMap &data) const = 0;
     virtual bool isStreamingSupport() const;
     virtual bool isSupportedSeveralMessages() const;
     virtual void storeEntry(IOAdapter *, const QVariantMap &, int) {}
@@ -105,6 +106,7 @@ private:
     Document * getDocument(IOAdapter *io, U2OpStatus &os);
     Task * processDocs();
     SaveDocFlags getDocFlags() const;
+    void storeData(const QStringList &urls, const QVariantMap &data, U2OpStatus &os);
 };
 
 }// Workflow namespace

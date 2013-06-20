@@ -259,7 +259,7 @@ IOAdapter * BaseDocWriter::getAdapter(const QString &url, U2OpStatus &os) {
     QString resultUrl = io->getURL().getURLString();
     adapters[resultUrl] = io.data();
     usedUrls << resultUrl;
-    context->getMonitor()->addOutputFile(resultUrl, getActor()->getId());
+    monitor()->addOutputFile(resultUrl, getActorId());
 
     return io.take();
 }
@@ -283,32 +283,45 @@ bool BaseDocWriter::isStreamingSupport() const {
     return format->isStreamingSupport();
 }
 
+void BaseDocWriter::storeData(const QStringList &urls, const QVariantMap &data, U2OpStatus &os) {
+    foreach (const QString &anUrl, urls) {
+        IOAdapter *io = getAdapter(anUrl, os);
+        CHECK_OP(os, );
+        if (isStreamingSupport()) {
+            // TODO: make it in separate thread!
+            storeEntry(io, data, ch->takenMessages());
+        } else {
+            Document *doc = getDocument(io, os);
+            CHECK_OP(os, );
+            data2doc(doc, data);
+        }
+    }
+}
+
+#define CHECK_OS(os) \
+    if (os.hasError()) { \
+    reportError(os.getError()); \
+    continue; \
+    }
+
 Task * BaseDocWriter::tick() {
     U2OpStatusImpl os;
     while(ch->hasMessage()) {
         Message inputMessage = getMessageAndSetupScriptValues(ch);
+        this->takeParameters(os);
+        CHECK_OS(os);
+
         QVariantMap data = inputMessage.getData().toMap();
-        if (data.isEmpty()) {
+        if (!hasDataToWrite(data)) {
+            reportError(tr("No data to write"));
             continue;
         }
 
-        this->takeParameters(os);
-        CHECK_OP(os, new FailTask(os.getError()));
         QStringList urls = this->takeUrlList(data, os);
-        CHECK_OP(os, new FailTask(os.getError()));
+        CHECK_OS(os);
 
-        foreach (const QString &anUrl, urls) {
-            IOAdapter *io = getAdapter(anUrl, os);
-            CHECK_OP(os, new FailTask(os.getError()));
-            if (isStreamingSupport()) {
-                // TODO: make it in separate thread!
-                storeEntry(io, data, ch->takenMessages());
-            } else {
-                Document *doc = getDocument(io, os);
-                CHECK_OP(os, new FailTask(os.getError()));
-                data2doc(doc, data);
-            }
-        }
+        storeData(urls, data, os);
+        CHECK_OS(os);
         if (!append) {
             break;
         }

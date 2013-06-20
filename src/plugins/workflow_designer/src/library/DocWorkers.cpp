@@ -167,6 +167,10 @@ void TextWriter::data2doc(Document* doc, const QVariantMap& data) {
     }
 }
 
+bool TextWriter::hasDataToWrite(const QVariantMap &data) const {
+    return data.contains(BaseSlots::TEXT_SLOT().getId());
+}
+
 bool TextWriter::isStreamingSupport() const {
     return false;
 }
@@ -208,6 +212,10 @@ static U2SequenceObject *addSeqObject(Document *doc, DNASequence &seq) {
 void FastaWriter::data2doc(Document* doc, const QVariantMap& data) {
     data2document(doc, data, context, numSplitSequences, currentSplitSequence);
     currentSplitSequence++;
+}
+
+bool FastaWriter::hasDataToWrite(const QVariantMap &data) const {
+    return SeqWriter::hasSequence(data);
 }
 
 void FastaWriter::storeEntry(IOAdapter *io, const QVariantMap &data, int entryNum) {
@@ -333,6 +341,10 @@ void FastQWriter::data2document(Document* doc, const QVariantMap& data, Workflow
     addSeqObject(doc, seq);
 }
 
+bool FastQWriter::hasDataToWrite(const QVariantMap &data) const {
+    return SeqWriter::hasSequence(data);
+}
+
 void FastQWriter::streamingStoreEntry(DocumentFormat* format, IOAdapter *io, const QVariantMap &data, WorkflowContext *context, int entryNum) {
     CHECK(data.contains(BaseSlots::DNA_SEQUENCE_SLOT().getId()), );
     U2OpStatus2Log os;
@@ -375,6 +387,10 @@ void RawSeqWriter::data2document(Document* doc, const QVariantMap& data, Workflo
         seq.setName(QString("unknown sequence %1").arg(doc->getObjects().size()));
     }
     addSeqObject(doc, seq);
+}
+
+bool RawSeqWriter::hasDataToWrite(const QVariantMap &data) const {
+    return SeqWriter::hasSequence(data);
 }
 
 void RawSeqWriter::streamingStoreEntry(DocumentFormat* format, IOAdapter *io, const QVariantMap &data, WorkflowContext *context, int) {
@@ -476,6 +492,10 @@ void GenbankWriter::data2document(Document* doc, const QVariantMap& data, Workfl
     }
 }
 
+bool GenbankWriter::hasDataToWrite(const QVariantMap &data) const {
+    return SeqWriter::hasSequenceOrAnns(data);
+}
+
 void GenbankWriter::streamingStoreEntry(DocumentFormat* format, IOAdapter *io, const QVariantMap &data, WorkflowContext *context, int entryNum) {
     U2OpStatus2Log os;
     std::auto_ptr<U2SequenceObject> seqObj(NULL);
@@ -530,6 +550,10 @@ void GenbankWriter::streamingStoreEntry(DocumentFormat* format, IOAdapter *io, c
  *************************************/
 void GFFWriter::data2doc(Document* doc, const QVariantMap& data) {
     data2document(doc, data, context);
+}
+
+bool GFFWriter::hasDataToWrite(const QVariantMap &data) const {
+    return SeqWriter::hasSequenceOrAnns(data);
 }
 
 void GFFWriter::data2document(Document* doc, const QVariantMap& data, WorkflowContext *context) {
@@ -623,6 +647,27 @@ void SeqWriter::data2doc(Document* doc, const QVariantMap& data){
     }
 }
 
+bool SeqWriter::hasSequence(const QVariantMap &data) {
+    return data.contains(BaseSlots::DNA_SEQUENCE_SLOT().getId());
+}
+
+bool SeqWriter::hasSequenceOrAnns(const QVariantMap &data) {
+    return data.contains(BaseSlots::DNA_SEQUENCE_SLOT().getId())
+        || data.contains(BaseSlots::ANNOTATION_TABLE_SLOT().getId());
+}
+
+bool SeqWriter::hasDataToWrite(const QVariantMap &data) const {
+    CHECK(NULL != format, false);
+    
+    DocumentFormatId fid = format->getFormatId();
+    if (BaseDocumentFormats::GFF == fid
+        || BaseDocumentFormats::PLAIN_GENBANK == fid) {
+        return hasSequenceOrAnns(data);
+    } else {
+        return hasSequence(data);
+    }
+}
+
 void SeqWriter::storeEntry(IOAdapter *io, const QVariantMap &data, int entryNum) {
     if( format == NULL ) {
         return;
@@ -702,7 +747,6 @@ void MSAWriter::data2doc(Document* doc, const QVariantMap& data) {
 }
 
 void MSAWriter::data2document(Document* doc, const QVariantMap& data, WorkflowContext* context) {
-    CHECK(data.contains(BaseSlots::MULTIPLE_ALIGNMENT_SLOT().getId()), );
     SharedDbiDataHandler msaId = data.value(BaseSlots::MULTIPLE_ALIGNMENT_SLOT().getId()).value<SharedDbiDataHandler>();
     std::auto_ptr<MAlignmentObject> msaObj(StorageUtils::getMsaObject(context->getDataStorage(), msaId));
     SAFE_POINT(NULL != msaObj.get(), "NULL MSA Object!", );
@@ -722,6 +766,10 @@ void MSAWriter::data2document(Document* doc, const QVariantMap& data, WorkflowCo
 
     MAlignmentObject* obj = new MAlignmentObject(ma.getName(), msaRef);
     doc->addObject(obj);
+}
+
+bool MSAWriter::hasDataToWrite(const QVariantMap &data) const {
+    return data.contains(BaseSlots::MULTIPLE_ALIGNMENT_SLOT().getId());
 }
 
 bool MSAWriter::isStreamingSupport() const {

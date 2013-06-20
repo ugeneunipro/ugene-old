@@ -40,11 +40,15 @@ class SeqWriter : public BaseDocWriter {
 public:
     SeqWriter(Actor *a);
     SeqWriter(Actor *a, const DocumentFormatId &fid);
+
+    static bool hasSequence(const QVariantMap &data);
+    static bool hasSequenceOrAnns(const QVariantMap &data);
 protected:
     int numSplitSequences;
     int currentSplitSequence;
 
     virtual void data2doc(Document*, const QVariantMap&);
+    virtual bool hasDataToWrite(const QVariantMap &data) const;
     virtual void storeEntry(IOAdapter *io, const QVariantMap &data, int entryNum);
 
     virtual void takeParameters(U2OpStatus &os);
@@ -60,6 +64,7 @@ public:
 protected:
     virtual void data2doc(Document*, const QVariantMap&);
     virtual bool isStreamingSupport() const;
+    virtual bool hasDataToWrite(const QVariantMap &data) const;
 public:
     static void data2document(Document*, const QVariantMap&, WorkflowContext*);
 };
@@ -90,6 +95,7 @@ protected:
     virtual void data2doc(Document*, const QVariantMap&);
     virtual bool isStreamingSupport() const;
     virtual bool isSupportedSeveralMessages() const;
+    virtual bool hasDataToWrite(const QVariantMap &data) const;
 };
 
 class FastaWriter : public SeqWriter {
@@ -99,6 +105,7 @@ public:
 protected:
     virtual void data2doc(Document*, const QVariantMap&);
     virtual void storeEntry(IOAdapter *io, const QVariantMap &data, int entryNum);
+    virtual bool hasDataToWrite(const QVariantMap &data) const;
 public:
     static void data2document(Document*, const QVariantMap&, WorkflowContext*, int numSplitSequences, int currentSplit);
     static U2Region getSplitRegion(int numSplitSequences, int currentSplit, qint64 seqLen);
@@ -112,6 +119,7 @@ public:
 protected:
     virtual void data2doc(Document*, const QVariantMap&);
     virtual void storeEntry(IOAdapter *io, const QVariantMap &data, int entryNum);
+    virtual bool hasDataToWrite(const QVariantMap &data) const;
 public:
     static void data2document(Document*, const QVariantMap&, WorkflowContext*);
     static void streamingStoreEntry(DocumentFormat* format, IOAdapter *io, const QVariantMap &data, WorkflowContext *context, int entryNum);
@@ -124,6 +132,7 @@ public:
 protected:
     virtual void data2doc(Document*, const QVariantMap&);
     virtual void storeEntry(IOAdapter *io, const QVariantMap &data, int entryNum);
+    virtual bool hasDataToWrite(const QVariantMap &data) const;
 public:
     static void data2document(Document*, const QVariantMap&, WorkflowContext*);
     static void streamingStoreEntry(DocumentFormat* format, IOAdapter *io, const QVariantMap &data, WorkflowContext *context, int entryNum);
@@ -136,6 +145,7 @@ public:
 protected:
     virtual void data2doc(Document*, const QVariantMap&);
     virtual void storeEntry(IOAdapter *io, const QVariantMap &data, int entryNum);
+    virtual bool hasDataToWrite(const QVariantMap &data) const;
 public:
     static void data2document(Document*, const QVariantMap&, WorkflowContext*);
     static void streamingStoreEntry(DocumentFormat* format, IOAdapter *io, const QVariantMap &data, WorkflowContext *context, int entryNum);
@@ -147,6 +157,7 @@ public:
     GFFWriter(Actor* a) : BaseDocWriter(a, BaseDocumentFormats::GFF){}
 protected:
     virtual void data2doc(Document*, const QVariantMap&);
+    virtual bool hasDataToWrite(const QVariantMap &data) const;
 public:
     static void data2document(Document*, const QVariantMap&, WorkflowContext*);
 };

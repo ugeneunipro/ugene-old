@@ -69,10 +69,6 @@ public:
     QMap<QString, IntegralBus*> &getPorts() {return ports;}
     Actor * getActor() const {return actor;}
 
-    /** Returns the value of a parameter with paramId */
-    template<class T>
-    T getValue(const QString &paramId) const;
-
 private:
     // bind values from input ports to script vars. 
     // This function is called before 'get' data from channel -> to set up parameters for scripting
@@ -85,7 +81,14 @@ protected:
     QMap<QString, IntegralBus*> ports;
     // workflow settings: worker task should fail on first error
     //bool failFast;
-    
+
+protected:
+    /** Returns the value of a parameter with paramId */
+    template<class T>
+    T getValue(const QString &paramId) const;
+
+    WorkflowMonitor * monitor() const;
+    void reportError(const QString &message);
 }; // BaseWorker
 
 /**

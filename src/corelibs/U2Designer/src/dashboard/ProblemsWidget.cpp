@@ -29,6 +29,9 @@ ProblemsWidget::ProblemsWidget(const QWebElement &content, Dashboard *parent)
 : TableWidget(content, parent)
 {
     createTable();
+    foreach (const Problem &info, dashboard->monitor()->getProblems()) {
+        sl_newProblem(info);
+    }
     connect(dashboard->monitor(), SIGNAL(si_newProblem(const Monitor::Problem &)), SLOT(sl_newProblem(const Monitor::Problem &)));
 }
 

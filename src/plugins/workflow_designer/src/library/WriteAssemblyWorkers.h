@@ -33,6 +33,7 @@ public:
 
 protected:
     virtual void data2doc(Document *doc, const QVariantMap &data);
+    virtual bool hasDataToWrite(const QVariantMap &data) const;
 }; // BaseWriteAssemblyWorker
 
 class WriteBAMWorker : public BaseWriteAssemblyWorker {

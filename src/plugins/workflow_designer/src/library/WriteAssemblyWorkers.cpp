@@ -59,7 +59,7 @@ BaseWriteAssemblyWorker::BaseWriteAssemblyWorker(Actor *a)
 }
 
 void BaseWriteAssemblyWorker::data2doc(Document *doc, const QVariantMap &data) {
-    CHECK(data.contains(BaseSlots::ASSEMBLY_SLOT().getId()), );
+    CHECK(hasDataToWrite(data), );
     SharedDbiDataHandler assemblyId = data[BaseSlots::ASSEMBLY_SLOT().getId()].value<SharedDbiDataHandler>();
     std::auto_ptr<AssemblyObject> assemblyObj(StorageUtils::getAssemblyObject(context->getDataStorage(), assemblyId));
     SAFE_POINT(NULL != assemblyObj.get(), tr("Assembly writer: NULL assembly object"), );
@@ -79,6 +79,10 @@ void BaseWriteAssemblyWorker::data2doc(Document *doc, const QVariantMap &data) {
     } else {
         algoLog.trace("Failed to add assembly object to document: op is not supported!");
     }
+}
+
+bool BaseWriteAssemblyWorker::hasDataToWrite(const QVariantMap &data) const {
+    return data.contains(BaseSlots::ASSEMBLY_SLOT().getId());
 }
 
 /************************************************************************/
