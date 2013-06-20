@@ -266,12 +266,13 @@ public:
     MSAHighlightingScheme* getCurrentHighlightingScheme(){return highlitingScheme;};
     bool getUseDotsCheckedState(){return useDotsAction->isChecked();};
 
+    void onVisibleRangeChanged();
 signals:
     void si_startChanged(const QPoint& p, const QPoint& prev);
     void si_selectionChanged(const MSAEditorSelection& current, const MSAEditorSelection& prev);
     void si_selectionChanged(const QStringList& selectedRows);
     void si_highlightingChanged();
-    void si_visibleRangeChanged(QStringList visibleSequences);
+    void si_visibleRangeChanged(QStringList visibleSequences, int reqHeight);
 
 public slots:
     void sl_changeColorSchemeOutside(const QString &name);
@@ -335,6 +336,7 @@ private slots:
     void sl_setCollapsingRegions(const QStringList* visibleSequences);
     void sl_useDots();
     void sl_fontChanged(QFont font);
+
 protected:
     virtual void wheelEvent (QWheelEvent * event);
 
@@ -364,6 +366,7 @@ private:
     void validateRanges();          //called on resize/refont like events
 
     void reverseComplementModification(ModificationType& type);
+
 
     MSAEditor*      editor;
     MSAEditorUI*    ui;

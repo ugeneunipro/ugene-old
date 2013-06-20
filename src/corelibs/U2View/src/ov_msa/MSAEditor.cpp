@@ -286,7 +286,6 @@ void MSAEditor::setFont(const QFont& f) {
     font.setPointSize(qBound(MIN_FONT_SIZE, pSize, MAX_FONT_SIZE));
     emit si_fontChanged(f);
     saveFont(font);
-    emit si_sizeChanged(ui->seqArea->getHeight(), MIN_FONT_SIZE == pSize, MAX_FONT_SIZE == pSize);
 }
 
 void MSAEditor::setFirstVisibleBase(int firstPos) {

@@ -74,7 +74,8 @@ QWidget* MSAEditorTreeViewer::createWidget() {
 void MSAEditorTreeViewer::setTreeVerticalSize(int size) {
     MSAEditorTreeViewerUI* msaUI = dynamic_cast<MSAEditorTreeViewerUI*>(ui);
     CHECK(NULL != msaUI, );
-    msaUI->setTreeVerticalSize(size);
+    //msaUI->setTreeVerticalSize(size);
+    //msa->getUI()->getSequenceArea()->onVisibleRangeChanged();
 } 
 
 void MSAEditorTreeViewer::setCreatePhyTreeSettings(const CreatePhyTreeSettings& _buildSettings) {
@@ -102,17 +103,18 @@ void MSAEditorTreeViewer::setSynchronizationMode(SynchronizationMode newSyncMode
             connect(treeViewerUI, SIGNAL(si_collapseModelChangedInTree(const QStringList*)), msaUI->getSequenceArea(), SLOT(sl_setCollapsingRegions(const QStringList*)));
             connect(treeViewerUI, SIGNAL(si_seqOrderChanged(QStringList*)), msa, SLOT(sl_onSeqOrderChanged(QStringList*)));
             connect(treeViewerUI, SIGNAL(si_groupColorsChanged(const GroupColorSchema&)), msaUI->getEditorNameList(), SLOT(sl_onGroupColorsChanged(const GroupColorSchema&)));
-            connect(msa, SIGNAL(si_sizeChanged(int, bool, bool)), treeViewerUI, SLOT(sl_onHeightChanged(int, bool, bool)));
+            //connect(msa, SIGNAL(si_sizeChanged(int, bool, bool)), treeViewerUI, SLOT(sl_onHeightChanged(int, bool, bool)));
 
             connect(treeViewerUI,   SIGNAL(si_treeZoomedIn()),                      msa,  SLOT(sl_zoomIn()));
             connect(msa,   SIGNAL(si_referenceSeqChanged(const QString &)), treeViewerUI,  SLOT(sl_onReferenceSeqChanged(const QString &)));
             connect(treeViewerUI,   SIGNAL(si_treeZoomedOut()),                     msa,  SLOT(sl_zoomOut()));
-            connect(msaUI->getSequenceArea(),   SIGNAL(si_visibleRangeChanged(QStringList)), treeViewerUI, SLOT(sl_onVisibleRangeChanged(QStringList)));
+            connect(msaUI->getSequenceArea(),   SIGNAL(si_visibleRangeChanged(QStringList, int)), treeViewerUI, SLOT(sl_onVisibleRangeChanged(QStringList, int)));
 
             slotsAreConnected = true;
         }
         sortSeqAction->setEnabled(true);
-        treeViewerUI->setTreeVerticalSize(msaUI->getSequenceArea()->getHeight());
+        //treeViewerUI->setTreeVerticalSize(msaUI->getSequenceArea()->getHeight());
+        msa->getUI()->getSequenceArea()->onVisibleRangeChanged();
     }
     connect(msaUI->getSequenceArea(),   SIGNAL(si_selectionChanged(const QStringList&)), treeViewerUI, SLOT(sl_selectionChanged(const QStringList&)));
     connect(msaUI->getEditorNameList(), SIGNAL(si_sequenceNameChanged(QString, QString)), treeViewerUI, SLOT(sl_sequenceNameChanged(QString, QString)));
@@ -129,7 +131,7 @@ MSAEditorTreeViewerUI::MSAEditorTreeViewerUI(MSAEditorTreeViewer* treeViewer)
 }
 
 void MSAEditorTreeViewerUI::setTreeVerticalSize(int size) {
-    sl_onHeightChanged(size, false, false);
+    //sl_onHeightChanged(size, false, false);
 }
 
 ColorGenerator::ColorGenerator(int _countOfColors, qreal _lightness): countOfColors(_countOfColors), delta(0.1), hue(0.0), lightness(_lightness){
@@ -196,13 +198,13 @@ void MSAEditorTreeViewerUI::wheelEvent(QWheelEvent *we ) {
         TreeViewerUI::wheelEvent(we);
         return;
     }
+    we->accept();
     if(0 < we->delta() && !hasMaxSize) {
         emit si_treeZoomedIn();
     }
     if(0 > we->delta() && !hasMinSize) {
         emit si_treeZoomedOut();
     }
-    we->accept();
 }
 
 void MSAEditorTreeViewerUI::mouseMoveEvent(QMouseEvent *me) {
@@ -235,7 +237,7 @@ void MSAEditorTreeViewerUI::mouseMoveEvent(QMouseEvent *me) {
         QRectF rect = scene()->sceneRect();
         subgroupSelector->setLine(subgroupSelectorPos, rect.bottom(), subgroupSelectorPos, rect.top());
         highlightBranches();
-        scene()->update();
+        //scene()->update();
     }
     else {
         TreeViewerUI::mouseMoveEvent(me);
@@ -393,7 +395,8 @@ void MSAEditorTreeViewerUI::onLayoutChanged(const TreeLayout& layout) {
             curMSATreeViewer->getSortSeqsAction()->setEnabled(true);
             MSAEditor* msa = curMSATreeViewer->getMsaEditor();
             CHECK(NULL != msa, );
-            setTreeVerticalSize(msa->getUI()->getSequenceArea()->getHeight());
+            //setTreeVerticalSize(msa->getUI()->getSequenceArea()->getHeight());
+            msa->getUI()->getSequenceArea()->onVisibleRangeChanged();
         }
     }
     else {
@@ -427,7 +430,7 @@ void MSAEditorTreeViewerUI::sl_onHeightChanged(int height, bool isMinimumSize, b
     int treeHeight = getTreeSize().length;
     CHECK(0 != treeHeight  && 0 != height, );
     qreal zoomCoef = (qreal)(height - 5) / treeHeight;
-    zooming(1.0, zoomCoef);
+    //zooming(1.0, zoomCoef);
     //updateSceneRect(sceneRect());
     hasMaxSize = isMaximumSize;
     hasMinSize = isMinimumSize;
@@ -586,18 +589,12 @@ void MSAEditorTreeViewerUI::updateSettings(const TreeSettings &settings) {
     }
 
     bool widthChanged = treeSettings.width_coef == settings.width_coef;
-    qreal oldHZoom = getHorizontalZoom();
     treeSettings = settings;
     updateTreeSettings(widthChanged);
 
     MSAEditor* msa = curMSATreeViewer->getMsaEditor();
     CHECK(NULL != msa, );
-    setTreeVerticalSize(msa->getUI()->getSequenceArea()->getHeight());
-    qreal newHZoom = getHorizontalZoom();
-    bool compareRes = qFuzzyCompare(oldHZoom, newHZoom);
-    if(!compareRes) {
-        zooming(oldHZoom/newHZoom, 1.0);
-    }
+    msa->getUI()->getSequenceArea()->onVisibleRangeChanged();
 }
 
 void MSAEditorTreeViewerUI::sl_rectLayoutRecomputed() {
@@ -605,10 +602,15 @@ void MSAEditorTreeViewerUI::sl_rectLayoutRecomputed() {
     curMSATreeViewer->setSynchronizationMode(syncMode);
 }
 
-void MSAEditorTreeViewerUI::sl_onVisibleRangeChanged(QStringList visibleSeqs) {
+void MSAEditorTreeViewerUI::sl_onVisibleRangeChanged(QStringList visibleSeqs, int height) {
+    SAFE_POINT(height > 0, QString("Argument 'height' in function 'MSAEditorTreeViewerUI::sl_onVisibleRangeChanged' less then 1"),);
     QList<GraphicsBranchItem*> items = getListNodesOfTree();
     QRectF rect;
     zooming(1.0, 1.0/getVerticalZoom());
+    foreach(const QString& str, visibleSeqs) {
+        str == "";
+    }
+    int itemsNumber = 0;
     foreach(GraphicsBranchItem* item, items) {
         if(visibleSeqs.contains(item->getNameText()->text())) {
           if(rect.isNull()) {
@@ -616,23 +618,26 @@ void MSAEditorTreeViewerUI::sl_onVisibleRangeChanged(QStringList visibleSeqs) {
             }
             else {
                 rect = rect.united(item->getNameText()->sceneBoundingRect());
+                ++itemsNumber;
             }
         }
     }
-    QRectF viewRect = viewport()->rect();
-    CHECK(!viewRect.isEmpty(), );
-    
     CHECK(rect.height() > 0, );
     QRectF sceneRect = transform().mapRect(rect); 
 
     MSAEditor* msa = curMSATreeViewer->getMsaEditor();
     CHECK(NULL != msa, );
-    setTreeVerticalSize(msa->getUI()->getSequenceArea()->getHeight());
-    viewRect.setHeight(msa->getUI()->getSequenceArea()->getHeight());
+    //setTreeVerticalSize(msa->getUI()->getSequenceArea()->getHeight());
+    //msa->getUI()->getSequenceArea()->onVisibleRangeChanged();
 
-    qreal zoom = viewRect.height() / sceneRect.height();
+    int viewportHeight = viewport()->rect().height(); 
+    qreal zoom = qreal(height - msa->getRowHeight()/10) / (sceneRect.height() - sceneRect.height() / 1.5 / itemsNumber);
+    
+    rect.setHeight(rect.height() * (viewportHeight-35) / height);
+    
     zooming(1.0, zoom);
     centerOn(rect.center());
+    //translate(0, qreal(sceneRect.height()) / 1.5 / itemsNumber);
 }
 
 

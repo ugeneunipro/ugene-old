@@ -704,14 +704,6 @@ void MSAEditorSequenceArea::sl_onHScrollMoved(int pos) {
 void MSAEditorSequenceArea::sl_onVScrollMoved(int seq) {
     assert(seq >=0 && seq <= editor->getNumSequences() - getNumVisibleSequences(false));    
     setFirstVisibleSequence(seq);
-
-    QStringList rowNames = editor->getMSAObject()->getMAlignment().getRowNames();
-    QStringList visibleSeqs;
-    int lastSeq = getNumVisibleSequences(false) + seq;
-    for(int i = seq; i < lastSeq; i++) {
-        visibleSeqs.append(rowNames.at(i));
-    }
-    emit si_visibleRangeChanged(visibleSeqs);
 }
 
 void MSAEditorSequenceArea::updateHScrollBar() {
@@ -758,6 +750,33 @@ void MSAEditorSequenceArea::updateVScrollBar() {
 
     connect(svBar, SIGNAL(valueChanged(int)), SLOT(sl_onVScrollMoved(int)));
     connect(svBar, SIGNAL(actionTriggered(int)), SLOT(sl_onScrollBarActionTriggered(int)));
+
+    onVisibleRangeChanged();
+}
+
+
+void MSAEditorSequenceArea::onVisibleRangeChanged() {
+    qint64 firstVisibleSeq = getFirstVisibleSequence();
+    qint64 lastVisibleSeq  = getLastVisibleSequence(true);
+
+    QVector<U2Region> range;
+    if (ui->isCollapsibleMode()) {
+        ui->getCollapseModel()->getVisibleRows(firstVisibleSeq, lastVisibleSeq, range);
+    } else {
+        range.append(U2Region(firstVisibleSeq, lastVisibleSeq - firstVisibleSeq + 1));
+    }
+
+    QStringList rowNames = editor->getMSAObject()->getMAlignment().getRowNames();
+    QStringList visibleSeqs;
+    foreach(const U2Region& region, range) {
+        int start = region.startPos;
+        int end = qMin(region.endPos(), lastVisibleSeq);
+        for (int seq = start; seq <= end; seq++) {
+            visibleSeqs.append(rowNames.at(seq));
+        }
+    }
+    int h = height();
+    emit si_visibleRangeChanged(visibleSeqs, getHeight());
 }
 
 
@@ -1649,6 +1668,7 @@ void MSAEditorSequenceArea::sl_zoomOperationPerformed( bool resizeModeChanged )
     validateRanges();
     updateActions();
     update();
+    onVisibleRangeChanged();
 }
 
 void MSAEditorSequenceArea::sl_modelChanged() {
