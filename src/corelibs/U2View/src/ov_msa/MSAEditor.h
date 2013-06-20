@@ -282,6 +282,8 @@ public:
 
     void setSimilaritySettings(const SimilarityStatisticsSettings* settings);
 
+    void refreshSimilarityColumn();
+
     void showSimilarity();
     void hideSimilarity();
     

@@ -221,43 +221,17 @@ void MSAEditorAlignmentDependentWidget::createHeaderWidget() {
     nameWidget.setFont(settings->ui->getEditor()->getFont());
     headerLayout->addWidget(&nameWidget);
 
-    updateBar = new QWidget();
-    QHBoxLayout* updateLayout = new QHBoxLayout();
-
     state = DataIsValid;
-    statusBar.setText(DataIsValidMessage);
-    QFont font;
-    font.setPointSize(12);
-    statusBar.setFont(font);
-    updateLayout->addWidget(&statusBar);
-
-    updateButton.setText(tr("Update"));
-    updateButton.setEnabled(false);
-    connect(&updateButton, SIGNAL(pressed()),
-        this, SLOT(sl_onUpdateButonPressed()));
-
-    updateLayout->addWidget(&updateButton);
-    updateBar->setLayout(updateLayout);
-
-    headerLayout->addWidget(updateBar);
     headerWidget = new MSAWidget(settings->ui);
     headerWidget->setLayout(headerLayout);
 }
 
 void MSAEditorAlignmentDependentWidget::setSettings(const UpdatedWidgetSettings* _settings) {
     settings = _settings; 
-    setAutomaticUpdating(settings->autoUpdate);
+    automaticUpdating = settings->autoUpdate;
     contentWidget->setSettings(settings);
 }
 
-void MSAEditorAlignmentDependentWidget::setAutomaticUpdating(bool autoUpdate) {
-    automaticUpdating = autoUpdate;
-    if(automaticUpdating) {
-        updateBar->hide();
-        return;
-    }
-    updateBar->show();
-}
 
 void MSAEditorAlignmentDependentWidget::sl_onAlignmentChanged(const MAlignment& maBefore, const MAlignmentModInfo& modInfo) {
     contentWidget->onAlignmentChanged(maBefore, modInfo);

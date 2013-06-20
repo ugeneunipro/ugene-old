@@ -52,7 +52,7 @@ QWidget* MSAEditorTreeViewer::createWidget() {
     sortSeqAction->setObjectName("Sort Alignment");
     connect(sortSeqAction, SIGNAL(triggered()), ui, SLOT(sl_sortAlignment()));
 
-    refreshTreeAction = new QAction(QIcon(":core/images/arrow_rotate_clockwise.png"), tr("Refresh tree"), ui);
+    refreshTreeAction = new QAction(QIcon(":core/images/refresh.png"), tr("Refresh tree"), ui);
     refreshTreeAction->setObjectName("Refresh tree");
     refreshTreeAction->setEnabled(false);
     connect(refreshTreeAction, SIGNAL(triggered()), SLOT(sl_refreshTree()));
@@ -106,17 +106,17 @@ void MSAEditorTreeViewer::setSynchronizationMode(SynchronizationMode newSyncMode
             //connect(msa, SIGNAL(si_sizeChanged(int, bool, bool)), treeViewerUI, SLOT(sl_onHeightChanged(int, bool, bool)));
 
             connect(treeViewerUI,   SIGNAL(si_treeZoomedIn()),                      msa,  SLOT(sl_zoomIn()));
-            connect(msa,   SIGNAL(si_referenceSeqChanged(const QString &)), treeViewerUI,  SLOT(sl_onReferenceSeqChanged(const QString &)));
+            connect(msa,   SIGNAL(si_referenceSeqChanged(const QString &)), treeViewerUI, SLOT(sl_onReferenceSeqChanged(const QString &)));
             connect(treeViewerUI,   SIGNAL(si_treeZoomedOut()),                     msa,  SLOT(sl_zoomOut()));
             connect(msaUI->getSequenceArea(),   SIGNAL(si_visibleRangeChanged(QStringList, int)), treeViewerUI, SLOT(sl_onVisibleRangeChanged(QStringList, int)));
 
             slotsAreConnected = true;
         }
         sortSeqAction->setEnabled(true);
-        //treeViewerUI->setTreeVerticalSize(msaUI->getSequenceArea()->getHeight());
+        treeViewerUI->sl_sortAlignment();
         msa->getUI()->getSequenceArea()->onVisibleRangeChanged();
     }
-    connect(msaUI->getSequenceArea(),   SIGNAL(si_selectionChanged(const QStringList&)), treeViewerUI, SLOT(sl_selectionChanged(const QStringList&)));
+    connect(msaUI->getSequenceArea(),   SIGNAL(si_selectionChanged(const QStringList&)), treeViewerUI,  SLOT(sl_selectionChanged(const QStringList&)));
     connect(msaUI->getEditorNameList(), SIGNAL(si_sequenceNameChanged(QString, QString)), treeViewerUI, SLOT(sl_sequenceNameChanged(QString, QString)));
 }
 
@@ -598,8 +598,10 @@ void MSAEditorTreeViewerUI::updateSettings(const TreeSettings &settings) {
 }
 
 void MSAEditorTreeViewerUI::sl_rectLayoutRecomputed() {
+    QMatrix curMatrix = matrix();
     TreeViewerUI::sl_rectLayoutRecomputed();
     curMSATreeViewer->setSynchronizationMode(syncMode);
+    setMatrix(curMatrix);
 }
 
 void MSAEditorTreeViewerUI::sl_onVisibleRangeChanged(QStringList visibleSeqs, int height) {

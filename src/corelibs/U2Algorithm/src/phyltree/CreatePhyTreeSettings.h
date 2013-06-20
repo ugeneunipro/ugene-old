@@ -35,6 +35,7 @@ public:
     QString algorithmId;
     QString matrixId;
     bool    displayWithAlignmentEditor;
+    bool    syncAlignmentWithTree;
     GUrl    fileUrl;
     bool useGammaDistributionRates;
     double alphaFactor;

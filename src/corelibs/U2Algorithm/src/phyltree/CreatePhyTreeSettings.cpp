@@ -23,7 +23,7 @@
 
 namespace U2{
 
-CreatePhyTreeSettings::CreatePhyTreeSettings() : algorithmId(""), matrixId(""),
+CreatePhyTreeSettings::CreatePhyTreeSettings() : algorithmId(""), matrixId(""), syncAlignmentWithTree(true),
     displayWithAlignmentEditor(true), useGammaDistributionRates(false),
     bootstrap(false), consensusID(""),mb_ngen(1),mrBayesSettingsScript("")
 

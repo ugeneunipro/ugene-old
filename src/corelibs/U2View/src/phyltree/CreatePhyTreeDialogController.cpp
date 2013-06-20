@@ -44,6 +44,7 @@ CreatePhyTreeDialogController::CreatePhyTreeDialogController(QWidget* parent, co
     connect(ui->algorithmBox, SIGNAL(currentIndexChanged ( int )), SLOT(sl_comboIndexChaged(int)));
     connect(ui->storeSettings, SIGNAL(clicked()), SLOT(sl_onStoreSettings()));
     connect(ui->restoreSettings, SIGNAL(clicked()), SLOT(sl_onRestoreDefault()));
+    connect(ui->displayWithAlignmentEditor, SIGNAL(toggled(bool)), SLOT(sl_onDispayWithMSAClicked(bool)));
     
     ui->fileNameEdit->setText(url.getURLString());
     
@@ -64,6 +65,7 @@ CreatePhyTreeDialogController::CreatePhyTreeDialogController(QWidget* parent, co
         }
     }
     ui->displayWithAlignmentEditor->setChecked(true);
+    ui->syncCheckBox->setCheckState(Qt::Checked);
 }
 
 void CreatePhyTreeDialogController::sl_okClicked(){
@@ -180,6 +182,10 @@ void CreatePhyTreeDialogController::sl_comboIndexChaged(int ){
     PhyTreeGenerator* generator = registry->getGenerator(ui->algorithmBox->currentText());
     generator->setupCreatePhyTreeUI(this, msa);
     ui->verticalLayout->activate(); 
+}
+
+void CreatePhyTreeDialogController::sl_onDispayWithMSAClicked(bool checked) {
+     ui->syncCheckBox->setEnabled(checked);
 }
 
 CreatePhyTreeDialogController::~CreatePhyTreeDialogController()

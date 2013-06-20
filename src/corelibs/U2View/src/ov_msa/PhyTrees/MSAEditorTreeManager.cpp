@@ -257,7 +257,7 @@ void MSAEditorTreeManager::sl_openTreeTaskFinished(Task* t) {
             const TreeViewerUI* treeUI = treeView->getTreeViewerUI();
 
             treeView->setMSAEditor(editor);
-            treeView->setSynchronizationMode(FullSynchronization);
+            treeView->setSynchronizationMode(settings.syncAlignmentWithTree ? FullSynchronization : OnlySeqsSelection);
             
             connect(treeView, SIGNAL(si_refreshTree(MSAEditorTreeViewer&)), SLOT(sl_refreshTree(MSAEditorTreeViewer&)));
         }

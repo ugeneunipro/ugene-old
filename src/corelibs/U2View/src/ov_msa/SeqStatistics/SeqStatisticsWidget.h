@@ -42,6 +42,7 @@ private slots:
     void sl_onAlgoChanged(const QString & text);
     void sl_onGapsChanged(int state);
     void sl_onUnitsChanged(bool);
+    void sl_onUpdateClicked();
     void sl_onShowStatisticsChanged(int);
     void sl_onAutoUpdateChanged(int);
     void sl_onRefSeqChanged(const QString&);

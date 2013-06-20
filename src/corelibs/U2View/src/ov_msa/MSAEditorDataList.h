@@ -137,7 +137,6 @@ public:
     void setSettings(const UpdatedWidgetSettings* _settings);
     const DataState& getDataState() const{return state;}
     const UpdatedWidgetSettings* getSettings() const {return settings;} 
-    void setAutomaticUpdating(bool autoUpdate);
 
 private slots:
     void sl_onAlignmentChanged(const MAlignment& maBefore, const MAlignmentModInfo& modInfo);

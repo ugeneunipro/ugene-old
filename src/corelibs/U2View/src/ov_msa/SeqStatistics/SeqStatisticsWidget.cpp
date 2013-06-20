@@ -90,6 +90,8 @@ void SeqStatisticsWidget::updateWidgetsSettings(){
         "font: bold;");
     ui.refSeqWarning->setWordWrap(true);
 
+    ui.dataState->setText(tr("Distances are correct"));
+
     restoreSettings();
 
     connectSlots();
@@ -100,6 +102,7 @@ void SeqStatisticsWidget::connectSlots() {
     connect(ui.excludeGapsCheckBox,      SIGNAL(stateChanged (int)),                    SLOT(sl_onGapsChanged(int)));
     connect(ui.countsButton,             SIGNAL(clicked(bool)),                         SLOT(sl_onUnitsChanged(bool)));
     connect(ui.percentsButton,           SIGNAL(clicked(bool)),                         SLOT(sl_onUnitsChanged(bool)));
+    connect(ui.updateButton,             SIGNAL(pressed()),                             SLOT(sl_onUpdateClicked()));
     connect(ui.showDistancesColumnCheck, SIGNAL(stateChanged (int)),                    SLOT(sl_onShowStatisticsChanged(int)));
     connect(ui.autoUpdateCheck,          SIGNAL(stateChanged (int)),                    SLOT(sl_onAutoUpdateChanged(int)));
     connect(msa,                         SIGNAL(si_referenceSeqChanged(const QString&)), SLOT(sl_onRefSeqChanged(const QString&)));
@@ -111,6 +114,9 @@ void SeqStatisticsWidget::restoreSettings() {
     ui.countsButton->setChecked(!settings->usePercents);
     ui.excludeGapsCheckBox->setCheckState(settings->excludeGaps ? Qt::Checked : Qt::Unchecked);
     ui.autoUpdateCheck->setCheckState(settings->autoUpdate ? Qt::Checked : Qt::Unchecked);
+    ui.updateButton->setEnabled(!settings->autoUpdate);
+    ui.dataState->setEnabled(!settings->autoUpdate);
+
     int index = ui.algoComboBox->findText(settings->algoName);
     if(0 <= index) {
         ui.algoComboBox->setCurrentIndex(index);
@@ -127,7 +133,7 @@ void SeqStatisticsWidget::restoreSettings() {
 }
 
 void SeqStatisticsWidget::sl_onAlgoChanged(const QString &algoName) {
-    settings->algoName   = algoName;
+    settings->algoName = algoName;
     msaUI->setSimilaritySettings(settings);
 }
 
@@ -142,7 +148,10 @@ void SeqStatisticsWidget::sl_onUnitsChanged( bool ) {
 }
 
 void SeqStatisticsWidget::sl_onAutoUpdateChanged(int state) {
-    settings->autoUpdate = (Qt::Checked == state);
+    bool autoUpdateEnabled = Qt::Checked == state;
+    settings->autoUpdate = autoUpdateEnabled;
+    ui.updateButton->setEnabled(!autoUpdateEnabled);
+    ui.dataState->setEnabled(!autoUpdateEnabled);
     msaUI->setSimilaritySettings(settings);
 }
 
@@ -162,6 +171,10 @@ void SeqStatisticsWidget::sl_onShowStatisticsChanged(int state) {
     else {
         hideSimilaritySettings();
     }
+}
+
+void SeqStatisticsWidget::sl_onUpdateClicked() {
+    msaUI->refreshSimilarityColumn();
 }
 
 void SeqStatisticsWidget::hideSimilaritySettings() {

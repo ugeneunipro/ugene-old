@@ -129,14 +129,14 @@ signals:
     void si_treeZoomedIn();
     void si_treeZoomedOut();
     void si_groupColorsChanged(const GroupColorSchema& schema);
-
+public slots:
+    void sl_sortAlignment();
 private slots:
     void sl_selectionChanged(const QStringList& selection);
     void sl_sequenceNameChanged(QString prevName, QString newName);
     virtual void sl_collapseTriggered();
     void sl_onHeightChanged(int height, bool isMinimumSize, bool isMaximumSize);
     void sl_onReferenceSeqChanged(const QString &str);
-    void sl_sortAlignment();
     void sl_onSceneRectChanged(const QRectF&);
     virtual void sl_rectLayoutRecomputed();
     void sl_onVisibleRangeChanged(QStringList visibleSeqs, int height);

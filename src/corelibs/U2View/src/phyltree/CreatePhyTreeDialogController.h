@@ -32,7 +32,8 @@ private slots:
     void sl_comboIndexChaged(int index);
     void sl_onStoreSettings();
     void sl_onRestoreDefault();
-    
+    void sl_onDispayWithMSAClicked(bool checked);
+
 private:
     int rightMargin;
     MAlignment msa;

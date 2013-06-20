@@ -118,5 +118,6 @@
         <file>images/settings2.png</file>
         <file>images/navi_right.png</file>
         <file>images/close_small.png</file>
+        <file>images/refresh.png</file>
     </qresource>
 </RCC>

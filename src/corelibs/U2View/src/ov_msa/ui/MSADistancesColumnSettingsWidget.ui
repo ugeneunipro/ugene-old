@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>230</width>
-    <height>230</height>
+    <height>251</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -89,13 +89,6 @@
           <widget class="QComboBox" name="algoComboBox"/>
          </item>
          <item>
-          <widget class="QCheckBox" name="autoUpdateCheck">
-           <property name="text">
-            <string>Automatic updating</string>
-           </property>
-          </widget>
-         </item>
-         <item>
           <widget class="QGroupBox" name="profileGrope">
            <property name="title">
             <string>Profile mode</string>
@@ -129,9 +122,47 @@
           </widget>
          </item>
          <item>
+          <widget class="QCheckBox" name="autoUpdateCheck">
+           <property name="text">
+            <string>Automatic updating</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout">
+           <item>
+            <widget class="QLabel" name="dataState">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="text">
+              <string>&lt;dataState&gt;</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QToolButton" name="updateButton">
+             <property name="toolTip">
+              <string>Refresh distances</string>
+             </property>
+             <property name="text">
+              <string>...</string>
+             </property>
+             <property name="icon">
+              <iconset resource="../../../../U2Gui/U2Gui.qrc">
+               <normaloff>:/core/images/refresh.png</normaloff>:/core/images/refresh.png</iconset>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
           <widget class="QLabel" name="refSeqWarning">
            <property name="text">
-            <string>&lt;empty&gt;</string>
+            <string>&lt;hint&gt;</string>
            </property>
           </widget>
          </item>
@@ -143,6 +174,8 @@
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="../../../../U2Gui/U2Gui.qrc"/>
+ </resources>
  <connections/>
 </ui>

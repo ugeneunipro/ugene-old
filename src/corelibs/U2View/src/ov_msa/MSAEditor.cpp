@@ -835,6 +835,10 @@ void MSAEditorUI::setSimilaritySettings( const SimilarityStatisticsSettings* set
     similarityStatistics->setSettings(settings);
 }
 
+void MSAEditorUI::refreshSimilarityColumn() {
+    dataList->updateWidget();
+}
+
 void MSAEditorUI::showSimilarity() {
     if(NULL == similarityStatistics) {
         SimilarityStatisticsSettings settings;
