@@ -30,7 +30,6 @@
 
 #include <library/QDFindActor.h>
 #include <library/QDFindPolyRegionsActor.h>
-#include <library/QDGcContentActor.h>
 
 #include <U2Core/AppContext.h>
 #include <U2Gui/ObjectViewModel.h>
@@ -93,7 +92,6 @@ QueryDesignerPlugin::QueryDesignerPlugin()
 void QueryDesignerPlugin::registerLibFactories() {
     AppContext::getQDActorProtoRegistry()->registerProto(new QDFindActorPrototype());
     AppContext::getQDActorProtoRegistry()->registerProto(new QDFindPolyActorPrototype());
-    AppContext::getQDActorProtoRegistry()->registerProto(new QDFindGcActorPrototype());
 }
 
 QueryDesignerViewContext::QueryDesignerViewContext(QObject *p)

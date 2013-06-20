@@ -18,8 +18,7 @@ HEADERS += src/QueryDesignerPlugin.h \
            src/QDGroupsEditor.h \
            src/QDWorker.h \
            src/library/QDFindActor.h \
-           src/library/QDFindPolyRegionsActor.h \
-           src/library/QDGcContentActor.h
+           src/library/QDFindPolyRegionsActor.h
 
 FORMS += src/ui/AddConstraintDialog.ui \
          src/ui/QueryEditorWidget.ui \
@@ -41,8 +40,7 @@ SOURCES += src/QueryDesignerPlugin.cpp \
            src/QDGroupsEditor.cpp \
            src/QDWorker.cpp \
            src/library/QDFindActor.cpp \
-           src/library/QDFindPolyRegionsActor.cpp \
-           src/library/QDGcContentActor.cpp
+           src/library/QDFindPolyRegionsActor.cpp
 
 RESOURCES += query_designer.qrc
 TRANSLATIONS += transl/english.ts transl/russian.ts
