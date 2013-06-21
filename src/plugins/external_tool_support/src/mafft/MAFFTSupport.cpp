@@ -57,7 +57,7 @@ MAFFTSupport::MAFFTSupport(const QString& name, const QString& path) : ExternalT
     executableFileName="mafft.bat";
 #else
     #if defined(Q_OS_MAC)
-    executableFileName="mafft";
+    executableFileName="mafft.bat";
     #endif
 #endif
     validationArguments<<"-help";
