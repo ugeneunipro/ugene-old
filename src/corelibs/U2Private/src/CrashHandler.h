@@ -97,18 +97,18 @@ public:
 
 class CrashLogCache : public LogCache {
     Q_OBJECT
-public:
-    virtual void onMessage(const LogMessage& msg) {
+protected slots:
+    virtual void sl_onMessage(const LogMessage& msg) {
         static int count=0;
         if (!(count++ % logMemoryInfoEvery)) {
             cmdLog.trace(formMemInfo());
         }
 
-        LogCache::onMessage(msg);
+        LogCache::sl_onMessage(msg);
     }
 
 private:
-    static const int logMemoryInfoEvery = 20;
+    static const int logMemoryInfoEvery = 10;
 
     QString formMemInfo() {
         AppResourcePool* pool = AppResourcePool::instance();

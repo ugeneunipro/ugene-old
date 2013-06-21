@@ -205,7 +205,7 @@ enum GTestLogHelperStatus {GTest_LogHelper_Invalid, GTest_LogHelper_Valid};
  * "lockForLogListening" for "multi-test" tag! This is done to avoid mixing of log
  * between different tests.
  */
-class U2TEST_EXPORT GTestLogHelper : public QObject, public LogListener {
+class U2TEST_EXPORT GTestLogHelper : public LogListener {
     Q_OBJECT
 public:
     GTestLogHelper();

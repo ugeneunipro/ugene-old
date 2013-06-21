@@ -27,7 +27,7 @@
 
 namespace U2 {
 
-class LogDriver : public QObject, public LogListener, public LogSettingsHolder {
+class LogDriver : public QObject, public LogSettingsHolder {
     Q_OBJECT
 public:
     static const QString LOG_SHOW_DATE_CMD_OPTION;
@@ -51,9 +51,8 @@ private:
     
 public:
     LogDriver();
-    virtual ~LogDriver();
+    virtual ~LogDriver() {}
 
-    void onMessage(const LogMessage& msg);
 
 private:
     void setCmdLineSettings();
@@ -61,6 +60,7 @@ private:
     QString getLevelName(int i) const;
     
 private slots:
+    void sl_onMessage(const LogMessage& msg);
     QString prepareText(const LogMessage& msg) const;
 private:
     bool printToConsole;

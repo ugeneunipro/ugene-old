@@ -48,27 +48,20 @@ static void checkThread() {
 
 #define MAX_VISIBLE_MESSAGES 1000
 
-LogViewWidget::LogViewWidget(const LogFilter& filter) : messageCounter(0), connected(false) {
-    cache = new LogCache(MAX_VISIBLE_MESSAGES);
+LogViewWidget::LogViewWidget(const LogFilter& filter) {
+    cache = new LogCache();
     cache->filter = filter;
     cache->setParent(this);
     init();
-
-    connect(&updateViewTimer, SIGNAL(timeout()), this, SLOT(sl_showNewMessages()));
 }
 
-LogViewWidget::LogViewWidget(LogCache* c) : messageCounter(0), connected(false) {
+LogViewWidget::LogViewWidget(LogCache* c) {
     cache = c;
     init();
-
-    connect(&updateViewTimer, SIGNAL(timeout()), this, SLOT(sl_showNewMessages()));
-}
-
-LogViewWidget::~LogViewWidget() {
-    updateViewTimer.stop();
 }
 
 void LogViewWidget::init() {
+    connected = false;
     caseSensitive = true;
     useRegexp = true;
 
@@ -163,13 +156,26 @@ void LogViewWidget::sl_showHideEdit() {
     }
 }
 
+void LogViewWidget::resetText() {
+    edit->clear();
+    foreach(EntryStruct e, original_text) {
+        if (isShown(e.msg.text)) {
+            if(e.is_plain_text) {
+                edit->appendHtml(e.msg.text);
+            } else {
+                edit->appendHtml(prepareText(e.msg));
+            }
+        }
+    }
+}
+
 void LogViewWidget::sl_onTextEdited(const QString & text) {
     QRegExp re(text);
     if (highlighter->reg_exp.patternSyntax() == QRegExp::RegExp && !re.isValid())
         return;
 
     highlighter->reg_exp.setPattern(text);
-    resetView();
+    resetText();
 }
 
 bool LogViewWidget::isShown(const QString & txt) {
@@ -203,7 +209,7 @@ void LogViewWidget::setSearchCaseSensitive() {
     } else {
         highlighter->reg_exp.setCaseSensitivity(Qt::CaseInsensitive);
     }
-    resetView();
+    resetText();
 }
 
 void LogViewWidget::useRegExp() {
@@ -214,51 +220,64 @@ void LogViewWidget::useRegExp() {
         highlighter->reg_exp.setPattern(searchEdit->text());
         highlighter->reg_exp.setPatternSyntax(QRegExp::FixedString);
     }
-    resetView();
+    resetText();
 }
 
 void LogViewWidget::resetView() {
+    QTime startTime = QTime::currentTime();
+    
     edit->clear();
-    messageCounter = MAX_VISIBLE_MESSAGES;
+    original_text.clear();
+    
+    QList<LogMessage*> messagesToShow;
+    for (int i= cache->messages.size(); --i>=0;) {
+        LogMessage* m = cache->messages[i];
+        if (isShown(*m)) {
+            original_text.prepend(*m);
+            if (!isShown(m->text)) {
+                continue;
+            }
+
+            messagesToShow.prepend(m);
+            if (messagesToShow.count() == MAX_VISIBLE_MESSAGES) {
+                break;    
+            }
+        }
+    }
+    foreach(LogMessage* m, messagesToShow) {
+        edit->appendHtml(prepareText(*m));
+    }
+    edit->moveCursor(QTextCursor::End);
+    edit->moveCursor(QTextCursor::StartOfLine);
+    edit->ensureCursorVisible();
+
+    QTime endTime = QTime::currentTime();
+    perfLog.trace(QString("Log view update time %1 millis").arg(startTime.msecsTo(endTime)));
+    searchEdit->setFocus();
+}
+
+void LogViewWidget::sl_onMessage(const LogMessage& msg) {
+    checkThread();
+    if (isVisible()) {
+        addMessage(msg);
+    }
 }
 
 void LogViewWidget::showEvent(QShowEvent *e) {
     Q_UNUSED(e);
-    if (!connected) {
-        updateViewTimer.start(500);
-        LogServer::getInstance()->addListener(this);
-        connected = !connected;
-    }
-
+    assert(!connected);
+    connect(LogServer::getInstance(), SIGNAL(si_message(const LogMessage&)), SLOT(sl_onMessage(const LogMessage&)));
+    connected = true;
     resetView();
 }
 
 void LogViewWidget::hideEvent(QHideEvent *e) {
     Q_UNUSED(e);
-
-    if (connected) {
-        updateViewTimer.stop();
-        LogServer::getInstance()->removeListener(this);
-        connected = !connected;
-    }
-
-    edit->clear();
-}
-
-void LogViewWidget::sl_showNewMessages() {
-    QList<LogMessage> newMessagesToShow = cache->getLastMessages(messageCounter);
-    messageCounter = 0;
-    int count = 0;
-    foreach(const LogMessage& m, newMessagesToShow) {
-        addMessage(m);
-        if (count++ > MAX_VISIBLE_MESSAGES) {
-            break;
-        }
-    }
-}
-
-void LogViewWidget::onMessage(const LogMessage& msg) {
-    messageCounter++;
+    
+    //do not use any resources when hidden
+    LogServer::getInstance()->disconnect(this);
+    connected = false;
+    edit->clear(); 
 }
 
 bool LogViewWidget::isShown(const LogMessage& msg)  {
@@ -292,7 +311,6 @@ void LogViewWidget::setSettings(const LogSettings& s) {
         return;
     }
     LogSettingsHolder::setSettings(s);
-
     resetView();
 }
 
@@ -325,6 +343,7 @@ void LogViewWidget::addMessage(const LogMessage& msg) {
     if (!isShown(msg)) {
         return;
     }
+    original_text.append(msg);
     addText(prepareText(msg));
 }
 
@@ -336,29 +355,39 @@ void LogViewWidget::addText(const QString& txt) {
     edit->moveCursor(QTextCursor::End);
     edit->moveCursor(QTextCursor::StartOfLine);
     edit->ensureCursorVisible();
-    QApplication::processEvents();
+}
+
+void LogViewWidget::sl_logSettingsChanged() {
+    if (isVisible()) {
+        resetView();
+    }
 }
 
 void LogViewWidget::sl_dumpCounters() {
     QString text = "Counters report start ***********************\n";
+    original_text.append(text);
     addText(text);
     foreach(GCounter* c, GCounter::allCounters()) {
         double val = c->scaledTotal();
         text = c->name + " " + QString::number(val) + " " + c->suffix;
+        original_text.append(text);
         addText(text);
     }
     text = "Counters report end ***********************\n";
+    original_text.append(text);
     addText(text);
 }
 
 void LogViewWidget::sl_addSeparator() {
     QString text = "\n==================================================\n";
+    original_text.append(text);
     addText(text);
 }
 
 void LogViewWidget::sl_clear() {
     cache->messages.clear();
     edit->clear(); 
+    original_text.clear();
 }
 
 void LogViewWidget::setSearchBoxMode(LogViewSearchBoxMode mode) {

@@ -28,7 +28,7 @@
 namespace U2 {
 
 
-LogServer::LogServer() : listenerMutex(QMutex::Recursive) {
+LogServer::LogServer() {
     qRegisterMetaType<LogMessage>("LogMessage");
 }
 
@@ -53,20 +53,16 @@ QStringList LogServer::getCategories() const {
     return result;
 }
 
-void LogServer::addListener(LogListener* listner)
+void LogServer::addListner(LogListener* listner)
 {
-    QMutexLocker l(&listenerMutex);
-
     SAFE_POINT(NULL != listner, "Internal error during adding a log listner: NULL listner!",);
     SAFE_POINT(!listeners.contains(listner),
         "Internal error during adding a log listner: the listener is already added!",);
     listeners.append(listner);
 }
 
-void LogServer::removeListener(LogListener* listener)
+void LogServer::removeListner(LogListener* listener)
 {
-    QMutexLocker l(&listenerMutex);
-
     int numOfListenersRemoved = listeners.removeAll(listener);
     SAFE_POINT(1 == numOfListenersRemoved, QString("Internal error during removing a log listener:"
         " unexpected number '%1' of listeners!").arg(numOfListenersRemoved),);
@@ -74,7 +70,7 @@ void LogServer::removeListener(LogListener* listener)
 
 void LogServer::message(const LogMessage& m)
 {
-    QMutexLocker l(&listenerMutex);
+    emit si_message(m);
     foreach (LogListener* listner, listeners)
     {
         listner->onMessage(m);

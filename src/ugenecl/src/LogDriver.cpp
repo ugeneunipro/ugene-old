@@ -54,18 +54,14 @@ const QString LogDriver::LOG_SETTINGS_ACTIVE_FLAG           = "activeFlagLevel";
 bool LogDriver::helpRegistered = false;
 
 LogDriver::LogDriver() : printToConsole (true) {
-    LogServer::getInstance()->addListener(this);
-
+    connect(LogServer::getInstance(), SIGNAL(si_message(const LogMessage&)), SLOT(sl_onMessage(const LogMessage&)));
+    
     if( !helpRegistered ) {
         setLogCmdlineHelp();
     }
     
     setLogSettings();
     setCmdLineSettings();
-}
-
-LogDriver::~LogDriver() {
-    LogServer::getInstance()->removeListener(this);
 }
 
 void LogDriver::setLogCmdlineHelp() {
@@ -256,7 +252,7 @@ QString LogDriver::prepareText(const LogMessage& msg) const {
 }
 
 
-void LogDriver::onMessage(const LogMessage& msg) {
+void LogDriver::sl_onMessage(const LogMessage& msg) {
     if (!printToConsole || !settings.activeLevelGlobalFlag[msg.level]) {
         return;
     }
