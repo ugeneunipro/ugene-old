@@ -31,6 +31,28 @@ workflow "Single dataset Tuxedo: single-end reads"{
     tophat.hits-url->cufflinks.in-assembly.url
 
     .meta {
+        parameter-aliases {
+            tophat.bowtie-index-basename {
+                alias:bowtie_index_basename;
+                description:"The basename of the Bowtie index for the reference sequence.";
+            }
+            tophat.bowtie-index-dir {
+                alias:bowtie_index_dir;
+                description:"The directory with the Bowtie index for the reference sequence.";
+            }
+            tophat.out-dir {
+                alias:tophat_out_dir;
+                description:"The directory to store TopHat output files.";
+            }
+            cufflinks.out-dir {
+                alias:cufflinks_out_dir;
+                description:"The directory to store Cufflinks output files.";
+            }
+            read-sequence.url-in {
+                alias:reads_in;
+                description:"Input RNA-seq short reads.";
+            }
+        }
         visual {
             cufflinks {
                 pos:"-510 -690";

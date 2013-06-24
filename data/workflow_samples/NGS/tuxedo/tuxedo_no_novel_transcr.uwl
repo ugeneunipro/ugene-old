@@ -2,7 +2,7 @@
 
 
 
-workflow "Multiple datasets Tuxedo: paired-end reads"{
+workflow "Multiple datasets Tuxedo: single-end reads"{
 
     tophat {
         type:tophat;
@@ -12,23 +12,9 @@ workflow "Multiple datasets Tuxedo: paired-end reads"{
         type:cuffdiff;
         name:"Test for Diff. Expression with Cuffdiff";
     }
-    multiplexer {
-        type:multiplexer;
-        name:Multiplexer;
-    }
     read-sequence {
         type:get-file-list;
-        name:"Read Paired Reads 1";
-        url-in {
-            dataset:"Dataset 1";
-        }
-        url-in {
-            dataset:"Dataset 2";
-        }
-    }
-    read-sequence-1 {
-        type:get-file-list;
-        name:"Read Paired Reads 2";
+        name:"Read RNA-seq short reads";
         url-in {
             dataset:"Dataset 1";
         }
@@ -46,77 +32,77 @@ workflow "Multiple datasets Tuxedo: paired-end reads"{
 
 
     .actor-bindings {
+        read-sequence.out-url->tophat.in-sequence
         tophat.out-assembly->cuffdiff.in-assembly
-        read-sequence.out-url->multiplexer.input-data-1
-        multiplexer.output-data->tophat.in-sequence
-        read-sequence-1.out-url->multiplexer.input-data-2
         read-annotations.out-annotations->cuffdiff.in-annotations
     }
 
     read-sequence.dataset->tophat.in-sequence.dataset
     read-sequence.url->tophat.in-sequence.in-url
-    read-sequence-1.url->tophat.in-sequence.paired-url
     read-annotations.annotations->cuffdiff.in-annotations.annotations
     tophat.hits-url->cuffdiff.in-assembly.url
 
     .meta {
+        parameter-aliases {
+            tophat.bowtie-index-basename {
+                alias:bowtie_index_basename;
+                description:"The basename of the Bowtie index for the reference sequence.";
+            }
+            tophat.bowtie-index-dir {
+                alias:bowtie_index_dir;
+                description:"The directory with the Bowtie index for the reference sequence.";
+            }
+            tophat.out-dir {
+                alias:tophat_out_dir;
+                description:"The directory to store TopHat output files.";
+            }
+            cuffdiff.out-dir {
+                alias:cuffdiff_out_dir;
+                description:"The directory to store Cuffdiff output files.";
+            }
+            read-sequence.url-in {
+                alias:reads_in;
+                description:"Input RNA-seq short reads (at least two datasets).";
+            }
+            read-annotations.url-in {
+                alias:transcript_in;
+                description:"Input transcript annotations.";
+            }
+        }
         visual {
             cuffdiff {
-                pos:"-447 -417";
+                pos:"-511 -479";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
-                bounds:"-30 -30 147.25 118";
-                in-annotations.angle:218.66;
-                in-assembly.angle:25.1593;
-            }
-            multiplexer {
-                pos:"-738 -611";
-                style:ext;
-                bg-color-ext:"0 128 128 64";
-                bounds:"-30 -30 149 88";
-                input-data-1.angle:190.008;
-                input-data-2.angle:238.339;
-                output-data.angle:351.68;
+                bounds:"-30 -30 119.25 136";
+                in-annotations.angle:32.9052;
+                in-assembly.angle:221.424;
             }
             read-annotations {
-                pos:"-680 -400";
+                pos:"-475 -694";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
-                out-annotations.angle:355.601;
+                out-annotations.angle:277.481;
             }
             read-sequence {
-                pos:"-1020 -675";
+                pos:"-1032 -454";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
-                bounds:"-30 -30 147 61";
-                out-url.angle:351.506;
-            }
-            read-sequence-1 {
-                pos:"-1020 -523";
-                style:ext;
-                bg-color-ext:"0 128 128 64";
-                bounds:"-30 -30 148 59";
-                out-url.angle:357.447;
+                out-url.angle:360;
             }
             tophat {
-                pos:"-446 -613";
+                pos:"-792 -453";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
-                bounds:"-30 -30 149.75 89";
-                in-sequence.angle:218.589;
-                out-assembly.angle:305.172;
-            }
-            multiplexer.output-data->tophat.in-sequence {
-                text-pos:"-42.5 -45";
+                bounds:"-30 -30 120.75 102";
+                in-sequence.angle:180;
+                out-assembly.angle:360;
             }
             read-annotations.out-annotations->cuffdiff.in-annotations {
                 text-pos:"-33 -24";
             }
-            read-sequence-1.out-url->multiplexer.input-data-2 {
-                text-pos:"-30 -13";
-            }
-            read-sequence.out-url->multiplexer.input-data-1 {
-                text-pos:"-30 -12";
+            read-sequence.out-url->tophat.in-sequence {
+                text-pos:"-44 -24";
             }
             tophat.out-assembly->cuffdiff.in-assembly {
                 text-pos:"-38.5 -24";
@@ -130,14 +116,9 @@ workflow "Multiple datasets Tuxedo: paired-end reads"{
                 title:"Input data";
                 parameters-area {
                     group {
-                        title:"RNA-seq paired short reads";
-                        paired-reads-datasets {
-                            read-sequence.url-in {
-                                label:"First short-reads files";
-                            }
-                            read-sequence-1.url-in {
-                                label:"Second short-reads files";
-                            }
+                        title:"RNA-seq short reads";
+                        read-sequence.url-in {
+                            type:datasets;
                         }
                     }
                 }

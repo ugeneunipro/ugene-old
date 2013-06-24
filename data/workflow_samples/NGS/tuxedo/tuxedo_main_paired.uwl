@@ -65,6 +65,40 @@ workflow "Main Tuxedo: paired-end reads"{
     tophat.hits-url->cuffdiff.in-assembly.url
 
     .meta {
+        parameter-aliases {
+            tophat.bowtie-index-basename {
+                alias:bowtie_index_basename;
+                description:"The basename of the Bowtie index for the reference sequence.";
+            }
+            tophat.bowtie-index-dir {
+                alias:bowtie_index_dir;
+                description:"The directory with the Bowtie index for the reference sequence.";
+            }
+            tophat.out-dir {
+                alias:tophat_out_dir;
+                description:"The directory to store TopHat output files.";
+            }
+            cufflinks.out-dir {
+                alias:cufflinks_out_dir;
+                description:"The directory to store Cufflinks output files.";
+            }
+            cuffmerge.out-dir {
+                alias:cuffmerge_out_dir;
+                description:"The directory to store Cuffmerge output files.";
+            }
+            cuffdiff.out-dir {
+                alias:cuffdiff_out_dir;
+                description:"The directory to store Cuffdiff output files.";
+            }
+            read-sequence.url-in {
+                alias:reads_in1;
+                description:"The *_1 ('left') set of input RNA-seq short reads (at least two datasets are required).";
+            }
+            read-sequence-1.url-in {
+                alias:reads_in2;
+                description:"The *_2 ('right') set of input RNA-seq short reads (at least two datasets are required).";
+            }
+        }
         visual {
             cuffdiff {
                 pos:"-705 -270";

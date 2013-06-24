@@ -33,10 +33,10 @@ workflow "Single dataset Tuxedo: paired-end reads"{
 
 
     .actor-bindings {
-        multiplexer.output-data->tophat.in-sequence
-        read-sequence.out-url->multiplexer.input-data-1
         read-sequence-1.out-url->multiplexer.input-data-2
         tophat.out-assembly->cufflinks.in-assembly
+        read-sequence.out-url->multiplexer.input-data-1
+        multiplexer.output-data->tophat.in-sequence
     }
 
     read-sequence.dataset->tophat.in-sequence.dataset
@@ -45,6 +45,32 @@ workflow "Single dataset Tuxedo: paired-end reads"{
     tophat.hits-url->cufflinks.in-assembly.url
 
     .meta {
+        parameter-aliases {
+            tophat.bowtie-index-basename {
+                alias:bowtie_index_basename;
+                description:"The basename of the Bowtie index for the reference sequence.";
+            }
+            tophat.bowtie-index-dir {
+                alias:bowtie_index_dir;
+                description:"The directory with the Bowtie index for the reference sequence.";
+            }
+            tophat.out-dir {
+                alias:tophat_out_dir;
+                description:"The directory to store TopHat output files.";
+            }
+            cufflinks.out-dir {
+                alias:cufflinks_out_dir;
+                description:"The directory to store Cufflinks output files.";
+            }
+            read-sequence.url-in {
+                alias:reads_in1;
+                description:"The *_1 ('left') set of input RNA-seq short reads.";
+            }
+            read-sequence-1.url-in {
+                alias:reads_in2;
+                description:"The *_2 ('right') set of input RNA-seq short reads.";
+            }
+        }
         visual {
             cufflinks {
                 pos:"-447 -408";

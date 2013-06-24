@@ -12,8 +12,8 @@ workflow "RNA-seq analysis with Tuxedo tools" {
                 NGS/tuxedo/tuxedo_main_paired.uwl: "pipeline.full reads.paired";
                 NGS/tuxedo/tuxedo_single_dataset.uwl: "pipeline.single reads.single";
                 NGS/tuxedo/tuxedo_single_dataset_paired.uwl: "pipeline.single reads.paired";
-                NGS/tuxedo/tuxedo_multiple_dataset.uwl: "pipeline.multiple reads.single";
-                NGS/tuxedo/tuxedo_multiple_dataset_paired.uwl: "pipeline.multiple reads.paired";
+                NGS/tuxedo/tuxedo_no_novel_transcr.uwl: "pipeline.multiple reads.single";
+                NGS/tuxedo/tuxedo_no_novel_transcr_paired.uwl: "pipeline.multiple reads.paired";
             }
             page {
                 id: 1;
