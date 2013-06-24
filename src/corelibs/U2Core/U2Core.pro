@@ -144,6 +144,7 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/tasks/CopyDocumentTask.h \
            src/tasks/CreateAnnotationTask.h \
            src/tasks/DocumentProviderTask.h \
+           src/tasks/ExternalToolRunTask.h \
            src/tasks/ExtractAnnotatedRegionTask.h \
            src/tasks/FailTask.h \
            src/tasks/LoadDocumentTask.h \
@@ -289,6 +290,7 @@ SOURCES += src/cmdline/CMDLineCoreOptions.cpp \
            src/tasks/CopyDocumentTask.cpp \
            src/tasks/CreateAnnotationTask.cpp \
            src/tasks/DocumentProviderTask.cpp \
+           src/tasks/ExternalToolRunTask.cpp \
            src/tasks/ExtractAnnotatedRegionTask.cpp \
            src/tasks/LoadDocumentTask.cpp \
            src/tasks/LoadDASDocumentTask.cpp \

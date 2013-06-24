@@ -56,6 +56,7 @@ CallVariantsTask::CallVariantsTask( const CallVariantsTaskSettings& _settings, D
 ,settings(_settings)
 ,loadTask(NULL)
 ,mpileupTask(NULL)
+,varFilterTask(NULL)
 ,storage(_store)
 {
     setMaxParallelSubtasks(1);
@@ -97,7 +98,11 @@ QList<Task*> CallVariantsTask::onSubTaskFinished( Task* subTask ){
     }
 
     if(subTask == mpileupTask){
-        GUrl url(mpileupTask->getBcfOutputFilePath());
+        varFilterTask = runVarFilter(mpileupTask->getBcfOutputFilePath());
+        CHECK_OP(stateInfo, res);
+        res << varFilterTask;
+    } else if (subTask == varFilterTask) {
+        GUrl url(filteredVcfUrl);
         if( url.isEmpty() ) {
             return res;
         }
@@ -115,7 +120,7 @@ QList<Task*> CallVariantsTask::onSubTaskFinished( Task* subTask ){
         loadTask =  new LoadDocumentTask( df->getFormatId(), url, iof, cfg );
         res.append(loadTask);
 
-    }else if(subTask == loadTask){
+    } else if(subTask == loadTask){
         QScopedPointer<Document> doc (loadTask->takeDocument(false));
         SAFE_POINT(doc!=NULL, tr("No document loaded"), res);
         doc->setDocumentOwnsDbiResources(false);
@@ -127,7 +132,7 @@ QList<Task*> CallVariantsTask::onSubTaskFinished( Task* subTask ){
             SharedDbiDataHandler handler = storage->getDataHandler(varObj->getEntityRef());
             m.insert(BaseSlots::VARIATION_TRACK_SLOT().getId(), qVariantFromValue<SharedDbiDataHandler>(handler));
             results.append(m);
-       }
+        }
    }
 
     return res;
@@ -137,10 +142,28 @@ Task::ReportResult CallVariantsTask::report(){
     if (!mpileupTask || mpileupTask->hasError()){
         return ReportResult_Finished;
     }
-    
+
     GUrlUtils::removeFile(mpileupTask->getBcfOutputFilePath(), stateInfo);
+    GUrlUtils::removeFile(filteredVcfUrl, stateInfo);
 
     return ReportResult_Finished;
+}
+
+QString CallVariantsTask::tmpFilePath(const QString &baseName, const QString &ext, U2OpStatus &os) {
+    QString tmpDirPath = AppContext::getAppSettings()->getUserAppsSettings()->getCurrentProcessTemporaryDirPath(CALL_VARIANTS_DIR);
+    return GUrlUtils::prepareTmpFileLocation(tmpDirPath, baseName, ext, os);
+}
+
+ExternalToolRunTask * CallVariantsTask::runVarFilter(const QString &inVcf) {
+    filteredVcfUrl = CallVariantsTask::tmpFilePath("filtered", "vcf", stateInfo);
+    CHECK_OP(stateInfo, NULL);
+
+    QStringList arguments = settings.getVarFilterArgs() << inVcf;
+    ExternalToolRunTask *result = new ExternalToolRunTask("vcfutils", arguments, new ExternalToolLogParser());
+
+    result->setOutputFile(filteredVcfUrl);
+
+    return result;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -201,13 +224,11 @@ void SamtoolsMpileupTask::prepare(){
             return ;
         }
     }
-    
-    //prepare tmp file
-    QString tmpDirPath = AppContext::getAppSettings()->getUserAppsSettings()->getCurrentProcessTemporaryDirPath(CALL_VARIANTS_DIR);
-    tmpMpileupOutputFile = GUrlUtils::prepareTmpFileLocation(tmpDirPath, "tmp", "bcf", stateInfo);
-    tmpBcfViewOutputFile = GUrlUtils::prepareTmpFileLocation(tmpDirPath, "tmp", "vcf", stateInfo);
-    CHECK_OP(stateInfo, );
 
+    //prepare tmp files
+    tmpMpileupOutputFile = CallVariantsTask::tmpFilePath("tmp", "bcf", stateInfo);
+    tmpBcfViewOutputFile = CallVariantsTask::tmpFilePath("tmp", "vcf", stateInfo);
+    CHECK_OP(stateInfo, );
 }
 
 void SamtoolsMpileupTask::run(){
@@ -278,7 +299,6 @@ void SamtoolsMpileupTask::run(){
     bcfSettings.min_perm_p = settings.min_perm_p;
     bcfSettings.cancelFlag = &(stateInfo.cancelFlag);
 
-   
     ret = bcfview(2, bcfViewArgv, &bcfSettings, tmpBcfViewOutputFile.toLocal8Bit().constData());
     taskLog.details("bcf view has been finished");
     if (ret == -1){
@@ -287,6 +307,7 @@ void SamtoolsMpileupTask::run(){
     }
     } catch (...) {
         setError("Samtools has been finished with an error");
+        return;
     }
 }
 
@@ -297,6 +318,36 @@ Task::ReportResult SamtoolsMpileupTask::report(){
     return ReportResult_Finished;
 }
 
+QStringList CallVariantsTaskSettings::getVarFilterArgs() const {
+    QStringList result;
+    result << "varFilter";
+    result << "-Q";
+    result << QString::number(minQual);
+    result << "-d";
+    result << QString::number(minDep);
+    result << "-D";
+    result << QString::number(maxDep);
+    result << "-a";
+    result << QString::number(minAlt);
+    result << "-w";
+    result << QString::number(gapSize);
+    result << "-W";
+    result << QString::number(window);
+    result << "-1";
+    result << QString::number(pvalue1);
+    result << "-2";
+    result << QString::number(pvalue2);
+    result << "-3";
+    result << QString::number(pvalue3);
+    result << "-4";
+    result << QString::number(pvalue4);
+    result << "-e";
+    result << QString::number(pvalueHwe);
+    if (printFiltered) {
+        result << "-p";
+    }
+    return result;
+}
 
 }
 } //namespace

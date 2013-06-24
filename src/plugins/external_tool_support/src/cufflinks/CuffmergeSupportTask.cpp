@@ -20,11 +20,12 @@
  */
 
 #include "CufflinksSupport.h"
-#include "ExternalToolRunTask.h"
+#include "CufflinksSupportTask.h"
 
 #include <U2Core/AppContext.h>
 #include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/ExternalToolRegistry.h>
+#include <U2Core/ExternalToolRunTask.h>
 #include <U2Core/GUrlUtils.h>
 #include <U2Core/U2SafePoints.h>
 
@@ -75,7 +76,7 @@ QList<Task*> CuffmergeSupportTask::onSubTaskFinished(Task *subTask) {
 }
 
 void CuffmergeSupportTask::run() {
-    result = ExternalToolSupportUtils::getAnnotationsFromFile(
+    result = CufflinksSupportTask::getAnnotationsFromFile(
         settings.outDir + "/merged.gtf",
         BaseDocumentFormats::GTF,
         CUFFMERGE_TOOL_NAME,

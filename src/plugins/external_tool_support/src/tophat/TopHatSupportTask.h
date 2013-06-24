@@ -22,12 +22,12 @@
 #ifndef _U2_TOPHAT_SUPPORT_TASK_H_
 #define _U2_TOPHAT_SUPPORT_TASK_H_
 
-#include "ExternalToolRunTask.h"
 #include "TopHatSettings.h"
 #include "TopHatSupport.h"
 
 #include <U2Core/AnnotationTableObject.h>
 #include <U2Core/DocumentModel.h>
+#include <U2Core/ExternalToolRunTask.h>
 #include <U2Core/SaveDocumentTask.h>
 #include <U2Core/Task.h>
 

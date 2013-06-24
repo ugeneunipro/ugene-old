@@ -19,6 +19,10 @@
  * MA 02110-1301, USA.
  */
 
+#include <U2Core/AppContext.h>
+#include <U2Core/ExternalToolRegistry.h>
+#include <U2Core/U2SafePoints.h>
+
 #include "ScriptingToolRegistry.h"
 
 namespace U2 {
@@ -28,6 +32,21 @@ namespace U2 {
 ScriptingTool::ScriptingTool(QString _name, QString _path) : name(_name), path(_path) {
 }
 
+void ScriptingTool::onPathChanged(ExternalTool *tool) {
+    ScriptingToolRegistry* reg = AppContext::getScriptingToolRegistry();
+    CHECK(NULL != reg, );
+
+    if (tool->isValid()){
+        if (NULL != reg->getByName(tool->getName())){
+            reg->unregisterEntry(tool->getName());
+        }
+        if (!tool->getPath().isEmpty()){
+            reg->registerEntry(new ScriptingTool(tool->getName(), tool->getPath()));
+        }
+    } else {
+        reg->unregisterEntry(tool->getName());
+    }
+}
 
 ////////////////////////////////////////
 //ScriptingToolRegistry

@@ -23,10 +23,12 @@
 #define _U2_ASSEMBLY_SAMTOOLS_MPILEUP_H_
 
 #include <U2Core/global.h>
+#include <U2Core/ExternalToolRunTask.h>
 #include <U2Core/Task.h>
 #include <U2Core/LoadDocumentTask.h>
 
 #include <U2Lang/LocalDomain.h>
+
 namespace U2 {
 namespace LocalWorkflow{
 
@@ -73,6 +75,21 @@ class CallVariantsTaskSettings{
     int     n_perm;
     float   min_perm_p;
 
+    //varFilter
+    int minQual;
+    int minDep;
+    int maxDep;
+    int minAlt;
+    int gapSize;
+    int window;
+    float pvalue1;
+    float pvalue2;
+    float pvalue3;
+    float pvalue4;
+    float pvalueHwe;
+    bool printFiltered;
+
+    QStringList getVarFilterArgs() const;
 };
 
 class SamtoolsMpileupTask : public Task{
@@ -105,13 +122,20 @@ public:
 
     const QList<QVariantMap>& getResults(){return results;}
     void clearResults(){results.clear();}
+
+    static QString tmpFilePath(const QString &baseName, const QString &ext, U2OpStatus &os);
+
 private:
     CallVariantsTaskSettings    settings;
     LoadDocumentTask*       loadTask;
     SamtoolsMpileupTask*    mpileupTask;
+    ExternalToolRunTask*    varFilterTask;
     DbiDataStorage*         storage;
     QList<QVariantMap>      results;
+    QString                 filteredVcfUrl;
 
+private:
+    ExternalToolRunTask * runVarFilter(const QString &inVcf);
 };
 
 }

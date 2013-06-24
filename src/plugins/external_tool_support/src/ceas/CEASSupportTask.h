@@ -23,9 +23,9 @@
 #define _U2_CEAS_SUPPORT_TASK_
 
 #include <U2Core/AnnotationData.h>
+#include <U2Core/ExternalToolRunTask.h>
 #include <U2Core/Task.h>
 
-#include "ExternalToolRunTask.h"
 #include "CEASSettings.h"
 
 namespace U2 {

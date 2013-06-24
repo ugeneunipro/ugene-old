@@ -34,12 +34,6 @@
 #include <U2Core/ScriptingToolRegistry.h>
 #include <U2Core/U2SafePoints.h>
 
-#include <U2Formats/DifferentialFormat.h>
-#include <U2Formats/FpkmTrackingFormat.h>
-#include <U2Formats/GTFFormat.h>
-
-#include <U2Lang/WorkflowUtils.h>
-
 #include <QtCore/QString>
 #include <QtCore/QFile>
 #include <QtCore/QDir>
@@ -53,7 +47,8 @@ ExternalToolRunTask::ExternalToolRunTask(const QString& _toolName, const QString
   logParser(_logParser),
   toolName(_toolName),
   externalToolProcess(NULL),
-  workingDirectory(_workingDirectory)
+  workingDirectory(_workingDirectory),
+  writeOutputToFile(false)
 {
     ExternalTool * tool = AppContext::getExternalToolRegistry()->getByName(toolName);
     if (tool == NULL) {
@@ -96,6 +91,11 @@ ExternalToolRunTask::~ExternalToolRunTask(){
     delete externalToolProcess;
 }
 
+void ExternalToolRunTask::setOutputFile(const QString &url) {
+    writeOutputToFile = true;
+    outputUrl = url;
+}
+
 void ExternalToolRunTask::prepare(){
     if (hasError() || isCanceled()) {
         return;
@@ -107,6 +107,9 @@ void ExternalToolRunTask::run(){
     }
     externalToolProcess = new QProcess();//???
     externalToolProcess->setProcessEnvironment(processEnvironment);
+    if (writeOutputToFile) {
+        externalToolProcess->setStandardOutputFile(outputUrl);
+    }
     ExternalToolRunTaskHelper* h = new ExternalToolRunTaskHelper(this);
     connect(externalToolProcess,SIGNAL(readyReadStandardOutput()), h, SLOT(sl_onReadyToReadLog()));
     connect(externalToolProcess,SIGNAL(readyReadStandardError()), h, SLOT(sl_onReadyToReadErrLog()));
@@ -117,7 +120,7 @@ void ExternalToolRunTask::run(){
         algoLog.details(tr("Working directory is \"%1\"").arg(externalToolProcess->workingDirectory()));
     }
 
-    bool started = WorkflowUtils::startExternalProcess(externalToolProcess, program, arguments);
+    bool started = ExternalToolSupportUtils::startExternalProcess(externalToolProcess, program, arguments);
 
     if (!started){
         ExternalTool* tool = AppContext::getExternalToolRegistry()->getByName(toolName);
@@ -276,38 +279,6 @@ QString ExternalToolSupportUtils::createTmpDir(const QString& domain, U2OpStatus
     return createTmpDir(tmpDirPath, domain, os);
 }
 
-QList<SharedAnnotationData> ExternalToolSupportUtils::getAnnotationsFromFile(const QString &filePath,
-    const DocumentFormatId &format, const QString &toolName, U2OpStatus &os) {
-    QList<SharedAnnotationData> result;
-
-    IOAdapterFactory *iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
-    if (NULL == iof) {
-        os.setError(QObject::tr("An internal error occurred during getting annotations from a %1 output file!").arg(toolName));
-        return result;
-    }
-
-    if(!QFile::exists(filePath)){
-        os.setError(tr("%1 output file '%2' is not found!").arg(toolName).arg(filePath));
-        return result;
-    }
-
-    QScopedPointer<IOAdapter> io(iof->createIOAdapter());
-    if (!io.data()->open(GUrl(filePath), IOAdapterMode_Read)) {
-        os.setError(L10N::errorOpeningFileRead(filePath));
-        return result;
-    }
-
-    if (BaseDocumentFormats::FPKM_TRACKING_FORMAT == format) {
-        return FpkmTrackingFormat::getAnnotData(io.data(), os);
-    } else if (BaseDocumentFormats::GTF == format) {
-        return GTFFormat::getAnnotData(io.data(), os);
-    } else if (BaseDocumentFormats::DIFF == format) {
-        return DifferentialFormat::getAnnotationData(io.data(), os);
-    } else {
-        FAIL(QObject::tr("Internal error: unexpected format of the %1 output!").arg(toolName), result);
-    }
-}
-
 Document * ExternalToolSupportUtils::createAnnotationsDocument(const QString &filePath,
                              const DocumentFormatId &format,
                              const QList<SharedAnnotationData> &anns,
@@ -336,6 +307,29 @@ void ExternalToolSupportUtils::appendExistingFile(const QString &path, QStringLi
     if (QFile::exists(url.getURLString())) {
         files << url.getURLString();
     }
+}
+
+#define WIN_LAUNCH_CMD_COMMAND "cmd /C "
+#define START_WAIT_MSEC 3000
+
+bool ExternalToolSupportUtils::startExternalProcess(QProcess *process, const QString &program, const QStringList &arguments) {
+    process->start(program, arguments);
+    bool started = process->waitForStarted(START_WAIT_MSEC);
+
+#ifdef Q_OS_WIN32
+    if(!started) {
+        QString execStr = WIN_LAUNCH_CMD_COMMAND + program;
+        foreach (const QString arg, arguments) {
+            execStr += " " + arg;
+        }
+        process->start(execStr);
+        coreLog.trace(tr("Can't run an executable file \"%1\" as it is. Try to run it as a cmd line command: \"%2\"")
+            .arg(program).arg(execStr));
+        started = process->waitForStarted(START_WAIT_MSEC);
+    }
+#endif
+
+    return started;
 }
 
 }//namespace

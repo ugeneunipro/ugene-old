@@ -23,9 +23,8 @@
 #define _U2_CONDUCT_GO_TASK_
 
 #include <U2Core/AnnotationData.h>
+#include <U2Core/ExternalToolRunTask.h>
 #include <U2Core/Task.h>
-
-#include "ExternalToolRunTask.h"
 
 #include "ConductGOSettings.h"
 

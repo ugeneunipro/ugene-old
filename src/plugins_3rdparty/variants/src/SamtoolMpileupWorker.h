@@ -69,8 +69,36 @@ public:
     virtual Worker* createWorker(Actor* a) {return new CallVariantsWorker(a);}
 };
 
-}// Workflow namespace
+class ScientificDoubleWidget : public PropertyWidget {
+    Q_OBJECT
+public:
+    ScientificDoubleWidget(QWidget *parent);
 
+    virtual QVariant value();
+
+public slots:
+    virtual void setValue(const QVariant &value);
+
+private:
+    QLineEdit *lineEdit;
+};
+
+class ScientificDoubleDelegate : public PropertyDelegate {
+public:
+    ScientificDoubleDelegate(QObject *parent = NULL);
+
+    // PropertyDelegate
+    virtual QVariant getDisplayValue(const QVariant &v) const;
+    virtual PropertyDelegate * clone();
+    virtual PropertyWidget * createWizardWidget(U2OpStatus &os, QWidget *parent) const;
+
+    // QItemDelegate
+    virtual QWidget * createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const;
+    virtual void setEditorData(QWidget *editor, const QModelIndex &index) const;
+    virtual void setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const;
+};
+
+}// Workflow namespace
 } // namespace
 
 #endif //_SAMTOOLS_MPILEUP_WORKER_H_

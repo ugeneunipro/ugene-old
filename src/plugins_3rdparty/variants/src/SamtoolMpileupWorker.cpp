@@ -45,6 +45,7 @@
 
 #include <QtGui/QApplication>
 
+#include "limits.h"
 
 namespace U2 {
 
@@ -92,6 +93,20 @@ const QString CCALL("ccall");
 const QString N1("n1");
 const QString N_PERM("n_perm");
 const QString MIN_PERM_P("min_perm_p");
+
+//varFilter
+const QString MIN_QUAL("min-qual");
+const QString MIN_DEP("min-dep");
+const QString MAX_DEP("max-dep");
+const QString MIN_ALT("min-alt-bases");
+const QString GAP_SIZE("gap-size");
+const QString WINDOW("window");
+const QString PVALUE1("min-strand");
+const QString PVALUE2("min-baseQ");
+const QString PVALUE3("min-mapQ");
+const QString PVALUE4("min-end-distance");
+const QString PVALUE_HWE("min-hwe");
+const QString PRINT("print-filtered");
 
 class EmptySlotValidator : public ConfigurationValidator {
 public:
@@ -309,6 +324,44 @@ void CallVariantsWorkerFactory::init() {
         CallVariantsWorker::tr("Min P(chi^2)"),
         CallVariantsWorker::tr("Only perform permutations for P(chi^2)<FLOAT (N permutations). (bcf view)(-X)"));
 
+    //varFilter
+    Descriptor minQual(MIN_QUAL,
+        CallVariantsWorker::tr("Minimum RMS quality"),
+        CallVariantsWorker::tr("Minimum RMS mapping quality for SNPs. (varFilter) (-Q)"));
+    Descriptor minDep(MIN_DEP,
+        CallVariantsWorker::tr("Minimum read depth"),
+        CallVariantsWorker::tr("Minimum read depth. (varFilter) (-d)"));
+    Descriptor maxDep(MAX_DEP,
+        CallVariantsWorker::tr("Maximum read depth"),
+        CallVariantsWorker::tr("Maximum read depth. (varFilter) (-D)"));
+    Descriptor minAlt(MIN_ALT,
+        CallVariantsWorker::tr("Alternate bases"),
+        CallVariantsWorker::tr("Minimum number of alternate bases. (varFilter) (-a)"));
+    Descriptor gapSize(GAP_SIZE,
+        CallVariantsWorker::tr("Gap size"),
+        CallVariantsWorker::tr("SNP within INT bp around a gap to be filtered. (varFilter) (-w)"));
+    Descriptor window(WINDOW,
+        CallVariantsWorker::tr("Window size"),
+        CallVariantsWorker::tr("Window size for filtering adjacent gaps. (varFilter) (-W)"));
+    Descriptor pvalue1(PVALUE1,
+        CallVariantsWorker::tr("Strand bias"),
+        CallVariantsWorker::tr("Minimum P-value for strand bias (given PV4). (varFilter) (-1)"));
+    Descriptor pvalue2(PVALUE2,
+        CallVariantsWorker::tr("BaseQ bias"),
+        CallVariantsWorker::tr("Minimum P-value for baseQ bias. (varFilter) (-2)"));
+    Descriptor pvalue3(PVALUE3,
+        CallVariantsWorker::tr("MapQ bias"),
+        CallVariantsWorker::tr("Minimum P-value for mapQ bias. (varFilter) (-3)"));
+    Descriptor pvalue4(PVALUE4,
+        CallVariantsWorker::tr("End distance bias"),
+        CallVariantsWorker::tr("Minimum P-value for end distance bias. (varFilter) (-4)"));
+    Descriptor pvalueHwe(PVALUE_HWE,
+        CallVariantsWorker::tr("HWE"),
+        CallVariantsWorker::tr("Minimum P-value for HWE (plus F<0). (varFilter) (-e)"));
+    Descriptor printF(PRINT,
+        CallVariantsWorker::tr("Log filtered"),
+        CallVariantsWorker::tr("Print filtered variants into the log. (varFilter) (-p)"));
+
     attributes << new Attribute(illumina13Encoding, BaseTypes::BOOL_TYPE(), false, QVariant(false));
     attributes << new Attribute(useOrphan, BaseTypes::BOOL_TYPE(), false, QVariant(false));
     attributes << new Attribute(disableBaq, BaseTypes::BOOL_TYPE(), false, QVariant(false));
@@ -325,7 +378,6 @@ void CallVariantsWorkerFactory::init() {
     attributes << new Attribute(maxIndelDepth, BaseTypes::NUM_TYPE(), false, QVariant(250));
     attributes << new Attribute(openq, BaseTypes::NUM_TYPE(), false, QVariant(40));
     attributes << new Attribute(plList, BaseTypes::STRING_TYPE(), false, QVariant(""));
-
 
     //bcf vew
     attributes << new Attribute(keepalt, BaseTypes::BOOL_TYPE(), false, QVariant(false));
@@ -345,7 +397,21 @@ void CallVariantsWorkerFactory::init() {
     attributes << new Attribute(n1, BaseTypes::NUM_TYPE(), false, QVariant(0));
     attributes << new Attribute(n_perm, BaseTypes::NUM_TYPE(), false, QVariant(0));
     attributes << new Attribute(min_perm_p, BaseTypes::NUM_TYPE(), false, QVariant(0.01));
- 
+
+    //varFilter
+    attributes << new Attribute(minQual, BaseTypes::NUM_TYPE(), false, 10);
+    attributes << new Attribute(minDep, BaseTypes::NUM_TYPE(), false, 2);
+    attributes << new Attribute(maxDep, BaseTypes::NUM_TYPE(), false, 10000000);
+    attributes << new Attribute(minAlt, BaseTypes::NUM_TYPE(), false, 2);
+    attributes << new Attribute(gapSize, BaseTypes::NUM_TYPE(), false, 3);
+    attributes << new Attribute(window, BaseTypes::NUM_TYPE(), false, 10);
+    attributes << new Attribute(pvalue1, BaseTypes::NUM_TYPE(), false, 0.0001);
+    attributes << new Attribute(pvalue2, BaseTypes::STRING_TYPE(), false, "1e-100");
+    attributes << new Attribute(pvalue3, BaseTypes::NUM_TYPE(), false, 0);
+    attributes << new Attribute(pvalue4, BaseTypes::NUM_TYPE(), false, 0.0001);
+    attributes << new Attribute(pvalueHwe, BaseTypes::NUM_TYPE(), false, 0.0001);
+    attributes << new Attribute(printF, BaseTypes::BOOL_TYPE(), false, false);
+
     //prototype
     ActorPrototype* proto = new IntegralBusActorPrototype(desc, p, attributes);
     QMap<QString, PropertyDelegate*> delegates;
@@ -476,6 +542,81 @@ void CallVariantsWorkerFactory::init() {
         delegates[MIN_PERM_P] = new DoubleSpinBoxDelegate(vm);
     }
 
+    //varFilter
+    {
+        QVariantMap vm;
+        vm["minimum"] = 0;
+        vm["maximum"] = INT_MAX;
+        vm["singleStep"] = 1;
+        delegates[MIN_QUAL] = new SpinBoxDelegate(vm);
+    }
+    {
+        QVariantMap vm;
+        vm["minimum"] = 0;
+        vm["maximum"] = INT_MAX;
+        vm["singleStep"] = 1;
+        delegates[MIN_DEP] = new SpinBoxDelegate(vm);
+    }
+    {
+        QVariantMap vm;
+        vm["minimum"] = 0;
+        vm["maximum"] = INT_MAX;
+        vm["singleStep"] = 1;
+        delegates[MAX_DEP] = new SpinBoxDelegate(vm);
+    }
+    {
+        QVariantMap vm;
+        vm["minimum"] = 0;
+        vm["maximum"] = INT_MAX;
+        vm["singleStep"] = 1;
+        delegates[MIN_ALT] = new SpinBoxDelegate(vm);
+    }
+    {
+        QVariantMap vm;
+        vm["minimum"] = 0;
+        vm["maximum"] = INT_MAX;
+        vm["singleStep"] = 1;
+        delegates[GAP_SIZE] = new SpinBoxDelegate(vm);
+    }
+    {
+        QVariantMap vm;
+        vm["minimum"] = 0;
+        vm["maximum"] = INT_MAX;
+        vm["singleStep"] = 1;
+        delegates[WINDOW] = new SpinBoxDelegate(vm);
+    }
+    {
+        QVariantMap vm;
+        vm["minimum"] = 0;
+        vm["maximum"] = INT_MAX;
+        vm["singleStep"] = 0.0001;
+        delegates[PVALUE1] = new DoubleSpinBoxDelegate(vm);
+    }
+    {
+        delegates[PVALUE2] = new ScientificDoubleDelegate();
+    }
+    {
+        QVariantMap vm;
+        vm["minimum"] = 0;
+        vm["maximum"] = INT_MAX;
+        vm["singleStep"] = 0.0001;
+        delegates[PVALUE3] = new DoubleSpinBoxDelegate(vm);
+    }
+    {
+        QVariantMap vm;
+        vm["minimum"] = 0;
+        vm["maximum"] = INT_MAX;
+        vm["singleStep"] = 0.0001;
+        delegates[PVALUE4] = new DoubleSpinBoxDelegate(vm);
+    }
+    {
+        QVariantMap vm;
+        vm["minimum"] = 0;
+        vm["maximum"] = INT_MAX;
+        vm["singleStep"] = 0.0001;
+        delegates[PVALUE_HWE] = new DoubleSpinBoxDelegate(vm);
+    }
+
     delegates[BCF_BED] = new URLDelegate("", "", false, true);
     delegates[SAMPLES] = new URLDelegate("", "", false, true);
 
@@ -487,6 +628,7 @@ void CallVariantsWorkerFactory::init() {
 
     proto->setPortValidator(BasePorts::IN_ASSEMBLY_PORT_ID(), new EmptySlotValidator(BaseSlots::URL_SLOT().getId()));
     proto->setPortValidator(BasePorts::IN_SEQ_PORT_ID(), new EmptySlotValidator(BaseSlots::URL_SLOT().getId()));
+    proto->addExternalTool("vcfutils");
 
     WorkflowEnv::getProtoRegistry()->registerProto(BaseActorCategories::CATEGORY_CALL_VARIATIONS(), proto);
 
@@ -574,41 +716,55 @@ Task* CallVariantsWorker::tick() {
         settings.refSeqUrl = data.value(BaseSlots::URL_SLOT().getId()).value<QString>();
         settings.assemblyUrls = assemblyUrls;
 
-        settings.illumina13 = actor->getParameter(ILLUMINA13)->getAttributeValue<bool>(context);
-        settings.use_orphan = actor->getParameter(USE_ORPHAN)->getAttributeValue<bool>(context);
-        settings.disable_baq = actor->getParameter(DISABLE_BAQ)->getAttributeValue<bool>(context);
-        settings.capq_thres = actor->getParameter(CAPQ_THRES)->getAttributeValue<int>(context);
-        settings.max_depth = actor->getParameter(MAX_DEPTH)->getAttributeValue<int>(context);
-        settings.ext_baq = actor->getParameter(EXT_BAQ)->getAttributeValue<bool>(context);
-        settings.bed = actor->getParameter(BED)->getAttributeValue<QString>(context).toLatin1();
-        settings.reg = actor->getParameter(REG)->getAttributeValue<QString>(context).toLatin1();
-        settings.min_mq = actor->getParameter(MIN_MQ)->getAttributeValue<int>(context);
-        settings.min_baseq = actor->getParameter(MIN_BASEQ)->getAttributeValue<int>(context);
-        settings.extq = actor->getParameter(EXTQ)->getAttributeValue<int>(context);
-        settings.tandemq = actor->getParameter(TANDEMQ)->getAttributeValue<int>(context);
-        settings.no_indel = actor->getParameter(NO_INDEL)->getAttributeValue<bool>(context);
-        settings.max_indel_depth = actor->getParameter(MAX_INDEL_DEPTH)->getAttributeValue<int>(context);
-        settings.openq = actor->getParameter(OPENQ)->getAttributeValue<int>(context);
-        settings.pl_list = actor->getParameter(PL_LIST)->getAttributeValue<QString>(context).toLatin1();
+        settings.illumina13 = getValue<bool>(ILLUMINA13);
+        settings.use_orphan = getValue<bool>(USE_ORPHAN);
+        settings.disable_baq = getValue<bool>(DISABLE_BAQ);
+        settings.capq_thres = getValue<int>(CAPQ_THRES);
+        settings.max_depth = getValue<int>(MAX_DEPTH);
+        settings.ext_baq = getValue<bool>(EXT_BAQ);
+        settings.bed = getValue<QString>(BED).toLatin1();
+        settings.reg = getValue<QString>(REG).toLatin1();
+        settings.min_mq = getValue<int>(MIN_MQ);
+        settings.min_baseq = getValue<int>(MIN_BASEQ);
+        settings.extq = getValue<int>(EXTQ);
+        settings.tandemq = getValue<int>(TANDEMQ);
+        settings.no_indel = getValue<bool>(NO_INDEL);
+        settings.max_indel_depth = getValue<int>(MAX_INDEL_DEPTH);
+        settings.openq = getValue<int>(OPENQ);
+        settings.pl_list = getValue<QString>(PL_LIST).toLatin1();
 
         //bcf view
-        settings.keepalt = actor->getParameter(KEEPALT)->getAttributeValue<bool>(context);
-        settings.fix_pl = actor->getParameter(FIX_PL)->getAttributeValue<bool>(context);
-        settings.no_geno = actor->getParameter(NO_GENO)->getAttributeValue<bool>(context);
-        settings.acgt_only = actor->getParameter(ACGT_ONLY)->getAttributeValue<bool>(context);
-        settings.bcf_bed = actor->getParameter(BCF_BED)->getAttributeValue<QString>(context).toLatin1();
-        settings.qcall = actor->getParameter(QCALL)->getAttributeValue<bool>(context);
-        settings.samples = actor->getParameter(SAMPLES)->getAttributeValue<QString>(context).toLatin1();
-        settings.min_smpl_frac = actor->getParameter(MIN_SMPL_FRAC)->getAttributeValue<float>(context);
-        settings.call_gt = actor->getParameter(CALL_GT)->getAttributeValue<bool>(context);
-        settings.indel_frac = actor->getParameter(INDEL_FRAC)->getAttributeValue<float>(context);
-        settings.pref = actor->getParameter(PREF)->getAttributeValue<float>(context);
-        settings.ptype = actor->getParameter(PTYPE)->getAttributeValue<QString>(context).toLatin1();
-        settings.theta = actor->getParameter(THETA)->getAttributeValue<float>(context);
-        settings.ccall = actor->getParameter(CCALL)->getAttributeValue<QString>(context).toLatin1();
-        settings.n1 = actor->getParameter(N1)->getAttributeValue<int>(context);
-        settings.n_perm = actor->getParameter(N_PERM)->getAttributeValue<int>(context);
-        settings.min_perm_p = actor->getParameter(MIN_PERM_P)->getAttributeValue<float>(context);
+        settings.keepalt = getValue<bool>(KEEPALT);
+        settings.fix_pl = getValue<bool>(FIX_PL);
+        settings.no_geno = getValue<bool>(NO_GENO);
+        settings.acgt_only = getValue<bool>(ACGT_ONLY);
+        settings.bcf_bed = getValue<QString>(BCF_BED).toLatin1();
+        settings.qcall = getValue<bool>(QCALL);
+        settings.samples = getValue<QString>(SAMPLES).toLatin1();
+        settings.min_smpl_frac = getValue<float>(MIN_SMPL_FRAC);
+        settings.call_gt = getValue<bool>(CALL_GT);
+        settings.indel_frac = getValue<float>(INDEL_FRAC);
+        settings.pref = getValue<float>(PREF);
+        settings.ptype = getValue<QString>(PTYPE).toLatin1();
+        settings.theta = getValue<float>(THETA);
+        settings.ccall = getValue<QString>(CCALL).toLatin1();
+        settings.n1 = getValue<int>(N1);
+        settings.n_perm = getValue<int>(N_PERM);
+        settings.min_perm_p = getValue<float>(MIN_PERM_P);
+
+        //varFilter
+        settings.minQual = getValue<int>(MIN_QUAL);
+        settings.minDep = getValue<int>(MIN_DEP);
+        settings.maxDep = getValue<int>(MAX_DEP);
+        settings.minAlt = getValue<int>(MIN_ALT);
+        settings.gapSize = getValue<int>(GAP_SIZE);
+        settings.window = getValue<int>(WINDOW);
+        settings.pvalue1 = getValue<float>(PVALUE1);
+        settings.pvalue2 = getValue<QString>(PVALUE2).toFloat();
+        settings.pvalue3 = getValue<float>(PVALUE3);
+        settings.pvalue4 = getValue<float>(PVALUE4);
+        settings.pvalueHwe = getValue<float>(PVALUE_HWE);
+        settings.printFiltered = getValue<bool>(PRINT);
 
         Task* t = new CallVariantsTask(settings, context->getDataStorage());
         connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
@@ -644,6 +800,63 @@ void CallVariantsWorker::sl_taskFinished() {
 void CallVariantsWorker::cleanup() {
 }
 
-} //namespace LocalWorkflow
+/************************************************************************/
+/* ScientificDoubleDelegate */
+/************************************************************************/
+ScientificDoubleWidget::ScientificDoubleWidget(QWidget *parent)
+: PropertyWidget(parent)
+{
+    lineEdit = new QLineEdit(this);
+    QDoubleValidator *validator = new QDoubleValidator();
+    validator->setNotation(QDoubleValidator::ScientificNotation);
+    lineEdit->setValidator(validator);
+    addMainWidget(lineEdit);
 
+    connect(lineEdit, SIGNAL(textChanged(const QString &)), SLOT(sl_valueChanged(const QVariant &)));
+}
+
+QVariant ScientificDoubleWidget::value() {
+    return lineEdit->text();
+}
+
+void ScientificDoubleWidget::setValue(const QVariant &value) {
+    lineEdit->setText(value.toString());
+}
+
+ScientificDoubleDelegate::ScientificDoubleDelegate(QObject *parent)
+: PropertyDelegate(parent)
+{
+
+}
+
+// PropertyDelegate
+QVariant ScientificDoubleDelegate::getDisplayValue(const QVariant &v) const {
+    return v;
+}
+
+PropertyDelegate * ScientificDoubleDelegate::clone() {
+    return new ScientificDoubleDelegate(parent());
+}
+
+PropertyWidget * ScientificDoubleDelegate::createWizardWidget(U2OpStatus & /*os*/, QWidget *parent) const {
+    return new ScientificDoubleWidget(parent);
+}
+
+// QItemDelegate
+QWidget * ScientificDoubleDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem & /*option*/, const QModelIndex & /*index*/) const {
+    return new ScientificDoubleWidget(parent);
+}
+
+void ScientificDoubleDelegate::setEditorData(QWidget *editor, const QModelIndex &index) const {
+    QVariant value = index.model()->data(index, ConfigurationEditor::ItemValueRole);
+    PropertyWidget *widget = static_cast<PropertyWidget*>(editor);
+    widget->setValue(value);
+}
+
+void ScientificDoubleDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const {
+    PropertyWidget *widget = static_cast<PropertyWidget*>(editor);
+    model->setData(index, widget->value(), ConfigurationEditor::ItemValueRole);
+}
+
+} //namespace LocalWorkflow
 } // namespace

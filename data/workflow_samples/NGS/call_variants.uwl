@@ -194,8 +194,36 @@ workflow "Call variants with SAMtools"{
 				  }
 				  
 			}
+            page {
+				id: 4;
+                next: 5;
+				title: "SAMtools <i>vcfutils varFilter</i> parameters";
+                    parameters-area {
+                        group {
+                            title: "Parameters";
+                            label-size: 200;
+                            call_variants.print-filtered {}
+                            call_variants.min-qual {}
+                            call_variants.min-dep {}
+                            call_variants.max-dep {}
+                            call_variants.min-alt-bases {}
+                            call_variants.gap-size {}
+                            call_variants.window {}
+                        }
+                        group {
+                            title : "Additional";
+                            label-size: 200;
+                            type : hideable;
+                            call_variants.min-strand {}
+                            call_variants.min-baseQ {}
+                            call_variants.min-mapQ {}
+                            call_variants.min-end-distance {}
+                            call_variants.min-hwe {}
+                        }
+                    }
+			}
 			page {
-				id : 4;
+				id : 5;
 				title: "Output variations";
 				  parameters-area {
 					group {

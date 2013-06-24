@@ -2,7 +2,6 @@ include (external_tool_support.pri)
 
 # Input
 HEADERS += src/ETSProjectViewItemsContoller.h \
-           src/ExternalToolRunTask.h \
            src/ExternalToolSupportL10N.h \
            src/ExternalToolSupportPlugin.h \
            src/ExternalToolSupportSettings.h \
@@ -84,6 +83,7 @@ HEADERS += src/ETSProjectViewItemsContoller.h \
            src/peak2gene/Peak2GeneSupport.h \
            src/peak2gene/Peak2GeneTask.h \
            src/peak2gene/Peak2GeneWorker.h \
+           src/perl/PerlSupport.h \
            src/python/PythonSupport.h \
            src/samtools/SamToolsExtToolSupport.h \
            src/seqpos/SeqPosSettings.h \
@@ -105,6 +105,7 @@ HEADERS += src/ETSProjectViewItemsContoller.h \
            src/utils/ExportTasks.h \
            src/utils/ExternalToolSupportAction.h \
            src/utils/ExternalToolValidateTask.h \
+           src/vcfutils/VcfutilsSupport.h \
            src/bowtie/bowtie_tests/bowtieTests.h \
            src/bwa/bwa_tests/bwaTests.h
 FORMS += src/ui/BlastAllSupportDialog.ui \
@@ -124,7 +125,6 @@ FORMS += src/ui/BlastAllSupportDialog.ui \
          src/ui/SelectPathDialog.ui \
          src/ui/TCoffeeSupportRunDialog.ui
 SOURCES += src/ETSProjectViewItemsContoller.cpp \
-           src/ExternalToolRunTask.cpp \
            src/ExternalToolSupportPlugin.cpp \
            src/ExternalToolSupportSettings.cpp \
            src/ExternalToolSupportSettingsController.cpp \
@@ -205,6 +205,7 @@ SOURCES += src/ETSProjectViewItemsContoller.cpp \
            src/peak2gene/Peak2GeneSupport.cpp \
            src/peak2gene/Peak2GeneTask.cpp \
            src/peak2gene/Peak2GeneWorker.cpp \
+           src/perl/PerlSupport.cpp \
            src/python/PythonSupport.cpp \
            src/samtools/SamToolsExtToolSupport.cpp \
            src/seqpos/SeqPosSettings.cpp \
@@ -226,6 +227,7 @@ SOURCES += src/ETSProjectViewItemsContoller.cpp \
            src/utils/ExportTasks.cpp \
            src/utils/ExternalToolSupportAction.cpp \
            src/utils/ExternalToolValidateTask.cpp \
+           src/vcfutils/VcfutilsSupport.cpp \
            src/bowtie/bowtie_tests/bowtieTests.cpp \
            src/bwa/bwa_tests/bwaTests.cpp
 RESOURCES += external_tool_support.qrc

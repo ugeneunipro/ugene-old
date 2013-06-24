@@ -23,10 +23,9 @@
 #define _U2_CUFFMERGESUPPORTTASK_H_
 
 #include <U2Core/AnnotationData.h>
+#include <U2Core/ExternalToolRunTask.h>
 #include <U2Core/SaveDocumentTask.h>
 #include <U2Core/Task.h>
-
-#include "ExternalToolRunTask.h"
 
 namespace U2 {
 

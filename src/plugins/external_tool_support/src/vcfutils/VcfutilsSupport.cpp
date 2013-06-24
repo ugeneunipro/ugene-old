@@ -19,37 +19,31 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_BLASTPPLUS_SUPPORT_TASK_H
-#define _U2_BLASTPPLUS_SUPPORT_TASK_H
+#include <U2Core/AppContext.h>
 
-#include <U2Core/Task.h>
-#include <U2Core/IOAdapter.h>
-#include <U2Core/DocumentModel.h>
+#include "perl/PerlSupport.h"
 
-#include <U2Core/AnnotationData.h>
-
-
-#include <U2Core/LoadDocumentTask.h>
-#include <U2Core/SaveDocumentTask.h>
-#include "utils/ExportTasks.h"
-
-#include <U2Core/DNASequenceObject.h>
-#include <U2Core/AnnotationTableObject.h>
-#include <U2Core/ExternalToolRunTask.h>
-
-#include "BlastPlusSupportCommonTask.h"
-
-#include <QtXml/QDomNode>
-#include <QtXml/QDomDocument>
+#include "VcfutilsSupport.h"
 
 namespace U2 {
 
-class BlastPPlusSupportTask : public BlastPlusSupportCommonTask {
-    Q_OBJECT
-public:
-    BlastPPlusSupportTask(const BlastTaskSettings& settings):BlastPlusSupportCommonTask(settings){}
-    virtual ExternalToolRunTask* createBlastPlusTask();
-};
+const QString VcfutilsSupport::TOOL_NAME("vcfutils");
 
-}//namespace
-#endif // _U2_BLASTPPLUS_SUPPORT_TASK_H
+VcfutilsSupport::VcfutilsSupport(const QString &name)
+: ExternalTool(name)
+{
+    if (AppContext::getMainWindow()) {
+        icon = QIcon(":external_tool_support/images/cmdline.png");
+        grayIcon = QIcon(":external_tool_support/images/cmdline_gray.png");
+        warnIcon = QIcon(":external_tool_support/images/cmdline_warn.png");
+    }
+
+    executableFileName = "vcfutils.pl";
+    description = "The set of utilities for VCF format operations";
+
+    toolRunnerProgramm = PERL_TOOL_NAME;
+    validMessage = "varFilter";
+    toolKitName = "SAMtools";
+}
+
+} // U2

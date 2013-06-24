@@ -25,10 +25,10 @@
 
 #include "CufflinksSettings.h"
 #include "CufflinksSupport.h"
-#include "ExternalToolRunTask.h"
 
 #include <U2Core/AnnotationTableObject.h>
 #include <U2Core/DocumentModel.h>
+#include <U2Core/ExternalToolRunTask.h>
 #include <U2Core/Task.h>
 
 #include <U2Formats/ConvertAssemblyToSamTask.h>
@@ -54,6 +54,12 @@ public:
 
     QList<SharedAnnotationData> getIsoformAnnots() const { return isoformLevelAnnots; }
     QStringList getOutputFiles() const;
+
+    static QList<SharedAnnotationData> getAnnotationsFromFile(
+        const QString &filePath,
+        const DocumentFormatId &format,
+        const QString &toolName,
+        U2OpStatus &os);
 
 private:
     // "fileName" is the file name relatively to the working directory

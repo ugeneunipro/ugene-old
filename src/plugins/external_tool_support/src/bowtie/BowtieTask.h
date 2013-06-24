@@ -24,7 +24,7 @@
 
 #include <U2Algorithm/DnaAssemblyTask.h>
 
-#include "ExternalToolRunTask.h"
+#include <U2Core/ExternalToolRunTask.h>
 
 namespace U2 {
 

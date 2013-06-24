@@ -19,37 +19,24 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_BLASTPPLUS_SUPPORT_TASK_H
-#define _U2_BLASTPPLUS_SUPPORT_TASK_H
+#ifndef _U2_PERLSUPPORT_H_
+#define _U2_PERLSUPPORT_H_
 
-#include <U2Core/Task.h>
-#include <U2Core/IOAdapter.h>
-#include <U2Core/DocumentModel.h>
+#include <U2Core/ExternalToolRegistry.h>
 
-#include <U2Core/AnnotationData.h>
-
-
-#include <U2Core/LoadDocumentTask.h>
-#include <U2Core/SaveDocumentTask.h>
-#include "utils/ExportTasks.h"
-
-#include <U2Core/DNASequenceObject.h>
-#include <U2Core/AnnotationTableObject.h>
-#include <U2Core/ExternalToolRunTask.h>
-
-#include "BlastPlusSupportCommonTask.h"
-
-#include <QtXml/QDomNode>
-#include <QtXml/QDomDocument>
+#define PERL_TOOL_NAME "perl"
 
 namespace U2 {
 
-class BlastPPlusSupportTask : public BlastPlusSupportCommonTask {
+class PerlSupport : public ExternalTool {
     Q_OBJECT
 public:
-    BlastPPlusSupportTask(const BlastTaskSettings& settings):BlastPlusSupportCommonTask(settings){}
-    virtual ExternalToolRunTask* createBlastPlusTask();
+    PerlSupport(const QString &name, const QString &path = "");
+
+private slots:
+    void sl_pathChanged();
 };
 
-}//namespace
-#endif // _U2_BLASTPPLUS_SUPPORT_TASK_H
+} // U2
+
+#endif // _U2_PERLSUPPORT_H_

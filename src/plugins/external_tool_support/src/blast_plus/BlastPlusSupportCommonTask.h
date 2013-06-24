@@ -34,8 +34,8 @@
 
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/AnnotationTableObject.h>
+#include <U2Core/ExternalToolRunTask.h>
 
-#include "ExternalToolRunTask.h"
 #include "utils/BlastTaskSettings.h"
 
 #include <QtXml/QDomNode>

@@ -24,14 +24,13 @@
 
 #include <U2Core/AnnotationData.h>
 #include <U2Core/DocumentModel.h>
+#include <U2Core/ExternalToolRunTask.h>
 #include <U2Core/SaveDocumentTask.h>
 #include <U2Core/Task.h>
 
 #include <U2Formats/ConvertAssemblyToSamTask.h>
 
 #include <U2Lang/DbiDataHandler.h>
-
-#include "ExternalToolRunTask.h"
 
 namespace U2 {
 

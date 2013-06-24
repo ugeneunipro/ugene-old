@@ -29,9 +29,8 @@
 
 #include "utils/ExportTasks.h"
 
+#include <U2Core/ExternalToolRunTask.h>
 #include <U2Core/MAlignmentObject.h>
-
-#include "ExternalToolRunTask.h"
 
 namespace U2 {
 

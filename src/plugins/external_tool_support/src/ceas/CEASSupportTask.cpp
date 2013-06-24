@@ -25,6 +25,7 @@
 #include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/DocumentUtils.h>
+#include <U2Core/ExternalToolRunTask.h>
 #include <U2Core/GUrlUtils.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/IOAdapterUtils.h>
@@ -34,7 +35,6 @@
 #include <U2Core/UserApplicationsSettings.h>
 
 #include "CEASSupport.h"
-#include "ExternalToolRunTask.h"
 
 #include "CEASSupportTask.h"
 

@@ -26,6 +26,8 @@
 
 namespace U2 {
 
+class ExternalTool;
+
 class U2CORE_EXPORT ScriptingTool : public QObject {
     Q_OBJECT
 public:
@@ -33,6 +35,8 @@ public:
 
     const QString getName() const {return name;}
     const QString getPath() const {return path;}
+
+    static void onPathChanged(ExternalTool *tool);
 
 protected:
     QString     name;

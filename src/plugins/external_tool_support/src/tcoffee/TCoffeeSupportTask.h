@@ -24,8 +24,8 @@
 
 
 #include "utils/ExportTasks.h"
-#include "ExternalToolRunTask.h"
 
+#include <U2Core/ExternalToolRunTask.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/GObjectReference.h>
 #include <U2Core/LoadDocumentTask.h>

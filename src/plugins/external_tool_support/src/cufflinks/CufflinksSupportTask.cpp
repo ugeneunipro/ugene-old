@@ -36,6 +36,7 @@
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/UserApplicationsSettings.h>
 
+#include <U2Formats/DifferentialFormat.h>
 #include <U2Formats/FpkmTrackingFormat.h>
 #include <U2Formats/GTFFormat.h>
 
@@ -212,7 +213,7 @@ QList<SharedAnnotationData> CufflinksSupportTask::getAnnotationsFromFile(QString
     } else {
         FAIL("Internal error: unexpected format of the Cufflinks output!", res);
     }
-    return ExternalToolSupportUtils::getAnnotationsFromFile(filePath, formatId, CUFFLINKS_TOOL_NAME, stateInfo);
+    return getAnnotationsFromFile(filePath, formatId, CUFFLINKS_TOOL_NAME, stateInfo);
 }
 
 Task::ReportResult CufflinksSupportTask::report()
@@ -229,6 +230,36 @@ QStringList CufflinksSupportTask::getOutputFiles() const {
     return outputFiles;
 }
 
+QList<SharedAnnotationData> CufflinksSupportTask::getAnnotationsFromFile(const QString &filePath,
+    const DocumentFormatId &format, const QString &toolName, U2OpStatus &os) {
+    QList<SharedAnnotationData> result;
 
+    IOAdapterFactory *iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
+    if (NULL == iof) {
+        os.setError(QObject::tr("An internal error occurred during getting annotations from a %1 output file!").arg(toolName));
+        return result;
+    }
+
+    if(!QFile::exists(filePath)){
+        os.setError(tr("%1 output file '%2' is not found!").arg(toolName).arg(filePath));
+        return result;
+    }
+
+    QScopedPointer<IOAdapter> io(iof->createIOAdapter());
+    if (!io.data()->open(GUrl(filePath), IOAdapterMode_Read)) {
+        os.setError(L10N::errorOpeningFileRead(filePath));
+        return result;
+    }
+
+    if (BaseDocumentFormats::FPKM_TRACKING_FORMAT == format) {
+        return FpkmTrackingFormat::getAnnotData(io.data(), os);
+    } else if (BaseDocumentFormats::GTF == format) {
+        return GTFFormat::getAnnotData(io.data(), os);
+    } else if (BaseDocumentFormats::DIFF == format) {
+        return DifferentialFormat::getAnnotationData(io.data(), os);
+    } else {
+        FAIL(QObject::tr("Internal error: unexpected format of the %1 output!").arg(toolName), result);
+    }
+}
 
 } // namespace U2

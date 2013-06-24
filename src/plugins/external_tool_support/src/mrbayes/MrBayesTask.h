@@ -23,12 +23,12 @@
 #define _U2_MRBAYES_TASK_H
 
 #include "MrBayesSupport.h"
-#include "ExternalToolRunTask.h"
 #include "utils/ExportTasks.h"
 
 #include <U2View/CreatePhyTreeDialogController.h>
 #include <U2Algorithm/PhyTreeGenerator.h>
 #include <U2Algorithm/PhyTreeGeneratorTask.h>
+#include <U2Core/ExternalToolRunTask.h>
 #include <U2Core/LoadDocumentTask.h>
 #include <U2Core/PhyTreeObject.h>
 

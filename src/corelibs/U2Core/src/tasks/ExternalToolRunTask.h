@@ -35,7 +35,7 @@ class ExternalToolLogParser;
 class ExternalToolRunTaskHelper;
 class SaveDocumentTask;
 
-class ExternalToolRunTask: public Task {
+class U2CORE_EXPORT ExternalToolRunTask: public Task {
     Q_OBJECT
     friend class ExternalToolRunTaskHelper;
 public:
@@ -45,9 +45,9 @@ public:
     void prepare();
     void run();
     Task::ReportResult report();
-    
-    
     void cancelProcess();
+    void setOutputFile(const QString &url);
+
 private:
     QStringList             arguments;
     QString                 program;
@@ -57,10 +57,12 @@ private:
     QProcess*               externalToolProcess;
     QString                 workingDirectory;
     QProcessEnvironment     processEnvironment;
+    bool                    writeOutputToFile;
+    QString                 outputUrl;
 };
 
 /** Part of ExternalToolRunTask that belongs to task run  thread -> get signals from that thread directly */
-class ExternalToolRunTaskHelper : public QObject {
+class U2CORE_EXPORT ExternalToolRunTaskHelper : public QObject {
     Q_OBJECT
 
 public:
@@ -76,7 +78,7 @@ private:
     QByteArray              logData;
 };
 
-class ExternalToolSupportUtils : public QObject {
+class U2CORE_EXPORT ExternalToolSupportUtils : public QObject {
     Q_OBJECT
 public:
     static void removeTmpDir(const QString &absoulutePath, U2OpStatus &os);
@@ -85,20 +87,16 @@ public:
      * Creates a new directory: prePath/domain/tmp_dir_name
      */
     static QString createTmpDir(const QString &prePath, const QString &domain, U2OpStatus &os);
-    static QList<SharedAnnotationData> getAnnotationsFromFile(
-        const QString &filePath,
-        const DocumentFormatId &format,
-        const QString &toolName,
-        U2OpStatus &os);
     static Document * createAnnotationsDocument(const QString &filePath,
         const DocumentFormatId &format,
         const QList<SharedAnnotationData> &anns,
         U2OpStatus &os);
     static void appendExistingFile(const QString &path, QStringList &files);
+    static bool startExternalProcess(QProcess *process, const QString &program, const QStringList &arguments);
 };
 
 
-class ExternalToolLogParser : public QObject {
+class U2CORE_EXPORT ExternalToolLogParser : public QObject {
     Q_OBJECT
 public:
     ExternalToolLogParser();

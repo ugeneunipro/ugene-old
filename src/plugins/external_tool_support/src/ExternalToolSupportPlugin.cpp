@@ -108,6 +108,8 @@
 #include "conduct_go/ConductGOWorker.h"
 #include "conduct_go/ConductGOSupport.h"
 #include "python/PythonSupport.h"
+#include "perl/PerlSupport.h"
+#include "vcfutils/VcfutilsSupport.h"
 
 #include <U2Algorithm/CDSearchTaskFactoryRegistry.h>
 #include <U2Algorithm/DnaAssemblyAlgRegistry.h>
@@ -132,6 +134,10 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin():Plugin(tr("External tool 
     //python
     PythonSupport* pythonSupport = new PythonSupport(PYTHON_TOOL_NAME);
     AppContext::getExternalToolRegistry()->registerEntry(pythonSupport);
+
+    //perl
+    PerlSupport *perlSupport = new PerlSupport(PERL_TOOL_NAME);
+    AppContext::getExternalToolRegistry()->registerEntry(perlSupport);
 
     //Fill ExternalToolRegistry with supported tools
     //ClustalW
@@ -308,6 +314,10 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin():Plugin(tr("External tool 
     //ConductGO
     ConductGOSupport *conductGO = new ConductGOSupport(ConductGOSupport::TOOL_NAME);
     etRegistry->registerEntry(conductGO);
+
+    //Vcfutils
+    VcfutilsSupport *vcfutils = new VcfutilsSupport(VcfutilsSupport::TOOL_NAME);
+    etRegistry->registerEntry(vcfutils);
 
     if (AppContext::getMainWindow()) {
         ExternalToolSupportAction* formatDBAction= new ExternalToolSupportAction(tr("FormatDB..."), this, QStringList(FORMATDB_TOOL_NAME));

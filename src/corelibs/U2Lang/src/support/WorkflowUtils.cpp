@@ -40,6 +40,7 @@
 #include <U2Core/DocumentModel.h>
 #include <U2Core/DocumentUtils.h>
 #include <U2Core/ExternalToolRegistry.h>
+#include <U2Core/ExternalToolRunTask.h>
 #include <U2Core/GObject.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/L10n.h>
@@ -736,44 +737,8 @@ void WorkflowUtils::applyPathsToBusMap(QStrStrMap &busMap, const SlotPathMap &pa
     }
 }
 
-static bool pathExists(Actor *start, Port *end, QStringList path) {
-    path.removeOne(start->getId());
-
-    foreach (Port *p, start->getOutputPorts()) {
-        foreach (Port *out, p->getLinks().keys()) {
-            if (out == end) {
-                return path.isEmpty();
-            }
-            bool res = pathExists(out->owner(), end, path);
-            if (res) {
-                return true;
-            }
-        }
-    }
-    return false;
-}
-
-#define WIN_LAUNCH_CMD_COMMAND "cmd /C "
-#define START_WAIT_MSEC 3000
-
 bool WorkflowUtils::startExternalProcess(QProcess *process, const QString &program, const QStringList &arguments) {
-    process->start(program, arguments);
-    bool started = process->waitForStarted(START_WAIT_MSEC);
-
-#ifdef Q_OS_WIN32
-    if(!started) {
-        QString execStr = WIN_LAUNCH_CMD_COMMAND + program;
-        foreach (const QString arg, arguments) {
-            execStr += " " + arg;
-        }
-        process->start(execStr);
-        coreLog.trace(tr("Can't run an executable file \"%1\" as it is. Try to run it as a cmd line command: \"%2\"")
-            .arg(program).arg(execStr));
-        started = process->waitForStarted(START_WAIT_MSEC);
-    }
-#endif
-
-    return started;
+    return ExternalToolSupportUtils::startExternalProcess(process, program, arguments);
 }
 
 QStringList WorkflowUtils::getDatasetsUrls(const QList<Dataset> &sets) {

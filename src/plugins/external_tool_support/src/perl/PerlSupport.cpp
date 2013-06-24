@@ -19,51 +19,38 @@
  * MA 02110-1301, USA.
  */
 
-#include "PythonSupport.h"
-#include "ExternalToolSupportSettingsController.h"
-#include "ExternalToolSupportSettings.h"
-
 #include <U2Core/AppContext.h>
-#include <U2Core/AppSettings.h>
 #include <U2Core/ScriptingToolRegistry.h>
-#include <U2Core/U2SafePoints.h>
-#include <U2Core/U2OpStatusUtils.h>
-#include <U2Gui/MainWindow.h>
-#include <QtGui/QMainWindow>
 
-
+#include "PerlSupport.h"
 
 namespace U2 {
 
-
-PythonSupport::PythonSupport(const QString& name, const QString& path) : ExternalTool(name, path)
+PerlSupport::PerlSupport(const QString &name, const QString &path)
+: ExternalTool(name, path)
 {
     if (AppContext::getMainWindow()) {
-        icon = QIcon(":external_tool_support/images/python.png");
-        grayIcon = QIcon(":external_tool_support/images/python_gray.png");
-        warnIcon = QIcon(":external_tool_support/images/python_warn.png");
+        icon = QIcon(":external_tool_support/images/perl.png");
+        grayIcon = QIcon(":external_tool_support/images/perl_gray.png");
+        warnIcon = QIcon(":external_tool_support/images/perl_warn.png");
     }
 #ifdef Q_OS_WIN
-    executableFileName="python.exe";
-#else
-    #if defined(Q_OS_LINUX) || defined(Q_OS_MAC)
-    executableFileName="python2.7";
-    #endif
+    executableFileName = "perl.exe";
+#elif defined(Q_OS_LINUX) || defined(Q_OS_MAC)
+    executableFileName = "perl";
 #endif
-    validMessage="Python ";
-    validationArguments << "--version";
-    
-    description+=tr("Python scripts interpreter");
-    versionRegExp=QRegExp("(\\d+.\\d+.\\d+)");
-    toolKitName="python";
+    validMessage = "This is perl";
+    validationArguments << "-v";
+
+    description += tr("Perl scripts interpreter");
+    versionRegExp = QRegExp("(\\d+.\\d+.\\d+)");
+    toolKitName="perl";
 
     connect(this, SIGNAL(si_pathChanged()), SLOT(sl_pathChanged())); 
-
 }
 
-void PythonSupport::sl_pathChanged(){
+void PerlSupport::sl_pathChanged(){
     ScriptingTool::onPathChanged(this);
 }
 
-
-}//namespace
+} // U2

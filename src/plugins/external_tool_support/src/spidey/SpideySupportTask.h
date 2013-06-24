@@ -32,10 +32,9 @@
 
 #include <U2Core/AnnotationTableObject.h>
 #include <U2Core/DNASequenceObject.h>
+#include <U2Core/ExternalToolRunTask.h>
 #include <U2Gui/CreateAnnotationWidgetController.h>
 
-
-#include "ExternalToolRunTask.h"
 
 namespace U2 {
 
