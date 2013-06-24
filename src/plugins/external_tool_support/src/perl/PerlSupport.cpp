@@ -40,7 +40,7 @@ PerlSupport::PerlSupport(const QString &name, const QString &path)
     executableFileName = "perl";
 #endif
     validMessage = "This is perl";
-    validationArguments << "-v";
+    validationArguments << "--version";
 
     description += tr("Perl scripts interpreter");
     versionRegExp = QRegExp("(\\d+.\\d+.\\d+)");
