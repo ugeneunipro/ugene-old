@@ -25,6 +25,24 @@
 
 namespace U2 {
 
+#define U2FeatureGeneName       "Gene"
+#define U2FeatureExonName       "Exon"
+#define U2FeatureCDSName        "CDS"
+
+#define U2FeatureSuperDupName       "SD"
+#define U2FeatureConservativeName   "CR"
+
+#define U2FeatureKey_Name       "name"
+#define U2FeatureKey_AltName    "alt_name"
+#define U2FeatureKey_Note       "note"
+#define U2FeatureKey_Group      "group"
+#define U2FeatureKey_Accession  "accession"
+#define U2FeatureKey_KnownType  "known"
+#define U2FeatureKey_Disease    "disease"
+    
+
+
+
 //Since feature keys are used to store groups and operations, the most rare symbols combination is used
 //to avoid adding qualifier with the same name
 //Also it is short to reduce required space in the db

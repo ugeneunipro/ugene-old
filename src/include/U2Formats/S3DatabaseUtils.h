@@ -1,0 +1,1 @@
+#include "../../corelibs/U2Formats/src/S3DatabaseUtils.h"

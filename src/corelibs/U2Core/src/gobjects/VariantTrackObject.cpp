@@ -74,7 +74,7 @@ GObject* VariantTrackObject::clone(const U2DbiRef &dstDbiRef, U2OpStatus &os) co
     U2VariantTrack track = this->getVariantTrack(os);
     CHECK_OP(os, NULL);
     U2VariantTrack clonedTrack = track;
-    dstVDbi->createVariantTrack(clonedTrack, "", os);
+    dstVDbi->createVariantTrack(clonedTrack, TrackType_All, os);
     CHECK_OP(os, NULL);
 
     QScopedPointer< U2DbiIterator<U2Variant> > varsIter(this->getVariants(U2_REGION_MAX, os));

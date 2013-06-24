@@ -29,6 +29,8 @@
 #include <QtCore/QStringList>
 #include <QtCore/QVector>
 #include <QtCore/QThread>
+#include <QtCore/QHash>
+#include <QtCore/QSharedPointer>
 
 struct sqlite3;
 struct sqlite3_stmt;
@@ -42,11 +44,12 @@ class U2CORE_EXPORT DbRef {
 public:
     DbRef(sqlite3* db = NULL) : handle(db), lock(QMutex::Recursive), useTransaction(true) {}
 
-    sqlite3*                    handle;
-    QMutex                      lock;
-    bool                        useTransaction;
-    QVector<SQLiteTransaction*> transactionStack;
-    QMap<QString, SQLiteQuery*> preparedQueries;
+    sqlite3*                     handle;
+    QMutex                       lock;
+    bool                         useTransaction;
+    bool                         useCache;
+    QVector<SQLiteTransaction*>  transactionStack;
+    QHash<QString, QSharedPointer<SQLiteQuery> > preparedQueries; //shared pointer because a query can be deleted elsewhere
 };
 
 class U2CORE_EXPORT SQLiteUtils {
@@ -225,7 +228,7 @@ public:
 
     void setError(const QString& err);
     
-    bool hasError() const {return os->hasError();}
+    bool hasError() const {return (os!=NULL) ? os->hasError() : true;}
 
     void setOpStatus(U2OpStatus& _os) {os = &_os;}
 
@@ -252,12 +255,15 @@ public:
     SQLiteTransaction(DbRef* db, U2OpStatus& os);
     virtual ~SQLiteTransaction();
 
-    SQLiteQuery *getPreparedQuery(const QString &sql, DbRef *d, U2OpStatus &os);
-    SQLiteQuery *getPreparedQuery(const QString &sql, qint64 offset, qint64 count, DbRef *d, U2OpStatus &os);
+    QSharedPointer<SQLiteQuery> getPreparedQuery(const QString &sql, DbRef *d, U2OpStatus &os);
+    QSharedPointer<SQLiteQuery> getPreparedQuery(const QString &sql, qint64 offset, qint64 count, DbRef *d, U2OpStatus &os);
+
+    bool isCacheQueries() {return cacheQueries;}
 
 private:
     DbRef* db;
     U2OpStatus& os;
+    bool cacheQueries;
 
     void clearPreparedQueries();
 
@@ -284,8 +290,8 @@ public:
 /** SQL query result set iterator */
 template<class T> class SqlRSIterator : public U2DbiIterator<T> {
 public:
-    SqlRSIterator(SQLiteQuery* q, SqlRSLoader<T>* l, SqlRSFilter<T>* f, const T& d, U2OpStatus& o) 
-        : query(q), loader(l), filter(f), defaultValue(d), os(o), endOfStream(false) 
+    SqlRSIterator(QSharedPointer<SQLiteQuery> q, SqlRSLoader<T>* l, SqlRSFilter<T>* f, const T& d, U2OpStatus& o) 
+        : query(q), loader(l), filter(f), defaultValue(d), os(o), endOfStream(false)
     {
         fetchNext();
     }
@@ -293,7 +299,7 @@ public:
     virtual ~SqlRSIterator() {
         delete filter;
         delete loader;
-        delete query;
+        query.clear();
     }
 
     virtual bool hasNext() {
@@ -323,11 +329,11 @@ private:
                 endOfStream = true;        
                 return;
             }
-            nextResult = loader->load(query);
+            nextResult = loader->load(query.data());
         } while (filter != NULL && !filter->filter(nextResult));
     }
 
-    SQLiteQuery*    query;
+    QSharedPointer<SQLiteQuery>    query;
     SqlRSLoader<T>* loader;
     SqlRSFilter<T>* filter;
     T               defaultValue;
@@ -335,6 +341,7 @@ private:
     bool            endOfStream;
     T               nextResult;
     T               currentResult;
+    bool            deleteQuery;
 };
 
 class SqlDataIdRSLoader : public SqlRSLoader<U2DataId> {

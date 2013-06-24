@@ -38,6 +38,9 @@
 #include <U2Core/U2VariantDbi.h>
 #include <U2Core/U2ModDbi.h>
 
+#include <U2Core/S3TablesDbi.h>
+#include <U2Core/KnownMutationsDbi.h>
+
 
 namespace U2 {
 
@@ -79,6 +82,10 @@ public:
     virtual U2VariantDbi* getVariantDbi()  {return NULL;}
 
     virtual U2ModDbi* getModDbi()  {return NULL;}
+
+    virtual S3TablesDbi* getS3TableDbi() {return NULL;}
+
+    virtual KnownMutationsDbi* getKnownMutationsDbi() {return NULL;}
     
     virtual U2CrossDatabaseReferenceDbi* getCrossDatabaseReferenceDbi()  {return NULL;}
     

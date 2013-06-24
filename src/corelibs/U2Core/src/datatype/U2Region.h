@@ -101,6 +101,10 @@ public:
     Returns true if this region starts strictly earlier than the specified one. */
     bool operator<(const U2Region &r) const {return startPos < r.startPos;}
 
+/** Compares 2 regions by start position. 
+    Returns true if this region starts strictly later than the specified one. */
+    bool operator>(const U2Region &r) const {return startPos > r.startPos;}
+
     /**
         String formats for U2Region::toString:
             FormatBrackets  "[100, 200)"

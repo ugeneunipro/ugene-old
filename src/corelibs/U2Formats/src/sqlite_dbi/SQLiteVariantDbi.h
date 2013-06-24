@@ -33,37 +33,34 @@ public:
 
     SQLiteVariantDbi(SQLiteDbi* dbi);
 
-    //TODO ADD ID
-    virtual U2DbiIterator<U2VariantTrack>* getVariantTracks(U2OpStatus& os);
+    virtual U2DbiIterator<U2VariantTrack>* getVariantTracks(VariantTrackType trackType, U2OpStatus& os);
 
     virtual U2DbiIterator<U2VariantTrack>* getVariantTracks(const U2DataId& seqId, U2OpStatus& os);
+
+    virtual U2DbiIterator<U2VariantTrack>* getVariantTracks(const U2DataId& seqId, VariantTrackType trackType, U2OpStatus& os);
     
-    /** Returns VariantTrack instance by the given id */
-    virtual U2VariantTrack getVariantTrack(const U2DataId& id, U2OpStatus& os);
-// 
-//     /** 
-//         Creates new VariantTrack instance
-//         Requires U2DbiFeature_WriteVariants feature support
-//     */
-//     virtual void createVariantTrack(U2VariantTrack& track, QString& folder, U2OpStatus& os);
-// 
+    /** Returns VariantTrack instance by the given track id */
+    virtual U2VariantTrack getVariantTrack(const U2DataId& trackId, U2OpStatus& os);
+
+    /** Returns VariantTrack instance by the given variant id */
+    virtual U2VariantTrack getVariantTrackofVariant(const U2DataId& variantId, U2OpStatus& os);
+
     /** 
         Create Variant and add it to the track
         Requires U2DbiFeature_WriteVariants feature support
     */
     virtual void addVariantsToTrack(const U2VariantTrack& track, U2DbiIterator<U2Variant>* it,U2OpStatus& os);
 
+     /** 
+        Creates new index for variations.
+    */
+    virtual void createVariationsIndex(U2OpStatus& os);
+
     /** 
         Creates new VariantTrack instance
         Requires U2DbiFeature_WriteVariants feature support
     */
-    virtual void createVariantTrack(U2VariantTrack& track, const QString& folder, U2OpStatus& os);
-
-    /** 
-        Create Variant and add it to the track
-        Requires U2DbiFeature_WriteVariants feature support
-    */
-//    virtual void addVariantToTrack(U2Variant& variant, const U2VariantTrack& track, U2OpStatus& os);
+    virtual void createVariantTrack(U2VariantTrack& track, VariantTrackType trackType, U2OpStatus& os);
 
     /** 
         Updates VariantTrack instance 
@@ -85,6 +82,12 @@ public:
 
     /** Delete the variant track from the database */
     virtual void removeTrack(const U2DataId& track, U2OpStatus& os);
+
+    /**Update variant public ID*/
+    virtual void updateVariantPublicId(const U2DataId& track, const U2DataId& variant, const QString& newId, U2OpStatus& os);
+
+    /**Update variant track ID*/
+    virtual void updateTrackIDofVariant(const U2DataId& variant, const U2DataId& newTrackId, U2OpStatus& os);
 
 };
 

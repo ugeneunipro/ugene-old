@@ -118,10 +118,11 @@ QList<U2DataId> SQLiteObjectDbi::getParents(const U2DataId& entityId, U2OpStatus
 }
 
 U2DbiIterator<U2DataId>* SQLiteObjectDbi::getObjectsByVisualName(const QString& visualName, U2DataType type, U2OpStatus& os) {
+    SQLiteTransaction t(db, os);
     bool checkType = (type != U2Type::Unknown);
     QString query = "SELECT id, type FROM Object WHERE " + TOP_LEVEL_FILTER 
             + " AND name = ?1 " + (checkType ? "AND type = ?2" : "");
-    SQLiteQuery* q = new SQLiteQuery(query, db, os);
+    QSharedPointer<SQLiteQuery> q = t.getPreparedQuery(query, db, os);
     q->bindString(1, visualName);
     if (checkType) {
         q->bindType(2, type);
@@ -151,7 +152,7 @@ void SQLiteObjectDbi::removeObjects(const QList<U2DataId>& dataIds, const QStrin
 void SQLiteObjectDbi::updateObjectCore(U2Object &obj, U2OpStatus &os) {
     SQLiteTransaction t(db, os);
     static const QString queryString("UPDATE Object SET name = ?1, version = version WHERE id = ?2");
-    SQLiteQuery *q = t.getPreparedQuery(queryString, db, os);
+    QSharedPointer<SQLiteQuery> q = t.getPreparedQuery(queryString, db, os);
     SAFE_POINT_OP(os, );
     q->bindString(1, obj.visualName);
     q->bindDataId(2, obj.id);
@@ -168,18 +169,18 @@ bool SQLiteObjectDbi::removeObjectImpl(const U2DataId& objectId, const QString& 
     }
     if (folder.isEmpty()) {
         static const QString deleteString("DELETE FROM FolderContent WHERE object = ?1");
-        SQLiteQuery *deleteQ = t.getPreparedQuery(deleteString, db, os);
+        QSharedPointer<SQLiteQuery> deleteQ = t.getPreparedQuery(deleteString, db, os);
         CHECK_OP(os, false);
         deleteQ->bindDataId(1, objectId);
     } else {
         static const QString selectString("SELECT id FROM Folder WHERE path = ?1");
-        SQLiteQuery *selectQ = t.getPreparedQuery(selectString, db, os);
+        QSharedPointer<SQLiteQuery> selectQ = t.getPreparedQuery(selectString, db, os);
         CHECK_OP(os, false);
         selectQ->bindString(1, folder);
         qint64 folderId = selectQ->selectInt64();
 
         static const QString deleteString("DELETE FROM FolderContent WHERE folder = ?1 AND object = ?2");
-        SQLiteQuery *deleteQ = t.getPreparedQuery(deleteString, db, os);
+        QSharedPointer<SQLiteQuery> deleteQ = t.getPreparedQuery(deleteString, db, os);
         CHECK_OP(os, false);
         deleteQ->bindInt64(1, folderId);
         deleteQ->bindDataId(2, objectId);
@@ -198,7 +199,7 @@ bool SQLiteObjectDbi::removeObjectImpl(const U2DataId& objectId, const QString& 
     if (!parents.isEmpty()) { // object is a part of another object ->  do not erase
         //update top_level flag!
         static const QString toplevelString("UPDATE Object SET rank = ?1 WHERE id = ?2");
-        SQLiteQuery *toplevelQ = t.getPreparedQuery(toplevelString, db, os);
+        QSharedPointer<SQLiteQuery> toplevelQ = t.getPreparedQuery(toplevelString, db, os);
         CHECK_OP(os, false);
         toplevelQ->bindInt32(1, SQLiteDbiObjectRank_Child);
         toplevelQ->bindDataId(2, objectId);
@@ -664,7 +665,7 @@ void SQLiteObjectDbi::ensureParent(const U2DataId& parentId, const U2DataId& chi
 void SQLiteObjectDbi::incrementVersion(const U2DataId& objectId, DbRef* db, U2OpStatus& os) {
     SQLiteTransaction t(db, os);
     static const QString queryString("UPDATE Object SET version = version + 1 WHERE id = ?1");
-    SQLiteQuery *q = t.getPreparedQuery(queryString, db, os);
+    QSharedPointer<SQLiteQuery> q = t.getPreparedQuery(queryString, db, os);
     CHECK_OP(os, );
     q->bindDataId(1, objectId);
     q->update(1);
@@ -673,7 +674,7 @@ void SQLiteObjectDbi::incrementVersion(const U2DataId& objectId, DbRef* db, U2Op
 qint64 SQLiteObjectDbi::getObjectVersion(const U2DataId& objectId, U2OpStatus& os) {
     SQLiteTransaction t(db, os);
     static const QString queryString("SELECT version FROM Object WHERE id = ?1");
-    SQLiteQuery *q = t.getPreparedQuery(queryString, db, os);
+    QSharedPointer<SQLiteQuery> q = t.getPreparedQuery(queryString, db, os);
     CHECK_OP(os, -1);
     q->bindDataId(1, objectId);
     return q->selectInt64();
@@ -723,7 +724,7 @@ U2DataId SQLiteObjectDbi::createObject(U2Object & object, const QString& folder,
     const QString &vname = object.visualName;
     int trackMod = object.trackModType;
     static const QString i1String("INSERT INTO Object(type, rank, name, trackMod) VALUES(?1, ?2, ?3, ?4)");
-    SQLiteQuery *i1 = t.getPreparedQuery(i1String, db, os);
+    QSharedPointer<SQLiteQuery> i1 = t.getPreparedQuery(i1String, db, os);
     CHECK_OP(os, U2DataId());
     i1->bindType(1, type);
     i1->bindInt32(2, rank);
@@ -741,7 +742,7 @@ U2DataId SQLiteObjectDbi::createObject(U2Object & object, const QString& folder,
         }
 
         static const QString i2String("INSERT INTO FolderContent(folder, object) VALUES(?1, ?2)");
-        SQLiteQuery *i2 = t.getPreparedQuery(i2String, db, os);
+        QSharedPointer<SQLiteQuery> i2 = t.getPreparedQuery(i2String, db, os);
         CHECK_OP(os, res);
         i2->bindInt64(1, folderId);
         i2->bindDataId(2, res);    

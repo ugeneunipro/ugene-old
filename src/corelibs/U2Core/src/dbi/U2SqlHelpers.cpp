@@ -544,18 +544,17 @@ SQLiteTransaction::SQLiteTransaction(DbRef* ref, U2OpStatus& _os)
             os.setError(SQLiteL10n::queryError(sqlite3_errmsg(db->handle)));
             return;
         }
-
     }
     if (db->useTransaction) {
         checkStack(db->transactionStack);
         db->transactionStack << this;
     }
+
 }
 
 void SQLiteTransaction::clearPreparedQueries() {
     foreach (const QString &sql, db->preparedQueries.keys()) {
-        SQLiteQuery *query = db->preparedQueries[sql];
-        delete query;
+        db->preparedQueries[sql].clear();
     }
     db->preparedQueries.clear();
 }
@@ -585,29 +584,33 @@ SQLiteTransaction::~SQLiteTransaction() {
     
 }
 
-SQLiteQuery *SQLiteTransaction::getPreparedQuery(const QString &sql, DbRef *d, U2OpStatus &os) {
+QSharedPointer<SQLiteQuery> SQLiteTransaction::getPreparedQuery(const QString &sql, DbRef *d, U2OpStatus &os) {
     if (db->preparedQueries.contains(sql)) {
-        SQLiteQuery *result = db->preparedQueries[sql];
+        QSharedPointer<SQLiteQuery> result = db->preparedQueries[sql];
         result->setOpStatus(os);
         result->reset(false);
         return result;
     }
-    SQLiteQuery *result = new SQLiteQuery(sql, d, os);
-    CHECK_OP(os, NULL);
-    db->preparedQueries[sql] = result;
+    QSharedPointer<SQLiteQuery> result (new SQLiteQuery(sql, d, os));
+    CHECK_OP(os, QSharedPointer<SQLiteQuery>());
+    if(cacheQueries){
+        db->preparedQueries[sql] = result;
+    }
     return result;
 }
 
-SQLiteQuery *SQLiteTransaction::getPreparedQuery(const QString &sql, qint64 offset, qint64 count, DbRef *d, U2OpStatus &os) {
+QSharedPointer<SQLiteQuery> SQLiteTransaction::getPreparedQuery(const QString &sql, qint64 offset, qint64 count, DbRef *d, U2OpStatus &os) {
     if (db->preparedQueries.contains(sql)) {
-        SQLiteQuery *result = db->preparedQueries[sql];
+        QSharedPointer<SQLiteQuery> result = db->preparedQueries[sql];
         result->setOpStatus(os);
         result->reset(false);
         return result;
     }
-    SQLiteQuery *result = new SQLiteQuery(sql, offset, count, d, os);
-    CHECK_OP(os, NULL);
-    db->preparedQueries[sql] = result;
+    QSharedPointer<SQLiteQuery> result (new SQLiteQuery(sql, offset, count, d, os));
+    CHECK_OP(os, QSharedPointer<SQLiteQuery>());
+    if(cacheQueries){
+        db->preparedQueries[sql] = result;
+    }
     return result;
 }
 

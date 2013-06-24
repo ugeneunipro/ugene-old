@@ -102,7 +102,7 @@ U2DbiIterator<U2AssemblyRead>* RTreeAssemblyAdapter::getReads(const U2Region& r,
         qStr += SORTED_READS;
     }
 
-    SQLiteQuery* q = new SQLiteQuery(qStr, db, os);
+    QSharedPointer<SQLiteQuery> q(new SQLiteQuery(qStr, db, os));
     q->bindInt64(1, r.endPos());
     q->bindInt64(2, r.startPos);
     return new SqlRSIterator<U2AssemblyRead>(q, new SimpleAssemblyReadLoader(), NULL, U2AssemblyRead(), os);
@@ -111,7 +111,7 @@ U2DbiIterator<U2AssemblyRead>* RTreeAssemblyAdapter::getReads(const U2Region& r,
 U2DbiIterator<U2AssemblyRead>* RTreeAssemblyAdapter::getReadsByRow(const U2Region& r, qint64 minRow, qint64 maxRow, U2OpStatus& os) {
     QString qStr = QString("SELECT " + ALL_READ_FIELDS + FROM_2TABLES + " WHERE " + SAME_IDX + " AND "+ RANGE_CONDITION_CHECK + 
                         " AND (i.prow1 >= ?3 AND i.prow2 < ?4)").arg(readsTable).arg(indexTable);
-    SQLiteQuery* q = new SQLiteQuery(qStr, db, os);
+    QSharedPointer<SQLiteQuery> q(new SQLiteQuery(qStr, db, os));
     q->bindInt64(1, r.endPos());
     q->bindInt64(2, r.startPos);
     q->bindInt64(3, minRow);
@@ -121,7 +121,7 @@ U2DbiIterator<U2AssemblyRead>* RTreeAssemblyAdapter::getReadsByRow(const U2Regio
 
 U2DbiIterator<U2AssemblyRead>* RTreeAssemblyAdapter::getReadsByName(const QByteArray& name, U2OpStatus& os) {
     QString qStr = QString("SELECT " + ALL_READ_FIELDS + " FROM %1 WHERE name = ?1").arg(readsTable);
-    SQLiteQuery* q = new SQLiteQuery(qStr, db, os);
+    QSharedPointer<SQLiteQuery>q ( new SQLiteQuery(qStr, db, os) );
     int hash = qHash(name);
     q->bindInt64(1, hash);
     return new SqlRSIterator<U2AssemblyRead>(q, new SimpleAssemblyReadLoader(), 
@@ -219,7 +219,7 @@ void RTreeAssemblyAdapter::calculateCoverage(const U2Region& r, U2AssemblyCovera
 
 
 U2DbiIterator<PackAlgorithmData>* RTreePackAlgorithmAdapter::selectAllReads(U2OpStatus& os) {
-    SQLiteQuery* q = new SQLiteQuery("SELECT id, gstart, gend - gstart FROM " + indexTable + " ORDER BY gstart", db, os);
+    QSharedPointer<SQLiteQuery> q( new SQLiteQuery("SELECT id, gstart, gend - gstart FROM " + indexTable + " ORDER BY gstart", db, os));
     return new SqlRSIterator<PackAlgorithmData>(q, new SimpleAssemblyReadPackedDataLoader(), NULL, PackAlgorithmData(), os);
 }
 

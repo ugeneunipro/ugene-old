@@ -38,21 +38,22 @@ protected:
 public:
     
     /** Returns available VariantTracks */
-    virtual U2DbiIterator<U2VariantTrack>* getVariantTracks(U2OpStatus& os) = 0;
+    virtual U2DbiIterator<U2VariantTrack>* getVariantTracks(VariantTrackType trackType, U2OpStatus& os) = 0;
 
     /** Returns available VariantTracks for given sequence id*/
     virtual U2DbiIterator<U2VariantTrack>* getVariantTracks(const U2DataId& seqId, U2OpStatus& os) = 0;
 
+    /** Returns available VariantTracks for given sequence id and type
+    if type == TrackType_All returns all tracks of given sequence */
+    virtual U2DbiIterator<U2VariantTrack>* getVariantTracks(const U2DataId& seqId, VariantTrackType trackType, U2OpStatus& os) = 0;
 
-    /** Returns VariantTrack instance by the given id */
+
+    /** Returns VariantTrack instance by the given track id */
     virtual U2VariantTrack getVariantTrack(const U2DataId& id, U2OpStatus& os) = 0;
-// 
-//     /** 
-//         Creates new VariantTrack instance and adds all Variants provided by iterator to it 
-//         Requires U2DbiFeature_WriteVariants feature support
-//     */
-//     virtual void createVariantTrack(U2VariantTrack& track, U2DbiIterator<U2Variant>* it, const QString& folder, U2OpStatus& os) = 0;
-// 
+
+    /** Returns VariantTrack instance by the given variant id */
+    virtual U2VariantTrack getVariantTrackofVariant(const U2DataId& variantId, U2OpStatus& os) = 0;
+
     /** 
         Adds all Variants provided by iterator to the track 
         Requires U2DbiFeature_WriteVariants feature support
@@ -62,14 +63,13 @@ public:
         Creates new VariantTrack instance
         Requires U2DbiFeature_WriteVariants feature support
     */
-    virtual void createVariantTrack(U2VariantTrack& track, const QString& folder, U2OpStatus& os) = 0;
+    virtual void createVariantTrack(U2VariantTrack& track, VariantTrackType trackType, U2OpStatus& os) = 0;
 
     /** 
-        Create Variant and add it to the track
-        Requires U2DbiFeature_WriteVariants feature support
+        Creates new index for variations.
     */
-    //virtual void addVariantToTrack(U2Variant& variant, const U2VariantTrack& track, U2OpStatus& os) = 0;
- 
+    virtual void createVariationsIndex(U2OpStatus& os) = 0;
+
     /** 
         Updates VariantTrack instance 
         Requires U2DbiFeature_WriteVariants feature support
@@ -88,6 +88,13 @@ public:
 
     /** Delete the variant track from the database */
     virtual void removeTrack(const U2DataId& track, U2OpStatus& os) = 0;
+
+    /**Update variant public ID*/
+    virtual void updateVariantPublicId(const U2DataId& track, const U2DataId& variant, const QString& newId, U2OpStatus& os) = 0;
+
+    /**Update variant track ID*/
+    virtual void updateTrackIDofVariant(const U2DataId& variant, const U2DataId& newTrackId, U2OpStatus& os) = 0;
+
 };
 
 

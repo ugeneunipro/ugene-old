@@ -1,0 +1,44 @@
+
+#ifndef _S3_KNOWN_MUTATIONS_DBI_H_
+#define _S3_KNOWN_MUTATIONS_DBI_H_
+
+#include <U2Core/U2Type.h>
+#include <U2Core/U2Dbi.h>
+#include <U2Core/KnownMutations.h>
+
+namespace U2 {
+    
+    /*Dbi for pre-build (known) mutation tables.
+        Tables are included for objects: 
+            KnownMutation
+            */
+class KnownMutationsDbi : public U2ChildDbi{
+protected:
+    KnownMutationsDbi(U2Dbi* rootDbi) : U2ChildDbi(rootDbi){}
+public:
+
+    /* Creates known mutation track instance */
+    virtual void createKnownMutationsTrack(KnownMutationsTrack& mutationsTrack, U2OpStatus& os) = 0;
+
+    /* Remove the known mutation track and its mutations from the database */
+    virtual void removeKnownMutationsTrack(const KnownMutationsTrack& mutationsTrack, U2OpStatus& os) = 0;
+
+    /* returns known mutation tracks by given chromosome number (x-23, y-24)*/
+    virtual KnownMutationsTrack getKnownMutationsTrack(int chrNumber, U2OpStatus& os) = 0;
+
+    /* Insert known mutations of the specific track into db*/
+    virtual void addKnownMutationsToTrack (const U2DataId& mTrack, U2DbiIterator<KnownMutation>* it, U2OpStatus& os) = 0;
+
+    /* Get all KnownMutations in track*/
+    virtual U2DbiIterator<KnownMutation>* getKnownMutations(const U2DataId& mTrack, U2OpStatus& os) = 0;
+
+    /* Get KnownMutations by startPos*/
+    virtual U2DbiIterator<KnownMutation>* getKnownMutations(const U2DataId& mTrack, qint64 startPos, U2OpStatus& os) = 0;
+
+    /* Get KnownMutations count in the track*/
+    virtual int getKnownMutationsCount(const U2DataId& mTrack, U2OpStatus& os) = 0;
+};
+    
+} //namespace
+
+#endif //_S3_KNOWN_MUTATIONS_DBI_H_

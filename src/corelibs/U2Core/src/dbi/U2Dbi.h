@@ -47,6 +47,8 @@ class U2AssemblyDbi;
 class U2AttributeDbi;
 class U2VariantDbi;
 class U2ModDbi;
+class S3TablesDbi;
+class KnownMutationsDbi;
 class U2OpStatus;
 class U2Dbi;
 
@@ -265,6 +267,15 @@ public:
         Not NULL only if U2DbiFeature_ReadVariants supported
     */
     virtual U2VariantDbi* getVariantDbi()  = 0;
+    /**  
+        FilterTableDbi related DBI routines 
+    */
+    virtual S3TablesDbi* getS3TableDbi()  = 0;
+
+    /**  
+        Dbi for prebuild mutations
+    */
+    virtual KnownMutationsDbi* getKnownMutationsDbi()  = 0;
 
     /** 
         Cross database references handling routines 

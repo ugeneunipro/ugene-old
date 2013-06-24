@@ -26,18 +26,35 @@
 
 namespace U2 {
 
+/**return SNP region in case endPos == 0, else return variation region*/
+#define VARIATION_REGION(var)  \
+    U2Region((var).startPos, (var).endPos == 0 ? 1 : (var).endPos - (var).startPos)
+
 /** 
     Representation for set of genomic variations. 
 */
-class U2VariantTrack : public U2Object {
+
+enum VariantTrackType{
+    TrackType_All = 1,
+    TrackType_Perspective,
+    TrackType_Discarded,
+    TrackType_UnknownEffect
+};
+
+class U2CORE_EXPORT U2VariantTrack : public U2Object {
 public:
-    U2VariantTrack() {}
-    U2VariantTrack(const U2DataId& id, const QString& dbId, qint64 version) : U2Object(id, dbId, version){}
+    U2VariantTrack():
+    trackType(TrackType_All){}
+    U2VariantTrack(const U2DataId& id, const QString& dbId, VariantTrackType _trackType, qint64 version) : U2Object(id, dbId, version), trackType(_trackType){}
     
     /** Sequence id */
     U2DataId      sequence;
 
-    QString       sequenceName;
+    /** Sequence name */
+    QString     sequenceName;
+
+    /** Track Type*/
+    VariantTrackType trackType;
 
     // implement U2Object
     virtual U2DataType getType() { return U2Type::VariantTrack; }

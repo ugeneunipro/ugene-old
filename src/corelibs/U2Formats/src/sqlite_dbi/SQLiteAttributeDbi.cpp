@@ -200,11 +200,11 @@ void SQLiteAttributeDbi::removeAttributes(const QList<U2DataId>& attributeIds, U
     static const QString qrString("DELETE FROM RealAttribute WHERE attribute = ?1");
     static const QString qsString("DELETE FROM StringAttribute WHERE attribute = ?1");
     static const QString qbString("DELETE FROM ByteArrayAttribute WHERE attribute = ?1");
-    SQLiteQuery *q = t.getPreparedQuery(qString, db, os);
-    SQLiteQuery *qi = t.getPreparedQuery(qiString, db, os);
-    SQLiteQuery *qr = t.getPreparedQuery(qrString, db, os);
-    SQLiteQuery *qs = t.getPreparedQuery(qsString, db, os);
-    SQLiteQuery *qb = t.getPreparedQuery(qbString, db, os);
+    QSharedPointer<SQLiteQuery> q = t.getPreparedQuery(qString, db, os);
+    QSharedPointer<SQLiteQuery> qi = t.getPreparedQuery(qiString, db, os);
+    QSharedPointer<SQLiteQuery> qr = t.getPreparedQuery(qrString, db, os);
+    QSharedPointer<SQLiteQuery> qs = t.getPreparedQuery(qsString, db, os);
+    QSharedPointer<SQLiteQuery> qb = t.getPreparedQuery(qbString, db, os);
     foreach(const U2DataId& id, attributeIds) {
         q->reset();
         q->bindDataId(1, id);
@@ -212,16 +212,16 @@ void SQLiteAttributeDbi::removeAttributes(const QList<U2DataId>& attributeIds, U
         U2DataType type = SQLiteUtils::toType(id);
         switch (type) {
             case U2Type::AttributeInteger:
-                removeAttribute(qi, id);
+                removeAttribute(qi.data(), id);
                 break;
             case U2Type::AttributeReal:
-                removeAttribute(qr, id);
+                removeAttribute(qr.data(), id);
                 break;
             case U2Type::AttributeString:
-                removeAttribute(qs, id);
+                removeAttribute(qs.data(), id);
                 break;
             case U2Type::AttributeByteArray:
-                removeAttribute(qb, id);
+                removeAttribute(qb.data(), id);
                 break;
             default:
                 os.setError(SQLiteL10n::tr("Unsupported attribute type: %1").arg(type));
@@ -245,7 +245,7 @@ void SQLiteAttributeDbi::removeObjectAttributes(const U2DataId& objectId, U2OpSt
 qint64 SQLiteAttributeDbi::createAttribute(U2Attribute& attr, U2DataType type, SQLiteTransaction& t, U2OpStatus& os) {
     static const QString queryString("INSERT INTO Attribute(type, object, child, otype, ctype, oextra, cextra, version, name) "
         " VALUES(?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9)");
-    SQLiteQuery *q = t.getPreparedQuery(queryString, db, os);
+    QSharedPointer<SQLiteQuery> q = t.getPreparedQuery(queryString, db, os);
     CHECK_OP(os, -1);
     
     q->bindType(1, type);
@@ -275,7 +275,7 @@ void SQLiteAttributeDbi::createIntegerAttribute(U2IntegerAttribute& a, U2OpStatu
     a.id = SQLiteUtils::toU2DataId(id, U2Type::AttributeInteger);
 
     static const QString queryString("INSERT INTO IntegerAttribute(attribute, value) VALUES(?1, ?2)");
-    SQLiteQuery *q = t.getPreparedQuery(queryString, db, os);
+    QSharedPointer<SQLiteQuery> q = t.getPreparedQuery(queryString, db, os);
     CHECK_OP(os, );
     q->bindInt64(1, id);
     q->bindInt64(2, a.value);
@@ -295,7 +295,7 @@ void SQLiteAttributeDbi::createRealAttribute(U2RealAttribute& a, U2OpStatus& os)
     a.id = SQLiteUtils::toU2DataId(id, U2Type::AttributeReal);
 
     static const QString queryString("INSERT INTO RealAttribute(attribute, value) VALUES(?1, ?2)");
-    SQLiteQuery *q = t.getPreparedQuery(queryString, db, os);
+    QSharedPointer<SQLiteQuery> q = t.getPreparedQuery(queryString, db, os);
     CHECK_OP(os, );
     q->bindInt64(1, id);
     q->bindDouble(2, a.value);
@@ -315,7 +315,7 @@ void SQLiteAttributeDbi::createStringAttribute(U2StringAttribute& a, U2OpStatus&
     a.id = SQLiteUtils::toU2DataId(id, U2Type::AttributeString);
 
     static const QString queryString("INSERT INTO StringAttribute(attribute, value) VALUES(?1, ?2)");
-    SQLiteQuery *q = t.getPreparedQuery(queryString, db, os);
+    QSharedPointer<SQLiteQuery> q = t.getPreparedQuery(queryString, db, os);
     CHECK_OP(os, );
     q->bindInt64(1, id);
     q->bindString(2, a.value);
@@ -335,7 +335,7 @@ void SQLiteAttributeDbi::createByteArrayAttribute(U2ByteArrayAttribute& a, U2OpS
     a.id = SQLiteUtils::toU2DataId(id, U2Type::AttributeByteArray);
 
     static const QString queryString("INSERT INTO ByteArrayAttribute(attribute, value) VALUES(?1, ?2)");
-    SQLiteQuery *q = t.getPreparedQuery(queryString, db, os);
+    QSharedPointer<SQLiteQuery> q = t.getPreparedQuery(queryString, db, os);
     CHECK_OP(os, );
     q->bindInt64(1, id);
     q->bindBlob(2, a.value, false);

@@ -166,7 +166,7 @@ void SQLiteMsaDbi::createMsaRowGap(const U2DataId& msaId, qint64 msaRowId, const
     SQLiteTransaction t(db, os);
     static const QString queryString("INSERT INTO MsaRowGap(msa, rowId, gapStart, gapEnd)"
         " VALUES(?1, ?2, ?3, ?4)");
-    SQLiteQuery *q = t.getPreparedQuery(queryString, db, os);
+    QSharedPointer<SQLiteQuery> q = t.getPreparedQuery(queryString, db, os);
     CHECK_OP(os, );
 
     q->bindDataId(1, msaId);
@@ -383,7 +383,7 @@ void SQLiteMsaDbi::setNewRowsOrder(const U2DataId& msaId, const QList<qint64>& r
 void SQLiteMsaDbi::removeRecordFromMsaRow(const U2DataId& msaId, qint64 rowId, U2OpStatus& os) {
     SQLiteTransaction t(db, os);
     static const QString queryString("DELETE FROM MsaRow WHERE msa = ?1 AND rowId = ?2");
-    SQLiteQuery *q = t.getPreparedQuery(queryString, db, os);
+    QSharedPointer<SQLiteQuery> q = t.getPreparedQuery(queryString, db, os);
     CHECK_OP(os, );
 
     q->bindDataId(1, msaId);
@@ -394,7 +394,7 @@ void SQLiteMsaDbi::removeRecordFromMsaRow(const U2DataId& msaId, qint64 rowId, U
 void SQLiteMsaDbi::removeRecordsFromMsaRowGap(const U2DataId& msaId, qint64 rowId, U2OpStatus& os) {
     SQLiteTransaction t(db, os);
     static const QString queryString("DELETE FROM MsaRowGap WHERE msa = ?1 AND rowId = ?2");
-    SQLiteQuery *q = t.getPreparedQuery(queryString, db, os);
+    QSharedPointer<SQLiteQuery> q = t.getPreparedQuery(queryString, db, os);
     CHECK_OP(os, );
 
     q->bindDataId(1, msaId);

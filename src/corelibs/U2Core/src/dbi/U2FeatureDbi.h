@@ -44,11 +44,19 @@ enum OrderOp {
     OrderOp_Desc
 };
 
+enum StrandQuery{
+    Strand_Both,
+    Strand_Direct,
+    Strand_Compl
+};
+
 class FeatureQuery {
 public:
     FeatureQuery() : topLevelOnly(false), featureNameOrderOp(OrderOp_None),  keyNameOrderOp(OrderOp_None),
         keyValueCompareOp(ComparisonOp_Invalid), keyValueOrderOp(OrderOp_None), 
-        intersectRegion(-1, 0), startPosOrderOp(OrderOp_None) {}
+        intersectRegion(-1, 0), startPosOrderOp(OrderOp_None)
+        ,closestFeature(ComparisonOp_Invalid)
+    ,strandQuery(Strand_Both){}
     
     U2DataId        sequenceId;
 
@@ -71,6 +79,17 @@ public:
     */
     U2Region        intersectRegion;
     OrderOp         startPosOrderOp;
+
+    /** Get one feature which:
+        ComparisonOp_EQ - intersect intersectRegion
+        ComparisonOp_GT - to the right of intersectRegion
+        ComparisonOp_LT - to the left of intersectRegion
+        
+        ComparisonOp_Invalid - disables filter
+    */
+    ComparisonOp    closestFeature;
+
+    StrandQuery        strandQuery;
 };
 /**
     An interface to obtain 'read' access to sequence features
@@ -158,6 +177,17 @@ public:
         Requires: U2DbiFeature_WriteFeature feature support
     */
     virtual void removeFeature(const U2DataId& featureId, U2OpStatus& os) = 0;
+
+    /**
+        Returns features that matched the query. Returns NULL if error occurs
+    */
+    virtual U2DbiIterator<U2Feature>* getFeaturesByRegion(const U2Region& reg, const QString& featureName, const U2DataId& seqId, U2OpStatus& os) = 0;
+
+    virtual U2DbiIterator<U2Feature>* getFeaturesByParent(const U2DataId& parentId, const QString& featureName, const U2DataId& seqId, U2OpStatus& os) = 0;
+
+    virtual U2DbiIterator<U2Feature>* getSubFeatures(const U2DataId& parentId, const U2DataId& seqId, U2OpStatus& os) = 0;
+
+    virtual U2DbiIterator<U2Feature>* getFeaturesBySequence(const QString& featureName, const U2DataId& seqId, U2OpStatus& os) = 0;
     
 };
 

@@ -56,7 +56,7 @@ U2VariantTrack U2VariationUtils::createVariantTrack( const U2DbiRef &dbiRef, con
 
     U2VariantTrack track;
     track.sequenceName = seqName;
-    vdbi->createVariantTrack(track, "", os);
+    vdbi->createVariantTrack(track, TrackType_All, os);
 
     return track;
 }

@@ -120,8 +120,20 @@ public:
     */
     virtual void removeFeature(const U2DataId& featureId, U2OpStatus& os);
 
+
+    /**
+        Returns features that matched the query. Returns NULL if error occurs
+    */
+    virtual U2DbiIterator<U2Feature>* getFeaturesByRegion(const U2Region& reg, const QString& featureName, const U2DataId& seqId, U2OpStatus& os);
+
+    virtual U2DbiIterator<U2Feature>* getFeaturesByParent(const U2DataId& parentId, const QString& featureName, const U2DataId& seqId, U2OpStatus& os);
+
+    virtual U2DbiIterator<U2Feature>* getSubFeatures(const U2DataId& parentId, const U2DataId& seqId, U2OpStatus& os);
+
+    virtual U2DbiIterator<U2Feature>* getFeaturesBySequence(const QString& featureName, const U2DataId& seqId, U2OpStatus& os);
+
 private:
-    SQLiteQuery* createFeatureQuery(const QString& selectPart, const FeatureQuery& fq, bool useOrder, U2OpStatus& os, SQLiteTransaction* trans = NULL);
+    QSharedPointer<SQLiteQuery> createFeatureQuery(const QString& selectPart, const FeatureQuery& fq, bool useOrder, U2OpStatus& os, SQLiteTransaction* trans = NULL);
 };
 
 } //namespace

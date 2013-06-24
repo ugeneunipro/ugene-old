@@ -142,7 +142,7 @@ Document *AbstractVariationFormat::loadDocument(IOAdapter *io, const U2DbiRef &d
     if (snpsMap.isEmpty()){
         U2VariantTrack track;
         track.sequenceName = "unknown";
-        dbi->getVariantDbi()->createVariantTrack(track, "", os);
+        dbi->getVariantDbi()->createVariantTrack(track, TrackType_All, os);
 
         U2EntityRef trackRef(dbiRef, track.id);
         QString objName = TextUtils::variate(track.sequenceName, "_", names);
@@ -154,7 +154,7 @@ Document *AbstractVariationFormat::loadDocument(IOAdapter *io, const U2DbiRef &d
     foreach (const QString &seqName, snpsMap.keys().toSet()) {
         U2VariantTrack track;
         track.sequenceName = seqName;
-        dbi->getVariantDbi()->createVariantTrack(track, "", os);
+        dbi->getVariantDbi()->createVariantTrack(track, TrackType_All, os);
 
         const QList<U2Variant>& vars = snpsMap.value(seqName);
         BufferedDbiIterator<U2Variant> bufIter(vars);

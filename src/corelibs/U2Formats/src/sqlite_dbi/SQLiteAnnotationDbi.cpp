@@ -205,9 +205,9 @@ U2DbiIterator<U2DataId>* SQLiteAnnotationDbi::getAnnotationsBySequence(const U2D
     //TODO: support multi-location annotations
     DBI_TYPE_CHECK(sequenceId, U2Type::Sequence, os, NULL);
 
-    SQLiteQuery* q = new SQLiteQuery("SELECT a.id FROM Annotation AS a, AnnotationLocation AS l, AnnotationLocationIndex AS li "
+    QSharedPointer<SQLiteQuery> q (new SQLiteQuery("SELECT a.id FROM Annotation AS a, AnnotationLocation AS l, AnnotationLocationIndex AS li "
                     " WHERE a.sequence = ?1 AND a.id = l.annotation AND l.id = li.id AND " + bindRegion("li", region), 
-                    offset, count, db, os);
+                    offset, count, db, os));
     
     q->bindDataId(1, sequenceId);
     return new SqlRSIterator<U2DataId>(q, new SqlDataIdRSLoader(U2Type::Annotation), NULL, U2DataId(), os);

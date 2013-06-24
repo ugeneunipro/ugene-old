@@ -148,7 +148,7 @@ U2DbiIterator<U2AssemblyRead>* SingleTableAssemblyAdapter::getReads(const U2Regi
         qStr += SORTED_READS;
     }
 
-    SQLiteQuery* q = new SQLiteQuery(qStr, db, os);
+    QSharedPointer<SQLiteQuery> q (new SQLiteQuery(qStr, db, os));
     bindRegion(*q, r);
     return new SqlRSIterator<U2AssemblyRead>(q, new SimpleAssemblyReadLoader(), NULL, U2AssemblyRead(), os);
 }
@@ -157,7 +157,7 @@ U2DbiIterator<U2AssemblyRead>* SingleTableAssemblyAdapter::getReadsByRow(const U
     int rowFieldPos = rangeMode ? 4 : 3;
     QString qStr = QString("SELECT " + ALL_READ_FIELDS + " FROM %1 WHERE " + rangeConditionCheck 
         + " AND (prow >= ?%2 AND prow < ?%3)").arg(readsTable).arg(rowFieldPos).arg(rowFieldPos + 1);
-    SQLiteQuery* q = new SQLiteQuery(qStr, db, os);
+    QSharedPointer<SQLiteQuery> q ( new SQLiteQuery(qStr, db, os) );
     bindRegion(*q, r);
     q->bindInt64(rowFieldPos, minRow);
     q->bindInt64(rowFieldPos + 1, maxRow);
@@ -166,7 +166,7 @@ U2DbiIterator<U2AssemblyRead>* SingleTableAssemblyAdapter::getReadsByRow(const U
 
 U2DbiIterator<U2AssemblyRead>* SingleTableAssemblyAdapter::getReadsByName(const QByteArray& name, U2OpStatus& os) {
     QString qStr = QString("SELECT " + ALL_READ_FIELDS + " FROM %1 WHERE name = ?1").arg(readsTable);
-    SQLiteQuery* q = new SQLiteQuery(qStr, db, os);
+    QSharedPointer<SQLiteQuery> q (new SQLiteQuery(qStr, db, os));
     int hash = qHash(name);
     q->bindInt64(1, hash);
     return new SqlRSIterator<U2AssemblyRead>(q, new SimpleAssemblyReadLoader(), 
@@ -247,7 +247,7 @@ void SingleTableAssemblyAdapter::calculateCoverage(const U2Region& r, U2Assembly
 // pack adapter
 
 U2DbiIterator<PackAlgorithmData>* SingleTablePackAlgorithmAdapter::selectAllReads(U2OpStatus& os) {
-    SQLiteQuery* q = new SQLiteQuery("SELECT id, gstart, elen FROM " + readsTable + " ORDER BY gstart", db, os);
+    QSharedPointer<SQLiteQuery> q (new SQLiteQuery("SELECT id, gstart, elen FROM " + readsTable + " ORDER BY gstart", db, os));
     return new SqlRSIterator<PackAlgorithmData>(q, new SimpleAssemblyReadPackedDataLoader(), NULL, PackAlgorithmData(), os);
 }
 

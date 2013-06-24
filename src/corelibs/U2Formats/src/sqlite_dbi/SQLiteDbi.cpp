@@ -28,6 +28,8 @@
 #include "SQLiteVariantDbi.h"
 #include "SQLiteFeatureDbi.h"
 #include "SQLiteModDbi.h"
+#include "SQLiteS3TablesDbi.h"
+#include "SQLiteKnownMutationsDbi.h"
 
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/U2SqlHelpers.h>
@@ -54,6 +56,8 @@ SQLiteDbi::SQLiteDbi() : U2AbstractDbi (SQLiteDbiFactory::ID){
     variantDbi = new SQLiteVariantDbi(this);
     featureDbi = new SQLiteFeatureDbi(this);
     operationsBlockTransaction = NULL;
+    filterTableDbi = new SQLiteS3TablesDbi(this);
+    knownMutationsDbi = new SQLiteKnownMutationsDbi(this);
 }
 
 SQLiteDbi::~SQLiteDbi() {
@@ -68,6 +72,8 @@ SQLiteDbi::~SQLiteDbi() {
     delete attributeDbi;
     delete featureDbi;
     delete modDbi;
+    delete filterTableDbi;
+    delete knownMutationsDbi;
     delete db;
 }
 
@@ -126,6 +132,15 @@ SQLiteModDbi* SQLiteDbi::getSQLiteModDbi() const {
     return modDbi;
 }
 
+S3TablesDbi* SQLiteDbi::getS3TableDbi(){
+    return filterTableDbi;
+}
+
+KnownMutationsDbi* SQLiteDbi::getKnownMutationsDbi(){
+    return knownMutationsDbi;
+}
+
+
 QString SQLiteDbi::getProperty(const QString& name, const QString& defaultValue, U2OpStatus& os) {
     SQLiteQuery q("SELECT value FROM Meta WHERE name = ?1", db, os);
     q.bindString(1, name);
@@ -155,12 +170,14 @@ void SQLiteDbi::setProperty(const QString& name, const QString& value, U2OpStatu
 
 void SQLiteDbi::startOperationsBlock(U2OpStatus &os) {
     SQLiteTransaction *newTransaction = new SQLiteTransaction(this->db, os);
+    this->db->useCache = true;
     SAFE_POINT(NULL == operationsBlockTransaction, "Operations block initializing error", );
     operationsBlockTransaction = newTransaction;
 }
 
 void SQLiteDbi::stopOperationBlock() {
     SQLiteTransaction *transactionToDelete = operationsBlockTransaction;
+    this->db->useCache = false;
     operationsBlockTransaction = NULL;
     delete transactionToDelete;
 }
@@ -209,6 +226,8 @@ void SQLiteDbi::populateDefaultSchema(U2OpStatus& os) {
     variantDbi->initSqlSchema(os);
     featureDbi->initSqlSchema(os);
     modDbi->initSqlSchema(os);
+    filterTableDbi->initSqlSchema(os);
+    knownMutationsDbi->initSqlSchema(os);
 
     setProperty(SQLITE_DBI_OPTION_APP_VERSION, Version::appVersion().text, os);
 }
@@ -224,8 +243,8 @@ void SQLiteDbi::internalInit(const QHash<QString, QString>& props, U2OpStatus& o
         return;
     }
     if (appVersionText.isEmpty()) {
-        os.setError(SQLiteL10n::tr("Not a %1 SQLite database: %2").arg(U2_PRODUCT_NAME).arg(url));
-        return;
+        //Not an error since other databases might be opened with this interface
+        coreLog.info(SQLiteL10n::tr("Not a %1 SQLite database: %2").arg(U2_PRODUCT_NAME).arg(url));
     }
     Version dbAppVersion = Version::parseVersion(appVersionText);
     Version currentVersion = Version::appVersion();
@@ -365,6 +384,8 @@ QVariantMap SQLiteDbi::shutdown(U2OpStatus& os) {
     variantDbi->shutdown(os);
     featureDbi->shutdown(os);
     modDbi->shutdown(os);
+    filterTableDbi->shutdown(os);
+    knownMutationsDbi->shutdown(os);
     
     setState(U2DbiState_Stopping);
     int rc = sqlite3_close(db->handle);
