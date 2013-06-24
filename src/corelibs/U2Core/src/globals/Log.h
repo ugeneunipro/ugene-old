@@ -80,8 +80,7 @@ private:
     QStringList categoryNames;
 };
 
-class U2CORE_EXPORT LogListener : public QObject {
-    Q_OBJECT
+class U2CORE_EXPORT LogListener {
 public:
     virtual void onMessage(const LogMessage& m) = 0;
 };
@@ -96,17 +95,15 @@ public:
     const QList<Logger*>& getLoggers() const {return loggers;}
     QStringList getCategories() const;
 
-    void addListner(LogListener* listner);
-    void removeListner(LogListener* listener);
+    void addListener(LogListener* listner);
+    void removeListener(LogListener* listener);
 
 private:
     void message(const LogMessage& m);
+
     QList<Logger*> loggers;
     QList<LogListener*> listeners;
-
-
-signals:
-    void si_message(const LogMessage& m);
+    QMutex listenerMutex;
 };
 
 

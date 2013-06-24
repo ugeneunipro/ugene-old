@@ -25,10 +25,14 @@ namespace U2 {
 
 GTLogTracer::GTLogTracer()
 : wasError(false) {
-    connect(LogServer::getInstance(), SIGNAL(si_message(const LogMessage&)), SLOT(sl_onMessage(const LogMessage&)));
+    LogServer::getInstance()->addListener(this);
 }
 
-void GTLogTracer::sl_onMessage(const LogMessage &msg) {
+GTLogTracer::~GTLogTracer(){
+    LogServer::getInstance()->removeListener(this);
+}
+
+void GTLogTracer::onMessage(const LogMessage &msg) {
 
     if (msg.level == LogLevel_ERROR) {
         wasError = true;
