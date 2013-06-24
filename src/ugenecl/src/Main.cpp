@@ -582,8 +582,8 @@ int main(int argc, char **argv)
 #endif
     appContext->setOpenCLGpuRegistry(NULL);
 
-    delete appSettings;
     appContext->setAppSettings(NULL);
+    delete appSettings;
 
     delete settings;
     appContext->setSettings(NULL);

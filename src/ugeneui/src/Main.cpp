@@ -772,8 +772,8 @@ int main(int argc, char **argv)
     delete appSettingsGUI;
     appContext->setAppSettingsGUI(NULL);
 
-    delete appSettings;
     appContext->setAppSettings(NULL);
+    delete appSettings;
 
     delete settings;
     appContext->setSettings(NULL);
