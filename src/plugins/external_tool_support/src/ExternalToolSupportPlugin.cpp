@@ -126,7 +126,53 @@ extern "C" Q_DECL_EXPORT Plugin * U2_PLUGIN_INIT_FUNC() {
     return plug;
 }
 
+/************************************************************************/
+/* SearchToolsInPathTask */
+/************************************************************************/
+class SearchToolsInPathTask : public Task {
+public:
+    SearchToolsInPathTask(ExternalToolSupportPlugin *_plugin)
+        : Task(tr("Search tools in PATH"), TaskFlag_NoRun), plugin(_plugin)
+    {
 
+    }
+
+    void prepare() {
+        QStringList envList = QProcess::systemEnvironment();
+        if(envList.indexOf(QRegExp("PATH=.*",Qt::CaseInsensitive))>=0){
+            QString pathEnv = envList.at(envList.indexOf(QRegExp("PATH=.*",Qt::CaseInsensitive)));
+#if defined(Q_OS_LINUX) || defined(Q_OS_MAC)
+            QStringList paths = pathEnv.split("=").at(1).split(":");
+#elif defined(Q_OS_WIN)
+            QStringList paths = pathEnv.split("=").at(1).split(";");
+#else
+            QStringList paths;
+#endif
+
+            foreach(ExternalTool* curTool, AppContext::getExternalToolRegistry()->getAllEntries()){
+                foreach(const QString& curPath, paths){
+                    if(curTool->getPath().isEmpty()){
+                        QString exePath = curPath+"/"+curTool->getExecutableFileName();
+                        QFileInfo fileExe(exePath);
+                        if(fileExe.exists() && (curTool->getPath()=="")){
+                            //curTool->setPath(exePath);
+                            ExternalToolValidateTask* validateTask=new ExternalToolValidateTask(curTool->getName(), exePath);
+                            connect(validateTask, SIGNAL(si_stateChanged()), plugin, SLOT(sl_validateTaskStateChanged()));
+                            addSubTask(validateTask);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+private:
+    ExternalToolSupportPlugin *plugin;
+};
+
+/************************************************************************/
+/* ExternalToolSupportPlugin */
+/************************************************************************/
 ExternalToolSupportPlugin::ExternalToolSupportPlugin():Plugin(tr("External tool support"),tr("Runs other external tools")) {
     //External tools registry keeps order of items added
     //it is important because there might be dependencies
@@ -442,8 +488,8 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin():Plugin(tr("External tool 
         }
     }    
 
+    QList<Task*> tasks;
     if (!toolsDir.isEmpty()) {
-        QList<Task*> tasks;
         foreach(ExternalTool* curTool, etRegistry->getAllEntries()){
              if(!curTool->getPath().isEmpty()){ 
                  //check if runner exists otherwise run validation (for invalid external tools)
@@ -475,40 +521,13 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin():Plugin(tr("External tool 
                  }
              }
         }
-        if (!tasks.isEmpty()){
-            SequentialMultiTask* checkExternalToolsTask=new SequentialMultiTask(tr("Checking external tools for first time"), tasks, TaskFlags_NR_FOSCOE);
-            AppContext::getTaskScheduler()->registerTopLevelTask(checkExternalToolsTask);
-        }
     }
-
-    //Search for tools in path
-
-    QStringList envList = QProcess::systemEnvironment();
-    if(envList.indexOf(QRegExp("PATH=.*",Qt::CaseInsensitive))>=0){
-        QString pathEnv = envList.at(envList.indexOf(QRegExp("PATH=.*",Qt::CaseInsensitive)));
-#ifdef Q_OS_LINUX
-        QStringList paths = pathEnv.split("=").at(1).split(":");
-#else
-    #ifdef Q_OS_WIN
-        QStringList paths = pathEnv.split("=").at(1).split(";");
-    #else
-        QStringList paths;
-    #endif
-#endif
-        foreach(ExternalTool* curTool, etRegistry->getAllEntries()){
-            foreach(const QString& curPath, paths){
-                if(curTool->getPath().isEmpty()){
-                    QString exePath = curPath+"/"+curTool->getExecutableFileName();
-                    QFileInfo fileExe(exePath);
-                    if(fileExe.exists() && (curTool->getPath()=="")){
-                        //curTool->setPath(exePath);
-                        ExternalToolValidateTask* validateTask=new ExternalToolValidateTask(curTool->getName(), exePath);
-                        connect(validateTask,SIGNAL(si_stateChanged()),SLOT(sl_validateTaskStateChanged()));
-                        AppContext::getTaskScheduler()->registerTopLevelTask(validateTask);
-                    }
-                }
-            }
-        }
+    if (!tasks.isEmpty()) {
+        tasks << new SearchToolsInPathTask(this);
+        SequentialMultiTask* checkExternalToolsTask=new SequentialMultiTask(tr("Checking external tools for first time"), tasks, TaskFlags_NR_FOSCOE);
+        AppContext::getTaskScheduler()->registerTopLevelTask(checkExternalToolsTask);
+    } else {
+        AppContext::getTaskScheduler()->registerTopLevelTask(new SearchToolsInPathTask(this));
     }
 
     if (AppContext::getMainWindow()) {
