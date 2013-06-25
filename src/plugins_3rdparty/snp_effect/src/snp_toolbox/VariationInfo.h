@@ -14,6 +14,20 @@
 namespace U2 {
 
 /* Class for S3 variation info storage. Contains variation description for each gene*/
+    enum ReportColumns {
+        Chr = 1,
+        Position, 
+        Allele,
+        dbSNPId,
+        GeneId,
+        Clinical_significance,
+        Location,
+        Protein,
+        Codon,
+        SubstitutionAA,
+        SIFTeffect,
+        SIFTscore
+    };
 
 class VariationInfo : public QObject{
     Q_OBJECT
@@ -21,10 +35,15 @@ public:
     VariationInfo(const U2Variant& var, const U2DataId& seqId, U2SequenceDbi* _seqDbi, const QString& sequenceName = QString());
     VariationInfo(const U2Variant& var, const U2DataId& seqId, const QList<Gene>& genes, U2SequenceDbi* _seqDbi, const QString& sequenceName = QString());
 
+    QString getInGeneTableHeader();
+    QString getOutGeneTableHeader();
+
+    QStringList getInGeneTableRaws();
+
     void initInfo(U2VariantDbi* varDbi, QSharedPointer<DamageEffectEvaluator> evaluator, bool withEffect = false);
     QString getVariationInfoHeader();
-    QString getInGeneEffectInfo(const QString& geneName);
-    QString getInGeneLocationInfo(const QString& geneName);
+    QString getInGeneEffectInfo(const QString& geneName, QMap<ReportColumns, QString>& rawData = QMap<ReportColumns, QString>());
+    QString getInGeneLocationInfo(const QString& geneName, QMap<ReportColumns, QString>& rawData = QMap<ReportColumns, QString>());
     QString gentFullGeneReport(const QString& geneName);
     QString getFullVariationReport();
 
@@ -49,6 +68,14 @@ private:
 
     DNATranslation* complTransl;
     DNATranslation* aaTransl;
+
+    QList<ReportColumns> columnsOrderInGene;
+
+private:
+    void initOrderColumns();
+    void addValueToRaw(const QString& val, ReportColumns key, QMap<ReportColumns, QString>& rawData);
+
+
 };
 
 } //namespace

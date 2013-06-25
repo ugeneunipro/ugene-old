@@ -73,7 +73,7 @@ void VariationInfo::initInfo(U2VariantDbi* varDbi, QSharedPointer<DamageEffectEv
     }
 }
 
-QString VariationInfo::getInGeneEffectInfo( const QString& geneName ){
+QString VariationInfo::getInGeneEffectInfo( const QString& geneName, QMap<ReportColumns, QString>& rawData ){
     QString result;
     SAFE_POINT(seqDbi != NULL, "Sequence DBI is NULL", QString("Effect is not evaluated\n"));
 
@@ -251,7 +251,7 @@ QString VariationInfo::getInGeneEffectInfo( const QString& geneName ){
     return result;
 }
 
-QString VariationInfo::getInGeneLocationInfo( const QString& geneName ){
+QString VariationInfo::getInGeneLocationInfo( const QString& geneName, QMap<ReportColumns, QString>& rawData ){
     QString result;
     if(!containsGene(geneName)){
         result = tr("Out of gene");
@@ -597,10 +597,55 @@ QString VariationInfo::getVariationInfoHeader(){
 QString VariationInfo::getInGeneTableHeader(){
     QString res;
 
-    res = "#Chr\tPosition\tAllele\tdbSNP\tGene\tClinical_significance\tLocation\tProtein\tCodon\tSubstitution\tSIFTeffect\tSIFTscore"
+    res = "#Chr\tPosition\tAllele\tdbSNP\tGene\tClinical_significance\tLocation\tProtein\tCodon\tSubstitution\tSIFTeffect\tSIFTscore";
 
     return res;
 
+}
+
+QStringList VariationInfo::getInGeneTableRaws(){
+    QStringList res;
+
+    if(!isIntergenic()){
+        foreach(const Gene& gene, genes){
+            QString curRaw = "";
+            curRaw += gentFullGeneReport(gene.getName());
+            if(sequenceName.isEmpty()){
+                U2OpStatusImpl opStatus;
+                SAFE_POINT(seqDbi!= NULL, "No sequence DBI", res);
+                U2Sequence seq = seqDbi->getSequenceObject(seqId, opStatus);
+                CHECK_OP(opStatus, res);
+                sequenceName = seq.visualName;
+            }
+            curRaw += QString("%1\t%2\t%3/%4\t");
+        }
+    }
+
+    
+    return res;
+}
+
+void VariationInfo::initOrderColumns(){
+    if (!columnsOrderInGene.isEmpty()){
+        columnsOrderInGene.clear();
+    }
+    columnsOrderInGene << Chr << Position ; 
+    /*    Allele,
+        dbSNPId,
+        GeneId,
+        Clinical_significance,
+        Location,
+        Protein,
+        Codon,
+        SubstitutionAA,
+        SIFTeffect,
+        SIFTscore*/
+}
+
+void VariationInfo::addValueToRaw( const QString& val, ReportColumns key, QMap<ReportColumns, QString>& rawData ){
+    if (columnsOrderInGene.contains(key)){
+        rawData.insert(key, val);
+    }
 }
 
 } //namespace
