@@ -37,13 +37,13 @@ void AnalyzeTataBoxesTask::run( )
     QByteArray tmpSequence = seq.toLocal8Bit( );
     // TODO: check if the other function from "TBP_TATA.h" is useful too
     double unknownNumber = TBP_NatTATA_95conf_interval( tmpSequence.data( ) );
-    // TODO: construct report here
-    report = "Some important number: " + QString::number( unknownNumber );
+    // TODO: construct result here
+    // result;
 }
 
-QString AnalyzeTataBoxesTask::getReport( )
+QVariantMap AnalyzeTataBoxesTask::getResult( )
 {
-    return report;
+    return result;
 }
 
 } // namespace U2

@@ -31,7 +31,6 @@
 #include <U2Lang/BasePorts.h>
 #include <U2Lang/WorkflowEnv.h>
 
-#include "RSnpToolsTask.h"
 #include "RSnpToolsWorker.h"
 
 namespace U2 {
@@ -55,11 +54,20 @@ void RSnpToolsWorker::cleanup( )
 
 }
 
-BaseRequestForSnpTask * RSnpToolsWorker::createRequestTask( )
+QVariantMap RSnpToolsWorker::getInputDataForRequest( )
 {
+    QVariantMap inputData;
+    inputData[SnpRequestDefaultItems::R_SNP_RUN_SIGNAL.first]
+        = SnpRequestDefaultItems::R_SNP_RUN_SIGNAL.second;
     // TODO: obtain sequences from DB
-    return new RSnpToolsTask( "cctcagtgctgagggccaagcaaatatttgtggttatggaTtaactcgaactccaggctgtcatggcggcaggacggcgaa",
-                                "cctcagtgctgagggccaagcaaatatttgtggttatggaCtaactcgaactccaggctgtcatggcggcaggacggcgaa" );
+    inputData[SnpRequestKeys::R_SNP_FIRST_SEQUENCE] = "cctcagtgctgagggccaagcaaatatttgtggttatggaTtaactcgaactccaggctgtcatggcggcaggacggcgaa";
+    inputData[SnpRequestKeys::R_SNP_SECOND_SEQUENCE] = "cctcagtgctgagggccaagcaaatatttgtggttatggaCtaactcgaactccaggctgtcatggcggcaggacggcgaa";
+    return inputData;
+}
+
+SnpRequestAddress RSnpToolsWorker::getRequestAddress( )
+{
+    return SnpRequestAddresses::R_SNP_TOOLS_ADDRESS;
 }
 
 /************************************************************************/

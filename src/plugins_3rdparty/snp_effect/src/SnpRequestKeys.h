@@ -19,29 +19,39 @@
  * MA 02110-1301, USA.
  */
 
-#include "RSnpToolsTask.h"
+#ifndef _U2_SNP_REQUEST_KEYS_
+#define _U2_SNP_REQUEST_KEYS_
+
+#include <QtCore/QString>
+#include <QtCore/QPair>
 
 namespace U2 {
 
-RSnpToolsTask::RSnpToolsTask( const QString &_seq1, const QString &_seq2 )
-    : BaseRequestForSnpTask( ), seq1( _seq1 ), seq2( _seq2 )
-{
+typedef QString SnpRequestKey;
 
-}
+namespace SnpRequestKeys {
 
-QString RSnpToolsTask::getReport( )
-{
-    // TODO: parse the `responseString` field
-    return responseString;
-}
+const SnpRequestKey R_SNP_FIRST_SEQUENCE( "snpf1" );
+const SnpRequestKey R_SNP_SECOND_SEQUENCE( "snpf2" );
 
-QUrl RSnpToolsTask::createRequestString( )
-{
-    QUrl result( "http://samurai.bionet.nsc.ru/cgi-bin/03/programs/rsnp_lin/rsnpd.pl" );
-    result.addQueryItem( "b1", "Calculate" );
-    result.addQueryItem( "snpf1", seq1 );
-    result.addQueryItem( "snpf2", seq2 );
-    return result;
-}
+} // namespace SnpRequestKeys
+
+typedef QPair<QString, QString> SnpRequestDefaultItem;
+
+namespace SnpRequestDefaultItems {
+
+const SnpRequestDefaultItem R_SNP_RUN_SIGNAL = SnpRequestDefaultItem( "b1", "Calculate" );
+
+} // namespace SnpRequestDefaultItems
+
+typedef QString SnpRequestAddress;
+
+namespace SnpRequestAddresses {
+
+const SnpRequestAddress R_SNP_TOOLS_ADDRESS( "http://samurai.bionet.nsc.ru/cgi-bin/03/programs/rsnp_lin/rsnpd.pl" );
+
+} // namespace SnpRequestAddresses
 
 } // namespace U2
+
+#endif // _U2_SNP_REQUEST_KEYS_

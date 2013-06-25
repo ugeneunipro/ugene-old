@@ -35,16 +35,17 @@ namespace LocalWorkflow {
 /* Worker */
 /************************************************************************/
 
-class RSnpToolsWorker :         public BaseRequestForSnpWorker
+class RSnpToolsWorker :     public BaseRequestForSnpWorker
 {
     Q_OBJECT
 public:
-                                RSnpToolsWorker( Actor *p );
+                            RSnpToolsWorker( Actor *p );
 
-    void                        cleanup( );
+    void                    cleanup( );
 
 protected:
-    BaseRequestForSnpTask *     createRequestTask( );
+    QVariantMap             getInputDataForRequest( );
+    SnpRequestAddress       getRequestAddress( );
 };
 
 /************************************************************************/

@@ -24,9 +24,11 @@
 
 #include <U2Lang/LocalDomain.h>
 
+#include "SnpRequestKeys.h"
+
 namespace U2 {
 
-class BaseRequestForSnpTask;
+class RequestForSnpTask;
 
 namespace LocalWorkflow {
 
@@ -43,7 +45,8 @@ private slots:
     void                            sl_taskFinished( );
 
 protected:
-    virtual BaseRequestForSnpTask * createRequestTask( ) = 0;
+    virtual QVariantMap             getInputDataForRequest( ) = 0;
+    virtual SnpRequestAddress       getRequestAddress( ) = 0;
 
     IntegralBus *                   inChannel;
     IntegralBus *                   outChannel;

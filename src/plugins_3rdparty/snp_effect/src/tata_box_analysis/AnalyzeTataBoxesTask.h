@@ -19,8 +19,8 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_BASE_REQUEST_FOR_SNP_TASK_
-#define _U2_BASE_REQUEST_FOR_SNP_TASK_
+#ifndef _U2_ANALYZE_TATA_BOXES_TASK_
+#define _U2_ANALYZE_TATA_BOXES_TASK_
 
 #include <QtCore/QUrl>
 
@@ -34,14 +34,14 @@ public:
                                 AnalyzeTataBoxesTask( const QString &seq );
 
     void                        run( );
-    QString                     getReport( );
+    QVariantMap                 getResult( );
 
 private:
     // TODO: revise sequence type
     QString                     seq;
-    QString                     report;
+    QVariantMap                 result;
 };
 
 } // U2
 
-#endif // _U2_BASE_REQUEST_FOR_SNP_TASK_
+#endif // _U2_ANALYZE_TATA_BOXES_TASK_

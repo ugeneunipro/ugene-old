@@ -19,29 +19,44 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_BASE_REQUEST_FOR_SNP_TASK_
-#define _U2_BASE_REQUEST_FOR_SNP_TASK_
+#ifndef _U2_REQUEST_FOR_SNP_TASK_
+#define _U2_REQUEST_FOR_SNP_TASK_
 
 #include <QtCore/QUrl>
 
+#include <U2Core/ExternalToolRunTask.h>
 #include <U2Core/Task.h>
 
 namespace U2 {
 
-class BaseRequestForSnpTask :   public Task
+class SnpResponseLogParser : public ExternalToolLogParser
 {
 public:
-                                BaseRequestForSnpTask( );
+    SnpResponseLogParser( );
 
-    void                        run( );
-    virtual QString             getReport( ) = 0;
+    void                parseOutput( const QString &partOfLog );
+    QVariantMap         getResult( );
 
-protected:
-    virtual QUrl                createRequestString( ) = 0;
+private:
+    QVariantMap         result;
+};
 
-    QString                     responseString;
+class RequestForSnpTask :       public Task
+{
+public:
+                                RequestForSnpTask( const QString &scriptPath,
+                                    const QVariantMap &inputData );
+
+    virtual QVariantMap         getResult( );
+
+private:
+
+    const QVariantMap           inputData;
+    const QString               scriptPath;
+    ExternalToolRunTask *       requestTask;
+    SnpResponseLogParser        responseLogParser;
 };
 
 } // U2
 
-#endif // _U2_BASE_REQUEST_FOR_SNP_TASK_
+#endif // _U2_REQUEST_FOR_SNP_TASK_

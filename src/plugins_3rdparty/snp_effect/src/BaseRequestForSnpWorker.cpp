@@ -27,7 +27,7 @@
 #include <U2Lang/BasePorts.h>
 #include <U2Lang/BaseSlots.h>
 
-#include "BaseRequestForSnpTask.h"
+#include "RequestForSnpTask.h"
 #include "BaseRequestForSnpWorker.h"
 
 namespace U2 {
@@ -50,7 +50,7 @@ Task* BaseRequestForSnpWorker::tick( )
 {
     U2OpStatus2Log os;
     if ( inChannel->hasMessage( ) ) {
-        Task* t = createRequestTask( );
+        Task* t = new RequestForSnpTask( getRequestAddress( ), getInputDataForRequest( ) );
         connect( t, SIGNAL( si_stateChanged( ) ), SLOT( sl_taskFinished( ) ) );
         return t;
     }
@@ -64,11 +64,13 @@ Task* BaseRequestForSnpWorker::tick( )
 
 void BaseRequestForSnpWorker::sl_taskFinished( )
 {
-    BaseRequestForSnpTask *t = dynamic_cast<BaseRequestForSnpTask *>( sender( ) );
+    RequestForSnpTask *t = dynamic_cast<RequestForSnpTask *>( sender( ) );
     SAFE_POINT( NULL != t, "Invalid task is encountered", );
     if ( !t->isFinished( ) || t->hasError( ) ) {
         return;
     }
+    // TODO: get results from task, put them to DB
+    // t->getResult( );
     outChannel->put( Message::getEmptyMapMessage( ) );
     if ( inChannel->isEnded( ) && !inChannel->hasMessage( ) ) {
         setDone( );
