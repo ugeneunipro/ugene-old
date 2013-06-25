@@ -14,6 +14,11 @@
 namespace U2 {
 
 /* Class for S3 variation info storage. Contains variation description for each gene*/
+    
+
+class VariationInfo : public QObject{
+    Q_OBJECT
+public:
     enum ReportColumns {
         Chr = 1,
         Position, 
@@ -28,10 +33,6 @@ namespace U2 {
         SIFTeffect,
         SIFTscore
     };
-
-class VariationInfo : public QObject{
-    Q_OBJECT
-public:
     VariationInfo(const U2Variant& var, const U2DataId& seqId, U2SequenceDbi* _seqDbi, const QString& sequenceName = QString());
     VariationInfo(const U2Variant& var, const U2DataId& seqId, const QList<Gene>& genes, U2SequenceDbi* _seqDbi, const QString& sequenceName = QString());
 
@@ -42,8 +43,8 @@ public:
 
     void initInfo(U2VariantDbi* varDbi, QSharedPointer<DamageEffectEvaluator> evaluator, bool withEffect = false);
     QString getVariationInfoHeader();
-    QString getInGeneEffectInfo(const QString& geneName, QMap<ReportColumns, QString>& rawData = QMap<ReportColumns, QString>());
-    QString getInGeneLocationInfo(const QString& geneName, QMap<ReportColumns, QString>& rawData = QMap<ReportColumns, QString>());
+    QString getInGeneEffectInfo(const QString& geneName, QMap<ReportColumns, QString>& rawData );
+    QString getInGeneLocationInfo(const QString& geneName, QMap<ReportColumns, QString>& rawData);
     QString gentFullGeneReport(const QString& geneName);
     QString getFullVariationReport();
 

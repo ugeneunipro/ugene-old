@@ -482,11 +482,12 @@ QString VariationInfo::gentFullGeneReport( const QString& geneName ){
     res += "\n";
 
     //variation location
-    res += QString("Variation location: %1 ").arg(getInGeneLocationInfo(geneName));
+    QMap<ReportColumns, QString> rcs;
+    res += QString("Variation location: %1 ").arg(getInGeneLocationInfo(geneName, rcs));
     res += "\n";
 
     //variation effect
-    res += QString("Variation effect: %1 ").arg(getInGeneEffectInfo(geneName));
+    res += QString("Variation effect: %1 ").arg(getInGeneEffectInfo(geneName, rcs));
     res += "\n";
 
     return res;
@@ -597,7 +598,41 @@ QString VariationInfo::getVariationInfoHeader(){
 QString VariationInfo::getInGeneTableHeader(){
     QString res;
 
-    res = "#Chr\tPosition\tAllele\tdbSNP\tGene\tClinical_significance\tLocation\tProtein\tCodon\tSubstitution\tSIFTeffect\tSIFTscore";
+    bool first = true;
+    foreach(ReportColumns rc, columnsOrderInGene){
+        if (first){
+            res.append("#");
+            first = false;
+        }else{
+            res.append("\t");
+        }
+        if (rc == VariationInfo::Chr){
+            res.append("Chr");
+        }else if(rc == VariationInfo::Position){
+            res.append("Position");
+        }else if(rc == VariationInfo::Allele){
+            res.append("Allele");
+        }else if(rc == VariationInfo::dbSNPId){
+            res.append("dbSNP");
+        }else if(rc == VariationInfo::GeneId){
+            res.append("Gene");
+        }else if(rc == VariationInfo::Clinical_significance){
+            res.append("Clinical_significance");
+        }else if(rc == VariationInfo::Location){
+            res.append("Location");
+        }else if(rc == VariationInfo::Protein){
+            res.append("Protein");
+        }else if(rc == VariationInfo::Codon){
+            res.append("Codon");
+        }else if(rc == VariationInfo::SubstitutionAA){
+            res.append("Substitution");
+        }else if(rc == VariationInfo::SIFTeffect){
+            res.append("SIFTeffect");
+        }else if(rc == VariationInfo::SIFTscore){
+            res.append("SIFTscore");
+        }
+
+    }
 
     return res;
 
@@ -608,6 +643,7 @@ QStringList VariationInfo::getInGeneTableRaws(){
 
     if(!isIntergenic()){
         foreach(const Gene& gene, genes){
+            QMap<ReportColumns, QString> curRawData;
             QString curRaw = "";
             curRaw += gentFullGeneReport(gene.getName());
             if(sequenceName.isEmpty()){
@@ -617,7 +653,24 @@ QStringList VariationInfo::getInGeneTableRaws(){
                 CHECK_OP(opStatus, res);
                 sequenceName = seq.visualName;
             }
-            curRaw += QString("%1\t%2\t%3/%4\t");
+
+            getInGeneEffectInfo(gene.getName(), curRawData);
+            getInGeneLocationInfo(gene.getName(), curRawData);
+        
+            bool first = true;
+            foreach(ReportColumns rc, columnsOrderInGene){
+                if (first){
+                    first = false;
+                }else{
+                    curRaw.append("\t");
+                }
+                if (curRawData.contains(rc)){
+                    curRaw.append(curRawData.value(rc));
+                }else{
+                    curRaw.append("-");
+                }
+            }
+            res.append(curRaw);
         }
     }
 
@@ -629,17 +682,19 @@ void VariationInfo::initOrderColumns(){
     if (!columnsOrderInGene.isEmpty()){
         columnsOrderInGene.clear();
     }
-    columnsOrderInGene << Chr << Position ; 
-    /*    Allele,
-        dbSNPId,
-        GeneId,
-        Clinical_significance,
-        Location,
-        Protein,
-        Codon,
-        SubstitutionAA,
-        SIFTeffect,
-        SIFTscore*/
+    columnsOrderInGene 
+        << VariationInfo::Chr 
+        << VariationInfo::Position 
+        << VariationInfo::Allele
+        << VariationInfo::dbSNPId
+        << VariationInfo::GeneId
+        << VariationInfo::Clinical_significance
+        << VariationInfo::Location
+        << VariationInfo::Protein
+        << VariationInfo::Codon
+        << VariationInfo::SubstitutionAA
+        << VariationInfo::SIFTeffect
+        << VariationInfo::SIFTscore;
 }
 
 void VariationInfo::addValueToRaw( const QString& val, ReportColumns key, QMap<ReportColumns, QString>& rawData ){
