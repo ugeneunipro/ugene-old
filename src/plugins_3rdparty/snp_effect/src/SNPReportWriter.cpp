@@ -60,6 +60,14 @@ void SNPReportWriter::init() {
 
 Task* SNPReportWriter::tick() {
     U2OpStatus2Log os;
+    QList<U2VariantTrack> tracks;
+    U2DbiRef dbiRef;
+
+    SNPReportWriterSettings settings = createSNPWriterSettings(os);
+    if (os.hasError()) {
+        return new FailTask(os.getError());
+    }
+
     while (inChannel->hasMessage()) {
         Message m = getMessageAndSetupScriptValues(inChannel);
         QVariantMap data = m.getData().toMap();
@@ -79,16 +87,20 @@ Task* SNPReportWriter::tick() {
 
         }
 
-        //SNPToolboxSettings settings = createSNPToolboxSettings(os);
-        //if (os.hasError()) {
-        //    return new FailTask(os.getError());
-        //}
+       
 
         U2VariantTrack track = trackObj->getVariantTrack(os);
         if(os.hasError()){
             return new FailTask(os.getError());
         }
+        tracks.append(track);
 
+        U2DbiRef curDbiRef = trackObj->getEntityRef().dbiRef;
+        if (!dbiRef.isValid()){
+            dbiRef = curDbiRef;
+        }else{
+            SAFE_POINT(dbiRef == curDbiRef, SNPReportWriter::tr("Tracks are stored in different databases"), NULL);
+        }
        
     }
 
@@ -96,9 +108,9 @@ Task* SNPReportWriter::tick() {
         return NULL;
     }
 
-    //Task* t = new SNPToolboxTask(settings, track, dbiRef);
-    //connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
-    //return t;
+    Task* t = new SNPReportWriterTask(settings, tracks, dbiRef);
+    connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
+    return t;
 
 
     if (inChannel->isEnded()) {
@@ -109,10 +121,10 @@ Task* SNPReportWriter::tick() {
 
 
 void SNPReportWriter::sl_taskFinished() {
-    //SNPToolboxTask *t = dynamic_cast<SNPToolboxTask*>(sender());
-    //if (!t->isFinished() || t->hasError()) {
-    //    return;
-    //}
+    SNPReportWriterTask *t = dynamic_cast<SNPReportWriterTask*>(sender());
+    if (!t->isFinished() || t->hasError()) {
+        return;
+    }
     if (inChannel->isEnded() && !inChannel->hasMessage()) {
         setDone();
     }
@@ -120,17 +132,15 @@ void SNPReportWriter::sl_taskFinished() {
 
 void SNPReportWriter::cleanup(){
 }
-/*
-SNPToolboxSettings SNPReportWriter::createSNPToolboxSettings( U2OpStatus &os ){
-    SNPToolboxSettings settings;
 
-    settings.outDir = getValue<QString>(TopHatWorkerFactory::OUT_DIR);
+SNPReportWriterSettings SNPReportWriter::createSNPWriterSettings( U2OpStatus &os ){
+    SNPReportWriterSettings settings;
 
-    //settings.dbPath = actor->getParameter(DB_PATH)->getAttributeValue<QString>(context);
+    settings.reportPath = getValue<QString>(REPORT_PATH);
 
     return settings;
 }
-*/
+
 /************************************************************************/
 /* Factory */
 /************************************************************************/

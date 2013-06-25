@@ -22,6 +22,8 @@
 #ifndef _U2_SNP_REPORT_WRITER_H_
 #define _U2_SNP_REPORT_WRITER_H_
 
+#include "SNPReportWriterTask.h"
+
 #include <U2Core/U2OpStatus.h>
 
 #include <U2Lang/LocalDomain.h>
@@ -43,7 +45,7 @@ private:
     IntegralBus *inChannel;
 
 private:
-//    SNPToolboxSettings createSNPToolboxSettings(U2OpStatus &os);
+    SNPReportWriterSettings createSNPWriterSettings(U2OpStatus &os);
 
 private slots:
     void sl_taskFinished();

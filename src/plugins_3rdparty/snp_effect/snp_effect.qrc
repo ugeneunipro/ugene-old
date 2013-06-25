@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="snp_effect/">
+        #<file>html/generalInfoImage.js</file>
+    </qresource>
+</RCC>
