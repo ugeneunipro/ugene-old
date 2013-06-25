@@ -6,7 +6,7 @@ HEADERS += 	src/rsnp_tools/RSnpToolsTask.h \
 			src/snp_toolbox/DamageEffectEvaluator.h \
 			src/snp_toolbox/SNPToolboxTask.h \
 			src/snp_toolbox/SNPToolboxWorker.h \
-#            src/snp_toolbox/VariationInfo.h \
+            src/snp_toolbox/VariationInfo.h \
 			src/tata_box_analysis/AnalyzeTataBoxesTask.h \
 			src/tata_box_analysis/AnalyzeTataBoxesWorker.h \
 			src/tata_box_analysis/TBP_TATA.h \
@@ -21,7 +21,7 @@ SOURCES += 	src/rsnp_tools/RSnpToolsTask.cpp \
 			src/snp_toolbox/DamageEffectEvaluator.cpp \
 			src/snp_toolbox/SNPToolboxTask.cpp \
 			src/snp_toolbox/SNPToolboxWorker.cpp \
-#            src/snp_toolbox/VariationInfo.cpp \
+            src/snp_toolbox/VariationInfo.cpp \
 			src/tata_box_analysis/AnalyzeTataBoxesTask.cpp \
 			src/tata_box_analysis/AnalyzeTataBoxesWorker.cpp \
 			src/tata_box_analysis/TBP_TATA.cpp \
