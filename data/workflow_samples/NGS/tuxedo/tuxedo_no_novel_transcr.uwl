@@ -135,6 +135,8 @@ workflow "Multiple datasets Tuxedo: single-end reads"{
                         }
                         tophat.bowtie-index-basename {
                         }
+                        tophat.bowtie-version {
+                        }
                     }
                     group {
                         title:Parameters;
@@ -177,8 +179,6 @@ workflow "Multiple datasets Tuxedo: single-end reads"{
                         tophat.segment-mismatches {
                         }
                         tophat.solexa-1-3-quals {
-                        }
-                        tophat.bowtie-version {
                         }
                         tophat.bowtie-n-mode {
                         }
