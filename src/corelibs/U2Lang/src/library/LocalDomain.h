@@ -92,35 +92,6 @@ protected:
 }; // BaseWorker
 
 /**
- * simple realization of scheduler
- * worker tasks run sequentially, not in parallel
- *
- * bind to BaseWorker class as actor's workers
- */
-class U2LANG_EXPORT SimplestSequentialScheduler : public Scheduler {
-public:
-    SimplestSequentialScheduler(Schema* sh);
-    virtual ~SimplestSequentialScheduler();
-    
-    // reimplemented from Worker
-    virtual void init();
-    virtual bool isReady();
-    virtual Task* tick();
-    virtual bool isDone();
-    virtual void cleanup();
-    
-    virtual WorkerState getWorkerState(ActorId);
-    
-private:
-    Schema* schema;
-    BaseWorker* lastWorker;
-    Task* lastTask;
-
-    WorkerState getWorkerState(Actor* a);
-    
-}; // SimplestSequentialScheduler
-
-/**
  * simple realization of Communnication channel
  */
 class U2LANG_EXPORT SimpleQueue : public CommunicationChannel {
