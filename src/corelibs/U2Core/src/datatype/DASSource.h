@@ -55,9 +55,9 @@ private:
     QString id;
     QString name;
     QString url;
-    QString description;
-    QString hint;
     DASReferenceType referenceType;
+    QString hint;
+    QString description;
 };
 
 /**Object type that is need to form a request string*/

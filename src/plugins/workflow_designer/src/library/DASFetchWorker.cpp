@@ -158,7 +158,7 @@ Task* DASFetcherWorker::tick() {
         }
     }
 
-    ret = new LoadDASDocumentTask(seqId, fullPathDir, refSource, featureSources);
+    ret = new ConvertIdAndLoadDASDocumentTask(seqId, fullPathDir, refSource, featureSources);
     connect(ret, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
 
     return ret;
@@ -172,7 +172,7 @@ void DASFetcherWorker::cleanup() {
 }
 
 void DASFetcherWorker::sl_taskFinished() {
-    LoadDASDocumentTask *loadTask = qobject_cast<LoadDASDocumentTask*>(sender());
+    ConvertIdAndLoadDASDocumentTask *loadTask = qobject_cast<ConvertIdAndLoadDASDocumentTask*>(sender());
     if(!loadTask){
         return;
     }

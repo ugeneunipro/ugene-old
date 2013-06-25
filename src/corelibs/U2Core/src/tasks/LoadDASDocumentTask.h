@@ -67,6 +67,49 @@ private:
 
 };
 
+class XMLPICRIdsParser {
+public:
+    XMLPICRIdsParser();
+    void parse(const QByteArray& data);
+
+    QString getError() const { return error; }
+    void setError(const QString& val) { error = val; }
+
+    QString getAccessionData() { return accessionNumber; }
+private:
+    QString error;
+    QString accessionNumber;
+};
+
+class U2CORE_EXPORT ConvertDASIdTask : public Task {
+    Q_OBJECT
+public:
+    ConvertDASIdTask(const QString& resId);
+    virtual ~ConvertDASIdTask();
+
+    virtual void run();
+    QString getAccessionNumber();
+public slots :
+    void sl_replyFinished(QNetworkReply* reply);
+    void sl_onError(QNetworkReply::NetworkError error);
+    void sl_uploadProgress( qint64 bytesSent, qint64 bytesTotal);
+
+private:
+    QString getRequestURLString();
+
+    QString                 resourceId;
+
+    QEventLoop*             loop;
+    QNetworkReply*          downloadReply;
+    QNetworkAccessManager*  networkManager;
+
+    QString                 accNumber;  //result
+
+    const static QString          accessionURL;
+    const static QString          swissprotDb;
+    const static QString          emptyResult;
+};
+
 
 class U2CORE_EXPORT LoadDASObjectTask : public Task{
     Q_OBJECT
@@ -118,8 +161,8 @@ private:
 
 private:
     QString                 accNumber;
-    DASSource               referenceSource;
     QList<DASSource>        featureSources;
+    DASSource               referenceSource;
 
     LoadDASObjectTask*             loadSequenceTask;
     QList<LoadDASObjectTask*>      loadFeaturesTasks;
@@ -130,6 +173,27 @@ private:
     QMap<QString, QList<SharedAnnotationData> > annotationData;
 }; 
 
+class U2CORE_EXPORT ConvertIdAndLoadDASDocumentTask : public Task {
+    Q_OBJECT
+public:
+    ConvertIdAndLoadDASDocumentTask(const QString& accId, const QString& fullPath, const DASSource& referenceSource, const QList<DASSource>& featureSources);
+    Document* getDocument() { return loadDasDocumentTask->getDocument(); }
+    Document* takeDocument() { return loadDasDocumentTask->takeDocument(); }
+    QString getLocalUrl() { return loadDasDocumentTask->getLocalUrl(); }
+
+    virtual void run() {}
+    virtual void prepare();
+    virtual QList<Task*> onSubTaskFinished(Task *subTask);
+
+private:
+    ConvertDASIdTask*       convertDasIdTask;
+    LoadDASDocumentTask*    loadDasDocumentTask;
+
+    QString                 accessionNumber;
+    QString                 fullPath;
+    DASSource               referenceSource;
+    QList<DASSource>        featureSources;
+};
 
 
 } //namespace

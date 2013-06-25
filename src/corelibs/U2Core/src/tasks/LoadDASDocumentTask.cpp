@@ -39,6 +39,8 @@ LoadDASDocumentTask::LoadDASDocumentTask( const QString& accId, const QString& _
 ,accNumber(accId)
 ,featureSources(_featureSources)
 ,referenceSource(_referenceSource)
+,loadSequenceTask(NULL)
+,saveDocumentTask(NULL)
 ,seq(NULL)
 {
 
@@ -61,7 +63,8 @@ void LoadDASDocumentTask::prepare(){
 }
 
 QString LoadDASDocumentTask::getFileFormat( const QString & dbid ){
-     return GENBANK_FORMAT;
+    Q_UNUSED(dbid);
+    return GENBANK_FORMAT;
 }
 
 GUrl LoadDASDocumentTask::getSourceURL(){
@@ -83,6 +86,7 @@ QString LoadDASDocumentTask::getFileName(){
 
 QList<Task*> LoadDASDocumentTask::onSubTaskFinished( Task* subTask ){
     QList<Task*> subTasks;
+
     if(subTask == loadDocumentTask){
         if (subTask->hasError()){
             setError(tr("Cannot load cached document: %1").arg(accNumber));
@@ -212,6 +216,103 @@ void LoadDASDocumentTask::mergeFeatures( const QMap<QString, QList<SharedAnnotat
 }
 
 //////////////////////////////////////////////////////////////////////////
+//ConvertDASIdTask
+const QString ConvertDASIdTask::accessionURL = QString("http://www.ebi.ac.uk/Tools/picr/rest/getUPIForAccession");
+const QString ConvertDASIdTask::swissprotDb = QString("SWISSPROT");
+const QString ConvertDASIdTask::emptyResult = QString("<ns2:getUPIForAccessionResponse xmlns=\"http://model.picr.ebi.ac.uk\" xmlns:ns2=\"http://www.ebi.ac.uk/picr/AccessionMappingService\"/>");
+
+ConvertDASIdTask::ConvertDASIdTask(const QString& resId)
+:Task(tr("Convert resource id: %1").arg(resId), TaskFlags_FOSCOE | TaskFlag_MinimizeSubtaskErrorText)
+,resourceId(resId)
+,loop(NULL)
+,downloadReply(NULL)
+,networkManager(NULL)
+{
+
+}
+
+ConvertDASIdTask::~ConvertDASIdTask() {
+    delete loop;
+    delete networkManager;
+}
+
+void ConvertDASIdTask::run() {
+    if (stateInfo.isCanceled()) {
+        return;
+    }
+    stateInfo.progress = 0;
+    ioLog.trace("Sending request to PICR...");
+
+    loop = new QEventLoop;
+
+    networkManager = new QNetworkAccessManager();
+    connect(networkManager, SIGNAL(finished(QNetworkReply*)), this, SLOT(sl_replyFinished(QNetworkReply*)));
+    NetworkConfiguration* nc = AppContext::getAppSettings()->getNetworkConfiguration();
+
+    ioLog.trace("Downloading xml file...");
+
+    QString fetchUrl = getRequestURLString();
+    QNetworkProxy proxy = nc->getProxyByUrl(fetchUrl);
+    networkManager->setProxy(proxy);
+    ioLog.trace(fetchUrl);
+
+    QUrl requestUrl(fetchUrl);
+    downloadReply = networkManager->get(QNetworkRequest(requestUrl));
+    connect(downloadReply, SIGNAL(error(QNetworkReply::NetworkError)),
+        this, SLOT(sl_onError(QNetworkReply::NetworkError)));
+    connect( downloadReply, SIGNAL(uploadProgress( qint64, qint64 )),
+        this, SLOT(sl_uploadProgress(qint64,qint64)) );
+
+    loop->exec();
+    ioLog.trace("Download finished.");
+
+    QByteArray result = downloadReply->readAll();
+    if (result.size() <= emptyResult.length()) {
+        return;
+    }
+
+    //parse output
+    XMLPICRIdsParser parser;
+    parser.parse(result);
+    if (!parser.getError().isEmpty()) {
+        setError(parser.getError());
+    } else {
+        accNumber = parser.getAccessionData();
+    }
+}
+
+QString ConvertDASIdTask::getAccessionNumber() {
+    return accNumber;
+}
+
+void ConvertDASIdTask::sl_replyFinished( QNetworkReply* reply ) {
+    Q_UNUSED(reply);
+    loop->exit();
+}
+
+void ConvertDASIdTask::sl_onError( QNetworkReply::NetworkError error ) {
+    stateInfo.setError(QString("NetworkReply error %1").arg(error));
+    loop->exit();
+}
+
+void ConvertDASIdTask::sl_uploadProgress( qint64 bytesSent, qint64 bytesTotal ) {
+    stateInfo.progress = bytesSent/ bytesTotal * 100;
+}
+
+QString ConvertDASIdTask::getRequestURLString() {
+    QString res = "";
+    if (resourceId.isEmpty()) {
+        return res;
+    }
+
+    res = accessionURL + "?accession=" + resourceId;
+
+    res += "&database=" + swissprotDb;
+
+    return res;
+}
+
+//////////////////////////////////////////////////////////////////////////
 //LoadDASObjectTask
 LoadDASObjectTask::LoadDASObjectTask( const QString& accId, const DASSource& _source, DASObjectType objType)
 :Task(tr("Load DAS data: %1").arg(accId), TaskFlags_FOSCOE | TaskFlag_MinimizeSubtaskErrorText)
@@ -219,8 +320,8 @@ LoadDASObjectTask::LoadDASObjectTask( const QString& accId, const DASSource& _so
 ,source(_source)
 ,objectType(objType)
 ,loop(NULL)
-,networkManager(NULL)
 ,downloadReply(NULL)
+,networkManager(NULL)
 ,seq(NULL)
 {
     
@@ -289,6 +390,7 @@ void LoadDASObjectTask::run(){
 }
 
 void LoadDASObjectTask::sl_replyFinished( QNetworkReply* reply ) {
+    Q_UNUSED(reply);
     loop->exit();
 }
 
@@ -300,6 +402,51 @@ void LoadDASObjectTask::sl_onError( QNetworkReply::NetworkError error ){
 
 void LoadDASObjectTask::sl_uploadProgress( qint64 bytesSent, qint64 bytesTotal ){
     stateInfo.progress = bytesSent/ bytesTotal * 100;
+}
+
+//////////////////////////////////////////////////////////////////////////
+//ConvertAndLoadDASDocumentTask
+ConvertIdAndLoadDASDocumentTask::ConvertIdAndLoadDASDocumentTask(const QString& accId,
+                                                             const QString& _fullPath,
+                                                             const DASSource& _referenceSource,
+                                                             const QList<DASSource>& _featureSources) :
+    Task(QString("Convert ID and load DAS document: %1").arg(accId), TaskFlags_FOSCOE | TaskFlag_MinimizeSubtaskErrorText),
+    convertDasIdTask(NULL),
+    loadDasDocumentTask(NULL),
+    accessionNumber(accId),
+    fullPath(_fullPath),
+    referenceSource(_referenceSource),
+    featureSources(_featureSources)
+{
+
+}
+
+void ConvertIdAndLoadDASDocumentTask::prepare() {
+    convertDasIdTask = new ConvertDASIdTask(accessionNumber);
+    addSubTask(convertDasIdTask);
+}
+
+QList<Task*> ConvertIdAndLoadDASDocumentTask::onSubTaskFinished(Task *subTask) {
+    QList<Task*> subTasks;
+
+    // Convert task can have an error, than try to load without conversion.
+
+    if (subTask->isCanceled()) {
+        return subTasks;
+    }
+
+    if (subTask == convertDasIdTask) {
+        if (!convertDasIdTask->getAccessionNumber().isEmpty() && !convertDasIdTask->hasError()) {
+            ioLog.details(QString("\"%1\" was converted into \"%2\"").
+                          arg(accessionNumber).
+                          arg(convertDasIdTask->getAccessionNumber()));
+            accessionNumber = convertDasIdTask->getAccessionNumber();
+        }
+        loadDasDocumentTask = new LoadDASDocumentTask(accessionNumber, fullPath, referenceSource, featureSources);
+        subTasks << loadDasDocumentTask;
+    }
+
+    return subTasks;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -574,5 +721,30 @@ void XMLDASFeaturesParser::parse( const QByteArray& data ){
     }
 }
 
+//////////////////////////////////////////////////////////////////////////
+//XMLDASFeaturesParser
+XMLPICRIdsParser::XMLPICRIdsParser(){
+
+}
+
+#define PICR_ACCESSION "accession"
+
+void XMLPICRIdsParser::parse(const QByteArray& data) {
+    QDomDocument pDoc;
+    pDoc.setContent(data);
+
+    QDomElement docElement = pDoc.documentElement();
+    QDomNodeList list = docElement.elementsByTagName(PICR_ACCESSION);
+    if (list.isEmpty()) {
+        setError(QString("No %1 tag").arg(PICR_ACCESSION));
+        return;
+    }
+
+    // The first accession number is taken
+    QDomNode accessionNode = list.at(0);
+
+    accessionNumber = accessionNode.toElement().text();
+    return;
+}
 
 } //namespace
