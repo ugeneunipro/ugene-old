@@ -19,17 +19,14 @@
  * MA 02110-1301, USA.
  */
 
-#include "SamToolsExtToolSupport.h"
-
 #include <U2Core/AppContext.h>
 
-#include <U2Gui/MainWindow.h>
-
+#include "BcfToolsSupport.h"
 
 namespace U2 {
 
-SamToolsExtToolSupport::SamToolsExtToolSupport(const QString& name, const QString& path)
-    : ExternalTool(name, path)
+BcfToolsSupport::BcfToolsSupport(const QString &name)
+: ExternalTool(name)
 {
     if (AppContext::getMainWindow()) {
         icon = QIcon(":external_tool_support/images/cmdline.png");
@@ -38,20 +35,16 @@ SamToolsExtToolSupport::SamToolsExtToolSupport(const QString& name, const QStrin
     }
 
 #ifdef Q_OS_WIN
-    executableFileName = "samtools.exe";
-#else
-#if defined(Q_OS_LINUX) || defined(Q_OS_MAC)
+    executableFileName = "bcftools.exe";
+#elif defined(Q_OS_LINUX) || defined(Q_OS_MAC)
     executableFileName = "samtools";
 #endif
-#endif
 
-    validMessage = "samtools (Tools for alignments in the SAM format)";
-    description = "<i>SAMtools</i> is a set of utilities for interacting"
-        " with and post-processing short DNA sequence read alignments."
-        " This external tool is required to run <i>TopHat</i> external tool.";
+    validMessage = "bcftools (Tools for data in the VCF/BCF formats)";
+    description = "<i>BCFtools</i> is a set of utilities for data in the VCF/BCF formats";
     versionRegExp = QRegExp("Version: (\\d+.\\d+.\\d+)");
 
     toolKitName = "SAMtools";
 }
 
-} // namespace
+} // U2

@@ -110,6 +110,7 @@
 #include "python/PythonSupport.h"
 #include "perl/PerlSupport.h"
 #include "vcfutils/VcfutilsSupport.h"
+#include "samtools/BcfToolsSupport.h"
 
 #include <U2Algorithm/CDSearchTaskFactoryRegistry.h>
 #include <U2Algorithm/DnaAssemblyAlgRegistry.h>
@@ -317,6 +318,10 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin():Plugin(tr("External tool 
     // SAMtools (external tool)
     SamToolsExtToolSupport* samToolsExtToolSupport = new SamToolsExtToolSupport(SAMTOOLS_EXT_TOOL_NAME);
     AppContext::getExternalToolRegistry()->registerEntry(samToolsExtToolSupport);
+
+    // BCFtools (external tool)
+    BcfToolsSupport* bcfToolsSupport = new BcfToolsSupport(BCFTOOLS_TOOL_NAME);
+    AppContext::getExternalToolRegistry()->registerEntry(bcfToolsSupport);
 
     // Spidey
     SpideySupport* spideySupport = new SpideySupport(SPIDEY_TOOL_NAME);

@@ -89,6 +89,8 @@ class CallVariantsTaskSettings{
     float pvalueHwe;
     bool printFiltered;
 
+    QStringList getMpiliupArgs() const;
+    QStringList getBcfViewArgs() const;
     QStringList getVarFilterArgs() const;
 };
 
@@ -98,16 +100,19 @@ public:
     SamtoolsMpileupTask ( const CallVariantsTaskSettings& _settings);
 
     void prepare();
-    void run();
+    QList<Task*> onSubTaskFinished(Task* subTask);
     ReportResult report();
 
-    const QString& getBcfOutputFilePath(){return tmpBcfViewOutputFile;}
+    const QString& getBcfOutputFilePath(){return filteredFile;}
 
 private:
     CallVariantsTaskSettings    settings;
-    QString             tmpMpileupOutputFile;
     QString             tmpBcfViewOutputFile;
-
+    QString             filteredFile;
+    ExternalToolRunTask *mpileupTask;
+    ExternalToolRunTask *bcfviewTask;
+    ExternalToolRunTask *varFilterTask;
+    int subtaskCount;
 };
 
 class CallVariantsTask : public Task {
@@ -129,13 +134,8 @@ private:
     CallVariantsTaskSettings    settings;
     LoadDocumentTask*       loadTask;
     SamtoolsMpileupTask*    mpileupTask;
-    ExternalToolRunTask*    varFilterTask;
     DbiDataStorage*         storage;
     QList<QVariantMap>      results;
-    QString                 filteredVcfUrl;
-
-private:
-    ExternalToolRunTask * runVarFilter(const QString &inVcf);
 };
 
 }

@@ -628,6 +628,9 @@ void CallVariantsWorkerFactory::init() {
 
     proto->setPortValidator(BasePorts::IN_ASSEMBLY_PORT_ID(), new EmptySlotValidator(BaseSlots::URL_SLOT().getId()));
     proto->setPortValidator(BasePorts::IN_SEQ_PORT_ID(), new EmptySlotValidator(BaseSlots::URL_SLOT().getId()));
+    proto->addExternalTool("SAMtools");
+    proto->addExternalTool("BCFtools");
+    proto->addExternalTool("perl");
     proto->addExternalTool("vcfutils");
 
     WorkflowEnv::getProtoRegistry()->registerProto(BaseActorCategories::CATEGORY_CALL_VARIATIONS(), proto);

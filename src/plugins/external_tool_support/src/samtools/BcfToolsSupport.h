@@ -19,24 +19,21 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_SAMTOOLS_EXT_TOOL_SUPPORT_H_
-#define _U2_SAMTOOLS_EXT_TOOL_SUPPORT_H_
+#ifndef _U2_BCFTOOLSSUPPORT_H_
+#define _U2_BCFTOOLSSUPPORT_H_
 
 #include <U2Core/ExternalToolRegistry.h>
 
-#define SAMTOOLS_EXT_TOOL_NAME "SAMtools"
-
+#define BCFTOOLS_TOOL_NAME "BCFtools"
 
 namespace U2 {
 
-class SamToolsExtToolSupport : public ExternalTool
-{
+class BcfToolsSupport : public ExternalTool {
     Q_OBJECT
-
 public:
-    SamToolsExtToolSupport(const QString& name, const QString& path = "");
+    BcfToolsSupport(const QString &name);
 };
 
-} // namespace
+} // U2
 
-#endif
+#endif // _U2_BCFTOOLSSUPPORT_H_

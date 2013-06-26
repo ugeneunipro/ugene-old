@@ -47,6 +47,9 @@ public:
     Task::ReportResult report();
     void cancelProcess();
     void setOutputFile(const QString &url);
+    void setOutputProcess(QProcess *proc);
+
+    QProcess * process();
 
 private:
     QStringList             arguments;

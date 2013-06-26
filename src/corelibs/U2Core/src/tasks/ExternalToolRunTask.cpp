@@ -46,10 +46,10 @@ ExternalToolRunTask::ExternalToolRunTask(const QString& _toolName, const QString
   arguments(_arguments),
   logParser(_logParser),
   toolName(_toolName),
-  externalToolProcess(NULL),
   workingDirectory(_workingDirectory),
   writeOutputToFile(false)
 {
+    externalToolProcess = new QProcess();
     ExternalTool * tool = AppContext::getExternalToolRegistry()->getByName(toolName);
     if (tool == NULL) {
         setError(tr("Undefined tool: '%1'").arg(toolName));
@@ -87,6 +87,10 @@ ExternalToolRunTask::ExternalToolRunTask(const QString& _toolName, const QString
     coreLog.trace("Creating run task for: " + toolName);
 }
 
+QProcess * ExternalToolRunTask::process() {
+    return externalToolProcess;
+}
+
 ExternalToolRunTask::~ExternalToolRunTask(){
     delete externalToolProcess;
 }
@@ -96,16 +100,38 @@ void ExternalToolRunTask::setOutputFile(const QString &url) {
     outputUrl = url;
 }
 
+void ExternalToolRunTask::setOutputProcess(QProcess *proc) {
+    CHECK(NULL != externalToolProcess, );
+    externalToolProcess->setStandardOutputProcess(proc);
+}
+
+class Helper {
+public:
+    Helper(QProcess **proc) : proc(proc){}
+    ~Helper() {
+        (*proc)->closeReadChannel(QProcess::StandardError);
+        (*proc)->closeReadChannel(QProcess::StandardOutput);
+        (*proc)->closeWriteChannel();
+        (*proc)->close();
+        delete (*proc);
+        (*proc) = NULL;
+    }
+private:
+    QProcess **proc;
+};
+
 void ExternalToolRunTask::prepare(){
     if (hasError() || isCanceled()) {
+        Helper helper(&externalToolProcess);
         return;
     }
 }
+
 void ExternalToolRunTask::run(){
     if (hasError() || isCanceled()) {
         return;
     }
-    externalToolProcess = new QProcess();//???
+    Helper helper(&externalToolProcess);
     externalToolProcess->setProcessEnvironment(processEnvironment);
     if (writeOutputToFile) {
         externalToolProcess->setStandardOutputFile(outputUrl);
@@ -152,6 +178,7 @@ Task::ReportResult ExternalToolRunTask::report(){
     return ReportResult_Finished;
 }
 void ExternalToolRunTask::cancelProcess(){
+    CHECK(NULL != externalToolProcess, );
     externalToolProcess->kill();
 }
 
@@ -164,6 +191,7 @@ ExternalToolRunTaskHelper::ExternalToolRunTaskHelper(ExternalToolRunTask* t)
 void ExternalToolRunTaskHelper::sl_onReadyToReadLog(){
     QMutexLocker locker(&logMutex);
     assert(p->isRunning());
+    CHECK(NULL != p->externalToolProcess, );
     if (p->externalToolProcess->readChannel() == QProcess::StandardError) {
         p->externalToolProcess->setReadChannel(QProcess::StandardOutput);
     }
@@ -180,6 +208,7 @@ void ExternalToolRunTaskHelper::sl_onReadyToReadLog(){
 void ExternalToolRunTaskHelper::sl_onReadyToReadErrLog(){
     QMutexLocker locker(&logMutex);
     assert(p->isRunning());
+    CHECK(NULL != p->externalToolProcess, );
     if (p->externalToolProcess->readChannel() == QProcess::StandardOutput) {
         p->externalToolProcess->setReadChannel(QProcess::StandardError);
     }
