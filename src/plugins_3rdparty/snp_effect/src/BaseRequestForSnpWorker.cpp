@@ -50,7 +50,7 @@ Task* BaseRequestForSnpWorker::tick( )
 {
     U2OpStatus2Log os;
     if ( inChannel->hasMessage( ) ) {
-        Task* t = new RequestForSnpTask( getRequestAddress( ), getInputDataForRequest( ) );
+        Task* t = new RequestForSnpTask( getRequestingScriptPath( ), getInputDataForRequest( ) );
         connect( t, SIGNAL( si_stateChanged( ) ), SLOT( sl_taskFinished( ) ) );
         return t;
     }

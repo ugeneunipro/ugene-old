@@ -46,7 +46,7 @@ private slots:
 
 protected:
     virtual QVariantMap             getInputDataForRequest( ) = 0;
-    virtual SnpRequestingScript     getRequestAddress( ) = 0;
+    virtual SnpRequestingScript     getRequestingScriptPath( ) = 0;
 
     IntegralBus *                   inChannel;
     IntegralBus *                   outChannel;

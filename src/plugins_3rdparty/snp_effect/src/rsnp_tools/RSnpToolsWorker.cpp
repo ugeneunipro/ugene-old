@@ -63,7 +63,7 @@ QVariantMap RSnpToolsWorker::getInputDataForRequest( )
     return inputData;
 }
 
-SnpRequestingScript RSnpToolsWorker::getRequestAddress( )
+SnpRequestingScript RSnpToolsWorker::getRequestingScriptPath( )
 {
     return SnpRequestingScripts::R_SNP_TOOLS_SCRIPT_PATH;
 }
