@@ -156,7 +156,7 @@ Qt::ItemFlags InvestigationDataModel::flags(const QModelIndex &index) const {
     if (!index.isValid()) {
         return Qt::ItemIsEnabled;
     }
-    return QAbstractTableModel::flags(index) | ~Qt::ItemIsEditable;
+    return QAbstractTableModel::flags(index) | Qt::ItemFlags(~Qt::ItemIsEditable);
 }
 
 bool InvestigationDataModel::insertRows(int position, int rows, const QModelIndex &index) {

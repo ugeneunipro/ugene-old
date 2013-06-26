@@ -31,8 +31,6 @@ namespace U2 {
 
 using namespace Workflow;
 
-class Workflow::Link;
-
 // the class is intended to enhance the performance
 // of the workflow debugging investigations tools, i.e.
 // the table containing the content of workflow workers' messages

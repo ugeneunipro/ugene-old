@@ -137,8 +137,7 @@ void WorkflowDebugMessageParser::convertMessagesToDocuments(const QString &conve
     QString tmpFolderUrl
         = (AppContext::getAppSettings()->getUserAppsSettings()->getCurrentProcessTemporaryDirPath());
     tmpFolderUrl.replace("//", "/");
-    
-    quint32 countOfLoadedDocs = 0;
+
     quint32 messageCounter = ++messageNumber;
     ProjectView *projectView = AppContext::getProjectView();
     foreach(QVariantMap mapData, sourceMessages) {
