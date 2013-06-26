@@ -141,25 +141,24 @@ public:
         QStringList envList = QProcess::systemEnvironment();
         if(envList.indexOf(QRegExp("PATH=.*",Qt::CaseInsensitive))>=0){
             QString pathEnv = envList.at(envList.indexOf(QRegExp("PATH=.*",Qt::CaseInsensitive)));
-#if defined(Q_OS_LINUX) || defined(Q_OS_MAC)
-            QStringList paths = pathEnv.split("=").at(1).split(":");
-#elif defined(Q_OS_WIN)
-            QStringList paths = pathEnv.split("=").at(1).split(";");
-#else
             QStringList paths;
+#if defined(Q_OS_LINUX) || defined(Q_OS_MAC)
+            paths = pathEnv.split("=").at(1).split(":");
+#elif defined(Q_OS_WIN)
+            paths = pathEnv.split("=").at(1).split(";");
 #endif
 
             foreach(ExternalTool* curTool, AppContext::getExternalToolRegistry()->getAllEntries()){
+                if(!curTool->getPath().isEmpty()) {
+                    continue;
+                }
                 foreach(const QString& curPath, paths){
-                    if(curTool->getPath().isEmpty()){
-                        QString exePath = curPath+"/"+curTool->getExecutableFileName();
-                        QFileInfo fileExe(exePath);
-                        if(fileExe.exists() && (curTool->getPath()=="")){
-                            //curTool->setPath(exePath);
-                            ExternalToolValidateTask* validateTask=new ExternalToolValidateTask(curTool->getName(), exePath);
-                            connect(validateTask, SIGNAL(si_stateChanged()), plugin, SLOT(sl_validateTaskStateChanged()));
-                            addSubTask(validateTask);
-                        }
+                    QString exePath = curPath+"/"+curTool->getExecutableFileName();
+                    QFileInfo fileExe(exePath);
+                    if(fileExe.exists() && (curTool->getPath()=="")){
+                        ExternalToolValidateTask* validateTask=new ExternalToolValidateTask(curTool->getName(), exePath);
+                        connect(validateTask, SIGNAL(si_stateChanged()), plugin, SLOT(sl_validateTaskStateChanged()));
+                        addSubTask(validateTask);
                     }
                 }
             }

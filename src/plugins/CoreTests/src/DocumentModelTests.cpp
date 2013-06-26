@@ -593,9 +593,10 @@ Task::ReportResult GTest_Compare_VCF_Files::report() {
             }
             break;
         }
+        int size = qMin<int>(bytes1.size(), bytes2.size());
 
         int tabCounter=0;
-        for(int i=0;;i++){
+        for(int i=0; i<size; i++){
             if (bytes1[i]=='\t'){
                 tabCounter++;
                 if(tabCounter==NUMDER_OF_COLUMNS){

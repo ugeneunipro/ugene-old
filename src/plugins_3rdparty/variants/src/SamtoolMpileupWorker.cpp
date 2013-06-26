@@ -472,7 +472,7 @@ void CallVariantsWorkerFactory::init() {
         delegates[OPENQ] = new SpinBoxDelegate(vm);
     }
 
-    delegates[BED] = new URLDelegate("", "", false, true);
+    delegates[BED] = new URLDelegate("", "", false, false, false);
 
     //bcf view
     {
@@ -617,8 +617,8 @@ void CallVariantsWorkerFactory::init() {
         delegates[PVALUE_HWE] = new DoubleSpinBoxDelegate(vm);
     }
 
-    delegates[BCF_BED] = new URLDelegate("", "", false, true);
-    delegates[SAMPLES] = new URLDelegate("", "", false, true);
+    delegates[BCF_BED] = new URLDelegate("", "", false, false, false);
+    delegates[SAMPLES] = new URLDelegate("", "", false, false, false);
 
 
     // Init and register the actor prototype
