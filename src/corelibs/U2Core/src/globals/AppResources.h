@@ -26,6 +26,7 @@
 #include <U2Core/U2SafePoints.h>
 #include <QtCore/QHash>
 #include <QtCore/QSemaphore>
+#include <QtCore/QReadWriteLock>
 #include <U2Core/U2OpStatus.h>
 
 namespace U2 {
@@ -54,63 +55,20 @@ namespace U2 {
 class U2CORE_EXPORT AppResource {
 public:
     AppResource(int id, int _maxUse, const QString& _name, const QString& _suffix = QString()) 
-        : resourceId(id), _maxUse(_maxUse), name(_name), suffix(_suffix), resource(NULL) {
-        resource = new QSemaphore(_maxUse);
-    }
-    virtual ~AppResource(){
-        delete resource; resource = NULL;
-    }
+		: resourceId(id), _maxUse(_maxUse), name(_name), suffix(_suffix) {}
 
-    void acquire(int n = 1) {
-        LOG_TRACE(acquire);
-        resource->acquire(n);
-    }
+	virtual ~AppResource(){}
 
-    bool tryAcquire(int n = 1) {
-        LOG_TRACE(tryAcquire);
-        return resource->tryAcquire(n);
-    }
+    virtual void acquire(int n = 1) = 0;
+    virtual bool tryAcquire(int n = 1) = 0;
 
-    bool tryAcquire(int n, int timeout) {
-        LOG_TRACE(tryAcquire_timeout);
-        return resource->tryAcquire(n, timeout);
-    }
+    virtual bool tryAcquire(int n, int timeout) = 0;
 
-    void release(int n = 1) {
-        LOG_TRACE(release);
-        SAFE_POINT(n>=0, QString("AppResource %1 release %2 < 0 called").arg(name).arg(n), );
-        resource->release(n);
+    virtual void release(int n = 1) = 0;
 
-        // QSemaphore allow to create resources by releasing, we do not want to get such behavior
-        SAFE_POINT_EXT(resource->available() <= _maxUse,,);
-    }
-
-    int available() const {
-        return resource->available();
-    }
+    virtual int available() const = 0;
 
     int maxUse() const { return _maxUse; }
-
-    void setMaxUse (int n) {
-        LOG_TRACE(setMaxUse);
-        int diff = n - _maxUse;
-        if (diff > 0) {
-            // adding resources
-            resource->release(diff);
-            _maxUse += diff;
-        } else {
-            diff = -diff;
-            // safely remove resources
-            for (int i=diff; i>0; i--) {
-                bool ok = resource->tryAcquire(i, 0);
-                if (ok) {
-                    // successfully acquired i resources
-                    _maxUse -= i;
-                    break;
-                }
-            }
-        }
-    }
 
     int resourceId;
     int _maxUse;
@@ -119,8 +77,139 @@ public:
 private:
     AppResource( const AppResource& other );
     AppResource& operator= (const AppResource& other);
+};
 
-    QSemaphore *resource;
+class U2CORE_EXPORT AppResourceReadWriteLock : public AppResource {
+public:
+	AppResourceReadWriteLock(int id, const QString& _name, const QString& _suffix = QString()) 
+		: AppResource(id, Write, _name, _suffix), resource(NULL) {
+		resource = new QReadWriteLock;
+	}
+
+	virtual ~AppResourceReadWriteLock() {
+		delete resource; resource = NULL;
+	}
+
+	enum UseType {
+		Read,
+		Write
+	};
+
+	// for TaskScheduler
+	virtual void acquire(int n) {
+		switch (n) {
+			case Read:
+				resource->lockForRead();
+				break;
+			case Write:
+				resource->lockForWrite();
+				break;
+			default:
+				break;
+		}
+	}
+
+	virtual bool tryAcquire(int n) {
+		switch (n) {
+			case Read:
+				return resource->tryLockForRead();
+			case Write:
+				return resource->tryLockForWrite();
+			default:
+				return false;
+		}
+	}
+	virtual bool tryAcquire(int n, int timeout) {
+		switch (n) {
+			case Read:
+				return resource->tryLockForRead(timeout);
+			case Write:
+				return resource->tryLockForWrite(timeout);
+			default:
+				return false;
+		}
+	}
+
+	virtual void release(int n) {
+		resource->unlock();
+	}
+
+	virtual int available() const {
+		return -1;
+	}
+
+	int maxUse() const { return _maxUse; }
+
+	int resourceId;
+	int _maxUse;
+	QString name;
+	QString suffix;
+private:
+	QReadWriteLock* resource;
+};
+
+class U2CORE_EXPORT AppResourceSemaphore : public AppResource {
+public:
+	AppResourceSemaphore(int id, int _maxUse, const QString& _name, const QString& _suffix = QString()) 
+		: AppResource(id, _maxUse, _name, _suffix), resource(NULL) {
+			resource = new QSemaphore(_maxUse);
+	}
+	virtual ~AppResourceSemaphore(){
+		delete resource; resource = NULL;
+	}
+
+	void acquire(int n = 1) {
+		LOG_TRACE(acquire);
+		resource->acquire(n);
+	}
+
+	bool tryAcquire(int n = 1) {
+		LOG_TRACE(tryAcquire);
+		return resource->tryAcquire(n);
+	}
+
+	bool tryAcquire(int n, int timeout) {
+		LOG_TRACE(tryAcquire_timeout);
+		return resource->tryAcquire(n, timeout);
+	}
+
+	void release(int n = 1) {
+		LOG_TRACE(release);
+		SAFE_POINT(n>=0, QString("AppResource %1 release %2 < 0 called").arg(name).arg(n), );
+		resource->release(n);
+
+		// QSemaphore allow to create resources by releasing, we do not want to get such behavior
+		int avail = resource->available();
+		SAFE_POINT_EXT(avail <= _maxUse,,);
+	}
+
+	int available() const {
+		return resource->available();
+	}
+
+	void setMaxUse (int n) {
+		LOG_TRACE(setMaxUse);
+		int diff = n - _maxUse;
+		if (diff > 0) {
+			// adding resources
+			resource->release(diff);
+			_maxUse += diff;
+		} else {
+			diff = -diff;
+			// safely remove resources
+			for (int i=diff; i>0; i--) {
+				bool ok = resource->tryAcquire(i, 0);
+				if (ok) {
+					// successfully acquired i resources
+					_maxUse -= i;
+					break;
+				}
+			}
+		}
+	}
+
+private:
+	QSemaphore *resource;
 };
 
 #define MIN_MEMORY_SIZE 200
@@ -160,11 +249,10 @@ private:
 
     int idealThreadCount;
 
-    AppResource* threadResource;
-    AppResource* memResource;
-    AppResource* projectResouce;
-    AppResource* phyTreeResource;
-    AppResource* listenLogInGTest;
+    AppResourceSemaphore* threadResource;
+    AppResourceSemaphore* memResource;
+    AppResourceSemaphore* projectResouce;
+    AppResourceReadWriteLock* listenLogInGTest;
 };
 
 

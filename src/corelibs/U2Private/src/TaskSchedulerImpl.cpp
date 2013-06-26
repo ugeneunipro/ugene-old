@@ -386,12 +386,12 @@ QString TaskSchedulerImpl::tryLockResources(Task* task, bool prepareStage, bool&
     // releasing all locked resources
     for (int i=0; i<tres.size(); i++) {
         TaskResourceUsage& taskRes = tres[i];
-        taskRes.locked = false;
 
         AppResource* appRes = resourcePool->getResource(taskRes.resourceId);
-        if (appRes) {
+        if (appRes && taskRes.locked) {
             appRes->release(lockedResourceCount[i]);
         }
+		taskRes.locked = false;
     }
     if (!prepareStage) {
         threadsResource->release();

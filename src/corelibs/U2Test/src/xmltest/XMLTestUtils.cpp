@@ -64,8 +64,11 @@ void XMLMultiTest::init(XMLTestFormat *tf, const QDomElement& el) {
     }
     if (!hasError()) {
         if (lockForLogListening) {
-            addTaskResource(TaskResourceUsage(RESOURCE_LISTEN_LOG_IN_TESTS, 1, true));
+			addTaskResource(TaskResourceUsage(RESOURCE_LISTEN_LOG_IN_TESTS, TaskResourceUsage::Write, true));
         }
+		else {
+			addTaskResource(TaskResourceUsage(RESOURCE_LISTEN_LOG_IN_TESTS, TaskResourceUsage::Read, true));
+		}
 
         foreach(Task* t, subs) {
             addSubTask(t);

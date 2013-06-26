@@ -50,7 +50,7 @@ AppResourcePool::AppResourcePool() {
     idealThreadCount = s->getValue(SETTINGS_ROOT + "idealThreadCount", QThread::idealThreadCount()).toInt();
 
     int maxThreadCount = s->getValue(SETTINGS_ROOT + "maxThreadCount", 1000).toInt();
-    threadResource = new AppResource(RESOURCE_THREAD, maxThreadCount, tr("Threads"));
+    threadResource = new AppResourceSemaphore(RESOURCE_THREAD, maxThreadCount, tr("Threads"));
     registerResource(threadResource);
 
     int totalPhysicalMemory = getTotalPhysicalMemory();
@@ -61,13 +61,13 @@ AppResourcePool::AppResourcePool() {
     maxMem = maxMem > x32MaxMemoryLimitMb ? x32MaxMemoryLimitMb : maxMem;
 #endif
 
-    memResource = new AppResource(RESOURCE_MEMORY, maxMem, tr("Memory"), tr("Mb"));
+    memResource = new AppResourceSemaphore(RESOURCE_MEMORY, maxMem, tr("Memory"), tr("Mb"));
     registerResource(memResource);
 
-    projectResouce = new AppResource(RESOURCE_PROJECT, 1, tr("Project"));
+    projectResouce = new AppResourceSemaphore(RESOURCE_PROJECT, 1, tr("Project"));
     registerResource(projectResouce);
 
-    listenLogInGTest = new AppResource(RESOURCE_LISTEN_LOG_IN_TESTS, 1, "LogInTests");
+    listenLogInGTest = new AppResourceReadWriteLock(RESOURCE_LISTEN_LOG_IN_TESTS, "LogInTests");
     registerResource(listenLogInGTest);
 }
 

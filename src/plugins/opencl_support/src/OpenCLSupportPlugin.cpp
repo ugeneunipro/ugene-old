@@ -64,7 +64,7 @@ OpenCLSupportPlugin::OpenCLSupportPlugin() : Plugin(tr("OpenCL Support"),
 
     //registering gpu resource
     if( !gpus.empty() ) {
-        AppResource * gpuResource = new AppResource( RESOURCE_OPENCL_GPU, gpus.size(), RESOURCE_OPENCL_GPU_NAME);
+        AppResource * gpuResource = new AppResourceSemaphore( RESOURCE_OPENCL_GPU, gpus.size(), RESOURCE_OPENCL_GPU_NAME);
         AppResourcePool::instance()->registerResource( gpuResource );
     }
 }

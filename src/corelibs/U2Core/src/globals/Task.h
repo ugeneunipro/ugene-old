@@ -33,16 +33,25 @@
 
 namespace U2 {
 
-struct  U2CORE_EXPORT TaskResourceUsage {
+struct U2CORE_EXPORT TaskResourceUsage {
     
     TaskResourceUsage(int id = 0, int use = 0, bool prepareStage = false) 
-        : resourceId(id), resourceUse(use), prepareStageLock(prepareStage), locked(false) 
+        : resourceId(id), resourceUse(use), prepareStageLock(prepareStage), locked(false)
     {}
+
+	enum UseType {
+		Read,
+		Write
+	};
+
+	TaskResourceUsage(int id, UseType use, bool prepareStage = false) 
+		: resourceId(id), resourceUse(use), prepareStageLock(prepareStage), locked(false)
+	{}
 
     int resourceId;
     int resourceUse;
     bool prepareStageLock;
-    bool locked; 
+    bool locked;
 };
 
 class TaskScheduler;

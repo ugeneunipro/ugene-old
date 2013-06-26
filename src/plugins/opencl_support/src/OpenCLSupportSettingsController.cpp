@@ -55,7 +55,7 @@ void OpenCLSupportSettingsPageController::saveState( AppSettingsGUIPageState * _
 
     //increasing/decreasing maxuse of according resource
     int totalEnabled = s->enabledGpus.count(true);
-    AppResource * gpuResource = AppResourcePool::instance()->getResource( RESOURCE_OPENCL_GPU );
+    AppResourceSemaphore* gpuResource = dynamic_cast<AppResourceSemaphore*>(AppResourcePool::instance()->getResource( RESOURCE_OPENCL_GPU ));
     if( gpuResource ) {
         gpuResource->setMaxUse(totalEnabled);
     } //else - resource was not registered, nothing to do.
