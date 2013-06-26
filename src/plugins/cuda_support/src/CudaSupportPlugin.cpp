@@ -60,7 +60,7 @@ CudaSupportPlugin::CudaSupportPlugin() : Plugin( tr("CUDA Support"), tr("Utility
 
     //registering gpu resource
     if( !gpus.empty() ) {
-        AppResource * gpuResource = new AppResource( RESOURCE_CUDA_GPU, gpus.size(), RESOURCE_CUDA_GPU_NAME );
+        AppResource * gpuResource = new AppResourceSemaphore( RESOURCE_CUDA_GPU, gpus.size(), RESOURCE_CUDA_GPU_NAME );
         AppResourcePool::instance()->registerResource( gpuResource );
     }
 }
