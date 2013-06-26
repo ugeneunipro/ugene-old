@@ -735,5 +735,11 @@ void Document::propagateModLocks(Document* doc)  const {
 }
 
 
+
+DocumentMimeData::DocumentMimeData( Document* obj ) 
+    : objPtr(obj){
+    setUrls(QList<QUrl>() << QUrl(GUrlUtils::gUrl2qUrl(obj->getURL())));
+};
+
 }//namespace
 

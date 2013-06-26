@@ -445,7 +445,7 @@ class U2CORE_EXPORT DocumentMimeData : public QMimeData {
     Q_OBJECT
 public:
     static const QString MIME_TYPE;
-    DocumentMimeData(Document* obj) : objPtr(obj){};
+    DocumentMimeData(Document* obj);
     QPointer<Document> objPtr;
     bool hasFormat ( const QString & mimeType ) const { return (mimeType == MIME_TYPE);}
     QStringList formats () const {return (QStringList() << MIME_TYPE);}

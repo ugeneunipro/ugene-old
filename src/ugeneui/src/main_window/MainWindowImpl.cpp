@@ -109,19 +109,24 @@ void MWStub::dragEnterEvent(QDragEnterEvent *event)
 
 void MWStub::dropEvent(QDropEvent *event)
 {
-    if (event->mimeData()->hasUrls()) {
-        QList<GUrl> urls = GUrlUtils::qUrls2gUrls(event->mimeData()->urls());
-        QVariantMap hints;
-        hints[ProjectLoaderHint_CloseActiveProject] = true;
-        Task* t = AppContext::getProjectLoader()->openWithProjectTask(urls, hints);
-        if (t) {
-            AppContext::getTaskScheduler()->registerTopLevelTask(t);
-            event->acceptProposedAction();
+    if (event->source() == NULL) {
+        QList<GUrl> urls;
+        if (event->mimeData()->hasUrls()) {
+            urls = GUrlUtils::qUrls2gUrls(event->mimeData()->urls());
+        }else if(event->mimeData()->hasFormat(DocumentMimeData::MIME_TYPE)){
+            const DocumentMimeData *docData = static_cast<const DocumentMimeData *>(event->mimeData());
+            urls = GUrlUtils::qUrls2gUrls(event->mimeData()->urls());
+        }
+        if(!urls.isEmpty()){
+            QVariantMap hints;
+            hints[ProjectLoaderHint_CloseActiveProject] = true;
+            Task* t = AppContext::getProjectLoader()->openWithProjectTask(urls, hints);
+            if (t) {
+                AppContext::getTaskScheduler()->registerTopLevelTask(t);
+                event->acceptProposedAction();
+            }
         }
     } else {
-        if (event->source() == NULL) {
-            return;
-        }
         if(event->mimeData()->hasFormat(DocumentMimeData::MIME_TYPE)) {
             const DocumentMimeData *docData = static_cast<const DocumentMimeData *>(event->mimeData());
             
@@ -144,6 +149,7 @@ bool MWStub::focusNextPrevChild(bool next) {
 }
 
 void MWStub::dragMoveEvent( QDragMoveEvent * event ){
+    if(event->mimeData()->hasUrls()) return;
     if(event->source() != NULL){
         QObject *par = event->source()->parent();
         while(par != NULL){
