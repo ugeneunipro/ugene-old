@@ -1,5 +1,5 @@
 <RCC>
     <qresource prefix="snp_effect/">
-        
+        <file>scripts/rsnp.py</file>    
     </qresource>
 </RCC>

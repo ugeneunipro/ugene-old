@@ -57,8 +57,6 @@ void RSnpToolsWorker::cleanup( )
 QVariantMap RSnpToolsWorker::getInputDataForRequest( )
 {
     QVariantMap inputData;
-    inputData[SnpRequestDefaultItems::R_SNP_RUN_SIGNAL.first]
-        = SnpRequestDefaultItems::R_SNP_RUN_SIGNAL.second;
     // TODO: obtain sequences from DB
     inputData[SnpRequestKeys::R_SNP_FIRST_SEQUENCE] = "cctcagtgctgagggccaagcaaatatttgtggttatggaTtaactcgaactccaggctgtcatggcggcaggacggcgaa";
     inputData[SnpRequestKeys::R_SNP_SECOND_SEQUENCE] = "cctcagtgctgagggccaagcaaatatttgtggttatggaCtaactcgaactccaggctgtcatggcggcaggacggcgaa";
@@ -67,7 +65,7 @@ QVariantMap RSnpToolsWorker::getInputDataForRequest( )
 
 SnpRequestAddress RSnpToolsWorker::getRequestAddress( )
 {
-    return SnpRequestAddresses::R_SNP_TOOLS_ADDRESS;
+    return SnpRequestAddresses::R_SNP_TOOLS_SCRIPT_PATH;
 }
 
 /************************************************************************/

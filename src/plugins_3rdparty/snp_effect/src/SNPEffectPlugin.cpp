@@ -25,6 +25,7 @@
 
 #include "snp_toolbox/SNPToolboxWorker.h"
 #include "SNPReportWriter.h"
+#include "rsnp_tools/RSnpToolsWorker.h"
 
 namespace U2 {
 
@@ -37,6 +38,7 @@ extern "C" Q_DECL_EXPORT Plugin* U2_PLUGIN_INIT_FUNC() {
 SNPEffectPlugin::SNPEffectPlugin() : Plugin(tr("SNP Effect Plugin"), tr("Evaluates effect of human genome variations and finds relations with diseases")){
     LocalWorkflow::SNPToolboxWorkerFactory::init();
     LocalWorkflow::SNPReportWriterFactory::init();
+    LocalWorkflow::RSnpToolsWorkerFactory::init();
 }
 
 }//namespace
