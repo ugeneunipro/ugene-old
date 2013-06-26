@@ -1,0 +1,65 @@
+/**
+ * UGENE - Integrated Bioinformatics Tools.
+ * Copyright (C) 2008-2013 UniPro <ugene@unipro.ru>
+ * http://ugene.unipro.ru
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301, USA.
+ */
+
+#include <QtCore/QVariant>
+
+#include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/U2VariantDbi.h>
+#include <U2Lang/WorkflowContext.h>
+#include <U2Lang/DbiDataHandler.h>
+
+#include "VariationTrackMessageTranslator.h"
+
+const char *VARIATIONS_COUNT_LABEL = "Count of variations: ";
+
+namespace U2 {
+
+VariationTrackMessageTranslator::VariationTrackMessageTranslator(const QVariant &atomicMessage, WorkflowContext *initContext)
+    : BaseMessageTranslator(atomicMessage, initContext)
+{
+    SAFE_POINT(source.canConvert<SharedDbiDataHandler>(), "Message doesn't contain dbi reference", );
+    SharedDbiDataHandler dbId = source.value<SharedDbiDataHandler>();
+    std::auto_ptr<VariantTrackObject> variantTrackObject(StorageUtils::getVariantTrackObject(context->getDataStorage(), dbId));
+    SAFE_POINT(NULL != variantTrackObject.get(), "Couldn't obtain variant object", );
+    variantTrackRef = variantTrackObject->getEntityRef();
+}
+
+VariationTrackMessageTranslator::~VariationTrackMessageTranslator() {
+
+}
+
+QString VariationTrackMessageTranslator::getTranslation() const {
+    U2OpStatusImpl os;
+    DbiConnection connection(variantTrackRef.dbiRef, os);
+    SAFE_POINT_OP(os, "Couldn't establish dbi connection");
+
+    U2VariantDbi *dbi = connection.dbi->getVariantDbi();
+    const U2DataId variantId = variantTrackRef.entityId;
+    const int variantCount = dbi->getVariantCount(variantId, os);
+    SAFE_POINT_OP(os, "Couldn't obtain variant count");
+
+    QString result = QString().append(QObject::tr(VARIATIONS_COUNT_LABEL)
+        + QString::number(variantCount));
+
+    return result;
+}
+
+} // namespace U2

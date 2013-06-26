@@ -52,7 +52,12 @@ const StyleId ItemStyles::EXTENDED = "ext";
 #define BGC QString("-bgc")
 #define FONT QString("-font")
 
-ItemViewStyle::ItemViewStyle(WorkflowProcessItem* p, const QString& id) : QGraphicsObject(p), defFont(WorkflowSettings::defaultFont()), id(id) {
+const QColor ITEM_WITH_ENABLED_BREAKPOINT_BORDER_COLOR = QColor(178, 34, 34);
+const QColor ITEM_WITH_DISABLED_BREAKPOINT_BORDER_COLOR = QColor(184, 134, 11);
+
+ItemViewStyle::ItemViewStyle(WorkflowProcessItem* p, const QString& id) : QGraphicsObject(p),
+    defFont(WorkflowSettings::defaultFont()), id(id)
+{
     setVisible(false);
     bgColorAction = new QAction(tr("Background color"), this);
     connect(bgColorAction, SIGNAL(triggered()), SLOT(selectBGColor()));
@@ -137,12 +142,19 @@ void SimpleProcStyle::paint(QPainter *painter,
     painter->setRenderHint(QPainter::Antialiasing);
     QPainterPath contour;
     contour.addEllipse(QPointF(0,0), R, R);
+    
+    QPen pen;
+    if(owner->isBreakpointInserted()) {
+        const QColor borderColor = (owner->isBreakpointEnabled())
+            ? ITEM_WITH_ENABLED_BREAKPOINT_BORDER_COLOR
+            : ITEM_WITH_DISABLED_BREAKPOINT_BORDER_COLOR;
+        pen.setColor(borderColor);
+    }
     if (owner->isSelected()) {
-        QPen pen;
         pen.setWidthF(2);
         pen.setStyle(Qt::DashLine);
-        painter->setPen(pen);
     }
+    painter->setPen(pen);
 
     QRadialGradient rg(R/2, -R/2, R*2);
     rg.setColorAt(1, bgColor);
@@ -281,7 +293,15 @@ void ExtendedProcStyle::paint(QPainter *painter,
     if (owner->isSelected()) {
         pen.setStyle(Qt::DashLine);
     }
+    if(owner->isBreakpointInserted()) {
+        const QColor borderColor = (owner->isBreakpointEnabled())
+            ? ITEM_WITH_ENABLED_BREAKPOINT_BORDER_COLOR
+            : ITEM_WITH_DISABLED_BREAKPOINT_BORDER_COLOR;
+        pen.setColor(borderColor);
+    }
+
     painter->setPen(pen);
+    QColor color = pen.color();
     painter->drawRoundedRect(tb, MARGIN, MARGIN);
 }
 

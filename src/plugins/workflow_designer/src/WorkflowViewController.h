@@ -53,6 +53,9 @@ class WorkflowBusItem;
 class WorkflowPortItem;
 class WorkflowProcessItem;
 class WorkflowRunTask;
+class WorkflowDebugStatus;
+class BreakpointManagerView;
+class WorkflowInvestigationWidgetsController;
 class WorkflowTabView;
 
 class WorkflowScene : public QGraphicsScene {
@@ -211,6 +214,7 @@ private slots:
     void sl_pickInfo(QListWidgetItem*);
     void sl_launch();
     void sl_stop();
+    void sl_pause(bool isPause = true);
     void sl_iterationsMode();
     void sl_configureIterations();
     void sl_configureParameterAliases();
@@ -233,8 +237,22 @@ private slots:
     void sl_toggleDashboard();
     void sl_dashboardCountChanged();
 
+    void sl_toggleBreakpointManager();
+
+    void sl_toggleBreakpoint();
+    void sl_breakpointAdded(const ActorId &actor);
+    void sl_breakpointRemoved(const ActorId &actor);
+    void sl_breakpointIsReached(const U2::ActorId &actor);
+    void sl_processOneMessage();
+    void sl_highlightingRequested(const ActorId &actor);
+    void sl_breakpointEnabled(const ActorId &actor);
+    void sl_breakpointDisabled(const ActorId &actor);
+    void sl_convertMessages2Documents(const Workflow::Link *bus, const QString &messageType,
+        int messageNumber);
+
 protected:
     bool onCloseEvent();
+    virtual void paintEvent(QPaintEvent *event);
 
 private:
     void createActions();
@@ -243,6 +261,15 @@ private:
     void recreateScene();
     void localHostLaunch();
     void remoteLaunch();
+
+    void toggleDebugActionsState(bool enable);
+    void changeBreakpointState(const ActorId &actor, bool isBreakpointBeingAdded,
+    bool isBreakpointStateBeingChanged = false);
+    WorkflowProcessItem *findItemById(ActorId actor) const;
+    void addBottomWidgetsToInfoSplitter();
+    void setInvestigationWidgetsVisible(bool visible);
+    void propagateBreakpointToSceneItem(ActorId actor);
+
     void removeWizards();
 
     // setup ui
@@ -292,7 +319,7 @@ private:
     QAction* saveAsAction;
     QAction* loadAction;
     QAction* newAction;
-    QAction* createScriptAcction;
+    QAction* createScriptAction;
     QAction* editScriptAction;
     QAction* externalToolAction;
     QAction* appendExternalTool;
@@ -305,6 +332,11 @@ private:
     QAction* runAction;
     QAction* stopAction;
     QAction* validateAction;
+    QAction *pauseAction;
+    QAction *nextStepAction;
+    QAction *toggleBreakpointAction;
+    QAction *tickReadyAction;
+
     QAction* findPrototypeAction;
     QAction* unlockAction;
     QAction* showWizard;
@@ -324,17 +356,26 @@ private:
     QList<QAction*> runModeActions;
     QList<QAction*> scriptingActions;
 
+    QAction *toggleBreakpointManager;
+
+    QSplitter*              splitter;
+    WorkflowPalette*        palette;
+    WorkflowEditor*         propertyEditor;
     WorkflowTabView*        tabView;
     WorkflowScene*          scene;
     QGraphicsView*          sceneView;
-    WorkflowPalette*        palette;
     SamplesWidget*          samples;
     QTabWidget*             tabs;
-    WorkflowEditor*         propertyEditor;
     QGroupBox*              errorList;
-    QSplitter*              splitter;
     QListWidget*            infoList;
-    QSplitter*              infoSplitter;
+
+    QSplitter*      infoSplitter;
+
+    WorkflowDebugStatus *debugInfo;
+    QList<QAction *> debugActions;
+    BreakpointManagerView *breakpointView;
+    QTabWidget *bottomTabs;
+    WorkflowInvestigationWidgetsController *investigationWidgets;
 };
 
 class SceneCreator {

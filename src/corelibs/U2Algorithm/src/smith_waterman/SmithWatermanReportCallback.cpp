@@ -184,7 +184,7 @@ QString SmithWatermanReportCallbackMAImpl::planFor_SequenceView_Search(const QLi
 
         expansionInfo.curProcessingSubseq = &pairAlignSeqs.ptrnSubseq;
         msa.addRow(tagsRegistry->parseStringWithTags(ptrnSubseqTemplate, expansionInfo), curResultPtrnSubseq, stateInfo);
-        CHECK_OP(stateInfo, tr("Failed to add a pattern subsequence row."));        
+        CHECK_OP(stateInfo, tr("Failed to add a pattern subsequence row."));
 
         U2EntityRef msaRef = MAlignmentImporter::createAlignment(alignmentDoc->getDbiRef(), msa, stateInfo);
         CHECK_OP(stateInfo, tr("Failed to create an alignment."));

@@ -109,16 +109,16 @@ DnaAssemblyDialog::DnaAssemblyDialog(QWidget* p, const QStringList& shortReadsUr
         shortReadsList->addItem(read);
     }*/
 
-	/*
+    /*
 
     //TODO Delete this crap after 01.11.2012
-	
+    
     //HACK for testing UGENE-1092
-	refSeqEdit->setText("W:/chrY-trunc.fa");
-	samBox->setChecked(true);
-	sl_onSamBoxClicked();
-	QFile::remove("W:/chrY-trunc.sam");
-	buildResultUrl(GUrl("W:/chrY-trunc.fa"));
+    refSeqEdit->setText("W:/chrY-trunc.fa");
+    samBox->setChecked(true);
+    sl_onSamBoxClicked();
+    QFile::remove("W:/chrY-trunc.sam");
+    buildResultUrl(GUrl("W:/chrY-trunc.fa"));
     if (NULL != customGUI) {
         QString error;
         if (!customGUI->buildIndexUrl(GUrl("W:/chrY-trunc.fa"), prebuiltIndex, error)) {
@@ -126,10 +126,10 @@ DnaAssemblyDialog::DnaAssemblyDialog(QWidget* p, const QStringList& shortReadsUr
         }
     }
 
-	shortReadsList->clear();
-	shortReadsList->addItem(new QListWidgetItem(QString("W:\\chrY-trunc-reads.fasta")));
-	//KCAH!!
-	*/
+    shortReadsList->clear();
+    shortReadsList->addItem(new QListWidgetItem(QString("W:\\chrY-trunc-reads.fasta")));
+    //KCAH!!
+    */
 }
 
 void DnaAssemblyDialog::updateState() {

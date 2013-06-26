@@ -771,7 +771,7 @@ void SmithWatermanDialog::loadDialogConfig()
         patternSequenceName->text().isEmpty())
         fillTemplateNamesFieldsByDefault();
 
-	advOptions->setChecked(dialogConfig->enableAdvancedMASettings);
+    advOptions->setChecked(dialogConfig->enableAdvancedMASettings);
 
     return;
 }
@@ -832,7 +832,7 @@ void SmithWatermanDialog::saveDialogConfig()
     if(!patternName.isEmpty())
         dialogConfig->patternSequenceName = patternName;
 
-	dialogConfig->enableAdvancedMASettings = advOptions->isChecked();
+    dialogConfig->enableAdvancedMASettings = advOptions->isChecked();
 
     if(sender() == bttnRun)
         dialogConfig->countOfLaunchesAlgorithm++;

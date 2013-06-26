@@ -101,8 +101,7 @@ Task * WriteAnnotationsWorker::tick() {
             seqName = seqObj->getSequenceName();
         }
         QStringList exts = formatId == CSV_FORMAT_ID ? QStringList("csv") : format->getSupportedDocumentFileExtensions();
-        filepath = GUrlUtils::ensureFileExt(filepath, exts).getURLString();
-        
+
         QString objName = actor->getParameter(ANNOTATIONS_NAME)->getAttributeValue<QString>(context);
         if(objName.isEmpty()) {
             objName = ANNOTATIONS_NAME_DEF_VAL;

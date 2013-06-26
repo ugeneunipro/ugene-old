@@ -34,7 +34,7 @@ typedef int ScoreType;
 
 extern QList<resType> calculateOnGPU(const char * seqLib, int seqLibLength, ScoreType* queryProfile, ScoreType qProfLen, int queryLength,
                                         ScoreType gapOpen, ScoreType gapExtension, ScoreType maxScore,
-										U2::SmithWatermanSettings::SWResultView resultView);
+                                        U2::SmithWatermanSettings::SWResultView resultView);
 
 static U2::Logger log("Smith Waterman CUDA");
 
@@ -81,13 +81,13 @@ quint64 sw_cuda_cpp::estimateNeededGpuMemory( int seqLibLength, ScoreType qProfL
     int sizeRow = calcSizeRow(seqLibLength, overlapLength, partsNumber, partSeqSize);
 
     int sizeN = 7 * sizeRow * sizeof(ScoreType);
-	
+    
 int directionMatrixSize = 0;
-	int backtraceBeginsSize = 0;
-	if(U2::SmithWatermanSettings::MULTIPLE_ALIGNMENT == resultView) {
-		directionMatrixSize = sizeof(int) * queryLength * seqLibLength;
-		backtraceBeginsSize = sizeof(int) * sizeRow * 2;
-	}
+    int backtraceBeginsSize = 0;
+    if(U2::SmithWatermanSettings::MULTIPLE_ALIGNMENT == resultView) {
+        directionMatrixSize = sizeof(int) * queryLength * seqLibLength;
+        backtraceBeginsSize = sizeof(int) * sizeRow * 2;
+    }
 
     quint64 memToAlloc = sizeL + sizeP + sizeN; //see cudaMallocs in sw_cuda.cu for details
     return memToAlloc * 1.2; //just for safety
@@ -160,21 +160,21 @@ QList<resType> calculateOnGPU(const char * seqLib, int seqLibLength, ScoreType* 
     }
 
     ScoreType* directionRow = new ScoreType[sizeRow];
-	
-	size_t directionMatrixSize = 0;
-	size_t backtraceBeginsSize = 0;
-	int * globalMatrix = NULL;
-	int * backtraceBegins = NULL;
-	if(U2::SmithWatermanSettings::MULTIPLE_ALIGNMENT == resultView) {
-		directionMatrixSize = seqLibLength * queryLength * sizeof(int);
-		backtraceBeginsSize = 2 * sizeRow * sizeof(int);
-		
-		globalMatrix = new int[directionMatrixSize / sizeof(int)];
-		backtraceBegins = new int[backtraceBeginsSize / sizeof(int)];
-		
-		memset(globalMatrix, 0, directionMatrixSize);
-		memset(backtraceBegins, 0, backtraceBeginsSize);
-	}
+    
+    size_t directionMatrixSize = 0;
+    size_t backtraceBeginsSize = 0;
+    int * globalMatrix = NULL;
+    int * backtraceBegins = NULL;
+    if(U2::SmithWatermanSettings::MULTIPLE_ALIGNMENT == resultView) {
+        directionMatrixSize = seqLibLength * queryLength * sizeof(int);
+        backtraceBeginsSize = 2 * sizeRow * sizeof(int);
+        
+        globalMatrix = new int[directionMatrixSize / sizeof(int)];
+        backtraceBegins = new int[backtraceBeginsSize / sizeof(int)];
+        
+        memset(globalMatrix, 0, directionMatrixSize);
+        memset(backtraceBegins, 0, backtraceBeginsSize);
+    }
     //************************** sizes of arrays
 
     size_t sizeQ = sizeRow * sizeof(ScoreType);
@@ -208,14 +208,14 @@ QList<resType> calculateOnGPU(const char * seqLib, int seqLibLength, ScoreType* 
     cudaMalloc((void **)& g_directionsMax, sizeQ);
     cudaMalloc((void **)& g_HdataRec, sizeQ);
     cudaMalloc((void **)& g_directionsRec, sizeQ);
-	
-	if(U2::SmithWatermanSettings::MULTIPLE_ALIGNMENT == resultView) {
-		cudaError errorMatrix = cudaMalloc(reinterpret_cast<void **>(&g_directionsMatrix), directionMatrixSize);
-		cudaError errorBacktrace = cudaMalloc(reinterpret_cast<void **>(&g_backtraceBegins), backtraceBeginsSize);
-	}
+    
+    if(U2::SmithWatermanSettings::MULTIPLE_ALIGNMENT == resultView) {
+        cudaError errorMatrix = cudaMalloc(reinterpret_cast<void **>(&g_directionsMatrix), directionMatrixSize);
+        cudaError errorBacktrace = cudaMalloc(reinterpret_cast<void **>(&g_backtraceBegins), backtraceBeginsSize);
+    }
 
     log.details(QString("GLOBAL MEMORY USED %1 KB").arg((sizeL + sizeP + sizeQ * 7
-														+ directionMatrixSize + backtraceBeginsSize) / 1024));
+                                                        + directionMatrixSize + backtraceBeginsSize) / 1024));
 
     //************************** copy from host to device
 
@@ -228,10 +228,10 @@ QList<resType> calculateOnGPU(const char * seqLib, int seqLibLength, ScoreType* 
     cudaMemcpy(g_directionsMax, zerroArr, sizeQ, cudaMemcpyHostToDevice);
     cudaMemcpy(g_directionsRec, zerroArr, sizeQ, cudaMemcpyHostToDevice);
     cudaMemcpy(g_HdataRec, zerroArr, sizeQ, cudaMemcpyHostToDevice);
-	if(U2::SmithWatermanSettings::MULTIPLE_ALIGNMENT == resultView) {
-		cudaMemcpy(g_directionsMatrix, globalMatrix, directionMatrixSize, cudaMemcpyHostToDevice);
-		cudaMemcpy(g_backtraceBegins, backtraceBegins, backtraceBeginsSize, cudaMemcpyHostToDevice);
-	}
+    if(U2::SmithWatermanSettings::MULTIPLE_ALIGNMENT == resultView) {
+        cudaMemcpy(g_directionsMatrix, globalMatrix, directionMatrixSize, cudaMemcpyHostToDevice);
+        cudaMemcpy(g_backtraceBegins, backtraceBegins, backtraceBeginsSize, cudaMemcpyHostToDevice);
+    }
 
     //************************** start calculation
 
@@ -289,10 +289,10 @@ QList<resType> calculateOnGPU(const char * seqLib, int seqLibLength, ScoreType* 
     //Copy vectors on host and find actual results
     cudaMemcpy(tempRow, g_HdataMax, sizeQQ, cudaMemcpyDeviceToHost);
     cudaMemcpy(directionRow, g_directionsMax, sizeQQ, cudaMemcpyDeviceToHost);
-	if(U2::SmithWatermanSettings::MULTIPLE_ALIGNMENT == resultView) {
-		cudaMemcpy(globalMatrix, g_directionsMatrix, directionMatrixSize, cudaMemcpyDeviceToHost);
-		cudaMemcpy(backtraceBegins, g_backtraceBegins, backtraceBeginsSize, cudaMemcpyDeviceToHost);
-	}
+    if(U2::SmithWatermanSettings::MULTIPLE_ALIGNMENT == resultView) {
+        cudaMemcpy(globalMatrix, g_directionsMatrix, directionMatrixSize, cudaMemcpyDeviceToHost);
+        cudaMemcpy(backtraceBegins, g_backtraceBegins, backtraceBeginsSize, cudaMemcpyDeviceToHost);
+    }
 
     QList<resType> pas;
     resType res;
@@ -360,8 +360,8 @@ QList<resType> calculateOnGPU(const char * seqLib, int seqLibLength, ScoreType* 
     delete[] tempRow;
     delete[] directionRow;
     delete[] zerroArr;
-	delete[] globalMatrix;
-	delete[] backtraceBegins;
+    delete[] globalMatrix;
+    delete[] backtraceBegins;
 
     return pas;
 }

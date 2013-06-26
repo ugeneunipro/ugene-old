@@ -19,6 +19,8 @@
  * MA 02110-1301, USA.
  */
 
+#include <QtScriptTools/QScriptEngineDebugger>
+
 #include "ScriptWorker.h"
 
 #include <U2Core/AppContext.h>
@@ -58,7 +60,7 @@ static const QString IN_PORT_ID("in");
 static const QString OUT_PORT_ID("out");
 
 ScriptWorkerTask::ScriptWorkerTask(WorkflowScriptEngine *_engine, AttributeScript *_script)
-: Task(tr("Script worker task"), TaskFlag_None), engine(_engine), script(_script)
+: Task(tr("Script worker task"), TaskFlag_RunInMainThread), engine(_engine), script(_script)
 {
     WorkflowScriptLibrary::initEngine(engine);
 }
@@ -73,7 +75,6 @@ void ScriptWorkerTask::run() {
             scriptVars[key.getId()] = engine->newVariant(engine->globalObject().property(key.getId().toLatin1().data()).toVariant());
         }
     }
-
     QScriptValue scriptResultValue = ScriptTask::runScript(engine, scriptVars, script->getScriptText(), stateInfo);
     if (engine->hasUncaughtException()) {
         scriptResultValue = engine->uncaughtException();
@@ -129,6 +130,10 @@ void ScriptWorker::init() {
     input = ports.value(IN_PORT_ID);
     output = ports.value(OUT_PORT_ID);
     engine = new WorkflowScriptEngine(context);
+    engine->setProcessEventsInterval(50);
+    QScriptEngineDebugger *scriptDebugger = new QScriptEngineDebugger(engine);
+    scriptDebugger->setAutoShowStandardWindow(true);
+    scriptDebugger->attachTo(engine);
 }
 
 void ScriptWorker::bindPortVariables() {

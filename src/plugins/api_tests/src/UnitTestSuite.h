@@ -10,18 +10,18 @@ class UnitTestSuite : public GTest {
 public:
     SIMPLE_XML_TEST_BODY_WITH_FACTORY_EXT(UnitTestSuite, "unittest", TaskFlags_NR_FOSCOE);
 
-	void prepare();
+    void prepare();
     void cleanup();
 
 protected:
-	void tests_run();
-	void test_run(const QString& testName);
+    void tests_run();
+    void test_run(const QString& testName);
 
     QMap<QString, QStringList> tests;
 private:
-	int passed;
-	int ignored;
-	int failed;
+    int passed;
+    int ignored;
+    int failed;
 };
 
 } // namespace

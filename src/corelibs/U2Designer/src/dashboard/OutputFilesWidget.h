@@ -38,7 +38,7 @@ public:
     virtual QList<QStringList> data();
 
 private slots:
-    void sl_newOutputFile(const Monitor::FileInfo &info);
+    void sl_newOutputFile(const U2::Workflow::Monitor::FileInfo &info);
 
 private:
     QString createFileButton(const QString &url) const;

@@ -29,6 +29,7 @@
 #include <U2Lang/Schema.h>
 #include <U2Lang/WorkflowManager.h>
 #include <U2Lang/WorkflowIOTasks.h>
+#include <U2Lang/WorkflowDebugStatus.h>
 
 #include <QtCore/QUrl>
 #include <QtCore/QTemporaryFile>
@@ -50,8 +51,8 @@ class U2LANG_EXPORT WorkflowAbstractRunner : public Task {
 public:
     WorkflowAbstractRunner(const QString &name, TaskFlags flags);
     virtual QList<WorkerState> getState(Actor*) = 0;
-    virtual int getMsgNum(Link*) = 0;
-    virtual int getMsgPassed(Link*) = 0;
+    virtual int getMsgNum(const Link*) = 0;
+    virtual int getMsgPassed(const Link*) = 0;
 
     const QList<WorkflowMonitor*> & getMonitors() const;
 
@@ -65,8 +66,8 @@ public:
     WorkflowAbstractIterationRunner(const QString &name, TaskFlags flags);
     virtual ~WorkflowAbstractIterationRunner() {}
     virtual WorkerState getState(const ActorId &actor) = 0;
-    virtual int getMsgNum(Link *l) = 0;
-    virtual int getMsgPassed(Link *l) = 0;
+    virtual int getMsgNum(const Link *l) = 0;
+    virtual int getMsgPassed(const Link *l) = 0;
 
     virtual int getDataProduced(const ActorId &actor) = 0;
 
@@ -80,12 +81,13 @@ typedef QMap<ActorId,ActorId> ActorMap;
 class U2LANG_EXPORT WorkflowRunTask : public WorkflowAbstractRunner {
     Q_OBJECT
 public:
-    WorkflowRunTask(const Schema&, QList<Iteration>, const ActorMap& rmap = ActorMap());
+    WorkflowRunTask(const Schema&, QList<Iteration>, const ActorMap& rmap = ActorMap(),
+        WorkflowDebugStatus *debugInfo = new WorkflowDebugStatus());
     virtual ReportResult report(); 
     virtual QList<WorkerState> getState(Actor*);
-    virtual int getMsgNum(Link*);
-    virtual int getMsgPassed(Link*);
-    
+    virtual int getMsgNum(const Link*);
+    virtual int getMsgPassed(const Link*);
+
 signals:
     void si_ticked();
 
@@ -101,14 +103,14 @@ private:
 class WorkflowIterationRunTask : public WorkflowAbstractIterationRunner {
     Q_OBJECT
 public:
-    WorkflowIterationRunTask(const Schema&, const Iteration&);
+    WorkflowIterationRunTask(const Schema&, const Iteration&, WorkflowDebugStatus *initDebugInfo);
     ~WorkflowIterationRunTask();
     virtual void prepare();
     virtual ReportResult report();
 
     virtual WorkerState getState(const ActorId &actor);
-    virtual int getMsgNum(Link *l);
-    virtual int getMsgPassed(Link *l);
+    virtual int getMsgNum(const Link *l);
+    virtual int getMsgPassed(const Link *l);
     virtual int getDataProduced(const ActorId &actor);
 
     WorkflowMonitor * getMonitor() const;
@@ -119,15 +121,27 @@ signals:
 protected:
     virtual QList<Task*> onSubTaskFinished(Task* subTask);
 
-private:
-    QList<CommunicationChannel*> getActorLinks(const QString &actor);
+private slots:
+    void sl_pauseStateChanged(bool isPaused);
+    void sl_busInvestigationIsRequested(const Workflow::Link *bus, int messageNumber);
+    void sl_busCountOfMessagesRequested(const Workflow::Link *bus);
+    void sl_singleStepIsRequested(const ActorId &actor);
+    void sl_convertMessages2Documents(const Workflow::Link *bus, const QString &messageType,
+        int messageNumber, const QString &schemeName);
 
 private:
+    static TaskFlags getAdditionalFlags();
+
+    QList<CommunicationChannel*> getActorLinks(const QString &actor);
+
     WorkflowContext *context;
     Schema* schema;
     Scheduler* scheduler;
     QMap<ActorId, ActorId> rmap;
     QMap<QString, CommunicationChannel*> lmap;
+    
+    WorkflowDebugStatus *debugInfo;
+    bool isNextTickRestoring;
 };
 
 class U2LANG_EXPORT WorkflowRunInProcessTask : public WorkflowAbstractRunner {
@@ -136,8 +150,8 @@ public:
     WorkflowRunInProcessTask(const Schema & sc, const QList<Iteration> & its);
     virtual ReportResult report();
     virtual QList<WorkerState> getState(Actor*);
-    virtual int getMsgNum(Link*);
-    virtual int getMsgPassed(Link*);
+    virtual int getMsgNum(const Link*);
+    virtual int getMsgPassed(const Link*);
     
 signals:
     void si_ticked();
@@ -156,8 +170,8 @@ public:
     virtual QList<Task*> onSubTaskFinished(Task* subTask);
     
     virtual WorkerState getState(const ActorId &actor);
-    virtual int getMsgNum(Link * l);
-    virtual int getMsgPassed(Link * l);
+    virtual int getMsgNum(const Link * l);
+    virtual int getMsgPassed(const Link * l);
     virtual int getDataProduced(const ActorId &actor);
     WorkflowMonitor * getMonitor() const;
     

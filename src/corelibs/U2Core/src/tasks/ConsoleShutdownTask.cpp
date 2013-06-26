@@ -19,7 +19,7 @@
  * MA 02110-1301, USA.
  */
 
-#include "ShutdownTask.h"
+#include "ConsoleShutdownTask.h"
 
 #include <U2Core/Log.h>
 #include <U2Core/ServiceModel.h>
@@ -29,14 +29,14 @@
 
 namespace U2 {
 
-ShutdownTask::ShutdownTask(QCoreApplication* app) 
+ConsoleShutdownTask::ConsoleShutdownTask(QCoreApplication* app) 
 : Task(tr("Shutdown"), TaskFlags_NR_FOSCOE | TaskFlag_NoAutoDelete), app(app) 
 {
     connect(AppContext::getTaskScheduler(), SIGNAL(si_topLevelTaskUnregistered(Task*)), SLOT(startShutdown()));
     connect(app, SIGNAL(aboutToQuit()), SLOT(startShutdown()));
 }
 
-void ShutdownTask::startShutdown() {
+void ConsoleShutdownTask::startShutdown() {
     
     if (sender() == app) {
         coreLog.info("Shutdown initiated by user");
@@ -80,7 +80,7 @@ static Service* findServiceToDisable(ServiceRegistry* sr) {
 
 class CancelAllTask : public Task {
 public:
-    CancelAllTask() : Task(U2::ShutdownTask::tr("Cancel active tasks"), TaskFlag_NoRun) {}
+    CancelAllTask() : Task(QObject::tr("Cancel active tasks"), TaskFlag_NoRun) {}
     void prepare() {
         // cancel all tasks but ShutdownTask
         QList<Task*> activeTopTasks = AppContext::getTaskScheduler()->getTopLevelTasks();
@@ -102,13 +102,13 @@ public:
 };
 
 
-void ShutdownTask::prepare() {
+void ConsoleShutdownTask::prepare() {
     coreLog.info(tr("Starting shutdown process..."));
 
     addSubTask(new CancelAllTask());
 }
 
-QList<Task*> ShutdownTask::onSubTaskFinished(Task* subTask) {
+QList<Task*> ConsoleShutdownTask::onSubTaskFinished(Task* subTask) {
     QList<Task*> res;
 
     if (isCanceled() || subTask->hasError()) {
@@ -123,7 +123,7 @@ QList<Task*> ShutdownTask::onSubTaskFinished(Task* subTask) {
     return res;
 }
 
-Task::ReportResult ShutdownTask::report() {
+Task::ReportResult ConsoleShutdownTask::report() {
     if (stateInfo.cancelFlag) {
         coreLog.info(tr("Shutdown was canceled"));
         return Task::ReportResult_Finished;

@@ -112,7 +112,11 @@ Message BaseWorker::getMessageAndSetupScriptValues( CommunicationChannel * chann
     assert(channel != NULL);
     assert(channel->hasMessage());
     bindScriptValues();
-    return channel->get();
+    Message currentMessage = channel->get();
+    currentMessage.isEmpty();
+    messagesProcessedOnLastTick[channel].enqueue(currentMessage);
+
+    return currentMessage;
 }
 
 void BaseWorker::bindScriptValues() {
@@ -122,28 +126,43 @@ void BaseWorker::bindScriptValues() {
             continue;
         }
         
-        QVariantMap busData = bus->look().getData().toMap();
         foreach( Attribute * attribute, actor->getParameters().values() ) {
             assert(attribute != NULL);
-            foreach(const QString & slotDesc, busData.keys()) {
-                ActorId actorId = IntegralBusType::parseSlotDesc(slotDesc);
-                QString attrId = IntegralBusType::parseAttributeIdFromSlotDesc(slotDesc);
-                QString portId = bus->getPortId();
-                IntegralBusPort * busPort = qobject_cast<IntegralBusPort*>(actor->getPort(portId));
-                assert(busPort != NULL);
-                
-                Actor * bindedAttrOwner = busPort->getLinkedActorById(actorId);
-                if(bindedAttrOwner == NULL) {
-                    continue;
-                }
-                //attrId.replace(".", "_");
-                //attrId.replace("-", "_");
-                AttributeScript & attrScript = attribute->getAttributeScript();
-                if( !attrScript.getScriptText().isEmpty() ) {
-                    //attrScript.setVarValueWithId(attrId, busData.value(slotDesc));
-                    attrScript.setScriptVar(attrId, busData.value(slotDesc));
-                }
+            setScriptVariableFromBus(&attribute->getAttributeScript(), bus);
+
+            if(actor->getCondition()->hasVarWithId(attribute->getId())) {
+                actor->getCondition()->setVarValueWithId(attribute->getId(), attribute->getAttributePureValue());
             }
+        }
+
+        QVariantMap busData = bus->lookMessage().getData().toMap();
+        foreach(const QString & slotId, busData.keys()) {
+            QString attrId = "in_" + slotId;
+            if( actor->getCondition()->hasVarWithId(attrId)) {
+                actor->getCondition()->setVarValueWithId(attrId, busData.value(slotId));
+            }
+        }
+    }
+}
+
+void BaseWorker::setScriptVariableFromBus(AttributeScript *script, IntegralBus *bus) {
+    QVariantMap busData = bus->look().getData().toMap();
+    foreach(const QString & slotDesc, busData.keys()) {
+        ActorId actorId = IntegralBusType::parseSlotDesc(slotDesc);
+        QString attrId = IntegralBusType::parseAttributeIdFromSlotDesc(slotDesc);
+        QString portId = bus->getPortId();
+        IntegralBusPort * busPort = qobject_cast<IntegralBusPort*>(actor->getPort(portId));
+        assert(busPort != NULL);
+
+        Actor * bindedAttrOwner = busPort->getLinkedActorById(actorId);
+        if(bindedAttrOwner == NULL) {
+            continue;
+        }
+        //attrId.replace(".", "_");
+        //attrId.replace("-", "_");
+        if( !script->getScriptText().isEmpty() ) {
+            //attrScript.setVarValueWithId(attrId, busData.value(slotDesc));
+            script->setScriptVar(attrId, busData.value(slotDesc));
         }
     }
 }
@@ -176,6 +195,20 @@ bool BaseWorker::isReady() {
     return false;
 }
 
+void BaseWorker::saveCurrentChannelsStateAndRestorePrevious() {
+    foreach(CommunicationChannel *channel, messagesProcessedOnLastTick.keys()) {
+        assert(ports.values().contains(dynamic_cast<IntegralBus *>(channel)));
+        
+        QQueue<Message> currentMessagesBackup;
+        while(channel->hasMessage()) {
+            currentMessagesBackup.enqueue(channel->get());
+        }
+        addMessagesFromBackupToAppropriratePort(channel);
+        
+        messagesProcessedOnLastTick[channel] = currentMessagesBackup;
+    }
+}
+
 WorkflowMonitor * BaseWorker::monitor() const {
     CHECK(NULL != context, NULL);
     return context->getMonitor();
@@ -184,6 +217,32 @@ WorkflowMonitor * BaseWorker::monitor() const {
 void BaseWorker::reportError(const QString &message) {
     CHECK(NULL != monitor(), );
     monitor()->addError(message, getActorId());
+}
+
+void BaseWorker::restoreActualChannelsState() {
+    foreach(CommunicationChannel *channel, messagesProcessedOnLastTick.keys()) {
+        assert(!channel->hasMessage());
+        addMessagesFromBackupToAppropriratePort(channel);
+    }
+}
+
+void BaseWorker::addMessagesFromBackupToAppropriratePort(CommunicationChannel *channel) {
+    while(!messagesProcessedOnLastTick[channel].isEmpty()) {
+        channel->put(messagesProcessedOnLastTick[channel].dequeue(), true);
+    }
+}
+
+bool BaseWorker::canTaskBeCanceled(Task *workerTask) const {
+    return false;
+}
+
+Task * BaseWorker::tick(bool &canResultBeCanceled) {
+    Task *result = tick();
+    if(NULL != result) {
+        canResultBeCanceled = canTaskBeCanceled(result);
+    }
+
+    return result;
 }
 
 /*****************************
@@ -203,8 +262,11 @@ Message SimpleQueue::look() const {
     return que.head();
 }
 
-void SimpleQueue::put(const Message& m) {
+void SimpleQueue::put(const Message& m, bool isMessageRestored) {
     que.enqueue(m);
+    if(isMessageRestored) {
+        --takenMsgs;
+    }
 }
 
 int SimpleQueue::hasMessage() const {
@@ -232,6 +294,19 @@ int SimpleQueue::capacity() const {
 }
 
 void SimpleQueue::setCapacity(int) {
+}
+
+QQueue<Message> SimpleQueue::getMessages(int startIndex, int endIndex) const {
+    if(-1 == endIndex) {
+        endIndex = hasMessage() - 1;
+    }
+    Q_ASSERT(0 <= startIndex && que.size() >= startIndex
+        && 0 <= endIndex && que.size() >= endIndex);
+    QQueue<Message> result;
+    foreach(Message message, que.mid(startIndex, endIndex - startIndex + 1)) {
+        result.enqueue(message);
+    }
+    return result;
 }
 
 /*****************************
@@ -339,8 +414,7 @@ CommunicationChannel* LocalDomainFactory::createConnection(Link* l) {
 }
 
 Scheduler* LocalDomainFactory::createScheduler(Schema* sh) {
-    Scheduler *sc = NULL;
-    sc = new LastReadyScheduler(sh);
+    Scheduler *sc = new LastReadyScheduler(sh);
     return sc;
 }
 

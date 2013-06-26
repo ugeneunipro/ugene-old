@@ -482,7 +482,7 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin():Plugin(tr("External tool 
     
     //Search for tools in application dir
     
-    QDir appDir(QCoreApplication::applicationDirPath());
+    QDir appDir(AppContext::getWorkingDirectoryPath());
     QStringList entryList = appDir.entryList(QDir::Dirs | QDir::NoDotAndDotDot);
     QString toolsDir;
     foreach(const QString& dirName, entryList) {

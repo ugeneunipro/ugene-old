@@ -210,6 +210,7 @@ void AttributeScript::setVarValueWithId(const QString & varName, const QVariant 
     foreach(const Descriptor & varDesc, vars.keys()) {
         if( varDesc.getId() == varName ) {
             vars[varDesc] = value;
+            break;
         }
     }
 }

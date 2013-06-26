@@ -34,6 +34,9 @@ namespace U2 {
 
 class DocumentSelection;
 class GObjectSelection;
+class GObject;
+class Annotation;
+class GUrl;
 
 class U2GUI_EXPORT ProjectView : public Service {
     Q_OBJECT
@@ -53,8 +56,12 @@ public:
 
     virtual void highlightItem(Document*) = 0;
 
+    virtual void exportObject2Document(GObject *object, const QString &url = QString(), bool tracePath = true) = 0;
+    virtual void exportAnnotations(QList<Annotation *> &annotations, const GUrl &dstUrl) = 0;
+
 signals:
     void si_onDocTreePopupMenuRequested(QMenu& m);
+    void si_annotationsExportRequested(QList<Annotation*> &, const GUrl &);
 };
 
 }//namespace

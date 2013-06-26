@@ -155,7 +155,7 @@ static void setDataSearchPaths() {
     const static char * RELATIVE_DATA_DIR = "/data";
     const static char * RELATIVE_DEV_DATA_DIR = "/../../data";
     //on windows data is normally located in the application directory
-    QString appDirPath = QCoreApplication::applicationDirPath();
+    QString appDirPath = AppContext::getWorkingDirectoryPath();
     if( QDir(appDirPath+RELATIVE_DATA_DIR).exists() ) {
         dataSearchPaths.push_back( appDirPath+RELATIVE_DATA_DIR );
     } else if( QDir(appDirPath+RELATIVE_DEV_DATA_DIR).exists() ) {          //data location for developers
@@ -276,23 +276,25 @@ int main(int argc, char **argv)
     
     //QApplication app(argc, argv);
     GApplication app(argc, argv);
-    QCoreApplication::addLibraryPath(QCoreApplication::applicationDirPath());
 
-// add some extra paths used during development
+    AppContextImpl* appContext = AppContextImpl::getApplicationContext();
+    appContext->setGUIMode(true);
+    appContext->setWorkingDirectoryPath(QCoreApplication::applicationDirPath());
+
+    QCoreApplication::addLibraryPath(AppContext::getWorkingDirectoryPath());
+
+    // add some extra paths used during development
 #ifdef Q_OS_WIN
 #ifdef _DEBUG
-    QString devPluginsPath = QDir(QCoreApplication::applicationDirPath()+"/../../extras/windows/dotnet_style/_debug").absolutePath();
+    QString devPluginsPath = QDir(AppContext::getWorkingDirectoryPath() + "/../../extras/windows/dotnet_style/_debug").absolutePath();
 #else 
-    QString devPluginsPath = QDir(QCoreApplication::applicationDirPath()+"/../../extras/windows/dotnet_style/_release").absolutePath();
+    QString devPluginsPath = QDir(AppContext::getWorkingDirectoryPath() + "/../../extras/windows/dotnet_style/_release").absolutePath();
 #endif
     QCoreApplication::addLibraryPath(devPluginsPath); //dev version
 #endif
 
     setSearchPaths();
-
-    AppContextImpl* appContext = AppContextImpl::getApplicationContext();
-    appContext->setGUIMode(true);
-
+    
     // parse all cmdline arguments
     CMDLineRegistry* cmdLineRegistry = new CMDLineRegistry(app.arguments()); 
     appContext->setCMDLineRegistry(cmdLineRegistry);
@@ -315,7 +317,7 @@ int main(int argc, char **argv)
     QStringList envList = QProcess::systemEnvironment();
     QString envTranslation = findKey(envList, "UGENE_TRANSLATION");
     if (!envTranslation.isEmpty()) {
-        trOK = translator.load(QString("transl_") + envTranslation, QCoreApplication::applicationDirPath());
+        trOK = translator.load(QString("transl_") + envTranslation, AppContext::getWorkingDirectoryPath());
     }
 
     if (!trOK) {
@@ -326,7 +328,7 @@ int main(int argc, char **argv)
             "transl_en"
         };
         for (int i = transFile[0].isEmpty() ? 1 : 0; i < 3; ++i) {
-            if (!translator.load(transFile[i], QCoreApplication::applicationDirPath())) {
+            if (!translator.load(transFile[i], AppContext::getWorkingDirectoryPath())) {
                 fprintf(stderr, "Translation not found: %s\n", transFile[i].toLatin1().constData());
             } else {
                 trOK = true;
@@ -349,7 +351,7 @@ int main(int argc, char **argv)
     coreLog.details(AppContextImpl::tr("UGENE initialization started"));
     GCOUNTER( cvar, tvar, "ugeneui" );
 
-    coreLog.trace(QString("UGENE run at dir %1 with parameters %2").arg(app.applicationDirPath()).arg(app.arguments().join(" ")));
+    coreLog.trace(QString("UGENE run at dir %1 with parameters %2").arg(AppContext::getWorkingDirectoryPath()).arg(app.arguments().join(" ")));
 
     //print some settings info, can't do it earlier than logging is initialized
     coreLog.trace(QString("Active UGENE.ini file : %1").arg(AppContext::getSettings()->fileName()));

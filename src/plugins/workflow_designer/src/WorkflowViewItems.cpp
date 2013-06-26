@@ -50,7 +50,7 @@
 namespace U2 {
 
 
-WorkflowProcessItem::WorkflowProcessItem(Actor* prc) : process(prc) {
+WorkflowProcessItem::WorkflowProcessItem(Actor* prc) : process(prc), hasBreakpoint(false), highlighting(NULL)/*, inspectionItem(NULL)*/ {
     setToolTip(process->getProto()->getDocumentation());
     setFlag(QGraphicsItem::ItemIsSelectable, true);
     setFlag(QGraphicsItem::ItemIsMovable, true);
@@ -70,6 +70,7 @@ WorkflowProcessItem::~WorkflowProcessItem()
 {
     qDeleteAll(styles.values());
     qDeleteAll(ports);
+    delete highlighting;
 }
 
 ItemViewStyle* WorkflowProcessItem::getStyleByIdSafe(StyleId id) const {
@@ -175,9 +176,9 @@ void WorkflowProcessItem::paint(QPainter *painter, const QStyleOptionGraphicsIte
     WorkflowAbstractRunner* rt = getWorkflowScene()->getRunner();
     if (rt) {
         //{WorkerWaiting, WorkerReady, WorkerRunning, WorkerDone};
-        static QColor rsColors[4] = {QColor(234,143,7),"#04AA04", "#AA0404", "#0404AA"};
+        static QColor rsColors[5] = {QColor(234,143,7),"#04AA04", "#AA0404", "#0404AA", "#9B30FF"};
             //{QColor(234,143,7),QColor(Qt::red),QColor(Qt::green),QColor(0,0,255)};
-        static QString rsNames[4] = {("Waiting"),("Ready"),("Running"),("Done")};
+        static QString rsNames[5] = {("Waiting"), ("Ready"), ("Running"), ("Done"), ("Paused")};
 
         const QList<WorkerState> rsList = rt->getState(this->process);
         WorkerState state = WorkerDone;
@@ -187,7 +188,10 @@ void WorkflowProcessItem::paint(QPainter *painter, const QStyleOptionGraphicsIte
             state = WorkerReady;
         } else if (rsList.contains(WorkerWaiting)) {
             state = WorkerWaiting;
+        } else if (rsList.contains(WorkerPaused)) {
+            state = WorkerPaused;
         }
+        
         QString stateName = rsNames[state];
         QColor scolor = rsColors[state];
         painter->setPen(scolor);
@@ -215,7 +219,7 @@ void WorkflowProcessItem::paint(QPainter *painter, const QStyleOptionGraphicsIte
                 QRectF textRect(brect.topLeft()+QPointF(0,fh-1),QSizeF(brect.width(), 3));
                 textRect.setLeft(brect.left()+1);
                 textRect.setRight(brect.right()-1);
-                QColor fc = /*rsColors[WorkerDone];//*/QColor(0,80,222); 
+                QColor fc = /*rsColors[WorkerDone];//*/ QColor(0,80,222); 
                 fc.setAlpha(90);
                 painter->setPen(fc);
                 painter->drawRect(textRect);
@@ -250,7 +254,6 @@ void WorkflowProcessItem::paint(QPainter *painter, const QStyleOptionGraphicsIte
             painter->translate(brect.center().x() - d.idealWidth()/2, brect.top() + fh);
             d.drawContents(painter/*, brect*/);
             painter->restore();
-
 
 //             qreal unit = brect.width()/rsList.size();
 //             qreal step = 3;
@@ -330,7 +333,7 @@ QVariant WorkflowProcessItem::itemChange ( GraphicsItemChange change, const QVar
             updatePorts();
 
             WorkflowScene * sc = qobject_cast<WorkflowScene*>(scene());
-            if(sc != NULL) {
+            if (sc != NULL) {
                 if (!sc->views().isEmpty()) {
                     foreach(QGraphicsView* view, sc->views()) {
                         QRectF itemRect = boundingRect() | childrenBoundingRect();
@@ -374,8 +377,18 @@ QVariant WorkflowProcessItem::itemChange ( GraphicsItemChange change, const QVar
             foreach(WorkflowPortItem* pit, ports) {
                 scene()->removeItem(pit);
             }
+            //scene()->removeItem(inspectionItem);
+            //delete inspectionItem;
         }
         break;
+/*    case ItemSelectedChange:
+        if (NULL != inspectionItem) {
+            inspectionItem->setPermanent(!inspectionItem->isPermanent());
+            if (!inspectionItem->isPermanent()) {
+                inspectionItem->eraseFromScene();
+            }
+        }
+        break;*/
     default:
         break;
     }
@@ -449,7 +462,7 @@ void WorkflowProcessItem::mouseMoveEvent( QGraphicsSceneMouseEvent *event ) {
 
             QPointF currentParentPos = view->mapToScene(view->mapFromGlobal(event->screenPos()));
             QPointF buttonDownParentPos = view->mapToScene(view->mapFromGlobal(event->buttonDownScreenPos(Qt::LeftButton)));
-
+             
             item->setPos(initialPositions.value(item) + currentParentPos - buttonDownParentPos);
         }
     } else {
@@ -462,6 +475,90 @@ void WorkflowProcessItem::mouseReleaseEvent( QGraphicsSceneMouseEvent *event ) {
     QGraphicsItem::mouseReleaseEvent(event);
 }
 
+void WorkflowProcessItem::toggleBreakpoint() {
+    hasBreakpoint = !hasBreakpoint;
+    if(!hasBreakpoint) {
+        hasEnabledBreakpoint = false;
+    }
+    else {
+        if(NULL == highlighting) {
+            highlighting = new WorkflowHighlightItem(this);
+        }
+        hasEnabledBreakpoint = true;
+    }
+}
+
+void WorkflowProcessItem::toggleBreakpointState() {
+    Q_ASSERT(hasBreakpoint);
+    hasEnabledBreakpoint = !hasEnabledBreakpoint;
+}
+
+bool WorkflowProcessItem::isBreakpointInserted() {
+    return hasBreakpoint;
+}
+
+bool WorkflowProcessItem::isBreakpointEnabled() {
+    return hasEnabledBreakpoint;
+}
+
+void WorkflowProcessItem::highlightItem() {
+    highlighting->replay();
+}
+
+/*
+bool WorkflowProcessItem::isSchemaPaused() const {
+    return getWorkflowScene()->getController()->isPaused();
+}
+
+void WorkflowProcessItem::hoverEnterEvent(QGraphicsSceneHoverEvent * event) {
+    if (isSchemaPaused()) {
+        InspectionItemOrientationType inspectionOrientation;
+
+        QRectF bRect = boundingRect();
+        QPointF mouseAppearencePoint = event->lastPos();
+
+        // following code is intended to find out
+        // what is the nearest side of boundingRect() to the event mouse position.
+        // It is needed to determine location of further appearing inspection item.
+
+        const qreal distFromCursorToBottom = bRect.bottom() - mouseAppearencePoint.y();
+        const qreal distFromCursorToLeft = mouseAppearencePoint.x() - bRect.left();
+        const qreal distFromCursorToTop = mouseAppearencePoint.y() - bRect.top();
+        const qreal distFromCursorToRight = bRect.right() - mouseAppearencePoint.x();
+
+        const qreal minDistance = qMin<qreal>(qMin<qreal>(distFromCursorToBottom, distFromCursorToLeft),
+            qMin<qreal>(distFromCursorToRight, distFromCursorToTop));
+
+        if (minDistance == distFromCursorToBottom) {
+            inspectionOrientation = InspectionDown;
+        } else if (minDistance == distFromCursorToLeft) {
+            inspectionOrientation = InspectionLeft;
+        } else if (minDistance == distFromCursorToRight) {
+            inspectionOrientation = InspectionRight;
+        } else {
+            inspectionOrientation = InspectionUp;
+        }
+
+        if (NULL == inspectionItem) {
+            inspectionItem = new WorkflowInspectionItem(this, WorkerDebugInfo(), mouseAppearencePoint,
+                inspectionOrientation);
+            getWorkflowScene()->addItem(inspectionItem);
+        } else if (!inspectionItem->isVisible()){
+            inspectionItem->setOriginPoint(mouseAppearencePoint);
+            inspectionItem->setOrientation(inspectionOrientation);
+            inspectionItem->setVisible(true);
+        }
+    }
+}
+
+void WorkflowProcessItem::hoverLeaveEvent(QGraphicsSceneHoverEvent * event) {
+    if (isSchemaPaused() && NULL != inspectionItem) {
+        if (!inspectionItem->isPermanent()) {    
+            inspectionItem->eraseFromScene();
+        }
+    }
+}
+*/
 ///////////// PIO /////////////
 
 WorkflowPortItem* WorkflowPortItem::findNearbyBindingCandidate(const QPointF& pos) const {
@@ -489,7 +586,6 @@ WorkflowPortItem* WorkflowPortItem::findNearbyBindingCandidate(const QPointF& po
 //static const QCursor portRotationCursor = QCursor(QBitmap(":workflow_designer/images/rot_cur.png")); //FIXME
 static const int portRotationModifier = Qt::AltModifier;
 static const int bl = (int) A/4;
-
 
 WorkflowPortItem::WorkflowPortItem(WorkflowProcessItem* owner, Port* p) 
 : /*StyledItem(owner), */ currentStyle(owner->getStyle()),port(p),owner(owner),orientation(0), dragging(false), rotating(false),
@@ -534,8 +630,8 @@ void WorkflowPortItem::setOrientation(qreal angle) {
             angle = round(angle, ANGLE_STEP);
         }
         angle = -angle;
-        qreal x = R*qCos(angle*2*PI/360);
-        qreal y = R*qSin(angle*2*PI/360);
+        qreal x = R * qCos(angle * 2 * M_PI / 360);
+        qreal y = R * qSin(angle * 2 * M_PI / 360);
         
         resetTransform();
         translate(x, y);
@@ -589,9 +685,9 @@ void WorkflowPortItem::setOrientation(qreal angle) {
         //log.info(QString("a=%1 pa=%2 pn=%3 n=%4 df=%5").arg(angle).arg(polyAngle).arg(polyLine.normalVector().angle()).arg(norm).arg(df));
         rotate(-norm);
     }
-    if(oldOrientation != orientation) {
+    if (oldOrientation != orientation) {
         WorkflowScene * sc = qobject_cast<WorkflowScene*>(owner->scene());
-        if(sc != NULL) {
+        if (sc != NULL) {
             sc->setModified(true);
             sc->update();
         }
@@ -1011,6 +1107,7 @@ QVariant WorkflowBusItem::itemChange ( GraphicsItemChange change, const QVariant
         dst->removeDataFlow(this);
         src->removeDataFlow(this);
         disconnect(dst->getPort(), SIGNAL(bindingChanged()), this, SLOT(sl_update()));
+        
         WorkflowView *ctl = getWorkflowScene()->getController();
         if (NULL != ctl) {
             ctl->onBusRemoved(bus);
@@ -1093,9 +1190,10 @@ void WorkflowBusItem::paint ( QPainter * painter, const QStyleOptionGraphicsItem
     painter->drawRect(textRec);
 
     WorkflowAbstractRunner* rt = getWorkflowScene()->getRunner();
-    if (rt) {
+    if (rt) {  
         int msgsInQueue = rt->getMsgNum(this->bus);
         int passed = rt->getMsgPassed(this->bus);
+
         QString rts = QString("%1 in queue, %2 passed").arg(msgsInQueue).arg(passed);
         QRectF rtb = textRec.translated(0, -QFontMetricsF(QFont()).height());
         qreal shift = (QFontMetricsF(QFont()).width(rts) - rtb.width()) / 2;
@@ -1105,8 +1203,8 @@ void WorkflowBusItem::paint ( QPainter * painter, const QStyleOptionGraphicsItem
         if (msgsInQueue == 0) {
             return;
         }
-        qreal dx = (p2.x() - p1.x())/msgsInQueue;
-        qreal dy = (p2.y() - p1.y())/msgsInQueue;
+        qreal dx = (p2.x() - p1.x()) / msgsInQueue;
+        qreal dy = (p2.y() - p1.y()) / msgsInQueue;
         QPointF dp(dx,dy);
         QColor c1("#AA0404");
         painter->setPen(c1);
@@ -1154,4 +1252,47 @@ WorkflowScene* StyledItem::getWorkflowScene() const
 {
     return qobject_cast<WorkflowScene*>(scene());
 }
+
+///////////////// WorkflowHighlightItem /////////////////////////////////////////////////////////
+
+const quint8 INIT_ANIMATION_STEPS_NUMBER = 50;
+const qreal HALVED_MAXIMUM_SIZE_RELATION_TO_PROCESS_ITEM_SIZE = 0.15;
+const QColor BORDER_COLOR = QColor(205, 133, 63);
+const QPointF INIT_POSITION = QPointF(0.0, 0.0);
+
+WorkflowHighlightItem::WorkflowHighlightItem(WorkflowProcessItem *owner)
+    : StyledItem(owner), countOfAnimationStepsLeft(0) {
+    setPos(INIT_POSITION);
+    setZValue(owner->zValue());
+    setVisible(false);
+}
+
+QRectF WorkflowHighlightItem::boundingRect() const {
+    WorkflowProcessItem *owner = dynamic_cast<WorkflowProcessItem *>(parentItem());
+    const QRectF parentBoundary = owner->getStyleById(owner->getStyle())->boundingRect();
+    const qreal sizeFactor = HALVED_MAXIMUM_SIZE_RELATION_TO_PROCESS_ITEM_SIZE
+        * countOfAnimationStepsLeft / INIT_ANIMATION_STEPS_NUMBER;
+
+    return parentBoundary.adjusted(-parentBoundary.width() * sizeFactor, -parentBoundary.height()
+        * sizeFactor, parentBoundary.width() * sizeFactor, parentBoundary.height() * sizeFactor);
+}
+
+void WorkflowHighlightItem::paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget) {
+    if(0 != countOfAnimationStepsLeft) {
+        painter->setPen(BORDER_COLOR);
+        painter->drawRoundedRect(boundingRect(), 5, 5);
+        prepareGeometryChange();
+        --countOfAnimationStepsLeft;
+        if(0 == countOfAnimationStepsLeft) {
+            setVisible(false);
+        }
+    }
+}
+
+void WorkflowHighlightItem::replay() {
+    countOfAnimationStepsLeft = INIT_ANIMATION_STEPS_NUMBER;
+    setVisible(true);
+    update();
+}
+
 }//namespace

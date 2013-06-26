@@ -2,9 +2,11 @@ include (workflow_designer.pri)
 
 # Input
 HEADERS += src/ActorCfgModel.h \
+           src/BreakpointManagerView.h \
            src/ChooseItemDialog.h \
            src/CreateScriptWorker.h \
            src/ImportSchemaDialog.h \
+           src/InvestigationDataModel.h \
            src/ItemViewStyle.h \
            src/IterationListWidget.h \
            src/PortAliasesConfigurationDialog.h \
@@ -15,6 +17,7 @@ HEADERS += src/ActorCfgModel.h \
            src/WorkflowDocument.h \
            src/WorkflowEditor.h \
            src/WorkflowEditorDelegates.h \
+           src/WorkflowInvestigationWidgetsController.h \
            src/WorkflowMetaDialog.h \
            src/WorkflowPalette.h \
            src/WorkflowSamples.h \
@@ -76,9 +79,11 @@ FORMS += src/ui/ChooseItemDialog.ui \
          src/ui/WorkflowMetaDialog.ui \
          src/ui/WorkflowSettingsWidget.ui
 SOURCES += src/ActorCfgModel.cpp \
+           src/BreakpointManagerView.cpp \
            src/ChooseItemDialog.cpp \
            src/CreateScriptWorker.cpp \
            src/ImportSchemaDialog.cpp \
+           src/InvestigationDataModel.cpp \
            src/ItemViewStyle.cpp \
            src/IterationListWidget.cpp \
            src/PortAliasesConfigurationDialog.cpp \
@@ -89,6 +94,7 @@ SOURCES += src/ActorCfgModel.cpp \
            src/WorkflowDocument.cpp \
            src/WorkflowEditor.cpp \
            src/WorkflowEditorDelegates.cpp \
+           src/WorkflowInvestigationWidgetsController.cpp \
            src/WorkflowMetaDialog.cpp \
            src/WorkflowPalette.cpp \
            src/WorkflowSamples.cpp \

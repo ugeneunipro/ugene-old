@@ -285,7 +285,6 @@ void DNAAlphabetRegistryImpl::initBaseTranslations() {
         treg->registerDNATranslation(t);
     }
 
-
     //extended NUCL DNA complement
     {
         //source: http://www.geneinfinity.org/sp_nucsymbols.html
@@ -515,7 +514,7 @@ void DNAAlphabetRegistryImpl::initBaseTranslations() {
         "TCAGTCAGTCAGTCAGTCAGTCAGTCAGTCAGTCAGTCAGTCAGTCAGTCAGTCAGTCAGTCAG",
         DNATranslationID(23),
         tr("23. Thraustochytrium Mitochondrial Code"));
-
+    
     char amino[65], n1[65], n2[65], n3[65];
     int prob[64];
 

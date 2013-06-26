@@ -45,6 +45,20 @@
 #include <QtCore/QFile>
 #include <QtCore/QFileInfo>
 #include <QtCore/QDir>
+#include <QCoreApplication>
+
+#include <U2Lang/DbiDataStorage.h>
+#include <U2Lang/WorkflowEnv.h>
+#include <U2Lang/WorkflowManager.h>
+#include <U2Lang/Schema.h>
+#include <U2Lang/HRSchemaSerializer.h>
+#include <U2Lang/WorkflowUtils.h>
+#include <U2Lang/BaseAttributes.h>
+#include <U2Lang/WorkflowSettings.h>
+#include <U2Lang/LocalDomain.h>
+
+#include "WorkflowDebugMessageParser.h"
+#include "WorkflowRunTask.h"
 
 #if (defined(Q_OS_WIN32) || defined(Q_OS_WINCE))
 #include <Windows.h>
@@ -56,6 +70,7 @@ static const QString OUTPUT_PROGRESS_OPTION("ugene-output-progress-state");
 static const QString OUTPUT_ERROR_OPTION("ugene-output-error");
 static const int UPDATE_PROGRESS_INTERVAL = 500;
 static const int TICK_UPDATE_INTERVAL = 1000;
+static const quint32 PAUSE_CHECK_REFRESH_PERIOD = 500;
 static const QString OUTPUT_PROGRESS_TAG("task-progress=");
 static const QString ERROR_KEYWORD("#%*ugene-finished-with-error#%*");
 static const QString STATE_KEYWORD("#%&state#%&");
@@ -81,15 +96,23 @@ WorkflowAbstractIterationRunner::WorkflowAbstractIterationRunner(const QString &
 /*******************************************
  * WorkflowRunTask
  *******************************************/
-WorkflowRunTask::WorkflowRunTask(const Schema& sh, QList<Iteration> lst, const QMap<ActorId, ActorId>& remap) :
-WorkflowAbstractRunner(tr("Execute workflow"), TaskFlags(TaskFlag_NoRun) | TaskFlag_ReportingIsSupported | TaskFlag_OnlyNotificationReport), rmap(remap), flows(sh.getFlows()) {
+WorkflowRunTask::WorkflowRunTask(const Schema& sh, QList<Iteration> lst,
+    const QMap<ActorId, ActorId>& remap, WorkflowDebugStatus *debugInfo)
+    : WorkflowAbstractRunner(tr("Execute workflow"),
+    TaskFlags(TaskFlag_NoRun) | TaskFlag_ReportingIsSupported | TaskFlag_OnlyNotificationReport), rmap(remap), flows(sh.getFlows())
+{
+
     GCOUNTER( cvar, tvar, "WorkflowRunTask" );
     if (lst.isEmpty()) { //  non-iterated schema
         lst << sh.extractIterationFromConfig();
     }
-    assert(!lst.isEmpty());
+    Q_ASSERT(!lst.isEmpty());
+    Q_ASSERT(NULL != debugInfo);
+    if(NULL == debugInfo->parent()) {
+        debugInfo->setParent(this);
+    }
     foreach(const Iteration& it, lst) {
-        WorkflowIterationRunTask* t = new WorkflowIterationRunTask(sh, it);
+        WorkflowIterationRunTask* t = new WorkflowIterationRunTask(sh, it, debugInfo);
         WorkflowMonitor *m = t->getMonitor();
         if (NULL != m) {
             monitors << m;
@@ -150,7 +173,7 @@ QList<WorkerState> WorkflowRunTask::getState( Actor* actor) {
     return ret;
 }
 
-int WorkflowRunTask::getMsgNum( Link* l) {
+int WorkflowRunTask::getMsgNum(const Link* l) {
     int ret = 0;
     foreach(Task* t, getSubtasks()) {
         WorkflowIterationRunTask* rt = qobject_cast<WorkflowIterationRunTask*>(t);
@@ -159,7 +182,7 @@ int WorkflowRunTask::getMsgNum( Link* l) {
     return ret;
 }
 
-int WorkflowRunTask::getMsgPassed(Link* l) {
+int WorkflowRunTask::getMsgPassed(const Link* l) {
     int ret = 0;
     foreach(Task* t, getSubtasks()) {
         ret += qobject_cast<WorkflowIterationRunTask*>(t)->getMsgPassed(l);
@@ -181,9 +204,14 @@ Task::ReportResult WorkflowRunTask::report() {
 /*******************************************
 * WorkflowIterationRunTask
 *******************************************/
-WorkflowIterationRunTask::WorkflowIterationRunTask(const Schema& sh, const Iteration& it) : 
-WorkflowAbstractIterationRunner(QString("%1").arg(it.name), TaskFlags(TaskFlag_FailOnSubtaskCancel) | TaskFlag_NoRun),
-context(NULL), schema(new Schema()), scheduler(NULL) {
+
+WorkflowIterationRunTask::WorkflowIterationRunTask(const Schema& sh, const Iteration& it,
+    WorkflowDebugStatus *initDebugInfo)
+    : WorkflowAbstractIterationRunner(QString("%1").arg(it.name),
+    (getAdditionalFlags() | TaskFlag_FailOnSubtaskCancel)), context(NULL),
+    schema(new Schema()), scheduler(NULL), debugInfo(initDebugInfo), isNextTickRestoring(false)
+{
+
     rmap = HRSchemaSerializer::deepCopy(sh, schema, stateInfo);
     SAFE_POINT_OP(stateInfo, );
     schema->applyConfiguration(it, rmap);
@@ -199,12 +227,29 @@ context(NULL), schema(new Schema()), scheduler(NULL) {
         return;
     }
 
+    connect(debugInfo, SIGNAL(si_pauseStateChanged(bool)), SLOT(sl_pauseStateChanged(bool)));
+    connect(debugInfo, SIGNAL(si_singleStepIsRequested(const ActorId &)), SLOT(sl_singleStepIsRequested(const ActorId &)));
+    connect(debugInfo, SIGNAL(si_busInvestigationIsRequested(const Workflow::Link *, int)),
+        SLOT(sl_busInvestigationIsRequested(const Workflow::Link *, int)));
+    connect(debugInfo, SIGNAL(si_busCountOfMessagesIsRequested(const Workflow::Link *)),
+        SLOT(sl_busCountOfMessagesRequested(const Workflow::Link *)));
+    connect(debugInfo, SIGNAL(si_convertMessages2Documents(const Workflow::Link *,
+        const QString &, int, const QString &)), SLOT(sl_convertMessages2Documents(
+        const Workflow::Link *, const QString &, int, const QString &)));
+
     WorkflowMonitor *m = new WorkflowMonitor(this, schema->getProcesses());
     context = new WorkflowContext(schema->getProcesses(), m);
 
     QTimer * timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), SIGNAL(si_updateProducers()));
     timer->start(UPDATE_PROGRESS_INTERVAL);
+}
+
+TaskFlags WorkflowIterationRunTask::getAdditionalFlags() {
+    TaskFlags result = (AppContext::isGUIMode())
+        ? (TaskFlags(TaskFlag_RunMessageLoopOnly) | TaskFlag_RunBeforeSubtasksFinished)
+        : TaskFlag_NoRun;
+    return result;
 }
 
 WorkflowIterationRunTask::~WorkflowIterationRunTask() {
@@ -255,10 +300,10 @@ void WorkflowIterationRunTask::prepare() {
     }
 
     if (!context->init()) {
-        stateInfo.setError(tr("Failed to create a worflow context"));
+        stateInfo.setError(tr("Failed to create a workflow context"));
         return;
     }
-
+    debugInfo->setContext(context);
     scheduler = df->createScheduler(schema);
     if (!scheduler) {
         stateInfo.setError(  tr("Failed to create scheduler in domain %1").arg(df->getDisplayName()) );
@@ -266,6 +311,7 @@ void WorkflowIterationRunTask::prepare() {
     }
     scheduler->setContext(context);
     scheduler->init();
+    scheduler->setDebugInfo(debugInfo);
     context->getMonitor()->start();
     while(scheduler->isReady() && !isCanceled()) {
         Task* t = scheduler->tick();
@@ -278,6 +324,20 @@ void WorkflowIterationRunTask::prepare() {
 
 QList<Task*> WorkflowIterationRunTask::onSubTaskFinished(Task* subTask) {
     QList<Task*> tasks;
+    
+    while(debugInfo->isPaused() && !isCanceled()) {
+        QCoreApplication::processEvents();
+    }
+    if(scheduler->isReady() && isNextTickRestoring) {
+        Task *replayingTask = scheduler->replayLastWorkerTick();
+        isNextTickRestoring = false;
+        if(NULL != replayingTask) {
+            tasks << replayingTask;
+            emit si_ticked();
+            return tasks;
+        }
+    }
+
     if (subTask->hasError()) {
         getMonitor()->addTaskError(subTask);
     }
@@ -289,6 +349,7 @@ QList<Task*> WorkflowIterationRunTask::onSubTaskFinished(Task* subTask) {
         }
     }
     emit si_ticked();
+
     return tasks;
 }
 
@@ -343,7 +404,17 @@ Task::ReportResult WorkflowIterationRunTask::report() {
     return ReportResult_Finished;
 }
 
-static QString getKey(Link * l) {
+WorkerState WorkflowIterationRunTask::getState(const ActorId& id)
+{
+    if (scheduler) {
+        const WorkerState currentState = scheduler->getWorkerState(rmap.value(id));
+        return (debugInfo->isPaused() && Workflow::WorkerRunning == currentState) ?
+            Workflow::WorkerPaused : currentState;
+    }
+    return WorkerWaiting;
+}
+
+static QString getKey(const Link * l) {
     QStringList lst;
     lst << (l->source()->owner()->getId());
     lst << (l->source()->getId());
@@ -363,14 +434,7 @@ WorkflowMonitor * WorkflowIterationRunTask::getMonitor() const {
     return context->getMonitor();
 }
 
-WorkerState WorkflowIterationRunTask::getState(const ActorId &actor) {
-    if (scheduler) {
-        return scheduler->getWorkerState(rmap.value(actor));
-    }
-    return WorkerWaiting;
-}
-
-int WorkflowIterationRunTask::getMsgNum(Link *l) {
+int WorkflowIterationRunTask::getMsgNum(const Link *l) {
     CommunicationChannel* cc = lmap.value(getKey(l));
     if (cc) {
         return cc->hasMessage();
@@ -378,7 +442,7 @@ int WorkflowIterationRunTask::getMsgNum(Link *l) {
     return 0;
 }
 
-int WorkflowIterationRunTask::getMsgPassed(Link *l) {
+int WorkflowIterationRunTask::getMsgPassed(const Link* l) {
     CommunicationChannel * cc = lmap.value(getKey(l));
     if(cc != NULL) {
         return cc->takenMessages();
@@ -406,6 +470,54 @@ int WorkflowIterationRunTask::getDataProduced(const ActorId &actor) {
         break;
     }
     return result;
+}
+
+void WorkflowIterationRunTask::sl_pauseStateChanged(bool isPaused) {
+    if (isPaused) {
+        if (!debugInfo->isCurrentStepIsolated()) {
+            isNextTickRestoring = scheduler->cancelCurrentTaskIfAllowed();
+        }
+        if (AppContext::isGUIMode()) {
+            AppContext::getTaskScheduler()->pauseThreadWithTask(this);
+        }
+    } else if (AppContext::isGUIMode()) {
+        AppContext::getTaskScheduler()->resumeThreadWithTask(this);
+    }
+}
+
+void WorkflowIterationRunTask::sl_busInvestigationIsRequested(const Workflow::Link *bus,
+    int messageNumber)
+{
+    CommunicationChannel *channel = lmap.value(getKey(bus));
+    if(NULL != channel && debugInfo->isPaused()) {
+        QQueue<Message> messages = channel->getMessages(messageNumber, messageNumber);
+        WorkflowInvestigationData data = WorkflowDebugMessageParser(messages, context)
+            .getAllMessageValues();
+        debugInfo->respondToInvestigator(data, bus);
+    }
+}
+
+void WorkflowIterationRunTask::sl_busCountOfMessagesRequested(const Workflow::Link *bus) {
+    debugInfo->respondMessagesCount(bus, getMsgNum(bus));
+}
+
+void WorkflowIterationRunTask::sl_singleStepIsRequested(const ActorId &actor) {
+    if(debugInfo->isPaused()) {
+        scheduler->makeOneTick(actor);
+    }
+}
+
+void WorkflowIterationRunTask::sl_convertMessages2Documents(const Workflow::Link *bus,
+    const QString &messageType, int messageNumber, const QString &schemeName)
+{
+    CommunicationChannel *channel = lmap.value(getKey(bus));
+    if(NULL != channel && debugInfo->isPaused()) {
+        QQueue<Message> messages = channel->getMessages(messageNumber, messageNumber);
+        if(!messages.isEmpty()) {
+            WorkflowDebugMessageParser(messages, context).convertMessagesToDocuments(messageType,
+                schemeName, messageNumber);
+        }
+    }
 }
 
 /*******************************************
@@ -445,7 +557,7 @@ QList<WorkerState> WorkflowRunInProcessTask::getState(Actor * a) {
     return ret;
 }
 
-int WorkflowRunInProcessTask::getMsgNum(Link * l) {
+int WorkflowRunInProcessTask::getMsgNum(const Link * l) {
     int ret = 0;
     foreach(Task* t, getSubtasks()) {
         WorkflowIterationRunInProcessTask* rt = qobject_cast<WorkflowIterationRunInProcessTask*>(t);
@@ -454,7 +566,7 @@ int WorkflowRunInProcessTask::getMsgNum(Link * l) {
     return ret;
 }
 
-int WorkflowRunInProcessTask::getMsgPassed(Link * l) {
+int WorkflowRunInProcessTask::getMsgPassed(const Link * l) {
     int ret = 0;
     foreach(Task* t, getSubtasks()) {
         WorkflowIterationRunInProcessTask* rt = qobject_cast<WorkflowIterationRunInProcessTask*>(t);
@@ -521,7 +633,7 @@ WorkerState WorkflowIterationRunInProcessTask::getState(const ActorId &actor) {
     return monitor != NULL ? monitor->getState(rmap.value(actor)) : WorkerWaiting;
 }
 
-int WorkflowIterationRunInProcessTask::getMsgNum(Link * l) {
+int WorkflowIterationRunInProcessTask::getMsgNum(const Link * l) {
     if(monitor != NULL) {
         ActorId srcId = rmap.value(l->source()->owner()->getId());
         ActorId dstId = rmap.value(l->destination()->owner()->getId());
@@ -532,7 +644,7 @@ int WorkflowIterationRunInProcessTask::getMsgNum(Link * l) {
     }
 }
 
-int WorkflowIterationRunInProcessTask::getMsgPassed(Link * l) {
+int WorkflowIterationRunInProcessTask::getMsgPassed(const Link * l) {
     if(monitor != NULL) {
         ActorId srcId = rmap.value(l->source()->owner()->getId());
         ActorId dstId = rmap.value(l->destination()->owner()->getId());

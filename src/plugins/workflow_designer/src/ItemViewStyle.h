@@ -33,10 +33,8 @@ namespace U2 {
 
 class WorkflowProcessItem;
 
-const qreal PI = 3.141596;
 const qreal R = 30;
 const qreal A = 8;
-
 
 class ItemViewStyle : public QGraphicsObject {
     Q_OBJECT

@@ -82,7 +82,7 @@ public:
     // reimplemented from CommunicationChannel
     virtual Message get();
     virtual Message look() const;
-    virtual void put(const Message& m);
+    virtual void put(const Message& m, bool isMessageRestored = false);
     // put incoming context to the output channels
     virtual void transit();
     virtual int hasMessage() const;
@@ -93,7 +93,8 @@ public:
     virtual int capacity() const {return 1;}
     virtual void setCapacity(int) {}
     virtual Message lookMessage() const;
-    
+    virtual QQueue<Message> getMessages(int startIndex, int endIndex) const;
+
     virtual QVariantMap getContext() const {return context;}
     virtual void setContext(const QVariantMap& m);
     
@@ -105,7 +106,7 @@ public:
     void setPrintSlots(bool in, const QList<QString> &printSlots);
 
     void setWorkflowContext(WorkflowContext *context);
-    
+
 protected:
     virtual Message composeMessage(const Message&);
 

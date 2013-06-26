@@ -39,6 +39,7 @@
 #include <QtGui/QPrinter>
 #include <QtGui/QShortcut>
 #include <QtGui/QSplitter>
+#include <QtGui/QTableWidget>
 #include <QtGui/QToolBar>
 #include <QtGui/QToolButton>
 #include <QtSvg/QSvgGenerator>
@@ -79,6 +80,7 @@
 #include <U2Lang/WorkflowRunTask.h>
 #include <U2Lang/WorkflowSettings.h>
 #include <U2Lang/WorkflowUtils.h>
+#include <U2Lang/WorkflowDebugStatus.h>
 #include <U2Remote/DistributedComputingUtil.h>
 #include <U2Remote/RemoteMachine.h>
 #include <U2Remote/RemoteMachineMonitorDialogController.h>
@@ -103,10 +105,11 @@
 #include "WorkflowViewController.h"
 #include "WorkflowViewItems.h"
 #include "WorkflowViewItems.h"
+#include "BreakpointManagerView.h"
 #include "library/CreateExternalProcessDialog.h"
 #include "library/ExternalProcessWorker.h"
 #include "library/ScriptWorker.h"
-
+#include "WorkflowInvestigationWidgetsController.h"
 
 /* TRANSLATOR U2::LocalWorkflow::WorkflowView*/
 
@@ -216,7 +219,8 @@ static QToolButton * scriptMenu(WorkflowView *parent, const QList<QAction*> &scr
 * WorkflowView
 ********************************/
 WorkflowView::WorkflowView(WorkflowGObject* go) 
-: MWMDIWindow(tr("Workflow Designer")), running(false), sceneRecreation(false), go(go), currentProto(NULL), currentActor(NULL), pasteCount(0)
+: MWMDIWindow(tr("Workflow Designer")), running(false), sceneRecreation(false), go(go), currentProto(NULL), currentActor(NULL),
+pasteCount(0), debugInfo(new WorkflowDebugStatus(this)), debugActions()
 {
     runMode = (RunMode)WorkflowSettings::getRunMode();
     scriptingMode = WorkflowSettings::getScriptingMode();
@@ -232,6 +236,7 @@ WorkflowView::WorkflowView(WorkflowGObject* go)
     infoSplitter = new QSplitter(Qt::Vertical);
     infoSplitter->addWidget(sceneView);
     infoSplitter->addWidget(errorList);
+    addBottomWidgetsToInfoSplitter();
     setupMainSplitter();
 
     loadUiSettings();
@@ -392,6 +397,63 @@ void WorkflowView::setupMainSplitter() {
     layout->setMargin(0);
     layout->setContentsMargins(0, 0, 0, 0);
     setLayout(layout);
+    
+    connect(debugInfo, SIGNAL(si_pauseStateChanged(bool)), scene, SLOT(update()));
+    connect(debugInfo, SIGNAL(si_pauseStateChanged(bool)), SLOT(sl_pause(bool)));
+    connect(investigationWidgets,
+        SIGNAL(si_updateCurrentInvestigation(const Workflow::Link *, int)), debugInfo,
+        SIGNAL(si_busInvestigationIsRequested(const Workflow::Link *, int)));
+    connect(investigationWidgets, SIGNAL(si_countOfMessagesRequested(const Workflow::Link *)),
+        debugInfo, SIGNAL(si_busCountOfMessagesIsRequested(const Workflow::Link *)));
+    connect(debugInfo,
+        SIGNAL(si_busInvestigationRespond(const WorkflowInvestigationData &, const Workflow::Link *)),
+        investigationWidgets,
+        SLOT(sl_currentInvestigationUpdateResponse(const WorkflowInvestigationData &, const Workflow::Link *)));
+    connect(debugInfo, SIGNAL(si_busCountOfMessagesResponse(const Workflow::Link *, int)),
+        investigationWidgets, SLOT(sl_countOfMessagesResponse(const Workflow::Link *, int)));
+    connect(investigationWidgets, SIGNAL(si_convertionMessages2DocumentsIsRequested(
+        const Workflow::Link *, const QString &, int)),
+        SLOT(sl_convertMessages2Documents(const Workflow::Link *, const QString &, int)));
+    connect(debugInfo, SIGNAL(si_breakpointAdded(const ActorId &)),
+        SLOT(sl_breakpointAdded(const ActorId &)));
+    connect(debugInfo, SIGNAL(si_breakpointEnabled(const ActorId &)), SLOT(sl_breakpointEnabled(const ActorId &)));
+    connect(debugInfo, SIGNAL(si_breakpointRemoved(const ActorId &)),
+        SLOT(sl_breakpointRemoved(const ActorId &)));
+    connect(debugInfo, SIGNAL(si_breakpointDisabled(const ActorId &)),
+        SLOT(sl_breakpointDisabled(const ActorId &)));
+    connect(debugInfo, SIGNAL(si_breakpointIsReached(const U2::ActorId &)),
+        SLOT(sl_breakpointIsReached(const U2::ActorId &)));
+}
+
+void WorkflowView::sl_breakpointIsReached(const U2::ActorId &actor) {
+    propagateBreakpointToSceneItem(actor);
+    breakpointView->onBreakpointReached(actor);
+}
+
+void WorkflowView::addBottomWidgetsToInfoSplitter() {
+    bottomTabs = new QTabWidget(infoSplitter);
+
+    infoList = new QListWidget(this);
+    connect(infoList, SIGNAL(itemDoubleClicked(QListWidgetItem*)), SLOT(sl_pickInfo(QListWidgetItem*)));
+
+    QWidget* w = new QWidget(bottomTabs);
+    QVBoxLayout* vl = new QVBoxLayout(w);
+    vl->setSpacing(0);
+    vl->setMargin(0);
+    vl->setContentsMargins(0, 0, 0, 0);
+    vl->addWidget(infoList);
+    w->hide();
+    bottomTabs->addTab(w, tr("Error list"));
+
+    breakpointView = new BreakpointManagerView(debugInfo, schema);
+    connect(breakpointView, SIGNAL(si_highlightingRequested(const ActorId &)),
+        SLOT(sl_highlightingRequested(const ActorId &)));
+    bottomTabs->addTab(breakpointView, tr("Breakpoints"));
+
+    investigationWidgets = new WorkflowInvestigationWidgetsController(bottomTabs);
+    
+    infoSplitter->addWidget(bottomTabs);
+    bottomTabs->hide();
 }
 
 void WorkflowView::sl_rescaleScene(const QString &scale)
@@ -410,34 +472,67 @@ void WorkflowView::sl_rescaleScene(const QString &scale)
     scene->setSceneRect(rect);
 }
 
-
 void WorkflowView::createActions() {
-    runAction = new QAction(tr("&Run schema"), this);
+    runAction = new QAction(tr("&Run scheme"), this);
     runAction->setIcon(QIcon(":workflow_designer/images/run.png"));
     runAction->setShortcut(QKeySequence("Ctrl+R"));
     connect(runAction, SIGNAL(triggered()), SLOT(sl_launch()));
+    connect(runAction, SIGNAL(triggered()), debugInfo, SLOT(sl_resumeTriggerActivated()));
 
-    stopAction = new QAction(tr("S&top schema"), this);
+    stopAction = new QAction(tr("S&top scheme"), this);
     stopAction->setIcon(QIcon(":workflow_designer/images/stopTask.png"));
+    stopAction->setEnabled(false);
+    connect(stopAction, SIGNAL(triggered()), debugInfo, SLOT(sl_executionFinished()));
     connect(stopAction, SIGNAL(triggered()), SLOT(sl_stop()));
 
-    validateAction = new QAction(tr("&Validate schema"), this);
+    validateAction = new QAction(tr("&Validate scheme"), this);
     validateAction->setIcon(QIcon(":workflow_designer/images/ok.png"));
     validateAction->setShortcut(QKeySequence("Ctrl+E"));
     connect(validateAction, SIGNAL(triggered()), SLOT(sl_validate()));
 
-    newAction = new QAction(tr("&New schema"), this);
+    pauseAction = new QAction(tr("&Pause scheme"), this);
+    pauseAction->setIcon(QIcon(":workflow_designer/images/pause.png"));
+    pauseAction->setShortcut(QKeySequence("Ctrl+P"));
+    pauseAction->setEnabled(false);
+    connect(pauseAction, SIGNAL(triggered()), debugInfo, SLOT(sl_pauseTriggerActivated()));
+    debugActions.append(pauseAction);
+    
+    nextStepAction = new QAction(tr("&Next step"), this);
+    nextStepAction->setIcon(QIcon(":workflow_designer/images/next_step.png"));
+    nextStepAction->setShortcut(QKeySequence("F10"));
+    nextStepAction->setEnabled(false);
+    connect(nextStepAction, SIGNAL(triggered()), debugInfo, SLOT(sl_isolatedStepTriggerActivated()));
+    debugActions.append(nextStepAction);
+
+    toggleBreakpointAction = new QAction(tr("Toggle &breakpoint"), this);
+    toggleBreakpointAction->setIcon(QIcon(":workflow_designer/images/breakpoint.png"));
+    toggleBreakpointAction->setShortcut(QKeySequence("Ctrl+B"));
+    toggleBreakpointAction->setEnabled(false);
+    connect(toggleBreakpointAction, SIGNAL(triggered()), SLOT(sl_toggleBreakpoint()));
+    connect(toggleBreakpointAction, SIGNAL(triggered()), scene, SLOT(update()));
+
+    tickReadyAction = new QAction(tr("Process one &message"), this);
+    tickReadyAction->setIcon(QIcon(":workflow_designer/images/process_one_message.png"));
+    tickReadyAction->setShortcut(QKeySequence("Ctrl+M"));
+    tickReadyAction->setEnabled(false);
+    connect(tickReadyAction, SIGNAL(triggered()), SLOT(sl_processOneMessage()));
+    connect(tickReadyAction, SIGNAL(triggered()), scene, SLOT(update()));
+    connect(tickReadyAction, SIGNAL(triggered()), SLOT(sl_onSelectionChanged()));
+    connect(tickReadyAction, SIGNAL(triggered()), bottomTabs, SLOT(update()));
+    debugActions.append(tickReadyAction);
+
+    newAction = new QAction(tr("&New scheme"), this);
     newAction->setIcon(QIcon(":workflow_designer/images/filenew.png"));
     newAction->setShortcuts(QKeySequence::New);
     connect(newAction, SIGNAL(triggered()), SLOT(sl_newScene()));
 
-    saveAction = new QAction(tr("&Save schema"), this);
+    saveAction = new QAction(tr("&Save scheme"), this);
     saveAction->setIcon(QIcon(":workflow_designer/images/filesave.png"));
     saveAction->setShortcut(QKeySequence::Save);
     saveAction->setShortcutContext(Qt::WindowShortcut);
     connect(saveAction, SIGNAL(triggered()), SLOT(sl_saveScene()));
     
-    saveAsAction = new QAction(tr("&Save schema as..."), this);
+    saveAsAction = new QAction(tr("&Save scheme as..."), this);
     saveAsAction->setIcon(QIcon(":workflow_designer/images/filesaveas.png"));
     connect(saveAsAction, SIGNAL(triggered()), SLOT(sl_saveSceneAs()));
 
@@ -445,6 +540,11 @@ void WorkflowView::createActions() {
     QPixmap pm = QPixmap(":workflow_designer/images/wizard.png").scaled(16, 16);
     showWizard->setIcon(QIcon(pm));
     connect(showWizard, SIGNAL(triggered()), SLOT(sl_showWizard()));
+
+    toggleBreakpointManager = new QAction("Show or hide breakpoint manager", this);
+    toggleBreakpointManager->setIcon(QIcon(":workflow_designer/images/show_breakpoint_manager.png"));
+    connect(toggleBreakpointManager, SIGNAL(triggered()), SLOT(sl_toggleBreakpointManager()));
+    
 
     { // toggle dashboard action
         toggleDashboard = new QAction(this);
@@ -456,7 +556,7 @@ void WorkflowView::createActions() {
     loadAction->setShortcut(QKeySequence("Ctrl+L"));
     connect(loadAction, SIGNAL(triggered()), SLOT(sl_loadScene()));
 
-    exportAction = new QAction(tr("&Export schema"), this);
+    exportAction = new QAction(tr("&Export scheme"), this);
     exportAction->setIcon(QIcon(":workflow_designer/images/export.png"));
     exportAction->setShortcut(QKeySequence("Ctrl+Shift+S"));
     connect(exportAction, SIGNAL(triggered()), SLOT(sl_exportScene()));
@@ -489,7 +589,7 @@ void WorkflowView::createActions() {
     configurePortAliasesAction->setIcon(QIcon(":workflow_designer/images/port_relationship.png"));
     connect(configurePortAliasesAction, SIGNAL(triggered()), SLOT(sl_configurePortAliases()));
 
-    importSchemaToElement = new QAction(tr("Import schema to element..."), this);
+    importSchemaToElement = new QAction(tr("Import scheme to element..."), this);
     importSchemaToElement->setIcon(QIcon(":workflow_designer/images/import.png"));
     connect(importSchemaToElement, SIGNAL(triggered()), SLOT(sl_importSchemaToElement()));
 
@@ -569,9 +669,9 @@ void WorkflowView::createActions() {
     unlockAction->setChecked(true);
     connect(unlockAction, SIGNAL(toggled(bool)), SLOT(sl_toggleLock(bool)));
 
-    createScriptAcction = new QAction(tr("Create element with script..."), this);
-    createScriptAcction->setIcon(QIcon(":workflow_designer/images/script.png"));
-    connect(createScriptAcction, SIGNAL(triggered()), SLOT(sl_createScript()));
+    createScriptAction = new QAction(tr("Create element with script..."), this);
+    createScriptAction->setIcon(QIcon(":workflow_designer/images/script.png"));
+    connect(createScriptAction, SIGNAL(triggered()), SLOT(sl_createScript()));
 
     editScriptAction = new QAction(tr("Edit script of the element..."),this);
     editScriptAction->setIcon(QIcon(":workflow_designer/images/script_edit.png"));
@@ -595,6 +695,10 @@ void WorkflowView::createActions() {
     findPrototypeAction->setShortcut(QKeySequence::Find);
     connect(findPrototypeAction, SIGNAL(triggered()), SLOT(sl_findPrototype()));
     this->addAction(findPrototypeAction);
+
+    foreach(QAction *action, debugActions) {
+        action->setVisible(false);
+    }
 }
 
 void WorkflowView::sl_findPrototype(){
@@ -798,6 +902,12 @@ void WorkflowView::sl_toggleLock(bool b) {
     running = !b;
     if (sender() != unlockAction) {
         unlockAction->setChecked(!running);
+        if(!WorkflowSettings::runInSeparateProcess()) {
+            breakpointView->setEnabled(b);
+            toggleDebugActionsState(!b);
+            investigationWidgets->deleteBusInvestigations();
+            investigationWidgets->resetInvestigations();
+        }
         return;
     }
 
@@ -814,6 +924,7 @@ void WorkflowView::sl_toggleLock(bool b) {
     pasteAction->setEnabled(!running);
     cutAction->setEnabled(!running);
 
+    stopAction->setEnabled(running);
     iterationModeAction->setEnabled(!running);
     configureIterationsAction->setEnabled(!running);
     runAction->setEnabled(!running);
@@ -825,6 +936,8 @@ void WorkflowView::sl_toggleLock(bool b) {
     propertyEditor->setEnabled(!running);
     propertyEditor->setSpecialPanelEnabled(!running);
     palette->setEnabled(!running);
+    toggleDebugActionsState(!b);
+    breakpointView->setEnabled(b);
     samples->setEnabled(!running);
 
     setupActions();
@@ -954,13 +1067,18 @@ void WorkflowView::setupMDIToolbar(QToolBar* tb) {
     tb->addAction(showWizard);
     tb->addAction(validateAction);
     tb->addAction(runAction);
+    tb->addAction(pauseAction);
+    tb->addAction(toggleBreakpointAction);
+    tb->addAction(toggleBreakpointManager);
+    tb->addAction(nextStepAction);
+    tb->addAction(tickReadyAction);
     tb->addAction(stopAction);
     runSep = tb->addSeparator();
     tb->addAction(configureParameterAliasesAction);
     tb->addAction(iterationModeAction);
     tb->addAction(configureIterationsAction);
     confSep = tb->addSeparator();
-    tb->addAction(createScriptAcction);
+    tb->addAction(createScriptAction);
     tb->addAction(editScriptAction);
     scriptSep = tb->addSeparator();
     tb->addAction(externalToolAction);
@@ -996,7 +1114,6 @@ void WorkflowView::setupActions() {
 
     showWizard->setVisible(editMode && !schema->getWizards().isEmpty());
     validateAction->setVisible(editMode);
-    runAction->setVisible(!running);
     stopAction->setVisible(running);
     runSep->setVisible(editMode);
 
@@ -1005,7 +1122,7 @@ void WorkflowView::setupActions() {
     configureIterationsAction->setVisible(editMode);
     confSep->setVisible(editMode);
 
-    createScriptAcction->setVisible(editMode);
+    createScriptAction->setVisible(editMode);
     editScriptAction->setVisible(editMode);
     scriptSep->setVisible(editMode);
 
@@ -1054,7 +1171,7 @@ void WorkflowView::setupViewMenu(QMenu* m) {
     m->addAction(iterationModeAction);
     m->addAction(configureIterationsAction);
     m->addSeparator();
-    m->addAction(createScriptAcction);
+    m->addAction(createScriptAction);
     m->addAction(editScriptAction);
     m->addSeparator();
     m->addAction(externalToolAction);
@@ -1087,64 +1204,75 @@ void WorkflowView::setupViewMenu(QMenu* m) {
 }
 
 void WorkflowView::setupContextMenu(QMenu* m) {
-    if (!unlockAction->isChecked()) {
-        m->addAction(unlockAction);
-        return;
-    }
-
-    if(!lastPaste.isEmpty()) {
-        m->addAction(pasteAction);
-    }
-    QList<QGraphicsItem*> sel = scene->selectedItems();
-    if (!sel.isEmpty()) {
-        if(!((sel.size() == 1 && sel.first()->type() == WorkflowBusItemType) || sel.first()->type() == WorkflowPortItemType)) {
-            m->addAction(copyAction);
-            m->addAction(cutAction);
+    if(!debugInfo->isPaused()) {
+        if (!unlockAction->isChecked()) {
+            if(WorkflowSettings::runInSeparateProcess()) {
+                m->addAction(unlockAction);
+            }
+            return;
         }
-        if(!(sel.size() == 1 && sel.first()->type() == WorkflowPortItemType)) {
-            m->addAction(deleteAction);
+
+        if(!lastPaste.isEmpty()) {
+            m->addAction(pasteAction);
+        }
+        QList<QGraphicsItem*> sel = scene->selectedItems();
+        if (!sel.isEmpty()) {
+            if(!((sel.size() == 1 && sel.first()->type() == WorkflowBusItemType) || sel.first()->type() == WorkflowPortItemType)) {
+                m->addAction(copyAction);
+                m->addAction(cutAction);
+            }
+            if(!(sel.size() == 1 && sel.first()->type() == WorkflowPortItemType)) {
+                m->addAction(deleteAction);
+            }
+            m->addSeparator();
+            if (sel.size() == 1 && sel.first()->type() == WorkflowProcessItemType) {
+                WorkflowProcessItem* wit = qgraphicsitem_cast<WorkflowProcessItem*>(sel.first());
+                Actor *scriptActor = wit->getProcess();
+                AttributeScript *script = scriptActor->getScript();
+                if(script) {
+                    m->addAction(editScriptAction);
+                }
+
+                ActorPrototype *p = scriptActor->getProto();
+                if (p->isExternalTool()) {
+                    m->addAction(editExternalToolAction);
+                }
+
+                m->addSeparator();
+
+                QMenu* itMenu = new QMenu(tr("Element properties"));
+                foreach(QAction* a, wit->getContextMenuActions()) {
+                    itMenu->addAction(a);
+                }
+                m->addMenu(itMenu);
+            }
+            if(!(sel.size() == 1 && (sel.first()->type() == WorkflowBusItemType || sel.first()->type() == WorkflowPortItemType))) {
+                QMenu* ttMenu = new QMenu(tr("Element style"));
+                foreach(QAction* a, styleActions) {
+                    ttMenu->addAction(a);
+                }
+                m->addMenu(ttMenu);
+            }
         }
         m->addSeparator();
-        if (sel.size() == 1 && sel.first()->type() == WorkflowProcessItemType) {
-            WorkflowProcessItem* wit = qgraphicsitem_cast<WorkflowProcessItem*>(sel.first());
-            Actor *scriptActor = wit->getProcess();
-            AttributeScript *script = scriptActor->getScript();
-            if(script) {
-                m->addAction(editScriptAction);
-            }
 
-            ActorPrototype *p = scriptActor->getProto();
-            if (p->isExternalTool()) {
-                m->addAction(editExternalToolAction);
-            }
-
-            m->addSeparator();
-
-            QMenu* itMenu = new QMenu(tr("Element properties"));
-            foreach(QAction* a, wit->getContextMenuActions()) {
-                itMenu->addAction(a);
-            }
-            m->addMenu(itMenu);
+        QMenu * runModeMenu = new QMenu( tr( "Run mode" ) );
+        foreach( QAction * a, runModeActions ) {
+            runModeMenu->addAction( a );
         }
-        if(!(sel.size() == 1 && (sel.first()->type() == WorkflowBusItemType || sel.first()->type() == WorkflowPortItemType))) {
-            QMenu* ttMenu = new QMenu(tr("Element style"));
-            foreach(QAction* a, styleActions) {
-                ttMenu->addAction(a);
-            }
-            m->addMenu(ttMenu);
+        m->addMenu( runModeMenu );
+        m->addSeparator();
+
+        m->addAction(selectAction);
+        m->addMenu(palette->createMenu(tr("Add element")));
+    }
+
+    foreach(QGraphicsItem *item, scene->selectedItems()) {
+        if(WorkflowProcessItemType == item->type()) {
+            m->addAction(toggleBreakpointAction);
+            break;
         }
     }
-    m->addSeparator();
-
-    QMenu * runModeMenu = new QMenu( tr( "Run mode" ) );
-    foreach( QAction * a, runModeActions ) {
-        runModeMenu->addAction( a );
-    }
-    m->addMenu( runModeMenu );
-    m->addSeparator();
-
-    m->addAction(selectAction);
-    m->addMenu(palette->createMenu(tr("Add element")));
 }
 
 void WorkflowView::sl_pickInfo(QListWidgetItem* info) {
@@ -1186,14 +1314,16 @@ bool WorkflowView::sl_validate(bool notify) {
         foreach(QListWidgetItem* wi, lst) {
             infoList->addItem(wi);
         }
+        bottomTabs->show();
+        bottomTabs->setCurrentWidget(infoList->parentWidget());
         infoList->parentWidget()->show();
         QList<int> s = infoSplitter->sizes();
-        if (s[s.size() - 2] == 0) {
-            s[s.size() - 2] = qMin(infoList->sizeHint().height(), 300);
+        if (s[s.size() - 1] == 0) {
+            s[s.size() - 1] = qMin(infoList->sizeHint().height(), 300);
             infoSplitter->setSizes(s);
         }
-    } else {
-        infoList->parentWidget()->hide();
+    } else if(bottomTabs->currentWidget() == infoList->parentWidget()) {
+        bottomTabs->hide();
     }
     if (!good) {
         QMessageBox::warning(this, tr("Schema cannot be executed"), 
@@ -1226,7 +1356,7 @@ void WorkflowView::localHostLaunch() {
     if(WorkflowSettings::runInSeparateProcess()) {
         t = new WorkflowRunInProcessTask(*s, s->getIterations());
     } else {
-        t = new WorkflowRunTask(*s, s->getIterations());
+        t = new WorkflowRunTask(*s, s->getIterations(), ActorMap(), debugInfo);
     }
 
     t->setReportingEnabled(true);
@@ -1234,7 +1364,10 @@ void WorkflowView::localHostLaunch() {
         unlockAction->setChecked(false);
         scene->setRunner(t);
         connect(t, SIGNAL(si_ticked()), scene, SLOT(update()));
-        connect(new TaskSignalMapper(t), SIGNAL(si_taskFinished(Task*)), SLOT(sl_toggleLock()));
+        TaskSignalMapper *signalMapper = new TaskSignalMapper(t);
+        connect(signalMapper, SIGNAL(si_taskFinished(Task*)), debugInfo,
+            SLOT(sl_executionFinished()));
+        connect(signalMapper, SIGNAL(si_taskFinished(Task*)), SLOT(sl_toggleLock()));
     }
     AppContext::getTaskScheduler()->registerTopLevelTask(t);
     foreach (WorkflowMonitor *m, t->getMonitors()) {
@@ -1263,23 +1396,182 @@ void WorkflowView::remoteLaunch() {
 }
 
 void WorkflowView::sl_launch() {
-    switch( runMode ) {
-    case LOCAL_HOST:
-        localHostLaunch();
-        break;
-    case REMOTE_MACHINE:
-        remoteLaunch();
-        break;
-    default:
-        assert( false );
+    if(!debugInfo->isPaused()) {
+        switch( runMode ) {
+        case LOCAL_HOST:
+            localHostLaunch();
+            break;
+        case REMOTE_MACHINE:
+            remoteLaunch();
+            break;
+        default:
+            assert( false );
+        }
+        if(NULL != scene->getRunner()) {
+            stopAction->setEnabled(true);
+            if(!WorkflowSettings::runInSeparateProcess()) {
+                pauseAction->setEnabled(true);
+                propertyEditor->setEnabled(false);
+                toggleDebugActionsState(true);
+            }
+        }
+    }
+}
+
+void WorkflowView::sl_pause(bool isPause) {
+    pauseAction->setEnabled(!isPause);
+    runAction->setEnabled(isPause);
+    nextStepAction->setEnabled(isPause);
+    propertyEditor->setEnabled(isPause);
+    scene->setLocked(!isPause);
+    breakpointView->setEnabled(isPause);
+    investigationWidgets->setInvestigationWidgetsVisible(isPause);
+    WorkflowAbstractRunner *runningWorkflow = scene->getRunner();
+    if (NULL != runningWorkflow && runningWorkflow->isRunning()) {
+        foreach (WorkflowMonitor *m, runningWorkflow->getMonitors()) {
+            if (isPause) {
+                m->pause();
+            } else {
+                m->start();
+            }
+        }
     }
 }
 
 void WorkflowView::sl_stop() {
     Task *runningWorkflow = scene->getRunner();
-    if (runningWorkflow) {
+    if (NULL != runningWorkflow) {
         runningWorkflow->cancel();
     }
+    investigationWidgets->resetInvestigations();
+}
+
+void WorkflowView::toggleDebugActionsState(bool enable) {
+    if(!WorkflowSettings::runInSeparateProcess()) {
+        foreach(QAction *action, debugActions) {
+            action->setVisible(enable);
+        }
+    }
+}
+
+void WorkflowView::sl_toggleBreakpoint() {
+    foreach(QGraphicsItem *item, scene->selectedItems()) {
+        if(WorkflowProcessItemType == item->type()) {
+            WorkflowProcessItem *processItem = qgraphicsitem_cast<WorkflowProcessItem*>(item);
+            Q_ASSERT(NULL != processItem);
+            if(processItem->isBreakpointInserted() && !processItem->isBreakpointEnabled()) {
+                processItem->toggleBreakpointState();
+                debugInfo->setBreakpointEnabled(processItem->getProcess()->getId(), true);
+            } else {
+                processItem->toggleBreakpoint();
+            }
+            if(processItem->isBreakpointInserted()) {
+                debugInfo->addBreakpointToActor(processItem->getProcess()->getId());
+            } else {
+                debugInfo->removeBreakpointFromActor(processItem->getProcess()->getId());
+            }
+        }
+    }
+}
+
+void WorkflowView::propagateBreakpointToSceneItem(ActorId actor) {
+    WorkflowProcessItem* processItem = findItemById(actor);
+    Q_ASSERT(processItem->isBreakpointInserted());
+    processItem->highlightItem();
+}
+
+void WorkflowView::sl_breakpointAdded(const ActorId &actor) {
+    changeBreakpointState(actor, true);
+}
+
+void WorkflowView::sl_breakpointRemoved(const ActorId &actor) {
+    changeBreakpointState(actor, false);
+}
+
+void WorkflowView::sl_breakpointEnabled(const ActorId &actor) {
+    changeBreakpointState(actor, false, true);
+}
+
+void WorkflowView::sl_breakpointDisabled(const ActorId &actor) {
+    changeBreakpointState(actor, false, true);
+}
+
+void WorkflowView::changeBreakpointState(const ActorId &actor, bool isBreakpointBeingAdded,
+    bool isBreakpointStateBeingChanged)
+{
+    WorkflowProcessItem* processItem = findItemById(actor);
+    Q_ASSERT(NULL != processItem);
+
+    if(processItem->isBreakpointInserted()) {
+        if(!isBreakpointBeingAdded) {
+            if(!isBreakpointStateBeingChanged) {
+                processItem->toggleBreakpoint();
+            } else {
+                processItem->toggleBreakpointState();
+            }
+        }
+    } else {
+        if(isBreakpointBeingAdded) {
+            if(!isBreakpointStateBeingChanged){
+                processItem->toggleBreakpoint();
+            } else {
+                Q_ASSERT(false);
+            }
+        }
+    }
+    scene->update();
+}
+
+void WorkflowView::sl_toggleBreakpointManager() {
+    if(!breakpointView->isVisible()) {
+        bottomTabs->setVisible(true);
+        bottomTabs->setCurrentWidget(breakpointView);
+    } else {
+        bottomTabs->hide();
+    }
+}
+
+void WorkflowView::sl_highlightingRequested(const ActorId &actor) {
+    findItemById(actor)->highlightItem();
+}
+
+void WorkflowView::sl_processOneMessage() {
+    Q_ASSERT(debugInfo->isPaused());
+    QList<QGraphicsItem *> selectedItems = scene->selectedItems();
+    Q_ASSERT(1 == selectedItems.size());
+    WorkflowProcessItem *processItem = qgraphicsitem_cast<WorkflowProcessItem *>(selectedItems.first());
+    debugInfo->requestForSingleStep(processItem->getProcess()->getId());
+}
+
+void WorkflowView::sl_convertMessages2Documents(const Workflow::Link *bus,
+    const QString &messageType, int messageNumber)
+{
+    debugInfo->convertMessagesToDocuments(bus, messageType, messageNumber, meta.name);
+}
+
+WorkflowProcessItem *WorkflowView::findItemById(ActorId actor) const {
+    foreach(QGraphicsItem *item, scene->items()) {
+        if(WorkflowProcessItemType == item->type()) {
+            WorkflowProcessItem *processItem = qgraphicsitem_cast<WorkflowProcessItem*>(item);
+            Q_ASSERT(NULL != processItem);
+            if(actor == processItem->getProcess()->getId()) {
+                return processItem;
+            }
+        }
+    }
+    return NULL;
+}
+
+void WorkflowView::paintEvent(QPaintEvent *event) {
+    toggleBreakpointManager->setEnabled(!WorkflowSettings::runInSeparateProcess());
+    if(NULL != scene->getRunner()) {
+        if(debugInfo->isPaused()) {
+            sl_onSelectionChanged();
+        } else {
+            tickReadyAction->setEnabled(false);
+        }
+    }
+    MWMDIWindow::paintEvent(event);
 }
 
 void WorkflowView::sl_iterationsMode() {
@@ -1646,8 +1938,14 @@ void WorkflowView::sl_editItem() {
             return;
         }
         Port* p = NULL;
+        
         if (it->type() == WorkflowBusItemType) {
-            p = qgraphicsitem_cast<WorkflowBusItem*>(it)->getInPort()->getPort();
+            WorkflowBusItem *busItem = qgraphicsitem_cast<WorkflowBusItem *>(it);
+            
+            if(debugInfo->isPaused()) {
+                investigationWidgets->setCurrentInvestigation(busItem->getBus());
+            }
+            p = busItem->getInPort()->getPort();
         } else if (it->type() == WorkflowPortItemType) {
             p = qgraphicsitem_cast<WorkflowPortItem*>(it)->getPort();
         }
@@ -1667,8 +1965,19 @@ void WorkflowView::sl_editItem() {
 
 void WorkflowView::sl_onSelectionChanged() {
     QList<Actor*> actorsSelected = scene->getSelectedActors();
-    editScriptAction->setEnabled(actorsSelected.size() == 1 && actorsSelected.first()->getScript() != NULL);
-    editExternalToolAction->setEnabled(actorsSelected.size() == 1 && actorsSelected.first()->getProto()->isExternalTool());
+    const int actorsCount = actorsSelected.size();
+    editScriptAction->setEnabled(actorsCount == 1 && actorsSelected.first()->getScript() != NULL);
+    editExternalToolAction->setEnabled(actorsCount == 1 && actorsSelected.first()->getProto()->isExternalTool());
+    toggleBreakpointAction->setEnabled(actorsCount > 0 && !WorkflowSettings::runInSeparateProcess());
+
+    WorkflowAbstractRunner *runner = scene->getRunner();
+    if(NULL != runner && !actorsSelected.isEmpty()) {
+        QList<Workflow::WorkerState> workerStates = runner->getState(actorsSelected.first());
+        tickReadyAction->setEnabled(debugInfo->isPaused() && 1 == actorsCount
+            && workerStates.contains(WorkerReady));
+    } else {
+        tickReadyAction->setEnabled(false);
+    }
 }
 
 void WorkflowView::sl_exportScene() {

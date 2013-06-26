@@ -91,6 +91,7 @@ public:
         tb = NULL;
         pairwiseAlignmentRegistry = NULL;
         dpr = NULL;
+        workingDirectoryPath = "";
         dsr = NULL;
         str = NULL;
     }
@@ -291,6 +292,11 @@ public:
         activeWindow = name;
     }
 
+    void setWorkingDirectoryPath(const QString &path) {
+        assert(!path.isEmpty());
+        workingDirectoryPath = path;
+    }
+
     void setGUITestBase(GUITestBase *_tb) {assert(tb == NULL || _tb == NULL); tb = _tb;}
 
     static AppContextImpl* getApplicationContext();
@@ -361,12 +367,12 @@ protected:
     virtual U2DataPathRegistry*             _getDataPathRegistry() const { return dpr; }
     virtual DASSourceRegistry*              _getDASSourceRegistry() const { return dsr; }
     virtual ScriptingToolRegistry*          _getScriptingToolRegistry() const { return str; }
-
     virtual void _registerGlobalObject(AppGlobalObject* go);
     virtual void _unregisterGlobalObject(const QString& id);
     virtual AppGlobalObject* _getGlobalObjectById(const QString& id) const;
     virtual bool _isGUIMode() const {return guiMode;}
     virtual QString _getActiveWindowName() const {return activeWindow;}
+    virtual QString _getWorkingDirectoryPath() const { return workingDirectoryPath; }
 
 private:
     PluginSupport* ps;
@@ -434,6 +440,7 @@ private:
     ScriptingToolRegistry *str;
     bool guiMode;
     QString activeWindow;
+    QString workingDirectoryPath;
 
     QList<AppGlobalObject*> appGlobalObjects;
 };

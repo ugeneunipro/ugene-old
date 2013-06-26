@@ -239,6 +239,7 @@ public:
 
     static ScriptingToolRegistry* getScriptingToolRegistry() { return getInstance()->_getScriptingToolRegistry(); }
 
+    static QString getWorkingDirectoryPath() { return getInstance()->_getWorkingDirectoryPath(); }
 protected:
     static AppContext* getInstance() {assert(instance); return instance;}
 
@@ -302,7 +303,7 @@ protected:
     virtual WorkflowScriptRegistry* _getWorkflowScriptRegistry() const = 0;
     virtual AppFileStorage *_getAppFileStorage() const = 0;
     virtual PairwiseAlignmentRegistry* _getPairwiseAlignmentRegistry() const = 0;
-    virtual U2DataPathRegistry* _getDataPathRegistry() const = 0; 
+    virtual U2DataPathRegistry* _getDataPathRegistry() const = 0;
     virtual DASSourceRegistry* _getDASSourceRegistry() const = 0; 
     virtual ScriptingToolRegistry* _getScriptingToolRegistry() const = 0;
 
@@ -312,6 +313,7 @@ protected:
     virtual bool _isGUIMode() const = 0;
     virtual QString _getActiveWindowName() const = 0;
     virtual void _setActiveWindowName(const QString &name) = 0;
+    virtual QString _getWorkingDirectoryPath() const = 0;
 
     static AppContext* instance;
 };

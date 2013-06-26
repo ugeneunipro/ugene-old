@@ -70,7 +70,7 @@ struct SWDialogConfig {
         ptrnSubseqNamesTmpl = QString("");
         patternSequenceName = QString("");
 
-		enableAdvancedMASettings = false;
+        enableAdvancedMASettings = false;
         countOfLaunchesAlgorithm = 1;
     }
     QByteArray ptrn;
@@ -93,7 +93,7 @@ struct SWDialogConfig {
     QString ptrnSubseqNamesTmpl;
     QString patternSequenceName;
 
-	bool enableAdvancedMASettings;
+    bool enableAdvancedMASettings;
     int countOfLaunchesAlgorithm;
 };
 

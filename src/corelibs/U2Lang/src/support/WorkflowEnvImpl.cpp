@@ -27,6 +27,7 @@
 #include <U2Lang/Schema.h>
 #include <U2Lang/IntegralBusModel.h>
 #include <U2Lang/BaseTypes.h>
+#include <U2Lang/WorkflowMonitor.h>
 #include <U2Lang/WorkflowTasksRegistry.h>
 
 namespace U2 {
@@ -36,6 +37,8 @@ DataTypeRegistry* WorkflowEnvImpl::initDataRegistry() {
     qRegisterMetaTypeStreamOperators<QStrStrMap>("QStrStrMap");
     qRegisterMetaTypeStreamOperators<CfgMap>("CfgMap");
     qRegisterMetaTypeStreamOperators<IterationCfg>("IterationCfg");
+    qRegisterMetaType<U2::Workflow::Monitor::FileInfo>( "U2::Workflow::Monitor::FileInfo" );
+    qRegisterMetaType<U2::ActorId>( "U2::ActorId" );
 
     DataTypeRegistry * r = new DataTypeRegistry();
 

@@ -65,6 +65,10 @@ void SetThreadName( DWORD dwThreadID, char* threadName)
 }
 #endif
 
+const int GET_NEW_SUBTASKS_EVENT_TYPE = 10001;
+const int TERMINATE_MESSAGE_LOOP_EVENT_TYPE = 10002;
+const int PAUSE_THREAD_EVENT_TYPE = 10003;
+
 namespace U2 {
 
 #define UPDATE_TIMEOUT 100
@@ -90,6 +94,7 @@ void TaskSchedulerImpl::cancelTask(Task* task) {
     if (task->getState() < Task::State_Finished) {
         taskLog.info(tr("Canceling task: %1").arg(task->getTaskName()));
         getTaskStateInfo(task).cancelFlag = true;
+        resumeThreadWithTask(task); // for the case when task's thread is paused. it should be resumed and terminated
         foreach(Task* t, task->getSubtasks()) {
             cancelTask(t);
         }
@@ -172,6 +177,12 @@ bool TaskSchedulerImpl::processFinishedTasks() {
                 continue;
             }
         }
+        
+        if((NULL != pti) && pti->task->hasFlags(TaskFlag_RunMessageLoopOnly)
+            && (NULL != pti->thread) && pti->thread->isPaused)
+        {
+            continue;
+        }
 
         hasFinished = true;
         promoteTask(ti, Task::State_Finished);
@@ -180,6 +191,10 @@ bool TaskSchedulerImpl::processFinishedTasks() {
 
         Task* task = ti->task;
         priorityQueue.removeAt(i);
+        if(task->hasFlags(TaskFlag_RunMessageLoopOnly)) {
+            QCoreApplication::postEvent (ti->thread,
+                new QEvent(static_cast<QEvent::Type>(TERMINATE_MESSAGE_LOOP_EVENT_TYPE)));
+        }
         delete ti; //task is removed from priority queue
 
         // notify parent that subtask finished, check if there are new subtasks from parent
@@ -188,7 +203,22 @@ bool TaskSchedulerImpl::processFinishedTasks() {
             SAFE_POINT(parentTask != NULL, "When notifying parentTask about finished task: parentTask is NULL", hasFinished);
             SAFE_POINT(task != NULL, "When notifying parentTask about finished task: task is NULL", hasFinished);
             propagateStateToParent(task);
-            QList<Task*> newSubTasks = onSubTaskFinished(parentTask, task);
+            QList<Task*> newSubTasks;
+            if (parentTask->hasFlags(TaskFlag_RunMessageLoopOnly)) {
+                QCoreApplication::postEvent (pti->thread,
+                    new QEvent(static_cast<QEvent::Type>(GET_NEW_SUBTASKS_EVENT_TYPE)));
+                while (!pti->thread->newSubtasksObtained && pti->thread->isRunning()) {
+                    QCoreApplication::processEvents();
+                }
+                if(pti->thread->newSubtasksObtained) {
+                    pti->thread->subtasksLocker.lock();
+                    newSubTasks = pti->thread->unconsideredNewSubtasks;
+                    pti->thread->newSubtasksObtained = false;
+                    pti->thread->subtasksLocker.unlock();
+                }
+            } else {
+                newSubTasks = onSubTaskFinished(parentTask, task);
+            }
             if (!newSubTasks.isEmpty() || !pti->newSubtasks.isEmpty()) {
                 if (!tasksWithNewSubtasks.contains(pti)) {
                     tasksWithNewSubtasks.append(pti);
@@ -279,7 +309,13 @@ void TaskSchedulerImpl::runReady() {
             promoteTask(ti, Task::State_Running);
         }
         setTaskStateDesc(ti->task, "");
-        runThread(ti);
+        if(ti->task->hasFlags(TaskFlag_RunInMainThread)) {
+            ti->task->run();
+            assert(Task::State_Running == ti->task->getState());
+            ti->selfRunFinished = true;
+        } else {
+            runThread(ti);
+        }
     }
 }
 
@@ -873,6 +909,43 @@ Task * TaskSchedulerImpl::getTopLevelTaskById( qint64 id ) const {
     return ret;
 }
 
+void TaskSchedulerImpl::pauseThreadWithTask(const Task *task) {
+    foreach(TaskInfo *ti, priorityQueue) {
+        if(task == ti->task) {
+            QCoreApplication::postEvent(ti->thread,
+                new QEvent(static_cast<QEvent::Type>(PAUSE_THREAD_EVENT_TYPE)));
+        }
+    }
+}
+
+void TaskSchedulerImpl::resumeThreadWithTask(const Task *task) {
+    foreach(TaskInfo *ti, priorityQueue) {
+        if(task == ti->task && NULL != ti->thread && ti->thread->isPaused) {
+            ti->thread->resume();
+        }
+    }
+}
+
+void TaskSchedulerImpl::onSubTaskFinished(TaskThread *thread, Task *subtask) {
+    if(thread->ti->task->hasFlags(TaskFlag_RunMessageLoopOnly) && NULL != subtask
+        && !thread->newSubtasksObtained)
+    {
+        thread->subtasksLocker.lock();
+        thread->unconsideredNewSubtasks = onSubTaskFinished(thread->ti->task, subtask);
+        thread->newSubtasksObtained = true;
+        thread->subtasksLocker.unlock();
+    }
+}
+
+TaskThread::TaskThread(TaskInfo* _ti)
+    : ti(_ti), finishEventListener(NULL), unconsideredNewSubtasks(), subtasksLocker(),
+    newSubtasksObtained(false), pauser(), isPaused(false), pauseLocker()
+{
+    if(ti->task->hasFlags(TaskFlag_RunMessageLoopOnly)) {
+        moveToThread(this);
+    }
+}
+
 static QMutex lock;
 
 void TaskThread::run() {
@@ -881,37 +954,101 @@ void TaskThread::run() {
     QByteArray threadName = ti->task->getTaskName().toLocal8Bit();
     SetThreadName(threadId, threadName.data());
 #endif
-   // try {
     Qt::HANDLE handle= QThread::currentThreadId();
     lock.lock();
     AppContext::getTaskScheduler()->addThreadId(ti->task->getTaskId(), handle);
     lock.unlock();
 
-        assert(!ti->selfRunFinished);
-        assert(ti->task->getState()== Task::State_Running);
+    assert(!ti->selfRunFinished);
+    assert(ti->task->getState()== Task::State_Running);
 
-        updateThreadPriority(ti);
+    updateThreadPriority(ti);
+    if(!ti->task->hasFlags(TaskFlag_RunMessageLoopOnly)) {
         ti->task->run();
         assert(ti->task->getState()== Task::State_Running);
-        ti->selfRunFinished = true;
-
-        lock.lock();
+    }
+    ti->selfRunFinished = true;
+    if(ti->task->hasFlags(TaskFlag_RunMessageLoopOnly)) {
+        startTimer(1);
+        exec();
+    }
+    lock.lock();
     AppContext::getTaskScheduler()->removeThreadId(ti->task->getTaskId());
     lock.unlock();
-    //delete handle;
-    /*}
-    catch(...) {
-        if(CrashHandler::buffer) {
-            CrashHandler::releaseReserve();
+}
+
+bool TaskThread::event(QEvent *event) {
+    QTimerEvent *timerEvent = NULL;
+    switch(event->type()) {
+    case GET_NEW_SUBTASKS_EVENT_TYPE:
+        getNewSubtasks();
+        break;
+    case TERMINATE_MESSAGE_LOOP_EVENT_TYPE:
+        terminateMessageLoop();
+        break;
+    case PAUSE_THREAD_EVENT_TYPE:
+        pause();
+        break;
+    case QEvent::Timer:
+        timerEvent = dynamic_cast<QTimerEvent *>(event);
+        assert(NULL != timerEvent);
+        if(ti->task->hasFlags(TaskFlag_RunMessageLoopOnly) && (ti->task->isCanceled()
+            || ti->task->hasError()))
+        {
+            killTimer(timerEvent->timerId());
+            exit();
         }
-        CrashHandler::runMonitorProcess("|Unhandled exception");
-    }*/
+        break;
+    default:
+        return false;
+    }
+    return true;
+}
+
+void TaskThread::getNewSubtasks() {
+    if(ti->task->hasFlags(TaskFlag_RunMessageLoopOnly) && !newSubtasksObtained) {
+        TaskSchedulerImpl *scheduler = dynamic_cast<TaskSchedulerImpl *>(AppContext::getTaskScheduler());
+        assert(NULL != scheduler);
+        foreach (Task *subtask, ti->task->getSubtasks()) {
+            if (subtask->isFinished()) {
+                scheduler->onSubTaskFinished(this, subtask);
+                break;
+            }
+        }
+    }
+}
+
+void TaskThread::terminateMessageLoop() {
+    if(ti->task->hasFlags(TaskFlag_RunMessageLoopOnly) && isRunning()) {
+        exit();
+    }
+}
+
+void TaskThread::pause() {
+    if(!isPaused) {
+        pauseLocker.lock();
+        isPaused = true;
+        pauser.wait(&pauseLocker);
+        pauseLocker.unlock();
+    }
+}
+
+void TaskThread::resume() {
+    if(isPaused) {
+        pauseLocker.lock();
+        isPaused = false;
+        pauseLocker.unlock();
+        pauser.wakeAll();
+    }
 }
 
 TaskInfo::~TaskInfo() {
     if (thread!=NULL) {
         if (!thread->isFinished()) {
             taskLog.trace("TaskScheduler: Waiting for the thread before delete");
+            if (thread->isPaused) {
+                thread->resume();
+            }
             thread->wait();
             taskLog.trace("TaskScheduler: Wait finished");
         }

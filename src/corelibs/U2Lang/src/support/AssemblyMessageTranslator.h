@@ -19,31 +19,26 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_SHUTDOWN_TASK_H_
-#define _U2_SHUTDOWN_TASK_H_
+#ifndef _U2_ASSEMBLY_MESSAGE_TRANSLATOR_H_
+#define _U2_ASSEMBLY_MESSAGE_TRANSLATOR_H_
 
-#include <QtCore/QCoreApplication>
-#include <U2Core/Task.h>
+#include "BaseMessageTranslator.h"
 
 namespace U2 {
 
-class ShutdownTask : public Task {
-    Q_OBJECT
+class U2EntityRef;
+
+class AssemblyMessageTranslator : public BaseMessageTranslator {
 public:
-    ShutdownTask(QCoreApplication* app);
+    AssemblyMessageTranslator(const QVariant &atomicMessage, WorkflowContext *initContext);
+    virtual ~AssemblyMessageTranslator();
 
-    void prepare();
+    virtual QString getTranslation() const;
 
-    ReportResult report();
-protected slots:
-    void startShutdown();
 protected:
-    virtual QList<Task*> onSubTaskFinished(Task* subTask);
-private:
-    QCoreApplication* app;
+    U2EntityRef assemblyRef;
 };
 
+} // namespace U2
 
-}//namespace
-
-#endif
+#endif // _U2_ASSEMBLY_MESSAGE_TRANSLATOR_H_

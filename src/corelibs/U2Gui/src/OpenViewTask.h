@@ -32,7 +32,7 @@ namespace U2 {
 class Document;
 class LoadDocumentTask;
 class LoadRemoteDocumentTask;
-class ConvertIdAndLoadDASDocumentTask;
+class LoadDASDocumentTask;
 class DocumentProviderTask;
 
 
@@ -76,11 +76,11 @@ public:
 protected:
     QList<Task*> onSubTaskFinished(Task* subTask);
 private:
-    QString                             accNumber;
-    QString                             fullpath;
-    DASSource                           referenceSource;
-    QList<DASSource>                    featureSources;
-    ConvertIdAndLoadDASDocumentTask*    loadDasDocumentTask;
+    QString                 accNumber;
+    QString                 fullpath;
+    DASSource               referenceSource;
+    QList<DASSource>        featureSources;
+    LoadDASDocumentTask*    loadDasDocumentTask;
 };
 
 class U2GUI_EXPORT OpenViewTask : public Task {

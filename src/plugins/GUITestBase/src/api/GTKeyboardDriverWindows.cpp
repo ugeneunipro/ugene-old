@@ -57,8 +57,8 @@ void GTKeyboardDriver::keyPress(U2::U2OpStatus &os, char key, int modifiers)
             keyPress(os, VK_OEM_MINUS, GTKeyboardDriver::key["shift"]);
             break;
 
-		case '=':
-			if (modifiers != 0) {
+        case '=':
+            if (modifiers != 0) {
                 keyPress(os, modifiers);
             }
             keyPress(os, VK_OEM_PLUS, modifiers);
@@ -244,9 +244,9 @@ void GTKeyboardDriver::keyRelease(U2OpStatus &os, char key, int modifiers)
 #define GT_METHOD_NAME "keyClick"
 void GTKeyboardDriver::keyClick(U2OpStatus &os, char key, int modifiers)
 {
-	if (key == 0) {
-		int i = 100;
-	}
+    if (key == 0) {
+        int i = 100;
+    }
     GT_CHECK(key != 0, "key = 0");
 //    GT_CHECK(QApplication::activeWindow() != NULL, "There is no activeWindow");
 
@@ -337,7 +337,7 @@ GTKeyboardDriver::keys::keys()
     ADD_KEY("f9", VK_F9);
     ADD_KEY("f10", VK_F10);
     ADD_KEY("f12", VK_F12);
-	ADD_KEY("home", VK_HOME);
+    ADD_KEY("home", VK_HOME);
 
 // feel free to add other keys
 // macro VK_* defined in WinUser.h

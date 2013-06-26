@@ -95,12 +95,13 @@ bool RemoteMachineMonitor::deserializeMachines( const QVariant & data ) {
         if( itemArgs.size() == 0 ) {
             return false;
         }
-        RemoteMachineSettingsPtr machineSettings = SerializeUtils::deserializeRemoteMachineSettings(itemArgs[0].toString());
-        if( machineSettings == NULL ) {
-            return false;
-        }
-        
-        items << machineSettings;
+        // call leads to FAIL("Obsolete! Not implemented!", "");
+        //RemoteMachineSettingsPtr machineSettings = SerializeUtils::deserializeRemoteMachineSettings(itemArgs[0].toString());
+        //if( machineSettings == NULL ) {
+        //    return false;
+        //}
+        //
+        //items << machineSettings;
     }
     return true;
 }

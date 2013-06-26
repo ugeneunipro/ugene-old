@@ -106,7 +106,7 @@ void LoadAllPluginsTask::prepare() {
     foreach (const QString& url, pluginFiles) {
         addToOrderingQueue(url);
     }
-    
+
     QString err;
     orderedPlugins = PluginDescriptorHelper::orderPlugins(orderedPlugins, err);
     
@@ -114,7 +114,7 @@ void LoadAllPluginsTask::prepare() {
         setError(err);
         return;
     }
-
+    
     foreach(const PluginDesc& desc, orderedPlugins) {
         addSubTask(new AddPluginTask(ps, desc));
     }
@@ -360,7 +360,7 @@ void PluginSupportImpl::updateSavedState(PluginRef* ref) {
 }
 
 QDir PluginSupportImpl::getDefaultPluginsDir() {
-    return QDir(QCoreApplication::applicationDirPath() + "/plugins");
+    return QDir(AppContext::getWorkingDirectoryPath() + "/plugins");
 }
 
 bool PluginSupportImpl::isDefaultPluginsDir(const QString& url) {    

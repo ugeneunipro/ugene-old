@@ -157,6 +157,12 @@ void WorkflowMonitor::addProblem(const Monitor::Problem &problem) {
 /************************************************************************/
 /* FileInfo */
 /************************************************************************/
+FileInfo::FileInfo( )
+    : url( ), actor( )
+{
+
+}
+
 FileInfo::FileInfo(const QString &_url, const QString &_producer)
 : url(_url), actor(_producer)
 {

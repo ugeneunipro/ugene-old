@@ -37,7 +37,7 @@ namespace Workflow {
  * Actor
  **************************/
 Actor::Actor(const ActorId &actorId, ActorPrototype* proto, AttributeScript * _script)
-: id(actorId), proto(proto), doc(NULL), script(_script) {
+: id(actorId), proto(proto), doc(NULL), script(_script), condition(new AttributeScript()) {
     if(script == NULL) {
         if(proto->isScriptFlagSet()) {
             script = new AttributeScript();
@@ -49,9 +49,11 @@ Actor::Actor(const ActorId &actorId, ActorPrototype* proto, AttributeScript * _s
     }
 
     if(script != NULL) {
-        setupVariablesForPort();
-        setupVariablesForAttribute();
+        setupVariablesForPort(script);
+        setupVariablesForAttribute(script);
     }
+    setupVariablesForPort(condition, true);
+    setupVariablesForAttribute(condition);
 }
 
 Actor::Actor(const Actor&) : QObject(), Configuration(), Peer() {
@@ -62,16 +64,19 @@ Actor::~Actor() {
     qDeleteAll(ports.values()); 
     delete doc;
     delete script;
+    delete condition;
 }
 
-void Actor::setupVariablesForPort() {
+void Actor::setupVariablesForPort(AttributeScript *_script, bool inputOnly) {
     foreach(const PortDescriptor *descr, proto->getPortDesciptors()) {
         QString prefix;
         if(descr->isInput()) {
             prefix = "in_";
         }
-        else {
+        else if (!inputOnly) {
             prefix = "out_";
+        } else {
+            continue;
         }
 
         DataTypePtr dataTypePtr = descr->getType();
@@ -79,29 +84,29 @@ void Actor::setupVariablesForPort() {
             QMap<Descriptor, DataTypePtr> map = dataTypePtr->getDatatypesMap();
             foreach(const Descriptor & d, map.keys()) {
                 Descriptor var(prefix + d.getId(), d.getDisplayName(), d.getDocumentation());
-                script->setScriptVar(var, QVariant());
+                _script->setScriptVar(var, QVariant());
             }
         }
         else  if(dataTypePtr->isList()) {
             foreach(const Descriptor & typeDescr, dataTypePtr->getAllDescriptors()) {
                 Descriptor var(prefix + typeDescr.getId(), typeDescr.getDisplayName(), typeDescr.getDocumentation());
-                script->setScriptVar(var, QVariant());
+                _script->setScriptVar(var, QVariant());
             }
         }
         else {
             QString id = prefix + dataTypePtr->getId();
             QString displayName = dataTypePtr->getDisplayName();
             QString doc = prefix + dataTypePtr->getDocumentation();
-            script->setScriptVar(Descriptor(id,displayName,doc), QVariant());
+            _script->setScriptVar(Descriptor(id,displayName,doc), QVariant());
         }
     }
 }
 
-void Actor::setupVariablesForAttribute() {
+void Actor::setupVariablesForAttribute(AttributeScript *_script) {
     foreach( Attribute * attribute, proto->getAttributes() ) {
         assert(attribute != NULL);
         QString attrVarName = attribute->getDisplayName();
-        script->setScriptVar(Descriptor(attribute->getId().replace(".","_"), attrVarName.replace(".", "_"), attribute->getDocumentation()), QVariant());
+        _script->setScriptVar(Descriptor(attribute->getId().replace(".","_"), attrVarName.replace(".", "_"), attribute->getDocumentation()), QVariant());
     }
 }
 
@@ -111,6 +116,10 @@ AttributeScript * Actor::getScript() const {
 
 void Actor::setScript(AttributeScript* _script) {
     script->setScriptText(_script->getScriptText());
+}
+
+AttributeScript *Actor::getCondition() const {
+    return condition;
 }
 
 ActorId Actor::getOwner() const {

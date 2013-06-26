@@ -41,7 +41,6 @@
 #include <QtGui/QAction>
 #include <QtGui/QHeaderView>
 
-
 #define MAIN_SPLITTER "main.splitter"
 #define TAB_SPLITTER "tab.splitter"
 

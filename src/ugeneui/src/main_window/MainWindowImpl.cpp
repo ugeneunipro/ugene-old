@@ -380,7 +380,7 @@ void MainWindowImpl::sl_installToPathAction() {
     // https://github.com/pieter/gitx/blob/85322728facbd2a2df84e5fee3e7239fce18fd22/ApplicationController.m#L121
 
     bool success = true;
-    QString exePath = QCoreApplication::applicationDirPath() + "/";
+    QString exePath = AppContext::getWorkingDirectoryPath() + "/";
     QString installationPath = "/usr/bin/";
     QStringList tools;
     tools << "ugene" << "ugeneui" << "ugenecl";

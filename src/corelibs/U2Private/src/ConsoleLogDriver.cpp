@@ -19,7 +19,7 @@
  * MA 02110-1301, USA.
  */
 
-#include "LogDriver.h"
+#include "ConsoleLogDriver.h"
 
 #include <U2Core/Timer.h>
 #include <U2Core/Settings.h>
@@ -27,7 +27,6 @@
 #include <U2Core/CMDLineRegistry.h>
 #include <U2Core/CMDLineHelpProvider.h>
 #include <U2Core/CMDLineCoreOptions.h>
-#include "TaskStatusBar.h"
 
 #ifdef Q_OS_WIN32
 #include "windows.h"
@@ -35,27 +34,28 @@
 #include <stdio.h>
 //#include <conio.h>
 #define LOG_SETTINGS_ROOT QString("log_settings/")
+#define TSB_SETTINGS_ROOT QString("task_status_bar_settings/")
 
 namespace U2 {
 
-const QString LogDriver::LOG_SHOW_DATE_CMD_OPTION           = "log-show-date";
-const QString LogDriver::LOG_SHOW_LEVEL_CMD_OPTION          = "log-show-level";
-const QString LogDriver::LOG_SHOW_CATEGORY_CMD_OPTION       = "log-show-category";
-const QString LogDriver::LOG_LEVEL_NONE_CMD_OPTION          = "log-level-none";
-const QString LogDriver::LOG_LEVEL_ERROR_CMD_OPTION         = "log-level-error";
-const QString LogDriver::LOG_LEVEL_INFO_CMD_OPTION          = "log-level-info";
-const QString LogDriver::LOG_LEVEL_DETAILS_CMD_OPTION       = "log-level-details";
-const QString LogDriver::LOG_LEVEL_TRACE_CMD_OPTION         = "log-level-trace";
-const QString LogDriver::COLOR_OUTPUT_CMD_OPTION            = "log-color-output";
-const QString LogDriver::LOG_SETTINGS_ACTIVE_FLAG           = "activeFlagLevel";
-//const QString LogDriver::LOG_FORMAT                         = "log-format";
-//const QString LogDriver::LOG_LEVEL                          = "log-level";
+const QString ConsoleLogDriver::LOG_SHOW_DATE_CMD_OPTION           = "log-show-date";
+const QString ConsoleLogDriver::LOG_SHOW_LEVEL_CMD_OPTION          = "log-show-level";
+const QString ConsoleLogDriver::LOG_SHOW_CATEGORY_CMD_OPTION       = "log-show-category";
+const QString ConsoleLogDriver::LOG_LEVEL_NONE_CMD_OPTION          = "log-level-none";
+const QString ConsoleLogDriver::LOG_LEVEL_ERROR_CMD_OPTION         = "log-level-error";
+const QString ConsoleLogDriver::LOG_LEVEL_INFO_CMD_OPTION          = "log-level-info";
+const QString ConsoleLogDriver::LOG_LEVEL_DETAILS_CMD_OPTION       = "log-level-details";
+const QString ConsoleLogDriver::LOG_LEVEL_TRACE_CMD_OPTION         = "log-level-trace";
+const QString ConsoleLogDriver::COLOR_OUTPUT_CMD_OPTION            = "log-color-output";
+const QString ConsoleLogDriver::LOG_SETTINGS_ACTIVE_FLAG           = "activeFlagLevel";
+//const QString ConsoleLogDriver::LOG_FORMAT                         = "log-format";
+//const QString ConsoleLogDriver::LOG_LEVEL                          = "log-level";
 
-bool LogDriver::helpRegistered = false;
+bool ConsoleLogDriver::helpRegistered = false;
 
-LogDriver::LogDriver() : printToConsole (true) {
-    LogServer::getInstance()->addListener(this);
-
+ConsoleLogDriver::ConsoleLogDriver() : printToConsole (true) {
+    connect(LogServer::getInstance(), SIGNAL(si_message(const LogMessage&)), SLOT(sl_onMessage(const LogMessage&)));
+    
     if( !helpRegistered ) {
         setLogCmdlineHelp();
     }
@@ -64,11 +64,7 @@ LogDriver::LogDriver() : printToConsole (true) {
     setCmdLineSettings();
 }
 
-LogDriver::~LogDriver() {
-    LogServer::getInstance()->removeListener(this);
-}
-
-void LogDriver::setLogCmdlineHelp() {
+void ConsoleLogDriver::setLogCmdlineHelp() {
     assert( !helpRegistered );
     helpRegistered = true;
     
@@ -98,14 +94,14 @@ void LogDriver::setLogCmdlineHelp() {
         tr( "\"<category1>=<level1> [<category2>=<level2> ...]\" | <level>" ));
 
     CMDLineHelpProvider *coloredOutput = new CMDLineHelpProvider(
-        LogDriver::COLOR_OUTPUT_CMD_OPTION, tr("Enables colored output."));
+        ConsoleLogDriver::COLOR_OUTPUT_CMD_OPTION, tr("Enables colored output."));
 
     cmdLineRegistry->registerCMDLineHelpProvider( logFormat );
     cmdLineRegistry->registerCMDLineHelpProvider( logLevel );
     cmdLineRegistry->registerCMDLineHelpProvider(coloredOutput);
 }
 
-QString LogDriver::getLevelName(int i) const{
+QString ConsoleLogDriver::getLevelName(int i) const{
     switch(i) {
         case 0:
             return "TRACE";
@@ -120,7 +116,7 @@ QString LogDriver::getLevelName(int i) const{
     }
 }
 
-void LogDriver::setLogSettings() {
+void ConsoleLogDriver::setLogSettings() {
     CMDLineRegistry *cmd = AppContext::getCMDLineRegistry();
     if(cmd->hasParameter(CMDLineCoreOptions::LOG_FORMAT)) {
        QString logFormat = cmd->getParameterValue(CMDLineCoreOptions::LOG_FORMAT);
@@ -220,7 +216,7 @@ void LogDriver::setLogSettings() {
     }
 }
 
-void LogDriver::setCmdLineSettings() {
+void ConsoleLogDriver::setCmdLineSettings() {
     CMDLineRegistry * cmdLineRegistry = AppContext::getCMDLineRegistry();
     assert( NULL != cmdLineRegistry );
     Settings * settings = AppContext::getSettings();
@@ -236,7 +232,7 @@ void LogDriver::setCmdLineSettings() {
     }
 }
 
-QString LogDriver::prepareText(const LogMessage& msg) const {
+QString ConsoleLogDriver::prepareText(const LogMessage& msg) const {
     QString prefix = settings.logPattern;
     prefix.replace("C", getEffectiveCategory(msg));
     prefix.replace("L", LogCategories::getLocalizedLevelName(msg.level));
@@ -256,7 +252,7 @@ QString LogDriver::prepareText(const LogMessage& msg) const {
 }
 
 
-void LogDriver::onMessage(const LogMessage& msg) {
+void ConsoleLogDriver::sl_onMessage(const LogMessage& msg) {
     if (!printToConsole || !settings.activeLevelGlobalFlag[msg.level]) {
         return;
     }
@@ -308,7 +304,7 @@ void LogDriver::onMessage(const LogMessage& msg) {
     fflush(stdout);
 }
 
-QString LogDriver::getEffectiveCategory(const LogMessage& msg) const {
+QString ConsoleLogDriver::getEffectiveCategory(const LogMessage& msg) const {
     QString result;
     foreach (const QString& category, msg.categories) {
         const LoggerSettings& cs = settings.getLoggerSettings(category);

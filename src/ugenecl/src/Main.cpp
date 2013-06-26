@@ -45,6 +45,7 @@
 #include <U2Core/DataPathRegistry.h>
 #include <U2Core/DASSource.h>
 #include <U2Core/ScriptingToolRegistry.h>
+#include <U2Core/ConsoleShutdownTask.h>
 #include <U2Core/Counter.h>
 
 #include <U2Algorithm/CudaGpuRegistry.h>
@@ -91,11 +92,10 @@
 #include <TaskSchedulerImpl.h>
 #include <AppSettingsImpl.h>
 #include <CrashHandler.h>
+#include <ConsoleLogDriver.h>
 
 // local project imports
 #include "ForeverTask.h"
-#include "LogDriver.h"
-#include "ShutdownTask.h"
 #include "TestStarter.h"
 #include "TaskStatusBar.h"
 #include "DumpLicenseTask.h"
@@ -149,7 +149,7 @@ static void setScriptsSearchPath() {
     const static char * RELATIVE_SCRIPTS_DIR = "/scripts";
     const static char * RELATIVE_DEV_SCRIPTS_DIR = "/../../scripts";
 
-    QString appDirPath = QCoreApplication::applicationDirPath();
+    QString appDirPath = AppContext::getWorkingDirectoryPath();
     if( QDir(appDirPath+RELATIVE_SCRIPTS_DIR).exists() ) {
         scriptsSearchPath.push_back( appDirPath+RELATIVE_SCRIPTS_DIR );
     } else if( QDir(appDirPath+RELATIVE_DEV_SCRIPTS_DIR).exists() ) {
@@ -167,7 +167,7 @@ static void setDataSearchPaths() {
     const static char * RELATIVE_DATA_DIR = "/data";
     const static char * RELATIVE_DEV_DATA_DIR = "/../../data";
     //on windows data is normally located in the application directory
-    QString appDirPath = QCoreApplication::applicationDirPath();
+    QString appDirPath = AppContext::getWorkingDirectoryPath();
     
     if( QDir(appDirPath+RELATIVE_DATA_DIR).exists() ) {
         dataSearchPaths.push_back( appDirPath+RELATIVE_DATA_DIR );
@@ -250,14 +250,16 @@ int main(int argc, char **argv)
     GTIMER(c1, t1, "main()->QApp::exec");
 
     GApplication app(argc, argv);
-    QCoreApplication::addLibraryPath(QCoreApplication::applicationDirPath());
-    QString devPluginsPath = QDir(QCoreApplication::applicationDirPath()+"/../../installer/windows").absolutePath();
+
+    AppContextImpl* appContext = AppContextImpl::getApplicationContext();
+    appContext->setWorkingDirectoryPath(QCoreApplication::applicationDirPath());
+
+    QCoreApplication::addLibraryPath(AppContext::getWorkingDirectoryPath());
+    QString devPluginsPath = QDir(AppContext::getWorkingDirectoryPath()+"/../../installer/windows").absolutePath();
     QCoreApplication::addLibraryPath(devPluginsPath); //dev version
 
     setSearchPaths();
 
-    AppContextImpl* appContext = AppContextImpl::getApplicationContext();
-    
     // parse all cmdline arguments
     CMDLineRegistry* cmdLineRegistry = new CMDLineRegistry(app.arguments()); 
     appContext->setCMDLineRegistry(cmdLineRegistry);
@@ -292,7 +294,7 @@ int main(int argc, char **argv)
         if((i == 0 && skipFirst) || (i == 1 && skipSecond)) {
             continue;
         }
-        if (!translator.load(transFile[i], QCoreApplication::applicationDirPath())) {
+        if (!translator.load(transFile[i], AppContext::getWorkingDirectoryPath())) {
             fprintf(stderr, "Translation not found: %s\n", transFile[i].toLatin1().constData());
         } else {
             trOK = true;
@@ -308,7 +310,7 @@ int main(int argc, char **argv)
     updateStaticTranslations();
     
     // 2 create functional components of congene
-    LogDriver logs;
+    ConsoleLogDriver logs;
     coreLog.details(AppContextImpl::tr("UGENE initialization started"));
     GCOUNTER( cvar, tvar, "ugenecl" );
 
@@ -501,7 +503,7 @@ int main(int argc, char **argv)
     //3 run QT 
     t1.stop();
     coreLog.info(AppContextImpl::tr("%1-bit version of UGENE started").arg(Version::appArchitecture));
-    ShutdownTask watchQuit(&app);
+    ConsoleShutdownTask watchQuit(&app);
     int rc = app.exec();
 
     //4 deallocate resources
@@ -602,7 +604,6 @@ int main(int argc, char **argv)
 
     appContext->setScriptingToolRegistry(NULL);
     delete str;
-
 
     delete msaConsReg;
     appContext->setMSAConsensusAlgorithmRegistry(NULL);

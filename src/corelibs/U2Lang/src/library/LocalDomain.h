@@ -44,6 +44,8 @@ using namespace Workflow;
 class U2LANG_EXPORT BaseWorker : public QObject, public Worker, public CommunicationSubject {
     Q_OBJECT
 public:
+    using Workflow::Worker::tick;
+
     BaseWorker(Actor* a, bool autoTransitBus = true);
     virtual ~BaseWorker();
     
@@ -69,20 +71,43 @@ public:
     QMap<QString, IntegralBus*> &getPorts() {return ports;}
     Actor * getActor() const {return actor;}
 
+    void deleteBackupMessagesFromPreviousTick() { messagesProcessedOnLastTick.clear(); }
+    // replace current worker's messages in channels with ones from previous tick
+    void saveCurrentChannelsStateAndRestorePrevious();
+    // fill channels with messages which were existed before the pause
+    void restoreActualChannelsState();
+    // method should be invoked by scheduler instead of tick().
+    // parameter canBeCanceled indicates if the returning task can be canceled
+    // in case of the schema's pause
+    Task *tick(bool &canResultBeCanceled);
+
 private:
     // bind values from input ports to script vars. 
     // This function is called before 'get' data from channel -> to set up parameters for scripting
     void bindScriptValues();
+    void setScriptVariableFromBus(AttributeScript *script, IntegralBus *bus);
     bool processDone;
+    
+    // this field contains all messages that Worker processes during one tick.
+    // New messages are added here in getMessageAndSetupScriptValues(CommunicationChannel *) method.
+    // Also during the pause state it contains backup messages
+    // (which were existed at the moment before the pause) from the same ports
+    QMap<CommunicationChannel *, QQueue<Message> > messagesProcessedOnLastTick;
+    
+    // puts all messages from messagesProcessedOnLastTick to appropriate channel
+    // which is actually key for the queue of messages
+    void addMessagesFromBackupToAppropriratePort(CommunicationChannel *channel);
     
 protected:
     Actor* actor;
     // integral buses of actor's ports
     QMap<QString, IntegralBus*> ports;
-    // workflow settings: worker task should fail on first error
-    //bool failFast;
+    
+    // default implementation always return false
+    // TODO: check all workers' task and override this method
+    // in order to cancel tasks on debug events (e.g. pause, breakpoint, etc)
+    virtual bool canTaskBeCanceled(Task *workerTask) const;
 
-protected:
     /** Returns the value of a parameter with paramId */
     template<class T>
     T getValue(const QString &paramId) const;
@@ -102,7 +127,7 @@ public:
     // reimplemented from CommunicationChannel
     virtual Message get();
     virtual Message look() const;
-    virtual void put(const Message& m);
+    virtual void put(const Message& m, bool isMessageRestored = false);
     virtual int hasMessage() const;
     virtual int takenMessages()const;
     virtual int hasRoom(const DataType* ) const;
@@ -112,7 +137,8 @@ public:
     virtual int capacity() const;
     // does nothing
     virtual void setCapacity(int);
-    
+    virtual QQueue<Message> getMessages(int startIndex = 0, int endIndex = -1) const;
+
 protected:
     // first in, first out
     QQueue<Message> que;

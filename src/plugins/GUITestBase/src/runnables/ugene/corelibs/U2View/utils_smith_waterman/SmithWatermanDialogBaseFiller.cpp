@@ -139,9 +139,9 @@ void SmithWatermanDialogFiller::run() {
 
         const int swRealizationIndex = comboRealization->findText(realizationName);
         comboRealization->setCurrentIndex(swRealizationIndex);
-		
-		QComboBox * comboResultFilter = qobject_cast<QComboBox *>(GTWidget::findWidget(os, "comboResultFilter", dialog));
-		comboResultFilter->setCurrentIndex(RESULT_INTERSECTION_FILTER_INDEX);
+        
+        QComboBox * comboResultFilter = qobject_cast<QComboBox *>(GTWidget::findWidget(os, "comboResultFilter", dialog));
+        comboResultFilter->setCurrentIndex(RESULT_INTERSECTION_FILTER_INDEX);
 
         QSpinBox * spinScorePercent = qobject_cast<QSpinBox *>(GTWidget::findWidget(os, "spinScorePercent", dialog));
         spinScorePercent->setValue(RESULT_SCORE_PERCENTAGE);

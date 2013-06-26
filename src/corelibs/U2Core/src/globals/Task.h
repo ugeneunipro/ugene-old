@@ -108,8 +108,10 @@ enum TaskFlag {
 
     TaskFlag_NoAutoDelete = 1 << 3, //for top level tasks only: task is not deleted by scheduler after task is finished
     
-
+    TaskFlag_RunMessageLoopOnly = 1 << 4, // for tasks that shouldn't run but should conduct processing of their subtasks in a separate thread
     
+    TaskFlag_RunInMainThread = 1 << 5, // for tasks that need access to GUI, they will be run in main thread
+
     // Behavior based on subtasks
     TaskFlag_FailOnSubtaskError = 1 << 10, //subtask error is propagated automatically
 
@@ -371,6 +373,10 @@ public:
     virtual void removeThreadId(qint64 taskId) = 0;
 
     virtual qint64 getNameByThreadId(Qt::HANDLE id) const = 0;
+
+    virtual void pauseThreadWithTask(const Task *task) = 0;
+
+    virtual void resumeThreadWithTask(const Task *task) = 0;
 
 signals:
     void si_noTasksInScheduler();

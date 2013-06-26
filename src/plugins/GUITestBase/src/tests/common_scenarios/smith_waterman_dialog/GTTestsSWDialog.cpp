@@ -47,24 +47,24 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
 // Steps:
 //
 // 1. Use menu {File->Open}. Open file _common_data/smith_waterman2/multi/06/query.txt. Get pattern sequence
-	GTFileDialog::openFile(os, testDir + "_common_data/smith_waterman2/multi/06/", "query.txt");
-	GTUtilsDocument::checkDocument(os, "query.txt");
-	QString patternSequence;
-	GTUtilsSequenceView::getSequenceAsString(os, patternSequence);
-	CHECK_SET_ERR(!patternSequence.isEmpty(), "Pattern sequence is empty");
+    GTFileDialog::openFile(os, testDir + "_common_data/smith_waterman2/multi/06/", "query.txt");
+    GTUtilsDocument::checkDocument(os, "query.txt");
+    QString patternSequence;
+    GTUtilsSequenceView::getSequenceAsString(os, patternSequence);
+    CHECK_SET_ERR(!patternSequence.isEmpty(), "Pattern sequence is empty");
 
 // 2. Use menu {File->Open}. Open file _common_data/smith_waterman2/multi/06/search.txt
-	GTFileDialog::openFile(os, testDir + "_common_data/smith_waterman2/multi/06/", "search.txt");
-	GTUtilsDocument::checkDocument(os, "search.txt");
+    GTFileDialog::openFile(os, testDir + "_common_data/smith_waterman2/multi/06/", "search.txt");
+    GTUtilsDocument::checkDocument(os, "search.txt");
 
 // 3. Run Smith-Waterman Search by SW dialog
-	Runnable * swDialog = new SmithWatermanDialogFiller(os, SmithWatermanDialogFiller::CLASSIC, SmithWatermanSettings::MULTIPLE_ALIGNMENT, testDir + "_common_data/scenarios/sandbox/",
-		patternSequence);
-	GTUtilsDialog::waitForDialog(os, swDialog);
+    Runnable * swDialog = new SmithWatermanDialogFiller(os, SmithWatermanDialogFiller::CLASSIC, SmithWatermanSettings::MULTIPLE_ALIGNMENT, testDir + "_common_data/scenarios/sandbox/",
+        patternSequence);
+    GTUtilsDialog::waitForDialog(os, swDialog);
 
-	GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_ANALYSE << "find_pattern_smith_waterman_action", GTGlobals::UseMouse));
-	GTMenu::showMainMenu(os, MWMENU_ACTIONS);
-	GTGlobals::sleep();
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_ANALYSE << "find_pattern_smith_waterman_action", GTGlobals::UseMouse));
+    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
+    GTGlobals::sleep();
 
 
 // 4. Check names of alignment files and names of found subsequences

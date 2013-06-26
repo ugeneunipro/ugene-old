@@ -42,16 +42,32 @@ HEADERS += src/library/BaseActorCategories.h \
            src/model/WorkflowManager.h \
            src/model/WorkflowScriptEngine.h \
            src/model/WorkflowTransport.h \
+           src/support/AnnotationsMessageTranslator.h \
+           src/support/AssemblyMessageTranslator.h \
+           src/support/BaseMessageTranslator.h \
+           src/support/BaseBreakpointHitCounter.h \
            src/run/SeparateProcessMonitor.h \
            src/run/WorkflowMonitor.h \
            src/support/CoreLibConstants.h \
+           src/support/SequenceMessageTranslator.h \
            src/support/MapDatatypeEditor.h \
            src/support/MarkerUtils.h \
+           src/support/MultipleAlignmentMessageTranslator.h \
            src/support/NoFailTaskWrapper.h \
            src/support/SchemaSerializer.h \
            src/support/ScriptWorkerSerializer.h \
            src/support/SimpleWorkflowTask.h \
+           src/support/VariationTrackMessageTranslator.h \
+           src/support/WorkflowBreakpoint.h \
+           src/support/BreakpointConditionChecker.h \
+           src/support/BreakpointEqualHitCounter.h \
+           src/support/BreakpointGreaterOrEqualHitCounter.h \
+           src/support/WorkflowBreakpointSharedInfo.h \
+           src/support/BreakpointMultipleHitCounter.h \
+           src/support/WorkflowDebugStatus.h \
+           src/support/WorkflowDebugMessageParser.h \
            src/support/WorkflowEnvImpl.h \
+           src/support/WorkflowInvestigationData.h \
            src/support/WorkflowIOTasks.h \
            src/support/WorkflowRunTask.h \
            src/support/WorkflowSettings.h \
@@ -116,15 +132,30 @@ SOURCES += src/library/BaseActorCategories.cpp \
            src/model/WorkflowEnv.cpp \
            src/model/WorkflowScriptEngine.cpp \
            src/model/WorkflowTransport.cpp \
+           src/support/AnnotationsMessageTranslator.cpp \
+           src/support/AssemblyMessageTranslator.cpp \
+           src/support/BaseMessageTranslator.cpp \
+           src/support/BaseBreakpointHitCounter.cpp \
            src/run/SeparateProcessMonitor.cpp \
            src/run/WorkflowMonitor.cpp \
            src/support/CoreLibConstants.cpp \
+           src/support/SequenceMessageTranslator.cpp \
            src/support/MapDatatypeEditor.cpp \
            src/support/MarkerUtils.cpp \
+           src/support/MultipleAlignmentMessageTranslator.cpp \
            src/support/NoFailTaskWrapper.cpp \
            src/support/SchemaSerializer.cpp \
            src/support/ScriptWorkerSerializer.cpp \
            src/support/SimpleWorkflowTask.cpp \
+           src/support/VariationTrackMessageTranslator.cpp \
+           src/support/WorkflowBreakpoint.cpp \
+           src/support/BreakpointConditionChecker.cpp \
+           src/support/BreakpointEqualHitCounter.cpp \
+           src/support/BreakpointGreaterOrEqualHitCounter.cpp \
+           src/support/WorkflowBreakpointSharedInfo.cpp \
+           src/support/BreakpointMultipleHitCounter.cpp \
+           src/support/WorkflowDebugMessageParser.cpp \
+           src/support/WorkflowDebugStatus.cpp \
            src/support/WorkflowEnvImpl.cpp \
            src/support/WorkflowIOTasks.cpp \
            src/support/WorkflowRunTask.cpp \

@@ -1,12 +1,14 @@
 include (U2Designer.pri)
 
 # Input
-HEADERS += src/DatasetsController.h \
+HEADERS += src/BreakpointHitCountDialog.h \
+           src/DatasetsController.h \
            src/DatasetsListWidget.h \
            src/DatasetWidget.h \
            src/DelegateEditors.h \
            src/DesignerUtils.h \
            src/DirectoryItem.h \
+           src/EditBreakpointLabelsDialog.h \
            src/EditMarkerGroupDialog.h \
            src/FileItem.h \
            src/GrouperEditor.h \
@@ -14,6 +16,7 @@ HEADERS += src/DatasetsController.h \
            src/MarkerEditor.h \
            src/MarkerEditorWidget.h \
            src/NewGrouperSlotDialog.h \
+           src/NewBreakpointDialog.h \
            src/PropertyWidget.h \
            src/QDScheduler.h \
            src/UrlItem.h \
@@ -35,8 +38,10 @@ HEADERS += src/DatasetsController.h \
            src/wizard/WizardController.h \
            src/wizard/WizardPageController.h
 FORMS += src/ui/AnnsActionDialog.ui \
+         src/ui/BreakpointHitCountDialog.ui \
          src/ui/DatasetWidget.ui \
          src/ui/DirectoryOptions.ui \
+         src/ui/EditBreakpointLabelsDialog.ui \
          src/ui/EditFloatMarkerWidget.ui \
          src/ui/EditIntegerMarkerWidget.ui \
          src/ui/EditMarkerDialog.ui \
@@ -46,14 +51,17 @@ FORMS += src/ui/AnnsActionDialog.ui \
          src/ui/MarkerEditorWidget.ui \
          src/ui/MsaActionDialog.ui \
          src/ui/NewGrouperSlotDialog.ui \
+         src/ui/NewBreakpointDialog.ui \
          src/ui/SequenceActionDialog.ui \
          src/ui/StringActionDialog.ui
-SOURCES += src/DatasetsController.cpp \
+SOURCES += src/BreakpointHitCountDialog.cpp \
+           src/DatasetsController.cpp \
            src/DatasetsListWidget.cpp \
            src/DatasetWidget.cpp \
            src/DelegateEditors.cpp \
            src/DesignerUtils.cpp \
            src/DirectoryItem.cpp \
+           src/EditBreakpointLabelsDialog.cpp \
            src/EditMarkerGroupDialog.cpp \
            src/FileItem.cpp \
            src/GrouperEditor.cpp \
@@ -61,6 +69,7 @@ SOURCES += src/DatasetsController.cpp \
            src/MarkerEditor.cpp \
            src/MarkerEditorWidget.cpp \
            src/NewGrouperSlotDialog.cpp \
+           src/NewBreakpointDialog.cpp \
            src/PropertyWidget.cpp \
            src/QDScheduler.cpp \
            src/UrlItem.cpp \

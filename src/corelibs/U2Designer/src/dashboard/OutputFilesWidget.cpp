@@ -37,11 +37,11 @@ OutputFilesWidget::OutputFilesWidget(const QWebElement &content, Dashboard *pare
 {
     createTable();
 
-    connect(dashboard->monitor(), SIGNAL(si_newOutputFile(const Monitor::FileInfo &)),
-        SLOT(sl_newOutputFile(const Monitor::FileInfo &)));
+    connect(dashboard->monitor(), SIGNAL(si_newOutputFile(const U2::Workflow::Monitor::FileInfo &)),
+        SLOT(sl_newOutputFile(const U2::Workflow::Monitor::FileInfo &)));
 }
 
-void OutputFilesWidget::sl_newOutputFile(const Monitor::FileInfo &info) {
+void OutputFilesWidget::sl_newOutputFile(const U2::Workflow::Monitor::FileInfo &info) {
     const WorkflowMonitor *m = dashboard->monitor();
     CHECK(NULL != m, );
     if (m->getOutputFiles().size() > MAX_FILES_COUNT && !collapsed) {

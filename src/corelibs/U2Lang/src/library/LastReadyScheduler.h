@@ -45,19 +45,22 @@ public:
     virtual bool isDone();
     virtual void cleanup();
 
-    virtual WorkerState getWorkerState(ActorId);
+    virtual WorkerState getWorkerState(const ActorId &actor);
+    virtual Task * replayLastWorkerTick();
+    virtual bool cancelCurrentTaskIfAllowed();
+    virtual void makeOneTick(const ActorId &actor);
 
-private:
-    Schema *schema;
-    QMap<int, QList<Actor*> > topologicSortedGraph;
-    BaseWorker *lastWorker;
-    Task *lastTask;
-
-    WorkerState getWorkerState(Actor* a);
+protected:
+    virtual WorkerState getWorkerState(const Actor *a);
     ActorId actorId() const;
     bool hasValidFinishedTask() const;
     qint64 lastTaskTimeSec() const;
     void measuredTick();
+
+    QMap<int, QList<Actor *> > topologicSortedGraph;
+    BaseWorker *lastWorker;
+    bool canLastTaskBeCanceled;
+    ActorId requestedActorForNextTick;
 };
 
 } // LocalWorkflow

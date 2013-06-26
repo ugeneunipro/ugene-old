@@ -6,57 +6,76 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>506</width>
+    <width>484</width>
     <height>339</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Script editor</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout">
-   <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_2">
-     <item>
-      <widget class="QLabel" name="label_2">
-       <property name="text">
-        <string>Used script</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLineEdit" name="scriptPathEdit"/>
-     </item>
-     <item>
-      <widget class="QToolButton" name="openButton">
-       <property name="text">
-        <string>...</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
+  <layout class="QGridLayout" name="gridLayout_2">
+   <item row="0" column="0">
+    <widget class="QLabel" name="ScriptFileLabel">
+     <property name="text">
+      <string>Used script</string>
+     </property>
+    </widget>
    </item>
-   <item>
-    <widget class="QLabel" name="label">
+   <item row="0" column="1">
+    <widget class="QLineEdit" name="scriptPathEdit"/>
+   </item>
+   <item row="0" column="2">
+    <widget class="QToolButton" name="openButton">
+     <property name="text">
+      <string>...</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0" colspan="3">
+    <widget class="QLabel" name="scriptTextLabel">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>10</height>
+      </size>
+     </property>
      <property name="text">
       <string>Script text</string>
      </property>
     </widget>
    </item>
-   <item>
-    <widget class="QSplitter" name="splitter">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-     <widget class="QTextEdit" name="headerEdit"/>
-     <widget class="QTextEdit" name="scriptEdit"/>
-    </widget>
-   </item>
-   <item>
+   <item row="3" column="0" colspan="3">
     <layout class="QGridLayout" name="gridLayout">
+     <item row="1" column="1">
+      <widget class="QPushButton" name="saveAsButton">
+       <property name="text">
+        <string>Save as..</string>
+       </property>
+      </widget>
+     </item>
      <item row="0" column="0">
       <widget class="QPushButton" name="checkButton">
        <property name="text">
         <string>Check syntax</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QPushButton" name="clearButton">
+       <property name="text">
+        <string>Clear</string>
        </property>
       </widget>
      </item>
@@ -67,44 +86,10 @@
        </property>
       </widget>
      </item>
-     <item row="0" column="2" rowspan="2">
-      <spacer name="horizontalSpacer">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item row="1" column="0">
-      <widget class="QPushButton" name="clearButton">
-       <property name="text">
-        <string>Clear</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="1">
-      <widget class="QPushButton" name="saveAsButton">
-       <property name="text">
-        <string>Save as..</string>
-       </property>
-      </widget>
-     </item>
      <item row="1" column="3">
       <widget class="QPushButton" name="okButton">
        <property name="text">
         <string>Done</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="4">
-      <widget class="QPushButton" name="cancelButton">
-       <property name="text">
-        <string>Cancel</string>
        </property>
       </widget>
      </item>
@@ -115,12 +100,35 @@
        </property>
       </widget>
      </item>
+     <item row="0" column="2">
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>122</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item row="1" column="4">
+      <widget class="QPushButton" name="cancelButton">
+       <property name="text">
+        <string>Cancel</string>
+       </property>
+      </widget>
+     </item>
     </layout>
+   </item>
+   <item row="2" column="0" colspan="3">
+    <layout class="QVBoxLayout" name="scriptEditorLayout"/>
    </item>
   </layout>
  </widget>
  <resources>
-  <include location="../../../U2Gui/U2Gui.qrc"/>
+  <include location="../../../U2Gui.qrc"/>
  </resources>
  <connections>
   <connection>

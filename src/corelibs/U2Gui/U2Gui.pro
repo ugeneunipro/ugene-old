@@ -24,6 +24,7 @@ HEADERS += src/AppSettingsGUI.h \
            src/util/AddNewDocumentDialogImpl.h \
            src/util/AuthenticationDialog.h \
            src/util/BaseDocumentFormatConfigurators.h \
+           src/util/BreakpointConditionEditDialog.h \
            src/util/CreateAnnotationDialog.h \
            src/util/CreateAnnotationWidgetController.h \
            src/util/CreateDocumentFromTextDialogController.h \
@@ -53,7 +54,10 @@ HEADERS += src/AppSettingsGUI.h \
            src/util/RemovePartFromSequenceDialogController.h \
            src/util/SaveDocumentGroupController.h \
            src/util/ScaleBar.h \
+           src/util/ScriptEditorDelegate.h \
            src/util/ScriptEditorDialog.h \
+           src/util/ScriptEditorWidget.h \
+           src/util/ScriptHighLighter.h \
            src/util/SeqPasterWidgetController.h \
 		   src/util/SuggestCompleter.h \
            src/util/TextEditorDialog.h \
@@ -61,6 +65,7 @@ HEADERS += src/AppSettingsGUI.h \
            src/util/logview/LogView.h 
 FORMS += src/util/ui/AddNewDocumentDialog.ui \
          src/util/ui/AuthentificationDialog.ui \
+         src/util/ui/BreakpointConditionEditDialog.ui \
          src/util/ui/CreateDocumentFromTextDialog.ui \
          src/util/ui/CreateObjectRelationDialog.ui \
          src/util/ui/DownloadRemoteFileDialog.ui \
@@ -95,6 +100,7 @@ SOURCES += src/MainWindow.cpp \
            src/util/AddNewDocumentDialogImpl.cpp \
            src/util/AuthenticationDialog.cpp \
            src/util/BaseDocumentFormatConfigurators.cpp \
+           src/util/BreakpointConditionEditDialog.cpp \
            src/util/CreateAnnotationDialog.cpp \
            src/util/CreateAnnotationWidgetController.cpp \
            src/util/CreateDocumentFromTextDialogController.cpp \
@@ -123,7 +129,10 @@ SOURCES += src/MainWindow.cpp \
            src/util/RemovePartFromSequenceDialogController.cpp \
            src/util/SaveDocumentGroupController.cpp \
            src/util/ScaleBar.cpp \
+           src/util/ScriptEditorDelegate.cpp \
            src/util/ScriptEditorDialog.cpp \
+           src/util/ScriptEditorWidget.cpp \
+           src/util/ScriptHighLighter.cpp \
            src/util/SeqPasterWidgetController.cpp \
 		   src/util/SuggestCompleter.cpp \
            src/util/TextEditorDialog.cpp \

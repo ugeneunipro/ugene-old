@@ -36,14 +36,38 @@
 
 namespace U2{
 
-ExportDocumentDialogController::ExportDocumentDialogController(Document* d, QWidget *p) : QDialog(p) {
+ExportDocumentDialogController::ExportDocumentDialogController(Document* d, QWidget *p)
+    : QDialog(p), sourceDoc(d), sourceObject(NULL)
+{
     ui = new Ui_ExportDocumentDialog();
     ui->setupUi(this);
+    initSaveController(sourceDoc->getObjects(), sourceDoc->getURLString());
+    ui->fileNameEdit->setText(saveController->getDefaultFileName());
+}
 
+ExportDocumentDialogController::ExportDocumentDialogController(GObject *object, QWidget *parent,
+    const QString &initUrl) : QDialog(parent), ui(new Ui_ExportDocumentDialog()),
+    sourceObject(object), sourceDoc(NULL)
+{
+    ui->setupUi(this);
+    QList<GObject *> objectList;
+    objectList.append(sourceObject);
+    initSaveController(objectList, initUrl);
+    QString fileName = saveController->getDefaultFileName();
+    if(-1 == fileName.lastIndexOf(".")) {
+        fileName.append("." + saveController->getFormatToSave()
+            ->getSupportedDocumentFileExtensions().first());
+    }
+    ui->fileNameEdit->setText(fileName);
+}
+
+void ExportDocumentDialogController::initSaveController(const QList<GObject *> &objects,
+    const QString &fileUrl)
+{
     SaveDocumentGroupControllerConfig conf;
     //UGENE-1458
     QMap<GObjectType, int> objPerTypeMap;
-    foreach (GObject* obj, d->getObjects()) {
+    foreach (GObject* obj, objects) {
         GObjectType tp = obj->getGObjectType();
         conf.dfc.supportedObjectTypes += tp;
         if(objPerTypeMap.contains(tp)){
@@ -64,8 +88,8 @@ ExportDocumentDialogController::ExportDocumentDialogController(Document* d, QWid
     conf.fileNameEdit = ui->fileNameEdit;
     conf.formatCombo = ui->formatCombo;
     conf.parentWidget = this; 
-
-    QString fileName = GUrlUtils::rollFileName(d->getURLString(), "_copy", DocumentUtils::getNewDocFileNameExcludesHint());
+    const QString fileName = GUrlUtils::rollFileName(fileUrl, "_copy",
+        DocumentUtils::getNewDocFileNameExcludesHint());
     conf.defaultFileName = fileName;
     saveController = new SaveDocumentGroupController(conf, this);
 }
@@ -94,4 +118,13 @@ bool ExportDocumentDialogController::getAddToProjectFlag() const
 {
     return ui->addToProjCheck->isChecked();
 }
+
+Document *ExportDocumentDialogController::getSourceDoc() const {
+    return sourceDoc;
+}
+
+GObject *ExportDocumentDialogController::getSourceObject() const {
+    return sourceObject;
+}
+
 }//namespace

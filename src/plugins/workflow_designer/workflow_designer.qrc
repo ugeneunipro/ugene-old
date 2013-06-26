@@ -1,8 +1,13 @@
 <RCC>
     <qresource prefix="workflow_designer/" >
 	<file>images/checked_tag.png</file>
+  <file>images/clipboard.png</file>
 	<file>images/dashboard.png</file>
 	<file>images/delete.png</file>
+  <file>images/delete_selected_breakpoints.png</file>
+  <file>images/delete_all_breakpoints.png</file>
+  <file>images/disable_all_breakpoints.png</file>
+  <file>images/document_convert.png</file>
 	<file>images/editcopy.png</file>
 	<file>images/editcut.png</file>
 	<file>images/editpaste.png</file>
@@ -14,6 +19,7 @@
 	<file>images/filesave.png</file>
 	<file>images/filesaveas.png</file>
 	<file>images/green_circle.png</file>
+  <file>images/highlight_item.png</file>
 	<file>images/import.png</file>
 	<file>images/leftarrow.png</file>
 	<file>images/mag_circle.png</file>
@@ -22,10 +28,15 @@
 	<file>images/rot_arrow.png</file>
 	<file>images/rot_cur.png</file>
 	<file>images/run.png</file>
+  <file>images/pause.png</file>
+  <file>images/breakpoint.png</file>
+  <file>images/next_step.png</file>
+  <file>images/process_one_message.png</file>
 	<file>images/script.png</file>
 	<file>images/script_edit.png</file>
 	<file>images/sendtoback.png</file>
-	<file>images/stopTask.png</file>
+  <file>images/show_breakpoint_manager.png</file>
+  <file>images/stopTask.png</file>
 	<file>images/table_relationship.png</file>
 	<file>images/tag.png</file>
 	<file>images/toggle.png</file>

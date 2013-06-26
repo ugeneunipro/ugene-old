@@ -19,15 +19,15 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_LOG_DRIVER_H_
-#define _U2_LOG_DRIVER_H_
+#ifndef _U2_CONSOLE_LOG_DRIVER_H_
+#define _U2_CONSOLE_LOG_DRIVER_H_
 
 #include <U2Core/Log.h>
-#include <LogSettings.h>
+#include "LogSettings.h"
 
 namespace U2 {
 
-class LogDriver : public QObject, public LogListener, public LogSettingsHolder {
+class U2PRIVATE_EXPORT ConsoleLogDriver : public QObject, public LogSettingsHolder {
     Q_OBJECT
 public:
     static const QString LOG_SHOW_DATE_CMD_OPTION;
@@ -50,10 +50,9 @@ private:
     static bool helpRegistered;
     
 public:
-    LogDriver();
-    virtual ~LogDriver();
+    ConsoleLogDriver();
+    virtual ~ConsoleLogDriver() {}
 
-    void onMessage(const LogMessage& msg);
 
 private:
     void setCmdLineSettings();
@@ -61,6 +60,7 @@ private:
     QString getLevelName(int i) const;
     
 private slots:
+    void sl_onMessage(const LogMessage& msg);
     QString prepareText(const LogMessage& msg) const;
 private:
     bool printToConsole;

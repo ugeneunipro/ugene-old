@@ -91,7 +91,7 @@ LONG CrashHandler::CrashHandlerFuncSecond(PEXCEPTION_POINTERS pExceptionInfo ) {
     if(addHandlerFunc != NULL) {
         addHandlerFunc(1, CrashHandlerFuncThird);
     }
-    QString path = QCoreApplication::applicationDirPath() + "/ugenem.exe";
+    QString path = AppContext::getWorkingDirectoryPath() + "/ugenem.exe";
     static QMutex mutex;
     QMutexLocker lock(&mutex);
     QProcess::startDetached(path, QStringList());
@@ -379,7 +379,7 @@ void CrashHandler::setupHandler() {
 
 void CrashHandler::runMonitorProcess(const QString &exceptionType)
 {
-    QString path = QCoreApplication::applicationDirPath() + "/ugenem";
+    QString path = AppContext::getWorkingDirectoryPath() + "/ugenem";
 
 #ifndef Q_OS_WIN
     char pid_buf[30];

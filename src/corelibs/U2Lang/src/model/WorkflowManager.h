@@ -39,6 +39,8 @@
 
 namespace U2 {
 
+class WorkflowDebugStatus;
+
 namespace Workflow {
 
 /**
@@ -79,7 +81,8 @@ enum WorkerState {
     WorkerWaiting, 
     WorkerReady, 
     WorkerRunning, 
-    WorkerDone
+    WorkerDone,
+    WorkerPaused
 }; // WorkerState
 
 /**
@@ -88,8 +91,23 @@ enum WorkerState {
  */
 class U2LANG_EXPORT Scheduler : public Worker {
 public:
-    virtual WorkerState getWorkerState(ActorId) = 0;
-    
+    Scheduler(Schema *sch) : schema(sch), lastTask(NULL) {}
+    virtual WorkerState getWorkerState(const ActorId &) = 0;
+    virtual Task * replayLastWorkerTick() = 0;
+    // returning value indicates if current task was canceled
+    virtual bool cancelCurrentTaskIfAllowed() = 0;
+    virtual void makeOneTick(const ActorId &) = 0;
+    virtual void setDebugInfo(WorkflowDebugStatus *newDebugInfo) {
+        Q_ASSERT(NULL != newDebugInfo);
+        debugInfo = newDebugInfo;
+    }
+
+protected:
+    Schema *schema;
+    Task *lastTask;
+    WorkflowDebugStatus *debugInfo;
+
+    virtual WorkerState getWorkerState(const Actor*) = 0;
 }; // Scheduler
 
 /**

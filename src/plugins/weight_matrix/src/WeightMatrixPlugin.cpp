@@ -77,16 +77,11 @@ WeightMatrixPlugin::WeightMatrixPlugin() : Plugin(tr("Weight matrix"), tr("Searc
     AppContext::getDocumentFormatRegistry()->registerFormat(new PWMatrixFormat(this));
 
     LocalWorkflow::PWMatrixWorkerFactory::init();
-    LocalWorkflow::PFMatrixWorkerFactory::init();
 
     QString defaultDir = QDir::searchPaths( PATH_PREFIX_DATA ).first() + "/position_weight_matrix";
 
     if (LastUsedDirHelper::getLastUsedDir(WeightMatrixIO::WEIGHT_MATRIX_ID).isEmpty()) {
         LastUsedDirHelper::setLastUsedDir(defaultDir, WeightMatrixIO::WEIGHT_MATRIX_ID);
-    }
-
-    if (LastUsedDirHelper::getLastUsedDir(WeightMatrixIO::FREQUENCY_MATRIX_ID).isEmpty()) {
-        LastUsedDirHelper::setLastUsedDir(defaultDir, WeightMatrixIO::FREQUENCY_MATRIX_ID);
     }
 
     QDActorPrototypeRegistry* qdpr = AppContext::getQDActorProtoRegistry();

@@ -35,33 +35,33 @@ namespace U2 {
 SaveDocumentGroupController::SaveDocumentGroupController(const SaveDocumentGroupControllerConfig& _conf, QObject* _parent)
 : QObject(_parent)
 {
-	conf = _conf;
+    conf = _conf;
     if (conf.saveTitle.isEmpty()) {
         conf.saveTitle = tr("Select file location");
     }
     assert(conf.parentWidget!=NULL);
 
-	conf.fileNameEdit->setText(conf.defaultFileName);
+    conf.fileNameEdit->setText(conf.defaultFileName);
     comboController = new DocumentFormatComboboxController(this, conf.formatCombo, conf.dfc, conf.defaultFormatId);
 
-	connect(conf.fileNameEdit, SIGNAL(textChanged(const QString&)), SLOT(sl_fileNameChanged(const QString&)));
-	connect(conf.fileDialogButton, SIGNAL(clicked()), SLOT(sl_saveButtonClicked()));
+    connect(conf.fileNameEdit, SIGNAL(textChanged(const QString&)), SLOT(sl_fileNameChanged(const QString&)));
+    connect(conf.fileDialogButton, SIGNAL(clicked()), SLOT(sl_saveButtonClicked()));
     connect(comboController->comboBox(), SIGNAL(currentIndexChanged ( const QString& )), SLOT(sl_formatChanged(const QString&)));
     sl_formatChanged(QString());
 }
 
 void SaveDocumentGroupController::sl_fileNameChanged(const QString& newName) {
-	GUrl url(newName);
-	QString ext = GUrlUtils::getUncompressedExtension(url);
-	DocumentFormatRegistry* formatRegistry = AppContext::getDocumentFormatRegistry();
-	DocumentFormat* df = formatRegistry->selectFormatByFileExtension(ext);
-	if (df!=NULL && df->checkConstraints(conf.dfc)) {
-		comboController->setActiveFormatId(df->getFormatId());
-	}
+    GUrl url(newName);
+    QString ext = GUrlUtils::getUncompressedExtension(url);
+    DocumentFormatRegistry* formatRegistry = AppContext::getDocumentFormatRegistry();
+    DocumentFormat* df = formatRegistry->selectFormatByFileExtension(ext);
+    if (df!=NULL && df->checkConstraints(conf.dfc)) {
+        comboController->setActiveFormatId(df->getFormatId());
+    }
 }
 
 DocumentFormatId SaveDocumentGroupController::getFormatIdToSave() const {
-	return comboController->getActiveFormatId();
+    return comboController->getActiveFormatId();
 }
 
 void SaveDocumentGroupController::setSelectedFormatId(DocumentFormatId id) {
@@ -69,11 +69,11 @@ void SaveDocumentGroupController::setSelectedFormatId(DocumentFormatId id) {
 }
 
 DocumentFormat* SaveDocumentGroupController::getFormatToSave() const {
-	DocumentFormatId id = getFormatIdToSave();
-	if (id.isEmpty()) {
-		return NULL;
-	}
-	return AppContext::getDocumentFormatRegistry()->getFormatById(id);
+    DocumentFormatId id = getFormatIdToSave();
+    if (id.isEmpty()) {
+        return NULL;
+    }
+    return AppContext::getDocumentFormatRegistry()->getFormatById(id);
 }
 
 void SaveDocumentGroupController::sl_saveButtonClicked() {
@@ -84,16 +84,16 @@ void SaveDocumentGroupController::sl_saveButtonClicked() {
     QStringList extList = getFormatToSave()->getSupportedDocumentFileExtensions();
 
     // show the dialog
-	LastUsedDirHelper lod;
-	lod.url = QFileDialog::getSaveFileName(conf.parentWidget, conf.saveTitle, lod, filter);
-	if (lod.url.isEmpty()) {
-		return;
-	}
+    LastUsedDirHelper lod;
+    lod.url = QFileDialog::getSaveFileName(conf.parentWidget, conf.saveTitle, lod, filter);
+    if (lod.url.isEmpty()) {
+        return;
+    }
     QFileInfo f(lod.url);
     if(!extList.contains(f.suffix())){
         lod.url.append("." + extList.first());
     }
-	conf.fileNameEdit->setText(lod.url);
+    conf.fileNameEdit->setText(lod.url);
 }
 
 void SaveDocumentGroupController::sl_formatChanged( const QString& )

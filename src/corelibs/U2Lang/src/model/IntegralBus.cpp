@@ -151,7 +151,6 @@ QString BusMap::getNewSourceId(const QString &srcId, const QString &actorId) {
 }
 
 QVariantMap BusMap::composeMessageMap(const Message &m, const QVariantMap &context) {
-    assert(!input);
     QVariantMap data;
     if (breaksDataflow) {
         foreach (const QString &key, context.keys()) {
@@ -296,6 +295,31 @@ Message IntegralBus::get() {
     return Message(busType, data);
 }
 
+QQueue<Message> IntegralBus::getMessages(int startIndex, int endIndex) const {
+    QQueue<Message> result;
+
+    QMap<CommunicationChannel *, QQueue<Message> > messagesFromChannels;
+    foreach(CommunicationChannel* channel, outerChannels) {
+        assert(channel != NULL);
+        QQueue<Message> channelMessages = channel->getMessages(startIndex, endIndex);
+        messagesFromChannels[channel] = channelMessages;
+    }
+
+    for(qint32 messageCount = 0; messageCount
+        < messagesFromChannels[messagesFromChannels.keys().first()].size(); ++messageCount)
+    {
+        QVariantMap resultingMessageMap;
+        foreach(CommunicationChannel *channel, messagesFromChannels.keys()) {
+            assert(messagesFromChannels[channel][messageCount].getData().type() == QVariant::Map);
+            resultingMessageMap.unite(
+                messagesFromChannels[channel][messageCount].getData().toMap());
+        }
+        result.enqueue(Message(busType, resultingMessageMap));
+    }
+    
+    return result;
+}
+
 Message IntegralBus::look() const {
     QVariantMap result;
     foreach(CommunicationChannel* channel, outerChannels) {
@@ -327,10 +351,10 @@ Message IntegralBus::composeMessage(const Message& m) {
     return Message(busType, data);
 }
 
-void IntegralBus::put(const Message& m) {
+void IntegralBus::put(const Message& m, bool isMessageRestored) {
     Message busMessage = composeMessage(m);
     foreach(CommunicationChannel* ch, outerChannels) {
-        ch->put(busMessage);
+        ch->put(busMessage, isMessageRestored);
     }
     if ( !printSlots.isEmpty() && (m.getData().type() == QVariant::Map) ) {
         QVariantMap map = m.getData().toMap();
@@ -344,6 +368,10 @@ void IntegralBus::put(const Message& m) {
                 }
             }
         }
+    }
+
+    if(isMessageRestored) {
+        --takenMsgs;
     }
 }
 

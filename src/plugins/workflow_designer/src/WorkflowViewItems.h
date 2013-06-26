@@ -23,6 +23,7 @@
 #define _U2_WORKFLOW_VIEW_ITEMS_H_
 
 #include <U2Lang/ActorModel.h>
+#include "U2Lang/LocalDomain.h"
 
 #include <QtGui/QAction>
 #include <QtGui/QWidget>
@@ -35,6 +36,7 @@ namespace U2 {
 using namespace Workflow;
 class WorkflowScene;
 class ItemViewStyle;
+class WorkflowHighlightItem;
 
 typedef QString StyleId;
 
@@ -80,6 +82,13 @@ enum {
     WorkflowBusItemType
 };
 
+enum InspectionItemOrientationType {
+    InspectionLeft,
+    InspectionRight,
+    InspectionUp,
+    InspectionDown
+};
+
 class WorkflowProcessItem : public QObject, public StyledItem {
     Q_OBJECT
 public:
@@ -109,14 +118,24 @@ public:
     ItemViewStyle* getStyleById(const StyleId & id) const;
     bool containsStyle(const StyleId & id) const;
     void updatePorts();
-    
+
+    void toggleBreakpointState();
+    void toggleBreakpoint();
+    bool isBreakpointInserted();
+    bool isBreakpointEnabled();
+    void highlightItem();
+
 protected:
     QVariant itemChange ( GraphicsItemChange change, const QVariant & value );
     virtual bool sceneEvent ( QEvent * event );
     virtual void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
     virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
+    //virtual void hoverEnterEvent(QGraphicsSceneHoverEvent * event);
+    //virtual void hoverLeaveEvent(QGraphicsSceneHoverEvent * event);
+
 public slots:
     void sl_update();
+
 private:
     void createPorts();
     QMap<StyleId, ItemViewStyle*> styles;
@@ -124,6 +143,10 @@ private:
     Actor* process;
     QList<WorkflowPortItem*> ports;
     QMap<QGraphicsItem *, QPointF> initialPositions;
+    bool hasBreakpoint;
+    bool hasEnabledBreakpoint;
+    WorkflowHighlightItem *highlighting;
+//    WorkflowInspectionItem *inspectionItem;
 };
 
 class WorkflowPortItem : public StyledItem {
@@ -212,6 +235,7 @@ protected:
     //void mouseReleaseEvent ( QGraphicsSceneMouseEvent * event );
     void hoverEnterEvent ( QGraphicsSceneHoverEvent * event );
     void hoverLeaveEvent ( QGraphicsSceneHoverEvent * event );
+
 private slots:
     void sl_update();
 
@@ -221,6 +245,18 @@ private:
     QGraphicsItem* text;
     //bool dragging;
     //QPointF dragPoint;
+};
+
+class WorkflowHighlightItem : public StyledItem {
+public:
+    WorkflowHighlightItem(WorkflowProcessItem *owner);
+    QRectF boundingRect() const;
+    void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0);
+
+    void replay();
+
+private:
+    quint8 countOfAnimationStepsLeft;
 };
 
 } // U2

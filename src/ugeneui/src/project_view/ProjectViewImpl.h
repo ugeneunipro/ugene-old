@@ -40,6 +40,7 @@ namespace U2 {
 class EnableProjectViewTask;
 class DisableProjectViewTask;
 class ProjectViewWidgetFactory;
+class ExportDocumentDialogController;
 
 class DocumentUpdater : public QObject {
     Q_OBJECT
@@ -95,6 +96,10 @@ public:
 
     void setSaveProjectOnCloseEnabled(bool enabled) { saveProjectOnClose = enabled; }
 
+    void exportObject2Document(GObject *object, const QString &url, bool tracePath);
+
+    void exportAnnotations(QList<Annotation*> &annotations, const GUrl &dstUrl);
+
 protected:
     /// returns NULL if no actions are required to enable service
     virtual Task* createServiceEnablingTask();
@@ -142,6 +147,7 @@ private:
     //todo: find a better place to do this
     void registerBuiltInObjectViews();
     void unregisterBuiltInObjectViews();
+    void export2Document(ExportDocumentDialogController &dialog, bool tracePath = true) const;
 
 
     QAction*    saveSelectedDocsAction;

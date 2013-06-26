@@ -296,7 +296,8 @@ void DocumentUpdater::excludeDocumentsInTasks(const QList<Task*>& tasks, QList<D
         } else {
             LoadDocumentTask* loadTask = qobject_cast<LoadDocumentTask*>(task);
             if (loadTask) {
-                documents.removeAll(loadTask->getDocument());
+                documents.removeAll(loadTask->getDocument(NULL == loadTask->getParentTask() ||
+                    loadTask->getParentTask()->thread() == QCoreApplication::instance()->thread()));
             }
         }
     }
@@ -1038,15 +1039,29 @@ void ProjectViewImpl::sl_exportDocument() {
     if (!srcDoc->isLoaded()) {
         return;
     }
-    LastUsedDirHelper h;
     ExportDocumentDialogController dialog(srcDoc, w);
+    export2Document(dialog);
+}
+
+void ProjectViewImpl::exportObject2Document(GObject *object, const QString &url, bool tracePath) {
+    if(NULL == object || object->isUnloaded()) {
+        return;
+    }
+    ExportDocumentDialogController dialog(object, w, url);
+    export2Document(dialog, tracePath);
+}
+
+void ProjectViewImpl::export2Document(ExportDocumentDialogController &dialog, bool tracePath) const {
     int result = dialog.exec();
     if (result == QDialog::Accepted) {
-        h.url = dialog.getDocumentURL();
-        if (h.url.isEmpty()) {
+        if (tracePath) {
+            LastUsedDirHelper h;
+            h.url = dialog.getDocumentURL();
+        }
+        QString dstUrl = dialog.getDocumentURL();
+        if (dstUrl.isEmpty()) {
             return;
         }
-        QString dstUrl = h.url;
         if (AppContext::getProject()->findDocumentByURL(dstUrl)) {
             QMessageBox::critical(w, tr("Error"), tr("Document with the same URL is added to the project. \n Remove it from the project first."));
             return;
@@ -1060,7 +1075,15 @@ void ProjectViewImpl::sl_exportDocument() {
         DocumentFormat *df = dfr->getFormatById(formatId);
         CHECK_EXT(df != NULL, coreLog.error(QString("Unknown document format IO factory: %1").arg(formatId)), );
 
-        Document *dstDoc = srcDoc->getSimpleCopy(df, iof, dstUrl);
+        U2OpStatusImpl os;
+        Document *srcDoc = dialog.getSourceDoc();
+        Document *dstDoc = NULL;
+        if(NULL == srcDoc) {
+            dstDoc = df->createNewLoadedDocument(iof, dstUrl, os);
+            dstDoc->addObject(dialog.getSourceObject());
+        } else {
+            dstDoc = srcDoc->getSimpleCopy(df, iof, dstUrl);
+        }
 
         SaveDocFlags flags = SaveDocFlags(SaveDoc_Roll) | SaveDoc_DestroyButDontUnload;
         if (addToProject) {
@@ -1069,6 +1092,11 @@ void ProjectViewImpl::sl_exportDocument() {
         SaveDocumentTask *t = new SaveDocumentTask(dstDoc, iof, dstUrl, flags);
         AppContext::getTaskScheduler()->registerTopLevelTask(t);
     }
+}
+
+void ProjectViewImpl::exportAnnotations(QList<Annotation*> &annotations, const GUrl &dstUrl)
+{
+    emit si_annotationsExportRequested(annotations, dstUrl);
 }
 
 void ProjectViewImpl::highlightItem(Document* doc){

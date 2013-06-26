@@ -99,7 +99,6 @@
 #   define U2PRIVATE_EXPORT Q_DECL_IMPORT
 #endif
 
-
 // UGENE_VERSION must be supplied as a preprocessor directive
 #ifndef UGENE_VERSION
 #error UGENE_VERSION is not set!

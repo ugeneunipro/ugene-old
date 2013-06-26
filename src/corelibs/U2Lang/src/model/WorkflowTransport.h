@@ -23,6 +23,7 @@
 #define _U2_WORKFLOW_TRANSPORT_H_
 
 #include <QtCore/QVariant>
+#include <QtCore/QQueue>
 
 #include <U2Lang/Datatype.h>
 
@@ -70,8 +71,10 @@ public:
     // Message is united of data that was putted to outer channels
     // used in scripting
     virtual Message look() const = 0;
-    // after calling message is in channel until get() invocation
-    virtual void put(const Message& m) = 0;
+    // after calling message is in channel until get() invocation.
+    // isMessageRestored should be true for messages which are queued in channel repeatedly
+    // since they weren't processed
+    virtual void put(const Message& m, bool isMessageRestored = false) = 0;
     // how many messages in channel
     virtual int hasMessage() const = 0;
     // how many messages taken from channel
@@ -86,6 +89,11 @@ public:
     // how many messages can be put to channel
     virtual int capacity() const = 0;
     virtual void setCapacity(int) = 0;
+    // get messages dump (this is intended to be used in WD debug purposes);
+    // messages shouldn't be removed from channel;
+    // indices should be treated inclusively;
+    // default indices values should be used for obtaining all the messages in channel
+    virtual QQueue<Message> getMessages(int startIndex = 0, int endIndex = -1) const = 0;
     
 }; // CommunicationChannel
 

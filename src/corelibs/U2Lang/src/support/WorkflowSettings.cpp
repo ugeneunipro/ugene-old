@@ -266,7 +266,7 @@ static QStringList generateCandidates(const QString & prefix) {
 }
 
 static QString lookupCmdlineUgenePath() {
-    QString executableDir = QCoreApplication::applicationDirPath();
+    QString executableDir = AppContext::getWorkingDirectoryPath();
     QStringList candidates(generateCandidates(executableDir));
     foreach(const QString & candidate, candidates) {
         if(QFile::exists(candidate)) {

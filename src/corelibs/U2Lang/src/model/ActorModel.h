@@ -184,12 +184,10 @@ public:
     // reimplemented: Configuration::remap
     virtual void remap(const QMap<ActorId, ActorId>&);
     
-    // setups variables for script
-    void setupVariablesForPort();
-    void setupVariablesForAttribute();
-    
     AttributeScript *getScript() const;
     void setScript(AttributeScript* _script);
+
+    AttributeScript *getCondition() const;
 
     ActorId getOwner() const;
     void setOwner(const ActorId &owner);
@@ -235,10 +233,17 @@ protected:
     // actor can be written on script
     // this object identifies it's text and variables
     AttributeScript * script;
+    // condition that is to be evaluated
+    // before the actor's execution
+    AttributeScript * condition;
     // an actor could be a subactor of some another
     ActorId owner;
 
 private:
+    // setups variables for script
+    void setupVariablesForPort(AttributeScript *_script, bool inputOnly = false);
+    void setupVariablesForAttribute(AttributeScript *_script);
+
     void updateGrouperSlots(const QMap<ActorId, ActorId> &actorsMapping);
 }; // Actor
 

@@ -33,6 +33,7 @@ namespace Workflow {
 namespace Monitor {
     class U2LANG_EXPORT FileInfo {
     public:
+        FileInfo( );
         FileInfo(const QString &url, const QString &producer);
         QString url;
         QString actor;
@@ -93,7 +94,7 @@ public slots:
 
 signals:
     void si_firstProblem();
-    void si_newOutputFile(const Monitor::FileInfo &info);
+    void si_newOutputFile(const U2::Workflow::Monitor::FileInfo &info);
     void si_newProblem(const Monitor::Problem &info);
     void si_workerInfoChanged(const QString &actor, const Monitor::WorkerInfo &info);
     void si_progressChanged(int progress);
@@ -124,5 +125,7 @@ public:
 
 } // Workflow
 } // U2
+
+Q_DECLARE_METATYPE( U2::Workflow::Monitor::FileInfo )
 
 #endif // _U2_WORKFLOWMONITOR_H_

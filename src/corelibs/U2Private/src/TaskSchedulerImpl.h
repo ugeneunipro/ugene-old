@@ -28,6 +28,7 @@
 #include <QtCore/QThread>
 #include <QtCore/QTimer>
 #include <QtCore/QMutex>
+#include <QtCore/QWaitCondition>
 
 namespace U2 {
 
@@ -37,11 +38,27 @@ class AppResource;
 
 class TaskThread : public QThread {
 public:
-    TaskThread(TaskInfo* _ti) : ti(_ti),finishEventListener(NULL) {}
+    TaskThread(TaskInfo* _ti);
     void run();
+    void resume();
 
     TaskInfo* ti;
     QObject*  finishEventListener;
+    QMutex subtasksLocker;
+    QList<Task *> unconsideredNewSubtasks;
+    volatile bool newSubtasksObtained;
+    
+    QWaitCondition pauser;
+    volatile bool isPaused;
+    QMutex pauseLocker;
+
+protected:
+    bool event(QEvent *event);
+
+private:
+    void getNewSubtasks();
+    void terminateMessageLoop();
+    void pause();
 };
 
 
@@ -86,6 +103,8 @@ public:
 class U2PRIVATE_EXPORT TaskSchedulerImpl : public TaskScheduler {
     Q_OBJECT
 public:
+    using TaskScheduler::onSubTaskFinished;
+
     TaskSchedulerImpl(AppResourcePool* rp);
     ~TaskSchedulerImpl();
 
@@ -108,6 +127,9 @@ public:
     void addThreadId(qint64 taskId, Qt::HANDLE id) {/*threadIds.insert(taskId, id);*/threadIds[taskId] = id;}
     void removeThreadId(qint64 taskId) {threadIds.remove(taskId);}
     qint64 getNameByThreadId(Qt::HANDLE id) const{return threadIds.key(id);}
+    void pauseThreadWithTask(const Task *task);
+    void resumeThreadWithTask(const Task *task);
+    void onSubTaskFinished(TaskThread *thread, Task *subtask);
 
 private slots:
     void update();
