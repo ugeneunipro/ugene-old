@@ -176,6 +176,12 @@ bool FileInfo::operator== (const FileInfo &other) const {
 /************************************************************************/
 /* Problem */
 /************************************************************************/
+Problem::Problem( )
+    : message( ), actor( )
+{
+
+}
+
 Problem::Problem(const QString &_message, const QString &_actor)
 : message(_message), actor(_actor)
 {

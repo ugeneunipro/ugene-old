@@ -31,24 +31,21 @@ typedef QString SnpRequestKey;
 
 namespace SnpRequestKeys {
 
-const SnpRequestKey R_SNP_FIRST_SEQUENCE( "-s" );
-const SnpRequestKey R_SNP_SECOND_SEQUENCE( "-f" );
+const SnpRequestKey R_SNP_FIRST_SEQUENCE( "-f" );
+const SnpRequestKey R_SNP_SECOND_SEQUENCE( "-s" );
 
 const SnpRequestKey R_SNP_FIRST_UNKNOWN_BINDS( "--snpdm1" );
 const SnpRequestKey R_SNP_SECOND_UNKNOWN_BINDS( "--snpdm2" );
 
 const SnpRequestKey R_SNP_SIGNIFICANCE( "--sign" );
 
-
 } // namespace SnpRequestKeys
 
-typedef QPair<QString, QString> SnpRequestDefaultItem;
+typedef QString SnpRequestingScript;
 
-typedef QString SnpRequestAddress;
+namespace SnpRequestingScripts {
 
-namespace SnpRequestAddresses {
-
-    const SnpRequestAddress R_SNP_TOOLS_SCRIPT_PATH( ":snp_effect/scripts/rsnp.py" );
+const SnpRequestingScript R_SNP_TOOLS_SCRIPT_PATH( ":snp_effect/scripts/rsnp.py" );
 
 } // namespace SnpRequestAddresses
 

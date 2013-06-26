@@ -58,7 +58,7 @@ public:
     QVector<U2Region>    allowedRegions;       //reported repeat must fit one of these regions
 
     RFAlgorithm         algo;
-	RepeatsFilterAlgorithm	filter;
+    RepeatsFilterAlgorithm    filter;
     int                 nThreads;
     bool                excludeTandems;
 

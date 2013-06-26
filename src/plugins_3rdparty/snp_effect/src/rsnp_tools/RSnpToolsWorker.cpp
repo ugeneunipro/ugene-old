@@ -63,9 +63,9 @@ QVariantMap RSnpToolsWorker::getInputDataForRequest( )
     return inputData;
 }
 
-SnpRequestAddress RSnpToolsWorker::getRequestAddress( )
+SnpRequestingScript RSnpToolsWorker::getRequestAddress( )
 {
-    return SnpRequestAddresses::R_SNP_TOOLS_SCRIPT_PATH;
+    return SnpRequestingScripts::R_SNP_TOOLS_SCRIPT_PATH;
 }
 
 /************************************************************************/
@@ -129,17 +129,14 @@ RSnpToolsPrompter::RSnpToolsPrompter( Actor *p )
 QString RSnpToolsPrompter::composeRichDoc( )
 {
     QString res = ""; 
-    //Actor* annProducer = qobject_cast<IntegralBusPort*>(
-    //    target->getPort(BasePorts::IN_VARIATION_TRACK_PORT_ID( ) ) )->getProducer(
-    //    BaseSlots::VARIATION_TRACK_SLOT( ).getId( ) );
+    Actor* annProducer = qobject_cast<IntegralBusPort*>(
+        target->getPort(BasePorts::IN_VARIATION_TRACK_PORT_ID( ) ) )->getProducer(
+        BaseSlots::VARIATION_TRACK_SLOT( ).getId( ) );
 
-    //QString unsetStr = "<font color='red'>" + tr("unset") + "</font>";
-    //QString annUrl = annProducer ? annProducer->getLabel( ) : unsetStr;
+    QString unsetStr = "<font color='red'>" + tr("unset") + "</font>";
+    QString annUrl = annProducer ? annProducer->getLabel( ) : unsetStr;
 
-    //QString path = getHyperlink(DB_PATH, getURL(DB_PATH));
-
-    //res.append(tr("Uses variations from <u>%1</u> as input.").arg(annUrl));
-    //res.append(tr(" Takes annotations from <u>%1</u> database.").arg(path.isEmpty() ? unsetStr : path));
+    res.append(tr("Uses variations from <u>%1</u> as input.").arg(annUrl));
 
     return res;
 }

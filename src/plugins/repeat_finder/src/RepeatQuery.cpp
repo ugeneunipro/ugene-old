@@ -66,13 +66,13 @@ QList< QPair<QString,QString> > QDRepeatActor::saveConfiguration() const
     QList< QPair<QString,QString> > res = QDActor::saveConfiguration();
     Attribute* a = cfg->getParameter(ALGO_ATTR);
     for (int i=0; i<res.size(); i++) 
-	{
+    {
         QPair<QString, QString>& attr = res[i];
         if (attr.first==a->getId()) 
-		{
+        {
             RFAlgorithm alg = RFAlgorithm(a->getAttributeValueWithoutScript<int>());
             switch (alg) 
-			{
+            {
             case RFAlgorithm_Auto:
                 attr.second = ALGO_AUTO;
                 break;
@@ -90,13 +90,13 @@ QList< QPair<QString,QString> > QDRepeatActor::saveConfiguration() const
 
     Attribute* fa = cfg->getParameter(NESTED_ATTR);
     for (int i=0; i<res.size(); i++) 
-	{
+    {
         QPair<QString, QString>& attr = res[i];
         if (attr.first==a->getId()) 
-		{
+        {
             RepeatsFilterAlgorithm falg = RepeatsFilterAlgorithm(a->getAttributeValueWithoutScript<int>());
             switch (falg) 
-			{
+            {
             case DisjointRepeats:
                 attr.second = FA_DISJOINT;
                 break;
@@ -128,49 +128,49 @@ void QDRepeatActor::loadConfiguration(const QList< QPair<QString,QString> >& str
     QString minDistStr;
     QString maxDistStr;
     foreach(const StringAttribute& attr, strMap) 
-	{
+    {
         if (attr.first==ALGO_ATTR) 
-		{
+        {
             int alg;
             const QString& strandVal = attr.second;
             if (strandVal==ALGO_AUTO) 
-			{
+            {
                 alg = 0;
             }
             else if (strandVal==ALGO_DIAG) 
-			{
+            {
                 alg = 1;
             }
             else if (strandVal==ALGO_SUFFIX) 
-			{
+            {
                 alg = 2;
             }
             cfg->setParameter(ALGO_ATTR, qVariantFromValue(alg));
         }
-		else if (attr.first==NESTED_ATTR)
-		{
+        else if (attr.first==NESTED_ATTR)
+        {
             int falg;
             const QString& strandVal = attr.second;
             if (strandVal==FA_DISJOINT) 
-			{
+            {
                 falg = 0;
             }
             else if (strandVal==FA_NOFILTERING) 
-			{
+            {
                 falg = 1;
             }
             else if (strandVal==FA_UNIQUE) 
-			{
+            {
                 falg = 2;
             }
             cfg->setParameter(NESTED_ATTR, qVariantFromValue(falg));
-		}
-		else if (attr.first == MIN_DIST_ATTR)
-		{
+        }
+        else if (attr.first == MIN_DIST_ATTR)
+        {
             minDistStr = attr.second;
         }
-		else if (attr.first == MAX_DIST_ATTR)
-		{
+        else if (attr.first == MAX_DIST_ATTR)
+        {
             maxDistStr = attr.second;
         }
     }

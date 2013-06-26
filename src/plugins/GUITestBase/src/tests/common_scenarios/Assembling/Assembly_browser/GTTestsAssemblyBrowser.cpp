@@ -50,7 +50,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
 
 //1. Open _common_data/scenarios/assembly/example-alignment.ugenedb
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/assembly/", "example-alignment.ugenedb");
-	GTWidget::click(os, GTUtilsMdi::activeWindow(os));
+    GTWidget::click(os, GTUtilsMdi::activeWindow(os));
 //2. Zoom in until overview selection transforms to cross-hair
     for (int i = 0;i < 24;i++){
         GTKeyboardDriver::keyClick(os, '=', GTKeyboardDriver::key["shift"]);

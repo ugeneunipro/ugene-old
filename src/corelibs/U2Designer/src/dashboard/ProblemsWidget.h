@@ -38,7 +38,7 @@ public:
     virtual QList<QStringList> data();
 
 private slots:
-    void sl_newProblem(const Monitor::Problem &info);
+    void sl_newProblem(const U2::Workflow::Monitor::Problem &info);
 
 private:
     QStringList createRow(const Problem &info, bool multi) const;

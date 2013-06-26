@@ -172,18 +172,18 @@ RFAlgorithmBase* FindRepeatsTask::createRFTask() {
 
 void FindRepeatsTask::run() 
 {
-	if (settings.filter != NoFiltering) 
-	{
-		if (settings.filter == UniqueRepeats) 
-		{
-	        stateInfo.setDescription(tr("Filtering unique results"));
-			filterUniqueRepeats();
-		}
-		if (settings.filter == DisjointRepeats) 
-		{
-	        stateInfo.setDescription(tr("Filtering nested results"));
-			filterNestedRepeats();
-		}
+    if (settings.filter != NoFiltering) 
+    {
+        if (settings.filter == UniqueRepeats) 
+        {
+            stateInfo.setDescription(tr("Filtering unique results"));
+            filterUniqueRepeats();
+        }
+        if (settings.filter == DisjointRepeats) 
+        {
+            stateInfo.setDescription(tr("Filtering nested results"));
+            filterNestedRepeats();
+        }
     }
 }
 
@@ -199,40 +199,40 @@ Task::ReportResult FindRepeatsTask::report() {
 
 bool CompareResultLen(RFResult r1, RFResult r2) 
 {
-	return r1.l < r2.l;
+    return r1.l < r2.l;
 }
 
 void FindRepeatsTask::filterUniqueRepeats() 
 {
     quint64 t1 = GTimer::currentTimeMicros();
 
-	qSort(results.begin(), results.end(), CompareResultLen);
+    qSort(results.begin(), results.end(), CompareResultLen);
 
-	bool changed = false;
+    bool changed = false;
     for (int i=0, n = results.size(); i < n; i++) 
-	{
+    {
         RFResult& ri = results[i];
 
-		for (int j = i+1; j < results.size(); j++)
-		{
-			int Index = results[j].fragment.indexOf(ri.fragment);
-			if (Index != -1)
-			{
-				changed = true;
-				ri.l = -1;
-				break;
-			}
-		}
+        for (int j = i+1; j < results.size(); j++)
+        {
+            int Index = results[j].fragment.indexOf(ri.fragment);
+            if (Index != -1)
+            {
+                changed = true;
+                ri.l = -1;
+                break;
+            }
+        }
     }
     int nBefore = results.size();
     if (changed) 
-	{
+    {
         QVector<RFResult> prev = results;
         results.clear();
         foreach(const RFResult& r, prev) 
-		{
+        {
             if (r.l!=-1) 
-			{
+            {
                 results.append(r);
             }
         }
@@ -320,30 +320,30 @@ void FindRepeatsTask::addResult(const RFResult& r)
 
     int dist = qAbs(x - y) - l;
     if (dist < settings.minDist || dist > settings.maxDist) 
-	{
+    {
         if (dist < 0) 
-		{ 
-			if (settings.filter == DisjointRepeats) 
-			{
-		        // dist < 0 -> overlapping repeat. Try to reduce its length to fit min/max constraints if possible
+        { 
+            if (settings.filter == DisjointRepeats) 
+            {
+                // dist < 0 -> overlapping repeat. Try to reduce its length to fit min/max constraints if possible
 
-				// match if prefixes fits dist
-				int plen = qAbs(x - y) - settings.minDist;
-				if (plen  >= settings.minLen) 
-				{
-					_addResult(x, y, plen, plen);
-				}
-				// match if suffixes fits dist
-				int dlen = settings.minDist - dist;
-				if (l - dlen >= settings.minLen) 
-				{
-					_addResult(x + dlen, y + dlen, l - dlen, l - dlen);
-				}
-			}
-			else
-			{
-				_addResult(x, y, l, c);
-			}
+                // match if prefixes fits dist
+                int plen = qAbs(x - y) - settings.minDist;
+                if (plen  >= settings.minLen) 
+                {
+                    _addResult(x, y, plen, plen);
+                }
+                // match if suffixes fits dist
+                int dlen = settings.minDist - dist;
+                if (l - dlen >= settings.minLen) 
+                {
+                    _addResult(x + dlen, y + dlen, l - dlen, l - dlen);
+                }
+            }
+            else
+            {
+                _addResult(x, y, l, c);
+            }
         }
         return;
     }
@@ -352,16 +352,16 @@ void FindRepeatsTask::addResult(const RFResult& r)
 
 void FindRepeatsTask::_addResult(int x, int y, int l, int c) 
 {
-	const QByteArray& locDNA = seq1.constSequence();
+    const QByteArray& locDNA = seq1.constSequence();
 
-	if (settings.reportReflected || x <= y) 
-	{
-		QString locFragment = QString(locDNA.mid(x,l));
+    if (settings.reportReflected || x <= y) 
+    {
+        QString locFragment = QString(locDNA.mid(x,l));
         results.append(RFResult(x, y, l, c, locFragment));
     } 
-	else 
-	{
-		QString locFragment = QString(locDNA.mid(y,l));
+    else 
+    {
+        QString locFragment = QString(locDNA.mid(y,l));
         results.append(RFResult(y, x, l, c, locFragment));
     }
 }

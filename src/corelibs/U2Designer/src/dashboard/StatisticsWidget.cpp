@@ -31,13 +31,15 @@ StatisticsWidget::StatisticsWidget(const QWebElement &container, Dashboard *pare
     useEmptyRows = false;
     createTable();
     fillTable();
-    connect(dashboard->monitor(), SIGNAL(si_workerInfoChanged(const QString &, const Monitor::WorkerInfo &)),
-        SLOT(sl_workerInfoChanged(const QString &, const Monitor::WorkerInfo &)));
+    connect(dashboard->monitor(), SIGNAL(si_workerInfoChanged(const QString &, const U2::Workflow::Monitor::WorkerInfo &)),
+        SLOT(sl_workerInfoChanged(const QString &, const U2::Workflow::Monitor::WorkerInfo &)));
     connect(dashboard->monitor(), SIGNAL(si_updateProducers()),
         SLOT(sl_update()));
 }
 
-void StatisticsWidget::sl_workerInfoChanged(const QString &actor, const WorkerInfo &info) {
+void StatisticsWidget::sl_workerInfoChanged(const QString &actor,
+    const U2::Workflow::Monitor::WorkerInfo &info)
+{
     updateRow(actor, createRow(actor, info));
 }
 

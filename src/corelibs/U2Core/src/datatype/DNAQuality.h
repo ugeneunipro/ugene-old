@@ -50,7 +50,7 @@ public:
     static DNAQualityType getDNAQualityTypeByName(const QString& name);
     static QStringList getDNAQualityTypeNames();
 
-	qint64 memoryHint() const;
+    qint64 memoryHint() const;
 
     QByteArray      qualCodes;
     DNAQualityType  type;

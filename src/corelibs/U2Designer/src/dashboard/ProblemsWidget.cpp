@@ -32,10 +32,11 @@ ProblemsWidget::ProblemsWidget(const QWebElement &content, Dashboard *parent)
     foreach (const Problem &info, dashboard->monitor()->getProblems()) {
         sl_newProblem(info);
     }
-    connect(dashboard->monitor(), SIGNAL(si_newProblem(const Monitor::Problem &)), SLOT(sl_newProblem(const Monitor::Problem &)));
+    connect(dashboard->monitor(), SIGNAL(si_newProblem(const U2::Workflow::Monitor::Problem &)),
+        SLOT(sl_newProblem(const U2::Workflow::Monitor::Problem &)));
 }
 
-void ProblemsWidget::sl_newProblem(const Problem &info) {
+void ProblemsWidget::sl_newProblem(const U2::Workflow::Monitor::Problem &info) {
     const WorkflowMonitor *m = dashboard->monitor();
     CHECK(NULL != m, );
     if (rows.contains(id(info))) {

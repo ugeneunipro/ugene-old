@@ -61,7 +61,7 @@ FindRepeatsTaskSettings FindRepeatsDialog::defaultSettings()
     res.maxDist = !maxDistCheck ? 0 : (s->getValue(SETTINGS_ROOT + MAX_DIST_SETTINGS, 5000).toInt());
     res.inverted = (s->getValue(SETTINGS_ROOT + INVERT_CHECK_SETTINGS, false).toBool());
     res.excludeTandems = (s->getValue(SETTINGS_ROOT + TANDEMS_CHECK_SETTINGS, false).toBool());
-	res.filter = DisjointRepeats;
+    res.filter = DisjointRepeats;
     return res;
 }
 
@@ -91,9 +91,9 @@ FindRepeatsDialog::FindRepeatsDialog(ADVSequenceObjectContext* _sc)
     algoCombo->addItem(tr("Suffix index"), RFAlgorithm_Suffix);
     algoCombo->addItem(tr("Diagonals"), RFAlgorithm_Diagonal);
 
-	filterAlgorithms->addItem(tr("Disjoint repeats"), DisjointRepeats);
-	filterAlgorithms->addItem(tr("No filtering"), NoFiltering);
-	filterAlgorithms->addItem(tr("Unique repeats"), UniqueRepeats);
+    filterAlgorithms->addItem(tr("Disjoint repeats"), DisjointRepeats);
+    filterAlgorithms->addItem(tr("No filtering"), NoFiltering);
+    filterAlgorithms->addItem(tr("Unique repeats"), UniqueRepeats);
 
     qint64 seqLen = sc->getSequenceLength();
 
