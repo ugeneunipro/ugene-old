@@ -102,7 +102,7 @@ class RSNP:
         out = content.split()
         for item in out:
             if item:
-                print(item)
+                print("PRESENT:"+item)
 def main():
     opts=opt_validate(prepare_optparser())
     g = RSNP(opts)
