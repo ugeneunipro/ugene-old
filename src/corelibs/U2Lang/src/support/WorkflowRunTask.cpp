@@ -260,6 +260,8 @@ WorkflowIterationRunTask::~WorkflowIterationRunTask() {
         df->destroy(scheduler, schema);
     }
     scheduler = NULL;
+// make all signals to be delivered to GUI before the scheme is destroyed
+    QCoreApplication::processEvents();
     delete schema;
     delete context;
 }
