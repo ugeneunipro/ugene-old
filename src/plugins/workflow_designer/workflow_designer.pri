@@ -6,13 +6,13 @@ PLUGIN_VENDOR=Unipro
 
 include( ../../ugene_plugin_common.pri )
 
-LIBS += -lQtScriptTools4
+LIBS += -lQtScriptTools
 
 !debug_and_release|build_pass {
 
     CONFIG(debug, debug|release) {
-        LIBS += -lQtScriptToolsd4
-        LIBS -= -lQtScriptTools4
+        LIBS += -lQtScriptToolsd
+        LIBS -= -lQtScriptTools
     }
 
 }
