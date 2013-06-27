@@ -53,8 +53,12 @@ SnpResponseLogParser::SnpResponseLogParser( )
 
 void SnpResponseLogParser::parseOutput( const QString &partOfLog )
 {
-    lastPartOfLog = partOfLog.split( "\n" );
+    lastPartOfLog = partOfLog.split( "\n", QString::SkipEmptyParts );
     foreach ( QString line, lastPartOfLog ) {
+        line = line.trimmed( );
+        if ( line.isEmpty( ) ) {
+            continue;
+        }
         const int lineSeparatorPos = line.indexOf( QRegExp( "\\s" ) );
         const QString key = line.left( lineSeparatorPos );
         const QString value = line.mid( line.indexOf( QRegExp( "\\w" ), lineSeparatorPos ) );

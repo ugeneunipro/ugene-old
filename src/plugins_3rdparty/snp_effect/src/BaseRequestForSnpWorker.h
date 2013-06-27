@@ -46,10 +46,13 @@ private slots:
 
 protected:
     virtual QVariantMap             getInputDataForRequest( ) = 0;
-    virtual SnpRequestingScript     getRequestingScriptPath( ) = 0;
+    virtual QString                 getRequestingScriptName( ) const = 0;
 
     IntegralBus *                   inChannel;
     IntegralBus *                   outChannel;
+
+private:
+    QString                         getRequestingScriptPath( ) const;
 };
 
 } // namespace LocalWorkflow

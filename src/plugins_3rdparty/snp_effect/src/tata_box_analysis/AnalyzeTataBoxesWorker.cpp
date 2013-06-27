@@ -65,8 +65,30 @@ Task* AnalyzeTataBoxesWorker::tick( )
 {
     U2OpStatus2Log os;
     if ( inChannel->hasMessage( ) ) {
+        Message m = getMessageAndSetupScriptValues( inChannel );
+        QVariantMap data = m.getData( ).toMap( );
+
+        QVariant inVar;
+        if ( !data.contains( BaseSlots::VARIATION_TRACK_SLOT( ).getId( ) ) ) {
+            os.setError( "Variations slot is empty" );
+            return new FailTask( os.getError( ) );
+        }
+
+        QScopedPointer<VariantTrackObject> trackObj( NULL );
+        {
+            SharedDbiDataHandler objId = data.value( BaseSlots::VARIATION_TRACK_SLOT( ).getId( ) )
+                .value<SharedDbiDataHandler>( );
+            trackObj.reset( StorageUtils::getVariantTrackObject(context->getDataStorage( ), objId ) );
+            SAFE_POINT( NULL != trackObj.data( ), tr( "Can't get track object" ), NULL );
+
+        }
+        U2DbiRef dbiRef = trackObj->getEntityRef( ).dbiRef;
+        U2VariantTrack track = trackObj->getVariantTrack( os );
+        if ( os.hasError( ) ) {
+            return new FailTask( os.getError( ) );
+        }
         // TODO: obtain `sequence` from DB
-        QString sequence;
+        QString sequence( "cctcagtgctgagggccaagcaaatatttgtggttatggaTtaactcgaactccaggctgtcatggcggcaggacggcgaa" );
         Task* t = new AnalyzeTataBoxesTask( sequence );
         connect( t, SIGNAL( si_stateChanged( ) ), SLOT( sl_taskFinished( ) ) );
         return t;
@@ -154,17 +176,14 @@ AnalyzeTataBoxesPrompter::AnalyzeTataBoxesPrompter( Actor *p )
 QString AnalyzeTataBoxesPrompter::composeRichDoc( )
 {
     QString res = ""; 
-    //Actor* annProducer = qobject_cast<IntegralBusPort*>(
-    //    target->getPort(BasePorts::IN_VARIATION_TRACK_PORT_ID( ) ) )->getProducer(
-    //    BaseSlots::VARIATION_TRACK_SLOT( ).getId( ) );
+    Actor* annProducer = qobject_cast<IntegralBusPort*>(
+        target->getPort(BasePorts::IN_VARIATION_TRACK_PORT_ID( ) ) )->getProducer(
+        BaseSlots::VARIATION_TRACK_SLOT( ).getId( ) );
 
-    //QString unsetStr = "<font color='red'>" + tr("unset") + "</font>";
-    //QString annUrl = annProducer ? annProducer->getLabel( ) : unsetStr;
+    QString unsetStr = "<font color='red'>" + tr("unset") + "</font>";
+    QString annUrl = annProducer ? annProducer->getLabel( ) : unsetStr;
 
-    //QString path = getHyperlink(DB_PATH, getURL(DB_PATH));
-
-    //res.append(tr("Uses variations from <u>%1</u> as input.").arg(annUrl));
-    //res.append(tr(" Takes annotations from <u>%1</u> database.").arg(path.isEmpty() ? unsetStr : path));
+    res.append(tr("Uses variations from <u>%1</u> as input.").arg(annUrl));
 
     return res;
 }

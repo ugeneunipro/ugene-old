@@ -41,11 +41,9 @@ const SnpRequestKey R_SNP_SIGNIFICANCE( "--sign" );
 
 } // namespace SnpRequestKeys
 
-typedef QString SnpRequestingScript;
-
 namespace SnpRequestingScripts {
 
-const SnpRequestingScript R_SNP_TOOLS_SCRIPT_PATH( ":snp_effect/scripts/rsnp.py" );
+const QString R_SNP_TOOLS_SCRIPT( "rsnp.py" );
 
 } // namespace SnpRequestAddresses
 

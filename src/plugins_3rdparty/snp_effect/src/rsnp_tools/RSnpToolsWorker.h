@@ -45,7 +45,7 @@ public:
 
 protected:
     QVariantMap             getInputDataForRequest( );
-    SnpRequestingScript     getRequestingScriptPath( );
+    QString                 getRequestingScriptName( ) const;
 };
 
 /************************************************************************/

@@ -26,6 +26,7 @@
 #include "snp_toolbox/SNPToolboxWorker.h"
 #include "SNPReportWriter.h"
 #include "rsnp_tools/RSnpToolsWorker.h"
+#include "tata_box_analysis/AnalyzeTataBoxesWorker.h"
 
 namespace U2 {
 
@@ -39,6 +40,7 @@ SNPEffectPlugin::SNPEffectPlugin() : Plugin(tr("SNP Effect Plugin"), tr("Evaluat
     LocalWorkflow::SNPToolboxWorkerFactory::init();
     LocalWorkflow::SNPReportWriterFactory::init();
     LocalWorkflow::RSnpToolsWorkerFactory::init();
+    LocalWorkflow::AnalyzeTataBoxesWorkerFactory::init( );
 }
 
 }//namespace

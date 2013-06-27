@@ -50,6 +50,29 @@ Task* BaseRequestForSnpWorker::tick( )
 {
     U2OpStatus2Log os;
     if ( inChannel->hasMessage( ) ) {
+        Message m = getMessageAndSetupScriptValues( inChannel );
+        QVariantMap data = m.getData( ).toMap( );
+
+        QVariant inVar;
+        if ( !data.contains(BaseSlots::VARIATION_TRACK_SLOT( ).getId( ) ) ) {
+            os.setError( "Variations slot is empty" );
+            return new FailTask( os.getError( ) );
+        }
+
+        QScopedPointer<VariantTrackObject> trackObj( NULL );
+        {
+            SharedDbiDataHandler objId = data.value( BaseSlots::VARIATION_TRACK_SLOT( ).getId( ) )
+                .value<SharedDbiDataHandler>( );
+            trackObj.reset( StorageUtils::getVariantTrackObject( context->getDataStorage( ), objId ) );
+            SAFE_POINT( NULL != trackObj.data( ), tr( "Can't get track object" ), NULL );
+
+        }
+        U2DbiRef dbiRef = trackObj->getEntityRef( ).dbiRef;
+        U2VariantTrack track = trackObj->getVariantTrack( os );
+        if ( os.hasError( ) ) {
+            return new FailTask( os.getError( ) );
+        }
+        // TODO: obtain sequences from DB
         Task* t = new RequestForSnpTask( getRequestingScriptPath( ), getInputDataForRequest( ) );
         connect( t, SIGNAL( si_stateChanged( ) ), SLOT( sl_taskFinished( ) ) );
         return t;
@@ -60,7 +83,6 @@ Task* BaseRequestForSnpWorker::tick( )
     }
     return NULL;
 }
-
 
 void BaseRequestForSnpWorker::sl_taskFinished( )
 {
@@ -77,6 +99,15 @@ void BaseRequestForSnpWorker::sl_taskFinished( )
         outChannel->setEnded( );
     }
 }
+
+QString BaseRequestForSnpWorker::getRequestingScriptPath( ) const
+{
+    QString result( AppContext::getWorkingDirectoryPath( )
+        + "/../../data/snp_scripts/" + getRequestingScriptName( ) );
+    QFileInfo info( result );
+    return info.absoluteFilePath( );
+}
+
 
 } // namespace LocalWorkflow
 
