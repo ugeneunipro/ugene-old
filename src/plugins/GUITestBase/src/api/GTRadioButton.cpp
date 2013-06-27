@@ -21,6 +21,9 @@
 
 #include "GTRadioButton.h"
 #include "GTWidget.h"
+#include <U2Gui/MainWindow.h>
+#include <U2Core/AppContext.h>
+#include <QMainWindow>
 
 #include "GTMouseDriver.h"
 #include "GTKeyboardDriver.h"
@@ -38,6 +41,25 @@ void GTRadioButton::click(U2OpStatus& os, QRadioButton *radioButton) {
 
     GTMouseDriver::moveTo(os, buttonPos);
     GTMouseDriver::click(os);
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "getRadioButtonByText"
+QRadioButton* GTRadioButton::getRadioButtonByText(U2OpStatus &os, QString text, QWidget *parent){
+    QRadioButton* result=NULL;
+    if(parent==NULL){
+        parent=AppContext::getMainWindow()->getQMainWindow();
+    }
+    QList<QRadioButton*> radioList = parent->findChildren<QRadioButton*>();
+    foreach(QRadioButton* but, radioList){
+        if(but->text().toLower().contains(text.toLower())){
+            GT_CHECK_RESULT(result==NULL, "Several radioButtons contain this text.",result)
+            result=but;
+        }
+    }
+
+    GT_CHECK_RESULT(result,"No radioButtons with this text found",NULL);
+    return result;
 }
 #undef GT_METHOD_NAME
 

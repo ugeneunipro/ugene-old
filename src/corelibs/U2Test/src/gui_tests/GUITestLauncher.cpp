@@ -31,6 +31,7 @@
 #include <QtCore/QMap>
 
 #define TIMEOUT 240000
+#define LONG_TIMEOUT 7200000
 #define GUITESTING_REPORT_PREFIX "GUITesting"
 
 namespace U2 {
@@ -63,6 +64,7 @@ void GUITestLauncher::run() {
         Q_ASSERT(t);
         if (t) {
             QString testName = t->getName();
+            bool isLong = t->isLong();
             results[testName] = "";
 
             firstTestRunCheck(testName);
@@ -71,7 +73,7 @@ void GUITestLauncher::run() {
                 qint64 startTime = GTimer::currentTimeMicros();
                 GUITestTeamcityLogger::testStarted(testName);
 
-                QString testResult = performTest(testName);
+                QString testResult = performTest(testName,isLong);
                 results[testName] = testResult;
                 if (GUITestTeamcityLogger::testFailed(testResult)) {
                     renameTestLog(testName);
@@ -130,7 +132,7 @@ QProcessEnvironment GUITestLauncher::getProcessEnvironment(const QString &testNa
     return env;
 }
 
-QString GUITestLauncher::performTest(const QString& testName) {
+QString GUITestLauncher::performTest(const QString& testName, bool isLong) {
 
     QString path = QCoreApplication::applicationFilePath();
 
@@ -143,8 +145,11 @@ QString GUITestLauncher::performTest(const QString& testName) {
     if (!started) {
         return tr("An error occurred while starting UGENE: ") + process.errorString();
     }
-
-    bool finished = process.waitForFinished(TIMEOUT);
+    bool finished;
+    if (isLong)
+        finished = process.waitForFinished(LONG_TIMEOUT);
+    else
+        finished = process.waitForFinished(TIMEOUT);
     QProcess::ExitStatus exitStatus = process.exitStatus();
 
     if (finished && (exitStatus == QProcess::NormalExit)) {

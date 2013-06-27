@@ -31,6 +31,7 @@ class GTRadioButton {
 public:
     // fails if the radioButton is NULL or can't click
     static void click(U2OpStatus& os, QRadioButton *radioButton);
+    static QRadioButton* getRadioButtonByText(U2OpStatus& os, QString text, QWidget* parent=NULL);
 };
 
 }

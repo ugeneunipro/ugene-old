@@ -30,15 +30,22 @@
 #include <QTreeWidget>
 #include <QGraphicsItem>
 #include <QGraphicsView>
+#include <U2Core/AppContext.h>
 
 namespace U2 {
 #define GT_CLASS_NAME "GTUtilsWorkflowDesigner"
 
 #define GT_METHOD_NAME "findTreeItem"
-QTreeWidgetItem* GTUtilsWorkflowDesigner::findTreeItem(U2OpStatus &os,QString itemName){
+QTreeWidgetItem* GTUtilsWorkflowDesigner::findTreeItem(U2OpStatus &os,QString itemName, tab t){
 
     QTreeWidgetItem* foundItem=NULL;
-    QTreeWidget *w=qobject_cast<QTreeWidget*>(GTWidget::findWidget(os,"WorkflowPaletteElements"));
+    QTreeWidget *w;
+    if(t==algoriths){
+        w=qobject_cast<QTreeWidget*>(GTWidget::findWidget(os,"WorkflowPaletteElements"));
+    }
+    else{
+        w=qobject_cast<QTreeWidget*>(GTWidget::findWidget(os,"samples"));
+    }
     GT_CHECK_RESULT(w!=NULL,"WorkflowPaletteElements is null", NULL);
 
     QList<QTreeWidgetItem*> outerList = w->findItems("",Qt::MatchContains);
@@ -51,9 +58,19 @@ QTreeWidgetItem* GTUtilsWorkflowDesigner::findTreeItem(U2OpStatus &os,QString it
         }
 
         foreach(QTreeWidgetItem* item, innerList){
-            if(item->data(0,Qt::UserRole).value<QAction*>()->text()==itemName){
-                foundItem=item;
-                return foundItem;
+            if(t==algoriths){
+                QString s = item->data(0,Qt::UserRole).value<QAction*>()->text();
+                if(s.toLower().contains(itemName.toLower())){
+                    GT_CHECK_RESULT(foundItem==NULL,"several items have this discription",item);
+                    foundItem=item;
+                }
+            }
+            else{
+                QString s = item->text(0);
+                if(s.toLower().contains(itemName.toLower())){
+                    GT_CHECK_RESULT(foundItem==NULL,"several items have this discription",item);
+                    foundItem=item;
+                }
             }
         }
     }
@@ -62,12 +79,27 @@ QTreeWidgetItem* GTUtilsWorkflowDesigner::findTreeItem(U2OpStatus &os,QString it
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "findSamplesTreeItem"
+QTreeWidgetItem* findSamplesTreeItem(U2OpStatus &os, QString itemName){
+
+}
+#undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "addAlgorithm"
 void GTUtilsWorkflowDesigner::addAlgorithm(U2OpStatus &os, QString algName){
-    QTreeWidgetItem *alg = findTreeItem(os, algName);
+    expandTabs(os);
+    QTabWidget* tabs = qobject_cast<QTabWidget*>(GTWidget::findWidget(os,"tabs"));
+    GT_CHECK(tabs!=NULL, "tabs widget not found");
+
+    QPoint p = tabs->rect().topLeft();//Opening algorithm tab
+    p.setX(p.x()+20);
+    p.setY(p.y()+20);
+    GTMouseDriver::moveTo(os,tabs->mapToGlobal(p));
+    GTMouseDriver::click(os);
+
+    QTreeWidgetItem *alg = findTreeItem(os, algName,algoriths);
     GTGlobals::sleep(100);
-    CHECK_SET_ERR(alg!=NULL,"algorithm is NULL");
+    GT_CHECK(alg!=NULL,"algorithm is NULL");
 
     selectAlgorithm(os,alg);
     GTWidget::click(os, GTWidget::findWidget(os,"sceneView"));
@@ -89,6 +121,64 @@ void GTUtilsWorkflowDesigner::selectAlgorithm(U2OpStatus &os, QTreeWidgetItem* a
 
     algorithm->parent()->setExpanded(true);
     GTMouseDriver::moveTo(os,GTTreeWidget::getItemCenter(os,algorithm));
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "addSample"
+void GTUtilsWorkflowDesigner::addSample(U2OpStatus &os, QString sampName){
+    expandTabs(os);
+    QTabWidget* tabs = qobject_cast<QTabWidget*>(GTWidget::findWidget(os,"tabs"));
+    GT_CHECK(tabs!=NULL, "tabs widget not found");
+
+    QPoint p = tabs->rect().topLeft();//Opening samples tab
+    p.setX(p.x()+100);
+    p.setY(p.y()+20);
+    GTMouseDriver::moveTo(os,tabs->mapToGlobal(p));
+    GTMouseDriver::click(os);
+
+    QTreeWidgetItem *samp = findTreeItem(os, sampName,samples);
+    GTGlobals::sleep(100);
+    GT_CHECK(samp!=NULL,"sample is NULL");
+
+    selectSample(os,samp);
+}
+#undef GT_METHOD_NAME
+
+
+#define GT_METHOD_NAME "selectSample"
+void GTUtilsWorkflowDesigner::selectSample(U2OpStatus &os, QTreeWidgetItem* sample){
+    GT_CHECK(sample!=NULL, "sample is NULL");
+    GTGlobals::sleep(500);
+
+    QTreeWidget *w=qobject_cast<QTreeWidget*>(GTWidget::findWidget(os,"samples"));
+    QList<QTreeWidgetItem*> childrenList = w->findItems("",Qt::MatchContains);
+    foreach(QTreeWidgetItem* child,childrenList){
+        child->setExpanded(false);
+    }
+
+    sample->parent()->setExpanded(true);
+    GTMouseDriver::moveTo(os,GTTreeWidget::getItemCenter(os,sample));
+    GTMouseDriver::doubleClick(os);
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "expandTabs"
+void GTUtilsWorkflowDesigner::expandTabs(U2OpStatus &os){
+    QSplitter* splitter = qobject_cast<QSplitter*>(GTWidget::findWidget(os,"splitter"));
+    QList<int> s;
+    s  = splitter->sizes();
+
+    if(s.first()==0){//expands tabs if collapsed
+        QPoint p;
+        p.setX(splitter->geometry().left()+2);
+        p.setY(splitter->geometry().center().y());
+        GTMouseDriver::moveTo(os, p);
+        GTGlobals::sleep(300);
+        GTMouseDriver::press(os);
+        p.setX(p.x()+200);
+        GTMouseDriver::moveTo(os,p);
+        GTMouseDriver::release(os);
+    }
 }
 #undef GT_METHOD_NAME
 
@@ -123,7 +213,7 @@ int GTUtilsWorkflowDesigner::getItemBottom(U2OpStatus &os, QString itemName){
 }
 
 QRect GTUtilsWorkflowDesigner::getItemRect(U2OpStatus &os,QString itemName){
-
+//TODO: support finding items when there are several similar workers in scheme
     QGraphicsView* sceneView = qobject_cast<QGraphicsView*>(GTWidget::findWidget(os,"sceneView"));
     QList<QGraphicsItem *> items = sceneView->items();
 

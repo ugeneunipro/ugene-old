@@ -289,8 +289,10 @@ void WorkflowView::setupPalette() {
     connect(palette, SIGNAL(si_protoChanged()), scene, SLOT(sl_updateDocs()));
 
     tabs = new QTabWidget(this);
+    tabs->setObjectName("tabs");
     tabs->insertTab(ElementsTab, palette, tr("Elements"));
     samples = new SamplesWidget(scene);
+    samples->setObjectName("samples");
     tabs->insertTab(SamplesTab, samples, tr("Samples"));
     tabs->setTabPosition(QTabWidget::North);
 
@@ -377,6 +379,7 @@ void WorkflowView::loadUiSettings() {
 
 void WorkflowView::setupMainSplitter() {
     splitter = new QSplitter(this);
+    splitter->setObjectName("splitter");
     {
         splitter->addWidget(tabs);
         splitter->addWidget(infoSplitter);
@@ -537,6 +540,7 @@ void WorkflowView::createActions() {
     connect(saveAsAction, SIGNAL(triggered()), SLOT(sl_saveSceneAs()));
 
     showWizard = new QAction(tr("Show wizard"), this);
+    showWizard->setObjectName("Show wizard");
     QPixmap pm = QPixmap(":workflow_designer/images/wizard.png").scaled(16, 16);
     showWizard->setIcon(QIcon(pm));
     connect(showWizard, SIGNAL(triggered()), SLOT(sl_showWizard()));

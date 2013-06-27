@@ -49,7 +49,7 @@ private:
     static QString testOutFile(const QString &testName);
 
     void firstTestRunCheck(const QString& testName);
-    static QString performTest(const QString& testName);
+    static QString performTest(const QString& testName, bool isLong);
     static QString readTestResult(const QByteArray& output);
     static bool renameTestLog(const QString& testName);
 

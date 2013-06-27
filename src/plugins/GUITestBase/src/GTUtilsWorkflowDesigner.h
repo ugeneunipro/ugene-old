@@ -31,12 +31,17 @@ namespace U2 {
 
 class GTUtilsWorkflowDesigner {
 public:
-    static QTreeWidgetItem* findTreeItem(U2OpStatus &os, QString itemName);
+    enum tab {algoriths,samples};
+    static QTreeWidgetItem* findTreeItem(U2OpStatus &os, QString itemName,tab t);
+    static QTreeWidgetItem* findSamplesTreeItem(U2OpStatus &os, QString itemName);
     static void addAlgorithm(U2OpStatus &os, QString algName);
+    static void addSample(U2OpStatus &os, QString sampName);
+    static void selectAlgorithm(U2OpStatus &os, QTreeWidgetItem *algorithm);
+    static void selectSample(U2OpStatus &os, QTreeWidgetItem *sample);
+    static void expandTabs(U2OpStatus &os);
+
     static QPoint getItemCenter(U2OpStatus &os,QString itemName);
     static QRect getItemRect(U2OpStatus &os,QString itemName);
-    static void selectAlgorithm(U2OpStatus &os, QTreeWidgetItem *algorithm);
-
     static int getItemLeft(U2OpStatus &os, QString itemName);
     static int getItemRight(U2OpStatus &os, QString itemName);
     static int getItemTop(U2OpStatus &os, QString itemName);

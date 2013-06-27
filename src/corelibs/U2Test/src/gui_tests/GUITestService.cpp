@@ -333,9 +333,36 @@ void GUITestService::clearSandbox()
 
     foreach (QString fileName, sandbox.entryList()) {
         if (fileName != "." && fileName != "..") {
-            QFile::remove(pathToSandbox + fileName);
+            if(QFile::remove(pathToSandbox + fileName))
+                continue;
+            else{
+                QDir dir(pathToSandbox + fileName);
+                removeDir(dir.absolutePath());
+            }
         }
     }
 }
 
+void GUITestService::removeDir(QString dirName)
+{
+    QDir dir(dirName);
+
+
+    foreach (QFileInfo fileInfo, dir.entryInfoList()) {
+        QString fileName = fileInfo.fileName();
+        QString filePath = fileInfo.filePath();
+        if (fileName != "." && fileName != "..") {
+            if(QFile::remove(filePath))
+                continue;
+            else{
+                QDir dir(filePath);
+                if(dir.rmdir(filePath))
+                    continue;
+                else
+                    removeDir(filePath);
+            }
+
+        }
+    }dir.rmdir(dir.absoluteFilePath(dirName));
+}
 }

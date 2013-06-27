@@ -69,6 +69,7 @@ protected slots:
 
 private:
     static void clearSandbox();
+    static void removeDir(QString dirName);
 
     LaunchOptions getLaunchOptions(CMDLineRegistry* cmdLine) const;
 

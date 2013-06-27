@@ -83,6 +83,7 @@ QWizard * WizardController::createGui() {
     result->setModal(true);
     result->setAutoFillBackground(true);
     result->setWindowTitle(wizard->getName());
+    result->setObjectName(wizard->getName());
     if (!wizard->getFinishLabel().isEmpty()) {
         result->setButtonText(QWizard::FinishButton, wizard->getFinishLabel());
     }

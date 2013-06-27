@@ -41,7 +41,10 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/runnables/ugene/corelibs/U2View/ov_msa/ConsensusSelectorDialogFiller.h \
             src/runnables/ugene/corelibs/U2View/ov_msa/ExtractSelectedAsMSADialogFiller.h \
             src/runnables/ugene/corelibs/U2View/ov_msa/DistanceMatrixDialogFiller.h \
-            src/runnables/ugene/plugins/dna_export/ImportAnnotationsToCsvFiller.h \
+            src/runnables/ugene/corelibs/U2View/ov_msa/BuildTreeDialogFiller.h \
+            src/runnables/ugene/corelibs/U2View/ov_msa/LicenseAgreemntDialogFiller.h \
+            src/runnables/ugene/corelibs/U2View/ov_msa/GenerateAlignmentProfileDialogFiller.h \
+            src/runnables/ugene/corelibs/U2View/ov_msa/BranchSettingsDialogFiller.h \
 #   Runnables / UGENE / plugins_3rdparty
 #   Runnables / UGENE / plugins_3rdparty / kalign
             src/runnables/ugene/plugins_3rdparty/kalign/KalignDialogFiller.h \
@@ -58,10 +61,9 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/runnables/ugene/plugins/dna_export/ExportSequences2MSADialogFiller.h \
             src/runnables/ugene/plugins/dna_export/ExportSequencesDialogFiller.h \
             src/runnables/ugene/plugins/dna_export/ExportSelectedSequenceFromliAnmentDialogFiller.h \
-            src/runnables/ugene/corelibs/U2View/ov_msa/BuildTreeDialogFiller.h \
-            src/runnables/ugene/corelibs/U2View/ov_msa/LicenseAgreemntDialogFiller.h \
-            src/runnables/ugene/corelibs/U2View/ov_msa/GenerateAlignmentProfileDialogFiller.h \
-            src/runnables/ugene/corelibs/U2View/ov_msa/BranchSettingsDialogFiller.h \
+            src/runnables/ugene/plugins/dna_export/ImportAnnotationsToCsvFiller.h \
+#   Runnables / UGENE / plugins / workflow_designer
+            src/runnables/ugene/plugins/workflow_designer/WizardFiller.h \
 #   Utils classes
             src/GTUtilsApp.h \
             src/GTUtilsDialog.h \
@@ -209,6 +211,8 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/runnables/ugene/plugins/dna_export/ExportSequencesDialogFiller.cpp \
             src/runnables/ugene/plugins/dna_export/ImportAnnotationsToCsvFiller.cpp \
             src/runnables/ugene/plugins/dna_export/ExportSelectedSequenceFromliAnmentDialogFiller.cpp \
+#   Runnables / UGENE / plugins / workflow_designer
+            src/runnables/ugene/plugins/workflow_designer/WizardFiller.cpp \
 #   Utils classes
             src/GTUtilsApp.cpp \
             src/GTUtilsDialog.cpp \

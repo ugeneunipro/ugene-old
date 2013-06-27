@@ -24,6 +24,14 @@ namespace U2 {
         virtual void run(U2OpStatus &os); \
     };
 
+#define GUI_LONG_TEST_CLASS_DECLARATION(className) \
+    class className : public GUITest { \
+    public: \
+        className () : GUITest(TESTNAME(className),true){} \
+    protected: \
+        virtual void run(U2OpStatus &os); \
+    };
+
 #define GUI_TEST_CLASS_DEFINITION(className) \
     void className::run(U2OpStatus &os)
 
