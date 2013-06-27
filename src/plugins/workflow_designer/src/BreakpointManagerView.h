@@ -23,8 +23,12 @@
 #define _U2_BREAKPOINT_MANAGER_VIEW_H_
 
 #include <QtGui/QWidget>
+
 #include <U2Lang/ActorModel.h>
 #include <U2Lang/Schema.h>
+#include <U2Lang/WorkflowBreakpointSharedInfo.h>
+
+#include <U2Gui/BreakpointConditionEditDialog.h>
 
 class QTreeWidget;
 class QTreeWidgetItem;
@@ -35,8 +39,6 @@ namespace U2 {
 
 using namespace Workflow;
 class WorkflowDebugStatus;
-enum HitCondition;
-enum BreakpointConditionParameter;
 
 class BreakpointManagerView : public QWidget {
     Q_OBJECT

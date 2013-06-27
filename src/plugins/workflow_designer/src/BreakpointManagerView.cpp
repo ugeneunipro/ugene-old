@@ -28,13 +28,11 @@
 #include <QtGui/QMenu>
 
 #include <U2Lang/WorkflowDebugStatus.h>
-#include <U2Lang/WorkflowBreakpointSharedInfo.h>
 #include <U2Lang/WorkflowSettings.h>
 #include <U2Designer/DelegateEditors.h>
 #include <U2Designer/EditBreakpointLabelsDialog.h>
 #include <U2Designer/BreakpointHitCountDialog.h>
 #include <U2Designer/NewBreakpointDialog.h>
-#include <U2Gui/BreakpointConditionEditDialog.h>
 
 #include "BreakpointManagerView.h"
 
