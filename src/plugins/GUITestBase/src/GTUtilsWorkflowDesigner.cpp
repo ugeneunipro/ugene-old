@@ -79,12 +79,6 @@ QTreeWidgetItem* GTUtilsWorkflowDesigner::findTreeItem(U2OpStatus &os,QString it
 }
 #undef GT_METHOD_NAME
 
-#define GT_METHOD_NAME "findSamplesTreeItem"
-QTreeWidgetItem* findSamplesTreeItem(U2OpStatus &os, QString itemName){
-
-}
-#undef GT_METHOD_NAME
-
 #define GT_METHOD_NAME "addAlgorithm"
 void GTUtilsWorkflowDesigner::addAlgorithm(U2OpStatus &os, QString algName){
     expandTabs(os);
