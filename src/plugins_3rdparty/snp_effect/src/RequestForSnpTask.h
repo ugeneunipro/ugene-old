@@ -26,6 +26,7 @@
 
 #include <U2Core/ExternalToolRunTask.h>
 #include <U2Core/Task.h>
+#include <U2Core/U2Variant.h>
 
 namespace U2 {
 
@@ -45,9 +46,10 @@ class RequestForSnpTask :       public Task
 {
 public:
                                 RequestForSnpTask( const QString &scriptPath,
-                                    const QVariantMap &inputData );
+                                    const QVariantMap &inputData, const U2Variant& var );
 
     virtual QVariantMap         getResult( );
+    const U2Variant&            getVariant( ){return variant;};
 
 private:
 
@@ -55,6 +57,7 @@ private:
     const QString               scriptPath;
     ExternalToolRunTask *       requestTask;
     SnpResponseLogParser        responseLogParser;
+    U2Variant                   variant;
 };
 
 } // U2

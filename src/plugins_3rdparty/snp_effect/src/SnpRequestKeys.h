@@ -39,6 +39,8 @@ const SnpRequestKey R_SNP_SECOND_UNKNOWN_BINDS( "--snpdm2" );
 
 const SnpRequestKey R_SNP_SIGNIFICANCE( "--sign" );
 
+const SnpRequestKey R_SNP_PRESENT_TFBS( "PRESENT" );
+
 } // namespace SnpRequestKeys
 
 namespace SnpRequestingScripts {

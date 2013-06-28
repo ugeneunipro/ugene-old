@@ -69,7 +69,6 @@ private:
     void initCaches();
     bool checkDbi(U2OpStatus &os);
 
-    U2DataId getSequenceId(const QString& sequenceName);
     KnownMutationsTrack getKnownMutationsTrack(const U2DataId& seqId, U2OpStatus& os);
     KnownMutation getKnownMutation(const U2Variant& var, const KnownMutationsTrack& track, U2OpStatus& os);
     DamageEffect formatDamageEffect(const U2Variant& var, const U2DataId& trackId, const KnownMutation& mut, const QString& geneName, bool inConserved, bool inSegmantal, U2OpStatus& os);

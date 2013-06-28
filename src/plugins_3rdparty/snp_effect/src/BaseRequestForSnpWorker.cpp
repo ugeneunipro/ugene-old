@@ -23,6 +23,11 @@
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/AppContext.h>
+#include <U2Core/U2VariantDbi.h>
+#include <U2Core/MultiTask.h>
+
+#include <U2Formats/Database.h>
+#include <U2Formats/S3DatabaseUtils.h>
 
 #include <U2Lang/BasePorts.h>
 #include <U2Lang/BaseSlots.h>
@@ -67,15 +72,50 @@ Task* BaseRequestForSnpWorker::tick( )
             SAFE_POINT( NULL != trackObj.data( ), tr( "Can't get track object" ), NULL );
 
         }
-        U2DbiRef dbiRef = trackObj->getEntityRef( ).dbiRef;
         U2VariantTrack track = trackObj->getVariantTrack( os );
         if ( os.hasError( ) ) {
             return new FailTask( os.getError( ) );
         }
-        // TODO: obtain sequences from DB
-        Task* t = new RequestForSnpTask( getRequestingScriptPath( ), getInputDataForRequest( ) );
-        connect( t, SIGNAL( si_stateChanged( ) ), SLOT( sl_taskFinished( ) ) );
-        return t;
+
+        U2OpStatusImpl os;
+        U2DbiRef dbiRef = trackObj->getEntityRef( ).dbiRef;
+        DbiConnection* sessionHandle = new DbiConnection(dbiRef, os);
+        CHECK_OP(os, NULL);
+        QScopedPointer<DbiConnection> session(sessionHandle);
+        U2Dbi* sessionDbi = session->dbi;
+        if(sessionDbi == NULL){
+            outChannel->put( Message::getEmptyMapMessage( ) );
+            return NULL;
+        }    
+        U2VariantDbi* varDbi = sessionDbi->getVariantDbi();
+        if(varDbi == NULL){
+            outChannel->put( Message::getEmptyMapMessage( ) );
+            return NULL;
+        }
+        QScopedPointer <Database> db(S3DatabaseUtils::openDatabase(getDatabasePath()));
+        if(db.isNull() || db->getDbi().dbi == NULL){
+            outChannel->put( Message::getEmptyMapMessage( ) );
+            return NULL;
+        }
+        U2Dbi* dbDbi = db->getDbi().dbi;
+        QList<Task*> tasks;
+        QScopedPointer<U2DbiIterator<U2Variant> > snpIter( varDbi->getVariants(track.id, U2_REGION_MAX, os));
+        CHECK_OP(os, NULL);
+        while(snpIter->hasNext()){
+            const U2Variant& var = snpIter->next();
+            Task* t = new RequestForSnpTask( getRequestingScriptPath( ), getInputDataForRequest( var, track, dbDbi ), var);
+            connect( t, SIGNAL( si_stateChanged( ) ), SLOT( sl_taskFinished( ) ) );
+            tasks.append(t);
+        }
+
+        if (!tasks.isEmpty()){
+            SequentialMultiTask* trackTasks = new SequentialMultiTask(tr("Requesting data for SNPs"), tasks, TaskFlags_NR_FOSCOE);
+            connect( trackTasks, SIGNAL( si_stateChanged( ) ), SLOT( sl_trackTaskFinished( ) ) );
+            return trackTasks;
+        }else{
+            outChannel->put( Message::getEmptyMapMessage( ) );
+            return NULL;
+        }
     }
     if ( inChannel->isEnded( ) ) {
         setDone( );
@@ -91,8 +131,13 @@ void BaseRequestForSnpWorker::sl_taskFinished( )
     if ( !t->isFinished( ) || t->hasError( ) ) {
         return;
     }
-    // TODO: get results from task, put them to DB
-    // t->getResult( );
+    resultCache.insert(t->getVariant().id, qMakePair(t->getVariant(), t->getResult()));
+    if (checkFlushCache()){
+        flushCache();
+    }
+}
+void BaseRequestForSnpWorker::sl_trackTaskFinished( ){
+    flushCache();
     outChannel->put( Message::getEmptyMapMessage( ) );
     if ( inChannel->isEnded( ) && !inChannel->hasMessage( ) ) {
         setDone( );
@@ -106,6 +151,37 @@ QString BaseRequestForSnpWorker::getRequestingScriptPath( ) const
         + "/../../data/snp_scripts/" + getRequestingScriptName( ) );
     QFileInfo info( result );
     return info.absoluteFilePath( );
+}
+
+#define FLUSH_CACHE_ITEMS_SIZE 1000
+bool BaseRequestForSnpWorker::checkFlushCache(){
+    int size = resultCache.size();
+    if (size < FLUSH_CACHE_ITEMS_SIZE){
+        return false;
+    }
+    return true;
+}
+
+void BaseRequestForSnpWorker::flushCache(){
+    U2OpStatusImpl os;
+    U2DbiRef dbiRef = context->getDataStorage()->getDbiRef();
+    DbiConnection* sessionHandle = new DbiConnection(dbiRef, os);
+    CHECK_OP(os, );
+    QScopedPointer<DbiConnection> session(sessionHandle);
+    U2Dbi* sessionDbi = session->dbi;
+    if(sessionDbi == NULL){
+        return;
+    }    
+    
+    foreach(const U2DataId& var, resultCache.keys()){
+
+        handleResult(resultCache.value(var).first, resultCache.value(var).second, sessionDbi);
+    }
+    clearCache();
+}
+
+void BaseRequestForSnpWorker::clearCache(){
+    resultCache.clear();
 }
 
 

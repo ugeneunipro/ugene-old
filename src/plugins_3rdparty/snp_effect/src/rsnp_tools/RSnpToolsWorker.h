@@ -44,8 +44,10 @@ public:
     void                    cleanup( );
 
 protected:
-    QVariantMap             getInputDataForRequest( );
+    QVariantMap             getInputDataForRequest( const U2Variant& variant, const U2VariantTrack& track, U2Dbi* dataBase );
     QString                 getRequestingScriptName( ) const;
+    QString                 getDatabasePath () const;
+    void                    handleResult(const U2Variant& variant, const QVariantMap& result, U2Dbi* sessionDbi);
 };
 
 /************************************************************************/

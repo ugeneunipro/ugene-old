@@ -43,6 +43,7 @@ namespace LocalWorkflow {
 const QString SNPReportWriterFactory::ACTOR_ID("snp-report-writer-id");
 
 static const QString REPORT_PATH("report_path");
+static const QString DB_PATH("db_path");
 
 /************************************************************************/
 /* Worker */
@@ -60,8 +61,6 @@ void SNPReportWriter::init() {
 
 Task* SNPReportWriter::tick() {
     U2OpStatus2Log os;
-    QList<U2VariantTrack> tracks;
-    U2DbiRef dbiRef;
 
     SNPReportWriterSettings settings = createSNPWriterSettings(os);
     if (os.hasError()) {
@@ -86,8 +85,7 @@ Task* SNPReportWriter::tick() {
             SAFE_POINT(NULL != trackObj.data(), tr("Can't get track object"), NULL);
 
         }
-
-       
+      
 
         U2VariantTrack track = trackObj->getVariantTrack(os);
         if(os.hasError()){
@@ -128,15 +126,22 @@ void SNPReportWriter::sl_taskFinished() {
     if (inChannel->isEnded() && !inChannel->hasMessage()) {
         setDone();
     }
+    if (!t->getOutputFilePath().isEmpty()){
+        context->getMonitor()->addOutputFile(t->getOutputFilePath(), getActor()->getId());
+    }
+    
 }
 
 void SNPReportWriter::cleanup(){
+    tracks.clear();
+    dbiRef = U2DbiRef();
 }
 
 SNPReportWriterSettings SNPReportWriter::createSNPWriterSettings( U2OpStatus &os ){
     SNPReportWriterSettings settings;
 
     settings.reportPath = getValue<QString>(REPORT_PATH);
+    settings.dbPath = getValue<QString>(DB_PATH);
 
     return settings;
 }
@@ -164,11 +169,19 @@ void SNPReportWriterFactory::init() {
 
 
         attrs << new Attribute(reportPath, BaseTypes::STRING_TYPE(), true, "");
+
+        Descriptor dbPath(DB_PATH,
+            SNPReportWriter::tr("Database path"),
+            SNPReportWriter::tr("Path to SNP database."));
+
+
+        attrs << new Attribute(dbPath, BaseTypes::STRING_TYPE(), true, "");
     }
 
     QMap<QString, PropertyDelegate*> delegates;
     {
         delegates[REPORT_PATH] = new URLDelegate("", "", false);
+        delegates[DB_PATH] = new URLDelegate("", "", false);
     }
 
     Descriptor protoDesc(SNPReportWriterFactory::ACTOR_ID,

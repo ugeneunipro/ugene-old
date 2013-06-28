@@ -3,6 +3,7 @@
 #include <U2Core/KnownMutationsDbi.h>
 #include <U2Core/KnownMutationsUtils.h>
 #include <U2Core/S3TablesUtils.h>
+#include <U2Formats/S3DatabaseUtils.h>
 
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
@@ -77,7 +78,7 @@ void DamageEffectEvaluator::calcDamageEffectForTracks( const QList<U2VariantTrac
     os.setProgress(0);
 
     foreach(const U2VariantTrack& track, tracks){
-        U2DataId seqId = track.sequence.isEmpty() ? getSequenceId(track.sequenceName) : track.sequence;
+        U2DataId seqId = track.sequence.isEmpty() ? S3DatabaseUtils::getSequenceId(track.sequenceName, objectDbi) : track.sequence;
         KnownMutationsTrack knownTrack = getKnownMutationsTrack(seqId, os);
         seqCache.setSequenceId(seqId);
 
@@ -119,7 +120,7 @@ QList<DamageEffect> DamageEffectEvaluator::getDamageEffect( U2Variant& var, cons
         CHECK_OP(os, res);
 
         //calculate gene-based effect
-        U2DataId seqId = track.sequence.isEmpty() ? getSequenceId(track.sequenceName) : track.sequence;
+        U2DataId seqId = track.sequence.isEmpty() ? S3DatabaseUtils::getSequenceId(track.sequenceName, objectDbi) : track.sequence;
         seqCache.setSequenceId(seqId);
         const QList<DamageEffect>& effects = calcGeneEffect(var, track, os);
         res.append(effects);
@@ -133,7 +134,7 @@ void DamageEffectEvaluator::calcDamageEffect( U2Variant& var, const U2VariantTra
     if (!checkDbi(os)){
         return;
     }
-    U2DataId seqId = track.sequence.isEmpty() ? getSequenceId(track.sequenceName) : track.sequence;
+    U2DataId seqId = track.sequence.isEmpty() ? S3DatabaseUtils::getSequenceId(track.sequenceName, objectDbi) : track.sequence;
     seqCache.setSequenceId(seqId);
     if (effectType == DamageEffectFull || effectType == DamageEffectKnown){
         KnownMutationsTrack knownTrack = getKnownMutationsTrack(seqId, os);
@@ -295,7 +296,7 @@ DamageEffect DamageEffectEvaluator::calcKnownEffect( U2Variant &var, KnownMutati
         hasKnownMutations = true;
 
         //get special regions
-        U2DataId seqId = track.sequence.isEmpty() ? getSequenceId(track.sequenceName) : track.sequence;
+        U2DataId seqId = track.sequence.isEmpty() ? S3DatabaseUtils::getSequenceId(track.sequenceName, objectDbi) : track.sequence;
         bool inConserv = conservativeCache.isIntersect(VARIATION_REGION(var), seqId);
         bool inSegDup = superDupCache.isIntersect(VARIATION_REGION(var), seqId);
 
@@ -327,7 +328,7 @@ QList<DamageEffect> DamageEffectEvaluator::calcGeneEffect( U2Variant &var, const
         return res;
     }
     QList<Gene> genes;
-    U2DataId seqId = track.sequence.isEmpty() ? getSequenceId(track.sequenceName) : track.sequence;
+    U2DataId seqId = track.sequence.isEmpty() ? S3DatabaseUtils::getSequenceId(track.sequenceName, objectDbi) : track.sequence;
     if (useCache){
         genes = geneCache.overlappedGenes(VARIATION_REGION(var), seqId);
     }else{
@@ -372,7 +373,7 @@ QList<DamageEffect> DamageEffectEvaluator::calcGeneEffect( U2Variant &var, const
         if (useCache){
             referenceTriplet = VariationPropertiesUtils::getDamagedTripletBufferedSeq(gene, nuclPos, seqCache, os);
         }else{
-            U2DataId seqId = track.sequence.isEmpty() ? getSequenceId(track.sequenceName) : track.sequence;
+            U2DataId seqId = track.sequence.isEmpty() ? S3DatabaseUtils::getSequenceId(track.sequenceName, objectDbi) : track.sequence;
             referenceTriplet = VariationPropertiesUtils::getDamagedTriplet(gene, nuclPos, seqId, sequenceDbi, os);
         }
         
@@ -458,21 +459,6 @@ QList<Gene> DamageEffectEvaluator::findGenes( const U2Variant& var, const U2Data
 
     return genes;
 
-}
-
-U2DataId DamageEffectEvaluator::getSequenceId( const QString& sequenceName ){
-    U2DataId seqId;
-    if (sequenceName.isEmpty()){
-        return seqId;
-    }
-    SAFE_POINT(objectDbi != NULL, "object Dbi is NULL", seqId);
-
-    U2OpStatusImpl os;
-    QScopedPointer< U2DbiIterator<U2DataId> > it(objectDbi->getObjectsByVisualName(sequenceName, U2Type::Sequence, os));
-    SAFE_POINT(it->hasNext(), "no sequence found", seqId );
-    seqId = it->next();
-
-    return seqId;
 }
 
 } //namespace

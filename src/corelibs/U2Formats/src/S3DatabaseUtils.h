@@ -20,6 +20,7 @@
  */
 
 #include <U2Core/global.h>
+#include <U2Core/U2ObjectDbi.h>
 
 #include <U2Formats/Database.h>
 
@@ -31,6 +32,8 @@ namespace U2 {
 class U2FORMATS_EXPORT S3DatabaseUtils {
 public:
     static Database* openDatabase(const QString& path);
+
+    static U2DataId getSequenceId(const QString& sequenceName, U2ObjectDbi* objectDbi);
 
 };
 

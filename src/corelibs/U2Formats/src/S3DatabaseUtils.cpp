@@ -43,4 +43,20 @@ Database* S3DatabaseUtils::openDatabase( const QString& path ){
     return res;
 }
 
+U2DataId S3DatabaseUtils::getSequenceId( const QString& sequenceName, U2ObjectDbi* objectDbi ){
+    U2DataId seqId;
+    if (sequenceName.isEmpty()){
+        return seqId;
+    }
+    SAFE_POINT(objectDbi != NULL, "object Dbi is NULL", seqId);
+
+    U2OpStatusImpl os;
+    QScopedPointer< U2DbiIterator<U2DataId> > it(objectDbi->getObjectsByVisualName(sequenceName, U2Type::Sequence, os));
+    SAFE_POINT(it->hasNext(), "no sequence found", seqId );
+    seqId = it->next();
+
+    return seqId;
+
+}
+
 } // U2

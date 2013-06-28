@@ -26,10 +26,13 @@
 
 namespace U2 {
 
-RequestForSnpTask::RequestForSnpTask( const QString &_scriptPath,
-    const QVariantMap &_inputData )
-    : Task( "Request to remote server for SNP analysis", TaskFlag_NoRun ),
-    scriptPath( _scriptPath ), inputData( _inputData ), requestTask( NULL ), responseLogParser( )
+RequestForSnpTask::RequestForSnpTask( const QString &_scriptPath,    const QVariantMap &_inputData,const U2Variant& var )
+: Task( "Request to remote server for SNP analysis", TaskFlag_NoRun )
+,scriptPath( _scriptPath )
+,inputData( _inputData )
+,requestTask( NULL )
+,responseLogParser( )
+,variant(var)
 {
     QStringList pythonArguments( scriptPath );
     foreach ( QString key, inputData.keys( ) ) {
@@ -59,9 +62,9 @@ void SnpResponseLogParser::parseOutput( const QString &partOfLog )
         if ( line.isEmpty( ) ) {
             continue;
         }
-        const int lineSeparatorPos = line.indexOf( QRegExp( "\\s" ) );
-        const QString key = line.left( lineSeparatorPos );
-        const QString value = line.mid( line.indexOf( QRegExp( "\\w" ), lineSeparatorPos ) );
+        int lineSeparatorPos = line.indexOf( QRegExp( ":" ) );
+        QString key = line.left( lineSeparatorPos );
+        QString value = line.mid( line.indexOf( QRegExp( "\\w" ), lineSeparatorPos ) );
         result[key] = value;
     }
 }

@@ -32,6 +32,7 @@ public:
     SNPReportWriterSettings(){};
     
     QString reportPath;
+    QString dbPath;
 };
 
 
@@ -42,10 +43,13 @@ public:
 
     virtual void run();
 
+    QString getOutputFilePath() {return outPath;}
+
 private:
     SNPReportWriterSettings settings;
     QList<U2VariantTrack> tracks;
     U2DbiRef dbiRef;
+    QString outPath;
 
 };
 

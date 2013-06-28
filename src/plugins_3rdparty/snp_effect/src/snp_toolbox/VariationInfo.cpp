@@ -30,7 +30,7 @@ VariationInfo::VariationInfo( const U2Variant& var, const U2DataId& _seqId, U2Se
 ,effectLoaded(false)
 ,seqDbi(_seqDbi)
 {
-
+    initOrderColumns();
 }
 
 VariationInfo::VariationInfo( const U2Variant& var, const U2DataId& _seqId, const QList<Gene>& _genes, U2SequenceDbi* _seqDbi, const QString& _sequenceName)
@@ -42,7 +42,7 @@ VariationInfo::VariationInfo( const U2Variant& var, const U2DataId& _seqId, cons
 ,effectLoaded(false)
 ,seqDbi(_seqDbi)
 {
-
+    initOrderColumns();
 }
 
 void VariationInfo::initInfo(U2VariantDbi* varDbi, QSharedPointer<DamageEffectEvaluator> _evaluator, bool withEffect){
@@ -168,6 +168,13 @@ QString VariationInfo::getInGeneEffectInfo( const QString& geneName, QMap<Report
             char variedTransl = aaTransl->translate3to1(variedTriplet[0], variedTriplet[1], variedTriplet[2]);
             result.append(QString("Translation: %1 => %2\n").arg(damageTransl).arg(variedTransl));
 
+            rawData.insert(VariationInfo::Codon, QString("%1->%2").arg(QString::fromLatin1(damagedTriplet)).arg(QString::fromLatin1(variedTriplet)));
+            rawData.insert(VariationInfo::SubstitutionAA, QString("%1%2%3").arg(damageTransl).arg(aaPos+1).arg(variedTransl));
+            if (!gene.getAccession().isEmpty()){
+                rawData.insert(VariationInfo::Protein, gene.getAccession());
+            }
+            
+
             if (damageTransl == variedTransl){
                 result.append(QString("Synonymous\n"));
             }else{
@@ -197,8 +204,6 @@ QString VariationInfo::getInGeneEffectInfo( const QString& geneName, QMap<Report
 
             }
 
-          
-
             CHECK_OP(os, result);
         }
 
@@ -212,46 +217,66 @@ QString VariationInfo::getInGeneEffectInfo( const QString& geneName, QMap<Report
 
         //known scores
         if(knownEffect.avSift != DAMAGE_EFFECT_UNDEFINED_SCORE){
+            if (knownEffect.avSift < 0.05){
+                rawData.insert(VariationInfo::SIFTeffect, "Damaging");
+            }else{
+                rawData.insert(VariationInfo::SIFTeffect, "Tolerated");
+            }
             result.append(QString("AV SIFT: %1\n").arg(knownEffect.avSift));
+
+            rawData.insert(VariationInfo::SIFTscore, QString("%1").arg(knownEffect.avSift));
+        }else{
+            rawData.insert(VariationInfo::SIFTeffect, "Unknown");
         }
+
         if(knownEffect.ljb_lrt != DAMAGE_EFFECT_UNDEFINED_SCORE){
             result.append(QString("LRT: %1\n").arg(knownEffect.ljb_lrt));
+            rawData.insert(VariationInfo::LRT, QString("%1").arg(knownEffect.ljb_lrt));
         }
         if(knownEffect.ljb_phylop != DAMAGE_EFFECT_UNDEFINED_SCORE){
             result.append(QString("PhyloP: %1\n").arg(knownEffect.ljb_phylop));
+            rawData.insert(VariationInfo::PhyloP, QString("%1").arg(knownEffect.ljb_phylop));
         }
         if(knownEffect.ljb_pp2 != DAMAGE_EFFECT_UNDEFINED_SCORE){
             result.append(QString("PolyPhen2: %1\n").arg(knownEffect.ljb_pp2));
+            rawData.insert(VariationInfo::PolyPhen2, QString("%1").arg(knownEffect.ljb_pp2));
         }
         if(knownEffect.ljb_mt != DAMAGE_EFFECT_UNDEFINED_SCORE){
             result.append(QString("MutationTaster: %1\n").arg(knownEffect.ljb_mt));
+            rawData.insert(VariationInfo::MutationTaster, QString("%1").arg(knownEffect.ljb_mt));
         }
         if(knownEffect.genomes1000 != DAMAGE_EFFECT_UNDEFINED_SCORE){
             result.append(QString("1000 genomes allele freq: %1\n").arg(knownEffect.genomes1000));
+            rawData.insert(VariationInfo::genomes1000, QString("%1").arg(knownEffect.genomes1000));
         }
         if(knownEffect.segmentalDuplication){
             result.append(QString("In segmental duplication region\n"));
+            rawData.insert(VariationInfo::segmental, QString("+"));
         }
         if(knownEffect.conserved){
             result.append(QString("In conserved region\n"));
+            rawData.insert(VariationInfo::conserved, QString("+"));
         }
         if(knownEffect.gerpConcerved != DAMAGE_EFFECT_UNDEFINED_SCORE){
             result.append(QString("GERP Conserved region: %1\n").arg(knownEffect.gerpConcerved));
         }
         if(knownEffect.allFreq != DAMAGE_EFFECT_UNDEFINED_SCORE){
             result.append(QString("Alternative allele frequency : %1\n").arg(knownEffect.allFreq));
+            rawData.insert(VariationInfo::altall, QString("%1").arg(knownEffect.allFreq));
         }
         if(knownEffect.hapmap != DAMAGE_EFFECT_UNDEFINED_SCORE){
             result.append(QString("Scores of haplotype map: %1\n").arg(knownEffect.hapmap));
+            rawData.insert(VariationInfo::hapmap, QString("%1").arg(knownEffect.hapmap));
         }
         if(knownEffect.gerpScore != DAMAGE_EFFECT_UNDEFINED_SCORE){
             result.append(QString("GERP Score: %1\n").arg(knownEffect.gerpScore));
+            rawData.insert(VariationInfo::gerpScore, QString("%1").arg(knownEffect.gerpScore));
         }
     }
     return result;
 }
 
-QString VariationInfo::getInGeneLocationInfo( const QString& geneName, QMap<ReportColumns, QString>& rawData ){
+QString VariationInfo::getInGeneLocationInfo( const QString& geneName ){
     QString result;
     if(!containsGene(geneName)){
         result = tr("Out of gene");
@@ -483,7 +508,7 @@ QString VariationInfo::gentFullGeneReport( const QString& geneName ){
 
     //variation location
     QMap<ReportColumns, QString> rcs;
-    res += QString("Variation location: %1 ").arg(getInGeneLocationInfo(geneName, rcs));
+    res += QString("Variation location: %1 ").arg(getInGeneLocationInfo(geneName));
     res += "\n";
 
     //variation effect
@@ -630,9 +655,29 @@ QString VariationInfo::getInGeneTableHeader(){
             res.append("SIFTeffect");
         }else if(rc == VariationInfo::SIFTscore){
             res.append("SIFTscore");
+        }else if(rc == VariationInfo::LRT){
+            res.append("LRT");
+        }else if(rc == VariationInfo::PhyloP){
+            res.append("PhyloP");
+        }else if(rc == VariationInfo::PolyPhen2){
+            res.append("PolyPhen2");
+        }else if(rc == VariationInfo::MutationTaster){
+            res.append("MutationTaster");
+        }else if(rc == VariationInfo::genomes1000){
+            res.append("1000genomes");
+        }else if(rc == VariationInfo::segmental){
+            res.append("segmental_dupl");
+        }else if(rc == VariationInfo::conserved){
+            res.append("conserved_reg");
+        }else if(rc == VariationInfo::altall){
+            res.append("alt_allele");
+        }else if(rc == VariationInfo::hapmap){
+            res.append("hapmap");
+        }else if(rc == VariationInfo::gerpScore){
+            res.append("gerpScore");
         }
-
     }
+    res.append("\n");
 
     return res;
 
@@ -645,7 +690,6 @@ QStringList VariationInfo::getInGeneTableRaws(){
         foreach(const Gene& gene, genes){
             QMap<ReportColumns, QString> curRawData;
             QString curRaw = "";
-            curRaw += gentFullGeneReport(gene.getName());
             if(sequenceName.isEmpty()){
                 U2OpStatusImpl opStatus;
                 SAFE_POINT(seqDbi!= NULL, "No sequence DBI", res);
@@ -653,9 +697,20 @@ QStringList VariationInfo::getInGeneTableRaws(){
                 CHECK_OP(opStatus, res);
                 sequenceName = seq.visualName;
             }
+            curRawData.insert(VariationInfo::Chr, sequenceName);
+            curRawData.insert(VariationInfo::Position, QString("%1").arg(variant.startPos + 1));
+            curRawData.insert(VariationInfo::Allele, QString("%1/%2").arg(QString::fromLatin1(variant.refData)).arg(QString::fromLatin1(variant.obsData)));
+            curRawData.insert(VariationInfo::GeneId, gene.getAltName().isEmpty() ? gene.getName() : gene.getAltName());
+            curRawData.insert(VariationInfo::GeneId, gene.getDisease());
+            if (variant.publicId.startsWith("rs")){
+                curRawData.insert(VariationInfo::dbSNPId, variant.publicId);
+            }
+            
 
             getInGeneEffectInfo(gene.getName(), curRawData);
-            getInGeneLocationInfo(gene.getName(), curRawData);
+            QString locationStr = getInGeneLocationInfo(gene.getName());
+            curRawData.insert(VariationInfo::Location, locationStr);
+
         
             bool first = true;
             foreach(ReportColumns rc, columnsOrderInGene){
@@ -694,7 +749,18 @@ void VariationInfo::initOrderColumns(){
         << VariationInfo::Codon
         << VariationInfo::SubstitutionAA
         << VariationInfo::SIFTeffect
-        << VariationInfo::SIFTscore;
+        << VariationInfo::SIFTscore
+        << VariationInfo::LRT
+        << VariationInfo::PhyloP
+        << VariationInfo::PolyPhen2
+        << VariationInfo::MutationTaster
+        << VariationInfo::genomes1000
+        << VariationInfo::segmental
+        << VariationInfo::conserved
+        << VariationInfo::altall
+        << VariationInfo::hapmap
+        << VariationInfo::gerpScore;
+
 }
 
 void VariationInfo::addValueToRaw( const QString& val, ReportColumns key, QMap<ReportColumns, QString>& rawData ){

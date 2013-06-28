@@ -31,8 +31,20 @@ public:
         Codon,
         SubstitutionAA,
         SIFTeffect,
-        SIFTscore
+        SIFTscore,
+        LRT,
+        PhyloP,
+        PolyPhen2,
+        MutationTaster,
+        genomes1000,
+        segmental,
+        conserved,
+        altall,
+        hapmap,
+        gerpScore
     };
+
+
     VariationInfo(const U2Variant& var, const U2DataId& seqId, U2SequenceDbi* _seqDbi, const QString& sequenceName = QString());
     VariationInfo(const U2Variant& var, const U2DataId& seqId, const QList<Gene>& genes, U2SequenceDbi* _seqDbi, const QString& sequenceName = QString());
 
@@ -44,7 +56,7 @@ public:
     void initInfo(U2VariantDbi* varDbi, QSharedPointer<DamageEffectEvaluator> evaluator, bool withEffect = false);
     QString getVariationInfoHeader();
     QString getInGeneEffectInfo(const QString& geneName, QMap<ReportColumns, QString>& rawData );
-    QString getInGeneLocationInfo(const QString& geneName, QMap<ReportColumns, QString>& rawData);
+    QString getInGeneLocationInfo(const QString& geneName);
     QString gentFullGeneReport(const QString& geneName);
     QString getFullVariationReport();
 

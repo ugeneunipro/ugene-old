@@ -43,6 +43,8 @@ public:
 
 private:
     IntegralBus *inChannel;
+    QList<U2VariantTrack> tracks;
+    U2DbiRef dbiRef;
 
 private:
     SNPReportWriterSettings createSNPWriterSettings(U2OpStatus &os);

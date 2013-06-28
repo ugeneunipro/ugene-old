@@ -24,6 +24,8 @@
 
 #include <U2Lang/LocalDomain.h>
 
+#include <U2Core/U2Dbi.h>
+
 #include "SnpRequestKeys.h"
 
 namespace U2 {
@@ -43,16 +45,27 @@ public:
 
 private slots:
     void                            sl_taskFinished( );
+    void                            sl_trackTaskFinished( );
 
 protected:
-    virtual QVariantMap             getInputDataForRequest( ) = 0;
+    virtual QVariantMap             getInputDataForRequest( const U2Variant& variant, const U2VariantTrack& track, U2Dbi* dataBase ) = 0;
     virtual QString                 getRequestingScriptName( ) const = 0;
+
+    virtual void                    handleResult(const U2Variant& variant, const QVariantMap& result, U2Dbi* sessionDbi) = 0;
+
+    //each child worker must provide a path to the database
+    virtual QString                 getDatabasePath () const = 0;
 
     IntegralBus *                   inChannel;
     IntegralBus *                   outChannel;
 
 private:
     QString                         getRequestingScriptPath( ) const;
+
+    bool                            checkFlushCache();
+    void                            flushCache();
+    void                            clearCache();
+    QMap<U2DataId, QPair<U2Variant, QVariantMap> >    resultCache;
 };
 
 } // namespace LocalWorkflow
