@@ -96,13 +96,16 @@ class RSNP:
         rsp = urllib2.urlopen(req)
         content = rsp.read()
         res = content.find('PRESENT:</b>&nbsp;')
-        content = content[res+18:]
-        res = content.find('<P align')
-        content = content[:res]
-        out = content.split()
-        for item in out:
-            if item:
-                print("PRESENT:"+item)
+        if res == -1:
+            print "ERROR:error"
+        else:
+            content = content[res+18:]
+            res = content.find('<P align')
+            content = content[:res]
+            out = content.split()
+            for item in out:
+                if item:
+                    print("PRESENT:"+item)
 def main():
     opts=opt_validate(prepare_optparser())
     g = RSNP(opts)
