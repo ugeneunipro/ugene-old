@@ -91,9 +91,9 @@ QVariantMap RSnpToolsWorker::getInputDataForRequest( const U2Variant& variant, c
     QByteArray seq2 = seq1;
     seq2.replace(replPos, 1, variant.obsData);
 
-      //sample data
-//    inputData[SnpRequestKeys::R_SNP_FIRST_SEQUENCE] = "cctcagtgctgagggccaagcaaatatttgtggttatggaTtaactcgaactccaggctgtcatggcggcaggacggcgaa";
-//    inputData[SnpRequestKeys::R_SNP_SECOND_SEQUENCE] = "cctcagtgctgagggccaagcaaatatttgtggttatggaCtaactcgaactccaggctgtcatggcggcaggacggcgaa";
+    //sample data
+    //inputData[SnpRequestKeys::R_SNP_FIRST_SEQUENCE] = "cctcagtgctgagggccaagcaaatatttgtggttatggaTtaactcgaactccaggctgtcatggcggcaggacggcgaa";
+    //inputData[SnpRequestKeys::R_SNP_SECOND_SEQUENCE] = "cctcagtgctgagggccaagcaaatatttgtggttatggaCtaactcgaactccaggctgtcatggcggcaggacggcgaa";
 
     inputData[SnpRequestKeys::R_SNP_FIRST_SEQUENCE] = seq1;
     inputData[SnpRequestKeys::R_SNP_SECOND_SEQUENCE] = seq2;
@@ -217,8 +217,12 @@ QString RSnpToolsPrompter::composeRichDoc( )
 
     QString unsetStr = "<font color='red'>" + tr("unset") + "</font>";
     QString annUrl = annProducer ? annProducer->getLabel( ) : unsetStr;
+    QString path = getHyperlink(DB_PATH, getURL(DB_PATH));
 
     res.append(tr("Uses variations from <u>%1</u> as input.").arg(annUrl));
+    res.append(tr(" Takes annotations from <u>%1</u> database.").arg(path.isEmpty() ?
+        unsetStr : path));
+
 
     return res;
 }

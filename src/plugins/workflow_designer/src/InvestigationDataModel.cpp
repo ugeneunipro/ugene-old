@@ -110,7 +110,9 @@ QVariant InvestigationDataModel::data(const QModelIndex &index, int role) const 
         if(cachedData[key].size() <= requestedRow) {
             emit si_investigationRequested(investigatedLink, requestedRow);
         }
-        result.setValue<QString>(cachedData[key][requestedRow]);
+        if(cachedData[key].size() > requestedRow) {
+            result.setValue<QString>(cachedData[key][requestedRow]);
+        }
     }
     return result;
 }

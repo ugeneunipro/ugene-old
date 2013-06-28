@@ -137,6 +137,11 @@ void BaseRequestForSnpWorker::sl_taskFinished( )
     }
 }
 void BaseRequestForSnpWorker::sl_trackTaskFinished( ){
+    SequentialMultiTask *t = dynamic_cast<SequentialMultiTask *>( sender( ) );
+    SAFE_POINT( NULL != t, "Invalid task is encountered", );
+    if ( !t->isFinished( ) || t->hasError( ) ) {
+        return;
+    }
     flushCache();
     outChannel->put( Message::getEmptyMapMessage( ) );
     if ( inChannel->isEnded( ) && !inChannel->hasMessage( ) ) {

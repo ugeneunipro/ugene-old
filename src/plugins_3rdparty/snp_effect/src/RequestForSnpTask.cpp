@@ -62,10 +62,11 @@ void SnpResponseLogParser::parseOutput( const QString &partOfLog )
         if ( line.isEmpty( ) ) {
             continue;
         }
-        int lineSeparatorPos = line.indexOf( QRegExp( ":" ) );
+        int lineSeparatorPos = line.indexOf( ":" );
         QString key = line.left( lineSeparatorPos );
         QString value = line.mid( line.indexOf( QRegExp( "\\w" ), lineSeparatorPos ) );
         result[key] = value;
+        qDebug() << key << ":" << value;
     }
 }
 
