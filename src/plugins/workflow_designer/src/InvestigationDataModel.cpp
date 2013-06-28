@@ -99,17 +99,18 @@ int InvestigationDataModel::columnCount(const QModelIndex &parent) const {
 
 QVariant InvestigationDataModel::data(const QModelIndex &index, int role) const {
     QVariant result;
-    if(index.row() < countOfRows && index.column() < hiddenColumns.count(false) && Qt::DisplayRole == role
-        && !cachedData.isEmpty())
+    const QList<QString> headerLabelList = cachedData.keys();
+    const int requestedRow = index.row();
+    const int absoluteColumnNumber = getAbsoluteNumberOfVisibleColumn(index.column());
+    if ( Qt::DisplayRole == role && requestedRow < countOfRows
+        && index.column() < hiddenColumns.count(false)
+        && headerLabelList.size() > absoluteColumnNumber)
     {
-        const int requestedRow = index.row();
-        const QString key = cachedData.keys()[getAbsoluteNumberOfVisibleColumn(index.column())];
+        const QString key = headerLabelList[absoluteColumnNumber];
         if(cachedData[key].size() <= requestedRow) {
             emit si_investigationRequested(investigatedLink, requestedRow);
         }
-        if(cachedData[key].size() > requestedRow) {
-            result.setValue<QString>(cachedData[key][requestedRow]);
-        }
+        result.setValue<QString>(cachedData[key][requestedRow]);
     }
     return result;
 }
@@ -122,8 +123,13 @@ QVariant InvestigationDataModel::headerData(int section, Qt::Orientation orienta
         switch(orientation) {
         case Qt::Horizontal:
             if(section < hiddenColumns.count(false) && !cachedData.isEmpty()) {
-                result.setValue<QString>(cachedData.keys()[
-                    getAbsoluteNumberOfVisibleColumn(section)]);
+                const int absNumberOfVisibleColumn = getAbsoluteNumberOfVisibleColumn(section);
+                const QList<QString> headerLabelList = cachedData.keys();
+                if (headerLabelList.size() > absNumberOfVisibleColumn) {
+                    result.setValue<QString>(cachedData.keys()[absNumberOfVisibleColumn]);
+                } else {
+                    emit si_investigationRequested(investigatedLink, 0);
+                }
             }
             break;
         case Qt::Vertical:

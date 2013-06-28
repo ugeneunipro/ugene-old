@@ -29,7 +29,7 @@
 #include "InvestigationDataModel.h"
 #include "WorkflowInvestigationWidgetsController.h"
 
-const qint16 HEADER_TEXT_MARGIN = 20;
+const qint16 HEADER_TEXT_MARGIN = 40;
 const int DEFAULT_SELECTED_COLUMN = -1;
 const char *CONVERT_TO_DOC_ACTION_NAME = "Convert to document";
 const char *COPY_TO_CLIPBOARD_ACTION_NAME = "Copy to clipboard";
@@ -165,7 +165,7 @@ void WorkflowInvestigationWidgetsController::adjustInvestigationColumnWidth(
         const int width = (columnWidths[investigatedLink].size() <= absoluteColumnNumber
             || 0 == columnWidths[investigatedLink][absoluteColumnNumber])
             ? investigator->fontMetrics().width(investigationModel->headerData(
-            currentColumn, Qt::Horizontal).toString()) + 2 * HEADER_TEXT_MARGIN
+            currentColumn, Qt::Horizontal).toString()) + HEADER_TEXT_MARGIN
             : columnWidths[investigatedLink][absoluteColumnNumber];
        Q_ASSERT(0 < width);
        investigator->setColumnWidth(currentColumn, width);
