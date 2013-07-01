@@ -42,25 +42,30 @@ public:
 
     void                            init( );
     Task *                          tick( );
+    virtual void                    cleanup( );
 
 private slots:
     void                            sl_taskFinished( );
     void                            sl_trackTaskFinished( );
 
 protected:
-    virtual QVariantMap             getInputDataForRequest( const U2Variant& variant, const U2VariantTrack& track, U2Dbi* dataBase ) = 0;
+    virtual QVariantMap             getInputDataForRequest( const U2Variant& variant,
+                                        const U2VariantTrack& track, U2Dbi* dataBase ) = 0;
     virtual QString                 getRequestingScriptName( ) const = 0;
-
-    virtual void                    handleResult(const U2Variant& variant, const QVariantMap& result, U2Dbi* sessionDbi) = 0;
-
+    virtual QList<SnpResponseKey>   getResultKeys( ) const = 0;
     //each child worker must provide a path to the database
-    virtual QString                 getDatabasePath () const = 0;
+    virtual QString                 getDatabasePath( ) const = 0;
+    QByteArray                      getSequenceForVariant( const U2Variant &variant,
+                                        const U2VariantTrack &track, U2Dbi *dataBase,
+                                        qint64 &sequenceStart ) const;
 
     IntegralBus *                   inChannel;
     IntegralBus *                   outChannel;
 
 private:
     QString                         getRequestingScriptPath( ) const;
+    void                            handleResult(const U2Variant &variant,
+                                        const QVariantMap &result, U2Dbi *sessionDbi);
 
     bool                            checkFlushCache();
     void                            flushCache();

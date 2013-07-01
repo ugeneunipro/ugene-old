@@ -19,8 +19,8 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_RSNP_TOOLS_WORKER_
-#define _U2_RSNP_TOOLS_WORKER_
+#ifndef _U2_SNP_2_PDB_SITE_WORKER_
+#define _U2_SNP_2_PDB_SITE_WORKER_
 
 #include <U2Lang/LocalDomain.h>
 #include <U2Lang/WorkflowUtils.h>
@@ -35,16 +35,17 @@ namespace LocalWorkflow {
 /* Worker */
 /************************************************************************/
 
-class RSnpToolsWorker :     public BaseRequestForSnpWorker
+class Snp2PdbSiteWorker :   public BaseRequestForSnpWorker
 {
     Q_OBJECT
 public:
-                            RSnpToolsWorker( Actor *p );
+                            Snp2PdbSiteWorker( Actor *p );
 
 protected:
-    QVariantMap             getInputDataForRequest( const U2Variant& variant, const U2VariantTrack& track, U2Dbi* dataBase );
+    QVariantMap             getInputDataForRequest( const U2Variant& variant,
+                              const U2VariantTrack& track, U2Dbi* dataBase );
     QString                 getRequestingScriptName( ) const;
-    QString                 getDatabasePath( ) const;
+    QString                 getDatabasePath ( ) const;
     QList<SnpResponseKey>   getResultKeys( ) const;
 };
 
@@ -52,36 +53,34 @@ protected:
 /* Factory */
 /************************************************************************/
 
-class RSnpToolsWorkerFactory :  public DomainFactory
+class Snp2PdbSiteWorkerFactory : public DomainFactory
 {
 public:
-                                RSnpToolsWorkerFactory( );
+                                 Snp2PdbSiteWorkerFactory( );
 
-    static void                 init( );
-    Worker *                    createWorker( Actor *a );
+    static void                  init( );
+    Worker *                     createWorker( Actor *a );
 
 private:
-    static QVariantMap          getAllBindingSiteStates( );
-
-    static const QString        ACTOR_ID;
+    static const QString         ACTOR_ID;
 };
 
 /************************************************************************/
 /* Prompter */
 /************************************************************************/
 
-class RSnpToolsPrompter :       public PrompterBase<RSnpToolsPrompter>
+class Snp2PdbSitePrompter : public PrompterBase<Snp2PdbSitePrompter>
 {
     Q_OBJECT
 public:
-                                RSnpToolsPrompter( Actor *p = NULL );
+                            Snp2PdbSitePrompter( Actor *p = NULL );
 
 protected:
-    QString                     composeRichDoc( );
+    QString                 composeRichDoc( );
 };
 
 } // namespace LocalWorkflow
 
 } // namespace U2
 
-#endif // _U2_RSNP_TOOLS_WORKER_
+#endif // _U2_SNP_2_PDB_SITE_WORKER_

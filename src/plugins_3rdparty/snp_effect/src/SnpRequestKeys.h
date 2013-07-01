@@ -33,19 +33,43 @@ namespace SnpRequestKeys {
 
 const SnpRequestKey R_SNP_FIRST_SEQUENCE( "-f" );
 const SnpRequestKey R_SNP_SECOND_SEQUENCE( "-s" );
-
-const SnpRequestKey R_SNP_FIRST_UNKNOWN_BINDS( "--snpdm1" );
-const SnpRequestKey R_SNP_SECOND_UNKNOWN_BINDS( "--snpdm2" );
-
+const SnpRequestKey R_SNP_FIRST_SITE_STATE( "--snpdm1" );
+const SnpRequestKey R_SNP_SECOND_SITE_STATE( "--snpdm2" );
 const SnpRequestKey R_SNP_SIGNIFICANCE( "--sign" );
 
-const SnpRequestKey R_SNP_PRESENT_TFBS( "PRESENT" );
+const SnpRequestKey PROT_STAB_1D_SEQUENCE( "" );
+const SnpRequestKey PROT_STAB_1D_MUTATION_POS( "" );
+const SnpRequestKey PROT_STAB_1D_REPLACEMENT( "" );
+
+const SnpRequestKey PROT_STAB_3D_PDB_ID( "" );
+const SnpRequestKey PROT_STAB_3D_CHAIN( "" );
+const SnpRequestKey PROT_STAB_3D_MUTATION_POS( "" );
+const SnpRequestKey PROT_STAB_3D_REPLACEMENT( "" );
+
+const SnpRequestKey SNP_2_PDB_SITE_PDB_ID( "" );
+const SnpRequestKey SNP_2_PDB_SITE_CHAIN( "" );
+const SnpRequestKey SNP_2_PDB_SITE_MUTATIONS( "" );
 
 } // namespace SnpRequestKeys
+
+typedef QString SnpResponseKey;
+
+namespace SnpResponseKeys {
+
+const SnpResponseKey R_SNP_PRESENT_TFBS( "PRESENT" );
+const SnpResponseKey PROT_STABILITY_1D( "" );
+const SnpResponseKey PROT_STABILITY_3D( "" );
+// TODO: add response keys for SNP2PDBSite tool
+const SnpResponseKey SNP_2_PDB_SITE_( "" );
+
+}
 
 namespace SnpRequestingScripts {
 
 const QString R_SNP_TOOLS_SCRIPT( "rsnp.py" );
+const QString SNP_PROT_STABILITY_1D_SCRIPT( "" );
+const QString SNP_PROT_STABILITY_3D_SCRIPT( "" );
+const QString SNP_2_PDB_SITE_SCRIPT( "" );
 
 } // namespace SnpRequestAddresses
 

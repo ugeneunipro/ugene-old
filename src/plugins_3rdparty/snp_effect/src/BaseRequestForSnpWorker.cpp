@@ -19,12 +19,14 @@
  * MA 02110-1301, USA.
  */
 
+#include <U2Core/AppContext.h>
 #include <U2Core/FailTask.h>
+#include <U2Core/MultiTask.h>
+#include <U2Core/U2AttributeDbi.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
-#include <U2Core/AppContext.h>
+#include <U2Core/U2SequenceDbi.h>
 #include <U2Core/U2VariantDbi.h>
-#include <U2Core/MultiTask.h>
 
 #include <U2Formats/Database.h>
 #include <U2Formats/S3DatabaseUtils.h>
@@ -34,6 +36,8 @@
 
 #include "RequestForSnpTask.h"
 #include "BaseRequestForSnpWorker.h"
+
+const int SNP_NEAR_REGION_LENGTH = 40;
 
 namespace U2 {
 
@@ -49,6 +53,11 @@ void BaseRequestForSnpWorker::init( )
 {
     inChannel = ports.value( BasePorts::IN_VARIATION_TRACK_PORT_ID( ) );
     outChannel = ports.value( BasePorts::OUT_VARIATION_TRACK_PORT_ID( ) );
+}
+
+void BaseRequestForSnpWorker::cleanup( )
+{
+
 }
 
 Task* BaseRequestForSnpWorker::tick( )
@@ -150,12 +159,60 @@ void BaseRequestForSnpWorker::sl_trackTaskFinished( ){
     }
 }
 
+QByteArray BaseRequestForSnpWorker::getSequenceForVariant( const U2Variant &variant,
+    const U2VariantTrack &track, U2Dbi *dataBase, qint64 &sequenceStart ) const
+{
+    QByteArray result;
+    SAFE_POINT( NULL != dataBase, "No database dbi", result );
+
+    U2SequenceDbi* seqDbi = dataBase->getSequenceDbi( );
+    SAFE_POINT( NULL != seqDbi, "No sequence dbi", result );
+
+    U2ObjectDbi* objDbi = dataBase->getObjectDbi( );
+    SAFE_POINT( NULL != objDbi, "No object dbi", result );
+
+    const U2DataId seqId = track.sequence.isEmpty( ) ?
+        S3DatabaseUtils::getSequenceId( track.sequenceName, objDbi ) : track.sequence;
+
+    qint64 start = qMax( ( qint64 )0, variant.startPos - SNP_NEAR_REGION_LENGTH );
+    qint64 end = variant.startPos + SNP_NEAR_REGION_LENGTH + 1; //include last char
+    U2Region regAround(start, end - start);
+
+    U2OpStatusImpl os;
+    result = seqDbi->getSequenceData( seqId, regAround, os );
+    CHECK_OP( os, result );
+    sequenceStart = start;
+
+    return result;
+}
+
 QString BaseRequestForSnpWorker::getRequestingScriptPath( ) const
 {
     QString result( AppContext::getWorkingDirectoryPath( )
         + "/../../data/snp_scripts/" + getRequestingScriptName( ) );
     QFileInfo info( result );
     return info.absoluteFilePath( );
+}
+
+void BaseRequestForSnpWorker::handleResult( const U2Variant &variant, const QVariantMap &result,
+    U2Dbi *sessionDbi )
+{
+    SAFE_POINT( NULL != sessionDbi, "no session dbi", );
+    U2AttributeDbi *attrDbi = sessionDbi->getAttributeDbi();
+    SAFE_POINT( NULL != attrDbi, "no Attribute Dbi", );
+    CHECK( !result.isEmpty( ), );
+
+    foreach ( SnpResponseKey key, getResultKeys( ) ) {
+        QString res = "";
+        if ( result.contains( key ) ) {
+            res = result.value( key, "" ).toString( );
+        }
+        CHECK( !res.isEmpty( ), );
+        U2StringAttribute resAtr( variant.id, key, res );
+        U2OpStatusImpl os;
+        attrDbi->createStringAttribute( resAtr, os );
+        CHECK_OP( os, );
+    }
 }
 
 #define FLUSH_CACHE_ITEMS_SIZE 1000

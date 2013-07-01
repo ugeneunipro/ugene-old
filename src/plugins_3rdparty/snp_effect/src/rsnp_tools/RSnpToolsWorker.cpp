@@ -23,10 +23,6 @@
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/AppContext.h>
-#include <U2Core/U2SequenceDbi.h>
-#include <U2Core/U2AttributeDbi.h>
-
-#include <U2Formats/S3DatabaseUtils.h>
 
 #include <U2Lang/ActorPrototypeRegistry.h>
 #include <U2Lang/BaseActorCategories.h>
@@ -46,6 +42,9 @@ namespace LocalWorkflow {
 const QString RSnpToolsWorkerFactory::ACTOR_ID( "rSnp-tools" );
 
 static const QString DB_PATH("db_path");
+static const QString FIRST_SITE_STATE( "first_site_state" );
+static const QString SECOND_SITE_STATE( "second_site_state" );
+static const QString SNP_SIGNIFICANCE( "snp_significance" );
 
 /************************************************************************/
 /* Worker */
@@ -57,43 +56,24 @@ RSnpToolsWorker::RSnpToolsWorker( Actor *p )
 
 }
 
-void RSnpToolsWorker::cleanup( )
+QVariantMap RSnpToolsWorker::getInputDataForRequest( const U2Variant& variant,
+    const U2VariantTrack& track, U2Dbi* dataBase )
 {
-
-}
-
-#define SNP_NEAR_REGION_LENGTH 40
-
-QVariantMap RSnpToolsWorker::getInputDataForRequest( const U2Variant& variant, const U2VariantTrack& track, U2Dbi* dataBase ){
     QVariantMap inputData;
+    qint64 sequenceStart = 0;
+    QByteArray seq1 = getSequenceForVariant( variant, track, dataBase, sequenceStart );
+    CHECK( !seq1.isEmpty( ), inputData );
 
-    SAFE_POINT(dataBase != NULL, "No database dbi", inputData);
-
-    QString dbPath = getValue<QString>(DB_PATH);
-
-    U2SequenceDbi* seqDbi = dataBase->getSequenceDbi();
-    SAFE_POINT(seqDbi != NULL, "No sequence dbi", inputData);
-
-    U2ObjectDbi* objDbi = dataBase->getObjectDbi();
-    SAFE_POINT(objDbi != NULL, "No object dbi", inputData);
-
-    U2DataId seqId = track.sequence.isEmpty() ? S3DatabaseUtils::getSequenceId(track.sequenceName, objDbi) : track.sequence;
-
-    qint64 start = qMax((qint64)0, variant.startPos - SNP_NEAR_REGION_LENGTH);
-    qint64 end = variant.startPos + SNP_NEAR_REGION_LENGTH + 1; //include last char
-    U2Region regAround(start, end - start);
-
-    U2OpStatusImpl os;
-    QByteArray seq1 = seqDbi->getSequenceData(seqId, regAround, os);
-    CHECK_OP(os, inputData);
-
-    qint64 replPos = variant.startPos - start;
+    const qint64 mutationPos = variant.startPos - sequenceStart;
     QByteArray seq2 = seq1;
-    seq2.replace(replPos, 1, variant.obsData);
+    seq2.replace( mutationPos, 1, variant.obsData );
 
     //sample data
     //inputData[SnpRequestKeys::R_SNP_FIRST_SEQUENCE] = "cctcagtgctgagggccaagcaaatatttgtggttatggaTtaactcgaactccaggctgtcatggcggcaggacggcgaa";
     //inputData[SnpRequestKeys::R_SNP_SECOND_SEQUENCE] = "cctcagtgctgagggccaagcaaatatttgtggttatggaCtaactcgaactccaggctgtcatggcggcaggacggcgaa";
+    //inputData[SnpRequestKeys::R_SNP_FIRST_SITE_STATE] = 1;
+    //inputData[SnpRequestKeys::R_SNP_SECOND_SITE_STATE] = 0.5;
+    //inputData[SnpRequestKeys::R_SNP_SIGNIFICANCE] = 0.00025;
 
     inputData[SnpRequestKeys::R_SNP_FIRST_SEQUENCE] = seq1;
     inputData[SnpRequestKeys::R_SNP_SECOND_SEQUENCE] = seq2;
@@ -106,35 +86,16 @@ QString RSnpToolsWorker::getRequestingScriptName( ) const
     return SnpRequestingScripts::R_SNP_TOOLS_SCRIPT;
 }
 
-QString RSnpToolsWorker::getDatabasePath() const{
-    return getValue<QString>(DB_PATH);
+QString RSnpToolsWorker::getDatabasePath( ) const
+{
+    return getValue<QString>( DB_PATH );
 }
 
-void RSnpToolsWorker::handleResult( const U2Variant& variant, const QVariantMap& result, U2Dbi* sessionDbi ){
-    SAFE_POINT(sessionDbi != NULL, "no session dbi", );
-
-    U2AttributeDbi* attrDbi = sessionDbi->getAttributeDbi();
-    SAFE_POINT(attrDbi != NULL, "no Attribute Dbi", );
-
-    U2OpStatusImpl os;
-
-    if (result.isEmpty()){
-        return;
-    }
-
-    QString res = "";
-    if (result.contains(SnpRequestKeys::R_SNP_PRESENT_TFBS)){
-        res = result.value(SnpRequestKeys::R_SNP_PRESENT_TFBS, "").toString();
-    }
-
-    if (res.isEmpty()){
-        return;
-    }
-    
-    U2StringAttribute resAtr(variant.id, SnpRequestKeys::R_SNP_PRESENT_TFBS, res);
-    attrDbi->createStringAttribute(resAtr, os);
-    CHECK_OP(os, );
-
+QList<SnpResponseKey> RSnpToolsWorker::getResultKeys( ) const
+{
+    QList<SnpResponseKey> result;
+    result << SnpResponseKeys::R_SNP_PRESENT_TFBS;
+    return result;
 }
 
 /************************************************************************/
@@ -150,7 +111,6 @@ RSnpToolsWorkerFactory::RSnpToolsWorkerFactory( )
 void RSnpToolsWorkerFactory::init( )
 {
     QList<PortDescriptor*> p;
-    QList<Attribute*> a;
     {
         Descriptor sd( BasePorts::IN_VARIATION_TRACK_PORT_ID( ), "Input variations",
             "Variations for annotations." );
@@ -167,16 +127,34 @@ void RSnpToolsWorkerFactory::init( )
             false /*input*/, true /*multi*/ );
     }
 
-    Descriptor dbPath(DB_PATH,
-        RSnpToolsWorker::tr("Database path"),
-        RSnpToolsWorker::tr("Path to SNP database."));
+    QList<Attribute*> a;
+    {
+        Descriptor dbPath( DB_PATH, QObject::tr( "Database path" ),
+            QObject::tr( "Path to SNP database." ) );
+        Descriptor firstSiteState( FIRST_SITE_STATE, QObject::tr( "First site state" ),
+            QObject::tr( "First sequence TFBS state." ) );
+        Descriptor secondSiteState( SECOND_SITE_STATE, QObject::tr( "Second site state" ),
+            QObject::tr( "Second sequence TFBS state." ) );
+        Descriptor snpSignificance( SNP_SIGNIFICANCE, QObject::tr( "SNP significance" ),
+            QObject::tr( "Significance value for the SNP." ) );
 
-
-    a << new Attribute(dbPath, BaseTypes::STRING_TYPE(), true, "");
+        a << new Attribute( dbPath, BaseTypes::STRING_TYPE( ), true, QVariant( "" ) );
+        a << new Attribute( firstSiteState, BaseTypes::NUM_TYPE( ), true, QVariant( 1 ) );
+        a << new Attribute( secondSiteState, BaseTypes::NUM_TYPE( ), true, QVariant( 0.5 ) );
+        a << new Attribute( snpSignificance, BaseTypes::NUM_TYPE( ), true, QVariant( 0.00025 ) );
+    }
 
     QMap<QString, PropertyDelegate*> delegates;
     {
-        delegates[DB_PATH] = new URLDelegate("", "", false);
+        delegates[DB_PATH] = new URLDelegate( "", "", false );
+        delegates[FIRST_SITE_STATE] = new ComboBoxDelegate( getAllBindingSiteStates( ) );
+        delegates[SECOND_SITE_STATE] = new ComboBoxDelegate( getAllBindingSiteStates( ) );
+        QVariantMap snpSignificanceValues;
+        snpSignificanceValues["minimum"] = 0.000005;
+        snpSignificanceValues["maximum"] = 0.33;
+        snpSignificanceValues["singleStep"] = 0.0001;
+        snpSignificanceValues["decimals"] = 6;
+        delegates[SNP_SIGNIFICANCE] = new DoubleSpinBoxDelegate( snpSignificanceValues );
     }
 
     Descriptor protoDesc( RSnpToolsWorkerFactory::ACTOR_ID,
@@ -186,11 +164,31 @@ void RSnpToolsWorkerFactory::init( )
 
     ActorPrototype *proto = new IntegralBusActorPrototype( protoDesc, p, a );
     proto->setPrompter( new RSnpToolsPrompter( ) );
-    proto->setEditor(new DelegateEditor(delegates));
+    proto->setEditor( new DelegateEditor( delegates ) );
     WorkflowEnv::getProtoRegistry( )->registerProto( BaseActorCategories::CATEGORY_SCHEMAS( ),
         proto );
     WorkflowEnv::getDomainRegistry( )->getById( LocalDomainFactory::ID )->registerEntry(
         new RSnpToolsWorkerFactory( ) );
+}
+
+QVariantMap RSnpToolsWorkerFactory::getAllBindingSiteStates( )
+{
+    static QVariantMap siteStates;
+    if ( siteStates.isEmpty( ) ) {
+        const QString extendedState = QObject::tr( "Extended (1.5)" );
+        const QString normalState = QObject::tr( "Normal (1.0)" );
+        const QString weakenedState = QObject::tr( "Weakened (0.5)" );
+        const QString undetectableState = QObject::tr( "Undetectable (0.0)" );
+        const QString unspecificState = QObject::tr( "Unspecific (-0.5)" );
+        const QString noBindingState = QObject::tr( "No binding (-1.0)" );
+        siteStates[extendedState] = 1.5;
+        siteStates[normalState] = 1.0;
+        siteStates[weakenedState] = 0.5;
+        siteStates[undetectableState] = 0.0;
+        siteStates[unspecificState] = -0.5;
+        siteStates[noBindingState] = -1.0;
+    }
+    return siteStates;
 }
 
 Worker *RSnpToolsWorkerFactory::createWorker( Actor *a )

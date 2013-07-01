@@ -25,7 +25,10 @@
 
 #include "snp_toolbox/SNPToolboxWorker.h"
 #include "SNPReportWriter.h"
+#include "prot_stability_1d/ProtStability1DWorker.h"
+#include "prot_stability_3d/ProtStability3DWorker.h"
 #include "rsnp_tools/RSnpToolsWorker.h"
+#include "snp2pdb_site/Snp2PdbSiteWorker.h"
 #include "tata_box_analysis/AnalyzeTataBoxesWorker.h"
 
 namespace U2 {
@@ -39,6 +42,9 @@ extern "C" Q_DECL_EXPORT Plugin* U2_PLUGIN_INIT_FUNC() {
 SNPEffectPlugin::SNPEffectPlugin() : Plugin(tr("SNP Effect Plugin"), tr("Evaluates effect of human genome variations and finds relations with diseases")){
     LocalWorkflow::SNPToolboxWorkerFactory::init();
     LocalWorkflow::SNPReportWriterFactory::init();
+    LocalWorkflow::ProtStability1DWorkerFactory::init();
+    LocalWorkflow::ProtStability3DWorkerFactory::init();
+    LocalWorkflow::Snp2PdbSiteWorkerFactory::init();
     LocalWorkflow::RSnpToolsWorkerFactory::init();
     LocalWorkflow::AnalyzeTataBoxesWorkerFactory::init( );
 }

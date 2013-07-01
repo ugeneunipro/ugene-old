@@ -19,8 +19,8 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_RSNP_TOOLS_WORKER_
-#define _U2_RSNP_TOOLS_WORKER_
+#ifndef _U2_PROT_STABILITY_1D_WORKER_
+#define _U2_PROT_STABILITY_1D_WORKER_
 
 #include <U2Lang/LocalDomain.h>
 #include <U2Lang/WorkflowUtils.h>
@@ -35,46 +35,45 @@ namespace LocalWorkflow {
 /* Worker */
 /************************************************************************/
 
-class RSnpToolsWorker :     public BaseRequestForSnpWorker
+class ProtStability1DWorker :   public BaseRequestForSnpWorker
 {
     Q_OBJECT
 public:
-                            RSnpToolsWorker( Actor *p );
+                                ProtStability1DWorker( Actor *p );
 
 protected:
-    QVariantMap             getInputDataForRequest( const U2Variant& variant, const U2VariantTrack& track, U2Dbi* dataBase );
-    QString                 getRequestingScriptName( ) const;
-    QString                 getDatabasePath( ) const;
-    QList<SnpResponseKey>   getResultKeys( ) const;
+    QVariantMap                 getInputDataForRequest( const U2Variant& variant,
+                                    const U2VariantTrack& track, U2Dbi* dataBase );
+    QString                     getRequestingScriptName( ) const;
+    QString                     getDatabasePath ( ) const;
+    QList<SnpResponseKey>       getResultKeys( ) const;
 };
 
 /************************************************************************/
 /* Factory */
 /************************************************************************/
 
-class RSnpToolsWorkerFactory :  public DomainFactory
+class ProtStability1DWorkerFactory :    public DomainFactory
 {
 public:
-                                RSnpToolsWorkerFactory( );
+                                        ProtStability1DWorkerFactory( );
 
-    static void                 init( );
-    Worker *                    createWorker( Actor *a );
+    static void                         init( );
+    virtual Worker *                    createWorker( Actor *a );
 
 private:
-    static QVariantMap          getAllBindingSiteStates( );
-
-    static const QString        ACTOR_ID;
+    static const QString                ACTOR_ID;
 };
 
 /************************************************************************/
 /* Prompter */
 /************************************************************************/
 
-class RSnpToolsPrompter :       public PrompterBase<RSnpToolsPrompter>
+class ProtStability1DPrompter : public PrompterBase<ProtStability1DPrompter>
 {
     Q_OBJECT
 public:
-                                RSnpToolsPrompter( Actor *p = NULL );
+                                ProtStability1DPrompter( Actor *p = NULL );
 
 protected:
     QString                     composeRichDoc( );
@@ -84,4 +83,4 @@ protected:
 
 } // namespace U2
 
-#endif // _U2_RSNP_TOOLS_WORKER_
+#endif // _U2_PROT_STABILITY_1D_WORKER_

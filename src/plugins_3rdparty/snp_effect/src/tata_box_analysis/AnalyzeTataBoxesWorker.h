@@ -29,38 +29,38 @@ namespace U2 {
 
 namespace LocalWorkflow {
 
-class AnalyzeTataBoxesWorker :      public BaseWorker
+class AnalyzeTataBoxesWorker : public BaseWorker
 {
     Q_OBJECT
 public:
-                                AnalyzeTataBoxesWorker( Actor *p );
+                               AnalyzeTataBoxesWorker( Actor *p );
 
-    void                        init( );
-    void                        cleanup( );
-    Task *                      tick( );
+    void                       init( );
+    void                       cleanup( );
+    Task *                     tick( );
 
 private slots:
-    void                        sl_taskFinished( );
+    void                       sl_taskFinished( );
 
 private:
-    IntegralBus *               inChannel;
-    IntegralBus *               outChannel;
+    IntegralBus *              inChannel;
+    IntegralBus *              outChannel;
 };
 
 /************************************************************************/
 /* Factory */
 /************************************************************************/
 
-class AnalyzeTataBoxesWorkerFactory :  public DomainFactory
+class AnalyzeTataBoxesWorkerFactory :   public DomainFactory
 {
 public:
-                                AnalyzeTataBoxesWorkerFactory( );
+                                        AnalyzeTataBoxesWorkerFactory( );
 
-    static void                 init( );
-    virtual Worker *            createWorker( Actor *a );
+    static void                         init( );
+    Worker *                            createWorker( Actor *a );
 
 private:
-    static const QString        ACTOR_ID;
+    static const QString                ACTOR_ID;
 };
 
 /************************************************************************/
@@ -71,10 +71,10 @@ class AnalyzeTataBoxesPrompter : public PrompterBase<AnalyzeTataBoxesPrompter>
 {
     Q_OBJECT
 public:
-                                AnalyzeTataBoxesPrompter( Actor *p = NULL );
+                                 AnalyzeTataBoxesPrompter( Actor *p = NULL );
 
 protected:
-    QString                     composeRichDoc( );
+    QString                      composeRichDoc( );
 };
 
 } // namespace LocalWorkflow
