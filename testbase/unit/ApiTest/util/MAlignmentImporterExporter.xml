@@ -1,8 +1,0 @@
-<!DOCTYPE UGENE_TEST_FRAMEWORK_TEST>
-
-<unittest>
-
-MAlignmentImporterExporterUnitTests
-+ importExportAlignment
-
-</unittest>

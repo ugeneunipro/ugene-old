@@ -1,6 +1,0 @@
-<!DOCTYPE UGENE_TEST_FRAMEWORK_SUITE>
-
-<suite name="API tests">
-    <env-var name ="COMMON_DATA_DIR" />
-    <test-dir path="ApiTest" test-format="XML" test-ext="*.xml"/>
-</suite>
