@@ -24,6 +24,7 @@
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/S3TablesUtils.h>
+#include <U2Core/VariationPropertiesUtils.h>
 
 #include <U2Formats/S3DatabaseUtils.h>
 

@@ -23,6 +23,11 @@
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/AppContext.h>
+#include <U2Core/S3TablesUtils.h>
+#include <U2Core/Gene.h>
+#include <U2Core/VariationPropertiesUtils.h>
+
+#include <U2Formats/S3DatabaseUtils.h>
 
 #include <U2Lang/ActorPrototypeRegistry.h>
 #include <U2Lang/BaseActorCategories.h>
@@ -56,22 +61,39 @@ ProtStability3DWorker::ProtStability3DWorker( Actor *p )
 QList< QVariantMap > ProtStability3DWorker::getInputDataForRequest( const U2Variant& variant,
     const U2VariantTrack& track, U2Dbi* dataBase )
 {
-    QList< QVariantMap > res;
-    QVariantMap inputData;
-    // TODO: obtain pdb id and chain from db
+    QList<QVariantMap> res;
+    U2ObjectDbi* objDbi = dataBase->getObjectDbi();
+    SAFE_POINT(objDbi!=NULL, "No object DBI", res);
+    U2FeatureDbi* featureDbi = dataBase->getFeatureDbi();
+    SAFE_POINT(featureDbi!=NULL, "No feature DBI", res);
 
-    //sample data
-    //inputData[SnpRequestKeys::PROT_STAB_3D_PDB_ID] = "1GZH";
-    //inputData[SnpRequestKeys::PROT_STAB_3D_CHAIN] = "A";
-    //inputData[SnpRequestKeys::PROT_STAB_3D_MUTATION_POS] = 100;
-    //inputData[SnpRequestKeys::PROT_STAB_3D_REPLACEMENT] = "V";
+    U2DataId seqId = track.sequence.isEmpty() ? S3DatabaseUtils::getSequenceId(track.sequenceName, objDbi) : track.sequence;
+    U2OpStatusImpl os;
+    QList<Gene> genes = S3TablesUtils::findGenes(seqId, VARIATION_REGION(variant), featureDbi, os);
+    CHECK_OP(os, res);
+    foreach(const Gene& gene, genes){
+        QVariantMap inputData;
 
-    inputData[SnpRequestKeys::PROT_STAB_3D_PDB_ID] = "";
-    inputData[SnpRequestKeys::PROT_STAB_3D_CHAIN] = "";
-    inputData[SnpRequestKeys::PROT_STAB_3D_MUTATION_POS] = "";
-    inputData[SnpRequestKeys::PROT_STAB_3D_REPLACEMENT] = variant.obsData;
+        int aaPos = -1;
+        QPair<QByteArray, QByteArray> aaSubs = VariationPropertiesUtils::getAASubstitution(dataBase, gene, seqId, variant, &aaPos, os);
+        if (aaPos == -1 || aaSubs.first.isEmpty() || aaSubs.second.isEmpty()){
+            continue;
+        }
 
-    res.append(inputData);
+        //sample data
+        //inputData[SnpRequestKeys::PROT_STAB_3D_PDB_ID] = "1GZH";
+        //inputData[SnpRequestKeys::PROT_STAB_3D_CHAIN] = "A";
+        //inputData[SnpRequestKeys::PROT_STAB_3D_MUTATION_POS] = 100;
+        //inputData[SnpRequestKeys::PROT_STAB_3D_REPLACEMENT] = "V";
+
+        //WARNING! UNIPROT ID is sent. It is converted to pdb with a script. The scripts defines the chain as well
+        inputData[SnpRequestKeys::SNP_FEATURE_ID_KEY] = gene.getFeatureId();
+        inputData[SnpRequestKeys::PROT_STAB_3D_PDB_ID] = gene.getAccession();
+        inputData[SnpRequestKeys::PROT_STAB_3D_CHAIN] = "A";
+        inputData[SnpRequestKeys::PROT_STAB_3D_MUTATION_POS] = aaPos + 1;
+        inputData[SnpRequestKeys::PROT_STAB_3D_REPLACEMENT] = aaSubs.second;
+        res.append(inputData);
+    }
 
     return res;
 }

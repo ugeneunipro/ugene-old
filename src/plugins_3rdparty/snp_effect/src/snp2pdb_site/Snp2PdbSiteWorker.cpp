@@ -23,6 +23,11 @@
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/AppContext.h>
+#include <U2Core/Gene.h>
+#include <U2Core/S3TablesUtils.h>
+#include <U2Core/VariationPropertiesUtils.h>
+
+#include <U2Formats/S3DatabaseUtils.h>
 
 #include <U2Lang/ActorPrototypeRegistry.h>
 #include <U2Lang/BaseActorCategories.h>
@@ -57,21 +62,38 @@ QList<QVariantMap> Snp2PdbSiteWorker::getInputDataForRequest( const U2Variant& v
     const U2VariantTrack& track, U2Dbi* dataBase )
 {
     QList<QVariantMap> res;
-    QVariantMap inputData;
-    // TODO: obtain pdb id and chain from db
+    U2ObjectDbi* objDbi = dataBase->getObjectDbi();
+    SAFE_POINT(objDbi!=NULL, "No object DBI", res);
+    U2FeatureDbi* featureDbi = dataBase->getFeatureDbi();
+    SAFE_POINT(featureDbi!=NULL, "No feature DBI", res);
 
-    //sample data
-    //inputData[SnpRequestKeys::SNP_2_PDB_SITE_PDB_ID] = "1GZH";
-    //inputData[SnpRequestKeys::SNP_2_PDB_SITE_CHAIN] = "A";
-    //inputData[SnpRequestKeys::SNP_2_PDB_SITE_MUTATIONS] = "A 110       R -> C";
+    U2DataId seqId = track.sequence.isEmpty() ? S3DatabaseUtils::getSequenceId(track.sequenceName, objDbi) : track.sequence;
+    U2OpStatusImpl os;
+    QList<Gene> genes = S3TablesUtils::findGenes(seqId, VARIATION_REGION(variant), featureDbi, os);
+    CHECK_OP(os, res);
+    foreach(const Gene& gene, genes){
+        QVariantMap inputData;
 
-    inputData[SnpRequestKeys::SNP_2_PDB_SITE_PDB_ID] = "";
-    inputData[SnpRequestKeys::SNP_2_PDB_SITE_CHAIN] = "";
-    // TODO: construct the parameter below using the following notation:
-    // <`pdb_chain` `snp_position`       `source_aminoacid` -> `replacing_aminoacid`>
-    inputData[SnpRequestKeys::SNP_2_PDB_SITE_MUTATIONS] = "";
+        int aaPos = -1;
+        QPair<QByteArray, QByteArray> aaSubs = VariationPropertiesUtils::getAASubstitution(dataBase, gene, seqId, variant, &aaPos, os);
+        if (aaPos == -1 || aaSubs.first.isEmpty() || aaSubs.second.isEmpty()){
+            continue;
+        }
+        //sample data
+        //inputData[SnpRequestKeys::SNP_2_PDB_SITE_PDB_ID] = "1GZH";
+        //inputData[SnpRequestKeys::SNP_2_PDB_SITE_CHAIN] = "A";
+        //inputData[SnpRequestKeys::SNP_2_PDB_SITE_MUTATIONS] = "A 110       R -> C";
 
-    res.append(inputData);
+        //WARNING! UNIPROT ID is sent. It is converted to pdb with a script. The scripts defines the chain as well
+        inputData[SnpRequestKeys::SNP_FEATURE_ID_KEY] = gene.getFeatureId();
+        inputData[SnpRequestKeys::SNP_2_PDB_SITE_PDB_ID] = gene.getAccession();
+        inputData[SnpRequestKeys::SNP_2_PDB_SITE_CHAIN] = "A";
+        // TODO: construct the parameter below using the following notation:
+        // <`pdb_chain` `snp_position`       `source_aminoacid` -> `replacing_aminoacid`>
+        inputData[SnpRequestKeys::SNP_2_PDB_SITE_MUTATIONS] = QString("A %1       %2 -> %3").arg(aaPos+1).arg(QString::fromLatin1(aaSubs.first)).arg(QString::fromLatin1(aaSubs.second));
+
+        res.append(inputData);
+    }
     return res;
 }
 
