@@ -25,6 +25,7 @@
 #include "api/GTMouseDriver.h"
 #include "api/GTTreeWidget.h"
 #include "GTUtilsMdi.h"
+#include "api/GTTabWidget.h"
 
 #include <U2View/MSAEditor.h>
 #include <QTreeWidget>
@@ -85,11 +86,7 @@ void GTUtilsWorkflowDesigner::addAlgorithm(U2OpStatus &os, QString algName){
     QTabWidget* tabs = qobject_cast<QTabWidget*>(GTWidget::findWidget(os,"tabs"));
     GT_CHECK(tabs!=NULL, "tabs widget not found");
 
-    QPoint p = tabs->rect().topLeft();//Opening algorithm tab
-    p.setX(p.x()+20);
-    p.setY(p.y()+20);
-    GTMouseDriver::moveTo(os,tabs->mapToGlobal(p));
-    GTMouseDriver::click(os);
+    GTTabWidget::setCurrentIndex(os,tabs,0);
 
     QTreeWidgetItem *alg = findTreeItem(os, algName,algoriths);
     GTGlobals::sleep(100);
@@ -124,11 +121,7 @@ void GTUtilsWorkflowDesigner::addSample(U2OpStatus &os, QString sampName){
     QTabWidget* tabs = qobject_cast<QTabWidget*>(GTWidget::findWidget(os,"tabs"));
     GT_CHECK(tabs!=NULL, "tabs widget not found");
 
-    QPoint p = tabs->rect().topLeft();//Opening samples tab
-    p.setX(p.x()+100);
-    p.setY(p.y()+20);
-    GTMouseDriver::moveTo(os,tabs->mapToGlobal(p));
-    GTMouseDriver::click(os);
+    GTTabWidget::setCurrentIndex(os,tabs,1);
 
     QTreeWidgetItem *samp = findTreeItem(os, sampName,samples);
     GTGlobals::sleep(100);
