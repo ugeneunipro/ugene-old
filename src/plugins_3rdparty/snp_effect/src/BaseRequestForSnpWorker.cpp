@@ -37,9 +37,13 @@
 #include "RequestForSnpTask.h"
 #include "BaseRequestForSnpWorker.h"
 
+const int SNP_NEAR_REGION_LENGTH = 40;
+
 namespace U2 {
 
 namespace LocalWorkflow {
+
+const QString BaseRequestForSnpWorker::DB_SEQUENCE_PATH( "db_path" );
 
 BaseRequestForSnpWorker::BaseRequestForSnpWorker( Actor *p )
     : BaseWorker( p ), inChannel( NULL ), outChannel( NULL )
@@ -99,30 +103,27 @@ Task* BaseRequestForSnpWorker::tick( )
             outChannel->put( Message::getEmptyMapMessage( ) );
             return NULL;
         }
-        QScopedPointer <Database> db(S3DatabaseUtils::openDatabase(getDatabasePath()));
-        if(db.isNull() || db->getDbi().dbi == NULL){
+        QScopedPointer <Database> db(S3DatabaseUtils::openDatabase(
+            getValue<QString>( DB_SEQUENCE_PATH ) ) );
+        if ( db.isNull( ) || NULL == db->getDbi( ).dbi ) {
             outChannel->put( Message::getEmptyMapMessage( ) );
             return NULL;
         }
-        U2Dbi* dbDbi = db->getDbi().dbi;
+        U2Dbi* dbDbi = db->getDbi( ).dbi;
         QList<Task*> tasks;
         QScopedPointer<U2DbiIterator<U2Variant> > snpIter( varDbi->getVariants(track.id, U2_REGION_MAX, os));
         CHECK_OP(os, NULL);
-        while(snpIter->hasNext()){
+        while ( snpIter->hasNext( ) ) {
             const U2Variant& var = snpIter->next();
-            const QList<QVariantMap>& resList = getInputDataForRequest( var, track, dbDbi );
-            foreach(const QVariantMap& res, resList){
-                Task* t = new RequestForSnpTask( getRequestingScriptPath( ), res, var);
-                connect( t, SIGNAL( si_stateChanged( ) ), SLOT( sl_taskFinished( ) ) );
-                tasks.append(t);
-            }
+            tasks.append( createVariationProcessingTasks( var, track, dbDbi ) );
         }
 
-        if (!tasks.isEmpty()){
-            SequentialMultiTask* trackTasks = new SequentialMultiTask(tr("Requesting data for SNPs"), tasks, TaskFlags_NR_FOSCOE);
+        if ( !tasks.isEmpty( ) ) {
+            SequentialMultiTask* trackTasks = new SequentialMultiTask(
+                tr( "Requesting data for SNPs" ), tasks, TaskFlags_NR_FOSCOE );
             connect( trackTasks, SIGNAL( si_stateChanged( ) ), SLOT( sl_trackTaskFinished( ) ) );
             return trackTasks;
-        }else{
+        } else {
             outChannel->put( Message::getEmptyMapMessage( ) );
             return NULL;
         }
@@ -162,6 +163,62 @@ void BaseRequestForSnpWorker::sl_trackTaskFinished( ){
         setDone( );
         outChannel->setEnded( );
     }
+}
+
+QList<QVariantMap> BaseRequestForSnpWorker::getInputDataForRequest( const U2Variant& variant,
+    const U2VariantTrack& track, U2Dbi* dataBase )
+{
+    FAIL( "Not implemented", QList<QVariantMap>( ) );
+}
+
+QString BaseRequestForSnpWorker::getRequestingScriptName( ) const
+{
+    FAIL( "Not implemented", QString( ) );
+}
+
+QList<SnpResponseKey> BaseRequestForSnpWorker::getResultKeys( ) const
+{
+    FAIL( "Not implemented", QList<SnpResponseKey>( ) );
+}
+
+QList<Task *> BaseRequestForSnpWorker::createVariationProcessingTasks( const U2Variant &var,
+    const U2VariantTrack &track, U2Dbi *dbi )
+{
+    QList<Task *> tasks;
+    const QList<QVariantMap>& resList = getInputDataForRequest( var, track, dbi );
+    foreach ( const QVariantMap& res, resList ) {
+        Task* t = new RequestForSnpTask( getRequestingScriptPath( ), res, var);
+        connect( t, SIGNAL( si_stateChanged( ) ), SLOT( sl_taskFinished( ) ) );
+        tasks.append(t);
+    }
+    return tasks;
+}
+
+QByteArray BaseRequestForSnpWorker::getSequenceForVariant( const U2Variant &variant,
+    const U2VariantTrack &track, U2Dbi *dataBase, qint64 &sequenceStart )
+{
+    QByteArray result;
+    SAFE_POINT( NULL != dataBase, "No database dbi", result );
+
+    U2SequenceDbi* seqDbi = dataBase->getSequenceDbi( );
+    SAFE_POINT( NULL != seqDbi, "No sequence dbi", result );
+
+    U2ObjectDbi* objDbi = dataBase->getObjectDbi( );
+    SAFE_POINT( NULL != objDbi, "No object dbi", result );
+
+    const U2DataId seqId = track.sequence.isEmpty( ) ?
+        S3DatabaseUtils::getSequenceId( track.sequenceName, objDbi ) : track.sequence;
+
+    qint64 start = qMax( ( qint64 )0, variant.startPos - SNP_NEAR_REGION_LENGTH );
+    qint64 end = variant.startPos + SNP_NEAR_REGION_LENGTH + 1; //include last char
+    U2Region regAround(start, end - start);
+
+    U2OpStatusImpl os;
+    result = seqDbi->getSequenceData( seqId, regAround, os );
+    CHECK_OP( os, result );
+    sequenceStart = start;
+
+    return result;
 }
 
 QString BaseRequestForSnpWorker::getRequestingScriptPath( ) const
@@ -210,10 +267,10 @@ void BaseRequestForSnpWorker::flushCache(){
     CHECK_OP(os, );
     QScopedPointer<DbiConnection> session(sessionHandle);
     U2Dbi* sessionDbi = session->dbi;
-    if(sessionDbi == NULL){
+    if ( NULL == sessionDbi ) {
         return;
-    }    
-    
+    }
+
     foreach(const U2DataId& var, resultCache.keys()){
         const QList<SnpResultCacheItem>& items = resultCache[var];
         foreach(const SnpResultCacheItem& item, items){

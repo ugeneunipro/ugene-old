@@ -54,29 +54,35 @@ public:
     Task *                          tick( );
     virtual void                    cleanup( );
 
+    static const QString            DB_SEQUENCE_PATH;
+
 private slots:
     void                            sl_taskFinished( );
     void                            sl_trackTaskFinished( );
 
 protected:
     virtual QList< QVariantMap>     getInputDataForRequest( const U2Variant& variant,
-                                        const U2VariantTrack& track, U2Dbi* dataBase ) = 0;
-    virtual QString                 getRequestingScriptName( ) const = 0;
-    virtual QList<SnpResponseKey>   getResultKeys( ) const = 0;
-    //each child worker must provide a path to the database
-    virtual QString                 getDatabasePath( ) const = 0;
- 
+                                        const U2VariantTrack& track, U2Dbi* dataBase );
+    virtual QString                 getRequestingScriptName( ) const;
+    virtual QList<SnpResponseKey>   getResultKeys( ) const;
+    virtual QList<Task *>           createVariationProcessingTasks( const U2Variant &var,
+                                        const U2VariantTrack &track, U2Dbi *dbi );
+
+    static QByteArray               getSequenceForVariant( const U2Variant &variant,
+                                        const U2VariantTrack &track, U2Dbi *dataBase,
+                                        qint64 &sequenceStart );
+
     IntegralBus *                   inChannel;
     IntegralBus *                   outChannel;
 
 private:
     QString                         getRequestingScriptPath( ) const;
-    void                            handleResult(const U2Variant &variant, const U2DataId &featureId,
-                                        const QVariantMap &result, U2Dbi *sessionDbi);
+    void                            handleResult( const U2Variant &variant, const U2DataId &featureId,
+                                        const QVariantMap &result, U2Dbi *sessionDbi );
 
-    bool                            checkFlushCache();
-    void                            flushCache();
-    void                            clearCache();
+    bool                            checkFlushCache( );
+    void                            flushCache( );
+    void                            clearCache( );
     QMap<U2DataId, QList< SnpResultCacheItem > >    resultCache;
 };
 

@@ -19,8 +19,8 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_PROT_STABILITY_3D_WORKER_
-#define _U2_PROT_STABILITY_3D_WORKER_
+#ifndef _U2_SNP_CHIP_TOOLS_WORKER_
+#define _U2_SNP_CHIP_TOOLS_WORKER_
 
 #include <U2Lang/LocalDomain.h>
 #include <U2Lang/WorkflowUtils.h>
@@ -35,44 +35,45 @@ namespace LocalWorkflow {
 /* Worker */
 /************************************************************************/
 
-class ProtStability3DWorker : public BaseRequestForSnpWorker
+class SnpChipToolsWorker :   public BaseRequestForSnpWorker
 {
     Q_OBJECT
 public:
-                              ProtStability3DWorker( Actor *p );
+                                SnpChipToolsWorker( Actor *p );
 
 protected:
-    QList< QVariantMap >      getInputDataForRequest( const U2Variant& variant,
-                                const U2VariantTrack& track, U2Dbi* dataBase );
-    QString                   getRequestingScriptName( ) const;
-    QList<SnpResponseKey>     getResultKeys( ) const;
+    QList<QVariantMap>          getInputDataForRequest( const U2Variant &variant,
+                                    const U2VariantTrack &track, U2Dbi *dataBase );
+
+    QString                     getRequestingScriptName( ) const;
+    QList<SnpResponseKey>       getResultKeys( ) const;
 };
 
 /************************************************************************/
 /* Factory */
 /************************************************************************/
 
-class ProtStability3DWorkerFactory : public DomainFactory
+class SnpChipToolsWorkerFactory :    public DomainFactory
 {
 public:
-                                     ProtStability3DWorkerFactory( );
+                                        SnpChipToolsWorkerFactory( );
 
-    static void                      init( );
-    Worker *                         createWorker( Actor *a );
+    static void                         init( );
+    virtual Worker *                    createWorker( Actor *a );
 
 private:
-    static const QString             ACTOR_ID;
+    static const QString                ACTOR_ID;
 };
 
 /************************************************************************/
 /* Prompter */
 /************************************************************************/
 
-class ProtStability3DPrompter : public PrompterBase<ProtStability3DPrompter>
+class SnpChipToolsPrompter : public PrompterBase<SnpChipToolsPrompter>
 {
     Q_OBJECT
 public:
-                                ProtStability3DPrompter( Actor *p = NULL );
+                                SnpChipToolsPrompter( Actor *p = NULL );
 
 protected:
     QString                     composeRichDoc( );
@@ -82,4 +83,4 @@ protected:
 
 } // namespace U2
 
-#endif // _U2_PROT_STABILITY_3D_WORKER_
+#endif // _U2_SNP_CHIP_TOOLS_WORKER_

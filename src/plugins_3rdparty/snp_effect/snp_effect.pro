@@ -5,6 +5,7 @@ HEADERS +=  src/prot_stability_1d/ProtStability1DWorker.h \
             src/prot_stability_3d/ProtStability3DWorker.h \
             src/snp2pdb_site/Snp2PdbSiteWorker.h \
             src/rsnp_tools/RSnpToolsWorker.h \
+            src/snp_chip_tools/SnpChIpToolsWorker.h \
             src/snp_toolbox/DamageEffectEvaluator.h \
             src/snp_toolbox/SNPToolboxTask.h \
             src/snp_toolbox/SNPToolboxWorker.h \
@@ -23,6 +24,7 @@ SOURCES +=  src/prot_stability_1d/ProtStability1DWorker.cpp \
             src/prot_stability_3d/ProtStability3DWorker.cpp \
             src/snp2pdb_site/Snp2PdbSiteWorker.cpp \
             src/rsnp_tools/RSnpToolsWorker.cpp \
+            src/snp_chip_tools/SnpChIpToolsWorker.cpp \
             src/snp_toolbox/DamageEffectEvaluator.cpp \
             src/snp_toolbox/SNPToolboxTask.cpp \
             src/snp_toolbox/SNPToolboxWorker.cpp \

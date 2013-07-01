@@ -46,8 +46,6 @@ namespace LocalWorkflow {
 
 const QString Snp2PdbSiteWorkerFactory::ACTOR_ID( "snp2pdb-site" );
 
-static const QString DB_PATH("db_path");
-
 /************************************************************************/
 /* Worker */
 /************************************************************************/
@@ -102,11 +100,6 @@ QString Snp2PdbSiteWorker::getRequestingScriptName( ) const
     return SnpRequestingScripts::SNP_2_PDB_SITE_SCRIPT;
 }
 
-QString Snp2PdbSiteWorker::getDatabasePath() const
-{
-    return getValue<QString>( DB_PATH );
-}
-
 QList<SnpResponseKey> Snp2PdbSiteWorker::getResultKeys( ) const
 {
     QList<SnpResponseKey> result;
@@ -145,13 +138,13 @@ void Snp2PdbSiteWorkerFactory::init( )
             false /*input*/, true /*multi*/ );
     }
 
-    Descriptor dbPath( DB_PATH, QObject::tr( "Database path" ),
+    Descriptor dbPath( BaseRequestForSnpWorker::DB_SEQUENCE_PATH, QObject::tr( "Database path" ),
         QObject::tr( "Path to SNP database." ) );
     a << new Attribute( dbPath, BaseTypes::STRING_TYPE( ), true, "" );
 
     QMap<QString, PropertyDelegate *> delegates;
     {
-        delegates[DB_PATH] = new URLDelegate( "", "", false );
+        delegates[BaseRequestForSnpWorker::DB_SEQUENCE_PATH] = new URLDelegate( "", "", false );
     }
 
     Descriptor protoDesc( Snp2PdbSiteWorkerFactory::ACTOR_ID,
@@ -189,13 +182,14 @@ QString Snp2PdbSitePrompter::composeRichDoc( )
         target->getPort(BasePorts::IN_VARIATION_TRACK_PORT_ID( ) ) )->getProducer(
         BaseSlots::VARIATION_TRACK_SLOT( ).getId( ) );
 
-    QString unsetStr = "<font color='red'>" + tr("unset") + "</font>";
+    QString unsetStr = "<font color='red'>" + tr( "unset" ) + "</font>";
     QString annUrl = annProducer ? annProducer->getLabel( ) : unsetStr;
-    QString path = getHyperlink(DB_PATH, getURL(DB_PATH));
+    QString path = getHyperlink( BaseRequestForSnpWorker::DB_SEQUENCE_PATH,
+        getURL(BaseRequestForSnpWorker::DB_SEQUENCE_PATH ) );
 
-    res.append(tr("Uses variations from <u>%1</u> as input.").arg(annUrl));
-    res.append(tr(" Takes annotations from <u>%1</u> database.").arg(path.isEmpty() ?
-        unsetStr : path));
+    res.append( tr( "Uses variations from <u>%1</u> as input." ).arg( annUrl ) );
+    res.append( tr( " Takes sequences from <u>%1</u> database." ).arg(path.isEmpty( ) ?
+        unsetStr : path ) );
 
     return res;
 }

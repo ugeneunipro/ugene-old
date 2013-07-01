@@ -26,7 +26,7 @@
 
 namespace U2 {
 
-AnalyzeTataBoxesTask::AnalyzeTataBoxesTask( const QString &_seq )
+AnalyzeTataBoxesTask::AnalyzeTataBoxesTask( const QByteArray &_seq )
     : Task( "Get SNP effect on tata boxes", TaskFlag_None ), seq( _seq )
 {
     SAFE_POINT( !seq.isEmpty( ), "Empty sequence is supplied", );
@@ -34,9 +34,8 @@ AnalyzeTataBoxesTask::AnalyzeTataBoxesTask( const QString &_seq )
 
 void AnalyzeTataBoxesTask::run( )
 {
-    QByteArray tmpSequence = seq.toLocal8Bit( );
     // TODO: check if the other function from "TBP_TATA.h" is useful too
-    double unknownNumber = TBP_NatTATA_95conf_interval( tmpSequence.data( ) );
+    double unknownNumber = TBP_NatTATA_95conf_interval( seq.data( ) );
     // TODO: construct result here
     // result;
 }

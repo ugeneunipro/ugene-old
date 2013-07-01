@@ -31,6 +31,8 @@
 #include <U2Lang/BaseTypes.h>
 #include <U2Lang/WorkflowEnv.h>
 
+#include <U2Designer/DelegateEditors.h>
+
 #include "AnalyzeTataBoxesTask.h"
 #include "AnalyzeTataBoxesWorker.h"
 
@@ -45,75 +47,18 @@ const QString AnalyzeTataBoxesWorkerFactory::ACTOR_ID( "tata-box-snp" );
 /************************************************************************/
 
 AnalyzeTataBoxesWorker::AnalyzeTataBoxesWorker( Actor *p )
-    : BaseWorker( p ), inChannel( NULL ), outChannel( NULL )
+    : BaseRequestForSnpWorker( p )
 {
 
 }
 
-void AnalyzeTataBoxesWorker::init( )
+QList<Task *> AnalyzeTataBoxesWorker::createVariationProcessingTask( const U2Variant &var,
+    const U2VariantTrack &track, U2Dbi *dbi )
 {
-    inChannel = ports.value( BasePorts::IN_VARIATION_TRACK_PORT_ID( ) );
-    outChannel = ports.value( BasePorts::OUT_VARIATION_TRACK_PORT_ID( ) );
-}
-
-void AnalyzeTataBoxesWorker::cleanup( )
-{
-
-}
-
-Task* AnalyzeTataBoxesWorker::tick( )
-{
-    U2OpStatus2Log os;
-    if ( inChannel->hasMessage( ) ) {
-        Message m = getMessageAndSetupScriptValues( inChannel );
-        QVariantMap data = m.getData( ).toMap( );
-
-        QVariant inVar;
-        if ( !data.contains( BaseSlots::VARIATION_TRACK_SLOT( ).getId( ) ) ) {
-            os.setError( "Variations slot is empty" );
-            return new FailTask( os.getError( ) );
-        }
-
-        QScopedPointer<VariantTrackObject> trackObj( NULL );
-        {
-            SharedDbiDataHandler objId = data.value( BaseSlots::VARIATION_TRACK_SLOT( ).getId( ) )
-                .value<SharedDbiDataHandler>( );
-            trackObj.reset( StorageUtils::getVariantTrackObject(context->getDataStorage( ), objId ) );
-            SAFE_POINT( NULL != trackObj.data( ), tr( "Can't get track object" ), NULL );
-
-        }
-        U2DbiRef dbiRef = trackObj->getEntityRef( ).dbiRef;
-        U2VariantTrack track = trackObj->getVariantTrack( os );
-        if ( os.hasError( ) ) {
-            return new FailTask( os.getError( ) );
-        }
-        // TODO: obtain `sequence` from DB
-        QString sequence( "cctcagtgctgagggccaagcaaatatttgtggttatggaTtaactcgaactccaggctgtcatggcggcaggacggcgaa" );
-        Task* t = new AnalyzeTataBoxesTask( sequence );
-        connect( t, SIGNAL( si_stateChanged( ) ), SLOT( sl_taskFinished( ) ) );
-        return t;
-    }
-    if ( inChannel->isEnded( ) ) {
-        setDone( );
-        outChannel->setEnded( );
-    }
-    return NULL;
-}
-
-
-void AnalyzeTataBoxesWorker::sl_taskFinished( )
-{
-    AnalyzeTataBoxesTask *t = dynamic_cast<AnalyzeTataBoxesTask *>( sender( ) );
-    SAFE_POINT( NULL != t, "Invalid task is encountered", );
-    if ( !t->isFinished( ) || t->hasError( ) ) {
-        return;
-    }
-    // TODO: put task report to DB
-    outChannel->put( Message::getEmptyMapMessage( ) );
-    if ( inChannel->isEnded( ) && !inChannel->hasMessage( ) ) {
-        setDone( );
-        outChannel->setEnded( );
-    }
+    QList<Task *> result;
+    qint64 sequenceStartPos = 0;
+    result << new AnalyzeTataBoxesTask( getSequenceForVariant( var, track, dbi, sequenceStartPos ) );
+    return result;
 }
 
 /************************************************************************/
@@ -146,12 +91,22 @@ void AnalyzeTataBoxesWorkerFactory::init( )
             false /*input*/, true /*multi*/ );
     }
 
+    Descriptor dbPath( BaseRequestForSnpWorker::DB_SEQUENCE_PATH, QObject::tr( "Database path" ),
+        QObject::tr( "Path to SNP database." ) );
+    a << new Attribute( dbPath, BaseTypes::STRING_TYPE( ), true, "" );
+
+    QMap<QString, PropertyDelegate *> delegates;
+    {
+        delegates[BaseRequestForSnpWorker::DB_SEQUENCE_PATH] = new URLDelegate( "", "", false );
+    }
+
     Descriptor protoDesc( AnalyzeTataBoxesWorkerFactory::ACTOR_ID,
         QObject::tr( "Determine SNP effect on TATA-boxes" ),
         QObject::tr( "Define the influence of SNP on TATA-boxes belonging to the sequence" ) );
 
-    ActorPrototype *proto = new IntegralBusActorPrototype( protoDesc, p );
+    ActorPrototype *proto = new IntegralBusActorPrototype( protoDesc, p, a );
     proto->setPrompter( new AnalyzeTataBoxesPrompter( ) );
+    proto->setEditor( new DelegateEditor( delegates ) );
     WorkflowEnv::getProtoRegistry( )->registerProto( BaseActorCategories::CATEGORY_SCHEMAS( ),
         proto );
     WorkflowEnv::getDomainRegistry( )->getById( LocalDomainFactory::ID )->registerEntry(
@@ -180,11 +135,14 @@ QString AnalyzeTataBoxesPrompter::composeRichDoc( )
         target->getPort(BasePorts::IN_VARIATION_TRACK_PORT_ID( ) ) )->getProducer(
         BaseSlots::VARIATION_TRACK_SLOT( ).getId( ) );
 
-    QString unsetStr = "<font color='red'>" + tr("unset") + "</font>";
+    QString unsetStr = "<font color='red'>" + tr( "unset" ) + "</font>";
     QString annUrl = annProducer ? annProducer->getLabel( ) : unsetStr;
+    QString path = getHyperlink( BaseRequestForSnpWorker::DB_SEQUENCE_PATH,
+        getURL( BaseRequestForSnpWorker::DB_SEQUENCE_PATH ) );
 
-    res.append(tr("Uses variations from <u>%1</u> as input.").arg(annUrl));
-
+    res.append( tr( "Uses variations from <u>%1</u> as input." ).arg( annUrl ) );
+    res.append( tr( " Takes sequences from <u>%1</u> database." ).arg( path.isEmpty( ) ?
+        unsetStr : path ) );
     return res;
 }
 

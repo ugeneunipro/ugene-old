@@ -52,6 +52,9 @@ const SnpRequestKey SNP_2_PDB_SITE_PDB_ID( "" );
 const SnpRequestKey SNP_2_PDB_SITE_CHAIN( "" );
 const SnpRequestKey SNP_2_PDB_SITE_MUTATIONS( "" );
 
+const SnpRequestKey SNP_CHIP_TOOLS_UG( "" );
+const SnpRequestKey SNP_CHIP_TOOLS_SNP_ID( "" );
+
 } // namespace SnpRequestKeys
 
 typedef QString SnpResponseKey;
@@ -64,6 +67,8 @@ const SnpResponseKey PROT_STABILITY_1D( "" );
 const SnpResponseKey PROT_STABILITY_3D( "" );
 // TODO: add response keys for SNP2PDBSite tool
 const SnpResponseKey SNP_2_PDB_SITE_( "" );
+// TODO: add response keys for SNPChIP tool
+const SnpResponseKey SNP_CHIP_TOOLS_( "" );
 
 }
 
@@ -73,6 +78,7 @@ const QString R_SNP_TOOLS_SCRIPT( "rsnp.py" );
 const QString SNP_PROT_STABILITY_1D_SCRIPT( "" );
 const QString SNP_PROT_STABILITY_3D_SCRIPT( "" );
 const QString SNP_2_PDB_SITE_SCRIPT( "" );
+const QString SNP_CHIP_TOOLS_SCRIPT( "" );
 
 } // namespace SnpRequestAddresses
 

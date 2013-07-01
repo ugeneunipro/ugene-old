@@ -23,11 +23,6 @@
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/AppContext.h>
-#include <U2Core/S3TablesUtils.h>
-#include <U2Core/Gene.h>
-#include <U2Core/VariationPropertiesUtils.h>
-
-#include <U2Formats/S3DatabaseUtils.h>
 
 #include <U2Lang/ActorPrototypeRegistry.h>
 #include <U2Lang/BaseActorCategories.h>
@@ -38,73 +33,52 @@
 
 #include <U2Designer/DelegateEditors.h>
 
-#include "ProtStability3DWorker.h"
+#include "SnpChIpToolsWorker.h"
 
 namespace U2 {
 
 namespace LocalWorkflow {
 
-const QString ProtStability3DWorkerFactory::ACTOR_ID( "prot-stability-3d" );
+const QString SnpChipToolsWorkerFactory::ACTOR_ID( "snp-chip-tools" );
 
 /************************************************************************/
 /* Worker */
 /************************************************************************/
 
-ProtStability3DWorker::ProtStability3DWorker( Actor *p )
+SnpChipToolsWorker::SnpChipToolsWorker( Actor *p )
     : BaseRequestForSnpWorker( p )
 {
 
 }
 
-QList< QVariantMap > ProtStability3DWorker::getInputDataForRequest( const U2Variant& variant,
+QList<QVariantMap> SnpChipToolsWorker::getInputDataForRequest( const U2Variant& variant,
     const U2VariantTrack& track, U2Dbi* dataBase )
 {
-    QList<QVariantMap> res;
-    U2ObjectDbi* objDbi = dataBase->getObjectDbi();
-    SAFE_POINT(objDbi!=NULL, "No object DBI", res);
-    U2FeatureDbi* featureDbi = dataBase->getFeatureDbi();
-    SAFE_POINT(featureDbi!=NULL, "No feature DBI", res);
+    QVariantMap inputData;
+    // TODO: obtain the SNP id from db as well as `UG` parameter
 
-    U2DataId seqId = track.sequence.isEmpty() ? S3DatabaseUtils::getSequenceId(track.sequenceName, objDbi) : track.sequence;
-    U2OpStatusImpl os;
-    QList<Gene> genes = S3TablesUtils::findGenes(seqId, VARIATION_REGION(variant), featureDbi, os);
-    CHECK_OP(os, res);
-    foreach(const Gene& gene, genes){
-        QVariantMap inputData;
+    //sample data
+    //inputData[SnpRequestKeys::SNP_CHIP_TOOLS_SNP_ID] = "11466315";
+    //inputData[SnpRequestKeys::SNP_CHIP_TOOLS_UG] = true;
 
-        int aaPos = -1;
-        QPair<QByteArray, QByteArray> aaSubs = VariationPropertiesUtils::getAASubstitution(dataBase, gene, seqId, variant, &aaPos, os);
-        if (aaPos == -1 || aaSubs.first.isEmpty() || aaSubs.second.isEmpty()){
-            continue;
-        }
+    inputData[SnpRequestKeys::SNP_CHIP_TOOLS_SNP_ID] = "";
+    inputData[SnpRequestKeys::SNP_CHIP_TOOLS_UG] = true;
 
-        //sample data
-        //inputData[SnpRequestKeys::PROT_STAB_3D_PDB_ID] = "1GZH";
-        //inputData[SnpRequestKeys::PROT_STAB_3D_CHAIN] = "A";
-        //inputData[SnpRequestKeys::PROT_STAB_3D_MUTATION_POS] = 100;
-        //inputData[SnpRequestKeys::PROT_STAB_3D_REPLACEMENT] = "V";
-
-        //WARNING! UNIPROT ID is sent. It is converted to pdb with a script. The scripts defines the chain as well
-        inputData[SnpRequestKeys::SNP_FEATURE_ID_KEY] = gene.getFeatureId();
-        inputData[SnpRequestKeys::PROT_STAB_3D_PDB_ID] = gene.getAccession();
-        inputData[SnpRequestKeys::PROT_STAB_3D_CHAIN] = "A";
-        inputData[SnpRequestKeys::PROT_STAB_3D_MUTATION_POS] = aaPos + 1;
-        inputData[SnpRequestKeys::PROT_STAB_3D_REPLACEMENT] = aaSubs.second;
-        res.append(inputData);
-    }
-
-    return res;
+    QList<QVariantMap> result;
+    result << inputData;
+    return result;
 }
 
-QString ProtStability3DWorker::getRequestingScriptName( ) const
+QString SnpChipToolsWorker::getRequestingScriptName( ) const
 {
-    return SnpRequestingScripts::SNP_PROT_STABILITY_3D_SCRIPT;
+    return SnpRequestingScripts::SNP_CHIP_TOOLS_SCRIPT;
 }
 
-QList<SnpResponseKey> ProtStability3DWorker::getResultKeys( ) const
+QList<SnpResponseKey> SnpChipToolsWorker::getResultKeys( ) const
 {
     QList<SnpResponseKey> result;
-    result << SnpResponseKeys::PROT_STABILITY_3D;
+    // TODO: set appropriate keys here
+    result << SnpResponseKeys::SNP_CHIP_TOOLS_;
     return result;
 }
 
@@ -112,13 +86,13 @@ QList<SnpResponseKey> ProtStability3DWorker::getResultKeys( ) const
 /* Factory */
 /************************************************************************/
 
-ProtStability3DWorkerFactory::ProtStability3DWorkerFactory( )
+SnpChipToolsWorkerFactory::SnpChipToolsWorkerFactory( )
     : DomainFactory( ACTOR_ID )
 {
 
 }
 
-void ProtStability3DWorkerFactory::init( )
+void SnpChipToolsWorkerFactory::init( )
 {
     QList<PortDescriptor*> p;
     QList<Attribute*> a;
@@ -146,44 +120,43 @@ void ProtStability3DWorkerFactory::init( )
     {
         delegates[BaseRequestForSnpWorker::DB_SEQUENCE_PATH] = new URLDelegate( "", "", false );
     }
-
-    Descriptor protoDesc( ProtStability3DWorkerFactory::ACTOR_ID,
-        QObject::tr( "SNP affect on protein tertiary structure thermodynamic stability" ),
-        QObject::tr( "Identification of the SNP influence on"
-            "protein tertiary structure thermodynamic stability" ) );
+    // TODO: revise the description
+    Descriptor protoDesc( SnpChipToolsWorkerFactory::ACTOR_ID,
+        QObject::tr( "SNP ChIP Tools" ),
+        QObject::tr( "Identification of some SNP influence on very important thangs" ) );
 
     ActorPrototype *proto = new IntegralBusActorPrototype( protoDesc, p, a );
-    proto->setPrompter( new ProtStability3DPrompter( ) );
+    proto->setPrompter( new SnpChipToolsPrompter( ) );
     proto->setEditor( new DelegateEditor( delegates ) );
     WorkflowEnv::getProtoRegistry( )->registerProto( BaseActorCategories::CATEGORY_SCHEMAS( ),
         proto );
     WorkflowEnv::getDomainRegistry( )->getById( LocalDomainFactory::ID )->registerEntry(
-        new ProtStability3DWorkerFactory( ) );
+        new SnpChipToolsWorkerFactory( ) );
 }
 
-Worker *ProtStability3DWorkerFactory::createWorker( Actor *a )
+Worker *SnpChipToolsWorkerFactory::createWorker( Actor *a )
 {
-    return new ProtStability3DWorker( a );
+    return new SnpChipToolsWorker( a );
 }
 
 /************************************************************************/
 /* Prompter */
 /************************************************************************/
 
-ProtStability3DPrompter::ProtStability3DPrompter( Actor *p )
-    : PrompterBase<ProtStability3DPrompter>( p )
+SnpChipToolsPrompter::SnpChipToolsPrompter( Actor *p )
+    : PrompterBase<SnpChipToolsPrompter>( p )
 {
 
 }
 
-QString ProtStability3DPrompter::composeRichDoc( )
+QString SnpChipToolsPrompter::composeRichDoc( )
 {
     QString res = ""; 
     Actor* annProducer = qobject_cast<IntegralBusPort*>(
         target->getPort(BasePorts::IN_VARIATION_TRACK_PORT_ID( ) ) )->getProducer(
         BaseSlots::VARIATION_TRACK_SLOT( ).getId( ) );
 
-    QString unsetStr = "<font color='red'>" + tr("unset") + "</font>";
+    QString unsetStr = "<font color='red'>" + tr( "unset" ) + "</font>";
     QString annUrl = annProducer ? annProducer->getLabel( ) : unsetStr;
     QString path = getHyperlink( BaseRequestForSnpWorker::DB_SEQUENCE_PATH,
         getURL( BaseRequestForSnpWorker::DB_SEQUENCE_PATH ) );
@@ -191,6 +164,7 @@ QString ProtStability3DPrompter::composeRichDoc( )
     res.append( tr( "Uses variations from <u>%1</u> as input." ).arg( annUrl ) );
     res.append( tr( " Takes sequences from <u>%1</u> database." ).arg( path.isEmpty( ) ?
         unsetStr : path ) );
+
     return res;
 }
 

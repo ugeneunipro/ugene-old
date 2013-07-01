@@ -46,7 +46,6 @@ namespace LocalWorkflow {
 
 const QString RSnpToolsWorkerFactory::ACTOR_ID( "rSnp-tools" );
 
-static const QString DB_PATH("db_path");
 static const QString FIRST_SITE_STATE( "first_site_state" );
 static const QString SECOND_SITE_STATE( "second_site_state" );
 static const QString SNP_SIGNIFICANCE( "snp_significance" );
@@ -83,6 +82,12 @@ QList<QVariantMap> RSnpToolsWorker::getInputDataForRequest( const U2Variant& var
 
     inputData[SnpRequestKeys::R_SNP_FIRST_SEQUENCE] = seq1;
     inputData[SnpRequestKeys::R_SNP_SECOND_SEQUENCE] = seq2;
+    inputData[SnpRequestKeys::R_SNP_FIRST_SITE_STATE]
+        = actor->getParameter( FIRST_SITE_STATE )->getAttributeValue<double>( context );
+    inputData[SnpRequestKeys::R_SNP_SECOND_SITE_STATE]
+        = actor->getParameter( SECOND_SITE_STATE )->getAttributeValue<double>( context );
+    inputData[SnpRequestKeys::R_SNP_SIGNIFICANCE]
+        = actor->getParameter( SNP_SIGNIFICANCE )->getAttributeValue<double>( context );
 
     res.append(inputData);
 
@@ -92,11 +97,6 @@ QList<QVariantMap> RSnpToolsWorker::getInputDataForRequest( const U2Variant& var
 QString RSnpToolsWorker::getRequestingScriptName( ) const
 {
     return SnpRequestingScripts::R_SNP_TOOLS_SCRIPT;
-}
-
-QString RSnpToolsWorker::getDatabasePath( ) const
-{
-    return getValue<QString>( DB_PATH );
 }
 
 QList<SnpResponseKey> RSnpToolsWorker::getResultKeys( ) const
@@ -165,8 +165,8 @@ void RSnpToolsWorkerFactory::init( )
 
     QList<Attribute*> a;
     {
-        Descriptor dbPath( DB_PATH, QObject::tr( "Database path" ),
-            QObject::tr( "Path to SNP database." ) );
+        Descriptor dbPath( BaseRequestForSnpWorker::DB_SEQUENCE_PATH,
+            QObject::tr( "Database path" ), QObject::tr( "Path to SNP database." ) );
         Descriptor firstSiteState( FIRST_SITE_STATE, QObject::tr( "First site state" ),
             QObject::tr( "First sequence TFBS state." ) );
         Descriptor secondSiteState( SECOND_SITE_STATE, QObject::tr( "Second site state" ),
@@ -182,7 +182,7 @@ void RSnpToolsWorkerFactory::init( )
 
     QMap<QString, PropertyDelegate*> delegates;
     {
-        delegates[DB_PATH] = new URLDelegate( "", "", false );
+        delegates[BaseRequestForSnpWorker::DB_SEQUENCE_PATH] = new URLDelegate( "", "", false );
         delegates[FIRST_SITE_STATE] = new ComboBoxDelegate( getAllBindingSiteStates( ) );
         delegates[SECOND_SITE_STATE] = new ComboBoxDelegate( getAllBindingSiteStates( ) );
         QVariantMap snpSignificanceValues;
@@ -249,15 +249,14 @@ QString RSnpToolsPrompter::composeRichDoc( )
         target->getPort(BasePorts::IN_VARIATION_TRACK_PORT_ID( ) ) )->getProducer(
         BaseSlots::VARIATION_TRACK_SLOT( ).getId( ) );
 
-    QString unsetStr = "<font color='red'>" + tr("unset") + "</font>";
+    QString unsetStr = "<font color='red'>" + tr( "unset" ) + "</font>";
     QString annUrl = annProducer ? annProducer->getLabel( ) : unsetStr;
-    QString path = getHyperlink(DB_PATH, getURL(DB_PATH));
+    QString path = getHyperlink( BaseRequestForSnpWorker::DB_SEQUENCE_PATH,
+        getURL( BaseRequestForSnpWorker::DB_SEQUENCE_PATH ) );
 
-    res.append(tr("Uses variations from <u>%1</u> as input.").arg(annUrl));
-    res.append(tr(" Takes annotations from <u>%1</u> database.").arg(path.isEmpty() ?
-        unsetStr : path));
-
-
+    res.append( tr( "Uses variations from <u>%1</u> as input." ).arg( annUrl ) );
+    res.append( tr( " Takes sequences from <u>%1</u> database." ).arg( path.isEmpty( ) ?
+        unsetStr : path ) );
     return res;
 }
 

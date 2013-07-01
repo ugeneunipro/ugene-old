@@ -25,26 +25,21 @@
 #include <U2Lang/LocalDomain.h>
 #include <U2Lang/WorkflowUtils.h>
 
+#include "../BaseRequestForSnpWorker.h"
+
 namespace U2 {
 
 namespace LocalWorkflow {
 
-class AnalyzeTataBoxesWorker : public BaseWorker
+class AnalyzeTataBoxesWorker : public BaseRequestForSnpWorker
 {
     Q_OBJECT
 public:
                                AnalyzeTataBoxesWorker( Actor *p );
 
-    void                       init( );
-    void                       cleanup( );
-    Task *                     tick( );
-
-private slots:
-    void                       sl_taskFinished( );
-
-private:
-    IntegralBus *              inChannel;
-    IntegralBus *              outChannel;
+protected:
+    QList<Task *>              createVariationProcessingTask( const U2Variant &var,
+                                   const U2VariantTrack &track, U2Dbi *dbi );
 };
 
 /************************************************************************/

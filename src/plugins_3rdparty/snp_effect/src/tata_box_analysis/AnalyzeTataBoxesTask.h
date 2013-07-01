@@ -31,14 +31,13 @@ namespace U2 {
 class AnalyzeTataBoxesTask :   public Task
 {
 public:
-                                AnalyzeTataBoxesTask( const QString &seq );
+                                AnalyzeTataBoxesTask( const QByteArray &seq );
 
     void                        run( );
     QVariantMap                 getResult( );
 
 private:
-    // TODO: revise sequence type
-    QString                     seq;
+    QByteArray                  seq;
     QVariantMap                 result;
 };
 

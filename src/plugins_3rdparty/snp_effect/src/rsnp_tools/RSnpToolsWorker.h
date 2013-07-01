@@ -44,7 +44,6 @@ public:
 protected:
     QList< QVariantMap>     getInputDataForRequest( const U2Variant& variant, const U2VariantTrack& track, U2Dbi* dataBase );
     QString                 getRequestingScriptName( ) const;
-    QString                 getDatabasePath( ) const;
     QList<SnpResponseKey>   getResultKeys( ) const;
 
 private:

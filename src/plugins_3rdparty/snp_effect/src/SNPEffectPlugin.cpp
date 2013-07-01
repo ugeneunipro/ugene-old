@@ -28,6 +28,7 @@
 #include "prot_stability_1d/ProtStability1DWorker.h"
 #include "prot_stability_3d/ProtStability3DWorker.h"
 #include "rsnp_tools/RSnpToolsWorker.h"
+#include "snp_chip_tools/SnpChIpToolsWorker.h"
 #include "snp2pdb_site/Snp2PdbSiteWorker.h"
 #include "tata_box_analysis/AnalyzeTataBoxesWorker.h"
 
@@ -45,6 +46,7 @@ SNPEffectPlugin::SNPEffectPlugin() : Plugin(tr("SNP Effect Plugin"), tr("Evaluat
     LocalWorkflow::ProtStability1DWorkerFactory::init();
     LocalWorkflow::ProtStability3DWorkerFactory::init();
     LocalWorkflow::Snp2PdbSiteWorkerFactory::init();
+    LocalWorkflow::SnpChipToolsWorkerFactory::init();
     LocalWorkflow::RSnpToolsWorkerFactory::init();
     LocalWorkflow::AnalyzeTataBoxesWorkerFactory::init( );
 }
