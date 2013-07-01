@@ -2,6 +2,7 @@
 #define _S3_VARIATION_INFO_H_
 
 #include "DamageEffectEvaluator.h"
+#include "SnpRequestKeys.h"
 
 #include <U2Core/Gene.h>
 #include <U2Core/DamageEffect.h>
@@ -41,17 +42,23 @@ public:
         conserved,
         altall,
         hapmap,
-        gerpScore
+        gerpScore,
+
+        //regulatory
+        promoterPos,
+        rSNPTranscrFactors
+
     };
 
 
-    VariationInfo(const U2Variant& var, const U2DataId& seqId, U2SequenceDbi* _seqDbi, const QString& sequenceName = QString());
-    VariationInfo(const U2Variant& var, const U2DataId& seqId, const QList<Gene>& genes, U2SequenceDbi* _seqDbi, const QString& sequenceName = QString());
+    VariationInfo(const U2Variant& var, const U2DataId& seqId, U2SequenceDbi* _seqDbi, U2AttributeDbi* _attrDbi, const QString& sequenceName = QString());
+    VariationInfo(const U2Variant& var, const U2DataId& seqId, const QList<Gene>& genes, U2SequenceDbi* _seqDbi, U2AttributeDbi* _attrDbi, const QString& sequenceName = QString());
 
     QString getInGeneTableHeader();
     QString getOutGeneTableHeader();
 
     QStringList getInGeneTableRaws();
+    QStringList getOutGeneTableRaws();
 
     void initInfo(U2VariantDbi* varDbi, QSharedPointer<DamageEffectEvaluator> evaluator, bool withEffect = false);
     QString getVariationInfoHeader();
@@ -68,6 +75,7 @@ public:
 
 private:
     U2SequenceDbi* seqDbi;
+    U2AttributeDbi* attrDbi;
     QSharedPointer<DamageEffectEvaluator> evaluator;
     U2Variant           variant;
     U2VariantTrack      variantTrack;
@@ -83,10 +91,13 @@ private:
     DNATranslation* aaTransl;
 
     QList<ReportColumns> columnsOrderInGene;
+    QList<ReportColumns> columnsOrderOutGene;
 
 private:
     void initOrderColumns();
-    void addValueToRaw(const QString& val, ReportColumns key, QMap<ReportColumns, QString>& rawData);
+    void addValueToRaw(const QString& val, ReportColumns key, QMap<ReportColumns, QString>& rawData, QList<ReportColumns>& container);
+
+    void getDefaultAttributeValue(const U2DataId& varId, SnpRequestKey key, ReportColumns colRey, QMap<ReportColumns, QString>& rawData);
 
 
 };

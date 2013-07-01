@@ -23,6 +23,9 @@
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/AppContext.h>
+#include <U2Core/S3TablesUtils.h>
+
+#include <U2Formats/S3DatabaseUtils.h>
 
 #include <U2Lang/ActorPrototypeRegistry.h>
 #include <U2Lang/BaseActorCategories.h>
@@ -53,30 +56,53 @@ ProtStability1DWorker::ProtStability1DWorker( Actor *p )
 
 }
 
-QVariantMap ProtStability1DWorker::getInputDataForRequest( const U2Variant& variant,
+QList<QVariantMap> ProtStability1DWorker::getInputDataForRequest( const U2Variant& variant,
     const U2VariantTrack& track, U2Dbi* dataBase )
 {
-    QVariantMap inputData;
-    qint64 sequenceStart = 0;
-    QByteArray sequence = getSequenceForVariant( variant, track, dataBase, sequenceStart );
-    CHECK( !sequence.isEmpty( ), inputData );
-    const qint64 mutationPos = variant.startPos - sequenceStart;
+    QList<QVariantMap> res;
+    U2ObjectDbi* objDbi = dataBase->getObjectDbi();
+    SAFE_POINT(objDbi!=NULL, "No object DBI", res);
+    U2FeatureDbi* featureDbi = dataBase->getFeatureDbi();
+    SAFE_POINT(featureDbi!=NULL, "No feature DBI", res);
+    U2SequenceDbi* sequenceDbi = dataBase->getSequenceDbi();
+    SAFE_POINT(sequenceDbi!=NULL, "No sequence DBI", res);
 
-    //sample data
-    //inputData[SnpRequestKeys::PROT_STAB_1D_SEQUENCE] = ">sample\n"
-    //"MPIMGSSVYITVELAIAVLAILGNVLVCWAVWLNSNLQNVTNYFVVSLAAADIAVGVLAIPFAITISTGFCAACHGCLFIACFVLVLTQSS"
-    //"IFSLLAIAIDRYIAIRIPLRYNGLVTGTRAKGIIAICWVLSFAIGLTPMLGWNNCGQPKEGKNHSQGCGEGQVACLFEDVVPMNYMVYFNF"
-    //"FACVLVPLLLMLGVYLRIFLAARRQLKQMESQPLPGERARSTLQKEVHAAKSLAIIVGLFALCWLPLHIINCFTFFCPDCSHAPLWLMYLA"
-    //"IVLSHTNSVVNPFIYAYRIREFRQTFRKIIRSHVLRQQEPFKAAGTSARVLAAHGSDGEQVSLRLNGHPPGVWANGSAPHPERRPNGYALG"
-    //"LVSGGSAQESQGNTGLPDVELLSHELKGVCPEPPGLDDPLAQDGAGVS";
-    //inputData[SnpRequestKeys::PROT_STAB_1D_MUTATION_POS] = 100;
-    //inputData[SnpRequestKeys::PROT_STAB_1D_REPLACEMENT] = "Q";
+    U2DataId seqId = track.sequence.isEmpty() ? S3DatabaseUtils::getSequenceId(track.sequenceName, objDbi) : track.sequence;
+    U2OpStatusImpl os;
+    QList<Gene> genes = S3TablesUtils::findGenes(seqId, VARIATION_REGION(variant), featureDbi, os, QList<int>() << S3TablesUtils::ExcludeNames);
+    CHECK_OP(os, res);
+    foreach(const Gene& gene, genes){
+        QVariantMap inputData;
 
-    inputData[SnpRequestKeys::PROT_STAB_1D_SEQUENCE] = sequence;
-    inputData[SnpRequestKeys::PROT_STAB_1D_MUTATION_POS] = mutationPos;
-    inputData[SnpRequestKeys::PROT_STAB_1D_REPLACEMENT] = variant.obsData;
+        int aaPos = -1;
+        QPair<QByteArray, QByteArray> aaSubs = VariationPropertiesUtils::getAASubstitution(dataBase, gene, seqId, variant, &aaPos, os);
+        if (aaPos == -1 || aaSubs.first.isEmpty() || aaSubs.second.isEmpty()){
+            continue;
+        }
 
-    return inputData;
+        QByteArray sequence = VariationPropertiesUtils::getCodingSequence(gene, seqId, sequenceDbi, os);
+        sequence = VariationPropertiesUtils::getAASequence(sequence);
+        sequence.prepend(">seq\n");
+
+        //sample data
+        //inputData[SnpRequestKeys::PROT_STAB_1D_SEQUENCE] = ">sample\n"
+        //"MPIMGSSVYITVELAIAVLAILGNVLVCWAVWLNSNLQNVTNYFVVSLAAADIAVGVLAIPFAITISTGFCAACHGCLFIACFVLVLTQSS"
+        //"IFSLLAIAIDRYIAIRIPLRYNGLVTGTRAKGIIAICWVLSFAIGLTPMLGWNNCGQPKEGKNHSQGCGEGQVACLFEDVVPMNYMVYFNF"
+        //"FACVLVPLLLMLGVYLRIFLAARRQLKQMESQPLPGERARSTLQKEVHAAKSLAIIVGLFALCWLPLHIINCFTFFCPDCSHAPLWLMYLA"
+        //"IVLSHTNSVVNPFIYAYRIREFRQTFRKIIRSHVLRQQEPFKAAGTSARVLAAHGSDGEQVSLRLNGHPPGVWANGSAPHPERRPNGYALG"
+        //"LVSGGSAQESQGNTGLPDVELLSHELKGVCPEPPGLDDPLAQDGAGVS";
+        //inputData[SnpRequestKeys::PROT_STAB_1D_MUTATION_POS] = 100;
+        //inputData[SnpRequestKeys::PROT_STAB_1D_REPLACEMENT] = "Q";
+
+        inputData[SnpRequestKeys::SNP_FEATURE_ID_KEY] = gene.getFeatureId();
+        inputData[SnpRequestKeys::PROT_STAB_1D_SEQUENCE] = sequence;
+        inputData[SnpRequestKeys::PROT_STAB_1D_MUTATION_POS] = aaPos + 1;
+        inputData[SnpRequestKeys::PROT_STAB_1D_REPLACEMENT] = aaSubs.second;
+
+        res.append(inputData);
+    }
+    
+    return res;
 }
 
 QString ProtStability1DWorker::getRequestingScriptName( ) const

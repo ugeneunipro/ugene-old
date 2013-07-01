@@ -203,6 +203,44 @@ U2DbiIterator<DamageEffect>* SQLiteS3TablesDbi::getDamageEffectsForVariant( cons
 
     return new SqlRSIterator<DamageEffect>(q, new SimpleDamageEffectLoader(), NULL, DamageEffect(), os); 
 }
+
+class SimpleRegulatoryEffectLoader : public SqlRSLoader<RegulatoryEffect> {
+    RegulatoryEffect load(SQLiteQuery* q) {
+        RegulatoryEffect re;
+        re.variant = q->getDataId(0, U2Type::VariantType);
+        re.affectedGeneId = q->getDataId(1, U2Type::Feature);
+        re.fromGeneStartPos = q->getInt64(2);
+
+        return re;
+    }
+};
+
+
+void SQLiteS3TablesDbi::removeRegulatoryEffect(const RegulatoryEffect& effect, U2OpStatus& os){
+    SQLiteQuery q("DELETE FROM RegulatoryEffect WHERE variant = ?1 AND geneId = ?2", db, os);
+    q.bindDataId(1, effect.variant);
+    q.bindDataId(2, effect.affectedGeneId);
+    q.execute();
+    SAFE_POINT_OP(os,);
+}
+
+void SQLiteS3TablesDbi::removeAllRegulatoryEffectForVariant(const U2Variant& variant, U2OpStatus& os){
+    SQLiteQuery q("DELETE FROM RegulatoryEffect WHERE variant = ?1", db, os);
+    q.bindDataId(1, variant.id);
+    q.execute();
+    SAFE_POINT_OP(os,);
+}
+
+    U2DbiIterator<RegulatoryEffect>* SQLiteS3TablesDbi::getRegulatoryEffectsForVariant(const U2DataId& variant, U2OpStatus& os){
+    SQLiteTransaction t(db, os);
+
+    QSharedPointer<SQLiteQuery> q = t.getPreparedQuery("SELECT variant, geneId, promoterPos "
+        " FROM RegulatoryEffect WHERE variant = ?1", db, os);
+    q->bindDataId(1, variant);
+
+    return new SqlRSIterator<RegulatoryEffect>(q, new SimpleRegulatoryEffectLoader(), NULL, RegulatoryEffect(), os); 
+}
+
 /*
 void SQLiteS3TablesDbi::createFilterTable( FilterTable& table, const QString& filterName, U2OpStatus& os )
 {

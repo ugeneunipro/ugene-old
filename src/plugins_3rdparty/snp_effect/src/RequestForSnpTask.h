@@ -50,11 +50,13 @@ public:
 
     virtual QVariantMap         getResult( );
     const U2Variant&            getVariant( ){return variant;};
+    const U2DataId&             getFeatureId( ){return featureId;};
 
 private:
 
-    const QVariantMap           inputData;
-    const QString               scriptPath;
+    U2DataId                    featureId;
+    QVariantMap                 inputData;
+    QString                     scriptPath;
     ExternalToolRunTask *       requestTask;
     SnpResponseLogParser        responseLogParser;
     U2Variant                   variant;

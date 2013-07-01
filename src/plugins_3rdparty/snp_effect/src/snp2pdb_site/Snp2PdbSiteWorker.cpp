@@ -53,9 +53,10 @@ Snp2PdbSiteWorker::Snp2PdbSiteWorker( Actor *p )
 
 }
 
-QVariantMap Snp2PdbSiteWorker::getInputDataForRequest( const U2Variant& variant,
+QList<QVariantMap> Snp2PdbSiteWorker::getInputDataForRequest( const U2Variant& variant,
     const U2VariantTrack& track, U2Dbi* dataBase )
 {
+    QList<QVariantMap> res;
     QVariantMap inputData;
     // TODO: obtain pdb id and chain from db
 
@@ -70,7 +71,8 @@ QVariantMap Snp2PdbSiteWorker::getInputDataForRequest( const U2Variant& variant,
     // <`pdb_chain` `snp_position`       `source_aminoacid` -> `replacing_aminoacid`>
     inputData[SnpRequestKeys::SNP_2_PDB_SITE_MUTATIONS] = "";
 
-    return inputData;
+    res.append(inputData);
+    return res;
 }
 
 QString Snp2PdbSiteWorker::getRequestingScriptName( ) const

@@ -99,6 +99,27 @@ public:
     
 };
 
+
+#define PROMOTER_LEN 1000
+/*
+Effect of a variation on regulatory function of a gene.
+*/
+
+class RegulatoryEffect : U2Entity{
+public:
+
+    RegulatoryEffect()
+        :fromGeneStartPos(DAMAGE_EFFECT_UNDEFINED_SCORE)
+      {};
+
+    U2DataId    variant;    /* related variant */
+
+    U2DataId    affectedGeneId;  /* related affected gene name ()*/
+
+    qint64      fromGeneStartPos; /* position from the start of transcription. Position 20 means -20 b.p. from the start */
+
+};
+
 } //namespace
 
 #endif

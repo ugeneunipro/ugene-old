@@ -68,6 +68,15 @@ public:
     /* returns damage effect instances for given variant*/
     virtual U2DbiIterator<DamageEffect>* getDamageEffectsForVariant(const U2DataId& variant, U2OpStatus& os) = 0;
 
+    /* Remove the regulatory effect instance from the database */
+    virtual void removeRegulatoryEffect(const RegulatoryEffect& effect, U2OpStatus& os) = 0;
+
+    /* Remove all damage effects for given variant from the database */
+    virtual void removeAllRegulatoryEffectForVariant(const U2Variant& variant, U2OpStatus& os) = 0;
+
+    /* returns damage effect instances for given variant*/
+    virtual U2DbiIterator<RegulatoryEffect>* getRegulatoryEffectsForVariant(const U2DataId& variant, U2OpStatus& os) = 0;
+
     /* Creates FilterTableNames instance with given name*/
   //  virtual void createFilterTable (FilterTable& table, const QString& filterName, U2OpStatus& os) = 0;
     

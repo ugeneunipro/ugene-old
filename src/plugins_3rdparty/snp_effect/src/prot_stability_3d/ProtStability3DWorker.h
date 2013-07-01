@@ -42,7 +42,7 @@ public:
                               ProtStability3DWorker( Actor *p );
 
 protected:
-    QVariantMap               getInputDataForRequest( const U2Variant& variant,
+    QList< QVariantMap >      getInputDataForRequest( const U2Variant& variant,
                                 const U2VariantTrack& track, U2Dbi* dataBase );
     QString                   getRequestingScriptName( ) const;
     QString                   getDatabasePath ( ) const;

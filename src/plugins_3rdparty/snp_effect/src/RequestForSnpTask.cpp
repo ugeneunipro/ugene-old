@@ -19,10 +19,11 @@
  * MA 02110-1301, USA.
  */
 
+#include "RequestForSnpTask.h"
+#include "SnpRequestKeys.h"
+
 #include <U2Core/ExternalToolRunTask.h>
 #include <U2Core/U2SafePoints.h>
-
-#include "RequestForSnpTask.h"
 
 namespace U2 {
 
@@ -35,6 +36,9 @@ RequestForSnpTask::RequestForSnpTask( const QString &_scriptPath,    const QVari
 ,variant(var)
 {
     QStringList pythonArguments( scriptPath );
+    if (inputData.contains(SnpRequestKeys::SNP_FEATURE_ID_KEY)){
+        featureId = inputData.take(SnpRequestKeys::SNP_FEATURE_ID_KEY).toByteArray();
+    }
     foreach ( QString key, inputData.keys( ) ) {
         SAFE_POINT( inputData[key].canConvert<QString>( ), "Invalid argument passed to script", );
         pythonArguments << key << inputData[key].toString( );
@@ -62,7 +66,7 @@ void SnpResponseLogParser::parseOutput( const QString &partOfLog )
         if ( line.isEmpty( ) ) {
             continue;
         }
-        int lineSeparatorPos = line.indexOf( ":" );
+        int lineSeparatorPos = line.indexOf( SnpResponseKeys::DEFAULT_SEPARATOR );
         QString key = line.left( lineSeparatorPos );
         QString value = line.mid( line.indexOf( QRegExp( "\\w" ), lineSeparatorPos ) );
         result[key] = value;

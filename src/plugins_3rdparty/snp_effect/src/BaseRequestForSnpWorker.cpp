@@ -37,8 +37,6 @@
 #include "RequestForSnpTask.h"
 #include "BaseRequestForSnpWorker.h"
 
-const int SNP_NEAR_REGION_LENGTH = 40;
-
 namespace U2 {
 
 namespace LocalWorkflow {
@@ -57,7 +55,7 @@ void BaseRequestForSnpWorker::init( )
 
 void BaseRequestForSnpWorker::cleanup( )
 {
-
+    clearCache();
 }
 
 Task* BaseRequestForSnpWorker::tick( )
@@ -112,9 +110,12 @@ Task* BaseRequestForSnpWorker::tick( )
         CHECK_OP(os, NULL);
         while(snpIter->hasNext()){
             const U2Variant& var = snpIter->next();
-            Task* t = new RequestForSnpTask( getRequestingScriptPath( ), getInputDataForRequest( var, track, dbDbi ), var);
-            connect( t, SIGNAL( si_stateChanged( ) ), SLOT( sl_taskFinished( ) ) );
-            tasks.append(t);
+            const QList<QVariantMap>& resList = getInputDataForRequest( var, track, dbDbi );
+            foreach(const QVariantMap& res, resList){
+                Task* t = new RequestForSnpTask( getRequestingScriptPath( ), res, var);
+                connect( t, SIGNAL( si_stateChanged( ) ), SLOT( sl_taskFinished( ) ) );
+                tasks.append(t);
+            }
         }
 
         if (!tasks.isEmpty()){
@@ -140,7 +141,11 @@ void BaseRequestForSnpWorker::sl_taskFinished( )
     if ( !t->isFinished( ) || t->hasError( ) ) {
         return;
     }
-    resultCache.insert(t->getVariant().id, qMakePair(t->getVariant(), t->getResult()));
+    SnpResultCacheItem item;
+    item.featureId = t->getFeatureId();
+    item.variantId = t->getVariant();
+    item.result = t->getResult();
+    resultCache[t->getVariant().id].append(item);
     if (checkFlushCache()){
         flushCache();
     }
@@ -159,33 +164,6 @@ void BaseRequestForSnpWorker::sl_trackTaskFinished( ){
     }
 }
 
-QByteArray BaseRequestForSnpWorker::getSequenceForVariant( const U2Variant &variant,
-    const U2VariantTrack &track, U2Dbi *dataBase, qint64 &sequenceStart ) const
-{
-    QByteArray result;
-    SAFE_POINT( NULL != dataBase, "No database dbi", result );
-
-    U2SequenceDbi* seqDbi = dataBase->getSequenceDbi( );
-    SAFE_POINT( NULL != seqDbi, "No sequence dbi", result );
-
-    U2ObjectDbi* objDbi = dataBase->getObjectDbi( );
-    SAFE_POINT( NULL != objDbi, "No object dbi", result );
-
-    const U2DataId seqId = track.sequence.isEmpty( ) ?
-        S3DatabaseUtils::getSequenceId( track.sequenceName, objDbi ) : track.sequence;
-
-    qint64 start = qMax( ( qint64 )0, variant.startPos - SNP_NEAR_REGION_LENGTH );
-    qint64 end = variant.startPos + SNP_NEAR_REGION_LENGTH + 1; //include last char
-    U2Region regAround(start, end - start);
-
-    U2OpStatusImpl os;
-    result = seqDbi->getSequenceData( seqId, regAround, os );
-    CHECK_OP( os, result );
-    sequenceStart = start;
-
-    return result;
-}
-
 QString BaseRequestForSnpWorker::getRequestingScriptPath( ) const
 {
     QString result( AppContext::getWorkingDirectoryPath( )
@@ -194,7 +172,7 @@ QString BaseRequestForSnpWorker::getRequestingScriptPath( ) const
     return info.absoluteFilePath( );
 }
 
-void BaseRequestForSnpWorker::handleResult( const U2Variant &variant, const QVariantMap &result,
+void BaseRequestForSnpWorker::handleResult( const U2Variant &variant, const U2DataId &featureId, const QVariantMap &result,
     U2Dbi *sessionDbi )
 {
     SAFE_POINT( NULL != sessionDbi, "no session dbi", );
@@ -208,7 +186,8 @@ void BaseRequestForSnpWorker::handleResult( const U2Variant &variant, const QVar
             res = result.value( key, "" ).toString( );
         }
         CHECK( !res.isEmpty( ), );
-        U2StringAttribute resAtr( variant.id, key, res );
+        QString attrKey = featureId.isEmpty() ? key : (key + SnpResponseKeys::DEFAULT_SEPARATOR + QString(featureId));
+        U2StringAttribute resAtr( variant.id, attrKey, res );
         U2OpStatusImpl os;
         attrDbi->createStringAttribute( resAtr, os );
         CHECK_OP( os, );
@@ -236,8 +215,10 @@ void BaseRequestForSnpWorker::flushCache(){
     }    
     
     foreach(const U2DataId& var, resultCache.keys()){
-
-        handleResult(resultCache.value(var).first, resultCache.value(var).second, sessionDbi);
+        const QList<SnpResultCacheItem>& items = resultCache[var];
+        foreach(const SnpResultCacheItem& item, items){
+            handleResult(item.variantId, item.featureId, item.result, sessionDbi);
+        }
     }
     clearCache();
 }

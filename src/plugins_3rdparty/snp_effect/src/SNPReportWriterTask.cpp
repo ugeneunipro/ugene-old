@@ -37,7 +37,6 @@ SNPReportWriterTask::SNPReportWriterTask(const SNPReportWriterSettings& _setting
 , settings(_settings)
 , dbiRef(_dbiRef)
 , tracks(_tracks)
-, outPath("")
 {
 
 }
@@ -86,6 +85,14 @@ void SNPReportWriterTask::run() {
         return;
     }
 
+    U2AttributeDbi* attrDbi = sessionDbi->getAttributeDbi();
+    if(attrDbi == NULL){
+        setError(tr("Attribute dbi is Null"));
+        return;
+    }
+
+
+    //in-gene
     IOAdapter* io = IOAdapterUtils::open(settings.reportPath, stateInfo, IOAdapterMode_Write);
     bool first = true;
 
@@ -94,12 +101,17 @@ void SNPReportWriterTask::run() {
         CHECK_OP(stateInfo, );
         while(snpIter->hasNext()){
             const U2Variant& var = snpIter->next();
-            VariationInfo varReport(var, track.sequence.isEmpty() ? S3DatabaseUtils::getSequenceId(track.sequenceName, objectDbi) : track.sequence, sequenceDbi, track.sequenceName);
+            U2DataId seqID = track.sequence.isEmpty() ? S3DatabaseUtils::getSequenceId(track.sequenceName, objectDbi) : track.sequence;
+            //for in-gene only
+            if (!deEval->isInGene(var, seqID)){
+                continue;
+            }
+            VariationInfo varReport(var, seqID, sequenceDbi, attrDbi, track.sequenceName);
             if (first){
                 QString header = varReport.getInGeneTableHeader();
                 io->writeBlock(header.toLatin1());
                 first = false;
-                outPath = settings.reportPath;
+                outPaths << settings.reportPath;
             }
             varReport.initInfo(varDbi, deEval, true);
             QStringList raws = varReport.getInGeneTableRaws();
@@ -109,12 +121,41 @@ void SNPReportWriterTask::run() {
             }
         }
     }
+    io->close();
 
-    
+    stateInfo.setProgress(50);
+
+    //regulatory
+    IOAdapter* ioReg = IOAdapterUtils::open(settings.regulatoryReportPath, stateInfo, IOAdapterMode_Write);
+    first = true;
+    foreach (const U2VariantTrack& track, tracks){
+        QScopedPointer<U2DbiIterator<U2Variant> > snpIter( varDbi->getVariants(track.id, U2_REGION_MAX, stateInfo));
+        CHECK_OP(stateInfo, );
+        while(snpIter->hasNext()){
+            const U2Variant& var = snpIter->next();
+            U2DataId seqID = track.sequence.isEmpty() ? S3DatabaseUtils::getSequenceId(track.sequenceName, objectDbi) : track.sequence;
+            //for regulatory only
+            if (deEval->isInGene(var, seqID)){
+                continue;
+            }
+            VariationInfo varReport(var, seqID, sequenceDbi, attrDbi, track.sequenceName);
+            if (first){
+                QString header = varReport.getOutGeneTableHeader();
+                ioReg->writeBlock(header.toLatin1());
+                first = false;
+                outPaths << settings.regulatoryReportPath;
+            }
+            varReport.initInfo(varDbi, deEval, true);
+            QStringList raws = varReport.getOutGeneTableRaws();
+            foreach(const QString& raw, raws){
+                ioReg->writeBlock(raw.toLatin1());
+                ioReg->writeBlock("\n");
+            }
+        }
+    }
+    ioReg->close();
 
     stateInfo.setProgress(100);
-
-    io->close();
 }
 
 } // U2

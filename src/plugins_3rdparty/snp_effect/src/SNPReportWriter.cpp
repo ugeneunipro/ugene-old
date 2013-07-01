@@ -42,6 +42,7 @@ namespace LocalWorkflow {
 
 const QString SNPReportWriterFactory::ACTOR_ID("snp-report-writer-id");
 
+static const QString REGULATORY_REPORT_PATH("regulatory_report_path");
 static const QString REPORT_PATH("report_path");
 static const QString DB_PATH("db_path");
 
@@ -126,8 +127,8 @@ void SNPReportWriter::sl_taskFinished() {
     if (inChannel->isEnded() && !inChannel->hasMessage()) {
         setDone();
     }
-    if (!t->getOutputFilePath().isEmpty()){
-        context->getMonitor()->addOutputFile(t->getOutputFilePath(), getActor()->getId());
+    foreach(const QString& path, t->getOutputFilePaths()){
+        context->getMonitor()->addOutputFile(path, getActor()->getId());
     }
     
 }
@@ -141,6 +142,7 @@ SNPReportWriterSettings SNPReportWriter::createSNPWriterSettings( U2OpStatus &os
     SNPReportWriterSettings settings;
 
     settings.reportPath = getValue<QString>(REPORT_PATH);
+    settings.regulatoryReportPath = getValue<QString>(REGULATORY_REPORT_PATH);
     settings.dbPath = getValue<QString>(DB_PATH);
 
     return settings;
@@ -165,10 +167,17 @@ void SNPReportWriterFactory::init() {
     {
         Descriptor reportPath(REPORT_PATH,
             SNPReportWriter::tr("Report path"),
-            SNPReportWriter::tr("Path to save SNP effects reports."));
+            SNPReportWriter::tr("Path to save in-gene SNP effects reports."));
 
 
         attrs << new Attribute(reportPath, BaseTypes::STRING_TYPE(), true, "");
+
+        Descriptor regReportPath(REGULATORY_REPORT_PATH,
+            SNPReportWriter::tr("Regulatory report path"),
+            SNPReportWriter::tr("Path to save regulatory SNP effects reports."));
+
+
+        attrs << new Attribute(regReportPath, BaseTypes::STRING_TYPE(), true, "");
 
         Descriptor dbPath(DB_PATH,
             SNPReportWriter::tr("Database path"),
@@ -180,6 +189,7 @@ void SNPReportWriterFactory::init() {
 
     QMap<QString, PropertyDelegate*> delegates;
     {
+        delegates[REGULATORY_REPORT_PATH] = new URLDelegate("", "", false);
         delegates[REPORT_PATH] = new URLDelegate("", "", false);
         delegates[DB_PATH] = new URLDelegate("", "", false);
     }
@@ -208,9 +218,11 @@ QString SNPReportPrompter::composeRichDoc() {
     QString annUrl = annProducer ? annProducer->getLabel() : unsetStr;
 
     QString path = getHyperlink(REPORT_PATH, getURL(REPORT_PATH));
+    QString regpath = getHyperlink(REGULATORY_REPORT_PATH, getURL(REGULATORY_REPORT_PATH));
 
     res.append(tr("Uses SNPs from <u>%1</u> as input.").arg(annUrl));
-    res.append(tr(" Writes SNP report to <u>%1</u>.").arg(path.isEmpty() ? unsetStr : path));
+    res.append(tr(" Writes in-gene SNP report to <u>%1</u>.").arg(path.isEmpty() ? unsetStr : path));
+    res.append(tr(" Writes regulatory SNP report to <u>%1</u>.").arg(regpath.isEmpty() ? unsetStr : regpath));
 
     return res;
 }

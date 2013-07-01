@@ -53,9 +53,10 @@ ProtStability3DWorker::ProtStability3DWorker( Actor *p )
 
 }
 
-QVariantMap ProtStability3DWorker::getInputDataForRequest( const U2Variant& variant,
+QList< QVariantMap > ProtStability3DWorker::getInputDataForRequest( const U2Variant& variant,
     const U2VariantTrack& track, U2Dbi* dataBase )
 {
+    QList< QVariantMap > res;
     QVariantMap inputData;
     // TODO: obtain pdb id and chain from db
 
@@ -70,7 +71,9 @@ QVariantMap ProtStability3DWorker::getInputDataForRequest( const U2Variant& vari
     inputData[SnpRequestKeys::PROT_STAB_3D_MUTATION_POS] = "";
     inputData[SnpRequestKeys::PROT_STAB_3D_REPLACEMENT] = variant.obsData;
 
-    return inputData;
+    res.append(inputData);
+
+    return res;
 }
 
 QString ProtStability3DWorker::getRequestingScriptName( ) const

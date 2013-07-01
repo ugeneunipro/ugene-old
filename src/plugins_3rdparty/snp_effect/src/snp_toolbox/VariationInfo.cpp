@@ -6,6 +6,7 @@
 #include <U2Formats/Database.h>
 #include <U2Formats/GenbankLocationParser.h>
 
+#include <U2Core/U2AttributeUtils.h>
 #include <U2Core/U2SequenceDbi.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/U2OpStatusUtils.h>
@@ -22,18 +23,19 @@ namespace U2 {
 
 //////////////////////////////////////////////////////////////////////////
 //VariationInfo
-VariationInfo::VariationInfo( const U2Variant& var, const U2DataId& _seqId, U2SequenceDbi* _seqDbi, const QString& _sequenceName)
+VariationInfo::VariationInfo( const U2Variant& var, const U2DataId& _seqId, U2SequenceDbi* _seqDbi, U2AttributeDbi* _attrDbi, const QString& _sequenceName)
 :variant(var)
 ,seqId(_seqId)
 ,sequenceName(_sequenceName)
 ,genesFound(false)
 ,effectLoaded(false)
 ,seqDbi(_seqDbi)
+,attrDbi(_attrDbi)
 {
     initOrderColumns();
 }
 
-VariationInfo::VariationInfo( const U2Variant& var, const U2DataId& _seqId, const QList<Gene>& _genes, U2SequenceDbi* _seqDbi, const QString& _sequenceName)
+VariationInfo::VariationInfo( const U2Variant& var, const U2DataId& _seqId, const QList<Gene>& _genes, U2SequenceDbi* _seqDbi, U2AttributeDbi* _attrDbi, const QString& _sequenceName)
 :variant(var)
 ,seqId(_seqId)
 ,sequenceName(_sequenceName)
@@ -41,6 +43,7 @@ VariationInfo::VariationInfo( const U2Variant& var, const U2DataId& _seqId, cons
 ,genesFound(true)
 ,effectLoaded(false)
 ,seqDbi(_seqDbi)
+,attrDbi(_attrDbi)
 {
     initOrderColumns();
 }
@@ -82,10 +85,12 @@ QString VariationInfo::getInGeneEffectInfo( const QString& geneName, QMap<Report
     int aaPos = -1;
     int nuclPos = -1;
     int codonPos = -1;
+    bool hasEffect = false;
 
     if(!containsGene(geneName)){
-        result = tr("Gene is not affected");
-        return result;
+        hasEffect = false;
+        //result = tr("Gene is not affected");
+        //return result;
     }
     Gene gene = getGeneByName(geneName);
     
@@ -96,12 +101,12 @@ QString VariationInfo::getInGeneEffectInfo( const QString& geneName, QMap<Report
         effectLoaded = true;
     }
      
-    bool hasEffect = false;
+    
     bool hasKnownEffect = false;
     DamageEffect effect;
     DamageEffect knownEffect;
     foreach(const DamageEffect& de, deffectList){
-        if(de.affectedGeneName.compare(gene.getName(), Qt::CaseInsensitive) == 0){
+        if(!gene.getName().isEmpty() && de.affectedGeneName.compare(gene.getName(), Qt::CaseInsensitive) == 0){
             effect = de;
             hasEffect = true;
             break;
@@ -683,6 +688,52 @@ QString VariationInfo::getInGeneTableHeader(){
 
 }
 
+QString VariationInfo::getOutGeneTableHeader(){
+    QString res;
+
+    bool first = true;
+    foreach(ReportColumns rc, columnsOrderOutGene){
+        if (first){
+            res.append("#");
+            first = false;
+        }else{
+            res.append("\t");
+        }
+        if (rc == VariationInfo::Chr){
+            res.append("Chr");
+        }else if(rc == VariationInfo::Position){
+            res.append("Position");
+        }else if(rc == VariationInfo::Allele){
+            res.append("Allele");
+        }else if(rc == VariationInfo::dbSNPId){
+            res.append("dbSNP");
+        }else if(rc == VariationInfo::GeneId){
+            res.append("Promoter_of_Gene");
+        }else if(rc == VariationInfo::promoterPos){
+            res.append("From_transcroption_start");
+        }else if(rc == VariationInfo::Clinical_significance){
+            res.append("Clinical_significance");
+        }else if(rc == VariationInfo::genomes1000){
+            res.append("1000genomes");
+        }else if(rc == VariationInfo::segmental){
+            res.append("segmental_dupl");
+        }else if(rc == VariationInfo::conserved){
+            res.append("conserved_reg");
+        }else if(rc == VariationInfo::altall){
+            res.append("alt_allele");
+        }else if(rc == VariationInfo::hapmap){
+            res.append("hapmap");
+        }else if(rc == VariationInfo::rSNPTranscrFactors){
+            res.append("rSNPTools_factors");
+        }
+
+    }
+    res.append("\n");
+
+    return res;
+}
+
+
 QStringList VariationInfo::getInGeneTableRaws(){
     QStringList res;
 
@@ -701,7 +752,7 @@ QStringList VariationInfo::getInGeneTableRaws(){
             curRawData.insert(VariationInfo::Position, QString("%1").arg(variant.startPos + 1));
             curRawData.insert(VariationInfo::Allele, QString("%1/%2").arg(QString::fromLatin1(variant.refData)).arg(QString::fromLatin1(variant.obsData)));
             curRawData.insert(VariationInfo::GeneId, gene.getAltName().isEmpty() ? gene.getName() : gene.getAltName());
-            curRawData.insert(VariationInfo::GeneId, gene.getDisease());
+            curRawData.insert(VariationInfo::Clinical_significance, gene.getDisease());
             if (variant.publicId.startsWith("rs")){
                 curRawData.insert(VariationInfo::dbSNPId, variant.publicId);
             }
@@ -733,6 +784,61 @@ QStringList VariationInfo::getInGeneTableRaws(){
     return res;
 }
 
+QStringList VariationInfo::getOutGeneTableRaws(){
+    QStringList res;
+
+    if(isIntergenic()){
+        QList<Gene> regulatedGenes;
+        regulatedGenes = evaluator->findRegulatedGenes(variant, seqId);
+        foreach(const Gene& gene, regulatedGenes){
+            QMap<ReportColumns, QString> curRawData;
+            QString curRaw = "";
+            if(sequenceName.isEmpty()){
+                U2OpStatusImpl opStatus;
+                SAFE_POINT(seqDbi!= NULL, "No sequence DBI", res);
+                U2Sequence seq = seqDbi->getSequenceObject(seqId, opStatus);
+                CHECK_OP(opStatus, res);
+                sequenceName = seq.visualName;
+            }
+            curRawData.insert(VariationInfo::Chr, sequenceName);
+            curRawData.insert(VariationInfo::Position, QString("%1").arg(variant.startPos + 1));
+            curRawData.insert(VariationInfo::Allele, QString("%1/%2").arg(QString::fromLatin1(variant.refData)).arg(QString::fromLatin1(variant.obsData)));
+            curRawData.insert(VariationInfo::GeneId, gene.getAltName().isEmpty() ? gene.getName() : gene.getAltName());
+            curRawData.insert(VariationInfo::Clinical_significance, gene.getDisease());
+            if (variant.publicId.startsWith("rs")){
+                curRawData.insert(VariationInfo::dbSNPId, variant.publicId);
+            }
+
+            qint64 fromTransStartPos = VariationPropertiesUtils::positionFromTranscriptionStart(gene, variant);
+            if (fromTransStartPos != -1){
+                curRawData.insert(VariationInfo::promoterPos, QString("-%1").arg(fromTransStartPos));
+            }
+
+            getInGeneEffectInfo(gene.getName(), curRawData);
+
+            getDefaultAttributeValue(variant.id, SnpResponseKeys::R_SNP_PRESENT_TFBS, VariationInfo::rSNPTranscrFactors, curRawData);
+
+            bool first = true;
+            foreach(ReportColumns rc, columnsOrderOutGene){
+                if (first){
+                    first = false;
+                }else{
+                    curRaw.append("\t");
+                }
+                if (curRawData.contains(rc)){
+                    curRaw.append(curRawData.value(rc));
+                }else{
+                    curRaw.append("-");
+                }
+            }
+            res.append(curRaw);
+        }
+    }
+
+    return res;
+}
+
+
 void VariationInfo::initOrderColumns(){
     if (!columnsOrderInGene.isEmpty()){
         columnsOrderInGene.clear();
@@ -761,11 +867,49 @@ void VariationInfo::initOrderColumns(){
         << VariationInfo::hapmap
         << VariationInfo::gerpScore;
 
+    if (!columnsOrderOutGene.isEmpty()){
+        columnsOrderOutGene.clear();
+    }
+    columnsOrderOutGene 
+        << VariationInfo::Chr 
+        << VariationInfo::Position 
+        << VariationInfo::Allele
+        << VariationInfo::dbSNPId
+        << VariationInfo::GeneId
+        << VariationInfo::Clinical_significance
+        << VariationInfo::promoterPos
+        << VariationInfo::rSNPTranscrFactors
+        << VariationInfo::genomes1000
+        << VariationInfo::segmental
+        << VariationInfo::conserved
+        << VariationInfo::altall
+        << VariationInfo::hapmap
+        << VariationInfo::gerpScore;
+
 }
 
-void VariationInfo::addValueToRaw( const QString& val, ReportColumns key, QMap<ReportColumns, QString>& rawData ){
-    if (columnsOrderInGene.contains(key)){
+void VariationInfo::addValueToRaw( const QString& val, ReportColumns key, QMap<ReportColumns, QString>& rawData, QList<ReportColumns>& container ){
+    if (container.contains(key)){
         rawData.insert(key, val);
+    }
+}
+
+void VariationInfo::getDefaultAttributeValue(const U2DataId& varId, SnpRequestKey key, ReportColumns colKey, QMap<ReportColumns, QString>& rawData ){
+    QString value = "";
+    if (attrDbi == NULL){
+        return;
+    }
+
+    U2OpStatusImpl os;
+    U2StringAttribute valAttribute = U2AttributeUtils::findStringAttribute(attrDbi, varId, key, os);
+    CHECK_OP(os, );
+    if(!valAttribute.hasValidId()) {
+        return;
+    }
+    value = valAttribute.value;
+
+    if (!value.isEmpty()){
+        rawData.insert(colKey, value);
     }
 }
 

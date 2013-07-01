@@ -461,4 +461,79 @@ QList<Gene> DamageEffectEvaluator::findGenes( const U2Variant& var, const U2Data
 
 }
 
+QList<Gene> DamageEffectEvaluator::findRegulatedGenes( const U2Variant& var, const U2DataId& seqId){
+    U2OpStatusImpl os;
+    QList<Gene> genes;
+    if(!checkDbi(os)){
+        return genes;
+    }
+
+    if (useCache){
+        if (geneCache.isIntersect(VARIATION_REGION(var), seqId)){
+            return genes; //variation is in a gene
+        }
+
+        QList<Gene> curGenes;
+        //+ strand
+        curGenes = geneCache.overlappedGenes(U2Region(var.startPos, PROMOTER_LEN), seqId);
+        foreach(const Gene& gene, curGenes){
+            if (!gene.isComplemented()){
+                genes.append(gene);
+            }
+        }
+
+        //- strand
+        curGenes = geneCache.overlappedGenes(U2Region(qMax((qint64)0, var.startPos-PROMOTER_LEN), PROMOTER_LEN), seqId);
+        foreach(const Gene& gene, curGenes){
+            if (gene.isComplemented()){
+                genes.append(gene);
+            }
+        }
+    }else{
+        QList<Gene> curGenes;
+        curGenes = S3TablesUtils::findGenes(seqId, VARIATION_REGION(var), featureDbi, os);
+        if (!curGenes.isEmpty()){
+            return genes; //variation is in a gene
+        }
+
+        //+ strand
+        curGenes = S3TablesUtils::findGenes(seqId, U2Region(var.startPos, PROMOTER_LEN), featureDbi, os);
+        foreach(const Gene& gene, curGenes){
+            if (!gene.isComplemented()){
+                genes.append(gene);
+            }
+        }
+
+        //- strand
+        curGenes = S3TablesUtils::findGenes(seqId, U2Region(qMax((qint64)0, var.startPos-PROMOTER_LEN), PROMOTER_LEN), featureDbi, os);
+        foreach(const Gene& gene, curGenes){
+            if (gene.isComplemented()){
+                genes.append(gene);
+            }
+        }
+
+    }
+
+    return genes;
+}
+
+bool DamageEffectEvaluator::isInGene( const U2Variant& var, const U2DataId& seqId){
+    bool res = false;
+    U2OpStatusImpl os;
+    if(!checkDbi(os)){
+        return res;
+    }
+
+    if (useCache){
+        res = geneCache.isIntersect(VARIATION_REGION(var), seqId);
+        
+    }else{
+        QList<Gene> genes;
+        genes = S3TablesUtils::findGenes(seqId, VARIATION_REGION(var), featureDbi, os);
+        res = !genes.isEmpty();
+    }
+
+    return res;
+}
+
 } //namespace

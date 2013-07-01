@@ -1,6 +1,7 @@
 #include "VariationPropertiesUtils.h"
 
 #include <U2Core/U2SafePoints.h>
+#include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/DNATranslation.h>
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/AppContext.h>
@@ -440,6 +441,90 @@ QByteArray VariationPropertiesUtils::getDamagedTripletBufferedSeq( const Gene& g
         return triplet;
     }
     return QByteArray();
+}
+
+qint64 VariationPropertiesUtils::positionFromTranscriptionStart( const Gene& gene, const U2Variant& var ){
+    qint64 res = -1;
+    if (gene.intersects(VARIATION_REGION(var))){
+        return res;
+    }
+
+    if (!gene.isComplemented()){
+        res = gene.getRegion().startPos - var.startPos;
+        if (res < 0){
+            return -1;
+        }
+    }else{
+        res = var.startPos -  gene.getRegion().endPos();
+        if (res < 0){
+            return -1;
+        }
+    }
+
+    return res;
+        
+
+}
+
+QPair< QByteArray, QByteArray > VariationPropertiesUtils::getAASubstitution( U2Dbi* database, const Gene& gene, const U2DataId& seqId, const U2Variant& var, int* aaPos, U2OpStatus& os ){
+    QPair< QByteArray, QByteArray >  res;
+    *aaPos = -1;
+
+    SAFE_POINT(database != NULL, "no database", res);
+    
+    if(!VariationPropertiesUtils::isDamageProtein(var, gene)){
+        return res;
+    }
+
+    int nuclPos = 0;
+    int curAaPos = 0;
+    int codonPos = -1;
+
+    if(!VariationPropertiesUtils::getFrameStartPositionsForCoding(&nuclPos, &curAaPos, &codonPos, var, gene)){
+        return res;
+    }
+
+
+    U2SequenceDbi* seqDbi = database->getSequenceDbi();
+    SAFE_POINT(seqDbi != NULL, "no sequence dbi", res);
+    QByteArray referenceTriplet;
+    referenceTriplet = VariationPropertiesUtils::getDamagedTriplet(gene, nuclPos, seqId, seqDbi, os);
+
+    QByteArray observedTriplet = referenceTriplet;
+    if (gene.isComplemented()){
+        DNAAlphabet* alphabet = AppContext::getDNAAlphabetRegistry()->findById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT());
+        SAFE_POINT(alphabet != NULL, "No Alphabet", res);
+
+        QList<DNATranslation*> translList = AppContext::getDNATranslationRegistry()->lookupTranslation(alphabet, DNATranslationType_NUCL_2_COMPLNUCL);
+        SAFE_POINT(!translList.isEmpty(), "No compl Translations", res);
+        DNATranslation* complTransl =  translList.first();
+
+        complTransl->translate(referenceTriplet.data(), referenceTriplet.size());
+        complTransl->translate(observedTriplet.data(), observedTriplet.size());
+        observedTriplet = VariationPropertiesUtils::varyTriplet(observedTriplet, var, codonPos, complTransl);
+    }else{
+        observedTriplet = VariationPropertiesUtils::varyTriplet(observedTriplet, var, codonPos);
+    }
+    if(observedTriplet.size() != 3){
+        return res;
+    }
+
+    DNAAlphabet* alphabet = AppContext::getDNAAlphabetRegistry()->findById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT());
+    SAFE_POINT(alphabet != NULL, "No Alphabet", res);
+
+    QList<DNATranslation*> translList = AppContext::getDNATranslationRegistry()->lookupTranslation(alphabet, DNATranslationType_NUCL_2_AMINO);
+    SAFE_POINT(!translList.isEmpty(), "No AA Translations",res);
+    DNATranslation* aaTransl =  translList.first();
+
+    char damagedAA = aaTransl->translate3to1(observedTriplet[0], observedTriplet[1], observedTriplet[2]);
+
+    char referenceAA = aaTransl->translate3to1(referenceTriplet[0], referenceTriplet[1], referenceTriplet[2]);
+
+    res.first = QString(referenceAA).toLatin1();
+    res.second = QString(damagedAA).toLatin1();
+    *aaPos = curAaPos;
+        
+    return res;
 }
 
 

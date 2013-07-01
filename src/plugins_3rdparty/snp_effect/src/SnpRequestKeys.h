@@ -31,6 +31,8 @@ typedef QString SnpRequestKey;
 
 namespace SnpRequestKeys {
 
+const SnpRequestKey SNP_FEATURE_ID_KEY( "featureID" );
+
 const SnpRequestKey R_SNP_FIRST_SEQUENCE( "-f" );
 const SnpRequestKey R_SNP_SECOND_SEQUENCE( "-s" );
 const SnpRequestKey R_SNP_FIRST_SITE_STATE( "--snpdm1" );
@@ -55,6 +57,7 @@ const SnpRequestKey SNP_2_PDB_SITE_MUTATIONS( "" );
 typedef QString SnpResponseKey;
 
 namespace SnpResponseKeys {
+const SnpResponseKey DEFAULT_SEPARATOR(":");
 
 const SnpResponseKey R_SNP_PRESENT_TFBS( "PRESENT" );
 const SnpResponseKey PROT_STABILITY_1D( "" );

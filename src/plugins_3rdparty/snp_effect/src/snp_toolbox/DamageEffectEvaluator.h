@@ -31,7 +31,9 @@ public:
     DamageEffectEvaluator (U2Dbi* dbiSession, U2Dbi* dbiDatabase, bool useCache = true);
     virtual ~DamageEffectEvaluator();
 
+    bool isInGene(const U2Variant& var, const U2DataId& seqId);
     QList<Gene> findGenes(const U2Variant& var, const U2DataId& seqId, U2OpStatus& os);
+    QList<Gene> findRegulatedGenes(const U2Variant& var, const U2DataId& seqId);
     
     void calcDamageEffectForTracks(const QList<U2VariantTrack>& tracks, DamageEffectType effectType, U2OpStatus& os);
     QList<DamageEffect> getDamageEffect(U2Variant& var, const U2VariantTrack& track, DamageEffectType effectType, U2OpStatus& os);

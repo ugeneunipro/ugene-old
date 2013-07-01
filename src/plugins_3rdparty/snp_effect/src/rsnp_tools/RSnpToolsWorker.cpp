@@ -23,6 +23,7 @@
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/AppContext.h>
+#include <U2Core/U2SequenceDbi.h>
 
 #include <U2Lang/ActorPrototypeRegistry.h>
 #include <U2Lang/BaseActorCategories.h>
@@ -31,11 +32,15 @@
 #include <U2Lang/BasePorts.h>
 #include <U2Lang/WorkflowEnv.h>
 
+#include <U2Formats/S3DatabaseUtils.h>
+
 #include <U2Designer/DelegateEditors.h>
 
 #include "RSnpToolsWorker.h"
 
 namespace U2 {
+
+const int SNP_NEAR_REGION_LENGTH = 40;
 
 namespace LocalWorkflow {
 
@@ -56,13 +61,14 @@ RSnpToolsWorker::RSnpToolsWorker( Actor *p )
 
 }
 
-QVariantMap RSnpToolsWorker::getInputDataForRequest( const U2Variant& variant,
+QList<QVariantMap> RSnpToolsWorker::getInputDataForRequest( const U2Variant& variant,
     const U2VariantTrack& track, U2Dbi* dataBase )
 {
+    QList< QVariantMap > res;
     QVariantMap inputData;
     qint64 sequenceStart = 0;
     QByteArray seq1 = getSequenceForVariant( variant, track, dataBase, sequenceStart );
-    CHECK( !seq1.isEmpty( ), inputData );
+    CHECK( !seq1.isEmpty( ), res );
 
     const qint64 mutationPos = variant.startPos - sequenceStart;
     QByteArray seq2 = seq1;
@@ -78,7 +84,9 @@ QVariantMap RSnpToolsWorker::getInputDataForRequest( const U2Variant& variant,
     inputData[SnpRequestKeys::R_SNP_FIRST_SEQUENCE] = seq1;
     inputData[SnpRequestKeys::R_SNP_SECOND_SEQUENCE] = seq2;
 
-    return inputData;
+    res.append(inputData);
+
+    return res;
 }
 
 QString RSnpToolsWorker::getRequestingScriptName( ) const
@@ -97,6 +105,34 @@ QList<SnpResponseKey> RSnpToolsWorker::getResultKeys( ) const
     result << SnpResponseKeys::R_SNP_PRESENT_TFBS;
     return result;
 }
+
+QByteArray RSnpToolsWorker::getSequenceForVariant( const U2Variant &variant,
+                                                          const U2VariantTrack &track, U2Dbi *dataBase, qint64 &sequenceStart ) const
+{
+    QByteArray result;
+    SAFE_POINT( NULL != dataBase, "No database dbi", result );
+
+    U2SequenceDbi* seqDbi = dataBase->getSequenceDbi( );
+    SAFE_POINT( NULL != seqDbi, "No sequence dbi", result );
+
+    U2ObjectDbi* objDbi = dataBase->getObjectDbi( );
+    SAFE_POINT( NULL != objDbi, "No object dbi", result );
+
+    const U2DataId seqId = track.sequence.isEmpty( ) ?
+        S3DatabaseUtils::getSequenceId( track.sequenceName, objDbi ) : track.sequence;
+
+    qint64 start = qMax( ( qint64 )0, variant.startPos - SNP_NEAR_REGION_LENGTH );
+    qint64 end = variant.startPos + SNP_NEAR_REGION_LENGTH + 1; //include last char
+    U2Region regAround(start, end - start);
+
+    U2OpStatusImpl os;
+    result = seqDbi->getSequenceData( seqId, regAround, os );
+    CHECK_OP( os, result );
+    sequenceStart = start;
+
+    return result;
+}
+
 
 /************************************************************************/
 /* Factory */

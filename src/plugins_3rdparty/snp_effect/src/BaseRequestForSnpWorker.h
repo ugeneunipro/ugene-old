@@ -34,6 +34,16 @@ class RequestForSnpTask;
 
 namespace LocalWorkflow {
 
+class SnpResultCacheItem{
+public:
+    SnpResultCacheItem(){;}
+    
+    U2Variant variantId;
+    U2DataId featureId;
+    QVariantMap result;
+
+
+};
 class BaseRequestForSnpWorker :     public BaseWorker
 {
     Q_OBJECT
@@ -49,28 +59,25 @@ private slots:
     void                            sl_trackTaskFinished( );
 
 protected:
-    virtual QVariantMap             getInputDataForRequest( const U2Variant& variant,
+    virtual QList< QVariantMap>     getInputDataForRequest( const U2Variant& variant,
                                         const U2VariantTrack& track, U2Dbi* dataBase ) = 0;
     virtual QString                 getRequestingScriptName( ) const = 0;
     virtual QList<SnpResponseKey>   getResultKeys( ) const = 0;
     //each child worker must provide a path to the database
     virtual QString                 getDatabasePath( ) const = 0;
-    QByteArray                      getSequenceForVariant( const U2Variant &variant,
-                                        const U2VariantTrack &track, U2Dbi *dataBase,
-                                        qint64 &sequenceStart ) const;
-
+ 
     IntegralBus *                   inChannel;
     IntegralBus *                   outChannel;
 
 private:
     QString                         getRequestingScriptPath( ) const;
-    void                            handleResult(const U2Variant &variant,
+    void                            handleResult(const U2Variant &variant, const U2DataId &featureId,
                                         const QVariantMap &result, U2Dbi *sessionDbi);
 
     bool                            checkFlushCache();
     void                            flushCache();
     void                            clearCache();
-    QMap<U2DataId, QPair<U2Variant, QVariantMap> >    resultCache;
+    QMap<U2DataId, QList< SnpResultCacheItem > >    resultCache;
 };
 
 } // namespace LocalWorkflow

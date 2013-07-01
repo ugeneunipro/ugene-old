@@ -93,6 +93,8 @@ public:
 
     static QByteArray getAASequence (const QByteArray& nuclSeq);
 
+    static QPair< QByteArray, QByteArray> getAASubstitution(U2Dbi* database, const Gene& gene, const U2DataId& seqId, const U2Variant& var, int* aaPos, U2OpStatus& os);
+
     static inline bool isInDonorSpliceSite (const U2Region& exon, qint64 varPos, int spliceSiteLen){
         bool res = false;
         res = U2Region(exon.endPos() - spliceSiteLen, 2*spliceSiteLen).contains(varPos);
@@ -112,6 +114,8 @@ public:
     static U2Region getIntron (const U2Region& geneRegion, const QVector<U2Region>& exons, qint64 varPos, U2Region& nearestExon, bool& isDonor);
 
     static bool isInSpliceSite(const QVector<U2Region>& exons, qint64 varPos, int spliceSiteLen, bool isCompl);
+
+    static qint64 positionFromTranscriptionStart(const Gene& gene, const U2Variant& var);
 
 private:
     static QByteArray aaAlphabet;

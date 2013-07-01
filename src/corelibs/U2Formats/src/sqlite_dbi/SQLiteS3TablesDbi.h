@@ -59,6 +59,15 @@ public:
     /* Remove all damage effects for given variant from the database */
     virtual void removeAllDamageEffectForVariant(const U2Variant& variant, U2OpStatus& os);
 
+    /* Remove the regulatory effect instance from the database */
+    virtual void removeRegulatoryEffect(const RegulatoryEffect& effect, U2OpStatus& os);
+
+    /* Remove all damage effects for given variant from the database */
+    virtual void removeAllRegulatoryEffectForVariant(const U2Variant& variant, U2OpStatus& os);
+
+    /* returns damage effect instances for given variant*/
+    virtual U2DbiIterator<RegulatoryEffect>* getRegulatoryEffectsForVariant(const U2DataId& variant, U2OpStatus& os);
+
     /* returns damage effect instances for given variant*/
     virtual U2DbiIterator<DamageEffect>* getDamageEffectsForVariant(const U2DataId& variant, U2OpStatus& os);
 
