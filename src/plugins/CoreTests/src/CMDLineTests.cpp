@@ -108,16 +108,21 @@ void GTest_RunCMDLine::setArgs(const QDomElement & el) {
 }
 
 QString GTest_RunCMDLine::splitVal(const QString & val, int midSize, const QString & prefix, bool isTmp) {
-    QString ret;
-    QStringList realVals = val.mid(midSize).split(";");
-    foreach(const QString & s, realVals) {
-        QString filename = prefix + s;
-        ret += filename + ";";
-        if(isTmp) {
-            tmpFiles << filename;
+    QStringList dsVals = val.mid(midSize).split(",");
+    QStringList result;
+    foreach (const QString &dsVal, dsVals) {
+        QStringList realVals = dsVal.split(";");
+        QStringList dsResult;
+        foreach(const QString & s, realVals) {
+            QString filename = prefix + s;
+            dsResult << filename;
+            if(isTmp) {
+                tmpFiles << filename;
+            }
         }
+        result << dsResult.join(";");
     }
-    return ret.mid(0, ret.size() - 1);
+    return result.join(",");
 }
 
 QString GTest_RunCMDLine::getVal( const QString & val ) {
