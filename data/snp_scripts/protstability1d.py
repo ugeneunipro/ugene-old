@@ -23,7 +23,7 @@ def prepare_optparser():
     function first.
     """
     usage = "usage: %prog <-s FASTA_SEQ -p POSITION -t AMINO_TYPE> [options]"
-    description = "Transcription factors binds to two DNAs: SNPs and\or site-directed mutations."
+    description = "Script for protStability1D tool."
 
     optparser = OptionParser(version="%prog v1.0", description=description, usage=usage, add_help_option=False)
     optparser.add_option("-h","--help",action="help",help="Show this help message and exit.")
@@ -101,7 +101,7 @@ class Protstability1d:
         
         itemlist = xmldoc.getElementsByTagName('stability')
         if itemlist.length <= 0:
-            print "Error"
+            print "Result is empty"
             sys.exit(1)
  
         res = "STABILITY_1D"  ':' +  str(itemlist[0].firstChild.nodeValue)

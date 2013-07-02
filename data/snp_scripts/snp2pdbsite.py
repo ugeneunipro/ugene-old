@@ -100,7 +100,7 @@ class Snp2pdbsite:
         
         itemlist = xmldoc.getElementsByTagName('aa')
         if itemlist.length <= 0:
-            print "Error"
+            print "Result is empty"
             sys.exit(1)
         for item in itemlist:
             print "PDB_SITE" + ':' + item.getAttribute("pos") + item.getAttribute("aa") + ';'

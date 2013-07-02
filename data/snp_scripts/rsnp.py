@@ -97,7 +97,7 @@ class RSNP:
         content = rsp.read()
         res = content.find('PRESENT:</b>&nbsp;')
         if res == -1:
-            print "ERROR:error"
+            print "Result is empty"
         else:
             content = content[res+18:]
             res = content.find('<P align')
