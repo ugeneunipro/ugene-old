@@ -22,10 +22,26 @@
 #ifndef _U2_SCRIPT_GLOBALS_H_
 #define _U2_SCRIPT_GLOBALS_H_
 
-#ifdef BUILDING_U2SCRIPT_DLL
-#define U2SCRIPT_EXPORT __declspec(dllexport)
+#if defined _WIN32 || defined __CYGWIN__
+  #ifdef BUILDING_U2SCRIPT_DLL
+    #ifdef __GNUC__
+      #define U2SCRIPT_EXPORT __attribute__ ((dllexport))
+    #else
+      #define U2SCRIPT_EXPORT __declspec(dllexport)
+    #endif
+  #else
+    #ifdef __GNUC__
+      #define U2SCRIPT_EXPORT __attribute__ ((dllimport))
+    #else
+      #define U2SCRIPT_EXPORT __declspec(dllimport)
+    #endif
+  #endif
 #else
-#define U2SCRIPT_EXPORT __declspec(dllimport)
+  #if __GNUC__ >= 4
+    #define U2SCRIPT_EXPORT __attribute__ ((visibility ("default")))
+  #else
+    #define U2SCRIPT_EXPORT
+  #endif
 #endif
 
 /*

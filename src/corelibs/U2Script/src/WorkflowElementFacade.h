@@ -24,7 +24,7 @@
 
 #include <QtCore/QString>
 
-enum U2ErrorType;
+#include "globals.h"
 
 namespace U2 {
 

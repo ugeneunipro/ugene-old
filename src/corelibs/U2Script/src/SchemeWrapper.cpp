@@ -32,7 +32,6 @@
 #include <U2Lang/HRSchemaSerializer.h>
 #include <U2Lang/WorkflowUtils.h>
 
-#include "globals.h"
 #include "WorkflowElementFacade.h"
 #include "SchemeWrapper.h"
 
@@ -991,7 +990,6 @@ U2ErrorType SchemeWrapper::getAttributeValuePositionFromRange( const QString &at
     const QRegExp letterOrNumberPattern( "\\w" );
     const QRegExp attributeNamePattern = QRegExp( "[\\s\\" + HRSchemaSerializer::SEMICOLON + "]"
         + attributeName + "\\s*\\" + HRSchemaSerializer::EQUALS_SIGN );
-    U2ErrorType result = U2_OK;
     const int attributePosition = attributeNamePattern.indexIn( schemeContent, *start );
     if ( SUBSTRING_NOT_FOUND != attributePosition && attributePosition < *end ) {
         int valueStartPosition = attributePosition + attributeNamePattern.matchedLength( );

@@ -200,7 +200,6 @@ void WorkflowInvestigationWidgetsController::sl_currentInvestigationUpdateRespon
 {
     Q_ASSERT(bus == investigatedLink);
     if(!investigationInfo.isEmpty()) {
-        const int newRowsCount = investigationInfo[investigationInfo.keys().first()].size();
         const int rowInsertionStartPosition = investigationModel->loadedRowCount();
         if(!investigationModel->headerData(0, Qt::Horizontal, Qt::DisplayRole).isValid()) {
             const QList<QString> headerTitles = investigationInfo.keys();

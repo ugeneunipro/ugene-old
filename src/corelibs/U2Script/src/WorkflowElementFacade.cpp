@@ -24,7 +24,6 @@
 #include <U2Lang/WorkflowEnv.h>
 #include <U2Lang/WorkflowUtils.h>
 
-#include "globals.h"
 #include "WorkflowElementFacade.h"
 
 static const QString READ_ELEMENT_PREFIX =          "read-";

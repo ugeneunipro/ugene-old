@@ -168,6 +168,7 @@ Qt::ItemFlags InvestigationDataModel::flags(const QModelIndex &index) const {
 }
 
 bool InvestigationDataModel::insertRows(int position, int rows, const QModelIndex &index) {
+    Q_UNUSED(position);
     Q_UNUSED(index);
     countOfRows = (DEFAULT_COUNT == countOfRows) ? rows : countOfRows + rows;
     return true;
