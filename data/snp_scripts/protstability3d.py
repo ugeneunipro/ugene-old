@@ -1,3 +1,4 @@
+#v 1.0
 import sys, os, time, re
 import urllib, urllib2 
 from optparse import OptionParser
@@ -101,12 +102,10 @@ class Protstability3d:
             print "Error"
             sys.exit(1)
  
-        f = open('workfile', 'w')
         res = self.pdbId
         res += '[' +  str(self.mutPos) + ',' + self.aminoType + ']'
         res += ':' +  str(itemlist[0].firstChild.nodeValue)
-        f.write(res)
-        f.close                            
+        print res                           
 def main():
     opts=opt_validate(prepare_optparser())
     g = Protstability3d(opts)

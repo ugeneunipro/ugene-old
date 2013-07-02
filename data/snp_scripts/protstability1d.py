@@ -1,3 +1,4 @@
+#v 1.0
 import sys, os, time, re
 import urllib, urllib2 
 from optparse import OptionParser
@@ -54,17 +55,6 @@ def opt_validate(optparser):
     print
     return options
 
-class MyHTMLParser(HTMLParser):
-    def __init__(self):
-        HTMLParser.__init__(self) 
-        self.f =  open('workfile', 'w')
-    def handle_starttag(self, tag, attrs):
-        self.f.write("Encountered a start tag:"+ tag)
-    def handle_endtag(self, tag):
-        self.f.write("Encountered an end tag :"+ tag)
-    def handle_data(self, data):
-        self.f.write("Encountered some data  :"+ data)
-
 class Protstability1d:
     def __init__(self, options):
         self.fastaSeq = options.fastaSeq
@@ -118,14 +108,12 @@ class Protstability1d:
             print "Error"
             sys.exit(1)
  
-        f = open('workfile', 'w')
         res = ""
         if(self.seqName):
             res += self.seqName
         res += '[' +  self.mutPos + ',' + self.aminoType + ']'
         res += ':' +  str(itemlist[0].firstChild.nodeValue)
-        f.write(res)
-        f.close                            
+        print res                       
 def main():
     opts=opt_validate(prepare_optparser())
     g = Protstability1d(opts)
