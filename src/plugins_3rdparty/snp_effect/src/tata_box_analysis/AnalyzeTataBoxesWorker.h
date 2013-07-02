@@ -38,7 +38,7 @@ public:
                                AnalyzeTataBoxesWorker( Actor *p );
 
 protected:
-    QList<Task *>              createVariationProcessingTask( const U2Variant &var,
+    QList<Task *>              createVariationProcessingTasks( const U2Variant &var,
                                    const U2VariantTrack &track, U2Dbi *dbi );
 };
 

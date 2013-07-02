@@ -52,7 +52,7 @@ AnalyzeTataBoxesWorker::AnalyzeTataBoxesWorker( Actor *p )
 
 }
 
-QList<Task *> AnalyzeTataBoxesWorker::createVariationProcessingTask( const U2Variant &var,
+QList<Task *> AnalyzeTataBoxesWorker::createVariationProcessingTasks( const U2Variant &var,
     const U2VariantTrack &track, U2Dbi *dbi )
 {
     QList<Task *> result;
