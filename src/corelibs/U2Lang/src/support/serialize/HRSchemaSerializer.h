@@ -236,6 +236,7 @@ public:
     static QMap<ActorId, ActorId> deepCopy(const Schema& from, Schema* to, U2OpStatus &os);
 
     static bool isHeaderLine(const QString &line);
+    static QString valueString(const QString & s);
 
 private:
     static GrouperSlotAction parseAction(Tokenizer &tokenizer);

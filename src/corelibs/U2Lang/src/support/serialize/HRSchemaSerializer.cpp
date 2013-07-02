@@ -173,7 +173,7 @@ static QString quotedString(const QString & str) {
     return HRSchemaSerializer::QUOTE + str + HRSchemaSerializer::QUOTE;
 }
 
-static QString valueString(const QString & s) {
+QString HRSchemaSerializer::valueString(const QString & s) {
     QString str = s;
     str.replace("\"", "'");
     if( str.contains(QRegExp("\\s") ) || str.contains(HRSchemaSerializer::SEMICOLON) || 
@@ -448,7 +448,7 @@ static QString skipBlock(HRSchemaSerializer::Tokenizer & tokenizer) {
     QString skipped;
     while(tokenizer.look() != HRSchemaSerializer::BLOCK_END) {
         QString tok = tokenizer.take();
-        skipped += "\n" + valueString(tok);;
+        skipped += "\n" + HRSchemaSerializer::valueString(tok);;
         if( tok == HRSchemaSerializer::BLOCK_START ) {
             skipped += skipBlock(tokenizer);
             skipped += "\n" + HRSchemaSerializer::BLOCK_END;

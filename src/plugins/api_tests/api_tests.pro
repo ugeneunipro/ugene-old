@@ -13,6 +13,7 @@ HEADERS += \
     src/core/dbi/attribute/AttributeDbiUnitTests.h \
     src/core/dbi/features/FeaturesTableObjectUnitTest.h \
     src/core/dbi/msa/MsaDbiUnitTests.h \
+    src/core/external_script/base_scheme_interface/CInterfaceUnitTests.h \
     src/core/format/fastq/FastqUnitTests.h \
     src/core/format/genbank/LocationParserUnitTests.h \
     src/core/format/sqlite_msa_dbi/MsaDbiSQLiteSpecificUnitTests.h \
@@ -34,6 +35,7 @@ SOURCES += \
     src/core/dbi/attribute/AttributeDbiUnitTests.cpp \
     src/core/dbi/features/FeaturesTableObjectUnitTest.cpp \
     src/core/dbi/msa/MsaDbiUnitTests.cpp \
+    src/core/external_script/base_scheme_interface/CInterfaceUnitTests.cpp \
     src/core/format/fastq/FastqUnitTests.cpp \
     src/core/format/genbank/LocationParserUnitTests.cpp \
     src/core/format/sqlite_msa_dbi/MsaDbiSQLiteSpecificUnitTests.cpp \

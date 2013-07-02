@@ -72,6 +72,9 @@ HEADERS += src/library/BaseActorCategories.h \
            src/support/WorkflowRunTask.h \
            src/support/WorkflowSettings.h \
            src/support/WorkflowUtils.h \
+           src/support/external_script/ScriptableScheduler.h \
+           src/support/external_script/ScriptContext.h \
+           src/support/external_script/WorkflowRunSerializedSchemeTask.h \
            src/tasks/ReadDocumentTaskFactory.h \
            src/tasks/WorkflowTasksRegistry.h \
            src/library/script/ActorContext.h \
@@ -161,6 +164,9 @@ SOURCES += src/library/BaseActorCategories.cpp \
            src/support/WorkflowRunTask.cpp \
            src/support/WorkflowSettings.cpp \
            src/support/WorkflowUtils.cpp \
+           src/support/external_script/ScriptableScheduler.cpp \
+           src/support/external_script/ScriptContext.cpp \
+           src/support/external_script/WorkflowRunSerializedSchemeTask.cpp \
            src/tasks/ReadDocumentTaskFactory.cpp \
            src/tasks/WorkflowTasksRegistry.cpp \
            src/library/script/ActorContext.cpp \

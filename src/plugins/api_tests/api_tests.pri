@@ -10,7 +10,7 @@ use_bundled_zlib() {
     INCLUDEPATH += ../../libs_3rdparty/zlib/src
 }
 
-LIBS += -lsamtools
+LIBS += -lsamtools -L../../_release -lU2Script
 
 # Force re-linking when lib changes
 unix:POST_TARGETDEPS += ../../_release/libsamtools.a
@@ -23,8 +23,8 @@ win32:DEFINES += _USE_MATH_DEFINES "inline=__inline" "__func__=__FUNCTION__" "R_
 
 !debug_and_release|build_pass {
     CONFIG(debug, debug|release) {
-        LIBS -= -lsamtools
-        LIBS += -lsamtoolsd
+        LIBS -= -lsamtools -L../../_release -lU2Script
+        LIBS += -lsamtoolsd -L../../_debug -lU2Scriptd
 
         unix:POST_TARGETDEPS -= ../../_release/libsamtools.a
         unix:POST_TARGETDEPS += ../../_debug/libsamtoolsd.a
