@@ -22,23 +22,20 @@ def prepare_optparser():
     """Prepare optparser object. New options will be added in this
     function first.
     """
-    usage = "usage: %prog <-i STRING -c STRING -p INT -t STRING> [options]"
-    description = "Transcription factors binds to two DNAs: SNPs and\or site-directed mutations."
+    usage = "usage: %prog <-p STRING -c STRING -m STRING> [options]"
+    description = "SNP2PDBSite."
 
     optparser = OptionParser(version="%prog v1.0", description=description, usage=usage, add_help_option=False)
     optparser.add_option("-h","--help",action="help",help="Show this help message and exit.")
     
-    optparser.add_option("-i","--pdb",dest="pdbId",type="string",
-                         help="Enter a PDB ID.")
-
+    optparser.add_option("-p","--pdb",dest="pdbId",type="string",
+                         help="Enter PDB ID.")
+    
     optparser.add_option("-c", "--chain", dest="chain",type="string",
                          help="Enter chain.")
-    
-    optparser.add_option("-p", "--pos", dest="mutPos",type="int",
-                         help="Enter mutation position.")
 
-    optparser.add_option("-t", "--type", dest="aminoType",type="string",
-                         help="Enter amino acid type.")
+    optparser.add_option("-m", "--mut", dest="mutation",type="string",
+                         help="Enter mutation.")
                                         
     return optparser
 
@@ -49,28 +46,32 @@ def opt_validate(optparser):
     """
     (options,args) = optparser.parse_args()
         
-    if not (options.chain and options.pdbId and options.mutPos and options.aminoType):
+    if not (options.pdbId and options.chain and options.mutation):
         optparser.print_help()
         sys.exit(1)
+    if '"' in options.pdbId:
+        options.pdbId = options.pdbId.replace('"','')
  
     print
     return options
 
-class Protstability3d:
+class Snp2pdbsite:
     def __init__(self, options):
         self.pdbId = options.pdbId
-        self.mutPos = options.mutPos
+        if not options.chain:
+            options.chain = "" 
         self.chain = options.chain
-        self.aminoType = options.aminoType
-        self.url = 'http://www-bionet.sscc.ru/psd2/rest.php?tool=protstability3d'
+        if not options.mutation:
+            options.mutation = "" 
+        self.mutation = options.mutation
+        self.url = 'http://www-bionet.sscc.ru/psd2/rest.php?tool=snp2pdbsite'
 
     def sendQuery(self):
         opener = urllib2.build_opener(NoRedirectHandler())
         urllib2.install_opener(opener)
-
         # do POST
                                           
-        params = urllib.urlencode({'pdb': self.pdbId, 'chain': self.chain,  'pos_mut': self.mutPos, 'mutation': self.aminoType})
+        params = urllib.urlencode({'pdb': self.pdbId, 'chain': self.chain, 'mut': self.mutation})
         req = urllib2.Request(self.url,  params)
 
         rsp = urllib2.urlopen(req) 
@@ -80,7 +81,7 @@ class Protstability3d:
         content = content[res+5:]
         res = content.find('"')
         content = content[:res]
-        self.url = "http://www-bionet.sscc.ru/psd2/rest.php?tool=protstability3d&q=%s" %content
+        self.url = "http://www-bionet.sscc.ru/psd2/rest.php?tool=snp2pdbsite&q=%s" %content
         self.getResult()      
 
     def getResult(self):
@@ -97,16 +98,15 @@ class Protstability3d:
     def parseOutput(self, content):
         xmldoc = parseString(content)
         
-        itemlist = xmldoc.getElementsByTagName('stability')
+        itemlist = xmldoc.getElementsByTagName('aa')
         if itemlist.length <= 0:
             print "Error"
             sys.exit(1)
- 
-        res = 'STABILITY_3D' ':' +  str(itemlist[0].firstChild.nodeValue)
-        print res                           
+        for item in itemlist:
+            print "PDB_SITE" + ':' + item.getAttribute("pos") + item.getAttribute("aa") + ';'
 def main():
     opts=opt_validate(prepare_optparser())
-    g = Protstability3d(opts)
+    g = Snp2pdbsite(opts)
     g.sendQuery()
 if __name__ == "__main__":
     main()

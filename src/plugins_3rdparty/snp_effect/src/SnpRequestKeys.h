@@ -65,8 +65,7 @@ const SnpResponseKey DEFAULT_SEPARATOR(":");
 const SnpResponseKey R_SNP_PRESENT_TFBS( "PRESENT" );
 const SnpResponseKey PROT_STABILITY_1D( "Stability1d" );
 const SnpResponseKey PROT_STABILITY_3D( "Stability3d" );
-// TODO: add response keys for SNP2PDBSite tool
-const SnpResponseKey SNP_2_PDB_SITE_( "" );
+const SnpResponseKey SNP_2_PDB_SITE_( "PDB_SITE" );
 // TODO: add response keys for SNPChIP tool
 const SnpResponseKey SNP_CHIP_TOOLS_( "" );
 
@@ -77,7 +76,7 @@ namespace SnpRequestingScripts {
 const QString R_SNP_TOOLS_SCRIPT( "rsnp.py" );
 const QString SNP_PROT_STABILITY_1D_SCRIPT( "protstability1d.py" );
 const QString SNP_PROT_STABILITY_3D_SCRIPT( "protstability3d.py" );
-const QString SNP_2_PDB_SITE_SCRIPT( "" );
+const QString SNP_2_PDB_SITE_SCRIPT( "snp2pdbsite" );
 const QString SNP_CHIP_TOOLS_SCRIPT( "" );
 
 } // namespace SnpRequestAddresses

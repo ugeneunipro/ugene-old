@@ -104,7 +104,7 @@ class Protstability1d:
             print "Error"
             sys.exit(1)
  
-        res = "Stability1d"  ':' +  str(itemlist[0].firstChild.nodeValue)
+        res = "STABILITY_1D"  ':' +  str(itemlist[0].firstChild.nodeValue)
         print res                       
 def main():
     opts=opt_validate(prepare_optparser())
