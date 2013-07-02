@@ -160,6 +160,8 @@ class GTest_CompareFiles : public GTest {
     ReportResult report();
     
 private:
+    void replacePrefix(QString &path);
+
     QString doc1Path;
     QString doc2Path;
     bool byLines;

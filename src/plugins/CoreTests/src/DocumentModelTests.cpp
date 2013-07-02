@@ -27,6 +27,7 @@
 #include <U2Core/GObject.h>
 #include <U2Core/GHints.h>
 #include <U2Core/Log.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <U2Core/LoadDocumentTask.h>
 #include <U2Core/SaveDocumentTask.h>
@@ -468,26 +469,76 @@ static const QString TMP_ATTR_ID  = "temp";
 static const QString TMP_ATTR_SPLITTER = ",";
 static const QString BY_LINES_ATTR_ID = "by_lines";
 
+void GTest_CompareFiles::replacePrefix(QString &path) {
+    QString result;
+
+    const QString EXPECTED_OUTPUT_DIR_PREFIX = "!expected!";
+    const QString TMP_DATA_DIR_PREFIX = "!tmp_data_dir!";
+
+    // Determine which environment variable is required
+    QString envVarName;
+    QString prefix;
+    if (path.startsWith(EXPECTED_OUTPUT_DIR_PREFIX)) {
+        envVarName = "EXPECTED_OUTPUT_DIR";
+        prefix = EXPECTED_OUTPUT_DIR_PREFIX;
+    }
+    else if (path.startsWith(TMP_DATA_DIR_PREFIX)) {
+        envVarName = "TEMP_DATA_DIR";
+        prefix = TMP_DATA_DIR_PREFIX;
+    }
+    else {
+        FAIL(QString("Unexpected 'prefix' value in the path: '%1'!").arg(path), );
+    }
+
+    // Replace with the correct value
+    QString prefixPath = env->getVar(envVarName);
+    SAFE_POINT(!prefixPath.isEmpty(), QString("No value for environment variable '%1'!").arg(envVarName), );
+    prefixPath += "/";
+
+    int prefixSize = prefix.size();
+    QStringList relativePaths = path.mid(prefixSize).split(";");
+
+    foreach (const QString &path, relativePaths) {
+        QString fullPath = prefixPath + path;
+        result += fullPath + ";";
+    }
+
+    path = result.mid(0, result.size() - 1); // without the last ';'
+}
+
 void GTest_CompareFiles::init(XMLTestFormat *tf, const QDomElement& el) {
     Q_UNUSED(tf);
-    
-    QStringList tmpDocNums = el.attribute(TMP_ATTR_ID).split(TMP_ATTR_SPLITTER, QString::SkipEmptyParts);
-    
+
+    // Get the attributes values
+    QString tmpAttr = el.attribute(TMP_ATTR_ID);
+
     doc1Path = el.attribute(DOC1_ATTR_ID);
     if(doc1Path.isEmpty()) {
         failMissingValue(DOC1_ATTR_ID);
         return;
     }
-    doc1Path = (tmpDocNums.contains("1") ? env->getVar( "TEMP_DATA_DIR" ) : env->getVar("COMMON_DATA_DIR")) + "/" + doc1Path;
-    
+
     doc2Path = el.attribute(DOC2_ATTR_ID);
     if(doc2Path.isEmpty()) {
         failMissingValue(DOC2_ATTR_ID);
         return;
     }
-    doc2Path = (tmpDocNums.contains("2") ? env->getVar( "TEMP_DATA_DIR" ) : env->getVar("COMMON_DATA_DIR")) + "/" + doc2Path;
-    
-    byLines = !el.attribute(BY_LINES_ATTR_ID).isEmpty();
+
+    // Get the full documents paths
+    if (!tmpAttr.isEmpty()) {
+        // Attribute "tmp" is used to determine paths prefixes,
+        // specified paths are relative (used in all old tests, obsolete)
+        QStringList tmpDocNums = tmpAttr.split(TMP_ATTR_SPLITTER, QString::SkipEmptyParts);
+        doc1Path = (tmpDocNums.contains("1") ? env->getVar("TEMP_DATA_DIR") : env->getVar("COMMON_DATA_DIR")) + "/" + doc1Path;
+        doc2Path = (tmpDocNums.contains("2") ? env->getVar("TEMP_DATA_DIR") : env->getVar("COMMON_DATA_DIR")) + "/" + doc2Path;
+        byLines = !el.attribute(BY_LINES_ATTR_ID).isEmpty();
+    }
+    else {
+        // Only "doc1" and "doc2" attributes are specified,
+        // paths contain prefixes, e.g. "!common_data_dir!"
+        replacePrefix(doc1Path);
+        replacePrefix(doc2Path);
+    }
 }
 
 static const qint64 READ_LINE_MAX_SZ = 2048;
@@ -495,13 +546,13 @@ static const qint64 READ_LINE_MAX_SZ = 2048;
 Task::ReportResult GTest_CompareFiles::report() {
     QFile f1(doc1Path);
     if(!f1.open(QIODevice::ReadOnly)) {
-        setError(QString("Cannot open %1 file").arg(doc1Path));
+        setError(QString("Cannot open file '%1'!").arg(doc1Path));
         return ReportResult_Finished;
     }
     
     QFile f2(doc2Path);
     if(!f2.open(QIODevice::ReadOnly)) {
-        setError(QString("Cannot open %1 file").arg(doc2Path));
+        setError(QString("Cannot open file '%1'!").arg(doc2Path));
         return ReportResult_Finished;
     }
     
@@ -512,7 +563,7 @@ Task::ReportResult GTest_CompareFiles::report() {
         
         if(bytes1.isEmpty() || bytes2.isEmpty()) {
             if( bytes1 != bytes2 ) {
-                setError(QString("files are of different size"));
+                setError(QString("The files are of different sizes!"));
                 return ReportResult_Finished;
             }
             break;
@@ -524,7 +575,9 @@ Task::ReportResult GTest_CompareFiles::report() {
         }
         
         if( bytes1 != bytes2 ) {
-            setError(QString("files are note equal at line %1. %2 and %3").arg(lineNum).arg(QString(bytes1)).arg(QString(bytes2)));
+            setError(QString("The files are not equal at line %1."
+                "The first file contains '%2'' and the second contains '%3'!")
+                .arg(lineNum).arg(QString(bytes1)).arg(QString(bytes2)));
             return ReportResult_Finished;
         }
         
@@ -719,4 +772,4 @@ QList<XMLTestFactory*> DocumentModelTests::createTestFactories() {
 }
 
 
-}//namespace
+} // namespace
