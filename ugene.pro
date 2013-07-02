@@ -1,7 +1,9 @@
 include( src/ugene_globals.pri )
 
-TEMPLATE = subdirs 
+TEMPLATE = subdirs
+
 CONFIG += ordered debug_and_release
+
 use_bundled_zlib() {
     SUBDIRS += src/libs_3rdparty/zlib
 }

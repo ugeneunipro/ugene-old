@@ -101,10 +101,6 @@ int ARGC = 0;
 
 namespace U2 {
 
-static void updateStaticTranslations( ) {
-    GObjectTypes::initTypeTranslations( );
-}
-
 static void setDataSearchPaths( ) {
     //set search paths for data files
     QStringList dataSearchPaths;

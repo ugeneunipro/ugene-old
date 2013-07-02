@@ -8,12 +8,6 @@ UGENE_RELATIVE_DESTDIR = ''
 
 DEFINES +=          QT_FATAL_ASSERT BUILDING_U2SCRIPT_DLL
 
-use_opencl(){
-    DEFINES +=      OPENCL_SUPPORT
-}
-
-QT -= gui
-
 INCLUDEPATH +=      ../../include \
                     ../U2Private/src
 
@@ -25,11 +19,14 @@ INCLUDEPATH +=      ../../include \
 #                    $${UGENE_NODE_DIR}/deps/uv/include
 #}
 
+LIBS += -L../../_release -lU2Core -lU2Algorithm -lU2Formats -lU2Remote -lU2Lang -lU2Private -lugenedb -lU2Gui -lU2Test
+
 !debug_and_release|build_pass {
 
     CONFIG( debug, debug|release ) {
         DESTDIR =   ../../_debug
 
+        LIBS -=     -L../../_release -lU2Core -lU2Algorithm -lU2Formats -lU2Remote -lU2Lang -lU2Private -lugenedb -lU2Gui -lU2Test
         LIBS +=     -L../../_debug -lU2Cored -lU2Algorithmd -lU2Formatsd -lU2Remoted -lU2Langd -lU2Privated -lugenedbd -lU2Guid -lU2Testd
                     
 #        count( UGENE_NODE_DIR, 1 ) {
@@ -39,8 +36,6 @@ INCLUDEPATH +=      ../../include \
 
     CONFIG( release, debug|release ) {
         DESTDIR =   ../../_release
-
-        LIBS +=     -L../../_release -lU2Core -lU2Algorithm -lU2Formats -lU2Remote -lU2Lang -lU2Private -lugenedb -lU2Gui -lU2Test
 
 #        count( UGENE_NODE_DIR, 1 ) {
 #            LIBS += -l$${UGENE_NODE_DIR}/Release/node
