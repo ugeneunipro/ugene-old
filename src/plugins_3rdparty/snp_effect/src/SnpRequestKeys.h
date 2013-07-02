@@ -39,14 +39,14 @@ const SnpRequestKey R_SNP_FIRST_SITE_STATE( "--snpdm1" );
 const SnpRequestKey R_SNP_SECOND_SITE_STATE( "--snpdm2" );
 const SnpRequestKey R_SNP_SIGNIFICANCE( "--sign" );
 
-const SnpRequestKey PROT_STAB_1D_SEQUENCE( "" );
-const SnpRequestKey PROT_STAB_1D_MUTATION_POS( "" );
-const SnpRequestKey PROT_STAB_1D_REPLACEMENT( "" );
+const SnpRequestKey PROT_STAB_1D_SEQUENCE( "-s" );
+const SnpRequestKey PROT_STAB_1D_MUTATION_POS( "-p" );
+const SnpRequestKey PROT_STAB_1D_REPLACEMENT( "-t" );
 
-const SnpRequestKey PROT_STAB_3D_PDB_ID( "" );
-const SnpRequestKey PROT_STAB_3D_CHAIN( "" );
-const SnpRequestKey PROT_STAB_3D_MUTATION_POS( "" );
-const SnpRequestKey PROT_STAB_3D_REPLACEMENT( "" );
+const SnpRequestKey PROT_STAB_3D_PDB_ID( "-i" );
+const SnpRequestKey PROT_STAB_3D_CHAIN( "-c" );
+const SnpRequestKey PROT_STAB_3D_MUTATION_POS( "-p" );
+const SnpRequestKey PROT_STAB_3D_REPLACEMENT( "-t" );
 
 const SnpRequestKey SNP_2_PDB_SITE_PDB_ID( "" );
 const SnpRequestKey SNP_2_PDB_SITE_CHAIN( "" );
@@ -75,8 +75,8 @@ const SnpResponseKey SNP_CHIP_TOOLS_( "" );
 namespace SnpRequestingScripts {
 
 const QString R_SNP_TOOLS_SCRIPT( "rsnp.py" );
-const QString SNP_PROT_STABILITY_1D_SCRIPT( "" );
-const QString SNP_PROT_STABILITY_3D_SCRIPT( "" );
+const QString SNP_PROT_STABILITY_1D_SCRIPT( "protstability1d.py" );
+const QString SNP_PROT_STABILITY_3D_SCRIPT( "protstability3d.py" );
 const QString SNP_2_PDB_SITE_SCRIPT( "" );
 const QString SNP_CHIP_TOOLS_SCRIPT( "" );
 
