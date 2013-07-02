@@ -48,9 +48,9 @@ const SnpRequestKey PROT_STAB_3D_CHAIN( "-c" );
 const SnpRequestKey PROT_STAB_3D_MUTATION_POS( "-p" );
 const SnpRequestKey PROT_STAB_3D_REPLACEMENT( "-t" );
 
-const SnpRequestKey SNP_2_PDB_SITE_PDB_ID( "" );
-const SnpRequestKey SNP_2_PDB_SITE_CHAIN( "" );
-const SnpRequestKey SNP_2_PDB_SITE_MUTATIONS( "" );
+const SnpRequestKey SNP_2_PDB_SITE_PDB_ID( "-p" );
+const SnpRequestKey SNP_2_PDB_SITE_CHAIN( "-c" );
+const SnpRequestKey SNP_2_PDB_SITE_MUTATIONS( "-m" );
 
 const SnpRequestKey SNP_CHIP_TOOLS_UG( "" );
 const SnpRequestKey SNP_CHIP_TOOLS_SNP_ID( "" );
