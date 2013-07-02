@@ -171,6 +171,7 @@ U2SCRIPT_EXPORT void getObjectName( UgeneDbHandle object, int expectedMaxNameLen
     }
     U2ErrorType error = U2::TextConversionUtils::qstringToCstring( result, expectedMaxNameLength,
         name );
+    Q_UNUSED( error );
 }
 
 U2SCRIPT_EXPORT void setObjectName( UgeneDbHandle object, const char *newName ) {

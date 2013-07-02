@@ -19,6 +19,10 @@
  * MA 02110-1301, USA.
  */
 
+#ifdef __GNUC__
+    #include <stdlib.h>
+#endif
+
 #include <U2Core/U2SafePoints.h>
 #include <U2Lang/WorkflowRunSerializedSchemeTask.h>
 
@@ -36,7 +40,7 @@ U2SCRIPT_EXPORT U2ErrorType createScheme( const char *pathToScheme, SchemeHandle
     try {
         *scheme = new U2::SchemeWrapper( pathToScheme, &result );
     } catch ( const std::bad_alloc & ) {
-        delete *scheme;
+        delete reinterpret_cast<U2::SchemeWrapper *>( *scheme );
         result = U2_NOT_ENOUGH_MEMORY;
     }
     return result;

@@ -39,14 +39,14 @@ struct U2CORE_EXPORT TaskResourceUsage {
         : resourceId(id), resourceUse(use), prepareStageLock(prepareStage), locked(false)
     {}
 
-	enum UseType {
-		Read,
-		Write
-	};
+    enum UseType {
+        Read,
+        Write
+    };
 
-	TaskResourceUsage(int id, UseType use, bool prepareStage = false) 
-		: resourceId(id), resourceUse(use), prepareStageLock(prepareStage), locked(false)
-	{}
+    TaskResourceUsage(int id, UseType use, bool prepareStage = false) 
+        : resourceId(id), resourceUse(use), prepareStageLock(prepareStage), locked(false)
+    {}
 
     int resourceId;
     int resourceUse;

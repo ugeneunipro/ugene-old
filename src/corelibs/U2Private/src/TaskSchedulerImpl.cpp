@@ -391,7 +391,7 @@ QString TaskSchedulerImpl::tryLockResources(Task* task, bool prepareStage, bool&
         if (appRes && taskRes.locked) {
             appRes->release(lockedResourceCount[i]);
         }
-		taskRes.locked = false;
+        taskRes.locked = false;
     }
     if (!prepareStage) {
         threadsResource->release();
