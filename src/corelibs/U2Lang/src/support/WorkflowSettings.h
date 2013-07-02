@@ -51,6 +51,9 @@ public:
     static bool monitorRun();
     static void setMonitorRun(bool v);
 
+    static bool isDebuggerEnabled();
+    static void setDebuggerEnabled(bool v);
+
     /*static bool failFast();
     static void setFailFast(bool v);*/
 

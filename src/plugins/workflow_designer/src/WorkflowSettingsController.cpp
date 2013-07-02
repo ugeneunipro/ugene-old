@@ -42,6 +42,7 @@ AppSettingsGUIPageState* WorkflowSettingsPageController::getSavedState() {
     state->showGrid = WorkflowSettings::showGrid();
     state->snap2grid = WorkflowSettings::snap2Grid();
     state->lockRun = WorkflowSettings::monitorRun();
+    state->enableDebugger = WorkflowSettings::isDebuggerEnabled();
     //state->failFast = WorkflowSettings::failFast();
     state->style = WorkflowSettings::defaultStyle();
     state->font = WorkflowSettings::defaultFont();
@@ -58,6 +59,7 @@ void WorkflowSettingsPageController::saveState(AppSettingsGUIPageState* s) {
     WorkflowSettings::setShowGrid(state->showGrid);
     WorkflowSettings::setSnap2Grid(state->snap2grid);
     WorkflowSettings::setMonitorRun(state->lockRun);
+    WorkflowSettings::setDebuggerEnabled(state->enableDebugger);
     //WorkflowSettings::setFailFast(state->failFast);
     WorkflowSettings::setDefaultStyle(state->style);
     WorkflowSettings::setDefaultFont(state->font);
@@ -124,6 +126,7 @@ void WorkflowSettingsPageWidget::setState(AppSettingsGUIPageState* s) {
     gridBox->setChecked(state->showGrid);
     snapBox->setChecked(state->snap2grid);
     lockBox->setChecked(state->lockRun);
+    debuggerBox->setChecked(state->enableDebugger);
     //failBox->setChecked(state->failFast);
     int idx = styleCombo->findData(state->style);
     if (idx < 0) idx = 1; 
@@ -144,6 +147,7 @@ AppSettingsGUIPageState* WorkflowSettingsPageWidget::getState(QString& ) const {
     state->showGrid = gridBox->isChecked();
     state->snap2grid = snapBox->isChecked();
     state->lockRun = lockBox->isChecked();
+    state->enableDebugger = debuggerBox->isChecked();
     //state->failFast = failBox->isChecked();
     state->style = styleCombo->itemData(styleCombo->currentIndex()).toString();
     state->font = fontCombo->currentFont();

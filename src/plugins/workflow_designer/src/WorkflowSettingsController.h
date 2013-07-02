@@ -49,6 +49,7 @@ public:
     bool showGrid;
     bool snap2grid;
     bool lockRun;
+    bool enableDebugger;
     //bool failFast;
     QString style;
     QFont font;

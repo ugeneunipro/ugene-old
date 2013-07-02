@@ -1451,7 +1451,8 @@ void WorkflowView::sl_stop() {
 }
 
 void WorkflowView::toggleDebugActionsState(bool enable) {
-    if(!WorkflowSettings::runInSeparateProcess()) {
+    if(!WorkflowSettings::runInSeparateProcess() && WorkflowSettings::isDebuggerEnabled())
+    {
         foreach(QAction *action, debugActions) {
             action->setVisible(enable);
         }
@@ -1567,8 +1568,16 @@ WorkflowProcessItem *WorkflowView::findItemById(ActorId actor) const {
 }
 
 void WorkflowView::paintEvent(QPaintEvent *event) {
-    toggleBreakpointManager->setEnabled(!WorkflowSettings::runInSeparateProcess());
-    if(NULL != scene->getRunner()) {
+    const bool isWorkflowRunning = ( NULL != scene->getRunner( ) );
+    const bool isDebuggerEnabled = WorkflowSettings::isDebuggerEnabled( );
+    foreach ( QAction *action, debugActions ) {
+        action->setVisible( WorkflowSettings::isDebuggerEnabled( ) && isWorkflowRunning );
+    }
+    toggleBreakpointAction->setVisible( isDebuggerEnabled );
+    toggleBreakpointManager->setVisible( isDebuggerEnabled );
+
+    toggleBreakpointManager->setEnabled( !WorkflowSettings::runInSeparateProcess( ) );
+    if (isWorkflowRunning) {
         if(debugInfo->isPaused()) {
             sl_onSelectionChanged();
         } else {

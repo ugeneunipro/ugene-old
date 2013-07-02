@@ -35,19 +35,20 @@
 
 namespace U2 {
 
-#define GRID_STATE SETTINGS + "showGrid"
-#define SNAP_STATE SETTINGS + "snap2rid"
-#define LOCK_STATE SETTINGS + "monitorRun"
-#define FAIL_STATE SETTINGS + "failFast"
-#define STYLE      SETTINGS + "style"
-#define FONT       SETTINGS + "font"
-#define DIR        "workflow_settings/path"
-#define BG_COLOR   SETTINGS + "bgcolor"
-#define RUN_MODE   SETTINGS + "runMode"
-#define SCRIPT_MODE SETTINGS + "scriptMode"
-#define RUN_IN_SEPARATE_PROC SETTINGS + "runInSeparateProcess"
-#define EXTERNAL_TOOL_WORKER_PATH SETTINGS + "externalToolWorkerPath"
-#define INCLUDED_WORKER_PATH SETTINGS + "includedWorkerPath"
+#define GRID_STATE                  SETTINGS + "showGrid"
+#define SNAP_STATE                  SETTINGS + "snap2rid"
+#define LOCK_STATE                  SETTINGS + "monitorRun"
+#define DEBUGGER_STATE              SETTINGS + "enableDebugger"
+#define FAIL_STATE                  SETTINGS + "failFast"
+#define STYLE                       SETTINGS + "style"
+#define FONT                        SETTINGS + "font"
+#define DIR                         "workflow_settings/path"
+#define BG_COLOR                    SETTINGS + "bgcolor"
+#define RUN_MODE                    SETTINGS + "runMode"
+#define SCRIPT_MODE                 SETTINGS + "scriptMode"
+#define RUN_IN_SEPARATE_PROC        SETTINGS + "runInSeparateProcess"
+#define EXTERNAL_TOOL_WORKER_PATH   SETTINGS + "externalToolWorkerPath"
+#define INCLUDED_WORKER_PATH        SETTINGS + "includedWorkerPath"
 
 Watcher* const WorkflowSettings::watcher = new Watcher;
 
@@ -76,6 +77,14 @@ bool WorkflowSettings::monitorRun() {
 
 void WorkflowSettings::setMonitorRun( bool v ) {
     AppContext::getSettings()->setValue(LOCK_STATE, v);
+}
+
+bool WorkflowSettings::isDebuggerEnabled() {
+    return AppContext::getSettings()->getValue(DEBUGGER_STATE, false).toBool();
+}
+
+void WorkflowSettings::setDebuggerEnabled(bool v) {
+    AppContext::getSettings()->setValue(DEBUGGER_STATE, v);
 }
 
 /*bool WorkflowSettings::failFast() {

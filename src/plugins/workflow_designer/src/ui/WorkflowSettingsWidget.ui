@@ -99,6 +99,16 @@
         </property>
        </widget>
       </item>
+      <item>
+       <widget class="QCheckBox" name="debuggerBox">
+        <property name="text">
+         <string>Enable debugger</string>
+        </property>
+        <property name="tristate">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
      </layout>
     </widget>
    </item>
