@@ -5,6 +5,26 @@ from optparse import OptionParser
 from HTMLParser import HTMLParser
 from xml.dom.minidom import parseString
 
+#id mapping
+def getPDBIdandChain(uniprotID):
+    #data from http://www.bioinf.org.uk/pdbsws/
+    f = open ('pdb_uniprot_chain_map.lst.2', 'r')
+    pdbId = ''
+    chain = ''
+    while(1):
+        line = f.readline()
+        if not line:
+            break
+        line = line.rstrip('\n')
+        columns = line.split()
+        if len(columns) != 3:
+            continue
+        if columns[2] == uniprotID:
+            pdbId = columns[0]
+            chain = columns[1]
+    f.close()
+    return pdbId, chain
+
 # Define a function for the thread
 
 class NoRedirectHandler(urllib2.HTTPRedirectHandler):
@@ -28,8 +48,8 @@ def prepare_optparser():
     optparser = OptionParser(version="%prog v1.0", description=description, usage=usage, add_help_option=False)
     optparser.add_option("-h","--help",action="help",help="Show this help message and exit.")
     
-    optparser.add_option("-p","--pdb",dest="pdbId",type="string",
-                         help="Enter PDB ID.")
+    optparser.add_option("-p","--protId",dest="protId",type="string",
+                         help="Enter protein (uniprot) ID.")
     
     optparser.add_option("-c", "--chain", dest="chain",type="string",
                          help="Enter chain.")
@@ -46,18 +66,26 @@ def opt_validate(optparser):
     """
     (options,args) = optparser.parse_args()
         
-    if not (options.pdbId and options.chain and options.mutation):
+    if not (options.protId and options.chain and options.mutation):
         optparser.print_help()
         sys.exit(1)
-    if '"' in options.pdbId:
-        options.pdbId = options.pdbId.replace('"','')
+    if '"' in options.protId:
+        options.protId = options.protId.replace('"','')
+        
+    id, chain = getPDBIdandChain(options.protId)
+    if not (id and chain):
+        sys.exit(1)
+    
+    options.chain = chain
+    options.protid = id
+    options.mutation[0] = chain
  
     print
     return options
 
 class Snp2pdbsite:
     def __init__(self, options):
-        self.pdbId = options.pdbId
+        self.protId = options.protId
         if not options.chain:
             options.chain = "" 
         self.chain = options.chain
@@ -71,7 +99,7 @@ class Snp2pdbsite:
         urllib2.install_opener(opener)
         # do POST
                                           
-        params = urllib.urlencode({'pdb': self.pdbId, 'chain': self.chain, 'mut': self.mutation})
+        params = urllib.urlencode({'pdb': self.protId, 'chain': self.chain, 'mut': self.mutation})
         req = urllib2.Request(self.url,  params)
 
         rsp = urllib2.urlopen(req) 

@@ -33,6 +33,9 @@ public:
         SubstitutionAA,
         SIFTeffect,
         SIFTscore,
+        prot1d,
+        prot3d,
+        snp2pdb,
         LRT,
         PhyloP,
         PolyPhen2,
@@ -46,7 +49,8 @@ public:
 
         //regulatory
         promoterPos,
-        rSNPTranscrFactors
+        rSNPTranscrFactors,
+        ChIPTools,
 
     };
 
@@ -97,7 +101,7 @@ private:
     void initOrderColumns();
     void addValueToRaw(const QString& val, ReportColumns key, QMap<ReportColumns, QString>& rawData, QList<ReportColumns>& container);
 
-    void getDefaultAttributeValue(const U2DataId& varId, SnpRequestKey key, ReportColumns colRey, QMap<ReportColumns, QString>& rawData);
+    void getDefaultAttributeValue(const U2DataId& varId, QString key, ReportColumns colRey, QMap<ReportColumns, QString>& rawData);
 
 
 };

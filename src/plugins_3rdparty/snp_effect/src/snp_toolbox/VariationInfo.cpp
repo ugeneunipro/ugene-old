@@ -660,6 +660,12 @@ QString VariationInfo::getInGeneTableHeader(){
             res.append("SIFTeffect");
         }else if(rc == VariationInfo::SIFTscore){
             res.append("SIFTscore");
+        }else if(rc == VariationInfo::prot1d){
+            res.append("ProtStability1D");
+        }else if(rc == VariationInfo::prot3d){
+            res.append("ProtStability3D");
+        }else if(rc == VariationInfo::snp2pdb){
+            res.append("SNP2PDBSite");
         }else if(rc == VariationInfo::LRT){
             res.append("LRT");
         }else if(rc == VariationInfo::PhyloP){
@@ -725,6 +731,8 @@ QString VariationInfo::getOutGeneTableHeader(){
             res.append("hapmap");
         }else if(rc == VariationInfo::rSNPTranscrFactors){
             res.append("rSNPTools_factors");
+        }else if(rc == VariationInfo::ChIPTools){
+            res.append("ChIPTools");
         }
 
     }
@@ -762,6 +770,15 @@ QStringList VariationInfo::getInGeneTableRaws(){
             QString locationStr = getInGeneLocationInfo(gene.getName());
             curRawData.insert(VariationInfo::Location, locationStr);
 
+            //scripts attributes
+            QString prot1dKey = SnpResponseKeys::PROT_STABILITY_1D + SnpResponseKeys::DEFAULT_SEPARATOR + QString::fromLatin1(gene.getFeatureId());
+            getDefaultAttributeValue(variant.id, prot1dKey, VariationInfo::prot1d, curRawData);
+
+            QString prot3dKey = SnpResponseKeys::PROT_STABILITY_3D + SnpResponseKeys::DEFAULT_SEPARATOR + QString::fromLatin1(gene.getFeatureId());
+            getDefaultAttributeValue(variant.id, prot3dKey, VariationInfo::prot3d, curRawData);
+
+            QString snp2pdbKey = SnpResponseKeys::SNP_2_PDB_SITE_ + SnpResponseKeys::DEFAULT_SEPARATOR + QString::fromLatin1(gene.getFeatureId());
+            getDefaultAttributeValue(variant.id, snp2pdbKey, VariationInfo::snp2pdb, curRawData);
         
             bool first = true;
             foreach(ReportColumns rc, columnsOrderInGene){
@@ -817,6 +834,7 @@ QStringList VariationInfo::getOutGeneTableRaws(){
             getInGeneEffectInfo(gene.getName(), curRawData);
 
             getDefaultAttributeValue(variant.id, SnpResponseKeys::R_SNP_PRESENT_TFBS, VariationInfo::rSNPTranscrFactors, curRawData);
+            getDefaultAttributeValue(variant.id, SnpResponseKeys::SNP_CHIP_TOOLS_, VariationInfo::ChIPTools, curRawData);
 
             bool first = true;
             foreach(ReportColumns rc, columnsOrderOutGene){
@@ -856,6 +874,9 @@ void VariationInfo::initOrderColumns(){
         << VariationInfo::SubstitutionAA
         << VariationInfo::SIFTeffect
         << VariationInfo::SIFTscore
+        << VariationInfo::prot1d
+        << VariationInfo::prot3d
+        << VariationInfo::snp2pdb
         << VariationInfo::LRT
         << VariationInfo::PhyloP
         << VariationInfo::PolyPhen2
@@ -879,6 +900,7 @@ void VariationInfo::initOrderColumns(){
         << VariationInfo::Clinical_significance
         << VariationInfo::promoterPos
         << VariationInfo::rSNPTranscrFactors
+        << VariationInfo::ChIPTools
         << VariationInfo::genomes1000
         << VariationInfo::segmental
         << VariationInfo::conserved
@@ -894,7 +916,7 @@ void VariationInfo::addValueToRaw( const QString& val, ReportColumns key, QMap<R
     }
 }
 
-void VariationInfo::getDefaultAttributeValue(const U2DataId& varId, SnpRequestKey key, ReportColumns colKey, QMap<ReportColumns, QString>& rawData ){
+void VariationInfo::getDefaultAttributeValue(const U2DataId& varId, QString key, ReportColumns colKey, QMap<ReportColumns, QString>& rawData ){
     QString value = "";
     if (attrDbi == NULL){
         return;

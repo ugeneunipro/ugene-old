@@ -5,6 +5,26 @@ from optparse import OptionParser
 from HTMLParser import HTMLParser
 from xml.dom.minidom import parseString
 
+#id mapping
+def getPDBIdandChain(uniprotID):
+    #data from http://www.bioinf.org.uk/pdbsws/
+    f = open ('pdb_uniprot_chain_map.lst.2', 'r')
+    pdbId = ''
+    chain = ''
+    while(1):
+        line = f.readline()
+        if not line:
+            break
+        line = line.rstrip('\n')
+        columns = line.split()
+        if len(columns) != 3:
+            continue
+        if columns[2] == uniprotID:
+            pdbId = columns[0]
+            chain = columns[1]
+    f.close()
+    return pdbId, chain
+
 # Define a function for the thread
 
 class NoRedirectHandler(urllib2.HTTPRedirectHandler):
@@ -28,8 +48,8 @@ def prepare_optparser():
     optparser = OptionParser(version="%prog v1.0", description=description, usage=usage, add_help_option=False)
     optparser.add_option("-h","--help",action="help",help="Show this help message and exit.")
     
-    optparser.add_option("-i","--pdb",dest="pdbId",type="string",
-                         help="Enter a PDB ID.")
+    optparser.add_option("-i","--protid",dest="protId",type="string",
+                         help="Enter a protein (uniprot) ID.")
 
     optparser.add_option("-c", "--chain", dest="chain",type="string",
                          help="Enter chain.")
@@ -47,18 +67,24 @@ def opt_validate(optparser):
 
     Return: Validated options object.
     """
+    
     (options,args) = optparser.parse_args()
-        
-    if not (options.chain and options.pdbId and options.mutPos and options.aminoType):
+    if not (options.chain and options.protId and options.mutPos and options.aminoType):
         optparser.print_help()
         sys.exit(1)
  
-    print
+    id, chain = getPDBIdandChain(options.protId)
+    if not (id and chain):
+        sys.exit(1)
+    
+    options.chain = chain
+    options.protid = id
+    
     return options
 
 class Protstability3d:
     def __init__(self, options):
-        self.pdbId = options.pdbId
+        self.protId = options.protId
         self.mutPos = options.mutPos
         self.chain = options.chain
         self.aminoType = options.aminoType
@@ -70,7 +96,7 @@ class Protstability3d:
 
         # do POST
                                           
-        params = urllib.urlencode({'pdb': self.pdbId, 'chain': self.chain,  'pos_mut': self.mutPos, 'mutation': self.aminoType})
+        params = urllib.urlencode({'pdb': self.protId, 'chain': self.chain,  'pos_mut': self.mutPos, 'mutation': self.aminoType})
         req = urllib2.Request(self.url,  params)
 
         rsp = urllib2.urlopen(req) 

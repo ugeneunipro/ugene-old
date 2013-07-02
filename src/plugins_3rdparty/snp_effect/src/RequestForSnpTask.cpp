@@ -68,7 +68,7 @@ void SnpResponseLogParser::parseOutput( const QString &partOfLog )
         }
         int lineSeparatorPos = line.indexOf( SnpResponseKeys::DEFAULT_SEPARATOR );
         QString key = line.left( lineSeparatorPos );
-        QString value = line.mid( line.indexOf( QRegExp( "\\w" ), lineSeparatorPos ) );
+        QString value = line.mid( lineSeparatorPos + 1 );
         result[key] = value;
         qDebug() << key << ":" << value;
     }

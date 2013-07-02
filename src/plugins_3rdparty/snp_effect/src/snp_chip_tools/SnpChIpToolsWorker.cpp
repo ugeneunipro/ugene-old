@@ -54,18 +54,22 @@ SnpChipToolsWorker::SnpChipToolsWorker( Actor *p )
 QList<QVariantMap> SnpChipToolsWorker::getInputDataForRequest( const U2Variant& variant,
     const U2VariantTrack& track, U2Dbi* dataBase )
 {
+    QList<QVariantMap> result;
     QVariantMap inputData;
     // TODO: obtain the SNP id from db as well as `UG` parameter
 
     //sample data
     //inputData[SnpRequestKeys::SNP_CHIP_TOOLS_SNP_ID] = "11466315";
     //inputData[SnpRequestKeys::SNP_CHIP_TOOLS_UG] = true;
+    if (!variant.publicId.startsWith("rs")){
+        return result;
+    }
 
-    inputData[SnpRequestKeys::SNP_CHIP_TOOLS_SNP_ID] = "";
+    inputData[SnpRequestKeys::SNP_CHIP_TOOLS_SNP_ID] = variant.publicId;
     inputData[SnpRequestKeys::SNP_CHIP_TOOLS_UG] = true;
+    
+    result.append(inputData);
 
-    QList<QVariantMap> result;
-    result << inputData;
     return result;
 }
 

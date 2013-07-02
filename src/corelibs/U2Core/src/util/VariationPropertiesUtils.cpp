@@ -304,9 +304,9 @@ QByteArray VariationPropertiesUtils::getAASequence( const QByteArray& nuclSeq){
     DNATranslation* transl =  translList.first();
 
     int transl_len = nuclSeq.length() / 3;
-    res.reserve(transl_len);
+    res = QByteArray(transl_len, '?');
 
-    transl->translate(nuclSeq.data(), nuclSeq.length(), res.data(), transl_len);
+    transl->translate(nuclSeq.constData(), nuclSeq.length(), res.data(), transl_len);
 
     return res;
 }

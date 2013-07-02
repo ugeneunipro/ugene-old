@@ -91,7 +91,6 @@ void SNPReportWriterTask::run() {
         return;
     }
 
-
     //in-gene
     IOAdapter* io = IOAdapterUtils::open(settings.reportPath, stateInfo, IOAdapterMode_Write);
     bool first = true;
