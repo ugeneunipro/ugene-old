@@ -58,10 +58,6 @@ def opt_validate(optparser):
 class Protstability1d:
     def __init__(self, options):
         self.fastaSeq = options.fastaSeq
-        index = self.fastaSeq.find('\n')
-        self.seqName = ""
-        if(index >= 0):
-            self.seqName = self.fastaSeq[1:index]
         if not options.mutPos:
             options.mutPos = "" 
         self.mutPos = options.mutPos
@@ -108,11 +104,7 @@ class Protstability1d:
             print "Error"
             sys.exit(1)
  
-        res = ""
-        if(self.seqName):
-            res += self.seqName
-        res += '[' +  self.mutPos + ',' + self.aminoType + ']'
-        res += ':' +  str(itemlist[0].firstChild.nodeValue)
+        res = "Stability1d"  ':' +  str(itemlist[0].firstChild.nodeValue)
         print res                       
 def main():
     opts=opt_validate(prepare_optparser())

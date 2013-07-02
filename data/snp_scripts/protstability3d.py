@@ -102,9 +102,7 @@ class Protstability3d:
             print "Error"
             sys.exit(1)
  
-        res = self.pdbId
-        res += '[' +  str(self.mutPos) + ',' + self.aminoType + ']'
-        res += ':' +  str(itemlist[0].firstChild.nodeValue)
+        res = 'Stability3d' ':' +  str(itemlist[0].firstChild.nodeValue)
         print res                           
 def main():
     opts=opt_validate(prepare_optparser())

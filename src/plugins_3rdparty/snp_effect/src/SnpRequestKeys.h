@@ -63,8 +63,8 @@ namespace SnpResponseKeys {
 const SnpResponseKey DEFAULT_SEPARATOR(":");
 
 const SnpResponseKey R_SNP_PRESENT_TFBS( "PRESENT" );
-const SnpResponseKey PROT_STABILITY_1D( "" );
-const SnpResponseKey PROT_STABILITY_3D( "" );
+const SnpResponseKey PROT_STABILITY_1D( "Stability1d" );
+const SnpResponseKey PROT_STABILITY_3D( "Stability3d" );
 // TODO: add response keys for SNP2PDBSite tool
 const SnpResponseKey SNP_2_PDB_SITE_( "" );
 // TODO: add response keys for SNPChIP tool
