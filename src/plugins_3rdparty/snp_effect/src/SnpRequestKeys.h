@@ -52,8 +52,8 @@ const SnpRequestKey SNP_2_PDB_SITE_PDB_ID( "-p" );
 const SnpRequestKey SNP_2_PDB_SITE_CHAIN( "-c" );
 const SnpRequestKey SNP_2_PDB_SITE_MUTATIONS( "-m" );
 
-const SnpRequestKey SNP_CHIP_TOOLS_UG( "" );
-const SnpRequestKey SNP_CHIP_TOOLS_SNP_ID( "" );
+const SnpRequestKey SNP_CHIP_TOOLS_UG( "--ug" );
+const SnpRequestKey SNP_CHIP_TOOLS_SNP_ID( "-i" );
 
 } // namespace SnpRequestKeys
 
@@ -66,8 +66,7 @@ const SnpResponseKey R_SNP_PRESENT_TFBS( "PRESENT" );
 const SnpResponseKey PROT_STABILITY_1D( "STABILITY_1D" );
 const SnpResponseKey PROT_STABILITY_3D( "STABILITY_3D" );
 const SnpResponseKey SNP_2_PDB_SITE_( "PDB_SITE" );
-// TODO: add response keys for SNPChIP tool
-const SnpResponseKey SNP_CHIP_TOOLS_( "" );
+const SnpResponseKey SNP_CHIP_TOOLS_( "SNP_CHIP" );
 
 }
 
@@ -77,7 +76,7 @@ const QString R_SNP_TOOLS_SCRIPT( "rsnp.py" );
 const QString SNP_PROT_STABILITY_1D_SCRIPT( "protstability1d.py" );
 const QString SNP_PROT_STABILITY_3D_SCRIPT( "protstability3d.py" );
 const QString SNP_2_PDB_SITE_SCRIPT( "snp2pdbsite" );
-const QString SNP_CHIP_TOOLS_SCRIPT( "" );
+const QString SNP_CHIP_TOOLS_SCRIPT( "SNPChIPTools" );
 
 } // namespace SnpRequestAddresses
 
