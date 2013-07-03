@@ -140,15 +140,15 @@ void CuffmergeWorkerFactory::init()
     QMap<QString, PropertyDelegate*> delegates;
     {
         delegates[OUT_DIR] = new URLDelegate("", "", false, true /*path*/);
-        delegates[REF_ANNOTATION] = new URLDelegate(DialogUtils::prepareDocumentsFileFilter(true), "", false);
-        delegates[REF_SEQ] = new URLDelegate(DialogUtils::prepareDocumentsFileFilter(true), "", false);
+        delegates[REF_ANNOTATION] = new URLDelegate(DialogUtils::prepareDocumentsFileFilter(true), "", false, false, false);
+        delegates[REF_SEQ] = new URLDelegate(DialogUtils::prepareDocumentsFileFilter(true), "", false, false, false);
         QVariantMap vm;
         vm["minimum"] = 0.0;
         vm["maximum"] = 1.0;
         delegates[MIN_ISOFORM_FRACTION] = new DoubleSpinBoxDelegate(vm);
-        delegates[CUFFCOMPARE_TOOL_PATH] = new URLDelegate("", "executable", false);
-        delegates[EXT_TOOL_PATH] = new URLDelegate("", "executable", false);
-        delegates[TMP_DIR_PATH] = new URLDelegate("", "TmpDir", false, true);
+        delegates[CUFFCOMPARE_TOOL_PATH] = new URLDelegate("", "executable", false, false, false);
+        delegates[EXT_TOOL_PATH] = new URLDelegate("", "executable", false, false, false);
+        delegates[TMP_DIR_PATH] = new URLDelegate("", "TmpDir", false, true, false);
     }
 
     // Init and register the actor prototype

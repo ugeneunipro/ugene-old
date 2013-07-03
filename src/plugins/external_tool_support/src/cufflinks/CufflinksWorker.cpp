@@ -252,12 +252,12 @@ void CufflinksWorkerFactory::init()
     }
 
     delegates[OUT_DIR] = new URLDelegate("", "", false, true /*path*/);
-    delegates[REF_ANNOTATION] = new URLDelegate(DialogUtils::prepareDocumentsFileFilter(true), "", false);
-    delegates[RABT_ANNOTATION] = new URLDelegate(DialogUtils::prepareDocumentsFileFilter(true), "", false);
-    delegates[MASK_FILE] = new URLDelegate(DialogUtils::prepareDocumentsFileFilter(true), "", false);
-    delegates[FRAG_BIAS_CORRECT] = new URLDelegate(DialogUtils::prepareDocumentsFileFilter(true), "", false);
-    delegates[EXT_TOOL_PATH] = new URLDelegate("", "executable", false);
-    delegates[TMP_DIR_PATH] = new URLDelegate("", "TmpDir", false, true);
+    delegates[REF_ANNOTATION] = new URLDelegate(DialogUtils::prepareDocumentsFileFilter(true), "", false, false, false);
+    delegates[RABT_ANNOTATION] = new URLDelegate(DialogUtils::prepareDocumentsFileFilter(true), "", false, false, false);
+    delegates[MASK_FILE] = new URLDelegate(DialogUtils::prepareDocumentsFileFilter(true), "", false, false, false);
+    delegates[FRAG_BIAS_CORRECT] = new URLDelegate(DialogUtils::prepareDocumentsFileFilter(true), "", false, false, false);
+    delegates[EXT_TOOL_PATH] = new URLDelegate("", "executable", false, false, false);
+    delegates[TMP_DIR_PATH] = new URLDelegate("", "TmpDir", false, true, false);
 
     // Init and register the actor prototype
     proto->setEditor(new DelegateEditor(delegates));

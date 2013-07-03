@@ -264,9 +264,9 @@ void CuffdiffWorkerFactory::init()
     }
 
     delegates[OUT_DIR] = new URLDelegate("", "", false, true /*path*/);
-    delegates[FRAG_BIAS_CORRECT] = new URLDelegate("", "", false);
-    delegates[MASK_FILE] = new URLDelegate(DialogUtils::prepareDocumentsFileFilter(true), "", false);
-    delegates[EXT_TOOL_PATH] = new URLDelegate("", "executable", false);
+    delegates[FRAG_BIAS_CORRECT] = new URLDelegate("", "", false, false, false);
+    delegates[MASK_FILE] = new URLDelegate(DialogUtils::prepareDocumentsFileFilter(true), "", false, false, false);
+    delegates[EXT_TOOL_PATH] = new URLDelegate("", "executable", false, false, false);
     delegates[TMP_DIR_PATH] = new URLDelegate("", "TmpDir", false, true);
 
     // Init and register the actor prototype
