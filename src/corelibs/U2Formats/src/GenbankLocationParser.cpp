@@ -52,6 +52,14 @@ public:
         position++;
         return result;
     }
+    char prev() {
+        if(0 == position) {
+            return '\0';
+        }
+        char result = input[position];
+        position--;
+        return result;
+    }
 
 private:
     QByteArray input;
@@ -168,11 +176,18 @@ private:
             {
                 const QBitArray& NUMS = TextUtils::NUMS;
                 QByteArray tokenString;
-                if(NUMS.testBit(input.peek())) {
+                if(NUMS.testBit(input.peek()) || '-' == input.peek()) {
+                    if('-' == input.peek()) {
+                        tokenString.append(input.next());
+                    }
                     while(NUMS.testBit(input.peek())) {
                         tokenString.append(input.next());
                     }
-                    if(!isNameCharacter(input.peek())) {
+                    if("-" == QString(tokenString)) {
+                        tokenString = "";
+                        input.prev();
+                    }
+                    else if(!isNameCharacter(input.peek())) {
                         return Token(tokenString, Token::NUMBER);
                     }
                 }
@@ -240,57 +255,77 @@ private:
     qint64 seqLenForCircular;
     
 
-    bool parseNumber(quint64 &result) {
+    bool parseNumber(qint64 &result) {
         if(lexer.peek().getType() != Token::NUMBER) {
             return false;
         }
         QByteArray string = lexer.next().getString();
         result = 0;
+
+        int sign = 1;
+        if('-' == string.at(0)) {
+            sign = -1;
+            string = string.right(1);
+        }
         foreach(char c, string) {
             result *= 10;
             result += (quint64)c - '0';
         }
+        result = result * sign;
         return true;
     }
 
-    bool parseLocationDescriptor(U2Location &location) {
+    bool parseLocationDescriptor(U2Location &location, QString& errorReport) {
         bool remoteEntry = false;
         if(lexer.peek().getType() == Token::NAME) { // remote entries
             remoteEntry = true;
             QByteArray accession = lexer.next().getString();
+            QString data = accession;
             if(!match(Token::PERIOD)) {
-                ioLog.trace(QString("GENBANK LOCATION PARSER: Must be PERIOD instead of %1").arg(lexer.peek().getString().data()));
+                errorReport = QString("GENBANK LOCATION PARSER: Must be PERIOD instead of %1").arg(lexer.peek().getString().data());
+                ioLog.trace(errorReport);
                 return false;
             }
-            quint64 version = 0;
+            qint64 version = 0;
             if(!parseNumber(version)) {
-                ioLog.trace(QString("GENBANK LOCATION PARSER: can't parse Number. Token: %1").arg(lexer.peek().getString().data()));
+                errorReport = QString("GENBANK LOCATION PARSER: can't parse Number. Token: %1").arg(lexer.peek().getString().data());
+                ioLog.trace(errorReport);
                 return false;
             }
             if(!match(Token::COLON)) {
-                ioLog.trace(QString("GENBANK LOCATION PARSER: Must be COLON instead of %1").arg(lexer.peek().getString().data()));
+                errorReport = QString("GENBANK LOCATION PARSER: Must be COLON instead of %1").arg(lexer.peek().getString().data());
+                ioLog.trace(errorReport);
                 return false;
             }
             ioLog.info(LocationParser::tr("Ignoring remote entry: %1.%2").arg(QString(accession)).arg(version));
         }
-        quint64 firstBase = 0;
+        qint64 firstBase = 0;
         bool firstBaseIsFromRange = false;
         if(match(Token::LEFT_PARENTHESIS)) { // cases like (1.2)..
             firstBaseIsFromRange = true;
             if(!parseNumber(firstBase)) { // use the first number as a region boundary
-                ioLog.trace(QString("GENBANK LOCATION PARSER: can't parse Number. Token: %1").arg(lexer.peek().getString().data()));
+                errorReport = QString("GENBANK LOCATION PARSER: can't parse Number. Token: %1").arg(lexer.peek().getString().data());
+                ioLog.trace(errorReport);
+                return false;
+            }
+            else if(firstBase < 0) {
+                errorReport = QString("GENBANK LOCATION PARSER: region boundary can not be less then zero. Token: %1%2").arg(firstBase).arg(lexer.peek().getString().data());
+                ioLog.trace(errorReport);
                 return false;
             }
             if(!match(Token::PERIOD)) {
-                ioLog.trace(QString("GENBANK LOCATION PARSER: Must be PERIOD instead of %1").arg(lexer.peek().getString().data()));
+                errorReport = QString("GENBANK LOCATION PARSER: Must be PERIOD instead of %1").arg(lexer.peek().getString().data());
+                ioLog.trace(errorReport);
                 return false;
             }
             if(!match(Token::NUMBER)) { // ignore the second number
-                ioLog.trace(QString("GENBANK LOCATION PARSER: Must be NUMBER instead of %1").arg(lexer.peek().getString().data()));
+                errorReport = QString("GENBANK LOCATION PARSER: Must be NUMBER instead of %1").arg(lexer.peek().getString().data());
+                ioLog.trace(errorReport);
                 return false;
             }
             if(!match(Token::RIGHT_PARENTHESIS)) {
-                ioLog.trace(QString("GENBANK LOCATION PARSER: Must be RIGHT_PARENTHESIS instead of %1").arg(lexer.peek().getString().data()));
+                errorReport = QString("GENBANK LOCATION PARSER: Must be RIGHT_PARENTHESIS instead of %1").arg(lexer.peek().getString().data());
+                ioLog.trace(errorReport);
                 return false;
             }
             ioLog.info(LocationParser::tr("'a single base from a range' in combination with 'sequence span' is not supported"));
@@ -299,22 +334,36 @@ private:
                 ioLog.info(LocationParser::tr("Ignoring '<' at start position"));
             }
             if(!parseNumber(firstBase)) {
-                ioLog.trace(QString("GENBANK LOCATION PARSER: can't parse Number. Token: %1").arg(lexer.peek().getString().data()));
+                errorReport = QString("GENBANK LOCATION PARSER: can't parse Number. Token: %1").arg(lexer.peek().getString().data());
+                ioLog.trace(errorReport);
+                return false;
+            }
+            else if(firstBase < 0) {
+                errorReport = QString("Region boundary can not be less then zero: %1%2").arg(firstBase).arg(lexer.peek().getString().data());
+                ioLog.trace("GENBANK LOCATION PARSER:" + errorReport);
                 return false;
             }
         }
         if(match(Token::PERIOD)) {
             if(firstBaseIsFromRange) { // ranges are only allowed in spans
-                ioLog.trace(QString("GENBANK LOCATION PARSER: ranges are only allowed in spans. Token: %1").arg(lexer.peek().getString().data()));
+                errorReport = QString("GENBANK LOCATION PARSER: ranges are only allowed in spans. Token: %1").arg(lexer.peek().getString().data());
+                ioLog.trace(errorReport);
                 return false;
             }
-            quint64 secondNumber = 0;
+            qint64 secondNumber = 0;
             if(!parseNumber(secondNumber)) {
-                ioLog.trace(QString("GENBANK LOCATION PARSER: can't parse Number. Token: %1").arg(lexer.peek().getString().data()));
+                errorReport = QString("GENBANK LOCATION PARSER: can't parse Number. Token: %1").arg(lexer.peek().getString().data());
+                ioLog.trace(errorReport);
+                return false;
+            }
+            else if(secondNumber < 0) {
+                errorReport = QString("Region boundary can not be less then zero: %1%2").arg(secondNumber).arg(lexer.peek().getString().data());
+                ioLog.trace("GENBANK LOCATION PARSER:" + errorReport);
                 return false;
             }
             if(!location->isEmpty()) {
-                ioLog.trace(QString("GENBANK LOCATION PARSER: location is not empty. Token: %1").arg(lexer.peek().getString().data()));
+                errorReport = QString("GENBANK LOCATION PARSER: location is not empty. Token: %1").arg(lexer.peek().getString().data());
+                ioLog.trace(errorReport);
                 return false;
             }
             if(!remoteEntry) { // ignore remote entries
@@ -322,22 +371,31 @@ private:
                 location->regionType = U2LocationRegionType_SingleBase;
             }
         } else if(match(Token::DOUBLE_PERIOD)) {
-            quint64 secondNumber = 0;
+            qint64 secondNumber = 0;
             if(match(Token::LEFT_PARENTHESIS)) { // cases like ..(1.2)
                 if(!match(Token::NUMBER)) { // ignore the first number
-                    ioLog.trace(QString("GENBANK LOCATION PARSER: Must be NUMBER instead of %1").arg(lexer.peek().getString().data()));
+                    errorReport = QString("GENBANK LOCATION PARSER: Must be NUMBER instead of %1").arg(lexer.peek().getString().data());
+                    ioLog.trace(errorReport);
                     return false;
                 }
                 if(!match(Token::PERIOD)) {
-                    ioLog.trace(QString("GENBANK LOCATION PARSER: Must be PERIOD instead of %1").arg(lexer.peek().getString().data()));
+                    errorReport = QString("GENBANK LOCATION PARSER: Must be PERIOD instead of %1").arg(lexer.peek().getString().data());
+                    ioLog.trace(errorReport);
                     return false;
                 }
                 if(!parseNumber(secondNumber)) { // use the second number as a region boudary
-                    ioLog.trace(QString("GENBANK LOCATION PARSER: can't parse Number. Token: %1").arg(lexer.peek().getString().data()));
+                    errorReport = QString("GENBANK LOCATION PARSER: can't parse Number. Token: %1").arg(lexer.peek().getString().data());
+                    ioLog.trace(errorReport);
+                    return false;
+                }
+                else if(secondNumber < 0) {
+                    errorReport = QString("Region boundary can not be less then zero: %1%2").arg(secondNumber).arg(lexer.peek().getString().data());
+                    ioLog.trace("GENBANK LOCATION PARSER:" + errorReport);
                     return false;
                 }
                 if(!match(Token::RIGHT_PARENTHESIS)) {
-                    ioLog.trace(QString("GENBANK LOCATION PARSER: Must be RIGHT_PARENTHESIS instead of %1").arg(lexer.peek().getString().data()));
+                    errorReport = QString("GENBANK LOCATION PARSER: Must be RIGHT_PARENTHESIS instead of %1").arg(lexer.peek().getString().data());
+                    ioLog.trace(errorReport);
                     return false;
                 }
                 ioLog.info(LocationParser::tr("'a single base from a range' in combination with 'sequence span' is not supported"));
@@ -346,7 +404,13 @@ private:
                     ioLog.info(LocationParser::tr("Ignoring '>' at end position"));
                 }
                 if(!parseNumber(secondNumber)) {
-                    ioLog.trace(QString("GENBANK LOCATION PARSER: can't parse Number. Token: %1").arg(lexer.peek().getString().data()));
+                    errorReport = QString("GENBANK LOCATION PARSER: can't parse Number. Token: %1").arg(lexer.peek().getString().data());
+                    ioLog.trace(errorReport);
+                    return false;
+                }
+                else if(secondNumber < 0) {
+                    errorReport = QString("Region boundary can not be less then zero: %1%2").arg(secondNumber).arg(lexer.peek().getString().data());
+                    ioLog.trace("GENBANK LOCATION PARSER:" + errorReport);
                     return false;
                 }
             }
@@ -365,7 +429,7 @@ private:
             if(firstBaseIsFromRange) { // ranges are only allowed in spans
                 return false;
             }
-            quint64 secondBase = 0;
+            qint64 secondBase = 0;
             if(!parseNumber(secondBase)) {
                 return false;
             }
@@ -476,9 +540,8 @@ private:
             }
         } else {
             while(true) {
-                if(!parseLocationDescriptor(location)) {
+                if(!parseLocationDescriptor(location, errorReport)) {
                     ioLog.trace(QString("GENBANK LOCATION PARSER: Can't parse location descriptor"));
-                    errorReport = LocationParser::tr("Can't parse location descriptor");
                     return false;
                 }
                 if(!match(Token::COMMA)) {
