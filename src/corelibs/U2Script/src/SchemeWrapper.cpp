@@ -364,12 +364,12 @@ U2ErrorType SchemeWrapper::createSas( const QString &elementType, const QString 
 
         // get the reader's output port name
         QString outputReaderPortId;
-        result = WorkflowElementFacade::getOutputPortIdForSlot( elementInputSlot,
+        result = WorkflowElementFacade::getOutputPortIdForSlot( readerType, elementInputSlot,
             outputReaderPortId );
         CHECK_DEL_OBJECT( result, newSas );
         // get the element's input port name
         QString inputElementPortId;
-        result = WorkflowElementFacade::getInputPortIdForSlot( elementInputSlot,
+        result = WorkflowElementFacade::getInputPortIdForSlot( elementType, elementInputSlot,
             inputElementPortId );
         CHECK_DEL_OBJECT( result, newSas );
         // add flow between found ports
@@ -378,12 +378,12 @@ U2ErrorType SchemeWrapper::createSas( const QString &elementType, const QString 
 
         // get the element's output port name
         QString outputElementPortId;
-        result = WorkflowElementFacade::getOutputPortIdForSlot( elementOutputSlot,
+        result = WorkflowElementFacade::getOutputPortIdForSlot( elementType, elementOutputSlot,
             outputElementPortId );
         CHECK_DEL_OBJECT( result, newSas );
         // get the writer's output port name
         QString inputWriterPortId;
-        result = WorkflowElementFacade::getInputPortIdForSlot( elementOutputSlot,
+        result = WorkflowElementFacade::getInputPortIdForSlot( writerType, elementOutputSlot,
             inputWriterPortId );
         CHECK_DEL_OBJECT( result, newSas );
         // add flow between found ports
@@ -412,7 +412,7 @@ U2ErrorType SchemeWrapper::createSas( const QString &elementType, const QString 
         CHECK_DEL_OBJECT( result, newSas );
         // finally bind slots with the same name
         foreach ( QString readerSlot, readerSlots ) {
-            if ( writerSlots.contains( readerSlot ) && readerSlot != elementOutputSlot
+            if ( writerSlots.contains( readerSlot )
                 && Workflow::BaseSlots::URL_SLOT( ) != readerSlot )
             {
                 result = newSas->addActorsBinding( readerName, readerSlot, writerName,

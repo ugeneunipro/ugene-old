@@ -13,7 +13,9 @@ HEADERS += \
     src/core/dbi/attribute/AttributeDbiUnitTests.h \
     src/core/dbi/features/FeaturesTableObjectUnitTest.h \
     src/core/dbi/msa/MsaDbiUnitTests.h \
-    src/core/external_script/base_scheme_interface/CInterfaceUnitTests.h \
+    src/core/external_script/base_scheme_interface/CInterfaceManualTests.h \
+	src/core/external_script/base_scheme_interface/CInterfaceSasTests.h \
+	src/core/external_script/base_scheme_interface/SchemeSimilarityUtils.h \
     src/core/format/fastq/FastqUnitTests.h \
     src/core/format/genbank/LocationParserUnitTests.h \
     src/core/format/sqlite_msa_dbi/MsaDbiSQLiteSpecificUnitTests.h \
@@ -35,7 +37,9 @@ SOURCES += \
     src/core/dbi/attribute/AttributeDbiUnitTests.cpp \
     src/core/dbi/features/FeaturesTableObjectUnitTest.cpp \
     src/core/dbi/msa/MsaDbiUnitTests.cpp \
-    src/core/external_script/base_scheme_interface/CInterfaceUnitTests.cpp \
+    src/core/external_script/base_scheme_interface/CInterfaceManualTests.cpp \
+	src/core/external_script/base_scheme_interface/CInterfaceSasTests.cpp \
+	src/core/external_script/base_scheme_interface/SchemeSimilarityUtils.cpp \
     src/core/format/fastq/FastqUnitTests.cpp \
     src/core/format/genbank/LocationParserUnitTests.cpp \
     src/core/format/sqlite_msa_dbi/MsaDbiSQLiteSpecificUnitTests.cpp \
@@ -46,15 +50,3 @@ SOURCES += \
     src/core/util/MsaDbiUtilsUnitTests.cpp \
     src/core/format/sqlite_mod_dbi/ModDbiSQLiteSpecificUnitTests.cpp \
     src/core/format/sqlite_sequence_dbi/SequenceDbiSQLiteSpecificUnitTests.cpp
-
-
-
-
-
-
-
-
-
-
-
-

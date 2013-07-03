@@ -31,9 +31,9 @@ public:
         return true;
     }
 
-	QMap<QString, QStringList> getTests() {
-		return tests;
-	}
+    QMap<QString, QStringList> getTests() {
+        return tests;
+    }
 private:
     QMap<QString, QStringList> tests;
 };
@@ -43,9 +43,9 @@ void UnitTestSuite::init(XMLTestFormat *tf, const QDomElement& el) {
     Q_UNUSED(tf);
     GTestBuilder builder;
 
-	passed = 0;
-	ignored = 0;
-	failed = 0;
+    passed = 0;
+    ignored = 0;
+    failed = 0;
 
     QString testList = el.text();
     QTextStream stream(&testList);
@@ -60,66 +60,66 @@ void UnitTestSuite::init(XMLTestFormat *tf, const QDomElement& el) {
         } else if (!line.startsWith('-') && !line.startsWith('#')) {
             testCase = line;
             builder.addTestCase(line);
-		} else if (line.startsWith('-')) {
-			ignored++;
-		}
+        } else if (line.startsWith('-')) {
+            ignored++;
+        }
         line = stream.readLine();
     }
-	tests = builder.getTests();
+    tests = builder.getTests();
 }
 
 void UnitTestSuite::prepare() {
     QString dataDir = env->getVar("COMMON_DATA_DIR");
     AppContext::getAppSettings()->getTestRunnerSettings()->setVar("COMMON_DATA_DIR", dataDir);
-	tests_run();
+    tests_run();
 }
 void UnitTestSuite::test_run(const QString& testName){
-	UnitTest* t = (UnitTest*)QMetaType::construct(QMetaType::type(testName.toStdString().c_str()));
-	if (t != NULL) {
+    UnitTest* t = (UnitTest*)QMetaType::construct(QMetaType::type(testName.toStdString().c_str()));
+    if (t != NULL) {
         t->SetUp();
-		t->Test();
-		if (!t->GetError().isEmpty()){
-			taskLog.error(testName + ": " + t->GetError());
-			failed++;
-		} else {
-			taskLog.info(testName + ": OK");
-			passed++;
-		}
-	} else {
-		taskLog.info(testName + ": Ignored");
-		ignored++;
-	}
+        t->Test();
+        if (!t->GetError().isEmpty()){
+            taskLog.error(testName + ": " + t->GetError());
+            failed++;
+        } else {
+            taskLog.info(testName + ": OK");
+            passed++;
+        }
+    } else {
+        taskLog.info(testName + ": Ignored");
+        ignored++;
+    }
 }
 
 void UnitTestSuite::tests_run(){
 
     foreach(const QString& suite, tests.keys()) {
         QStringList testList = tests.value(suite);
-		foreach(const QString& testName, testList) {
-			test_run(suite + "_" + testName);
-		}
-	}
+        foreach(const QString& testName, testList) {
+            test_run(suite + "_" + testName);
+        }
+    }
 }
 
 void UnitTestSuite::cleanup() {
     AppContext::getAppSettings()->getTestRunnerSettings()->removeVar("COMMON_DATA_DIR");
 
-	AttributeTestData::shutdown();
-	AssemblyTestData::shutdown();
-	SequenceTestData::shutdown();
+    AttributeTestData::shutdown();
+    AssemblyTestData::shutdown();
+    SequenceTestData::shutdown();
     FeaturesTableObjectTestData::shutdown();
     MsaSQLiteSpecificTestData::shutdown();
 
-	if (passed){
-		taskLog.info("Test passed: " + QString::number(passed));
-	}
-	if (ignored){
-		taskLog.info("Test ignored: " + QString::number(ignored));
-	}
-	if (failed){
-		taskLog.info("Test failed: " + QString::number(failed));
-		setError("Test failed");
-	}
+    if (passed){
+        taskLog.info("Test passed: " + QString::number(passed));
+    }
+    if (ignored){
+        taskLog.info("Test ignored: " + QString::number(ignored));
+    }
+    if (failed){
+        taskLog.info("Test failed: " + QString::number(failed));
+        setError("Test failed");
+    }
 }
 
 } //namespace

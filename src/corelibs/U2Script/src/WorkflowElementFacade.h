@@ -54,8 +54,8 @@ public:
                                 const QString &portId, QStringList &slotIds );
     static U2ErrorType      getReadElementTypeForSlot( const QString &slotId, QString &readerType );
     static U2ErrorType      getWriteElementTypeForSlot( const QString &slotId, QString &writerType);
-    static U2ErrorType      getInputPortIdForSlot( const QString &slotId, QString &portId );
-    static U2ErrorType      getOutputPortIdForSlot( const QString &slotId, QString &portId );
+    static U2ErrorType      getInputPortIdForSlot( const QString &elementId, const QString &slotId, QString &portId );
+    static U2ErrorType      getOutputPortIdForSlot( const QString &elementId, const QString &slotId, QString &portId );
 };
 
 } // namespace U2

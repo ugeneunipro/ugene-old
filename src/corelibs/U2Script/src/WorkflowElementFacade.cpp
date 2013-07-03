@@ -197,15 +197,85 @@ U2ErrorType WorkflowElementFacade::getReadElementTypeForSlot( const QString &slo
 U2ErrorType WorkflowElementFacade::getWriteElementTypeForSlot( const QString &slotId,
     QString &writerType )
 {
-    return addPrefixToSlotId( slotId, WRITE_ELEMENT_PREFIX, writerType );
+    U2ErrorType result = U2_OK;
+    U2::Workflow::ActorPrototype *prototype = NULL;
+    writerType = WRITE_ELEMENT_PREFIX + slotId;
+    CHECK( ! (U2_OK == ( result = getActorPrototype( writerType, &prototype ) ) ), result );
+    U2::Workflow::ActorPrototypeRegistry *prototypeRegistry
+        = U2::Workflow::WorkflowEnv::getProtoRegistry( );
+    QMap<Descriptor, QList<ActorPrototype*> > allElements 
+        = prototypeRegistry->getProtos();
+    QMapIterator <Descriptor, QList<ActorPrototype*>> iterr(allElements);
+    while ( iterr.hasNext() ) {
+        iterr.next();
+        QList <ActorPrototype*> currGroup = iterr.value();
+        QList <ActorPrototype*> ::iterator currElement = currGroup.begin();
+        while( currElement != currGroup.end() ) {
+            QList<PortDescriptor*> currPorts = (*currElement)->getPortDesciptors();
+            Workflow::PortDescriptor *port = currPorts.first();
+            if( port->isInput() ) {
+                QList<Descriptor> slotList = port->getOwnTypeMap( ).keys( );
+                foreach ( Descriptor slotDescriptor, slotList ) {
+                    if( slotDescriptor.getId() == slotId ){
+                        writerType = (*currElement)->getId();
+                        return U2_OK;
+                    }
+                }    
+            }
+            currElement++;
+        }
+        
+    }
+    return U2_ELEMENT_NOT_FOUND;
 }
 
-U2ErrorType WorkflowElementFacade::getInputPortIdForSlot( const QString &slotId, QString &portId ) {
-    return addPrefixToSlotId( slotId, INPUT_PORT_PREFIX, portId );
+U2ErrorType getConvenientPortIdForSlot(const QString &elementId, const QString &slotId, 
+    QString &portId, bool isInput ) 
+{
+    U2ErrorType result = U2_OK;
+    U2::Workflow::ActorPrototype *prototype = NULL;
+    U2::Workflow::ActorPrototypeRegistry *prototypeRegistry
+        = U2::Workflow::WorkflowEnv::getProtoRegistry( );
+    QMap<Descriptor, QList<ActorPrototype*> > allElements 
+        = prototypeRegistry->getProtos();
+    QMapIterator <Descriptor, QList<ActorPrototype*>> iterr(allElements);
+    while ( iterr.hasNext() ) {
+        iterr.next();
+        QList <ActorPrototype*> currGroup = iterr.value();
+        QList <ActorPrototype*> ::iterator currElement = currGroup.begin();
+        while( currElement != currGroup.end() ) {
+            if( (*currElement)->getId() == elementId ){
+                QList<PortDescriptor*> currPorts = (*currElement)->getPortDesciptors();
+                foreach ( Workflow::PortDescriptor *port, currPorts ) {
+                    if( ( isInput && port->isInput() ) || ( !isInput && port->isOutput() ) ){
+                        QList<Descriptor> slotList = port->getOwnTypeMap( ).keys( );
+                        foreach ( Descriptor slotDescriptor, slotList ) {
+                            if( slotDescriptor.getId() == slotId ){
+                                portId = port->getId();
+                                return U2_OK;
+                            }
+                        }
+                    }
+                }
+            }
+            currElement++;
+        }
+    }
+    return U2_ELEMENT_NOT_FOUND;
 }
 
-U2ErrorType WorkflowElementFacade::getOutputPortIdForSlot( const QString &slotId, QString &portId ) {
-    return addPrefixToSlotId( slotId, OUTPUT_PORT_PREFIX, portId );
+U2ErrorType WorkflowElementFacade::getInputPortIdForSlot( const QString &elementId, const QString &slotId, 
+    QString &portId ) 
+{
+    bool isInput = true;
+    return getConvenientPortIdForSlot(elementId, slotId, portId, isInput);
+}
+
+U2ErrorType WorkflowElementFacade::getOutputPortIdForSlot( const QString &elementId, const QString &slotId, 
+    QString &portId )
+{
+    bool isInput = false;
+    return getConvenientPortIdForSlot(elementId, slotId, portId, isInput);
 }
 
 } // namespace U2
