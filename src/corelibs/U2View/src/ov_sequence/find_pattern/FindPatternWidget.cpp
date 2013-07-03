@@ -444,6 +444,11 @@ void FindPatternWidget::updateShowOptions()
         QWidget::setTabOrder(annotsWidget, bottomFocus);
         QWidget::setTabOrder(usePatternNamesCheckBox, bottomFocus);
         boxAlgorithm->setFocus();
+
+        int checkButtonSize = 25;
+        int width = groupOther->layout()->contentsRect().width();
+        validateCheckBoxSize(removeOverlapsBox, width - checkButtonSize);
+        validateCheckBoxSize(boxUseMaxResult, width - checkButtonSize);
     }
     QWidget::setTabOrder(bottomFocus, lblShowMoreLess);
     // Change the mode
@@ -1497,6 +1502,42 @@ void FindPatternWidget::updatePatternText(int previousAlgorithm) {
         textPattern->setText(patternString);
     }
     setCorrectPatternsString();
+}
+
+void FindPatternWidget::validateCheckBoxSize(QCheckBox* checkBox, int requiredWidth) {
+    QFont font = checkBox->font();
+    QFontMetrics checkBoxMetrics(font); 
+    QString text = checkBox->text();
+
+    if(text.contains('\n')) {
+        return;
+    }
+    
+    int lastSpacePos = 0;
+    QString wrappedText = "";
+    int startPos = 0;
+    QRect textRect = checkBoxMetrics.boundingRect(text);
+    if(textRect.width() <= requiredWidth) {
+        return;
+    }
+    int length = text.length();
+    for(int endPos = 0; endPos < length; endPos++) {
+        if(' ' == text.at(endPos) || endPos == length - 1) {
+            if(endPos-1 <= startPos) {
+                wrappedText = "";
+            }
+            else {
+                wrappedText = text.mid(startPos, endPos - startPos - 1);
+            }
+            textRect = checkBoxMetrics.boundingRect(wrappedText);
+            if(textRect.width() > requiredWidth && 0 != lastSpacePos) {
+                startPos = endPos;
+                text[lastSpacePos] = '\n';
+            }
+            lastSpacePos = endPos;
+        }
+    }
+    checkBox->setText(text);
 }
 
 } // namespace

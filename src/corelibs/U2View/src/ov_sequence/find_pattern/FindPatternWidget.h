@@ -185,6 +185,8 @@ private:
 
     void updatePatternText(int previousAlgorithm);
 
+    void validateCheckBoxSize(QCheckBox* checkBox, int requiredWidth);
+
     AnnotatedDNAView* annotatedDnaView;
     CreateAnnotationWidgetController* annotController;
     bool annotModelPrepared;
