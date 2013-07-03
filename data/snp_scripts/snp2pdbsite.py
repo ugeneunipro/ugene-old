@@ -8,7 +8,12 @@ from xml.dom.minidom import parseString
 #id mapping
 def getPDBIdandChain(uniprotID):
     #data from http://www.bioinf.org.uk/pdbsws/
-    f = open ('pdb_uniprot_chain_map.lst.2', 'r')
+    dirPath = os.path.dirname(sys.argv[0])
+    fileName ='pdb_uniprot_chain_map.lst.2'
+    if len(dirPath) != 0:
+        fileName = dirPath + "/pdb_uniprot_chain_map.lst.2"
+    fileName = fileName.replace('\\', '/')
+    f = open (fileName, 'r')
     pdbId = ''
     chain = ''
     while(1):

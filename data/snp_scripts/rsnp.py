@@ -37,7 +37,7 @@ def prepare_optparser():
                          default:2""", default=2)
                                         
     optparser.add_option("--sign",dest="significance",type="int",
-                         help="Select significance. Enter integer from 0 to 16", default=10)
+                         help="Select significance. Enter integer from 0 to 15", default=10)
     return optparser
 
 def opt_validate(optparser):
