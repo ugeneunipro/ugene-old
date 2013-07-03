@@ -205,7 +205,7 @@ U2ErrorType WorkflowElementFacade::getWriteElementTypeForSlot( const QString &sl
         = U2::Workflow::WorkflowEnv::getProtoRegistry( );
     QMap<Descriptor, QList<ActorPrototype*> > allElements 
         = prototypeRegistry->getProtos();
-    QMapIterator <Descriptor, QList<ActorPrototype*>> iterr(allElements);
+    QMapIterator < Descriptor, QList<ActorPrototype*> > iterr(allElements);
     while ( iterr.hasNext() ) {
         iterr.next();
         QList <ActorPrototype*> currGroup = iterr.value();
@@ -232,13 +232,11 @@ U2ErrorType WorkflowElementFacade::getWriteElementTypeForSlot( const QString &sl
 U2ErrorType getConvenientPortIdForSlot(const QString &elementId, const QString &slotId, 
     QString &portId, bool isInput ) 
 {
-    U2ErrorType result = U2_OK;
-    U2::Workflow::ActorPrototype *prototype = NULL;
     U2::Workflow::ActorPrototypeRegistry *prototypeRegistry
         = U2::Workflow::WorkflowEnv::getProtoRegistry( );
     QMap<Descriptor, QList<ActorPrototype*> > allElements 
         = prototypeRegistry->getProtos();
-    QMapIterator <Descriptor, QList<ActorPrototype*>> iterr(allElements);
+    QMapIterator <Descriptor, QList<ActorPrototype*> > iterr(allElements);
     while ( iterr.hasNext() ) {
         iterr.next();
         QList <ActorPrototype*> currGroup = iterr.value();
