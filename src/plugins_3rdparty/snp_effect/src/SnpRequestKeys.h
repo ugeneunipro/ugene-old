@@ -75,8 +75,8 @@ namespace SnpRequestingScripts {
 const QString R_SNP_TOOLS_SCRIPT( "rsnp.py" );
 const QString SNP_PROT_STABILITY_1D_SCRIPT( "protstability1d.py" );
 const QString SNP_PROT_STABILITY_3D_SCRIPT( "protstability3d.py" );
-const QString SNP_2_PDB_SITE_SCRIPT( "snp2pdbsite" );
-const QString SNP_CHIP_TOOLS_SCRIPT( "SNPChIPTools" );
+const QString SNP_2_PDB_SITE_SCRIPT( "snp2pdbsite.py" );
+const QString SNP_CHIP_TOOLS_SCRIPT( "SNPChIPTools.py" );
 
 } // namespace SnpRequestAddresses
 
