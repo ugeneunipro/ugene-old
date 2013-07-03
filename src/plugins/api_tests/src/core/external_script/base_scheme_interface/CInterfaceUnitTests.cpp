@@ -30,8 +30,7 @@
 
 #include "CInterfaceUnitTests.h"
 
-static const QString WORKING_DIR = U2::AppContext::getWorkingDirectoryPath( );
-static const QString PROPER_WD_SCHEMES_PATH = WORKING_DIR + "/../../data/workflow_samples";
+static const QString PROPER_WD_SCHEMES_PATH = PATH_PREFIX_DATA + QString( ":workflow_samples" );
 static const QString TEMP_SCHEMES_DIR_PATH = QDir::tempPath( );
 static const int MAX_ELEMENT_NAME_LENGTH = 100;
 static const int SUBSTRING_NOT_FOUND = -1;
