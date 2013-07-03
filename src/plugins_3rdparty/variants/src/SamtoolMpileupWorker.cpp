@@ -389,12 +389,12 @@ void CallVariantsWorkerFactory::init() {
     attributes << new Attribute(attrSamples, BaseTypes::STRING_TYPE(), false, QVariant(""));
     attributes << new Attribute(minSmpl, BaseTypes::NUM_TYPE(), false, QVariant(0));
     attributes << new Attribute(callGt, BaseTypes::BOOL_TYPE(), false, QVariant(true));
-    attributes << new Attribute(indelFrac, BaseTypes::NUM_TYPE(), false, QVariant(0.15));
+    attributes << new Attribute(indelFrac, BaseTypes::NUM_TYPE(), false, QVariant(-1.0));
     attributes << new Attribute(pref, BaseTypes::NUM_TYPE(), false, QVariant(0.5));
-    attributes << new Attribute(ptype, BaseTypes::STRING_TYPE(), false, QVariant(""));
+    attributes << new Attribute(ptype, BaseTypes::STRING_TYPE(), false, QVariant("full"));
     attributes << new Attribute(theta, BaseTypes::NUM_TYPE(), false, QVariant(0.001));
     attributes << new Attribute(ccall, BaseTypes::STRING_TYPE(), false, QVariant(""));
-    attributes << new Attribute(n1, BaseTypes::NUM_TYPE(), false, QVariant(0));
+    attributes << new Attribute(n1, BaseTypes::NUM_TYPE(), false, QVariant(0.0));
     attributes << new Attribute(n_perm, BaseTypes::NUM_TYPE(), false, QVariant(0));
     attributes << new Attribute(min_perm_p, BaseTypes::NUM_TYPE(), false, QVariant(0.01));
 
@@ -484,8 +484,8 @@ void CallVariantsWorkerFactory::init() {
     }
     {
         QVariantMap vm;
-        vm["minimum"] = 0;
-        vm["maximum"] = 1;
+        vm["minimum"] = -1.0;
+        vm["maximum"] = 1.0;
         vm["singleStep"] = 0.1;
         delegates[INDEL_FRAC] = new DoubleSpinBoxDelegate(vm);
     }
@@ -522,14 +522,14 @@ void CallVariantsWorkerFactory::init() {
     }
     {
         QVariantMap vm;
-        vm["minimum"] = 1;
+        vm["minimum"] = 0;
         vm["maximum"] = INT_MAX;
         vm["singleStep"] = 1;
         delegates[N1] = new SpinBoxDelegate(vm);
     }
     {
         QVariantMap vm;
-        vm["minimum"] = 1;
+        vm["minimum"] = 0;
         vm["maximum"] = INT_MAX;
         vm["singleStep"] = 1;
         delegates[N_PERM] = new SpinBoxDelegate(vm);
