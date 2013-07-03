@@ -57,12 +57,13 @@ HEADERS += src/AppSettingsGUI.h \
            src/util/ScriptEditorDelegate.h \
            src/util/ScriptEditorDialog.h \
            src/util/ScriptEditorWidget.h \
-           src/util/ScriptHighLighter.h \
+           src/util/ScriptHighlighter.h \
+           src/util/SearchGenbankSequenceDialogController.h \
            src/util/SeqPasterWidgetController.h \
-		   src/util/SuggestCompleter.h \
+           src/util/SuggestCompleter.h \
            src/util/TextEditorDialog.h \
            src/util/TreeWidgetUtils.h \
-           src/util/logview/LogView.h 
+           src/util/logview/LogView.h
 FORMS += src/util/ui/AddNewDocumentDialog.ui \
          src/util/ui/AuthentificationDialog.ui \
          src/util/ui/BreakpointConditionEditDialog.ui \
@@ -79,6 +80,7 @@ FORMS += src/util/ui/AddNewDocumentDialog.ui \
          src/util/ui/RangeSelectionDialog.ui \
          src/util/ui/RemovePartFromSequenceDialog.ui \
          src/util/ui/ScriptEditorDialog.ui \
+         src/util/ui/SearchGenbankSequenceDialog.ui \
          src/util/ui/SeqPasterWidget.ui \
          src/util/ui/TextEditorDialog.ui
 SOURCES += src/MainWindow.cpp \
@@ -132,9 +134,10 @@ SOURCES += src/MainWindow.cpp \
            src/util/ScriptEditorDelegate.cpp \
            src/util/ScriptEditorDialog.cpp \
            src/util/ScriptEditorWidget.cpp \
-           src/util/ScriptHighLighter.cpp \
+           src/util/ScriptHighlighter.cpp \
+           src/util/SearchGenbankSequenceDialogController.cpp \
            src/util/SeqPasterWidgetController.cpp \
-		   src/util/SuggestCompleter.cpp \
+           src/util/SuggestCompleter.cpp \
            src/util/TextEditorDialog.cpp \
            src/util/TreeWidgetUtils.cpp \
            src/util/logview/LogView.cpp

@@ -79,6 +79,7 @@ private slots:
     void sl_onAddExistingDocument();
     
 	void sl_downloadRemoteFile();
+    void sl_searchGenbankEntry();
 
 
 // QT 4.5.0 bug workaround
@@ -89,6 +90,7 @@ private:
 	QAction* newProjectAction;
 	QAction* openProjectAction;
     QAction* downloadRemoteFileAction;
+    QAction* searchGenbankEntryAction;
     QAction* newDocumentFromtext;
     QAction* separatorAction1;
 	QAction* separatorAction2;

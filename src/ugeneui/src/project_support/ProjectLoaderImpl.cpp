@@ -44,6 +44,7 @@
 #include <U2Gui/LastUsedDirHelper.h>
 
 #include <U2Gui/CreateDocumentFromTextDialogController.h>
+#include <U2Gui/SearchGenbankSequenceDialogController.h>
 #include <U2Gui/DownloadRemoteFileDialog.h>
 #include <U2Gui/ObjectViewModel.h>
 #include <U2Gui/ProjectView.h>
@@ -100,6 +101,12 @@ ProjectLoaderImpl::ProjectLoaderImpl() {
     downloadRemoteFileAction->setIcon(QIcon(":ugene/images/world_go.png"));
     connect(downloadRemoteFileAction, SIGNAL(triggered()), SLOT(sl_downloadRemoteFile()));
 
+    searchGenbankEntryAction = new QAction(tr("Search NCBI Genbank..."), this);
+    searchGenbankEntryAction->setObjectName(ACTION_PROJECTSUPPORT__SEARCH_GENBANK);
+    searchGenbankEntryAction->setIcon(QIcon(":ugene/images/world_go.png"));
+    connect(searchGenbankEntryAction, SIGNAL(triggered()), SLOT(sl_searchGenbankEntry()));
+
+
     separatorAction1  = new QAction("-", this);
     separatorAction1->setSeparator(true);
 
@@ -119,7 +126,7 @@ ProjectLoaderImpl::ProjectLoaderImpl() {
     updateRecentItemsMenu();
 
     QList<QAction*> actions;
-    actions << newProjectAction << newDocumentFromtext << downloadRemoteFileAction 
+    actions << newProjectAction << newDocumentFromtext << downloadRemoteFileAction /*<< searchGenbankEntryAction*/
         << openProjectAction << addExistingDocumentAction << separatorAction1 <<  recentItemsMenu->menuAction() 
         << recentProjectsMenu->menuAction() << separatorAction2;
     
@@ -586,6 +593,15 @@ void ProjectLoaderImpl::sl_downloadRemoteFile()
     QWidget *p = (QWidget*)(AppContext::getMainWindow()->getQMainWindow());
     DownloadRemoteFileDialog dlg(p);
     dlg.exec();
+}
+
+void ProjectLoaderImpl::sl_searchGenbankEntry()
+{
+    QWidget *p = (QWidget*)(AppContext::getMainWindow()->getQMainWindow());
+    SearchGenbankSequenceDialogController dlg(p);
+    dlg.exec();
+
+
 }
 
 
