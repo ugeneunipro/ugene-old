@@ -108,7 +108,7 @@ void GTest_RunCMDLine::setArgs(const QDomElement & el) {
 }
 
 QString GTest_RunCMDLine::splitVal(const QString & val, int midSize, const QString & prefix, bool isTmp) {
-    QStringList dsVals = val.mid(midSize).split(",");
+    QStringList dsVals = val.mid(midSize).split(";;");
     QStringList result;
     foreach (const QString &dsVal, dsVals) {
         QStringList realVals = dsVal.split(";");
@@ -122,7 +122,7 @@ QString GTest_RunCMDLine::splitVal(const QString & val, int midSize, const QStri
         }
         result << dsResult.join(";");
     }
-    return result.join(",");
+    return result.join(";;");
 }
 
 QString GTest_RunCMDLine::getVal( const QString & val ) {

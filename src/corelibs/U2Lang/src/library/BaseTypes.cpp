@@ -245,7 +245,7 @@ QVariant NumTypeValueFactory::getValueFromString( const QString & str, bool * ok
 /* UrlTypeValueFactory */
 /************************************************************************/
 QVariant UrlTypeValueFactory::getValueFromString(const QString &str, bool *ok) const {
-    QStringList datasetStrs = str.split(",", QString::SkipEmptyParts);
+    QStringList datasetStrs = str.split(";;", QString::SkipEmptyParts);
     QList<Dataset> sets;
     int count = 0;
     foreach (const QString &datasetStr, datasetStrs) {
