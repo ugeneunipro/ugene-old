@@ -220,6 +220,8 @@ void WorkflowInvestigationWidgetsController::sl_currentInvestigationUpdateRespon
                     investigationInfo[key][rowNumber - rowInsertionStartPosition]);
             }
         }
+    } else if ( investigationModel->getColumnsVisibility( ).isNull( ) ) {
+        investigationModel->setColumnsVisibility( QBitArray( 0 ) );
     }
 }
 

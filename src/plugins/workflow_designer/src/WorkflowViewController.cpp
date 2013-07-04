@@ -1440,6 +1440,9 @@ void WorkflowView::sl_pause(bool isPause) {
             }
         }
     }
+    if ( isPause && tabView->isVisible() ) {
+        hideDashboards();
+    }
 }
 
 void WorkflowView::sl_stop() {
