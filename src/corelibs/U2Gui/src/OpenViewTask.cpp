@@ -309,15 +309,15 @@ LoadDASDocumentsAndOpenViewTask::LoadDASDocumentsAndOpenViewTask( const QString&
 : Task(tr("Load DAS documents and open view"), TaskFlags_NR_FOSCOE | TaskFlag_MinimizeSubtaskErrorText)
 ,accNumber(accId)
 ,fullpath(_fullPath)
-,featureSources(_featureSources)
 ,referenceSource(_referenceSource)
+,featureSources(_featureSources)
 ,loadDasDocumentTask(NULL)
 {
 
 }
 
 void LoadDASDocumentsAndOpenViewTask::prepare(){
-    loadDasDocumentTask = new LoadDASDocumentTask(accNumber, fullpath, referenceSource, featureSources);
+    loadDasDocumentTask = new ConvertIdAndLoadDASDocumentTask(accNumber, fullpath, referenceSource, featureSources);
 
     addSubTask(loadDasDocumentTask);
 }
