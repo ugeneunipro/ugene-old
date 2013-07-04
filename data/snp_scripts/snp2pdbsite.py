@@ -82,8 +82,10 @@ def opt_validate(optparser):
         sys.exit(1)
     
     options.chain = chain
-    options.protid = id
-    options.mutation[0] = chain
+    options.protId = id
+    mutList = list(options.mutation)
+    mutList[0] = chain
+    options.mutation[0] = "".join(mutList)
  
     print
     return options

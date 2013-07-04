@@ -128,6 +128,15 @@ ProtStability1DWorkerFactory::ProtStability1DWorkerFactory( )
 
 void ProtStability1DWorkerFactory::init( )
 {
+    //init data path
+    U2DataPath* dataPath = NULL;
+    U2DataPathRegistry* dpr =  AppContext::getDataPathRegistry();
+    if (dpr){
+        U2DataPath* dp = dpr->getDataPathByName(BaseRequestForSnpWorker::DB_SEQUENCE_PATH);
+        if (dp && dp->isValid()){
+            dataPath = dp;
+        }
+    }
     QList<PortDescriptor*> p;
     QList<Attribute*> a;
     {
@@ -148,7 +157,8 @@ void ProtStability1DWorkerFactory::init( )
 
     Descriptor dbPath( BaseRequestForSnpWorker::DB_SEQUENCE_PATH, QObject::tr( "Database path" ),
         QObject::tr( "Path to SNP database." ) );
-    a << new Attribute( dbPath, BaseTypes::STRING_TYPE( ), true, "" );
+    
+    a << new Attribute( dbPath, BaseTypes::STRING_TYPE( ), true, dataPath != NULL ? dataPath->getPath() : "");
 
     QMap<QString, PropertyDelegate *> delegates;
     {
@@ -156,7 +166,7 @@ void ProtStability1DWorkerFactory::init( )
     }
 
     Descriptor protoDesc( ProtStability1DWorkerFactory::ACTOR_ID,
-        QObject::tr( "SNP affect on protein primary structure thermodynamic stability" ),
+        QObject::tr( "ProtStability1D" ),
         QObject::tr( "Identification of the SNP influence on"
             "protein primary structure thermodynamic stability" ) );
 

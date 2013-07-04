@@ -21,7 +21,10 @@
 
 
 
+
 #include "SNPEffectPlugin.h"
+
+#include "BaseRequestForSnpWorker.h"
 
 #include "snp_toolbox/SNPToolboxWorker.h"
 #include "SNPReportWriter.h"
@@ -41,6 +44,13 @@ extern "C" Q_DECL_EXPORT Plugin* U2_PLUGIN_INIT_FUNC() {
 
     
 SNPEffectPlugin::SNPEffectPlugin() : Plugin(tr("SNP Effect Plugin"), tr("Evaluates effect of human genome variations and finds relations with diseases")){
+
+    U2DataPathRegistry* dpr = AppContext::getDataPathRegistry();
+    if (dpr){
+        U2DataPath* dp = new U2DataPath(LocalWorkflow::BaseRequestForSnpWorker::DB_SEQUENCE_PATH, QString(PATH_PREFIX_DATA)+QString(":")+LocalWorkflow::BaseRequestForSnpWorker::DB_FILE, false);
+        dpr->registerEntry(dp);
+    }
+
     LocalWorkflow::SNPToolboxWorkerFactory::init();
     LocalWorkflow::SNPReportWriterFactory::init();
     LocalWorkflow::ProtStability1DWorkerFactory::init();

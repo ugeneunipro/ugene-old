@@ -38,7 +38,7 @@ SNPReportWriterTask::SNPReportWriterTask(const SNPReportWriterSettings& _setting
 , dbiRef(_dbiRef)
 , tracks(_tracks)
 {
-
+    tpm = Progress_Manual;
 }
 
 void SNPReportWriterTask::run() {
@@ -91,13 +91,23 @@ void SNPReportWriterTask::run() {
         return;
     }
 
+    qint64 variationsNumber = 0;
+    foreach (const U2VariantTrack& track, tracks){
+        variationsNumber+=varDbi->getVariantCount(track.id, stateInfo);
+    }
+
+    qint64 curNumber = 0;
+
     //in-gene
     IOAdapter* io = IOAdapterUtils::open(settings.reportPath, stateInfo, IOAdapterMode_Write);
     bool first = true;
 
     foreach (const U2VariantTrack& track, tracks){
         QScopedPointer<U2DbiIterator<U2Variant> > snpIter( varDbi->getVariants(track.id, U2_REGION_MAX, stateInfo));
-        CHECK_OP(stateInfo, );
+        if (stateInfo.isCoR()){
+            return;
+        }
+
         while(snpIter->hasNext()){
             const U2Variant& var = snpIter->next();
             U2DataId seqID = track.sequence.isEmpty() ? S3DatabaseUtils::getSequenceId(track.sequenceName, objectDbi) : track.sequence;
@@ -105,6 +115,8 @@ void SNPReportWriterTask::run() {
             if (!deEval->isInGene(var, seqID)){
                 continue;
             }
+            curNumber++;
+            stateInfo.progress = curNumber*100 / (float)variationsNumber;
             VariationInfo varReport(var, seqID, sequenceDbi, attrDbi, track.sequenceName);
             if (first){
                 QString header = varReport.getInGeneTableHeader();
@@ -129,7 +141,9 @@ void SNPReportWriterTask::run() {
     first = true;
     foreach (const U2VariantTrack& track, tracks){
         QScopedPointer<U2DbiIterator<U2Variant> > snpIter( varDbi->getVariants(track.id, U2_REGION_MAX, stateInfo));
-        CHECK_OP(stateInfo, );
+        if (stateInfo.isCoR()){
+            return;
+        }
         while(snpIter->hasNext()){
             const U2Variant& var = snpIter->next();
             U2DataId seqID = track.sequence.isEmpty() ? S3DatabaseUtils::getSequenceId(track.sequenceName, objectDbi) : track.sequence;
@@ -137,6 +151,8 @@ void SNPReportWriterTask::run() {
             if (deEval->isInGene(var, seqID)){
                 continue;
             }
+            curNumber++;
+            stateInfo.progress = curNumber*100 / (float)variationsNumber;
             VariationInfo varReport(var, seqID, sequenceDbi, attrDbi, track.sequenceName);
             if (first){
                 QString header = varReport.getOutGeneTableHeader();

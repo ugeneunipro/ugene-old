@@ -77,17 +77,17 @@ QList<QVariantMap> RSnpToolsWorker::getInputDataForRequest( const U2Variant& var
     //inputData[SnpRequestKeys::R_SNP_FIRST_SEQUENCE] = "cctcagtgctgagggccaagcaaatatttgtggttatggaTtaactcgaactccaggctgtcatggcggcaggacggcgaa";
     //inputData[SnpRequestKeys::R_SNP_SECOND_SEQUENCE] = "cctcagtgctgagggccaagcaaatatttgtggttatggaCtaactcgaactccaggctgtcatggcggcaggacggcgaa";
     //inputData[SnpRequestKeys::R_SNP_FIRST_SITE_STATE] = 1;
-    //inputData[SnpRequestKeys::R_SNP_SECOND_SITE_STATE] = 0.5;
-    //inputData[SnpRequestKeys::R_SNP_SIGNIFICANCE] = 0.00025;
+    //inputData[SnpRequestKeys::R_SNP_SECOND_SITE_STATE] = 2;
+    //inputData[SnpRequestKeys::R_SNP_SIGNIFICANCE] = 10;
 
     inputData[SnpRequestKeys::R_SNP_FIRST_SEQUENCE] = seq1;
     inputData[SnpRequestKeys::R_SNP_SECOND_SEQUENCE] = seq2;
     inputData[SnpRequestKeys::R_SNP_FIRST_SITE_STATE]
-        = actor->getParameter( FIRST_SITE_STATE )->getAttributeValue<double>( context );
+        = actor->getParameter( FIRST_SITE_STATE )->getAttributeValue<int>( context );
     inputData[SnpRequestKeys::R_SNP_SECOND_SITE_STATE]
-        = actor->getParameter( SECOND_SITE_STATE )->getAttributeValue<double>( context );
+        = actor->getParameter( SECOND_SITE_STATE )->getAttributeValue<int>( context );
     inputData[SnpRequestKeys::R_SNP_SIGNIFICANCE]
-        = actor->getParameter( SNP_SIGNIFICANCE )->getAttributeValue<double>( context );
+        = actor->getParameter( SNP_SIGNIFICANCE )->getAttributeValue<int>( context );
 
     res.append(inputData);
 
@@ -146,6 +146,15 @@ RSnpToolsWorkerFactory::RSnpToolsWorkerFactory( )
 
 void RSnpToolsWorkerFactory::init( )
 {
+    //init data path
+    U2DataPath* dataPath = NULL;
+    U2DataPathRegistry* dpr =  AppContext::getDataPathRegistry();
+    if (dpr){
+        U2DataPath* dp = dpr->getDataPathByName(BaseRequestForSnpWorker::DB_SEQUENCE_PATH);
+        if (dp && dp->isValid()){
+            dataPath = dp;
+        }
+    }
     QList<PortDescriptor*> p;
     {
         Descriptor sd( BasePorts::IN_VARIATION_TRACK_PORT_ID( ), "Input variations",
@@ -174,10 +183,11 @@ void RSnpToolsWorkerFactory::init( )
         Descriptor snpSignificance( SNP_SIGNIFICANCE, QObject::tr( "SNP significance" ),
             QObject::tr( "Significance value for the SNP." ) );
 
-        a << new Attribute( dbPath, BaseTypes::STRING_TYPE( ), true, QVariant( "" ) );
+        
+        a << new Attribute( dbPath, BaseTypes::STRING_TYPE( ), true, QVariant( dataPath != NULL ? dataPath->getPath() : "" ) );
         a << new Attribute( firstSiteState, BaseTypes::NUM_TYPE( ), true, QVariant( 1 ) );
-        a << new Attribute( secondSiteState, BaseTypes::NUM_TYPE( ), true, QVariant( 0.5 ) );
-        a << new Attribute( snpSignificance, BaseTypes::NUM_TYPE( ), true, QVariant( 0.00025 ) );
+        a << new Attribute( secondSiteState, BaseTypes::NUM_TYPE( ), true, QVariant( 2 ) );
+        a << new Attribute( snpSignificance, BaseTypes::NUM_TYPE( ), true, QVariant( 10 ) );
     }
 
     QMap<QString, PropertyDelegate*> delegates;
@@ -185,12 +195,7 @@ void RSnpToolsWorkerFactory::init( )
         delegates[BaseRequestForSnpWorker::DB_SEQUENCE_PATH] = new URLDelegate( "", "", false );
         delegates[FIRST_SITE_STATE] = new ComboBoxDelegate( getAllBindingSiteStates( ) );
         delegates[SECOND_SITE_STATE] = new ComboBoxDelegate( getAllBindingSiteStates( ) );
-        QVariantMap snpSignificanceValues;
-        snpSignificanceValues["minimum"] = 0.000005;
-        snpSignificanceValues["maximum"] = 0.33;
-        snpSignificanceValues["singleStep"] = 0.0001;
-        snpSignificanceValues["decimals"] = 6;
-        delegates[SNP_SIGNIFICANCE] = new DoubleSpinBoxDelegate( snpSignificanceValues );
+        delegates[SNP_SIGNIFICANCE] = new ComboBoxDelegate( getSignificanceSiteStates() );
     }
 
     Descriptor protoDesc( RSnpToolsWorkerFactory::ACTOR_ID,
@@ -207,30 +212,70 @@ void RSnpToolsWorkerFactory::init( )
         new RSnpToolsWorkerFactory( ) );
 }
 
-QVariantMap RSnpToolsWorkerFactory::getAllBindingSiteStates( )
-{
+QVariantMap RSnpToolsWorkerFactory::getAllBindingSiteStates( ){
     static QVariantMap siteStates;
     if ( siteStates.isEmpty( ) ) {
-        const QString extendedState = QObject::tr( "Extended (1.5)" );
-        const QString normalState = QObject::tr( "Normal (1.0)" );
-        const QString weakenedState = QObject::tr( "Weakened (0.5)" );
-        const QString undetectableState = QObject::tr( "Undetectable (0.0)" );
-        const QString unspecificState = QObject::tr( "Unspecific (-0.5)" );
-        const QString noBindingState = QObject::tr( "No binding (-1.0)" );
-        siteStates[extendedState] = 1.5;
-        siteStates[normalState] = 1.0;
-        siteStates[weakenedState] = 0.5;
-        siteStates[undetectableState] = 0.0;
-        siteStates[unspecificState] = -0.5;
-        siteStates[noBindingState] = -1.0;
+        QString s0 = QObject::tr( "0.33" );
+        QString s1 = QObject::tr( "0.25" );
+        QString s2 = QObject::tr( "0.1" );
+        QString s3 = QObject::tr( "0.05" );
+        QString s4 = QObject::tr( "0.025" );
+        QString s5 = QObject::tr( "0.01" );
+        QString s6 = QObject::tr( "0.005" );
+        QString s7 = QObject::tr( "0.0025" );
+        QString s8 = QObject::tr( "0.001" );
+        QString s9 = QObject::tr( "0.0005" );
+        QString s10 = QObject::tr( "0.00025" );
+        QString s11 = QObject::tr( "0.0001" );
+        QString s12 = QObject::tr( "0.00005" );
+        QString s13 = QObject::tr( "0.000025" );
+        QString s14 = QObject::tr( "0.00001" );
+        QString s15 = QObject::tr( "0.000005" );
+        siteStates[s0] = 0;
+        siteStates[s1] = 1;
+        siteStates[s2] = 2;
+        siteStates[s3] = 3;
+        siteStates[s4] = 4;
+        siteStates[s5] = 5;
+        siteStates[s6] = 6;
+        siteStates[s7] = 7;
+        siteStates[s8] = 8;
+        siteStates[s9] = 9;
+        siteStates[s10] = 10;
+        siteStates[s11] = 11;
+        siteStates[s12] = 12;
+        siteStates[s13] = 13;
+        siteStates[s14] = 14;
+        siteStates[s15] = 15;
     }
     return siteStates;
 }
+
+QVariantMap RSnpToolsWorkerFactory::getSignificanceSiteStates(){
+    static QVariantMap siteStates;
+    if ( siteStates.isEmpty( ) ) {
+        QString extendedState = QObject::tr( "Extended (1.5)" );
+        QString normalState = QObject::tr( "Normal (1.0)" );
+        QString weakenedState = QObject::tr( "Weakened (0.5)" );
+        QString undetectableState = QObject::tr( "Undetectable (0.0)" );
+        QString unspecificState = QObject::tr( "Unspecific (-0.5)" );
+        QString noBindingState = QObject::tr( "No binding (-1.0)" );
+        siteStates[extendedState] = 0;
+        siteStates[normalState] = 1;
+        siteStates[weakenedState] = 2;
+        siteStates[undetectableState] = 3;
+        siteStates[unspecificState] = 4;
+        siteStates[noBindingState] = 6;
+    }
+    return siteStates;
+}
+
 
 Worker *RSnpToolsWorkerFactory::createWorker( Actor *a )
 {
     return new RSnpToolsWorker( a );
 }
+
 
 /************************************************************************/
 /* Prompter */

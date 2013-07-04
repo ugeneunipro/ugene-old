@@ -74,7 +74,7 @@ QList<QVariantMap> Snp2PdbSiteWorker::getInputDataForRequest( const U2Variant& v
 
         int aaPos = -1;
         QPair<QByteArray, QByteArray> aaSubs = VariationPropertiesUtils::getAASubstitution(dataBase, gene, seqId, variant, &aaPos, os);
-        if (aaPos == -1 || aaSubs.first.isEmpty() || aaSubs.second.isEmpty()){
+        if (aaPos == -1 || aaSubs.first.isEmpty() || aaSubs.second.isEmpty() || gene.getAccession().isEmpty()){
             continue;
         }
         //sample data
@@ -120,6 +120,15 @@ Snp2PdbSiteWorkerFactory::Snp2PdbSiteWorkerFactory( )
 
 void Snp2PdbSiteWorkerFactory::init( )
 {
+    //init data path
+    U2DataPath* dataPath = NULL;
+    U2DataPathRegistry* dpr =  AppContext::getDataPathRegistry();
+    if (dpr){
+        U2DataPath* dp = dpr->getDataPathByName(BaseRequestForSnpWorker::DB_SEQUENCE_PATH);
+        if (dp && dp->isValid()){
+            dataPath = dp;
+        }
+    }
     QList<PortDescriptor*> p;
     QList<Attribute*> a;
     {
@@ -140,7 +149,8 @@ void Snp2PdbSiteWorkerFactory::init( )
 
     Descriptor dbPath( BaseRequestForSnpWorker::DB_SEQUENCE_PATH, QObject::tr( "Database path" ),
         QObject::tr( "Path to SNP database." ) );
-    a << new Attribute( dbPath, BaseTypes::STRING_TYPE( ), true, "" );
+    
+    a << new Attribute( dbPath, BaseTypes::STRING_TYPE( ), true, dataPath != NULL ? dataPath->getPath() : "" );
 
     QMap<QString, PropertyDelegate *> delegates;
     {
@@ -148,7 +158,7 @@ void Snp2PdbSiteWorkerFactory::init( )
     }
 
     Descriptor protoDesc( Snp2PdbSiteWorkerFactory::ACTOR_ID,
-        QObject::tr( "SNP affect on PDB sites" ),
+        QObject::tr( "SNP effect on PDB sites" ),
         QObject::tr( "Identification of the SNP influence on PDB sites" ) );
 
     ActorPrototype *proto = new IntegralBusActorPrototype( protoDesc, p, a );

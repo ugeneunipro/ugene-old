@@ -19,11 +19,15 @@
  * MA 02110-1301, USA.
  */
 
+#include "SNPToolboxWorker.h"
+#include "BaseRequestForSnpWorker.h"
+
 #include <U2Core/FailTask.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/QVariantUtils.h>
 #include <U2Core/AppContext.h>
+#include <U2Core/DataPathRegistry.h>
 
 #include <U2Designer/DelegateEditors.h>
 
@@ -35,7 +39,7 @@
 #include <U2Lang/WorkflowEnv.h>
 #include <U2Lang/WorkflowMonitor.h>
 
-#include "SNPToolboxWorker.h"
+
 
 namespace U2 {
 namespace LocalWorkflow {
@@ -135,6 +139,15 @@ SNPToolboxSettings SNPToolboxWorker::createSNPToolboxSettings( U2OpStatus &os ){
 
 
 void SNPToolboxWorkerFactory::init() {
+    //init data path
+    U2DataPath* dataPath = NULL;
+    U2DataPathRegistry* dpr =  AppContext::getDataPathRegistry();
+    if (dpr){
+        U2DataPath* dp = dpr->getDataPathByName(BaseRequestForSnpWorker::DB_SEQUENCE_PATH);
+        if (dp && dp->isValid()){
+            dataPath = dp;
+        }
+    }
     QList<PortDescriptor*> p; QList<Attribute*> a;
     {
         Descriptor sd(BasePorts::IN_VARIATION_TRACK_PORT_ID(), "Input variations", "Variations for annotations.");
@@ -154,8 +167,7 @@ void SNPToolboxWorkerFactory::init() {
              SNPToolboxWorker::tr("Database path"),
              SNPToolboxWorker::tr("Path to SNPToolbox database with sequences, features and damage effect data."));
 
-
-        attrs << new Attribute(dbPath, BaseTypes::STRING_TYPE(), true, "");
+         attrs << new Attribute(dbPath, BaseTypes::STRING_TYPE(), true, dataPath != NULL ? dataPath->getPath() : "");
     }
 
     QMap<QString, PropertyDelegate*> delegates;

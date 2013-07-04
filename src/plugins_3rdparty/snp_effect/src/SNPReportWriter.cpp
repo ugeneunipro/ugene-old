@@ -19,11 +19,15 @@
  * MA 02110-1301, USA.
  */
 
+#include "SNPReportWriter.h"
+#include "BaseRequestForSnpWorker.h"
+
 #include <U2Core/FailTask.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/QVariantUtils.h>
 #include <U2Core/AppContext.h>
+#include <U2Core/DataPathRegistry.h>
 
 #include <U2Designer/DelegateEditors.h>
 
@@ -34,8 +38,6 @@
 #include <U2Lang/BasePorts.h>
 #include <U2Lang/WorkflowEnv.h>
 #include <U2Lang/WorkflowMonitor.h>
-
-#include "SNPReportWriter.h"
 
 namespace U2 {
 namespace LocalWorkflow {
@@ -154,6 +156,15 @@ SNPReportWriterSettings SNPReportWriter::createSNPWriterSettings( U2OpStatus &os
 
 
 void SNPReportWriterFactory::init() {
+    //init data path
+    U2DataPath* dataPath = NULL;
+    U2DataPathRegistry* dpr =  AppContext::getDataPathRegistry();
+    if (dpr){
+        U2DataPath* dp = dpr->getDataPathByName(BaseRequestForSnpWorker::DB_SEQUENCE_PATH);
+        if (dp && dp->isValid()){
+            dataPath = dp;
+        }
+    }
     QList<PortDescriptor*> p; QList<Attribute*> a;
     {
         Descriptor sd(BasePorts::IN_VARIATION_TRACK_PORT_ID(), "Input variations", "Variations for annotations.");
@@ -184,7 +195,7 @@ void SNPReportWriterFactory::init() {
             SNPReportWriter::tr("Path to SNP database."));
 
 
-        attrs << new Attribute(dbPath, BaseTypes::STRING_TYPE(), true, "");
+        attrs << new Attribute(dbPath, BaseTypes::STRING_TYPE(), true, dataPath != NULL ? dataPath->getPath() : "");
     }
 
     QMap<QString, PropertyDelegate*> delegates;

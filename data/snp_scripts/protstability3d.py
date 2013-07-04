@@ -85,7 +85,7 @@ def opt_validate(optparser):
         sys.exit(1)
     
     options.chain = chain
-    options.protid = id
+    options.protId = id
     
     return options
 
@@ -105,7 +105,7 @@ class Protstability3d:
                                           
         params = urllib.urlencode({'pdb': self.protId, 'chain': self.chain,  'pos_mut': self.mutPos, 'mutation': self.aminoType})
         req = urllib2.Request(self.url,  params)
-
+        
         rsp = urllib2.urlopen(req) 
 
         content = rsp.read()
@@ -120,8 +120,8 @@ class Protstability3d:
         opener = urllib2.build_opener(NoRedirectHandler())
         urllib2.install_opener(opener)
         content = "working"
-
         while content.find('working') >= 0:
+            
             req = urllib2.Request(self.url)
             rsp = urllib2.urlopen(req) 
             content = rsp.read()

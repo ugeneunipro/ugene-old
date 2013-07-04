@@ -73,6 +73,15 @@ AnalyzeTataBoxesWorkerFactory::AnalyzeTataBoxesWorkerFactory( )
 
 void AnalyzeTataBoxesWorkerFactory::init( )
 {
+    //init data path
+    U2DataPath* dataPath = NULL;
+    U2DataPathRegistry* dpr =  AppContext::getDataPathRegistry();
+    if (dpr){
+        U2DataPath* dp = dpr->getDataPathByName(BaseRequestForSnpWorker::DB_SEQUENCE_PATH);
+        if (dp && dp->isValid()){
+            dataPath = dp;
+        }
+    }
     QList<PortDescriptor*> p;
     QList<Attribute*> a;
     {
@@ -93,7 +102,8 @@ void AnalyzeTataBoxesWorkerFactory::init( )
 
     Descriptor dbPath( BaseRequestForSnpWorker::DB_SEQUENCE_PATH, QObject::tr( "Database path" ),
         QObject::tr( "Path to SNP database." ) );
-    a << new Attribute( dbPath, BaseTypes::STRING_TYPE( ), true, "" );
+    
+    a << new Attribute( dbPath, BaseTypes::STRING_TYPE( ), true, dataPath != NULL ? dataPath->getPath() : "" );
 
     QMap<QString, PropertyDelegate *> delegates;
     {

@@ -67,6 +67,7 @@ public:
 
 private:
     static QVariantMap          getAllBindingSiteStates( );
+    static QVariantMap          getSignificanceSiteStates( );
 
     static const QString        ACTOR_ID;
 };

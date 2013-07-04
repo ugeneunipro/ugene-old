@@ -24,6 +24,8 @@
 
 #include <U2Lang/LocalDomain.h>
 
+#include <U2Core/AppContext.h>
+#include <U2Core/DataPathRegistry.h>
 #include <U2Core/U2Dbi.h>
 
 #include "SnpRequestKeys.h"
@@ -55,6 +57,7 @@ public:
     virtual void                    cleanup( );
 
     static const QString            DB_SEQUENCE_PATH;
+    static const QString            DB_FILE;
 
 private slots:
     void                            sl_taskFinished( );

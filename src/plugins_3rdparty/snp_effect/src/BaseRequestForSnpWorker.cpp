@@ -19,7 +19,6 @@
  * MA 02110-1301, USA.
  */
 
-#include <U2Core/AppContext.h>
 #include <U2Core/FailTask.h>
 #include <U2Core/MultiTask.h>
 #include <U2Core/U2AttributeDbi.h>
@@ -44,6 +43,7 @@ namespace U2 {
 namespace LocalWorkflow {
 
 const QString BaseRequestForSnpWorker::DB_SEQUENCE_PATH( "db_path" );
+const QString BaseRequestForSnpWorker::DB_FILE ("snp_scripts/human_hg19_db.s3db");
 
 BaseRequestForSnpWorker::BaseRequestForSnpWorker( Actor *p )
     : BaseWorker( p ), inChannel( NULL ), outChannel( NULL )
@@ -283,7 +283,6 @@ void BaseRequestForSnpWorker::flushCache(){
 void BaseRequestForSnpWorker::clearCache(){
     resultCache.clear();
 }
-
 
 } // namespace LocalWorkflow
 

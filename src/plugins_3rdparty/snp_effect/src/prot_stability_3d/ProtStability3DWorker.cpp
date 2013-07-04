@@ -74,7 +74,7 @@ QList< QVariantMap > ProtStability3DWorker::getInputDataForRequest( const U2Vari
 
         int aaPos = -1;
         QPair<QByteArray, QByteArray> aaSubs = VariationPropertiesUtils::getAASubstitution(dataBase, gene, seqId, variant, &aaPos, os);
-        if (aaPos == -1 || aaSubs.first.isEmpty() || aaSubs.second.isEmpty()){
+        if (aaPos == -1 || aaSubs.first.isEmpty() || aaSubs.second.isEmpty() || gene.getAccession().isEmpty()){
             continue;
         }
 
@@ -120,6 +120,15 @@ ProtStability3DWorkerFactory::ProtStability3DWorkerFactory( )
 
 void ProtStability3DWorkerFactory::init( )
 {
+    //init data path
+    U2DataPath* dataPath = NULL;
+    U2DataPathRegistry* dpr =  AppContext::getDataPathRegistry();
+    if (dpr){
+        U2DataPath* dp = dpr->getDataPathByName(BaseRequestForSnpWorker::DB_SEQUENCE_PATH);
+        if (dp && dp->isValid()){
+            dataPath = dp;
+        }
+    }
     QList<PortDescriptor*> p;
     QList<Attribute*> a;
     {
@@ -140,7 +149,8 @@ void ProtStability3DWorkerFactory::init( )
 
     Descriptor dbPath( BaseRequestForSnpWorker::DB_SEQUENCE_PATH, QObject::tr( "Database path" ),
         QObject::tr( "Path to SNP database." ) );
-    a << new Attribute( dbPath, BaseTypes::STRING_TYPE( ), true, "" );
+    
+    a << new Attribute( dbPath, BaseTypes::STRING_TYPE( ), true, dataPath != NULL ? dataPath->getPath() : "" );
 
     QMap<QString, PropertyDelegate *> delegates;
     {
@@ -148,7 +158,7 @@ void ProtStability3DWorkerFactory::init( )
     }
 
     Descriptor protoDesc( ProtStability3DWorkerFactory::ACTOR_ID,
-        QObject::tr( "SNP affect on protein tertiary structure thermodynamic stability" ),
+        QObject::tr( "ProtStability3D" ),
         QObject::tr( "Identification of the SNP influence on"
             "protein tertiary structure thermodynamic stability" ) );
 

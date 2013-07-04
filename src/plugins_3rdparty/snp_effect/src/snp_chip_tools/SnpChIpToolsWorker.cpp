@@ -56,7 +56,6 @@ QList<QVariantMap> SnpChipToolsWorker::getInputDataForRequest( const U2Variant& 
 {
     QList<QVariantMap> result;
     QVariantMap inputData;
-    // TODO: obtain the SNP id from db as well as `UG` parameter
 
     //sample data
     //inputData[SnpRequestKeys::SNP_CHIP_TOOLS_SNP_ID] = "11466315";
@@ -81,7 +80,6 @@ QString SnpChipToolsWorker::getRequestingScriptName( ) const
 QList<SnpResponseKey> SnpChipToolsWorker::getResultKeys( ) const
 {
     QList<SnpResponseKey> result;
-    // TODO: set appropriate keys here
     result << SnpResponseKeys::SNP_CHIP_TOOLS_;
     return result;
 }
@@ -98,7 +96,15 @@ SnpChipToolsWorkerFactory::SnpChipToolsWorkerFactory( )
 
 void SnpChipToolsWorkerFactory::init( )
 {
-    QList<PortDescriptor*> p;
+    //init data path
+    U2DataPath* dataPath = NULL;
+    U2DataPathRegistry* dpr =  AppContext::getDataPathRegistry();
+    if (dpr){
+        U2DataPath* dp = dpr->getDataPathByName(BaseRequestForSnpWorker::DB_SEQUENCE_PATH);
+        if (dp && dp->isValid()){
+            dataPath = dp;
+        }
+    }    QList<PortDescriptor*> p;
     QList<Attribute*> a;
     {
         Descriptor sd( BasePorts::IN_VARIATION_TRACK_PORT_ID( ), "Input variations",
@@ -118,7 +124,8 @@ void SnpChipToolsWorkerFactory::init( )
 
     Descriptor dbPath( BaseRequestForSnpWorker::DB_SEQUENCE_PATH, QObject::tr( "Database path" ),
         QObject::tr( "Path to SNP database." ) );
-    a << new Attribute( dbPath, BaseTypes::STRING_TYPE( ), true, "" );
+    
+    a << new Attribute( dbPath, BaseTypes::STRING_TYPE( ), true, dataPath != NULL ? dataPath->getPath() : "" );
 
     QMap<QString, PropertyDelegate *> delegates;
     {
@@ -127,7 +134,7 @@ void SnpChipToolsWorkerFactory::init( )
     // TODO: revise the description
     Descriptor protoDesc( SnpChipToolsWorkerFactory::ACTOR_ID,
         QObject::tr( "SNP ChIP Tools" ),
-        QObject::tr( "Identification of some SNP influence on very important thangs" ) );
+        QObject::tr( "SNPs influence on TFBSs" ) );
 
     ActorPrototype *proto = new IntegralBusActorPrototype( protoDesc, p, a );
     proto->setPrompter( new SnpChipToolsPrompter( ) );
