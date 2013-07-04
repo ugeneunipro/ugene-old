@@ -197,10 +197,10 @@ U2ErrorType WorkflowElementFacade::getReadElementTypeForSlot( const QString &slo
 U2ErrorType WorkflowElementFacade::getWriteElementTypeForSlot( const QString &slotId,
     QString &writerType )
 {
-    U2ErrorType result = U2_OK;
     U2::Workflow::ActorPrototype *prototype = NULL;
     writerType = WRITE_ELEMENT_PREFIX + slotId;
-    CHECK( ! (U2_OK == ( result = getActorPrototype( writerType, &prototype ) ) ), result );
+    U2ErrorType result = getActorPrototype( writerType, &prototype );
+    CHECK( U2_OK != result, result );
     U2::Workflow::ActorPrototypeRegistry *prototypeRegistry
         = U2::Workflow::WorkflowEnv::getProtoRegistry( );
     QMap<Descriptor, QList<ActorPrototype*> > allElements 

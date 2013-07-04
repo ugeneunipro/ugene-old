@@ -114,7 +114,13 @@ QString WorkflowDebugMessageParser::getMessageTypeFromIdentifier(const QString &
 WorkflowInvestigationData WorkflowDebugMessageParser::getAllMessageValues() {
     if(!sourceMessages.isEmpty()) {
         foreach(const QString &key, sourceMessages.head().keys()) {
-            Q_ASSERT(possibleMessageTypes.contains(getMessageTypeFromIdentifier(key)));
+            const QString messageType = getMessageTypeFromIdentifier(key);
+            if (!possibleMessageTypes.contains(messageType)) {
+                coreLog.info( QObject::tr( "Messages in requested queue include info of the '%1' "
+                    "data type that is currently unsupported for view. "
+                    "No intermediate data will be displayed" ) );
+                return parsedInfo;
+            }
             if(!messageTypes.contains(key)) {
                 messageTypes << key;
             }
