@@ -69,9 +69,7 @@ void InvestigationDataModel::showAllHiddenColumns() {
 }
 
 void InvestigationDataModel::setColumnsVisibility(const QBitArray &columns) {
-    if(!columns.isEmpty()) {
-        hiddenColumns = columns;
-    }
+    hiddenColumns = columns;
 }
 
 QBitArray InvestigationDataModel::getColumnsVisibility() const {
