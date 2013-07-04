@@ -22,6 +22,8 @@
 #include "DNASequenceGenerator.h"
 
 #include <U2Core/AppContext.h>
+#include <U2Core/AppResources.h>
+#include <U2Core/AppSettings.h>
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/IOAdapterUtils.h>
@@ -38,6 +40,7 @@
 
 #include <U2Gui/DialogUtils.h>
 
+static const int MBYTE_TO_BYTE = 1048576;
 
 namespace U2 {
 
@@ -299,6 +302,12 @@ GenerateDNASequenceTask::GenerateDNASequenceTask(const QMap<char, qreal>& baseCo
 : Task(tr("Generate DNA sequence task"), TaskFlag_None), baseContent(baseContent_), length(length_), window(window_), count(count_), seed(seed_) {
 }
 
+void GenerateDNASequenceTask::prepare() {
+    const qint64 memUseMB = length / MBYTE_TO_BYTE;
+    coreLog.trace( QString( "Generate DNA sequence task: Memory resource %1" ).arg( memUseMB ) );
+    addTaskResource( TaskResourceUsage( RESOURCE_MEMORY, memUseMB ) );
+}
+
 void GenerateDNASequenceTask::run() {
     if(seed < 0) {
         qsrand(QDateTime::currentDateTime().toTime_t());
@@ -311,14 +320,21 @@ void GenerateDNASequenceTask::run() {
         if(window > length) {
             window = length;
         }
-        for(int i = 0; i< length/window; i++) {
-            DNASequenceGenerator::generateSequence(baseContent, window, tmp);
+        try {
+            for(int i = 0; i< length/window; i++) {
+                DNASequenceGenerator::generateSequence(baseContent, window, tmp);
+                seq.append(tmp);
+            }
+            DNASequenceGenerator::generateSequence(baseContent, length % window, tmp);
             seq.append(tmp);
-        }
-        DNASequenceGenerator::generateSequence(baseContent, length % window, tmp);
-        seq.append(tmp);
 
-        result.append(seq);
+            result.append(seq);
+        } catch ( const std::bad_alloc & ) {
+            setError( QString( "Not enough memory to allocate sequence. Sequence number - %1 of %2. "
+                "Size reached - %3 MB, size required - %4 MB" ).arg( QString::number( i + 1 ),
+                QString::number( count ), QString::number( seq.length( ) / MBYTE_TO_BYTE ),
+                QString::number( length / MBYTE_TO_BYTE ) ) );
+        }
     }
 }
 

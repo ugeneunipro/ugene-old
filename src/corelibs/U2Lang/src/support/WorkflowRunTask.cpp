@@ -326,7 +326,7 @@ void WorkflowIterationRunTask::prepare() {
 
 QList<Task*> WorkflowIterationRunTask::onSubTaskFinished(Task* subTask) {
     QList<Task*> tasks;
-    
+    // handle the situation when pause signal was not delivered to the current thread
     while(debugInfo->isPaused() && !isCanceled()) {
         QCoreApplication::processEvents();
     }

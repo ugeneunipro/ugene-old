@@ -23,7 +23,6 @@
 #define _U2_SNP_REQUEST_KEYS_
 
 #include <QtCore/QString>
-#include <QtCore/QPair>
 
 namespace U2 {
 
