@@ -118,7 +118,7 @@ WorkflowInvestigationData WorkflowDebugMessageParser::getAllMessageValues() {
             if (!possibleMessageTypes.contains(messageType)) {
                 coreLog.info( QObject::tr( "Messages in requested queue include info of the '%1' "
                     "data type that is currently unsupported for view. "
-                    "No intermediate data will be displayed" ) );
+                    "No intermediate data will be displayed" ).arg( messageType ) );
                 return parsedInfo;
             }
             if(!messageTypes.contains(key)) {

@@ -310,9 +310,9 @@ void WorkflowInvestigationWidgetsController::sl_showAllColumns() {
 }
 
 void WorkflowInvestigationWidgetsController::sl_columnsVisibilityResponse() {
-    QBitArray hiddenColumns;
+    QBitArray hiddenColumns( 0 );
     const QVector<int> widths = columnWidths[investigatedLink];
-    if(!widths.isEmpty()) {
+    if ( !widths.isEmpty( ) ) {
         const int columnCount = widths.size();
         hiddenColumns.resize(columnCount);
         for(int column = 0; columnCount > column; ++column) {
@@ -320,8 +320,8 @@ void WorkflowInvestigationWidgetsController::sl_columnsVisibilityResponse() {
                 hiddenColumns.setBit(column, true);
             }
         }
-        investigationModel->setColumnsVisibility(hiddenColumns);
     }
+    investigationModel->setColumnsVisibility( hiddenColumns );
 }
 
 } // namespace U2
