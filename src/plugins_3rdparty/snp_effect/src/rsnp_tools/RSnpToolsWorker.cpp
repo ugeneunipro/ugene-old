@@ -215,6 +215,25 @@ void RSnpToolsWorkerFactory::init( )
 QVariantMap RSnpToolsWorkerFactory::getAllBindingSiteStates( ){
     static QVariantMap siteStates;
     if ( siteStates.isEmpty( ) ) {
+        QString extendedState = QObject::tr( "Extended (1.5)" );
+        QString normalState = QObject::tr( "Normal (1.0)" );
+        QString weakenedState = QObject::tr( "Weakened (0.5)" );
+        QString undetectableState = QObject::tr( "Undetectable (0.0)" );
+        QString unspecificState = QObject::tr( "Unspecific (-0.5)" );
+        QString noBindingState = QObject::tr( "No binding (-1.0)" );
+        siteStates[extendedState] = 0;
+        siteStates[normalState] = 1;
+        siteStates[weakenedState] = 2;
+        siteStates[undetectableState] = 3;
+        siteStates[unspecificState] = 4;
+        siteStates[noBindingState] = 6;
+    }
+    return siteStates;
+}
+
+QVariantMap RSnpToolsWorkerFactory::getSignificanceSiteStates(){
+    static QVariantMap siteStates;
+    if ( siteStates.isEmpty( ) ) {
         QString s0 = QObject::tr( "0.33" );
         QString s1 = QObject::tr( "0.25" );
         QString s2 = QObject::tr( "0.1" );
@@ -247,25 +266,6 @@ QVariantMap RSnpToolsWorkerFactory::getAllBindingSiteStates( ){
         siteStates[s13] = 13;
         siteStates[s14] = 14;
         siteStates[s15] = 15;
-    }
-    return siteStates;
-}
-
-QVariantMap RSnpToolsWorkerFactory::getSignificanceSiteStates(){
-    static QVariantMap siteStates;
-    if ( siteStates.isEmpty( ) ) {
-        QString extendedState = QObject::tr( "Extended (1.5)" );
-        QString normalState = QObject::tr( "Normal (1.0)" );
-        QString weakenedState = QObject::tr( "Weakened (0.5)" );
-        QString undetectableState = QObject::tr( "Undetectable (0.0)" );
-        QString unspecificState = QObject::tr( "Unspecific (-0.5)" );
-        QString noBindingState = QObject::tr( "No binding (-1.0)" );
-        siteStates[extendedState] = 0;
-        siteStates[normalState] = 1;
-        siteStates[weakenedState] = 2;
-        siteStates[undetectableState] = 3;
-        siteStates[unspecificState] = 4;
-        siteStates[noBindingState] = 6;
     }
     return siteStates;
 }
