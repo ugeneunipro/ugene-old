@@ -105,7 +105,8 @@ void ExternalToolValidateTask::run(){
         QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
         externalToolProcess->setProcessEnvironment(env);
 
-        bool started = WorkflowUtils::startExternalProcess(externalToolProcess, validation.executableFile, validation.arguments);
+        externalToolProcess->start(validation.executableFile, validation.arguments);
+        bool started = externalToolProcess->waitForStarted(3000);
 
         if(!started){
             errorMsg = validation.possibleErrorsDescr.value(ExternalToolValidation::DEFAULT_DESCR_KEY, "");
