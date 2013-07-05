@@ -203,7 +203,7 @@ U2SCRIPT_EXPORT U2ErrorType launchScheme( SchemeHandle _scheme, int *outputFiles
         }
         for ( int i = 0; i < countOfFiles; ++i ) {
             const int pathLength = outputFiles[i].size( ) + 1;
-            ( *outputFileNames )[i] = ( wchar_t * )malloc( pathLength );
+            ( *outputFileNames )[i] = ( wchar_t * )malloc( pathLength * sizeof( wchar_t ) );
             // handle failed memory allocation
             if ( NULL == ( *outputFileNames )[i] ) {
                 for ( int j = 0; j < i; ++j ) {

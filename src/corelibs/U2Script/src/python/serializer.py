@@ -17,7 +17,7 @@ if _BioAvailable :
     from Bio import AlignIO
     
 def getUnixAbsPath( unknownPath ) :
-    return os.path.abspath( unknownPath ).replace( '\\', '/' )
+    return unicode( os.path.abspath( unknownPath ).replace( '\\', '/' ) )
 
 class Serializer :
     def bioListToString( self, values, treatStringsAsPaths ) :
@@ -49,7 +49,7 @@ class Serializer :
         tmpFileName = self._generateTmpFile( True )
         tmpFileAbsPath = getUnixAbsPath( tmpFileName )
         self.createdFiles[tmpFileAbsPath] = ''
-        return tmpFileAbsPath
+        return unicode( tmpFileAbsPath )
 
     def cleanUp( self ) :
         """
@@ -67,7 +67,7 @@ class Serializer :
         mergedList = ''
         for item in lst :
             itemStringRepresentation = ''
-            if str == type( item ) :
+            if str == type( item ) or unicode == type( item ) :
                 itemStringRepresentation = item if not treatStringsAsPaths else getUnixAbsPath( item )
             elif list == type( item ) :
                 itemStringRepresentation = self._listToString( item, treatStringsAsPaths )
@@ -90,7 +90,7 @@ class Serializer :
                 raise TypeError( 'expected string, list or an object belonging to Bio package' )
             mergedList += itemStringRepresentation + stringListSeparator
         mergedList = mergedList[:-1]
-        return mergedList
+        return unicode( mergedList )
 
     def _saveMsaToFile( self, msa, file ) :
         """

@@ -12,7 +12,7 @@ class Scheme( u2py_internals.Scheme ) :
         argCount = len( args )
         if 1 == argCount :
             schemeFilePath = serializer.getUnixAbsPath( args[0] )
-            super( Scheme, self ).__init__( schemeFilePath )
+            super( Scheme, self ).__init__( unicode( schemeFilePath ) )
         elif 1 < argCount :
             algorithmName = args[0]
             inputData = self._serializer.bioListToString( args[1], True )
@@ -21,7 +21,7 @@ class Scheme( u2py_internals.Scheme ) :
                 outputData = serializer.getUnixAbsPath( args[2] )
             elif 3 < argCount :
                 raise TypeError( 'expected 3 or less arguments' )
-            super( Scheme, self ).__init__( algorithmName, inputData, outputData )
+            super( Scheme, self ).__init__( unicode( algorithmName ), unicode( inputData ), unicode( outputData ) )
         else :
             super( Scheme, self ).__init__( )
 
@@ -31,7 +31,7 @@ class Scheme( u2py_internals.Scheme ) :
         set its input data and get the element's name
         """
         inputString = self._serializer.bioListToString( inputData, True )
-        return super( Scheme, self ).addReader( readerName, inputString )
+        return super( Scheme, self ).addReader( unicode( readerName ), inputString )
 
     def addWriter( self, writerName, outputPath ) :
         """
@@ -39,7 +39,7 @@ class Scheme( u2py_internals.Scheme ) :
         set its output file path and get the element's name
         """
         absPath = serializer.getUnixAbsPath( outputPath )
-        return super( Scheme, self ).addWriter( writerName, absPath )
+        return super( Scheme, self ).addWriter( unicode( writerName ), absPath )
 
     def setElementAttribute( self, elementName, attributeName, attributeValue ) :
         """"
@@ -49,14 +49,14 @@ class Scheme( u2py_internals.Scheme ) :
         if not ( 'url-in' == attributeName or 'url-out' == attributeName ) :
             treatStringsAsPaths = False
         stringValue = self._serializer.bioListToString( attributeValue, treatStringsAsPaths )
-        super( Scheme, self ).setElementAttribute( elementName, attributeName, stringValue )
+        super( Scheme, self ).setElementAttribute( unicode( elementName ), unicode( attributeName ), stringValue )
 
     def getElementAttribute( self, elementName, attributeName ) :
         """"
         Get the value of the given element's attribute
         """
         multivalueAttributeDelimeter = ';'
-        attributeValue = super( Scheme, self ).getElementAttribute( elementName, attributeName )
+        attributeValue = super( Scheme, self ).getElementAttribute( unicode( elementName ), unicode( attributeName ) )
         if multivalueAttributeDelimeter in attributeValue :
             valuesList = attributeValue.split( multivalueAttributeDelimeter )
             for index, value in enumerate( valuesList ) :
@@ -72,7 +72,7 @@ class Scheme( u2py_internals.Scheme ) :
         """
         Run the scheme synchronously by the Workflow Designer
         """
-        resultList = super( Scheme, self ).launch( )    
+        resultList = super( Scheme, self ).launch( )
         return self._serializer.stringListToBioList( resultList )
 
     @staticmethod
@@ -85,13 +85,13 @@ class Scheme( u2py_internals.Scheme ) :
         if not 2 <= argumentCount <= 3 :
             raise RuntimeError( 'expected 2 or 3 arguments' )
         algorithmName = args[0]
-        outputString = ''
+        outputString = unicode( '' )
         if 2 == argumentCount :
             outputString = tempSerializer.createTmpFileAndGetItsPath( )
         elif 3 == argumentCount :
             outputString = serializer.getUnixAbsPath( args[2] )
         inputString = tempSerializer.bioListToString( args[1], True )
-        resultList = u2py_internals.Scheme.launchSas( algorithmName, inputString, outputString )
+        resultList = u2py_internals.Scheme.launchSas( unicode( algorithmName ), inputString, outputString )
         if 2 == argumentCount :
             resultList = tempSerializer.stringListToBioList( resultList )
         tempSerializer.cleanUp( )
