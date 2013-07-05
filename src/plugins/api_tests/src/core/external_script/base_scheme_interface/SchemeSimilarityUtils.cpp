@@ -64,8 +64,13 @@ QString SchemeSimilarityUtils::getSchemeContentByHandle( SchemeHandle scheme,
     U2OpStatus &stateInfo )
 {
     QString pathToScheme( TEMP_SCHEMES_DIR_PATH + "/test_scheme.uwl" );
-    U2ErrorType error = saveSchemeToFile( scheme, pathToScheme.toLocal8Bit( ) );
-    CHECK_EXT( U2_OK == error, stateInfo.setError( getErrorString( error ) ), QString( ) );
+    wchar_t *wPathToScheme = ( wchar_t * )malloc( ( pathToScheme.length( ) + 1 )
+        * sizeof( wchar_t ) );
+    pathToScheme.toWCharArray( wPathToScheme );
+    wPathToScheme[pathToScheme.length( )] = '\0';
+    U2ErrorType error = saveSchemeToFile( scheme, wPathToScheme );
+    CHECK_EXT( U2_OK == error, stateInfo.setError(
+        QString::fromWCharArray( getErrorString( error ) ) ), QString( ) );
 
     QFile schemeFile( pathToScheme );
     const QString schemeContent = readFileContent( schemeFile, stateInfo );

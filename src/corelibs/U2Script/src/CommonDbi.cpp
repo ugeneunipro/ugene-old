@@ -73,10 +73,11 @@ static ObjectType toObjectType( U2::GObjectType type ) {
 
 extern "C" {
 
-U2SCRIPT_EXPORT void importFileToUgeneDb( const char *url, UgeneDbHandle *resultObjects, int maxObjectCount )
+U2SCRIPT_EXPORT void importFileToUgeneDb( const wchar_t *_url, UgeneDbHandle *resultObjects, int maxObjectCount )
 {
     using namespace U2;
 
+    const QString url = QString::fromWCharArray( _url );
     QFileInfo fileInfo( url );
     if ( !fileInfo.exists( ) ) {
         coreLog.error( QObject::tr( "File \"%1\" does not exist" ).arg( url ) );
@@ -124,17 +125,18 @@ U2SCRIPT_EXPORT UgeneDbHandle cloneObject( UgeneDbHandle object ) {
     return result;
 }
 
-U2SCRIPT_EXPORT void saveObjectsToFile( UgeneDbHandle *objects, int objectCount, const char *url,
+U2SCRIPT_EXPORT void saveObjectsToFile( UgeneDbHandle *objects, int objectCount, const wchar_t *_url,
     FileFormat format )
 {
     using namespace U2;
 
-    CHECK( NULL != objects && NULL != url, );
+    CHECK( NULL != objects && NULL != _url, );
 
     DocumentFormat *docFormat = AppContext::getDocumentFormatRegistry()->getFormatById(
         toDocumentFormatId( format ) );
     CHECK_EXT( NULL != docFormat, coreLog.error( QObject::tr( "The unsupported format"
         " was provided" ) ), );
+    const QString url = QString::fromWCharArray( _url );
     QFileInfo fileInfo( url );
     GUrl adoptedUrl = fileInfo.isAbsolute( ) ? GUrl( url ) : GUrl(
         QCoreApplication::applicationDirPath( ) + "/" + QString( url ) );
@@ -163,7 +165,7 @@ U2SCRIPT_EXPORT ObjectType getObjectType( UgeneDbHandle object ) {
     return toObjectType( result );
 }
 
-U2SCRIPT_EXPORT void getObjectName( UgeneDbHandle object, int expectedMaxNameLength, char *name ) {
+U2SCRIPT_EXPORT void getObjectName( UgeneDbHandle object, int expectedMaxNameLength, wchar_t *name ) {
     U2::GObject *unwrappedObject = reinterpret_cast<U2::GObject *>( object );
     QString result;
     if ( NULL != unwrappedObject ) {
@@ -174,10 +176,10 @@ U2SCRIPT_EXPORT void getObjectName( UgeneDbHandle object, int expectedMaxNameLen
     Q_UNUSED( error );
 }
 
-U2SCRIPT_EXPORT void setObjectName( UgeneDbHandle object, const char *newName ) {
+U2SCRIPT_EXPORT void setObjectName( UgeneDbHandle object, const wchar_t *newName ) {
     U2::GObject *unwrappedObject = reinterpret_cast<U2::GObject *>( object );
     if ( NULL != unwrappedObject && NULL != newName ) {
-        unwrappedObject->setGObjectName( newName );
+        unwrappedObject->setGObjectName( QString::fromWCharArray( newName ) );
     }
 }
 

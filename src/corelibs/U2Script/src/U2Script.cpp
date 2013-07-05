@@ -47,7 +47,8 @@ U2ErrorType processTask( U2::Task *task ) {
 
 extern "C" {
 
-U2SCRIPT_EXPORT U2ErrorType initContext( const char *workingDirectoryPath ) {
+U2SCRIPT_EXPORT U2ErrorType initContext( const wchar_t *_workingDirectoryPath ) {
+    QString workingDirectoryPath = QString::fromWCharArray( _workingDirectoryPath );
     QFileInfo info( workingDirectoryPath );
     if ( NULL == workingDirectoryPath || !info.isDir( ) || !info.exists( ) ) {
         return U2_INVALID_PATH;

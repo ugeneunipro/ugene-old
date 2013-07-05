@@ -37,7 +37,7 @@ static const QString TEMP_SCHEMES_DIR_PATH = QDir::tempPath( );
 static const int MAX_ELEMENT_NAME_LENGTH = 100;
 static const int SUBSTRING_NOT_FOUND = -1;
 
-#define CHECK_U2_ERROR( errorCode ) CHECK_TRUE( U2_OK == errorCode, getErrorString( errorCode ) )
+#define CHECK_U2_ERROR( errorCode ) CHECK_TRUE( U2_OK == errorCode, QString::fromWCharArray( getErrorString( errorCode ) ) )
 
 namespace U2 {
 

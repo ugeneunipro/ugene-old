@@ -30,28 +30,28 @@ namespace U2 {
 /////////////   TESTS IMPLEMENTATION   ///////////////////////////////////////////////////////
 
 IMPLEMENT_TEST( CInterfaceManualTests, basic_align ) {
-    char readMsa[MAX_ELEMENT_NAME_LENGTH], muscle[MAX_ELEMENT_NAME_LENGTH],
+    wchar_t readMsa[MAX_ELEMENT_NAME_LENGTH], muscle[MAX_ELEMENT_NAME_LENGTH],
         writeMsa[MAX_ELEMENT_NAME_LENGTH];
     SchemeHandle scheme = NULL;
     U2ErrorType error = createScheme( NULL, &scheme );
     CHECK_U2_ERROR( error );
-    error = addElementToScheme( scheme, "read-msa", MAX_ELEMENT_NAME_LENGTH, readMsa );
+    error = addElementToScheme( scheme, L"read-msa", MAX_ELEMENT_NAME_LENGTH, readMsa );
     CHECK_U2_ERROR( error );
-    error = addElementToScheme( scheme, "write-msa", MAX_ELEMENT_NAME_LENGTH, writeMsa );
+    error = addElementToScheme( scheme, L"write-msa", MAX_ELEMENT_NAME_LENGTH, writeMsa );
     CHECK_U2_ERROR( error );
-    error = addElementToScheme( scheme, "muscle", MAX_ELEMENT_NAME_LENGTH, muscle );
+    error = addElementToScheme( scheme, L"muscle", MAX_ELEMENT_NAME_LENGTH, muscle );
     CHECK_U2_ERROR( error );
-    error = setSchemeElementAttribute( scheme, writeMsa, "document-format", "stockholm" );
-    CHECK_U2_ERROR( error );
-
-    error = addFlowToScheme( scheme, readMsa, "out-msa", muscle, "in-msa" );
-    CHECK_U2_ERROR( error );
-    error = addFlowToScheme( scheme, muscle, "out-msa", writeMsa, "in-msa" );
+    error = setSchemeElementAttribute( scheme, writeMsa, L"document-format", L"stockholm" );
     CHECK_U2_ERROR( error );
 
-    error = addSchemeActorsBinding( scheme, readMsa, "msa", muscle, "in-msa.msa" );
+    error = addFlowToScheme( scheme, readMsa, L"out-msa", muscle, L"in-msa" );
     CHECK_U2_ERROR( error );
-    error = addSchemeActorsBinding( scheme, muscle, "msa", writeMsa, "in-msa.msa" );
+    error = addFlowToScheme( scheme, muscle, L"out-msa", writeMsa, L"in-msa" );
+    CHECK_U2_ERROR( error );
+
+    error = addSchemeActorsBinding( scheme, readMsa, L"msa", muscle, L"in-msa.msa" );
+    CHECK_U2_ERROR( error );
+    error = addSchemeActorsBinding( scheme, muscle, L"msa", writeMsa, L"in-msa.msa" );
     CHECK_U2_ERROR( error );
 
     U2OpStatusImpl stateInfo;
@@ -63,37 +63,37 @@ IMPLEMENT_TEST( CInterfaceManualTests, basic_align ) {
 }
 
 IMPLEMENT_TEST( CInterfaceManualTests, faqual2fastq ) {
-    char readSequence[MAX_ELEMENT_NAME_LENGTH], importPhredQualities[MAX_ELEMENT_NAME_LENGTH],
+    wchar_t readSequence[MAX_ELEMENT_NAME_LENGTH], importPhredQualities[MAX_ELEMENT_NAME_LENGTH],
         writeSequence[MAX_ELEMENT_NAME_LENGTH];
 
     SchemeHandle scheme = NULL;
     U2ErrorType error = createScheme( NULL, &scheme );
     CHECK_U2_ERROR( error );
-    error = addElementToScheme( scheme, "read-sequence", MAX_ELEMENT_NAME_LENGTH, readSequence );
+    error = addElementToScheme( scheme, L"read-sequence", MAX_ELEMENT_NAME_LENGTH, readSequence );
     CHECK_U2_ERROR( error );
-    error = addElementToScheme( scheme, "write-sequence", MAX_ELEMENT_NAME_LENGTH, writeSequence );
+    error = addElementToScheme( scheme, L"write-sequence", MAX_ELEMENT_NAME_LENGTH, writeSequence );
     CHECK_U2_ERROR( error );
-    error = addElementToScheme( scheme, "import-phred-qualities", MAX_ELEMENT_NAME_LENGTH,
+    error = addElementToScheme( scheme, L"import-phred-qualities", MAX_ELEMENT_NAME_LENGTH,
         importPhredQualities );
     CHECK_U2_ERROR( error );
-    error = setSchemeElementAttribute( scheme, writeSequence, "document-format", "fastq" );
+    error = setSchemeElementAttribute( scheme, writeSequence, L"document-format", L"fastq" );
     CHECK_U2_ERROR( error );
 
-    error = addFlowToScheme( scheme, readSequence, "out-sequence", importPhredQualities,
-        "in-sequence" );
+    error = addFlowToScheme( scheme, readSequence, L"out-sequence", importPhredQualities,
+        L"in-sequence" );
     CHECK_U2_ERROR( error );
-    error = addFlowToScheme( scheme, importPhredQualities, "out-sequence", writeSequence,
-        "in-sequence" );
+    error = addFlowToScheme( scheme, importPhredQualities, L"out-sequence", writeSequence,
+        L"in-sequence" );
     CHECK_U2_ERROR( error );
 
-    error = addSchemeActorsBinding( scheme, readSequence, "sequence", importPhredQualities,
-        "in-sequence.sequence" );
+    error = addSchemeActorsBinding( scheme, readSequence, L"sequence", importPhredQualities,
+        L"in-sequence.sequence" );
     CHECK_U2_ERROR( error );
-    error = addSchemeActorsBinding( scheme, importPhredQualities, "sequence", writeSequence,
-        "in-sequence.sequence" );
+    error = addSchemeActorsBinding( scheme, importPhredQualities, L"sequence", writeSequence,
+        L"in-sequence.sequence" );
     CHECK_U2_ERROR( error );
-    error = addSchemeActorsBinding( scheme, readSequence, "annotations", writeSequence,
-        "in-sequence.annotations" );
+    error = addSchemeActorsBinding( scheme, readSequence, L"annotations", writeSequence,
+        L"in-sequence.annotations" );
     CHECK_U2_ERROR( error );
 
     U2OpStatusImpl stateInfo;
@@ -105,20 +105,20 @@ IMPLEMENT_TEST( CInterfaceManualTests, faqual2fastq ) {
 }
 
 IMPLEMENT_TEST( CInterfaceManualTests, msa2clustal ) {
-    char readMsa[MAX_ELEMENT_NAME_LENGTH], writeMsa[MAX_ELEMENT_NAME_LENGTH];
+    wchar_t readMsa[MAX_ELEMENT_NAME_LENGTH], writeMsa[MAX_ELEMENT_NAME_LENGTH];
     SchemeHandle scheme = NULL;
     U2ErrorType error = createScheme( NULL, &scheme );
     CHECK_U2_ERROR( error );
-    error = addElementToScheme( scheme, "read-msa", MAX_ELEMENT_NAME_LENGTH, readMsa );
+    error = addElementToScheme( scheme, L"read-msa", MAX_ELEMENT_NAME_LENGTH, readMsa );
     CHECK_U2_ERROR( error );
-    error = addElementToScheme( scheme, "write-msa", MAX_ELEMENT_NAME_LENGTH, writeMsa );
+    error = addElementToScheme( scheme, L"write-msa", MAX_ELEMENT_NAME_LENGTH, writeMsa );
     CHECK_U2_ERROR( error );
-    error = setSchemeElementAttribute( scheme, writeMsa, "document-format", "clustal" );
+    error = setSchemeElementAttribute( scheme, writeMsa, L"document-format", L"clustal" );
     CHECK_U2_ERROR( error );
-    error = setSchemeElementAttribute( scheme, writeMsa, "write-mode", "2" );
+    error = setSchemeElementAttribute( scheme, writeMsa, L"write-mode", L"2" );
     CHECK_U2_ERROR( error );
 
-    error = addSchemeActorsBinding( scheme, readMsa, "msa", writeMsa, "in-msa.msa" );
+    error = addSchemeActorsBinding( scheme, readMsa, L"msa", writeMsa, L"in-msa.msa" );
     CHECK_U2_ERROR( error );
 
     U2OpStatusImpl stateInfo;
@@ -130,72 +130,72 @@ IMPLEMENT_TEST( CInterfaceManualTests, msa2clustal ) {
 }
 
 IMPLEMENT_TEST( CInterfaceManualTests, query2alignment ) {
-    char readSequence[MAX_ELEMENT_NAME_LENGTH], query[MAX_ELEMENT_NAME_LENGTH],
+    wchar_t readSequence[MAX_ELEMENT_NAME_LENGTH], query[MAX_ELEMENT_NAME_LENGTH],
         extractAnnotatedSequence[MAX_ELEMENT_NAME_LENGTH], sequencesToMsa[MAX_ELEMENT_NAME_LENGTH],
         writeMsa[MAX_ELEMENT_NAME_LENGTH], filterAnnotations[MAX_ELEMENT_NAME_LENGTH];
     SchemeHandle scheme = NULL;
     U2ErrorType error = createScheme( NULL, &scheme );
     CHECK_U2_ERROR( error );
-    error = addElementToScheme( scheme, "read-sequence", MAX_ELEMENT_NAME_LENGTH, readSequence );
+    error = addElementToScheme( scheme, L"read-sequence", MAX_ELEMENT_NAME_LENGTH, readSequence );
     CHECK_U2_ERROR( error );
-    error = addElementToScheme( scheme, "query", MAX_ELEMENT_NAME_LENGTH, query );
+    error = addElementToScheme( scheme, L"query", MAX_ELEMENT_NAME_LENGTH, query );
     CHECK_U2_ERROR( error );
-    error = addElementToScheme( scheme, "extract-annotated-sequence", MAX_ELEMENT_NAME_LENGTH,
+    error = addElementToScheme( scheme, L"extract-annotated-sequence", MAX_ELEMENT_NAME_LENGTH,
         extractAnnotatedSequence );
     CHECK_U2_ERROR( error );
-    error = addElementToScheme( scheme, "sequences-to-msa", MAX_ELEMENT_NAME_LENGTH,
+    error = addElementToScheme( scheme, L"sequences-to-msa", MAX_ELEMENT_NAME_LENGTH,
         sequencesToMsa );
     CHECK_U2_ERROR( error );
-    error = addElementToScheme( scheme, "write-msa", MAX_ELEMENT_NAME_LENGTH, writeMsa );
+    error = addElementToScheme( scheme, L"write-msa", MAX_ELEMENT_NAME_LENGTH, writeMsa );
     CHECK_U2_ERROR( error );
-    error = addElementToScheme( scheme, "filter-annotations", MAX_ELEMENT_NAME_LENGTH,
+    error = addElementToScheme( scheme, L"filter-annotations", MAX_ELEMENT_NAME_LENGTH,
         filterAnnotations );
     CHECK_U2_ERROR( error );
 
-    error = setSchemeElementAttribute( scheme, readSequence, "merge-gap", "10" );
+    error = setSchemeElementAttribute( scheme, readSequence, L"merge-gap", L"10" );
     CHECK_U2_ERROR( error );
-    error = setSchemeElementAttribute( scheme, readSequence, "mode", "0" );
-    CHECK_U2_ERROR( error );
-
-    error = setSchemeElementAttribute( scheme, query, "merge", "false" );
-    CHECK_U2_ERROR( error );
-    error = setSchemeElementAttribute( scheme, query, "offset", "0" );
+    error = setSchemeElementAttribute( scheme, readSequence, L"mode", L"0" );
     CHECK_U2_ERROR( error );
 
-    error = setSchemeElementAttribute( scheme, extractAnnotatedSequence, "complement", "true" );
+    error = setSchemeElementAttribute( scheme, query, L"merge", L"false" );
     CHECK_U2_ERROR( error );
-    error = setSchemeElementAttribute( scheme, extractAnnotatedSequence, "extend-left", "0" );
-    CHECK_U2_ERROR( error );
-    error = setSchemeElementAttribute( scheme, extractAnnotatedSequence, "extend-right", "0" );
-    CHECK_U2_ERROR( error );
-    error = setSchemeElementAttribute( scheme, extractAnnotatedSequence, "merge-gap-length", "1" );
-    CHECK_U2_ERROR( error );
-    error = setSchemeElementAttribute( scheme, extractAnnotatedSequence, "translate", "false" );
+    error = setSchemeElementAttribute( scheme, query, L"offset", L"0" );
     CHECK_U2_ERROR( error );
 
-    error = setSchemeElementAttribute( scheme, writeMsa, "document-format", "clustal" );
+    error = setSchemeElementAttribute( scheme, extractAnnotatedSequence, L"complement", L"true" );
     CHECK_U2_ERROR( error );
-    error = setSchemeElementAttribute( scheme, writeMsa, "write-mode", "2" );
+    error = setSchemeElementAttribute( scheme, extractAnnotatedSequence, L"extend-left", L"0" );
+    CHECK_U2_ERROR( error );
+    error = setSchemeElementAttribute( scheme, extractAnnotatedSequence, L"extend-right", L"0" );
+    CHECK_U2_ERROR( error );
+    error = setSchemeElementAttribute( scheme, extractAnnotatedSequence, L"merge-gap-length", L"1" );
+    CHECK_U2_ERROR( error );
+    error = setSchemeElementAttribute( scheme, extractAnnotatedSequence, L"translate", L"false" );
     CHECK_U2_ERROR( error );
 
-    error = setSchemeElementAttribute( scheme, filterAnnotations, "accept-or-filter", "true" );
+    error = setSchemeElementAttribute( scheme, writeMsa, L"document-format", L"clustal" );
+    CHECK_U2_ERROR( error );
+    error = setSchemeElementAttribute( scheme, writeMsa, L"write-mode", L"2" );
     CHECK_U2_ERROR( error );
 
-    error = addSchemeActorsBinding( scheme, readSequence, "sequence", query, "in-sequence.sequence" );
+    error = setSchemeElementAttribute( scheme, filterAnnotations, L"accept-or-filter", L"true" );
     CHECK_U2_ERROR( error );
-    error = addSchemeActorsBinding( scheme, filterAnnotations, "annotations",
-        extractAnnotatedSequence, "in-sequence.annotations" );
+
+    error = addSchemeActorsBinding( scheme, readSequence, L"sequence", query, L"in-sequence.sequence" );
     CHECK_U2_ERROR( error );
-    error = addSchemeActorsBinding( scheme, readSequence, "sequence", extractAnnotatedSequence,
-        "in-sequence.sequence" );
+    error = addSchemeActorsBinding( scheme, filterAnnotations, L"annotations",
+        extractAnnotatedSequence, L"in-sequence.annotations" );
     CHECK_U2_ERROR( error );
-    error = addSchemeActorsBinding( scheme, extractAnnotatedSequence, "sequence", sequencesToMsa,
-        "in-sequence.sequence" );
+    error = addSchemeActorsBinding( scheme, readSequence, L"sequence", extractAnnotatedSequence,
+        L"in-sequence.sequence" );
     CHECK_U2_ERROR( error );
-    error = addSchemeActorsBinding( scheme, sequencesToMsa, "msa", writeMsa, "in-msa.msa" );
+    error = addSchemeActorsBinding( scheme, extractAnnotatedSequence, L"sequence", sequencesToMsa,
+        L"in-sequence.sequence" );
     CHECK_U2_ERROR( error );
-    error = addSchemeActorsBinding( scheme, query, "annotations", filterAnnotations,
-        "in-annotations.annotations" );
+    error = addSchemeActorsBinding( scheme, sequencesToMsa, L"msa", writeMsa, L"in-msa.msa" );
+    CHECK_U2_ERROR( error );
+    error = addSchemeActorsBinding( scheme, query, L"annotations", filterAnnotations,
+        L"in-annotations.annotations" );
     CHECK_U2_ERROR( error );
 
     U2OpStatusImpl stateInfo;
@@ -207,33 +207,33 @@ IMPLEMENT_TEST( CInterfaceManualTests, query2alignment ) {
 }
 
 IMPLEMENT_TEST( CInterfaceManualTests, seq2gen ) {
-    char readSequence[MAX_ELEMENT_NAME_LENGTH], writeSequence[MAX_ELEMENT_NAME_LENGTH];
+    wchar_t readSequence[MAX_ELEMENT_NAME_LENGTH], writeSequence[MAX_ELEMENT_NAME_LENGTH];
     SchemeHandle scheme = NULL;
     U2ErrorType error = createScheme( NULL, &scheme );
     CHECK_U2_ERROR( error );
 
-    error = addElementToScheme( scheme, "read-sequence", MAX_ELEMENT_NAME_LENGTH, readSequence );
+    error = addElementToScheme( scheme, L"read-sequence", MAX_ELEMENT_NAME_LENGTH, readSequence );
     CHECK_U2_ERROR( error );
-    error = addElementToScheme( scheme, "write-sequence", MAX_ELEMENT_NAME_LENGTH, writeSequence );
-    CHECK_U2_ERROR( error );
-
-    error = setSchemeElementAttribute( scheme, readSequence, "merge-gap", "10" );
-    CHECK_U2_ERROR( error );
-    error = setSchemeElementAttribute( scheme, readSequence, "mode", "0" );
+    error = addElementToScheme( scheme, L"write-sequence", MAX_ELEMENT_NAME_LENGTH, writeSequence );
     CHECK_U2_ERROR( error );
 
-    error = setSchemeElementAttribute( scheme, writeSequence, "document-format", "genbank" );
+    error = setSchemeElementAttribute( scheme, readSequence, L"merge-gap", L"10" );
     CHECK_U2_ERROR( error );
-    error = setSchemeElementAttribute( scheme, writeSequence, "accumulate", "true" );
-    CHECK_U2_ERROR( error );
-    error = setSchemeElementAttribute( scheme, writeSequence, "write-mode", "2" );
+    error = setSchemeElementAttribute( scheme, readSequence, L"mode", L"0" );
     CHECK_U2_ERROR( error );
 
-    error = addSchemeActorsBinding( scheme, readSequence, "annotations", writeSequence,
-        "in-sequence.annotations" );
+    error = setSchemeElementAttribute( scheme, writeSequence, L"document-format", L"genbank" );
     CHECK_U2_ERROR( error );
-    error = addSchemeActorsBinding( scheme, readSequence, "sequence", writeSequence,
-        "in-sequence.sequence" );
+    error = setSchemeElementAttribute( scheme, writeSequence, L"accumulate", L"true" );
+    CHECK_U2_ERROR( error );
+    error = setSchemeElementAttribute( scheme, writeSequence, L"write-mode", L"2" );
+    CHECK_U2_ERROR( error );
+
+    error = addSchemeActorsBinding( scheme, readSequence, L"annotations", writeSequence,
+        L"in-sequence.annotations" );
+    CHECK_U2_ERROR( error );
+    error = addSchemeActorsBinding( scheme, readSequence, L"sequence", writeSequence,
+        L"in-sequence.sequence" );
     CHECK_U2_ERROR( error );
 
     U2OpStatusImpl stateInfo;
@@ -245,7 +245,7 @@ IMPLEMENT_TEST( CInterfaceManualTests, seq2gen ) {
 }
 
 IMPLEMENT_TEST( CInterfaceManualTests, tfbs ) {
-    char readSequence[MAX_ELEMENT_NAME_LENGTH], writeSequence[MAX_ELEMENT_NAME_LENGTH],
+    wchar_t readSequence[MAX_ELEMENT_NAME_LENGTH], writeSequence[MAX_ELEMENT_NAME_LENGTH],
         multiplexer[MAX_ELEMENT_NAME_LENGTH], siteconSearch[MAX_ELEMENT_NAME_LENGTH],
         wmatrixSearch[MAX_ELEMENT_NAME_LENGTH], siteconRead[MAX_ELEMENT_NAME_LENGTH],
         wmatrixRead[MAX_ELEMENT_NAME_LENGTH];
@@ -253,66 +253,66 @@ IMPLEMENT_TEST( CInterfaceManualTests, tfbs ) {
     U2ErrorType error = createScheme( NULL, &scheme );
     CHECK_U2_ERROR( error );
 
-    error = addElementToScheme( scheme, "read-sequence", MAX_ELEMENT_NAME_LENGTH, readSequence );
+    error = addElementToScheme( scheme, L"read-sequence", MAX_ELEMENT_NAME_LENGTH, readSequence );
     CHECK_U2_ERROR( error );
-    error = addElementToScheme( scheme, "write-sequence", MAX_ELEMENT_NAME_LENGTH, writeSequence );
+    error = addElementToScheme( scheme, L"write-sequence", MAX_ELEMENT_NAME_LENGTH, writeSequence );
     CHECK_U2_ERROR( error );
-    error = addElementToScheme( scheme, "multiplexer", MAX_ELEMENT_NAME_LENGTH, multiplexer );
+    error = addElementToScheme( scheme, L"multiplexer", MAX_ELEMENT_NAME_LENGTH, multiplexer );
     CHECK_U2_ERROR( error );
-    error = addElementToScheme( scheme, "sitecon-search", MAX_ELEMENT_NAME_LENGTH, siteconSearch );
+    error = addElementToScheme( scheme, L"sitecon-search", MAX_ELEMENT_NAME_LENGTH, siteconSearch );
     CHECK_U2_ERROR( error );
-    error = addElementToScheme( scheme, "wmatrix-search", MAX_ELEMENT_NAME_LENGTH, wmatrixSearch );
+    error = addElementToScheme( scheme, L"wmatrix-search", MAX_ELEMENT_NAME_LENGTH, wmatrixSearch );
     CHECK_U2_ERROR( error );
-    error = addElementToScheme( scheme, "sitecon-read", MAX_ELEMENT_NAME_LENGTH, siteconRead );
+    error = addElementToScheme( scheme, L"sitecon-read", MAX_ELEMENT_NAME_LENGTH, siteconRead );
     CHECK_U2_ERROR( error );
-    error = addElementToScheme( scheme, "wmatrix-read", MAX_ELEMENT_NAME_LENGTH, wmatrixRead );
-    CHECK_U2_ERROR( error );
-
-    error = setSchemeElementAttribute( scheme, writeSequence, "document-format", "genbank" );
-    CHECK_U2_ERROR( error );
-    error = setSchemeElementAttribute( scheme, siteconSearch, "result-name", "sitecon" );
-    CHECK_U2_ERROR( error );
-    error = setSchemeElementAttribute( scheme, wmatrixSearch, "result-name", "weight_matrix" );
+    error = addElementToScheme( scheme, L"wmatrix-read", MAX_ELEMENT_NAME_LENGTH, wmatrixRead );
     CHECK_U2_ERROR( error );
 
-    error = addFlowToScheme( scheme, multiplexer, "output-data", writeSequence, "in-sequence" );
+    error = setSchemeElementAttribute( scheme, writeSequence, L"document-format", L"genbank" );
     CHECK_U2_ERROR( error );
-    error = addFlowToScheme( scheme, siteconSearch, "out-annotations", multiplexer, "input-data-2" );
+    error = setSchemeElementAttribute( scheme, siteconSearch, L"result-name", L"sitecon" );
     CHECK_U2_ERROR( error );
-    error = addFlowToScheme( scheme, wmatrixSearch, "out-annotations", multiplexer, "input-data-1" );
-    CHECK_U2_ERROR( error );
-    error = addFlowToScheme( scheme, siteconRead, "out-sitecon", siteconSearch, "in-sitecon" );
-    CHECK_U2_ERROR( error );
-    error = addFlowToScheme( scheme, wmatrixRead, "out-wmatrix", wmatrixSearch, "in-wmatrix" );
-    CHECK_U2_ERROR( error );
-    error = addFlowToScheme( scheme, readSequence, "out-sequence", wmatrixSearch, "in-sequence" );
-    CHECK_U2_ERROR( error );
-    error = addFlowToScheme( scheme, readSequence, "out-sequence", siteconSearch, "in-sequence" );
+    error = setSchemeElementAttribute( scheme, wmatrixSearch, L"result-name", L"weight_matrix" );
     CHECK_U2_ERROR( error );
 
-    error = addSchemeActorsBinding( scheme, readSequence, "annotations", writeSequence,
-        "in-sequence.annotations" );
+    error = addFlowToScheme( scheme, multiplexer, L"output-data", writeSequence, L"in-sequence" );
     CHECK_U2_ERROR( error );
-    error = addSchemeActorsBinding( scheme, siteconSearch, "annotations", writeSequence,
-        "in-sequence.annotations" );
+    error = addFlowToScheme( scheme, siteconSearch, L"out-annotations", multiplexer, L"input-data-2" );
     CHECK_U2_ERROR( error );
-    error = addSchemeActorsBinding( scheme, wmatrixSearch, "annotations", writeSequence,
-        "in-sequence.annotations" );
+    error = addFlowToScheme( scheme, wmatrixSearch, L"out-annotations", multiplexer, L"input-data-1" );
     CHECK_U2_ERROR( error );
-    error = addSchemeActorsBinding( scheme, readSequence, "sequence", writeSequence,
-        "in-sequence.sequence" );
+    error = addFlowToScheme( scheme, siteconRead, L"out-sitecon", siteconSearch, L"in-sitecon" );
     CHECK_U2_ERROR( error );
-    error = addSchemeActorsBinding( scheme, readSequence, "sequence", siteconSearch,
-        "in-sequence.sequence" );
+    error = addFlowToScheme( scheme, wmatrixRead, L"out-wmatrix", wmatrixSearch, L"in-wmatrix" );
     CHECK_U2_ERROR( error );
-    error = addSchemeActorsBinding( scheme, siteconRead, "sitecon-model", siteconSearch,
-        "in-sitecon.sitecon-model" );
+    error = addFlowToScheme( scheme, readSequence, L"out-sequence", wmatrixSearch, L"in-sequence" );
     CHECK_U2_ERROR( error );
-    error = addSchemeActorsBinding( scheme, readSequence, "sequence", wmatrixSearch,
-        "in-sequence.sequence" );
+    error = addFlowToScheme( scheme, readSequence, L"out-sequence", siteconSearch, L"in-sequence" );
     CHECK_U2_ERROR( error );
-    error = addSchemeActorsBinding( scheme, wmatrixRead, "wmatrix", wmatrixSearch,
-        "in-wmatrix.wmatrix" );
+
+    error = addSchemeActorsBinding( scheme, readSequence, L"annotations", writeSequence,
+        L"in-sequence.annotations" );
+    CHECK_U2_ERROR( error );
+    error = addSchemeActorsBinding( scheme, siteconSearch, L"annotations", writeSequence,
+        L"in-sequence.annotations" );
+    CHECK_U2_ERROR( error );
+    error = addSchemeActorsBinding( scheme, wmatrixSearch, L"annotations", writeSequence,
+        L"in-sequence.annotations" );
+    CHECK_U2_ERROR( error );
+    error = addSchemeActorsBinding( scheme, readSequence, L"sequence", writeSequence,
+        L"in-sequence.sequence" );
+    CHECK_U2_ERROR( error );
+    error = addSchemeActorsBinding( scheme, readSequence, L"sequence", siteconSearch,
+        L"in-sequence.sequence" );
+    CHECK_U2_ERROR( error );
+    error = addSchemeActorsBinding( scheme, siteconRead, L"sitecon-model", siteconSearch,
+        L"in-sitecon.sitecon-model" );
+    CHECK_U2_ERROR( error );
+    error = addSchemeActorsBinding( scheme, readSequence, L"sequence", wmatrixSearch,
+        L"in-sequence.sequence" );
+    CHECK_U2_ERROR( error );
+    error = addSchemeActorsBinding( scheme, wmatrixRead, L"wmatrix", wmatrixSearch,
+        L"in-wmatrix.wmatrix" );
     CHECK_U2_ERROR( error );
 
     U2OpStatusImpl stateInfo;
@@ -324,87 +324,87 @@ IMPLEMENT_TEST( CInterfaceManualTests, tfbs ) {
 }
 
 IMPLEMENT_TEST( CInterfaceManualTests, build_test_HMM ) {
-    char readSequence[MAX_ELEMENT_NAME_LENGTH], readMsa[MAX_ELEMENT_NAME_LENGTH],
+    wchar_t readSequence[MAX_ELEMENT_NAME_LENGTH], readMsa[MAX_ELEMENT_NAME_LENGTH],
         hmm2Build[MAX_ELEMENT_NAME_LENGTH], hmm2WriteProfile[MAX_ELEMENT_NAME_LENGTH],
         hmm2Search[MAX_ELEMENT_NAME_LENGTH], writeSequence[MAX_ELEMENT_NAME_LENGTH];
     SchemeHandle scheme = NULL;
     U2ErrorType error = createScheme( NULL, &scheme );
     CHECK_U2_ERROR( error );
 
-    error = addElementToScheme( scheme, "read-sequence", MAX_ELEMENT_NAME_LENGTH, readSequence );
+    error = addElementToScheme( scheme, L"read-sequence", MAX_ELEMENT_NAME_LENGTH, readSequence );
     CHECK_U2_ERROR( error );
-    error = addElementToScheme( scheme, "read-msa", MAX_ELEMENT_NAME_LENGTH, readMsa );
+    error = addElementToScheme( scheme, L"read-msa", MAX_ELEMENT_NAME_LENGTH, readMsa );
     CHECK_U2_ERROR( error );
-    error = addElementToScheme( scheme, "hmm2-build", MAX_ELEMENT_NAME_LENGTH, hmm2Build );
+    error = addElementToScheme( scheme, L"hmm2-build", MAX_ELEMENT_NAME_LENGTH, hmm2Build );
     CHECK_U2_ERROR( error );
-    error = addElementToScheme( scheme, "hmm2-write-profile", MAX_ELEMENT_NAME_LENGTH,
+    error = addElementToScheme( scheme, L"hmm2-write-profile", MAX_ELEMENT_NAME_LENGTH,
         hmm2WriteProfile );
     CHECK_U2_ERROR( error );
-    error = addElementToScheme( scheme, "hmm2-search", MAX_ELEMENT_NAME_LENGTH, hmm2Search );
+    error = addElementToScheme( scheme, L"hmm2-search", MAX_ELEMENT_NAME_LENGTH, hmm2Search );
     CHECK_U2_ERROR( error );
-    error = addElementToScheme( scheme, "write-sequence", MAX_ELEMENT_NAME_LENGTH, writeSequence );
-    CHECK_U2_ERROR( error );
-
-    error = setSchemeElementAttribute( scheme, readSequence, "merge-gap", "10" );
-    CHECK_U2_ERROR( error );
-    error = setSchemeElementAttribute( scheme, readSequence, "mode", "0" );
+    error = addElementToScheme( scheme, L"write-sequence", MAX_ELEMENT_NAME_LENGTH, writeSequence );
     CHECK_U2_ERROR( error );
 
-    error = setSchemeElementAttribute( scheme, hmm2Build, "calibrate", "true" );
+    error = setSchemeElementAttribute( scheme, readSequence, L"merge-gap", L"10" );
     CHECK_U2_ERROR( error );
-    error = setSchemeElementAttribute( scheme, hmm2Build, "calibration-threads", "1" );
-    CHECK_U2_ERROR( error );
-    error = setSchemeElementAttribute( scheme, hmm2Build, "deviation", "200" );
-    CHECK_U2_ERROR( error );
-    error = setSchemeElementAttribute( scheme, hmm2Build, "fix-samples-length", "0" );
-    CHECK_U2_ERROR( error );
-    error = setSchemeElementAttribute( scheme, hmm2Build, "mean-samples-length", "325" );
-    CHECK_U2_ERROR( error );
-    error = setSchemeElementAttribute( scheme, hmm2Build, "samples-num", "5000" );
-    CHECK_U2_ERROR( error );
-    error = setSchemeElementAttribute( scheme, hmm2Build, "seed", "0" );
-    CHECK_U2_ERROR( error );
-    error = setSchemeElementAttribute( scheme, hmm2Build, "strategy", "1" );
+    error = setSchemeElementAttribute( scheme, readSequence, L"mode", L"0" );
     CHECK_U2_ERROR( error );
 
-    error = setSchemeElementAttribute( scheme, hmm2WriteProfile, "write-mode", "2" );
+    error = setSchemeElementAttribute( scheme, hmm2Build, L"calibrate", L"true" );
+    CHECK_U2_ERROR( error );
+    error = setSchemeElementAttribute( scheme, hmm2Build, L"calibration-threads", L"1" );
+    CHECK_U2_ERROR( error );
+    error = setSchemeElementAttribute( scheme, hmm2Build, L"deviation", L"200" );
+    CHECK_U2_ERROR( error );
+    error = setSchemeElementAttribute( scheme, hmm2Build, L"fix-samples-length", L"0" );
+    CHECK_U2_ERROR( error );
+    error = setSchemeElementAttribute( scheme, hmm2Build, L"mean-samples-length", L"325" );
+    CHECK_U2_ERROR( error );
+    error = setSchemeElementAttribute( scheme, hmm2Build, L"samples-num", L"5000" );
+    CHECK_U2_ERROR( error );
+    error = setSchemeElementAttribute( scheme, hmm2Build, L"seed", L"0" );
+    CHECK_U2_ERROR( error );
+    error = setSchemeElementAttribute( scheme, hmm2Build, L"strategy", L"1" );
     CHECK_U2_ERROR( error );
 
-    error = setSchemeElementAttribute( scheme, hmm2Search, "e-val", "-1" );
-    CHECK_U2_ERROR( error );
-    error = setSchemeElementAttribute( scheme, hmm2Search, "result-name", "hmm_signal" );
-    CHECK_U2_ERROR( error );
-    error = setSchemeElementAttribute( scheme, hmm2Search, "score", "-1000000000" );
-    CHECK_U2_ERROR( error );
-    error = setSchemeElementAttribute( scheme, hmm2Search, "seqs-num", "1" );
+    error = setSchemeElementAttribute( scheme, hmm2WriteProfile, L"write-mode", L"2" );
     CHECK_U2_ERROR( error );
 
-    error = setSchemeElementAttribute( scheme, writeSequence, "document-format", "genbank" );
+    error = setSchemeElementAttribute( scheme, hmm2Search, L"e-val", L"-1" );
     CHECK_U2_ERROR( error );
-    error = setSchemeElementAttribute( scheme, writeSequence, "accumulate", "true" );
+    error = setSchemeElementAttribute( scheme, hmm2Search, L"result-name", L"hmm_signal" );
     CHECK_U2_ERROR( error );
-    error = setSchemeElementAttribute( scheme, writeSequence, "write-mode", "2" );
+    error = setSchemeElementAttribute( scheme, hmm2Search, L"score", L"-1000000000" );
+    CHECK_U2_ERROR( error );
+    error = setSchemeElementAttribute( scheme, hmm2Search, L"seqs-num", L"1" );
     CHECK_U2_ERROR( error );
 
-    error = addSchemeActorsBinding( scheme, readMsa, "msa", hmm2Build, "in-msa.msa" );
+    error = setSchemeElementAttribute( scheme, writeSequence, L"document-format", L"genbank" );
     CHECK_U2_ERROR( error );
-    error = addSchemeActorsBinding( scheme, hmm2Build, "hmm2-profile", hmm2WriteProfile,
-        "in-hmm2.hmm2-profile" );
+    error = setSchemeElementAttribute( scheme, writeSequence, L"accumulate", L"true" );
     CHECK_U2_ERROR( error );
-    error = addSchemeActorsBinding( scheme, hmm2Build, "hmm2-profile", hmm2Search,
-        "in-hmm2.hmm2-profile" );
+    error = setSchemeElementAttribute( scheme, writeSequence, L"write-mode", L"2" );
     CHECK_U2_ERROR( error );
-    error = addSchemeActorsBinding( scheme, readSequence, "sequence", hmm2Search,
-        "in-sequence.sequence" );
+
+    error = addSchemeActorsBinding( scheme, readMsa, L"msa", hmm2Build, L"in-msa.msa" );
     CHECK_U2_ERROR( error );
-    error = addSchemeActorsBinding( scheme, hmm2Search, "annotations", writeSequence,
-        "in-sequence.annotations" );
+    error = addSchemeActorsBinding( scheme, hmm2Build, L"hmm2-profile", hmm2WriteProfile,
+        L"in-hmm2.hmm2-profile" );
     CHECK_U2_ERROR( error );
-    error = addSchemeActorsBinding( scheme, readSequence, "annotations", writeSequence,
-        "in-sequence.annotations" );
+    error = addSchemeActorsBinding( scheme, hmm2Build, L"hmm2-profile", hmm2Search,
+        L"in-hmm2.hmm2-profile" );
     CHECK_U2_ERROR( error );
-    error = addSchemeActorsBinding( scheme, readSequence, "sequence", writeSequence,
-        "in-sequence.sequence" );
+    error = addSchemeActorsBinding( scheme, readSequence, L"sequence", hmm2Search,
+        L"in-sequence.sequence" );
+    CHECK_U2_ERROR( error );
+    error = addSchemeActorsBinding( scheme, hmm2Search, L"annotations", writeSequence,
+        L"in-sequence.annotations" );
+    CHECK_U2_ERROR( error );
+    error = addSchemeActorsBinding( scheme, readSequence, L"annotations", writeSequence,
+        L"in-sequence.annotations" );
+    CHECK_U2_ERROR( error );
+    error = addSchemeActorsBinding( scheme, readSequence, L"sequence", writeSequence,
+        L"in-sequence.sequence" );
     CHECK_U2_ERROR( error );
 
     U2OpStatusImpl stateInfo;
@@ -416,57 +416,57 @@ IMPLEMENT_TEST( CInterfaceManualTests, build_test_HMM ) {
 }
 
 IMPLEMENT_TEST( CInterfaceManualTests, search_HMM ) {
-    char readSequence[MAX_ELEMENT_NAME_LENGTH], hmm2ReadProfile[MAX_ELEMENT_NAME_LENGTH],
+    wchar_t readSequence[MAX_ELEMENT_NAME_LENGTH], hmm2ReadProfile[MAX_ELEMENT_NAME_LENGTH],
         hmm2Search[MAX_ELEMENT_NAME_LENGTH], writeSequence[MAX_ELEMENT_NAME_LENGTH];
     SchemeHandle scheme = NULL;
     U2ErrorType error = createScheme( NULL, &scheme );
     CHECK_U2_ERROR( error );
 
-    error = addElementToScheme( scheme, "read-sequence", MAX_ELEMENT_NAME_LENGTH, readSequence );
+    error = addElementToScheme( scheme, L"read-sequence", MAX_ELEMENT_NAME_LENGTH, readSequence );
     CHECK_U2_ERROR( error );
-    error = addElementToScheme( scheme, "hmm2-read-profile", MAX_ELEMENT_NAME_LENGTH,
+    error = addElementToScheme( scheme, L"hmm2-read-profile", MAX_ELEMENT_NAME_LENGTH,
         hmm2ReadProfile );
     CHECK_U2_ERROR( error );
-    error = addElementToScheme( scheme, "hmm2-search", MAX_ELEMENT_NAME_LENGTH, hmm2Search );
+    error = addElementToScheme( scheme, L"hmm2-search", MAX_ELEMENT_NAME_LENGTH, hmm2Search );
     CHECK_U2_ERROR( error );
-    error = addElementToScheme( scheme, "write-sequence", MAX_ELEMENT_NAME_LENGTH, writeSequence );
-    CHECK_U2_ERROR( error );
-
-    error = setSchemeElementAttribute( scheme, readSequence, "merge-gap", "10" );
-    CHECK_U2_ERROR( error );
-    error = setSchemeElementAttribute( scheme, readSequence, "mode", "0" );
+    error = addElementToScheme( scheme, L"write-sequence", MAX_ELEMENT_NAME_LENGTH, writeSequence );
     CHECK_U2_ERROR( error );
 
-    error = setSchemeElementAttribute( scheme, hmm2Search, "e-val", "-1" );
+    error = setSchemeElementAttribute( scheme, readSequence, L"merge-gap", L"10" );
     CHECK_U2_ERROR( error );
-    error = setSchemeElementAttribute( scheme, hmm2Search, "result-name", "hmm_signal" );
-    CHECK_U2_ERROR( error );
-    error = setSchemeElementAttribute( scheme, hmm2Search, "score", "-1000000000" );
-    CHECK_U2_ERROR( error );
-    error = setSchemeElementAttribute( scheme, hmm2Search, "seqs-num", "1" );
+    error = setSchemeElementAttribute( scheme, readSequence, L"mode", L"0" );
     CHECK_U2_ERROR( error );
 
-    error = setSchemeElementAttribute( scheme, writeSequence, "document-format", "genbank" );
+    error = setSchemeElementAttribute( scheme, hmm2Search, L"e-val", L"-1" );
     CHECK_U2_ERROR( error );
-    error = setSchemeElementAttribute( scheme, writeSequence, "accumulate", "true" );
+    error = setSchemeElementAttribute( scheme, hmm2Search, L"result-name", L"hmm_signal" );
     CHECK_U2_ERROR( error );
-    error = setSchemeElementAttribute( scheme, writeSequence, "write-mode", "2" );
+    error = setSchemeElementAttribute( scheme, hmm2Search, L"score", L"-1000000000" );
+    CHECK_U2_ERROR( error );
+    error = setSchemeElementAttribute( scheme, hmm2Search, L"seqs-num", L"1" );
     CHECK_U2_ERROR( error );
 
-    error = addSchemeActorsBinding( scheme, hmm2ReadProfile, "hmm2-profile", hmm2Search,
-        "in-hmm2.hmm2-profile" );
+    error = setSchemeElementAttribute( scheme, writeSequence, L"document-format", L"genbank" );
     CHECK_U2_ERROR( error );
-    error = addSchemeActorsBinding( scheme, readSequence, "sequence", hmm2Search,
-        "in-sequence.sequence" );
+    error = setSchemeElementAttribute( scheme, writeSequence, L"accumulate", L"true" );
     CHECK_U2_ERROR( error );
-    error = addSchemeActorsBinding( scheme, hmm2Search, "annotations", writeSequence,
-        "in-sequence.annotations" );
+    error = setSchemeElementAttribute( scheme, writeSequence, L"write-mode", L"2" );
     CHECK_U2_ERROR( error );
-    error = addSchemeActorsBinding( scheme, readSequence, "annotations", writeSequence,
-        "in-sequence.annotations" );
+
+    error = addSchemeActorsBinding( scheme, hmm2ReadProfile, L"hmm2-profile", hmm2Search,
+        L"in-hmm2.hmm2-profile" );
     CHECK_U2_ERROR( error );
-    error = addSchemeActorsBinding( scheme, readSequence, "sequence", writeSequence,
-        "in-sequence.sequence" );
+    error = addSchemeActorsBinding( scheme, readSequence, L"sequence", hmm2Search,
+        L"in-sequence.sequence" );
+    CHECK_U2_ERROR( error );
+    error = addSchemeActorsBinding( scheme, hmm2Search, L"annotations", writeSequence,
+        L"in-sequence.annotations" );
+    CHECK_U2_ERROR( error );
+    error = addSchemeActorsBinding( scheme, readSequence, L"annotations", writeSequence,
+        L"in-sequence.annotations" );
+    CHECK_U2_ERROR( error );
+    error = addSchemeActorsBinding( scheme, readSequence, L"sequence", writeSequence,
+        L"in-sequence.sequence" );
     CHECK_U2_ERROR( error );
 
     U2OpStatusImpl stateInfo;
@@ -478,7 +478,7 @@ IMPLEMENT_TEST( CInterfaceManualTests, search_HMM ) {
 }
 
 IMPLEMENT_TEST( CInterfaceManualTests, search_TFBS ) {
-    char readSequence[MAX_ELEMENT_NAME_LENGTH], writeSequence[MAX_ELEMENT_NAME_LENGTH],
+    wchar_t readSequence[MAX_ELEMENT_NAME_LENGTH], writeSequence[MAX_ELEMENT_NAME_LENGTH],
         siteconSearch[MAX_ELEMENT_NAME_LENGTH], siteconSearch1[MAX_ELEMENT_NAME_LENGTH],
         siteconSearch2[MAX_ELEMENT_NAME_LENGTH], siteconRead[MAX_ELEMENT_NAME_LENGTH],
         siteconRead1[MAX_ELEMENT_NAME_LENGTH], siteconRead2[MAX_ELEMENT_NAME_LENGTH];
@@ -486,82 +486,82 @@ IMPLEMENT_TEST( CInterfaceManualTests, search_TFBS ) {
     U2ErrorType error = createScheme( NULL, &scheme );
     CHECK_U2_ERROR( error );
 
-    error = addElementToScheme( scheme, "read-sequence", MAX_ELEMENT_NAME_LENGTH, readSequence );
+    error = addElementToScheme( scheme, L"read-sequence", MAX_ELEMENT_NAME_LENGTH, readSequence );
     CHECK_U2_ERROR( error );
-    error = addElementToScheme( scheme, "write-sequence", MAX_ELEMENT_NAME_LENGTH, writeSequence );
+    error = addElementToScheme( scheme, L"write-sequence", MAX_ELEMENT_NAME_LENGTH, writeSequence );
     CHECK_U2_ERROR( error );
-    error = addElementToScheme( scheme, "sitecon-search", MAX_ELEMENT_NAME_LENGTH, siteconSearch );
+    error = addElementToScheme( scheme, L"sitecon-search", MAX_ELEMENT_NAME_LENGTH, siteconSearch );
     CHECK_U2_ERROR( error );
-    error = addElementToScheme( scheme, "sitecon-search", MAX_ELEMENT_NAME_LENGTH, siteconSearch1 );
+    error = addElementToScheme( scheme, L"sitecon-search", MAX_ELEMENT_NAME_LENGTH, siteconSearch1 );
     CHECK_U2_ERROR( error );
-    error = addElementToScheme( scheme, "sitecon-search", MAX_ELEMENT_NAME_LENGTH, siteconSearch2 );
+    error = addElementToScheme( scheme, L"sitecon-search", MAX_ELEMENT_NAME_LENGTH, siteconSearch2 );
     CHECK_U2_ERROR( error );
-    error = addElementToScheme( scheme, "sitecon-read", MAX_ELEMENT_NAME_LENGTH, siteconRead );
+    error = addElementToScheme( scheme, L"sitecon-read", MAX_ELEMENT_NAME_LENGTH, siteconRead );
     CHECK_U2_ERROR( error );
-    error = addElementToScheme( scheme, "sitecon-read", MAX_ELEMENT_NAME_LENGTH, siteconRead1 );
+    error = addElementToScheme( scheme, L"sitecon-read", MAX_ELEMENT_NAME_LENGTH, siteconRead1 );
     CHECK_U2_ERROR( error );
-    error = addElementToScheme( scheme, "sitecon-read", MAX_ELEMENT_NAME_LENGTH, siteconRead2 );
-    CHECK_U2_ERROR( error );
-
-    error = setSchemeElementAttribute( scheme, writeSequence, "document-format", "genbank" );
-    CHECK_U2_ERROR( error );
-    error = setSchemeElementAttribute( scheme, siteconSearch, "strand", "0" );
-    CHECK_U2_ERROR( error );
-    error = setSchemeElementAttribute( scheme, siteconSearch1, "strand", "0" );
-    CHECK_U2_ERROR( error );
-    error = setSchemeElementAttribute( scheme, siteconSearch2, "strand", "0" );
+    error = addElementToScheme( scheme, L"sitecon-read", MAX_ELEMENT_NAME_LENGTH, siteconRead2 );
     CHECK_U2_ERROR( error );
 
-    error = addFlowToScheme( scheme, siteconRead1, "out-sitecon", siteconSearch1, "in-sitecon" );
+    error = setSchemeElementAttribute( scheme, writeSequence, L"document-format", L"genbank" );
     CHECK_U2_ERROR( error );
-    error = addFlowToScheme( scheme, siteconSearch1, "out-annotations", siteconSearch2,
-        "in-sequence" );
+    error = setSchemeElementAttribute( scheme, siteconSearch, L"strand", L"0" );
     CHECK_U2_ERROR( error );
-    error = addFlowToScheme( scheme, siteconRead, "out-sitecon", siteconSearch, "in-sitecon" );
+    error = setSchemeElementAttribute( scheme, siteconSearch1, L"strand", L"0" );
     CHECK_U2_ERROR( error );
-    error = addFlowToScheme( scheme, siteconSearch2, "out-annotations", writeSequence,
-        "in-sequence" );
-    CHECK_U2_ERROR( error );
-    error = addFlowToScheme( scheme, siteconSearch, "out-annotations", siteconSearch1,
-        "in-sequence" );
-    CHECK_U2_ERROR( error );
-    error = addFlowToScheme( scheme, siteconRead2, "out-sitecon", siteconSearch2, "in-sitecon" );
-    CHECK_U2_ERROR( error );
-    error = addFlowToScheme( scheme, readSequence, "out-sequence", siteconSearch, "in-sequence" );
+    error = setSchemeElementAttribute( scheme, siteconSearch2, L"strand", L"0" );
     CHECK_U2_ERROR( error );
 
-    error = addSchemeActorsBinding( scheme, readSequence, "sequence", siteconSearch,
-        "in-sequence.sequence" );
+    error = addFlowToScheme( scheme, siteconRead1, L"out-sitecon", siteconSearch1, L"in-sitecon" );
     CHECK_U2_ERROR( error );
-    error = addSchemeActorsBinding( scheme, siteconRead, "sitecon-model", siteconSearch,
-        "in-sitecon.sitecon-model" );
+    error = addFlowToScheme( scheme, siteconSearch1, L"out-annotations", siteconSearch2,
+        L"in-sequence" );
     CHECK_U2_ERROR( error );
-    error = addSchemeActorsBinding( scheme, readSequence, "sequence", siteconSearch1,
-        "in-sequence.sequence" );
+    error = addFlowToScheme( scheme, siteconRead, L"out-sitecon", siteconSearch, L"in-sitecon" );
     CHECK_U2_ERROR( error );
-    error = addSchemeActorsBinding( scheme, siteconRead1, "sitecon-model", siteconSearch1,
-        "in-sitecon.sitecon-model" );
+    error = addFlowToScheme( scheme, siteconSearch2, L"out-annotations", writeSequence,
+        L"in-sequence" );
     CHECK_U2_ERROR( error );
-    error = addSchemeActorsBinding( scheme, readSequence, "sequence", siteconSearch2,
-        "in-sequence.sequence" );
+    error = addFlowToScheme( scheme, siteconSearch, L"out-annotations", siteconSearch1,
+        L"in-sequence" );
     CHECK_U2_ERROR( error );
-    error = addSchemeActorsBinding( scheme, siteconRead2, "sitecon-model", siteconSearch2,
-        "in-sitecon.sitecon-model" );
+    error = addFlowToScheme( scheme, siteconRead2, L"out-sitecon", siteconSearch2, L"in-sitecon" );
     CHECK_U2_ERROR( error );
-    error = addSchemeActorsBinding( scheme, siteconSearch2, "annotations", writeSequence,
-        "in-sequence.annotations" );
+    error = addFlowToScheme( scheme, readSequence, L"out-sequence", siteconSearch, L"in-sequence" );
     CHECK_U2_ERROR( error );
-    error = addSchemeActorsBinding( scheme, readSequence, "annotations", writeSequence,
-        "in-sequence.annotations" );
+
+    error = addSchemeActorsBinding( scheme, readSequence, L"sequence", siteconSearch,
+        L"in-sequence.sequence" );
     CHECK_U2_ERROR( error );
-    error = addSchemeActorsBinding( scheme, siteconSearch, "annotations", writeSequence,
-        "in-sequence.annotations" );
+    error = addSchemeActorsBinding( scheme, siteconRead, L"sitecon-model", siteconSearch,
+        L"in-sitecon.sitecon-model" );
     CHECK_U2_ERROR( error );
-    error = addSchemeActorsBinding( scheme, siteconSearch1, "annotations", writeSequence,
-        "in-sequence.annotations" );
+    error = addSchemeActorsBinding( scheme, readSequence, L"sequence", siteconSearch1,
+        L"in-sequence.sequence" );
     CHECK_U2_ERROR( error );
-    error = addSchemeActorsBinding( scheme, readSequence, "sequence", writeSequence,
-        "in-sequence.sequence" );
+    error = addSchemeActorsBinding( scheme, siteconRead1, L"sitecon-model", siteconSearch1,
+        L"in-sitecon.sitecon-model" );
+    CHECK_U2_ERROR( error );
+    error = addSchemeActorsBinding( scheme, readSequence, L"sequence", siteconSearch2,
+        L"in-sequence.sequence" );
+    CHECK_U2_ERROR( error );
+    error = addSchemeActorsBinding( scheme, siteconRead2, L"sitecon-model", siteconSearch2,
+        L"in-sitecon.sitecon-model" );
+    CHECK_U2_ERROR( error );
+    error = addSchemeActorsBinding( scheme, siteconSearch2, L"annotations", writeSequence,
+        L"in-sequence.annotations" );
+    CHECK_U2_ERROR( error );
+    error = addSchemeActorsBinding( scheme, readSequence, L"annotations", writeSequence,
+        L"in-sequence.annotations" );
+    CHECK_U2_ERROR( error );
+    error = addSchemeActorsBinding( scheme, siteconSearch, L"annotations", writeSequence,
+        L"in-sequence.annotations" );
+    CHECK_U2_ERROR( error );
+    error = addSchemeActorsBinding( scheme, siteconSearch1, L"annotations", writeSequence,
+        L"in-sequence.annotations" );
+    CHECK_U2_ERROR( error );
+    error = addSchemeActorsBinding( scheme, readSequence, L"sequence", writeSequence,
+        L"in-sequence.sequence" );
     CHECK_U2_ERROR( error );
 
     U2OpStatusImpl stateInfo;
@@ -573,49 +573,49 @@ IMPLEMENT_TEST( CInterfaceManualTests, search_TFBS ) {
 }
 
 IMPLEMENT_TEST( CInterfaceManualTests, call_variants ) {
-    char readSequence[MAX_ELEMENT_NAME_LENGTH], readAssembly[MAX_ELEMENT_NAME_LENGTH],
+    wchar_t readSequence[MAX_ELEMENT_NAME_LENGTH], readAssembly[MAX_ELEMENT_NAME_LENGTH],
         callVariants[MAX_ELEMENT_NAME_LENGTH], writeVariations[MAX_ELEMENT_NAME_LENGTH];
     SchemeHandle scheme = NULL;
     U2ErrorType error = createScheme( NULL, &scheme );
     CHECK_U2_ERROR( error );
 
-    error = addElementToScheme( scheme, "read-sequence", MAX_ELEMENT_NAME_LENGTH, readSequence );
+    error = addElementToScheme( scheme, L"read-sequence", MAX_ELEMENT_NAME_LENGTH, readSequence );
     CHECK_U2_ERROR( error );
-    error = addElementToScheme( scheme, "read-assembly", MAX_ELEMENT_NAME_LENGTH, readAssembly );
+    error = addElementToScheme( scheme, L"read-assembly", MAX_ELEMENT_NAME_LENGTH, readAssembly );
     CHECK_U2_ERROR( error );
-    error = addElementToScheme( scheme, "call_variants", MAX_ELEMENT_NAME_LENGTH, callVariants );
+    error = addElementToScheme( scheme, L"call_variants", MAX_ELEMENT_NAME_LENGTH, callVariants );
     CHECK_U2_ERROR( error );
-    error = addElementToScheme( scheme, "write-variations", MAX_ELEMENT_NAME_LENGTH, writeVariations );
-    CHECK_U2_ERROR( error );
-
-    error = setSchemeElementAttribute( scheme, readSequence, "url-in.dataset", "Dataset" );
-    CHECK_U2_ERROR( error );
-    error = setSchemeElementAttribute( scheme, readAssembly, "url-in.dataset", "Dataset" );
+    error = addElementToScheme( scheme, L"write-variations", MAX_ELEMENT_NAME_LENGTH, writeVariations );
     CHECK_U2_ERROR( error );
 
-    error = setSchemeElementAttribute( scheme, writeVariations, "document-format", "snp" );
+    error = setSchemeElementAttribute( scheme, readSequence, L"url-in.dataset", L"Dataset" );
     CHECK_U2_ERROR( error );
-    error = setSchemeElementAttribute( scheme, writeVariations, "write-mode", "0" );
-    CHECK_U2_ERROR( error );
-
-    error = addFlowToScheme( scheme, readAssembly, "out-assembly", callVariants, "in-assembly" );
-    CHECK_U2_ERROR( error );
-    error = addFlowToScheme( scheme, readSequence, "out-sequence", callVariants, "in-sequence" );
-    CHECK_U2_ERROR( error );
-    error = addFlowToScheme( scheme, callVariants, "out-variations", writeVariations, "in-variations" );
+    error = setSchemeElementAttribute( scheme, readAssembly, L"url-in.dataset", L"Dataset" );
     CHECK_U2_ERROR( error );
 
-    error = addSchemeActorsBinding( scheme, callVariants, "variation-track", writeVariations,
-        "in-variations.variation-track" );
+    error = setSchemeElementAttribute( scheme, writeVariations, L"document-format", L"snp" );
     CHECK_U2_ERROR( error );
-    error = addSchemeActorsBinding( scheme, readAssembly, "assembly", callVariants,
-        "in-assembly.assembly" );
-    error = addSchemeActorsBinding( scheme, readAssembly, "url", callVariants, "in-assembly.url" );
+    error = setSchemeElementAttribute( scheme, writeVariations, L"write-mode", L"0" );
     CHECK_U2_ERROR( error );
-    error = addSchemeActorsBinding( scheme, readSequence, "sequence", callVariants,
-        "in-sequence.sequence" );
+
+    error = addFlowToScheme( scheme, readAssembly, L"out-assembly", callVariants, L"in-assembly" );
     CHECK_U2_ERROR( error );
-    error = addSchemeActorsBinding( scheme, readSequence, "url", callVariants, "in-sequence.url" );
+    error = addFlowToScheme( scheme, readSequence, L"out-sequence", callVariants, L"in-sequence" );
+    CHECK_U2_ERROR( error );
+    error = addFlowToScheme( scheme, callVariants, L"out-variations", writeVariations, L"in-variations" );
+    CHECK_U2_ERROR( error );
+
+    error = addSchemeActorsBinding( scheme, callVariants, L"variation-track", writeVariations,
+        L"in-variations.variation-track" );
+    CHECK_U2_ERROR( error );
+    error = addSchemeActorsBinding( scheme, readAssembly, L"assembly", callVariants,
+        L"in-assembly.assembly" );
+    error = addSchemeActorsBinding( scheme, readAssembly, L"url", callVariants, L"in-assembly.url" );
+    CHECK_U2_ERROR( error );
+    error = addSchemeActorsBinding( scheme, readSequence, L"sequence", callVariants,
+        L"in-sequence.sequence" );
+    CHECK_U2_ERROR( error );
+    error = addSchemeActorsBinding( scheme, readSequence, L"url", callVariants, L"in-sequence.url" );
     CHECK_U2_ERROR( error );
 
     U2OpStatusImpl stateInfo;
@@ -627,7 +627,7 @@ IMPLEMENT_TEST( CInterfaceManualTests, call_variants ) {
 }
 
 IMPLEMENT_TEST( CInterfaceManualTests, chip_seq ) {
-    char readAnnotations[MAX_ELEMENT_NAME_LENGTH], macsId[MAX_ELEMENT_NAME_LENGTH],
+    wchar_t readAnnotations[MAX_ELEMENT_NAME_LENGTH], macsId[MAX_ELEMENT_NAME_LENGTH],
         ceasReport[MAX_ELEMENT_NAME_LENGTH], conservationPlotId[MAX_ELEMENT_NAME_LENGTH],
         seqPosId[MAX_ELEMENT_NAME_LENGTH], peak2GeneId[MAX_ELEMENT_NAME_LENGTH],
         conductGoId[MAX_ELEMENT_NAME_LENGTH];
@@ -635,59 +635,59 @@ IMPLEMENT_TEST( CInterfaceManualTests, chip_seq ) {
     U2ErrorType error = createScheme( NULL, &scheme );
     CHECK_U2_ERROR( error );
 
-    error = addElementToScheme( scheme, "read-annotations", MAX_ELEMENT_NAME_LENGTH,
+    error = addElementToScheme( scheme, L"read-annotations", MAX_ELEMENT_NAME_LENGTH,
         readAnnotations );
     CHECK_U2_ERROR( error );
-    error = addElementToScheme( scheme, "macs-id", MAX_ELEMENT_NAME_LENGTH, macsId );
+    error = addElementToScheme( scheme, L"macs-id", MAX_ELEMENT_NAME_LENGTH, macsId );
     CHECK_U2_ERROR( error );
-    error = addElementToScheme( scheme, "ceas-report", MAX_ELEMENT_NAME_LENGTH, ceasReport );
+    error = addElementToScheme( scheme, L"ceas-report", MAX_ELEMENT_NAME_LENGTH, ceasReport );
     CHECK_U2_ERROR( error );
-    error = addElementToScheme( scheme, "conservation_plot-id", MAX_ELEMENT_NAME_LENGTH,
+    error = addElementToScheme( scheme, L"conservation_plot-id", MAX_ELEMENT_NAME_LENGTH,
         conservationPlotId );
     CHECK_U2_ERROR( error );
-    error = addElementToScheme( scheme, "seqpos-id", MAX_ELEMENT_NAME_LENGTH, seqPosId );
+    error = addElementToScheme( scheme, L"seqpos-id", MAX_ELEMENT_NAME_LENGTH, seqPosId );
     CHECK_U2_ERROR( error );
-    error = addElementToScheme( scheme, "peak2gene-id", MAX_ELEMENT_NAME_LENGTH, peak2GeneId );
+    error = addElementToScheme( scheme, L"peak2gene-id", MAX_ELEMENT_NAME_LENGTH, peak2GeneId );
     CHECK_U2_ERROR( error );
-    error = addElementToScheme( scheme, "conduct-go-id", MAX_ELEMENT_NAME_LENGTH, conductGoId );
-    CHECK_U2_ERROR( error );
-
-    error = setSchemeElementAttribute( scheme, readAnnotations, "url-in.dataset", "Dataset" );
+    error = addElementToScheme( scheme, L"conduct-go-id", MAX_ELEMENT_NAME_LENGTH, conductGoId );
     CHECK_U2_ERROR( error );
 
-    error = addFlowToScheme( scheme, readAnnotations, "out-annotations", macsId, "in-data" );
-    CHECK_U2_ERROR( error );
-    error = addFlowToScheme( scheme, macsId, "out-data", ceasReport, "in-data" );
-    CHECK_U2_ERROR( error );
-    error = addFlowToScheme( scheme, macsId, "out-data", conservationPlotId, "in-data" );
-    CHECK_U2_ERROR( error );
-    error = addFlowToScheme( scheme, macsId, "out-data", seqPosId, "in-data" );
-    CHECK_U2_ERROR( error );
-    error = addFlowToScheme( scheme, macsId, "out-data", peak2GeneId, "in-data" );
-    CHECK_U2_ERROR( error );
-    error = addFlowToScheme( scheme, peak2GeneId, "out-data", conductGoId, "in-data" );
+    error = setSchemeElementAttribute( scheme, readAnnotations, L"url-in.dataset", L"Dataset" );
     CHECK_U2_ERROR( error );
 
-    error = addSchemeActorsBinding( scheme, readAnnotations, "annotations", macsId,
-        "in-data._treatment-ann" );
+    error = addFlowToScheme( scheme, readAnnotations, L"out-annotations", macsId, L"in-data" );
     CHECK_U2_ERROR( error );
-    error = addSchemeActorsBinding( scheme, macsId, "wiggle-treat", ceasReport,
-        "in-data.enrichment-signal" );
+    error = addFlowToScheme( scheme, macsId, L"out-data", ceasReport, L"in-data" );
     CHECK_U2_ERROR( error );
-    error = addSchemeActorsBinding( scheme, macsId, "peak-regions", ceasReport,
-        "in-data.peak-regions" );
+    error = addFlowToScheme( scheme, macsId, L"out-data", conservationPlotId, L"in-data" );
     CHECK_U2_ERROR( error );
-    error = addSchemeActorsBinding( scheme, macsId, "peak-regions", conservationPlotId,
-        "in-data.cp_treat-ann" );
+    error = addFlowToScheme( scheme, macsId, L"out-data", seqPosId, L"in-data" );
     CHECK_U2_ERROR( error );
-    error = addSchemeActorsBinding( scheme, macsId, "peak-regions", seqPosId,
-        "in-data.cp_treat-ann" );
+    error = addFlowToScheme( scheme, macsId, L"out-data", peak2GeneId, L"in-data" );
     CHECK_U2_ERROR( error );
-    error = addSchemeActorsBinding( scheme, macsId, "peak-regions", peak2GeneId,
-        "in-data._treat-ann" );
+    error = addFlowToScheme( scheme, peak2GeneId, L"out-data", conductGoId, L"in-data" );
     CHECK_U2_ERROR( error );
-    error = addSchemeActorsBinding( scheme, peak2GeneId, "gene-annotation", conductGoId,
-        "in-data.in-ann" );
+
+    error = addSchemeActorsBinding( scheme, readAnnotations, L"annotations", macsId,
+        L"in-data._treatment-ann" );
+    CHECK_U2_ERROR( error );
+    error = addSchemeActorsBinding( scheme, macsId, L"wiggle-treat", ceasReport,
+        L"in-data.enrichment-signal" );
+    CHECK_U2_ERROR( error );
+    error = addSchemeActorsBinding( scheme, macsId, L"peak-regions", ceasReport,
+        L"in-data.peak-regions" );
+    CHECK_U2_ERROR( error );
+    error = addSchemeActorsBinding( scheme, macsId, L"peak-regions", conservationPlotId,
+        L"in-data.cp_treat-ann" );
+    CHECK_U2_ERROR( error );
+    error = addSchemeActorsBinding( scheme, macsId, L"peak-regions", seqPosId,
+        L"in-data.cp_treat-ann" );
+    CHECK_U2_ERROR( error );
+    error = addSchemeActorsBinding( scheme, macsId, L"peak-regions", peak2GeneId,
+        L"in-data._treat-ann" );
+    CHECK_U2_ERROR( error );
+    error = addSchemeActorsBinding( scheme, peak2GeneId, L"gene-annotation", conductGoId,
+        L"in-data.in-ann" );
     CHECK_U2_ERROR( error );
 
     U2OpStatusImpl stateInfo;
@@ -699,7 +699,7 @@ IMPLEMENT_TEST( CInterfaceManualTests, chip_seq ) {
 }
 
 IMPLEMENT_TEST( CInterfaceManualTests, chip_seq_with_control ) {
-    char readAnnotations1[MAX_ELEMENT_NAME_LENGTH], readAnnotations2[MAX_ELEMENT_NAME_LENGTH],
+    wchar_t readAnnotations1[MAX_ELEMENT_NAME_LENGTH], readAnnotations2[MAX_ELEMENT_NAME_LENGTH],
         macsId[MAX_ELEMENT_NAME_LENGTH], ceasReport[MAX_ELEMENT_NAME_LENGTH],
         conservationPlotId[MAX_ELEMENT_NAME_LENGTH], seqPosId[MAX_ELEMENT_NAME_LENGTH],
         peak2GeneId[MAX_ELEMENT_NAME_LENGTH], conductGoId[MAX_ELEMENT_NAME_LENGTH],
@@ -708,75 +708,75 @@ IMPLEMENT_TEST( CInterfaceManualTests, chip_seq_with_control ) {
     U2ErrorType error = createScheme( NULL, &scheme );
     CHECK_U2_ERROR( error );
 
-    error = addElementToScheme( scheme, "read-annotations", MAX_ELEMENT_NAME_LENGTH,
+    error = addElementToScheme( scheme, L"read-annotations", MAX_ELEMENT_NAME_LENGTH,
         readAnnotations1 );
     CHECK_U2_ERROR( error );
-    error = addElementToScheme( scheme, "read-annotations", MAX_ELEMENT_NAME_LENGTH,
+    error = addElementToScheme( scheme, L"read-annotations", MAX_ELEMENT_NAME_LENGTH,
         readAnnotations2 );
     CHECK_U2_ERROR( error );
-    error = addElementToScheme( scheme, "macs-id", MAX_ELEMENT_NAME_LENGTH, macsId );
+    error = addElementToScheme( scheme, L"macs-id", MAX_ELEMENT_NAME_LENGTH, macsId );
     CHECK_U2_ERROR( error );
-    error = addElementToScheme( scheme, "ceas-report", MAX_ELEMENT_NAME_LENGTH, ceasReport );
+    error = addElementToScheme( scheme, L"ceas-report", MAX_ELEMENT_NAME_LENGTH, ceasReport );
     CHECK_U2_ERROR( error );
-    error = addElementToScheme( scheme, "conservation_plot-id", MAX_ELEMENT_NAME_LENGTH,
+    error = addElementToScheme( scheme, L"conservation_plot-id", MAX_ELEMENT_NAME_LENGTH,
         conservationPlotId );
     CHECK_U2_ERROR( error );
-    error = addElementToScheme( scheme, "seqpos-id", MAX_ELEMENT_NAME_LENGTH, seqPosId );
+    error = addElementToScheme( scheme, L"seqpos-id", MAX_ELEMENT_NAME_LENGTH, seqPosId );
     CHECK_U2_ERROR( error );
-    error = addElementToScheme( scheme, "peak2gene-id", MAX_ELEMENT_NAME_LENGTH, peak2GeneId );
+    error = addElementToScheme( scheme, L"peak2gene-id", MAX_ELEMENT_NAME_LENGTH, peak2GeneId );
     CHECK_U2_ERROR( error );
-    error = addElementToScheme( scheme, "conduct-go-id", MAX_ELEMENT_NAME_LENGTH, conductGoId );
+    error = addElementToScheme( scheme, L"conduct-go-id", MAX_ELEMENT_NAME_LENGTH, conductGoId );
     CHECK_U2_ERROR( error );
-    error = addElementToScheme( scheme, "multiplexer", MAX_ELEMENT_NAME_LENGTH, multiplexer );
-    CHECK_U2_ERROR( error );
-
-    error = setSchemeElementAttribute( scheme, readAnnotations1, "url-in.dataset", "Dataset" );
-    CHECK_U2_ERROR( error );
-    error = setSchemeElementAttribute( scheme, readAnnotations2, "url-in.dataset", "Dataset" );
+    error = addElementToScheme( scheme, L"multiplexer", MAX_ELEMENT_NAME_LENGTH, multiplexer );
     CHECK_U2_ERROR( error );
 
-    error = addFlowToScheme( scheme, readAnnotations1, "out-annotations", multiplexer,
-        "input-data-1" );
+    error = setSchemeElementAttribute( scheme, readAnnotations1, L"url-in.dataset", L"Dataset" );
     CHECK_U2_ERROR( error );
-    error = addFlowToScheme( scheme, readAnnotations2, "out-annotations", multiplexer,
-        "input-data-2" );
-    CHECK_U2_ERROR( error );
-    error = addFlowToScheme( scheme, multiplexer, "output-data", macsId, "in-data" );
-    CHECK_U2_ERROR( error );
-    error = addFlowToScheme( scheme, macsId, "out-data", ceasReport, "in-data" );
-    CHECK_U2_ERROR( error );
-    error = addFlowToScheme( scheme, macsId, "out-data", conservationPlotId, "in-data" );
-    CHECK_U2_ERROR( error );
-    error = addFlowToScheme( scheme, macsId, "out-data", seqPosId, "in-data" );
-    CHECK_U2_ERROR( error );
-    error = addFlowToScheme( scheme, macsId, "out-data", peak2GeneId, "in-data" );
-    CHECK_U2_ERROR( error );
-    error = addFlowToScheme( scheme, peak2GeneId, "out-data", conductGoId, "in-data" );
+    error = setSchemeElementAttribute( scheme, readAnnotations2, L"url-in.dataset", L"Dataset" );
     CHECK_U2_ERROR( error );
 
-    error = addSchemeActorsBinding( scheme, readAnnotations1, "annotations", macsId,
-        "in-data._treatment-ann" );
+    error = addFlowToScheme( scheme, readAnnotations1, L"out-annotations", multiplexer,
+        L"input-data-1" );
     CHECK_U2_ERROR( error );
-    error = addSchemeActorsBinding( scheme, readAnnotations2, "annotations", macsId,
-        "in-data.control-ann" );
+    error = addFlowToScheme( scheme, readAnnotations2, L"out-annotations", multiplexer,
+        L"input-data-2" );
     CHECK_U2_ERROR( error );
-    error = addSchemeActorsBinding( scheme, macsId, "wiggle-treat", ceasReport,
-        "in-data.enrichment-signal" );
+    error = addFlowToScheme( scheme, multiplexer, L"output-data", macsId, L"in-data" );
     CHECK_U2_ERROR( error );
-    error = addSchemeActorsBinding( scheme, macsId, "peak-regions", ceasReport,
-        "in-data.peak-regions" );
+    error = addFlowToScheme( scheme, macsId, L"out-data", ceasReport, L"in-data" );
     CHECK_U2_ERROR( error );
-    error = addSchemeActorsBinding( scheme, macsId, "peak-regions", conservationPlotId,
-        "in-data.cp_treat-ann" );
+    error = addFlowToScheme( scheme, macsId, L"out-data", conservationPlotId, L"in-data" );
     CHECK_U2_ERROR( error );
-    error = addSchemeActorsBinding( scheme, macsId, "peak-regions", seqPosId,
-        "in-data.cp_treat-ann" );
+    error = addFlowToScheme( scheme, macsId, L"out-data", seqPosId, L"in-data" );
     CHECK_U2_ERROR( error );
-    error = addSchemeActorsBinding( scheme, macsId, "peak-regions", peak2GeneId,
-        "in-data._treat-ann" );
+    error = addFlowToScheme( scheme, macsId, L"out-data", peak2GeneId, L"in-data" );
     CHECK_U2_ERROR( error );
-    error = addSchemeActorsBinding( scheme, peak2GeneId, "gene-annotation", conductGoId,
-        "in-data.in-ann" );
+    error = addFlowToScheme( scheme, peak2GeneId, L"out-data", conductGoId, L"in-data" );
+    CHECK_U2_ERROR( error );
+
+    error = addSchemeActorsBinding( scheme, readAnnotations1, L"annotations", macsId,
+        L"in-data._treatment-ann" );
+    CHECK_U2_ERROR( error );
+    error = addSchemeActorsBinding( scheme, readAnnotations2, L"annotations", macsId,
+        L"in-data.control-ann" );
+    CHECK_U2_ERROR( error );
+    error = addSchemeActorsBinding( scheme, macsId, L"wiggle-treat", ceasReport,
+        L"in-data.enrichment-signal" );
+    CHECK_U2_ERROR( error );
+    error = addSchemeActorsBinding( scheme, macsId, L"peak-regions", ceasReport,
+        L"in-data.peak-regions" );
+    CHECK_U2_ERROR( error );
+    error = addSchemeActorsBinding( scheme, macsId, L"peak-regions", conservationPlotId,
+        L"in-data.cp_treat-ann" );
+    CHECK_U2_ERROR( error );
+    error = addSchemeActorsBinding( scheme, macsId, L"peak-regions", seqPosId,
+        L"in-data.cp_treat-ann" );
+    CHECK_U2_ERROR( error );
+    error = addSchemeActorsBinding( scheme, macsId, L"peak-regions", peak2GeneId,
+        L"in-data._treat-ann" );
+    CHECK_U2_ERROR( error );
+    error = addSchemeActorsBinding( scheme, peak2GeneId, L"gene-annotation", conductGoId,
+        L"in-data.in-ann" );
     CHECK_U2_ERROR( error );
 
     U2OpStatusImpl stateInfo;
@@ -788,54 +788,54 @@ IMPLEMENT_TEST( CInterfaceManualTests, chip_seq_with_control ) {
 }
 
 IMPLEMENT_TEST( CInterfaceManualTests, tuxedo_main ) {
-    char getFileList[MAX_ELEMENT_NAME_LENGTH], topHat[MAX_ELEMENT_NAME_LENGTH],
+    wchar_t getFileList[MAX_ELEMENT_NAME_LENGTH], topHat[MAX_ELEMENT_NAME_LENGTH],
         cufflinks[MAX_ELEMENT_NAME_LENGTH], cuffmerge[MAX_ELEMENT_NAME_LENGTH],
         cuffdiff[MAX_ELEMENT_NAME_LENGTH];
     SchemeHandle scheme = NULL;
     U2ErrorType error = createScheme( NULL, &scheme );
     CHECK_U2_ERROR( error );
 
-    error = addElementToScheme( scheme, "get-file-list", MAX_ELEMENT_NAME_LENGTH, getFileList );
+    error = addElementToScheme( scheme, L"get-file-list", MAX_ELEMENT_NAME_LENGTH, getFileList );
     CHECK_U2_ERROR( error );
-    error = addElementToScheme( scheme, "cuffdiff", MAX_ELEMENT_NAME_LENGTH, cuffdiff );
+    error = addElementToScheme( scheme, L"cuffdiff", MAX_ELEMENT_NAME_LENGTH, cuffdiff );
     CHECK_U2_ERROR( error );
-    error = addElementToScheme( scheme, "cuffmerge", MAX_ELEMENT_NAME_LENGTH, cuffmerge );
+    error = addElementToScheme( scheme, L"cuffmerge", MAX_ELEMENT_NAME_LENGTH, cuffmerge );
     CHECK_U2_ERROR( error );
-    error = addElementToScheme( scheme, "cufflinks", MAX_ELEMENT_NAME_LENGTH, cufflinks );
+    error = addElementToScheme( scheme, L"cufflinks", MAX_ELEMENT_NAME_LENGTH, cufflinks );
     CHECK_U2_ERROR( error );
-    error = addElementToScheme( scheme, "tophat", MAX_ELEMENT_NAME_LENGTH, topHat );
-    CHECK_U2_ERROR( error );
-
-    error = setSchemeElementAttribute( scheme, getFileList, "url-in.dataset", "Dataset 1" );
-    CHECK_U2_ERROR( error );
-    error = setSchemeElementAttribute( scheme, getFileList, "url-in.dataset", "Dataset 2" );
+    error = addElementToScheme( scheme, L"tophat", MAX_ELEMENT_NAME_LENGTH, topHat );
     CHECK_U2_ERROR( error );
 
-    error = addFlowToScheme( scheme, getFileList, "out-url", topHat, "in-sequence" );
+    error = setSchemeElementAttribute( scheme, getFileList, L"url-in.dataset", L"Dataset 1" );
     CHECK_U2_ERROR( error );
-    error = addFlowToScheme( scheme, cufflinks, "out-annotations", cuffmerge, "in-annotations" );
-    CHECK_U2_ERROR( error );
-    error = addFlowToScheme( scheme, cuffmerge, "out-annotations", cuffdiff, "in-annotations" );
-    CHECK_U2_ERROR( error );
-    error = addFlowToScheme( scheme, topHat, "out-assembly", cufflinks, "in-assembly" );
-    CHECK_U2_ERROR( error );
-    error = addFlowToScheme( scheme, topHat, "out-assembly", cuffdiff, "in-assembly" );
+    error = setSchemeElementAttribute( scheme, getFileList, L"url-in.dataset", L"Dataset 2" );
     CHECK_U2_ERROR( error );
 
-    error = addSchemeActorsBinding( scheme, getFileList, "dataset", topHat,
-        "in-sequence.dataset" );
+    error = addFlowToScheme( scheme, getFileList, L"out-url", topHat, L"in-sequence" );
     CHECK_U2_ERROR( error );
-    error = addSchemeActorsBinding( scheme, getFileList, "url", topHat, "in-sequence.in-url" );
+    error = addFlowToScheme( scheme, cufflinks, L"out-annotations", cuffmerge, L"in-annotations" );
     CHECK_U2_ERROR( error );
-    error = addSchemeActorsBinding( scheme, topHat, "hits-url", cufflinks, "in-assembly.url" );
+    error = addFlowToScheme( scheme, cuffmerge, L"out-annotations", cuffdiff, L"in-annotations" );
     CHECK_U2_ERROR( error );
-    error = addSchemeActorsBinding( scheme, cufflinks, "isolevel.slot", cuffmerge,
-        "in-annotations.annotations" );
+    error = addFlowToScheme( scheme, topHat, L"out-assembly", cufflinks, L"in-assembly" );
     CHECK_U2_ERROR( error );
-    error = addSchemeActorsBinding( scheme, cuffmerge, "annotations", cuffdiff,
-        "in-annotations.annotations" );
+    error = addFlowToScheme( scheme, topHat, L"out-assembly", cuffdiff, L"in-assembly" );
     CHECK_U2_ERROR( error );
-    error = addSchemeActorsBinding( scheme, topHat, "hits-url", cuffdiff, "in-assembly.url" );
+
+    error = addSchemeActorsBinding( scheme, getFileList, L"dataset", topHat,
+        L"in-sequence.dataset" );
+    CHECK_U2_ERROR( error );
+    error = addSchemeActorsBinding( scheme, getFileList, L"url", topHat, L"in-sequence.in-url" );
+    CHECK_U2_ERROR( error );
+    error = addSchemeActorsBinding( scheme, topHat, L"hits-url", cufflinks, L"in-assembly.url" );
+    CHECK_U2_ERROR( error );
+    error = addSchemeActorsBinding( scheme, cufflinks, L"isolevel.slot", cuffmerge,
+        L"in-annotations.annotations" );
+    CHECK_U2_ERROR( error );
+    error = addSchemeActorsBinding( scheme, cuffmerge, L"annotations", cuffdiff,
+        L"in-annotations.annotations" );
+    CHECK_U2_ERROR( error );
+    error = addSchemeActorsBinding( scheme, topHat, L"hits-url", cuffdiff, L"in-assembly.url" );
     CHECK_U2_ERROR( error );
 
     U2OpStatusImpl stateInfo;
@@ -847,7 +847,7 @@ IMPLEMENT_TEST( CInterfaceManualTests, tuxedo_main ) {
 }
 
 IMPLEMENT_TEST( CInterfaceManualTests, tuxedo_main_paired ) {
-    char getFileList1[MAX_ELEMENT_NAME_LENGTH], getFileList2[MAX_ELEMENT_NAME_LENGTH],
+    wchar_t getFileList1[MAX_ELEMENT_NAME_LENGTH], getFileList2[MAX_ELEMENT_NAME_LENGTH],
         topHat[MAX_ELEMENT_NAME_LENGTH], cufflinks[MAX_ELEMENT_NAME_LENGTH],
         cuffmerge[MAX_ELEMENT_NAME_LENGTH], cuffdiff[MAX_ELEMENT_NAME_LENGTH],
         multiplexer[MAX_ELEMENT_NAME_LENGTH];
@@ -855,63 +855,63 @@ IMPLEMENT_TEST( CInterfaceManualTests, tuxedo_main_paired ) {
     U2ErrorType error = createScheme( NULL, &scheme );
     CHECK_U2_ERROR( error );
 
-    error = addElementToScheme( scheme, "get-file-list", MAX_ELEMENT_NAME_LENGTH, getFileList1 );
+    error = addElementToScheme( scheme, L"get-file-list", MAX_ELEMENT_NAME_LENGTH, getFileList1 );
     CHECK_U2_ERROR( error );
-    error = addElementToScheme( scheme, "get-file-list", MAX_ELEMENT_NAME_LENGTH, getFileList2 );
+    error = addElementToScheme( scheme, L"get-file-list", MAX_ELEMENT_NAME_LENGTH, getFileList2 );
     CHECK_U2_ERROR( error );
-    error = addElementToScheme( scheme, "cuffdiff", MAX_ELEMENT_NAME_LENGTH, cuffdiff );
+    error = addElementToScheme( scheme, L"cuffdiff", MAX_ELEMENT_NAME_LENGTH, cuffdiff );
     CHECK_U2_ERROR( error );
-    error = addElementToScheme( scheme, "cuffmerge", MAX_ELEMENT_NAME_LENGTH, cuffmerge );
+    error = addElementToScheme( scheme, L"cuffmerge", MAX_ELEMENT_NAME_LENGTH, cuffmerge );
     CHECK_U2_ERROR( error );
-    error = addElementToScheme( scheme, "cufflinks", MAX_ELEMENT_NAME_LENGTH, cufflinks );
+    error = addElementToScheme( scheme, L"cufflinks", MAX_ELEMENT_NAME_LENGTH, cufflinks );
     CHECK_U2_ERROR( error );
-    error = addElementToScheme( scheme, "tophat", MAX_ELEMENT_NAME_LENGTH, topHat );
+    error = addElementToScheme( scheme, L"tophat", MAX_ELEMENT_NAME_LENGTH, topHat );
     CHECK_U2_ERROR( error );
-    error = addElementToScheme( scheme, "multiplexer", MAX_ELEMENT_NAME_LENGTH, multiplexer );
-    CHECK_U2_ERROR( error );
-
-    error = setSchemeElementAttribute( scheme, getFileList1, "url-in.dataset", "Dataset 1" );
-    CHECK_U2_ERROR( error );
-    error = setSchemeElementAttribute( scheme, getFileList1, "url-in.dataset", "Dataset 2" );
+    error = addElementToScheme( scheme, L"multiplexer", MAX_ELEMENT_NAME_LENGTH, multiplexer );
     CHECK_U2_ERROR( error );
 
-    error = setSchemeElementAttribute( scheme, getFileList2, "url-in.dataset", "Dataset 1" );
+    error = setSchemeElementAttribute( scheme, getFileList1, L"url-in.dataset", L"Dataset 1" );
     CHECK_U2_ERROR( error );
-    error = setSchemeElementAttribute( scheme, getFileList2, "url-in.dataset", "Dataset 2" );
-    CHECK_U2_ERROR( error );
-
-    error = addFlowToScheme( scheme, topHat, "out-assembly", cufflinks, "in-assembly" );
-    CHECK_U2_ERROR( error );
-    error = addFlowToScheme( scheme, topHat, "out-assembly", cuffdiff, "in-assembly" );
-    CHECK_U2_ERROR( error );
-    error = addFlowToScheme( scheme, getFileList2, "out-url", multiplexer, "input-data-2" );
-    CHECK_U2_ERROR( error );
-    error = addFlowToScheme( scheme, getFileList1, "out-url", multiplexer, "input-data-1" );
-    CHECK_U2_ERROR( error );
-    error = addFlowToScheme( scheme, multiplexer, "output-data", topHat, "in-sequence" );
-    CHECK_U2_ERROR( error );
-    error = addFlowToScheme( scheme, cufflinks, "out-annotations", cuffmerge, "in-annotations" );
-    CHECK_U2_ERROR( error );
-    error = addFlowToScheme( scheme, cuffmerge, "out-annotations", cuffdiff, "in-annotations" );
+    error = setSchemeElementAttribute( scheme, getFileList1, L"url-in.dataset", L"Dataset 2" );
     CHECK_U2_ERROR( error );
 
-    error = addSchemeActorsBinding( scheme, getFileList1, "dataset", topHat,
-        "in-sequence.dataset" );
+    error = setSchemeElementAttribute( scheme, getFileList2, L"url-in.dataset", L"Dataset 1" );
     CHECK_U2_ERROR( error );
-    error = addSchemeActorsBinding( scheme, getFileList1, "url", topHat, "in-sequence.in-url" );
+    error = setSchemeElementAttribute( scheme, getFileList2, L"url-in.dataset", L"Dataset 2" );
     CHECK_U2_ERROR( error );
-    error = addSchemeActorsBinding( scheme, getFileList2, "url", topHat,
-        "in-sequence.paired-url" );
+
+    error = addFlowToScheme( scheme, topHat, L"out-assembly", cufflinks, L"in-assembly" );
     CHECK_U2_ERROR( error );
-    error = addSchemeActorsBinding( scheme, topHat, "hits-url", cufflinks, "in-assembly.url" );
+    error = addFlowToScheme( scheme, topHat, L"out-assembly", cuffdiff, L"in-assembly" );
     CHECK_U2_ERROR( error );
-    error = addSchemeActorsBinding( scheme, cufflinks, "isolevel.slot", cuffmerge,
-        "in-annotations.annotations" );
+    error = addFlowToScheme( scheme, getFileList2, L"out-url", multiplexer, L"input-data-2" );
     CHECK_U2_ERROR( error );
-    error = addSchemeActorsBinding( scheme, cuffmerge, "annotations", cuffdiff,
-        "in-annotations.annotations" );
+    error = addFlowToScheme( scheme, getFileList1, L"out-url", multiplexer, L"input-data-1" );
     CHECK_U2_ERROR( error );
-    error = addSchemeActorsBinding( scheme, topHat, "hits-url", cuffdiff, "in-assembly.url" );
+    error = addFlowToScheme( scheme, multiplexer, L"output-data", topHat, L"in-sequence" );
+    CHECK_U2_ERROR( error );
+    error = addFlowToScheme( scheme, cufflinks, L"out-annotations", cuffmerge, L"in-annotations" );
+    CHECK_U2_ERROR( error );
+    error = addFlowToScheme( scheme, cuffmerge, L"out-annotations", cuffdiff, L"in-annotations" );
+    CHECK_U2_ERROR( error );
+
+    error = addSchemeActorsBinding( scheme, getFileList1, L"dataset", topHat,
+        L"in-sequence.dataset" );
+    CHECK_U2_ERROR( error );
+    error = addSchemeActorsBinding( scheme, getFileList1, L"url", topHat, L"in-sequence.in-url" );
+    CHECK_U2_ERROR( error );
+    error = addSchemeActorsBinding( scheme, getFileList2, L"url", topHat,
+        L"in-sequence.paired-url" );
+    CHECK_U2_ERROR( error );
+    error = addSchemeActorsBinding( scheme, topHat, L"hits-url", cufflinks, L"in-assembly.url" );
+    CHECK_U2_ERROR( error );
+    error = addSchemeActorsBinding( scheme, cufflinks, L"isolevel.slot", cuffmerge,
+        L"in-annotations.annotations" );
+    CHECK_U2_ERROR( error );
+    error = addSchemeActorsBinding( scheme, cuffmerge, L"annotations", cuffdiff,
+        L"in-annotations.annotations" );
+    CHECK_U2_ERROR( error );
+    error = addSchemeActorsBinding( scheme, topHat, L"hits-url", cuffdiff, L"in-assembly.url" );
     CHECK_U2_ERROR( error );
 
     U2OpStatusImpl stateInfo;
@@ -923,44 +923,44 @@ IMPLEMENT_TEST( CInterfaceManualTests, tuxedo_main_paired ) {
 }
 
 IMPLEMENT_TEST( CInterfaceManualTests, tuxedo_multiple_dataset ) {
-    char getFileList[MAX_ELEMENT_NAME_LENGTH], readAnnotations[MAX_ELEMENT_NAME_LENGTH],
+    wchar_t getFileList[MAX_ELEMENT_NAME_LENGTH], readAnnotations[MAX_ELEMENT_NAME_LENGTH],
         topHat[MAX_ELEMENT_NAME_LENGTH], cuffdiff[MAX_ELEMENT_NAME_LENGTH];
     SchemeHandle scheme = NULL;
     U2ErrorType error = createScheme( NULL, &scheme );
     CHECK_U2_ERROR( error );
 
-    error = addElementToScheme( scheme, "get-file-list", MAX_ELEMENT_NAME_LENGTH, getFileList );
+    error = addElementToScheme( scheme, L"get-file-list", MAX_ELEMENT_NAME_LENGTH, getFileList );
     CHECK_U2_ERROR( error );
-    error = addElementToScheme( scheme, "read-annotations", MAX_ELEMENT_NAME_LENGTH, readAnnotations );
+    error = addElementToScheme( scheme, L"read-annotations", MAX_ELEMENT_NAME_LENGTH, readAnnotations );
     CHECK_U2_ERROR( error );
-    error = addElementToScheme( scheme, "cuffdiff", MAX_ELEMENT_NAME_LENGTH, cuffdiff );
+    error = addElementToScheme( scheme, L"cuffdiff", MAX_ELEMENT_NAME_LENGTH, cuffdiff );
     CHECK_U2_ERROR( error );
-    error = addElementToScheme( scheme, "tophat", MAX_ELEMENT_NAME_LENGTH, topHat );
-    CHECK_U2_ERROR( error );
-
-    error = setSchemeElementAttribute( scheme, readAnnotations, "url-in.dataset", "Dataset 1" );
-    CHECK_U2_ERROR( error );
-    error = setSchemeElementAttribute( scheme, getFileList, "url-in.dataset", "Dataset 1" );
-    CHECK_U2_ERROR( error );
-    error = setSchemeElementAttribute( scheme, getFileList, "url-in.dataset", "Dataset 2" );
+    error = addElementToScheme( scheme, L"tophat", MAX_ELEMENT_NAME_LENGTH, topHat );
     CHECK_U2_ERROR( error );
 
-    error = addFlowToScheme( scheme, topHat, "out-assembly", cuffdiff, "in-assembly" );
+    error = setSchemeElementAttribute( scheme, readAnnotations, L"url-in.dataset", L"Dataset 1" );
     CHECK_U2_ERROR( error );
-    error = addFlowToScheme( scheme, getFileList, "out-url", topHat, "in-sequence" );
+    error = setSchemeElementAttribute( scheme, getFileList, L"url-in.dataset", L"Dataset 1" );
     CHECK_U2_ERROR( error );
-    error = addFlowToScheme( scheme, readAnnotations, "out-annotations", cuffdiff, "in-annotations" );
+    error = setSchemeElementAttribute( scheme, getFileList, L"url-in.dataset", L"Dataset 2" );
     CHECK_U2_ERROR( error );
 
-    error = addSchemeActorsBinding( scheme, getFileList, "dataset", topHat,
-        "in-sequence.dataset" );
+    error = addFlowToScheme( scheme, topHat, L"out-assembly", cuffdiff, L"in-assembly" );
     CHECK_U2_ERROR( error );
-    error = addSchemeActorsBinding( scheme, getFileList, "url", topHat, "in-sequence.in-url" );
+    error = addFlowToScheme( scheme, getFileList, L"out-url", topHat, L"in-sequence" );
     CHECK_U2_ERROR( error );
-    error = addSchemeActorsBinding( scheme, readAnnotations, "annotations", cuffdiff,
-        "in-annotations.annotations" );
+    error = addFlowToScheme( scheme, readAnnotations, L"out-annotations", cuffdiff, L"in-annotations" );
     CHECK_U2_ERROR( error );
-    error = addSchemeActorsBinding( scheme, topHat, "hits-url", cuffdiff, "in-assembly.url" );
+
+    error = addSchemeActorsBinding( scheme, getFileList, L"dataset", topHat,
+        L"in-sequence.dataset" );
+    CHECK_U2_ERROR( error );
+    error = addSchemeActorsBinding( scheme, getFileList, L"url", topHat, L"in-sequence.in-url" );
+    CHECK_U2_ERROR( error );
+    error = addSchemeActorsBinding( scheme, readAnnotations, L"annotations", cuffdiff,
+        L"in-annotations.annotations" );
+    CHECK_U2_ERROR( error );
+    error = addSchemeActorsBinding( scheme, topHat, L"hits-url", cuffdiff, L"in-assembly.url" );
     CHECK_U2_ERROR( error );
 
     U2OpStatusImpl stateInfo;
@@ -972,62 +972,62 @@ IMPLEMENT_TEST( CInterfaceManualTests, tuxedo_multiple_dataset ) {
 }
 
 IMPLEMENT_TEST( CInterfaceManualTests, tuxedo_multiple_dataset_paired ) {
-    char getFileList1[MAX_ELEMENT_NAME_LENGTH], getFileList2[MAX_ELEMENT_NAME_LENGTH],
+    wchar_t getFileList1[MAX_ELEMENT_NAME_LENGTH], getFileList2[MAX_ELEMENT_NAME_LENGTH],
         readAnnotations[MAX_ELEMENT_NAME_LENGTH], topHat[MAX_ELEMENT_NAME_LENGTH],
         cuffdiff[MAX_ELEMENT_NAME_LENGTH], multiplexer[MAX_ELEMENT_NAME_LENGTH];
     SchemeHandle scheme = NULL;
     U2ErrorType error = createScheme( NULL, &scheme );
     CHECK_U2_ERROR( error );
 
-    error = addElementToScheme( scheme, "get-file-list", MAX_ELEMENT_NAME_LENGTH, getFileList1 );
+    error = addElementToScheme( scheme, L"get-file-list", MAX_ELEMENT_NAME_LENGTH, getFileList1 );
     CHECK_U2_ERROR( error );
-    error = addElementToScheme( scheme, "get-file-list", MAX_ELEMENT_NAME_LENGTH, getFileList2 );
+    error = addElementToScheme( scheme, L"get-file-list", MAX_ELEMENT_NAME_LENGTH, getFileList2 );
     CHECK_U2_ERROR( error );
-    error = addElementToScheme( scheme, "read-annotations", MAX_ELEMENT_NAME_LENGTH,
+    error = addElementToScheme( scheme, L"read-annotations", MAX_ELEMENT_NAME_LENGTH,
         readAnnotations );
     CHECK_U2_ERROR( error );
-    error = addElementToScheme( scheme, "cuffdiff", MAX_ELEMENT_NAME_LENGTH, cuffdiff );
+    error = addElementToScheme( scheme, L"cuffdiff", MAX_ELEMENT_NAME_LENGTH, cuffdiff );
     CHECK_U2_ERROR( error );
-    error = addElementToScheme( scheme, "tophat", MAX_ELEMENT_NAME_LENGTH, topHat );
+    error = addElementToScheme( scheme, L"tophat", MAX_ELEMENT_NAME_LENGTH, topHat );
     CHECK_U2_ERROR( error );
-    error = addElementToScheme( scheme, "multiplexer", MAX_ELEMENT_NAME_LENGTH, multiplexer );
-    CHECK_U2_ERROR( error );
-
-    error = setSchemeElementAttribute( scheme, readAnnotations, "url-in.dataset", "Dataset 1" );
-    CHECK_U2_ERROR( error );
-    error = setSchemeElementAttribute( scheme, getFileList1, "url-in.dataset", "Dataset 1" );
-    CHECK_U2_ERROR( error );
-    error = setSchemeElementAttribute( scheme, getFileList1, "url-in.dataset", "Dataset 2" );
-    CHECK_U2_ERROR( error );
-    error = setSchemeElementAttribute( scheme, getFileList2, "url-in.dataset", "Dataset 1" );
-    CHECK_U2_ERROR( error );
-    error = setSchemeElementAttribute( scheme, getFileList2, "url-in.dataset", "Dataset 2" );
+    error = addElementToScheme( scheme, L"multiplexer", MAX_ELEMENT_NAME_LENGTH, multiplexer );
     CHECK_U2_ERROR( error );
 
-    error = addFlowToScheme( scheme, topHat, "out-assembly", cuffdiff, "in-assembly" );
+    error = setSchemeElementAttribute( scheme, readAnnotations, L"url-in.dataset", L"Dataset 1" );
     CHECK_U2_ERROR( error );
-    error = addFlowToScheme( scheme, getFileList1, "out-url", multiplexer, "input-data-1" );
+    error = setSchemeElementAttribute( scheme, getFileList1, L"url-in.dataset", L"Dataset 1" );
     CHECK_U2_ERROR( error );
-    error = addFlowToScheme( scheme, getFileList2, "out-url", multiplexer, "input-data-2" );
+    error = setSchemeElementAttribute( scheme, getFileList1, L"url-in.dataset", L"Dataset 2" );
     CHECK_U2_ERROR( error );
-    error = addFlowToScheme( scheme, multiplexer, "output-data", topHat, "in-sequence" );
+    error = setSchemeElementAttribute( scheme, getFileList2, L"url-in.dataset", L"Dataset 1" );
     CHECK_U2_ERROR( error );
-    error = addFlowToScheme( scheme, readAnnotations, "out-annotations", cuffdiff,
-        "in-annotations" );
+    error = setSchemeElementAttribute( scheme, getFileList2, L"url-in.dataset", L"Dataset 2" );
     CHECK_U2_ERROR( error );
 
-    error = addSchemeActorsBinding( scheme, getFileList1, "dataset", topHat,
-        "in-sequence.dataset" );
+    error = addFlowToScheme( scheme, topHat, L"out-assembly", cuffdiff, L"in-assembly" );
     CHECK_U2_ERROR( error );
-    error = addSchemeActorsBinding( scheme, getFileList1, "url", topHat, "in-sequence.in-url" );
+    error = addFlowToScheme( scheme, getFileList1, L"out-url", multiplexer, L"input-data-1" );
     CHECK_U2_ERROR( error );
-    error = addSchemeActorsBinding( scheme, getFileList2, "url", topHat,
-        "in-sequence.paired-url" );
+    error = addFlowToScheme( scheme, getFileList2, L"out-url", multiplexer, L"input-data-2" );
     CHECK_U2_ERROR( error );
-    error = addSchemeActorsBinding( scheme, readAnnotations, "annotations", cuffdiff,
-        "in-annotations.annotations" );
+    error = addFlowToScheme( scheme, multiplexer, L"output-data", topHat, L"in-sequence" );
     CHECK_U2_ERROR( error );
-    error = addSchemeActorsBinding( scheme, topHat, "hits-url", cuffdiff, "in-assembly.url" );
+    error = addFlowToScheme( scheme, readAnnotations, L"out-annotations", cuffdiff,
+        L"in-annotations" );
+    CHECK_U2_ERROR( error );
+
+    error = addSchemeActorsBinding( scheme, getFileList1, L"dataset", topHat,
+        L"in-sequence.dataset" );
+    CHECK_U2_ERROR( error );
+    error = addSchemeActorsBinding( scheme, getFileList1, L"url", topHat, L"in-sequence.in-url" );
+    CHECK_U2_ERROR( error );
+    error = addSchemeActorsBinding( scheme, getFileList2, L"url", topHat,
+        L"in-sequence.paired-url" );
+    CHECK_U2_ERROR( error );
+    error = addSchemeActorsBinding( scheme, readAnnotations, L"annotations", cuffdiff,
+        L"in-annotations.annotations" );
+    CHECK_U2_ERROR( error );
+    error = addSchemeActorsBinding( scheme, topHat, L"hits-url", cuffdiff, L"in-assembly.url" );
     CHECK_U2_ERROR( error );
 
     U2OpStatusImpl stateInfo;
@@ -1039,33 +1039,33 @@ IMPLEMENT_TEST( CInterfaceManualTests, tuxedo_multiple_dataset_paired ) {
 }
 
 IMPLEMENT_TEST( CInterfaceManualTests, tuxedo_single_dataset ) {
-    char getFileList[MAX_ELEMENT_NAME_LENGTH], topHat[MAX_ELEMENT_NAME_LENGTH],
+    wchar_t getFileList[MAX_ELEMENT_NAME_LENGTH], topHat[MAX_ELEMENT_NAME_LENGTH],
         cufflinks[MAX_ELEMENT_NAME_LENGTH];
     SchemeHandle scheme = NULL;
     U2ErrorType error = createScheme( NULL, &scheme );
     CHECK_U2_ERROR( error );
 
-    error = addElementToScheme( scheme, "get-file-list", MAX_ELEMENT_NAME_LENGTH, getFileList );
+    error = addElementToScheme( scheme, L"get-file-list", MAX_ELEMENT_NAME_LENGTH, getFileList );
     CHECK_U2_ERROR( error );
-    error = addElementToScheme( scheme, "cufflinks", MAX_ELEMENT_NAME_LENGTH, cufflinks );
+    error = addElementToScheme( scheme, L"cufflinks", MAX_ELEMENT_NAME_LENGTH, cufflinks );
     CHECK_U2_ERROR( error );
-    error = addElementToScheme( scheme, "tophat", MAX_ELEMENT_NAME_LENGTH, topHat );
-    CHECK_U2_ERROR( error );
-
-    error = setSchemeElementAttribute( scheme, getFileList, "url-in.dataset", "Dataset 1" );
+    error = addElementToScheme( scheme, L"tophat", MAX_ELEMENT_NAME_LENGTH, topHat );
     CHECK_U2_ERROR( error );
 
-    error = addFlowToScheme( scheme, topHat, "out-assembly", cufflinks, "in-assembly" );
-    CHECK_U2_ERROR( error );
-    error = addFlowToScheme( scheme, getFileList, "out-url", topHat, "in-sequence" );
+    error = setSchemeElementAttribute( scheme, getFileList, L"url-in.dataset", L"Dataset 1" );
     CHECK_U2_ERROR( error );
 
-    error = addSchemeActorsBinding( scheme, getFileList, "dataset", topHat,
-        "in-sequence.dataset" );
+    error = addFlowToScheme( scheme, topHat, L"out-assembly", cufflinks, L"in-assembly" );
     CHECK_U2_ERROR( error );
-    error = addSchemeActorsBinding( scheme, getFileList, "url", topHat, "in-sequence.in-url" );
+    error = addFlowToScheme( scheme, getFileList, L"out-url", topHat, L"in-sequence" );
     CHECK_U2_ERROR( error );
-    error = addSchemeActorsBinding( scheme, topHat, "hits-url", cufflinks, "in-assembly.url" );
+
+    error = addSchemeActorsBinding( scheme, getFileList, L"dataset", topHat,
+        L"in-sequence.dataset" );
+    CHECK_U2_ERROR( error );
+    error = addSchemeActorsBinding( scheme, getFileList, L"url", topHat, L"in-sequence.in-url" );
+    CHECK_U2_ERROR( error );
+    error = addSchemeActorsBinding( scheme, topHat, L"hits-url", cufflinks, L"in-assembly.url" );
     CHECK_U2_ERROR( error );
 
     U2OpStatusImpl stateInfo;
@@ -1077,47 +1077,47 @@ IMPLEMENT_TEST( CInterfaceManualTests, tuxedo_single_dataset ) {
 }
 
 IMPLEMENT_TEST( CInterfaceManualTests, tuxedo_single_dataset_paired ) {
-    char getFileList1[MAX_ELEMENT_NAME_LENGTH], getFileList2[MAX_ELEMENT_NAME_LENGTH],
+    wchar_t getFileList1[MAX_ELEMENT_NAME_LENGTH], getFileList2[MAX_ELEMENT_NAME_LENGTH],
         topHat[MAX_ELEMENT_NAME_LENGTH], cufflinks[MAX_ELEMENT_NAME_LENGTH],
         multiplexer[MAX_ELEMENT_NAME_LENGTH];
     SchemeHandle scheme = NULL;
     U2ErrorType error = createScheme( NULL, &scheme );
     CHECK_U2_ERROR( error );
 
-    error = addElementToScheme( scheme, "get-file-list", MAX_ELEMENT_NAME_LENGTH, getFileList1 );
+    error = addElementToScheme( scheme, L"get-file-list", MAX_ELEMENT_NAME_LENGTH, getFileList1 );
     CHECK_U2_ERROR( error );
-    error = addElementToScheme( scheme, "get-file-list", MAX_ELEMENT_NAME_LENGTH, getFileList2 );
+    error = addElementToScheme( scheme, L"get-file-list", MAX_ELEMENT_NAME_LENGTH, getFileList2 );
     CHECK_U2_ERROR( error );
-    error = addElementToScheme( scheme, "cufflinks", MAX_ELEMENT_NAME_LENGTH, cufflinks );
+    error = addElementToScheme( scheme, L"cufflinks", MAX_ELEMENT_NAME_LENGTH, cufflinks );
     CHECK_U2_ERROR( error );
-    error = addElementToScheme( scheme, "tophat", MAX_ELEMENT_NAME_LENGTH, topHat );
+    error = addElementToScheme( scheme, L"tophat", MAX_ELEMENT_NAME_LENGTH, topHat );
     CHECK_U2_ERROR( error );
-    error = addElementToScheme( scheme, "multiplexer", MAX_ELEMENT_NAME_LENGTH, multiplexer );
-    CHECK_U2_ERROR( error );
-
-    error = setSchemeElementAttribute( scheme, getFileList1, "url-in.dataset", "Dataset 1" );
-    CHECK_U2_ERROR( error );
-    error = setSchemeElementAttribute( scheme, getFileList2, "url-in.dataset", "Dataset 1" );
+    error = addElementToScheme( scheme, L"multiplexer", MAX_ELEMENT_NAME_LENGTH, multiplexer );
     CHECK_U2_ERROR( error );
 
-    error = addFlowToScheme( scheme, topHat, "out-assembly", cufflinks, "in-assembly" );
+    error = setSchemeElementAttribute( scheme, getFileList1, L"url-in.dataset", L"Dataset 1" );
     CHECK_U2_ERROR( error );
-    error = addFlowToScheme( scheme, getFileList1, "out-url", multiplexer, "input-data-1" );
-    CHECK_U2_ERROR( error );
-    error = addFlowToScheme( scheme, getFileList2, "out-url", multiplexer, "input-data-2" );
-    CHECK_U2_ERROR( error );
-    error = addFlowToScheme( scheme, multiplexer, "output-data", topHat, "in-sequence" );
+    error = setSchemeElementAttribute( scheme, getFileList2, L"url-in.dataset", L"Dataset 1" );
     CHECK_U2_ERROR( error );
 
-    error = addSchemeActorsBinding( scheme, getFileList1, "dataset", topHat,
-        "in-sequence.dataset" );
+    error = addFlowToScheme( scheme, topHat, L"out-assembly", cufflinks, L"in-assembly" );
     CHECK_U2_ERROR( error );
-    error = addSchemeActorsBinding( scheme, getFileList1, "url", topHat, "in-sequence.in-url" );
+    error = addFlowToScheme( scheme, getFileList1, L"out-url", multiplexer, L"input-data-1" );
     CHECK_U2_ERROR( error );
-    error = addSchemeActorsBinding( scheme, getFileList2, "url", topHat,
-        "in-sequence.paired-url" );
+    error = addFlowToScheme( scheme, getFileList2, L"out-url", multiplexer, L"input-data-2" );
     CHECK_U2_ERROR( error );
-    error = addSchemeActorsBinding( scheme, topHat, "hits-url", cufflinks, "in-assembly.url" );
+    error = addFlowToScheme( scheme, multiplexer, L"output-data", topHat, L"in-sequence" );
+    CHECK_U2_ERROR( error );
+
+    error = addSchemeActorsBinding( scheme, getFileList1, L"dataset", topHat,
+        L"in-sequence.dataset" );
+    CHECK_U2_ERROR( error );
+    error = addSchemeActorsBinding( scheme, getFileList1, L"url", topHat, L"in-sequence.in-url" );
+    CHECK_U2_ERROR( error );
+    error = addSchemeActorsBinding( scheme, getFileList2, L"url", topHat,
+        L"in-sequence.paired-url" );
+    CHECK_U2_ERROR( error );
+    error = addSchemeActorsBinding( scheme, topHat, L"hits-url", cufflinks, L"in-assembly.url" );
     CHECK_U2_ERROR( error );
 
     U2OpStatusImpl stateInfo;
@@ -1129,45 +1129,45 @@ IMPLEMENT_TEST( CInterfaceManualTests, tuxedo_single_dataset_paired ) {
 }
 
 IMPLEMENT_TEST( CInterfaceManualTests, find_sequences ) {
-    char readSequence[MAX_ELEMENT_NAME_LENGTH], search[MAX_ELEMENT_NAME_LENGTH],
+    wchar_t readSequence[MAX_ELEMENT_NAME_LENGTH], search[MAX_ELEMENT_NAME_LENGTH],
         writeSequence[MAX_ELEMENT_NAME_LENGTH];
     SchemeHandle scheme = NULL;
     U2ErrorType error = createScheme( NULL, &scheme );
     CHECK_U2_ERROR( error );
 
-    error = addElementToScheme( scheme, "read-sequence", MAX_ELEMENT_NAME_LENGTH, readSequence );
+    error = addElementToScheme( scheme, L"read-sequence", MAX_ELEMENT_NAME_LENGTH, readSequence );
     CHECK_U2_ERROR( error );
-    error = addElementToScheme( scheme, "search", MAX_ELEMENT_NAME_LENGTH, search );
+    error = addElementToScheme( scheme, L"search", MAX_ELEMENT_NAME_LENGTH, search );
     CHECK_U2_ERROR( error );
-    error = addElementToScheme( scheme, "write-sequence", MAX_ELEMENT_NAME_LENGTH, writeSequence );
-    CHECK_U2_ERROR( error );
-
-    error = setSchemeElementAttribute( scheme, readSequence, "url-in.dataset", "Dataset" );
-    CHECK_U2_ERROR( error );
-    error = setSchemeElementAttribute( scheme, search, "result-name", "misc_feature" );
-    CHECK_U2_ERROR( error );
-    error = setSchemeElementAttribute( scheme, search, "use-names", "true" );
-    CHECK_U2_ERROR( error );
-    error = setSchemeElementAttribute( scheme, writeSequence, "document-format", "genbank" );
-    CHECK_U2_ERROR( error );
-    error = setSchemeElementAttribute( scheme, writeSequence, "write-mode", "0" );
+    error = addElementToScheme( scheme, L"write-sequence", MAX_ELEMENT_NAME_LENGTH, writeSequence );
     CHECK_U2_ERROR( error );
 
-    error = addFlowToScheme( scheme, search, "out-annotations", writeSequence, "in-sequence" );
+    error = setSchemeElementAttribute( scheme, readSequence, L"url-in.dataset", L"Dataset" );
     CHECK_U2_ERROR( error );
-    error = addFlowToScheme( scheme, readSequence, "out-sequence", search, "in-sequence" );
+    error = setSchemeElementAttribute( scheme, search, L"result-name", L"misc_feature" );
+    CHECK_U2_ERROR( error );
+    error = setSchemeElementAttribute( scheme, search, L"use-names", L"true" );
+    CHECK_U2_ERROR( error );
+    error = setSchemeElementAttribute( scheme, writeSequence, L"document-format", L"genbank" );
+    CHECK_U2_ERROR( error );
+    error = setSchemeElementAttribute( scheme, writeSequence, L"write-mode", L"0" );
     CHECK_U2_ERROR( error );
 
-    error = addSchemeActorsBinding( scheme, readSequence, "sequence", search,
-        "in-sequence.sequence" );
+    error = addFlowToScheme( scheme, search, L"out-annotations", writeSequence, L"in-sequence" );
     CHECK_U2_ERROR( error );
-    error = addSchemeActorsBinding( scheme, readSequence, "annotations", writeSequence,
-        "in-sequence.annotations" );
+    error = addFlowToScheme( scheme, readSequence, L"out-sequence", search, L"in-sequence" );
     CHECK_U2_ERROR( error );
-    error = addSchemeActorsBinding( scheme, search, "annotations", writeSequence, "in-sequence.annotations" );
+
+    error = addSchemeActorsBinding( scheme, readSequence, L"sequence", search,
+        L"in-sequence.sequence" );
     CHECK_U2_ERROR( error );
-    error = addSchemeActorsBinding( scheme, readSequence, "sequence", writeSequence,
-        "in-sequence.sequence" );
+    error = addSchemeActorsBinding( scheme, readSequence, L"annotations", writeSequence,
+        L"in-sequence.annotations" );
+    CHECK_U2_ERROR( error );
+    error = addSchemeActorsBinding( scheme, search, L"annotations", writeSequence, L"in-sequence.annotations" );
+    CHECK_U2_ERROR( error );
+    error = addSchemeActorsBinding( scheme, readSequence, L"sequence", writeSequence,
+        L"in-sequence.sequence" );
     CHECK_U2_ERROR( error );
 
     U2OpStatusImpl stateInfo;
@@ -1179,51 +1179,51 @@ IMPLEMENT_TEST( CInterfaceManualTests, find_sequences ) {
 }
 
 IMPLEMENT_TEST( CInterfaceManualTests, gene_by_gene_report ) {
-    char readSequence[MAX_ELEMENT_NAME_LENGTH], geneByGeneReportId[MAX_ELEMENT_NAME_LENGTH],
+    wchar_t readSequence[MAX_ELEMENT_NAME_LENGTH], geneByGeneReportId[MAX_ELEMENT_NAME_LENGTH],
         blast[MAX_ELEMENT_NAME_LENGTH], writeSequence[MAX_ELEMENT_NAME_LENGTH];
     SchemeHandle scheme = NULL;
     U2ErrorType error = createScheme( NULL, &scheme );
     CHECK_U2_ERROR( error );
 
-    error = addElementToScheme( scheme, "read-sequence", MAX_ELEMENT_NAME_LENGTH, readSequence );
+    error = addElementToScheme( scheme, L"read-sequence", MAX_ELEMENT_NAME_LENGTH, readSequence );
     CHECK_U2_ERROR( error );
-    error = addElementToScheme( scheme, "genebygene-report-id", MAX_ELEMENT_NAME_LENGTH,
+    error = addElementToScheme( scheme, L"genebygene-report-id", MAX_ELEMENT_NAME_LENGTH,
         geneByGeneReportId );
     CHECK_U2_ERROR( error );
-    error = addElementToScheme( scheme, "blast", MAX_ELEMENT_NAME_LENGTH, blast );
+    error = addElementToScheme( scheme, L"blast", MAX_ELEMENT_NAME_LENGTH, blast );
     CHECK_U2_ERROR( error );
-    error = addElementToScheme( scheme, "write-sequence", MAX_ELEMENT_NAME_LENGTH, writeSequence );
-    CHECK_U2_ERROR( error );
-
-    error = setSchemeElementAttribute( scheme, readSequence, "url-in.dataset", "Dataset" );
-    CHECK_U2_ERROR( error );
-    error = setSchemeElementAttribute( scheme, writeSequence, "document-format", "genbank" );
+    error = addElementToScheme( scheme, L"write-sequence", MAX_ELEMENT_NAME_LENGTH, writeSequence );
     CHECK_U2_ERROR( error );
 
-    error = addFlowToScheme( scheme, blast, "out-annotations", geneByGeneReportId, "in-data" );
+    error = setSchemeElementAttribute( scheme, readSequence, L"url-in.dataset", L"Dataset" );
     CHECK_U2_ERROR( error );
-    error = addFlowToScheme( scheme, readSequence, "out-sequence", blast, "in-sequence" );
-    CHECK_U2_ERROR( error );
-    error = addFlowToScheme( scheme, blast, "out-annotations", writeSequence, "in-sequence" );
+    error = setSchemeElementAttribute( scheme, writeSequence, L"document-format", L"genbank" );
     CHECK_U2_ERROR( error );
 
-    error = addSchemeActorsBinding( scheme, readSequence, "sequence", geneByGeneReportId,
-        "in-data.gene-seq" );
+    error = addFlowToScheme( scheme, blast, L"out-annotations", geneByGeneReportId, L"in-data" );
     CHECK_U2_ERROR( error );
-    error = addSchemeActorsBinding( scheme, readSequence, "sequence", blast,
-        "in-sequence.sequence" );
+    error = addFlowToScheme( scheme, readSequence, L"out-sequence", blast, L"in-sequence" );
     CHECK_U2_ERROR( error );
-    error = addSchemeActorsBinding( scheme, readSequence, "annotations", writeSequence,
-        "in-sequence.annotations" );
+    error = addFlowToScheme( scheme, blast, L"out-annotations", writeSequence, L"in-sequence" );
     CHECK_U2_ERROR( error );
-    error = addSchemeActorsBinding( scheme, readSequence, "sequence", writeSequence,
-        "in-sequence.sequence" );
+
+    error = addSchemeActorsBinding( scheme, readSequence, L"sequence", geneByGeneReportId,
+        L"in-data.gene-seq" );
     CHECK_U2_ERROR( error );
-    error = addSchemeActorsBinding( scheme, blast, "annotations", geneByGeneReportId,
-        "in-data.gene-ann" );
+    error = addSchemeActorsBinding( scheme, readSequence, L"sequence", blast,
+        L"in-sequence.sequence" );
     CHECK_U2_ERROR( error );
-    error = addSchemeActorsBinding( scheme, blast, "annotations", writeSequence,
-        "in-sequence.annotations" );
+    error = addSchemeActorsBinding( scheme, readSequence, L"annotations", writeSequence,
+        L"in-sequence.annotations" );
+    CHECK_U2_ERROR( error );
+    error = addSchemeActorsBinding( scheme, readSequence, L"sequence", writeSequence,
+        L"in-sequence.sequence" );
+    CHECK_U2_ERROR( error );
+    error = addSchemeActorsBinding( scheme, blast, L"annotations", geneByGeneReportId,
+        L"in-data.gene-ann" );
+    CHECK_U2_ERROR( error );
+    error = addSchemeActorsBinding( scheme, blast, L"annotations", writeSequence,
+        L"in-sequence.annotations" );
     CHECK_U2_ERROR( error );
 
     U2OpStatusImpl stateInfo;
@@ -1235,44 +1235,44 @@ IMPLEMENT_TEST( CInterfaceManualTests, gene_by_gene_report ) {
 }
 
 IMPLEMENT_TEST( CInterfaceManualTests, merge_sequence_annotation ) {
-    char readAnnotations[MAX_ELEMENT_NAME_LENGTH], readSequence[MAX_ELEMENT_NAME_LENGTH],
+    wchar_t readAnnotations[MAX_ELEMENT_NAME_LENGTH], readSequence[MAX_ELEMENT_NAME_LENGTH],
         multiplexer[MAX_ELEMENT_NAME_LENGTH], writeSequence[MAX_ELEMENT_NAME_LENGTH];
     SchemeHandle scheme = NULL;
     U2ErrorType error = createScheme( NULL, &scheme );
     CHECK_U2_ERROR( error );
 
-    error = addElementToScheme( scheme, "read-annotations", MAX_ELEMENT_NAME_LENGTH,
+    error = addElementToScheme( scheme, L"read-annotations", MAX_ELEMENT_NAME_LENGTH,
         readAnnotations );
     CHECK_U2_ERROR( error );
-    error = addElementToScheme( scheme, "read-sequence", MAX_ELEMENT_NAME_LENGTH, readSequence );
+    error = addElementToScheme( scheme, L"read-sequence", MAX_ELEMENT_NAME_LENGTH, readSequence );
     CHECK_U2_ERROR( error );
-    error = addElementToScheme( scheme, "multiplexer", MAX_ELEMENT_NAME_LENGTH, multiplexer );
+    error = addElementToScheme( scheme, L"multiplexer", MAX_ELEMENT_NAME_LENGTH, multiplexer );
     CHECK_U2_ERROR( error );
-    error = addElementToScheme( scheme, "write-sequence", MAX_ELEMENT_NAME_LENGTH, writeSequence );
-    CHECK_U2_ERROR( error );
-
-    error = setSchemeElementAttribute( scheme, readSequence, "url-in.dataset", "Dataset" );
-    CHECK_U2_ERROR( error );
-    error = setSchemeElementAttribute( scheme, readAnnotations, "url-in.dataset", "Dataset" );
-    CHECK_U2_ERROR( error );
-    error = setSchemeElementAttribute( scheme, writeSequence, "document-format", "genbank" );
+    error = addElementToScheme( scheme, L"write-sequence", MAX_ELEMENT_NAME_LENGTH, writeSequence );
     CHECK_U2_ERROR( error );
 
-    error = addFlowToScheme( scheme, readAnnotations, "out-annotations", multiplexer, "input-data-1" );
+    error = setSchemeElementAttribute( scheme, readSequence, L"url-in.dataset", L"Dataset" );
     CHECK_U2_ERROR( error );
-    error = addFlowToScheme( scheme, readSequence, "out-sequence", multiplexer, "input-data-2" );
+    error = setSchemeElementAttribute( scheme, readAnnotations, L"url-in.dataset", L"Dataset" );
     CHECK_U2_ERROR( error );
-    error = addFlowToScheme( scheme, multiplexer, "output-data", writeSequence, "in-sequence" );
+    error = setSchemeElementAttribute( scheme, writeSequence, L"document-format", L"genbank" );
     CHECK_U2_ERROR( error );
 
-    error = addSchemeActorsBinding( scheme, readAnnotations, "annotations", writeSequence,
-        "in-sequence.annotations" );
+    error = addFlowToScheme( scheme, readAnnotations, L"out-annotations", multiplexer, L"input-data-1" );
     CHECK_U2_ERROR( error );
-    error = addSchemeActorsBinding( scheme, readSequence, "annotations", writeSequence,
-        "in-sequence.annotations" );
+    error = addFlowToScheme( scheme, readSequence, L"out-sequence", multiplexer, L"input-data-2" );
     CHECK_U2_ERROR( error );
-    error = addSchemeActorsBinding( scheme, readSequence, "sequence", writeSequence,
-        "in-sequence.sequence" );
+    error = addFlowToScheme( scheme, multiplexer, L"output-data", writeSequence, L"in-sequence" );
+    CHECK_U2_ERROR( error );
+
+    error = addSchemeActorsBinding( scheme, readAnnotations, L"annotations", writeSequence,
+        L"in-sequence.annotations" );
+    CHECK_U2_ERROR( error );
+    error = addSchemeActorsBinding( scheme, readSequence, L"annotations", writeSequence,
+        L"in-sequence.annotations" );
+    CHECK_U2_ERROR( error );
+    error = addSchemeActorsBinding( scheme, readSequence, L"sequence", writeSequence,
+        L"in-sequence.sequence" );
     CHECK_U2_ERROR( error );
 
     U2OpStatusImpl stateInfo;

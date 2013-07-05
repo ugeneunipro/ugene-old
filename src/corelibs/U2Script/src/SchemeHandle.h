@@ -55,7 +55,7 @@ extern "C" {
  * If returning value is not U2_OK the environment is not affected by the invocation.
  *
  */
-U2SCRIPT_EXPORT U2ErrorType     createScheme(                const char *        pathToScheme,
+U2SCRIPT_EXPORT U2ErrorType     createScheme(                const wchar_t *     pathToScheme,
                                                              SchemeHandle *      scheme );
 
 /*
@@ -85,10 +85,10 @@ U2SCRIPT_EXPORT U2ErrorType     createScheme(                const char *       
  * If returning value is not U2_OK the environment is not affected by the invocation.
  *
  */
-U2SCRIPT_EXPORT U2ErrorType     createSas(                   const char *        algorithmType,
-                                                             const char *        inputPath,
-                                                             const char *        outputPath,
-                                                             SchemeHandle *      scheme );
+U2SCRIPT_EXPORT U2ErrorType     createSas(                   const wchar_t *    algorithmType,
+                                                             const wchar_t *    inputPath,
+                                                             const wchar_t *    outputPath,
+                                                             SchemeHandle *     scheme );
 
 /*
  * This function adds to the computational scheme described by the `scheme` object
@@ -123,10 +123,10 @@ U2SCRIPT_EXPORT U2ErrorType     createSas(                   const char *       
  *
  */
 U2SCRIPT_EXPORT U2ErrorType     addReaderToScheme(           SchemeHandle        scheme,
-                                                             const char *        readerType,
-                                                             const char *        inputFilePath,
+                                                             const wchar_t *     readerType,
+                                                             const wchar_t *     inputFilePath,
                                                              int                 maxExpectedNameLength,
-                                                             char *              name );
+                                                             wchar_t *           name );
 
 /*
  * This function adds to the computational scheme described by the `scheme` object
@@ -154,10 +154,10 @@ U2SCRIPT_EXPORT U2ErrorType     addReaderToScheme(           SchemeHandle       
  *
  */
 U2SCRIPT_EXPORT U2ErrorType     addWriterToScheme(           SchemeHandle        scheme,
-                                                             const char *        writerType,
-                                                             const char *        outputFilePath,
+                                                             const wchar_t *     writerType,
+                                                             const wchar_t *     outputFilePath,
                                                              int                 maxExpectedNameLength,
-                                                             char *              name );
+                                                             wchar_t *           name );
 
 /*
  * This function adds to the computational scheme described by the `scheme` object
@@ -184,9 +184,9 @@ U2SCRIPT_EXPORT U2ErrorType     addWriterToScheme(           SchemeHandle       
  *
  */
 U2SCRIPT_EXPORT U2ErrorType     addElementToScheme(          SchemeHandle        scheme,
-                                                             const char *        elementType,
+                                                             const wchar_t *     elementType,
                                                              int                 maxExpectedNameLength,
-                                                             char *              name );
+                                                             wchar_t *           name );
 
 /*
  * This function sets attribute with name `attributeName` of the computational element
@@ -208,9 +208,9 @@ U2SCRIPT_EXPORT U2ErrorType     addElementToScheme(          SchemeHandle       
  *
  */
 U2SCRIPT_EXPORT U2ErrorType     setSchemeElementAttribute(   SchemeHandle        scheme,
-                                                             const char *        elementName,
-                                                             const char *        attributeName,
-                                                             const char *        attributeValue );
+                                                             const wchar_t *     elementName,
+                                                             const wchar_t *     attributeName,
+                                                             const wchar_t *     attributeValue );
 
 /*
  * This function writes the value of the attribute with name `attributeName` of the computational
@@ -232,10 +232,10 @@ U2SCRIPT_EXPORT U2ErrorType     setSchemeElementAttribute(   SchemeHandle       
  *
  */
 U2SCRIPT_EXPORT U2ErrorType     getSchemeElementAttribute(   SchemeHandle        scheme,
-                                                             const char *        elementName,
-                                                             const char *        attributeName,
+                                                             const wchar_t *     elementName,
+                                                             const wchar_t *     attributeName,
                                                              int                 maxExpectedNameLength,
-                                                             char *              attributeValue );
+                                                             wchar_t *           attributeValue );
 
 /*
  * This function sets binding between ports with `srcPortName` and `dstPortName` names
@@ -259,10 +259,10 @@ U2SCRIPT_EXPORT U2ErrorType     getSchemeElementAttribute(   SchemeHandle       
  *
  */
 U2SCRIPT_EXPORT U2ErrorType     addFlowToScheme(             SchemeHandle        scheme,
-                                                             const char *        srcElementName,
-                                                             const char *        srcPortName,
-                                                             const char *        dstElementName,
-                                                             const char *        dstPortName );
+                                                             const wchar_t *     srcElementName,
+                                                             const wchar_t *     srcPortName,
+                                                             const wchar_t *     dstElementName,
+                                                             const wchar_t *     dstPortName );
 
 /*
  * This function sets binding between slots with `srcSlotName` and `dstPortAndSlotNames` names
@@ -288,10 +288,10 @@ U2SCRIPT_EXPORT U2ErrorType     addFlowToScheme(             SchemeHandle       
  *
  */
 U2SCRIPT_EXPORT U2ErrorType     addSchemeActorsBinding(      SchemeHandle        scheme,
-                                                             const char *        srcElementName,
-                                                             const char *        srcSlotName,
-                                                             const char *        dstElementName,
-                                                             const char *        dstPortAndSlotNames );
+                                                             const wchar_t *     srcElementName,
+                                                             const wchar_t *     srcSlotName,
+                                                             const wchar_t *     dstElementName,
+                                                             const wchar_t *     dstPortAndSlotNames );
 
 /*
  * This function saves the computational scheme described by the `scheme` object to file
@@ -314,7 +314,7 @@ U2SCRIPT_EXPORT U2ErrorType     addSchemeActorsBinding(      SchemeHandle       
  *
  */
 U2SCRIPT_EXPORT U2ErrorType     saveSchemeToFile(            SchemeHandle        scheme,
-                                                             const char *        path );
+                                                             const wchar_t *     path );
 
 /*
  * This function deallocates all the resources acquired by the `scheme` object.
@@ -349,7 +349,7 @@ U2SCRIPT_EXPORT void            releaseScheme(               SchemeHandle       
  */
 U2SCRIPT_EXPORT U2ErrorType         launchScheme(            SchemeHandle        scheme,
                                                              int  *              outputFilesCount,
-                                                             char ***            outputFileNames );
+                                                             wchar_t ***         outputFileNames );
 
 /*
  * This function creates new Single Algorithm Scheme then runs it with Workflow Designer
@@ -380,11 +380,11 @@ U2SCRIPT_EXPORT U2ErrorType         launchScheme(            SchemeHandle       
  * If returning value is not U2_OK the environment is not affected by the invocation.
  *
  */
-U2SCRIPT_EXPORT U2ErrorType         launchSas(               const char *        algorithmType,
-                                                             const char *        inputPath,
-                                                             const char *        outputPath,
+U2SCRIPT_EXPORT U2ErrorType         launchSas(               const wchar_t *     algorithmType,
+                                                             const wchar_t *     inputPath,
+                                                             const wchar_t *     outputPath,
                                                              int  *              outputFilesCount,
-                                                             char ***            outputFileNames );
+                                                             wchar_t ***         outputFileNames );
 
 #ifdef __cplusplus
 }

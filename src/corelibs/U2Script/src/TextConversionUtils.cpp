@@ -19,7 +19,6 @@
  * MA 02110-1301, USA.
  */
 
-#include <U2Core/Log.h>
 #include <U2Core/U2SafePoints.h>
 
 #include "TextConversionUtils.h"
@@ -29,18 +28,18 @@ static QString LAST_UNCONVERTED_STRING = QString( );
 namespace U2 {
 
 U2ErrorType TextConversionUtils::qstringToCstring( const QString &source, int maxExpectedLength,
-    char *destination )
+    wchar_t *destination )
 {
     CHECK( NULL != destination, U2_INVALID_STRING );
     const int nameLength = source.length( ) + 1;
     CHECK_EXT( nameLength <= maxExpectedLength, LAST_UNCONVERTED_STRING = source,
         U2_TOO_SMALL_BUFFER );
-    const QByteArray tmpSource = source.toLocal8Bit( );
-    memcpy( destination, tmpSource.constData( ), nameLength );
+    source.toWCharArray(destination);
+    destination[source.length( )] = '\0';
     return U2_OK;
 }
 
-U2ErrorType TextConversionUtils::repeatLastConversion( int maxExpectedLength, char *destination,
+U2ErrorType TextConversionUtils::repeatLastConversion( int maxExpectedLength, wchar_t *destination,
     int *requiredSize )
 {
     CHECK( NULL != requiredSize, U2_NUM_ARG_OUT_OF_RANGE );

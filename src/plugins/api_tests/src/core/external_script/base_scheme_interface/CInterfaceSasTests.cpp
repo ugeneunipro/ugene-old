@@ -19,12 +19,35 @@
  * MA 02110-1301, USA.
  */
 
-#include "SchemeSimilarityUtils.h"
+#include <U2Core/GAutoDeleteList.h>
 
+#include <U2Lang/ActorPrototypeRegistry.h>
+#include <U2Lang/ActorModel.h>
+#include <U2Lang/WorkflowEnv.h>
+
+#include "SchemeSimilarityUtils.h"
 #include "CInterfaceSasTests.h"
 
 static const QString WORKING_DIR = U2::AppContext::getWorkingDirectoryPath( );
 static const QString PROPER_WD_SCHEMES_PATH = WORKING_DIR + "/../../test/_common_data/cmdline/wd-sas-schemes/";
+
+static U2ErrorType getActorDisplayName( const QString &actorId, QString &actorName ) {
+    U2::Workflow::ActorPrototypeRegistry *prototypeRegistry
+        = U2::Workflow::WorkflowEnv::getProtoRegistry( );
+    CHECK( NULL != prototypeRegistry, U2_INVALID_CALL );
+    U2::Workflow::ActorPrototype *prototype = prototypeRegistry->getProto( actorId );
+    CHECK( NULL != prototype, U2_UNKNOWN_ELEMENT );
+    actorName = prototype->getDisplayName( );
+    return U2_OK;
+}
+
+static wchar_t * toDisposableWString( const QString &source ) {
+    CHECK( !source.isEmpty( ), NULL );
+    wchar_t *result = new wchar_t[source.size( ) + 1 ];
+    source.toWCharArray( result );
+    result[source.size( )] = '\0';
+    return result;
+}
 
 namespace U2 {
 
@@ -32,9 +55,14 @@ namespace U2 {
 
 IMPLEMENT_TEST( CInterfaceSasTests, align_with_clustalO_sas ) {
     SchemeHandle scheme = NULL;
-    U2ErrorType error = createSas( "ClustalO", NULL, NULL, &scheme );
+    U2ErrorType error = createSas( L"ClustalO", NULL, NULL, &scheme );
     CHECK_U2_ERROR( error );
-    error = setSchemeElementAttribute( scheme, "Read Alignment", "url-in.dataset", "Dataset 1" );
+    QString readerName;
+    error = getActorDisplayName( "read-msa", readerName );
+    CHECK_U2_ERROR( error );
+    gauto_array<wchar_t> wReaderName( toDisposableWString( readerName ) );
+    error = setSchemeElementAttribute( scheme, wReaderName.get( ), L"url-in.dataset",
+        L"Dataset 1" );
     CHECK_U2_ERROR( error );
 
     U2OpStatusImpl stateInfo;
@@ -46,9 +74,14 @@ IMPLEMENT_TEST( CInterfaceSasTests, align_with_clustalO_sas ) {
 }
 IMPLEMENT_TEST( CInterfaceSasTests, align_with_clustalW_sas ) {
     SchemeHandle scheme = NULL;
-    U2ErrorType error = createSas( "clustalw", NULL, NULL, &scheme );
+    U2ErrorType error = createSas( L"clustalw", NULL, NULL, &scheme );
     CHECK_U2_ERROR( error );
-    error = setSchemeElementAttribute( scheme, "Read Alignment", "url-in.dataset", "Dataset 1" );
+    QString readerName;
+    error = getActorDisplayName( "read-msa", readerName );
+    CHECK_U2_ERROR( error );
+    gauto_array<wchar_t> wReaderName( toDisposableWString( readerName ) );
+    error = setSchemeElementAttribute( scheme, wReaderName.get( ), L"url-in.dataset",
+        L"Dataset 1" );
     CHECK_U2_ERROR( error );
 
     U2OpStatusImpl stateInfo;
@@ -60,9 +93,14 @@ IMPLEMENT_TEST( CInterfaceSasTests, align_with_clustalW_sas ) {
 }
 IMPLEMENT_TEST( CInterfaceSasTests, align_with_kalign_sas ) {
     SchemeHandle scheme = NULL;
-    U2ErrorType error = createSas( "kalign", NULL, NULL, &scheme );
+    U2ErrorType error = createSas( L"kalign", NULL, NULL, &scheme );
     CHECK_U2_ERROR( error );
-    error = setSchemeElementAttribute( scheme, "Read Alignment", "url-in.dataset", "Dataset 1" );
+    QString readerName;
+    error = getActorDisplayName( "read-msa", readerName );
+    CHECK_U2_ERROR( error );
+    gauto_array<wchar_t> wReaderName( toDisposableWString( readerName ) );
+    error = setSchemeElementAttribute( scheme, wReaderName.get( ), L"url-in.dataset",
+        L"Dataset 1" );
     CHECK_U2_ERROR( error );
 
     U2OpStatusImpl stateInfo;
@@ -74,9 +112,14 @@ IMPLEMENT_TEST( CInterfaceSasTests, align_with_kalign_sas ) {
 }
 IMPLEMENT_TEST( CInterfaceSasTests, align_with_mafft_sas ) {
     SchemeHandle scheme = NULL;
-    U2ErrorType error = createSas( "mafft", NULL, NULL, &scheme );
+    U2ErrorType error = createSas( L"mafft", NULL, NULL, &scheme );
     CHECK_U2_ERROR( error );
-    error = setSchemeElementAttribute( scheme, "Read Alignment", "url-in.dataset", "Dataset 1" );
+    QString readerName;
+    error = getActorDisplayName( "read-msa", readerName );
+    CHECK_U2_ERROR( error );
+    gauto_array<wchar_t> wReaderName( toDisposableWString( readerName ) );
+    error = setSchemeElementAttribute( scheme, wReaderName.get( ), L"url-in.dataset",
+        L"Dataset 1" );
     CHECK_U2_ERROR( error );
 
     U2OpStatusImpl stateInfo;
@@ -88,9 +131,14 @@ IMPLEMENT_TEST( CInterfaceSasTests, align_with_mafft_sas ) {
 }
 IMPLEMENT_TEST( CInterfaceSasTests, align_with_muscle_sas ) {
     SchemeHandle scheme = NULL;
-    U2ErrorType error = createSas( "muscle", NULL, NULL, &scheme );
+    U2ErrorType error = createSas( L"muscle", NULL, NULL, &scheme );
     CHECK_U2_ERROR( error );
-    error = setSchemeElementAttribute( scheme, "Read Alignment", "url-in.dataset", "Dataset 1" );
+    QString readerName;
+    error = getActorDisplayName( "read-msa", readerName );
+    CHECK_U2_ERROR( error );
+    gauto_array<wchar_t> wReaderName( toDisposableWString( readerName ) );
+    error = setSchemeElementAttribute( scheme, wReaderName.get( ), L"url-in.dataset",
+        L"Dataset 1" );
     CHECK_U2_ERROR( error );
 
     U2OpStatusImpl stateInfo;
@@ -102,9 +150,14 @@ IMPLEMENT_TEST( CInterfaceSasTests, align_with_muscle_sas ) {
 }
 IMPLEMENT_TEST( CInterfaceSasTests, align_with_tcoffee_sas ) {
     SchemeHandle scheme = NULL;
-    U2ErrorType error = createSas( "tcoffee", NULL, NULL, &scheme );
+    U2ErrorType error = createSas( L"tcoffee", NULL, NULL, &scheme );
     CHECK_U2_ERROR( error );
-    error = setSchemeElementAttribute( scheme, "Read Alignment", "url-in.dataset", "Dataset 1" );
+    QString readerName;
+    error = getActorDisplayName( "read-msa", readerName );
+    CHECK_U2_ERROR( error );
+    gauto_array<wchar_t> wReaderName( toDisposableWString( readerName ) );
+    error = setSchemeElementAttribute( scheme, wReaderName.get( ), L"url-in.dataset",
+        L"Dataset 1" );
     CHECK_U2_ERROR( error );
 
     U2OpStatusImpl stateInfo;
@@ -116,9 +169,14 @@ IMPLEMENT_TEST( CInterfaceSasTests, align_with_tcoffee_sas ) {
 }
 IMPLEMENT_TEST( CInterfaceSasTests, annotate_with_uql_sas ) {
     SchemeHandle scheme = NULL;
-    U2ErrorType error = createSas( "query", NULL, NULL, &scheme );
+    U2ErrorType error = createSas( L"query", NULL, NULL, &scheme );
     CHECK_U2_ERROR( error );
-    error = setSchemeElementAttribute( scheme, "Read Sequence", "url-in.dataset", "Dataset 1" );
+    QString readerName;
+    error = getActorDisplayName( "read-sequence", readerName );
+    CHECK_U2_ERROR( error );
+    gauto_array<wchar_t> wReaderName( toDisposableWString( readerName ) );
+    error = setSchemeElementAttribute( scheme, wReaderName.get( ), L"url-in.dataset",
+        L"Dataset 1" );
     CHECK_U2_ERROR( error );
 
     U2OpStatusImpl stateInfo;
@@ -131,9 +189,14 @@ IMPLEMENT_TEST( CInterfaceSasTests, annotate_with_uql_sas ) {
 
 IMPLEMENT_TEST( CInterfaceSasTests, basic_align_sas ) {
     SchemeHandle scheme = NULL;
-    U2ErrorType error = createSas( "muscle", NULL, NULL, &scheme );
+    U2ErrorType error = createSas( L"muscle", NULL, NULL, &scheme );
     CHECK_U2_ERROR( error );
-    error = setSchemeElementAttribute( scheme, "Write Alignment", "document-format", "stockholm" );
+    QString writerName;
+    error = getActorDisplayName( "write-msa", writerName );
+    CHECK_U2_ERROR( error );
+    gauto_array<wchar_t> wWriterName( toDisposableWString( writerName ) );
+    error = setSchemeElementAttribute( scheme, wWriterName.get( ), L"document-format",
+        L"stockholm" );
     CHECK_U2_ERROR( error );
 
     U2OpStatusImpl stateInfo;
@@ -146,9 +209,14 @@ IMPLEMENT_TEST( CInterfaceSasTests, basic_align_sas ) {
 
 IMPLEMENT_TEST( CInterfaceSasTests, build_weight_matrix_sas ) {
     SchemeHandle scheme = NULL;
-    U2ErrorType error = createSas( "wmatrix-build", NULL, NULL, &scheme );
+    U2ErrorType error = createSas( L"wmatrix-build", NULL, NULL, &scheme );
     CHECK_U2_ERROR( error );
-    error = setSchemeElementAttribute( scheme, "Read Alignment", "url-in.dataset", "Dataset 1" );
+    QString readerName;
+    error = getActorDisplayName( "read-msa", readerName );
+    CHECK_U2_ERROR( error );
+    gauto_array<wchar_t> wReaderName( toDisposableWString( readerName ) );
+    error = setSchemeElementAttribute( scheme, wReaderName.get( ), L"url-in.dataset",
+        L"Dataset 1" );
     CHECK_U2_ERROR( error );
 
     U2OpStatusImpl stateInfo;
@@ -160,9 +228,14 @@ IMPLEMENT_TEST( CInterfaceSasTests, build_weight_matrix_sas ) {
 }
 IMPLEMENT_TEST( CInterfaceSasTests, cd_search_sas ) {
     SchemeHandle scheme = NULL;
-    U2ErrorType error = createSas( "cd-search", NULL, NULL, &scheme );
+    U2ErrorType error = createSas( L"cd-search", NULL, NULL, &scheme );
     CHECK_U2_ERROR( error );
-    error = setSchemeElementAttribute( scheme, "Read Sequence", "url-in.dataset", "Dataset 1" );
+    QString readerName;
+    error = getActorDisplayName( "read-sequence", readerName );
+    CHECK_U2_ERROR( error );
+    gauto_array<wchar_t> wReaderName( toDisposableWString( readerName ) );
+    error = setSchemeElementAttribute( scheme, wReaderName.get( ), L"url-in.dataset",
+        L"Dataset 1" );
     CHECK_U2_ERROR( error );
 
     U2OpStatusImpl stateInfo;
@@ -174,9 +247,14 @@ IMPLEMENT_TEST( CInterfaceSasTests, cd_search_sas ) {
 }    
 IMPLEMENT_TEST( CInterfaceSasTests, dna_statistics_sas ) {
     SchemeHandle scheme = NULL;
-    U2ErrorType error = createSas( "dna-stats", NULL, NULL, &scheme );
+    U2ErrorType error = createSas( L"dna-stats", NULL, NULL, &scheme );
     CHECK_U2_ERROR( error );
-    error = setSchemeElementAttribute( scheme, "Read Sequence", "url-in.dataset", "Dataset 1" );
+    QString readerName;
+    error = getActorDisplayName( "read-sequence", readerName );
+    CHECK_U2_ERROR( error );
+    gauto_array<wchar_t> wReaderName( toDisposableWString( readerName ) );
+    error = setSchemeElementAttribute( scheme, wReaderName.get( ), L"url-in.dataset",
+        L"Dataset 1" );
     CHECK_U2_ERROR( error );
 
     U2OpStatusImpl stateInfo;
@@ -189,9 +267,13 @@ IMPLEMENT_TEST( CInterfaceSasTests, dna_statistics_sas ) {
 
 IMPLEMENT_TEST( CInterfaceSasTests, faqual2fastq_sas ) {
     SchemeHandle scheme = NULL;
-    U2ErrorType error = createSas( "import-phred-qualities", NULL, NULL, &scheme );
+    U2ErrorType error = createSas( L"import-phred-qualities", NULL, NULL, &scheme );
     CHECK_U2_ERROR( error );
-    error = setSchemeElementAttribute( scheme, "Write Sequence", "document-format", "fastq" );
+    QString readerName;
+    error = getActorDisplayName( "write-sequence", readerName );
+    CHECK_U2_ERROR( error );
+    gauto_array<wchar_t> wReaderName( toDisposableWString( readerName ) );
+    error = setSchemeElementAttribute( scheme, wReaderName.get( ), L"document-format", L"fastq" );
     CHECK_U2_ERROR( error );
 
     U2OpStatusImpl stateInfo;
@@ -204,9 +286,14 @@ IMPLEMENT_TEST( CInterfaceSasTests, faqual2fastq_sas ) {
 
 IMPLEMENT_TEST( CInterfaceSasTests, filter_annotations_by_name_sas ) {
     SchemeHandle scheme = NULL;
-    U2ErrorType error = createSas( "filter-annotations", NULL, NULL, &scheme );
+    U2ErrorType error = createSas( L"filter-annotations", NULL, NULL, &scheme );
     CHECK_U2_ERROR( error );
-    error = setSchemeElementAttribute( scheme, "Read Annotations", "url-in.dataset", "Dataset 1" );
+    QString readerName;
+    error = getActorDisplayName( "read-annotations", readerName );
+    CHECK_U2_ERROR( error );
+    gauto_array<wchar_t> wReaderName( toDisposableWString( readerName ) );
+    error = setSchemeElementAttribute( scheme, wReaderName.get( ), L"url-in.dataset",
+        L"Dataset 1" );
     CHECK_U2_ERROR( error );
 
     U2OpStatusImpl stateInfo;
@@ -218,27 +305,35 @@ IMPLEMENT_TEST( CInterfaceSasTests, filter_annotations_by_name_sas ) {
 }
 IMPLEMENT_TEST( CInterfaceSasTests, find_repeats_sas ) {
     SchemeHandle scheme = NULL;
-    U2ErrorType error = createSas( "repeats-search", NULL, NULL, &scheme );
+    U2ErrorType error = createSas( L"repeats-search", NULL, NULL, &scheme );
     CHECK_U2_ERROR( error );
-    error = setSchemeElementAttribute( scheme, "Read Sequence", "url-in.dataset", "Dataset 1" );
+    QString readerName;
+    error = getActorDisplayName( "read-sequence", readerName );
     CHECK_U2_ERROR( error );
-    error = setSchemeElementAttribute( scheme, "Find Repeats", "algorithm", "0" );
+    gauto_array<wchar_t> wReaderName( toDisposableWString( readerName ) );
+    error = setSchemeElementAttribute( scheme, wReaderName.get( ), L"url-in.dataset", L"Dataset 1" );
     CHECK_U2_ERROR( error );
-    error = setSchemeElementAttribute( scheme, "Find Repeats", "exclude-tandems", "false" );
+    QString algoName;
+    error = getActorDisplayName( "repeats-search", algoName );
     CHECK_U2_ERROR( error );
-    error = setSchemeElementAttribute( scheme, "Find Repeats", "filter-algorithm", "0" );
+    gauto_array<wchar_t> wAlgoName( toDisposableWString( algoName ) );
+    error = setSchemeElementAttribute( scheme, wAlgoName.get( ), L"algorithm", L"0" );
     CHECK_U2_ERROR( error );
-    error = setSchemeElementAttribute( scheme, "Find Repeats", "identity", "100" );
+    error = setSchemeElementAttribute( scheme, wAlgoName.get( ), L"exclude-tandems", L"false" );
     CHECK_U2_ERROR( error );
-    error = setSchemeElementAttribute( scheme, "Find Repeats", "inverted", "false" );
+    error = setSchemeElementAttribute( scheme, wAlgoName.get( ), L"filter-algorithm", L"0" );
     CHECK_U2_ERROR( error );
-    error = setSchemeElementAttribute( scheme, "Find Repeats", "max-distance", "5000" );
+    error = setSchemeElementAttribute( scheme, wAlgoName.get( ), L"identity", L"100" );
     CHECK_U2_ERROR( error );
-    error = setSchemeElementAttribute( scheme, "Find Repeats", "min-distance", "0" );
+    error = setSchemeElementAttribute( scheme, wAlgoName.get( ), L"inverted", L"false" );
     CHECK_U2_ERROR( error );
-    error = setSchemeElementAttribute( scheme, "Find Repeats", "min-length", "5" );
+    error = setSchemeElementAttribute( scheme, wAlgoName.get( ), L"max-distance", L"5000" );
     CHECK_U2_ERROR( error );
-    error = setSchemeElementAttribute( scheme, "Find Repeats", "threads", "0" );
+    error = setSchemeElementAttribute( scheme, wAlgoName.get( ), L"min-distance", L"0" );
+    CHECK_U2_ERROR( error );
+    error = setSchemeElementAttribute( scheme, wAlgoName.get( ), L"min-length", L"5" );
+    CHECK_U2_ERROR( error );
+    error = setSchemeElementAttribute( scheme, wAlgoName.get( ), L"threads", L"0" );
     CHECK_U2_ERROR( error );
 
     U2OpStatusImpl stateInfo;
@@ -250,9 +345,13 @@ IMPLEMENT_TEST( CInterfaceSasTests, find_repeats_sas ) {
 }
 IMPLEMENT_TEST( CInterfaceSasTests, hmm2_build_sas ) {
     SchemeHandle scheme = NULL;
-    U2ErrorType error = createSas( "hmm2-build", NULL, NULL, &scheme );
+    U2ErrorType error = createSas( L"hmm2-build", NULL, NULL, &scheme );
     CHECK_U2_ERROR( error );
-    error = setSchemeElementAttribute( scheme, "Read Alignment", "url-in.dataset", "Dataset 1" );
+    QString readerName;
+    error = getActorDisplayName( "read-msa", readerName );
+    CHECK_U2_ERROR( error );
+    gauto_array<wchar_t> wReaderName( toDisposableWString( readerName ) );
+    error = setSchemeElementAttribute( scheme, wReaderName.get( ), L"url-in.dataset", L"Dataset 1" );
     CHECK_U2_ERROR( error );
 
     U2OpStatusImpl stateInfo;
@@ -264,9 +363,14 @@ IMPLEMENT_TEST( CInterfaceSasTests, hmm2_build_sas ) {
 }
 IMPLEMENT_TEST( CInterfaceSasTests, import_phred_qualities_sas ) {
     SchemeHandle scheme = NULL;
-    U2ErrorType error = createSas( "import-phred-qualities", NULL, NULL, &scheme );
+    U2ErrorType error = createSas( L"import-phred-qualities", NULL, NULL, &scheme );
     CHECK_U2_ERROR( error );
-    error = setSchemeElementAttribute( scheme, "Read Sequence", "url-in.dataset", "Dataset 1" );
+    QString readerName;
+    CHECK_U2_ERROR( error );
+    error = getActorDisplayName( "read-sequence", readerName );
+    gauto_array<wchar_t> wReaderName( toDisposableWString( readerName ) );
+    error = setSchemeElementAttribute( scheme, wReaderName.get( ), L"url-in.dataset",
+        L"Dataset 1" );
     CHECK_U2_ERROR( error );
 
     U2OpStatusImpl stateInfo;
@@ -279,9 +383,14 @@ IMPLEMENT_TEST( CInterfaceSasTests, import_phred_qualities_sas ) {
 
 IMPLEMENT_TEST( CInterfaceSasTests, join_sequences_into_alignment_sas ) {
     SchemeHandle scheme = NULL;
-    U2ErrorType error = createSas( "sequences-to-msa", NULL, NULL, &scheme    );
+    U2ErrorType error = createSas( L"sequences-to-msa", NULL, NULL, &scheme );
     CHECK_U2_ERROR( error );
-    error = setSchemeElementAttribute( scheme, "Read Sequence", "url-in.dataset", "Dataset 1" );
+    QString readerName;
+    error = getActorDisplayName( "read-sequence", readerName );
+    CHECK_U2_ERROR( error );
+    gauto_array<wchar_t> wReaderName( toDisposableWString( readerName ) );
+    error = setSchemeElementAttribute( scheme, wReaderName.get( ), L"url-in.dataset",
+        L"Dataset 1" );
     CHECK_U2_ERROR( error );
 
     U2OpStatusImpl stateInfo;
@@ -294,9 +403,14 @@ IMPLEMENT_TEST( CInterfaceSasTests, join_sequences_into_alignment_sas ) {
 
 IMPLEMENT_TEST( CInterfaceSasTests, local_blast_search_sas ) {
     SchemeHandle scheme = NULL;
-    U2ErrorType error = createSas( "blast", NULL, NULL, &scheme    );
+    U2ErrorType error = createSas( L"blast", NULL, NULL, &scheme );
     CHECK_U2_ERROR( error );
-    error = setSchemeElementAttribute( scheme, "Read Sequence", "url-in.dataset", "Dataset 1" );
+    QString readerName;
+    error = getActorDisplayName( "read-sequence", readerName );
+    CHECK_U2_ERROR( error );
+    gauto_array<wchar_t> wReaderName( toDisposableWString( readerName ) );
+    error = setSchemeElementAttribute( scheme, wReaderName.get( ), L"url-in.dataset",
+        L"Dataset 1" );
     CHECK_U2_ERROR( error );
 
     U2OpStatusImpl stateInfo;
@@ -308,9 +422,14 @@ IMPLEMENT_TEST( CInterfaceSasTests, local_blast_search_sas ) {
 }
 IMPLEMENT_TEST( CInterfaceSasTests, local_blast_plus_search_sas ) {
     SchemeHandle scheme = NULL;
-    U2ErrorType error = createSas( "blast-plus", NULL, NULL, &scheme    );
+    U2ErrorType error = createSas( L"blast-plus", NULL, NULL, &scheme );
     CHECK_U2_ERROR( error );
-    error = setSchemeElementAttribute( scheme, "Read Sequence", "url-in.dataset", "Dataset 1" );
+    QString readerName;
+    error = getActorDisplayName( "read-sequence", readerName );
+    CHECK_U2_ERROR( error );
+    gauto_array<wchar_t> wReaderName( toDisposableWString( readerName ) );
+    error = setSchemeElementAttribute( scheme, wReaderName.get( ), L"url-in.dataset",
+        L"Dataset 1" );
     CHECK_U2_ERROR( error );
 
     U2OpStatusImpl stateInfo;
@@ -322,9 +441,14 @@ IMPLEMENT_TEST( CInterfaceSasTests, local_blast_plus_search_sas ) {
 }
 IMPLEMENT_TEST( CInterfaceSasTests, merge_annotations_sas ) {
     SchemeHandle scheme = NULL;
-    U2ErrorType error = createSas( "import-annotations", NULL, NULL, &scheme    );
+    U2ErrorType error = createSas( L"import-annotations", NULL, NULL, &scheme );
     CHECK_U2_ERROR( error );
-    error = setSchemeElementAttribute( scheme, "Read Annotations", "url-in.dataset", "Dataset 1" );
+    QString readerName;
+    error = getActorDisplayName( "read-annotations", readerName );
+    CHECK_U2_ERROR( error );
+    gauto_array<wchar_t> wReaderName( toDisposableWString( readerName ) );
+    error = setSchemeElementAttribute( scheme, wReaderName.get( ), L"url-in.dataset",
+        L"Dataset 1" );
     CHECK_U2_ERROR( error );
 
     U2OpStatusImpl stateInfo;
@@ -336,9 +460,14 @@ IMPLEMENT_TEST( CInterfaceSasTests, merge_annotations_sas ) {
 }
 IMPLEMENT_TEST( CInterfaceSasTests, merge_assemblies_with_cuffmerge_sas ) {
     SchemeHandle scheme = NULL;
-    U2ErrorType error = createSas( "cuffmerge", NULL, NULL, &scheme    );
+    U2ErrorType error = createSas( L"cuffmerge", NULL, NULL, &scheme );
     CHECK_U2_ERROR( error );
-    error = setSchemeElementAttribute( scheme, "Read Annotations", "url-in.dataset", "Dataset 1" );
+    QString readerName;
+    error = getActorDisplayName( "read-annotations", readerName );
+    CHECK_U2_ERROR( error );
+    gauto_array<wchar_t> wReaderName( toDisposableWString( readerName ) );
+    error = setSchemeElementAttribute( scheme, wReaderName.get( ), L"url-in.dataset",
+        L"Dataset 1" );
     CHECK_U2_ERROR( error );
 
     U2OpStatusImpl stateInfo;
@@ -350,9 +479,14 @@ IMPLEMENT_TEST( CInterfaceSasTests, merge_assemblies_with_cuffmerge_sas ) {
 }
 IMPLEMENT_TEST( CInterfaceSasTests, orf_marker_sas ) {
     SchemeHandle scheme = NULL;
-    U2ErrorType error = createSas( "orf-search", NULL, NULL, &scheme    );
+    U2ErrorType error = createSas( L"orf-search", NULL, NULL, &scheme );
     CHECK_U2_ERROR( error );
-    error = setSchemeElementAttribute( scheme, "Read Sequence", "url-in.dataset", "Dataset 1" );
+    QString readerName;
+    error = getActorDisplayName( "read-sequence", readerName );
+    CHECK_U2_ERROR( error );
+    gauto_array<wchar_t> wReaderName( toDisposableWString( readerName ) );
+    error = setSchemeElementAttribute( scheme, wReaderName.get( ), L"url-in.dataset",
+        L"Dataset 1" );
     CHECK_U2_ERROR( error );
 
     U2OpStatusImpl stateInfo;
@@ -364,9 +498,14 @@ IMPLEMENT_TEST( CInterfaceSasTests, orf_marker_sas ) {
 }
 IMPLEMENT_TEST( CInterfaceSasTests, remote_blast_sas ) {
     SchemeHandle scheme = NULL;
-    U2ErrorType error = createSas( "blast-ncbi", NULL, NULL, &scheme    );
+    U2ErrorType error = createSas( L"blast-ncbi", NULL, NULL, &scheme );
     CHECK_U2_ERROR( error );
-    error = setSchemeElementAttribute( scheme, "Read Sequence", "url-in.dataset", "Dataset 1" );
+    QString readerName;
+    error = getActorDisplayName( "read-sequence", readerName );
+    CHECK_U2_ERROR( error );
+    gauto_array<wchar_t> wReaderName( toDisposableWString( readerName ) );
+    error = setSchemeElementAttribute( scheme, wReaderName.get( ), L"url-in.dataset",
+        L"Dataset 1" );
     CHECK_U2_ERROR( error );
 
     U2OpStatusImpl stateInfo;
@@ -378,9 +517,14 @@ IMPLEMENT_TEST( CInterfaceSasTests, remote_blast_sas ) {
 }
 IMPLEMENT_TEST( CInterfaceSasTests, reverse_complement_sas ) {
     SchemeHandle scheme = NULL;
-    U2ErrorType error = createSas( "reverse-complement", NULL, NULL, &scheme    );
+    U2ErrorType error = createSas( L"reverse-complement", NULL, NULL, &scheme );
     CHECK_U2_ERROR( error );
-    error = setSchemeElementAttribute( scheme, "Read Sequence", "url-in.dataset", "Dataset 1" );
+    QString readerName;
+    error = getActorDisplayName( "read-sequence", readerName );
+    CHECK_U2_ERROR( error );
+    gauto_array<wchar_t> wReaderName( toDisposableWString( readerName ) );
+    error = setSchemeElementAttribute( scheme, wReaderName.get( ), L"url-in.dataset",
+        L"Dataset 1" );
     CHECK_U2_ERROR( error );
 
     U2OpStatusImpl stateInfo;
@@ -392,9 +536,13 @@ IMPLEMENT_TEST( CInterfaceSasTests, reverse_complement_sas ) {
 }
 IMPLEMENT_TEST( CInterfaceSasTests, split_alignment_into_sequences_sas ) {
     SchemeHandle scheme = NULL;
-    U2ErrorType error = createSas( "convert-alignment-to-sequence", NULL, NULL, &scheme    );
+    U2ErrorType error = createSas( L"convert-alignment-to-sequence", NULL, NULL, &scheme );
     CHECK_U2_ERROR( error );
-    error = setSchemeElementAttribute( scheme, "Read Alignment", "url-in.dataset", "Dataset 1" );
+    QString readerName;
+    error = getActorDisplayName( "read-msa", readerName );
+    CHECK_U2_ERROR( error );
+    gauto_array<wchar_t> wReaderName( toDisposableWString( readerName ) );
+    error = setSchemeElementAttribute( scheme, wReaderName.get( ), L"url-in.dataset", L"Dataset 1" );
     CHECK_U2_ERROR( error );
 
     U2OpStatusImpl stateInfo;
@@ -406,9 +554,14 @@ IMPLEMENT_TEST( CInterfaceSasTests, split_alignment_into_sequences_sas ) {
 }
 IMPLEMENT_TEST( CInterfaceSasTests, split_assembly_into_sequences_sas ) {
     SchemeHandle scheme = NULL;
-    U2ErrorType error = createSas( "assembly-to-sequences", NULL, NULL, &scheme    );
+    U2ErrorType error = createSas( L"assembly-to-sequences", NULL, NULL, &scheme );
     CHECK_U2_ERROR( error );
-    error = setSchemeElementAttribute( scheme, "Read Assembly", "url-in.dataset", "Dataset 1" );
+    QString readerName;
+    error = getActorDisplayName( "read-assembly", readerName );
+    CHECK_U2_ERROR( error );
+    gauto_array<wchar_t> wReaderName( toDisposableWString( readerName ) );
+    error = setSchemeElementAttribute( scheme, wReaderName.get( ), L"url-in.dataset",
+        L"Dataset 1" );
     CHECK_U2_ERROR( error );
 
     U2OpStatusImpl stateInfo;
@@ -420,9 +573,14 @@ IMPLEMENT_TEST( CInterfaceSasTests, split_assembly_into_sequences_sas ) {
 }
 IMPLEMENT_TEST( CInterfaceSasTests, text2sequence_sas ) {
     SchemeHandle scheme = NULL;
-    U2ErrorType error = createSas( "convert-text-to-sequence", NULL, NULL, &scheme    );
+    U2ErrorType error = createSas( L"convert-text-to-sequence", NULL, NULL, &scheme );
     CHECK_U2_ERROR( error );
-    error = setSchemeElementAttribute( scheme, "Read Plain Text", "url-in.dataset", "Dataset 1" );
+    QString readerName;
+    error = getActorDisplayName( "read-text", readerName );
+    CHECK_U2_ERROR( error );
+    gauto_array<wchar_t> wReaderName( toDisposableWString( readerName ) );
+    error = setSchemeElementAttribute( scheme, wReaderName.get( ), L"url-in.dataset",
+        L"Dataset 1" );
     CHECK_U2_ERROR( error );
 
     U2OpStatusImpl stateInfo;
