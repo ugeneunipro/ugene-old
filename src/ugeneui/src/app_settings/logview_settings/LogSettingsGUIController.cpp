@@ -69,6 +69,11 @@ LogSettingsPageWidget::LogSettingsPageWidget() {
     connect(tableWidget, SIGNAL(currentCellChanged(int, int, int, int)), SLOT(sl_currentCellChanged(int, int, int, int)));
     connect(fileOutCB, SIGNAL(stateChanged(int)), SLOT(sl_outFileStateChanged(int)));
     connect(browseFileButton, SIGNAL(clicked()), SLOT(sl_browseFileClicked()));
+
+#ifdef Q_OS_MAC
+    // Layout fix for mac: the font size is bigger than in another systems.
+    tableWidget->horizontalHeader()->setDefaultSectionSize(110);
+#endif
 }
 
 void LogSettingsPageWidget::setState(AppSettingsGUIPageState* s) {

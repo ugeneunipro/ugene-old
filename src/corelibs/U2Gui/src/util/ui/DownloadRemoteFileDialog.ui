@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>501</width>
-    <height>338</height>
+    <height>357</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -26,6 +26,9 @@
    <string>Fetch Data from Remote Database</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="sizeConstraint">
+    <enum>QLayout::SetMinAndMaxSize</enum>
+   </property>
    <item>
     <layout class="QGridLayout" name="gridLayout">
      <item row="0" column="0">
