@@ -92,7 +92,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 //////////////////////////////////////////////////////////////////////////
 // Regression scenarios/
 //////////////////////////////////////////////////////////////////////////
-  /*  REGISTER_TEST(GUITest_regression_scenarios::test_0734);
+    REGISTER_TEST(GUITest_regression_scenarios::test_0734);
     REGISTER_TEST(GUITest_regression_scenarios::test_0928);
     REGISTER_TEST(GUITest_regression_scenarios::test_0986);
     REGISTER_TEST(GUITest_regression_scenarios::test_0986_1);
@@ -818,7 +818,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 // Common scenarios/Repeat Finder
 /////////////////////////////////////////////////////////////////////////
     REGISTER_TEST(GUITest_common_scenarios_repeat_finder::test_0001);
-*/
+
 /////////////////////////////////////////////////////////////////////////
 // Common scenarios/Undo_Redo
 /////////////////////////////////////////////////////////////////////////
