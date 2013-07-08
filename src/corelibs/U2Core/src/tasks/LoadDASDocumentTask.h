@@ -36,6 +36,8 @@
 
 namespace U2 {
 
+class ConvertDasIdTask;
+
 class XMLDASSequenceParser{
 public:
     XMLDASSequenceParser();
@@ -66,50 +68,6 @@ private:
     QMap<QString, QList<SharedAnnotationData> > annotationData;
 
 };
-
-class XMLPICRIdsParser {
-public:
-    XMLPICRIdsParser();
-    void parse(const QByteArray& data);
-
-    QString getError() const { return error; }
-    void setError(const QString& val) { error = val; }
-
-    QString getAccessionData() { return accessionNumber; }
-private:
-    QString error;
-    QString accessionNumber;
-};
-
-class U2CORE_EXPORT ConvertDASIdTask : public Task {
-    Q_OBJECT
-public:
-    ConvertDASIdTask(const QString& resId);
-    virtual ~ConvertDASIdTask();
-
-    virtual void run();
-    QString getAccessionNumber();
-public slots :
-    void sl_replyFinished(QNetworkReply* reply);
-    void sl_onError(QNetworkReply::NetworkError error);
-    void sl_uploadProgress( qint64 bytesSent, qint64 bytesTotal);
-
-private:
-    QString getRequestURLString();
-
-    QString                 resourceId;
-
-    QEventLoop*             loop;
-    QNetworkReply*          downloadReply;
-    QNetworkAccessManager*  networkManager;
-
-    QString                 accNumber;  //result
-
-    const static QString          accessionURL;
-    const static QString          swissprotDb;
-    const static QString          emptyResult;
-};
-
 
 class U2CORE_EXPORT LoadDASObjectTask : public Task{
     Q_OBJECT
@@ -186,7 +144,7 @@ public:
     virtual QList<Task*> onSubTaskFinished(Task *subTask);
 
 private:
-    ConvertDASIdTask*       convertDasIdTask;
+    ConvertDasIdTask*       convertDasIdTask;
     LoadDASDocumentTask*    loadDasDocumentTask;
 
     QString                 accessionNumber;

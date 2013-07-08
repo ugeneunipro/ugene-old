@@ -157,6 +157,7 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/tasks/LoadRemoteDocumentTask.h \
            src/tasks/ModifySequenceObjectTask.h \
            src/tasks/MultiTask.h \
+           src/tasks/PicrApiTask.h \
            src/tasks/RemoveAnnotationsTask.h \
            src/tasks/RemoveDocumentTask.h \
            src/tasks/ReverseSequenceTask.h \
@@ -308,6 +309,7 @@ SOURCES += src/cmdline/CMDLineCoreOptions.cpp \
            src/tasks/LoadRemoteDocumentTask.cpp \
            src/tasks/ModifySequenceObjectTask.cpp \
            src/tasks/MultiTask.cpp \
+           src/tasks/PicrApiTask.cpp \
            src/tasks/RemoveAnnotationsTask.cpp \
            src/tasks/RemoveDocumentTask.cpp \
            src/tasks/ReverseSequenceTask.cpp \
