@@ -21,6 +21,8 @@
 
 #include "ConductGOSupport.h"
 
+#include <python/PythonSupport.h>
+
 #include <U2Core/AppContext.h>
 
 namespace U2 {
@@ -45,7 +47,7 @@ void ConductGOSupport::initialize() {
 
     executableFileName = "go_analysis.py";
 
-    toolRunnerProgramm = "python";
+    toolRunnerProgramm = PYTHON_TOOL_NAME;
 
     validMessage = "Conduct GO";
     validationArguments << "--version";

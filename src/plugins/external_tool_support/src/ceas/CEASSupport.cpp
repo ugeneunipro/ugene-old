@@ -21,6 +21,8 @@
 
 #include "CEASSupport.h"
 
+#include <python/PythonSupport.h>
+
 #include <U2Core/AppContext.h>
 #include <U2Core/DataPathRegistry.h>
 
@@ -54,7 +56,7 @@ void CEASSupport::initialize() {
 
     executableFileName = "ceas.py";
 
-    toolRunnerProgramm = "python";
+    toolRunnerProgramm = PYTHON_TOOL_NAME;
 
     validMessage = "package version";
     validationArguments << "--version";

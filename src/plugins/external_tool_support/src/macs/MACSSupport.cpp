@@ -21,6 +21,8 @@
 
 #include "MACSSupport.h"
 
+#include <python/PythonSupport.h>
+
 #include <U2Core/AppContext.h>
 
 namespace U2 {
@@ -49,7 +51,7 @@ void MACSSupport::initialize() {
 
     executableFileName = "macs14.py";
 
-    toolRunnerProgramm = "python";
+    toolRunnerProgramm = PYTHON_TOOL_NAME;
 
     validMessage = "macs14";
     validationArguments << "--version";

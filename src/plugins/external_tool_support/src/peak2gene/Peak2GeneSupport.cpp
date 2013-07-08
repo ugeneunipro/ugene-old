@@ -21,6 +21,8 @@
 
 #include "Peak2GeneSupport.h"
 
+#include <python/PythonSupport.h>
+
 #include <U2Core/AppContext.h>
 #include <U2Core/DataPathRegistry.h>
 
@@ -48,7 +50,7 @@ void Peak2GeneSupport::initialize() {
 
     executableFileName = "peak2gene.py";
 
-    toolRunnerProgramm = "python";
+    toolRunnerProgramm = PYTHON_TOOL_NAME;
 
     validMessage = "peak2gene";
     validationArguments << "--version";

@@ -150,6 +150,12 @@ public:
 #endif
 
             foreach(ExternalTool* curTool, AppContext::getExternalToolRegistry()->getAllEntries()){
+                // UGENE-1781: Remove python external tool search in PATH
+                // It should be fixed without crutches.
+                if (curTool->getName() == PYTHON_TOOL_NAME) {
+                    continue;
+                }
+
                 if(!curTool->getPath().isEmpty()) {
                     continue;
                 }

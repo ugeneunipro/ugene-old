@@ -25,7 +25,7 @@
 #include <U2Core/ExternalToolRegistry.h>
 #include "utils/ExternalToolSupportAction.h"
 
-#define PYTHON_TOOL_NAME "python"
+#define PYTHON_TOOL_NAME "embedded python"
 
 namespace U2 {
 

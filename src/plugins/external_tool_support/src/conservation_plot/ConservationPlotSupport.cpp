@@ -21,6 +21,8 @@
 
 #include "ConservationPlotSupport.h"
 
+#include <python/PythonSupport.h>
+
 #include <U2Core/AppContext.h>
 #include <U2Core/DataPathRegistry.h>
 
@@ -47,7 +49,7 @@ void ConservationPlotSupport::initialize() {
 
     executableFileName = "conservation_plot.py";
 
-    toolRunnerProgramm = "python";
+    toolRunnerProgramm = PYTHON_TOOL_NAME;
 
     validMessage = "conservation_plot.py";
     validationArguments << "--version";

@@ -21,6 +21,8 @@
 
 #include "SeqPosSupport.h"
 
+#include <python/PythonSupport.h>
+
 #include <U2Core/AppContext.h>
 #include <U2Core/DataPathRegistry.h>
 
@@ -47,7 +49,7 @@ void SeqPosSupport::initialize() {
 
     executableFileName = "MDSeqPos.py";
 
-    toolRunnerProgramm = "python";
+    toolRunnerProgramm = PYTHON_TOOL_NAME;
 
     validMessage = "mdseqpos";
     validationArguments << "--version";
