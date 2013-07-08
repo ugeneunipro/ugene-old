@@ -39,7 +39,7 @@ signals:
     void si_checkFailed(QString path);
 
 private:
-    QString tempDirPath;
+    QString commonTempDirPath;
 };
 
 } // namespace

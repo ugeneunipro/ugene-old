@@ -34,15 +34,28 @@ TmpDirChecker::TmpDirChecker(): Task("Checking access rights to the temporary fo
 
 void TmpDirChecker::run()
 {
-    tempDirPath = AppContext::getAppSettings()->getUserAppsSettings()->getUserTemporaryDirPath();
-    if (!checkPath(tempDirPath)) {
+    commonTempDirPath = AppContext::getAppSettings()->getUserAppsSettings()->getUserTemporaryDirPath();
+    QString ugeneTempDirPath = commonTempDirPath + "/ugene_tmp";
+
+    if (!checkPath(commonTempDirPath)) {
         if (!AppContext::isGUIMode()) {
-            QString message = "You do not have permission to write to \"" + tempDirPath +
+            QString message = "You do not have permission to write to \"" + commonTempDirPath +
                 "\" directory. Use --tmp-dir=<path_to_file> to set new temporary directory";
             coreLog.error((message));
         }
         else {
-            emit si_checkFailed(tempDirPath);
+            emit si_checkFailed(commonTempDirPath);
+        }
+    }
+
+    if (!checkPath(ugeneTempDirPath)) {
+        if (!AppContext::isGUIMode()) {
+            QString message = "UGENE hasn't permitions to write to its temporary directory \"" + ugeneTempDirPath +
+                "\". Use --tmp-dir=<path_to_file> to set another temporary directory";
+            coreLog.error((message));
+        }
+        else {
+            emit si_checkFailed(ugeneTempDirPath);
         }
     }
 }
