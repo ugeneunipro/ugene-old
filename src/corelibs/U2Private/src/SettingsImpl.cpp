@@ -80,16 +80,16 @@ SettingsImpl::SettingsImpl(QSettings::Scope scope) {
     } else {
         fileName = findKey(envList, U2_SYSTEM_INI);
     }
-    if (fileName.isEmpty()) {
 #ifdef Q_WS_MAC
         QSettings::Format format = QSettings::NativeFormat;
 #else
         QSettings::Format format = QSettings::IniFormat;
 #endif
+    if (fileName.isEmpty()) {
         settings = new QSettings(format, scope, U2_ORGANIZATION_NAME, U2_PRODUCT_NAME
             , this);
     }  else {
-        settings = new QSettings(fileName, QSettings::IniFormat, this);
+        settings = new QSettings(fileName, format, this);
     }
 }
 
