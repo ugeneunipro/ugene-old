@@ -47,6 +47,7 @@ public:
     QStringList getOutputFilePaths() {return outPaths;}
 
 private:
+    void clearDuplicates(QStringList& raws);
     SNPReportWriterSettings settings;
     QList<U2VariantTrack> tracks;
     U2DbiRef dbiRef;

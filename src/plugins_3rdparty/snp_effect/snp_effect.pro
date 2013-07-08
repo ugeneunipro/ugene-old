@@ -18,7 +18,9 @@ HEADERS +=  src/prot_stability_1d/ProtStability1DWorker.h \
             src/SNPEffectPlugin.h \
             src/SNPReportWriter.h \
             src/SNPReportWriterTask.h \
-            src/SnpRequestKeys.h
+            src/SnpRequestKeys.h \
+            src/SNPEffectTests.h
+            
 
 SOURCES +=  src/prot_stability_1d/ProtStability1DWorker.cpp \
             src/prot_stability_3d/ProtStability3DWorker.cpp \
@@ -36,6 +38,5 @@ SOURCES +=  src/prot_stability_1d/ProtStability1DWorker.cpp \
             src/RequestForSnpTask.cpp \
             src/SNPEffectPlugin.cpp \
             src/SNPReportWriter.cpp \
-            src/SNPReportWriterTask.cpp
-
-RESOURCES += snp_effect.qrc
+            src/SNPReportWriterTask.cpp \
+            src/SNPEffectTests.cpp

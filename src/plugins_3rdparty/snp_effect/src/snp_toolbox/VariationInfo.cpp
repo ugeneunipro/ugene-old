@@ -760,7 +760,7 @@ QStringList VariationInfo::getInGeneTableRaws(){
             curRawData.insert(VariationInfo::Position, QString("%1").arg(variant.startPos + 1));
             curRawData.insert(VariationInfo::Allele, QString("%1/%2").arg(QString::fromLatin1(variant.refData)).arg(QString::fromLatin1(variant.obsData)));
             curRawData.insert(VariationInfo::GeneId, gene.getAltName().isEmpty() ? gene.getName() : gene.getAltName());
-            curRawData.insert(VariationInfo::Clinical_significance, gene.getDisease());
+            curRawData.insert(VariationInfo::Clinical_significance, gene.getDisease().trimmed());
             if (variant.publicId.startsWith("rs")){
                 curRawData.insert(VariationInfo::dbSNPId, variant.publicId);
             }
@@ -821,7 +821,7 @@ QStringList VariationInfo::getOutGeneTableRaws(){
             curRawData.insert(VariationInfo::Position, QString("%1").arg(variant.startPos + 1));
             curRawData.insert(VariationInfo::Allele, QString("%1/%2").arg(QString::fromLatin1(variant.refData)).arg(QString::fromLatin1(variant.obsData)));
             curRawData.insert(VariationInfo::GeneId, gene.getAltName().isEmpty() ? gene.getName() : gene.getAltName());
-            curRawData.insert(VariationInfo::Clinical_significance, gene.getDisease());
+            curRawData.insert(VariationInfo::Clinical_significance, gene.getDisease().trimmed());
             if (variant.publicId.startsWith("rs")){
                 curRawData.insert(VariationInfo::dbSNPId, variant.publicId);
             }
@@ -861,7 +861,43 @@ void VariationInfo::initOrderColumns(){
     if (!columnsOrderInGene.isEmpty()){
         columnsOrderInGene.clear();
     }
-    columnsOrderInGene 
+    
+    columnsOrderInGene = VariationInfo::getInGeneOrder();
+        
+    if (!columnsOrderOutGene.isEmpty()){
+        columnsOrderOutGene.clear();
+    }
+    columnsOrderOutGene = VariationInfo::getOutGeneOrder();
+}
+
+void VariationInfo::addValueToRaw( const QString& val, ReportColumns key, QMap<ReportColumns, QString>& rawData, QList<ReportColumns>& container ){
+    if (container.contains(key)){
+        rawData.insert(key, val);
+    }
+}
+
+void VariationInfo::getDefaultAttributeValue(const U2DataId& varId, QString key, ReportColumns colKey, QMap<ReportColumns, QString>& rawData ){
+    QString value = "";
+    if (attrDbi == NULL){
+        return;
+    }
+
+    U2OpStatusImpl os;
+    U2StringAttribute valAttribute = U2AttributeUtils::findStringAttribute(attrDbi, varId, key, os);
+    CHECK_OP(os, );
+    if(!valAttribute.hasValidId()) {
+        return;
+    }
+    value = valAttribute.value;
+
+    if (!value.isEmpty()){
+        rawData.insert(colKey, value);
+    }
+}
+
+QList<VariationInfo::ReportColumns> VariationInfo::getInGeneOrder(){
+    QList<ReportColumns> res;
+    res 
         << VariationInfo::Chr 
         << VariationInfo::Position 
         << VariationInfo::Allele
@@ -888,10 +924,12 @@ void VariationInfo::initOrderColumns(){
         << VariationInfo::hapmap
         << VariationInfo::gerpScore;
 
-    if (!columnsOrderOutGene.isEmpty()){
-        columnsOrderOutGene.clear();
-    }
-    columnsOrderOutGene 
+    return res;
+}
+
+QList<VariationInfo::ReportColumns> VariationInfo::getOutGeneOrder(){
+    QList<ReportColumns> res;
+    res
         << VariationInfo::Chr 
         << VariationInfo::Position 
         << VariationInfo::Allele
@@ -907,32 +945,7 @@ void VariationInfo::initOrderColumns(){
         << VariationInfo::altall
         << VariationInfo::hapmap
         << VariationInfo::gerpScore;
-
-}
-
-void VariationInfo::addValueToRaw( const QString& val, ReportColumns key, QMap<ReportColumns, QString>& rawData, QList<ReportColumns>& container ){
-    if (container.contains(key)){
-        rawData.insert(key, val);
-    }
-}
-
-void VariationInfo::getDefaultAttributeValue(const U2DataId& varId, QString key, ReportColumns colKey, QMap<ReportColumns, QString>& rawData ){
-    QString value = "";
-    if (attrDbi == NULL){
-        return;
-    }
-
-    U2OpStatusImpl os;
-    U2StringAttribute valAttribute = U2AttributeUtils::findStringAttribute(attrDbi, varId, key, os);
-    CHECK_OP(os, );
-    if(!valAttribute.hasValidId()) {
-        return;
-    }
-    value = valAttribute.value;
-
-    if (!value.isEmpty()){
-        rawData.insert(colKey, value);
-    }
+    return res;
 }
 
 } //namespace

@@ -24,6 +24,8 @@
 
 #include "SNPEffectPlugin.h"
 
+#include "SNPEffectTests.h"
+
 #include "BaseRequestForSnpWorker.h"
 
 #include "snp_toolbox/SNPToolboxWorker.h"
@@ -34,6 +36,12 @@
 #include "snp_chip_tools/SnpChIpToolsWorker.h"
 #include "snp2pdb_site/Snp2PdbSiteWorker.h"
 #include "tata_box_analysis/AnalyzeTataBoxesWorker.h"
+
+#include <U2Core/GAutoDeleteList.h>
+
+#include <U2Test/XMLTestFormat.h>
+#include <U2Test/GTest.h>
+#include <U2Test/GTestFrameworkComponents.h>
 
 namespace U2 {
 
@@ -59,6 +67,22 @@ SNPEffectPlugin::SNPEffectPlugin() : Plugin(tr("SNP Effect Plugin"), tr("Evaluat
     LocalWorkflow::SnpChipToolsWorkerFactory::init();
     LocalWorkflow::RSnpToolsWorkerFactory::init();
     LocalWorkflow::AnalyzeTataBoxesWorkerFactory::init( );
+
+    
+    //tests
+    GTestFormatRegistry* tfr = AppContext::getTestFramework()->getTestFormatRegistry();
+    XMLTestFormat *xmlTestFormat = qobject_cast<XMLTestFormat*>(tfr->findFormat("XML"));
+    assert(xmlTestFormat!=NULL);
+
+    GAutoDeleteList<XMLTestFactory>* l = new GAutoDeleteList<XMLTestFactory>(this);
+    l->qlist = SNPResultTests::createTestFactories();
+
+
+    foreach(XMLTestFactory* f, l->qlist) {
+        bool res = xmlTestFormat->registerTestFactory(f);
+        Q_UNUSED(res);
+        assert(res);
+    }
 }
 
 }//namespace

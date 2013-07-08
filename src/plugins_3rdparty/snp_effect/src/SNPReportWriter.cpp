@@ -177,7 +177,7 @@ void SNPReportWriterFactory::init() {
     QList<Attribute*> attrs;
     {
         Descriptor reportPath(REPORT_PATH,
-            SNPReportWriter::tr("Report path"),
+            SNPReportWriter::tr("In gene report path"),
             SNPReportWriter::tr("Path to save in-gene SNP effects reports."));
 
 

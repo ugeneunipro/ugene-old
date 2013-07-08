@@ -85,7 +85,7 @@ def opt_validate(optparser):
     options.protId = id
     mutList = list(options.mutation)
     mutList[0] = chain
-    options.mutation[0] = "".join(mutList)
+    options.mutation = "".join(mutList)
  
     print
     return options
@@ -131,6 +131,11 @@ class Snp2pdbsite:
             time.sleep(0.1)
         self.parseOutput(content)
     def parseOutput(self, content):
+        print content
+        if len(content) == 0:
+            print "Result is empty"
+            sys.exit(1)
+            
         xmldoc = parseString(content)
         
         itemlist = xmldoc.getElementsByTagName('aa')

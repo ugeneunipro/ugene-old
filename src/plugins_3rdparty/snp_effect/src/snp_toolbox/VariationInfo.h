@@ -15,8 +15,6 @@
 namespace U2 {
 
 /* Class for S3 variation info storage. Contains variation description for each gene*/
-    
-
 class VariationInfo : public QObject{
     Q_OBJECT
 public:
@@ -77,6 +75,9 @@ public:
     bool isIntergenic();
     QString getNearGenes(const QList<Gene>& predefinedGenes = QList<Gene>());
 
+    static QList<ReportColumns> getInGeneOrder();
+    static QList<ReportColumns> getOutGeneOrder();
+
 private:
     U2SequenceDbi* seqDbi;
     U2AttributeDbi* attrDbi;
@@ -109,3 +110,4 @@ private:
 } //namespace
 
 #endif //_S3_VARIATION_INFO_H_
+

@@ -126,6 +126,7 @@ void SNPReportWriterTask::run() {
             }
             varReport.initInfo(varDbi, deEval, true);
             QStringList raws = varReport.getInGeneTableRaws();
+            clearDuplicates(raws);
             foreach(const QString& raw, raws){
                 io->writeBlock(raw.toLatin1());
                 io->writeBlock("\n");
@@ -162,6 +163,7 @@ void SNPReportWriterTask::run() {
             }
             varReport.initInfo(varDbi, deEval, true);
             QStringList raws = varReport.getOutGeneTableRaws();
+            clearDuplicates(raws);
             foreach(const QString& raw, raws){
                 ioReg->writeBlock(raw.toLatin1());
                 ioReg->writeBlock("\n");
@@ -173,4 +175,18 @@ void SNPReportWriterTask::run() {
     stateInfo.setProgress(100);
 }
 
+void SNPReportWriterTask::clearDuplicates( QStringList& raws ){
+    
+    for (int i = 0; i < raws.size()-1;) {
+        const QString& r0 = raws[i];
+        const QString& r1 = raws[i+1];
+        if (r0 != r1){
+            i++;
+            continue;
+        }
+        raws.takeAt(i+1);
+    }
+}
+
 } // U2
+
