@@ -609,14 +609,18 @@ int main(int argc, char **argv)
 
     //3 run QT GUI
     t1.stop();
+
+	QList<Task*> tasks;
     coreLog.info(AppContextImpl::tr("%1-bit version of UGENE started").arg(Version::appArchitecture));
     if(AppContext::getSettings()->getValue(ASK_VESRION_SETTING, true).toBool()) {
-        ts->registerTopLevelTask(new CheckUpdatesTask(true));
+		tasks << new CheckUpdatesTask(true);
     }
 
     TmpDirChecker* tempDirChecker = new TmpDirChecker;
     QObject::connect(tempDirChecker, SIGNAL(si_checkFailed(QString)), mw, SLOT(sl_tempDirPathCheckFailed(QString)));
-    ts->registerTopLevelTask(tempDirChecker);
+	tasks << tempDirChecker;
+
+	ts->registerTopLevelTask(new SequentialMultiTask(QObject::tr("Startup checks"), tasks, TaskFlag_NoRun));
 
     MemoryLocker l(160); // 100Mb on UGENE start, ~60Mb SQLite cache
     int rc = app.exec();
