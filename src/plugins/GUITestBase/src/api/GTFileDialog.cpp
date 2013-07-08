@@ -46,17 +46,15 @@ namespace U2 {
 GTFileDialogUtils::GTFileDialogUtils(U2OpStatus &_os, const QString &_path, const QString &_fileName,
                                      const QString &_filters, Button _button, GTGlobals::UseMethod _method) :
     Filler(_os, "QFileDialog"),
-//    path(_path),
+    path(_path),
     fileName(_fileName),
     filters(_filters),
     button(_button),
     method(_method),
     isForGetSize(false)
-{
-    path = QDir::cleanPath(QDir::currentPath() + "/" + _path);
-    if (path.at(path.count() - 1) != '/') {
-        path += '/';
-    }
+
+{   if (path.at(path.count() - 1) != '/')
+         path += '/';
 }
 
 GTFileDialogUtils::GTFileDialogUtils(U2OpStatus &_os, const QString &_path, const QString &_fileName,
@@ -187,8 +185,9 @@ void GTFileDialogUtils::setPath()
 {
     QLineEdit* lineEdit = fileDialog->findChild<QLineEdit*>(FILE_NAME_LINE_EDIT);
     GT_CHECK(lineEdit != 0, QString("line edit \"1\" not found").arg(FILE_NAME_LINE_EDIT));
+GTLineEdit::setText(os,lineEdit,path);
 
-    QPoint linePos;
+    /*QPoint linePos;
 
     switch(method) {
     case GTGlobals::UseMouse:
@@ -214,7 +213,7 @@ void GTFileDialogUtils::setPath()
         }
         GTGlobals::sleep(100);
     }
-
+*/
     GT_CHECK(lineEdit->text() == path, "Can't open file \"" + lineEdit->text() + "\"");
 }
 #undef GT_METHOD_NAME

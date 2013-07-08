@@ -62,7 +62,7 @@ GUI_TEST_CLASS_DEFINITION(test_0003) {
     mainWindow->showMaximized();
 
 #ifdef Q_OS_MAC
-    mainWindow->setWindowFlags(mainWindow->windowFlags() | Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint);
+    mainWindow->setWindowFlags(mainWindow->windowFlags() | Qt::CustomizeWindowHint);
     mainWindow->show();
     mainWindow->setFocus();
 #endif

@@ -5,7 +5,7 @@ BUILD_DIR=./debug_bundle
 DEBUG_DIR=../../src/_debug
 TARGET_APP_DIR="$BUILD_DIR/${PRODUCT_NAME}.app/"
 TARGET_EXE_DIR="${TARGET_APP_DIR}/Contents/MacOS"
-PATH_TO_QT="/usr/local/Trolltech/Qt-4.7.4/lib"
+PATH_TO_QT="/usr/local/Trolltech/Qt-4.8.4/lib"
 
 source bundle_common_debug.sh
 
@@ -118,6 +118,7 @@ if [ "$1" == "-test" ]
       add-plugin api_tests
       add-plugin CoreTests
       add-plugin test_runner
+      add-plugin GUITestBase
 fi
 
 #echo

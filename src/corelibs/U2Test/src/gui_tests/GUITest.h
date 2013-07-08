@@ -47,6 +47,7 @@ public:
     bool isLong(){return longTest;}
     void setName(const QString &n) { name = n; }
 
+    static const QString getTrunkDir();
     static const QString testDir;
     static const QString dataDir;
 

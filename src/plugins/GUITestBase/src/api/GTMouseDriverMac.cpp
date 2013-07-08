@@ -87,7 +87,9 @@ void GTMouseDriver::release(U2::U2OpStatus &os, Qt::MouseButton button)
 
 #define GT_METHOD_NAME "doubleClick"
 void GTMouseDriver::doubleClick(U2OpStatus &os)
-{
+{   //**********TODO: find out why click(os) is needed here*********
+                                click(os);
+    //**************************************************************
     QPoint mousePos = QCursor::pos();
     CGEventType eventTypeMouseDown = kCGEventLeftMouseDown ;
     CGEventRef eventPress = CGEventCreateMouseEvent(NULL, eventTypeMouseDown, CGPointMake(mousePos.x(), mousePos.y()), 0 /*ignored*/);
@@ -106,6 +108,7 @@ void GTMouseDriver::doubleClick(U2OpStatus &os)
     GTGlobals::sleep(0);
 
     GTGlobals::sleep(100);
+
     CFRelease(eventPress);
     CFRelease(eventRelease);
 }
