@@ -46,14 +46,14 @@ namespace U2 {
 GTFileDialogUtils::GTFileDialogUtils(U2OpStatus &_os, const QString &_path, const QString &_fileName,
                                      const QString &_filters, Button _button, GTGlobals::UseMethod _method) :
     Filler(_os, "QFileDialog"),
-    path(_path),
     fileName(_fileName),
     filters(_filters),
     button(_button),
     method(_method),
     isForGetSize(false)
 
-{   if (path.at(path.count() - 1) != '/')
+{   path = QDir::cleanPath(QDir::currentPath() + "/" + _path);
+    if (path.at(path.count() - 1) != '/')
          path += '/';
 }
 
