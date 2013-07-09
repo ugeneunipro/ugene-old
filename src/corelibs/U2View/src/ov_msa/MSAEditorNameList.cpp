@@ -685,8 +685,12 @@ void MSAEditorNameList::drawSequenceItem(QPainter& p, int s, const QString& , bo
             p.fillRect(textRect, groupColors[seqName]);
         }
     }
-    if(seqName == ui->getEditor()->getRefSeqName())
-        drawRefSequence(p, textRect);
+    if(seqName == ui->getEditor()->getRefSeqName()){
+        qint64 refseqnumber = getRefSeqPos();
+        if(refseqnumber == s){
+            drawRefSequence(p, textRect);
+        }
+    }
     p.drawText(textRect, Qt::AlignVCenter | Qt::AlignLeft, itemText);
     if (labels) {
         labels->setObjectName(labels->objectName() + "|" + itemText);
