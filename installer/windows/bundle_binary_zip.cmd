@@ -44,6 +44,7 @@ copy %RELEASE_DIR%\U2Gui.dll  %OUTPUT_DIR%
 copy %RELEASE_DIR%\U2Lang.dll  %OUTPUT_DIR%
 copy %RELEASE_DIR%\U2Private.dll  %OUTPUT_DIR%
 copy %RELEASE_DIR%\U2Remote.dll  %OUTPUT_DIR%
+copy %RELEASE_DIR%\U2Script.dll  %OUTPUT_DIR%
 copy %RELEASE_DIR%\U2Test.dll  %OUTPUT_DIR%
 copy %RELEASE_DIR%\U2View.dll  %OUTPUT_DIR%
 copy %RELEASE_DIR%\ugenedb.map %OUTPUT_DIR%
@@ -55,6 +56,7 @@ copy %RELEASE_DIR%\U2Gui.map  %OUTPUT_DIR%
 copy %RELEASE_DIR%\U2Lang.map  %OUTPUT_DIR%
 copy %RELEASE_DIR%\U2Private.map  %OUTPUT_DIR%
 copy %RELEASE_DIR%\U2Remote.map  %OUTPUT_DIR%
+copy %RELEASE_DIR%\U2Script.map  %OUTPUT_DIR%
 copy %RELEASE_DIR%\U2Test.map  %OUTPUT_DIR%
 copy %RELEASE_DIR%\U2View.map  %OUTPUT_DIR%
 
