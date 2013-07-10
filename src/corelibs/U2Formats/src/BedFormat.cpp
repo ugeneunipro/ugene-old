@@ -264,6 +264,11 @@ bool validateBlocks(const QString& blockCountStr, const QString& blockSizesStr, 
 }
 
 
+#define CHECK_FIELD(INDEX) \
+    if (fields.size()<INDEX || INDEX<0) { \
+        status.incorrectNumberOfFields = true; \
+        return parsedData; \
+    }
 
 BedLineData BedFormat::parseAndValidateLine(const QString& line, int numOfFields, BEDLineValidateFlags& status) const
 {
@@ -290,6 +295,8 @@ BedLineData BedFormat::parseAndValidateLine(const QString& line, int numOfFields
     // "start" can be zero, "end" is not included into the region
     bool startIsInt;
     bool endIsInt;
+    CHECK_FIELD(BED_CHROM_START_INDEX);
+    CHECK_FIELD(BED_CHROM_END_INDEX);
     qint64 start = fields[BED_CHROM_START_INDEX].toLongLong(&startIsInt);
     qint64 end = fields[BED_CHROM_END_INDEX].toLongLong(&endIsInt);
     if (!startIsInt || !endIsInt || (start < 0) || (start >= end)) {
@@ -298,16 +305,19 @@ BedLineData BedFormat::parseAndValidateLine(const QString& line, int numOfFields
     }
 
     // Fill in the data and continue validation even if a value is incorrect
+    CHECK_FIELD(BED_CHROM_NAME_INDEX);
     parsedData.seqName = fields[BED_CHROM_NAME_INDEX];
     parsedData.region = U2Region(start, end - start);
 
     // Annotation name
     if (numOfFields > BED_ANNOT_NAME_INDEX) {
+        CHECK_FIELD(BED_ANNOT_NAME_INDEX);
         parsedData.additionalFields[ANNOT_QUALIFIER_NAME] = fields[BED_ANNOT_NAME_INDEX];
     }
 
     // Score
     if (numOfFields > BED_SCORE_INDEX) {
+        CHECK_FIELD(BED_SCORE_INDEX);
         QString scoreStr = fields[BED_SCORE_INDEX];
         parsedData.additionalFields[SCORE_QUALIFIER_NAME] = scoreStr;
 
@@ -330,6 +340,7 @@ BedLineData BedFormat::parseAndValidateLine(const QString& line, int numOfFields
 
     // Strand (either '+' or '-')
     if (numOfFields > BED_STRAND_INDEX) {
+        CHECK_FIELD(BED_STRAND_INDEX);
         QString strandStr = fields[BED_STRAND_INDEX];
         parsedData.additionalFields[STRAND_QUALIFIER_NAME] = strandStr;
 
@@ -341,6 +352,7 @@ BedLineData BedFormat::parseAndValidateLine(const QString& line, int numOfFields
 
     // Thick coordinates
     if (numOfFields > BED_THICK_START_INDEX) {
+        CHECK_FIELD(BED_THICK_START_INDEX);
         QString thickStartStr = fields[BED_THICK_START_INDEX];
         QString thickEndStr;
 
@@ -349,6 +361,7 @@ BedLineData BedFormat::parseAndValidateLine(const QString& line, int numOfFields
             status.incorrectThickCoordinates = true;
         }
         else {
+            CHECK_FIELD(BED_THICK_END_INDEX);
             thickEndStr = fields[BED_THICK_END_INDEX];
         }
 
@@ -362,6 +375,7 @@ BedLineData BedFormat::parseAndValidateLine(const QString& line, int numOfFields
 
     // Annotation color
     if (numOfFields > BED_ITEM_RGB_INDEX) {
+        CHECK_FIELD(BED_ITEM_RGB_INDEX);
         QString itemRgbStr = fields[BED_ITEM_RGB_INDEX];
         parsedData.additionalFields[ITEM_RGB_QUALIFIER_NAME] = itemRgbStr;
 
@@ -372,6 +386,7 @@ BedLineData BedFormat::parseAndValidateLine(const QString& line, int numOfFields
 
     // Blocks (i.e. exons) parameters
     if (numOfFields > BED_BLOCK_COUNT_INDEX) {
+        CHECK_FIELD(BED_BLOCK_COUNT_INDEX);
         QString blockCountStr = fields[BED_BLOCK_COUNT_INDEX];
         QString blockSizesStr;
         QString blockStartsStr;
@@ -381,12 +396,14 @@ BedLineData BedFormat::parseAndValidateLine(const QString& line, int numOfFields
             status.incorrectBlocks = true;
         }
         else {
+            CHECK_FIELD(BED_BLOCK_SIZES_INDEX);
             blockSizesStr = fields[BED_BLOCK_SIZES_INDEX];
 
             if (numOfFields <= BED_BLOCK_STARTS_INDEX) {
                 status.incorrectBlocks = true;
             }
             else {
+                CHECK_FIELD(BED_BLOCK_STARTS_INDEX);
                 blockStartsStr = fields[BED_BLOCK_STARTS_INDEX];
             }
         }
