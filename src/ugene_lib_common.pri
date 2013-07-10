@@ -7,6 +7,7 @@ isEmpty(UGENE_GLOBALS_DEFINED) {
 
 TEMPLATE = lib
 CONFIG +=qt dll thread debug_and_release
+macx : CONFIG -=plugin
 DEFINES+= QT_DLL
 QT += script
 INCLUDEPATH += src _tmp ../../include
