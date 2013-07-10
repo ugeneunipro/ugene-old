@@ -72,6 +72,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001){
 
 
     GTMenu::clickMenuItem(os, menu, QStringList() << "Workflow Designer");
+
     GTUtilsWorkflowDesigner::addSample(os,"tuxedo tools");
 
     GTKeyboardDriver::keyClick(os, 'r' ,GTKeyboardDriver::key["ctrl"]);
@@ -83,6 +84,8 @@ GUI_TEST_CLASS_DEFINITION(test_0001){
     }
 
     bool eq;
+//*****************************************
+    //tophat1
     eq = GTFile::equals(os,testDir + "_common_data/NIAID_pipelines/tuxedo_pipeline/data_to_compare_with/test_0001/tophat_out/junctions.bed",
                              testDir + "_common_data/scenarios/sandbox/tophat_out/junctions.bed");
     CHECK_SET_ERR(eq,"junctions.bed files are not equal");
@@ -93,16 +96,46 @@ GUI_TEST_CLASS_DEFINITION(test_0001){
                              testDir + "_common_data/scenarios/sandbox/tophat_out/insertions.bed");
     CHECK_SET_ERR(eq,"insertions.bed files are not equal");
 
-
+    //tophat2
     eq = GTFile::equals(os,testDir + "_common_data/NIAID_pipelines/tuxedo_pipeline/data_to_compare_with/test_0002/tophat_out/junctions.bed",
                              testDir + "_common_data/scenarios/sandbox/tophat_out_1/junctions.bed");
-    CHECK_SET_ERR(eq,"junctions.bed files are not equal");
+    CHECK_SET_ERR(eq,"junctions.bed2 files are not equal");
     eq = GTFile::equals(os,testDir + "_common_data/NIAID_pipelines/tuxedo_pipeline/data_to_compare_with/test_0002/tophat_out/deletions.bed",
                              testDir + "_common_data/scenarios/sandbox/tophat_out_1/deletions.bed");
-    CHECK_SET_ERR(eq,"deletions.bed files are not equal");
+    CHECK_SET_ERR(eq,"deletions.bed2 files are not equal");
     eq = GTFile::equals(os,testDir + "_common_data/NIAID_pipelines/tuxedo_pipeline/data_to_compare_with/test_0002/tophat_out/insertions.bed",
                              testDir + "_common_data/scenarios/sandbox/tophat_out_1/insertions.bed");
-    CHECK_SET_ERR(eq,"insertions.bed files are not equal");
+    CHECK_SET_ERR(eq,"insertions.bed2 files are not equal");
+//*****************************************
+    //cufflinks1
+    eq = GTFile::equals(os,testDir + "_common_data/NIAID_pipelines/tuxedo_pipeline/data_to_compare_with/test_0001/cufflinks_out/skipped.gtf",
+                             testDir + "_common_data/scenarios/sandbox/cufflinks_out/skipped.gtf");
+    CHECK_SET_ERR(eq,"skipped.gtf files are not equal");
+    eq = GTFile::equals(os,testDir + "_common_data/NIAID_pipelines/tuxedo_pipeline/data_to_compare_with/test_0001/cufflinks_out/genes.fpkm_tracking",
+                             testDir + "_common_data/scenarios/sandbox/cufflinks_out/genes.fpkm_tracking");
+    CHECK_SET_ERR(eq,"genes.fpkm_tracking files are not equal");
+    eq = GTFile::equals(os,testDir + "_common_data/NIAID_pipelines/tuxedo_pipeline/data_to_compare_with/test_0001/cufflinks_out/isoforms.fpkm_tracking",
+                             testDir + "_common_data/scenarios/sandbox/cufflinks_out/isoforms.fpkm_tracking");
+    CHECK_SET_ERR(eq,"isoforms.fpkm_tracking files are not equal");
+    eq = GTFile::equals(os,testDir + "_common_data/NIAID_pipelines/tuxedo_pipeline/data_to_compare_with/test_0001/cufflinks_out/transcripts.gtf",
+                             testDir + "_common_data/scenarios/sandbox/cufflinks_out/transcripts.gtf");
+    CHECK_SET_ERR(eq,"transcripts.gtf files are not equal");
+
+    //cufflinks2
+    eq = GTFile::equals(os,testDir + "_common_data/NIAID_pipelines/tuxedo_pipeline/data_to_compare_with/test_0002/cufflinks_out_1/skipped.gtf",
+                             testDir + "_common_data/scenarios/sandbox/cufflinks_out_1/skipped.gtf");
+    CHECK_SET_ERR(eq,"skipped.gtf2 files are not equal");
+    eq = GTFile::equals(os,testDir + "_common_data/NIAID_pipelines/tuxedo_pipeline/data_to_compare_with/test_0002/cufflinks_out_1/genes.fpkm_tracking",
+                             testDir + "_common_data/scenarios/sandbox/cufflinks_out_1/genes.fpkm_tracking");
+    CHECK_SET_ERR(eq,"genes.fpkm_tracking2 files are not equal");
+    eq = GTFile::equals(os,testDir + "_common_data/NIAID_pipelines/tuxedo_pipeline/data_to_compare_with/test_0002/cufflinks_out_1/isoforms.fpkm_tracking",
+                             testDir + "_common_data/scenarios/sandbox/cufflinks_out_1/isoforms.fpkm_tracking");
+    CHECK_SET_ERR(eq,"isoforms.fpkm_tracking2 files are not equal");
+    eq = GTFile::equals(os,testDir + "_common_data/NIAID_pipelines/tuxedo_pipeline/data_to_compare_with/test_0002/cufflinks_out_1/transcripts.gtf",
+                             testDir + "_common_data/scenarios/sandbox/cufflinks_out_1/transcripts.gtf");
+    CHECK_SET_ERR(eq,"transcripts.gtf2 files are not equal");
+//*****************************************
+
 }
 
 } // namespace GUITest_common_scenarios_annotations_edit

@@ -45,6 +45,7 @@
 #include "runnables/ugene/corelibs/U2Gui/AlignShortReadsDialogFiller.h"
 #include "runnables/qt/MessageBoxFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/util/ProjectTreeItemSelectorDialogBaseFiller.h"
+#include "runnables/ugene/corelibs/U2Gui/DownloadRemoteFileDialogFiller.h"
 #include "runnables/ugene/ugeneui/SelectDocumentFormatDialogFiller.h"
 #include "runnables/ugene/ugeneui/SequenceReadingModeSelectorDialogFiller.h"
 #include "runnables/ugene/plugins_3rdparty/umuscle/MuscleDialogFiller.h"
@@ -1013,17 +1014,34 @@ GUI_TEST_CLASS_DEFINITION(test_1527) {
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1527_1) {
-    //1. Open COI2.aln as an alignment
-    GTFileDialog::openFile(os, dataDir+"samples/CLUSTALW/", "COI.aln");
-    GTGlobals::sleep();
+//1. Open COI2.aln as an alignment
+GTFileDialog::openFile(os, dataDir+"samples/CLUSTALW/", "COI.aln");
+GTGlobals::sleep();
 
-    //2. {MSA Editor context menu} -> Align -> Align sequences to profile with MUSCLE
-    //3. Select empty "test.aln" in the profile browsing dialog.
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_ALIGN << "Align sequences to profile with MUSCLE", GTGlobals::UseMouse));
-    GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, testDir + "_common_data/regression/1527/", "test.aln"));
-    GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
+//2. {MSA Editor context menu} -> Align -> Align sequences to profile with MUSCLE
+//3. Select empty "test.aln" in the profile browsing dialog.
+GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_ALIGN << "Align sequences to profile with MUSCLE", GTGlobals::UseMouse));
+GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, testDir + "_common_data/regression/1527/", "test.aln"));
+GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1720){
+//1. Use menu {File->Access remote database...}
+    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE),ACTION_PROJECTSUPPORT__ACCESS_REMOTE_DB, GTGlobals::UseKey);
+    GTUtilsDialog::waitForDialog(os, new RemoteDBDialogFiller(os, "D11266", 0));
+    GTLogTracer l;
+    GTGlobals::sleep(3000);
+//2. Fill field "Resource ID" with value D11266. Click "OK"
+
+//3. Use menu {File->Access remote database...}
+    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE),ACTION_PROJECTSUPPORT__ACCESS_REMOTE_DB, GTGlobals::UseKey);
+    GTUtilsDialog::waitForDialog(os, new RemoteDBDialogFiller(os, "D11266", 0));
+    GTGlobals::sleep(3000);
+//4. Fill field "Resource ID" with value D11266. Click "OK"
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "D11266.gb"));
+    GTUtilsLog::check(os,l);
+//Expected state: project view with document "D11266.gb", no error messages in log appear
+}
 } // GUITest_regression_scenarios namespace
 
 } // U2 namespace
