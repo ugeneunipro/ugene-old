@@ -56,9 +56,11 @@ public:
     QString path;
     QString externalToolCfgDir;
     QString includedElementsDir;
+    QString workflowOutputDir;
     QColor color;
     bool showEmptyPorts;
     bool runSchemaInSeparateProcess;
+    bool useWorkflowOutputDir;
 };
 
 
@@ -77,6 +79,7 @@ private slots:
     void sl_getDirectory();
     void sl_getExternalToolCfgDir();
     void sl_getIncludedElementsDir();
+    void sl_getWorkflowOutputDir();
     void sl_getColor();
 };
 

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>487</width>
-    <height>497</height>
+    <height>508</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -119,6 +119,37 @@
      </property>
      <layout class="QVBoxLayout" name="verticalLayout">
       <item>
+       <widget class="QLabel" name="label_7">
+        <property name="text">
+         <string>Use directory for output files</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_7">
+        <item>
+         <widget class="QCheckBox" name="workflowOutputBox">
+          <property name="text">
+           <string/>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="workflowOutputEdit"/>
+        </item>
+        <item>
+         <widget class="QToolButton" name="workflowOutputButton">
+          <property name="text">
+           <string notr="true">...</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
        <widget class="QLabel" name="label_4">
         <property name="text">
          <string>Directory for custom elements with scripts</string>
@@ -207,5 +238,38 @@
   </layout>
  </widget>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>workflowOutputBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>workflowOutputEdit</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>27</x>
+     <y>304</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>67</x>
+     <y>305</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>workflowOutputBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>workflowOutputButton</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>30</x>
+     <y>308</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>452</x>
+     <y>306</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

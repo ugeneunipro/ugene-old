@@ -85,7 +85,12 @@ public:
 
     static void setIncludedElementsDirectory(const QString &newDir);
     static const QString getIncludedElementsDirectory();
-    
+
+    static bool isUseWorkflowOutputDirectory();
+    static void  setUseWorkflowOutputDirectory(bool value);
+    static void setWorkflowOutputDirectory(const QString &newDir);
+    static const QString getWorkflowOutputDirectory();
+
     static Watcher * const watcher;
 };
 

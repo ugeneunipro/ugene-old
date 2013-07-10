@@ -51,6 +51,8 @@ AppSettingsGUIPageState* WorkflowSettingsPageController::getSavedState() {
     state->runSchemaInSeparateProcess = WorkflowSettings::runInSeparateProcess();
     state->externalToolCfgDir = WorkflowSettings::getExternalToolDirectory();
     state->includedElementsDir = WorkflowSettings::getIncludedElementsDirectory();
+    state->useWorkflowOutputDir = WorkflowSettings::isUseWorkflowOutputDirectory();
+    state->workflowOutputDir = WorkflowSettings::getWorkflowOutputDirectory();
     return state;
 }
 
@@ -68,6 +70,8 @@ void WorkflowSettingsPageController::saveState(AppSettingsGUIPageState* s) {
     WorkflowSettings::setRunInSeparateProcess(state->runSchemaInSeparateProcess);
     WorkflowSettings::setExternalToolDirectory(state->externalToolCfgDir);
     WorkflowSettings::setIncludedElementsDirectory(state->includedElementsDir);
+    WorkflowSettings::setUseWorkflowOutputDirectory(state->useWorkflowOutputDir);
+    WorkflowSettings::setWorkflowOutputDirectory(state->workflowOutputDir);
 }
 
 AppSettingsGUIPageWidget* WorkflowSettingsPageController::createWidget(AppSettingsGUIPageState* state) {
@@ -83,6 +87,7 @@ WorkflowSettingsPageWidget::WorkflowSettingsPageWidget(WorkflowSettingsPageContr
     connect(dirButton, SIGNAL(clicked()), SLOT(sl_getDirectory()));
     connect(extToolDirButton, SIGNAL(clicked()), SLOT(sl_getExternalToolCfgDir()));
     connect(includedDirButton, SIGNAL(clicked()), SLOT(sl_getIncludedElementsDir()));
+    connect(workflowOutputButton, SIGNAL(clicked()), SLOT(sl_getWorkflowOutputDir()));
     colorWidget->setMinimumHeight(label->height());
     colorWidget->installEventFilter(this);
 //    runInSeparateProcessBox->setVisible(Version::appVersion().isDevVersion);
@@ -140,6 +145,8 @@ void WorkflowSettingsPageWidget::setState(AppSettingsGUIPageState* s) {
     runInSeparateProcessBox->setChecked(state->runSchemaInSeparateProcess);
     extToolDirEdit->setText(state->externalToolCfgDir);
     includedlDirEdit->setText(state->includedElementsDir);
+    workflowOutputEdit->setText(state->workflowOutputDir);
+    workflowOutputBox->setChecked(state->useWorkflowOutputDir);
 }
 
 AppSettingsGUIPageState* WorkflowSettingsPageWidget::getState(QString& ) const {
@@ -156,33 +163,33 @@ AppSettingsGUIPageState* WorkflowSettingsPageWidget::getState(QString& ) const {
     state->runSchemaInSeparateProcess = runInSeparateProcessBox->isChecked();
     state->externalToolCfgDir = extToolDirEdit->text();
     state->includedElementsDir = includedlDirEdit->text();
+    state->useWorkflowOutputDir = workflowOutputBox->isChecked();
+    state->workflowOutputDir = workflowOutputEdit->text();
     return state;
 }
 
-void WorkflowSettingsPageWidget::sl_getExternalToolCfgDir() {
-    QString url = WorkflowSettings::getExternalToolDirectory();
-
-    QFileDialog dialog(this);
+static void chooseDir(const QString &current, QLineEdit *edit,  QWidget *parent) {
+    QFileDialog dialog(parent);
     dialog.setFileMode(QFileDialog::Directory);
     dialog.setViewMode(QFileDialog::List);
-    dialog.setDirectory(url);
-    if(dialog.exec() == QDialog::Accepted) {
+    dialog.setDirectory(current);
+    bool chosen = (dialog.exec() == QDialog::Accepted);
+    if(chosen) {
         QString dir = dialog.selectedFiles().first();
-        extToolDirEdit->setText(dir + "/");
+        edit->setText(dir + "/");
     }
 }
 
-void WorkflowSettingsPageWidget::sl_getIncludedElementsDir() {
-    QString url = WorkflowSettings::getIncludedElementsDirectory();
+void WorkflowSettingsPageWidget::sl_getExternalToolCfgDir() {
+    chooseDir(WorkflowSettings::getExternalToolDirectory(), extToolDirEdit, this);
+}
 
-    QFileDialog dialog(this);
-    dialog.setFileMode(QFileDialog::Directory);
-    dialog.setViewMode(QFileDialog::List);
-    dialog.setDirectory(url);
-    if(dialog.exec() == QDialog::Accepted) {
-        QString dir = dialog.selectedFiles().first();
-        includedlDirEdit->setText(dir + "/");
-    }
+void WorkflowSettingsPageWidget::sl_getIncludedElementsDir() {
+    chooseDir(WorkflowSettings::getIncludedElementsDirectory(), includedlDirEdit, this);
+}
+
+void WorkflowSettingsPageWidget::sl_getWorkflowOutputDir() {
+    chooseDir(WorkflowSettings::getWorkflowOutputDirectory(), workflowOutputEdit, this);
 }
 
 } //namespace

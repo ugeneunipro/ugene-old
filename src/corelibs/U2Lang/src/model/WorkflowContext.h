@@ -63,6 +63,11 @@ public:
     const WorkflowProcess &getWorkflowProcess() const;
     WorkflowProcess &getWorkflowProcess();
 
+    // working directory
+    bool hasWorkingDir() const;
+    QString workingDir() const;
+    QString absolutePath(const QString &relative) const;
+
 private:
     WorkflowMonitor *monitor;
     DbiDataStorage *storage;
@@ -71,6 +76,29 @@ private:
     QMutex addFileMutex;
     QStringList externalProcessFiles;
     WorkflowProcess process;
+
+private:
+    bool initWorkingDir();
+
+private:
+    QString _workingDir;
+    bool _hasWorkingDir;
+};
+
+class U2LANG_EXPORT WorkflowContextCMDLine {
+public:
+    static const QString DEFAULT_OUTPUT_DIR;
+    static const QString OUTPUT_DIR;
+    static const QString ROLL_OUTPUT;
+
+    static QString getOutputDirectory(U2OpStatus &os);
+    static QString createSubDirectoryForRun(const QString &root, U2OpStatus &os);
+    static bool useWorkingDir();
+    static bool useSubDirs();
+
+private:
+    static bool useSettings();
+
 };
 
 } // Workflow

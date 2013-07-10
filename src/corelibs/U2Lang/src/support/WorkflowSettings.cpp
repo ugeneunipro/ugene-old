@@ -49,6 +49,8 @@ namespace U2 {
 #define RUN_IN_SEPARATE_PROC        SETTINGS + "runInSeparateProcess"
 #define EXTERNAL_TOOL_WORKER_PATH   SETTINGS + "externalToolWorkerPath"
 #define INCLUDED_WORKER_PATH        SETTINGS + "includedWorkerPath"
+#define USE_WORKFLOW_OUTPUT_PATH    SETTINGS + "useWorkflowOutputPath"
+#define WORKFLOW_OUTPUT_PATH        SETTINGS + "workflowOutputPath"
 
 Watcher* const WorkflowSettings::watcher = new Watcher;
 
@@ -146,6 +148,30 @@ void WorkflowSettings::setUserDirectory(const QString &newDir) {
             QFile::copy(fileInfo.filePath(), newFileUrl);
         }
     }
+}
+
+bool WorkflowSettings::isUseWorkflowOutputDirectory() {
+    Settings *s = AppContext::getSettings();
+    return s->getValue(USE_WORKFLOW_OUTPUT_PATH, true, true).toBool();
+}
+
+void  WorkflowSettings::setUseWorkflowOutputDirectory(bool value) {
+    Settings *s = AppContext::getSettings();
+    s->setValue(USE_WORKFLOW_OUTPUT_PATH, value, true);
+}
+
+void WorkflowSettings::setWorkflowOutputDirectory(const QString &newDir) {
+    Settings *s = AppContext::getSettings();
+    s->setValue(WORKFLOW_OUTPUT_PATH, newDir, true);
+}
+
+const QString WorkflowSettings::getWorkflowOutputDirectory() {
+    Settings *s = AppContext::getSettings();
+    GUrl url(s->fileName());
+    QString defaultPath = url.dirPath();
+    defaultPath += "/WorkflowOutput/";
+    QString path = s->getValue(WORKFLOW_OUTPUT_PATH, defaultPath, true).toString();
+    return path;
 }
 
 const QString WorkflowSettings::getExternalToolDirectory() {

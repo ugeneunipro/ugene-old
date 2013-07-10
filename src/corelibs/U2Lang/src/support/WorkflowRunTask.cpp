@@ -398,8 +398,9 @@ Task::ReportResult WorkflowIterationRunTask::report() {
         LocalWorkflow::BaseWorker *bw = a->castPeer<LocalWorkflow::BaseWorker>();
         QStringList urls = bw->getOutputFiles();
         foreach (const QString &url, urls) {
-            if (isValidFile(url, startTimeSec)) {
-                context->getMonitor()->addOutputFile(url, a->getId());
+            QString absUrl = context->absolutePath(url);
+            if (isValidFile(absUrl, startTimeSec)) {
+                context->getMonitor()->addOutputFile(absUrl, a->getId());
             }
         }
     }
@@ -615,7 +616,9 @@ QList<Task*> WorkflowIterationRunInProcessTask::onSubTaskFinished(Task* subTask)
         return res;
     }
     if(saveSchemaTask == subTask) {
-        monitor = new RunCmdlineWorkflowTask(tempFile.fileName(), wfMonitor);
+        RunCmdlineWorkflowTaskConfig c(tempFile.fileName());
+        c.args << ("--" + WorkflowContextCMDLine::DEFAULT_OUTPUT_DIR);
+        monitor = new RunCmdlineWorkflowTask(c, wfMonitor);
         connect(monitor, SIGNAL(si_logRead()), SIGNAL(si_updateProducers()));
         monitor->setSubtaskProgressWeight(1);
         res << monitor;

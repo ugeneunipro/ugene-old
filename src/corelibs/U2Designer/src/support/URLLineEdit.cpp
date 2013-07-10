@@ -84,12 +84,13 @@ public:
     }
 
     virtual QString finalyze(const QString &editorText, const QString &suggestion) {
-        QFileInfo f(editorText);
-        QString absPath = f.absoluteDir().absolutePath();
-        if(!absPath.endsWith("/")){
-            absPath.append("/");
-        }
-        return absPath + suggestion;
+        QString path = editorText;
+        path.replace("\\", "/");
+
+        int slashPos = path.lastIndexOf("/");
+        QString dirPath = path.left(slashPos + 1);
+
+        return dirPath + suggestion;
     }
 
 private:

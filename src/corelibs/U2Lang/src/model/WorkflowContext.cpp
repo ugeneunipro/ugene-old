@@ -24,6 +24,7 @@
 
 #include <U2Core/AppContext.h>
 #include <U2Core/AppFileStorage.h>
+#include <U2Core/CMDLineRegistry.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
 
@@ -33,12 +34,16 @@
 #include <U2Lang/GrouperOutSlot.h>
 #include <U2Lang/IntegralBus.h>
 #include <U2Lang/WorkflowMonitor.h>
+#include <U2Lang/WorkflowSettings.h>
 
 #include "WorkflowContext.h"
 
 namespace U2 {
-
 namespace Workflow {
+
+const QString WorkflowContextCMDLine::DEFAULT_OUTPUT_DIR("default-output-dir");
+const QString WorkflowContextCMDLine::OUTPUT_DIR("output-dir");
+const QString WorkflowContextCMDLine::ROLL_OUTPUT("roll-output");
 
 static QString getWorkflowId(WorkflowContext *ctx) {
     qint64 pid = QApplication::applicationPid();
@@ -83,6 +88,7 @@ WorkflowContext::~WorkflowContext() {
 
 bool WorkflowContext::init() {
     storage = new DbiDataStorage();
+    CHECK(initWorkingDir(), false);
     return storage->init();
 }
 
@@ -125,12 +131,130 @@ DataTypePtr WorkflowContext::getOutSlotType(const QString &slotStr) {
     return DataTypePtr();
 }
 
-const WorkflowProcess &WorkflowContext::getWorkflowProcess() const {
+const WorkflowProcess & WorkflowContext::getWorkflowProcess() const {
     return process;
 }
 
-WorkflowProcess &WorkflowContext::getWorkflowProcess() {
+WorkflowProcess & WorkflowContext::getWorkflowProcess() {
     return process;
+}
+
+bool WorkflowContext::hasWorkingDir() const {
+    return _hasWorkingDir;
+}
+
+QString WorkflowContext::workingDir() const {
+    return _workingDir;
+}
+
+QString WorkflowContext::absolutePath(const QString &relative) const {
+    QFileInfo info(relative);
+    if (info.isAbsolute()) {
+        return relative;
+    }
+    if (hasWorkingDir()) {
+        return workingDir() + relative;
+    }
+    return info.absoluteFilePath();
+}
+
+bool WorkflowContext::initWorkingDir() {
+    _hasWorkingDir = WorkflowContextCMDLine::useWorkingDir();
+    CHECK(hasWorkingDir(), true);
+
+    U2OpStatus2Log os;
+
+    QString root = WorkflowContextCMDLine::getOutputDirectory(os);
+    CHECK_OP(os, false);
+
+    if (!root.endsWith("/")) {
+        root += "/";
+    }
+
+    if (WorkflowContextCMDLine::useSubDirs()) {
+        QString dirName = WorkflowContextCMDLine::createSubDirectoryForRun(root, os);
+        CHECK_OP(os, false);
+        _workingDir = root + dirName + "/";
+    } else {
+        _workingDir = root;
+    }
+    coreLog.details("Workflow output directory is: " + workingDir());
+    return true;
+}
+
+/************************************************************************/
+/* WorkflowContextCMDLine */
+/************************************************************************/
+bool WorkflowContextCMDLine::useSettings() {
+    if (AppContext::isGUIMode()) {
+        return true;
+    }
+    CMDLineRegistry *reg = AppContext::getCMDLineRegistry();
+    return reg->hasParameter(DEFAULT_OUTPUT_DIR);
+}
+
+QString WorkflowContextCMDLine::getOutputDirectory(U2OpStatus &os) {
+    CMDLineRegistry *reg = AppContext::getCMDLineRegistry();
+
+    // 1. Detect directory
+    QString root;
+    if (useSettings()) {
+        root = WorkflowSettings::getWorkflowOutputDirectory();
+    } else if (reg->hasParameter(OUTPUT_DIR)) {
+        root = reg->getParameterValue(OUTPUT_DIR);
+    } else {
+        root = AppContext::getWorkingDirectoryPath();
+    }
+
+    // 2. Create directory if it does not exist
+    QDir rootDir(root);
+    if (!rootDir.exists()) {
+        bool created = rootDir.mkpath(rootDir.absolutePath());
+        if (!created) {
+            os.setError(QObject::tr("Can not create directory: ") + root);
+            return "";
+        }
+    }
+    return rootDir.absolutePath();
+}
+
+QString WorkflowContextCMDLine::createSubDirectoryForRun(const QString &root, U2OpStatus &os) {
+    QDir rootDir(root);
+    // 1. Find free sub-directory name
+    QString dirName;
+    {
+        int counter = 0;
+        do {
+            counter++;
+            dirName = QString("Run %1").arg(counter);
+        } while (rootDir.exists(dirName));
+    }
+
+    // 2. Try to create the sub-directory
+    bool created = rootDir.mkdir(dirName);
+    if (!created) {
+        os.setError(QObject::tr("Can not create directory %1 in the directory %2")
+            .arg(dirName).arg(rootDir.absolutePath()));
+        return "";
+    }
+    return dirName;
+}
+
+bool WorkflowContextCMDLine::useWorkingDir() {
+    CMDLineRegistry *reg = AppContext::getCMDLineRegistry();
+    if (useSettings()) {
+        return WorkflowSettings::isUseWorkflowOutputDirectory();
+    }
+    return true;
+}
+
+bool WorkflowContextCMDLine::useSubDirs() {
+    CMDLineRegistry *reg = AppContext::getCMDLineRegistry();
+    if (useSettings()) {
+        return true;
+    }
+
+    return reg->hasParameter(ROLL_OUTPUT);
 }
 
 } // Workflow

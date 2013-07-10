@@ -189,8 +189,7 @@ QStringList BaseDocWriter::takeUrlList(const QVariantMap &data, U2OpStatus &os) 
             return QStringList();
         }
 
-        // to avoid "c:/..." and "C:/..." on windows
-        anUrl = QFileInfo(anUrl).absoluteFilePath();
+        anUrl = context->absolutePath(anUrl);
     }
 
     QStringList urls;
@@ -224,6 +223,16 @@ bool BaseDocWriter::ifCreateAdapter(const QString &url) const {
 }
 
 void BaseDocWriter::openAdapter(IOAdapter *io, const QString &aUrl, const SaveDocFlags &flags, U2OpStatus &os) {
+    { // prepare dir
+        QFileInfo info(aUrl);
+        if (!info.dir().exists()) {
+            bool created = info.dir().mkpath(info.dir().absolutePath());
+            if (!created) {
+                os.setError(tr("Can not create directory: %1").arg(info.dir().absolutePath()));
+            }
+        }
+    }
+
     QString url = aUrl;
     if (counters.contains(aUrl)) {
         url = GUrlUtils::insertSuffix(aUrl, "_" + QString::number(counters[aUrl]));
