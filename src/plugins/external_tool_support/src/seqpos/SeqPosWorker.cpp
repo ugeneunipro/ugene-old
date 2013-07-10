@@ -185,7 +185,8 @@ void SeqPosWorkerFactory::init() {
              SeqPosWorker::tr("Run de novo motif search (-d)"));
          Descriptor motifDB(MOTIF_DB,
              SeqPosWorker::tr("Motif database"),
-             SeqPosWorker::tr("Known motif collections. (-m)"));
+             SeqPosWorker::tr("Known motif collections. (-m). Warning: computation time increases if many databases are selected. "
+             "It is recommended to uses cistrome.xml as a comprehensive collection of motifs from the other databases. Similar motifs were deleted from cistrome.xml"));
          Descriptor outName(OUT_NAME,
              SeqPosWorker::tr("Output file name"),
              SeqPosWorker::tr("Name of the output file which stores new motifs found during a de novo search. (-n)"));
@@ -291,8 +292,9 @@ QString SeqPosPrompter::composeRichDoc() {
      res.append(tr(" Genome assembly: <u>%1</u>.").arg(genome.isEmpty()? unsetStr : genome));
      if (deNovo){
          res.append(tr(" Finds de novo motifs."));
-     }else{
-         res.append(tr(" Uses <u>%1</u> known motifs.").arg(motifDb.isEmpty()? unsetStr : motifDb));
+     }
+     if(!motifDb.isEmpty()){
+         res.append(tr(" Uses <u>%1</u> known motifs.").arg(motifDb));
      }
     
      res.append(tr(" Outputs all result files to <u>%1</u> directory").arg(dir.isEmpty() ? unsetStr : dir));
