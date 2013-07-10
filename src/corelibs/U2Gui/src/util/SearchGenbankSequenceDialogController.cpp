@@ -76,6 +76,12 @@ void SearchGenbankSequenceDialogController::sl_searchButtonClicked()
 
 }
 
+void SearchGenbankSequenceDialogController::sl_searchFinished()
+{
+
+}
+
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
