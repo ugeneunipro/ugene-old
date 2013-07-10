@@ -59,9 +59,9 @@ QStringList SeqPosSettings::getArguments( const QString& treatFilePath){
         result << "-d";
     }
 
-    //if(motifDB != SeqPosSettings::MOTIF_DB_CISTROME){ //???
+    if (!motifDB.isEmpty()){
         result << "-m " + motifDB;
-    //}
+    }
 
     result << "-n " + outName;
 

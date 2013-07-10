@@ -210,9 +210,10 @@ void SeqPosWorkerFactory::init() {
             assemblyVerAttr = new Attribute(genAssembly, BaseTypes::STRING_TYPE(), true);
         }
         attrs << assemblyVerAttr;
-        attrs << new Attribute(findDeNovo, BaseTypes::BOOL_TYPE(), true, QVariant(false));
-        attrs << new Attribute(motifDB, BaseTypes::STRING_TYPE(), true, QVariant(SeqPosSettings::MOTIF_DB_CISTROME));
         attrs << new Attribute(outName, BaseTypes::STRING_TYPE(), true, QVariant("Default"));
+        attrs << new Attribute(findDeNovo, BaseTypes::BOOL_TYPE(), false, QVariant(false));
+        attrs << new Attribute(motifDB, BaseTypes::STRING_TYPE(), false, QVariant(SeqPosSettings::MOTIF_DB_CISTROME));
+        
         attrs << new Attribute(regW, BaseTypes::NUM_TYPE(), false, QVariant(600));
         attrs << new Attribute(pVal, BaseTypes::NUM_TYPE(), false, QVariant(0.001));
     }

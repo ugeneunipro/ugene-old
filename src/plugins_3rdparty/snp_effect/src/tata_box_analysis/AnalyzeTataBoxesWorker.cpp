@@ -56,8 +56,31 @@ QList<Task *> AnalyzeTataBoxesWorker::createVariationProcessingTasks( const U2Va
     const U2VariantTrack &track, U2Dbi *dbi )
 {
     QList<Task *> result;
-    qint64 sequenceStartPos = 0;
-    result << new AnalyzeTataBoxesTask( getSequenceForVariant( var, track, dbi, sequenceStartPos ) );
+//     qint64 sequenceStartPos = 0;
+//     
+//     QList<QVariantMap> res;
+//     U2ObjectDbi* objDbi = dbi->getObjectDbi();
+//     SAFE_POINT(objDbi!=NULL, "No object DBI", res);
+//     U2FeatureDbi* featureDbi = dbi->getFeatureDbi();
+//     SAFE_POINT(featureDbi!=NULL, "No feature DBI", res);
+// 
+//     U2DataId seqId = track.sequence.isEmpty() ? S3DatabaseUtils::getSequenceId(track.sequenceName, objDbi) : track.sequence;
+//     U2OpStatusImpl os;
+//     QList<Gene> genes = S3TablesUtils::findGenes(seqId, VARIATION_REGION(variant), featureDbi, os);
+//     CHECK_OP(os, res);
+//     foreach(const Gene& gene, genes){
+// 
+//     //result << new AnalyzeTataBoxesTask( getSequenceForVariant( var, track, dbi, sequenceStartPos ) );
+// 
+//         QList<Task *> tasks;
+//         const QList<QVariantMap>& resList = getInputDataForRequest( var, track, dbi );
+//         foreach ( const QVariantMap& res, resList ) {
+//             Task* t = new RequestForSnpTask( getRequestingScriptPath( ), res, var);
+//             connect( t, SIGNAL( si_stateChanged( ) ), SLOT( sl_taskFinished( ) ) );
+//             tasks.append(t);
+//         }
+//         return tasks;
+
     return result;
 }
 

@@ -51,6 +51,11 @@ public:
 
     static QList<Gene> findGenes(const U2DataId& seqId, const U2Region &region, U2FeatureDbi* dbi, U2OpStatus &opStatus, const QList<int>& excludeList = QList<int>());
 
+    static QList<Gene> findRegulatedGenes(const U2DataId& seqId, const U2Region &region, U2FeatureDbi* dbi, U2OpStatus &opStatus, const QList<int>& excludeList = QList<int>());
+
+
+
+
     static QList<Gene> findGenesAround(const U2DataId& seqId, const U2Region &region, U2FeatureDbi* dbi, U2OpStatus &opStatus, const QList<int>& excludeList = QList<int>());
 
     static Gene findGenesStep(const U2Feature &parentFeature, U2FeatureDbi* dbi, U2OpStatus &opStatus, const QList<int>& excludeList = QList<int>());
