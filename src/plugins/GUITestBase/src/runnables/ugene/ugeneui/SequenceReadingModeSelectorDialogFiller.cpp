@@ -33,7 +33,7 @@ namespace U2 {
 #define GT_CLASS_NAME "GTUtilsDialog::SequenceReadingModeSelectorDialogFiller"
 #define GT_METHOD_NAME "run"
 void SequenceReadingModeSelectorDialogFiller::run()
-{
+{   GTGlobals::sleep(1000);
     QWidget *dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog != NULL, "dialog not found");
     if (readingMode == Separate) {
