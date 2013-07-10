@@ -24,11 +24,15 @@
 
 #include <U2Core/global.h>
 
+#include <U2Core/LoadRemoteDocumentTask.h>
+
 #include <QtGui/QDialog>
 #include <QtCore/QList>
 #include <QtCore/QString>
 
 class Ui_SearchGenbankSequenceDialog;
+class QLineEdit;
+class QComboBox;
 
 namespace U2 {
 
@@ -38,17 +42,45 @@ struct QueryBlock {
     QString term;
 };
 
+class NCBISearchContext {
+public:
+    NCBISearchContext() {
+        rules << "AND" << "OR" << "NOT";
+        fields << "Author" << "Gene name" << "Organism";
+    }
+
+    QStringList fields;
+    QStringList rules;
+
+};
+
+class QueryBuilderController;
+
+class QueryBlockWidget : public QWidget {
+    Q_OBJECT
+private:
+    NCBISearchContext ctx;
+    QComboBox *conditionBox, *termBox;
+    QLineEdit* queryEdit;
+
+public:
+    QueryBlockWidget(QueryBuilderController* controller, bool first);
+    QString getQuery();
+};
+
 class SearchGenbankSequenceDialogController;
 
 class QueryBuilderController : public QObject {
     Q_OBJECT
 private:
-    QMap<QWidget*,QWidget*> removeWidgetCallbacks;
     SearchGenbankSequenceDialogController* parentController;
+    QList<QueryBlockWidget*> queryBlockWidgets;
 public:
     QueryBuilderController(SearchGenbankSequenceDialogController* parent);
+    ~QueryBuilderController();
     void removeQueryBlockWidget(QPushButton* callbackButton);
 private slots:
+    void sl_updateQuery();
     void sl_addQueryBlockWidget();
     void sl_removeQueryBlockWidget();
 
@@ -63,9 +95,14 @@ public:
     ~SearchGenbankSequenceDialogController();
     void addQueryBlockWidget(QWidget* w);
     void removeQueryBlockWidget(QWidget* w);
+    void setQueryText(const QString& queryText);
 private:
     Ui_SearchGenbankSequenceDialog* ui;
     QueryBuilderController* queryBlockController;
+private slots:
+    void sl_searchButtonClicked();
+    void sl_searchFinished();
+
 };
 
 } // namespace

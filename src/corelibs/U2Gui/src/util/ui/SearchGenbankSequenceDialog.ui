@@ -22,11 +22,11 @@
     </widget>
    </item>
    <item>
-    <widget class="QTextEdit" name="textEdit">
+    <widget class="QTextEdit" name="queryEdit">
      <property name="maximumSize">
       <size>
        <width>16777215</width>
-       <height>100</height>
+       <height>60</height>
       </size>
      </property>
      <property name="readOnly">
@@ -38,6 +38,9 @@
     <layout class="QHBoxLayout" name="horizontalLayout_3">
      <item>
       <widget class="QCheckBox" name="editDirectlyBox">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
        <property name="text">
         <string>Edit directly</string>
        </property>
@@ -58,6 +61,9 @@
      </item>
      <item>
       <widget class="QPushButton" name="historyButton">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
        <property name="text">
         <string>History...</string>
        </property>
@@ -70,32 +76,7 @@
      <property name="title">
       <string>Query builder:</string>
      </property>
-     <layout class="QVBoxLayout" name="verticalLayout_2">
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayout">
-        <item>
-         <widget class="QLabel" name="label_3">
-          <property name="text">
-           <string>Term:</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QComboBox" name="searchTermBox"/>
-        </item>
-        <item>
-         <widget class="QLineEdit" name="queryBlockEdit"/>
-        </item>
-        <item>
-         <widget class="QToolButton" name="addQueryBlockButton">
-          <property name="text">
-           <string>+</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-     </layout>
+     <layout class="QVBoxLayout" name="verticalLayout_2"/>
     </widget>
    </item>
    <item>
@@ -110,6 +91,13 @@
    </item>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item>
+      <widget class="QPushButton" name="searchButton">
+       <property name="text">
+        <string>Search</string>
+       </property>
+      </widget>
+     </item>
      <item>
       <spacer name="horizontalSpacer_3">
        <property name="orientation">

@@ -126,7 +126,7 @@ ProjectLoaderImpl::ProjectLoaderImpl() {
     updateRecentItemsMenu();
 
     QList<QAction*> actions;
-    actions << newProjectAction << newDocumentFromtext << downloadRemoteFileAction /*<< searchGenbankEntryAction*/
+    actions << newProjectAction << newDocumentFromtext << downloadRemoteFileAction << searchGenbankEntryAction
         << openProjectAction << addExistingDocumentAction << separatorAction1 <<  recentItemsMenu->menuAction() 
         << recentProjectsMenu->menuAction() << separatorAction2;
     
