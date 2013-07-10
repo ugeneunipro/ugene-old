@@ -65,6 +65,7 @@ private:
 
 public:
     QueryBlockWidget(QueryBuilderController* controller, bool first);
+    ~QueryBlockWidget();
     QString getQuery();
 };
 
@@ -99,9 +100,10 @@ public:
 private:
     Ui_SearchGenbankSequenceDialog* ui;
     QueryBuilderController* queryBlockController;
+    EntrezSearchTask* searchTask;
 private slots:
     void sl_searchButtonClicked();
-    void sl_searchFinished();
+    void sl_taskStateChanged(Task* task);
 
 };
 

@@ -22,6 +22,9 @@
 #include <QtGui/QLineEdit>
 #include <QtGui/QToolButton>
 #include <QtGui/QComboBox>
+#include <QtGui/QMessageBox>
+
+#include <U2Core/AppContext.h>
 
 #include "ui/ui_SearchGenbankSequenceDialog.h"
 
@@ -30,7 +33,7 @@
 
 namespace U2 {
 
-SearchGenbankSequenceDialogController::SearchGenbankSequenceDialogController(QWidget *p) : QDialog(p)
+SearchGenbankSequenceDialogController::SearchGenbankSequenceDialogController(QWidget *p) : QDialog(p), searchTask(NULL)
 {
     ui = new Ui_SearchGenbankSequenceDialog();
     ui->setupUi(this);
@@ -38,6 +41,8 @@ SearchGenbankSequenceDialogController::SearchGenbankSequenceDialogController(QWi
     queryBlockController = new QueryBuilderController(this);
 
     connect(ui->searchButton, SIGNAL(clicked()), SLOT(sl_searchButtonClicked()) );
+    connect( AppContext::getTaskScheduler(), SIGNAL(si_stateChanged(Task*)), SLOT(sl_taskStateChanged(Task*)) );
+
 
 }
 
@@ -70,16 +75,35 @@ void SearchGenbankSequenceDialogController::sl_searchButtonClicked()
         return;
     }
 
-
-
-
+    searchTask = new EntrezSearchTask("nucleotide", query);
+    AppContext::getTaskScheduler()->registerTopLevelTask(searchTask);
 
 }
 
-void SearchGenbankSequenceDialogController::sl_searchFinished()
+
+void SearchGenbankSequenceDialogController::sl_taskStateChanged( Task* task )
 {
-
+    if (task->getState() == Task::State_Finished ) {
+        if (task == searchTask) {
+            ui->treeWidget->clear();
+            const QStringList& results =  searchTask->getResults();
+            if (results.size() == 0) {
+                QMessageBox::information(this, windowTitle(), tr("No results found corresponding to the query.") );
+            } else {
+                // TODO: call edesc on the ids
+                foreach (const QString& id, results ) {
+                    QTreeWidgetItem* item = new QTreeWidgetItem(ui->treeWidget);
+                    item->setText(0, id);
+                    item->setText(1, "" );
+                    item->setText(2, "" );
+                    ui->treeWidget->addTopLevelItem( item );   
+                }
+            }
+            searchTask = NULL;
+        }
+    }
 }
+
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -130,6 +154,14 @@ QueryBlockWidget::QueryBlockWidget(QueryBuilderController* controller, bool firs
 
 
 }
+
+
+QueryBlockWidget::~QueryBlockWidget()
+{
+
+}
+
+
 
 QString QueryBlockWidget::getQuery()
 {
@@ -188,7 +220,7 @@ void QueryBuilderController::sl_removeQueryBlockWidget()
     parentController->removeQueryBlockWidget(queryBlockWidget);
     queryBlockWidgets.removeAll(queryBlockWidget);
 
-    delete queryBlockWidget;
+    queryBlockWidget->deleteLater();
 
     sl_updateQuery();
 

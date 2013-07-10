@@ -412,7 +412,7 @@ void LoadDataFromEntrezTask::sl_replyFinished( QNetworkReply* reply ) {
             assert(0);
             stateInfo.setError("Parsing eSearch result failed");
         } else {
-            resultIndex =  handler->getResultIndex();
+            //resultIndex =  handler->getResultIndex();
         }
         delete handler;
 
@@ -428,6 +428,70 @@ void LoadDataFromEntrezTask::sl_onError( QNetworkReply::NetworkError error ) {
 }
 
 void LoadDataFromEntrezTask::sl_uploadProgress( qint64 bytesSent, qint64 bytesTotal ) {
+    stateInfo.progress = bytesSent/ bytesTotal * 100;
+}
+
+
+
+//////////////////////////////////////////////////////////////////////////
+
+
+EntrezSearchTask::EntrezSearchTask( const QString& dbId, const QString& searchQuery )
+: Task("EntrezSearchTask", TaskFlags_FOSCOE | TaskFlag_MinimizeSubtaskErrorText), db(dbId), 
+query(searchQuery) {
+
+}
+
+EntrezSearchTask::~EntrezSearchTask() {
+    delete loop;
+    delete networkManager;
+}
+
+void EntrezSearchTask::run() {
+    stateInfo.progress = 0;
+    ioLog.trace("Entrez search task started...");
+    loop = new QEventLoop;
+
+    networkManager = new QNetworkAccessManager();
+    connect(networkManager, SIGNAL(finished(QNetworkReply*)), this, SLOT(sl_replyFinished(QNetworkReply*)));
+    
+    NetworkConfiguration* nc = AppContext::getAppSettings()->getNetworkConfiguration();
+    
+    QUrl request( NCBI_ESEARCH_URL.arg(db).arg(query) );
+    QString rUrl(request.toString());
+    ioLog.trace(QString("Sending request: %1").arg(rUrl));
+    searchReply = networkManager->get(QNetworkRequest( request ));
+    connect(searchReply, SIGNAL(error(QNetworkReply::NetworkError)),
+        this, SLOT(sl_onError(QNetworkReply::NetworkError)));
+    loop->exec();
+        
+    ioLog.trace(QString("Search finished. Found %1 results corresponding to query.").arg(results.size()));
+    
+}
+
+void EntrezSearchTask::sl_replyFinished( QNetworkReply* reply ) {
+    assert(reply == searchReply); 
+    QXmlInputSource source(reply);
+    ESearchResultHandler* handler = new ESearchResultHandler;
+    xmlReader.setContentHandler(handler);
+    xmlReader.setErrorHandler(handler);
+    bool ok = xmlReader.parse(source);
+    if (!ok) {
+        assert(0);
+        stateInfo.setError("Parsing eSearch result failed");
+    } else {
+        results =  handler->getIdList();
+    }
+    delete handler;
+    loop->exit();
+}
+
+void EntrezSearchTask::sl_onError( QNetworkReply::NetworkError error ) {
+    stateInfo.setError(QString("NetworkReply error %1").arg(error));
+    loop->exit();
+}
+
+void EntrezSearchTask::sl_uploadProgress( qint64 bytesSent, qint64 bytesTotal ) {
     stateInfo.progress = bytesSent/ bytesTotal * 100;
 }
 
@@ -452,7 +516,7 @@ bool ESearchResultHandler::endElement( const QString &namespaceURI, const QStrin
 {
     Q_UNUSED(namespaceURI); Q_UNUSED(localName);
     if ("Id" == qName) {
-        index = curText;
+        idList.append( curText );
     }
     return true;
 }

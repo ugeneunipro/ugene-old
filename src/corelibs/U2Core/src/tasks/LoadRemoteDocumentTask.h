@@ -178,13 +178,35 @@ private:
     QString fullPath, format;
 };
 
+class U2CORE_EXPORT EntrezSearchTask : public Task {
+    Q_OBJECT
+public:
+    EntrezSearchTask(const QString& dbId, const QString& query);
+    ~EntrezSearchTask();
+    
+    virtual void run();
+    const QList<QString>& getResults() const { return results; }
+
+    public slots:
+        void sl_replyFinished(QNetworkReply* reply);
+        void sl_onError(QNetworkReply::NetworkError error);
+        void sl_uploadProgress( qint64 bytesSent, qint64 bytesTotal);
+private:
+    QEventLoop* loop;
+    QNetworkReply* searchReply;
+    QNetworkAccessManager* networkManager;
+    QXmlSimpleReader xmlReader;
+    QString db, query;
+    QList<QString> results;
+};
+
 
 // Helper class to parse NCBI Entrez eSearch results
 class ESearchResultHandler : public QXmlDefaultHandler {
     bool metESearchResult;
     QString errorStr;
     QString curText;
-    QString index;
+    QList<QString> idList;
 public:
     ESearchResultHandler();
     bool startElement(const QString &namespaceURI, const QString &localName,
@@ -194,7 +216,7 @@ public:
     bool characters(const QString &str);
     bool fatalError(const QXmlParseException &exception);
     QString errorString() const { return errorStr; }
-    QString getResultIndex() const { return index; }
+    const QList<QString>& getIdList() const { return idList; }
 };
 
 } //namespace
