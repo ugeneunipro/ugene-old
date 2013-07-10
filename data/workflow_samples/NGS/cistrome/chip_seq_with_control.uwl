@@ -47,15 +47,27 @@ workflow "ChIP-seq analysis with control"{
         type:multiplexer;
         name:Multiplexer;
     }
+    write-annotations {
+        type:write-annotations;
+        name:"Write Gene Annotations";
+        document-format:bed;
+    }
+    write-annotations-1 {
+        type:write-annotations;
+        name:"Write Peak Annotations";
+        document-format:bed;
+    }
 
 
     .actor-bindings {
         peak2gene-id.out-data->conduct-go-id.in-data
+        peak2gene-id.out-data->write-annotations.in-annotations
+        peak2gene-id.out-data->write-annotations-1.in-annotations
+        read-annotations.out-annotations->multiplexer.input-data-1
         macs-id.out-data->ceas-report.in-data
         macs-id.out-data->conservation_plot-id.in-data
         macs-id.out-data->seqpos-id.in-data
         macs-id.out-data->peak2gene-id.in-data
-        read-annotations.out-annotations->multiplexer.input-data-1
         read-annotations-1.out-annotations->multiplexer.input-data-2
         multiplexer.output-data->macs-id.in-data
     }
@@ -68,6 +80,8 @@ workflow "ChIP-seq analysis with control"{
     macs-id.peak-regions->seqpos-id.in-data.cp_treat-ann
     macs-id.peak-regions->peak2gene-id.in-data._treat-ann
     peak2gene-id.gene-annotation->conduct-go-id.in-data.in-ann
+    peak2gene-id.gene-annotation->write-annotations.in-annotations.annotations
+    peak2gene-id.peak-annotation->write-annotations-1.in-annotations.annotations
 
     .meta {
         visual {
@@ -78,7 +92,7 @@ workflow "ChIP-seq analysis with control"{
                 in-data.angle:49.2892;
             }
             conduct-go-id {
-                pos:"-145 -294";
+                pos:"-159 -268";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 in-data.angle:41.3785;
@@ -109,7 +123,7 @@ workflow "ChIP-seq analysis with control"{
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 in-data.angle:180;
-                out-data.angle:302.005;
+                out-data.angle:292.805;
             }
             read-annotations {
                 pos:"-968 -937";
@@ -131,6 +145,18 @@ workflow "ChIP-seq analysis with control"{
                 bg-color-ext:"0 128 128 64";
                 in-data.angle:180;
             }
+            write-annotations {
+                pos:"235 -394";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                in-annotations.angle:180;
+            }
+            write-annotations-1 {
+                pos:"77 -290";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                in-annotations.angle:180;
+            }
             macs-id.out-data->ceas-report.in-data {
                 text-pos:"-45 -16";
             }
@@ -149,6 +175,12 @@ workflow "ChIP-seq analysis with control"{
             peak2gene-id.out-data->conduct-go-id.in-data {
                 text-pos:"-43 -21";
             }
+            peak2gene-id.out-data->write-annotations-1.in-annotations {
+                text-pos:"-20 -12";
+            }
+            peak2gene-id.out-data->write-annotations.in-annotations {
+                text-pos:"-25 -20";
+            }
             read-annotations-1.out-annotations->multiplexer.input-data-2 {
                 text-pos:"-36 -23";
             }
@@ -161,7 +193,7 @@ workflow "ChIP-seq analysis with control"{
             page {
                 id:1;
                 next:2;
-                title:"MACS";
+                title:"Input data";
                 parameters-area {
                     group {
                         title:"Input files";
@@ -172,19 +204,17 @@ workflow "ChIP-seq analysis with control"{
                         read-annotations-1.url-in {
                             label:"Control Tags";
                         }
-
                     }
+                }
+            }
+            page {
+                id:2;
+                next:3;
+                title:MACS;
+                parameters-area {
                     group {
-                        title:"Parameters";
+                        title:Parameters;
                         label-size:120;
-                        macs-id.output-dir {
-                        }
-                        macs-id.file-names {
-                        }
-                        macs-id.wiggle-output {
-                        }
-                        macs-id.wiggle-space {
-                        }
                         macs-id.genome-size {
                         }
                         macs-id.p-value {
@@ -197,15 +227,19 @@ workflow "ChIP-seq analysis with control"{
                         }
                         macs-id.model-fold {
                         }
-                        macs-id.shift-size {
+                        macs-id.wiggle-output {
                         }
-                        macs-id.band-width {
+                        macs-id.wiggle-space {
                         }
                     }
                     group {
                         title:Advanced;
                         label-size:120;
                         type:hideable;
+                        macs-id.shift-size {
+                        }
+                        macs-id.band-width {
+                        }
                         macs-id.use-lambda {
                         }
                         macs-id.small-nearby {
@@ -220,17 +254,13 @@ workflow "ChIP-seq analysis with control"{
                 }
             }
             page {
-                id:2;
-                next:3;
-                title:"CEAS";
+                id:3;
+                next:4;
+                title:CEAS;
                 parameters-area {
                     group {
-                        title:"Parameters";
+                        title:Parameters;
                         label-size:150;
-                        ceas-report.image-file {
-                        }
-                        ceas-report.anns-file {
-                        }
                         ceas-report.anns-table {
                         }
                         ceas-report.span {
@@ -256,15 +286,13 @@ workflow "ChIP-seq analysis with control"{
                 }
             }
             page {
-                id:3;
-                next:4;
+                id:4;
+                next:5;
                 title:"Conservation Plot";
                 parameters-area {
                     group {
-                        title:"Parameters";
+                        title:Parameters;
                         label-size:120;
-                        conservation_plot-id.output-file {
-                        }
                         conservation_plot-id.title {
                         }
                         conservation_plot-id.label {
@@ -281,24 +309,18 @@ workflow "ChIP-seq analysis with control"{
                 }
             }
             page {
-                id:4;
-                next:5;
+                id:5;
+                next:6;
                 title:"SeqPos motif tool";
                 parameters-area {
                     group {
-                        title:"Parameters";
+                        title:Parameters;
                         label-size:130;
-                        seqpos-id.output-dir {
-                        }
-                        seqpos-id.output-dir {
-                        }
                         seqpos-id.assembly {
                         }
                         seqpos-id.de_novo {
                         }
                         seqpos-id.motif_db {
-                        }
-                        seqpos-id.out_name {
                         }
                         seqpos-id.reg_width {
                         }
@@ -308,7 +330,8 @@ workflow "ChIP-seq analysis with control"{
                 }
             }
             page {
-                id:5;
+                id:6;
+                next:7;
                 title:"Peak2Gene and Gene Ontology";
                 parameters-area {
                     group {
@@ -326,11 +349,61 @@ workflow "ChIP-seq analysis with control"{
                     group {
                         title:"Conduct GO Parameters";
                         label-size:120;
-                        conduct-go-id.output-dir {
-                        }
                         conduct-go-id.title {
                         }
                         conduct-go-id.gene-universe {
+                        }
+                    }
+                }
+            }
+            page {
+                id:7;
+                title:"Output data";
+                parameters-area {
+                    group {
+                        title:"MACS output";
+                        label-size:130;
+                        macs-id.output-dir {
+                        }
+                        macs-id.file-names {
+                        }
+                    }
+                    group {
+                        title:"CEAS output";
+                        label-size:130;
+                        ceas-report.image-file {
+                        }
+                        ceas-report.anns-file {
+                        }
+                    }
+                    group {
+                        title:"Conservation Plot output";
+                        label-size:130;
+                        conservation_plot-id.output-file {
+                        }
+                    }
+                    group {
+                        title:"SeqPos motif tool output";
+                        label-size:130;
+                        seqpos-id.output-dir {
+                        }
+                        seqpos-id.out_name {
+                        }
+                    }
+                    group {
+                        title:"Peak2Gene output";
+                        label-size:130;
+                        write-annotations.url-out {
+                            label: "Gene annotations";
+                        }
+                        write-annotations-1.url-out {
+                            label: "Peak annotations";
+                        }
+                    }
+                    group {
+                        title:"Conduct GO output";
+                        label-size:130;
+                        conduct-go-id.output-dir {
                         }
                     }
                 }

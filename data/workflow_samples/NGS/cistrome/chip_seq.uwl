@@ -36,6 +36,16 @@ workflow "ChIP-seq analysis"{
         type:conduct-go-id;
         name:"Conduct GO";
     }
+    write-annotations {
+        type:write-annotations;
+        name:"Write Gene Annotations";
+        document-format:bed;
+    }
+    write-annotations-1 {
+        type:write-annotations;
+        name:"Write Peak Annotations";
+        document-format:bed;
+    }
 
 
     .actor-bindings {
@@ -45,6 +55,8 @@ workflow "ChIP-seq analysis"{
         macs-id.out-data->seqpos-id.in-data
         macs-id.out-data->peak2gene-id.in-data
         peak2gene-id.out-data->conduct-go-id.in-data
+        peak2gene-id.out-data->write-annotations.in-annotations
+        peak2gene-id.out-data->write-annotations-1.in-annotations
     }
 
     read-annotations.annotations->macs-id.in-data._treatment-ann
@@ -54,6 +66,8 @@ workflow "ChIP-seq analysis"{
     macs-id.peak-regions->seqpos-id.in-data.cp_treat-ann
     macs-id.peak-regions->peak2gene-id.in-data._treat-ann
     peak2gene-id.gene-annotation->conduct-go-id.in-data.in-ann
+    peak2gene-id.gene-annotation->write-annotations.in-annotations.annotations
+    peak2gene-id.peak-annotation->write-annotations-1.in-annotations.annotations
 
     .meta {
         visual {
@@ -65,10 +79,10 @@ workflow "ChIP-seq analysis"{
                 in-data.angle:49.2892;
             }
             conduct-go-id {
-                pos:"-418 -252";
+                pos:"-432 -239";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
-                in-data.angle:26.5651;
+                in-data.angle:34.8245;
             }
             conservation_plot-id {
                 pos:"-418 -884";
@@ -88,7 +102,7 @@ workflow "ChIP-seq analysis"{
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 in-data.angle:180;
-                out-data.angle:297.854;
+                out-data.angle:289.204;
             }
             read-annotations {
                 pos:"-1017 -884";
@@ -103,6 +117,18 @@ workflow "ChIP-seq analysis"{
                 bg-color-ext:"0 128 128 64";
                 in-data.angle:180;
             }
+            write-annotations {
+                pos:"3 -356";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                in-annotations.angle:180;
+            }
+            write-annotations-1 {
+                pos:"-158 -262";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                in-annotations.angle:180;
+            }
             macs-id.out-data->ceas-report.in-data {
                 text-pos:"-54 -10";
             }
@@ -116,7 +142,13 @@ workflow "ChIP-seq analysis"{
                 text-pos:"-27 -16";
             }
             peak2gene-id.out-data->conduct-go-id.in-data {
-                text-pos:"-32 -23";
+                text-pos:"-40 -23";
+            }
+            peak2gene-id.out-data->write-annotations-1.in-annotations {
+                text-pos:"-17 -14";
+            }
+            peak2gene-id.out-data->write-annotations.in-annotations {
+                text-pos:"-24 -16";
             }
             read-annotations.out-annotations->macs-id.in-data {
                 text-pos:"-47 -25";
@@ -319,6 +351,16 @@ workflow "ChIP-seq analysis"{
                         seqpos-id.output-dir {
                         }
                         seqpos-id.out_name {
+                        }
+                    }
+                    group {
+                        title:"Peak2Gene output";
+                        label-size:130;
+                        write-annotations.url-out {
+                            label: "Gene annotations";
+                        }
+                        write-annotations-1.url-out {
+                            label: "Peak annotations";
                         }
                     }
                     group {

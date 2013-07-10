@@ -185,8 +185,8 @@ void SeqPosWorkerFactory::init() {
              SeqPosWorker::tr("Run de novo motif search (-d)"));
          Descriptor motifDB(MOTIF_DB,
              SeqPosWorker::tr("Motif database"),
-             SeqPosWorker::tr("Known motif collections. (-m). Warning: computation time increases if many databases are selected. "
-             "It is recommended to uses cistrome.xml as a comprehensive collection of motifs from the other databases. Similar motifs were deleted from cistrome.xml"));
+             SeqPosWorker::tr("Known motif collections. (-m). Warning: computation time increases with selecting additional databases. "
+             "It is recommended to use cistrome.xml. It is a comprehensive collection of motifs from the other databases with similar motifs deleted."));
          Descriptor outName(OUT_NAME,
              SeqPosWorker::tr("Output file name"),
              SeqPosWorker::tr("Name of the output file which stores new motifs found during a de novo search. (-n)"));
