@@ -31,6 +31,7 @@
 #include "api/GTTreeWidget.h"
 #include "api/GTLineEdit.h"
 #include "api/GTComboBox.h"
+#include "api/GTClipboard.h"
 #include "GTUtilsProjectTreeView.h"
 #include "GTUtilsOptionsPanel.h"
 #include "GTUtilsBookmarksTreeView.h"
@@ -49,6 +50,7 @@
 #include "runnables/ugene/ugeneui/SelectDocumentFormatDialogFiller.h"
 #include "runnables/ugene/ugeneui/SequenceReadingModeSelectorDialogFiller.h"
 #include "runnables/ugene/plugins_3rdparty/umuscle/MuscleDialogFiller.h"
+#include "runnables/ugene/plugins_3rdparty/kalign/KalignDialogFiller.h"
 #include "GTUtilsLog.h"
 #include <U2View/ADVSingleSequenceWidget.h>
 
@@ -1025,6 +1027,41 @@ GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, testDir + "_common_da
 GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1708){
+    //1. Open COI.aln or HIV-1.aln from samples
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0,0), QPoint(9,1));
+    GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(500);
+    QString initAln = GTClipboard::text(os);
+
+    QString expectedAln("TAAGACTT-C\n"
+                        "TAAG-CTTAC");
+
+    //2. Align with KAlign
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<MSAE_MENU_ALIGN<<"align_with_kalign", GTGlobals::UseMouse));
+    GTUtilsDialog::waitForDialog(os, new KalignDialogFiller(os,10));
+    GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
+
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0,0), QPoint(9,1));
+    GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(500);
+    QString changedAln = GTClipboard::text(os);
+    CHECK_SET_ERR(changedAln==expectedAln, "Unexpected alignment\n" + changedAln);
+
+    QAbstractButton *undo= GTAction::button(os,"msa_action_undo");
+
+    //3. Press Undo
+    GTWidget::click(os,undo);
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0,0), QPoint(9,1));
+    GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(500);
+    changedAln = GTClipboard::text(os);
+
+    CHECK_SET_ERR(changedAln==initAln, "Undo works wrong\n" + changedAln);
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1720){
 //1. Use menu {File->Access remote database...}
     GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE),ACTION_PROJECTSUPPORT__ACCESS_REMOTE_DB, GTGlobals::UseKey);
@@ -1042,6 +1079,7 @@ GUI_TEST_CLASS_DEFINITION(test_1720){
     GTUtilsLog::check(os,l);
 //Expected state: project view with document "D11266.gb", no error messages in log appear
 }
+
 } // GUITest_regression_scenarios namespace
 
 } // U2 namespace
