@@ -580,7 +580,7 @@ void FindPatternWidget::connectSlots()
     connect(boxUseMaxResult, SIGNAL(stateChanged(int)), SLOT(sl_enableBoxMaxResult(int)));
     connect(editStart, SIGNAL(textEdited(QString)), SLOT(sl_onRegionValueEdited()));
     connect(editEnd, SIGNAL(textEdited(QString)), SLOT(sl_onRegionValueEdited()));
-    connect(spinMatch, SIGNAL(valueChanged()), SLOT(sl_onMatchPercentChanged()));
+    connect(spinMatch, SIGNAL(valueChanged(int)), SLOT(sl_onMatchPercentChanged(int)));
     connect(boxSeqTransl, SIGNAL(currentIndexChanged(int)), SLOT(sl_onSequenceTranslationChanged(int)));
     connect(btnSearch, SIGNAL(clicked()), SLOT(sl_onSearchClicked()));
 
@@ -724,7 +724,7 @@ void FindPatternWidget::sl_onRegionValueEdited()
 }
 
 
-void FindPatternWidget::sl_onMatchPercentChanged()
+void FindPatternWidget::sl_onMatchPercentChanged(int /*value*/)
 {
     tunePercentBox();
 }

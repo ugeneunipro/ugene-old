@@ -92,7 +92,7 @@ private slots:
     void sl_onRegionOptionChanged(int);
     void sl_enableBoxMaxResult(int checkBoxState);
     void sl_onRegionValueEdited();
-    void sl_onMatchPercentChanged();
+    void sl_onMatchPercentChanged(int);
     void sl_onSequenceTranslationChanged(int);
     void sl_onSearchPatternChanged();
     void sl_onSearchClicked();
