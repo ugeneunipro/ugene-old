@@ -49,6 +49,7 @@ public:
         promoterPos,
         rSNPTranscrFactors,
         ChIPTools,
+        tataTool
 
     };
 

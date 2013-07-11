@@ -27,18 +27,28 @@
 
 namespace U2 {
 
-RequestForSnpTask::RequestForSnpTask( const QString &_scriptPath,    const QVariantMap &_inputData,const U2Variant& var )
-: Task( "Request to remote server for SNP analysis", TaskFlag_NoRun )
-,scriptPath( _scriptPath )
-,inputData( _inputData )
-,requestTask( NULL )
-,responseLogParser( )
+//////////////////////////////////////////////////////////////////////////
+//BaseSnpAnnotationTask
+BaseSnpAnnotationTask::BaseSnpAnnotationTask( const QVariantMap& _inputData, const U2Variant& var, const QString& description )
+:Task(!description.isEmpty() ? description : QString("SNP Annotation task"), TaskFlag_None)
 ,variant(var)
+,inputData(_inputData)
 {
-    QStringList pythonArguments( scriptPath );
     if (inputData.contains(SnpRequestKeys::SNP_FEATURE_ID_KEY)){
         featureId = inputData.take(SnpRequestKeys::SNP_FEATURE_ID_KEY).toByteArray();
     }
+}
+
+
+//////////////////////////////////////////////////////////////////////////
+//RequestForSnpTask
+RequestForSnpTask::RequestForSnpTask( const QString &_scriptPath, const QVariantMap &_inputData, const U2Variant& var )
+:BaseSnpAnnotationTask(_inputData, var, "Request to remote server for SNP analysis")
+,scriptPath( _scriptPath )
+,requestTask( NULL )
+,responseLogParser( )
+{
+    QStringList pythonArguments( scriptPath );
     foreach ( QString key, inputData.keys( ) ) {
         SAFE_POINT( inputData[key].canConvert<QString>( ), "Invalid argument passed to script", );
         pythonArguments << key << inputData[key].toString( );
@@ -51,7 +61,8 @@ QVariantMap RequestForSnpTask::getResult( )
 {
     return responseLogParser.getResult( );
 }
-
+//////////////////////////////////////////////////////////////////////////
+//SnpResponseLogParser
 SnpResponseLogParser::SnpResponseLogParser( )
     : ExternalToolLogParser( )
 {

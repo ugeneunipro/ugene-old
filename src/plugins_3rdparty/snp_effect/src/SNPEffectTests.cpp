@@ -291,6 +291,7 @@ void GTest_SNPResultTable::initOrders(){
         << "promoterPos"
         << "rSNPTranscrFactors"
         << "ChIPTools"
+        << "TATATool"
         << "genomes1000"
         << "segmental"
         << "conserved"

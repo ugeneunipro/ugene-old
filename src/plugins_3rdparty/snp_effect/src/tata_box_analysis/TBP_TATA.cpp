@@ -7,6 +7,12 @@ double sqrt(),  exp(),  log();
 
 #include "TBP_TATA.h"
 
+#define Recognition_Threshold >19.00000
+#define Recognition_Defined   >-10.0000
+#define MATR_TBP_Length 26
+#define MATR_TBP_Point  13
+
+
 /**************************************************************************/
 
 double TBP_MeanFreq (char *S)
@@ -271,4 +277,129 @@ double TBP_NatTATA_95conf_interval (char *s)
     z=1.6652*sqrt(z);
 
     return (z);
+}
+
+
+int MATRIX_TBP /* Output: Status, 1 means O'K, otherwise Error # */
+(                  
+ char *Seq, float* directScores, float* complementScores, int* lenSeq
+ )                  
+{
+    char *seq, nucl_seq, nucl_dir, nucl_comp, direct[50],complement[50];
+    int i,j,k,m, len, new_nucl;
+    double z, Score_dir, Score_comp;
+
+    if (Seq == NULL || directScores == NULL || complementScores == NULL){
+        return -1;
+    }
+
+    seq=&Seq[0];
+    len=strlen(seq);
+    if(len< MATR_TBP_Length){
+        return -99;
+    }
+
+    for(i=0;i<50;i++){
+        direct[i]='\0';
+        complement[i]='\0';
+    }
+
+    for(j=0,i=0,k=0;j<len;j++){
+        nucl_seq=Seq[j]; new_nucl=0;
+        if (nucl_seq ==   10){
+            continue;
+        }
+        if (nucl_seq == '\0'){
+            continue;
+        }
+        if (nucl_seq == '\t'){
+            continue;
+        }
+        if (nucl_seq == '\b'){
+            continue;
+        }
+        /*if (nucl_seq == NULL) continue;*/
+        if (nucl_seq == 0){
+            continue; 
+        }
+        if (nucl_seq ==  ' '){
+            continue;
+        }
+        if (nucl_seq == '\n'){
+            continue;
+        }
+        switch (nucl_seq){
+            case 'a': case 'A': nucl_dir='A'; nucl_comp='T'; new_nucl=1; break;
+            case 't': case 'T':
+            case 'u': case 'U': nucl_dir='T'; nucl_comp='A'; new_nucl=1; break;
+            case 'g': case 'G': nucl_dir='G'; nucl_comp='C'; new_nucl=1; break;
+            case 'c': case 'C': nucl_dir='C'; nucl_comp='G'; new_nucl=1; break;
+            case 'm': case 'M':
+            case 'k': case 'K':
+            case 'r': case 'R':
+            case 'y': case 'Y':
+            case 'w': case 'W':
+            case 's': case 'S':
+            case 'x': case 'X':
+            case 'n': case 'N': nucl_dir='N'; nucl_comp='N'; new_nucl=1; break;
+        }
+        if(new_nucl){
+            i++;
+            Score_dir =-999.;
+            Score_comp=-999.;
+            if (k>MATR_TBP_Length-1){
+                k--;
+                for (m=0;m<k;m++){
+                    direct[m]=direct[m+1];
+                    complement[k-m]=complement[k-m-1];
+                }
+            }
+            direct[k]=nucl_dir;
+            complement[MATR_TBP_Length-k-1]=nucl_comp;
+            k++;
+            if(k==MATR_TBP_Length){
+                seq=&direct[0];
+                z=TBP_MeanFreq (seq);
+                Score_dir =z;
+                seq=&complement[0];
+                z=TBP_MeanFreq (seq);
+                Score_comp=z;
+                /*    if (abs(Score_dir-Score_comp) > 0.005) return (-987); */
+                seq=&direct[0];
+                z=TBP_NatTATA_95conf_interval (seq);
+                Score_comp=z;
+            }
+            if(i>MATR_TBP_Point-1){ // i>12
+                directScores[i-MATR_TBP_Length+MATR_TBP_Point] = (float)Score_dir;
+                complementScores[i-MATR_TBP_Length+MATR_TBP_Point] = (float)Score_comp;
+                //fprintf (Out_Score,"%d \t %f\t %f\n",
+                //i - 12
+                //i-MATR_TBP_Length+MATR_TBP_Point+1, Score_dir, Score_comp);
+            }
+            //if(Score_dir Recognition_Defined){ 
+            //    if(Score_dir Recognition_Threshold){
+            //        fprintf (Out_Table," %d.. %d / TATA-box (+)-chain: %s Score=%f (%f)\n",
+            //        i-MATR_TBP_Length+1, i, direct, Score_dir, Score_comp);
+            //        fprintf (Out_Table, " %d.. %d / TATA-box (-)-chain: %s Score=%f (%f)\n",
+            //       i-MATR_TBP_Length+1, i, complement, Score_dir, Score_comp);
+            //    }
+            //}
+        }
+    }
+    //j=i-11
+    for (j=i-MATR_TBP_Length+MATR_TBP_Point+1;j<i;j++){
+        directScores[j] = -999.;
+        complementScores[j] = -999.;
+        //fprintf (Out_Score,"%d \t %6.3f\t %6.3f\n", j, -999., -999.);
+    }
+    
+    //fclose (Out_Score);
+    //fclose (Out_Table);
+    if (i<MATR_TBP_Length){
+        return -9999;
+    }
+
+    *lenSeq = i;
+
+    return 1;
 }

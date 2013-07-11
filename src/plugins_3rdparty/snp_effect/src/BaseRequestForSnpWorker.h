@@ -64,10 +64,10 @@ private slots:
     void                            sl_trackTaskFinished( );
 
 protected:
-    virtual QList< QVariantMap>     getInputDataForRequest( const U2Variant& variant,
-                                        const U2VariantTrack& track, U2Dbi* dataBase );
+    virtual QList< QVariantMap>     getInputDataForRequest( const U2Variant& variant, const U2VariantTrack& track, U2Dbi* dataBase );
+    virtual QList<SnpResponseKey>   getResultKeys( ) const = 0;
+
     virtual QString                 getRequestingScriptName( ) const;
-    virtual QList<SnpResponseKey>   getResultKeys( ) const;
     virtual QList<Task *>           createVariationProcessingTasks( const U2Variant &var,
                                         const U2VariantTrack &track, U2Dbi *dbi );
 

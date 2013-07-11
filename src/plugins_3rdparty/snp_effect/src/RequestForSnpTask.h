@@ -30,6 +30,20 @@
 
 namespace U2 {
 
+class BaseSnpAnnotationTask : public Task{
+public:
+    BaseSnpAnnotationTask (const QVariantMap &inputData, const U2Variant& var, const QString& description="");
+
+    virtual QVariantMap         getResult( ) = 0;
+    const U2Variant&            getVariant( ){return variant;};
+    const U2DataId&             getFeatureId( ){return featureId;};
+
+protected:
+    U2DataId                    featureId;
+    QVariantMap                 inputData;
+    U2Variant                   variant;
+};
+
 class SnpResponseLogParser : public ExternalToolLogParser
 {
 public:
@@ -42,24 +56,19 @@ private:
     QVariantMap         result;
 };
 
-class RequestForSnpTask :       public Task
+class RequestForSnpTask :       public BaseSnpAnnotationTask
 {
 public:
                                 RequestForSnpTask( const QString &scriptPath,
                                     const QVariantMap &inputData, const U2Variant& var );
 
     virtual QVariantMap         getResult( );
-    const U2Variant&            getVariant( ){return variant;};
-    const U2DataId&             getFeatureId( ){return featureId;};
 
 private:
 
-    U2DataId                    featureId;
-    QVariantMap                 inputData;
     QString                     scriptPath;
     ExternalToolRunTask *       requestTask;
     SnpResponseLogParser        responseLogParser;
-    U2Variant                   variant;
 };
 
 } // U2

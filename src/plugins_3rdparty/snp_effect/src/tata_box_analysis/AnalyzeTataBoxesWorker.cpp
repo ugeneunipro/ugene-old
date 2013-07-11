@@ -23,6 +23,10 @@
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/AppContext.h>
+#include <U2Core/U2Region.h>
+#include <U2Core/Gene.h>
+#include <U2Core/S3TablesUtils.h>
+#include <U2Core/U2SequenceDbi.h>
 
 #include <U2Lang/ActorPrototypeRegistry.h>
 #include <U2Lang/BaseActorCategories.h>
@@ -32,6 +36,8 @@
 #include <U2Lang/WorkflowEnv.h>
 
 #include <U2Designer/DelegateEditors.h>
+
+#include <U2Formats/S3DatabaseUtils.h>
 
 #include "AnalyzeTataBoxesTask.h"
 #include "AnalyzeTataBoxesWorker.h"
@@ -52,36 +58,76 @@ AnalyzeTataBoxesWorker::AnalyzeTataBoxesWorker( Actor *p )
 
 }
 
+#define TATA_OFFSET_SMALL 20
+#define TATA_OFFSET_BIG 70
+static U2Region getTataRegion(const Gene& gene){
+    U2Region res;
+
+    qint64 start = -1;
+    if (gene.isComplemented()){
+        res = U2Region(gene.getRegion().endPos() + TATA_OFFSET_SMALL, TATA_OFFSET_BIG - TATA_OFFSET_SMALL); //upped bound of the sequence is not checked
+    }else{
+        if (gene.getRegion().startPos - TATA_OFFSET_BIG < 0){ //bad TATA
+            return res;
+        }
+        res = U2Region(gene.getRegion().startPos - TATA_OFFSET_BIG, TATA_OFFSET_BIG - TATA_OFFSET_SMALL); //upped bound of the sequence is not checked
+    }
+
+    return res;
+}
+
 QList<Task *> AnalyzeTataBoxesWorker::createVariationProcessingTasks( const U2Variant &var,
     const U2VariantTrack &track, U2Dbi *dbi )
 {
-    QList<Task *> result;
-//     qint64 sequenceStartPos = 0;
-//     
-//     QList<QVariantMap> res;
-//     U2ObjectDbi* objDbi = dbi->getObjectDbi();
-//     SAFE_POINT(objDbi!=NULL, "No object DBI", res);
-//     U2FeatureDbi* featureDbi = dbi->getFeatureDbi();
-//     SAFE_POINT(featureDbi!=NULL, "No feature DBI", res);
-// 
-//     U2DataId seqId = track.sequence.isEmpty() ? S3DatabaseUtils::getSequenceId(track.sequenceName, objDbi) : track.sequence;
-//     U2OpStatusImpl os;
-//     QList<Gene> genes = S3TablesUtils::findGenes(seqId, VARIATION_REGION(variant), featureDbi, os);
-//     CHECK_OP(os, res);
-//     foreach(const Gene& gene, genes){
-// 
-//     //result << new AnalyzeTataBoxesTask( getSequenceForVariant( var, track, dbi, sequenceStartPos ) );
-// 
-//         QList<Task *> tasks;
-//         const QList<QVariantMap>& resList = getInputDataForRequest( var, track, dbi );
-//         foreach ( const QVariantMap& res, resList ) {
-//             Task* t = new RequestForSnpTask( getRequestingScriptPath( ), res, var);
-//             connect( t, SIGNAL( si_stateChanged( ) ), SLOT( sl_taskFinished( ) ) );
-//             tasks.append(t);
-//         }
-//         return tasks;
+    QList<Task *> tasks;
 
-    return result;
+    U2ObjectDbi* objDbi = dbi->getObjectDbi();
+    SAFE_POINT(objDbi!=NULL, "No object DBI", tasks);
+    U2FeatureDbi* featureDbi = dbi->getFeatureDbi();
+    SAFE_POINT(featureDbi!=NULL, "No feature DBI", tasks);
+    U2SequenceDbi* seqDbi = dbi->getSequenceDbi();
+    SAFE_POINT(seqDbi!=NULL, "No sequence DBI", tasks);
+
+    U2DataId seqId = track.sequence.isEmpty() ? S3DatabaseUtils::getSequenceId(track.sequenceName, objDbi) : track.sequence;
+    U2OpStatusImpl os;
+    QList<Gene> genes = S3TablesUtils::findRegulatedGenes(seqId, VARIATION_REGION(var), featureDbi, os);
+    CHECK_OP(os, tasks);
+    foreach(const Gene& gene, genes){
+        QVariantMap inputData;
+
+        U2Region tataReg = getTataRegion(gene);
+        if (tataReg == U2Region()){
+            continue;
+        }
+
+        if (!tataReg.contains(var.startPos)){
+            continue;
+        }
+        
+        //get sequence
+        QByteArray seq1 = seqDbi->getSequenceData(seqId, tataReg, os);
+        CHECK_OP(os, tasks);
+        qint64 mutationPos = var.startPos - tataReg.startPos;
+        QByteArray seq2 = seq1;
+        seq2.replace( mutationPos, 1, var.obsData );
+
+        inputData[SnpRequestKeys::SNP_FEATURE_ID_KEY] = gene.getFeatureId();
+        inputData[SnpRequestKeys::TATA_TOOLS_SEQ_1] = seq1;
+        inputData[SnpRequestKeys::TATA_TOOLS_SEQ_2] = seq2;
+
+        Task* t = new AnalyzeTataBoxesTask(inputData, var);
+        connect( t, SIGNAL( si_stateChanged( ) ), SLOT( sl_taskFinished( ) ) );
+        tasks.append(t);
+
+    }
+
+    return tasks;
+}
+
+QList<SnpResponseKey> AnalyzeTataBoxesWorker::getResultKeys() const{
+    QList<SnpResponseKey> res;
+    res << SnpResponseKeys::TATA_TOOLS;
+    return res;
 }
 
 /************************************************************************/

@@ -19,30 +19,108 @@
  * MA 02110-1301, USA.
  */
 
-#include <U2Core/U2SafePoints.h>
 
 #include "TBP_TATA.h"
 #include "AnalyzeTataBoxesTask.h"
+#include "../SnpRequestKeys.h"
+
+#include <U2Core/U2SafePoints.h>
+
+#include <QtCore/QScopedArrayPointer>
+
+#include <math.h>
 
 namespace U2 {
 
-AnalyzeTataBoxesTask::AnalyzeTataBoxesTask( const QByteArray &_seq )
-    : Task( "Get SNP effect on tata boxes", TaskFlag_None ), seq( _seq )
+AnalyzeTataBoxesTask::AnalyzeTataBoxesTask( const QVariantMap &inputData, const U2Variant& var  )
+:BaseSnpAnnotationTask(inputData, var, "Get SNP effect on tata boxes")
 {
-    SAFE_POINT( !seq.isEmpty( ), "Empty sequence is supplied", );
 }
 
-void AnalyzeTataBoxesTask::run( )
-{
-    // TODO: check if the other function from "TBP_TATA.h" is useful too
-    double unknownNumber = TBP_NatTATA_95conf_interval( seq.data( ) );
-    // TODO: construct result here
-    // result;
+void AnalyzeTataBoxesTask::run(){
+    if (!inputData.contains(SnpRequestKeys::TATA_TOOLS_SEQ_1) || !inputData.contains(SnpRequestKeys::TATA_TOOLS_SEQ_2)){
+        return;
+    }
+    QByteArray seq1 = inputData[SnpRequestKeys::TATA_TOOLS_SEQ_1].toByteArray();
+    QByteArray seq2 = inputData[SnpRequestKeys::TATA_TOOLS_SEQ_2].toByteArray();
+
+    SAFE_POINT(seq1.size() == seq2.size(), "AnalyzeTataBoxesTask::sites of tata boxes must be similar in the length", );
+
+    QPair <float, float> seq1maxValues = getMaxValues(seq1);
+    if (seq1maxValues.first == -1.0f || seq1maxValues.first == -1.0f){
+        return;
+    }
+
+    QPair <float, float> seq2maxValues = getMaxValues(seq2);
+    if (seq2maxValues.first == -1.0f || seq2maxValues.first == -1.0f){
+        return;
+    }
+
+    double se = pow(seq1maxValues.second, 2) + pow(seq2maxValues.second, 2);
+    se = sqrt(se) / 2.0;
+
+    double sigma = (seq1maxValues.first > seq2maxValues.first ) ?  seq1maxValues.first - seq2maxValues.first : seq2maxValues.first - seq1maxValues.first;
+    sigma = sigma / se;
+
+    QString res = "";
+    if (sigma>=4.891638475699) {res = QString("%1/0.999999").arg(sigma);}
+    else if (sigma>=3.290526731492) {res = QString("%1/0.999").arg(sigma);}
+    else if (sigma>=2.575829303549) {res = QString("%1/0.99").arg(sigma);}
+    else if (sigma>=1.959963984540) {res = QString("%1/0.95").arg(sigma);}
+    else {res = QString("%1/unsignificant").arg(sigma);}
+
+    result[SnpResponseKeys::TATA_TOOLS] = res;
 }
 
-QVariantMap AnalyzeTataBoxesTask::getResult( )
-{
+QVariantMap AnalyzeTataBoxesTask::getResult(){
     return result;
+}
+
+#define CLEAR_VALUE -999.
+void AnalyzeTataBoxesTask::clearArray( float* arr, int len ){
+    for (int i = 0; i < len; i++){
+        arr[i] = CLEAR_VALUE;
+    }
+}
+
+int AnalyzeTataBoxesTask::idxOfMaxElement( float* arr, int len ){
+    int res = -1;
+    float maxElement = float(-INT_MAX);
+
+    for (int i = 0; i < len; i++){
+        if (maxElement < arr[i]){
+            maxElement = arr[i];
+            res = i;
+        }
+    }
+    
+    return res;
+}
+
+QPair<float, float> AnalyzeTataBoxesTask::getMaxValues( QByteArray& seq){
+    QPair<float, float> res;
+    res.first = -1.0f;
+    res.second = -1.0f;
+
+    QScopedArrayPointer<float> directScores(new float[seq.size()]);
+    QScopedArrayPointer<float> complementScores(new float[seq.size()]);
+    int len = -1;
+    clearArray(directScores.data(), seq.size());
+    clearArray(complementScores.data(), seq.size());
+
+    int resTbp = MATRIX_TBP(seq.data(), directScores.data(), complementScores.data(), &len);
+    if(len == -1 || resTbp != 1){
+        return res;
+    }
+
+    int idxMaxElement = idxOfMaxElement(directScores.data(), len);
+    if (idxMaxElement == -1){
+        return res;
+    }
+    res.first = directScores[idxMaxElement];
+    res.second = complementScores[idxMaxElement];
+
+    return res;
 }
 
 } // namespace U2

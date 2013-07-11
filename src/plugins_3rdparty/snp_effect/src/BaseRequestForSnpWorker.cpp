@@ -137,7 +137,7 @@ Task* BaseRequestForSnpWorker::tick( )
 
 void BaseRequestForSnpWorker::sl_taskFinished( )
 {
-    RequestForSnpTask *t = dynamic_cast<RequestForSnpTask *>( sender( ) );
+    BaseSnpAnnotationTask *t = dynamic_cast<BaseSnpAnnotationTask *>( sender( ) );
     SAFE_POINT( NULL != t, "Invalid task is encountered", );
     if ( !t->isFinished( ) || t->hasError( ) ) {
         return;
@@ -165,20 +165,9 @@ void BaseRequestForSnpWorker::sl_trackTaskFinished( ){
     }
 }
 
-QList<QVariantMap> BaseRequestForSnpWorker::getInputDataForRequest( const U2Variant& variant,
-    const U2VariantTrack& track, U2Dbi* dataBase )
-{
-    FAIL( "Not implemented", QList<QVariantMap>( ) );
-}
-
 QString BaseRequestForSnpWorker::getRequestingScriptName( ) const
 {
     FAIL( "Not implemented", QString( ) );
-}
-
-QList<SnpResponseKey> BaseRequestForSnpWorker::getResultKeys( ) const
-{
-    FAIL( "Not implemented", QList<SnpResponseKey>( ) );
 }
 
 QList<Task *> BaseRequestForSnpWorker::createVariationProcessingTasks( const U2Variant &var,
@@ -282,6 +271,10 @@ void BaseRequestForSnpWorker::flushCache(){
 
 void BaseRequestForSnpWorker::clearCache(){
     resultCache.clear();
+}
+
+QList< QVariantMap> BaseRequestForSnpWorker::getInputDataForRequest( const U2Variant& variant, const U2VariantTrack& track, U2Dbi* dataBase ){
+    FAIL("Not impelemented", QList< QVariantMap> ());
 }
 
 } // namespace LocalWorkflow

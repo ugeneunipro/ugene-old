@@ -40,6 +40,7 @@ public:
 protected:
     QList<Task *>              createVariationProcessingTasks( const U2Variant &var,
                                    const U2VariantTrack &track, U2Dbi *dbi );
+    virtual QList<SnpResponseKey>   getResultKeys( ) const;
 };
 
 /************************************************************************/

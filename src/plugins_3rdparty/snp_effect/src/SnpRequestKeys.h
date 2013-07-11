@@ -54,6 +54,9 @@ const SnpRequestKey SNP_2_PDB_SITE_MUTATIONS( "-m" );
 const SnpRequestKey SNP_CHIP_TOOLS_UG( "--ug" );
 const SnpRequestKey SNP_CHIP_TOOLS_SNP_ID( "-i" );
 
+const SnpRequestKey TATA_TOOLS_SEQ_1( "--seq1" );
+const SnpRequestKey TATA_TOOLS_SEQ_2( "-seq2" );
+
 } // namespace SnpRequestKeys
 
 typedef QString SnpResponseKey;
@@ -66,6 +69,7 @@ const SnpResponseKey PROT_STABILITY_1D( "STABILITY_1D" );
 const SnpResponseKey PROT_STABILITY_3D( "STABILITY_3D" );
 const SnpResponseKey SNP_2_PDB_SITE_( "PDB_SITE" );
 const SnpResponseKey SNP_CHIP_TOOLS_( "SNP_CHIP" );
+const SnpResponseKey TATA_TOOLS( "TATA_TOOLS" );
 
 }
 

@@ -733,6 +733,8 @@ QString VariationInfo::getOutGeneTableHeader(){
             res.append("rSNPTools_factors");
         }else if(rc == VariationInfo::ChIPTools){
             res.append("ChIPTools");
+        }else if(rc == VariationInfo::tataTool){
+            res.append("TATATool");
         }
 
     }
@@ -835,6 +837,9 @@ QStringList VariationInfo::getOutGeneTableRaws(){
 
             getDefaultAttributeValue(variant.id, SnpResponseKeys::R_SNP_PRESENT_TFBS, VariationInfo::rSNPTranscrFactors, curRawData);
             getDefaultAttributeValue(variant.id, SnpResponseKeys::SNP_CHIP_TOOLS_, VariationInfo::ChIPTools, curRawData);
+
+            QString tataKey = SnpResponseKeys::TATA_TOOLS + SnpResponseKeys::DEFAULT_SEPARATOR + QString::fromLatin1(gene.getFeatureId());
+            getDefaultAttributeValue(variant.id, tataKey, VariationInfo::tataTool, curRawData);
 
             bool first = true;
             foreach(ReportColumns rc, columnsOrderOutGene){
@@ -939,6 +944,7 @@ QList<VariationInfo::ReportColumns> VariationInfo::getOutGeneOrder(){
         << VariationInfo::promoterPos
         << VariationInfo::rSNPTranscrFactors
         << VariationInfo::ChIPTools
+        << VariationInfo::tataTool
         << VariationInfo::genomes1000
         << VariationInfo::segmental
         << VariationInfo::conserved

@@ -22,23 +22,30 @@
 #ifndef _U2_ANALYZE_TATA_BOXES_TASK_
 #define _U2_ANALYZE_TATA_BOXES_TASK_
 
-#include <QtCore/QUrl>
+#include "RequestForSnpTask.h"
 
 #include <U2Core/Task.h>
 
+#include <QtCore/QUrl>
+#include <QtCore/QPair>
+
 namespace U2 {
 
-class AnalyzeTataBoxesTask :   public Task
+class AnalyzeTataBoxesTask :   public BaseSnpAnnotationTask
 {
 public:
-                                AnalyzeTataBoxesTask( const QByteArray &seq );
+                                AnalyzeTataBoxesTask(const QVariantMap &inputData, const U2Variant& var );
 
     void                        run( );
     QVariantMap                 getResult( );
 
 private:
-    QByteArray                  seq;
     QVariantMap                 result;
+
+private:
+    void clearArray(float* arr, int len);
+    int idxOfMaxElement(float* arr, int len);
+    QPair<float, float> getMaxValues(QByteArray& seq);
 };
 
 } // U2
