@@ -78,7 +78,7 @@ BlastAllSupport::BlastAllSupport(const QString& name, const QString& path) : Ext
 #ifdef Q_OS_WIN
         executableFileName="CUDA-BLASTP.exe";
 #else
-    #ifdef Q_OS_LINUX
+    #if defined(Q_OS_LINUX) || defined(Q_OS_MAC)
         executableFileName="CUDA-BLASTP";
     #endif
 #endif
