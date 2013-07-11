@@ -68,12 +68,29 @@
 <body>
 
 <div id="wrapper">
-    <div id="widgets-container">
-        <div id="left-container">
-            
+    <div class="tabbable">
+        <div class="dash-menu-line">
+            <ul class="nav nav-pills dash-nav">
+              <li class="active"><a href="#overview_tab" data-toggle="tab" class="dash-tab-name">Overview</a></li>
+              <li class=""><a href="#input_tab" data-toggle="tab" class="dash-tab-name">Input</a></li>
+              <li class=""><a href="#output_tab" data-toggle="tab" class="dash-tab-name">Output</a></li>
+            </ul>
         </div>
-        <div id="right-container">
-            
+        <div class="dash-outer-tab-content">
+            <div class="tab-content dash-tab-content">
+                <div class="tab-pane active" id="overview_tab">
+                    <div class="left-container"></div>
+                    <div class="right-container"></div>
+                </div>
+                <div class="tab-pane" id="input_tab">
+                    <div class="left-container"></div>
+                    <div class="input-right-container"></div>
+                </div>
+                <div class="tab-pane" id="output_tab">
+                    <div class="left-container"></div>
+                    <div class="right-container"></div>
+                </div>
+            </div>
         </div>
     </div>
 </div>

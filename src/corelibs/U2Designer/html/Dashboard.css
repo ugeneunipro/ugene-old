@@ -25,20 +25,17 @@ body {
 }
 
 #wrapper {
-    width: 1060px;
-    margin: 0px auto;
-}
-
-#widgets-container{
+    /** Fill the whole horizontal space */
+    display: table; 
     width: 100%;
 }
 
-#left-container {
+.left-container {
     width: 525px;
     float: left;
 }
 
-#right-container {
+.right-container {
     width: 525px;
     float: right;
 }
@@ -74,6 +71,33 @@ body {
 
 .widget-content > :last-child {
     margin-bottom: 0px;
+}
+
+.dash-tab-name {
+    color: white;
+}
+
+.dash-menu-line {
+    background: url("qrc:U2Designer/images/background-menu.png") repeat scroll 0% 0% transparent;
+    padding-left: 20px;
+    margin-bottom: 30px;
+    min-width: 500px;
+}
+
+.dash-nav > .active > a, .dash-nav > .active > a:hover, .dash-nav > .active > a:focus {
+    background: url("qrc:U2Designer/images/background-menu-button.png") repeat scroll 0% 0% transparent;
+    color: white;
+}
+
+.dash-tab-content {
+    overflow: hidden;
+    width: 1060px;
+    margin: auto;
+}
+
+.dash-outer-tab-content {
+    margin-left: 20px;
+    margin-right: 20px;
 }
 
 .table-scroll {

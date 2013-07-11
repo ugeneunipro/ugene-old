@@ -53,11 +53,15 @@ private:
     QWebElement doc;
     bool initialized;
 
+    enum DashboardTab {OverviewDashTab, InputDashTab, OutputDashTab};
+
 private:
     void loadDocument();
     /** Returns the content area of the widget */
-    QWebElement addWidget(const QString &title, int cntNum = -1);
-    int containerSize(const QString &id);
+    QWebElement addWidget(const QString &title, DashboardTab dashTab, int cntNum = -1);
+
+    /** Returns size of the QWebElement "name", it is searched inside "insideElt" only*/
+    int containerSize(const QWebElement &insideElt, const QString &name);
 };
 
 class DashboardWidget : public QObject {

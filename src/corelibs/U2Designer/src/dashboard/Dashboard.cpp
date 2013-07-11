@@ -27,6 +27,7 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/ProjectModel.h>
 #include <U2Core/Task.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <U2Gui/MainWindow.h>
 
@@ -66,9 +67,9 @@ void Dashboard::sl_loaded(bool ok) {
     page()->mainFrame()->addToJavaScriptWindowObject("agent", new JavascriptAgent());
 
     doc = page()->mainFrame()->documentElement();
-    OutputFilesWidget *files = new OutputFilesWidget(addWidget(tr("Output Files"), 0), this);
-    ResourcesWidget *resource = new ResourcesWidget(addWidget(tr("Workflow Task"), 1), this);
-    StatisticsWidget *stat = new StatisticsWidget(addWidget(tr("Common Statistics"), 1), this);
+    OutputFilesWidget *files = new OutputFilesWidget(addWidget(tr("Output Files"), OverviewDashTab, 0), this);
+    ResourcesWidget *resource = new ResourcesWidget(addWidget(tr("Workflow Task"), OverviewDashTab, 1), this);
+    StatisticsWidget *stat = new StatisticsWidget(addWidget(tr("Common Statistics"), OverviewDashTab, 1), this);
 
     sl_runStateChanged(false);
     if (!monitor()->getProblems().isEmpty()) {
@@ -80,35 +81,57 @@ void Dashboard::sl_loaded(bool ok) {
 }
 
 void Dashboard::sl_addProblemsWidget() {
-    ProblemsWidget *problems = new ProblemsWidget(addWidget(tr("Problems")), this);
+    ProblemsWidget *problems = new ProblemsWidget(addWidget(tr("Problems"), OverviewDashTab), this);
 }
 
-int Dashboard::containerSize(const QString &id) {
-    QWebElement cont = doc.findFirst(id);
+int Dashboard::containerSize(const QWebElement &insideElt, const QString &name) {
+    QWebElement cont = insideElt.findFirst(name);
     SAFE_POINT(!cont.isNull(), "NULL container", 0);
     QWebElementCollection children = cont.findAll(".widget");
     return children.count();
 }
 
-QWebElement Dashboard::addWidget(const QString &title, int cntNum) {
+QWebElement Dashboard::addWidget(const QString &title, DashboardTab dashTab, int cntNum) {
+    // Find the tab
+    QString dashTabId;
+    if (OverviewDashTab == dashTab) {
+        dashTabId = "#overview_tab";
+    }
+    else if (InputDashTab == dashTab) {
+        dashTabId = "#input_tab";
+    }
+    else if (OutputDashTab == dashTab) {
+        dashTabId = "#output_tab";
+    }
+    else {
+        FAIL("Unexpected dashboard tab ID!", QWebElement());
+    }
+    QWebElement tabContainer = doc.findFirst(dashTabId);
+    SAFE_POINT(!tabContainer.isNull(), "Can't find the tab container!", QWebElement());
+
+    // Define the location on the tab
     bool left = true;
     if (0 == cntNum) {
         left = true;
     } else if (1 == cntNum) {
         left = false;
-    } else if (containerSize("#left-container") <= containerSize("#right-container")) {
+    } else if (containerSize(tabContainer, ".left-container") <= containerSize(tabContainer, ".right-container")) {
         left = true;
     } else {
         left = false;
     }
-    QWebElement container = doc.findFirst(left ? "#left-container" : "#right-container");
-    container.appendInside(
+
+    // Find a container on the tab depending on the location and insert the widget
+    QWebElement insideTabContainer = tabContainer.findFirst(left ? ".left-container" : ".right-container");
+    SAFE_POINT(!insideTabContainer.isNull(), "Can't find a container inside a tab!", QWebElement());
+
+    insideTabContainer.appendInside(
         "<div class=\"widget\">"
             "<div class=\"title\"><div class=\"title-content\">" + title + "</div></div>"
             "<div class=\"widget-content\"></div>"
         "</div>");
 
-    QWebElement widget = container.lastChild();
+    QWebElement widget = insideTabContainer.lastChild();
     return widget.findFirst(".widget-content");
 }
 
