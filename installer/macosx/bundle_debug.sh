@@ -64,6 +64,7 @@ add-library U2Gui
 add-library U2Lang
 add-library U2Private
 add-library U2Remote
+add-library U2Script
 add-library U2Test
 add-library U2View
 add-library ugenedb
