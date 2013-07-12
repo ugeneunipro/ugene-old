@@ -133,6 +133,7 @@ add-plugin workflow_designer
 if [ "$1" == "-test" ]
    then
       add-plugin CoreTests
+      app-plugin GUITestBase
       add-plugin test_runner
       add-plugin api_tests
 fi
