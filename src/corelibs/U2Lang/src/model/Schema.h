@@ -43,7 +43,6 @@ namespace Workflow {
 
 class Actor;
 class Link;
-class Iteration;
 class Port;
 
 /**
@@ -86,22 +85,11 @@ public:
     void update();
     void merge(const Schema &other);
 
-    // after schema is copied its actor's id's changed
-    // in that case we need to configurate new schema with values from Iteration using actors mapping
-    void applyConfiguration(const Iteration&, QMap<ActorId, ActorId>);
-
     Actor* actorById(ActorId) const;
     QList<Actor*> actorsByOwnerId(ActorId) const;
-    int iterationById(int);
     
     QString getDomain() const;
     void setDomain(const QString & d);
-    
-    const QList<Iteration> & getIterations() const;
-    void setIterations(const QList<Iteration> &value);
-    void addIteration(const Iteration &value);
-    void applyIteration(const Iteration &iter);
-    Iteration extractIterationFromConfig() const;
 
     const ActorBindingsGraph & getActorBindingsGraph() const;
 
@@ -110,6 +98,8 @@ public:
     void removeProcess(Actor *actor);
     void renameProcess(const ActorId &oldId, const ActorId &newId);
     void replaceProcess(Actor *oldActor, Actor *newActor, const QList<PortMapping> &mappings);
+
+    void applyConfiguration(const QMap<ActorId, QVariantMap> &cfg);
 
     QList<Link*> getFlows() const;
     void addFlow(Link* l);
@@ -139,8 +129,6 @@ public:
 private:
     // set of actors
     QList<Actor*> procs;
-    // list of iterations that user has fulfilled
-    QList<Iteration> iterations;
     // name of domain in which we work now
     // default is LocalDomainFactory::ID
     QString domain;
@@ -167,45 +155,6 @@ private:
     void update(const QMap<ActorId, ActorId> &actorsMapping);
     
 }; // Schema
-
-/**
- * Iteration is a set of values for schema's attributes
- * 
- * using schema and iteration you can parametrize schema and then run it
- */
-class U2LANG_EXPORT Iteration {
-public:
-    Iteration();
-    Iteration(const QString& name);
-    Iteration(const Iteration & it);
-    
-    QVariantMap getParameters(const ActorId& id) const;
-    // when actor changes id (if schema was deeply copied)
-    // we need to remap iteration's data to new actorId
-    void remap(QMap<ActorId, ActorId>);
-
-    void remapAfterPaste(QMap<ActorId, ActorId>);
-    
-    bool isEmpty() const;
-
-    const QMap<ActorId, QVariantMap> &getConfig() const;
-    QMap<ActorId, QVariantMap> &getConfig();
-    
-private:
-    static int nextId();
-    
-public:
-    // each configuration has name
-    // default name is 'default'
-    QString name;
-    //
-    int id;
-    // for each actor in schema iteration saves QVariantMap of it's attributes values
-    // QMap<attributeId, attributeValue>
-    // this QVariantMap contains only those attributes that were changed by user
-    QMap<ActorId, QVariantMap> cfg;
-    
-}; // Iteration
 
 class U2LANG_EXPORT ActorVisualData {
 public:

@@ -8,11 +8,9 @@ HEADERS += src/ActorCfgModel.h \
            src/ImportSchemaDialog.h \
            src/InvestigationDataModel.h \
            src/ItemViewStyle.h \
-           src/IterationListWidget.h \
            src/PortAliasesConfigurationDialog.h \
            src/SceneSerializer.h \
            src/SchemaAliasesConfigurationDialogImpl.h \
-           src/SchemaConfigurationDialog.h \
            src/WorkflowDesignerPlugin.h \
            src/WorkflowDocument.h \
            src/WorkflowEditor.h \
@@ -74,7 +72,6 @@ FORMS += src/ui/ChooseItemDialog.ui \
          src/ui/PaletteWidget.ui \
          src/ui/PortAliasesConfigurationDialog.ui \
          src/ui/SchemaAliasesConfigurationDialog.ui \
-         src/ui/SchemaConfigurationDialog.ui \
          src/ui/WorkflowEditorWidget.ui \
          src/ui/WorkflowMetaDialog.ui \
          src/ui/WorkflowSettingsWidget.ui
@@ -85,11 +82,9 @@ SOURCES += src/ActorCfgModel.cpp \
            src/ImportSchemaDialog.cpp \
            src/InvestigationDataModel.cpp \
            src/ItemViewStyle.cpp \
-           src/IterationListWidget.cpp \
            src/PortAliasesConfigurationDialog.cpp \
            src/SceneSerializer.cpp \
            src/SchemaAliasesConfigurationDialogImpl.cpp \
-           src/SchemaConfigurationDialog.cpp \
            src/WorkflowDesignerPlugin.cpp \
            src/WorkflowDocument.cpp \
            src/WorkflowEditor.cpp \

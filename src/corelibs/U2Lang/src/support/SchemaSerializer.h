@@ -46,8 +46,6 @@ public:
     static const QString WORKFLOW_DOC;
     static void readConfiguration(Configuration*, const QDomElement& );
     static void readParamAliases( QMap<QString, QString> &, const QDomElement& );
-    static void saveIterations(const QList<Iteration>&, QDomElement& );
-    static void readIterations(QList<Iteration>&, const QDomElement&,const QMap<ActorId, ActorId>&);
     static QDomElement saveActor(const Actor*, QDomElement&);
     static QDomElement savePort(const Port*, QDomElement&);
     static QDomElement saveLink(const Link*, QDomElement&);

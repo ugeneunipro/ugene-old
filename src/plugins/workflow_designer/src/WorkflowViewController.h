@@ -73,16 +73,9 @@ public:
     QList<Actor*> getSelectedActors() const;
 
     void clearScene();
+    void onModified();
 
     void setupLinkCtxMenu(const QString& href, Actor* actor, const QPoint& pos);
-
-    bool isIterated() const;
-    /*
-     * If it isn't iterated then there is one iteration that isn't shown to a user.
-     * This hidden iteration is @defaultIteration.
-     */
-    void setIterated(bool value);
-    void iterationsChanged();
 
     WorkflowBusItem * addFlow(WorkflowPortItem *from, WorkflowPortItem *to, Link *link);
 
@@ -125,9 +118,6 @@ private:
     WorkflowAbstractRunner* runner;
     int hint;
     QAction* openDocumentsAction;
-    // if it isn't iterated then there are one iteration and it isn't shown to a user
-    bool iterated;
-    
 }; // WorkflowScene
 
 class WorkflowView : public MWMDIWindow {
@@ -143,6 +133,7 @@ public:
     virtual void setupViewMenu(QMenu* n);
     void setupContextMenu(QMenu* menu);
 
+    void onModified();
     bool confirmModified();
 
     ActorPrototype* selectedProto() const {
@@ -157,9 +148,6 @@ public:
     void removeBusItem(WorkflowBusItem *item);
     void onBusRemoved(Link *link);
     Actor * createActor(ActorPrototype *proto, const QVariantMap &params) const;
-    QList<Iteration> getIterations() const;
-    QList<Iteration> getIterations(const QList<Actor*> &actors) const;
-    void setIterations(const QList<Iteration> &iters);
     WorkflowBusItem * tryBind(WorkflowPortItem *port1, WorkflowPortItem *port2);
 
     WorkflowScene * getScene() const {return scene;}
@@ -215,8 +203,6 @@ private slots:
     void sl_launch();
     void sl_stop();
     void sl_pause(bool isPause = true);
-    void sl_iterationsMode();
-    void sl_configureIterations();
     void sl_configureParameterAliases();
     void sl_configurePortAliases();
     void sl_importSchemaToElement();
@@ -257,7 +243,6 @@ protected:
 private:
     void createActions();
     void saveState();
-    void setSceneIterated(bool iterated, const Iteration &defaultIteration);
     void recreateScene();
     void localHostLaunch();
     void remoteLaunch();
@@ -324,8 +309,6 @@ private:
     QAction* externalToolAction;
     QAction* appendExternalTool;
     QAction* editExternalToolAction;
-    QAction* iterationModeAction;
-    QAction* configureIterationsAction;
     QAction* configureParameterAliasesAction;
     QAction* configurePortAliasesAction;
     QAction* importSchemaToElement;

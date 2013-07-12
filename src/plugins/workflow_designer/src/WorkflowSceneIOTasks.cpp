@@ -116,7 +116,6 @@ Task::ReportResult LoadWorkflowSceneTask::report() {
         xml.setContent(rawData);
         err = SceneSerializer::xml2scene(xml.documentElement(), scene, remapping);
         SchemaSerializer::readMeta(meta, xml.documentElement());
-        schema->setIterations(QList<Iteration>());
         scene->setModified(false);
         meta->url = url;
     } else {

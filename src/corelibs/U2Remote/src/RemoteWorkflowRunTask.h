@@ -37,7 +37,7 @@ using namespace Workflow;
 class U2REMOTE_EXPORT RemoteWorkflowRunTask : public Task {
     Q_OBJECT
 public:
-    RemoteWorkflowRunTask( const RemoteMachineSettingsPtr& m, const Schema & sc, const QList<Iteration> & its );
+    RemoteWorkflowRunTask( const RemoteMachineSettingsPtr& m, const Schema & sc);
     RemoteWorkflowRunTask( const RemoteMachineSettingsPtr& m, qint64 remoteTaskId);
     ~RemoteWorkflowRunTask();
 
@@ -61,7 +61,6 @@ private:
     RemoteMachineSettingsPtr  machineSettings;
     RemoteMachine *         machine;
     Schema                  schema;
-    QList<Iteration>        iterations;
     qint64                  taskId;
     QEventLoop*             eventLoop;
     QStringList             outputUrls;

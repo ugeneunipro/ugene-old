@@ -203,7 +203,7 @@ QString WorkflowContextCMDLine::getOutputDirectory(U2OpStatus &os) {
     } else if (reg->hasParameter(OUTPUT_DIR)) {
         root = reg->getParameterValue(OUTPUT_DIR);
     } else {
-        root = AppContext::getWorkingDirectoryPath();
+        root = QDir::currentPath();
     }
 
     // 2. Create directory if it does not exist

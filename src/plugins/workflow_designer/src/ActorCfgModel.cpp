@@ -42,8 +42,8 @@ static const int KEY_COLUMN = 0;
 static const int VALUE_COLUMN = 1;
 static const int SCRIPT_COLUMN = 2;
 
-ActorCfgModel::ActorCfgModel(QObject *parent, QList<Iteration>& lst)
-: QAbstractTableModel(parent), subject(NULL), iterations(lst), iterationIdx(-1), scriptMode(false) {
+ActorCfgModel::ActorCfgModel(QObject *parent)
+: QAbstractTableModel(parent), subject(NULL), scriptMode(false) {
     scriptDelegate = new AttributeScriptDelegate();
 }
 
@@ -133,14 +133,7 @@ void ActorCfgModel::setupAttributesScripts() {
     }
 }
 
-void ActorCfgModel::selectIteration(int i) {
-    listValues.clear();
-    iterationIdx = i;
-    reset();
-}
-
-void ActorCfgModel::setIterations(QList<Iteration>& lst) {
-    iterations = lst;
+void ActorCfgModel::update() {
     reset();
 }
 
@@ -156,23 +149,6 @@ int ActorCfgModel::rowCount( const QModelIndex & parent ) const {
     if(parent.isValid()) {
         return 0;
     }
-
-    /*int x = iterationIdx;
-    if(x < 0) {
-        return 0;
-    }
-    if (x >= iterations.size()) {
-        //FIXME: handle error
-        x = 0;
-    }
-    QVariantMap& cfg = iterations[x].cfg[subject->getId()]
-
-    int rows = 0;
-    foreach(Attribute *a, attrs) {
-        if(a->isVisible(cfg)) {
-            rows++;
-        }
-    }*/
 
     return attrs.isEmpty() || parent.isValid() ? 0 : attrs.size()/*rows*/;
 }
@@ -197,36 +173,10 @@ bool ActorCfgModel::isVisible(Attribute *a) const {
 }
 
 Qt::ItemFlags ActorCfgModel::flags( const QModelIndex & index ) const {
-    int x = iterationIdx;
-    if (x >= iterations.size()) {
-        //FIXME: handle error
-        x = 0;
+    Attribute *currentAttribute = attrs.at(index.row());
+    if (!isVisible(currentAttribute)) {
+        return 0;
     }
-    QVariantMap cfg = iterations[x].cfg.value(subject->getId());
-    if(cfg.isEmpty()) {
-        QVariantMap def;
-        foreach(Attribute *a, attrs) {
-            def[a->getId()] = a->getAttributePureValue();
-        }
-        Attribute *currentAttribute = attrs.at(index.row());
-        if (!isVisible(currentAttribute)) {
-            return 0;
-        }
-    } else {
-        QVariantMap map;
-        foreach(Attribute *a, attrs) {
-            if(cfg.contains(a->getId())) {
-                map[a->getId()] = cfg[a->getId()];
-            } else {
-                map[a->getId()] = a->getAttributePureValue();
-            }
-        }
-        Attribute *currentAttribute = attrs.at(index.row());
-        if (!isVisible(currentAttribute)) {
-            return 0;
-        }
-    }
-
 
     int col = index.column();
     int row = index.row();
@@ -279,38 +229,10 @@ bool ActorCfgModel::setAttributeValue( const Attribute * attr, QVariant & attrVa
     bool isDefaultVal = attr->isDefaultValue();
 
     attrValue = attr->getAttributePureValue();
-
-    if (iterations.isEmpty()) { //rare bug -> need to catch in debug
-        assert(0);
-        return isDefaultVal;
-
-    }
-
-    if (iterationIdx >= 0) {
-        int x = iterationIdx;
-        if (x >= iterations.size()) {
-            //FIXME: handle error
-            x = 0;
-        }
-        const Iteration& it = iterations.at(x);
-        if (it.cfg.contains(subject->getId())) {
-            const QVariantMap& params = it.cfg[subject->getId()];
-            if (params.contains(attr->getId())) {
-                attrValue = params.value(attr->getId());
-                isDefaultVal = false;
-            }
-        }
-    }
     return isDefaultVal;
 }
 
 Attribute* ActorCfgModel::getAttributeByRow(int row) const{
-    int x = iterationIdx;
-    if (x >= iterations.size()) {
-        //FIXME: handle error
-        x = 0;
-    }
-
     QList<Attribute*>visibleAttrs;
     foreach(Attribute* a, attrs) {
         if (isVisible(a)) {
@@ -322,18 +244,6 @@ Attribute* ActorCfgModel::getAttributeByRow(int row) const{
 
 QVariant ActorCfgModel::data(const QModelIndex & index, int role ) const {
     const Attribute *currentAttribute = attrs.at(index.row());
-    //const Attribute *currentAttribute = getAttributeByRow(index.row());
-
-    /*int x = iterationIdx;
-    if (x >= iterations.size()) {
-        //FIXME: handle error
-        x = 0;
-    }
-    QVariantMap& cfg = iterations[x].cfg[subject->getId()];
-
-    if(! currentAttribute->isVisible(cfg)) {
-        return QVariant();
-    }*/
     if (role == DescriptorRole) { // descriptor that will be shown in under editor. 'propDoc' in WorkflowEditor
         return qVariantFromValue<Descriptor>(*currentAttribute);
     }
@@ -345,7 +255,7 @@ QVariant ActorCfgModel::data(const QModelIndex & index, int role ) const {
             switch (role) {
             case Qt::DisplayRole: 
                 return currentAttribute->getDisplayName();
-            case Qt::ToolTipRole: 
+            case Qt::ToolTipRole:
                 return currentAttribute->getDocumentation();
             case Qt::FontRole:
                 if (currentAttribute->isRequiredAttribute()) {
@@ -445,25 +355,10 @@ bool ActorCfgModel::setData( const QModelIndex & index, const QVariant & value, 
             case ConfigurationEditor::ItemValueRole:
                 {
                     const QString& key = editingAttribute->getId();
-                    if (iterationIdx >= 0) {
-                        int x = iterationIdx;
-                        if (x >= iterations.size()) {
-                            //FIXME: handle error
-                            x = 0;
-                        }
-                        QVariantMap& cfg = iterations[x].cfg[subject->getId()];
-                        QVariant old = cfg.contains(key) ? cfg.value(key) : editingAttribute->getAttributePureValue();
-                        if (old != value) {
-                            cfg.insert(key, value);
-                            emit dataChanged(index, index);
-                            uiLog.trace("committed property change");
-                        }
-                    } else {
-                        if (editingAttribute->getAttributePureValue() != value) {
-                            subject->setParameter(key, value);
-                            emit dataChanged(index, index);
-                            uiLog.trace("committed property change");
-                        }
+                    if (editingAttribute->getAttributePureValue() != value) {
+                        subject->setParameter(key, value);
+                        emit dataChanged(index, index);
+                        uiLog.trace("committed property change");
                     }
                     foreach (const AttributeRelation *relation, editingAttribute->getRelations()) {
                         if (relation->valueChangingRelation()) {

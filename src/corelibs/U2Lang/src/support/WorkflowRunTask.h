@@ -81,7 +81,7 @@ typedef QMap<ActorId,ActorId> ActorMap;
 class U2LANG_EXPORT WorkflowRunTask : public WorkflowAbstractRunner {
     Q_OBJECT
 public:
-    WorkflowRunTask(const Schema&, QList<Iteration>, const ActorMap& rmap = ActorMap(),
+    WorkflowRunTask(const Schema&, const ActorMap& rmap = ActorMap(),
         WorkflowDebugStatus *debugInfo = new WorkflowDebugStatus());
     virtual ReportResult report(); 
     virtual QList<WorkerState> getState(Actor*);
@@ -103,7 +103,7 @@ private:
 class WorkflowIterationRunTask : public WorkflowAbstractIterationRunner {
     Q_OBJECT
 public:
-    WorkflowIterationRunTask(const Schema&, const Iteration&, WorkflowDebugStatus *initDebugInfo);
+    WorkflowIterationRunTask(const Schema&, WorkflowDebugStatus *initDebugInfo);
     ~WorkflowIterationRunTask();
     virtual void prepare();
     virtual ReportResult report();
@@ -147,7 +147,7 @@ private:
 class U2LANG_EXPORT WorkflowRunInProcessTask : public WorkflowAbstractRunner {
     Q_OBJECT
 public:
-    WorkflowRunInProcessTask(const Schema & sc, const QList<Iteration> & its);
+    WorkflowRunInProcessTask(const Schema & sc);
     virtual ReportResult report();
     virtual QList<WorkerState> getState(Actor*);
     virtual int getMsgNum(const Link*);
@@ -163,7 +163,7 @@ class RunCmdlineWorkflowTask;
 class WorkflowIterationRunInProcessTask : public WorkflowAbstractIterationRunner {
     Q_OBJECT
 public:
-    WorkflowIterationRunInProcessTask(const Schema & sc, const Iteration & it);
+    WorkflowIterationRunInProcessTask(const Schema & sc);
     ~WorkflowIterationRunInProcessTask();
     
     virtual ReportResult report();

@@ -93,7 +93,6 @@
 #include "PortAliasesConfigurationDialog.h"
 #include "SceneSerializer.h"
 #include "SchemaAliasesConfigurationDialogImpl.h"
-#include "SchemaConfigurationDialog.h"
 #include "WorkflowDesignerPlugin.h"
 #include "WorkflowDocument.h"
 #include "WorkflowEditor.h"
@@ -321,9 +320,6 @@ void WorkflowView::setupErrorList() {
 
 void WorkflowView::setupPropertyEditor() {
     propertyEditor = new WorkflowEditor(this);
-    propertyEditor->setIterated(scene->isIterated());
-
-    connect(propertyEditor, SIGNAL(iterationSelected()), SLOT(sl_refreshActorDocs()));
 }
 
 void WorkflowView::loadSceneFromObject() {
@@ -360,7 +356,6 @@ void WorkflowView::loadSceneFromObject() {
             meta.url = go->getDocument()->getURLString();
         }
         sl_updateTitle();
-        propertyEditor->resetIterations();
         scene->setModified(false);
         sl_refreshActorDocs();
     }
@@ -596,19 +591,6 @@ void WorkflowView::createActions() {
     importSchemaToElement = new QAction(tr("Import scheme to element..."), this);
     importSchemaToElement->setIcon(QIcon(":workflow_designer/images/import.png"));
     connect(importSchemaToElement, SIGNAL(triggered()), SLOT(sl_importSchemaToElement()));
-
-    iterationModeAction = new QAction(tr("Switch on/off iteration mode"), this);
-    iterationModeAction->setIcon(QIcon(":workflow_designer/images/checked_tag.png"));
-    iterationModeAction->setCheckable(true);
-    iterationModeAction->setChecked(scene->isIterated());
-    connect(iterationModeAction, SIGNAL(triggered()), SLOT(sl_iterationsMode()));
-    
-    configureIterationsAction = new QAction(tr("Configure iterations..."), this);
-    configureIterationsAction->setIcon(QIcon(":workflow_designer/images/tag.png"));
-    configureIterationsAction->setEnabled(scene->isIterated());
-    connect(configureIterationsAction, SIGNAL(triggered()), SLOT(sl_configureIterations()));
-
-    connect(iterationModeAction, SIGNAL(toggled(bool)), configureIterationsAction, SLOT(setEnabled(bool)));
 
     selectAction = new QAction(tr("Select all elements"), this);
     connect(selectAction, SIGNAL(triggered()), scene, SLOT(sl_selectAll()));
@@ -929,8 +911,6 @@ void WorkflowView::sl_toggleLock(bool b) {
     cutAction->setEnabled(!running);
 
     stopAction->setEnabled(running);
-    iterationModeAction->setEnabled(!running);
-    configureIterationsAction->setEnabled(!running);
     runAction->setEnabled(!running);
     validateAction->setEnabled(!running);
     configureParameterAliasesAction->setEnabled(!running);
@@ -1057,7 +1037,7 @@ void WorkflowView::sl_refreshActorDocs() {
     foreach(QGraphicsItem* it, scene->items()) {
         if (it->type() == WorkflowProcessItemType) {
             Actor* a = qgraphicsitem_cast<WorkflowProcessItem*>(it)->getProcess();
-            a->getDescription()->update(propertyEditor->getCurrentIteration().getParameters(a->getId()));
+            a->getDescription()->update(a->getValues());
         }
     }
 }
@@ -1079,8 +1059,6 @@ void WorkflowView::setupMDIToolbar(QToolBar* tb) {
     tb->addAction(stopAction);
     runSep = tb->addSeparator();
     tb->addAction(configureParameterAliasesAction);
-    tb->addAction(iterationModeAction);
-    tb->addAction(configureIterationsAction);
     confSep = tb->addSeparator();
     tb->addAction(createScriptAction);
     tb->addAction(editScriptAction);
@@ -1122,8 +1100,6 @@ void WorkflowView::setupActions() {
     runSep->setVisible(editMode);
 
     configureParameterAliasesAction->setVisible(editMode);
-    iterationModeAction->setVisible(editMode);
-    configureIterationsAction->setVisible(editMode);
     confSep->setVisible(editMode);
 
     createScriptAction->setVisible(editMode);
@@ -1172,8 +1148,6 @@ void WorkflowView::setupViewMenu(QMenu* m) {
     m->addAction(configurePortAliasesAction);
     m->addAction(importSchemaToElement);
     m->addSeparator();
-    m->addAction(iterationModeAction);
-    m->addAction(configureIterationsAction);
     m->addSeparator();
     m->addAction(createScriptAction);
     m->addAction(editScriptAction);
@@ -1295,8 +1269,6 @@ void WorkflowView::sl_pickInfo(QListWidgetItem* info) {
                 port->setSelected(true);
             } else {
                 proc->setSelected(true);
-                int itid = info->data(ITERATION_REF).toInt();
-                propertyEditor->selectIteration(itid);
             }
             return;
         }
@@ -1358,9 +1330,9 @@ void WorkflowView::localHostLaunch() {
     const Schema *s = getSchema();
     WorkflowAbstractRunner * t = NULL;
     if(WorkflowSettings::runInSeparateProcess()) {
-        t = new WorkflowRunInProcessTask(*s, s->getIterations());
+        t = new WorkflowRunInProcessTask(*s);
     } else {
-        t = new WorkflowRunTask(*s, s->getIterations(), ActorMap(), debugInfo);
+        t = new WorkflowRunTask(*s, ActorMap(), debugInfo);
     }
 
     t->setReportingEnabled(true);
@@ -1396,7 +1368,7 @@ void WorkflowView::remoteLaunch() {
     }
     assert(settings->getMachineType() == RemoteMachineType_RemoteService);
     const Schema *s = getSchema();
-    AppContext::getTaskScheduler()->registerTopLevelTask(new RemoteWorkflowRunTask(settings, *s, s->getIterations()));
+    AppContext::getTaskScheduler()->registerTopLevelTask(new RemoteWorkflowRunTask(settings, *s));
 }
 
 void WorkflowView::sl_launch() {
@@ -1590,45 +1562,6 @@ void WorkflowView::paintEvent(QPaintEvent *event) {
     MWMDIWindow::paintEvent(event);
 }
 
-void WorkflowView::sl_iterationsMode() {
-    bool iterated = iterationModeAction->isChecked();
-
-    if (!iterated && schema->getIterations().size() > 1) {
-        QMessageBox askBox(QMessageBox::Question, tr("Workflow Designer"),
-            tr("Do you really want to switch off iteration mode?"),
-            QMessageBox::Yes | QMessageBox::No, this);
-        askBox.setDefaultButton(QMessageBox::Yes);
-        askBox.setTextFormat(Qt::RichText);
-        askBox.setInformativeText(tr("A data from the current \"%1\" iteration will be saved "
-            "and other iterations data will be lost.").arg(propertyEditor->getCurrentIteration().name));
-        if (QMessageBox::No == askBox.exec()) {
-            iterationModeAction->setChecked(true);
-            return;
-        }
-    }
-
-    if (scene->isIterated() != iterated) {
-        setSceneIterated(iterated, propertyEditor->getCurrentIteration());
-        propertyEditor->setIterated(iterated);
-        propertyEditor->resetIterations();
-        scene->setModified(true);
-    }
-}
-
-void WorkflowView::sl_configureIterations() {
-    propertyEditor->commit();
-    SchemaConfigurationDialog d(*schema, schema->getIterations(), this);
-    int ret = d.exec();
-    if (d.hasModifications()) {
-        schema->setIterations(d.getIterations());
-        propertyEditor->resetIterations();
-        scene->iterationsChanged();
-    }
-    if (QDialog::Accepted == ret) {
-        sl_launch();
-    }
-}
-
 void WorkflowView::sl_configureParameterAliases() {
     SchemaAliasesConfigurationDialogImpl dlg(*schema, this );
     int ret = QDialog::Accepted;
@@ -1761,22 +1694,6 @@ void WorkflowView::sl_selectPrototype(Workflow::ActorPrototype* p) {
     }
 }
 
-QList<Iteration> WorkflowView::getIterations(const QList<Actor*> &actors) const {
-    QList<Iteration> result;
-    foreach (const Iteration &it, schema->getIterations()) {
-        Iteration copy(it.name);
-        foreach (Actor *a, actors) {
-            if (it.cfg.contains(a->getId())) {
-                copy.cfg.insert(a->getId(), it.cfg[a->getId()]);
-            }
-        }
-        if (!copy.cfg.isEmpty()) {
-            result << copy;
-        }
-    }
-    return result;
-}
-
 void WorkflowView::sl_copyItems() {
     QList<WorkflowProcessItem*> procs;
     foreach(QGraphicsItem* item, scene->selectedItems()) {
@@ -1790,7 +1707,7 @@ void WorkflowView::sl_copyItems() {
 
     QList<Actor*> actors = scene->getSelectedActors();
     Metadata actorMeta = getMeta(procs);
-    lastPaste = HRSchemaSerializer::items2String(actors, getIterations(actors), &actorMeta);
+    lastPaste = HRSchemaSerializer::items2String(actors, &actorMeta);
     pasteAction->setEnabled(true);
     QApplication::clipboard()->setText(lastPaste);
     pasteCount = 0;
@@ -1811,7 +1728,6 @@ void WorkflowView::sl_pasteSample(const QString& s) {
         sl_pasteItems(s, true);
         sl_setRunMode();
         sl_updateTitle();
-        scene->setIterated(false);
         sl_updateUi();
         scene->connectConfigurationEditors();
         scene->sl_selectAll();
@@ -1823,10 +1739,10 @@ void WorkflowView::sl_pasteSample(const QString& s) {
         }
         scene->sl_deselectAll();
         scene->update();
+        sl_refreshActorDocs();
         checkAutoRunWizard();
     } else {
         scene->clearScene();
-        propertyEditor->resetIterations();
         schema->reset();
         sl_pasteSample(s);
     }
@@ -1896,7 +1812,6 @@ void WorkflowView::sl_pasteItems(const QString &s, bool updateSchemaInfo) {
     pastedS.setDeepCopyFlag(false);
     recreateScene();
     scene->connectConfigurationEditors();
-    propertyEditor->resetIterations();
 
     foreach (QGraphicsItem *it, scene->items()) {
         WorkflowProcessItem *proc = qgraphicsitem_cast<WorkflowProcessItem*>(it);
@@ -2048,7 +1963,6 @@ void WorkflowView::runWizard(Wizard *w) {
             recreateScene();
             schema->setWizards(QList<Wizard*>());
         }
-        propertyEditor->resetIterations();
         scene->sl_updateDocs();
         scene->setModified();
     }
@@ -2167,7 +2081,6 @@ void WorkflowView::sl_newScene() {
     meta.name = tr("New schema");
     schema->reset();
     sl_updateTitle();
-    propertyEditor->resetIterations();
     scene->setModified(false);
     scene->update();
     this->sl_updateUi();
@@ -2177,9 +2090,9 @@ void WorkflowView::sl_onSceneLoaded() {
     sl_updateTitle();
     sl_updateUi();
     scene->centerView();
-    propertyEditor->resetIterations();
 
     scene->setModified(false);
+    sl_refreshActorDocs();
     checkAutoRunWizard();
 }
 
@@ -2196,9 +2109,6 @@ void WorkflowView::sl_updateTitle() {
 }
 
 void WorkflowView::sl_updateUi() {
-    bool iterated = scene->isIterated();
-    propertyEditor->setIterated(iterated);
-    iterationModeAction->setChecked(iterated);
     scene->setModified(false);
     showWizard->setVisible(!schema->getWizards().isEmpty());
 }
@@ -2262,25 +2172,8 @@ Actor * WorkflowView::createActor(ActorPrototype *proto, const QVariantMap &para
     return actor;
 }
 
-QList<Iteration> WorkflowView::getIterations() const {
-    if (scene->isIterated()) {
-        return schema->getIterations();
-    } else {
-        QList<Iteration> result;
-        SAFE_POINT(0 == schema->getIterations().size(), "Non-iterated schema has iterations", result << Iteration());
-        result << schema->extractIterationFromConfig();
-        return result;
-    }
-}
-
-void WorkflowView::setIterations(const QList<Iteration> &iters) {
-    if (scene->isIterated()) {
-        schema->setIterations(iters);
-    } else {
-        SAFE_POINT(1 == iters.size(), "More than one iteration are applied", );
-        schema->applyIteration(iters.first());
-    }
-    scene->iterationsChanged();
+void WorkflowView::onModified() {
+    scene->onModified();
 }
 
 WorkflowBusItem * WorkflowView::tryBind(WorkflowPortItem *from, WorkflowPortItem *to) {
@@ -2392,28 +2285,6 @@ Workflow::Metadata WorkflowView::getMeta(const QList<WorkflowProcessItem*> &item
     return result;
 }
 
-void WorkflowView::setSceneIterated(bool iterated, const Iteration &defaultIteration) {
-    scene->setIterated(iterated);
-    if (!iterated) {
-        schema->applyIteration(defaultIteration);
-    } else {
-        SAFE_POINT(0 == schema->getIterations().size(), "Non-iterated schema has iterations", );
-
-        schema->addIteration(schema->extractIterationFromConfig());
-
-        foreach (Actor *proc, schema->getProcesses()) {
-            foreach (Attribute *a, proc->getAttributes()) {
-                if (a->getGroup() != COMMON_GROUP) {
-                    continue;
-                }
-                if (!a->isDefaultValue()) {
-                    a->setAttributeValue(a->getDefaultPureValue());
-                }
-            }
-        }
-    }
-}
-
 /********************************
  * WorkflowScene
  ********************************/
@@ -2437,7 +2308,7 @@ static bool canDrop(const QMimeData* m, QList<ActorPrototype*>& lst) {
 }
 
 WorkflowScene::WorkflowScene(WorkflowView *parent)
-: QGraphicsScene(parent), controller(parent), modified(false), locked(false), runner(NULL), hint(0), iterated(false) {
+: QGraphicsScene(parent), controller(parent), modified(false), locked(false), runner(NULL), hint(0) {
     openDocumentsAction = new QAction(tr("Open document(s)"), this);
     connect(openDocumentsAction, SIGNAL(triggered()), SLOT(sl_openDocuments()));
 }
@@ -2466,7 +2337,6 @@ void WorkflowScene::sl_deleteItem() {
         controller->removeProcessItem(it);
         setModified();
     }
-    controller->propertyEditor->resetIterations();
 
     controller->update();
     emit configurationChanged();
@@ -2565,16 +2435,8 @@ void WorkflowScene::setupLinkCtxMenu(const QString& href, Actor* actor, const QP
     bool isInput = attributeId == BaseAttributes::URL_IN_ATTRIBUTE().getId();
     bool isOutput = attributeId == BaseAttributes::URL_OUT_ATTRIBUTE().getId();
     if (isInput || isOutput) {
-        const ActorId& actorId = actor->getId();
-        const Iteration& iteration = controller->propertyEditor->getCurrentIteration();
-        const QVariantMap& cfg = iteration.getParameters(actorId);
-        QString urlStr;
-        if (cfg.keys().contains(attributeId)) {
-            urlStr = cfg.value(attributeId).toString();
-        } else {
-            Attribute* attribute = actor->getParameter(attributeId);
-            urlStr = attribute->getAttributePureValue().toString();
-        }
+        Attribute *attribute = actor->getParameter(attributeId);
+        QString urlStr = attribute->getAttributePureValue().toString();
 
         if (!urlStr.isEmpty()) {
             QMenu menu;
@@ -2583,14 +2445,6 @@ void WorkflowScene::setupLinkCtxMenu(const QString& href, Actor* actor, const QP
             menu.exec(pos);
         }
     }
-}
-
-bool WorkflowScene::isIterated() const {
-    return iterated;
-}
-
-void WorkflowScene::setIterated(bool value) {
-    iterated = value;
 }
 
 void WorkflowScene::sl_openDocuments() {
@@ -2640,7 +2494,6 @@ void WorkflowScene::sl_reset() {
         removeItem(it);
         delete it;
     }
-    iterated = false;
 }
 
 void WorkflowScene::setModified(bool b) {
@@ -2697,9 +2550,9 @@ void WorkflowScene::drawBackground(QPainter * painter, const QRectF & rect)
     }
 }
 
-void WorkflowScene::iterationsChanged() {
+void WorkflowScene::onModified() {
     assert(!locked);
-    modified = true; 
+    modified = true;
     emit configurationChanged();
 }
 
@@ -2781,9 +2634,6 @@ WorkflowScene * SceneCreator::createScene() {
     foreach (Link *link, schema->getFlows()) {
         createBus(ports, link);
     }
-
-    bool iterated = (schema->getIterations().size() > 0);
-    scene->setIterated(iterated);
 
     WorkflowScene *result = scene;
     scene = NULL;

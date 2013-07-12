@@ -34,7 +34,6 @@ namespace U2 {
 using namespace Workflow;
 class ActorCfgModel;
 class AttributeDatasetsController;
-class IterationListWidget;
 class SpecialParametersPanel;
 class WorkflowView;
 
@@ -48,42 +47,28 @@ public:
     QVariant saveState() const;
     void restoreState(const QVariant&);
 
-    Iteration & getCurrentIteration() const;
     void changeScriptMode(bool _mode);
 
     void setEditable(bool editable);
 
     bool eventFilter(QObject* object, QEvent* event);
 
-    void setIterated(bool iterated);
-
     void setSpecialPanelEnabled(bool isEnabled);
     void commitDatasets(const QString &attrId, const QList<Dataset> &sets);
-
-signals:
-    void iterationSelected();
 
 public slots:
     void editActor(Actor*);
     void editPort(Port*);
     void setDescriptor(Descriptor* d, const QString& hint = QString());
     void edit(Configuration* subject);
-    void selectIteration(int id);
     void reset();
     void commit();
-    void resetIterations();
-    void commitIterations();
-    void sl_iteratedChanged();
-    void sl_iterationSelected();
+    void sendModified();
     void sl_resizeSplitter(bool);
-    
-protected:
-
-    //void commitData(const QString& name, const QVariant& val);
 
 private slots:
     void finishPropertyEditing();
-    void updateIterationData();
+    void updateEditingData();
     void handleDataChanged(const QModelIndex & topLeft, const QModelIndex & bottomRight);
     void editingLabelFinished();
     void sl_showPropDoc();
@@ -97,7 +82,6 @@ private:
 
 private:
     SpecialParametersPanel *specialParameters;
-    IterationListWidget* iterationList;
     WorkflowView* owner;
     ConfigurationEditor* custom;
     QWidget* customWidget;

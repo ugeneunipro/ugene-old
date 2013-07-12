@@ -51,7 +51,6 @@ Schema::Schema( const Schema & other ) {
 
 Schema & Schema::operator =( const Schema & other ) {
     procs = other.procs;
-    iterations = other.iterations;
     domain = other.domain;
     graph = ActorBindingsGraph(other.graph);
     deepCopy = false;
@@ -60,25 +59,24 @@ Schema & Schema::operator =( const Schema & other ) {
     return *this;
 }
 
-void Schema::applyConfiguration(const Iteration& cfg, QMap<ActorId, ActorId> remap) {
-    foreach(Actor* a, procs) {
-        ActorId id = remap.key(a->getId());
-        if (cfg.cfg.contains(id)) {
-            a->setParameters(cfg.cfg.value(id));
-        }
-    }
-}
-
 void Schema::reset() {
     if (deepCopy) {
         qDeleteAll(procs);
         procs.clear();
     }
-    iterations.clear();
     graph.clear();
     qDeleteAll(wizards);
     wizards.clear();
 }
+
+void Schema::applyConfiguration(const QMap<ActorId, QVariantMap> &cfg) {
+    foreach(Actor* a, procs) {
+        if (cfg.contains(a->getId())) {
+            a->setParameters(cfg[a->getId()]);
+        }
+    }
+}
+
 
 Actor * Schema::actorById( ActorId id) const {
     return WorkflowUtils::actorById(procs, id);
@@ -94,61 +92,12 @@ QList<Actor*> Schema::actorsByOwnerId(ActorId id) const {
     return res;
 }
 
-int Schema::iterationById(int id) {
-    for(int i = 0; i < iterations.size(); i++) {
-        if (iterations.at(i).id == id) {
-            return i;
-        }
-    }
-    return -1;
-}
-
 QString Schema::getDomain() const {
     return domain;
 }
 
 void Schema::setDomain(const QString & d) {
     domain = d;
-}
-
-const QList<Iteration> & Schema::getIterations() const {
-    return iterations;
-}
-
-void Schema::setIterations(const QList<Iteration> &value) {
-    iterations = value;
-}
-
-void Schema::addIteration(const Iteration &value) {
-    iterations << value;
-}
-
-void Schema::applyIteration(const Iteration &iter) {
-    foreach(Actor* a, procs) {
-        if (iter.cfg.contains(a->getId())) {
-            a->setParameters(iter.cfg.value(a->getId()));
-        }
-    }
-    iterations.clear();
-}
-
-Iteration Schema::extractIterationFromConfig() const {
-    Iteration newIter("Default iteration");
-    foreach (Actor *proc, procs) {
-        QVariantMap params;
-        foreach (Attribute *a, proc->getAttributes()) {
-            if (a->getGroup() != COMMON_GROUP) {
-                continue;
-            }
-            if (!a->isDefaultValue()) {
-                params[a->getId()] = a->getAttributePureValue();
-            }
-        }
-        if (!params.isEmpty()) {
-            newIter.cfg[proc->getId()] = params;
-        }
-    }
-    return newIter;
 }
 
 const ActorBindingsGraph & Schema::getActorBindingsGraph() const {
@@ -479,14 +428,6 @@ void Schema::removeProcess(Actor *actor) {
         }
     }
 
-    // remove actor from iterations
-    for (int i = 0; i<iterations.size(); i++) {
-        Iteration& it = iterations[i];
-        if (it.cfg.contains(actor->getId())) {
-            it.cfg.remove(actor->getId());
-        }
-    }
-
     procs.removeOne(actor);
     update();
 }
@@ -534,31 +475,12 @@ void Schema::renameProcess(const ActorId &oldId, const ActorId &newId) {
         p->remap(m);
     }
     update(m);
-
-    // rename iterations' actors
-    QList<Iteration>::iterator i = iterations.begin();
-    for (; i!=iterations.end(); i++) {
-        if (i->cfg.contains(oldId)) {
-            i->cfg[newId] = i->cfg[oldId];
-            i->cfg.remove(oldId);
-        }
-    }
 }
 
 void Schema::merge(const Schema &other) {
     procs << other.procs;
     graph.getBindings().unite(other.graph.getBindings());
     portAliases << other.portAliases;
-
-    // Merge iterations
-    QList<Iteration>::iterator i = iterations.begin();
-    for (; i!=iterations.end(); i++) {
-        foreach (const Iteration otherI, other.iterations) {
-            if (otherI.name == i->name) {
-                i->cfg.unite(otherI.cfg);
-            }
-        }
-    }
 }
 
 void Schema::replaceProcess(Actor *oldActor, Actor *newActor, const QList<PortMapping> &mappings) {
@@ -598,64 +520,6 @@ void Schema::replaceProcess(Actor *oldActor, Actor *newActor, const QList<PortMa
 
     procs.removeOne(oldActor);
     procs.append(newActor);
-}
-
-/**************************
- * Iteration
- **************************/
-Iteration::Iteration() : id(nextId()) {
-}
-
-Iteration::Iteration(const QString& n) : name(n), id(nextId()) {
-}
-
-Iteration::Iteration(const Iteration & it) : name(it.name), id(it.id), cfg(it.cfg) {
-}
-
-int Iteration::nextId() {
-    static int id = 0;
-    return id++;
-}
-
-void Iteration::remap(QMap<ActorId, ActorId> map) {
-    CfgMap newCfg;
-    QMapIterator< ActorId, QVariantMap> it(cfg);
-    while (it.hasNext())
-    {
-        it.next();
-        newCfg.insert(map.value(it.key()), it.value());
-    }
-    cfg = newCfg;
-}
-
-void Iteration::remapAfterPaste(QMap<ActorId, ActorId> map) {
-    CfgMap newCfg;
-    QMapIterator< ActorId, QVariantMap> it(cfg);
-    while (it.hasNext()){
-        it.next();
-        if(map.contains(it.key())){
-            newCfg.insert(map.take(it.key()), it.value());
-        }else{
-            newCfg.insert(it.key(), it.value());
-        }
-    }
-    cfg = newCfg;
-}
-
-bool Iteration::isEmpty() const {
-    return cfg.isEmpty();
-}
-
-const QMap<ActorId, QVariantMap> &Iteration::getConfig() const {
-    return cfg;
-}
-
-QMap<ActorId, QVariantMap> &Iteration::getConfig() {
-    return cfg;
-}
-
-QVariantMap Iteration::getParameters(const ActorId& id) const  {
-    return cfg.value(id);
 }
 
 /************************************************************************/

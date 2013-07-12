@@ -20,7 +20,6 @@
  */
 
 #include "WorkflowEditor.h"
-#include "IterationListWidget.h"
 
 #include "WorkflowEditorDelegates.h"
 
@@ -96,7 +95,7 @@ SuperDelegate::SuperDelegate(WorkflowEditor *parent) : ProxyDelegate(parent), ow
 }
 
 bool SuperDelegate::handlePropertyValueList(const QString& name, QVariant list) const {
-    return owner->iterationList->expandList(owner->actor->getId(), name, list);
+    return true;
 }
 
 } // U2

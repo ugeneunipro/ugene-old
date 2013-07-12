@@ -54,7 +54,6 @@ public:
 
     #define ACTOR_REF (Qt::UserRole)
     #define PORT_REF (Qt::UserRole + 1)
-    #define ITERATION_REF (Qt::UserRole + 2)
     #define TEXT_REF (Qt::UserRole + 3)
 
     // used in GUI schema validating

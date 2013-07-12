@@ -96,30 +96,25 @@ WorkflowAbstractIterationRunner::WorkflowAbstractIterationRunner(const QString &
 /*******************************************
  * WorkflowRunTask
  *******************************************/
-WorkflowRunTask::WorkflowRunTask(const Schema& sh, QList<Iteration> lst,
-    const QMap<ActorId, ActorId>& remap, WorkflowDebugStatus *debugInfo)
+WorkflowRunTask::WorkflowRunTask(const Schema& sh, const QMap<ActorId, ActorId>& remap, WorkflowDebugStatus *debugInfo)
     : WorkflowAbstractRunner(tr("Execute workflow"),
     TaskFlags(TaskFlag_NoRun) | TaskFlag_ReportingIsSupported | TaskFlag_OnlyNotificationReport), rmap(remap), flows(sh.getFlows())
 {
 
     GCOUNTER( cvar, tvar, "WorkflowRunTask" );
-    if (lst.isEmpty()) { //  non-iterated schema
-        lst << sh.extractIterationFromConfig();
-    }
-    Q_ASSERT(!lst.isEmpty());
     Q_ASSERT(NULL != debugInfo);
-    if(NULL == debugInfo->parent()) {
+    if (NULL == debugInfo->parent()) {
         debugInfo->setParent(this);
     }
-    foreach(const Iteration& it, lst) {
-        WorkflowIterationRunTask* t = new WorkflowIterationRunTask(sh, it, debugInfo);
-        WorkflowMonitor *m = t->getMonitor();
-        if (NULL != m) {
-            monitors << m;
-        }
-        connect(t, SIGNAL(si_ticked()), SIGNAL(si_ticked()));
-        addSubTask(t);
+
+    WorkflowIterationRunTask* t = new WorkflowIterationRunTask(sh, debugInfo);
+    WorkflowMonitor *m = t->getMonitor();
+    if (NULL != m) {
+        monitors << m;
     }
+    connect(t, SIGNAL(si_ticked()), SIGNAL(si_ticked()));
+    addSubTask(t);
+
     setMaxParallelSubtasks(MAX_PARALLEL_SUBTASKS_AUTO);
     if(AppContext::getCMDLineRegistry()->hasParameter(OUTPUT_PROGRESS_OPTION)) {
         QTimer * timer = new QTimer(this);
@@ -205,17 +200,16 @@ Task::ReportResult WorkflowRunTask::report() {
 * WorkflowIterationRunTask
 *******************************************/
 
-WorkflowIterationRunTask::WorkflowIterationRunTask(const Schema& sh, const Iteration& it,
+WorkflowIterationRunTask::WorkflowIterationRunTask(const Schema& sh,
     WorkflowDebugStatus *initDebugInfo)
-    : WorkflowAbstractIterationRunner(QString("%1").arg(it.name),
+    : WorkflowAbstractIterationRunner(tr("Default iteration"),
     (getAdditionalFlags() | TaskFlag_FailOnSubtaskCancel)), context(NULL),
     schema(new Schema()), scheduler(NULL), debugInfo(initDebugInfo), isNextTickRestoring(false)
 {
 
     rmap = HRSchemaSerializer::deepCopy(sh, schema, stateInfo);
     SAFE_POINT_OP(stateInfo, );
-    schema->applyConfiguration(it, rmap);
-    
+
     if(schema->getDomain().isEmpty()) {
         QList<DomainFactory*> factories = WorkflowEnv::getDomainRegistry()->getAllEntries();
         assert(!factories.isEmpty());
@@ -526,19 +520,14 @@ void WorkflowIterationRunTask::sl_convertMessages2Documents(const Workflow::Link
 /*******************************************
  * WorkflowRunInProcessTask
  *******************************************/
-WorkflowRunInProcessTask::WorkflowRunInProcessTask(const Schema & sc, const QList<Iteration> & its) :
+WorkflowRunInProcessTask::WorkflowRunInProcessTask(const Schema & sc) :
 WorkflowAbstractRunner(tr("Execute workflow in separate process"), TaskFlags(TaskFlag_NoRun) | TaskFlag_ReportingIsSupported | TaskFlag_OnlyNotificationReport) {
     GCOUNTER(cvar, tvar, "WorkflowRunInProcessTask");
-    QList<Iteration> iters = its;
-    if (iters.isEmpty()) { //  non-iterated schema
-        iters << sc.extractIterationFromConfig();
-    }
-    assert(!iters.isEmpty());
-    foreach(const Iteration& it, iters) {
-        WorkflowIterationRunInProcessTask * t = new WorkflowIterationRunInProcessTask(sc, it);
-        monitors << t->getMonitor();
-        addSubTask(t);
-    }
+
+    WorkflowIterationRunInProcessTask * t = new WorkflowIterationRunInProcessTask(sc);
+    monitors << t->getMonitor();
+    addSubTask(t);
+
     setMaxParallelSubtasks(MAX_PARALLEL_SUBTASKS_AUTO);
     
     QTimer * timer = new QTimer(this);
@@ -581,8 +570,8 @@ int WorkflowRunInProcessTask::getMsgPassed(const Link * l) {
 /*******************************************
  * WorkflowIterationRunInProcessTask
  *******************************************/
-WorkflowIterationRunInProcessTask::WorkflowIterationRunInProcessTask(const Schema & sc, const Iteration & it) :
-WorkflowAbstractIterationRunner(QString("Execute iteration '%1'").arg(it.name), TaskFlags_NR_FOSCOE), schema(new Schema()),
+WorkflowIterationRunInProcessTask::WorkflowIterationRunInProcessTask(const Schema & sc) :
+WorkflowAbstractIterationRunner("Default iteration", TaskFlags_NR_FOSCOE), schema(new Schema()),
 saveSchemaTask(NULL), monitor(NULL), wfMonitor(NULL) {
     tempFile.setFileTemplate(QString("%1/XXXXXX.uwl").arg(QDir::tempPath()));
     if(!tempFile.open()) {
@@ -595,8 +584,6 @@ saveSchemaTask(NULL), monitor(NULL), wfMonitor(NULL) {
     
     rmap = HRSchemaSerializer::deepCopy(sc, schema, stateInfo);
     SAFE_POINT_OP(stateInfo, );
-    schema->applyConfiguration(it, rmap);
-    schema->setIterations(QList<Iteration>());
     wfMonitor = new SeparateProcessMonitor(this, schema->getProcesses());
     saveSchemaTask = new SaveWorkflowTask(schema, meta, true);
     saveSchemaTask->setSubtaskProgressWeight(0);

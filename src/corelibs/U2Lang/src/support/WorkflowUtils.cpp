@@ -155,24 +155,17 @@ QStringList WorkflowUtils::expandToUrls(const QString& s) {
     return result;
 }
 
-static bool validateParameters(const Schema &schema, QList<ValidateError> &infoList, const Iteration *it, const QMap<ActorId, ActorId> &map) {
+static bool validateParameters(const Schema &schema, QList<ValidateError> &infoList) {
     bool good = true;
     foreach (Actor* a, schema.getProcesses()) {
         QStringList l;
         good &= a->validate(l);
-        foreach(const QString &s, l) {
-            QString error = s;
+        foreach(const QString &error, l) {
             QString id = a->getId();
-            if (NULL != it) {
-                error = QObject::tr("Iteration '%1': %2").arg(it->name).arg(s);
-                id = map.key(a->getId());
-            }
+            //id = map.key(a->getId());
             ValidateError item;
             item[TEXT_REF] = error;
             item[ACTOR_REF] = id;
-            if (NULL != it) {
-                item[ITERATION_REF] = it->id;
-            }
             infoList << item;
         }
     }
@@ -272,19 +265,8 @@ bool WorkflowUtils::validate(const Schema &schema, QList<ValidateError> &infoLis
         infoList.append( item );
     }
 
-    if (0 == schema.getIterations().size()) {
-        good &= validateParameters(schema, infoList, NULL, QMap<ActorId, ActorId>());
-    }
+    good &= validateParameters(schema, infoList);
 
-    foreach (const Iteration& it, schema.getIterations()) {
-        Schema sh;
-        U2OpStatusImpl os;
-        QMap<ActorId, ActorId> map = HRSchemaSerializer::deepCopy(schema, &sh, os);
-        SAFE_POINT_OP(os, false);
-        sh.applyConfiguration(it, map);
-
-        good &= validateParameters(sh, infoList, &it, map);
-    }
     return good;
 }
 

@@ -48,9 +48,9 @@ namespace U2 {
 * RemoteWorkflowRunTask
 ***************************************/
 
-RemoteWorkflowRunTask::RemoteWorkflowRunTask( const RemoteMachineSettingsPtr& m, const Schema & sc, const QList<Iteration> & its ) 
+RemoteWorkflowRunTask::RemoteWorkflowRunTask( const RemoteMachineSettingsPtr& m, const Schema & sc)
     : Task( tr( "Workflow run task on the cloud" ), TaskFlags_FOSCOE | TaskFlag_ReportingIsSupported | TaskFlag_ReportingIsEnabled ), machineSettings( m ), 
-      machine( NULL ), schema( sc ), iterations( its ), taskId(0), eventLoop(NULL),taskIsActive(false) 
+      machine( NULL ), schema( sc ), taskId(0), eventLoop(NULL),taskIsActive(false) 
 {
     GCOUNTER(cvar, tvar, "WorkflowOnTheCloud");
     if( NULL == machineSettings ) {
@@ -81,18 +81,6 @@ void RemoteWorkflowRunTask::preprocessSchema()
 
                 actor->addParameter( BaseAttributes::URL_LOCATION_ATTRIBUTE().getId(), 
                     new Attribute( BaseAttributes::URL_LOCATION_ATTRIBUTE(), BaseTypes::BOOL_TYPE(), false, true ) );
-        }
-
-        QList<Iteration>::iterator it = iterations.begin();
-        ActorId id = actor->getId();
-        while( it != iterations.end() ) {
-            QList<QString> parameterNames = actor->getParameters().keys();
-            foreach( const QString & paramName, parameterNames ) {
-                if( !it->cfg[id].contains( paramName ) ) {
-                    it->cfg[id][paramName] = actor->getParameter( paramName )->getAttributePureValue();
-                }
-            }
-            ++it;
         }
     }
 }
@@ -135,45 +123,36 @@ void RemoteWorkflowRunTask::prepare()
 
         Attribute * urlInAttr = actor->getParameter( BaseAttributes::URL_IN_ATTRIBUTE().getId() );
         if( NULL != urlInAttr ) {
-            QList<Iteration>::iterator it = iterations.begin();
-            while( it != iterations.end() ) {
-                if( it->cfg[actorId].value( BaseAttributes::URL_LOCATION_ATTRIBUTE().getId() ).value<bool>() ) { // file located on this computer
-                    QString urlpath = it->cfg[actorId].value( BaseAttributes::URL_IN_ATTRIBUTE().getId() ).value<QString>();
-                    // multiple urls are in the same string
-                    // TODO: folder contents handling
-                    QStringList urls = urlpath.split(';', QString::SkipEmptyParts); 
-                    QStringList newPathes;
-                    foreach (const GUrl& filePath, urls) {
-                        QString path = TASK_INPUT_DIR + filePath.fileName();
-                        inputUrls.append(filePath.getURLString());
-                        newPathes.append(path);
-                    }
-                    // skip first semicolon
-                    QString newPath = newPathes.join(";");
-                    it->cfg[actorId][BaseAttributes::URL_IN_ATTRIBUTE().getId()] = newPath;
+            Attribute * urlLocAttr = actor->getParameter(BaseAttributes::URL_LOCATION_ATTRIBUTE().getId());
+            assert(NULL != urlLocAttr);
+            if (urlLocAttr->getAttributePureValue().toBool()) { // file located on this computer
+                QString urlpath = urlInAttr->getAttributePureValue().toString();
+                // multiple urls are in the same string
+                // TODO: folder contents handling
+                QStringList urls = urlpath.split(';', QString::SkipEmptyParts); 
+                QStringList newPathes;
+                foreach (const GUrl& filePath, urls) {
+                    QString path = TASK_INPUT_DIR + filePath.fileName();
+                    inputUrls.append(filePath.getURLString());
+                    newPathes.append(path);
                 }
-                ++it;
+                // skip first semicolon
+                QString newPath = newPathes.join(";");
+                urlInAttr->setAttributeValue(newPath);
             }
         }
 
         Attribute * urlOutAttr = actor->getParameter( BaseAttributes::URL_OUT_ATTRIBUTE().getId() );
         if( NULL != urlOutAttr ) {
             assert( NULL == actor->getParameter( BaseAttributes::URL_LOCATION_ATTRIBUTE().getId() ) );
-            QList<Iteration>::iterator it = iterations.begin();
-            while( it != iterations.end() ) {
-                QVariantMap cfg = it->getParameters( actorId );
-                GUrl filePath = cfg.value( BaseAttributes::URL_OUT_ATTRIBUTE().getId() ).value<QString>();
-                QString newPath = TASK_OUTPUT_DIR + filePath.fileName();
-                outputUrls.append(filePath.getURLString());
-                it->cfg[actorId][BaseAttributes::URL_OUT_ATTRIBUTE().getId()] = newPath;
-                ++it;
-            }
+            GUrl filePath = urlOutAttr->getAttributePureValue().toString();
+            QString newPath = TASK_OUTPUT_DIR + filePath.fileName();
+            outputUrls.append(filePath.getURLString());
+            urlOutAttr->setAttributeValue(newPath);
         }
     }
 
-    schema.setIterations(iterations);
     QByteArray rawData = HRSchemaSerializer::schema2String(schema, NULL).toUtf8();
-    
     taskSettings.insert(CoreLibConstants::WORKFLOW_SCHEMA_ATTR, rawData);
     taskSettings.insert(CoreLibConstants::DATA_IN_ATTR, inputUrls);
     taskSettings.insert(CoreLibConstants::DATA_OUT_ATTR, outputUrls);

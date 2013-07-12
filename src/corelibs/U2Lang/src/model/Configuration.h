@@ -49,6 +49,7 @@ public:
     // sets if only parameter with 'name' exists
     virtual void setParameter(const QString& name, const QVariant& val);
     void setParameters(const QVariantMap&);
+    QVariantMap getValues() const;
     virtual bool hasParameter(const QString & name) const;
     
     // getters/setters

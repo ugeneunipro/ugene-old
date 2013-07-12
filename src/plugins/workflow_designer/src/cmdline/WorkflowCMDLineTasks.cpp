@@ -140,22 +140,7 @@ static void setSchemaCMDLineOptions( Schema * schema, int optionsStartAtIdx ) {
                 arg( param.first ));
             continue;
         }
-        // TODO: fix this cast!
-        if (NULL == dynamic_cast<URLAttribute*>(attr)) {
-            QList<Iteration> iterations = schema->getIterations();
-            if (0 == iterations.size()) {
-                attr->setAttributeValue(value);
-            } else {
-                QList<Iteration>::iterator it = iterations.begin();
-                while( it != iterations.end() ) { // TODO: make different values for different iterations
-                    it->cfg[id].insert( paramName, value );
-                    ++it;
-                }
-                schema->setIterations(iterations);
-            }
-        } else {
-            attr->setAttributeValue(value);
-        }
+        attr->setAttributeValue(value);
     }
 }
 
@@ -198,7 +183,7 @@ QList<Task*> WorkflowRunFromCMDLineBase::onSubTaskFinished( Task* subTask ) {
 * WorkflowRunFromCMDLineTask
 *******************************************/
 Task * WorkflowRunFromCMDLineTask::getWorkflowRunTask() const {
-    return new WorkflowRunTask(*schema, schema->getIterations(), remapping);
+    return new WorkflowRunTask(*schema, remapping);
 }
 
 /*******************************************
@@ -209,7 +194,7 @@ WorkflowRemoteRunFromCMDLineTask::WorkflowRemoteRunFromCMDLineTask() {
 
 Task * WorkflowRemoteRunFromCMDLineTask::getWorkflowRunTask() const {
     assert(settings != NULL);
-    return new RemoteWorkflowRunTask( settings, *schema, schema->getIterations());
+    return new RemoteWorkflowRunTask( settings, *schema );
 }
 
 void WorkflowRemoteRunFromCMDLineTask::prepare()

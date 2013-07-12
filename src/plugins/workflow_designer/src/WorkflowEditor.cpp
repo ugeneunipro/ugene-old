@@ -21,7 +21,6 @@
 
 #include "WorkflowEditor.h"
 #include "WorkflowViewController.h"
-#include "IterationListWidget.h"
 #include "WorkflowEditorDelegates.h"
 
 #include "ActorCfgModel.h"
@@ -74,14 +73,7 @@ customWidget(NULL), subject(NULL), actor(NULL)
     caption->setMinimumHeight(nameEdit->sizeHint().height());
     //doc->setMaximumHeight(height()/4);
 
-    iterationList = new IterationListWidget(this);
-    iterationBox->layout()->addWidget(iterationList);
-    connect(iterationBox, SIGNAL(toggled(bool)), iterationList, SLOT(setVisible(bool)));
-    connect(iterationBox, SIGNAL(toggled(bool)), SLOT(sl_resizeSplitter(bool)));
-    iterationBox->setChecked(false);
-    //iterationBox->setMaximumHeight(height()/4);
-
-    actorModel = new ActorCfgModel(this, iterationList->list());
+    actorModel = new ActorCfgModel(this);
     table->setModel(actorModel);
     table->horizontalHeader()->setResizeMode(QHeaderView::Interactive);
     
@@ -102,12 +94,6 @@ customWidget(NULL), subject(NULL), actor(NULL)
     doc->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     propDoc->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     doc->installEventFilter(this);
-    
-    connect(iterationList, SIGNAL(iterationListAboutToChange()), SLOT(finishPropertyEditing()));
-    connect(iterationList, SIGNAL(selectionChanged()), SLOT(updateIterationData()));
-    connect(iterationList, SIGNAL(listChanged()), SLOT(commitIterations()));
-    connect(iterationList, SIGNAL(iteratedChanged()), SLOT(sl_iteratedChanged()));
-    connect(iterationList, SIGNAL(selectionChanged()), SLOT(sl_iterationSelected()));
 
     connect(nameEdit, SIGNAL(editingFinished()), SLOT(editingLabelFinished()));
 
@@ -118,16 +104,8 @@ customWidget(NULL), subject(NULL), actor(NULL)
     //connect(doc, SIGNAL(customContextMenuRequested(const QPoint &)), SLOT(sl_contextMenuForDoc(const QPoint &)));
 }
 
-void WorkflowEditor::sl_iterationSelected() {
-    if (NULL != specialParameters && NULL != actor) {
-        specialParameters->editActor(actor);
-    }
-    emit iterationSelected();
-}
-
 void WorkflowEditor::setEditable(bool editable) {
     table->setDisabled(!editable);
-    iterationList->setDisabled(!editable);
     foreach(QWidget* w, inputPortWidget) { w->setDisabled(!editable); }
     foreach(QWidget* w, outputPortWidget) { w->setDisabled(!editable); }
 }
@@ -170,7 +148,7 @@ void WorkflowEditor::changeSizes(QWidget *w, int h) {
 
 void WorkflowEditor::handleDataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight) {
     if (topLeft == bottomRight) {
-        commitIterations();
+        sendModified();
     }
 }
 
@@ -191,20 +169,11 @@ void WorkflowEditor::changeScriptMode(bool _mode) {
     }
 }
 
-void WorkflowEditor::selectIteration(int id) {
-    iterationList->selectIteration(id);
-}
-
-Iteration & WorkflowEditor::getCurrentIteration() const {
-    return iterationList->list()[iterationList->current()];
-}
-
-void WorkflowEditor::updateIterationData() {
+void WorkflowEditor::updateEditingData() {
     if (sender()) {
         finishPropertyEditing();
     }
-    actorModel->setIterations(iterationList->list());
-    actorModel->selectIteration(iterationList->current());
+    actorModel->update();
 }
 
 void WorkflowEditor::sl_showDoc(const QString& str) {
@@ -258,9 +227,6 @@ void WorkflowEditor::reset() {
     ind = splitter->indexOf(paramBox);
     splitter->setStretchFactor(ind, 0);
     sizes[ind] = 0;
-    ind = splitter->indexOf(iterationBox);
-    splitter->setStretchFactor(ind, 0);
-    sizes[ind] = 0;
 
     sizes[indDoc] = splitterHeight/2;
     splitter->setStretchFactor(indDoc, 1);
@@ -277,38 +243,24 @@ void WorkflowEditor::reset() {
     }
 }
 
-void WorkflowEditor::resetIterations() {
-    //disconnect(iterationList, SIGNAL(listChanged()), this, SLOT(commitIterations()));
-    iterationList->setList(owner->getIterations());
-    //connect(iterationList, SIGNAL(listChanged()), SLOT(commitIterations()));
-}
-
 void WorkflowEditor::commitDatasets(const QString &attrId, const QList<Dataset> &sets) {
     assert(NULL != actor);
-    Iteration &current = getCurrentIteration();
-    QVariantMap &data = current.cfg[actor->getId()];
-    data[attrId] = qVariantFromValue(sets);
-    commitIterations();
+    Attribute *attr = actor->getParameter(attrId);
+    attr->setAttributeValue(qVariantFromValue< QList<Dataset> >(sets));
+    sendModified();
 }
 
-void WorkflowEditor::commitIterations() {
-    uiLog.trace("committing iterations data");
-    owner->setIterations(iterationList->list());
-}
-
-void WorkflowEditor::sl_iteratedChanged() {
-    owner->getScene()->setIterated(true);
-    owner->sl_updateUi();
+void WorkflowEditor::sendModified() {
+    uiLog.trace("committing schema data");
+    owner->onModified();
 }
 
 void WorkflowEditor::finishPropertyEditing() {
-    //table->setCurrentCell(0,0, QItemSelectionModel::NoUpdate);
-    table->setCurrentIndex(QModelIndex()/*table->model()->index(0, 0, QModelIndex())*/);
+    table->setCurrentIndex(QModelIndex());
 }
 
 void WorkflowEditor::commit() {
     finishPropertyEditing();
-    //commitIterations();
 }
 
 void WorkflowEditor::editActor(Actor* a) {
@@ -524,7 +476,7 @@ void WorkflowEditor::edit(Configuration* cfg) {
     if (subject && !customWidget) {
         assert(actor);
         actorModel->setActor(actor);
-        updateIterationData();
+        updateEditingData();
         tableSplitter->setVisible(paramBox->isChecked());
         /*if(paramBox->isChecked()) {
             h = table->sizeHint().height();
@@ -576,10 +528,6 @@ bool WorkflowEditor::eventFilter(QObject* object, QEvent* event) {
     return false;
 }
 
-void WorkflowEditor::setIterated(bool iterated) {
-    iterationBox->setVisible(iterated);
-}
-
 void WorkflowEditor::sl_linkActivated(const QString& url) {
     const QString& id = WorkflowUtils::getParamIdFromHref(url);
     
@@ -624,12 +572,7 @@ void SpecialParametersPanel::editActor(Actor *a) {
         if (NULL == urlAttr) {
             continue;
         }
-        QVariantMap cfg = editor->getCurrentIteration().getConfig().value(a->getId());
-        if (cfg.contains(attrId)) {
-            sets[attrId] = cfg[attrId].value< QList<Dataset> >();
-        } else {
-            sets[attrId] = Dataset::getDefaultDatasetList();
-        }
+        sets[attrId] = urlAttr->getAttributePureValue().value< QList<Dataset> >();
         controllers[attrId] = new AttributeDatasetsController(sets[attrId]);
         connect(controllers[attrId], SIGNAL(si_attributeChanged()), SLOT(sl_datasetsChanged()));
         addWidget(controllers[attrId]);

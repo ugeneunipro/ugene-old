@@ -70,6 +70,14 @@ void Configuration::setParameters(const QVariantMap& cfg) {
     }
 }
 
+QVariantMap Configuration::getValues() const {
+    QVariantMap result;
+    foreach (Attribute *attr, params) {
+        result[attr->getId()] = attr->getAttributePureValue();
+    }
+    return result;
+}
+
 bool Configuration::hasParameter(const QString & name) const {
     return params.contains(name);
 }

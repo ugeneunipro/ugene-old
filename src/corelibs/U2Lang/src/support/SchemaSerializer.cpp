@@ -203,43 +203,6 @@ void SchemaSerializer::schema2xml(const Schema& schema, QDomDocument& xml) {
     projectElement.appendChild(el);
 }
 
-void SchemaSerializer::saveIterations(const QList<Iteration>& lst, QDomElement& proj) {
-    foreach(const Iteration& it, lst) {
-        QDomElement el = proj.ownerDocument().createElement(ITERATION_EL);
-        el.setAttribute(ID_ATTR, it.id);
-        el.setAttribute(NAME_ATTR, it.name);
-        QVariant v = qVariantFromValue<CfgMap>(it.cfg);
-        el.appendChild(proj.ownerDocument().createTextNode(QVariantUtils::var2String(v)));
-        proj.appendChild(el);
-    }
-}
-void SchemaSerializer::readIterations(QList<Iteration>& lst, const QDomElement& proj, const QMap<ActorId, ActorId>& remapping) {
-    QDomNodeList paramNodes = proj.elementsByTagName(ITERATION_EL);
-    for(int i=0; i<paramNodes.size(); i++) {
-        QDomElement el = paramNodes.item(i).toElement();
-        if (el.isNull()) continue;
-        Iteration it(el.attribute(NAME_ATTR));
-        if (el.hasAttribute(ID_ATTR)) {
-            it.id = el.attribute(ID_ATTR).toInt();
-        }
-        QVariant var = QVariantUtils::String2Var(el.text());
-        if (var.canConvert<CfgMap>()) {
-            it.cfg = var.value<CfgMap>();
-        }
-        if (var.canConvert<IterationCfg>()) {
-            IterationCfg tmp = var.value<IterationCfg>();
-            QMapIterator<IterationCfgKey, QVariant> tit(tmp);
-            while (tit.hasNext())
-            {
-                tit.next();
-                it.cfg[tit.key().first].insert(tit.key().second, tit.value());
-            }
-        }
-        it.remap(remapping);
-        lst.append(it);
-    }
-}
-
 void SchemaSerializer::readConfiguration(Configuration* cfg, const QDomElement& owner) {
     QDomNodeList paramNodes = owner.elementsByTagName(PARAMS_EL);
     for(int i=0; i<paramNodes.size(); i++) {

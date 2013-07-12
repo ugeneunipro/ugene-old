@@ -1106,20 +1106,20 @@ void HRSchemaSerializer::parseMarkerDefinition(Actor *proc, const QString &marke
     outPort->setNewType(newType);
 }
 
-Iteration HRSchemaSerializer::parseIteration(Tokenizer & tokenizer, const QString & iterationName, 
+QMap<ActorId, QVariantMap> HRSchemaSerializer::parseIteration(Tokenizer & tokenizer,
                                              const QMap<QString, Actor*> & actorMap, bool pasteMode) {
     QPair<QString, QString> idPair = ParsedPairs::parseOneEqual(tokenizer);
     if( idPair.first != ITERATION_ID) {
         throw ReadFailed(tr("%1 definition expected at .iterations block").arg(ITERATION_ID));
     }
-    
-    Iteration iteration(iterationName);
+
+    QMap<ActorId, QVariantMap> cfg;
     bool ok = false;
-    iteration.id = idPair.second.toInt(&ok);
+    int id = idPair.second.toInt(&ok);
     if(!ok) {
         throw ReadFailed(tr("Cannot parse integer from '%1': iteration id").arg(idPair.second));
     }
-    
+
     while(tokenizer.look() != BLOCK_END) {
         QString actorName = tokenizer.take();
         if( !actorMap.contains(actorName)) {
@@ -1140,7 +1140,7 @@ Iteration HRSchemaSerializer::parseIteration(Tokenizer & tokenizer, const QStrin
         foreach (Attribute *attr, actorMap[actorName]->getParameters()) {
             QString attrId = attr->getId();
             if (pairs.equalPairs.contains(attrId)) {
-                iteration.cfg[actorId][attrId] =
+                cfg[actorId][attrId] =
                     getAttrValue(actorMap[actorName], attrId, pairs.equalPairs[attrId]);
             }
             if (NULL == dynamic_cast<URLAttribute*>(attr)) {
@@ -1148,11 +1148,11 @@ Iteration HRSchemaSerializer::parseIteration(Tokenizer & tokenizer, const QStrin
             }
             QList<Dataset> sets = parseUrlAttribute(attrId, pairs.blockPairsList);
             if (!sets.isEmpty()) {
-                iteration.cfg[actorId][attrId] = qVariantFromValue(sets);
+                cfg[actorId][attrId] = qVariantFromValue(sets);
             }
         }
     }
-    return iteration;
+    return cfg;
 }
 
 static void tryToConnect(Schema * schema, Port * input, Port * output) {
@@ -1524,7 +1524,8 @@ static void parseBody(WorkflowSchemaReaderData & data) {
         } else if(tok == HRSchemaSerializer::DOT_ITERATION_START) {
             QString itName = tokenizer.look() == HRSchemaSerializer::BLOCK_START ? "" : tokenizer.take();
             tokenizer.assertToken(HRSchemaSerializer::BLOCK_START);
-            data.schema->addIteration(HRSchemaSerializer::parseIteration(tokenizer, itName, data.actorMap));
+            QMap<ActorId, QVariantMap> cfg = HRSchemaSerializer::parseIteration(tokenizer, data.actorMap);
+            data.schema->applyConfiguration(cfg);
             tokenizer.assertToken(HRSchemaSerializer::BLOCK_END);
         } else if (tok == HRSchemaSerializer::ACTOR_BINDINGS) {
             tokenizer.assertToken(HRSchemaSerializer::BLOCK_START);
@@ -2077,35 +2078,6 @@ static QString elementsIterationData(const QVariantMap & data) {
     return res;
 }
 
-static QString iterationData(const Iteration & iteration, const HRSchemaSerializer::NamesMap& nmap) {
-    QString res = HRSchemaSerializer::makeEqualsPair(HRSchemaSerializer::ITERATION_ID, 
-                                                     QString::number(iteration.id)) + HRSchemaSerializer::NEW_LINE;
-    foreach(const ActorId & aid, iteration.cfg.uniqueKeys() ) {
-        QString blockName = nmap[aid];
-        if(blockName.isEmpty()) {
-            blockName = aid;
-        }
-        if (!iteration.cfg.value(aid).isEmpty()) {
-            res += HRSchemaSerializer::makeBlock(blockName, HRSchemaSerializer::NO_ERROR, elementsIterationData(iteration.cfg.value(aid)), 2);
-        }
-    }
-    return res;
-}
-
-QString HRSchemaSerializer::iterationsDefinition(const QList<Iteration> & iterations, const NamesMap& nmap, bool checkDummyIteration) {
-    if(checkDummyIteration) {
-        if( iterations.size() == 1 && iterations.at(0).isEmpty()) {
-            return QString();
-        }
-    }
-    
-    QString res;
-    foreach( const Iteration & iteration, iterations ) {
-        res += HRSchemaSerializer::makeBlock(HRSchemaSerializer::DOT_ITERATION_START, iteration.name, iterationData(iteration, nmap));
-    }
-    return res;
-}
-
 static QString visualData(const Schema & schema, const HRSchemaSerializer::NamesMap& nmap) {
     QString res;
     foreach(Link* link, schema.getFlows()) {
@@ -2232,7 +2204,6 @@ static QString bodyItself(const Schema & schema, const Metadata * meta, bool cop
     res += HRSchemaSerializer::markersDefinition(schema.getProcesses(), nmap, copyMode);
     res += HRSchemaSerializer::actorBindings(schema.getActorBindingsGraph(), nmap, copyMode);
     res += HRSchemaSerializer::dataflowDefinition(schema.getProcesses(), nmap);
-    res += HRSchemaSerializer::iterationsDefinition(schema.getIterations(), nmap, true);
     res += HRSchemaSerializer::makeBlock(HRSchemaSerializer::META_START, schema.getTypeName(), metaData(schema, meta, nmap));
     return res;
 }
@@ -2245,7 +2216,7 @@ QString HRSchemaSerializer::schema2String(const Schema & schema, const Metadata 
     return res;
 }
 
-QString HRSchemaSerializer::items2String(const QList<Actor*> &actors, const QList<Iteration> &iterations, const Metadata *meta) {
+QString HRSchemaSerializer::items2String(const QList<Actor*> &actors, const Metadata *meta) {
     assert(!actors.isEmpty());
     QString res;
     HRSchemaSerializer::addPart(res, HRSchemaSerializer::header2String(meta));
@@ -2255,7 +2226,6 @@ QString HRSchemaSerializer::items2String(const QList<Actor*> &actors, const QLis
     iData += HRSchemaSerializer::elementsDefinition(actors, nmap);
     iData += HRSchemaSerializer::markersDefinition(actors, nmap);
     iData += HRSchemaSerializer::dataflowDefinition(actors, nmap);
-    iData += HRSchemaSerializer::iterationsDefinition(iterations, nmap, false);
     iData += HRSchemaSerializer::makeBlock(HRSchemaSerializer::META_START, HRSchemaSerializer::NO_NAME, itemsMetaData(actors, meta, nmap));
 
     HRSchemaSerializer::addPart(res, HRSchemaSerializer::makeBlock(HRSchemaSerializer::BODY_START, HRSchemaSerializer::NO_NAME,

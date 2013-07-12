@@ -90,7 +90,7 @@ QList<Task *> WorkflowRunSerializedSchemeTask::onSubTaskFinished( Task *subtask 
             return res;
         }
         // AppContext::getScriptContext( )->setWorkflowScheduler( scheduler );
-        runTask = new WorkflowRunTask( *scheme, scheme->getIterations( ), remapping );
+        runTask = new WorkflowRunTask( *scheme, remapping );
         res.append( runTask );
     } else if ( runTask == subtask ) {
         const QList<Workflow::WorkflowMonitor *> workflowMonitors = runTask->getMonitors( );

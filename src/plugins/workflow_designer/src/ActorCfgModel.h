@@ -40,14 +40,12 @@ using namespace Workflow;
 class ActorCfgModel : public QAbstractTableModel {
     Q_OBJECT
 public:
-    ActorCfgModel(QObject *parent, QList<Iteration>& lst);
+    ActorCfgModel(QObject *parent);
     ~ActorCfgModel();
     
     void setActor(Actor * cfg);
-    
-    void selectIteration(int i);
-    
-    void setIterations(QList<Iteration>& lst);
+
+    void update();
 
     int columnCount(const QModelIndex &) const;
     
@@ -91,9 +89,6 @@ private:
     Actor*              subject;
     QList<Attribute*>   attrs;
     AttributeScriptDelegate * scriptDelegate;
-    
-    QList<Iteration>&   iterations;
-    int                 iterationIdx;
     QVariantMap         listValues;
     bool scriptMode;
         

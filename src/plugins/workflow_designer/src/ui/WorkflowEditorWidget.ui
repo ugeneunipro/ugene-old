@@ -159,43 +159,6 @@ QGroupBox::indicator:checked {
           <set>Qt::TextBrowserInteraction</set>
          </property>
         </widget>
-        <widget class="QGroupBox" name="iterationBox">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-           <horstretch>0</horstretch>
-           <verstretch>1</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="title">
-          <string>Iterations</string>
-         </property>
-         <property name="flat">
-          <bool>true</bool>
-         </property>
-         <property name="checkable">
-          <bool>true</bool>
-         </property>
-         <property name="checked">
-          <bool>true</bool>
-         </property>
-         <layout class="QVBoxLayout" name="verticalLayout_3">
-          <property name="spacing">
-           <number>0</number>
-          </property>
-          <property name="leftMargin">
-           <number>0</number>
-          </property>
-          <property name="topMargin">
-           <number>1</number>
-          </property>
-          <property name="rightMargin">
-           <number>0</number>
-          </property>
-          <property name="bottomMargin">
-           <number>0</number>
-          </property>
-         </layout>
-        </widget>
         <widget class="QGroupBox" name="paramBox">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Ignored" vsizetype="Preferred">

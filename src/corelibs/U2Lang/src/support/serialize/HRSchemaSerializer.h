@@ -189,7 +189,7 @@ public:
     static void parseMarkerDefinition(Actor *proc, const QString &markerId, ParsedPairs &pairs);
     static QPair<Port*, Port*> parseDataflow(Tokenizer & tokenizer, const QString & srcTok, const QMap<QString, Actor*> & actorMap);
     static QString parseAt(const QString & dottedStr, int ind);
-    static Iteration parseIteration(Tokenizer & tokenizer, const QString & iterationName, 
+    static QMap<ActorId, QVariantMap> parseIteration(Tokenizer & tokenizer,
                                         const QMap<QString, Actor*> & actorMap, bool pasteMode = false);
     static void parseActorBindings(Tokenizer &tokenizer, WorkflowSchemaReaderData &data);
     static void parseParameterAliases(Tokenizer & tokenizer, const QMap<QString, Actor*> & actorMap);
@@ -220,12 +220,11 @@ public:
     static QString grouperOutSlotsDefinition(Attribute *attribute);
     static QString actorBindings(const ActorBindingsGraph & graph, const NamesMap &nmap, bool copyMode = false);
     static QString dataflowDefinition(const QList<Actor*> & procs, const NamesMap & nmap);
-    static QString iterationsDefinition(const QList<Iteration> & iterations, const NamesMap & nmap, bool checkDummyIteration = true);
     static QString schemaParameterAliases(const QList<Actor*> & procs, const NamesMap& nmap);
     static QString schemaPortAliases(const NamesMap &nmap, const QList<PortAlias> &portAliases);
     static NamesMap generateElementNames(const QList<Actor*>& procs);
     static QString schema2String(const Schema & schema, const Metadata * meta, bool copyMode = false);
-    static QString items2String(const QList<Actor*> &actors, const QList<Iteration> & iterations, const Metadata *meta);
+    static QString items2String(const QList<Actor*> &actors, const Metadata *meta);
 
     static ExternalProcessConfig* string2Actor(const QString & bytes);
     static QString actor2String(ExternalProcessConfig *cfg);
