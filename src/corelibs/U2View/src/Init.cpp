@@ -38,6 +38,7 @@
 #include <U2View/MSAGeneralTabFactory.h>
 #include <U2View/MSAHighlightingTabFactory.h>
 #include <U2View/TreeOptionsWidgetFactory.h>
+#include <U2View/DasWidgetFactory.h>
 
 
 namespace U2 {
@@ -51,6 +52,8 @@ void Init::initOptionsPanels()
     opWidgetFactoryRegistry->registerFactory(new FindPatternWidgetFactory());
     opWidgetFactoryRegistry->registerFactory(new AnnotHighlightWidgetFactory());
     opWidgetFactoryRegistry->registerFactory(new SequenceInfoFactory());
+    // This feature doesn't tested yet, it can cause crashes.
+    //opWidgetFactoryRegistry->registerFactory(new DasWidgetFactory());
 
 
     // Assembly Browser groups

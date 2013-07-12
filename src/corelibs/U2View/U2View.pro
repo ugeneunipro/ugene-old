@@ -155,7 +155,9 @@ HEADERS += src/Init.h \
     src/LicenseDialog.h \ 
      	   src/ov_msa/PairAlign/PairAlignFactory.h \
                    src/ov_msa/PairAlign/PairAlign.h \
-    src/util_msa_align/PairwiseAlignmentGUIExtension.h
+    src/util_msa_align/PairwiseAlignmentGUIExtension.h \
+    src/ov_sequence/Das/DasWidgetFactory.h \
+    src/ov_sequence/Das/DasOptionsPanelWidget.h
 FORMS += src/ov_assembly/ui/ExportConsensusDialog.ui \
          src/ov_assembly/ui/ExportReadsDialog.ui \
          src/ov_msa/ui/ConsensusSelectorDialog.ui \
@@ -189,7 +191,9 @@ FORMS += src/ov_assembly/ui/ExportConsensusDialog.ui \
          src/util_smith_waterman/ui/SubstMatrixDialogBase.ui \
     src/ui/LicenseDialog.ui \ 
     src/ov_msa/ui/PairwiseAlignmentOptionsPanelWidget.ui \
-    src/ov_msa/ui/GeneralTabOptionsPanelWidget.ui
+    src/ov_msa/ui/GeneralTabOptionsPanelWidget.ui \
+    src/ov_sequence/Das/ui/DasOptionsPanelWidget.ui \
+    src/ov_sequence/Das/ui/DasBlastSettingsWidget.ui
 SOURCES += src/Init.cpp \
            src/UndoRedoFramework.cpp \
            src/WebWindow.cpp \
@@ -339,11 +343,21 @@ SOURCES += src/Init.cpp \
     src/LicenseDialog.cpp \ 
     src/ov_msa/PairAlign/PairAlignFactory.cpp \
     src/ov_msa/PairAlign/PairAlign.cpp \
-    src/util_msa_align/PairwiseAlignmentGUIExtension.cpp
+    src/util_msa_align/PairwiseAlignmentGUIExtension.cpp \
+    src/ov_sequence/Das/DasWidgetFactory.cpp \
+    src/ov_sequence/Das/DasOptionsPanelWidget.cpp
 TRANSLATIONS += transl/chinese.ts \
                 transl/czech.ts \
                 transl/english.ts \
                 transl/russian.ts
+
+
+
+
+
+
+
+
 
 
 

@@ -87,6 +87,7 @@ private:
     const static QString PICR_DATABASE_NAME;
     const static QString PICR_NCBI_GI;
     const static QString PICR_TAXON_ID;
+    const static QString SERVER_ERROR_STRING;
 };
 
 class U2CORE_EXPORT ConvertDasIdTask : public Task {
@@ -159,7 +160,46 @@ private:
 
     const static QString    baseUrl;
     const static QString    databasePart;
-    const static QString    emptyResult;
+    const static QString    parametersPart;
+};
+
+class U2CORE_EXPORT PicrBlastSettings {
+public:
+    /*enum ProgramValue {
+        Blastp = "blastp",
+        Blastx = "blastx",
+        Blastn = "blastn",
+        Tblastx = "tblastx",
+        Tblastn = "tblastn"
+    };
+
+    enum Matrix {
+        Blosum45 = "BLOSUM45",
+        Blosum50 = "BLOSUM50",
+        Blosum62 = "BLOSUM62",
+        Blosum80 = "BLOSUM80",
+        Blosum90 = "BLOSUM90",
+        Pam30 = "PAM30",
+        Pam70 = "PAM70",
+        Pam250 = "PAM250"
+    };*/
+};
+
+class U2CORE_EXPORT GetDasIdsByBlastTask : public GetDasIdsBySequenceTask {
+    Q_OBJECT
+public:
+    GetDasIdsByBlastTask(const QByteArray& _sequence, const int _identityValue);
+    virtual ~GetDasIdsByBlastTask();
+
+private:
+    virtual QString getRequestUrlString();
+    virtual XmlPicrParser getParser();
+
+    int identityValue;
+
+    const static QString    baseUrl;
+    const static QString    databasePart;
+    const static QString    parametersPart;
 };
 
 } //namespace

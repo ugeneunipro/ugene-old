@@ -50,17 +50,27 @@ const QString XmlPicrParser::PICR_DATABASE_DESCRIPTION = "databaseDescription";
 const QString XmlPicrParser::PICR_DATABASE_NAME = "databaseName";
 const QString XmlPicrParser::PICR_NCBI_GI = "gi";
 const QString XmlPicrParser::PICR_TAXON_ID = "taxonId";
+const QString XmlPicrParser::SERVER_ERROR_STRING = "500 internal server error";
 
 XmlPicrParser::XmlPicrParser(ResponseType _responseType) :
     responseType(_responseType) {
 }
 
 void XmlPicrParser::parse(const QByteArray& data) {
+    ioLog.details(QString::fromUtf8(data));
+    if (QString(data).contains(SERVER_ERROR_STRING)) {
+        setError(QString("Something gone wrong on the server (%1). Please, try later.").arg(SERVER_ERROR_STRING));
+        return;
+    }
+
     QDomDocument pDoc;
     pDoc.setContent(data);
 
     QDomElement docElement = pDoc.documentElement();
-
+    if (docElement.childNodes().isEmpty()) {
+        setError("No IDs found.");
+        return;
+    }
 
     QDomNodeList returnList;
     QDomElement returnElement;
@@ -377,6 +387,7 @@ void GetDasIdsBySequenceTask::sl_uploadProgress(qint64 bytesSent, qint64 bytesTo
 
 const QString GetDasIdsByExactSequenceTask::baseUrl = QString("http://www.ebi.ac.uk/Tools/picr/rest/getUPIForSequence");
 const QString GetDasIdsByExactSequenceTask::databasePart = QString("&database=SWISSPROT&database=SWISSPROT_ID&database=SWISSPROT_VARSPLIC");
+const QString GetDasIdsByExactSequenceTask::parametersPart = QString("&includeattributes=true");
 
 GetDasIdsByExactSequenceTask::GetDasIdsByExactSequenceTask(const QByteArray& _sequence) :
     GetDasIdsBySequenceTask(_sequence) {
@@ -391,12 +402,38 @@ QString GetDasIdsByExactSequenceTask::getRequestUrlString() {
         return res;
     }
 
-    res = baseUrl + "?sequence=" + sequence + databasePart;
+    res = baseUrl + "?sequence=" + sequence + databasePart + parametersPart;
     return res;
 }
 
 XmlPicrParser GetDasIdsByExactSequenceTask::getParser() {
     return XmlPicrParser(XmlPicrParser::ExactSequence);
+}
+
+const QString GetDasIdsByBlastTask::baseUrl = QString("http://www.ebi.ac.uk/Tools/picr/rest/getUPIForBLAST");
+const QString GetDasIdsByBlastTask::databasePart = QString("&database=SWISSPROT&database=SWISSPROT_ID&database=SWISSPROT_VARSPLIC");
+const QString GetDasIdsByBlastTask::parametersPart = QString("&filtertype=IDENTITY&identityvalue=%1&includeattributes=true");
+
+GetDasIdsByBlastTask::GetDasIdsByBlastTask(const QByteArray& _sequence, const int _identityValue) :
+    GetDasIdsBySequenceTask(_sequence),
+    identityValue(_identityValue) {
+}
+
+GetDasIdsByBlastTask::~GetDasIdsByBlastTask() {
+}
+
+QString GetDasIdsByBlastTask::getRequestUrlString() {
+    QString res;
+    if (sequence.isEmpty()) {
+        return res;
+    }
+
+    res = baseUrl + "?blastfrag=" + sequence + databasePart + parametersPart.arg(identityValue);
+    return res;
+}
+
+XmlPicrParser GetDasIdsByBlastTask::getParser() {
+    return XmlPicrParser(XmlPicrParser::Blast);
 }
 
 }   // namespace
