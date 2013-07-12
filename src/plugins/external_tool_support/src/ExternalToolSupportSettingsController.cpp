@@ -426,6 +426,7 @@ void ExternalToolSupportSettingsPageWidget::sl_onBrowseToolPackPath(){
         QDir dir = QDir(dirPath);
         QList<QTreeWidgetItem*> listOfItems=treeWidget->findItems("",Qt::MatchContains|Qt::MatchRecursive);
         assert(listOfItems.length()!=0);
+        QList<Task*> validationTasks;
         foreach(ExternalTool* et, AppContext::getExternalToolRegistry()->getAllEntries()){
             QList<QTreeWidgetItem*> listOfItems=treeWidget->findItems(et->getName(),Qt::MatchExactly|Qt::MatchRecursive);
             QTreeWidgetItem* item;
@@ -470,7 +471,7 @@ void ExternalToolSupportSettingsPageWidget::sl_onBrowseToolPackPath(){
                                 QToolButton* clearToolPathButton = itemWid->findChild<QToolButton*>("ClearToolPathButton");
                                 assert(clearToolPathButton);
                                 clearToolPathButton->setEnabled(true);
-                                QList<Task*> validationTasks;
+                                
                                 QString toolName = item->text(0);
                                 ExternalToolValidateTask* validateTask=new ExternalToolValidateTask(item->text(0), path);
                                 connect(validateTask,SIGNAL(si_stateChanged()),SLOT(sl_validateTaskStateChanged()));
@@ -485,10 +486,6 @@ void ExternalToolSupportSettingsPageWidget::sl_onBrowseToolPackPath(){
                                         }
                                     }
                                 }
-                                if (!validationTasks.isEmpty()){
-                                    SequentialMultiTask* checkExternalToolsTask=new SequentialMultiTask(tr("Checking external tool and its dependencies"), validationTasks, TaskFlags_NR_FOSCOE);
-                                    AppContext::getTaskScheduler()->registerTopLevelTask(checkExternalToolsTask);
-                                }
                                 fileNotFound=false;
                             }
 
@@ -497,10 +494,15 @@ void ExternalToolSupportSettingsPageWidget::sl_onBrowseToolPackPath(){
                  }
             }
         }
+
         if(!isPathValid){
             QMessageBox::warning(this, L10N::warningTitle(),
                                             tr("Not a valid external tools directory"),
                                             QMessageBox::Ok);
+        }
+        if (!validationTasks.isEmpty()){
+            SequentialMultiTask* checkExternalToolsTask=new SequentialMultiTask(tr("Checking external tool and its dependencies"), validationTasks, TaskFlags_NR_FOSCOE);
+            AppContext::getTaskScheduler()->registerTopLevelTask(checkExternalToolsTask);
         }
     }
 }
