@@ -93,7 +93,7 @@ static void getPreNPost(const QString &originalUrl, QString &pre, QString &post)
                 pre.append(".gz");
             }
         }
-        if (!extSuffix.contains("\\")) {
+        if (!extSuffix.contains("\\") && !extSuffix.contains("/")) {
             post = extSuffix;
             pre.chop(extSuffix.length());
         }
