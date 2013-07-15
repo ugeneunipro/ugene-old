@@ -247,11 +247,13 @@ void CreateAnnotationWidgetController::initLayout(AnnotationWidgetMode layoutMod
 
     QVBoxLayout* mainLayout = new QVBoxLayout(w);
     mainLayout->setContentsMargins(0, 0, 0, 0);
+    mainLayout->setSizeConstraint(QLayout::SetMinAndMaxSize);
 
     // Save annotations group
     QGroupBox* groupSaveAnnots = new QGroupBox(w);
     groupSaveAnnots->setTitle(tr("Save annotation(s) to"));
     QGridLayout* gridLayout = new QGridLayout(groupSaveAnnots);
+    gridLayout->setSizeConstraint(QLayout::SetMinAndMaxSize);
 
     existingObjectRB = new QRadioButton(groupSaveAnnots);
     existingObjectRB ->setObjectName("existingObjectRB");
@@ -320,6 +322,7 @@ void CreateAnnotationWidgetController::initLayout(AnnotationWidgetMode layoutMod
     groupAnnotParams->setTitle(tr("Annotation parameters"));
 
     QGridLayout* gridLayoutParams = new QGridLayout(groupAnnotParams);
+    gridLayoutParams->setSizeConstraint(QLayout::SetMinAndMaxSize);
     groupNameLabel = new QLabel(groupAnnotParams);
     QSizePolicy sizePolicy1(QSizePolicy::Maximum, QSizePolicy::Preferred);
     sizePolicy1.setHorizontalStretch(0);
