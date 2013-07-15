@@ -28,13 +28,15 @@
 #include <U2Core/GObjectRelationRoles.h>
 #include <U2Core/MultiTask.h>
 #include <U2Core/DocumentModel.h>
+#include <U2Core/DNASequenceSelection.h>
+#include <U2Core/DNAAlphabet.h>
 
 #include <U2View/AnnotatedDNAView.h>
 #include <U2View/ADVSequenceObjectContext.h>
 
-#include <U2Gui/RegionSelector.h>
 #include <U2Gui/ShowHideSubgroupWidget.h>
 #include <U2Gui/CreateAnnotationWidgetController.h>
+#include <U2Gui/GUIUtils.h>
 
 namespace U2 {
 
@@ -46,6 +48,9 @@ const QString DasOptionsPanelWidget::BLAST_SEARCH = tr("BLAST");
 const QString DasOptionsPanelWidget::ALGORITHM_SETTINGS = tr("Algorithm settings");
 const QString DasOptionsPanelWidget::ANNOTATIONS_SETTINGS = tr("Annotations settings");
 const QString DasOptionsPanelWidget::SOURCES = tr("DAS features sources");
+const QString DasOptionsPanelWidget::WHOLE_SEQUENCE = tr("Whole sequence");
+const QString DasOptionsPanelWidget::SELECTED_REGION = tr("Selected region");
+const QString DasOptionsPanelWidget::CUSTOM_REGION = tr("Custom region");
 
 DasBlastSettingsWidget::DasBlastSettingsWidget(QWidget* parent) : QWidget(parent) {
     setupUi(this);
@@ -55,11 +60,11 @@ int DasBlastSettingsWidget::getIdentity() {
     return identitySpinBox->value();
 }
 
+
 DasOptionsPanelWidget::DasOptionsPanelWidget(AnnotatedDNAView* adv) :
     annotatedDnaView(adv),
     ctx(adv->getSequenceInFocus()),
     selection(NULL),
-    regionSelector(NULL),
     blastSettingsWidget(NULL),
     dasFeaturesListWidget(NULL),
     annotationsWidgetController(NULL) {
@@ -75,11 +80,13 @@ void DasOptionsPanelWidget::sl_onSearchTypeChanged(int type) {
 }
 
 void DasOptionsPanelWidget::sl_onSearchIdsClicked() {
+    idList->clear();
     GetDasIdsBySequenceTask* searchIdsTask = NULL;
+
     if (searchTypeComboBox->currentText() == EXACT_SEARCH) {
-        searchIdsTask = new GetDasIdsByExactSequenceTask(ctx->getSequenceData(U2_REGION_MAX));
+        searchIdsTask = new GetDasIdsByExactSequenceTask(ctx->getSequenceData(getRegion()));
     } else if (searchTypeComboBox->currentText() == BLAST_SEARCH) {
-        searchIdsTask = new GetDasIdsByBlastTask(ctx->getSequenceData(U2_REGION_MAX), blastSettingsWidget->getIdentity());
+        searchIdsTask = new GetDasIdsByBlastTask(ctx->getSequenceData(getRegion()), blastSettingsWidget->getIdentity());
     } else {
         FAIL("Unexpected search type", );
     }
@@ -109,11 +116,11 @@ void DasOptionsPanelWidget::sl_onAnnotateClicked() {
 }
 
 void DasOptionsPanelWidget::sl_onSearchIdsFinish() {
+    idList->clear();
     GetDasIdsBySequenceTask* searchIdsTask = qobject_cast<GetDasIdsBySequenceTask*>(sender());
     SAFE_POINT(searchIdsTask, "Sender is not defined", );
 
     if (searchIdsTask->isFinished()) {
-        idList->clear();
         QList<PicrElement> results = searchIdsTask->getResults();
         for (int i = 0; i < results.count(); ++i) {
             idList->addItem(new QListWidgetItem(results[i].accessionNumber));
@@ -143,40 +150,72 @@ void DasOptionsPanelWidget::sl_onSequenceFocusChanged(ADVSequenceWidget*, ADVSeq
     SAFE_POINT(NULL != ctx, "Active sequence context is NULL.", );
 
     // Update region selector widget
-    delete regionSelectorContainerLayout->takeAt(0);
+    disconnect(SIGNAL(si_onSelectionChanged(GSelection*)),
+               this,
+               SLOT(sl_onSelectionChanged(GSelection*)));
 
-    qint64 seqLength = ctx->getSequenceLength();
     selection = ctx->getSequenceSelection();
-    regionSelector = new RegionSelector(regionSelectorContainerWidget, seqLength, true, selection);
+
+    connect(selection,
+            SIGNAL(si_selectionChanged(LRegionsSelection*, QVector<U2Region>, QVector<U2Region>)),
+            SLOT(sl_onSelectionChanged(LRegionsSelection*, QVector<U2Region>, QVector<U2Region>)));
+
+    updateRegionSelectorWidget();
 
     // Update annotations settings widget
     CreateAnnotationModel cm;
     cm.hideLocation = true;
     cm.sequenceObjectRef = ctx->getSequenceObject();
     cm.sequenceLen = ctx->getSequenceLength();
+    cm.hideAnnotationParameters = true;
     annotationsWidgetController->updateWidgetForAnnotationModel(cm);
 
+    checkState();
+}
+
+void DasOptionsPanelWidget::sl_onSelectionChanged(LRegionsSelection* _selection, const QVector<U2Region>& added, const QVector<U2Region>& removed) {
+    Q_UNUSED(added);
+    Q_UNUSED(removed);
+    SAFE_POINT(selection == _selection, "Selection is invalid", );
+    updateRegionSelectorWidget();
+    checkState();
+}
+
+void DasOptionsPanelWidget::sl_onRegionTypeChanged(int index) {
+    Q_UNUSED(index);
+    updateRegionSelectorWidget();
+    checkState();
+}
+
+void DasOptionsPanelWidget::sl_onRegionEdited(QString text) {
+    Q_UNUSED(text);
+    regionTypeComboBox->setCurrentIndex(regionTypeComboBox->findText(CUSTOM_REGION));
+    updateRegionSelectorWidget();
     checkState();
 }
 
 void DasOptionsPanelWidget::initialize() {
     SAFE_POINT(NULL != ctx, "Active sequence context is NULL.", );
 
-    qint64 seqLength = ctx->getSequenceLength();
     selection = ctx->getSequenceSelection();
-    regionSelector = new RegionSelector(regionSelectorContainerWidget,
-                                        seqLength,
-                                        true,
-                                        selection);
+    regionTypeComboBox->addItem(WHOLE_SEQUENCE);
+    regionTypeComboBox->addItem(SELECTED_REGION);
+    regionTypeComboBox->addItem(CUSTOM_REGION);
 
-    regionSelectorContainerLayout->addWidget(regionSelector);
+    if (!selection->isEmpty()) {
+        regionTypeComboBox->setCurrentIndex(regionTypeComboBox->findText(SELECTED_REGION));
+    } else {
+        regionTypeComboBox->setCurrentIndex(regionTypeComboBox->findText(WHOLE_SEQUENCE));
+    }
+
+    updateRegionSelectorWidget();
 
     blastSettingsWidget = new DasBlastSettingsWidget();
     settingsContainerLayout->addWidget(new ShowHideSubgroupWidget(ALGORITHM_SETTINGS, ALGORITHM_SETTINGS, blastSettingsWidget, false));
 
     searchTypeComboBox->addItem(EXACT_SEARCH);
     searchTypeComboBox->addItem(BLAST_SEARCH);
-    searchTypeComboBox->setCurrentIndex(0);
+    searchTypeComboBox->setCurrentIndex(searchTypeComboBox->findText(BLAST_SEARCH));
 
     // DAS sources
     dasFeaturesListWidget = new QListWidget();
@@ -204,6 +243,7 @@ void DasOptionsPanelWidget::initialize() {
     cm.hideLocation = true;
     cm.sequenceObjectRef = ctx->getSequenceObject();
     cm.sequenceLen = ctx->getSequenceLength();
+    cm.hideAnnotationParameters = true;
     annotationsWidgetController = new CreateAnnotationWidgetController(cm, this, optPanel);
 
     annotationsSettingsContainerLayout->addWidget(new ShowHideSubgroupWidget(ANNOTATIONS_SETTINGS, ANNOTATIONS_SETTINGS, annotationsWidgetController->getWidget(), false));
@@ -222,19 +262,32 @@ void DasOptionsPanelWidget::connectSignals() {
     connect(annotatedDnaView,
             SIGNAL(si_focusChanged(ADVSequenceWidget*, ADVSequenceWidget*)),
             SLOT(sl_onSequenceFocusChanged(ADVSequenceWidget*, ADVSequenceWidget*)));
+    connect(selection,
+            SIGNAL(si_selectionChanged(LRegionsSelection*, QVector<U2Region>, QVector<U2Region>)),
+            SLOT(sl_onSelectionChanged(LRegionsSelection*, QVector<U2Region>, QVector<U2Region>)));
+    connect(regionTypeComboBox,
+            SIGNAL(currentIndexChanged(int)),
+            SLOT(sl_onRegionTypeChanged(int)));
+    connect(startLineEdit,
+            SIGNAL(textEdited(QString)),
+            SLOT(sl_onRegionEdited(QString)));
+    connect(endLineEdit,
+            SIGNAL(textEdited(QString)),
+            SLOT(sl_onRegionEdited(QString)));
 }
 
 void DasOptionsPanelWidget::checkState() {
     SAFE_POINT(ctx, "Active sequence context is NULL.", );
     blastSettingsWidget->setEnabled(searchTypeComboBox->currentText() == BLAST_SEARCH);
 
-    bool ok = false;
-    regionSelector->getRegion(&ok);
+    bool ok = regionIsOk();
+    ok &= ctx->getAlphabet()->isAmino();
     searchIdsButton->setEnabled(ok);
 
     bool annotationButtonIsEnabled = true;
     annotationButtonIsEnabled &= annotationsWidgetController->validate().isEmpty();
     annotationButtonIsEnabled &= !idList->selectedItems().isEmpty();
+    ok &= ctx->getAlphabet()->isAmino();
     annotateButton->setEnabled(annotationButtonIsEnabled);
 }
 
@@ -319,6 +372,75 @@ void DasOptionsPanelWidget::addAnnotations() {
     }
 
     annotationsWidgetController->updateWidgetForAnnotationModel(cm);
+}
+
+void DasOptionsPanelWidget::updateRegionSelectorWidget() {
+    SAFE_POINT(NULL != selection, "Selection is NULL", );
+
+    U2Region region = getRegion();
+    if (WHOLE_SEQUENCE == regionTypeComboBox->currentText()) {
+        region = U2Region(0, ctx->getSequenceLength());
+    } else if (SELECTED_REGION == regionTypeComboBox->currentText()) {
+        if (selection->isEmpty()) {
+            region = U2Region(0, ctx->getSequenceLength());
+        } else {
+            region = selection->getSelectedRegions().first();
+        }
+    }
+
+    startLineEdit->setText(QString::number(region.startPos + 1));
+    endLineEdit->setText(QString::number(region.endPos()));
+}
+
+U2Region DasOptionsPanelWidget::getRegion() {
+    if (regionIsOk()) {
+        qint64 startPos = startLineEdit->text().toLongLong() - 1;
+        qint64 endPos = endLineEdit->text().toLongLong();
+
+        return U2Region(startPos, endPos - startPos);
+    }
+
+    return U2Region(0, ctx->getSequenceLength());
+}
+
+bool DasOptionsPanelWidget::regionIsOk() {
+    bool isDigit = true;
+    bool regionIsValid = true;
+    bool result = true;
+    qint64 startPos;
+    qint64 endPos;
+
+    startPos = startLineEdit->text().toLongLong(&isDigit);
+    if (!isDigit) {
+        result &= isDigit;
+        GUIUtils::setWidgetWarning(startLineEdit, true);
+    }
+    endPos = endLineEdit->text().toLongLong(&isDigit);
+    if (!isDigit) {
+        result &= isDigit;
+        GUIUtils::setWidgetWarning(endLineEdit, true);
+    }
+
+    if (result) {
+        if (startPos <= 0 || startPos > ctx->getSequenceLength()) {
+            GUIUtils::setWidgetWarning(startLineEdit, true);
+            regionIsValid = false;
+        }
+        if (endPos <= 0 || endPos > ctx->getSequenceLength()) {
+            GUIUtils::setWidgetWarning(startLineEdit, true);
+            regionIsValid = false;
+        }
+
+        regionIsValid &= (startPos <= endPos);
+        result &= regionIsValid;
+    }
+
+    if (result) {
+        GUIUtils::setWidgetWarning(startLineEdit, false);
+        GUIUtils::setWidgetWarning(endLineEdit, false);
+    }
+
+    return result;
 }
 
 }   // namespace

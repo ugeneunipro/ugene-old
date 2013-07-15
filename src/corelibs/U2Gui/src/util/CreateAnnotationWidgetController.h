@@ -33,6 +33,7 @@
 #include <QtGui/QToolButton>
 #include <QtGui/QComboBox>
 #include <QtGui/QLabel>
+#include <QtGui/QGroupBox>
 
 
 namespace U2 {
@@ -58,6 +59,7 @@ public:
     qint64                  sequenceLen;        //length of target sequence for validation purposes
 
     bool					hideAutoAnnotationsOption; // show automated highlighting for new annotation if possible
+    bool                    hideAnnotationParameters;   // hides annotation parameters groupbox
 
     AnnotationTableObject*  getAnnotationObject() const;
 };
@@ -135,6 +137,7 @@ private:
     QString GROUP_NAME_AUTO;
 
     // Widget layout
+    QGroupBox* groupAnnotParams;
     QLineEdit* newFileEdit;
     QLineEdit* annotationNameEdit;
     QLineEdit* groupNameEdit;

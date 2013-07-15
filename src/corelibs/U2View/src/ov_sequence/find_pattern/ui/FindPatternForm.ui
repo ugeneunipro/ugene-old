@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>264</width>
+    <width>275</width>
     <height>800</height>
    </rect>
   </property>
@@ -28,36 +28,8 @@
   <property name="windowTitle">
    <string notr="true">Form</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout_5">
-   <item row="1" column="0" colspan="2">
-    <widget class="QTextEdit" name="textPattern">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="minimumSize">
-      <size>
-       <width>0</width>
-       <height>120</height>
-      </size>
-     </property>
-     <property name="maximumSize">
-      <size>
-       <width>192</width>
-       <height>140</height>
-      </size>
-     </property>
-     <property name="focusPolicy">
-      <enum>Qt::StrongFocus</enum>
-     </property>
-     <property name="tabChangesFocus">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="0">
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
     <widget class="QLabel" name="searchForLabel">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
@@ -79,7 +51,35 @@
      </property>
     </widget>
    </item>
-   <item row="2" column="0">
+   <item>
+    <widget class="QTextEdit" name="textPattern">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>120</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>140</height>
+      </size>
+     </property>
+     <property name="focusPolicy">
+      <enum>Qt::StrongFocus</enum>
+     </property>
+     <property name="tabChangesFocus">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
     <widget class="QLabel" name="lblErrorMessage">
      <property name="text">
       <string notr="true">Error</string>
@@ -89,41 +89,45 @@
      </property>
     </widget>
    </item>
-   <item row="8" column="0" colspan="2">
-    <layout class="QHBoxLayout" name="layoutSearchButton">
-     <property name="spacing">
-      <number>9</number>
+   <item>
+    <widget class="QGroupBox" name="groupAlgorithm">
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>16777215</height>
+      </size>
      </property>
-     <item>
-      <widget class="QPushButton" name="btnSearch">
-       <property name="text">
-        <string>Search</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLabel" name="lblShowMoreLess">
-       <property name="text">
-        <string notr="true">Show more options</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
+     <property name="title">
+      <string>Search algorithm</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_2">
+      <property name="spacing">
+       <number>6</number>
+      </property>
+      <item row="0" column="0">
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>Algorithm</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QComboBox" name="boxAlgorithm">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>22</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0" colspan="2">
+       <layout class="QVBoxLayout" name="layoutAlgorithmSettings"/>
+      </item>
+     </layout>
+    </widget>
    </item>
-   <item row="6" column="0">
-    <layout class="QVBoxLayout" name="layoutAnnots">
-     <property name="spacing">
-      <number>0</number>
-     </property>
-     <property name="sizeConstraint">
-      <enum>QLayout::SetDefaultConstraint</enum>
-     </property>
-     <property name="rightMargin">
-      <number>0</number>
-     </property>
-    </layout>
-   </item>
-   <item row="4" column="0" colspan="2">
+   <item>
     <widget class="QGroupBox" name="groupSearchIn">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -133,7 +137,7 @@
      </property>
      <property name="maximumSize">
       <size>
-       <width>192</width>
+       <width>16777215</width>
        <height>16777215</height>
       </size>
      </property>
@@ -233,11 +237,11 @@
      </layout>
     </widget>
    </item>
-   <item row="5" column="0" colspan="2">
+   <item>
     <widget class="QGroupBox" name="groupOther">
      <property name="maximumSize">
       <size>
-       <width>192</width>
+       <width>16777215</width>
        <height>16777215</height>
       </size>
      </property>
@@ -284,7 +288,14 @@
      </layout>
     </widget>
    </item>
-   <item row="7" column="0" colspan="2">
+   <item>
+    <layout class="QVBoxLayout" name="layoutAnnots">
+     <property name="sizeConstraint">
+      <enum>QLayout::SetDefaultConstraint</enum>
+     </property>
+    </layout>
+   </item>
+   <item>
     <widget class="QGroupBox" name="loadFromFileGroupBox">
      <property name="toolTip">
       <string>Find file with newline-separated patterns</string>
@@ -319,45 +330,28 @@
      </layout>
     </widget>
    </item>
-   <item row="3" column="0" colspan="2">
-    <widget class="QGroupBox" name="groupAlgorithm">
-     <property name="maximumSize">
-      <size>
-       <width>192</width>
-       <height>16777215</height>
-      </size>
+   <item>
+    <layout class="QHBoxLayout" name="layoutSearchButton">
+     <property name="spacing">
+      <number>9</number>
      </property>
-     <property name="title">
-      <string>Search algorithm</string>
-     </property>
-     <layout class="QGridLayout" name="gridLayout_2">
-      <property name="spacing">
-       <number>6</number>
-      </property>
-      <item row="0" column="0">
-       <widget class="QLabel" name="label">
-        <property name="text">
-         <string>Algorithm</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QComboBox" name="boxAlgorithm">
-        <property name="minimumSize">
-         <size>
-          <width>0</width>
-          <height>22</height>
-         </size>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0" colspan="2">
-       <layout class="QVBoxLayout" name="layoutAlgorithmSettings"/>
-      </item>
-     </layout>
-    </widget>
+     <item>
+      <widget class="QPushButton" name="btnSearch">
+       <property name="text">
+        <string>Search</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="lblShowMoreLess">
+       <property name="text">
+        <string notr="true">Show more options</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
-   <item row="9" column="1">
+   <item>
     <spacer name="verticalSpacer">
      <property name="orientation">
       <enum>Qt::Vertical</enum>

@@ -33,13 +33,13 @@ namespace U2 {
 
 class AnnotatedDNAView;
 class DNASequenceSelection;
-class RegionSelector;
 class GetDasIdsBySequenceTask;
 class ADVSequenceWidget;
 class ADVSequenceObjectContext;
 class DASSource;
 class Task;
 class CreateAnnotationWidgetController;
+class LRegionsSelection;
 
 class DasBlastSettingsWidget : public QWidget, private Ui_DasBlastSettingsWidget {
     Q_OBJECT
@@ -60,22 +60,27 @@ private slots:
     void sl_onSearchIdsFinish();
     void sl_onLoadAnnotationsFinish();
     void sl_onSequenceFocusChanged(ADVSequenceWidget*, ADVSequenceWidget*);
+    void sl_onSelectionChanged(LRegionsSelection* _selection, const QVector<U2Region>& added, const QVector<U2Region>& removed);
+    void sl_onRegionTypeChanged(int index);
+    void sl_onRegionEdited(QString text);
 
 private:
     void initialize();
     void connectSignals();
     void checkState();
 
-private:
     QList<DASSource> getFeatureSources();
     DASSource getSequenceSource();
     void mergeFeatures(const QMap<QString, QList<SharedAnnotationData> >& newAnnotations);
     void addAnnotations();
+    void updateRegionSelectorWidget();
+    U2Region getRegion();
+    bool regionIsOk();
 
+private:
     AnnotatedDNAView* annotatedDnaView;
     ADVSequenceObjectContext* ctx;
     DNASequenceSelection* selection;
-    RegionSelector* regionSelector;
     DasBlastSettingsWidget* blastSettingsWidget;
     QListWidget* dasFeaturesListWidget;
     CreateAnnotationWidgetController* annotationsWidgetController;
@@ -89,6 +94,9 @@ private:
     const static QString ALGORITHM_SETTINGS;
     const static QString ANNOTATIONS_SETTINGS;
     const static QString SOURCES;
+    const static QString WHOLE_SEQUENCE;
+    const static QString SELECTED_REGION;
+    const static QString CUSTOM_REGION;
 };
 
 }   // namespace

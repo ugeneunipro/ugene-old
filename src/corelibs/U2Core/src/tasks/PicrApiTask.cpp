@@ -57,7 +57,6 @@ XmlPicrParser::XmlPicrParser(ResponseType _responseType) :
 }
 
 void XmlPicrParser::parse(const QByteArray& data) {
-    ioLog.details(QString::fromUtf8(data));
     if (QString(data).contains(SERVER_ERROR_STRING)) {
         setError(QString("Something gone wrong on the server (%1). Please, try later.").arg(SERVER_ERROR_STRING));
         return;
@@ -385,6 +384,8 @@ void GetDasIdsBySequenceTask::sl_uploadProgress(qint64 bytesSent, qint64 bytesTo
     stateInfo.progress = bytesSent/ bytesTotal * 100;
 }
 
+//////////////////////////////////////////////////////////////////////////
+//GetDasIdsByExactSequenceTask
 const QString GetDasIdsByExactSequenceTask::baseUrl = QString("http://www.ebi.ac.uk/Tools/picr/rest/getUPIForSequence");
 const QString GetDasIdsByExactSequenceTask::databasePart = QString("&database=SWISSPROT&database=SWISSPROT_ID&database=SWISSPROT_VARSPLIC");
 const QString GetDasIdsByExactSequenceTask::parametersPart = QString("&includeattributes=true");
@@ -410,6 +411,44 @@ XmlPicrParser GetDasIdsByExactSequenceTask::getParser() {
     return XmlPicrParser(XmlPicrParser::ExactSequence);
 }
 
+//////////////////////////////////////////////////////////////////////////
+//PicrBlastSettings
+/*const QStringList PicrBlastSettings::Program = QStringList() << "blastp"    //default value
+                                                             << "blastx"
+                                                             << "blastn"
+                                                             << "tblastx"
+                                                             << "tblastn";
+const QStringList PicrBlastSettings::Matrix = QStringList() << "BLOSUM45"
+                                                            << "BLOSUM50"
+                                                            << "BLOSUM62"   // default value
+                                                            << "BLOSUM80"
+                                                            << "BLOSUM90"
+                                                            << "PAM30"
+                                                            << "PAM70"
+                                                            << "PAM250";
+const QList<int> PicrBlastSettings::Dropoff = QList<int>() << 0             // default value
+                                                           << 2
+                                                           << 4
+                                                           << 6
+                                                           << 8
+                                                           << 10;
+const QList<int> PicrBlastSettings::Align = QList<int>() << 0               // default value
+                                                         << 1
+                                                         << 2
+                                                         << 3
+                                                         << 4
+                                                         << 5;
+const QStringList PicrBlastSettings::Filter = QStringList() << "F"          // default value
+                                                            << "T";
+const QList<int> PicrBlastSettings::GapExt = QList<int>() << 1               // default value
+                                                         << 1
+                                                         << 2
+                                                         << 3
+                                                         << 4
+                                                         << 5;*/
+
+//////////////////////////////////////////////////////////////////////////
+//GetDasIdsByBlastTask
 const QString GetDasIdsByBlastTask::baseUrl = QString("http://www.ebi.ac.uk/Tools/picr/rest/getUPIForBLAST");
 const QString GetDasIdsByBlastTask::databasePart = QString("&database=SWISSPROT&database=SWISSPROT_ID&database=SWISSPROT_VARSPLIC");
 const QString GetDasIdsByBlastTask::parametersPart = QString("&filtertype=IDENTITY&identityvalue=%1&includeattributes=true");

@@ -64,6 +64,7 @@ CreateAnnotationModel::CreateAnnotationModel() : defaultIsNewDoc(false), hideLoc
     data = new AnnotationData();
     useUnloadedObjects = false;
     hideAutoAnnotationsOption = true;
+    hideAnnotationParameters = false;
 }
 
 AnnotationTableObject* CreateAnnotationModel::getAnnotationObject() const {
@@ -214,6 +215,12 @@ void CreateAnnotationWidgetController::commonWidgetUpdate(const CreateAnnotation
         useAutoAnnotationsRB->show();
         useAutoAnnotationsRB->setChecked(true);
     }
+
+    if (model.hideAnnotationParameters) {
+        groupAnnotParams->hide();
+    } else {
+        groupAnnotParams->show();
+    }
 }
 
 
@@ -227,8 +234,8 @@ void CreateAnnotationWidgetController::initLayout(AnnotationWidgetMode layoutMod
         w->setMinimumSize(QSize(400, 58));
     } else if (layoutMode == optPanel) {
         w->resize(170, 369);
-        sizePolicy = QSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
-        w->setMinimumSize(QSize(170, 369));
+        sizePolicy = QSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Preferred);
+        w->setMinimumSize(QSize(1, 0));
     }else{
         w->resize(170, 369);
         sizePolicy = QSizePolicy(QSizePolicy::Minimum, QSizePolicy::Preferred);
@@ -309,7 +316,7 @@ void CreateAnnotationWidgetController::initLayout(AnnotationWidgetMode layoutMod
     }
 
     // Annotation parameters group
-    QGroupBox* groupAnnotParams = new QGroupBox(w);
+    groupAnnotParams = new QGroupBox(w);
     groupAnnotParams->setTitle(tr("Annotation parameters"));
 
     QGridLayout* gridLayoutParams = new QGridLayout(groupAnnotParams);

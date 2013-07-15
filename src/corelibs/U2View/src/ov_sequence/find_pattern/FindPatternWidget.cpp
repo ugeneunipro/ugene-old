@@ -373,7 +373,7 @@ FindPatternWidget::FindPatternWidget(AnnotatedDNAView* _annotatedDnaView)
         annotsWidget = annotController->getWidget();
         layoutAnnots->addWidget(annotsWidget);
         layoutAnnots->setSpacing(0);
-        layoutAnnots->setContentsMargins(0, 0, 8, 0);
+        layoutAnnots->setContentsMargins(0, 0, 0, 0);
 
         usePatternNamesCheckBox = new QCheckBox(tr("Use pattern name"));
         usePatternNamesCheckBox->setToolTip(tr("Use names of patterns as annotations names. In case the patterns are in FASTA format"));
