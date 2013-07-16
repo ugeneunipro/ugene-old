@@ -52,8 +52,8 @@ void Init::initOptionsPanels()
     opWidgetFactoryRegistry->registerFactory(new FindPatternWidgetFactory());
     opWidgetFactoryRegistry->registerFactory(new AnnotHighlightWidgetFactory());
     opWidgetFactoryRegistry->registerFactory(new SequenceInfoFactory());
-    // This feature doesn't tested yet, it can cause crashes.
-    //opWidgetFactoryRegistry->registerFactory(new DasWidgetFactory());
+
+    opWidgetFactoryRegistry->registerFactory(new DasWidgetFactory());
 
 
     // Assembly Browser groups

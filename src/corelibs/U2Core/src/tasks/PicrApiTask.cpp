@@ -311,7 +311,7 @@ QString ConvertDasIdTask::getRequestUrlString() {
 //////////////////////////////////////////////////////////////////////////
 //GetDasIdsBySequenceTask
 GetDasIdsBySequenceTask::GetDasIdsBySequenceTask(const QByteArray& _sequence) :
-    Task(tr("Get id for sequence"), TaskFlags_FOSCOE | TaskFlag_MinimizeSubtaskErrorText),
+    Task(tr("Get an ID for the sequence"), TaskFlags_FOSCOE | TaskFlag_MinimizeSubtaskErrorText),
     sequence(_sequence),
     loop(NULL),
     downloadReply(NULL),

@@ -76,6 +76,20 @@
     </widget>
    </item>
    <item>
+    <widget class="Line" name="line_2">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="similarityType">
+     <property name="text">
+      <string>Similarity search:</string>
+     </property>
+    </widget>
+   </item>
+   <item>
     <widget class="QComboBox" name="searchTypeComboBox"/>
    </item>
    <item>
@@ -106,7 +120,7 @@
     <widget class="QWidget" name="annotationsSettingsContainerWidget" native="true">
      <layout class="QVBoxLayout" name="annotationsSettingsContainerLayout">
       <property name="spacing">
-       <number>-1</number>
+       <number>6</number>
       </property>
       <property name="sizeConstraint">
        <enum>QLayout::SetDefaultConstraint</enum>
@@ -115,6 +129,20 @@
        <number>0</number>
       </property>
      </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="Line" name="line">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="idsLabel">
+     <property name="text">
+      <string>IDs of similar sequences:</string>
+     </property>
     </widget>
    </item>
    <item>
@@ -137,6 +165,9 @@
        <height>150</height>
       </size>
      </property>
+     <property name="toolTip">
+      <string>Select an ID to fetch annotations from DAS</string>
+     </property>
      <property name="selectionBehavior">
       <enum>QAbstractItemView::SelectRows</enum>
      </property>
@@ -149,15 +180,21 @@
      </property>
      <item>
       <widget class="QPushButton" name="searchIdsButton">
+       <property name="toolTip">
+        <string>Send request to Protein Identifier Cross-Reference (PICR) to get IDs of similar sequences</string>
+       </property>
        <property name="text">
-        <string>PICR</string>
+        <string>Fetch IDs</string>
        </property>
       </widget>
      </item>
      <item>
       <widget class="QPushButton" name="annotateButton">
+       <property name="toolTip">
+        <string>Load annotations from DAS by ID of a selected sequence</string>
+       </property>
        <property name="text">
-        <string>DAS</string>
+        <string>Fetch Annotations</string>
        </property>
       </widget>
      </item>

@@ -221,7 +221,7 @@ void LoadDASDocumentTask::mergeFeatures( const QMap<QString, QList<SharedAnnotat
 //////////////////////////////////////////////////////////////////////////
 //LoadDASObjectTask
 LoadDASObjectTask::LoadDASObjectTask( const QString& accId, const DASSource& _source, DASObjectType objType)
-:Task(tr("Load DAS data: %1").arg(accId), TaskFlags_FOSCOE | TaskFlag_MinimizeSubtaskErrorText)
+:Task(tr("Load DAS data for: %1").arg(accId), TaskFlags_FOSCOE | TaskFlag_MinimizeSubtaskErrorText)
 ,accNumber(accId)
 ,source(_source)
 ,objectType(objType)
@@ -316,7 +316,7 @@ ConvertIdAndLoadDASDocumentTask::ConvertIdAndLoadDASDocumentTask(const QString& 
                                                              const QString& _fullPath,
                                                              const DASSource& _referenceSource,
                                                              const QList<DASSource>& _featureSources) :
-    Task(QString("Convert ID and load DAS document: %1").arg(accId), TaskFlags_FOSCOE | TaskFlag_MinimizeSubtaskErrorText),
+    Task(QString("Convert ID and load DAS document for: %1").arg(accId), TaskFlags_FOSCOE | TaskFlag_MinimizeSubtaskErrorText),
     convertDasIdTask(NULL),
     loadDasDocumentTask(NULL),
     accessionNumber(accId),

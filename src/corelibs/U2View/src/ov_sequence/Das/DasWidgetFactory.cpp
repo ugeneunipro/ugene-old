@@ -30,8 +30,8 @@
 namespace U2 {
 
 const QString DasWidgetFactory::GROUP_ID = "OP_DAS";
-const QString DasWidgetFactory::GROUP_ICON_STR = ":core/images/todo.png";
-const QString DasWidgetFactory::GROUP_TITLE = QString(tr("Annotate with DAS"));
+const QString DasWidgetFactory::GROUP_ICON_STR = ":core/images/regions.png";
+const QString DasWidgetFactory::GROUP_TITLE = QString(tr("DAS annotations"));
 
 
 DasWidgetFactory::DasWidgetFactory()

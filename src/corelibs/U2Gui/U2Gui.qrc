@@ -119,5 +119,6 @@
         <file>images/navi_right.png</file>
         <file>images/close_small.png</file>
         <file>images/refresh.png</file>
+        <file>images/regions.png</file>
     </qresource>
 </RCC>
