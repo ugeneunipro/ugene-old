@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>280</width>
-    <height>378</height>
+    <width>345</width>
+    <height>504</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -119,9 +119,6 @@
    <item>
     <widget class="QWidget" name="annotationsSettingsContainerWidget" native="true">
      <layout class="QVBoxLayout" name="annotationsSettingsContainerLayout">
-      <property name="spacing">
-       <number>6</number>
-      </property>
       <property name="sizeConstraint">
        <enum>QLayout::SetDefaultConstraint</enum>
       </property>
@@ -174,7 +171,7 @@
     </widget>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="buttonsLayout">
+    <layout class="QVBoxLayout" name="verticalLayout">
      <property name="sizeConstraint">
       <enum>QLayout::SetMinAndMaxSize</enum>
      </property>

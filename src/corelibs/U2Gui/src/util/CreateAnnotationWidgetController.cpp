@@ -257,7 +257,7 @@ void CreateAnnotationWidgetController::initLayout(AnnotationWidgetMode layoutMod
     existingObjectRB ->setObjectName("existingObjectRB");
 
     existingObjectRB->setChecked(true);
-    existingObjectRB->setText(tr("Existing annotation table"));
+    existingObjectRB->setText(tr("Existing table"));
     existingObjectCombo = new QComboBox(groupSaveAnnots);
     existingObjectCombo->setObjectName("existingObjectCombo");
 
