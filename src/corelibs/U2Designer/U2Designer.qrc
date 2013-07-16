@@ -2,6 +2,8 @@
     <qresource prefix="/U2Designer">
         <file>html/Dashboard.css</file>
         <file>html/Dashboard.html</file>
+        <file>javascript/Common.js</file>
+        <file>javascript/ParametersWidget.js</file>
         <file>images/add.png</file>
         <file>images/background.png</file>
         <file>images/background-menu.png</file>

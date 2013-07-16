@@ -21,6 +21,7 @@
 
 #include <U2Lang/ActorModel.h>
 #include <U2Lang/WorkflowRunTask.h>
+#include <U2Lang/WorkflowUtils.h>
 
 #include "SeparateProcessMonitor.h"
 
@@ -37,6 +38,23 @@ WorkflowMonitor::WorkflowMonitor(WorkflowAbstractIterationRunner *_task, const Q
         procMap[p->getId()] = p;
         addTime(0, p->getId());
     }
+
+    foreach (Actor *p, procs){
+        WorkerParamsInfo info;
+        info.workerName = p->getLabel();
+        QMap<QString, Attribute *> params = p->getParameters();
+        QMapIterator<QString, Attribute *> paramsIter(params);
+        while (paramsIter.hasNext()) {
+            paramsIter.next();
+            Attribute *attr = paramsIter.value();
+            SAFE_POINT(NULL != attr, "NULL attribute in params!", );
+
+            info.paramsWithValues.insert(attr->getDisplayName(),
+                WorkflowUtils::getStringForParameterDisplayRole(attr->getAttributeValueWithoutScript<QVariant>()));
+        }
+        workersParamsInfo << info;
+    }
+
     connect(task.data(), SIGNAL(si_updateProducers()), SIGNAL(si_updateProducers()));
     connect(task.data(), SIGNAL(si_progressChanged()), SLOT(sl_progressChanged()));
     connect(task.data(), SIGNAL(si_stateChanged()), SLOT(sl_taskStateChanged()));
@@ -56,6 +74,10 @@ const QList<Problem> & WorkflowMonitor::getProblems() const {
 
 const QMap<QString, WorkerInfo> & WorkflowMonitor::getWorkersInfo() const {
     return workers;
+}
+
+const QList<WorkerParamsInfo> & WorkflowMonitor::getWorkersParameters() const {
+    return workersParamsInfo;
 }
 
 QString WorkflowMonitor::actorName(const QString &id) const {
@@ -192,8 +214,19 @@ bool Problem::operator== (const Problem &other) const {
     return (actor == other.actor) && (message == other.message);
 }
 
+/************************************************************************/
+/* WorkerInfo */
+/************************************************************************/
 WorkerInfo::WorkerInfo()
 : ticks(0), timeMks(0)
+{
+
+}
+
+/************************************************************************/
+/* WorkerParamsInfo */
+/************************************************************************/
+WorkerParamsInfo::WorkerParamsInfo()
 {
 
 }

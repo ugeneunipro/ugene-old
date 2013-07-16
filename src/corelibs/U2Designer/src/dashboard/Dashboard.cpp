@@ -32,6 +32,7 @@
 #include <U2Gui/MainWindow.h>
 
 #include "OutputFilesWidget.h"
+#include "ParametersWidget.h"
 #include "ProblemsWidget.h"
 #include "ResourcesWidget.h"
 #include "StatisticsWidget.h"
@@ -75,6 +76,8 @@ void Dashboard::sl_loaded(bool ok) {
     if (!monitor()->getProblems().isEmpty()) {
         sl_addProblemsWidget();
     }
+
+    ParametersWidget *params = new ParametersWidget(addWidget(tr("Parameters"), InputDashTab, 0), this);
 
     connect(monitor(), SIGNAL(si_runStateChanged(bool)), SLOT(sl_runStateChanged(bool)));
     connect(monitor(), SIGNAL(si_firstProblem()), SLOT(sl_addProblemsWidget()));

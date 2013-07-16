@@ -146,6 +146,18 @@ table.table-fixed {
     width: 100%;
 }
 
+.params-nav-tabs > .active > a,
+.params-nav-tabs > .active > a:hover,
+.params-nav-tabs > .active > a:focus {
+  color: rgb(51, 51, 51);
+}
+
+.params-nav-tabs > li > a,
+.params-nav-tabs > li > a:hover,
+.params-nav-tabs > li > a:focus {
+  color: rgb(136, 136, 136);
+}
+
 #status-bar {
     padding: 8px 0px;
     margin-bottom: 0px;

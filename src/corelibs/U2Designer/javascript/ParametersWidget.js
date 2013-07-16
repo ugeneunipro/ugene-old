@@ -1,0 +1,89 @@
+/**
+ * UGENE - Integrated Bioinformatics Tools.
+ * Copyright (C) 2008-2013 UniPro <ugene@unipro.ru>
+ * http://ugene.unipro.ru
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301, USA.
+ */
+
+ /** Creates the ParametersWidget layout and the first active tab (without parameters). */
+function pwInitAndActiveTab(container, activeTabName, activeTabId) {
+    var mainHtml =
+        '<div class="tabbable tabs-left">' +
+            '<ul class="nav nav-tabs params-nav-tabs">' +
+                '<li class="active"><a href="#' + activeTabId + '" data-toggle="tab">' + activeTabName + '</a></li>' +
+            '</ul>' +
+            '<div class="tab-content params-tab-content">' +
+                '<div class="tab-pane active" id="' + activeTabId + '">' +
+                    '<table class="table table-bordered table-fixed">' +
+                        '<col width="45%">' +
+                        '<col width="55%">' +
+                        '<thead>' +
+                            '<tr>' +
+                                '<th><span class="text">Parameter</span></th>' +
+                                '<th><span class="text">Value</span></th>' +
+                            '</tr>' +
+                        '</thead>' +
+                        '<tbody scroll="yes">' +
+                        '</tbody>' +
+                    '</table>' +
+                '</div>' +
+            '</div>' +
+        '</div>';
+    
+    container.innerHTML = mainHtml;
+}
+
+/** Add a parameter with the specified name and value to the specified parameters tab. */
+function pwAddParameter(paramsTabId, paramName, paramValue) {
+    var paramsTab = document.getElementById(paramsTabId);
+    var paramsTable = paramsTab.getElementsByTagName('table')[0];
+    var rowCount = paramsTable.rows.length;
+    var row = paramsTable.insertRow(rowCount);
+    var cell1 = row.insertCell(0);
+    var cell2 = row.insertCell(1);
+    cell1.innerHTML = wrapLongText(paramName);
+    cell2.innerHTML = wrapLongText(paramValue);
+}
+
+/**
+ * Searches for the ParametersWidget initial layout in the container and
+ * appends a new common (non-active) tab without parameters.
+ */
+function pwAddTab(container, tabName, tabId) {
+    var tabsList = container.getElementsByClassName("params-nav-tabs")[0];
+    var tabsContent = container.getElementsByClassName("params-tab-content")[0];
+    
+    var newTabsListEntry = '<li><a href="#' + tabId + '" data-toggle="tab">' + tabName + '</a></li>';
+    var newTabsContentEntry =
+        '<div class="tab-pane" id="' + tabId + '">' +
+            '<table class="table table-bordered table-fixed">' +
+                '<col width="45%">' +
+                '<col width="55%">' +
+                '<thead>' +
+                    '<tr>' +
+                        '<th><span class="text">Parameter</span></th>' +
+                        '<th><span class="text">Value</span></th>' +
+                    '</tr>' +
+                '</thead>' +
+                '<tbody scroll="yes">' +
+                '</tbody>' +
+            '</table>' +
+        '</div>';
+    
+    tabsList.insertAdjacentHTML('beforeend', newTabsListEntry);
+    tabsContent.insertAdjacentHTML('beforeend', newTabsContentEntry);
+}

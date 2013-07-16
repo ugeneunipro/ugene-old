@@ -55,6 +55,12 @@ namespace Monitor {
         int ticks;
         qint64 timeMks;
     };
+    class U2LANG_EXPORT WorkerParamsInfo {
+    public:
+        WorkerParamsInfo();
+        QString workerName;
+        QMap<QString, QString> paramsWithValues;
+    };
     enum U2LANG_EXPORT TaskState {
         RUNNING,
         RUNNING_WITH_PROBLEMS,
@@ -75,6 +81,7 @@ public:
     const QList<Monitor::FileInfo> & getOutputFiles() const;
     const QList<Monitor::Problem> & getProblems() const;
     const QMap<QString, Monitor::WorkerInfo> & getWorkersInfo() const;
+    const QList<Monitor::WorkerParamsInfo>  & getWorkersParameters() const;
     QString actorName(const QString &id) const;
     int getDataProduced(const QString &actor) const;
 
@@ -112,6 +119,7 @@ private:
     QList<Monitor::FileInfo> outputFiles;
     QList<Monitor::Problem> problems;
     QMap<QString, Monitor::WorkerInfo> workers;
+    QList<Monitor::WorkerParamsInfo> workersParamsInfo;
 
 protected:
     void setWorkerInfo(const QString &actorId, const Monitor::WorkerInfo &info);
