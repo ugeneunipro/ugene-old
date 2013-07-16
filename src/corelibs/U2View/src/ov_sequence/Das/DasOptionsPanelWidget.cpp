@@ -30,16 +30,21 @@
 #include <U2Core/DocumentModel.h>
 #include <U2Core/DNASequenceSelection.h>
 #include <U2Core/DNAAlphabet.h>
+#include <U2Core/Settings.h>
+#include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/GUrlUtils.h>
 
 #include <U2View/AnnotatedDNAView.h>
 #include <U2View/ADVSequenceObjectContext.h>
 
+#include <U2Gui/OpenViewTask.h>
 #include <U2Gui/ShowHideSubgroupWidget.h>
 #include <U2Gui/CreateAnnotationWidgetController.h>
 #include <U2Gui/GUIUtils.h>
 
 namespace U2 {
 
+#define SAVE_DIR QString("downloadremotefiledialog/savedir")    // taken from U2Core/DownloadRemoteFileDialog.cpp
 #define DAS_UNIPROT "dasuniprot"    // hardcoded, taken from U2Core/DASSource.cpp
 // TODO: add combobox with all available sources.
 
@@ -154,7 +159,10 @@ DasOptionsPanelWidget::DasOptionsPanelWidget(AnnotatedDNAView* adv) :
     blastSettingsWidget(NULL),
     dasFeaturesListWidget(NULL),
     annotationsWidgetController(NULL),
-    regionSelector(NULL){
+    regionSelector(NULL),
+    fetchIdsAction(NULL),
+    fetchAnnotationsAction(NULL),
+    openInNewViewAction(NULL) {
     setupUi(this);
     initialize();
     connectSignals();
@@ -167,6 +175,10 @@ void DasOptionsPanelWidget::sl_onSearchTypeChanged(int type) {
 }
 
 void DasOptionsPanelWidget::sl_onSearchIdsClicked() {
+    if (NULL == ctx) {
+        return;
+    }
+
     idList->clear();
     GetDasIdsBySequenceTask* searchIdsTask = NULL;
 
@@ -235,7 +247,9 @@ void DasOptionsPanelWidget::sl_onLoadAnnotationsFinish() {
 
 void DasOptionsPanelWidget::sl_onSequenceFocusChanged(ADVSequenceWidget*, ADVSequenceWidget*) {
     ctx = annotatedDnaView->getSequenceInFocus();
-    SAFE_POINT(NULL != ctx, "Active sequence context is NULL.", );
+    if (NULL == ctx) {
+        return;
+    }
 
     // Update region selector widget
     disconnect(SIGNAL(si_onSelectionChanged(GSelection*)),
@@ -267,6 +281,29 @@ void DasOptionsPanelWidget::sl_onSelectionChanged(LRegionsSelection* _selection,
     checkState();
 }
 
+void DasOptionsPanelWidget::sl_openInNewView() {
+    QString dir = AppContext::getSettings()->getValue(SAVE_DIR, "").value<QString>();
+    if (dir.isEmpty()) {
+        dir = LoadRemoteDocumentTask::getDefaultDownloadDirectory();
+    }
+    SAFE_POINT(!dir.isEmpty(), "Default download dir is empty", );
+
+    U2OpStatus2Log os;
+    dir = GUrlUtils::prepareDirLocation(dir, os);
+    SAFE_POINT(!dir.isEmpty(), "Prepared default download dir is empty", );
+
+    QString accessionNumber = idList->currentItem()->text();
+    QList<Task*> tasks;
+
+    DASSourceRegistry * dasRegistry = AppContext::getDASSourceRegistry();
+    SAFE_POINT(NULL != dasRegistry, "DAS registry is NULL", );
+
+    QList<DASSource> featureSources = getFeatureSources();
+    DASSource refSource = getSequenceSource();
+    SAFE_POINT(refSource.isValid(), "Reference source is invalid", );
+
+    AppContext::getTaskScheduler()->registerTopLevelTask(new LoadDASDocumentsAndOpenViewTask(accessionNumber, dir, refSource, featureSources, false));
+}
 
 void DasOptionsPanelWidget::initialize() {
     SAFE_POINT(NULL != ctx, "Active sequence context is NULL.", );
@@ -316,6 +353,15 @@ void DasOptionsPanelWidget::initialize() {
     annotationsWidgetController = new CreateAnnotationWidgetController(cm, this, optPanel);
 
     annotationsSettingsContainerLayout->addWidget(new ShowHideSubgroupWidget(ANNOTATIONS_SETTINGS, ANNOTATIONS_SETTINGS, annotationsWidgetController->getWidget(), false));
+
+    // Setup context menu of the idList widget
+    idList->setContextMenuPolicy(Qt::ActionsContextMenu);
+    fetchIdsAction = new QAction("Fetch IDs", idList);
+    fetchAnnotationsAction = new QAction("Fetch Annotations", idList);
+    openInNewViewAction = new QAction("Open in a new view", idList);
+    idList->addAction(fetchIdsAction);
+    idList->addAction(fetchAnnotationsAction);
+    idList->addAction(openInNewViewAction);
 }
 
 void DasOptionsPanelWidget::connectSignals() {
@@ -334,7 +380,15 @@ void DasOptionsPanelWidget::connectSignals() {
     connect(selection,
             SIGNAL(si_selectionChanged(LRegionsSelection*, QVector<U2Region>, QVector<U2Region>)),
             SLOT(sl_onSelectionChanged(LRegionsSelection*, QVector<U2Region>, QVector<U2Region>)));
-    
+    connect(fetchIdsAction,
+            SIGNAL(triggered()),
+            SLOT(sl_onSearchIdsClicked()));
+    connect(fetchAnnotationsAction,
+            SIGNAL(triggered()),
+            SLOT(sl_onAnnotateClicked()));
+    connect(openInNewViewAction,
+            SIGNAL(triggered()),
+            SLOT(sl_openInNewView()));
 }
 
 void DasOptionsPanelWidget::checkState() {
@@ -347,12 +401,19 @@ void DasOptionsPanelWidget::checkState() {
     ok &= alphabet->isAmino();
 
     searchIdsButton->setEnabled(ok);
+    fetchIdsAction->setEnabled(ok);
 
     bool annotationButtonIsEnabled = true;
     annotationButtonIsEnabled &= annotationsWidgetController->validate().isEmpty();
     annotationButtonIsEnabled &= !idList->selectedItems().isEmpty();
-    ok &= ctx->getAlphabet()->isAmino();
+    annotationButtonIsEnabled &= ctx->getAlphabet()->isAmino();
     annotateButton->setEnabled(annotationButtonIsEnabled);
+    fetchAnnotationsAction->setEnabled(annotationButtonIsEnabled);
+
+    bool openActionIsEnabled = true;
+    openActionIsEnabled &= !idList->selectedItems().isEmpty();
+    openActionIsEnabled &= ctx->getAlphabet()->isAmino();
+    openInNewViewAction->setEnabled(openActionIsEnabled);
 }
 
 QList<DASSource> DasOptionsPanelWidget::getFeatureSources() {

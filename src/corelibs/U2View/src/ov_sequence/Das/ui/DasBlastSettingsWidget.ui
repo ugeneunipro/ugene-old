@@ -56,11 +56,6 @@
      </item>
      <item>
       <property name="text">
-       <string>blastn</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
        <string>tblastx</string>
       </property>
      </item>

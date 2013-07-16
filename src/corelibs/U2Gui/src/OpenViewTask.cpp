@@ -305,19 +305,20 @@ QList<Task*> AddDocumentAndOpenViewTask::onSubTaskFinished(Task* t) {
 
 //////////////////////////////////////////////////////////////////////////
 //LoadDASDocumentsAndOpenViewTask
-LoadDASDocumentsAndOpenViewTask::LoadDASDocumentsAndOpenViewTask( const QString& accId, const QString& _fullPath, const DASSource& _referenceSource, const QList<DASSource>& _featureSources )
+LoadDASDocumentsAndOpenViewTask::LoadDASDocumentsAndOpenViewTask( const QString& accId, const QString& _fullPath, const DASSource& _referenceSource, const QList<DASSource>& _featureSources, bool _convertId )
 : Task(tr("Load DAS documents and open view"), TaskFlags_NR_FOSCOE | TaskFlag_MinimizeSubtaskErrorText)
 ,accNumber(accId)
 ,fullpath(_fullPath)
 ,referenceSource(_referenceSource)
 ,featureSources(_featureSources)
 ,loadDasDocumentTask(NULL)
+,convertId(_convertId)
 {
 
 }
 
 void LoadDASDocumentsAndOpenViewTask::prepare(){
-    loadDasDocumentTask = new ConvertIdAndLoadDASDocumentTask(accNumber, fullpath, referenceSource, featureSources);
+    loadDasDocumentTask = new ConvertIdAndLoadDASDocumentTask(accNumber, fullpath, referenceSource, featureSources, convertId);
 
     addSubTask(loadDasDocumentTask);
 }

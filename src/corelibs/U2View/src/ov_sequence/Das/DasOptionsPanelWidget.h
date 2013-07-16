@@ -75,6 +75,7 @@ private slots:
     void sl_onLoadAnnotationsFinish();
     void sl_onSequenceFocusChanged(ADVSequenceWidget*, ADVSequenceWidget*);
     void sl_onSelectionChanged(LRegionsSelection* _selection, const QVector<U2Region>& added, const QVector<U2Region>& removed);
+    void sl_openInNewView();
 
 private:
     void initialize();
@@ -100,6 +101,9 @@ private:
     RegionSelector* regionSelector;
 
     QList<Task*> loadDasObjectTasks;
+    QAction* fetchIdsAction;
+    QAction* fetchAnnotationsAction;
+    QAction* openInNewViewAction;
 
     QMap<QString, QList<SharedAnnotationData> > annotationData;
 

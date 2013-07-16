@@ -134,7 +134,7 @@ private:
 class U2CORE_EXPORT ConvertIdAndLoadDASDocumentTask : public Task {
     Q_OBJECT
 public:
-    ConvertIdAndLoadDASDocumentTask(const QString& accId, const QString& fullPath, const DASSource& referenceSource, const QList<DASSource>& featureSources);
+    ConvertIdAndLoadDASDocumentTask(const QString& accId, const QString& fullPath, const DASSource& referenceSource, const QList<DASSource>& featureSources, bool convertId = false);
     Document* getDocument() { return loadDasDocumentTask->getDocument(); }
     Document* takeDocument() { return loadDasDocumentTask->takeDocument(); }
     QString getLocalUrl() { return loadDasDocumentTask->getLocalUrl(); }
@@ -151,6 +151,8 @@ private:
     QString                 fullPath;
     DASSource               referenceSource;
     QList<DASSource>        featureSources;
+
+    bool convertId;
 };
 
 

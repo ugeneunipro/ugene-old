@@ -218,7 +218,7 @@ bool XmlPicrParser::isResultsEmpty() {
 //////////////////////////////////////////////////////////////////////////
 //ConvertDasIdTask
 const QString ConvertDasIdTask::baseUrl = QString("http://www.ebi.ac.uk/Tools/picr/rest/getUPIForAccession");
-const QString ConvertDasIdTask::databasePart = QString("&database=SWISSPROT&database=SWISSPROT_ID&database=SWISSPROT_VARSPLIC");
+const QString ConvertDasIdTask::databasePart = QString("&database=SWISSPROT&database=SWISSPROT_VARSPLIC&database=TREMBL&database=TREMBL_VARSPLIC");
 const QString ConvertDasIdTask::parametersPart = QString("&includeattributes=true");
 
 ConvertDasIdTask::ConvertDasIdTask(const QString& resId) :
@@ -387,7 +387,7 @@ void GetDasIdsBySequenceTask::sl_uploadProgress(qint64 bytesSent, qint64 bytesTo
 //////////////////////////////////////////////////////////////////////////
 //GetDasIdsByExactSequenceTask
 const QString GetDasIdsByExactSequenceTask::baseUrl = QString("http://www.ebi.ac.uk/Tools/picr/rest/getUPIForSequence");
-const QString GetDasIdsByExactSequenceTask::databasePart = QString("&database=SWISSPROT&database=SWISSPROT_ID&database=SWISSPROT_VARSPLIC");
+const QString GetDasIdsByExactSequenceTask::databasePart = QString("&database=SWISSPROT&database=SWISSPROT_VARSPLIC&database=TREMBL&database=TREMBL_VARSPLIC");
 const QString GetDasIdsByExactSequenceTask::parametersPart = QString("&includeattributes=true");
 
 GetDasIdsByExactSequenceTask::GetDasIdsByExactSequenceTask(const QByteArray& _sequence) :
@@ -460,7 +460,7 @@ QString PicrBlastSettings::value(const QString& key) {
 //////////////////////////////////////////////////////////////////////////
 //GetDasIdsByBlastTask
 const QString GetDasIdsByBlastTask::baseUrl = QString("http://www.ebi.ac.uk/Tools/picr/rest/getUPIForBLAST");
-const QString GetDasIdsByBlastTask::databasePart = QString("&database=SWISSPROT&database=SWISSPROT_ID&database=SWISSPROT_VARSPLIC");
+const QString GetDasIdsByBlastTask::databasePart = QString("&database=SWISSPROT&database=SWISSPROT_VARSPLIC&database=TREMBL&database=TREMBL_VARSPLIC");
 const QString GetDasIdsByBlastTask::parametersPart = QString("&program=%1&filtertype=IDENTITY&identityvalue=%2&includeattributes=true&matrix=%3&filter=%4&gapopen=%5&gapext=%6&dropoff=%7&gapalign=%8");
 
 GetDasIdsByBlastTask::GetDasIdsByBlastTask(const QByteArray& _sequence, const PicrBlastSettings& _settings) :

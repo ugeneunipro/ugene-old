@@ -71,7 +71,7 @@ private:
 class U2GUI_EXPORT LoadDASDocumentsAndOpenViewTask : public Task {
     Q_OBJECT
 public:
-    LoadDASDocumentsAndOpenViewTask(const QString& accId, const QString& fullPath, const DASSource& referenceSource, const QList<DASSource>& featureSources);
+    LoadDASDocumentsAndOpenViewTask(const QString& accId, const QString& fullPath, const DASSource& referenceSource, const QList<DASSource>& featureSources, bool convertId = true);
     virtual void prepare();
 protected:
     QList<Task*> onSubTaskFinished(Task* subTask);
@@ -81,6 +81,7 @@ private:
     DASSource                           referenceSource;
     QList<DASSource>                    featureSources;
     ConvertIdAndLoadDASDocumentTask*    loadDasDocumentTask;
+    bool                                convertId;
 };
 
 class U2GUI_EXPORT OpenViewTask : public Task {

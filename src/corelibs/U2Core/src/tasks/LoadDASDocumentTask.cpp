@@ -313,29 +313,34 @@ void LoadDASObjectTask::sl_uploadProgress( qint64 bytesSent, qint64 bytesTotal )
 //////////////////////////////////////////////////////////////////////////
 //ConvertAndLoadDASDocumentTask
 ConvertIdAndLoadDASDocumentTask::ConvertIdAndLoadDASDocumentTask(const QString& accId,
-                                                             const QString& _fullPath,
-                                                             const DASSource& _referenceSource,
-                                                             const QList<DASSource>& _featureSources) :
-    Task(QString("Convert ID and load DAS document for: %1").arg(accId), TaskFlags_FOSCOE | TaskFlag_MinimizeSubtaskErrorText),
+                                                                 const QString& _fullPath,
+                                                                 const DASSource& _referenceSource,
+                                                                 const QList<DASSource>& _featureSources,
+                                                                 bool _convertId) :
+    Task(QString("Convert ID and load DAS document for: %1").arg(accId), TaskFlags(TaskFlag_FailOnSubtaskCancel | TaskFlag_MinimizeSubtaskErrorText)),
     convertDasIdTask(NULL),
     loadDasDocumentTask(NULL),
     accessionNumber(accId),
     fullPath(_fullPath),
     referenceSource(_referenceSource),
-    featureSources(_featureSources)
+    featureSources(_featureSources),
+    convertId(_convertId)
 {
 
 }
 
 void ConvertIdAndLoadDASDocumentTask::prepare() {
-    convertDasIdTask = new ConvertDasIdTask(accessionNumber);
-    addSubTask(convertDasIdTask);
+    if (convertId) {
+        convertDasIdTask = new ConvertDasIdTask(accessionNumber);
+        addSubTask(convertDasIdTask);
+    } else {
+        loadDasDocumentTask = new LoadDASDocumentTask(accessionNumber, fullPath, referenceSource, featureSources);
+        addSubTask(loadDasDocumentTask);
+    }
 }
 
 QList<Task*> ConvertIdAndLoadDASDocumentTask::onSubTaskFinished(Task *subTask) {
     QList<Task*> subTasks;
-
-    // Convert task can have an error, than try to load without conversion.
 
     if (subTask->isCanceled()) {
         return subTasks;
