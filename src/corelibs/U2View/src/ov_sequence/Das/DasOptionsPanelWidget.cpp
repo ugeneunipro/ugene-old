@@ -54,10 +54,95 @@ const QString DasOptionsPanelWidget::CUSTOM_REGION = tr("Custom region");
 
 DasBlastSettingsWidget::DasBlastSettingsWidget(QWidget* parent) : QWidget(parent) {
     setupUi(this);
+    initialize();
+    connectSignals();
+    checkState();
 }
 
-int DasBlastSettingsWidget::getIdentity() {
-    return identitySpinBox->value();
+PicrBlastSettings DasBlastSettingsWidget::getSettings() {
+    PicrBlastSettings settings;
+    settings.insert(PicrBlastSettings::PROGRAM, programComboBox->currentText());
+    settings.insert(PicrBlastSettings::IDENTITY, QString::number(identitySpinBox->value()));
+    settings.insert(PicrBlastSettings::MATRIX, matrixComboBox->currentText());
+    settings.insert(PicrBlastSettings::FILTER, filterComboBox->currentText());
+
+    QStringList gapCosts = gapCostsComboBox->currentText().split(" ");
+    SAFE_POINT(2 == gapCosts.count(), "Invalid gap costs value", PicrBlastSettings());
+    settings.insert(PicrBlastSettings::GAP_OPEN, gapCosts.first());
+    settings.insert(PicrBlastSettings::GAP_EXT, gapCosts.last());
+
+    settings.insert(PicrBlastSettings::DROP_OFF, dropOffComboBox->currentText());
+
+    QString boolValue = gapAlignCheckBox->isChecked() ? "true" : "false";
+    settings.insert(PicrBlastSettings::GAP_ALIGN, boolValue);
+
+    return settings;
+}
+
+void DasBlastSettingsWidget::sl_onMatrixChanged(int index) {
+    Q_UNUSED(index);
+    checkState();
+}
+
+void DasBlastSettingsWidget::initialize() {
+    QStringList pam30 = QStringList() << "9 1"
+                                      << "5 2"
+                                      << "6 2"
+                                      << "7 2"
+                                      << "8 1"
+                                      << "10 1";
+    QStringList pam70 = QStringList() << "10 1"
+                                      << "6 2"
+                                      << "7 2"
+                                      << "8 2"
+                                      << "9 2"
+                                      << "11 1";
+    QStringList blosum45 = QStringList() << "15 2"
+                                         << "10 3"
+                                         << "11 3"
+                                         << "12 3"
+                                         << "12 2"
+                                         << "13 2"
+                                         << "14 2"
+                                         << "16 2"
+                                         << "15 1"
+                                         << "16 1"
+                                         << "17 1"
+                                         << "18 1"
+                                         << "19 1";
+    QStringList blosum62 = QStringList() << "11 1"
+                                         << "7 2"
+                                         << "8 2"
+                                         << "9 2"
+                                         << "10 1"
+                                         << "12 1";
+    QStringList blosum80 = QStringList() << "10 1"
+                                         << "6 2"
+                                         << "7 2"
+                                         << "8 2"
+                                         << "9 1"
+                                         << "11 1";
+
+    gapCostsByMatrix.insert("PAM30", pam30);
+    gapCostsByMatrix.insert("PAM70", pam70);
+    gapCostsByMatrix.insert("BLOSUM45", blosum45);
+    gapCostsByMatrix.insert("BLOSUM62", blosum62);
+    gapCostsByMatrix.insert("BLOSUM80", blosum80);
+}
+
+void DasBlastSettingsWidget::connectSignals() {
+    connect(matrixComboBox,
+            SIGNAL(currentIndexChanged(int)),
+            SLOT(sl_onMatrixChanged(int)));
+}
+
+void DasBlastSettingsWidget::checkState() {
+    gapCostsComboBox->clear();
+
+    QStringList gapCosts = gapCostsByMatrix.value(matrixComboBox->currentText());
+    SAFE_POINT(0 != gapCosts.count(), "Unrecognized matrix", );
+
+    gapCostsComboBox->addItems(gapCosts);
 }
 
 
@@ -65,6 +150,7 @@ DasOptionsPanelWidget::DasOptionsPanelWidget(AnnotatedDNAView* adv) :
     annotatedDnaView(adv),
     ctx(adv->getSequenceInFocus()),
     selection(NULL),
+    settingsShowHideWidget(NULL),
     blastSettingsWidget(NULL),
     dasFeaturesListWidget(NULL),
     annotationsWidgetController(NULL) {
@@ -86,7 +172,8 @@ void DasOptionsPanelWidget::sl_onSearchIdsClicked() {
     if (searchTypeComboBox->currentText() == EXACT_SEARCH) {
         searchIdsTask = new GetDasIdsByExactSequenceTask(ctx->getSequenceData(getRegion()));
     } else if (searchTypeComboBox->currentText() == BLAST_SEARCH) {
-        searchIdsTask = new GetDasIdsByBlastTask(ctx->getSequenceData(getRegion()), blastSettingsWidget->getIdentity());
+        SAFE_POINT (NULL != blastSettingsWidget, "BLAST settings widget is null", );
+        searchIdsTask = new GetDasIdsByBlastTask(ctx->getSequenceData(getRegion()), blastSettingsWidget->getSettings());
     } else {
         FAIL("Unexpected search type", );
     }
@@ -211,7 +298,8 @@ void DasOptionsPanelWidget::initialize() {
     updateRegionSelectorWidget();
 
     blastSettingsWidget = new DasBlastSettingsWidget();
-    settingsContainerLayout->addWidget(new ShowHideSubgroupWidget(ALGORITHM_SETTINGS, ALGORITHM_SETTINGS, blastSettingsWidget, false));
+    settingsShowHideWidget = new ShowHideSubgroupWidget(ALGORITHM_SETTINGS, ALGORITHM_SETTINGS, blastSettingsWidget, false);
+    settingsContainerLayout->addWidget(settingsShowHideWidget);
 
     searchTypeComboBox->addItem(EXACT_SEARCH);
     searchTypeComboBox->addItem(BLAST_SEARCH);
@@ -278,7 +366,7 @@ void DasOptionsPanelWidget::connectSignals() {
 
 void DasOptionsPanelWidget::checkState() {
     SAFE_POINT(ctx, "Active sequence context is NULL.", );
-    blastSettingsWidget->setEnabled(searchTypeComboBox->currentText() == BLAST_SEARCH);
+    settingsShowHideWidget->setVisible(searchTypeComboBox->currentText() == BLAST_SEARCH);
 
     bool ok = regionIsOk();
     ok &= ctx->getAlphabet()->isAmino();

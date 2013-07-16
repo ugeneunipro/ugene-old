@@ -40,12 +40,24 @@ class DASSource;
 class Task;
 class CreateAnnotationWidgetController;
 class LRegionsSelection;
+class ShowHideSubgroupWidget;
+class PicrBlastSettings;
 
 class DasBlastSettingsWidget : public QWidget, private Ui_DasBlastSettingsWidget {
     Q_OBJECT
 public:
     DasBlastSettingsWidget(QWidget* parent = NULL);
-    int getIdentity();
+    PicrBlastSettings getSettings();
+
+private slots:
+    void sl_onMatrixChanged(int index);
+
+private:
+    void initialize();
+    void connectSignals();
+    void checkState();
+
+    QMap<QString, QStringList> gapCostsByMatrix;
 };
 
 class DasOptionsPanelWidget : public QWidget, private Ui_DasOptionsPanelWidget {
@@ -81,6 +93,7 @@ private:
     AnnotatedDNAView* annotatedDnaView;
     ADVSequenceObjectContext* ctx;
     DNASequenceSelection* selection;
+    ShowHideSubgroupWidget* settingsShowHideWidget;
     DasBlastSettingsWidget* blastSettingsWidget;
     QListWidget* dasFeaturesListWidget;
     CreateAnnotationWidgetController* annotationsWidgetController;

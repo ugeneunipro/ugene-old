@@ -247,13 +247,11 @@ void CreateAnnotationWidgetController::initLayout(AnnotationWidgetMode layoutMod
 
     QVBoxLayout* mainLayout = new QVBoxLayout(w);
     mainLayout->setContentsMargins(0, 0, 0, 0);
-    mainLayout->setSizeConstraint(QLayout::SetMinAndMaxSize);
 
     // Save annotations group
     QGroupBox* groupSaveAnnots = new QGroupBox(w);
     groupSaveAnnots->setTitle(tr("Save annotation(s) to"));
     QGridLayout* gridLayout = new QGridLayout(groupSaveAnnots);
-    gridLayout->setSizeConstraint(QLayout::SetMinAndMaxSize);
 
     existingObjectRB = new QRadioButton(groupSaveAnnots);
     existingObjectRB ->setObjectName("existingObjectRB");
@@ -287,6 +285,9 @@ void CreateAnnotationWidgetController::initLayout(AnnotationWidgetMode layoutMod
     useAutoAnnotationsRB->setText(tr("Use auto-annotations table"));
 
     if (layoutMode == normal) {
+        mainLayout->setSizeConstraint(QLayout::SetMinAndMaxSize);
+        gridLayout->setSizeConstraint(QLayout::SetMinAndMaxSize);
+
         gridLayout->addWidget(existingObjectRB, 1, 0, 1, 1);
         gridLayout->addWidget(existingObjectCombo, 1, 1, 1, 1);
         gridLayout->addWidget(existingObjectButton, 1, 2, 1, 1);
@@ -322,7 +323,6 @@ void CreateAnnotationWidgetController::initLayout(AnnotationWidgetMode layoutMod
     groupAnnotParams->setTitle(tr("Annotation parameters"));
 
     QGridLayout* gridLayoutParams = new QGridLayout(groupAnnotParams);
-    gridLayoutParams->setSizeConstraint(QLayout::SetMinAndMaxSize);
     groupNameLabel = new QLabel(groupAnnotParams);
     QSizePolicy sizePolicy1(QSizePolicy::Maximum, QSizePolicy::Preferred);
     sizePolicy1.setHorizontalStretch(0);
@@ -373,6 +373,8 @@ void CreateAnnotationWidgetController::initLayout(AnnotationWidgetMode layoutMod
     complementButton->setIcon(iconComplement);
 
     if (layoutMode ==  normal) {
+        gridLayoutParams->setSizeConstraint(QLayout::SetMinAndMaxSize);
+
         groupNameLabel->setText(tr("Group name"));
         annotationNameLabel->setText(tr("Annotation name"));
         locationLabel->setText(tr("Location"));

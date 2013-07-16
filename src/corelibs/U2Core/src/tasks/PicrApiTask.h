@@ -165,37 +165,34 @@ private:
 
 class U2CORE_EXPORT PicrBlastSettings {
 public:
-    /*enum ProgramValue {
-        Blastp = "blastp",
-        Blastx = "blastx",
-        Blastn = "blastn",
-        Tblastx = "tblastx",
-        Tblastn = "tblastn"
-    };
+    void insert(const QString& key, const QVariant& value);
+    bool isValid();
+    QString value(const QString& key);
 
-    enum Matrix {
-        Blosum45 = "BLOSUM45",
-        Blosum50 = "BLOSUM50",
-        Blosum62 = "BLOSUM62",
-        Blosum80 = "BLOSUM80",
-        Blosum90 = "BLOSUM90",
-        Pam30 = "PAM30",
-        Pam70 = "PAM70",
-        Pam250 = "PAM250"
-    };*/
+    const static QString PROGRAM;
+    const static QString IDENTITY;
+    const static QString MATRIX;
+    const static QString FILTER;
+    const static QString GAP_OPEN;
+    const static QString GAP_EXT;
+    const static QString DROP_OFF;
+    const static QString GAP_ALIGN;
+
+private:
+    QVariantMap settings;
 };
 
 class U2CORE_EXPORT GetDasIdsByBlastTask : public GetDasIdsBySequenceTask {
     Q_OBJECT
 public:
-    GetDasIdsByBlastTask(const QByteArray& _sequence, const int _identityValue);
+    GetDasIdsByBlastTask(const QByteArray& _sequence, const PicrBlastSettings& _settings);
     virtual ~GetDasIdsByBlastTask();
 
 private:
     virtual QString getRequestUrlString();
     virtual XmlPicrParser getParser();
 
-    int identityValue;
+    PicrBlastSettings settings;
 
     const static QString    baseUrl;
     const static QString    databasePart;

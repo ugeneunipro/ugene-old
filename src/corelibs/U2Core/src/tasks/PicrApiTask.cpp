@@ -413,49 +413,59 @@ XmlPicrParser GetDasIdsByExactSequenceTask::getParser() {
 
 //////////////////////////////////////////////////////////////////////////
 //PicrBlastSettings
-/*const QStringList PicrBlastSettings::Program = QStringList() << "blastp"    //default value
-                                                             << "blastx"
-                                                             << "blastn"
-                                                             << "tblastx"
-                                                             << "tblastn";
-const QStringList PicrBlastSettings::Matrix = QStringList() << "BLOSUM45"
-                                                            << "BLOSUM50"
-                                                            << "BLOSUM62"   // default value
-                                                            << "BLOSUM80"
-                                                            << "BLOSUM90"
-                                                            << "PAM30"
-                                                            << "PAM70"
-                                                            << "PAM250";
-const QList<int> PicrBlastSettings::Dropoff = QList<int>() << 0             // default value
-                                                           << 2
-                                                           << 4
-                                                           << 6
-                                                           << 8
-                                                           << 10;
-const QList<int> PicrBlastSettings::Align = QList<int>() << 0               // default value
-                                                         << 1
-                                                         << 2
-                                                         << 3
-                                                         << 4
-                                                         << 5;
-const QStringList PicrBlastSettings::Filter = QStringList() << "F"          // default value
-                                                            << "T";
-const QList<int> PicrBlastSettings::GapExt = QList<int>() << 1               // default value
-                                                         << 1
-                                                         << 2
-                                                         << 3
-                                                         << 4
-                                                         << 5;*/
+const QString PicrBlastSettings::PROGRAM = "program";
+const QString PicrBlastSettings::IDENTITY = "identity";
+const QString PicrBlastSettings::MATRIX = "matrix";
+const QString PicrBlastSettings::FILTER = "filter";
+const QString PicrBlastSettings::GAP_OPEN = "gap_open";
+const QString PicrBlastSettings::GAP_EXT = "gap_ext";
+const QString PicrBlastSettings::DROP_OFF = "drop_off";
+const QString PicrBlastSettings::GAP_ALIGN = "gap_align";
+
+void PicrBlastSettings::insert(const QString& key, const QVariant& value) {
+    settings.insert(key, value);
+}
+
+bool PicrBlastSettings::isValid() {
+    bool allEntries = !settings.value(PROGRAM, QString()).toString().isEmpty() &&
+                      !settings.value(IDENTITY, QString()).toString().isEmpty() &&
+                      !settings.value(MATRIX, QString()).toString().isEmpty() &&
+                      !settings.value(FILTER, QString()).toString().isEmpty() &&
+                      !settings.value(GAP_OPEN, QString()).toString().isEmpty() &&
+                      !settings.value(GAP_EXT, QString()).toString().isEmpty() &&
+                      !settings.value(DROP_OFF, QString()).toString().isEmpty() &&
+                      !settings.value(GAP_ALIGN, QString()).toString().isEmpty();
+    if (false == allEntries) {
+        return false;
+    }
+
+    bool ok;
+    settings.value(GAP_OPEN).toInt(&ok);
+    if (false == ok) {
+        return false;
+    }
+    settings.value(GAP_EXT).toInt(&ok);
+    if (false == ok) {
+        return false;
+    }
+
+    return true;
+}
+
+QString PicrBlastSettings::value(const QString& key) {
+    return settings.value(key).toString();
+}
+
 
 //////////////////////////////////////////////////////////////////////////
 //GetDasIdsByBlastTask
 const QString GetDasIdsByBlastTask::baseUrl = QString("http://www.ebi.ac.uk/Tools/picr/rest/getUPIForBLAST");
 const QString GetDasIdsByBlastTask::databasePart = QString("&database=SWISSPROT&database=SWISSPROT_ID&database=SWISSPROT_VARSPLIC");
-const QString GetDasIdsByBlastTask::parametersPart = QString("&filtertype=IDENTITY&identityvalue=%1&includeattributes=true");
+const QString GetDasIdsByBlastTask::parametersPart = QString("&program=%1&filtertype=IDENTITY&identityvalue=%2&includeattributes=true&matrix=%3&filter=%4&gapopen=%5&gapext=%6&dropoff=%7&gapalign=%8");
 
-GetDasIdsByBlastTask::GetDasIdsByBlastTask(const QByteArray& _sequence, const int _identityValue) :
+GetDasIdsByBlastTask::GetDasIdsByBlastTask(const QByteArray& _sequence, const PicrBlastSettings& _settings) :
     GetDasIdsBySequenceTask(_sequence),
-    identityValue(_identityValue) {
+    settings(_settings) {
 }
 
 GetDasIdsByBlastTask::~GetDasIdsByBlastTask() {
@@ -463,11 +473,19 @@ GetDasIdsByBlastTask::~GetDasIdsByBlastTask() {
 
 QString GetDasIdsByBlastTask::getRequestUrlString() {
     QString res;
-    if (sequence.isEmpty()) {
+    if (sequence.isEmpty() || !settings.isValid()) {
         return res;
     }
 
-    res = baseUrl + "?blastfrag=" + sequence + databasePart + parametersPart.arg(identityValue);
+    res = baseUrl + "?blastfrag=" + sequence + databasePart + parametersPart.arg(settings.value(PicrBlastSettings::PROGRAM)).
+          arg(settings.value(PicrBlastSettings::IDENTITY)).
+          arg(settings.value(PicrBlastSettings::MATRIX)).
+          arg(settings.value(PicrBlastSettings::FILTER)).
+          arg(settings.value(PicrBlastSettings::GAP_OPEN)).
+          arg(settings.value(PicrBlastSettings::GAP_EXT)).
+          arg(settings.value(PicrBlastSettings::DROP_OFF)).
+          arg(settings.value(PicrBlastSettings::GAP_ALIGN));
+
     return res;
 }
 
