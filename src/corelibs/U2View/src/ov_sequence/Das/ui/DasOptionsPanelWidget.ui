@@ -24,6 +24,9 @@
     <enum>QLayout::SetMinAndMaxSize</enum>
    </property>
    <item>
+    <layout class="QVBoxLayout" name="regionLayout"/>
+   </item>
+   <item>
     <widget class="QWidget" name="regionSelectorContainerWidget" native="true">
      <layout class="QVBoxLayout" name="regionSelectorContainerLayout">
       <property name="sizeConstraint">
@@ -38,37 +41,6 @@
          <property name="margin">
           <number>0</number>
          </property>
-         <item>
-          <widget class="QComboBox" name="regionTypeComboBox"/>
-         </item>
-         <item>
-          <layout class="QHBoxLayout" name="regionLineEditLayout">
-           <property name="topMargin">
-            <number>0</number>
-           </property>
-           <item>
-            <widget class="QLineEdit" name="startLineEdit">
-             <property name="inputMethodHints">
-              <set>Qt::ImhDigitsOnly</set>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLabel" name="dashLabel">
-             <property name="text">
-              <string>-</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLineEdit" name="endLineEdit">
-             <property name="inputMethodHints">
-              <set>Qt::ImhDigitsOnly</set>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </item>
         </layout>
        </widget>
       </item>

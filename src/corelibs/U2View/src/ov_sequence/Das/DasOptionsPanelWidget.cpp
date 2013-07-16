@@ -153,7 +153,8 @@ DasOptionsPanelWidget::DasOptionsPanelWidget(AnnotatedDNAView* adv) :
     settingsShowHideWidget(NULL),
     blastSettingsWidget(NULL),
     dasFeaturesListWidget(NULL),
-    annotationsWidgetController(NULL) {
+    annotationsWidgetController(NULL),
+    regionSelector(NULL){
     setupUi(this);
     initialize();
     connectSignals();
@@ -247,8 +248,6 @@ void DasOptionsPanelWidget::sl_onSequenceFocusChanged(ADVSequenceWidget*, ADVSeq
             SIGNAL(si_selectionChanged(LRegionsSelection*, QVector<U2Region>, QVector<U2Region>)),
             SLOT(sl_onSelectionChanged(LRegionsSelection*, QVector<U2Region>, QVector<U2Region>)));
 
-    updateRegionSelectorWidget();
-
     // Update annotations settings widget
     CreateAnnotationModel cm;
     cm.hideLocation = true;
@@ -268,32 +267,14 @@ void DasOptionsPanelWidget::sl_onSelectionChanged(LRegionsSelection* _selection,
     checkState();
 }
 
-void DasOptionsPanelWidget::sl_onRegionTypeChanged(int index) {
-    Q_UNUSED(index);
-    updateRegionSelectorWidget();
-    checkState();
-}
-
-void DasOptionsPanelWidget::sl_onRegionEdited(QString text) {
-    Q_UNUSED(text);
-    regionTypeComboBox->setCurrentIndex(regionTypeComboBox->findText(CUSTOM_REGION));
-    updateRegionSelectorWidget();
-    checkState();
-}
 
 void DasOptionsPanelWidget::initialize() {
     SAFE_POINT(NULL != ctx, "Active sequence context is NULL.", );
 
     selection = ctx->getSequenceSelection();
-    regionTypeComboBox->addItem(WHOLE_SEQUENCE);
-    regionTypeComboBox->addItem(SELECTED_REGION);
-    regionTypeComboBox->addItem(CUSTOM_REGION);
 
-    if (!selection->isEmpty()) {
-        regionTypeComboBox->setCurrentIndex(regionTypeComboBox->findText(SELECTED_REGION));
-    } else {
-        regionTypeComboBox->setCurrentIndex(regionTypeComboBox->findText(WHOLE_SEQUENCE));
-    }
+    regionSelector = new RegionSelector(this, ctx->getSequenceLength(), true, ctx->getSequenceSelection());
+    regionLayout->addWidget(regionSelector);
 
     updateRegionSelectorWidget();
 
@@ -353,15 +334,7 @@ void DasOptionsPanelWidget::connectSignals() {
     connect(selection,
             SIGNAL(si_selectionChanged(LRegionsSelection*, QVector<U2Region>, QVector<U2Region>)),
             SLOT(sl_onSelectionChanged(LRegionsSelection*, QVector<U2Region>, QVector<U2Region>)));
-    connect(regionTypeComboBox,
-            SIGNAL(currentIndexChanged(int)),
-            SLOT(sl_onRegionTypeChanged(int)));
-    connect(startLineEdit,
-            SIGNAL(textEdited(QString)),
-            SLOT(sl_onRegionEdited(QString)));
-    connect(endLineEdit,
-            SIGNAL(textEdited(QString)),
-            SLOT(sl_onRegionEdited(QString)));
+    
 }
 
 void DasOptionsPanelWidget::checkState() {
@@ -369,7 +342,10 @@ void DasOptionsPanelWidget::checkState() {
     settingsShowHideWidget->setVisible(searchTypeComboBox->currentText() == BLAST_SEARCH);
 
     bool ok = regionIsOk();
-    ok &= ctx->getAlphabet()->isAmino();
+    DNAAlphabet* alphabet = ctx->getAlphabet();
+    SAFE_POINT(alphabet != NULL, "DasOptionsPanelWidget::checkState", )
+    ok &= alphabet->isAmino();
+
     searchIdsButton->setEnabled(ok);
 
     bool annotationButtonIsEnabled = true;
@@ -462,73 +438,25 @@ void DasOptionsPanelWidget::addAnnotations() {
     annotationsWidgetController->updateWidgetForAnnotationModel(cm);
 }
 
-void DasOptionsPanelWidget::updateRegionSelectorWidget() {
-    SAFE_POINT(NULL != selection, "Selection is NULL", );
-
-    U2Region region = getRegion();
-    if (WHOLE_SEQUENCE == regionTypeComboBox->currentText()) {
-        region = U2Region(0, ctx->getSequenceLength());
-    } else if (SELECTED_REGION == regionTypeComboBox->currentText()) {
-        if (selection->isEmpty()) {
-            region = U2Region(0, ctx->getSequenceLength());
-        } else {
-            region = selection->getSelectedRegions().first();
-        }
-    }
-
-    startLineEdit->setText(QString::number(region.startPos + 1));
-    endLineEdit->setText(QString::number(region.endPos()));
-}
 
 U2Region DasOptionsPanelWidget::getRegion() {
     if (regionIsOk()) {
-        qint64 startPos = startLineEdit->text().toLongLong() - 1;
-        qint64 endPos = endLineEdit->text().toLongLong();
-
-        return U2Region(startPos, endPos - startPos);
+        U2Region region = regionSelector->getRegion();
+        return region;
     }
 
     return U2Region(0, ctx->getSequenceLength());
 }
 
 bool DasOptionsPanelWidget::regionIsOk() {
-    bool isDigit = true;
-    bool regionIsValid = true;
-    bool result = true;
-    qint64 startPos;
-    qint64 endPos;
-
-    startPos = startLineEdit->text().toLongLong(&isDigit);
-    if (!isDigit) {
-        result &= isDigit;
-        GUIUtils::setWidgetWarning(startLineEdit, true);
-    }
-    endPos = endLineEdit->text().toLongLong(&isDigit);
-    if (!isDigit) {
-        result &= isDigit;
-        GUIUtils::setWidgetWarning(endLineEdit, true);
-    }
-
-    if (result) {
-        if (startPos <= 0 || startPos > ctx->getSequenceLength()) {
-            GUIUtils::setWidgetWarning(startLineEdit, true);
-            regionIsValid = false;
-        }
-        if (endPos <= 0 || endPos > ctx->getSequenceLength()) {
-            GUIUtils::setWidgetWarning(startLineEdit, true);
-            regionIsValid = false;
-        }
-
-        regionIsValid &= (startPos <= endPos);
-        result &= regionIsValid;
-    }
-
-    if (result) {
-        GUIUtils::setWidgetWarning(startLineEdit, false);
-        GUIUtils::setWidgetWarning(endLineEdit, false);
-    }
-
+    bool result=false;
+    U2Region region = regionSelector->getRegion(&result);
     return result;
 }
+
+void DasOptionsPanelWidget::updateRegionSelectorWidget(){
+    SAFE_POINT(NULL != selection, "Selection is NULL", );
+}
+
 
 }   // namespace

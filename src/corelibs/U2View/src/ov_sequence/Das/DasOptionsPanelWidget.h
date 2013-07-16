@@ -27,6 +27,8 @@
 
 #include <U2Core/AnnotationData.h>
 
+#include <U2Gui/RegionSelector.h>
+
 #include <QtGui/QListWidget>
 
 namespace U2 {
@@ -73,19 +75,17 @@ private slots:
     void sl_onLoadAnnotationsFinish();
     void sl_onSequenceFocusChanged(ADVSequenceWidget*, ADVSequenceWidget*);
     void sl_onSelectionChanged(LRegionsSelection* _selection, const QVector<U2Region>& added, const QVector<U2Region>& removed);
-    void sl_onRegionTypeChanged(int index);
-    void sl_onRegionEdited(QString text);
 
 private:
     void initialize();
     void connectSignals();
     void checkState();
+    void updateRegionSelectorWidget();
 
     QList<DASSource> getFeatureSources();
     DASSource getSequenceSource();
     void mergeFeatures(const QMap<QString, QList<SharedAnnotationData> >& newAnnotations);
     void addAnnotations();
-    void updateRegionSelectorWidget();
     U2Region getRegion();
     bool regionIsOk();
 
@@ -97,6 +97,7 @@ private:
     DasBlastSettingsWidget* blastSettingsWidget;
     QListWidget* dasFeaturesListWidget;
     CreateAnnotationWidgetController* annotationsWidgetController;
+    RegionSelector* regionSelector;
 
     QList<Task*> loadDasObjectTasks;
 

@@ -66,7 +66,7 @@ RegionSelector::RegionSelector(QWidget* p, qint64 _len, bool _isVertical, DNASeq
 }
 
 void RegionSelector::init() {
-    int w = qMax(((int)log10((double)region.endPos()))*10, 70);
+    int w = qMax(((int)log10((double)region.endPos()))*10, 50);
 
     comboBox = new QComboBox(this);
     foreach(const RegionPreset & rp, presets) {
