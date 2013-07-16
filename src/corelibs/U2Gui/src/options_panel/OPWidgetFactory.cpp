@@ -39,6 +39,17 @@ OPWidgetFactory::OPWidgetFactory() {
 OPWidgetFactory::~OPWidgetFactory() {
 }
 
+bool OPWidgetFactory::passFiltration( OPFactoryFilterVisitorInterface* filter ){
+    //by default checks type only
+    bool res = false;
+
+    SAFE_POINT(filter != NULL, "OPWidgetFactory::passFiltration. Filter is null", res);
+
+    res = filter->typePass(getObjectViewType());
+
+    return res;
+}
+
 OPCommonWidgetFactory::OPCommonWidgetFactory(QList<QString> _groupIds)
     : groupIds(_groupIds)
 {

@@ -44,6 +44,8 @@ public:
 
     virtual OPGroupParameters getOPGroupParameters();
 
+    virtual bool passFiltration (OPFactoryFilterVisitorInterface* filter);
+
     static const QString& getGroupId() { return GROUP_ID; }
 
 private:

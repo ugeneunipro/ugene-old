@@ -335,10 +335,16 @@ QWidget* TreeViewer::createWidget() {
 
     optionsPanel = new OptionsPanel(this);
     OPWidgetFactoryRegistry* opWidgetFactoryRegistry = AppContext::getOPWidgetFactoryRegistry();
-    QList<OPWidgetFactory*> opWidgetFactoriesForSeqView = opWidgetFactoryRegistry->getRegisteredFactories(ObjViewType_PhylogeneticTree);
+
+    QList<OPFactoryFilterVisitorInterface*> filters;
+    filters.append(new OPFactoryFilterVisitor(ObjViewType_PhylogeneticTree));
+
+    QList<OPWidgetFactory*> opWidgetFactoriesForSeqView = opWidgetFactoryRegistry->getRegisteredFactories(filters);
     foreach (OPWidgetFactory* factory, opWidgetFactoriesForSeqView) {
         optionsPanel->addGroup(factory);
     }
+
+    qDeleteAll(filters);
 
     return ui;
 }

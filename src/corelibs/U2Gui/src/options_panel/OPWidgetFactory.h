@@ -49,6 +49,39 @@ private:
     QString groupTitle;
 };
 
+class U2GUI_EXPORT OPFactoryFilterVisitorInterface{
+public:
+    OPFactoryFilterVisitorInterface(){}
+
+    virtual bool typePass(ObjectViewType factoryViewType) = 0;
+    virtual bool alphabetPass(DNAAlphabetType factoryAlphabetType) = 0;
+
+};
+
+class U2GUI_EXPORT OPFactoryFilterVisitor : public OPFactoryFilterVisitorInterface{
+public:
+    OPFactoryFilterVisitor(ObjectViewType _objectViewType)
+        :OPFactoryFilterVisitorInterface()
+        ,objectViewType(_objectViewType)
+        ,objectAlphabetType(DNAAlphabet_RAW){};
+    OPFactoryFilterVisitor(DNAAlphabetType _objectAlphabetType)
+        :OPFactoryFilterVisitorInterface()
+        ,objectViewType(ObjViewType_SequenceView)
+        ,objectAlphabetType(_objectAlphabetType){};
+    OPFactoryFilterVisitor(ObjectViewType _objectViewType, DNAAlphabetType _objectAlphabetType)
+        :OPFactoryFilterVisitorInterface()
+        ,objectViewType(_objectViewType)
+        ,objectAlphabetType(_objectAlphabetType){};
+
+    virtual bool typePass(ObjectViewType factoryViewType){ return factoryViewType == objectViewType;}
+    virtual bool alphabetPass(DNAAlphabetType factoryAlphabetType) { return factoryAlphabetType == objectAlphabetType;}
+
+private:
+    ObjectViewType objectViewType;
+    DNAAlphabetType objectAlphabetType;
+
+};
+
 
 class U2GUI_EXPORT OPWidgetFactory : public QObject
 {
@@ -62,6 +95,9 @@ public:
 
     virtual OPGroupParameters getOPGroupParameters() = 0;
 
+    virtual bool passFiltration (OPFactoryFilterVisitorInterface* filter);
+
+protected:
     virtual ObjectViewType getObjectViewType() { return objectViewOfWidget; }
 
 protected:

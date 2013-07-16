@@ -61,5 +61,17 @@ OPGroupParameters DasWidgetFactory::getOPGroupParameters()
     return OPGroupParameters(GROUP_ID, QPixmap(GROUP_ICON_STR), GROUP_TITLE);
 }
 
+bool DasWidgetFactory::passFiltration( OPFactoryFilterVisitorInterface* filter ){
+    //by default checks type only
+    bool res = false;
+
+    SAFE_POINT(filter != NULL, "OPWidgetFactory::passFiltration. Filter is null", res);
+
+    res = filter->typePass(getObjectViewType()) && filter->alphabetPass(DNAAlphabet_AMINO);
+
+    return res;
+}
+
+
 
 } // namespace

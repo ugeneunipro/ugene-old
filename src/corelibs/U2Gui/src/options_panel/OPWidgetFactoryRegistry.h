@@ -31,6 +31,7 @@
 
 namespace U2 {
 
+
 class U2GUI_EXPORT OPWidgetFactoryRegistry : public QObject
 {
     Q_OBJECT
@@ -41,7 +42,7 @@ public:
 
     bool registerFactory(OPWidgetFactory* factory);
 
-    QList<OPWidgetFactory*> getRegisteredFactories(ObjectViewType objViewType);
+    QList<OPWidgetFactory*> getRegisteredFactories(const QList<OPFactoryFilterVisitorInterface*>& filters);
 
 private:
     QList<OPWidgetFactory*> opWidgetFactories;

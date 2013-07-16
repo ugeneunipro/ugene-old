@@ -910,11 +910,17 @@ referenceArea(0), coverageGraph(0), ruler(0), readsArea(0), annotationsArea(0) {
 
         OPWidgetFactoryRegistry* opWidgetFactoryRegistry = AppContext::getOPWidgetFactoryRegistry();
         OptionsPanel * optionsPanel = browser->getOptionsPanel();
+
+        QList<OPFactoryFilterVisitorInterface*> filters;
+        filters.append(new OPFactoryFilterVisitor(ObjViewType_AssemblyBrowser));
+
         QList<OPWidgetFactory*> opWidgetFactoriesForAssBr =
-            opWidgetFactoryRegistry->getRegisteredFactories(ObjViewType_AssemblyBrowser);
+            opWidgetFactoryRegistry->getRegisteredFactories(filters);
         foreach (OPWidgetFactory* factory, opWidgetFactoriesForAssBr) {
             optionsPanel->addGroup(factory);
         }
+
+        qDeleteAll(filters);
 
         setLayout(mainLayout);
 

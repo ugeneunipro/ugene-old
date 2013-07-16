@@ -55,14 +55,18 @@ bool OPWidgetFactoryRegistry::registerFactory(OPWidgetFactory* factory)
 }
 
 
-QList<OPWidgetFactory*> OPWidgetFactoryRegistry::getRegisteredFactories(ObjectViewType objViewType)
+QList<OPWidgetFactory*> OPWidgetFactoryRegistry::getRegisteredFactories(const QList<OPFactoryFilterVisitorInterface*>& filters)
 {
     QMutexLocker lock(&mutex);
 
     QList<OPWidgetFactory*> factoriesForObjView;
 
     foreach (OPWidgetFactory* factory, opWidgetFactories) {
-        if (factory->getObjectViewType() == objViewType) {
+        bool pass = true;
+        foreach(OPFactoryFilterVisitorInterface* filter, filters){
+            pass &= factory->passFiltration(filter);
+        }
+        if (pass) {
             factoriesForObjView.append(factory);
         }
     }

@@ -217,10 +217,33 @@ QWidget* AnnotatedDNAView::createWidget() {
     // Init the Options Panel
     optionsPanel = new OptionsPanel(this);
     OPWidgetFactoryRegistry* opWidgetFactoryRegistry = AppContext::getOPWidgetFactoryRegistry();
-    QList<OPWidgetFactory*> opWidgetFactoriesForSeqView = opWidgetFactoryRegistry->getRegisteredFactories(ObjViewType_SequenceView);
+
+
+   
+
+    QList<OPFactoryFilterVisitorInterface*> filters;
+
+    DNAAlphabetType t = DNAAlphabet_NUCL;
+    ADVSequenceWidget* w = getSequenceWidgetInFocus();
+    bool enabled = w!=NULL;
+    if (enabled) {
+        ADVSequenceObjectContext* activeCtx =  w->getActiveSequenceContext();
+        if (activeCtx){
+            DNAAlphabet* alphabet = activeCtx->getAlphabet();
+            if (alphabet){
+                t = alphabet->getType();
+            }
+        }
+    }
+
+    filters.append(new OPFactoryFilterVisitor(ObjViewType_SequenceView, t));
+
+    QList<OPWidgetFactory*> opWidgetFactoriesForSeqView = opWidgetFactoryRegistry->getRegisteredFactories(filters);
     foreach (OPWidgetFactory* factory, opWidgetFactoriesForSeqView) {
         optionsPanel->addGroup(factory);
     }
+
+    qDeleteAll(filters);
 
     return mainSplitter;
 }

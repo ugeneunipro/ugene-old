@@ -447,10 +447,16 @@ QWidget* MSAEditor::createWidget() {
 
     optionsPanel = new OptionsPanel(this);
     OPWidgetFactoryRegistry *opWidgetFactoryRegistry = AppContext::getOPWidgetFactoryRegistry();
-    QList<OPWidgetFactory*> opWidgetFactories = opWidgetFactoryRegistry->getRegisteredFactories(ObjViewType_AlignmentEditor);
+
+    QList<OPFactoryFilterVisitorInterface*> filters;
+    filters.append(new OPFactoryFilterVisitor(ObjViewType_AlignmentEditor));
+
+    QList<OPWidgetFactory*> opWidgetFactories = opWidgetFactoryRegistry->getRegisteredFactories(filters);
     foreach (OPWidgetFactory *factory, opWidgetFactories) {
         optionsPanel->addGroup(factory);
     }
+
+    qDeleteAll(filters);
 
     connect(ui, SIGNAL(si_showTreeOP()), SLOT(sl_showTreeOP()));
     connect(ui, SIGNAL(si_hideTreeOP()), SLOT(sl_hideTreeOP()));
