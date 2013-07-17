@@ -84,14 +84,15 @@ public:
         const QModelIndex &index) const;
 
     virtual PropertyDelegate *clone() {
-        return new URLDelegate(tags()->get("filter").toString(), type, multi, isPath, saveFile, parent(), tags()->get("format").toString());
+        return new URLDelegate(tags()->get("filter").toString(), lastDirType, multi, isPath, saveFile, parent(), tags()->get("format").toString());
     }
+    virtual Type type() const;
 
 private slots:
     void sl_commit();
 
 public:
-    QString type;
+    QString lastDirType;
     bool    multi;
     bool    isPath;
     bool    saveFile; // sets when you need only 1 file for reading (is set with multi=false)

@@ -22,8 +22,6 @@
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
 
-#include <U2Designer/DelegateEditors.h>
-
 #include <U2Lang/ActorModel.h>
 #include <U2Lang/BaseAttributes.h>
 #include <U2Lang/SchemaConfig.h>
@@ -321,12 +319,15 @@ void RFSUtils::initRFS(RunFileSystem &rfs, const QList<Workflow::Actor*> &actors
 bool RFSUtils::isOutUrlAttribute(Attribute *attr, Workflow::Actor *actor, bool &dir) {
     PropertyDelegate *delegate = actor->getEditor()->getDelegate(attr->getId());
     CHECK(NULL != delegate, false);
-    URLDelegate *urlDelegate = dynamic_cast<URLDelegate*>(delegate);
-    CHECK(NULL != urlDelegate, false);
-    CHECK(urlDelegate->saveFile, false);
 
-    dir = urlDelegate->isPath;
-    return true;
+    dir = (PropertyDelegate::OUTPUT_DIR == delegate->type());
+    if (dir) {
+        return true;
+    } else if (PropertyDelegate::OUTPUT_FILE == delegate->type()) {
+        return true;
+    }
+
+    return false;
 }
 
 bool RFSUtils::isCorrectUrl(const QString &url) {

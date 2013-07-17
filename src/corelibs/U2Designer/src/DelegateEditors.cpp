@@ -276,14 +276,14 @@ QVariant ComboBoxWithChecksDelegate::getDisplayValue(const QVariant& val) const 
 * URLDelegate
 ********************************/
 URLDelegate::URLDelegate(const QString& filter, const QString& type, bool multi, bool isPath, bool saveFile, QObject *parent, const QString &format)
-: PropertyDelegate(parent), type(type), multi(multi), isPath(isPath), saveFile(saveFile)
+: PropertyDelegate(parent), lastDirType(type), multi(multi), isPath(isPath), saveFile(saveFile)
 {
     tags()->set("filter", filter);
     tags()->set("format", format);
 }
 
 URLWidget * URLDelegate::createWidget(QWidget *parent) const {
-    URLWidget *result = new URLWidget(type, multi, isPath, saveFile, tags(), parent);
+    URLWidget *result = new URLWidget(lastDirType, multi, isPath, saveFile, tags(), parent);
     if (saveFile) {
         result->setSchemaConfig(schemaConfig);
     }
@@ -335,6 +335,16 @@ void URLDelegate::setModelData(QWidget *editor, QAbstractItemModel *model,
         }
         model->setData(index, vl, ConfigurationEditor::ItemListValueRole);
     }
+}
+
+PropertyDelegate::Type URLDelegate::type() const {
+    if (saveFile) {
+        if (isPath) {
+            return OUTPUT_DIR;
+        }
+        return OUTPUT_FILE;
+    }
+    return NO_TYPE;
 }
 
 /********************************

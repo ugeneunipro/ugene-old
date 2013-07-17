@@ -88,6 +88,10 @@ PropertyWidget * PropertyDelegate::createWizardWidget(U2OpStatus &os, QWidget * 
     return NULL;
 }
 
+PropertyDelegate::Type PropertyDelegate::type() const {
+    return NO_TYPE;
+}
+
 DelegateTags * PropertyDelegate::tags() const {
     return _tags;
 }

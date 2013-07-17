@@ -117,13 +117,21 @@ protected:
  */
 class U2LANG_EXPORT PropertyDelegate : public QItemDelegate {
 public:
+    enum Type {
+        NO_TYPE,
+        OUTPUT_FILE,
+        OUTPUT_DIR
+    };
     PropertyDelegate(QObject *parent = 0);
     virtual ~PropertyDelegate();
     virtual QVariant getDisplayValue(const QVariant &v) const;
     virtual PropertyDelegate * clone();
     virtual PropertyWidget * createWizardWidget(U2OpStatus &os, QWidget *parent) const;
+    virtual Type type() const;
+
     DelegateTags * tags() const;
     void setSchemaConfig(SchemaConfig *value);
+
 protected:
     DelegateTags *_tags;
     SchemaConfig *schemaConfig;
