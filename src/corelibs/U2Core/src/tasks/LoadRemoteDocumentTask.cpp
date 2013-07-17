@@ -62,8 +62,8 @@ const QString RemoteDBRegistry::UNIPROTKB_TREMBL("UniProtKB/TrEMBL");
 
 ////////////////////////////////////////////////////////////////////////////
 //BaseLoadRemoteDocumentTask
-BaseLoadRemoteDocumentTask::BaseLoadRemoteDocumentTask(const QString& _downloadPath)
-:DocumentProviderTask(tr("Load remote document"), TaskFlags_NR_FOSCOE | TaskFlag_MinimizeSubtaskErrorText)
+BaseLoadRemoteDocumentTask::BaseLoadRemoteDocumentTask(const QString& _downloadPath, TaskFlags flags )
+:DocumentProviderTask(tr("Load remote document"), flags)
 {
     downloadPath = _downloadPath;
     sourceUrl = GUrl("");

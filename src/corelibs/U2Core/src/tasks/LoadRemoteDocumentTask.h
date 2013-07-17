@@ -92,7 +92,7 @@ public:
 class U2CORE_EXPORT BaseLoadRemoteDocumentTask : public DocumentProviderTask {
     Q_OBJECT
 public:
-    BaseLoadRemoteDocumentTask(const QString& downloadPath = QString());
+    BaseLoadRemoteDocumentTask(const QString& downloadPath = QString(), TaskFlags flags = TaskFlags(TaskFlags_NR_FOSCOE | TaskFlag_MinimizeSubtaskErrorText));
     virtual void prepare();
     QString getLocalUrl(){ return fullPath; }
     

@@ -36,7 +36,7 @@
 namespace U2 {
 
 LoadDASDocumentTask::LoadDASDocumentTask( const QString& accId, const QString& _fullPath, const DASSource& _referenceSource, const QList<DASSource>& _featureSources )
-: BaseLoadRemoteDocumentTask(_fullPath)
+: BaseLoadRemoteDocumentTask(_fullPath, TaskFlags(TaskFlag_FailOnSubtaskCancel | TaskFlag_MinimizeSubtaskErrorText | TaskFlag_NoRun))
 ,accNumber(accId)
 ,featureSources(_featureSources)
 ,referenceSource(_referenceSource)
@@ -125,16 +125,16 @@ QList<Task*> LoadDASDocumentTask::onSubTaskFinished( Task* subTask ){
                     return subTasks;
                 }
 
+                loadFeaturesTasks.removeAt(idx);
+
                 if(ftask->hasError()){
-                    setError(tr("Cannot find DAS features for: %1").arg(accNumber));
-                    return subTasks;
+                    ioLog.error(tr("Cannot find DAS features for: %1").arg(accNumber));
                 }else{
                     //merge features
                     if (!isCanceled()){
                         mergeFeatures(ftask->getAnnotationData());
                     }
                 }
-                loadFeaturesTasks.removeAt(idx);
             }
         }
 
@@ -317,7 +317,7 @@ ConvertIdAndLoadDASDocumentTask::ConvertIdAndLoadDASDocumentTask(const QString& 
                                                                  const DASSource& _referenceSource,
                                                                  const QList<DASSource>& _featureSources,
                                                                  bool _convertId) :
-    Task(QString("Convert ID and load DAS document for: %1").arg(accId), TaskFlags(TaskFlag_FailOnSubtaskCancel | TaskFlag_MinimizeSubtaskErrorText)),
+    Task(QString("Convert ID and load DAS document for: %1").arg(accId), TaskFlags(TaskFlag_CancelOnSubtaskCancel | TaskFlag_MinimizeSubtaskErrorText)),
     convertDasIdTask(NULL),
     loadDasDocumentTask(NULL),
     accessionNumber(accId),
