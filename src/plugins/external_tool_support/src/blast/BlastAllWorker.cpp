@@ -181,9 +181,9 @@ void BlastAllWorkerFactory::init() {
         m["not use"] = false;
         delegates[BLASTALL_GAPPED_ALN] = new ComboBoxDelegate(m);
     }
-    delegates[BLASTALL_DATABASE_PATH] = new URLDelegate("", "Database Directory", false, true);
-    delegates[BLASTALL_ORIGINAL_OUT] = new URLDelegate("", "out file", false);
-    delegates[BLASTALL_EXT_TOOL_PATH] = new URLDelegate("", "executable", false);
+    delegates[BLASTALL_DATABASE_PATH] = new URLDelegate("", "Database Directory", false, true, false);
+    delegates[BLASTALL_ORIGINAL_OUT] = new URLDelegate("", "out file", false, false);
+    delegates[BLASTALL_EXT_TOOL_PATH] = new URLDelegate("", "executable", false, false, false);
     delegates[BLASTALL_TMP_DIR_PATH] = new URLDelegate("", "TmpDir", false, true);
 
 //    {
@@ -370,7 +370,7 @@ Task* BlastAllWorker::tick() {
         }
         cfg.needCreateAnnotations=false;
         cfg.outputType=actor->getParameter(BLASTALL_OUT_TYPE)->getAttributeValue<int>(context);
-        cfg.outputOriginalFile=actor->getParameter(BLASTALL_ORIGINAL_OUT)->getAttributeValue<QString>(context);
+        cfg.outputOriginalFile=getValue<QString>(BLASTALL_ORIGINAL_OUT);
         if(cfg.outputType != 7 && cfg.outputOriginalFile.isEmpty()){
             return new FailTask(tr("Not selected BLAST output file"));
         }

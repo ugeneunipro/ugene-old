@@ -26,7 +26,7 @@
 namespace U2 {
 
 PropertyWidget::PropertyWidget(QWidget *parent, DelegateTags *_tags)
-    : QWidget(parent), _tags(_tags)
+    : QWidget(parent), _tags(_tags), schemaConfig(NULL)
 {
     QHBoxLayout *l = new QHBoxLayout();
     l->setContentsMargins(0, 0, 0, 0);
@@ -60,8 +60,12 @@ void PropertyWidget::setDelegateTags(const DelegateTags *value) {
     _tags = value;
 }
 
+void PropertyWidget::setSchemaConfig(SchemaConfig *value) {
+    schemaConfig = value;
+}
+
 PropertyDelegate::PropertyDelegate(QObject *parent)
-: QItemDelegate(parent)
+: QItemDelegate(parent), schemaConfig(NULL)
 {
     _tags = new DelegateTags();
     _tags->setParent(this);
@@ -86,6 +90,10 @@ PropertyWidget * PropertyDelegate::createWizardWidget(U2OpStatus &os, QWidget * 
 
 DelegateTags * PropertyDelegate::tags() const {
     return _tags;
+}
+
+void PropertyDelegate::setSchemaConfig(SchemaConfig *value) {
+    schemaConfig = value;
 }
 
 DelegateTags::DelegateTags(QObject *parent)

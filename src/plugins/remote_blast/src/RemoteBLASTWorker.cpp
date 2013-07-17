@@ -251,7 +251,7 @@ void RemoteBLASTWorker::sl_taskFinished() {
 
     if(output) {
         if(actor->getParameter(DATABASE)->getAttributeValue<QString>(context) != "ncbi-cdd") {
-            QString url = actor->getParameter(ORIGINAL_OUT)->getAttributeValue<QString>(context);
+            QString url = getValue<QString>(ORIGINAL_OUT);
             if(!url.isEmpty()) {
                 IOAdapterFactory * iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById( BaseIOAdapters::LOCAL_FILE );
                 IOAdapter * io = iof->createIOAdapter();

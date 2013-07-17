@@ -112,6 +112,8 @@ void DASFetcherWorker::init()
     fullPathDir = actor->getParameter(PATH_ID)->getAttributeValue<QString>(context);
     if (fullPathDir == DEFAULT_PATH) {
         fullPathDir = LoadRemoteDocumentTask::getDefaultDownloadDirectory();
+    } else {
+        fullPathDir = context->absolutePath(fullPathDir);
     }
 }
 

@@ -144,7 +144,7 @@ void GenerateDNAWorkerFactory::init() {
         contentMap[ContentIds::MANUAL] = ContentIds::MANUAL;
         delegates[CONTENT_ATTR] = new ComboBoxDelegate(contentMap);
 
-        delegates[REFERENCE_ATTR] = new URLDelegate(DNASequenceGenerator::prepareReferenceFileFilter(), DNASequenceGenerator::ID);
+        delegates[REFERENCE_ATTR] = new URLDelegate(DNASequenceGenerator::prepareReferenceFileFilter(), DNASequenceGenerator::ID, false, false, false);
 
         QVariantMap percentMap;
         percentMap["minimum"] = 0;

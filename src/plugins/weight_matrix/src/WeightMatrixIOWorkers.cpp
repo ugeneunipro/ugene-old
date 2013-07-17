@@ -103,7 +103,7 @@ ReadPWMatrixProto::ReadPWMatrixProto(const Descriptor& _desc, const QList<PortDe
 
         attrs << new Attribute(BaseAttributes::URL_IN_ATTRIBUTE(), BaseTypes::STRING_TYPE(), true);
         QMap<QString, PropertyDelegate*> delegateMap;
-        delegateMap[BaseAttributes::URL_IN_ATTRIBUTE().getId()] = new URLDelegate(WeightMatrixIO::getPWMFileFilter(), WeightMatrixIO::WEIGHT_MATRIX_ID, true);
+        delegateMap[BaseAttributes::URL_IN_ATTRIBUTE().getId()] = new URLDelegate(WeightMatrixIO::getPWMFileFilter(), WeightMatrixIO::WEIGHT_MATRIX_ID, true, false, false);
         setEditor(new DelegateEditor(delegateMap));
         setIconPath(":weight_matrix/images/weight_matrix.png");
 }
@@ -247,7 +247,7 @@ Task* PWMatrixWriter::tick() {
         if (inputMessage.isEmpty()) {
             return NULL;
         }
-        url = actor->getParameter(BaseAttributes::URL_OUT_ATTRIBUTE().getId())->getAttributeValue<QString>(context);
+        url = getValue<QString>(BaseAttributes::URL_OUT_ATTRIBUTE().getId());
         fileMode = actor->getParameter(BaseAttributes::FILE_MODE_ATTRIBUTE().getId())->getAttributeValue<uint>(context);
         QVariantMap data = inputMessage.getData().toMap();
         
@@ -266,6 +266,7 @@ Task* PWMatrixWriter::tick() {
             }*/
         }
         assert(!anUrl.isEmpty());
+        anUrl = context->absolutePath(anUrl);
         int count = ++counter[anUrl];
         if (count != 1) {
             anUrl = GUrlUtils::prepareFileName(anUrl, count, QStringList(WeightMatrixIO::WEIGHT_MATRIX_EXT));
@@ -326,7 +327,7 @@ ReadPFMatrixProto::ReadPFMatrixProto(const Descriptor& _desc, const QList<PortDe
 
     attrs << new Attribute(BaseAttributes::URL_IN_ATTRIBUTE(), BaseTypes::STRING_TYPE(), true);
     QMap<QString, PropertyDelegate*> delegateMap;
-    delegateMap[BaseAttributes::URL_IN_ATTRIBUTE().getId()] = new URLDelegate(WeightMatrixIO::getPFMFileFilter(), WeightMatrixIO::FREQUENCY_MATRIX_ID, true);
+    delegateMap[BaseAttributes::URL_IN_ATTRIBUTE().getId()] = new URLDelegate(WeightMatrixIO::getPFMFileFilter(), WeightMatrixIO::FREQUENCY_MATRIX_ID, true, false, false);
     setEditor(new DelegateEditor(delegateMap));
     setIconPath(":weight_matrix/images/weight_matrix.png");
 }
@@ -470,7 +471,7 @@ Task* PFMatrixWriter::tick() {
         if (inputMessage.isEmpty()) {
             return NULL;
         }
-        url = actor->getParameter(BaseAttributes::URL_OUT_ATTRIBUTE().getId())->getAttributeValue<QString>(context);
+        url = getValue<QString>(BaseAttributes::URL_OUT_ATTRIBUTE().getId());
         fileMode = actor->getParameter(BaseAttributes::FILE_MODE_ATTRIBUTE().getId())->getAttributeValue<uint>(context);
         QVariantMap data = inputMessage.getData().toMap();
         PFMatrix model = data.value(PFMatrixWorkerFactory::FMATRIX_SLOT.getId()).value<PFMatrix>();
@@ -489,6 +490,7 @@ Task* PFMatrixWriter::tick() {
             }*/
         }
         assert(!anUrl.isEmpty());
+        anUrl = context->absolutePath(anUrl);
         int count = ++counter[anUrl];
         if (count != 1) {
             anUrl = GUrlUtils::prepareFileName(anUrl, count, QStringList(WeightMatrixIO::FREQUENCY_MATRIX_EXT));

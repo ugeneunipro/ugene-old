@@ -192,7 +192,7 @@ void RSnpToolsWorkerFactory::init( )
 
     QMap<QString, PropertyDelegate*> delegates;
     {
-        delegates[BaseRequestForSnpWorker::DB_SEQUENCE_PATH] = new URLDelegate( "", "", false );
+        delegates[BaseRequestForSnpWorker::DB_SEQUENCE_PATH] = new URLDelegate( "", "", false, false, false );
         delegates[FIRST_SITE_STATE] = new ComboBoxDelegate( getAllBindingSiteStates( ) );
         delegates[SECOND_SITE_STATE] = new ComboBoxDelegate( getAllBindingSiteStates( ) );
         delegates[SNP_SIGNIFICANCE] = new ComboBoxDelegate( getSignificanceSiteStates() );

@@ -80,7 +80,7 @@ void ImportPhredQualityWorkerFactory::init() {
 
     QMap<QString, PropertyDelegate*> delegates;    
 
-    delegates[BaseAttributes::URL_IN_ATTRIBUTE().getId()] = new URLDelegate(DialogUtils::prepareDocumentsFileFilter(true), QString(), true);
+    delegates[BaseAttributes::URL_IN_ATTRIBUTE().getId()] = new URLDelegate(DialogUtils::prepareDocumentsFileFilter(true), QString(), true, false, false);
     
     
     {

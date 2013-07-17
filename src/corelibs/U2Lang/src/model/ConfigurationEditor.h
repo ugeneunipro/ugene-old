@@ -25,6 +25,7 @@
 #include <U2Core/U2OpStatus.h>
 
 #include <U2Lang/Attribute.h>
+#include <U2Lang/SchemaConfig.h>
 
 #include <QtGui/QItemDelegate>
 
@@ -94,6 +95,7 @@ public:
 
     void setDelegateTags(const DelegateTags *value);
     const DelegateTags * tags() const;
+    void setSchemaConfig(SchemaConfig *value);
 
 public slots:
     virtual void setValue(const QVariant &value) = 0;
@@ -106,6 +108,7 @@ protected:
 
 protected:
     const DelegateTags *_tags;
+    SchemaConfig *schemaConfig;
 };
 
 /**
@@ -120,8 +123,10 @@ public:
     virtual PropertyDelegate * clone();
     virtual PropertyWidget * createWizardWidget(U2OpStatus &os, QWidget *parent) const;
     DelegateTags * tags() const;
+    void setSchemaConfig(SchemaConfig *value);
 protected:
     DelegateTags *_tags;
+    SchemaConfig *schemaConfig;
 }; // PropertyDelegate
 
 class U2LANG_EXPORT DelegateTags : public QObject {

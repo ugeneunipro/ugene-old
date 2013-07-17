@@ -123,9 +123,9 @@ void ConductGOWorker::sl_taskFinished() {
 U2::ConductGOSettings ConductGOWorker::createConductGOSettings( U2OpStatus &os ){
     ConductGOSettings settings;
 
-    settings.outDir = actor->getParameter(OUTPUT_DIR)->getAttributeValue<QString>(context);
-    settings.title = actor->getParameter(TITLE)->getAttributeValue<QString>(context);
-    settings.geneUniverse = actor->getParameter(GENE_UNIVERSE)->getAttributeValue<QString>(context);
+    settings.outDir = getValue<QString>(OUTPUT_DIR);
+    settings.title = getValue<QString>(TITLE);
+    settings.geneUniverse = getValue<QString>(GENE_UNIVERSE);
 
     return settings;
 }

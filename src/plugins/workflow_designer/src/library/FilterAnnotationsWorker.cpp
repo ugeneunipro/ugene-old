@@ -125,7 +125,7 @@ void FilterAnnotationsWorkerFactory::init() {
     proto->setPrompter( new FilterAnnotationsPrompter() );
     {
         QMap<QString, PropertyDelegate*> delegateMap;
-        delegateMap[FILTER_NAMES_ATTR] = new URLDelegate(DialogUtils::prepareDocumentsFileFilter(true), QString(), true);
+        delegateMap[FILTER_NAMES_ATTR] = new URLDelegate(DialogUtils::prepareDocumentsFileFilter(true), QString(), true, false, false);
         proto->setEditor(new DelegateEditor(delegateMap));
     }
     WorkflowEnv::getProtoRegistry()->registerProto( BaseActorCategories::CATEGORY_BASIC(), proto );

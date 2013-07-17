@@ -171,49 +171,6 @@ GroupWidget::Type GroupWidget::getType() const {
 }
 
 /**********************************
-* AttributeInfo
-*********************************/
-const QString AttributeInfo::TYPE("type");
-const QString AttributeInfo::DEFAULT("default");
-const QString AttributeInfo::DATASETS("datasets");
-const QString AttributeInfo::LABEL("label");
-
-AttributeInfo::AttributeInfo(const QString &_actorId, const QString &_attrId, const QVariantMap &_hints)
-: actorId(_actorId), attrId(_attrId), hints(_hints)
-{
-
-}
-
-void AttributeInfo::validate(const QList<Actor*> &actors, U2OpStatus &os) const {
-    Actor *actor = WorkflowUtils::actorById(actors, actorId);
-    if (NULL == actor) {
-        os.setError(QObject::tr("Unknown actor id: %1").arg(actorId));
-        return;
-    }
-    if (!actor->hasParameter(attrId)) {
-        os.setError(QObject::tr("Actor '%1' does not have this parameter: %2").arg(actorId).arg(attrId));
-        return;
-    }
-}
-
-bool AttributeInfo::operator== (const AttributeInfo &other) const {
-    return toString() == other.toString();
-}
-
-QString AttributeInfo::toString() const {
-    return actorId + ":" + attrId;
-}
-
-AttributeInfo AttributeInfo::fromString(const QString &value, U2OpStatus &os) {
-    QStringList tokens = value.split(":");
-    if (2 != tokens.size()) {
-        os.setError("Bad attribute value: " + value);
-        return AttributeInfo("", "");
-    }
-    return AttributeInfo(tokens[0], tokens[1]);
-}
-
-/**********************************
 * AttributeWidget
 *********************************/
 AttributeWidget::AttributeWidget()

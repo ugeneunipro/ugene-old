@@ -97,7 +97,7 @@ ReadHMMProto::ReadHMMProto(const Descriptor& _desc, const QList<PortDescriptor*>
     
     attrs << new Attribute(BaseAttributes::URL_IN_ATTRIBUTE(), BaseTypes::STRING_TYPE(), true);
     QMap<QString, PropertyDelegate*> delegateMap;
-    delegateMap[BaseAttributes::URL_IN_ATTRIBUTE().getId()] = new URLDelegate( HMMIO::getHMMFileFilter(), HMMIO::HMM_ID, true );
+    delegateMap[BaseAttributes::URL_IN_ATTRIBUTE().getId()] = new URLDelegate( HMMIO::getHMMFileFilter(), HMMIO::HMM_ID, true, false, false );
     setEditor(new DelegateEditor(delegateMap));
     setIconPath( ":/hmm2/images/hmmer_16.png" );
 }
@@ -247,7 +247,7 @@ Task* HMMWriter::tick() {
         if (inputMessage.isEmpty()) {
             return NULL;
         }
-        url = actor->getParameter(BaseAttributes::URL_OUT_ATTRIBUTE().getId())->getAttributeValue<QString>(context);
+        url = getValue<QString>(BaseAttributes::URL_OUT_ATTRIBUTE().getId());
         fileMode = actor->getParameter(BaseAttributes::FILE_MODE_ATTRIBUTE().getId())->getAttributeValue<uint>(context);
         QVariantMap data = inputMessage.getData().toMap();
         
@@ -266,6 +266,7 @@ Task* HMMWriter::tick() {
             }*/
         }
         assert(!anUrl.isEmpty());
+        anUrl = context->absolutePath(anUrl);
         int count = ++counter[anUrl];
         if (count != 1) {
             anUrl = GUrlUtils::prepareFileName(anUrl, count, QStringList(HMMIO::HMM_EXT));

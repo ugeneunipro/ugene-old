@@ -90,12 +90,11 @@ public:
 private slots:
     void sl_commit();
 
-protected:
+public:
     QString type;
     bool    multi;
     bool    isPath;
     bool    saveFile; // sets when you need only 1 file for reading (is set with multi=false)
-    mutable URLWidget *currentEditor;
     QString text;
 
 private:

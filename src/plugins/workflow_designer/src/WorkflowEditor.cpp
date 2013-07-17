@@ -73,7 +73,7 @@ customWidget(NULL), subject(NULL), actor(NULL)
     caption->setMinimumHeight(nameEdit->sizeHint().height());
     //doc->setMaximumHeight(height()/4);
 
-    actorModel = new ActorCfgModel(this);
+    actorModel = new ActorCfgModel(this, owner);
     table->setModel(actorModel);
     table->horizontalHeader()->setResizeMode(QHeaderView::Interactive);
     

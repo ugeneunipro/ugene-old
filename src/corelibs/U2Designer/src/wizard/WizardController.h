@@ -31,6 +31,7 @@
 
 #include <U2Lang/ElementSelectorWidget.h>
 #include <U2Lang/Schema.h>
+#include <U2Lang/SchemaConfig.h>
 #include <U2Lang/Wizard.h>
 #include <U2Lang/WizardPage.h>
 #include <U2Lang/WizardWidget.h>
@@ -44,7 +45,7 @@ class PropertyWizardController;
 class WidgetController;
 class WizardPageController;
 
-class U2DESIGNER_EXPORT WizardController : public QObject {
+class U2DESIGNER_EXPORT WizardController : public QObject, public SchemaConfig {
     Q_OBJECT
 public:
     enum U2DESIGNER_EXPORT ApplyResult {
@@ -59,9 +60,6 @@ public:
     QWizard * createGui();
     ApplyResult applyChanges(Metadata &meta);
     const QList<Actor*> & getCurrentActors() const;
-
-    QVariant getAttributeValue(const AttributeInfo &info) const;
-    void setAttributeValue(const AttributeInfo &info, const QVariant &value);
 
     QVariant getVariableValue(const QString &var);
     void setVariableValue(const QString &var, const QString &value);
@@ -82,6 +80,11 @@ public:
     bool isBroken() const;
 
     void addPropertyController(const AttributeInfo &info, PropertyWizardController *ctrl);
+
+    // SchemaConfig
+    virtual RunFileSystem * getRFS();
+    QVariant getAttributeValue(const AttributeInfo &info) const;
+    void setAttributeValue(const AttributeInfo &info, const QVariant &value);
 
 private:
     bool broken;

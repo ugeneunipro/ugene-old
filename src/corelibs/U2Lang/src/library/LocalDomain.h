@@ -181,6 +181,20 @@ T BaseWorker::getValue(const QString &paramId) const {
     return attr->getAttributeValue<T>(context);
 }
 
+template<>
+inline QString BaseWorker::getValue(const QString &paramId) const {
+    Attribute *attr = actor->getParameter(paramId);
+    if (NULL == attr) {
+        return "";
+    }
+    QString value =  attr->getAttributeValue<QString>(context);
+    bool dir = false;
+    if (RFSUtils::isOutUrlAttribute(attr, actor, dir)) {
+        return context->absolutePath(value);
+    }
+    return value;
+}
+
 }//Workflow namespace
 
 }//GB2 namespace

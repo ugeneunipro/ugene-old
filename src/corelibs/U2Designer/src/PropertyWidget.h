@@ -167,10 +167,14 @@ private slots:
 /************************************************************************/
 /* URLWidget */
 /************************************************************************/
+class RunFileSystem;
+
 class URLWidget : public PropertyWidget {
     Q_OBJECT
 public:
     URLWidget(const QString &type, bool multi, bool isPath, bool saveFile, DelegateTags *tags, QWidget *parent = NULL);
+
+    // PropertyWidget
     virtual QVariant value();
     virtual void setValue(const QVariant &value);
     virtual void setRequired();
@@ -178,9 +182,18 @@ public:
 signals:
     void finished();
 
+private slots:
+    void sl_browse();
+    void sl_finished();
+
+private:
+    RunFileSystem * getRFS();
+
 private:
     URLLineEdit *urlLine;
+    QToolButton *browseButton;
     QToolButton *addButton;
+    QString initialValue;
 
 private slots:
     void sl_textChanged(const QString &text);

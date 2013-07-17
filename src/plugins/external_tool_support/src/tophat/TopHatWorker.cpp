@@ -454,7 +454,7 @@ void TopHatWorkerFactory::init()
     delegates[SAMTOOLS_TOOL_PATH] = new URLDelegate("", "executable", false, false, false);
     delegates[REF_SEQ] = new URLDelegate(DialogUtils::prepareDocumentsFileFilter(true), "", false, false, false);
     delegates[EXT_TOOL_PATH] = new URLDelegate("", "executable", false, false, false);
-    delegates[TMP_DIR_PATH] = new URLDelegate("", "TmpDir", false, true, false);
+    delegates[TMP_DIR_PATH] = new URLDelegate("", "TmpDir", false, true);
     delegates[RAW_JUNCTIONS] = new URLDelegate("", "", false, false, false);
     delegates[KNOWN_TRANSCRIPT] = new URLDelegate("", "", false, false, false);
 

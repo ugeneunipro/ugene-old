@@ -97,7 +97,7 @@ ReadSiteconProto::ReadSiteconProto(const Descriptor& _desc, const QList<PortDesc
     
     attrs << new Attribute(BaseAttributes::URL_IN_ATTRIBUTE(), BaseTypes::STRING_TYPE(), true);
     QMap<QString, PropertyDelegate*> delegateMap;
-    delegateMap[BaseAttributes::URL_IN_ATTRIBUTE().getId()] = new URLDelegate(SiteconIO::getFileFilter(), SiteconIO::SITECON_ID, true);
+    delegateMap[BaseAttributes::URL_IN_ATTRIBUTE().getId()] = new URLDelegate(SiteconIO::getFileFilter(), SiteconIO::SITECON_ID, true, false, false);
     setEditor(new DelegateEditor(delegateMap));
     setIconPath(":sitecon/images/sitecon.png");
 }
@@ -112,7 +112,7 @@ WriteSiteconProto::WriteSiteconProto(const Descriptor& _desc, const QList<PortDe
     attrs << new Attribute(BaseAttributes::FILE_MODE_ATTRIBUTE(), BaseTypes::NUM_TYPE(), false, SaveDoc_Roll);
 
     QMap<QString, PropertyDelegate*> delegateMap;
-    delegateMap[BaseAttributes::URL_OUT_ATTRIBUTE().getId()] = new URLDelegate(SiteconIO::getFileFilter(), SiteconIO::SITECON_ID, false );
+    delegateMap[BaseAttributes::URL_OUT_ATTRIBUTE().getId()] = new URLDelegate(SiteconIO::getFileFilter(), SiteconIO::SITECON_ID);
     delegateMap[BaseAttributes::FILE_MODE_ATTRIBUTE().getId()] = new FileModeDelegate(false);
     
     setEditor(new DelegateEditor(delegateMap));
@@ -240,7 +240,7 @@ Task* SiteconWriter::tick() {
         if (inputMessage.isEmpty()) {
             return NULL;
         }
-        url = actor->getParameter(BaseAttributes::URL_OUT_ATTRIBUTE().getId())->getAttributeValue<QString>(context);
+        url = getValue<QString>(BaseAttributes::URL_OUT_ATTRIBUTE().getId());
         fileMode = actor->getParameter(BaseAttributes::FILE_MODE_ATTRIBUTE().getId())->getAttributeValue<uint>(context);
         QVariantMap data = inputMessage.getData().toMap();
         SiteconModel model = data.value(SiteconWorkerFactory::SITECON_SLOT.getId()).value<SiteconModel>();
@@ -259,6 +259,7 @@ Task* SiteconWriter::tick() {
             }*/
         }
         assert(!anUrl.isEmpty());
+        anUrl = context->absolutePath(anUrl);
         int count = ++counter[anUrl];
         if (count != 1) {
             anUrl = GUrlUtils::prepareFileName(anUrl, count, QStringList("sitecon"));

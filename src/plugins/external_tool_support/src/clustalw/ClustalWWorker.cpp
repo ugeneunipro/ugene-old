@@ -164,7 +164,7 @@ void ClustalWWorkerFactory::init() {
         vm["ID"] = 5;
         delegates[MATRIX] = new ComboBoxDelegate(vm);
     }
-    delegates[EXT_TOOL_PATH] = new URLDelegate("", "executable", false);
+    delegates[EXT_TOOL_PATH] = new URLDelegate("", "executable", false, false, false);
     delegates[TMP_DIR_PATH] = new URLDelegate("", "TmpDir", false, true);
 
     proto->setEditor(new DelegateEditor(delegates));

@@ -148,7 +148,7 @@ void CuffmergeWorkerFactory::init()
         delegates[MIN_ISOFORM_FRACTION] = new DoubleSpinBoxDelegate(vm);
         delegates[CUFFCOMPARE_TOOL_PATH] = new URLDelegate("", "executable", false, false, false);
         delegates[EXT_TOOL_PATH] = new URLDelegate("", "executable", false, false, false);
-        delegates[TMP_DIR_PATH] = new URLDelegate("", "TmpDir", false, true, false);
+        delegates[TMP_DIR_PATH] = new URLDelegate("", "TmpDir", false, true);
     }
 
     // Init and register the actor prototype

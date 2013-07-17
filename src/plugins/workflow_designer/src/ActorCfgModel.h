@@ -31,6 +31,7 @@
 #include <U2Lang/ActorModel.h>
 #include <U2Lang/IntegralBusModel.h>
 #include <U2Lang/Schema.h>
+#include <U2Lang/SchemaConfig.h>
 #include <U2Designer/DelegateEditors.h>
 
 namespace U2 {
@@ -40,7 +41,7 @@ using namespace Workflow;
 class ActorCfgModel : public QAbstractTableModel {
     Q_OBJECT
 public:
-    ActorCfgModel(QObject *parent);
+    ActorCfgModel(QObject *parent, SchemaConfig *schemaConfig);
     ~ActorCfgModel();
     
     void setActor(Actor * cfg);
@@ -86,6 +87,7 @@ private:
     bool isVisible(Attribute *a) const;
     
 private:
+    SchemaConfig*       schemaConfig;
     Actor*              subject;
     QList<Attribute*>   attrs;
     AttributeScriptDelegate * scriptDelegate;

@@ -178,7 +178,7 @@ void BaseDocWriter::takeParameters(U2OpStatus &os) {
 }
 
 QStringList BaseDocWriter::takeUrlList(const QVariantMap &data, U2OpStatus &os) {
-    QString anUrl = getValue<QString>(BaseAttributes::URL_OUT_ATTRIBUTE().getId());;
+    QString anUrl = getValue<QString>(BaseAttributes::URL_OUT_ATTRIBUTE().getId());
     {
         if (anUrl.isEmpty()) {
             anUrl = data.value(BaseSlots::URL_SLOT().getId()).toString();

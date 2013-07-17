@@ -116,6 +116,7 @@ QWidget * DefaultPropertyController::createGUI(U2OpStatus &os) {
     CHECK_OP(os, NULL);
     connect(propWidget, SIGNAL(si_valueChanged(const QVariant &)), SLOT(sl_valueChanged(const QVariant &)));
     connect(this, SIGNAL(si_updateGUI(const QVariant &)), propWidget, SLOT(setValue(const QVariant &)));
+    propWidget->setSchemaConfig(wc);
     propWidget->setValue(wc->getAttributeValue(widget->getInfo()));
 
     QString label = widget->getProperty(AttributeInfo::LABEL);

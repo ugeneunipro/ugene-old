@@ -116,7 +116,7 @@ void CDSearchWorkerFactory::init() {
     }
 
     {
-        delegates[DB_PATH_ATTR] = new URLDelegate("", "Database Directory", false, true);
+        delegates[DB_PATH_ATTR] = new URLDelegate("", "Database Directory", false, true, false);
     }
 
     proto->setPrompter(new CDSearchPrompter());

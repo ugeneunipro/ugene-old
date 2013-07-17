@@ -71,7 +71,7 @@ void CAP3WorkerFactory::init() {
     ActorPrototype* proto = new IntegralBusActorPrototype(desc, p, a);
 
     QMap<QString, PropertyDelegate*> delegates;
-    delegates[INPUT_FILE_PATH] = new URLDelegate("", "inputPath", false);
+    delegates[INPUT_FILE_PATH] = new URLDelegate("", "inputPath", false, false, false);
     
     proto->setEditor(new DelegateEditor(delegates));
     proto->setPrompter(new CAP3Prompter());

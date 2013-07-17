@@ -145,12 +145,10 @@ CEASTaskSettings CEASReportWorker::createTaskSettings(U2OpStatus &os) {
 
 CEASSettings CEASReportWorker::createCEASSettings(U2OpStatus &/*os*/) {
     CEASSettings settings;
-    settings.setImagePath(
-        actor->getParameter(IMAGE_FILE_ATTR_ID)->getAttributeValue<QString>(context));
+    settings.setImagePath(getValue<QString>(IMAGE_FILE_ATTR_ID));
 //     settings.setImageFormat(
 //         actor->getParameter(IMAGE_FORMAT_ATTR_ID)->getAttributeValue<QString>(context));
-    settings.setAnnsFilePath(
-        actor->getParameter(OUT_ANNS_ATTR_ID)->getAttributeValue<QString>(context));
+    settings.setAnnsFilePath(getValue<QString>(OUT_ANNS_ATTR_ID));
     settings.setGdbFile(
         actor->getParameter(ANNS_TABLE_ATTR_ID)->getAttributeValue<QString>(context));
     settings.setSpan(
@@ -312,7 +310,7 @@ void CEASReportWorkerFactory::init() {
 //             vm[CEASTaskSettings::PNG_FORMAT] = CEASTaskSettings::PNG_FORMAT;
 //             delegates[IMAGE_FORMAT_ATTR_ID] = new ComboBoxDelegate(vm);
 //         }
-        delegates[OUT_ANNS_ATTR_ID] = new URLDelegate(DialogUtils::prepareFileFilter(CEASReportWorker::tr("Annotations file"), QStringList("xls"), true), "", false);
+        delegates[OUT_ANNS_ATTR_ID] = new URLDelegate(DialogUtils::prepareFileFilter(CEASReportWorker::tr("Annotations file"), QStringList("xls"), true), "");
         {
             QVariantMap vm;
             if (dataPath){
@@ -333,7 +331,7 @@ void CEASReportWorkerFactory::init() {
             delegates[BISIZES_ATTR_ID] = new SpinBoxDelegate(vm);
             delegates[REL_DIST_ATTR_ID] = new SpinBoxDelegate(vm);
         }
-        delegates[GROUP_FILES_ATTR_ID] = new URLDelegate(DialogUtils::prepareDocumentsFileFilter(true), "", true);
+        delegates[GROUP_FILES_ATTR_ID] = new URLDelegate(DialogUtils::prepareDocumentsFileFilter(true), "", true, false, false);
     }
 
     Descriptor protoDesc(CEASReportWorkerFactory::ACTOR_ID,

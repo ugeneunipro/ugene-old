@@ -24,7 +24,9 @@
 
 #include <U2Lang/ActorModel.h>
 #include <U2Lang/Aliasing.h>
+#include <U2Lang/AttributeInfo.h>
 #include <U2Lang/Schema.h>
+#include <U2Lang/SchemaConfig.h>
 #include <U2Lang/WorkflowRunTask.h>
 
 #include <U2Gui/MainWindow.h>
@@ -120,7 +122,7 @@ private:
     QAction* openDocumentsAction;
 }; // WorkflowScene
 
-class WorkflowView : public MWMDIWindow {
+class WorkflowView : public MWMDIWindow, public SchemaConfig {
     friend class WorkflowScene;
     Q_OBJECT
 public:
@@ -167,6 +169,12 @@ public:
         LOCAL_HOST,
         REMOTE_MACHINE
     }; // RunMode
+
+    // SchemaConfig
+    virtual RunFileSystem * getRFS();
+    virtual QVariant getAttributeValue(const AttributeInfo &info) const;
+    virtual void setAttributeValue(const AttributeInfo &info, const QVariant &value);
+
 public slots:
     void sl_updateUi();
     void sl_rescaleScene(const QString &scale);

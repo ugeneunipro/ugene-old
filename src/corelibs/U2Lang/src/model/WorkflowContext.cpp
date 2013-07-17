@@ -148,6 +148,7 @@ QString WorkflowContext::workingDir() const {
 }
 
 QString WorkflowContext::absolutePath(const QString &relative) const {
+    CHECK(!relative.isEmpty(), "");
     QFileInfo info(relative);
     if (info.isAbsolute()) {
         return relative;

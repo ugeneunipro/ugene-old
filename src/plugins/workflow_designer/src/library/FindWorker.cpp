@@ -155,7 +155,7 @@ void FindWorkerFactory::init() {
         delegates[ERR_ATTR] = new SpinBoxDelegate(lenMap);
     }
     {
-        delegates[PATTERN_FILE_ATTR] = new URLDelegate("", "File with patterns", false, false);
+        delegates[PATTERN_FILE_ATTR] = new URLDelegate("", "File with patterns", false, false, false);
     }
     {
         delegates[BaseAttributes::STRAND_ATTRIBUTE().getId()] = new ComboBoxDelegate(BaseAttributes::STRAND_ATTRIBUTE_VALUES_MAP());

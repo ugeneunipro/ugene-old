@@ -172,7 +172,7 @@ void SNPToolboxWorkerFactory::init() {
 
     QMap<QString, PropertyDelegate*> delegates;
     {
-          delegates[DB_PATH] = new URLDelegate("", "", false);
+          delegates[DB_PATH] = new URLDelegate("", "", false, false, false);
     }
 
     Descriptor protoDesc(SNPToolboxWorkerFactory::ACTOR_ID,

@@ -106,7 +106,7 @@ void QDWorkerFactory::init() {
         delegates[SCHEMA_ATTR] = new URLDelegate(
             DialogUtils::prepareFileFilter(QDWorker::tr("Query schemes"), QStringList(QUERY_SCHEME_EXTENSION), true),
             QUERY_DESIGNER_ID,
-            false);
+            false, false, false);
 
         QVariantMap m;
         m["minimum"] = 0; m["maximum"] = INT_MAX;

@@ -2285,6 +2285,28 @@ Workflow::Metadata WorkflowView::getMeta(const QList<WorkflowProcessItem*> &item
     return result;
 }
 
+RunFileSystem * WorkflowView::getRFS() {
+    RunFileSystem *result = new RunFileSystem(this);
+    RFSUtils::initRFS(*result, schema->getProcesses(), this);
+    return result;
+}
+
+QVariant WorkflowView::getAttributeValue(const AttributeInfo &info) const {
+    Actor *actor = schema->actorById(info.actorId);
+    CHECK(NULL != actor, QVariant());
+    Attribute *attr = actor->getParameter(info.attrId);
+    CHECK(NULL != attr, QVariant());
+    return attr->getAttributePureValue();
+}
+
+void WorkflowView::setAttributeValue(const AttributeInfo &info, const QVariant &value) {
+    Actor *actor = schema->actorById(info.actorId);
+    CHECK(NULL != actor, );
+    Attribute *attr = actor->getParameter(info.attrId);
+    CHECK(NULL != attr, );
+    attr->setAttributeValue(value);
+}
+
 /********************************
  * WorkflowScene
  ********************************/

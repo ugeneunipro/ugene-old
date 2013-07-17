@@ -15,8 +15,9 @@ HEADERS += src/BreakpointHitCountDialog.h \
            src/GrouperEditorWidget.h \
            src/MarkerEditor.h \
            src/MarkerEditorWidget.h \
-           src/NewGrouperSlotDialog.h \
            src/NewBreakpointDialog.h \
+           src/NewGrouperSlotDialog.h \
+           src/OutputFileDialog.h \
            src/PropertyWidget.h \
            src/QDScheduler.h \
            src/UrlItem.h \
@@ -40,6 +41,7 @@ HEADERS += src/BreakpointHitCountDialog.h \
            src/wizard/WizardPageController.h
 FORMS += src/ui/AnnsActionDialog.ui \
          src/ui/BreakpointHitCountDialog.ui \
+         src/ui/CreateDirectoryDialog.ui \
          src/ui/DatasetWidget.ui \
          src/ui/DirectoryOptions.ui \
          src/ui/EditBreakpointLabelsDialog.ui \
@@ -51,8 +53,9 @@ FORMS += src/ui/AnnsActionDialog.ui \
          src/ui/GrouperEditorWidget.ui \
          src/ui/MarkerEditorWidget.ui \
          src/ui/MsaActionDialog.ui \
-         src/ui/NewGrouperSlotDialog.ui \
          src/ui/NewBreakpointDialog.ui \
+         src/ui/NewGrouperSlotDialog.ui \
+         src/ui/OutputFileDialog.ui \
          src/ui/SequenceActionDialog.ui \
          src/ui/StringActionDialog.ui
 SOURCES += src/BreakpointHitCountDialog.cpp \
@@ -69,8 +72,9 @@ SOURCES += src/BreakpointHitCountDialog.cpp \
            src/GrouperEditorWidget.cpp \
            src/MarkerEditor.cpp \
            src/MarkerEditorWidget.cpp \
-           src/NewGrouperSlotDialog.cpp \
            src/NewBreakpointDialog.cpp \
+           src/NewGrouperSlotDialog.cpp \
+           src/OutputFileDialog.cpp \
            src/PropertyWidget.cpp \
            src/QDScheduler.cpp \
            src/UrlItem.cpp \

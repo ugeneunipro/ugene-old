@@ -173,17 +173,16 @@ void MACSWorker::sl_taskFinished() {
 U2::MACSSettings MACSWorker::createMACSSettings( U2OpStatus & /*os*/ ){
     MACSSettings settings;
 
-    settings.outDir = actor->getParameter(OUTPUT_DIR)->getAttributeValue<QString>(context);
-    settings.fileNames = actor->getParameter(FILE_NAMES)->getAttributeValue<QString>(context);
-    settings.wiggleOut = actor->getParameter(WIGGLE_OUTPUT)->getAttributeValue<bool>(context);
-    settings.wiggleSpace = actor->getParameter(WIGGLE_SPACE)->getAttributeValue<int>(context);
+    settings.outDir = getValue<QString>(OUTPUT_DIR);
+    settings.fileNames = getValue<QString>(FILE_NAMES);
+    settings.wiggleOut = getValue<bool>(WIGGLE_OUTPUT);
+    settings.wiggleSpace = getValue<int>(WIGGLE_SPACE);
 
-    settings.genomeSizeInMbp = actor->getParameter(GENOME_SIZE_ATTR_ID)->getAttributeValue<int>(context);
-    settings.pValue = actor->getParameter(P_VALUE_ATTR_ID)->getAttributeValue<double>(context);
-    //settings.qValue = actor->getParameter(Q_VALUE_ATTR_ID)->getAttributeValue<double>(context);    //(MACS 2)
-    settings.useModel = actor->getParameter(USE_MODEL_ATTR_ID)->getAttributeValue<bool>(context);
+    settings.genomeSizeInMbp = getValue<int>(GENOME_SIZE_ATTR_ID);
+    settings.pValue = getValue<double>(P_VALUE_ATTR_ID);
+    settings.useModel = getValue<bool>(USE_MODEL_ATTR_ID);
 
-    QString locStr = actor->getParameter(MODEL_FOLD_ATTR_ID)->getAttributeValue<QString>(context);
+    QString locStr = getValue<QString>(MODEL_FOLD_ATTR_ID);
     U2Location l;
     QString err = Genbank::LocationParser::parseLocation(qPrintable(locStr), locStr.size(), l);
     if (!err.isEmpty()){
@@ -194,24 +193,24 @@ U2::MACSSettings MACSWorker::createMACSSettings( U2OpStatus & /*os*/ ){
         }
     }
     
-    settings.shiftSize = actor->getParameter(SHIFT_SIZE_ATTR_ID)->getAttributeValue<int>(context);
+    settings.shiftSize = getValue<int>(SHIFT_SIZE_ATTR_ID);
 
-    settings.keepDublicates = actor->getParameter(KEEP_DUBLICATES_ATTR_ID)->getAttributeValue<QString>(context);
+    settings.keepDublicates = getValue<QString>(KEEP_DUBLICATES_ATTR_ID);
 
-    settings.bandWidth = actor->getParameter(BAND_WIDTH_ATTR_ID)->getAttributeValue<int>(context);
-    //settings.extFr = actor->getParameter(EXT_FR_ATTR_ID)->getAttributeValue<bool>(context);    //(???)
+    settings.bandWidth = getValue<int>(BAND_WIDTH_ATTR_ID);
+    //settings.extFr = getValue<bool>(EXT_FR_ATTR_ID);    //(???)
     //optional
-    settings.tagSize = actor->getParameter(TAG_SIZE_ATTR_ID)->getAttributeValue<int>(context); //0 for default
+    settings.tagSize = getValue<int>(TAG_SIZE_ATTR_ID); //0 for default
     //advanced
-    settings.useLambda = actor->getParameter(USE_LAMBDA_ATTR_ID)->getAttributeValue<bool>(context);
-    settings.smallNearby = actor->getParameter(SMALL_NEARBY_ATTR_ID)->getAttributeValue<int>(context);
-    settings.largeNearby = actor->getParameter(LARGE_NEARBY_ATTR_ID)->getAttributeValue<int>(context);
-    settings.autoBimodal = actor->getParameter(AUTO_BIMODAL_ATTR_ID)->getAttributeValue<bool>(context);
-    settings.scaleLarge = actor->getParameter(SCALE_LARGE_ATTR_ID)->getAttributeValue<bool>(context);
-    //settings.shiftControl = actor->getParameter(SHIFT_CONTROL_ATTR_ID)->getAttributeValue<bool>(context);    //(MACS 2)
-    //settings.halfExtend = actor->getParameter(HALF_EXTEND_ATTR_ID)->getAttributeValue<bool>(context);    //(MACS 2)
-    //settings.broad = actor->getParameter(BROAD_ATTR_ID)->getAttributeValue<bool>(context);    //(MACS 2)
-    //settings.broadCutoff = actor->getParameter(BROAD_CUTOFF_ATTR_ID)->getAttributeValue<double>(context);    //(MACS 2)
+    settings.useLambda = getValue<bool>(USE_LAMBDA_ATTR_ID);
+    settings.smallNearby = getValue<int>(SMALL_NEARBY_ATTR_ID);
+    settings.largeNearby = getValue<int>(LARGE_NEARBY_ATTR_ID);
+    settings.autoBimodal = getValue<bool>(AUTO_BIMODAL_ATTR_ID);
+    settings.scaleLarge = getValue<bool>(SCALE_LARGE_ATTR_ID);
+    //settings.shiftControl = getValue<bool>(SHIFT_CONTROL_ATTR_ID);    //(MACS 2)
+    //settings.halfExtend = getValue<bool>(HALF_EXTEND_ATTR_ID);    //(MACS 2)
+    //settings.broad = getValue<bool>(BROAD_ATTR_ID);    //(MACS 2)
+    //settings.broadCutoff = getValue<double>(BROAD_CUTOFF_ATTR_ID);    //(MACS 2)
 
     return settings;
 }

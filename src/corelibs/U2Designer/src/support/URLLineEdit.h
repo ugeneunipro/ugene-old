@@ -30,6 +30,9 @@
 
 namespace U2 {
 
+class CompletionFiller;
+class RunFileSystem;
+class SchemaConfig;
 class URLWidget;
 
 class URLLineEdit : public QLineEdit {
@@ -41,19 +44,23 @@ public:
                 bool saveFile,
                 URLWidget *parent);
     bool isMulti();
+    CompletionFiller * getCompletionFillerInstance();
 
 protected:
     void focusOutEvent(QFocusEvent *event);
 
-private slots:
+public slots:
     void sl_onBrowse();
+
+private slots:
     void sl_onBrowseWithAdding();
     void sl_completionFinished();
 
 signals:
     void si_finished();
     
-private:
+public:
+    SchemaConfig *schemaConfig;
     QString type;
     bool multi;
     bool isPath;

@@ -176,7 +176,7 @@ void AnalyzeTataBoxesWorkerFactory::init( )
 
     QMap<QString, PropertyDelegate *> delegates;
     {
-        delegates[BaseRequestForSnpWorker::DB_SEQUENCE_PATH] = new URLDelegate( "", "", false );
+        delegates[BaseRequestForSnpWorker::DB_SEQUENCE_PATH] = new URLDelegate( "", "", false, false, false );
     }
 
     Descriptor protoDesc( AnalyzeTataBoxesWorkerFactory::ACTOR_ID,

@@ -202,7 +202,7 @@ void SNPReportWriterFactory::init() {
     {
         delegates[REGULATORY_REPORT_PATH] = new URLDelegate("", "", false);
         delegates[REPORT_PATH] = new URLDelegate("", "", false);
-        delegates[DB_PATH] = new URLDelegate("", "", false);
+        delegates[DB_PATH] = new URLDelegate("", "", false, false, false);
     }
 
     Descriptor protoDesc(SNPReportWriterFactory::ACTOR_ID,

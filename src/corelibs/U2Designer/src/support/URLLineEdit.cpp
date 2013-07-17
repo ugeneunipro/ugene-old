@@ -27,6 +27,8 @@
 #include <U2Core/DocumentModel.h>
 #include <U2Core/GUrlUtils.h>
 
+#include <U2Lang/SchemaConfig.h>
+
 #include <U2Gui/LastUsedDirHelper.h>
 #include <U2Gui/SuggestCompleter.h>
 
@@ -68,7 +70,7 @@ public:
                         choices.append(baseName + "." + ext + ".gz");
                     }
                 }
-            }  
+            }
         }
 
         if(choices.size() == 1){
@@ -102,11 +104,16 @@ URLLineEdit::URLLineEdit(const QString &type,
                          bool isPath,
                          bool saveFile,
                          URLWidget *_parent)
-: QLineEdit(_parent), type(type), multi(multi),
+: QLineEdit(_parent), schemaConfig(NULL), type(type), multi(multi),
 isPath(isPath), saveFile(saveFile), parent(_parent) {
     if (saveFile && NULL != parent) {
-        BaseCompleter *completer = new BaseCompleter(new FilenameCompletionFiller(parent), this);
-        connect(completer, SIGNAL(si_editingFinished()), SLOT(sl_completionFinished()));
+        new BaseCompleter(new FilenameCompletionFiller(parent), this);
+    }
+}
+
+CompletionFiller * URLLineEdit::getCompletionFillerInstance() {
+    if (saveFile && NULL != parent) {
+        return new FilenameCompletionFiller(parent);
     }
 }
 
@@ -219,7 +226,7 @@ bool URLLineEdit::isMulti() {
     return multi;
 }
 
-void URLLineEdit::sl_completionFinished(){
+void URLLineEdit::sl_completionFinished() {
     emit si_finished();
 }
 

@@ -26,6 +26,7 @@
 
 #include <U2Lang/ActorModel.h>
 #include <U2Lang/Attribute.h>
+#include <U2Lang/AttributeInfo.h>
 #include <U2Lang/URLAttribute.h>
 
 namespace U2 {
@@ -127,28 +128,6 @@ private:
 /************************************************************************/
 /* AttributeWidget */
 /************************************************************************/
-class U2LANG_EXPORT AttributeInfo {
-public:
-    AttributeInfo(const QString &actorId, const QString &attrId, const QVariantMap &hints = QVariantMap());
-
-    void validate(const QList<Actor*> &actors, U2OpStatus &os) const;
-    bool operator== (const AttributeInfo &other) const;
-    QString toString() const;
-
-    static AttributeInfo fromString(const QString &value, U2OpStatus &os);
-
-    QString actorId;
-    QString attrId;
-    QVariantMap hints;
-
-public:
-    static const QString TYPE;
-    static const QString DEFAULT;
-    static const QString DATASETS;
-
-    static const QString LABEL;
-};
-
 class U2LANG_EXPORT AttributeWidget : public WizardWidget {
 public:
     AttributeWidget();

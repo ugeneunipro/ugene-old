@@ -70,7 +70,7 @@ void ExportPhredQualityWorkerFactory::init() {
     QMap<QString, PropertyDelegate*> delegates;
     {
 
-        delegates[BaseAttributes::URL_OUT_ATTRIBUTE().getId()] = new URLDelegate(DialogUtils::prepareDocumentsFileFilter(true), QString(), false, false, true);
+        delegates[BaseAttributes::URL_OUT_ATTRIBUTE().getId()] = new URLDelegate(DialogUtils::prepareDocumentsFileFilter(true), QString(), false, false);
 
     }
 
@@ -122,7 +122,7 @@ ExportPhredQualityWorker::ExportPhredQualityWorker(Actor* a) : BaseWorker(a), in
 
 void ExportPhredQualityWorker::init() {
     input = ports.value(BasePorts::IN_SEQ_PORT_ID());
-    fileName = actor->getParameter(BaseAttributes::URL_OUT_ATTRIBUTE().getId())->getAttributeValue<QString>(context);
+    fileName = getValue<QString>(BaseAttributes::URL_OUT_ATTRIBUTE().getId());
 }
 
 Task* ExportPhredQualityWorker::tick() {

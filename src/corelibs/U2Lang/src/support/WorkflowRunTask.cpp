@@ -202,7 +202,7 @@ Task::ReportResult WorkflowRunTask::report() {
 
 WorkflowIterationRunTask::WorkflowIterationRunTask(const Schema& sh,
     WorkflowDebugStatus *initDebugInfo)
-    : WorkflowAbstractIterationRunner(tr("Default iteration"),
+    : WorkflowAbstractIterationRunner(tr("Workflow run"),
     (getAdditionalFlags() | TaskFlag_FailOnSubtaskCancel)), context(NULL),
     schema(new Schema()), scheduler(NULL), debugInfo(initDebugInfo), isNextTickRestoring(false)
 {
@@ -571,7 +571,7 @@ int WorkflowRunInProcessTask::getMsgPassed(const Link * l) {
  * WorkflowIterationRunInProcessTask
  *******************************************/
 WorkflowIterationRunInProcessTask::WorkflowIterationRunInProcessTask(const Schema & sc) :
-WorkflowAbstractIterationRunner("Default iteration", TaskFlags_NR_FOSCOE), schema(new Schema()),
+WorkflowAbstractIterationRunner("Workflow run in process", TaskFlags_NR_FOSCOE), schema(new Schema()),
 saveSchemaTask(NULL), monitor(NULL), wfMonitor(NULL) {
     tempFile.setFileTemplate(QString("%1/XXXXXX.uwl").arg(QDir::tempPath()));
     if(!tempFile.open()) {

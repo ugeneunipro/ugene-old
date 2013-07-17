@@ -23,11 +23,16 @@
 #include <QFileDialog>
 
 #include <U2Core/L10n.h>
+#include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
 
+#include <U2Lang/SchemaConfig.h>
 #include <U2Lang/URLContainer.h>
+#include <U2Lang/WorkflowSettings.h>
 #include <U2Lang/WorkflowUtils.h>
 #include <U2Gui/LastUsedDirHelper.h>
+
+#include "OutputFileDialog.h"
 
 #include "PropertyWidget.h"
 
@@ -326,15 +331,15 @@ URLWidget::URLWidget(const QString &type, bool multi, bool isPath, bool saveFile
 {
     urlLine = new URLLineEdit(type, multi, isPath, saveFile, this);
     urlLine->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
-    connect(urlLine, SIGNAL(si_finished()), SIGNAL(finished()));
+    connect(urlLine, SIGNAL(si_finished()), SLOT(sl_finished()));
     connect(urlLine, SIGNAL(textChanged(const QString &)), SLOT(sl_textChanged(const QString &)));
     addMainWidget(urlLine);
 
-    QToolButton * toolButton = new QToolButton(this);
-    toolButton->setText("...");
-    toolButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred);
-    connect(toolButton, SIGNAL(clicked()), urlLine, SLOT(sl_onBrowse()));
-    layout()->addWidget(toolButton);
+    browseButton = new QToolButton(this);
+    browseButton->setText("...");
+    browseButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred);
+    connect(browseButton, SIGNAL(clicked()), SLOT(sl_browse()));
+    layout()->addWidget(browseButton);
 
     if (urlLine->isMulti()) {
         addButton = new QToolButton(this);
@@ -347,7 +352,6 @@ URLWidget::URLWidget(const QString &type, bool multi, bool isPath, bool saveFile
 }
 
 void URLWidget::sl_textChanged(const QString &text) {
-    emit si_valueChanged(text);
     if (!urlLine->isMulti()) {
         return;
     }
@@ -360,7 +364,6 @@ QVariant URLWidget::value() {
 }
 
 void URLWidget::setValue(const QVariant &value) {
-    QString urlString;
     if (value.canConvert< QList<Dataset> >()) {
         QStringList urls;
         foreach (const Dataset &set, value.value< QList<Dataset> >()) {
@@ -368,15 +371,57 @@ void URLWidget::setValue(const QVariant &value) {
                 urls << c->getUrl();
             }
         }
-        urlString = urls.join(";");
+        initialValue = urls.join(";");
     } else {
-        urlString = value.toString();
+        initialValue = value.toString();
     }
-    urlLine->setText(urlString);
+    urlLine->setText(initialValue);
 }
 
 void URLWidget::setRequired() {
     urlLine->setPlaceholderText(L10N::required());
+}
+
+void URLWidget::sl_browse() {
+    bool useOutDir = WorkflowSettings::isUseWorkflowOutputDirectory();
+    if (!useOutDir || !urlLine->saveFile) {
+        urlLine->sl_onBrowse();
+        return;
+    }
+
+    RunFileSystem *rfs = getRFS();
+    if (NULL == rfs) {
+        urlLine->sl_onBrowse();
+    } else {
+        OutputFileDialog d(rfs, urlLine->isPath, urlLine->getCompletionFillerInstance(), this);
+        if (d.exec()) {
+            urlLine->setText(d.getResult());
+        } else if (d.isSaveToFileSystem()) {
+            urlLine->sl_onBrowse();
+        }
+        urlLine->setFocus();
+    }
+}
+
+void URLWidget::sl_finished() {
+    RunFileSystem *rfs = getRFS();
+    if (NULL != rfs) {
+        QString result = urlLine->text();
+        if ((result != initialValue) && RFSUtils::isCorrectUrl(result)) {
+            if (rfs->canAdd(result, urlLine->isPath)) {
+                rfs->addItem(result, urlLine->isPath, U2OpStatusImpl());
+            } else {
+                urlLine->setText(initialValue);
+            }
+        }
+    }
+    emit si_valueChanged(urlLine->text());
+    emit finished();
+}
+
+RunFileSystem * URLWidget::getRFS() {
+    CHECK(NULL != schemaConfig, NULL);
+    return schemaConfig->getRFS();
 }
 
 } // U2

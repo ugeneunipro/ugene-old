@@ -105,10 +105,10 @@ Task *GeneByGeneReportWorker::tick() {
 
     GeneByGeneReportSettings settings;
 
-    settings.outFile = actor->getParameter(OUTPUT_FILE)->getAttributeValue<QString>(context);
-    settings.existingFile = actor->getParameter(EXISTING_FILE)->getAttributeValue<QString>(context);
-    settings.identity = actor->getParameter(IDENTITY)->getAttributeValue<float>(context);
-    settings.annName = actor->getParameter(ANN_NAME)->getAttributeValue<QString>(context);
+    settings.outFile = getValue<QString>(OUTPUT_FILE);
+    settings.existingFile = getValue<QString>(EXISTING_FILE);
+    settings.identity = getValue<float>(IDENTITY);
+    settings.annName = getValue<QString>(ANN_NAME);
 
 
     Task* t = new GeneByGeneReportTask(settings, geneData);

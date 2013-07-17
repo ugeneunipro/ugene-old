@@ -173,7 +173,7 @@ void ImportAnnotationsWorkerFactory::init() {
     QMap<QString, PropertyDelegate*> delegates;
     {
         delegates[BaseAttributes::URL_IN_ATTRIBUTE().getId()] = new URLDelegate(
-            DialogUtils::prepareDocumentsFileFilterByObjType(GObjectTypes::ANNOTATION_TABLE, true), QString(), true );
+            DialogUtils::prepareDocumentsFileFilterByObjType(GObjectTypes::ANNOTATION_TABLE, true), QString(), true, false, false );
     }
     proto->setEditor(new DelegateEditor(delegates));
     proto->setPrompter(new ReadDocPrompter(ImportAnnotationsWorker::tr("Merge input annotations with annotations from <u>%1</u>.")));

@@ -165,8 +165,8 @@ void BlastPlusWorkerFactory::init() {
         delegates[BLASTPLUS_OUT_TYPE] = new ComboBoxDelegate(m);
     }
     delegates[BLASTPLUS_ORIGINAL_OUT] = new URLDelegate("", "out file", false);
-    delegates[BLASTPLUS_DATABASE_PATH] = new URLDelegate("", "Database Directory", false, true);
-    delegates[BLASTPLUS_EXT_TOOL_PATH] = new URLDelegate("", "executable", false);
+    delegates[BLASTPLUS_DATABASE_PATH] = new URLDelegate("", "Database Directory", false, true, false);
+    delegates[BLASTPLUS_EXT_TOOL_PATH] = new URLDelegate("", "executable", false, false, false);
     delegates[BLASTPLUS_TMP_DIR_PATH] = new URLDelegate("", "TmpDir", false, true);
 
     proto->setEditor(new DelegateEditor(delegates));
@@ -273,7 +273,7 @@ Task* BlastPlusWorker::tick() {
         }
         cfg.needCreateAnnotations=false;
         cfg.outputType=actor->getParameter(BLASTPLUS_OUT_TYPE)->getAttributeValue<int>(context);
-        cfg.outputOriginalFile=actor->getParameter(BLASTPLUS_ORIGINAL_OUT)->getAttributeValue<QString>(context);
+        cfg.outputOriginalFile=getValue<QString>(BLASTPLUS_ORIGINAL_OUT);
         if(cfg.outputType != 5 && cfg.outputOriginalFile.isEmpty()){
             return new FailTask(tr("Not selected BLAST output file"));
         }

@@ -115,7 +115,7 @@ void ClustalOWorkerFactory::init() {
         delegates[MAX_HMM_ITERATIONS] = new SpinBoxDelegate(m);
     }
 
-    delegates[EXT_TOOL_PATH] = new URLDelegate("", "executable", false);
+    delegates[EXT_TOOL_PATH] = new URLDelegate("", "executable", false, false, false);
     delegates[TMP_DIR_PATH] = new URLDelegate("", "TmpDir", false, true);
 
     proto->setEditor(new DelegateEditor(delegates));

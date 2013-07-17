@@ -137,13 +137,13 @@ void ConservationPlotWorker::sl_taskFinished() {
 U2::ConservationPlotSettings ConservationPlotWorker::createConservationPlotSettings( U2OpStatus &os ){
     ConservationPlotSettings settings;
 
-    settings.outFile = actor->getParameter(OUTPUT_FILE)->getAttributeValue<QString>(context);
-    settings.title = actor->getParameter(TITLE)->getAttributeValue<QString>(context);
-    settings.label = actor->getParameter(LABEL)->getAttributeValue<QString>(context);
-    settings.assemblyVersion= actor->getParameter(ASSEMBLY_VER)->getAttributeValue<QString>(context);
-    settings.windowSize = actor->getParameter(WINDOW_S)->getAttributeValue<int>(context);
-    settings.height = actor->getParameter(HEIGHT)->getAttributeValue<int>(context);
-    settings.width = actor->getParameter(WIDTH)->getAttributeValue<int>(context);
+    settings.outFile = getValue<QString>(OUTPUT_FILE);
+    settings.title = getValue<QString>(TITLE);
+    settings.label = getValue<QString>(LABEL);
+    settings.assemblyVersion= getValue<QString>(ASSEMBLY_VER);
+    settings.windowSize = getValue<int>(WINDOW_S);
+    settings.height = getValue<int>(HEIGHT);
+    settings.width = getValue<int>(WIDTH);
 
     return settings;
 }

@@ -276,15 +276,18 @@ QVariant ComboBoxWithChecksDelegate::getDisplayValue(const QVariant& val) const 
 * URLDelegate
 ********************************/
 URLDelegate::URLDelegate(const QString& filter, const QString& type, bool multi, bool isPath, bool saveFile, QObject *parent, const QString &format)
-: PropertyDelegate(parent), type(type), multi(multi), isPath(isPath), saveFile(saveFile),
-currentEditor(NULL)
+: PropertyDelegate(parent), type(type), multi(multi), isPath(isPath), saveFile(saveFile)
 {
     tags()->set("filter", filter);
     tags()->set("format", format);
 }
 
 URLWidget * URLDelegate::createWidget(QWidget *parent) const {
-    return new URLWidget(type, multi, isPath, saveFile, tags(), parent);
+    URLWidget *result = new URLWidget(type, multi, isPath, saveFile, tags(), parent);
+    if (saveFile) {
+        result->setSchemaConfig(schemaConfig);
+    }
+    return result;
 }
 
 PropertyWidget * URLDelegate::createWizardWidget(U2OpStatus & /*os*/, QWidget *parent) const {
@@ -295,9 +298,9 @@ QWidget * URLDelegate::createEditor(QWidget *parent,
                                        const QStyleOptionViewItem &/* option */,
                                        const QModelIndex &/* index */) const
 {
-    currentEditor = createWidget(parent);
-    connect(currentEditor, SIGNAL(finished()), SLOT(sl_commit()));
-    return currentEditor;
+    URLWidget *editor = createWidget(parent);
+    connect(editor, SIGNAL(finished()), SLOT(sl_commit()));
+    return editor;
 }
 
 void URLDelegate::sl_commit() {
@@ -305,9 +308,7 @@ void URLDelegate::sl_commit() {
 
     if(editor->value().toString() != text) {
         text = editor->value().toString();
-        if (currentEditor) {
-            emit commitData(currentEditor);
-        }
+        emit commitData(editor);
     }
 }
 

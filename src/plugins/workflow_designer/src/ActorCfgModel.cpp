@@ -42,8 +42,8 @@ static const int KEY_COLUMN = 0;
 static const int VALUE_COLUMN = 1;
 static const int SCRIPT_COLUMN = 2;
 
-ActorCfgModel::ActorCfgModel(QObject *parent)
-: QAbstractTableModel(parent), subject(NULL), scriptMode(false) {
+ActorCfgModel::ActorCfgModel(QObject *parent, SchemaConfig *_schemaConfig)
+: QAbstractTableModel(parent), schemaConfig(_schemaConfig), subject(NULL), scriptMode(false) {
     scriptDelegate = new AttributeScriptDelegate();
 }
 
@@ -61,6 +61,16 @@ void ActorCfgModel::setActor(Actor* cfg) {
         attrs = cfg->getAttributes();
         //inputPortsData.setData(cfg->getInputPorts());
         setupAttributesScripts();
+
+        ConfigurationEditor *editor = subject->getEditor();
+        if (NULL != editor) {
+            foreach (Attribute *attr, attrs) {
+                PropertyDelegate *delegate = editor->getDelegate(attr->getId());
+                if (NULL != delegate) {
+                    delegate->setSchemaConfig(schemaConfig);
+                }
+            }
+        }
     }
     reset();
 }

@@ -152,7 +152,7 @@ void WorkflowSettings::setUserDirectory(const QString &newDir) {
 
 bool WorkflowSettings::isUseWorkflowOutputDirectory() {
     Settings *s = AppContext::getSettings();
-    return s->getValue(USE_WORKFLOW_OUTPUT_PATH, true, true).toBool();
+    return s->getValue(USE_WORKFLOW_OUTPUT_PATH, false, true).toBool();
 }
 
 void  WorkflowSettings::setUseWorkflowOutputDirectory(bool value) {

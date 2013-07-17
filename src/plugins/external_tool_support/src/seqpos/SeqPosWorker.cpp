@@ -129,13 +129,13 @@ void SeqPosWorker::sl_taskFinished() {
 U2::SeqPosSettings SeqPosWorker::createSeqPosSettings( U2OpStatus &os ){
     SeqPosSettings settings;
 
-    settings.outDir = actor->getParameter(OUTPUT_DIR)->getAttributeValue<QString>(context);
-    settings.genomeAssembly = actor->getParameter(GENOME_ASSEMBLY)->getAttributeValue<QString>(context);
-    settings.findDeNovo = actor->getParameter(FIND_DE_NOVO)->getAttributeValue<bool>(context);
-    settings.motifDB = actor->getParameter(MOTIF_DB)->getAttributeValue<QString>(context);
-    settings.outName = actor->getParameter(OUT_NAME)->getAttributeValue<QString>(context);
-    settings.regWidth = actor->getParameter(REG_WIDTH)->getAttributeValue<int>(context);
-    settings.pVal = actor->getParameter(P_VAL)->getAttributeValue<float>(context);
+    settings.outDir = getValue<QString>(OUTPUT_DIR);
+    settings.genomeAssembly = getValue<QString>(GENOME_ASSEMBLY);
+    settings.findDeNovo = getValue<bool>(FIND_DE_NOVO);
+    settings.motifDB = getValue<QString>(MOTIF_DB);
+    settings.outName = getValue<QString>(OUT_NAME);
+    settings.regWidth = getValue<int>(REG_WIDTH);
+    settings.pVal = getValue<float>(P_VAL);
 
     return settings;
 }

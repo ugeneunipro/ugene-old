@@ -16,6 +16,7 @@
         <file>images/up.png</file>
         <file>images/add_directory.png</file>
         <file>images/add_file.png</file>
+        <file>images/outside.png</file>
     </qresource>
     <qresource>
         <file>javascript/bootstrap/css/bootstrap-responsive.css</file>

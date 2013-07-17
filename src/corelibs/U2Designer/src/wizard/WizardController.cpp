@@ -123,39 +123,9 @@ const QList<Actor*> & WizardController::getCurrentActors() const {
     return currentActors;
 }
 
-QVariant WizardController::getAttributeValue(const AttributeInfo &info) const {
-    if (values.contains(info.toString())) {
-        return values[info.toString()];
-    }
-    QString attrId;
-    Attribute *attr = getAttribute(info);
-    CHECK(NULL != attr, QVariant());
-
-    return attr->getAttributePureValue();
-}
-
 DelegateTags * WizardController::getTags(const AttributeInfo &info) {
     CHECK(propertyControllers.contains(info.toString()), NULL);
     return propertyControllers[info.toString()]->tags();
-}
-
-void WizardController::setAttributeValue(const AttributeInfo &info, const QVariant &value) {
-    values[info.toString()] = value;
-
-    // Check attribute relations
-    Attribute *attr = getAttribute(info);
-    CHECK(NULL != attr, );
-    foreach (const AttributeRelation *relation, attr->getRelations()) {
-        if (!relation->valueChangingRelation()) {
-            continue;
-        }
-        AttributeInfo related(info.actorId, relation->getRelatedAttrId());
-        QVariant newValue = relation->getAffectResult(value, getAttributeValue(related), getTags(info), getTags(related));
-        setAttributeValue(related, newValue);
-        if (propertyControllers.contains(related.toString())) {
-            propertyControllers[related.toString()]->updateGUI(newValue);
-        }
-    }
 }
 
 Attribute * WizardController::getAttribute(const AttributeInfo &info) const {
@@ -280,6 +250,42 @@ WizardController::ApplyResult WizardController::applyChanges(Metadata &meta) {
 
 void WizardController::addPropertyController(const AttributeInfo &info, PropertyWizardController *ctrl) {
     propertyControllers[info.toString()] = ctrl;
+}
+
+RunFileSystem * WizardController::getRFS() {
+    RunFileSystem *result = new RunFileSystem(this);
+    RFSUtils::initRFS(*result, schema->getProcesses(), this);
+    return result;
+}
+
+QVariant WizardController::getAttributeValue(const AttributeInfo &info) const {
+    if (values.contains(info.toString())) {
+        return values[info.toString()];
+    }
+    QString attrId;
+    Attribute *attr = getAttribute(info);
+    CHECK(NULL != attr, QVariant());
+
+    return attr->getAttributePureValue();
+}
+
+void WizardController::setAttributeValue(const AttributeInfo &info, const QVariant &value) {
+    values[info.toString()] = value;
+
+    // Check attribute relations
+    Attribute *attr = getAttribute(info);
+    CHECK(NULL != attr, );
+    foreach (const AttributeRelation *relation, attr->getRelations()) {
+        if (!relation->valueChangingRelation()) {
+            continue;
+        }
+        AttributeInfo related(info.actorId, relation->getRelatedAttrId());
+        QVariant newValue = relation->getAffectResult(value, getAttributeValue(related), getTags(info), getTags(related));
+        setAttributeValue(related, newValue);
+        if (propertyControllers.contains(related.toString())) {
+            propertyControllers[related.toString()]->updateGUI(newValue);
+        }
+    }
 }
 
 /************************************************************************/
