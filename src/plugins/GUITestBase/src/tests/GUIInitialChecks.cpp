@@ -42,6 +42,7 @@ GUI_TEST_CLASS_DEFINITION(test_0000) {
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0001) {
+    Q_UNUSED(os);
 // fail on MacOS
 #ifndef Q_OS_MAC
 //    QString activeWindowName = AppContext::getActiveWindowName();
@@ -88,17 +89,23 @@ GUI_TEST_CLASS_DEFINITION(post_test_0001) {
     GTGlobals::sleep(1000);
     // close project
     if (AppContext::getProject() != NULL) {
+        int key;
+#ifdef Q_OS_MAC
+        key = GTKeyboardDriver::key["cmd"];
+#else
+        key = GTKeyboardDriver::key["ctrl"];
+#endif
 
         GTGlobals::sleep();
         GTWidget::click(os, GTUtilsProjectTreeView::getTreeWidget(os));
-        GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
+        GTKeyboardDriver::keyClick(os, 'a', key);
         GTGlobals::sleep(100);
 
         GTUtilsDialog::waitForDialog(os, new MessageBoxNoToAllOrNo(os));
         GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
         GTGlobals::sleep(100);
 
-        GTKeyboardDriver::keyClick(os, 'q', GTKeyboardDriver::key["ctrl"]);
+        GTKeyboardDriver::keyClick(os, 'q', key);
         GTGlobals::sleep(100);
         GTGlobals::sleep(500);
 
@@ -117,6 +124,7 @@ GUI_TEST_CLASS_DEFINITION(post_test_0002) {
 }
 
 GUI_TEST_CLASS_DEFINITION(post_test_0003) {
+    Q_UNUSED(os);
 #ifdef Q_OS_WIN 
     QProcess *svnProcess = new QProcess();
 
