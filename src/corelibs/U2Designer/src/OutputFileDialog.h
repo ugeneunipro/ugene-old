@@ -74,10 +74,10 @@ public:
 
     FSItem * toItem(const QModelIndex &index) const;
     QString getPath(FSItem *target) const;
-    void addDir(const QModelIndex &index, const QString &dirName);
+    QModelIndex addDir(const QModelIndex &index, const QString &dirName);
 
 private:
-    FSItem *rootItem;
+    FSItem *superRootItem;
     bool saveDir;
 };
 

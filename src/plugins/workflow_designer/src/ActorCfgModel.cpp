@@ -346,6 +346,15 @@ QVariant ActorCfgModel::data(const QModelIndex & index, int role ) const {
     return QVariant();
 }
 
+bool ActorCfgModel::canSetData(Attribute *attr, const QVariant &value) {
+    bool dir = false;
+    bool isOutUrlAttr = RFSUtils::isOutUrlAttribute(attr, subject, dir);
+    CHECK(isOutUrlAttr, true);
+
+    RunFileSystem *rfs = schemaConfig->getRFS();
+    return rfs->canAdd(value.toString(), dir);
+}
+
 bool ActorCfgModel::setData( const QModelIndex & index, const QVariant & value, int role ) {
     int col = index.column();
     Attribute* editingAttribute = attrs[index.row()];
@@ -372,12 +381,15 @@ bool ActorCfgModel::setData( const QModelIndex & index, const QVariant & value, 
                     }
                     foreach (const AttributeRelation *relation, editingAttribute->getRelations()) {
                         if (relation->valueChangingRelation()) {
+                            Attribute *depAttr = subject->getParameter(relation->getRelatedAttrId());
                             ConfigurationEditor *editor = subject->getEditor();
                             DelegateTags *inf = editor ? editor->getDelegate(editingAttribute->getId())->tags() : NULL;
                             DelegateTags *dep = editor ? editor->getDelegate(relation->getRelatedAttrId())->tags() : NULL;
                             QModelIndex idx = modelIndexById(relation->getRelatedAttrId());
                             QVariant newValue = relation->getAffectResult(value, data(idx), inf, dep);
-                            setData(idx, newValue);
+                            if (canSetData(depAttr, newValue)) {
+                                setData(idx, newValue);
+                            }
                         }
                     }
                     return true;

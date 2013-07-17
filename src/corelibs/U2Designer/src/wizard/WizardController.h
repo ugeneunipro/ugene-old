@@ -106,6 +106,7 @@ private:
     void assignParameters();
     void saveDelegateTags();
     DelegateTags * getTags(const AttributeInfo &info);
+    bool canSetValue(const AttributeInfo &info, const QVariant &value);
 };
 
 /************************************************************************/

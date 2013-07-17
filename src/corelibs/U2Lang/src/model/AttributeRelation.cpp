@@ -66,7 +66,6 @@ QVariant FileExtensionRelation::getAffectResult(const QVariant &influencingValue
     if (urlStr.isEmpty()) {
         return "";
     }
-    GUrl url(urlStr);
 
     QString extension;
     if (NULL == newFormat) {
@@ -74,17 +73,15 @@ QVariant FileExtensionRelation::getAffectResult(const QVariant &influencingValue
     } else {
         extension = newFormat->getSupportedDocumentFileExtensions().first();
     }
-    QString urlString = url.getURLString();
-    QString lastSuffix = url.lastFileSuffix();
-    bool withGz = false;
 
+    QString lastSuffix = GUrl(urlStr).lastFileSuffix();
+    bool withGz = false;
     if ("gz" == lastSuffix) {
-        int dotPos = urlString.length() - lastSuffix.length() - 1;
-        if ((dotPos >= 0) && (QChar('.') == urlString[dotPos])) {
+        int dotPos = urlStr.length() - lastSuffix.length() - 1;
+        if ((dotPos >= 0) && (QChar('.') == urlStr[dotPos])) {
             withGz = true;
-            urlString = url.getURLString().left(dotPos);
-            GUrl tmp(urlString);
-            lastSuffix = tmp.lastFileSuffix(); 
+            urlStr = urlStr.left(dotPos);
+            lastSuffix = GUrl(urlStr).lastFileSuffix(); 
         }
     }
 
@@ -115,17 +112,17 @@ QVariant FileExtensionRelation::getAffectResult(const QVariant &influencingValue
     }
     
     if (foundExt) {
-        int dotPos = urlString.length() - lastSuffix.length() - 1;
-        if ((dotPos >= 0) && (QChar('.') == urlString[dotPos])) { //yes, lastSuffix is a correct extension with .
-            urlString = url.getURLString().left(dotPos);
+        int dotPos = urlStr.length() - lastSuffix.length() - 1;
+        if ((dotPos >= 0) && (QChar('.') == urlStr[dotPos])) { //yes, lastSuffix is a correct extension with .
+            urlStr = urlStr.left(dotPos);
         }
     }
 
-    urlString += "." + extension;
+    urlStr += "." + extension;
     if (withGz) {
-        urlString += ".gz";
+        urlStr += ".gz";
     }
-    return urlString;
+    return urlStr;
 }
 
 void FileExtensionRelation::updateDelegateTags(const QVariant &influencingValue, DelegateTags *dependentTags) const {

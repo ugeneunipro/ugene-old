@@ -30,6 +30,7 @@
 namespace U2 {
 
 static const QString OUT_DIR = QObject::tr("Output directory");
+static const QString BAD_CHARS = "\\*\\?\\|\\\"\\:";
 
 OutputFileDialog::OutputFileDialog(RunFileSystem *_rfs, bool _saveDir, CompletionFiller *filler, QWidget *parent)
 : QDialog(parent), rfs(_rfs), saveDir(_saveDir), saveToFileSystem(false)
@@ -45,6 +46,7 @@ OutputFileDialog::OutputFileDialog(RunFileSystem *_rfs, bool _saveDir, Completio
         if (NULL != filler) {
             new BaseCompleter(filler, nameEdit);
         }
+        nameEdit->setValidator(new QRegExpValidator(QRegExp("[^" + BAD_CHARS + "]+"), this));
     }
     updateFocus();
 
@@ -116,7 +118,9 @@ void OutputFileDialog::sl_addDir() {
         if (!item->isDir()) {
             index = index.parent();
         }
-        model->addDir(index, d.getResult());
+        QModelIndex child = model->addDir(index, d.getResult());
+        treeView->setExpanded(index, true);
+        selectionModel->select(child, QItemSelectionModel::ClearAndSelect);
     }
     updateFocus();
 }
@@ -182,6 +186,8 @@ CreateDirectoryDialog::CreateDirectoryDialog(RunFileSystem *_rfs, const QString 
     }
     sl_textChanged();
 
+    nameEdit->setValidator(new QRegExpValidator(QRegExp("[^" + BAD_CHARS + "\\\\\\/]+"), this));
+
     connect(nameEdit, SIGNAL(textEdited(const QString &)), SLOT(sl_textChanged()));
 }
 
@@ -206,15 +212,16 @@ QString CreateDirectoryDialog::getResult() const {
 /************************************************************************/
 /* RFSTreeModel */
 /************************************************************************/
-RFSTreeModel::RFSTreeModel(FSItem *rfsRoot, bool _saveDir, QObject *parent)
+RFSTreeModel::RFSTreeModel(FSItem *rootItem, bool _saveDir, QObject *parent)
 : QAbstractItemModel(parent), saveDir(_saveDir)
 {
-    rootItem = new FSItem("", true);
-    rootItem->addChild(rfsRoot);
+    superRootItem = new FSItem("", true);
+    superRootItem->addChild(rootItem);
 }
 
 RFSTreeModel::~RFSTreeModel() {
-    //delete rootItem;
+    superRootItem->noChildren();
+    delete superRootItem;
 }
 
 QVariant RFSTreeModel::data(const QModelIndex &index, int role) const {
@@ -253,7 +260,7 @@ QVariant RFSTreeModel::headerData(int section, Qt::Orientation orientation, int 
 QModelIndex RFSTreeModel::index(int row, int column, const QModelIndex &parent) const {
     CHECK(hasIndex(row, column, parent), QModelIndex());
 
-    FSItem *parentItem = rootItem;
+    FSItem *parentItem = superRootItem;
     if (parent.isValid()) {
         parentItem = toItem(parent);
     }
@@ -270,7 +277,7 @@ QModelIndex RFSTreeModel::parent(const QModelIndex &index) const {
     CHECK(index.isValid(), QModelIndex());
 
     FSItem *parentItem = toItem(index)->parent();
-    CHECK(parentItem != rootItem, QModelIndex());
+    CHECK(parentItem != superRootItem, QModelIndex());
 
     return createIndex(parentItem->row(), 0, parentItem);
 }
@@ -278,7 +285,7 @@ QModelIndex RFSTreeModel::parent(const QModelIndex &index) const {
 int RFSTreeModel::rowCount(const QModelIndex &parent) const {
     CHECK(0 >= parent.column(), 0);
 
-    FSItem *parentItem = rootItem;
+    FSItem *parentItem = superRootItem;
     if (parent.isValid()) {
         parentItem = toItem(parent);
     }
@@ -292,7 +299,7 @@ int RFSTreeModel::columnCount(const QModelIndex &parent) const {
 }
 
 QString RFSTreeModel::getPath(FSItem *target) const {
-    FSItem *root = rootItem->child(0);
+    FSItem *root = superRootItem->child(0);
 
     QStringList result;
     FSItem *item = target;
@@ -308,11 +315,14 @@ FSItem * RFSTreeModel::toItem(const QModelIndex &index) const {
     return static_cast<FSItem*>(index.internalPointer());
 }
 
-void RFSTreeModel::addDir(const QModelIndex &index, const QString &dirName) {
+QModelIndex RFSTreeModel::addDir(const QModelIndex &index, const QString &dirName) {
     FSItem *item = toItem(index);
-    beginInsertRows(index, 0, item->children().size());
-    item->addChild(new FSItem(dirName, true));
+    FSItem *newItem = new FSItem(dirName, true);
+    int pos = item->posToInsert(newItem);
+    beginInsertRows(index, pos, pos);
+    item->addChild(newItem);
     endInsertRows();
+    return index.child(pos, 0);
 }
 
 } // U2

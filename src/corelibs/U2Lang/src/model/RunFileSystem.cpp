@@ -92,19 +92,27 @@ void FSItem::addChild(FSItem *item) {
     SAFE_POINT(isDir(), "Files can not have children", );
     SAFE_POINT(!contains(item->name()), "This item already exists: " + item->name(), );
 
-    QVector<FSItem*>::iterator i = items.begin();
-    for (; i != items.end(); i++) {
-        if ((*i)->isDir() && !item->isDir()) {
-            continue;
-        } else if (!(*i)->isDir() && item->isDir()) {
-            break;
-        }
-        if (item->name() < (*i)->name()) {
-            break;
-        }
-    }
-    items.insert(i, item);
+    int pos = posToInsert(item);
+    items.insert(pos, item);
     item->parentItem = this;
+}
+
+int FSItem::posToInsert(FSItem *item) const {
+    int pos = 0;
+    while (pos<items.size()) {
+        FSItem *i = items[pos];
+        if (i->isDir() && !item->isDir()) {
+            pos++;
+            continue;
+        } else if (!i->isDir() && item->isDir()) {
+            break;
+        }
+        if (item->name() < i->name()) {
+            break;
+        }
+        pos++;
+    }
+    return pos;
 }
 
 void FSItem::removeChild(const QString &name, U2OpStatus &os) {
@@ -128,6 +136,13 @@ FSItem * FSItem::getItem(const QVector<FSItem*> &items, const QString &name) {
     return NULL;
 }
 
+void FSItem::noChildren() {
+    foreach (FSItem *item, items) {
+        item->parentItem = NULL;
+    }
+    items.clear();
+}
+
 /************************************************************************/
 /* RunFileSystem */
 /************************************************************************/
@@ -135,6 +150,10 @@ RunFileSystem::RunFileSystem(QObject *parent)
 : QObject(parent)
 {
     root = new FSItem(tr("Output directory"), true);
+}
+
+RunFileSystem::~RunFileSystem() {
+    delete root;
 }
 
 bool RunFileSystem::contains(const QString &pathStr) {

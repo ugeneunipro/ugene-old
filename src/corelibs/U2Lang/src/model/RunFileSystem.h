@@ -54,7 +54,9 @@ public:
 
     void rename(const QString &newName);
     void addChild(FSItem *item);
+    int posToInsert(FSItem *item) const;
     void removeChild(const QString &name, U2OpStatus &os);
+    void noChildren();
 
     static FSItem * getItem(const QVector<FSItem*> &items, const QString &name);
 
@@ -69,6 +71,7 @@ class U2LANG_EXPORT RunFileSystem : public QObject {
     Q_OBJECT
 public:
     RunFileSystem(QObject *parent = NULL);
+    ~RunFileSystem();
 
     bool contains(const QString &path);
     bool canAdd(const QString &path, bool isDirectory);

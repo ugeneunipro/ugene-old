@@ -269,6 +269,17 @@ QVariant WizardController::getAttributeValue(const AttributeInfo &info) const {
     return attr->getAttributePureValue();
 }
 
+bool WizardController::canSetValue(const AttributeInfo &info, const QVariant &value) {
+    Actor *actor = WorkflowUtils::actorById(currentActors, info.actorId);
+    Attribute *attr = getAttribute(info);
+
+    bool dir = false;
+    bool isOutUrlAttr = RFSUtils::isOutUrlAttribute(attr, actor, dir);
+    CHECK(isOutUrlAttr, true);
+
+    return getRFS()->canAdd(value.toString(), dir);
+}
+
 void WizardController::setAttributeValue(const AttributeInfo &info, const QVariant &value) {
     values[info.toString()] = value;
 
@@ -281,9 +292,11 @@ void WizardController::setAttributeValue(const AttributeInfo &info, const QVaria
         }
         AttributeInfo related(info.actorId, relation->getRelatedAttrId());
         QVariant newValue = relation->getAffectResult(value, getAttributeValue(related), getTags(info), getTags(related));
-        setAttributeValue(related, newValue);
-        if (propertyControllers.contains(related.toString())) {
-            propertyControllers[related.toString()]->updateGUI(newValue);
+        if (canSetValue(related, newValue)) {
+            setAttributeValue(related, newValue);
+            if (propertyControllers.contains(related.toString())) {
+                propertyControllers[related.toString()]->updateGUI(newValue);
+            }
         }
     }
 }

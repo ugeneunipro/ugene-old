@@ -85,7 +85,8 @@ private:
     void setupAttributesScripts();
     Attribute *getAttributeByRow(int row) const;
     bool isVisible(Attribute *a) const;
-    
+    bool canSetData(Attribute *attr, const QVariant &value);
+
 private:
     SchemaConfig*       schemaConfig;
     Actor*              subject;
