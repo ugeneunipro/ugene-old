@@ -409,7 +409,8 @@ void URLWidget::sl_finished() {
         QString result = urlLine->text();
         if ((result != initialValue) && RFSUtils::isCorrectUrl(result)) {
             if (rfs->canAdd(result, urlLine->isPath)) {
-                rfs->addItem(result, urlLine->isPath, U2OpStatusImpl());
+                U2OpStatusImpl os;
+                rfs->addItem(result, urlLine->isPath, os);
             } else {
                 urlLine->setText(initialValue);
             }
