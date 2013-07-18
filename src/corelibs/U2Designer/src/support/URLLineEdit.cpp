@@ -169,6 +169,11 @@ void URLLineEdit::browse(bool addFiles) {
             lod.url = name = QFileDialog::getSaveFileName(NULL, tr("Select a file"), lastDir, FileFilter, 0, QFileDialog::DontConfirmOverwrite);
             this->checkExtension(name);
         } else {
+            #ifdef Q_OS_MAC
+                if (qgetenv("UGENE_GUI_TEST").toInt() == 1 && qgetenv("UGENE_USE_NATIVE_DIALOGS").toInt() == 0) {
+                    lod.url = name = QFileDialog::getOpenFileName(NULL, tr("Select a file"), lastDir, FileFilter, 0, QFileDialog::DontUseNativeDialog );
+                } else
+            #endif
             lod.url = name = QFileDialog::getOpenFileName(NULL, tr("Select a file"), lastDir, FileFilter );
         }
     }

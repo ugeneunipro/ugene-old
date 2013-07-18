@@ -57,6 +57,7 @@
 #include "tests/common_scenarios/tree_viewer/GTTestsCommonScenariousTreeviewer.h"
 #include "tests/common_scenarios/repeat_finder/GTTestsRepeatFinder.h"
 #include "tests/common_scenarios/undo_redo/GTTestsUndoRedo.h"
+#include "tests/common_scenarios/NIAID_pipelines/GTTestsNiaidPipelines.h"
 
 
 #define REGISTER_TEST(X) if (guiTestBase) guiTestBase->registerTest(new X())
@@ -793,6 +794,10 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 /////////////////////////////////////////////////////////////////////////
     REGISTER_TEST(GUITest_common_scenarios_workflow_designer::test_0001);
 
+/////////////////////////////////////////////////////////////////////////
+// Common scenarios/NIAID_pipelines
+/////////////////////////////////////////////////////////////////////////
+    REGISTER_TEST(GUITest_common_scenarios_NIAID_pipelines::test_0001);
 /////////////////////////////////////////////////////////////////////////
 // Common scenarios/Tree viewer
 /////////////////////////////////////////////////////////////////////////

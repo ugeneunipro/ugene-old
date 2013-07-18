@@ -553,6 +553,7 @@ void WorkflowView::createActions() {
     loadAction = new QAction(tr("&Load schema"), this);
     loadAction->setIcon(QIcon(":workflow_designer/images/fileopen.png"));
     loadAction->setShortcut(QKeySequence("Ctrl+L"));
+    loadAction->setObjectName("Load schema");
     connect(loadAction, SIGNAL(triggered()), SLOT(sl_loadScene()));
 
     exportAction = new QAction(tr("&Export scheme"), this);

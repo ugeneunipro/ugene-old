@@ -152,6 +152,7 @@ void GTUtilsWorkflowDesigner::selectSample(U2OpStatus &os, QTreeWidgetItem* samp
 #define GT_METHOD_NAME "expandTabs"
 void GTUtilsWorkflowDesigner::expandTabs(U2OpStatus &os){
     QSplitter* splitter = qobject_cast<QSplitter*>(GTWidget::findWidget(os,"splitter"));
+    GT_CHECK(splitter, "splitter not found");
     QList<int> s;
     s  = splitter->sizes();
 
