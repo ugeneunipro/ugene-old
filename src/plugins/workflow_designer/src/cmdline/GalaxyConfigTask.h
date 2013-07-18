@@ -125,7 +125,6 @@ private:
     QList <int> inputElementsPositions;
     QList <int> outputElementsPositions;
     QList <int> optionElementsPositions;
-
     QXmlStreamWriter galaxyConfigOutput;
 
 };// GalaxyConfigTask

@@ -127,7 +127,7 @@ public:
     virtual QVariant getDisplayValue(const QVariant &v) const;
     virtual PropertyDelegate * clone();
     virtual PropertyWidget * createWizardWidget(U2OpStatus &os, QWidget *parent) const;
-    virtual void getItems( QVariantMap & ) const{}
+    virtual void getItems( QVariantMap & ) const {}
     virtual Type type() const;
 
     DelegateTags * tags() const;

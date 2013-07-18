@@ -724,9 +724,9 @@ void GalaxyConfigTask::writeOutputsUnit() {
 }
 
 void GalaxyConfigTask::writeHelpUnit() {
-    galaxyConfigOutput.writeStartElement( HELP );  //help unit begin
+    galaxyConfigOutput.writeStartElement( HELP );  
     galaxyConfigOutput.writeDTD( galaxyHelpMessage );
-    galaxyConfigOutput.writeEndElement();          //help unit end
+    galaxyConfigOutput.writeEndElement();      
 }
 
 bool GalaxyConfigTask::createConfigForGalaxy() {

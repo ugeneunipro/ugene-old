@@ -151,7 +151,7 @@ public:
         return new DoubleSpinBoxDelegate(spinProperties, parent());
     }
 
-    void getItems( QVariantMap &items ) const;
+    void getItems(QVariantMap &items ) const;
 
     static const int DEFAULT_DECIMALS_VALUE;
 
