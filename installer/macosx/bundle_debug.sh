@@ -34,6 +34,14 @@ echo copying data dir
 cp -R "$DEBUG_DIR/../../data" "${TARGET_EXE_DIR}/"
 find $TARGET_EXE_DIR -name ".svn" | xargs rm -rf
 
+if [ -e "../../cistrome" ]; then
+    ln -s "../../../../../../../cistrome" "${TARGET_EXE_DIR}/data/cistrome"
+fi
+
+if [ -e "../../tools" ]; then
+    ln -s "../../../../../../tools" "${TARGET_EXE_DIR}/tools"
+fi
+
 echo copying console binary
 cp "$DEBUG_DIR/ugenecld.app/Contents/MacOS/ugenecld" "$TARGET_EXE_DIR"
 changeCoreInstallNames ugenecld
