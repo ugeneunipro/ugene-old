@@ -94,9 +94,10 @@ void SpinBoxDelegate::setEditorProperty(const char* name, const QVariant& val) {
     }
 }
 
-void SpinBoxDelegate::getItems(QVariantMap &items ) const {
+void SpinBoxDelegate::getItems( QVariantMap &items ) const {
     items = this->spinProperties;
 }
+
 
 /********************************
 * DoubleSpinBoxDelegate

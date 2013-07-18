@@ -37,6 +37,7 @@ public:
     ~GalaxyConfigTask();
 
     static const QString GALAXY_CONFIG_OPTION;
+    static const QString UGENE_PATH_OPTION;
     static const QString GALAXY_PATH_OPTION;
     static const QString TOOL;
     static const QString NAME;
@@ -51,20 +52,17 @@ public:
     static const QString CHANGE_FORMAT;
     static const QString WHEN;
     static const QString HELP;
-    static const QString WORKFLOW_RUN_LOG;
 
 private:
-    bool tryToFindInPath( const QString &objectName, QString &objectPath );
-    bool tryToFindByLocate( const QString &objectName, QString &objectPath );
-    bool fileExists( const QString &objectPath, const QString &suffix );
-    bool findPathToObject( const QString &objectName, QString &objectPath );
+    bool readPathFromPATHVariable( const QString &objectName, QString &objectPath );
     bool getPath( const QString &whatPath, QString &resultPath );
     bool getSchemeName();
+    bool getUgenePath();
     bool getGalaxyPath();
 
-    bool getSchemeContent();
-    bool getHelpMessage();
-    bool getWorkflowName();
+    void getSchemeContent();
+    void getHelpMessage();
+    void getWorkflowName();
 
     void getParameterValue( const QString &keyword, const int searchFrom, QString &parameterValue, int &nextSearchFrom );
     bool defineAliases();
@@ -73,8 +71,13 @@ private:
 
     ActorPrototype* findElemInActorPrototypeRegistry( const QString &elementName );
 
+    void defineAdditionalInputs();
+    void makePathToGalaxyToolsDir();
     void getTypeOfAttribute( const QString &elementAttribute, const int elementPosition );
     void divideElementsByTypes();
+    void writeConditionalStatementsAboutTmpFiles();
+    void writeConditionalStatementsForInputElements();
+    void writeConditionalStatementsForOptionElements();
     void writeSelectedElements( const QList <int> &elementsPositions );
     void writeAllElements();
     void writeCommandUnit();
@@ -102,16 +105,17 @@ private:
 
     bool createConfigForGalaxy();
 
+    void getAliases( const QList <int> positions, QString &aliases );
+    bool createConfigForUgene();
+
     void doCopyCommands( const QString &pathToCopy );
     void doDeleteCommands();
-    bool prepareDirectoryForTool();
+    void prepareDirectoryForTool();
     
     void makeCopyOfGalaxyToolConfig();
-    bool addToolToConfig();
-    bool writeNewSection( const QString &config );
-    bool addToolToGalaxyConfigFile();
+    void readGalaxyToolConfig();
+    void addToolToGalaxyConfigFile();
 
-    QString appDirPath;
     QString schemeName;
     QString schemePath;
     QString ugenePath;
@@ -120,11 +124,11 @@ private:
     QString galaxyToolName;
     QString galaxyHelpMessage;
 
-
     QList < QMap < QString, QStringList > > elemAliases;
     QList <int> inputElementsPositions;
     QList <int> outputElementsPositions;
     QList <int> optionElementsPositions;
+
     QXmlStreamWriter galaxyConfigOutput;
 
 };// GalaxyConfigTask

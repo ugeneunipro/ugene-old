@@ -39,6 +39,7 @@ namespace U2 {
 *******************************************/
 
 const QString GalaxyConfigTask::GALAXY_CONFIG_OPTION              = "galaxy-config";
+const QString GalaxyConfigTask::UGENE_PATH_OPTION                 = "ugene-path";
 const QString GalaxyConfigTask::GALAXY_PATH_OPTION                = "galaxy-path";
 
 const QString GalaxyConfigTask::TOOL                              = "tool";
@@ -55,33 +56,25 @@ const QString GalaxyConfigTask::CHANGE_FORMAT                     = "change-form
 const QString GalaxyConfigTask::WHEN                              = "when";
 const QString GalaxyConfigTask::HELP                              = "help";
 
-const QString GalaxyConfigTask::WORKFLOW_RUN_LOG                  = "ugene_workflow_run_log";
-
 static int SUBSTRING_NOT_FOUND = -1;
 
 GalaxyConfigTask::GalaxyConfigTask() 
 :Task( tr( "Create Galaxy config from existing workflow scheme" ), TaskFlag_NoRun ) {
-    appDirPath = QApplication::applicationDirPath() + "/";
     if( !getSchemeName() ) {
         coreLog.error("Scheme name is incorrect");
         return;
     }
-    if( !getGalaxyPath() ) {
-        coreLog.error("Galaxy directory is not found");
+    /*if( !getUgenePath() ) {
+        coreLog.error("UGENE is not found");
         return;
-    }
-    if( !getSchemeContent() ) {
-        coreLog.error("Can't read scheme content");
+    }*/
+    /*if( !getGalaxyPath() ) {
+        coreLog.error("Galaxy is not found");
         return;
-    }
-    if( !getHelpMessage() ) {
-        coreLog.error("Can't read scheme description");
-        return;
-    }
-    if( !getWorkflowName() ) {
-        coreLog.error("Can't read scheme name");
-        return;
-    }
+    }*/
+    getSchemeContent();
+    getHelpMessage();
+    getWorkflowName();
     if( !defineAliases() ){
         coreLog.error("Aliases are not found");
         return;
@@ -90,77 +83,32 @@ GalaxyConfigTask::GalaxyConfigTask()
         coreLog.error("Config for Galaxy is not created");
         return;
     }
-    if( !prepareDirectoryForTool() ) {
-        coreLog.error("Can't create directory for Galaxy tool. Check user privileges");
+    if( !createConfigForUgene() ) {
+        coreLog.error("Config for Ugene is not created");
         return;
     }
-    if( !addToolToGalaxyConfigFile() ) {
-        coreLog.error("Can't add new tool to tool_conf.xml. Check user privileges");
-        return;
-    }
+    prepareDirectoryForTool();
+    addToolToGalaxyConfigFile();
 }
-
 GalaxyConfigTask::~GalaxyConfigTask() {
 
 }
 
-bool GalaxyConfigTask::tryToFindInPath( const QString &objectName, QString &objectPath ) {
-    QString pathVariable = qgetenv("PATH").constData();
-    const int objectNamePosition = pathVariable.indexOf( objectName );
-    if( objectNamePosition == SUBSTRING_NOT_FOUND ) {
-        return false;
-    }
-    int currPos;
-    for( currPos = objectNamePosition; currPos >= 0; currPos-- ) {
-        if( QString(pathVariable[currPos]) == HRSchemaSerializer::COLON ) {
-            break;
-        }
-    }
-    const int pathStartPosition = currPos + 1,
-              pathEndPosition = pathVariable.indexOf( HRSchemaSerializer::COLON, objectNamePosition ),
-              pathLength = pathEndPosition - pathStartPosition;
-    objectPath = pathVariable.mid( pathStartPosition, pathLength );
-    if( !objectPath.endsWith( "/" ) ) {
-        objectPath.append("/");
-    }
-    return true;
-}
-
-bool GalaxyConfigTask::tryToFindByLocate( const QString &objectName, QString &objectPath ) {
-    system( QString("locate " + objectName + " -l 1 > " + objectName + "_path.txt").toLocal8Bit().constData() );
-    QFile file( objectName + "_path.txt" );
+bool GalaxyConfigTask::readPathFromPATHVariable( const QString &objectName, QString &objectPath ) {
+    QProcess process;
+    process.start("locate" + objectName + " -l 1 > " + objectName + "_path.txt");
+    //сделать, чтобы файлы для определения пути программы в PATH создавались во временной директории
+    QFile file(objectName + "_path.txt");
     file.open(QIODevice::ReadOnly );
     QTextStream inFile(&file);
     inFile >> objectPath;
     file.close();
-    system( QString("rm " + objectName + "_path.txt").toLocal8Bit().constData() );
+    process.start("rm " + objectName + "_path.txt");
     if( !objectPath.length() ) {
         return false;
     }
-    if( !objectPath.endsWith( "/" ) ) {
-        objectPath.append("/");
-    }
+    objectPath += "/";
     return true;
-}
-
-bool GalaxyConfigTask::fileExists( const QString &objectPath, const QString &suffix ) {
-    const QString fullPath = objectPath + suffix;
-    QFile file( fullPath );
-    if( file.exists() ) {
-        return true;
-    }
-    return false;
-}
-
-bool GalaxyConfigTask::findPathToObject( const QString &objectName, QString &objectPath ) {
-    const QString suffix = "tool_conf.xml";
-    if( tryToFindInPath( objectName, objectPath ) && fileExists( objectPath, suffix ) ) {
-        return true;
-    }
-    if( tryToFindByLocate( objectName, objectPath ) && fileExists( objectPath, suffix ) ) {
-        return true;
-    }
-    return false;
 }
 
 bool GalaxyConfigTask::getPath( const QString &whatPath, QString &resultPath ) {
@@ -170,15 +118,20 @@ bool GalaxyConfigTask::getPath( const QString &whatPath, QString &resultPath ) {
     const int result = CMDLineRegistryUtils::getParameterIndex(whatPath);
     const QStringList paramValues = CMDLineRegistryUtils::getParameterValues(whatPath);
     if( result == -1 || !paramValues.first().length() ) {
-        return findPathToObject("galaxy", galaxyPath);
+        if( whatPath == UGENE_PATH_OPTION ) {
+            return readPathFromPATHVariable("ugene", ugenePath);
+            
+        } else {
+            return readPathFromPATHVariable("galaxy", galaxyPath);
+        }
     }
     resultPath = paramValues.first();
-    if( !resultPath.endsWith("/") ) {
-        resultPath.append("/");
-    }
     return true;
 }
 
+bool GalaxyConfigTask::getUgenePath() {
+    return getPath( UGENE_PATH_OPTION, ugenePath );
+}
 bool GalaxyConfigTask::getGalaxyPath() {
     return getPath( GALAXY_PATH_OPTION, galaxyPath );
 }
@@ -196,57 +149,43 @@ bool GalaxyConfigTask::getSchemeName() {
     return true;
 }
 
-bool GalaxyConfigTask::getSchemeContent() {
-    QFile schemeFile( schemePath );
-    if( !schemeFile.open(QIODevice::ReadOnly ) ) {
-        return false;
-    }
+void GalaxyConfigTask::getSchemeContent() {
+    const QString fileName = schemePath;
+    QFile schemeFile( fileName );
+    schemeFile.open(QIODevice::ReadOnly );
     QTextStream input(&schemeFile);
     schemeContent = input.readAll();
     schemeFile.close();
-    return true;
 }
 
-bool GalaxyConfigTask::getHelpMessage() {
-    galaxyHelpMessage = "\r\n**Description**\r\n";
-    int commentStartPosition = schemeContent.indexOf( HRSchemaSerializer::HEADER_LINE );
-    if( commentStartPosition == SUBSTRING_NOT_FOUND ) {
-        return false;
-    }
-    commentStartPosition += HRSchemaSerializer::HEADER_LINE.length();
-    const int commentEndPosition = schemeContent.lastIndexOf( HRSchemaSerializer::BODY_START ),
-              commentLength = commentEndPosition - commentStartPosition;
-    QString comment = QString();
-    comment = schemeContent.mid( commentStartPosition, commentLength );
-    comment.replace( HRSchemaSerializer::SERVICE_SYM, "\r\n" );
+void GalaxyConfigTask::getHelpMessage() {
+    galaxyHelpMessage = "\n**Description**\n\n";
+    const int commentStartPosition = schemeContent.indexOf( HRSchemaSerializer::HEADER_LINE );
+    const int commentEndPosition = schemeContent.lastIndexOf( HRSchemaSerializer::BODY_START );
+    const int commentLength = commentEndPosition - commentStartPosition;
+    const QString comment= schemeContent.mid( commentStartPosition, commentLength );
     galaxyHelpMessage += comment;
-    return true;
 }
 
-bool GalaxyConfigTask::getWorkflowName() {
-    int nameStartPosition = schemeContent.lastIndexOf( HRSchemaSerializer::BODY_START );
-    if( nameStartPosition == SUBSTRING_NOT_FOUND ) {
-        return false;
-    }
-    nameStartPosition += HRSchemaSerializer::BODY_START.length() + 1;
-    const int nameEndPosition = schemeContent.indexOf( HRSchemaSerializer::BLOCK_START, nameStartPosition ),
-              nameLength = nameEndPosition - nameStartPosition;
+void GalaxyConfigTask::getWorkflowName() {
+    const int nameStartPosition = schemeContent.lastIndexOf( HRSchemaSerializer::BODY_START ) + HRSchemaSerializer::BODY_START.length() + 1; // +1 because of space symbol
+    const int nameEndPosition = schemeContent.indexOf( HRSchemaSerializer::BLOCK_START, nameStartPosition );
+    const int nameLength = nameEndPosition - nameStartPosition;
     galaxyToolName = schemeContent.mid( nameStartPosition, nameLength );
     galaxyToolName.replace( QRegExp("^\""),"" );
     galaxyToolName.replace( QRegExp("\"$"),"" );
-    return true;
 }
 
 void GalaxyConfigTask::getParameterValue( const QString &keyword, const int searchFrom, QString &parameterValue, int &nextSearchFrom ) {
-    const int keywordPosition = schemeContent.indexOf( keyword, searchFrom ),
-              blockEndPosition = schemeContent.indexOf( HRSchemaSerializer::BLOCK_END, searchFrom );
+    const int keywordPosition = schemeContent.indexOf( keyword, searchFrom );
+    const int blockEndPosition = schemeContent.indexOf( HRSchemaSerializer::BLOCK_END, searchFrom );
     if( keyword == HRSchemaSerializer::DESCRIPTION && ( keywordPosition == - 1 || blockEndPosition < keywordPosition ) ) {
         nextSearchFrom = searchFrom;
         return;
     }
-    const int parameterStartPosition = schemeContent.indexOf( HRSchemaSerializer::COLON, keywordPosition ) + 1,
-              parameterEndPosition = schemeContent.indexOf( HRSchemaSerializer::SEMICOLON, parameterStartPosition ),
-              parameterLength = parameterEndPosition - parameterStartPosition;
+    const int parameterStartPosition = schemeContent.indexOf( HRSchemaSerializer::COLON, keywordPosition ) + 1;
+    const int parameterEndPosition = schemeContent.indexOf( HRSchemaSerializer::SEMICOLON, parameterStartPosition );
+    const int parameterLength = parameterEndPosition - parameterStartPosition;
     parameterValue = schemeContent.mid( parameterStartPosition, parameterLength );
     nextSearchFrom = parameterEndPosition;
 }
@@ -260,20 +199,21 @@ bool GalaxyConfigTask::defineAliases() {
     const int visualKeywordPosition = schemeContent.indexOf( HRSchemaSerializer::VISUAL_START, aliasesStartPosition );
     int elementNameStartPosition = schemeContent.indexOf( QRegExp("[a-z]"), aliasesStartPosition );
     while ( elementNameStartPosition < visualKeywordPosition ) {
-        const int elementNameEndPosition = schemeContent.indexOf( HRSchemaSerializer::DOT, elementNameStartPosition ),
-                  elementNameLength = elementNameEndPosition - elementNameStartPosition;
+        const int elementNameEndPosition = schemeContent.indexOf( HRSchemaSerializer::DOT, elementNameStartPosition );
+        const int elementNameLength = elementNameEndPosition - elementNameStartPosition;
         QString elementName = schemeContent.mid( elementNameStartPosition, elementNameLength );
         elementName.replace(QRegExp("[0-9]$"),"");
 
-        const int elementAliasStartPosition = elementNameEndPosition + 1,
-                  elementAliasEndPosition = schemeContent.indexOf( HRSchemaSerializer::BLOCK_START, elementAliasStartPosition ),
-                  elementAliasLength = elementAliasEndPosition - elementAliasStartPosition;
+        const int elementAliasStartPosition = elementNameEndPosition + 1;
+        const int elementAliasEndPosition = schemeContent.indexOf( HRSchemaSerializer::BLOCK_START, elementAliasStartPosition );
+        const int elementAliasLength = elementAliasEndPosition - elementAliasStartPosition;
         QString elementAlias = schemeContent.mid( elementAliasStartPosition, elementAliasLength );
         elementAlias.replace(" ","");
 
-        QString aliasName, aliasDescription;
-        int aliasNameEndPosition, aliasDescriptionEndPosition;
-
+        QString aliasName, 
+                aliasDescription;
+        int aliasNameEndPosition, 
+            aliasDescriptionEndPosition;
         getParameterValue( HRSchemaSerializer::ALIAS, elementAliasEndPosition, aliasName, aliasNameEndPosition );
         getParameterValue( HRSchemaSerializer::DESCRIPTION, aliasNameEndPosition, aliasDescription, aliasDescriptionEndPosition );
 
@@ -291,24 +231,29 @@ bool GalaxyConfigTask::defineAliases() {
 void GalaxyConfigTask::writeToolUnit() {
     galaxyConfigOutput.writeStartElement( TOOL );  //tool unit begin
     galaxyConfigOutput.writeAttribute( ID, galaxyToolName );
-    QString idStrCopy = galaxyToolName;
-    idStrCopy.replace(" ", "_");
-    galaxyConfigOutput.writeAttribute( NAME, idStrCopy );
+    galaxyConfigOutput.writeAttribute( NAME, galaxyToolName );
 }
 
 ActorPrototype* GalaxyConfigTask::findElemInActorPrototypeRegistry( const QString &elementName ) {
     U2::Workflow::ActorPrototypeRegistry *prototypeRegistry
         = U2::Workflow::WorkflowEnv::getProtoRegistry();
-    assert( NULL != prototypeRegistry );
     return prototypeRegistry->getProto( elementName );
 }
 
+void GalaxyConfigTask::makePathToGalaxyToolsDir() {
+    QString galaxyToolsPath = galaxyPath + "tools/";
+    QString fullPathToGalaxyDir = galaxyToolsPath + schemeName.mid(0,schemeName.length() - 4 );
+    fullPathToGalaxyDir += HRSchemaSerializer::SEMICOLON + HRSchemaSerializer::NEW_LINE;
+    galaxyConfigOutput.writeCharacters("cd " + fullPathToGalaxyDir );
+}
 void GalaxyConfigTask::getTypeOfAttribute( const QString &elementAttribute, const int elementPosition ) {
     if( BaseAttributes::URL_IN_ATTRIBUTE().getId() == elementAttribute ) {
         inputElementsPositions.push_back( elementPosition );
-    } else if ( BaseAttributes::URL_OUT_ATTRIBUTE().getId() == elementAttribute ){
+    }
+    else if ( BaseAttributes::URL_OUT_ATTRIBUTE().getId() == elementAttribute ){
         outputElementsPositions.push_back( elementPosition );
-    } else {
+    }
+    else {
         optionElementsPositions.push_back( elementPosition );
     }
 }
@@ -317,14 +262,15 @@ void GalaxyConfigTask::divideElementsByTypes() {
     QList < QMap < QString, QStringList > > ::iterator elemAliasesIterator;
     elemAliasesIterator = elemAliases.begin();
     while( elemAliasesIterator != elemAliases.end() ) {
-        const QMap < QString, QStringList > ::iterator elementProperties = (*elemAliasesIterator).begin();
+        QMap < QString, QStringList > ::iterator elementProperties = (*elemAliasesIterator).begin();
         QString elementName = elementProperties.key();
         QString attributeName = elementProperties.value().at(0);
-
         ActorPrototype *currElement = findElemInActorPrototypeRegistry( elementName );
-        assert( NULL != currElement );
-
-        const QList < Attribute* > elementAttibutes = currElement->getAttributes();
+        if( currElement == NULL ) {
+            elemAliasesIterator++;
+            continue;
+        }
+        QList < Attribute* > elementAttibutes = currElement->getAttributes();
         foreach( Attribute *elementAttribute, elementAttibutes ) {
             if( elementAttribute->getId() == attributeName ) {
                 getTypeOfAttribute( attributeName, std::distance( elemAliases.begin(), elemAliasesIterator ) );
@@ -334,106 +280,116 @@ void GalaxyConfigTask::divideElementsByTypes() {
     }
 }
 
+void GalaxyConfigTask::writeConditionalStatementsAboutTmpFiles() {
+    galaxyConfigOutput.writeCharacters((QString)"if [ -e no_input.txt ];\nthen\n" + 
+                                       (QString)"rm no_input.txt;\n" + 
+                                       (QString)"fi;\n" + 
+                                       (QString)"if [ -e empty_aliases.txt ];\nthen\n" + 
+                                       (QString)"rm empty_aliases.txt;\n" + 
+                                       (QString)"fi;\n" + 
+                                       (QString)"if [ -e ugene ];\nthen\n" + 
+                                       (QString)"rm ugene;\n" + 
+                                       (QString)"fi;\n" );
+}
+void GalaxyConfigTask::writeConditionalStatementsForInputElements() {
+    QList <int> ::iterator inputElementsIterator;
+    inputElementsIterator = inputElementsPositions.begin();
+    while( inputElementsIterator != inputElementsPositions.end() ) {
+        QMap < QString, QStringList > currAlias = elemAliases[ *inputElementsIterator ];
+        QMap < QString, QStringList > ::iterator currAliasIterator = currAlias.begin();
+        QStringList elementParameters = (currAliasIterator).value();
+        galaxyConfigOutput.writeCharacters( QString("if [ -z $") + elementParameters.at(1) + QString(" ];\nthen\n") );
+        galaxyConfigOutput.writeCharacters( QString("echo ") + elementParameters.at(1) + QString(" >> no_input.txt;\n") );
+        galaxyConfigOutput.writeCharacters( "fi;\n" );
+        inputElementsIterator++;
+    }
+}
+
+void GalaxyConfigTask::writeConditionalStatementsForOptionElements() {
+    QList <int> ::iterator optionElementsIterator;
+    optionElementsIterator = optionElementsPositions.begin();
+    while( optionElementsIterator != optionElementsPositions.end() ) {
+        QMap < QString, QStringList > currAlias = elemAliases[ *optionElementsIterator ];
+        QMap < QString, QStringList > ::iterator currAliasIterator = currAlias.begin();
+        QStringList elementParameters = (currAliasIterator).value();
+        galaxyConfigOutput.writeCharacters( QString("if [ -z $") + elementParameters.at(1) + QString(" ];\nthen\n") );
+        galaxyConfigOutput.writeCharacters( QString("echo ") + elementParameters.at(1) + QString(" >> empty_aliases.txt;\n") );
+        galaxyConfigOutput.writeCharacters( "fi;\n" );
+        optionElementsIterator++;
+    }
+}
+
+void GalaxyConfigTask::writeSelectedElements( const QList <int> &elementsPositions ) {
+    QList <int> ::const_iterator elementsIterator;
+    elementsIterator = elementsPositions.begin();
+    while( elementsIterator != elementsPositions.end() ) {
+        QMap < QString, QStringList > currAlias = elemAliases[ *elementsIterator ];
+        QMap < QString, QStringList > ::iterator currAliasIterator = currAlias.begin();
+        QStringList elementParameters = (currAliasIterator).value();
+        galaxyConfigOutput.writeCharacters( QString("$") + elementParameters.at(1) + " " );
+        elementsIterator++;
+    }
+}
+void GalaxyConfigTask::writeAllElements() {
+    writeSelectedElements( inputElementsPositions );
+    writeSelectedElements( optionElementsPositions );
+    writeSelectedElements( outputElementsPositions );
+    galaxyConfigOutput.writeCharacters( HRSchemaSerializer::SEMICOLON );
+}
+
 void GalaxyConfigTask::writeCommandUnit() {
     galaxyConfigOutput.writeStartElement ( COMMAND ); //command unit begin 
+    makePathToGalaxyToolsDir();
     divideElementsByTypes();
-
-    QString ugeneExecutable;
-#ifdef QT_DEBUG
-    ugeneExecutable = "ugened";
-#else
-    ugeneExecutable = "ugene";
-#endif
-
-    QString runUgene = appDirPath + ugeneExecutable + " --task=" + schemePath + " ";
-    QList < QMap < QString, QStringList > > ::iterator elemAliasesIterator;
-    elemAliasesIterator = elemAliases.begin();
-    while( elemAliasesIterator != elemAliases.end() ) {
-        QMap <QString, QStringList> ::iterator elementParameters = (*elemAliasesIterator).begin();
-        QString aliasName = elementParameters.value().at(1);
-        runUgene += "--" + aliasName + "=$" + aliasName + " ";
-        elemAliasesIterator++;
-    }
-    runUgene += "  >> $" + WORKFLOW_RUN_LOG + " 2>&1;";
-    galaxyConfigOutput.writeCharacters( runUgene );
-
-    QList <int> ::iterator outputElementsPositionsIterator;
-    outputElementsPositionsIterator = outputElementsPositions.begin();
-    while( outputElementsPositionsIterator != outputElementsPositions.end() ) {
-        QMap <QString, QStringList> ::iterator elementParameters = elemAliases[*outputElementsPositionsIterator].begin();
-        QString aliasName = elementParameters.value().at(1);
-        galaxyConfigOutput.writeDTD( QString("\r\nif [ ! -s $" + aliasName + " ]; then") );
-        galaxyConfigOutput.writeDTD( QString("\r\necho \"EMPTY RESULT FILE\" > $" + aliasName + ";") );
-        galaxyConfigOutput.writeDTD( QString("\r\nfi;\r\n") );
-        outputElementsPositionsIterator++;
-    }
-    galaxyConfigOutput.writeEndElement();            //command unit end
+    writeConditionalStatementsAboutTmpFiles();
+    writeConditionalStatementsForInputElements();
+    writeConditionalStatementsForOptionElements();
+    //нужно изменить текущий вызов, т.к. не будет утилиты ugene_run. Может быть сделать тут вызов Ugene с указанием папки tool'a ?
+    const QString runUgene = "./ugene_run ";
+    galaxyConfigOutput.writeCharacters(runUgene);
+    //-------------------------------------------------------------
+    writeAllElements();
+    galaxyConfigOutput.writeEndElement(); //command unit end
 }
 
 void GalaxyConfigTask::getConstraint( const QString &typeName, QString &resultType ) {
-    if( typeName == GObjectTypes::getTypeInfo( GObjectTypes::TEXT ).name ||
-        typeName == GObjectTypes::getTypeInfo( GObjectTypes::TEXT ).pluralName )
-    {
+    if ( typeName == GObjectTypes::getTypeInfo( GObjectTypes::TEXT ).name ) {
         resultType = GObjectTypes::getTypeInfo( GObjectTypes::TEXT ).type;
     } 
-    else
-    if( typeName == GObjectTypes::getTypeInfo( GObjectTypes::SEQUENCE ).name ||
-        typeName == GObjectTypes::getTypeInfo( GObjectTypes::SEQUENCE ).pluralName )
-    {
+    else if( typeName == GObjectTypes::getTypeInfo( GObjectTypes::SEQUENCE ).name ) {
         resultType = GObjectTypes::getTypeInfo( GObjectTypes::SEQUENCE ).type;
     } 
-    else
-    if( typeName.contains(GObjectTypes::getTypeInfo( GObjectTypes::ANNOTATION_TABLE ).name, Qt::CaseInsensitive ) ||
-        typeName.contains(GObjectTypes::getTypeInfo( GObjectTypes::ANNOTATION_TABLE ).pluralName, Qt::CaseInsensitive ) )
-    {
+    else if( typeName == GObjectTypes::getTypeInfo( GObjectTypes::ANNOTATION_TABLE ).name ) {
         resultType = GObjectTypes::getTypeInfo( GObjectTypes::ANNOTATION_TABLE ).type;
     }
-    else
-    if( typeName == GObjectTypes::getTypeInfo( GObjectTypes::VARIANT_TRACK ).name ||
-        typeName == GObjectTypes::getTypeInfo( GObjectTypes::VARIANT_TRACK ).pluralName )
-    {
+    else if( typeName == GObjectTypes::getTypeInfo( GObjectTypes::VARIANT_TRACK ).name ) {
         resultType = GObjectTypes::getTypeInfo( GObjectTypes::VARIANT_TRACK ).type;
     }
-    else
-    if( typeName == GObjectTypes::getTypeInfo( GObjectTypes::CHROMATOGRAM ).name ||
-        typeName == GObjectTypes::getTypeInfo( GObjectTypes::CHROMATOGRAM ).pluralName )
-    {
+    else if( typeName == GObjectTypes::getTypeInfo( GObjectTypes::CHROMATOGRAM ).name ) {
         resultType = GObjectTypes::getTypeInfo( GObjectTypes::CHROMATOGRAM ).type;
     }
-    else
-    if( typeName == GObjectTypes::getTypeInfo( GObjectTypes::MULTIPLE_ALIGNMENT ).name ||
-        typeName == GObjectTypes::getTypeInfo( GObjectTypes::MULTIPLE_ALIGNMENT ).pluralName )
-    {
+    else if( typeName == GObjectTypes::getTypeInfo( GObjectTypes::MULTIPLE_ALIGNMENT ).name ) {
         resultType = GObjectTypes::getTypeInfo( GObjectTypes::MULTIPLE_ALIGNMENT ).type;
     }
-    else
-    if( typeName == GObjectTypes::getTypeInfo( GObjectTypes::PHYLOGENETIC_TREE ).name ||
-        typeName == GObjectTypes::getTypeInfo( GObjectTypes::PHYLOGENETIC_TREE ).pluralName )
-    {
+    else if( typeName == GObjectTypes::getTypeInfo( GObjectTypes::PHYLOGENETIC_TREE ).name ) {
         resultType = GObjectTypes::getTypeInfo( GObjectTypes::PHYLOGENETIC_TREE ).type;
     }
-    else
-    if( typeName == GObjectTypes::getTypeInfo( GObjectTypes::BIOSTRUCTURE_3D ).name ||
-        typeName == GObjectTypes::getTypeInfo( GObjectTypes::BIOSTRUCTURE_3D ).pluralName )
-    {
+    else if( typeName == GObjectTypes::getTypeInfo( GObjectTypes::BIOSTRUCTURE_3D ).name ) {
         resultType = GObjectTypes::getTypeInfo( GObjectTypes::BIOSTRUCTURE_3D ).type;
     }
-    else
-    if( typeName == GObjectTypes::getTypeInfo( GObjectTypes::ASSEMBLY ).name ||
-        typeName == GObjectTypes::getTypeInfo( GObjectTypes::ASSEMBLY ).pluralName )
-    {
+    //else if( typeName == GObjectTypes::getTypeInfo( GObjectTypes::UINDEX ).name ) {
+    //    resultType = GObjectTypes::getTypeInfo( GObjectTypes::UINDEX ).type;
+    //}
+    else if( typeName == GObjectTypes::getTypeInfo( GObjectTypes::ASSEMBLY ).name ) {
         resultType = GObjectTypes::getTypeInfo( GObjectTypes::ASSEMBLY ).type;
     }
-    else
-    {
+    else {
         resultType = GObjectTypes::getTypeInfo( GObjectTypes::UNKNOWN ).type;
     }
 }
 
 void GalaxyConfigTask::writeFormatAttribute( const QString &resultType ) {
     DocumentFormatRegistry *docFormatRegistry = AppContext::getDocumentFormatRegistry();
-    assert( NULL != docFormatRegistry );
-
     DocumentFormatConstraints constraint;
     constraint.supportedObjectTypes.insert( resultType );
     QList <QString> selectedFormats = docFormatRegistry->selectFormats( constraint );
@@ -441,7 +397,7 @@ void GalaxyConfigTask::writeFormatAttribute( const QString &resultType ) {
     QString resultFormatString = QString(); 
     QList <QString> ::iterator selectedFormatsIterator;
     selectedFormatsIterator = selectedFormats.begin();
-    while( selectedFormatsIterator != selectedFormats.end() - 1 ) {
+    while( selectedFormatsIterator != selectedFormats.end()-1 ) {
         resultFormatString += *selectedFormatsIterator;
         resultFormatString += HRSchemaSerializer::COMMA;
         selectedFormatsIterator++;
@@ -451,10 +407,10 @@ void GalaxyConfigTask::writeFormatAttribute( const QString &resultType ) {
 }
 
 void GalaxyConfigTask::writeLabelAttribute( const QStringList &elementParameters, const ActorPrototype *element ) {
-    const QString attributeName = elementParameters.at(0);
+    QString attributeName = elementParameters.at(0);
     QString aliasDescription = elementParameters.at(2);
     QString copyStr = aliasDescription;
-    if( aliasDescription.length() == 0 || (!copyStr.contains("[a-zA-Z0-9]") ) ) {
+    if( aliasDescription.length() == 0 || ( copyStr.replace(" ","") ).length() == 0 ) {
         aliasDescription.clear();
         aliasDescription += element->getDisplayName();
         aliasDescription += ".";
@@ -465,7 +421,7 @@ void GalaxyConfigTask::writeLabelAttribute( const QStringList &elementParameters
         aliasDescription.remove( 0, 1 );
     }
     if( (QString)aliasDescription[ aliasDescription.length() - 1 ] == HRSchemaSerializer::QUOTE ) {
-        aliasDescription.remove( aliasDescription.length() - 1, 1 );
+        aliasDescription.remove( aliasDescription.length()-1, 1 );
     }
     galaxyConfigOutput.writeAttribute( "label", aliasDescription );
 }
@@ -475,19 +431,17 @@ void GalaxyConfigTask::writeInputElements() {
     inputElementsIterator = inputElementsPositions.begin();
     while( inputElementsIterator != inputElementsPositions.end() ) {
         galaxyConfigOutput.writeStartElement( PARAM );
-        const QMap < QString, QStringList > currAlias = elemAliases[ *inputElementsIterator ];
-        QMap < QString, QStringList > ::const_iterator currAliasIterator = currAlias.begin();
-        const QString elementName = (currAliasIterator).key(),
-                      aliasName = (currAliasIterator).value().at(1);
+        QMap < QString, QStringList > currAlias = elemAliases[ *inputElementsIterator ];
+        QMap < QString, QStringList > ::iterator currAliasIterator = currAlias.begin();
+        QString elementName = (currAliasIterator).key(),
+                aliasName = (currAliasIterator).value().at(1);
 
         galaxyConfigOutput.writeAttribute( HRSchemaSerializer::NAME_ATTR, aliasName );
         galaxyConfigOutput.writeAttribute( HRSchemaSerializer::TYPE_ATTR, DATA );
 
         ActorPrototype *currElement = findElemInActorPrototypeRegistry( elementName );
-        assert( NULL != currElement );
-
-        const QString formatType = currElement->getPortDesciptors().first()->getDisplayName();
-        QString resultType = QString();
+        QString formatType = currElement->getPortDesciptors().first()->getDisplayName(),
+                resultType = QString();
         getConstraint( formatType, resultType );
         if ( resultType == GObjectTypes::UNKNOWN ) {
             inputElementsIterator++;
@@ -517,16 +471,14 @@ bool GalaxyConfigTask::isDelegateSpinBox( PropertyDelegate *pd ) {
 }
 
 void GalaxyConfigTask::convertAttributeType( QString &attributeType, PropertyDelegate *pd ) {
-    if( isDelegateComboBox(pd) && pd != NULL ) {
+    if( isDelegateComboBox(pd) ) {
         attributeType = "select";
     }
-    else if ( isDelegateSpinBox(pd) && pd != NULL && attributeType == BaseTypes::NUM_TYPE()->getId() ) {
+    else if ( isDelegateSpinBox(pd) && attributeType == BaseTypes::NUM_TYPE()->getId() ) {
         attributeType = "integer";
         QVariantMap items;
         pd->getItems( items );
-        const QString typeName1 = items.value("minimum").typeName();
-        const QString typeName2 = items.value("minimum").typeName();
-        if( typeName1 == "double" || typeName2 == "double" ) {
+        if( items.value("minimum").typeName() == "double" || items.value("maximum").typeName() == "double" ) {
             attributeType = "float";
         }
     }
@@ -539,11 +491,9 @@ void GalaxyConfigTask::convertAttributeType( QString &attributeType, PropertyDel
 }
 
 void GalaxyConfigTask::writeTypeForOptionElement( const QStringList &elementParameters, const ActorPrototype *element ) {
-    const QString attributeName = elementParameters.at(0);
-    QString attributeType = element->getAttribute(attributeName)->getAttributeType()->getId();
-
+    QString attributeName = elementParameters.at(0),
+            attributeType = element->getAttribute(attributeName)->getAttributeType()->getId();
     PropertyDelegate *pd = element->getEditor()->getDelegate(attributeName);
-
     convertAttributeType( attributeType, pd );
     galaxyConfigOutput.writeAttribute( HRSchemaSerializer::TYPE_ATTR, attributeType );
     if( attributeType == "integer" ) {
@@ -562,7 +512,7 @@ void GalaxyConfigTask::writeSelectAttribute( const PropertyDelegate *pd ) {
         if( itemsIterator == items.begin() ) {
             galaxyConfigOutput.writeAttribute( "selected", "true" );
         }
-        galaxyConfigOutput.writeDTD( itemsIterator.key() );
+        galaxyConfigOutput.writeCharacters( itemsIterator.key() );
         galaxyConfigOutput.writeEndElement();
         itemsIterator++;
     }
@@ -582,29 +532,26 @@ void GalaxyConfigTask::writeOptionElements() {
     optionElementsIterator = optionElementsPositions.begin();
     while( optionElementsIterator != optionElementsPositions.end() ) {
         galaxyConfigOutput.writeStartElement( PARAM );
-        const QMap < QString, QStringList > currAlias = elemAliases[ *optionElementsIterator ];
-        QMap < QString, QStringList > ::const_iterator currAliasIterator = currAlias.begin();
-
-        const QString elementName = (currAliasIterator).key(),
-                      attributeName = (currAliasIterator).value().at(0),
-                      aliasName = (currAliasIterator).value().at(1);
+        QMap < QString, QStringList > currAlias = elemAliases[ *optionElementsIterator ];
+        QMap < QString, QStringList > ::iterator currAliasIterator = currAlias.begin();
+        QString elementName = (currAliasIterator).key(), 
+                attributeName = (currAliasIterator).value().at(0), 
+                aliasName = (currAliasIterator).value().at(1);
         galaxyConfigOutput.writeAttribute( HRSchemaSerializer::NAME_ATTR, aliasName );
        
         ActorPrototype *currElement = findElemInActorPrototypeRegistry( elementName );
-        assert( NULL != currElement );
-
         writeTypeForOptionElement( (currAliasIterator).value(), currElement );
 
         PropertyDelegate *pd = currElement->getEditor()->getDelegate(attributeName);
-
         writeLabelAttribute( (currAliasIterator).value(), currElement );
-        if( pd != NULL ) {
-            if( isDelegateComboBox(pd) ) {
-                writeSelectAttribute( pd );
-            }
-            if( isDelegateSpinBox(pd) ) {
-                writeMinAndMaxAttributes( pd );
-            }
+        if( !isDelegateComboBox(pd) ) {
+            galaxyConfigOutput.writeAttribute( "optional", "true" );
+        }
+        else {
+            writeSelectAttribute( pd );
+        }
+        if( isDelegateSpinBox( pd ) ) {
+            writeMinAndMaxAttributes( pd );
         }
         galaxyConfigOutput.writeEndElement();
         optionElementsIterator++;
@@ -620,16 +567,14 @@ void GalaxyConfigTask::writeInputsUnit() {
 
 void GalaxyConfigTask::writeFormatAttributeForOutputElement( const QString &resultType ) {
     DocumentFormatRegistry *docFormatRegistry = AppContext::getDocumentFormatRegistry();
-    assert( NULL != docFormatRegistry );
-
     DocumentFormatConstraints constraint;
     constraint.supportedObjectTypes.insert( resultType );
-    const QList <QString> selectedFormats = docFormatRegistry->selectFormats( constraint );
+    QList <QString> selectedFormats = docFormatRegistry->selectFormats( constraint );
     galaxyConfigOutput.writeAttribute( FORMAT, selectedFormats.first() );
 }
 
 bool GalaxyConfigTask::checkDocumentFormatAttribute( const ActorPrototype *element ) {
-    const QList < Attribute * > elementAttibutes = element->getAttributes();
+    QList < Attribute * > elementAttibutes = element->getAttributes();
     foreach( Attribute *elementAttribute, elementAttibutes ) {
         if( elementAttribute->getId() == BaseAttributes::DOCUMENT_FORMAT_ATTRIBUTE().getId() ) {
             return true;
@@ -640,10 +585,7 @@ bool GalaxyConfigTask::checkDocumentFormatAttribute( const ActorPrototype *eleme
 
 void GalaxyConfigTask::writeChangeFormatAttribute( const QString &aliasName, const ActorPrototype *element ) {
     galaxyConfigOutput.writeStartElement( CHANGE_FORMAT );
-
     PropertyDelegate *pd = element->getEditor()->getDelegate( BaseAttributes::DOCUMENT_FORMAT_ATTRIBUTE().getId() );
-    assert( NULL != pd );
-
     QVariantMap items;
     pd->getItems(items);
     QVariantMap ::iterator itemsIterator;
@@ -667,15 +609,11 @@ void GalaxyConfigTask::tryToWriteChangeFormatAttribute( const ActorPrototype *el
     optionElementsIterator = optionElementsPositions.begin();
     while( optionElementsIterator != optionElementsPositions.end() ) {
         QMap < QString, QStringList > ::iterator elementProperties = elemAliases[ *optionElementsIterator ].begin();
-
-        const QString elementName = elementProperties.key(),
-                      attributeName = elementProperties.value().at(0),
-                      aliasName = elementProperties.value().at(1);
-
-        if( elementName == element->getId() &&
-            attributeName == BaseAttributes::DOCUMENT_FORMAT_ATTRIBUTE().getId() &&
-            !usedOptionElements.count( *optionElementsIterator ) )
-        {
+        QString elementName = elementProperties.key(),
+                attributeName = elementProperties.value().at(0),
+                aliasName = elementProperties.value().at(1);
+        if( elementName == element->getId() && attributeName == BaseAttributes::DOCUMENT_FORMAT_ATTRIBUTE().getId() && 
+            !usedOptionElements.count( *optionElementsIterator ) ) {
             usedOptionElements.push_back( *optionElementsIterator );
             writeChangeFormatAttribute( aliasName, element );
             return;
@@ -690,54 +628,43 @@ void GalaxyConfigTask::writeOutputsUnit() {
     QList <int> ::iterator outputElementsIterator;
     outputElementsIterator = outputElementsPositions.begin();
     while( outputElementsIterator != outputElementsPositions.end() ) {
-        const QMap < QString, QStringList > currAlias = elemAliases[ *outputElementsIterator ];
-        QMap < QString, QStringList > ::const_iterator currAliasIterator = currAlias.begin();
-
-        const QString elementName = (currAliasIterator).key(),
-                      aliasName = (currAliasIterator).value().at(1);
+        galaxyConfigOutput.writeStartElement( DATA );
+        QMap < QString, QStringList > currAlias = elemAliases[ *outputElementsIterator ];
+        QMap < QString, QStringList > ::iterator currAliasIterator = currAlias.begin();
+        QString elementName = (currAliasIterator).key(),
+                aliasName = (currAliasIterator).value().at(1);
 
         ActorPrototype *currElement = findElemInActorPrototypeRegistry( elementName );
-        assert( NULL != currElement );
-
-        const QString formatType = currElement->getPortDesciptors().first()->getDisplayName();
-        QString resultType = QString();
+        QString formatType = currElement->getPortDesciptors().first()->getDisplayName(),
+                resultType = QString();
         getConstraint( formatType, resultType );
         if ( resultType == GObjectTypes::UNKNOWN ) {
             outputElementsIterator++;
             continue;
         }
-        galaxyConfigOutput.writeStartElement( DATA );
         writeFormatAttributeForOutputElement( resultType ); 
         galaxyConfigOutput.writeAttribute( HRSchemaSerializer::NAME_ATTR, aliasName );
-        tryToWriteChangeFormatAttribute( currElement, usedOptionElements );
+        tryToWriteChangeFormatAttribute( currElement, usedOptionElements );  //подправить, чтобы для 2 выходных элементов всё было ок
         galaxyConfigOutput.writeEndElement(); 
         outputElementsIterator++;
     }
-
-    galaxyConfigOutput.writeStartElement( DATA );
-    galaxyConfigOutput.writeAttribute( FORMAT, "txt" );
-    galaxyConfigOutput.writeAttribute( HRSchemaSerializer::NAME_ATTR, WORKFLOW_RUN_LOG );
-    galaxyConfigOutput.writeAttribute( "label", WORKFLOW_RUN_LOG );
-    galaxyConfigOutput.writeEndElement();
-
     galaxyConfigOutput.writeEndElement();            //outputs unit end
 }
 
 void GalaxyConfigTask::writeHelpUnit() {
-    galaxyConfigOutput.writeStartElement( HELP );  
-    galaxyConfigOutput.writeDTD( galaxyHelpMessage );
-    galaxyConfigOutput.writeEndElement();      
+    galaxyConfigOutput.writeStartElement( HELP );  //help unit begin
+    galaxyConfigOutput.writeCharacters( galaxyHelpMessage );
+    galaxyConfigOutput.writeEndElement();          //help unit end
 }
 
 bool GalaxyConfigTask::createConfigForGalaxy() {
-    const QString schemePathWithoutExtension = schemePath.mid(0, schemePath.length()-4 );
+    QString schemePathWithoutExtension = schemePath.mid(0, schemePath.length()-4 );
     QFile galaxyConfigFile( schemePathWithoutExtension + ".xml");
     galaxyConfigFile.open( QIODevice::WriteOnly );
     if( !galaxyConfigFile.isOpen() ) {
         coreLog.error( "Can't open " + schemePathWithoutExtension + ".xml" );
         return false;
     }
-
     galaxyConfigOutput.setDevice(&galaxyConfigFile);
     writeToolUnit();
     writeCommandUnit();
@@ -745,88 +672,75 @@ bool GalaxyConfigTask::createConfigForGalaxy() {
     writeOutputsUnit();
     writeHelpUnit();
     galaxyConfigOutput.writeEndElement(); //tool unit end
-
     galaxyConfigFile.close();
     return true;
 }
 
+void GalaxyConfigTask::getAliases( QList <int> positions, QString &aliases ) {
+    foreach( int position, positions ) {
+        QStringList elementProperties = elemAliases[position].begin().value();
+        QString aliasName = elementProperties.at(1);
+        aliases.append( aliasName );
+        aliases.append( "\r\n" );
+    }
+}
+
+bool GalaxyConfigTask::createConfigForUgene() {
+    QString appDirPath = QApplication::applicationDirPath();
+    QFile configFile( appDirPath + "/config.txt" );
+    configFile.open( QIODevice::WriteOnly );
+    if ( !configFile.isOpen() ) {
+        return false;
+    }
+    QTextStream file(&configFile);
+    file << ugenePath << "\r\n";
+    file << schemePath << "\r\n";
+    file << outputElementsPositions.length() << "\r\n";
+    QString aliases;
+    getAliases( inputElementsPositions, aliases );
+    getAliases( optionElementsPositions, aliases );
+    getAliases( outputElementsPositions, aliases );
+    file << aliases;
+    configFile.close();
+    return true;
+}
+
 void GalaxyConfigTask::doCopyCommands( const QString &pathToCopy ) {
-    system( QString("cp " + schemePath.left( schemePath.length() - 4 ) + ".xml" + pathToCopy).toLocal8Bit().constData() );
-    system( QString("cp " + schemePath + " " + pathToCopy).toLocal8Bit().constData() );
+    QProcess process;
+    process.start( "cp " + schemePath.mid(0, schemePath.length()-4 ) + ".xml " + pathToCopy );
+    process.start( "cp " + schemePath + " " + pathToCopy );
+    process.start( "cp " + QApplication::applicationDirPath() +"/config.txt " + pathToCopy );
 }
 void GalaxyConfigTask::doDeleteCommands() {
-    system( QString("rm " + schemePath.left( schemePath.length() - 4 ) + ".xml").toLocal8Bit().constData() );
+    QProcess process;
+    process.start( "rm " + QApplication::applicationDirPath() +"/config.txt" );
+    process.start( "rm " + schemePath.mid(0, schemePath.length()-4 ) + ".xml" );
 }
 
-bool GalaxyConfigTask::prepareDirectoryForTool() {
-    QString schemeNameWithoutExtension = schemeName.left( schemeName.length() - 4 );
-    const QString pathToCopy = galaxyPath + "tools/" + schemeNameWithoutExtension;
-    QDir directory;
-    directory.setPath( pathToCopy );
-    if( !directory.exists() ) {
-        const QString createDirCommand = "mkdir " + pathToCopy;
-        system( createDirCommand.toLocal8Bit().constData() );
-    }
-    if( !directory.exists() ) {
-        return false;
-    }
+void GalaxyConfigTask::prepareDirectoryForTool() {
+    QString pathToCopy = galaxyPath + "tools/" + schemeName.mid( 0, schemeName.length() - 4 );
+    QString createDirCommand = "mkdir " + pathToCopy;
     doCopyCommands( pathToCopy );
     doDeleteCommands();
-    return true;
 }
-
 void GalaxyConfigTask::makeCopyOfGalaxyToolConfig() {
-    const QString toolConfigurationPath = galaxyPath + "tool_conf.xml";
-    system( QString("cp " + toolConfigurationPath + " " + toolConfigurationPath + "_old").toLocal8Bit().constData() );
+    QProcess process;
+    QString toolConfiguration = galaxyPath.append( "tool_conf.xml" );
+    process.start( "cp " + toolConfiguration + " " + toolConfiguration + "_old" );
 }
 
-bool GalaxyConfigTask::writeNewSection( const QString &config ) {
-    const int toolboxPosition = config.indexOf( "<toolbox>" );
-    const int beginLength = toolboxPosition + QString("<toolbox>").length();
-    QString begin = config.mid(0, beginLength );
-    QString end = config.mid( beginLength, config.length() - begin.length() );
-
-    const QString toolsConfigurationPath = galaxyPath + "tool_conf.xml";
-    QFile configFile( toolsConfigurationPath );
-    if( !configFile.open( QIODevice::WriteOnly ) ) {
-        return false;
-    }
-
-    QXmlStreamWriter galaxyToolsConfigOutput;
-    galaxyToolsConfigOutput.setDevice( &configFile );
-    galaxyToolsConfigOutput.writeDTD( begin );
-    galaxyToolsConfigOutput.writeStartElement( "section" );
-    galaxyToolsConfigOutput.writeAttribute( "name", galaxyToolName + "-tool" );
-    QString idStrCopy = galaxyToolName;
-    idStrCopy.replace(" ","_");
-    galaxyToolsConfigOutput.writeAttribute( "id", idStrCopy );
-    galaxyToolsConfigOutput.writeStartElement( "tool" );
-    const QString schemeNameWithoutExtension = schemeName.left( schemeName.length() - 4 );
-    galaxyToolsConfigOutput.writeAttribute( "file", schemeNameWithoutExtension + "/" + schemeNameWithoutExtension + ".xml" );
-    galaxyToolsConfigOutput.writeEndElement();
-    galaxyToolsConfigOutput.writeEndElement();
-    galaxyToolsConfigOutput.writeDTD( end );
-    return true;
+void GalaxyConfigTask::readGalaxyToolConfig() {
+    
 }
 
-bool GalaxyConfigTask::addToolToConfig() {
-    const QString toolsConfigurationPath = galaxyPath + "tool_conf.xml";
-    QFile configFile( toolsConfigurationPath );
-    if( !configFile.open( QIODevice::ReadOnly ) ) {
-        return false;
-    }
-    QTextStream input( &configFile );
-    QString config = input.readAll();
-    configFile.close();
-    if( config.indexOf( galaxyToolName ) != SUBSTRING_NOT_FOUND ) {
-        return true;
-    }
-    return writeNewSection( config );
-}
-
-bool GalaxyConfigTask::addToolToGalaxyConfigFile() {
+void GalaxyConfigTask::addToolToGalaxyConfigFile() {
     makeCopyOfGalaxyToolConfig();
-    return addToolToConfig();
+    readGalaxyToolConfig();
+    /*ifstream xmlIn( galaxyConfig.c_str(), ios::in );
+    bool skip = false;
+    readGalaxyConfig( xmlIn, idTemp, result, resultXml, toolName, dirName, id, skip );
+    xmlIn.close();
+    checkSkipVariable( galaxyConfig, result, skip );*/
 }
 
 } // U2
