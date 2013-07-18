@@ -218,6 +218,8 @@ void GTest_LoadBrokenDocument::init(XMLTestFormat* tf, const QDomElement& el) {
         url = env->getVar("COMMON_DATA_DIR") + "/" + urlAttr;
     }
 
+    message = el.attribute("message");
+
     loadTask = new LoadDocumentTask(format, url, iof);
     addSubTask(loadTask);
 }
@@ -225,6 +227,11 @@ void GTest_LoadBrokenDocument::init(XMLTestFormat* tf, const QDomElement& el) {
 Task::ReportResult GTest_LoadBrokenDocument::report() {
     Document* doc = loadTask->getDocument();
     if (doc == NULL && loadTask->hasError()) {
+        CHECK(!message.isEmpty(), ReportResult_Finished);
+        if (loadTask->getError().contains(message)) {
+            return ReportResult_Finished;
+        }
+        stateInfo.setError(QString("expected message is not found"));
         return ReportResult_Finished;
     }
     stateInfo.setError(QString("file read without errors"));

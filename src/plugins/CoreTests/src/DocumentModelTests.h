@@ -89,6 +89,7 @@ private:
     LoadDocumentTask*   loadTask;
     QString url;
     bool tempFile;
+    QString message;
 };
 
 class GTest_DocumentNumObjects : public GTest {
