@@ -11,6 +11,7 @@ HEADERS += src/ActorCfgModel.h \
            src/PortAliasesConfigurationDialog.h \
            src/SceneSerializer.h \
            src/SchemaAliasesConfigurationDialogImpl.h \
+           src/StartupDialog.h \
            src/WorkflowDesignerPlugin.h \
            src/WorkflowDocument.h \
            src/WorkflowEditor.h \
@@ -73,6 +74,7 @@ FORMS += src/ui/ChooseItemDialog.ui \
          src/ui/PaletteWidget.ui \
          src/ui/PortAliasesConfigurationDialog.ui \
          src/ui/SchemaAliasesConfigurationDialog.ui \
+         src/ui/StartupDialog.ui \
          src/ui/WorkflowEditorWidget.ui \
          src/ui/WorkflowMetaDialog.ui \
          src/ui/WorkflowSettingsWidget.ui
@@ -86,6 +88,7 @@ SOURCES += src/ActorCfgModel.cpp \
            src/PortAliasesConfigurationDialog.cpp \
            src/SceneSerializer.cpp \
            src/SchemaAliasesConfigurationDialogImpl.cpp \
+           src/StartupDialog.cpp \
            src/WorkflowDesignerPlugin.cpp \
            src/WorkflowDocument.cpp \
            src/WorkflowEditor.cpp \

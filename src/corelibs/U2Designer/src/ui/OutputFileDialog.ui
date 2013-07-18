@@ -20,7 +20,7 @@
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_2">
      <item>
-      <widget class="QPushButton" name="addDirButton">
+      <widget class="QToolButton" name="addDirButton">
        <property name="maximumSize">
         <size>
          <width>25</width>
@@ -33,10 +33,7 @@
        <property name="text">
         <string/>
        </property>
-       <property name="autoDefault">
-        <bool>false</bool>
-       </property>
-       <property name="flat">
+       <property name="autoRaise">
         <bool>true</bool>
        </property>
       </widget>
@@ -55,7 +52,7 @@
       </spacer>
      </item>
      <item>
-      <widget class="QPushButton" name="absolutePathButton">
+      <widget class="QToolButton" name="absolutePathButton">
        <property name="maximumSize">
         <size>
          <width>25</width>
@@ -68,11 +65,33 @@
        <property name="text">
         <string/>
        </property>
-       <property name="autoDefault">
-        <bool>false</bool>
-       </property>
-       <property name="flat">
+       <property name="autoRaise">
         <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="settingsButton">
+       <property name="maximumSize">
+        <size>
+         <width>25</width>
+         <height>25</height>
+        </size>
+       </property>
+       <property name="toolTip">
+        <string>Save to file system</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="popupMode">
+        <enum>QToolButton::InstantPopup</enum>
+       </property>
+       <property name="autoRaise">
+        <bool>true</bool>
+       </property>
+       <property name="arrowType">
+        <enum>Qt::NoArrow</enum>
        </property>
       </widget>
      </item>

@@ -93,6 +93,7 @@
 #include "PortAliasesConfigurationDialog.h"
 #include "SceneSerializer.h"
 #include "SchemaAliasesConfigurationDialogImpl.h"
+#include "StartupDialog.h"
 #include "WorkflowDesignerPlugin.h"
 #include "WorkflowDocument.h"
 #include "WorkflowEditor.h"
@@ -250,6 +251,7 @@ pasteCount(0), debugInfo(new WorkflowDebugStatus(this)), debugActions()
     }
 
     propertyEditor->reset();
+    checkOutputDir();
 }
 
 WorkflowView::~WorkflowView() {
@@ -421,6 +423,13 @@ void WorkflowView::setupMainSplitter() {
         SLOT(sl_breakpointDisabled(const ActorId &)));
     connect(debugInfo, SIGNAL(si_breakpointIsReached(const U2::ActorId &)),
         SLOT(sl_breakpointIsReached(const U2::ActorId &)));
+}
+
+void WorkflowView::checkOutputDir() {
+    CHECK(!WorkflowSettings::isOutputDirectorySet(), );
+
+    StartupDialog d(this);
+    WorkflowSettings::setUseWorkflowOutputDirectory(d.exec());
 }
 
 void WorkflowView::sl_breakpointIsReached(const U2::ActorId &actor) {

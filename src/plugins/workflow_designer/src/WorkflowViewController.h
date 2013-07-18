@@ -273,6 +273,7 @@ private:
     void setupMainSplitter();
     void loadSceneFromObject();
     void loadUiSettings();
+    void checkOutputDir();
 
     // dashboards
     void setupActions();

@@ -19,7 +19,14 @@
  * MA 02110-1301, USA.
  */
 
+#include <QFileDialog>
+#include <QMenu>
+#include <QPushButton>
+#include <QWidgetAction>
+
 #include <U2Core/U2SafePoints.h>
+
+#include <U2Designer/OutputDirectoryWidget.h>
 
 #include <U2Gui/SuggestCompleter.h>
 
@@ -38,6 +45,7 @@ OutputFileDialog::OutputFileDialog(RunFileSystem *_rfs, bool _saveDir, Completio
     setupUi(this);
     addDirButton->setIcon(QIcon(":U2Designer/images/add_directory.png"));
     absolutePathButton->setIcon(QIcon(":U2Designer/images/outside.png"));
+    settingsButton->setIcon(QIcon(":U2Designer/images/settings.png"));
     if (saveDir) {
         nameWidget->setVisible(false);
         setWindowTitle(tr("Save a directory"));
@@ -49,6 +57,7 @@ OutputFileDialog::OutputFileDialog(RunFileSystem *_rfs, bool _saveDir, Completio
         nameEdit->setValidator(new QRegExpValidator(QRegExp("[^" + BAD_CHARS + "]+"), this));
     }
     updateFocus();
+    setupSettings();
 
     model = new RFSTreeModel(rfs->getRoot(), saveDir, this);
     selectionModel = new QItemSelectionModel(model);
@@ -63,6 +72,18 @@ OutputFileDialog::OutputFileDialog(RunFileSystem *_rfs, bool _saveDir, Completio
         SLOT(sl_selectionChanged()));
     connect(addDirButton, SIGNAL(clicked()), SLOT(sl_addDir()));
     connect(absolutePathButton, SIGNAL(clicked()), SLOT(sl_saveToFS()));
+}
+
+void OutputFileDialog::setupSettings() {
+    QMenu *m = new QMenu(this);
+    OutputDirectoryWidget *odw = new OutputDirectoryWidget(m);
+    connect(odw, SIGNAL(si_browsed()), settingsButton, SLOT(click()));
+    odw->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::MinimumExpanding);
+
+    QWidgetAction *action = new QWidgetAction(m);
+    action->setDefaultWidget(odw);
+    m->addAction(action);
+    settingsButton->setMenu(m);
 }
 
 FSItem * OutputFileDialog::selectedItem() const {

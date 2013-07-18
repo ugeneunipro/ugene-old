@@ -50,6 +50,7 @@ private:
     QString selectedPath() const;
     FSItem * selectedItem() const;
     void updateFocus();
+    void setupSettings();
 
 private:
     RunFileSystem *rfs;

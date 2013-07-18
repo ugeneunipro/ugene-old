@@ -29,6 +29,7 @@ HEADERS += src/BreakpointHitCountDialog.h \
            src/dashboard/ResourcesWidget.h \
            src/dashboard/StatisticsWidget.h \
            src/dashboard/TableWidget.h \
+           src/support/OutputDirectoryWidget.h \
            src/support/URLLineEdit.h \
            src/wizard/ElementSelectorController.h \
            src/wizard/PairedDatasetsController.h \
@@ -86,6 +87,7 @@ SOURCES += src/BreakpointHitCountDialog.cpp \
            src/dashboard/ResourcesWidget.cpp \
            src/dashboard/StatisticsWidget.cpp \
            src/dashboard/TableWidget.cpp \
+           src/support/OutputDirectoryWidget.cpp \
            src/support/URLLineEdit.cpp \
            src/wizard/ElementSelectorController.cpp \
            src/wizard/PairedDatasetsController.cpp \

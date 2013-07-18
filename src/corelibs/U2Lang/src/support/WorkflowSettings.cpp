@@ -150,27 +150,30 @@ void WorkflowSettings::setUserDirectory(const QString &newDir) {
     }
 }
 
+bool WorkflowSettings::isOutputDirectorySet() {
+    Settings *s = AppContext::getSettings();
+    return s->contains(USE_WORKFLOW_OUTPUT_PATH);
+}
+
 bool WorkflowSettings::isUseWorkflowOutputDirectory() {
     Settings *s = AppContext::getSettings();
-    return s->getValue(USE_WORKFLOW_OUTPUT_PATH, false, true).toBool();
+    return s->getValue(USE_WORKFLOW_OUTPUT_PATH, true).toBool();
 }
 
 void  WorkflowSettings::setUseWorkflowOutputDirectory(bool value) {
     Settings *s = AppContext::getSettings();
-    s->setValue(USE_WORKFLOW_OUTPUT_PATH, value, true);
+    s->setValue(USE_WORKFLOW_OUTPUT_PATH, value);
 }
 
 void WorkflowSettings::setWorkflowOutputDirectory(const QString &newDir) {
     Settings *s = AppContext::getSettings();
-    s->setValue(WORKFLOW_OUTPUT_PATH, newDir, true);
+    s->setValue(WORKFLOW_OUTPUT_PATH, newDir);
 }
 
 const QString WorkflowSettings::getWorkflowOutputDirectory() {
     Settings *s = AppContext::getSettings();
     GUrl url(s->fileName());
-    QString defaultPath = url.dirPath();
-    defaultPath += "/WorkflowOutput/";
-    QString path = s->getValue(WORKFLOW_OUTPUT_PATH, defaultPath, true).toString();
+    QString path = s->getValue(WORKFLOW_OUTPUT_PATH, QDir::homePath() + "/WorkflowOutput/").toString();
     return path;
 }
 
