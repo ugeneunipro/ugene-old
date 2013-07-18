@@ -44,6 +44,7 @@
 #include <U2Core/CMDLineHelpProvider.h>
 #include <U2Core/CMDLineUtils.h>
 #include <cmdline/WorkflowCMDLineTasks.h>
+#include <cmdline/GalaxyConfigTask.h>
 
 #include <U2Core/TaskStarter.h>
 #include <U2Core/GAutoDeleteList.h>
@@ -116,7 +117,14 @@ void WorkflowDesignerPlugin::processCMDLineOptions() {
         }
         connect(AppContext::getPluginSupport(), SIGNAL(si_allStartUpPluginsLoaded()), new TaskStarter(t), SLOT(registerTask()));
     }
-}
+    else{
+        if( cmdlineReg->hasParameter(GalaxyConfigTask::GALAXY_CONFIG_OPTION) && consoleMode ) {
+            Task *t = NULL;
+            t = new GalaxyConfigTask();
+            connect(AppContext::getPluginSupport(), SIGNAL(si_allStartUpPluginsLoaded()), new TaskStarter(t), SLOT(registerTask()));
+        }
+    }
+}   
 
 void WorkflowDesignerPlugin::sl_saveSchemaImageTaskFinished() {
     ProduceSchemaImageLinkTask * saveImgTask = qobject_cast<ProduceSchemaImageLinkTask*>(sender());
@@ -159,7 +167,16 @@ void WorkflowDesignerPlugin::registerCMDLineHelp() {
         " specified slot is printed to the standart output."),
         tr("<actor_name>.<port_name>.<slot_name>"));
     Q_UNUSED(printSection);
-    
+
+    CMDLineHelpProvider * galaxyConfigSection = new CMDLineHelpProvider(
+        GalaxyConfigTask::GALAXY_CONFIG_OPTION,
+        tr("Creates new Galaxy tool config."),
+        tr("Creates new Galaxy tool config from existing workflow schema. Paths to UGENE"
+        " and Galaxy can be set"),
+        tr("<uwl-file> [--ugene-path=value] [--galaxy-path=value]"));
+
+    cmdLineRegistry->registerCMDLineHelpProvider( galaxyConfigSection );
+
     //CMDLineHelpProvider * remoteMachineSectionArguments = new CMDLineHelpProvider( REMOTE_MACHINE, "<path-to-machine-file>");
     //CMDLineHelpProvider * remoteMachineSection = new CMDLineHelpProvider( REMOTE_MACHINE, tr("run provided tasks on given remote machine") );        
     //TODO: bug UGENE-23

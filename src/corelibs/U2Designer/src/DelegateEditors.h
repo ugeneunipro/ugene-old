@@ -124,6 +124,8 @@ public:
         return new SpinBoxDelegate(spinProperties, parent());
     }
 
+    void getItems( QVariantMap &items ) const;
+
 signals:
     void si_valueChanged(int);
 private:
@@ -149,6 +151,8 @@ public:
         return new DoubleSpinBoxDelegate(spinProperties, parent());
     }
 
+    void getItems( QVariantMap &items ) const;
+
     static const int DEFAULT_DECIMALS_VALUE;
 
 private:
@@ -173,6 +177,8 @@ public:
       virtual PropertyDelegate *clone() {
           return new ComboBoxDelegate(items, parent());
       }
+
+      void getItems( QVariantMap &items ) const;
 
 signals:
     void si_valueChanged( const QString & newVal ) const;

@@ -25,6 +25,7 @@ HEADERS += src/ActorCfgModel.h \
            src/WorkflowViewController.h \
            src/WorkflowViewItems.h \
            src/cmdline/WorkflowCMDLineTasks.h \
+           src/cmdline/GalaxyConfigTask.h \
            src/library/AminoTranslationWorker.h \
            src/library/AssemblyToSequenceWorker.h \
            src/library/BaseDocWorker.h \
@@ -99,6 +100,7 @@ SOURCES += src/ActorCfgModel.cpp \
            src/WorkflowViewController.cpp \
            src/WorkflowViewItems.cpp \
            src/cmdline/WorkflowCMDLineTasks.cpp \
+           src/cmdline/GalaxyConfigTask.cpp \
            src/library/AminoTranslationWorker.cpp \
            src/library/AssemblyToSequenceWorker.cpp \
            src/library/BaseDocWorker.cpp \

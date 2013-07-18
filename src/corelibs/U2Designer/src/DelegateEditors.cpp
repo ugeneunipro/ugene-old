@@ -94,6 +94,10 @@ void SpinBoxDelegate::setEditorProperty(const char* name, const QVariant& val) {
     }
 }
 
+void SpinBoxDelegate::getItems( QVariantMap &items ) const {
+    items = this->spinProperties;
+}
+
 /********************************
 * DoubleSpinBoxDelegate
 ********************************/
@@ -141,6 +145,10 @@ QVariant DoubleSpinBoxDelegate::getDisplayValue( const QVariant& v) const {
     return editor.text();
 }
 
+void DoubleSpinBoxDelegate::getItems( QVariantMap &items ) const {
+    items = this->spinProperties;
+}
+
 /********************************
 * ComboBoxDelegate
 ********************************/
@@ -180,6 +188,10 @@ QVariant ComboBoxDelegate::getDisplayValue(const QVariant& val) const {
     QString display = items.key(val);
     emit si_valueChanged( display );
     return QVariant( display );
+}
+
+void ComboBoxDelegate::getItems( QVariantMap &items ) const {
+    items = this->items;
 }
 
 void ComboBoxDelegate::sl_commit() {
