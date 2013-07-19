@@ -117,13 +117,13 @@ void WorkflowDesignerPlugin::processCMDLineOptions() {
         }
         connect(AppContext::getPluginSupport(), SIGNAL(si_allStartUpPluginsLoaded()), new TaskStarter(t), SLOT(registerTask()));
     }
-    /*else{
+    else{
         if( cmdlineReg->hasParameter(GalaxyConfigTask::GALAXY_CONFIG_OPTION) && consoleMode ) {
             Task *t = NULL;
             t = new GalaxyConfigTask();
             connect(AppContext::getPluginSupport(), SIGNAL(si_allStartUpPluginsLoaded()), new TaskStarter(t), SLOT(registerTask()));
         }
-    }*/
+    }
 }   
 
 void WorkflowDesignerPlugin::sl_saveSchemaImageTaskFinished() {
