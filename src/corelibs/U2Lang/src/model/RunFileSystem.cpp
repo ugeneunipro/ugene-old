@@ -275,13 +275,13 @@ bool RunFileSystem::getPath(const QString &pathStr, QStringList &parentPath, QSt
     return true;
 }
 
-void RunFileSystem::test() {
-    QFile f("D:/test.txt");
-    f.open(QIODevice::Append);
+void RunFileSystem::test(const QString &file) {
+    QFile f(file);
+    f.open(QIODevice::WriteOnly);
     f.write(test(*root).join("\n").toLatin1());
     f.write("\n===============================\n");
     f.close();
-    return ;
+    return;
 }
 
 QStringList RunFileSystem::test(FSItem &root) {
@@ -308,6 +308,10 @@ QStringList RunFileSystem::test(FSItem &root) {
 /************************************************************************/
 void RFSUtils::initRFS(RunFileSystem &rfs, const QList<Workflow::Actor*> &actors, SchemaConfig *cfg) {
     rfs.reset();
+    { // add report dir
+        U2OpStatus2Log os;
+        rfs.addItem("report", true, os);
+    }
     foreach (Workflow::Actor *actor, actors) {
         foreach (Attribute *attr, actor->getParameters()) {
             bool dir = false;

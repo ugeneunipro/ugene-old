@@ -96,6 +96,9 @@ public:
 
     void registerTask(Task *task, const QString &actor);
 
+    void setOutputDir(const QString &dir);
+    QString outputDir() const;
+
 public slots:
     void sl_progressChanged();
     void sl_taskStateChanged();
@@ -109,6 +112,8 @@ signals:
     void si_runStateChanged(bool paused);
     void si_taskStateChanged(Monitor::TaskState state);
     void si_updateProducers();
+    void si_report();
+    void si_dirSet(const QString &dir);
 
 private:
     QPointer<WorkflowAbstractIterationRunner> task;
@@ -120,6 +125,7 @@ private:
     QList<Monitor::Problem> problems;
     QMap<QString, Monitor::WorkerInfo> workers;
     QList<Monitor::WorkerParamsInfo> workersParamsInfo;
+    QString _outputDir;
 
 protected:
     void setWorkerInfo(const QString &actorId, const Monitor::WorkerInfo &info);

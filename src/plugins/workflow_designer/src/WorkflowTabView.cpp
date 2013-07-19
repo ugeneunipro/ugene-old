@@ -24,6 +24,7 @@
 #include <QPushButton>
 #include <QTabBar>
 
+#include <U2Core/AppContext.h>
 #include <U2Core/U2SafePoints.h>
 
 #include <U2Designer/Dashboard.h>
@@ -58,11 +59,13 @@ WorkflowTabView::WorkflowTabView(QWidget *parent)
     tabBar()->setMovable(true);
 
     setDocumentMode(true);
+    LoadDashboardsTask *t = new LoadDashboardsTask();
+    connect(t, SIGNAL(si_stateChanged()), SLOT(sl_dashboardsLoaded()));
+    AppContext::getTaskScheduler()->registerTopLevelTask(t);
 }
 
-void WorkflowTabView::addDashboard(WorkflowMonitor *monitor) {
+void WorkflowTabView::addDashboard(Dashboard *db) {
     runsCounter++;
-    Dashboard *db = new Dashboard(monitor, this);
     int idx = addTab(db, tr("Run %1").arg(runsCounter));
     setCurrentIndex(idx);
 
@@ -70,6 +73,10 @@ void WorkflowTabView::addDashboard(WorkflowMonitor *monitor) {
     tabBar()->setTabButton(idx, QTabBar::RightSide, closeButton);
     connect(closeButton, SIGNAL(clicked()), SLOT(sl_closeTab()));
     emit si_countChanged();
+}
+
+void WorkflowTabView::addDashboard(WorkflowMonitor *monitor) {
+    addDashboard(new Dashboard(monitor, this));
 }
 
 bool WorkflowTabView::hasDashboards() const {
@@ -80,8 +87,20 @@ void WorkflowTabView::sl_closeTab() {
     CloseButton *button = dynamic_cast<CloseButton*>(sender());
     SAFE_POINT(NULL != button, "NULL close button", );
     int idx = indexOf(button->content());
+    Dashboard *db = dynamic_cast<Dashboard*>(widget(idx));
+    db->setClosed();
     removeTab(idx);
     emit si_countChanged();
+}
+
+void WorkflowTabView::sl_dashboardsLoaded() {
+    LoadDashboardsTask *t = dynamic_cast<LoadDashboardsTask*>(sender());
+    CHECK(NULL != t, );
+    CHECK(t->isFinished(), );
+
+    foreach (const QString &dbPath, t->result()) {
+        addDashboard(new Dashboard(dbPath, this));
+    }
 }
 
 } // U2

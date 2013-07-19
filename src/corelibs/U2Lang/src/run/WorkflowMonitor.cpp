@@ -133,6 +133,15 @@ void WorkflowMonitor::registerTask(Task *task, const QString &actor) {
     taskMap[task] = procMap[actor];
 }
 
+void WorkflowMonitor::setOutputDir(const QString &dir) {
+    _outputDir = dir;
+    emit si_dirSet(outputDir());
+}
+
+QString WorkflowMonitor::outputDir() const {
+    return _outputDir;
+}
+
 void WorkflowMonitor::sl_progressChanged() {
     CHECK(!task.isNull(), );
     emit si_progressChanged(task->getProgress());
@@ -148,6 +157,7 @@ void WorkflowMonitor::sl_taskStateChanged() {
             state = FAILED;
         }
         emit si_taskStateChanged(state);
+        emit si_report();
     }
 }
 

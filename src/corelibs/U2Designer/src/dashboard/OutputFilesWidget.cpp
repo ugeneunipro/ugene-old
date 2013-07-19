@@ -85,9 +85,9 @@ QString OutputFilesWidget::createActionsSubMenu(const QString &url, bool fullWid
         "</ul>"
         )
         .arg(fullWidth ? "full-width" : "")
-        .arg(info.dir().absolutePath())
+        .arg(relative(info.dir().absolutePath() + "/"))
         .arg(tr("Open containing directory"))
-        .arg(url)
+        .arg(relative(url))
         .arg(tr("Open by operating system"));
 }
 
@@ -105,7 +105,7 @@ QString OutputFilesWidget::createFileButton(const QString &url) const {
     return QString(
         "<div class=\"file-button-ctn\">"
         "<div class=\"btn-group full-width file-btn-group\">"
-            "<button class=\"btn full-width long-text\" onclick=\"agent.openUrl('%1')\" title=\"%1\">%2</button>"
+        "<button class=\"btn full-width long-text\" onclick=\"agent.openUrl('%1')\" onmouseover=\"this.title=agent.absolute('%1')\">%2</button>"
             "<button class=\"btn dropdown-toggle\" data-toggle=\"dropdown\">"
                 "<span class=\"caret\"></span>"
             "</button>"
@@ -113,7 +113,7 @@ QString OutputFilesWidget::createFileButton(const QString &url) const {
         "</div>"
         "</div>"
     )
-    .arg(url)
+    .arg(relative(url))
     .arg(fileName(url))
     .arg(createActionsSubMenu(url, true));
 }
@@ -125,7 +125,7 @@ QString OutputFilesWidget::createFileSubMenu(const QString &url) const {
             "%3"
         "</li>"
     )
-    .arg(url)
+    .arg(relative(url))
     .arg(fileName(url))
     .arg(createActionsSubMenu(url, false));
 }
@@ -203,6 +203,13 @@ void OutputFilesWidget::addFileMenu(const Monitor::FileInfo &info) {
 
 QString OutputFilesWidget::buttonLabel(int filesCount) const {
     return QString("%1 %2 %3").arg(filesCount).arg(tr("files")).arg("<span class=\"caret\"></span>");
+}
+
+QString OutputFilesWidget::relative(const QString &absolute) const {
+    if (absolute.startsWith(dashboard->directory())) {
+        return absolute.mid(dashboard->directory().size());
+    }
+    return absolute;
 }
 
 QString OutputFilesWidget::id(const QString &actorId) const {

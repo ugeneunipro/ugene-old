@@ -179,6 +179,7 @@ bool WorkflowContext::initWorkingDir() {
     } else {
         _workingDir = root;
     }
+    monitor->setOutputDir(workingDir());
     coreLog.details("Workflow output directory is: " + workingDir());
     return true;
 }
@@ -222,13 +223,14 @@ QString WorkflowContextCMDLine::getOutputDirectory(U2OpStatus &os) {
 QString WorkflowContextCMDLine::createSubDirectoryForRun(const QString &root, U2OpStatus &os) {
     QDir rootDir(root);
     // 1. Find free sub-directory name
-    QString dirName;
+    QString baseDirName = QDateTime::currentDateTime().toString("yyyy.MM.dd_hh-mm");
+    QString dirName = baseDirName;
     {
-        int counter = 0;
-        do {
+        int counter = 1;
+        while (rootDir.exists(dirName)) {
+            dirName = QString("%1_%2").arg(baseDirName).arg(QString::number(counter));
             counter++;
-            dirName = QString("Run %1").arg(counter);
-        } while (rootDir.exists(dirName));
+        }
     }
 
     // 2. Try to create the sub-directory
@@ -242,7 +244,9 @@ QString WorkflowContextCMDLine::createSubDirectoryForRun(const QString &root, U2
 }
 
 bool WorkflowContextCMDLine::useWorkingDir() {
-    CMDLineRegistry *reg = AppContext::getCMDLineRegistry();
+    if (AppContext::isGUIMode()) {
+        return true;
+    }
     if (useSettings()) {
         return WorkflowSettings::isUseWorkflowOutputDirectory();
     }

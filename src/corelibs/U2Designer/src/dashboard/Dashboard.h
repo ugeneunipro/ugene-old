@@ -36,9 +36,12 @@ class U2DESIGNER_EXPORT Dashboard : public QWebView {
     Q_OBJECT
 public:
     Dashboard(const WorkflowMonitor *monitor, QWidget *parent);
+    Dashboard(const QString &dirPath, QWidget *parent);
 
     const WorkflowMonitor * monitor();
     QWebElement getDocument();
+    void setClosed();
+    QString directory() const;
 
 protected:
     virtual void contextMenuEvent(QContextMenuEvent *ev);
@@ -47,8 +50,12 @@ private slots:
     void sl_runStateChanged(bool paused);
     void sl_loaded(bool ok);
     void sl_addProblemsWidget();
+    void sl_serialize();
+    void sl_setDirectory(const QString &dir);
 
 private:
+    QString dir;
+    bool opened;
     const WorkflowMonitor *_monitor;
     QWebElement doc;
     bool initialized;
@@ -56,12 +63,15 @@ private:
     enum DashboardTab {OverviewDashTab, InputDashTab, OutputDashTab};
 
 private:
-    void loadDocument();
+    void loadDocument(const QString &file);
     /** Returns the content area of the widget */
     QWebElement addWidget(const QString &title, DashboardTab dashTab, int cntNum = -1);
 
     /** Returns size of the QWebElement "name", it is searched inside "insideElt" only*/
     int containerSize(const QWebElement &insideElt, const QString &name);
+
+    void serialize(const QString &fileName, U2OpStatus &os);
+    void saveSettings(const QString &fileName, U2OpStatus &os);
 };
 
 class DashboardWidget : public QObject {
@@ -76,9 +86,31 @@ protected:
 
 class JavascriptAgent : public QObject {
     Q_OBJECT
+public:
+    JavascriptAgent(Dashboard *dashboard);
+
 public slots:
     void openUrl(const QString &url);
     void openByOS(const QString &url);
+    QString absolute(const QString &url);
+
+private:
+    Dashboard *dashboard;
+};
+
+class U2DESIGNER_EXPORT LoadDashboardsTask : public Task {
+    Q_OBJECT
+public:
+    LoadDashboardsTask();
+    void run();
+
+    QStringList result() const;
+
+private:
+    bool isOpenedDashboard(const QString &dirPath);
+
+private:
+    QStringList dashboards;
 };
 
 } // U2

@@ -33,6 +33,8 @@ class QGraphicsView;
 namespace U2 {
 using namespace Workflow;
 
+class Dashboard;
+
 class WorkflowTabView : public QTabWidget {
     Q_OBJECT
 public:
@@ -49,6 +51,10 @@ private:
 
 private slots:
     void sl_closeTab();
+    void sl_dashboardsLoaded();
+
+private:
+    void addDashboard(Dashboard *db);
 };
 
 } // U2

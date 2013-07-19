@@ -81,7 +81,7 @@ public:
 
     FSItem * getRoot();
 
-    void test();
+    void test(const QString &file);
 
 private:
     FSItem *root;

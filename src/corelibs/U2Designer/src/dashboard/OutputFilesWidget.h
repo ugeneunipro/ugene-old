@@ -52,6 +52,7 @@ private:
     QString id(const Monitor::FileInfo &info) const;
     void addFileMenu(const Monitor::FileInfo &info);
     QString buttonLabel(int filesCount) const;
+    QString relative(const QString &absolute) const;
 
 private:
     bool collapsed;
