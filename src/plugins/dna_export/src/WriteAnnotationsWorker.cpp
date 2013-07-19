@@ -251,7 +251,8 @@ void WriteAnnotationsWorkerFactory::init() {
     proto->setPrompter(new WriteAnnotationsPrompter());
     proto->setValidator(new ScreenedParamValidator(BaseAttributes::URL_OUT_ATTRIBUTE().getId(), 
         BasePorts::IN_ANNOTATIONS_PORT_ID(), BaseSlots::URL_SLOT().getId()));
-    proto->setPortValidator(BasePorts::IN_ANNOTATIONS_PORT_ID(), new ScreenedSlotValidator(BaseSlots::URL_SLOT().getId()));
+    proto->setPortValidator(BasePorts::IN_ANNOTATIONS_PORT_ID(),
+                            new ScreenedSlotValidator(QStringList() << BaseSlots::URL_SLOT().getId() << BaseSlots::DNA_SEQUENCE_SLOT().getId()));
     WorkflowEnv::getProtoRegistry()->registerProto(BaseActorCategories::CATEGORY_DATASINK(), proto);
     WorkflowEnv::getDomainRegistry()->getById(LocalDomainFactory::ID)->registerEntry(new WriteAnnotationsWorkerFactory());
 }

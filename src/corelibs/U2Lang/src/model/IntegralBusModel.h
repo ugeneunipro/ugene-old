@@ -115,6 +115,7 @@ public:
 class U2LANG_EXPORT ScreenedSlotValidator : public ConfigurationValidator {
 public:
     ScreenedSlotValidator(const QString& slot): screenedSlots(slot) {}
+    ScreenedSlotValidator(const QStringList& slotList): screenedSlots(slotList) {}
     static bool validate(const QStringList& screenedSlots, const IntegralBusPort*, QStringList& output);
     virtual bool validate(const Configuration*, QStringList& output) const;
         
