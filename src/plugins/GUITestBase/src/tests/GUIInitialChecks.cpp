@@ -24,6 +24,7 @@
 #include "api/GTWidget.h"
 #include "api/GTGlobals.h"
 #include "api/GTFile.h"
+#include "api/GTMenu.h"
 #include "GTUtilsProject.h"
 #include "GTUtilsDialog.h"
 #include "GTUtilsProjectTreeView.h"
@@ -104,9 +105,13 @@ GUI_TEST_CLASS_DEFINITION(post_test_0001) {
         GTUtilsDialog::waitForDialog(os, new MessageBoxNoToAllOrNo(os));
         GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
         GTGlobals::sleep(100);
-
+#ifdef Q_OS_MAC
+        QMenu *menu = GTMenu::showMainMenu(os, MWMENU_FILE);
+        GTMenu::clickMenuItem(os, menu, ACTION_PROJECTSUPPORT__CLOSE_PROJECT);
+#else
         GTKeyboardDriver::keyClick(os, 'q', key);
         GTGlobals::sleep(100);
+#endif
         GTGlobals::sleep(500);
 
         GTUtilsDialog::cleanup(os, GTUtilsDialog::NoFailOnUnfinished);
