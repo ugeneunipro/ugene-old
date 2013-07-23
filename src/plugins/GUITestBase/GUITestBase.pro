@@ -64,6 +64,7 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/runnables/ugene/plugins/dna_export/ImportAnnotationsToCsvFiller.h \
 #   Runnables / UGENE / plugins / workflow_designer
             src/runnables/ugene/plugins/workflow_designer/WizardFiller.h \
+            src/runnables/ugene/plugins/workflow_designer/StartupDialogFiller.h \
 #   Utils classes
             src/GTUtilsApp.h \
             src/GTUtilsDialog.h \
@@ -117,6 +118,7 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/tests/common_scenarios/tree_viewer/GTTestsCommonScenariousTreeviewer.h \
             src/tests/common_scenarios/repeat_finder/GTTestsRepeatFinder.h \
             src/tests/common_scenarios/undo_redo/GTTestsUndoRedo.h \
+            src/tests/common_scenarios/NIAID_pipelines/GTTestsNiaidPipelines.h \
 #   UGENE primitives
             src/api/GTMSAEditorStatusWidget.h \
             src/api/GTRegionSelector.h \
@@ -149,7 +151,6 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/api/GTWidget.h \
             src/api/GTAction.h \
             src/api/GTDoubleSpinBox.h \
-    src/tests/common_scenarios/NIAID_pipelines/GTTestsNiaidPipelines.h
 
 
 SOURCES +=  src/GUITestBasePlugin.cpp \
@@ -214,6 +215,7 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/runnables/ugene/plugins/dna_export/ExportSelectedSequenceFromliAnmentDialogFiller.cpp \
 #   Runnables / UGENE / plugins / workflow_designer
             src/runnables/ugene/plugins/workflow_designer/WizardFiller.cpp \
+            src/runnables/ugene/plugins/workflow_designer/StartupDialogFiller.cpp \
 #   Utils classes
             src/GTUtilsApp.cpp \
             src/GTUtilsDialog.cpp \
@@ -267,6 +269,7 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/tests/common_scenarios/tree_viewer/GTTestsCommonScenariousTreeviewer.cpp \
             src/tests/common_scenarios/repeat_finder/GTTestsRepeatFinder.cpp \
             src/tests/common_scenarios/undo_redo/GTTestsUndoRedo.cpp \
+            src/tests/common_scenarios/NIAID_pipelines/GTTestsNiaidPipelines.cpp \
 #   UGENE primitives
             src/api/GTMSAEditorStatusWidget.cpp \
             src/api/GTRegionSelector.cpp \
@@ -305,6 +308,3 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/api/GTWidget.cpp \
             src/api/GTAction.cpp \
             src/api/GTDoubleSpinBox.cpp \
-    src/tests/common_scenarios/NIAID_pipelines/GTTestsNiaidPipelines.cpp
-
-

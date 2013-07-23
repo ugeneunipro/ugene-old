@@ -28,12 +28,24 @@ namespace U2 {
 
 class ConsensusSelectionDialogFiller : public Filler {
 public:
-    ConsensusSelectionDialogFiller(U2OpStatus &os,int _comboBoxVal=0, int _spinVal=0) : Filler(os, "ConsensusSelectorDialog"),
+    ConsensusSelectionDialogFiller(U2OpStatus &os,int _comboBoxVal=0, int _spinVal=0, bool _reset=false) : Filler(os, "ConsensusSelectorDialog"),
         comboBoxVal(_comboBoxVal),
-        spinVal(_spinVal){}
+        spinVal(_spinVal),
+        reset(_reset){}
     virtual void run();
 private:
     int comboBoxVal,spinVal;
+    bool reset;
+};
+
+class CheckConsensusValues : public Filler{
+public:
+    CheckConsensusValues(U2OpStatus &os, int _comboValue=-1, int _spinValue = -1): Filler(os, "ConsensusSelectorDialog"),
+        comboValue(_comboValue),
+        spinValue(_spinValue){}
+    virtual void run();
+private:
+    int comboValue, spinValue;
 };
 
 }

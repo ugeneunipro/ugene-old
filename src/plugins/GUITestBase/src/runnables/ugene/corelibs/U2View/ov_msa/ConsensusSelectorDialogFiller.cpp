@@ -27,6 +27,7 @@
 #include <QComboBox>
 #include <QSpinBox>
 #include <QApplication>
+#include <QtGui/QToolButton>
 
 namespace U2 {
 
@@ -38,18 +39,50 @@ void ConsensusSelectionDialogFiller::run() {
     GT_CHECK(dialog, "activeModalWidget is NULL");
 
     QComboBox *consensusCombo=dialog->findChild<QComboBox*>("consensusCombo");
-    GT_CHECK(consensusCombo!=NULL, "consensusCombo is NULL")
+    GT_CHECK(consensusCombo!=NULL, "consensusCombo is NULL");
     GTComboBox::setCurrentIndex(os,consensusCombo,comboBoxVal);
 
     if(spinVal){
         QSpinBox *thresholdSpin=dialog->findChild<QSpinBox*>("thresholdSpin");
-        GT_CHECK(thresholdSpin!=NULL, "consensusCombo is NULL")
+        GT_CHECK(thresholdSpin!=NULL, "consensusCombo is NULL");
         GTSpinBox::setValue(os,thresholdSpin,spinVal,GTGlobals::UseKey);
     }
 
+    if (reset){
+        QToolButton* resetButton = dialog->findChild<QToolButton*>("thresholdDefaultButton");
+        GT_CHECK(resetButton,"reset button not found");
+        GTWidget::click(os,resetButton);
+    }
     GTWidget::click(os, GTWidget::findWidget(os,"okButton"));
 
 
+}
+#undef GT_METHOD_NAME
+#undef GT_CLASS_NAME
+
+
+#define GT_CLASS_NAME "CheckConsensusValues"
+#define GT_METHOD_NAME "run"
+void CheckConsensusValues::run(){
+    QWidget* dialog = QApplication::activeModalWidget();
+    GT_CHECK(dialog, "activeModalWidget is NULL");
+
+    QComboBox *consensusCombo=dialog->findChild<QComboBox*>("consensusCombo");
+    GT_CHECK(consensusCombo!=NULL, "consensusCombo is NULL");
+
+    QSpinBox *thresholdSpin=dialog->findChild<QSpinBox*>("thresholdSpin");
+    GT_CHECK(thresholdSpin!=NULL, "consensusCombo is NULL");
+
+    if(comboValue!=-1){
+        GT_CHECK(comboValue==consensusCombo->currentIndex(),
+                 QString("Expected comboValue = %1, found = %2").arg(comboValue).arg(consensusCombo->currentIndex()));
+    }
+
+    if(spinValue!=-1){
+        GT_CHECK(spinValue==thresholdSpin->value(),
+                 QString("Expected spinValue = %1, found = %2").arg(spinValue).arg(thresholdSpin->value()));
+    }
+    GTWidget::click(os, GTWidget::findWidget(os,"okButton"));
 }
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME

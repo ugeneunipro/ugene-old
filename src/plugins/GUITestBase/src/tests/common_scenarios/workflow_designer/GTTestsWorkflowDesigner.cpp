@@ -33,6 +33,7 @@
 #include "api/GTFile.h"
 #include "runnables/qt/PopupChooser.h"
 #include "runnables/ugene/plugins/workflow_designer/WizardFiller.h"
+#include "runnables/ugene/plugins/workflow_designer/StartupDialogFiller.h"
 #include "runnables/ugene/ugeneui/SequenceReadingModeSelectorDialogFiller.h"
 #include "GTUtilsWorkflowDesigner.h"
 #include "GTUtilsApp.h"
@@ -53,7 +54,9 @@ namespace U2 {
 
 namespace GUITest_common_scenarios_workflow_designer {
 GUI_TEST_CLASS_DEFINITION(test_0001){
+    GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
     QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
+
     WizardFiller::pairValList list;
     list.append(WizardFiller::pairValLabel("bowtie version",new WizardFiller::ComboBoxValue(0)));
     list.append(WizardFiller::pairValLabel("bowtie index directory", new WizardFiller::lineEditValue
@@ -74,6 +77,8 @@ GUI_TEST_CLASS_DEFINITION(test_0001){
     GTMenu::clickMenuItem(os, menu, QStringList() << "Workflow Designer");
 
     GTUtilsWorkflowDesigner::addSample(os,"tuxedo tools");
+
+
 
     GTKeyboardDriver::keyClick(os, 'r' ,GTKeyboardDriver::key["ctrl"]);
     TaskScheduler* scheduller = AppContext::getTaskScheduler();
@@ -138,5 +143,37 @@ GUI_TEST_CLASS_DEFINITION(test_0001){
 
 }
 
-} // namespace GUITest_common_scenarios_annotations_edit
+GUI_TEST_CLASS_DEFINITION(test_0002){
+    QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
+    GTMenu::clickMenuItem(os, menu, QStringList() << "Workflow Designer");
+
+    GTUtilsWorkflowDesigner::addSample(os,"call variants");
+    GTGlobals::sleep();
+    GTMouseDriver::moveTo(os,GTUtilsWorkflowDesigner::getItemCenter(os, "call variants"));
+    GTMouseDriver::click(os);
+    GTGlobals::sleep(500);
+
+
+    QGroupBox *paramBox = qobject_cast<QGroupBox*>(GTWidget::findWidget(os, "paramBox"));
+    QList<QWidget*> list = paramBox->findChildren<QWidget*>();
+
+    QTableView* table = qobject_cast<QTableView*>(GTWidget::findWidget(os,"table",paramBox));
+
+    QString s;
+    foreach(QWidget* w, list){
+        s.append(QString("\n%1 %2").arg(w->metaObject()->className()).arg(w->objectName()));
+    }
+    //CHECK_SET_ERR(false,s);
+
+//    GTMouseDriver::moveTo(os,GTUtilsWorkflowDesigner::getItemCenter(os, "read sequence"));
+//    GTMouseDriver::doubleClick(os);
+
+//    GTGlobals::sleep();
+//    GTMouseDriver::moveTo(os,QPoint(GTUtilsWorkflowDesigner::getItemLeft(os, "read sequence")+25,
+//                                    GTUtilsWorkflowDesigner::getItemTop(os,"read sequence")+25));
+//    GTMouseDriver::doubleClick(os);
+}
+
+} // namespace GUITest_common_scenarios_workflow_designer
+
 } // namespace U2

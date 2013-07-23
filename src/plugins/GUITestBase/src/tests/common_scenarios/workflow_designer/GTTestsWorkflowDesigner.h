@@ -32,7 +32,7 @@ namespace GUITest_common_scenarios_workflow_designer {
 #define GUI_TEST_PREFIX "GUITest_common_scenarios_workflow_designer_"
 
 GUI_LONG_TEST_CLASS_DECLARATION(test_0001)
-
+GUI_TEST_CLASS_DECLARATION(test_0002)
 
 
 #undef GUI_TEST_PREFIX

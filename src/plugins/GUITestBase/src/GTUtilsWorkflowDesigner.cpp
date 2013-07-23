@@ -211,15 +211,18 @@ QRect GTUtilsWorkflowDesigner::getItemRect(U2OpStatus &os,QString itemName){
         QGraphicsTextItem* textItemO = qobject_cast<QGraphicsTextItem*>(itObj);
         if (textItemO) {
             QString text = textItemO->toPlainText();
-            if (text.contains(itemName)) {
-                QRectF r = it->parentItem()->boundingRect();
-                QRect sceneRect = it->parentItem()->mapRectToScene(r).toRect();
+            if (text.contains(itemName,Qt::CaseInsensitive)) {
+               QPointF scenePButton = it->mapToScene(it->boundingRect().bottomRight());
+               QPoint viewP = sceneView->mapFromScene(scenePButton);
+               QPoint globalBottomRightPos = sceneView->viewport()->mapToGlobal(viewP);
 
-                QPoint globalTopLeftPos = sceneView->mapToGlobal(sceneRect.topLeft());
-                QPoint globalBottomRightPos = sceneView->mapToGlobal(sceneRect.bottomRight());
-                QRect globalRect(globalTopLeftPos,globalBottomRightPos);
+               QPointF scenePTop = it->mapToScene(it->boundingRect().topLeft());
+               viewP = sceneView->mapFromScene(scenePTop);
+               QPoint globalTopLeftPos = sceneView->viewport()->mapToGlobal(viewP);
 
-                return globalRect;
+               QRect globalRect(globalTopLeftPos,globalBottomRightPos);
+
+               return globalRect;
             }
         }
     }
