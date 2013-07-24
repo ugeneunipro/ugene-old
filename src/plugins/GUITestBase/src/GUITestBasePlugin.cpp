@@ -71,6 +71,7 @@
 #define REGISTER_TEST_IGNORED(X, MESSAGE) REGISTER_TEST_IGNORED_BY(X, GUITest::Ignored, MESSAGE)
 #define REGISTER_TEST_IGNORED_LINUX(X, MESSAGE) REGISTER_TEST_IGNORED_BY(X, GUITest::IgnoredLinux, MESSAGE)
 #define REGISTER_TEST_IGNORED_WINDOWS(X, MESSAGE) REGISTER_TEST_IGNORED_BY(X, GUITest::IgnoredWindows, MESSAGE)
+#define REGISTER_TEST_IGNORED_MAC(X, MESSAGE) REGISTER_TEST_IGNORED_BY(X, GUITest::IgnoredMac, MESSAGE)
 
 namespace U2 {
 
@@ -794,8 +795,6 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 // Common scenarios/Workflow designer
 /////////////////////////////////////////////////////////////////////////
     REGISTER_TEST_IGNORED(GUITest_common_scenarios_workflow_designer::test_0001, "needs quick fix");
-
-
 
 /////////////////////////////////////////////////////////////////////////
 // Common scenarios/NIAID_pipelines

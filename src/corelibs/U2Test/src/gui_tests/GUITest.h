@@ -10,7 +10,7 @@ namespace U2 {
 class GUITestIgnorable {
 public:
     // not ignored test, ignored by all, ignored on windows platforms, ignored on linux platforms
-    enum IgnoreStatus {NotIgnored, Ignored, IgnoredWindows, IgnoredLinux};
+    enum IgnoreStatus {NotIgnored, Ignored, IgnoredWindows, IgnoredLinux, IgnoredMac};
 
     GUITestIgnorable() : ignoreStatus(NotIgnored), ignoreMessage("") {}
 
@@ -28,6 +28,10 @@ public:
 
 #ifdef __linux__
         platformIgnore = (ignoreStatus == IgnoredLinux);
+#endif
+
+#ifdef Q_OS_MAC
+        platformIgnore = (ignoreStatus == IgnoredMac);
 #endif
 
         return ignored || platformIgnore;
