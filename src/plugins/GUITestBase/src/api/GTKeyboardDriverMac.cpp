@@ -76,6 +76,7 @@ void GTKeyboardDriver::keyPress(U2::U2OpStatus &os, char key, int modifiers)
     GTGlobals::sleep(10);
     keyPress(os, (int)key, modifiers);
 }
+#undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "keyPress_int"
 void GTKeyboardDriver::keyPress(U2::U2OpStatus &os, int key, int modifiers)
@@ -140,6 +141,7 @@ void GTKeyboardDriver::keyRelease(U2::U2OpStatus &os, char key, int modifiers)
     GTGlobals::sleep(10);
     keyRelease(os, (int) key, modifiers);
 }
+#undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "keyRelease_int"
 void GTKeyboardDriver::keyRelease(U2::U2OpStatus &os, int key, int modifiers)
@@ -176,7 +178,7 @@ GTKeyboardDriver::keys::keys()
     ADD_KEY("up", kVK_UpArrow);
     ADD_KEY("right", kVK_RightArrow);
     ADD_KEY("down", kVK_DownArrow);
-    ADD_KEY("delete", kVK_Delete);
+    ADD_KEY("delete", kVK_ForwardDelete);
     ADD_KEY("help", kVK_Help);
     ADD_KEY("f1", kVK_F1);
     ADD_KEY("f2", kVK_F2);
@@ -201,7 +203,8 @@ GTKeyboardDriver::keys::keys()
 void GTKeyboardDriver::keyClick(U2::U2OpStatus &os, char key, int modifiers)
 {
     GT_CHECK(key != 0, "key = 0");
-
+    if (modifiers==GTKeyboardDriver::key["ctrl"])
+        modifiers=GTKeyboardDriver::key["cmd"];
     keyPress(os, key, modifiers);
     GTGlobals::sleep(10);
     keyRelease(os, key, modifiers);
