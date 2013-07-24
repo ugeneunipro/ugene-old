@@ -31,7 +31,7 @@ namespace GUITest_common_scenarios_NIAID_pipelines {
 #undef GUI_TEST_PREFIX
 #define GUI_TEST_PREFIX "GUITest_common_scenarios_NIAID_pipelines_"
 
-GUI_LONG_TEST_CLASS_DECLARATION(test_0001)
+GUI_TEST_CLASS_DECLARATION(test_0001)
 
 
 #undef GUI_TEST_PREFIX
