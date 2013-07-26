@@ -184,6 +184,7 @@ static void addToggleDashboardAction(QToolBar *toolBar, QAction *action) {
 
 static QToolButton * styleMenu(WorkflowView *parent, const QList<QAction*> &actions) {
     QToolButton *tt = new QToolButton(parent);
+    tt->setObjectName("Element style");
     QMenu *ttMenu = new QMenu( QObject::tr("Element style"), parent );
     foreach(QAction *a, actions) {
         ttMenu->addAction( a );
@@ -195,6 +196,7 @@ static QToolButton * styleMenu(WorkflowView *parent, const QList<QAction*> &acti
 
 static QToolButton * runMenu(WorkflowView *parent, const QList<QAction*> &runModeActions) {
     QToolButton *runModeToolButton = new QToolButton(parent);
+    runModeToolButton->setObjectName("Run mode");
     QMenu *runModeMenu = new QMenu( QObject::tr( "Run mode" ), parent );
     foreach(QAction * a, runModeActions) {
         runModeMenu->addAction( a );
@@ -622,11 +624,13 @@ void WorkflowView::createActions() {
 
     { // style
         QAction* simpleStyle = new QAction(tr("Minimal"), this);
+        simpleStyle->setObjectName("Minimal");
         simpleStyle->setData(QVariant(ItemStyles::SIMPLE));
         styleActions << simpleStyle;
         connect(simpleStyle, SIGNAL(triggered()), SLOT(sl_setStyle()));
 
         QAction* extStyle = new QAction(tr("Extended"), this);
+        extStyle->setObjectName("Extended");
         extStyle->setData(QVariant(ItemStyles::EXTENDED));
         styleActions << extStyle;
         connect(extStyle, SIGNAL(triggered()), SLOT(sl_setStyle()));
@@ -635,11 +639,13 @@ void WorkflowView::createActions() {
     { // run mode
         QAction * localHostRunMode = new QAction( tr( "Local host" ), this );
         localHostRunMode->setCheckable( true );
+        localHostRunMode->setObjectName("Local host");
         localHostRunMode->setChecked( LOCAL_HOST == runMode );
         runModeActions << localHostRunMode;
         connect( localHostRunMode, SIGNAL( triggered() ), SLOT( sl_setRunMode() ) );
 
         QAction * remoteMachineRunMode = new QAction( tr( "Remote machine" ), this );
+        remoteMachineRunMode->setObjectName("Remote machine");
         remoteMachineRunMode->setCheckable( true );
         remoteMachineRunMode->setChecked( REMOTE_MACHINE == runMode );
         runModeActions << remoteMachineRunMode;

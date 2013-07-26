@@ -31,6 +31,8 @@
 #include "api/GTTreeWidget.h"
 #include "api/GTAction.h"
 #include "api/GTFile.h"
+#include "api/GTSpinBox.h"
+#include "api/GTTableView.h"
 #include "runnables/qt/PopupChooser.h"
 #include "runnables/ugene/plugins/workflow_designer/WizardFiller.h"
 #include "runnables/ugene/plugins/workflow_designer/StartupDialogFiller.h"
@@ -42,6 +44,7 @@
 #include <U2Core/AppContext.h>
 #include <QProcess>
 #include "../../workflow_designer/src/WorkflowViewItems.h"
+#include <U2Lang/WorkflowSettings.h>
 
 
 namespace U2 {
@@ -144,34 +147,68 @@ GUI_TEST_CLASS_DEFINITION(test_0001){
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0002){
-    QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
+    //1. Start UGENE. Open workflow schema file from data\cmdline\pfm-build.uws
+    GTFileDialog::openFile(os,dataDir + "cmdline/","pwm-build.uwl");
+    GTGlobals::sleep(1000);
+//  Expected state: workflow schema opened in Workflow designer
+//    2. Change item style (Minimal - Extended - Minimal - Extended)
+    QGraphicsView* sceneView = qobject_cast<QGraphicsView*>(GTWidget::findWidget(os,"sceneView"));
+    CHECK_SET_ERR(sceneView,"scene not found");
+    QList<QGraphicsItem *> items = sceneView->items();
+    QList<QPointF> posList;
+
+    foreach(QGraphicsItem* item,items){
+        posList.append(item->pos());
+    }
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os,QStringList()<<"Minimal"));
+    GTWidget::click(os, GTWidget::findWidget(os,"Element style"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os,QStringList()<<"Extended"));
+    GTWidget::click(os, GTWidget::findWidget(os,"Element style"));
+//  Expected state: all arrows in schema still unbroken
+    items = sceneView->items();
+    foreach(QGraphicsItem* item,items){
+        QPointF p = posList.takeFirst();
+        CHECK_SET_ERR(p==item->pos(),QString("some item changed position from %1, %2 to %3, %4")
+                      .arg(p.x()).arg(p.y()).arg(item->pos().x()).arg(item->pos().y()));
+    }
+    /*QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
     GTMenu::clickMenuItem(os, menu, QStringList() << "Workflow Designer");
 
-    GTUtilsWorkflowDesigner::addSample(os,"call variants");
+    1. Start UGENE. Open workflow schema file from data\cmdline\pfm-build.uws
+
+    WorkflowProcessItem* s =  qgraphicsitem_cast<WorkflowProcessItem*>(it->parentItem()->parentItem());
+    StyleId id = s->getStyle();
+    GTMouseDriver::moveTo(os,GTUtilsWorkflowDesigner::getItemCenter(os, "read sequence"));
+    GTMouseDriver::doubleClick(os);
+
     GTGlobals::sleep();
-    GTMouseDriver::moveTo(os,GTUtilsWorkflowDesigner::getItemCenter(os, "call variants"));
-    GTMouseDriver::click(os);
-    GTGlobals::sleep(500);
+    GTMouseDriver::moveTo(os,QPoint(GTUtilsWorkflowDesigner::getItemLeft(os, "read sequence")+25,
+                                    GTUtilsWorkflowDesigner::getItemTop(os,"read sequence")+25));
+    GTMouseDriver::doubleClick(os);*/
+}
 
+GUI_TEST_CLASS_DEFINITION(test_0002_1){
+    //1. Start UGENE. Open workflow schema file from data\cmdline\pfm-build.uws
+    GTFileDialog::openFile(os,dataDir + "cmdline/","pwm-build.uwl");
+    GTGlobals::sleep(1000);
+//  Expected state: workflow schema opened in Workflow designer
+//    2. Change item style (Minimal - Extended - Minimal - Extended)
+    QGraphicsView* sceneView = qobject_cast<QGraphicsView*>(GTWidget::findWidget(os,"sceneView"));
+    CHECK_SET_ERR(sceneView,"scene not found");
+    QList<QGraphicsItem *> items = sceneView->items();
+    QList<QPointF> posList;
 
-    QGroupBox *paramBox = qobject_cast<QGroupBox*>(GTWidget::findWidget(os, "paramBox"));
-    QList<QWidget*> list = paramBox->findChildren<QWidget*>();
-
-    QTableView* table = qobject_cast<QTableView*>(GTWidget::findWidget(os,"table",paramBox));
-
-    QString s;
-    foreach(QWidget* w, list){
-        s.append(QString("\n%1 %2").arg(w->metaObject()->className()).arg(w->objectName()));
+    foreach(QGraphicsItem* item,items){
+        posList.append(item->pos());
     }
-    //CHECK_SET_ERR(false,s);
 
-//    GTMouseDriver::moveTo(os,GTUtilsWorkflowDesigner::getItemCenter(os, "read sequence"));
-//    GTMouseDriver::doubleClick(os);
+    GTMouseDriver::moveTo(os,GTUtilsWorkflowDesigner::getItemCenter(os, "Write Weight Matrix"));
+    GTMouseDriver::doubleClick(os);
 
-//    GTGlobals::sleep();
-//    GTMouseDriver::moveTo(os,QPoint(GTUtilsWorkflowDesigner::getItemLeft(os, "read sequence")+25,
-//                                    GTUtilsWorkflowDesigner::getItemTop(os,"read sequence")+25));
-//    GTMouseDriver::doubleClick(os);
+    GTGlobals::sleep();
+    GTMouseDriver::moveTo(os,QPoint(GTUtilsWorkflowDesigner::getItemLeft(os, "Write Weight Matrix")+25,
+                                    GTUtilsWorkflowDesigner::getItemTop(os,"Write Weight Matrix")+25));
+    GTMouseDriver::doubleClick(os);
 }
 
 } // namespace GUITest_common_scenarios_workflow_designer

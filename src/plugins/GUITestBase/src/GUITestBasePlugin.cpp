@@ -794,7 +794,9 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 /////////////////////////////////////////////////////////////////////////
 // Common scenarios/Workflow designer
 /////////////////////////////////////////////////////////////////////////
-    REGISTER_TEST_IGNORED(GUITest_common_scenarios_workflow_designer::test_0001, "needs quick fix");
+    REGISTER_TEST(GUITest_common_scenarios_workflow_designer::test_0001);
+    REGISTER_TEST(GUITest_common_scenarios_workflow_designer::test_0002);
+    REGISTER_TEST(GUITest_common_scenarios_workflow_designer::test_0002_1);
 
 /////////////////////////////////////////////////////////////////////////
 // Common scenarios/NIAID_pipelines

@@ -151,6 +151,7 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/api/GTWidget.h \
             src/api/GTAction.h \
             src/api/GTDoubleSpinBox.h \
+            src/api/GTTableView.h /
 
 
 SOURCES +=  src/GUITestBasePlugin.cpp \
@@ -308,3 +309,4 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/api/GTWidget.cpp \
             src/api/GTAction.cpp \
             src/api/GTDoubleSpinBox.cpp \
+            src/api/GTTableView.cpp \
