@@ -75,6 +75,7 @@ GUI_TEST_CLASS_DEFINITION(test_0011){
     GTUtilsDialog::waitForDialog(os, filler2);
 
     GTMenu::clickMenuItem(os, menu, QStringList() << "Build dotplot");
+    GTGlobals::sleep(1000);
 //Expected state: Dot plot view has appear. There is 1 line at view.
 //6. Use context menu on dot plot view {Dotplot->Remove}
 //Expected state: save "Dotplot" has appear.
