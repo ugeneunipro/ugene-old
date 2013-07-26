@@ -378,6 +378,9 @@ int asciiToVirtual(int key)
     case '.':
         key = kVK_ANSI_Period;
         break;
+    case '\n':
+        key = kVK_Return;
+        break;
     }
 
     return key;

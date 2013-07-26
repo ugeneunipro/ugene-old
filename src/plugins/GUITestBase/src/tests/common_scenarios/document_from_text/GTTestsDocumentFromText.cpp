@@ -1101,7 +1101,7 @@ GUI_TEST_CLASS_DEFINITION(test_0015) {
     GTGlobals::sleep();
     CHECK_SET_ERR(translation -> isEnabled() == false, "button is not disabled");
 
-    Runnable *chooser = new PopupChooser(os, QStringList() << "show_hide_details_view");
+    Runnable *chooser = new PopupChooser(os, QStringList() << "show_hide_details_view",GTGlobals::UseMouse);
     GTUtilsDialog::waitForDialog(os, chooser);
     GTWidget::click(os, GTWidget::findWidget(os, "toggle_view_button_result"));
     GTGlobals::sleep();
@@ -1148,7 +1148,7 @@ GUI_TEST_CLASS_DEFINITION(test_0015_1) {
     GTGlobals::sleep();
     CHECK_SET_ERR(translation -> isEnabled() == false, "button is not disabled");
 
-    Runnable *chooser = new PopupChooser(os, QStringList() << "show_hide_details_view");
+    Runnable *chooser = new PopupChooser(os, QStringList() << "show_hide_details_view",GTGlobals::UseMouse);
     GTUtilsDialog::waitForDialog(os, chooser);
     GTWidget::click(os, GTWidget::findWidget(os, "toggle_view_button_result"));
     GTGlobals::sleep();
@@ -1196,7 +1196,7 @@ GUI_TEST_CLASS_DEFINITION(test_0015_2) {
     CHECK_SET_ERR(translation -> isEnabled() == false, "button is not disabled");
 
     GTGlobals::sleep();
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "show_hide_details_view"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "show_hide_details_view",GTGlobals::UseMouse));
     GTWidget::click(os, GTWidget::findWidget(os, "toggle_view_button_result"));
     GTGlobals::sleep();
 
