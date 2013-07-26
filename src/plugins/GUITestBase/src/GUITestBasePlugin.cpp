@@ -798,6 +798,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_workflow_designer::test_0002);
     REGISTER_TEST(GUITest_common_scenarios_workflow_designer::test_0002_1);
 
+
 /////////////////////////////////////////////////////////////////////////
 // Common scenarios/NIAID_pipelines
 /////////////////////////////////////////////////////////////////////////

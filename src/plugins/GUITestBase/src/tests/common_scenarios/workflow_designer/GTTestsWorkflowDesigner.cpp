@@ -38,6 +38,7 @@
 #include "runnables/ugene/plugins/workflow_designer/StartupDialogFiller.h"
 #include "runnables/ugene/ugeneui/SequenceReadingModeSelectorDialogFiller.h"
 #include "GTUtilsWorkflowDesigner.h"
+#include "GTUtilsMdi.h"
 #include "GTUtilsApp.h"
 
 #include <QGraphicsItem>
@@ -147,6 +148,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001){
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0002){
+    GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
     //1. Start UGENE. Open workflow schema file from data\cmdline\pfm-build.uws
     GTFileDialog::openFile(os,dataDir + "cmdline/","pwm-build.uwl");
     GTGlobals::sleep(1000);
@@ -171,23 +173,11 @@ GUI_TEST_CLASS_DEFINITION(test_0002){
         CHECK_SET_ERR(p==item->pos(),QString("some item changed position from %1, %2 to %3, %4")
                       .arg(p.x()).arg(p.y()).arg(item->pos().x()).arg(item->pos().y()));
     }
-    /*QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
-    GTMenu::clickMenuItem(os, menu, QStringList() << "Workflow Designer");
 
-    1. Start UGENE. Open workflow schema file from data\cmdline\pfm-build.uws
-
-    WorkflowProcessItem* s =  qgraphicsitem_cast<WorkflowProcessItem*>(it->parentItem()->parentItem());
-    StyleId id = s->getStyle();
-    GTMouseDriver::moveTo(os,GTUtilsWorkflowDesigner::getItemCenter(os, "read sequence"));
-    GTMouseDriver::doubleClick(os);
-
-    GTGlobals::sleep();
-    GTMouseDriver::moveTo(os,QPoint(GTUtilsWorkflowDesigner::getItemLeft(os, "read sequence")+25,
-                                    GTUtilsWorkflowDesigner::getItemTop(os,"read sequence")+25));
-    GTMouseDriver::doubleClick(os);*/
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0002_1){
+    GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
     //1. Start UGENE. Open workflow schema file from data\cmdline\pfm-build.uws
     GTFileDialog::openFile(os,dataDir + "cmdline/","pwm-build.uwl");
     GTGlobals::sleep(1000);
@@ -209,8 +199,36 @@ GUI_TEST_CLASS_DEFINITION(test_0002_1){
     GTMouseDriver::moveTo(os,QPoint(GTUtilsWorkflowDesigner::getItemLeft(os, "Write Weight Matrix")+25,
                                     GTUtilsWorkflowDesigner::getItemTop(os,"Write Weight Matrix")+25));
     GTMouseDriver::doubleClick(os);
+
+//  Expected state: all arrows in schema still unbroken
+        items = sceneView->items();
+        foreach(QGraphicsItem* item,items){
+            QPointF p = posList.takeFirst();
+            CHECK_SET_ERR(p==item->pos(),QString("some item changed position from %1, %2 to %3, %4")
+                          .arg(p.x()).arg(p.y()).arg(item->pos().x()).arg(item->pos().y()));
+        }
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0003){
+    GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
+//    1. Start UGENE. Open workflow schema file from \common data\workflow\remoteDBReaderTest.uws
+    GTFileDialog::openFile(os,testDir + "_common_data/workflow/","remoteDBReaderTest.uws");
+//    Expected state: workflow schema opened in Workflow designer
+    QTableView* table = qobject_cast<QTableView*>(GTWidget::findWidget(os,"table"));
+    CHECK_SET_ERR(table,"tableView not found");
+    GTMouseDriver::moveTo(os,GTUtilsWorkflowDesigner::getItemCenter(os,"Write Genbank"));
+    GTMouseDriver::click(os);
+    GTMouseDriver::moveTo(os,GTTableView::getCellPosition(os,table,1,4));
+    GTMouseDriver::click(os);
+    GTKeyboardDriver::keySequence(os,testDir + "_common_data/scenarios/sandbox/T1.gb");
+    GTWidget::click(os,GTUtilsMdi::activeWindow(os));
+
+    GTWidget::click(os,GTAction::button(os,"Run scheme"));
+
+    GTGlobals::sleep();
+//    2. If you don't want result file (T1.gb) in UGENE run directory, change this property in write genbank worker.Run schema.
+//    Expected state: T1.gb file is saved to your disc
+}
 } // namespace GUITest_common_scenarios_workflow_designer
 
 } // namespace U2

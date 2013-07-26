@@ -483,6 +483,7 @@ void WorkflowView::sl_rescaleScene(const QString &scale)
 
 void WorkflowView::createActions() {
     runAction = new QAction(tr("&Run scheme"), this);
+    runAction->setObjectName("Run scheme");
     runAction->setIcon(QIcon(":workflow_designer/images/run.png"));
     runAction->setShortcut(QKeySequence("Ctrl+R"));
     connect(runAction, SIGNAL(triggered()), SLOT(sl_launch()));
