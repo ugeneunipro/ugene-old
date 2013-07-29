@@ -19,46 +19,40 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_WORKFLOWTABVIEW_H_
-#define _U2_WORKFLOWTABVIEW_H_
-
-#include <QTabBar>
-#include <QTabWidget>
-#include <QToolButton>
+#ifndef _U2_DASHBOARDSMANAGERDIALOG_H_
+#define _U2_DASHBOARDSMANAGERDIALOG_H_
 
 #include <U2Designer/Dashboard.h>
 
-#include <U2Lang/WorkflowMonitor.h>
-
-class QGraphicsView;
+#include <ui_DashboardsManagerDialog.h>
 
 namespace U2 {
-using namespace Workflow;
 
-class Dashboard;
+class ScanDashboardsDirTask;
 
-class WorkflowTabView : public QTabWidget {
+class DashboardsManagerDialog : public QDialog, public Ui::DashboardsManagerDialog {
     Q_OBJECT
 public:
-    WorkflowTabView(QWidget *parent);
+    DashboardsManagerDialog(ScanDashboardsDirTask *task, QWidget *parent);
 
-    void addDashboard(WorkflowMonitor *monitor, const QString &name = QString());
-    bool hasDashboards() const;
-    void updateDashboards(const QList<DashboardInfo> &dashboards);
-
-signals:
-    void si_countChanged();
+    QList<DashboardInfo> selectedDashboards();
+    QList<DashboardInfo> removedDashboards();
 
 private slots:
-    void sl_closeTab();
-    void sl_dashboardsLoaded();
+    void sl_check();
+    void sl_uncheck();
+    void sl_selectAll();
+    void sl_remove();
 
 private:
-    void addDashboard(Dashboard *db);
-    QString generateName(const QString &baseName = "") const;
-    QStringList allNames() const;
+    void setupList();
+    QList<QTreeWidgetItem*> allItems();
+
+private:
+    ScanDashboardsDirTask *task;
+    QList<DashboardInfo> removed;
 };
 
 } // U2
 
-#endif // _U2_WORKFLOWTABVIEW_H_
+#endif // _U2_DASHBOARDSMANAGERDIALOG_H_

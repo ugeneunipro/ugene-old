@@ -35,13 +35,16 @@ using namespace Workflow;
 class U2DESIGNER_EXPORT Dashboard : public QWebView {
     Q_OBJECT
 public:
-    Dashboard(const WorkflowMonitor *monitor, QWidget *parent);
+    Dashboard(const WorkflowMonitor *monitor, const QString &name, QWidget *parent);
     Dashboard(const QString &dirPath, QWidget *parent);
 
     const WorkflowMonitor * monitor();
     QWebElement getDocument();
     void setClosed();
     QString directory() const;
+
+    QString getName() const;
+    void setName(const QString &value);
 
 protected:
     virtual void contextMenuEvent(QContextMenuEvent *ev);
@@ -54,6 +57,7 @@ private slots:
     void sl_setDirectory(const QString &dir);
 
 private:
+    QString name;
     QString dir;
     bool opened;
     const WorkflowMonitor *_monitor;
@@ -70,8 +74,9 @@ private:
     /** Returns size of the QWebElement "name", it is searched inside "insideElt" only*/
     int containerSize(const QWebElement &insideElt, const QString &name);
 
-    void serialize(const QString &fileName, U2OpStatus &os);
-    void saveSettings(const QString &fileName, U2OpStatus &os);
+    void serialize(U2OpStatus &os);
+    void saveSettings();
+    void loadSettings();
 };
 
 class DashboardWidget : public QObject {
@@ -98,21 +103,47 @@ private:
     Dashboard *dashboard;
 };
 
-class U2DESIGNER_EXPORT LoadDashboardsTask : public Task {
+class U2DESIGNER_EXPORT DashboardInfo {
+public:
+    QString path;
+    QString dirName;
+    QString name;
+    bool opened;
+
+public:
+    DashboardInfo();
+    DashboardInfo(const QString &dirPath, bool opened = true);
+    bool operator==(const DashboardInfo &other) const;
+};
+
+class U2DESIGNER_EXPORT ScanDashboardsDirTask : public Task {
     Q_OBJECT
 public:
-    LoadDashboardsTask();
+    ScanDashboardsDirTask();
     void run();
 
-    QStringList result() const;
+    QStringList getOpenedDashboards() const;
+    QList<DashboardInfo> getResult() const;
 
 private:
-    bool isOpenedDashboard(const QString &dirPath);
+    bool isDashboardDir(const QString &dirPath, DashboardInfo &info);
 
 private:
-    QStringList dashboards;
+    QStringList openedDashboards;
+    QList<DashboardInfo> result;
+};
+
+class U2DESIGNER_EXPORT RemoveDashboardsTask : public Task {
+public:
+    RemoveDashboardsTask(const QList<DashboardInfo> &dashboards);
+    void run();
+
+private:
+    QList<DashboardInfo> dashboards;
 };
 
 } // U2
+
+Q_DECLARE_METATYPE(U2::DashboardInfo);
 
 #endif // _U2_DASHBOARD_H_

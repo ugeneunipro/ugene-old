@@ -27,8 +27,6 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/U2SafePoints.h>
 
-#include <U2Designer/Dashboard.h>
-
 #include "WorkflowTabView.h"
 
 namespace U2 {
@@ -52,21 +50,23 @@ private:
 };
 
 WorkflowTabView::WorkflowTabView(QWidget *parent)
-: QTabWidget(parent), runsCounter(0)
+: QTabWidget(parent)
 {
     setTabPosition(QTabWidget::North);
     tabBar()->setShape(QTabBar::TriangularNorth);
     tabBar()->setMovable(true);
 
     setDocumentMode(true);
-    LoadDashboardsTask *t = new LoadDashboardsTask();
+    ScanDashboardsDirTask *t = new ScanDashboardsDirTask();
     connect(t, SIGNAL(si_stateChanged()), SLOT(sl_dashboardsLoaded()));
     AppContext::getTaskScheduler()->registerTopLevelTask(t);
 }
 
 void WorkflowTabView::addDashboard(Dashboard *db) {
-    runsCounter++;
-    int idx = addTab(db, tr("Run %1").arg(runsCounter));
+    if (db->getName().isEmpty()) {
+        db->setName(generateName());
+    }
+    int idx = addTab(db, db->getName());
     setCurrentIndex(idx);
 
     CloseButton *closeButton = new CloseButton(db);
@@ -75,12 +75,33 @@ void WorkflowTabView::addDashboard(Dashboard *db) {
     emit si_countChanged();
 }
 
-void WorkflowTabView::addDashboard(WorkflowMonitor *monitor) {
-    addDashboard(new Dashboard(monitor, this));
+void WorkflowTabView::addDashboard(WorkflowMonitor *monitor, const QString &baseName) {
+    QString name = generateName(baseName);
+    addDashboard(new Dashboard(monitor, name, this));
 }
 
 bool WorkflowTabView::hasDashboards() const {
     return count() > 0;
+}
+
+void WorkflowTabView::updateDashboards(const QList<DashboardInfo> &dashboards) {
+    QList<DashboardInfo> dbs = dashboards;
+    int i = 0;
+    while (i < count()) {
+        Dashboard *db = dynamic_cast<Dashboard*>(widget(i));
+        DashboardInfo info(db->directory());
+        if (dbs.contains(info)) {
+            dbs.removeOne(info);
+            i++;
+        } else {
+            db->setClosed();
+            removeTab(i);
+        }
+    }
+    foreach (const DashboardInfo &info, dbs) {
+        addDashboard(new Dashboard(info.path, this));
+    }
+    emit si_countChanged();
 }
 
 void WorkflowTabView::sl_closeTab() {
@@ -94,13 +115,38 @@ void WorkflowTabView::sl_closeTab() {
 }
 
 void WorkflowTabView::sl_dashboardsLoaded() {
-    LoadDashboardsTask *t = dynamic_cast<LoadDashboardsTask*>(sender());
+    ScanDashboardsDirTask *t = dynamic_cast<ScanDashboardsDirTask*>(sender());
     CHECK(NULL != t, );
     CHECK(t->isFinished(), );
 
-    foreach (const QString &dbPath, t->result()) {
+    foreach (const QString &dbPath, t->getOpenedDashboards()) {
         addDashboard(new Dashboard(dbPath, this));
     }
+}
+
+QStringList WorkflowTabView::allNames() const {
+    QStringList result;
+    for (int i=0; i<count(); i++) {
+        Dashboard *db = dynamic_cast<Dashboard*>(widget(i));
+        result << db->getName();
+    }
+    return result;
+}
+
+QString WorkflowTabView::generateName(const QString &name) const {
+    QString baseName = name;
+    if (baseName.isEmpty()) {
+        baseName = tr("Run");
+    }
+
+    QString result;
+    QStringList all = allNames();
+    int num = 1;
+    do {
+        result = baseName + QString(" %1").arg(num);
+        num++;
+    } while (all.contains(result));
+    return result;
 }
 
 } // U2

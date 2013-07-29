@@ -25,6 +25,7 @@
 #include <QWebFrame>
 
 #include <U2Core/AppContext.h>
+#include <U2Core/GUrlUtils.h>
 #include <U2Core/ProjectModel.h>
 #include <U2Core/Task.h>
 #include <U2Core/U2OpStatusUtils.h>
@@ -48,12 +49,13 @@ static const QString REPORT_SUB_DIR("report/");
 static const QString DB_FILE_NAME("dashboard.html");
 static const QString SETTINGS_FILE_NAME("settings.ini");
 static const QString OPENED_SETTING("opened");
+static const QString NAME_SETTING("name");
 
 /************************************************************************/
 /* Dashboard */
 /************************************************************************/
-Dashboard::Dashboard(const WorkflowMonitor *monitor, QWidget *parent)
-: QWebView(parent), opened(true), _monitor(monitor), initialized(false)
+Dashboard::Dashboard(const WorkflowMonitor *monitor, const QString &_name, QWidget *parent)
+: QWebView(parent), name(_name), opened(true), _monitor(monitor), initialized(false)
 {
     connect(this, SIGNAL(loadFinished(bool)), SLOT(sl_loaded(bool)));
     connect(_monitor, SIGNAL(si_report()), SLOT(sl_serialize()));
@@ -65,23 +67,34 @@ Dashboard::Dashboard(const QString &dirPath, QWidget *parent)
 : QWebView(parent), dir(dirPath), opened(true), _monitor(NULL), initialized(false)
 {
     connect(this, SIGNAL(loadFinished(bool)), SLOT(sl_loaded(bool)));
-    loadDocument(dirPath + REPORT_SUB_DIR + DB_FILE_NAME);
+    loadDocument(dir + REPORT_SUB_DIR + DB_FILE_NAME);
+    loadSettings();
+    saveSettings();
 }
 
 void Dashboard::sl_setDirectory(const QString &value) {
     dir = value;
     U2OpStatus2Log os;
-    saveSettings(dir + REPORT_SUB_DIR + SETTINGS_FILE_NAME, os);
+    saveSettings();
 }
 
 void Dashboard::setClosed() {
     opened = false;
     U2OpStatus2Log os;
-    saveSettings(dir + REPORT_SUB_DIR + SETTINGS_FILE_NAME, os);
+    saveSettings();
 }
 
 QString Dashboard::directory() const {
     return dir;
+}
+
+QString Dashboard::getName() const {
+    return name;
+}
+
+void Dashboard::setName(const QString &value) {
+    saveSettings();
+    name = value;
 }
 
 void Dashboard::loadDocument(const QString &filePath) {
@@ -135,12 +148,13 @@ void Dashboard::sl_serialize() {
         }
     }
     U2OpStatus2Log os;
-    serialize(reportDir + DB_FILE_NAME, os);
+    serialize(os);
     CHECK_OP(os, );
-    saveSettings(reportDir + SETTINGS_FILE_NAME, os);
+    saveSettings();
 }
 
-void Dashboard::serialize(const QString &fileName, U2OpStatus &os) {
+void Dashboard::serialize(U2OpStatus &os) {
+    QString fileName = dir + REPORT_SUB_DIR + DB_FILE_NAME;
     QFile file(fileName);
     bool opened = file.open(QIODevice::WriteOnly);
     if (!opened) {
@@ -155,10 +169,17 @@ void Dashboard::serialize(const QString &fileName, U2OpStatus &os) {
     file.close();
 }
 
-void Dashboard::saveSettings(const QString &fileName, U2OpStatus &os) {
-    QSettings s(fileName, QSettings::IniFormat);
+void Dashboard::saveSettings() {
+    QSettings s(dir + REPORT_SUB_DIR + SETTINGS_FILE_NAME, QSettings::IniFormat);
     s.setValue(OPENED_SETTING, opened);
+    s.setValue(NAME_SETTING, name);
     s.sync();
+}
+
+void Dashboard::loadSettings() {
+    QSettings s(dir + REPORT_SUB_DIR + SETTINGS_FILE_NAME, QSettings::IniFormat);
+    opened = true;
+    name = s.value(NAME_SETTING).toString();
 }
 
 int Dashboard::containerSize(const QWebElement &insideElt, const QString &name) {
@@ -274,38 +295,79 @@ QString JavascriptAgent::absolute(const QString &url) {
 /************************************************************************/
 /* LoadDashboardsTask */
 /************************************************************************/
-LoadDashboardsTask::LoadDashboardsTask()
-: Task(tr("Load dashboards"), TaskFlag_None)
+ScanDashboardsDirTask::ScanDashboardsDirTask()
+: Task(tr("Scan dashboards directory"), TaskFlag_None)
 {
 
 }
 
-void LoadDashboardsTask::run() {
+void ScanDashboardsDirTask::run() {
     QDir outDir(WorkflowSettings::getWorkflowOutputDirectory());
     CHECK(outDir.exists(), );
 
     QFileInfoList dirs = outDir.entryInfoList(QDir::Dirs | QDir::NoDotAndDotDot | QDir::NoSymLinks);
     foreach (const QFileInfo &info, dirs) {
         QString dirPath = info.absoluteFilePath() + "/";
-        if (isOpenedDashboard(dirPath)) {
-            dashboards << dirPath;
+        DashboardInfo dbi(dirPath);
+        if (isDashboardDir(dirPath, dbi)) {
+            result << dbi;
+            if (dbi.opened) {
+                openedDashboards << dirPath;
+            }
         }
     }
 }
 
-bool LoadDashboardsTask::isOpenedDashboard(const QString &dirPath) {
+bool ScanDashboardsDirTask::isDashboardDir(const QString &dirPath, DashboardInfo &info) {
     QDir dir(dirPath + REPORT_SUB_DIR);
     CHECK(dir.exists(), false);
     CHECK(dir.exists(DB_FILE_NAME), false);
     CHECK(dir.exists(SETTINGS_FILE_NAME), false);
 
     QSettings s(dirPath + REPORT_SUB_DIR + SETTINGS_FILE_NAME, QSettings::IniFormat);
-
-    return s.value(OPENED_SETTING).toBool();
+    info.opened = s.value(OPENED_SETTING).toBool();
+    info.name = s.value(NAME_SETTING).toString();
+    return true;
 }
 
-QStringList LoadDashboardsTask::result() const {
-    return dashboards;
+QStringList ScanDashboardsDirTask::getOpenedDashboards() const {
+    return openedDashboards;
+}
+
+QList<DashboardInfo> ScanDashboardsDirTask::getResult() const {
+    return result;
+}
+
+/************************************************************************/
+/* RemoveDashboardsTask */
+/************************************************************************/
+RemoveDashboardsTask::RemoveDashboardsTask(const QList<DashboardInfo> &_dashboards)
+: Task(tr("Remove dashboards"), TaskFlag_None), dashboards(_dashboards)
+{
+
+}
+void RemoveDashboardsTask::run() {
+    foreach (const DashboardInfo &info, dashboards) {
+        U2OpStatus2Log os;
+        GUrlUtils::removeDir(info.path, os);
+    }
+}
+
+/************************************************************************/
+/* DashboardInfo */
+/************************************************************************/
+DashboardInfo::DashboardInfo() {
+
+}
+
+DashboardInfo::DashboardInfo(const QString &dirPath, bool _opened)
+: path(dirPath), opened(_opened)
+{
+    dirName = QDir(path).dirName();
+}
+
+bool DashboardInfo::operator==(const DashboardInfo &other) const {
+    return path == other.path;
 }
 
 } // U2

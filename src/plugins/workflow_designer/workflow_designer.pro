@@ -5,6 +5,7 @@ HEADERS += src/ActorCfgModel.h \
            src/BreakpointManagerView.h \
            src/ChooseItemDialog.h \
            src/CreateScriptWorker.h \
+           src/DashboardsManagerDialog.h \
            src/ImportSchemaDialog.h \
            src/InvestigationDataModel.h \
            src/ItemViewStyle.h \
@@ -25,8 +26,8 @@ HEADERS += src/ActorCfgModel.h \
            src/WorkflowTabView.h \
            src/WorkflowViewController.h \
            src/WorkflowViewItems.h \
-           src/cmdline/WorkflowCMDLineTasks.h \
            src/cmdline/GalaxyConfigTask.h \
+           src/cmdline/WorkflowCMDLineTasks.h \
            src/library/AminoTranslationWorker.h \
            src/library/AssemblyToSequenceWorker.h \
            src/library/BaseDocWorker.h \
@@ -69,6 +70,7 @@ HEADERS += src/ActorCfgModel.h \
            src/util/WriteSequenceValidator.h
 FORMS += src/ui/ChooseItemDialog.ui \
          src/ui/CreateScriptBlockDialog.ui \
+         src/ui/DashboardsManagerDialog.ui \
          src/ui/ExternalProcessWorkerDialog.ui \
          src/ui/ImportSchemaDialog.ui \
          src/ui/PaletteWidget.ui \
@@ -82,6 +84,7 @@ SOURCES += src/ActorCfgModel.cpp \
            src/BreakpointManagerView.cpp \
            src/ChooseItemDialog.cpp \
            src/CreateScriptWorker.cpp \
+           src/DashboardsManagerDialog.cpp \
            src/ImportSchemaDialog.cpp \
            src/InvestigationDataModel.cpp \
            src/ItemViewStyle.cpp \
@@ -102,8 +105,8 @@ SOURCES += src/ActorCfgModel.cpp \
            src/WorkflowTabView.cpp \
            src/WorkflowViewController.cpp \
            src/WorkflowViewItems.cpp \
-           src/cmdline/WorkflowCMDLineTasks.cpp \
            src/cmdline/GalaxyConfigTask.cpp \
+           src/cmdline/WorkflowCMDLineTasks.cpp \
            src/library/AminoTranslationWorker.cpp \
            src/library/AssemblyToSequenceWorker.cpp \
            src/library/BaseDocWorker.cpp \

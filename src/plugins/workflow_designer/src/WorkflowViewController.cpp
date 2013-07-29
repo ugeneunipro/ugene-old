@@ -54,6 +54,7 @@
 #include <U2Core/TaskSignalMapper.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
+#include <U2Designer/Dashboard.h>
 #include <U2Designer/DelegateEditors.h>
 #include <U2Designer/DesignerUtils.h>
 #include <U2Designer/GrouperEditor.h>
@@ -88,6 +89,7 @@
 
 #include "ChooseItemDialog.h"
 #include "CreateScriptWorker.h"
+#include "DashboardsManagerDialog.h"
 #include "ImportSchemaDialog.h"
 #include "ItemViewStyle.h"
 #include "PortAliasesConfigurationDialog.h"
@@ -215,6 +217,60 @@ static QToolButton * scriptMenu(WorkflowView *parent, const QList<QAction*> &scr
     scriptingModeButton->setDefaultAction( scriptingModeMenu->menuAction() );
     scriptingModeButton->setPopupMode( QToolButton::InstantPopup );
     return scriptingModeButton;
+}
+
+DashboardManagerHelper::DashboardManagerHelper(QAction *_dmAction, WorkflowView *_parent)
+: dmAction(_dmAction), parent(_parent)
+{
+    connect(dmAction, SIGNAL(triggered()), SLOT(sl_runScanTask()));
+}
+
+void DashboardManagerHelper::sl_runScanTask() {
+    dmAction->setEnabled(false);
+    ScanDashboardsDirTask *t = new ScanDashboardsDirTask();
+    connect(t, SIGNAL(si_stateChanged()), SLOT(sl_scanTaskFinished()));
+    AppContext::getTaskScheduler()->registerTopLevelTask(t);
+}
+
+void DashboardManagerHelper::sl_scanTaskFinished() {
+    ScanDashboardsDirTask *t = dynamic_cast<ScanDashboardsDirTask*>(sender());
+    CHECK(NULL != t, );
+    CHECK(t->isFinished(), );
+
+    if (t->getResult().isEmpty()) {
+        dmAction->setEnabled(true);
+        QMessageBox *d = new QMessageBox(QMessageBox::Information,
+            tr("No dashboards"),
+            tr("You have not any dashboards yet. You need to run some workflow to use Dashboards Manager."), QMessageBox::NoButton, parent);
+        d->show();
+        return;
+    }
+
+    DashboardsManagerDialog *d = new DashboardsManagerDialog(t, parent);
+    connect(d, SIGNAL(finished(int)), SLOT(sl_result(int)));
+    d->setWindowModality(Qt::ApplicationModal);
+    d->show();
+}
+
+void DashboardManagerHelper::sl_result(int result) {
+    DashboardsManagerDialog *d = dynamic_cast<DashboardsManagerDialog*>(sender());
+    if (QDialog::Accepted == result) {
+        parent->tabView->updateDashboards(d->selectedDashboards());
+        if (!d->removedDashboards().isEmpty()) {
+            RemoveDashboardsTask *rt = new RemoveDashboardsTask(d->removedDashboards());
+            connect(rt, SIGNAL(si_stateChanged()), SLOT(sl_removeTaskFinished()));
+            AppContext::getTaskScheduler()->registerTopLevelTask(rt);
+            return;
+        }
+    }
+    dmAction->setEnabled(true);
+}
+
+void DashboardManagerHelper::sl_removeTaskFinished() {
+    RemoveDashboardsTask *t = dynamic_cast<RemoveDashboardsTask*>(sender());
+    CHECK(NULL != t, );
+    CHECK(t->isFinished(), );
+    dmAction->setEnabled(true);
 }
 
 /********************************
@@ -576,6 +632,10 @@ void WorkflowView::createActions() {
     deleteAction = new QAction(tr("Delete"), this);
     deleteAction->setIcon(QIcon(":workflow_designer/images/delete.png"));
     connect(deleteAction, SIGNAL(triggered()), scene, SLOT(sl_deleteItem()));
+
+    dmAction = new QAction(tr("Dashboards manager"), this);
+    dmAction->setIcon(QIcon(":workflow_designer/images/settings.png"));
+    new DashboardManagerHelper(dmAction, this);
 
     { // Delete shortcut
         deleteShortcut = new QAction(sceneView);
@@ -1094,6 +1154,7 @@ void WorkflowView::setupMDIToolbar(QToolBar* tb) {
     styleAction = tb->addWidget(styleMenu(this, styleActions));
     runModeAction = tb->addWidget(runMenu(this, runModeActions));
     scriptAction = tb->addWidget(scriptMenu(this, scriptingActions));
+    tb->addAction(dmAction);
 
     addToggleDashboardAction(tb, toggleDashboard);
 
@@ -1196,6 +1257,7 @@ void WorkflowView::setupViewMenu(QMenu* m) {
         m->addAction(unlockAction);
     }
     m->addSeparator();
+    m->addAction(dmAction);
 }
 
 void WorkflowView::setupContextMenu(QMenu* m) {
@@ -1364,7 +1426,7 @@ void WorkflowView::localHostLaunch() {
     }
     AppContext::getTaskScheduler()->registerTopLevelTask(t);
     foreach (WorkflowMonitor *m, t->getMonitors()) {
-        tabView->addDashboard(m);
+        tabView->addDashboard(m, getMeta().name);
         showDashboards();
     }
 }

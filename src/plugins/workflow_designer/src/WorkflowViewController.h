@@ -45,6 +45,7 @@ class QGroupBox;
 
 namespace U2 {
 using namespace Workflow;
+class DashboardManagerHelper;
 class SamplesWidget;
 class WorkflowView;
 class WorkflowScene;
@@ -123,6 +124,7 @@ private:
 }; // WorkflowScene
 
 class WorkflowView : public MWMDIWindow, public SchemaConfig {
+    friend class DashboardManagerHelper;
     friend class WorkflowScene;
     Q_OBJECT
 public:
@@ -285,6 +287,8 @@ private:
     void checkAutoRunWizard();
     void loadWizardResult(const QString &result);
 
+    DashboardManagerHelper * getDMHInstance();
+
 private:
     bool running;
     bool sceneRecreation;
@@ -344,6 +348,7 @@ private:
     QAction* styleAction;
     QAction* runModeAction;
     QAction* scriptAction;
+    QAction* dmAction;
     QList<QAction*> styleActions;
     QList<QAction*> runModeActions;
     QList<QAction*> scriptingActions;
@@ -386,6 +391,22 @@ private:
     WorkflowScene * createScene();
     WorkflowProcessItem * createProcess(Actor *actor);
     void createBus(const QMap<Port*, WorkflowPortItem*> &ports, Link *link);
+};
+
+class DashboardManagerHelper : public QObject {
+    Q_OBJECT
+public:
+    DashboardManagerHelper(QAction *dmAction, WorkflowView *parent);
+
+private slots:
+    void sl_runScanTask();
+    void sl_result(int result);
+    void sl_scanTaskFinished();
+    void sl_removeTaskFinished();
+
+private:
+    QAction *dmAction;
+    WorkflowView *parent;
 };
 
 }//namespace
