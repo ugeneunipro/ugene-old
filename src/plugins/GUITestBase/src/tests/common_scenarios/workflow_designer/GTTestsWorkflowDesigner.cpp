@@ -245,19 +245,30 @@ GUI_TEST_CLASS_DEFINITION(test_0005){
 
 GUI_TEST_CLASS_DEFINITION(test_0006){
 //1. Do menu Settings->Prefrences
-    GTUtilsDialog::waitForDialog(os,new AppSettingsDialogFiller(os,AppSettingsDialogFiller::minimal));
+    GTUtilsDialog::waitForDialog(os,new AppSettingsDialogFiller(os,AppSettingsDialogFiller::extended));
     QMenu* menu=GTMenu::showMainMenu(os, MWMENU_SETTINGS);
     GTMenu::clickMenuItem(os, menu, QStringList() << "action__settings");
 //2. Open WD settings
-
 //3. Change Default visualization Item style from Extended to Minimal.
-
 //4. Click OK button
 
 //5. Open WD
-
+    menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
+    GTMenu::clickMenuItem(os, menu, QStringList() << "Workflow Designer");
 //6. Load any scheme from samples tab
+    GTUtilsWorkflowDesigner::addSample(os,"call variants");
 //Expected state: item style on loaded schema must be Minimal
+    StyleId id;
+    QGraphicsView* sceneView = qobject_cast<QGraphicsView*>(GTWidget::findWidget(os,"sceneView"));
+    QList<QGraphicsItem *> items = sceneView->items();
+    foreach(QGraphicsItem* item, items){
+        WorkflowProcessItem* s = qgraphicsitem_cast<WorkflowProcessItem*>(item);
+        if(s){
+            id = s->getStyle();
+            //bool b = id==ItemStyles::SIMPLE;
+            CHECK_SET_ERR(id=="simple","items style is not minimal");
+        }
+    }
 }
 } // namespace GUITest_common_scenarios_workflow_designer
 
