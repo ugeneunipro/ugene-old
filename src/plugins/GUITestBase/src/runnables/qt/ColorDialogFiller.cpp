@@ -36,7 +36,9 @@ void ColorDialogFiller::run(){
     GT_CHECK(dialog!=NULL, "dialog is NULL");
 
     QList<QSpinBox*> spinList = dialog->findChildren<QSpinBox*>();
-    GTSpinBox::setValue(os,spinList.at(5),255,GTGlobals::UseKeyBoard);
+    GTSpinBox::setValue(os,spinList.at(3),r,GTGlobals::UseKeyBoard);
+    GTSpinBox::setValue(os,spinList.at(4),g,GTGlobals::UseKeyBoard);
+    GTSpinBox::setValue(os,spinList.at(5),b,GTGlobals::UseKeyBoard);
 
 
     GTGlobals::sleep();

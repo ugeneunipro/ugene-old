@@ -28,12 +28,15 @@ namespace U2{
 class AppSettingsDialogFiller: public Filler
 {
 public:
-    enum style{minimal,extended};
+    enum style{minimal,extended,none};
     AppSettingsDialogFiller(U2OpStatus &_os, style _itemStyle=extended):Filler(_os,"AppSettingsDialog"),
-        itemStyle(_itemStyle){}
+        itemStyle(_itemStyle),r(-1),g(-1),b(-1){}
+    AppSettingsDialogFiller(U2OpStatus &_os, int _r,int _g, int _b):Filler(_os,"AppSettingsDialog"),
+        itemStyle(none),r(_r),g(_g),b(_b){}
     void run();
 private:
     style itemStyle;
+    int r,g,b;
 };
 }
 #endif // APPSETTINGSDIALOGFILLER_H

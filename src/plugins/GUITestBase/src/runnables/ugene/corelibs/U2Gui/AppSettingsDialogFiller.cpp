@@ -20,6 +20,7 @@
  */
 #include "AppSettingsDialogFiller.h"
 
+#include "runnables/qt/ColorDialogFiller.h"
 #include "api/GTWidget.h"
 #include "api/GTTreeWidget.h"
 #include "api/GTMouseDriver.h"
@@ -48,8 +49,16 @@ void AppSettingsDialogFiller::run(){
             GTMouseDriver::click(os);
         }
     }
-    QComboBox *styleCombo = qobject_cast<QComboBox*>(GTWidget::findWidget(os,"styleCombo",dialog));
-    GTComboBox::setCurrentIndex(os,styleCombo,itemStyle);
+    if(itemStyle!=none){
+        QComboBox *styleCombo = qobject_cast<QComboBox*>(GTWidget::findWidget(os,"styleCombo",dialog));
+        GTComboBox::setCurrentIndex(os,styleCombo,itemStyle);
+    }
+
+    if(r!=-1){
+        GTUtilsDialog::waitForDialog(os, new ColorDialogFiller(os,r,g,b));
+        QWidget *colorWidget = GTWidget::findWidget(os,"colorWidget",dialog);
+        GTWidget::click(os,colorWidget);
+    }
     GTWidget::click(os,GTWidget::findWidget(os,"okButton"));
 }
 #undef GT_METHOD_NAME

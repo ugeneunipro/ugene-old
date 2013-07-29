@@ -245,7 +245,7 @@ GUI_TEST_CLASS_DEFINITION(test_0005){
 
 GUI_TEST_CLASS_DEFINITION(test_0006){
 //1. Do menu Settings->Prefrences
-    GTUtilsDialog::waitForDialog(os,new AppSettingsDialogFiller(os,AppSettingsDialogFiller::extended));
+    GTUtilsDialog::waitForDialog(os,new AppSettingsDialogFiller(os,AppSettingsDialogFiller::minimal));
     QMenu* menu=GTMenu::showMainMenu(os, MWMENU_SETTINGS);
     GTMenu::clickMenuItem(os, menu, QStringList() << "action__settings");
 //2. Open WD settings
@@ -265,10 +265,33 @@ GUI_TEST_CLASS_DEFINITION(test_0006){
         WorkflowProcessItem* s = qgraphicsitem_cast<WorkflowProcessItem*>(item);
         if(s){
             id = s->getStyle();
-            //bool b = id==ItemStyles::SIMPLE;
             CHECK_SET_ERR(id=="simple","items style is not minimal");
         }
     }
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0007){
+//1. Do menu {Settings->Prefrences}
+    GTUtilsDialog::waitForDialog(os,new AppSettingsDialogFiller(os,255,0,0));
+    QMenu* menu=GTMenu::showMainMenu(os, MWMENU_SETTINGS);
+    GTMenu::clickMenuItem(os, menu, QStringList() << "action__settings");
+//2. Activate WD prefrences page. Change Backgrounf color for workers.
+
+//3. Open WD and place any worker on working area.
+    menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
+    GTMenu::clickMenuItem(os, menu, QStringList() << "Workflow Designer");
+//Expected state: workers background color must be same as in prefrences
+    GTUtilsWorkflowDesigner::addAlgorithm(os,"read alignment");
+    QPoint p(GTUtilsWorkflowDesigner::getItemLeft(os,"read alignment")+20,
+             GTUtilsWorkflowDesigner::getItemTop(os,"read alignment")+20);
+
+    QPixmap pixmap = QPixmap::grabWindow(QApplication::desktop()->winId());
+    QImage img = pixmap.toImage();
+    QRgb rgb = img.pixel(p);
+    QColor c(rgb);
+
+    CHECK_SET_ERR(c.name()=="#ffbfbf", QString("Expected: #ffbfbf, found: %1").arg(c.name()));
+
 }
 } // namespace GUITest_common_scenarios_workflow_designer
 

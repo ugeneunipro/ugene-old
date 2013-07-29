@@ -28,8 +28,11 @@ namespace U2{
 class ColorDialogFiller : public Filler
 {
 public:
-    ColorDialogFiller(U2OpStatus &os) : Filler(os, ""){}
+    ColorDialogFiller(U2OpStatus &os,int _r, int _g, int _b) : Filler(os, ""),
+        r(_r),g(_g),b(_b){}
     virtual void run();
+private:
+    int r,g,b;
 };
 
 }

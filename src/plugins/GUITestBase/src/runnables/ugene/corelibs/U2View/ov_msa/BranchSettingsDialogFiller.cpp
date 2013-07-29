@@ -37,7 +37,7 @@ void BranchSettingsDialogFiller::run(){
     GT_CHECK(dialog!=NULL, "Active modal widget not found");
 
     GTGlobals::sleep(500);
-    GTUtilsDialog::waitForDialog(os, new ColorDialogFiller(os));
+    GTUtilsDialog::waitForDialog(os, new ColorDialogFiller(os,0,0,255));
     QPushButton* colorButton = dialog->findChild<QPushButton*>("colorButton");
     GTWidget::click(os, colorButton);
 
