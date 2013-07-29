@@ -100,6 +100,7 @@ call %INSTALL_DIR%/copy_plugin.cmd expert_discovery
 call %INSTALL_DIR%/copy_plugin.cmd ptools
 call %INSTALL_DIR%/copy_plugin.cmd dna_flexibility
 call %INSTALL_DIR%/copy_plugin.cmd variants
+call %INSTALL_DIR%/copy_plugin.cmd snp_effect
 
 
 

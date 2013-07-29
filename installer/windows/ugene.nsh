@@ -218,6 +218,7 @@ Section "Build"
     !insertmacro AddPlugin weight_matrix
     !insertmacro AddPlugin workflow_designer
     !insertmacro AddPlugin variants
+    !insertmacro AddPlugin snp_effect
     
     SetOutPath $INSTDIR\tools
     File /r /x .svn "includes\tools\*.*"
