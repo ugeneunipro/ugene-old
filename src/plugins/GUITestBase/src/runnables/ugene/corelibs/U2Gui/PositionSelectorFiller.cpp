@@ -22,6 +22,7 @@
 #include "PositionSelectorFiller.h"
 #include "api/GTLineEdit.h"
 #include "api/GTWidget.h"
+#include "api/GTKeyboardDriver.h"
 
 #include <QtGui/QApplication>
 #include <QtGui/QPushButton>
@@ -38,6 +39,9 @@ void GoToDialogFiller::run()
     QLineEdit *posEdit = dialog->findChild<QLineEdit*>("go_to_pos_line_edit");
     GT_CHECK(posEdit != NULL, "Line edit not found");
 
+#ifdef Q_OS_MAC
+    GTKeyboardDriver::keyRelease(os, GTKeyboardDriver::key["cmd"]);
+#endif
     GTLineEdit::setText(os, posEdit, QString::number(goTo));
 
     QPushButton *goButton = dialog->findChild<QPushButton*>("okButton");
