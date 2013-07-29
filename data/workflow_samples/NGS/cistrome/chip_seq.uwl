@@ -15,18 +15,23 @@ workflow "ChIP-seq analysis"{
     macs-id {
         type:macs-id;
         name:"Find Peaks with MACS";
+        output-dir:tools_output;
     }
     ceas-report {
         type:ceas-report;
         name:"Create CEAS Report";
+        anns-file:ceas_annotations.xls;
+        image-file:ceas_report.pdf;
     }
     conservation_plot-id {
         type:conservation_plot-id;
         name:"Build Conservation Plot";
+        output-file:conservation.bmp;
     }
     seqpos-id {
         type:seqpos-id;
         name:"Collect Motifs with SeqPos";
+        output-dir:tools_output;
     }
     peak2gene-id {
         type:peak2gene-id;
@@ -35,16 +40,19 @@ workflow "ChIP-seq analysis"{
     conduct-go-id {
         type:conduct-go-id;
         name:"Conduct GO";
+        output-dir:tools_output;
     }
     write-annotations {
         type:write-annotations;
         name:"Write Gene Annotations";
         document-format:bed;
+        url-out:genes.bed;
     }
     write-annotations-1 {
         type:write-annotations;
         name:"Write Peak Annotations";
         document-format:bed;
+        url-out:peaks.bed;
     }
 
 

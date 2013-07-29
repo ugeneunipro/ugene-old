@@ -7,10 +7,12 @@ workflow "Multiple datasets Tuxedo: single-end reads"{
     tophat {
         type:tophat;
         name:"Find Splice Junctions with TopHat";
+        out-dir:tools_output;
     }
     cuffdiff {
         type:cuffdiff;
         name:"Test for Diff. Expression with Cuffdiff";
+        out-dir:tools_output;
     }
     read-sequence {
         type:get-file-list;

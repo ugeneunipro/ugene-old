@@ -7,10 +7,12 @@ workflow "Single dataset Tuxedo: single-end reads"{
     tophat {
         type:tophat;
         name:"Find Splice Junctions with TopHat";
+        out-dir:tools_output;
     }
     cufflinks {
         type:cufflinks;
         name:"Assemble Transcripts with Cufflinks";
+        out-dir:tools_output;
     }
     read-sequence {
         type:get-file-list;
