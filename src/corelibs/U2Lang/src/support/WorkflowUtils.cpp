@@ -216,9 +216,30 @@ static bool validatePorts(Actor *a, QList<ValidateError> &infoList) {
     return good;
 }
 
-static bool isReadElement( Actor *a ) {
-    foreach ( Port *p, a->getPorts( ) ) {
-        if ( p->isInput( ) ) {
+static bool graphDepthFirstSearch( Actor *vertex, QList<Actor *> &visitedVertices ) {
+    visitedVertices.append( vertex );
+    const QList<Port *> outputPorts = vertex->getOutputPorts( );
+    QList<Actor *> receivingVertices;
+    foreach ( Port *outputPort, outputPorts ) {
+        foreach ( Port *receivingPort, outputPort->getLinks( ).keys( ) ) {
+            receivingVertices.append( receivingPort->owner( ) );
+        }
+    }
+    foreach ( Actor *receivingVertex, receivingVertices ) {
+        if ( visitedVertices.contains( receivingVertex ) ) {
+            return false;
+        } else {
+            return graphDepthFirstSearch( receivingVertex, visitedVertices );
+        }
+    }
+    return true;
+}
+
+// the returning values signals about cycles existence in the scheme
+static bool hasSchemeCycles( const Schema &scheme ) {
+    foreach ( Actor *vertex, scheme.getProcesses( ) ) {
+        QList<Actor *> visitedVertices;
+        if ( !graphDepthFirstSearch( vertex, visitedVertices ) ) {
             return false;
         }
     }
@@ -245,23 +266,17 @@ static bool validateScript(Actor *a, QList<ValidateError> &infoList) {
 bool WorkflowUtils::validate(const Schema &schema, QList<ValidateError> &infoList) {
     bool good = true;
     std::auto_ptr<WorkflowScriptEngine> engine(new WorkflowScriptEngine(NULL));
-    bool hasInputElements = false;
     foreach (Actor *a, schema.getProcesses()) {
         good &= validatePorts(a, infoList);
-        if ( !hasInputElements ) {
-            hasInputElements = isReadElement( a );
-        }
-
         if (a->getProto()->isScriptFlagSet()) {
             good &= validateScript(a, infoList);
         }
-
         good &= validateExternalTools(a, infoList);
     }
-    if ( !hasInputElements ) {
+    if ( !hasSchemeCycles( schema ) ) {
         good = false;
         ValidateError item;
-        item[TEXT_REF] = QObject::tr( "The scheme contains no read element" );
+        item[TEXT_REF] = QObject::tr( "The scheme contains a cycle" );
         infoList.append( item );
     }
 
