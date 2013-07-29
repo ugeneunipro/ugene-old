@@ -27,6 +27,23 @@
 #include "ui/ui_BwaBuildSettings.h"
 #include "U2View/DnaAssemblyGUIExtension.h"
 
+class BwaIndexAlgorithmWarningReporter : public QObject {
+    Q_OBJECT
+public:
+    BwaIndexAlgorithmWarningReporter( QObject *parent );
+    void setReportingLabel( QLabel *reportLabel );
+    void setRefSequencePath( const U2::GUrl &path );
+
+public slots:
+    void sl_IndexAlgorithmChanged( int index );
+
+private:
+    void setReportLabelStyle( );
+
+    QLabel *reportLabel;
+    U2::GUrl referenceSequencePath;
+};
+
 namespace U2 {
 
 class BwaSettingsWidget : public DnaAssemblyAlgorithmMainWidget, Ui_BwaSettings {
@@ -38,13 +55,8 @@ public:
     bool isParametersOk(QString &);
     void validateReferenceSequence( const GUrl &url );
 
-private slots:
-    void sl_IndexAlgorithmChanged( int index );
-
 private:
-    void setupInfoLabel( );
-
-    GUrl referenceSequencePath;
+    BwaIndexAlgorithmWarningReporter *warningReporter;
 };
 
 class BwaSwSettingsWidget : public DnaAssemblyAlgorithmMainWidget, Ui_BwaSwSettings {
@@ -64,6 +76,10 @@ public:
     virtual QMap<QString,QVariant> getBuildIndexCustomSettings();
     virtual QString getIndexFileExtension();
     virtual void buildIndexUrl(const GUrl& url);
+    void validateReferenceSequence( const GUrl &url );
+
+private:
+    BwaIndexAlgorithmWarningReporter *warningReporter;
 };
 
 class BwaGUIExtensionsFactory : public DnaAssemblyGUIExtensionsFactory {

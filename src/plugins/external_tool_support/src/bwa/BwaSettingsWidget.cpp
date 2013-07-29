@@ -34,6 +34,15 @@ const QString STYLE_SHEET_FONT_WEIGHT_ATTRIBUTE =   "font-weight";
 const QString INFO_MESSAGE_FONT =                   "bold";
 const QString STYLE_SHEET_ATTRIBUTE_EQUALS_SIGN =   ": ";
 const QString STYLE_SHEET_ATTRIBUTES_SEPARATOR =     ";";
+const QString IS_BUILD_INDEX_ALGO_WARNING =          QObject::tr( "NOTE: \"is\" index algorithm "
+    "is not supposed to work with reference\nsequences having size larger than 2 GB. In order "
+    "to achieve stable\nBWA performance it is strongly recommend to set the index algorithm\nto "
+    "\"bwtsw\"" );
+const QString BWTSW_BUILD_INDEX_ALGO_WARNING =       QObject::tr( "NOTE: \"bwtsw\" index algorithm"
+    " is not supposed to work with reference\nsequences having size smaller than 10 MB. In order "
+    "to achieve stable\nBWA performance it is strongly recommend to set the index algorithm\nto "
+    "\"is\"" );
+
 
 void setStylesheetAttributeValue( const QString &attributeName, const QString &attributeValue,
     QString &stylesheet )
@@ -52,21 +61,68 @@ void setStylesheetAttributeValue( const QString &attributeName, const QString &a
     }
 }
 
+BwaIndexAlgorithmWarningReporter::BwaIndexAlgorithmWarningReporter( QObject *parent )
+    : QObject( parent ), reportLabel( NULL ), referenceSequencePath( )
+{
+
+}
+
+void BwaIndexAlgorithmWarningReporter::setRefSequencePath( const U2::GUrl &path ) {
+    referenceSequencePath = path;
+}
+
+void BwaIndexAlgorithmWarningReporter::setReportingLabel( QLabel *_reportLabel ) {
+    reportLabel = _reportLabel;
+    setReportLabelStyle( );
+}
+
+void BwaIndexAlgorithmWarningReporter::sl_IndexAlgorithmChanged( int index ) {
+    QFile referenceSequenceFile( referenceSequencePath.getURLString( ) );
+    if ( !referenceSequenceFile.exists( ) ) {
+        return;
+    }
+    QString infoText = QString( );
+    if ( 2 == index ) {
+        if ( MAX_REFERENCE_SIZE_FOR_IS_METHOD < referenceSequenceFile.size( ) ) {
+            infoText = IS_BUILD_INDEX_ALGO_WARNING;
+        }
+    } else if ( 0 == index ) {
+        if ( MIN_REFERENCE_SIZE_FOR_BWTSW_METHOD > referenceSequenceFile.size( ) ) {
+            infoText = BWTSW_BUILD_INDEX_ALGO_WARNING;
+        }
+    }
+    using namespace U2;
+    SAFE_POINT( NULL != reportLabel, "Trying to access null pointer data", );
+    reportLabel->setText( infoText );
+}
+
+void BwaIndexAlgorithmWarningReporter::setReportLabelStyle( ) {
+    using namespace U2;
+    SAFE_POINT( NULL != reportLabel, "Trying to access null pointer data", );
+    QString infoLabelStyleSheet = reportLabel->styleSheet( );
+    setStylesheetAttributeValue( STYLE_SHEET_COLOR_ATTRIBUTE, U2::L10N::errorColorLabelStr( ),
+        infoLabelStyleSheet );
+    setStylesheetAttributeValue( STYLE_SHEET_FONT_WEIGHT_ATTRIBUTE, INFO_MESSAGE_FONT,
+        infoLabelStyleSheet );
+    reportLabel->setStyleSheet( infoLabelStyleSheet );
+}
+
 namespace U2 {
 
 // BwaSettingsWidget
 
-BwaSettingsWidget::BwaSettingsWidget(QWidget *parent):
-    DnaAssemblyAlgorithmMainWidget(parent), referenceSequencePath( )
+BwaSettingsWidget::BwaSettingsWidget(QWidget *parent)
+    : DnaAssemblyAlgorithmMainWidget(parent),
+    warningReporter( new BwaIndexAlgorithmWarningReporter( this ) )
 {
     setupUi(this);
     layout()->setContentsMargins(0,0,0,0);
 
     threadsSpinBox->setMaximum(AppContext::getAppSettings()->getAppResourcePool()->getIdealThreadCount());
     threadsSpinBox->setValue(AppContext::getAppSettings()->getAppResourcePool()->getIdealThreadCount());
-    connect( indexAlgorithmComboBox, SIGNAL( currentIndexChanged ( int ) ),
+    warningReporter->setReportingLabel( infoLabel );
+    connect( indexAlgorithmComboBox, SIGNAL( currentIndexChanged ( int ) ), warningReporter,
         SLOT( sl_IndexAlgorithmChanged( int ) ) );
-    setupInfoLabel( );
 }
 
 QMap<QString,QVariant> BwaSettingsWidget::getDnaAssemblyCustomSettings() {
@@ -127,45 +183,20 @@ bool BwaSettingsWidget::isParametersOk(QString &) {
 }
 
 void BwaSettingsWidget::validateReferenceSequence( const GUrl &url ) {
-    referenceSequencePath = url;
-    sl_IndexAlgorithmChanged( indexAlgorithmComboBox->currentIndex( ) );
-}
-
-void BwaSettingsWidget::sl_IndexAlgorithmChanged( int index ) {
-    QFile referenceSequenceFile( referenceSequencePath.getURLString( ) );
-    QString infoText = QString( );
-    if ( 2 == index ) {
-        if ( MAX_REFERENCE_SIZE_FOR_IS_METHOD < referenceSequenceFile.size( ) ) {
-            infoText = tr( "NOTE: \"is\" index algorithm is not supposed to work with reference sequences\n"
-                "having size larger than 2 GB. In order to achieve stable BWA performance\n"
-                "it is strongly recommend to set the index algorithm to \"bwtsw\"" );
-        }
-    } else if ( 0 == index ) {
-        if ( MIN_REFERENCE_SIZE_FOR_BWTSW_METHOD > referenceSequenceFile.size( ) ) {
-            infoText = tr( "NOTE: \"bwtsw\" index algorithm is not supposed to work with reference sequences\n"
-                "having size smaller than 10 MB. In order to achieve stable BWA performance\n"
-                "it is strongly recommend to set the index algorithm to \"is\"" );
-        }
-    }
-    infoLabel->setText( infoText );
-}
-
-void BwaSettingsWidget::setupInfoLabel( ) {
-    QString infoLabelStyleSheet = infoLabel->styleSheet( );
-    setStylesheetAttributeValue( STYLE_SHEET_COLOR_ATTRIBUTE, U2::L10N::errorColorLabelStr( ),
-        infoLabelStyleSheet );
-    setStylesheetAttributeValue( STYLE_SHEET_FONT_WEIGHT_ATTRIBUTE, INFO_MESSAGE_FONT,
-        infoLabelStyleSheet );
-    infoLabel->setStyleSheet( infoLabelStyleSheet );
+    warningReporter->setRefSequencePath( url );
+    warningReporter->sl_IndexAlgorithmChanged( indexAlgorithmComboBox->currentIndex( ) );
 }
 
 // BwaBuildSettingsWidget
 
-BwaBuildSettingsWidget::BwaBuildSettingsWidget(QWidget *parent):
-    DnaAssemblyAlgorithmBuildIndexWidget(parent)
+BwaBuildSettingsWidget::BwaBuildSettingsWidget(QWidget *parent)
+    : DnaAssemblyAlgorithmBuildIndexWidget(parent),
+    warningReporter( new BwaIndexAlgorithmWarningReporter( this ) )
 {
     setupUi(this);
-    layout()->setContentsMargins(0,0,0,0);
+    warningReporter->setReportingLabel( infoLabel );
+    connect( indexAlgorithmComboBox, SIGNAL( currentIndexChanged ( int ) ), warningReporter,
+        SLOT( sl_IndexAlgorithmChanged( int ) ) );
 }
 
 QMap<QString,QVariant> BwaBuildSettingsWidget::getBuildIndexCustomSettings() {
@@ -198,6 +229,11 @@ QString BwaBuildSettingsWidget::getIndexFileExtension() {
 
 void BwaBuildSettingsWidget::buildIndexUrl(const GUrl& ) {
     // do nothing
+}
+
+void BwaBuildSettingsWidget::validateReferenceSequence( const GUrl &url ) {
+    warningReporter->setRefSequencePath( url );
+    warningReporter->sl_IndexAlgorithmChanged( indexAlgorithmComboBox->currentIndex( ) );
 }
 
 // BwaGUIExtensionsFactory

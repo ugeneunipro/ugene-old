@@ -31,24 +31,29 @@
 
 namespace U2 {
 
+class DnaAssemblyAlgorithmBaseWidget : public QWidget {
+public:
+    DnaAssemblyAlgorithmBaseWidget( QWidget *parent ) : QWidget( parent ) { }
+    virtual void validateReferenceSequence( const GUrl & ) { }
+};
 
 // These classes are intended for extending standard Dna Assembly dialog GUI
 // with options specific to the assembly algorithm
 
-class DnaAssemblyAlgorithmMainWidget : public QWidget {
+class DnaAssemblyAlgorithmMainWidget : public DnaAssemblyAlgorithmBaseWidget {
 public:
-    DnaAssemblyAlgorithmMainWidget(QWidget* parent) : QWidget(parent) {}
+    DnaAssemblyAlgorithmMainWidget(QWidget* parent) : DnaAssemblyAlgorithmBaseWidget(parent) { }
     virtual QMap<QString,QVariant> getDnaAssemblyCustomSettings() = 0;
     virtual bool isParametersOk(QString &error) = 0;
     virtual bool buildIndexUrl(const GUrl&, bool, QString &) {return true;};
     virtual void prebuiltIndex(bool) {};
     virtual bool isIndexOk(QString &, GUrl) {return true;};
-    virtual void validateReferenceSequence( const GUrl & ) { }
 };
 
-class DnaAssemblyAlgorithmBuildIndexWidget : public QWidget {
+class DnaAssemblyAlgorithmBuildIndexWidget : public DnaAssemblyAlgorithmBaseWidget {
 public:
-    DnaAssemblyAlgorithmBuildIndexWidget(QWidget* parent) : QWidget(parent) {}
+    DnaAssemblyAlgorithmBuildIndexWidget(QWidget* parent)
+        : DnaAssemblyAlgorithmBaseWidget(parent) { }
     virtual QMap<QString,QVariant> getBuildIndexCustomSettings() = 0;
     virtual QString getIndexFileExtension() = 0;
     virtual void buildIndexUrl(const GUrl& url) = 0;
