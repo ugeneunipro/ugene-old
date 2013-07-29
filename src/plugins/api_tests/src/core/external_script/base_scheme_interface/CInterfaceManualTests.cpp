@@ -630,7 +630,8 @@ IMPLEMENT_TEST( CInterfaceManualTests, chip_seq ) {
     wchar_t readAnnotations[MAX_ELEMENT_NAME_LENGTH], macsId[MAX_ELEMENT_NAME_LENGTH],
         ceasReport[MAX_ELEMENT_NAME_LENGTH], conservationPlotId[MAX_ELEMENT_NAME_LENGTH],
         seqPosId[MAX_ELEMENT_NAME_LENGTH], peak2GeneId[MAX_ELEMENT_NAME_LENGTH],
-        conductGoId[MAX_ELEMENT_NAME_LENGTH];
+        conductGoId[MAX_ELEMENT_NAME_LENGTH], writeAnnotations[MAX_ELEMENT_NAME_LENGTH],
+        writeAnnotations1[MAX_ELEMENT_NAME_LENGTH];
     SchemeHandle scheme = NULL;
     U2ErrorType error = createScheme( NULL, &scheme );
     CHECK_U2_ERROR( error );
@@ -651,8 +652,18 @@ IMPLEMENT_TEST( CInterfaceManualTests, chip_seq ) {
     CHECK_U2_ERROR( error );
     error = addElementToScheme( scheme, L"conduct-go-id", MAX_ELEMENT_NAME_LENGTH, conductGoId );
     CHECK_U2_ERROR( error );
+    error = addElementToScheme( scheme, L"write-annotations", MAX_ELEMENT_NAME_LENGTH,
+        writeAnnotations );
+    CHECK_U2_ERROR( error );
+    error = addElementToScheme( scheme, L"write-annotations", MAX_ELEMENT_NAME_LENGTH,
+        writeAnnotations1 );
+    CHECK_U2_ERROR( error );
 
     error = setSchemeElementAttribute( scheme, readAnnotations, L"url-in.dataset", L"Dataset" );
+    CHECK_U2_ERROR( error );
+    error = setSchemeElementAttribute( scheme, writeAnnotations, L"document-format", L"bed" );
+    CHECK_U2_ERROR( error );
+    error = setSchemeElementAttribute( scheme, writeAnnotations1, L"document-format", L"bed" );
     CHECK_U2_ERROR( error );
 
     error = addFlowToScheme( scheme, readAnnotations, L"out-annotations", macsId, L"in-data" );
@@ -666,6 +677,12 @@ IMPLEMENT_TEST( CInterfaceManualTests, chip_seq ) {
     error = addFlowToScheme( scheme, macsId, L"out-data", peak2GeneId, L"in-data" );
     CHECK_U2_ERROR( error );
     error = addFlowToScheme( scheme, peak2GeneId, L"out-data", conductGoId, L"in-data" );
+    CHECK_U2_ERROR( error );
+    error = addFlowToScheme( scheme, peak2GeneId, L"out-data", writeAnnotations,
+        L"in-annotations" );
+    CHECK_U2_ERROR( error );
+    error = addFlowToScheme( scheme, peak2GeneId, L"out-data", writeAnnotations1,
+        L"in-annotations" );
     CHECK_U2_ERROR( error );
 
     error = addSchemeActorsBinding( scheme, readAnnotations, L"annotations", macsId,
@@ -689,6 +706,12 @@ IMPLEMENT_TEST( CInterfaceManualTests, chip_seq ) {
     error = addSchemeActorsBinding( scheme, peak2GeneId, L"gene-annotation", conductGoId,
         L"in-data.in-ann" );
     CHECK_U2_ERROR( error );
+    error = addSchemeActorsBinding( scheme, peak2GeneId, L"gene-annotation", writeAnnotations,
+        L"in-annotations.annotations" );
+    CHECK_U2_ERROR( error );
+    error = addSchemeActorsBinding( scheme, peak2GeneId, L"peak-annotation", writeAnnotations1,
+        L"in-annotations.annotations" );
+    CHECK_U2_ERROR( error );
 
     U2OpStatusImpl stateInfo;
     SchemeSimilarityUtils::checkSchemesSimilarity( scheme,
@@ -703,7 +726,8 @@ IMPLEMENT_TEST( CInterfaceManualTests, chip_seq_with_control ) {
         macsId[MAX_ELEMENT_NAME_LENGTH], ceasReport[MAX_ELEMENT_NAME_LENGTH],
         conservationPlotId[MAX_ELEMENT_NAME_LENGTH], seqPosId[MAX_ELEMENT_NAME_LENGTH],
         peak2GeneId[MAX_ELEMENT_NAME_LENGTH], conductGoId[MAX_ELEMENT_NAME_LENGTH],
-        multiplexer[MAX_ELEMENT_NAME_LENGTH];
+        multiplexer[MAX_ELEMENT_NAME_LENGTH], writeAnnotations[MAX_ELEMENT_NAME_LENGTH],
+        writeAnnotations1[MAX_ELEMENT_NAME_LENGTH];
     SchemeHandle scheme = NULL;
     U2ErrorType error = createScheme( NULL, &scheme );
     CHECK_U2_ERROR( error );
@@ -729,10 +753,20 @@ IMPLEMENT_TEST( CInterfaceManualTests, chip_seq_with_control ) {
     CHECK_U2_ERROR( error );
     error = addElementToScheme( scheme, L"multiplexer", MAX_ELEMENT_NAME_LENGTH, multiplexer );
     CHECK_U2_ERROR( error );
+    error = addElementToScheme( scheme, L"write-annotations", MAX_ELEMENT_NAME_LENGTH,
+        writeAnnotations );
+    CHECK_U2_ERROR( error );
+    error = addElementToScheme( scheme, L"write-annotations", MAX_ELEMENT_NAME_LENGTH,
+        writeAnnotations1 );
+    CHECK_U2_ERROR( error );
 
     error = setSchemeElementAttribute( scheme, readAnnotations1, L"url-in.dataset", L"Dataset" );
     CHECK_U2_ERROR( error );
     error = setSchemeElementAttribute( scheme, readAnnotations2, L"url-in.dataset", L"Dataset" );
+    CHECK_U2_ERROR( error );
+    error = setSchemeElementAttribute( scheme, writeAnnotations, L"document-format", L"bed" );
+    CHECK_U2_ERROR( error );
+    error = setSchemeElementAttribute( scheme, writeAnnotations1, L"document-format", L"bed" );
     CHECK_U2_ERROR( error );
 
     error = addFlowToScheme( scheme, readAnnotations1, L"out-annotations", multiplexer,
@@ -752,6 +786,12 @@ IMPLEMENT_TEST( CInterfaceManualTests, chip_seq_with_control ) {
     error = addFlowToScheme( scheme, macsId, L"out-data", peak2GeneId, L"in-data" );
     CHECK_U2_ERROR( error );
     error = addFlowToScheme( scheme, peak2GeneId, L"out-data", conductGoId, L"in-data" );
+    CHECK_U2_ERROR( error );
+    error = addFlowToScheme( scheme, peak2GeneId, L"out-data", writeAnnotations,
+        L"in-annotations" );
+    CHECK_U2_ERROR( error );
+    error = addFlowToScheme( scheme, peak2GeneId, L"out-data", writeAnnotations1,
+        L"in-annotations" );
     CHECK_U2_ERROR( error );
 
     error = addSchemeActorsBinding( scheme, readAnnotations1, L"annotations", macsId,
@@ -777,6 +817,12 @@ IMPLEMENT_TEST( CInterfaceManualTests, chip_seq_with_control ) {
     CHECK_U2_ERROR( error );
     error = addSchemeActorsBinding( scheme, peak2GeneId, L"gene-annotation", conductGoId,
         L"in-data.in-ann" );
+    CHECK_U2_ERROR( error );
+    error = addSchemeActorsBinding( scheme, peak2GeneId, L"gene-annotation", writeAnnotations,
+        L"in-annotations.annotations" );
+    CHECK_U2_ERROR( error );
+    error = addSchemeActorsBinding( scheme, peak2GeneId, L"peak-annotation", writeAnnotations1,
+        L"in-annotations.annotations" );
     CHECK_U2_ERROR( error );
 
     U2OpStatusImpl stateInfo;
