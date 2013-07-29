@@ -133,6 +133,9 @@ static const QString XML_SCHEMA_WARNING = WorkflowView::tr("You opened obsolete 
 
 static const QString XML_SCHEMA_APOLOGIZE = WorkflowView::tr("Sorry! This schema is obsolete and cannot be opened.");
 
+static const QString BREAKPOINT_MANAGER_LABEL = QObject::tr( "Breakpoints" );
+static const int ABSENT_WIDGET_TAB_NUMBER = -1;
+
 /************************************************************************/
 /* Utilities */
 /************************************************************************/
@@ -513,7 +516,9 @@ void WorkflowView::addBottomWidgetsToInfoSplitter() {
     breakpointView = new BreakpointManagerView(debugInfo, schema);
     connect(breakpointView, SIGNAL(si_highlightingRequested(const ActorId &)),
         SLOT(sl_highlightingRequested(const ActorId &)));
-    bottomTabs->addTab(breakpointView, tr("Breakpoints"));
+    if ( WorkflowSettings::isDebuggerEnabled( ) ) {
+        bottomTabs->addTab( breakpointView, BREAKPOINT_MANAGER_LABEL );
+    }
 
     investigationWidgets = new WorkflowInvestigationWidgetsController(bottomTabs);
     
@@ -1625,6 +1630,13 @@ WorkflowProcessItem *WorkflowView::findItemById(ActorId actor) const {
 void WorkflowView::paintEvent(QPaintEvent *event) {
     const bool isWorkflowRunning = ( NULL != scene->getRunner( ) );
     const bool isDebuggerEnabled = WorkflowSettings::isDebuggerEnabled( );
+    if ( isDebuggerEnabled && ABSENT_WIDGET_TAB_NUMBER == bottomTabs->indexOf( breakpointView ) ) {
+        bottomTabs->addTab( breakpointView, BREAKPOINT_MANAGER_LABEL );
+    } else if ( !isDebuggerEnabled
+        && ABSENT_WIDGET_TAB_NUMBER != bottomTabs->indexOf( breakpointView ) )
+    {
+        bottomTabs->removeTab( bottomTabs->indexOf( breakpointView ) );
+    }
     foreach ( QAction *action, debugActions ) {
         action->setVisible( WorkflowSettings::isDebuggerEnabled( ) && isWorkflowRunning );
     }
