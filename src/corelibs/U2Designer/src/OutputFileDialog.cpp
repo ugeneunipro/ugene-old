@@ -253,8 +253,11 @@ QVariant RFSTreeModel::data(const QModelIndex &index, int role) const {
     if (Qt::DisplayRole == role) {
         return item->name();
     } else if (Qt::DecorationRole == role) {
+        FSItem *root = superRootItem->child(0);
         QString iconStr;
-        if (item->isDir()) {
+        if (root == item) {
+            iconStr = ":U2Designer/images/hard_disk.png";
+        } else if (item->isDir()) {
             iconStr = ":U2Designer/images/directory.png";
         } else {
             iconStr = ":U2Designer/images/file.png";

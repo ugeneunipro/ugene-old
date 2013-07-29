@@ -173,7 +173,7 @@ void WorkflowSettings::setWorkflowOutputDirectory(const QString &newDir) {
 const QString WorkflowSettings::getWorkflowOutputDirectory() {
     Settings *s = AppContext::getSettings();
     GUrl url(s->fileName());
-    QString path = s->getValue(WORKFLOW_OUTPUT_PATH, QDir::homePath() + "/WorkflowOutput/").toString();
+    QString path = s->getValue(WORKFLOW_OUTPUT_PATH, QDir::homePath() + "/workflow_output/").toString();
     return path;
 }
 
