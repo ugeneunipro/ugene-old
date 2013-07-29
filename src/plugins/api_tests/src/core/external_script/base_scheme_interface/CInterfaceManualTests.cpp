@@ -597,6 +597,8 @@ IMPLEMENT_TEST( CInterfaceManualTests, call_variants ) {
     CHECK_U2_ERROR( error );
     error = setSchemeElementAttribute( scheme, writeVariations, L"write-mode", L"0" );
     CHECK_U2_ERROR( error );
+    error = setSchemeElementAttribute( scheme, writeVariations, L"url-out", L"variations.snp" );
+    CHECK_U2_ERROR( error );
 
     error = addFlowToScheme( scheme, readAssembly, L"out-assembly", callVariants, L"in-assembly" );
     CHECK_U2_ERROR( error );
@@ -661,9 +663,28 @@ IMPLEMENT_TEST( CInterfaceManualTests, chip_seq ) {
 
     error = setSchemeElementAttribute( scheme, readAnnotations, L"url-in.dataset", L"Dataset" );
     CHECK_U2_ERROR( error );
+    error = setSchemeElementAttribute( scheme, macsId, L"output-dir", L"tools_output" );
+    CHECK_U2_ERROR( error );
+    error = setSchemeElementAttribute( scheme, ceasReport, L"anns-file", L"ceas_annotations.xls" );
+    CHECK_U2_ERROR( error );
+    error = setSchemeElementAttribute( scheme, ceasReport, L"image-file", L"ceas_report.pdf" );
+    CHECK_U2_ERROR( error );
+    error = setSchemeElementAttribute( scheme, conservationPlotId, L"output-file",
+        L"conservation.bmp" );
+    CHECK_U2_ERROR( error );
+    error = setSchemeElementAttribute( scheme, seqPosId, L"output-dir", L"tools_output" );
+    CHECK_U2_ERROR( error );
+    error = setSchemeElementAttribute( scheme, conductGoId, L"output-dir", L"tools_output" );
+    CHECK_U2_ERROR( error );
+
     error = setSchemeElementAttribute( scheme, writeAnnotations, L"document-format", L"bed" );
     CHECK_U2_ERROR( error );
+    error = setSchemeElementAttribute( scheme, writeAnnotations, L"url-out", L"genes.bed" );
+    CHECK_U2_ERROR( error );
+
     error = setSchemeElementAttribute( scheme, writeAnnotations1, L"document-format", L"bed" );
+    CHECK_U2_ERROR( error );
+    error = setSchemeElementAttribute( scheme, writeAnnotations1, L"url-out", L"peaks.bed" );
     CHECK_U2_ERROR( error );
 
     error = addFlowToScheme( scheme, readAnnotations, L"out-annotations", macsId, L"in-data" );
@@ -764,9 +785,28 @@ IMPLEMENT_TEST( CInterfaceManualTests, chip_seq_with_control ) {
     CHECK_U2_ERROR( error );
     error = setSchemeElementAttribute( scheme, readAnnotations2, L"url-in.dataset", L"Dataset" );
     CHECK_U2_ERROR( error );
+    error = setSchemeElementAttribute( scheme, macsId, L"output-dir", L"tools_output" );
+    CHECK_U2_ERROR( error );
+    error = setSchemeElementAttribute( scheme, ceasReport, L"anns-file", L"ceas_annotations.xls" );
+    CHECK_U2_ERROR( error );
+    error = setSchemeElementAttribute( scheme, ceasReport, L"image-file", L"ceas_report.pdf" );
+    CHECK_U2_ERROR( error );
+    error = setSchemeElementAttribute( scheme, conservationPlotId, L"output-file",
+        L"conservation.bmp" );
+    CHECK_U2_ERROR( error );
+    error = setSchemeElementAttribute( scheme, seqPosId, L"output-dir", L"tools_output" );
+    CHECK_U2_ERROR( error );
+    error = setSchemeElementAttribute( scheme, conductGoId, L"output-dir", L"tools_output" );
+    CHECK_U2_ERROR( error );
+
     error = setSchemeElementAttribute( scheme, writeAnnotations, L"document-format", L"bed" );
     CHECK_U2_ERROR( error );
+    error = setSchemeElementAttribute( scheme, writeAnnotations, L"url-out", L"genes.bed" );
+    CHECK_U2_ERROR( error );
+
     error = setSchemeElementAttribute( scheme, writeAnnotations1, L"document-format", L"bed" );
+    CHECK_U2_ERROR( error );
+    error = setSchemeElementAttribute( scheme, writeAnnotations1, L"url-out", L"peaks.bed" );
     CHECK_U2_ERROR( error );
 
     error = addFlowToScheme( scheme, readAnnotations1, L"out-annotations", multiplexer,
@@ -852,6 +892,15 @@ IMPLEMENT_TEST( CInterfaceManualTests, tuxedo_main ) {
     error = addElementToScheme( scheme, L"tophat", MAX_ELEMENT_NAME_LENGTH, topHat );
     CHECK_U2_ERROR( error );
 
+    error = setSchemeElementAttribute( scheme, topHat, L"out-dir", L"tools_output" );
+    CHECK_U2_ERROR( error );
+    error = setSchemeElementAttribute( scheme, cufflinks, L"out-dir", L"tools_output" );
+    CHECK_U2_ERROR( error );
+    error = setSchemeElementAttribute( scheme, cuffmerge, L"out-dir", L"tools_output" );
+    CHECK_U2_ERROR( error );
+    error = setSchemeElementAttribute( scheme, cuffdiff, L"out-dir", L"tools_output" );
+    CHECK_U2_ERROR( error );
+
     error = setSchemeElementAttribute( scheme, getFileList, L"url-in.dataset", L"Dataset 1" );
     CHECK_U2_ERROR( error );
     error = setSchemeElementAttribute( scheme, getFileList, L"url-in.dataset", L"Dataset 2" );
@@ -914,6 +963,15 @@ IMPLEMENT_TEST( CInterfaceManualTests, tuxedo_main_paired ) {
     error = addElementToScheme( scheme, L"tophat", MAX_ELEMENT_NAME_LENGTH, topHat );
     CHECK_U2_ERROR( error );
     error = addElementToScheme( scheme, L"multiplexer", MAX_ELEMENT_NAME_LENGTH, multiplexer );
+    CHECK_U2_ERROR( error );
+
+    error = setSchemeElementAttribute( scheme, topHat, L"out-dir", L"tools_output" );
+    CHECK_U2_ERROR( error );
+    error = setSchemeElementAttribute( scheme, cufflinks, L"out-dir", L"tools_output" );
+    CHECK_U2_ERROR( error );
+    error = setSchemeElementAttribute( scheme, cuffmerge, L"out-dir", L"tools_output" );
+    CHECK_U2_ERROR( error );
+    error = setSchemeElementAttribute( scheme, cuffdiff, L"out-dir", L"tools_output" );
     CHECK_U2_ERROR( error );
 
     error = setSchemeElementAttribute( scheme, getFileList1, L"url-in.dataset", L"Dataset 1" );
@@ -984,6 +1042,11 @@ IMPLEMENT_TEST( CInterfaceManualTests, tuxedo_multiple_dataset ) {
     error = addElementToScheme( scheme, L"tophat", MAX_ELEMENT_NAME_LENGTH, topHat );
     CHECK_U2_ERROR( error );
 
+    error = setSchemeElementAttribute( scheme, topHat, L"out-dir", L"tools_output" );
+    CHECK_U2_ERROR( error );
+    error = setSchemeElementAttribute( scheme, cuffdiff, L"out-dir", L"tools_output" );
+    CHECK_U2_ERROR( error );
+
     error = setSchemeElementAttribute( scheme, readAnnotations, L"url-in.dataset", L"Dataset 1" );
     CHECK_U2_ERROR( error );
     error = setSchemeElementAttribute( scheme, getFileList, L"url-in.dataset", L"Dataset 1" );
@@ -1037,6 +1100,11 @@ IMPLEMENT_TEST( CInterfaceManualTests, tuxedo_multiple_dataset_paired ) {
     error = addElementToScheme( scheme, L"tophat", MAX_ELEMENT_NAME_LENGTH, topHat );
     CHECK_U2_ERROR( error );
     error = addElementToScheme( scheme, L"multiplexer", MAX_ELEMENT_NAME_LENGTH, multiplexer );
+    CHECK_U2_ERROR( error );
+
+    error = setSchemeElementAttribute( scheme, topHat, L"out-dir", L"tools_output" );
+    CHECK_U2_ERROR( error );
+    error = setSchemeElementAttribute( scheme, cuffdiff, L"out-dir", L"tools_output" );
     CHECK_U2_ERROR( error );
 
     error = setSchemeElementAttribute( scheme, readAnnotations, L"url-in.dataset", L"Dataset 1" );
@@ -1098,6 +1166,11 @@ IMPLEMENT_TEST( CInterfaceManualTests, tuxedo_single_dataset ) {
     error = addElementToScheme( scheme, L"tophat", MAX_ELEMENT_NAME_LENGTH, topHat );
     CHECK_U2_ERROR( error );
 
+    error = setSchemeElementAttribute( scheme, topHat, L"out-dir", L"tools_output" );
+    CHECK_U2_ERROR( error );
+    error = setSchemeElementAttribute( scheme, cufflinks, L"out-dir", L"tools_output" );
+    CHECK_U2_ERROR( error );
+
     error = setSchemeElementAttribute( scheme, getFileList, L"url-in.dataset", L"Dataset 1" );
     CHECK_U2_ERROR( error );
 
@@ -1139,6 +1212,11 @@ IMPLEMENT_TEST( CInterfaceManualTests, tuxedo_single_dataset_paired ) {
     error = addElementToScheme( scheme, L"tophat", MAX_ELEMENT_NAME_LENGTH, topHat );
     CHECK_U2_ERROR( error );
     error = addElementToScheme( scheme, L"multiplexer", MAX_ELEMENT_NAME_LENGTH, multiplexer );
+    CHECK_U2_ERROR( error );
+
+    error = setSchemeElementAttribute( scheme, topHat, L"out-dir", L"tools_output" );
+    CHECK_U2_ERROR( error );
+    error = setSchemeElementAttribute( scheme, cufflinks, L"out-dir", L"tools_output" );
     CHECK_U2_ERROR( error );
 
     error = setSchemeElementAttribute( scheme, getFileList1, L"url-in.dataset", L"Dataset 1" );
