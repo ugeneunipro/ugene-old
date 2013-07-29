@@ -21,6 +21,7 @@
 
 #include "MessageBoxFiller.h"
 #include "api/GTWidget.h"
+#include "api/GTKeyboardDriver.h"
 
 #include <QtGui/QApplication>
 #include <QtGui/QAbstractButton>
@@ -34,6 +35,11 @@ void MessageBoxDialogFiller::run() {
     QWidget* activeModal = QApplication::activeModalWidget();
     QMessageBox *messageBox = qobject_cast<QMessageBox*>(activeModal);
     GT_CHECK(messageBox != NULL, "messageBox is NULL");
+
+    if(message!=""){
+        GT_CHECK(messageBox->text().contains(message,Qt::CaseInsensitive),
+                 QString("Expected: %1, found: %2").arg(message).arg(messageBox->text()));
+    }
 
     QAbstractButton* button = messageBox->button(b);
     GT_CHECK(button != NULL, "There is no such button in messagebox");

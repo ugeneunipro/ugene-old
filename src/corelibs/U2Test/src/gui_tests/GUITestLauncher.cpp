@@ -30,7 +30,11 @@
 #include <U2Gui/MainWindow.h>
 #include <QtCore/QMap>
 
+#ifdef  Q_OS_MAC
+#define TIMEOUT 120000
+#else
 #define TIMEOUT 240000
+#endif
 #define LONG_TIMEOUT 7200000
 #define GUITESTING_REPORT_PREFIX "GUITesting"
 

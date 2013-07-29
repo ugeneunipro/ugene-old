@@ -34,6 +34,8 @@
 #include "api/GTSpinBox.h"
 #include "api/GTTableView.h"
 #include "runnables/qt/PopupChooser.h"
+#include "runnables/qt/MessageBoxFiller.h"
+#include "runnables/ugene/corelibs/U2Gui/AppSettingsDialogFiller.h"
 #include "runnables/ugene/plugins/workflow_designer/WizardFiller.h"
 #include "runnables/ugene/plugins/workflow_designer/StartupDialogFiller.h"
 #include "runnables/ugene/ugeneui/SequenceReadingModeSelectorDialogFiller.h"
@@ -228,6 +230,34 @@ GUI_TEST_CLASS_DEFINITION(test_0003){
     GTGlobals::sleep();
 //    2. If you don't want result file (T1.gb) in UGENE run directory, change this property in write genbank worker.Run schema.
 //    Expected state: T1.gb file is saved to your disc
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0005){
+    //GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
+//1. Open WD
+    QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
+    GTMenu::clickMenuItem(os, menu, QStringList() << "Workflow Designer");
+//2. Press button Validate schema
+    GTUtilsDialog::waitForDialog(os,new MessageBoxDialogFiller(os, QMessageBox::Ok,"Nothing to run: empty workflow schema"));
+    GTWidget::click(os,GTAction::button(os,"Validate scheme"));
+//Expected state: message box which warns of validating empty schema has appeared
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0006){
+//1. Do menu Settings->Prefrences
+    GTUtilsDialog::waitForDialog(os,new AppSettingsDialogFiller(os,AppSettingsDialogFiller::minimal));
+    QMenu* menu=GTMenu::showMainMenu(os, MWMENU_SETTINGS);
+    GTMenu::clickMenuItem(os, menu, QStringList() << "action__settings");
+//2. Open WD settings
+
+//3. Change Default visualization Item style from Extended to Minimal.
+
+//4. Click OK button
+
+//5. Open WD
+
+//6. Load any scheme from samples tab
+//Expected state: item style on loaded schema must be Minimal
 }
 } // namespace GUITest_common_scenarios_workflow_designer
 

@@ -30,11 +30,12 @@ namespace U2 {
 
     class MessageBoxDialogFiller : public Filler {
     public:
-        MessageBoxDialogFiller(U2OpStatus &_os, QMessageBox::StandardButton _b)
-            :Filler(_os, ""), b(_b){}
+        MessageBoxDialogFiller(U2OpStatus &_os, QMessageBox::StandardButton _b, QString _message = "")
+            :Filler(_os, ""), b(_b), message(_message){}
         virtual void run();
     private:
         QMessageBox::StandardButton b;
+        QString message;
     };
 
     class MessageBoxNoToAllOrNo : public Filler {

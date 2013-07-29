@@ -552,6 +552,7 @@ void WorkflowView::createActions() {
     connect(stopAction, SIGNAL(triggered()), SLOT(sl_stop()));
 
     validateAction = new QAction(tr("&Validate scheme"), this);
+    validateAction->setObjectName("Validate scheme");
     validateAction->setIcon(QIcon(":workflow_designer/images/ok.png"));
     validateAction->setShortcut(QKeySequence("Ctrl+E"));
     connect(validateAction, SIGNAL(triggered()), SLOT(sl_validate()));
