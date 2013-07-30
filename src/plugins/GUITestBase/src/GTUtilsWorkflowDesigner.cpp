@@ -200,6 +200,28 @@ int GTUtilsWorkflowDesigner::getItemBottom(U2OpStatus &os, QString itemName){
     return i;
 }
 
+#define GT_METHOD_NAME "getWorker"
+QGraphicsItem* GTUtilsWorkflowDesigner::getWorker(U2OpStatus &os,QString itemName,const GTGlobals::FindOptions &options){
+    QGraphicsView* sceneView = qobject_cast<QGraphicsView*>(GTWidget::findWidget(os,"sceneView"));
+    QList<QGraphicsItem *> items = sceneView->items();
+
+    foreach(QGraphicsItem* it, items) {
+        QGraphicsObject *itObj = it->toGraphicsObject();
+
+        QGraphicsTextItem* textItemO = qobject_cast<QGraphicsTextItem*>(itObj);
+        if (textItemO) {
+            QString text = textItemO->toPlainText();
+            if (text.contains(itemName,Qt::CaseInsensitive)) {
+                return it->parentItem();
+            }
+        }
+    }
+    GT_CHECK_RESULT(options.failIfNull == false, "Item " + itemName + " not found at scene", NULL);
+
+    return NULL;
+}
+#undef GT_METHOD_NAME
+
 QRect GTUtilsWorkflowDesigner::getItemRect(U2OpStatus &os,QString itemName){
 //TODO: support finding items when there are several similar workers in scheme
     QGraphicsView* sceneView = qobject_cast<QGraphicsView*>(GTWidget::findWidget(os,"sceneView"));

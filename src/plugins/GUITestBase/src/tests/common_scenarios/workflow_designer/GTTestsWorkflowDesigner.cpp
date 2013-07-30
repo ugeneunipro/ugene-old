@@ -322,6 +322,30 @@ GUI_TEST_CLASS_DEFINITION(test_0009){
                       .arg(p.x()).arg(p.y()).arg(item->pos().x()).arg(item->pos().y()));
     }
 }
+
+GUI_TEST_CLASS_DEFINITION(test_0010){
+//    1. Open WD
+    QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
+    GTMenu::clickMenuItem(os, menu, QStringList() << "Workflow Designer");
+//    2. Place 3 HMM build workflow elements on scheme
+    GTUtilsWorkflowDesigner::addAlgorithm(os,"hmm build");
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["right"]);
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["right"]);
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["right"]);
+    GTUtilsWorkflowDesigner::addAlgorithm(os,"hmm build");
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["right"]);
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["right"]);
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["right"]);
+    GTUtilsWorkflowDesigner::addAlgorithm(os,"hmm build");
+
+//    Expected state: there 3 element with names "HMM build" "HMM build 1" "HMM build 2"
+    QGraphicsItem* hmm = GTUtilsWorkflowDesigner::getWorker(os,"hmm build");
+    CHECK_SET_ERR(hmm,"hmm not found");
+    hmm = GTUtilsWorkflowDesigner::getWorker(os,"hmm build 1");
+    CHECK_SET_ERR(hmm,"hmm 1 not found");
+    hmm = GTUtilsWorkflowDesigner::getWorker(os,"hmm build 2");
+    CHECK_SET_ERR(hmm,"hmm 2 not found");
+}
 } // namespace GUITest_common_scenarios_workflow_designer
 
 } // namespace U2

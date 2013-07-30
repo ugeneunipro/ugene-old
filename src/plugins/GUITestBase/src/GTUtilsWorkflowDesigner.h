@@ -25,6 +25,7 @@
 #include "api/GTGlobals.h"
 
 #include <QTreeWidget>
+class QGraphicsItem;
 class QRectF;
 
 namespace U2 {
@@ -46,6 +47,7 @@ public:
     static int getItemRight(U2OpStatus &os, QString itemName);
     static int getItemTop(U2OpStatus &os, QString itemName);
     static int getItemBottom(U2OpStatus &os, QString itemName);
+    static QGraphicsItem* getWorker(U2OpStatus &os, QString itemName,const GTGlobals::FindOptions &options = GTGlobals::FindOptions());
 };
 
 } // namespace
