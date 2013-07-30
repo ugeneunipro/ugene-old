@@ -36,9 +36,9 @@
 namespace U2 {
 
 const QString OutputDirectoryWidget::INFO = QObject::tr(
-    "Workflow output directory is the directory that is used to store all output files which are created during the workflow run process. "
-    "For each workflow run the subdirectory is created in the output directory and the files are stored there.\n"
-    "Set your output directory:"
+    "The Workflow Output Directory is a common directory that is used to store all output files in the Workflow Designer."
+    " If this directory is used, then a separate subdirectory of the directory is created for each run of a workflow."
+    "\n\nSet up the directory:"
     );
 
 OutputDirectoryWidget::OutputDirectoryWidget(QWidget *parent)

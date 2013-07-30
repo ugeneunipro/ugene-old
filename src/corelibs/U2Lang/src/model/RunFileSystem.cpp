@@ -149,7 +149,7 @@ void FSItem::noChildren() {
 RunFileSystem::RunFileSystem(QObject *parent)
 : QObject(parent)
 {
-    root = new FSItem(tr("Output directory"), true);
+    root = new FSItem(tr("Workflow-run output"), true);
 }
 
 RunFileSystem::~RunFileSystem() {

@@ -36,7 +36,7 @@
 
 namespace U2 {
 
-static const QString OUT_DIR = QObject::tr("Output directory");
+static const QString OUT_DIR = QObject::tr("Workflow-run output");
 static const QString BAD_CHARS = "\\*\\?\\|\\\"\\:";
 
 OutputFileDialog::OutputFileDialog(RunFileSystem *_rfs, bool _saveDir, CompletionFiller *filler, QWidget *parent)
