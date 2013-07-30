@@ -19,10 +19,13 @@
  * MA 02110-1301, USA.
  */
 
+#include <QMouseEvent>
 #include <QGraphicsView>
-#include <QVBoxLayout>
+#include <QInputDialog>
+#include <QMenu>
 #include <QPushButton>
 #include <QTabBar>
+#include <QVBoxLayout>
 
 #include <U2Core/AppContext.h>
 #include <U2Core/U2SafePoints.h>
@@ -60,6 +63,7 @@ WorkflowTabView::WorkflowTabView(QWidget *parent)
     ScanDashboardsDirTask *t = new ScanDashboardsDirTask();
     connect(t, SIGNAL(si_stateChanged()), SLOT(sl_dashboardsLoaded()));
     AppContext::getTaskScheduler()->registerTopLevelTask(t);
+    tabBar()->installEventFilter(this);
 }
 
 void WorkflowTabView::addDashboard(Dashboard *db) {
@@ -114,6 +118,23 @@ void WorkflowTabView::sl_closeTab() {
     emit si_countChanged();
 }
 
+void WorkflowTabView::sl_renameTab() {
+    QAction *rename = dynamic_cast<QAction*>(sender());
+    CHECK(NULL != rename, );
+    int idx = rename->data().toInt();
+    Dashboard *db = dynamic_cast<Dashboard*>(widget(idx));
+    CHECK(NULL != db, );
+
+    bool ok = false;
+    QString newName = QInputDialog::getText(this, tr("Rename Dashboard"),
+        tr("New dashboard name:"), QLineEdit::Normal,
+        db->getName(), &ok);
+    if (ok && !newName.isEmpty()) {
+        db->setName(newName);
+        setTabText(idx, newName);
+    }
+}
+
 void WorkflowTabView::sl_dashboardsLoaded() {
     ScanDashboardsDirTask *t = dynamic_cast<ScanDashboardsDirTask*>(sender());
     CHECK(NULL != t, );
@@ -147,6 +168,24 @@ QString WorkflowTabView::generateName(const QString &name) const {
         num++;
     } while (all.contains(result));
     return result;
+}
+
+bool WorkflowTabView::eventFilter(QObject *watched, QEvent *event) {
+    CHECK(watched == tabBar(), false);
+    CHECK(QEvent::MouseButtonRelease == event->type(), false);
+
+    QMouseEvent *me = dynamic_cast<QMouseEvent*>(event);
+    CHECK(Qt::RightButton == me->button(), false);
+    int idx = tabBar()->tabAt(me->pos());
+    CHECK(idx >=0 && idx < count(), false);
+    QMenu m(tabBar());
+    QAction *rename = new QAction(tr("Rename"), this);
+    rename->setData(idx);
+    connect(rename, SIGNAL(triggered()), SLOT(sl_renameTab()));
+    m.addAction(rename);
+    m.move(tabBar()->mapToGlobal(me->pos()));
+    m.exec();
+    return true;
 }
 
 } // U2

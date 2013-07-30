@@ -46,12 +46,15 @@ public:
     bool hasDashboards() const;
     void updateDashboards(const QList<DashboardInfo> &dashboards);
 
+    bool eventFilter(QObject *watched, QEvent *event);
+
 signals:
     void si_countChanged();
 
 private slots:
     void sl_closeTab();
     void sl_dashboardsLoaded();
+    void sl_renameTab();
 
 private:
     void addDashboard(Dashboard *db);

@@ -93,8 +93,8 @@ QString Dashboard::getName() const {
 }
 
 void Dashboard::setName(const QString &value) {
-    saveSettings();
     name = value;
+    saveSettings();
 }
 
 void Dashboard::loadDocument(const QString &filePath) {
