@@ -60,7 +60,7 @@ namespace U2 {
 
 namespace GUITest_common_scenarios_workflow_designer {
 GUI_TEST_CLASS_DEFINITION(test_0001){
-    GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
+    //GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
     QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
 
     WizardFiller::pairValList list;
@@ -150,7 +150,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001){
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0002){
-    GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
+    //GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
     //1. Start UGENE. Open workflow schema file from data\cmdline\pfm-build.uws
     GTFileDialog::openFile(os,dataDir + "cmdline/","pwm-build.uwl");
     GTGlobals::sleep(1000);
@@ -179,7 +179,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002){
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0002_1){
-    GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
+    //GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
     //1. Start UGENE. Open workflow schema file from data\cmdline\pfm-build.uws
     GTFileDialog::openFile(os,dataDir + "cmdline/","pwm-build.uwl");
     GTGlobals::sleep(1000);
@@ -212,7 +212,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002_1){
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0003){
-    GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
+    //GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
 //    1. Start UGENE. Open workflow schema file from \common data\workflow\remoteDBReaderTest.uws
     GTFileDialog::openFile(os,testDir + "_common_data/workflow/","remoteDBReaderTest.uws");
 //    Expected state: workflow schema opened in Workflow designer
@@ -292,6 +292,35 @@ GUI_TEST_CLASS_DEFINITION(test_0007){
 
     CHECK_SET_ERR(c.name()=="#ffbfbf", QString("Expected: #ffbfbf, found: %1").arg(c.name()));
 
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0009){
+//    1. Open schema from examples
+    QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
+    GTMenu::clickMenuItem(os, menu, QStringList() << "Workflow Designer");
+    GTUtilsWorkflowDesigner::addSample(os, "call variants");
+//    2. Clear dashboard (select all + del button)
+    QGraphicsView* sceneView = qobject_cast<QGraphicsView*>(GTWidget::findWidget(os,"sceneView"));
+    CHECK_SET_ERR(sceneView,"scene not found");
+    QList<QGraphicsItem *> items = sceneView->items();
+    QList<QPointF> posList;
+
+    foreach(QGraphicsItem* item,items){
+        posList.append(item->pos());
+    }
+
+    GTWidget::setFocus(os,GTWidget::findWidget(os,"sceneView"));
+    GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+//    3. Open this schema from examples
+    GTUtilsWorkflowDesigner::addSample(os, "call variants");
+//    Expected state: items and links between them painted correctly
+    items = sceneView->items();
+    foreach(QGraphicsItem* item,items){
+        QPointF p = posList.takeFirst();
+        CHECK_SET_ERR(p==item->pos(),QString("some item changed position from %1, %2 to %3, %4")
+                      .arg(p.x()).arg(p.y()).arg(item->pos().x()).arg(item->pos().y()));
+    }
 }
 } // namespace GUITest_common_scenarios_workflow_designer
 
