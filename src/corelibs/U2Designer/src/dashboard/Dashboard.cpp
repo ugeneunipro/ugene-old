@@ -55,21 +55,27 @@ static const QString NAME_SETTING("name");
 /* Dashboard */
 /************************************************************************/
 Dashboard::Dashboard(const WorkflowMonitor *monitor, const QString &_name, QWidget *parent)
-: QWebView(parent), name(_name), opened(true), _monitor(monitor), initialized(false)
+: QWebView(parent), loaded(false), name(_name), opened(true), _monitor(monitor), initialized(false)
 {
     connect(this, SIGNAL(loadFinished(bool)), SLOT(sl_loaded(bool)));
     connect(_monitor, SIGNAL(si_report()), SLOT(sl_serialize()));
     connect(_monitor, SIGNAL(si_dirSet(const QString &)), SLOT(sl_setDirectory(const QString &)));
-    loadDocument(":U2Designer/html/Dashboard.html");
+    loadUrl = ":U2Designer/html/Dashboard.html";
+    loadDocument();
 }
 
 Dashboard::Dashboard(const QString &dirPath, QWidget *parent)
-: QWebView(parent), dir(dirPath), opened(true), _monitor(NULL), initialized(false)
+: QWebView(parent), loaded(false), dir(dirPath), opened(true), _monitor(NULL), initialized(false)
 {
     connect(this, SIGNAL(loadFinished(bool)), SLOT(sl_loaded(bool)));
-    loadDocument(dir + REPORT_SUB_DIR + DB_FILE_NAME);
+    loadUrl = dir + REPORT_SUB_DIR + DB_FILE_NAME;
     loadSettings();
     saveSettings();
+}
+
+void Dashboard::onShow() {
+    CHECK(!loaded, );
+    loadDocument();
 }
 
 void Dashboard::sl_setDirectory(const QString &value) {
@@ -97,10 +103,11 @@ void Dashboard::setName(const QString &value) {
     saveSettings();
 }
 
-void Dashboard::loadDocument(const QString &filePath) {
-    QFile file(filePath);
+void Dashboard::loadDocument() {
+    loaded = true;
+    QFile file(loadUrl);
     bool opened = file.open(QIODevice::ReadOnly);
-    SAFE_POINT(opened, "Can not load " + filePath, );
+    SAFE_POINT(opened, "Can not load " + loadUrl, );
     QTextStream stream(&file);
     stream.setCodec("UTF-8");
     QString html = stream.readAll();

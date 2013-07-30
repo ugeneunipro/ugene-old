@@ -64,24 +64,33 @@ WorkflowTabView::WorkflowTabView(QWidget *parent)
     connect(t, SIGNAL(si_stateChanged()), SLOT(sl_dashboardsLoaded()));
     AppContext::getTaskScheduler()->registerTopLevelTask(t);
     tabBar()->installEventFilter(this);
+
+    connect(this, SIGNAL(currentChanged(int)), SLOT(sl_showDashboard(int)));
 }
 
-void WorkflowTabView::addDashboard(Dashboard *db) {
+void WorkflowTabView::sl_showDashboard(int idx) {
+    Dashboard *db = dynamic_cast<Dashboard*>(widget(idx));
+    CHECK(NULL != db, );
+    db->onShow();
+}
+
+int WorkflowTabView::addDashboard(Dashboard *db) {
     if (db->getName().isEmpty()) {
         db->setName(generateName());
     }
     int idx = addTab(db, db->getName());
-    setCurrentIndex(idx);
 
     CloseButton *closeButton = new CloseButton(db);
     tabBar()->setTabButton(idx, QTabBar::RightSide, closeButton);
     connect(closeButton, SIGNAL(clicked()), SLOT(sl_closeTab()));
     emit si_countChanged();
+    return idx;
 }
 
 void WorkflowTabView::addDashboard(WorkflowMonitor *monitor, const QString &baseName) {
     QString name = generateName(baseName);
-    addDashboard(new Dashboard(monitor, name, this));
+    int idx = addDashboard(new Dashboard(monitor, name, this));
+    setCurrentIndex(idx);
 }
 
 bool WorkflowTabView::hasDashboards() const {
@@ -100,6 +109,7 @@ void WorkflowTabView::updateDashboards(const QList<DashboardInfo> &dashboards) {
         } else {
             db->setClosed();
             removeTab(i);
+            delete db;
         }
     }
     foreach (const DashboardInfo &info, dbs) {
@@ -115,6 +125,7 @@ void WorkflowTabView::sl_closeTab() {
     Dashboard *db = dynamic_cast<Dashboard*>(widget(idx));
     db->setClosed();
     removeTab(idx);
+    delete db;
     emit si_countChanged();
 }
 

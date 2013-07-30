@@ -55,9 +55,10 @@ private slots:
     void sl_closeTab();
     void sl_dashboardsLoaded();
     void sl_renameTab();
+    void sl_showDashboard(int idx);
 
 private:
-    void addDashboard(Dashboard *db);
+    int addDashboard(Dashboard *db);
     QString generateName(const QString &baseName = "") const;
     QStringList allNames() const;
 };

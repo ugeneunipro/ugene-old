@@ -38,6 +38,8 @@ public:
     Dashboard(const WorkflowMonitor *monitor, const QString &name, QWidget *parent);
     Dashboard(const QString &dirPath, QWidget *parent);
 
+    void onShow();
+
     const WorkflowMonitor * monitor();
     QWebElement getDocument();
     void setClosed();
@@ -57,6 +59,8 @@ private slots:
     void sl_setDirectory(const QString &dir);
 
 private:
+    bool loaded;
+    QString loadUrl;
     QString name;
     QString dir;
     bool opened;
@@ -67,7 +71,7 @@ private:
     enum DashboardTab {OverviewDashTab, InputDashTab, OutputDashTab};
 
 private:
-    void loadDocument(const QString &file);
+    void loadDocument();
     /** Returns the content area of the widget */
     QWebElement addWidget(const QString &title, DashboardTab dashTab, int cntNum = -1);
 
