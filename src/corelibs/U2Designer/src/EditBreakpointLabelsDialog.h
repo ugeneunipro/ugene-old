@@ -25,9 +25,14 @@
 #include <QtGui/QDialog>
 
 #include <U2Core/global.h>
-#include "../_tmp/ui/ui_EditBreakpointLabelsDialog.h"
 
 class QKeyEvent;
+
+namespace Ui {
+
+class EditBreakpointLabelsDialog;
+
+}
 
 namespace U2 {
 
@@ -37,6 +42,7 @@ public:
     EditBreakpointLabelsDialog(const QStringList &existingLabels = QStringList(),
         const QStringList &initCallingBreakpointLabels = QStringList(), QWidget *parent = 0,
         Qt::WindowFlags f = 0);
+    ~EditBreakpointLabelsDialog();
 
 protected:
     virtual void keyPressEvent(QKeyEvent *event);
@@ -59,7 +65,7 @@ private:
 
     QStringList callingBreakpointLabels;
     QStringList newLabelsAdded;
-    Ui::EditBreakpointLabelsDialog ui;
+    Ui::EditBreakpointLabelsDialog *ui;
 };
 
 } // namespace U2

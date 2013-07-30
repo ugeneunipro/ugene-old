@@ -25,7 +25,12 @@
 #include <QtGui/QDialog>
 
 #include <U2Core/global.h>
-#include "../_tmp/ui/ui_NewBreakpointDialog.h"
+
+namespace Ui {
+
+class NewBreakpointDialog;
+
+}
 
 namespace U2 {
 
@@ -34,6 +39,7 @@ class U2DESIGNER_EXPORT NewBreakpointDialog : public QDialog {
 public:
     NewBreakpointDialog(const QStringList &elementsNames, QWidget *parent = NULL,
         Qt::WindowFlags f = 0);
+    ~NewBreakpointDialog();
 
 signals:
     void si_newBreakpointCreated(const QString &element);
@@ -42,7 +48,7 @@ private slots:
     void sl_announceNewBreakpoint();
 
 private:
-    Ui::NewBreakpointDialog ui;
+    Ui::NewBreakpointDialog *ui;
 };
 
 } // namespace U2

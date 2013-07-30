@@ -19,20 +19,25 @@
  * MA 02110-1301, USA.
  */
 
+#include "ui/ui_NewBreakpointDialog.h"
 #include "NewBreakpointDialog.h"
 
 namespace U2 {
 
 NewBreakpointDialog::NewBreakpointDialog(const QStringList &elementsNames, QWidget *parent,
-    Qt::WindowFlags f) : QDialog(parent, f)
+    Qt::WindowFlags f) : QDialog(parent, f), ui(new Ui::NewBreakpointDialog())
 {
-    ui.setupUi(this);
-    ui.elementCombo->addItems(elementsNames);
-    connect(ui.okButton, SIGNAL(clicked()), SLOT(sl_announceNewBreakpoint()));
+    ui->setupUi(this);
+    ui->elementCombo->addItems(elementsNames);
+    connect(ui->okButton, SIGNAL(clicked()), SLOT(sl_announceNewBreakpoint()));
+}
+
+NewBreakpointDialog::~NewBreakpointDialog() {
+    delete ui;
 }
 
 void NewBreakpointDialog::sl_announceNewBreakpoint() {
-    emit si_newBreakpointCreated(ui.elementCombo->currentText());
+    emit si_newBreakpointCreated(ui->elementCombo->currentText());
 }
 
 } // namespace U2
