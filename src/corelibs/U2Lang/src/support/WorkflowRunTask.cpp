@@ -231,7 +231,7 @@ WorkflowIterationRunTask::WorkflowIterationRunTask(const Schema& sh,
         const QString &, int, const QString &)), SLOT(sl_convertMessages2Documents(
         const Workflow::Link *, const QString &, int, const QString &)));
 
-    WorkflowMonitor *m = new WorkflowMonitor(this, schema->getProcesses());
+    WorkflowMonitor *m = new WorkflowMonitor(this, schema);
     context = new WorkflowContext(schema->getProcesses(), m);
 
     QTimer * timer = new QTimer(this);
@@ -584,7 +584,7 @@ saveSchemaTask(NULL), monitor(NULL), wfMonitor(NULL) {
     
     rmap = HRSchemaSerializer::deepCopy(sc, schema, stateInfo);
     SAFE_POINT_OP(stateInfo, );
-    wfMonitor = new SeparateProcessMonitor(this, schema->getProcesses());
+    wfMonitor = new SeparateProcessMonitor(this, schema);
     saveSchemaTask = new SaveWorkflowTask(schema, meta, true);
     saveSchemaTask->setSubtaskProgressWeight(0);
     addSubTask(saveSchemaTask);

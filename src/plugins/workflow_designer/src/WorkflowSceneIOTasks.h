@@ -45,13 +45,12 @@ public:
 private:
     Schema *schema;
     Metadata meta;
-    QString rawData;
 };
 
 class LoadWorkflowSceneTask : public Task {
     Q_OBJECT
 public:
-    LoadWorkflowSceneTask(Schema *schema, Metadata *meta, WorkflowScene *scene, const QString &url);
+    LoadWorkflowSceneTask(Schema *schema, Metadata *meta, WorkflowScene *scene, const QString &url, bool noUrl = false);
     virtual void run();
     virtual Task::ReportResult report();
     
@@ -62,6 +61,7 @@ private:
     QString url;
     QString rawData;
     LoadWorkflowTask::FileFormat format;
+    bool noUrl;
 };
 
 } //namespace

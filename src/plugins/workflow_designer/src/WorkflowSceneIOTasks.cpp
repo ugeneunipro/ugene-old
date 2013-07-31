@@ -45,8 +45,7 @@ SaveWorkflowSceneTask::SaveWorkflowSceneTask(Schema *s, const Metadata& m)
 : Task(tr("Save workflow scene task"), TaskFlag_None), schema(s), meta(m) {
     GCOUNTER(cvar,tvar,"SaveWorkflowSceneTask");
     assert(schema != NULL);
-    rawData = HRSchemaSerializer::schema2String(*schema, &meta);
-    
+
     // add ( name, path ) pair to settings. need for running schemas in cmdline by name
     Settings * settings = AppContext::getSettings();
     assert( settings != NULL );
@@ -59,22 +58,14 @@ void SaveWorkflowSceneTask::run() {
     if(hasError()) {
         return;
     }
-    
-    QFile file(meta.url);
-    if(!file.open(QIODevice::WriteOnly)) {
-        setError(L10N::errorOpeningFileWrite(meta.url));
-        return;
-    }
-    QTextStream out(&file);
-    out.setCodec("UTF-8");
-    out << rawData;
+    HRSchemaSerializer::saveSchema(schema, &meta, meta.url, stateInfo);
 }
 
 /**********************************
  * LoadWorkflowSceneTask
  **********************************/
-LoadWorkflowSceneTask::LoadWorkflowSceneTask(Schema *_schema, Metadata *_meta, WorkflowScene *_scene, const QString &_url):
-Task(tr("Load workflow scene"),TaskFlag_None), schema(_schema), meta(_meta), scene(_scene), url(_url) {
+LoadWorkflowSceneTask::LoadWorkflowSceneTask(Schema *_schema, Metadata *_meta, WorkflowScene *_scene, const QString &_url, bool _noUrl):
+Task(tr("Load workflow scene"),TaskFlag_None), schema(_schema), meta(_meta), scene(_scene), url(_url), noUrl(_noUrl) {
     GCOUNTER(cvar,tvar, "LoadWorkflowSceneTask");
     assert(schema != NULL);
     assert(meta != NULL);
@@ -134,7 +125,9 @@ Task::ReportResult LoadWorkflowSceneTask::report() {
     sc.recreateScene(scene);
     scene->setModified(false);
     scene->connectConfigurationEditors();
-    meta->url = url;
+    if (!noUrl) {
+        meta->url = url;
+    }
     return ReportResult_Finished;
 }
 

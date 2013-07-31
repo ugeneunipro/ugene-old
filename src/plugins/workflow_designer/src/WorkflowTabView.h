@@ -36,11 +36,12 @@ namespace U2 {
 using namespace Workflow;
 
 class Dashboard;
+class WorkflowView;
 
 class WorkflowTabView : public QTabWidget {
     Q_OBJECT
 public:
-    WorkflowTabView(QWidget *parent);
+    WorkflowTabView(WorkflowView *parent);
 
     void addDashboard(WorkflowMonitor *monitor, const QString &name = QString());
     bool hasDashboards() const;
@@ -61,6 +62,9 @@ private:
     int addDashboard(Dashboard *db);
     QString generateName(const QString &baseName = "") const;
     QStringList allNames() const;
+
+private:
+    WorkflowView *parent;
 };
 
 } // U2

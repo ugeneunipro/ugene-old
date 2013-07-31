@@ -30,6 +30,8 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/U2SafePoints.h>
 
+#include "WorkflowViewController.h"
+
 #include "WorkflowTabView.h"
 
 namespace U2 {
@@ -52,8 +54,8 @@ private:
     QWidget *_content;
 };
 
-WorkflowTabView::WorkflowTabView(QWidget *parent)
-: QTabWidget(parent)
+WorkflowTabView::WorkflowTabView(WorkflowView *_parent)
+: QTabWidget(_parent), parent(_parent)
 {
     setTabPosition(QTabWidget::North);
     tabBar()->setShape(QTabBar::TriangularNorth);
@@ -83,6 +85,7 @@ int WorkflowTabView::addDashboard(Dashboard *db) {
     CloseButton *closeButton = new CloseButton(db);
     tabBar()->setTabButton(idx, QTabBar::RightSide, closeButton);
     connect(closeButton, SIGNAL(clicked()), SLOT(sl_closeTab()));
+    connect(db, SIGNAL(si_loadSchema(const QString &)), parent, SLOT(sl_loadScene(const QString &)));
     emit si_countChanged();
     return idx;
 }

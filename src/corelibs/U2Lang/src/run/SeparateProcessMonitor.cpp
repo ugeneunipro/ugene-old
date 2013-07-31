@@ -33,8 +33,8 @@ static const QString PROMLEM_TAG("PROBLEM_TAG");
 static const QString WORKER_TAG("WORKER_INFO_TAG");
 static const QString RUN_STATE_TAG("RUN_STATE_TAG");
 
-SeparateProcessMonitor::SeparateProcessMonitor(WorkflowAbstractIterationRunner *task, const QList<Actor*> &procs)
-: WorkflowMonitor(task, procs)
+SeparateProcessMonitor::SeparateProcessMonitor(WorkflowAbstractIterationRunner *task, Schema *schema)
+: WorkflowMonitor(task, schema)
 {
 
 }

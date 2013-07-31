@@ -48,8 +48,10 @@ public:
     QString getName() const;
     void setName(const QString &value);
 
-protected:
-    virtual void contextMenuEvent(QContextMenuEvent *ev);
+    void loadSchema();
+
+signals:
+    void si_loadSchema(const QString &url);
 
 private slots:
     void sl_runStateChanged(bool paused);
@@ -102,6 +104,7 @@ public slots:
     void openUrl(const QString &url);
     void openByOS(const QString &url);
     QString absolute(const QString &url);
+    void loadSchema();
 
 private:
     Dashboard *dashboard;

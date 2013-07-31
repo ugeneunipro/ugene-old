@@ -183,3 +183,18 @@ table.table-fixed {
     white-space: nowrap;
     text-overflow: ellipsis;
 }
+
+.load-btn {
+    float: right;
+    margin-top: -50px;
+    margin-right: 20px;
+    padding-left: 8px;
+    padding-right: 8px;
+}
+
+.load-btn div {
+    width: 16px;
+    height: 16px;
+    background-image: url("qrc:U2Designer/images/load_schema.png");
+    background-repeat: no-repeat;
+}

@@ -237,6 +237,8 @@ public:
     static bool isHeaderLine(const QString &line);
     static QString valueString(const QString & s);
 
+    static void saveSchema(Schema *schema, Metadata *meta, const QString &url, U2OpStatus &os);
+
 private:
     static GrouperSlotAction parseAction(Tokenizer &tokenizer);
     static QList<Dataset> parseUrlAttribute(const QString attrId, QList<StringPair> &blockPairs);

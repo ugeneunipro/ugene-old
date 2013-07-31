@@ -30,7 +30,7 @@ namespace Workflow {
 class SeparateProcessMonitor : public WorkflowMonitor {
     Q_OBJECT
 public:
-    SeparateProcessMonitor(WorkflowAbstractIterationRunner *task, const QList<Actor*> &procs);
+    SeparateProcessMonitor(WorkflowAbstractIterationRunner *task, Schema *schema);
 
     void parseLog(const QStringList &lines);
 };

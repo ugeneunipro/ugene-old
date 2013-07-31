@@ -75,9 +75,8 @@ class Actor;
 class U2LANG_EXPORT WorkflowMonitor : public QObject {
     Q_OBJECT
 public:
-    WorkflowMonitor(WorkflowAbstractIterationRunner *task, const QList<Actor*> &procs);
+    WorkflowMonitor(WorkflowAbstractIterationRunner *task, Schema *schema);
 
-    QString getName() const;
     const QList<Monitor::FileInfo> & getOutputFiles() const;
     const QList<Monitor::Problem> & getProblems() const;
     const QMap<QString, Monitor::WorkerInfo> & getWorkersInfo() const;
@@ -99,6 +98,8 @@ public:
     void setOutputDir(const QString &dir);
     QString outputDir() const;
 
+    void setSaveSchema(const Metadata &meta);
+
 public slots:
     void sl_progressChanged();
     void sl_taskStateChanged();
@@ -116,9 +117,10 @@ signals:
     void si_dirSet(const QString &dir);
 
 private:
+    Schema *schema;
+    QScopedPointer<Metadata> meta;
     QPointer<WorkflowAbstractIterationRunner> task;
     QMap<QString, Actor*> procMap;
-    QString name;
     QMap<Task*, Actor*> taskMap;
     QList<Task*> errorTasks;
     QList<Monitor::FileInfo> outputFiles;
@@ -126,6 +128,7 @@ private:
     QMap<QString, Monitor::WorkerInfo> workers;
     QList<Monitor::WorkerParamsInfo> workersParamsInfo;
     QString _outputDir;
+    bool saveSchema;
 
 protected:
     void setWorkerInfo(const QString &actorId, const Monitor::WorkerInfo &info);

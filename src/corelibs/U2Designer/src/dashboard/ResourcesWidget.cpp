@@ -55,6 +55,10 @@ void ResourcesWidget::sl_progressChanged(int progress) {
     bar.setStyleProperty("width", QString::number(progress) + "%");
 }
 
+static bool isFinished(TaskState state) {
+    return (Monitor::SUCCESS == state) || (Monitor::CANCELLED == state) || (Monitor::FAILED == state);
+}
+
 void ResourcesWidget::sl_taskStateChanged(TaskState state) {
     if (Monitor::RUNNING == state) {
         running();
@@ -66,6 +70,9 @@ void ResourcesWidget::sl_taskStateChanged(TaskState state) {
         success();
     } else {
         canceled();
+    }
+    if (isFinished(state)) {
+        dashboard->getDocument().evaluateJavaScript("showLoadButton()");
     }
 }
 

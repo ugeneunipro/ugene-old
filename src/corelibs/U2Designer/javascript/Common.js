@@ -19,7 +19,12 @@
  * MA 02110-1301, USA.
  */
  
- function wrapLongText(text) {
+function wrapLongText(text) {
     return '<div class="long-text" title="' + text + '">' + text + '</div>';
- }
- 
+}
+
+function showLoadButton() {
+    var menuLine = document.getElementsByClassName("dash-menu-line")[0];
+    var btnDef = "<button class='btn load-btn' onclick='agent.loadSchema()' title='Load schema'><div /></button>";
+    menuLine.insertAdjacentHTML('beforeend', btnDef);
+}

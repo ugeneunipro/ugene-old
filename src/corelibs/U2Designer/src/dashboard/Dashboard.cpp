@@ -253,8 +253,9 @@ void Dashboard::sl_runStateChanged(bool paused) {
     page()->mainFrame()->evaluateJavaScript(script);
 }
 
-void Dashboard::contextMenuEvent(QContextMenuEvent * /*ev*/) {
-
+void Dashboard::loadSchema() {
+    QString url = dir + REPORT_SUB_DIR + "schema.uwl";
+    emit si_loadSchema(url);
 }
 
 /************************************************************************/
@@ -297,6 +298,10 @@ QString JavascriptAgent::absolute(const QString &url) {
         return url;
     }
     return dashboard->directory() + url;
+}
+
+void JavascriptAgent::loadSchema() {
+    dashboard->loadSchema();
 }
 
 /************************************************************************/

@@ -1431,8 +1431,10 @@ void WorkflowView::localHostLaunch() {
         connect(signalMapper, SIGNAL(si_taskFinished(Task*)), SLOT(sl_toggleLock()));
     }
     AppContext::getTaskScheduler()->registerTopLevelTask(t);
+    Metadata meta = getMeta();
     foreach (WorkflowMonitor *m, t->getMonitors()) {
-        tabView->addDashboard(m, getMeta().name);
+        m->setSaveSchema(meta);
+        tabView->addDashboard(m, meta.name);
         showDashboards();
     }
 }
@@ -2144,14 +2146,22 @@ void WorkflowView::sl_loadScene() {
     QString url = QFileDialog::getOpenFileName(0, tr("Open workflow schema file"), dir, filter);
     if (!url.isEmpty()) {
         AppContext::getSettings()->setValue(LAST_DIR, QFileInfo(url).absoluteDir().absolutePath());
-        Task* t = new LoadWorkflowSceneTask(schema, &meta, scene, url); //FIXME unsynchronized meta usage
-        TaskSignalMapper* m = new TaskSignalMapper(t);
-        connect(m, SIGNAL(si_taskFinished(Task*)), SLOT(sl_onSceneLoaded()));
-        if(LoadWorkflowTask::detectFormat(IOAdapterUtils::readFileHeader(url)) == LoadWorkflowTask::XML) {
-            connect(m, SIGNAL(si_taskFinished(Task*)), SLOT(sl_xmlSchemaLoaded(Task*)));
-        }
-        AppContext::getTaskScheduler()->registerTopLevelTask(t);
+        sl_loadScene(url, false);
     }
+}
+
+void WorkflowView::sl_loadScene(const QString &url, bool askConfirmation) {
+    if (askConfirmation && !confirmModified()) {
+        return;
+    }
+    bool noUrl = (NULL != sender());
+    Task* t = new LoadWorkflowSceneTask(schema, &meta, scene, url, noUrl); //FIXME unsynchronized meta usage
+    TaskSignalMapper* m = new TaskSignalMapper(t);
+    connect(m, SIGNAL(si_taskFinished(Task*)), SLOT(sl_onSceneLoaded()));
+    if(LoadWorkflowTask::detectFormat(IOAdapterUtils::readFileHeader(url)) == LoadWorkflowTask::XML) {
+        connect(m, SIGNAL(si_taskFinished(Task*)), SLOT(sl_xmlSchemaLoaded(Task*)));
+    }
+    AppContext::getTaskScheduler()->registerTopLevelTask(t);
 }
 
 void WorkflowView::sl_xmlSchemaLoaded(Task* t) {
@@ -2186,6 +2196,7 @@ void WorkflowView::sl_onSceneLoaded() {
     scene->setModified(false);
     sl_refreshActorDocs();
     checkAutoRunWizard();
+    hideDashboards();
 }
 
 void WorkflowView::sl_onSceneSaved() {

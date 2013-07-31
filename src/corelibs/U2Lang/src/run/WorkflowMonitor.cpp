@@ -19,7 +19,10 @@
  * MA 02110-1301, USA.
  */
 
+#include <U2Core/U2OpStatusUtils.h>
+
 #include <U2Lang/ActorModel.h>
+#include <U2Lang/HRSchemaSerializer.h>
 #include <U2Lang/WorkflowRunTask.h>
 #include <U2Lang/WorkflowUtils.h>
 
@@ -31,15 +34,15 @@ namespace U2 {
 namespace Workflow {
 using namespace Monitor;
 
-WorkflowMonitor::WorkflowMonitor(WorkflowAbstractIterationRunner *_task, const QList<Actor*> &procs)
-: QObject(), task(_task)
+WorkflowMonitor::WorkflowMonitor(WorkflowAbstractIterationRunner *_task, Schema *_schema)
+: QObject(), schema(_schema), task(_task), saveSchema(false)
 {
-    foreach (Actor *p, procs) {
+    foreach (Actor *p, schema->getProcesses()) {
         procMap[p->getId()] = p;
         addTime(0, p->getId());
     }
 
-    foreach (Actor *p, procs){
+    foreach (Actor *p, schema->getProcesses()){
         WorkerParamsInfo info;
         info.workerName = p->getLabel();
         QMap<QString, Attribute *> params = p->getParameters();
@@ -58,10 +61,6 @@ WorkflowMonitor::WorkflowMonitor(WorkflowAbstractIterationRunner *_task, const Q
     connect(task.data(), SIGNAL(si_updateProducers()), SIGNAL(si_updateProducers()));
     connect(task.data(), SIGNAL(si_progressChanged()), SLOT(sl_progressChanged()));
     connect(task.data(), SIGNAL(si_stateChanged()), SLOT(sl_taskStateChanged()));
-}
-
-QString WorkflowMonitor::getName() const {
-    return name;
 }
 
 const QList<FileInfo> & WorkflowMonitor::getOutputFiles() const {
@@ -136,6 +135,12 @@ void WorkflowMonitor::registerTask(Task *task, const QString &actor) {
 void WorkflowMonitor::setOutputDir(const QString &dir) {
     _outputDir = dir;
     emit si_dirSet(outputDir());
+
+    if (saveSchema) {
+        QString url = outputDir() + "report/schema.uwl";
+        U2OpStatus2Log os;
+        HRSchemaSerializer::saveSchema(schema, meta.data(), url, os);
+    }
 }
 
 QString WorkflowMonitor::outputDir() const {
@@ -184,6 +189,11 @@ void WorkflowMonitor::addProblem(const Monitor::Problem &problem) {
     problems << problem;
     emit si_newProblem(problem);
     cmdLog.trace(PackUtils::packProblem(problem));
+}
+
+void WorkflowMonitor::setSaveSchema(const Metadata &_meta) {
+    meta.reset(new Metadata(_meta));
+    saveSchema = true;
 }
 
 /************************************************************************/

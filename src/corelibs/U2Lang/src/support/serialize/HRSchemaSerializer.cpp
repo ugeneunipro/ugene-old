@@ -22,6 +22,7 @@
 #include <QtCore/QTextStream>
 
 #include <U2Core/GUrl.h>
+#include <U2Core/L10n.h>
 #include <U2Core/Log.h>
 #include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/U2OpStatusUtils.h>
@@ -184,6 +185,19 @@ QString HRSchemaSerializer::valueString(const QString & s) {
     } else {
         return str;
     }
+}
+
+void HRSchemaSerializer::saveSchema(Schema *schema, Metadata *meta, const QString &url, U2OpStatus &os) {
+    QFile file(url);
+    if(!file.open(QIODevice::WriteOnly)) {
+        os.setError(L10N::errorOpeningFileWrite(url));
+        return;
+    }
+    QTextStream out(&file);
+    out.setCodec("UTF-8");
+    out << schema2String(*schema, meta);
+
+    file.close();
 }
 
 QString HRSchemaSerializer::Tokenizer::take() {
