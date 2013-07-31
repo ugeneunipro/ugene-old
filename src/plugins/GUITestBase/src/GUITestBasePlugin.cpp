@@ -804,6 +804,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_workflow_designer::test_0009);
     REGISTER_TEST(GUITest_common_scenarios_workflow_designer::test_0010);
     REGISTER_TEST(GUITest_common_scenarios_workflow_designer::test_0013);
+    REGISTER_TEST(GUITest_common_scenarios_workflow_designer::test_0015);
 
 
 /////////////////////////////////////////////////////////////////////////

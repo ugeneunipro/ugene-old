@@ -61,7 +61,9 @@ namespace U2 {
 
 namespace GUITest_common_scenarios_workflow_designer {
 GUI_TEST_CLASS_DEFINITION(test_0001){
-    //GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
+#ifndef Q_OS_LINUX
+    GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
+#endif
     QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
 
     WizardFiller::pairValList list;
@@ -151,7 +153,9 @@ GUI_TEST_CLASS_DEFINITION(test_0001){
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0002){
-    //GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
+#ifndef Q_OS_LINUX
+    GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
+#endif
     //1. Start UGENE. Open workflow schema file from data\cmdline\pfm-build.uws
     GTFileDialog::openFile(os,dataDir + "cmdline/","pwm-build.uwl");
     GTGlobals::sleep(1000);
@@ -180,7 +184,9 @@ GUI_TEST_CLASS_DEFINITION(test_0002){
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0002_1){
-    //GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
+#ifndef Q_OS_LINUX
+    GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
+#endif
     //1. Start UGENE. Open workflow schema file from data\cmdline\pfm-build.uws
     GTFileDialog::openFile(os,dataDir + "cmdline/","pwm-build.uwl");
     GTGlobals::sleep(1000);
@@ -213,7 +219,9 @@ GUI_TEST_CLASS_DEFINITION(test_0002_1){
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0003){
-    //GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
+#ifndef Q_OS_LINUX
+    GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
+#endif
 //    1. Start UGENE. Open workflow schema file from \common data\workflow\remoteDBReaderTest.uws
     GTFileDialog::openFile(os,testDir + "_common_data/workflow/","remoteDBReaderTest.uws");
 //    Expected state: workflow schema opened in Workflow designer
@@ -236,7 +244,9 @@ GUI_TEST_CLASS_DEFINITION(test_0003){
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0005){
-    //GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
+#ifndef Q_OS_LINUX
+    GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
+#endif
 //1. Open WD
     QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
     GTMenu::clickMenuItem(os, menu, QStringList() << "Workflow Designer");
@@ -247,6 +257,9 @@ GUI_TEST_CLASS_DEFINITION(test_0005){
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0006){
+#ifndef Q_OS_LINUX
+    GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
+#endif
 //1. Do menu Settings->Prefrences
     GTUtilsDialog::waitForDialog(os,new AppSettingsDialogFiller(os,AppSettingsDialogFiller::minimal));
     QMenu* menu=GTMenu::showMainMenu(os, MWMENU_SETTINGS);
@@ -274,6 +287,9 @@ GUI_TEST_CLASS_DEFINITION(test_0006){
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0007){
+#ifndef Q_OS_LINUX
+    GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
+#endif
 //1. Do menu {Settings->Prefrences}
     GTUtilsDialog::waitForDialog(os,new AppSettingsDialogFiller(os,255,0,0));
     QMenu* menu=GTMenu::showMainMenu(os, MWMENU_SETTINGS);
@@ -298,6 +314,9 @@ GUI_TEST_CLASS_DEFINITION(test_0007){
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0009){
+#ifndef Q_OS_LINUX
+    GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
+#endif
 //    1. Open schema from examples
     QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
     GTMenu::clickMenuItem(os, menu, QStringList() << "Workflow Designer");
@@ -327,6 +346,9 @@ GUI_TEST_CLASS_DEFINITION(test_0009){
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0010){
+#ifndef Q_OS_LINUX
+    GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
+#endif
 //    1. Open WD
     QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
     GTMenu::clickMenuItem(os, menu, QStringList() << "Workflow Designer");
@@ -351,6 +373,9 @@ GUI_TEST_CLASS_DEFINITION(test_0010){
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0013){
+#ifndef Q_OS_LINUX
+    GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
+#endif
 //    1. Load any sample in WD
     QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
     GTMenu::clickMenuItem(os, menu, QStringList() << "Workflow Designer");
@@ -385,6 +410,26 @@ GUI_TEST_CLASS_DEFINITION(test_0013){
     doc = qobject_cast<QTextEdit*>(GTWidget::findWidget(os,"doc"));
     CHECK_SET_ERR(doc->document()->toPlainText().contains("Input port \"Input assembly"),"expected text not found");
 //    Expected state: in property editor 'Input port' item appears
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0015){
+#ifndef Q_OS_LINUX
+    GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
+#endif
+//    1. open WD.
+    QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
+    GTMenu::clickMenuItem(os, menu, QStringList() << "Workflow Designer");
+//    2. Select any worker on palette.
+    GTUtilsWorkflowDesigner::addSample(os,"call variants");
+    GTMouseDriver::moveTo(os,GTUtilsWorkflowDesigner::getItemCenter(os,"call variants with"));
+    GTMouseDriver::click(os);
+    GTGlobals::sleep(500);
+    CHECK_SET_ERR(GTWidget::findWidget(os,"table"),"parameters table not found");
+    CHECK_SET_ERR(GTWidget::findWidget(os,"doc"),"element documentation widget not found");
+    CHECK_SET_ERR(GTWidget::findWidget(os,"table2"),"input data table not found");
+    CHECK_SET_ERR(GTWidget::findWidget(os,"propDoc"),"property documentation widget not found");
+
+//    Expected state: Actor info (parameters, input data ...) will be displayed at the right part of window
 }
 } // namespace GUITest_common_scenarios_workflow_designer
 
