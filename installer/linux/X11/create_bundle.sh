@@ -94,6 +94,8 @@ cp -v "$PATH_TO_QT_LIBS/libQtXmlPatterns.so.4" "${TARGET_APP_DIR}"
 strip -v "${TARGET_APP_DIR}/libQtXmlPatterns.so.4"
 cp -v "$PATH_TO_QT_LIBS/libQtScript.so.4" "${TARGET_APP_DIR}"
 strip -v "${TARGET_APP_DIR}/libQtScript.so.4"
+cp -v "$PATH_TO_QT_LIBS/libQtScriptTools.so.4" "${TARGET_APP_DIR}"
+strip -v "${TARGET_APP_DIR}/libQtScriptTools.so.4"
 cp -v "$PATH_TO_QT_LIBS/libQtWebKit.so.4" "${TARGET_APP_DIR}"
 strip -v "${TARGET_APP_DIR}/libQtWebKit.so.4"
 cp -v "$PATH_TO_QT_LIBS/libQtNetwork.so.4" "${TARGET_APP_DIR}"
@@ -183,6 +185,7 @@ add-plugin workflow_designer
 add-plugin weight_matrix
 add-plugin remote_service
 add-plugin variants
+add-plugin snp_effect
 
 if [ "$1" == "-test" ]; then
   add-plugin test_runner
