@@ -170,10 +170,17 @@ QString GUrl::baseFileName() const {
         QStringList args = urlString.split(U2_VFS_FILE_SEPARATOR, QString::SkipEmptyParts, Qt::CaseSensitive );
         if( 2 == args.size() ) {
             result = QFileInfo( args.at( 1 ) ).baseName();
+			if( !result.length() ) {
+				result = QFileInfo( args.at( 1 ) ).fileName();
+			}
         }
     } else {
         result = QFileInfo(path(this)).baseName();
+		if( !result.length() ) {
+			result = QFileInfo(path(this)).fileName();
+		}
     }
+	
     return result;
 }
 
