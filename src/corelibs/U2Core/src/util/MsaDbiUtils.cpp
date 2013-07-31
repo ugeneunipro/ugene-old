@@ -559,7 +559,7 @@ void MsaDbiUtils::updateMsa(const U2EntityRef& msaRef, const MAlignment& al, U2O
         // Update data for rows with the same row and sequence IDs
         if (newRowsIds.contains(currentRow.rowId)) {
             // Update sequence and row info
-            U2MsaRow newRow = al.getRowByRowId(currentRow.rowId, os);
+            U2MsaRow newRow = al.getRowByRowId(currentRow.rowId, os).getRowDBInfo();
             CHECK_OP(os, );
 
             if (newRow.sequenceId != currentRow.sequenceId) {
@@ -571,7 +571,7 @@ void MsaDbiUtils::updateMsa(const U2EntityRef& msaRef, const MAlignment& al, U2O
                 continue;
             }
 
-            DNASequence sequence = al.getSequenceByRowId(newRow.rowId, os);
+            DNASequence sequence = al.getRowByRowId(newRow.rowId, os).getSequence();
             CHECK_OP(os, );
 
             msaDbi->updateRowName(msaRef.entityId, newRow.rowId, sequence.getName(), os);

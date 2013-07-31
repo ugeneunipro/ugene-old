@@ -99,7 +99,6 @@ private slots:
 private:
     void sl_buildStaticMenu(GObjectView*, QMenu*) {}
     void sl_buildContextMenu(GObjectView*, QMenu*) {}
-    void sl_referenceSequenceChanged(const MAlignmentRow&);
     void updateDistanceMatrix();
 
     MSADistanceMatrix* algo;

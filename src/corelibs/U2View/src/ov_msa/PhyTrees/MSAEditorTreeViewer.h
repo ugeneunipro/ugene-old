@@ -136,7 +136,7 @@ private slots:
     void sl_sequenceNameChanged(QString prevName, QString newName);
     virtual void sl_collapseTriggered();
     void sl_onHeightChanged(int height, bool isMinimumSize, bool isMaximumSize);
-    void sl_onReferenceSeqChanged(const QString &str);
+    void sl_onReferenceSeqChanged(qint64);
     void sl_onSceneRectChanged(const QRectF&);
     virtual void sl_rectLayoutRecomputed();
     void sl_onVisibleRangeChanged(QStringList visibleSeqs, int height);

@@ -35,7 +35,7 @@ public:
 
 private slots:
     void sl_sync();
-    void sl_updateHint(const QString &);
+    void sl_updateHint();
 
 private:
     QWidget* createColorGroup();

@@ -22,7 +22,8 @@
 #ifndef _U2_MSA_GENERAL_TAB_H_
 #define _U2_MSA_GENERAL_TAB_H_
 
-#include "../SequenceSelectorWidgetController.h"
+#include <U2Core/global.h>
+
 #include "ui/ui_GeneralTabOptionsPanelWidget.h"
 
 #include <QtGui/QtGui>

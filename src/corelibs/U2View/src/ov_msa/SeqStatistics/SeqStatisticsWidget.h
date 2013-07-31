@@ -45,7 +45,7 @@ private slots:
     void sl_onUpdateClicked();
     void sl_onShowStatisticsChanged(int);
     void sl_onAutoUpdateChanged(int);
-    void sl_onRefSeqChanged(const QString&);
+    void sl_onRefSeqChanged(qint64);
 private:
     void copySettings();
     void connectSlots();

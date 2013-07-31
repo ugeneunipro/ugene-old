@@ -58,7 +58,7 @@ private slots:
     void sl_selectReferenceSequence();
     void sl_alignmentChanged(const MAlignment&, const MAlignmentModInfo&);
     void sl_onScrollBarActionTriggered( int scrollAction );
-    void sl_refrenceSeqChanged(const QString &);
+    void sl_referenceSeqChanged(qint64);
     
     void sl_startChanged(const QPoint& p, const QPoint& prev);
     void sl_selectionChanged(const MSAEditorSelection& current, const MSAEditorSelection& prev);
@@ -90,9 +90,8 @@ protected:
     bool                completeRedraw;
 
 public:
-    int getRefSeqPos(); //returns -1 if refseq is not visible
     void drawContent(QPainter& p);
-    QString sequenceAtPos(QPoint p);
+    qint64 sequenceIdAtPos(QPoint p);
     void clearGroupsSelections();
 
 signals:

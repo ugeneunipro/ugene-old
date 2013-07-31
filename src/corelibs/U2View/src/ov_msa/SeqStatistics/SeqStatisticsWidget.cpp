@@ -62,8 +62,7 @@ void SeqStatisticsWidget::copySettings() {
         const SimilarityStatisticsSettings* s = static_cast<const SimilarityStatisticsSettings*>(similarityWidget->getSettings());
         if(NULL != s) {
             settings = new SimilarityStatisticsSettings(*s);
-        }
-        else {
+        } else {
             settings = new SimilarityStatisticsSettings();
         }
         statisticsIsShown = !similarityWidget->isHidden();
@@ -105,7 +104,7 @@ void SeqStatisticsWidget::connectSlots() {
     connect(ui.updateButton,             SIGNAL(pressed()),                             SLOT(sl_onUpdateClicked()));
     connect(ui.showDistancesColumnCheck, SIGNAL(stateChanged (int)),                    SLOT(sl_onShowStatisticsChanged(int)));
     connect(ui.autoUpdateCheck,          SIGNAL(stateChanged (int)),                    SLOT(sl_onAutoUpdateChanged(int)));
-    connect(msa,                         SIGNAL(si_referenceSeqChanged(const QString&)), SLOT(sl_onRefSeqChanged(const QString&)));
+    connect(msa,                         SIGNAL(si_referenceSeqChanged(qint64)),        SLOT(sl_onRefSeqChanged(qint64)));
 }
 
 void SeqStatisticsWidget::restoreSettings() {
@@ -120,15 +119,13 @@ void SeqStatisticsWidget::restoreSettings() {
     int index = ui.algoComboBox->findText(settings->algoName);
     if(0 <= index) {
         ui.algoComboBox->setCurrentIndex(index);
-    }
-    else {
+    } else {
         settings->algoName = ui.algoComboBox->currentText();
     }
     if(!statisticsIsShown) {
         hideSimilaritySettings();
-    }
-    else {
-        sl_onRefSeqChanged(msa->getRefSeqName());
+    } else {
+        sl_onRefSeqChanged(msa->getReferenceRowId());
     }
 }
 
@@ -155,11 +152,10 @@ void SeqStatisticsWidget::sl_onAutoUpdateChanged(int state) {
     msaUI->setSimilaritySettings(settings);
 }
 
-void SeqStatisticsWidget::sl_onRefSeqChanged(const QString& str) {
-    if(str.isEmpty()) {
+void SeqStatisticsWidget::sl_onRefSeqChanged(qint64 referenceRowId) {
+    if(MAlignmentRow::invalidRowId() == referenceRowId) {
         ui.refSeqWarning->show();
-    }
-    else {
+    } else {
         ui.refSeqWarning->hide();
     }
 }
@@ -167,8 +163,7 @@ void SeqStatisticsWidget::sl_onRefSeqChanged(const QString& str) {
 void SeqStatisticsWidget::sl_onShowStatisticsChanged(int state) {
     if(Qt::Checked == state) {
         showSimilaritySettings();
-    }
-    else {
+    } else {
         hideSimilaritySettings();
     }
 }
@@ -190,7 +185,7 @@ void SeqStatisticsWidget::showSimilaritySettings() {
     ui.refSeqWarning->show();
     msaUI->showSimilarity();
     msaUI->setSimilaritySettings(settings);
-    sl_onRefSeqChanged(msa->getRefSeqName());
+    sl_onRefSeqChanged(msa->getReferenceRowId());
 }
 
 }

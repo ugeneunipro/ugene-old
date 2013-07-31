@@ -76,17 +76,24 @@ class PairwiseAlignmentTask;
 
 class SNPSettings {
 public:
-    SNPSettings():seqName(QString("")){};
+    SNPSettings() : seqId(MAlignmentRow::invalidRowId()) { };
     QPoint clickPoint;
-    QString seqName;
+    qint64 seqId;
 };
 
 class PairwiseAlignmentWidgetsSettings {
 public:
-    PairwiseAlignmentWidgetsSettings() : inNewWindow(true), pairwiseAlignmentTask(NULL),
-        showSequenceWidget(true), showAlgorithmWidget(false), showOutputWidget(false), sequenceSelectionModeOn(false) {}
-    QString firstSequenceName;
-    QString secondSequenceName;
+    PairwiseAlignmentWidgetsSettings()
+        : firstSequenceId(MAlignmentRow::invalidRowId()),
+        secondSequenceId(MAlignmentRow::invalidRowId()), inNewWindow(true),
+        pairwiseAlignmentTask(NULL), showSequenceWidget(true), showAlgorithmWidget(false),
+        showOutputWidget(false), sequenceSelectionModeOn(false)
+    {
+
+    }
+
+    qint64 firstSequenceId;
+    qint64 secondSequenceId;
     QString algorithmName;
     bool inNewWindow;
     QString resultFileName;
@@ -148,11 +155,11 @@ public:
     
     static const float zoomMult;
 
-    void setReference(QString ref);
+    void setReference(qint64 sequenceId);
+    qint64 getReferenceRowId() const { return snp.seqId; }
+    QString getReferenceRowName() const;
 
-    QString getRefSeqName(){return snp.seqName;};
-
-    PairwiseAlignmentWidgetsSettings* getPairwiseAlignmentWidgetsSettings() { return pairwiseAlignmentWidgetsSettings; }
+    PairwiseAlignmentWidgetsSettings* getPairwiseAlignmentWidgetsSettings() const { return pairwiseAlignmentWidgetsSettings; }
    
     MSAEditorTreeManager* getTreeManager() {return &treeManager;}
 
@@ -163,7 +170,7 @@ public:
 signals:
     void si_fontChanged(const QFont& f);
     void si_zoomOperationPerformed(bool resizeModeChanged);
-    void si_referenceSeqChanged(const QString &str);
+    void si_referenceSeqChanged(qint64 referenceId);
     void si_sizeChanged(int newHeight, bool isMinimumSize, bool isMaximumSize);
 
 protected slots:

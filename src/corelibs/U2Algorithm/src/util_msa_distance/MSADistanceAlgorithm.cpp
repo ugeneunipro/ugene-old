@@ -93,17 +93,12 @@ void MSADistanceAlgorithm::fillTable() {
 
 MSADistanceMatrix::MSADistanceMatrix(const MSADistanceAlgorithm *algo, bool _usePercents) 
 : distanceTable(algo->distanceTable), usePercents(_usePercents), excludeGaps(false) {
-    int i = 0;
-    foreach(QString seqName, algo->ma.getRowNames()) {
-        namesAndIndexes[seqName] = i++;
-    }
     excludeGaps = algo->getExcludeGapsFlag();
     int nSeq = algo->ma.getNumRows();
     alignmentLength = algo->ma.getLength();
     for (int i = 0; i < nSeq; i++) {
         const MAlignmentRow& row = algo->ma.getRow(i);
         seqsUngappedLenghts.append(row.getUngappedLength());
-
     }
 }
 
@@ -114,21 +109,6 @@ int MSADistanceMatrix::getSimilarity(int refRow, int row) {
     }
     else {
         return distanceTable[refRow][row];
-    }
-}
-
-int MSADistanceMatrix::getSimilarity(const QString& refSeqName, const QString& secondSeqName) {
-    if(namesAndIndexes.contains(refSeqName) && namesAndIndexes.contains(secondSeqName)) {
-        return getSimilarity(namesAndIndexes[refSeqName], namesAndIndexes[secondSeqName]);
-    }
-    else {
-        return -1;
-    }
-}
-void MSADistanceMatrix::sl_onSequenceNameChanged(QString oldSeqName, QString newSeqName) {
-    if(namesAndIndexes.contains(oldSeqName)) {
-        namesAndIndexes[newSeqName] = namesAndIndexes[oldSeqName];
-        namesAndIndexes.remove(oldSeqName);
     }
 }
 

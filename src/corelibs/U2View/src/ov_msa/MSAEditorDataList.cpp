@@ -28,17 +28,17 @@
 #include <U2Core/MAlignmentObject.h>
 #include <U2Core/MAlignment.h>
 #include <U2Core/TaskSignalMapper.h>
+#include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/GObjectRelationRoles.h>
 #include <U2Core/PhyTreeObject.h>
-#include <U2Gui/GUIUtils.h>
 
+#include <U2Gui/GUIUtils.h>
 #include <QtGui/QApplication>
 #include <QtGui/QClipboard>
 #include <QtGui/QPainter>
 #include <QtGui/QMouseEvent>
 #include <QtGui/QSplitter>
-
 
 #include <U2Algorithm/MSADistanceAlgorithmRegistry.h>
 #include <U2Algorithm/MSADistanceAlgorithm.h>
@@ -53,7 +53,6 @@ const QString MSAEditorAlignmentDependentWidget::DataIsBeingUpdatedMessage(QStri
 MSAEditorSimilarityColumn::MSAEditorSimilarityColumn(MSAEditorUI* ui, QScrollBar* nhBar, const SimilarityStatisticsSettings* _settings)
 : MSAEditorNameList(ui, nhBar), algo(NULL), autoUpdate(true) {
     newSettings = curSettings = *_settings;
-    connect(editor->getMSAObject(), SIGNAL(si_referenceSequenceChanged(const MAlignmentRow&)), SLOT(sl_referenceSequenceChanged(const MAlignmentRow&)));
     updateDistanceMatrix();
 }
 
@@ -68,17 +67,18 @@ QString MSAEditorSimilarityColumn::getTextForRow( int s ) {
     }
 
     const MAlignment& ma = editor->getMSAObject()->getMAlignment();
-    QString refSeqName = editor->getRefSeqName();
-
-    if(refSeqName.isEmpty()) {
+    const qint64 referenceRowId = editor->getReferenceRowId();
+    if(MAlignmentRow::invalidRowId() == referenceRowId) {
         return tr("-");
     }
 
-    QString currentSeqName = ma.getRowNames().at(s);
-    QString units = algo->areUsePercents() ? "%" : "";
+    U2OpStatusImpl os;
+    const int refSequenceIndex = ma.getRowIndexByRowId(referenceRowId, os);
+    CHECK_OP(os, QString());
 
-    int sim = algo->getSimilarity(refSeqName, currentSeqName);
+    int sim = algo->getSimilarity(refSequenceIndex, s);
     CHECK(-1 != sim, tr("-"));
+    const QString units = algo->areUsePercents() ? "%" : "";
     return QString("%1").arg(sim) + units;
 }
 
@@ -86,10 +86,6 @@ QString MSAEditorSimilarityColumn::getSeqName(int s) {
     const MAlignment& ma = editor->getMSAObject()->getMAlignment();
 
     return ma.getRowNames().at(s);
-}
-
-void MSAEditorSimilarityColumn::sl_referenceSequenceChanged( const MAlignmentRow& ) {
-    update();
 }
 
 void MSAEditorSimilarityColumn::setSettings(const UpdatedWidgetSettings* _settings) {

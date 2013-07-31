@@ -19,15 +19,22 @@
  * MA 02110-1301, USA.
  */
 
+#include <U2Core/U2OpStatusUtils.h>
+
 #include "SequenceSelectorWidgetController.h"
 
-namespace U2{
+const int CURSOR_START_POSITION = 0;
 
-SequenceSelectorWidgetController::SequenceSelectorWidgetController(MSAEditor* _msa):msa(_msa), defaultSeqName(""){
+namespace U2 {
+
+SequenceSelectorWidgetController::SequenceSelectorWidgetController(MSAEditor* _msa)
+    : msa(_msa), defaultSeqName(""), seqId(MAlignmentRow::invalidRowId())
+{
     setupUi(this);
     filler = new MSACompletionFiller();
-    seqLineEdit->setText(msa->getRefSeqName());
-    seqLineEdit->setCursorPosition(0);
+
+    seqLineEdit->setText(msa->getReferenceRowName());
+    seqLineEdit->setCursorPosition(CURSOR_START_POSITION);
     completer = new BaseCompleter(filler, seqLineEdit);
     sl_updateCompleter();
 
@@ -39,14 +46,26 @@ SequenceSelectorWidgetController::SequenceSelectorWidgetController(MSAEditor* _m
         SLOT(sl_seqLineEditEditingFinished(const MAlignment& , const MAlignmentModInfo&)));
 
     connect(completer, SIGNAL(si_editingFinished()), SLOT(sl_seqLineEditEditingFinished()));
-    
 }
 
-void SequenceSelectorWidgetController::setText(QString str) {
-    if (seqLineEdit->text() != str) {
-        seqLineEdit->setText(str);
-        seqLineEdit->setCursorPosition(0);
+QString SequenceSelectorWidgetController::text() const {
+    return seqLineEdit->text();
+}
+
+void SequenceSelectorWidgetController::setSequenceId(qint64 newId) {
+    const MAlignment ma = msa->getMSAObject()->getMAlignment();
+    U2OpStatusImpl os;
+    const MAlignmentRow selectedRow = ma.getRowByRowId(newId, os);
+    seqId = newId;
+    const QString selectedName = selectedRow.getName();
+    if (seqLineEdit->text() != selectedName) {
+        seqLineEdit->setText(selectedName);
+        seqLineEdit->setCursorPosition(CURSOR_START_POSITION);
     }
+}
+
+qint64 SequenceSelectorWidgetController::sequenceId( ) const {
+    return seqId;
 }
 
 void SequenceSelectorWidgetController::sl_updateCompleter(){
@@ -78,21 +97,22 @@ void SequenceSelectorWidgetController::sl_seqLineEditEditingFinished(){
     }else{
         if (defaultSeqName != seqLineEdit->text()) {
             defaultSeqName = seqLineEdit->text();
-            seqLineEdit->setCursorPosition(0);
+            seqLineEdit->setCursorPosition(CURSOR_START_POSITION);
         }
     }
-    emit si_textControllerChanged();
+    emit si_selectionChanged();
 } 
 
-void SequenceSelectorWidgetController::sl_addSeqClicked(){
-    seqLineEdit->setText(msa->getMSAObject()->getRow(msa->getCurrentSelection().y()).getName());
-    seqLineEdit->setCursorPosition(0);
-    emit si_textControllerChanged();
+void SequenceSelectorWidgetController::sl_addSeqClicked() {
+    const MAlignmentRow selectedRow = msa->getMSAObject()->getRow(msa->getCurrentSelection().y());
+    setSequenceId(selectedRow.getRowId());
+    emit si_selectionChanged();
 }
 
-void SequenceSelectorWidgetController::sl_deleteSeqClicked(){
+void SequenceSelectorWidgetController::sl_deleteSeqClicked() {
     seqLineEdit->setText("");
-    emit si_textControllerChanged();
+    setSequenceId(MAlignmentRow::invalidRowId());
+    emit si_selectionChanged();
 }
 
 }

@@ -28,6 +28,7 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/Settings.h>
 #include <U2Core/MAlignmentObject.h>
+#include <U2Core/U2OpStatusUtils.h>
 
 #include <QtGui/QPainter>
 #include <math.h>
@@ -68,7 +69,7 @@ MSAEditorOffsetsViewController::MSAEditorOffsetsViewController(QObject* p, MSAEd
     viewAction->setCheckable(true);
     viewAction->setChecked(showOffsets);
     connect(viewAction, SIGNAL(triggered(bool)), SLOT(sl_showOffsets(bool)));
-    connect(editor, SIGNAL(si_referenceSeqChanged(const QString &)), SLOT(sl_refSeqChanged(const QString &)));
+    connect(editor, SIGNAL(si_referenceSeqChanged(qint64)), SLOT(sl_refSeqChanged(qint64)));
 
     updateOffsets();
 }
@@ -181,7 +182,12 @@ void MSAEditorOffsetsViewWidget::drawAll(QPainter& p) {
         visibleRows.append(U2Region(startSeq, nSeqVisible));
     }
 
-    int i=0, refSeq = ui->getEditorNameList()->getRefSeqPos();
+    int i=0;
+    const MSAEditor *editor = ui->getEditor();
+    const MAlignment alignment = editor->getMSAObject()->getMAlignment();
+    U2OpStatusImpl os;
+    const int refSeq = alignment.getRowIndexByRowId(editor->getReferenceRowId(), os);
+
     qint64 numRows = (qint64)cache->getMSAObject()->getNumRows();
     foreach(const U2Region& r, visibleRows) {
         int end = qMin(r.endPos(), numRows);;

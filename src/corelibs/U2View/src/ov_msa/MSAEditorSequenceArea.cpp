@@ -190,7 +190,7 @@ MSAEditorSequenceArea::MSAEditorSequenceArea(MSAEditorUI* _ui, GScrollBar* hb, G
     connect(editor, SIGNAL(si_zoomOperationPerformed(bool)), SLOT(sl_zoomOperationPerformed(bool)));
     connect(editor, SIGNAL(si_fontChanged(QFont)), SLOT(sl_fontChanged(QFont)));
     connect(ui->getCollapseModel(), SIGNAL(toggled()), SLOT(sl_modelChanged()));
-    connect(editor, SIGNAL(si_referenceSeqChanged(const QString &)), SLOT(sl_refrenceSeqChanged(const QString &)));
+    connect(editor, SIGNAL(si_referenceSeqChanged(qint64)), SLOT(sl_referenceSeqChanged(qint64)));
     
     QAction* undoAction = ui->getUndoAction();
     QAction* redoAction = ui->getRedoAction();
@@ -491,14 +491,16 @@ void MSAEditorSequenceArea::drawContent(QPainter& p) {
         range.append(U2Region(firstVisibleSeq, lastVisibleSeq - firstVisibleSeq + 1));
     }
 
-    int refSeq = ui->getEditorNameList()->getRefSeqPos()/*, curSeq =0*/;
-    QString refSeqName = ui->getEditor()->getRefSeqName();
+    const MSAEditor *editor = ui->getEditor();
+    const MAlignment alignment = editor->getMSAObject()->getMAlignment();
+    U2OpStatusImpl os;
+    const int refSeq = alignment.getRowIndexByRowId(editor->getReferenceRowId(), os);
+    QString refSeqName = editor->getReferenceRowName();
     const MAlignmentRow *r = NULL;
-    if(!refSeqName.isEmpty()){
-        r = &(msa.getRow(refSeqName));
+    if (MAlignmentRow::invalidRowId() != refSeq) {
+        r = &(msa.getRow(refSeq));
     }
 
-    
     foreach(const U2Region& region, range) {
         int start = region.startPos;
         int end = qMin(region.endPos(), (qint64)msa.getNumRows());
@@ -1694,8 +1696,7 @@ void MSAEditorSequenceArea::sl_modelChanged() {
     update();
 }
 
-void MSAEditorSequenceArea::sl_refrenceSeqChanged(const QString &str){
-    Q_UNUSED(str);
+void MSAEditorSequenceArea::sl_referenceSeqChanged(qint64){
     completeRedraw = true;
     update();
 }
@@ -2215,10 +2216,6 @@ void MSAEditorSequenceArea::sl_reverseCurrentSelection() {
 void MSAEditorSequenceArea::sl_complementCurrentSelection() {
     ModificationType type(ModificationType::Complement);
     reverseComplementModification(type);
-}
-
-void MSAEditorSequenceArea::sl_setSeqAsRefrence(){
-
 }
 
 QPair<QString, int> MSAEditorSequenceArea::getGappedColumnInfo() const{

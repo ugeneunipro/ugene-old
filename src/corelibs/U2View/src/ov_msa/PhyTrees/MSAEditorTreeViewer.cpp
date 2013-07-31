@@ -105,10 +105,14 @@ void MSAEditorTreeViewer::setSynchronizationMode(SynchronizationMode newSyncMode
             connect(treeViewerUI, SIGNAL(si_groupColorsChanged(const GroupColorSchema&)), msaUI->getEditorNameList(), SLOT(sl_onGroupColorsChanged(const GroupColorSchema&)));
             //connect(msa, SIGNAL(si_sizeChanged(int, bool, bool)), treeViewerUI, SLOT(sl_onHeightChanged(int, bool, bool)));
 
-            connect(treeViewerUI,   SIGNAL(si_treeZoomedIn()),                      msa,  SLOT(sl_zoomIn()));
-            connect(msa,   SIGNAL(si_referenceSeqChanged(const QString &)), treeViewerUI, SLOT(sl_onReferenceSeqChanged(const QString &)));
-            connect(treeViewerUI,   SIGNAL(si_treeZoomedOut()),                     msa,  SLOT(sl_zoomOut()));
-            connect(msaUI->getSequenceArea(),   SIGNAL(si_visibleRangeChanged(QStringList, int)), treeViewerUI, SLOT(sl_onVisibleRangeChanged(QStringList, int)));
+            connect(treeViewerUI,               SIGNAL(si_treeZoomedIn()),
+                    msa,                        SLOT(sl_zoomIn()));
+            connect(msa,                        SIGNAL(si_referenceSeqChanged(qint64)),
+                    treeViewerUI,               SLOT(sl_onReferenceSeqChanged(qint64)));
+            connect(treeViewerUI,               SIGNAL(si_treeZoomedOut()),
+                    msa,                        SLOT(sl_zoomOut()));
+            connect(msaUI->getSequenceArea(),   SIGNAL(si_visibleRangeChanged(QStringList, int)),
+                    treeViewerUI,               SLOT(sl_onVisibleRangeChanged(QStringList, int)));
 
             slotsAreConnected = true;
         }
@@ -436,7 +440,7 @@ void MSAEditorTreeViewerUI::sl_onHeightChanged(int height, bool isMinimumSize, b
     hasMinSize = isMinimumSize;
 }
 
-void MSAEditorTreeViewerUI::sl_onReferenceSeqChanged(const QString &) {
+void MSAEditorTreeViewerUI::sl_onReferenceSeqChanged(qint64) {
     QList<QGraphicsItem*> items = scene()->items();
     foreach(QGraphicsItem* item, items) {
         GraphicsBranchItem *branchItem = dynamic_cast<GraphicsBranchItem *>(item);

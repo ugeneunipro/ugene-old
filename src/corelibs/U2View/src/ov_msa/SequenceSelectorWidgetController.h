@@ -28,18 +28,20 @@
 
 #include <U2Gui/SuggestCompleter.h>
 
-namespace U2{
+namespace U2 {
 
 class SequenceSelectorWidgetController : public QWidget, Ui_SequenceSelectorWidget{
     Q_OBJECT
 public:
     SequenceSelectorWidgetController(MSAEditor* _msa);
 
-    QString text(){return seqLineEdit->text();};
-    void setText(QString str);
+    QString text() const;
+
+    void setSequenceId(qint64 newId);
+    qint64 sequenceId( ) const;
 
 signals:
-    void si_textControllerChanged();    
+    void si_selectionChanged();
 
 private slots:
     void sl_updateCompleter();
@@ -52,8 +54,8 @@ private:
     MSACompletionFiller *filler;
     BaseCompleter *completer;
     QString defaultSeqName;
+    qint64 seqId;
 };
-   
 
 };
 

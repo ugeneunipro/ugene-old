@@ -182,6 +182,8 @@ public:
     /** Returns length of the sequence + number of gaps. Doesn't include trailing gaps. */
     qint64 getRowLengthWithoutTrailing() const;
 
+    inline static qint64 invalidRowId() { return -1; }
+
 private:
     /** Create a new row (sequence + gap model) from the bytes */
     static MAlignmentRow createRow(const QString& name,
@@ -379,12 +381,12 @@ public:
     /** Returns IDs of the alignment rows in the database */
     QList<qint64> getRowsIds() const;
 
-    U2MsaRow getRowByRowId(qint64 rowId, U2OpStatus& os) const;
-
-    DNASequence getSequenceByRowId(qint64 rowId, U2OpStatus& os) const;
+    MAlignmentRow getRowByRowId(qint64 rowId, U2OpStatus& os) const;
 
     /** Returns all rows' names in the alignment */
     QStringList getRowNames() const;
+
+    int getRowIndexByRowId(qint64 rowId, U2OpStatus &os) const;
 
     /** Returns a character (a gap or a non-gap) in the specified row and position */
     char charAt(int rowIndex, int pos) const;

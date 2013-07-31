@@ -313,7 +313,6 @@ private slots:
     void sl_reverseComplementCurrentSelection();
     void sl_reverseCurrentSelection();
     void sl_complementCurrentSelection();
-    void sl_setSeqAsRefrence();
 
     void sl_onPosChangeRequest(int pos);
 
@@ -330,7 +329,7 @@ private slots:
 
     void sl_customColorSettingsChanged();
     void sl_showCustomSettings();
-    void sl_refrenceSeqChanged(const QString &str);
+    void sl_referenceSeqChanged(qint64);
 
     void sl_resetCollapsibleModel();
     void sl_setCollapsingRegions(const QStringList* visibleSequences);

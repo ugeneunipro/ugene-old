@@ -31,7 +31,7 @@ namespace U2 {
 RefSeqCommonWidget::RefSeqCommonWidget(MSAEditor *_msaEditor)
     : msaEditor(_msaEditor)
 {
-    connect(msaEditor, SIGNAL(si_referenceSeqChanged(const QString &)), SLOT(sl_refSeqChanged(const QString &)));
+    connect(msaEditor, SIGNAL(si_referenceSeqChanged(qint64)), SLOT(sl_refSeqChanged(qint64)));
 
     QVBoxLayout *mainLayout = new QVBoxLayout;
     mainLayout->setContentsMargins(0, 0, 0, 0);
@@ -53,7 +53,7 @@ QWidget* RefSeqCommonWidget::createReferenceGroup(){
 
     reSeqSelector = new SequenceSelectorWidgetController(msaEditor);
 
-    connect(reSeqSelector, SIGNAL(si_textControllerChanged()), SLOT(si_textControllerChanged()));
+    connect(reSeqSelector, SIGNAL(si_selectionChanged()), SLOT(sl_textControllerChanged()));
 
     layout->addWidget(reSeqSelector);
     group->setLayout(layout);
@@ -61,12 +61,12 @@ QWidget* RefSeqCommonWidget::createReferenceGroup(){
     return group;
 }
 
-void RefSeqCommonWidget::sl_refSeqChanged(const QString &str){
-    reSeqSelector->setText(str);
+void RefSeqCommonWidget::sl_refSeqChanged(qint64 sequenceId) {
+    reSeqSelector->setSequenceId(sequenceId);
 }
 
-void RefSeqCommonWidget::si_textControllerChanged(){
-    msaEditor->setReference(reSeqSelector->text());
+void RefSeqCommonWidget::sl_textControllerChanged(){
+    msaEditor->setReference(reSeqSelector->sequenceId());
 }
 
 

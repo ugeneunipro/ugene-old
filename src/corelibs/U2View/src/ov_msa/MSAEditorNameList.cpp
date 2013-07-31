@@ -78,7 +78,7 @@ MSAEditorNameList::MSAEditorNameList(MSAEditorUI* _ui, QScrollBar* _nhBar)
         connect(ui->seqArea->getVBar(), SIGNAL(actionTriggered(int)), SLOT(sl_onScrollBarActionTriggered(int)));
     }
     connect(ui->getCollapseModel(), SIGNAL(toggled()), SLOT(sl_modelChanged()));
-    connect(editor, SIGNAL(si_referenceSeqChanged(const QString &)), SLOT(sl_refrenceSeqChanged(const QString &)));
+    connect(editor, SIGNAL(si_referenceSeqChanged(qint64)), SLOT(sl_referenceSeqChanged(qint64)));
     
     nhBar->setEnabled(false);
     updateActions();
@@ -227,7 +227,7 @@ void MSAEditorNameList::sl_selectReferenceSequence() {
             return;
         }
         assert(!maObj->isStateLocked());
-        editor->setReference(maObj->getRow(n).getName());
+        editor->setReference(maObj->getRow(n).getRowId());
     }
 }
 
@@ -498,11 +498,11 @@ void MSAEditorNameList::sl_startChanged(const QPoint& p, const QPoint& prev) {
     update();
 }
 
-void MSAEditorNameList::sl_refrenceSeqChanged( const QString & str){
-    Q_UNUSED(str);
+void MSAEditorNameList::sl_referenceSeqChanged(qint64) {
     completeRedraw = true;
     update();
 }
+
 void MSAEditorNameList::updateContent() {
     completeRedraw = true;
     update();
@@ -599,34 +599,6 @@ void MSAEditorNameList::drawAll() {
     //drawFocus(p);
 }
 
-int MSAEditorNameList::getRefSeqPos() {
-    int startSeq = ui->seqArea->getFirstVisibleSequence();
-    int lastSeq = ui->seqArea->getLastVisibleSequence(true);
-
-    if (ui->isCollapsibleMode()) {
-        MSACollapsibleItemModel* m = ui->getCollapseModel();
-        QVector<U2Region> range;
-        m->getVisibleRows(startSeq, lastSeq, range);
-        int numRows = editor->getNumSequences();
-
-        foreach(const U2Region& r, range) {
-            int end = qMin((qint64)numRows, r.endPos());
-            for (int s = r.startPos; s < end; s++) {
-                QString seqName = ui->getEditorNameList()->getTextForRow(s);
-                if(seqName == ui->getEditor()->getRefSeqName())
-                    return s;
-            }
-        }
-    } else {
-        for (int s = startSeq; s <= lastSeq; s++) {
-            QString seqName = ui->getEditorNameList()->getTextForRow(s);
-            if(seqName == ui->getEditor()->getRefSeqName())
-                return s;
-        }
-    }
-    return -1;
-}
-
 void MSAEditorNameList::drawContent(QPainter& p) {
     p.fillRect(cachedView->rect(), Qt::white);
     int startSeq = ui->seqArea->getFirstVisibleSequence();
@@ -679,17 +651,12 @@ void MSAEditorNameList::drawSequenceItem(QPainter& p, int s, const QString& , bo
     QString seqName = getSeqName(s);
     QString itemText = getTextForRow(s);
     p.fillRect(textRect, Qt::white);
-    if(groupColors.contains(seqName)) {
-        //p.setPen(groupColors[seqName]);
-        if(QColor(Qt::black) != groupColors[seqName]) {
-            p.fillRect(textRect, groupColors[seqName]);
-        }
+    if(groupColors.contains(seqName) && QColor(Qt::black) != groupColors[seqName]) {
+        p.fillRect(textRect, groupColors[seqName]);
     }
-    if(seqName == ui->getEditor()->getRefSeqName()){
-        qint64 refseqnumber = getRefSeqPos();
-        if(refseqnumber == s){
-            drawRefSequence(p, textRect);
-        }
+    U2OpStatusImpl os;
+    if (s == maObj->getMAlignment().getRowIndexByRowId(editor->getReferenceRowId(), os)) {
+        drawRefSequence(p, textRect);
     }
     p.drawText(textRect, Qt::AlignVCenter | Qt::AlignLeft, itemText);
     if (labels) {
@@ -743,8 +710,13 @@ void MSAEditorNameList::drawSequenceItem(QPainter& p, int s, const QString& , bo
         }
     }
 
-    if(seqName == ui->getEditor()->getRefSeqName())
+    const MSAEditor *editor = ui->getEditor();
+    const MAlignment alignment = editor->getMSAObject()->getMAlignment();
+    U2OpStatusImpl os;
+    if (s == alignment.getRowIndexByRowId(editor->getReferenceRowId(), os)) {
         drawRefSequence(p, textRect);
+    }
+
     p.drawText(textRect, Qt::AlignVCenter | Qt::AlignLeft, seqName);
     if (labels) {
         labels->setObjectName(labels->objectName() + "|" + seqName);
@@ -873,8 +845,8 @@ bool MSAEditorNameList::isRowInSelection( int seqnum )
     return seqnum >= s.y() && seqnum <= endPos;
 }
 
-QString MSAEditorNameList::sequenceAtPos( QPoint p ){
-    QString result;
+qint64 MSAEditorNameList::sequenceIdAtPos( QPoint p ) {
+    qint64 result = -1;
     curSeq = ui->seqArea->getSequenceNumByY(p.y());
     if (ui->isCollapsibleMode()) {
         MSACollapsibleItemModel* m = ui->getCollapseModel();
@@ -882,9 +854,9 @@ QString MSAEditorNameList::sequenceAtPos( QPoint p ){
             return result;
         }
     }
-    if (curSeq != -1){
+    if (curSeq != -1) {
         MAlignmentObject* maObj = editor->getMSAObject();
-        result = maObj->getMAlignment().getRow(curSeq).getName();
+        result = maObj->getMAlignment().getRow(curSeq).getRowId();
     }
     return result;
 }

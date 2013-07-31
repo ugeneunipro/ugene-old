@@ -26,7 +26,7 @@
 #include <U2View/MSAEditorSequenceArea.h>
 #include <U2Core/AppContext.h>
 
-namespace U2{
+namespace U2 {
 
 static const int ITEMS_SPACING = 6;
 static const int TITLE_SPACING = 1;
@@ -89,14 +89,16 @@ MSAHighlightingTab::MSAHighlightingTab(MSAEditor* m):msa(m){
 
     initColorCB();
     sl_sync();
-    connect(colorScheme, SIGNAL(currentIndexChanged(const QString &)), seqArea, SLOT(sl_changeColorSchemeOutside(const QString &)));
-    connect(highlightingScheme, SIGNAL(currentIndexChanged(const QString &)), seqArea, SLOT(sl_changeColorSchemeOutside(const QString &)));
-    connect(highlightingScheme, SIGNAL(currentIndexChanged(const QString &)), SLOT(sl_updateHint(const QString &)));
+    connect(colorScheme, SIGNAL(currentIndexChanged(const QString &)), seqArea,
+        SLOT(sl_changeColorSchemeOutside(const QString &)));
+    connect(highlightingScheme, SIGNAL(currentIndexChanged(const QString &)), seqArea,
+        SLOT(sl_changeColorSchemeOutside(const QString &)));
+    connect(highlightingScheme, SIGNAL(currentIndexChanged(const QString &)), SLOT(sl_updateHint()));
     connect(useDots, SIGNAL(stateChanged(int)), seqArea, SLOT(sl_useDots(int)));
 
     connect(seqArea, SIGNAL(si_highlightingChanged()), SLOT(sl_sync()));
 
-    connect(m, SIGNAL(si_referenceSeqChanged(const QString &)), SLOT(sl_updateHint(const QString &)));
+    connect(m, SIGNAL(si_referenceSeqChanged(qint64)), SLOT(sl_updateHint()));
 }
 
 void MSAHighlightingTab::initColorCB(){
@@ -124,20 +126,18 @@ void MSAHighlightingTab::sl_sync(){
     disconnect(useDots, SIGNAL(stateChanged(int)), seqArea, SLOT(sl_useDots(int))); //disconnect-connect to prevent infinite loop
     useDots->setChecked(seqArea->getUseDotsCheckedState());
     connect(useDots, SIGNAL(stateChanged(int)), seqArea, SLOT(sl_useDots(int)));
-    sl_updateHint(QString(""));
+    sl_updateHint();
 }
 
-void MSAHighlightingTab::sl_updateHint(const QString &str){
-    Q_UNUSED(str);
-
-    if(msa->getRefSeqName().isEmpty()){
-        if(!seqArea->getCurrentHighlightingScheme()->getFactory()->isRefFree()){
-            hint->setText(tr("Hint: select a reference above"));
-            hint->setStyleSheet(
-                "color: green;"
-                "font: bold;");
-            return;
-        }
+void MSAHighlightingTab::sl_updateHint() {
+    if (MAlignmentRow::invalidRowId() == msa->getReferenceRowId()
+        && !seqArea->getCurrentHighlightingScheme()->getFactory()->isRefFree())
+    {
+        hint->setText(tr("Hint: select a reference above"));
+        hint->setStyleSheet(
+            "color: green;"
+            "font: bold;");
+        return;
     }
     hint->setText("");
 }

@@ -41,8 +41,8 @@ public:
     RefSeqCommonWidget(MSAEditor *msaEditor);
 
 private slots:
-    void sl_refSeqChanged(const QString &);
-    void si_textControllerChanged();
+    void sl_refSeqChanged(qint64);
+    void sl_textControllerChanged();
 
 private:
     QWidget* createReferenceGroup();

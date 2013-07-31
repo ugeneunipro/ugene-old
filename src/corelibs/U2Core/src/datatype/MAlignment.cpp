@@ -1168,24 +1168,24 @@ QList<qint64> MAlignment::getRowsIds() const {
     return rowIds;
 }
 
-U2MsaRow MAlignment::getRowByRowId(qint64 rowId, U2OpStatus& os) const {
+MAlignmentRow MAlignment::getRowByRowId(qint64 rowId, U2OpStatus& os) const {
     foreach (const MAlignmentRow& row, rows) {
         if (row.getRowId() == rowId) {
-            return row.getRowDBInfo();
+            return row;
         }
     }
     os.setError("Failed to find a row in an alignment!");
-    return U2MsaRow();
+    return MAlignmentRow();
 }
 
-DNASequence MAlignment::getSequenceByRowId(qint64 rowId, U2OpStatus& os) const {
-    foreach (const MAlignmentRow& row, rows) {
-        if (row.getRowId() == rowId) {
-            return row.getSequence();
+int MAlignment::getRowIndexByRowId( qint64 rowId, U2OpStatus &os ) const {
+    for ( int rowIndex = 0; rowIndex < rows.size( ); ++rowIndex ) {
+        if ( rows.at( rowIndex ).getRowId( ) == rowId ) {
+            return rowIndex;
         }
     }
-    os.setError("Failed to find a row in an alignment!");
-    return DNASequence();
+    os.setError("Invalid row id!");
+    return MAlignmentRow::invalidRowId();
 }
 
 char MAlignment::charAt(int rowIndex, int pos) const {

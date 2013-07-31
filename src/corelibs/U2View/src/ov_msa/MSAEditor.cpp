@@ -638,25 +638,28 @@ void MSAEditor::createDistanceColumn(MSADistanceMatrix* algo) {
 }
 
 void MSAEditor::sl_setSeqAsRefrence(){
-    QPoint  menuCallPos = snp.clickPoint;
-    QPoint  nameMapped = ui->nameList->mapFromGlobal(menuCallPos);
-    if(nameMapped.y() < 0){
-        //clicked on consensus
-        //setRefrence("conaensus");
-    }else{
-        //clicked on sequence
-        QString newName = ui->nameList->sequenceAtPos(nameMapped);
-        if (!newName.isEmpty() && newName != snp.seqName){
-            setReference(newName);
-            emit si_referenceSeqChanged(newName);
-        }        
+    QPoint menuCallPos = snp.clickPoint;
+    QPoint nameMapped = ui->nameList->mapFromGlobal(menuCallPos);
+    if ( nameMapped.y() >= 0 ) {
+        qint64 newRowId = ui->nameList->sequenceIdAtPos(nameMapped);
+        if (MAlignmentRow::invalidRowId() != newRowId && newRowId != snp.seqId) {
+            setReference(newRowId);
+        }
     }
 }
 
-void MSAEditor::setReference(QString ref) {
-    snp.seqName = ref;
-    emit si_referenceSeqChanged(ref);
+void MSAEditor::setReference(qint64 sequenceId) {
+    snp.seqId = sequenceId;
+    emit si_referenceSeqChanged(sequenceId);
     //REDRAW OTHER WIDGETS
+}
+
+QString MSAEditor::getReferenceRowName() const {
+    const MAlignment alignment = getMSAObject()->getMAlignment();
+    U2OpStatusImpl os;
+    const int refSeq = alignment.getRowIndexByRowId(getReferenceRowId(), os);
+    return (MAlignmentRow::invalidRowId() != refSeq) ? alignment.getRowNames().at(refSeq)
+        : QString();
 }
 
 void MSAEditor::buildTree() {
@@ -815,8 +818,6 @@ void MSAEditorUI::sl_onTabsCountChanged(int curTabsNumber) {
 
 void MSAEditorUI::createDistanceColumn(MSADistanceMatrix* algo )
 {
-    //connect(nameList, SIGNAL(si_sequenceNameChanged(QString, QString)), algo, SLOT(sl_onSequenceNameChanged(QString, QString)));
-
     dataList->setAlgorithm(algo);
     dataList->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::MinimumExpanding);
     MSAEditorAlignmentDependentWidget* statisticsWidget = new MSAEditorAlignmentDependentWidget(dataList);

@@ -54,7 +54,7 @@ private slots:
     void sl_startChanged(const QPoint& , const QPoint& ) {updateOffsets();}
     void sl_fontChanged() {updateOffsets();}
     void sl_modelChanged() {updateOffsets();}
-    void sl_refSeqChanged(const QString &str) {Q_UNUSED(str);updateOffsets();}
+    void sl_refSeqChanged(qint64) { updateOffsets(); }
     void sl_showOffsets(bool);
 private:
     void updateOffsets();

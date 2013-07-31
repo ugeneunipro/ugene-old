@@ -60,6 +60,11 @@
 #include <QtGui/QLayout>
 #include <QtGui/QHBoxLayout>
 
+inline U2::U2DataId getSequenceIdByRowId( U2::MSAEditor* msa, qint64 rowId, U2::U2OpStatus &os ) {
+    U2::MAlignmentRow row = msa->getMSAObject()->getMAlignment().getRowByRowId(rowId, os);
+    CHECK_OP(os, U2::U2DataId());
+    return row.getRowDBInfo().sequenceId;
+}
 
 namespace U2 {
 
@@ -70,7 +75,8 @@ PairAlign::PairAlign(MSAEditor* _msa) : msa(_msa), pairwiseAlignmentWidgetsSetti
     showAlgorithmWidget(_msa->getPairwiseAlignmentWidgetsSettings()->showAlgorithmWidget),
     showOutputWidget(_msa->getPairwiseAlignmentWidgetsSettings()->showOutputWidget),
     firstSequenceSelectionOn(false), secondSequenceSelectionOn(false),
-    sequencesChanged(true), sequenceNamesIsOk(false), alphabetIsOk(false) {
+    sequencesChanged(true), sequenceNamesIsOk(false), alphabetIsOk(false)
+{
     SAFE_POINT(NULL != msa, "MSA Editor is NULL.", );
     SAFE_POINT(NULL != pairwiseAlignmentWidgetsSettings, "pairwiseAlignmentWidgetsSettings is NULL.", );
 
@@ -103,11 +109,13 @@ void PairAlign::initLayout() {
 
 void PairAlign::initParameters() {
     if (2 == msa->getCurrentSelection().height()) {
-        firstSeqSelectorWC->setText(msa->getMSAObject()->getRow(msa->getCurrentSelection().y()).getName());
-        secondSeqSelectorWC->setText(msa->getMSAObject()->getRow(msa->getCurrentSelection().y() + 1).getName());
+        firstSeqSelectorWC->setSequenceId(msa->getMSAObject()->getRow(
+            msa->getCurrentSelection().y()).getRowId());
+        secondSeqSelectorWC->setSequenceId(msa->getMSAObject()->getRow(
+            msa->getCurrentSelection().y() + 1).getRowId());
     } else {
-        firstSeqSelectorWC->setText(pairwiseAlignmentWidgetsSettings->firstSequenceName);
-        secondSeqSelectorWC->setText(pairwiseAlignmentWidgetsSettings->secondSequenceName);
+        firstSeqSelectorWC->setSequenceId(pairwiseAlignmentWidgetsSettings->firstSequenceId);
+        secondSeqSelectorWC->setSequenceId(pairwiseAlignmentWidgetsSettings->secondSequenceId);
     }
 
     inNewWindowCheckBox->setChecked(pairwiseAlignmentWidgetsSettings->inNewWindow);
@@ -141,8 +149,8 @@ void PairAlign::connectSignals() {
     connect(outputFileSelectButton,     SIGNAL(clicked()),                          SLOT(sl_selectFileButtonClicked()));
     connect(outputFileLineEdit,         SIGNAL(textChanged(QString)),               SLOT(sl_outputFileChanged(QString)));
 
-    connect(firstSeqSelectorWC,         SIGNAL(si_textControllerChanged()),         SLOT(sl_selectorTextChanged()));
-    connect(secondSeqSelectorWC,        SIGNAL(si_textControllerChanged()),         SLOT(sl_selectorTextChanged()));
+    connect(firstSeqSelectorWC,         SIGNAL(si_selectionChanged()),         SLOT(sl_selectorTextChanged()));
+    connect(secondSeqSelectorWC,        SIGNAL(si_selectionChanged()),         SLOT(sl_selectorTextChanged()));
 }
 
 void PairAlign::checkState() {
@@ -166,8 +174,8 @@ void PairAlign::checkState() {
 
     alignButton->setEnabled(canDoAlign);
 
-    pairwiseAlignmentWidgetsSettings->firstSequenceName = firstSeqSelectorWC->text();
-    pairwiseAlignmentWidgetsSettings->secondSequenceName = secondSeqSelectorWC->text();
+    pairwiseAlignmentWidgetsSettings->firstSequenceId = firstSeqSelectorWC->sequenceId();
+    pairwiseAlignmentWidgetsSettings->secondSequenceId = secondSeqSelectorWC->sequenceId();
     pairwiseAlignmentWidgetsSettings->algorithmName = algorithmListComboBox->currentText();
     pairwiseAlignmentWidgetsSettings->inNewWindow = inNewWindowCheckBox->isChecked();
     pairwiseAlignmentWidgetsSettings->resultFileName = outputFileLineEdit->text();
@@ -266,21 +274,15 @@ void PairAlign::sl_alignButtonPressed() {
     DbiConnection con(msaRef.dbiRef, os);
     CHECK_OP(os, );
 
-    U2EntityRef firstSequenceRef;
-    U2EntityRef secondSequenceRef;
-
-    QList<U2MsaRow> rows = con.dbi->getMsaDbi()->getRows(msaRef.entityId, os);
+    U2DataId firstSeqId = getSequenceIdByRowId(msa,
+        pairwiseAlignmentWidgetsSettings->firstSequenceId, os);
     CHECK_OP(os, );
-    foreach(U2MsaRow row, rows) {
-        U2Sequence sequence = con.dbi->getSequenceDbi()->getSequenceObject(row.sequenceId, os);
-        CHECK_OP(os, );
-        if (sequence.visualName == firstSeqSelectorWC->text()) {
-            firstSequenceRef = U2EntityRef(msaRef.dbiRef, sequence.id);
-        }
-        if (sequence.visualName == secondSeqSelectorWC->text()) {
-            secondSequenceRef = U2EntityRef(msaRef.dbiRef, sequence.id);
-        }
-    }
+    U2EntityRef firstSequenceRef = U2EntityRef(msaRef.dbiRef, firstSeqId);
+
+    U2DataId secondSeqId = getSequenceIdByRowId(msa,
+        pairwiseAlignmentWidgetsSettings->secondSequenceId, os);
+    CHECK_OP(os, );
+    U2EntityRef secondSequenceRef = U2EntityRef(msaRef.dbiRef, secondSeqId);
 
     PairwiseAlignmentTaskSettings settings;
     settings.algorithmName = algorithmListComboBox->currentText();
