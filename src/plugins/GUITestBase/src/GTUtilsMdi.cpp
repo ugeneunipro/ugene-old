@@ -66,8 +66,6 @@ void GTUtilsMdi::click(U2OpStatus &os, GTGlobals::WindowAction action) {
         QPoint p(left+15,top-10);
         GTMouseDriver::moveTo(os, mdiWindow->mapToGlobal(p));
         GTMouseDriver::click(os);
-        // TODO
-        //GT_CHECK(false, "No this case under MacOS");
         break;
     }
 #endif
