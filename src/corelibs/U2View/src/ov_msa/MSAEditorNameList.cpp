@@ -846,7 +846,7 @@ bool MSAEditorNameList::isRowInSelection( int seqnum )
 }
 
 qint64 MSAEditorNameList::sequenceIdAtPos( QPoint p ) {
-    qint64 result = -1;
+    qint64 result = MAlignmentRow::invalidRowId();
     curSeq = ui->seqArea->getSequenceNumByY(p.y());
     if (ui->isCollapsibleMode()) {
         MSACollapsibleItemModel* m = ui->getCollapseModel();

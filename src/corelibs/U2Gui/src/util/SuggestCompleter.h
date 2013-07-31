@@ -56,7 +56,7 @@ public:
     ~BaseCompleter();
     bool eventFilter(QObject *obj, QEvent *ev);
     void showCompletion(const QStringList &choices);
-    int getLastChosenItemIndex();
+    int getLastChosenItemIndex() const;
 
 signals:
     void si_editingFinished();

@@ -38,7 +38,6 @@ SequenceSelectorWidgetController::SequenceSelectorWidgetController(MSAEditor* _m
     completer = new BaseCompleter(filler, seqLineEdit);
     updateCompleter();
 
-    connect(seqLineEdit, SIGNAL(editingFinished()), SLOT(sl_seqLineEditEditingFinished()));
     connect(addSeq, SIGNAL(clicked()), SLOT(sl_addSeqClicked()));
     connect(deleteSeq, SIGNAL(clicked()), SLOT(sl_deleteSeqClicked()));
     
@@ -105,7 +104,8 @@ void SequenceSelectorWidgetController::sl_seqLineEditEditingFinished() {
             seqLineEdit->setCursorPosition(CURSOR_START_POSITION);
         }
         const int sequenceIndex = completer->getLastChosenItemIndex();
-        if (-1 != sequenceIndex) { // check if current sequence was auto-completed
+        if ( completer == QObject::sender( ) && -1 != sequenceIndex ) {
+            // check if current sequence was auto-completed
             seqId = ma.getRow(sequenceIndex).getRowId();
         } else if ( NULL == dynamic_cast<MAlignmentObject *>( QObject::sender( ) ) ) {
             // else if slot was invoked by the user typed sequence name, but not by changed alignment

@@ -162,10 +162,8 @@ void BaseCompleter::sl_textEdited( const QString& typedText){
     showCompletion(filler->getSuggestions(typedText));
 }
 
-int BaseCompleter::getLastChosenItemIndex() {
-    const int result = lastChosenItemIndex;
-    lastChosenItemIndex = INVALID_ITEM_INDEX;
-    return result;
+int BaseCompleter::getLastChosenItemIndex() const {
+    return lastChosenItemIndex;
 }
 
 QStringList MSACompletionFiller::getSuggestions(const QString &str){
