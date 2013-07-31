@@ -25,11 +25,12 @@
 #include "api/GTGlobals.h"
 
 #include <QTreeWidget>
-class QGraphicsItem;
+
 class QRectF;
 
 namespace U2 {
-
+class WorkflowProcessItem;
+class WorkflowPortItem;
 class GTUtilsWorkflowDesigner {
 public:
     enum tab {algoriths,samples};
@@ -47,7 +48,8 @@ public:
     static int getItemRight(U2OpStatus &os, QString itemName);
     static int getItemTop(U2OpStatus &os, QString itemName);
     static int getItemBottom(U2OpStatus &os, QString itemName);
-    static QGraphicsItem* getWorker(U2OpStatus &os, QString itemName,const GTGlobals::FindOptions &options = GTGlobals::FindOptions());
+    static WorkflowProcessItem* getWorker(U2OpStatus &os, QString itemName,const GTGlobals::FindOptions &options = GTGlobals::FindOptions());
+    static WorkflowPortItem* getPortById(U2OpStatus &os,WorkflowProcessItem* worker, QString id);
 };
 
 } // namespace

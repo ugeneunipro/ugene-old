@@ -797,11 +797,13 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST_IGNORED_MAC(GUITest_common_scenarios_workflow_designer::test_0001,"too long timeout");
     REGISTER_TEST(GUITest_common_scenarios_workflow_designer::test_0002);
     REGISTER_TEST(GUITest_common_scenarios_workflow_designer::test_0002_1);
+    REGISTER_TEST(GUITest_common_scenarios_workflow_designer::test_0003);
     REGISTER_TEST(GUITest_common_scenarios_workflow_designer::test_0005);
     REGISTER_TEST(GUITest_common_scenarios_workflow_designer::test_0006);
     REGISTER_TEST(GUITest_common_scenarios_workflow_designer::test_0007);
     REGISTER_TEST(GUITest_common_scenarios_workflow_designer::test_0009);
     REGISTER_TEST(GUITest_common_scenarios_workflow_designer::test_0010);
+    REGISTER_TEST(GUITest_common_scenarios_workflow_designer::test_0013);
 
 
 /////////////////////////////////////////////////////////////////////////

@@ -32,6 +32,7 @@
 #include <QGraphicsItem>
 #include <QGraphicsView>
 #include <U2Core/AppContext.h>
+#include "../../workflow_designer/src/WorkflowViewItems.h"
 
 namespace U2 {
 #define GT_CLASS_NAME "GTUtilsWorkflowDesigner"
@@ -201,7 +202,7 @@ int GTUtilsWorkflowDesigner::getItemBottom(U2OpStatus &os, QString itemName){
 }
 
 #define GT_METHOD_NAME "getWorker"
-QGraphicsItem* GTUtilsWorkflowDesigner::getWorker(U2OpStatus &os,QString itemName,const GTGlobals::FindOptions &options){
+WorkflowProcessItem* GTUtilsWorkflowDesigner::getWorker(U2OpStatus &os,QString itemName,const GTGlobals::FindOptions &options){
     QGraphicsView* sceneView = qobject_cast<QGraphicsView*>(GTWidget::findWidget(os,"sceneView"));
     QList<QGraphicsItem *> items = sceneView->items();
 
@@ -212,7 +213,8 @@ QGraphicsItem* GTUtilsWorkflowDesigner::getWorker(U2OpStatus &os,QString itemNam
         if (textItemO) {
             QString text = textItemO->toPlainText();
             if (text.contains(itemName,Qt::CaseInsensitive)) {
-                return it->parentItem();
+                if(qgraphicsitem_cast<WorkflowProcessItem*>(it->parentItem()->parentItem()))
+                    return (qgraphicsitem_cast<WorkflowProcessItem*>(it->parentItem()->parentItem()));
             }
         }
     }
@@ -220,6 +222,21 @@ QGraphicsItem* GTUtilsWorkflowDesigner::getWorker(U2OpStatus &os,QString itemNam
 
     return NULL;
 }
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "getPortById"
+WorkflowPortItem* GTUtilsWorkflowDesigner::getPortById(U2OpStatus &os, WorkflowProcessItem *worker, QString id){
+    QGraphicsView* sceneView = qobject_cast<QGraphicsView*>(GTWidget::findWidget(os,"sceneView"));
+    GT_CHECK_RESULT(sceneView,"sceneView not found",NULL)
+    QList<WorkflowPortItem*> list = worker->getPortItems();
+    foreach(WorkflowPortItem* p, list){
+        if(p&&p->getPort()->getId()==id){
+            return p;
+        }
+    }
+    GT_CHECK_RESULT(false, "port with id " + id + "not found",NULL);
+}
+
 #undef GT_METHOD_NAME
 
 QRect GTUtilsWorkflowDesigner::getItemRect(U2OpStatus &os,QString itemName){

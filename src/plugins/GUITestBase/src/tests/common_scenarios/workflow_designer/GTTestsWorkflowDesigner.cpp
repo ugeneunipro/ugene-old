@@ -44,6 +44,7 @@
 #include "GTUtilsApp.h"
 
 #include <QGraphicsItem>
+#include <QtGui/QTextEdit>
 #include <U2Core/AppContext.h>
 #include <QProcess>
 #include "../../workflow_designer/src/WorkflowViewItems.h"
@@ -222,7 +223,8 @@ GUI_TEST_CLASS_DEFINITION(test_0003){
     GTMouseDriver::click(os);
     GTMouseDriver::moveTo(os,GTTableView::getCellPosition(os,table,1,4));
     GTMouseDriver::click(os);
-    GTKeyboardDriver::keySequence(os,testDir + "_common_data/scenarios/sandbox/T1.gb");
+    QString s = QDir().absoluteFilePath(testDir + "_common_data/scenarios/sandbox/");
+    GTKeyboardDriver::keySequence(os,s+"T1.gb");
     GTWidget::click(os,GTUtilsMdi::activeWindow(os));
 
     GTWidget::click(os,GTAction::button(os,"Run scheme"));
@@ -230,6 +232,7 @@ GUI_TEST_CLASS_DEFINITION(test_0003){
     GTGlobals::sleep();
 //    2. If you don't want result file (T1.gb) in UGENE run directory, change this property in write genbank worker.Run schema.
 //    Expected state: T1.gb file is saved to your disc
+    GTFileDialog::openFile(os,testDir + "_common_data/scenarios/sandbox/","T1.gb");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0005){
@@ -345,6 +348,43 @@ GUI_TEST_CLASS_DEFINITION(test_0010){
     CHECK_SET_ERR(hmm,"hmm 1 not found");
     hmm = GTUtilsWorkflowDesigner::getWorker(os,"hmm build 2");
     CHECK_SET_ERR(hmm,"hmm 2 not found");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0013){
+//    1. Load any sample in WD
+    QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
+    GTMenu::clickMenuItem(os, menu, QStringList() << "Workflow Designer");
+    GTUtilsWorkflowDesigner::addSample(os, "call variants");
+//    2. Select output port.
+    WorkflowProcessItem* gr = GTUtilsWorkflowDesigner::getWorker(os,"call variants with");
+    QGraphicsView* sceneView = qobject_cast<QGraphicsView*>(GTWidget::findWidget(os,"sceneView"));
+    QList<WorkflowPortItem*> list = gr->getPortItems();
+    foreach(WorkflowPortItem* p, list){
+        if(p&&p->getPort()->getId()=="out-variations"){
+            QPointF scenePButton = p->mapToScene(p->boundingRect().center());
+            QPoint viewP = sceneView->mapFromScene(scenePButton);
+            QPoint globalBottomRightPos = sceneView->viewport()->mapToGlobal(viewP);
+            GTMouseDriver::moveTo(os, globalBottomRightPos);
+            GTMouseDriver::click(os);
+            GTGlobals::sleep(2000);
+        }
+    }
+    QTextEdit* doc = qobject_cast<QTextEdit*>(GTWidget::findWidget(os,"doc"));
+    CHECK_SET_ERR(doc->document()->toPlainText().contains("Output port \"Output variations"),"expected text not found");
+
+//    Expected state: in property editor 'Output port' item appears
+
+//    3. Select input port.
+    WorkflowPortItem* in = GTUtilsWorkflowDesigner::getPortById(os, gr, "in-assembly");
+    QPointF scenePButton = in->mapToScene(in->boundingRect().center());
+    QPoint viewP = sceneView->mapFromScene(scenePButton);
+    QPoint globalBottomRightPos = sceneView->viewport()->mapToGlobal(viewP);
+    GTMouseDriver::moveTo(os, globalBottomRightPos);
+    GTMouseDriver::click(os);
+
+    doc = qobject_cast<QTextEdit*>(GTWidget::findWidget(os,"doc"));
+    CHECK_SET_ERR(doc->document()->toPlainText().contains("Input port \"Input assembly"),"expected text not found");
+//    Expected state: in property editor 'Input port' item appears
 }
 } // namespace GUITest_common_scenarios_workflow_designer
 
