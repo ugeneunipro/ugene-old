@@ -56,6 +56,8 @@ public:
     ~BaseCompleter();
     bool eventFilter(QObject *obj, QEvent *ev);
     void showCompletion(const QStringList &choices);
+    int getLastChosenItemIndex();
+
 signals:
     void si_editingFinished();
 
@@ -67,6 +69,7 @@ private:
     CompletionFiller *filler;
     QLineEdit *editor;
     QTreeWidget *popup;
+    int lastChosenItemIndex;
 };
 
 } // U2

@@ -30,10 +30,13 @@
 #include <QHeaderView>
 #include <QKeyEvent>
 
-namespace U2{
+const int INVALID_ITEM_INDEX = -1;
+
+namespace U2 {
 
 BaseCompleter::BaseCompleter( CompletionFiller *filler, QLineEdit *parent /*= 0*/ )
-: QObject(parent), filler(filler), editor(parent) {
+    : QObject(parent), filler(filler), editor(parent), lastChosenItemIndex(INVALID_ITEM_INDEX)
+{
     popup = new QTreeWidget;
     popup->setWindowFlags(Qt::Popup);
     popup->setFocusPolicy(Qt::NoFocus);
@@ -146,6 +149,7 @@ void BaseCompleter::doneCompletion(){
         QString result = filler->finalyze(editor->text(), item->text(0));
         editor->setText(result);
         editor->setCursorPosition(0);
+        lastChosenItemIndex = popup->currentIndex().row();
         emit si_editingFinished();
     }
 }
@@ -156,6 +160,12 @@ void BaseCompleter::sl_textEdited( const QString& typedText){
         return;
     }
     showCompletion(filler->getSuggestions(typedText));
+}
+
+int BaseCompleter::getLastChosenItemIndex() {
+    const int result = lastChosenItemIndex;
+    lastChosenItemIndex = INVALID_ITEM_INDEX;
+    return result;
 }
 
 QStringList MSACompletionFiller::getSuggestions(const QString &str){

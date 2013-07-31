@@ -36,7 +36,7 @@ SequenceSelectorWidgetController::SequenceSelectorWidgetController(MSAEditor* _m
     seqLineEdit->setText(msa->getReferenceRowName());
     seqLineEdit->setCursorPosition(CURSOR_START_POSITION);
     completer = new BaseCompleter(filler, seqLineEdit);
-    sl_updateCompleter();
+    updateCompleter();
 
     connect(seqLineEdit, SIGNAL(editingFinished()), SLOT(sl_seqLineEditEditingFinished()));
     connect(addSeq, SIGNAL(clicked()), SLOT(sl_addSeqClicked()));
@@ -46,6 +46,10 @@ SequenceSelectorWidgetController::SequenceSelectorWidgetController(MSAEditor* _m
         SLOT(sl_seqLineEditEditingFinished(const MAlignment& , const MAlignmentModInfo&)));
 
     connect(completer, SIGNAL(si_editingFinished()), SLOT(sl_seqLineEditEditingFinished()));
+}
+
+SequenceSelectorWidgetController::~SequenceSelectorWidgetController() {
+    delete completer;
 }
 
 QString SequenceSelectorWidgetController::text() const {
@@ -68,15 +72,15 @@ qint64 SequenceSelectorWidgetController::sequenceId( ) const {
     return seqId;
 }
 
-void SequenceSelectorWidgetController::sl_updateCompleter(){
+void SequenceSelectorWidgetController::updateCompleter() {
     MAlignmentObject* maObj = msa->getMSAObject();
     const MAlignment& ma = maObj->getMAlignment();
     QStringList newNamesList = ma.getRowNames();
     filler->updateSeqList(newNamesList);
-    if(!newNamesList.contains(defaultSeqName) && defaultSeqName != ""){
+    if (!newNamesList.contains(defaultSeqName) && defaultSeqName != "") {
         defaultSeqName = "";
     }
-    if(!newNamesList.contains(seqLineEdit->text())){
+    if (!newNamesList.contains(seqLineEdit->text())) {
         sl_seqLineEditEditingFinished();
     }
 }
@@ -89,15 +93,24 @@ void SequenceSelectorWidgetController::sl_seqLineEditEditingFinished(const MAlig
     sl_seqLineEditEditingFinished();
 }
 
-void SequenceSelectorWidgetController::sl_seqLineEditEditingFinished(){
+void SequenceSelectorWidgetController::sl_seqLineEditEditingFinished() {
     MAlignmentObject* maObj = msa->getMSAObject();
     const MAlignment& ma = maObj->getMAlignment();
-    if(!ma.getRowNames().contains(seqLineEdit->text())){
+    if (!ma.getRowNames().contains(seqLineEdit->text())) {
         seqLineEdit->setText(defaultSeqName);
-    }else{
-        if (defaultSeqName != seqLineEdit->text()) {
+    } else {
+        const QString selectedSeqName = seqLineEdit->text();
+        if (defaultSeqName != selectedSeqName) {
             defaultSeqName = seqLineEdit->text();
             seqLineEdit->setCursorPosition(CURSOR_START_POSITION);
+        }
+        const int sequenceIndex = completer->getLastChosenItemIndex();
+        if (-1 != sequenceIndex) { // check if current sequence was auto-completed
+            seqId = ma.getRow(sequenceIndex).getRowId();
+        } else if ( NULL == dynamic_cast<MAlignmentObject *>( QObject::sender( ) ) ) {
+            // else if slot was invoked by the user typed sequence name, but not by changed alignment
+            const MAlignmentRow firstRowWithSequenceName = ma.getRow(selectedSeqName);
+            seqId = firstRowWithSequenceName.getRowId();
         }
     }
     emit si_selectionChanged();

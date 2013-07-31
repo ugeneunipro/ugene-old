@@ -34,6 +34,7 @@ class SequenceSelectorWidgetController : public QWidget, Ui_SequenceSelectorWidg
     Q_OBJECT
 public:
     SequenceSelectorWidgetController(MSAEditor* _msa);
+    ~SequenceSelectorWidgetController();
 
     QString text() const;
 
@@ -44,12 +45,14 @@ signals:
     void si_selectionChanged();
 
 private slots:
-    void sl_updateCompleter();
     void sl_seqLineEditEditingFinished();
     void sl_seqLineEditEditingFinished(const MAlignment& , const MAlignmentModInfo&);
     void sl_addSeqClicked();
     void sl_deleteSeqClicked();
+
 private:
+    void updateCompleter();
+
     MSAEditor* msa;
     MSACompletionFiller *filler;
     BaseCompleter *completer;

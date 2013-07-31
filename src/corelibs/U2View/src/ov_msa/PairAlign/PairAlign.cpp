@@ -167,10 +167,10 @@ void PairAlign::checkState() {
         updatePercentOfSimilarity();
     }
 
-    canDoAlign = ((false == firstSeqSelectorWC->text().isEmpty()) &&
-                  (false == secondSeqSelectorWC->text().isEmpty()) &&
-                  (firstSeqSelectorWC->text() != secondSeqSelectorWC->text()) &&
-                  sequenceNamesIsOk && alphabetIsOk);
+    canDoAlign = ((MAlignmentRow::invalidRowId() != firstSeqSelectorWC->sequenceId())
+                  && (MAlignmentRow::invalidRowId() != secondSeqSelectorWC->sequenceId())
+                  && (firstSeqSelectorWC->sequenceId() != secondSeqSelectorWC->sequenceId())
+                  && sequenceNamesIsOk && alphabetIsOk);
 
     alignButton->setEnabled(canDoAlign);
 
@@ -200,10 +200,12 @@ void PairAlign::updatePercentOfSimilarity() {
 
     U2OpStatusImpl os;
     MAlignment ma;
-    QStringList rowsNames = msa->getMSAObject()->getMAlignment().getRowNames();
-    ma.addRow(firstSeqSelectorWC->text(),msa->getMSAObject()->getMAlignment().getRow(rowsNames.indexOf(firstSeqSelectorWC->text())).getCore(), -1, os);
+    const MAlignment currentAlignment = msa->getMSAObject()->getMAlignment();
+    ma.addRow(firstSeqSelectorWC->text(),
+        currentAlignment.getRowByRowId(firstSeqSelectorWC->sequenceId(), os).getCore(), -1, os);
     CHECK_OP(os, );
-    ma.addRow(secondSeqSelectorWC->text(), msa->getMSAObject()->getMAlignment().getRow(rowsNames.indexOf(secondSeqSelectorWC->text())).getCore(), -1, os);
+    ma.addRow(secondSeqSelectorWC->text(),
+        currentAlignment.getRowByRowId(secondSeqSelectorWC->sequenceId(), os).getCore(), -1, os);
     CHECK_OP(os, );
     distanceCalcTask = distanceFactory->createAlgorithm(ma);
     distanceCalcTask->setExcludeGaps(true);
@@ -211,9 +213,10 @@ void PairAlign::updatePercentOfSimilarity() {
     AppContext::getTaskScheduler()->registerTopLevelTask(distanceCalcTask);
 }
 
-bool PairAlign::checkSequenceNames() {
-    QStringList rowNames = msa->getMSAObject()->getMAlignment().getRowNames();
-    return rowNames.contains(firstSeqSelectorWC->text()) && rowNames.contains(secondSeqSelectorWC->text());
+bool PairAlign::checkSequenceNames( ) {
+    QList<qint64> rowIds = msa->getMSAObject( )->getMAlignment( ).getRowsIds( );
+    return ( rowIds.contains( firstSeqSelectorWC->sequenceId( ) )
+        && rowIds.contains( secondSeqSelectorWC->sequenceId( ) ) );
 }
 
 void PairAlign::sl_algorithmSelected(const QString& algorithmName) {
