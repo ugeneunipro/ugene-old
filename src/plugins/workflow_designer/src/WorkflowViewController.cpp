@@ -2177,7 +2177,7 @@ void WorkflowView::sl_newScene() {
     if (!confirmModified()) {
         return;
     }
-    infoList->parentWidget()->hide();
+    bottomTabs->hide();
     scene->sl_reset();
     meta.reset();
     meta.name = tr("New schema");
