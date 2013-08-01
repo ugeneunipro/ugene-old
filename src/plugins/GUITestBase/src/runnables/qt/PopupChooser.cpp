@@ -21,6 +21,7 @@
 
 #include "PopupChooser.h"
 #include "api/GTMenu.h"
+#include "api/GTMouseDriver.h"
 
 #include <QtGui/QApplication>
 #include <QtGui/QMenu>
@@ -30,9 +31,10 @@ namespace U2 {
 void PopupChooser::run()
 {
     GTGlobals::sleep(1000);
+    GTMouseDriver::release(os);
     QMenu* activePopupMenu = qobject_cast<QMenu*>(QApplication::activePopupWidget());
     GTMenu::clickMenuItem(os, activePopupMenu, namePath, useMethod);
 }
 
-
 }
+
