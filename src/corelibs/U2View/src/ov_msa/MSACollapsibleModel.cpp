@@ -108,19 +108,23 @@ U2Region MSACollapsibleItemModel::mapToRows(int pos) const {
     return U2Region(startPos, 1);
 }
 
+#ifdef Q_OS_MAC
+
 int MSACollapsibleItemModel::rowToMap(int row) const {
     int invisibleRows = 0;
     for (QVector<MSACollapsableItem>::ConstIterator it = items.constBegin();
-         it->row < row; it++) {
-        if (it->row + it->numRows > row) {
-            return -1;
-        }
-        if (it->isCollapsed) {
-            invisibleRows += it->numRows - 1;
-        }
+        it->row < row; it++) {
+            if (it->row + it->numRows > row) {
+                return -1;
+            }
+            if (it->isCollapsed) {
+                invisibleRows += it->numRows - 1;
+            }
     }
     return row - invisibleRows;
 }
+
+#endif
 
 void MSACollapsibleItemModel::getVisibleRows(int startPos, int endPos, QVector<U2Region>& range) const {
     if (items.isEmpty()) {

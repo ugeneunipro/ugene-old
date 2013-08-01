@@ -246,95 +246,97 @@ void MSAEditorNameList::paintEvent(QPaintEvent*) {
     drawAll();
 }
 
+// conditional compilation in this method is used for UGENE-1680 fix
 void MSAEditorNameList::keyPressEvent (QKeyEvent *e) {
     int key = e->key();
     static int newSeq = 0;
     switch(key) {
-         case Qt::Key_Delete:
-             ui->seqArea->deleteCurrentSelection();    
-             break;
-        case Qt::Key_Up:
-            if(Qt::ShiftModifier & e->modifiers()) {
-                if (ui->seqArea->isSeqInRange(newSeq - 1)) {
-                    newSeq--;
-                    updateSelection(newSeq);
-                }
-            }
-            else {
-                ui->seqArea->moveSelection(0, -1);
+    case Qt::Key_Delete:
+        ui->seqArea->deleteCurrentSelection();
+        break;
+    case Qt::Key_Up:
+        if (Qt::ShiftModifier == e->modifiers() && ui->seqArea->isSeqInRange(newSeq - 1)) {
+           newSeq--;
+           updateSelection(newSeq);
+        } else {
+            ui->seqArea->moveSelection(0, -1);
+            if (0 <= curSeq - 1) {
                 curSeq--;
+            }
+            if (0 <= startSelectingSeq - 1) {
                 startSelectingSeq--;
             }
-            break;
-        case Qt::Key_Down:
-            if(Qt::ShiftModifier & e->modifiers()) {
-                if (ui->seqArea->isSeqInRange(newSeq + 1)) {
-                    newSeq++;
-                    updateSelection(newSeq);
-                }
-            }
-            else {
-                ui->seqArea->moveSelection(0, 1);
+        }
+        break;
+    case Qt::Key_Down:
+        if (Qt::ShiftModifier == e->modifiers() && ui->seqArea->isSeqInRange(newSeq + 1)) {
+            newSeq++;
+            updateSelection(newSeq);
+        } else {
+            ui->seqArea->moveSelection(0, 1);
+            if (editor->getNumSequences() > curSeq + 1) {
                 curSeq++;
+            }
+            if (editor->getNumSequences() > startSelectingSeq + 1) {
                 startSelectingSeq++;
             }
-            break;
-        case Qt::Key_Left:
-            nhBar->triggerAction(QAbstractSlider::SliderSingleStepSub);
-            break;
-        case Qt::Key_Right:
-            nhBar->triggerAction(QAbstractSlider::SliderSingleStepAdd);
-            break;
-        case Qt::Key_Home:
-            ui->seqArea->setFirstVisibleSequence(0);
+        }
+        break;
+    case Qt::Key_Left:
+        nhBar->triggerAction(QAbstractSlider::SliderSingleStepSub);
+        break;
+    case Qt::Key_Right:
+        nhBar->triggerAction(QAbstractSlider::SliderSingleStepAdd);
+        break;
+    case Qt::Key_Home:
+        ui->seqArea->setFirstVisibleSequence(0);
+        ui->seqArea->cancelSelection();
+        //TODO: select first sequence?
+        break;
+    case Qt::Key_End:
+        {
+            int s = editor->getNumSequences() - 1;
+            ui->seqArea->setFirstVisibleSequence(s);
             ui->seqArea->cancelSelection();
-            //TODO: select first sequence?
-            break;
-        case Qt::Key_End: 
-            {
-                int s = editor->getNumSequences() - 1;
-                ui->seqArea->setFirstVisibleSequence(s);
-                ui->seqArea->cancelSelection();
-                //TODO: select last sequence?
-            }            
-            break;
-        case Qt::Key_PageUp:
-            {
-                int nVis = ui->seqArea->getNumVisibleSequences(false);
-                int fp = qMax(0, ui->seqArea->getFirstVisibleSequence() - nVis);
-                //int cp = qMax(0, ui->seqArea->getCursorPos().y() - nVis);
-                ui->seqArea->setFirstVisibleSequence(fp);
-                ui->seqArea->cancelSelection();
-            }
-            break;
-        case Qt::Key_PageDown:
-            {
-                int nVis = ui->seqArea->getNumVisibleSequences(false);
-                int nSeq = editor->getNumSequences();
-                int fp = qMin(nSeq-1, ui->seqArea->getFirstVisibleSequence() + nVis);
-                //int cp = qMin(nSeq-1, ui->seqArea->getCursorPos().y() + nVis);
-                ui->seqArea->setFirstVisibleSequence(fp);
-                ui->seqArea->cancelSelection();
-            }
-            break;
-        case Qt::Key_Shift:
-            {
-                curSeq = startSelectingSeq;
-                if (startSelectingSeq == ui->getCollapseModel()->rowToMap(ui->seqArea->getSelectedRows().startPos)) {
-                    newSeq = ui->getCollapseModel()->rowToMap(ui->seqArea->getSelectedRows().endPos() - 1);
-                } else {
-                    newSeq = ui->getCollapseModel()->rowToMap(ui->seqArea->getSelectedRows().startPos);
-                }
-            }
-            break;
-        case Qt::Key_Escape:
-            {
-                ui->seqArea->cancelSelection();
-                curSeq = 0;
-                startSelectingSeq = 0;
-            }
-            break;
-  }
+            //TODO: select last sequence?
+        }
+        break;
+    case Qt::Key_PageUp:
+        {
+            int nVis = ui->seqArea->getNumVisibleSequences(false);
+            int fp = qMax(0, ui->seqArea->getFirstVisibleSequence() - nVis);
+            ui->seqArea->setFirstVisibleSequence(fp);
+            ui->seqArea->cancelSelection();
+        }
+        break;
+    case Qt::Key_PageDown:
+        {
+            int nVis = ui->seqArea->getNumVisibleSequences(false);
+            int nSeq = editor->getNumSequences();
+            int fp = qMin(nSeq-1, ui->seqArea->getFirstVisibleSequence() + nVis);
+            ui->seqArea->setFirstVisibleSequence(fp);
+            ui->seqArea->cancelSelection();
+        }
+        break;
+    case Qt::Key_Shift:
+#ifndef Q_OS_MAC
+        newSeq = curSeq = ui->seqArea->getSelectedRows().startPos;
+        startSelectingSeq = curSeq;
+#else
+        curSeq = startSelectingSeq;
+        if (startSelectingSeq == ui->getCollapseModel()->rowToMap(ui->seqArea->getSelectedRows().startPos)) {
+            newSeq = ui->getCollapseModel()->rowToMap(ui->seqArea->getSelectedRows().endPos() - 1);
+        } else {
+            newSeq = ui->getCollapseModel()->rowToMap(ui->seqArea->getSelectedRows().startPos);
+        }
+#endif
+        break;
+    case Qt::Key_Escape:
+        ui->seqArea->cancelSelection();
+        curSeq = 0;
+        startSelectingSeq = 0;
+        break;
+    }
     QWidget::keyPressEvent(e);
 }
 
@@ -512,13 +514,12 @@ void MSAEditorNameList::sl_selectionChanged( const MSAEditorSelection& current, 
 {
     Q_UNUSED(current);
     Q_UNUSED(prev);
-    
+
     if (current.y() == prev.y() && current.height() == prev.height() ) {
         return;
     }
     completeRedraw = true;
     update();
-
 }
 
 void MSAEditorNameList::focusInEvent(QFocusEvent* fe) {
