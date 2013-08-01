@@ -449,6 +449,7 @@ void WorkflowView::setupMainSplitter() {
     }
 
     tabView = new WorkflowTabView(this);
+    tabView->hide();
     connect(tabView, SIGNAL(si_countChanged()), SLOT(sl_dashboardCountChanged()));
 
     QHBoxLayout *layout = new QHBoxLayout();
@@ -2151,6 +2152,7 @@ void WorkflowView::sl_loadScene() {
 }
 
 void WorkflowView::sl_loadScene(const QString &url, bool askConfirmation) {
+    CHECK(!running, );
     if (askConfirmation && !confirmModified()) {
         return;
     }
