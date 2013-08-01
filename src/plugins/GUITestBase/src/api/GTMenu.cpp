@@ -199,7 +199,9 @@ QAction* GTMenu::clickMenuItem(U2OpStatus &os, const QMenu *menu, const QString 
         }
         break;
     }
-
+    QMenu* activePopupMenu = qobject_cast<QMenu*>(QApplication::activePopupWidget());
+    if(activePopupMenu==NULL)
+        action=NULL;
     return action;
 }
 #undef GT_METHOD_NAME
