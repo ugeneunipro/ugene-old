@@ -794,15 +794,15 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 /////////////////////////////////////////////////////////////////////////
 // Common scenarios/Workflow designer
 /////////////////////////////////////////////////////////////////////////
-    REGISTER_TEST_IGNORED_MAC(GUITest_common_scenarios_workflow_designer::test_0001,"too long timeout");
-    REGISTER_TEST(GUITest_common_scenarios_workflow_designer::test_0002);
-    REGISTER_TEST(GUITest_common_scenarios_workflow_designer::test_0002_1);
+    REGISTER_TEST_IGNORED(GUITest_common_scenarios_workflow_designer::test_0001,"https://ugene.unipro.ru/tracker/browse/UGENE-1820");
+    REGISTER_TEST_IGNORED_WINDOWS(GUITest_common_scenarios_workflow_designer::test_0002,"https://ugene.unipro.ru/tracker/browse/UGENE-1820");
+    REGISTER_TEST_IGNORED_WINDOWS(GUITest_common_scenarios_workflow_designer::test_0002_1,"https://ugene.unipro.ru/tracker/browse/UGENE-1820");
     REGISTER_TEST(GUITest_common_scenarios_workflow_designer::test_0003);
-    REGISTER_TEST(GUITest_common_scenarios_workflow_designer::test_0005);
+    REGISTER_TEST_IGNORED_WINDOWS(GUITest_common_scenarios_workflow_designer::test_0005,"https://ugene.unipro.ru/tracker/browse/UGENE-1820");
     REGISTER_TEST(GUITest_common_scenarios_workflow_designer::test_0006);
-    REGISTER_TEST(GUITest_common_scenarios_workflow_designer::test_0007);
-    REGISTER_TEST(GUITest_common_scenarios_workflow_designer::test_0009);
-    REGISTER_TEST(GUITest_common_scenarios_workflow_designer::test_0010);
+    REGISTER_TEST_IGNORED(GUITest_common_scenarios_workflow_designer::test_0007,"https://ugene.unipro.ru/tracker/browse/UGENE-1820");
+    REGISTER_TEST_IGNORED(GUITest_common_scenarios_workflow_designer::test_0009,"https://ugene.unipro.ru/tracker/browse/UGENE-1820");
+    REGISTER_TEST_IGNORED_WINDOWS(GUITest_common_scenarios_workflow_designer::test_0010,"https://ugene.unipro.ru/tracker/browse/UGENE-1820");
     REGISTER_TEST(GUITest_common_scenarios_workflow_designer::test_0013);
     REGISTER_TEST(GUITest_common_scenarios_workflow_designer::test_0015);
 
