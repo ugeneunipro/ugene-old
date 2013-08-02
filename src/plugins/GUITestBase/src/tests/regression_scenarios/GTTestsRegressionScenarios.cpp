@@ -1,4 +1,4 @@
-/**
+    /**
  * UGENE - Integrated Bioinformatics Tools.
  * Copyright (C) 2008-2013 UniPro <ugene@unipro.ru>
  * http://ugene.unipro.ru
@@ -129,7 +129,14 @@ GUI_TEST_CLASS_DEFINITION(test_0986) {
     class EscClicker : public Filler {
     public:
         EscClicker(U2OpStatus& _os) : Filler(_os, "SmithWatermanDialogBase"){}
-        virtual void run(){ GTKeyboardDriver::keyPress(os, GTKeyboardDriver::key["esc"]); }
+        virtual void run(){
+            GTGlobals::sleep(500);
+#ifdef Q_OS_MAC
+            GTKeyboardDriver::keyRelease(os, GTKeyboardDriver::key["shift"]);
+            GTKeyboardDriver::keyRelease(os, GTKeyboardDriver::key["cmd"]);
+#endif Q_OS_MAC
+            GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["esc"]);
+        }
     };
 
     GTUtilsDialog::waitForDialog(os, new EscClicker(os));
@@ -664,7 +671,7 @@ GUI_TEST_CLASS_DEFINITION(test_1113){//commit AboutDialogController.cpp
             GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["esc"]);
         }
     };
-
+    GTGlobals::sleep(1000);
     GTUtilsDialog::waitForDialog(os, new EscClicker(os));
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["f1"]);
     GTGlobals::sleep(1000);
@@ -680,6 +687,9 @@ GUI_TEST_CLASS_DEFINITION(test_1113_1){//commit AboutDialogController.cpp
         EscClicker(U2OpStatus& _os) : Filler(_os, "AboutDialog"){}
         virtual void run(){
             GTGlobals::sleep();
+#ifdef Q_OS_MAC
+            GTMouseDriver::release(os);
+#endif
             QWidget* dialog = QApplication::activeModalWidget();
 //getting an info string
             QWidget *w = new QWidget();
@@ -1010,6 +1020,7 @@ GUI_TEST_CLASS_DEFINITION(test_1527) {
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_ALIGN << "Align profile to profile with MUSCLE", GTGlobals::UseMouse));
     GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, testDir + "_common_data/regression/1527/", "test.aln"));
     GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
+
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1527_1) {
@@ -1095,15 +1106,17 @@ GUI_TEST_CLASS_DEFINITION(test_1708){
 
 GUI_TEST_CLASS_DEFINITION(test_1720){
 //1. Use menu {File->Access remote database...}
-    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE),ACTION_PROJECTSUPPORT__ACCESS_REMOTE_DB, GTGlobals::UseKey);
     GTUtilsDialog::waitForDialog(os, new RemoteDBDialogFiller(os, "D11266", 0));
+    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE),ACTION_PROJECTSUPPORT__ACCESS_REMOTE_DB, GTGlobals::UseKey);
+
     GTLogTracer l;
     GTGlobals::sleep(8000);//some time needed for request
 //2. Fill field "Resource ID" with value D11266. Click "OK"
 
 //3. Use menu {File->Access remote database...}
-    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE),ACTION_PROJECTSUPPORT__ACCESS_REMOTE_DB, GTGlobals::UseKey);
     GTUtilsDialog::waitForDialog(os, new RemoteDBDialogFiller(os, "D11266", 0));
+    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE),ACTION_PROJECTSUPPORT__ACCESS_REMOTE_DB, GTGlobals::UseKey);
+
     GTGlobals::sleep(8000);
 //4. Fill field "Resource ID" with value D11266. Click "OK"
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "D11266.gb"));

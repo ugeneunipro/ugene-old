@@ -24,6 +24,7 @@
 #include "api/GTWidget.h"
 #include "api/GTClipboard.h"
 #include "api/GTKeyboardDriver.h"
+#include "api/GTMouseDriver.h"
 
 #include <QtGui/QApplication>
 #include <QtGui/QPushButton>
@@ -51,8 +52,18 @@ void RenameSequenceFiller::run(){
     }
  
     GTGlobals::sleep(1000);
+
+#ifndef Q_OS_MAC
     //instead clicking OK we will send 'Enter'
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
+#else
+    //but on Mac we will definitly click OK
+    QList<QPushButton*> list = dialog->findChildren<QPushButton*>();
+    foreach(QPushButton* but,list){
+        if (but->text().contains("OK"))
+                GTWidget::click(os,but);
+    }
+#endif
 }
 
 #undef GT_METHOD_NAME

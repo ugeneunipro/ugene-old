@@ -1995,8 +1995,14 @@ void MSAEditorSequenceArea::sl_addSeqFromFile()
     QString filter = DialogUtils::prepareDocumentsFileFilterByObjType(GObjectTypes::SEQUENCE, true);
     
     LastUsedDirHelper lod;
-    QStringList urls = QFileDialog::getOpenFileNames(this, tr("Open file with sequences"), lod.dir, filter);
-    
+    QStringList urls;
+#ifdef Q_OS_MAC
+    if (qgetenv("UGENE_GUI_TEST").toInt() == 1 && qgetenv("UGENE_USE_NATIVE_DIALOGS").toInt() == 0) {
+        urls = QFileDialog::getOpenFileNames(this, tr("Open file with sequences"), lod.dir, filter, 0, QFileDialog::DontUseNativeDialog );
+    } else
+#endif
+    urls = QFileDialog::getOpenFileNames(this, tr("Open file with sequences"), lod.dir, filter);
+
     if (!urls.isEmpty()) {
         lod.url = urls.first();
         cancelSelection();

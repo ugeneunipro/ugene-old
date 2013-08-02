@@ -47,6 +47,7 @@
 #include <U2View/MSAEditorFactory.h>
 #include <U2View/ADVConstants.h>
 #include <QtGui/QClipboard>
+#include <ApplicationServices/ApplicationServices.h>
 
 namespace U2 {
 
@@ -193,7 +194,12 @@ GUI_TEST_CLASS_DEFINITION(test_0001_4) {
     CHECK_SET_ERR(activeMDIWindow == NULL, "there is active MDI window");
 }
 
+
+
+#include <QCursor>
+
 GUI_TEST_CLASS_DEFINITION(test_0002) {
+
     // 1. Use menu {File->Open}. Open file _common_data/scenarios/project/multiple.fa
     GTUtilsDialog::waitForDialog(os, new SequenceReadingModeSelectorDialogFiller(os));
     GTUtilsProject::openFiles(os, testDir + "_common_data/scenarios/project/multiple.fa");
@@ -201,7 +207,37 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
 
     //2. Click on toolbar button Toggle view for sequence se2. Click menu item Hide all.
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "show_hide_all_views"));
-    GTWidget::click(os, GTWidget::findWidget(os, "toggle_view_button_se2"));
+    //GTWidget::click(os, GTWidget::findWidget(os, "toggle_view_button_se2"));
+    QWidget *w = GTWidget::findWidget(os, "toggle_view_button_se2");
+    QPoint p = w->parentWidget()->mapToGlobal(w->geometry().center());
+    GTMouseDriver::moveTo(os, p);
+
+    Qt::MouseButton button = Qt::LeftButton;
+    QPoint mousePos = QCursor::pos();
+
+    CGEventType eventType = button == Qt::LeftButton ? kCGEventLeftMouseDown :
+                                button == Qt::RightButton ? kCGEventRightMouseDown:
+                                button == Qt::MidButton ? kCGEventOtherMouseDown : kCGEventNull;
+    CGEventRef event = CGEventCreateMouseEvent(NULL, eventType, CGPointMake(mousePos.x(), mousePos.y()), 0 /*ignored*/);
+    //GT_CHECK(event != NULL, "Can't create event");
+
+    CGEventPost(kCGSessionEventTap, event);
+    GTGlobals::sleep(0); // don't touch, it's Mac's magic
+    CFRelease(event);
+
+
+    mousePos = QCursor::pos();
+    eventType = button == Qt::LeftButton ? kCGEventLeftMouseUp :
+                                button == Qt::RightButton ? kCGEventRightMouseUp:
+                                button == Qt::MidButton ? kCGEventOtherMouseUp : kCGEventNull;
+    event = CGEventCreateMouseEvent(NULL, eventType, CGPointMake(mousePos.x(), mousePos.y()), 0 /*ignored*/);
+    //GT_CHECK(event != NULL, "Can't create event");
+
+    CGEventPost(kCGSessionEventTap, event);
+    GTGlobals::sleep(0); // don't touch, it's Mac's magic
+    CFRelease(event);
+
+    GTGlobals::sleep(100);
     GTGlobals::sleep();
 
     //Expected state: views for se2 sequence has been closed, but toolbar still present.

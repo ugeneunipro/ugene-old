@@ -228,6 +228,11 @@ void MuscleMSAEditorContext::sl_alignSequencesToProfile() {
     QString filter = f2 + "\n" + f1;
 
     LastUsedDirHelper lod;
+#ifdef Q_OS_MAC
+    if (qgetenv("UGENE_GUI_TEST").toInt() == 1 && qgetenv("UGENE_USE_NATIVE_DIALOGS").toInt() == 0) {
+        lod.url = QFileDialog::getOpenFileName(NULL, tr("Select file with sequences"), lod, filter, 0, QFileDialog::DontUseNativeDialog );
+    } else
+#endif
     lod.url = QFileDialog::getOpenFileName(NULL, tr("Select file with sequences"), lod, filter);
     if (lod.url.isEmpty()) {
         return;
@@ -248,6 +253,12 @@ void MuscleMSAEditorContext::sl_alignProfileToProfile() {
     assert(!obj->isStateLocked());
 
     LastUsedDirHelper lod;
+#ifdef Q_OS_MAC
+    if (qgetenv("UGENE_GUI_TEST").toInt() == 1 && qgetenv("UGENE_USE_NATIVE_DIALOGS").toInt() == 0) {
+        lod.url = QFileDialog::getOpenFileName(NULL, tr("Select file with alignment"), lod,
+            DialogUtils::prepareDocumentsFileFilterByObjType(GObjectTypes::MULTIPLE_ALIGNMENT, true), 0, QFileDialog::DontUseNativeDialog );
+    } else
+#endif
     lod.url = QFileDialog::getOpenFileName(NULL, tr("Select file with alignment"), lod,
         DialogUtils::prepareDocumentsFileFilterByObjType(GObjectTypes::MULTIPLE_ALIGNMENT, true));
 

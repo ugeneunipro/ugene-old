@@ -138,7 +138,13 @@ void DnaAssemblyDialog::updateState() {
 
 void DnaAssemblyDialog::sl_onAddShortReadsButtonClicked() {
     LastUsedDirHelper lod;
-    QStringList fileNames = QFileDialog::getOpenFileNames(this, tr("Add short reads"), lod.dir);
+    QStringList fileNames;
+#ifdef Q_OS_MAC
+    if (qgetenv("UGENE_GUI_TEST").toInt() == 1 && qgetenv("UGENE_USE_NATIVE_DIALOGS").toInt() == 0) {
+        fileNames = QFileDialog::getOpenFileNames(this, tr("Add short reads"), lod.dir, QString(), 0, QFileDialog::DontUseNativeDialog );
+    } else
+#endif
+    fileNames = QFileDialog::getOpenFileNames(this, tr("Add short reads"), lod.dir);
     if (fileNames.isEmpty()) {
         return;
     }
@@ -156,6 +162,11 @@ void DnaAssemblyDialog::sl_onAddShortReadsButtonClicked() {
 void DnaAssemblyDialog::sl_onAddRefButtonClicked() {
     LastUsedDirHelper lod;
     QString filter;
+#ifdef Q_OS_MAC
+    if (qgetenv("UGENE_GUI_TEST").toInt() == 1 && qgetenv("UGENE_USE_NATIVE_DIALOGS").toInt() == 0) {
+        lod.url = QFileDialog::getOpenFileName(this, tr("Open reference sequence"), lod.dir, filter, 0, QFileDialog::DontUseNativeDialog );
+    } else
+#endif
 
     lod.url = QFileDialog::getOpenFileName(this, tr("Open reference sequence"), lod.dir, filter);
     if (lod.url.isEmpty()) {
