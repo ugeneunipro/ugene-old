@@ -31,7 +31,7 @@ namespace U2 {
 
 const QString DasWidgetFactory::GROUP_ID = "OP_DAS";
 const QString DasWidgetFactory::GROUP_ICON_STR = ":core/images/regions.png";
-const QString DasWidgetFactory::GROUP_TITLE = QString(tr("DAS annotations"));
+const QString DasWidgetFactory::GROUP_TITLE = QString(tr("DAS Annotations"));
 
 
 DasWidgetFactory::DasWidgetFactory()

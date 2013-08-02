@@ -90,6 +90,11 @@ private:
     const static QString SERVER_ERROR_STRING;
 };
 
+class CommonDasSettings {
+public:
+    const static QString    databaseStr;
+};
+
 class U2CORE_EXPORT ConvertDasIdTask : public Task {
     Q_OBJECT
 public:

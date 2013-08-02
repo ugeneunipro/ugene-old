@@ -20,8 +20,14 @@
    <string>Form</string>
   </property>
   <layout class="QVBoxLayout" name="mainLayout">
+   <property name="spacing">
+    <number>0</number>
+   </property>
    <property name="sizeConstraint">
     <enum>QLayout::SetMinAndMaxSize</enum>
+   </property>
+   <property name="margin">
+    <number>0</number>
    </property>
    <item>
     <layout class="QVBoxLayout" name="regionLayout"/>
