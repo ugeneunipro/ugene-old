@@ -602,7 +602,7 @@ bool MSAEditorSequenceArea::isPosInRange(int p) const {
 }
 
 bool MSAEditorSequenceArea::isSeqInRange(int s) const {
-    return s >= 0 && s < ui->collapseModel->displayedRowsCount();;
+    return s >= 0 && s < ui->collapseModel->displayedRowsCount();
 }
 
 
@@ -1042,6 +1042,9 @@ void MSAEditorSequenceArea::keyPressEvent(QKeyEvent *e) {
                 moveSelection(-1,0);
                 break;
             }
+            if( selectionEnd.x() < 1 ) {
+                break;
+            }
             selectionEnd.setX(selectionEnd.x() - 1);
             endX = selectionEnd.x();
             if (isPosInRange(endX) ) {
@@ -1064,7 +1067,10 @@ void MSAEditorSequenceArea::keyPressEvent(QKeyEvent *e) {
                 moveSelection(1,0);
                 break;
             }
-            selectionEnd.setX(selectionEnd.x() + 1);
+            if( selectionEnd.x() >= ( editor->getAlignmentLen() - 1 ) ) {
+                break;
+            }
+            selectionEnd.setX(selectionEnd.x() +  1);
             endX = selectionEnd.x();
             if (isPosInRange(endX) ) {
                 if (endX != -1) {
@@ -1084,6 +1090,9 @@ void MSAEditorSequenceArea::keyPressEvent(QKeyEvent *e) {
         case Qt::Key_Up:
             if(!(Qt::ShiftModifier & e->modifiers())) {
                 moveSelection(0,-1);
+                break;
+            }
+            if( selectionEnd.y() < 1 ) {
                 break;
             }
             selectionEnd.setY(selectionEnd.y() - 1);
@@ -1106,6 +1115,9 @@ void MSAEditorSequenceArea::keyPressEvent(QKeyEvent *e) {
         case Qt::Key_Down:
             if(!(Qt::ShiftModifier & e->modifiers())) {
                 moveSelection(0,1);
+                break;
+            }
+            if( selectionEnd.y() >= ( ui->collapseModel->displayedRowsCount() - 1 ) ) {
                 break;
             }
             selectionEnd.setY(selectionEnd.y() + 1);
