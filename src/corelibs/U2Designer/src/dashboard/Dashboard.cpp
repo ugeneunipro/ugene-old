@@ -61,6 +61,7 @@ Dashboard::Dashboard(const WorkflowMonitor *monitor, const QString &_name, QWidg
     connect(this, SIGNAL(loadFinished(bool)), SLOT(sl_loaded(bool)));
     connect(_monitor, SIGNAL(si_report()), SLOT(sl_serialize()));
     connect(_monitor, SIGNAL(si_dirSet(const QString &)), SLOT(sl_setDirectory(const QString &)));
+	setContextMenuPolicy(Qt::NoContextMenu);
     loadUrl = ":U2Designer/html/Dashboard.html";
     loadDocument();
 }
@@ -69,6 +70,7 @@ Dashboard::Dashboard(const QString &dirPath, QWidget *parent)
 : QWebView(parent), loaded(false), dir(dirPath), opened(true), _monitor(NULL), initialized(false)
 {
     connect(this, SIGNAL(loadFinished(bool)), SLOT(sl_loaded(bool)));
+	setContextMenuPolicy(Qt::NoContextMenu);
     loadUrl = dir + REPORT_SUB_DIR + DB_FILE_NAME;
     loadSettings();
     saveSettings();
