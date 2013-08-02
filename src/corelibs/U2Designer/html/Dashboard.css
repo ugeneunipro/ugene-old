@@ -90,7 +90,7 @@ body {
 }
 
 .dash-tab-content {
-    overflow: hidden;
+    overflow: visible;
     width: 1060px;
     margin: auto;
 }

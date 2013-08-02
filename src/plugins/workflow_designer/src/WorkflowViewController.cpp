@@ -2151,13 +2151,12 @@ void WorkflowView::sl_loadScene() {
     }
 }
 
-void WorkflowView::sl_loadScene(const QString &url, bool askConfirmation) {
+void WorkflowView::sl_loadScene(const QString &url, bool fromDashboard) {
     CHECK(!running, );
-    if (askConfirmation && !confirmModified()) {
+    if (fromDashboard && !confirmModified()) {
         return;
     }
-    bool noUrl = (NULL != sender());
-    Task* t = new LoadWorkflowSceneTask(schema, &meta, scene, url, noUrl); //FIXME unsynchronized meta usage
+    Task* t = new LoadWorkflowSceneTask(schema, &meta, scene, url, fromDashboard); //FIXME unsynchronized meta usage
     TaskSignalMapper* m = new TaskSignalMapper(t);
     connect(m, SIGNAL(si_taskFinished(Task*)), SLOT(sl_onSceneLoaded()));
     if(LoadWorkflowTask::detectFormat(IOAdapterUtils::readFileHeader(url)) == LoadWorkflowTask::XML) {

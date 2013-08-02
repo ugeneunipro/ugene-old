@@ -180,7 +180,7 @@ public:
 public slots:
     void sl_updateUi();
     void sl_rescaleScene(const QString &scale);
-    void sl_loadScene(const QString &url, bool askConfirmation = true);
+    void sl_loadScene(const QString &url, bool fromDashboard = true);
 
 private slots:
     void sl_editItem();
