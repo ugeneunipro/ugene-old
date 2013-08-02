@@ -73,6 +73,9 @@
 #define REGISTER_TEST_IGNORED_WINDOWS(X, MESSAGE) REGISTER_TEST_IGNORED_BY(X, GUITest::IgnoredWindows, MESSAGE)
 #define REGISTER_TEST_IGNORED_MAC(X, MESSAGE) REGISTER_TEST_IGNORED_BY(X, GUITest::IgnoredMac, MESSAGE)
 
+#define REGISTER_TEST_LINUX(X, MESSAGE) REGISTER_TEST_IGNORED_BY(X, GUITest::IgnoredWindows|GUITest::IgnoredMac, MESSAGE)
+#define REGISTER_TEST_WINDOWS(X, MESSAGE) REGISTER_TEST_IGNORED_BY(X, GUITest::IgnoredMac|GUITest::IgnoredLinux, MESSAGE)
+#define REGISTER_TEST_MAC(X, MESSAGE) REGISTER_TEST_IGNORED_BY(X, GUITest::IgnoredWindows|GUITest::IgnoredLinux, MESSAGE)
 namespace U2 {
 
 extern "C" Q_DECL_EXPORT Plugin* U2_PLUGIN_INIT_FUNC() {
@@ -444,20 +447,20 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0023);
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0024);
 
-    REGISTER_TEST_IGNORED_WINDOWS(GUITest_common_scenarios_msa_editor::test_0025, "Linux font test");
-    REGISTER_TEST_IGNORED_LINUX(GUITest_common_scenarios_msa_editor::test_0025_1, "Windows font test");
+    REGISTER_TEST_LINUX(GUITest_common_scenarios_msa_editor::test_0025, "Linux font test");
+    REGISTER_TEST_WINDOWS(GUITest_common_scenarios_msa_editor::test_0025_1, "Windows font test");
 
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0026);
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0026_1);
 
-    REGISTER_TEST_IGNORED_WINDOWS(GUITest_common_scenarios_msa_editor::test_0026_2_linux, "Linux version of test");
-    REGISTER_TEST_IGNORED_LINUX(GUITest_common_scenarios_msa_editor::test_0026_2_windows, "Windows version of test");
+    REGISTER_TEST_LINUX(GUITest_common_scenarios_msa_editor::test_0026_2_linux, "Linux version of test");
+    REGISTER_TEST_WINDOWS(GUITest_common_scenarios_msa_editor::test_0026_2_windows, "Windows version of test");
 
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0027);
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0027_1);
 
-    REGISTER_TEST_IGNORED_WINDOWS(GUITest_common_scenarios_msa_editor::test_0028_linux, "Linux version of test");
-    REGISTER_TEST_IGNORED_LINUX(GUITest_common_scenarios_msa_editor::test_0028_windows, "Windows version of test");
+    REGISTER_TEST_LINUX(GUITest_common_scenarios_msa_editor::test_0028_linux, "Linux version of test");
+    REGISTER_TEST_WINDOWS(GUITest_common_scenarios_msa_editor::test_0028_windows, "Windows version of test");
 
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0029);
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0029_1);
@@ -805,6 +808,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST_IGNORED_WINDOWS(GUITest_common_scenarios_workflow_designer::test_0010,"https://ugene.unipro.ru/tracker/browse/UGENE-1820");
     REGISTER_TEST(GUITest_common_scenarios_workflow_designer::test_0013);
     REGISTER_TEST(GUITest_common_scenarios_workflow_designer::test_0015);
+
 
 
 /////////////////////////////////////////////////////////////////////////

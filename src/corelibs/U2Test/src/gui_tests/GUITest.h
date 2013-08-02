@@ -10,35 +10,35 @@ namespace U2 {
 class GUITestIgnorable {
 public:
     // not ignored test, ignored by all, ignored on windows platforms, ignored on linux platforms
-    enum IgnoreStatus {NotIgnored, Ignored, IgnoredWindows, IgnoredLinux, IgnoredMac};
+    enum IgnoreStatus {NotIgnored=0x0, Ignored=0x1, IgnoredWindows=0x2, IgnoredLinux=0x4, IgnoredMac=0x8};
 
     GUITestIgnorable() : ignoreStatus(NotIgnored), ignoreMessage("") {}
 
-    void setIgnored(IgnoreStatus status, const QString& message = "") { ignoreStatus = status; ignoreMessage = message; }
-    IgnoreStatus getIgnoreStatus() const {return ignoreStatus; }
+    void setIgnored(int status, const QString& message = "") { ignoreStatus = status; ignoreMessage = message; }
+    int getIgnoreStatus() const {return ignoreStatus; }
     QString getIgnoreMessage() const {return ignoreMessage; }
 
     bool isIgnored() const {
-        bool ignored = ignoreStatus == Ignored;
+        bool ignored = ignoreStatus & Ignored;
         bool platformIgnore = false;
 
 #ifdef _WIN32
-        platformIgnore = (ignoreStatus == IgnoredWindows);
+        platformIgnore = (ignoreStatus & IgnoredWindows);
 #endif
 
 #ifdef __linux__
-        platformIgnore = (ignoreStatus == IgnoredLinux);
+        platformIgnore = (ignoreStatus & IgnoredLinux);
 #endif
 
 #ifdef Q_OS_MAC
-        platformIgnore = (ignoreStatus == IgnoredMac);
+        platformIgnore = (ignoreStatus & IgnoredMac);
 #endif
 
         return ignored || platformIgnore;
     }
 
 private:
-    IgnoreStatus ignoreStatus;
+    int ignoreStatus;
     QString ignoreMessage;
 };
 
