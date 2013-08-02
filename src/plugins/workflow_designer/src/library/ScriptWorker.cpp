@@ -60,7 +60,8 @@ static const QString IN_PORT_ID("in");
 static const QString OUT_PORT_ID("out");
 
 ScriptWorkerTask::ScriptWorkerTask(WorkflowScriptEngine *_engine, AttributeScript *_script)
-: Task(tr("Script worker task"), TaskFlag_RunInMainThread), engine(_engine), script(_script)
+    : Task(tr("Script worker task"), AppContext::isGUIMode() ? TaskFlag_RunInMainThread
+    : TaskFlag_None), engine(_engine), script(_script)
 {
     WorkflowScriptLibrary::initEngine(engine);
 }
@@ -130,10 +131,12 @@ void ScriptWorker::init() {
     input = ports.value(IN_PORT_ID);
     output = ports.value(OUT_PORT_ID);
     engine = new WorkflowScriptEngine(context);
-    engine->setProcessEventsInterval(50);
-    QScriptEngineDebugger *scriptDebugger = new QScriptEngineDebugger(engine);
-    scriptDebugger->setAutoShowStandardWindow(true);
-    scriptDebugger->attachTo(engine);
+    if ( AppContext::isGUIMode( ) ) { // add script debugger
+        engine->setProcessEventsInterval(50);
+        QScriptEngineDebugger *scriptDebugger = new QScriptEngineDebugger(engine);
+        scriptDebugger->setAutoShowStandardWindow(true);
+        scriptDebugger->attachTo(engine);
+    }
 }
 
 void ScriptWorker::bindPortVariables() {
