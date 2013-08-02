@@ -218,7 +218,9 @@ bool ExportImageDialog::exportToBitmap(){
 //    widget->render(&painter);
 //    bool result = painter.end();
 //    return (result && image.save(filename));
-    QPixmap image = QPixmap::grabWidget(widget, rect);
+    rect.setRight( this->getWidth() );
+    rect.setBottom( this->getHeight() );
+    QPixmap image = QPixmap::grabWidget( widget, rect );
     if(hasQuality()){
         return image.save(filename, qPrintable(format),getQuality());
     }else{
