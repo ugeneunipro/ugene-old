@@ -797,9 +797,9 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST_IGNORED(GUITest_common_scenarios_workflow_designer::test_0001,"https://ugene.unipro.ru/tracker/browse/UGENE-1820");
     REGISTER_TEST_IGNORED_WINDOWS(GUITest_common_scenarios_workflow_designer::test_0002,"https://ugene.unipro.ru/tracker/browse/UGENE-1820");
     REGISTER_TEST_IGNORED_WINDOWS(GUITest_common_scenarios_workflow_designer::test_0002_1,"https://ugene.unipro.ru/tracker/browse/UGENE-1820");
-    REGISTER_TEST(GUITest_common_scenarios_workflow_designer::test_0003);
+    REGISTER_TEST_IGNORED_WINDOWS(GUITest_common_scenarios_workflow_designer::test_0003,"https://ugene.unipro.ru/tracker/browse/UGENE-1820");
     REGISTER_TEST_IGNORED_WINDOWS(GUITest_common_scenarios_workflow_designer::test_0005,"https://ugene.unipro.ru/tracker/browse/UGENE-1820");
-    REGISTER_TEST(GUITest_common_scenarios_workflow_designer::test_0006);
+    REGISTER_TEST_IGNORED_WINDOWS(GUITest_common_scenarios_workflow_designer::test_0006,"https://ugene.unipro.ru/tracker/browse/UGENE-1820");
     REGISTER_TEST_IGNORED(GUITest_common_scenarios_workflow_designer::test_0007,"https://ugene.unipro.ru/tracker/browse/UGENE-1820");
     REGISTER_TEST_IGNORED(GUITest_common_scenarios_workflow_designer::test_0009,"https://ugene.unipro.ru/tracker/browse/UGENE-1820");
     REGISTER_TEST_IGNORED_WINDOWS(GUITest_common_scenarios_workflow_designer::test_0010,"https://ugene.unipro.ru/tracker/browse/UGENE-1820");
