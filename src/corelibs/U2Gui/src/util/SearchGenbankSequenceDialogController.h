@@ -29,6 +29,7 @@
 #include <QtGui/QDialog>
 #include <QtCore/QList>
 #include <QtCore/QString>
+#include <QtCore/QScopedPointer>
 
 class Ui_SearchGenbankSequenceDialog;
 class QLineEdit;
@@ -100,7 +101,11 @@ public:
 private:
     Ui_SearchGenbankSequenceDialog* ui;
     QueryBuilderController* queryBlockController;
-    EntrezSearchTask* searchTask;
+    QScopedPointer<ESearchResultHandler> searchResultHandler;
+    EntrezQueryTask* searchTask;
+    QScopedPointer<ESummaryResultHandler> summaryResultHandler;
+    EntrezQueryTask* summaryTask;
+    
 private slots:
     void sl_searchButtonClicked();
     void sl_taskStateChanged(Task* task);

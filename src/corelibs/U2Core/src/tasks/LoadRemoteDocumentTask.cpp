@@ -49,8 +49,9 @@
 
 namespace U2 {
 
-const QString NCBI_ESEARCH_URL("http://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=%1&term=%2&tool=UGENE");
-const QString NCBI_EFETCH_URL("http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=%1&id=%2&retmode=text&rettype=%3&tool=UGENE");
+const QString EntrezUtils::NCBI_ESEARCH_URL("http://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=%1&term=%2&tool=UGENE");
+const QString EntrezUtils::NCBI_ESUMMARY_URL("http://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=%1&id=%2&tool=UGENE");
+const QString EntrezUtils::NCBI_EFETCH_URL("http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=%1&id=%2&retmode=text&rettype=%3&tool=UGENE");
 const QString RemoteDBRegistry::ENSEMBL("ENSEMBL");
 const QString RemoteDBRegistry::GENBANK_DNA("NCBI GenBank (DNA sequence)");
 const QString RemoteDBRegistry::GENBANK_PROTEIN("NCBI protein sequence database");
@@ -371,11 +372,11 @@ void LoadDataFromEntrezTask::run() {
     
     ioLog.trace("Downloading file...");
     // Step one: download the file    
-    QString traceFetchUrl = QString(NCBI_EFETCH_URL).arg(db).arg(accNumber).arg(format);
+    QString traceFetchUrl = QString(EntrezUtils::NCBI_EFETCH_URL).arg(db).arg(accNumber).arg(format);
     QNetworkProxy proxy = nc->getProxyByUrl(traceFetchUrl);
     networkManager->setProxy(proxy);
     ioLog.trace(traceFetchUrl);
-    QUrl requestUrl(NCBI_EFETCH_URL.arg(db).arg(accNumber).arg(format));
+    QUrl requestUrl(EntrezUtils::NCBI_EFETCH_URL.arg(db).arg(accNumber).arg(format));
     downloadReply = networkManager->get(QNetworkRequest(requestUrl));
     connect(downloadReply, SIGNAL(error(QNetworkReply::NetworkError)),
         this, SLOT(sl_onError(QNetworkReply::NetworkError)));
@@ -432,68 +433,62 @@ void LoadDataFromEntrezTask::sl_uploadProgress( qint64 bytesSent, qint64 bytesTo
 }
 
 
-
 //////////////////////////////////////////////////////////////////////////
 
 
-EntrezSearchTask::EntrezSearchTask( const QString& dbId, const QString& searchQuery )
-: Task("EntrezSearchTask", TaskFlags_FOSCOE | TaskFlag_MinimizeSubtaskErrorText), db(dbId), 
-query(searchQuery) {
-
+EntrezQueryTask::EntrezQueryTask( QXmlDefaultHandler* rHandler, const QString& searchQuery )
+: Task("EntrezQueryTask", TaskFlags_FOSCOE | TaskFlag_MinimizeSubtaskErrorText), resultHandler(rHandler), query(searchQuery) {
+    assert(rHandler);
 }
 
-EntrezSearchTask::~EntrezSearchTask() {
+EntrezQueryTask::~EntrezQueryTask() {
     delete loop;
     delete networkManager;
 }
 
-void EntrezSearchTask::run() {
+void EntrezQueryTask::run() {
     stateInfo.progress = 0;
-    ioLog.trace("Entrez search task started...");
+    ioLog.trace("Entrez query task started...");
     loop = new QEventLoop;
 
     networkManager = new QNetworkAccessManager();
     connect(networkManager, SIGNAL(finished(QNetworkReply*)), this, SLOT(sl_replyFinished(QNetworkReply*)));
-    
+
     NetworkConfiguration* nc = AppContext::getAppSettings()->getNetworkConfiguration();
-    
-    QUrl request( NCBI_ESEARCH_URL.arg(db).arg(query) );
-    QString rUrl(request.toString());
-    ioLog.trace(QString("Sending request: %1").arg(rUrl));
-    searchReply = networkManager->get(QNetworkRequest( request ));
-    connect(searchReply, SIGNAL(error(QNetworkReply::NetworkError)),
+
+    QUrl request( query );
+    ioLog.trace(QString("Sending request: %1").arg(query));
+    queryReply = networkManager->get(QNetworkRequest( request ));
+    connect(queryReply, SIGNAL(error(QNetworkReply::NetworkError)),
         this, SLOT(sl_onError(QNetworkReply::NetworkError)));
     loop->exec();
-        
-    ioLog.trace(QString("Search finished. Found %1 results corresponding to query.").arg(results.size()));
-    
+
+    ioLog.trace("Query finished.");
+
 }
 
-void EntrezSearchTask::sl_replyFinished( QNetworkReply* reply ) {
-    assert(reply == searchReply); 
+void EntrezQueryTask::sl_replyFinished( QNetworkReply* reply ) {
+    assert(reply == queryReply); 
     QXmlInputSource source(reply);
-    ESearchResultHandler* handler = new ESearchResultHandler;
-    xmlReader.setContentHandler(handler);
-    xmlReader.setErrorHandler(handler);
+    xmlReader.setContentHandler(resultHandler);
+    xmlReader.setErrorHandler(resultHandler);
     bool ok = xmlReader.parse(source);
     if (!ok) {
-        assert(0);
-        stateInfo.setError("Parsing eSearch result failed");
-    } else {
-        results =  handler->getIdList();
-    }
-    delete handler;
+        stateInfo.setError("Parsing Entrez query result failed");
+    } 
+
     loop->exit();
 }
 
-void EntrezSearchTask::sl_onError( QNetworkReply::NetworkError error ) {
+void EntrezQueryTask::sl_onError( QNetworkReply::NetworkError error ) {
     stateInfo.setError(QString("NetworkReply error %1").arg(error));
     loop->exit();
 }
 
-void EntrezSearchTask::sl_uploadProgress( qint64 bytesSent, qint64 bytesTotal ) {
+void EntrezQueryTask::sl_uploadProgress( qint64 bytesSent, qint64 bytesTotal ) {
     stateInfo.progress = bytesSent/ bytesTotal * 100;
 }
+
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -537,6 +532,66 @@ bool ESearchResultHandler::fatalError( const QXmlParseException &exception )
 {
     Q_UNUSED(exception);
     assert(0);
+    return false;
+
+}
+//////////////////////////////////////////////////////////////////////////
+
+bool ESummaryResultHandler::startElement( const QString &namespaceURI, const QString &localName, const QString &qName, const QXmlAttributes &attributes )
+{
+    Q_UNUSED(namespaceURI); Q_UNUSED(localName); Q_UNUSED(attributes);
+
+    if (!metESummaryResult && qName != "eSummaryResult") {
+        errorStr = QObject::tr("This is not a ESummary result!");
+        return false;
+    }
+    if ("eSummaryResult" == qName) {
+        metESummaryResult = true;
+    } 
+    curAttributes = attributes;
+    curText.clear();
+    return true;
+}
+
+bool ESummaryResultHandler::endElement( const QString &namespaceURI, const QString &localName, const QString &qName )
+{
+    Q_UNUSED(namespaceURI); Q_UNUSED(localName);
+    if ("DocSum" == qName) {
+        results.append(currentSummary);
+        currentSummary = EntrezSummary();
+    } else if ("Id" == qName) {
+        currentSummary.id = curText;
+    } else if ("Item" == qName) {
+        QString itemName = curAttributes.value("Name");
+
+        if ("Caption" == itemName) {
+            currentSummary.name = curText;
+        } else if ("Title" == itemName ) {
+            currentSummary.title = curText;
+        } else if ("Length" == itemName) {
+            currentSummary.size = curText.toInt();
+        }
+    }
+    return true;
+}
+
+ESummaryResultHandler::ESummaryResultHandler()
+{
+
+    metESummaryResult = false;
+}
+
+bool ESummaryResultHandler::characters( const QString &str )
+{
+    curText += str;
+    return true;
+}
+
+bool ESummaryResultHandler::fatalError( const QXmlParseException &exception )
+{
+    
+    errorStr = QString("ESummary result parsing failed: %1").arg(exception.message());
+    
     return false;
 
 }

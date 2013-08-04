@@ -88,6 +88,14 @@ public:
 
 };
 
+class U2CORE_EXPORT EntrezUtils {
+public:
+    static const QString NCBI_ESEARCH_URL;
+    static const QString NCBI_ESUMMARY_URL;
+    static const QString NCBI_EFETCH_URL;
+};
+
+
 //Base class for loading documents
 class U2CORE_EXPORT BaseLoadRemoteDocumentTask : public DocumentProviderTask {
     Q_OBJECT
@@ -178,14 +186,14 @@ private:
     QString fullPath, format;
 };
 
-class U2CORE_EXPORT EntrezSearchTask : public Task {
+class U2CORE_EXPORT EntrezQueryTask : public Task {
     Q_OBJECT
 public:
-    EntrezSearchTask(const QString& dbId, const QString& query);
-    ~EntrezSearchTask();
-    
+    EntrezQueryTask( QXmlDefaultHandler* resultHandler, const QString& query );
+    ~EntrezQueryTask();
+
     virtual void run();
-    const QList<QString>& getResults() const { return results; }
+    const QXmlDefaultHandler* getResultHandler() const { return resultHandler; }
 
     public slots:
         void sl_replyFinished(QNetworkReply* reply);
@@ -193,16 +201,15 @@ public:
         void sl_uploadProgress( qint64 bytesSent, qint64 bytesTotal);
 private:
     QEventLoop* loop;
-    QNetworkReply* searchReply;
+    QNetworkReply* queryReply;
     QNetworkAccessManager* networkManager;
+    QXmlDefaultHandler* resultHandler;
     QXmlSimpleReader xmlReader;
-    QString db, query;
-    QList<QString> results;
+    QString query;
 };
 
-
 // Helper class to parse NCBI Entrez eSearch results
-class ESearchResultHandler : public QXmlDefaultHandler {
+class U2CORE_EXPORT ESearchResultHandler : public QXmlDefaultHandler {
     bool metESearchResult;
     QString errorStr;
     QString curText;
@@ -218,6 +225,36 @@ public:
     QString errorString() const { return errorStr; }
     const QList<QString>& getIdList() const { return idList; }
 };
+
+
+struct EntrezSummary {
+    QString id;
+    QString name;
+    QString title;
+    int size;
+};
+
+// Helper class to parse NCBI Entrez ESummary results
+class U2CORE_EXPORT ESummaryResultHandler : public QXmlDefaultHandler {
+    bool metESummaryResult;
+    QString errorStr;
+    QString curText;
+    EntrezSummary currentSummary;
+    QXmlAttributes curAttributes;
+    QList<EntrezSummary> results;
+public:
+    ESummaryResultHandler();
+    bool startElement(const QString &namespaceURI, const QString &localName,
+        const QString &qName, const QXmlAttributes &attributes);
+    bool endElement(const QString &namespaceURI, const QString &localName,
+        const QString &qName);
+    bool characters(const QString &str);
+    bool fatalError(const QXmlParseException &exception);
+    QString errorString() const { return errorStr; }
+    const QList<EntrezSummary>& getResults() const { return results; }
+};
+
+
 
 } //namespace
 

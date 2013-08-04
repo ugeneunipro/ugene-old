@@ -74,8 +74,13 @@ void SearchGenbankSequenceDialogController::sl_searchButtonClicked()
     if (query.isEmpty()) {
         return;
     }
+    
 
-    searchTask = new EntrezSearchTask("nucleotide", query);
+    //searchTask = new EntrezSearchTask("nucleotide", query);
+    QString qUrl(EntrezUtils::NCBI_ESEARCH_URL.arg("nucleotide").arg(query));
+    searchResultHandler.reset( new ESearchResultHandler() );
+    searchTask = new EntrezQueryTask(searchResultHandler.data(), qUrl );
+
     AppContext::getTaskScheduler()->registerTopLevelTask(searchTask);
 
 }
@@ -86,20 +91,30 @@ void SearchGenbankSequenceDialogController::sl_taskStateChanged( Task* task )
     if (task->getState() == Task::State_Finished ) {
         if (task == searchTask) {
             ui->treeWidget->clear();
-            const QStringList& results =  searchTask->getResults();
+            const QStringList& results =  searchResultHandler->getIdList();
             if (results.size() == 0) {
                 QMessageBox::information(this, windowTitle(), tr("No results found corresponding to the query.") );
             } else {
-                // TODO: call edesc on the ids
-                foreach (const QString& id, results ) {
-                    QTreeWidgetItem* item = new QTreeWidgetItem(ui->treeWidget);
-                    item->setText(0, id);
-                    item->setText(1, "" );
-                    item->setText(2, "" );
-                    ui->treeWidget->addTopLevelItem( item );   
-                }
+                QString ids = results.join(",");
+                QString query(EntrezUtils::NCBI_ESUMMARY_URL.arg("nucleotide").arg(ids));
+                summaryResultHandler.reset( new ESummaryResultHandler() );
+                summaryTask = new EntrezQueryTask( summaryResultHandler.data() , query);
+                AppContext::getTaskScheduler()->registerTopLevelTask(summaryTask);
             }
             searchTask = NULL;
+        } else if (task == summaryTask) {
+            
+            assert(summaryResultHandler);
+            const QList<EntrezSummary>& results = summaryResultHandler->getResults();
+            
+            foreach (const EntrezSummary& desc, results ) {
+                QTreeWidgetItem* item = new QTreeWidgetItem(ui->treeWidget);
+                item->setText(0, desc.name);
+                item->setText(1, desc.title );
+                item->setText(2, QString("%1").arg(desc.size) );
+                ui->treeWidget->addTopLevelItem( item );   
+            }
+            summaryTask = NULL;
         }
     }
 }
