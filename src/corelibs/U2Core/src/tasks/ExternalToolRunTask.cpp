@@ -80,7 +80,7 @@ ExternalToolRunTask::ExternalToolRunTask(const QString& _toolName, const QString
 
     processEnvironment = QProcessEnvironment::systemEnvironment();
     foreach (QString path, additionalPaths) {
-        path = processEnvironment.value("PATH") + ":" + path;
+        path = path + ":" + processEnvironment.value("PATH");
         processEnvironment.insert("PATH", path);
     }
 

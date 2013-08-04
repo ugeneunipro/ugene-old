@@ -108,7 +108,8 @@ HEADERS += src/ETSProjectViewItemsContoller.h \
            src/utils/ExternalToolValidateTask.h \
            src/vcfutils/VcfutilsSupport.h \
            src/bowtie/bowtie_tests/bowtieTests.h \
-           src/bwa/bwa_tests/bwaTests.h
+           src/bwa/bwa_tests/bwaTests.h \
+    src/R/RSupport.h
 FORMS += src/ui/BlastAllSupportDialog.ui \
          src/ui/BlastDBCmdDialog.ui \
          src/ui/BowtieBuildSettings.ui \
@@ -231,9 +232,12 @@ SOURCES += src/ETSProjectViewItemsContoller.cpp \
            src/utils/ExternalToolValidateTask.cpp \
            src/vcfutils/VcfutilsSupport.cpp \
            src/bowtie/bowtie_tests/bowtieTests.cpp \
-           src/bwa/bwa_tests/bwaTests.cpp
+           src/bwa/bwa_tests/bwaTests.cpp \
+    src/R/RSupport.cpp
 RESOURCES += external_tool_support.qrc
 TRANSLATIONS += transl/chinese.ts \
                 transl/czech.ts \
                 transl/english.ts \
                 transl/russian.ts
+
+

@@ -67,7 +67,8 @@ HEADERS += src/ActorCfgModel.h \
            src/util/GrouperActionUtils.h \
            src/util/SaveSchemaImageUtils.h \
            src/util/WorkerNameValidator.h \
-           src/util/WriteSequenceValidator.h
+           src/util/WriteSequenceValidator.h \
+    src/RPackageInstallerDialog.h
 FORMS += src/ui/ChooseItemDialog.ui \
          src/ui/CreateScriptBlockDialog.ui \
          src/ui/DashboardsManagerDialog.ui \
@@ -79,7 +80,8 @@ FORMS += src/ui/ChooseItemDialog.ui \
          src/ui/StartupDialog.ui \
          src/ui/WorkflowEditorWidget.ui \
          src/ui/WorkflowMetaDialog.ui \
-         src/ui/WorkflowSettingsWidget.ui
+         src/ui/WorkflowSettingsWidget.ui \
+    src/ui/RPackageInstallerDialog.ui
 SOURCES += src/ActorCfgModel.cpp \
            src/BreakpointManagerView.cpp \
            src/ChooseItemDialog.cpp \
@@ -146,6 +148,10 @@ SOURCES += src/ActorCfgModel.cpp \
            src/util/GrouperActionUtils.cpp \
            src/util/SaveSchemaImageUtils.cpp \
            src/util/WorkerNameValidator.cpp \
-           src/util/WriteSequenceValidator.cpp
+           src/util/WriteSequenceValidator.cpp \
+    src/RPackageInstallerDialog.cpp
 RESOURCES += workflow_designer.qrc
 TRANSLATIONS += transl/english.ts transl/russian.ts
+
+
+

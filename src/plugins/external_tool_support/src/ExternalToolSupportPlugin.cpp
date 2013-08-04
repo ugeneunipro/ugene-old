@@ -109,6 +109,7 @@
 #include "conduct_go/ConductGOSupport.h"
 #include "python/PythonSupport.h"
 #include "perl/PerlSupport.h"
+#include "R/RSupport.h"
 #include "vcfutils/VcfutilsSupport.h"
 #include "samtools/BcfToolsSupport.h"
 
@@ -190,6 +191,10 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin():Plugin(tr("External tool 
     //perl
     PerlSupport *perlSupport = new PerlSupport(PERL_TOOL_NAME);
     AppContext::getExternalToolRegistry()->registerEntry(perlSupport);
+
+    //Rscript
+    RSupport* rSupport = new RSupport(R_TOOL_NAME);
+    AppContext::getExternalToolRegistry()->registerEntry(rSupport);
 
     //Fill ExternalToolRegistry with supported tools
     //ClustalW

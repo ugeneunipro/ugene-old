@@ -46,6 +46,8 @@
 
 #include <U2Core/AppContext.h>
 #include <U2Core/DocumentModel.h>
+#include <U2Core/ExternalToolRegistry.h>
+#include <U2Core/ExternalToolRunTask.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/IOAdapterUtils.h>
 #include <U2Core/Log.h>
@@ -112,6 +114,7 @@
 #include "library/ExternalProcessWorker.h"
 #include "library/ScriptWorker.h"
 #include "WorkflowInvestigationWidgetsController.h"
+#include "RPackageInstallerDialog.h"
 
 /* TRANSLATOR U2::LocalWorkflow::WorkflowView*/
 
@@ -122,6 +125,7 @@ namespace U2 {
 #define EDITOR_STATE SETTINGS + "editor"
 #define PALETTE_STATE SETTINGS + "palette"
 #define TABS_STATE SETTINGS + "tabs"
+#define CHECK_R_PACKAGE SETTINGS + "check_r_for_cistrome"
 
 enum {ElementsTab,SamplesTab};
 
@@ -313,6 +317,7 @@ pasteCount(0), debugInfo(new WorkflowDebugStatus(this)), debugActions()
 
     propertyEditor->reset();
     checkOutputDir();
+    checkRPackage();
 }
 
 WorkflowView::~WorkflowView() {
@@ -497,6 +502,32 @@ void WorkflowView::checkOutputDir() {
 void WorkflowView::sl_breakpointIsReached(const U2::ActorId &actor) {
     propagateBreakpointToSceneItem(actor);
     breakpointView->onBreakpointReached(actor);
+}
+
+void WorkflowView::checkRPackage() {
+    CHECK(AppContext::getSettings()->getValue(CHECK_R_PACKAGE, true).toBool(), );
+
+    ExternalToolRegistry* etRegistry = AppContext::getExternalToolRegistry();
+    SAFE_POINT(NULL != etRegistry, "External tool registry is NULL", );
+
+    ExternalTool* rTool = etRegistry->getByName("Rscript");
+    CHECK_EXT(NULL != rTool, AppContext::getSettings()->setValue(CHECK_R_PACKAGE, true), );
+    CHECK_EXT(rTool->isValid(), AppContext::getSettings()->setValue(CHECK_R_PACKAGE, true), );
+
+    RPackageInstallerDialog d(this);
+    if (QDialog::Accepted == d.exec()) {
+        CHECK(!d.filePathLineEdit->text().isEmpty(), );
+        rLogParser = new ExternalToolLogParser;
+        ExternalToolRunTask* rTask = new ExternalToolRunTask(rTool->getName(),
+                                                             QStringList() << d.filePathLineEdit->text(),
+                                                             rLogParser,
+                                                             "",
+                                                             QStringList() << rTool->getPath());
+        connect(rTask, SIGNAL(si_stateChanged()), SLOT(sl_rInstallationStateChanged()));
+        AppContext::getTaskScheduler()->registerTopLevelTask(rTask);
+    } else {
+        AppContext::getSettings()->setValue(CHECK_R_PACKAGE, !d.doNotRemindCheckBox->isChecked());
+    }
 }
 
 void WorkflowView::addBottomWidgetsToInfoSplitter() {
@@ -1628,6 +1659,33 @@ WorkflowProcessItem *WorkflowView::findItemById(ActorId actor) const {
         }
     }
     return NULL;
+}
+
+void WorkflowView::sl_rInstallationStateChanged() {
+    ExternalToolRunTask* rTask = qobject_cast<ExternalToolRunTask*>(sender());
+    SAFE_POINT(NULL != rTask, "Unexpected message sender", );
+
+    if (rTask->isFinished()) {
+        delete rLogParser;
+        if (rTask->hasError() || rTask->isCanceled()) {
+            AppContext::getSettings()->setValue(CHECK_R_PACKAGE, true);
+            QMessageBox result(QMessageBox::Warning,
+                               tr("Error"),
+                               tr("R packages for the cistrome pipeline installation fails. "
+                                  "The right work of the cistorme pipeline is not garanteed. "
+                                  "Try to start the cistrome R packages installation script manually."),
+                               QMessageBox::Close);
+            result.exec();
+        } else {
+            AppContext::getSettings()->setValue(CHECK_R_PACKAGE, false);
+            QMessageBox result(QMessageBox::Information,
+                               tr("Success"),
+                               tr("R packages for the cistrome pipeline were successfully installed. "
+                                  "Now you can use the cistrome pipeline."),
+                               QMessageBox::Close);
+            result.exec();
+        }
+    }
 }
 
 void WorkflowView::paintEvent(QPaintEvent *event) {
