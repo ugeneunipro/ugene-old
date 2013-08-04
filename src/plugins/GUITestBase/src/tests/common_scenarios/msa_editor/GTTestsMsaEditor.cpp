@@ -2727,7 +2727,7 @@ GUI_TEST_CLASS_DEFINITION(test_0026_2_linux){
     qint64 bigSize = GTFileDialog::getSize(os,testDir + "_common_data/scenarios/sandbox/","bigImage.jpeg");
     qint64 smallSize = GTFileDialog::getSize(os,testDir + "_common_data/scenarios/sandbox/","smallImage.jpeg");
 
-    CHECK_SET_ERR(bigSize==716710 && smallSize==163637, QString().setNum(bigSize) + "  " + QString().setNum(smallSize));
+    CHECK_SET_ERR(bigSize==780420 && smallSize==185049, QString().setNum(bigSize) + "  " + QString().setNum(smallSize));
 //    Expected state: image is exported
 }
 
