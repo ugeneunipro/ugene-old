@@ -34,6 +34,7 @@
 #include "runnables/qt/PopupChooser.h"
 #include "runnables/ugene/plugins/workflow_designer/WizardFiller.h"
 #include "runnables/ugene/plugins/workflow_designer/StartupDialogFiller.h"
+#include "runnables/ugene/plugins/workflow_designer/RPackageDialorFiller.h"
 #include "runnables/ugene/ugeneui/SequenceReadingModeSelectorDialogFiller.h"
 #include "GTUtilsWorkflowDesigner.h"
 #include "GTUtilsApp.h"
@@ -114,6 +115,7 @@ private:
     QWizard* wizard; //= qobject_cast<QWizard*>(dialog);
 };
 GUI_TEST_CLASS_DEFINITION(test_0001){
+    GTUtilsDialog::waitForDialog(os,new RPackageDialorFiller(os));
     GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
     QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
     GTMenu::clickMenuItem(os, menu, QStringList() << "Workflow Designer");

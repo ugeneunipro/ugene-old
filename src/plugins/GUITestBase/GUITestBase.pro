@@ -152,7 +152,9 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/api/GTAction.h \
             src/api/GTDoubleSpinBox.h \
             src/api/GTTableView.h / \
-    src/runnables/ugene/corelibs/U2Gui/AppSettingsDialogFiller.h
+    src/runnables/ugene/corelibs/U2Gui/AppSettingsDialogFiller.h \
+    src/runnables/ugene/plugins/workflow_designer/AliasesDialogFiller.h \
+    src/runnables/ugene/plugins/workflow_designer/RPackageDialorFiller.h
 
 
 SOURCES +=  src/GUITestBasePlugin.cpp \
@@ -311,4 +313,6 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/api/GTAction.cpp \
             src/api/GTDoubleSpinBox.cpp \
             src/api/GTTableView.cpp \
-    src/runnables/ugene/corelibs/U2Gui/AppSettingsDialogFiller.cpp
+    src/runnables/ugene/corelibs/U2Gui/AppSettingsDialogFiller.cpp \
+    src/runnables/ugene/plugins/workflow_designer/AliasesDialogFiller.cpp \
+    src/runnables/ugene/plugins/workflow_designer/RPackageDialorFiller.cpp

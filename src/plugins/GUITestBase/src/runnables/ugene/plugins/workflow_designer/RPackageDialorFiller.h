@@ -18,19 +18,17 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301, USA.
  */
-
-#ifndef STARTUPDIALOGFILLER_H
-#define STARTUPDIALOGFILLER_H
+#ifndef RPACKAGEDIALORFILLER_H
+#define RPACKAGEDIALORFILLER_H
 
 #include "GTUtilsDialog.h"
 
-namespace U2 {
-
-class StartupDialogFiller : public Filler
+namespace U2{
+class RPackageDialorFiller : public Filler
 {
 public:
-    StartupDialogFiller(U2OpStatus &_os):Filler(_os,"StartupDialog"){}
+    RPackageDialorFiller(U2OpStatus &_os):Filler(_os,"RPackageInstallerDialog"){}
     void run();
 };
 }
-#endif // STARTUPDIALOGFILLER_H
+#endif // RPACKAGEDIALORFILLER_H

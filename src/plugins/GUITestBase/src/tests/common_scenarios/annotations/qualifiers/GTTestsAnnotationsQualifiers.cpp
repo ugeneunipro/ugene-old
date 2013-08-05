@@ -337,7 +337,7 @@ GUI_TEST_CLASS_DEFINITION(test_0004_2) {
 
     GTUtilsAnnotationsTreeView::getItemCenter(os, "C");
     GTMouseDriver::moveTo(os, GTUtilsAnnotationsTreeView::getItemCenter(os, "qual1"));
-    GTKeyboardDriver::keyPress(os, GTKeyboardDriver::key["delete"]);
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
     GTGlobals::sleep();
 
     GTGlobals::sleep();
@@ -347,7 +347,7 @@ GUI_TEST_CLASS_DEFINITION(test_0004_2) {
 
     GTUtilsAnnotationsTreeView::getItemCenter(os, "B");
     GTMouseDriver::moveTo(os, GTUtilsAnnotationsTreeView::getItemCenter(os, "qual"));
-    GTKeyboardDriver::keyPress(os, GTKeyboardDriver::key["delete"]);
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
     GTGlobals::sleep();
 
     GTGlobals::sleep();

@@ -692,6 +692,7 @@ void WorkflowView::createActions() {
     }
 
     configureParameterAliasesAction = new QAction(tr("Configure parameter aliases..."), this);
+    configureParameterAliasesAction->setObjectName("Configure parameter aliases");
     configureParameterAliasesAction->setIcon(QIcon(":workflow_designer/images/table_relationship.png"));
     connect(configureParameterAliasesAction, SIGNAL(triggered()), SLOT(sl_configureParameterAliases()));
 

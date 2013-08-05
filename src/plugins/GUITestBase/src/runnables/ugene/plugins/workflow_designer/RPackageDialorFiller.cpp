@@ -19,18 +19,28 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef STARTUPDIALOGFILLER_H
-#define STARTUPDIALOGFILLER_H
+#include "RPackageDialorFiller.h"
+#include "api/GTWidget.h"
 
-#include "GTUtilsDialog.h"
+#include <QtGui/QPushButton>
+#include <QApplication>
+namespace U2{
 
-namespace U2 {
+#define GT_CLASS_NAME "GTUtilsDialog::StartupDialogFiller"
+#define GT_METHOD_NAME "run"
+void RPackageDialorFiller::run(){
+    QWidget* dialog = QApplication::activeModalWidget();
+    GT_CHECK(dialog, "activeModalWidget is NULL");
 
-class StartupDialogFiller : public Filler
-{
-public:
-    StartupDialogFiller(U2OpStatus &_os):Filler(_os,"StartupDialog"){}
-    void run();
-};
+    QList<QPushButton*> list= dialog->findChildren<QPushButton*>();
+
+    foreach(QPushButton* but, list){
+        if (but->text().contains("Cancel"))
+            GTWidget::click(os,but);
+    }
+
 }
-#endif // STARTUPDIALOGFILLER_H
+#undef GT_METHOD_NAME
+#undef GT_CLASS_NAME
+}
+

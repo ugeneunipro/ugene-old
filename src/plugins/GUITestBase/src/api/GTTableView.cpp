@@ -27,7 +27,7 @@ namespace U2{
 QPoint GTTableView::getCellPosition(U2OpStatus& os, QTableView *table, int column, int row){
     GT_CHECK_RESULT(table,"table view is NULL",QPoint());
     QPoint p(table->columnViewportPosition(column)+table->columnWidth(column)/2,
-             table->rowViewportPosition(row)+table->rowHeight(row)/2);
+             table->rowViewportPosition(row)+table->rowHeight(row)*1.5);
     QPoint pGlob = table->mapToGlobal(p);
     return pGlob;
 }

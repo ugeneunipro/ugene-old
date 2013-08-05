@@ -19,18 +19,21 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef STARTUPDIALOGFILLER_H
-#define STARTUPDIALOGFILLER_H
+#ifndef ALIASESDIALOGFILLER_H
+#define ALIASESDIALOGFILLER_H
 
 #include "GTUtilsDialog.h"
 
-namespace U2 {
+namespace U2{
 
-class StartupDialogFiller : public Filler
+class AliasesDialogFiller : public Filler
 {
 public:
-    StartupDialogFiller(U2OpStatus &_os):Filler(_os,"StartupDialog"){}
+    AliasesDialogFiller(U2OpStatus &_os, QMap<QPoint*,QString> _map):Filler(_os,"SchemaAliasesConfigurationDialog"),
+        map(_map){}
     void run();
+private:
+    QMap<QPoint*,QString> map;
 };
 }
-#endif // STARTUPDIALOGFILLER_H
+#endif // ALIASESDIALOGFILLER_H
