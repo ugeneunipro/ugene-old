@@ -24,6 +24,7 @@
 #include "api/GTWidget.h"
 #include "api/GTLineEdit.h"
 #include "api/GTComboBox.h"
+#include "api/GTKeyboardDriver.h"
 
 #include <QtGui/QAbstractButton>
 #include <QtGui/QApplication>
@@ -92,7 +93,9 @@ void CreateAnnotationWidgetChecker::run() {
 #define GT_CLASS_NAME "GTUtilsDialog::CreateAnnotationDialogFiller"
 #define GT_METHOD_NAME "run"
 void CreateAnnotationWidgetFiller::run() {
-
+#ifdef Q_OS_MAC
+    GTKeyboardDriver::keyRelease(os,GTKeyboardDriver::key["cmd"]);
+#endif
     QWidget* dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog, "activeModalWidget is NULL");
 

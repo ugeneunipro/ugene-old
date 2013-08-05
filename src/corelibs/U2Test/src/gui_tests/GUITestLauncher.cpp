@@ -31,7 +31,7 @@
 #include <QtCore/QMap>
 
 #ifdef  Q_OS_MAC
-#define TIMEOUT 120000
+#define TIMEOUT 180000
 #else
 #define TIMEOUT 240000
 #endif
