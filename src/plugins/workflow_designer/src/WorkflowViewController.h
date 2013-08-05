@@ -260,6 +260,7 @@ private:
     void recreateScene();
     void localHostLaunch();
     void remoteLaunch();
+    void rescale(bool updateGui = true);
 
     void toggleDebugActionsState(bool enable);
     void changeBreakpointState(const ActorId &actor, bool isBreakpointBeingAdded,
@@ -357,6 +358,7 @@ private:
     QList<QAction*> styleActions;
     QList<QAction*> runModeActions;
     QList<QAction*> scriptingActions;
+    QComboBox *scaleComboBox;
 
     QAction *toggleBreakpointManager;
 

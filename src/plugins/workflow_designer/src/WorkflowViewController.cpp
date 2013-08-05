@@ -425,6 +425,7 @@ void WorkflowView::loadSceneFromObject() {
         }
         sl_updateTitle();
         scene->setModified(false);
+        rescale();
         sl_refreshActorDocs();
     }
 }
@@ -561,7 +562,24 @@ void WorkflowView::addBottomWidgetsToInfoSplitter() {
 void WorkflowView::sl_rescaleScene(const QString &scale)
 {
     int percentPos = scale.indexOf(percentStr);
-    double newScale = scale.left(percentPos).toDouble() / 100.0;
+    meta.scalePercent = scale.left(percentPos).toInt();
+    rescale(false);
+}
+
+static void updateComboBox(QComboBox *scaleComboBox, int scalePercent) {
+    QString value = QString("%1%2").arg(scalePercent).arg(percentStr);
+    for (int i=0; i<scaleComboBox->count(); i++) {
+        if (scaleComboBox->itemText(i) == value) {
+            scaleComboBox->setCurrentIndex(i);
+            return;
+        }
+    }
+    scaleComboBox->addItem(value);
+    scaleComboBox->setCurrentIndex(scaleComboBox->count() - 1);
+}
+
+void WorkflowView::rescale(bool updateGui) {
+    double newScale = meta.scalePercent / 100.0;
     QMatrix oldMatrix = scene->views().at(0)->matrix();
     scene->views().at(0)->resetMatrix();
     scene->views().at(0)->translate(oldMatrix.dx(), oldMatrix.dy());
@@ -572,6 +590,9 @@ void WorkflowView::sl_rescaleScene(const QString &scale)
     rect.setWidth(w);
     rect.setHeight(h);
     scene->setSceneRect(rect);
+    if (updateGui) {
+        updateComboBox(scaleComboBox, meta.scalePercent);
+    }
 }
 
 void WorkflowView::createActions() {
@@ -801,6 +822,8 @@ void WorkflowView::createActions() {
     foreach(QAction *action, debugActions) {
         action->setVisible(false);
     }
+
+    scaleComboBox = scaleCombo(this);
 }
 
 void WorkflowView::sl_findPrototype(){
@@ -1188,7 +1211,7 @@ void WorkflowView::setupMDIToolbar(QToolBar* tb) {
     tb->addAction(cutAction);
     tb->addAction(deleteAction);
     editSep = tb->addSeparator();
-    scaleAction = tb->addWidget(scaleCombo(this));
+    scaleAction = tb->addWidget(scaleComboBox);
     scaleSep = tb->addSeparator();
     styleAction = tb->addWidget(styleMenu(this, styleActions));
     runModeAction = tb->addWidget(runMenu(this, runModeActions));
@@ -1893,6 +1916,7 @@ void WorkflowView::sl_pasteSample(const QString& s) {
         }
         scene->sl_deselectAll();
         scene->update();
+        rescale();
         sl_refreshActorDocs();
         checkAutoRunWizard();
     } else {
@@ -1962,6 +1986,7 @@ void WorkflowView::sl_pasteItems(const QString &s, bool updateSchemaInfo) {
     if (updateSchemaInfo) {
         meta.name = pastedM.name;
         meta.comment = pastedM.comment;
+        meta.scalePercent = pastedM.scalePercent;
     }
     pastedS.setDeepCopyFlag(false);
     recreateScene();
@@ -2244,6 +2269,7 @@ void WorkflowView::sl_newScene() {
     schema->reset();
     sl_updateTitle();
     scene->setModified(false);
+    rescale();
     scene->update();
     this->sl_updateUi();
 }
@@ -2254,6 +2280,7 @@ void WorkflowView::sl_onSceneLoaded() {
     scene->centerView();
 
     scene->setModified(false);
+    rescale();
     sl_refreshActorDocs();
     checkAutoRunWizard();
     hideDashboards();

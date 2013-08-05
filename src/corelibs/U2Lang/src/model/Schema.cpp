@@ -625,6 +625,7 @@ void Metadata::reset() {
     name = QString();
     comment = QString();
     url = QString();
+    scalePercent = 100;
 
     resetVisual();
 }

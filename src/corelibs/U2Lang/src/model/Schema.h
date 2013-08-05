@@ -228,6 +228,7 @@ public:
     QString name;
     QString url;
     QString comment;
+    int scalePercent;
 
 private:
     QMap<ActorId, ActorVisualData> actorVisual;

@@ -44,6 +44,7 @@ private:
     void parseLinkVisualBlock(const QString &from, const QString &to);
     void parseStyleData(ActorVisualData &visual, const QString &styleId,
         HRSchemaSerializer::ParsedPairs &pairs);
+    void parseScale(const QString &scaleStr);
 
     static QPointF string2Point(const QString &str, U2OpStatus &os);
     static QColor string2Color(const QString &str, U2OpStatus &os);

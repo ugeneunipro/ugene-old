@@ -26,6 +26,7 @@
 
 namespace U2 {
 
+static const QString SCALE              = "scale";
 static const QString POSITION_ATTR      = "pos";
 static const QString STYLE_ATTR         = "style";
 static const QString BG_COLOR           = "bg-color-";
@@ -33,6 +34,9 @@ static const QString FONT               = "font-";
 static const QString BOUNDS             = "bounds";
 static const QString PORT_ANGLE         = "angle";
 static const QString TEXT_POS_ATTR      = "text-pos";
+
+static const int DEFAULT_SCALE = 100;
+static const int MAX_SCALE = 500;
 
 /************************************************************************/
 /* HRVisualParser */
@@ -59,11 +63,27 @@ void HRVisualParser::parse(U2OpStatus &os) {
             } else if(next == HRSchemaSerializer::DATAFLOW_SIGN) {
                 QString to = data.tokenizer.take();
                 parseLinkVisualBlock(tok, to);
+            } else if (next == HRSchemaSerializer::EQUALS_SIGN) {
+                QString value = data.tokenizer.take();
+                if (SCALE == tok) {
+                    parseScale(value);
+                }
             }
         }
     } catch(HRSchemaSerializer::ReadFailed e) {
         os.setError(e.what);
     }
+}
+
+void HRVisualParser::parseScale(const QString &scaleStr) {
+    CHECK(NULL != data.meta, );
+    bool ok = false;
+    int scale = scaleStr.toInt(&ok);
+    CHECK(ok, );
+    CHECK(scale > 0, );
+    CHECK(scale < MAX_SCALE, );
+
+    data.meta->scalePercent = scale;
 }
 
 void HRVisualParser::parseVisualActorParams(const QString &actorId) {
@@ -251,6 +271,10 @@ HRVisualSerializer::HRVisualSerializer(const Metadata &_meta, const HRSchemaSeri
 
 QString HRVisualSerializer::serialize(int depth) {
     QString vData;
+
+    if (meta.scalePercent != DEFAULT_SCALE) {
+        vData += HRSchemaSerializer::makeEqualsPair(SCALE, QString::number(meta.scalePercent), depth + 1);
+    }
 
     foreach(const ActorVisualData &visual, meta.getActorsVisual()) {
         vData += actorVisualData(visual, depth + 1);
