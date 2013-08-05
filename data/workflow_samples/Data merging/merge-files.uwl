@@ -1,0 +1,70 @@
+#@UGENE_WORKFLOW
+#This schema reads sequences from the different files and writes them into the new one file.
+
+
+
+workflow "Merge sequence files"{
+
+    read-sequence {
+        type:read-sequence;
+        name:"Read Sequence";
+        url-in {
+            dataset:"Dataset 1";
+        }
+    }
+    write-sequence {
+        type:write-sequence;
+        name:"Write Sequence";
+    }
+
+
+    .actor-bindings {
+        read-sequence.out-sequence->write-sequence.in-sequence
+    }
+
+    read-sequence.annotations->write-sequence.in-sequence.annotations
+    read-sequence.sequence->write-sequence.in-sequence.sequence
+
+    .meta {
+        visual {
+            read-sequence {
+                pos:"-368 -400";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                out-sequence.angle:360;
+            }
+            write-sequence {
+                pos:"-123 -400";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                in-sequence.angle:180;
+            }
+            read-sequence.out-sequence->write-sequence.in-sequence {
+                text-pos:"-33.8281 -27";
+            }
+        }
+        wizard {
+            name:"File Merge Wizard";
+            page {
+                id:1;
+                title:"Input data";
+                parameters-area {
+                    group {
+                        title:"Input sequence files";
+                        read-sequence.url-in {
+                            type:datasets;
+                        }
+                    }
+                    group {
+                        title:"Output file";
+                        write-sequence.url-out {
+                        }
+                        write-sequence.document-format {
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
