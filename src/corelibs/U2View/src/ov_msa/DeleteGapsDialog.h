@@ -40,6 +40,7 @@ public:
     DeleteMode getDeleteMode() const {return deleteMode;}
     int getValue() const {return value;}
 private slots:
+    void sl_onRadioButtonClicked();
     void sl_onOkClicked();
     void sl_onCancelClicked();
 

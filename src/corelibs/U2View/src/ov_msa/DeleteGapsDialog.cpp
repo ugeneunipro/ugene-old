@@ -31,8 +31,25 @@ DeleteGapsDialog::DeleteGapsDialog(QWidget* parent, int rowNum): QDialog(parent)
     absoluteSpinBox->setMinimum(1);
     absoluteSpinBox->setMaximum(rowNum);
 
+    connect(absoluteRadioButton, SIGNAL(clicked()), SLOT(sl_onRadioButtonClicked()));
+    connect(relativeRadioButton, SIGNAL(clicked()), SLOT(sl_onRadioButtonClicked()));
+    connect(allRadioButton, SIGNAL(clicked()), SLOT(sl_onRadioButtonClicked()));
     connect(deleteButton, SIGNAL(clicked()), SLOT(sl_onOkClicked()));
     connect(cancelButton, SIGNAL(clicked()), SLOT(sl_onCancelClicked()));
+
+    sl_onRadioButtonClicked();
+}
+
+void DeleteGapsDialog::sl_onRadioButtonClicked() {
+    absoluteSpinBox->setEnabled(absoluteRadioButton->isChecked());
+    relativeSpinBox->setEnabled(relativeRadioButton->isChecked());
+
+    if (absoluteRadioButton->isChecked()) {
+        absoluteSpinBox->setFocus();
+    }
+    if (relativeRadioButton->isChecked()) {
+        relativeSpinBox->setFocus();
+    }
 }
 
 void DeleteGapsDialog::sl_onOkClicked() {
