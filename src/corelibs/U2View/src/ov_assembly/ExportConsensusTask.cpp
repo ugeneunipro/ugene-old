@@ -95,6 +95,10 @@ void ExportConsensusTask::prepare() {
 
 QList<Task*> ExportConsensusTask::onSubTaskFinished(Task *finished) {
     QList<Task*> newSubTasks;
+    if (finished->hasError() || finished->isCanceled()) {
+        return newSubTasks;
+    }
+
     if(finished == consensusTask) {
         U2Sequence u2seq = seqImporter.finalizeSequence(stateInfo);
         CHECK_OP(stateInfo, newSubTasks);
