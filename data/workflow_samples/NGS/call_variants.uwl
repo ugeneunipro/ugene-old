@@ -22,6 +22,7 @@ workflow "Call variants with SAMtools"{
     write-variations {
         type:write-variations;
         name:"Write Variations";
+        document-format:snp;
         url-out:variations.snp;
         write-mode:0;
     }
