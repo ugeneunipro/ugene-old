@@ -317,7 +317,7 @@ pasteCount(0), debugInfo(new WorkflowDebugStatus(this)), debugActions()
 
     propertyEditor->reset();
     checkOutputDir();
-    checkRPackage();
+//    checkRPackage();
 }
 
 WorkflowView::~WorkflowView() {
