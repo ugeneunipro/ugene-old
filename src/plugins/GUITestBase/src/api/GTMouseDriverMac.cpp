@@ -53,6 +53,25 @@ void GTMouseDriver::moveToP(U2::U2OpStatus &os, const int x, const int y)
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "selectArea"
+void GTMouseDriver::selectArea(U2::U2OpStatus &os, const int x, const int y)
+{
+    CGDirectDisplayID displayID = CGMainDisplayID();
+    size_t horres = CGDisplayPixelsWide (displayID);
+    size_t vertres = CGDisplayPixelsHigh (displayID);
+
+    QRect screen(0, 0, horres-1, vertres-1);
+    GT_CHECK(screen.contains(QPoint(x, y)), "Invalid coordinates");
+
+    CGEventRef event = CGEventCreateMouseEvent(NULL, kCGEventLeftMouseDragged, CGPointMake(x, y), kCGMouseButtonLeft /*ignored*/);
+    GT_CHECK(event != NULL, "Can't create event");
+
+    CGEventPost(kCGSessionEventTap, event);
+    CFRelease(event);
+    GTGlobals::sleep(100);
+}
+#undef GT_METHOD_NAME
+
 #define GT_METHOD_NAME "press"
 void GTMouseDriver::press(U2::U2OpStatus &os, Qt::MouseButton button)
 {

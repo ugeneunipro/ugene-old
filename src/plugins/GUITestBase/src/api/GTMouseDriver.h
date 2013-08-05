@@ -32,7 +32,9 @@ public:
     // fails if given coordinates are not in the screen's rect
     // Linux: fails if there is an opening X display error
     static void moveTo(U2OpStatus &os, const QPoint& p) { mousePos = p; moveToP(os, p.x(), p.y()); }
-
+#ifdef Q_OS_MAC
+    static void selectAreaMac(U2::U2OpStatus &os, const QPoint& p){mousePos = p; selectArea(os, p.x(), p.y());}
+#endif
     // fails if press or release fails
     // Linux: fails if there is an opening X display error
     static void click(U2OpStatus &os, Qt::MouseButton = Qt::LeftButton); //all click methods work with the current position of the cursor
@@ -51,6 +53,7 @@ private:
     static QPoint mousePos;
 
     static void moveToP(U2::U2OpStatus &os, const int x, const int y); // platform-depended realization of moveTo
+    static void selectArea(U2::U2OpStatus &os, const int x, const int y);
 };
 
 } //namespace

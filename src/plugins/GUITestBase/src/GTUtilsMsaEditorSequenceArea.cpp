@@ -34,12 +34,20 @@ namespace U2 {
 #define GT_METHOD_NAME "moveTo"
 void GTUtilsMSAEditorSequenceArea::moveTo(U2OpStatus &os, const QPoint &p)
 {
+    QPoint convP = convertCoordinates(os,p);
+
+    GTMouseDriver::moveTo(os, convP);
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "convertCoordinates"
+QPoint GTUtilsMSAEditorSequenceArea::convertCoordinates(U2OpStatus &os, const QPoint p){
     QWidget* activeWindow = GTUtilsMdi::activeWindow(os);
     MSAEditorSequenceArea *msaEditArea = qobject_cast<MSAEditorSequenceArea*>(GTWidget::findWidget(os, "msa_editor_sequence_area", activeWindow));
-    CHECK_SET_ERR(msaEditArea != NULL, "MsaEditorSequenceArea not found");
+    GT_CHECK_RESULT(msaEditArea != NULL, "MsaEditorSequenceArea not found",QPoint());
 
     QWidget *msaOffsetLeft = GTWidget::findWidget(os, "msa_editor_offsets_view_widget_left", activeWindow);
-    CHECK_SET_ERR(msaOffsetLeft != NULL, "MsaOffset Left not found");
+    GT_CHECK_RESULT(msaOffsetLeft != NULL, "MsaOffset Left not found",QPoint());
 
     QPoint shift = msaOffsetLeft->mapToGlobal(QPoint(0, 0));
     if (msaOffsetLeft->isVisible()) {
@@ -49,7 +57,7 @@ void GTUtilsMSAEditorSequenceArea::moveTo(U2OpStatus &os, const QPoint &p)
     int posX = msaEditArea->getXByColumnNum(p.x());
     int posY = msaEditArea->getYBySequenceNum(p.y());
 
-    GTMouseDriver::moveTo(os, shift+QPoint(posX, posY));
+    return shift+QPoint(posX, posY);
 }
 #undef GT_METHOD_NAME
 
@@ -63,11 +71,17 @@ void GTUtilsMSAEditorSequenceArea::selectArea(U2OpStatus &os, QPoint p1, QPoint 
     p2.rx() = p2.x()==-1 ? msaEditArea->getNumVisibleBases(true)-1 : p2.x();
     p1.ry() = p1.y()==-1 ? msaEditArea->getNumVisibleSequences(true)-1 : p1.y();
     p2.ry() = p2.y()==-1 ? msaEditArea->getNumVisibleSequences(true)-1 : p2.y();
-
+#ifdef Q_OS_MAC
+    moveTo(os, p1);
+    GTMouseDriver::press(os);
+    GTMouseDriver::selectAreaMac(os,convertCoordinates(os,p2));
+    GTMouseDriver::release(os);
+#else
     moveTo(os, p1);
     GTMouseDriver::press(os);
     moveTo(os, p2);
     GTMouseDriver::release(os);
+#endif
     GTGlobals::sleep();
 }
 #undef GT_METHOD_NAME
