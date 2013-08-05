@@ -3,7 +3,7 @@
  * Copyright (C) 2008-2013 UniPro <ugene@unipro.ru>
  * http://ugene.unipro.ru
  *
- * This program is free software; you can redistribute it and/or
+ * This program is free software; you can redistribute it and/or 
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
@@ -250,8 +250,8 @@ GUI_TEST_CLASS_DEFINITION(test_0004){
                                "29.7%  ");
     CHECK_SET_ERR(clipboardText.contains(text), "\nExpected:\n" + text + "\nFound: " + clipboardText);
 
-//3. Use context menu to select and copy information from "Character Occurence". Paste copied information into test editor
-//Expected state: copied and pasted iformation are identical
+//3. Use context menu to select and copy information from "Character Occurence". Paste copied information into test editor 
+     //Expected state: copied and pasted iformation are identical
 }
 GUI_TEST_CLASS_DEFINITION(test_0005){
 //    Options panel. Copyng

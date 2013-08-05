@@ -3,8 +3,7 @@
  * Copyright (C) 2008-2013 UniPro <ugene@unipro.ru>
  * http://ugene.unipro.ru
  *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
+ * This program is free software; you can redistribute it and/or * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
  *
@@ -631,7 +630,6 @@ GUI_TEST_CLASS_DEFINITION(test_0010) {
 
 //  1. Open menu {File->New Document From Text}
 //  Expected result: Create document dialog has appear
-
 //  2. Fill the next fields in dialog:
 //    {Paste data here} RNACCGTTAAIOUAGCCDOOPMAGTZZ
 //    {Custom settings} set checked
@@ -672,7 +670,6 @@ GUI_TEST_CLASS_DEFINITION(test_0010_1) {
 
     //  1. Open menu {File->New Document From Text}
     //  Expected result: Create document dialog has appear
-
     //  2. Fill the next fields in dialog:
     //    {Paste data here} RNACCGTTAAIOUAGCCDOOPMAGTZZ
     //    {Custom settings} set checked
@@ -713,7 +710,6 @@ GUI_TEST_CLASS_DEFINITION(test_0010_2) {
 
     //  1. Open menu {File->New Document From Text}
     //  Expected result: Create document dialog has appear
-
     //  2. Fill the next fields in dialog:
     //    {Paste data here} RNACCGTTAAIOUAGCCDOOPMAGTZZ
     //    {Custom settings} set checked
@@ -753,7 +749,6 @@ GUI_TEST_CLASS_DEFINITION(test_0011) {
 
     //  1. Open menu {File->New Document From Text}
     //  Expected result: Create document dialog has appear
-
     //  2. Fill the next fields in dialog:
     //  {Paste data here} RNACCGTTAAIOUAGCCDOOPMAGTZZ
     //  {Custom settings} set checked
@@ -794,7 +789,6 @@ GUI_TEST_CLASS_DEFINITION(test_0011_1) {
 
     //  1. Open menu {File->New Document From Text}
     //  Expected result: Create document dialog has appear
-
     //  2. Fill the next fields in dialog:
     //  {Paste data here} RNACCGTTAAIOUAGCCDOOPMAGTZZ
     //  {Custom settings} set checked
@@ -834,7 +828,6 @@ GUI_TEST_CLASS_DEFINITION(test_0011_2) {
 
     //  1. Open menu {File->New Document From Text}
     //  Expected result: Create document dialog has appear
-
     //  2. Fill the next fields in dialog:
     //  {Paste data here} RNACCGTTAAIOUAGCCDOOPMAGTZZ
     //  {Custom settings} set checked
