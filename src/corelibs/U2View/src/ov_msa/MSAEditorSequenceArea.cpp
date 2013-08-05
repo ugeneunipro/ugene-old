@@ -82,7 +82,7 @@ namespace U2 {
 #define SETTINGS_HIGHGHLIGHT_AMINO     "highghligh_amino"
 
 MSAEditorSequenceArea::MSAEditorSequenceArea(MSAEditorUI* _ui, GScrollBar* hb, GScrollBar* vb)
-: editor(_ui->editor), ui(_ui), shBar(hb), svBar(vb) 
+: editor(_ui->editor), ui(_ui), shBar(hb), svBar(vb), shiftTracker(NULL)
 {
     setObjectName("msa_editor_sequence_area");
     setFocusPolicy(Qt::WheelFocus);
@@ -97,8 +97,8 @@ MSAEditorSequenceArea::MSAEditorSequenceArea(MSAEditorUI* _ui, GScrollBar* hb, G
     startSeq = 0;
     highlightSelection = false;
     scribbling = false;
-    shifting = false;
     selecting = false;
+    finishShifting();
 
     rubberBand = new QRubberBand(QRubberBand::Rectangle, this);
    
@@ -205,6 +205,7 @@ MSAEditorSequenceArea::MSAEditorSequenceArea(MSAEditorUI* _ui, GScrollBar* hb, G
 }
 
 MSAEditorSequenceArea::~MSAEditorSequenceArea() {
+    finishShifting();
     delete cachedView;
     deleteOldCustomSchemes();
 }
@@ -924,20 +925,17 @@ void MSAEditorSequenceArea::mouseMoveEvent( QMouseEvent* e )
         if (isInRange(newCurPos)) {
             updateHBarPosition(newCurPos.x());
             updateVBarPosition(newCurPos.y());
-        } 
+        }
 
         if (shifting) {
             shiftSelectedRegion(newCurPos.x() - cursorPos.x());
-        } else if (selecting){
+        } else if (selecting) {
             rubberBand->setGeometry(QRect(origin, e->pos()).normalized());
         }
     }
 
     QWidget::mouseMoveEvent(e);
-
 }
-
-
 
 void MSAEditorSequenceArea::mouseReleaseEvent(QMouseEvent *e)
 {
@@ -958,7 +956,7 @@ void MSAEditorSequenceArea::mouseReleaseEvent(QMouseEvent *e)
 
         if (e->pos() == origin) {
             // special case: click but don't drag
-            shifting = false;
+            finishShifting();
         }
         if (shifting) {
             int shift = newCurPos.x() - cursorPos.x();
@@ -966,7 +964,7 @@ void MSAEditorSequenceArea::mouseReleaseEvent(QMouseEvent *e)
         } else {
             updateSelection(newCurPos);
         }
-        shifting = false;
+        finishShifting();
         scribbling = false;
         selecting = false;
     }
@@ -976,9 +974,7 @@ void MSAEditorSequenceArea::mouseReleaseEvent(QMouseEvent *e)
     QWidget::mouseReleaseEvent(e);
 }
 
-
 void MSAEditorSequenceArea::mousePressEvent(QMouseEvent *e) {
-
     if (!hasFocus()) {
         setFocus();
     }
@@ -995,9 +991,9 @@ void MSAEditorSequenceArea::mousePressEvent(QMouseEvent *e) {
             setCursorPos(p);
 
             MSAEditorSelection s = ui->seqArea->getSelection();
-            if ( s.getRect().contains(cursorPos) ){
-                shifting = true;
-                editor->getMSAObject()->saveState();                
+            if ( s.getRect().contains(cursorPos) ) {
+                startShifting();
+                editor->getMSAObject()->saveState();
             }
         }
         if (!shifting) {
@@ -1226,6 +1222,19 @@ void MSAEditorSequenceArea::keyPressEvent(QKeyEvent *e) {
     QWidget::keyPressEvent(e);
 }
 
+void MSAEditorSequenceArea::startShifting() {
+    shifting = true;
+    MAlignmentObject* maObj = editor->getMSAObject();
+    U2OpStatus2Log os;
+    shiftTracker = new U2UseCommonUserModStep(maObj->getEntityRef(), os);
+}
+
+void MSAEditorSequenceArea::finishShifting() {
+    shifting = false;
+    delete shiftTracker;
+    shiftTracker = NULL;
+}
+
 void MSAEditorSequenceArea::focusInEvent(QFocusEvent* fe) {
     QWidget::focusInEvent(fe);
     update();
@@ -1236,9 +1245,8 @@ void MSAEditorSequenceArea::focusOutEvent(QFocusEvent* fe) {
     update();
 }
 
-
 void MSAEditorSequenceArea::moveSelection( int dx, int dy )
-{   
+{
     int leftX = selection.x();
     int topY = selection.y();
     int bottomY = selection.y() + selection.height() - 1;
@@ -1950,10 +1958,6 @@ void MSAEditorSequenceArea::shiftSelectedRegion( int shift )
         if (maObj->isRegionEmpty(x, y, width, height)) {
             return;
         }
-
-        U2OpStatus2Log os;
-        U2UseCommonUserModStep userModStep(maObj->getEntityRef(), os);
-        Q_UNUSED(userModStep);
 
         const bool shiftOk = maObj->shiftRegion(x, y, width, height, shift);
         if (shiftOk) {

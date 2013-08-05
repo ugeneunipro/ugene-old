@@ -45,6 +45,7 @@ class MSAHighlightingScheme;
 class MAlignment;
 class MAlignmentModInfo;
 class MAlignmentObject;
+class U2UseCommonUserModStep;
 
 class ModificationType {
 public:
@@ -365,7 +366,9 @@ private:
     void validateRanges();          //called on resize/refont like events
 
     void reverseComplementModification(ModificationType& type);
-
+    // guards for changing @shifting value and @shiftTracker simultaneously
+    void startShifting();
+    void finishShifting();
 
     MSAEditor*      editor;
     MSAEditorUI*    ui;
@@ -412,6 +415,7 @@ private:
     QList<QAction*> colorSchemeMenuActions;
     QList<QAction* > customColorSchemeMenuActions;
     QList<QAction* > highlightingSchemeMenuActions;
+    U2UseCommonUserModStep *shiftTracker;
 };
 
 }//namespace
