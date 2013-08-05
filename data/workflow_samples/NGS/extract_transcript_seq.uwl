@@ -1,0 +1,130 @@
+#@UGENE_WORKFLOW
+#Uses input transcripts and genomic sequences to generate a FASTA file with the DNA sequences for the transcripts.
+#Please make sure that contig or chromosome names in the transcript file(s) have corresponding entries in the input sequence(s).
+
+
+
+workflow "Extract transcript sequences"{
+
+    read-sequence {
+        type:read-sequence;
+        name:"Read Sequence(s)";
+        url-in {
+            dataset:"Dataset 1";
+        }
+    }
+    read-annotations {
+        type:read-annotations;
+        name:"Read Transcripts";
+        url-in {
+            dataset:"Dataset 1";
+        }
+    }
+    multiplexer {
+        type:multiplexer;
+        name:Multiplexer;
+    }
+    write-sequence {
+        type:write-sequence;
+        name:"Write Extracted Sequences";
+        url-out:extracted.fa;
+    }
+    extract-annotated-sequence {
+        type:extract-annotated-sequence;
+        name:"Get Sequences by Annotations";
+    }
+
+
+    .actor-bindings {
+        read-sequence.out-sequence->multiplexer.input-data-1
+        read-annotations.out-annotations->multiplexer.input-data-2
+        multiplexer.output-data->extract-annotated-sequence.in-sequence
+        extract-annotated-sequence.out-sequence->write-sequence.in-sequence
+    }
+
+    extract-annotated-sequence.annotations->write-sequence.in-sequence.annotations
+    read-annotations.annotations->write-sequence.in-sequence.annotations
+    read-sequence.annotations->write-sequence.in-sequence.annotations
+    extract-annotated-sequence.sequence->write-sequence.in-sequence.sequence
+    read-annotations.annotations->extract-annotated-sequence.in-sequence.annotations
+    read-sequence.sequence->extract-annotated-sequence.in-sequence.sequence
+
+    .meta {
+        visual {
+            extract-annotated-sequence {
+                pos:"-262 -573";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                in-sequence.angle:180;
+                out-sequence.angle:360;
+            }
+            multiplexer {
+                pos:"-564 -574";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                input-data-1.angle:150;
+                input-data-2.angle:210;
+                output-data.angle:360;
+            }
+            read-annotations {
+                pos:"-780 -480";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                bounds:"-30 -30 60 75";
+                out-annotations.angle:360;
+            }
+            read-sequence {
+                pos:"-779 -645";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                bounds:"-30 -30 59 90";
+                out-sequence.angle:360;
+            }
+            write-sequence {
+                pos:"2 -573";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                in-sequence.angle:180;
+            }
+            extract-annotated-sequence.out-sequence->write-sequence.in-sequence {
+                text-pos:"-45 -37";
+            }
+            multiplexer.output-data->extract-annotated-sequence.in-sequence {
+                text-pos:"-49 -37";
+            }
+            read-annotations.out-annotations->multiplexer.input-data-2 {
+                text-pos:"-32 -5";
+            }
+            read-sequence.out-sequence->multiplexer.input-data-1 {
+                text-pos:"-33.5 -11";
+            }
+        }
+        wizard {
+            name:"Extract Transcript Sequences Wizard";
+            page {
+                id:1;
+                title:"Extract Transcript Sequences";
+                parameters-area {
+                    group {
+                        title:"Input parameters";
+                        label-size:120;
+                        read-sequence.url-in {
+                            label:"Genomic sequences";
+                        }
+                        read-annotations.url-in {
+                            label:Transcripts;
+                        }
+                    }
+                    group {
+                        title:"Extracted sequences";
+                        label-size:120;
+                        write-sequence.url-out {
+                            label:"Output file";
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
