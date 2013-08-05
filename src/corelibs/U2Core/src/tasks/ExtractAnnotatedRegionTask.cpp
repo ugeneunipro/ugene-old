@@ -68,7 +68,6 @@ void ExtractAnnotatedRegionTask::run() {
     QVector<U2Region> safeLocation = inputAnn->getRegions();
     U2Region::bound(0, inputSeq.length(), safeLocation);
     QList<QByteArray> resParts = U1SequenceUtils::extractRegions(inputSeq.seq, safeLocation, complT, NULL, inputSeq.circular);
-    QVector<U2Region> resLocation = U1SequenceUtils::getJoinedMapping(resParts);
     if (aminoT == NULL) { // extension does not work for translated annotations
         if (cfg.extLeft > 0) {
             int annStart = safeLocation.first().startPos;
@@ -76,7 +75,12 @@ void ExtractAnnotatedRegionTask::run() {
             int preLen = annStart - preStart;
             QByteArray preSeq = inputSeq.seq.mid(preStart, preLen);
             resParts.prepend(preSeq);
-            U2Region::shift(cfg.extLeft, resLocation);
+
+            int shiftVal = -preLen;
+            for (int i = 0; i < safeLocation.size(); ++i) {
+                safeLocation[i].startPos -= preLen;
+                safeLocation[i].length += preLen;
+            }
         }
         if (cfg.extRight) {
             U2Region annRegion = U2Region::containingRegion(safeLocation);
@@ -85,14 +89,17 @@ void ExtractAnnotatedRegionTask::run() {
             int postLen = postEnd - annEnd;
             QByteArray postSeq = inputSeq.seq.mid(annEnd, postLen);
             resParts.append(postSeq);
+
+            for (int i = 0; i < safeLocation.size(); ++i) {
+                safeLocation[i].length += postLen;
+            }
         }
     } else {
         resParts = U1SequenceUtils::translateRegions(resParts, aminoT, inputAnn->isJoin());
-        resLocation = U1SequenceUtils::getJoinedMapping(resParts);
     }
     resultedSeq.seq = resParts.size() == 1 ? resParts.first() : U1SequenceUtils::joinRegions(resParts);
     resultedAnn = inputAnn;
-    resultedAnn->location->regions = resLocation;
+    resultedAnn->location->regions = safeLocation;
     resultedAnn->setStrand(U2Strand::Direct);
     resultedAnn->setLocationOperator(inputAnn->getLocationOperator());
 }
