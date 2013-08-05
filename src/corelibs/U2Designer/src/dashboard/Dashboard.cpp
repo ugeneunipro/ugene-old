@@ -152,6 +152,7 @@ void Dashboard::sl_addProblemsWidget() {
 }
 
 void Dashboard::sl_serialize() {
+    QCoreApplication::processEvents();
     QString reportDir = dir + REPORT_SUB_DIR;
     QDir d(reportDir);
     if (!d.exists(reportDir)) {
