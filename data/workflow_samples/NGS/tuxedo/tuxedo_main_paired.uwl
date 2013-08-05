@@ -53,11 +53,11 @@ workflow "Main Tuxedo: paired-end reads"{
     .actor-bindings {
         tophat.out-assembly->cufflinks.in-assembly
         tophat.out-assembly->cuffdiff.in-assembly
-        read-sequence-1.out-url->multiplexer.input-data-2
-        read-sequence.out-url->multiplexer.input-data-1
-        multiplexer.output-data->tophat.in-sequence
         cufflinks.out-annotations->cuffmerge.in-annotations
         cuffmerge.out-annotations->cuffdiff.in-annotations
+        multiplexer.output-data->tophat.in-sequence
+        read-sequence-1.out-url->multiplexer.input-data-2
+        read-sequence.out-url->multiplexer.input-data-1
     }
 
     read-sequence.dataset->tophat.in-sequence.dataset
@@ -105,31 +105,31 @@ workflow "Main Tuxedo: paired-end reads"{
         }
         visual {
             cuffdiff {
-                pos:"-705 -270";
+                pos:"-702 -342";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 bounds:"-30 -30 147.25 118";
                 in-annotations.angle:348.927;
-                in-assembly.angle:222.732;
+                in-assembly.angle:15.4842;
             }
             cufflinks {
-                pos:"-390 -480";
+                pos:"-387 -552";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 bounds:"-30 -30 149.875 89";
-                in-assembly.angle:25.5377;
-                out-annotations.angle:304.042;
+                in-assembly.angle:95.3558;
+                out-annotations.angle:270;
             }
             cuffmerge {
-                pos:"-390 -270";
+                pos:"-387 -342";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 bounds:"-30 -30 150.625 89";
-                in-annotations.angle:25.8664;
+                in-annotations.angle:91.7357;
                 out-annotations.angle:222.797;
             }
             multiplexer {
-                pos:"-705 -675";
+                pos:"-702 -747";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 bounds:"-30 -30 149 88";
@@ -138,35 +138,35 @@ workflow "Main Tuxedo: paired-end reads"{
                 output-data.angle:351.68;
             }
             read-sequence {
-                pos:"-1020 -675";
+                pos:"-1017 -747";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 bounds:"-30 -30 147 61";
                 out-url.angle:351.506;
             }
             read-sequence-1 {
-                pos:"-705 -480";
+                pos:"-702 -552";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 bounds:"-30 -30 148 59";
                 out-url.angle:27.1497;
             }
             tophat {
-                pos:"-390 -675";
+                pos:"-387 -747";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 bounds:"-30 -30 149.75 89";
-                in-sequence.angle:218.589;
-                out-assembly.angle:305.172;
+                in-sequence.angle:216.607;
+                out-assembly.angle:267.955;
             }
             cufflinks.out-annotations->cuffmerge.in-annotations {
-                text-pos:"-40.5 -21";
+                text-pos:"2.5 -23";
             }
             cuffmerge.out-annotations->cuffdiff.in-annotations {
-                text-pos:"-43.5 -41";
+                text-pos:"-43.5 -43";
             }
             multiplexer.output-data->tophat.in-sequence {
-                text-pos:"-48.5 -56";
+                text-pos:"-48.5 -59";
             }
             read-sequence-1.out-url->multiplexer.input-data-2 {
                 text-pos:"-40 -10";
@@ -175,10 +175,10 @@ workflow "Main Tuxedo: paired-end reads"{
                 text-pos:"-39 -25";
             }
             tophat.out-assembly->cuffdiff.in-assembly {
-                text-pos:"-38.5 -24";
+                text-pos:"-46.5 30";
             }
             tophat.out-assembly->cufflinks.in-assembly {
-                text-pos:"-44 -22";
+                text-pos:"3 -21";
             }
         }
         wizard {

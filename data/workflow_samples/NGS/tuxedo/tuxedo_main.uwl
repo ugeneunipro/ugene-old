@@ -39,9 +39,9 @@ workflow "Main Tuxedo: single-end reads"{
     .actor-bindings {
         tophat.out-assembly->cufflinks.in-assembly
         tophat.out-assembly->cuffdiff.in-assembly
+        cufflinks.out-annotations->cuffmerge.in-annotations
         cuffmerge.out-annotations->cuffdiff.in-annotations
         read-sequence.out-url->tophat.in-sequence
-        cufflinks.out-annotations->cuffmerge.in-annotations
     }
 
     read-sequence.dataset->tophat.in-sequence.dataset
@@ -84,15 +84,15 @@ workflow "Main Tuxedo: single-end reads"{
         }
         visual {
             cuffdiff {
-                pos:"-510 -270";
+                pos:"-508 -340";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 bounds:"-30 -30 119.25 136";
-                in-annotations.angle:32.9052;
+                in-annotations.angle:34.249;
                 in-assembly.angle:221.424;
             }
             cufflinks {
-                pos:"-510 -690";
+                pos:"-508 -760";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 bounds:"-30 -30 116.875 119";
@@ -100,7 +100,7 @@ workflow "Main Tuxedo: single-end reads"{
                 out-annotations.angle:289.911;
             }
             cuffmerge {
-                pos:"-510 -450";
+                pos:"-508 -538";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 bounds:"-30 -30 118.625 85";
@@ -108,13 +108,13 @@ workflow "Main Tuxedo: single-end reads"{
                 out-annotations.angle:297.3;
             }
             read-sequence {
-                pos:"-1035 -690";
+                pos:"-1033 -760";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 out-url.angle:360;
             }
             tophat {
-                pos:"-795 -690";
+                pos:"-793 -760";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 bounds:"-30 -30 120.75 102";

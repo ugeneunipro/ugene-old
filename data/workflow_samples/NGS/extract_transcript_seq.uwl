@@ -36,8 +36,8 @@ workflow "Extract transcript sequences"{
 
 
     .actor-bindings {
-        read-sequence.out-sequence->multiplexer.input-data-1
         read-annotations.out-annotations->multiplexer.input-data-2
+        read-sequence.out-sequence->multiplexer.input-data-1
         multiplexer.output-data->extract-annotated-sequence.in-sequence
         extract-annotated-sequence.out-sequence->write-sequence.in-sequence
     }
@@ -52,14 +52,14 @@ workflow "Extract transcript sequences"{
     .meta {
         visual {
             extract-annotated-sequence {
-                pos:"-262 -573";
+                pos:"-380 -571";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 in-sequence.angle:180;
                 out-sequence.angle:360;
             }
             multiplexer {
-                pos:"-564 -574";
+                pos:"-682 -572";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 input-data-1.angle:150;
@@ -67,33 +67,33 @@ workflow "Extract transcript sequences"{
                 output-data.angle:360;
             }
             read-annotations {
-                pos:"-780 -480";
+                pos:"-898 -454";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
-                bounds:"-30 -30 60 75";
+                bounds:"-30 -30 76 103";
                 out-annotations.angle:360;
             }
             read-sequence {
-                pos:"-779 -645";
+                pos:"-897 -643";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
-                bounds:"-30 -30 59 90";
+                bounds:"-30 -30 74 104";
                 out-sequence.angle:360;
             }
             write-sequence {
-                pos:"2 -573";
+                pos:"-80 -571";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 in-sequence.angle:180;
             }
             extract-annotated-sequence.out-sequence->write-sequence.in-sequence {
-                text-pos:"-45 -37";
+                text-pos:"-43 -46";
             }
             multiplexer.output-data->extract-annotated-sequence.in-sequence {
-                text-pos:"-49 -37";
+                text-pos:"-46 -61";
             }
             read-annotations.out-annotations->multiplexer.input-data-2 {
-                text-pos:"-32 -5";
+                text-pos:"-42 -8";
             }
             read-sequence.out-sequence->multiplexer.input-data-1 {
                 text-pos:"-33.5 -11";

@@ -68,14 +68,14 @@ workflow "ChIP-seq analysis with control"{
 
 
     .actor-bindings {
-        peak2gene-id.out-data->conduct-go-id.in-data
-        peak2gene-id.out-data->write-annotations.in-annotations
-        peak2gene-id.out-data->write-annotations-1.in-annotations
         read-annotations.out-annotations->multiplexer.input-data-1
         macs-id.out-data->ceas-report.in-data
         macs-id.out-data->conservation_plot-id.in-data
         macs-id.out-data->seqpos-id.in-data
         macs-id.out-data->peak2gene-id.in-data
+        peak2gene-id.out-data->conduct-go-id.in-data
+        peak2gene-id.out-data->write-annotations.in-annotations
+        peak2gene-id.out-data->write-annotations-1.in-annotations
         read-annotations-1.out-annotations->multiplexer.input-data-2
         multiplexer.output-data->macs-id.in-data
     }
@@ -93,33 +93,34 @@ workflow "ChIP-seq analysis with control"{
 
     .meta {
         visual {
+            scale:85;
             ceas-report {
-                pos:"-449 -565";
+                pos:"-777 -523";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
-                in-data.angle:49.2892;
+                in-data.angle:14.3148;
             }
             conduct-go-id {
-                pos:"-159 -268";
+                pos:"-777 -299";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
-                in-data.angle:41.3785;
+                in-data.angle:14.6383;
             }
             conservation_plot-id {
-                pos:"-160 -769";
+                pos:"-150 -807";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 in-data.angle:180;
             }
             macs-id {
-                pos:"-489 -880";
+                pos:"-453 -806";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 in-data.angle:180;
                 out-data.angle:300.069;
             }
             multiplexer {
-                pos:"-778 -879";
+                pos:"-747 -805";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 input-data-1.angle:150;
@@ -127,73 +128,73 @@ workflow "ChIP-seq analysis with control"{
                 output-data.angle:360;
             }
             peak2gene-id {
-                pos:"-161 -480";
+                pos:"-550 -517";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
-                in-data.angle:180;
+                in-data.angle:16.1722;
                 out-data.angle:292.805;
             }
             read-annotations {
-                pos:"-968 -937";
+                pos:"-971 -872";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
-                bounds:"-30 -30 66.25 79";
+                bounds:"-30 -30 77.25 88";
                 out-annotations.angle:360;
             }
             read-annotations-1 {
-                pos:"-968 -797";
+                pos:"-969 -716";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 bounds:"-30 -30 76.25 74";
                 out-annotations.angle:360;
             }
             seqpos-id {
-                pos:"-162 -640";
+                pos:"-150 -597";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 in-data.angle:180;
             }
             write-annotations {
-                pos:"235 -394";
+                pos:"-347 -266";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
-                in-annotations.angle:180;
+                in-annotations.angle:53.9726;
             }
             write-annotations-1 {
-                pos:"77 -290";
+                pos:"-568 -266";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
-                in-annotations.angle:180;
+                in-annotations.angle:23.9625;
             }
             macs-id.out-data->ceas-report.in-data {
-                text-pos:"-45 -16";
+                text-pos:"-87 -22";
             }
             macs-id.out-data->conservation_plot-id.in-data {
-                text-pos:"8 -34";
+                text-pos:"-7 -47";
             }
             macs-id.out-data->peak2gene-id.in-data {
-                text-pos:"-45 -37";
+                text-pos:"-40 -14";
             }
             macs-id.out-data->seqpos-id.in-data {
-                text-pos:"-45 -37";
+                text-pos:"-20 -19";
             }
             multiplexer.output-data->macs-id.in-data {
-                text-pos:"-45 -37";
+                text-pos:"-44 -60";
             }
             peak2gene-id.out-data->conduct-go-id.in-data {
-                text-pos:"-43 -21";
+                text-pos:"-74 -26";
             }
             peak2gene-id.out-data->write-annotations-1.in-annotations {
-                text-pos:"-20 -12";
+                text-pos:"-40 -6";
             }
             peak2gene-id.out-data->write-annotations.in-annotations {
-                text-pos:"-25 -20";
+                text-pos:"4 -27";
             }
             read-annotations-1.out-annotations->multiplexer.input-data-2 {
-                text-pos:"-36 -23";
+                text-pos:"-37 -19";
             }
             read-annotations.out-annotations->multiplexer.input-data-1 {
-                text-pos:"-33 -20";
+                text-pos:"-34 -20";
             }
         }
         wizard {
@@ -402,10 +403,10 @@ workflow "ChIP-seq analysis with control"{
                         title:"Peak2Gene output";
                         label-size:130;
                         write-annotations.url-out {
-                            label: "Gene annotations";
+                            label:"Gene annotations";
                         }
                         write-annotations-1.url-out {
-                            label: "Peak annotations";
+                            label:"Peak annotations";
                         }
                     }
                     group {

@@ -35,10 +35,10 @@ workflow "Single dataset Tuxedo: paired-end reads"{
 
 
     .actor-bindings {
-        read-sequence-1.out-url->multiplexer.input-data-2
         tophat.out-assembly->cufflinks.in-assembly
-        read-sequence.out-url->multiplexer.input-data-1
         multiplexer.output-data->tophat.in-sequence
+        read-sequence-1.out-url->multiplexer.input-data-2
+        read-sequence.out-url->multiplexer.input-data-1
     }
 
     read-sequence.dataset->tophat.in-sequence.dataset
@@ -75,7 +75,7 @@ workflow "Single dataset Tuxedo: paired-end reads"{
         }
         visual {
             cufflinks {
-                pos:"-447 -408";
+                pos:"-419 -409";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 bounds:"-30 -30 149.875 89";
@@ -83,7 +83,7 @@ workflow "Single dataset Tuxedo: paired-end reads"{
                 out-annotations.angle:304.042;
             }
             multiplexer {
-                pos:"-737 -611";
+                pos:"-729 -611";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 bounds:"-30 -30 149 88";
@@ -106,24 +106,24 @@ workflow "Single dataset Tuxedo: paired-end reads"{
                 out-url.angle:358.08;
             }
             tophat {
-                pos:"-447 -612";
+                pos:"-419 -611";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 bounds:"-30 -30 149.75 89";
-                in-sequence.angle:218.589;
+                in-sequence.angle:216.87;
                 out-assembly.angle:305.172;
             }
             multiplexer.output-data->tophat.in-sequence {
-                text-pos:"-44.5 -46";
+                text-pos:"-45.5 -60";
             }
             read-sequence-1.out-url->multiplexer.input-data-2 {
-                text-pos:"-36 -5";
+                text-pos:"-38 -8";
             }
             read-sequence.out-url->multiplexer.input-data-1 {
-                text-pos:"-29 -12";
+                text-pos:"-38 -15";
             }
             tophat.out-assembly->cufflinks.in-assembly {
-                text-pos:"-46 -9";
+                text-pos:"-46 -18";
             }
         }
         wizard {

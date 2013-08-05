@@ -79,10 +79,10 @@ workflow "Single dataset Tuxedo: single-end reads"{
                 out-assembly.angle:360;
             }
             read-sequence.out-url->tophat.in-sequence {
-                text-pos:"-45 -31";
+                text-pos:"-41 -27";
             }
             tophat.out-assembly->cufflinks.in-assembly {
-                text-pos:"-42 -31";
+                text-pos:"-43 -43";
             }
         }
         wizard {

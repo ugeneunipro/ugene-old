@@ -2,7 +2,9 @@
 #Call variants for an input assembly and a reference sequence using SAMtools mpileup and bcftool
 
 
+
 workflow "Call variants with SAMtools"{
+
     read-assembly {
         type:read-assembly;
         name:"Read Assembly (BAM/SAM)";
@@ -20,9 +22,8 @@ workflow "Call variants with SAMtools"{
     write-variations {
         type:write-variations;
         name:"Write Variations";
-        document-format:snp;
-        write-mode:0;
         url-out:variations.snp;
+        write-mode:0;
     }
     call_variants {
         type:call_variants;
@@ -31,9 +32,9 @@ workflow "Call variants with SAMtools"{
 
 
     .actor-bindings {
-        read-assembly.out-assembly->call_variants.in-assembly
         read-sequence.out-sequence->call_variants.in-sequence
         call_variants.out-variations->write-variations.in-variations
+        read-assembly.out-assembly->call_variants.in-assembly
     }
 
     call_variants.variation-track->write-variations.in-variations.variation-track
@@ -43,207 +44,15 @@ workflow "Call variants with SAMtools"{
     read-sequence.url->call_variants.in-sequence.url
 
     .meta {
-		wizard {
-			name : "Call Variants Wizard";
-			page {
-				 id : 1;
-				 next : 2;
-				 title: "Input reference sequence and assembly";
-				  parameters-area {
-					group {
-						title : "Input files";
-						label-size: 120;
-						read-sequence.url-in {
-							label : "Reference sequence file";
-						}
-						read-assembly.url-in{
-							label : "BAM/SAM file";
-						}
-                    }
-			      }
-		    }
-			page {
-				id : 2;
-				next : 3;
-				title: "SAMtools <i>mpileup</i> parameters";
-				  parameters-area {
-					group {
-						title : "Parameters";
-						label-size: 200;
-						call_variants.use_orphan {
-							
-						}
-						call_variants.disable_baq {
-							
-						}
-						call_variants.capq_thres {
-							
-						}
-						call_variants.max_depth {
-							
-						}
-						call_variants.ext_baq {
-							
-						}
-						call_variants.bed {
-							
-						}
-						call_variants.reg {
-							
-						}
-						call_variants.min_mq{
-							
-						}
-						call_variants.min_baseq{
-							
-						}
-				    }
-					group {
-						title : "Additional";
-						label-size: 200;
-						type : hideable;
-						call_variants.illumina13-encoding {
-							
-					    }
-						call_variants.extQ{
-							
-						}
-						call_variants.tandemQ{
-							
-						}
-						call_variants.no_indel{
-							
-						}
-						call_variants.max_indel_depth{
-							
-						}
-						call_variants.openQ{
-							
-						}
-						call_variants.pl_list{
-							
-						}
-				    }
-				}
-			}
-			page {
-				id : 3;
-				next : 4;
-				title: "SAMtools <i>bcftools view</i> parameters";
-				  parameters-area {
-					group {
-						title : "Parameters";
-						label-size: 200;
-						call_variants.keepalt{
-							
-						}
-						call_variants.fix_pl{
-							
-						}
-						call_variants.no_geno{
-							
-						}
-						call_variants.acgt_only{
-							
-						}
-						call_variants.bcf_bed{
-							
-						}
-						call_variants.qcall{
-							
-						}
-						call_variants.samples{
-							
-						}
-						call_variants.min_smpl_frac{
-							
-						}
-						call_variants.call_gt{
-							
-						}
-						
-					}
-					group {
-						title : "Additional";
-						label-size: 200;
-						type : hideable;
-						call_variants.indel_frac{
-							
-						}
-						call_variants.pref{
-							
-						}
-						call_variants.ptype{
-							
-						}
-						call_variants.theta{
-							
-						}
-						call_variants.ccall{
-							
-						}
-						call_variants.n1{
-							
-						}
-						call_variants.n_perm{
-							
-						}
-						call_variants.min_perm_p{
-							
-						}
-				  }
-				  }
-				  
-			}
-            page {
-				id: 4;
-                next: 5;
-				title: "SAMtools <i>vcfutils varFilter</i> parameters";
-                    parameters-area {
-                        group {
-                            title: "Parameters";
-                            label-size: 200;
-                            call_variants.print-filtered {}
-                            call_variants.min-qual {}
-                            call_variants.min-dep {}
-                            call_variants.max-dep {}
-                            call_variants.min-alt-bases {}
-                            call_variants.gap-size {}
-                            call_variants.window {}
-                        }
-                        group {
-                            title : "Additional";
-                            label-size: 200;
-                            type : hideable;
-                            call_variants.min-strand {}
-                            call_variants.min-baseQ {}
-                            call_variants.min-mapQ {}
-                            call_variants.min-end-distance {}
-                            call_variants.min-hwe {}
-                        }
-                    }
-			}
-			page {
-				id : 5;
-				title: "Output variations";
-				  parameters-area {
-					group {
-						title : "Output file";
-						label-size: 100;
-						write-variations.url-out{
-						
-						}
-						write-variations.document-format{
-						
-						}
-						
-						write-variations.write-mode{
-						}
-                    }
-			      }
-			}
-		}
         visual {
+            call_variants {
+                pos:"-460 -495";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                in-assembly.angle:150;
+                in-sequence.angle:210;
+                out-variations.angle:360;
+            }
             read-assembly {
                 pos:"-675 -555";
                 style:ext;
@@ -257,28 +66,195 @@ workflow "Call variants with SAMtools"{
                 out-sequence.angle:360;
             }
             write-variations {
-                pos:"-240 -495";
+                pos:"-156 -495";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 in-variations.angle:180;
             }
-            call_variants {
-                pos:"-495 -495";
-                style:ext;
-                bg-color-ext:"0 128 128 64";
-                in-assembly.angle:150;
-                in-sequence.angle:210;
-                out-variations.angle:360;
-            }
-            read-sequence.out-sequence->call_variants.in-sequence {
-                text-pos:"-27.5 -24";
-            }
             call_variants.out-variations->write-variations.in-variations {
-                text-pos:"-45 -37";
+                text-pos:"-49 -43";
             }
             read-assembly.out-assembly->call_variants.in-assembly {
-                text-pos:"-26.5 -24";
+                text-pos:"-32.5 -17";
+            }
+            read-sequence.out-sequence->call_variants.in-sequence {
+                text-pos:"-33.5 -14";
+            }
+        }
+        wizard {
+            name:"Call Variants Wizard";
+            page {
+                id:1;
+                next:2;
+                title:"Input reference sequence and assembly";
+                parameters-area {
+                    group {
+                        title:"Input files";
+                        label-size:120;
+                        read-sequence.url-in {
+                            label:"Reference sequence file";
+                        }
+                        read-assembly.url-in {
+                            label:"BAM/SAM file";
+                        }
+                    }
+                }
+            }
+            page {
+                id:2;
+                next:3;
+                title:"SAMtools <i>mpileup</i> parameters";
+                parameters-area {
+                    group {
+                        title:Parameters;
+                        label-size:200;
+                        call_variants.use_orphan {
+                        }
+                        call_variants.disable_baq {
+                        }
+                        call_variants.capq_thres {
+                        }
+                        call_variants.max_depth {
+                        }
+                        call_variants.ext_baq {
+                        }
+                        call_variants.bed {
+                        }
+                        call_variants.reg {
+                        }
+                        call_variants.min_mq {
+                        }
+                        call_variants.min_baseq {
+                        }
+                    }
+                    group {
+                        title:Additional;
+                        label-size:200;
+                        type:hideable;
+                        call_variants.illumina13-encoding {
+                        }
+                        call_variants.extQ {
+                        }
+                        call_variants.tandemQ {
+                        }
+                        call_variants.no_indel {
+                        }
+                        call_variants.max_indel_depth {
+                        }
+                        call_variants.openQ {
+                        }
+                        call_variants.pl_list {
+                        }
+                    }
+                }
+            }
+            page {
+                id:3;
+                next:4;
+                title:"SAMtools <i>bcftools view</i> parameters";
+                parameters-area {
+                    group {
+                        title:Parameters;
+                        label-size:200;
+                        call_variants.keepalt {
+                        }
+                        call_variants.fix_pl {
+                        }
+                        call_variants.no_geno {
+                        }
+                        call_variants.acgt_only {
+                        }
+                        call_variants.bcf_bed {
+                        }
+                        call_variants.qcall {
+                        }
+                        call_variants.samples {
+                        }
+                        call_variants.min_smpl_frac {
+                        }
+                        call_variants.call_gt {
+                        }
+                    }
+                    group {
+                        title:Additional;
+                        label-size:200;
+                        type:hideable;
+                        call_variants.indel_frac {
+                        }
+                        call_variants.pref {
+                        }
+                        call_variants.ptype {
+                        }
+                        call_variants.theta {
+                        }
+                        call_variants.ccall {
+                        }
+                        call_variants.n1 {
+                        }
+                        call_variants.n_perm {
+                        }
+                        call_variants.min_perm_p {
+                        }
+                    }
+                }
+            }
+            page {
+                id:4;
+                next:5;
+                title:"SAMtools <i>vcfutils varFilter</i> parameters";
+                parameters-area {
+                    group {
+                        title:Parameters;
+                        label-size:200;
+                        call_variants.print-filtered {
+                        }
+                        call_variants.min-qual {
+                        }
+                        call_variants.min-dep {
+                        }
+                        call_variants.max-dep {
+                        }
+                        call_variants.min-alt-bases {
+                        }
+                        call_variants.gap-size {
+                        }
+                        call_variants.window {
+                        }
+                    }
+                    group {
+                        title:Additional;
+                        label-size:200;
+                        type:hideable;
+                        call_variants.min-strand {
+                        }
+                        call_variants.min-baseQ {
+                        }
+                        call_variants.min-mapQ {
+                        }
+                        call_variants.min-end-distance {
+                        }
+                        call_variants.min-hwe {
+                        }
+                    }
+                }
+            }
+            page {
+                id:5;
+                title:"Output variations";
+                parameters-area {
+                    group {
+                        title:"Output file";
+                        label-size:100;
+                        write-variations.url-out {
+                        }
+                        write-variations.document-format {
+                        }
+                        write-variations.write-mode {
+                        }
+                    }
+                }
             }
         }
     }
 }
+

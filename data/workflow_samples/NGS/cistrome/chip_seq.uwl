@@ -79,84 +79,85 @@ workflow "ChIP-seq analysis"{
 
     .meta {
         visual {
+            scale:90;
             ceas-report {
-                pos:"-779 -629";
+                pos:"-1062 -564";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 bounds:"-30 -30 148.25 84";
-                in-data.angle:49.2892;
+                in-data.angle:18.6279;
             }
             conduct-go-id {
-                pos:"-432 -239";
+                pos:"-1061 -338";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
-                in-data.angle:34.8245;
+                in-data.angle:19.6538;
             }
             conservation_plot-id {
-                pos:"-418 -884";
+                pos:"-462 -790";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
-                in-data.angle:180;
+                in-data.angle:250.56;
             }
             macs-id {
-                pos:"-778 -883";
+                pos:"-822 -789";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 in-data.angle:180;
                 out-data.angle:322.481;
             }
             peak2gene-id {
-                pos:"-419 -479";
+                pos:"-822 -564";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
-                in-data.angle:180;
+                in-data.angle:15.8192;
                 out-data.angle:289.204;
             }
             read-annotations {
-                pos:"-1017 -884";
+                pos:"-1061 -790";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 bounds:"-30 -30 85.25 90";
                 out-annotations.angle:360;
             }
             seqpos-id {
-                pos:"-418 -688";
+                pos:"-462 -594";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 in-data.angle:180;
             }
             write-annotations {
-                pos:"3 -356";
+                pos:"-652 -308";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
-                in-annotations.angle:180;
+                in-annotations.angle:42.0492;
             }
             write-annotations-1 {
-                pos:"-158 -262";
+                pos:"-854 -306";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
-                in-annotations.angle:180;
+                in-annotations.angle:25.7693;
             }
             macs-id.out-data->ceas-report.in-data {
-                text-pos:"-54 -10";
+                text-pos:"-87 -18";
             }
             macs-id.out-data->conservation_plot-id.in-data {
-                text-pos:"-43 -28";
+                text-pos:"-34 -36";
             }
             macs-id.out-data->peak2gene-id.in-data {
-                text-pos:"-55 -24";
+                text-pos:"-54 -11";
             }
             macs-id.out-data->seqpos-id.in-data {
                 text-pos:"-27 -16";
             }
             peak2gene-id.out-data->conduct-go-id.in-data {
-                text-pos:"-40 -23";
+                text-pos:"-59 -24";
             }
             peak2gene-id.out-data->write-annotations-1.in-annotations {
-                text-pos:"-17 -14";
+                text-pos:"-38 -8";
             }
             peak2gene-id.out-data->write-annotations.in-annotations {
-                text-pos:"-24 -16";
+                text-pos:"3 -24";
             }
             read-annotations.out-annotations->macs-id.in-data {
                 text-pos:"-47 -25";
@@ -365,10 +366,10 @@ workflow "ChIP-seq analysis"{
                         title:"Peak2Gene output";
                         label-size:130;
                         write-annotations.url-out {
-                            label: "Gene annotations";
+                            label:"Gene annotations";
                         }
                         write-annotations-1.url-out {
-                            label: "Peak annotations";
+                            label:"Peak annotations";
                         }
                     }
                     group {
