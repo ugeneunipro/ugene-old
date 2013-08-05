@@ -22,18 +22,19 @@
 #ifndef _U2_MSA_EDITOR_SEQUENCE_AREA_H_
 #define _U2_MSA_EDITOR_SEQUENCE_AREA_H_
 
-#include "DeleteGapsDialog.h"
-#include "MSACollapsibleModel.h"
-#include "SaveSelectedSequenceFromMSADialogController.h"
+#include <QtGui/QWidget>
+#include <QtGui/QMenu>
+#include <QtGui/QToolBar>
+#include <QtGui/QRubberBand>
 
 #include <U2Core/global.h>
 #include <U2Core/U2Region.h>
 #include <U2Gui/GScrollBar.h>
 
-#include <QtGui/QWidget>
-#include <QtGui/QMenu>
-#include <QtGui/QToolBar>
-#include <QtGui/QRubberBand>
+#include "DeleteGapsDialog.h"
+#include "MSACollapsibleModel.h"
+#include "MsaEditorUserModStepController.h"
+#include "SaveSelectedSequenceFromMSADialogController.h"
 
 namespace U2 {
 
@@ -45,7 +46,6 @@ class MSAHighlightingScheme;
 class MAlignment;
 class MAlignmentModInfo;
 class MAlignmentObject;
-class U2UseCommonUserModStep;
 
 class ModificationType {
 public:
@@ -415,7 +415,7 @@ private:
     QList<QAction*> colorSchemeMenuActions;
     QList<QAction* > customColorSchemeMenuActions;
     QList<QAction* > highlightingSchemeMenuActions;
-    U2UseCommonUserModStep *shiftTracker;
+    MsaEditorUserModStepController changeTracker;
 };
 
 }//namespace

@@ -82,7 +82,7 @@ namespace U2 {
 #define SETTINGS_HIGHGHLIGHT_AMINO     "highghligh_amino"
 
 MSAEditorSequenceArea::MSAEditorSequenceArea(MSAEditorUI* _ui, GScrollBar* hb, GScrollBar* vb)
-: editor(_ui->editor), ui(_ui), shBar(hb), svBar(vb), shiftTracker(NULL)
+: editor(_ui->editor), ui(_ui), shBar(hb), svBar(vb), changeTracker(editor->getMSAObject()->getEntityRef())
 {
     setObjectName("msa_editor_sequence_area");
     setFocusPolicy(Qt::WheelFocus);
@@ -98,7 +98,7 @@ MSAEditorSequenceArea::MSAEditorSequenceArea(MSAEditorUI* _ui, GScrollBar* hb, G
     highlightSelection = false;
     scribbling = false;
     selecting = false;
-    finishShifting();
+    shifting = false;
 
     rubberBand = new QRubberBand(QRubberBand::Rectangle, this);
    
@@ -205,7 +205,6 @@ MSAEditorSequenceArea::MSAEditorSequenceArea(MSAEditorUI* _ui, GScrollBar* hb, G
 }
 
 MSAEditorSequenceArea::~MSAEditorSequenceArea() {
-    finishShifting();
     delete cachedView;
     deleteOldCustomSchemes();
 }
@@ -954,17 +953,14 @@ void MSAEditorSequenceArea::mouseReleaseEvent(QMouseEvent *e)
 
         newCurPos.setY(yPosWithValidations);
 
-        if (e->pos() == origin) {
-            // special case: click but don't drag
-            finishShifting();
-        }
         if (shifting) {
             int shift = newCurPos.x() - cursorPos.x();
             shiftSelectedRegion(shift);
         } else {
             updateSelection(newCurPos);
         }
-        finishShifting();
+        shifting = false;
+        changeTracker.finishTracking();
         scribbling = false;
         selecting = false;
     }
@@ -992,7 +988,10 @@ void MSAEditorSequenceArea::mousePressEvent(QMouseEvent *e) {
 
             MSAEditorSelection s = ui->seqArea->getSelection();
             if ( s.getRect().contains(cursorPos) ) {
-                startShifting();
+                shifting = true;
+                U2OpStatus2Log os;
+                changeTracker.startTracking( os );
+                CHECK_OP( os, );
                 editor->getMSAObject()->saveState();
             }
         }
@@ -1220,19 +1219,6 @@ void MSAEditorSequenceArea::keyPressEvent(QKeyEvent *e) {
             break;
     }
     QWidget::keyPressEvent(e);
-}
-
-void MSAEditorSequenceArea::startShifting() {
-    shifting = true;
-    MAlignmentObject* maObj = editor->getMSAObject();
-    U2OpStatus2Log os;
-    shiftTracker = new U2UseCommonUserModStep(maObj->getEntityRef(), os);
-}
-
-void MSAEditorSequenceArea::finishShifting() {
-    shifting = false;
-    delete shiftTracker;
-    shiftTracker = NULL;
 }
 
 void MSAEditorSequenceArea::focusInEvent(QFocusEvent* fe) {
@@ -1567,8 +1553,8 @@ void MSAEditorSequenceArea::sl_delCol() {
         MAlignmentObject* msaObj = editor->getMSAObject();
 
         U2OpStatus2Log os;
-        U2UseCommonUserModStep userModStep(msaObj->getEntityRef(), os);
-        SAFE_POINT_OP(os, );
+        changeTracker.startTracking( os );
+        CHECK_OP( os, );
 
         switch(deleteMode) {
         case DeleteByAbsoluteVal: msaObj->deleteColumnWithGaps(value);
@@ -1586,6 +1572,7 @@ void MSAEditorSequenceArea::sl_delCol() {
         default:
             assert(0);
         }
+        changeTracker.finishTracking();
     }
 }
 
@@ -1648,8 +1635,8 @@ void MSAEditorSequenceArea::sl_removeAllGaps() {
     collapsibleModel->reset();
 
     U2OpStatus2Log os;
-    U2UseCommonUserModStep userModStep(msa->getEntityRef(), os);
-    SAFE_POINT_OP(os, );
+    changeTracker.startTracking( os );
+    CHECK_OP(os, );
 
     QMap<qint64, QList<U2MsaGap> > noGapModel;
     MAlignment ma = msa->getMAlignment();
@@ -1661,6 +1648,7 @@ void MSAEditorSequenceArea::sl_removeAllGaps() {
     setFirstVisibleBase(0);
     setFirstVisibleSequence(0);
     SAFE_POINT_OP(os, );
+    changeTracker.finishTracking( );
 }
 
 bool MSAEditorSequenceArea::checkState() const {
@@ -1988,8 +1976,8 @@ void MSAEditorSequenceArea::deleteCurrentSelection()
     const U2Region& sel = getSelectedRows();
 
     U2OpStatusImpl os;
-    U2UseCommonUserModStep modeStep(maObj->getEntityRef(), os);
-    SAFE_POINT_OP(os, );
+    changeTracker.startTracking( os );
+    CHECK_OP(os, );
     maObj->removeRegion(selection.x(), sel.startPos, selection.width(), sel.length, true);
 
     if (selection.height() == 1 && selection.width() == 1) {
@@ -1997,8 +1985,8 @@ void MSAEditorSequenceArea::deleteCurrentSelection()
             return;
         }
     }
-
     cancelSelection();
+    changeTracker.finishTracking();
 }
 
 void MSAEditorSequenceArea::sl_addSeqFromFile()
@@ -2134,8 +2122,8 @@ void MSAEditorSequenceArea::fillSelectionWithGaps( )
     }
 
     U2OpStatus2Log os;
-    U2UseCommonUserModStep userModStep(maObj->getEntityRef(), os);
-    SAFE_POINT_OP(os, );
+    changeTracker.startTracking( os );
+    CHECK_OP(os, );
 
     const MAlignment& msa = maObj->getMAlignment();
     if (selection.width() == msa.getLength() && selection.height() == msa.getNumRows()) {
@@ -2146,7 +2134,8 @@ void MSAEditorSequenceArea::fillSelectionWithGaps( )
     maObj->insertGap(sequences,  selection.x() , selection.width());
     if (selection.height() > 1 && selection.width() > 1) {
         cancelSelection();
-    }   
+    }
+    changeTracker.finishTracking( );
 }
 
 void MSAEditorSequenceArea::reverseComplementModification(ModificationType& type) {

@@ -54,7 +54,7 @@ HEADERS += src/Init.h \
            src/ov_msa/SaveSelectedSequenceFromMSADialogController.h \
            src/ov_msa/ColorSchemaDialogController.h \
 		   src/ov_msa/ColorSchemaSettingsController.h \
-                   src/ov_msa/Common/RefSeqCommonWidget.h \
+           src/ov_msa/Common/RefSeqCommonWidget.h \
 		   src/ov_msa/SeqStatistics/SeqStatisticsWidget.h \
 		   src/ov_msa/SeqStatistics/SeqStatisticsWidgetFactory.h \   
 		   src/ov_msa/Display/MSADisplayTab.h \
@@ -63,13 +63,14 @@ HEADERS += src/Init.h \
 		   src/ov_msa/General/MSAGeneralTabFactory.h \
 		   src/ov_msa/Highlighting/MSAHighlightingTab.h \
 		   src/ov_msa/Highlighting/MSAHighlightingTabFactory.h \
-                   src/ov_msa/TreeOptions/TreeOptionsWidget.h \
-                   src/ov_msa/TreeOptions/TreeOptionsWidgetFactory.h \
-                   src/ov_msa/PhyTrees/MSAEditorTreeViewer.h \
-                   src/ov_msa/PhyTrees/MSAEditorMultiTreeViewer.h \
-                   src/ov_msa/PhyTrees/MSAEditorTreeManager.h \
-                   src/ov_msa/PhyTrees/AddTreeDialog.h \
-		   src/ov_msa/SequenceSelectorWidgetController.h \	   
+           src/ov_msa/TreeOptions/TreeOptionsWidget.h \
+           src/ov_msa/TreeOptions/TreeOptionsWidgetFactory.h \
+           src/ov_msa/PhyTrees/MSAEditorTreeViewer.h \
+           src/ov_msa/PhyTrees/MSAEditorMultiTreeViewer.h \
+           src/ov_msa/PhyTrees/MSAEditorTreeManager.h \
+           src/ov_msa/PhyTrees/AddTreeDialog.h \
+		   src/ov_msa/SequenceSelectorWidgetController.h \
+           src/ov_msa/MsaEditorUserModStepController.h \
            src/ov_phyltree/CreateBranchesTask.h \
            src/ov_phyltree/CreateCircularBranchesTask.h \
            src/ov_phyltree/CreateRectangularBranchesTask.h \
@@ -152,12 +153,12 @@ HEADERS += src/Init.h \
            src/util_smith_waterman/SmithWatermanDialog.h \
            src/util_smith_waterman/SmithWatermanDialogImpl.h \
            src/util_smith_waterman/SubstMatrixDialog.h \ 
-    src/LicenseDialog.h \ 
+           src/LicenseDialog.h \
      	   src/ov_msa/PairAlign/PairAlignFactory.h \
-                   src/ov_msa/PairAlign/PairAlign.h \
-    src/util_msa_align/PairwiseAlignmentGUIExtension.h \
-    src/ov_sequence/Das/DasWidgetFactory.h \
-    src/ov_sequence/Das/DasOptionsPanelWidget.h
+           src/ov_msa/PairAlign/PairAlign.h \
+           src/util_msa_align/PairwiseAlignmentGUIExtension.h \
+           src/ov_sequence/Das/DasWidgetFactory.h \
+           src/ov_sequence/Das/DasOptionsPanelWidget.h
 FORMS += src/ov_assembly/ui/ExportConsensusDialog.ui \
          src/ov_assembly/ui/ExportReadsDialog.ui \
          src/ov_msa/ui/ConsensusSelectorDialog.ui \
@@ -247,7 +248,7 @@ SOURCES += src/Init.cpp \
            src/ov_msa/SaveSelectedSequenceFromMSADialogController.cpp \
            src/ov_msa/ColorSchemaDialogController.cpp \           
            src/ov_msa/ColorSchemaSettingsController.cpp \
-                   src/ov_msa/Common/RefSeqCommonWidget.cpp \
+           src/ov_msa/Common/RefSeqCommonWidget.cpp \
 		   src/ov_msa/SeqStatistics/SeqStatisticsWidget.cpp \
 		   src/ov_msa/SeqStatistics/SeqStatisticsWidgetFactory.cpp \    
 		   src/ov_msa/Display/MSADisplayTab.cpp \
@@ -256,13 +257,14 @@ SOURCES += src/Init.cpp \
 		   src/ov_msa/General/MSAGeneralTabFactory.cpp \
 		   src/ov_msa/Highlighting/MSAHighlightingTab.cpp \
 		   src/ov_msa/Highlighting/MSAHighlightingTabFactory.cpp \
-                   src/ov_msa/TreeOptions/TreeOptionsWidget.cpp \
-                   src/ov_msa/TreeOptions/TreeOptionsWidgetFactory.cpp \
-                   src/ov_msa/PhyTrees/MSAEditorTreeViewer.cpp \
-                   src/ov_msa/PhyTrees/MSAEditorMultiTreeViewer.cpp \
-                   src/ov_msa/PhyTrees/MSAEditorTreeManager.cpp \
-                   src/ov_msa/PhyTrees/AddTreeDialog.cpp \
-		   src/ov_msa/SequenceSelectorWidgetController.cpp \	   
+           src/ov_msa/TreeOptions/TreeOptionsWidget.cpp \
+           src/ov_msa/TreeOptions/TreeOptionsWidgetFactory.cpp \
+           src/ov_msa/PhyTrees/MSAEditorTreeViewer.cpp \
+           src/ov_msa/PhyTrees/MSAEditorMultiTreeViewer.cpp \
+           src/ov_msa/PhyTrees/MSAEditorTreeManager.cpp \
+           src/ov_msa/PhyTrees/AddTreeDialog.cpp \
+		   src/ov_msa/SequenceSelectorWidgetController.cpp \
+           src/ov_msa/MsaEditorUserModStepController.cpp \
            src/ov_phyltree/CreateCircularBranchesTask.cpp \
            src/ov_phyltree/CreateRectangularBranchesTask.cpp \
            src/ov_phyltree/CreateUnrootedBranchesTask.cpp \
