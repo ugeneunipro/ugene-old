@@ -1424,7 +1424,7 @@ void MSAEditorSequenceArea::sl_alignmentChanged(const MAlignment&, const MAlignm
     MSAEditorSelection newSelection(selTopLeft, selBottomRight);
     
     // we don't emit "selection changed" signal to avoid redrawing
-    selection = newSelection;  
+    selection = newSelection;
 
     updateHScrollBar();
     updateVScrollBar();
@@ -2129,12 +2129,11 @@ void MSAEditorSequenceArea::fillSelectionWithGaps( )
     if (selection.width() == msa.getLength() && selection.height() == msa.getNumRows()) {
         return;
     }
-    
+
     const U2Region& sequences = getSelectedRows();
     maObj->insertGap(sequences,  selection.x() , selection.width());
-    if (selection.height() > 1 && selection.width() > 1) {
-        cancelSelection();
-    }
+    moveSelection(selection.width(), 0);
+
     changeTracker.finishTracking( );
 }
 
