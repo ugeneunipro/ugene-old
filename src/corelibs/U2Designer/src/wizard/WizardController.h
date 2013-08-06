@@ -60,6 +60,7 @@ public:
     QWizard * createGui();
     ApplyResult applyChanges(Metadata &meta);
     const QList<Actor*> & getCurrentActors() const;
+    bool isRunAfterApply() const;
 
     QVariant getVariableValue(const QString &var);
     void setVariableValue(const QString &var, const QString &value);
@@ -97,8 +98,10 @@ private:
     QMap<QString, SelectorActors> selectors; // varName <-> actors
     QVariantMap values;
     QMap<QString, PropertyWizardController*> propertyControllers;
+    bool runAfterApply;
 
 private:
+    void setupRunButton(QWizard *wizard);
     QWizardPage * createPage(WizardPage *page);
     Attribute * getAttribute(const AttributeInfo &info) const;
     void registerSelector(ElementSelectorWidget *widget);
@@ -107,6 +110,9 @@ private:
     void saveDelegateTags();
     DelegateTags * getTags(const AttributeInfo &info);
     bool canSetValue(const AttributeInfo &info, const QVariant &value);
+
+private slots:
+    void sl_run();
 };
 
 /************************************************************************/

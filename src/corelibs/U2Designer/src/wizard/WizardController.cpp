@@ -60,7 +60,7 @@
 namespace U2 {
 
 WizardController::WizardController(Schema *s, const Wizard *w)
-: QObject(), schema(s), wizard(w)
+: QObject(), schema(s), wizard(w), runAfterApply(false)
 {
     broken = false;
     currentActors = s->getProcesses();
@@ -73,6 +73,8 @@ WizardController::~WizardController() {
 
 QWizard * WizardController::createGui() {
     QWizard *result = new QWizard((QWidget*)AppContext::getMainWindow()->getQMainWindow());
+    setupRunButton(result);
+
     int idx = 0;
     foreach (WizardPage *page, wizard->getPages()) {
         result->setPage(idx, createPage(page));
@@ -84,10 +86,35 @@ QWizard * WizardController::createGui() {
     result->setAutoFillBackground(true);
     result->setWindowTitle(wizard->getName());
     result->setObjectName(wizard->getName());
-    if (!wizard->getFinishLabel().isEmpty()) {
-        result->setButtonText(QWizard::FinishButton, wizard->getFinishLabel());
+
+    QString finishLabel = wizard->getFinishLabel();
+    if (finishLabel.isEmpty()) {
+        finishLabel = tr("Apply");
     }
+    result->setButtonText(QWizard::FinishButton, finishLabel);
+    result->setOption(QWizard::NoBackButtonOnStartPage);
+
     return result;
+}
+
+void WizardController::setupRunButton(QWizard *gui) {
+    CHECK(wizard->hasRunButton(), );
+    gui->setOption(QWizard::HaveCustomButton1);
+    gui->setButtonText(QWizard::CustomButton1, tr("Run"));
+    QAbstractButton *runButton = gui->button(QWizard::CustomButton1);
+    connect(runButton, SIGNAL(clicked()), SLOT(sl_run()));
+    connect(runButton, SIGNAL(clicked()), gui, SLOT(accept()));
+    QList<QWizard::WizardButton> order;
+    order << QWizard::Stretch << QWizard::BackButton << QWizard::NextButton << QWizard::FinishButton << QWizard::CustomButton1 << QWizard::CancelButton;
+    gui->setButtonLayout(order);
+}
+
+bool WizardController::isRunAfterApply() const {
+    return runAfterApply;
+}
+
+void WizardController::sl_run() {
+    runAfterApply = true;
 }
 
 void WizardController::assignParameters() {

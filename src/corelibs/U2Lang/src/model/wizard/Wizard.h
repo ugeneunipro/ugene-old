@@ -54,6 +54,9 @@ public:
     bool isAutoRun() const;
     void setAutoRun(bool value);
 
+    bool hasRunButton() const;
+    void setHasRunButton(bool value);
+
     static const QString DEFAULT_NAME;
 
 private:
@@ -61,6 +64,7 @@ private:
     QList<WizardPage*> pages;
     QMap<QString, Variable> vars;
     bool autoRun;
+    bool withRunButton;
     QMap<QString, QList<Predicate> > results;
     QString finishLabel;
 };

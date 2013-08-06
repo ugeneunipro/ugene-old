@@ -49,6 +49,7 @@ const QString HRWizardParser::DST_PORT("dst-port");
 const QString HRWizardParser::RESULT("result");
 const QString HRWizardParser::FINISH_LABEL("finish-label");
 const QString HRWizardParser::TOOLTIP("tooltip");
+const QString HRWizardParser::HAS_RUN_BUTTON("has-run-button");
 
 HRWizardParser::HRWizardParser(HRSchemaSerializer::Tokenizer &_tokenizer,
                                        const QMap<QString, Actor*> &_actorMap)
@@ -79,6 +80,7 @@ Wizard * HRWizardParser::takeResult() {
 
 Wizard * HRWizardParser::parseWizard(U2OpStatus &os) {
     bool autoRun = false;
+    bool noRunButton = false;
     while (tokenizer.look() != HRSchemaSerializer::BLOCK_END) {
         QString tok = tokenizer.take();
         if (PAGE == tok) {
@@ -92,6 +94,9 @@ Wizard * HRWizardParser::parseWizard(U2OpStatus &os) {
         } else if (AUTORUN == tok) {
             tokenizer.assertToken(HRSchemaSerializer::EQUALS_SIGN);
             autoRun = ("true" == tokenizer.take());
+        } else if (HAS_RUN_BUTTON == tok) {
+            tokenizer.assertToken(HRSchemaSerializer::EQUALS_SIGN);
+            noRunButton = ("false" == tokenizer.take());
         } else if (RESULT == tok) {
             tokenizer.assertToken(HRSchemaSerializer::BLOCK_START);
             parseResult(os);
@@ -109,6 +114,7 @@ Wizard * HRWizardParser::parseWizard(U2OpStatus &os) {
     Wizard *result = takeResult();
     CHECK(NULL != result, NULL);
     result->setAutoRun(autoRun);
+    result->setHasRunButton(!noRunButton);
     return result;
 }
 
@@ -528,6 +534,10 @@ QString HRWizardSerializer::serialize(Wizard *wizard, int depth) {
 
     if (wizard->isAutoRun()) {
         wizardData += HRSchemaSerializer::makeEqualsPair(HRWizardParser::AUTORUN, "true", depth + 1);
+    }
+
+    if (!wizard->hasRunButton()) {
+        wizardData += HRSchemaSerializer::makeEqualsPair(HRWizardParser::HAS_RUN_BUTTON, "false", depth + 1);
     }
 
     if (!wizard->getResults().isEmpty()) {

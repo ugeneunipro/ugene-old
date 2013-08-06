@@ -5,6 +5,7 @@ workflow "ChIP-seq analysis with Cistrome tools" {
     .meta {
         wizard {
             auto-run: true;
+            has-run-button: false;
             name: "Configure Cistrome Pipeline";
             finish-label: "Setup";
             result {

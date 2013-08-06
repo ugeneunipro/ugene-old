@@ -39,9 +39,20 @@ void WDWizardPage::initializePage () {
     controller->applyLayout(this);
 }
 
+static QAbstractButton * getRunButton(QWizard *w) {
+    QAbstractButton *runButton = w->button(QWizard::CustomButton1);
+    CHECK(NULL != runButton, NULL);
+    CHECK(!runButton->text().isEmpty(), NULL);
+    return runButton;
+}
+
 void WDWizardPage::showEvent(QShowEvent *event) {
     if (wizard()->currentPage() == this) {
         setupDialogSize();
+    }
+    QAbstractButton *runButton = getRunButton(wizard());
+    if (NULL != runButton) {
+        runButton->setVisible(isFinalPage());
     }
     QWizardPage::showEvent(event);
 }

@@ -30,7 +30,7 @@ namespace U2 {
 const QString Wizard::DEFAULT_NAME("Wizard");
 
 Wizard::Wizard(const QString &_name, const QList<WizardPage*> &_pages)
-: name(_name), pages(_pages)
+: name(_name), pages(_pages), autoRun(false), withRunButton(true)
 {
 
 }
@@ -101,6 +101,14 @@ QString Wizard::getFinishLabel() const {
 
 void Wizard::setFinishLabel(const QString &value) {
     finishLabel = value;
+}
+
+bool Wizard::hasRunButton() const {
+    return withRunButton;
+}
+
+void Wizard::setHasRunButton(bool value) {
+    withRunButton = value;
 }
 
 } // U2
