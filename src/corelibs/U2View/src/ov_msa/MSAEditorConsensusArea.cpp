@@ -153,9 +153,7 @@ void MSAEditorConsensusArea::paintEvent(QPaintEvent *e) {
     if (completeRedraw) {
         QPainter pCached(cachedView);
         pCached.fillRect(cachedView->rect(), Qt::white);
-        drawConsensus(pCached);
-        drawRuler(pCached);
-        drawHistogram(pCached);
+        drawContent( pCached );
         completeRedraw = false;
     }
     QPainter p(this);
@@ -175,19 +173,15 @@ void MSAEditorConsensusArea::drawSelection(QPainter& p) {
     QFont f = ui->editor->getFont();
     f.setWeight(QFont::DemiBold);
     p.setFont(f);
-    
+
     MSAEditorSelection selection = ui->seqArea->getSelection();
-    if (selection.width() == editor->getAlignmentLen() ) {
-        // small optimization?
-        return;
-    }
-    int startPos = qMax(selection.x(), 0);
-    int endPos = qMin(selection.x() + selection.width() - 1, ui->editor->getAlignmentLen() - 1);
-    assert(endPos < ui->editor->getAlignmentLen());
-    for ( int pos = startPos; pos <= endPos; ++pos) {
+    int startPos = qMax(selection.x(), ui->seqArea->getFirstVisibleBase());
+    int endPos = qMin(selection.x() + selection.width() - 1,
+        ui->seqArea->getLastVisibleBase(true));
+    SAFE_POINT(endPos < ui->editor->getAlignmentLen(), "Incorrect selection width!", );
+    for ( int pos = startPos; pos <= endPos; ++pos ) {
         drawConsensusChar(p, pos, true);
     }
-
 }
 
 void MSAEditorConsensusArea::drawConsensus(QPainter& p) {
@@ -203,7 +197,6 @@ void MSAEditorConsensusArea::drawConsensus(QPainter& p) {
     int lastPos = ui->seqArea->getLastVisibleBase(true);
     for (int pos = startPos; pos <= lastPos; pos++) {
         drawConsensusChar(p, pos, false);
-
     }
 }
 

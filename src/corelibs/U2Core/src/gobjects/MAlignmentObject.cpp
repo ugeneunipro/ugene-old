@@ -166,22 +166,13 @@ void MAlignmentObject::insertGap(U2Region rows, int pos, int count) {
     int startSeq = rows.startPos;
     int endSeq = startSeq + rows.length;
 
-    U2OpStatus2Log os;
     QList<qint64> rowIdsToInsert;
-    QList<qint64> rowIdsToShift;
-    for (int i = 0; i < startSeq; ++i) {
-        qint64 rowId = msa.getRow(i).getRowId();
-        rowIdsToShift.append(rowId);
-    }
     for (int i = startSeq; i < endSeq; ++i) {
         qint64 rowId = msa.getRow(i).getRowId();
         rowIdsToInsert.append(rowId);
     }
-    for (int i = endSeq; i < msa.getNumRows(); ++i) {
-        qint64 rowId = msa.getRow(i).getRowId();
-        rowIdsToShift.append(rowId);
-    }
 
+    U2OpStatus2Log os;
     MsaDbiUtils::insertGaps(entityRef, rowIdsToInsert, pos, count, os);
     SAFE_POINT_OP(os, );
 
