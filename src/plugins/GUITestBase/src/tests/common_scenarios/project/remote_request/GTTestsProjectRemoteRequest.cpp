@@ -48,7 +48,7 @@ namespace U2{
 namespace GUITest_common_scenarios_project_remote_request {
 
 GUI_TEST_CLASS_DEFINITION(test_0001) {
-    GTUtilsDialog::waitForDialog(os, new RemoteDBDialogFiller(os, "3EZB", 2));
+    GTUtilsDialog::waitForDialog(os, new RemoteDBDialogFiller(os, "3EZB", 3));
     GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE),ACTION_PROJECTSUPPORT__ACCESS_REMOTE_DB, GTGlobals::UseKey);
     GTGlobals::sleep();
 

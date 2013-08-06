@@ -234,7 +234,7 @@ GUI_TEST_CLASS_DEFINITION(test_0013) {
 
 GUI_TEST_CLASS_DEFINITION(test_0014) {
     GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE),ACTION_PROJECTSUPPORT__ACCESS_REMOTE_DB, GTGlobals::UseKey);
-    GTUtilsDialog::waitForDialog(os, new RemoteDBDialogFiller(os, "1HTQ", 2));
+    GTUtilsDialog::waitForDialog(os, new RemoteDBDialogFiller(os, "1HTQ", 3));
     GTGlobals::sleep();
 
     GTUtilsTaskTreeView::openView(os);
