@@ -1100,6 +1100,7 @@ GUI_TEST_CLASS_DEFINITION(test_1708){
     GTUtilsDialog::waitForDialog(os, new KalignDialogFiller(os,10));
     GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
 
+    GTWidget::click(os, GTUtilsMdi::activeWindow(os));
     GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0,0), QPoint(9,1));
     GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep(500);
@@ -1110,6 +1111,7 @@ GUI_TEST_CLASS_DEFINITION(test_1708){
 
     //3. Press Undo
     GTWidget::click(os,undo);
+    GTWidget::click(os, GTUtilsMdi::activeWindow(os));
     GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0,0), QPoint(9,1));
     GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep(500);
