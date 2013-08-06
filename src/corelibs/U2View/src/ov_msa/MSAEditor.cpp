@@ -441,9 +441,13 @@ QWidget* MSAEditor::createWidget() {
     alignAction->setObjectName("Align");
     connect(alignAction, SIGNAL(triggered()), this, SLOT(sl_align()));
 
-    setAsRefrenceSequenceAction = new QAction(tr("Set this sequence as reference"), this);
-    setAsRefrenceSequenceAction->setObjectName("set_seq_as_refrence");
-    connect(setAsRefrenceSequenceAction, SIGNAL(triggered()), SLOT(sl_setSeqAsRefrence()));
+    setAsReferenceSequenceAction = new QAction(tr("Set this sequence as reference"), this);
+    setAsReferenceSequenceAction->setObjectName("set_seq_as_reference");
+    connect(setAsReferenceSequenceAction, SIGNAL(triggered()), SLOT(sl_setSeqAsReference()));
+
+    unsetReferenceSequenceAction = new QAction(tr("Unset reference sequence"), this);
+    unsetReferenceSequenceAction->setObjectName("unset_reference");
+    connect(unsetReferenceSequenceAction, SIGNAL(triggered()), SLOT(sl_unsetReferenceSeq()));
 
     optionsPanel = new OptionsPanel(this);
     OPWidgetFactoryRegistry *opWidgetFactoryRegistry = AppContext::getOPWidgetFactoryRegistry();
@@ -492,9 +496,20 @@ void MSAEditor::sl_onContextMenuRequested(const QPoint & pos) {
     addAdvancedMenu(&m);
 
     m.addSeparator();
-    m.addAction(setAsRefrenceSequenceAction);
+    snp.clickPoint = QCursor::pos( );
+    const QPoint nameMapped = ui->nameList->mapFromGlobal( snp.clickPoint );
+    const qint64 hoverRowId = ( 0 <= nameMapped.y( ) )
+        ? ui->nameList->sequenceIdAtPos( nameMapped ) : MAlignmentRow::invalidRowId( );
+    if ( ( hoverRowId != getReferenceRowId( )
+        || MAlignmentRow::invalidRowId( ) == getReferenceRowId( ) )
+        && hoverRowId != MAlignmentRow::invalidRowId( ) )
+    {
+        m.addAction( setAsReferenceSequenceAction );
+    }
+    if ( MAlignmentRow::invalidRowId( ) != getReferenceRowId( ) ) {
+        m.addAction( unsetReferenceSequenceAction );
+    }
     m.addSeparator();
-    snp.clickPoint = QCursor::pos();
 
     emit si_buildPopupMenu(this, &m);
 
@@ -637,7 +652,7 @@ void MSAEditor::createDistanceColumn(MSADistanceMatrix* algo) {
     ui->createDistanceColumn(algo);
 }
 
-void MSAEditor::sl_setSeqAsRefrence(){
+void MSAEditor::sl_setSeqAsReference(){
     QPoint menuCallPos = snp.clickPoint;
     QPoint nameMapped = ui->nameList->mapFromGlobal(menuCallPos);
     if ( nameMapped.y() >= 0 ) {
@@ -645,6 +660,12 @@ void MSAEditor::sl_setSeqAsRefrence(){
         if (MAlignmentRow::invalidRowId() != newRowId && newRowId != snp.seqId) {
             setReference(newRowId);
         }
+    }
+}
+
+void MSAEditor::sl_unsetReferenceSeq( ) {
+    if ( MAlignmentRow::invalidRowId( ) != getReferenceRowId( ) ) {
+        setReference( MAlignmentRow::invalidRowId( ) );
     }
 }
 

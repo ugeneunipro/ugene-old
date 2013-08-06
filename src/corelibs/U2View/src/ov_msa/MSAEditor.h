@@ -182,7 +182,8 @@ protected slots:
     void sl_resetZoom(); 
     void sl_buildTree();
     void sl_align();
-    void sl_setSeqAsRefrence();
+    void sl_setSeqAsReference();
+    void sl_unsetReferenceSeq();
 
     void sl_onSeqOrderChanged(QStringList* order);
     void sl_showTreeOP();
@@ -225,7 +226,8 @@ private:
     QAction*          saveScreenshotAction;
     QAction*          saveSvgAction;
     QAction*          alignAction;
-    QAction*          setAsRefrenceSequenceAction;
+    QAction*          setAsReferenceSequenceAction;
+    QAction *         unsetReferenceSequenceAction;
 
     QToolBar*         toolbar;
 
