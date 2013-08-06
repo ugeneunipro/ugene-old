@@ -36,6 +36,11 @@ StartupDialog::StartupDialog(QWidget *parent)
     l->addWidget(new OutputDirectoryWidget(this));
     buttons->addButton(tr("Don't use the directory"), QDialogButtonBox::RejectRole);
 
+#ifdef Q_OS_WIN
+    QFont f( "Arial", 8, QFont::Bold);
+    label->setFont(f);
+#endif
+
 }
 
 } // U2
