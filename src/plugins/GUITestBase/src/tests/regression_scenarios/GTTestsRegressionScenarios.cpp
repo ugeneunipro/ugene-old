@@ -130,16 +130,19 @@ GUI_TEST_CLASS_DEFINITION(test_0986) {
     public:
         EscClicker(U2OpStatus& _os) : Filler(_os, "SmithWatermanDialogBase"){}
         virtual void run(){
-            GTGlobals::sleep(500);
+            GTGlobals::sleep();
 #ifdef Q_OS_MAC
             GTKeyboardDriver::keyRelease(os, GTKeyboardDriver::key["shift"]);
             GTKeyboardDriver::keyRelease(os, GTKeyboardDriver::key["cmd"]);
-#endif Q_OS_MAC
+            GTWidget::click(os,GTWidget::findWidget(os,"bttnCancel"));
+#else
             GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["esc"]);
+#endif
         }
     };
 
     GTUtilsDialog::waitForDialog(os, new EscClicker(os));
+    GTGlobals::sleep(500);
     GTKeyboardDriver::keyPress(os, GTKeyboardDriver::key["shift"]);
     GTKeyboardDriver::keyClick(os, 'f', GTKeyboardDriver::key["ctrl"]);
     GTKeyboardDriver::keyRelease(os, GTKeyboardDriver::key["shift"]);
@@ -650,7 +653,12 @@ GUI_TEST_CLASS_DEFINITION(test_1113){//commit AboutDialogController.cpp
     public:
         EscClicker(U2OpStatus& _os) : Filler(_os, "AboutDialog"){}
         virtual void run(){
+
             GTGlobals::sleep();
+#ifdef Q_OS_MAC
+            GTKeyboardDriver::keyRelease(os,GTKeyboardDriver::key["f1"]);
+#endif
+
             QWidget* dialog = QApplication::activeModalWidget();
 //getting an info string
             QWidget *w = new QWidget();
@@ -667,8 +675,11 @@ GUI_TEST_CLASS_DEFINITION(test_1113){//commit AboutDialogController.cpp
 
             QString text = child->objectName();
             CHECK_SET_ERR(text.contains("64-bit")||text.contains("32-bit"),text);
-
+#ifdef Q_OS_MAC
+            GTWidget::click(os,GTWidget::findWidget(os,"close_button"));
+#else
             GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["esc"]);
+#endif
         }
     };
     GTGlobals::sleep(1000);
@@ -706,8 +717,11 @@ GUI_TEST_CLASS_DEFINITION(test_1113_1){//commit AboutDialogController.cpp
 
             QString text = child->objectName();
             CHECK_SET_ERR(text.contains("64-bit")||text.contains("32-bit"),text);
-
+#ifdef Q_OS_MAC
+            GTWidget::click(os,GTWidget::findWidget(os,"close_button"));
+#else
             GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["esc"]);
+#endif
         }
     };
 
