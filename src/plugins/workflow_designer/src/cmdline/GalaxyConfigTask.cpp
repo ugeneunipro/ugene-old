@@ -354,7 +354,8 @@ void GalaxyConfigTask::writeCommandUnit() {
         runUgene += "--" + aliasName + "=$" + aliasName + " ";
         elemAliasesIterator++;
     }
-    runUgene += "  >> $" + WORKFLOW_RUN_LOG + " 2>&1;";
+    const QString redirectStderrToStdout = " 2>&1;";
+    runUgene += "  >> $" + WORKFLOW_RUN_LOG + redirectStderrToStdout;
     galaxyConfigOutput.writeCharacters( runUgene );
 
     QList <int> ::iterator outputElementsPositionsIterator;
