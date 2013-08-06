@@ -43,6 +43,7 @@
 #include <U2Core/U2SequenceDbi.h>
 #include <U2Core/U2ObjectDbi.h>
 #include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/U2AlphabetUtils.h>
 
 #include <U2Formats/GenbankFeatures.h>
 
@@ -269,6 +270,57 @@ void EMBLGenbankAbstractDocument::load(const U2DbiRef& dbiRef, IOAdapter* io, QL
     U1AnnotationUtils::addAnnotations(objects, seqImporter.getCaseAnnotations(), sequenceRef, mergedAnnotationsPtr);
 
 }
+
+DNASequence* EMBLGenbankAbstractDocument::loadSequence(IOAdapter* io, U2OpStatus& os) {
+
+    QStringList contigs;
+    QSet<QString> usedNames;
+
+    GObjectReference sequenceRef(GObjectReference(io->getURL().getURLString(), "", GObjectTypes::SEQUENCE));
+
+    QByteArray sequenceData;
+    U2MemorySequenceImporter seqImporter(sequenceData);
+    QByteArray readBuffer(ParserState::READ_BUFF_SIZE, '\0');
+    ParserState st(getFormatId() == BaseDocumentFormats::PLAIN_GENBANK ? 12 : 5, io, NULL, os);
+    st.buff = readBuffer.data();
+
+    qint64 sequenceStart = 0;
+    int sequenceSize = 0;
+    int fullSequenceSize = 0;
+
+    EMBLGenbankDataEntry data;
+    st.entry = &data;
+
+    sequenceSize = 0;
+    os.setDescription(tr("Reading entry header"));
+    int offset = 0;
+    bool merge = false;
+    if (!readEntry(&st,seqImporter,sequenceSize,fullSequenceSize,merge,offset, os)) {
+        return NULL;
+    }
+
+    // tolerate blank lines between records
+    char ch;
+    bool b;
+    while ((b = st.io->getChar(&ch)) && (ch == '\n' || ch == '\r')){}
+    if (b) {
+        st.io->skip(-1);
+    }
+
+    if (os.isCoR()) {
+        return NULL;
+    }
+    QString sequenceName = genObjectName(usedNames, data.name, data.tags, 1, GObjectTypes::SEQUENCE);
+
+    if (sequenceSize != 0){
+        DNASequence* seq = new DNASequence(sequenceName, sequenceData, U2AlphabetUtils::getById(seqImporter.getAlphabet()));
+        return seq;
+    }
+
+    return NULL;
+}
+
+
 
 //column annotation data starts with
 #define A_COL 21

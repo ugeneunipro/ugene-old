@@ -47,6 +47,8 @@ public:
 
     virtual const QString& getFormatName() const {return formatName;}
 
+    virtual DNASequence* loadSequence(IOAdapter*, U2OpStatus& os);
+
     static const QString UGENE_MARK;
     static const QString DEFAULT_OBJ_NAME;
     static const QString LOCUS_TAG_CIRCULAR;

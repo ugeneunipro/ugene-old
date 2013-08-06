@@ -70,9 +70,9 @@ public:
     virtual ~U2SequenceImporter();
     
     void startSequence(const U2DbiRef& dbiRef, const QString& visualName, bool circular, U2OpStatus& os);
-    void addBlock(const char* data, qint64 len, U2OpStatus& os);
+    virtual void addBlock(const char* data, qint64 len, U2OpStatus& os);
     void addSequenceBlock(const U2EntityRef& seqId, const U2Region& r, U2OpStatus& os);
-    void addDefaultSymbolsBlock(int n, U2OpStatus& os);
+    virtual void addDefaultSymbolsBlock(int n, U2OpStatus& os);
     U2Sequence finalizeSequence(U2OpStatus& os);
     U2AlphabetId getAlphabet() const {return sequence.alphabet;}
 
@@ -80,9 +80,9 @@ public:
     bool isCaseAnnotationsModeOn() const;
     QList<Annotation*> &getCaseAnnotations();
 
-    qint64 getCurrentLength() const;
+    virtual qint64 getCurrentLength() const;
 
-private:
+protected:
     void _addBlock2Buffer(const char* data, qint64 len, U2OpStatus& os);
     void _addBlock2Db(const char* data, qint64 len, U2OpStatus& os);
     void _addBuffer2Db(U2OpStatus& os);
@@ -106,6 +106,29 @@ private:
     bool                sequenceCreated;
     qint64              committedLength; // singleThread only
 
+};
+
+
+/** Class to read sequences when there is already readers which use U2SequenceImporter interface */
+class U2CORE_EXPORT U2MemorySequenceImporter : public U2SequenceImporter {
+public:
+    U2MemorySequenceImporter(QByteArray& data) : sequenceData(data) {}
+    virtual ~U2MemorySequenceImporter() {}
+
+    virtual void addBlock(const char* data, qint64 len, U2OpStatus& os);
+    virtual void addDefaultSymbolsBlock(int n, U2OpStatus& os);
+
+    virtual qint64 getCurrentLength() const;
+
+private:
+    void startSequence(const U2DbiRef& dbiRef, const QString& visualName, bool circular, U2OpStatus& os);
+    void addSequenceBlock(const U2EntityRef& seqId, const U2Region& r, U2OpStatus& os);
+    U2Sequence finalizeSequence(U2OpStatus& os);
+    void setCaseAnnotationsMode(CaseAnnotationsMode mode);
+    bool isCaseAnnotationsModeOn() const;
+    QList<Annotation*> &getCaseAnnotations();
+
+    QByteArray &sequenceData;
 };
 
 class U2CORE_EXPORT U2SequenceDbiHints {
