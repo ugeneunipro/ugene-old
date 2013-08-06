@@ -42,6 +42,8 @@
 #include <U2Core/AnnotationTableObject.h>
 
 #include "CoreLib.h"
+#include "util/RequiredSlotsValidator.h"
+
 #include "FindWorker.h"
 
 /* TRANSLATOR U2::LocalWorkflow::FindWorker */
@@ -49,9 +51,6 @@
 namespace U2 {
 namespace LocalWorkflow {
 
-/***************************
- * FindWorkerFactory
- ***************************/
 static const QString NAME_ATTR("result-name");
 static const QString PATTERN_ATTR("pattern");
 static const QString PATTERN_FILE_ATTR("pattern_file");
@@ -65,6 +64,54 @@ const QString FindWorkerFactory::ACTOR_ID("search");
 
 const QString PATTERN_DELIMITER(";");
 
+static const Descriptor pd(PATTERN_ATTR,
+              FindWorker::tr("Pattern(s)"),
+              FindWorker::tr("Semicolon-separated list of patterns to search for."));
+
+static const Descriptor pf(PATTERN_FILE_ATTR,
+              FindWorker::tr("Pattern file"),
+              FindWorker::tr("Load pattern from file in any sequence format or in newline-delimited format"));
+
+/************************************************************************/
+/* FindPatternsValidator */
+/************************************************************************/
+class FindPatternsValidator : public ConfigurationValidator {
+public:
+    virtual bool validate(const Configuration *cfg, QStringList &output) const {
+        bool hasPattern = isPatternSet(cfg) || isPatternFileSet(cfg) || isPatternSlotBinded(cfg);
+        if (!hasPattern) {
+            output << QObject::tr("Patterns are not set. Set the '%1' or '%2' parameter or bind the input text slot")
+                .arg(pd.getDisplayName()).arg(pf.getDisplayName());
+        }
+        return hasPattern;
+    }
+
+private:
+    bool isStringAttrSet(const Configuration *cfg, const QString &id) const {
+        Attribute *attr = cfg->getParameter(id);
+        QString value = attr->getAttributePureValue().toString();
+        return !value.isEmpty();
+    }
+    bool isPatternSet(const Configuration *cfg) const {
+        return isStringAttrSet(cfg, PATTERN_ATTR);
+    }
+    bool isPatternFileSet(const Configuration *cfg) const {
+        return isStringAttrSet(cfg, PATTERN_FILE_ATTR);
+    }
+    bool isPatternSlotBinded(const Configuration *cfg) const {
+        const Workflow::Actor *a = dynamic_cast<const Workflow::Actor*>(cfg);
+        SAFE_POINT(NULL != a, "NULL actor", false);
+        Workflow::Port* p = a->getPort(BasePorts::IN_SEQ_PORT_ID());
+        SAFE_POINT(NULL != p, "NULL port", false);
+        QVariant busMap = p->getParameter(Workflow::IntegralBusPort::BUS_MAP_ATTR_ID)->getAttributePureValue();
+        QString slotValue = busMap.value<QStrStrMap>().value(BaseSlots::TEXT_SLOT().getId());
+        return !slotValue.isEmpty();
+    }
+};
+
+/***************************
+ * FindWorkerFactory
+ ***************************/
 void FindWorkerFactory::init() {
 
     QMap<Descriptor, DataTypePtr> m;
@@ -95,14 +142,6 @@ void FindWorkerFactory::init() {
         Descriptor nd(NAME_ATTR,
             FindWorker::tr("Annotate as"),
             FindWorker::tr("Name of the result annotations."));
-
-        Descriptor pd(PATTERN_ATTR,
-            FindWorker::tr("Pattern(s)"),
-            FindWorker::tr("Semicolon-separated list of patterns to search for."));
-
-        Descriptor pf(PATTERN_FILE_ATTR,
-            FindWorker::tr("Pattern file"),
-            FindWorker::tr("Load pattern from file in any sequence format or in newline-delimited format"));
 
         Descriptor un(USE_NAMES_ATTR,
             FindWorker::tr("Use pattern name"),
@@ -164,6 +203,9 @@ void FindWorkerFactory::init() {
     
     proto->setIconPath( ":core/images/find_dialog.png" );
     proto->setPrompter(new FindPrompter());
+    proto->setValidator(new FindPatternsValidator());
+    QList<Descriptor> reqSlots; reqSlots << BaseSlots::DNA_SEQUENCE_SLOT();
+    proto->setPortValidator(BasePorts::IN_SEQ_PORT_ID(), new RequiredSlotsValidator(reqSlots));
     WorkflowEnv::getProtoRegistry()->registerProto(BaseActorCategories::CATEGORY_BASIC(), proto);
     
     DomainFactory* localDomain = WorkflowEnv::getDomainRegistry()->getById(LocalDomainFactory::ID);
