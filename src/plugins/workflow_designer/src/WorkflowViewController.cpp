@@ -1907,13 +1907,6 @@ void WorkflowView::sl_pasteSample(const QString& s) {
         sl_updateTitle();
         sl_updateUi();
         scene->connectConfigurationEditors();
-        scene->sl_selectAll();
-        foreach(QGraphicsItem* it, scene->selectedItems()){
-            StyledItem* styledItem = static_cast<StyledItem*>(it);
-            if (styledItem) {
-                styledItem->setStyle(WorkflowSettings::defaultStyle());
-            }
-        }
         scene->sl_deselectAll();
         scene->update();
         rescale();

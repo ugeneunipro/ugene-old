@@ -181,10 +181,6 @@ QPixmap SaveSchemaImageUtils::generateSchemaSnapshot(const QString & data) {
     pixmap.fill();
     QPainter painter(&pixmap);
     painter.setRenderHint(QPainter::Antialiasing);
-    scene->sl_selectAll();
-    foreach(QGraphicsItem* it, scene->selectedItems()){
-        (static_cast<StyledItem*>(it))->setStyle(WorkflowSettings::defaultStyle());
-    }
     scene->render(&painter, QRectF(), bounds);
     delete scene;
     return pixmap;
