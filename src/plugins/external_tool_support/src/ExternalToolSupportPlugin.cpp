@@ -538,7 +538,10 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin():Plugin(tr("External tool 
         }
     }
     if (!tasks.isEmpty()) {
-        tasks << new SearchToolsInPathTask(this);
+        // Workaround: perl is found after the vcftool.
+        // Should be fixed.
+//        tasks << new SearchToolsInPathTask(this);
+        tasks.prepend(new SearchToolsInPathTask(this));
         SequentialMultiTask* checkExternalToolsTask=new SequentialMultiTask(tr("Checking external tools for first time"), tasks, TaskFlags_NR_FOSCOE);
         AppContext::getTaskScheduler()->registerTopLevelTask(checkExternalToolsTask);
     } else {
