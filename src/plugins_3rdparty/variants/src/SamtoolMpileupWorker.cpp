@@ -642,7 +642,7 @@ void CallVariantsWorkerFactory::init() {
 
 QString CallVariantsPrompter::composeRichDoc() {
     Actor* assemblyProducer = qobject_cast<IntegralBusPort*>(target->getPort(BasePorts::IN_ASSEMBLY_PORT_ID()))->getProducer(BaseSlots::ASSEMBLY_SLOT().getId());
-    Actor* seqProducer = qobject_cast<IntegralBusPort*>(target->getPort(BasePorts::IN_SEQ_PORT_ID()))->getProducer(BaseSlots::DNA_SEQUENCE_SLOT().getId());
+    Actor* seqProducer = qobject_cast<IntegralBusPort*>(target->getPort(BasePorts::IN_SEQ_PORT_ID()))->getProducer(BaseSlots::URL_SLOT().getId());
 
     QString unsetStr = "<font color='red'>"+tr("unset")+"</font>";
     QString seqName = tr("For reference sequence from <u>%1</u>,").arg(seqProducer ? seqProducer->getLabel() : unsetStr);
