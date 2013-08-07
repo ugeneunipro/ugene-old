@@ -1237,8 +1237,8 @@ void DotPlotWidget::checkShift(bool emitSignal) {
         shiftX = w*(1-zoom.x());
     }
 
-    if (shiftY < qFloor(h*(1-zoom.y()))) {
-        shiftY = qFloor(h*(1-zoom.y()));
+    if (shiftY < h*(1-zoom.y())) {
+        shiftY = h*(1-zoom.y());
     }
 
     if (emitSignal) {
