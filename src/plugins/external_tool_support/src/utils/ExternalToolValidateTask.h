@@ -23,6 +23,7 @@
 #define _U2_EXTERNAL_TOOL_VALIDATE_TASK_H
 
 #include <U2Core/Task.h>
+#include <U2Core/MultiTask.h>
 #include <QtCore/QProcess>
 
 namespace U2 {
@@ -69,6 +70,42 @@ private:
 
 };
 
-}//namespace
+class ExternalToolSearchAndValidateTask : public Task {
+    Q_OBJECT
+public:
+    ExternalToolSearchAndValidateTask(const QString& toolName, const QString& path = QString());
+
+    void prepare();
+    QList<Task*> onSubTaskFinished(Task *subTask);
+    Task::ReportResult report();
+
+    bool isValidTool();
+    QString getToolName();
+    QString getToolPath();
+    QString getToolVersion();
+
+private:
+    QString     toolName;
+    QStringList toolPaths;
+    bool        isValid;
+    QString     program;
+    QString     version;
+    QString     errorMsg;
+    bool        toolIsFound;
+    QString     path;
+    ExternalToolValidateTask* validateTask;
+
+    static const QString TOOLS;
+};
+
+class ExternalToolsValidateTask : public SequentialMultiTask {
+    Q_OBJECT
+public:
+    ExternalToolsValidateTask (const QList<Task*>& _tasks);
+
+    virtual QList<Task*> onSubTaskFinished(Task* subTask);
+};
+
+}   // namespace
 
 #endif // _U2_EXTERNAL_TOOL_VALIDATE_TASK_H

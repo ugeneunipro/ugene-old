@@ -20,6 +20,8 @@
  */
 
 #include "ExternalToolValidateTask.h"
+#include "ExternalToolSupportSettings.h"
+#include "python/PythonSupport.h"
 
 #include <U2Core/AppContext.h>
 #include <U2Core/ExternalToolRegistry.h>
@@ -193,4 +195,164 @@ void ExternalToolValidateTask::checkVersion(const QString &partOfLog){
         }
     }
 }
+
+const QString ExternalToolSearchAndValidateTask::TOOLS = "tools";
+
+ExternalToolSearchAndValidateTask::ExternalToolSearchAndValidateTask(const QString& _toolName, const QString& _path) :
+    Task(_toolName + " search and validate task", TaskFlags(TaskFlag_CancelOnSubtaskCancel | TaskFlag_NoRun)),
+    toolName(_toolName),
+    isValid(false),
+    toolIsFound(true),
+    path(_path),
+    validateTask(NULL) {
+}
+
+void ExternalToolSearchAndValidateTask::prepare() {
+    ExternalTool* tool = AppContext::getExternalToolRegistry()->getByName(toolName);
+    if (!tool) {
+        setError(QString("Tool \'%1\' wasn't found in registry").arg(toolName));
+        return;
+    }
+
+    if (!path.isEmpty()) {
+        // Try to validate tool on the predefined path
+        toolPaths << path;
+    } else {
+        // Search and validate
+
+        // Check the path from the settings
+        if (!tool->getPath().isEmpty()) {
+            toolPaths << tool->getPath();
+        }
+
+        // Search for the tool in an application dir
+        QDir appDir(QCoreApplication::applicationDirPath());
+        QStringList entryList = appDir.entryList(QDir::Dirs | QDir::NoDotAndDotDot);
+        QString toolsDir;
+        foreach(const QString& dirName, entryList) {
+            if (dirName.contains(TOOLS)) {
+                toolsDir = appDir.absolutePath()+ "/" + dirName;
+                break;
+            }
+        }
+
+        if (!toolsDir.isEmpty()) {
+            QString exeName = tool->getExecutableFileName();
+            bool fileNotFound = true;
+            LimitedDirIterator it (toolsDir);
+            while (it.hasNext() && fileNotFound) {
+                it.next();
+                QString toolPath(it.filePath() + "/" + exeName);
+                QFileInfo info(toolPath);
+                if (info.exists() && info.isFile()) {
+                    toolPaths << QDir::toNativeSeparators(toolPath);
+                    fileNotFound = false;
+                }
+            }
+        }
+
+        // Search for the tool in the PATH variable
+        QStringList envList = QProcess::systemEnvironment();
+        if (envList.indexOf(QRegExp("PATH=.*",Qt::CaseInsensitive)) >= 0) {
+            QString pathEnv = envList.at(envList.indexOf(QRegExp("PATH=.*",Qt::CaseInsensitive)));
+#if defined(Q_OS_LINUX) || defined(Q_OS_MAC)
+            QStringList paths = pathEnv.split("=").at(1).split(":");
+#else
+#ifdef Q_OS_WIN
+            QStringList paths = pathEnv.split("=").at(1).split(";");
+#else
+            QStringList paths;
+#endif
+#endif
+            // UGENE-1781: Remove python external tool search in PATH
+            // It should be fixed without crutches.
+            if (tool->getName() != PYTHON_TOOL_NAME) {
+                foreach (const QString& curPath, paths) {
+                    QString exePath = curPath + "/" + tool->getExecutableFileName();
+                    QFileInfo fileExe(exePath);
+                    if (fileExe.exists()) {
+                        toolPaths << exePath;
+                    }
+                }
+            }
+        }
+
+    }
+
+    if (!toolPaths.isEmpty()) {
+        validateTask = new ExternalToolValidateTask(toolName, toolPaths.first());
+        addSubTask(validateTask);
+    } else {
+        toolIsFound = false;
+    }
+}
+
+QList<Task*> ExternalToolSearchAndValidateTask::onSubTaskFinished(Task *subTask) {
+    QList<Task*> subTasks;
+
+    if (subTask->isCanceled()) {
+        return subTasks;
+    }
+
+    if (validateTask == subTask) {
+        if (validateTask->isValidTool()) {
+            isValid = validateTask->isValidTool();
+            program = validateTask->getToolPath();
+            version = validateTask->getToolVersion();
+        } else {
+            errorMsg = validateTask->getError();
+            program = validateTask->getToolPath();
+            toolPaths.removeAll(validateTask->getToolPath());
+            if (!toolPaths.isEmpty()) {
+                validateTask = new ExternalToolValidateTask(toolName, toolPaths.first());
+                subTasks << validateTask;
+            }
+        }
+    }
+
+    return subTasks;
+}
+
+Task::ReportResult ExternalToolSearchAndValidateTask::report() {
+    ExternalTool* tool = AppContext::getExternalToolRegistry()->getByName(toolName);
+    SAFE_POINT(NULL != tool, QString("Tool \'%1\' wasn't found in registry").arg(toolName), ReportResult_Finished);
+    if (!isValid && toolIsFound) {
+        if (errorMsg.isEmpty()) {
+            stateInfo.setError(tr("Can not find expected message."
+                                  "<br>It is possible that the specified executable file "
+                                  "<i>%1</i> for %2 tool is invalid. "
+                                  "You can change the path to the executable file "
+                                  "in the external tool settings in the global "
+                                  "preferences.").arg(program).arg(toolName));
+        } else {
+            stateInfo.setError(errorMsg);
+        }
+    }
+    return ReportResult_Finished;
+}
+
+bool ExternalToolSearchAndValidateTask::isValidTool() {
+    return isValid;
+}
+QString ExternalToolSearchAndValidateTask::getToolName() {
+    return toolName;
+}
+QString ExternalToolSearchAndValidateTask::getToolPath() {
+    return program;
+}
+QString ExternalToolSearchAndValidateTask::getToolVersion() {
+    return version;
+}
+
+ExternalToolsValidateTask::ExternalToolsValidateTask(const QList<Task*> &_tasks) :
+    SequentialMultiTask(tr("Checking external tools for the first time"), _tasks, TaskFlags(TaskFlag_NoRun | TaskFlag_CancelOnSubtaskCancel)) {
+}
+
+QList<Task*> ExternalToolsValidateTask::onSubTaskFinished(Task* subTask) {
+    if (subTask->hasError()) {
+        taskLog.error(subTask->getTaskName() + tr(" failed: ") + subTask->getError());
+    }
+    return SequentialMultiTask::onSubTaskFinished(subTask);
+}
+
 }//namespace

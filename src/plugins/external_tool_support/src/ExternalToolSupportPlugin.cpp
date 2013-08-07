@@ -491,65 +491,32 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin():Plugin(tr("External tool 
     //Read settings
     ExternalToolSupportSettings::getExternalTools();
     
-    //Search for tools in application dir
-    
-    QDir appDir(AppContext::getWorkingDirectoryPath());
-    QStringList entryList = appDir.entryList(QDir::Dirs | QDir::NoDotAndDotDot);
-    QString toolsDir;
-    foreach(const QString& dirName, entryList) {
-        if (dirName.contains(TOOLS)) {
-            toolsDir = appDir.absolutePath()+ "/" + dirName;
-            break;
-        }
-    }    
-
+    // Create validation tasks
     QList<Task*> tasks;
-    if (!toolsDir.isEmpty()) {
-        foreach(ExternalTool* curTool, etRegistry->getAllEntries()){
-             if(!curTool->getPath().isEmpty()){ 
-                 //check if runner exists otherwise run validation (for invalid external tools)
+    foreach (ExternalTool* curTool, etRegistry->getAllEntries()) {
+        if (curTool->isValid() && !curTool->getPath().isEmpty()) {
+            QString runner = curTool->getToolRunnerProgram();
+            if (runner.isEmpty()) {
+                continue;
+            }
 
-                 QString runner = curTool->getToolRunnerProgram();
-                 if(runner.isEmpty()){
-                    continue;
-                 }
-
-                 
-                 ScriptingToolRegistry* str = AppContext::getScriptingToolRegistry();
-                 if (str && str->getByName(runner) && curTool->isValid()){
-                     continue;
-                 }
-             }
-             QString exeName = curTool->getExecutableFileName();
-             bool fileNotFound = true;
-             LimitedDirIterator it (toolsDir);
-             while (it.hasNext()&& fileNotFound) {
-                 it.next();
-                 QString toolPath(it.filePath() + "/" + exeName);
-                 QFileInfo info(toolPath);
-                 if(info.exists() && info.isFile()){
-                     QString path = QDir::toNativeSeparators(toolPath);
-                     ExternalToolValidateTask* validateTask=new ExternalToolValidateTask(curTool->getName(), path);
-                     connect(validateTask,SIGNAL(si_stateChanged()),SLOT(sl_validateTaskStateChanged()));
-                     tasks.append(validateTask);
-                     fileNotFound=false;
-                 }
-             }
+            ScriptingToolRegistry* str = AppContext::getScriptingToolRegistry();
+            if (str && str->getByName(runner)) {
+                continue;
+            }
         }
-    }
-    if (!tasks.isEmpty()) {
-        // Workaround: perl is found after the vcftool.
-        // Should be fixed.
-//        tasks << new SearchToolsInPathTask(this);
-        tasks.prepend(new SearchToolsInPathTask(this));
-        SequentialMultiTask* checkExternalToolsTask=new SequentialMultiTask(tr("Checking external tools for first time"), tasks, TaskFlags_NR_FOSCOE);
-        AppContext::getTaskScheduler()->registerTopLevelTask(checkExternalToolsTask);
-    } else {
-        AppContext::getTaskScheduler()->registerTopLevelTask(new SearchToolsInPathTask(this));
+
+        ExternalToolSearchAndValidateTask* validateTask = new ExternalToolSearchAndValidateTask(curTool->getName());
+        connect(validateTask,SIGNAL(si_stateChanged()),SLOT(sl_validateTaskStateChanged()));
+        tasks << validateTask;
     }
 
+    if (!tasks.isEmpty()) {
+        AppContext::getTaskScheduler()->registerTopLevelTask(new ExternalToolsValidateTask(tasks));
+    }
+
+    //Add viewer for settings
     if (AppContext::getMainWindow()) {
-        //Add viewer for settings
         AppContext::getAppSettingsGUI()->registerPage(new ExternalToolSupportSettingsPageController());
     }
     //Add new workers to WD
@@ -580,7 +547,7 @@ ExternalToolSupportPlugin::~ExternalToolSupportPlugin(){
     ExternalToolSupportSettings::setExternalTools();
 }
 void ExternalToolSupportPlugin::sl_validateTaskStateChanged(){
-    ExternalToolValidateTask* s=qobject_cast<ExternalToolValidateTask*>(sender());
+    ExternalToolSearchAndValidateTask* s=qobject_cast<ExternalToolSearchAndValidateTask*>(sender());
     assert(s);
     if(s->isFinished()){
         AppContext::getExternalToolRegistry()->getByName(s->getToolName())->setValid(s->isValidTool());
