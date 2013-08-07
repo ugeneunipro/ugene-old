@@ -75,8 +75,11 @@ U2Sequence SQLiteSequenceDbi::getSequenceObject(const U2DataId& sequenceId, U2Op
 QByteArray SQLiteSequenceDbi::getSequenceData(const U2DataId& sequenceId, const U2Region& region, U2OpStatus& os) {
     QByteArray res;
     //TODO: check mem-overflow, compare region.length with sequence length!
-    // res.reserve(region.length);
-
+    if ( 0 == region.length ) {
+        return res;
+    } else if ( U2_REGION_MAX != region ) {
+        res.reserve(region.length);
+    }
     // Get all chunks that intersect the region
     SQLiteQuery q("SELECT sstart, send, data FROM SequenceData WHERE sequence = ?1 "
         "AND  (send >= ?2 AND sstart < ?3) ORDER BY sstart", db, os);

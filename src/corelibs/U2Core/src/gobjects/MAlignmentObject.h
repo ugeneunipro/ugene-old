@@ -117,7 +117,9 @@ public:
     void crop(U2Region window, const QSet<QString>& rowNames);
     bool shiftRegion(int startPos, int startRow, int nBases, int nRows, int shift);
     void deleteColumnWithGaps(int requiredGapCount = GAP_COLUMN_ONLY);
-    void updateCachedMAlignment(MAlignmentModInfo mi = MAlignmentModInfo());
+    void updateCachedMAlignment(MAlignmentModInfo mi = MAlignmentModInfo(),
+        const QList<qint64> &modifiedRowIds = QList<qint64>(),
+        const QList<qint64> &removedRowIds = QList<qint64>());
     void sortRowsByList(const QStringList& order);
 
     void saveState();

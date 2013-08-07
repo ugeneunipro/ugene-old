@@ -28,6 +28,9 @@
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SequenceDbi.h>
 
+static const char *NULL_MSA_DBI_ERROR =             "NULL MSA Dbi during exporting rows of an alignment!";
+static const char *OPENED_DBI_CONNECTION_ERROR =    "Connection is already opened!";
+static const char *ROWS_SEQS_COUNT_MISMATCH_ERROR = "Different number of rows and sequences!";
 
 namespace U2 {
 
@@ -37,7 +40,7 @@ MAlignmentExporter::MAlignmentExporter()
 }
 
 MAlignment MAlignmentExporter::getAlignment(const U2DbiRef& dbiRef, const U2DataId& msaId, U2OpStatus& os) {
-    SAFE_POINT(!con.isOpen(), "Connection is already opened!", MAlignment());
+    SAFE_POINT(!con.isOpen(), OPENED_DBI_CONNECTION_ERROR, MAlignment());
     con.open(dbiRef, false, os);
     CHECK_OP(os, MAlignment());
 
@@ -48,8 +51,9 @@ MAlignment MAlignmentExporter::getAlignment(const U2DbiRef& dbiRef, const U2Data
     QList<DNASequence> sequences = exportSequencesOfRows(rows, os);
     CHECK_OP(os, MAlignment());
 
-    SAFE_POINT(rows.count() == sequences.count(), "Different number of rows and sequences!", MAlignment());
+    SAFE_POINT(rows.count() == sequences.count(), ROWS_SEQS_COUNT_MISMATCH_ERROR, MAlignment());
 
+    MAlignment al;
     for (int i = 0; i < rows.count(); ++i) {
         al.addRow(rows[i], sequences[i], os);
         CHECK_OP(os, MAlignment());
@@ -72,18 +76,55 @@ MAlignment MAlignmentExporter::getAlignment(const U2DbiRef& dbiRef, const U2Data
     return al;
 }
 
+QList<MAlignmentRowReplacementData> MAlignmentExporter::getAlignmentRows(const U2DbiRef& dbiRef,
+    const U2DataId& msaId, const QList<qint64> rowIds, U2OpStatus& os)
+{
+    SAFE_POINT(!con.isOpen(), OPENED_DBI_CONNECTION_ERROR, QList<MAlignmentRowReplacementData>());
+    con.open(dbiRef, false, os);
+    CHECK_OP(os, QList<MAlignmentRowReplacementData>());
+
+    QList<U2MsaRow> rows = exportRows(msaId, rowIds, os);
+    CHECK_OP(os, QList<MAlignmentRowReplacementData>());
+
+    QList<DNASequence> sequences = exportSequencesOfRows(rows, os);
+    CHECK_OP(os, QList<MAlignmentRowReplacementData>());
+
+    QList<MAlignmentRowReplacementData> result;
+    SAFE_POINT(rows.count() == sequences.count(), ROWS_SEQS_COUNT_MISMATCH_ERROR,
+        QList<MAlignmentRowReplacementData>());
+    for ( int i = 0; i < rows.length( ); ++i ) {
+        result << MAlignmentRowReplacementData( sequences.at(i), rows.at( i ) );
+    }
+    return result;
+}
+
 QList<U2MsaRow> MAlignmentExporter::exportRows(const U2DataId& msaId, U2OpStatus& os) {
     U2MsaDbi* msaDbi = con.dbi->getMsaDbi();
-    SAFE_POINT(NULL != msaDbi, "NULL MSA Dbi during exporting rows of an alignment!", QList<U2MsaRow>());
+    SAFE_POINT(NULL != msaDbi, NULL_MSA_DBI_ERROR, QList<U2MsaRow>());
 
     return msaDbi->getRows(msaId, os);
 }
+
+QList<U2MsaRow> MAlignmentExporter::exportRows( const U2DataId &msaId, const QList<qint64> rowIds,
+    U2OpStatus &os )
+{
+    U2MsaDbi* msaDbi = con.dbi->getMsaDbi( );
+    SAFE_POINT( NULL != msaDbi, NULL_MSA_DBI_ERROR, QList<U2MsaRow>( ) );
+    QList<U2MsaRow> result;
+    foreach ( qint64 rowId, rowIds ) {
+        result.append( msaDbi->getRow( msaId, rowId, os) );
+        SAFE_POINT_OP( os, QList<U2MsaRow>( ) );
+    }
+    return result;
+}
+
 
 QList<DNASequence> MAlignmentExporter::exportSequencesOfRows(QList<U2MsaRow> rows, U2OpStatus& os) {
     U2SequenceDbi* sequenceDbi = con.dbi->getSequenceDbi();
     SAFE_POINT(NULL != sequenceDbi, "NULL Sequence Dbi during exporting rows sequences!", QList<DNASequence>());
 
     QList<DNASequence> sequences;
+    sequences.reserve( rows.count( ) );
     for (int i = 0, n = rows.count(); i < n; ++i) {
         const U2DataId& sequenceId = rows[i].sequenceId;
         qint64 gstart = rows[i].gstart;

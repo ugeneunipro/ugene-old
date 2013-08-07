@@ -80,14 +80,38 @@ MAlignment MAlignmentObject::getMAlignment() const {
     return cachedMAlignment;
 }
 
-void MAlignmentObject::updateCachedMAlignment(MAlignmentModInfo mi) {
+void MAlignmentObject::updateCachedMAlignment(MAlignmentModInfo mi,
+    const QList<qint64> &modifiedRowIds, const QList<qint64> &removedRowIds)
+{
     MAlignment maBefore = cachedMAlignment;
     QString oldName = maBefore.getName();
 
     U2OpStatus2Log os;
     MAlignmentExporter alExporter;
-    cachedMAlignment = alExporter.getAlignment(entityRef.dbiRef, entityRef.entityId, os);
-    SAFE_POINT_OP(os, );
+    if ( modifiedRowIds.isEmpty( ) && removedRowIds.isEmpty( ) ) { // suppose that in this case all the alignment has changed
+        cachedMAlignment = alExporter.getAlignment(entityRef.dbiRef, entityRef.entityId, os);
+        SAFE_POINT_OP(os, );
+    } else { // only specified rows were changed
+        if ( !removedRowIds.isEmpty( ) ) {
+            foreach ( qint64 rowId, removedRowIds ) {
+                const int rowIndex = cachedMAlignment.getRowIndexByRowId( rowId, os );
+                SAFE_POINT_OP(os, );
+                cachedMAlignment.removeRow( rowIndex, os );
+                SAFE_POINT_OP(os, );
+            }
+        }
+        if ( !modifiedRowIds.isEmpty( ) ) {
+            QList<MAlignmentRowReplacementData> rowsAndSeqs = alExporter.getAlignmentRows(
+                entityRef.dbiRef, entityRef.entityId, modifiedRowIds, os);
+            SAFE_POINT_OP(os, );
+            foreach ( const MAlignmentRowReplacementData &data, rowsAndSeqs ) {
+                const int rowIndex = cachedMAlignment.getRowIndexByRowId( data.row.rowId, os );
+                SAFE_POINT_OP(os, );
+                cachedMAlignment.setRowContent( rowIndex, data.sequence.seq );
+                cachedMAlignment.setRowGapModel( rowIndex, data.row.gaps );
+            }
+        }
+    }
 
     setModified(true);
     if (mi.middleState == false) {
@@ -318,29 +342,93 @@ void MAlignmentObject::setGObjectName(const QString& newName) {
     GObject::setGObjectName(newName);
 }
 
-void MAlignmentObject::removeRegion(int startPos, int startRow, int nBases, int nRows, bool removeEmptyRows, bool track) {
+QList<qint64> getRowsAffectedByDeletion( const MAlignment &msa,
+    const QList<qint64> &removedRowIds )
+{
+    QList<qint64> rowIdsAffectedByDeletion;
+    U2OpStatus2Log os;
+    const QList<qint64> msaRows = msa.getRowsIds( );
+    int previousRemovedRowIndex = -1;
+    foreach ( qint64 removedRowId, removedRowIds ) {
+        if ( -1 != previousRemovedRowIndex ) {
+            const int currentRemovedRowIndex = msa.getRowIndexByRowId( removedRowId, os );
+            SAFE_POINT_OP(os, QList<qint64>( ) );
+            SAFE_POINT( currentRemovedRowIndex > previousRemovedRowIndex,
+                "Rows order violation!", QList<qint64>( ) );
+            const int countOfUnchangedRowsBetween = currentRemovedRowIndex
+                - previousRemovedRowIndex - 1;
+            if ( 0 < countOfUnchangedRowsBetween ) {
+                for ( int middleRowIndex = previousRemovedRowIndex + 1;
+                    middleRowIndex < currentRemovedRowIndex; ++middleRowIndex )
+                {
+                    rowIdsAffectedByDeletion += msaRows[middleRowIndex];
+                }
+            }
+        }
+        previousRemovedRowIndex = msa.getRowIndexByRowId( removedRowId, os );
+        SAFE_POINT_OP(os, QList<qint64>( ) );
+    }
+    rowIdsAffectedByDeletion += msaRows.mid(
+        msa.getRowIndexByRowId( removedRowIds.last( ) + 1, os ) );
+    SAFE_POINT_OP(os, QList<qint64>( ) );
+    return rowIdsAffectedByDeletion;
+}
+
+template<typename T>
+inline QList<T> mergeLists( const QList<T> &first, const QList<T> &second ) {
+    QList<T> result = first;
+    foreach ( const T &item, second ) {
+        if ( !result.contains( item ) ) {
+            result.append( item );
+        }
+    }
+    return result;
+}
+
+void MAlignmentObject::removeRegion(int startPos, int startRow, int nBases, int nRows,
+    bool removeEmptyRows, bool track)
+{
     SAFE_POINT(!isStateLocked(), "Alignment state is locked!", );
-    QList<qint64> rowIds;
-    MAlignment msa = getMAlignment();
-    SAFE_POINT(nRows > 0 && startRow >= 0 && startRow + nRows - 1 < msa.getNumRows(), "Invalid parameters!", );
-    QList<MAlignmentRow>::ConstIterator it = msa.getRows().begin() + startRow;
+    QList<qint64> modifiedRowIds;
+    const MAlignment msa = getMAlignment();
+    const QList<MAlignmentRow> msaRows = msa.getRows();
+    SAFE_POINT(nRows > 0 && startRow >= 0 && startRow + nRows < msaRows.size(),
+        "Invalid parameters!", );
+    QList<MAlignmentRow>::ConstIterator it = msaRows.begin() + startRow;
     QList<MAlignmentRow>::ConstIterator end = it + nRows;
     for (; it != end; it++) {
-        rowIds << it->getRowId();
+        modifiedRowIds << it->getRowId();
     }
+    const bool trimmingIsNeeded = ( 0 == startPos || msa.getLength( ) == startPos + nBases );
 
     U2OpStatus2Log os;
-    MsaDbiUtils::removeRegion(entityRef, rowIds, startPos, nBases, os);
+    MsaDbiUtils::removeRegion(entityRef, modifiedRowIds, startPos, nBases, os);
     SAFE_POINT_OP(os, );
 
-    MsaDbiUtils::trim(entityRef, os);
-    SAFE_POINT_OP(os, );
-
-    if (removeEmptyRows) {
-        MsaDbiUtils::removeEmptyRows(entityRef, rowIds, os);
+    QList<qint64> trimmedRowIds; // include this rows into modified rows further
+    if ( trimmingIsNeeded ) {
+        trimmedRowIds = MsaDbiUtils::trim(entityRef, os);
+        SAFE_POINT_OP(os, );
     }
+
+    QList<qint64> removedRows;
+    if (removeEmptyRows) {
+        removedRows = MsaDbiUtils::removeEmptyRows(entityRef, modifiedRowIds, os);
+        SAFE_POINT_OP(os, );
+        if ( !removedRows.isEmpty( ) ) { // suppose that if at least one row in msa was removed then
+            // all the rows below it were changed
+            const QList<qint64> rowIdsAffectedByDeletion = getRowsAffectedByDeletion( msa,
+                removedRows );
+            foreach ( qint64 removedRowId, removedRows ) { // removed rows ain't need to be update
+                modifiedRowIds.removeAll( removedRowId );
+                trimmedRowIds.removeAll( removedRowId );
+            }
+            modifiedRowIds = mergeLists( modifiedRowIds, rowIdsAffectedByDeletion );
+        }
+    }
+    modifiedRowIds = mergeLists( modifiedRowIds, trimmedRowIds );
     if (track) {
-        updateCachedMAlignment();
+        updateCachedMAlignment( MAlignmentModInfo( ), modifiedRowIds, removedRows );
     }
 }
 

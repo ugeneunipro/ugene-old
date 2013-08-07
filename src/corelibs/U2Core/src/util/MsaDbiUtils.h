@@ -84,8 +84,9 @@ public:
      * Removes leading and trailing gaps, if required.
      * Updates the alignment length in this case.
      * Gap mode should be correct, else some gaps may be not trimmed.
+     * Returns list of modified rows.
      */
-    static void trim(const U2EntityRef& msaRef, U2OpStatus& os);
+    static QList<qint64> trim(const U2EntityRef& msaRef, U2OpStatus& os);
 
     /**
      * Adds a row to the alignment and updates 'row'.
@@ -136,8 +137,9 @@ public:
 
     /**
      * If some of specified rows is empty it will be removed.
+     * Returns list of removed row ids.
      */
-    static void removeEmptyRows(const U2EntityRef& msaRef, const QList<qint64>& rowIds, U2OpStatus &os);
+    static QList<qint64> removeEmptyRows(const U2EntityRef& msaRef, const QList<qint64>& rowIds, U2OpStatus &os);
 
 private:
     /** Calculates a new gap model when 'count' gaps are inserted to 'pos' position */
@@ -147,15 +149,17 @@ private:
      * Verifies if the alignment contains columns of gaps at the beginning.
      * Delete this columns of gaps from each row.
      * Gaps should be ordered and should not stick together.
+     * Returns a list containing modified rows
      */
-    static void cutOffLeadingGaps(QList<U2MsaRow>& rows);
+    static QList<U2MsaRow> cutOffLeadingGaps(QList<U2MsaRow>& rows);
 
     /**
      * Delete all gaps from gapModel after msaLength.
      * If gap begins before the end of alignment and end after it, it will be modified:
      * the gap`s end will be equal to the alignment`s end.
+     * Returns a list containing modified rows
      */
-    static void cutOffTrailingGaps(QList<U2MsaRow>& rows, const qint64 msaLength);
+    static QList<U2MsaRow> cutOffTrailingGaps(QList<U2MsaRow>& rows, const qint64 msaLength);
 
     /**
      * Removes gaps from the row between position 'pos' and 'pos + count'.

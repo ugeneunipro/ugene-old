@@ -30,21 +30,32 @@
 
 namespace U2 {
 
+struct MAlignmentRowReplacementData {
+    MAlignmentRowReplacementData( const DNASequence &_sequence, const U2MsaRow &_row )
+        : sequence( _sequence ), row( _row ) { }
+
+    DNASequence sequence;
+    U2MsaRow row;
+};
+
 /** Getting a multiple alignment from DBI */
 class U2CORE_EXPORT MAlignmentExporter {
 public:
-    MAlignmentExporter();
+                                        MAlignmentExporter();
 
-    MAlignment getAlignment(const U2DbiRef& dbiRef, const U2DataId& msaId, U2OpStatus& os);
+    MAlignment                          getAlignment(const U2DbiRef& dbiRef, const U2DataId& msaId,
+                                            U2OpStatus& os);
+    QList<MAlignmentRowReplacementData> getAlignmentRows(const U2DbiRef& dbiRef, const U2DataId& msaId,
+                                            const QList<qint64> rowIds, U2OpStatus& os);
 
 private:
-    QList<U2MsaRow> exportRows(const U2DataId&, U2OpStatus&);
-    QList<DNASequence> exportSequencesOfRows(QList<U2MsaRow>, U2OpStatus&);
-    QVariantMap exportAlignmentInfo(const U2DataId&, U2OpStatus&);
-    U2Msa exportAlignmentObject(const U2DataId&, U2OpStatus&);
+    QList<U2MsaRow>                     exportRows(const U2DataId&, U2OpStatus&);
+    QList<U2MsaRow>                     exportRows(const U2DataId&, const QList<qint64> rowIds, U2OpStatus&);
+    QList<DNASequence>                  exportSequencesOfRows(QList<U2MsaRow>, U2OpStatus&);
+    QVariantMap                         exportAlignmentInfo(const U2DataId&, U2OpStatus&);
+    U2Msa                               exportAlignmentObject(const U2DataId&, U2OpStatus&);
 
-    MAlignment            al;
-    DbiConnection         con;
+    DbiConnection                       con;
 };
 
 } // namespace
