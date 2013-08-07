@@ -144,9 +144,9 @@ QString CallVariantsTask::tmpFilePath(const QString &baseName, const QString &ex
 /************************************************************************/
 /* SamtoolsMpileupTask */
 /************************************************************************/
-SamtoolsMpileupTask::SamtoolsMpileupTask( const CallVariantsTaskSettings& _settings)
-:Task(tr("Samtool mpileup for %1 ").arg(_settings.refSeqUrl), TaskFlags(TaskFlag_NoRun))
-,settings(_settings), mpileupTask(NULL), bcfviewTask(NULL), varFilterTask(NULL), subtaskCount(0) {
+SamtoolsMpileupTask::SamtoolsMpileupTask(const CallVariantsTaskSettings &_settings)
+:Task(tr("Samtool mpileup for %1 ").arg(_settings.refSeqUrl), TaskFlags(TaskFlag_None)),settings(_settings)
+{
 
 }
 
@@ -170,46 +170,64 @@ void SamtoolsMpileupTask::prepare(){
 
     //prepare tmp files
     QString tmpDirPath = AppContext::getAppSettings()->getUserAppsSettings()->getCurrentProcessTemporaryDirPath(CALL_VARIANTS_DIR);
-    tmpBcfViewOutputFile = GUrlUtils::prepareTmpFileLocation(tmpDirPath, "tmp", "vcf", stateInfo);
     filteredFile = GUrlUtils::prepareTmpFileLocation(tmpDirPath, "filtered", "vcf", stateInfo);
     CHECK_OP(stateInfo, );
-    setMaxParallelSubtasks(2);
-
-    subtaskCount = 2;
-    mpileupTask = new ExternalToolRunTask("SAMtools", settings.getMpiliupArgs(), new ExternalToolLogParser());
-    bcfviewTask = new ExternalToolRunTask("BCFtools", settings.getBcfViewArgs(), new ExternalToolLogParser());
-
-    mpileupTask->setOutputProcess(bcfviewTask->process());
-    bcfviewTask->setOutputFile(tmpBcfViewOutputFile);
-
-    addSubTask(mpileupTask);
-    addSubTask(bcfviewTask);
 }
 
-QList<Task*> SamtoolsMpileupTask::onSubTaskFinished(Task *subTask) {
-    subtaskCount--;
-    QList<Task*> result;
-    if (subTask->hasError() || subTask->isCanceled()) {
-        mpileupTask->cancel();
-        bcfviewTask->cancel();
-        if (NULL != varFilterTask) {
-            varFilterTask->cancel();
+void SamtoolsMpileupTask::run() {
+    ProcessRun samtools = ExternalToolSupportUtils::prepareProcess("SAMtools", settings.getMpiliupArgs(), "", QStringList(), stateInfo);
+    CHECK_OP(stateInfo, );
+    QScopedPointer<QProcess> sp(samtools.process);
+    QScopedPointer<ExternalToolRunTaskHelper> sh(new ExternalToolRunTaskHelper(samtools.process, new ExternalToolLogParser(), stateInfo));
+
+    ProcessRun bcftools = ExternalToolSupportUtils::prepareProcess("BCFtools", settings.getBcfViewArgs(), "", QStringList(), stateInfo);
+    CHECK_OP(stateInfo, );
+    QScopedPointer<QProcess> bp(bcftools.process);
+    QScopedPointer<ExternalToolRunTaskHelper> bh(new ExternalToolRunTaskHelper(bcftools.process, new ExternalToolLogParser(), stateInfo));
+
+    ProcessRun vcfutils = ExternalToolSupportUtils::prepareProcess("vcfutils", settings.getVarFilterArgs(), "", QStringList(), stateInfo);
+    CHECK_OP(stateInfo, );
+    QScopedPointer<QProcess> vp(vcfutils.process);
+    QScopedPointer<ExternalToolRunTaskHelper> vh(new ExternalToolRunTaskHelper(vcfutils.process, new ExternalToolLogParser(), stateInfo));
+
+    samtools.process->setStandardOutputProcess(bcftools.process);
+    bcftools.process->setStandardOutputProcess(vcfutils.process);
+    vcfutils.process->setStandardOutputFile(filteredFile);
+
+    start(samtools, "SAMtools");
+    CHECK_OP(stateInfo, );
+    start(bcftools, "BCFtools");
+    CHECK_OP(stateInfo, );
+    start(vcfutils, "vcfutils");
+    CHECK_OP(stateInfo, );
+
+    while(!vcfutils.process->waitForFinished(1000)){
+        if (isCanceled()) {
+            samtools.process->kill();
+            bcftools.process->kill();
+            vcfutils.process->kill();
+            return;
         }
-        return result;
     }
 
-    if (0 == subtaskCount) {
-        varFilterTask = new ExternalToolRunTask("vcfutils", settings.getVarFilterArgs() << tmpBcfViewOutputFile, new ExternalToolLogParser());
-        varFilterTask->setOutputFile(filteredFile);
-        result << varFilterTask;
-    }
-
-    return result;
+    checkExitCode(vcfutils.process, "vcfutils");
+    checkExitCode(bcftools.process, "BCFtools");
+    checkExitCode(samtools.process, "SAMtools");
 }
 
-Task::ReportResult SamtoolsMpileupTask::report() {
-    GUrlUtils::removeFile(tmpBcfViewOutputFile, stateInfo);
-    return ReportResult_Finished;
+void SamtoolsMpileupTask::start(const ProcessRun &pRun, const QString &toolName) {
+    pRun.process->start(pRun.program, pRun.arguments);
+    bool started = pRun.process->waitForStarted();
+    CHECK_EXT(started, setError(tr("Can not run %1 tool").arg(toolName)), );
+}
+
+void SamtoolsMpileupTask::checkExitCode(QProcess *process, const QString &toolName) {
+    int exitCode = process->exitCode();
+    if (exitCode != EXIT_SUCCESS && !hasError()) {
+        setError(tr("%1 tool exited with code %2").arg(toolName).arg(exitCode));
+    } else {
+        algoLog.details(tr("Tool %1 finished successfully").arg(toolName));
+    }
 }
 
 /************************************************************************/

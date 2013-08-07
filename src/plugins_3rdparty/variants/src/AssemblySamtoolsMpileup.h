@@ -97,22 +97,20 @@ class CallVariantsTaskSettings{
 class SamtoolsMpileupTask : public Task{
     Q_OBJECT
 public:
-    SamtoolsMpileupTask ( const CallVariantsTaskSettings& _settings);
+    SamtoolsMpileupTask(const CallVariantsTaskSettings &settings);
 
     void prepare();
-    QList<Task*> onSubTaskFinished(Task* subTask);
-    ReportResult report();
+    void run();
 
     const QString& getBcfOutputFilePath(){return filteredFile;}
 
 private:
-    CallVariantsTaskSettings    settings;
-    QString             tmpBcfViewOutputFile;
-    QString             filteredFile;
-    ExternalToolRunTask *mpileupTask;
-    ExternalToolRunTask *bcfviewTask;
-    ExternalToolRunTask *varFilterTask;
-    int subtaskCount;
+    void start(const ProcessRun &pRun, const QString &toolName);
+    void checkExitCode(QProcess *process, const QString &toolName);
+
+private:
+    CallVariantsTaskSettings settings;
+    QString filteredFile;
 };
 
 class CallVariantsTask : public Task {

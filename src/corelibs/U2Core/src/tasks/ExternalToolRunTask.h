@@ -35,6 +35,13 @@ class ExternalToolLogParser;
 class ExternalToolRunTaskHelper;
 class SaveDocumentTask;
 
+class U2CORE_EXPORT ProcessRun {
+public:
+    QProcess *process;
+    QString program;
+    QStringList arguments;
+};
+
 class U2CORE_EXPORT ExternalToolRunTask: public Task {
     Q_OBJECT
     friend class ExternalToolRunTaskHelper;
@@ -42,26 +49,15 @@ public:
     ExternalToolRunTask(const QString& toolName, const QStringList& arguments, ExternalToolLogParser*  logParser, const QString& workingDirectory = "", const QStringList& additionalPaths = QStringList());
     ~ExternalToolRunTask();
 
-    void prepare();
     void run();
-    Task::ReportResult report();
-    void cancelProcess();
-    void setOutputFile(const QString &url);
-    void setOutputProcess(QProcess *proc);
-
-    QProcess * process();
 
 private:
     QStringList             arguments;
-    QString                 program;
-    QString                 toolRunnerProgram;
     ExternalToolLogParser*  logParser;
     QString                 toolName;
-    QProcess*               externalToolProcess;
     QString                 workingDirectory;
-    QProcessEnvironment     processEnvironment;
-    bool                    writeOutputToFile;
-    QString                 outputUrl;
+    QStringList             additionalPaths;
+    QProcess*               externalToolProcess;
 };
 
 /** Part of ExternalToolRunTask that belongs to task run  thread -> get signals from that thread directly */
@@ -70,6 +66,7 @@ class U2CORE_EXPORT ExternalToolRunTaskHelper : public QObject {
 
 public:
     ExternalToolRunTaskHelper(ExternalToolRunTask* t);
+    ExternalToolRunTaskHelper(QProcess *process, ExternalToolLogParser *logParser, U2OpStatus &os);
 
 public slots:
     void sl_onReadyToReadLog();
@@ -77,7 +74,9 @@ public slots:
 
 private:
     QMutex logMutex;
-    ExternalToolRunTask*    p;
+    QProcess *process;
+    ExternalToolLogParser *logParser;
+    U2OpStatus &os;
     QByteArray              logData;
 };
 
@@ -96,6 +95,7 @@ public:
         U2OpStatus &os);
     static void appendExistingFile(const QString &path, QStringList &files);
     static bool startExternalProcess(QProcess *process, const QString &program, const QStringList &arguments);
+    static ProcessRun prepareProcess(const QString &toolName, const QStringList &arguments, const QString &workingDirectory, const QStringList &additionalPaths, U2OpStatus &os);
 };
 
 
