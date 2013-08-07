@@ -20,6 +20,8 @@
  */
 
 #include "DotPlotClasses.h"
+#include <QtCore/qmath.h>
+#include <QtCore/qnumeric.h>
 
 namespace U2 {
 
@@ -48,7 +50,14 @@ QPointF DotPlotMiniMap::fromMiniMap(const QPointF &p, const QPointF &zoom) const
     float lx = p.x() - x;
     float ly = p.y() - y;
 
-    return QPointF((lx*zoom.x() - w/2)*ratio, (ly*zoom.y() - h/2)*ratio);
+    QPointF result((lx*zoom.x() - w/2)*ratio, (ly*zoom.y() - h/2)*ratio);
+    if (lx == w) {
+        result.setX(qInf());
+    }
+    if (ly == h) {
+        result.setY(qInf());
+    }
+    return result;
 }
 
 // draw minimap
@@ -59,7 +68,7 @@ void DotPlotMiniMap::draw(QPainter &p, int shiftX, int shiftY, const QPointF &zo
     p.setBrush(QBrush(QColor(200, 200, 200, 100)));
 
     p.translate(x, y);
-    p.drawRect(0, 0, w, h);
+    p.drawRect(0, 0, w, h+1);
 
     QRect r((-shiftX/ratio)/zoom.x(), (-shiftY/ratio)/zoom.y(), w/zoom.x(), h/zoom.y());
 
