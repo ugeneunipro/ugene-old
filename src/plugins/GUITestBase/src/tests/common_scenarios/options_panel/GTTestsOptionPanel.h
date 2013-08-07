@@ -25,6 +25,7 @@ k
 
 #include <U2Test/GUITestBase.h>
 #include "api/GTKeyboardDriver.h"
+#include "api/GTWidget.h"
 #include "GTUtilsDialog.h"
 
 namespace U2 {
@@ -35,8 +36,18 @@ public:
         :Filler(_os,"SequenceReadingModeSelectorDialog"){}
     virtual void run(){
         GTGlobals::sleep(1000);
+#ifdef Q_OS_MAC
+        QWidget* dialog = QApplication::activeModalWidget();
+        QList<QPushButton*> list= dialog->findChildren<QPushButton*>();
 
-        GTKeyboardDriver::keyClick(os,GTKeyboardDriver::key["enter"]);}
+        foreach(QPushButton* but, list){
+            if (but->text().contains("OK"))
+                GTWidget::click(os,but);
+        }
+#else
+        GTKeyboardDriver::keyClick(os,GTKeyboardDriver::key["enter"]);
+#endif
+    }
 private:
 
 };

@@ -127,7 +127,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 
     REGISTER_TEST(GUITest_regression_scenarios::test_1199);
     REGISTER_TEST(GUITest_regression_scenarios::test_1083);
-    REGISTER_TEST(GUITest_regression_scenarios::test_1093);
+    REGISTER_TEST_IGNORED_MAC(GUITest_regression_scenarios::test_1093,"not for mac");
     REGISTER_TEST(GUITest_regression_scenarios::test_1113);
     REGISTER_TEST(GUITest_regression_scenarios::test_1113_1);
 
@@ -138,7 +138,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_1189);
     REGISTER_TEST(GUITest_regression_scenarios::test_1189_1);
 
-    REGISTER_TEST(GUITest_regression_scenarios::test_1190);
+    REGISTER_TEST_IGNORED_MAC(GUITest_regression_scenarios::test_1190,"not for mac");
 
     REGISTER_TEST(GUITest_regression_scenarios::test_1212);
     REGISTER_TEST(GUITest_regression_scenarios::test_1212_1);
