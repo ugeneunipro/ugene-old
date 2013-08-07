@@ -95,6 +95,7 @@ public:
     static QString createSubDirectoryForRun(const QString &root, U2OpStatus &os);
     static bool useWorkingDir();
     static bool useSubDirs();
+    static void saveRunInfo(const QString &dir);
 
 private:
     static bool useSettings();

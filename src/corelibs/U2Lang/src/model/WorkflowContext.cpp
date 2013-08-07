@@ -179,6 +179,9 @@ bool WorkflowContext::initWorkingDir() {
     } else {
         _workingDir = root;
     }
+    if (!AppContext::isGUIMode()) {
+        WorkflowContextCMDLine::saveRunInfo(workingDir());
+    }
     monitor->setOutputDir(workingDir());
     coreLog.details("Workflow output directory is: " + workingDir());
     return true;
@@ -260,6 +263,19 @@ bool WorkflowContextCMDLine::useSubDirs() {
     }
 
     return reg->hasParameter(ROLL_OUTPUT);
+}
+
+void WorkflowContextCMDLine::saveRunInfo(const QString &dir) {
+    QFile runInfo(dir + "run.info");
+    bool opened = runInfo.open(QIODevice::WriteOnly);
+    CHECK(opened, );
+
+    QTextStream stream(&runInfo);
+    stream.setCodec("UTF-8");
+    stream << QCoreApplication::arguments().join(" ") + "\n";
+    stream.flush();
+
+    runInfo.close();
 }
 
 } // Workflow
