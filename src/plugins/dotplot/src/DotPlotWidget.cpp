@@ -140,9 +140,6 @@ void DotPlotWidget::initActionsAndSignals() {
     filterDotPlotAction = new QAction(tr("Filter Results"), this);
     connect(filterDotPlotAction, SIGNAL(triggered()), SLOT(sl_filter()));
 
-
-    connect(AppContext::getTaskScheduler(), SIGNAL(si_stateChanged(Task*)), SLOT(sl_taskFinished(Task*)));
-
     foreach (ADVSequenceWidget *advSeqWidget, dnaView->getSequenceWidgets()) {
         ADVSingleSequenceWidget *ssw = qobject_cast<ADVSingleSequenceWidget*>(advSeqWidget);
         if (ssw != NULL) {
@@ -363,50 +360,63 @@ void DotPlotWidget::sl_timer(){
     timer->stop();
 }
 
-void DotPlotWidget::sl_taskFinished(Task *task) {
+void DotPlotWidget::sl_taskStateChanged() {
+    if (!dotPlotTask || (dotPlotTask && dotPlotTask->getState() != Task::State_Finished)) {
+        return;
+    }
+    dotPlotTask = NULL;
+}
 
-    Q_ASSERT(task);
-    if ( task != dotPlotTask || task->getState() != Task::State_Finished) {
+void DotPlotWidget::sl_closeDotplotTaskStateChanged() {
+    if (!dotPlotTask || (dotPlotTask && dotPlotTask->getState() != Task::State_Finished)) {
+        return;
+    }
+    dotPlotTask = NULL;
+
+    emit si_removeDotPlot();
+}
+
+void DotPlotWidget::sl_filteringTaskStateChanged() {
+    if (!dotPlotTask || (dotPlotTask && dotPlotTask->getState() != Task::State_Finished)) {
+        return;
+    }
+    dotPlotTask = NULL;
+
+    // build dotplot task finished
+    pixMapUpdateNeeded = true;
+    update();
+}
+
+void DotPlotWidget::sl_buildDotplotTaskStateChanged() {
+
+    if (!dotPlotTask || (dotPlotTask && dotPlotTask->getState() != Task::State_Finished)) {
         return;
     }
 
-    if (createDotPlot) {
-        GCOUNTER(c, t, "Create dotplot");
-        dpFilteredResults->clear();
-        dpFilteredResultsRevCompl->clear();
-        createDotPlot = false;
-    }
+    GCOUNTER(c, t, "Create dotplot");
+    dpFilteredResults->clear();
+    dpFilteredResultsRevCompl->clear();
 
     if (!dpDirectResultListener->stateOk || !dpRevComplResultsListener->stateOk) {
         DotPlotDialogs::tooManyResults();
     }
-    if(!filtration){
-        foreach(DotPlotResults dpR, *dpDirectResultListener->dotPlotList){
-            dpFilteredResults->append(dpR);
-        }
+    foreach(DotPlotResults dpR, *dpDirectResultListener->dotPlotList){
+        dpFilteredResults->append(dpR);
+    }
 
-        //inverted
-        if(inverted){
-            foreach(DotPlotResults dpR, *dpRevComplResultsListener->dotPlotList){
-                    dpFilteredResultsRevCompl->append(dpR);
-            }
+    //inverted
+    if (inverted){
+        foreach(DotPlotResults dpR, *dpRevComplResultsListener->dotPlotList){
+                dpFilteredResultsRevCompl->append(dpR);
         }
     }
-    filtration = false;
+
     dotPlotTask = NULL;
     dpDirectResultListener->setTask(NULL);
     dpRevComplResultsListener->setTask(NULL);
-    
+
     seqXCache.clear();
     seqYCache.clear();
-
-    
-
-    if (deleteDotPlotFlag) {
-        deleteDotPlotFlag = false;
-        emit si_removeDotPlot();
-        return;
-    }
 
     // build dotplot task finished
     pixMapUpdateNeeded = true;
@@ -553,6 +563,7 @@ bool DotPlotWidget::sl_showSaveFileDialog() {
             identity
     );
     ts->registerTopLevelTask(dotPlotTask);
+    connect(dotPlotTask, SIGNAL(si_stateChanged()), SLOT(sl_taskStateChanged()));
 
     return true;
 }
@@ -624,6 +635,7 @@ bool DotPlotWidget::sl_showLoadFileDialog() {
 
     TaskScheduler* ts = AppContext::getTaskScheduler();
     ts->registerTopLevelTask(dotPlotTask);
+    connect(dotPlotTask, SIGNAL(si_stateChanged()), SLOT(sl_buildDotplotTaskStateChanged()));
 
     pixMapUpdateNeeded = true;
     update();
@@ -762,6 +774,7 @@ bool DotPlotWidget::sl_showSettingsDialog(bool disableLoad) {
 
     TaskScheduler* ts = AppContext::getTaskScheduler();
     ts->registerTopLevelTask(dotPlotTask);
+    connect(dotPlotTask, SIGNAL(si_stateChanged()), SLOT(sl_buildDotplotTaskStateChanged()));
 
     return true;
 }
@@ -802,6 +815,7 @@ void DotPlotWidget::addCloseDotPlotTask() {
     }
 
     AppContext::getTaskScheduler()->registerTopLevelTask(t);
+    connect(t, SIGNAL(si_stateChanged()), SLOT(sl_closeDotplotTaskStateChanged()));
 }
 
 // dotplot results updated, need to update picture
@@ -1223,8 +1237,8 @@ void DotPlotWidget::checkShift(bool emitSignal) {
         shiftX = w*(1-zoom.x());
     }
 
-    if (shiftY < h*(1-zoom.y())) {
-        shiftY = h*(1-zoom.y());
+    if (shiftY < qFloor(h*(1-zoom.y()))) {
+        shiftY = qFloor(h*(1-zoom.y()));
     }
 
     if (emitSignal) {
@@ -1868,6 +1882,7 @@ void DotPlotWidget::sl_filter(){
         }
 
         dotPlotTask = new MultiTask("Filtration", tasks);
+        connect(dotPlotTask, SIGNAL(si_stateChanged()), SLOT(sl_filteringTaskStateChanged()));
 
         filtration = true;
 
