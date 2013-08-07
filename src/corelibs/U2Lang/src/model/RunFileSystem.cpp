@@ -340,7 +340,9 @@ void RFSUtils::initRFS(RunFileSystem &rfs, const QList<Workflow::Actor*> &actors
 }
 
 bool RFSUtils::isOutUrlAttribute(Attribute *attr, Workflow::Actor *actor, bool &dir) {
-    PropertyDelegate *delegate = actor->getEditor()->getDelegate(attr->getId());
+    ConfigurationEditor *editor = actor->getEditor();
+    CHECK(NULL != editor, false);
+    PropertyDelegate *delegate = editor->getDelegate(attr->getId());
     CHECK(NULL != delegate, false);
 
     dir = (PropertyDelegate::OUTPUT_DIR == delegate->type());
