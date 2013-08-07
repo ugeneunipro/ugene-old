@@ -171,7 +171,7 @@ QString WizardFiller::actualizePath(lineEditValue* val){
 
 #define GT_METHOD_NAME "WizardFiller::getButtonByText"
 QPushButton* WizardFiller::getButtonByText(U2OpStatus &os, QString text){
-    QPushButton* nextButton;
+    QPushButton* nextButton=NULL;
 
     QWidget* dialog = QApplication::activeModalWidget();
     GT_CHECK_RESULT(dialog, "activeModalWidget is NULL", NULL);
@@ -219,7 +219,7 @@ QPushButton* WizardFiller::getNextButton(U2OpStatus &os){
 
 #define GT_METHOD_NAME "WizardFiller::getFinishButton"
 QPushButton* WizardFiller::getFinishButton(U2OpStatus &os){
-    QPushButton* finish = getButtonByText(os, "&Finish");
+    QPushButton* finish = getButtonByText(os, "Apply");
     GT_CHECK_RESULT(finish, "finish button not found",NULL);
     return finish;
 }

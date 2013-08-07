@@ -265,7 +265,7 @@ GUI_TEST_CLASS_DEFINITION(test_0005){
 
 GUI_TEST_CLASS_DEFINITION(test_0006){
 #ifndef Q_OS_LINUX
-    GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
+    //GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
 #endif
     //GTUtilsDialog::waitForDialog(os,new RPackageDialorFiller(os));
 //1. Do menu Settings->Prefrences
@@ -280,7 +280,7 @@ GUI_TEST_CLASS_DEFINITION(test_0006){
     menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
     GTMenu::clickMenuItem(os, menu, QStringList() << "Workflow Designer");
 //6. Load any scheme from samples tab
-    GTUtilsWorkflowDesigner::addSample(os,"call variants");
+    GTUtilsWorkflowDesigner::addAlgorithm(os,"read alignment");
 //Expected state: item style on loaded schema must be Minimal
     StyleId id;
     QGraphicsView* sceneView = qobject_cast<QGraphicsView*>(GTWidget::findWidget(os,"sceneView"));

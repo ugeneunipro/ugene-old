@@ -53,6 +53,7 @@ GTSequenceReadingModeDialogUtils::GTSequenceReadingModeDialogUtils(U2OpStatus &o
 #define GT_METHOD_NAME "run"
 void GTSequenceReadingModeDialogUtils::run()
 {
+    GTGlobals::sleep(1000);
     QWidget *openDialog = QApplication::activeModalWidget();
     GT_CHECK(openDialog != NULL, "dialog not found");
 
