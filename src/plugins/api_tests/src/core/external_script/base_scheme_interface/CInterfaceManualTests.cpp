@@ -579,7 +579,7 @@ IMPLEMENT_TEST( CInterfaceManualTests, call_variants ) {
     U2ErrorType error = createScheme( NULL, &scheme );
     CHECK_U2_ERROR( error );
 
-    error = addElementToScheme( scheme, L"read-sequence", MAX_ELEMENT_NAME_LENGTH, readSequence );
+    error = addElementToScheme( scheme, L"get-file-list", MAX_ELEMENT_NAME_LENGTH, readSequence );
     CHECK_U2_ERROR( error );
     error = addElementToScheme( scheme, L"read-assembly", MAX_ELEMENT_NAME_LENGTH, readAssembly );
     CHECK_U2_ERROR( error );
@@ -602,7 +602,7 @@ IMPLEMENT_TEST( CInterfaceManualTests, call_variants ) {
 
     error = addFlowToScheme( scheme, readAssembly, L"out-assembly", callVariants, L"in-assembly" );
     CHECK_U2_ERROR( error );
-    error = addFlowToScheme( scheme, readSequence, L"out-sequence", callVariants, L"in-sequence" );
+    error = addFlowToScheme( scheme, readSequence, L"out-url", callVariants, L"in-sequence" );
     CHECK_U2_ERROR( error );
     error = addFlowToScheme( scheme, callVariants, L"out-variations", writeVariations, L"in-variations" );
     CHECK_U2_ERROR( error );
@@ -613,9 +613,6 @@ IMPLEMENT_TEST( CInterfaceManualTests, call_variants ) {
     error = addSchemeActorsBinding( scheme, readAssembly, L"assembly", callVariants,
         L"in-assembly.assembly" );
     error = addSchemeActorsBinding( scheme, readAssembly, L"url", callVariants, L"in-assembly.url" );
-    CHECK_U2_ERROR( error );
-    error = addSchemeActorsBinding( scheme, readSequence, L"sequence", callVariants,
-        L"in-sequence.sequence" );
     CHECK_U2_ERROR( error );
     error = addSchemeActorsBinding( scheme, readSequence, L"url", callVariants, L"in-sequence.url" );
     CHECK_U2_ERROR( error );
