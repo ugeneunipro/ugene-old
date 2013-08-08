@@ -41,6 +41,7 @@
 #include "ExternalProcessWorker.h"
 #include "library/AminoTranslationWorker.h"
 #include "library/AssemblyToSequenceWorker.h"
+#include "library/ConvertFilesFormatWorker.h"
 #include "library/GetFileListWorker.h"
 #include "library/GroupWorker.h"
 #include "library/PassFilterWorker.h"
@@ -292,6 +293,7 @@ void CoreLib::init() {
     AssemblyToSequencesWorkerFactory::init();
     WriteAssemblyWorkerFactory::init();
     ReadAnnotationsWorkerFactory::init();
+    ConvertFilesFormatWorkerFactory::init();
 
     initUsersWorkers();
     initExternalToolsWorkers();

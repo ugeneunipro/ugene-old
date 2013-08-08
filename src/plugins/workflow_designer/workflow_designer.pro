@@ -32,6 +32,7 @@ HEADERS += src/ActorCfgModel.h \
            src/library/AssemblyToSequenceWorker.h \
            src/library/BaseDocWorker.h \
            src/library/CDSearchWorker.h \
+           src/library/ConvertFilesFormatWorker.h \
            src/library/CoreLib.h \
            src/library/CreateExternalProcessDialog.h \
            src/library/DASFetchWorker.h \
@@ -114,6 +115,7 @@ SOURCES += src/ActorCfgModel.cpp \
            src/library/AssemblyToSequenceWorker.cpp \
            src/library/BaseDocWorker.cpp \
            src/library/CDSearchWorker.cpp \
+           src/library/ConvertFilesFormatWorker.cpp \
            src/library/CoreLib.cpp \
            src/library/CreateExternalProcessDialog.cpp \
            src/library/DASFetchWorker.cpp \
