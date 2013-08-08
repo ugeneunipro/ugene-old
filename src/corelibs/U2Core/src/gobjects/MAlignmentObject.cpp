@@ -368,9 +368,11 @@ QList<qint64> getRowsAffectedByDeletion( const MAlignment &msa,
         previousRemovedRowIndex = msa.getRowIndexByRowId( removedRowId, os );
         SAFE_POINT_OP(os, QList<qint64>( ) );
     }
-    rowIdsAffectedByDeletion += msaRows.mid(
-        msa.getRowIndexByRowId( removedRowIds.last( ) + 1, os ) );
+    const int lastDeletedRowIndex = msa.getRowIndexByRowId( removedRowIds.last( ), os );
     SAFE_POINT_OP(os, QList<qint64>( ) );
+    if ( lastDeletedRowIndex < msaRows.size( ) - 1 ) { // if the last removed row was not in the bottom of the msa
+        rowIdsAffectedByDeletion += msaRows.mid( lastDeletedRowIndex + 1 );
+    }
     return rowIdsAffectedByDeletion;
 }
 
@@ -392,7 +394,7 @@ void MAlignmentObject::removeRegion(int startPos, int startRow, int nBases, int 
     QList<qint64> modifiedRowIds;
     const MAlignment msa = getMAlignment();
     const QList<MAlignmentRow> msaRows = msa.getRows();
-    SAFE_POINT(nRows > 0 && startRow >= 0 && startRow + nRows < msaRows.size(),
+    SAFE_POINT(nRows > 0 && startRow >= 0 && startRow + nRows <= msaRows.size(),
         "Invalid parameters!", );
     QList<MAlignmentRow>::ConstIterator it = msaRows.begin() + startRow;
     QList<MAlignmentRow>::ConstIterator end = it + nRows;
