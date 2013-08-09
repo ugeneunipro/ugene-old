@@ -42,7 +42,8 @@ protected:
 class ConvertFilesFormatWorker: public BaseWorker {
     Q_OBJECT
 public:
-    ConvertFilesFormatWorker(Actor* a) : BaseWorker(a), inputUrlPort(NULL), outputUrlPort(NULL) {};
+    ConvertFilesFormatWorker(Actor* a) : BaseWorker(a), inputUrlPort(NULL), outputUrlPort(NULL), 
+                                                        selectedFormat(QString()), excludedFormats(NULL) {};
     void init();
     void getWorkingDir( QString &workingDir );
     Task * tick();
@@ -51,6 +52,7 @@ private:
     IntegralBus *inputUrlPort;
     IntegralBus *outputUrlPort;
     QString selectedFormat;
+    QStringList excludedFormats;
 public slots:
     void sl_taskFinished( Task *task );
 }; //ConvertFilesFormatWorker

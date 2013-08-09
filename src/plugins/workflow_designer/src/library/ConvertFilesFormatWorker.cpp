@@ -52,6 +52,7 @@ static const QString SHORT_NAME( "cff" );
 static const QString INPUT_PORT( "in-file" );
 static const QString OUTPUT_PORT( "out-file" );
 static const QString OUTPUT_SUBDIR( "Converted files/" );
+static const QString EXCLUDED_FORMATS_ID( "excluded-formats" );
 
 QString ConvertFilesFormatPrompter::composeRichDoc() {
     IntegralBusPort* input = qobject_cast<IntegralBusPort*>(target->getPort(INPUT_PORT));
@@ -59,18 +60,17 @@ QString ConvertFilesFormatPrompter::composeRichDoc() {
     QString unsetStr = "<font color='red'>"+tr("unset")+"</font>";
     QString producerName = tr(" from <u>%1</u>").arg(producer ? producer->getLabel() : unsetStr);
 
-    QString doc = tr("Convert sequences %1 to selected format").arg(producerName);
+    QString doc = tr("Convert sequences %1 to selected format if it is not excluded").arg(producerName);
     return doc;
 }
 
-void getFormatsByType( const GObjectType &type, QVariantMap& m ) {
-    DocumentFormatConstraints constr;
-    constr.supportedObjectTypes.insert( type );
-    constr.addFlagToSupport(DocumentFormatFlag_SupportWriting);
-
-    const QList<DocumentFormatId> supportedFormats = AppContext::getDocumentFormatRegistry()->selectFormats( constr );
+void getFormatsMap( QVariantMap &formats, const QList<DocumentFormatId> &supportedFormats, bool boolValues ) {
     foreach( const DocumentFormatId & fid, supportedFormats ) {
-        m[fid] = fid;
+        if( boolValues ) {
+            formats[fid] = false;
+        } else {
+            formats[fid] = fid;
+        }
     }
 }
 
@@ -88,24 +88,29 @@ void ConvertFilesFormatWorkerFactory::init() {
     p << new PortDescriptor(outd, DataTypePtr(new MapDataType(SHORT_NAME + ".output-url", outM)), false, true);
 
     QList<Attribute*> a; 
-    a << new Attribute( BaseAttributes::DOCUMENT_FORMAT_ATTRIBUTE(), BaseTypes::STRING_TYPE(), false, "txt" );
+    a << new Attribute( BaseAttributes::DOCUMENT_FORMAT_ATTRIBUTE(), BaseTypes::STRING_TYPE(), false );
+
+    Descriptor excludedFormats(EXCLUDED_FORMATS_ID, ConvertFilesFormatWorker::tr("Excluded formats"),
+                                                 ConvertFilesFormatWorker::tr("Input file won't be converted into any of selected formats"));
+    a << new Attribute( excludedFormats, BaseTypes::STRING_TYPE(), false );
+
     Descriptor desc( ACTOR_ID, ConvertFilesFormatWorker::tr("File conversion"),
-               ConvertFilesFormatWorker::tr("Converts a file into selected format.") );
+                               ConvertFilesFormatWorker::tr("Converts a file into selected format if it is not excluded.") );
     ActorPrototype* proto = new IntegralBusActorPrototype(desc, p, a);
 
-    QVariantMap m;
-    getFormatsByType( GObjectTypes::SEQUENCE, m );
-    getFormatsByType( GObjectTypes::TEXT, m );
-    getFormatsByType( GObjectTypes::ANNOTATION_TABLE, m );
-    getFormatsByType( GObjectTypes::VARIANT_TRACK, m );
-    getFormatsByType( GObjectTypes::CHROMATOGRAM, m );
-    getFormatsByType( GObjectTypes::MULTIPLE_ALIGNMENT, m );
-    getFormatsByType( GObjectTypes::PHYLOGENETIC_TREE, m );
-    getFormatsByType( GObjectTypes::BIOSTRUCTURE_3D, m );
-    getFormatsByType( GObjectTypes::ASSEMBLY, m );
+    DocumentFormatConstraints constr;
+    constr.addFlagToSupport(DocumentFormatFlag_SupportWriting);
+    const QList<DocumentFormatId> supportedFormats = AppContext::getDocumentFormatRegistry()->selectFormats(constr);
     
+    QVariantMap formatsWithIdValues,
+                formatsWithBooleanValues;
+    bool boolValues = false;
+    getFormatsMap( formatsWithIdValues, supportedFormats, boolValues );
+    getFormatsMap( formatsWithBooleanValues, supportedFormats, !boolValues );
+
     proto->setEditor(new DelegateEditor(QMap<QString, PropertyDelegate*>()));
-    proto->getEditor()->addDelegate( new ComboBoxDelegate(m), BaseAttributes::DOCUMENT_FORMAT_ATTRIBUTE().getId() );
+    proto->getEditor()->addDelegate( new ComboBoxDelegate(formatsWithIdValues), BaseAttributes::DOCUMENT_FORMAT_ATTRIBUTE().getId() );
+    proto->getEditor()->addDelegate( new ComboBoxWithChecksDelegate(formatsWithBooleanValues), EXCLUDED_FORMATS_ID );
 
     proto->setPrompter(new ConvertFilesFormatPrompter());
     WorkflowEnv::getProtoRegistry()->registerProto(BaseActorCategories::CATEGORY_CONVERTERS(), proto);
@@ -118,6 +123,7 @@ void ConvertFilesFormatWorker::init() {
     inputUrlPort = ports.value(INPUT_PORT);
     outputUrlPort = ports.value(OUTPUT_PORT); 
     selectedFormat = actor->getParameter( BaseAttributes::DOCUMENT_FORMAT_ATTRIBUTE().getId() )->getAttributeValue<QString>(context);
+    excludedFormats = actor->getParameter( EXCLUDED_FORMATS_ID )->getAttributeValue<QString>(context).split(",", QString::SkipEmptyParts);
 }
 
 void ConvertFilesFormatWorker::getWorkingDir( QString &workingDir ) {
@@ -149,12 +155,15 @@ Task* ConvertFilesFormatWorker::tick() {
          }
          const QVariantMap qm = inputMessage.getData().toMap();
          const GUrl sourceURL( qm.values().at(0).toString() );
-         QList<FormatDetectionResult> formats = DocumentUtils::detectFormat( sourceURL );
+         const QList<FormatDetectionResult> formats = DocumentUtils::detectFormat( sourceURL );
          if( formats.empty() ) {
              monitor()->addError( "Undefined file format", getActorId() );
              return NULL;
          }
-         if( formats.first().getFormatOrImporterName().toUpper() == selectedFormat.toUpper() ) {
+         const QString detectedFormat = formats.first().getFormatOrImporterName();
+         if( excludedFormats.contains( selectedFormat, Qt::CaseInsensitive ) || 
+             !QString::compare( detectedFormat, selectedFormat, Qt::CaseInsensitive ) )
+         {
              const Message resultMessage( BaseTypes::STRING_TYPE(), sourceURL.getURLString() );
              outputUrlPort->put( resultMessage );
              return NULL;
