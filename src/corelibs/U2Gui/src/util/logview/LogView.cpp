@@ -243,7 +243,6 @@ void LogViewWidget::hideEvent(QHideEvent *e) {
     }
 
     edit->clear();
-    QApplication::processEvents();
 }
 
 void LogViewWidget::sl_showNewMessages() {
