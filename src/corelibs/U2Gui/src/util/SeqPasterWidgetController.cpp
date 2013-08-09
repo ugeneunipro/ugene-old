@@ -109,7 +109,8 @@ QString SeqPasterWidgetController::validate(){
 
     QChar replaceChar = replace ? ui->symbolToReplaceEdit->text().at(0) : QChar();
     QByteArray normSequence = getNormSequence(alph, seq, replace, replaceChar);
-    if((seq != normSequence) && additionalWarning){
+    bool sequencesAreEqual = 0 == qstricmp(seq.data(), normSequence.data());
+    if (!sequencesAreEqual && additionalWarning){
         QString message(tr("Some of symbols, which doesn't match alphabet has been "));
         if (replace){
             message.append(tr("replaced"));
