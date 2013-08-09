@@ -798,14 +798,15 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 // Common scenarios/Workflow designer
 /////////////////////////////////////////////////////////////////////////
     REGISTER_TEST_IGNORED(GUITest_common_scenarios_workflow_designer::test_0001,"https://ugene.unipro.ru/tracker/browse/UGENE-1820");
-    REGISTER_TEST_IGNORED_WINDOWS(GUITest_common_scenarios_workflow_designer::test_0002,"https://ugene.unipro.ru/tracker/browse/UGENE-1820");
-    REGISTER_TEST_IGNORED_WINDOWS(GUITest_common_scenarios_workflow_designer::test_0002_1,"https://ugene.unipro.ru/tracker/browse/UGENE-1820");
-    REGISTER_TEST_IGNORED_WINDOWS(GUITest_common_scenarios_workflow_designer::test_0003,"https://ugene.unipro.ru/tracker/browse/UGENE-1820");
-    REGISTER_TEST_IGNORED_WINDOWS(GUITest_common_scenarios_workflow_designer::test_0005,"https://ugene.unipro.ru/tracker/browse/UGENE-1820");
-    REGISTER_TEST_IGNORED_WINDOWS(GUITest_common_scenarios_workflow_designer::test_0006,"https://ugene.unipro.ru/tracker/browse/UGENE-1820");
-    REGISTER_TEST_IGNORED(GUITest_common_scenarios_workflow_designer::test_0007,"https://ugene.unipro.ru/tracker/browse/UGENE-1820");
-    REGISTER_TEST_IGNORED(GUITest_common_scenarios_workflow_designer::test_0009,"https://ugene.unipro.ru/tracker/browse/UGENE-1820");
-    REGISTER_TEST_IGNORED_WINDOWS(GUITest_common_scenarios_workflow_designer::test_0010,"https://ugene.unipro.ru/tracker/browse/UGENE-1820");
+    REGISTER_TEST_IGNORED_WINDOWS(GUITest_common_scenarios_workflow_designer::test_0002,"no such scheme on windows");
+    REGISTER_TEST_IGNORED_WINDOWS(GUITest_common_scenarios_workflow_designer::test_0002_1,"no such scheme on windows");
+    REGISTER_TEST_IGNORED_WINDOWS(GUITest_common_scenarios_workflow_designer::test_0003,"no such scheme on windows");
+    REGISTER_TEST_IGNORED_WINDOWS(GUITest_common_scenarios_workflow_designer::test_0005,"no such scheme on windows");
+    REGISTER_TEST_IGNORED_WINDOWS(GUITest_common_scenarios_workflow_designer::test_0006,"no such scheme on windows");
+    REGISTER_TEST_IGNORED_WINDOWS(GUITest_common_scenarios_workflow_designer::test_0006_1,"no such scheme on windows");
+    REGISTER_TEST_IGNORED_WINDOWS(GUITest_common_scenarios_workflow_designer::test_0007,"no such scheme on windows");
+    REGISTER_TEST_IGNORED_WINDOWS(GUITest_common_scenarios_workflow_designer::test_0009,"no such scheme on windows");
+    REGISTER_TEST_IGNORED_WINDOWS(GUITest_common_scenarios_workflow_designer::test_0010,"no such scheme on windows");
     REGISTER_TEST(GUITest_common_scenarios_workflow_designer::test_0013);
     REGISTER_TEST(GUITest_common_scenarios_workflow_designer::test_0015);
 

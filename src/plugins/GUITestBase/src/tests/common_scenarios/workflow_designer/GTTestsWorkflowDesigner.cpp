@@ -294,6 +294,37 @@ GUI_TEST_CLASS_DEFINITION(test_0006){
     }
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0006_1){
+#ifndef Q_OS_LINUX
+    //GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
+#endif
+    //GTUtilsDialog::waitForDialog(os,new RPackageDialorFiller(os));
+//1. Do menu Settings->Prefrences
+    GTUtilsDialog::waitForDialog(os,new AppSettingsDialogFiller(os,AppSettingsDialogFiller::extended));
+    QMenu* menu=GTMenu::showMainMenu(os, MWMENU_SETTINGS);
+    GTMenu::clickMenuItem(os, menu, QStringList() << "action__settings");
+//2. Open WD settings
+//3. Change Default visualization Item style from Extended to Minimal.
+//4. Click OK button
+
+//5. Open WD
+    menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
+    GTMenu::clickMenuItem(os, menu, QStringList() << "Workflow Designer");
+//6. Load any scheme from samples tab
+    GTUtilsWorkflowDesigner::addAlgorithm(os,"read alignment");
+//Expected state: item style on loaded schema must be Minimal
+    StyleId id;
+    QGraphicsView* sceneView = qobject_cast<QGraphicsView*>(GTWidget::findWidget(os,"sceneView"));
+    QList<QGraphicsItem *> items = sceneView->items();
+    foreach(QGraphicsItem* item, items){
+        WorkflowProcessItem* s = qgraphicsitem_cast<WorkflowProcessItem*>(item);
+        if(s){
+            id = s->getStyle();
+            CHECK_SET_ERR(id=="ext","items style is not minimal");
+        }
+    }
+}
+
 GUI_TEST_CLASS_DEFINITION(test_0007){
 #ifndef Q_OS_LINUX
     GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
@@ -332,13 +363,15 @@ GUI_TEST_CLASS_DEFINITION(test_0009){
     GTMenu::clickMenuItem(os, menu, QStringList() << "Workflow Designer");
     GTUtilsWorkflowDesigner::addSample(os, "call variants");
 //    2. Clear dashboard (select all + del button)
+    GTGlobals::sleep(500);
     QGraphicsView* sceneView = qobject_cast<QGraphicsView*>(GTWidget::findWidget(os,"sceneView"));
     CHECK_SET_ERR(sceneView,"scene not found");
     QList<QGraphicsItem *> items = sceneView->items();
     QList<QPointF> posList;
 
     foreach(QGraphicsItem* item,items){
-        posList.append(item->pos());
+        if(qgraphicsitem_cast<WorkflowProcessItem*>(item))
+            posList.append(item->pos());
     }
 
     GTWidget::setFocus(os,GTWidget::findWidget(os,"sceneView"));
@@ -347,12 +380,16 @@ GUI_TEST_CLASS_DEFINITION(test_0009){
 //    3. Open this schema from examples
     GTUtilsWorkflowDesigner::addSample(os, "call variants");
 //    Expected state: items and links between them painted correctly
-    items = sceneView->items();
-    foreach(QGraphicsItem* item,items){
-        QPointF p = posList.takeFirst();
-        CHECK_SET_ERR(p==item->pos(),QString("some item changed position from %1, %2 to %3, %4")
-                      .arg(p.x()).arg(p.y()).arg(item->pos().x()).arg(item->pos().y()));
+    GTGlobals::sleep(500);
+    QList<QGraphicsItem *> items1 = sceneView->items();
+    QList<QPointF> posList1;
+
+    foreach(QGraphicsItem* item,items1){
+        if(qgraphicsitem_cast<WorkflowProcessItem*>(item))
+            posList1.append(item->pos());
     }
+
+    CHECK_SET_ERR(posList==posList1,"some workers changed positions");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0010){
