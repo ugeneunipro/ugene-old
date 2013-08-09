@@ -114,6 +114,11 @@ AnnotatedDNAView::AnnotatedDNAView(const QString& viewName, const QList<U2Sequen
     toggleHLAction = new QAction("", this);
     connect(toggleHLAction, SIGNAL(triggered()), SLOT(sl_toggleHL()));
 
+    removeAnnsAndQsAction = new QAction("",this);
+    removeAnnsAndQsAction->setShortcut(QKeySequence(Qt::Key_Delete));
+    removeAnnsAndQsAction->setShortcutContext(Qt::WidgetWithChildrenShortcut);
+
+
     syncViewManager = new ADVSyncViewManager(this);
     
     foreach(U2SequenceObject* dnaObj, dnaObjects) {
@@ -180,6 +185,7 @@ QWidget* AnnotatedDNAView::createWidget() {
     scrolledWidget->setBackgroundRole(QPalette::Light);
 
     annotationsView = new AnnotationsTreeView(this);
+    annotationsView->setParent(mainSplitter);
     annotationsView->setObjectName("annotations_tree_view");
     for (int i = seqContexts.size(); --i>=0;) { //use reverse mode -> so sequence widget for a lower index will be on top
         ADVSequenceObjectContext* seqCtx = seqContexts[i];
@@ -209,8 +215,12 @@ QWidget* AnnotatedDNAView::createWidget() {
     }
 
 //add view global shortcuts
+
+    connect(removeAnnsAndQsAction, SIGNAL(triggered()),annotationsView->removeAnnsAndQsAction, SIGNAL(triggered()));
     mainSplitter->addAction(toggleHLAction);
     mainSplitter->addAction(removeSequenceObjectAction);
+
+    mainSplitter->addAction(removeAnnsAndQsAction);
 
     mainSplitter->setWindowIcon(GObjectTypes::getTypeInfo(GObjectTypes::SEQUENCE).icon);
 
@@ -244,7 +254,6 @@ QWidget* AnnotatedDNAView::createWidget() {
     }
 
     qDeleteAll(filters);
-
     return mainSplitter;
 }
 

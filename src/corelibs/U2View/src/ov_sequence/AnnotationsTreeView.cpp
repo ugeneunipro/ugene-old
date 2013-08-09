@@ -151,8 +151,7 @@ AnnotationsTreeView::AnnotationsTreeView(AnnotatedDNAView* _ctx) : ctx(_ctx){
 
     removeAnnsAndQsAction = new QAction(tr("Selected annotations and qualifiers"), this);
     removeAnnsAndQsAction->setObjectName("Selected annotations and qualifiers");
-    removeAnnsAndQsAction->setShortcut(QKeySequence(Qt::Key_Delete));
-    removeAnnsAndQsAction->setShortcutContext(Qt::WindowShortcut);
+    //hotkeys are set in AnnotatedDNAView::createWidget()
     connect(removeAnnsAndQsAction, SIGNAL(triggered()), SLOT(sl_removeAnnsAndQs()));
     tree->addAction(removeAnnsAndQsAction);
 

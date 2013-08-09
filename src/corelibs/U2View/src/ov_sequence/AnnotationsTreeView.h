@@ -64,6 +64,7 @@ typedef QFlags<ATVAnnUpdateFlag> ATVAnnUpdateFlags;
 
 class U2VIEW_EXPORT AnnotationsTreeView : public QWidget {
     Q_OBJECT
+    friend class AnnotatedDNAView;
 public:
     AnnotationsTreeView(AnnotatedDNAView* ctx);
 

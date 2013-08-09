@@ -212,6 +212,7 @@ private:
     QAction*            posSelectorAction;
     QAction*            toggleHLAction;
     QAction*            posSelectorWidgetAction;
+    QAction*            removeAnnsAndQsAction;
 
     QAction*            addSequencePart;
     QAction*            removeSequencePart;
