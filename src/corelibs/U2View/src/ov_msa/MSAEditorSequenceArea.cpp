@@ -2307,4 +2307,94 @@ int MSAEditorSequenceArea::getHeight(){
     return editor->getRowHeight() * (getNumVisibleSequences(true) - 1);
 }
 
+QString MSAEditorSequenceArea::exportHighligtning( int startPos, int endPos, int startingIndex, bool keepGaps, bool dots ){
+    QStringList result;
+
+    MAlignmentObject* maObj = editor->getMSAObject();
+
+    assert(maObj!=NULL);
+
+    QString header;
+    header.append("Position\t");
+    QString refSeqName = editor->getReferenceRowName();
+    header.append(refSeqName);
+    header.append("\t");
+    foreach(QString name, maObj->getMAlignment().getRowNames()){
+        if(name != refSeqName){
+            header.append(name);
+            header.append("\t");
+        }
+    }
+    header.remove(header.length()-1,1);
+    result.append(header);
+
+    const MAlignment& msa = maObj->getMAlignment();
+    const MSAEditor *editor = ui->getEditor();
+    const MAlignment alignment = editor->getMSAObject()->getMAlignment();
+    U2OpStatusImpl os;
+    const int refSeq = alignment.getRowIndexByRowId(editor->getReferenceRowId(), os);
+    const MAlignmentRow *r = NULL;
+    if (MAlignmentRow::invalidRowId() != refSeq) {
+        r = &(msa.getRow(refSeq));
+    }
+
+    int posInResult = startingIndex;
+
+    for (int pos = startPos-1; pos < endPos; pos++) {
+        QString rowStr;
+        rowStr.append(QString("%1").arg(posInResult));
+        rowStr.append(QString("\t") + QString(msa.charAt(refSeq, pos)) + QString("\t"));
+        bool informative = false;
+        for (int seq = 0; seq < msa.getNumRows(); seq++) {  //FIXME possible problems when sequences have moved in view
+            if (seq == refSeq) continue;
+            char c = msa.charAt(seq, pos);
+
+            const char refChar = r->charAt(pos);
+            if (refChar == '-' && !keepGaps) continue;
+            bool drawColor = false;
+            highlitingScheme->setUseDots(useDotsAction->isChecked());
+            highlitingScheme->process(refChar, c, drawColor);
+
+            if (drawColor) {
+                rowStr.append(c);
+                informative = true;
+            }else{
+                if (dots){
+                    rowStr.append("."); 
+                }else{
+                    rowStr.append(" "); 
+                }
+            }
+            rowStr.append("\t");
+        }
+        if(informative){
+            header.remove(rowStr.length()-1,1);
+            result.append(rowStr);
+        }
+        posInResult++;
+    }
+
+    return result.join("\n");
+}
+
+
+ExportHighligtningTask::ExportHighligtningTask( ExportHighligtningDialogController *dialog, MSAEditorSequenceArea *msaese_ ) :Task(tr("Export highlightning"), TaskFlags_FOSCOE){
+    msaese = msaese_;
+    startPos = dialog->startPos;
+    endPos = dialog->endPos;
+    startingIndex = dialog->startingIndex;
+    keepGaps = dialog->keepGaps;
+    dots = dialog->dots;
+    url = dialog->url;
+}
+
+void ExportHighligtningTask::run(){
+    QString exportedData = msaese->exportHighligtning(startPos, endPos, startingIndex, keepGaps, dots);
+
+    QFile resultFile(url.getURLString());
+    CHECK_EXT(resultFile.open( QFile::WriteOnly | QFile::Truncate ), url.getURLString());
+    QTextStream contentWriter(&resultFile);
+    contentWriter << exportedData;
+}
+
 }//namespace

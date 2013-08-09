@@ -29,12 +29,15 @@
 
 #include <U2Core/global.h>
 #include <U2Core/U2Region.h>
+#include <U2Core/Task.h>
 #include <U2Gui/GScrollBar.h>
+
 
 #include "DeleteGapsDialog.h"
 #include "MSACollapsibleModel.h"
 #include "MsaEditorUserModStepController.h"
 #include "SaveSelectedSequenceFromMSADialogController.h"
+#include "ExportHighlightedDialogController.h"
 
 namespace U2 {
 
@@ -263,6 +266,8 @@ public:
     
     void drawContent(QPainter& p);
 
+    QString exportHighligtning(int startPos, int endPos, int startingIndex, bool keepGaps, bool dots);
+
     MSAColorScheme* getCurrentColorScheme(){return colorScheme;};
     MSAHighlightingScheme* getCurrentHighlightingScheme(){return highlitingScheme;};
     bool getUseDotsCheckedState(){return useDotsAction->isChecked();};
@@ -416,6 +421,23 @@ private:
     QList<QAction* > customColorSchemeMenuActions;
     QList<QAction* > highlightingSchemeMenuActions;
     MsaEditorUserModStepController changeTracker;
+};
+
+class U2VIEW_EXPORT ExportHighligtningTask : public Task {
+    Q_OBJECT
+public:
+    ExportHighligtningTask(ExportHighligtningDialogController *dialog, MSAEditorSequenceArea *msaese_);
+
+    void run();
+
+private:
+    int startPos;
+    int endPos;
+    int startingIndex;
+    bool keepGaps;
+    bool dots;
+    GUrl url;
+    MSAEditorSequenceArea *msaese;
 };
 
 }//namespace

@@ -41,6 +41,16 @@ static inline QVBoxLayout * initVBoxLayout(QWidget * w) {
     return layout;
 }
 
+static inline QHBoxLayout * initHBoxLayout(QWidget * w) {
+    QHBoxLayout * layout = new QHBoxLayout;
+    layout->setContentsMargins(0, 0, 0, 0);
+    //layout->setSpacing(5);
+    layout->setAlignment(Qt::AlignTop);
+
+    w->setLayout(layout);
+    return layout;
+}
+
 QWidget* MSAHighlightingTab::createColorGroup(){
     QWidget * group = new QWidget(this);
 
@@ -60,17 +70,26 @@ QWidget* MSAHighlightingTab::createHighlightingGroup() {
 
     QVBoxLayout * layout = initVBoxLayout(group);
     highlightingScheme = new QComboBox();
-    highlightingScheme->setSizeAdjustPolicy(QComboBox::AdjustToMinimumContentsLength);
+    //highlightingScheme->setSizeAdjustPolicy(QComboBox::AdjustToMinimumContentsLength);
 
     hint = new QLabel("");
     hint->setWordWrap(true);
 
     useDots = new QCheckBox(tr("Use dots"));
 
+    exportHighlightning = new QToolButton();
+    exportHighlightning->setText(tr("Export"));
+    
+    QWidget *buttonAndSpacer = new QWidget(this);
+    QHBoxLayout * layout2 = initHBoxLayout(buttonAndSpacer);
+    layout2->addWidget(exportHighlightning);
+    layout2->addSpacerItem(new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum));
+
     layout->addSpacing(TITLE_SPACING);  
     layout->addWidget(highlightingScheme);
     layout->addWidget(hint);
     layout->addWidget(useDots);
+    layout->addWidget(buttonAndSpacer);
 
     return group;
 }
@@ -99,6 +118,10 @@ MSAHighlightingTab::MSAHighlightingTab(MSAEditor* m):msa(m){
     connect(seqArea, SIGNAL(si_highlightingChanged()), SLOT(sl_sync()));
 
     connect(m, SIGNAL(si_referenceSeqChanged(qint64)), SLOT(sl_updateHint()));
+
+    connect(exportHighlightning, SIGNAL(clicked()), SLOT(sl_exportHighlightningClicked()));
+
+    exportHighlightning->setDisabled(true);
 }
 
 void MSAHighlightingTab::initColorCB(){
@@ -137,9 +160,20 @@ void MSAHighlightingTab::sl_updateHint() {
         hint->setStyleSheet(
             "color: green;"
             "font: bold;");
+        exportHighlightning->setDisabled(true);
         return;
     }
     hint->setText("");
+    MSAHighlightingScheme *s = seqArea->getCurrentHighlightingScheme();
+    if(s->getFactory()->isRefFree()){
+        exportHighlightning->setDisabled(true);
+    }else{
+        exportHighlightning->setEnabled(true);
+    }
+}
+
+void MSAHighlightingTab::sl_exportHighlightningClicked(){
+    msa->exportHighlighted();
 }
 
 }//ns

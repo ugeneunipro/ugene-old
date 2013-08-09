@@ -167,6 +167,8 @@ public:
 
     void resetCollapsibleModel();
 
+    void exportHighlighted(){sl_exportHighlighted();};
+
 signals:
     void si_fontChanged(const QFont& f);
     void si_zoomOperationPerformed(bool resizeModeChanged);
@@ -184,6 +186,7 @@ protected slots:
     void sl_align();
     void sl_setSeqAsReference();
     void sl_unsetReferenceSeq();
+    void sl_exportHighlighted();
 
     void sl_onSeqOrderChanged(QStringList* order);
     void sl_showTreeOP();
@@ -228,6 +231,7 @@ private:
     QAction*          alignAction;
     QAction*          setAsReferenceSequenceAction;
     QAction *         unsetReferenceSequenceAction;
+    QAction*          exportHighlightedAction;
 
     QToolBar*         toolbar;
 

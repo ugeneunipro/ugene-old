@@ -36,6 +36,7 @@ public:
 private slots:
     void sl_sync();
     void sl_updateHint();
+    void sl_exportHighlightningClicked();
 
 private:
     QWidget* createColorGroup();
@@ -48,6 +49,7 @@ private:
     QComboBox *highlightingScheme;
     QLabel *hint;
     QCheckBox *useDots;
+    QToolButton *exportHighlightning;
 };
 
 } // namespace

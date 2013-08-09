@@ -30,6 +30,7 @@
 #include "MSAEditorStatusBar.h"
 #include "MSAEditorUndoFramework.h"
 #include "MSAEditorDataList.h"
+#include "ExportHighlightedDialogController.h"
 
 #include <ov_phyltree/TreeViewerTasks.h>
 
@@ -85,6 +86,7 @@
 #include <U2View/MSAEditorTreeViewer.h>
 #include <U2View/TreeOptionsWidgetFactory.h>
 #include <U2View/UndoRedoFramework.h>
+#include <U2View/MSAColorScheme.h>
 
 #include <QtCore/QEvent>
 
@@ -163,6 +165,11 @@ MSAEditor::MSAEditor(const QString& viewName, GObject* obj)
     
     pairwiseAlignmentWidgetsSettings = new PairwiseAlignmentWidgetsSettings;
     pairwiseAlignmentWidgetsSettings->customSettings.insert("alphabet", msaObject->getAlphabet()->getId());
+
+    exportHighlightedAction = new QAction(tr("Export highlighted"), this);
+    exportHighlightedAction->setObjectName("Export highlighted");
+    connect(exportHighlightedAction, SIGNAL(triggered()), this, SLOT(sl_exportHighlighted()));
+    exportHighlightedAction->setDisabled(true);
 
     updateActions();
 }
@@ -374,6 +381,12 @@ void MSAEditor::addExportMenu(QMenu* m) {
     em->menuAction()->setObjectName(MSAE_MENU_EXPORT);
     em->addAction(saveScreenshotAction);
     em->addAction(saveSvgAction);
+    em->addAction(exportHighlightedAction);
+    if(ui->getSequenceArea()->getCurrentHighlightingScheme()->getFactory()->isRefFree()){
+        exportHighlightedAction->setDisabled(true);
+    }else{
+        exportHighlightedAction->setEnabled(true);
+    }
 }
 
 void MSAEditor::addViewMenu(QMenu* m) {
@@ -670,6 +683,11 @@ void MSAEditor::sl_unsetReferenceSeq( ) {
 }
 
 void MSAEditor::setReference(qint64 sequenceId) {
+    if(sequenceId == MAlignmentRow::invalidRowId()){
+        exportHighlightedAction->setDisabled(true);
+    }else{
+        exportHighlightedAction->setEnabled(true);
+    }
     snp.seqId = sequenceId;
     emit si_referenceSeqChanged(sequenceId);
     //REDRAW OTHER WIDGETS
@@ -691,6 +709,16 @@ void MSAEditor::resetCollapsibleModel() {
     MSACollapsibleItemModel *collapsibleModel = ui->getCollapseModel();
     SAFE_POINT(NULL != collapsibleModel, "NULL collapsible model!", );
     collapsibleModel->reset();
+}
+
+void MSAEditor::sl_exportHighlighted(){
+    ExportHighligtningDialogController d(ui, (QWidget*)AppContext::getMainWindow()->getQMainWindow());
+    MSAHighlightingScheme *scheme = ui->getSequenceArea()->getCurrentHighlightingScheme();
+    QString cname = scheme->metaObject()->className();
+    d.exec();
+    if (d.result() == QDialog::Accepted){
+        AppContext::getTaskScheduler()->registerTopLevelTask(new ExportHighligtningTask(&d, ui->getSequenceArea()));
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////
