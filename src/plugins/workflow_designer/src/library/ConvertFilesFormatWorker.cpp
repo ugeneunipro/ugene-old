@@ -60,7 +60,7 @@ QString ConvertFilesFormatPrompter::composeRichDoc() {
     QString unsetStr = "<font color='red'>"+tr("unset")+"</font>";
     QString producerName = tr(" from <u>%1</u>").arg(producer ? producer->getLabel() : unsetStr);
 
-    QString doc = tr("Convert sequences %1 to selected format if it is not excluded").arg(producerName);
+    QString doc = tr("Convert file %1 to selected format if it is not excluded").arg(producerName);
     return doc;
 }
 
@@ -88,19 +88,18 @@ void ConvertFilesFormatWorkerFactory::init() {
     p << new PortDescriptor(outd, DataTypePtr(new MapDataType(SHORT_NAME + ".output-url", outM)), false, true);
 
     QList<Attribute*> a; 
-    a << new Attribute( BaseAttributes::DOCUMENT_FORMAT_ATTRIBUTE(), BaseTypes::STRING_TYPE(), false );
+    a << new Attribute( BaseAttributes::DOCUMENT_FORMAT_ATTRIBUTE(), BaseTypes::STRING_TYPE(), true );
 
     Descriptor excludedFormats(EXCLUDED_FORMATS_ID, ConvertFilesFormatWorker::tr("Excluded formats"),
-                                                 ConvertFilesFormatWorker::tr("Input file won't be converted into any of selected formats"));
+                                                    ConvertFilesFormatWorker::tr("Input file won't be converted to any of selected formats"));
     a << new Attribute( excludedFormats, BaseTypes::STRING_TYPE(), false );
 
     Descriptor desc( ACTOR_ID, ConvertFilesFormatWorker::tr("File conversion"),
-                               ConvertFilesFormatWorker::tr("Converts a file into selected format if it is not excluded.") );
+                               ConvertFilesFormatWorker::tr("Converts a file to selected format if it is not excluded.") );
     ActorPrototype* proto = new IntegralBusActorPrototype(desc, p, a);
 
     DocumentFormatConstraints constr;
-    constr.addFlagToSupport(DocumentFormatFlag_SupportWriting);
-    const QList<DocumentFormatId> supportedFormats = AppContext::getDocumentFormatRegistry()->selectFormats(constr);
+    const QList <DocumentFormatId> supportedFormats = AppContext::getDocumentFormatRegistry()->getRegisteredFormats();
     
     QVariantMap formatsWithIdValues,
                 formatsWithBooleanValues;
@@ -155,12 +154,15 @@ Task* ConvertFilesFormatWorker::tick() {
          }
          const QVariantMap qm = inputMessage.getData().toMap();
          const GUrl sourceURL( qm.values().at(0).toString() );
-         const QList<FormatDetectionResult> formats = DocumentUtils::detectFormat( sourceURL );
+         FormatDetectionConfig cfg;
+         cfg.bestMatchesOnly = false;
+         cfg.useImporters = true;
+         const QList<FormatDetectionResult> formats = DocumentUtils::detectFormat( sourceURL, cfg );
          if( formats.empty() ) {
              monitor()->addError( "Undefined file format", getActorId() );
              return NULL;
          }
-         const QString detectedFormat = formats.first().getFormatOrImporterName();
+         const QString detectedFormat = formats.first().extension;
          if( excludedFormats.contains( selectedFormat, Qt::CaseInsensitive ) || 
              !QString::compare( detectedFormat, selectedFormat, Qt::CaseInsensitive ) )
          {
@@ -193,11 +195,12 @@ void ConvertFilesFormatWorker::sl_taskFinished( Task *task ) {
     SaveDocumentTask *sdt = qobject_cast<SaveDocumentTask*>( subTasks.last() );
     QFile outputFile( sdt->getURL().getURLString() );
     if( !outputFile.open(QIODevice::ReadOnly) ) {
-        monitor()->addError( "Can not open converted file. Check format is correct", getActorId() );
+        monitor()->addError( "Converted file can not be opened. Check correct format is selected", getActorId() );
         return;
     }
+    outputFile.close();
     if( !outputFile.size() ) {
-        monitor()->addError( "Converted file is empty. Check format is correct", getActorId() );
+        monitor()->addError( "Converted file is empty. Check correct format is selected", getActorId() );
         return;
     }
     Message resultMessage( BaseTypes::STRING_TYPE(), sdt->getURL().getURLString() );
@@ -206,19 +209,27 @@ void ConvertFilesFormatWorker::sl_taskFinished( Task *task ) {
 }
 
 void ConvertFilesFormatTask::prepare() {
-    LoadDocumentTask *t = LoadDocumentTask::getDefaultLoadDocTask( sourceURL );
+    Task *t = LoadDocumentTask::getDefaultLoadDocTask( sourceURL );
+    if( t == NULL ) {
+        return;
+    }
     this->addSubTask( t );
     isTaskLoadDocument = true;
 }
 
 QList<Task*> ConvertFilesFormatTask::onSubTaskFinished( Task *subTask ) {
     if( !isTaskLoadDocument ) {
-        QList<Task*> taskList;
-        return taskList;
+        return QList<Task*>();
     }
     LoadDocumentTask *ldt = qobject_cast<LoadDocumentTask*>(subTask);
+    if( ldt == NULL ) {
+        return QList<Task*>();
+    }
     bool mainThread = false;
     Document *srcDoc = ldt->getDocument( mainThread );
+    if( srcDoc == NULL ) {
+        return QList<Task*>();
+    }
 
     IOAdapterFactory *iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById( IOAdapterUtils::url2io( srcDoc->getURL() ) );
     DocumentFormatRegistry *dfr =  AppContext::getDocumentFormatRegistry();
@@ -230,6 +241,9 @@ QList<Task*> ConvertFilesFormatTask::onSubTaskFinished( Task *subTask ) {
     QString destinationURL = workingDir + fileName;
     
     Task *sdt = new SaveDocumentTask(dstDoc, iof, destinationURL);
+    if( sdt == NULL ) {
+        return QList<Task*>();
+    }
     isTaskLoadDocument = false;
     QList<Task*> taskList;
     taskList << sdt;
