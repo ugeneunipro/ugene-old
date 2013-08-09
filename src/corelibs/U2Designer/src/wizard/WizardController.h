@@ -136,6 +136,8 @@ public:
     QList<WidgetController*> & getControllers();
     QBoxLayout * getLayout();
 
+    bool hasFullWidth();
+
 private:
     WizardController *wc;
     int labelSize;
@@ -143,6 +145,7 @@ private:
     QList<WidgetController*> controllers;
     QBoxLayout *layout;
     QScrollArea *widgetsArea;
+    bool fullWidth;
 
 private:
     void setGroupBoxLayout(GroupBox *gb);
@@ -178,7 +181,7 @@ private:
 class GroupBox : public QGroupBox {
     Q_OBJECT
 public:
-    GroupBox(bool collapsible, const QString &title);
+    GroupBox(bool collapsible, const QString &title, bool fullWidth = false);
 
     void setLayout(QLayout *l);
 

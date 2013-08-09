@@ -332,15 +332,19 @@ void WizardController::setAttributeValue(const AttributeInfo &info, const QVaria
 /* WidgetCreator */
 /************************************************************************/
 WidgetCreator::WidgetCreator(WizardController *_wc)
-: wc(_wc), labelSize(0), result(NULL), layout(NULL)
+: wc(_wc), labelSize(0), result(NULL), layout(NULL), fullWidth(false)
 {
 
 }
 
 WidgetCreator::WidgetCreator(WizardController *_wc, int _labelSize)
-: wc(_wc), labelSize(_labelSize), result(NULL), layout(NULL)
+: wc(_wc), labelSize(_labelSize), result(NULL), layout(NULL), fullWidth(false)
 {
 
+}
+
+bool WidgetCreator::hasFullWidth() {
+    return fullWidth;
 }
 
 void WidgetCreator::visit(AttributeWidget *aw) {
@@ -351,6 +355,7 @@ void WidgetCreator::visit(AttributeWidget *aw) {
         controller = new DefaultPropertyController(wc, aw, labelSize);
     } else if (AttributeInfo::DATASETS == type) {
         controller = new InUrlDatasetsController(wc, aw);
+        fullWidth = true;
     } else {
         WIZARD_SAFE_POINT_EXT(false, QString("Unknown widget type: %1").arg(type), wc->setBroken(), );
     }
@@ -376,13 +381,19 @@ void WidgetCreator::visit(WidgetsArea *wa) {
         WidgetCreator wcr(wc, labelSize);
         w->accept(&wcr);
         if (NULL != wcr.getResult()) {
-            wcr.getResult()->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Maximum);
+            if (!wcr.hasFullWidth()) {
+                wcr.getResult()->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Maximum);
+            } else {
+                fullWidth = true;
+            }
             layout->addWidget(wcr.getResult());
             controllers << wcr.getControllers();
         }
     }
-    QSpacerItem *spacer = new QSpacerItem(0, 0, QSizePolicy::Maximum, QSizePolicy::Minimum);
-    layout->addSpacerItem(spacer);
+    if (!fullWidth) {
+        QSpacerItem *spacer = new QSpacerItem(0, 0, QSizePolicy::Maximum, QSizePolicy::Minimum);
+        layout->addSpacerItem(spacer);
+    }
     setupScrollArea(scrollContent);
 }
 
@@ -403,7 +414,7 @@ void WidgetCreator::visit(GroupWidget *gw) {
     widgetsArea = NULL;
 
     bool collapsible = (gw->getType() == GroupWidget::HIDEABLE);
-    GroupBox *gb = new GroupBox(collapsible, gw->getTitle());
+    GroupBox *gb = new GroupBox(collapsible, gw->getTitle(), fullWidth);
     setGroupBoxLayout(gb);
 }
 
@@ -438,6 +449,7 @@ void WidgetCreator::visit(PairedReadsWidget *dsw) {
     controllers << controller;
     U2OpStatusImpl os;
     result = controller->createGUI(os);
+    fullWidth = true;
 }
 
 void WidgetCreator::visit(RadioWidget *rw) {
@@ -500,7 +512,7 @@ void PageContentCreator::visit(DefaultPageContent *content) {
         WidgetCreator paramsWC(wc);
         content->getParamsArea()->accept(&paramsWC);
         if (NULL != paramsWC.getResult()) {
-            if (NULL != paramsWC.getLayout()) {
+            if (NULL != paramsWC.getLayout() && !paramsWC.hasFullWidth()) {
                 QSpacerItem *spacer = new QSpacerItem(0, 0, QSizePolicy::Maximum, QSizePolicy::MinimumExpanding);
                 paramsWC.getLayout()->addSpacerItem(spacer);
             }
@@ -562,11 +574,12 @@ void PageContentCreator::createSubTitle(QVBoxLayout *contentLayout) {
 /************************************************************************/
 const int GroupBox::MARGIN = 5;
 
-GroupBox::GroupBox(bool collapsible, const QString &title)
+GroupBox::GroupBox(bool collapsible, const QString &title, bool fullWidth)
 : QGroupBox(title), hLayout(NULL), tip(NULL), showHideButton(NULL)
 {
     ui = new QWidget(this);
-    ui->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Maximum);
+    QSizePolicy::Policy vPolicy = fullWidth ? QSizePolicy::MinimumExpanding : QSizePolicy::Maximum;
+    ui->setSizePolicy(QSizePolicy::Minimum, vPolicy);
     QVBoxLayout *layout = new QVBoxLayout();
     QGroupBox::setLayout(layout);
 
