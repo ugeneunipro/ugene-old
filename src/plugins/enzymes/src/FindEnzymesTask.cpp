@@ -270,11 +270,13 @@ dnaSeq(_seq), region(region), enzyme(_enzyme), maxResults(mr), resultListener(l)
         circular = false;
     }
     SequenceWalkerConfig swc;
-    
+
     swc.seq = dnaSeq.seq.constData() + region.startPos;
     swc.seqSize = region.length;
     swc.chunkSize = region.length;
-    
+    swc.lastChunkExtraLen = swc.chunkSize/2;
+    swc.overlapSize = enzyme->seq.size()-1;
+
     addSubTask(new SequenceWalkerTask(swc, this, tr("Find enzyme '%1' parallel").arg(enzyme->id)));
 }
 
@@ -309,16 +311,14 @@ void FindSingleEnzymeTask::onRegion(SequenceWalkerSubtask* t, TaskStateInfo& ti)
                                 || dnaSeq.alphabet->getId() == BaseDNAAlphabetIds::NUCL_DNA_EXTENDED() 
                                 || dnaSeq.alphabet->getId() == BaseDNAAlphabetIds::NUCL_RNA_DEFAULT()
                                 || dnaSeq.alphabet->getId() == BaseDNAAlphabetIds::NUCL_RNA_EXTENDED();
-  
-    const SequenceWalkerConfig& c = t->getGlobalConfig();
 
     // Note that enzymes algorithm filters N symbols in sequence by itself
     if (useExtendedComparator) {
         FindEnzymesAlgorithm<ExtendedDNAlphabetComparator> algo;
-        algo.run(dnaSeq, c.range, enzyme, resultListener, ti);
+        algo.run(dnaSeq, t->getGlobalRegion(), enzyme, resultListener, ti);
     } else {
         FindEnzymesAlgorithm<ExactDNAAlphabetComparatorN1M_N2M> algo;
-        algo.run(dnaSeq, c.range, enzyme, resultListener, ti);
+        algo.run(dnaSeq, t->getGlobalRegion(), enzyme, resultListener, ti);
     }
 }
 
