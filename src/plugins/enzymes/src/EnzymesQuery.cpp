@@ -75,9 +75,8 @@ Task* QDEnzymesActor::getAlgorithmTask(const QVector<U2Region>& location) {
         }
     }
 
-    const DNASequence& seq = scheme->getSequence();
     foreach(const U2Region& r, location) {
-        FindEnzymesTask* st = new FindEnzymesTask(seq, r, enzymes, INT_MAX, circular);
+        FindEnzymesTask* st = new FindEnzymesTask(scheme->getEntityRef(), r, enzymes, INT_MAX, circular);
         t->addSubTask(st);
         enzymesTasks.append(st);
     }

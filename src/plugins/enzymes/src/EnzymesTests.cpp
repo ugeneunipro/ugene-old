@@ -170,7 +170,7 @@ QList<Task*> GTest_FindEnzymes::onSubTaskFinished(Task* subTask) {
     cfg.maxHitCount = maxHits;
     cfg.excludedRegions = excludedRegions;
 
-    FindEnzymesToAnnotationsTask* t = new FindEnzymesToAnnotationsTask(aObj, seqObj->getWholeSequence(), enzymesToSearch, cfg);
+    FindEnzymesToAnnotationsTask* t = new FindEnzymesToAnnotationsTask(aObj, seqObj->getSequenceRef(), enzymesToSearch, cfg);
     res.append(t);
     return res;
 }

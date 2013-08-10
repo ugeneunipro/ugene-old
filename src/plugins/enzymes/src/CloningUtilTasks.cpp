@@ -87,7 +87,7 @@ void DigestSequenceTask::prepare() {
         FindEnzymesTaskConfig feCfg;
         feCfg.circular = isCircular;
         feCfg.groupName = ANNOTATION_GROUP_ENZYME;
-        Task* t = new FindEnzymesToAnnotationsTask(sourceObj, dnaObj->getWholeSequence(), cfg.enzymeData, feCfg);
+        Task* t = new FindEnzymesToAnnotationsTask(sourceObj, dnaObj->getSequenceRef(), cfg.enzymeData, feCfg);
         addSubTask(t);
     }  
         

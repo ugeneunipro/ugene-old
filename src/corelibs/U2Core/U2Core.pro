@@ -165,6 +165,7 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/tasks/SaveDocumentTask.h \
            src/tasks/ScriptTask.h \
            src/tasks/SequenceWalkerTask.h \
+           src/tasks/SequenceDbiWalkerTask.h \
            src/tasks/ConsoleShutdownTask.h \
            src/tasks/TaskSignalMapper.h \
            src/tasks/TaskStarter.h \
@@ -317,6 +318,7 @@ SOURCES += src/cmdline/CMDLineCoreOptions.cpp \
            src/tasks/SaveDocumentTask.cpp \
            src/tasks/ScriptTask.cpp \
            src/tasks/SequenceWalkerTask.cpp \
+           src/tasks/SequenceDbiWalkerTask.cpp \
            src/tasks/ConsoleShutdownTask.cpp \
            src/tasks/TaskSignalMapper.cpp \
            src/tasks/TaskStarter.cpp \

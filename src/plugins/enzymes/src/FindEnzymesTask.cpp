@@ -40,13 +40,13 @@ namespace U2 {
 //////////////////////////////////////////////////////////////////////////
 // enzymes -> annotations
 
-FindEnzymesToAnnotationsTask::FindEnzymesToAnnotationsTask(AnnotationTableObject* aobj, const DNASequence& seq, 
+FindEnzymesToAnnotationsTask::FindEnzymesToAnnotationsTask(AnnotationTableObject* aobj, const U2EntityRef& seqRef, 
                                                            const QList<SEnzymeData>& _enzymes, const FindEnzymesTaskConfig& config)
-: Task(tr("Find and store enzymes"), TaskFlags_FOSCOE), dnaSeq(seq), enzymes(_enzymes), aObj(aobj), cfg(config)
+: Task(tr("Find and store enzymes"), TaskFlags_FOSCOE), dnaSeqRef(seqRef), enzymes(_enzymes), aObj(aobj), cfg(config)
 {
     GCOUNTER( cvar, tvar, "FindEnzymesToAnnotationsTask" );
-    seqRange = U2Region(0, seq.length());
-   
+    U2SequenceObject dnaSeq("sequence",dnaSeqRef);
+    seqRange = U2Region(0, dnaSeq.getSequenceLength());
 }
 
 
@@ -56,7 +56,7 @@ void FindEnzymesToAnnotationsTask::prepare()
         stateInfo.setError(tr("No enzymes selected."));
         return;
     }
-    fTask = new FindEnzymesTask(dnaSeq, seqRange, enzymes, cfg.maxResults, cfg.circular);
+    fTask = new FindEnzymesTask(dnaSeqRef, seqRange, enzymes, cfg.maxResults, cfg.circular);
     addSubTask(fTask);
 }
 
@@ -151,14 +151,16 @@ Task::ReportResult FindEnzymesToAnnotationsTask::report()
 
 //////////////////////////////////////////////////////////////////////////
 // find multiple enzymes task
-FindEnzymesTask::FindEnzymesTask(const DNASequence& seq, const U2Region& region, const QList<SEnzymeData>& enzymes, int mr, bool _circular)
+FindEnzymesTask::FindEnzymesTask(const U2EntityRef& seqRef, const U2Region& region, const QList<SEnzymeData>& enzymes, int mr, bool _circular)
 :Task(tr("Find Enzymes"), TaskFlags_NR_FOSCOE), maxResults(mr), circular(_circular)
 {
-    assert(seq.alphabet->isNucleic());
-    seqlen = seq.length();
+    U2SequenceObject seq("sequence", seqRef);
+
+    assert(seq.getAlphabet()->isNucleic());
+    seqlen = seq.getSequenceLength();
     //for every enzymes in selection create FindSingleEnzymeTask
     foreach(const SEnzymeData& e, enzymes) {
-        addSubTask(new FindSingleEnzymeTask(seq, region, e, this, circular));
+        addSubTask(new FindSingleEnzymeTask(seqRef, region, e, this, circular));
     }
 }
 
@@ -257,27 +259,32 @@ void FindEnzymesTask::cleanup() {
 
 //////////////////////////////////////////////////////////////////////////
 // find single enzyme task
-FindSingleEnzymeTask::FindSingleEnzymeTask(const DNASequence& _seq, const U2Region& region, const SEnzymeData& _enzyme, 
+FindSingleEnzymeTask::FindSingleEnzymeTask(const U2EntityRef& _seqRef, const U2Region& region, const SEnzymeData& _enzyme, 
                                            FindEnzymesAlgListener* l, bool _circular, int mr)
 : Task(tr("Find enzyme '%1'").arg(_enzyme->id), TaskFlag_NoRun), 
-dnaSeq(_seq), region(region), enzyme(_enzyme), maxResults(mr), resultListener(l), circular(_circular)
+dnaSeqRef(_seqRef), region(region), enzyme(_enzyme), maxResults(mr), resultListener(l), circular(_circular)
 {
-    assert(dnaSeq.alphabet->isNucleic());
+    U2SequenceObject dnaSeq("sequence", dnaSeqRef);
+
+    assert(dnaSeq.getAlphabet()->isNucleic());
     if (resultListener == NULL) {
         resultListener = this;
     }
-    if (region.length != dnaSeq.length()) {
+    if (region.length != dnaSeq.getSequenceLength()) {
         circular = false;
     }
-    SequenceWalkerConfig swc;
+    SequenceDbiWalkerConfig swc;
 
-    swc.seq = dnaSeq.seq.constData() + region.startPos;
-    swc.seqSize = region.length;
-    swc.chunkSize = region.length;
+    const int BLOCK_READ_FROM_DB = 128000;
+    static const int chunkSize = BLOCK_READ_FROM_DB;
+
+    swc.seqRef = dnaSeqRef;
+    swc.range = region;
+    swc.chunkSize = qMax(enzyme->seq.size(), chunkSize);
     swc.lastChunkExtraLen = swc.chunkSize/2;
     swc.overlapSize = enzyme->seq.size()-1;
 
-    addSubTask(new SequenceWalkerTask(swc, this, tr("Find enzyme '%1' parallel").arg(enzyme->id)));
+    addSubTask(new SequenceDbiWalkerTask(swc, this, tr("Find enzyme '%1' parallel").arg(enzyme->id)));
 }
 
 void FindSingleEnzymeTask::onResult(int pos, const SEnzymeData& enzyme, const U2Strand& strand) {
@@ -295,11 +302,12 @@ void FindSingleEnzymeTask::onResult(int pos, const SEnzymeData& enzyme, const U2
     results.append(FindEnzymesAlgResult(enzyme, pos, strand));
 }
 
-void FindSingleEnzymeTask::onRegion(SequenceWalkerSubtask* t, TaskStateInfo& ti) {
+void FindSingleEnzymeTask::onRegion(SequenceDbiWalkerSubtask* t, TaskStateInfo& ti) {
     if (enzyme->seq.isEmpty()) {
         return;
     }
-    if (dnaSeq.length() < enzyme->seq.length()) {
+    U2SequenceObject dnaSequenceObject("sequence", dnaSeqRef);
+    if (dnaSequenceObject.getSequenceLength() < enzyme->seq.length()) {
         return;
     }
     SAFE_POINT(enzyme->alphabet != NULL, tr("No enzyme alphabet"), );
@@ -307,18 +315,24 @@ void FindSingleEnzymeTask::onRegion(SequenceWalkerSubtask* t, TaskStateInfo& ti)
         algoLog.info(tr("Non-nucleic enzyme alphabet: %1, enzyme: %2, skipping..").arg(enzyme->alphabet->getId()).arg(enzyme->id));
         return;
     }
-    bool useExtendedComparator = enzyme->alphabet->getId() == BaseDNAAlphabetIds::NUCL_DNA_EXTENDED() 
-                                || dnaSeq.alphabet->getId() == BaseDNAAlphabetIds::NUCL_DNA_EXTENDED() 
-                                || dnaSeq.alphabet->getId() == BaseDNAAlphabetIds::NUCL_RNA_DEFAULT()
-                                || dnaSeq.alphabet->getId() == BaseDNAAlphabetIds::NUCL_RNA_EXTENDED();
 
+    DNAAlphabet* seqAlphabet = dnaSequenceObject.getAlphabet();
+    SAFE_POINT(seqAlphabet != NULL, tr("Failed to get sequence alphabet"), );
+
+    bool useExtendedComparator = enzyme->alphabet->getId() == BaseDNAAlphabetIds::NUCL_DNA_EXTENDED() 
+                                || seqAlphabet->getId() == BaseDNAAlphabetIds::NUCL_DNA_EXTENDED() 
+                                || seqAlphabet->getId() == BaseDNAAlphabetIds::NUCL_RNA_DEFAULT()
+                                || seqAlphabet->getId() == BaseDNAAlphabetIds::NUCL_RNA_EXTENDED();
+
+    U2Region chunkRegion = t->getGlobalRegion();
+    DNASequence dnaSeq = dnaSequenceObject.getSequence(chunkRegion);
     // Note that enzymes algorithm filters N symbols in sequence by itself
     if (useExtendedComparator) {
         FindEnzymesAlgorithm<ExtendedDNAlphabetComparator> algo;
-        algo.run(dnaSeq, t->getGlobalRegion(), enzyme, resultListener, ti);
+        algo.run(dnaSeq, U2Region(0, chunkRegion.length), enzyme, resultListener, ti, chunkRegion.startPos);
     } else {
         FindEnzymesAlgorithm<ExactDNAAlphabetComparatorN1M_N2M> algo;
-        algo.run(dnaSeq, t->getGlobalRegion(), enzyme, resultListener, ti);
+        algo.run(dnaSeq, U2Region(0, chunkRegion.length), enzyme, resultListener, ti, chunkRegion.startPos);
     }
 }
 
@@ -371,8 +385,8 @@ Task* FindEnzymesAutoAnnotationUpdater::createAutoAnnotationsUpdateTask( const A
     }
     
     AnnotationTableObject* aObj = aa->getAnnotationObject();
-    DNASequence dna = aa->getSeqObject()->getWholeSequence();
-    Task* task = new FindEnzymesToAnnotationsTask(aObj, dna, selectedEnzymes, cfg );
+    const U2EntityRef& dnaRef = aa->getSeqObject()->getEntityRef();
+    Task* task = new FindEnzymesToAnnotationsTask(aObj, dnaRef, selectedEnzymes, cfg );
 
     return task;
 }

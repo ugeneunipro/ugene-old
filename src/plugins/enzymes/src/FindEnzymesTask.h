@@ -30,7 +30,7 @@
 #include <U2Core/Task.h>
 #include <U2Core/U2Region.h>
 #include <U2Core/DNASequence.h>
-#include <U2Core/SequenceWalkerTask.h>
+#include <U2Core/SequenceDbiWalkerTask.h>
 #include <U2Core/AutoAnnotationsSupport.h>
 
 #include <U2Core/AnnotationTableObject.h>
@@ -68,14 +68,14 @@ struct FindEnzymesTaskConfig {
 class FindEnzymesToAnnotationsTask : public Task {
     Q_OBJECT
 public:
-    FindEnzymesToAnnotationsTask(AnnotationTableObject* aobj, const DNASequence& seq, 
+    FindEnzymesToAnnotationsTask(AnnotationTableObject* aobj, const U2EntityRef& seqRef, 
         const QList<SEnzymeData>& enzymes, const FindEnzymesTaskConfig& cfg);
     void prepare();
     void run();
     ReportResult report();
     
 private:
-    DNASequence                         dnaSeq;
+    U2EntityRef                         dnaSeqRef;
     QList<SEnzymeData>                  enzymes;
     QMap<QString,SharedAnnotationData>  resultMap;
     U2Region                            seqRange;
@@ -87,7 +87,7 @@ private:
 class FindEnzymesTask : public Task, public FindEnzymesAlgListener {
     Q_OBJECT
 public:
-    FindEnzymesTask(const DNASequence& seq, const U2Region& region, const QList<SEnzymeData>& enzymes, int maxResults = 0x7FFFFFFF, bool _circular = false);
+    FindEnzymesTask(const U2EntityRef& seqRef, const U2Region& region, const QList<SEnzymeData>& enzymes, int maxResults = 0x7FFFFFFF, bool _circular = false);
 
     QList<FindEnzymesAlgResult>  getResults() const {return results;}
 
@@ -113,18 +113,18 @@ private:
 };
 
 
-class FindSingleEnzymeTask: public Task, public FindEnzymesAlgListener, public SequenceWalkerCallback {
+class FindSingleEnzymeTask: public Task, public FindEnzymesAlgListener, public SequenceDbiWalkerCallback {
     Q_OBJECT
 public:
-    FindSingleEnzymeTask(const DNASequence& seq, const U2Region& region, const SEnzymeData& enzyme, 
+    FindSingleEnzymeTask(const U2EntityRef& seqRef, const U2Region& region, const SEnzymeData& enzyme, 
                         FindEnzymesAlgListener* l = NULL, bool circular = false, int maxResults = 0x7FFFFFFF);
     
     QList<FindEnzymesAlgResult>  getResults() const {return results;}
     virtual void onResult(int pos, const SEnzymeData& enzyme, const U2Strand& strand);
-    virtual void onRegion(SequenceWalkerSubtask* t, TaskStateInfo& ti);
+    virtual void onRegion(SequenceDbiWalkerSubtask* t, TaskStateInfo& ti);
     void cleanup();
 private:
-    DNASequence                 dnaSeq;
+    U2EntityRef                 dnaSeqRef;
     U2Region                    region;
     SEnzymeData                 enzyme;
     int                         maxResults;
