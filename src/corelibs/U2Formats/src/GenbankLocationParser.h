@@ -23,10 +23,11 @@
 #define _U2_GENBANK_LOCATION_PARSER_H
 
 #include <U2Core/global.h>
+#include <U2Core/U2Location.h>
 #include <U2Core/U2Region.h>
-#include <U2Core/U2Annotation.h>
 
 #include <QtCore/QList>
+
 
 namespace U2 {
 

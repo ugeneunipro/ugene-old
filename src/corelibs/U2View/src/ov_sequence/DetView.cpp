@@ -25,7 +25,6 @@
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/DNATranslation.h>
 #include <U2Core/AppContext.h>
-#include <U2Core/U2Annotation.h>
 
 #include <U2Core/DNATranslationImpl.h>
 

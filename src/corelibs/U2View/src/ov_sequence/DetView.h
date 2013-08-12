@@ -24,7 +24,7 @@
 
 #include "GSequenceLineViewAnnotated.h"
 
-#include <U2Core/U2Annotation.h>
+#include <U2Core/U2Location.h>
 
 #include <QtGui/QFont>
 #include <QtGui/QAction>

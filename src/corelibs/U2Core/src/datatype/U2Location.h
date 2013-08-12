@@ -19,48 +19,16 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_ANNOTATION_H_
-#define _U2_ANNOTATION_H_
+#ifndef _U2_LOCATION_H_
+#define _U2_LOCATION_H_
 
 #include <U2Core/U2Type.h>
 #include <U2Core/U2Region.h>
 
-#include <QtCore/QStringList>
-#include <QtCore/QVector>
 #include <QtCore/QSharedData>
 
+
 namespace U2 {
-
-
-/**
-    Annotation qualifier - a textual property/remark for annotation
-*/
-class U2CORE_EXPORT U2Qualifier {
-public:
-    /** Name of qualifier */
-    QString name;
-
-    /** Value of qualifier */
-    QString value;
-
-
-
-    /** Constructs new empty (and invalid) qualifier */
-    U2Qualifier(){}
-    
-    /** Constructs new qualifier instance with name and value set */
-    U2Qualifier(const QString& _name, const QString& _value) : name(_name), value(_value){}
-
-    /** U2Qualifier is valid if  its name is not empty */
-    bool isValid() const {return !name.isEmpty();}
-
-    /** Any two qualifiers are equal if their names & values are equal */
-    bool operator== ( const U2Qualifier & q ) const { return q.name == name && q.value == value; }
-    
-    /** Any two qualifiers are not equal if either their names or values are  not equal */
-    bool operator!= ( const U2Qualifier & q ) const { return !(*this == q); }
-
-};
 
 /** 
     For annotation with multiple regions this flag indicates how to process joins
@@ -181,64 +149,6 @@ inline bool	operator== ( const U2Location & ptr1, const U2Location & ptr2 ) {ret
 inline bool	operator== ( const U2Location & ptr1, const U2LocationData * ptr2 ) {return *ptr1  == *ptr2;}
 inline bool	operator== ( const U2LocationData * ptr1, const U2Location & ptr2 ) {return *ptr1 == *ptr2;}
 
-/** 
-    Sequence annotation. Used to annotate set of sequence regions
-*/
-class U2CORE_EXPORT U2Annotation : public U2Entity {
-public:
-    U2Annotation() : location(new U2LocationData()), version(0){}
-
-    /** Sequence this annotation is related to */
-    U2DataId                sequenceId;
-    
-    /** Key (name) of the annotation */
-    QString                 key;
-    
-    /** Annotation location */
-    U2Location              location;
-
-    /** Annotation related qualifiers (textual properties) */
-    QVector<U2Qualifier>    qualifiers;
-
-    /** Version of the annotation. Same as modification count */
-    qint64                  version;
-};
-
-
-/** 
-    Group of the annotations represents a tree-like hierarchy of annotations
-    related to some sequence.
-    Group holds references to annotation and one annotation can be included into multiple groups
-    If an annotation does not belong to any group -> the annotation must be removed by DBI
-*/
-
-class U2CORE_EXPORT U2AnnotationGroup : public U2Entity {
-public:
-    /** Parent group for this group */
-    U2DataId            parentGroupId;
-    
-    /** Object (sequence) this group is related to */
-    U2DataId            sequenceId;
-
-    /** Group name, may contain any readable characters except '/' symbol used to separate group path */
-    QString             name;
-
-    /** 
-        Group path 
-        Path construction algorithm: parent-name2 + "/" + parent-name1 +  "/" + ... + "/" + groupName 
-        Note: group path includes current group name
-    */
-    QString             path;
-
-    /** Modification counter of group fields, content and annotation names included into the group */
-    qint64              localVersion;
-
-    /** Modification counter updated any (any depth) child group is modified */
-    qint64              globalVersion;
-};
-
-#define GROUP_PATH_SEPARATOR "/"
-#define GROUP_PATH_SEPARATOR_CHAR '/'
 
 //////////////////////////////////////////////////////////////////////////
 // functions impl
@@ -252,6 +162,7 @@ inline void U2LocationData::reset() {
     truncateRight = false;
 }
 
-} //namespace
+
+} // namespace
 
 #endif

@@ -22,8 +22,8 @@
 #ifndef _U1_ANNOTATION_UTILS_H_
 #define _U1_ANNOTATION_UTILS_H_
 
-#include <U2Core/U2Annotation.h>
 #include <U2Core/AnnotationTableObject.h>
+
 
 namespace U2 {
 

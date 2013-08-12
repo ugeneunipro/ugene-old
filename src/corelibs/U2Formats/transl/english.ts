@@ -1293,11 +1293,6 @@
 <context>
     <name>U2::SQLiteL10N</name>
     <message>
-        <location filename="../src/sqlite_dbi/SQLiteAnnotationDbi.cpp" line="257"/>
-        <source>No location found for annotation: %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../src/sqlite_dbi/SQLiteAssemblyDbi.cpp" line="82"/>
         <source>There is no assembly object with the specified id.</source>
         <translation type="unfinished"></translation>

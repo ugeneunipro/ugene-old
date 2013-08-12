@@ -31,7 +31,6 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/datatype/PWMatrix.h \
            src/datatype/SMatrix.h \
            src/datatype/U2Alphabet.h \
-           src/datatype/U2Annotation.h \
            src/datatype/U2Assembly.h \
            src/datatype/U2Attribute.h \
            src/datatype/U2CoreAttributes.h \
@@ -39,8 +38,10 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/datatype/U2FeatureKeys.h \
            src/datatype/U2Identity.h \
            src/datatype/U2IdTypes.h \
+           src/datatype/U2Location.h \
            src/datatype/U2Mod.h \
            src/datatype/U2Msa.h \
+           src/datatype/U2Qualifier.h \
            src/datatype/U2Range.h \
            src/datatype/U2Region.h \
            src/datatype/U2Sequence.h \
@@ -50,7 +51,6 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/datatype/Vector3D.h \
            src/dbi/DbiDocumentFormat.h \
            src/dbi/U2AbstractDbi.h \
-           src/dbi/U2AnnotationDbi.h \
            src/dbi/U2AssemblyDbi.h \
            src/dbi/U2AttributeDbi.h \
            src/dbi/U2CrossDatabaseReferenceDbi.h \
@@ -187,7 +187,6 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/util/TextUtils.h \
            src/util/U1AnnotationUtils.h \
            src/util/U2AlphabetUtils.h \
-           src/util/U2AnnotationUtils.h \
            src/util/U2AssemblyReadIterator.h \
            src/util/U2AssemblyUtils.h \
            src/util/U2AttributeUtils.h \
@@ -340,7 +339,6 @@ SOURCES += src/cmdline/CMDLineCoreOptions.cpp \
            src/util/TextUtils.cpp \
            src/util/U1AnnotationUtils.cpp \
            src/util/U2AlphabetUtils.cpp \
-           src/util/U2AnnotationUtils.cpp \
            src/util/U2AssemblyReadIterator.cpp \
            src/util/U2AssemblyUtils.cpp \
            src/util/U2AttributeUtils.cpp \

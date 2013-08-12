@@ -1345,11 +1345,6 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/sqlite_dbi/SQLiteAnnotationDbi.cpp" line="257"/>
-        <source>No location found for annotation: %1</source>
-        <translation>在注释 %1 中未能找到位置</translation>
-    </message>
-    <message>
         <location filename="../src/sqlite_dbi/SQLiteAssemblyDbi.cpp" line="82"/>
         <source>There is no assembly object with the specified id.</source>
         <translation>对于该 id 号没有合适的对象。</translation>

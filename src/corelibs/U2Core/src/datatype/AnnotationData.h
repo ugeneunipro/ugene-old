@@ -22,7 +22,8 @@
 #ifndef _U2_ANNOTATION_DATA_H_
 #define _U2_ANNOTATION_DATA_H_
 
-#include <U2Core/U2Annotation.h>
+#include <U2Core/U2Location.h>
+#include <U2Core/U2Qualifier.h>
 
 #include <QtCore/QSharedData>
 #include <QtCore/QVector>
