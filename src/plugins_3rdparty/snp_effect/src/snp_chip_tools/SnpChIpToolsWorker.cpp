@@ -104,8 +104,8 @@ void SnpChipToolsWorkerFactory::init( )
         if (dp && dp->isValid()){
             dataPath = dp;
         }
-    }    QList<PortDescriptor*> p;
-    QList<Attribute*> a;
+    }
+    QList<PortDescriptor*> p;
     {
         Descriptor sd( BasePorts::IN_VARIATION_TRACK_PORT_ID( ), "Input variations",
             "Variations for annotations." );
@@ -122,23 +122,13 @@ void SnpChipToolsWorkerFactory::init( )
             false /*input*/, true /*multi*/ );
     }
 
-    Descriptor dbPath( BaseRequestForSnpWorker::DB_SEQUENCE_PATH, QObject::tr( "Database path" ),
-        QObject::tr( "Path to SNP database." ) );
-    
-    a << new Attribute( dbPath, BaseTypes::STRING_TYPE( ), true, dataPath != NULL ? dataPath->getPath() : "" );
-
-    QMap<QString, PropertyDelegate *> delegates;
-    {
-        delegates[BaseRequestForSnpWorker::DB_SEQUENCE_PATH] = new URLDelegate( "", "", false, false, false );
-    }
     // TODO: revise the description
     Descriptor protoDesc( SnpChipToolsWorkerFactory::ACTOR_ID,
         QObject::tr( "SNP ChIP Tools" ),
         QObject::tr( "SNPs influence on TFBSs" ) );
 
-    ActorPrototype *proto = new IntegralBusActorPrototype( protoDesc, p, a );
+    ActorPrototype *proto = new IntegralBusActorPrototype( protoDesc, p, QList<Attribute *>( ) );
     proto->setPrompter( new SnpChipToolsPrompter( ) );
-    proto->setEditor( new DelegateEditor( delegates ) );
     WorkflowEnv::getProtoRegistry( )->registerProto( BaseActorCategories::CATEGORY_SCHEMAS( ),
         proto );
     WorkflowEnv::getDomainRegistry( )->getById( LocalDomainFactory::ID )->registerEntry(
@@ -169,12 +159,8 @@ QString SnpChipToolsPrompter::composeRichDoc( )
 
     QString unsetStr = "<font color='red'>" + tr( "unset" ) + "</font>";
     QString annUrl = annProducer ? annProducer->getLabel( ) : unsetStr;
-    QString path = getHyperlink( BaseRequestForSnpWorker::DB_SEQUENCE_PATH,
-        getURL( BaseRequestForSnpWorker::DB_SEQUENCE_PATH ) );
 
     res.append( tr( "Uses variations from <u>%1</u> as input." ).arg( annUrl ) );
-    res.append( tr( " Takes sequences from <u>%1</u> database." ).arg( path.isEmpty( ) ?
-        unsetStr : path ) );
 
     return res;
 }
