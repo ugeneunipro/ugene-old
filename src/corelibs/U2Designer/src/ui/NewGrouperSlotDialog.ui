@@ -32,6 +32,9 @@
    <string>Setup New Data Merge Action</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="sizeConstraint">
+    <enum>QLayout::SetMinimumSize</enum>
+   </property>
    <item>
     <layout class="QGridLayout" name="gridLayout">
      <item row="0" column="0">
