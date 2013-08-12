@@ -24,8 +24,10 @@
 
 #include <core/dbi/DbiTest.h>
 
-#include <U2Core/AnnotationTableObject.h>
+#include <U2Core/FeaturesTableObject.h>
+
 #include <unittest.h>
+
 
 namespace U2 {
 

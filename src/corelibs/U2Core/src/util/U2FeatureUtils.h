@@ -26,6 +26,8 @@
 #include <U2Core/U2DbiUtils.h>
 #include <U2Core/U2Type.h>
 #include <U2Core/U2OpStatus.h>
+#include <U2Core/DNATranslation.h>
+#include <U2Core/DNASequenceObject.h>
 
 namespace U2 {
 
@@ -46,6 +48,10 @@ public:
         in case of single regions features contains all the information from the annotation*/
     void exportAnnotationToFeatures(Annotation* a, const U2DataId& parentFeatureId, const U2DbiRef& dbiRef, U2OpStatus& op);
 
+    /**import features to annotation list 
+    make parentFeatureId parent id of the rootFeatureToImport feature*/
+    static QList<Annotation*> importFeaturesToAnnotations(const U2Feature& feature, U2FeatureDbi* fDbi, U2OpStatus& op);
+
     /**Removes corresponding to annotation feature and its children from db. RootId feature is not deleted*/
     void removeFeature (Annotation* a, const U2DataId& rootFeatureId, const U2DbiRef& dbiRef, U2OpStatus& op);
 
@@ -62,8 +68,12 @@ public:
     /**use annotation modification to update features*/
     void modifyFeatures( const AnnotationModification& md, const U2DataId& rootFeatureId, const U2DbiRef& dbiRef, U2OpStatus& op);
 
+    void detachChildFeatures( const U2DataId& rootFeatureId, const U2DbiRef& dbiRef, U2OpStatus& op );
+
 private:
     void addSubFeatures( const QVector<U2Region> & regions, const U2Strand& strand, const U2DataId& parentFeatureId, U2FeatureDbi* fDbi, U2OpStatus& op);
+    static Annotation* getAnnotationFromFeature(const U2Feature& parentFeatureId, U2FeatureDbi* fDbi, U2OpStatus& op);
+    
     
 private:
     QHash<U2DataId, Annotation*> syncTable;

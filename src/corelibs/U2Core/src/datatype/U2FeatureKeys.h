@@ -19,8 +19,8 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_FEATUREKEYS_H_
-#define _U2_FEATUREKEYS_H_
+#ifndef _U2_FEATURE_KEYS_H_
+#define _U2_FEATURE_KEYS_H_
 
 
 namespace U2 {
@@ -55,4 +55,4 @@ namespace U2 {
 
 } //namespace
 
-#endif //_U2_FEATUREKEYS_H_
+#endif //_U2_FEATURE_KEYS_H_

@@ -108,6 +108,7 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/gobjects/BioStruct3DObject.h \
            src/gobjects/DNAChromatogramObject.h \
            src/gobjects/DNASequenceObject.h \
+           src/gobjects/FeaturesTableObject.h \
            src/gobjects/GObjectRelationRoles.h \
            src/gobjects/GObjectTypes.h \
            src/gobjects/GObjectUtils.h \
@@ -265,6 +266,7 @@ SOURCES += src/cmdline/CMDLineCoreOptions.cpp \
            src/gobjects/BioStruct3DObject.cpp \
            src/gobjects/DNAChromatogramObject.cpp \
            src/gobjects/DNASequenceObject.cpp \
+           src/gobjects/FeaturesTableObject.cpp \
            src/gobjects/GObjectRelationRoles.cpp \
            src/gobjects/GObjectTypes.cpp \
            src/gobjects/GObjectUtils.cpp \
