@@ -42,7 +42,7 @@ namespace U2 {
 /* TRANSLATOR U2::EMBLGenbankAbstractDocument */ 
 
 SwissProtPlainTextFormat::SwissProtPlainTextFormat(QObject* p)
-: EMBLGenbankAbstractDocument(BaseDocumentFormats::PLAIN_SWISS_PROT, tr("Swiss-Prot"), 80, DocumentFormatFlag_SupportWriting, p)
+: EMBLGenbankAbstractDocument(BaseDocumentFormats::PLAIN_SWISS_PROT, tr("Swiss-Prot"), 80, DocumentFormatFlag_SupportStreaming, p)
 {
     formatDescription = tr("SwissProt is a format of the UniProtKB/Swiss-prot database used for "
             "storing annotated protein sequence");

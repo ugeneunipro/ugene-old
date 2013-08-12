@@ -365,7 +365,11 @@ Document* FastqFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const
 void FastqFormat::storeDocument( Document* d, IOAdapter* io, U2OpStatus& os) {
     foreach (GObject* obj, d->getObjects()) {
         U2SequenceObject* seqObj = qobject_cast< U2SequenceObject* >( obj);
-        QList<GObject*> seqs; seqs << seqObj;
+        if( seqObj == NULL ) {
+            continue;
+        }
+        QList<GObject*> seqs; 
+        seqs << seqObj;
         QMap< GObjectType, QList<GObject*> > objectsMap;
         objectsMap[GObjectTypes::SEQUENCE] = seqs;
 

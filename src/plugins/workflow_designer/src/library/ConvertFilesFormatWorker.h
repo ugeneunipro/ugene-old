@@ -75,7 +75,7 @@ private:
 public:
     ConvertFilesFormatTask( const GUrl &url, const QString &format, const QString &dir ) : 
                                              Task( "Conversion file format task", TaskFlags_NR_FOSCOE ), 
-                                             sourceURL( url ), selectedFormat( format ), workingDir( dir ) {}
+                                             sourceURL( url ), selectedFormat( format ), workingDir( dir ), isTaskLoadDocument(true) {}
     void prepare();
     QList<Task*> onSubTaskFinished( Task *subTask );
 }; //ConvertFilesFormatTask

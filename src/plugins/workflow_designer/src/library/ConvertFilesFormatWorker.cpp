@@ -27,6 +27,7 @@
 #include <U2Core/DocumentModel.h>
 #include <U2Core/DocumentUtils.h>
 #include <U2Core/FailTask.h>
+#include <U2Core/GObject.h>
 #include <U2Core/GObjectTypes.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/IOAdapterUtils.h>
@@ -43,6 +44,7 @@
 #include <U2Lang/IntegralBusModel.h>
 #include <U2Lang/WorkflowEnv.h>
 #include <U2Lang/WorkflowMonitor.h>
+
 
 namespace U2 {
 namespace LocalWorkflow {
@@ -66,10 +68,13 @@ QString ConvertFilesFormatPrompter::composeRichDoc() {
 
 void getFormatsMap( QVariantMap &formats, const QList<DocumentFormatId> &supportedFormats, bool boolValues ) {
     foreach( const DocumentFormatId & fid, supportedFormats ) {
-        if( boolValues ) {
-            formats[fid] = false;
-        } else {
-            formats[fid] = fid;
+        DocumentFormat *currentFormat = AppContext::getDocumentFormatRegistry()->getFormatById( fid );
+        if( currentFormat->getFlags().testFlag(DocumentFormatFlag_SupportWriting) || boolValues ) {
+            if( boolValues ) {
+                formats[fid] = false;
+            } else {
+                formats[fid] = fid;
+            }
         }
     }
 }
@@ -98,9 +103,8 @@ void ConvertFilesFormatWorkerFactory::init() {
                                ConvertFilesFormatWorker::tr("Converts a file to selected format if it is not excluded.") );
     ActorPrototype* proto = new IntegralBusActorPrototype(desc, p, a);
 
-    DocumentFormatConstraints constr;
     const QList <DocumentFormatId> supportedFormats = AppContext::getDocumentFormatRegistry()->getRegisteredFormats();
-    
+     
     QVariantMap formatsWithIdValues,
                 formatsWithBooleanValues;
     bool boolValues = false;
@@ -193,16 +197,11 @@ void ConvertFilesFormatWorker::sl_taskFinished( Task *task ) {
         return;
     }
     SaveDocumentTask *sdt = qobject_cast<SaveDocumentTask*>( subTasks.last() );
+    if( sdt == NULL ) {
+        monitor()->addError( "Can not save the file in the selected format", getActorId() );
+        return;
+    }
     QFile outputFile( sdt->getURL().getURLString() );
-    if( !outputFile.open(QIODevice::ReadOnly) ) {
-        monitor()->addError( "Converted file can not be opened. Check correct format is selected", getActorId() );
-        return;
-    }
-    outputFile.close();
-    if( !outputFile.size() ) {
-        monitor()->addError( "Converted file is empty. Check correct format is selected", getActorId() );
-        return;
-    }
     Message resultMessage( BaseTypes::STRING_TYPE(), sdt->getURL().getURLString() );
     outputUrlPort->put(resultMessage);
     monitor()->addOutputFile( sdt->getURL().getURLString(), getActorId() );
@@ -211,10 +210,10 @@ void ConvertFilesFormatWorker::sl_taskFinished( Task *task ) {
 void ConvertFilesFormatTask::prepare() {
     Task *t = LoadDocumentTask::getDefaultLoadDocTask( sourceURL );
     if( t == NULL ) {
+        isTaskLoadDocument = false;
         return;
     }
     this->addSubTask( t );
-    isTaskLoadDocument = true;
 }
 
 QList<Task*> ConvertFilesFormatTask::onSubTaskFinished( Task *subTask ) {
@@ -231,11 +230,23 @@ QList<Task*> ConvertFilesFormatTask::onSubTaskFinished( Task *subTask ) {
         return QList<Task*>();
     }
 
-    IOAdapterFactory *iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById( IOAdapterUtils::url2io( srcDoc->getURL() ) );
     DocumentFormatRegistry *dfr =  AppContext::getDocumentFormatRegistry();
     DocumentFormat *df = dfr->getFormatById(selectedFormat);
+    
+    QSet <GObjectType> selectedFormatObjectsTypes = df->getSupportedObjectTypes();
+    QSet <GObjectType> inputFormatObjectTypes;
+    QListIterator <GObject*> objectsIterator( srcDoc->getObjects() );
+    while( objectsIterator.hasNext() ) {
+        inputFormatObjectTypes.insert( objectsIterator.next()->getGObjectType() );
+    }
+    inputFormatObjectTypes.intersect( selectedFormatObjectsTypes );
+    if( inputFormatObjectTypes.empty() ) {
+        return QList<Task*>();
+    }
 
+    IOAdapterFactory *iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById( IOAdapterUtils::url2io( srcDoc->getURL() ) );
     Document *dstDoc = srcDoc->getSimpleCopy( df, iof, srcDoc->getURL() );
+
     QString fileName = srcDoc->getName();
     fileName.append("." + selectedFormat);
     QString destinationURL = workingDir + fileName;
