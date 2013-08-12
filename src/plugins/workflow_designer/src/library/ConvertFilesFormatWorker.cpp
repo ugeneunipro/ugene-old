@@ -34,8 +34,10 @@
 #include <U2Core/LoadDocumentTask.h>
 #include <U2Core/SaveDocumentTask.h>
 #include <U2Core/TaskSignalMapper.h>
+#include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/UserApplicationsSettings.h>
 #include <U2Designer/DelegateEditors.h>
+#include <U2Formats/BAMUtils.h>
 #include <U2Lang/ActorPrototypeRegistry.h>
 #include <U2Lang/BaseAttributes.h>
 #include <U2Lang/BaseTypes.h>
@@ -44,6 +46,7 @@
 #include <U2Lang/IntegralBusModel.h>
 #include <U2Lang/WorkflowEnv.h>
 #include <U2Lang/WorkflowMonitor.h>
+
 
 
 namespace U2 {
@@ -174,13 +177,23 @@ Task* ConvertFilesFormatWorker::tick() {
              outputUrlPort->put( resultMessage );
              return NULL;
          } 
-
          QString workingDir = QString();
          getWorkingDir( workingDir );
 
-         Task *t = new ConvertFilesFormatTask( sourceURL, selectedFormat, workingDir );
-         connect(new TaskSignalMapper(t), SIGNAL(si_taskFinished(Task*)), SLOT(sl_taskFinished(Task*)));
-         return t;
+         if( detectedFormat == BaseDocumentFormats::SAM && selectedFormat == BaseDocumentFormats::BAM ) {
+             U2OpStatusImpl status;
+             const QString destinationURL = workingDir + sourceURL.fileName() + ".bam";
+             BAMUtils::convertSamToBam( sourceURL, destinationURL, status );
+             if( status.hasError() ) {
+                 monitor()->addError( status.getError(), getActorId() );
+                 return NULL;
+             }
+             monitor()->addOutputFile( destinationURL, getActorId() );
+         } else {
+             Task *t = new ConvertFilesFormatTask( sourceURL, selectedFormat, workingDir );
+             connect(new TaskSignalMapper(t), SIGNAL(si_taskFinished(Task*)), SLOT(sl_taskFinished(Task*)));
+             return t;
+         }
     } else if( inputUrlPort->isEnded() ) {
         setDone();
         outputUrlPort->setEnded();

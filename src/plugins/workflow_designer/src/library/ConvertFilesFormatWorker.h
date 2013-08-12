@@ -73,9 +73,10 @@ private:
     QList<SharedDbiDataHandler> result;
     bool isTaskLoadDocument;
 public:
-    ConvertFilesFormatTask( const GUrl &url, const QString &format, const QString &dir ) : 
+    ConvertFilesFormatTask( const GUrl &url, const QString &_selectedFormat, const QString &dir ) : 
                                              Task( "Conversion file format task", TaskFlags_NR_FOSCOE ), 
-                                             sourceURL( url ), selectedFormat( format ), workingDir( dir ), isTaskLoadDocument(true) {}
+                                             sourceURL( url ), selectedFormat( _selectedFormat ),
+                                             workingDir( dir ), isTaskLoadDocument(true) {}
     void prepare();
     QList<Task*> onSubTaskFinished( Task *subTask );
 }; //ConvertFilesFormatTask
