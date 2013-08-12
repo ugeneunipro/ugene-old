@@ -31,18 +31,26 @@ workflow "Multiple datasets Tuxedo: single-end reads"{
             dataset:"Dataset 1";
         }
     }
+    files-conversion {
+        type:files-conversion;
+        name:"File conversion";
+        document-format:fastq;
+        excluded-formats:fasta;
+    }
 
 
     .actor-bindings {
         tophat.out-assembly->cuffdiff.in-assembly
-        read-sequence.out-url->tophat.in-sequence
+        files-conversion.out-file->tophat.in-sequence
         read-annotations.out-annotations->cuffdiff.in-annotations
+        read-sequence.out-url->files-conversion.in-file
     }
 
     read-sequence.dataset->tophat.in-sequence.dataset
-    read-sequence.url->tophat.in-sequence.in-url
+    files-conversion.url->tophat.in-sequence.in-url
     read-annotations.annotations->cuffdiff.in-annotations.annotations
     tophat.hits-url->cuffdiff.in-assembly.url
+    read-sequence.url->files-conversion.in-file.url
 
     .meta {
         parameter-aliases {
@@ -80,6 +88,12 @@ workflow "Multiple datasets Tuxedo: single-end reads"{
                 in-annotations.angle:32.9052;
                 in-assembly.angle:221.424;
             }
+            files-conversion {
+                pos:"-922 -453";
+                style:simple;
+                in-file.angle:180;
+                out-file.angle:360;
+            }
             read-annotations {
                 pos:"-503 -694";
                 style:ext;
@@ -87,7 +101,7 @@ workflow "Multiple datasets Tuxedo: single-end reads"{
                 out-annotations.angle:294.254;
             }
             read-sequence {
-                pos:"-1032 -453";
+                pos:"-1091 -453";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 out-url.angle:360;
@@ -100,11 +114,14 @@ workflow "Multiple datasets Tuxedo: single-end reads"{
                 in-sequence.angle:180;
                 out-assembly.angle:360;
             }
+            files-conversion.out-file->tophat.in-sequence {
+                text-pos:"-12 -33";
+            }
             read-annotations.out-annotations->cuffdiff.in-annotations {
                 text-pos:"-37 -20";
             }
-            read-sequence.out-url->tophat.in-sequence {
-                text-pos:"-43 -27";
+            read-sequence.out-url->files-conversion.in-file {
+                text-pos:"-29 -35";
             }
             tophat.out-assembly->cuffdiff.in-assembly {
                 text-pos:"-42.5 -43";

@@ -32,19 +32,35 @@ workflow "Single dataset Tuxedo: paired-end reads"{
             dataset:"Dataset 1";
         }
     }
+    files-conversion-1 {
+        type:files-conversion;
+        name:"File conversion 1";
+        document-format:fastq;
+        excluded-formats:fasta;
+    }
+    files-conversion-2 {
+        type:files-conversion;
+        name:"File conversion 2";
+        document-format:fastq;
+        excluded-formats:fasta;
+    }
 
 
     .actor-bindings {
-        tophat.out-assembly->cufflinks.in-assembly
         multiplexer.output-data->tophat.in-sequence
-        read-sequence-1.out-url->multiplexer.input-data-2
-        read-sequence.out-url->multiplexer.input-data-1
+        files-conversion-2.out-file->multiplexer.input-data-2
+        tophat.out-assembly->cufflinks.in-assembly
+        files-conversion-1.out-file->multiplexer.input-data-1
+        read-sequence-1.out-url->files-conversion-2.in-file
+        read-sequence.out-url->files-conversion-1.in-file
     }
 
     read-sequence.dataset->tophat.in-sequence.dataset
-    read-sequence.url->tophat.in-sequence.in-url
-    read-sequence-1.url->tophat.in-sequence.paired-url
+    files-conversion-1.url->tophat.in-sequence.in-url
+    files-conversion-2.url->tophat.in-sequence.paired-url
     tophat.hits-url->cufflinks.in-assembly.url
+    read-sequence.url->files-conversion-1.in-file.url
+    read-sequence-1.url->files-conversion-2.in-file.url
 
     .meta {
         parameter-aliases {
@@ -82,6 +98,18 @@ workflow "Single dataset Tuxedo: paired-end reads"{
                 in-assembly.angle:25.5377;
                 out-annotations.angle:304.042;
             }
+            files-conversion-1 {
+                pos:"-861 -631";
+                style:simple;
+                in-file.angle:162.814;
+                out-file.angle:347.8;
+            }
+            files-conversion-2 {
+                pos:"-865 -539";
+                style:simple;
+                in-file.angle:198.435;
+                out-file.angle:15.3885;
+            }
             multiplexer {
                 pos:"-729 -611";
                 style:ext;
@@ -92,14 +120,14 @@ workflow "Single dataset Tuxedo: paired-end reads"{
                 output-data.angle:351.68;
             }
             read-sequence {
-                pos:"-1020 -675";
+                pos:"-1117 -680";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 bounds:"-30 -30 147 61";
                 out-url.angle:351.506;
             }
             read-sequence-1 {
-                pos:"-1021 -523";
+                pos:"-1118 -520";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 bounds:"-30 -30 148 59";
@@ -113,14 +141,20 @@ workflow "Single dataset Tuxedo: paired-end reads"{
                 in-sequence.angle:216.87;
                 out-assembly.angle:305.172;
             }
+            files-conversion-1.out-file->multiplexer.input-data-1 {
+                text-pos:"-12 -24";
+            }
+            files-conversion-2.out-file->multiplexer.input-data-2 {
+                text-pos:"-12 -24";
+            }
             multiplexer.output-data->tophat.in-sequence {
                 text-pos:"-45.5 -60";
             }
-            read-sequence-1.out-url->multiplexer.input-data-2 {
-                text-pos:"-38 -8";
+            read-sequence-1.out-url->files-conversion-2.in-file {
+                text-pos:"-31 -24";
             }
-            read-sequence.out-url->multiplexer.input-data-1 {
-                text-pos:"-38 -15";
+            read-sequence.out-url->files-conversion-1.in-file {
+                text-pos:"-31 -24";
             }
             tophat.out-assembly->cufflinks.in-assembly {
                 text-pos:"-46 -18";

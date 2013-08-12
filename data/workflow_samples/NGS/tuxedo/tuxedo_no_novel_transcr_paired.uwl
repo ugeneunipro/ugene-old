@@ -45,21 +45,37 @@ workflow "Multiple datasets Tuxedo: paired-end reads"{
             dataset:"Dataset 1";
         }
     }
+    files-conversion {
+        type:files-conversion;
+        name:"File conversion 2";
+        document-format:fastq;
+        excluded-formats:fasta;
+    }
+    files-conversion-1 {
+        type:files-conversion;
+        name:"File conversion 1";
+        document-format:fastq;
+        excluded-formats:fasta;
+    }
 
 
     .actor-bindings {
-        read-annotations.out-annotations->cuffdiff.in-annotations
+        files-conversion-1.out-file->multiplexer.input-data-1
         tophat.out-assembly->cuffdiff.in-assembly
         multiplexer.output-data->tophat.in-sequence
-        read-sequence-1.out-url->multiplexer.input-data-2
-        read-sequence.out-url->multiplexer.input-data-1
+        read-sequence.out-url->files-conversion-1.in-file
+        files-conversion.out-file->multiplexer.input-data-2
+        read-annotations.out-annotations->cuffdiff.in-annotations
+        read-sequence-1.out-url->files-conversion.in-file
     }
 
     read-sequence.dataset->tophat.in-sequence.dataset
-    read-sequence.url->tophat.in-sequence.in-url
-    read-sequence-1.url->tophat.in-sequence.paired-url
+    files-conversion-1.url->tophat.in-sequence.in-url
+    files-conversion.url->tophat.in-sequence.paired-url
     read-annotations.annotations->cuffdiff.in-annotations.annotations
     tophat.hits-url->cuffdiff.in-assembly.url
+    read-sequence-1.url->files-conversion.in-file.url
+    read-sequence.url->files-conversion-1.in-file.url
 
     .meta {
         parameter-aliases {
@@ -101,6 +117,18 @@ workflow "Multiple datasets Tuxedo: paired-end reads"{
                 in-annotations.angle:218.66;
                 in-assembly.angle:25.1593;
             }
+            files-conversion {
+                pos:"-871 -534";
+                style:simple;
+                in-file.angle:198.435;
+                out-file.angle:15.3885;
+            }
+            files-conversion-1 {
+                pos:"-872 -630";
+                style:simple;
+                in-file.angle:162.814;
+                out-file.angle:347.8;
+            }
             multiplexer {
                 pos:"-728 -611";
                 style:ext;
@@ -117,14 +145,14 @@ workflow "Multiple datasets Tuxedo: paired-end reads"{
                 out-annotations.angle:355.601;
             }
             read-sequence {
-                pos:"-1020 -675";
+                pos:"-1121 -678";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 bounds:"-30 -30 147 61";
                 out-url.angle:351.506;
             }
             read-sequence-1 {
-                pos:"-1020 -523";
+                pos:"-1124 -510";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 bounds:"-30 -30 148 59";
@@ -138,17 +166,23 @@ workflow "Multiple datasets Tuxedo: paired-end reads"{
                 in-sequence.angle:218.589;
                 out-assembly.angle:305.172;
             }
+            files-conversion-1.out-file->multiplexer.input-data-1 {
+                text-pos:"-12 -24";
+            }
+            files-conversion.out-file->multiplexer.input-data-2 {
+                text-pos:"-12 -24";
+            }
             multiplexer.output-data->tophat.in-sequence {
                 text-pos:"-44.5 -60";
             }
             read-annotations.out-annotations->cuffdiff.in-annotations {
                 text-pos:"-39 -26";
             }
-            read-sequence-1.out-url->multiplexer.input-data-2 {
-                text-pos:"-38 -13";
+            read-sequence-1.out-url->files-conversion.in-file {
+                text-pos:"-31 -24";
             }
-            read-sequence.out-url->multiplexer.input-data-1 {
-                text-pos:"-38 -12";
+            read-sequence.out-url->files-conversion-1.in-file {
+                text-pos:"-31 -24";
             }
             tophat.out-assembly->cuffdiff.in-assembly {
                 text-pos:"-42.5 -22";

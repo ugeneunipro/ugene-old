@@ -22,7 +22,6 @@ workflow "Call variants with SAMtools"{
     write-variations {
         type:write-variations;
         name:"Write Variations";
-        document-format:snp;
         url-out:variations.snp;
         write-mode:0;
     }
@@ -30,18 +29,25 @@ workflow "Call variants with SAMtools"{
         type:call_variants;
         name:"Call Variants";
     }
+    files-conversion-1 {
+        type:files-conversion;
+        name:"File conversion";
+        document-format:fasta;
+    }
 
 
     .actor-bindings {
-        read-sequence.out-url->call_variants.in-sequence
-        call_variants.out-variations->write-variations.in-variations
         read-assembly.out-assembly->call_variants.in-assembly
+        read-sequence.out-url->files-conversion-1.in-file
+        call_variants.out-variations->write-variations.in-variations
+        files-conversion-1.out-file->call_variants.in-sequence
     }
 
     call_variants.variation-track->write-variations.in-variations.variation-track
     read-assembly.assembly->call_variants.in-assembly.assembly
     read-assembly.url->call_variants.in-assembly.url
-    read-sequence.url->call_variants.in-sequence.url
+    files-conversion-1.url->call_variants.in-sequence.url
+    read-sequence.url->files-conversion-1.in-file.url
 
     .meta {
         visual {
@@ -53,14 +59,20 @@ workflow "Call variants with SAMtools"{
                 in-sequence.angle:210;
                 out-variations.angle:360;
             }
+            files-conversion-1 {
+                pos:"-616 -449";
+                style:simple;
+                in-file.angle:198.435;
+                out-file.angle:15.3885;
+            }
             read-assembly {
-                pos:"-675 -555";
+                pos:"-789 -558";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 out-assembly.angle:360;
             }
             read-sequence {
-                pos:"-675 -420";
+                pos:"-789 -423";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 out-url.angle:360;
@@ -74,11 +86,14 @@ workflow "Call variants with SAMtools"{
             call_variants.out-variations->write-variations.in-variations {
                 text-pos:"-49 -43";
             }
-            read-assembly.out-assembly->call_variants.in-assembly {
-                text-pos:"-32.5 -17";
+            files-conversion-1.out-file->call_variants.in-sequence {
+                text-pos:"-19 -28";
             }
-            read-sequence.out-url->call_variants.in-sequence {
-                text-pos:"-33.5 -14";
+            read-assembly.out-assembly->call_variants.in-assembly {
+                text-pos:"-26.5 -24";
+            }
+            read-sequence.out-url->files-conversion-1.in-file {
+                text-pos:"-29 -32";
             }
         }
         wizard {

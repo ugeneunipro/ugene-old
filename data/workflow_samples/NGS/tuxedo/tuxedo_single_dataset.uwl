@@ -21,16 +21,24 @@ workflow "Single dataset Tuxedo: single-end reads"{
             dataset:"Dataset 1";
         }
     }
+    files-conversion {
+        type:files-conversion;
+        name:"File conversion";
+        document-format:fastq;
+        excluded-formats:fasta;
+    }
 
 
     .actor-bindings {
+        read-sequence.out-url->files-conversion.in-file
         tophat.out-assembly->cufflinks.in-assembly
-        read-sequence.out-url->tophat.in-sequence
+        files-conversion.out-file->tophat.in-sequence
     }
 
     read-sequence.dataset->tophat.in-sequence.dataset
-    read-sequence.url->tophat.in-sequence.in-url
+    files-conversion.url->tophat.in-sequence.in-url
     tophat.hits-url->cufflinks.in-assembly.url
+    read-sequence.url->files-conversion.in-file.url
 
     .meta {
         parameter-aliases {
@@ -64,8 +72,14 @@ workflow "Single dataset Tuxedo: single-end reads"{
                 in-assembly.angle:180;
                 out-annotations.angle:0.881404;
             }
+            files-conversion {
+                pos:"-928 -690";
+                style:simple;
+                in-file.angle:180;
+                out-file.angle:360;
+            }
             read-sequence {
-                pos:"-1035 -690";
+                pos:"-1105 -690";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 out-url.angle:360;
@@ -78,8 +92,11 @@ workflow "Single dataset Tuxedo: single-end reads"{
                 in-sequence.angle:180;
                 out-assembly.angle:360;
             }
-            read-sequence.out-url->tophat.in-sequence {
-                text-pos:"-41 -27";
+            files-conversion.out-file->tophat.in-sequence {
+                text-pos:"-12 -37";
+            }
+            read-sequence.out-url->files-conversion.in-file {
+                text-pos:"-28 -37";
             }
             tophat.out-assembly->cufflinks.in-assembly {
                 text-pos:"-43 -43";
