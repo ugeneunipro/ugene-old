@@ -574,7 +574,8 @@ IMPLEMENT_TEST( CInterfaceManualTests, search_TFBS ) {
 
 IMPLEMENT_TEST( CInterfaceManualTests, call_variants ) {
     wchar_t readSequence[MAX_ELEMENT_NAME_LENGTH], readAssembly[MAX_ELEMENT_NAME_LENGTH],
-        callVariants[MAX_ELEMENT_NAME_LENGTH], writeVariations[MAX_ELEMENT_NAME_LENGTH];
+        callVariants[MAX_ELEMENT_NAME_LENGTH], writeVariations[MAX_ELEMENT_NAME_LENGTH],
+        filesConversion[MAX_ELEMENT_NAME_LENGTH];
     SchemeHandle scheme = NULL;
     U2ErrorType error = createScheme( NULL, &scheme );
     CHECK_U2_ERROR( error );
@@ -585,16 +586,19 @@ IMPLEMENT_TEST( CInterfaceManualTests, call_variants ) {
     CHECK_U2_ERROR( error );
     error = addElementToScheme( scheme, L"call_variants", MAX_ELEMENT_NAME_LENGTH, callVariants );
     CHECK_U2_ERROR( error );
-    error = addElementToScheme( scheme, L"write-variations", MAX_ELEMENT_NAME_LENGTH, writeVariations );
+    error = addElementToScheme( scheme, L"write-variations", MAX_ELEMENT_NAME_LENGTH,
+        writeVariations );
     CHECK_U2_ERROR( error );
+    error = addElementToScheme( scheme, L"files-conversion", MAX_ELEMENT_NAME_LENGTH,
+        filesConversion );
 
     error = setSchemeElementAttribute( scheme, readSequence, L"url-in.dataset", L"Dataset" );
     CHECK_U2_ERROR( error );
     error = setSchemeElementAttribute( scheme, readAssembly, L"url-in.dataset", L"Dataset" );
     CHECK_U2_ERROR( error );
-
-    error = setSchemeElementAttribute( scheme, writeVariations, L"document-format", L"snp" );
+    error = setSchemeElementAttribute( scheme, filesConversion, L"document-format", L"fasta" );
     CHECK_U2_ERROR( error );
+
     error = setSchemeElementAttribute( scheme, writeVariations, L"write-mode", L"0" );
     CHECK_U2_ERROR( error );
     error = setSchemeElementAttribute( scheme, writeVariations, L"url-out", L"variations.snp" );
@@ -602,9 +606,12 @@ IMPLEMENT_TEST( CInterfaceManualTests, call_variants ) {
 
     error = addFlowToScheme( scheme, readAssembly, L"out-assembly", callVariants, L"in-assembly" );
     CHECK_U2_ERROR( error );
-    error = addFlowToScheme( scheme, readSequence, L"out-url", callVariants, L"in-sequence" );
+    error = addFlowToScheme( scheme, readSequence, L"out-url", filesConversion, L"in-file" );
     CHECK_U2_ERROR( error );
-    error = addFlowToScheme( scheme, callVariants, L"out-variations", writeVariations, L"in-variations" );
+    error = addFlowToScheme( scheme, callVariants, L"out-variations", writeVariations,
+        L"in-variations" );
+    CHECK_U2_ERROR( error );
+    error = addFlowToScheme( scheme, filesConversion, L"out-file", callVariants, L"in-sequence" );
     CHECK_U2_ERROR( error );
 
     error = addSchemeActorsBinding( scheme, callVariants, L"variation-track", writeVariations,
@@ -612,9 +619,14 @@ IMPLEMENT_TEST( CInterfaceManualTests, call_variants ) {
     CHECK_U2_ERROR( error );
     error = addSchemeActorsBinding( scheme, readAssembly, L"assembly", callVariants,
         L"in-assembly.assembly" );
-    error = addSchemeActorsBinding( scheme, readAssembly, L"url", callVariants, L"in-assembly.url" );
+    error = addSchemeActorsBinding( scheme, readAssembly, L"url", callVariants,
+        L"in-assembly.url" );
     CHECK_U2_ERROR( error );
-    error = addSchemeActorsBinding( scheme, readSequence, L"url", callVariants, L"in-sequence.url" );
+    error = addSchemeActorsBinding( scheme, readSequence, L"url", filesConversion,
+        L"in-file.url" );
+    CHECK_U2_ERROR( error );
+    error = addSchemeActorsBinding( scheme, filesConversion, L"url", callVariants,
+        L"in-sequence.url" );
     CHECK_U2_ERROR( error );
 
     U2OpStatusImpl stateInfo;
@@ -873,7 +885,7 @@ IMPLEMENT_TEST( CInterfaceManualTests, chip_seq_with_control ) {
 IMPLEMENT_TEST( CInterfaceManualTests, tuxedo_main ) {
     wchar_t getFileList[MAX_ELEMENT_NAME_LENGTH], topHat[MAX_ELEMENT_NAME_LENGTH],
         cufflinks[MAX_ELEMENT_NAME_LENGTH], cuffmerge[MAX_ELEMENT_NAME_LENGTH],
-        cuffdiff[MAX_ELEMENT_NAME_LENGTH];
+        cuffdiff[MAX_ELEMENT_NAME_LENGTH], filesConversion[MAX_ELEMENT_NAME_LENGTH];
     SchemeHandle scheme = NULL;
     U2ErrorType error = createScheme( NULL, &scheme );
     CHECK_U2_ERROR( error );
@@ -888,6 +900,9 @@ IMPLEMENT_TEST( CInterfaceManualTests, tuxedo_main ) {
     CHECK_U2_ERROR( error );
     error = addElementToScheme( scheme, L"tophat", MAX_ELEMENT_NAME_LENGTH, topHat );
     CHECK_U2_ERROR( error );
+    error = addElementToScheme( scheme, L"files-conversion", MAX_ELEMENT_NAME_LENGTH,
+        filesConversion );
+    CHECK_U2_ERROR( error );
 
     error = setSchemeElementAttribute( scheme, topHat, L"out-dir", L"tools_output" );
     CHECK_U2_ERROR( error );
@@ -897,13 +912,19 @@ IMPLEMENT_TEST( CInterfaceManualTests, tuxedo_main ) {
     CHECK_U2_ERROR( error );
     error = setSchemeElementAttribute( scheme, cuffdiff, L"out-dir", L"tools_output" );
     CHECK_U2_ERROR( error );
+    error = setSchemeElementAttribute( scheme, filesConversion, L"document-format", L"fastq" );
+    CHECK_U2_ERROR( error );
+    error = setSchemeElementAttribute( scheme, filesConversion, L"excluded-formats", L"fasta" );
+    CHECK_U2_ERROR( error );
 
     error = setSchemeElementAttribute( scheme, getFileList, L"url-in.dataset", L"Dataset 1" );
     CHECK_U2_ERROR( error );
     error = setSchemeElementAttribute( scheme, getFileList, L"url-in.dataset", L"Dataset 2" );
     CHECK_U2_ERROR( error );
 
-    error = addFlowToScheme( scheme, getFileList, L"out-url", topHat, L"in-sequence" );
+    error = addFlowToScheme( scheme, getFileList, L"out-url", filesConversion, L"in-file" );
+    CHECK_U2_ERROR( error );
+    error = addFlowToScheme( scheme, filesConversion, L"out-file", topHat, L"in-sequence" );
     CHECK_U2_ERROR( error );
     error = addFlowToScheme( scheme, cufflinks, L"out-annotations", cuffmerge, L"in-annotations" );
     CHECK_U2_ERROR( error );
@@ -917,7 +938,9 @@ IMPLEMENT_TEST( CInterfaceManualTests, tuxedo_main ) {
     error = addSchemeActorsBinding( scheme, getFileList, L"dataset", topHat,
         L"in-sequence.dataset" );
     CHECK_U2_ERROR( error );
-    error = addSchemeActorsBinding( scheme, getFileList, L"url", topHat, L"in-sequence.in-url" );
+    error = addSchemeActorsBinding( scheme, getFileList, L"url", filesConversion, L"in-file.url" );
+    CHECK_U2_ERROR( error );
+    error = addSchemeActorsBinding( scheme, filesConversion, L"url", topHat, L"in-sequence.in-url" );
     CHECK_U2_ERROR( error );
     error = addSchemeActorsBinding( scheme, topHat, L"hits-url", cufflinks, L"in-assembly.url" );
     CHECK_U2_ERROR( error );
@@ -942,7 +965,8 @@ IMPLEMENT_TEST( CInterfaceManualTests, tuxedo_main_paired ) {
     wchar_t getFileList1[MAX_ELEMENT_NAME_LENGTH], getFileList2[MAX_ELEMENT_NAME_LENGTH],
         topHat[MAX_ELEMENT_NAME_LENGTH], cufflinks[MAX_ELEMENT_NAME_LENGTH],
         cuffmerge[MAX_ELEMENT_NAME_LENGTH], cuffdiff[MAX_ELEMENT_NAME_LENGTH],
-        multiplexer[MAX_ELEMENT_NAME_LENGTH];
+        multiplexer[MAX_ELEMENT_NAME_LENGTH], filesConversion1[MAX_ELEMENT_NAME_LENGTH],
+        filesConversion2[MAX_ELEMENT_NAME_LENGTH];
     SchemeHandle scheme = NULL;
     U2ErrorType error = createScheme( NULL, &scheme );
     CHECK_U2_ERROR( error );
@@ -960,6 +984,10 @@ IMPLEMENT_TEST( CInterfaceManualTests, tuxedo_main_paired ) {
     error = addElementToScheme( scheme, L"tophat", MAX_ELEMENT_NAME_LENGTH, topHat );
     CHECK_U2_ERROR( error );
     error = addElementToScheme( scheme, L"multiplexer", MAX_ELEMENT_NAME_LENGTH, multiplexer );
+    CHECK_U2_ERROR( error );
+    error = addElementToScheme( scheme, L"files-conversion", MAX_ELEMENT_NAME_LENGTH, filesConversion1 );
+    CHECK_U2_ERROR( error );
+    error = addElementToScheme( scheme, L"files-conversion", MAX_ELEMENT_NAME_LENGTH, filesConversion2 );
     CHECK_U2_ERROR( error );
 
     error = setSchemeElementAttribute( scheme, topHat, L"out-dir", L"tools_output" );
@@ -981,13 +1009,23 @@ IMPLEMENT_TEST( CInterfaceManualTests, tuxedo_main_paired ) {
     error = setSchemeElementAttribute( scheme, getFileList2, L"url-in.dataset", L"Dataset 2" );
     CHECK_U2_ERROR( error );
 
+    error = setSchemeElementAttribute( scheme, filesConversion1, L"document-format", L"fastq" );
+    CHECK_U2_ERROR( error );
+    error = setSchemeElementAttribute( scheme, filesConversion1, L"excluded-formats", L"fasta" );
+    CHECK_U2_ERROR( error );
+
+    error = setSchemeElementAttribute( scheme, filesConversion2, L"document-format", L"fastq" );
+    CHECK_U2_ERROR( error );
+    error = setSchemeElementAttribute( scheme, filesConversion2, L"excluded-formats", L"fasta" );
+    CHECK_U2_ERROR( error );
+
     error = addFlowToScheme( scheme, topHat, L"out-assembly", cufflinks, L"in-assembly" );
     CHECK_U2_ERROR( error );
     error = addFlowToScheme( scheme, topHat, L"out-assembly", cuffdiff, L"in-assembly" );
     CHECK_U2_ERROR( error );
-    error = addFlowToScheme( scheme, getFileList2, L"out-url", multiplexer, L"input-data-2" );
+    error = addFlowToScheme( scheme, filesConversion2, L"out-file", multiplexer, L"input-data-2" );
     CHECK_U2_ERROR( error );
-    error = addFlowToScheme( scheme, getFileList1, L"out-url", multiplexer, L"input-data-1" );
+    error = addFlowToScheme( scheme, filesConversion1, L"out-file", multiplexer, L"input-data-1" );
     CHECK_U2_ERROR( error );
     error = addFlowToScheme( scheme, multiplexer, L"output-data", topHat, L"in-sequence" );
     CHECK_U2_ERROR( error );
@@ -995,13 +1033,23 @@ IMPLEMENT_TEST( CInterfaceManualTests, tuxedo_main_paired ) {
     CHECK_U2_ERROR( error );
     error = addFlowToScheme( scheme, cuffmerge, L"out-annotations", cuffdiff, L"in-annotations" );
     CHECK_U2_ERROR( error );
+    error = addFlowToScheme( scheme, getFileList1, L"out-url", filesConversion1, L"in-file" );
+    CHECK_U2_ERROR( error );
+    error = addFlowToScheme( scheme, getFileList2, L"out-url", filesConversion2, L"in-file" );
+    CHECK_U2_ERROR( error );
 
+    error = addSchemeActorsBinding( scheme, getFileList1, L"url", filesConversion1,
+        L"in-file.url" );
+    CHECK_U2_ERROR( error );
+    error = addSchemeActorsBinding( scheme, getFileList2, L"url", filesConversion2,
+        L"in-file.url" );
     error = addSchemeActorsBinding( scheme, getFileList1, L"dataset", topHat,
         L"in-sequence.dataset" );
     CHECK_U2_ERROR( error );
-    error = addSchemeActorsBinding( scheme, getFileList1, L"url", topHat, L"in-sequence.in-url" );
+    error = addSchemeActorsBinding( scheme, filesConversion1, L"url", topHat,
+        L"in-sequence.in-url" );
     CHECK_U2_ERROR( error );
-    error = addSchemeActorsBinding( scheme, getFileList2, L"url", topHat,
+    error = addSchemeActorsBinding( scheme, filesConversion1, L"url", topHat,
         L"in-sequence.paired-url" );
     CHECK_U2_ERROR( error );
     error = addSchemeActorsBinding( scheme, topHat, L"hits-url", cufflinks, L"in-assembly.url" );
@@ -1025,7 +1073,8 @@ IMPLEMENT_TEST( CInterfaceManualTests, tuxedo_main_paired ) {
 
 IMPLEMENT_TEST( CInterfaceManualTests, tuxedo_multiple_dataset ) {
     wchar_t getFileList[MAX_ELEMENT_NAME_LENGTH], readAnnotations[MAX_ELEMENT_NAME_LENGTH],
-        topHat[MAX_ELEMENT_NAME_LENGTH], cuffdiff[MAX_ELEMENT_NAME_LENGTH];
+        topHat[MAX_ELEMENT_NAME_LENGTH], cuffdiff[MAX_ELEMENT_NAME_LENGTH],
+        filesConversion[MAX_ELEMENT_NAME_LENGTH];
     SchemeHandle scheme = NULL;
     U2ErrorType error = createScheme( NULL, &scheme );
     CHECK_U2_ERROR( error );
@@ -1037,6 +1086,8 @@ IMPLEMENT_TEST( CInterfaceManualTests, tuxedo_multiple_dataset ) {
     error = addElementToScheme( scheme, L"cuffdiff", MAX_ELEMENT_NAME_LENGTH, cuffdiff );
     CHECK_U2_ERROR( error );
     error = addElementToScheme( scheme, L"tophat", MAX_ELEMENT_NAME_LENGTH, topHat );
+    CHECK_U2_ERROR( error );
+    error = addElementToScheme( scheme, L"files-conversion", MAX_ELEMENT_NAME_LENGTH, filesConversion );
     CHECK_U2_ERROR( error );
 
     error = setSchemeElementAttribute( scheme, topHat, L"out-dir", L"tools_output" );
@@ -1051,22 +1102,33 @@ IMPLEMENT_TEST( CInterfaceManualTests, tuxedo_multiple_dataset ) {
     error = setSchemeElementAttribute( scheme, getFileList, L"url-in.dataset", L"Dataset 2" );
     CHECK_U2_ERROR( error );
 
+    error = setSchemeElementAttribute( scheme, filesConversion, L"document-format", L"fastq" );
+    CHECK_U2_ERROR( error );
+    error = setSchemeElementAttribute( scheme, filesConversion, L"excluded-formats", L"fasta" );
+    CHECK_U2_ERROR( error );
+
     error = addFlowToScheme( scheme, topHat, L"out-assembly", cuffdiff, L"in-assembly" );
     CHECK_U2_ERROR( error );
-    error = addFlowToScheme( scheme, getFileList, L"out-url", topHat, L"in-sequence" );
+    error = addFlowToScheme( scheme, filesConversion, L"out-file", topHat, L"in-sequence" );
     CHECK_U2_ERROR( error );
-    error = addFlowToScheme( scheme, readAnnotations, L"out-annotations", cuffdiff, L"in-annotations" );
+    error = addFlowToScheme( scheme, readAnnotations, L"out-annotations", cuffdiff,
+        L"in-annotations" );
+    CHECK_U2_ERROR( error );
+    error = addFlowToScheme( scheme, getFileList, L"out-url", filesConversion, L"in-file" );
     CHECK_U2_ERROR( error );
 
     error = addSchemeActorsBinding( scheme, getFileList, L"dataset", topHat,
         L"in-sequence.dataset" );
     CHECK_U2_ERROR( error );
-    error = addSchemeActorsBinding( scheme, getFileList, L"url", topHat, L"in-sequence.in-url" );
+    error = addSchemeActorsBinding( scheme, filesConversion, L"url", topHat,
+        L"in-sequence.in-url" );
     CHECK_U2_ERROR( error );
     error = addSchemeActorsBinding( scheme, readAnnotations, L"annotations", cuffdiff,
         L"in-annotations.annotations" );
     CHECK_U2_ERROR( error );
     error = addSchemeActorsBinding( scheme, topHat, L"hits-url", cuffdiff, L"in-assembly.url" );
+    CHECK_U2_ERROR( error );
+    error = addSchemeActorsBinding( scheme, getFileList, L"url", filesConversion, L"in-file.url" );
     CHECK_U2_ERROR( error );
 
     U2OpStatusImpl stateInfo;
@@ -1080,7 +1142,8 @@ IMPLEMENT_TEST( CInterfaceManualTests, tuxedo_multiple_dataset ) {
 IMPLEMENT_TEST( CInterfaceManualTests, tuxedo_multiple_dataset_paired ) {
     wchar_t getFileList1[MAX_ELEMENT_NAME_LENGTH], getFileList2[MAX_ELEMENT_NAME_LENGTH],
         readAnnotations[MAX_ELEMENT_NAME_LENGTH], topHat[MAX_ELEMENT_NAME_LENGTH],
-        cuffdiff[MAX_ELEMENT_NAME_LENGTH], multiplexer[MAX_ELEMENT_NAME_LENGTH];
+        cuffdiff[MAX_ELEMENT_NAME_LENGTH], multiplexer[MAX_ELEMENT_NAME_LENGTH],
+        filesConversion1[MAX_ELEMENT_NAME_LENGTH], filesConversion2[MAX_ELEMENT_NAME_LENGTH];
     SchemeHandle scheme = NULL;
     U2ErrorType error = createScheme( NULL, &scheme );
     CHECK_U2_ERROR( error );
@@ -1097,6 +1160,10 @@ IMPLEMENT_TEST( CInterfaceManualTests, tuxedo_multiple_dataset_paired ) {
     error = addElementToScheme( scheme, L"tophat", MAX_ELEMENT_NAME_LENGTH, topHat );
     CHECK_U2_ERROR( error );
     error = addElementToScheme( scheme, L"multiplexer", MAX_ELEMENT_NAME_LENGTH, multiplexer );
+    CHECK_U2_ERROR( error );
+    error = addElementToScheme( scheme, L"files-conversion", MAX_ELEMENT_NAME_LENGTH, filesConversion1 );
+    CHECK_U2_ERROR( error );
+    error = addElementToScheme( scheme, L"files-conversion", MAX_ELEMENT_NAME_LENGTH, filesConversion2 );
     CHECK_U2_ERROR( error );
 
     error = setSchemeElementAttribute( scheme, topHat, L"out-dir", L"tools_output" );
@@ -1115,30 +1182,50 @@ IMPLEMENT_TEST( CInterfaceManualTests, tuxedo_multiple_dataset_paired ) {
     error = setSchemeElementAttribute( scheme, getFileList2, L"url-in.dataset", L"Dataset 2" );
     CHECK_U2_ERROR( error );
 
+    error = setSchemeElementAttribute( scheme, filesConversion1, L"document-format", L"fastq" );
+    CHECK_U2_ERROR( error );
+    error = setSchemeElementAttribute( scheme, filesConversion1, L"excluded-formats", L"fasta" );
+    CHECK_U2_ERROR( error );
+
+    error = setSchemeElementAttribute( scheme, filesConversion2, L"document-format", L"fastq" );
+    CHECK_U2_ERROR( error );
+    error = setSchemeElementAttribute( scheme, filesConversion2, L"excluded-formats", L"fasta" );
+    CHECK_U2_ERROR( error );
+
     error = addFlowToScheme( scheme, topHat, L"out-assembly", cuffdiff, L"in-assembly" );
     CHECK_U2_ERROR( error );
-    error = addFlowToScheme( scheme, getFileList1, L"out-url", multiplexer, L"input-data-1" );
+    error = addFlowToScheme( scheme, filesConversion2, L"out-file", multiplexer, L"input-data-1" );
     CHECK_U2_ERROR( error );
-    error = addFlowToScheme( scheme, getFileList2, L"out-url", multiplexer, L"input-data-2" );
+    error = addFlowToScheme( scheme, filesConversion1, L"out-file", multiplexer, L"input-data-2" );
     CHECK_U2_ERROR( error );
     error = addFlowToScheme( scheme, multiplexer, L"output-data", topHat, L"in-sequence" );
     CHECK_U2_ERROR( error );
     error = addFlowToScheme( scheme, readAnnotations, L"out-annotations", cuffdiff,
         L"in-annotations" );
     CHECK_U2_ERROR( error );
+    error = addFlowToScheme( scheme, getFileList1, L"out-url", filesConversion2, L"in-file" );
+    CHECK_U2_ERROR( error );
+    error = addFlowToScheme( scheme, getFileList2, L"out-url", filesConversion1, L"in-file" );
+    CHECK_U2_ERROR( error );
 
     error = addSchemeActorsBinding( scheme, getFileList1, L"dataset", topHat,
         L"in-sequence.dataset" );
     CHECK_U2_ERROR( error );
-    error = addSchemeActorsBinding( scheme, getFileList1, L"url", topHat, L"in-sequence.in-url" );
+    error = addSchemeActorsBinding( scheme, filesConversion2, L"url", topHat, L"in-sequence.in-url" );
     CHECK_U2_ERROR( error );
-    error = addSchemeActorsBinding( scheme, getFileList2, L"url", topHat,
+    error = addSchemeActorsBinding( scheme, filesConversion1, L"url", topHat,
         L"in-sequence.paired-url" );
     CHECK_U2_ERROR( error );
     error = addSchemeActorsBinding( scheme, readAnnotations, L"annotations", cuffdiff,
         L"in-annotations.annotations" );
     CHECK_U2_ERROR( error );
     error = addSchemeActorsBinding( scheme, topHat, L"hits-url", cuffdiff, L"in-assembly.url" );
+    CHECK_U2_ERROR( error );
+    error = addSchemeActorsBinding( scheme, getFileList2, L"url", filesConversion1,
+        L"in-file.url" );
+    CHECK_U2_ERROR( error );
+    error = addSchemeActorsBinding( scheme, getFileList1, L"url", filesConversion2,
+        L"in-file.url" );
     CHECK_U2_ERROR( error );
 
     U2OpStatusImpl stateInfo;
@@ -1151,7 +1238,7 @@ IMPLEMENT_TEST( CInterfaceManualTests, tuxedo_multiple_dataset_paired ) {
 
 IMPLEMENT_TEST( CInterfaceManualTests, tuxedo_single_dataset ) {
     wchar_t getFileList[MAX_ELEMENT_NAME_LENGTH], topHat[MAX_ELEMENT_NAME_LENGTH],
-        cufflinks[MAX_ELEMENT_NAME_LENGTH];
+        cufflinks[MAX_ELEMENT_NAME_LENGTH], filesConversion[MAX_ELEMENT_NAME_LENGTH];
     SchemeHandle scheme = NULL;
     U2ErrorType error = createScheme( NULL, &scheme );
     CHECK_U2_ERROR( error );
@@ -1162,6 +1249,9 @@ IMPLEMENT_TEST( CInterfaceManualTests, tuxedo_single_dataset ) {
     CHECK_U2_ERROR( error );
     error = addElementToScheme( scheme, L"tophat", MAX_ELEMENT_NAME_LENGTH, topHat );
     CHECK_U2_ERROR( error );
+    error = addElementToScheme( scheme, L"files-conversion", MAX_ELEMENT_NAME_LENGTH,
+        filesConversion );
+    CHECK_U2_ERROR( error );
 
     error = setSchemeElementAttribute( scheme, topHat, L"out-dir", L"tools_output" );
     CHECK_U2_ERROR( error );
@@ -1171,15 +1261,25 @@ IMPLEMENT_TEST( CInterfaceManualTests, tuxedo_single_dataset ) {
     error = setSchemeElementAttribute( scheme, getFileList, L"url-in.dataset", L"Dataset 1" );
     CHECK_U2_ERROR( error );
 
+    error = setSchemeElementAttribute( scheme, filesConversion, L"document-format", L"fastq" );
+    CHECK_U2_ERROR( error );
+    error = setSchemeElementAttribute( scheme, filesConversion, L"excluded-formats", L"fasta" );
+    CHECK_U2_ERROR( error );
+
     error = addFlowToScheme( scheme, topHat, L"out-assembly", cufflinks, L"in-assembly" );
     CHECK_U2_ERROR( error );
-    error = addFlowToScheme( scheme, getFileList, L"out-url", topHat, L"in-sequence" );
+    error = addFlowToScheme( scheme, filesConversion, L"out-file", topHat, L"in-sequence" );
+    CHECK_U2_ERROR( error );
+    error = addFlowToScheme( scheme, getFileList, L"out-url", filesConversion, L"in-file" );
     CHECK_U2_ERROR( error );
 
     error = addSchemeActorsBinding( scheme, getFileList, L"dataset", topHat,
         L"in-sequence.dataset" );
     CHECK_U2_ERROR( error );
-    error = addSchemeActorsBinding( scheme, getFileList, L"url", topHat, L"in-sequence.in-url" );
+    error = addSchemeActorsBinding( scheme, filesConversion, L"url", topHat,
+        L"in-sequence.in-url" );
+    CHECK_U2_ERROR( error );
+    error = addSchemeActorsBinding( scheme, getFileList, L"url", filesConversion, L"in-file.url" );
     CHECK_U2_ERROR( error );
     error = addSchemeActorsBinding( scheme, topHat, L"hits-url", cufflinks, L"in-assembly.url" );
     CHECK_U2_ERROR( error );
@@ -1195,7 +1295,8 @@ IMPLEMENT_TEST( CInterfaceManualTests, tuxedo_single_dataset ) {
 IMPLEMENT_TEST( CInterfaceManualTests, tuxedo_single_dataset_paired ) {
     wchar_t getFileList1[MAX_ELEMENT_NAME_LENGTH], getFileList2[MAX_ELEMENT_NAME_LENGTH],
         topHat[MAX_ELEMENT_NAME_LENGTH], cufflinks[MAX_ELEMENT_NAME_LENGTH],
-        multiplexer[MAX_ELEMENT_NAME_LENGTH];
+        multiplexer[MAX_ELEMENT_NAME_LENGTH], filesConversion1[MAX_ELEMENT_NAME_LENGTH],
+        filesConversion2[MAX_ELEMENT_NAME_LENGTH];
     SchemeHandle scheme = NULL;
     U2ErrorType error = createScheme( NULL, &scheme );
     CHECK_U2_ERROR( error );
@@ -1210,6 +1311,10 @@ IMPLEMENT_TEST( CInterfaceManualTests, tuxedo_single_dataset_paired ) {
     CHECK_U2_ERROR( error );
     error = addElementToScheme( scheme, L"multiplexer", MAX_ELEMENT_NAME_LENGTH, multiplexer );
     CHECK_U2_ERROR( error );
+    error = addElementToScheme( scheme, L"files-conversion", MAX_ELEMENT_NAME_LENGTH, filesConversion1 );
+    CHECK_U2_ERROR( error );
+    error = addElementToScheme( scheme, L"files-conversion", MAX_ELEMENT_NAME_LENGTH, filesConversion2 );
+    CHECK_U2_ERROR( error );
 
     error = setSchemeElementAttribute( scheme, topHat, L"out-dir", L"tools_output" );
     CHECK_U2_ERROR( error );
@@ -1221,11 +1326,25 @@ IMPLEMENT_TEST( CInterfaceManualTests, tuxedo_single_dataset_paired ) {
     error = setSchemeElementAttribute( scheme, getFileList2, L"url-in.dataset", L"Dataset 1" );
     CHECK_U2_ERROR( error );
 
+    error = setSchemeElementAttribute( scheme, filesConversion1, L"document-format", L"fastq" );
+    CHECK_U2_ERROR( error );
+    error = setSchemeElementAttribute( scheme, filesConversion1, L"excluded-formats", L"fasta" );
+    CHECK_U2_ERROR( error );
+
+    error = setSchemeElementAttribute( scheme, filesConversion2, L"document-format", L"fastq" );
+    CHECK_U2_ERROR( error );
+    error = setSchemeElementAttribute( scheme, filesConversion2, L"excluded-formats", L"fasta" );
+    CHECK_U2_ERROR( error );
+
     error = addFlowToScheme( scheme, topHat, L"out-assembly", cufflinks, L"in-assembly" );
     CHECK_U2_ERROR( error );
-    error = addFlowToScheme( scheme, getFileList1, L"out-url", multiplexer, L"input-data-1" );
+    error = addFlowToScheme( scheme, filesConversion1, L"out-file", multiplexer, L"input-data-1" );
     CHECK_U2_ERROR( error );
-    error = addFlowToScheme( scheme, getFileList2, L"out-url", multiplexer, L"input-data-2" );
+    error = addFlowToScheme( scheme, getFileList1, L"out-url", filesConversion1, L"in-file" );
+    CHECK_U2_ERROR( error );
+    error = addFlowToScheme( scheme, filesConversion2, L"out-file", multiplexer, L"input-data-2" );
+    CHECK_U2_ERROR( error );
+    error = addFlowToScheme( scheme, getFileList2, L"out-url", filesConversion2, L"in-file" );
     CHECK_U2_ERROR( error );
     error = addFlowToScheme( scheme, multiplexer, L"output-data", topHat, L"in-sequence" );
     CHECK_U2_ERROR( error );
@@ -1233,10 +1352,17 @@ IMPLEMENT_TEST( CInterfaceManualTests, tuxedo_single_dataset_paired ) {
     error = addSchemeActorsBinding( scheme, getFileList1, L"dataset", topHat,
         L"in-sequence.dataset" );
     CHECK_U2_ERROR( error );
-    error = addSchemeActorsBinding( scheme, getFileList1, L"url", topHat, L"in-sequence.in-url" );
+    error = addSchemeActorsBinding( scheme, filesConversion1, L"url", topHat,
+        L"in-sequence.in-url" );
     CHECK_U2_ERROR( error );
-    error = addSchemeActorsBinding( scheme, getFileList2, L"url", topHat,
+    error = addSchemeActorsBinding( scheme, getFileList1, L"url", filesConversion1,
+        L"in-file.url" );
+    CHECK_U2_ERROR( error );
+    error = addSchemeActorsBinding( scheme, filesConversion2, L"url", topHat,
         L"in-sequence.paired-url" );
+    CHECK_U2_ERROR( error );
+    error = addSchemeActorsBinding( scheme, getFileList2, L"url", filesConversion2,
+        L"in-file.url" );
     CHECK_U2_ERROR( error );
     error = addSchemeActorsBinding( scheme, topHat, L"hits-url", cufflinks, L"in-assembly.url" );
     CHECK_U2_ERROR( error );
