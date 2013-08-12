@@ -355,6 +355,14 @@ bool ActorCfgModel::canSetData(Attribute *attr, const QVariant &value) {
     return rfs->canAdd(value.toString(), dir);
 }
 
+DelegateTags * getTags(Actor *subject, const QString &attrId) {
+    ConfigurationEditor *editor = subject->getEditor();
+    CHECK(NULL != editor, NULL);
+    PropertyDelegate *delegate = editor->getDelegate(attrId);
+    CHECK(NULL != delegate, NULL);
+    return delegate->tags();
+}
+
 bool ActorCfgModel::setData( const QModelIndex & index, const QVariant & value, int role ) {
     int col = index.column();
     Attribute* editingAttribute = attrs[index.row()];
@@ -381,13 +389,13 @@ bool ActorCfgModel::setData( const QModelIndex & index, const QVariant & value, 
                     }
                     foreach (const AttributeRelation *relation, editingAttribute->getRelations()) {
                         if (relation->valueChangingRelation()) {
+                            DelegateTags *inf = getTags(subject, editingAttribute->getId());
+                            DelegateTags *dep = getTags(subject, relation->getRelatedAttrId());
                             Attribute *depAttr = subject->getParameter(relation->getRelatedAttrId());
-                            ConfigurationEditor *editor = subject->getEditor();
-                            DelegateTags *inf = editor ? editor->getDelegate(editingAttribute->getId())->tags() : NULL;
-                            DelegateTags *dep = editor ? editor->getDelegate(relation->getRelatedAttrId())->tags() : NULL;
-                            QModelIndex idx = modelIndexById(relation->getRelatedAttrId());
-                            QVariant newValue = relation->getAffectResult(value, data(idx), inf, dep);
+                            QVariant newValue = relation->getAffectResult(value, depAttr->getAttributePureValue(), inf, dep);
+
                             if (canSetData(depAttr, newValue)) {
+                                QModelIndex idx = modelIndexById(relation->getRelatedAttrId());
                                 setData(idx, newValue);
                             }
                         }

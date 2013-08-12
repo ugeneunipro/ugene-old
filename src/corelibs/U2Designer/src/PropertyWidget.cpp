@@ -416,6 +416,7 @@ void URLWidget::sl_finished() {
             }
         }
     }
+    urlLine->setText(finalyze(urlLine->text()));
     emit si_valueChanged(urlLine->text());
     emit finished();
 }
@@ -423,6 +424,37 @@ void URLWidget::sl_finished() {
 RunFileSystem * URLWidget::getRFS() {
     CHECK(NULL != schemaConfig, NULL);
     return schemaConfig->getRFS();
+}
+
+QString URLWidget::finalyze(const QString &url) {
+    return url;
+}
+
+/************************************************************************/
+/* NoFileURLWidget */
+/************************************************************************/
+NoFileURLWidget::NoFileURLWidget(const QString &type, bool multi, bool isPath, bool saveFile, DelegateTags *tags, QWidget *parent)
+: URLWidget(type, multi, isPath, saveFile, tags, parent)
+{
+
+}
+
+static const QString FILE_TAG("file");
+
+QString NoFileURLWidget::finalyze(const QString &url) {
+    QFileInfo info(url);
+    DelegateTags *t = const_cast<DelegateTags*>(tags());
+    if (url.isEmpty() || info.isDir() || info.isRelative() || !info.exists()) {
+        if (NULL != t) {
+            t->set(FILE_TAG, "");
+        }
+        return url;
+    }
+
+    if (NULL != t) {
+        t->set(FILE_TAG, info.fileName());
+    }
+    return info.dir().absolutePath();
 }
 
 } // U2

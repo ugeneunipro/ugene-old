@@ -48,6 +48,7 @@ public:
 
 protected:
     void focusOutEvent(QFocusEvent *event);
+    void keyPressEvent(QKeyEvent *event);
 
 public slots:
     void sl_onBrowse();

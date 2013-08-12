@@ -72,7 +72,7 @@ protected:
 class U2DESIGNER_EXPORT URLDelegate : public PropertyDelegate {
     Q_OBJECT
 public:
-    URLDelegate(const QString& filter, const QString& type, bool multi = false, bool isPath = false, bool saveFile = true, QObject *parent = 0, const QString &format = "");
+    URLDelegate(const QString& filter, const QString& type, bool multi = false, bool isPath = false, bool saveFile = true, QObject *parent = 0, const QString &format = "", bool noFilesMode = false);
     virtual ~URLDelegate() {}
 
     virtual QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option,
@@ -84,7 +84,7 @@ public:
         const QModelIndex &index) const;
 
     virtual PropertyDelegate *clone() {
-        return new URLDelegate(tags()->get("filter").toString(), lastDirType, multi, isPath, saveFile, parent(), tags()->get("format").toString());
+        return new URLDelegate(tags()->get("filter").toString(), lastDirType, multi, isPath, saveFile, parent(), tags()->get("format").toString(), noFilesMode);
     }
     virtual Type type() const;
 
@@ -97,6 +97,7 @@ public:
     bool    isPath;
     bool    saveFile; // sets when you need only 1 file for reading (is set with multi=false)
     QString text;
+    bool noFilesMode;
 
 private:
     URLWidget * createWidget(QWidget *parent) const;

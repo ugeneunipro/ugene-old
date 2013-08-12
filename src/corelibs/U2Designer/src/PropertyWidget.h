@@ -186,6 +186,9 @@ private slots:
     void sl_browse();
     void sl_finished();
 
+protected:
+    virtual QString finalyze(const QString &url);
+
 private:
     RunFileSystem * getRFS();
 
@@ -197,6 +200,17 @@ private:
 
 private slots:
     void sl_textChanged(const QString &text);
+};
+
+/************************************************************************/
+/* NoFileURLWidget */
+/************************************************************************/
+class NoFileURLWidget : public URLWidget {
+public:
+    NoFileURLWidget(const QString &type, bool multi, bool isPath, bool saveFile, DelegateTags *tags, QWidget *parent = NULL);
+
+protected:
+    virtual QString finalyze(const QString &url);
 };
 
 } // U2

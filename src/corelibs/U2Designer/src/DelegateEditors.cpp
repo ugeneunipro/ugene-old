@@ -287,15 +287,20 @@ QVariant ComboBoxWithChecksDelegate::getDisplayValue(const QVariant& val) const 
 /********************************
 * URLDelegate
 ********************************/
-URLDelegate::URLDelegate(const QString& filter, const QString& type, bool multi, bool isPath, bool saveFile, QObject *parent, const QString &format)
-: PropertyDelegate(parent), lastDirType(type), multi(multi), isPath(isPath), saveFile(saveFile)
+URLDelegate::URLDelegate(const QString& filter, const QString& type, bool multi, bool isPath, bool saveFile, QObject *parent, const QString &format, bool _noFilesMode)
+: PropertyDelegate(parent), lastDirType(type), multi(multi), isPath(isPath), saveFile(saveFile), noFilesMode(_noFilesMode)
 {
     tags()->set("filter", filter);
     tags()->set("format", format);
 }
 
 URLWidget * URLDelegate::createWidget(QWidget *parent) const {
-    URLWidget *result = new URLWidget(lastDirType, multi, isPath, saveFile, tags(), parent);
+    URLWidget *result;
+    if (noFilesMode) {
+        result = new NoFileURLWidget(lastDirType, multi, isPath, saveFile, tags(), parent);
+    } else {
+        result = new URLWidget(lastDirType, multi, isPath, saveFile, tags(), parent);
+    }
     if (saveFile) {
         result->setSchemaConfig(schemaConfig);
     }
@@ -318,10 +323,8 @@ QWidget * URLDelegate::createEditor(QWidget *parent,
 void URLDelegate::sl_commit() {
     URLWidget *editor = static_cast<URLWidget*>(sender());
 
-    if(editor->value().toString() != text) {
-        text = editor->value().toString();
-        emit commitData(editor);
-    }
+    text = editor->value().toString();
+    emit commitData(editor);
 }
 
 void URLDelegate::setEditorData(QWidget *editor,

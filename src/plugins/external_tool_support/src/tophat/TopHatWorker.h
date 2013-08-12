@@ -145,6 +145,25 @@ public:
     virtual bool validate(const Actor *actor, QStringList &output) const;
 };
 
+class BowtieFilesRelation : public AttributeRelation {
+public:
+    BowtieFilesRelation(const QString &indexNameAttrId);
+    QVariant getAffectResult(const QVariant &influencingValue, const QVariant &dependentValue,
+        DelegateTags *infTags, DelegateTags *depTags) const;
+    RelationType getType() const;
+
+    static QString getBowtie1IndexName(const QString &dir, const QString &fileName);
+    static QString getBowtie2IndexName(const QString &dir, const QString &fileName);
+};
+
+class BowtieVersionRelation : public AttributeRelation {
+public:
+    BowtieVersionRelation(const QString &bwtVersionAttrId);
+    QVariant getAffectResult(const QVariant &influencingValue, const QVariant &dependentValue,
+        DelegateTags *infTags, DelegateTags *depTags) const;
+    RelationType getType() const;
+};
+
 } // namespace LocalWorkflow
 } // namespace U2
 

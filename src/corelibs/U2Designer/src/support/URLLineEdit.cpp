@@ -115,6 +115,7 @@ CompletionFiller * URLLineEdit::getCompletionFillerInstance() {
     if (saveFile && NULL != parent) {
         return new FilenameCompletionFiller(parent);
     }
+    return NULL;
 }
 
 void URLLineEdit::sl_onBrowse() {
@@ -184,11 +185,19 @@ void URLLineEdit::browse(bool addFiles) {
         setText(name);
     }
     setFocus();
+    emit si_finished();
 }
 
 void URLLineEdit::focusOutEvent(QFocusEvent *event) {
-    QLineEdit::focusOutEvent(event);
     sl_completionFinished();
+    QLineEdit::focusOutEvent(event);
+}
+
+void URLLineEdit::keyPressEvent(QKeyEvent *event) {
+    if (Qt::Key_Enter == event->key()) {
+        sl_completionFinished();
+    }
+    QLineEdit::keyPressEvent(event);
 }
 
 void URLLineEdit::checkExtension(QString &name) {

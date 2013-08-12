@@ -94,6 +94,8 @@ static const QString OUT_BAM_URL_SLOT_ID("hits-url");
 static const QString BOWTIE1("Bowtie1");
 static const QString BOWTIE2("Bowtie2");
 
+static const QString FILE_TAG("file");
+
 void TopHatWorkerFactory::init()
 {
     QList<PortDescriptor*> portDescriptors;
@@ -335,7 +337,12 @@ void TopHatWorkerFactory::init()
         TopHatWorker::tr("The directory for temporary files"));
 
     attributes << new Attribute(outDir, BaseTypes::STRING_TYPE(), true, "");
-    attributes << new Attribute(bowtieIndexDir, BaseTypes::STRING_TYPE(), true, QVariant(""));
+    {
+        Attribute *dirAttr = new Attribute(bowtieIndexDir, BaseTypes::STRING_TYPE(), true, QVariant(""));
+        dirAttr->addRelation(new BowtieFilesRelation(BOWTIE_INDEX_BASENAME));
+        dirAttr->addRelation(new BowtieVersionRelation(BOWTIE_VERSION));
+        attributes << dirAttr;
+    }
     attributes << new Attribute(bowtieIndexBasename, BaseTypes::STRING_TYPE(), true, QVariant(""));
     // attributes << new Attribute(refSeq, BaseTypes::STRING_TYPE(), true, QVariant(""));
     attributes << new Attribute(mateInnerDistance, BaseTypes::NUM_TYPE(), false, QVariant(200));
@@ -449,7 +456,7 @@ void TopHatWorkerFactory::init()
     }
 
     delegates[OUT_DIR] = new URLDelegate("", "", false, true /*path*/);
-    delegates[BOWTIE_INDEX_DIR] = new URLDelegate("", "", false, true, false);
+    delegates[BOWTIE_INDEX_DIR] = new URLDelegate("", "", false, false, false, NULL, "", true);
     delegates[BOWTIE_TOOL_PATH] = new URLDelegate("", "executable", false, false, false);
     delegates[SAMTOOLS_TOOL_PATH] = new URLDelegate("", "executable", false, false, false);
     delegates[REF_SEQ] = new URLDelegate(DialogUtils::prepareDocumentsFileFilter(true), "", false, false, false);
@@ -776,6 +783,85 @@ bool BowtieToolsValidator::validate(const Actor *actor, QStringList &output) con
         output << WorkflowUtils::externalToolError(tool->getName());
     }
     return valid;
+}
+
+/************************************************************************/
+/* BowtieFilesRelation */
+/************************************************************************/
+BowtieFilesRelation::BowtieFilesRelation(const QString &indexNameAttrId)
+: AttributeRelation(indexNameAttrId)
+{
+
+}
+
+QVariant BowtieFilesRelation::getAffectResult(const QVariant &influencingValue, const QVariant &dependentValue, DelegateTags *infTags, DelegateTags *depTags) const {
+    QString bwtDir = influencingValue.toString();
+    QString bwtFile = infTags->get(FILE_TAG).toString();
+
+    QString indexName = getBowtie1IndexName(bwtDir, bwtFile);
+    if (indexName.isEmpty()) {
+        indexName = getBowtie2IndexName(bwtDir, bwtFile);
+        CHECK(!indexName.isEmpty(), dependentValue);
+    }
+    return indexName;
+}
+
+RelationType BowtieFilesRelation::getType() const {
+    return CUSTOM_VALUE_CHANGER;
+}
+
+static QString getBowtieIndexName(const QString &dir, const QString &fileName, const QRegExp &dirRx, const QRegExp &revRx) {
+    QString indexName;
+    if (revRx.exactMatch(fileName)) {
+        indexName = revRx.cap(1);
+    } else if (dirRx.exactMatch(fileName)) {
+        indexName = dirRx.cap(1);
+    } else {
+        return "";
+    }
+    return indexName;
+}
+
+QString BowtieFilesRelation::getBowtie1IndexName(const QString &dir, const QString &fileName) {
+    QRegExp dirRx("^(.+)\\.[1-4]\\.ebwt$");
+    QRegExp revRx("^(.+)\\.rev\\.[1-2]\\.ebwt$");
+
+    return getBowtieIndexName(dir, fileName, dirRx, revRx);
+}
+
+QString BowtieFilesRelation::getBowtie2IndexName(const QString &dir, const QString &fileName) {
+    QRegExp dirRx("^(.+)\\.[1-4]\\.bt2$");
+    QRegExp revRx("^(.+)\\.rev\\.[1-2]\\.bt2$");
+
+    return getBowtieIndexName(dir, fileName, dirRx, revRx);
+}
+
+/************************************************************************/
+/* BowtieVersionRelation */
+/************************************************************************/
+BowtieVersionRelation::BowtieVersionRelation(const QString &bwtVersionAttrId)
+: AttributeRelation(bwtVersionAttrId)
+{
+
+}
+
+QVariant BowtieVersionRelation::getAffectResult(const QVariant &influencingValue, const QVariant &dependentValue, DelegateTags *infTags, DelegateTags *depTags) const {
+    QString bwtDir = influencingValue.toString();
+    QString bwtFile = infTags->get(FILE_TAG).toString();
+
+    QString indexName = BowtieFilesRelation::getBowtie1IndexName(bwtDir, bwtFile);
+    if (indexName.isEmpty()) {
+        indexName = BowtieFilesRelation::getBowtie2IndexName(bwtDir, bwtFile);
+        if (indexName.isEmpty()) {
+            return dependentValue;
+        }
+        return 0;
+    }
+    return 1;
+}
+
+RelationType BowtieVersionRelation::getType() const {
+    return CUSTOM_VALUE_CHANGER;
 }
 
 } // namespace LocalWorkflow
