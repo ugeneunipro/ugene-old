@@ -265,8 +265,6 @@ UgeneContextWrapper::UgeneContextWrapper( const QString &workingDirectoryPath )
 #ifdef OPENCL_SUPPORT
     oclgr = new OpenCLGpuRegistry( );
     appContext->setOpenCLGpuRegistry( oclgr );
-#else
-    oclgr = NULL;
 #endif
 
     rdc = new RecentlyDownloadedCache( );
@@ -394,8 +392,10 @@ UgeneContextWrapper::~UgeneContextWrapper( ) {
     delete cgr;
     appContext->setCudaGpuRegistry( NULL );
 
+#ifdef OPENCL_SUPPORT
     delete oclgr;
     appContext->setOpenCLGpuRegistry( NULL );
+#endif
 
     delete appSettings;
     appContext->setAppSettings( NULL );

@@ -61,7 +61,9 @@ class SWResultFilterRegistry;
 class SecStructPredictAlgRegistry;
 class CudaGpuRegistry;
 class PairwiseAlignmentRegistry;
+#ifdef OPENCL_SUPPORT
 class OpenCLGpuRegistry;
+#endif
 class RecentlyDownloadedCache;
 class DistributedComputingUtil;
 class VirtualFileSystemRegistry;
@@ -125,7 +127,9 @@ private:
     SecStructPredictAlgRegistry *           sspar;
     CudaGpuRegistry *                       cgr;
     PairwiseAlignmentRegistry *             pwr;
+#ifdef OPENCL_SUPPORT
     OpenCLGpuRegistry *                     oclgr;
+#endif
     RecentlyDownloadedCache *               rdc;
     DistributedComputingUtil *              distrUtil;
     VirtualFileSystemRegistry *             vfsReg;
