@@ -25,6 +25,8 @@
 #include <U2Lang/LocalDomain.h>
 #include <U2Lang/WorkflowUtils.h>
 
+#include "AssemblySamtoolsMpileup.h"
+
 namespace U2 {
 
 namespace LocalWorkflow {
@@ -59,6 +61,9 @@ protected:
     QList<Message> cache;
     QList<QString> assemblyUrls;
 
+private:
+    void takeAssembly(U2OpStatus &os);
+    CallVariantsTaskSettings getSettings();
 }; 
 
 class CallVariantsWorkerFactory : public DomainFactory {

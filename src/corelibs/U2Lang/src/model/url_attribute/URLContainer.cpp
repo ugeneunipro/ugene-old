@@ -25,8 +25,12 @@
 
 namespace U2 {
 
+static QString toUniversal(const QString &url) {
+    return QFileInfo(url).absoluteFilePath();
+}
+
 URLContainer::URLContainer(const QString &_url)
-: url(_url)
+: url(toUniversal(_url))
 {
 
 }

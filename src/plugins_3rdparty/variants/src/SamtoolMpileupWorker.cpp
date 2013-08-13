@@ -20,8 +20,6 @@
  */
 #include "SamtoolMpileupWorker.h"
 
-#include "AssemblySamtoolsMpileup.h"
-
 #include <U2Lang/IntegralBusModel.h>
 #include <U2Lang/WorkflowEnv.h>
 #include <U2Lang/ActorPrototypeRegistry.h>
@@ -684,19 +682,9 @@ Task* CallVariantsWorker::tick() {
     U2OpStatus2Log os;
 
     //get all assemblies
-    
     while(assemblyPort->hasMessage()){
-        Message inputMessage = getMessageAndSetupScriptValues(assemblyPort);
-        if (!inputMessage.isEmpty()) {
-            QVariantMap data = inputMessage.getData().toMap();
-            if (!data.contains(BaseSlots::URL_SLOT().getId())){
-                os.setError(CallVariantsWorker::tr("Assembly URL slot is empty. Please, specify the URL slot"));
-                return new FailTask(os.getError());
-            }
-            QString assemblyUrl;
-            assemblyUrl = data.value(BaseSlots::URL_SLOT().getId()).value<QString>();
-            assemblyUrls.append(assemblyUrl);
-        }
+        takeAssembly(os);
+        CHECK_OP(os, new FailTask(os.getError()));
     }
     if (!assemblyPort->isEnded()) {
         return NULL;
@@ -715,59 +703,9 @@ Task* CallVariantsWorker::tick() {
             return new FailTask(os.getError());
         }
 
-        CallVariantsTaskSettings settings;
+        CallVariantsTaskSettings settings = getSettings();
         settings.refSeqUrl = data.value(BaseSlots::URL_SLOT().getId()).value<QString>();
         settings.assemblyUrls = assemblyUrls;
-
-        settings.illumina13 = getValue<bool>(ILLUMINA13);
-        settings.use_orphan = getValue<bool>(USE_ORPHAN);
-        settings.disable_baq = getValue<bool>(DISABLE_BAQ);
-        settings.capq_thres = getValue<int>(CAPQ_THRES);
-        settings.max_depth = getValue<int>(MAX_DEPTH);
-        settings.ext_baq = getValue<bool>(EXT_BAQ);
-        settings.bed = getValue<QString>(BED).toLatin1();
-        settings.reg = getValue<QString>(REG).toLatin1();
-        settings.min_mq = getValue<int>(MIN_MQ);
-        settings.min_baseq = getValue<int>(MIN_BASEQ);
-        settings.extq = getValue<int>(EXTQ);
-        settings.tandemq = getValue<int>(TANDEMQ);
-        settings.no_indel = getValue<bool>(NO_INDEL);
-        settings.max_indel_depth = getValue<int>(MAX_INDEL_DEPTH);
-        settings.openq = getValue<int>(OPENQ);
-        settings.pl_list = getValue<QString>(PL_LIST).toLatin1();
-
-        //bcf view
-        settings.keepalt = getValue<bool>(KEEPALT);
-        settings.fix_pl = getValue<bool>(FIX_PL);
-        settings.no_geno = getValue<bool>(NO_GENO);
-        settings.acgt_only = getValue<bool>(ACGT_ONLY);
-        settings.bcf_bed = getValue<QString>(BCF_BED).toLatin1();
-        settings.qcall = getValue<bool>(QCALL);
-        settings.samples = getValue<QString>(SAMPLES).toLatin1();
-        settings.min_smpl_frac = getValue<float>(MIN_SMPL_FRAC);
-        settings.call_gt = getValue<bool>(CALL_GT);
-        settings.indel_frac = getValue<float>(INDEL_FRAC);
-        settings.pref = getValue<float>(PREF);
-        settings.ptype = getValue<QString>(PTYPE).toLatin1();
-        settings.theta = getValue<float>(THETA);
-        settings.ccall = getValue<QString>(CCALL).toLatin1();
-        settings.n1 = getValue<int>(N1);
-        settings.n_perm = getValue<int>(N_PERM);
-        settings.min_perm_p = getValue<float>(MIN_PERM_P);
-
-        //varFilter
-        settings.minQual = getValue<int>(MIN_QUAL);
-        settings.minDep = getValue<int>(MIN_DEP);
-        settings.maxDep = getValue<int>(MAX_DEP);
-        settings.minAlt = getValue<int>(MIN_ALT);
-        settings.gapSize = getValue<int>(GAP_SIZE);
-        settings.window = getValue<int>(WINDOW);
-        settings.pvalue1 = getValue<float>(PVALUE1);
-        settings.pvalue2 = getValue<QString>(PVALUE2).toFloat();
-        settings.pvalue3 = getValue<float>(PVALUE3);
-        settings.pvalue4 = getValue<float>(PVALUE4);
-        settings.pvalueHwe = getValue<float>(PVALUE_HWE);
-        settings.printFiltered = getValue<bool>(PRINT);
 
         Task* t = new CallVariantsTask(settings, context->getDataStorage());
         connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
@@ -801,6 +739,73 @@ void CallVariantsWorker::sl_taskFinished() {
 }
 
 void CallVariantsWorker::cleanup() {
+}
+
+void CallVariantsWorker::takeAssembly(U2OpStatus &os) {
+    Message m = getMessageAndSetupScriptValues(assemblyPort);
+    if (!m.isEmpty()) {
+        QVariantMap data = m.getData().toMap();
+        if (!data.contains(BaseSlots::URL_SLOT().getId())){
+            os.setError(CallVariantsWorker::tr("Assembly URL slot is empty. Please, specify the URL slot"));
+            return;
+        }
+        QString assemblyUrl = data.value(BaseSlots::URL_SLOT().getId()).value<QString>();
+        assemblyUrls.append(assemblyUrl);
+    }
+}
+
+CallVariantsTaskSettings CallVariantsWorker::getSettings() {
+    CallVariantsTaskSettings settings;
+    settings.illumina13 = getValue<bool>(ILLUMINA13);
+    settings.use_orphan = getValue<bool>(USE_ORPHAN);
+    settings.disable_baq = getValue<bool>(DISABLE_BAQ);
+    settings.capq_thres = getValue<int>(CAPQ_THRES);
+    settings.max_depth = getValue<int>(MAX_DEPTH);
+    settings.ext_baq = getValue<bool>(EXT_BAQ);
+    settings.bed = getValue<QString>(BED).toLatin1();
+    settings.reg = getValue<QString>(REG).toLatin1();
+    settings.min_mq = getValue<int>(MIN_MQ);
+    settings.min_baseq = getValue<int>(MIN_BASEQ);
+    settings.extq = getValue<int>(EXTQ);
+    settings.tandemq = getValue<int>(TANDEMQ);
+    settings.no_indel = getValue<bool>(NO_INDEL);
+    settings.max_indel_depth = getValue<int>(MAX_INDEL_DEPTH);
+    settings.openq = getValue<int>(OPENQ);
+    settings.pl_list = getValue<QString>(PL_LIST).toLatin1();
+
+    //bcf view
+    settings.keepalt = getValue<bool>(KEEPALT);
+    settings.fix_pl = getValue<bool>(FIX_PL);
+    settings.no_geno = getValue<bool>(NO_GENO);
+    settings.acgt_only = getValue<bool>(ACGT_ONLY);
+    settings.bcf_bed = getValue<QString>(BCF_BED).toLatin1();
+    settings.qcall = getValue<bool>(QCALL);
+    settings.samples = getValue<QString>(SAMPLES).toLatin1();
+    settings.min_smpl_frac = getValue<float>(MIN_SMPL_FRAC);
+    settings.call_gt = getValue<bool>(CALL_GT);
+    settings.indel_frac = getValue<float>(INDEL_FRAC);
+    settings.pref = getValue<float>(PREF);
+    settings.ptype = getValue<QString>(PTYPE).toLatin1();
+    settings.theta = getValue<float>(THETA);
+    settings.ccall = getValue<QString>(CCALL).toLatin1();
+    settings.n1 = getValue<int>(N1);
+    settings.n_perm = getValue<int>(N_PERM);
+    settings.min_perm_p = getValue<float>(MIN_PERM_P);
+
+    //varFilter
+    settings.minQual = getValue<int>(MIN_QUAL);
+    settings.minDep = getValue<int>(MIN_DEP);
+    settings.maxDep = getValue<int>(MAX_DEP);
+    settings.minAlt = getValue<int>(MIN_ALT);
+    settings.gapSize = getValue<int>(GAP_SIZE);
+    settings.window = getValue<int>(WINDOW);
+    settings.pvalue1 = getValue<float>(PVALUE1);
+    settings.pvalue2 = getValue<QString>(PVALUE2).toFloat();
+    settings.pvalue3 = getValue<float>(PVALUE3);
+    settings.pvalue4 = getValue<float>(PVALUE4);
+    settings.pvalueHwe = getValue<float>(PVALUE_HWE);
+    settings.printFiltered = getValue<bool>(PRINT);
+    return settings;
 }
 
 /************************************************************************/
