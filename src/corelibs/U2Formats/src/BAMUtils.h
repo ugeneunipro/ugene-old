@@ -33,9 +33,9 @@ class GObject;
 class U2FORMATS_EXPORT BAMUtils : public QObject {
 public:
     /**
-     * Returns the url to the output BAM file
+     * Returns the url to the output BAM or SAM file
      */
-    static void convertSamToBam(const GUrl &samUrl, const GUrl &bamUrl, U2OpStatus &os);
+    static void convertSamOrBam(const GUrl &samUrl, const GUrl &bamUrl, U2OpStatus &os, bool samToBam );
 
     static bool isSortedBam(const GUrl &bamUrl, U2OpStatus &os);
 

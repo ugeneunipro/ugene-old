@@ -71,7 +71,7 @@ QString ConvertFilesFormatPrompter::composeRichDoc() {
 
 void getFormatsMap( QVariantMap &formats, const QList<DocumentFormatId> &supportedFormats, bool boolValues ) {
     foreach( const DocumentFormatId & fid, supportedFormats ) {
-        DocumentFormat *currentFormat = AppContext::getDocumentFormatRegistry()->getFormatById( fid );
+        const DocumentFormat *currentFormat = AppContext::getDocumentFormatRegistry()->getFormatById( fid );
         if( currentFormat->getFlags().testFlag(DocumentFormatFlag_SupportWriting) || boolValues ) {
             if( boolValues ) {
                 formats[fid] = false;
@@ -103,7 +103,7 @@ void ConvertFilesFormatWorkerFactory::init() {
     a << new Attribute( excludedFormats, BaseTypes::STRING_TYPE(), false );
 
     Descriptor desc( ACTOR_ID, ConvertFilesFormatWorker::tr("File conversion"),
-                               ConvertFilesFormatWorker::tr("Converts a file to selected format if it is not excluded.") );
+                               ConvertFilesFormatWorker::tr("Converts the file to selected format if it is not excluded.") );
     ActorPrototype* proto = new IntegralBusActorPrototype(desc, p, a);
 
     const QList <DocumentFormatId> supportedFormats = AppContext::getDocumentFormatRegistry()->getRegisteredFormats();
@@ -180,10 +180,21 @@ Task* ConvertFilesFormatWorker::tick() {
          QString workingDir = QString();
          getWorkingDir( workingDir );
 
-         if( detectedFormat == BaseDocumentFormats::SAM && selectedFormat == BaseDocumentFormats::BAM ) {
+         bool isSourceSam = (detectedFormat == BaseDocumentFormats::SAM);
+         bool isTargetBam = (selectedFormat == BaseDocumentFormats::BAM);
+         bool isSourceBam = (detectedFormat == BaseDocumentFormats::BAM);
+         bool isTargetSam = (selectedFormat == BaseDocumentFormats::SAM);
+
+         if( ( isSourceSam && isTargetBam ) || ( isSourceBam && isTargetSam ) ) {
              U2OpStatusImpl status;
-             const QString destinationURL = workingDir + sourceURL.fileName() + ".bam";
-             BAMUtils::convertSamToBam( sourceURL, destinationURL, status );
+             QString extension = (isTargetBam)? ".bam" : ".sam";
+             const QString destinationURL = workingDir + sourceURL.fileName() + extension;
+             bool samToBam = isSourceSam;
+             if( samToBam ) {
+                 BAMUtils::convertSamOrBam( sourceURL, destinationURL, status, samToBam );
+             } else {
+                 BAMUtils::convertSamOrBam( destinationURL, sourceURL, status, samToBam );
+             }
              if( status.hasError() ) {
                  monitor()->addError( status.getError(), getActorId() );
                  return NULL;
@@ -211,7 +222,7 @@ void ConvertFilesFormatWorker::sl_taskFinished( Task *task ) {
     }
     SaveDocumentTask *sdt = qobject_cast<SaveDocumentTask*>( subTasks.last() );
     if( sdt == NULL ) {
-        monitor()->addError( "Can not save the file in the selected format", getActorId() );
+        monitor()->addError( "Can not convert the file to selected format", getActorId() );
         return;
     }
     QFile outputFile( sdt->getURL().getURLString() );
@@ -243,10 +254,10 @@ QList<Task*> ConvertFilesFormatTask::onSubTaskFinished( Task *subTask ) {
         return QList<Task*>();
     }
 
-    DocumentFormatRegistry *dfr =  AppContext::getDocumentFormatRegistry();
+    const DocumentFormatRegistry *dfr =  AppContext::getDocumentFormatRegistry();
     DocumentFormat *df = dfr->getFormatById(selectedFormat);
     
-    QSet <GObjectType> selectedFormatObjectsTypes = df->getSupportedObjectTypes();
+    const QSet <GObjectType> selectedFormatObjectsTypes = df->getSupportedObjectTypes();
     QSet <GObjectType> inputFormatObjectTypes;
     QListIterator <GObject*> objectsIterator( srcDoc->getObjects() );
     while( objectsIterator.hasNext() ) {

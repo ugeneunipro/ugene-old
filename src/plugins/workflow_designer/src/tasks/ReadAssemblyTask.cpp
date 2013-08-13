@@ -81,7 +81,8 @@ void ConvertToIndexedBamTask::run() {
         if (bam.isEmpty()) {
             QString dir = fileStorage->createDirectory();
             bamUrl = dir + "/" + url.fileName() + ".bam";
-            BAMUtils::convertSamToBam(url, bamUrl, stateInfo);
+            bool samToBam = true;
+            BAMUtils::convertSamOrBam(url, bamUrl, stateInfo, samToBam );
             CHECK_OP(stateInfo, );
 
             addConvertedFile(bamUrl);

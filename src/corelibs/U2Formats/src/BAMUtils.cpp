@@ -40,6 +40,7 @@ extern "C" {
 #include <sam.h>
 #include <sam.c>
 #include <sam_header.h>
+#include <bgzf.h>
 }
 
 #include <QFileInfo>
@@ -58,45 +59,47 @@ static void closeFiles(samfile_t *in, samfile_t *out) {
     }
 }
 
-void BAMUtils::convertSamToBam(const GUrl &samUrl, const GUrl &bamUrl, U2OpStatus &os) {
-    QByteArray samFileName = samUrl.getURLString().toLocal8Bit();
-    QByteArray bamFileName = bamUrl.getURLString().toLocal8Bit();
+void BAMUtils::convertSamOrBam(const GUrl &samUrl, const GUrl &bamUrl, U2OpStatus &os, bool samToBam ) {
+    const QByteArray samFileName = samUrl.getURLString().toLocal8Bit();
+    const QByteArray bamFileName = bamUrl.getURLString().toLocal8Bit();
+
+    QByteArray sourceName = (samToBam)? samFileName : bamFileName;
+    QByteArray targetName = (samToBam)? bamFileName : samFileName;
 
     samfile_t *in = NULL;
     samfile_t *out = NULL;
 
-    //samUrl.getURLString().
-
     // open files
     {
-        in = samopen(samFileName.constData(), "r", NULL);
+        QByteArray readMode = ( samToBam ) ? "r" : "rb";
+        in = samopen(sourceName.constData(), readMode, NULL);
         if (NULL == in) {
-            os.setError(QString("[main_samview] fail to open \"%1\" for reading").arg(samFileName.constData()));
+            os.setError(QString("[main_samview] fail to open \"%1\" for reading").arg(sourceName.constData()));
             closeFiles(in, out);
             return;
         }
         if (NULL == in->header) {
-            os.setError(QString("[main_samview] fail to read the header from \"%1\"").arg(samFileName.constData()));
+            os.setError(QString("[main_samview] fail to read the header from \"%1\"").arg(sourceName.constData()));
             closeFiles(in, out);
             return;
         }
-        out = samopen(bamFileName.constData(), "wb", in->header);
+        QByteArray writeMode = ( samToBam ) ? "wb" : "w";
+        out = samopen(targetName.constData(), writeMode, in->header);
         if (NULL == out) {
-            os.setError(QString("[main_samview] fail to open \"%1\" for writing").arg(bamFileName.constData()));
+            os.setError(QString("[main_samview] fail to open \"%1\" for writing").arg(targetName.constData()));
             closeFiles(in, out);
             return;
         }
     }
-
     // convert files
+    bam1_t *b = bam_init1();
+    int r;
     {
-        bam1_t *b = bam_init1();
-        int r;
         while ((r = samread(in, b)) >= 0) { // read one alignment from `in'
             samwrite(out, b); // write the alignment to `out'
         }
         if (r < -1) {
-            os.setError(QString("[main_samview] truncated file \"%1\"").arg(samFileName.constData()));
+            os.setError(QString("[main_samview] truncated file \"%1\"").arg(sourceName.constData()));
         }
         bam_destroy1(b);
     }
