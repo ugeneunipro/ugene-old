@@ -59,7 +59,7 @@ static void closeFiles(samfile_t *in, samfile_t *out) {
     }
 }
 
-void BAMUtils::convertSamOrBam(const GUrl &samUrl, const GUrl &bamUrl, U2OpStatus &os, bool samToBam ) {
+void BAMUtils::convertToSamOrBam(const GUrl &samUrl, const GUrl &bamUrl, U2OpStatus &os, bool samToBam ) {
     const QByteArray samFileName = samUrl.getURLString().toLocal8Bit();
     const QByteArray bamFileName = bamUrl.getURLString().toLocal8Bit();
 
@@ -83,7 +83,7 @@ void BAMUtils::convertSamOrBam(const GUrl &samUrl, const GUrl &bamUrl, U2OpStatu
             closeFiles(in, out);
             return;
         }
-        QByteArray writeMode = ( samToBam ) ? "wb" : "w";
+        QByteArray writeMode = ( samToBam ) ? "wb" : "wh";
         out = samopen(targetName.constData(), writeMode, in->header);
         if (NULL == out) {
             os.setError(QString("[main_samview] fail to open \"%1\" for writing").arg(targetName.constData()));

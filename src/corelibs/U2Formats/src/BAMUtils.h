@@ -35,7 +35,7 @@ public:
     /**
      * Returns the url to the output BAM or SAM file
      */
-    static void convertSamOrBam(const GUrl &samUrl, const GUrl &bamUrl, U2OpStatus &os, bool samToBam );
+    static void convertToSamOrBam(const GUrl &samUrl, const GUrl &bamUrl, U2OpStatus &os, bool samToBam );
 
     static bool isSortedBam(const GUrl &bamUrl, U2OpStatus &os);
 

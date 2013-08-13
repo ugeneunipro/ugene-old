@@ -191,14 +191,15 @@ Task* ConvertFilesFormatWorker::tick() {
              const QString destinationURL = workingDir + sourceURL.fileName() + extension;
              bool samToBam = isSourceSam;
              if( samToBam ) {
-                 BAMUtils::convertSamOrBam( sourceURL, destinationURL, status, samToBam );
+                 BAMUtils::convertToSamOrBam( sourceURL, destinationURL, status, samToBam );
              } else {
-                 BAMUtils::convertSamOrBam( destinationURL, sourceURL, status, samToBam );
+                 BAMUtils::convertToSamOrBam( destinationURL, sourceURL, status, samToBam );
              }
              if( status.hasError() ) {
                  monitor()->addError( status.getError(), getActorId() );
                  return NULL;
              }
+             outputUrlPort->put( Message( BaseTypes::STRING_TYPE(), destinationURL ) );
              monitor()->addOutputFile( destinationURL, getActorId() );
          } else {
              Task *t = new ConvertFilesFormatTask( sourceURL, selectedFormat, workingDir );
