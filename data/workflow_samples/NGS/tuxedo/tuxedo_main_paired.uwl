@@ -76,7 +76,7 @@ workflow "Main Tuxedo: paired-end reads"{
 
     read-sequence.dataset->tophat.in-sequence.dataset
     files-conversion.url->tophat.in-sequence.in-url
-    files-conversion.url->tophat.in-sequence.paired-url
+    files-conversion-1.url->tophat.in-sequence.paired-url
     tophat.hits-url->cufflinks.in-assembly.url
     cufflinks.isolevel.slot->cuffmerge.in-annotations.annotations
     cuffmerge.annotations->cuffdiff.in-annotations.annotations
