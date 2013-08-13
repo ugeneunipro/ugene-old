@@ -23,7 +23,6 @@
 #define _U2_BROWSERSUPPORT_PLUGIN_H_
 
 #include <U2Core/PluginModel.h>
-#include <QtCore/QTimer>
 
 namespace U2 {
 
@@ -36,7 +35,6 @@ protected slots:
     void sl_clipboardCheck();
 
 protected:
-    QTimer clipboardTimer;
     QString saveToTmp(QString &data); // return tmp file name
 };
 

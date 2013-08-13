@@ -77,8 +77,7 @@ extern "C" Q_DECL_EXPORT Plugin* U2_PLUGIN_INIT_FUNC() {
 }
 
 BrowserSupportPlugin::BrowserSupportPlugin() : Plugin(tr("BrowserSupport"), tr("Browser support")) {
-    clipboardTimer.start(100);
-    connect(&clipboardTimer, SIGNAL(timeout()), this, SLOT(sl_clipboardCheck()));
+    connect(QApplication::clipboard(), SIGNAL(changed(QClipboard::Mode)), SLOT(sl_clipboardCheck()));
 }
 
 static bool clipboardRead = false;
