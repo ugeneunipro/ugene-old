@@ -329,6 +329,8 @@ void ComboBoxWithChecksWidget::sl_itemChanged( QStandardItem * item ){
 URLWidget::URLWidget(const QString &type, bool multi, bool isPath, bool saveFile, DelegateTags *tags, QWidget *parent)
 : PropertyWidget(parent, tags)
 {
+    setAutoFillBackground(true);
+
     urlLine = new URLLineEdit(type, multi, isPath, saveFile, this);
     urlLine->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
     connect(urlLine, SIGNAL(si_finished()), SLOT(sl_finished()));
