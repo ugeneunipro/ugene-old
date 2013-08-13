@@ -356,8 +356,8 @@ PFMatrixBuildTask::PFMatrixBuildTask(const PMBuildSettings& s, const MAlignment&
 }
 
 void PFMatrixBuildTask::run() {
-    if (ma.hasGaps()) {
-        stateInfo.setError(  tr("Alignment has gaps") );
+    if (!ma.hasEqualLength()) {
+        stateInfo.setError(  tr("Sequences in alignment have various lengths") );
         return;
     }
     if (ma.isEmpty()) {
@@ -497,8 +497,8 @@ void PWMatrixBuildTask::run() {
             return;
         }
     } else {
-        if (ma.hasGaps()) {
-            stateInfo.setError(  tr("Alignment has gaps") );
+        if (!ma.hasEqualLength()) {
+            stateInfo.setError(  tr("Sequences in alignment have various lengths") );
             return;
         }
         if (ma.isEmpty()) {

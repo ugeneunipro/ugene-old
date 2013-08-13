@@ -977,15 +977,15 @@ IMPLEMENT_TEST(MAlignmentUnitTests, operNotEqual_notEqual) {
     CHECK_TRUE(res, "Operator!= returned 'False' unexpectedly!");
 }
 
-/** Tests hasGaps */
-IMPLEMENT_TEST(MAlignmentUnitTests, hasGaps_gaps) {
+/** Tests hasEmptyGapModel */
+IMPLEMENT_TEST(MAlignmentUnitTests, hasEmptyGapModel_gaps) {
     MAlignment almnt = MAlignmentTestUtils::initTestAlignment();
-    bool res = almnt.hasGaps();
+    bool res = almnt.hasEmptyGapModel();
 
-    CHECK_TRUE(res, "Method hasGaps() returned 'False' unexpectedly!");
+    CHECK_FALSE(res, "Method hasEmptyGapModel() returned 'True' unexpectedly!");
 }
 
-IMPLEMENT_TEST(MAlignmentUnitTests, hasGaps_noGaps) {
+IMPLEMENT_TEST(MAlignmentUnitTests, hasEmptyGapModel_noGaps) {
     QByteArray firstSequence("AAAAAA");
 
     U2OpStatusImpl os;
@@ -993,9 +993,9 @@ IMPLEMENT_TEST(MAlignmentUnitTests, hasGaps_noGaps) {
     almnt.addRow("First", firstSequence, os);
     CHECK_NO_ERROR(os);
 
-    bool res = almnt.hasGaps();
+    bool res = almnt.hasEmptyGapModel();
 
-    CHECK_FALSE(res, "Method hasGaps() returned 'True' unexpectedly!");
+    CHECK_TRUE(res, "Method hasEmptyGapModel() returned 'False' unexpectedly!");
 }
 
 

@@ -245,9 +245,8 @@ QList<U2MsaRow> MsaDbiUtils::cutOffTrailingGaps(QList<U2MsaRow>& rows, const qin
         }
 
         // Cut off all gaps with offset before msa length and end after msa length
-        if (false == rowIt->gaps.isEmpty()
-            && rowIt->gaps.last().gap + rowIt->gaps.last().offset >
-            msaLength)
+        if (!rowIt->gaps.isEmpty()
+            && rowIt->gaps.last().gap + rowIt->gaps.last().offset > msaLength)
         {
             rowIt->gaps.last().gap = msaLength - rowIt->gaps.last().offset;
             affectedRows << *rowIt;

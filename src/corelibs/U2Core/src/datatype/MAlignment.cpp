@@ -772,15 +772,30 @@ bool MAlignment::simplify() {
     return true;
 }
 
-bool MAlignment::hasGaps() const {
-    for (int i = 0, n = rows.size(); i < n; ++i) {
-        const MAlignmentRow& row = rows.at(i);
-        if (row.getGapModel().size() > 0) {
-            return true;
+bool MAlignment::hasEmptyGapModel( ) const {
+    for ( int i = 0, n = rows.size( ); i < n; ++i ) {
+        const MAlignmentRow &row = rows.at( i );
+        if ( !row.getGapModel( ).isEmpty( ) ) {
+            return false;
         }
     }
+    return true;
+}
 
-    return false;
+bool MAlignment::hasEqualLength() const {
+    const int defaultSequenceLength = -1;
+    int sequenceLength = defaultSequenceLength;
+    for ( int i = 0, n = rows.size( ); i < n; ++i ) {
+        const MAlignmentRow &row = rows.at( i );
+        if ( defaultSequenceLength != sequenceLength
+            && sequenceLength != row.getUngappedLength() )
+        {
+            return false;
+        } else {
+            sequenceLength = row.getUngappedLength();
+        }
+    }
+    return true;
 }
 
 void MAlignment::clear() {

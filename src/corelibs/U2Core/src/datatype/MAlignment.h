@@ -488,9 +488,12 @@ public:
      */
     void appendChars(int row, const char* str, int len);
 
-    /** Returns true if alignment contains gaps */
-    bool hasGaps() const;
-    
+    /** returns "True" if there are no gaps in the alignment */
+    bool hasEmptyGapModel() const;
+
+    /**  returns "True" if all sequences in the alignment have equal lengths */
+    bool hasEqualLength() const;
+
     /**
      * Joins two alignments. Alignments must have the same size and alphabet.
      * Increases the alignment length.

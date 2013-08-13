@@ -66,8 +66,9 @@ QMap<QString, QString> JasparInfo::getProperties() const {
 }
 
 PFMatrix::PFMatrix(const MAlignment &align, PFMatrixType _type): type(_type) {
-    assert(!align.hasGaps());
-    length = (type == PFM_MONONUCLEOTIDE) ? align.getLength() : align.getLength() - 1;
+    assert(!align.hasEqualLength());
+    const int sequenceLength = align.getRows().first().getUngappedLength();
+    length = (type == PFM_MONONUCLEOTIDE) ? sequenceLength : sequenceLength - 1;
     assert (length > 0);
     int size = (type == PFM_MONONUCLEOTIDE) ? 4 : 16;
     data.resize(size * length);
@@ -75,7 +76,7 @@ PFMatrix::PFMatrix(const MAlignment &align, PFMatrixType _type): type(_type) {
     U2OpStatus2Log os;
     if (type == PFM_MONONUCLEOTIDE) {
         for (int i = 0, n = align.getNumRows(); i < n; i++) {
-            const QByteArray row = align.getRow(i).toByteArray(length, os);
+            const QByteArray row = align.getRow(i).getSequence().seq;
             for (int j = 0; j < length; j++) {
                 char curr = row[j];
                 data[DiProperty::index(curr) * length + j]++;
@@ -83,7 +84,7 @@ PFMatrix::PFMatrix(const MAlignment &align, PFMatrixType _type): type(_type) {
         }
     } else {
         for (int i = 0, n = align.getNumRows(); i < n; i++) {
-            const QByteArray row = align.getRow(i).toByteArray(length + 1, os);
+            const QByteArray row = align.getRow(i).getSequence().seq;
             for (int j = 0; j < length; j++) {
                 char curr = row[j];
                 char next = row[j+1];

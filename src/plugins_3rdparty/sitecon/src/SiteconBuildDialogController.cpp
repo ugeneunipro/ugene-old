@@ -178,8 +178,8 @@ SiteconBuildTask::SiteconBuildTask(const SiteconBuildSettings& s, const MAlignme
 
 void SiteconBuildTask::run() {
     // compute average/dispersion matrix
-    if (ma.hasGaps()) {
-        stateInfo.setError(  tr("alignment_has_gaps") );
+    if (!ma.hasEmptyGapModel()) {
+        stateInfo.setError(  tr("alignment has gaps") );
         return;
     }
     if (ma.isEmpty()) {

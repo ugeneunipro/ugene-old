@@ -264,8 +264,8 @@ DECLARE_TEST(MAlignmentUnitTests, operNotEqual_notEqual);
  *   ^ gaps   - there are gaps in the alignment
  *   ^ noGaps - there are NO gaps in the alignment
  */
-DECLARE_TEST(MAlignmentUnitTests, hasGaps_gaps);
-DECLARE_TEST(MAlignmentUnitTests, hasGaps_noGaps);
+DECLARE_TEST(MAlignmentUnitTests, hasEmptyGapModel_gaps);
+DECLARE_TEST(MAlignmentUnitTests, hasEmptyGapModel_noGaps);
 
 
 } // namespace
@@ -339,8 +339,8 @@ DECLARE_METATYPE(MAlignmentUnitTests, appendChars_validParams);
 DECLARE_METATYPE(MAlignmentUnitTests, operPlusEqual_validParams);
 DECLARE_METATYPE(MAlignmentUnitTests, operNotEqual_equal);
 DECLARE_METATYPE(MAlignmentUnitTests, operNotEqual_notEqual);
-DECLARE_METATYPE(MAlignmentUnitTests, hasGaps_gaps);
-DECLARE_METATYPE(MAlignmentUnitTests, hasGaps_noGaps);
+DECLARE_METATYPE(MAlignmentUnitTests, hasEmptyGapModel_gaps);
+DECLARE_METATYPE(MAlignmentUnitTests, hasEmptyGapModel_noGaps);
 
 
 #endif
