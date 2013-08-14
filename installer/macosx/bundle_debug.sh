@@ -1,3 +1,4 @@
+#!/usr/bin/bash
 PRODUCT_NAME="ugeneuid"
 
 VERSION=`cat ../../src/ugene_version.pri | grep UGENE_VERSION | awk -F'=' '{print $2}'`
@@ -5,7 +6,7 @@ BUILD_DIR=./debug_bundle
 DEBUG_DIR=../../src/_debug
 TARGET_APP_DIR="$BUILD_DIR/${PRODUCT_NAME}.app/"
 TARGET_EXE_DIR="${TARGET_APP_DIR}/Contents/MacOS"
-PATH_TO_QT="/usr/local/Trolltech/Qt-4.8.4/lib"
+PATH_TO_QT="/usr/local/Trolltech/Qt-4.8.5/lib"
 
 source bundle_common_debug.sh
 
