@@ -262,5 +262,15 @@ QMap< QString, QList<FileInfo> > MonitorUtils::filesByActor(const WorkflowMonito
     return result;
 }
 
+QStringList MonitorUtils::sortedByAppearanceActorIds(const WorkflowMonitor *m) {
+    QStringList result;
+    foreach (const FileInfo &info, m->getOutputFiles()) {
+        if (!result.contains(info.actor)) {
+            result << info.actor;
+        }
+    }
+    return result;
+}
+
 } // Workflow
 } // U2

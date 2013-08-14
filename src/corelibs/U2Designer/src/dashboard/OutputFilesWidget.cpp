@@ -164,9 +164,10 @@ void OutputFilesWidget::collapse() {
     collapsed = true;
     createTable();
 
+    QStringList actors = MonitorUtils::sortedByAppearanceActorIds(dashboard->monitor());
     QMap< QString, QList<Monitor::FileInfo> > filesMap =
         MonitorUtils::filesByActor(dashboard->monitor());
-    foreach (const QString &actorId, filesMap.keys()) {
+    foreach (const QString &actorId, actors) {
         QList<Monitor::FileInfo> files = filesMap[actorId];
         if (1 == files.size()) {
             addRow(id(files.first()), createRow(files.first()));
