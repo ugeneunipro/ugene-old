@@ -349,7 +349,7 @@ GUI_TEST_CLASS_DEFINITION(test_0007){
     QRgb rgb = img.pixel(p);
     QColor c(rgb);
 
-    CHECK_SET_ERR(c.name()=="#ffbfbf", QString("Expected: #ffbfbf, found: %1").arg(c.name()));
+    CHECK_SET_ERR(c.name()=="#ff0000", QString("Expected: #ffbfbf, found: %1").arg(c.name()));
 
 }
 
