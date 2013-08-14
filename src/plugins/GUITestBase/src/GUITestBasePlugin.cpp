@@ -748,7 +748,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 /////////////////////////////////////////////////////////////////////////
 // Common scenarios/smith_waterman_dialog
 /////////////////////////////////////////////////////////////////////////
-    REGISTER_TEST(GUITest_common_scenarios_sw_dialog::test_0001);
+    REGISTER_TEST_IGNORED(GUITest_common_scenarios_sw_dialog::test_0001,"https://ugene.unipro.ru/tracker/browse/UGENE-1957");
     REGISTER_TEST(GUITest_common_scenarios_sw_dialog::test_0002);
 
 /////////////////////////////////////////////////////////////////////////
