@@ -30,7 +30,7 @@ namespace U2 {
 //////////////////////////////////////////////////////////////////////////
 //BaseSnpAnnotationTask
 BaseSnpAnnotationTask::BaseSnpAnnotationTask( const QVariantMap& _inputData, const U2Variant& var, const QString& description )
-:Task(!description.isEmpty() ? description : QString("SNP Annotation task"), TaskFlag_None)
+:Task(!description.isEmpty() ? description : QString("SNP Annotation task"), TaskFlag_NoRun)
 ,variant(var)
 ,inputData(_inputData)
 {

@@ -125,7 +125,7 @@ void SnpChipToolsWorkerFactory::init( )
     // TODO: revise the description
     Descriptor protoDesc( SnpChipToolsWorkerFactory::ACTOR_ID,
         QObject::tr( "SNP ChIP Tools" ),
-        QObject::tr( "SNPs influence on TFBSs" ) );
+        QObject::tr( "Assess the SNP impact on regulatory regions" ) );
 
     ActorPrototype *proto = new IntegralBusActorPrototype( protoDesc, p, QList<Attribute *>( ) );
     proto->setPrompter( new SnpChipToolsPrompter( ) );
