@@ -89,6 +89,30 @@ DownloadRemoteFileDialog::DownloadRemoteFileDialog(QWidget *p):QDialog(p), isQue
     setSaveFilename();
 }
 
+DownloadRemoteFileDialog::DownloadRemoteFileDialog( const QString& id, const QString& dbId, QWidget *p /*= NULL*/ ) 
+    :QDialog(p), isQueryDB(false)
+{
+    ui = new Ui_DownloadRemoteFileDialog;
+    ui->setupUi(this);
+
+    ui->dasfeaturesWidget->setResizeMode(QListView::Adjust);
+    ui->dasBox->hide();
+    adjustSize();
+
+    ui->databasesBox->clear();
+    const QString dbName = 
+        dbId == EntrezUtils::NCBI_DB_PROTEIN ?  RemoteDBRegistry::GENBANK_PROTEIN : RemoteDBRegistry::GENBANK_DNA;
+    ui->databasesBox->addItem(dbName,dbName);
+
+    ui->idLineEdit->setText(id);
+    ui->idLineEdit->setReadOnly(true);
+
+    connect(ui->saveFilenameToolButton, SIGNAL(clicked()), SLOT(sl_saveFilenameButtonClicked()));
+    setSaveFilename();
+
+}
+
+
 const QString DOWNLOAD_REMOTE_FILE_DOMAIN = "DownloadRemoteFileDialog";
 
 void DownloadRemoteFileDialog::sl_saveFilenameButtonClicked() {
@@ -246,5 +270,7 @@ void DownloadRemoteFileDialog::sl_linkActivated( const QString& link ){
         ui->idLineEdit->setText(link);
     }
 }
+
+
 
 } //namespace 

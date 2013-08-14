@@ -27,13 +27,13 @@
 #include <U2Core/LoadRemoteDocumentTask.h>
 
 #include <QtGui/QDialog>
+#include <QtGui/QLineEdit>
+#include <QtGui/QComboBox>
 #include <QtCore/QList>
 #include <QtCore/QString>
 #include <QtCore/QScopedPointer>
 
 class Ui_SearchGenbankSequenceDialog;
-class QLineEdit;
-class QComboBox;
 
 namespace U2 {
 
@@ -68,6 +68,7 @@ public:
     QueryBlockWidget(QueryBuilderController* controller, bool first);
     ~QueryBlockWidget();
     QString getQuery();
+    void setInputFocus() { queryEdit->setFocus(); }
 };
 
 class SearchGenbankSequenceDialogController;
@@ -108,6 +109,8 @@ private:
     
 private slots:
     void sl_searchButtonClicked();
+    void sl_downloadButtonClicked();
+    void sl_itemSelectionChanged();
     void sl_taskStateChanged(Task* task);
 
 };

@@ -93,6 +93,9 @@ public:
     static const QString NCBI_ESEARCH_URL;
     static const QString NCBI_ESUMMARY_URL;
     static const QString NCBI_EFETCH_URL;
+    static const QString NCBI_DB_NUCLEOTIDE;
+    static const QString NCBI_DB_PROTEIN;
+
 };
 
 

@@ -52,6 +52,9 @@ namespace U2 {
 const QString EntrezUtils::NCBI_ESEARCH_URL("http://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=%1&term=%2&tool=UGENE");
 const QString EntrezUtils::NCBI_ESUMMARY_URL("http://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=%1&id=%2&tool=UGENE");
 const QString EntrezUtils::NCBI_EFETCH_URL("http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=%1&id=%2&retmode=text&rettype=%3&tool=UGENE");
+const QString EntrezUtils::NCBI_DB_NUCLEOTIDE("nucleotide");
+const QString EntrezUtils::NCBI_DB_PROTEIN("protein");
+
 const QString RemoteDBRegistry::ENSEMBL("ENSEMBL");
 const QString RemoteDBRegistry::GENBANK_DNA("NCBI GenBank (DNA sequence)");
 const QString RemoteDBRegistry::GENBANK_PROTEIN("NCBI protein sequence database");

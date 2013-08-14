@@ -28,7 +28,9 @@
 
 #include "ui/ui_SearchGenbankSequenceDialog.h"
 
+#include "DownloadRemoteFileDialog.h"
 #include "SearchGenbankSequenceDialogController.h"
+
 
 
 namespace U2 {
@@ -37,11 +39,20 @@ SearchGenbankSequenceDialogController::SearchGenbankSequenceDialogController(QWi
 {
     ui = new Ui_SearchGenbankSequenceDialog();
     ui->setupUi(this);
+    
+    ui->databaseBox->addItem(EntrezUtils::NCBI_DB_NUCLEOTIDE);
+    ui->databaseBox->addItem(EntrezUtils::NCBI_DB_PROTEIN);
 
     queryBlockController = new QueryBuilderController(this);
 
     connect(ui->searchButton, SIGNAL(clicked()), SLOT(sl_searchButtonClicked()) );
+    connect(ui->downloadButton, SIGNAL(clicked()), SLOT(sl_downloadButtonClicked()) );
+    connect(ui->treeWidget, SIGNAL(itemSelectionChanged()), SLOT(sl_itemSelectionChanged()) );
+
     connect( AppContext::getTaskScheduler(), SIGNAL(si_stateChanged(Task*)), SLOT(sl_taskStateChanged(Task*)) );
+
+    ui->treeWidget->header()->setStretchLastSection(false);
+    ui->treeWidget->header()->setResizeMode(1, QHeaderView::Stretch);  
 
 
 }
@@ -76,8 +87,7 @@ void SearchGenbankSequenceDialogController::sl_searchButtonClicked()
     }
     
 
-    //searchTask = new EntrezSearchTask("nucleotide", query);
-    QString qUrl(EntrezUtils::NCBI_ESEARCH_URL.arg("nucleotide").arg(query));
+    QString qUrl(EntrezUtils::NCBI_ESEARCH_URL.arg(ui->databaseBox->currentText()).arg(query));
     searchResultHandler.reset( new ESearchResultHandler() );
     searchTask = new EntrezQueryTask(searchResultHandler.data(), qUrl );
 
@@ -96,7 +106,7 @@ void SearchGenbankSequenceDialogController::sl_taskStateChanged( Task* task )
                 QMessageBox::information(this, windowTitle(), tr("No results found corresponding to the query.") );
             } else {
                 QString ids = results.join(",");
-                QString query(EntrezUtils::NCBI_ESUMMARY_URL.arg("nucleotide").arg(ids));
+                QString query(EntrezUtils::NCBI_ESUMMARY_URL.arg(ui->databaseBox->currentText()).arg(ids));
                 summaryResultHandler.reset( new ESummaryResultHandler() );
                 summaryTask = new EntrezQueryTask( summaryResultHandler.data() , query);
                 AppContext::getTaskScheduler()->registerTopLevelTask(summaryTask);
@@ -117,6 +127,25 @@ void SearchGenbankSequenceDialogController::sl_taskStateChanged( Task* task )
             summaryTask = NULL;
         }
     }
+}
+
+void SearchGenbankSequenceDialogController::sl_downloadButtonClicked()
+{
+    QList<QTreeWidgetItem*> selectedItems = ui->treeWidget->selectedItems();
+    
+    QStringList ids;
+    foreach (QTreeWidgetItem* item, selectedItems) {
+        ids.append(item->text(0));
+    }
+
+    DownloadRemoteFileDialog dlg(ids.join(";"), ui->databaseBox->currentText(), this);
+    dlg.exec();
+    
+}
+
+void SearchGenbankSequenceDialogController::sl_itemSelectionChanged()
+{
+    ui->downloadButton->setEnabled(ui->treeWidget->selectedItems().size() > 0);
 }
 
 
@@ -208,6 +237,7 @@ QueryBuilderController::QueryBuilderController(SearchGenbankSequenceDialogContro
     QueryBlockWidget* widget = new QueryBlockWidget(this, true);
     parentController->addQueryBlockWidget(widget);
     queryBlockWidgets.append(widget);
+    widget->setInputFocus();
 }
 
 QueryBuilderController::~QueryBuilderController()

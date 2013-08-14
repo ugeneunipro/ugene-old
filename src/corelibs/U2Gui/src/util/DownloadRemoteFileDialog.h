@@ -41,6 +41,7 @@ class U2GUI_EXPORT DownloadRemoteFileDialog : public QDialog{
     Q_OBJECT
     bool isQueryDB;
     QString resUrl;
+    QString resUrls;
     static QString defaultDB;
     
 public slots:
@@ -49,7 +50,8 @@ public slots:
     void sl_linkActivated(const QString& link);
     
 public:
-    DownloadRemoteFileDialog(QWidget *p = NULL);  
+    DownloadRemoteFileDialog(QWidget *p = NULL);
+    DownloadRemoteFileDialog(const QString& ids, const QString& dbId, QWidget *p = NULL);
     ~DownloadRemoteFileDialog();
     QString getDBId() const;
     QString getResourceId() const;

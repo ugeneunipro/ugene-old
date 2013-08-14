@@ -15,6 +15,41 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
+    <widget class="QGroupBox" name="queryBuilderBox">
+     <property name="title">
+      <string/>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_2"/>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QLabel" name="label_3">
+       <property name="text">
+        <string>Database:</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="databaseBox"/>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer_2">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
+   <item>
     <widget class="QLabel" name="label">
      <property name="text">
       <string>Search query:</string>
@@ -36,16 +71,6 @@
    </item>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_3">
-     <item>
-      <widget class="QCheckBox" name="editDirectlyBox">
-       <property name="enabled">
-        <bool>false</bool>
-       </property>
-       <property name="text">
-        <string>Edit directly</string>
-       </property>
-      </widget>
-     </item>
      <item>
       <spacer name="horizontalSpacer">
        <property name="orientation">
@@ -72,14 +97,6 @@
     </layout>
    </item>
    <item>
-    <widget class="QGroupBox" name="queryBuilderBox">
-     <property name="title">
-      <string>Query builder:</string>
-     </property>
-     <layout class="QVBoxLayout" name="verticalLayout_2"/>
-    </widget>
-   </item>
-   <item>
     <widget class="QLabel" name="label_2">
      <property name="text">
       <string>Results:</string>
@@ -88,6 +105,9 @@
    </item>
    <item>
     <widget class="QTreeWidget" name="treeWidget">
+     <property name="selectionMode">
+      <enum>QAbstractItemView::ContiguousSelection</enum>
+     </property>
      <column>
       <property name="text">
        <string>Id</string>
