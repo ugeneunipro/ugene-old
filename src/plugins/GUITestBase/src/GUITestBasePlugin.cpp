@@ -454,13 +454,13 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0026_1);
 
     REGISTER_TEST_LINUX(GUITest_common_scenarios_msa_editor::test_0026_2_linux, "Linux version of test");
-    REGISTER_TEST_IGNORED(GUITest_common_scenarios_msa_editor::test_0026_2_windows, "Windows version of test");
+    REGISTER_TEST_LINUX(GUITest_common_scenarios_msa_editor::test_0026_2_windows, "Windows version of test");
 
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0027);
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0027_1);
 
     REGISTER_TEST_LINUX(GUITest_common_scenarios_msa_editor::test_0028_linux, "Linux version of test");
-    REGISTER_TEST_IGNORED(GUITest_common_scenarios_msa_editor::test_0028_windows, "Windows version of test");
+    REGISTER_TEST_LINUX(GUITest_common_scenarios_msa_editor::test_0028_windows, "Windows version of test");
 
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0029);
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0029_1);
