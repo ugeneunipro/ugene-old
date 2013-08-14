@@ -22,6 +22,7 @@
 #include "ConductGOSupport.h"
 
 #include <python/PythonSupport.h>
+#include <R/RSupport.h>
 
 #include <U2Core/AppContext.h>
 
@@ -48,14 +49,26 @@ void ConductGOSupport::initialize() {
     executableFileName = "go_analysis.py";
 
     toolRunnerProgramm = PYTHON_TOOL_NAME;
+    dependencies << PYTHON_TOOL_NAME
+                 << ET_R
+                 << ET_R_GOSTATS
+                 << ET_R_GO_DB
+                 << Et_R_HGU133A_DB
+                 << ET_R_HGU133B_DB
+                 << ET_R_HGU1333PLUS2_DB
+                 << ET_R_HGU95AV2_DB
+                 << ET_R_MOUSE430A2_DB
+                 << ET_R_CELEGANS_DB
+                 << ET_R_DROSOPHILA2_DB
+                 << ET_R_ORG_HS_EG_DB
+                 << ET_R_ORG_MM_EG_DB
+                 << ET_R_ORG_CE_EG_DB
+                 << ET_R_ORG_DM_EG_DB;
 
     validMessage = "Conduct GO";
     validationArguments << "--version";
 
     versionRegExp=QRegExp(executableFileName + "\\d+\\.\\d+");
-
-    additionalValidators<<DefaultExternalToolValidations::rValidation();
-
 }
 
 } // U2

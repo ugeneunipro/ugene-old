@@ -42,6 +42,8 @@ VcfutilsSupport::VcfutilsSupport(const QString &name)
     description = "The set of utilities for VCF format operations";
 
     toolRunnerProgramm = PERL_TOOL_NAME;
+    dependencies << PERL_TOOL_NAME;
+
     validMessage = "varFilter";
     toolKitName = "SAMtools";
 }

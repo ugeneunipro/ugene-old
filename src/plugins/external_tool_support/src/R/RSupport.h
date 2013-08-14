@@ -25,7 +25,21 @@
 #include <U2Core/ExternalToolRegistry.h>
 #include "utils/ExternalToolSupportAction.h"
 
-#define R_TOOL_NAME "Rscript"
+#define ET_R "Rscript"
+#define ET_R_GOSTATS "GOstats"
+#define ET_R_GO_DB "GO.db"
+#define Et_R_HGU133A_DB "hgu133a.db"
+#define ET_R_HGU133B_DB "hgu133b.db"
+#define ET_R_HGU1333PLUS2_DB "hgu133plus2.db"
+#define ET_R_HGU95AV2_DB "hgu95av2.db"
+#define ET_R_MOUSE430A2_DB "mouse430a2.db"
+#define ET_R_CELEGANS_DB "celegans.db"
+#define ET_R_DROSOPHILA2_DB "drosophila2.db"
+#define ET_R_ORG_HS_EG_DB "org.Hs.eg.db"
+#define ET_R_ORG_MM_EG_DB "org.Mm.eg.db"
+#define ET_R_ORG_CE_EG_DB "org.Ce.eg.db"
+#define ET_R_ORG_DM_EG_DB "org.Dm.eg.db"
+#define ET_R_SEQLOGO "seqLogo"
 
 namespace U2 {
 
@@ -34,8 +48,99 @@ class RSupport : public ExternalTool {
 public:
     RSupport(const QString& name, const QString& path = "");
 private slots:
-    void sl_pathChanged();
+    void sl_toolValidationStatusChanged(bool isValid);
 };
 
-}//namespace
+class RModuleSupport : public ExternalToolModule {
+    Q_OBJECT
+public:
+    RModuleSupport(const QString& name, const QString& path = "");
+};
+
+class RModuleGostatsSupport : public RModuleSupport {
+    Q_OBJECT
+public:
+    RModuleGostatsSupport(const QString& name, const QString& path = "");
+};
+
+class RModuleGodbSupport : public RModuleSupport {
+    Q_OBJECT
+public:
+    RModuleGodbSupport(const QString& name, const QString& path = "");
+};
+
+class RModuleHgu133adbSupport : public RModuleSupport {
+    Q_OBJECT
+public:
+    RModuleHgu133adbSupport(const QString& name, const QString& path = "");
+};
+
+class RModuleHgu133bdbSupport : public RModuleSupport {
+    Q_OBJECT
+public:
+    RModuleHgu133bdbSupport(const QString& name, const QString& path = "");
+};
+
+class RModuleHgu133plus2dbSupport : public RModuleSupport {
+    Q_OBJECT
+public:
+    RModuleHgu133plus2dbSupport(const QString& name, const QString& path = "");
+};
+
+class RModuleHgu95av2dbSupport : public RModuleSupport {
+    Q_OBJECT
+public:
+    RModuleHgu95av2dbSupport(const QString& name, const QString& path = "");
+};
+
+class RModuleMouse430a2dbSupport : public RModuleSupport {
+    Q_OBJECT
+public:
+    RModuleMouse430a2dbSupport(const QString& name, const QString& path = "");
+};
+
+class RModuleCelegansdbSupport : public RModuleSupport {
+    Q_OBJECT
+public:
+    RModuleCelegansdbSupport(const QString& name, const QString& path = "");
+};
+
+class RModuleDrosophila2dbSupport : public RModuleSupport {
+    Q_OBJECT
+public:
+    RModuleDrosophila2dbSupport(const QString& name, const QString& path = "");
+};
+
+class RModuleOrghsegdbSupport : public RModuleSupport {
+    Q_OBJECT
+public:
+    RModuleOrghsegdbSupport(const QString& name, const QString& path = "");
+};
+
+class RModuleOrgmmegdbSupport : public RModuleSupport {
+    Q_OBJECT
+public:
+    RModuleOrgmmegdbSupport(const QString& name, const QString& path = "");
+};
+
+class RModuleOrgceegdbSupport : public RModuleSupport {
+    Q_OBJECT
+public:
+    RModuleOrgceegdbSupport(const QString& name, const QString& path = "");
+};
+
+class RModuleOrgdmegdbSupport : public RModuleSupport {
+    Q_OBJECT
+public:
+    RModuleOrgdmegdbSupport(const QString& name, const QString& path = "");
+};
+
+class RModuleSeqlogoSupport : public RModuleSupport {
+    Q_OBJECT
+public:
+    RModuleSeqlogoSupport(const QString& name, const QString& path = "");
+};
+
+}   // namespace
+
 #endif // _U2_R_SUPPORT_H_

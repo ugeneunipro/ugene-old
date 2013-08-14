@@ -37,6 +37,7 @@ struct ExternalToolInfo{
     QString description;
     QString version;
     bool    valid;
+    bool    isModule;
 };
 
 class ExternalToolSupportSettingsPageController : public AppSettingsGUIPageController {
@@ -47,7 +48,6 @@ public:
     AppSettingsGUIPageState* getSavedState();
     void saveState(AppSettingsGUIPageState* s);
     AppSettingsGUIPageWidget* createWidget(AppSettingsGUIPageState* state);
-
 };
 
 class ExternalToolSupportSettingsPageState : public AppSettingsGUIPageState {
@@ -64,20 +64,30 @@ public:
     virtual void setState(AppSettingsGUIPageState* state);
 
     virtual AppSettingsGUIPageState* getState(QString& err) const;
+
 private:
     QWidget* createPathEditor(QWidget *parent, const QString& path) const;
-    void insertChild(QTreeWidgetItem* rootItem, QString name, int pos);
+    QTreeWidgetItem* insertChild(QTreeWidgetItem* rootItem, const QString& name, int pos, bool isModule = false);
+    ExternalTool* isMasterWithModules(const QList<ExternalTool*>& toolsList) const;
+    void setToolState(ExternalTool* tool);
+
 private slots:
-    void sl_toolPathCanged();//QString path);
-    void sl_validateTaskStateChanged();
+    void sl_toolPathChanged();
     void sl_itemSelectionChanged();
     void sl_onPathEditWidgetClick();
     void sl_onBrowseToolKitPath();
     void sl_onBrowseToolPackPath();
-    void sl_linkActivated(QString);
+    void sl_linkActivated(const QString& url);
+    void sl_toolValidationStatusChanged(bool isValid);
+    void sl_validationComplete();
+
 private:
     QMap<QString, ExternalToolInfo> externalToolsInfo;
+    QMap<QString, QTreeWidgetItem*> externalToolsItems;
     mutable int buttonsWidth;
+
+    static const QString INSTALLED;
+    static const QString NOT_INSTALLED;
 };
 
 class PathLineEdit : public QLineEdit {

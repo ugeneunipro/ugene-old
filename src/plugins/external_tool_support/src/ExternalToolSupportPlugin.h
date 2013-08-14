@@ -25,6 +25,8 @@
 #include <U2Core/PluginModel.h>
 #include <U2Core/ServiceModel.h>
 
+#include "ExternalToolManager.h"
+
 namespace U2 {
 class ETSProjectViewItemsContoller;
 
@@ -34,8 +36,8 @@ public:
     ExternalToolSupportPlugin();
     ~ExternalToolSupportPlugin();
 
-private slots:
-    void sl_validateTaskStateChanged();
+private:
+    ExternalToolManagerImpl validationManager;
 };
 
 class ExternalToolSupportService: public Service {

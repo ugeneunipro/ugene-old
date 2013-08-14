@@ -37,6 +37,7 @@
 #include <U2Core/UserApplicationsSettings.h>
 
 #include "ConductGOSupport.h"
+#include "R/RSupport.h"
 
 #include "ConductGOTask.h"
 
@@ -135,7 +136,11 @@ QList<Task*> ConductGOTask::onSubTaskFinished(Task* subTask) {
             QStringList args = settings.getArguments(treatDoc->getURLString());
             
             logParser = new ConductGOLogParser();
-            etTask = new ExternalToolRunTask(ConductGOSupport::TOOL_NAME, args, logParser, getSettings().outDir);
+
+            ExternalTool* rTool = AppContext::getExternalToolRegistry()->getByName(ET_R);
+            SAFE_POINT(NULL != rTool, "R script tool wasn't found in the registry", result);
+
+            etTask = new ExternalToolRunTask(ConductGOSupport::TOOL_NAME, args, logParser, getSettings().outDir, QStringList() << rTool->getPath());
             result << etTask;
     }
     return result;

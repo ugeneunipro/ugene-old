@@ -33,8 +33,10 @@
 #include <U2Core/TextObject.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/UserApplicationsSettings.h>
+#include <U2Core/FailTask.h>
 
 #include "CEASSupport.h"
+#include "R/RSupport.h"
 
 #include "CEASSupportTask.h"
 
@@ -186,7 +188,10 @@ Task* CEASSupportTask::createETTask(){
     QStringList args = settings.getCeasSettings().getArgumentList();
 
     logParser = new CEASLogParser();
-    res = new ExternalToolRunTask(CEASSupport::TOOL_NAME, args, logParser, workingDir);
+    ExternalTool* rTool = AppContext::getExternalToolRegistry()->getByName(ET_R);
+    SAFE_POINT(NULL != rTool, "R script tool wasn't found in the registry", new FailTask("R script tool wasn't found in the registry"));
+
+    res = new ExternalToolRunTask(CEASSupport::TOOL_NAME, args, logParser, workingDir, QStringList() << rTool->getPath());
 
     return res;
 }

@@ -23,6 +23,8 @@
 
 #include <U2Core/AppContext.h>
 #include <U2Core/Settings.h>
+#include <U2Core/Task.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <U2Core/Log.h>
 namespace U2 {
@@ -33,7 +35,7 @@ const QString ExternalToolValidation::DEFAULT_DESCR_KEY = "DEFAULT_DESCR";
 
 ////////////////////////////////////////
 //ExternalTool
-ExternalTool::ExternalTool(QString _name, QString _path) : name(_name), path(_path), isValidTool(false) {
+ExternalTool::ExternalTool(QString _name, QString _path) : name(_name), path(_path), isValidTool(false), muted(false), isModuleTool(false) {
 }
 
 ExternalTool::~ExternalTool() {
@@ -59,7 +61,29 @@ ExternalToolValidation ExternalTool::getToolValidation() {
 }
 
 ////////////////////////////////////////
+//ExternalToolValidationListener
+ExternalToolValidationListener::ExternalToolValidationListener(const QString& toolName) {
+    toolNames << toolName;
+}
+
+ExternalToolValidationListener::ExternalToolValidationListener(const QStringList& _toolNames) {
+    toolNames = _toolNames;
+}
+
+void ExternalToolValidationListener::sl_validationTaskStateChanged() {
+    Task* validationTask = qobject_cast<Task*>(sender());
+    SAFE_POINT(NULL != validationTask, "Unexpected message sender", );
+    if (validationTask->isFinished()) {
+        emit si_validationComplete();
+    }
+}
+
+////////////////////////////////////////
 //ExternalToolRegistry
+ExternalToolRegistry::ExternalToolRegistry() :
+    manager(NULL) {
+}
+
 ExternalToolRegistry::~ExternalToolRegistry() {
     registryOrder.clear();
     qDeleteAll(registry.values());
@@ -113,6 +137,14 @@ QList< QList<ExternalTool*> > ExternalToolRegistry::getAllEntriesSortedByToolKit
         res.append(toolKitList);
     }
     return res;
+}
+
+void ExternalToolRegistry::setManager(ExternalToolManager* _manager) {
+    manager = _manager;
+}
+
+ExternalToolManager* ExternalToolRegistry::getManager() const {
+    return manager;
 }
 
 ExternalToolValidation DefaultExternalToolValidations::pythonValidation(){

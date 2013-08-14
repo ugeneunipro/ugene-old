@@ -112,6 +112,7 @@
 #include "R/RSupport.h"
 #include "vcfutils/VcfutilsSupport.h"
 #include "samtools/BcfToolsSupport.h"
+#include "R/RSupport.h"
 
 #include <U2Algorithm/CDSearchTaskFactoryRegistry.h>
 #include <U2Algorithm/DnaAssemblyAlgRegistry.h>
@@ -188,13 +189,29 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin():Plugin(tr("External tool 
     PythonSupport* pythonSupport = new PythonSupport(PYTHON_TOOL_NAME);
     AppContext::getExternalToolRegistry()->registerEntry(pythonSupport);
 
+    //Rscript
+    RSupport *rSupport = new RSupport(ET_R);
+    AppContext::getExternalToolRegistry()->registerEntry(rSupport);
+
+    // R modules
+    AppContext::getExternalToolRegistry()->registerEntry(new RModuleGostatsSupport(ET_R_GOSTATS));
+    AppContext::getExternalToolRegistry()->registerEntry(new RModuleGodbSupport(ET_R_GO_DB));
+    AppContext::getExternalToolRegistry()->registerEntry(new RModuleHgu133adbSupport(Et_R_HGU133A_DB));
+    AppContext::getExternalToolRegistry()->registerEntry(new RModuleHgu133bdbSupport(ET_R_HGU133B_DB));
+    AppContext::getExternalToolRegistry()->registerEntry(new RModuleHgu133plus2dbSupport(ET_R_HGU1333PLUS2_DB));
+    AppContext::getExternalToolRegistry()->registerEntry(new RModuleHgu95av2dbSupport(ET_R_HGU95AV2_DB));
+    AppContext::getExternalToolRegistry()->registerEntry(new RModuleMouse430a2dbSupport(ET_R_MOUSE430A2_DB));
+    AppContext::getExternalToolRegistry()->registerEntry(new RModuleCelegansdbSupport(ET_R_CELEGANS_DB));
+    AppContext::getExternalToolRegistry()->registerEntry(new RModuleDrosophila2dbSupport(ET_R_DROSOPHILA2_DB));
+    AppContext::getExternalToolRegistry()->registerEntry(new RModuleOrghsegdbSupport(ET_R_ORG_HS_EG_DB));
+    AppContext::getExternalToolRegistry()->registerEntry(new RModuleOrgmmegdbSupport(ET_R_ORG_MM_EG_DB));
+    AppContext::getExternalToolRegistry()->registerEntry(new RModuleOrgceegdbSupport(ET_R_ORG_CE_EG_DB));
+    AppContext::getExternalToolRegistry()->registerEntry(new RModuleOrgdmegdbSupport(ET_R_ORG_DM_EG_DB));
+    AppContext::getExternalToolRegistry()->registerEntry(new RModuleSeqlogoSupport(ET_R_SEQLOGO));
+
     //perl
     PerlSupport *perlSupport = new PerlSupport(PERL_TOOL_NAME);
     AppContext::getExternalToolRegistry()->registerEntry(perlSupport);
-
-    //Rscript
-    RSupport* rSupport = new RSupport(R_TOOL_NAME);
-    AppContext::getExternalToolRegistry()->registerEntry(rSupport);
 
     //Fill ExternalToolRegistry with supported tools
     //ClustalW
@@ -488,32 +505,8 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin():Plugin(tr("External tool 
         }
     }
 
-    //Read settings
-    ExternalToolSupportSettings::getExternalTools();
-    
-    // Create validation tasks
-    QList<Task*> tasks;
-    foreach (ExternalTool* curTool, etRegistry->getAllEntries()) {
-        if (curTool->isValid() && !curTool->getPath().isEmpty()) {
-            QString runner = curTool->getToolRunnerProgram();
-            if (runner.isEmpty()) {
-                continue;
-            }
-
-            ScriptingToolRegistry* str = AppContext::getScriptingToolRegistry();
-            if (str && str->getByName(runner)) {
-                continue;
-            }
-        }
-
-        ExternalToolSearchAndValidateTask* validateTask = new ExternalToolSearchAndValidateTask(curTool->getName());
-        connect(validateTask,SIGNAL(si_stateChanged()),SLOT(sl_validateTaskStateChanged()));
-        tasks << validateTask;
-    }
-
-    if (!tasks.isEmpty()) {
-        AppContext::getTaskScheduler()->registerTopLevelTask(new ExternalToolsValidateTask(tasks));
-    }
+    etRegistry->setManager(&validationManager);
+    validationManager.start();
 
     //Add viewer for settings
     if (AppContext::getMainWindow()) {
@@ -546,7 +539,7 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin():Plugin(tr("External tool 
 ExternalToolSupportPlugin::~ExternalToolSupportPlugin(){
     ExternalToolSupportSettings::setExternalTools();
 }
-void ExternalToolSupportPlugin::sl_validateTaskStateChanged(){
+/*void ExternalToolSupportPlugin::sl_validateTaskStateChanged(){
     ExternalToolSearchAndValidateTask* s=qobject_cast<ExternalToolSearchAndValidateTask*>(sender());
     assert(s);
     if(s->isFinished()){
@@ -555,7 +548,7 @@ void ExternalToolSupportPlugin::sl_validateTaskStateChanged(){
         AppContext::getExternalToolRegistry()->getByName(s->getToolName())->setPath(s->getToolPath());
         
     }
-}
+}*/
 //////////////////////////////////////////////////////////////////////////
 // Service
 ExternalToolSupportService::ExternalToolSupportService()

@@ -22,6 +22,7 @@
 #include "SeqPosSupport.h"
 
 #include <python/PythonSupport.h>
+#include <R/RSupport.h>
 
 #include <U2Core/AppContext.h>
 #include <U2Core/DataPathRegistry.h>
@@ -50,6 +51,9 @@ void SeqPosSupport::initialize() {
     executableFileName = "MDSeqPos.py";
 
     toolRunnerProgramm = PYTHON_TOOL_NAME;
+    dependencies << PYTHON_TOOL_NAME
+                 << ET_R
+                 << ET_R_SEQLOGO;
 
     validMessage = "mdseqpos";
     validationArguments << "--version";
@@ -61,8 +65,6 @@ void SeqPosSupport::initialize() {
         U2DataPath* dp = new U2DataPath(ASSEMBLY_DIR, QString(PATH_PREFIX_DATA)+QString(":")+"cistrome/genomes", true);
         dpr->registerEntry(dp);
     }
-
-    additionalValidators<<DefaultExternalToolValidations::rValidation();
 
     errorDescriptions.insert("CRITICAL: numpy 1.3 or greater must be installed", SeqPosSupport::tr("Please, install numpy 1.3 or greater for your Python to run SeqPos"));
     errorDescriptions.insert("CRITICAL: DJANGO 1.1.1 or greater must be installed", SeqPosSupport::tr("Please, install DJANGO 1.1.1 or greater for your Python to run SeqPos"));

@@ -73,7 +73,7 @@ private:
 class ExternalToolSearchAndValidateTask : public Task {
     Q_OBJECT
 public:
-    ExternalToolSearchAndValidateTask(const QString& toolName, const QString& path = QString());
+    ExternalToolSearchAndValidateTask(const QString& toolName, const QString& path = QString::null);
 
     void prepare();
     QList<Task*> onSubTaskFinished(Task *subTask);
@@ -101,7 +101,7 @@ private:
 class ExternalToolsValidateTask : public SequentialMultiTask {
     Q_OBJECT
 public:
-    ExternalToolsValidateTask (const QList<Task*>& _tasks);
+    ExternalToolsValidateTask (const QList<Task*> &_tasks);
 
     virtual QList<Task*> onSubTaskFinished(Task* subTask);
 };

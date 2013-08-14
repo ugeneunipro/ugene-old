@@ -52,6 +52,7 @@ void MACSSupport::initialize() {
     executableFileName = "macs14.py";
 
     toolRunnerProgramm = PYTHON_TOOL_NAME;
+    dependencies << PYTHON_TOOL_NAME;
 
     validMessage = "macs14";
     validationArguments << "--version";

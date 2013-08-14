@@ -22,6 +22,7 @@
 #include "ConservationPlotSupport.h"
 
 #include <python/PythonSupport.h>
+#include <R/RSupport.h>
 
 #include <U2Core/AppContext.h>
 #include <U2Core/DataPathRegistry.h>
@@ -50,6 +51,8 @@ void ConservationPlotSupport::initialize() {
     executableFileName = "conservation_plot.py";
 
     toolRunnerProgramm = PYTHON_TOOL_NAME;
+    dependencies << PYTHON_TOOL_NAME
+                 << ET_R;
 
     validMessage = "conservation_plot.py";
     validationArguments << "--version";
@@ -61,8 +64,6 @@ void ConservationPlotSupport::initialize() {
         U2DataPath* dp = new U2DataPath(CONSERVATION_DATA_NAME, QString(PATH_PREFIX_DATA)+QString(":")+"cistrome/phastCons", true);
         dpr->registerEntry(dp);
     }
-
-    additionalValidators<<DefaultExternalToolValidations::rValidation();
 }
 
 } // U2

@@ -75,9 +75,9 @@ bool ExternalToolSupportSettings::getExternalTools() {
         isValid=AppContext::getSettings()->getValue(PREFIX_EXTERNAL_TOOL_IS_VALID + QString::number(i), QVariant(false), true).toBool();
         version=AppContext::getSettings()->getValue(PREFIX_EXTERNAL_TOOL_VERSION + QString::number(i), QVariant("unknown"), true).toString();
         if(AppContext::getExternalToolRegistry()->getByName(name) != NULL){
-            AppContext::getExternalToolRegistry()->getByName(name)->setValid(isValid);
             AppContext::getExternalToolRegistry()->getByName(name)->setPath(path);
             AppContext::getExternalToolRegistry()->getByName(name)->setVersion(version);
+            AppContext::getExternalToolRegistry()->getByName(name)->setValid(isValid);
         }
     }
     prevNumberExternalTools = numberExternalTools;

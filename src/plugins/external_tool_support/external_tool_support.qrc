@@ -22,8 +22,11 @@
         <file>images/python.png</file>
         <file>images/python_gray.png</file>
         <file>images/python_warn.png</file>
-	<file>images/mrbayes.png</file>
-	<file>images/mrbayes_gray.png</file>
-	<file>images/mrbayes_warn.png</file>
+        <file>images/mrbayes.png</file>
+        <file>images/mrbayes_gray.png</file>
+        <file>images/mrbayes_warn.png</file>
+        <file>images/R_gray.png</file>
+        <file>images/R.png</file>
+        <file>images/R_warn.png</file>
     </qresource>
 </RCC>

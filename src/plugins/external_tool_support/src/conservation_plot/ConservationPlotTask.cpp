@@ -37,6 +37,7 @@
 #include <U2Core/UserApplicationsSettings.h>
 
 #include "ConservationPlotSupport.h"
+#include "R/RSupport.h"
 
 #include "ConservationPlotTask.h"
 
@@ -159,7 +160,11 @@ QList<Task*> ConservationPlotTask::onSubTaskFinished(Task* subTask) {
                 QStringList args = settings.getArguments(docNames);
 
                 logParser = new ConservationPlotLogParser();
-                etTask = new ExternalToolRunTask(ConservationPlotSupport::TOOL_NAME, args, logParser, workingDir);
+                ExternalTool* rTool = AppContext::getExternalToolRegistry()->getByName(ET_R);
+                SAFE_POINT(NULL != rTool, "R script tool wasn't found in the registry", result);
+
+
+                etTask = new ExternalToolRunTask(ConservationPlotSupport::TOOL_NAME, args, logParser, workingDir, QStringList() << rTool->getPath());
                 result << etTask;
             }
             

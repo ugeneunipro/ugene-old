@@ -46,10 +46,11 @@ PerlSupport::PerlSupport(const QString &name, const QString &path)
     versionRegExp = QRegExp("(\\d+.\\d+.\\d+)");
     toolKitName="perl";
 
-    connect(this, SIGNAL(si_pathChanged()), SLOT(sl_pathChanged())); 
+    connect(this, SIGNAL(si_toolValidationStatusChanged(bool)), SLOT(sl_toolValidationStatusChanged(bool)));
 }
 
-void PerlSupport::sl_pathChanged(){
+void PerlSupport::sl_toolValidationStatusChanged(bool isValid) {
+    Q_UNUSED(isValid);
     ScriptingTool::onPathChanged(this);
 }
 

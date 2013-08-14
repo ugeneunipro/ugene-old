@@ -36,7 +36,7 @@
 namespace U2 {
 
 ExternalToolValidateTask::ExternalToolValidateTask(const QString& _toolName) :
-        Task(_toolName + " validate task", TaskFlag_None), toolName(_toolName), errorMsg("")
+    Task(_toolName + " validate task", TaskFlag_None), toolName(_toolName), errorMsg("")
 {
     ExternalTool* tool = AppContext::getExternalToolRegistry()->getByName(toolName);
     assert(tool);
@@ -51,7 +51,7 @@ ExternalToolValidateTask::ExternalToolValidateTask(const QString& _toolName) :
 }
 
 ExternalToolValidateTask::ExternalToolValidateTask(const QString& _toolName, const QString& path) :
-        Task(_toolName + " validate task", TaskFlag_None), toolName(_toolName), errorMsg("")
+    Task(_toolName + " validate task", TaskFlag_None), toolName(_toolName), errorMsg("")
 {
     program=path;
 
@@ -69,7 +69,7 @@ void ExternalToolValidateTask::run(){
     ExternalTool* tool = AppContext::getExternalToolRegistry()->getByName(toolName);
     assert(tool);
     if (tool){
-        assert(program!="");
+        CHECK(program!="", );
         validations.append(tool->getToolAdditionalValidations());
         ExternalToolValidation origianlValidation = tool->getToolValidation();
         origianlValidation.executableFile = program;
@@ -79,7 +79,7 @@ void ExternalToolValidateTask::run(){
             ScriptingTool* stool = stregister->getByName(origianlValidation.toolRunnerProgram);
             if(!stool || stool->getPath().isEmpty()){
                 stateInfo.setError(QString("The tool %1 that runs %2 is not installed. Please set the path to the executable file of the"
-                    " tool in the External Tools settings. Some of the tools may be located in UGENE/Tools directory").arg(origianlValidation.toolRunnerProgram).arg(toolName));
+                                           " tool in the External Tools settings. Some of the tools may be located in UGENE/Tools directory").arg(origianlValidation.toolRunnerProgram).arg(toolName));
             }else{
                 origianlValidation.arguments.prepend(origianlValidation.executableFile);
                 origianlValidation.executableFile = stool->getPath();
@@ -214,7 +214,7 @@ void ExternalToolSearchAndValidateTask::prepare() {
         return;
     }
 
-    if (!path.isEmpty()) {
+    if (!path.isNull()) {
         // Try to validate tool on the predefined path
         toolPaths << path;
     } else {
@@ -345,11 +345,17 @@ QString ExternalToolSearchAndValidateTask::getToolVersion() {
 }
 
 ExternalToolsValidateTask::ExternalToolsValidateTask(const QList<Task*> &_tasks) :
-    SequentialMultiTask(tr("Checking external tools for the first time"), _tasks, TaskFlags(TaskFlag_NoRun | TaskFlag_CancelOnSubtaskCancel)) {
+    SequentialMultiTask(tr("Checking external tools"), _tasks, TaskFlags(TaskFlag_NoRun | TaskFlag_CancelOnSubtaskCancel)) {
 }
 
 QList<Task*> ExternalToolsValidateTask::onSubTaskFinished(Task* subTask) {
-    if (subTask->hasError()) {
+    ExternalToolSearchAndValidateTask* validateTask = qobject_cast<ExternalToolSearchAndValidateTask*>(subTask);
+    bool muted = false;
+    if (validateTask) {
+        muted = AppContext::getExternalToolRegistry()->getByName(validateTask->getToolName())->isMuted();
+    }
+
+    if (subTask->hasError() && !muted) {
         taskLog.error(subTask->getTaskName() + tr(" failed: ") + subTask->getError());
     }
     return SequentialMultiTask::onSubTaskFinished(subTask);

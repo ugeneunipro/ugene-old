@@ -22,6 +22,7 @@
 #include "CEASSupport.h"
 
 #include <python/PythonSupport.h>
+#include <R/RSupport.h>
 
 #include <U2Core/AppContext.h>
 #include <U2Core/DataPathRegistry.h>
@@ -57,6 +58,8 @@ void CEASSupport::initialize() {
     executableFileName = "ceas.py";
 
     toolRunnerProgramm = PYTHON_TOOL_NAME;
+    dependencies << PYTHON_TOOL_NAME
+                 << ET_R;
 
     validMessage = "package version";
     validationArguments << "--version";
@@ -68,9 +71,6 @@ void CEASSupport::initialize() {
         U2DataPath* dp = new U2DataPath(REF_GENES_DATA_NAME, QString(PATH_PREFIX_DATA)+QString(":")+"cistrome/refGene 1");
         dpr->registerEntry(dp);
     }
-
-    additionalValidators<<DefaultExternalToolValidations::rValidation();
-
 }
 
 } // U2

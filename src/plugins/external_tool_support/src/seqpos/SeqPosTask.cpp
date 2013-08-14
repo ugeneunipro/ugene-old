@@ -37,6 +37,7 @@
 #include <U2Core/UserApplicationsSettings.h>
 
 #include "SeqPosSupport.h"
+#include "R/RSupport.h"
 
 #include "SeqPosTask.h"
 
@@ -134,7 +135,11 @@ QList<Task*> SeqPosTask::onSubTaskFinished(Task* subTask) {
             QStringList args = settings.getArguments(treatDoc->getURLString());
             
             logParser = new SeqPosLogParser();
-            etTask = new ExternalToolRunTask(SeqPosSupport::TOOL_NAME, args, logParser, getSettings().outDir);
+            ExternalTool* rTool = AppContext::getExternalToolRegistry()->getByName(ET_R);
+            SAFE_POINT(NULL != rTool, "R script tool wasn't found in the registry", result);
+
+
+            etTask = new ExternalToolRunTask(SeqPosSupport::TOOL_NAME, args, logParser, getSettings().outDir, QStringList() << rTool->getPath());
             result << etTask;
     }
     return result;
