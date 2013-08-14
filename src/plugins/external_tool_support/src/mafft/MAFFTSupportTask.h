@@ -110,12 +110,13 @@ private:
 class MAFFTLogParser : public ExternalToolLogParser {
 public:
     MAFFTLogParser(int countSequencesInMSA, int countRefinementIter, const QString& outputFileName);
-    ~MAFFTLogParser(){ outFile.close(); }
+    ~MAFFTLogParser(){ cleanup(); }
     int getProgress();
     void parseOutput(const QString& partOfLog);
     void parseErrOutput(const QString& partOfLog);
 
     bool isOutFileCreated(){ return isOutputFileCreated; }
+    void cleanup();
 private:
     int     countSequencesInMSA;
     int     countRefinementIter;

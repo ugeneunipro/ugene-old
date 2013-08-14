@@ -68,6 +68,7 @@ MAFFTSupportTask::MAFFTSupportTask(const MAlignment& _inputMsa, const GObjectRef
 }
 
 MAFFTSupportTask::~MAFFTSupportTask() {
+    delete logParser;
     if (NULL != tmpDoc) {
         delete tmpDoc;
     }
@@ -147,7 +148,7 @@ QList<Task*> MAFFTSupportTask::onSubTaskFinished(Task* subTask) {
         res.append(mAFFTTask);
     } else if (subTask == mAFFTTask) {
         assert(logParser);
-        delete logParser;
+        logParser->cleanup();
         if (!QFileInfo(outputUrl).exists()) {
             if (AppContext::getExternalToolRegistry()->getByName(MAFFT_TOOL_NAME)->isValid()){
                 stateInfo.setError(tr("Output file '%1' not found").arg(outputUrl));
@@ -417,4 +418,11 @@ int MAFFTLogParser::getProgress(){
     }
     return progress;
 }
+
+void MAFFTLogParser::cleanup() {
+    if (outFile.isOpen()) {
+        outFile.close();
+    }
+}
+
 }//namespace
