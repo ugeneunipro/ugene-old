@@ -109,6 +109,7 @@ void MAlignmentObject::updateCachedMAlignment(MAlignmentModInfo mi,
                 SAFE_POINT_OP(os, );
                 cachedMAlignment.setRowContent( rowIndex, data.sequence.seq );
                 cachedMAlignment.setRowGapModel( rowIndex, data.row.gaps );
+                cachedMAlignment.renameRow( rowIndex, data.sequence.getName( ) );
             }
         }
     }
@@ -307,10 +308,6 @@ void MAlignmentObject::removeRow(int rowIdx) {
     U2OpStatus2Log os;
     MsaDbiUtils::removeRow(entityRef, rowId, os);
     SAFE_POINT_OP(os, );
-
-    MAlignmentModInfo mi;
-    mi.sequenceContentChanged = false;
-    updateCachedMAlignment(mi);
 }
 
 void MAlignmentObject::updateRow(int rowIdx, const QString& name, const QByteArray& seqBytes, const QList<U2MsaGap>& gapModel, U2OpStatus& os) {
@@ -320,16 +317,11 @@ void MAlignmentObject::updateRow(int rowIdx, const QString& name, const QByteArr
     const MAlignmentRow& row = cachedMAlignment.getRow(rowIdx);
     qint64 rowId = row.getRowDBInfo().rowId;
 
-    U2UseCommonUserModStep modStep(entityRef, os);
-    SAFE_POINT_OP(os, );
-
     MsaDbiUtils::updateRowContent(entityRef, rowId, seqBytes, gapModel, os);
     CHECK_OP(os, );
 
     MsaDbiUtils::renameRow(entityRef, rowId, name, os);
     CHECK_OP(os, );
-
-    updateCachedMAlignment();
 }
 
 void MAlignmentObject::setGObjectName(const QString& newName) {

@@ -2151,31 +2151,37 @@ void MSAEditorSequenceArea::reverseComplementModification(ModificationType& type
         return;
     }
     assert(isInRange(selection.topLeft()));
-    assert(isInRange( QPoint(selection.x() + selection.width() - 1, selection.y() + selection.height() - 1) ) );
+    assert(isInRange( QPoint(selection.x() + selection.width() - 1,
+        selection.y() + selection.height() - 1) ) );
     if ( !selection.isNull()) {
         MAlignment ma = maObj->getMAlignment();
-        DNATranslation* trans = AppContext::getDNATranslationRegistry()->lookupComplementTranslation(ma.getAlphabet());
+        DNATranslation* trans =
+            AppContext::getDNATranslationRegistry()->lookupComplementTranslation(ma.getAlphabet());
         if (trans == NULL || !trans->isOne2One()) {
             return;
         }
         const U2Region& sel = getSelectedRows();
         U2OpStatus2Log os;
+        changeTracker.startTracking( os );
+        QList<qint64> modifiedRowIds;
+        modifiedRowIds.reserve( sel.length );
         for (int i = sel.startPos; i < sel.endPos(); i++) {
-            QByteArray curr = ma.getRow(i).toByteArray(ma.getLength(), os);
+            const MAlignmentRow &currentRow = ma.getRow( i );
+            QByteArray currentRowContent = currentRow.toByteArray(ma.getLength(), os);
             switch (type.getType())
             {
             case ModificationType::Reverse:
-                TextUtils::reverse(curr.data(), curr.length());
+                TextUtils::reverse(currentRowContent.data(), currentRowContent.length());
                 break;
             case ModificationType::Complement:
-                trans->translate(curr.data(), curr.length());
+                trans->translate(currentRowContent.data(), currentRowContent.length());
                 break;
             case ModificationType::ReverseComplement:
-                TextUtils::reverse(curr.data(), curr.length());
-                trans->translate(curr.data(), curr.length());
+                TextUtils::reverse(currentRowContent.data(), currentRowContent.length());
+                trans->translate(currentRowContent.data(), currentRowContent.length());
                 break;
             }
-            QString name = ma.getRow(i).getName();
+            QString name = currentRow.getName();
             ModificationType oldType(ModificationType::NoType);
             if (name.endsWith("|revcompl")) {
                 name.resize(name.length() - QString("|revcompl").length());
@@ -2206,10 +2212,13 @@ void MSAEditorSequenceArea::reverseComplementModification(ModificationType& type
             // Split the sequence into gaps and chars
             QByteArray seqBytes;
             QList<U2MsaGap> gapModel;
-            MsaDbiUtils::splitBytesToCharsAndGaps(curr, seqBytes, gapModel);
+            MsaDbiUtils::splitBytesToCharsAndGaps(currentRowContent, seqBytes, gapModel);
 
             maObj->updateRow(i, name, seqBytes, gapModel, os);
+            modifiedRowIds << currentRow.getRowId( );
         }
+        maObj->updateCachedMAlignment( MAlignmentModInfo( ), modifiedRowIds );
+        changeTracker.finishTracking( );
     }
 }
 

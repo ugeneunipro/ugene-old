@@ -211,6 +211,9 @@ QList<Task*> ClustalOSupportTask::onSubTaskFinished(Task* subTask) {
                                 alObj->removeRow(i);
                             }
                         }
+                        MAlignmentModInfo mi;
+                        mi.sequenceContentChanged = false;
+                        alObj->updateCachedMAlignment(mi);
                     }
 
                     QMap<qint64, QList<U2MsaGap> > rowsGapModel;
