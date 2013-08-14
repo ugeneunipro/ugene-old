@@ -255,11 +255,12 @@ void MSAEditorNameList::keyPressEvent (QKeyEvent *e) {
         ui->seqArea->deleteCurrentSelection();
         break;
     case Qt::Key_Up:
-        if (Qt::ShiftModifier & e->modifiers()
-                && ui->seqArea->isSeqInRange(newSeq - 1)) {
+        if ( 0 != ( Qt::ShiftModifier & e->modifiers( ) )
+                && ui->seqArea->isSeqInRange(newSeq - 1))
+        {
             newSeq--;
             updateSelection(newSeq);
-        } else {
+        } else if ( 0 == ( Qt::ShiftModifier & e->modifiers( ) ) ) {
             ui->seqArea->moveSelection(0, -1);
             if (0 <= curSeq - 1) {
                 curSeq--;
@@ -270,11 +271,12 @@ void MSAEditorNameList::keyPressEvent (QKeyEvent *e) {
         }
         break;
     case Qt::Key_Down:
-        if (Qt::ShiftModifier & e->modifiers()
-                && ui->seqArea->isSeqInRange(newSeq + 1)) {
+        if ( 0 != ( Qt::ShiftModifier & e->modifiers( ) )
+                && ui->seqArea->isSeqInRange(newSeq + 1))
+        {
             newSeq++;
             updateSelection(newSeq);
-        } else {
+        } else if ( 0 == ( Qt::ShiftModifier & e->modifiers( ) ) ) {
             ui->seqArea->moveSelection(0, 1);
             if (editor->getNumSequences() > curSeq + 1) {
                 curSeq++;
