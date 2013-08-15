@@ -22,6 +22,7 @@
 
 #include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>
+
 #include <U2Core/UserApplicationsSettings.h>
 #include <U2Formats/BAMUtils.h>
 
@@ -30,6 +31,12 @@
 
 namespace U2 {
 namespace BAM {
+
+PrepareToImportTask::PrepareToImportTask( const GUrl& url, bool sam ) : Task("Prepare assembly file to import", TaskFlag_None), 
+                                                                        sourceURL( url ), samFormat(sam) 
+{ 
+    tpm = Progress_Manual; 
+}
 
 bool PrepareToImportTask::checkStatus( U2OpStatusImpl &status ) {
     if( status.hasError() ) {
@@ -62,6 +69,7 @@ void PrepareToImportTask::run() {
         }
         currentURL = destinationURL;
     }
+    stateInfo.setProgress( 33 );
     bool sortedBam = BAMUtils::isSortedBam( currentURL, status );
     if( !checkStatus( status ) ) {
         return;
@@ -74,11 +82,13 @@ void PrepareToImportTask::run() {
     if( !checkStatus( status ) ) {
         return;
     }
+    stateInfo.setProgress( 66 );
     if( !BAMUtils::hasValidBamIndex( currentURL ) ) {
         stateInfo.setDescription( "Creating BAM index" );
         BAMUtils::createBamIndex( currentURL, status );
     }
     checkStatus( status );
+    stateInfo.setProgress( 100 );
     sourceURL = currentURL;
 }
 

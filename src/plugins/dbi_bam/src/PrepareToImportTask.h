@@ -22,7 +22,6 @@
 #ifndef _U2_PREPARE_TO_IMPORT_TASK_H
 #define _U2_PREPARE_TO_IMPORT_TASK_H
 
-#include <U2Core/GUrl.h>
 #include <U2Core/Task.h>
 #include <U2Core/U2OpStatusUtils.h>
 
@@ -35,8 +34,7 @@ private:
     GUrl sourceURL;
     bool samFormat;
 public:
-    PrepareToImportTask( const GUrl& url, bool sam ) : Task(tr("Prepare assembly file to import"), TaskFlag_None),
-                                                       sourceURL( url ), samFormat(sam) {};
+    PrepareToImportTask( const GUrl& url, bool sam );
     void run();
     bool checkStatus( U2OpStatusImpl &status );
     const GUrl& getSourceUrl() const;

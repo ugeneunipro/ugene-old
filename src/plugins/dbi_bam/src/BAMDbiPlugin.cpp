@@ -56,6 +56,8 @@
 #include <QtGui/QFileDialog>
 #include <QtGui/QMainWindow>
 
+#include <time.h>
+
 #include "SamtoolsBasedDbi.h"
 
 namespace U2 {
@@ -223,6 +225,10 @@ BAMImporterTask::BAMImporterTask(const GUrl& url, bool _useGui, const QVariantMa
     documentDescription = url.fileName();
 }
 
+void BAMImporterTask::prepare() {
+    startTime = time(0);
+}
+
 QList<Task*> BAMImporterTask::onSubTaskFinished(Task* subTask) {
     QList<Task*> res;
     if (subTask->hasError()) {
@@ -273,6 +279,12 @@ QList<Task*> BAMImporterTask::onSubTaskFinished(Task* subTask) {
         resultDocument = loadDocTask->takeDocument();
     }
     return res;
+}
+
+Task::ReportResult BAMImporterTask::report() {
+    time_t totalTime = time(0) - startTime;
+    taskLog.info(QString("BAMImporter task total time is %1 sec").arg( totalTime ) );
+    return ReportResult_Finished;
 }
 
 } // namespace BAM

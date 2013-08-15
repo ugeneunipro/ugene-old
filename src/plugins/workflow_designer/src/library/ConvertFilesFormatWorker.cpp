@@ -29,6 +29,7 @@
 #include <U2Core/FailTask.h>
 #include <U2Core/GObject.h>
 #include <U2Core/GObjectTypes.h>
+#include <U2Core/GUrlUtils.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/IOAdapterUtils.h>
 #include <U2Core/LoadDocumentTask.h>
@@ -133,23 +134,23 @@ void ConvertFilesFormatWorker::init() {
 }
 
 void ConvertFilesFormatWorker::getWorkingDir( QString &workingDir ) {
-    QString destinationURL;
+    QString workingDirPath;
     if( context->hasWorkingDir() ) {
-        destinationURL.append( context->workingDir() );
+        workingDirPath.append( context->workingDir() );
     } else {
         QString tempDir = AppContext::getAppSettings()->getUserAppsSettings()->getCurrentProcessTemporaryDirPath();
-        destinationURL.append( tempDir );
+        workingDirPath.append( tempDir );
     }
-    if( !destinationURL.endsWith("/") ) {
-        destinationURL.append("/");
+    if( !workingDirPath.endsWith("/") ) {
+        workingDirPath.append("/");
     }
-    destinationURL.append( OUTPUT_SUBDIR );
+    workingDirPath.append( OUTPUT_SUBDIR );
     
-    QDir dir(destinationURL);
-    if( !dir.exists( destinationURL ) ) {
-        dir.mkdir( destinationURL );
+    QDir dir(workingDirPath);
+    if( !dir.exists( workingDirPath ) ) {
+        dir.mkdir( workingDirPath );
     }
-    workingDir = destinationURL;
+    workingDir = workingDirPath;
 }
 
 Task* ConvertFilesFormatWorker::tick() {
@@ -169,9 +170,14 @@ Task* ConvertFilesFormatWorker::tick() {
              monitor()->addError( "Undefined file format", getActorId() );
              return NULL;
          }
+         DocumentFormatRegistry *dfr = AppContext::getDocumentFormatRegistry();
+         if( dfr == NULL ) {
+             return NULL;
+         }
+         QStringList selectedFormatExtensions = dfr->getFormatById( selectedFormat )->getSupportedDocumentFileExtensions();
          const QString detectedFormat = formats.first().extension;
          if( excludedFormats.contains( selectedFormat, Qt::CaseInsensitive ) || 
-             !QString::compare( detectedFormat, selectedFormat, Qt::CaseInsensitive ) )
+             selectedFormatExtensions.contains( detectedFormat, Qt::CaseInsensitive ) )
          {
              const Message resultMessage( BaseTypes::STRING_TYPE(), sourceURL.getURLString() );
              outputUrlPort->put( resultMessage );
@@ -184,28 +190,19 @@ Task* ConvertFilesFormatWorker::tick() {
          bool isTargetBam = (selectedFormat == BaseDocumentFormats::BAM);
          bool isSourceBam = (detectedFormat == BaseDocumentFormats::BAM);
          bool isTargetSam = (selectedFormat == BaseDocumentFormats::SAM);
-
+         Task *t = NULL;
          if( ( isSourceSam && isTargetBam ) || ( isSourceBam && isTargetSam ) ) {
-             U2OpStatusImpl status;
-             QString extension = (isTargetBam)? ".bam" : ".sam";
-             const QString destinationURL = workingDir + sourceURL.fileName() + extension;
              bool samToBam = isSourceSam;
-             if( samToBam ) {
-                 BAMUtils::convertToSamOrBam( sourceURL, destinationURL, status, samToBam );
-             } else {
-                 BAMUtils::convertToSamOrBam( destinationURL, sourceURL, status, samToBam );
-             }
-             if( status.hasError() ) {
-                 monitor()->addError( status.getError(), getActorId() );
-                 return NULL;
-             }
-             outputUrlPort->put( Message( BaseTypes::STRING_TYPE(), destinationURL ) );
-             monitor()->addOutputFile( destinationURL, getActorId() );
+             QString extension = (isTargetBam)? ".bam" : ".sam";
+             QString destinationURL = workingDir + sourceURL.fileName() + extension;
+             destinationURL = GUrlUtils::rollFileName( destinationURL, QSet<QString>() );
+
+             t = new BamSamConversionTask( sourceURL, GUrl(destinationURL), samToBam );
          } else {
-             Task *t = new ConvertFilesFormatTask( sourceURL, selectedFormat, workingDir );
-             connect(new TaskSignalMapper(t), SIGNAL(si_taskFinished(Task*)), SLOT(sl_taskFinished(Task*)));
-             return t;
+             t = new ConvertFilesFormatTask( sourceURL, selectedFormat, workingDir );
          }
+         connect(new TaskSignalMapper(t), SIGNAL(si_taskFinished(Task*)), SLOT(sl_taskFinished(Task*)));
+         return t;
     } else if( inputUrlPort->isEnded() ) {
         setDone();
         outputUrlPort->setEnded();
@@ -217,6 +214,12 @@ void ConvertFilesFormatWorker::cleanup() {
 }
 
 void ConvertFilesFormatWorker::sl_taskFinished( Task *task ) {
+    BamSamConversionTask *bsct = qobject_cast<BamSamConversionTask*>( task );
+    if( bsct != NULL ) {
+        outputUrlPort->put( Message( BaseTypes::STRING_TYPE(), bsct->getDestinationURL() ) );
+        monitor()->addOutputFile( bsct->getDestinationURL(), getActorId() );
+        return;
+    }
     QList <Task*> subTasks = task->getSubtasks();
     if( subTasks.empty() ) {
         return;
@@ -275,6 +278,7 @@ QList<Task*> ConvertFilesFormatTask::onSubTaskFinished( Task *subTask ) {
     QString fileName = srcDoc->getName();
     fileName.append("." + selectedFormat);
     QString destinationURL = workingDir + fileName;
+    destinationURL = GUrlUtils::rollFileName( destinationURL, QSet<QString>() );
     
     Task *sdt = new SaveDocumentTask(dstDoc, iof, destinationURL);
     if( sdt == NULL ) {
@@ -284,6 +288,22 @@ QList<Task*> ConvertFilesFormatTask::onSubTaskFinished( Task *subTask ) {
     QList<Task*> taskList;
     taskList << sdt;
     return taskList;
+}
+
+void BamSamConversionTask::run() {
+    U2OpStatusImpl status;
+    if( samToBam ) {
+        BAMUtils::convertToSamOrBam( sourceURL, destinationURL, status, samToBam );
+    } else {
+        BAMUtils::convertToSamOrBam( destinationURL, sourceURL, status, samToBam );
+    }
+    if( status.hasError() ) {
+        stateInfo.setError( status.getError() );
+    }
+}
+
+QString BamSamConversionTask::getDestinationURL() {
+    return destinationURL.getURLString();
 }
 
 } //LocalWorkflow

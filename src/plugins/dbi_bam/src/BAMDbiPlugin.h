@@ -66,6 +66,8 @@ class BAMImporterTask : public DocumentProviderTask {
 public:
     BAMImporterTask(const GUrl& url, bool useGui, const QVariantMap &hints);
     QList<Task*> onSubTaskFinished(Task* subTask);
+    void prepare();
+    ReportResult report();
 private:
     LoadInfoTask*           loadInfoTask;
     LoadInfoTask*           loadBamInfoTask;
@@ -76,6 +78,7 @@ private:
     bool                    sam;
     QString                 hintedDbiUrl;
     GUrl                    destUrl;
+    time_t                  startTime;
 };
 
 } // namespace BAM

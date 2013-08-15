@@ -24,6 +24,7 @@
 
 #include <U2Lang/LocalDomain.h>
 #include <U2Lang/WorkflowUtils.h>
+#include <U2Core/GUrl.h>
 
 namespace U2 {
 namespace LocalWorkflow {
@@ -80,6 +81,22 @@ public:
     void prepare();
     QList<Task*> onSubTaskFinished( Task *subTask );
 }; //ConvertFilesFormatTask
+
+
+
+class BamSamConversionTask : public Task {
+    Q_OBJECT
+private:
+    GUrl sourceURL;
+    GUrl destinationURL;
+    bool samToBam;
+public:
+    BamSamConversionTask( const GUrl &_sourceURL, const GUrl &_destinationURL, bool _samToBam) : 
+                          Task("BAM/SAM conversion task", TaskFlag_None), 
+                          sourceURL(_sourceURL), destinationURL(_destinationURL), samToBam(_samToBam){}
+    void run();
+    QString getDestinationURL();
+}; //BamSamConversionTask
 
 } //LocalWorkflow
 } //U2
