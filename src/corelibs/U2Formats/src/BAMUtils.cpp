@@ -199,8 +199,8 @@ inline static qint64 mB2bytes(int mb) {
     return (qint64)mb * 1024 * 1024;
 }
 
-#define INITIAL_SAMTOOLS_MEM_SIZE_MB bytes2MB(500000000)
-#define SAMTOOLS_MEM_BOOST 5
+#define INITIAL_SAMTOOLS_MEM_SIZE_MB 500000000
+#define SAMTOOLS_MEM_BOOST 10
 
 GUrl BAMUtils::sortBam(const GUrl &bamUrl, const QString &sortedBamBaseName, U2OpStatus &os) {
     const QByteArray &bamFileName = bamUrl.getURLString().toLocal8Bit();
@@ -219,7 +219,7 @@ GUrl BAMUtils::sortBam(const GUrl &bamUrl, const QString &sortedBamBaseName, U2O
     CHECK_EXT(fileSizeBytes >= 0, os.setError(QString("Unknown file size: %1").arg(bamFileName.constData())), QString());
 
     int fileSizeMB = bytes2MB(fileSizeBytes);
-    int maxMemMB = qMin(SAMTOOLS_MEM_BOOST * fileSizeMB, INITIAL_SAMTOOLS_MEM_SIZE_MB);
+    int maxMemMB = qMin(fileSizeMB / SAMTOOLS_MEM_BOOST, INITIAL_SAMTOOLS_MEM_SIZE_MB);
     while (!memory->tryAcquire(maxMemMB)) {
         // reduce used memory
         maxMemMB = maxMemMB * 2 / 3;
@@ -231,7 +231,7 @@ GUrl BAMUtils::sortBam(const GUrl &bamUrl, const QString &sortedBamBaseName, U2O
         coreLog.details(BAMUtils::tr("Sort bam file: \"%1\" using %2 Mb of memory. Result sorted file is: \"%3\"")
             .arg(QString(bamFileName)).arg(maxMemMB).arg(QString(sortedFileName)));
         size_t maxMemBytes = (size_t)(mB2bytes(maxMemMB)); // maxMemMB < 500 Mb, so the conversation is correct!
-        bam_sort_core(0, bamFileName.constData(), sortedBamBaseName.toLocal8Bit().constData(), maxMemBytes);
+        bam_sort_core(0, bamFileName.constData(), sortedBamBaseName.toLocal8Bit().constData(), maxMemBytes); //maxMemBytes
     }
     memory->release(maxMemMB);
 

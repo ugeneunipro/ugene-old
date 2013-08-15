@@ -204,7 +204,7 @@ DocumentProviderTask* BAMImporter::createImportTask(const FormatDetectionResult&
 
 
 BAMImporterTask::BAMImporterTask(const GUrl& url, bool _useGui, const QVariantMap &hints) 
-: DocumentProviderTask(tr("BAM/SAM file import: %1").arg(url.fileName()), TaskFlags_NR_FOSCOE)
+: DocumentProviderTask(tr("BAM/SAM file import: %1").arg(url.fileName()), TaskFlags_NR_FOSCOE), destUrl(NULL)
 {
     useGui = _useGui;
     sam = hints.value(SAM_HINT, false).toBool();
@@ -214,7 +214,10 @@ BAMImporterTask::BAMImporterTask(const GUrl& url, bool _useGui, const QVariantMa
     }
     convertTask = NULL;
     loadDocTask = NULL;
-    loadInfoTask = new LoadInfoTask(url, sam);
+    prepareToImportTask = NULL;
+    loadBamInfoTask = NULL;
+
+    loadInfoTask = new LoadInfoTask( url, sam );
     addSubTask(loadInfoTask);
 
     documentDescription = url.fileName();
@@ -226,9 +229,8 @@ QList<Task*> BAMImporterTask::onSubTaskFinished(Task* subTask) {
         propagateSubtaskError();
         return res;
     }
-    if (loadInfoTask == subTask) {
+    if( loadInfoTask == subTask ) {
         GUrl srcUrl = loadInfoTask->getSourceUrl();
-        GUrl destUrl;
         if (hintedDbiUrl.isEmpty()) {
             destUrl = srcUrl.dirPath() + "/" + srcUrl.fileName() + ".ugenedb";
         } else {
@@ -248,9 +250,17 @@ QList<Task*> BAMImporterTask::onSubTaskFinished(Task* subTask) {
             }
         }
         if (convert) {
-            convertTask = new ConvertToSQLiteTask(loadInfoTask->getSourceUrl(), destUrl, loadInfoTask->getInfo(), sam);
-            res << convertTask;
+            prepareToImportTask = new PrepareToImportTask( loadInfoTask->getSourceUrl(), loadInfoTask->isSam() );
+            res << prepareToImportTask;
         }
+   } else if ( prepareToImportTask == subTask ) {
+        bool samFormat = false;
+        loadBamInfoTask = new LoadInfoTask( prepareToImportTask->getSourceUrl(), samFormat );
+        res << loadBamInfoTask;
+    } else if ( loadBamInfoTask == subTask ) {
+        bool samFormat = false;
+        convertTask = new ConvertToSQLiteTask( loadBamInfoTask->getSourceUrl(), destUrl, loadBamInfoTask->getInfo(), samFormat );
+        res << convertTask;
     } else if (convertTask == subTask) {
         loadDocTask = LoadDocumentTask::getDefaultLoadDocTask(convertTask->getDestinationUrl());
         if (loadDocTask == NULL) {

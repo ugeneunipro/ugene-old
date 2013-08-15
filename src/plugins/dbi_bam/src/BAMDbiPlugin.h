@@ -28,6 +28,8 @@
 #include <U2Core/DocumentImport.h>
 #include <U2Core/DocumentProviderTask.h>
 
+#include "PrepareToImportTask.h"
+
 namespace U2 {
 
 class LoadDocumentTask;
@@ -66,11 +68,14 @@ public:
     QList<Task*> onSubTaskFinished(Task* subTask);
 private:
     LoadInfoTask*           loadInfoTask;
+    LoadInfoTask*           loadBamInfoTask;
+    PrepareToImportTask*    prepareToImportTask;
     ConvertToSQLiteTask*    convertTask;
     LoadDocumentTask*       loadDocTask;
     bool                    useGui;
     bool                    sam;
     QString                 hintedDbiUrl;
+    GUrl                    destUrl;
 };
 
 } // namespace BAM

@@ -19,6 +19,7 @@ HEADERS += src/Alignment.h \
            src/InvalidFormatException.h \
            src/IOException.h \
            src/LoadBamInfoTask.h \
+           src/PrepareToImportTask.h \
            src/Reader.h \
            src/SamReader.h \
            src/SamtoolsBasedDbi.h \
@@ -42,6 +43,7 @@ SOURCES += src/Alignment.cpp \
            src/InvalidFormatException.cpp \
            src/IOException.cpp \
            src/LoadBamInfoTask.cpp \
+           src/PrepareToImportTask.cpp \
            src/Reader.cpp \
            src/SamReader.cpp \
            src/SamtoolsBasedDbi.cpp \
