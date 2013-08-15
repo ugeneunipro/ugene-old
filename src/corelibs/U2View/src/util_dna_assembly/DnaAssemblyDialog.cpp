@@ -98,6 +98,7 @@ DnaAssemblyDialog::DnaAssemblyDialog(QWidget* p, const QStringList& shortReadsUr
         if (NULL != customGUI) {
             QString error;
             customGUI->buildIndexUrl(lastRefSeqUrl, prebuiltIndex, error);
+            customGUI->validateReferenceSequence( activeRefSeqUrl );
             //todo: process error!
         }
     }

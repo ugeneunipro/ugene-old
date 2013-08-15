@@ -26,6 +26,7 @@
 #include <U2Core/DocumentUtils.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/ExternalToolRegistry.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <U2Algorithm/DnaAssemblyAlgRegistry.h>
 
@@ -58,6 +59,8 @@ BuildIndexDialog::BuildIndexDialog(const DnaAssemblyAlgRegistry* registry, QWidg
     if (!genomePath.isEmpty()) {
         refSeqEdit->setText(genomePath);
         buildIndexUrl(genomePath);
+        SAFE_POINT( NULL != customGUI, "Build Index dialog referenced null pointer", );
+        customGUI->validateReferenceSequence( genomePath );
     }
 }
 
