@@ -130,8 +130,6 @@ protected:
     virtual bool sceneEvent ( QEvent * event );
     virtual void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
     virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
-    //virtual void hoverEnterEvent(QGraphicsSceneHoverEvent * event);
-    //virtual void hoverLeaveEvent(QGraphicsSceneHoverEvent * event);
 
 public slots:
     void sl_update();
@@ -146,7 +144,6 @@ private:
     bool hasBreakpoint;
     bool hasEnabledBreakpoint;
     WorkflowHighlightItem *highlighting;
-//    WorkflowInspectionItem *inspectionItem;
 };
 
 class WorkflowPortItem : public StyledItem {

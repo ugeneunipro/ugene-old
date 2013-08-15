@@ -1170,7 +1170,7 @@ QMap<ActorId, QVariantMap> HRSchemaSerializer::parseIteration(Tokenizer & tokeni
 }
 
 static void tryToConnect(Schema * schema, Port * input, Port * output) {
-    if(!input || !output || !input->canBind(output)) {
+    if(!input || !output || !input->canBind(output) || WorkflowUtils::isPathExist( input, output ) ) {
         throw HRSchemaSerializer::ReadFailed(HRSchemaSerializer::tr("Cannot bind %1:%2 to %3:%4").
             arg(input->owner()->getId()).arg(input->getId()).arg(output->owner()->getId()).arg(output->getId()));
     }

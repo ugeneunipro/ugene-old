@@ -2267,7 +2267,7 @@ void WorkflowView::sl_newScene() {
     scene->setModified(false);
     rescale();
     scene->update();
-    this->sl_updateUi();
+    sl_updateUi();
 }
 
 void WorkflowView::sl_onSceneLoaded() {

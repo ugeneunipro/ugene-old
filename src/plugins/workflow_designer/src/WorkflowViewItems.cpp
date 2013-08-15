@@ -505,60 +505,6 @@ void WorkflowProcessItem::highlightItem() {
     highlighting->replay();
 }
 
-/*
-bool WorkflowProcessItem::isSchemaPaused() const {
-    return getWorkflowScene()->getController()->isPaused();
-}
-
-void WorkflowProcessItem::hoverEnterEvent(QGraphicsSceneHoverEvent * event) {
-    if (isSchemaPaused()) {
-        InspectionItemOrientationType inspectionOrientation;
-
-        QRectF bRect = boundingRect();
-        QPointF mouseAppearencePoint = event->lastPos();
-
-        // following code is intended to find out
-        // what is the nearest side of boundingRect() to the event mouse position.
-        // It is needed to determine location of further appearing inspection item.
-
-        const qreal distFromCursorToBottom = bRect.bottom() - mouseAppearencePoint.y();
-        const qreal distFromCursorToLeft = mouseAppearencePoint.x() - bRect.left();
-        const qreal distFromCursorToTop = mouseAppearencePoint.y() - bRect.top();
-        const qreal distFromCursorToRight = bRect.right() - mouseAppearencePoint.x();
-
-        const qreal minDistance = qMin<qreal>(qMin<qreal>(distFromCursorToBottom, distFromCursorToLeft),
-            qMin<qreal>(distFromCursorToRight, distFromCursorToTop));
-
-        if (minDistance == distFromCursorToBottom) {
-            inspectionOrientation = InspectionDown;
-        } else if (minDistance == distFromCursorToLeft) {
-            inspectionOrientation = InspectionLeft;
-        } else if (minDistance == distFromCursorToRight) {
-            inspectionOrientation = InspectionRight;
-        } else {
-            inspectionOrientation = InspectionUp;
-        }
-
-        if (NULL == inspectionItem) {
-            inspectionItem = new WorkflowInspectionItem(this, WorkerDebugInfo(), mouseAppearencePoint,
-                inspectionOrientation);
-            getWorkflowScene()->addItem(inspectionItem);
-        } else if (!inspectionItem->isVisible()){
-            inspectionItem->setOriginPoint(mouseAppearencePoint);
-            inspectionItem->setOrientation(inspectionOrientation);
-            inspectionItem->setVisible(true);
-        }
-    }
-}
-
-void WorkflowProcessItem::hoverLeaveEvent(QGraphicsSceneHoverEvent * event) {
-    if (isSchemaPaused() && NULL != inspectionItem) {
-        if (!inspectionItem->isPermanent()) {    
-            inspectionItem->eraseFromScene();
-        }
-    }
-}
-*/
 ///////////// PIO /////////////
 
 WorkflowPortItem* WorkflowPortItem::findNearbyBindingCandidate(const QPointF& pos) const {
@@ -730,31 +676,31 @@ static bool checkTypes(Port* p1, Port* p2) {
 WorkflowPortItem* WorkflowPortItem::checkBindCandidate(const QGraphicsItem* it) const 
 {
     switch (it->type()) {
-            case WorkflowProcessItemType:
-                {
-                    const WorkflowProcessItem* receiver = static_cast<const WorkflowProcessItem*>(it);
-                    // try best matches first
-                    foreach(WorkflowPortItem* otherPit, receiver->getPortItems()) {
-                        if (port->canBind(otherPit->getPort()) && checkTypes(port, otherPit->getPort())) {
-                            return otherPit;
-                        }
-                    }
-                    // take first free port
-                    foreach(WorkflowPortItem* otherPit, receiver->getPortItems()) {
-                        if (port->canBind(otherPit->getPort())) {
-                            return otherPit;
-                        }
+        case WorkflowProcessItemType:
+            {
+                const WorkflowProcessItem* receiver = static_cast<const WorkflowProcessItem*>(it);
+                // try best matches first
+                foreach(WorkflowPortItem* otherPit, receiver->getPortItems()) {
+                    if (port->canBind(otherPit->getPort()) && checkTypes(port, otherPit->getPort())) {
+                        return otherPit;
                     }
                 }
-                break;
-            case WorkflowPortItemType:
-                {
-                    WorkflowPortItem* otherPit = (WorkflowPortItem*)(it);
+                // take first free port
+                foreach(WorkflowPortItem* otherPit, receiver->getPortItems()) {
                     if (port->canBind(otherPit->getPort())) {
                         return otherPit;
                     }
                 }
-                break;
+            }
+            break;
+        case WorkflowPortItemType:
+            {
+                WorkflowPortItem* otherPit = (WorkflowPortItem*)(it);
+                if (port->canBind(otherPit->getPort())) {
+                    return otherPit;
+                }
+            }
+            break;
     }
     return NULL;
 }
@@ -811,7 +757,10 @@ static QList<WorkflowPortItem*> getCandidates(WorkflowPortItem* port) {
     foreach(QGraphicsItem* it, port->scene()->items()) {
         if (it->type() == WorkflowPortItemType) {
             WorkflowPortItem* next = qgraphicsitem_cast<WorkflowPortItem*>(it);
-            if (port->getPort()->canBind(next->getPort()) && checkTypes(next->getPort(), port->getPort())) {
+            if (port->getPort()->canBind(next->getPort())
+                && checkTypes(next->getPort(), port->getPort())
+                && !WorkflowUtils::isPathExist(port->getPort(), next->getPort()))
+            {
                 l.append(next);
             }
         }

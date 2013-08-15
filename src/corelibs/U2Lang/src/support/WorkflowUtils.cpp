@@ -463,23 +463,24 @@ void WorkflowUtils::getLinkedActorsId(Actor *a, QList<QString> &linkedActors) {
 }
 
 bool WorkflowUtils::isPathExist(const Port *src, const Port *dest) {
-    assert(src->isOutput());
-    assert(dest->isInput());
-    if (src == dest) {
-        return true;
+    SAFE_POINT( ( src->isInput( ) ^ dest->isInput( ) ), "The ports have the same direction",
+        true );
+    if ( !src->isOutput( ) && !dest->isInput( ) ) {
+        const Port *tmp = dest;
+        dest = src;
+        src = tmp;
     }
-    Port *const src1 = const_cast<Port*>(src);
+    const Actor *destElement = dest->owner( );
 
-    foreach (const Link *l, src->getLinks().values(src1)) {
-        const Port *p = l->destination();
-        if (l->source() != src) {
+    foreach ( const Port *port, src->owner( )->getPorts( ) ) {
+        if ( src == port ) {
             continue;
         }
-        if (dest == p) {
-            return true;
-        } else {
-            bool result = isPathExist(p, dest);
-            if (result) {
+        foreach ( const Port *p, port->getLinks( ).keys( ) ) {
+            if ( destElement == p->owner( ) ) {
+                return true;
+            }
+            if ( isPathExist( p, dest ) ) {
                 return true;
             }
         }

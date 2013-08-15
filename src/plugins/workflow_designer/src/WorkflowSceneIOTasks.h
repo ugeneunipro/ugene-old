@@ -55,6 +55,8 @@ public:
     virtual Task::ReportResult report();
     
 private:
+    void resetSceneAndScheme( );
+
     Schema *schema;
     Metadata *meta;
     WorkflowScene *scene;

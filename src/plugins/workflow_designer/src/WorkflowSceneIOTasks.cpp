@@ -95,9 +95,7 @@ Task::ReportResult LoadWorkflowSceneTask::report() {
 
     QString err;
     if (!scene->items().isEmpty()) {
-        scene->clearScene();
-        meta->reset();
-        schema->reset();
+        resetSceneAndScheme();
     }
     if(format == LoadWorkflowTask::HR) {
         err = HRSchemaSerializer::string2Schema(rawData, schema, meta);
@@ -116,19 +114,22 @@ Task::ReportResult LoadWorkflowSceneTask::report() {
 
     if(!err.isEmpty()) {
         setError(tr("Error while parsing file: %1").arg(err));
-        scene->sl_reset();
-        schema->reset();
-        meta->reset();
+        resetSceneAndScheme( );
         return ReportResult_Finished;
     }
     SceneCreator sc(schema, *meta);
-    sc.recreateScene(scene);
     scene->setModified(false);
     scene->connectConfigurationEditors();
     if (!noUrl) {
         meta->url = url;
     }
     return ReportResult_Finished;
+}
+
+void LoadWorkflowSceneTask::resetSceneAndScheme( ) {
+    scene->sl_reset();
+    schema->reset();
+    meta->reset();
 }
 
 }//namespace
