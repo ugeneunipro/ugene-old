@@ -593,7 +593,7 @@ void ADVExportContext::prepareMAFromAnnotations(MAlignment& ma, bool translate, 
     ma.setAlphabet(al);
     QSet<QString> names;
     foreach(const AnnotationSelectionData& a, selection) {
-        QString rowName = ExportUtils::genUniqueName(names, a.annotation->getAnnotationName());
+        QString rowName = a.annotation->getAnnotationName();
         AnnotationTableObject* ao = a.annotation->getGObject();
         ADVSequenceObjectContext* seqCtx = view->getSequenceContext(ao);
         U2EntityRef seqRef = seqCtx->getSequenceObject()->getSequenceRef();
