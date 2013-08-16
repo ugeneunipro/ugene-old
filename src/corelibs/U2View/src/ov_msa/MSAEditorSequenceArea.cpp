@@ -938,6 +938,7 @@ void MSAEditorSequenceArea::mouseMoveEvent( QMouseEvent* e )
 
 void MSAEditorSequenceArea::mouseReleaseEvent(QMouseEvent *e)
 {
+    changeTracker.finishTracking();
     rubberBand->hide();
     if (shifting) {
         editor->getMSAObject()->releaseState();
@@ -960,7 +961,6 @@ void MSAEditorSequenceArea::mouseReleaseEvent(QMouseEvent *e)
             updateSelection(newCurPos);
         }
         shifting = false;
-        changeTracker.finishTracking();
         scribbling = false;
         selecting = false;
     }
