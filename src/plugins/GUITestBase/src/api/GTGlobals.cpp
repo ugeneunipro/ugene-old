@@ -30,11 +30,7 @@ namespace U2 {
 
 void GTGlobals::sleep(int msec) {
     QEventLoop l;
-#if defined Q_OS_WIN
-    QTimer::singleShot(msec*2, &l, SLOT(quit()));
-#else
     QTimer::singleShot(msec, &l, SLOT(quit()));
-#endif
     l.exec();
 }
 
