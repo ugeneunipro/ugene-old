@@ -25,21 +25,19 @@
 #include "ADVSingleSequenceWidget.h"
 #include "PanViewRows.h"
 
-#include <U2Core/DNAAlphabet.h>
-#include <U2Core/SelectionModel.h>
-#include <U2Core/Log.h>
-#include <U2Core/Timer.h>
-#include <U2Core/AppContext.h>
-
-#include <U2Core/DNASequenceObject.h>
-#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/AnnotationSettings.h>
-#include <U2Core/U2SafePoints.h>
+#include <U2Core/AnnotationTableObject.h>
+#include <U2Core/AppContext.h>
+#include <U2Core/DNAAlphabet.h>
 #include <U2Core/DNASequenceSelection.h>
+#include <U2Core/DNASequenceObject.h>
+#include <U2Core/Log.h>
+#include <U2Core/SelectionModel.h>
+#include <U2Core/Timer.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <U2Gui/GraphUtils.h>
 #include <U2Gui/GScrollBar.h>
-
 
 #include <QtGui/QTextEdit>
 #include <QtGui/QGridLayout>

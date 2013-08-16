@@ -19,72 +19,68 @@
  * MA 02110-1301, USA.
  */
 
-#include "AnnotatedDNAView.h"
-#include "AnnotatedDNAViewState.h"
-#include "AnnotatedDNAViewFactory.h"
-#include "AnnotatedDNAViewTasks.h"
-#include "ADVUtils.h"
-
-#include "AnnotationsTreeView.h"
 #include "ADVAnnotationCreation.h"
 #include "ADVClipboard.h"
 #include "ADVConstants.h"
 #include "ADVSequenceObjectContext.h"
 #include "ADVSingleSequenceWidget.h"
-#include "ADVSplitWidget.h"
 #include "ADVSyncViewManager.h"
+#include "ADVSplitWidget.h"
+#include "ADVUtils.h"
+#include "AnnotatedDNAView.h"
+#include "AnnotatedDNAViewState.h"
+#include "AnnotatedDNAViewFactory.h"
+#include "AnnotatedDNAViewTasks.h"
+#include "AnnotationsTreeView.h"
 #include "AutoAnnotationUtils.h"
 #include "GraphMenu.h"
 
-#include <U2Core/AppContext.h>
-#include <U2Core/Log.h>
-#include <U2Core/ProjectModel.h>
-#include <U2Core/Task.h>
-#include <U2Core/DocumentModel.h>
-#include <U2Core/BaseDocumentFormats.h>
-#include <U2Core/Timer.h>
-#include <U2Core/IOAdapter.h>
-#include <U2Core/AutoAnnotationsSupport.h>
-#include <U2Core/RemoveAnnotationsTask.h>
-
-#include <U2Core/DNASequenceObject.h>
-#include <U2Core/AnnotationTableObject.h>
-#include <U2Core/GObjectTypes.h>
-#include <U2Core/AnnotationSettings.h>
-#include <U2Core/GObjectUtils.h>
-#include <U2Core/GObjectRelationRoles.h>
-#include <U2Core/U2SafePoints.h>
-#include <U2Core/SelectionUtils.h>
 #include <U2Core/AnnotationSelection.h>
+#include <U2Core/AnnotationSettings.h>
+#include <U2Core/AnnotationTableObject.h>
+#include <U2Core/AppContext.h>
+#include <U2Core/AutoAnnotationsSupport.h>
+#include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/DNASequenceSelection.h>
-#include <U2Core/ReverseSequenceTask.h>
+#include <U2Core/DNASequenceObject.h>
+#include <U2Core/DocumentModel.h>
+#include <U2Core/GObjectRelationRoles.h>
+#include <U2Core/GObjectTypes.h>
+#include <U2Core/GObjectUtils.h>
+#include <U2Core/IOAdapter.h>
+#include <U2Core/Log.h>
 #include <U2Core/ModifySequenceObjectTask.h>
+#include <U2Core/ProjectModel.h>
+#include <U2Core/RemoveAnnotationsTask.h>
+#include <U2Core/ReverseSequenceTask.h>
+#include <U2Core/SelectionUtils.h>
+#include <U2Core/Task.h>
+#include <U2Core/Timer.h>
+#include <U2Core/U2SafePoints.h>
+
+#include <U2Gui/CreateObjectRelationDialogController.h>
+#include <U2Gui/DialogUtils.h>
+#include <U2Gui/EditSequenceDialogController.h>
+#include <U2Gui/GUIUtils.h>
+#include <U2Gui/OptionsPanel.h>
+#include <U2Gui/OPWidgetFactoryRegistry.h>
+#include <U2Gui/PositionSelector.h>
+#include <U2Gui/RemovePartFromSequenceDialogController.h>
 
 #include <U2View/FindPatternWidgetFactory.h>
 #include <U2View/SecStructPredictUtils.h>
 
-#include <U2Gui/GUIUtils.h>
-#include <U2Gui/CreateObjectRelationDialogController.h>
-#include <U2Gui/PositionSelector.h>
-#include <U2Gui/DialogUtils.h>
-#include <U2Gui/EditSequenceDialogController.h>
-#include <U2Gui/OptionsPanel.h>
-#include <U2Gui/OPWidgetFactoryRegistry.h>
-#include <U2Gui/RemovePartFromSequenceDialogController.h>
-
-#include <QtGui/QVBoxLayout>
-#include <QtGui/QScrollArea>
-#include <QtGui/QToolBar>
 #include <QtGui/QAction>
 #include <QtGui/QMenu>
 #include <QtGui/QMessageBox>
+#include <QtGui/QScrollArea>
+#include <QtGui/QToolBar>
+#include <QtGui/QVBoxLayout>
 
 #include <memory>
 
+
 namespace U2 {
-
-/* TRANSLATOR U2::AnnotatedDNAView */
-
 
 AnnotatedDNAView::AnnotatedDNAView(const QString& viewName, const QList<U2SequenceObject*>& dnaObjects) 
 : GObjectView(AnnotatedDNAViewFactory::ID, viewName)

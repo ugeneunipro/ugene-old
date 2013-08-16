@@ -19,18 +19,18 @@
  * MA 02110-1301, USA.
  */
 
-#include "AnnotatedDNAViewState.h"
+#include "ADVSequenceObjectContext.h"
 #include "AnnotatedDNAView.h"
 #include "AnnotatedDNAViewFactory.h"
-#include "ADVSequenceObjectContext.h"
+#include "AnnotatedDNAViewState.h"
 
 #include <U2Core/AnnotationTableObject.h>
+#include <U2Core/DNASequenceSelection.h>
 #include <U2Core/DNASequenceObject.h>
+#include <U2Core/DNATranslation.h>
+#include <U2Core/DocumentModel.h>
 #include <U2Core/GObjectTypes.h>
 
-#include <U2Core/DNASequenceSelection.h>
-#include <U2Core/DocumentModel.h>
-#include <U2Core/DNATranslation.h>
 
 namespace U2 {
 

@@ -21,19 +21,19 @@
 
 #include "ADVSequenceObjectContext.h"
 
+#include "AnnotatedDNAView.h"
+
 #include <U2Core/AppContext.h>
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/DNAAlphabet.h>
+#include <U2Core/DNASequenceObject.h>
+#include <U2Core/DNASequenceSelection.h>
 #include <U2Core/DNATranslation.h>
 #include <U2Core/GHints.h>
-#include <U2Core/DNASequenceObject.h>
-#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/GObjectRelationRoles.h>
 #include <U2Core/GObjectUtils.h>
 #include <U2Core/U2SafePoints.h>
 
-#include <U2Core/DNASequenceSelection.h>
-
-#include "AnnotatedDNAView.h"
 
 namespace U2 {
 

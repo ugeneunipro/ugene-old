@@ -19,24 +19,22 @@
  * MA 02110-1301, USA.
  */
 
-#include "Overview.h"
-
 #include "ADVSingleSequenceWidget.h"
-#include "PanView.h"
 #include "DetView.h"
+#include "Overview.h"
+#include "PanView.h"
 
+#include <U2Core/AnnotationSettings.h>
+#include <U2Core/AnnotationTableObject.h>
+#include <U2Core/AppContext.h>
 #include <U2Core/DNASequenceSelection.h>
 
-#include <U2Core/AppContext.h>
-
-#include <U2Core/AnnotationTableObject.h>
-#include <U2Core/AnnotationSettings.h>
-
-#include <U2Gui/GScrollBar.h>
 #include <U2Gui/GraphUtils.h>
+#include <U2Gui/GScrollBar.h>
 
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QToolTip>
+
 
 namespace U2 {
 

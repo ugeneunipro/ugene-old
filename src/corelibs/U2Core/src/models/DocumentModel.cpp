@@ -20,29 +20,29 @@
  * MA 02110-1301, USA.
  */
 
-#include <U2Core/DocumentModel.h>
-#include <U2Core/GObject.h>
-#include <U2Core/Task.h>
-#include <U2Core/IOAdapter.h>
+#include "DocumentModel.h"
+
+#include <U2Core/AppContext.h>
 #include <U2Core/GHints.h>
-#include <U2Core/Log.h>
-#include <U2Core/L10n.h>
+#include <U2Core/GObject.h>
+#include <U2Core/GObjectUtils.h>
 #include <U2Core/GUrlUtils.h>
+#include <U2Core/IOAdapter.h>
+#include <U2Core/L10n.h>
+#include <U2Core/Log.h>
+#include <U2Core/Task.h>
 #include <U2Core/U2Dbi.h>
 #include <U2Core/U2DbiRegistry.h>
-#include <U2Core/GObjectUtils.h>
-#include <U2Core/UnloadedObject.h>
-#include <U2Core/U2SafePoints.h>
-#include <U2Core/AppContext.h>
 #include <U2Core/U2DbiUtils.h>
-#include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2ObjectDbi.h>
+#include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/U2SafePoints.h>
+#include <U2Core/UnloadedObject.h>
 
 #include <QtCore/QFileInfo>
 
 #include <memory>
 
-/* TRANSLATOR U2::DocumentFormat */
 
 namespace U2 {
 
