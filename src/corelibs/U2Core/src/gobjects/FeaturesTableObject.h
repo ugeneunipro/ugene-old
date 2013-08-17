@@ -52,31 +52,42 @@ public:
     bool isLocked() const;
     void cleanAnnotations();
 
-    AnnotationTableObject*  getAnnotationTableObject() {return aObject;}
+    AnnotationTableObject*  getAnnotationTableObject() { return aObject; }
 
-    /** Direct feature interface: without sync with Annotations */
+    //////////////////////////////////////////////////////////////////////////
+    // Direct features interface (without sync with annotations)
 
-    U2Feature getRootFeature() const {return rootFeature;}
+    /** Get the root feature */
+    U2Feature getRootFeature() const { return rootFeature; }
 
-    void setRootFeaturesSequenceId (const U2DataId& id){rootFeature.sequenceId = id;}
+    /** Set sequence for the dummy root feature and therefore for all the features of the object */
+    void setRootFeatureSequenceId (const U2DataId &id){ rootFeature.sequenceId = id; }
 
-    /** Adds new feature. Sets its id, and sets parentFeatureId to root feature if it is empty */
-    void addFeature(U2Feature & f, U2OpStatus & os, bool create = false);
+    /**
+     * Add a new feature. Set its id to the correct value.
+     * If not specified otherwise, parentFeatureId is set to the root feature.
+     */
+    void addFeature(U2Feature &f, U2OpStatus &os, bool create = false);
 
-    /** Adds new feature, then adds all keys from the list to it.
-        Sets its id, and sets parentFeatureId to root feature if it is empty */
-    void addFeature(U2Feature & f, QList<U2FeatureKey> keys, U2OpStatus & os, bool create = false);
+    /**
+     * Add a new feature. Set its id to the correct value.
+     * Also add the list of keys to the feature.
+     * If not specified otherwise, parentFeatureId is set to the root feature.
+     */
+    void addFeature(U2Feature &f, QList<U2FeatureKey> keys, U2OpStatus &os, bool create = false);
 
-    /** Retrieves feature by id */
-    U2Feature getFeature(U2DataId id, U2OpStatus & os);
+    /** Retrieve a feature by its id */
+    U2Feature getFeature(U2DataId id, U2OpStatus &os);
 
-    /** Finds subfeatures of given feature. If recursive is false, returns only direct children.
-        Otherwise returns all features in subtree */
-    QList<U2Feature> getSubfeatures(U2DataId parentFeatureId, U2OpStatus & os, bool recursive = false);
+    /**
+    * Find all child features of a given feature.
+    * If recursive is false, returns only direct children.
+    * Otherwise returns all features in the subtree.
+    */
+    QList<U2Feature> getSubfeatures(U2DataId parentFeatureId, U2OpStatus &os, bool recursive = false);
 
-    QList<Annotation*> getAnnotations(const U2Region& range);
-
-    U2DbiIterator<U2Feature>* getFeatures(const U2Region& range, U2OpStatus & os);
+    /** Get features that intersects the specified region */
+    U2DbiIterator<U2Feature>* getFeatures(const U2Region &range, U2OpStatus & os);
 
 protected:
 
@@ -89,20 +100,18 @@ protected:
 
     void _removeAnnotation(Annotation* a);
 
-    void initRootFeature(const U2DbiRef& dbiRef);
-    void importToDbi(Annotation* a);
-
     QList<Annotation*>      annotations;
     AnnotationGroup*        rootGroup;
     AnnotationsLocker       annLocker;
 
-    //wrapped object
+private:
+    /** Import an annotation to the database */
+    void importToDbi(Annotation* a);
+
+    /** Wrapped annotations object */
     AnnotationTableObject*  aObject;
 
-    //object to query features dbi
-    //FeatureSynchronizer synchronizer;
-
-    //dummy root feature
+    /** Dummy root feature */
     U2Feature rootFeature;
 
 signals:

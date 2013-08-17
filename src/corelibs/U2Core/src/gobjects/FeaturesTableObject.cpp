@@ -22,8 +22,10 @@
 #include "FeaturesTableObject.h"
 #include "GObjectTypes.h"
 
+#include <U2Core/AppContext.h>
 #include <U2Core/Timer.h>
 #include <U2Core/U2FeatureDbi.h>
+#include <U2Core/U2FeatureKeys.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
 
@@ -31,66 +33,33 @@
 namespace U2 {
 
 FeaturesTableObject::FeaturesTableObject( const QString& objectName, const U2DbiRef& dbiRef, const QVariantMap& hintsMap)
-    : GObject(GObjectTypes::ANNOTATION_TABLE, objectName+"_features", hintsMap) {
-
-        aObject = new AnnotationTableObject(objectName, hintsMap);
-        //initRootFeature(dbiRef);
-        entityRef = U2EntityRef(dbiRef, rootFeature.id);
-
-//        connect(aObject, SIGNAL( si_onAnnotationsRemoved(const QList<Annotation*>& ) ), SLOT( sl_onAnnotationsRemoved(const QList<Annotation*>& )));
-//        connect(aObject, SIGNAL( si_onAnnotationsInGroupRemoved(const QList<Annotation*>&, AnnotationGroup*) ), 
-//            SLOT( sl_onAnnotationsInGroupRemoved(const QList<Annotation*>&, AnnotationGroup*)));
-//        connect(aObject, SIGNAL( si_onAnnotationModified(const AnnotationModification& ) ), SLOT( sl_onAnnotationModified(const AnnotationModification& ) ));
-//        connect(aObject, SIGNAL( si_onGroupRemoved(AnnotationGroup* , AnnotationGroup* ) ), SLOT( sl_onGroupRemoved(AnnotationGroup* , AnnotationGroup* ) ));
-//        connect(aObject, SIGNAL( si_onGroupRenamed(AnnotationGroup*, const QString& ) ), SLOT( sl_onGroupRenamed(AnnotationGroup*, const QString& ) ));
+    : GObject(GObjectTypes::ANNOTATION_TABLE, objectName + "_features", hintsMap)
+{
+    aObject = new AnnotationTableObject(objectName, hintsMap);
+    entityRef = U2EntityRef(dbiRef, rootFeature.id);
 }
 
-void FeaturesTableObject::initRootFeature(const U2DbiRef& dbiRef){
-    rootFeature.name = getGObjectName();
-
-    U2OpStatus2Log os;
-
-    DbiConnection con(dbiRef, os);
-    CHECK_OP(os, );
-
-    U2FeatureDbi* fdbi = con.dbi->getFeatureDbi();
-    SAFE_POINT(fdbi!=NULL, "Features dbi is NULL", );
-
-    fdbi->createFeature(rootFeature, QList<U2FeatureKey>(), os);
-    CHECK_OP(os, );
-}
-
+// TODO: remove root feature
 FeaturesTableObject::~FeaturesTableObject(){
-    U2OpStatus2Log os;
-
     delete aObject;
-
-    //synchronizer.detachChildFeatures(rootFeature.id, entityRef.dbiRef, os);
-    //CHECK_OP(os,);
-
-    //TODO: remove root feature
 }
 
-void FeaturesTableObject::addAnnotation( Annotation* a, const QString& groupName ){
+void FeaturesTableObject::addAnnotation(Annotation *a, const QString &groupName) {
     aObject->addAnnotation(a, groupName);
-
     importToDbi(a);
-
     emit si_onAnnotationsAdded(QList<Annotation*>()<<a);
 }
 
-void FeaturesTableObject::addAnnotation( Annotation* a, const QList<QString>& groupsNames ){
+void FeaturesTableObject::addAnnotation(Annotation *a, const QList<QString> &groupsNames) {
     aObject->addAnnotation(a, groupsNames);
-
     importToDbi(a);
-
     emit si_onAnnotationsAdded(QList<Annotation*>()<<a);
 }
 
-void FeaturesTableObject::addAnnotations( const QList<Annotation*>& annotations, const QString& groupName ){
+void FeaturesTableObject::addAnnotations(const QList<Annotation*> &annotations, const QString &groupName) {
     aObject->addAnnotations(annotations, groupName);
 
-    foreach(Annotation* a, annotations){
+    foreach(Annotation *a, annotations){
         importToDbi(a);
     }
 
@@ -98,20 +67,10 @@ void FeaturesTableObject::addAnnotations( const QList<Annotation*>& annotations,
 }
 
 void FeaturesTableObject::removeAnnotation( Annotation* a ){
-    U2OpStatus2Log os;
-    //synchronizer.removeFeature(a, rootFeature.id, entityRef.dbiRef, os);
-    //CHECK_OP(os, );  
-
     aObject->removeAnnotation(a);
 }
 
 void FeaturesTableObject::removeAnnotations( const QList<Annotation*>& annotations ){
-    U2OpStatus2Log os;
-    foreach(Annotation* a, annotations){
-        //synchronizer.removeFeature(a, rootFeature.id, entityRef.dbiRef, os);
-        //CHECK_OP(os, );
-    }
-
     aObject->removeAnnotations(annotations);
 }
 
@@ -169,30 +128,21 @@ bool FeaturesTableObject::isLocked() const{
 }
 
 void FeaturesTableObject::cleanAnnotations(){
-    U2OpStatus2Log os;
-    //synchronizer.removeFeature(rootFeature.id, entityRef.dbiRef, os);
-    //CHECK_OP(os, );
-
     aObject->cleanAnnotations();
 }
 
 void FeaturesTableObject::_removeAnnotation( Annotation* a ){
-    U2OpStatus2Log os;
-    //synchronizer.removeFeature(a, rootFeature.id, entityRef.dbiRef, os);
-    //CHECK_OP(os, );  
-
     aObject->_removeAnnotation(a);
 }
 
 void FeaturesTableObject::importToDbi( Annotation* a ){
+    // TODO
     SAFE_POINT(a->obj != NULL, "Annotation must be assigned to an object", );
-
-    U2OpStatus2Log os;
-    //synchronizer.exportAnnotationToFeatures(a, rootFeature.id, entityRef.dbiRef, os);
-    CHECK_OP(os, );
 }
 
-// direct interface to dbi
+
+//////////////////////////////////////////////////////////////////////////
+// Direct features interface (without sync with annotations)
 
 void FeaturesTableObject::addFeature(U2Feature &f, U2OpStatus &os, bool create) {
     addFeature(f, QList<U2FeatureKey>(), os, create);
@@ -200,7 +150,7 @@ void FeaturesTableObject::addFeature(U2Feature &f, U2OpStatus &os, bool create) 
 
 void FeaturesTableObject::addFeature(U2Feature &f, QList<U2FeatureKey> keys, U2OpStatus &os, bool create) {
 
-    if(f.parentFeatureId.isEmpty()) {
+    if (f.parentFeatureId.isEmpty()) {
         f.parentFeatureId = rootFeature.id;
     }
 
@@ -208,12 +158,12 @@ void FeaturesTableObject::addFeature(U2Feature &f, QList<U2FeatureKey> keys, U2O
     con.open(entityRef.dbiRef, os);
     CHECK_OP(os, );
 
-    if(create){
-        // TODO: should we set sequenceId too? Seems logical that all subfeatures has same sequenceId
+    if (create) {
+        // TODO: should we set sequenceId too? Seems logical that all sub-features has same sequenceId
         // f.sequenceId = rootFeature.sequenceId;
-
         con.dbi->getFeatureDbi()->createFeature(f, keys, os);
-    }else{
+    }
+    else {
         con.dbi->getFeatureDbi()->updateParentId(f.id, rootFeature.id, os);
         CHECK_OP(os, );
     }
@@ -235,7 +185,21 @@ QList<U2Feature> FeaturesTableObject::getSubfeatures(U2DataId parentFeatureId, U
     return U2FeaturesUtils::getSubFeatures(parentFeatureId, con.dbi->getFeatureDbi(), os, recursive);
 }
 
-//slots
+U2DbiIterator<U2Feature>* FeaturesTableObject::getFeatures(const U2Region& range, U2OpStatus & os){
+    // Prepare the connection
+    DbiConnection con(entityRef.dbiRef, os);
+    SAFE_POINT_OP(os, NULL);
+
+    U2FeatureDbi *fdbi = con.dbi->getFeatureDbi();
+    SAFE_POINT(NULL != fdbi, "NULL Feature Dbi!", NULL);
+
+    // Get the features
+    if(range == U2Region(-1, 0)){
+        return fdbi->getFeaturesBySequence(U2FeatureGeneName, rootFeature.sequenceId, os);
+    }
+
+    return fdbi->getFeaturesByRegion(range, U2FeatureGeneName, rootFeature.sequenceId, os);   
+}
 
 void FeaturesTableObject::sl_onAnnotationsRemoved( const QList<Annotation*>& a ){
     emit si_onAnnotationsRemoved(a);
@@ -247,47 +211,22 @@ void FeaturesTableObject::sl_onAnnotationsInGroupRemoved( const QList<Annotation
 }
 
 void FeaturesTableObject::sl_onAnnotationModified( const AnnotationModification& md ){
-    U2OpStatus2Log os;
-    //synchronizer.modifyFeatures(md, rootFeature.id, entityRef.dbiRef, os);
-
-
     emit_onAnnotationModified(md);
 }
 
 void FeaturesTableObject::sl_onGroupCreated( AnnotationGroup* g){
     //TODO: how to create an empty group?
-
     emit_onGroupCreated(g);
 }
 
 void FeaturesTableObject::sl_onGroupRemoved( AnnotationGroup* p, AnnotationGroup* removed ){
     //delete groups from features
-    U2OpStatus2Log os;
-    //synchronizer.removeGroup(p, removed, rootFeature.id, entityRef.dbiRef, os);
-
     emit_onGroupRemoved(p, removed);
 }
 
 void FeaturesTableObject::sl_onGroupRenamed( AnnotationGroup* g, const QString& oldName ){
     //rename group in features
-    U2OpStatus2Log os;
-    //synchronizer.renameGroup(g, oldName, rootFeature.id, entityRef.dbiRef, os);
-
     emit_onGroupRenamed(g, oldName);
 }
-
-QList<Annotation*> FeaturesTableObject::getAnnotations( const U2Region& range ){
-    QList<Annotation*> result;
-
-    // TODO
-
-    return result;
-}
-
-U2DbiIterator<U2Feature>* FeaturesTableObject::getFeatures(const U2Region& range, U2OpStatus & os){
-    // TODO
-    return NULL;
-}
-
 
 } // namespace
