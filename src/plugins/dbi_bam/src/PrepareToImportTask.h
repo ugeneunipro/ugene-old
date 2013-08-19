@@ -33,11 +33,13 @@ class PrepareToImportTask : public Task
 private:
     GUrl sourceURL;
     bool samFormat;
+    bool newURL;
 public:
     PrepareToImportTask( const GUrl& url, bool sam );
     void run();
     bool checkStatus( U2OpStatusImpl &status );
     const GUrl& getSourceUrl() const;
+    bool isNewURL();
 }; 
 
 } // namespace BAM

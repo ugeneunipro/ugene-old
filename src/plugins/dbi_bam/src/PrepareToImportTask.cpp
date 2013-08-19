@@ -33,7 +33,7 @@ namespace U2 {
 namespace BAM {
 
 PrepareToImportTask::PrepareToImportTask( const GUrl& url, bool sam ) : Task("Prepare assembly file to import", TaskFlag_None), 
-                                                                        sourceURL( url ), samFormat(sam) 
+                                                                        sourceURL( url ), samFormat(sam), newURL(false)
 { 
     tpm = Progress_Manual; 
 }
@@ -67,6 +67,9 @@ void PrepareToImportTask::run() {
         if( !checkStatus( status ) ) {
             return;
         }
+        if( !newURL ) {
+            newURL = true;
+        }
         currentURL = destinationURL;
     }
     stateInfo.setProgress( 33 );
@@ -78,22 +81,31 @@ void PrepareToImportTask::run() {
         const QString sortedFileName = dirPath + currentURL.fileName() + "_sorted";
         stateInfo.setDescription( "Sorting BAM" );
         currentURL = BAMUtils::sortBam( currentURL, sortedFileName, status );
+        if( !checkStatus( status ) ) {
+            return;
+        }
+        if( !newURL ) {
+            newURL = true;
+        }
     } 
-    if( !checkStatus( status ) ) {
-        return;
-    }
     stateInfo.setProgress( 66 );
     if( !BAMUtils::hasValidBamIndex( currentURL ) ) {
         stateInfo.setDescription( "Creating BAM index" );
         BAMUtils::createBamIndex( currentURL, status );
+        if( !checkStatus( status ) ) {
+            return;
+        }
     }
-    checkStatus( status );
     stateInfo.setProgress( 100 );
     sourceURL = currentURL;
 }
 
 const GUrl& PrepareToImportTask::getSourceUrl() const {
     return sourceURL;
+}
+
+bool PrepareToImportTask::isNewURL() {
+    return newURL;
 }
 
 } // namespace BAM

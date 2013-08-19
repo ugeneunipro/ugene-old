@@ -259,15 +259,27 @@ QList<Task*> BAMImporterTask::onSubTaskFinished(Task* subTask) {
             prepareToImportTask = new PrepareToImportTask( loadInfoTask->getSourceUrl(), loadInfoTask->isSam() );
             res << prepareToImportTask;
         }
-   } else if ( prepareToImportTask == subTask ) {
+   } else if ( prepareToImportTask == subTask && prepareToImportTask->isNewURL() ) {
         bool samFormat = false;
         loadBamInfoTask = new LoadInfoTask( prepareToImportTask->getSourceUrl(), samFormat );
         res << loadBamInfoTask;
-    } else if ( loadBamInfoTask == subTask ) {
+    }
+    else if ( loadBamInfoTask == subTask || prepareToImportTask == subTask ) {
         bool samFormat = false;
-        convertTask = new ConvertToSQLiteTask( loadBamInfoTask->getSourceUrl(), destUrl, loadBamInfoTask->getInfo(), samFormat );
+        GUrl sourceURL = NULL;
+        BAMInfo bamInfo;
+        if( prepareToImportTask->isNewURL() ) {
+            sourceURL = loadBamInfoTask->getSourceUrl();
+            bamInfo = loadBamInfoTask->getInfo();
+        } else {
+            sourceURL = prepareToImportTask->getSourceUrl();
+            bamInfo = loadInfoTask->getInfo();
+        }
+        convertTask = new ConvertToSQLiteTask( sourceURL, destUrl, bamInfo, samFormat );
         res << convertTask;
-    } else if (convertTask == subTask) {
+        return res;
+    }
+    else if ( convertTask == subTask ) {
         loadDocTask = LoadDocumentTask::getDefaultLoadDocTask(convertTask->getDestinationUrl());
         if (loadDocTask == NULL) {
             setError(tr("Failed to get load task for : %1").arg(convertTask->getDestinationUrl().getURLString()));

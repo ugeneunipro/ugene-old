@@ -200,7 +200,7 @@ inline static qint64 mB2bytes(int mb) {
 }
 
 #define INITIAL_SAMTOOLS_MEM_SIZE_MB 500000000
-#define SAMTOOLS_MEM_BOOST 10
+#define SAMTOOLS_MEM_BOOST 5
 
 GUrl BAMUtils::sortBam(const GUrl &bamUrl, const QString &sortedBamBaseName, U2OpStatus &os) {
     const QByteArray &bamFileName = bamUrl.getURLString().toLocal8Bit();
@@ -218,8 +218,14 @@ GUrl BAMUtils::sortBam(const GUrl &bamUrl, const QString &sortedBamBaseName, U2O
     qint64 fileSizeBytes = info.size();
     CHECK_EXT(fileSizeBytes >= 0, os.setError(QString("Unknown file size: %1").arg(bamFileName.constData())), QString());
 
+    int maxMemMB = INITIAL_SAMTOOLS_MEM_SIZE_MB;
     int fileSizeMB = bytes2MB(fileSizeBytes);
-    int maxMemMB = qMin(fileSizeMB / SAMTOOLS_MEM_BOOST, INITIAL_SAMTOOLS_MEM_SIZE_MB);
+    if( fileSizeMB < 10 ) {
+        maxMemMB = fileSizeMB;
+    } else if( fileSizeMB < 100 ) {
+        maxMemMB = fileSizeMB / SAMTOOLS_MEM_BOOST;
+    }
+    maxMemMB = qMin( maxMemMB, INITIAL_SAMTOOLS_MEM_SIZE_MB);
     while (!memory->tryAcquire(maxMemMB)) {
         // reduce used memory
         maxMemMB = maxMemMB * 2 / 3;
