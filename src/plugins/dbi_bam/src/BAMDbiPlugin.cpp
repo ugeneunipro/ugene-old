@@ -266,7 +266,7 @@ QList<Task*> BAMImporterTask::onSubTaskFinished(Task* subTask) {
     }
     else if ( loadBamInfoTask == subTask || prepareToImportTask == subTask ) {
         bool samFormat = false;
-        GUrl sourceURL = NULL;
+        GUrl sourceURL;
         BAMInfo bamInfo;
         if( prepareToImportTask->isNewURL() ) {
             sourceURL = loadBamInfoTask->getSourceUrl();
