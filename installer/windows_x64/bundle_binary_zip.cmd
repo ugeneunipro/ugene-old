@@ -14,7 +14,7 @@ REM create release dir
 mkdir %OUTPUT_DIR%
 
 REM copy includes
-xcopy /S %INSTALL_DIR%\includes\* %OUTPUT_DIR%
+xcopy %INSTALL_DIR%\includes\* %OUTPUT_DIR%
 
 REM copy executables
 copy %RELEASE_DIR%\ugeneui.exe %OUTPUT_DIR%
