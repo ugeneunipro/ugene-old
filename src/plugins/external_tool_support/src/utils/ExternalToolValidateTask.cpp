@@ -135,7 +135,7 @@ void ExternalToolValidateTask::run(){
     }
 }
 Task::ReportResult ExternalToolValidateTask::report(){
-    if(!isValid && !stateInfo.hasError()){
+    if(!isValid && !stateInfo.hasError() && !program.isEmpty()){
         if (errorMsg.isEmpty()){
             stateInfo.setError(tr("Can not find expected message.<br>It is possible that the specified executable file <i>%1</i> for %2 tool is invalid. You can change the path to the executable file in the external tool settings in the global preferences.").arg(program).arg(toolName));
         }else{
@@ -316,7 +316,7 @@ QList<Task*> ExternalToolSearchAndValidateTask::onSubTaskFinished(Task *subTask)
 Task::ReportResult ExternalToolSearchAndValidateTask::report() {
     ExternalTool* tool = AppContext::getExternalToolRegistry()->getByName(toolName);
     SAFE_POINT(NULL != tool, QString("Tool \'%1\' wasn't found in registry").arg(toolName), ReportResult_Finished);
-    if (!isValid && toolIsFound) {
+    if (!isValid && toolIsFound && !program.isEmpty()) {
         if (errorMsg.isEmpty()) {
             stateInfo.setError(tr("Can not find expected message."
                                   "<br>It is possible that the specified executable file "
