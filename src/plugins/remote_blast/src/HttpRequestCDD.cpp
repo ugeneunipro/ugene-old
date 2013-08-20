@@ -59,51 +59,33 @@ void HttpRequestCDD::sendRequest(const QString &params,const QString &query) {
         return;
     }
 
-    int ind = response.indexOf("RID = ") + 6;
-    int ind2 = response.indexOf("<",ind);
-    QString rid = response.mid(ind, ind2 - ind);
+    QString secretQueryStart("<input name=\"dhandle\" type=\"hidden\" value=\"");
+    int queStart = response.indexOf(secretQueryStart)+secretQueryStart.length();
+    int queEnd = response.indexOf('"', queStart);
+    QString queStr = response.mid(queStart, queEnd-queStart);
 
-    while(response.indexOf("<title>Loading...</title>")!=-1) {
-        Waiter::await(5000);
-
-        io = iof->createIOAdapter();
-        if(!io->open( host + "RID=" + rid, IOAdapterMode_Read )) {
-            connectionError = true; 
-            error = QObject::tr("Cannot open the IO adapter");
-            return;
-        }
-        int offs = 0;
-        int read = 0;
-        int CHUNK_SIZE = 1024;
-        response.resize(CHUNK_SIZE);
-        response.fill(0);
-        do {
-            if(task->isCanceled()) {
-                io->close();
-                return;
-            }
-            read = io->readBlock( response.data() + offs, CHUNK_SIZE );
-            offs += read;
-            response.resize( offs + read );
-        } while( read == CHUNK_SIZE );
-        response.resize(offs);
-        io->close();
-        if(read<0){
-            connectionError = true;
-            error = QObject::tr("Cannot load page. %1").arg(io->errorString());
-            return;
-        }
-    }
-
-    if((response.indexOf("<title>Loading...</title>")!=-1) || (response.isEmpty())) {
+    if(!io->open( host + "dhandle=" + queStr, IOAdapterMode_Read )) {
         connectionError = true; 
-        error = QObject::tr("The database did not respond");
+        error = QObject::tr("Cannot open the IO adapter");
         return;
     }
 
-    if(response.indexOf("Query Exception:")!=-1) {
+    response.clear();
+    response.resize(CHUNK_SIZE);
+    do {
+        if(task->isCanceled()) {
+            io->close();
+            return;
+        }
+        read = io->readBlock( response.data() + offs, CHUNK_SIZE );
+        offs += read;
+        response.resize( offs + read );
+    } while( read == CHUNK_SIZE );
+    response.resize(offs);
+    io->close();
+    if(read<0){
         connectionError = true;
-        error = QObject::tr("Incorrect query");
+        error = QObject::tr("Cannot load page. %1").arg(io->errorString());
         return;
     }
 
