@@ -938,9 +938,9 @@ void MSAEditorSequenceArea::mouseMoveEvent( QMouseEvent* e )
 
 void MSAEditorSequenceArea::mouseReleaseEvent(QMouseEvent *e)
 {
-    changeTracker.finishTracking();
     rubberBand->hide();
     if (shifting) {
+        //changeTracker.finishTracking();
         editor->getMSAObject()->releaseState();
     }
     if (scribbling) {
@@ -990,7 +990,8 @@ void MSAEditorSequenceArea::mousePressEvent(QMouseEvent *e) {
             if ( s.getRect().contains(cursorPos) ) {
                 shifting = true;
                 U2OpStatus2Log os;
-                changeTracker.startTracking( os );
+                U2UseCommonUserModStep userModStep(editor->getMSAObject()->getEntityRef(), os);
+//                changeTracker.startTracking( os );
                 CHECK_OP( os, );
                 editor->getMSAObject()->saveState();
             }
@@ -1553,8 +1554,8 @@ void MSAEditorSequenceArea::sl_delCol() {
         MAlignmentObject* msaObj = editor->getMSAObject();
 
         U2OpStatus2Log os;
-        changeTracker.startTracking( os );
-        CHECK_OP( os, );
+        U2UseCommonUserModStep userModStep(msaObj->getEntityRef(), os);
+        SAFE_POINT_OP(os, );
 
         switch(deleteMode) {
         case DeleteByAbsoluteVal: msaObj->deleteColumnWithGaps(value);
@@ -1572,7 +1573,6 @@ void MSAEditorSequenceArea::sl_delCol() {
         default:
             assert(0);
         }
-        changeTracker.finishTracking();
     }
 }
 
@@ -1635,8 +1635,8 @@ void MSAEditorSequenceArea::sl_removeAllGaps() {
     collapsibleModel->reset();
 
     U2OpStatus2Log os;
-    changeTracker.startTracking( os );
-    CHECK_OP(os, );
+    U2UseCommonUserModStep userModStep(msa->getEntityRef(), os);
+    SAFE_POINT_OP(os, );
 
     QMap<qint64, QList<U2MsaGap> > noGapModel;
     MAlignment ma = msa->getMAlignment();
@@ -1648,7 +1648,6 @@ void MSAEditorSequenceArea::sl_removeAllGaps() {
     setFirstVisibleBase(0);
     setFirstVisibleSequence(0);
     SAFE_POINT_OP(os, );
-    changeTracker.finishTracking( );
 }
 
 bool MSAEditorSequenceArea::checkState() const {
@@ -1976,8 +1975,8 @@ void MSAEditorSequenceArea::deleteCurrentSelection()
     const U2Region& sel = getSelectedRows();
 
     U2OpStatusImpl os;
-    changeTracker.startTracking( os );
-    CHECK_OP(os, );
+    U2UseCommonUserModStep userModStep(maObj->getEntityRef(), os);
+    SAFE_POINT_OP(os, );
     maObj->removeRegion(selection.x(), sel.startPos, selection.width(), sel.length, true);
 
     if (selection.height() == 1 && selection.width() == 1) {
@@ -1986,7 +1985,6 @@ void MSAEditorSequenceArea::deleteCurrentSelection()
         }
     }
     cancelSelection();
-    changeTracker.finishTracking();
 }
 
 void MSAEditorSequenceArea::sl_addSeqFromFile()
@@ -2122,8 +2120,8 @@ void MSAEditorSequenceArea::fillSelectionWithGaps( )
     }
 
     U2OpStatus2Log os;
-    changeTracker.startTracking( os );
-    CHECK_OP(os, );
+    U2UseCommonUserModStep userModStep(maObj->getEntityRef(), os);
+    SAFE_POINT_OP(os, );
 
     const MAlignment& msa = maObj->getMAlignment();
     if (selection.width() == msa.getLength() && selection.height() == msa.getNumRows()) {
@@ -2133,8 +2131,6 @@ void MSAEditorSequenceArea::fillSelectionWithGaps( )
     const U2Region& sequences = getSelectedRows();
     maObj->insertGap(sequences,  selection.x() , selection.width());
     moveSelection(selection.width(), 0);
-
-    changeTracker.finishTracking( );
 }
 
 void MSAEditorSequenceArea::reverseComplementModification(ModificationType& type) {
@@ -2162,7 +2158,8 @@ void MSAEditorSequenceArea::reverseComplementModification(ModificationType& type
         }
         const U2Region& sel = getSelectedRows();
         U2OpStatus2Log os;
-        changeTracker.startTracking( os );
+        U2UseCommonUserModStep userModStep(maObj->getEntityRef(), os);
+        SAFE_POINT_OP(os, );
         QList<qint64> modifiedRowIds;
         modifiedRowIds.reserve( sel.length );
         for (int i = sel.startPos; i < sel.endPos(); i++) {
@@ -2218,7 +2215,6 @@ void MSAEditorSequenceArea::reverseComplementModification(ModificationType& type
             modifiedRowIds << currentRow.getRowId( );
         }
         maObj->updateCachedMAlignment( MAlignmentModInfo( ), modifiedRowIds );
-        changeTracker.finishTracking( );
     }
 }
 

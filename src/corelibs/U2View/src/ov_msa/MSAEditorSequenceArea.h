@@ -35,7 +35,7 @@
 
 #include "DeleteGapsDialog.h"
 #include "MSACollapsibleModel.h"
-#include "MsaEditorUserModStepController.h"
+//#include "MsaEditorUserModStepController.h"
 #include "SaveSelectedSequenceFromMSADialogController.h"
 #include "ExportHighlightedDialogController.h"
 
@@ -420,7 +420,12 @@ private:
     QList<QAction*> colorSchemeMenuActions;
     QList<QAction* > customColorSchemeMenuActions;
     QList<QAction* > highlightingSchemeMenuActions;
-    MsaEditorUserModStepController changeTracker;
+
+    // The member is intended for tracking MSA changes (handling U2UseCommonUserModStep objects)
+    // that does not fit into one method, e.g. shifting MSA region with mouse.
+    // If the changing action fits within one method it's recommended using
+    // the U2UseCommonUserModStep object explicitly.
+    //MsaEditorUserModStepController changeTracker;
 };
 
 class U2VIEW_EXPORT ExportHighligtningTask : public Task {
