@@ -57,8 +57,9 @@ PythonSupport::PythonSupport(const QString& name, const QString& path) : Externa
     versionRegExp=QRegExp("(\\d+.\\d+.\\d+)");
     toolKitName="python";
 
-    connect(this, SIGNAL(si_toolValidationStatusChanged(bool)), SLOT(sl_toolValidationStatusChanged(bool)));
+    muted = true;
 
+    connect(this, SIGNAL(si_toolValidationStatusChanged(bool)), SLOT(sl_toolValidationStatusChanged(bool)));
 }
 
 void PythonSupport::sl_toolValidationStatusChanged(bool isValid) {

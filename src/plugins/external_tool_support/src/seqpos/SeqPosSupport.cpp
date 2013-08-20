@@ -66,6 +66,7 @@ void SeqPosSupport::initialize() {
     errorDescriptions.insert("CRITICAL: numpy 1.3 or greater must be installed", SeqPosSupport::tr("Please, install numpy 1.3 or greater for your Python to run SeqPos"));
     errorDescriptions.insert("CRITICAL: DJANGO 1.1.1 or greater must be installed", SeqPosSupport::tr("Please, install DJANGO 1.1.1 or greater for your Python to run SeqPos"));
 
+    muted = true;
 }
 
 } // U2

@@ -57,6 +57,7 @@ void MACSSupport::initialize() {
 
     versionRegExp=QRegExp(executableFileName + " (\\d+\\.\\d+\\.\\d+)");
 
+    muted = true;
 }
 
 } // U2

@@ -100,6 +100,7 @@ CufflinksSupport::CufflinksSupport(const QString& name, const QString& path)
         description = CufflinksSupport::tr("<i>Cuffmerge</i> merges together several assemblies.");
     }
 
+    muted = true;
 }
 
 

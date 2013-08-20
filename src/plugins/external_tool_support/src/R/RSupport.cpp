@@ -55,8 +55,9 @@ RSupport::RSupport(const QString& name, const QString& path) : ExternalTool(name
     versionRegExp = QRegExp("(\\d+.\\d+.\\d+)");
     toolKitName = "R";
 
-    connect(this, SIGNAL(si_toolValidationStatusChanged(bool)), SLOT(sl_toolValidationStatusChanged(bool)));
+    muted = true;
 
+    connect(this, SIGNAL(si_toolValidationStatusChanged(bool)), SLOT(sl_toolValidationStatusChanged(bool)));
 }
 
 void RSupport::sl_toolValidationStatusChanged(bool isValid) {

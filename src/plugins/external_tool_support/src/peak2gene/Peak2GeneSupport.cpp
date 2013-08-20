@@ -63,6 +63,7 @@ void Peak2GeneSupport::initialize() {
         dpr->registerEntry(dp1);
     }
 
+    muted = true;
 }
 
 } // U2

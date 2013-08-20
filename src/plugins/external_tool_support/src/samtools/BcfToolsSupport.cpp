@@ -45,6 +45,8 @@ BcfToolsSupport::BcfToolsSupport(const QString &name)
     versionRegExp = QRegExp("Version: (\\d+.\\d+.\\d+)");
 
     toolKitName = "SAMtools";
+
+    muted = true;
 }
 
 } // U2

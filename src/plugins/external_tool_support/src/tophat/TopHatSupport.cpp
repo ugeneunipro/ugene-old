@@ -52,6 +52,8 @@ TopHatSupport::TopHatSupport(const QString& name, const QString& path)
         " the ultrafast short read mapping program Bowtie.";
 
     toolKitName = "TopHat";
+
+    muted = true;
 }
 
 } // namespace

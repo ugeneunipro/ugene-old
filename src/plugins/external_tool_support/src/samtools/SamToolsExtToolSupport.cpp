@@ -52,6 +52,8 @@ SamToolsExtToolSupport::SamToolsExtToolSupport(const QString& name, const QStrin
     versionRegExp = QRegExp("Version: (\\d+.\\d+.\\d+)");
 
     toolKitName = "SAMtools";
+
+    muted = true;
 }
 
 } // namespace

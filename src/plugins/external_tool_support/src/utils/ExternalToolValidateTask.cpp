@@ -355,8 +355,12 @@ QList<Task*> ExternalToolsValidateTask::onSubTaskFinished(Task* subTask) {
         muted = AppContext::getExternalToolRegistry()->getByName(validateTask->getToolName())->isMuted();
     }
 
-    if (subTask->hasError() && !muted) {
-        taskLog.error(subTask->getTaskName() + tr(" failed: ") + subTask->getError());
+    if (subTask->hasError()) {
+        if (muted) {
+            taskLog.details(subTask->getTaskName() + tr(" failed: ") + subTask->getError());
+        } else {
+            taskLog.error(subTask->getTaskName() + tr(" failed: ") + subTask->getError());
+        }
     }
     return SequentialMultiTask::onSubTaskFinished(subTask);
 }

@@ -67,6 +67,8 @@ void ConductGOSupport::initialize() {
     validationArguments << "--version";
 
     versionRegExp=QRegExp(executableFileName + "\\d+\\.\\d+");
+
+    muted = true;
 }
 
 } // U2

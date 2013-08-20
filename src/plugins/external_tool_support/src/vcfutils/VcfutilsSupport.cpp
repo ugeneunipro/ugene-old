@@ -46,6 +46,8 @@ VcfutilsSupport::VcfutilsSupport(const QString &name)
 
     validMessage = "varFilter";
     toolKitName = "SAMtools";
+
+    muted = true;
 }
 
 } // U2
