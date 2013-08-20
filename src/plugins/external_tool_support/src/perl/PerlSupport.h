@@ -24,7 +24,7 @@
 
 #include <U2Core/ExternalToolRegistry.h>
 
-#define PERL_TOOL_NAME "perl"
+#define ET_PERL "perl"
 
 namespace U2 {
 

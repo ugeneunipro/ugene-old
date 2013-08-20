@@ -26,7 +26,7 @@
 #include <U2View/MSAEditor.h>
 #include "utils/ExternalToolSupportAction.h"
 
-#define TCOFFEE_TOOL_NAME   "T-Coffee"
+#define ET_TCOFFEE   "T-Coffee"
 #define TCOFFEE_TMP_DIR     "tcoffee"
 
 namespace U2 {
@@ -59,7 +59,7 @@ class TCoffeeSupportAction : public ExternalToolSupportAction {
         Q_OBJECT
 public:
     TCoffeeSupportAction(QObject* p, GObjectView* v, const QString& text, int order)
-        : ExternalToolSupportAction(p,v,text,order, QStringList(TCOFFEE_TOOL_NAME)) {}
+        : ExternalToolSupportAction(p,v,text,order, QStringList(ET_TCOFFEE)) {}
     MSAEditor*  getMSAEditor() const;
 
 private slots:

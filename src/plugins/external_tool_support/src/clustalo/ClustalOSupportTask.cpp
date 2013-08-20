@@ -145,7 +145,7 @@ QList<Task*> ClustalOSupportTask::onSubTaskFinished(Task* subTask) {
         arguments <<"--threads="+QString::number(settings.numberOfProcessors);
 
         logParser=new ClustalOLogParser();
-        clustalOTask=new ExternalToolRunTask(CLUSTALO_TOOL_NAME,arguments, logParser);
+        clustalOTask=new ExternalToolRunTask(ET_CLUSTALO,arguments, logParser);
         clustalOTask->setSubtaskProgressWeight(95);
         res.append(clustalOTask);
     }
@@ -153,12 +153,12 @@ QList<Task*> ClustalOSupportTask::onSubTaskFinished(Task* subTask) {
         assert(logParser);
         delete logParser;
         if(!QFileInfo(outputUrl).exists()){
-            if(AppContext::getExternalToolRegistry()->getByName(CLUSTALO_TOOL_NAME)->isValid()){
+            if(AppContext::getExternalToolRegistry()->getByName(ET_CLUSTALO)->isValid()){
                 stateInfo.setError(tr("Output file %1 not found").arg(outputUrl));
             }else{
                 stateInfo.setError(tr("Output file %3 not found. May be %1 tool path '%2' not valid?")
-                                   .arg(AppContext::getExternalToolRegistry()->getByName(CLUSTALO_TOOL_NAME)->getName())
-                                   .arg(AppContext::getExternalToolRegistry()->getByName(CLUSTALO_TOOL_NAME)->getPath())
+                                   .arg(AppContext::getExternalToolRegistry()->getByName(ET_CLUSTALO)->getName())
+                                   .arg(AppContext::getExternalToolRegistry()->getByName(ET_CLUSTALO)->getPath())
                                    .arg(outputUrl));
             }
             emit si_stateChanged();

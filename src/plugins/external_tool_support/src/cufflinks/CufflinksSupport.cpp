@@ -40,7 +40,7 @@ CufflinksSupport::CufflinksSupport(const QString& name, const QString& path)
     toolKitName = "Cufflinks";
 
     // Cuffcompare
-    if (name == CUFFCOMPARE_TOOL_NAME) {
+    if (name == ET_CUFFCOMPARE) {
 #ifdef Q_OS_WIN
         executableFileName = "cuffcompare.exe";
 #else
@@ -56,7 +56,7 @@ CufflinksSupport::CufflinksSupport(const QString& name, const QString& path)
     }
 
     // Cuffdiff
-    else if (name == CUFFDIFF_TOOL_NAME) {
+    else if (name == ET_CUFFDIFF) {
 #ifdef Q_OS_WIN
         executableFileName = "cuffdiff.exe";
 #else
@@ -71,7 +71,7 @@ CufflinksSupport::CufflinksSupport(const QString& name, const QString& path)
     }
 
     // Cufflinks
-    else if (name == CUFFLINKS_TOOL_NAME) {
+    else if (name == ET_CUFFLINKS) {
 #ifdef Q_OS_WIN
         executableFileName = "cufflinks.exe";
 #else
@@ -87,7 +87,7 @@ CufflinksSupport::CufflinksSupport(const QString& name, const QString& path)
 
 
     // Cuffmerge
-    else if (name == CUFFMERGE_TOOL_NAME) {
+    else if (name == ET_CUFFMERGE) {
 #ifdef Q_OS_WIN
         executableFileName = "cuffmerge.py";
 #else

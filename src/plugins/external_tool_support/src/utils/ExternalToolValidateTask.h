@@ -101,7 +101,15 @@ private:
 class ExternalToolsValidateTask : public SequentialMultiTask {
     Q_OBJECT
 public:
-    ExternalToolsValidateTask (const QList<Task*> &_tasks);
+    ExternalToolsValidateTask(const QList<Task*> &_tasks);
+
+    virtual QList<Task*> onSubTaskFinished(Task* subTask);
+};
+
+class ExternalToolsInstallTask : public SequentialMultiTask {
+    Q_OBJECT
+public:
+    ExternalToolsInstallTask(const QList<Task*> &_tasks);
 
     virtual QList<Task*> onSubTaskFinished(Task* subTask);
 };

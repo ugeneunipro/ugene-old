@@ -25,10 +25,10 @@
 #include <U2Core/ExternalToolRegistry.h>
 #include "utils/ExternalToolSupportAction.h"
 
-#define FORMATDB_TOOL_NAME "FormatDB"
-#define CUDA_FORMATDB_TOOL_NAME "CUDA-FormatDB"
-#define MAKEBLASTDB_TOOL_NAME "MakeBLASTDB"
-#define GPU_MAKEBLASTDB_TOOL_NAME "GPU-MakeBLASTDB"
+#define ET_FORMATDB "FormatDB"
+#define ET_CUDA_FORMATDB "CUDA-FormatDB"
+#define ET_MAKEBLASTDB "MakeBLASTDB"
+#define ET_GPU_MAKEBLASTDB "GPU-MakeBLASTDB"
 namespace U2 {
 
 class FormatDBSupport : public ExternalTool {

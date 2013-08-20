@@ -140,7 +140,7 @@ QList<Task*> ConductGOTask::onSubTaskFinished(Task* subTask) {
             ExternalTool* rTool = AppContext::getExternalToolRegistry()->getByName(ET_R);
             SAFE_POINT(NULL != rTool, "R script tool wasn't found in the registry", result);
 
-            etTask = new ExternalToolRunTask(ConductGOSupport::TOOL_NAME, args, logParser, getSettings().outDir, QStringList() << rTool->getPath());
+            etTask = new ExternalToolRunTask(ET_GO_ANALYSIS, args, logParser, getSettings().outDir, QStringList() << rTool->getPath());
             result << etTask;
     }
     return result;

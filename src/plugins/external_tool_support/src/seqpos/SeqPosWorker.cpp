@@ -150,7 +150,7 @@ void SeqPosWorkerFactory::init() {
     U2DataPath* dataPath = NULL;
     U2DataPathRegistry* dpr =  AppContext::getDataPathRegistry();
     if (dpr){
-        U2DataPath* dp = dpr->getDataPathByName(SeqPosSupport::ASSEMBLY_DIR);
+        U2DataPath* dp = dpr->getDataPathByName(ASSEMBLY_DIR);
         if (dp && dp->isValid()){
             dataPath = dp;
         }
@@ -266,7 +266,7 @@ void SeqPosWorkerFactory::init() {
     ActorPrototype *proto = new IntegralBusActorPrototype(protoDesc, portDescs, attrs);
     proto->setPrompter(new SeqPosPrompter());
     proto->setEditor(new DelegateEditor(delegates));
-    proto->addExternalTool(SeqPosSupport::TOOL_NAME);
+    proto->addExternalTool(ET_SEQPOS);
     WorkflowEnv::getProtoRegistry()->registerProto(BaseActorCategories::CATEGORY_CHIP_SEQ(), proto);
     WorkflowEnv::getDomainRegistry()->getById(LocalDomainFactory::ID)->registerEntry(new SeqPosWorkerFactory());
 }

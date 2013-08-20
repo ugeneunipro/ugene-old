@@ -26,13 +26,13 @@
 
 namespace U2 {
 
+#define ET_CEAS "CEAS Tools"
+#define REF_GENES_DATA_NAME "Gene annotation table"
+
 class CEASSupport : public ExternalTool {
     Q_OBJECT
 public:
     CEASSupport(const QString &name);
-
-    static const QString TOOL_NAME;
-    static const QString REF_GENES_DATA_NAME;
 
 private:
     void initialize();

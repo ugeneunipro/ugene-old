@@ -26,7 +26,7 @@
 
 namespace U2 {
 
-#define BWA_TOOL_NAME "BWA"
+#define ET_BWA "BWA"
 
 class BwaSupport : public ExternalTool {
     Q_OBJECT

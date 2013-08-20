@@ -65,7 +65,7 @@ BlastPlusSupport::BlastPlusSupport(const QString& name, const QString& path) : E
     }
     validationArguments<<"-h";
 
-    if(name == BLASTN_TOOL_NAME){
+    if(name == ET_BLASTN){
 #ifdef Q_OS_WIN
     executableFileName="blastn.exe";
 #else
@@ -77,7 +77,7 @@ BlastPlusSupport::BlastPlusSupport(const QString& name, const QString& path) : E
     description="The <i>blastn</i> tool searches a nucleotide database \
                 using a nucleotide query.";
     versionRegExp=QRegExp("Nucleotide-Nucleotide BLAST (\\d+\\.\\d+\\.\\d+\\+?)");
-    }else if(name == BLASTP_TOOL_NAME){
+    }else if(name == ET_BLASTP){
 #ifdef Q_OS_WIN
     executableFileName="blastp.exe";
 #else
@@ -101,7 +101,7 @@ BlastPlusSupport::BlastPlusSupport(const QString& name, const QString& path) : E
 //     validMessage="[-gpu boolean]";
 //     description="The <i>blastp</i> tool searches a protein database using a protein query.";
 //     versionRegExp=QRegExp("Protein-Protein BLAST (\\d+\\.\\d+\\.\\d+\\+?)");
-    }else if(name == BLASTX_TOOL_NAME){
+    }else if(name == ET_BLASTX){
 #ifdef Q_OS_WIN
     executableFileName="blastx.exe";
 #else
@@ -113,7 +113,7 @@ BlastPlusSupport::BlastPlusSupport(const QString& name, const QString& path) : E
     description="The <i>blastx</i> tool searches a protein database \
                 using a translated nucleotide query.";
     versionRegExp=QRegExp("Translated Query-Protein Subject BLAST (\\d+\\.\\d+\\.\\d+\\+?)");
-    }else if(name == TBLASTN_TOOL_NAME){
+    }else if(name == ET_TBLASTN){
 #ifdef Q_OS_WIN
     executableFileName="tblastn.exe";
 #else
@@ -125,7 +125,7 @@ BlastPlusSupport::BlastPlusSupport(const QString& name, const QString& path) : E
     description="The <i>tblastn</i> compares a protein query against \
                 a translated nucleotide database";
     versionRegExp=QRegExp("Protein Query-Translated Subject BLAST (\\d+\\.\\d+\\.\\d+\\+?)");
-    }else if(name == TBLASTX_TOOL_NAME){
+    }else if(name == ET_TBLASTX){
 #ifdef Q_OS_WIN
     executableFileName="tblastx.exe";
 #else
@@ -139,7 +139,7 @@ BlastPlusSupport::BlastPlusSupport(const QString& name, const QString& path) : E
                 against the six-frame translations of a nucleotide \
                 sequence database.";
     versionRegExp=QRegExp("Translated Query-Translated Subject BLAST (\\d+\\.\\d+\\.\\d+\\+?)");
-    }else if(name == RPSBLAST_TOOL_NAME) {
+    }else if(name == ET_RPSBLAST) {
 #ifdef Q_OS_WIN
     executableFileName="rpsblast.exe";
 #else
@@ -151,7 +151,7 @@ BlastPlusSupport::BlastPlusSupport(const QString& name, const QString& path) : E
     description="";
     versionRegExp=QRegExp("Reverse Position Specific BLAST (\\d+\\.\\d+\\.\\d+\\+?)");
     }
-    if(name == GPU_BLASTP_TOOL_NAME) {
+    if(name == ET_GPU_BLASTP) {
         toolKitName="GPU-BLAST+";
     } else {
         toolKitName="BLAST+";
@@ -163,7 +163,7 @@ BlastPlusSupport::BlastPlusSupport(const QString& name, const QString& path) : E
 void BlastPlusSupport::sl_runWithExtFileSpecify(){
     //Check that blastal and tempory directory path defined
     QStringList toolList;
-    toolList << BLASTN_TOOL_NAME << BLASTP_TOOL_NAME << BLASTX_TOOL_NAME << TBLASTN_TOOL_NAME << TBLASTX_TOOL_NAME << RPSBLAST_TOOL_NAME;
+    toolList << ET_BLASTN << ET_BLASTP << ET_BLASTX << ET_TBLASTN << ET_TBLASTX << ET_RPSBLAST;
     bool isOneOfToolConfigured=false;
     foreach(QString toolName, toolList){
         if(!AppContext::getExternalToolRegistry()->getByName(toolName)->getPath().isEmpty()){
@@ -216,7 +216,7 @@ void BlastPlusSupport::sl_runWithExtFileSpecify(){
 ////////////////////////////////////////
 //BlastPlusSupportContext
 BlastPlusSupportContext::BlastPlusSupportContext(QObject* p) : GObjectViewWindowContext(p, ANNOTATED_DNA_VIEW_FACTORY_ID) {
-    toolList << BLASTN_TOOL_NAME << BLASTP_TOOL_NAME << BLASTX_TOOL_NAME << TBLASTN_TOOL_NAME << TBLASTX_TOOL_NAME << RPSBLAST_TOOL_NAME;
+    toolList << ET_BLASTN << ET_BLASTP << ET_BLASTX << ET_TBLASTN << ET_TBLASTX << ET_RPSBLAST;
     lastDBName="";
     lastDBPath="";
 }

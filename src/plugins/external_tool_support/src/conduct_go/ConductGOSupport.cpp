@@ -28,8 +28,6 @@
 
 namespace U2 {
 
-const QString ConductGOSupport::TOOL_NAME("go_analysis");
-
 ConductGOSupport::ConductGOSupport(const QString &name)
 : ExternalTool(name)
 {
@@ -48,12 +46,12 @@ void ConductGOSupport::initialize() {
 
     executableFileName = "go_analysis.py";
 
-    toolRunnerProgramm = PYTHON_TOOL_NAME;
-    dependencies << PYTHON_TOOL_NAME
+    toolRunnerProgramm = ET_PYTHON;
+    dependencies << ET_PYTHON
                  << ET_R
                  << ET_R_GOSTATS
                  << ET_R_GO_DB
-                 << Et_R_HGU133A_DB
+                 << ET_R_HGU133A_DB
                  << ET_R_HGU133B_DB
                  << ET_R_HGU1333PLUS2_DB
                  << ET_R_HGU95AV2_DB

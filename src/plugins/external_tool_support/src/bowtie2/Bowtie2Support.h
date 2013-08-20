@@ -24,9 +24,9 @@
 
 #include <U2Core/ExternalToolRegistry.h>
 
-#define BOWTIE2_ALIGN_TOOL_NAME "Bowtie 2 aligner"
-#define BOWTIE2_BUILD_TOOL_NAME "Bowtie 2 build indexer"
-#define BOWTIE2_INSPECT_TOOL_NAME "Bowtie 2 index inspector"
+#define ET_BOWTIE2_ALIGN "Bowtie 2 aligner"
+#define ET_BOWTIE2_BUILD "Bowtie 2 build indexer"
+#define ET_BOWTIE2_INSPECT "Bowtie 2 index inspector"
 
 #define BOWTIE2_TMP_DIR "bowtie2"
 

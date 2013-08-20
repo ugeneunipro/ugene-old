@@ -47,7 +47,7 @@ BlastDBCmdSupportTask::BlastDBCmdSupportTask(const BlastDBCmdSupportTaskSettings
     GCOUNTER( cvar, tvar, "BlastDBCmdSupportTask" );
     blastDBCmdTask=NULL;
     logParser=NULL;
-    toolName = BLASTDBCMD_TOOL_NAME;
+    toolName = ET_BLASTDBCMD;
 }
 
 void BlastDBCmdSupportTask::prepare(){

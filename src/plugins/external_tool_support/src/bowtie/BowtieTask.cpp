@@ -55,7 +55,7 @@ void BowtieBuildIndexTask::prepare() {
     if(colorspace) {
         arguments.append("--color");
     }
-    ExternalToolRunTask *task = new ExternalToolRunTask(BOWTIE_BUILD_TOOL_NAME, arguments, &logParser);
+    ExternalToolRunTask *task = new ExternalToolRunTask(ET_BOWTIE_BUILD, arguments, &logParser);
     addSubTask(task);
 }
 
@@ -277,7 +277,7 @@ void BowtieAssembleTask::prepare() {
         }
     }
     arguments.append(settings.resultFileName.getURLString());
-    ExternalToolRunTask *task = new ExternalToolRunTask(BOWTIE_TOOL_NAME, arguments, &logParser);
+    ExternalToolRunTask *task = new ExternalToolRunTask(ET_BOWTIE, arguments, &logParser);
     addSubTask(task);
 }
 

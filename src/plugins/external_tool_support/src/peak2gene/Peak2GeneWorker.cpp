@@ -155,7 +155,7 @@ void Peak2GeneWorkerFactory::init() {
     U2DataPath* dataPath = NULL;
     U2DataPathRegistry* dpr =  AppContext::getDataPathRegistry();
     if (dpr){
-        U2DataPath* dp = dpr->getDataPathByName(Peak2GeneSupport::REF_GENES_DATA_NAME);
+        U2DataPath* dp = dpr->getDataPathByName(REF_GENES_DATA_NAME);
         if (dp && dp->isValid()){
             dataPath = dp;
         }
@@ -276,7 +276,7 @@ void Peak2GeneWorkerFactory::init() {
     ActorPrototype *proto = new IntegralBusActorPrototype(protoDesc, portDescs, attrs);
     proto->setPrompter(new Peak2GenePrompter());
     proto->setEditor(new DelegateEditor(delegates));
-    proto->addExternalTool(Peak2GeneSupport::TOOL_NAME);
+    proto->addExternalTool(ET_PEAK2GENE);
     WorkflowEnv::getProtoRegistry()->registerProto(BaseActorCategories::CATEGORY_CHIP_SEQ(), proto);
     WorkflowEnv::getDomainRegistry()->getById(LocalDomainFactory::ID)->registerEntry(new Peak2GeneWorkerFactory());
 }

@@ -65,7 +65,7 @@ MrBayesSupport::MrBayesSupport(const QString& name, const QString& path) : Exter
 
     //register the method  
     PhyTreeGeneratorRegistry* registry = AppContext::getPhyTreeGeneratorRegistry();
-    registry->registerPhyTreeGenerator(new MrBayesAdapter(), MRBAYES_TOOL_NAME);
+    registry->registerPhyTreeGenerator(new MrBayesAdapter(), ET_MRBAYES);
 }
 
 ////////////////////////////////////////

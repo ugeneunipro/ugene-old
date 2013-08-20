@@ -154,10 +154,10 @@ void MAFFTSupportContext::buildMenu(GObjectView* view, QMenu* m) {
 }
 void MAFFTSupportContext::sl_align_with_MAFFT() {
     //Check that MAFFT and tempory directory path defined
-    if (AppContext::getExternalToolRegistry()->getByName(MAFFT_TOOL_NAME)->getPath().isEmpty()){
+    if (AppContext::getExternalToolRegistry()->getByName(ET_MAFFT)->getPath().isEmpty()){
         QMessageBox msgBox;
-        msgBox.setWindowTitle(MAFFT_TOOL_NAME);
-        msgBox.setText(tr("Path for %1 tool not selected.").arg(MAFFT_TOOL_NAME));
+        msgBox.setWindowTitle(ET_MAFFT);
+        msgBox.setText(tr("Path for %1 tool not selected.").arg(ET_MAFFT));
         msgBox.setInformativeText(tr("Do you want to select it now?"));
         msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
         msgBox.setDefaultButton(QMessageBox::Yes);
@@ -174,7 +174,7 @@ void MAFFTSupportContext::sl_align_with_MAFFT() {
                break;
          }
     }
-    if (AppContext::getExternalToolRegistry()->getByName(MAFFT_TOOL_NAME)->getPath().isEmpty()){
+    if (AppContext::getExternalToolRegistry()->getByName(ET_MAFFT)->getPath().isEmpty()){
         return;
     }
     U2OpStatus2Log os(LogLevel_DETAILS);

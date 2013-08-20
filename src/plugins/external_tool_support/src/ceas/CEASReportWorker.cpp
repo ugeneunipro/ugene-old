@@ -186,7 +186,7 @@ void CEASReportWorkerFactory::init() {
     U2DataPath* dataPath = NULL;
     U2DataPathRegistry* dpr =  AppContext::getDataPathRegistry();
     if (dpr){
-        U2DataPath* dp = dpr->getDataPathByName(CEASSupport::REF_GENES_DATA_NAME);
+        U2DataPath* dp = dpr->getDataPathByName(REF_GENES_DATA_NAME);
         if (dp && dp->isValid()){
             dataPath = dp;
         }
@@ -344,7 +344,7 @@ void CEASReportWorkerFactory::init() {
     ActorPrototype *proto = new IntegralBusActorPrototype(protoDesc, portDescs, attrs);
     proto->setPrompter(new CEASReportPrompter());
     proto->setEditor(new DelegateEditor(delegates));
-    proto->addExternalTool(CEASSupport::TOOL_NAME);
+    proto->addExternalTool(ET_CEAS);
     WorkflowEnv::getProtoRegistry()->registerProto(BaseActorCategories::CATEGORY_CHIP_SEQ(), proto);
     WorkflowEnv::getDomainRegistry()->getById(LocalDomainFactory::ID)->registerEntry(new CEASReportWorkerFactory());
 }

@@ -25,8 +25,8 @@
 #include <U2Core/ExternalToolRegistry.h>
 #include <U2Gui/ObjectViewModel.h>
 
-#define BLASTALL_TOOL_NAME "BlastAll"
-#define CUDA_BLASTP_TOOL_NAME "CUDA-BlastP"
+#define ET_BLASTALL "BlastAll"
+#define ET_CUDA_BLASTP "CUDA-BlastP"
 #define BLASTALL_TMP_DIR    "blast_all"
 
 namespace U2 {

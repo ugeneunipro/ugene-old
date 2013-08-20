@@ -110,14 +110,14 @@ bool BlastPlusSupportRunDialog::checkToolPath(){
     msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
     msgBox.setDefaultButton(QMessageBox::Yes);
     if((programName->currentText() == "blastn") &&
-       (AppContext::getExternalToolRegistry()->getByName(BLASTN_TOOL_NAME)->getPath().isEmpty())){
+       (AppContext::getExternalToolRegistry()->getByName(ET_BLASTN)->getPath().isEmpty())){
         needSetToolPath=true;
-        toolName=BLASTN_TOOL_NAME;
+        toolName=ET_BLASTN;
 
     }else if((programName->currentText() == "blastp") &&
-             (AppContext::getExternalToolRegistry()->getByName(BLASTP_TOOL_NAME)->getPath().isEmpty())){
+             (AppContext::getExternalToolRegistry()->getByName(ET_BLASTP)->getPath().isEmpty())){
         needSetToolPath=true;
-        toolName=BLASTP_TOOL_NAME;
+        toolName=ET_BLASTP;
 
 // https://ugene.unipro.ru/tracker/browse/UGENE-945
 //     }else if((programName->currentText() == "gpu-blastp") &&
@@ -126,19 +126,19 @@ bool BlastPlusSupportRunDialog::checkToolPath(){
 //         toolName=GPU_BLASTP_TOOL_NAME;
 
     }else if((programName->currentText() == "blastx") &&
-             (AppContext::getExternalToolRegistry()->getByName(BLASTX_TOOL_NAME)->getPath().isEmpty())){
+             (AppContext::getExternalToolRegistry()->getByName(ET_BLASTX)->getPath().isEmpty())){
         needSetToolPath=true;
-        toolName=BLASTX_TOOL_NAME;
+        toolName=ET_BLASTX;
 
     }else if((programName->currentText() == "tblastn") &&
-             (AppContext::getExternalToolRegistry()->getByName(TBLASTN_TOOL_NAME)->getPath().isEmpty())){
+             (AppContext::getExternalToolRegistry()->getByName(ET_TBLASTN)->getPath().isEmpty())){
         needSetToolPath=true;
-        toolName=TBLASTN_TOOL_NAME;
+        toolName=ET_TBLASTN;
 
     }else if((programName->currentText() == "tblastx") &&
-             (AppContext::getExternalToolRegistry()->getByName(TBLASTX_TOOL_NAME)->getPath().isEmpty())){
+             (AppContext::getExternalToolRegistry()->getByName(ET_TBLASTX)->getPath().isEmpty())){
         needSetToolPath=true;
-        toolName=TBLASTX_TOOL_NAME;
+        toolName=ET_TBLASTX;
     }
     if(needSetToolPath){
         msgBox.setText(tr("Path for <i>BLAST+ %1</i> tool not selected.").arg(toolName));
@@ -367,14 +367,14 @@ bool BlastPlusWithExtFileSpecifySupportRunDialog::checkToolPath(){
     msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
     msgBox.setDefaultButton(QMessageBox::Yes);
     if((programName->currentText() == "blastn") &&
-       (AppContext::getExternalToolRegistry()->getByName(BLASTN_TOOL_NAME)->getPath().isEmpty())){
+       (AppContext::getExternalToolRegistry()->getByName(ET_BLASTN)->getPath().isEmpty())){
         needSetToolPath=true;
-        toolName=BLASTN_TOOL_NAME;
+        toolName=ET_BLASTN;
 
     }else if((programName->currentText() == "blastp") &&
-             (AppContext::getExternalToolRegistry()->getByName(BLASTP_TOOL_NAME)->getPath().isEmpty())){
+             (AppContext::getExternalToolRegistry()->getByName(ET_BLASTP)->getPath().isEmpty())){
         needSetToolPath=true;
-        toolName=BLASTP_TOOL_NAME;
+        toolName=ET_BLASTP;
 
 // https://ugene.unipro.ru/tracker/browse/UGENE-945
 //     }else if((programName->currentText() == "gpu-blastp") &&
@@ -383,19 +383,19 @@ bool BlastPlusWithExtFileSpecifySupportRunDialog::checkToolPath(){
 //         toolName=GPU_BLASTP_TOOL_NAME;
 
     }else if((programName->currentText() == "blastx") &&
-             (AppContext::getExternalToolRegistry()->getByName(BLASTX_TOOL_NAME)->getPath().isEmpty())){
+             (AppContext::getExternalToolRegistry()->getByName(ET_BLASTX)->getPath().isEmpty())){
         needSetToolPath=true;
-        toolName=BLASTX_TOOL_NAME;
+        toolName=ET_BLASTX;
 
     }else if((programName->currentText() == "tblastn") &&
-             (AppContext::getExternalToolRegistry()->getByName(TBLASTN_TOOL_NAME)->getPath().isEmpty())){
+             (AppContext::getExternalToolRegistry()->getByName(ET_TBLASTN)->getPath().isEmpty())){
         needSetToolPath=true;
-        toolName=TBLASTN_TOOL_NAME;
+        toolName=ET_TBLASTN;
 
     }else if((programName->currentText() == "tblastx") &&
-             (AppContext::getExternalToolRegistry()->getByName(TBLASTX_TOOL_NAME)->getPath().isEmpty())){
+             (AppContext::getExternalToolRegistry()->getByName(ET_TBLASTX)->getPath().isEmpty())){
         needSetToolPath=true;
-        toolName=TBLASTX_TOOL_NAME;
+        toolName=ET_TBLASTX;
     }
     if(needSetToolPath){
         msgBox.setText(tr("Path for <i>BLAST+ %1</i> tool not selected.").arg(toolName));

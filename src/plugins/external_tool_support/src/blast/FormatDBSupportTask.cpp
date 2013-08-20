@@ -52,8 +52,8 @@ FormatDBSupportTask::FormatDBSupportTask(const QString& name, const FormatDBSupp
 
 void FormatDBSupportTask::prepare(){
     QStringList arguments;
-    assert((toolName == FORMATDB_TOOL_NAME)||(toolName == MAKEBLASTDB_TOOL_NAME));
-    if(toolName == FORMATDB_TOOL_NAME){
+    assert((toolName == ET_FORMATDB)||(toolName == ET_MAKEBLASTDB));
+    if(toolName == ET_FORMATDB){
         for(int i=0; i< settings.inputFilesPath.length(); i++){
             if(settings.inputFilesPath[i].contains(" ")){
                 stateInfo.setError(tr("Input files paths contain space characters."));
@@ -64,7 +64,7 @@ void FormatDBSupportTask::prepare(){
         arguments <<"-l"<< settings.outputPath+"formatDB.log";
         arguments <<"-n"<< settings.outputPath;
         arguments <<"-p"<< (settings.typeOfFile ? "T" : "F");
-    }else if (toolName == MAKEBLASTDB_TOOL_NAME){
+    }else if (toolName == ET_MAKEBLASTDB){
         for(int i=0; i< settings.inputFilesPath.length(); i++){
             settings.inputFilesPath[i]="\""+settings.inputFilesPath[i]+"\"";
         }

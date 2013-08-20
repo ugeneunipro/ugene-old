@@ -160,10 +160,10 @@ void ClustalOSupportContext::buildMenu(GObjectView* view, QMenu* m) {
 
 void ClustalOSupportContext::sl_align_with_ClustalO() {
     //Check that Clustal and tempory directory path defined
-    if (AppContext::getExternalToolRegistry()->getByName(CLUSTALO_TOOL_NAME)->getPath().isEmpty()){
+    if (AppContext::getExternalToolRegistry()->getByName(ET_CLUSTALO)->getPath().isEmpty()){
         QMessageBox msgBox;
-        msgBox.setWindowTitle(CLUSTALO_TOOL_NAME);
-        msgBox.setText(tr("Path for %1 tool not selected.").arg(CLUSTALO_TOOL_NAME));
+        msgBox.setWindowTitle(ET_CLUSTALO);
+        msgBox.setText(tr("Path for %1 tool not selected.").arg(ET_CLUSTALO));
         msgBox.setInformativeText(tr("Do you want to select it now?"));
         msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
         msgBox.setDefaultButton(QMessageBox::Yes);
@@ -180,7 +180,7 @@ void ClustalOSupportContext::sl_align_with_ClustalO() {
                break;
          }
     }
-    if (AppContext::getExternalToolRegistry()->getByName(CLUSTALO_TOOL_NAME)->getPath().isEmpty()){
+    if (AppContext::getExternalToolRegistry()->getByName(ET_CLUSTALO)->getPath().isEmpty()){
         return;
     }
     U2OpStatus2Log os(LogLevel_DETAILS);

@@ -544,7 +544,7 @@ void MACSWorkerFactory::init() {
     proto->setPrompter(new MACSPrompter());
     proto->setEditor(new DelegateEditor(delegates));
     proto->setPortValidator(IN_PORT_DESCR, new MACSInputSlotsValidator());
-    proto->addExternalTool(MACSSupport::TOOL_NAME);
+    proto->addExternalTool(ET_MACS);
     WorkflowEnv::getProtoRegistry()->registerProto(BaseActorCategories::CATEGORY_CHIP_SEQ(), proto);
     WorkflowEnv::getDomainRegistry()->getById(LocalDomainFactory::ID)->registerEntry(new MACSWorkerFactory());
 }

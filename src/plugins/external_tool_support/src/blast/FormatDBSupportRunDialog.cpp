@@ -111,7 +111,7 @@ void FormatDBSupportRunDialog::sl_onBrowseDatabasePath(){
 void FormatDBSupportRunDialog::sl_lineEditChanged(){
     bool hasSpacesInInputFiles=false;
     bool hasSpacesInOutputDBPath=false;
-    if(name == FORMATDB_TOOL_NAME){
+    if(name == ET_FORMATDB){
         if(inputFilesRadioButton->isChecked()){
             bool warning = inputFilesLineEdit->text().contains(' ');
             QString tooltip = warning ? tr("Input files paths contain space characters.") : "";
@@ -126,7 +126,7 @@ void FormatDBSupportRunDialog::sl_lineEditChanged(){
             hasSpacesInInputFiles |= warning;
         }
     }
-    if(name == MAKEBLASTDB_TOOL_NAME){
+    if(name == ET_MAKEBLASTDB){
         bool pathWarning = databasePathLineEdit->text().contains(' ');
         QString pathTooltip = pathWarning ? tr("Output database path contain space characters.") : "";
         GUIUtils::setWidgetWarning(databasePathLineEdit, pathWarning);

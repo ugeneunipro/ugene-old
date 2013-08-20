@@ -266,7 +266,7 @@ void ExternalToolSearchAndValidateTask::prepare() {
 #endif
             // UGENE-1781: Remove python external tool search in PATH
             // It should be fixed without crutches.
-            if (tool->getName() != PYTHON_TOOL_NAME) {
+            if (tool->getName() != ET_PYTHON) {
                 foreach (const QString& curPath, paths) {
                     QString exePath = curPath + "/" + tool->getExecutableFileName();
                     QFileInfo fileExe(exePath);
@@ -356,6 +356,17 @@ QList<Task*> ExternalToolsValidateTask::onSubTaskFinished(Task* subTask) {
     }
 
     if (subTask->hasError() && !muted) {
+        taskLog.error(subTask->getTaskName() + tr(" failed: ") + subTask->getError());
+    }
+    return SequentialMultiTask::onSubTaskFinished(subTask);
+}
+
+ExternalToolsInstallTask::ExternalToolsInstallTask(const QList<Task*> &_tasks) :
+    SequentialMultiTask(tr("Installing external tools"), _tasks, TaskFlags(TaskFlag_NoRun | TaskFlag_CancelOnSubtaskCancel)) {
+}
+
+QList<Task*> ExternalToolsInstallTask::onSubTaskFinished(Task* subTask) {
+    if (subTask->hasError()) {
         taskLog.error(subTask->getTaskName() + tr(" failed: ") + subTask->getError());
     }
     return SequentialMultiTask::onSubTaskFinished(subTask);

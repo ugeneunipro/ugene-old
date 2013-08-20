@@ -203,7 +203,7 @@ void ConductGOWorkerFactory::init() {
     ActorPrototype *proto = new IntegralBusActorPrototype(protoDesc, portDescs, attrs);
     proto->setPrompter(new ConductGOPrompter());
     proto->setEditor(new DelegateEditor(delegates));
-    proto->addExternalTool(ConductGOSupport::TOOL_NAME);
+    proto->addExternalTool(ET_GO_ANALYSIS);
     WorkflowEnv::getProtoRegistry()->registerProto(BaseActorCategories::CATEGORY_CHIP_SEQ(), proto);
     WorkflowEnv::getDomainRegistry()->getById(LocalDomainFactory::ID)->registerEntry(new ConductGOWorkerFactory());
 }

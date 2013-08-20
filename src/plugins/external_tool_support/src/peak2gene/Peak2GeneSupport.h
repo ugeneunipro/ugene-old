@@ -26,14 +26,14 @@
 
 namespace U2 {
 
+#define ET_PEAK2GENE "peak2gene"
+#define REF_GENES_DATA_NAME "Gene annotation table"
+#define ENTREZ_TRANSLATION_DATA_NAME "Entrez ID translations"
+
 class Peak2GeneSupport : public ExternalTool {
     Q_OBJECT
 public:
     Peak2GeneSupport(const QString &name);
-
-    static const QString TOOL_NAME;
-    static const QString REF_GENES_DATA_NAME;
-    static const QString ENTREZ_TRANSLATION_DATA_NAME;
 
 private:
     void initialize();

@@ -158,7 +158,7 @@ void ConservationPlotWorkerFactory::init() {
     U2DataPath* dataPath = NULL;
     U2DataPathRegistry* dpr =  AppContext::getDataPathRegistry();
     if (dpr){
-        U2DataPath* dp = dpr->getDataPathByName(ConservationPlotSupport::CONSERVATION_DATA_NAME);
+        U2DataPath* dp = dpr->getDataPathByName(CONSERVATION_DATA_NAME);
         if (dp && dp->isValid()){
             dataPath = dp;
         }
@@ -257,7 +257,7 @@ void ConservationPlotWorkerFactory::init() {
     ActorPrototype *proto = new IntegralBusActorPrototype(protoDesc, portDescs, attrs);
     proto->setPrompter(new ConservationPlotPrompter());
     proto->setEditor(new DelegateEditor(delegates));
-    proto->addExternalTool(ConservationPlotSupport::TOOL_NAME);
+    proto->addExternalTool(ET_CONSERVATION_PLOT);
     WorkflowEnv::getProtoRegistry()->registerProto(BaseActorCategories::CATEGORY_CHIP_SEQ(), proto);
     WorkflowEnv::getDomainRegistry()->getById(LocalDomainFactory::ID)->registerEntry(new ConservationPlotWorkerFactory());
 }

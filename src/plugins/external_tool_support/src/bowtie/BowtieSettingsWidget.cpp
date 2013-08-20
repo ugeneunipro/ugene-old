@@ -96,8 +96,8 @@ void BowtieSettingsWidget::buildIndexUrl(const GUrl &) {
 
 bool BowtieSettingsWidget::isParametersOk(QString& error) {
     
-    ExternalTool* bowtie = AppContext::getExternalToolRegistry()->getByName(BOWTIE_TOOL_NAME);
-    ExternalTool* bowtieBuild = AppContext::getExternalToolRegistry()->getByName(BOWTIE_BUILD_TOOL_NAME);
+    ExternalTool* bowtie = AppContext::getExternalToolRegistry()->getByName(ET_BOWTIE);
+    ExternalTool* bowtieBuild = AppContext::getExternalToolRegistry()->getByName(ET_BOWTIE_BUILD);
     bool bowtieToolsExist = bowtie && bowtieBuild; 
 
     if( !bowtieToolsExist || bowtie->getPath().isEmpty() || bowtieBuild->getPath().isEmpty() ) {

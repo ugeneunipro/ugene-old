@@ -98,6 +98,6 @@ ExternalToolRunTask* TBlastXPlusSupportTask::createBlastPlusTask(){
     algoLog.trace("Blastall arguments: "+arguments.join(" "));
     logParser=new ExternalToolLogParser();
     QString workingDirectory=QFileInfo(url).absolutePath();
-    return new ExternalToolRunTask(TBLASTX_TOOL_NAME, arguments, logParser, workingDirectory);
+    return new ExternalToolRunTask(ET_TBLASTX, arguments, logParser, workingDirectory);
 }
 }//namespace

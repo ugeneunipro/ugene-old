@@ -172,7 +172,7 @@ Task * CuffdiffSupportTask::createCuffdiffTask() {
 
     // create task
     logParser.reset(new LogParser());
-    diffTask = new ExternalToolRunTask(CUFFDIFF_TOOL_NAME,
+    diffTask = new ExternalToolRunTask(ET_CUFFDIFF,
         arguments,
         logParser.data(),
         workingDir);

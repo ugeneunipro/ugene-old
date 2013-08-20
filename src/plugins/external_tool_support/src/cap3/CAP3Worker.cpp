@@ -65,7 +65,7 @@ void CAP3WorkerFactory::init() {
     
     a << new Attribute(input, BaseTypes::STRING_TYPE(), true, QVariant("Default"));
 
-    QString cap3Description = AppContext::getExternalToolRegistry()->getByName(CAP3_TOOL_NAME)->getDescription();
+    QString cap3Description = AppContext::getExternalToolRegistry()->getByName(ET_CAP3)->getDescription();
     Descriptor desc(ACTOR_ID, CAP3Worker::tr("Align with CAP3"), cap3Description);
 
     ActorPrototype* proto = new IntegralBusActorPrototype(desc, p, a);
@@ -76,7 +76,7 @@ void CAP3WorkerFactory::init() {
     proto->setEditor(new DelegateEditor(delegates));
     proto->setPrompter(new CAP3Prompter());
     proto->setIconPath(":external_tool_support/images/clustalx.png");
-    proto->addExternalTool(CAP3_TOOL_NAME);
+    proto->addExternalTool(ET_CAP3);
     WorkflowEnv::getProtoRegistry()->registerProto(BaseActorCategories::CATEGORY_ASSEMBLY(), proto);
 
     DomainFactory* localDomain = WorkflowEnv::getDomainRegistry()->getById(LocalDomainFactory::ID);

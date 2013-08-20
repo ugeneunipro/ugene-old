@@ -27,7 +27,7 @@
 #include <U2View/CreatePhyTreeDialogController.h>
 #include <U2Algorithm/PhyTreeGenerator.h>
 
-#define MRBAYES_TOOL_NAME "MrBayes"
+#define ET_MRBAYES "MrBayes"
 #define MRBAYES_TMP_DIR   "mrbayes"
 
 namespace U2 {

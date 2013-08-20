@@ -121,7 +121,7 @@ void ClustalOWorkerFactory::init() {
     proto->setEditor(new DelegateEditor(delegates));
     proto->setPrompter(new ClustalOPrompter());
     proto->setIconPath(":external_tool_support/images/clustalo.png");
-    proto->addExternalTool(CLUSTALO_TOOL_NAME, EXT_TOOL_PATH);
+    proto->addExternalTool(ET_CLUSTALO, EXT_TOOL_PATH);
     WorkflowEnv::getProtoRegistry()->registerProto(BaseActorCategories::CATEGORY_ALIGNMENT(), proto);
 
     DomainFactory* localDomain = WorkflowEnv::getDomainRegistry()->getById(LocalDomainFactory::ID);
@@ -168,7 +168,7 @@ Task* ClustalOWorker::tick() {
 
         QString path=actor->getParameter(EXT_TOOL_PATH)->getAttributeValue<QString>(context);
         if(QString::compare(path, "default", Qt::CaseInsensitive) != 0){
-            AppContext::getExternalToolRegistry()->getByName(CLUSTALO_TOOL_NAME)->setPath(path);
+            AppContext::getExternalToolRegistry()->getByName(ET_CLUSTALO)->setPath(path);
         }
         path=actor->getParameter(TMP_DIR_PATH)->getAttributeValue<QString>(context);
         if(QString::compare(path, "default", Qt::CaseInsensitive) != 0){

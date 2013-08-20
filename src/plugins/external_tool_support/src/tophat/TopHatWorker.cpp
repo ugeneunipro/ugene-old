@@ -472,8 +472,8 @@ void TopHatWorkerFactory::init()
     proto->setValidator(new BowtieToolsValidator());
 
     { // external tools
-        proto->addExternalTool(SAMTOOLS_EXT_TOOL_NAME, SAMTOOLS_TOOL_PATH);
-        proto->addExternalTool(TOPHAT_TOOL_NAME, EXT_TOOL_PATH);
+        proto->addExternalTool(ET_SAMTOOLS_EXT, SAMTOOLS_TOOL_PATH);
+        proto->addExternalTool(ET_TOPHAT, EXT_TOOL_PATH);
     }
 
     WorkflowEnv::getProtoRegistry()->registerProto(
@@ -598,14 +598,14 @@ void TopHatWorker::initSettings() {
     QString bowtieExtToolPath = getValue<QString>(TopHatWorkerFactory::BOWTIE_TOOL_PATH);
     if (0 != bowtieVersionVal) {
         settings.useBowtie1 = true;
-        settings.bowtiePath = WorkflowUtils::updateExternalToolPath(BOWTIE_TOOL_NAME, bowtieExtToolPath);
+        settings.bowtiePath = WorkflowUtils::updateExternalToolPath(ET_BOWTIE, bowtieExtToolPath);
     }
     else {
-        settings.bowtiePath = WorkflowUtils::updateExternalToolPath(BOWTIE2_ALIGN_TOOL_NAME, bowtieExtToolPath);
+        settings.bowtiePath = WorkflowUtils::updateExternalToolPath(ET_BOWTIE2_ALIGN, bowtieExtToolPath);
     }
 
     QString samtools = getValue<QString>(TopHatWorkerFactory::SAMTOOLS_TOOL_PATH);
-    settings.samtoolsPath = WorkflowUtils::updateExternalToolPath(SAMTOOLS_EXT_TOOL_NAME, samtools);
+    settings.samtoolsPath = WorkflowUtils::updateExternalToolPath(ET_SAMTOOLS_EXT, samtools);
 }
 
 void TopHatWorker::initPathes() {
@@ -616,7 +616,7 @@ void TopHatWorker::initPathes() {
 
     QString extToolPath = actor->getParameter(TopHatWorkerFactory::EXT_TOOL_PATH)->getAttributeValue<QString>(context);
     if (QString::compare(extToolPath, "default", Qt::CaseInsensitive) != 0) {
-        AppContext::getExternalToolRegistry()->getByName(TOPHAT_TOOL_NAME)->setPath(extToolPath);
+        AppContext::getExternalToolRegistry()->getByName(ET_TOPHAT)->setPath(extToolPath);
     }
 }
 
@@ -771,9 +771,9 @@ bool BowtieToolsValidator::validate(const Actor *actor, QStringList &output) con
     {
         int version = getValue<int>(actor, TopHatWorkerFactory::BOWTIE_VERSION);
         if (1 == version) {
-            tool = AppContext::getExternalToolRegistry()->getByName(BOWTIE_TOOL_NAME);
+            tool = AppContext::getExternalToolRegistry()->getByName(ET_BOWTIE);
         } else {
-            tool = AppContext::getExternalToolRegistry()->getByName(BOWTIE2_ALIGN_TOOL_NAME);
+            tool = AppContext::getExternalToolRegistry()->getByName(ET_BOWTIE2_ALIGN);
         }
         SAFE_POINT(NULL != tool, "NULL bowtie tool", false);
     }

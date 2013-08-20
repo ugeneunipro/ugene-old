@@ -198,9 +198,9 @@ QList<Task*> BlastAllSupportTask::onSubTaskFinished(Task* subTask) {
         logParser=new ExternalToolLogParser();
         QString workingDirectory=QFileInfo(url).absolutePath();
         if("cuda-blastp" == settings.programName) {
-            blastAllTask=new ExternalToolRunTask(CUDA_BLASTP_TOOL_NAME,arguments, logParser, workingDirectory);
+            blastAllTask=new ExternalToolRunTask(ET_CUDA_BLASTP,arguments, logParser, workingDirectory);
         } else {
-            blastAllTask=new ExternalToolRunTask(BLASTALL_TOOL_NAME,arguments, logParser, workingDirectory);
+            blastAllTask=new ExternalToolRunTask(ET_BLASTALL,arguments, logParser, workingDirectory);
         }
         blastAllTask->setSubtaskProgressWeight(95);
         res.append(blastAllTask);
@@ -210,12 +210,12 @@ QList<Task*> BlastAllSupportTask::onSubTaskFinished(Task* subTask) {
         delete logParser;
         if(settings.outputType == 7 || settings.outputType == 8){
             if(!QFileInfo(settings.outputOriginalFile).exists()){
-                if(AppContext::getExternalToolRegistry()->getByName(BLASTALL_TOOL_NAME)->isValid()){
+                if(AppContext::getExternalToolRegistry()->getByName(ET_BLASTALL)->isValid()){
                     stateInfo.setError(tr("Output file not found"));
                 }else{
                     stateInfo.setError(tr("Output file not found. May be %1 tool path '%2' not valid?")
-                                       .arg(AppContext::getExternalToolRegistry()->getByName(BLASTALL_TOOL_NAME)->getName())
-                                       .arg(AppContext::getExternalToolRegistry()->getByName(BLASTALL_TOOL_NAME)->getPath()));
+                                       .arg(AppContext::getExternalToolRegistry()->getByName(ET_BLASTALL)->getName())
+                                       .arg(AppContext::getExternalToolRegistry()->getByName(ET_BLASTALL)->getPath()));
                 }
                 emit si_stateChanged();
                 return res;

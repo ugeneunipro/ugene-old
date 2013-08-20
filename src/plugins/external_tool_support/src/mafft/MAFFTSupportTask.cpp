@@ -112,13 +112,13 @@ QList<Task*> MAFFTSupportTask::onSubTaskFinished(Task* subTask) {
     QList<Task*> res;
     if(subTask->hasError()) {
         if(subTask==loadTmpDocumentTask){
-            if(AppContext::getExternalToolRegistry()->getByName(MAFFT_TOOL_NAME)->isValid()){
+            if(AppContext::getExternalToolRegistry()->getByName(ET_MAFFT)->isValid()){
                 stateInfo.setError(tr("Can not open output file: ")+subTask->getError());
             }else{
                 stateInfo.setError(tr("Can not open output file: ")+subTask->getError()
                                    +tr(" May be %1 tool path '%2' not valid?")
-                                   .arg(AppContext::getExternalToolRegistry()->getByName(MAFFT_TOOL_NAME)->getName())
-                                   .arg(AppContext::getExternalToolRegistry()->getByName(MAFFT_TOOL_NAME)->getPath()));
+                                   .arg(AppContext::getExternalToolRegistry()->getByName(ET_MAFFT)->getName())
+                                   .arg(AppContext::getExternalToolRegistry()->getByName(ET_MAFFT)->getPath()));
             }
 
         }else{
@@ -143,19 +143,19 @@ QList<Task*> MAFFTSupportTask::onSubTaskFinished(Task* subTask) {
         }
         arguments <<url;
         logParser = new MAFFTLogParser(inputMsa.getNumRows(), settings.maxNumberIterRefinement, outputUrl);
-        mAFFTTask = new ExternalToolRunTask(MAFFT_TOOL_NAME, arguments, logParser);
+        mAFFTTask = new ExternalToolRunTask(ET_MAFFT, arguments, logParser);
         mAFFTTask->setSubtaskProgressWeight(95);
         res.append(mAFFTTask);
     } else if (subTask == mAFFTTask) {
         assert(logParser);
         logParser->cleanup();
         if (!QFileInfo(outputUrl).exists()) {
-            if (AppContext::getExternalToolRegistry()->getByName(MAFFT_TOOL_NAME)->isValid()){
+            if (AppContext::getExternalToolRegistry()->getByName(ET_MAFFT)->isValid()){
                 stateInfo.setError(tr("Output file '%1' not found").arg(outputUrl));
             } else {
                 stateInfo.setError(tr("Output file '%3' not found. May be %1 tool path '%2' not valid?")
-                                   .arg(AppContext::getExternalToolRegistry()->getByName(MAFFT_TOOL_NAME)->getName())
-                                   .arg(AppContext::getExternalToolRegistry()->getByName(MAFFT_TOOL_NAME)->getPath())
+                                   .arg(AppContext::getExternalToolRegistry()->getByName(ET_MAFFT)->getName())
+                                   .arg(AppContext::getExternalToolRegistry()->getByName(ET_MAFFT)->getPath())
                                    .arg(outputUrl));
             }
             emit si_stateChanged();

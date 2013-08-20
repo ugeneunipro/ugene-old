@@ -111,7 +111,7 @@ void MAFFTWorkerFactory::init() {
     proto->setEditor(new DelegateEditor(delegates));
     proto->setPrompter(new MAFFTPrompter());
     proto->setIconPath(":external_tool_support/images/cmdline.png");
-    proto->addExternalTool(MAFFT_TOOL_NAME, EXT_TOOL_PATH);
+    proto->addExternalTool(ET_MAFFT, EXT_TOOL_PATH);
     WorkflowEnv::getProtoRegistry()->registerProto(BaseActorCategories::CATEGORY_ALIGNMENT(), proto);
 
     DomainFactory* localDomain = WorkflowEnv::getDomainRegistry()->getById(LocalDomainFactory::ID);
@@ -156,7 +156,7 @@ Task* MAFFTWorker::tick() {
         cfg.maxNumberIterRefinement=actor->getParameter(NUM_ITER)->getAttributeValue<int>(context);
         QString path=actor->getParameter(EXT_TOOL_PATH)->getAttributeValue<QString>(context);
         if(QString::compare(path, "default", Qt::CaseInsensitive) != 0){
-            AppContext::getExternalToolRegistry()->getByName(MAFFT_TOOL_NAME)->setPath(path);
+            AppContext::getExternalToolRegistry()->getByName(ET_MAFFT)->setPath(path);
         }
         path=actor->getParameter(TMP_DIR_PATH)->getAttributeValue<QString>(context);
         if(QString::compare(path, "default", Qt::CaseInsensitive) != 0){

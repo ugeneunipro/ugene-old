@@ -166,7 +166,7 @@ ExternalToolRunTask * CufflinksSupportTask::runCufflinks() {
     logParser = new ExternalToolLogParser();
 
     // Create the Cufflinks task
-    return new ExternalToolRunTask(CUFFLINKS_TOOL_NAME,
+    return new ExternalToolRunTask(ET_CUFFLINKS,
         arguments,
         logParser,
         workingDirectory);
@@ -213,7 +213,7 @@ QList<SharedAnnotationData> CufflinksSupportTask::getAnnotationsFromFile(QString
     } else {
         FAIL("Internal error: unexpected format of the Cufflinks output!", res);
     }
-    return getAnnotationsFromFile(filePath, formatId, CUFFLINKS_TOOL_NAME, stateInfo);
+    return getAnnotationsFromFile(filePath, formatId, ET_CUFFLINKS, stateInfo);
 }
 
 Task::ReportResult CufflinksSupportTask::report()

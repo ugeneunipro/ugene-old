@@ -46,7 +46,7 @@
 namespace U2 {
 
 
-BlastDbCmdSupport::BlastDbCmdSupport(const QString& path) : ExternalTool(BLASTDBCMD_TOOL_NAME, path)
+BlastDbCmdSupport::BlastDbCmdSupport(const QString& path) : ExternalTool(ET_BLASTDBCMD, path)
 {
     if (AppContext::getMainWindow() != NULL) {
         icon = QIcon(":external_tool_support/images/ncbi.png");
@@ -76,7 +76,7 @@ void BlastDbCmdSupport::sl_runWithExtFileSpecify(){
     if (path.isEmpty()){
         QMessageBox msgBox;
         msgBox.setWindowTitle("BLAST+ " +name);
-        msgBox.setText(tr("Path for BLAST+ %1 tool not selected.").arg(BLASTDBCMD_TOOL_NAME));
+        msgBox.setText(tr("Path for BLAST+ %1 tool not selected.").arg(ET_BLASTDBCMD));
         msgBox.setInformativeText(tr("Do you want to select it now?"));
         msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
         msgBox.setDefaultButton(QMessageBox::Yes);

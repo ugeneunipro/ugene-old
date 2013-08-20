@@ -25,13 +25,13 @@
 #include <U2Core/ExternalToolRegistry.h>
 #include <U2Gui/ObjectViewModel.h>
 
-#define BLASTN_TOOL_NAME "BlastN"
-#define BLASTP_TOOL_NAME "BlastP"
-#define GPU_BLASTP_TOOL_NAME "GPU-BlastP"
-#define BLASTX_TOOL_NAME "BlastX"
-#define TBLASTN_TOOL_NAME "TBlastN"
-#define TBLASTX_TOOL_NAME "TBlastX"
-#define RPSBLAST_TOOL_NAME "RPSBlast"
+#define ET_BLASTN "BlastN"
+#define ET_BLASTP "BlastP"
+#define ET_GPU_BLASTP "GPU-BlastP"
+#define ET_BLASTX "BlastX"
+#define ET_TBLASTN "TBlastN"
+#define ET_TBLASTX "TBlastX"
+#define ET_RPSBLAST "RPSBlast"
 #define BLASTPLUS_TMP_DIR    "blast_plus"
 
 namespace U2 {

@@ -36,7 +36,7 @@ ExternalToolRunTask* RPSBlastSupportTask::createBlastPlusTask() {
     algoLog.trace("RPSBlast arguments: "+arguments.join(" "));
     logParser=new ExternalToolLogParser;
     QString workingDirectory=QFileInfo(url).absolutePath();
-    return new ExternalToolRunTask(RPSBLAST_TOOL_NAME, arguments, logParser, workingDirectory);
+    return new ExternalToolRunTask(ET_RPSBLAST, arguments, logParser, workingDirectory);
 }
 
 LocalCDSearch::LocalCDSearch(const CDSearchSettings& settings) {

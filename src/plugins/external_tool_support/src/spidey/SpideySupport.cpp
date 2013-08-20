@@ -88,11 +88,11 @@ void SpideySupport::sl_validationStatusChanged( bool isValid )
     SplicedAlignmentTaskRegistry* registry = AppContext::getSplicedAlignmentTaskRegistry();
     if (isValid) 
     {
-        if (!registry->hadRegistered(SPIDEY_TOOL_NAME)) {
-            registry->registerTaskFactory(new SpideyAlignmentTaskFactory, SPIDEY_TOOL_NAME);
+        if (!registry->hadRegistered(ET_SPIDEY)) {
+            registry->registerTaskFactory(new SpideyAlignmentTaskFactory, ET_SPIDEY);
         }
     } else {
-        registry->unregisterTaskFactory(SPIDEY_TOOL_NAME);
+        registry->unregisterTaskFactory(ET_SPIDEY);
     }
 }
 
@@ -136,10 +136,10 @@ void SpideySupportContext::sl_align_with_Spidey() {
     QWidget* parent = QApplication::activeWindow();
 
     //Check that Spidey and tempory directory path defined
-    if (AppContext::getExternalToolRegistry()->getByName(SPIDEY_TOOL_NAME)->getPath().isEmpty()){
+    if (AppContext::getExternalToolRegistry()->getByName(ET_SPIDEY)->getPath().isEmpty()){
         QMessageBox msgBox(parent);
-        msgBox.setWindowTitle(SPIDEY_TOOL_NAME);
-        msgBox.setText(tr("Path for %1 tool not selected.").arg(SPIDEY_TOOL_NAME));
+        msgBox.setWindowTitle(ET_SPIDEY);
+        msgBox.setText(tr("Path for %1 tool not selected.").arg(ET_SPIDEY));
         msgBox.setInformativeText(tr("Do you want to select it now?"));
         msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
         msgBox.setDefaultButton(QMessageBox::Yes);

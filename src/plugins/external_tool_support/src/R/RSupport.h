@@ -28,7 +28,7 @@
 #define ET_R "Rscript"
 #define ET_R_GOSTATS "GOstats"
 #define ET_R_GO_DB "GO.db"
-#define Et_R_HGU133A_DB "hgu133a.db"
+#define ET_R_HGU133A_DB "hgu133a.db"
 #define ET_R_HGU133B_DB "hgu133b.db"
 #define ET_R_HGU1333PLUS2_DB "hgu133plus2.db"
 #define ET_R_HGU95AV2_DB "hgu95av2.db"

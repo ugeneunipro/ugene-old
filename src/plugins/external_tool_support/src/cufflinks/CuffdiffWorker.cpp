@@ -275,7 +275,7 @@ void CuffdiffWorkerFactory::init()
     proto->setPortValidator(BasePorts::IN_ASSEMBLY_PORT_ID(), new InputSlotValidator());
 
     { // external tools
-        proto->addExternalTool(CUFFDIFF_TOOL_NAME, EXT_TOOL_PATH);
+        proto->addExternalTool(ET_CUFFDIFF, EXT_TOOL_PATH);
     }
 
     WorkflowEnv::getProtoRegistry()->registerProto(
@@ -321,7 +321,7 @@ void CuffdiffWorker::initSlotsState() {
 }
 
 void CuffdiffWorker::init() {
-    WorkflowUtils::updateExternalToolPath(CUFFDIFF_TOOL_NAME, getValue<QString>(EXT_TOOL_PATH));
+    WorkflowUtils::updateExternalToolPath(ET_CUFFDIFF, getValue<QString>(EXT_TOOL_PATH));
 
     inAssembly = ports[BasePorts::IN_ASSEMBLY_PORT_ID()];
     inTranscript = ports[BasePorts::IN_ANNOTATIONS_PORT_ID()];

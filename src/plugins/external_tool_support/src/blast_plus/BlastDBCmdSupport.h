@@ -25,7 +25,7 @@
 #include <U2Core/ExternalToolRegistry.h>
 #include "utils/ExternalToolSupportAction.h"
 
-#define BLASTDBCMD_TOOL_NAME "BlastDBCmd"
+#define ET_BLASTDBCMD "BlastDBCmd"
 
 namespace U2 {
 

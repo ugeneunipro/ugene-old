@@ -26,7 +26,7 @@
 #include <U2View/MSAEditor.h>
 #include "utils/ExternalToolSupportAction.h"
 
-#define CAP3_TOOL_NAME "CAP3"
+#define ET_CAP3 "CAP3"
 #define CAP3_TMP_DIR    "cap3"
 namespace U2 {
 

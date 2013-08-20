@@ -128,7 +128,7 @@ QList<Task*> MrBayesSupportTask::onSubTaskFinished(Task* subTask){
         QStringList arguments;
         arguments << tmpNexusFile;
         logParser = new MrBayesLogParser(settings.mb_ngen);
-        mrBayesTask = new ExternalToolRunTask(MRBAYES_TOOL_NAME, arguments, logParser);
+        mrBayesTask = new ExternalToolRunTask(ET_MRBAYES, arguments, logParser);
         mrBayesTask->setSubtaskProgressWeight(95);
         res.append(mrBayesTask);
     }else if(subTask == mrBayesTask){

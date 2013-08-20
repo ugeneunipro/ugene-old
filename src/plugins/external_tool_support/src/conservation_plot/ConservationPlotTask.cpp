@@ -164,7 +164,7 @@ QList<Task*> ConservationPlotTask::onSubTaskFinished(Task* subTask) {
                 SAFE_POINT(NULL != rTool, "R script tool wasn't found in the registry", result);
 
 
-                etTask = new ExternalToolRunTask(ConservationPlotSupport::TOOL_NAME, args, logParser, workingDir, QStringList() << rTool->getPath());
+                etTask = new ExternalToolRunTask(ET_CONSERVATION_PLOT, args, logParser, workingDir, QStringList() << rTool->getPath());
                 result << etTask;
             }
             

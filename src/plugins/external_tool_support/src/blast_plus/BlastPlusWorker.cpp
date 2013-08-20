@@ -229,15 +229,15 @@ Task* BlastPlusWorker::tick() {
         QString path=actor->getParameter(BLASTPLUS_EXT_TOOL_PATH)->getAttributeValue<QString>(context);
         if(QString::compare(path, "default", Qt::CaseInsensitive) != 0){
             if(cfg.programName == "blastn"){
-                AppContext::getExternalToolRegistry()->getByName(BLASTN_TOOL_NAME)->setPath(path);
+                AppContext::getExternalToolRegistry()->getByName(ET_BLASTN)->setPath(path);
             }else if(cfg.programName == "blastp"){
-                AppContext::getExternalToolRegistry()->getByName(BLASTP_TOOL_NAME)->setPath(path);
+                AppContext::getExternalToolRegistry()->getByName(ET_BLASTP)->setPath(path);
             }else if(cfg.programName == "blastx"){
-                AppContext::getExternalToolRegistry()->getByName(BLASTX_TOOL_NAME)->setPath(path);
+                AppContext::getExternalToolRegistry()->getByName(ET_BLASTX)->setPath(path);
             }else if(cfg.programName == "tblastn"){
-                AppContext::getExternalToolRegistry()->getByName(TBLASTN_TOOL_NAME)->setPath(path);
+                AppContext::getExternalToolRegistry()->getByName(ET_TBLASTN)->setPath(path);
             }else if(cfg.programName == "tblastx"){
-                AppContext::getExternalToolRegistry()->getByName(TBLASTX_TOOL_NAME)->setPath(path);
+                AppContext::getExternalToolRegistry()->getByName(ET_TBLASTX)->setPath(path);
             }
 
         }

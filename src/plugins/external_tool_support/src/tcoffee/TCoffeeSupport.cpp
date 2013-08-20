@@ -157,10 +157,10 @@ void TCoffeeSupportContext::buildMenu(GObjectView* view, QMenu* m) {
 }
 void TCoffeeSupportContext::sl_align_with_TCoffee() {
     //Check that T-Coffee and temporary directory path defined
-    if (AppContext::getExternalToolRegistry()->getByName(TCOFFEE_TOOL_NAME)->getPath().isEmpty()){
+    if (AppContext::getExternalToolRegistry()->getByName(ET_TCOFFEE)->getPath().isEmpty()){
         QMessageBox msgBox;
-        msgBox.setWindowTitle(TCOFFEE_TOOL_NAME);
-        msgBox.setText(tr("Path for %1 tool not selected.").arg(TCOFFEE_TOOL_NAME));
+        msgBox.setWindowTitle(ET_TCOFFEE);
+        msgBox.setText(tr("Path for %1 tool not selected.").arg(ET_TCOFFEE));
         msgBox.setInformativeText(tr("Do you want to select it now?"));
         msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
         msgBox.setDefaultButton(QMessageBox::Yes);
@@ -177,7 +177,7 @@ void TCoffeeSupportContext::sl_align_with_TCoffee() {
                break;
          }
     }
-    if (AppContext::getExternalToolRegistry()->getByName(TCOFFEE_TOOL_NAME)->getPath().isEmpty()){
+    if (AppContext::getExternalToolRegistry()->getByName(ET_TCOFFEE)->getPath().isEmpty()){
         return;
     }
     U2OpStatus2Log os(LogLevel_DETAILS);

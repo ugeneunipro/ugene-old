@@ -79,7 +79,7 @@ void CuffmergeSupportTask::run() {
     result = CufflinksSupportTask::getAnnotationsFromFile(
         settings.outDir + "/merged.gtf",
         BaseDocumentFormats::GTF,
-        CUFFMERGE_TOOL_NAME,
+        ET_CUFFMERGE,
         stateInfo);
 
     ExternalToolSupportUtils::appendExistingFile(settings.outDir + "/merged.gtf", outputFiles);
@@ -156,8 +156,8 @@ Task * CuffmergeSupportTask::createCuffmergeTask() {
     {
         ExternalToolRegistry *registry = AppContext::getExternalToolRegistry();
 
-        ExternalTool *cm =registry->getByName(CUFFMERGE_TOOL_NAME);
-        ExternalTool *cc =registry->getByName(CUFFCOMPARE_TOOL_NAME);
+        ExternalTool *cm =registry->getByName(ET_CUFFMERGE);
+        ExternalTool *cc =registry->getByName(ET_CUFFCOMPARE);
         QFileInfo cmInfo(cm->getPath());
         QFileInfo ccInfo(cc->getPath());
 
@@ -166,7 +166,7 @@ Task * CuffmergeSupportTask::createCuffmergeTask() {
     }
 
     logParser.reset(new ExternalToolLogParser());
-    mergeTask = new ExternalToolRunTask(CUFFMERGE_TOOL_NAME, args, logParser.data(), workingDir, addPaths);
+    mergeTask = new ExternalToolRunTask(ET_CUFFMERGE, args, logParser.data(), workingDir, addPaths);
     return mergeTask;
 }
 

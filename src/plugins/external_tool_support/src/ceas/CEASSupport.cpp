@@ -30,10 +30,6 @@
 
 namespace U2 {
 
-const QString CEASSupport::TOOL_NAME("CEAS Tools");
-const QString CEASSupport::REF_GENES_DATA_NAME("Gene annotation table");
-
-
 CEASSupport::CEASSupport(const QString &name)
 : ExternalTool(name)
 {
@@ -57,8 +53,8 @@ void CEASSupport::initialize() {
 
     executableFileName = "ceas.py";
 
-    toolRunnerProgramm = PYTHON_TOOL_NAME;
-    dependencies << PYTHON_TOOL_NAME
+    toolRunnerProgramm = ET_PYTHON;
+    dependencies << ET_PYTHON
                  << ET_R;
 
     validMessage = "package version";

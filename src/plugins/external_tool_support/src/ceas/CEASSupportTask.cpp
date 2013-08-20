@@ -191,7 +191,7 @@ Task* CEASSupportTask::createETTask(){
     ExternalTool* rTool = AppContext::getExternalToolRegistry()->getByName(ET_R);
     SAFE_POINT(NULL != rTool, "R script tool wasn't found in the registry", new FailTask("R script tool wasn't found in the registry"));
 
-    res = new ExternalToolRunTask(CEASSupport::TOOL_NAME, args, logParser, workingDir, QStringList() << rTool->getPath());
+    res = new ExternalToolRunTask(ET_CEAS, args, logParser, workingDir, QStringList() << rTool->getPath());
 
     return res;
 }

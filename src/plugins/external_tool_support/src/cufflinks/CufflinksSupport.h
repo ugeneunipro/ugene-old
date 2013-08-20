@@ -24,10 +24,10 @@
 
 #include <U2Core/ExternalToolRegistry.h>
 
-#define CUFFCOMPARE_TOOL_NAME   "Cuffcompare"
-#define CUFFDIFF_TOOL_NAME      "Cuffdiff"
-#define CUFFLINKS_TOOL_NAME     "Cufflinks"
-#define CUFFMERGE_TOOL_NAME     "Cuffmerge"
+#define ET_CUFFCOMPARE   "Cuffcompare"
+#define ET_CUFFDIFF      "Cuffdiff"
+#define ET_CUFFLINKS     "Cufflinks"
+#define ET_CUFFMERGE     "Cuffmerge"
 
 #define CUFFLINKS_TMP_DIR       "cufflinks"
 #define CUFFDIFF_TMP_DIR        "cuffdiff"

@@ -24,7 +24,7 @@
 
 #include <U2Core/ExternalToolRegistry.h>
 
-#define TOPHAT_TOOL_NAME    "TopHat"
+#define ET_TOPHAT    "TopHat"
 #define TOPHAT_TMP_DIR      "tophat"
 
 

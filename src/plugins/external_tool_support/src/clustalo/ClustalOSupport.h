@@ -26,7 +26,7 @@
 #include <U2View/MSAEditor.h>
 #include "utils/ExternalToolSupportAction.h"
 
-#define CLUSTALO_TOOL_NAME "ClustalO"
+#define ET_CLUSTALO "ClustalO"
 #define CLUSTALO_TMP_DIR "clustalо"
 
 namespace U2 {
@@ -60,7 +60,7 @@ class ClustalOSupportAction : public ExternalToolSupportAction {
         Q_OBJECT
 public:
     ClustalOSupportAction(QObject* p, GObjectView* v, const QString& text, int order)
-        : ExternalToolSupportAction(p,v,text,order, QStringList(CLUSTALO_TOOL_NAME)) {}
+        : ExternalToolSupportAction(p,v,text,order, QStringList(ET_CLUSTALO)) {}
     MSAEditor*  getMSAEditor() const;
 
 private slots:

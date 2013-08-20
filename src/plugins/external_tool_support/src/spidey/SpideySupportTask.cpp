@@ -80,19 +80,19 @@ QList<Task*> SpideyAlignmentTask::onSubTaskFinished(Task* subTask) {
         const QStringList& arguments = prepareDataForSpideyTask->getArgumentsList();
 
         logParser = new SpideyLogParser();
-        spideyTask = new ExternalToolRunTask(SPIDEY_TOOL_NAME, arguments, logParser);
+        spideyTask = new ExternalToolRunTask(ET_SPIDEY, arguments, logParser);
         spideyTask->setSubtaskProgressWeight(95);
         res.append(spideyTask);
 
     } else if (subTask == spideyTask){
 
         if(!QFile::exists(tmpOutputUrl)){
-            if(AppContext::getExternalToolRegistry()->getByName(SPIDEY_TOOL_NAME)->isValid()){
+            if(AppContext::getExternalToolRegistry()->getByName(ET_SPIDEY)->isValid()){
                 stateInfo.setError(tr("Output file not found"));
             }else{
                 stateInfo.setError(tr("Output file not found. May be %1 tool path '%2' not valid?")
-                                   .arg(AppContext::getExternalToolRegistry()->getByName(SPIDEY_TOOL_NAME)->getName())
-                                   .arg(AppContext::getExternalToolRegistry()->getByName(SPIDEY_TOOL_NAME)->getPath()));
+                                   .arg(AppContext::getExternalToolRegistry()->getByName(ET_SPIDEY)->getName())
+                                   .arg(AppContext::getExternalToolRegistry()->getByName(ET_SPIDEY)->getPath()));
             }
             return res;
         }

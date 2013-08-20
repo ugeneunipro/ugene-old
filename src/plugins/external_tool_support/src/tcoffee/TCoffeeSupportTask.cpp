@@ -142,19 +142,19 @@ QList<Task*> TCoffeeSupportTask::onSubTaskFinished(Task* subTask) {
         }
         arguments <<"-outfile"<<outputUrl;
         logParser=new TCoffeeLogParser();
-        tCoffeeTask=new ExternalToolRunTask(TCOFFEE_TOOL_NAME, arguments, logParser);
+        tCoffeeTask=new ExternalToolRunTask(ET_TCOFFEE, arguments, logParser);
         tCoffeeTask->setSubtaskProgressWeight(95);
         res.append(tCoffeeTask);
     }else if(subTask==tCoffeeTask){
         assert(logParser);
         delete logParser;
         if(!QFileInfo(outputUrl).exists()){
-            if(AppContext::getExternalToolRegistry()->getByName(TCOFFEE_TOOL_NAME)->isValid()){
+            if(AppContext::getExternalToolRegistry()->getByName(ET_TCOFFEE)->isValid()){
                 stateInfo.setError(tr("Output file %1 not found").arg(outputUrl));
             }else{
                 stateInfo.setError(tr("Output file %3 not found. May be %1 tool path '%2' not valid?")
-                                   .arg(AppContext::getExternalToolRegistry()->getByName(TCOFFEE_TOOL_NAME)->getName())
-                                   .arg(AppContext::getExternalToolRegistry()->getByName(TCOFFEE_TOOL_NAME)->getPath())
+                                   .arg(AppContext::getExternalToolRegistry()->getByName(ET_TCOFFEE)->getName())
+                                   .arg(AppContext::getExternalToolRegistry()->getByName(ET_TCOFFEE)->getPath())
                                    .arg(outputUrl));
             }
             emit si_stateChanged();

@@ -172,7 +172,7 @@ QList<Task*> MACSTask::onSubTaskFinished(Task* subTask) {
 //             }
 
             logParser = new MACSLogParser();
-            etTask = new ExternalToolRunTask(MACSSupport::TOOL_NAME, args, logParser, getSettings().outDir);
+            etTask = new ExternalToolRunTask(ET_MACS, args, logParser, getSettings().outDir);
             result << etTask;
         }
     }else if(subTask == etTask){

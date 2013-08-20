@@ -25,7 +25,7 @@
 #include <U2Core/ExternalToolRegistry.h>
 #include "utils/ExternalToolSupportAction.h"
 
-#define SPIDEY_TOOL_NAME "Spidey"
+#define ET_SPIDEY "Spidey"
 #define SPIDEY_TMP_DIR   "spidey"
 
 namespace U2 {

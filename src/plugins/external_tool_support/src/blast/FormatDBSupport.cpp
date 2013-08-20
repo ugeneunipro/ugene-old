@@ -53,8 +53,8 @@ FormatDBSupport::FormatDBSupport(const QString& name, const QString& path) : Ext
         grayIcon = QIcon(":external_tool_support/images/ncbi_gray.png");
         warnIcon = QIcon(":external_tool_support/images/ncbi_warn.png");
     }
-    assert((name == FORMATDB_TOOL_NAME)||(name == CUDA_FORMATDB_TOOL_NAME)||(name == MAKEBLASTDB_TOOL_NAME)||(name == GPU_MAKEBLASTDB_TOOL_NAME));
-    if(name == FORMATDB_TOOL_NAME){
+    assert((name == ET_FORMATDB)||(name == ET_CUDA_FORMATDB)||(name == ET_MAKEBLASTDB)||(name == ET_GPU_MAKEBLASTDB));
+    if(name == ET_FORMATDB){
 #ifdef Q_OS_WIN
     executableFileName="formatdb.exe";
 #else
@@ -70,7 +70,7 @@ FormatDBSupport::FormatDBSupport(const QString& name, const QString& path) : Ext
 
     versionRegExp=QRegExp("formatdb (\\d+\\.\\d+\\.\\d+)");
     toolKitName="BLAST";
-    }else if(name == CUDA_FORMATDB_TOOL_NAME){
+    }else if(name == ET_CUDA_FORMATDB){
 #ifdef Q_OS_WIN
     executableFileName="CUDA-formatdb.exe";
 #else
@@ -84,7 +84,7 @@ FormatDBSupport::FormatDBSupport(const QString& name, const QString& path) : Ext
         " can be searched by <i>blastall</i>.");
 
     toolKitName="CUDA-BLAST";
-    }else if(name == MAKEBLASTDB_TOOL_NAME){
+    }else if(name == ET_MAKEBLASTDB){
 #ifdef Q_OS_WIN
     executableFileName="makeblastdb.exe";
 #else
@@ -99,7 +99,7 @@ FormatDBSupport::FormatDBSupport(const QString& name, const QString& path) : Ext
                    " can be searched by other BLAST+ tools.");
     versionRegExp=QRegExp("Application to create BLAST databases, version (\\d+\\.\\d+\\.\\d+\\+?)");
     toolKitName="BLAST+";
-    }else if(name == GPU_MAKEBLASTDB_TOOL_NAME){
+    }else if(name == ET_GPU_MAKEBLASTDB){
 #ifdef Q_OS_WIN
     executableFileName="makeblastdb.exe";
 #else
@@ -121,7 +121,7 @@ void FormatDBSupport::sl_runWithExtFileSpecify(){
     //Check that formatDB or makeblastdb and tempory directory path defined
     if (path.isEmpty()){
         QMessageBox msgBox;
-        if(name == FORMATDB_TOOL_NAME){
+        if(name == ET_FORMATDB){
             msgBox.setWindowTitle("BLAST "+name);
             msgBox.setText(tr("Path for BLAST %1 tool not selected.").arg(name));
         }else{

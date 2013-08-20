@@ -47,8 +47,8 @@
 
 namespace U2 {
 ETSProjectViewItemsContoller::ETSProjectViewItemsContoller(QObject* p) : QObject(p) {
-    formatDBOnSelectionAction=new ExternalToolSupportAction(tr("FormatDB..."), this, QStringList(FORMATDB_TOOL_NAME));
-    makeBLASTDBOnSelectionAction=new ExternalToolSupportAction(tr("BLAST+ make DB..."), this, QStringList(MAKEBLASTDB_TOOL_NAME));
+    formatDBOnSelectionAction=new ExternalToolSupportAction(tr("FormatDB..."), this, QStringList(ET_FORMATDB));
+    makeBLASTDBOnSelectionAction=new ExternalToolSupportAction(tr("BLAST+ make DB..."), this, QStringList(ET_MAKEBLASTDB));
     connect(formatDBOnSelectionAction,SIGNAL(triggered()), SLOT(sl_runFormatDBOnSelection()));
     connect(makeBLASTDBOnSelectionAction,SIGNAL(triggered()), SLOT(sl_runFormatDBOnSelection()));
 
@@ -83,11 +83,11 @@ void ETSProjectViewItemsContoller::sl_addToProjectViewMenu(QMenu& m) {
 void ETSProjectViewItemsContoller::sl_runFormatDBOnSelection(){
     ExternalToolSupportAction* s = qobject_cast<ExternalToolSupportAction*>(sender());
     assert(s != NULL);
-    assert((s->getToolNames().contains(FORMATDB_TOOL_NAME))||(s->getToolNames().contains(MAKEBLASTDB_TOOL_NAME)));
+    assert((s->getToolNames().contains(ET_FORMATDB))||(s->getToolNames().contains(ET_MAKEBLASTDB)));
     //Check that formatDB and temporary directory path defined
     if (AppContext::getExternalToolRegistry()->getByName(s->getToolNames().at(0))->getPath().isEmpty()){
         QMessageBox msgBox;
-        if(s->getToolNames().at(0) == FORMATDB_TOOL_NAME){
+        if(s->getToolNames().at(0) == ET_FORMATDB){
             msgBox.setWindowTitle("BLAST "+s->getToolNames().at(0));
             msgBox.setText(tr("Path for BLAST %1 tool not selected.").arg(s->getToolNames().at(0)));
         }else{

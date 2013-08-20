@@ -29,9 +29,6 @@
 
 namespace U2 {
 
-const QString ConservationPlotSupport::TOOL_NAME("conservation_plot");
-const QString ConservationPlotSupport::CONSERVATION_DATA_NAME("conservation_data");
-
 ConservationPlotSupport::ConservationPlotSupport(const QString &name)
 : ExternalTool(name)
 {
@@ -50,8 +47,8 @@ void ConservationPlotSupport::initialize() {
 
     executableFileName = "conservation_plot.py";
 
-    toolRunnerProgramm = PYTHON_TOOL_NAME;
-    dependencies << PYTHON_TOOL_NAME
+    toolRunnerProgramm = ET_PYTHON;
+    dependencies << ET_PYTHON
                  << ET_R;
 
     validMessage = "conservation_plot.py";

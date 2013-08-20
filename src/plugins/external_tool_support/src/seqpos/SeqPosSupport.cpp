@@ -29,9 +29,6 @@
 
 namespace U2 {
 
-const QString SeqPosSupport::TOOL_NAME("seqpos");
-const QString SeqPosSupport::ASSEMBLY_DIR("Assembly dir");
-
 SeqPosSupport::SeqPosSupport(const QString &name)
 : ExternalTool(name)
 {
@@ -50,8 +47,8 @@ void SeqPosSupport::initialize() {
 
     executableFileName = "MDSeqPos.py";
 
-    toolRunnerProgramm = PYTHON_TOOL_NAME;
-    dependencies << PYTHON_TOOL_NAME
+    toolRunnerProgramm = ET_PYTHON;
+    dependencies << ET_PYTHON
                  << ET_R
                  << ET_R_SEQLOGO;
 

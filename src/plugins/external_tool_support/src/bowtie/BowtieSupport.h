@@ -26,8 +26,8 @@
 
 namespace U2 {
 
-#define BOWTIE_TOOL_NAME "Bowtie aligner"
-#define BOWTIE_BUILD_TOOL_NAME "Bowtie build indexer"
+#define ET_BOWTIE "Bowtie aligner"
+#define ET_BOWTIE_BUILD "Bowtie build indexer"
 
 class BowtieSupport : public ExternalTool {
     Q_OBJECT

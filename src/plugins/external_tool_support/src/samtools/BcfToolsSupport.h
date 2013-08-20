@@ -24,7 +24,7 @@
 
 #include <U2Core/ExternalToolRegistry.h>
 
-#define BCFTOOLS_TOOL_NAME "BCFtools"
+#define ET_BCFTOOLS "BCFtools"
 
 namespace U2 {
 

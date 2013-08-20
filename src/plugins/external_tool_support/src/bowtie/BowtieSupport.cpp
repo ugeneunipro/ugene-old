@@ -35,7 +35,7 @@ BowtieSupport::BowtieSupport(const QString &name, const QString &path):
         grayIcon = QIcon(":external_tool_support/images/cmdline_gray.png");
         warnIcon = QIcon(":external_tool_support/images/cmdline_warn.png");
     }
-    if(BOWTIE_TOOL_NAME == name) {
+    if(ET_BOWTIE == name) {
 #ifdef Q_OS_WIN
         executableFileName="bowtie.exe";
 #else

@@ -27,8 +27,6 @@
 
 namespace U2 {
 
-const QString MACSSupport::TOOL_NAME("MACS");
-
 MACSSupport::MACSSupport(const QString &name)
 : ExternalTool(name)
 {
@@ -51,8 +49,8 @@ void MACSSupport::initialize() {
 
     executableFileName = "macs14.py";
 
-    toolRunnerProgramm = PYTHON_TOOL_NAME;
-    dependencies << PYTHON_TOOL_NAME;
+    toolRunnerProgramm = ET_PYTHON;
+    dependencies << ET_PYTHON;
 
     validMessage = "macs14";
     validationArguments << "--version";

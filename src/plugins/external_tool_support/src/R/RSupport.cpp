@@ -100,9 +100,9 @@ RModuleGodbSupport::RModuleGodbSupport(const QString &name, const QString &path)
 }
 
 RModuleHgu133adbSupport::RModuleHgu133adbSupport(const QString &name, const QString &path) : RModuleSupport(name, path) {
-    description += Et_R_HGU133A_DB + tr(": Rscript module for the cistrome pipeline");
+    description += ET_R_HGU133A_DB + tr(": Rscript module for the cistrome pipeline");
     validationArguments << "-e";
-    validationArguments << QString("print(require(%1))").arg(Et_R_HGU133A_DB);
+    validationArguments << QString("print(require(%1))").arg(ET_R_HGU133A_DB);
 }
 
 RModuleHgu133bdbSupport::RModuleHgu133bdbSupport(const QString &name, const QString &path) : RModuleSupport(name, path) {

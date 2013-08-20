@@ -28,10 +28,6 @@
 
 namespace U2 {
 
-const QString Peak2GeneSupport::TOOL_NAME("peak2gene");
-const QString Peak2GeneSupport::REF_GENES_DATA_NAME("Gene annotation table");
-const QString Peak2GeneSupport::ENTREZ_TRANSLATION_DATA_NAME("Entrez ID translations");
-
 Peak2GeneSupport::Peak2GeneSupport(const QString &name)
 : ExternalTool(name)
 {
@@ -50,8 +46,8 @@ void Peak2GeneSupport::initialize() {
 
     executableFileName = "peak2gene.py";
 
-    toolRunnerProgramm = PYTHON_TOOL_NAME;
-    dependencies << PYTHON_TOOL_NAME;
+    toolRunnerProgramm = ET_PYTHON;
+    dependencies << ET_PYTHON;
 
     validMessage = "peak2gene";
     validationArguments << "--version";

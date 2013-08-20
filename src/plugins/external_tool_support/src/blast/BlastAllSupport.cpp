@@ -59,7 +59,7 @@ BlastAllSupport::BlastAllSupport(const QString& name, const QString& path) : Ext
         grayIcon = QIcon(":external_tool_support/images/ncbi_gray.png");
         warnIcon = QIcon(":external_tool_support/images/ncbi_warn.png");
     }
-    if(BLASTALL_TOOL_NAME == name) {
+    if(ET_BLASTALL == name) {
 #ifdef Q_OS_WIN
         executableFileName="blastall.exe";
 #else
@@ -74,7 +74,7 @@ BlastAllSupport::BlastAllSupport(const QString& name, const QString& path) : Ext
                        "that people start using the programs of the BLAST+ package instead.");
         versionRegExp=QRegExp("blastall (\\d+\\.\\d+\\.\\d+)");
         toolKitName="BLAST";
-    } else if(CUDA_BLASTP_TOOL_NAME == name) {
+    } else if(ET_CUDA_BLASTP == name) {
 #ifdef Q_OS_WIN
         executableFileName="CUDA-BLASTP.exe";
 #else
@@ -143,7 +143,7 @@ void BlastAllSupportContext::initViewContext(GObjectView* view) {
     assert(av!=NULL);
     Q_UNUSED(av);
 
-    ExternalToolSupportAction* queryAction = new ExternalToolSupportAction(this, view, tr("Query with BLAST..."), 2000, QStringList(BLASTALL_TOOL_NAME));
+    ExternalToolSupportAction* queryAction = new ExternalToolSupportAction(this, view, tr("Query with BLAST..."), 2000, QStringList(ET_BLASTALL));
 
     addViewAction(queryAction);
     connect(queryAction, SIGNAL(triggered()), SLOT(sl_showDialog()));
@@ -160,10 +160,10 @@ void BlastAllSupportContext::buildMenu(GObjectView* view, QMenu* m) {
 
 void BlastAllSupportContext::sl_showDialog() {
     //Checking the BlastAll path and temporary directory path are defined
-    if (AppContext::getExternalToolRegistry()->getByName(BLASTALL_TOOL_NAME)->getPath().isEmpty()){
+    if (AppContext::getExternalToolRegistry()->getByName(ET_BLASTALL)->getPath().isEmpty()){
         QMessageBox msgBox;
-        msgBox.setWindowTitle("BLAST "+QString(BLASTALL_TOOL_NAME));
-        msgBox.setText(tr("Path for BLAST %1 tool not selected.").arg(BLASTALL_TOOL_NAME));
+        msgBox.setWindowTitle("BLAST "+QString(ET_BLASTALL));
+        msgBox.setText(tr("Path for BLAST %1 tool not selected.").arg(ET_BLASTALL));
         msgBox.setInformativeText(tr("Do you want to select it now?"));
         msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
         msgBox.setDefaultButton(QMessageBox::Yes);
@@ -179,7 +179,7 @@ void BlastAllSupportContext::sl_showDialog() {
                break;
          }
     }
-    if (AppContext::getExternalToolRegistry()->getByName(BLASTALL_TOOL_NAME)->getPath().isEmpty()){
+    if (AppContext::getExternalToolRegistry()->getByName(ET_BLASTALL)->getPath().isEmpty()){
         return;
     }
     U2OpStatus2Log os;

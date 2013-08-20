@@ -139,7 +139,7 @@ QList<Task*> SeqPosTask::onSubTaskFinished(Task* subTask) {
             SAFE_POINT(NULL != rTool, "R script tool wasn't found in the registry", result);
 
 
-            etTask = new ExternalToolRunTask(SeqPosSupport::TOOL_NAME, args, logParser, getSettings().outDir, QStringList() << rTool->getPath());
+            etTask = new ExternalToolRunTask(ET_SEQPOS, args, logParser, getSettings().outDir, QStringList() << rTool->getPath());
             result << etTask;
     }
     return result;

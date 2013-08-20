@@ -24,7 +24,7 @@
 
 #include <U2Core/ExternalToolRegistry.h>
 
-#define SAMTOOLS_EXT_TOOL_NAME "SAMtools"
+#define ET_SAMTOOLS_EXT "SAMtools"
 
 
 namespace U2 {

@@ -600,17 +600,17 @@ QString BlastPlusSupportMultiTask::generateReport() const {
 QString BlastPlusSupportCommonTask::toolNameByProgram(const QString &program) {
     QString result;
     if("blastn" == program){
-        result = BLASTN_TOOL_NAME;
+        result = ET_BLASTN;
     } else if ("blastp" == program){
-        result = BLASTP_TOOL_NAME;
+        result = ET_BLASTP;
     } else if ("blastx" == program){
-        result = BLASTX_TOOL_NAME;
+        result = ET_BLASTX;
     } else if ("tblastn" == program){
-        result = TBLASTN_TOOL_NAME;
+        result = ET_TBLASTN;
     } else if ("tblastx" == program){
-        result = TBLASTX_TOOL_NAME;
+        result = ET_TBLASTX;
     } else if ("rpsblast" == program) {
-        result = RPSBLAST_TOOL_NAME;
+        result = ET_RPSBLAST;
     }
     return result;
 }

@@ -26,13 +26,13 @@
 
 namespace U2 {
 
+#define ET_SEQPOS "seqpos"
+#define ASSEMBLY_DIR "Assembly dir"
+
 class SeqPosSupport : public ExternalTool {
     Q_OBJECT
 public:
     SeqPosSupport(const QString &name);
-
-    static const QString TOOL_NAME;
-    static const QString ASSEMBLY_DIR;
 
 private:
     void initialize();
