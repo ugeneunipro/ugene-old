@@ -82,7 +82,7 @@ namespace U2 {
 #define SETTINGS_HIGHGHLIGHT_AMINO     "highghligh_amino"
 
 MSAEditorSequenceArea::MSAEditorSequenceArea(MSAEditorUI* _ui, GScrollBar* hb, GScrollBar* vb)
-: editor(_ui->editor), ui(_ui), shBar(hb), svBar(vb), changeTracker(editor->getMSAObject()->getEntityRef())
+: editor(_ui->editor), ui(_ui), shBar(hb), svBar(vb)//, changeTracker(editor->getMSAObject()->getEntityRef())
 {
     setObjectName("msa_editor_sequence_area");
     setFocusPolicy(Qt::WheelFocus);
