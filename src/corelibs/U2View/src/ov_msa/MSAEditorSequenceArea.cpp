@@ -989,10 +989,8 @@ void MSAEditorSequenceArea::mousePressEvent(QMouseEvent *e) {
             MSAEditorSelection s = ui->seqArea->getSelection();
             if ( s.getRect().contains(cursorPos) ) {
                 shifting = true;
-                U2OpStatus2Log os;
-                U2UseCommonUserModStep userModStep(editor->getMSAObject()->getEntityRef(), os);
 //                changeTracker.startTracking( os );
-                CHECK_OP( os, );
+//                CHECK_OP( os, );
                 editor->getMSAObject()->saveState();
             }
         }
@@ -1945,6 +1943,10 @@ void MSAEditorSequenceArea::shiftSelectedRegion( int shift )
         if (maObj->isRegionEmpty(x, y, width, height)) {
             return;
         }
+
+        U2OpStatus2Log os;
+        U2UseCommonUserModStep userModStep(maObj->getEntityRef(), os);
+        Q_UNUSED(userModStep);
 
         const bool shiftOk = maObj->shiftRegion(x, y, width, height, shift);
         if (shiftOk) {
