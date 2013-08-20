@@ -248,7 +248,7 @@ GUI_TEST_CLASS_DEFINITION(test_0006){//undo replace_selected_rows_with_reverse-c
 
 // 2. Select first sequence and do context menu {Edit->Replace selected rows with reverce complement}
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_EDIT << "replace_selected_rows_with_reverse-complement"));
-    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0, 0), QPoint(-1, 0));
+    GTUtilsMSAEditorSequenceArea::selectArea( os, QPoint( 0, 0 ), QPoint( -1, 2 ) );
     GTMouseDriver::click(os, Qt::RightButton);
 
 // Expected state: sequence changed from TTG -> CAA
@@ -257,12 +257,15 @@ GUI_TEST_CLASS_DEFINITION(test_0006){//undo replace_selected_rows_with_reverse-c
 
     GTGlobals::sleep(500);
     QString clipboardText = GTClipboard::text(os);
-    CHECK_SET_ERR(clipboardText == "CAA", "Clipboard string and expected MSA string differs");
+    CHECK_SET_ERR(clipboardText == "CAA\nTGA\nATC",
+        "Clipboard string and expected MSA string differs");
 
-//                 sequence name  changed from L -> L|revcompl
+//  sequence name changed from L -> L|revcompl
     QStringList nameList = GTUtilsMSAEditorSequenceArea::getNameList(os);
-    CHECK_SET_ERR(nameList.size() >= 2, "nameList doesn't contain enough strings");
-    CHECK_SET_ERR((nameList[0] == "L") && (nameList[1] == "revcompl"), "There are no 'L|revcompl' in nameList");
+    CHECK_SET_ERR( nameList.size( ) >= 6, "nameList doesn't contain enough strings" );
+    CHECK_SET_ERR( ( nameList[0] == "L" ) && ( nameList[1] == "revcompl" )
+        && ( nameList[2] == "S" ) && ( nameList[3] == "revcompl" )
+        && ( nameList[4] == "D" ) && ( nameList[5] == "revcompl" ), "Unexpected sequence names" );
 
 // 3. Undo
     QAbstractButton *undo= GTAction::button(os,"msa_action_undo");
@@ -274,12 +277,14 @@ GUI_TEST_CLASS_DEFINITION(test_0006){//undo replace_selected_rows_with_reverse-c
 
     GTGlobals::sleep(500);
     clipboardText = GTClipboard::text(os);
-    CHECK_SET_ERR(clipboardText == "TTG", "Clipboard string and expected MSA string differs");
+    CHECK_SET_ERR( clipboardText == "TTG\nTCA\nGAT",
+        "Clipboard string and expected MSA string differs" );
 
-//                 sequence name changed from L|revcompl ->
+//  sequence name changed from L|revcompl ->
     nameList = GTUtilsMSAEditorSequenceArea::getNameList(os);
-    CHECK_SET_ERR(nameList.size() >= 2, "nameList doesn't contain enough strings");
-    CHECK_SET_ERR((nameList[0] == "L") && (nameList[1] != "revcompl"), "There are 'L|revcompl' in nameList");
+    CHECK_SET_ERR( nameList.size( ) >= 3, "nameList doesn't contain enough strings" );
+    CHECK_SET_ERR( ( nameList[0] == "L" ) && ( nameList[1] == "S" ) && ( nameList[2] == "D" ),
+        "There are unexpected names in nameList" );
 
     GTGlobals::sleep(500);
 
@@ -293,12 +298,15 @@ GUI_TEST_CLASS_DEFINITION(test_0006){//undo replace_selected_rows_with_reverse-c
 
     GTGlobals::sleep(500);
     clipboardText = GTClipboard::text(os);
-    CHECK_SET_ERR(clipboardText == "CAA", "Clipboard string and expected MSA string differs");
+    CHECK_SET_ERR(clipboardText == "CAA\nTGA\nATC",
+        "Clipboard string and expected MSA string differs");
 
-//                 sequence name  changed from L -> L|revcompl
+//  sequence name changed from L -> L|revcompl
     nameList = GTUtilsMSAEditorSequenceArea::getNameList(os);
-    CHECK_SET_ERR(nameList.size() >= 2, "nameList doesn't contain enough strings");
-    CHECK_SET_ERR((nameList[0] == "L") && (nameList[1] == "revcompl"), "There are no 'L|revcompl' in nameList");
+    CHECK_SET_ERR( nameList.size( ) >= 6, "nameList doesn't contain enough strings" );
+    CHECK_SET_ERR( ( nameList[0] == "L" ) && ( nameList[1] == "revcompl" )
+        && ( nameList[2] == "S" ) && ( nameList[3] == "revcompl" )
+        && ( nameList[4] == "D" ) && ( nameList[5] == "revcompl" ), "Unexpected sequence names" );
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0006_1){//undo replace_selected_rows_with_reverse
@@ -309,7 +317,7 @@ GUI_TEST_CLASS_DEFINITION(test_0006_1){//undo replace_selected_rows_with_reverse
 
 // 2. Select first sequence and do context menu {Edit->Replace selected rows with reverce complement}
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_EDIT << "replace_selected_rows_with_reverse"));
-    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0, 0), QPoint(-1, 0));
+    GTUtilsMSAEditorSequenceArea::selectArea( os, QPoint( 0, 0 ), QPoint( -1, 2 ) );
     GTMouseDriver::click(os, Qt::RightButton);
 
 // Expected state: sequence changed from TTG -> GTT
@@ -318,12 +326,15 @@ GUI_TEST_CLASS_DEFINITION(test_0006_1){//undo replace_selected_rows_with_reverse
 
     GTGlobals::sleep(500);
     QString clipboardText = GTClipboard::text(os);
-    CHECK_SET_ERR(clipboardText == "GTT", "Clipboard string and expected MSA string differs");
+    CHECK_SET_ERR( clipboardText == "GTT\nACT\nTAG",
+        "Clipboard string and expected MSA string differs");
 
-//                 sequence name  changed from L -> L|revcompl
+// sequence name  changed from L -> L|revcompl
     QStringList nameList = GTUtilsMSAEditorSequenceArea::getNameList(os);
-    CHECK_SET_ERR(nameList.size() >= 2, "nameList doesn't contain enough strings");
-    CHECK_SET_ERR((nameList[0] == "L") && (nameList[1] == "rev"), "There are no 'L|rev' in nameList");
+    CHECK_SET_ERR( nameList.size( ) >= 6, "nameList doesn't contain enough strings" );
+    CHECK_SET_ERR( ( nameList[0] == "L" ) && ( nameList[1] == "rev" )
+        && ( nameList[2] == "S" ) && ( nameList[3] == "rev" )
+        && ( nameList[4] == "D" ) && ( nameList[5] == "rev" ), "Unexpected sequence names" );
 
 // 3. Undo
     QAbstractButton *undo= GTAction::button(os,"msa_action_undo");
@@ -335,12 +346,14 @@ GUI_TEST_CLASS_DEFINITION(test_0006_1){//undo replace_selected_rows_with_reverse
 
     GTGlobals::sleep(500);
     clipboardText = GTClipboard::text(os);
-    CHECK_SET_ERR(clipboardText == "TTG", "Clipboard string and expected MSA string differs");
+    CHECK_SET_ERR( clipboardText == "TTG\nTCA\nGAT",
+        "Clipboard string and expected MSA string differs" );
 
-//                 sequence name changed from L|rev ->
+//  sequence name changed from L|rev ->
     nameList = GTUtilsMSAEditorSequenceArea::getNameList(os);
-    CHECK_SET_ERR(nameList.size() >= 2, "nameList doesn't contain enough strings");
-    CHECK_SET_ERR((nameList[0] == "L") && (nameList[1] != "rev"), "There are 'L|rev' in nameList");
+    CHECK_SET_ERR( nameList.size( ) >= 3, "nameList doesn't contain enough strings" );
+    CHECK_SET_ERR( ( nameList[0] == "L" ) && ( nameList[1] == "S" ) && ( nameList[2] == "D" ),
+        "There are unexpected names in nameList" );
 
     GTGlobals::sleep(500);
 
@@ -354,73 +367,89 @@ GUI_TEST_CLASS_DEFINITION(test_0006_1){//undo replace_selected_rows_with_reverse
 
     GTGlobals::sleep(500);
     clipboardText = GTClipboard::text(os);
-    CHECK_SET_ERR(clipboardText == "GTT", "Clipboard string and expected MSA string differs");
+    CHECK_SET_ERR( clipboardText == "GTT\nACT\nTAG",
+        "Clipboard string and expected MSA string differs");
 
-//                 sequence name  changed from L -> L|revcompl
+//  sequence name changed from L -> L|revcompl
     nameList = GTUtilsMSAEditorSequenceArea::getNameList(os);
-    CHECK_SET_ERR(nameList.size() >= 2, "nameList doesn't contain enough strings");
-    CHECK_SET_ERR((nameList[0] == "L") && (nameList[1] == "rev"), "There are no 'L|rev' in nameList");
+    CHECK_SET_ERR( nameList.size( ) >= 6, "nameList doesn't contain enough strings" );
+    CHECK_SET_ERR( ( nameList[0] == "L" ) && ( nameList[1] == "rev" )
+        && ( nameList[2] == "S" ) && ( nameList[3] == "rev" )
+        && ( nameList[4] == "D" ) && ( nameList[5] == "rev" ), "Unexpected sequence names" );
 }
 
-GUI_TEST_CLASS_DEFINITION(test_0006_2){//undo replace_selected_rows_with_complement
+GUI_TEST_CLASS_DEFINITION( test_0006_2 )
+{
+//undo replace_selected_rows_with_complement
 // In-place reverse complement replace in MSA Editor (0002425)
 
 // 1. Open file _common_data\scenarios\msa\translations_nucl.aln
-    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "translations_nucl.aln");
+    GTFileDialog::openFile( os, testDir + "_common_data/scenarios/msa/", "translations_nucl.aln" );
 
 // 2. Select first sequence and do context menu {Edit->Replace selected rows with reverce complement}
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_EDIT << "replace_selected_rows_with_complement"));
-    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0, 0), QPoint(-1, 0));
-    GTMouseDriver::click(os, Qt::RightButton);
+    GTUtilsDialog::waitForDialog( os, new PopupChooser( os, QStringList( ) << MSAE_MENU_EDIT
+        << "replace_selected_rows_with_complement" ) );
+    GTUtilsMSAEditorSequenceArea::selectArea( os, QPoint( 0, 0 ), QPoint( -1, 2 ) );
+    GTMouseDriver::click( os, Qt::RightButton );
 
 // Expected state: sequence changed from TTG -> AAC
-    GTGlobals::sleep(500);
-    GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep( 500 );
+    GTKeyboardDriver::keyClick( os, 'c', GTKeyboardDriver::key["ctrl"] );
 
-    GTGlobals::sleep(500);
-    QString clipboardText = GTClipboard::text(os);
-    CHECK_SET_ERR(clipboardText == "AAC", "Clipboard string and expected MSA string differs");
+    GTGlobals::sleep( 500 );
+    QString clipboardText = GTClipboard::text( os );
+    CHECK_SET_ERR( clipboardText == "AAC\nAGT\nCTA",
+        "Clipboard string and expected MSA string differs. Clipboard string is: "
+        + clipboardText );
 
-//                 sequence name  changed from L -> L|compl
-    QStringList nameList = GTUtilsMSAEditorSequenceArea::getNameList(os);
-    CHECK_SET_ERR(nameList.size() >= 2, "nameList doesn't contain enough strings");
-    CHECK_SET_ERR((nameList[0] == "L") && (nameList[1] == "compl"), "There are no 'L|compl' in nameList");
+//  sequence name  changed from L -> L|compl
+    QStringList nameList = GTUtilsMSAEditorSequenceArea::getNameList( os );
+    CHECK_SET_ERR( nameList.size( ) >= 6, "nameList doesn't contain enough strings" );
+    CHECK_SET_ERR( ( nameList[0] == "L" ) && ( nameList[1] == "compl" )
+        && ( nameList[2] == "S" ) && ( nameList[3] == "compl" )
+        && ( nameList[4] == "D" ) && ( nameList[5] == "compl" ), "Unexpected sequence names" );
 
 // 3. Undo
-    QAbstractButton *undo= GTAction::button(os,"msa_action_undo");
-    GTWidget::click(os, undo);
+    QAbstractButton *undo = GTAction::button( os, "msa_action_undo" );
+    GTWidget::click( os, undo );
 
 // Expected state: sequence changed from AAC -> TTG
-    GTGlobals::sleep(500);
-    GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep( 500 );
+    GTKeyboardDriver::keyClick( os, 'c', GTKeyboardDriver::key["ctrl"] );
 
-    GTGlobals::sleep(500);
-    clipboardText = GTClipboard::text(os);
-    CHECK_SET_ERR(clipboardText == "TTG", "Clipboard string and expected MSA string differs");
+    GTGlobals::sleep( 500 );
+    clipboardText = GTClipboard::text( os );
+    CHECK_SET_ERR( clipboardText == "TTG\nTCA\nGAT",
+        "Clipboard string and expected MSA string differs" );
 
-//                 sequence name changed from L|rev ->
-    nameList = GTUtilsMSAEditorSequenceArea::getNameList(os);
-    CHECK_SET_ERR(nameList.size() >= 2, "nameList doesn't contain enough strings");
-    CHECK_SET_ERR((nameList[0] == "L") && (nameList[1] != "compl"), "There are 'L|compl' in nameList");
+//  sequence name changed from L|rev ->
+    nameList = GTUtilsMSAEditorSequenceArea::getNameList( os );
+    CHECK_SET_ERR( nameList.size( ) >= 3, "nameList doesn't contain enough strings" );
+    CHECK_SET_ERR( ( nameList[0] == "L" ) && ( nameList[1] == "S" ) && ( nameList[2] == "D" ),
+        "There are unexpected names in nameList" );
 
-    GTGlobals::sleep(500);
+    GTGlobals::sleep( 500 );
 
 // 4. Redo
-    QAbstractButton *redo= GTAction::button(os,"msa_action_redo");
-    GTWidget::click(os, redo);
+    QAbstractButton *redo = GTAction::button( os, "msa_action_redo" );
+    GTWidget::click( os, redo );
 
 // Expected state: sequence changed from TTG -> AAC
-    GTGlobals::sleep(500);
-    GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep( 500 );
+    GTKeyboardDriver::keyClick( os, 'c', GTKeyboardDriver::key["ctrl"] );
 
-    GTGlobals::sleep(500);
-    clipboardText = GTClipboard::text(os);
-    CHECK_SET_ERR(clipboardText == "AAC", "Clipboard string and expected MSA string differs");
+    GTGlobals::sleep( 500 );
+    clipboardText = GTClipboard::text( os );
+    CHECK_SET_ERR( clipboardText == "AAC\nAGT\nCTA",
+        "Clipboard string and expected MSA string differs" );
 
-//                 sequence name  changed from L -> L|revcompl
-    nameList = GTUtilsMSAEditorSequenceArea::getNameList(os);
-    CHECK_SET_ERR(nameList.size() >= 2, "nameList doesn't contain enough strings");
-    CHECK_SET_ERR((nameList[0] == "L") && (nameList[1] == "compl"), "There are no 'L|compl' in nameList");
+//  sequence name  changed from L -> L|revcompl
+    nameList = GTUtilsMSAEditorSequenceArea::getNameList( os );
+    CHECK_SET_ERR( nameList.size( ) >= 6, "nameList doesn't contain enough strings" );
+    CHECK_SET_ERR( ( nameList[0] == "L" ) && ( nameList[1] == "compl" )
+        && ( nameList[2] == "S" ) && ( nameList[3] == "compl" )
+        && ( nameList[4] == "D" ) && ( nameList[5] == "compl" ),
+       "There are unexpected names in nameList" );
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0007){//remove columns with 3 or more gaps

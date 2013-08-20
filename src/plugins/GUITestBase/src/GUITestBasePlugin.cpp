@@ -156,9 +156,14 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 
     REGISTER_TEST(GUITest_regression_scenarios::test_1527);
     REGISTER_TEST(GUITest_regression_scenarios::test_1527_1);
+    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_1622, "https://ugene.unipro.ru/tracker/browse/UGENE-1622");
     REGISTER_TEST(GUITest_regression_scenarios::test_1689);
+    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_1703, "Restore the test after fix of pressing arrow keys with shift key");
     REGISTER_TEST(GUITest_regression_scenarios::test_1708);
     REGISTER_TEST(GUITest_regression_scenarios::test_1720);
+    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_1884, "Restore the test after fix of pressing arrow keys with shift key");
+    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_1886_1, "Restore the test after fix of pressing Esc key");
+    REGISTER_TEST(GUITest_regression_scenarios::test_1886_2);
 
 //////////////////////////////////////////////////////////////////////////
 // Common scenarios/project/

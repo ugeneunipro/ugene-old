@@ -1049,6 +1049,43 @@ GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, testDir + "_common_da
 GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
 }
 
+GUI_TEST_CLASS_DEFINITION( test_1622 )
+{
+    // 1. Open document "ma.aln"
+    GTFileDialog::openFile( os, testDir + "_common_data/scenarios/msa", "ma.aln" );
+
+    // 2. Save the initial content
+    GTUtilsMSAEditorSequenceArea::selectArea( os, QPoint( 0, 0 ), QPoint( 11, 17 ) );
+    GTKeyboardDriver::keyClick( os, 'c', GTKeyboardDriver::key["ctrl"] );
+    GTGlobals::sleep(200);
+    const QString initialContent = GTClipboard::text( os );
+
+    // 2.1. Remove selection
+    GTKeyboardDriver::keyClick( os, GTKeyboardDriver::key["esc"] );
+    GTGlobals::sleep(200);
+    GTUtilsMSAEditorSequenceArea::checkSelectedRect( os, QRect( ) );
+
+    // 3. Select a region in the sequence area
+    GTUtilsMSAEditorSequenceArea::selectArea( os, QPoint( 5, 4 ), QPoint( 10, 12 ) );
+
+    // 4. Shift the region
+    GTUtilsMSAEditorSequenceArea::selectArea( os, QPoint( 6, 7 ), QPoint( 11, 7 ) );
+
+    // 5. Obtain undo button
+    QAbstractButton *undo = GTAction::button( os, "msa_action_undo" );
+
+    // 6. Undo shifting, e.g. alignment should restore to the init state
+    GTWidget::click( os, undo );
+
+    // 7. Check the undone state
+    GTUtilsMSAEditorSequenceArea::selectArea( os, QPoint( 0, 0 ), QPoint( 11, 17 ) );
+    GTKeyboardDriver::keyClick( os, 'c', GTKeyboardDriver::key["ctrl"] );
+    GTGlobals::sleep(200);
+    const QString undoneContent = GTClipboard::text( os );
+    CHECK_SET_ERR( undoneContent == initialContent,
+        "Undo works wrong. Found text is: " + undoneContent );
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1689){
 //1. Open "data/samples/CLUSTALW/COI.aln"
     GTFileDialog::openFile(os, dataDir+"samples/CLUSTALW/", "COI.aln");
@@ -1081,6 +1118,29 @@ GUI_TEST_CLASS_DEFINITION(test_1689){
     GTUtilsDialog::waitForDialog(os, new CheckConsensusValues(os,-1,100));
     GTMenu::showContextMenu(os,GTUtilsMdi::activeWindow(os));
 //Expected state: the threshold is 100%
+}
+
+GUI_TEST_CLASS_DEFINITION( test_1703 )
+{
+    // 1. Open document "ma.aln"
+    GTFileDialog::openFile( os, testDir + "_common_data/scenarios/msa", "ma.aln" );
+
+    // 2. Select some row in the name list area
+    GTUtilsMSAEditorSequenceArea::click( os, QPoint( -5, 6 ) );
+    GTGlobals::sleep(200);
+    GTUtilsMSAEditorSequenceArea::checkSelectedRect( os, QRect( 0, 6, 12, 1 ) );
+
+    // 3. Select the upper row
+    GTKeyboardDriver::keyClick( os, GTKeyboardDriver::key["up"], GTKeyboardDriver::key["shift"] );
+    GTGlobals::sleep(200);
+    GTUtilsMSAEditorSequenceArea::checkSelectedRect( os, QRect( 0, 6, 12, 2 ) );
+
+    // 4. Select the bottom row
+    GTKeyboardDriver::keyClick( os, GTKeyboardDriver::key["down"], GTKeyboardDriver::key["shift"] );
+    GTGlobals::sleep(200);
+    GTKeyboardDriver::keyClick( os, GTKeyboardDriver::key["down"], GTKeyboardDriver::key["shift"] );
+    GTGlobals::sleep(200);
+    GTUtilsMSAEditorSequenceArea::checkSelectedRect( os, QRect( 0, 7, 12, 2 ) );
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1708){
@@ -1138,6 +1198,100 @@ GUI_TEST_CLASS_DEFINITION(test_1720){
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "D11266.gb"));
     GTUtilsLog::check(os,l);
 //Expected state: project view with document "D11266.gb", no error messages in log appear
+}
+
+GUI_TEST_CLASS_DEFINITION( test_1884 )
+{
+    // 1. Open document "ma.aln"
+    GTFileDialog::openFile( os, testDir + "_common_data/scenarios/msa", "ma.aln" );
+
+    // 2. Select some row in the name list area
+    const int startRowNumber = 6;
+    const int alignmentLength = 12;
+    GTUtilsMSAEditorSequenceArea::click( os, QPoint( -5, startRowNumber ) );
+    GTGlobals::sleep( 200 );
+    GTUtilsMSAEditorSequenceArea::checkSelectedRect( os, QRect( 0, startRowNumber,
+        alignmentLength, 1 ) );
+
+    // 3. Select all the upper rows and make some extra "selection"
+    const int extraUpperSelectionCount = 3;
+    GTKeyboardDriver::keyPress( os, GTKeyboardDriver::key["shift"] );
+    GTGlobals::sleep(200);
+    for ( int i = 0; i < startRowNumber + extraUpperSelectionCount; ++i ) {
+        GTKeyboardDriver::keyClick( os, GTKeyboardDriver::key["up"] );
+        GTGlobals::sleep(200);
+    }
+    const int upperSequencesCount = 7;
+    GTUtilsMSAEditorSequenceArea::checkSelectedRect( os, QRect( 0, startRowNumber,
+        alignmentLength, upperSequencesCount ) );
+
+    // 4. Decrease the selection
+    const int deselectionCount = extraUpperSelectionCount - 1;
+    for ( int i = 0; i < deselectionCount; ++i ) {
+        GTKeyboardDriver::keyClick( os, GTKeyboardDriver::key["down"] );
+        GTGlobals::sleep(200);
+    }
+    GTUtilsMSAEditorSequenceArea::checkSelectedRect( os, QRect( 0, startRowNumber,
+        alignmentLength, upperSequencesCount - deselectionCount ) );
+    GTKeyboardDriver::keyRelease( os, GTKeyboardDriver::key["shift"] );
+}
+
+GUI_TEST_CLASS_DEFINITION( test_1886_1 )
+{
+    // 1. Open document "ma.aln"
+    GTFileDialog::openFile( os, testDir + "_common_data/scenarios/msa", "ma.aln" );
+
+    // 2. Select a region in the sequence area
+    GTUtilsMSAEditorSequenceArea::selectArea( os, QPoint( 5, 4 ), QPoint( 10, 12 ) );
+
+    // 3. Shift the region but don't release left mouse button
+    const QPoint mouseDragPosition( 7, 7 );
+    GTUtilsMSAEditorSequenceArea::moveTo( os, mouseDragPosition );
+    GTMouseDriver::press( os );
+    GTUtilsMSAEditorSequenceArea::moveTo( os, mouseDragPosition + QPoint( 3, 0 ) );
+
+    // 4. Call context menu
+    GTMouseDriver::click( os, Qt::RightButton );
+    GTGlobals::sleep(200);
+
+    // 5. Release left mouse button
+    GTMouseDriver::release( os );
+    GTGlobals::sleep(200);
+
+    // 6. Close context menu
+    GTKeyboardDriver::keyClick( os, GTKeyboardDriver::key["esc"] );
+    GTGlobals::sleep(200);
+    GTUtilsMSAEditorSequenceArea::checkSelectedRect( os, QRect( QPoint( 8, 4 ), QPoint( 13, 12 ) ) );
+
+    // 7. Insert gaps with the Space button
+    GTKeyboardDriver::keyClick( os, GTKeyboardDriver::key["space"] );
+    GTUtilsMSAEditorSequenceArea::checkSelectedRect( os, QRect( QPoint( 13, 4 ), QPoint( 18, 12 ) ) );
+}
+
+GUI_TEST_CLASS_DEFINITION( test_1886_2 )
+{
+    // 1. Open document "ma.aln"
+    GTFileDialog::openFile( os, testDir + "_common_data/scenarios/msa", "ma.aln" );
+
+    // 2. Select a region in the sequence area
+    GTUtilsMSAEditorSequenceArea::selectArea( os, QPoint( 5, 4 ), QPoint( 10, 12 ) );
+
+    // 3. Shift the region but don't release left mouse button
+    const QPoint mouseDragPosition( 7, 7 );
+    GTUtilsMSAEditorSequenceArea::moveTo( os, mouseDragPosition );
+    GTMouseDriver::press( os );
+    GTUtilsMSAEditorSequenceArea::moveTo( os, mouseDragPosition + QPoint( 3, 0 ) );
+
+    // 4. Replace selected rows with reverse
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_EDIT << "replace_selected_rows_with_reverse"));
+    GTMouseDriver::click(os, Qt::RightButton);
+
+    // 5. Obtain selection
+    GTKeyboardDriver::keyClick( os, 'c', GTKeyboardDriver::key["ctrl"] );
+    GTGlobals::sleep(200);
+    const QString selectionContent = GTClipboard::text( os );
+    CHECK_SET_ERR( "--TGAC\n--TGAT\n--AGAC\n--AGAT\n--AGAT\n"
+        "--TGAA\n--CGAT\n--CGAT\n--CGAT" == selectionContent, "MSA changing is failed" );
 }
 
 } // GUITest_regression_scenarios namespace
