@@ -64,12 +64,15 @@ void HttpRequestCDD::sendRequest(const QString &params,const QString &query) {
     int queEnd = response.indexOf('"', queStart);
     QString queStr = response.mid(queStart, queEnd-queStart);
 
+    Waiter::await(10000);
+
+    offs = 0;
+    read = 0;
     if(!io->open( host + "dhandle=" + queStr, IOAdapterMode_Read )) {
         connectionError = true; 
         error = QObject::tr("Cannot open the IO adapter");
         return;
     }
-
     response.clear();
     response.resize(CHUNK_SIZE);
     do {
