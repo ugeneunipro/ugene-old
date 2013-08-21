@@ -176,7 +176,7 @@ Task* ConvertFilesFormatWorker::tick() {
          }
          QStringList selectedFormatExtensions = dfr->getFormatById( selectedFormat )->getSupportedDocumentFileExtensions();
          const QString detectedFormat = formats.first().extension;
-         if( excludedFormats.contains( selectedFormat, Qt::CaseInsensitive ) || 
+         if( excludedFormats.contains( detectedFormat, Qt::CaseInsensitive ) ||
              selectedFormatExtensions.contains( detectedFormat, Qt::CaseInsensitive ) )
          {
              const Message resultMessage( BaseTypes::STRING_TYPE(), sourceURL.getURLString() );
