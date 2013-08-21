@@ -168,8 +168,8 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 //////////////////////////////////////////////////////////////////////////
 // Common scenarios/project/
 //////////////////////////////////////////////////////////////////////////
-    REGISTER_TEST_IGNORED_LINUX(GUITest_common_scenarios_project::test_0004, "https://ugene.unipro.ru/tracker/browse/UGENE-2005");
-    REGISTER_TEST_IGNORED_LINUX(GUITest_common_scenarios_project::test_0005, "https://ugene.unipro.ru/tracker/browse/UGENE-2005");
+    REGISTER_TEST(GUITest_common_scenarios_project::test_0004);
+    REGISTER_TEST(GUITest_common_scenarios_project::test_0005);
     REGISTER_TEST(GUITest_common_scenarios_project::test_0006);
     REGISTER_TEST(GUITest_common_scenarios_project::test_0007);
     REGISTER_TEST(GUITest_common_scenarios_project::test_0009);
@@ -208,7 +208,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 // Common scenarios/project/anonymous project/
 //////////////////////////////////////////////////////////////////////////
 
-    REGISTER_TEST_IGNORED_LINUX(GUITest_common_scenarios_project_anonymous_project::test_0003, "https://ugene.unipro.ru/tracker/browse/UGENE-2005");
+    REGISTER_TEST(GUITest_common_scenarios_project_anonymous_project::test_0003);
 
 //////////////////////////////////////////////////////////////////////////
 // Common scenarios/project/relations/
@@ -221,7 +221,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 //////////////////////////////////////////////////////////////////////////
     REGISTER_TEST(GUITest_common_scenarios_project_user_locking::test_0001);
     REGISTER_TEST(GUITest_common_scenarios_project_user_locking::test_0002);
-    REGISTER_TEST_IGNORED_LINUX(GUITest_common_scenarios_project_user_locking::test_0003, "https://ugene.unipro.ru/tracker/browse/UGENE-2005");
+    REGISTER_TEST(GUITest_common_scenarios_project_user_locking::test_0003);
     REGISTER_TEST(GUITest_common_scenarios_project_user_locking::test_0005);
 
 //////////////////////////////////////////////////////////////////////////
@@ -230,7 +230,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_project_document_modifying::test_0001);
     REGISTER_TEST(GUITest_common_scenarios_project_document_modifying::test_0001_1);
 
-    REGISTER_TEST_IGNORED_LINUX(GUITest_common_scenarios_project_document_modifying::test_0002, "https://ugene.unipro.ru/tracker/browse/UGENE-2005");
+    REGISTER_TEST(GUITest_common_scenarios_project_document_modifying::test_0002);
 
 //////////////////////////////////////////////////////////////////////////
 // Common scenarios/Sequence view/
