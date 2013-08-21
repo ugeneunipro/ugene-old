@@ -1130,17 +1130,19 @@ GUI_TEST_CLASS_DEFINITION( test_1703 )
     GTGlobals::sleep(200);
     GTUtilsMSAEditorSequenceArea::checkSelectedRect( os, QRect( 0, 6, 12, 1 ) );
 
+    GTKeyboardDriver::keyPress(os,GTKeyboardDriver::key["shift"]);
     // 3. Select the upper row
-    GTKeyboardDriver::keyClick( os, GTKeyboardDriver::key["up"], GTKeyboardDriver::key["shift"] );
-    GTGlobals::sleep(200);
-    GTUtilsMSAEditorSequenceArea::checkSelectedRect( os, QRect( 0, 6, 12, 2 ) );
+    GTKeyboardDriver::keyClick( os, GTKeyboardDriver::key["up"] );
+    GTGlobals::sleep(500);
+    GTUtilsMSAEditorSequenceArea::checkSelectedRect( os, QRect( 0, 5, 12, 2 ) );
 
     // 4. Select the bottom row
-    GTKeyboardDriver::keyClick( os, GTKeyboardDriver::key["down"], GTKeyboardDriver::key["shift"] );
-    GTGlobals::sleep(200);
-    GTKeyboardDriver::keyClick( os, GTKeyboardDriver::key["down"], GTKeyboardDriver::key["shift"] );
-    GTGlobals::sleep(200);
-    GTUtilsMSAEditorSequenceArea::checkSelectedRect( os, QRect( 0, 7, 12, 2 ) );
+    GTKeyboardDriver::keyClick( os, GTKeyboardDriver::key["down"] );
+    GTGlobals::sleep(500);
+    GTKeyboardDriver::keyClick( os, GTKeyboardDriver::key["down"] );
+    GTGlobals::sleep(500);
+    GTKeyboardDriver::keyRelease(os,GTKeyboardDriver::key["shift"]);
+    GTUtilsMSAEditorSequenceArea::checkSelectedRect( os, QRect( 0, 6, 12, 2 ) );
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1708){
@@ -1217,12 +1219,12 @@ GUI_TEST_CLASS_DEFINITION( test_1884 )
     const int extraUpperSelectionCount = 3;
     GTKeyboardDriver::keyPress( os, GTKeyboardDriver::key["shift"] );
     GTGlobals::sleep(200);
-    for ( int i = 0; i < startRowNumber + extraUpperSelectionCount; ++i ) {
+    for ( int i = 0; i < extraUpperSelectionCount; ++i ) {
         GTKeyboardDriver::keyClick( os, GTKeyboardDriver::key["up"] );
         GTGlobals::sleep(200);
     }
-    const int upperSequencesCount = 7;
-    GTUtilsMSAEditorSequenceArea::checkSelectedRect( os, QRect( 0, startRowNumber,
+    const int upperSequencesCount = 4;
+    GTUtilsMSAEditorSequenceArea::checkSelectedRect( os, QRect( 0, startRowNumber-extraUpperSelectionCount,
         alignmentLength, upperSequencesCount ) );
 
     // 4. Decrease the selection
@@ -1231,7 +1233,7 @@ GUI_TEST_CLASS_DEFINITION( test_1884 )
         GTKeyboardDriver::keyClick( os, GTKeyboardDriver::key["down"] );
         GTGlobals::sleep(200);
     }
-    GTUtilsMSAEditorSequenceArea::checkSelectedRect( os, QRect( 0, startRowNumber,
+    GTUtilsMSAEditorSequenceArea::checkSelectedRect( os, QRect( 0, startRowNumber-1,
         alignmentLength, upperSequencesCount - deselectionCount ) );
     GTKeyboardDriver::keyRelease( os, GTKeyboardDriver::key["shift"] );
 }

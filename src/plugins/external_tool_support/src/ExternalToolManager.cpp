@@ -56,7 +56,9 @@ void ExternalToolManagerImpl::start() {
         toolPaths.insert(tool->getName(), toolPath);
     }
 
-    validateTools(toolPaths);
+    if (qgetenv("UGENE_GUI_TEST").toInt() != 1){//no tools validation for GUI-testing
+        validateTools(toolPaths);
+    }
 }
 
 void ExternalToolManagerImpl::stop() {
