@@ -125,19 +125,62 @@ GUI_TEST_CLASS_DEFINITION(test_0001){
     QAbstractButton* wiz = GTAction::button(os, "Show wizard");
     GTWidget::click(os,wiz);
 
-    //GTUtilsDialog::waitForDialog(os,new GTFileDialogUtilsMac(os, "path", "fileName"));
-    //QAbstractButton* but = GTAction::button(os, "Load schema");
-    //GTWidget::click(os, but);
-
-    //GTKeyboardDriver::keyClick(os, 'r' ,GTKeyboardDriver::key["ctrl"]);
     TaskScheduler* scheduller = AppContext::getTaskScheduler();
 
     GTGlobals::sleep(5000);
     while(!scheduller->getTopLevelTasks().isEmpty()){
         GTGlobals::sleep();
     }
+}
+#define GT_CLASS_NAME "GTUtilsDialog::DotPlotFiller"
+#define GT_METHOD_NAME "run"
+class WizardFiller0002:public WizardFiller{
+public:
+    WizardFiller0002(U2OpStatus &_os):WizardFiller(_os,"Tuxedo Wizard"){}
+    void run(){
+        QWidget* dialog = QApplication::activeModalWidget();
+        GT_CHECK(dialog, "activeModalWidget is NULL");
+
+        QList<QWidget*> list= dialog->findChildren<QWidget*>();
+
+        QList<QWidget*> datasetList;
+        foreach(QWidget* act, list){
+            if(act->objectName()=="DatasetWidget")
+            datasetList.append(act);
+        }
+        QWidget* dataset = datasetList.takeLast();
+
+        QPushButton* cancel = WizardFiller::getCancelButton(os);
+
+        GT_CHECK(dataset,"dataset widget not found");
+        GT_CHECK(cancel, "cancel button not found");
+
+        QPoint i = dataset->mapToGlobal(dataset->rect().bottomLeft());
+        QPoint j = cancel->mapToGlobal(cancel->rect().topLeft());
+
+        CHECK_SET_ERR(qAbs(i.y()-j.y())<50, QString("%1   %2").arg(i.y()).arg(j.y()));
+        GTWidget::click(os,cancel);
+    }
+};
+#undef GT_METHOD_NAME
+#undef GT_CLASS_NAME
+
+GUI_TEST_CLASS_DEFINITION(test_0002){
+//    1. Open WD
+#ifndef Q_OS_LINUX
+    GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
+#endif
+    QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
+    GTMenu::clickMenuItem(os, menu, QStringList() << "Workflow Designer");
+//    2. Open tuxedo pipeline from samples
+    GTUtilsDialog::waitForDialog(os, new WizardFiller0002(os));
+    GTUtilsDialog::waitForDialog(os,new ConfigureTuxedoWizardFiller(os,ConfigureTuxedoWizardFiller::full
+                                                                    ,ConfigureTuxedoWizardFiller::singleReads));
+    GTUtilsWorkflowDesigner::addSample(os,"Tuxedo tools");
+//    3. Open wizard
 
 
+//    Expected state: dataset widget fits full height
 }
 
 } // namespace GUITest_common_scenarios_annotations_edit
