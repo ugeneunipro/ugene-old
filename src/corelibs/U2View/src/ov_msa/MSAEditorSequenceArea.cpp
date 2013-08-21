@@ -1464,6 +1464,8 @@ void MSAEditorSequenceArea::sl_buildContextMenu(GObjectView*, QMenu* m) {
         editMenu->addActions(actions);
         copyMenu->addAction(ui->getCopySelectionAction());
     }
+
+    m->setObjectName( "msa sequence area context menu" ); // for GUI testing
 }
 void MSAEditorSequenceArea::sl_showCustomSettings(){
     AppContext::getAppSettingsGUI()->showSettingsDialog(ColorSchemaSettingsPageId);

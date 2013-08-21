@@ -20,33 +20,22 @@ k
  * MA 02110-1301, USA.
  */
 
-#ifndef GTTESTS_DP_VIEW_H_
-#define GTTESTS_DP_VIEW_H_
+#ifndef GTUTILS_ESC_CLICKER_H_
+#define GTUTILS_ESC_CLICKER_H_
 
-#include <U2Test/GUITestBase.h>
 #include "GTUtilsDialog.h"
 
 namespace U2 {
 
-namespace GUITest_Common_scenarios_dp_view {
-#undef GUI_TEST_PREFIX
-#define GUI_TEST_PREFIX "GUITest_Common_scenarios_dp_view_"
+class GTUtilsEscClicker : public Filler {
+public:
+    GTUtilsEscClicker( U2OpStatus &_os, const QString &menuObjectName, bool _mouse = false );
+    virtual void run();
 
-GUI_TEST_CLASS_DECLARATION(test_0011)
-GUI_TEST_CLASS_DECLARATION(test_0011_1)
-GUI_TEST_CLASS_DECLARATION(test_0011_2)
-GUI_TEST_CLASS_DECLARATION(test_0011_3)
+private:
+    bool mouse;
+};
 
-GUI_TEST_CLASS_DECLARATION(test_0013)
-GUI_TEST_CLASS_DECLARATION(test_0014)
-GUI_TEST_CLASS_DECLARATION(test_0014_1)
-GUI_TEST_CLASS_DECLARATION(test_0014_2)
-
-GUI_TEST_CLASS_DECLARATION(test_0020)
-
-#undef GUI_TEST_PREFIX
 } // namespace U2
 
-} //namespace
-
-#endif // GTTESTS_DP_VIEW_H_
+#endif // GTUTILS_ESC_CLICKER_H_

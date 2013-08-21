@@ -20,6 +20,7 @@
  */
 
 #include "../../GTUtilsMsaEditorSequenceArea.h"
+#include "../../GTUtilsEscClicker.h"
 #include "GTTestsRegressionScenarios.h"
 #include "api/GTGlobals.h"
 #include "api/GTMouseDriver.h"
@@ -1253,21 +1254,18 @@ GUI_TEST_CLASS_DEFINITION( test_1886_1 )
     GTUtilsMSAEditorSequenceArea::moveTo( os, mouseDragPosition + QPoint( 3, 0 ) );
 
     // 4. Call context menu
+    GTUtilsDialog::waitForDialog( os, new GTUtilsEscClicker( os, "msa sequence area context menu" ) );
     GTMouseDriver::click( os, Qt::RightButton );
-    GTGlobals::sleep(200);
+    GTGlobals::sleep( 200 );
+    GTUtilsMSAEditorSequenceArea::checkSelectedRect( os, QRect( QPoint( 8, 4 ), QPoint( 13, 12 ) ) );
 
     // 5. Release left mouse button
     GTMouseDriver::release( os );
-    GTGlobals::sleep(200);
+    GTGlobals::sleep( 200 );
 
-    // 6. Close context menu
-    GTKeyboardDriver::keyClick( os, GTKeyboardDriver::key["esc"] );
-    GTGlobals::sleep(200);
-    GTUtilsMSAEditorSequenceArea::checkSelectedRect( os, QRect( QPoint( 8, 4 ), QPoint( 13, 12 ) ) );
-
-    // 7. Insert gaps with the Space button
+    // 6. Insert gaps with the Space button
     GTKeyboardDriver::keyClick( os, GTKeyboardDriver::key["space"] );
-    GTUtilsMSAEditorSequenceArea::checkSelectedRect( os, QRect( QPoint( 13, 4 ), QPoint( 18, 12 ) ) );
+    GTUtilsMSAEditorSequenceArea::checkSelectedRect( os, QRect( QPoint( 14, 4 ), QPoint( 19, 12 ) ) );
 }
 
 GUI_TEST_CLASS_DEFINITION( test_1886_2 )
@@ -1285,7 +1283,8 @@ GUI_TEST_CLASS_DEFINITION( test_1886_2 )
     GTUtilsMSAEditorSequenceArea::moveTo( os, mouseDragPosition + QPoint( 3, 0 ) );
 
     // 4. Replace selected rows with reverse
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_EDIT << "replace_selected_rows_with_reverse"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_EDIT
+        << "replace_selected_rows_with_reverse") );
     GTMouseDriver::click(os, Qt::RightButton);
 
     // 5. Obtain selection

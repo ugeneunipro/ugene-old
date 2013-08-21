@@ -18,7 +18,9 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301, USA.
  */
+
 #include "GTTestsDpView.h"
+#include "../../../GTUtilsEscClicker.h"
 #include "api/GTMouseDriver.h"
 #include "api/GTKeyboardDriver.h"
 #include "api/GTKeyboardUtils.h"
@@ -41,18 +43,6 @@
 
 namespace U2 {
 
-void EscClicker::run()
-{   GTGlobals::sleep(1000);
-    if(mouse){
-        QPoint p = GTMouseDriver::getMousePosition();
-        p.setX(p.x()-50);
-        GTMouseDriver::moveTo(os,p);
-        GTMouseDriver::click(os);
-    }
-    else{
-        GTKeyboardDriver::keyClick(os,GTKeyboardDriver::key["esc"]);
-    }
-}
 namespace GUITest_Common_scenarios_dp_view {
 
 GUI_TEST_CLASS_DEFINITION(test_0011){
@@ -198,7 +188,7 @@ GUI_TEST_CLASS_DEFINITION(test_0014) {
 //9. Repeat operation 3-4 times
 //Expected state: menu repaints correctly, UGENE not crashed
     for(int i=0;i<4;i++){
-        GTUtilsDialog::waitForDialog(os, new EscClicker(os));
+        GTUtilsDialog::waitForDialog(os, new GTUtilsEscClicker(os, "dotplot context menu"));
 
         GTWidget::click(os, GTWidget::findWidget(os, GTUtilsProjectTreeView::widgetName));
         QWidget* dpWidget = GTWidget::findWidget(os, "dotplot widget");
@@ -221,7 +211,7 @@ GUI_TEST_CLASS_DEFINITION(test_0014_1){
     GTUtilsProjectTreeView::openView(os);
 
     for(int i=0;i<4;i++){
-        GTUtilsDialog::waitForDialog(os, new EscClicker(os));
+        GTUtilsDialog::waitForDialog(os, new GTUtilsEscClicker(os, "dotplot context menu"));
 
         GTWidget::click(os, GTWidget::findWidget(os, GTUtilsAnnotationsTreeView::widgetName));
         QWidget* dpWidget = GTWidget::findWidget(os, "dotplot widget");
@@ -243,7 +233,7 @@ GUI_TEST_CLASS_DEFINITION(test_0014_2){
     GTUtilsProjectTreeView::openView(os);
 
     for(int i=0;i<4;i++){
-        GTUtilsDialog::waitForDialog(os, new EscClicker(os,true));
+        GTUtilsDialog::waitForDialog(os, new GTUtilsEscClicker(os, "dotplot context menu", true));
 
         GTWidget::click(os, GTWidget::findWidget(os, GTUtilsAnnotationsTreeView::widgetName));
         QWidget* dpWidget = GTWidget::findWidget(os, "dotplot widget");

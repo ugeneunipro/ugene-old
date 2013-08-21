@@ -69,6 +69,7 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/GTUtilsApp.h \
             src/GTUtilsDialog.h \
             src/GTUtilsDocument.h \
+            src/GTUtilsEscClicker.h \
             src/GTUtilsLog.h \
             src/GTUtilsMdi.h \
             src/GTUtilsProject.h \
@@ -224,6 +225,7 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/GTUtilsApp.cpp \
             src/GTUtilsDialog.cpp \
             src/GTUtilsDocument.cpp \
+            src/GTUtilsEscClicker.cpp \
             src/GTUtilsLog.cpp \
             src/GTUtilsMdi.cpp \
             src/GTUtilsProject.cpp \

@@ -6,7 +6,6 @@
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
-k
  * of the License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
@@ -20,33 +19,31 @@ k
  * MA 02110-1301, USA.
  */
 
-#ifndef GTTESTS_DP_VIEW_H_
-#define GTTESTS_DP_VIEW_H_
+#include "api/GTMouseDriver.h"
+#include "api/GTKeyboardDriver.h"
 
-#include <U2Test/GUITestBase.h>
-#include "GTUtilsDialog.h"
+#include "GTUtilsEscClicker.h"
 
 namespace U2 {
 
-namespace GUITest_Common_scenarios_dp_view {
-#undef GUI_TEST_PREFIX
-#define GUI_TEST_PREFIX "GUITest_Common_scenarios_dp_view_"
+GTUtilsEscClicker::GTUtilsEscClicker( U2OpStatus &_os, const QString &menuObjectName, bool _mouse )
+    : Filler( _os, GUIDialogWaiter::WaitSettings( menuObjectName, GUIDialogWaiter::Popup ) ),
+    mouse( _mouse )
+{
 
-GUI_TEST_CLASS_DECLARATION(test_0011)
-GUI_TEST_CLASS_DECLARATION(test_0011_1)
-GUI_TEST_CLASS_DECLARATION(test_0011_2)
-GUI_TEST_CLASS_DECLARATION(test_0011_3)
+}
 
-GUI_TEST_CLASS_DECLARATION(test_0013)
-GUI_TEST_CLASS_DECLARATION(test_0014)
-GUI_TEST_CLASS_DECLARATION(test_0014_1)
-GUI_TEST_CLASS_DECLARATION(test_0014_2)
+void GTUtilsEscClicker::run( )
+{
+    GTGlobals::sleep( 1000 );
+    if ( mouse ) {
+        QPoint p = GTMouseDriver::getMousePosition( );
+        p.setX( p.x( ) - 50 );
+        GTMouseDriver::moveTo( os, p );
+        GTMouseDriver::click( os );
+    } else {
+        GTKeyboardDriver::keyClick( os, GTKeyboardDriver::key["esc"] );
+    }
+}
 
-GUI_TEST_CLASS_DECLARATION(test_0020)
-
-#undef GUI_TEST_PREFIX
 } // namespace U2
-
-} //namespace
-
-#endif // GTTESTS_DP_VIEW_H_
