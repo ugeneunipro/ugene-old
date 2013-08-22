@@ -130,6 +130,9 @@ public:
 
     virtual void onSequenceObjectRenamed(const QString& oldName);
 
+signals:
+    void si_titleClicked(ADVSequenceWidget*);
+
 protected slots:
     void sl_onViewDestroyed(QObject*);
 

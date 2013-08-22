@@ -527,6 +527,14 @@ bool ADVSingleSequenceWidget::eventFilter(QObject* o, QEvent* e) {
     } else if (t == QEvent::FocusIn || t == QEvent::MouseButtonPress || t == QEvent::MouseButtonRelease) {
         ctx->setFocusedSequenceWidget(this);
     } 
+
+    if (o == headerWidget && t == QEvent::MouseButtonPress) {
+        QMouseEvent* event = dynamic_cast<QMouseEvent*>(e);
+        CHECK(event, false);
+        if (event->buttons() == Qt::LeftButton) {
+            emit si_titleClicked(this);
+        }
+    }
     return false;
 }
 

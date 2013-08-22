@@ -98,6 +98,7 @@ AnnotatedDNAView::AnnotatedDNAView(const QString& viewName, const QList<U2Sequen
     posSelectorWidgetAction = NULL;
     annotationsView = NULL;
     focusedWidget = NULL;
+    replacedSeqWidget = NULL;
 
     createAnnotationAction = (new ADVAnnotationCreation(this))->getCreateAnnotationAction();
 
@@ -179,13 +180,15 @@ QWidget* AnnotatedDNAView::createWidget() {
     scrolledWidgetLayout->setContentsMargins(0, 0, 0, 0);
     scrolledWidgetLayout->setSpacing(0);
     scrolledWidget->setBackgroundRole(QPalette::Light);
+    scrolledWidget->installEventFilter(this);
 
     annotationsView = new AnnotationsTreeView(this);
     annotationsView->setParent(mainSplitter);
     annotationsView->setObjectName("annotations_tree_view");
-    for (int i = seqContexts.size(); --i>=0;) { //use reverse mode -> so sequence widget for a lower index will be on top
+    for (int i = 0; i < seqContexts.size(); ++i) {
         ADVSequenceObjectContext* seqCtx = seqContexts[i];
         ADVSingleSequenceWidget* block = new ADVSingleSequenceWidget(seqCtx, this);
+        connect(block, SIGNAL(si_titleClicked(ADVSequenceWidget*)), SLOT(sl_onSequenceWidgetTitleClicked(ADVSequenceWidget*)));
         block->setObjectName("ADV_single_sequence_widget_"+QString::number(i));
         addSequenceWidget(block);
     }
@@ -271,6 +274,10 @@ void AnnotatedDNAView::sl_splitterMoved(int, int) {
     timerId = startTimer(100);*/
 }
 
+void AnnotatedDNAView::sl_onSequenceWidgetTitleClicked(ADVSequenceWidget* seqWidget) {
+    replacedSeqWidget = seqWidget;
+}
+
 void AnnotatedDNAView::timerEvent(QTimerEvent*) {
     //see comment for sl_splitterMoved()
     assert(timerId!=0);
@@ -321,7 +328,20 @@ bool AnnotatedDNAView::eventFilter(QObject* o, QEvent* e) {
                     }
                 }
             }
-        } 
+        }
+    } else if (o == scrolledWidget) {
+        if (replacedSeqWidget && e->type() == QEvent::MouseMove) {
+            QMouseEvent* event = dynamic_cast<QMouseEvent*>(e);
+            if (event->buttons() == Qt::LeftButton) {
+                seqWidgetMove(event->pos());
+            }
+        } else if (replacedSeqWidget && e->type() == QEvent::MouseButtonRelease) {
+            QMouseEvent* event = dynamic_cast<QMouseEvent*>(e);
+            if (event->buttons() == Qt::LeftButton) {
+                finishSeqWidgetMove();
+            }
+        }
+        return false;
     } else if (e->type() == QEvent::Resize) {
         ADVSequenceWidget* v = qobject_cast<ADVSequenceWidget*>(o);
         if ( v!=NULL ) {
@@ -626,7 +646,7 @@ void AnnotatedDNAView::addSequenceWidget(ADVSequenceWidget* v) {
         addAutoAnnotations(c);
         addGraphs(c);
     }
-    scrolledWidgetLayout->insertWidget(0, v);
+    scrolledWidgetLayout->addWidget(v);
     v->setVisible(true);
     v->installEventFilter(this);
     updateScrollAreaHeight();
@@ -784,8 +804,10 @@ QString AnnotatedDNAView::addObject(GObject* o) {
         //if mainSplitter==NULL -> its view initialization and widgets will be added later
         if (mainSplitter!=NULL && !isChildWidgetObject(dnaObj)) { 
             ADVSingleSequenceWidget* block = new ADVSingleSequenceWidget(sc, this);
+            connect(block, SIGNAL(si_titleClicked(ADVSequenceWidget*)), SLOT(sl_onSequenceWidgetTitleClicked(ADVSequenceWidget*)));
             block->setObjectName("ADV_single_sequence_widget_" + QString::number(seqViews.count()));
             addSequenceWidget(block);
+            setFocusedSequenceWidget(block);
         }
         addRelatedAnnotations(sc);
         emit si_sequenceAdded(sc);
@@ -978,6 +1000,40 @@ void AnnotatedDNAView::importDocAnnotations(Document* doc) {
         }
         addObject(o);
     }
+}
+
+void AnnotatedDNAView::seqWidgetMove(const QPoint &pos) {
+    SAFE_POINT(replacedSeqWidget, "Moving the NULL widget", );
+    CHECK_EXT(seqViews.contains(replacedSeqWidget), replacedSeqWidget = NULL, );
+
+    int index = seqViews.indexOf(replacedSeqWidget);
+    QRect replacedWidgetRect = replacedSeqWidget->geometry();
+    CHECK(!replacedWidgetRect.contains(pos), );
+
+    QRect prevWidgetRect;
+    // If previous widget exists, define its rectangle
+    if (index > 0) {
+        prevWidgetRect = seqViews[index - 1]->geometry();
+    }
+
+    QRect nextWidgetRect;
+    // If next widget exists, define its rectangle
+    if (index < seqViews.count() - 1) {
+        nextWidgetRect = seqViews[index + 1]->geometry();
+    }
+
+    if (prevWidgetRect.isValid() && pos.y() < prevWidgetRect.center().y()) {
+        seqViews.swap(index - 1, index);
+        scrolledWidgetLayout->insertWidget(index - 1, scrolledWidgetLayout->takeAt(index)->widget());
+    }
+    if (nextWidgetRect.isValid() && pos.y() > nextWidgetRect.top()) {
+        seqViews.swap(index, index + 1);
+        scrolledWidgetLayout->insertWidget(index, scrolledWidgetLayout->takeAt(index + 1)->widget());
+    }
+}
+
+void AnnotatedDNAView::finishSeqWidgetMove() {
+    replacedSeqWidget = NULL;
 }
 
 void AnnotatedDNAView::sl_onDocumentLoadedStateChanged() {

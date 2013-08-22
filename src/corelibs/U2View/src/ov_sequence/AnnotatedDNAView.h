@@ -180,6 +180,7 @@ private slots:
     void sl_onShowPosSelectorRequest();
     void sl_toggleHL();
     void sl_splitterMoved(int, int);
+    void sl_onSequenceWidgetTitleClicked(ADVSequenceWidget* seqWidget);
 
     void sl_addSequencePart();
     void sl_removeSequencePart();
@@ -201,6 +202,9 @@ private:
     void cancelAutoAnnotationUpdates(AutoAnnotationObject* aaObj, bool* existsRemovedTasks = NULL);
     void addGraphs(ADVSequenceObjectContext* seqCtx);
     void importDocAnnotations(Document* doc);
+
+    void seqWidgetMove(const QPoint& pos);
+    void finishSeqWidgetMove();
 
     QSplitter*          mainSplitter;
     QScrollArea*        scrollArea;
@@ -240,6 +244,7 @@ private:
     ADVSyncViewManager*         syncViewManager;
 
     ADVSequenceWidget*          focusedWidget;
+    ADVSequenceWidget*          replacedSeqWidget;     // not NULL when any sequence widget is dragging to the new place.
     
     int                         timerId;
 };
