@@ -126,11 +126,29 @@ void ConvertFilesFormatWorkerFactory::init() {
     localDomain->registerEntry( new ConvertFilesFormatWorkerFactory() );
 }
 
+void ConvertFilesFormatWorker::getSelectedFormatExtensions( ) {
+    DocumentFormatRegistry *dfr = AppContext::getDocumentFormatRegistry();
+    assert( NULL != dfr );
+    selectedFormatExtensions = dfr->getFormatById( selectedFormat )->getSupportedDocumentFileExtensions();
+}
+
+void ConvertFilesFormatWorker::getExcludedFormats( const QStringList &excludedFormatsIds ) {
+    DocumentFormatRegistry *dfr = AppContext::getDocumentFormatRegistry();
+    assert( NULL != dfr );
+    QStringListIterator formatsIterator(excludedFormatsIds);
+    while( formatsIterator.hasNext() ) {
+        const QStringList formatExtensions = dfr->getFormatById( formatsIterator.next() )->getSupportedDocumentFileExtensions();
+        excludedFormats.append( formatExtensions );
+    }
+}
+
 void ConvertFilesFormatWorker::init() {
     inputUrlPort = ports.value(INPUT_PORT);
     outputUrlPort = ports.value(OUTPUT_PORT); 
     selectedFormat = actor->getParameter( BaseAttributes::DOCUMENT_FORMAT_ATTRIBUTE().getId() )->getAttributeValue<QString>(context);
-    excludedFormats = actor->getParameter( EXCLUDED_FORMATS_ID )->getAttributeValue<QString>(context).split(",", QString::SkipEmptyParts);
+    getSelectedFormatExtensions( );
+    const QStringList excludedFormatsIds = actor->getParameter( EXCLUDED_FORMATS_ID )->getAttributeValue<QString>(context).split(",", QString::SkipEmptyParts);
+    getExcludedFormats( excludedFormatsIds );
 }
 
 void ConvertFilesFormatWorker::getWorkingDir( QString &workingDir ) {
@@ -170,12 +188,8 @@ Task* ConvertFilesFormatWorker::tick() {
              monitor()->addError( "Undefined file format", getActorId() );
              return NULL;
          }
-         DocumentFormatRegistry *dfr = AppContext::getDocumentFormatRegistry();
-         if( dfr == NULL ) {
-             return NULL;
-         }
-         QStringList selectedFormatExtensions = dfr->getFormatById( selectedFormat )->getSupportedDocumentFileExtensions();
          const QString detectedFormat = formats.first().extension;
+
          if( excludedFormats.contains( detectedFormat, Qt::CaseInsensitive ) ||
              selectedFormatExtensions.contains( detectedFormat, Qt::CaseInsensitive ) )
          {
@@ -187,9 +201,9 @@ Task* ConvertFilesFormatWorker::tick() {
          getWorkingDir( workingDir );
 
          bool isSourceSam = (detectedFormat == BaseDocumentFormats::SAM);
-         bool isTargetBam = (selectedFormat == BaseDocumentFormats::BAM);
+         bool isTargetBam = (selectedFormat == BaseDocumentFormats::BAM );
          bool isSourceBam = (detectedFormat == BaseDocumentFormats::BAM);
-         bool isTargetSam = (selectedFormat == BaseDocumentFormats::SAM);
+         bool isTargetSam = (selectedFormat == BaseDocumentFormats::SAM );
          Task *t = NULL;
          if( ( isSourceSam && isTargetBam ) || ( isSourceBam && isTargetSam ) ) {
              bool samToBam = isSourceSam;

@@ -44,7 +44,10 @@ class ConvertFilesFormatWorker: public BaseWorker {
     Q_OBJECT
 public:
     ConvertFilesFormatWorker(Actor* a) : BaseWorker(a), inputUrlPort(NULL), outputUrlPort(NULL), 
-                                                        selectedFormat(QString()), excludedFormats(NULL) {};
+                                                        selectedFormat(QString()), selectedFormatExtensions(NULL), 
+                                                        excludedFormats(NULL) {};
+    void getSelectedFormatExtensions( );
+    void getExcludedFormats( const QStringList &excludedFormatsIds );
     void init();
     void getWorkingDir( QString &workingDir );
     Task * tick();
@@ -53,6 +56,7 @@ private:
     IntegralBus *inputUrlPort;
     IntegralBus *outputUrlPort;
     QString selectedFormat;
+    QStringList selectedFormatExtensions;
     QStringList excludedFormats;
 public slots:
     void sl_taskFinished( Task *task );
