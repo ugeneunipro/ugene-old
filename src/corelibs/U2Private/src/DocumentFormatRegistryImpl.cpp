@@ -178,8 +178,10 @@ void DocumentFormatRegistryImpl::init() {
     MegaFormat *meg = new MegaFormat(this);
     registerFormat(meg);
 
-    ACEFormat *ace = new ACEFormat(this);
-    registerFormat(ace);
+    // Switched off, because of UGENE-2046
+    // It should be switched on in UGENE-2047
+//    ACEFormat *ace = new ACEFormat(this);
+//    registerFormat(ace);
 
     PDWFormat *pdw = new PDWFormat(this);
     registerFormat(pdw);
