@@ -439,8 +439,6 @@ TreeViewerUI::TreeViewerUI(TreeViewer* treeViewer): phyObject(treeViewer->getPhy
     updateActionsState();
     this->setObjectName("treeView");
     updateTreeSettings();
-
-    setContextMenuPolicy(Qt::CustomContextMenu);
 }
 
 TreeViewerUI::~TreeViewerUI() {
