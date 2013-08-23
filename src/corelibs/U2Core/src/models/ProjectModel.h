@@ -72,6 +72,7 @@ public:
 
     virtual QAction* getAddExistingDocumentAction() = 0;
 
+    // This function can return NULL, don't forget to check the result.
     Task* openWithProjectTask(const GUrl& url, const QVariantMap& hints = QVariantMap()) {
         QList<GUrl> urls; urls << url;
         return openWithProjectTask(urls, hints);

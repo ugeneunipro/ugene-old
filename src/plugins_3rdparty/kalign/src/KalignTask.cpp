@@ -331,7 +331,9 @@ QList<Task*> KalignWithExtFileSpecifySupportTask::onSubTaskFinished( Task* subTa
         //    }
         //}
         Task* openTask = AppContext::getProjectLoader()->openWithProjectTask(config.outputFilePath);
-        res << openTask;
+        if (openTask != NULL) {
+            res << openTask;
+        }
     }
     return res;
 }

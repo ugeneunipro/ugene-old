@@ -352,7 +352,9 @@ QList<Task*> ClustalWWithExtFileSpecifySupportTask::onSubTaskFinished(Task* subT
     }
     else if (subTask == saveDocumentTask) {
         Task* openTask = AppContext::getProjectLoader()->openWithProjectTask(settings.outputFilePath);
-        res << openTask;
+        if (openTask != NULL) {
+            res << openTask;
+        }
     }
     return res;
 }

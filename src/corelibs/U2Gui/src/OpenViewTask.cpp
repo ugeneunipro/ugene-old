@@ -250,7 +250,10 @@ QList<Task*> LoadRemoteDocumentAndOpenViewTask::onSubTaskFinished( Task* subTask
         QString fullPath = loadRemoteDocTask->getLocalUrl();
         Project* proj = AppContext::getProject();
         if (proj == NULL) {
-            subTasks.append(AppContext::getProjectLoader()->openWithProjectTask(fullPath));
+            Task* openWithProjectTask = AppContext::getProjectLoader()->openWithProjectTask(fullPath);
+            if (openWithProjectTask != NULL) {
+                subTasks.append(openWithProjectTask);
+            }
         } else {
             Document* doc = loadRemoteDocTask->getDocument();
             SAFE_POINT(doc != NULL, "loadRemoteDocTask->takeDocument() returns NULL!", subTasks);
@@ -338,7 +341,10 @@ QList<Task*> LoadDASDocumentsAndOpenViewTask::onSubTaskFinished( Task* subTask )
         QString fullPath = loadDasDocumentTask->getLocalUrl();
         Project* proj = AppContext::getProject();
         if (proj == NULL) {
-            subTasks.append(AppContext::getProjectLoader()->openWithProjectTask(fullPath));
+            Task* openWithProjectTask = AppContext::getProjectLoader()->openWithProjectTask(fullPath);
+            if (openWithProjectTask != NULL) {
+                subTasks.append(openWithProjectTask);
+            }
         } else {
             Document* doc = loadDasDocumentTask->getDocument();
             SAFE_POINT(doc != NULL, "loadRemoteDocTask->takeDocument() returns NULL!", subTasks);
