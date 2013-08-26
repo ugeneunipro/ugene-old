@@ -156,6 +156,10 @@ QString GUITestLauncher::performTest(const QString& testName, bool isLong) {
         finished = process.waitForFinished(TIMEOUT);
     QProcess::ExitStatus exitStatus = process.exitStatus();
 
+#ifdef Q_OS_WIN
+    QProcess::execute("closeErrorReport.exe"); //this exe file, compiled Autoit script with next code WinClose("ugeneui: ugeneui.exe - Application Error")
+#endif
+
     if (finished && (exitStatus == QProcess::NormalExit)) {
         return readTestResult(process.readAllStandardOutput());
     }
