@@ -55,7 +55,9 @@ QList<GObject*> SelectionUtils::findObjects(GObjectType t, const MultiGSelection
         QList<GObject*> tmp = findObjects(t, s, f);
         res+=tmp;
     }
-    return res.toSet().toList();
+
+    removeDuplicatesPointersFromList(res);
+    return res;
 }
 
 QList<GObject*> SelectionUtils::findObjectsKeepOrder(GObjectType t, const MultiGSelection* ms, UnloadedObjectFilter f) {
