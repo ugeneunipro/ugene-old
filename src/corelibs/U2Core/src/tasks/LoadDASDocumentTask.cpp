@@ -356,6 +356,9 @@ QList<Task*> ConvertIdAndLoadDASDocumentTask::onSubTaskFinished(Task *subTask) {
         loadDasDocumentTask = new LoadDASDocumentTask(accessionNumber, fullPath, referenceSource, featureSources);
         subTasks << loadDasDocumentTask;
     }
+    if (subTask == loadDasDocumentTask && loadDasDocumentTask->hasError()) {
+        setError(loadDasDocumentTask->getError());
+    }
 
     return subTasks;
 }
