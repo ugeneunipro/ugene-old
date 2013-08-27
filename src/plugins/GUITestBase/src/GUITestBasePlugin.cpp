@@ -422,9 +422,9 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0014_1);
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0014_2);
 
-    REGISTER_TEST_IGNORED_WINDOWS(GUITest_common_scenarios_msa_editor::test_0016, "https://ugene.unipro.ru/tracker/browse/UGENE-1558");
-    REGISTER_TEST_IGNORED_WINDOWS(GUITest_common_scenarios_msa_editor::test_0016_1, "https://ugene.unipro.ru/tracker/browse/UGENE-1558");
-    REGISTER_TEST_IGNORED_WINDOWS(GUITest_common_scenarios_msa_editor::test_0016_2, "https://ugene.unipro.ru/tracker/browse/UGENE-1558");
+    REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0016);
+    REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0016_1);
+    REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0016_2);
 
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0017);
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0017_1);
@@ -438,7 +438,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0019_1);
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0019_2);
 
-    REGISTER_TEST_IGNORED_WINDOWS(GUITest_common_scenarios_msa_editor::test_0020, "https://ugene.unipro.ru/tracker/browse/UGENE-1558");
+    REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0020);
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0020_1);
 
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0021);
@@ -889,7 +889,7 @@ void GUITestBasePlugin::registerAdditionalChecks(GUITestBase *guiTestBase) {
         guiTestBase->registerTest(new GUITest_initial_checks::post_test_0000, GUITestBase::PostAdditional);
         guiTestBase->registerTest(new GUITest_initial_checks::post_test_0001, GUITestBase::PostAdditional);
         guiTestBase->registerTest(new GUITest_initial_checks::post_test_0002, GUITestBase::PostAdditional);
-        //guiTestBase->registerTest(new GUITest_initial_checks::post_test_0003, GUITestBase::PostAdditional);
+        guiTestBase->registerTest(new GUITest_initial_checks::post_test_0003, GUITestBase::PostAdditional);
     }
 }
 
