@@ -33,25 +33,10 @@ namespace U2 {
 class GalaxyConfigTask : public Task {
     Q_OBJECT
 public:
+    static const QString GALAXY_CONFIG_OPTION;
+
     GalaxyConfigTask();
     ~GalaxyConfigTask();
-
-    static const QString GALAXY_CONFIG_OPTION;
-    static const QString GALAXY_PATH_OPTION;
-    static const QString TOOL;
-    static const QString NAME;
-    static const QString ID;
-    static const QString COMMAND;
-    static const QString INPUTS;
-    static const QString OUTPUTS;
-    static const QString OPTION;
-    static const QString PARAM;
-    static const QString FORMAT;
-    static const QString DATA;
-    static const QString CHANGE_FORMAT;
-    static const QString WHEN;
-    static const QString HELP;
-    static const QString WORKFLOW_RUN_LOG;
 
 private:
     bool tryToFindInPath( const QString &objectName, QString &objectPath );
@@ -66,37 +51,37 @@ private:
     bool getHelpMessage();
     bool getWorkflowName();
 
-    void getParameterValue( const QString &keyword, const int searchFrom, QString &parameterValue, int &nextSearchFrom );
+    bool getParameterValue( const QString &keyword, const int searchFrom, QString &parameterValue, int &nextSearchFrom );
     bool defineAliases();
 
     void writeToolUnit();
 
-    ActorPrototype* findElemInActorPrototypeRegistry( const QString &elementName );
+    ActorPrototype* getElementFromActorPrototypeRegistry( const QString &elementName );
 
-    void getTypeOfAttribute( const QString &elementAttribute, const int elementPosition );
-    void divideElementsByTypes();
+    void pushAttributeTypeToPositionsList( const QString &elementAttribute, const int elementPosition );
+    bool divideElementsByType();
     void writeSelectedElements( const QList <int> &elementsPositions );
     void writeAllElements();
-    void writeCommandUnit();
+    bool writeCommandUnit();
 
     void getConstraint( const QString &typeName, QString &resultType );
     void writeFormatAttribute( const QString &resultType );
     void writeLabelAttribute( const QStringList &elementParameters, const ActorPrototype *element );
-    void writeInputElements();
+    bool writeInputElements();
     bool isDelegateComboBox( PropertyDelegate *pd );
     bool isDelegateSpinBox( PropertyDelegate *pd );
-    void convertAttributeType( QString &attributeType, PropertyDelegate *pd );
-    void writeTypeForOptionElement( const QStringList &elementParameters, const ActorPrototype *element );
+    bool convertAttributeType( QString &attributeType, PropertyDelegate *pd );
+    bool writeTypeForOptionElement( const QStringList &elementParameters, const ActorPrototype *element );
     void writeSelectAttribute( const PropertyDelegate *pd );
     void writeMinAndMaxAttributes( const PropertyDelegate *pd );
-    void writeOptionElements();
-    void writeInputsUnit();
+    bool writeOptionElements();
+    bool writeInputsUnit();
 
     void writeFormatAttributeForOutputElement( const QString &resultType );
     bool checkDocumentFormatAttribute( const ActorPrototype *element );
     void writeChangeFormatAttribute( const QString &aliasName, const ActorPrototype *element );
     void tryToWriteChangeFormatAttribute( const ActorPrototype *element, QList <int> &usedOptionElements );
-    void writeOutputsUnit();
+    bool writeOutputsUnit();
 
     void writeHelpUnit();
 
@@ -109,7 +94,7 @@ private:
     void makeCopyOfGalaxyToolConfig();
     bool addToolToConfig();
     bool writeNewSection( const QString &config );
-    bool addToolToGalaxyConfigFile();
+    bool addToolToGalaxyConfig();
 
     QString appDirPath;
     QString schemeName;

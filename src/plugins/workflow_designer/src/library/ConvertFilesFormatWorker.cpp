@@ -103,7 +103,7 @@ void ConvertFilesFormatWorkerFactory::init() {
                                                     ConvertFilesFormatWorker::tr("Input file won't be converted to any of selected formats"));
     a << new Attribute( excludedFormats, BaseTypes::STRING_TYPE(), false );
 
-    Descriptor desc( ACTOR_ID, ConvertFilesFormatWorker::tr("File conversion"),
+    Descriptor desc( ACTOR_ID, ConvertFilesFormatWorker::tr("File Format Conversion"),
                                ConvertFilesFormatWorker::tr("Converts the file to selected format if it is not excluded.") );
     ActorPrototype* proto = new IntegralBusActorPrototype(desc, p, a);
 
