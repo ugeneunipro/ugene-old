@@ -31,13 +31,18 @@ class ExternalToolSupportAction : public GObjectViewAction {
     Q_OBJECT
 public:
     ExternalToolSupportAction(QObject* p, GObjectView* v, const QString& _text, int order, const QStringList& _toolNames);
-
     ExternalToolSupportAction(const QString& text, QObject* p, const QStringList& _toolNames);
 
     const QStringList getToolNames(){return toolNames;}
+
 private slots:
     void sl_pathChanged();
+    void sl_toolStateChanged(bool) { sl_pathChanged(); }
+
 private:
+    bool checkTools(bool connectSignals = false);
+    void setState(bool isAnyToolConfigured);
+
     QStringList toolNames;
 };
 

@@ -29,102 +29,65 @@
 namespace U2 {
 
 ExternalToolSupportAction::ExternalToolSupportAction(QObject* p, GObjectView* v, const QString& _text, int order, const QStringList& _toolNames)
-    : GObjectViewAction(p,v,_text,order), toolNames(_toolNames)
-{
-    QFont isConfiguredToolFont;
-    bool isOneOfToolConfigured=false;
-    foreach(QString toolName, toolNames){
-        if(!AppContext::getExternalToolRegistry()->getByName(toolName)->getPath().isEmpty()){
-            isOneOfToolConfigured=true;
-        }
-        ExternalTool* exTool=AppContext::getExternalToolRegistry()->getByName(toolName);
-        connect(exTool, SIGNAL(si_pathChanged()), SLOT(sl_pathChanged()));
-    }
-    connect(AppContext::getAppSettings()->getUserAppsSettings(), SIGNAL(si_temporaryPathChanged()), SLOT(sl_pathChanged()));
-    if(!isOneOfToolConfigured ||
-       (AppContext::getAppSettings()->getUserAppsSettings()->getUserTemporaryDirPath().isEmpty())){
-        isConfiguredToolFont.setItalic(true);
-        setFont(isConfiguredToolFont);
-//        setText(text()+"...");
-        setIcon(AppContext::getExternalToolRegistry()->getByName(toolNames.at(0))->getGrayIcon());
-    }else{
-        isConfiguredToolFont.setItalic(false);
-        setFont(isConfiguredToolFont);
-//        if(text().endsWith("...")){
-//            setText(text().remove(text().length()-3,3));
-//        }else{
-//            setText(text());
-//        }
-        if(AppContext::getExternalToolRegistry()->getByName(toolNames.at(0))->isValid()){
-            setIcon(AppContext::getExternalToolRegistry()->getByName(toolNames.at(0))->getIcon());
-        }else{
-            setIcon(AppContext::getExternalToolRegistry()->getByName(toolNames.at(0))->getWarnIcon());
-        }
-    }
+    : GObjectViewAction(p,v,_text,order),
+      toolNames(_toolNames) {
+    bool isAnyToolConfigured = checkTools(true);
+    setState(isAnyToolConfigured);
 }
 
 ExternalToolSupportAction::ExternalToolSupportAction(const QString& _text, QObject* p, const QStringList& _toolNames)
-    : GObjectViewAction(p, NULL, _text), toolNames(_toolNames)
-{
-    QFont isConfiguredToolFont;
-    bool isOneOfToolConfigured=false;
-    foreach(QString toolName, toolNames){
-        if(!AppContext::getExternalToolRegistry()->getByName(toolName)->getPath().isEmpty()){
-            isOneOfToolConfigured=true;
-        }
-        ExternalTool* exTool=AppContext::getExternalToolRegistry()->getByName(toolName);
-        connect(exTool, SIGNAL(si_pathChanged()), SLOT(sl_pathChanged()));
-    }
-    connect(AppContext::getAppSettings()->getUserAppsSettings(), SIGNAL(si_temporaryPathChanged()), SLOT(sl_pathChanged()));
-    if(!isOneOfToolConfigured ||
-       (AppContext::getAppSettings()->getUserAppsSettings()->getUserTemporaryDirPath().isEmpty())){
-        isConfiguredToolFont.setItalic(true);
-        setFont(isConfiguredToolFont);
-//        setText(text()+"...");
-        setIcon(AppContext::getExternalToolRegistry()->getByName(toolNames.at(0))->getGrayIcon());
-    }else{
-        isConfiguredToolFont.setItalic(false);
-        setFont(isConfiguredToolFont);
-//        if(text().endsWith("...")){
-//            setText(text().remove(text().length()-3,3));
-//        }else{
-//            setText(text());
-//        }
-        if(AppContext::getExternalToolRegistry()->getByName(toolNames.at(0))->isValid()){
-            setIcon(AppContext::getExternalToolRegistry()->getByName(toolNames.at(0))->getIcon());
-        }else{
-            setIcon(AppContext::getExternalToolRegistry()->getByName(toolNames.at(0))->getWarnIcon());
-        }
-    }
+    : GObjectViewAction(p, NULL, _text),
+      toolNames(_toolNames) {
+    bool isAnyToolConfigured = checkTools(true);
+    setState(isAnyToolConfigured);
 }
 
 void ExternalToolSupportAction::sl_pathChanged() {
-    QFont isConfiguredToolFont;
-    bool isOneOfToolConfigured=false;
-    foreach(QString toolName, toolNames){
-        if(!AppContext::getExternalToolRegistry()->getByName(toolName)->getPath().isEmpty()){
-            isOneOfToolConfigured=true;
+    bool isAnyToolConfigured = checkTools();
+    setState(isAnyToolConfigured);
+}
+
+bool ExternalToolSupportAction::checkTools(bool connectSignals) {
+    bool result = false;
+    foreach (QString toolName, toolNames) {
+        if (!AppContext::getExternalToolRegistry()->getByName(toolName)->getPath().isEmpty()) {
+            result = true;
+        }
+        ExternalTool* exTool=AppContext::getExternalToolRegistry()->getByName(toolName);
+        if (connectSignals == true) {
+            connect(exTool, SIGNAL(si_pathChanged()), SLOT(sl_pathChanged()));
+            connect(exTool, SIGNAL(si_toolValidationStatusChanged(bool)), SLOT(sl_toolStateChanged(bool)));
         }
     }
-    if(!isOneOfToolConfigured ||
-       (AppContext::getAppSettings()->getUserAppsSettings()->getUserTemporaryDirPath().isEmpty())){
+
+    if (connectSignals == true) {
+        connect(AppContext::getAppSettings()->getUserAppsSettings(), SIGNAL(si_temporaryPathChanged()), SLOT(sl_pathChanged()));
+    }
+
+    return result;
+}
+
+void ExternalToolSupportAction::setState(bool isAnyToolConfigured) {
+    QFont isConfiguredToolFont;
+
+    if (!isAnyToolConfigured ||
+            (AppContext::getAppSettings()->getUserAppsSettings()->getUserTemporaryDirPath().isEmpty())) {
         isConfiguredToolFont.setItalic(true);
-        setFont(isConfiguredToolFont);
-//        if(!text().endsWith("...")){
-//            setText(text()+"...");
-//        }
         setIcon(AppContext::getExternalToolRegistry()->getByName(toolNames.at(0))->getGrayIcon());
-    }else{
+    } else {
         isConfiguredToolFont.setItalic(false);
-        setFont(isConfiguredToolFont);
-//        if(text().endsWith("...")){
-//            setText(text().remove(text().length()-3,3));
-//        }
-        if(AppContext::getExternalToolRegistry()->getByName(toolNames.at(0))->isValid()){
+        if (AppContext::getExternalToolRegistry()->getByName(toolNames.at(0))->isValid()) {
             setIcon(AppContext::getExternalToolRegistry()->getByName(toolNames.at(0))->getIcon());
-        }else{
+        } else {
             setIcon(AppContext::getExternalToolRegistry()->getByName(toolNames.at(0))->getWarnIcon());
         }
     }
+
+#ifndef Q_OS_MAC
+    // On Mac OS X native menu bar ignores font style changes providing via Qt.
+    // Result is not an italic font, it has normal style but less size.
+    // Turning off the italic style doesn't return the font's previous state.
+    setFont(isConfiguredToolFont);
+#endif
 }
 }//namespace
