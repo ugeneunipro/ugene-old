@@ -120,7 +120,11 @@ void WorkflowDesignerPlugin::processCMDLineOptions() {
     else{
         if( cmdlineReg->hasParameter(GalaxyConfigTask::GALAXY_CONFIG_OPTION) && consoleMode ) {
             Task *t = NULL;
-            t = new GalaxyConfigTask();
+            const QString schemePath =  cmdlineReg->getParameterValue( GalaxyConfigTask::GALAXY_CONFIG_OPTION );
+            const QString ugenePath = cmdlineReg->getParameterValue( GalaxyConfigTask::UGENE_PATH_OPTION );
+            const QString galaxyPath = cmdlineReg->getParameterValue( GalaxyConfigTask::GALAXY_PATH_OPTION );
+            const QString destinationPath = NULL;
+            t = new GalaxyConfigTask( schemePath, ugenePath, galaxyPath, destinationPath );
             connect(AppContext::getPluginSupport(), SIGNAL(si_allStartUpPluginsLoaded()), new TaskStarter(t), SLOT(registerTask()));
         }
     }

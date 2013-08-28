@@ -6,6 +6,7 @@ HEADERS += src/ActorCfgModel.h \
            src/ChooseItemDialog.h \
            src/CreateScriptWorker.h \
            src/DashboardsManagerDialog.h \
+           src/GalaxyConfigConfigurationDialogImpl.h \
            src/ImportSchemaDialog.h \
            src/InvestigationDataModel.h \
            src/ItemViewStyle.h \
@@ -75,6 +76,7 @@ FORMS += src/ui/ChooseItemDialog.ui \
          src/ui/CreateScriptBlockDialog.ui \
          src/ui/DashboardsManagerDialog.ui \
          src/ui/ExternalProcessWorkerDialog.ui \
+         src/ui/GalaxyConfigConfigurationDialog.ui \
          src/ui/ImportSchemaDialog.ui \
          src/ui/PaletteWidget.ui \
          src/ui/PortAliasesConfigurationDialog.ui \
@@ -89,6 +91,7 @@ SOURCES += src/ActorCfgModel.cpp \
            src/ChooseItemDialog.cpp \
            src/CreateScriptWorker.cpp \
            src/DashboardsManagerDialog.cpp \
+           src/GalaxyConfigConfigurationDialogImpl.cpp \
            src/ImportSchemaDialog.cpp \
            src/InvestigationDataModel.cpp \
            src/ItemViewStyle.cpp \

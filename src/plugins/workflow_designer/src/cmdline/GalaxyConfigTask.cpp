@@ -29,9 +29,7 @@
 #include <U2Lang/HRSchemaSerializer.h>
 #include <U2Lang/WorkflowEnv.h>
 #include <U2Designer/DelegateEditors.h>
-
 #include <U2Core/U2SafePoints.h>
-
 #include "GalaxyConfigTask.h"
 
 namespace U2 {
@@ -40,7 +38,6 @@ namespace U2 {
 * GalaxyConfigTask
 *******************************************/
 
-#define  GALAXY_PATH_OPTION      "galaxy-path"
 #define  TOOL                    "tool"
 #define  NAME                    "name"
 #define  ID                      "id"
@@ -55,49 +52,80 @@ namespace U2 {
 #define  WHEN                    "when"
 #define  HELP                    "help"
 #define  WORKFLOW_RUN_LOG        "ugene_workflow_run_log"
+#define  STDERR_TO_STDOUT        "2>&1"
+#define  SUBSTRING_NOT_FOUND     -1
 
-static int SUBSTRING_NOT_FOUND = -1;
+const QString GalaxyConfigTask::GALAXY_CONFIG_OPTION   = "galaxy-config";
+const QString GalaxyConfigTask::UGENE_PATH_OPTION      = "ugene-path";
+const QString GalaxyConfigTask::GALAXY_PATH_OPTION     = "galaxy-path";
 
-const QString GalaxyConfigTask::GALAXY_CONFIG_OPTION = "galaxy-config";
 
-GalaxyConfigTask::GalaxyConfigTask() 
-:Task( tr( "Create Galaxy config from existing workflow scheme" ), TaskFlag_None ),  appDirPath(QString()), schemeName(QString()),
-                                                                                     schemePath(QString()), ugenePath(QString()),
-                                                                                     galaxyPath(QString()), schemeContent(QString()),
-                                                                                     galaxyToolName(QString()), galaxyHelpMessage(QString())
+GalaxyConfigTask::GalaxyConfigTask( const QString &_schemePath, const QString &_ugenePath, 
+                                    const QString &_galaxyPath, const QString &_destinationPath ) :
+Task( tr( "Create Galaxy config from existing workflow scheme" ), TaskFlag_None ), schemePath(_schemePath), ugenePath(_ugenePath),
+                                                                                   galaxyPath(_galaxyPath), destinationPath(_destinationPath) 
 {
+}
+
+GalaxyConfigTask::~GalaxyConfigTask() {}
+
+void tryToAppendSlash( QString &path ) {
+    if( !path.endsWith("/") && !path.endsWith("\\") && path.length() > 0 ) {
+        path.append("/");
+    }
+}
+
+void GalaxyConfigTask::prepare() {
+    schemeName.clear();
+    schemeContent.clear();
+    galaxyToolName.clear();
+    galaxyHelpMessage.clear();
+    schemeConfigName.clear();
+    schemeConfigFile.clear();
+
     elemAliases.clear();
     inputElementsPositions.clear();
     outputElementsPositions.clear();
     optionElementsPositions.clear();
 
-    appDirPath = QApplication::applicationDirPath() + "/";
+    appDirPath = QApplication::applicationDirPath();
 
-    CHECK_OPERATIONS( !getSchemeName(),           coreLog.error( stateInfo.getError() + "\nScheme name is incorrect" ),                                         return; );
-    CHECK_OPERATIONS( !getGalaxyPath(),           coreLog.error( stateInfo.getError() + "\nGalaxy directory is not found" ),                                    return; );
-    CHECK_OPERATIONS( !getSchemeContent(),        coreLog.error( stateInfo.getError() + "\nCan not get scheme content" ),                                       return; );
-    CHECK_OPERATIONS( !getHelpMessage(),          coreLog.error( stateInfo.getError() + "\nCan not get scheme description" ),                                   return; );
-    CHECK_OPERATIONS( !getWorkflowName(),         coreLog.error( stateInfo.getError() + "\nCan not get scheme name" ),                                          return; );
-    CHECK_OPERATIONS( !defineAliases(),           coreLog.error( stateInfo.getError() + "\nCan not get scheme aliases" ),                                       return; );
-    CHECK_OPERATIONS( !createConfigForGalaxy(),   coreLog.error( stateInfo.getError() + "\nScheme Config for Galaxy is not created" ),                          return; );
-    CHECK_OPERATIONS( !prepareDirectoryForTool(), coreLog.error( stateInfo.getError() + "\nCan not create directory for Galaxy tool. Check user privileges" ),  return; );
-    CHECK_OPERATIONS( !addToolToGalaxyConfig(),   coreLog.error( stateInfo.getError() + "\nCan not add new section to tool_conf.xml. Check user privileges" ),  return; );
+    tryToAppendSlash( appDirPath );
+    tryToAppendSlash( ugenePath );
+    tryToAppendSlash( galaxyPath );
+    tryToAppendSlash( destinationPath );
 
+    if( galaxyPath.isEmpty() && !getGalaxyPath() ) {
+        coreLog.info( "Galaxy directory is not found" );
+    }
 }
 
-GalaxyConfigTask::~GalaxyConfigTask() {
-
+void GalaxyConfigTask::run() {
+    CHECK( getSchemeName(),             );
+    CHECK( getSchemeContent(),          );
+    CHECK( getHelpMessage(),            );
+    CHECK( getWorkflowName(),           );
+    CHECK( defineAliases(),             );
+    CHECK( createConfigForGalaxy(),     );
+    if( tryToCopySchemeConfigFile() ) {
+       addToolToGalaxy();
+    }
 }
 
-bool GalaxyConfigTask::tryToFindInPath( const QString &objectName, QString &objectPath ) {
+void GalaxyConfigTask::tryToFindInPath( const QString &objectName, QString &objectPath ) {
+    QString envVariable = qgetenv( "GALAXY_DIR" );
+    if( envVariable.isEmpty() ) {
+        coreLog.info( QString("Environment variable GALAXY_DIR is not found") );
+    }
+
     QString pathVariable = qgetenv("PATH").constData();
     const int objectNamePosition = pathVariable.indexOf( objectName );
     if( objectNamePosition == SUBSTRING_NOT_FOUND ) {
-        coreLog.info( "Path to " + objectName + " directory is not found in PATH variable" );
-        return false;
+        coreLog.info( QString("Path to %1 directory is not found in PATH variable").arg(objectName) );
+        return;
     }
-    int currPos;
-    for( currPos = objectNamePosition; currPos >= 0; currPos-- ) {
+    int currPos = objectNamePosition;
+    for( ; currPos >= 0; currPos-- ) {
         if( QString(pathVariable[currPos]) == HRSchemaSerializer::COLON ) {
             break;
         }
@@ -106,92 +134,82 @@ bool GalaxyConfigTask::tryToFindInPath( const QString &objectName, QString &obje
               pathEndPosition = pathVariable.indexOf( HRSchemaSerializer::COLON, objectNamePosition ),
               pathLength = pathEndPosition - pathStartPosition;
     objectPath = pathVariable.mid( pathStartPosition, pathLength );
-    if( !objectPath.endsWith( "/" ) ) {
-        objectPath.append("/");
-    }
-    return true;
+    
+    tryToAppendSlash( objectPath );
 }
 
-bool GalaxyConfigTask::tryToFindByLocate( const QString &objectName, QString &objectPath ) {
-    system( QString("locate " + objectName + " -l 1 > " + objectName + "_path.txt").toLocal8Bit().constData() );
-    QFile file( objectName + "_path.txt" );
+void GalaxyConfigTask::tryToFindByLocate( const QString &objectName, QString &objectPath ) {
+    if( !objectPath.isEmpty() ) {
+        return;
+    }
+    QString fileName = objectName + "_path.txt";
+    QString locateCommand = QString("locate %1 -l 1 > %2").arg(objectName).arg(fileName);
+    system( locateCommand.toLocal8Bit().constData() );
+
+    QFile file( fileName );
     if( !file.open(QIODevice::ReadOnly ) ) {
-        coreLog.info( "Can not read " + objectName + "_path.txt file to find " + objectName + " directory. Check user privileges" );
-        return false;
+        coreLog.info( QString("Can not read %1_path.txt file to get path to %1 directory. Check user privileges").arg(objectName) );
+        return;
     }
     QTextStream inFile(&file);
     inFile >> objectPath;
     file.close();
-    system( QString("rm " + objectName + "_path.txt").toLocal8Bit().constData() );
+
+    QFile::remove( fileName );
     if( !objectPath.length() ) {
-        coreLog.info( "Path to " + objectName + " directory is not found by \"locate\" command" );
-        return false;
+        coreLog.info( QString("Path to %1 directory is not found by \"locate\" command").arg(objectName) );
+        return;
     }
-    if( !objectPath.endsWith( "/" ) ) {
-        objectPath.append("/");
-    }
-    return true;
+
+    tryToAppendSlash( objectPath );
 }
 
 bool GalaxyConfigTask::fileExists( const QString &objectPath, const QString &suffix ) {
-    const QString fullPath = objectPath + suffix;
-    QFile file( fullPath );
-    if( file.exists() ) {
-        return true;
+    if( !objectPath.isEmpty() ) {
+        const QString fullPath = objectPath + suffix;
+        if( QFile::exists( fullPath ) ) {
+            return true;
+        }
+        coreLog.info( QString("Galaxy directory does not contain %1 file").arg(suffix) );
     }
-    stateInfo.setError( "Directory is incorrect. Check it contains " + suffix );
     return false;
 }
 
 bool GalaxyConfigTask::findPathToObject( const QString &objectName, QString &objectPath ) {
     const QString suffix = "tool_conf.xml";
-    if( tryToFindInPath( objectName, objectPath ) && fileExists( objectPath, suffix ) ) {
-        return true;
-    }
-    if( tryToFindByLocate( objectName, objectPath ) && fileExists( objectPath, suffix ) ) {
-        return true;
-    }
-    return false;
+    tryToFindInPath( objectName, objectPath );
+
+#ifdef __linux__
+    tryToFindByLocate( objectName, objectPath );
+#endif
+    return fileExists( objectPath, suffix );
 }
 
-bool GalaxyConfigTask::getPath( const QString &whatPath, QString &resultPath ) {
-    CMDLineRegistry * cmdLineRegistry = AppContext::getCMDLineRegistry();
-    assert( NULL != cmdLineRegistry );
-
-    const int result = CMDLineRegistryUtils::getParameterIndex(whatPath);
-    const QStringList paramValues = CMDLineRegistryUtils::getParameterValues(whatPath);
-    if( result == -1 || !paramValues.first().length() ) {
-        return findPathToObject("galaxy", galaxyPath);
-    }
-    resultPath = paramValues.first();
-    if( !resultPath.endsWith("/") ) {
-        resultPath.append("/");
+bool GalaxyConfigTask::getGalaxyPath() {
+    if( galaxyPath.isEmpty() ) {
+        return findPathToObject( "galaxy", galaxyPath );
     }
     return true;
 }
 
-bool GalaxyConfigTask::getGalaxyPath() {
-    return getPath( GALAXY_PATH_OPTION, galaxyPath );
-}
-
 bool GalaxyConfigTask::getSchemeName() {
-    CMDLineRegistry * cmdLineRegistry = AppContext::getCMDLineRegistry();
-    assert( NULL != cmdLineRegistry );
-
-    const QStringList paramValues = CMDLineRegistryUtils::getParameterValues( GALAXY_CONFIG_OPTION );
-    if( !paramValues.first().length() || !QFile::exists( paramValues.first() ) ) {
+    if( !schemePath.length() || !QFile::exists( schemePath ) ) {
         stateInfo.setError( "Scheme file is incorrect. Check it exists" );
         return false;
     }
-    schemePath = paramValues.first();
     schemeName = schemePath.split("/").last();
     return true;
 }
 
 bool GalaxyConfigTask::getSchemeContent() {
     QFile schemeFile( schemePath );
+    QFileInfo schemeFileInfo( schemePath );
+    if( !schemeFileInfo.isReadable() ) {
+        stateInfo.setError( QString("Scheme file %1 is not readable by this user").arg( schemePath) );
+        return false;
+    }
     if( !schemeFile.open(QIODevice::ReadOnly ) ) {
-        stateInfo.setError( "Can not read " + schemePath + " file. Check user privileges " );
+        stateInfo.setError( QString("Can not open %1 file. Check user privileges ").arg(schemePath) );
         return false;
     }
     QTextStream input(&schemeFile);
@@ -200,23 +218,28 @@ bool GalaxyConfigTask::getSchemeContent() {
     return true;
 }
 
+void GalaxyConfigTask::setError( const QString &keyword ) {
+    stateInfo.setError( QString("Scheme file is corrupted. It does not contain %1 keyword").arg(keyword) );
+}
+
 bool GalaxyConfigTask::getHelpMessage() {
-    galaxyHelpMessage = "\r\n**Description**\r\n";
+    galaxyHelpMessage = "\n**Description**\n";
     int commentStartPosition = schemeContent.indexOf( HRSchemaSerializer::HEADER_LINE );
     if( commentStartPosition == SUBSTRING_NOT_FOUND ) {
-        stateInfo.setError( "Scheme is corrupted. It does not contain " + HRSchemaSerializer::HEADER_LINE + " keyword" );
+        setError( HRSchemaSerializer::HEADER_LINE );
         return false;
     }
     commentStartPosition += HRSchemaSerializer::HEADER_LINE.length();
     const int commentEndPosition = schemeContent.lastIndexOf( HRSchemaSerializer::BODY_START );
     if( commentEndPosition == SUBSTRING_NOT_FOUND ) {
-        stateInfo.setError( "Scheme is corrupted. It does not contain " + HRSchemaSerializer::BODY_START + " keyword" );
+        setError( HRSchemaSerializer::BODY_START );
         return false;
     }
     const int commentLength = commentEndPosition - commentStartPosition;
+
     QString comment = QString();
     comment = schemeContent.mid( commentStartPosition, commentLength );
-    comment.replace( HRSchemaSerializer::SERVICE_SYM, "\r\n" );
+    comment.replace( HRSchemaSerializer::SERVICE_SYM, "\n" );
     galaxyHelpMessage += comment;
     return true;
 }
@@ -226,10 +249,11 @@ bool GalaxyConfigTask::getWorkflowName() {
     nameStartPosition += HRSchemaSerializer::BODY_START.length() + 1;
     const int nameEndPosition = schemeContent.indexOf( HRSchemaSerializer::BLOCK_START, nameStartPosition );
     CHECK_OPERATIONS( nameEndPosition != SUBSTRING_NOT_FOUND, 
-                      stateInfo.setError( "Scheme is corrupted. It does not contain start of block" ),
+                      stateInfo.setError( "Scheme file is corrupted. It does not contain start of body block" ),
                       return false;
     );
     const int nameLength = nameEndPosition - nameStartPosition;
+
     galaxyToolName = schemeContent.mid( nameStartPosition, nameLength );
     galaxyToolName.replace( QRegExp("^\""),"" );
     galaxyToolName.replace( QRegExp("\"$"),"" );
@@ -243,18 +267,20 @@ bool GalaxyConfigTask::getParameterValue( const QString &keyword, const int sear
         nextSearchFrom = searchFrom;
         return true;
     }
+
     const int parameterStartPosition = schemeContent.indexOf( HRSchemaSerializer::COLON, keywordPosition ) + 1,
               parameterEndPosition = schemeContent.indexOf( HRSchemaSerializer::SEMICOLON, parameterStartPosition );
     CHECK_OPERATIONS( parameterStartPosition != SUBSTRING_NOT_FOUND,
-                      stateInfo.setError( "Scheme is corrupted. Begin of alias value is not found" ),
+                      stateInfo.setError( "Scheme file is corrupted. Begin of alias value is not found" ),
                       return false;
                     );
     CHECK_OPERATIONS( parameterEndPosition != SUBSTRING_NOT_FOUND,
-                      stateInfo.setError( "Scheme is corrupted. End of alias value is not found" ),
+                      stateInfo.setError( "Scheme file is corrupted. End of alias value is not found" ),
                       return false;
                     );
     const int parameterLength = parameterEndPosition - parameterStartPosition;
     parameterValue = schemeContent.mid( parameterStartPosition, parameterLength );
+
     nextSearchFrom = parameterEndPosition;
     return true;
 }
@@ -262,20 +288,21 @@ bool GalaxyConfigTask::getParameterValue( const QString &keyword, const int sear
 bool GalaxyConfigTask::defineAliases() {
     int aliasesStartPosition = schemeContent.indexOf( HRSchemaSerializer::PARAM_ALIASES_START );
     CHECK_OPERATIONS( aliasesStartPosition != SUBSTRING_NOT_FOUND, 
-                      stateInfo.setError( "Scheme is corrupted. It does not contain " + HRSchemaSerializer::PARAM_ALIASES_START + " keyword" ),
-                      return false;
-                    );
+        setError( HRSchemaSerializer::PARAM_ALIASES_START ),
+        return false;
+    );
     aliasesStartPosition += HRSchemaSerializer::PARAM_ALIASES_START.length();
     const int visualKeywordPosition = schemeContent.indexOf( HRSchemaSerializer::VISUAL_START, aliasesStartPosition );
     CHECK_OPERATIONS( visualKeywordPosition != SUBSTRING_NOT_FOUND, 
-                      stateInfo.setError( "Scheme is corrupted. It does not contain " + HRSchemaSerializer::VISUAL_START + " keyword" ),
-                      return false;
-                    );
+        setError( HRSchemaSerializer::VISUAL_START ),
+        return false;
+    );
+
     int elementNameStartPosition = schemeContent.indexOf( QRegExp("[a-z]"), aliasesStartPosition );
     while ( elementNameStartPosition < visualKeywordPosition ) {
         const int elementNameEndPosition = schemeContent.indexOf( HRSchemaSerializer::DOT, elementNameStartPosition );
         CHECK_OPERATIONS( elementNameEndPosition != SUBSTRING_NOT_FOUND, 
-                          stateInfo.setError( "Scheme contains wrong alias" ),
+                          stateInfo.setError( "Scheme file contains wrong alias" ),
                           return false;
                         );
         const int elementNameLength = elementNameEndPosition - elementNameStartPosition;
@@ -288,8 +315,10 @@ bool GalaxyConfigTask::defineAliases() {
         QString elementAlias = schemeContent.mid( elementAliasStartPosition, elementAliasLength );
         elementAlias.replace(" ","");
 
-        QString aliasName, aliasDescription;
-        int aliasNameEndPosition, aliasDescriptionEndPosition;
+        QString aliasName = QString(),
+                aliasDescription = QString();
+        int aliasNameEndPosition = -1,
+            aliasDescriptionEndPosition = -1;
 
         if( !getParameterValue( HRSchemaSerializer::ALIAS, elementAliasEndPosition, aliasName, aliasNameEndPosition ) ) {
             return false;
@@ -312,9 +341,9 @@ bool GalaxyConfigTask::defineAliases() {
 void GalaxyConfigTask::writeToolUnit() {
     galaxyConfigOutput.writeStartElement( TOOL );  //tool unit begin
     galaxyConfigOutput.writeAttribute( ID, galaxyToolName );
-    QString idStrCopy = galaxyToolName;
-    idStrCopy.replace(" ", "_");
-    galaxyConfigOutput.writeAttribute( NAME, idStrCopy );
+    QString toolName = galaxyToolName;
+    toolName.replace(" ", "_");
+    galaxyConfigOutput.writeAttribute( NAME, toolName );
 }
 
 ActorPrototype* GalaxyConfigTask::getElementFromActorPrototypeRegistry( const QString &elementName ) {
@@ -324,7 +353,7 @@ ActorPrototype* GalaxyConfigTask::getElementFromActorPrototypeRegistry( const QS
     return prototypeRegistry->getProto( elementName );
 }
 
-void GalaxyConfigTask::pushAttributeTypeToPositionsList( const QString &elementAttribute, const int elementPosition ) {
+void GalaxyConfigTask::fillPositionsList( const QString &elementAttribute, const int elementPosition ) {
     if( BaseAttributes::URL_IN_ATTRIBUTE().getId() == elementAttribute ) {
         inputElementsPositions.push_back( elementPosition );
     } else if ( BaseAttributes::URL_OUT_ATTRIBUTE().getId() == elementAttribute ){
@@ -347,18 +376,48 @@ bool GalaxyConfigTask::divideElementsByType() {
 
         const QList < Attribute* > elementAttributes = currElement->getAttributes();
         if( elementAttributes.isEmpty() ) {
-            stateInfo.setError( "Can not get attributes from \"" + currElement->getId() + "\" element" );
+            stateInfo.setError( QString("Config generation error: can not get attributes from \"%1\" element").arg( currElement->getId() ) );
             return false;
         }
 
         foreach( Attribute *elementAttribute, elementAttributes ) {
             if( elementAttribute->getId() == attributeName ) {
-                pushAttributeTypeToPositionsList( attributeName, std::distance( elemAliases.begin(), elemAliasesIterator ) );
+                fillPositionsList( attributeName, std::distance( elemAliases.begin(), elemAliasesIterator ) );
             }
         }
         elemAliasesIterator++;
     }
-    return false;
+    return true;
+}
+
+void GalaxyConfigTask::writeRunUgeneCommand( const QString &ugeneExecutable ) {
+    if( ugenePath.isEmpty() ) {
+        ugenePath = appDirPath;
+    }
+    QString runUgene = ugenePath + ugeneExecutable + " --task=" + schemePath + " ";
+    QList < QMap < QString, QStringList > > ::iterator elemAliasesIterator;
+    elemAliasesIterator = elemAliases.begin();
+    while( elemAliasesIterator != elemAliases.end() ) {
+        QMap <QString, QStringList> ::iterator elementParameters = (*elemAliasesIterator).begin();
+        const QString aliasName = elementParameters.value().at(1);
+        runUgene += "--" + aliasName + "=$" + aliasName + " ";
+        elemAliasesIterator++;
+    }
+    runUgene += QString("  >> $") + WORKFLOW_RUN_LOG + " " + STDERR_TO_STDOUT;
+    galaxyConfigOutput.writeCharacters( runUgene );
+}
+
+void GalaxyConfigTask::writeOutputFilesChecks() {
+    QList <int> ::iterator outputElementsPositionsIterator;
+    outputElementsPositionsIterator = outputElementsPositions.begin();
+    while( outputElementsPositionsIterator != outputElementsPositions.end() ) {
+        QMap <QString, QStringList> ::iterator elementParameters = elemAliases[*outputElementsPositionsIterator].begin();
+        const QString aliasName = elementParameters.value().at(1);
+        galaxyConfigOutput.writeDTD( QString("\nif [ ! -s $" + aliasName + " ]; then") );
+        galaxyConfigOutput.writeDTD( QString("\necho \"EMPTY RESULT FILE\" > $" + aliasName + ";") );
+        galaxyConfigOutput.writeDTD( QString("\nfi;\n") );
+        outputElementsPositionsIterator++;
+    }
 }
 
 bool GalaxyConfigTask::writeCommandUnit() {
@@ -371,30 +430,9 @@ bool GalaxyConfigTask::writeCommandUnit() {
 #else
     ugeneExecutable = "ugene";
 #endif
+    writeRunUgeneCommand( ugeneExecutable );
+    writeOutputFilesChecks( );
 
-    QString runUgene = appDirPath + ugeneExecutable + " --task=" + schemePath + " ";
-    QList < QMap < QString, QStringList > > ::iterator elemAliasesIterator;
-    elemAliasesIterator = elemAliases.begin();
-    while( elemAliasesIterator != elemAliases.end() ) {
-        QMap <QString, QStringList> ::iterator elementParameters = (*elemAliasesIterator).begin();
-        QString aliasName = elementParameters.value().at(1);
-        runUgene += "--" + aliasName + "=$" + aliasName + " ";
-        elemAliasesIterator++;
-    }
-    const QString redirectStderrToStdout = " 2>&1;";
-    runUgene += QString("  >> $") + WORKFLOW_RUN_LOG + redirectStderrToStdout;
-    galaxyConfigOutput.writeCharacters( runUgene );
-
-    QList <int> ::iterator outputElementsPositionsIterator;
-    outputElementsPositionsIterator = outputElementsPositions.begin();
-    while( outputElementsPositionsIterator != outputElementsPositions.end() ) {
-        QMap <QString, QStringList> ::iterator elementParameters = elemAliases[*outputElementsPositionsIterator].begin();
-        const QString aliasName = elementParameters.value().at(1);
-        galaxyConfigOutput.writeDTD( QString("\r\nif [ ! -s $" + aliasName + " ]; then") );
-        galaxyConfigOutput.writeDTD( QString("\r\necho \"EMPTY RESULT FILE\" > $" + aliasName + ";") );
-        galaxyConfigOutput.writeDTD( QString("\r\nfi;\r\n") );
-        outputElementsPositionsIterator++;
-    }
     galaxyConfigOutput.writeEndElement();            //command unit end
     return true;
 }
@@ -519,7 +557,7 @@ bool GalaxyConfigTask::writeInputElements() {
         QString resultType = QString();
         getConstraint( formatType, resultType );
         if ( resultType == GObjectTypes::UNKNOWN ) {
-            stateInfo.setError( "Element \"" + currElement->getId() + "\" has unknown type" );
+            stateInfo.setError( QString("Config generation error: element \"%1\" has unknown type").arg(currElement->getId()) );
             return false;
         }
         writeFormatAttribute( resultType );
@@ -563,7 +601,7 @@ bool GalaxyConfigTask::convertAttributeType( QString &attributeType, PropertyDel
     } else if( attributeType == BaseTypes::STRING_TYPE()->getId() ) {
         attributeType = "text";
     } else {
-        stateInfo.setError( "Unknown attribute type: " + attributeType );
+        stateInfo.setError( "Config generation error: unknown attribute type: " + attributeType );
         return false; 
     }
     return true;
@@ -585,7 +623,7 @@ bool GalaxyConfigTask::writeTypeForOptionElement( const QStringList &elementPara
     if( attributeType == "integer" ) {
        galaxyConfigOutput.writeAttribute( "value", "1" );
     }
-    return false;
+    return true;
 }
 
 void GalaxyConfigTask::writeSelectAttribute( const PropertyDelegate *pd ) {
@@ -741,7 +779,7 @@ bool GalaxyConfigTask::writeOutputsUnit() {
         QString resultType = QString();
         getConstraint( formatType, resultType );
         if ( resultType == GObjectTypes::UNKNOWN ) {
-            stateInfo.setError( "Element \"" + currElement->getId() + "\" has unknown type" );
+            stateInfo.setError( QString("Config generation error: element \"%1\" has unknown type").arg(currElement->getId() ) );
             return false;
         }
         galaxyConfigOutput.writeStartElement( DATA );
@@ -769,104 +807,181 @@ void GalaxyConfigTask::writeHelpUnit() {
 }
 
 bool GalaxyConfigTask::createConfigForGalaxy() {
-    const QString schemePathWithoutExtension = schemePath.mid(0, schemePath.length()-4 );
-
-    QFile galaxyConfigFile( schemePathWithoutExtension + ".xml");
+    const QString truncatedSchemePath = schemePath.left( schemePath.length()-4 );
+    schemeConfigFile = truncatedSchemePath + ".xml";
+    QFile galaxyConfigFile( schemeConfigFile );
     galaxyConfigFile.open( QIODevice::WriteOnly );
     if( !galaxyConfigFile.isOpen() ) {
-        this->stateInfo.setError( "Can not open " + galaxyConfigFile.fileName() );
+        this->stateInfo.setError( "Config generation error: can not open " + schemeConfigFile );
         return false;
     }
     galaxyConfigOutput.setDevice(&galaxyConfigFile);
 
     writeToolUnit();
     CHECK( writeCommandUnit(), false );
-    CHECK( writeInputsUnit(), false );
+    CHECK( writeInputsUnit(),  false );
     CHECK( writeOutputsUnit(), false );
     writeHelpUnit();
     galaxyConfigOutput.writeEndElement(); //tool unit end
 
     galaxyConfigFile.close();
+    coreLog.info("Tool config was created");
     return true;
 }
 
-void GalaxyConfigTask::doCopyCommands( const QString &pathToCopy ) {
-    system( QString("cp " + schemePath.left( schemePath.length() - 4 ) + ".xml" + pathToCopy).toLocal8Bit().constData() );
-    system( QString("cp " + schemePath + " " + pathToCopy).toLocal8Bit().constData() );
-}
-void GalaxyConfigTask::doDeleteCommands() {
-    system( QString("rm " + schemePath.left( schemePath.length() - 4 ) + ".xml").toLocal8Bit().constData() );
-}
-
-bool GalaxyConfigTask::prepareDirectoryForTool() {
-    QString schemeNameWithoutExtension = schemeName.left( schemeName.length() - 4 );
-    const QString pathToCopy = galaxyPath + "tools/" + schemeNameWithoutExtension;
-    QDir directory;
-    directory.setPath( pathToCopy );
-    if( !directory.exists() ) {
-        const QString createDirCommand = "mkdir " + pathToCopy;
-        system( createDirCommand.toLocal8Bit().constData() );
+bool GalaxyConfigTask::tryToCopySchemeConfigFile() {
+    if( destinationPath.isEmpty() ) {
+        return true;
     }
-    if( !directory.exists() ) {
+    QFileInfo destinationDirInfo( destinationPath );
+    if( !destinationDirInfo.isWritable() ) {
+        stateInfo.setError( QString("Directory %1 is not writable by this user").arg(destinationPath) );
         return false;
     }
-    doCopyCommands( pathToCopy );
-    doDeleteCommands();
+
+    schemeConfigName = schemeName;
+    schemeConfigName.replace( ".uwl", ".xml" );
+    QString destinationFilePath = destinationPath + schemeConfigName;
+    QString schemeConfigFileCopy = schemeConfigFile;
+    destinationFilePath.replace( "\\", "/" );
+    schemeConfigFileCopy.replace( "\\", "/" );
+
+    if( !QString::compare( destinationFilePath, schemeConfigFile ) ) {
+        return true;
+    }
+    bool copied = QFile::copy( schemeConfigFile, destinationFilePath );
+    if( !copied ) {
+        stateInfo.setError( QString("Can not copy %1 to %2").arg(schemeConfigFile).arg(destinationPath) );
+        return false;
+    }
     return true;
 }
 
-void GalaxyConfigTask::makeCopyOfGalaxyToolConfig() {
-    const QString toolConfigurationPath = galaxyPath + "tool_conf.xml";
-    system( QString("cp " + toolConfigurationPath + " " + toolConfigurationPath + "_old").toLocal8Bit().constData() );
+bool GalaxyConfigTask::rewriteFile( const QString &sourceFileName, const QString &targetFileName ) {
+    if( QFile::exists( targetFileName ) ) {
+        if( !QFile::remove( targetFileName ) ) {
+            stateInfo.setError( QString("Can not remove %1").arg(targetFileName) );
+            return false;
+        }
+    }
+    if( !QFile::copy( sourceFileName, targetFileName ) ) {
+        stateInfo.setError( QString("Can not copy %1 to %2").arg(sourceFileName).arg(targetFileName) );
+        return false;
+    }
 }
 
-bool GalaxyConfigTask::writeNewSection( const QString &config ) {
+bool GalaxyConfigTask::doCopyCommands( const QString &pathToCopy ) {
+    CHECK( rewriteFile( schemeConfigFile, pathToCopy + schemeConfigName ), false );
+    CHECK( rewriteFile( schemePath, pathToCopy + schemeName ), false );
+    return true;
+}
+void GalaxyConfigTask::doDeleteCommands() {
+    if( !QFile::remove( schemeConfigFile ) ) {
+        coreLog.info( QString("Can not delete %1").arg(schemeConfigFile) );
+    }
+}
+
+bool GalaxyConfigTask::prepareToolDirectory() {
+    if( galaxyPath.isEmpty() ) {
+        return true;
+    }
+    const QString truncatedSchemeName = schemeName.left( schemeName.length() - 4 );
+    QString pathToCopy = galaxyPath + "tools/" + truncatedSchemeName;
+    QDir directory( pathToCopy );
+
+    if( !directory.exists() ) {
+        bool created = directory.mkdir( pathToCopy );
+        if( !created ) {
+            stateInfo.setError( QString("Can not create %1 directory. Check user privileges").arg(pathToCopy) );
+            return false;
+        }
+    }
+    QFileInfo copyPathDirectory( pathToCopy );
+    if( !copyPathDirectory.isWritable() ) {
+        stateInfo.setError( QString("Directory %1 is not writable by this user").arg(pathToCopy) );
+        return false;
+    }
+
+    tryToAppendSlash( pathToCopy );
+    CHECK( doCopyCommands( pathToCopy ), false );
+    doDeleteCommands( );
+    return true;
+}
+
+bool GalaxyConfigTask::makeCopyOfGalaxyToolConfig() {
+    const QString toolConfigurationPath = galaxyPath + "tool_conf.xml";
+    QString backupFile = toolConfigurationPath;
+    backupFile.replace( ".xml", ".bak" );
+    if( !QFile::exists( backupFile ) ) {
+        bool copied = QFile::copy( toolConfigurationPath, backupFile );
+        if( !copied ) {
+            stateInfo.setError( QString("Can not copy %1 to %2").arg(toolConfigurationPath).arg(backupFile) );
+            return false;
+        }
+    }
+    return true;
+}
+
+void GalaxyConfigTask::writeNewSection( const QString &config ) {
     const int toolboxPosition = config.indexOf( "<toolbox>" );
     const int beginLength = toolboxPosition + QString("<toolbox>").length();
-    QString begin = config.mid(0, beginLength );
-    QString end = config.mid( beginLength, config.length() - begin.length() );
+    const QString begin = config.mid(0, beginLength );
+    const QString end = config.mid( beginLength, config.length() - begin.length() );
 
     const QString toolsConfigurationPath = galaxyPath + "tool_conf.xml";
     QFile configFile( toolsConfigurationPath );
     if( !configFile.open( QIODevice::WriteOnly ) ) {
-        return false;
+        return;
     }
-
     QXmlStreamWriter galaxyToolsConfigOutput;
     galaxyToolsConfigOutput.setDevice( &configFile );
-    galaxyToolsConfigOutput.writeDTD( begin );
-    galaxyToolsConfigOutput.writeStartElement( "section" );
-    galaxyToolsConfigOutput.writeAttribute( "name", galaxyToolName + "-tool" );
+
     QString idStrCopy = galaxyToolName;
     idStrCopy.replace(" ","_");
+    const QString truncatedSchemeName = schemeName.left( schemeName.length() - 4 );
+
+    galaxyToolsConfigOutput.writeDTD( begin );
+    galaxyToolsConfigOutput.writeDTD( "\n" );
+    galaxyToolsConfigOutput.writeStartElement( "section" );
+    galaxyToolsConfigOutput.writeAttribute( "name", galaxyToolName + "-tool" );
+   
     galaxyToolsConfigOutput.writeAttribute( "id", idStrCopy );
+    galaxyToolsConfigOutput.writeDTD( "\n" );
     galaxyToolsConfigOutput.writeStartElement( "tool" );
-    const QString schemeNameWithoutExtension = schemeName.left( schemeName.length() - 4 );
-    galaxyToolsConfigOutput.writeAttribute( "file", schemeNameWithoutExtension + "/" + schemeNameWithoutExtension + ".xml" );
+    
+    galaxyToolsConfigOutput.writeAttribute( "file", QString( "%1/%1.xml" ).arg(truncatedSchemeName) );
     galaxyToolsConfigOutput.writeEndElement();
+    galaxyToolsConfigOutput.writeDTD( "\n" );
     galaxyToolsConfigOutput.writeEndElement();
+    galaxyToolsConfigOutput.writeDTD( "\n" );
     galaxyToolsConfigOutput.writeDTD( end );
-    return true;
 }
 
-bool GalaxyConfigTask::addToolToConfig() {
-    const QString toolsConfigurationPath = galaxyPath + "tool_conf.xml";
-    QFile configFile( toolsConfigurationPath );
+void GalaxyConfigTask::addNewTool() {
+    const QString toolConfigurationPath = galaxyPath + "tool_conf.xml";
+
+    QFile configFile( toolConfigurationPath );
     if( !configFile.open( QIODevice::ReadOnly ) ) {
-        return false;
+        coreLog.info( QString("Can not open %1").arg( toolConfigurationPath ) );
+        return;
     }
     QTextStream input( &configFile );
     QString config = input.readAll();
     configFile.close();
     if( config.indexOf( galaxyToolName ) != SUBSTRING_NOT_FOUND ) {
-        return true;
+        return;
     }
-    return writeNewSection( config );
+    writeNewSection( config );
 }
 
-bool GalaxyConfigTask::addToolToGalaxyConfig() {
-    makeCopyOfGalaxyToolConfig();
-    return addToolToConfig();
+void GalaxyConfigTask::modifyToolConfig() {
+    CHECK( makeCopyOfGalaxyToolConfig(), );
+    addNewTool();
+}
+
+void GalaxyConfigTask::addToolToGalaxy() {
+    CHECK( prepareToolDirectory(), );
+    modifyToolConfig();
 }
 
 } // U2

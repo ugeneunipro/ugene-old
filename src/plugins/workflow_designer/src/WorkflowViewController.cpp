@@ -92,6 +92,7 @@
 #include "ChooseItemDialog.h"
 #include "CreateScriptWorker.h"
 #include "DashboardsManagerDialog.h"
+#include "GalaxyConfigConfigurationDialogImpl.h"
 #include "ImportSchemaDialog.h"
 #include "ItemViewStyle.h"
 #include "PortAliasesConfigurationDialog.h"
@@ -725,6 +726,11 @@ void WorkflowView::createActions() {
     importSchemaToElement->setIcon(QIcon(":workflow_designer/images/import.png"));
     connect(importSchemaToElement, SIGNAL(triggered()), SLOT(sl_importSchemaToElement()));
 
+    createGalaxyConfigAction = new QAction(tr("Create Galaxy tool config..."), this);
+    createGalaxyConfigAction->setObjectName("Create Galaxy tool config");
+    createGalaxyConfigAction->setIcon(QIcon(":workflow_designer/images/galaxy.png"));
+    connect(createGalaxyConfigAction, SIGNAL(triggered()), SLOT(sl_createGalaxyConfig()));
+
     selectAction = new QAction(tr("Select all elements"), this);
     connect(selectAction, SIGNAL(triggered()), scene, SLOT(sl_selectAll()));
 
@@ -1285,6 +1291,7 @@ void WorkflowView::setupViewMenu(QMenu* m) {
     m->addAction(stopAction);
     m->addSeparator();
     m->addAction(configureParameterAliasesAction);
+    m->addAction(createGalaxyConfigAction);
     m->addAction(configurePortAliasesAction);
     m->addAction(importSchemaToElement);
     m->addSeparator();
@@ -1774,6 +1781,27 @@ void WorkflowView::sl_configureParameterAliases() {
             assert(false);
         }
     } while( ret == QDialog::Accepted );
+}
+
+void WorkflowView::sl_createGalaxyConfig() {
+    bool schemeContainsAliases = schema->hasParamAliases();
+    if( !schemeContainsAliases ) {
+        QMessageBox::critical( this, tr("Bad input!"), tr("Scheme does not contain any parameter aliases") );
+        return;
+    }
+    if( meta.url.isEmpty() ) {
+        QMessageBox::critical( this, tr("Bad input!"), tr("Save scheme before its usage") );
+        return;
+    }
+    GalaxyConfigConfigurationDialogImpl dlg( meta.url, this );
+    if ( QDialog::Accepted == dlg.exec() ) {
+        QList <QListWidgetItem*> schemeErrors;
+        bool created = dlg.createGalaxyConfigTask();
+        if( !created ) {
+            QMessageBox::critical( this, tr("Internal error!"), tr("Can not create Galaxy config") );
+            return;
+        }
+    }
 }
 
 void WorkflowView::sl_configurePortAliases() {

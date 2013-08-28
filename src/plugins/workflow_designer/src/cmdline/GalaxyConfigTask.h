@@ -33,35 +33,64 @@ namespace U2 {
 class GalaxyConfigTask : public Task {
     Q_OBJECT
 public:
+    static const QString UGENE_PATH_OPTION;
+    static const QString GALAXY_PATH_OPTION;
     static const QString GALAXY_CONFIG_OPTION;
 
-    GalaxyConfigTask();
+    GalaxyConfigTask( const QString &_schemePath, const QString &_ugenePath,
+                      const QString &_galaxyPath, const QString &_destinationPath );
     ~GalaxyConfigTask();
 
+    void prepare();
+    void run();
 private:
-    bool tryToFindInPath( const QString &objectName, QString &objectPath );
-    bool tryToFindByLocate( const QString &objectName, QString &objectPath );
+    QString appDirPath;
+    QString schemeName;
+    QString schemePath;
+    QString ugenePath;
+    QString galaxyPath;
+    QString destinationPath;
+    QString schemeContent;
+    QString galaxyToolName;
+    QString galaxyHelpMessage;
+    QString schemeConfigName;
+    QString schemeConfigFile;
+
+    QList < QMap <QString, QStringList> > elemAliases;
+    QList <int> inputElementsPositions;
+    QList <int> outputElementsPositions;
+    QList <int> optionElementsPositions;
+    QXmlStreamWriter galaxyConfigOutput;
+
+    /* Preparation to generating */
+    /* BEGIN */
+    void tryToFindInPath( const QString &objectName, QString &objectPath );
+    void tryToFindByLocate( const QString &objectName, QString &objectPath );
     bool fileExists( const QString &objectPath, const QString &suffix );
     bool findPathToObject( const QString &objectName, QString &objectPath );
-    bool getPath( const QString &whatPath, QString &resultPath );
-    bool getSchemeName();
     bool getGalaxyPath();
 
+    bool getSchemeName();
+
     bool getSchemeContent();
+    void setError( const QString &keyword );
     bool getHelpMessage();
     bool getWorkflowName();
 
     bool getParameterValue( const QString &keyword, const int searchFrom, QString &parameterValue, int &nextSearchFrom );
     bool defineAliases();
+    /* END */
 
+    /* Tool config generation */
+    /* BEGIN */
     void writeToolUnit();
 
     ActorPrototype* getElementFromActorPrototypeRegistry( const QString &elementName );
 
-    void pushAttributeTypeToPositionsList( const QString &elementAttribute, const int elementPosition );
+    void fillPositionsList( const QString &elementAttribute, const int elementPosition );
     bool divideElementsByType();
-    void writeSelectedElements( const QList <int> &elementsPositions );
-    void writeAllElements();
+    void writeRunUgeneCommand( const QString &ugeneExecutable );
+    void writeOutputFilesChecks();
     bool writeCommandUnit();
 
     void getConstraint( const QString &typeName, QString &resultType );
@@ -86,31 +115,21 @@ private:
     void writeHelpUnit();
 
     bool createConfigForGalaxy();
+    /* END */
 
-    void doCopyCommands( const QString &pathToCopy );
+    bool tryToCopySchemeConfigFile();
+
+    bool rewriteFile( const QString &sourceFileName, const QString &targetDirectory );
+    bool doCopyCommands( const QString &pathToCopy );
     void doDeleteCommands();
-    bool prepareDirectoryForTool();
-    
-    void makeCopyOfGalaxyToolConfig();
-    bool addToolToConfig();
-    bool writeNewSection( const QString &config );
-    bool addToolToGalaxyConfig();
+    bool prepareToolDirectory();
 
-    QString appDirPath;
-    QString schemeName;
-    QString schemePath;
-    QString ugenePath;
-    QString galaxyPath;
-    QString schemeContent;
-    QString galaxyToolName;
-    QString galaxyHelpMessage;
+    bool makeCopyOfGalaxyToolConfig();
+    void addNewTool();
+    void writeNewSection( const QString &config );
+    void modifyToolConfig();
 
-
-    QList < QMap < QString, QStringList > > elemAliases;
-    QList <int> inputElementsPositions;
-    QList <int> outputElementsPositions;
-    QList <int> optionElementsPositions;
-    QXmlStreamWriter galaxyConfigOutput;
+    void addToolToGalaxy();
 
 };// GalaxyConfigTask
 

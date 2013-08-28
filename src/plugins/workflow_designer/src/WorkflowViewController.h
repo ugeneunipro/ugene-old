@@ -216,6 +216,7 @@ private slots:
     void sl_stop();
     void sl_pause(bool isPause = true);
     void sl_configureParameterAliases();
+    void sl_createGalaxyConfig();
     void sl_configurePortAliases();
     void sl_importSchemaToElement();
 
@@ -329,6 +330,7 @@ private:
     QAction* appendExternalTool;
     QAction* editExternalToolAction;
     QAction* configureParameterAliasesAction;
+    QAction* createGalaxyConfigAction;
     QAction* configurePortAliasesAction;
     QAction* importSchemaToElement;
     QAction* runAction;
