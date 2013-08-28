@@ -19,11 +19,13 @@
  * MA 02110-1301, USA.
  */
 
-#include <QVBoxLayout>
-
-#include <U2Designer/OutputDirectoryWidget.h>
-
 #include "StartupDialog.h"
+
+#include <QtCore/QDir>
+
+#include <QtGui/QMessageBox>
+#include <QtGui/QVBoxLayout>
+
 
 namespace U2 {
 
@@ -31,16 +33,30 @@ StartupDialog::StartupDialog(QWidget *parent)
 : QDialog(parent)
 {
     setupUi(this);
+    outDirWidget = new OutputDirectoryWidget(this);
     QVBoxLayout *l = new QVBoxLayout(box);
     l->setMargin(3);
-    l->addWidget(new OutputDirectoryWidget(this));
+    l->addWidget(outDirWidget);
     buttons->addButton(tr("Don't use the directory"), QDialogButtonBox::RejectRole);
+    connect(buttons, SIGNAL(accepted()), this, SLOT(sl_accepted()));
 
 #ifdef Q_OS_WIN
     QFont f( "Arial", 8, QFont::Bold);
     label->setFont(f);
 #endif
 
+}
+
+void StartupDialog::sl_accepted(){
+    QDir dir(outDirWidget->getChoosenDir());
+    QFile file(dir.filePath("ex1.txt"));
+    if (!file.open(QIODevice::WriteOnly)){
+        QMessageBox::critical(this, this->windowTitle(), tr("You have no write access to the directory. Please choose another one."));
+        return;
+    }
+    file.close();
+    file.remove();
+    QDialog::accept();
 }
 
 } // U2

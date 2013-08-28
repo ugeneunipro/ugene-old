@@ -22,13 +22,15 @@
 #ifndef _U2_OUTPUTDIRECTORYWIDGET_H_
 #define _U2_OUTPUTDIRECTORYWIDGET_H_
 
-#include <QWidget>
-
 #include <U2Core/global.h>
+
+#include <QtGui/QLineEdit>
+#include <QtGui/QWidget>
 
 class QLabel;
 class QLineEdit;
 class QPushButton;
+
 
 namespace U2 {
 
@@ -37,6 +39,7 @@ class U2DESIGNER_EXPORT OutputDirectoryWidget : public QWidget {
 public:
     OutputDirectoryWidget(QWidget *parent);
 
+    QString getChoosenDir(){return pathEdit->text();};
     static const QString INFO;
 
 signals:
