@@ -622,7 +622,7 @@ int main(int argc, char **argv)
 
 	ts->registerTopLevelTask(new SequentialMultiTask(QObject::tr("Startup checks"), tasks, TaskFlag_NoRun));
 
-    MemoryLocker l(160); // 100Mb on UGENE start, ~60Mb SQLite cache
+    MemoryLocker l(160, AppResource::SystemMemory); // 100Mb on UGENE start, ~60Mb SQLite cache
     int rc = app.exec();
     l.release();
 

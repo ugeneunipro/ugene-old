@@ -54,26 +54,47 @@ namespace U2 {
 
 class U2CORE_EXPORT AppResource {
 public:
+    // TaskMemory will be released after Task is finished,
+    // SystemMemory will be released only on UGENE shutdown. Example: SQLite buffer memory lock
+    enum MemoryLockType {
+        TaskMemory,
+        SystemMemory
+    };
+
     AppResource(int id, int _maxUse, const QString& _name, const QString& _suffix = QString()) 
-        : resourceId(id), _maxUse(_maxUse), name(_name), suffix(_suffix) {}
+        : resourceId(id), _maxUse(_maxUse), name(_name), suffix(_suffix), systemUse(0) {}
 
     virtual ~AppResource(){}
 
-    virtual void acquire(int n = 1) = 0;
-    virtual bool tryAcquire(int n = 1) = 0;
+    virtual void acquire(int n = 1, MemoryLockType lt = TaskMemory) = 0;
+    virtual bool tryAcquire(int n = 1, MemoryLockType lt = TaskMemory) = 0;
 
-    virtual bool tryAcquire(int n, int timeout) = 0;
+    virtual bool tryAcquire(int n, int timeout, MemoryLockType lt = TaskMemory) = 0;
 
-    virtual void release(int n = 1) = 0;
+    virtual void release(int n = 1, MemoryLockType lt = TaskMemory) = 0;
 
     virtual int available() const = 0;
 
+    // total maximum usage of resource
     int maxUse() const { return _maxUse; }
 
-    int resourceId;
-    int _maxUse;
+    // total maximum usage of resource without system memory
+    int maxTaskUse() const {
+        SAFE_POINT_EXT(systemUse >= 0,,_maxUse);
+        return _maxUse - systemUse;
+    }
+    int getResourceId() const {
+        return resourceId;
+    }
+
     QString name;
     QString suffix;
+
+protected:
+    int resourceId;
+    int _maxUse;
+    int systemUse;
+
 private:
     AppResource( const AppResource& other );
     AppResource& operator= (const AppResource& other);
@@ -96,7 +117,8 @@ public:
     };
 
     // for TaskScheduler
-    virtual void acquire(int n) {
+    virtual void acquire(int n, MemoryLockType lt = TaskMemory) {
+        Q_UNUSED(lt);
         switch (n) {
             case Read:
                 resource->lockForRead();
@@ -109,7 +131,8 @@ public:
         }
     }
 
-    virtual bool tryAcquire(int n) {
+    virtual bool tryAcquire(int n, MemoryLockType lt = TaskMemory) {
+        Q_UNUSED(lt);
         switch (n) {
             case Read:
                 return resource->tryLockForRead();
@@ -119,7 +142,8 @@ public:
                 return false;
         }
     }
-    virtual bool tryAcquire(int n, int timeout) {
+    virtual bool tryAcquire(int n, int timeout, MemoryLockType lt = TaskMemory) {
+        Q_UNUSED(lt);
         switch (n) {
             case Read:
                 return resource->tryLockForRead(timeout);
@@ -130,7 +154,8 @@ public:
         }
     }
 
-    virtual void release(int n) {
+    virtual void release(int n, MemoryLockType lt = TaskMemory) {
+        Q_UNUSED(lt);
         resource->unlock();
     }
 
@@ -138,10 +163,6 @@ public:
         return -1;
     }
 
-    int maxUse() const { return _maxUse; }
-
-    int resourceId;
-    int _maxUse;
     QString name;
     QString suffix;
 private:
@@ -158,25 +179,40 @@ public:
         delete resource; resource = NULL;
     }
 
-    void acquire(int n = 1) {
+    void acquire(int n = 1, MemoryLockType lt = TaskMemory) {
         LOG_TRACE(acquire);
         resource->acquire(n);
+        if (lt == AppResource::SystemMemory) {
+            systemUse += n;
+        }
     }
 
-    bool tryAcquire(int n = 1) {
+    bool tryAcquire(int n = 1, MemoryLockType lt = TaskMemory) {
         LOG_TRACE(tryAcquire);
-        return resource->tryAcquire(n);
+        bool acquired = resource->tryAcquire(n);
+        if (acquired && (lt == AppResource::SystemMemory)) {
+            systemUse += n;
+        }
+        return acquired;
     }
 
-    bool tryAcquire(int n, int timeout) {
+    bool tryAcquire(int n, int timeout, MemoryLockType lt = TaskMemory) {
         LOG_TRACE(tryAcquire_timeout);
-        return resource->tryAcquire(n, timeout);
+        bool acquired = resource->tryAcquire(n, timeout);
+        if (acquired && (lt == AppResource::SystemMemory)) {
+            systemUse += n;
+        }
+        return acquired;
     }
 
-    void release(int n = 1) {
+    void release(int n = 1, MemoryLockType lt = TaskMemory) {
         LOG_TRACE(release);
         SAFE_POINT(n>=0, QString("AppResource %1 release %2 < 0 called").arg(name).arg(n), );
         resource->release(n);
+        if (lt == AppResource::SystemMemory) {
+            systemUse -= n;
+            SAFE_POINT_EXT(systemUse >= 0,,);
+        }
 
         // QSemaphore allow to create resources by releasing, we do not want to get such behavior
         int avail = resource->available();
@@ -202,6 +238,10 @@ public:
                 if (ok) {
                     // successfully acquired i resources
                     _maxUse -= i;
+                    if (_maxUse < systemUse) {
+                        resource->release(systemUse - _maxUse);
+                        _maxUse = systemUse;
+                    }
                     break;
                 }
             }
@@ -258,15 +298,15 @@ private:
 
 class MemoryLocker {
 public:
-    MemoryLocker(U2OpStatus& os, int preLockMB = 10)
-        : os(&os), preLockMB(preLockMB), lockedMB(0), needBytes(0), resource(NULL) {
+    MemoryLocker(U2OpStatus& os, int preLockMB = 10, AppResource::MemoryLockType memoryLockType = AppResource::TaskMemory)
+        : os(&os), preLockMB(preLockMB), lockedMB(0), needBytes(0), resource(NULL), memoryLockType(memoryLockType) {
         resource = AppResourcePool::instance()->getResource(RESOURCE_MEMORY);
 
         preLockMB = preLockMB>0?preLockMB : 0;
         tryAcquire(0);
     }
-    MemoryLocker(int preLockMB = 10)
-        : os(NULL), preLockMB(preLockMB), lockedMB(0), needBytes(0), resource(NULL) {
+    MemoryLocker(int preLockMB = 10, AppResource::MemoryLockType memoryLockType = AppResource::TaskMemory)
+        : os(NULL), preLockMB(preLockMB), lockedMB(0), needBytes(0), resource(NULL), memoryLockType(memoryLockType) {
         resource = AppResourcePool::instance()->getResource(RESOURCE_MEMORY);
 
         preLockMB = preLockMB>0?preLockMB : 0;
@@ -275,6 +315,7 @@ public:
 
     MemoryLocker(MemoryLocker& other) {
         resource = other.resource;
+        memoryLockType = other.memoryLockType;
         os = NULL;
         preLockMB = other.preLockMB;
         lockedMB = other.lockedMB; other.lockedMB = 0;
@@ -287,6 +328,7 @@ public:
         qSwap(preLockMB, tmp.preLockMB);
         qSwap(lockedMB, tmp.lockedMB);
         qSwap(needBytes, tmp.needBytes);
+        qSwap(memoryLockType, tmp.memoryLockType);
 
         return *this;
     }
@@ -302,7 +344,7 @@ public:
         if (needMB > lockedMB) {
             int diff = needMB - lockedMB;
             CHECK_EXT(NULL != resource, if (os) os->setError("MemoryLocker - Resource error"), false);
-            bool ok = resource->tryAcquire(diff);
+            bool ok = resource->tryAcquire(diff, memoryLockType);
             if (ok) {
                 lockedMB = needMB;
             } else {
@@ -318,7 +360,7 @@ public:
     void release() {
         CHECK_EXT(NULL != resource, if (os) os->setError("MemoryLocker - Resource error"), );
         if (lockedMB > 0) {
-            resource->release(lockedMB);
+            resource->release(lockedMB, memoryLockType);
         }
         lockedMB = 0;
         needBytes = 0;
@@ -330,6 +372,7 @@ private:
     int lockedMB;
     qint64 needBytes;
     AppResource* resource;
+    AppResource::MemoryLockType memoryLockType;
 };
 
 

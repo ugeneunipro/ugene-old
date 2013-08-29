@@ -195,9 +195,10 @@ bool AppResourcePool::isSSE2Enabled() {
 }
 
 void AppResourcePool::registerResource(AppResource* r) {
-    SAFE_POINT(!resources.contains(r->resourceId), QString("Duplicate resource: ").arg(r->resourceId),);
+    SAFE_POINT(NULL != r,"",);
+    SAFE_POINT(!resources.contains(r->getResourceId()), QString("Duplicate resource: ").arg(r->getResourceId()),);
 
-    resources[r->resourceId] = r;
+    resources[r->getResourceId()] = r;
 }
 
 AppResource* AppResourcePool::getResource(int id) const {
