@@ -359,7 +359,8 @@ void SamReader::readHeader() {
                     if(!QRegExp("[A-Za-z][A-Za-z]").exactMatch(fieldTag) && "M5" != fieldTag) { //workaround for bug in the spec
                         throw InvalidFormatException(BAMDbiPlugin::tr("Invalid header field tag: %1").arg(QString(fieldTag)));
                     }
-                    if(!QRegExp("[ -~]+").exactMatch(fieldValue)) {
+                    // CL and PN tags of can contain any string 
+                    if(fieldTag!="CL" && fieldTag!="PN" && !QRegExp("[ -~]+").exactMatch(fieldValue)) {
                         throw InvalidFormatException(BAMDbiPlugin::tr("Invalid %1-%2 value: %3").arg(QString(recordTag)).arg(QString(fieldTag)).arg(QString(fieldValue)));
                     }
                     if(!fields.contains(fieldTag)) {
