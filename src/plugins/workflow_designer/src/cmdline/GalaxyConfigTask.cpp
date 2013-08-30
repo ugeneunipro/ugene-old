@@ -874,6 +874,7 @@ bool GalaxyConfigTask::createConfigForGalaxy() {
 
     galaxyConfigFile.close();
     coreLog.info("Tool config was created");
+    coreLog.info("Scheme config path is " + schemeConfigPath);
     return true;
 }
 
