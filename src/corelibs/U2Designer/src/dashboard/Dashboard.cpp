@@ -131,16 +131,16 @@ void Dashboard::sl_loaded(bool ok) {
 
     doc = page()->mainFrame()->documentElement();
     if (NULL != monitor()) {
-        OutputFilesWidget *files = new OutputFilesWidget(addWidget(tr("Output Files"), OverviewDashTab, 0), this);
-        ResourcesWidget *resource = new ResourcesWidget(addWidget(tr("Workflow Task"), OverviewDashTab, 1), this);
-        StatisticsWidget *stat = new StatisticsWidget(addWidget(tr("Common Statistics"), OverviewDashTab, 1), this);
+        new OutputFilesWidget(addWidget(tr("Output Files"), OverviewDashTab, 0), this);
+        new ResourcesWidget(addWidget(tr("Workflow Task"), OverviewDashTab, 1), this);
+        new StatisticsWidget(addWidget(tr("Common Statistics"), OverviewDashTab, 1), this);
 
         sl_runStateChanged(false);
         if (!monitor()->getProblems().isEmpty()) {
             sl_addProblemsWidget();
         }
 
-        ParametersWidget *params = new ParametersWidget(addWidget(tr("Parameters"), InputDashTab, 0), this);
+        new ParametersWidget(addWidget(tr("Parameters"), InputDashTab, 0), this);
 
         connect(monitor(), SIGNAL(si_runStateChanged(bool)), SLOT(sl_runStateChanged(bool)));
         connect(monitor(), SIGNAL(si_firstProblem()), SLOT(sl_addProblemsWidget()));
@@ -222,29 +222,39 @@ QWebElement Dashboard::addWidget(const QString &title, DashboardTab dashTab, int
     QWebElement tabContainer = doc.findFirst(dashTabId);
     SAFE_POINT(!tabContainer.isNull(), "Can't find the tab container!", QWebElement());
 
-    // Define the location on the tab
-    bool left = true;
-    if (0 == cntNum) {
-        left = true;
-    } else if (1 == cntNum) {
-        left = false;
-    } else if (containerSize(tabContainer, ".left-container") <= containerSize(tabContainer, ".right-container")) {
-        left = true;
-    } else {
-        left = false;
+    // Specify if the tab has left/right inner containers
+    bool hasInnerContainers = true;
+    if (InputDashTab == dashTab) {
+        hasInnerContainers = false;
     }
 
-    // Find a container on the tab depending on the location and insert the widget
-    QWebElement insideTabContainer = tabContainer.findFirst(left ? ".left-container" : ".right-container");
-    SAFE_POINT(!insideTabContainer.isNull(), "Can't find a container inside a tab!", QWebElement());
+    // Get the left or right inner container (if the tab allows),
+    // otherwise use the whole tab as a container
+    QWebElement mainContainer = tabContainer;
 
-    insideTabContainer.appendInside(
+    if (hasInnerContainers) {
+        bool left = true;
+        if (0 == cntNum) {
+            left = true;
+        } else if (1 == cntNum) {
+            left = false;
+        } else if (containerSize(tabContainer, ".left-container") <= containerSize(tabContainer, ".right-container")) {
+            left = true;
+        } else {
+            left = false;
+        }
+
+        mainContainer = tabContainer.findFirst(left ? ".left-container" : ".right-container");
+        SAFE_POINT(!mainContainer.isNull(), "Can't find a container inside a tab!", QWebElement());
+    }
+
+    mainContainer.appendInside(
         "<div class=\"widget\">"
             "<div class=\"title\"><div class=\"title-content\">" + title + "</div></div>"
             "<div class=\"widget-content\"></div>"
         "</div>");
 
-    QWebElement widget = insideTabContainer.lastChild();
+    QWebElement widget = mainContainer.lastChild();
     return widget.findFirst(".widget-content");
 }
 

@@ -41,7 +41,7 @@ body {
 }
 
 .widget {
-    width: 500px;
+    width:  auto;
     height: auto;
 
     position: relative;
