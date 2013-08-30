@@ -276,6 +276,9 @@ void ComboBoxWithChecksDelegate::setModelData(QWidget *editor, QAbstractItemMode
     model->setData(index, box->value(), ConfigurationEditor::ItemValueRole);
 }
 
+void ComboBoxWithChecksDelegate::getItems( QVariantMap &items ) const {
+    items = this->items;
+}
 
 QVariant ComboBoxWithChecksDelegate::getDisplayValue(const QVariant& val) const {
     QString display = val.toString();

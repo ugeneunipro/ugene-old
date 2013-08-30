@@ -237,6 +237,8 @@ public:
         return new ComboBoxWithChecksDelegate(items, parent());
     }
 
+    void getItems( QVariantMap &items ) const;
+
 signals:
     void si_valueChanged( const QString & newVal ) const;
 
