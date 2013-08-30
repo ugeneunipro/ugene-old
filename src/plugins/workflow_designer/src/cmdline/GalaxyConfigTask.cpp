@@ -372,7 +372,7 @@ bool GalaxyConfigTask::defineAliases() {
 
 void GalaxyConfigTask::writeToolUnit() {
     galaxyConfigOutput.writeStartElement( TOOL );  //tool unit begin
-    galaxyConfigOutput.writeAttribute( ID, galaxyToolName );
+    galaxyConfigOutput.writeAttribute( ID, galaxyToolName + "_tool" );
     QString toolName = galaxyToolName;
     toolName.replace(" ", "_");
     galaxyConfigOutput.writeAttribute( NAME, toolName );
@@ -637,6 +637,7 @@ void GalaxyConfigTask::writeDrillDownAttribute( const PropertyDelegate &pd ) {
         galaxyConfigOutput.writeAttribute( NAME, itemsIterator.key() );
         galaxyConfigOutput.writeAttribute( VALUE, itemsIterator.value().toString() );
         galaxyConfigOutput.writeEndElement();
+        itemsIterator++;
     }
     galaxyConfigOutput.writeEndElement();
 }
@@ -681,10 +682,13 @@ bool GalaxyConfigTask::tryToWriteComplexType( PropertyDelegate *pd, const QStrin
     } 
     else if( isDelegateStringList(pd) ) {
         attributeType = "text";
+        galaxyConfigOutput.writeAttribute( HRSchemaSerializer::TYPE_ATTR, attributeType );
     }
     return true;
 }
 
+//FIXME
+//look at tryToWriteSimpleType and tryToWriteComplexType functions
 bool GalaxyConfigTask::writeTypeForOptionElement( const QStringList &elementParameters, const ActorPrototype &element ) {
     const QString attributeName = elementParameters.at(0);
     Attribute *elementAttribute = element.getAttribute(attributeName);
