@@ -737,17 +737,23 @@ void WorkflowView::createActions() {
     copyAction = new QAction(tr("&Copy"), this);
     copyAction->setIcon(QIcon(":workflow_designer/images/editcopy.png"));
     copyAction->setShortcut(QKeySequence("Ctrl+C"));
+    copyAction->setShortcutContext(Qt::WidgetWithChildrenShortcut);
     connect(copyAction, SIGNAL(triggered()), SLOT(sl_copyItems()));
+    addAction(copyAction);
 
     cutAction = new QAction(tr("Cu&t"), this);
     cutAction->setIcon(QIcon(":workflow_designer/images/editcut.png"));
     cutAction->setShortcuts(QKeySequence::Cut);
+    cutAction->setShortcutContext(Qt::WidgetWithChildrenShortcut);
     connect(cutAction, SIGNAL(triggered()), SLOT(sl_cutItems()));
+    addAction(cutAction);
 
     pasteAction = new QAction(tr("&Paste"), this);
     pasteAction->setIcon(QIcon(":workflow_designer/images/editpaste.png"));
     pasteAction->setShortcuts(QKeySequence::Paste);
+    pasteAction->setShortcutContext(Qt::WidgetWithChildrenShortcut);
     connect(pasteAction, SIGNAL(triggered()), SLOT(sl_pasteItems()));
+    addAction(pasteAction);
 
     { // style
         QAction* simpleStyle = new QAction(tr("Minimal"), this);
