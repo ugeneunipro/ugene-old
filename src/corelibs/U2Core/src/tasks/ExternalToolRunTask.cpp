@@ -70,25 +70,31 @@ void ExternalToolRunTask::run(){
     externalToolProcess = pRun.process;
 
     QScopedPointer<ExternalToolRunTaskHelper> h(new ExternalToolRunTaskHelper(this));
-    externalToolProcess->start(pRun.program, pRun.arguments);
-    bool started = externalToolProcess->waitForStarted(START_WAIT_MSEC);
 
-    if (!started){
-        ExternalTool* tool = AppContext::getExternalToolRegistry()->getByName(toolName);
-        if (tool->isValid()){
-            stateInfo.setError(tr("Can not run %1 tool.").arg(toolName));
-        } else {
-            stateInfo.setError(tr("Can not run %1 tool. May be tool path '%2' not valid?")
-                               .arg(toolName)
-                               .arg(AppContext::getExternalToolRegistry()->getByName(toolName)->getPath()));
+    try {
+        externalToolProcess->start(pRun.program, pRun.arguments);
+        bool started = externalToolProcess->waitForStarted(START_WAIT_MSEC);
+
+        if (!started){
+            ExternalTool* tool = AppContext::getExternalToolRegistry()->getByName(toolName);
+            if (tool->isValid()){
+                stateInfo.setError(tr("Can not run %1 tool.").arg(toolName));
+            } else {
+                stateInfo.setError(tr("Can not run %1 tool. May be tool path '%2' not valid?")
+                                   .arg(toolName)
+                                   .arg(AppContext::getExternalToolRegistry()->getByName(toolName)->getPath()));
+            }
+            return;
         }
-        return;
-    }
-    while(!externalToolProcess->waitForFinished(1000)){
-        if (isCanceled()) {
-            externalToolProcess->kill();
+        while(!externalToolProcess->waitForFinished(1000)){
+            if (isCanceled()) {
+                externalToolProcess->kill();
+            }
         }
+    } catch(...) {
+        setError(QString("%1 tool finished unexpectedly.").arg(toolName));
     }
+
     {
         int exitCode = externalToolProcess->exitCode();
         if(exitCode != EXIT_SUCCESS && !hasError()) {
