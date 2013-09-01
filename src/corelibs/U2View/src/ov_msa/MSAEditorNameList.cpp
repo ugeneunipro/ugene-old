@@ -246,7 +246,6 @@ void MSAEditorNameList::paintEvent(QPaintEvent*) {
     drawAll();
 }
 
-// conditional compilation in this method is used for UGENE-1680 fix
 void MSAEditorNameList::keyPressEvent (QKeyEvent *e) {
     int key = e->key();
     static int newSeq = 0;
@@ -323,17 +322,12 @@ void MSAEditorNameList::keyPressEvent (QKeyEvent *e) {
         }
         break;
     case Qt::Key_Shift:
-#ifndef Q_OS_MAC
-        newSeq = curSeq = ui->seqArea->getSelectedRows().startPos;
-        startSelectingSeq = curSeq;
-#else
         curSeq = startSelectingSeq;
         if (startSelectingSeq == ui->getCollapseModel()->rowToMap(ui->seqArea->getSelectedRows().startPos)) {
             newSeq = ui->getCollapseModel()->rowToMap(ui->seqArea->getSelectedRows().endPos() - 1);
         } else {
             newSeq = ui->getCollapseModel()->rowToMap(ui->seqArea->getSelectedRows().startPos);
         }
-#endif
         break;
     case Qt::Key_Escape:
         ui->seqArea->cancelSelection();
@@ -370,13 +364,13 @@ void MSAEditorNameList::mousePressEvent(QMouseEvent *e) {
                 }
             }
         }
+        startSelectingSeq = curSeq;
         MSAEditorSelection s = ui->seqArea->getSelection();
         if ( s.getRect().contains(0,curSeq) ) {
             if (!ui->isCollapsibleMode()) {
                 shifting = true;
             }
         } else {
-            startSelectingSeq = ui->seqArea->getSequenceNumByY(e->y());
             if (!ui->seqArea->isSeqInRange(startSelectingSeq) ) {
                 if (e->y() < origin.y()) {
                     startSelectingSeq = 0;

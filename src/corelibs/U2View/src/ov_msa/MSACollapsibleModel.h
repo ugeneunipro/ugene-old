@@ -44,15 +44,12 @@ public:
 
     U2Region mapToRows(int pos) const;
 
-    #ifdef Q_OS_MAC // fix for UGENE-1680
-
     /**
-    *  Function converts the real row number into the visible position in the msa.
-    *  Returns -1 if the row is invisible.
+    * The method converts the row position in the whole msa into its "visible" position (i.e.
+    * the row position that takes into account collapsed items).
+    * Returns -1 if the row is inside a collapsed item.
     */
     int rowToMap(int row) const;
-
-    #endif
 
     void getVisibleRows(int startPos, int endPos, QVector<U2Region>& rows) const;
 
