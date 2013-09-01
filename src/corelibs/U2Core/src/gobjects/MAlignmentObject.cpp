@@ -308,6 +308,16 @@ void MAlignmentObject::removeRow(int rowIdx) {
     U2OpStatus2Log os;
     MsaDbiUtils::removeRow(entityRef, rowId, os);
     SAFE_POINT_OP(os, );
+
+    MAlignmentModInfo mi;
+    mi.sequenceContentChanged = false;
+
+    QList<qint64> modifiedRowIds;
+
+    QList<qint64> removedRowIds;
+    removedRowIds << rowId;
+
+    updateCachedMAlignment(mi, modifiedRowIds, removedRowIds);
 }
 
 void MAlignmentObject::updateRow(int rowIdx, const QString& name, const QByteArray& seqBytes, const QList<U2MsaGap>& gapModel, U2OpStatus& os) {
