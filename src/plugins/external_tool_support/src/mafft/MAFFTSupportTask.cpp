@@ -336,12 +336,13 @@ Task::ReportResult MAFFTWithExtFileSpecifySupportTask::report(){
 MAFFTLogParser::MAFFTLogParser(int _countSequencesInMSA, int _countRefinementIter, const QString& _outputFileName) :
         countSequencesInMSA(_countSequencesInMSA),
         countRefinementIter(_countRefinementIter),
-        outputFileName(_outputFileName)
+        outputFileName(_outputFileName),
+        isOutputFileCreated(false),
+        firstDistanceMatrix(false),
+        firstUPGMATree(false),
+        firstProAlign(false),
+        progress(0)
 {
-    isOutputFileCreated=false;
-    firstDistanceMatrix=false;
-    firstUPGMATree=false;
-    firstProAlign=false;
     outFile.setFileName(outputFileName);
     if(outFile.open(QIODevice::WriteOnly)){
         isOutputFileCreated=true;
