@@ -293,6 +293,8 @@ protected:
 
 class U2LANG_EXPORT ActorValidator : public ConfigurationValidator {
 public:
+    virtual ~ActorValidator() { }
+
     virtual bool validate(const Configuration *cfg, QStringList &errors) const;
     virtual bool validate(const Actor *actor, QStringList &errors) const = 0;
 

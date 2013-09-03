@@ -21,6 +21,7 @@
 
 #include "DocActors.h"
 #include "CoreLib.h"
+#include "../util/DatasetValidator.h"
 
 #include <U2Designer/DelegateEditors.h>
 #include <U2Lang/CoreLibConstants.h>
@@ -75,6 +76,7 @@ QString DocActorProto::prepareDocumentFilter() {
 ReadDocActorProto::ReadDocActorProto(const DocumentFormatId& _fid, const Descriptor& _desc, const QList<PortDescriptor*>& _ports, 
                                      const QList<Attribute*>& _attrs ) : DocActorProto( _fid, _desc, _ports, _attrs ) {
     attrs << new URLAttribute(BaseAttributes::URL_IN_ATTRIBUTE(), BaseTypes::URL_DATASETS_TYPE(), true);
+    setValidator(new DatasetValidator());
 }
 
 bool ReadDocActorProto::isAcceptableDrop(const QMimeData * md, QVariantMap * params ) const {

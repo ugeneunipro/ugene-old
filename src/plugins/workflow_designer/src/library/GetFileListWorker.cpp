@@ -36,6 +36,7 @@
 #include <U2Gui/GUIUtils.h>
 
 #include "GetFileListWorker.h"
+#include "util/DatasetValidator.h"
 
 namespace U2 {
 namespace LocalWorkflow {
@@ -108,6 +109,7 @@ void GetFileListWorkerFactory::init() {
     ActorPrototype *proto = new IntegralBusActorPrototype(protoDesc, portDescs, attrs);
     proto->setEditor(new DelegateEditor(QMap<QString, PropertyDelegate*>()));
     proto->setPrompter(new GetFileListPrompter());
+    proto->setValidator(new DatasetValidator());
     if(AppContext::isGUIMode()) {
         proto->setIcon( GUIUtils::createRoundIcon(QColor(85,85,255), 22));
     }

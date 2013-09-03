@@ -22,6 +22,7 @@
 #include "GenericReadActor.h"
 #include "CoreLib.h"
 #include "DocActors.h"
+#include "util/DatasetValidator.h"
 
 #include <U2Lang/WorkflowEnv.h>
 #include <U2Designer/DelegateEditors.h>
@@ -68,6 +69,8 @@ GenericReadDocProto::GenericReadDocProto(const Descriptor &desc)
     if(AppContext::isGUIMode()) {
         setIcon( GUIUtils::createRoundIcon(ICOLOR, 22) );
     }
+
+    setValidator(new DatasetValidator());
 }
 
 const QString GenericSeqActorProto::MODE_ATTR("mode");
