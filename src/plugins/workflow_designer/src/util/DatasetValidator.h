@@ -27,7 +27,7 @@
 namespace U2 {
 namespace Workflow {
 
-class U2LANG_EXPORT DatasetValidator : public ActorValidator {
+class DatasetValidator : public ActorValidator {
 public:
     virtual ~DatasetValidator() { }
 
