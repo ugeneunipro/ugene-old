@@ -118,6 +118,7 @@ Task::ReportResult LoadWorkflowSceneTask::report() {
         return ReportResult_Finished;
     }
     SceneCreator sc(schema, *meta);
+    sc.recreateScene(scene);
     scene->setModified(false);
     scene->connectConfigurationEditors();
     if (!noUrl) {
