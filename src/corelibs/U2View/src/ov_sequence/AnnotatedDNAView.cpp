@@ -1269,5 +1269,21 @@ void AnnotatedDNAView::sl_reverseSequence()
     connect(t, SIGNAL(si_stateChanged()), SLOT(sl_sequenceModifyTaskStateChanged()));
 }   
 
+bool AnnotatedDNAView::areAnnotationsInRange(const QList<Annotation*> &toCheck){
+    foreach (Annotation *a, toCheck) {
+        SAFE_POINT(a != NULL, "Annotation is NULL", true);
+        QList<ADVSequenceObjectContext*> relatedSeqObjects = findRelatedSequenceContexts(a->getGObject());
+
+        foreach (ADVSequenceObjectContext *seq, relatedSeqObjects) {
+            SAFE_POINT(seq != NULL, "Sequence is NULL", true);
+            foreach (const U2Region &r, a->getRegions()){
+                if (r.endPos() > seq->getSequenceLength()){
+                    return false;
+                }
+            }
+       }
+    }
+    return true;
+}
 
 }//namespace

@@ -39,6 +39,7 @@ class AnnotatedDNAView;
 class AnnotatedDNAViewState;
 class U2SequenceObject;
 class AnnotationTableObject;
+class Annotation;
 class GSequenceLineView;
 class AnnotationsTreeView;
 class AnnotationSelection;
@@ -135,9 +136,18 @@ public:
 
     void addAutoAnnotationsUpdated(AutoAnnotationsUpdater* updater);
 
-    // Tries to add object to the view. Uses GUI functions to ask user if some data if needed
-    // Returns error message if failed.
-    // If object is unloaded - intitiates async object loading
+    /**
+     * Returns "true" if all input annotations are within the bounds of the associated sequences.
+     * Returns "true" in case of an error.
+     * Otherwise, returns "false", i.e. the method returns "false", even if an annotation intersects a sequence only partially.
+     */
+    bool areAnnotationsInRange(const QList<Annotation*> &toCheck);
+
+    /**
+     * Tries to add object to the view. Uses GUI functions to ask user if some data if needed
+     * Returns error message if failed.
+     * If object is unloaded - intitiates async object loading
+     */
     QString tryAddObject(GObject* obj);
 
 protected:

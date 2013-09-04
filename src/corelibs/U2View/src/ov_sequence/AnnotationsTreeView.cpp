@@ -29,6 +29,7 @@
 
 #include <U2Core/AppContext.h>
 #include <U2Core/DocumentModel.h>
+#include <U2Core/L10n.h>
 #include <U2Core/Settings.h>
 #include <U2Core/Timer.h>
 #include <U2Core/DBXRefRegistry.h>
@@ -82,8 +83,10 @@ public:
 #define COLUMN_SIZES QString("columnSizes")
 
 const QString AnnotationsTreeView::annotationMimeType = "application/x-annotations-and-groups";
+AVGroupItem* AnnotationsTreeView::dropDestination = NULL;
+QList<Annotation*> AnnotationsTreeView::dndAdded = QList<Annotation*>();
 
-AnnotationsTreeView::AnnotationsTreeView(AnnotatedDNAView* _ctx) : ctx(_ctx){
+AnnotationsTreeView::AnnotationsTreeView(AnnotatedDNAView* _ctx) : ctx(_ctx), dndHit(0) {
     lastMB = Qt::NoButton;
     lastClickedColumn = 0;
 
@@ -511,6 +514,17 @@ void AnnotationsTreeView::sl_onAnnotationsAdded(const QList<Annotation*>& as) {
             }
             assert(gi!=NULL);
             toUpdate.insert(gi);
+        }
+        if (dndAdded.contains(a)) {
+            dndHit++;
+            int size = dndAdded.size();
+            if (dndHit == dndAdded.size()) {
+                if (!ctx->areAnnotationsInRange(dndAdded)) {
+                    QMessageBox::warning(this, L10N::warningTitle(), AnnotationsTreeView::tr(
+                        "At least one dragged annotation is out of the sequence range!"));
+                }
+                dndHit = 0;
+            }
         }
     }
     GTIMER(c2,t2,"AnnotationsTreeView::sl_onAnnotationsAdded [updateVisual]");
@@ -1200,10 +1214,6 @@ bool AnnotationsTreeView::eventFilter(QObject* o, QEvent* e) {
         }
         case QEvent::DragMove: { // update current D&D state
             QDragMoveEvent *de = dynamic_cast<QDragMoveEvent*>(e);
-            if (de->source() != this) {
-                de->ignore();
-                return true;
-            }
             if (de->mimeData()->hasFormat(annotationMimeType)) {
                 QTreeWidgetItem *item = tree->itemAt(de->pos());
                 if (item == NULL) {
@@ -1256,10 +1266,6 @@ bool AnnotationsTreeView::eventFilter(QObject* o, QEvent* e) {
         case QEvent::Drop: {
             uiLog.trace("Drop event in Annotations view");
             QDropEvent *de = dynamic_cast<QDropEvent*>(e);
-            if (de->source() != this) {
-                de->ignore();
-                return true;
-            }
             const QMimeData *mime = de->mimeData();
             if (mime->hasFormat(annotationMimeType)) {
                 QTreeWidgetItem *item = tree->itemAt(de->pos());
@@ -1270,6 +1276,7 @@ bool AnnotationsTreeView::eventFilter(QObject* o, QEvent* e) {
                     }
                     if (avItem != NULL) {
                         dropDestination = static_cast<AVGroupItem*>(avItem);
+                        SAFE_POINT(dropDestination != NULL, "dropDestination is NULL", false);
                         if (de->keyboardModifiers() & Qt::ShiftModifier) {
                             de->setDropAction(Qt::CopyAction);
                         } else {
@@ -1288,7 +1295,6 @@ bool AnnotationsTreeView::eventFilter(QObject* o, QEvent* e) {
                 uiLog.trace("Drop event in Annotations view : unknown MIME format");
                 return false;
             }
-
             de->ignore();
             return true;
         }
@@ -1385,8 +1391,9 @@ static void collectAnnotationDnDInfo(AnnotationGroup* ag, const QString& destGro
 }
 
 void AnnotationsTreeView::finishDragAndDrop(Qt::DropAction dndAction) {
+    SAFE_POINT(dropDestination != NULL, "dropDestination is NULL",);
     AnnotationTableObject* dstObject = dropDestination->getAnnotationTableObject();
-    
+
     // Can not drag anything to auto-annotation object
     if (AutoAnnotationsSupport::isAutoAnnotation(dstObject)) {
         return;
@@ -1411,7 +1418,7 @@ void AnnotationsTreeView::finishDragAndDrop(Qt::DropAction dndAction) {
             if (movedGroupItem->group->getParentGroup() == dropDestination->group) {
                 continue; // can't drop group into itself
             }
-            
+
             // auto-annotations have to be handled differently
             if (AutoAnnotationsSupport::isAutoAnnotation(movedGroupItem->getAnnotationTableObject())) {
                 GObjectReference dstRef(dstObject);
@@ -1434,6 +1441,10 @@ void AnnotationsTreeView::finishDragAndDrop(Qt::DropAction dndAction) {
     uiLog.trace(QString("Finishing drag & drop in Annotations view, affected groups: %1 , top-level annotations: %2").arg(affectedGroups.size()).arg(affectedAnnotations.size()));
 
     // Move or Copy annotation reference inside of the object
+    dndAdded.clear();
+    QList<Annotation*> dndToRemove; // used to remove dragged annotations at once in case of Qt::MoveAction (see below)
+    QList<AnnotationGroup*> srcGroupList; // used to remove dragged annotations at once in case of Qt::MoveAction (see below)
+    QList<AnnotationGroup*> dstGroupList; // used to add all dragged annotations at once (see below)
     foreach(const AnnotationDnDInfo& adnd, affectedAnnotations) {
         const QString& toGroupPath = adnd.first.second;
         AnnotationGroup* dstGroup = dstObject->getRootGroup()->getSubgroup(toGroupPath, true);
@@ -1446,12 +1457,28 @@ void AnnotationsTreeView::finishDragAndDrop(Qt::DropAction dndAction) {
         bool doAdd = !dstGroup->getAnnotations().contains(dstAnnotation);
         bool doRemove = dndAction == Qt::MoveAction && doAdd;
         if (doAdd) {
-            dstGroup->addAnnotation(dstAnnotation);
+            dndAdded.append(dstAnnotation);
+            dstGroupList.append(dstGroup);
         }
         if (doRemove) {
-            srcGroup->removeAnnotation(srcAnnotation);
+            srcGroupList.append(srcGroup);
+            dndToRemove.append(srcAnnotation);
         }
     }
+
+    // Add and remove the dragged annotations to the receiver AnnotationsTreeView at once.
+    // It is required for the case of cross-view drag and drop.
+    int i = 0;
+    foreach (AnnotationGroup *g, dstGroupList) {
+        g->addAnnotation(dndAdded.at(i));
+        i++;
+    }
+    i = 0;
+    foreach (AnnotationGroup *g, srcGroupList) {
+        g->removeAnnotation(dndToRemove.at(i));
+        i++;
+    }
+
     // Process groups
     if (dndAction == Qt::MoveAction) {
         foreach(AnnotationGroup* ag, affectedGroups) {

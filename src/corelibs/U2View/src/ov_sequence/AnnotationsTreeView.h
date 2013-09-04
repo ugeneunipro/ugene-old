@@ -206,12 +206,23 @@ private:
     QPoint              dragStartPos;
     QMenu*              highlightAutoAnnotationsMenu;
     // drag&drop related data
-    bool                    isDragging;
-    bool                    dndCopyOnly;
-    QList<AVItem*>          dndSelItems;
-    AVGroupItem*            dropDestination;
+    bool                isDragging;
+    bool                dndCopyOnly;
+    QList<AVItem*>      dndSelItems;
 
-    static const QString annotationMimeType;
+    /**
+     * Used for cross-view drag and drop: each time an annotation is added to the reciever AnnotationsTreeView,
+     * the counter is increased by 1.
+     * As soon as it equals to the overall number of the dragged annotations,
+     * the annotations are checked for their range within the reciever sequences.
+     */
+    int                 dndHit;
+
+    /** Dragged annotations, "static" for cross-view support */
+    static QList<Annotation*> dndAdded;
+
+    static AVGroupItem*     dropDestination;
+    static const QString    annotationMimeType;
 
     friend class RemoveItemsTask;
     friend class FindQualifierTask;
