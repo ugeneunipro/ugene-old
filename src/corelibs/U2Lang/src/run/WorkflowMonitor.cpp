@@ -52,8 +52,7 @@ WorkflowMonitor::WorkflowMonitor(WorkflowAbstractIterationRunner *_task, Schema 
             Attribute *attr = paramsIter.value();
             SAFE_POINT(NULL != attr, "NULL attribute in params!", );
 
-            info.paramsWithValues.insert(attr->getDisplayName(),
-                WorkflowUtils::getStringForParameterDisplayRole(attr->getAttributeValueWithoutScript<QVariant>()));
+            info.parameters << attr;
         }
         workersParamsInfo << info;
     }

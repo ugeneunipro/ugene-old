@@ -48,7 +48,7 @@ function pwInitAndActiveTab(container, activeTabName, activeTabId) {
 }
 
 /** Add a parameter with the specified name and value to the specified parameters tab. */
-function pwAddParameter(paramsTabId, paramName, paramValue) {
+function pwAddCommonParameter(paramsTabId, paramName, paramValue) {
     var paramsTab = document.getElementById(paramsTabId);
     var paramsTable = paramsTab.getElementsByTagName('table')[0];
     var rowCount = paramsTable.rows.length;
@@ -57,6 +57,30 @@ function pwAddParameter(paramsTabId, paramName, paramValue) {
     var cell2 = row.insertCell(1);
     cell1.innerHTML = wrapLongText(paramName);
     cell2.innerHTML = wrapLongText(paramValue);
+}
+
+/** Add a parameter with the specified name and value to the specified parameters tab. */
+function pwAddDatasetParameter(paramsTabId, paramName, paramValue) {
+    var paramsTab = document.getElementById(paramsTabId);
+    var paramsTable = paramsTab.getElementsByTagName('table')[0];
+
+    var urls = paramValue.split(';');
+
+    var rowCount = paramsTable.rows.length;
+    var row1 = paramsTable.insertRow(rowCount);
+
+    var cell1 = row1.insertCell(0);
+    cell1.innerHTML = wrapLongText(paramName);
+    cell1.rowSpan = urls.length;
+
+    var cell2 = row1.insertCell(1);
+    cell2.innerHTML = urls[0];
+
+    for (var i = 1; i < urls.length; i++) {
+        var row = paramsTable.insertRow(rowCount + i);
+        var cell = row.insertCell(0);
+        cell.innerHTML = urls[i];
+    }
 }
 
 /**

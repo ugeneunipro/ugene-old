@@ -23,6 +23,11 @@
 
 #include <U2Core/U2SafePoints.h>
 
+#include <U2Lang/Dataset.h>
+#include <U2Lang/URLAttribute.h>
+#include <U2Lang/URLContainer.h>
+#include <U2Lang/WorkflowUtils.h>
+
 
 namespace U2 {
 
@@ -53,13 +58,43 @@ void ParametersWidget::createWidget(const QList<WorkerParamsInfo> &workersParams
         container.evaluateJavaScript(createTabFunc);
 
         // Add the parameters
-        foreach (QString paramName, info.paramsWithValues.keys()) {
-            QString createParamFunc = "pwAddParameter";
-            createParamFunc += "('" + tabId + "', ";
-            createParamFunc += "'" + paramName + "', ";
-            createParamFunc += "'" + info.paramsWithValues.value(paramName) + "')";
+        foreach (Attribute* param, info.parameters) {
+            SAFE_POINT(NULL != param, "NULL attribute!", );
 
-            container.evaluateJavaScript(createParamFunc);
+            QVariant paramValueVariant = param->getAttributePureValue();
+            if (paramValueVariant.canConvert< QList<Dataset> >()) {
+                QList<Dataset> sets = paramValueVariant.value< QList<Dataset > >();
+
+                foreach (const Dataset &set, sets) {
+                    QString paramName = param->getDisplayName();
+                    if (sets.size() > 1) {
+                        paramName += ": <i>" + set.getName() + "</i>";
+                    }
+                    QStringList urls;
+                    foreach (URLContainer *c, set.getUrls()) {
+                        urls << c->getUrl();
+                    }
+                    QString paramValue = urls.join(";");
+
+                    QString createParamFunc = "pwAddDatasetParameter";
+                    createParamFunc += "('" + tabId + "', ";
+                    createParamFunc += "'" + paramName + "', ";
+                    createParamFunc += "'" + paramValue + "')";
+
+                    container.evaluateJavaScript(createParamFunc);
+                }
+            }
+            else {
+                QString paramName = param->getDisplayName();
+                QString paramValue = WorkflowUtils::getStringForParameterDisplayRole(paramValueVariant);
+
+                QString createParamFunc = "pwAddCommonParameter";
+                createParamFunc += "('" + tabId + "', ";
+                createParamFunc += "'" + paramName + "', ";
+                createParamFunc += "'" + paramValue + "')";
+
+                container.evaluateJavaScript(createParamFunc);
+            }
         }
 
         // Increase the iterator

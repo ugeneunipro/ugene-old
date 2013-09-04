@@ -59,7 +59,7 @@ namespace Monitor {
     public:
         WorkerParamsInfo();
         QString workerName;
-        QMap<QString, QString> paramsWithValues;
+        QList<Attribute*> parameters;
     };
     enum U2LANG_EXPORT TaskState {
         RUNNING,
