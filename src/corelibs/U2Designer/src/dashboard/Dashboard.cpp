@@ -142,6 +142,8 @@ void Dashboard::sl_loaded(bool ok) {
 
         new ParametersWidget(addWidget(tr("Parameters"), InputDashTab, 0), this);
 
+        new OutputFilesWidget(addWidget(tr("Output Files"), OutputDashTab, 0), this);
+
         connect(monitor(), SIGNAL(si_runStateChanged(bool)), SLOT(sl_runStateChanged(bool)));
         connect(monitor(), SIGNAL(si_firstProblem()), SLOT(sl_addProblemsWidget()));
     }

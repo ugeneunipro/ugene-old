@@ -59,7 +59,11 @@ function pwAddCommonParameter(paramsTabId, paramName, paramValue) {
     cell2.innerHTML = wrapLongText(paramValue);
 }
 
-/** Add a parameter with the specified name and value to the specified parameters tab. */
+/**
+ * Add a parameter with the specified name and several values.
+ * The values should be joined by ';' and
+ * input to the method as a single string ('paramValue').
+ */
 function pwAddDatasetParameter(paramsTabId, paramName, paramValue) {
     var paramsTab = document.getElementById(paramsTabId);
     var paramsTable = paramsTab.getElementsByTagName('table')[0];
