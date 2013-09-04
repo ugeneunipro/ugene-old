@@ -12,6 +12,7 @@ set RELEASE_DIR=src\_release
 
 REM create release dir
 mkdir %OUTPUT_DIR%
+mkdir "%OUTPUT_DIR%\plugins"
 
 REM copy includes
 xcopy %INSTALL_DIR%\includes\* %OUTPUT_DIR%
