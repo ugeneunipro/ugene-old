@@ -150,8 +150,10 @@ mv "$TARGET_APP_DIR" "$TARGET_APP_DIR_RENAMED"
 
 cd  $BUILD_DIR 
 ln -s ./Unipro\ UGENE.app/Contents/MacOS/data/samples ./Samples
-ln -s ./Unipro\ UGENE.app/Contents/MacOS/data ./Data
 cd ..
+
+echo copy readme.txt file
+cp ./readme.txt $BUILD_DIR/readme.txt
 
 if [ ! "$1" ] 
    then
