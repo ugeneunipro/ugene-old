@@ -76,7 +76,7 @@ public:
     QSet<QString> enzymes;
 };
 
-#define DEFAULT_ENZYMES_FILE    QString("rebase_v003_t2_com.bairoch.gz")
+#define DEFAULT_ENZYMES_FILE    QString("2013_08_01.bairoch.gz")
 
 
 } //namespace

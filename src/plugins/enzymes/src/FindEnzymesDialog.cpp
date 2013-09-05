@@ -27,6 +27,7 @@
 #include <U2Core/GObjectReference.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/Settings.h>
+#include <U2Core/L10n.h>
 #include <U2Core/Log.h>
 #include <U2Core/Timer.h>
 
@@ -401,14 +402,12 @@ void EnzymesSelectorWidget::sl_openDBPage() {
         QMessageBox::critical(this, tr("Error!"), tr("No enzyme selected!"));
         return;
     }
-    QString suffix = item->enzyme->accession;
-    if (suffix.isEmpty()){
-        suffix = item->enzyme->id;
-    } else if (suffix.startsWith("RB")) {
-        suffix = suffix.mid(2);
-
+    QString id = item->enzyme->id;
+    if (id.isEmpty()) {
+        QMessageBox::critical(this, L10N::errorTitle(), tr("Selected enzyme has no ID!"));
+        return;
     }
-    GUIUtils::runWebBrowser("http://rebase.neb.com/cgi-bin/reb_get.pl?enzname="+suffix);
+    GUIUtils::runWebBrowser("http://rebase.neb.com/cgi-bin/reb_get.pl?enzname=" + id);
 }
 
 void EnzymesSelectorWidget::sl_itemChanged(QTreeWidgetItem* item, int col) {
