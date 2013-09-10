@@ -91,6 +91,14 @@ bool GffreadWorker::hasInput() const {
     return ports[IN_PORT_ID]->hasMessage();
 }
 
+static void createUrlDir(const QString &url) {
+    QFileInfo info(url);
+    QDir dir = info.absoluteDir();
+    if (!dir.exists()) {
+        dir.mkpath(dir.absolutePath());
+    }
+}
+
 QString GffreadWorker::getOutUrl() {
     QString url = getValue<QString>(OUT_URL_ATTR_ID);
     if (counters.contains(url)) {
@@ -99,6 +107,8 @@ QString GffreadWorker::getOutUrl() {
     } else {
         counters[url] = 0;
     }
+
+    createUrlDir(url);
     return url;
 }
 
