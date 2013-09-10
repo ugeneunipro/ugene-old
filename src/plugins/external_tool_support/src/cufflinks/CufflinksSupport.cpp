@@ -100,8 +100,20 @@ CufflinksSupport::CufflinksSupport(const QString& name, const QString& path)
         description = CufflinksSupport::tr("<i>Cuffmerge</i> merges together several assemblies.");
     }
 
+
+    // Gffread
+    else if (name == ET_GFFREAD) {
+#ifdef Q_OS_WIN
+        executableFileName = "gffread.exe";
+#elif defined(Q_OS_LINUX) || defined(Q_OS_MAC)
+        executableFileName = "gffread";
+#endif
+        validMessage = "gffread <input_gff>";
+        validationArguments << "--help";
+        description = CufflinksSupport::tr("<i>Gffread</i> is used to verify or perform various operations on GFF files.");
+    }
+
     muted = true;
 }
-
 
 } // namespace

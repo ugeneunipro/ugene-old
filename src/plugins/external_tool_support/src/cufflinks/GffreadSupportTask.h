@@ -19,34 +19,42 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_CUFFLINKS_SUPPORT_H
-#define _U2_CUFFLINKS_SUPPORT_H
+#ifndef _U2_GFFRAD_SUPPORT_TASK_H_
+#define _U2_GFFRAD_SUPPORT_TASK_H_
 
-#include <U2Core/ExternalToolRegistry.h>
-
-#define ET_CUFFCOMPARE   "Cuffcompare"
-#define ET_CUFFDIFF      "Cuffdiff"
-#define ET_CUFFLINKS     "Cufflinks"
-#define ET_CUFFMERGE     "Cuffmerge"
-#define ET_GFFREAD       "Gffread"
-
-#define CUFFLINKS_TMP_DIR       "cufflinks"
-#define CUFFDIFF_TMP_DIR        "cuffdiff"
-#define CUFFMERGE_TMP_DIR       "cuffmerge"
-
+#include <U2Core/Task.h>
+#include <U2Core/U2IdTypes.h>
 
 namespace U2 {
 
-class CufflinksSupport : public ExternalTool
-{
-    Q_OBJECT
-
+class GffreadSettings {
 public:
-    CufflinksSupport(const QString& name, const QString& path = "");
+    QString transcriptsUrl; // GTF
+    QString genomeUrl; // FASTA (mutli-FASTA)
+    QString outputUrl; // FASTA
+
+    QStringList getArguments() const;
 };
 
+class ExternalToolLogParser;
 
+class GffreadSupportTask : public Task {
+    Q_OBJECT
+public:
+    GffreadSupportTask(const GffreadSettings &settings);
+    ~GffreadSupportTask();
 
-} // namespace
+    void prepare();
+    QString result() const;
 
-#endif
+private:
+    void checkFormat(const QString &url, const DocumentFormatId &target);
+
+private:
+    GffreadSettings settings;
+    ExternalToolLogParser *logParser;
+};
+
+} // U2
+
+#endif // _U2_GFFRAD_SUPPORT_TASK_H_

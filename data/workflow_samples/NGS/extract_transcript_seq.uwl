@@ -6,97 +6,110 @@
 
 workflow "Extract transcript sequences"{
 
-    read-sequence {
-        type:read-sequence;
+    get-file-list {
+        type:get-file-list;
         name:"Read Sequence(s)";
         url-in {
             dataset:"Dataset 1";
         }
     }
-    read-annotations {
-        type:read-annotations;
+    get-file-list-1 {
+        type:get-file-list;
         name:"Read Transcripts";
         url-in {
             dataset:"Dataset 1";
         }
     }
-    multiplexer {
+    multiplexer-1 {
         type:multiplexer;
         name:Multiplexer;
     }
-    write-sequence {
-        type:write-sequence;
-        name:"Write Extracted Sequences";
+    gffread {
+        type:gffread;
+        name:"Extract transcript sequences with gffread";
         url-out:extracted.fa;
     }
-    extract-annotated-sequence {
-        type:extract-annotated-sequence;
-        name:"Get Sequences by Annotations";
+    files-conversion {
+        type:files-conversion;
+        name:"To FASTA";
+        document-format:fasta;
+    }
+    files-conversion-1 {
+        type:files-conversion;
+        name:"To GTF";
+        document-format:gtf;
     }
 
 
     .actor-bindings {
-        read-annotations.out-annotations->multiplexer.input-data-2
-        read-sequence.out-sequence->multiplexer.input-data-1
-        multiplexer.output-data->extract-annotated-sequence.in-sequence
-        extract-annotated-sequence.out-sequence->write-sequence.in-sequence
+        get-file-list.out-url->files-conversion.in-file
+        get-file-list-1.out-url->files-conversion-1.in-file
+        multiplexer-1.output-data->gffread.in-data
+        files-conversion.out-file->multiplexer-1.input-data-1
+        files-conversion-1.out-file->multiplexer-1.input-data-2
     }
 
-    extract-annotated-sequence.annotations->write-sequence.in-sequence.annotations
-    read-annotations.annotations->write-sequence.in-sequence.annotations
-    read-sequence.annotations->write-sequence.in-sequence.annotations
-    extract-annotated-sequence.sequence->write-sequence.in-sequence.sequence
-    read-annotations.annotations->extract-annotated-sequence.in-sequence.annotations
-    read-sequence.sequence->extract-annotated-sequence.in-sequence.sequence
+    files-conversion.url->gffread.in-data.genome
+    files-conversion-1.url->gffread.in-data.transcripts
+    get-file-list.url->files-conversion.in-file.url
+    get-file-list-1.url->files-conversion-1.in-file.url
 
     .meta {
         visual {
-            extract-annotated-sequence {
-                pos:"-380 -571";
+            files-conversion {
+                pos:"-755 -478";
+                style:simple;
+                in-file.angle:180;
+                out-file.angle:360;
+            }
+            files-conversion-1 {
+                pos:"-758 -311";
+                style:simple;
+                in-file.angle:180;
+                out-file.angle:360;
+            }
+            get-file-list {
+                pos:"-931 -478";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
-                in-sequence.angle:180;
-                out-sequence.angle:360;
+                out-url.angle:360;
             }
-            multiplexer {
-                pos:"-682 -572";
+            get-file-list-1 {
+                pos:"-931 -311";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                out-url.angle:360;
+            }
+            gffread {
+                pos:"-281 -386";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                bounds:"-30 -30 153 120";
+                extracted-data.angle:360;
+                in-data.angle:180;
+            }
+            multiplexer-1 {
+                pos:"-574 -387";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 input-data-1.angle:150;
                 input-data-2.angle:210;
                 output-data.angle:360;
             }
-            read-annotations {
-                pos:"-898 -454";
-                style:ext;
-                bg-color-ext:"0 128 128 64";
-                bounds:"-30 -30 76 103";
-                out-annotations.angle:360;
+            files-conversion-1.out-file->multiplexer-1.input-data-2 {
+                text-pos:"-16.3828 -28";
             }
-            read-sequence {
-                pos:"-897 -643";
-                style:ext;
-                bg-color-ext:"0 128 128 64";
-                bounds:"-30 -30 74 104";
-                out-sequence.angle:360;
+            files-conversion.out-file->multiplexer-1.input-data-1 {
+                text-pos:"-16.3828 -28";
             }
-            write-sequence {
-                pos:"-80 -571";
-                style:ext;
-                bg-color-ext:"0 128 128 64";
-                in-sequence.angle:180;
+            get-file-list-1.out-url->files-conversion-1.in-file {
+                text-pos:"-42.3047 -28";
             }
-            extract-annotated-sequence.out-sequence->write-sequence.in-sequence {
-                text-pos:"-43 -46";
+            get-file-list.out-url->files-conversion.in-file {
+                text-pos:"-42.3047 -28";
             }
-            multiplexer.output-data->extract-annotated-sequence.in-sequence {
-                text-pos:"-46 -61";
-            }
-            read-annotations.out-annotations->multiplexer.input-data-2 {
-                text-pos:"-42 -8";
-            }
-            read-sequence.out-sequence->multiplexer.input-data-1 {
-                text-pos:"-33.5 -11";
+            multiplexer-1.output-data->gffread.in-data {
+                text-pos:"-45 -37";
             }
         }
         wizard {
@@ -108,17 +121,17 @@ workflow "Extract transcript sequences"{
                     group {
                         title:"Input parameters";
                         label-size:120;
-                        read-sequence.url-in {
+                        get-file-list.url-in {
                             label:"Genomic sequences";
                         }
-                        read-annotations.url-in {
+                        get-file-list-1.url-in {
                             label:Transcripts;
                         }
                     }
                     group {
                         title:"Extracted sequences";
                         label-size:120;
-                        write-sequence.url-out {
+                        gffread.url-out {
                             label:"Output file";
                         }
                     }

@@ -93,6 +93,7 @@
 #include "cufflinks/CufflinksSupport.h"
 #include "cufflinks/CufflinksWorker.h"
 #include "cufflinks/CuffmergeWorker.h"
+#include "cufflinks/GffreadWorker.h"
 #include "tophat/TopHatSupport.h"
 #include "tophat/TopHatWorker.h"
 #include "ceas/CEASReportWorker.h"
@@ -360,14 +361,16 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin():Plugin(tr("External tool 
     etRegistry->registerEntry(tophatTool);
 
     // Cufflinks external tools
-    CufflinksSupport* cuffcompareTool = new CufflinksSupport(ET_CUFFCOMPARE);
+    CufflinksSupport *cuffcompareTool = new CufflinksSupport(ET_CUFFCOMPARE);
     etRegistry->registerEntry(cuffcompareTool);
-    CufflinksSupport* cuffdiffTool = new CufflinksSupport(ET_CUFFDIFF);
+    CufflinksSupport *cuffdiffTool = new CufflinksSupport(ET_CUFFDIFF);
     etRegistry->registerEntry(cuffdiffTool);
-    CufflinksSupport* cufflinksTool = new CufflinksSupport(ET_CUFFLINKS);
+    CufflinksSupport *cufflinksTool = new CufflinksSupport(ET_CUFFLINKS);
     etRegistry->registerEntry(cufflinksTool);
-    CufflinksSupport* cuffmergeTool = new CufflinksSupport(ET_CUFFMERGE);
+    CufflinksSupport *cuffmergeTool = new CufflinksSupport(ET_CUFFMERGE);
     etRegistry->registerEntry(cuffmergeTool);
+    CufflinksSupport *gffreadTool = new CufflinksSupport(ET_GFFREAD);
+    etRegistry->registerEntry(gffreadTool);
 
     // CEAS
     CEASSupport *ceasTool = new CEASSupport(ET_CEAS);
@@ -522,6 +525,7 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin():Plugin(tr("External tool 
     LocalWorkflow::CuffdiffWorkerFactory::init();
     LocalWorkflow::CufflinksWorkerFactory::init();
     LocalWorkflow::CuffmergeWorkerFactory::init();
+    LocalWorkflow::GffreadWorkerFactory::init();
     LocalWorkflow::TopHatWorkerFactory::init();
     LocalWorkflow::CEASReportWorkerFactory::init();
     LocalWorkflow::MACSWorkerFactory::init();
