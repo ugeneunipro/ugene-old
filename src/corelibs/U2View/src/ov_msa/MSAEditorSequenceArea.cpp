@@ -1514,11 +1514,14 @@ void MSAEditorSequenceArea::buildMenu(QMenu* m) {
     foreach(QAction* a, customColorSchemeMenuActions) {
         customColorSchemaMenu->addAction(a);
     }    
-    if(customColorSchemeMenuActions.isEmpty()){
-        lookMSASchemesSettingsAction = new QAction(tr("Create new color scheme"), this);    
-        connect(lookMSASchemesSettingsAction, SIGNAL(triggered()), SLOT(sl_showCustomSettings()));
-        customColorSchemaMenu->addAction(lookMSASchemesSettingsAction);
+
+    if (!customColorSchemeMenuActions.isEmpty()){
+        customColorSchemaMenu->addSeparator();
     }
+
+    lookMSASchemesSettingsAction = new QAction(tr("Create new color scheme"), this);    
+    connect(lookMSASchemesSettingsAction, SIGNAL(triggered()), SLOT(sl_showCustomSettings()));
+    customColorSchemaMenu->addAction(lookMSASchemesSettingsAction);
 
     colorsSchemeMenu->addMenu(customColorSchemaMenu);
     m->insertMenu(GUIUtils::findAction(m->actions(), MSAE_MENU_EDIT), colorsSchemeMenu);   
