@@ -27,10 +27,12 @@ void ColorSchemaDialogController::paintEvent(QPaintEvent*){
 
     const int rect_width = static_cast<double> (alphabetColorsFrame->size().width()) / columns ;
     if(rect_width == 0){return;}
+    int rect_width_rest = alphabetColorsFrame->size().width() % columns;
 
     const int rows = (newColors.size() / columns) + ((newColors.size() % columns) ?  1 : 0);
     const int rect_height = static_cast<double> (alphabetColorsFrame->size().height() ) / rows;    
     if(rect_height == 0){return;}
+    int rect_height_rest = alphabetColorsFrame->size().height() % rows;
     
     delete alphabetColorsView; 
     alphabetColorsView = new QPixmap(alphabetColorsFrame->size());
@@ -43,22 +45,39 @@ void ColorSchemaDialogController::paintEvent(QPaintEvent*){
 
     QMapIterator<char, QColor> it(newColors);
 
+    int hLineY = 0;
     for(int i = 0; i < rows; ++i){
-        painter.drawLine(0, i * rect_height, alphabetColorsView->size().width(), i * rect_height);
+        int rh = rect_height;
+        rect_width_rest = alphabetColorsFrame->size().width() % columns;
+        if(rect_height_rest > 0){
+            rh++;
+            rect_height_rest--;
+        }
+        painter.drawLine(0, hLineY, alphabetColorsView->size().width(), hLineY);
+        int vLineX = 0;
         for(int j = 0; j < columns; ++j){
             if(!it.hasNext()){break;}
 
             it.next();
-            QRect nextRect(j * rect_width, i * rect_height + 1, rect_width, rect_height - 1);
+            int rw = rect_width;
+            if(rect_width_rest > 0){
+                rw++;
+                rect_width_rest--;
+            }
+            QRect nextRect(vLineX, hLineY + 1, rw, rh - 1);
             painter.fillRect(nextRect, it.value());
-            painter.drawLine(j * rect_width, i * rect_height, j * rect_width, (i + 1) * rect_height);
-            painter.drawLine((j + 1) * rect_width, i * rect_height, (j + 1) * rect_width, (i + 1) * rect_height);
             painter.drawText(nextRect, Qt::AlignCenter, QString(it.key()));
-
+            painter.drawLine(vLineX, hLineY, vLineX, hLineY + rh);
+            painter.drawLine(vLineX + rw, hLineY, vLineX + rw, hLineY + rh);
+            vLineX += rw;
             charsPlacement[it.key()] = nextRect;
-        }   
+        }
+        hLineY += rh;
         if(!it.hasNext()){break;}
     }
+    painter.drawLine(0, alphabetColorsView->size().height(), alphabetColorsView->size().width(), alphabetColorsView->size().height());
+    painter.drawLine(alphabetColorsView->size().width(), 0, alphabetColorsView->size().width(), alphabetColorsView->size().height());
+
 
     QPainter dialogPainter(this);
     dialogPainter.drawPixmap(alphabetColorsFrame->geometry().x(), alphabetColorsFrame->geometry().y(), *alphabetColorsView);

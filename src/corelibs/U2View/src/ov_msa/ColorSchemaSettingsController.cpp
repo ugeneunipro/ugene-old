@@ -214,7 +214,7 @@ static bool getSchemaColors(CustomColorSchema& customSchema){
 
     std::auto_ptr<IOAdapter> io(factory->createIOAdapter());
     if(!io->open(dir.filePath(file), IOAdapterMode_Read)){
-        coreLog.info(QString("%1: no such schema").arg(customSchema.name));
+        coreLog.info(QString("%1: no such scheme").arg(customSchema.name));
         return false;
     }
     while(!io->isEof()){
@@ -235,11 +235,11 @@ static bool getSchemaColors(CustomColorSchema& customSchema){
                 defaultAlpType = false;
             }
             else{
-                coreLog.info(QString("%1: mode of nucleic alphabet of schema not defined, use default mode").arg(customSchema.name));
+                coreLog.info(QString("%1: mode of nucleic alphabet of scheme not defined, use default mode").arg(customSchema.name));
             }
         }
         else{
-            coreLog.info(QString("%1: alphabet of schema not defined").arg(customSchema.name));
+            coreLog.info(QString("%1: alphabet of scheme not defined").arg(customSchema.name));
             return false;
         }
         alphColors = getDefaultSchemaColors(type, defaultAlpType, DefaultStrategy_Void);
@@ -257,7 +257,7 @@ static bool getSchemaColors(CustomColorSchema& customSchema){
         QStringList properties = line.split(QString("="), QString::SkipEmptyParts);
 
         if(!lineValid(properties, alphColors )){
-            coreLog.info(QString("%1: schema is not valid").arg(customSchema.name));
+            coreLog.info(QString("%1: scheme is not valid").arg(customSchema.name));
             return false;
         }
         tmpHelper[properties.first().at(0).toLatin1()] = QColor(properties[1]); 
@@ -457,7 +457,7 @@ CreateColorSchemaDialog::CreateColorSchemaDialog(CustomColorSchema* _newSchema, 
     foreach(const QString& usedName, usedNames){
         excluded.insert(usedName);
     }
-    schemeName->setText(GUrlUtils::rollFileName("Custom color schema", excluded));
+    schemeName->setText(GUrlUtils::rollFileName("Custom color scheme", excluded));
 }
 
 bool CreateColorSchemaDialog::isNameExist(const QString& text){
@@ -471,7 +471,7 @@ bool CreateColorSchemaDialog::isNameExist(const QString& text){
 
 bool CreateColorSchemaDialog::isSchemaNameValid(const QString& text, QString& description){
     if(text.isEmpty()){
-        description = "Name of schema is empty";
+        description = "Name of scheme is empty";
         return false;
     }
     for(int i = 0; i < text.length(); ++i){
@@ -481,7 +481,7 @@ bool CreateColorSchemaDialog::isSchemaNameValid(const QString& text, QString& de
         }        
     }
     if(isNameExist(text)){
-        description = "Color schema with the same name already exist";
+        description = "Color scheme with the same name already exist";
         return false;
     }
     return true;
