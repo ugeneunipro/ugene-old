@@ -187,6 +187,11 @@ private:
     QVariantMap settings;
 };
 
+/* The PICR service is unstable: very often server doesn't responce
+ * for sequences larger than 150 proteins.
+ * Test new features that used this task and be ready to use another services
+ * such as http://uniprot/blast/
+ */
 class U2CORE_EXPORT GetDasIdsByBlastTask : public GetDasIdsBySequenceTask {
     Q_OBJECT
 public:

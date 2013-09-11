@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>117</width>
-    <height>348</height>
+    <width>121</width>
+    <height>300</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -20,18 +20,21 @@
    <string>Form</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="spacing">
+    <number>3</number>
+   </property>
    <property name="margin">
     <number>0</number>
    </property>
    <item>
-    <widget class="QLabel" name="programLabel">
+    <widget class="QLabel" name="minimumIdentityLabel">
      <property name="text">
-      <string>Program:</string>
+      <string>Minimum identity:</string>
      </property>
     </widget>
    </item>
    <item>
-    <widget class="QComboBox" name="programComboBox">
+    <widget class="QDoubleSpinBox" name="minimumIdentityDoubleSpinBox">
      <property name="sizePolicy">
       <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
        <horstretch>0</horstretch>
@@ -44,51 +47,66 @@
        <height>0</height>
       </size>
      </property>
-     <item>
-      <property name="text">
-       <string>blastp</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>blastx</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>tblastx</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>tblastn</string>
-      </property>
-     </item>
-    </widget>
-   </item>
-   <item>
-    <widget class="QLabel" name="identityLabel">
-     <property name="text">
-      <string>Identity value:</string>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+     <property name="suffix">
+      <string>%</string>
+     </property>
+     <property name="decimals">
+      <number>1</number>
      </property>
     </widget>
    </item>
    <item>
-    <widget class="QSpinBox" name="identitySpinBox">
+    <widget class="QLabel" name="databaseLabel">
+     <property name="text">
+      <string>Database:</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QComboBox" name="databaseComboBox">
      <property name="sizePolicy">
       <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
-     <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     <property name="minimumSize">
+      <size>
+       <width>1</width>
+       <height>0</height>
+      </size>
      </property>
-     <property name="maximum">
-      <number>100</number>
+     <property name="sizeAdjustPolicy">
+      <enum>QComboBox::AdjustToMinimumContentsLength</enum>
      </property>
-     <property name="value">
-      <number>90</number>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="thresholdLabel">
+     <property name="text">
+      <string>Threshold:</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QComboBox" name="thresholdComboBox">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>1</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="sizeAdjustPolicy">
+      <enum>QComboBox::AdjustToMinimumContentsLength</enum>
      </property>
     </widget>
    </item>
@@ -107,143 +125,95 @@
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
+     <property name="minimumSize">
+      <size>
+       <width>1</width>
+       <height>0</height>
+      </size>
+     </property>
      <property name="currentIndex">
-      <number>1</number>
+      <number>-1</number>
      </property>
      <property name="sizeAdjustPolicy">
       <enum>QComboBox::AdjustToMinimumContentsLength</enum>
      </property>
-     <item>
-      <property name="text">
-       <string>BLOSUM45</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>BLOSUM62</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>BLOSUM80</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>PAM30</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>PAM70</string>
-      </property>
-     </item>
     </widget>
    </item>
    <item>
-    <widget class="QLabel" name="filterLabel">
+    <widget class="QLabel" name="filteringLabel">
      <property name="text">
-      <string>Filter:</string>
+      <string>Filtering:</string>
      </property>
     </widget>
    </item>
    <item>
-    <widget class="QComboBox" name="filterComboBox">
+    <widget class="QComboBox" name="filteringComboBox">
      <property name="sizePolicy">
       <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
-     <item>
-      <property name="text">
-       <string>F</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>T</string>
-      </property>
-     </item>
-    </widget>
-   </item>
-   <item>
-    <widget class="QLabel" name="gapCostsLabel">
-     <property name="text">
-      <string>Gap costs:</string>
+     <property name="minimumSize">
+      <size>
+       <width>1</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="sizeAdjustPolicy">
+      <enum>QComboBox::AdjustToMinimumContentsLength</enum>
      </property>
     </widget>
    </item>
    <item>
-    <widget class="QComboBox" name="gapCostsComboBox">
+    <widget class="QLabel" name="gappedLabel">
+     <property name="text">
+      <string>Gapped:</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QComboBox" name="gappedComboBox">
      <property name="sizePolicy">
       <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QLabel" name="dropOffLabel">
-     <property name="text">
-      <string>Drop off:</string>
+     <property name="minimumSize">
+      <size>
+       <width>1</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="sizeAdjustPolicy">
+      <enum>QComboBox::AdjustToMinimumContentsLength</enum>
      </property>
     </widget>
    </item>
    <item>
-    <widget class="QComboBox" name="dropOffComboBox">
+    <widget class="QLabel" name="hitsLabel">
+     <property name="text">
+      <string>Maximum results:</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QComboBox" name="hitsComboBox">
      <property name="sizePolicy">
       <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
-     <item>
-      <property name="text">
-       <string>0</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>2</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>4</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>6</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>8</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>10</string>
-      </property>
-     </item>
-    </widget>
-   </item>
-   <item>
-    <widget class="QCheckBox" name="gapAlignCheckBox">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
+     <property name="minimumSize">
+      <size>
+       <width>1</width>
+       <height>0</height>
+      </size>
      </property>
-     <property name="text">
-      <string>Gap align</string>
-     </property>
-     <property name="checked">
-      <bool>true</bool>
+     <property name="sizeAdjustPolicy">
+      <enum>QComboBox::AdjustToMinimumContentsLength</enum>
      </property>
     </widget>
    </item>

@@ -23,6 +23,7 @@
 
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/PicrApiTask.h>
+#include <U2Core/UniprotBlastTask.h>
 #include <U2Core/LoadDASDocumentTask.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/GObjectRelationRoles.h>
@@ -59,97 +60,62 @@ const QString DasOptionsPanelWidget::CUSTOM_REGION = tr("Custom region");
 
 DasBlastSettingsWidget::DasBlastSettingsWidget(QWidget* parent) : QWidget(parent) {
     setupUi(this);
-    initialize();
-    connectSignals();
-    checkState();
+    minimumIdentityDoubleSpinBox->setValue(90);
+
+    databaseComboBox->addItem("UniProtKB", "uniprotkb");
+    databaseComboBox->addItem("...Archaea", "uniprotkb_archaea");
+    databaseComboBox->addItem("...Bacteria", "uniprotkb_bacteria");
+    databaseComboBox->addItem("...Eucaryota", "uniprotkb_eukaryota");
+    databaseComboBox->addItem("...Arthropoda", "uniprotkb_arthropoda");
+    databaseComboBox->addItem("...Fungi", "uniprotkb_fungi");
+    databaseComboBox->addItem("...Human", "uniprotkb_human");
+    databaseComboBox->addItem("...Mammals", "uniprotkb_mammals");
+    databaseComboBox->addItem("...Nematoda", "uniprotkb_nematoda");
+    databaseComboBox->addItem("...Plants", "uniprotkb_plants");
+    databaseComboBox->addItem("...Rodents", "uniprotkb_rodents");
+    databaseComboBox->addItem("...Vertebrates", "uniprotkb_vertebrates");
+    databaseComboBox->addItem("...Viruses", "uniprotkb_viruses");
+    databaseComboBox->addItem("...PDB", "uniprotkb_pdb");
+    databaseComboBox->addItem("...Complete microbial proteoms", "uniprotkb_complete_microbial_proteomes");
+    databaseComboBox->addItem("UniProtKB/Swiss-Prot", "uniprotkb_swissprot");
+    databaseComboBox->addItem("UniRef100", "UniRef100");
+    databaseComboBox->addItem("UniRef90", "UniRef90");
+    databaseComboBox->addItem("UniRef50", "UniRef50");
+    databaseComboBox->addItem("UniParc", "uniparc");
+
+    matrixComboBox->addItem("Auto", "");
+    matrixComboBox->addItem("BLOSUM-45", "blosum45");
+    matrixComboBox->addItem("BLOSUM-62", "blosum62");
+    matrixComboBox->addItem("BLOSUM-80", "blosum80");
+    matrixComboBox->addItem("PAM-70", "pam70");
+    matrixComboBox->addItem("PAM-30", "pam30");
+
+    filteringComboBox->addItem("None", "false");
+    filteringComboBox->addItem("Filter low complexity regions", "true");
+    filteringComboBox->addItem("Mask lookup table only", "mask");
+
+    thresholdComboBox->addItems(UniprotBlastSettings::ALLOWED_THRESHOLD);
+    gappedComboBox->addItems(UniprotBlastSettings::ALLOWED_GAPPED);
+    hitsComboBox->addItems(UniprotBlastSettings::ALLOWED_HITS);
+
+    databaseComboBox->setCurrentIndex(databaseComboBox->findData(UniprotBlastSettings::DEFAULT_DATABASE));
+    thresholdComboBox->setCurrentIndex(thresholdComboBox->findText(UniprotBlastSettings::DEFAULT_THRESHOLD));
+    matrixComboBox->setCurrentIndex(matrixComboBox->findData(UniprotBlastSettings::DEFAULT_MATRIX));
+    filteringComboBox->setCurrentIndex(filteringComboBox->findData(UniprotBlastSettings::DEFAULT_FILTERING));
+    gappedComboBox->setCurrentIndex(gappedComboBox->findText(UniprotBlastSettings::DEFAULT_GAPPED));
+    hitsComboBox->setCurrentIndex(hitsComboBox->findText(UniprotBlastSettings::DEFAULT_HITS));
 }
 
-PicrBlastSettings DasBlastSettingsWidget::getSettings() {
-    PicrBlastSettings settings;
-    settings.insert(PicrBlastSettings::PROGRAM, programComboBox->currentText());
-    settings.insert(PicrBlastSettings::IDENTITY, QString::number(identitySpinBox->value()));
-    settings.insert(PicrBlastSettings::MATRIX, matrixComboBox->currentText());
-    settings.insert(PicrBlastSettings::FILTER, filterComboBox->currentText());
-
-    QStringList gapCosts = gapCostsComboBox->currentText().split(" ");
-    SAFE_POINT(2 == gapCosts.count(), "Invalid gap costs value", PicrBlastSettings());
-    settings.insert(PicrBlastSettings::GAP_OPEN, gapCosts.first());
-    settings.insert(PicrBlastSettings::GAP_EXT, gapCosts.last());
-
-    settings.insert(PicrBlastSettings::DROP_OFF, dropOffComboBox->currentText());
-
-    QString boolValue = gapAlignCheckBox->isChecked() ? "true" : "false";
-    settings.insert(PicrBlastSettings::GAP_ALIGN, boolValue);
-
+UniprotBlastSettings DasBlastSettingsWidget::getSettings() {
+    UniprotBlastSettings settings;
+    settings.insert(UniprotBlastSettings::DATABASE, databaseComboBox->itemData(databaseComboBox->currentIndex()).toString());
+    settings.insert(UniprotBlastSettings::THRESHOLD, thresholdComboBox->currentText());
+    settings.insert(UniprotBlastSettings::MATRIX, matrixComboBox->itemData(matrixComboBox->currentIndex()).toString());
+    settings.insert(UniprotBlastSettings::FILTERING, filteringComboBox->itemData(filteringComboBox->currentIndex()).toString());
+    settings.insert(UniprotBlastSettings::GAPPED, gappedComboBox->currentText());
+    settings.insert(UniprotBlastSettings::HITS, hitsComboBox->currentText());
     return settings;
 }
-
-void DasBlastSettingsWidget::sl_onMatrixChanged(int index) {
-    Q_UNUSED(index);
-    checkState();
-}
-
-void DasBlastSettingsWidget::initialize() {
-    QStringList pam30 = QStringList() << "9 1"
-                                      << "5 2"
-                                      << "6 2"
-                                      << "7 2"
-                                      << "8 1"
-                                      << "10 1";
-    QStringList pam70 = QStringList() << "10 1"
-                                      << "6 2"
-                                      << "7 2"
-                                      << "8 2"
-                                      << "9 2"
-                                      << "11 1";
-    QStringList blosum45 = QStringList() << "15 2"
-                                         << "10 3"
-                                         << "11 3"
-                                         << "12 3"
-                                         << "12 2"
-                                         << "13 2"
-                                         << "14 2"
-                                         << "16 2"
-                                         << "15 1"
-                                         << "16 1"
-                                         << "17 1"
-                                         << "18 1"
-                                         << "19 1";
-    QStringList blosum62 = QStringList() << "11 1"
-                                         << "7 2"
-                                         << "8 2"
-                                         << "9 2"
-                                         << "10 1"
-                                         << "12 1";
-    QStringList blosum80 = QStringList() << "10 1"
-                                         << "6 2"
-                                         << "7 2"
-                                         << "8 2"
-                                         << "9 1"
-                                         << "11 1";
-
-    gapCostsByMatrix.insert("PAM30", pam30);
-    gapCostsByMatrix.insert("PAM70", pam70);
-    gapCostsByMatrix.insert("BLOSUM45", blosum45);
-    gapCostsByMatrix.insert("BLOSUM62", blosum62);
-    gapCostsByMatrix.insert("BLOSUM80", blosum80);
-}
-
-void DasBlastSettingsWidget::connectSignals() {
-    connect(matrixComboBox,
-            SIGNAL(currentIndexChanged(int)),
-            SLOT(sl_onMatrixChanged(int)));
-}
-
-void DasBlastSettingsWidget::checkState() {
-    gapCostsComboBox->clear();
-
-    QStringList gapCosts = gapCostsByMatrix.value(matrixComboBox->currentText());
-    SAFE_POINT(0 != gapCosts.count(), "Unrecognized matrix", );
-
-    gapCostsComboBox->addItems(gapCosts);
-}
-
 
 DasOptionsPanelWidget::DasOptionsPanelWidget(AnnotatedDNAView* adv) :
     annotatedDnaView(adv),
@@ -169,39 +135,42 @@ DasOptionsPanelWidget::DasOptionsPanelWidget(AnnotatedDNAView* adv) :
     checkState();
 }
 
-void DasOptionsPanelWidget::sl_onSearchTypeChanged(int type) {
+void DasOptionsPanelWidget::sl_searchTypeChanged(int type) {
     Q_UNUSED(type);
     checkState();
 }
 
-void DasOptionsPanelWidget::sl_onSearchIdsClicked() {
+void DasOptionsPanelWidget::sl_searchIdsClicked() {
     if (NULL == ctx) {
         return;
     }
 
-    idList->clear();
+    idList->clearContents();
     GetDasIdsBySequenceTask* searchIdsTask = NULL;
 
     if (searchTypeComboBox->currentText() == EXACT_SEARCH) {
         searchIdsTask = new GetDasIdsByExactSequenceTask(ctx->getSequenceData(getRegion()));
+        connect(searchIdsTask,
+                SIGNAL(si_stateChanged()),
+                SLOT(sl_exactSearchFinish()));
+        AppContext::getTaskScheduler()->registerTopLevelTask(searchIdsTask);
     } else if (searchTypeComboBox->currentText() == BLAST_SEARCH) {
         SAFE_POINT (NULL != blastSettingsWidget, "BLAST settings widget is null", );
-        searchIdsTask = new GetDasIdsByBlastTask(ctx->getSequenceData(getRegion()), blastSettingsWidget->getSettings());
+        UniprotBlastTask* blastTask = new UniprotBlastTask(ctx->getSequenceData(getRegion()), blastSettingsWidget->getSettings());
+        connect(blastTask,
+                SIGNAL(si_stateChanged()),
+                SLOT(sl_blastSearchFinish()));
+        AppContext::getTaskScheduler()->registerTopLevelTask(blastTask);
     } else {
         FAIL("Unexpected search type", );
     }
-
-    connect(searchIdsTask,
-            SIGNAL(si_stateChanged()),
-            SLOT(sl_onSearchIdsFinish()));
-    AppContext::getTaskScheduler()->registerTopLevelTask(searchIdsTask);
 }
 
-void DasOptionsPanelWidget::sl_onAnnotateClicked() {
+void DasOptionsPanelWidget::sl_annotateClicked() {
     annotationData.clear();
     QList<DASSource> featureSources = getFeatureSources();
 
-    QString accessionNumber = idList->currentItem()->text();
+    QString accessionNumber = idList->item(idList->currentRow(), 0)->text();
 
     loadDasObjectTasks.clear();
     foreach (DASSource featureSource, featureSources) {
@@ -215,18 +184,40 @@ void DasOptionsPanelWidget::sl_onAnnotateClicked() {
     AppContext::getTaskScheduler()->registerTopLevelTask(new MultiTask("Load DAS annotations for current sequence", loadDasObjectTasks));
 }
 
-void DasOptionsPanelWidget::sl_onSearchIdsFinish() {
-    idList->clear();
+void DasOptionsPanelWidget::sl_exactSearchFinish() {
     GetDasIdsBySequenceTask* searchIdsTask = qobject_cast<GetDasIdsBySequenceTask*>(sender());
     SAFE_POINT(searchIdsTask, "Sender is not defined", );
 
     if (searchIdsTask->isFinished()) {
+        idList->clearContents();
         QList<PicrElement> results = searchIdsTask->getResults();
         for (int i = 0; i < results.count(); ++i) {
-            idList->addItem(new QListWidgetItem(results[i].accessionNumber));
+            idList->insertRow(i);
+            idList->setItem(i, 0, new QTableWidgetItem(results[i].accessionNumber));
+            idList->setItem(i, 1, new QTableWidgetItem("100%"));
         }
 
-        idList->setCurrentRow(0);
+        idList->setCurrentCell(0, 0);
+        checkState();
+    }
+}
+
+void DasOptionsPanelWidget::sl_blastSearchFinish() {
+    UniprotBlastTask* blastTask = qobject_cast<UniprotBlastTask*>(sender());
+    SAFE_POINT(blastTask, "Sender is not defined", );
+
+    if (blastTask->isFinished()) {
+        idList->clearContents();
+        QList<UniprotResult> results = blastTask->getResults();
+        for (int i = 0; i < results.count(); ++i) {
+            if (results[i].identity >= blastSettingsWidget->getMinIdentity()) {
+                idList->insertRow(i);
+                idList->setItem(i, 0, new QTableWidgetItem(results[i].accession));
+                idList->setItem(i, 1, new QTableWidgetItem(QString::number(results[i].identity) + "%"));
+            }
+        }
+
+        idList->setCurrentCell(0, 0);
         checkState();
     }
 }
@@ -293,7 +284,6 @@ void DasOptionsPanelWidget::sl_openInNewView() {
     SAFE_POINT(!dir.isEmpty(), "Prepared default download dir is empty", );
 
     QString accessionNumber = idList->currentItem()->text();
-    QList<Task*> tasks;
 
     DASSourceRegistry * dasRegistry = AppContext::getDASSourceRegistry();
     SAFE_POINT(NULL != dasRegistry, "DAS registry is NULL", );
@@ -362,18 +352,21 @@ void DasOptionsPanelWidget::initialize() {
     idList->addAction(fetchIdsAction);
     idList->addAction(fetchAnnotationsAction);
     idList->addAction(openInNewViewAction);
+
+    idList->horizontalHeader()->setResizeMode(0, QHeaderView::Stretch);
+    idList->horizontalHeader()->setResizeMode(1, QHeaderView::ResizeToContents);
 }
 
 void DasOptionsPanelWidget::connectSignals() {
     connect(searchTypeComboBox,
             SIGNAL(currentIndexChanged(int)),
-            SLOT(sl_onSearchTypeChanged(int)));
+            SLOT(sl_searchTypeChanged(int)));
     connect(searchIdsButton,
             SIGNAL(clicked()),
-            SLOT(sl_onSearchIdsClicked()));
+            SLOT(sl_searchIdsClicked()));
     connect(annotateButton,
             SIGNAL(clicked()),
-            SLOT(sl_onAnnotateClicked()));
+            SLOT(sl_annotateClicked()));
     connect(annotatedDnaView,
             SIGNAL(si_focusChanged(ADVSequenceWidget*, ADVSequenceWidget*)),
             SLOT(sl_onSequenceFocusChanged(ADVSequenceWidget*, ADVSequenceWidget*)));
@@ -382,10 +375,10 @@ void DasOptionsPanelWidget::connectSignals() {
             SLOT(sl_onSelectionChanged(LRegionsSelection*, QVector<U2Region>, QVector<U2Region>)));
     connect(fetchIdsAction,
             SIGNAL(triggered()),
-            SLOT(sl_onSearchIdsClicked()));
+            SLOT(sl_searchIdsClicked()));
     connect(fetchAnnotationsAction,
             SIGNAL(triggered()),
-            SLOT(sl_onAnnotateClicked()));
+            SLOT(sl_annotateClicked()));
     connect(openInNewViewAction,
             SIGNAL(triggered()),
             SLOT(sl_openInNewView()));

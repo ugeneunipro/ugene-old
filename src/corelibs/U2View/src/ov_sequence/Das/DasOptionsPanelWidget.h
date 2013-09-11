@@ -43,23 +43,14 @@ class Task;
 class CreateAnnotationWidgetController;
 class LRegionsSelection;
 class ShowHideSubgroupWidget;
-class PicrBlastSettings;
+class UniprotBlastSettings;
 
 class DasBlastSettingsWidget : public QWidget, private Ui_DasBlastSettingsWidget {
     Q_OBJECT
 public:
     DasBlastSettingsWidget(QWidget* parent = NULL);
-    PicrBlastSettings getSettings();
-
-private slots:
-    void sl_onMatrixChanged(int index);
-
-private:
-    void initialize();
-    void connectSignals();
-    void checkState();
-
-    QMap<QString, QStringList> gapCostsByMatrix;
+    UniprotBlastSettings getSettings();
+    double getMinIdentity() { return minimumIdentityDoubleSpinBox->value(); }
 };
 
 class DasOptionsPanelWidget : public QWidget, private Ui_DasOptionsPanelWidget {
@@ -68,10 +59,11 @@ public:
     DasOptionsPanelWidget(AnnotatedDNAView* adv);
 
 private slots:
-    void sl_onSearchTypeChanged(int type);
-    void sl_onSearchIdsClicked();
-    void sl_onAnnotateClicked();
-    void sl_onSearchIdsFinish();
+    void sl_searchTypeChanged(int type);
+    void sl_searchIdsClicked();
+    void sl_annotateClicked();
+    void sl_exactSearchFinish();
+    void sl_blastSearchFinish();
     void sl_onLoadAnnotationsFinish();
     void sl_onSequenceFocusChanged(ADVSequenceWidget*, ADVSequenceWidget*);
     void sl_onSelectionChanged(LRegionsSelection* _selection, const QVector<U2Region>& added, const QVector<U2Region>& removed);
