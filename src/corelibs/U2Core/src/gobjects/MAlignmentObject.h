@@ -87,15 +87,21 @@ public:
 
     /** Methods that modify the gap model only */
     void insertGap(U2Region rows, int pos, int nGaps);
-    int deleteGap(const U2Region &rows, int pos, int maxGaps);
-    int deleteGap(int pos, int maxGaps);
+
+    /**
+     * Removes gap region that extends from the @pos column and is no longer than @maxGaps.
+     * If the region starting from @pos and having width of @maxGaps includes any non-gap symbols
+     * then its longest subset starting from @pos and containing gaps only is removed.
+     *
+     * If the given region is a subset of a trailing gaps area then nothing happens.
+     */
+    int deleteGap(const U2Region &rows, int pos, int maxGaps, U2OpStatus &os);
 
     /**
      * Updates a gap model of the alignment.
      * The map must contain valid row IDs and corresponding gap models.
      */
     void updateGapModel(QMap<qint64, QList<U2MsaGap> > rowsGapModel, U2OpStatus& os);
-
 
     /** Methods to work with rows */
     void addRow(U2MsaRow& rowInDb, const DNASequence& sequence, int rowIdx = -1);

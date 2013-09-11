@@ -363,7 +363,13 @@ private:
     void drawSelection(QPainter &p);
 
     void fillSelectionWithGaps();
-    void del(const QPoint& p, bool columnMode);
+
+    /**
+     * Reverse operation for @fillSelectionWithGaps( ),
+     * removes the region preceding the selection with the same size if it consists of gaps only.
+     * Otherwise, does nothing.
+     */
+    void removeGapsPrecedingSelection( );
   
     void deleteOldCustomSchemes();
 

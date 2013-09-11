@@ -206,80 +206,73 @@ void MAlignmentObject::insertGap(U2Region rows, int pos, int count) {
     updateCachedMAlignment(mi);
 }
 
-int MAlignmentObject::deleteGap(const U2Region &rows, int pos, int maxGaps) {
-    SAFE_POINT(!isStateLocked(), "Alignment state is locked!", 0);
+int MAlignmentObject::deleteGap( const U2Region &rows, int pos, int maxGaps, U2OpStatus &os ) {
+    SAFE_POINT( !isStateLocked( ), "Alignment state is locked!", 0 );
 
-    MAlignment msa = getMAlignment();
+    MAlignment msa = getMAlignment( );
 
-    int n = 0, max = qBound(0, maxGaps, msa.getLength() - pos);
+    const int maxRemovedGaps = qBound(0, maxGaps, msa.getLength() - pos);
+    // check if there is nothing to remove
+    if ( 0 == maxRemovedGaps ) {
+        return 0;
+    }
+
+    int removingGapColumnCount = maxRemovedGaps;
     int rowCount = rows.startPos;
-
+    bool isRegionInRowTrailingGaps = true;
+    // iterate through given rows to determine the width of the continuous gap region
     while (rowCount < rows.endPos()) {
-        while (n < max) {
-            char c = msa.charAt(rowCount, pos + n);
-            if (c != MAlignment_GapChar) { //not a gap
+        int gapCountInCurrentRow = 0;
+        // iterate through current row bases to determine gap count
+        while ( gapCountInCurrentRow < maxRemovedGaps ) {
+            const char currentSymbol = msa.charAt( rowCount, pos + gapCountInCurrentRow );
+            if ( MAlignment_GapChar != currentSymbol ) {
                 break;
             }
-            n++;
+            gapCountInCurrentRow++;
         }
 
-        if (n == 0) {
-            if (rows.endPos() - 1 == rowCount) {
-                return 0;
+        // determine if the given area intersects a row in the area of trailing gaps
+        if ( gapCountInCurrentRow == maxRemovedGaps && isRegionInRowTrailingGaps ) {
+            int trailingPosition = pos + gapCountInCurrentRow;
+            if ( msa.getLength( ) != trailingPosition ) {
+                while ( msa.getLength( ) > trailingPosition && isRegionInRowTrailingGaps ) {
+                    isRegionInRowTrailingGaps &= ( MAlignment_GapChar == msa.charAt( rowCount, trailingPosition ) );
+                    ++trailingPosition;
+                }
             }
-            ++rowCount;
-            continue;
         }
 
-        U2OpStatus2Log os;
-        msa.removeChars(rowCount, pos, n, os);
-        SAFE_POINT_OP(os, 0);
-
-        const MAlignmentRow &row = msa.getRow(rowCount);
-        MsaDbiUtils::updateRowGapModel(entityRef, row.getRowId(), row.getGapModel(), os);
-        SAFE_POINT_OP(os, 0);
-
+        if ( 0 == gapCountInCurrentRow ) {
+            // don't do anything if there is a row without gaps
+            return 0;
+        }
+        removingGapColumnCount = qMin( removingGapColumnCount, gapCountInCurrentRow );
         ++rowCount;
     }
-    updateCachedMAlignment();
-    return n;
-}
 
-int MAlignmentObject::deleteGap(int pos, int maxGaps) {
-    SAFE_POINT(!isStateLocked(), "Alignment state is locked!", 0);
-
-    MAlignment msa = getMAlignment();
-    //find min gaps in all sequences starting from pos
-    int minGaps = maxGaps;
-    int max = qBound(0, maxGaps, msa.getLength() - pos);
-    foreach(const MAlignmentRow& row, msa.getRows()) {
-        int nGaps = 0;
-        for (int i = pos; i < pos + max; i++, nGaps++) {
-            if (row.charAt(i) != MAlignment_GapChar) { 
-                break;
-            }
-        }
-        minGaps = qMin(minGaps, nGaps);
-        if (minGaps == 0) {
-            break;
-        }
-    }
-    if (minGaps == 0) {
-        return  0;
-    }
-    int nDeleted = minGaps;
-    U2OpStatus2Log os;
-    for (int i = 0, n = msa.getNumRows(); i < n; i++) {
-        msa.removeChars(i, pos, nDeleted, os);
-        SAFE_POINT_OP(os, 0);
-
-        const MAlignmentRow &row = msa.getRow(i);
-        MsaDbiUtils::updateRowGapModel(entityRef, row.getRowId(), row.getGapModel(), os);
-        SAFE_POINT_OP(os, 0);
+    if ( isRegionInRowTrailingGaps ) {
+        return 0;
     }
 
-    updateCachedMAlignment();
-    return nDeleted;
+    QList<qint64> modifiedRowIds;
+    modifiedRowIds.reserve( rows.length );
+
+    rowCount = rows.startPos;
+    // iterate through given rows to update each of them in DB
+    while ( rowCount < rows.endPos( ) ) {
+        msa.removeChars( rowCount, pos, removingGapColumnCount, os );
+        CHECK_OP( os, 0 );
+
+        const MAlignmentRow &row = msa.getRow( rowCount );
+        MsaDbiUtils::updateRowGapModel( entityRef, row.getRowId( ), row.getGapModel( ), os );
+        CHECK_OP( os, 0 );
+        modifiedRowIds << row.getRowId( );
+        ++rowCount;
+    }
+
+    updateCachedMAlignment( MAlignmentModInfo( ), modifiedRowIds );
+    return removingGapColumnCount;
 }
 
 void MAlignmentObject::addRow(U2MsaRow& rowInDb, const DNASequence& seq, int rowIdx) {
@@ -563,8 +556,10 @@ bool MAlignmentObject::shiftRegion( int startPos, int startRow, int nBases, int 
         if (startPos + shift < 0) {
             return false;
         }
-        n = deleteGap(U2Region(startRow, nRows), startPos + shift, -shift);
-    }    
+        U2OpStatus2Log os;
+        n = deleteGap(U2Region(startRow, nRows), startPos + shift, -shift, os);
+        SAFE_POINT_OP( os, false );
+    }
 
     return n > 0;
 }
