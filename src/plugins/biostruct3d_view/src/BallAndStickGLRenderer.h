@@ -48,6 +48,8 @@ private:
 
 private:
     GLuint dl;
+    static QList<GLuint> dlIndexStorage;
+    static QMutex mutex;
 
     RENDERER_FACTORY(BallAndStickGLRenderer)   
 };

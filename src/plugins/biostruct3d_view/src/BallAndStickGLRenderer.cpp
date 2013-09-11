@@ -34,11 +34,29 @@
 
 namespace U2 { 
 
+
 const QString BallAndStickGLRenderer::ID(QObject::tr("Ball-and-Stick"));
+QList<GLuint> BallAndStickGLRenderer::dlIndexStorage;
+QMutex BallAndStickGLRenderer::mutex;
+
+#define MAX_OPEN_VIEWS_NUMBER 8086
 
 BallAndStickGLRenderer::BallAndStickGLRenderer(const BioStruct3D& struc, const BioStruct3DColorScheme* s, const QList<int> &shownModels, const BioStruct3DRendererSettings *settings)
-    : BioStruct3DGLRenderer(struc,s,shownModels,settings), dl(0)
+    : BioStruct3DGLRenderer(struc,s,shownModels,settings)
 {
+    {
+        QMutexLocker lock(&mutex);
+        if (dlIndexStorage.size() == 0) {
+            dl = glGenLists(MAX_OPEN_VIEWS_NUMBER);
+            for (GLuint idx = dl+1; idx <= dl + MAX_OPEN_VIEWS_NUMBER; ++idx) {
+                dlIndexStorage.push_back(idx);
+            }
+        } else {
+            dl = dlIndexStorage.takeFirst();
+        }
+        
+    }
+    
     create();
 }
 
@@ -46,6 +64,10 @@ BallAndStickGLRenderer::~BallAndStickGLRenderer() {
     if (glIsList(dl)) {
         glDeleteLists(dl, 1);
     }
+
+    QMutexLocker lock(&mutex);
+    dlIndexStorage.push_back(dl);
+
 }
 
 void BallAndStickGLRenderer::create() {
@@ -135,7 +157,6 @@ void BallAndStickGLRenderer::createDisplayList()
         glDeleteLists(dl, 1);
     }
 
-    dl = glGenLists(1);
     float renderDetailLevel = settings->detailLevel;
 
     QList<Color4f> colors;
