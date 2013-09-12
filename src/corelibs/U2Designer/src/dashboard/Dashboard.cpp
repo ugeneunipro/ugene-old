@@ -324,6 +324,10 @@ void JavascriptAgent::loadSchema() {
     dashboard->loadSchema();
 }
 
+void JavascriptAgent::hideLoadButtonHint() {
+    WorkflowSettings::setShowLoadButtonHint(false);
+}
+
 /************************************************************************/
 /* LoadDashboardsTask */
 /************************************************************************/

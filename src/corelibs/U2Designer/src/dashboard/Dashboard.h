@@ -105,6 +105,7 @@ public slots:
     void openByOS(const QString &url);
     QString absolute(const QString &url);
     void loadSchema();
+    void hideLoadButtonHint();
 
 private:
     Dashboard *dashboard;

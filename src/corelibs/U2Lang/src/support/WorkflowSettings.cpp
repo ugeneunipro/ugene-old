@@ -22,8 +22,9 @@
 #include "WorkflowSettings.h"
 
 #include <U2Core/AppContext.h>
-#include <U2Core/Settings.h>
 #include <U2Core/Log.h>
+#include <U2Core/Settings.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <QtCore/QSettings>
 #include <QtCore/QDir>
@@ -51,6 +52,7 @@ namespace U2 {
 #define INCLUDED_WORKER_PATH        SETTINGS + "includedWorkerPath"
 #define USE_WORKFLOW_OUTPUT_PATH    SETTINGS + "useWorkflowOutputPath"
 #define WORKFLOW_OUTPUT_PATH        SETTINGS + "workflowOutputPath"
+#define SHOW_LOAD_BUTTON_HINT       SETTINGS + "showLoadButtonHint"
 
 Watcher* const WorkflowSettings::watcher = new Watcher;
 
@@ -339,6 +341,20 @@ const QString WorkflowSettings::getIncludedElementsDirectory() {
     defaultPath += "/IncludedWorkers/";
     QString path = s->getValue(INCLUDED_WORKER_PATH, defaultPath, true).toString();
     return path;
+}
+
+bool WorkflowSettings::isShowLoadButtonHint() {
+    Settings *s = AppContext::getSettings();
+    SAFE_POINT(NULL != s, "NULL settings!", false);
+
+    return s->getValue(SHOW_LOAD_BUTTON_HINT, QVariant(true)).toBool();
+}
+
+void WorkflowSettings::setShowLoadButtonHint(bool value) {
+    Settings *s = AppContext::getSettings();
+    SAFE_POINT(NULL != s, "NULL settings!", );
+
+    s->setValue(SHOW_LOAD_BUTTON_HINT, value);
 }
 
 }//namespace

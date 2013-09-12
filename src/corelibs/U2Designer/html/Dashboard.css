@@ -198,3 +198,13 @@ table.table-fixed {
     background-image: url("qrc:U2Designer/images/load_schema.png");
     background-repeat: no-repeat;
 }
+
+#load-btn-hint-container {
+    position: relative;
+    right: -110px;
+    top: -25px;
+    width: 400px;
+    float: right;
+    z-index: 10;
+    opacity: 0.8;
+}

@@ -19,7 +19,10 @@
  * MA 02110-1301, USA.
  */
 
+#include <U2Lang/WorkflowSettings.h>
+
 #include "ResourcesWidget.h"
+
 
 namespace U2 {
 
@@ -71,8 +74,11 @@ void ResourcesWidget::sl_taskStateChanged(TaskState state) {
     } else {
         canceled();
     }
+
+    bool showHint = WorkflowSettings::isShowLoadButtonHint();
+
     if (isFinished(state)) {
-        dashboard->getDocument().evaluateJavaScript("showLoadButton()");
+        dashboard->getDocument().evaluateJavaScript("showLoadButton(" + QString::number(showHint) + ")");
     }
 }
 

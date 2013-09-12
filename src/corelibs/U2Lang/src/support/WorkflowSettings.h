@@ -92,6 +92,10 @@ public:
     static void setWorkflowOutputDirectory(const QString &newDir);
     static const QString getWorkflowOutputDirectory();
 
+    /** Specifies whether hint for load schema button on the dashboard should be shown or not */
+    static bool isShowLoadButtonHint();
+    static void setShowLoadButtonHint(bool value);
+
     static Watcher * const watcher;
 };
 
