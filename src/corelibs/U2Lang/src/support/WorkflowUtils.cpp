@@ -33,6 +33,7 @@
 #include <U2Lang/BaseTypes.h>
 #include <U2Lang/BaseSlots.h>
 #include <U2Lang/IntegralBus.h>
+#include <U2Lang/URLAttribute.h>
 
 #include <U2Core/AnnotationTableObject.h>
 #include <U2Core/AppContext.h>
@@ -876,6 +877,31 @@ void WorkflowUtils::schemaFromFile(const QString &url, Schema *schema, Metadata 
     if (!error.isEmpty()) {
         os.setError(error);
     }
+}
+
+static bool isDatasetsAttr(Attribute *attr) {
+    URLAttribute *dsa = dynamic_cast<URLAttribute*>(attr);
+    return (NULL != dsa);
+}
+
+bool WorkflowUtils::isUrlAttribute(Attribute *attr, Actor *actor) {
+    if (isDatasetsAttr(attr)) {
+        return true;
+    }
+
+    ConfigurationEditor *editor = actor->getEditor();
+    CHECK(NULL != editor, false);
+    PropertyDelegate *delegate = editor->getDelegate(attr->getId());
+    CHECK(NULL != delegate, false);
+
+    if (PropertyDelegate::OUTPUT_DIR == delegate->type()
+        || PropertyDelegate::OUTPUT_FILE == delegate->type()
+        || PropertyDelegate::INPUT_DIR == delegate->type()
+        || PropertyDelegate::INPUT_FILE == delegate->type()) {
+        return true;
+    }
+
+    return false;
 }
 
 /*****************************

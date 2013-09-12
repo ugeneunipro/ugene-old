@@ -117,6 +117,10 @@ public:
 
     static void schemaFromFile(const QString &url, Schema *schema, Metadata *meta, U2OpStatus &os);
 
+    /** Returns if the attribute is needed to keep input/output URL(s) */
+    static bool isUrlAttribute(Attribute *attr, Actor *actor);
+    //static bool isOutUrlAttribute(Attribute *attr, Actor *actor, );
+
 private:
     static QStringList initExtensions();
     static bool validate(const Workflow::Schema &s, QList<ValidateError> &infoList);
