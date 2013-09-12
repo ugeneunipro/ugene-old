@@ -82,7 +82,8 @@ namespace U2 {
 #define SETTINGS_HIGHGHLIGHT_AMINO     "highghligh_amino"
 
 MSAEditorSequenceArea::MSAEditorSequenceArea(MSAEditorUI* _ui, GScrollBar* hb, GScrollBar* vb)
-: editor(_ui->editor), ui(_ui), shBar(hb), svBar(vb)//, changeTracker(editor->getMSAObject()->getEntityRef())
+    : editor(_ui->editor), ui(_ui), shBar(hb), svBar(vb),
+    changeTracker( editor->getMSAObject( )->getEntityRef( ) )
 {
     setObjectName("msa_editor_sequence_area");
     setFocusPolicy(Qt::WheelFocus);
@@ -940,7 +941,7 @@ void MSAEditorSequenceArea::mouseReleaseEvent(QMouseEvent *e)
 {
     rubberBand->hide();
     if (shifting) {
-        //changeTracker.finishTracking();
+        changeTracker.finishTracking();
         editor->getMSAObject()->releaseState();
     }
     if (scribbling) {
@@ -989,8 +990,9 @@ void MSAEditorSequenceArea::mousePressEvent(QMouseEvent *e) {
             MSAEditorSelection s = ui->seqArea->getSelection();
             if ( s.getRect().contains(cursorPos) ) {
                 shifting = true;
-//                changeTracker.startTracking( os );
-//                CHECK_OP( os, );
+                U2OpStatus2Log os;
+                changeTracker.startTracking( os );
+                CHECK_OP( os, );
                 editor->getMSAObject()->saveState();
             }
         }
@@ -1405,6 +1407,10 @@ void MSAEditorSequenceArea::removeGapsPrecedingSelection( ) {
         return;
     }
 
+    // if this method was invoked during a region shifting
+    // then shifting should be canceled
+    cancelShiftTracking( );
+
     const U2Region rowsContainingRemovedGaps( topLeftCornerOfRemovedRegion.y( ),
         selectionBackup.height( ) );
     U2OpStatus2Log os;
@@ -1573,8 +1579,12 @@ void MSAEditorSequenceArea::sl_delCol() {
 
         DeleteMode deleteMode = dlg.getDeleteMode();
         int value = dlg.getValue();
-        MAlignmentObject* msaObj = editor->getMSAObject();
 
+        // if this method was invoked during a region shifting
+        // then shifting should be canceled
+        cancelShiftTracking( );
+
+        MAlignmentObject* msaObj = editor->getMSAObject();
         U2OpStatus2Log os;
         U2UseCommonUserModStep userModStep(msaObj->getEntityRef(), os);
         SAFE_POINT_OP(os, );
@@ -1655,6 +1665,10 @@ void MSAEditorSequenceArea::sl_removeAllGaps() {
     MSACollapsibleItemModel *collapsibleModel = ui->getCollapseModel();
     SAFE_POINT(NULL != collapsibleModel, "NULL collapsible model!", );
     collapsibleModel->reset();
+
+    // if this method was invoked during a region shifting
+    // then shifting should be canceled
+    cancelShiftTracking( );
 
     U2OpStatus2Log os;
     U2UseCommonUserModStep userModStep(msa->getEntityRef(), os);
@@ -1968,10 +1982,6 @@ void MSAEditorSequenceArea::shiftSelectedRegion( int shift )
             return;
         }
 
-        U2OpStatus2Log os;
-        U2UseCommonUserModStep userModStep(maObj->getEntityRef(), os);
-        Q_UNUSED(userModStep);
-
         const bool shiftOk = maObj->shiftRegion(x, y, width, height, shift);
         if (shiftOk) {
             int newCursorPosX = cursorPos.x() + shift >= 0 ? cursorPos.x() + shift : 0;
@@ -1998,11 +2008,15 @@ void MSAEditorSequenceArea::deleteCurrentSelection()
         return;
     }
 
-    const U2Region& sel = getSelectedRows();
+    // if this method was invoked during a region shifting
+    // then shifting should be canceled
+    cancelShiftTracking( );
 
     U2OpStatusImpl os;
     U2UseCommonUserModStep userModStep(maObj->getEntityRef(), os);
     SAFE_POINT_OP(os, );
+
+    const U2Region& sel = getSelectedRows();
     maObj->removeRegion(selection.x(), sel.startPos, selection.width(), sel.length, true);
 
     if (selection.height() == 1 && selection.width() == 1) {
@@ -2140,11 +2154,15 @@ void MSAEditorSequenceArea::fillSelectionWithGaps( )
     }
     assert(isInRange(selection.topLeft()));
     assert(isInRange( QPoint(selection.x() + selection.width() - 1, selection.y() + selection.height() - 1) ) );
+
+    // if this method was invoked during a region shifting
+    // then shifting should be canceled
+    cancelShiftTracking( );
+
     MAlignmentObject* maObj = editor->getMSAObject();
     if (maObj == NULL || maObj->isStateLocked()) {
         return;
     }
-
     U2OpStatus2Log os;
     U2UseCommonUserModStep userModStep(maObj->getEntityRef(), os);
     SAFE_POINT_OP(os, );
@@ -2176,16 +2194,23 @@ void MSAEditorSequenceArea::reverseComplementModification(ModificationType& type
     assert(isInRange( QPoint(selection.x() + selection.width() - 1,
         selection.y() + selection.height() - 1) ) );
     if ( !selection.isNull()) {
+        // if this method was invoked during a region shifting
+        // then shifting should be canceled
+        cancelShiftTracking( );
+
         MAlignment ma = maObj->getMAlignment();
         DNATranslation* trans =
             AppContext::getDNATranslationRegistry()->lookupComplementTranslation(ma.getAlphabet());
         if (trans == NULL || !trans->isOne2One()) {
             return;
         }
-        const U2Region& sel = getSelectedRows();
+
         U2OpStatus2Log os;
         U2UseCommonUserModStep userModStep(maObj->getEntityRef(), os);
         SAFE_POINT_OP(os, );
+
+        const U2Region& sel = getSelectedRows();
+
         QList<qint64> modifiedRowIds;
         modifiedRowIds.reserve( sel.length );
         for (int i = sel.startPos; i < sel.endPos(); i++) {
@@ -2408,8 +2433,17 @@ QString MSAEditorSequenceArea::exportHighligtning( int startPos, int endPos, int
     return result.join("\n");
 }
 
+void MSAEditorSequenceArea::cancelShiftTracking( ) {
+    shifting = false;
+    scribbling = false;
+    selecting = false;
+    changeTracker.finishTracking( );
+    editor->getMSAObject( )->releaseState( );
+}
 
-ExportHighligtningTask::ExportHighligtningTask( ExportHighligtningDialogController *dialog, MSAEditorSequenceArea *msaese_ ) :Task(tr("Export highlightning"), TaskFlags_FOSCOE){
+ExportHighligtningTask::ExportHighligtningTask( ExportHighligtningDialogController *dialog, MSAEditorSequenceArea *msaese_ )
+    : Task(tr("Export highlighting"), TaskFlags_FOSCOE)
+{
     msaese = msaese_;
     startPos = dialog->startPos;
     endPos = dialog->endPos;

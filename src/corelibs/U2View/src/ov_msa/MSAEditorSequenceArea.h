@@ -35,7 +35,7 @@
 
 #include "DeleteGapsDialog.h"
 #include "MSACollapsibleModel.h"
-//#include "MsaEditorUserModStepController.h"
+#include "MsaEditorUserModStepController.h"
 #include "SaveSelectedSequenceFromMSADialogController.h"
 #include "ExportHighlightedDialogController.h"
 
@@ -377,9 +377,12 @@ private:
     void validateRanges();          //called on resize/refont like events
 
     void reverseComplementModification(ModificationType& type);
-    // guards for changing @shifting value and @shiftTracker simultaneously
-    void startShifting();
-    void finishShifting();
+
+    /*
+     * Interrupts the tracking of MSA modifications caused by a region shifting,
+     * also stops shifting. The method is used to keep consistence of undo/redo stack.
+     */
+    void cancelShiftTracking( );
 
     MSAEditor*      editor;
     MSAEditorUI*    ui;
@@ -431,7 +434,7 @@ private:
     // that does not fit into one method, e.g. shifting MSA region with mouse.
     // If the changing action fits within one method it's recommended using
     // the U2UseCommonUserModStep object explicitly.
-    //MsaEditorUserModStepController changeTracker;
+    MsaEditorUserModStepController changeTracker;
 };
 
 class U2VIEW_EXPORT ExportHighligtningTask : public Task {
