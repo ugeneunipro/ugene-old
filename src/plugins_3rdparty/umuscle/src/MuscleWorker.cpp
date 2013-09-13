@@ -222,6 +222,8 @@ void MuscleWorker::sl_taskFinished() {
     if (t->hasError()) {
         coreLog.error(t->getError());
         return;
+    } else if ( t->isCanceled( ) ) {
+        return;
     }
 
     SAFE_POINT(NULL != output, "NULL output!", );
