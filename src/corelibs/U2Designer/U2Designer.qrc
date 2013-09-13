@@ -2,8 +2,6 @@
     <qresource prefix="/U2Designer">
         <file>html/Dashboard.css</file>
         <file>html/Dashboard.html</file>
-        <file>html/EstimationReport.css</file>
-        <file>html/EstimationReport.html</file>
         <file>javascript/Common.js</file>
         <file>javascript/ParametersWidget.js</file>
         <file>images/add.png</file>

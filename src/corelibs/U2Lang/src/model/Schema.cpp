@@ -67,7 +67,6 @@ void Schema::reset() {
     graph.clear();
     qDeleteAll(wizards);
     wizards.clear();
-    _estimationsCode.clear();
 }
 
 void Schema::applyConfiguration(const QMap<ActorId, QVariantMap> &cfg) {
@@ -112,7 +111,6 @@ const QList<Actor*> & Schema::getProcesses() const {
 void Schema::addProcess(Actor * a) {
     assert(a != NULL);
     procs.append(a);
-    _estimationsCode.clear();
 }
 
 QList<Link*> Schema::getFlows() const {
@@ -120,7 +118,6 @@ QList<Link*> Schema::getFlows() const {
 }
 
 void Schema::addFlow(Link* l) {
-    _estimationsCode.clear();
     assert(l != NULL);
     graph.addBinding(l->source(), l->destination());
 }
@@ -412,7 +409,6 @@ QList<Wizard*> Schema::takeWizards() {
 }
 
 void Schema::removeProcess(Actor *actor) {
-    _estimationsCode.clear();
     // remove actors flows
     foreach (Port *p, actor->getPorts()) {
         foreach (Link *l, p->getLinks()) {
@@ -452,7 +448,6 @@ void Schema::update(const QMap<ActorId, ActorId> &actorsMapping) {
 }
 
 void Schema::removeFlow(Link* l) {
-    _estimationsCode.clear();
     if (graph.contains(l->source(), l->destination())) {
         graph.removeBinding(l->source(), l->destination());
         l->disconnect();

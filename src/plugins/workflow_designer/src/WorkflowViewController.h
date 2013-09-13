@@ -211,8 +211,6 @@ private slots:
     void sl_changeScriptMode();
     
     bool sl_validate(bool notify = true);
-    void sl_estimate();
-    void sl_estimationTaskFinished();
     void sl_pickInfo(QListWidgetItem*);
     void sl_launch();
     void sl_stop();
@@ -342,7 +340,6 @@ private:
     QAction *nextStepAction;
     QAction *toggleBreakpointAction;
     QAction *tickReadyAction;
-    QAction *estimateAction;
 
     QAction* findPrototypeAction;
     QAction* unlockAction;

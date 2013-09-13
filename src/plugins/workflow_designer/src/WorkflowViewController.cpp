@@ -78,7 +78,6 @@
 #include <U2Lang/IncludedProtoFactory.h>
 #include <U2Lang/IntegralBusModel.h>
 #include <U2Lang/MapDatatypeEditor.h>
-#include <U2Lang/SchemaEstimationTask.h>
 #include <U2Lang/WorkflowEnv.h>
 #include <U2Lang/WorkflowManager.h>
 #include <U2Lang/WorkflowRunTask.h>
@@ -93,7 +92,6 @@
 #include "ChooseItemDialog.h"
 #include "CreateScriptWorker.h"
 #include "DashboardsManagerDialog.h"
-#include "EstimationDialog.h"
 #include "GalaxyConfigConfigurationDialogImpl.h"
 #include "ImportSchemaDialog.h"
 #include "ItemViewStyle.h"
@@ -618,12 +616,6 @@ void WorkflowView::createActions() {
     validateAction->setShortcut(QKeySequence("Ctrl+E"));
     connect(validateAction, SIGNAL(triggered()), SLOT(sl_validate()));
 
-    estimateAction = new QAction(tr("&Estimate scheme"), this);
-    estimateAction->setObjectName("Run scheme");
-    estimateAction->setIcon(QIcon(":workflow_designer/images/external_cmd_tool.png"));
-    estimateAction->setShortcut(QKeySequence("Ctrl+R"));
-    connect(estimateAction, SIGNAL(triggered()), SLOT(sl_estimate()));
-
     pauseAction = new QAction(tr("&Pause scheme"), this);
     pauseAction->setIcon(QIcon(":workflow_designer/images/pause.png"));
     pauseAction->setShortcut(QKeySequence("Ctrl+P"));
@@ -1072,7 +1064,6 @@ void WorkflowView::sl_toggleLock(bool b) {
     stopAction->setEnabled(running);
     runAction->setEnabled(!running);
     validateAction->setEnabled(!running);
-    estimateAction->setEnabled(!running);
     configureParameterAliasesAction->setEnabled(!running);
     configurePortAliasesAction->setEnabled(!running);
     importSchemaToElement->setEnabled(!running);
@@ -1210,7 +1201,6 @@ void WorkflowView::setupMDIToolbar(QToolBar* tb) {
     loadSep = tb->addSeparator();
     tb->addAction(showWizard);
     tb->addAction(validateAction);
-    tb->addAction(estimateAction);
     tb->addAction(runAction);
     tb->addAction(pauseAction);
     tb->addAction(toggleBreakpointAction);
@@ -1258,7 +1248,6 @@ void WorkflowView::setupActions() {
 
     showWizard->setVisible(editMode && !schema->getWizards().isEmpty());
     validateAction->setVisible(editMode);
-    estimateAction->setVisible(editMode && !schema->estimationsCode().isEmpty());
     stopAction->setVisible(running);
     runSep->setVisible(editMode);
 
@@ -1304,7 +1293,6 @@ void WorkflowView::setupViewMenu(QMenu* m) {
     m->addAction(exportAction);
     m->addSeparator();
     m->addAction(validateAction);
-    m->addAction(estimateAction);
     m->addAction(runAction);
     m->addAction(stopAction);
     m->addSeparator();
@@ -1482,25 +1470,6 @@ bool WorkflowView::sl_validate(bool notify) {
         }
     }
     return good;
-}
-
-void WorkflowView::sl_estimate() {
-    SAFE_POINT(!schema->estimationsCode().isEmpty(), "No estimation code", );
-    estimateAction->setEnabled(false);
-
-    SchemaEstimationTask *t = new SchemaEstimationTask(schema);
-    connect(t, SIGNAL(si_stateChanged()), SLOT(sl_estimationTaskFinished()));
-    AppContext::getTaskScheduler()->registerTopLevelTask(t);
-}
-
-void WorkflowView::sl_estimationTaskFinished() {
-    SchemaEstimationTask *t = dynamic_cast<SchemaEstimationTask*>(sender());
-    CHECK(NULL != t, );
-    CHECK(t->isFinished(), );
-    estimateAction->setEnabled(true);
-    EstimationDialog *d = new EstimationDialog(t->result(), this);
-    d->setWindowModality(Qt::ApplicationModal);
-    d->show();
 }
 
 void WorkflowView::localHostLaunch() {
@@ -2045,7 +2014,6 @@ void WorkflowView::sl_pasteItems(const QString &s, bool updateSchemaInfo) {
         meta.name = pastedM.name;
         meta.comment = pastedM.comment;
         meta.scalePercent = pastedM.scalePercent;
-        schema->estimationsCode() = pastedS.estimationsCode();
     }
     pastedS.setDeepCopyFlag(false);
     recreateScene();
@@ -2363,7 +2331,6 @@ void WorkflowView::sl_updateTitle() {
 void WorkflowView::sl_updateUi() {
     scene->setModified(false);
     showWizard->setVisible(!schema->getWizards().isEmpty());
-    estimateAction->setVisible(!schema->estimationsCode().isEmpty());
 }
 
 void WorkflowView::saveState() {
