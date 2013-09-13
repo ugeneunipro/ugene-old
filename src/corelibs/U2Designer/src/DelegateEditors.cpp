@@ -356,13 +356,10 @@ void URLDelegate::setModelData(QWidget *editor, QAbstractItemModel *model,
 }
 
 PropertyDelegate::Type URLDelegate::type() const {
-    if (saveFile) {
-        if (isPath) {
-            return OUTPUT_DIR;
-        }
-        return OUTPUT_FILE;
+    if (isPath) {
+        return saveFile ? OUTPUT_DIR : INPUT_DIR;
     }
-    return NO_TYPE;
+    return saveFile ? OUTPUT_FILE : INPUT_FILE;
 }
 
 /********************************
