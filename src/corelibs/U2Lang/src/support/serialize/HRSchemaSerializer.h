@@ -119,6 +119,7 @@ public:
     static const QString EXC_FILTER;
     static const QString INC_FILTER;
     static const QString RECURSIVE;
+    static const QString ESTIMATIONS;
     
 public:
     struct U2LANG_EXPORT ReadFailed {

@@ -76,6 +76,7 @@ HEADERS += src/library/BaseActorCategories.h \
            src/support/WorkflowSettings.h \
            src/support/WorkflowUtils.h \
            src/tasks/ReadDocumentTaskFactory.h \
+           src/tasks/SchemaEstimationTask.h \
            src/tasks/WorkflowTasksRegistry.h \
            src/library/script/ActorContext.h \
            src/library/script/DbiClassPrototype.h \
@@ -170,6 +171,7 @@ SOURCES += src/library/BaseActorCategories.cpp \
            src/support/WorkflowSettings.cpp \
            src/support/WorkflowUtils.cpp \
            src/tasks/ReadDocumentTaskFactory.cpp \
+           src/tasks/SchemaEstimationTask.cpp \
            src/tasks/WorkflowTasksRegistry.cpp \
            src/library/script/ActorContext.cpp \
            src/library/script/DbiClassPrototype.cpp \

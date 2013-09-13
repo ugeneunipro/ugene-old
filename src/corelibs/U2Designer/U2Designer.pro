@@ -10,6 +10,7 @@ HEADERS += src/BreakpointHitCountDialog.h \
            src/DirectoryItem.h \
            src/EditBreakpointLabelsDialog.h \
            src/EditMarkerGroupDialog.h \
+           src/EstimationReporter.h \
            src/FileItem.h \
            src/GrouperEditor.h \
            src/GrouperEditorWidget.h \
@@ -68,6 +69,7 @@ SOURCES += src/BreakpointHitCountDialog.cpp \
            src/DirectoryItem.cpp \
            src/EditBreakpointLabelsDialog.cpp \
            src/EditMarkerGroupDialog.cpp \
+           src/EstimationReporter.cpp \
            src/FileItem.cpp \
            src/GrouperEditor.cpp \
            src/GrouperEditorWidget.cpp \

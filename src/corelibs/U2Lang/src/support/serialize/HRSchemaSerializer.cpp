@@ -123,6 +123,7 @@ const QString HRSchemaSerializer::PATH                  = "path";
 const QString HRSchemaSerializer::EXC_FILTER            = "exclude-name-filter";
 const QString HRSchemaSerializer::INC_FILTER            = "include-name-filter";
 const QString HRSchemaSerializer::RECURSIVE             = "recursive";
+const QString HRSchemaSerializer::ESTIMATIONS           = "estimations";
 
 template <class T>
 static void setIfNotNull(const T & what, T * to) {
@@ -301,6 +302,7 @@ static bool isBlockLine(const QString & str) {
 }
 
 static const int WIZARD_PAGE_DEPTH = 3;
+static const int ESTIMATIONS_DEPTH = 2;
 static const int ELEMENT_DEPTH = 1;
 void HRSchemaSerializer::Tokenizer::tokenizeSchema(const QString & d) {
     depth = 0;
@@ -310,6 +312,8 @@ void HRSchemaSerializer::Tokenizer::tokenizeSchema(const QString & d) {
     bool elemDefHeader = false;
     bool pageDef = false;
     bool pageDefHeader = false;
+    bool estDef = false;
+    bool estDefHeader = false;
     do {
         QString line = stream.readLine().trimmed();
         if(line.isEmpty()) {
@@ -332,8 +336,14 @@ void HRSchemaSerializer::Tokenizer::tokenizeSchema(const QString & d) {
         } else {
             pageDefHeader = false;
         }
+        if (ESTIMATIONS_DEPTH == depth) {
+            estDef = line.startsWith(ESTIMATIONS);
+            //estDefHeader = true;
+        } else {
+            //estDefHeader = false;
+        }
         if(isBlockLine(line) &&
-            ((pageDef && !pageDefHeader) || (isElemDef && !elemDefHeader))) {
+            ((estDef && !isElemDef) || (pageDef && !pageDefHeader) || (isElemDef && !elemDefHeader))) {
             tokenizeBlock(line, stream);
             continue;
         }
@@ -1521,6 +1531,10 @@ static void parseMeta(WorkflowSchemaReaderData & data) {
             CHECK_OP_EXT(os, throw HRSchemaSerializer::ReadFailed(os.getError()), );
             data.wizards << w;
             data.tokenizer.assertToken(HRSchemaSerializer::BLOCK_END);
+        } else if (HRSchemaSerializer::ESTIMATIONS == tok) {
+            data.tokenizer.assertToken(HRSchemaSerializer::BLOCK_START);
+            data.schema->estimationsCode() = data.tokenizer.take();
+            data.tokenizer.assertToken(HRSchemaSerializer::BLOCK_END);
         } else {
             throw HRSchemaSerializer::ReadFailed(HRSchemaSerializer::UNDEFINED_META_BLOCK.arg(tok));
         }
@@ -2128,6 +2142,11 @@ static QString metaData(const Schema & schema, const Metadata * meta, const HRSc
     QString res;
 
     res += itemsMetaData(schema.getProcesses(), meta, nmap);
+
+    if (!schema.estimationsCode().isEmpty()) {
+        res += HRSchemaSerializer::makeBlock(HRSchemaSerializer::ESTIMATIONS, HRSchemaSerializer::NO_NAME,
+            schema.estimationsCode() + HRSchemaSerializer::NEW_LINE, 2);
+    }
 
     if(schema.hasPortAliases()) {
         res += HRSchemaSerializer::makeBlock(HRSchemaSerializer::PORT_ALIASES_START, HRSchemaSerializer::NO_NAME, 

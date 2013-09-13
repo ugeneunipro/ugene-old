@@ -57,7 +57,7 @@ QString GffreadSupportTask::result() const {
 void GffreadSupportTask::checkFormat(const QString &url, const DocumentFormatId &target) {
     FormatDetectionConfig cfg;
     cfg.bestMatchesOnly = false;
-    QList<FormatDetectionResult> result = DocumentUtils::detectFormat(url);
+    QList<FormatDetectionResult> result = DocumentUtils::detectFormat(url, cfg);
     if (result.isEmpty()) {
         setError(tr("Unknown file format: %1").arg(url));
         return;
