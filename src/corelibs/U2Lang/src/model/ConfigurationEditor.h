@@ -119,6 +119,8 @@ class U2LANG_EXPORT PropertyDelegate : public QItemDelegate {
 public:
     enum Type {
         NO_TYPE,
+        INPUT_FILE,
+        INPUT_DIR,
         OUTPUT_FILE,
         OUTPUT_DIR
     };
