@@ -191,5 +191,34 @@ void GTUtilsMSAEditorSequenceArea::checkConsensus(U2OpStatus &os, QString cons){
     GTGlobals::sleep(1000);
 }
 #undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "selectColumnInConsensus"
+void GTUtilsMSAEditorSequenceArea::selectColumnInConsensus( U2OpStatus &os, int columnNumber ) {
+    QWidget *activeWindow = GTUtilsMdi::activeWindow( os );
+    const MSAEditorSequenceArea *msaEditArea = qobject_cast<MSAEditorSequenceArea *>(
+        GTWidget::findWidget( os, "msa_editor_sequence_area", activeWindow ) );
+    GT_CHECK_RESULT( NULL != msaEditArea, "MsaEditorSequenceArea not found", );
+
+    const QWidget *msaOffsetLeft = GTWidget::findWidget( os, "msa_editor_offsets_view_widget_left",
+        activeWindow );
+    GT_CHECK_RESULT( NULL != msaOffsetLeft, "MsaOffset Left not found", );
+
+    QPoint shift = msaOffsetLeft->mapToGlobal( QPoint( 0, 0 ) );
+    if ( msaOffsetLeft->isVisible( ) ) {
+        shift = msaOffsetLeft->mapToGlobal( QPoint( msaOffsetLeft->rect( ).right( ), 0 ) );
+    }
+
+    const int posX = msaEditArea->getXByColumnNum( columnNumber ) + shift.x( );
+
+    QWidget *consArea = GTWidget::findWidget( os,"consArea" );
+    CHECK_SET_ERR( NULL != consArea,"consArea is NULL" );
+
+    const int posY = consArea->mapToGlobal( consArea->rect( ).center( ) ).y( );
+    GTMouseDriver::moveTo( os, QPoint( posX, posY ) );
+    GTMouseDriver::click( os );
+}
+#undef GT_METHOD_NAME
+
 #undef GT_CLASS_NAME
+
 } // namespace

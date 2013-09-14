@@ -156,7 +156,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 
     REGISTER_TEST(GUITest_regression_scenarios::test_1527);
     REGISTER_TEST(GUITest_regression_scenarios::test_1527_1);
-    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_1622, "https://ugene.unipro.ru/tracker/browse/UGENE-1622");
+    REGISTER_TEST(GUITest_regression_scenarios::test_1622);
     REGISTER_TEST(GUITest_regression_scenarios::test_1689);
     REGISTER_TEST(GUITest_regression_scenarios::test_1703);
     REGISTER_TEST(GUITest_regression_scenarios::test_1708);
@@ -164,6 +164,10 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_1884);
     REGISTER_TEST(GUITest_regression_scenarios::test_1886_1);
     REGISTER_TEST(GUITest_regression_scenarios::test_1886_2);
+    REGISTER_TEST(GUITest_regression_scenarios::test_2021_1);
+    REGISTER_TEST(GUITest_regression_scenarios::test_2021_2);
+    REGISTER_TEST(GUITest_regression_scenarios::test_2021_3);
+    REGISTER_TEST(GUITest_regression_scenarios::test_2021_4);
 
 //////////////////////////////////////////////////////////////////////////
 // Common scenarios/project/

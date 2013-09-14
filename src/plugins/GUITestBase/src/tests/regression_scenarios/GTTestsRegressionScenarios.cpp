@@ -1296,6 +1296,161 @@ GUI_TEST_CLASS_DEFINITION( test_1886_2 )
         "--TGAA\n--CGAT\n--CGAT\n--CGAT" == selectionContent, "MSA changing is failed" );
 }
 
+GUI_TEST_CLASS_DEFINITION( test_2021_1 )
+{
+    // 1. Open document "ma.aln" and save it to string
+    GTFileDialog::openFile( os, testDir + "_common_data/scenarios/msa", "ma.aln" );
+    GTUtilsMSAEditorSequenceArea::selectArea( os, QPoint( 0, 0 ), QPoint( 11, 17 ) );
+    GTKeyboardDriver::keyClick( os, 'c', GTKeyboardDriver::key["ctrl"] );
+    GTGlobals::sleep(200);
+    const QString initialMsaContent = GTClipboard::text( os );
+    GTKeyboardDriver::keyPress( os, GTKeyboardDriver::key["esc"] );
+
+    // 2. Select a character in the sequence area
+    const QPoint initialSelectionPos( 10, 10 );
+    GTUtilsMSAEditorSequenceArea::click( os, initialSelectionPos );
+    GTGlobals::sleep(200);
+
+    // 3. Add gaps by pressing "Space" key
+    const int totalShiftCount = 3;
+    int shiftCounter = 0;
+    QPoint currentSelection = initialSelectionPos;
+    while ( shiftCounter++ < totalShiftCount ) {
+        GTKeyboardDriver::keyPress( os, GTKeyboardDriver::key["space"] );
+        GTGlobals::sleep(200);
+    }
+    currentSelection.rx( ) += totalShiftCount;
+
+    // 4. Remove gaps with "Backspace" key
+    shiftCounter = 0;
+    while ( shiftCounter++ < totalShiftCount ) {
+        GTKeyboardDriver::keyPress( os, GTKeyboardDriver::key["back"] );
+        GTGlobals::sleep(200);
+        currentSelection.rx( ) -= 1;
+        GTUtilsMSAEditorSequenceArea::checkSelectedRect( os, QRect( currentSelection,
+            currentSelection ) );
+    }
+
+    // 5. Check that alignment content has returned to initial state
+    GTUtilsMSAEditorSequenceArea::selectArea( os, QPoint( 0, 0 ), QPoint( 11, 17 ) );
+    GTKeyboardDriver::keyClick( os, 'c', GTKeyboardDriver::key["ctrl"] );
+    GTGlobals::sleep(200);
+    const QString finalMsaContent = GTClipboard::text( os );
+    CHECK_SET_ERR( initialMsaContent == finalMsaContent, "MSA has unexpectedly changed" );
+}
+
+GUI_TEST_CLASS_DEFINITION( test_2021_2 )
+{
+    // 1. Open document "ma.aln" and save it to string
+    GTFileDialog::openFile( os, testDir + "_common_data/scenarios/msa", "ma.aln" );
+    GTUtilsMSAEditorSequenceArea::selectArea( os, QPoint( 0, 0 ), QPoint( 11, 17 ) );
+    GTKeyboardDriver::keyClick( os, 'c', GTKeyboardDriver::key["ctrl"] );
+    GTGlobals::sleep(200);
+    const QString initialMsaContent = GTClipboard::text( os );
+    GTKeyboardDriver::keyPress( os, GTKeyboardDriver::key["esc"] );
+
+    // 2. Select a region in the sequence area
+    const QPoint initialSelectionLeftTop( 5, 5 );
+    const QPoint initialSelectionRightBottom( 11, 10 );
+    const int selectionWidth = initialSelectionRightBottom.x( ) - initialSelectionLeftTop.x( ) + 1;
+    GTUtilsMSAEditorSequenceArea::selectArea( os, initialSelectionLeftTop,
+        initialSelectionRightBottom );
+    GTGlobals::sleep(200);
+
+    // 3. Add gaps by pressing "Space" key
+    const int totalShiftCount = 3;
+    int shiftCounter = 0;
+    QPoint currentSelectionLeftTop = initialSelectionLeftTop;
+    QPoint currentSelectionRightBottom = initialSelectionRightBottom;
+    while ( shiftCounter++ < totalShiftCount ) {
+        GTKeyboardDriver::keyPress( os, GTKeyboardDriver::key["space"] );
+        GTGlobals::sleep( 200 );
+    }
+    currentSelectionLeftTop.rx( ) += totalShiftCount * selectionWidth;
+    currentSelectionRightBottom.rx( ) += totalShiftCount * selectionWidth;
+    GTUtilsMSAEditorSequenceArea::checkSelectedRect( os, QRect( currentSelectionLeftTop,
+        currentSelectionRightBottom ) );
+
+    // 4. Remove gaps with "Backspace" key
+    shiftCounter = 0;
+    while ( shiftCounter++ < totalShiftCount ) {
+        GTKeyboardDriver::keyPress( os, GTKeyboardDriver::key["back"] );
+        GTGlobals::sleep( 200 );
+        currentSelectionLeftTop.rx( ) -= selectionWidth;
+        currentSelectionRightBottom.rx( ) -= selectionWidth;
+        GTUtilsMSAEditorSequenceArea::checkSelectedRect( os, QRect( currentSelectionLeftTop,
+            currentSelectionRightBottom ) );
+    }
+
+    // 5. Check that alignment content has returned to initial state
+    GTUtilsMSAEditorSequenceArea::selectArea( os, QPoint( 0, 0 ), QPoint( 11, 17 ) );
+    GTKeyboardDriver::keyClick( os, 'c', GTKeyboardDriver::key["ctrl"] );
+    GTGlobals::sleep( 200 );
+    const QString finalMsaContent = GTClipboard::text( os );
+    CHECK_SET_ERR( initialMsaContent == finalMsaContent, "MSA has unexpectedly changed" );
+}
+
+GUI_TEST_CLASS_DEFINITION( test_2021_3 )
+{
+    // 1. Open document "ma2_gap_8_col.aln"
+    GTFileDialog::openFile( os, testDir + "_common_data/scenarios/msa", "ma2_gap_8_col.aln" );
+
+    // 2. Select a column in the sequence area
+    GTUtilsMSAEditorSequenceArea::moveTo( os, QPoint( 0, 0 ) );
+    GTMouseDriver::click( os );
+    GTUtilsMSAEditorSequenceArea::selectColumnInConsensus( os, 9 );
+    GTGlobals::sleep( 200 );
+
+    // 3. Remove gap columns by pressing "Backspace" key
+    const int totalShiftCount = 6;
+    int shiftCounter = 0;
+    while ( shiftCounter++ < totalShiftCount ) {
+        GTKeyboardDriver::keyPress( os, GTKeyboardDriver::key["back"] );
+        GTGlobals::sleep( 200 );
+    }
+
+    // 4. Check that all the empty columns were removed
+    GTUtilsMSAEditorSequenceArea::selectArea( os, QPoint( 0, 0 ), QPoint( 14, 9 ) );
+    GTKeyboardDriver::keyClick( os, 'c', GTKeyboardDriver::key["ctrl"] );
+    GTGlobals::sleep( 200 );
+    const QString finalMsaContent = GTClipboard::text( os );
+    CHECK_SET_ERR(  "AAGCTTCTTTTAA--\nAAGTTACTAA-----\nTAG---TTATTAA--\nAAGC---TATTAA--\n"
+                    "TAGTTATTAA-----\nTAGTTATTAA-----\nTAGTTATTAA-----\nAAGCTTT---TAA--\n"
+                    "A--AGAATAATTA--\nAAGCTTTTAA-----" == finalMsaContent,
+                    "Unexpected MSA content has occurred" );
+}
+
+GUI_TEST_CLASS_DEFINITION( test_2021_4 )
+{
+    // 1. Open document "ma2_gap_8_col.aln" and save it to string
+    GTFileDialog::openFile( os, testDir + "_common_data/scenarios/msa", "ma2_gap_8_col.aln" );
+    GTUtilsMSAEditorSequenceArea::selectArea( os, QPoint( 0, 0 ), QPoint( 20, 9 ) );
+    GTKeyboardDriver::keyClick( os, 'c', GTKeyboardDriver::key["ctrl"] );
+    GTGlobals::sleep(200);
+    const QString initialMsaContent = GTClipboard::text( os );
+    GTKeyboardDriver::keyPress( os, GTKeyboardDriver::key["esc"] );
+
+    // 2. Select a region of trailing gaps
+    GTUtilsMSAEditorSequenceArea::selectArea( os, QPoint( 17, 4 ), QPoint( 19, 6 ) );
+
+    // 3. Press "Backspace"
+    GTKeyboardDriver::keyPress( os, GTKeyboardDriver::key["back"] );
+    GTGlobals::sleep( 200 );
+
+    // 4. Check that MSA does not changed
+    GTUtilsMSAEditorSequenceArea::selectArea( os, QPoint( 0, 0 ), QPoint( 20, 9 ) );
+    GTKeyboardDriver::keyClick( os, 'c', GTKeyboardDriver::key["ctrl"] );
+    GTGlobals::sleep( 200 );
+    const QString finalMsaContent = GTClipboard::text( os );
+    CHECK_SET_ERR( initialMsaContent == finalMsaContent, "MSA has unexpectedly changed" );
+
+    // 5. Check that "Undo" and "Redo" buttons are disabled
+    const QAbstractButton *undo = GTAction::button( os, "msa_action_undo" );
+    CHECK_SET_ERR( !undo->isEnabled( ), "Undo button is unexpectedly enabled" );
+    const QAbstractButton *redo = GTAction::button( os, "msa_action_redo" );
+    CHECK_SET_ERR( !redo->isEnabled( ), "Redo button is unexpectedly enabled" );
+}
+
 } // GUITest_regression_scenarios namespace
 
 } // U2 namespace

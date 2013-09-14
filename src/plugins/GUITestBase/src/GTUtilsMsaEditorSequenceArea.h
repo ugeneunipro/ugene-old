@@ -33,6 +33,8 @@ public:
     static void checkSorted(U2OpStatus &os, bool sortedState = true);
 
     static void checkConsensus(U2OpStatus &os, QString cons);
+    // may be used for selecting visible columns only
+    static void selectColumnInConsensus( U2OpStatus &os, int columnNumber );
 
     // MSAEditorNameList
     static QStringList getNameList(U2OpStatus &os);
