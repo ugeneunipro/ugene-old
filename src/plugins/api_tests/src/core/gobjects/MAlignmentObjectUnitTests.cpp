@@ -92,6 +92,29 @@ MAlignment MAlignmentObjectTestData::getTestAlignment2() {
     return al;
 }
 
+MAlignment MAlignmentObjectTestData::getTestAlignmentWithTrailingGaps( ) {
+    U2OpStatusImpl os;
+
+    QString alignmentName = "Alignment with trailing gaps";
+    DNAAlphabetRegistry *alphabetRegistry = AppContext::getDNAAlphabetRegistry( );
+    DNAAlphabet *alphabet = alphabetRegistry->findById( BaseDNAAlphabetIds::NUCL_DNA_DEFAULT( ) );
+    
+    QByteArray firstSequence(  "AC-GT--AAA----" );
+    QByteArray secondSequence( "-ACA---GTT----" );
+    QByteArray thirdSequence(  "-ACACA-G------" );
+
+    MAlignment al(alignmentName, alphabet);
+
+    al.addRow( "First", firstSequence, os );
+    SAFE_POINT_OP( os, MAlignment( ) );
+    al.addRow( "Second", secondSequence, os );
+    SAFE_POINT_OP( os, MAlignment( ) );
+    al.addRow( "Third", thirdSequence, os );
+    SAFE_POINT_OP( os, MAlignment( ) );
+
+    return al;
+}
+
 IMPLEMENT_TEST(MAlignmentObjectUnitTests, getMAlignment) {
     U2DbiRef dbiRef = MAlignmentObjectTestData::getDbiRef();
     MAlignment al = MAlignmentObjectTestData::getTestAlignment();
@@ -133,6 +156,76 @@ IMPLEMENT_TEST(MAlignmentObjectUnitTests, setMAlignment) {
     bool alsEqual = (al2 == alActual);
     CHECK_TRUE(alsEqual, "Actual alignment doesn't equal to the original!");
     CHECK_EQUAL(al2Name, alActual.getName(), "alignment name");
+}
+
+IMPLEMENT_TEST( MAlignmentObjectUnitTests, deleteGap_trailingGaps ) {
+    U2DbiRef dbiRef = MAlignmentObjectTestData::getDbiRef( );
+    MAlignment aln = MAlignmentObjectTestData::getTestAlignmentWithTrailingGaps( );
+
+    U2OpStatusImpl os;
+
+    // Import the alignment
+    U2EntityRef entityRef = MAlignmentImporter::createAlignment( dbiRef, aln, os );
+    CHECK_NO_ERROR( os );
+
+    const QString alignmentName = aln.getName( );
+    MAlignmentObject alnObj( alignmentName, entityRef );
+
+    alnObj.deleteGap( U2Region( 0, aln.getNumRows( ) ), 10, 3, os );
+    SAFE_POINT_OP( os, );
+    CHECK_TRUE( alnObj.getMAlignment( )
+        == MAlignmentObjectTestData::getTestAlignmentWithTrailingGaps( ),
+        "Alignment has changed!" );
+}
+
+IMPLEMENT_TEST( MAlignmentObjectUnitTests, deleteGap_regionWithNonGapSymbols ) {
+    U2DbiRef dbiRef = MAlignmentObjectTestData::getDbiRef( );
+    MAlignment aln = MAlignmentObjectTestData::getTestAlignmentWithTrailingGaps( );
+
+    U2OpStatusImpl os;
+
+    // Import the alignment
+    U2EntityRef entityRef = MAlignmentImporter::createAlignment( dbiRef, aln, os );
+    CHECK_NO_ERROR( os );
+
+    const QString alignmentName = aln.getName( );
+    MAlignmentObject alnObj( alignmentName, entityRef );
+
+    const int countOfDeleted = alnObj.deleteGap( U2Region( 1, aln.getNumRows( ) - 1 ), 6, 2, os );
+    SAFE_POINT_OP( os, );
+    CHECK_TRUE( 1 == countOfDeleted, "Unexpected count of removed symbols!" );
+    const MAlignment &resultAlignment = alnObj.getMAlignment( );
+    CHECK_TRUE( resultAlignment.getRow( 0 ).getCore( ) == "AC-GT--AAA----",
+        "First row content is unexpected!" );
+    CHECK_TRUE( resultAlignment.getRow( 1 ).getCore( ) == "-ACA--GTT----",
+        "Second row content is unexpected!" );
+    CHECK_TRUE( resultAlignment.getRow( 2 ).getCore( ) == "-ACACAG------",
+        "Third row content is unexpected!" );
+}
+
+IMPLEMENT_TEST( MAlignmentObjectUnitTests, deleteGap_gapRegion ) {
+    U2DbiRef dbiRef = MAlignmentObjectTestData::getDbiRef( );
+    MAlignment aln = MAlignmentObjectTestData::getTestAlignmentWithTrailingGaps( );
+
+    U2OpStatusImpl os;
+
+    // Import the alignment
+    U2EntityRef entityRef = MAlignmentImporter::createAlignment( dbiRef, aln, os );
+    CHECK_NO_ERROR( os );
+
+    const QString alignmentName = aln.getName( );
+    MAlignmentObject alnObj( alignmentName, entityRef );
+
+    const int countOfDeleted = alnObj.deleteGap( U2Region( 0, aln.getNumRows( ) - 1 ), 5, 2, os );
+    SAFE_POINT_OP( os, );
+    CHECK_TRUE( 2 == countOfDeleted, "Unexpected count of removed symbols!" );
+    const MAlignment &resultAlignment = alnObj.getMAlignment( );
+    CHECK_TRUE( resultAlignment.getRow( 0 ).getCore( ) == "AC-GTAAA----",
+        "First row content is unexpected!" );
+    CHECK_TRUE( resultAlignment.getRow( 1 ).getCore( ) == "-ACA-GTT----",
+        "Second row content is unexpected!" );
+    CHECK_TRUE( resultAlignment.getRow( 2 ).getCore( ) == "-ACACA-G------",
+        "Third row content is unexpected!" );
 }
 
 } // namespace

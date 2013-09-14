@@ -241,6 +241,8 @@ int MAlignmentObject::deleteGap( const U2Region &rows, int pos, int maxGaps, U2O
                     ++trailingPosition;
                 }
             }
+        } else if ( isRegionInRowTrailingGaps ) {
+            isRegionInRowTrailingGaps = false;
         }
 
         if ( 0 == gapCountInCurrentRow ) {

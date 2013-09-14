@@ -40,6 +40,7 @@ public:
 
     static MAlignment getTestAlignment();
     static MAlignment getTestAlignment2();
+    static MAlignment getTestAlignmentWithTrailingGaps( );
 
 private:
     static TestDbiProvider dbiProvider;
@@ -49,10 +50,16 @@ private:
 
 DECLARE_TEST(MAlignmentObjectUnitTests, getMAlignment);
 DECLARE_TEST(MAlignmentObjectUnitTests, setMAlignment);
+DECLARE_TEST( MAlignmentObjectUnitTests, deleteGap_trailingGaps );
+DECLARE_TEST( MAlignmentObjectUnitTests, deleteGap_regionWithNonGapSymbols );
+DECLARE_TEST( MAlignmentObjectUnitTests, deleteGap_gapRegion );
 
 } // namespace
 
 DECLARE_METATYPE(MAlignmentObjectUnitTests, getMAlignment);
 DECLARE_METATYPE(MAlignmentObjectUnitTests, setMAlignment);
+DECLARE_METATYPE( MAlignmentObjectUnitTests, deleteGap_trailingGaps );
+DECLARE_METATYPE( MAlignmentObjectUnitTests, deleteGap_regionWithNonGapSymbols );
+DECLARE_METATYPE( MAlignmentObjectUnitTests, deleteGap_gapRegion );
 
 #endif
