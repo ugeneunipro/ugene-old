@@ -103,14 +103,21 @@ void SequenceSelectorWidgetController::sl_seqLineEditEditingFinished() {
             defaultSeqName = seqLineEdit->text();
             seqLineEdit->setCursorPosition(CURSOR_START_POSITION);
         }
+        // index in popup list
         const int sequenceIndex = completer->getLastChosenItemIndex();
         if ( completer == QObject::sender( ) && -1 != sequenceIndex ) {
-            // check if current sequence was auto-completed
-            seqId = ma.getRow(sequenceIndex).getRowId();
-        } else if ( NULL == dynamic_cast<MAlignmentObject *>( QObject::sender( ) ) ) {
-            // else if slot was invoked by the user typed sequence name, but not by changed alignment
-            const MAlignmentRow firstRowWithSequenceName = ma.getRow(selectedSeqName);
-            seqId = firstRowWithSequenceName.getRowId();
+            const QStringList rowNames = ma.getRowNames( );
+            SAFE_POINT( rowNames.contains( selectedSeqName ), "Unexpected sequence name is selected", );
+            if ( 1 < rowNames.count( selectedSeqName ) ) { // case when there are sequences with identical names
+                int selectedRowIndex = -1;
+                // search for chosen row in the msa
+                for ( int sameNameCounter = 0; sameNameCounter <= sequenceIndex; ++sameNameCounter ) {
+                    selectedRowIndex = rowNames.indexOf( selectedSeqName, selectedRowIndex + 1 );
+                }
+                seqId = ma.getRow( selectedRowIndex ).getRowId( );
+            } else { // case when chosen name is unique in the msa
+                seqId = ma.getRow( selectedSeqName ).getRowId( );
+            }
         }
     }
     emit si_selectionChanged();
