@@ -345,7 +345,6 @@ void SQLiteDbi::init(const QHash<QString, QString>& props, const QVariantMap&, U
             }
         } else {
             upgrade(os);
-            CHECK_OP(os, );
         }
 
         dbiId = url;

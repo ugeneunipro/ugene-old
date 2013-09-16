@@ -92,6 +92,11 @@ void ConvertAssemblyToSamTask::run() {
         handle = dbiHandle.data();
     }
 
+    if (handle->dbi == NULL){
+        setError(tr("Given file is not valid UGENE database file"));
+        return;
+    }
+
     U2ObjectDbi *odbi = handle->dbi->getObjectDbi();
     QList<U2DataId> objectIds;
     // If the entityRef has been passed to the class constructor,

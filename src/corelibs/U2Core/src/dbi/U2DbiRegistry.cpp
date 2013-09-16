@@ -224,6 +224,7 @@ U2Dbi* U2DbiPool::openDbi(const U2DbiRef& ref, bool create, U2OpStatus& os) {
         }
         dbi->init(initProperties, QVariantMap(), os);
         if (os.hasError()) {
+            dbi->shutdown(os);
             delete dbi;
             return NULL;
         }
