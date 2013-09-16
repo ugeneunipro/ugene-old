@@ -885,6 +885,9 @@ static bool isDatasetsAttr(Attribute *attr) {
 }
 
 bool WorkflowUtils::isUrlAttribute(Attribute *attr, Actor *actor) {
+    SAFE_POINT(NULL != attr, "NULL attribute!", false);
+    SAFE_POINT(NULL != actor, "NULL actor!", false);
+
     if (isDatasetsAttr(attr)) {
         return true;
     }

@@ -28,7 +28,7 @@ function pwInitAndActiveTab(container, activeTabName, activeTabId) {
             '</ul>' +
             '<div class="tab-content params-tab-content">' +
                 '<div class="tab-pane active" id="' + activeTabId + '">' +
-                    '<table class="table table-bordered table-fixed">' +
+                    '<table class="table table-bordered table-fixed param-value-column">' +
                         '<col width="45%">' +
                         '<col width="55%">' +
                         '<thead>' +
@@ -64,7 +64,7 @@ function pwAddCommonParameter(paramsTabId, paramName, paramValue) {
  * The values should be joined by ';' and
  * input to the method as a single string ('paramValue').
  */
-function pwAddDatasetParameter(paramsTabId, paramName, paramValue) {
+function pwAddFilesParameter(paramsTabId, paramName, paramValue) {
     var paramsTab = document.getElementById(paramsTabId);
     var paramsTable = paramsTab.getElementsByTagName('table')[0];
 
@@ -78,12 +78,12 @@ function pwAddDatasetParameter(paramsTabId, paramName, paramValue) {
     cell1.rowSpan = urls.length;
 
     var cell2 = row1.insertCell(1);
-    cell2.innerHTML = urls[0];
+    cell2.innerHTML = showFileButton(urls[0]);
 
     for (var i = 1; i < urls.length; i++) {
         var row = paramsTable.insertRow(rowCount + i);
         var cell = row.insertCell(0);
-        cell.innerHTML = urls[i];
+        cell.innerHTML = showFileButton(urls[i]);
     }
 }
 
@@ -94,11 +94,11 @@ function pwAddDatasetParameter(paramsTabId, paramName, paramValue) {
 function pwAddTab(container, tabName, tabId) {
     var tabsList = container.getElementsByClassName("params-nav-tabs")[0];
     var tabsContent = container.getElementsByClassName("params-tab-content")[0];
-    
+
     var newTabsListEntry = '<li><a href="#' + tabId + '" data-toggle="tab">' + tabName + '</a></li>';
     var newTabsContentEntry =
         '<div class="tab-pane" id="' + tabId + '">' +
-            '<table class="table table-bordered table-fixed">' +
+            '<table class="table table-bordered table-fixed param-value-column">' +
                 '<col width="45%">' +
                 '<col width="55%">' +
                 '<thead>' +
@@ -115,3 +115,4 @@ function pwAddTab(container, tabName, tabId) {
     tabsList.insertAdjacentHTML('beforeend', newTabsListEntry);
     tabsContent.insertAdjacentHTML('beforeend', newTabsContentEntry);
 }
+

@@ -44,6 +44,7 @@ WorkflowMonitor::WorkflowMonitor(WorkflowAbstractIterationRunner *_task, Schema 
 
     foreach (Actor *p, schema->getProcesses()){
         WorkerParamsInfo info;
+        info.actor = p;
         info.workerName = p->getLabel();
         QMap<QString, Attribute *> params = p->getParameters();
         QMapIterator<QString, Attribute *> paramsIter(params);

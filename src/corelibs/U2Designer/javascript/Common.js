@@ -58,3 +58,24 @@ function showLoadButton(showHint) {
         menuLine.insertAdjacentHTML('beforeend', hintDef);
     }
 }
+
+function showFileButton(url) {
+    var fileName = url.slice(url.lastIndexOf('/') + 1, url.length);
+    var path = url.slice(0, url.lastIndexOf('/') + 1);
+    var button = 
+        '<div class="file-button-ctn">' +
+            '<div class="btn-group full-width file-btn-group">' + 
+                '<button class="btn full-width long-text" onclick="agent.openUrl(\'' + url + '\')">' + fileName +
+                '</button>' +
+                    '<button class="btn dropdown-toggle" data-toggle="dropdown">' + 
+                        '<span class="caret"></span>' +
+                    '</button>' +
+	            '<ul class="dropdown-menu full-width">' +
+       	                '<li><a href="#" onclick="agent.openByOS(\'' + path + '\')">Open containing folder</a></li>' +
+                        '<li><a href="#" onclick="agent.openByOS(\'' + path + fileName + '\')">Open by operating system</a></li>' + 
+                    '</ul>' +
+            '</div>' +
+        '</div>';
+	return button;
+}
+

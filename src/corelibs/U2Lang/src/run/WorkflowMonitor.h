@@ -30,6 +30,8 @@
 namespace U2 {
 namespace Workflow {
 
+class Actor;
+
 namespace Monitor {
     class U2LANG_EXPORT FileInfo {
     public:
@@ -60,6 +62,7 @@ namespace Monitor {
         WorkerParamsInfo();
         QString workerName;
         QList<Attribute*> parameters;
+        Actor *actor;
     };
     enum U2LANG_EXPORT TaskState {
         RUNNING,
@@ -69,8 +72,6 @@ namespace Monitor {
         SUCCESS
     };
 } // Monitor
-
-class Actor;
 
 class U2LANG_EXPORT WorkflowMonitor : public QObject {
     Q_OBJECT

@@ -146,6 +146,10 @@ table.table-fixed {
     width: 100%;
 }
 
+.params-nav-tabs {
+    width: 250px;
+}
+
 .params-nav-tabs > .active > a,
 .params-nav-tabs > .active > a:hover,
 .params-nav-tabs > .active > a:focus {
@@ -156,6 +160,17 @@ table.table-fixed {
 .params-nav-tabs > li > a:hover,
 .params-nav-tabs > li > a:focus {
   color: rgb(136, 136, 136);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: pre-line;
+}
+
+.tab-content {
+    overflow: visible;
+}
+
+.param-value-column {
+    width: 750px;
 }
 
 #status-bar {

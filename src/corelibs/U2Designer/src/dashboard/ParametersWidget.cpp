@@ -76,7 +76,7 @@ void ParametersWidget::createWidget(const QList<WorkerParamsInfo> &workersParams
                     }
                     QString paramValue = urls.join(";");
 
-                    QString createParamFunc = "pwAddDatasetParameter";
+                    QString createParamFunc = "pwAddFilesParameter";
                     createParamFunc += "('" + tabId + "', ";
                     createParamFunc += "'" + paramName + "', ";
                     createParamFunc += "'" + paramValue + "')";
@@ -88,11 +88,17 @@ void ParametersWidget::createWidget(const QList<WorkerParamsInfo> &workersParams
                 QString paramName = param->getDisplayName();
                 QString paramValue = WorkflowUtils::getStringForParameterDisplayRole(paramValueVariant);
 
-                QString createParamFunc = "pwAddCommonParameter";
+                QString createParamFunc;
+                if (WorkflowUtils::isUrlAttribute(param, info.actor)) {
+                    createParamFunc = "pwAddFilesParameter";
+                }
+                else {
+                    createParamFunc = "pwAddCommonParameter";
+                }
+
                 createParamFunc += "('" + tabId + "', ";
                 createParamFunc += "'" + paramName + "', ";
                 createParamFunc += "'" + paramValue + "')";
-
                 container.evaluateJavaScript(createParamFunc);
             }
         }
