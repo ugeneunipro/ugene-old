@@ -40,8 +40,8 @@ EstimationResult::EstimationResult() {
     cpuCount = -1;
 }
 
-SchemaEstimationTask::SchemaEstimationTask(const Schema *_schema)
-: Task(tr("Schema estimation task"), TaskFlag_None), schema(_schema)
+SchemaEstimationTask::SchemaEstimationTask(const Schema *_schema, const Metadata *_meta)
+: Task(tr("Schema estimation task"), TaskFlag_None), schema(_schema), meta(_meta)
 {
 
 }
@@ -54,7 +54,7 @@ void SchemaEstimationTask::run() {
         engine.globalObject().setProperty("utils", utils);
     }
 
-    QScriptValue result = engine.evaluate(schema->estimationsCode());
+    QScriptValue result = engine.evaluate(meta->estimationsCode);
     if (engine.hasUncaughtException()) {
         setError(tr("Exception during script execution! Line: %1, error: %2")
             .arg(engine.uncaughtExceptionLineNumber())

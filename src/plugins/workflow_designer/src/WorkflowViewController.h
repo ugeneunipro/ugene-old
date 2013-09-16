@@ -274,6 +274,7 @@ private:
     void propagateBreakpointToSceneItem(ActorId actor);
 
     void removeWizards();
+    void removeEstimations();
 
     // setup ui
     void setupScene();

@@ -990,6 +990,7 @@ void WorkflowView::sl_protoListModified() {
 
 void WorkflowView::addProcess(Actor *proc, const QPointF &pos) {
     schema->addProcess(proc);
+    removeEstimations();
 
     WorkflowProcessItem *it = new WorkflowProcessItem(proc);
     it->setPos(pos);
@@ -1021,6 +1022,7 @@ void WorkflowView::removeProcessItem(WorkflowProcessItem *item) {
     delete actor;
 
     removeWizards();
+    removeEstimations();
 }
 
 void WorkflowView::removeWizards() {
@@ -1028,10 +1030,16 @@ void WorkflowView::removeWizards() {
     sl_updateUi();
 }
 
+void WorkflowView::removeEstimations() {
+    meta.estimationsCode.clear();
+    sl_updateUi();
+}
+
 void WorkflowView::removeBusItem(WorkflowBusItem *item) {
     Link *link = item->getBus();
     scene->removeItem(item);
     delete item;
+    removeEstimations();
     scene->setModified();
     onBusRemoved(link);
 }
@@ -1258,7 +1266,7 @@ void WorkflowView::setupActions() {
 
     showWizard->setVisible(editMode && !schema->getWizards().isEmpty());
     validateAction->setVisible(editMode);
-    estimateAction->setVisible(editMode && !schema->estimationsCode().isEmpty());
+    estimateAction->setVisible(editMode && !meta.estimationsCode.isEmpty());
     stopAction->setVisible(running);
     runSep->setVisible(editMode);
 
@@ -1485,10 +1493,10 @@ bool WorkflowView::sl_validate(bool notify) {
 }
 
 void WorkflowView::sl_estimate() {
-    SAFE_POINT(!schema->estimationsCode().isEmpty(), "No estimation code", );
+    SAFE_POINT(!meta.estimationsCode.isEmpty(), "No estimation code", );
     estimateAction->setEnabled(false);
 
-    SchemaEstimationTask *t = new SchemaEstimationTask(schema);
+    SchemaEstimationTask *t = new SchemaEstimationTask(schema, &meta);
     connect(t, SIGNAL(si_stateChanged()), SLOT(sl_estimationTaskFinished()));
     AppContext::getTaskScheduler()->registerTopLevelTask(t);
 }
@@ -2045,7 +2053,7 @@ void WorkflowView::sl_pasteItems(const QString &s, bool updateSchemaInfo) {
         meta.name = pastedM.name;
         meta.comment = pastedM.comment;
         meta.scalePercent = pastedM.scalePercent;
-        schema->estimationsCode() = pastedS.estimationsCode();
+        meta.estimationsCode = pastedM.estimationsCode;
     }
     pastedS.setDeepCopyFlag(false);
     recreateScene();
@@ -2363,7 +2371,7 @@ void WorkflowView::sl_updateTitle() {
 void WorkflowView::sl_updateUi() {
     scene->setModified(false);
     showWizard->setVisible(!schema->getWizards().isEmpty());
-    estimateAction->setVisible(!schema->estimationsCode().isEmpty());
+    estimateAction->setVisible(!meta.estimationsCode.isEmpty());
 }
 
 void WorkflowView::saveState() {
@@ -2446,6 +2454,7 @@ WorkflowBusItem * WorkflowView::tryBind(WorkflowPortItem *from, WorkflowPortItem
         Link *link = new Link(src, dest);
         schema->addFlow(link);
         dit = scene->addFlow(from, to, link);
+        removeEstimations();
     }
     return dit;
 }

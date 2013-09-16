@@ -1533,7 +1533,10 @@ static void parseMeta(WorkflowSchemaReaderData & data) {
             data.tokenizer.assertToken(HRSchemaSerializer::BLOCK_END);
         } else if (HRSchemaSerializer::ESTIMATIONS == tok) {
             data.tokenizer.assertToken(HRSchemaSerializer::BLOCK_START);
-            data.schema->estimationsCode() = data.tokenizer.take();
+            QString code = data.tokenizer.take();
+            if (NULL != data.meta) {
+                data.meta->estimationsCode = code;
+            }
             data.tokenizer.assertToken(HRSchemaSerializer::BLOCK_END);
         } else {
             throw HRSchemaSerializer::ReadFailed(HRSchemaSerializer::UNDEFINED_META_BLOCK.arg(tok));
@@ -2143,9 +2146,9 @@ static QString metaData(const Schema & schema, const Metadata * meta, const HRSc
 
     res += itemsMetaData(schema.getProcesses(), meta, nmap);
 
-    if (!schema.estimationsCode().isEmpty()) {
+    if (NULL != meta && !meta->estimationsCode.isEmpty()) {
         res += HRSchemaSerializer::makeBlock(HRSchemaSerializer::ESTIMATIONS, HRSchemaSerializer::NO_NAME,
-            schema.estimationsCode() + HRSchemaSerializer::NEW_LINE, 2);
+            meta->estimationsCode + HRSchemaSerializer::NEW_LINE, 2);
     }
 
     if(schema.hasPortAliases()) {

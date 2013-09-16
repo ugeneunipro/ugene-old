@@ -124,9 +124,6 @@ public:
     void setWizards(const QList<Wizard*> &value);
     QList<Wizard*> takeWizards();
 
-    QString & estimationsCode() {return _estimationsCode;}
-    const QString & estimationsCode() const {return _estimationsCode;}
-
     static ActorId uniqueActorId(const QString &id, const QList<Actor*> &procs);
 
 private:
@@ -146,8 +143,6 @@ private:
     // if you include this schema to another schema then here is new type name
     QString includedTypeName;
     QList<Wizard*> wizards;
-    // ECMAScript code of schema run estimations
-    QString _estimationsCode;
 
 private:
     void setAliasedAttributes(Actor *proc, Actor *subProc);
@@ -234,6 +229,8 @@ public:
     QString url;
     QString comment;
     int scalePercent;
+    // ECMAScript code of schema run estimations
+    QString estimationsCode;
 
 private:
     QMap<ActorId, ActorVisualData> actorVisual;

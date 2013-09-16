@@ -42,7 +42,7 @@ public:
 class U2LANG_EXPORT SchemaEstimationTask : public Task {
     Q_OBJECT
 public:
-    SchemaEstimationTask(const Schema *schema);
+    SchemaEstimationTask(const Schema *schema, const Metadata *meta);
 
     void run();
 
@@ -50,6 +50,7 @@ public:
 
 private:
     const Schema *schema;
+    const Metadata *meta;
     EstimationResult er;
 };
 
