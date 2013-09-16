@@ -22,4 +22,14 @@
 body {
     -webkit-user-select: none;
     background: url("qrc:U2Designer/images/background.png") repeat scroll 0% 0% transparent;
+    padding: 10px;
 }
+
+.report-area {
+    margin-bottom: 0px;
+}
+
+.blue-text {
+    color: #0088cc;
+}
+

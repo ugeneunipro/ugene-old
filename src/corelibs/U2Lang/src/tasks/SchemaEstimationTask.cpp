@@ -34,7 +34,7 @@ namespace U2 {
 namespace Workflow {
 
 EstimationResult::EstimationResult() {
-    timeMin = -1;
+    timeSec = -1;
     ramMb = -1;
     hddMb = -1;
     cpuCount = -1;
@@ -62,7 +62,7 @@ void SchemaEstimationTask::run() {
         return;
     }
 
-    er.timeMin = result.property(0).toInt32();
+    er.timeSec = result.property(0).toInt32();
     er.ramMb = result.property(1).toInt32();
     er.hddMb = result.property(2).toInt32();
     er.cpuCount = result.property(3).toInt32();

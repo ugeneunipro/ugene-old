@@ -57,7 +57,7 @@ QWebView * EstimationReporter::generateReport(const Workflow::EstimationResult &
     helper.waitLoading();
     SAFE_POINT(helper.loadedOk, "Can not load html", result);
 
-    eval(result, "setTime('" + QString::number(er.timeMin) + "')");
+    eval(result, "setTime('" + QString::number(er.timeSec) + "')");
     eval(result, "setRAM('" + QString::number(er.ramMb) + "')");
     eval(result, "setHDD('" + QString::number(er.hddMb) + "')");
     eval(result, "setCPU('" + QString::number(er.cpuCount) + "')");

@@ -33,7 +33,7 @@ class U2LANG_EXPORT EstimationResult {
 public:
     EstimationResult();
 
-    int timeMin;
+    int timeSec;
     int ramMb;
     int hddMb;
     int cpuCount;

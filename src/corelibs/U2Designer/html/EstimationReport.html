@@ -27,35 +27,66 @@
     <script type="text/javascript" src="qrc:javascript/jquery/jquery.js"></script>
     <script type="text/javascript" src="qrc:javascript/bootstrap/js/bootstrap.js"></script>
     <script type="text/javascript" language="javascript">
+        String.prototype.toHMS = function () {
+            var secNum = parseInt(this, 10);
+            var hours   = Math.floor(secNum / 3600);
+            var minutes = Math.floor((secNum - (hours * 3600)) / 60);
+            var seconds = secNum - (hours * 3600) - (minutes * 60);
+
+            var time = seconds + 's';
+            if (minutes > 0 || hours > 0) {
+                time = minutes + 'm ' + time;
+            }
+            if (hours > 0) {
+                time = hours + 'h ' + time;
+            }
+            return time;
+        }
         function applyTranslations() {
             document.getElementById("header").innerHTML = "Workflow estimation";
+        }
+        function checkValue(value, elId) {
+            var num = parseInt(value, 10);
+            if (num < 0) {
+                var el = document.getElementById(elId);
+                el.parentNode.removeChild(el);
+                return false;
+            }
+            return true;
         }
         function idHtml(id) {
             return document.getElementById(id).innerHTML;
         }
-        function setTime(value) {
-            document.getElementById("time").innerHTML = value;
+        function setTime(timeSec) {
+            if (checkValue(timeSec, "timeP")) {
+                document.getElementById("time").innerHTML = timeSec.toHMS();
+            }
         }
-        function setRAM(value) {
-            document.getElementById("ram").innerHTML = value;
+        function setRAM(ramMb) {
+            if (checkValue(ramMb, "ramP")) {
+                document.getElementById("ram").innerHTML = ramMb + 'Mb';
+            }
         }
-        function setHDD(value) {
-            document.getElementById("hdd").innerHTML = value;
+        function setHDD(hddMb) {
+            if (checkValue(hddMb, "hddP")) {
+                document.getElementById("hdd").innerHTML = hddMb + 'Mb';
+            }
         }
         function setCPU(value) {
-            document.getElementById("cpu").innerHTML = value;
+            if (checkValue(value, "cpuP")) {
+                document.getElementById("cpu").innerHTML = value;
+            }
         }
     </script>
 </head>
 <body onload="applyTranslations()">
 
     <center><h1 id="header">Workflow estimation</h1></center>
-    <div class="well well-large">
-        <p>Required time: <span id="time"></span></p>
-        <p>Hardware resources:</p>
-        <p>RAM peak: <span id="ram"></span></p>
-        <p>HDD: <span id="hdd"></span></p>
-        <p>CPU: <span id="cpu"></span></p>
+    <div class="well well-large report-area">
+        <p id="timeP"><span class="blue-text">Required time:</span> <span id="time">1m 13s</span></p>
+        <p id="ramP"><span class="blue-text">RAM peak:</span> <span id="ram">120 Mb</span></p>
+        <p id="hddP"><span class="blue-text">HDD:</span> <span id="hdd">1.7 Gb</span></p>
+        <p id="cpuP"><span class="blue-text">CPU:</span> <span id="cpu">1</span></p>
     </div>
 
 </body>

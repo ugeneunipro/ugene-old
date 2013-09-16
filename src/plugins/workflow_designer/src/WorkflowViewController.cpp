@@ -620,7 +620,7 @@ void WorkflowView::createActions() {
 
     estimateAction = new QAction(tr("&Estimate scheme"), this);
     estimateAction->setObjectName("Run scheme");
-    estimateAction->setIcon(QIcon(":workflow_designer/images/external_cmd_tool.png"));
+    estimateAction->setIcon(QIcon(":core/images/sum.png"));
     estimateAction->setShortcut(QKeySequence("Ctrl+R"));
     connect(estimateAction, SIGNAL(triggered()), SLOT(sl_estimate()));
 

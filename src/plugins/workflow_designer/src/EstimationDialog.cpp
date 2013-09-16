@@ -34,14 +34,16 @@ EstimationDialog::EstimationDialog(const Workflow::EstimationResult &er, QWidget
 : QDialog(parent)
 {
     QVBoxLayout *vl = new QVBoxLayout(this);
+    vl->setContentsMargins(0, 0, 0, 0);
     vl->addWidget(EstimationReporter::generateReport(er));
 
-    QDialogButtonBox *buttons = new QDialogButtonBox(QDialogButtonBox::Close);
+    /*QDialogButtonBox *buttons = new QDialogButtonBox(QDialogButtonBox::Close);
     vl->addWidget(buttons);
 
-    connect(buttons->button(QDialogButtonBox::Close), SIGNAL(clicked()), SLOT(accept()));
+    connect(buttons->button(QDialogButtonBox::Close), SIGNAL(clicked()), SLOT(accept()));*/
 
     setWindowTitle(tr("Workflow Estimation"));
+    setFixedSize(600, 250);
 }
 
 } // U2
