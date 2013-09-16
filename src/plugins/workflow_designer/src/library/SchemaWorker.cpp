@@ -61,7 +61,7 @@ QString SchemaWorkerPrompter::composeRichDoc() {
 
 bool SchemaWorkerFactory::init(Schema *schema, const QString &name, const QString &actorFilePath) {
     ActorPrototype *proto = IncludedProtoFactory::getSchemaActorProto(schema, name, actorFilePath);
-    WorkflowEnv::getProtoRegistry()->registerProto(BaseActorCategories::CATEGORY_SCHEMAS(), proto);
+    WorkflowEnv::getProtoRegistry()->registerProto(BaseActorCategories::CATEGORY_SNP_ANNOTATION(), proto);
     return true;
 }
 

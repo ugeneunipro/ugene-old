@@ -83,8 +83,9 @@ const Descriptor BaseActorCategories::CATEGORY_INCLUDES() {
     return Descriptor("inc", tr("Includes"),"");
 }
 
-const Descriptor BaseActorCategories::CATEGORY_SCHEMAS() {
-    return Descriptor("sch", tr("Schemas"),"");
+const Descriptor BaseActorCategories::CATEGORY_SNP_ANNOTATION()
+{
+    return Descriptor("sch", tr("SNP Annotation"),"");
 }
 
 const Descriptor BaseActorCategories::CATEGORY_CHIP_SEQ() {

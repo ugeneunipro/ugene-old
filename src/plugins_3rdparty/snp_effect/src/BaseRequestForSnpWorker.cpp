@@ -103,13 +103,17 @@ Task* BaseRequestForSnpWorker::tick( )
             outChannel->put( Message::getEmptyMapMessage( ) );
             return NULL;
         }
-        QScopedPointer <Database> db(S3DatabaseUtils::openDatabase(
-            getValue<QString>( DB_SEQUENCE_PATH ) ) );
-        if ( db.isNull( ) || NULL == db->getDbi( ).dbi ) {
-            outChannel->put( Message::getEmptyMapMessage( ) );
-            return NULL;
+        QScopedPointer <Database> db( NULL );
+        U2Dbi* dbDbi = NULL;
+        QString dbPath = getValue<QString>( DB_SEQUENCE_PATH );
+        if (!dbPath.isEmpty()){
+           db.reset(S3DatabaseUtils::openDatabase(dbPath ) );
+            if ( db.isNull( ) || NULL == db->getDbi( ).dbi ) {
+                outChannel->put( Message::getEmptyMapMessage( ) );
+                return NULL;
+            }
+            dbDbi = db->getDbi( ).dbi;
         }
-        U2Dbi* dbDbi = db->getDbi( ).dbi;
         QList<Task*> tasks;
         QScopedPointer<U2DbiIterator<U2Variant> > snpIter( varDbi->getVariants(track.id, U2_REGION_MAX, os));
         CHECK_OP(os, NULL);

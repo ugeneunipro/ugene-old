@@ -129,7 +129,7 @@ void SnpChipToolsWorkerFactory::init( )
 
     ActorPrototype *proto = new IntegralBusActorPrototype( protoDesc, p, QList<Attribute *>( ) );
     proto->setPrompter( new SnpChipToolsPrompter( ) );
-    WorkflowEnv::getProtoRegistry( )->registerProto( BaseActorCategories::CATEGORY_SCHEMAS( ),
+    WorkflowEnv::getProtoRegistry( )->registerProto( BaseActorCategories::CATEGORY_SNP_ANNOTATION( ),
         proto );
     WorkflowEnv::getDomainRegistry( )->getById( LocalDomainFactory::ID )->registerEntry(
         new SnpChipToolsWorkerFactory( ) );

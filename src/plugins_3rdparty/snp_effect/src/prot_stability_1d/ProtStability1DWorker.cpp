@@ -173,7 +173,7 @@ void ProtStability1DWorkerFactory::init( )
     ActorPrototype *proto = new IntegralBusActorPrototype( protoDesc, p, a );
     proto->setPrompter( new ProtStability1DPrompter( ) );
     proto->setEditor( new DelegateEditor( delegates ) );
-    WorkflowEnv::getProtoRegistry( )->registerProto( BaseActorCategories::CATEGORY_SCHEMAS( ),
+    WorkflowEnv::getProtoRegistry( )->registerProto( BaseActorCategories::CATEGORY_SNP_ANNOTATION( ),
         proto );
     WorkflowEnv::getDomainRegistry( )->getById( LocalDomainFactory::ID )->registerEntry(
         new ProtStability1DWorkerFactory( ) );

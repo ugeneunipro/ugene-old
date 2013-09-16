@@ -163,7 +163,7 @@ void Snp2PdbSiteWorkerFactory::init( )
     ActorPrototype *proto = new IntegralBusActorPrototype( protoDesc, p, a );
     proto->setPrompter( new Snp2PdbSitePrompter( ) );
     proto->setEditor( new DelegateEditor( delegates ) );
-    WorkflowEnv::getProtoRegistry( )->registerProto( BaseActorCategories::CATEGORY_SCHEMAS( ),
+    WorkflowEnv::getProtoRegistry( )->registerProto( BaseActorCategories::CATEGORY_SNP_ANNOTATION( ),
         proto );
     WorkflowEnv::getDomainRegistry( )->getById( LocalDomainFactory::ID )->registerEntry(
         new Snp2PdbSiteWorkerFactory( ) );

@@ -44,7 +44,7 @@ public:
     static const Descriptor CATEGORY_EXTERNAL();
     static const Descriptor CATEGORY_DATAFLOW();
     static const Descriptor CATEGORY_INCLUDES();
-    static const Descriptor CATEGORY_SCHEMAS();
+    static const Descriptor CATEGORY_SNP_ANNOTATION();
     static const Descriptor CATEGORY_CHIP_SEQ();
     
 }; // BaseActorCategories

@@ -182,7 +182,7 @@ void SNPToolboxWorkerFactory::init() {
     ActorPrototype *proto = new IntegralBusActorPrototype(protoDesc, p, attrs);
     proto->setPrompter(new SNPToolboxPrompter());
     proto->setEditor(new DelegateEditor(delegates));
-    WorkflowEnv::getProtoRegistry()->registerProto(BaseActorCategories::CATEGORY_SCHEMAS(), proto);
+    WorkflowEnv::getProtoRegistry()->registerProto(BaseActorCategories::CATEGORY_SNP_ANNOTATION(), proto);
     WorkflowEnv::getDomainRegistry()->getById(LocalDomainFactory::ID)->registerEntry(new SNPToolboxWorkerFactory());
 }
 

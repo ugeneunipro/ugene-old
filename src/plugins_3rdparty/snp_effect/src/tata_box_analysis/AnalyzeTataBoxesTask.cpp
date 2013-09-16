@@ -37,7 +37,7 @@ AnalyzeTataBoxesTask::AnalyzeTataBoxesTask( const QVariantMap &inputData, const 
 {
 }
 
-void AnalyzeTataBoxesTask::run(){
+void AnalyzeTataBoxesTask::prepare(){
     if (!inputData.contains(SnpRequestKeys::TATA_TOOLS_SEQ_1) || !inputData.contains(SnpRequestKeys::TATA_TOOLS_SEQ_2)){
         return;
     }
@@ -70,6 +70,10 @@ void AnalyzeTataBoxesTask::run(){
     else {res = QString("%1/unsignificant").arg(sigma);}
 
     result[SnpResponseKeys::TATA_TOOLS] = res;
+}
+
+void AnalyzeTataBoxesTask::run(){
+   
 }
 
 QVariantMap AnalyzeTataBoxesTask::getResult(){

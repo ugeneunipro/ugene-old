@@ -328,15 +328,11 @@ void S3TablesUtils::calcDamageEffectForTrack( const U2VariantTrack& track, U2Dbi
 QList<Gene> S3TablesUtils::findRegulatedGenes( const U2DataId& seqId, const U2Region &region, U2FeatureDbi* dbi, U2OpStatus &opStatus, const QList<int>& excludeList  ){
     QList<Gene> genes;
     QList<Gene> curGenes;
-    curGenes = S3TablesUtils::findGenes(seqId, region, dbi, opStatus);
-    if (!curGenes.isEmpty()){
-        return genes; //variation is in a gene
-    }
 
     //+ strand
     curGenes = S3TablesUtils::findGenes(seqId, U2Region(region.startPos, PROMOTER_LEN), dbi, opStatus);
     foreach(const Gene& gene, curGenes){
-        if (!gene.isComplemented()){
+        if (!gene.isComplemented() && !gene.getRegion().intersects(region)){
             genes.append(gene);
         }
     }
@@ -344,7 +340,7 @@ QList<Gene> S3TablesUtils::findRegulatedGenes( const U2DataId& seqId, const U2Re
     //- strand
     curGenes = S3TablesUtils::findGenes(seqId, U2Region(qMax((qint64)0, region.startPos-PROMOTER_LEN), PROMOTER_LEN), dbi, opStatus);
     foreach(const Gene& gene, curGenes){
-        if (gene.isComplemented()){
+        if (gene.isComplemented() && !gene.getRegion().intersects(region)){
             genes.append(gene);
         }
     }

@@ -36,6 +36,7 @@ class AnalyzeTataBoxesTask :   public BaseSnpAnnotationTask
 public:
                                 AnalyzeTataBoxesTask(const QVariantMap &inputData, const U2Variant& var );
 
+    void                        prepare( );
     void                        run( );
     QVariantMap                 getResult( );
 
