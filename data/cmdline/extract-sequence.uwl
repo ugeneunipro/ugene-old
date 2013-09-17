@@ -28,9 +28,9 @@ workflow {
 
 
     .actor-bindings {
-        read-sequence.out-sequence->filter-annotations.in-annotations
         filter-annotations.out-annotations->extract-annotated-sequence.in-sequence
         extract-annotated-sequence.out-sequence->write-fasta.in-sequence
+        read-sequence.out-sequence->filter-annotations.in-annotations
     }
 
     read-sequence.annotations->filter-annotations.in-annotations.annotations
@@ -42,7 +42,7 @@ workflow {
         parameter-aliases {
             filter-annotations.accept-or-filter {
                 alias:accept-or-filter;
-                description:"Accept specified names or accept all except specified";
+                description:"Accept specified names or accept all except specified (using 'True' by default)";
             }
             filter-annotations.annotation-names {
                 alias:annotation-names;
@@ -50,27 +50,31 @@ workflow {
             }
             extract-annotated-sequence.complement {
                 alias:complement;
-                description:"Complement the annotated regions if the corresponding annotation is located on complement strand";
+                description:"Complement the annotated regions if the corresponding annotation is located on complement strand (using 'True' by default)";
             }
             extract-annotated-sequence.extend-left {
                 alias:extend-left;
-                description:"Extend the resulted regions to left";
+                description:"Extend the resulted regions to left (using '0' by default)";
             }
             extract-annotated-sequence.extend-right {
                 alias:extend-right;
-                description:"Extend the resulted regions to right";
+                description:"Extend the resulted regions to right (using '0' by default)";
             }
             extract-annotated-sequence.merge-gap-length {
                 alias:gap-length;
-                description:"Insert gap of specified length between merged locations of annotation";
+                description:"Insert gap of specified length between merged locations of annotation (using '1' by default)";
             }
             extract-annotated-sequence.translate {
                 alias:transl;
-                description:"Translate the annotated regions if the corresponding annotation marks translated subsequence";
+                description:"Translate the annotated regions if the corresponding annotation marks translated subsequence (using 'False' by default)";
             }
             read-sequence.url-in {
                 alias:in;
                 description:"Input sequence";
+            }
+            write-fasta.accumulate {
+                alias:accumulate;
+                description:"Accumulate all incoming data in one file or create separate files for each input. In the latter case, an incremental numerical suffix is added to the file name (using 'True' by default)";
             }
             write-fasta.url-out {
                 alias:out;

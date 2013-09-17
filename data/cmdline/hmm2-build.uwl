@@ -1,54 +1,83 @@
 #@UGENE_WORKFLOW
 #Build hmm profile using hmmer2
 
+
+
 workflow hmm2-build{
+
     read-msa {
         type:read-msa;
         name:"Read alignment";
+        url-in {
+            dataset:"Dataset 1";
+        }
     }
     hmm2-build {
         type:hmm2-build;
         name:"HMM build";
-        calibrate:true;
-        calibration-threads:1;
-        deviation:200;
-        fix-samples-length:0;
-        mean-samples-length:325;
-        samples-num:5000;
-        seed:0;
-        strategy:1;
     }
     hmm2-write-profile {
         type:hmm2-write-profile;
         name:"Write HMM profile";
-        write-mode:2;
+    }
+
+
+    .actor-bindings {
+        read-msa.out-msa->hmm2-build.in-msa
+        hmm2-build.out-hmm2->hmm2-write-profile.in-hmm2
     }
 
     read-msa.msa->hmm2-build.in-msa.msa
     hmm2-build.hmm2-profile->hmm2-write-profile.in-hmm2.hmm2-profile
 
     .meta {
-        aliases {
-            read-msa.url-in:in;
-            hmm2-build.calibrate:calibrate;
-            hmm2-build.profile-name:name;
-            hmm2-build.seed:seed;
-            hmm2-write-profile.url-out:out;
-        }
-        help {
-            in:"Input alignment";
-            calibrate:"Enables/disables optional profile calibration";
-            name:"Name of the profile HMM";
-            seed:"The seed for random numbers";
-            out:"Output profile HMM";
+        parameter-aliases {
+            read-msa.url-in {
+                alias:in;
+                description:"Input alignment";
+            }
+            hmm2-build.calibrate {
+                alias:calibrate;
+                description:"Enables/disables optional profile calibration (using 'True' by default)";
+            }
+            hmm2-build.calibration-threads {
+                alias:parallel-calibration;
+                description:"Number of parallel threads that the calibration will run in (using '1' by default)";
+            }
+            hmm2-build.deviation {
+                alias:stand-deviation;
+                description:"Standard deviation of the synthetic sequence length. A positive number. The default is 200. Note that the Gaussian is left-truncated so that no sequences have lengths (using '200.00' by default)";
+            }
+            hmm2-build.fix-samples-length {
+                alias:fixed-length;
+                description:"Fix the length of the random sequences to , where is a positive (and reasonably sized) integer. The default is instead to generate sequences with a variety of different lengths, controlled by a Gaussian (normal) distribution (using '0' by default)";
+            }
+            hmm2-build.mean-samples-length {
+                alias:mean-length;
+                description:"Mean length of the synthetic sequences, positive real number. The default value is 325 (using '325' by default)";
+            }
+            hmm2-build.profile-name {
+                alias:name;
+                description:"Name of the profile HMM (using 'hmm_profile' by default)";
+            }
+            hmm2-build.samples-num {
+                alias:samples-count;
+                description:"Number of synthetic sequences. If is less than about 1000, the fit to the EVD may fail Higher numbers of will give better determined EVD parameters. The default is 5000; it was empirically chosen as a tradeoff between accuracy and computation time (using '0' by default)";
+            }
+            hmm2-build.seed {
+                alias:seed;
+                description:"The seed for random numbers (using '0' by default)";
+            }
+            hmm2-build.strategy {
+                alias:strategy;
+                description:"Specifies kind of alignments you want to allow (using 'hmmls' by default)";
+            }
+            hmm2-write-profile.url-out {
+                alias:out;
+                description:"Output profile HMM";
+            }
         }
         visual {
-            read-msa {
-                pos:"-750 -660";
-                style:ext;
-                bg-color-ext:"0 128 128 64";
-                out-msa.angle:360;
-            }
             hmm2-build {
                 pos:"-555 -660";
                 style:ext;
@@ -62,12 +91,19 @@ workflow hmm2-build{
                 bg-color-ext:"0 128 128 64";
                 in-hmm2.angle:180;
             }
-            read-msa.out-msa->hmm2-build.in-msa {
-                text-pos:"-45 -50";
+            read-msa {
+                pos:"-750 -660";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                out-msa.angle:360;
             }
             hmm2-build.out-hmm2->hmm2-write-profile.in-hmm2 {
                 text-pos:"-32 -24";
             }
+            read-msa.out-msa->hmm2-build.in-msa {
+                text-pos:"-45 -50";
+            }
         }
     }
 }
+

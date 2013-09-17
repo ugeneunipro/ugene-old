@@ -89,7 +89,7 @@ void ClustalWWorkerFactory::init() {
                            <ul> \
                            <li>None - No iteration;</li> \
                            <li>Tree - Iteration at each step of alignment process;</li> \
-                           <li>Alignment - Iteation only on final alignment.</li> \
+                           <li>Alignment - Iteration only on final alignment.</li> \
                            </ul>"));
     Descriptor ni(NUM_ITERATIONS, ClustalWWorker::tr("Number of iterations"),
                     ClustalWWorker::tr("The maximum number of iterations to perform."));

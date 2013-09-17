@@ -1,48 +1,88 @@
 #@UGENE_WORKFLOW
 #Generates a random DNA sequence with specified nucleotide content
 
+
+
 workflow "Generate DNA"{
+
     generate-dna {
         type:generate-dna;
         name:"Generate DNA";
-        content:manual;
-        count:1;
-        length:1000;
-        percent-a:25;
-        percent-c:25;
-        percent-g:25;
-        percent-t:25;
     }
     write-sequence {
         type:write-sequence;
         name:"Write sequence";
-        accumulate:true;
-        document-format:fasta;
-        write-mode:2;
+    }
+
+
+    .actor-bindings {
+        generate-dna.out-sequence->write-sequence.in-sequence
     }
 
     generate-dna.sequence->write-sequence.in-sequence.sequence
 
     .meta {
-        aliases {
-            generate-dna.percent-a : a;
-            generate-dna.percent-c : c;
-            generate-dna.percent-g : g;
-            generate-dna.percent-t : t;
-            generate-dna.length : length;
-            generate-dna.count : count;
-            write-sequence.document-format : format;
-            write-sequence.url-out : out;
-        }
-        help {
-            a : "Adenine content";
-            c : "Cytosine content";
-            g : "Guanine content";
-            t : "Thymine content";
-            length : "Length of the resulted sequence(s)";
-            count : "Number of sequences to generate";
-            out : "Output file";
-            format: "Output file format";
+        parameter-aliases {
+            generate-dna.algorithm {
+                alias:algo;
+                description:"Algorithm for generating (using 'GC Content' by default)";
+            }
+            generate-dna.content {
+                alias:content;
+                description:"Specifies if the nucleotide content of generated sequence(s) will be taken from reference or specified manually (A, G, C, T parameters) (using 'manual' by default)";
+            }
+            generate-dna.count {
+                alias:count;
+                description:"Number of sequences to generate (using '1' by default)";
+            }
+            generate-dna.length {
+                alias:length;
+                description:"Length of the resulted sequence(s) (using '1000' bp by default)";
+            }
+            generate-dna.percent-a {
+                alias:a;
+                description:"Adenine content (using '25' percents by default)";
+            }
+            generate-dna.percent-c {
+                alias:c;
+                description:"Cytosine content (using '25' percents by default)";
+            }
+            generate-dna.percent-g {
+                alias:g;
+                description:"Guanine content (using '25' percents by default)";
+            }
+            generate-dna.percent-t {
+                alias:t;
+                description:"Thymine content (using '25' percents by default)";
+            }
+            generate-dna.reference-url {
+                alias:ref;
+                description:"Path to the reference file (could be a sequence or an alignment)";
+            }
+            generate-dna.seed {
+                alias:seed;
+                description:"Value to initialize the random generator. By default (seed = -1) the generator is initialized with the system time (using '-1' by default)";
+            }
+            generate-dna.window-size {
+                alias:wnd-size;
+                description:"Size of window where set content (using '1000' by default)";
+            }
+            write-sequence.accumulate {
+                alias:accumulate;
+                description:"Accumulate all incoming data in one file or create separate files for each input. In the latter case, an incremental numerical suffix is added to the file name (using 'True' by default)";
+            }
+            write-sequence.document-format {
+                alias:format;
+                description:"Output file format (using 'fasta' by default)";
+            }
+            write-sequence.split {
+                alias:split;
+                description:"Split each incoming sequence on several parts (using '1' by default)";
+            }
+            write-sequence.url-out {
+                alias:out;
+                description:"Output file";
+            }
         }
         visual {
             generate-dna {
@@ -64,3 +104,4 @@ workflow "Generate DNA"{
         }
     }
 }
+

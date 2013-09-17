@@ -1,43 +1,51 @@
 #@UGENE_WORKFLOW
 #Build frequency matrix from existing multiple sequence alignment
 
+
+
 workflow "Build frequency matrix"{
+
     read-msa {
         type:read-msa;
         name:"Read alignment";
+        url-in {
+            dataset:"Dataset 1";
+        }
     }
     fmatrix-build {
         type:fmatrix-build;
         name:"Build frequency matrix";
-        matrix-type:false;
     }
     fmatrix-write {
         type:fmatrix-write;
         name:"Write frequency matrix";
-        write-mode:2;
+    }
+
+
+    .actor-bindings {
+        read-msa.out-msa->fmatrix-build.in-msa
+        fmatrix-build.out-fmatrix->fmatrix-write.in-fmatrix
     }
 
     read-msa.msa->fmatrix-build.in-msa.msa
     fmatrix-build.fmatrix->fmatrix-write.in-fmatrix.fmatrix
 
     .meta {
-        aliases {
-            read-msa.url-in:in;
-            fmatrix-build.matrix-type:type;
-            fmatrix-write.url-out:out;
-        }
-        help {
-            in:"Input alignment";
-            type:"Frequency matrix type";
-            out:"Output frequency matrix";
+        parameter-aliases {
+            read-msa.url-in {
+                alias:in;
+                description:"Input alignment";
+            }
+            fmatrix-build.matrix-type {
+                alias:type;
+                description:"Frequency matrix type (using 'Mononucleic' by default)";
+            }
+            fmatrix-write.url-out {
+                alias:out;
+                description:"Output frequency matrix";
+            }
         }
         visual {
-            read-msa {
-                pos:"-780 -645";
-                style:ext;
-                bg-color-ext:"0 128 128 64";
-                out-msa.angle:360;
-            }
             fmatrix-build {
                 pos:"-600 -645";
                 style:ext;
@@ -51,12 +59,19 @@ workflow "Build frequency matrix"{
                 bg-color-ext:"0 128 128 64";
                 in-fmatrix.angle:180;
             }
-            read-msa.out-msa->fmatrix-build.in-msa {
-                text-pos:"-45 -50";
+            read-msa {
+                pos:"-780 -645";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                out-msa.angle:360;
             }
             fmatrix-build.out-fmatrix->fmatrix-write.in-fmatrix {
                 text-pos:"-45 -37";
             }
+            read-msa.out-msa->fmatrix-build.in-msa {
+                text-pos:"-45 -50";
+            }
         }
     }
 }
+

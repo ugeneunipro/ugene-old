@@ -1,45 +1,71 @@
 #@UGENE_WORKFLOW
 #Annotates a sequence in compliance with a UGENE Query Language (UQL) schema.
 
+
+
 workflow "Annotate with UQL Schema"{
+
     read-sequence {
         type:read-sequence;
         name:"Read sequence";
-        merge-gap:10;
-        mode:0;
+        url-in {
+            dataset:"Dataset 1";
+        }
     }
     write-genbank {
-        type:write-genbank;
+        type:write-sequence;
         name:"Write Genbank";
-        accumulate:true;
-        write-mode:2;
+        document-format:genbank;
     }
     query {
         type:query;
         name:"Annotate with UQL";
-        merge:false;
-        offset:0;
+    }
+
+
+    .actor-bindings {
+        read-sequence.out-sequence->query.in-sequence
+        query.out-annotations->write-genbank.in-sequence
     }
 
     query.annotations->write-genbank.in-sequence.annotations
     read-sequence.sequence->query.in-sequence.sequence
 
     .meta {
-        aliases {
-            read-sequence.url-in:in;
-            write-genbank.url-out:out;
-            query.merge:merge;
-            query.offset:offset;
-            query.schema:schema;
-        }
-        help {
-            in:"Input sequence";
-            out:"Output file with annotations";
-            merge:"Merges regions of each result into single annotation";
-            offset:"Specifies left and right offsets for merged annotation (if merge parameter is set to true)";
-            schema:"Input query schema";
+        parameter-aliases {
+            read-sequence.url-in {
+                alias:in;
+                description:"Input sequence";
+            }
+            write-genbank.accumulate {
+                alias:accumulate;
+                description:"Accumulate all incoming data in one file or create separate files for each input. In the latter case, an incremental numerical suffix is added to the file name (using 'True' by default)";
+            }
+            write-genbank.url-out {
+                alias:out;
+                description:"Output file with annotations";
+            }
+            query.merge {
+                alias:merge;
+                description:"Merges regions of each result into single annotation (using 'False' by default)";
+            }
+            query.offset {
+                alias:offset;
+                description:"Specifies left and right offsets for merged annotation if merge parameter is set to true (using '0' by default)";
+            }
+            query.url-in {
+                alias:schema;
+                description:"Input query schema";
+            }
         }
         visual {
+            query {
+                pos:"-420 -585";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                in-sequence.angle:180;
+                out-annotations.angle:360;
+            }
             read-sequence {
                 pos:"-585 -585";
                 style:ext;
@@ -53,13 +79,6 @@ workflow "Annotate with UQL Schema"{
                 bg-color-ext:"0 128 128 64";
                 in-sequence.angle:180;
             }
-            query {
-                pos:"-420 -585";
-                style:ext;
-                bg-color-ext:"0 128 128 64";
-                in-sequence.angle:180;
-                out-annotations.angle:360;
-            }
             query.out-annotations->write-genbank.in-sequence {
                 text-pos:"-45 -37";
             }
@@ -69,3 +88,4 @@ workflow "Annotate with UQL Schema"{
         }
     }
 }
+

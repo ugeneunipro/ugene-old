@@ -1,12 +1,16 @@
 #@UGENE_WORKFLOW
 #Searches each input sequence for transcription factor binding sites significantly similar to specified SITECON profiles(models). In case several profiles were supplied, searches with all profiles one by one and outputs merged set of annotations for each sequence.
 
+
+
 workflow sitecon-search{
+
     read-sequence {
         type:read-sequence;
         name:"Read sequence";
-        merge-gap:10;
-        mode:0;
+        url-in {
+            dataset:"Dataset 1";
+        }
     }
     sitecon-read {
         type:sitecon-read;
@@ -15,17 +19,19 @@ workflow sitecon-search{
     sitecon-search {
         type:sitecon-search;
         name:"Search for TFBS with SITECON";
-        err1:0;
-        err2:0.001;
-        min-score:85;
-        result-name:misc_feature;
         strand:0;
     }
     write-genbank {
-        type:write-genbank;
+        type:write-sequence;
         name:"Write Genbank";
-        accumulate:true;
-        write-mode:2;
+        document-format:genbank;
+    }
+
+
+    .actor-bindings {
+        read-sequence.out-sequence->sitecon-search.in-sequence
+        sitecon-read.out-sitecon->sitecon-search.in-sitecon
+        sitecon-search.out-annotations->write-genbank.in-sequence
     }
 
     read-sequence.sequence->sitecon-search.in-sequence.sequence
@@ -35,25 +41,43 @@ workflow sitecon-search{
     read-sequence.sequence->write-genbank.in-sequence.sequence
 
     .meta {
-        aliases {
-            read-sequence.url-in:in;
-            sitecon-read.url-in:inmodel;
-            sitecon-search.err1:min-err1;
-            sitecon-search.err2:max-err2;
-            sitecon-search.min-score:min-score;
-            sitecon-search.result-name:annotation-name;
-            sitecon-search.strand:strand;
-            write-genbank.url-out:out;
-        }
-        help {
-            in:"Input sequence";
-            inmodel:"Input SITECON model";
-            min-err1:"Minimal value of Error type I";
-            max-err2:"Maximal value of Error type II";
-            min-score:"Recognition quality threshold, should be less than 100%";
-            annotation-name:"Annotation name for marking found regions";
-            strand:"Search strand";
-            out:"Output file with annotations";
+        parameter-aliases {
+            read-sequence.url-in {
+                alias:in;
+                description:"Input sequence";
+            }
+            sitecon-read.url-in {
+                alias:inmodel;
+                description:"Input SITECON model";
+            }
+            sitecon-search.err1 {
+                alias:min-err1;
+                description:"Minimal value of Error type I (using '0.0' by default)";
+            }
+            sitecon-search.err2 {
+                alias:max-err2;
+                description:"Maximal value of Error type II (using '0.001' by default)";
+            }
+            sitecon-search.min-score {
+                alias:min-score;
+                description:"Recognition quality threshold, should be less than 100% (using '85' percents by default)";
+            }
+            sitecon-search.result-name {
+                alias:annotation-name;
+                description:"Annotation name for marking found regions (using 'misc_feature' by default)";
+            }
+            sitecon-search.strand {
+                alias:strand;
+                description:"Search strand";
+            }
+            write-genbank.accumulate {
+                alias:accumulate;
+                description:"Accumulate all incoming data in one file or create separate files for each input. In the latter case, an incremental numerical suffix is added to the file name (using 'True' by default)";
+            }
+            write-genbank.url-out {
+                alias:out;
+                description:"Output file with annotations";
+            }
         }
         visual {
             read-sequence {
@@ -94,3 +118,4 @@ workflow sitecon-search{
         }
     }
 }
+

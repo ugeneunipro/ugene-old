@@ -1,12 +1,16 @@
 #@UGENE_WORKFLOW
 #Search each input sequence for significantly similar sequence matches to all specified HMM profiles using hmmer2 tools.
 
+
+
 workflow hmm2-search{
+
     read-sequence {
         type:read-sequence;
         name:"Read sequence";
-        merge-gap:10;
-        mode:0;
+        url-in {
+            dataset:"Dataset 1";
+        }
     }
     hmm2-read-profile {
         type:hmm2-read-profile;
@@ -15,16 +19,18 @@ workflow hmm2-search{
     hmm2-search {
         type:hmm2-search;
         name:"HMM search";
-        e-val:-1;
-        result-name:hmm_signal;
-        score:-1000000000;
-        seqs-num:1;
     }
     write-genbank {
-        type:write-genbank;
+        type:write-sequence;
         name:"Write Genbank";
-        accumulate:true;
-        write-mode:2;
+        document-format:genbank;
+    }
+
+
+    .actor-bindings {
+        read-sequence.out-sequence->hmm2-search.in-sequence
+        hmm2-read-profile.out-hmm2->hmm2-search.in-hmm2
+        hmm2-search.out-annotations->write-genbank.in-sequence
     }
 
     hmm2-read-profile.hmm2-profile->hmm2-search.in-hmm2.hmm2-profile
@@ -34,29 +40,41 @@ workflow hmm2-search{
     read-sequence.sequence->write-genbank.in-sequence.sequence
 
     .meta {
-        aliases {
-            read-sequence.url-in:seq;
-            hmm2-read-profile.url-in:hmm;
-            hmm2-search.e-val:e-val;
-            hmm2-search.result-name:name;
-            hmm2-search.score:score;
-            write-genbank.url-out:out;
-        }
-        help {
-            seq:"Input sequence";
-            hmm:"Input profile HMM";
-            e-val:"Filter by high E-value";
-            name:"Name of the result annotations";
-            score:"Filter by low score";
-            out:"Output file with annotations";
+        parameter-aliases {
+            read-sequence.url-in {
+                alias:in-seq;
+                description:"Input sequence";
+            }
+            hmm2-read-profile.url-in {
+                alias:in-hmm;
+                description:"Input profile HMM";
+            }
+            hmm2-search.e-val {
+                alias:e-val;
+                description:"Filter by high E-value (using '1e-1' by default)";
+            }
+            hmm2-search.result-name {
+                alias:name;
+                description:"Name of the result annotations (using 'hmm_signal' by default)";
+            }
+            hmm2-search.score {
+                alias:score;
+                description:"Filter by low score (using '-1.0e9' by default)";
+            }
+            hmm2-search.seqs-num {
+                alias:seq-num;
+                description:"Calculate the E-value scores as if we had seen a sequence database of sequences (using '1' by default)";
+            }
+            write-genbank.accumulate {
+                alias:accumulate;
+                description:"Accumulate all incoming data in one file or create separate files for each input. In the latter case, an incremental numerical suffix is added to the file name (using 'True' by default)";
+            }
+            write-genbank.url-out {
+                alias:out;
+                description:"Output file with annotations";
+            }
         }
         visual {
-            read-sequence {
-                pos:"-780 -765";
-                style:ext;
-                bg-color-ext:"0 128 128 64";
-                out-sequence.angle:360;
-            }
             hmm2-read-profile {
                 pos:"-780 -525";
                 style:ext;
@@ -71,14 +89,17 @@ workflow hmm2-search{
                 in-sequence.angle:166.759;
                 out-annotations.angle:360;
             }
+            read-sequence {
+                pos:"-780 -765";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                out-sequence.angle:360;
+            }
             write-genbank {
                 pos:"-330 -645";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 in-sequence.angle:180;
-            }
-            read-sequence.out-sequence->hmm2-search.in-sequence {
-                text-pos:"-27.5 -24";
             }
             hmm2-read-profile.out-hmm2->hmm2-search.in-hmm2 {
                 text-pos:"-32 -24";
@@ -86,6 +107,10 @@ workflow hmm2-search{
             hmm2-search.out-annotations->write-genbank.in-sequence {
                 text-pos:"-45 -37";
             }
+            read-sequence.out-sequence->hmm2-search.in-sequence {
+                text-pos:"-27.5 -24";
+            }
         }
     }
 }
+

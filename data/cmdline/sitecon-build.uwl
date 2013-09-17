@@ -1,44 +1,61 @@
 #@UGENE_WORKFLOW
 #Builds statistical profile for SITECON. The SITECON is a program for probabilistic recognition of transcription factor binding sites.
 
+
+
 workflow sitecon-build{
+
     read-msa {
         type:read-msa;
         name:"Read alignment";
+        url-in {
+            dataset:"Dataset 1";
+        }
     }
     sitecon-build {
         type:sitecon-build;
         name:"Build SITECON model";
-        calibrate-length:1000000;
-        seed:0;
-        weight-algorithm:0;
-        window-size:40;
     }
     sitecon-write {
         type:sitecon-write;
         name:"Write SITECON model";
-        write-mode:2;
+    }
+
+
+    .actor-bindings {
+        read-msa.out-msa->sitecon-build.in-msa
+        sitecon-build.out-sitecon->sitecon-write.in-sitecon
     }
 
     read-msa.msa->sitecon-build.in-msa.msa
     sitecon-build.sitecon-model->sitecon-write.in-sitecon.sitecon-model
 
     .meta {
-        aliases {
-            read-msa.url-in:in;
-            sitecon-build.calibrate-length:clength;
-            sitecon-build.seed:rseed;
-            sitecon-build.weight-algorithm:walg;
-            sitecon-build.window-size:wsize;
-            sitecon-write.url-out:out;
-        }
-        help {
-            in:"Input alignment";
-            clength:"Length of random synthetic sequences used to calibrate the profile";
-            rseed:"The seed for random numbers";
-            walg:"Weight algorithm";
-            wsize:"Window size, bp";
-            out:"Output SITECON model";
+        parameter-aliases {
+            read-msa.url-in {
+                alias:in;
+                description:"Input alignment";
+            }
+            sitecon-build.calibrate-length {
+                alias:clength;
+                description:"Length of random synthetic sequences used to calibrate the profile (using '1000000' by default)";
+            }
+            sitecon-build.seed {
+                alias:rseed;
+                description:"The seed for random numbers (using '0' by default)";
+            }
+            sitecon-build.weight-algorithm {
+                alias:walg;
+                description:"Weight algorithm (using 'False' by default)";
+            }
+            sitecon-build.window-size {
+                alias:wsize;
+                description:"Window size, bp (using '40' by default)";
+            }
+            sitecon-write.url-out {
+                alias:out;
+                description:"Output SITECON model";
+            }
         }
         visual {
             read-msa {
@@ -69,3 +86,4 @@ workflow sitecon-build{
         }
     }
 }
+

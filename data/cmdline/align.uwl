@@ -2,55 +2,79 @@
 #Performs multiple sequence alignment with MUSCLE algorithm and saves the resulting alignment to file. Source data can be of any format containing sequences or alignments.
 #
 
+
+
 workflow align{
+
     read-msa {
         type:read-msa;
         name:"Read alignment";
+        url-in {
+            dataset:"Dataset 1";
+        }
     }
     muscle {
         type:muscle;
         name:"Align with MUSCLE";
-        max-iterations:-1;
-        mode:0;
-        range:"Whole alignment";
-        stable:true;
     }
     write-msa {
         type:write-msa;
         name:"Write alignment";
-        document-format:clustal;
         write-mode:1;
+    }
+
+
+    .actor-bindings {
+        read-msa.out-msa->muscle.in-msa
+        muscle.out-msa->write-msa.in-msa
     }
 
     read-msa.msa->muscle.in-msa.msa
     muscle.msa->write-msa.in-msa.msa
 
     .meta {
-        aliases {
-            read-msa.url-in:in;
-            write-msa.url-out:out;
-            write-msa.document-format:format;
-            muscle.max-iterations:max-iterations;
-            muscle.mode:mode;
-            muscle.range:range;
-            muscle.stable:stable;
-        }
-        help {
-            in:"Input alignment";
-            out:"Output alignment";
+        parameter-aliases {
+            read-msa.url-in {
+                alias:in;
+                description:"Input alignment";
+            }
+            muscle.max-iterations {
+                alias:max-iterations;
+                description:"Maximum number of iterations (using '2' by default)";
+            }
+            muscle.mode {
+                alias:mode;
+                description:"Selector of preset configurations, that give you the choice of optimizing accuracy, speed,or some compromise between the two. The default favors accuracy (using 'MUSCLE default' by default)";
+            }
+            muscle.range {
+                alias:range;
+                description:"Whole alignment or column range e.g. 1..100 (using 'Whole alignment' by default)";
+            }
+            muscle.stable {
+                alias:stable;
+                description:"Do not rearrange aligned sequences (using 'True' by default)";
+            }
+            write-msa.document-format {
+                alias:format;
+                description:"Document format of output alignment (using 'clustal' by default)";
+            }
+            write-msa.url-out {
+                alias:out;
+                description:"Output alignment";
+            }
         }
         visual {
-            read-msa {
-                pos:"-765 -645";
-                style:ext;
-                bg-color-ext:"0 128 128 64";
-                out-msa.angle:360;
-            }
             muscle {
                 pos:"-570 -645";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 in-msa.angle:180;
+                out-msa.angle:360;
+            }
+            read-msa {
+                pos:"-765 -645";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
                 out-msa.angle:360;
             }
             write-msa {
@@ -59,12 +83,13 @@ workflow align{
                 bg-color-ext:"0 128 128 64";
                 in-msa.angle:180;
             }
-            read-msa.out-msa->muscle.in-msa {
+            muscle.out-msa->write-msa.in-msa {
                 text-pos:"-45 -50";
             }
-            muscle.out-msa->write-msa.in-msa {
+            read-msa.out-msa->muscle.in-msa {
                 text-pos:"-45 -50";
             }
         }
     }
 }
+

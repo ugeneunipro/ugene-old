@@ -32,9 +32,9 @@ workflow find-sw{
 
 
     .actor-bindings {
+        ssearch.out-annotations->write-sequence.in-sequence
         read-sequence.out-sequence->ssearch.in-sequence
         read-sequence-1.out-sequence->ssearch.pattern
-        ssearch.out-annotations->write-sequence.in-sequence
     }
 
     read-sequence-1.annotations->write-sequence.in-sequence.annotations
@@ -47,32 +47,56 @@ workflow find-sw{
     .meta {
         parameter-aliases {
             read-sequence.url-in {
-                alias:in;
-                description:"Input sequence";
+                alias:ref;
+                description:"Input reference sequence";
             }
             read-sequence-1.url-in {
                 alias:ptrn;
                 description:"A subsequence pattern to look for";
             }
+            write-sequence.accumulate {
+                alias:accumulate;
+                description:"Accumulate all incoming data in one file or create separate files for each input. In the latter case, an incremental numerical suffix is added to the file name (using 'True' by default)";
+            }
             write-sequence.url-out {
                 alias:out;
                 description:"Output file with annotations";
             }
+            ssearch.algorithm {
+                alias:algo;
+                description:"Version of the Smith-Waterman algorithm. You can use the optimized versions of the algorithm(SSE2, CUDA and OpenCL) if your hardware supports these capabilities (using 'Classic 2' by default)";
+            }
+            ssearch.amino {
+                alias:amino;
+                description:"Translates a supplied nucleotide sequence to protein and searches in the translated sequence (using 'False' by default)";
+            }
             ssearch.filter-strategy {
                 alias:filter;
-                description:"Result filtering strategy";
+                description:"Result filtering strategy (using 'filter-intersections' by default)";
+            }
+            ssearch.gap-ext-score {
+                alias:gap-ext-penalty;
+                description:"Penalty for extending a gap (using '-1.0' by default)";
+            }
+            ssearch.gap-open-score {
+                alias:gap-open-penalty;
+                description:"Penalty for opening a gap (using '-10.0' by default)";
             }
             ssearch.matrix {
                 alias:matrix;
-                description:"Scoring matrix";
+                description:"Scoring matrix (using 'Auto' by default)";
             }
             ssearch.min-score {
-                alias:score;
-                description:"The minimum score of the result";
+                alias:min-score;
+                description:"Minimal percent similarity between a sequence and a pattern (using '90' percents by default)";
             }
             ssearch.result-name {
                 alias:name;
-                description:"Name of the result annotations marking found regions";
+                description:"Name of the result annotations marking found regions (using 'misc_feature' by default)";
+            }
+            ssearch.use-pattern-names {
+                alias:use-pattern-names;
+                description:"Use a pattern name as an annotation name (using 'True' by default)";
             }
         }
         visual {

@@ -1,29 +1,32 @@
 #@UGENE_WORKFLOW
 #Finds Open Reading Frames (ORFs) in each supplied nucleotide sequence, stores found regions as annotations.
 
+
+
 workflow find-orfs{
+
     read-sequence {
         type:read-sequence;
         name:"Read sequence";
-        merge-gap:10;
-        mode:0;
+        url-in {
+            dataset:"Dataset 1";
+        }
     }
     orf-search {
         type:orf-search;
         name:"ORF marker";
-        allow-alternative-codons:false;
-        genetic-code:"NCBI-GenBank #1";
-        min-length:100;
-        require-init-codon:true;
-        require-stop-codon:false;
-        result-name:ORF;
         strand:0;
     }
     write-genbank {
-        type:write-genbank;
+        type:write-sequence;
         name:"Write Genbank";
-        accumulate:true;
-        write-mode:2;
+        document-format:genbank;
+    }
+
+
+    .actor-bindings {
+        read-sequence.out-sequence->orf-search.in-sequence
+        orf-search.out-annotations->write-genbank.in-sequence
     }
 
     read-sequence.sequence->orf-search.in-sequence.sequence
@@ -32,31 +35,53 @@ workflow find-orfs{
     read-sequence.sequence->write-genbank.in-sequence.sequence
 
     .meta {
-        aliases {
-            read-sequence.url-in:in;
-            orf-search.allow-alternative-codons:allow-alternative-codons;
-            orf-search.min-length:min-length;
-            orf-search.require-init-codon:require-init-codon;
-            orf-search.require-stop-codon:require-stop-codon;
-            orf-search.result-name:name;
-            write-genbank.url-out:out;
-        }
-        help {
-            in:"Input sequence";
-            allow-alternative-codons:"Allow ORFs starting with alternative initiation codons";
-            min-length:"Ignore ORFs shorter than the specified length";
-            require-init-codon:"Specifies that each ORF found must start with the start codon";
-            require-stop-codon:"Ignore boundary ORFs which last beyound the search region";
-            name:"Name of the result annotations marking found ORFs";
-            out:"Output file with annotations";
+        parameter-aliases {
+            read-sequence.url-in {
+                alias:in;
+                description:"Input sequence";
+            }
+            orf-search.allow-alternative-codons {
+                alias:allow-alternative-codons;
+                description:"Allow ORFs starting with alternative initiation codons (using 'False' by default)";
+            }
+            orf-search.include-stop-codon {
+                alias:include-stop-codon;
+                description:"The result annotation will includes stop codon if this option is set (using 'False' by default)";
+            }
+            orf-search.limit-results {
+                alias:limit-results;
+                description:"The amount of results will be limited id that option is setted (using 'True' by default)";
+            }
+            orf-search.max-result-attribute {
+                alias:max-result;
+                description:"Find results not achieved by specified count (using '100000' by default)";
+            }
+            orf-search.min-length {
+                alias:min-length;
+                description:"Ignore ORFs shorter than the specified length (using '100' bp by default)";
+            }
+            orf-search.require-init-codon {
+                alias:require-init-codon;
+                description:"Specifies that each ORF found must start with the start codon (using 'True' by default)";
+            }
+            orf-search.require-stop-codon {
+                alias:require-stop-codon;
+                description:"Ignore boundary ORFs which last beyound the search region (using 'False' by default)";
+            }
+            orf-search.result-name {
+                alias:name;
+                description:"Name of the result annotations marking found ORFs (using 'ORF' by default)";
+            }
+            write-genbank.accumulate {
+                alias:accumulate;
+                description:"Accumulate all incoming data in one file or create separate files for each input. In the latter case, an incremental numerical suffix is added to the file name (using 'True' by default)";
+            }
+            write-genbank.url-out {
+                alias:out;
+                description:"Output file with annotations";
+            }
         }
         visual {
-            read-sequence {
-                pos:"-780 -600";
-                style:ext;
-                bg-color-ext:"0 128 128 64";
-                out-sequence.angle:360;
-            }
             orf-search {
                 pos:"-615 -600";
                 style:ext;
@@ -64,18 +89,25 @@ workflow find-orfs{
                 in-sequence.angle:180;
                 out-annotations.angle:360;
             }
+            read-sequence {
+                pos:"-780 -600";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                out-sequence.angle:360;
+            }
             write-genbank {
                 pos:"-285 -600";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 in-sequence.angle:180;
             }
-            read-sequence.out-sequence->orf-search.in-sequence {
-                text-pos:"-27.5 -24";
-            }
             orf-search.out-annotations->write-genbank.in-sequence {
                 text-pos:"-44.5 -24";
+            }
+            read-sequence.out-sequence->orf-search.in-sequence {
+                text-pos:"-27.5 -24";
             }
         }
     }
 }
+

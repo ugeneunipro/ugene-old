@@ -1,63 +1,106 @@
 #@UGENE_WORKFLOW
 #Create alignment with ClustalW. ClustalW is a general purpose multiple sequence alignment program for DNA or proteins. Must have an installed ClustalW package.
 
+
+
 workflow align-clustalw{
+
     read-msa {
         type:read-msa;
         name:"Read alignment";
+        url-in {
+            dataset:"Dataset 1";
+        }
     }
     clustalw {
         type:clustalw;
         name:"Align with ClustalW";
-        close-gap-penalty:false;
-        gap-distance:4.42;
-        gap-ext-penalty:8.52;
-        gap-open-penalty:53.9;
-        iteration-type:0;
-        iterations-max-num:3;
-        matrix:-1;
-        no-hydrophilic-gaps:false;
-        no-residue-specific-gaps:false;
-        path:Default;
-        temp-dir:Default;
     }
     write-msa {
         type:write-msa;
         name:"Write alignment";
-        document-format:clustal;
-        write-mode:2;
+    }
+
+
+    .actor-bindings {
+        read-msa.out-msa->clustalw.in-msa
+        clustalw.out-msa->write-msa.in-msa
     }
 
     read-msa.msa->clustalw.in-msa.msa
     clustalw.msa->write-msa.in-msa.msa
 
     .meta {
-        aliases {
-            read-msa.url-in:in;
-            clustalw.path:toolpath;
-            clustalw.temp-dir:tmpdir;
-            write-msa.document-format:format;
-            write-msa.url-out:out;
-        }
-        help {
-            in:"Input alignment";
-            toolpath:"ClustalW location";
-            tmpdir:"Directory to store temporary files";
-            format:"Document format of output alignment";
-            out:"Output alignment";
+        parameter-aliases {
+            read-msa.url-in {
+                alias:in;
+                description:"Input alignment";
+            }
+            clustalw.close-gap-penalty {
+                alias:close-gap-penalty;
+                description:"The penalty for closing a gap (using 'False' by default)";
+            }
+            clustalw.gap-distance {
+                alias:gap-dist;
+                description:"The gap separation penalty. Tries to decrease the chances of gaps being too close to each other (using '4.42' by default)";
+            }
+            clustalw.gap-ext-penalty {
+                alias:gap-ext-penalty;
+                description:"The penalty for extending a gap (using '8.52' by default)";
+            }
+            clustalw.gap-open-penalty {
+                alias:gap-open-penalty;
+                description:"The penalty for opening a gap (using '53.90' by default)";
+            }
+            clustalw.iteration-type {
+                alias:iter-type;
+                description:"Alignment improvement iteration type. Can take values:- None - No iteration (default);- Tree - Iteration at each step of alignment process;- Alignment - Iteration only on final alignment (using 'None' by default)";
+            }
+            clustalw.iterations-max-num {
+                alias:iter-max;
+                description:"The maximum number of iterations to perform (using '3' by default)";
+            }
+            clustalw.matrix {
+                alias:wmatrix;
+                description:"For proteins it is a scoring table which describes the similarity of each amino acid to each other and can take values:- BLOSUM - Appear to be the best available for carrying out database similarity (homology searches). - PAM - Have been extremely widely used since the late '70s. - Gonnet - Derived using almost the same procedure as the PAM bit are much more up to date. - ID - Identitical matrix gives a score of 1.0 to two identical amino acids and a score of zero otherwise. For DNA it is the scores assigned to matches and mismatches. The values available are: - IUB - The default scoring matrix used by BESTFIT for the comparison of nucleic acid sequences. All matches score 1.9; all mismatches for IUB symbols score 0.- ClustalW - The previous system used by Clustal W, in which matches score 1.0 and mismatches score 0. All matches for IUB symbols also score 0. (using 'default' by default)";
+            }
+            clustalw.no-hydrophilic-gaps {
+                alias:hydro-gaps-off;
+                description:"Hydrophilic gap penalties are used to increase the chances of a gap within a run (5 or more residues) of hydrophilic amino acids (using 'False' by default)";
+            }
+            clustalw.no-residue-specific-gaps {
+                alias:residue-gaps-off;
+                description:"Residue-specific penalties are amino specific gap penalties that reduce or increase the gap opening penalties at each position in the alignment (using 'False' by default)";
+            }
+            clustalw.path {
+                alias:toolpath;
+                description:"ClustalW location (using the path specified in UGENE by default)";
+            }
+            clustalw.temp-dir {
+                alias:tmpdir;
+                description:"Directory to store temporary files (using UGENE temporary directory by default)";
+            }
+            write-msa.document-format {
+                alias:format;
+                description:"Document format of output alignment (using 'clustal' by default)";
+            }
+            write-msa.url-out {
+                alias:out;
+                description:"Output alignment";
+            }
         }
         visual {
-            read-msa {
-                pos:"-750 -660";
-                style:ext;
-                bg-color-ext:"0 128 128 64";
-                out-msa.angle:360;
-            }
             clustalw {
                 pos:"-585 -660";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 in-msa.angle:180;
+                out-msa.angle:360;
+            }
+            read-msa {
+                pos:"-750 -660";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
                 out-msa.angle:360;
             }
             write-msa {
@@ -66,12 +109,13 @@ workflow align-clustalw{
                 bg-color-ext:"0 128 128 64";
                 in-msa.angle:180;
             }
-            read-msa.out-msa->clustalw.in-msa {
-                text-pos:"-45 -50";
-            }
             clustalw.out-msa->write-msa.in-msa {
                 text-pos:"-45 -37";
+            }
+            read-msa.out-msa->clustalw.in-msa {
+                text-pos:"-45 -50";
             }
         }
     }
 }
+

@@ -1,38 +1,53 @@
 #@UGENE_WORKFLOW
 #Build position weight matrix from existing multiple sequence alignment
 
+
+
 workflow "Build weight matrix"{
+
     read-msa {
         type:read-msa;
         name:"Read alignment";
+        url-in {
+            dataset:"Dataset 1";
+        }
     }
     wmatrix-build {
         type:wmatrix-build;
         name:"Build weight matrix";
-        matrix-type:false;
-        weight-algorithm:"Berg and von Hippel";
     }
     wmatrix-write {
         type:wmatrix-write;
         name:"Write weight matrix";
-        write-mode:2;
+    }
+
+
+    .actor-bindings {
+        read-msa.out-msa->wmatrix-build.in-msa
+        wmatrix-build.out-wmatrix->wmatrix-write.in-wmatrix
     }
 
     read-msa.msa->wmatrix-build.in-msa.msa
     wmatrix-build.wmatrix->wmatrix-write.in-wmatrix.wmatrix
 
     .meta {
-        aliases {
-            read-msa.url-in:in;
-            wmatrix-build.matrix-type:type;
-            wmatrix-build.weight-algorithm:algo;
-            wmatrix-write.url-out:out;
-        }
-        help {
-            in:"Input alignment";
-            type:"Weight matrix type";
-            algo:"Weight algorithm";
-            out:"Output weight matrix";
+        parameter-aliases {
+            read-msa.url-in {
+                alias:in;
+                description:"Input alignment";
+            }
+            wmatrix-build.matrix-type {
+                alias:type;
+                description:"Weight matrix type (using 'Mononucleic' by default)";
+            }
+            wmatrix-build.weight-algorithm {
+                alias:algo;
+                description:"Weight algorithm (using 'Berg and von Hippel' by default)";
+            }
+            wmatrix-write.url-out {
+                alias:out;
+                description:"Output weight matrix";
+            }
         }
         visual {
             read-msa {
@@ -54,7 +69,6 @@ workflow "Build weight matrix"{
                 bg-color-ext:"0 128 128 64";
                 in-wmatrix.angle:180;
             }
-
             read-msa.out-msa->wmatrix-build.in-msa {
                 text-pos:"-45 -50";
             }
@@ -64,3 +78,4 @@ workflow "Build weight matrix"{
         }
     }
 }
+

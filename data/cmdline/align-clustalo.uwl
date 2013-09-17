@@ -1,10 +1,16 @@
 #@UGENE_WORKFLOW
 #Create alignment with ClustalO. ClustalO is a general purpose multiple sequence alignment program for proteins. Must have an installed ClustalO package.
 
+
+
 workflow align-clustalo{
+
     read-msa {
         type:read-msa;
         name:"Read alignment";
+        url-in {
+            dataset:"Dataset 1";
+        }
     }
     write-msa {
         type:write-msa;
@@ -17,8 +23,8 @@ workflow align-clustalo{
 
 
     .actor-bindings {
-        ClustalO.out-msa->write-msa.in-msa
         read-msa.out-msa->ClustalO.in-msa
+        ClustalO.out-msa->write-msa.in-msa
     }
 
     ClustalO.msa->write-msa.in-msa.msa
@@ -32,7 +38,7 @@ workflow align-clustalo{
             }
             write-msa.document-format {
                 alias:format;
-                description:"Document format of output alignment";
+                description:"Document format of output alignment (using 'clustal' by default)";
             }
             write-msa.url-out {
                 alias:out;
@@ -40,30 +46,37 @@ workflow align-clustalo{
             }
             ClustalO.max-guidetree-iterations {
                 alias:max-guidetree-iterations;
-                description:"Maximum number guidetree iterations";
+                description:"Maximum number guidetree iterations (using '0' by default)";
             }
             ClustalO.max-hmm-iterations {
                 alias:max-hmm-iterations;
-                description:"Maximum number of HMM iterations";
+                description:"Maximum number of HMM iterations (using '0' by default)";
             }
             ClustalO.num-iterations {
                 alias:iter;
-                description:"Number of (combined guide-tree/HMM) iterations";
+                description:"Number of (combined guide-tree/HMM) iterations (using '1' by default)";
             }
             ClustalO.path {
                 alias:toolpath;
-                description:"ClustalO location";
+                description:"ClustalO location (using the path specified in UGENE by default)";
             }
             ClustalO.set-auto {
                 alias:auto;
-                description:"Set options automatically (might overwrite some of your options)";
+                description:"Set options automatically (might overwrite some of your options) (using 'False' by default)";
             }
             ClustalO.temp-dir {
                 alias:tmpdir;
-                description:"Directory to store temporary files";
+                description:"Directory to store temporary files (using UGENE temporary directory by default)";
             }
         }
         visual {
+            ClustalO {
+                pos:"-540 -645";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                in-msa.angle:180;
+                out-msa.angle:360;
+            }
             read-msa {
                 pos:"-735 -645";
                 style:ext;
@@ -76,19 +89,13 @@ workflow align-clustalo{
                 bg-color-ext:"0 128 128 64";
                 in-msa.angle:180;
             }
-            ClustalO {
-                pos:"-540 -645";
-                style:ext;
-                bg-color-ext:"0 128 128 64";
-                in-msa.angle:180;
-                out-msa.angle:360;
+            ClustalO.out-msa->write-msa.in-msa {
+                text-pos:"-45 -39";
             }
             read-msa.out-msa->ClustalO.in-msa {
                 text-pos:"-58 -39";
             }
-            ClustalO.out-msa->write-msa.in-msa {
-                text-pos:"-45 -39";
-            }
         }
     }
 }
+

@@ -15,7 +15,15 @@ workflow find-repeats{
     repeats-search {
         type:repeats-search;
         name:"Find Repeats";
+        algorithm:0;
+        exclude-tandems:false;
+        filter-algorithm:0;
+        identity:100;
+        inverted:false;
+        max-distance:5000;
+        min-distance:0;
         min-length:25;
+        threads:0;
     }
     write-sequence {
         type:write-sequence;
@@ -40,29 +48,61 @@ workflow find-repeats{
                 alias:in;
                 description:"Input sequence";
             }
+            repeats-search.algorithm {
+                alias:algo;
+                description:"Control over variations of algorithm (using 'Auto' by default)";
+            }
+            repeats-search.exclude-tandems {
+                alias:exclude-tandems;
+                description:"Exclude tandems areas before find repeat task is run (using 'False' by default)";
+            }
+            repeats-search.filter-algorithm {
+                alias:filter-algo;
+                description:"Filter repeats algorithm (using 'Disjoint repeats' by default)";
+            }
             repeats-search.identity {
                 alias:identity;
-                description:"Repeats identity";
+                description:"Repeats identity (using '100' percents by default)";
             }
             repeats-search.inverted {
                 alias:inverted;
-                description:"Search for inverted repeats";
+                description:"Search for inverted repeats (using 'False' by default)";
             }
             repeats-search.max-distance {
                 alias:max-distance;
-                description:"Maximum distance between repeats";
+                description:"Maximum distance between repeats (using '5000' bp by default)";
             }
             repeats-search.min-distance {
                 alias:min-distance;
-                description:"Minimum distance between repeats";
+                description:"Minimum distance between repeats (using '0' bp by default)";
             }
             repeats-search.min-length {
                 alias:min-length;
-                description:"Minimum length of repeats";
+                description:"Minimum length of repeats (using '25' bp by default)";
             }
             repeats-search.result-name {
                 alias:name;
-                description:"Name of the result annotations marking found repeats";
+                description:"Name of the result annotations marking found repeats (using 'repeat_unit' by default)";
+            }
+            repeats-search.threads {
+                alias:thread-count;
+                description:"Number of parallel threads used for the task (using 'Auto' by default)";
+            }
+            repeats-search.use-maxdistance {
+                alias:use-maxdistance;
+                description:"Apply max-distance attribute (using 'True' by default)";
+            }
+            repeats-search.use-mindistance {
+                alias:use-mindistance;
+                description:"Apply min-distance attribute (using 'True' by default)";
+            }
+            write-sequence.accumulate {
+                alias:accumulate;
+                description:"Accumulate all incoming data in one file or create separate files for each input. In the latter case, an incremental numerical suffix is added to the file name (using 'True' by default)";
+            }
+            write-sequence.document-format {
+                alias:format;
+                description:"Document format of output sequence (using 'genbank' by default)";
             }
             write-sequence.url-out {
                 alias:out;

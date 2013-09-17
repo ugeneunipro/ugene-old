@@ -24,8 +24,8 @@ workflow "Import PHRED quality scores"{
 
 
     .actor-bindings {
-        import-phred-qualities.out-sequence->write-fastq.in-sequence
         read-sequence.out-sequence->import-phred-qualities.in-sequence
+        import-phred-qualities.out-sequence->write-fastq.in-sequence
     }
 
     import-phred-qualities.sequence->write-fastq.in-sequence.sequence
@@ -37,9 +37,21 @@ workflow "Import PHRED quality scores"{
                 alias:in;
                 description:"Input sequence";
             }
+            write-fastq.accumulate {
+                alias:accumulate;
+                description:"Accumulate all incoming data in one file or create separate files for each input. In the latter case, an incremental numerical suffix is added to the file name (using 'True' by default)";
+            }
             write-fastq.url-out {
                 alias:out;
                 description:"Output file in FASTQ format";
+            }
+            import-phred-qualities.quality-format {
+                alias:format;
+                description:"Quality values can be in specialized FASTA-like PHRED qual format or encoded similar as in FASTQ files (using 'PHRED' by default)";
+            }
+            import-phred-qualities.quality-type {
+                alias:qual-type;
+                description:"Method to encode quality scores (using 'Sanger' by default)";
             }
             import-phred-qualities.url-in {
                 alias:quality;

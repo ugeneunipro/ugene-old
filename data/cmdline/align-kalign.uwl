@@ -2,55 +2,79 @@
 #Create alignment with Kalign algorithm. Kalign is a fast and accurate multiple sequence alignment algorithm designed to align large numbers of protein sequences.
 #
 
+
+
 workflow align-kalign{
+
     read-msa {
         type:read-msa;
         name:"Read alignment";
+        url-in {
+            dataset:"Dataset 1";
+        }
     }
     kalign {
         type:kalign;
         name:"Align with Kalign";
-        bonus-score:0.02;
-        gap-ext-penalty:8.52;
-        gap-open-penalty:54.9;
-        terminal-gap-penalty:4.42;
     }
     write-msa {
         type:write-msa;
         name:"Write alignment";
-        document-format:clustal;
         write-mode:1;
+    }
+
+
+    .actor-bindings {
+        read-msa.out-msa->kalign.in-msa
+        kalign.out-msa->write-msa.in-msa
     }
 
     read-msa.msa->kalign.in-msa.msa
     kalign.msa->write-msa.in-msa.msa
 
     .meta {
-        aliases {
-            read-msa.url-in:in;
-            kalign.bonus-score:bonus-score;
-            kalign.gap-ext-penalty:gap-ext-penalty;
-            kalign.gap-open-penalty:gap-open-penalty;
-            kalign.terminal-gap-penalty:gap-terminal-penalty;
-            write-msa.document-format:format;
-            write-msa.url-out:out;
-        }
-        help {
-            in:"Input alignment";
-            out:"Output alignment";
+        parameter-aliases {
+            read-msa.url-in {
+                alias:in;
+                description:"Input alignment";
+            }
+            kalign.bonus-score {
+                alias:bonus-score;
+                description:"A bonus score that is added to each pair of aligned residues (using '0.02' by default)";
+            }
+            kalign.gap-ext-penalty {
+                alias:gap-ext-penalty;
+                description:"The penalty for extending a gap (using '8.52' by default)";
+            }
+            kalign.gap-open-penalty {
+                alias:gap-open-penalty;
+                description:"The penalty for opening/closing a gap. Half the value will be subtracted from the alignment score when opening, and half when closing a gap (using '54.90' by default)";
+            }
+            kalign.terminal-gap-penalty {
+                alias:gap-terminal-penalty;
+                description:"The penalty to extend gaps from the N/C terminal of protein or 5'/3' terminal of nucleotide sequences (using '4.42' by default)";
+            }
+            write-msa.document-format {
+                alias:format;
+                description:"Document format of output alignment (using 'clustal' by default)";
+            }
+            write-msa.url-out {
+                alias:out;
+                description:"Output alignment";
+            }
         }
         visual {
-            read-msa {
-                pos:"-750 -615";
-                style:ext;
-                bg-color-ext:"0 128 128 64";
-                out-msa.angle:360;
-            }
             kalign {
                 pos:"-540 -615";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 in-msa.angle:180;
+                out-msa.angle:360;
+            }
+            read-msa {
+                pos:"-750 -615";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
                 out-msa.angle:360;
             }
             write-msa {
@@ -59,12 +83,13 @@ workflow align-kalign{
                 bg-color-ext:"0 128 128 64";
                 in-msa.angle:180;
             }
-            read-msa.out-msa->kalign.in-msa {
-                text-pos:"-45 -50";
-            }
             kalign.out-msa->write-msa.in-msa {
                 text-pos:"-45 -24";
+            }
+            read-msa.out-msa->kalign.in-msa {
+                text-pos:"-45 -50";
             }
         }
     }
 }
+

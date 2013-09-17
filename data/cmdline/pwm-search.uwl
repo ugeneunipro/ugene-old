@@ -1,12 +1,16 @@
 #@UGENE_WORKFLOW
 #Search for transcription factor binding sites (TFBS) with weight matrices
 
+
+
 workflow "Search weight matrix"{
+
     read-sequence {
         type:read-sequence;
         name:"Read sequence";
-        merge-gap:10;
-        mode:0;
+        url-in {
+            dataset:"Dataset 1";
+        }
     }
     wmatrix-read {
         type:wmatrix-read;
@@ -15,15 +19,19 @@ workflow "Search weight matrix"{
     wmatrix-search {
         type:wmatrix-search;
         name:"Search for TFBS with weight matrix";
-        min-score:85;
-        result-name:misc_feature;
         strand:0;
     }
     write-genbank {
-        type:write-genbank;
+        type:write-sequence;
         name:"Write Genbank";
-        accumulate:true;
-        write-mode:2;
+        document-format:genbank;
+    }
+
+
+    .actor-bindings {
+        read-sequence.out-sequence->wmatrix-search.in-sequence
+        wmatrix-read.out-wmatrix->wmatrix-search.in-wmatrix
+        wmatrix-search.out-annotations->write-genbank.in-sequence
     }
 
     read-sequence.sequence->wmatrix-search.in-sequence.sequence
@@ -33,21 +41,35 @@ workflow "Search weight matrix"{
     read-sequence.sequence->write-genbank.in-sequence.sequence
 
     .meta {
-        aliases {
-            read-sequence.url-in:seq;
-            wmatrix-read.url-in:matrix;
-            wmatrix-search.min-score:min-score;
-            wmatrix-search.result-name:name;
-            wmatrix-search.strand:strand;
-            write-genbank.url-out:out;
-        }
-        help {
-            seq:"Input sequence";
-            matrix:"Input weight matrix";
-            min-score:"Minimum score to detect transcription factor binding site";
-            name:"Annotation name for marking found regions";
-            strand:"Search strand";
-            out:"Output file with annotations";
+        parameter-aliases {
+            read-sequence.url-in {
+                alias:seq;
+                description:"Input sequence";
+            }
+            wmatrix-read.url-in {
+                alias:matrix;
+                description:"Input weight matrix";
+            }
+            wmatrix-search.min-score {
+                alias:min-score;
+                description:"Minimum score to detect transcription factor binding site (using '85' percents by default)";
+            }
+            wmatrix-search.result-name {
+                alias:name;
+                description:"Annotation name for marking found regions (using 'misc_feature' by default)";
+            }
+            wmatrix-search.strand {
+                alias:strand;
+                description:"Search strand";
+            }
+            write-genbank.accumulate {
+                alias:accumulate;
+                description:"Accumulate all incoming data in one file or create separate files for each input. In the latter case, an incremental numerical suffix is added to the file name (using 'True' by default)";
+            }
+            write-genbank.url-out {
+                alias:out;
+                description:"Output file with annotations";
+            }
         }
         visual {
             read-sequence {
@@ -88,3 +110,4 @@ workflow "Search weight matrix"{
         }
     }
 }
+

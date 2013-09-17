@@ -46,17 +46,61 @@ workflow "Gene-by-gene approach for characterization of genomes"{
                 alias:in;
                 description:"Input sequence file";
             }
+            genebygene-report-id.annotation_name {
+                alias:final-name;
+                description:" Annotation name used to compare genes and reference genomes (using 'blast_result' by dafault)";
+            }
+            genebygene-report-id.existing {
+                alias:exist-file;
+                description:"If a target report already exists you should specify how to handle that. Merge two table in one. Overwrite or Rename existing file (using 'Merge' by default)";
+            }
+            genebygene-report-id.identity {
+                alias:ident;
+                description:"Identity between gene sequence length and annotation length in per cent. BLAST identity (if specified) is checked after (using '90.0' percents by default)";
+            }
             genebygene-report-id.output-file {
                 alias:out;
                 description:"Output report file";
             }
+            blast.blast-output {
+                alias:blast-out;
+                description:"Location of BLAST output file";
+            }
+            blast.blast-type {
+                alias:search-type;
+                description:"Type of BLAST searches (using 'blastn' by default)";
+            }
             blast.db-name {
-                alias:blast-name;
+                alias:db-name;
                 description:"Name of BLAST DB";
             }
             blast.db-path {
                 alias:blast-path;
                 description:"Path to BLAST DB";
+            }
+            blast.e-val {
+                alias:expected-value;
+                description:"This setting specifies the statistical significance threshold for reporting matches against database sequences (using '10.0' by default)";
+            }
+            blast.gapped-aln {
+                alias:gapped-aln;
+                description:"Perform gapped alignment (using 'use' by default)";
+            }
+            blast.result-name {
+                alias:blast-name;
+                description:"Name for annotations (using 'blast_result' by default)";
+            }
+            blast.temp-dir {
+                alias:tmpdir;
+                description:"Directory for temporary files (using UGENE temporary directory by default)";
+            }
+            blast.tool-path {
+                alias:toolpath;
+                description:"External tool path (using the path specified in UGENE by default)";
+            }
+            blast.type-output {
+                alias:out-type;
+                description:"Type of BLAST output file (using 'XML (-m 7)' by default)";
             }
         }
         visual {

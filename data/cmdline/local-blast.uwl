@@ -1,26 +1,31 @@
 #@UGENE_WORKFLOW
 #Run local NCBI BLAST search. BLAST finds regions of similarity between biological sequences. Must have an installed NCBI BLAST package.
 
+
+
 workflow local-blast{
+
     read-sequence {
         type:read-sequence;
         name:"Read sequence";
-        merge-gap:10;
-        mode:0;
+        url-in {
+            dataset:"Dataset 1";
+        }
     }
     blast {
         type:blast;
         name:"Local BLAST search";
-        blast-type:blastn;
-        e-val:10;
-        temp-dir:default;
-        tool-path:default;
     }
     write-genbank {
-        type:write-genbank;
+        type:write-sequence;
         name:"Write Genbank";
-        accumulate:true;
-        write-mode:2;
+        document-format:genbank;
+    }
+
+
+    .actor-bindings {
+        read-sequence.out-sequence->blast.in-sequence
+        blast.out-annotations->write-genbank.in-sequence
     }
 
     read-sequence.sequence->blast.in-sequence.sequence
@@ -29,39 +34,61 @@ workflow local-blast{
     read-sequence.sequence->write-genbank.in-sequence.sequence
 
     .meta {
-        aliases {
-            read-sequence.url-in:in;
-            blast.blast-output:blast-out;
-            blast.blast-type:p;
-            blast.db-name:dbname;
-            blast.db-path:dbpath;
-            blast.e-val:e;
-            blast.result-name:name;
-            blast.temp-dir:tmpdir;
-            blast.tool-path:toolpath;
-            blast.type-output:out-type;
-            write-genbank.url-out:out;
-        }
-        help {
-            in:"Input sequence";
-            p:"Type of BLAST searches";
-            dbname:"Base name for BLAST DB files";
-            dbpath:"Path with database files";
-            e:"The statistical significance threshold for reporting matches against database sequences";
-            name:"Name of the result annotations marking found regions";
-            tmpdir:"Directory to store temporary files";
-            toolpath:"BLAST location";
-            out:"Output file with annotations";
-            blast-out:"Type of BLAST output file";
-            out-type:"Location of BLAST output file";
+        parameter-aliases {
+            read-sequence.url-in {
+                alias:in;
+                description:"Input sequence";
+            }
+            blast.blast-output {
+                alias:blast-out;
+                description:"Type of BLAST output file";
+            }
+            blast.blast-type {
+                alias:p;
+                description:"Type of BLAST searches (using 'blastn' by default)";
+            }
+            blast.db-name {
+                alias:dbname;
+                description:"Base name for BLAST DB files";
+            }
+            blast.db-path {
+                alias:dbpath;
+                description:"Path with database files";
+            }
+            blast.e-val {
+                alias:e;
+                description:"The statistical significance threshold for reporting matches against database sequences (using '10.0' by default)";
+            }
+            blast.gapped-aln {
+                alias:gap-aln;
+                description:"Perform gapped alignment (using 'use' by default)";
+            }
+            blast.result-name {
+                alias:name;
+                description:"Name of the result annotations marking found regions (using 'blast_result' by default)";
+            }
+            blast.temp-dir {
+                alias:tmpdir;
+                description:"Directory to store temporary files (using UGENE temporary directory by default)";
+            }
+            blast.tool-path {
+                alias:toolpath;
+                description:"BLAST location (using the path specified in UGENE by default)";
+            }
+            blast.type-output {
+                alias:out-type;
+                description:"Type of BLAST output file (using 'XML (-m 7)' by default)";
+            }
+            write-genbank.accumulate {
+                alias:accumulate;
+                description:"Accumulate all incoming data in one file or create separate files for each input. In the latter case, an incremental numerical suffix is added to the file name (using 'True' by default)";
+            }
+            write-genbank.url-out {
+                alias:out;
+                description:"Output file with annotations";
+            }
         }
         visual {
-            read-sequence {
-                pos:"-780 -660";
-                style:ext;
-                bg-color-ext:"0 128 128 64";
-                out-sequence.angle:360;
-            }
             blast {
                 pos:"-600 -660";
                 style:ext;
@@ -69,18 +96,25 @@ workflow local-blast{
                 in-sequence.angle:180;
                 out-annotations.angle:360;
             }
+            read-sequence {
+                pos:"-780 -660";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                out-sequence.angle:360;
+            }
             write-genbank {
                 pos:"-390 -660";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 in-sequence.angle:180;
             }
-            read-sequence.out-sequence->blast.in-sequence {
-                text-pos:"-27.5 -24";
-            }
             blast.out-annotations->write-genbank.in-sequence {
                 text-pos:"-33 -24";
+            }
+            read-sequence.out-sequence->blast.in-sequence {
+                text-pos:"-27.5 -24";
             }
         }
     }
 }
+

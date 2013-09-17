@@ -1,34 +1,52 @@
 #@UGENE_WORKFLOW
 #Converts sequence from one document format to another
 
+
+
 workflow convert-seq{
+
     read-sequence {
         type:read-sequence;
         name:"Read sequence";
-        merge-gap:10;
-        mode:0;
+        url-in {
+            dataset:"Dataset 1";
+        }
     }
     write-sequence {
         type:write-sequence;
         name:"Write sequence";
-        accumulate:true;
-        document-format:fasta;
-        write-mode:2;
+    }
+
+
+    .actor-bindings {
+        read-sequence.out-sequence->write-sequence.in-sequence
     }
 
     read-sequence.annotations->write-sequence.in-sequence.annotations
     read-sequence.sequence->write-sequence.in-sequence.sequence
 
     .meta {
-        aliases {
-            read-sequence.url-in:in;
-            write-sequence.document-format:format;
-            write-sequence.url-out:out;
-        }
-        help {
-            in:"Input sequence";
-            format:"Document format of output sequence";
-            out:"Output sequence";
+        parameter-aliases {
+            read-sequence.url-in {
+                alias:in;
+                description:"Input sequence";
+            }
+            write-sequence.accumulate {
+                alias:accumulate;
+                description:"Accumulate all incoming data in one file or create separate files for each input. In the latter case, an incremental numerical suffix is added to the file name (using 'True' by default)";
+            }
+            write-sequence.document-format {
+                alias:format;
+                description:"Document format of output sequence (using 'fasta' by default)";
+            }
+            write-sequence.split {
+                alias:split;
+                description:"Split each incoming sequence on several parts (using '1' by default)";
+            }
+            write-sequence.url-out {
+                alias:out;
+                description:"Output sequence";
+            }
         }
         visual {
             read-sequence {
@@ -49,3 +67,4 @@ workflow convert-seq{
         }
     }
 }
+
