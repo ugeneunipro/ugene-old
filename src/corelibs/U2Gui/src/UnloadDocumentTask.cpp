@@ -30,6 +30,7 @@
 #include <U2Core/GUrlUtils.h>
 #include <U2Core/DocumentUtils.h>
 #include <U2Core/SaveDocumentTask.h>
+#include <U2Core/RemoveDocumentTask.h>
 
 #include <U2Core/GObjectUtils.h>
 
@@ -154,6 +155,26 @@ QString UnloadDocumentTask::checkSafeUnload(Document* doc) {
     }
 
     return QString();
+}
+
+ReloadDocumentTask::ReloadDocumentTask( Document *d ):Task("Reloading given document", TaskFlags_NR_FOSE_COSC),doc(d), url(d->getURL()){}
+
+void ReloadDocumentTask::prepare(){
+    removeDocTask = new RemoveMultipleDocumentsTask(AppContext::getProject(), QList<Document*>()<<doc, false, false);
+    addSubTask(removeDocTask);
+}
+
+QList<Task*> ReloadDocumentTask::onSubTaskFinished( Task* subTask ){
+    QList<Task*> res;
+
+    if (subTask == removeDocTask){
+        Task* openTask = AppContext::getProjectLoader()->openWithProjectTask(url);
+        if (openTask != NULL) {
+            res.append(openTask);
+        }
+    }
+
+    return res;
 }
 
 }//namespace

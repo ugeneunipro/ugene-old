@@ -24,6 +24,7 @@
 
 #include <U2Core/GUrl.h>
 #include <U2Core/Task.h>
+#include <U2Core/LoadDocumentTask.h>
 #include <U2Core/UnloadedObject.h>
 
 #include <QtCore/QPointer>
@@ -52,6 +53,18 @@ public:
 private:
     QPointer<Document>      doc;
     SaveDocumentTask*       saveTask;
+};
+
+class U2GUI_EXPORT ReloadDocumentTask : public Task{
+    Q_OBJECT
+public:
+    ReloadDocumentTask(Document *d);
+    virtual void prepare();
+    virtual QList<Task*> onSubTaskFinished(Task* subTask);
+private:
+    Document *doc;
+    GUrl url;
+    Task *removeDocTask;
 };
 
 }//namespace

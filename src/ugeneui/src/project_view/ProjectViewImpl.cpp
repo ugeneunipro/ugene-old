@@ -45,6 +45,8 @@
 #include <U2Core/SaveDocumentTask.h>
 #include <U2Core/SelectionUtils.h>
 #include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/RemoveDocumentTask.h>
+#include <U2Core/DocumentUtils.h>
 
 #include <U2Gui/OpenViewTask.h>
 #include <U2Gui/UnloadDocumentTask.h>
@@ -333,11 +335,7 @@ void DocumentUpdater::ReloadDocuments( QList<Document*> docs2Reload ){
             doc->setLastUpdateTime();
             continue;
         }
-
-        QList<Task*> subs;
-        subs << new UnloadDocumentTask(doc, false);
-        subs << new LoadUnloadedDocumentTask(doc);
-        reloadTask->addSubTask(new MultiTask(tr("Reload '%1' task").arg(doc->getName()), subs));
+        reloadTask->addSubTask(new ReloadDocumentTask(doc));
     }
 
     Task* updateViewTask = new Task(tr("Restore state task"), TaskFlag_NoRun);
