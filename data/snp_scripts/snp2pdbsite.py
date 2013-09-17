@@ -70,13 +70,16 @@ def opt_validate(optparser):
     Return: Validated options object.
     """
     (options,args) = optparser.parse_args()
-        
+            
     if not (options.protId and options.chain and options.mutation):
         optparser.print_help()
         sys.exit(1)
     if '"' in options.protId:
         options.protId = options.protId.replace('"','')
         
+    if '"' in options.mutation:
+        options.mutation = options.mutation.replace('"','')
+       
     id, chain = getPDBIdandChain(options.protId)
     if not (id and chain):
         sys.exit(1)
@@ -87,7 +90,6 @@ def opt_validate(optparser):
     mutList[0] = chain
     options.mutation = "".join(mutList)
  
-    print
     return options
 
 class Snp2pdbsite:
@@ -131,7 +133,6 @@ class Snp2pdbsite:
             time.sleep(0.1)
         self.parseOutput(content)
     def parseOutput(self, content):
-        print content
         if len(content) == 0:
             print "Result is empty"
             sys.exit(1)
