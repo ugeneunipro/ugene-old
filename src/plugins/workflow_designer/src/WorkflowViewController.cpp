@@ -1493,6 +1493,7 @@ bool WorkflowView::sl_validate(bool notify) {
 }
 
 void WorkflowView::sl_estimate() {
+    CHECK(sl_validate(false /*don't notify*/), );
     SAFE_POINT(!meta.estimationsCode.isEmpty(), "No estimation code", );
     estimateAction->setEnabled(false);
 
@@ -1506,6 +1507,7 @@ void WorkflowView::sl_estimationTaskFinished() {
     CHECK(NULL != t, );
     CHECK(t->isFinished(), );
     estimateAction->setEnabled(true);
+    CHECK(!t->hasError(), );
     EstimationDialog *d = new EstimationDialog(t->result(), this);
     d->setWindowModality(Qt::ApplicationModal);
     d->show();

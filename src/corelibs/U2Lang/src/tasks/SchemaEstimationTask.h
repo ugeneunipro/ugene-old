@@ -65,6 +65,7 @@ public slots:
     qint64 fileSize(const QString &url);
     QString fileFormat(const QString &url);
     bool testAttr(const QString &attrId);
+    qint64 bowtieIndexSize(const QString &dir, const QString &name, int versionId);
 
 private:
     QStringList parseTokens(const QString &attrStr, U2OpStatus &os);

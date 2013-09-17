@@ -189,6 +189,21 @@ QString ExtimationsUtilsClass::fileFormat(const QString &url) {
     }
 }
 
+#define BT1_ID 1
+#define BT2_ID 0
+
+qint64 ExtimationsUtilsClass::bowtieIndexSize(const QString &dir, const QString &name, int versionId) {
+    QString ext = (BT1_ID == versionId) ? ".ebwt" : ".bt2";
+    qint64 result = 0;
+    result += fileSize(dir + "/" + name + ".1" + ext);
+    result += fileSize(dir + "/" + name + ".2" + ext);
+    result += fileSize(dir + "/" + name + ".3" + ext);
+    result += fileSize(dir + "/" + name + ".4" + ext);
+    result += fileSize(dir + "/" + name + ".rev.1" + ext);
+    result += fileSize(dir + "/" + name + ".rev.2" + ext);
+    return result;
+}
+
 void ExtimationsUtilsClass::test(QScriptValue v) {
     if (v.isNumber()) {
         coreLog.info(QString::number(v.toNumber()));

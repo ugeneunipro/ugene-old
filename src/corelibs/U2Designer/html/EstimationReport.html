@@ -31,11 +31,13 @@
             var secNum = parseInt(this, 10);
             var hours   = Math.floor(secNum / 3600);
             var minutes = Math.floor((secNum - (hours * 3600)) / 60);
-            var seconds = secNum - (hours * 3600) - (minutes * 60);
+            var minutesUp = Math.floor((secNum + 59 - (hours * 3600)) / 60);
 
-            var time = seconds + 's';
+            var time;
             if (minutes > 0 || hours > 0) {
-                time = minutes + 'm ' + time;
+                time = minutesUp + 'm';
+            } else {
+                time = "< 1m";
             }
             if (hours > 0) {
                 time = hours + 'h ' + time;

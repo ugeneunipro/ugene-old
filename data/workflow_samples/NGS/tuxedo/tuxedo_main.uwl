@@ -60,6 +60,37 @@ workflow "Main Tuxedo: single-end reads"{
     read-sequence.url->files-conversion.in-file.url
 
     .meta {
+        estimations {
+            function tophatTime(reads, idx) {
+                return (idx/79) * (0.146052*reads*reads + 0.540541*reads + 11);
+            }
+            function cufflinksTime(reads, idx) {
+                return (idx/79) * (12*reads + 86);
+            }
+            function cuffdiffCuffmergeTime(reads, idx) {
+                return reads;
+            }
+            var datasets = utils.attributeValue("read-sequence.url-in");
+            var time = 0;
+            var fullReads = 0;
+            for (var i=0; i<datasets.length; i++) {
+                var set = datasets[i];
+                var reads = 0; // size of reads in Mb
+                for (var j=0; j<set.length; j++) {
+                    var url = set[j];
+                    reads += utils.fileSize(url) / (1024*1024);
+                }
+                var idxDir = utils.attributeValue("tophat.bowtie-index-dir");
+                var idxName = utils.attributeValue("tophat.bowtie-index-basename");
+                var idxVer = utils.attributeValue("tophat.bowtie-version");
+                var idx = utils.bowtieIndexSize(idxDir, idxName, idxVer) / (1024*1024); // size of index in Mb
+                time += tophatTime(reads, idx);
+                time += cufflinksTime(reads, idx);
+                fullReads += reads;
+            }
+            time += cuffdiffCuffmergeTime(fullReads);
+            [time, 200, 300, 1];
+        }
         parameter-aliases {
             tophat.bowtie-index-basename {
                 alias:bowtie_index_basename;
