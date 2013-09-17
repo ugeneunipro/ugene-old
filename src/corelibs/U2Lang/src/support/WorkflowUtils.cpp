@@ -750,6 +750,18 @@ QStringList WorkflowUtils::getDatasetsUrls(const QList<Dataset> &sets) {
     return result;
 }
 
+QStringList WorkflowUtils::getAttributeUrls(Attribute *attribute){
+    QStringList urlList;
+    QVariant var = attribute->getAttributePureValue();
+    if(var.canConvert<QList<Dataset> >()){
+        urlList = WorkflowUtils::getDatasetsUrls(var.value<QList<Dataset> >());
+    }
+    else if (var.canConvert(QVariant::String)) {
+        urlList = var.toString().split(";");
+    }
+    return urlList;
+}
+
 Actor * WorkflowUtils::actorById(const QList<Actor*> &actors, const ActorId &id) {
     foreach(Actor *a, actors) {
         if (a->getId() == id) {

@@ -2732,7 +2732,11 @@ void WorkflowScene::setupLinkCtxMenu(const QString& href, Actor* actor, const QP
     bool isOutput = attributeId == BaseAttributes::URL_OUT_ATTRIBUTE().getId();
     if (isInput || isOutput) {
         Attribute *attribute = actor->getParameter(attributeId);
-        QString urlStr = attribute->getAttributePureValue().toString();
+        QString urlStr;
+        QStringList urlList = WorkflowUtils::getAttributeUrls(attribute);
+        if(urlList.size()==1){
+            urlStr = urlList.takeFirst();
+        }
 
         if (!urlStr.isEmpty()) {
             QMenu menu;

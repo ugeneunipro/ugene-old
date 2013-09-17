@@ -97,6 +97,8 @@ public:
 
     static QStringList getDatasetsUrls(const QList<Dataset> &sets);
 
+    static QStringList getAttributeUrls(Attribute *attr);
+
     static Actor * actorById(const QList<Actor*> &actors, const ActorId &id);
 
     static QMap<Descriptor, DataTypePtr> getBusType(Port *inPort);
