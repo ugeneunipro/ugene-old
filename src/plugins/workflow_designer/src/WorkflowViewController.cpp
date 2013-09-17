@@ -1532,6 +1532,7 @@ void WorkflowView::localHostLaunch() {
 
     t->setReportingEnabled(true);
     if (WorkflowSettings::monitorRun()) {
+        commitWarningsToMonitor(t);
         unlockAction->setChecked(false);
         scene->setRunner(t);
         connect(t, SIGNAL(si_ticked()), scene, SLOT(update()));
@@ -2276,6 +2277,15 @@ void WorkflowView::showDashboards() {
 
 void WorkflowView::setDashboardActionVisible(bool visible) {
     toggleDashboard->setVisible(visible);
+}
+
+void WorkflowView::commitWarningsToMonitor(WorkflowAbstractRunner* t) {
+    for (int i = 0; i < infoList->count(); i++) {
+        QListWidgetItem* warning = infoList->item(i);
+        foreach (WorkflowMonitor* monitor, t->getMonitors()) {
+            monitor->addError(warning->data(TEXT_REF).toString(), warning->data(ACTOR_REF).toString());
+        }
+    }
 }
 
 void WorkflowView::sl_toggleDashboard() {

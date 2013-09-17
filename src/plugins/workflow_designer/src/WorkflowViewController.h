@@ -292,6 +292,7 @@ private:
     void hideDashboards();
     void showDashboards();
     void setDashboardActionVisible(bool visible);
+    void commitWarningsToMonitor(WorkflowAbstractRunner *t);
 
     void runWizard(Wizard *w);
     void checkAutoRunWizard();
