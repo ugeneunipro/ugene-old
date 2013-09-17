@@ -686,42 +686,44 @@ void MAlignment::setAlphabet(DNAAlphabet* al) {
     alphabet = al;
 }
 
-bool MAlignment::trim() {
+bool MAlignment::trim( bool removeLeadingGaps ) {
     MAStateCheck check(this);
     bool result = false;
 
-    // Verify if there are leading columns of gaps
-    // by checking the first gap in each row
-    qint64 leadingGapColumnsNum = 0;
-    foreach (MAlignmentRow row, rows) {
-        if (row.getGapModel().count() > 0) {
-            U2MsaGap firstGap = row.getGapModel().first();
-            if (firstGap.offset > 0) {
+    if ( removeLeadingGaps ) {
+        // Verify if there are leading columns of gaps
+        // by checking the first gap in each row
+        qint64 leadingGapColumnsNum = 0;
+        foreach (MAlignmentRow row, rows) {
+            if (row.getGapModel().count() > 0) {
+                U2MsaGap firstGap = row.getGapModel().first();
+                if (firstGap.offset > 0) {
+                    leadingGapColumnsNum = 0;
+                    break;
+                }
+                else {
+                    if (leadingGapColumnsNum == 0) {
+                        leadingGapColumnsNum = firstGap.gap;
+                    }
+                    else {
+                        leadingGapColumnsNum = qMin(leadingGapColumnsNum, firstGap.gap);
+                    }
+                }
+            }
+            else {
                 leadingGapColumnsNum = 0;
                 break;
             }
-            else {
-                if (leadingGapColumnsNum == 0) {
-                    leadingGapColumnsNum = firstGap.gap;
-                }
-                else {
-                    leadingGapColumnsNum = qMin(leadingGapColumnsNum, firstGap.gap);
-                }
-            }
         }
-        else {
-            leadingGapColumnsNum = 0;
-            break;
-        }
-    }
 
-    // If there are leading gap columns, remove them
-    U2OpStatus2Log os;
-    if (leadingGapColumnsNum > 0) {
-        for (int i = 0; i < rows.count(); ++i) {
-            rows[i].removeChars(0, leadingGapColumnsNum, os);
-            CHECK_OP(os, true);
-            result = true;
+        // If there are leading gap columns, remove them
+        U2OpStatus2Log os;
+        if (leadingGapColumnsNum > 0) {
+            for (int i = 0; i < rows.count(); ++i) {
+                rows[i].removeChars(0, leadingGapColumnsNum, os);
+                CHECK_OP(os, true);
+                result = true;
+            }
         }
     }
 
@@ -988,7 +990,8 @@ void MAlignment::removeChars(int row, int pos, int count, U2OpStatus& os) {
     MAlignmentRow& r = rows[row];
     bool lengthHolder = length == r.getRowLength();
     r.removeChars(pos, count, os);
-    trim();
+    // do not remove possible leading gap columns
+    trim( false );
     if (lengthHolder) {
         length = calculateMinLength();
     }

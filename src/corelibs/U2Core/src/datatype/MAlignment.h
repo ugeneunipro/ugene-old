@@ -350,10 +350,10 @@ public:
 
     /**
      * Recomputes the length of the alignment and makes it as minimal
-     * as possible. All leading gaps columns are removed.
+     * as possible. All leading gaps columns are removed by default.
      * Returns "true" if the alignment has been modified.
      */
-    bool trim();
+    bool trim( bool removeLeadingGaps = true );
 
     /**
      * Removes all gaps from all columns in the alignment.
