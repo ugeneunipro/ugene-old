@@ -319,7 +319,7 @@ void ComboBoxWithChecksWidget::sl_itemChanged( QStandardItem * item ){
         } else if(checkState == Qt::Unchecked){
             items[key] = false;
         }
-        emit si_valueChanged(value());
+        sl_valueChanged(0);
     }
 }
 

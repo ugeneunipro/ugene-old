@@ -126,7 +126,7 @@ void SeqPosWorker::sl_taskFinished() {
     }
 }
 
-U2::SeqPosSettings SeqPosWorker::createSeqPosSettings( U2OpStatus &os ){
+U2::SeqPosSettings SeqPosWorker::createSeqPosSettings( U2OpStatus &/*os*/ ){
     SeqPosSettings settings;
 
     settings.outDir = getValue<QString>(OUTPUT_DIR);
@@ -138,6 +138,61 @@ U2::SeqPosSettings SeqPosWorker::createSeqPosSettings( U2OpStatus &os ){
     settings.pVal = getValue<float>(P_VAL);
 
     return settings;
+}
+
+/************************************************************************/
+/* SeqPosComboBoxWithChecksDelegate */
+/************************************************************************/
+PropertyWidget * SeqPosComboBoxWithChecksDelegate::createWizardWidget(U2OpStatus & /*os*/, QWidget *parent) const {
+    SeqPosComboBoxWithChecksWidget* widget = new SeqPosComboBoxWithChecksWidget(items, parent);
+    widget->setHint("<div  align=\"justify\"><font color=\"green\"><b>" + tr("Hint:") + "</b> " + tr("Use 'cistrome.xml' to descrease the computation time. It is a comprehensive collection of motifs from the other databases with similar motifs deleted.") + "</font></div>");
+    return widget;
+}
+
+/************************************************************************/
+/* SeqPosComboBoxWithChecksWidget */
+/************************************************************************/
+SeqPosComboBoxWithChecksWidget::SeqPosComboBoxWithChecksWidget(const QVariantMap &items, QWidget *parent) :
+    ComboBoxWithChecksWidget(items, parent),
+    hintLabel(NULL) {
+    QLayout* l = layout();
+    if (l) {
+        delete l;
+    }
+
+    QVBoxLayout* mainLayout = new QVBoxLayout;
+    mainLayout->setContentsMargins(0, 0, 0, 1);
+    mainLayout->setSpacing(0);
+    setLayout(mainLayout);
+
+    hintLabel = new QLabel;
+    hintLabel->setWordWrap(true);
+    hintLabel->hide();
+
+    mainLayout->addWidget(comboBox);
+    mainLayout->addWidget(hintLabel);
+}
+
+void SeqPosComboBoxWithChecksWidget::setValue(const QVariant &value) {
+    ComboBoxWithChecksWidget::setValue(value);
+    checkHint();
+}
+
+void SeqPosComboBoxWithChecksWidget::sl_valueChanged(int) {
+    checkHint();
+    ComboBoxWithChecksWidget::sl_valueChanged(0);
+}
+
+void SeqPosComboBoxWithChecksWidget::checkHint() {
+    QStringList values = ComboBoxWithChecksWidget::value().toString().split(",");
+    if (values.count() != 1 || values.first() != SeqPosSettings::MOTIF_DB_CISTROME) {
+        hintLabel->show();
+        layout()->setSpacing(6);
+        layout()->setContentsMargins(0, 0, 0, 3);
+    } else {
+        hintLabel->hide();
+        layout()->setSpacing(0);
+    }
 }
 
 /************************************************************************/
@@ -238,7 +293,7 @@ void SeqPosWorkerFactory::init() {
              contentMap[SeqPosSettings::MOTIF_DB_TRANSFAC] = false;
              contentMap[SeqPosSettings::MOTIF_DB_HDPI] = false;
              contentMap[SeqPosSettings::MOTIF_DB_JASPAR] = false;
-             delegates[MOTIF_DB] = new ComboBoxWithChecksDelegate(contentMap);
+             delegates[MOTIF_DB] = new SeqPosComboBoxWithChecksDelegate(contentMap);
          }
          {
              QVariantMap vm;

@@ -54,6 +54,8 @@ LabeledPropertyWidget::LabeledPropertyWidget(const QString &labelText, PropertyW
 
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
+
+    layout->setAlignment(label, Qt::AlignTop);
 }
 
 void LabeledPropertyWidget::setLabelWidth(int width) {

@@ -27,6 +27,8 @@
 #include <U2Lang/LocalDomain.h>
 #include <U2Lang/WorkflowUtils.h>
 
+#include <U2Designer/DelegateEditors.h>
+
 #include "SeqPosTask.h"
 #include "SeqPosSettings.h"
 
@@ -51,6 +53,33 @@ private:
 private slots:
     void sl_taskFinished();
 }; // SeqPosWorker
+
+class SeqPosComboBoxWithChecksDelegate : public ComboBoxWithChecksDelegate {
+public:
+    SeqPosComboBoxWithChecksDelegate(const QVariantMap& items, QObject *parent = 0) : ComboBoxWithChecksDelegate(items, parent) {}
+    virtual ~SeqPosComboBoxWithChecksDelegate() {}
+
+    virtual PropertyWidget* createWizardWidget(U2OpStatus &os, QWidget *parent) const;
+    virtual PropertyDelegate *clone() { return new SeqPosComboBoxWithChecksDelegate(items, parent()); }
+};
+
+class SeqPosComboBoxWithChecksWidget : public ComboBoxWithChecksWidget {
+    Q_OBJECT
+public:
+    SeqPosComboBoxWithChecksWidget( const QVariantMap &items, QWidget *parent = NULL);
+
+    void setValue(const QVariant &value);
+    void setHint(const QString &hint) { hintLabel->setText(hint); }
+
+protected slots:
+    void sl_valueChanged(int index);
+
+private:
+    void checkHint();
+
+private:
+    QLabel* hintLabel;
+};
 
 class SeqPosWorkerFactory : public DomainFactory {
 public:

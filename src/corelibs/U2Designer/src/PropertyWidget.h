@@ -153,14 +153,14 @@ public:
 signals:
     void valueChanged(const QString &value);
 
-private:
+protected:
     QComboBox *comboBox;
     QStandardItemModel* cm;
     QVariantMap items;
 
-private slots:
-    void sl_valueChanged(int index);
-    void sl_itemChanged(QStandardItem * item);
+protected slots:
+    virtual void sl_valueChanged(int index);
+    virtual void sl_itemChanged(QStandardItem * item);
 };
 
 
