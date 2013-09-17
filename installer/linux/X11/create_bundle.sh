@@ -5,6 +5,7 @@ VERSION=`cat ../../../src/ugene_version.pri | grep UGENE_VERSION | awk -F'=' '{p
 RELEASE_DIR=../../../src/_release
 DATA_DIR=../../../data
 TARGET_APP_DIR="${PRODUCT_NAME}-${VERSION}"
+PACKAGE_TYPE="linux"
 
 #PATH_TO_QT_LIBS="$HOME/qtsdk-2010.01/qt/lib"
 
@@ -60,6 +61,15 @@ cp -v $RELEASE_DIR/transl_zh.qm "$TARGET_APP_DIR"
 
 echo copying data dir
 cp -R "$RELEASE_DIR/../../data"  "${TARGET_APP_DIR}"
+echo
+
+#include external tools package if applicable
+echo copying tools dir
+if [ -e "$RELEASE_DIR/../../tools" ]; then
+    cp -R "$RELEASE_DIR/../../tools" "${TARGET_APP_DIR}/"
+    find $TARGET_APP_DIR -name ".svn" | xargs rm -rf
+    PACKAGE_TYPE="linux-full" 
+fi
 
 echo
 echo copying core shared libs
@@ -193,25 +203,6 @@ fi
 
 # remove svn dirs
 find $TARGET_APP_DIR -name ".svn" | xargs rm -rf 
-
-
-PACKAGE_TYPE="linux"
-
-#download and include external tools package if applicable
-if [ -z "$EXT_TOOLS_URL" ]; then 
-   echo
-   echo EXT_TOOLS_URL environment variable is not set: skipping this step
-   echo
-else
-   PACKAGE_TYPE="linux-full-package" 
-   pushd $TARGET_APP_DIR 
-   wget $EXT_TOOLS_URL
-   EXT_TOOLS_PACKAGE=`basename $EXT_TOOLS_URL` 
-   tar -xf $EXT_TOOLS_PACKAGE
-   rm $EXT_TOOLS_PACKAGE
-   popd
-fi
-
 
 REVISION=$BUILD_VCS_NUMBER_new_trunk
 if [ -z "$REVISION" ]; then
