@@ -143,7 +143,7 @@ private slots:
 /************************************************************************/
 /* ComboBoxWithChecksWidget */
 /************************************************************************/
-class ComboBoxWithChecksWidget: public PropertyWidget {
+class U2DESIGNER_EXPORT ComboBoxWithChecksWidget: public PropertyWidget {
     Q_OBJECT
 public:
     ComboBoxWithChecksWidget( const QVariantMap &items, QWidget *parent = NULL);
