@@ -174,6 +174,11 @@ Section "Build"
     SetOutPath $INSTDIR\data
     File /r /x .svn "..\..\data\*.*"
 
+    !ifdef ExternalTools
+    SetOutPath $INSTDIR\tools
+    File /r /x .svn "..\..\tools\*.*"
+    !endif
+
     SetOutPath $INSTDIR\styles
     File "includes\styles\qtdotnet2.dll"
 
