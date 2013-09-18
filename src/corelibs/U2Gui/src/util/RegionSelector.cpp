@@ -72,7 +72,7 @@ void RegionSelector::init() {
     foreach(const RegionPreset & rp, presets) {
         comboBox->addItem(rp.text);
     }
-    comboBox->addItem(tr("Custom"));
+    comboBox->addItem(tr("Custom region"));
     customIndex = comboBox->count() - 1;
 
     connect(comboBox,SIGNAL(currentIndexChanged(int)),SLOT(sl_onComboBoxIndexChanged(int)));
