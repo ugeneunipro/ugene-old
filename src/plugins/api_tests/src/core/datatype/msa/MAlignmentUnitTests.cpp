@@ -566,9 +566,9 @@ IMPLEMENT_TEST(MAlignmentUnitTests, removeChars_validParamsAndTrimmed) {
     U2OpStatusImpl os;
     almnt.removeChars(1, 0, 2, os);
     CHECK_NO_ERROR(os);
-    CHECK_EQUAL(6, almnt.getLength(), "alignment length");
-    CHECK_EQUAL("--AG-T", MAlignmentTestUtils::getRowData(almnt, 0), "first row");
-    CHECK_EQUAL("CT-TAA", MAlignmentTestUtils::getRowData(almnt, 1), "second row");
+    CHECK_EQUAL(7, almnt.getLength(), "alignment length");
+    CHECK_EQUAL("---AG-T", MAlignmentTestUtils::getRowData(almnt, 0), "first row");
+    CHECK_EQUAL("-CT-TAA", MAlignmentTestUtils::getRowData(almnt, 1), "second row");
 }
 
 IMPLEMENT_TEST(MAlignmentUnitTests, removeChars_negativeRowIndex) {    
