@@ -63,9 +63,11 @@ void SchemaEstimationTask::run() {
     }
 
     er.timeSec = result.property(0).toInt32();
-    er.ramMb = result.property(1).toInt32();
-    er.hddMb = result.property(2).toInt32();
-    er.cpuCount = result.property(3).toInt32();
+    if (result.property("length").toInt32() > 1) {
+        er.ramMb = result.property(1).toInt32();
+    }
+    //er.hddMb = result.property(2).toInt32();
+    //er.cpuCount = result.property(3).toInt32();
 }
 
 EstimationResult SchemaEstimationTask::result() const {

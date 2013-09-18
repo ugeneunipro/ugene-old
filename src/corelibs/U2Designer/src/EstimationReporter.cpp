@@ -59,8 +59,8 @@ QWebView * EstimationReporter::generateReport(const Workflow::EstimationResult &
 
     eval(result, "setTime('" + QString::number(er.timeSec) + "')");
     eval(result, "setRAM('" + QString::number(er.ramMb) + "')");
-    eval(result, "setHDD('" + QString::number(er.hddMb) + "')");
-    eval(result, "setCPU('" + QString::number(er.cpuCount) + "')");
+    //eval(result, "setHDD('" + QString::number(er.hddMb) + "')");
+    //eval(result, "setCPU('" + QString::number(er.cpuCount) + "')");
 
     result->setContextMenuPolicy(Qt::NoContextMenu);
     return result;

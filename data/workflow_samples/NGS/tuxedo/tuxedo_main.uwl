@@ -89,7 +89,7 @@ workflow "Main Tuxedo: single-end reads"{
                 fullReads += reads;
             }
             time += cuffdiffCuffmergeTime(fullReads);
-            [time, 200, 300, 1];
+            [time];
         }
         parameter-aliases {
             tophat.bowtie-index-basename {

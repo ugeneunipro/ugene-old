@@ -50,6 +50,31 @@ workflow "Call variants with SAMtools"{
     read-sequence.url->files-conversion-1.in-file.url
 
     .meta {
+        estimations {
+            function samtoolsTime(bam, ref) {
+                return (ref/236) * (25*bam + 4);
+            }
+			function samtoolsRAM(bam, ref) {
+                return (ref + 50);
+            }
+            var bamSets = utils.attributeValue("read-assembly.url-in");
+			var refSets = utils.attributeValue("read-sequence.url-in");
+            var time = 0;
+            var ram = 0;
+            for (var i=0; i<bamSets.length; i++) {
+                var bamSet = bamSets[i];
+                var bam = 0; // size of bams in Mb
+                for (var j=0; j<bamSet.length; j++) {
+                    var url = bamSet[j];
+                    bam += utils.fileSize(url) / (1024*1024);
+                }
+				var refUrl = refSets[i][0];
+				var ref = utils.fileSize(refUrl) / (1024*1024);  // size of ref in Mb
+                time += samtoolsTime(bam, ref);
+                ram += samtoolsRAM(bam, ref);
+            }
+            [time, ram];
+        }
         visual {
             call_variants {
                 pos:"-460 -495";
