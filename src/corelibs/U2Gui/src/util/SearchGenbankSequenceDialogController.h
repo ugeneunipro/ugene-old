@@ -86,6 +86,7 @@ private slots:
     void sl_updateQuery();
     void sl_addQueryBlockWidget();
     void sl_removeQueryBlockWidget();
+    void sl_returnPressed();
 
 
 };
@@ -107,7 +108,7 @@ private:
     QScopedPointer<ESummaryResultHandler> summaryResultHandler;
     EntrezQueryTask* summaryTask;
     
-private slots:
+public slots:
     void sl_searchButtonClicked();
     void sl_downloadButtonClicked();
     void sl_itemSelectionChanged();

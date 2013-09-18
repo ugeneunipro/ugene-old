@@ -140,7 +140,7 @@ class U2CORE_EXPORT LoadRemoteDocumentTask : public BaseLoadRemoteDocumentTask {
     Q_OBJECT
 public:
     LoadRemoteDocumentTask(const GUrl& url);
-    LoadRemoteDocumentTask(const QString & accId, const QString & dbName, const QString & fullPathDir = QString());
+    LoadRemoteDocumentTask(const QString & accId, const QString & dbName, const QString & fullPathDir = QString(), const QString& fileFormat = QString());
     virtual void prepare();
 
     QString getAccNumber() const { return accNumber; }

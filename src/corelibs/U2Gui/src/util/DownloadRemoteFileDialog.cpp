@@ -57,6 +57,8 @@ DownloadRemoteFileDialog::DownloadRemoteFileDialog(QWidget *p):QDialog(p), isQue
     
     ui->dasfeaturesWidget->setResizeMode(QListView::Adjust);
     ui->dasBox->hide();
+    ui->formatBox->hide();
+    ui->formatLabel->hide();
     adjustSize();
     
     RemoteDBRegistry& registry = RemoteDBRegistry::getRemoteDBRegistry();
@@ -97,6 +99,8 @@ DownloadRemoteFileDialog::DownloadRemoteFileDialog( const QString& id, const QSt
 
     ui->dasfeaturesWidget->setResizeMode(QListView::Adjust);
     ui->dasBox->hide();
+    ui->formatBox->addItem(GENBANK_FORMAT);
+    ui->formatBox->addItem(FASTA_FORMAT);
     adjustSize();
 
     ui->databasesBox->clear();
@@ -183,8 +187,12 @@ void DownloadRemoteFileDialog::accept()
     QList<Task*> tasks;
 
     if (isDefaultDb(dbId)){
+        QString fileFormat;
+        if (ui->formatBox->count() > 0) {
+            fileFormat = ui->formatBox->currentText();
+        }
         foreach (const QString& resId, resIds) {
-            tasks.append( new LoadRemoteDocumentAndOpenViewTask(resId, dbId, fullPath) );
+            tasks.append( new LoadRemoteDocumentAndOpenViewTask(resId, dbId, fullPath, fileFormat) );
         }
 
         AppContext::getTaskScheduler()->registerTopLevelTask( new MultiTask("DownloadRemoteDocuments", tasks) );

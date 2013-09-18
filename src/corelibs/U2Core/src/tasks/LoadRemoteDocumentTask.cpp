@@ -189,13 +189,13 @@ LoadRemoteDocumentTask::LoadRemoteDocumentTask( const GUrl& url )
     GCOUNTER( cvar, tvar, "LoadRemoteDocumentTask" );
 }
 
-LoadRemoteDocumentTask::LoadRemoteDocumentTask( const QString & accId, const QString & dbName, const QString & fullPathDir)
+LoadRemoteDocumentTask::LoadRemoteDocumentTask( const QString & accId, const QString & dbName, const QString & fullPathDir, const QString& fileFormat)
 :BaseLoadRemoteDocumentTask(fullPathDir)
 ,accNumber(accId)
 ,dbName(dbName)
 {
     GCOUNTER( cvar, tvar, "LoadRemoteDocumentTask" );
-
+    format = fileFormat;
 }
 
 void LoadRemoteDocumentTask::prepare(){
@@ -243,7 +243,9 @@ QString LoadRemoteDocumentTask::getFileName(){
     if( sourceUrl.isHyperLink() ) {
         return sourceUrl.fileName();
     } else {
-        format = getFileFormat(dbName);
+        if (format.isEmpty()) {
+            format = getFileFormat(dbName);
+        }
         accNumber.replace(";",",");
         QStringList accIds = accNumber.split(",");
         if (accIds.size() == 1 ) {

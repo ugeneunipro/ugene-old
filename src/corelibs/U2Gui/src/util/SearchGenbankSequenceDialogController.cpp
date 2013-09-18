@@ -48,7 +48,7 @@ SearchGenbankSequenceDialogController::SearchGenbankSequenceDialogController(QWi
     connect(ui->searchButton, SIGNAL(clicked()), SLOT(sl_searchButtonClicked()) );
     connect(ui->downloadButton, SIGNAL(clicked()), SLOT(sl_downloadButtonClicked()) );
     connect(ui->treeWidget, SIGNAL(itemSelectionChanged()), SLOT(sl_itemSelectionChanged()) );
-
+    
     connect( AppContext::getTaskScheduler(), SIGNAL(si_stateChanged(Task*)), SLOT(sl_taskStateChanged(Task*)) );
 
     ui->treeWidget->header()->setStretchLastSection(false);
@@ -176,6 +176,7 @@ QueryBlockWidget::QueryBlockWidget(QueryBuilderController* controller, bool firs
 
     queryEdit = new QLineEdit(this);
     connect(queryEdit,  SIGNAL(textEdited(const QString&)), controller, SLOT(sl_updateQuery()) );
+    connect(queryEdit, SIGNAL(returnPressed()), controller, SLOT(sl_returnPressed()));
 
 
     layout->addWidget(termBox);
@@ -282,6 +283,11 @@ void QueryBuilderController::sl_updateQuery()
 
     parentController->setQueryText(query);
 
+}
+
+void QueryBuilderController::sl_returnPressed()
+{
+    parentController->sl_searchButtonClicked();
 }
 
 
