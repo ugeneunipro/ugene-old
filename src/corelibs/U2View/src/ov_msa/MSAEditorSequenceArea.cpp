@@ -97,9 +97,9 @@ MSAEditorSequenceArea::MSAEditorSequenceArea(MSAEditorUI* _ui, GScrollBar* hb, G
     startPos = 0;
     startSeq = 0;
     highlightSelection = false;
-    scribbling = false;
     selecting = false;
     shifting = false;
+    shiftingWasPerformed = false;
 
     rubberBand = new QRubberBand(QRubberBand::Rectangle, this);
    
@@ -726,7 +726,6 @@ void MSAEditorSequenceArea::updateHScrollBar() {
     shBar->setDisabled(numVisibleBases == alignmentLen);
 
     connect(shBar, SIGNAL(valueChanged(int)), SLOT(sl_onHScrollMoved(int)));
-    connect(shBar, SIGNAL(actionTriggered(int)), SLOT(sl_onScrollBarActionTriggered(int)));
 }
 
 void MSAEditorSequenceArea::updateVScrollBar() {
@@ -752,7 +751,6 @@ void MSAEditorSequenceArea::updateVScrollBar() {
     svBar->setDisabled(numVisibleSequences == nSeqs);
 
     connect(svBar, SIGNAL(valueChanged(int)), SLOT(sl_onVScrollMoved(int)));
-    connect(svBar, SIGNAL(actionTriggered(int)), SLOT(sl_onScrollBarActionTriggered(int)));
 
     onVisibleRangeChanged();
 }
@@ -920,7 +918,7 @@ void MSAEditorSequenceArea::updateSelection( const QPoint& newPos) {
 
 void MSAEditorSequenceArea::mouseMoveEvent( QMouseEvent* e )
 {
-    if ( (e->buttons() & Qt::LeftButton) && scribbling ) {
+    if ( e->buttons( ) & Qt::LeftButton ) {
         QPoint newCurPos = coordToAbsolutePos(e->pos());
         if (isInRange(newCurPos)) {
             updateHBarPosition(newCurPos.x());
@@ -929,6 +927,7 @@ void MSAEditorSequenceArea::mouseMoveEvent( QMouseEvent* e )
 
         if (shifting) {
             shiftSelectedRegion(newCurPos.x() - cursorPos.x());
+            shiftingWasPerformed = true;
         } else if (selecting) {
             rubberBand->setGeometry(QRect(origin, e->pos()).normalized());
         }
@@ -944,27 +943,35 @@ void MSAEditorSequenceArea::mouseReleaseEvent(QMouseEvent *e)
         changeTracker.finishTracking();
         editor->getMSAObject()->releaseState();
     }
-    if (scribbling) {
-        QPoint newCurPos = coordToAbsolutePos(e->pos());
 
-        int firstVisibleSeq = ui->seqArea->getFirstVisibleSequence();
-        int visibleRowsNums = ui->getCollapseModel()->displayedRowsCount() - 1;
+    QPoint newCurPos = coordToAbsolutePos(e->pos());
 
-        int yPosWithValidations = qMax(firstVisibleSeq, newCurPos.y());
-        yPosWithValidations     = qMin(yPosWithValidations, visibleRowsNums + firstVisibleSeq);
+    int firstVisibleSeq = ui->seqArea->getFirstVisibleSequence();
+    int visibleRowsNums = ui->getCollapseModel()->displayedRowsCount() - 1;
 
-        newCurPos.setY(yPosWithValidations);
+    int yPosWithValidations = qMax(firstVisibleSeq, newCurPos.y());
+    yPosWithValidations     = qMin(yPosWithValidations, visibleRowsNums + firstVisibleSeq);
 
-        if (shifting) {
-            int shift = newCurPos.x() - cursorPos.x();
-            shiftSelectedRegion(shift);
-        } else {
-            updateSelection(newCurPos);
+    newCurPos.setY(yPosWithValidations);
+
+    if (shifting) {
+        int shift = ( !shiftingWasPerformed )
+            ? newCurPos.x( ) - ui->seqArea->getSelection( ).getRect( ).center( ).x( )
+            : newCurPos.x( ) - cursorPos.x( );
+        if ( 0 != shift ) {
+            U2OpStatus2Log os;
+            U2UseCommonUserModStep userModStep( editor->getMSAObject( )->getEntityRef( ), os );
+            while ( !shiftSelectedRegion( shift ) && 0 != shift ) {
+                shift = ( shift / qAbs( shift ) ) * ( qAbs( shift ) - 1 );
+            }
         }
-        shifting = false;
-        scribbling = false;
-        selecting = false;
+    } else {
+        updateSelection(newCurPos);
     }
+    shifting = false;
+    selecting = false;
+    shiftingWasPerformed = false;
+
     shBar->setupRepeatAction(QAbstractSlider::SliderNoAction);
     svBar->setupRepeatAction(QAbstractSlider::SliderNoAction);
 
@@ -979,7 +986,6 @@ void MSAEditorSequenceArea::mousePressEvent(QMouseEvent *e) {
     if ((e->button() == Qt::LeftButton)){
         if(Qt::ShiftModifier == e->modifiers()) {
             QWidget::mousePressEvent(e);
-            scribbling = true;
             return;
         }
         origin = e->pos();
@@ -987,7 +993,7 @@ void MSAEditorSequenceArea::mousePressEvent(QMouseEvent *e) {
         if(isInRange(p)) {
             setCursorPos(p);
 
-            MSAEditorSelection s = ui->seqArea->getSelection();
+            const MSAEditorSelection &s = ui->seqArea->getSelection( );
             if ( s.getRect().contains(cursorPos) ) {
                 shifting = true;
                 U2OpStatus2Log os;
@@ -1007,7 +1013,6 @@ void MSAEditorSequenceArea::mousePressEvent(QMouseEvent *e) {
             rubberBand->show();
             ui->seqArea->cancelSelection();
         }
-        scribbling = true;
     }
 
     QWidget::mousePressEvent(e);
@@ -1832,27 +1837,6 @@ void MSAEditorSequenceArea::cancelSelection()
     setSelection(emptySelection);
 }
 
-void MSAEditorSequenceArea::sl_onScrollBarActionTriggered( int scrollAction )
-{
-    QScrollBar* sbar = qobject_cast<QScrollBar*>( QObject::sender() );
-    if (sbar == NULL) {
-        return;
-    }
-
-    if (scrollAction ==  QAbstractSlider::SliderSingleStepAdd || scrollAction == QAbstractSlider::SliderSingleStepSub) {
-        if (scribbling) {
-            /*QPoint coord = mapFromGlobal(QCursor::pos());
-            QPoint pos = coordToAbsolutePos(coord);
-            if ( (scrollAction == QAbstractSlider::SliderSingleStepSub) && (sbar == shBar) ) {
-                pos.setX(pos.x() - 1);
-            } else if ( (scrollAction == QAbstractSlider::SliderSingleStepSub) && (sbar == svBar) )  {
-                pos.setY(pos.y() - 1);
-            }
-            updateSelection(pos);*/
-        }
-    }
-}
-
 void MSAEditorSequenceArea::updateHBarPosition( int base )
 {
     if (base <= getFirstVisibleBase() ) {
@@ -1863,8 +1847,6 @@ void MSAEditorSequenceArea::updateHBarPosition( int base )
         shBar->setupRepeatAction(QAbstractSlider::SliderNoAction);
     }
 }
-
-
 
 void MSAEditorSequenceArea::updateVBarPosition( int seq )
 {
@@ -1965,10 +1947,10 @@ void MSAEditorSequenceArea::sl_copyCurrentSelection()
     
 }
 
-void MSAEditorSequenceArea::shiftSelectedRegion( int shift )
+bool MSAEditorSequenceArea::shiftSelectedRegion( int shift )
 {
     if (shift == 0) {
-        return;
+        return true;
     }
 
     MAlignmentObject* maObj = editor->getMSAObject();
@@ -1979,7 +1961,7 @@ void MSAEditorSequenceArea::shiftSelectedRegion( int shift )
         const int width = selection.width();
         const int height = rows.length;
         if (maObj->isRegionEmpty(x, y, width, height)) {
-            return;
+            return true;
         }
 
         const bool shiftOk = maObj->shiftRegion(x, y, width, height, shift);
@@ -1988,7 +1970,9 @@ void MSAEditorSequenceArea::shiftSelectedRegion( int shift )
             setCursorPos(newCursorPosX);
             moveSelection(shift, 0);
         }
+        return shiftOk;
     }
+    return false;
 }
 
 void MSAEditorSequenceArea::deleteCurrentSelection()
@@ -2435,8 +2419,8 @@ QString MSAEditorSequenceArea::exportHighligtning( int startPos, int endPos, int
 
 void MSAEditorSequenceArea::cancelShiftTracking( ) {
     shifting = false;
-    scribbling = false;
     selecting = false;
+    shiftingWasPerformed = false;
     changeTracker.finishTracking( );
     editor->getMSAObject( )->releaseState( );
 }

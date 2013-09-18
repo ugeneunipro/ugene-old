@@ -211,7 +211,14 @@ public:
 
     void moveSelection(int dx, int dy);
 
-    void shiftSelectedRegion(int shift);
+    /**
+     * Shifts currently selected region to @shift.
+     * If @shift > 0, the region is moved to the right and "true" is returned.
+     * If @shift <= 0, the region is moved to the left only for the available number
+     * of columns (i.e. the columns with gaps). The returned value specifies
+     * whether the region was actually moved in this case.
+     */
+    bool shiftSelectedRegion(int shift);
 
     void cancelSelection();
 
@@ -298,7 +305,6 @@ private slots:
     void sl_onHScrollMoved(int pos);
     void sl_onVScrollMoved(int pos);
     void sl_alignmentChanged(const MAlignment&, const MAlignmentModInfo&);
-    void sl_onScrollBarActionTriggered(int scrollAction);
 
     void sl_buildStaticMenu(GObjectView* v, QMenu* m);
     void sl_buildStaticToolbar(GObjectView* v, QToolBar* t);
@@ -393,7 +399,9 @@ private:
     int             startPos; //first visible x pos 
     int             startSeq; //first visible y pos
 
-    bool                scribbling, shifting, selecting;
+    bool                shifting;
+    bool                selecting;
+    bool                shiftingWasPerformed; // specifies whether a user has shifted a selection
     QPoint              origin; // global window coordinates
     QPoint              cursorPos; // mouse cursor position in alignment coordinates
     MSAEditorSelection  selection;
