@@ -86,8 +86,8 @@ void SearchGenbankSequenceDialogController::sl_searchButtonClicked()
         return;
     }
     
-
-    QString qUrl(EntrezUtils::NCBI_ESEARCH_URL.arg(ui->databaseBox->currentText()).arg(query));
+    int maxRet = ui->resultLimitBox->value();
+    QString qUrl(EntrezUtils::NCBI_ESEARCH_URL.arg(ui->databaseBox->currentText()).arg(query).arg(maxRet));
     searchResultHandler.reset( new ESearchResultHandler() );
     searchTask = new EntrezQueryTask(searchResultHandler.data(), qUrl );
 

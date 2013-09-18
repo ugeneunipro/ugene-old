@@ -49,7 +49,7 @@
 
 namespace U2 {
 
-const QString EntrezUtils::NCBI_ESEARCH_URL("http://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=%1&term=%2&tool=UGENE");
+const QString EntrezUtils::NCBI_ESEARCH_URL("http://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=%1&term=%2&retmax=%3&tool=UGENE");
 const QString EntrezUtils::NCBI_ESUMMARY_URL("http://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=%1&id=%2&tool=UGENE");
 const QString EntrezUtils::NCBI_EFETCH_URL("http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=%1&id=%2&retmode=text&rettype=%3&tool=UGENE");
 const QString EntrezUtils::NCBI_DB_NUCLEOTIDE("nucleotide");
