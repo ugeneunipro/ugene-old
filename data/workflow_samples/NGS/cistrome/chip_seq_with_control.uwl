@@ -92,6 +92,24 @@ workflow "ChIP-seq analysis with control"{
     peak2gene-id.peak-annotation->write-annotations-1.in-annotations.annotations
 
     .meta {
+        estimations {
+            function cistromeTime(tagsSize, dbCount) {
+                return 240*tagsSize*dbCount;
+            }
+            var db = new String(utils.attributeValue("seqpos-id.motif_db"));
+            var dbCount = db.split(',').length;
+            var sets = utils.attributeValue("read-annotations.url-in");
+            var time = 0;
+            var ram = 0;
+            for (var i=0; i<sets.length; i++) {
+                var set = sets[i];
+                for (var j=0; j<set.length; j++) {
+                    var tagsSize = utils.fileSize(set[j]) / (1024*1024);
+                    time += cistromeTime(tagsSize, dbCount);
+                }
+            }
+            [time];
+        }
         visual {
             scale:85;
             ceas-report {
