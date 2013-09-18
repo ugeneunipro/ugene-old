@@ -25,8 +25,7 @@
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/DataPathRegistry.h>
 #include <U2Core/AppContext.h>
-
-#include <U2Designer/DelegateEditors.h>
+#include <U2Core/Settings.h>
 
 #include <U2Gui/DialogUtils.h>
 
@@ -178,6 +177,21 @@ CEASSettings CEASReportWorker::createCEASSettings(U2OpStatus &/*os*/) {
 }
 
 /************************************************************************/
+/* CeasComboBoxWithUrlsDelegate */
+/************************************************************************/
+void CeasComboBoxWithUrlsDelegate::updateUgeneSettings() {
+    updateDataPath(getDataPathName(), REFGENE_DIR_NAME);
+}
+
+QString CeasComboBoxWithUrlsDelegate::getDataPathName() {
+    return REF_GENES_DATA_NAME;
+}
+
+QString CeasComboBoxWithUrlsDelegate::getAttributeName() {
+    return ANNS_TABLE_ATTR_ID;
+}
+
+/************************************************************************/
 /* Factory */
 /************************************************************************/
 void CEASReportWorkerFactory::init() {
@@ -314,11 +328,9 @@ void CEASReportWorkerFactory::init() {
         {
             QVariantMap vm;
             if (dataPath){
-                if (dataPath){
-                    vm = dataPath->getDataItemsVariantMap();
-                }
+                vm = dataPath->getDataItemsVariantMap();
             }
-            delegates[ANNS_TABLE_ATTR_ID] = new ComboBoxWithUrlsDelegate(vm);
+            delegates[ANNS_TABLE_ATTR_ID] = new CeasComboBoxWithUrlsDelegate(vm);
         }
         {
             QVariantMap vm;

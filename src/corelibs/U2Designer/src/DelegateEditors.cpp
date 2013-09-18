@@ -45,6 +45,18 @@ DelegateEditor::DelegateEditor(const DelegateEditor &other) {
     }
 }
 
+void DelegateEditor::updateDelegates() {
+    foreach (PropertyDelegate* delegate, delegates.values()) {
+        delegate->update();
+    }
+}
+
+void DelegateEditor::updateDelegate( const QString & name ) {
+    if (delegates.contains(name)) {
+        delegates[name]->update();
+    }
+}
+
 /********************************
  * SpinBoxDelegate
  ********************************/

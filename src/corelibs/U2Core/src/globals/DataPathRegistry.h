@@ -49,6 +49,9 @@ public:
     QVariantMap         getDataItemsVariantMap() const;
     QString             getPathByName(const QString& name) const; //first name found is returned. if your items have similar names use getDataItems()
 
+    bool operator ==(const U2DataPath& other) const { return (name == other.name) && (folders == other.folders); }
+    bool operator !=(const U2DataPath& other) const { return !(*this == other); }
+
 protected:
     QString                 name;
     QString                 path;

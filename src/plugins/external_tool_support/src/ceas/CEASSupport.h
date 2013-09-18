@@ -27,6 +27,8 @@
 namespace U2 {
 
 #define ET_CEAS "CEAS Tools"
+#define CISTROME_DATA_DIR "CISTROME_DATA_DIR"
+#define REFGENE_DIR_NAME "refGene"
 #define REF_GENES_DATA_NAME "Gene annotation table"
 
 class CEASSupport : public ExternalTool {

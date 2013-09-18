@@ -373,6 +373,22 @@ void WizardWidgetParser::visit(RadioWidget *rw) {
     CHECK_OP(os, );
 }
 
+void WizardWidgetParser::visit(SettingsWidget *sw) {
+    pairs = HRSchemaSerializer::ParsedPairs(data, 0);
+    if (!pairs.equalPairs.contains(HRWizardParser::ID)) {
+        os.setError("No id of settings-widget");
+        return;
+    }
+
+    sw->setVar(SettingsWidget::SETTING_PREFIX + pairs.equalPairs[HRWizardParser::ID]);
+    sw->setType(pairs.equalPairs[HRWizardParser::TYPE]);
+    sw->setLabel(pairs.equalPairs[HRWizardParser::LABEL]);
+    Variable v(sw->var());
+
+    addVariable(v);
+    CHECK_OP(os, );
+}
+
 SelectorValue WizardWidgetParser::parseSelectorValue(ActorPrototype *srcProto, const QString &valueDef) {
     HRSchemaSerializer::ParsedPairs pairs(valueDef, 0);
     if (!pairs.equalPairs.contains(HRWizardParser::ID)) {
@@ -468,6 +484,8 @@ WizardWidget * WizardWidgetParser::createWidget(const QString &id) {
         return new PairedReadsWidget();
     } else if (RadioWidget::ID == id) {
         return new RadioWidget();
+    } else if (SettingsWidget::ID == id) {
+        return new SettingsWidget();
     } else {
         return new AttributeWidget();
     }
@@ -693,6 +711,20 @@ void WizardWidgetSerializer::visit(RadioWidget *rw) {
         rData += serializeValue(value, depth + 1);
     }
     result = HRSchemaSerializer::makeBlock(RadioWidget::ID,
+        HRSchemaSerializer::NO_NAME, rData, depth);
+}
+
+void WizardWidgetSerializer::visit(SettingsWidget *sw) {
+    QString rData;
+    QString var = sw->var();
+    if (var.startsWith(SettingsWidget::SETTING_PREFIX)) {
+        var.remove(0, SettingsWidget::SETTING_PREFIX.length());
+    }
+
+    rData += HRSchemaSerializer::makeEqualsPair(HRWizardParser::ID, var, depth + 1);
+    rData += HRSchemaSerializer::makeEqualsPair(HRWizardParser::TYPE, sw->type(), depth + 1);
+    rData += HRSchemaSerializer::makeEqualsPair(HRWizardParser::LABEL, sw->label(), depth + 1);
+    result = HRSchemaSerializer::makeBlock(SettingsWidget::ID,
         HRSchemaSerializer::NO_NAME, rData, depth);
 }
 

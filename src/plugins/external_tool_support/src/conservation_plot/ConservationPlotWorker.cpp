@@ -25,9 +25,9 @@
 #include <U2Core/QVariantUtils.h>
 #include <U2Core/DataPathRegistry.h>
 #include <U2Core/AppContext.h>
-#include <U2Formats/GenbankLocationParser.h>
+#include <U2Core/Settings.h>
 
-#include <U2Designer/DelegateEditors.h>
+#include <U2Formats/GenbankLocationParser.h>
 
 #include <U2Gui/DialogUtils.h>
 
@@ -135,6 +135,7 @@ void ConservationPlotWorker::sl_taskFinished() {
 }
 
 U2::ConservationPlotSettings ConservationPlotWorker::createConservationPlotSettings( U2OpStatus &os ){
+    Q_UNUSED(os);
     ConservationPlotSettings settings;
 
     settings.outFile = getValue<QString>(OUTPUT_FILE);
@@ -146,6 +147,22 @@ U2::ConservationPlotSettings ConservationPlotWorker::createConservationPlotSetti
     settings.width = getValue<int>(WIDTH);
 
     return settings;
+}
+
+
+/************************************************************************/
+/* ConservationPlotComboBoxWithUrlsDelegate */
+/************************************************************************/
+void ConservationPlotComboBoxWithUrlsDelegate::updateUgeneSettings() {
+    updateDataPath(getDataPathName(), CONSERVATION_DIR_NAME, true);
+}
+
+QString ConservationPlotComboBoxWithUrlsDelegate::getDataPathName() {
+    return CONSERVATION_DATA_NAME;
+}
+
+QString ConservationPlotComboBoxWithUrlsDelegate::getAttributeName() {
+    return ASSEMBLY_VER;
 }
 
 /************************************************************************/
@@ -242,11 +259,9 @@ void ConservationPlotWorkerFactory::init() {
          {
              QVariantMap vm;
              if (dataPath){
-                 if (dataPath){
-                     vm = dataPath->getDataItemsVariantMap();
-                 }
+                 vm = dataPath->getDataItemsVariantMap();
              }
-             delegates[ASSEMBLY_VER] = new ComboBoxWithUrlsDelegate(vm, true);
+             delegates[ASSEMBLY_VER] = new ConservationPlotComboBoxWithUrlsDelegate(vm, true);
          }
     }
 

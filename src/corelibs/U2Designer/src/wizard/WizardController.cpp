@@ -24,6 +24,7 @@
 #include <QSizePolicy>
 
 #include <U2Core/AppContext.h>
+#include <U2Core/Settings.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
 
@@ -36,6 +37,7 @@
 #include "PairedDatasetsController.h"
 #include "PropertyWizardController.h"
 #include "RadioController.h"
+#include "SettingsController.h"
 #include "WDWizardPage.h"
 #include "WizardPageController.h"
 
@@ -126,6 +128,20 @@ void WizardController::assignParameters() {
             continue;
         }
         attr->setAttributeValue(values[attrId]);
+    }
+}
+
+void WizardController::applySettings() {
+    foreach (QString varId, vars.keys()) {
+        if (varId.startsWith(SettingsWidget::SETTING_PREFIX)) {
+            QString settingName = varId;
+            settingName.remove(0, SettingsWidget::SETTING_PREFIX.length());
+            QVariant value;
+            if (vars[varId].isAssigned()) {
+                value = vars[varId].getValue();
+            }
+            AppContext::getSettings()->setValue(settingName, value);
+        }
     }
 }
 
@@ -253,6 +269,7 @@ WizardController::ApplyResult WizardController::applyChanges(Metadata &meta) {
         return BROKEN;
     }
     assignParameters();
+    applySettings();
     saveDelegateTags();
     if (selectors.isEmpty()) {
         return OK;
@@ -454,6 +471,13 @@ void WidgetCreator::visit(PairedReadsWidget *dsw) {
 
 void WidgetCreator::visit(RadioWidget *rw) {
     RadioController *controller = new RadioController(wc, rw);
+    controllers << controller;
+    U2OpStatusImpl os;
+    result = controller->createGUI(os);
+}
+
+void WidgetCreator::visit(SettingsWidget *sw) {
+    SettingsController *controller = new SettingsController(wc, sw);
     controllers << controller;
     U2OpStatusImpl os;
     result = controller->createGUI(os);

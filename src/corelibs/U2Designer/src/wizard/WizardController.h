@@ -107,6 +107,7 @@ private:
     void registerSelector(ElementSelectorWidget *widget);
     void replaceCurrentActor(const QString &actorId, const QString &selectorValue);
     void assignParameters();
+    void applySettings();
     void saveDelegateTags();
     DelegateTags * getTags(const AttributeInfo &info);
     bool canSetValue(const AttributeInfo &info, const QVariant &value);
@@ -131,6 +132,7 @@ public:
     virtual void visit(ElementSelectorWidget *esw);
     virtual void visit(PairedReadsWidget *dsw);
     virtual void visit(RadioWidget *rw);
+    virtual void visit(SettingsWidget *sw);
 
     QWidget * getResult();
     QList<WidgetController*> & getControllers();

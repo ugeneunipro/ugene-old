@@ -25,9 +25,9 @@
 #include <U2Core/QVariantUtils.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/DataPathRegistry.h>
-#include <U2Formats/GenbankLocationParser.h>
+#include <U2Core/Settings.h>
 
-#include <U2Designer/DelegateEditors.h>
+#include <U2Formats/GenbankLocationParser.h>
 
 #include <U2Gui/DialogUtils.h>
 
@@ -196,6 +196,21 @@ void SeqPosComboBoxWithChecksWidget::checkHint() {
 }
 
 /************************************************************************/
+/* SeqPosComboBoxWithUrlsDelegate */
+/************************************************************************/
+void SeqPosComboBoxWithUrlsDelegate::updateUgeneSettings() {
+    updateDataPath(getDataPathName(), ASSEMBLY_DIR_NAME, true);
+}
+
+QString SeqPosComboBoxWithUrlsDelegate::getDataPathName() {
+    return ASSEMBLY_DIR;
+}
+
+QString SeqPosComboBoxWithUrlsDelegate::getAttributeName() {
+    return GENOME_ASSEMBLY;
+}
+
+/************************************************************************/
 /* Factory */
 /************************************************************************/
 
@@ -297,12 +312,10 @@ void SeqPosWorkerFactory::init() {
          }
          {
              QVariantMap vm;
-             if (dataPath){
-                 if (dataPath){
-                     vm = dataPath->getDataItemsVariantMap();
-                 }
+             if (dataPath) {
+                 vm = dataPath->getDataItemsVariantMap();
              }
-             delegates[GENOME_ASSEMBLY] = new ComboBoxWithUrlsDelegate(vm, true);
+             delegates[GENOME_ASSEMBLY] = new SeqPosComboBoxWithUrlsDelegate(vm, true);
          }
          {
              QVariantMap vm;

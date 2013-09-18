@@ -29,6 +29,7 @@
 
 #include "CEASSupportTask.h"
 #include "CEASSettings.h"
+#include "utils/CistromeDelegate.h"
 
 namespace U2 {
 namespace LocalWorkflow {
@@ -52,6 +53,18 @@ private:
 private slots:
     void sl_taskFinished();
 }; // CEASReportWorker
+
+class CeasComboBoxWithUrlsDelegate : public CistromeComboBoxWithUrlsDelegate {
+public:
+    CeasComboBoxWithUrlsDelegate(const QVariantMap& items, bool _isPath = false, QObject *parent = 0) : CistromeComboBoxWithUrlsDelegate(items, _isPath, parent) {}
+
+private:
+    virtual void updateUgeneSettings();
+
+    virtual QString getDataPathName();
+    virtual QString getAttributeName();
+    virtual QString getDefaultValue() { return "hg19"; }
+}; // CeasComboBoxWithUrlsDelegate
 
 class CEASReportWorkerFactory : public DomainFactory {
 public:

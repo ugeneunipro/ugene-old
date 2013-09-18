@@ -295,4 +295,42 @@ void RadioWidget::add(const Value &value) {
     _values << value;
 }
 
+/************************************************************************/
+/* SettingsWidget */
+/************************************************************************/
+const QString SettingsWidget::ID("settings-widget");
+const QString SettingsWidget::SETTING_PREFIX = "%setting%";
+SettingsWidget::SettingsWidget()
+: WizardWidget()
+{
+
+}
+
+
+void SettingsWidget::accept(WizardWidgetVisitor *visitor) {
+    visitor->visit(this);
+}
+
+const QString & SettingsWidget::var() const {
+    return _var;
+}
+void SettingsWidget::setVar(const QString &value) {
+    _var = value;
+}
+
+const QString & SettingsWidget::type() const {
+    return _type;
+}
+
+void SettingsWidget::setType(const QString &value) {
+    _type = value;
+}
+
+const QString & SettingsWidget::label() const {
+    return _label;
+}
+void SettingsWidget::setLabel(const QString &value) {
+    _label = value;
+}
+
 } // U2

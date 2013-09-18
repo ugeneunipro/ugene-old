@@ -37,6 +37,7 @@ HEADERS += src/BreakpointHitCountDialog.h \
            src/wizard/PropertyWizardController.h \
            src/wizard/RadioController.h \
            src/wizard/SelectorActors.h \
+           src/wizard/SettingsController.h \
            src/wizard/WDWizardPage.h \
            src/wizard/WidgetController.h \
            src/wizard/WizardController.h \
@@ -96,6 +97,7 @@ SOURCES += src/BreakpointHitCountDialog.cpp \
            src/wizard/PropertyWizardController.cpp \
            src/wizard/RadioController.cpp \
            src/wizard/SelectorActors.cpp \
+           src/wizard/SettingsController.cpp \
            src/wizard/WDWizardPage.cpp \
            src/wizard/WidgetController.cpp \
            src/wizard/WizardController.cpp \

@@ -116,6 +116,7 @@ public:
     virtual void visit(ElementSelectorWidget *esw);
     virtual void visit(PairedReadsWidget *dsw);
     virtual void visit(RadioWidget *rw);
+    virtual void visit(SettingsWidget *sw);
 
 private:
     QString title;
@@ -168,6 +169,7 @@ public:
     virtual void visit(ElementSelectorWidget *esw);
     virtual void visit(PairedReadsWidget *dsw);
     virtual void visit(RadioWidget *rw);
+    virtual void visit(SettingsWidget *rw);
 
     const QString & getResult();
 

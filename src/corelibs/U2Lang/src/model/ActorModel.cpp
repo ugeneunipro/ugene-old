@@ -409,6 +409,9 @@ Port* ActorPrototype::createPort(const PortDescriptor& d, Actor* p) {
 
 Actor* ActorPrototype::createInstance(const ActorId &actorId, AttributeScript *script, const QVariantMap& params) {
     Actor* proc = new Actor(actorId, this, script);
+    if (ed) {
+        ed->updateDelegates();
+    }
 
     foreach(PortDescriptor* pd, getPortDesciptors()) {
         Port* p = createPort(*pd, proc);

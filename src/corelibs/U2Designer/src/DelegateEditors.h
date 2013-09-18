@@ -61,6 +61,8 @@ public:
     virtual ~DelegateEditor() {qDeleteAll(delegates.values());}
     virtual PropertyDelegate* getDelegate(const QString& name) {return delegates.value(name);}
     virtual PropertyDelegate* removeDelegate( const QString & name ) {return delegates.take( name );}
+    virtual void updateDelegates();
+    virtual void updateDelegate( const QString & name );
     virtual void addDelegate( PropertyDelegate * del, const QString & name ) { delegates.insert( name, del ); }
     virtual void commit() {}
     virtual ConfigurationEditor *clone() {return new DelegateEditor(*this);}

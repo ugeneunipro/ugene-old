@@ -26,6 +26,7 @@
 
 #include <U2Core/AppContext.h>
 #include <U2Core/DataPathRegistry.h>
+#include <U2Core/Settings.h>
 
 namespace U2 {
 
@@ -57,9 +58,17 @@ void ConservationPlotSupport::initialize() {
     versionRegExp=QRegExp(executableFileName + "\\d+\\.\\d+");
 
     U2DataPathRegistry* dpr = AppContext::getDataPathRegistry();
-    if (dpr){
-        U2DataPath* dp = new U2DataPath(CONSERVATION_DATA_NAME, QString(PATH_PREFIX_DATA)+QString(":")+"cistrome/phastCons", true);
-        dpr->registerEntry(dp);
+    if (dpr) {
+        QString conservationPath = AppContext::getSettings()->getValue(CISTROME_DATA_DIR).toString() + "/" + CONSERVATION_DIR_NAME;
+        U2DataPath* dp = new U2DataPath(CONSERVATION_DATA_NAME, conservationPath);
+        if (!dp->isValid()) {
+            delete dp;
+            dp = new U2DataPath(CONSERVATION_DATA_NAME, QString(PATH_PREFIX_DATA) + QString(":") + "cistrome/" + CONSERVATION_DIR_NAME, true);
+        }
+
+        if (!dpr->registerEntry(dp)) {
+            delete dp;
+        }
     }
 
     muted = true;

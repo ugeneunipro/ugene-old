@@ -25,6 +25,8 @@
 #include <U2Core/QVariantUtils.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/DataPathRegistry.h>
+#include <U2Core/Settings.h>
+
 #include <U2Formats/GenbankLocationParser.h>
 
 #include <U2Designer/DelegateEditors.h>
@@ -134,6 +136,7 @@ void Peak2GeneWorker::sl_taskFinished() {
 }
 
 U2::Peak2GeneSettings Peak2GeneWorker::createPeak2GeneSettings( U2OpStatus &os ){
+    Q_UNUSED(os);
     Peak2GeneSettings settings;
 
     settings.outpos = actor->getParameter(OUTPOS)->getAttributeValue<QString>(context);
@@ -142,6 +145,22 @@ U2::Peak2GeneSettings Peak2GeneWorker::createPeak2GeneSettings( U2OpStatus &os )
     settings.genomePath = actor->getParameter(GENOME)->getAttributeValue<QString>(context);
 
     return settings;
+}
+
+/************************************************************************/
+/* Peak2GeneComboBoxWithUrlsDelegate */
+/************************************************************************/
+void Peak2GeneComboBoxWithUrlsDelegate::updateUgeneSettings() {
+    updateDataPath(getDataPathName(), REFGENE_DIR_NAME);
+    updateDataPath(ENTREZ_TRANSLATION_DATA_NAME, TRANSLATIONS_DIR_NAME);
+}
+
+QString Peak2GeneComboBoxWithUrlsDelegate::getDataPathName() {
+    return REF_GENES_DATA_NAME;
+}
+
+QString Peak2GeneComboBoxWithUrlsDelegate::getAttributeName() {
+    return GENOME;
 }
 
 /************************************************************************/
@@ -253,11 +272,9 @@ void Peak2GeneWorkerFactory::init() {
          {
              QVariantMap vm;
              if (dataPath){
-                 if (dataPath){
-                     vm = dataPath->getDataItemsVariantMap();
-                 }
+                 vm = dataPath->getDataItemsVariantMap();
              }
-             delegates[GENOME] = new ComboBoxWithUrlsDelegate(vm);
+             delegates[GENOME] = new Peak2GeneComboBoxWithUrlsDelegate(vm);
          }
 
 

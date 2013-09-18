@@ -27,7 +27,10 @@
 namespace U2 {
 
 #define ET_PEAK2GENE "peak2gene"
+#define CISTROME_DATA_DIR "CISTROME_DATA_DIR"
+#define REFGENE_DIR_NAME "refGene"
 #define REF_GENES_DATA_NAME "Gene annotation table"
+#define TRANSLATIONS_DIR_NAME "geneIdTranslations"
 #define ENTREZ_TRANSLATION_DATA_NAME "Entrez ID translations"
 
 class Peak2GeneSupport : public ExternalTool {

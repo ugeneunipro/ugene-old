@@ -217,6 +217,7 @@ void ComboBoxWithUrlWidget::setValue(const QVariant &value) {
         idx = comboBox->findData(value);
         comboBox->setCurrentIndex(idx);
     }
+    sl_valueChanged(0);
 }
 
 void ComboBoxWithUrlWidget::sl_valueChanged(int) {

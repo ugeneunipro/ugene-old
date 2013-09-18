@@ -112,7 +112,8 @@ HEADERS += src/ETSProjectViewItemsContoller.h \
            src/bowtie/bowtie_tests/bowtieTests.h \
            src/bwa/bwa_tests/bwaTests.h \
     src/R/RSupport.h \
-    src/ExternalToolManager.h
+    src/ExternalToolManager.h \
+    src/utils/CistromeDelegate.h
 FORMS += src/ui/BlastAllSupportDialog.ui \
          src/ui/BlastDBCmdDialog.ui \
          src/ui/BowtieBuildSettings.ui \
@@ -239,7 +240,8 @@ SOURCES += src/ETSProjectViewItemsContoller.cpp \
            src/bowtie/bowtie_tests/bowtieTests.cpp \
            src/bwa/bwa_tests/bwaTests.cpp \
     src/R/RSupport.cpp \
-    src/ExternalToolManager.cpp
+    src/ExternalToolManager.cpp \
+    src/utils/CistromeDelegate.cpp
 RESOURCES += external_tool_support.qrc
 TRANSLATIONS += transl/chinese.ts \
                 transl/czech.ts \

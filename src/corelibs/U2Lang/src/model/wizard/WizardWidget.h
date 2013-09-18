@@ -201,6 +201,33 @@ private:
     QList<Value> _values;
 };
 
+/************************************************************************/
+/* Settings */
+/************************************************************************/
+class U2LANG_EXPORT SettingsWidget : public WizardWidget {
+public:
+    SettingsWidget();
+
+    virtual void accept(WizardWidgetVisitor *visitor);
+
+    const QString & var() const;
+    void setVar(const QString &value);
+
+    const QString & type() const;
+    void setType(const QString &value);
+
+    const QString & label() const;
+    void setLabel(const QString &value);
+
+    static const QString ID;
+    static const QString SETTING_PREFIX;
+
+private:
+    QString _var;
+    QString _type;
+    QString _label;
+};
+
 } // U2
 
 #endif // _U2_WIZARDWIDGET_H_

@@ -19,27 +19,39 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_SEQPOS_SUPPORT_
-#define _U2_SEQPOS_SUPPORT_
+#ifndef _U2_SETTINGS_CONTROLLER_H_
+#define _U2_SETTINGS_CONTROLLER_H_
 
-#include <U2Core/ExternalToolRegistry.h>
+#include <U2Designer/WizardController.h>
+
+#include <U2Lang/WizardWidget.h>
+
+#include "WidgetController.h"
 
 namespace U2 {
 
-#define ET_SEQPOS "seqpos"
-#define CISTROME_DATA_DIR "CISTROME_DATA_DIR"
-#define ASSEMBLY_DIR_NAME "genomes"
-#define ASSEMBLY_DIR "Assembly dir"
-
-class SeqPosSupport : public ExternalTool {
+class SettingsController : public WidgetController {
     Q_OBJECT
 public:
-    SeqPosSupport(const QString &name);
+    SettingsController(WizardController *wc, SettingsWidget *sw);
+    virtual ~SettingsController();
+
+    virtual QWidget * createGUI(U2OpStatus &os);
+
+    static const QString TYPE_URL;
+private slots:
+    void sl_valueChanged();
+    void sl_fileSelect();
 
 private:
-    void initialize();
+    SettingsWidget *sw;
+    QLineEdit* lineEdit;
+
+private:
+    QWidget* createUrlSettingsWidget(U2OpStatus &os);
+    QString getSettingValue();
 };
 
 } // U2
 
-#endif // _U2_SEQPOS_SUPPORT_
+#endif // _U2_SETTINGS_CONTROLLER_H_

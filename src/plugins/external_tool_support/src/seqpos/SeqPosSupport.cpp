@@ -26,6 +26,7 @@
 
 #include <U2Core/AppContext.h>
 #include <U2Core/DataPathRegistry.h>
+#include <U2Core/Settings.h>
 
 namespace U2 {
 
@@ -58,9 +59,17 @@ void SeqPosSupport::initialize() {
     versionRegExp=QRegExp("Version \\d+\\.\\d+");
 
     U2DataPathRegistry* dpr = AppContext::getDataPathRegistry();
-    if (dpr){
-        U2DataPath* dp = new U2DataPath(ASSEMBLY_DIR, QString(PATH_PREFIX_DATA)+QString(":")+"cistrome/genomes", true);
-        dpr->registerEntry(dp);
+    if (dpr) {
+        QString assemblyPath = AppContext::getSettings()->getValue(CISTROME_DATA_DIR).toString() + "/" + ASSEMBLY_DIR_NAME;
+        U2DataPath* dp = new U2DataPath(ASSEMBLY_DIR, assemblyPath);
+        if (!dp->isValid()) {
+            delete dp;
+            dp = new U2DataPath(ASSEMBLY_DIR, QString(PATH_PREFIX_DATA) + QString(":") + "cistrome/" + ASSEMBLY_DIR_NAME, true);
+        }
+
+        if (!dpr->registerEntry(dp)) {
+            delete dp;
+        }
     }
 
     errorDescriptions.insert("CRITICAL: numpy 1.3 or greater must be installed", SeqPosSupport::tr("Please, install numpy 1.3 or greater for your Python to run SeqPos"));

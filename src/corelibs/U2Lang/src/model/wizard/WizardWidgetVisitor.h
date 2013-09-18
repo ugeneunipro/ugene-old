@@ -36,6 +36,7 @@ public:
     virtual void visit(ElementSelectorWidget *) = 0;
     virtual void visit(PairedReadsWidget *) = 0;
     virtual void visit(RadioWidget *) = 0;
+    virtual void visit(SettingsWidget *) = 0;
 };
 
 } // U2

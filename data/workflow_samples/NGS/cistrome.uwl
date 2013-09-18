@@ -30,6 +30,14 @@ workflow "ChIP-seq analysis with Cistrome tools" {
                             }
                         }
                     }
+                    group {
+                        title:"Cistrome internal data";
+                        settings-widget {
+                            id: CISTROME_DATA_DIR;
+                            type: url;
+                            label: "Cistrome data directory";
+                        }
+                    }
                 }
             }
         }

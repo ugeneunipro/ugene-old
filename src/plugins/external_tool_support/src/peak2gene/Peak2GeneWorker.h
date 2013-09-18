@@ -29,6 +29,7 @@
 
 #include "Peak2GeneTask.h"
 #include "Peak2GeneSettings.h"
+#include "utils/CistromeDelegate.h"
 
 namespace U2 {
 namespace LocalWorkflow {
@@ -52,6 +53,18 @@ private:
 private slots:
     void sl_taskFinished();
 }; // Peak2GeneWorker
+
+class Peak2GeneComboBoxWithUrlsDelegate : public CistromeComboBoxWithUrlsDelegate {
+public:
+    Peak2GeneComboBoxWithUrlsDelegate(const QVariantMap& items, bool _isPath = false, QObject *parent = 0) : CistromeComboBoxWithUrlsDelegate(items, _isPath, parent) {}
+
+private:
+    virtual void updateUgeneSettings();
+
+    virtual QString getDataPathName();
+    virtual QString getAttributeName();
+    virtual QString getDefaultValue() { return "hg19"; }
+}; // Peak2GeneComboBoxWithUrlsDelegate
 
 class Peak2GeneWorkerFactory : public DomainFactory {
 public:

@@ -2203,6 +2203,7 @@ void WorkflowView::runWizard(Wizard *w) {
     if (gui->exec() && !controller.isBroken()) {
         QString result = w->getResult(controller.getVariables());
         if (!result.isEmpty()) {
+            controller.applyChanges(meta);
             loadWizardResult(result);
             return;
         }

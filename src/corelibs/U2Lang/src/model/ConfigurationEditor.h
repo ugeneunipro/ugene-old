@@ -60,6 +60,8 @@ public:
     // this controller is a container of delegates
     virtual PropertyDelegate* getDelegate(const QString&) { return NULL; }
     virtual PropertyDelegate* removeDelegate( const QString&) { return NULL; }
+    virtual void updateDelegates() {}
+    virtual void updateDelegate( const QString&) {}
     virtual void addDelegate( PropertyDelegate * , const QString & ) {}
     
     // commit data to model
@@ -131,6 +133,7 @@ public:
     virtual PropertyWidget * createWizardWidget(U2OpStatus &os, QWidget *parent) const;
     virtual void getItems( QVariantMap & ) const {}
     virtual Type type() const;
+    virtual void update() {}
 
     DelegateTags * tags() const;
     void setSchemaConfig(SchemaConfig *value);

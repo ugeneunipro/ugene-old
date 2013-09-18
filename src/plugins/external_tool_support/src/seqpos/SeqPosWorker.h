@@ -31,6 +31,7 @@
 
 #include "SeqPosTask.h"
 #include "SeqPosSettings.h"
+#include "utils/CistromeDelegate.h"
 
 namespace U2 {
 namespace LocalWorkflow {
@@ -80,6 +81,18 @@ private:
 private:
     QLabel* hintLabel;
 };
+
+class SeqPosComboBoxWithUrlsDelegate : public CistromeComboBoxWithUrlsDelegate {
+public:
+    SeqPosComboBoxWithUrlsDelegate(const QVariantMap& items, bool _isPath = false, QObject *parent = 0) : CistromeComboBoxWithUrlsDelegate(items, _isPath, parent) {}
+
+private:
+    virtual void updateUgeneSettings();
+
+    virtual QString getDataPathName();
+    virtual QString getAttributeName();
+    virtual QString getDefaultValue() { return "hg19"; }
+}; // SeqPosComboBoxWithUrlsDelegate
 
 class SeqPosWorkerFactory : public DomainFactory {
 public:

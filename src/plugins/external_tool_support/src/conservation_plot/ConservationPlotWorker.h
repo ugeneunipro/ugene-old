@@ -29,6 +29,7 @@
 
 #include "ConservationPlotTask.h"
 #include "ConservationPlotSettings.h"
+#include "utils/CistromeDelegate.h"
 
 namespace U2 {
 namespace LocalWorkflow {
@@ -52,6 +53,18 @@ private:
 private slots:
     void sl_taskFinished();
 }; // ConservationPlotWorker
+
+class ConservationPlotComboBoxWithUrlsDelegate : public CistromeComboBoxWithUrlsDelegate {
+public:
+    ConservationPlotComboBoxWithUrlsDelegate(const QVariantMap& items, bool _isPath = false, QObject *parent = 0) : CistromeComboBoxWithUrlsDelegate(items, _isPath, parent) {}
+
+private:
+    virtual void updateUgeneSettings();
+
+    virtual QString getDataPathName();
+    virtual QString getAttributeName();
+    virtual QString getDefaultValue() { return "hg19"; }
+}; // ConservationPlotComboBoxWithUrlsDelegate
 
 class ConservationPlotWorkerFactory : public DomainFactory {
 public:
