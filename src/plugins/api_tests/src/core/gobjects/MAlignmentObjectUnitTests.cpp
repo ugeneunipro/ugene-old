@@ -193,13 +193,13 @@ IMPLEMENT_TEST( MAlignmentObjectUnitTests, deleteGap_regionWithNonGapSymbols ) {
 
     const int countOfDeleted = alnObj.deleteGap( U2Region( 1, aln.getNumRows( ) - 1 ), 6, 2, os );
     SAFE_POINT_OP( os, );
-    CHECK_TRUE( 1 == countOfDeleted, "Unexpected count of removed symbols!" );
+    CHECK_TRUE( 0 == countOfDeleted, "Unexpected count of removed symbols!" );
     const MAlignment &resultAlignment = alnObj.getMAlignment( );
     CHECK_TRUE( resultAlignment.getRow( 0 ).getCore( ) == "AC-GT--AAA----",
         "First row content is unexpected!" );
-    CHECK_TRUE( resultAlignment.getRow( 1 ).getCore( ) == "-ACA--GTT----",
+    CHECK_TRUE( resultAlignment.getRow( 1 ).getCore( ) == "-ACA---GTT----",
         "Second row content is unexpected!" );
-    CHECK_TRUE( resultAlignment.getRow( 2 ).getCore( ) == "-ACACAG------",
+    CHECK_TRUE( resultAlignment.getRow( 2 ).getCore( ) == "-ACACA-G------",
         "Third row content is unexpected!" );
 }
 

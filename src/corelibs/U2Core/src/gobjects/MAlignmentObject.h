@@ -136,6 +136,16 @@ signals:
     void si_completeStateChanged(bool complete);
     
 private:
+    
+    /**
+     * Returns maximum count of subsequent gap columns in the region that starts from column
+     * with @pos number, has width of @maxGaps and includes the rows specified by @rows.
+     * @maxGaps, @pos are to be non-negative numbers. Gap columns should finish in column
+     * having @pos + @maxGaps number, otherwise 0 is returned. If the region is located
+     * in the MSA trailing gaps area, then 0 is returned.
+     */
+    int getMaxWidthOfGapRegion( const U2Region &rows, int pos, int maxGaps, U2OpStatus &os );
+
     MAlignment cachedMAlignment;
     MSAMemento*     memento;
 };

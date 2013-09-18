@@ -1451,6 +1451,29 @@ GUI_TEST_CLASS_DEFINITION( test_2021_4 )
     CHECK_SET_ERR( !redo->isEnabled( ), "Redo button is unexpectedly enabled" );
 }
 
+GUI_TEST_CLASS_DEFINITION( test_2021_5 )
+{
+    // 1. Open document "ma2_gap_8_col.aln"
+    GTFileDialog::openFile( os, testDir + "_common_data/scenarios/msa", "ma2_gap_8_col.aln" );
+
+    // 2. Select a column in the sequence area
+    GTUtilsMSAEditorSequenceArea::selectArea( os, QPoint( 9, 0 ), QPoint( 16, 9 ) );
+
+    // 3. Remove gap columns by pressing "Backspace" key
+    GTKeyboardDriver::keyPress( os, GTKeyboardDriver::key["back"] );
+    GTGlobals::sleep( 200 );
+
+    // 4. Check that all the empty columns were removed
+    GTUtilsMSAEditorSequenceArea::selectArea( os, QPoint( 0, 0 ), QPoint( 14, 9 ) );
+    GTKeyboardDriver::keyClick( os, 'c', GTKeyboardDriver::key["ctrl"] );
+    GTGlobals::sleep( 200 );
+    const QString finalMsaContent = GTClipboard::text( os );
+    CHECK_SET_ERR(  "AAGCTTCTTTTAA--\nAAGTTACTAA-----\nTAG---TTATTAA--\nAAGC---TATTAA--\n"
+        "TAGTTATTAA-----\nTAGTTATTAA-----\nTAGTTATTAA-----\nAAGCTTT---TAA--\n"
+        "A--AGAATAATTA--\nAAGCTTTTAA-----" == finalMsaContent,
+        "Unexpected MSA content has occurred" );
+}
+
 } // GUITest_regression_scenarios namespace
 
 } // U2 namespace

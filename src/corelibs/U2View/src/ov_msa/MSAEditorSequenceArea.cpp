@@ -955,15 +955,13 @@ void MSAEditorSequenceArea::mouseReleaseEvent(QMouseEvent *e)
     newCurPos.setY(yPosWithValidations);
 
     if (shifting) {
-        int shift = ( !shiftingWasPerformed )
+        const int shift = ( !shiftingWasPerformed )
             ? newCurPos.x( ) - ui->seqArea->getSelection( ).getRect( ).center( ).x( )
             : newCurPos.x( ) - cursorPos.x( );
         if ( 0 != shift ) {
             U2OpStatus2Log os;
             U2UseCommonUserModStep userModStep( editor->getMSAObject( )->getEntityRef( ), os );
-            while ( !shiftSelectedRegion( shift ) && 0 != shift ) {
-                shift = ( shift / qAbs( shift ) ) * ( qAbs( shift ) - 1 );
-            }
+            shiftSelectedRegion( shift );
         }
     } else {
         updateSelection(newCurPos);
@@ -1398,14 +1396,17 @@ void MSAEditorSequenceArea::removeGapsPrecedingSelection( ) {
 
     const QPoint selectionTopLeftCorner( selectionBackup.topLeft( ) );
     // don't perform the deletion if the selection is at the alignment start
-    if ( 0 > selectionTopLeftCorner.x( ) - selectionBackup.width( ) ) {
+    if ( 0 == selectionTopLeftCorner.x( ) ) {
         return;
     }
 
-    const QPoint topLeftCornerOfRemovedRegion( selectionTopLeftCorner.x( )
+    QPoint topLeftCornerOfRemovedRegion( selectionTopLeftCorner.x( )
         - selectionBackup.width( ), selectionTopLeftCorner.y( ) );
-    SAFE_POINT( isInRange( topLeftCornerOfRemovedRegion ),
-        "Unexpected gap position is encountered", );
+    int removingRegionWidth = selectionBackup.width( );
+    if ( 0 > topLeftCornerOfRemovedRegion.x( ) ) {
+        removingRegionWidth -= qAbs( topLeftCornerOfRemovedRegion.x( ) );
+        topLeftCornerOfRemovedRegion.setX( 0 );
+    }
 
     MAlignmentObject *maObj = editor->getMSAObject( );
     if ( NULL == maObj || maObj->isStateLocked( ) ) {
@@ -1420,14 +1421,15 @@ void MSAEditorSequenceArea::removeGapsPrecedingSelection( ) {
         selectionBackup.height( ) );
     U2OpStatus2Log os;
     U2UseCommonUserModStep userModStep( maObj->getEntityRef( ), os );
+
     const int countOfDeletedSymbols = maObj->deleteGap( rowsContainingRemovedGaps,
-        topLeftCornerOfRemovedRegion.x( ), selectionBackup.width( ), os );
-    SAFE_POINT_OP( os, );
+        topLeftCornerOfRemovedRegion.x( ), removingRegionWidth, os );
+
     // if some symbols were actually removed and the selection is not located
     // at the alignment end, then it's needed to move the selection
     // to the place of the removed symbols
     if ( 0 < countOfDeletedSymbols) {
-        const MSAEditorSelection newSelection( selectionBackup.x( ) - selectionBackup.width( ),
+        const MSAEditorSelection newSelection( selectionBackup.x( ) - removingRegionWidth,
             topLeftCornerOfRemovedRegion.y( ), selectionBackup.width( ),
             selectionBackup.height( ) );
         setSelection( newSelection );

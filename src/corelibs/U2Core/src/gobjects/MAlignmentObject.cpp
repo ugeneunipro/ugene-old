@@ -206,10 +206,12 @@ void MAlignmentObject::insertGap(U2Region rows, int pos, int count) {
     updateCachedMAlignment(mi);
 }
 
-int MAlignmentObject::deleteGap( const U2Region &rows, int pos, int maxGaps, U2OpStatus &os ) {
-    SAFE_POINT( !isStateLocked( ), "Alignment state is locked!", 0 );
-
+int MAlignmentObject::getMaxWidthOfGapRegion( const U2Region &rows, int pos, int maxGaps,
+    U2OpStatus &os )
+{
     MAlignment msa = getMAlignment( );
+    SAFE_POINT( U2Region( 0, msa.getNumRows( ) ).contains( rows ) && 0 <= pos && 0 <= maxGaps
+        && msa.getLength( ) > pos, "Illegal parameters of the gap region!", 0 );
 
     const int maxRemovedGaps = qBound(0, maxGaps, msa.getLength() - pos);
     // check if there is nothing to remove
@@ -225,7 +227,8 @@ int MAlignmentObject::deleteGap( const U2Region &rows, int pos, int maxGaps, U2O
         int gapCountInCurrentRow = 0;
         // iterate through current row bases to determine gap count
         while ( gapCountInCurrentRow < maxRemovedGaps ) {
-            const char currentSymbol = msa.charAt( rowCount, pos + gapCountInCurrentRow );
+            const char currentSymbol = msa.charAt( rowCount,
+                pos + maxGaps - gapCountInCurrentRow - 1 );
             if ( MAlignment_GapChar != currentSymbol ) {
                 break;
             }
@@ -257,10 +260,25 @@ int MAlignmentObject::deleteGap( const U2Region &rows, int pos, int maxGaps, U2O
         return 0;
     }
 
+    return removingGapColumnCount;
+}
+
+int MAlignmentObject::deleteGap( const U2Region &rows, int pos, int maxGaps, U2OpStatus &os ) {
+    SAFE_POINT( !isStateLocked( ), "Alignment state is locked!", 0 );
+
+    MAlignment msa = getMAlignment( );
+
+    const int removingGapColumnCount = getMaxWidthOfGapRegion( rows, pos, maxGaps, os );
+    SAFE_POINT_OP( os, 0 );
+    if ( 0 == removingGapColumnCount ) {
+        return 0;
+    } else if ( removingGapColumnCount < maxGaps ) {
+        pos += maxGaps - removingGapColumnCount;
+    }
     QList<qint64> modifiedRowIds;
     modifiedRowIds.reserve( rows.length );
 
-    rowCount = rows.startPos;
+    int rowCount = rows.startPos;
     // iterate through given rows to update each of them in DB
     while ( rowCount < rows.endPos( ) ) {
         msa.removeChars( rowCount, pos, removingGapColumnCount, os );
