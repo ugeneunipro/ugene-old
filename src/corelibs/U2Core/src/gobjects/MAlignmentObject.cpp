@@ -220,10 +220,9 @@ int MAlignmentObject::getMaxWidthOfGapRegion( const U2Region &rows, int pos, int
     }
 
     int removingGapColumnCount = maxRemovedGaps;
-    int rowCount = rows.startPos;
     bool isRegionInRowTrailingGaps = true;
     // iterate through given rows to determine the width of the continuous gap region
-    while (rowCount < rows.endPos()) {
+    for ( int rowCount = rows.startPos; rowCount < rows.endPos( ); ++rowCount ) {
         int gapCountInCurrentRow = 0;
         // iterate through current row bases to determine gap count
         while ( gapCountInCurrentRow < maxRemovedGaps ) {
@@ -236,11 +235,12 @@ int MAlignmentObject::getMaxWidthOfGapRegion( const U2Region &rows, int pos, int
         }
 
         // determine if the given area intersects a row in the area of trailing gaps
-        if ( gapCountInCurrentRow == maxRemovedGaps && isRegionInRowTrailingGaps ) {
-            int trailingPosition = pos + gapCountInCurrentRow;
+        if ( 0 != gapCountInCurrentRow && isRegionInRowTrailingGaps ) {
+            int trailingPosition = pos + maxRemovedGaps - gapCountInCurrentRow;
             if ( msa.getLength( ) != trailingPosition ) {
                 while ( msa.getLength( ) > trailingPosition && isRegionInRowTrailingGaps ) {
-                    isRegionInRowTrailingGaps &= ( MAlignment_GapChar == msa.charAt( rowCount, trailingPosition ) );
+                    isRegionInRowTrailingGaps &= ( MAlignment_GapChar == msa.charAt( rowCount,
+                        trailingPosition ) );
                     ++trailingPosition;
                 }
             }
@@ -253,7 +253,6 @@ int MAlignmentObject::getMaxWidthOfGapRegion( const U2Region &rows, int pos, int
             return 0;
         }
         removingGapColumnCount = qMin( removingGapColumnCount, gapCountInCurrentRow );
-        ++rowCount;
     }
 
     if ( isRegionInRowTrailingGaps ) {
@@ -266,8 +265,6 @@ int MAlignmentObject::getMaxWidthOfGapRegion( const U2Region &rows, int pos, int
 int MAlignmentObject::deleteGap( const U2Region &rows, int pos, int maxGaps, U2OpStatus &os ) {
     SAFE_POINT( !isStateLocked( ), "Alignment state is locked!", 0 );
 
-    MAlignment msa = getMAlignment( );
-
     const int removingGapColumnCount = getMaxWidthOfGapRegion( rows, pos, maxGaps, os );
     SAFE_POINT_OP( os, 0 );
     if ( 0 == removingGapColumnCount ) {
@@ -278,9 +275,9 @@ int MAlignmentObject::deleteGap( const U2Region &rows, int pos, int maxGaps, U2O
     QList<qint64> modifiedRowIds;
     modifiedRowIds.reserve( rows.length );
 
-    int rowCount = rows.startPos;
+    MAlignment msa = getMAlignment( );
     // iterate through given rows to update each of them in DB
-    while ( rowCount < rows.endPos( ) ) {
+    for ( int rowCount = rows.startPos; rowCount < rows.endPos( ); ++rowCount ) {
         msa.removeChars( rowCount, pos, removingGapColumnCount, os );
         CHECK_OP( os, 0 );
 
@@ -288,7 +285,6 @@ int MAlignmentObject::deleteGap( const U2Region &rows, int pos, int maxGaps, U2O
         MsaDbiUtils::updateRowGapModel( entityRef, row.getRowId( ), row.getGapModel( ), os );
         CHECK_OP( os, 0 );
         modifiedRowIds << row.getRowId( );
-        ++rowCount;
     }
 
     updateCachedMAlignment( MAlignmentModInfo( ), modifiedRowIds );

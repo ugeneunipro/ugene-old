@@ -1429,7 +1429,7 @@ void MSAEditorSequenceArea::removeGapsPrecedingSelection( ) {
     // at the alignment end, then it's needed to move the selection
     // to the place of the removed symbols
     if ( 0 < countOfDeletedSymbols) {
-        const MSAEditorSelection newSelection( selectionBackup.x( ) - removingRegionWidth,
+        const MSAEditorSelection newSelection( selectionBackup.x( ) - countOfDeletedSymbols,
             topLeftCornerOfRemovedRegion.y( ), selectionBackup.width( ),
             selectionBackup.height( ) );
         setSelection( newSelection );
