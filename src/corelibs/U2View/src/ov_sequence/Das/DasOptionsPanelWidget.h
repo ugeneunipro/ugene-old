@@ -50,13 +50,13 @@ class DasBlastSettingsWidget : public QWidget, private Ui_DasBlastSettingsWidget
 public:
     DasBlastSettingsWidget(QWidget* parent = NULL);
     UniprotBlastSettings getSettings();
-    double getMinIdentity() { return minimumIdentityDoubleSpinBox->value(); }
 };
 
 class DasOptionsPanelWidget : public QWidget, private Ui_DasOptionsPanelWidget {
     Q_OBJECT
 public:
     DasOptionsPanelWidget(AnnotatedDNAView* adv);
+    double getMinIdentity() { return minimumIdentityDoubleSpinBox->value(); }
 
 private slots:
     void sl_searchTypeChanged(int type);
@@ -68,12 +68,14 @@ private slots:
     void sl_onSequenceFocusChanged(ADVSequenceWidget*, ADVSequenceWidget*);
     void sl_onSelectionChanged(LRegionsSelection* _selection, const QVector<U2Region>& added, const QVector<U2Region>& removed);
     void sl_openInNewView();
+    void sl_showLessClicked(const QString&);
 
 private:
     void initialize();
     void connectSignals();
     void checkState();
     void updateRegionSelectorWidget();
+    void updateShowOptions();
 
     QList<DASSource> getFeatureSources();
     DASSource getSequenceSource();
@@ -91,6 +93,7 @@ private:
     QListWidget* dasFeaturesListWidget;
     CreateAnnotationWidgetController* annotationsWidgetController;
     RegionSelector* regionSelector;
+    bool showMore;
 
     QList<Task*> loadDasObjectTasks;
     QAction* fetchIdsAction;

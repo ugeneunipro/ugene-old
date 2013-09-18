@@ -58,30 +58,10 @@ const QString DasOptionsPanelWidget::WHOLE_SEQUENCE = tr("Whole sequence");
 const QString DasOptionsPanelWidget::SELECTED_REGION = tr("Selected region");
 const QString DasOptionsPanelWidget::CUSTOM_REGION = tr("Custom region");
 
+const static QString SHOW_OPTIONS_LINK("show_options_link");
+
 DasBlastSettingsWidget::DasBlastSettingsWidget(QWidget* parent) : QWidget(parent) {
     setupUi(this);
-    minimumIdentityDoubleSpinBox->setValue(90);
-
-    databaseComboBox->addItem("UniProtKB", "uniprotkb");
-    databaseComboBox->addItem("...Archaea", "uniprotkb_archaea");
-    databaseComboBox->addItem("...Bacteria", "uniprotkb_bacteria");
-    databaseComboBox->addItem("...Eucaryota", "uniprotkb_eukaryota");
-    databaseComboBox->addItem("...Arthropoda", "uniprotkb_arthropoda");
-    databaseComboBox->addItem("...Fungi", "uniprotkb_fungi");
-    databaseComboBox->addItem("...Human", "uniprotkb_human");
-    databaseComboBox->addItem("...Mammals", "uniprotkb_mammals");
-    databaseComboBox->addItem("...Nematoda", "uniprotkb_nematoda");
-    databaseComboBox->addItem("...Plants", "uniprotkb_plants");
-    databaseComboBox->addItem("...Rodents", "uniprotkb_rodents");
-    databaseComboBox->addItem("...Vertebrates", "uniprotkb_vertebrates");
-    databaseComboBox->addItem("...Viruses", "uniprotkb_viruses");
-    databaseComboBox->addItem("...PDB", "uniprotkb_pdb");
-    databaseComboBox->addItem("...Complete microbial proteoms", "uniprotkb_complete_microbial_proteomes");
-    databaseComboBox->addItem("UniProtKB/Swiss-Prot", "uniprotkb_swissprot");
-    databaseComboBox->addItem("UniRef100", "UniRef100");
-    databaseComboBox->addItem("UniRef90", "UniRef90");
-    databaseComboBox->addItem("UniRef50", "UniRef50");
-    databaseComboBox->addItem("UniParc", "uniparc");
 
     matrixComboBox->addItem("Auto", "");
     matrixComboBox->addItem("BLOSUM-45", "blosum45");
@@ -98,7 +78,6 @@ DasBlastSettingsWidget::DasBlastSettingsWidget(QWidget* parent) : QWidget(parent
     gappedComboBox->addItems(UniprotBlastSettings::ALLOWED_GAPPED);
     hitsComboBox->addItems(UniprotBlastSettings::ALLOWED_HITS);
 
-    databaseComboBox->setCurrentIndex(databaseComboBox->findData(UniprotBlastSettings::DEFAULT_DATABASE));
     thresholdComboBox->setCurrentIndex(thresholdComboBox->findText(UniprotBlastSettings::DEFAULT_THRESHOLD));
     matrixComboBox->setCurrentIndex(matrixComboBox->findData(UniprotBlastSettings::DEFAULT_MATRIX));
     filteringComboBox->setCurrentIndex(filteringComboBox->findData(UniprotBlastSettings::DEFAULT_FILTERING));
@@ -108,7 +87,6 @@ DasBlastSettingsWidget::DasBlastSettingsWidget(QWidget* parent) : QWidget(parent
 
 UniprotBlastSettings DasBlastSettingsWidget::getSettings() {
     UniprotBlastSettings settings;
-    settings.insert(UniprotBlastSettings::DATABASE, databaseComboBox->itemData(databaseComboBox->currentIndex()).toString());
     settings.insert(UniprotBlastSettings::THRESHOLD, thresholdComboBox->currentText());
     settings.insert(UniprotBlastSettings::MATRIX, matrixComboBox->itemData(matrixComboBox->currentIndex()).toString());
     settings.insert(UniprotBlastSettings::FILTERING, filteringComboBox->itemData(filteringComboBox->currentIndex()).toString());
@@ -128,11 +106,13 @@ DasOptionsPanelWidget::DasOptionsPanelWidget(AnnotatedDNAView* adv) :
     regionSelector(NULL),
     fetchIdsAction(NULL),
     fetchAnnotationsAction(NULL),
-    openInNewViewAction(NULL) {
+    openInNewViewAction(NULL),
+    showMore(true){
     setupUi(this);
     initialize();
     connectSignals();
     checkState();
+    updateShowOptions();
 }
 
 void DasOptionsPanelWidget::sl_searchTypeChanged(int type) {
@@ -146,24 +126,12 @@ void DasOptionsPanelWidget::sl_searchIdsClicked() {
     }
 
     idList->clearContents();
-    GetDasIdsBySequenceTask* searchIdsTask = NULL;
-
-    if (searchTypeComboBox->currentText() == EXACT_SEARCH) {
-        searchIdsTask = new GetDasIdsByExactSequenceTask(ctx->getSequenceData(getRegion()));
-        connect(searchIdsTask,
-                SIGNAL(si_stateChanged()),
-                SLOT(sl_exactSearchFinish()));
-        AppContext::getTaskScheduler()->registerTopLevelTask(searchIdsTask);
-    } else if (searchTypeComboBox->currentText() == BLAST_SEARCH) {
-        SAFE_POINT (NULL != blastSettingsWidget, "BLAST settings widget is null", );
-        UniprotBlastTask* blastTask = new UniprotBlastTask(ctx->getSequenceData(getRegion()), blastSettingsWidget->getSettings());
-        connect(blastTask,
-                SIGNAL(si_stateChanged()),
-                SLOT(sl_blastSearchFinish()));
-        AppContext::getTaskScheduler()->registerTopLevelTask(blastTask);
-    } else {
-        FAIL("Unexpected search type", );
-    }
+    SAFE_POINT (NULL != blastSettingsWidget, "BLAST settings widget is null", );
+    UniprotBlastTask* blastTask = new UniprotBlastTask(ctx->getSequenceData(getRegion()), blastSettingsWidget->getSettings());
+    connect(blastTask,
+            SIGNAL(si_stateChanged()),
+            SLOT(sl_blastSearchFinish()));
+    AppContext::getTaskScheduler()->registerTopLevelTask(blastTask);
 }
 
 void DasOptionsPanelWidget::sl_annotateClicked() {
@@ -210,7 +178,7 @@ void DasOptionsPanelWidget::sl_blastSearchFinish() {
         idList->clearContents();
         QList<UniprotResult> results = blastTask->getResults();
         for (int i = 0; i < results.count(); ++i) {
-            if (results[i].identity >= blastSettingsWidget->getMinIdentity()) {
+            if (results[i].identity >= getMinIdentity()) {
                 idList->insertRow(i);
                 idList->setItem(i, 0, new QTableWidgetItem(results[i].accession));
                 idList->setItem(i, 1, new QTableWidgetItem(QString::number(results[i].identity) + "%"));
@@ -295,6 +263,11 @@ void DasOptionsPanelWidget::sl_openInNewView() {
     AppContext::getTaskScheduler()->registerTopLevelTask(new LoadDASDocumentsAndOpenViewTask(accessionNumber, dir, refSource, featureSources, false));
 }
 
+void DasOptionsPanelWidget::sl_showLessClicked(const QString& link) {
+    SAFE_POINT(SHOW_OPTIONS_LINK == link, "Incorrect link!",);
+    updateShowOptions();
+}
+
 void DasOptionsPanelWidget::initialize() {
     SAFE_POINT(NULL != ctx, "Active sequence context is NULL.", );
 
@@ -309,9 +282,30 @@ void DasOptionsPanelWidget::initialize() {
     settingsShowHideWidget = new ShowHideSubgroupWidget(ALGORITHM_SETTINGS, ALGORITHM_SETTINGS, blastSettingsWidget, false);
     settingsContainerLayout->addWidget(settingsShowHideWidget);
 
-    searchTypeComboBox->addItem(EXACT_SEARCH);
-    searchTypeComboBox->addItem(BLAST_SEARCH);
-    searchTypeComboBox->setCurrentIndex(searchTypeComboBox->findText(BLAST_SEARCH));
+    minimumIdentityDoubleSpinBox->setValue(90);
+
+    databaseComboBox->addItem("UniProtKB", "uniprotkb");
+    databaseComboBox->addItem("...Archaea", "uniprotkb_archaea");
+    databaseComboBox->addItem("...Bacteria", "uniprotkb_bacteria");
+    databaseComboBox->addItem("...Eucaryota", "uniprotkb_eukaryota");
+    databaseComboBox->addItem("...Arthropoda", "uniprotkb_arthropoda");
+    databaseComboBox->addItem("...Fungi", "uniprotkb_fungi");
+    databaseComboBox->addItem("...Human", "uniprotkb_human");
+    databaseComboBox->addItem("...Mammals", "uniprotkb_mammals");
+    databaseComboBox->addItem("...Nematoda", "uniprotkb_nematoda");
+    databaseComboBox->addItem("...Plants", "uniprotkb_plants");
+    databaseComboBox->addItem("...Rodents", "uniprotkb_rodents");
+    databaseComboBox->addItem("...Vertebrates", "uniprotkb_vertebrates");
+    databaseComboBox->addItem("...Viruses", "uniprotkb_viruses");
+    databaseComboBox->addItem("...PDB", "uniprotkb_pdb");
+    databaseComboBox->addItem("...Complete microbial proteoms", "uniprotkb_complete_microbial_proteomes");
+    databaseComboBox->addItem("UniProtKB/Swiss-Prot", "uniprotkb_swissprot");
+    databaseComboBox->addItem("UniRef100", "UniRef100");
+    databaseComboBox->addItem("UniRef90", "UniRef90");
+    databaseComboBox->addItem("UniRef50", "UniRef50");
+    databaseComboBox->addItem("UniParc", "uniparc");
+
+    databaseComboBox->setCurrentIndex(databaseComboBox->findData(UniprotBlastSettings::DEFAULT_DATABASE));
 
     // DAS sources
     dasFeaturesListWidget = new QListWidget();
@@ -358,9 +352,6 @@ void DasOptionsPanelWidget::initialize() {
 }
 
 void DasOptionsPanelWidget::connectSignals() {
-    connect(searchTypeComboBox,
-            SIGNAL(currentIndexChanged(int)),
-            SLOT(sl_searchTypeChanged(int)));
     connect(searchIdsButton,
             SIGNAL(clicked()),
             SLOT(sl_searchIdsClicked()));
@@ -382,11 +373,14 @@ void DasOptionsPanelWidget::connectSignals() {
     connect(openInNewViewAction,
             SIGNAL(triggered()),
             SLOT(sl_openInNewView()));
+    connect(lblShowMoreLess,
+            SIGNAL(linkActivated(const QString&)),
+            SLOT(sl_showLessClicked(const QString&)));
+
 }
 
 void DasOptionsPanelWidget::checkState() {
     SAFE_POINT(ctx, "Active sequence context is NULL.", );
-    settingsShowHideWidget->setVisible(searchTypeComboBox->currentText() == BLAST_SEARCH);
 
     bool ok = regionIsOk();
     DNAAlphabet* alphabet = ctx->getAlphabet();
@@ -512,5 +506,35 @@ void DasOptionsPanelWidget::updateRegionSelectorWidget(){
     SAFE_POINT(NULL != selection, "Selection is NULL", );
 }
 
+void DasOptionsPanelWidget::updateShowOptions() {
+    // Change the label
+    QString linkText = showMore ? tr("Show more options") : tr("Show less options");
+#ifndef Q_OS_MAC
+    linkText = QString("<a href=\"%1\" style=\"color: palette(shadow)\">").arg(SHOW_OPTIONS_LINK)
+               + linkText
+               + QString("</a>");
+#else
+    linkText = QString("<a href=\"%1\" style=\"color: gray\">").arg(SHOW_OPTIONS_LINK)
+               + linkText
+               + QString("</a>");
+#endif
+
+    lblShowMoreLess->setText(linkText);
+    lblShowMoreLess->setTextInteractionFlags(Qt::LinksAccessibleByKeyboard | Qt::LinksAccessibleByMouse);
+
+    // Show/hide the additional options
+    if (showMore) {
+        settingsContainerWidget->hide();
+        sourcesContainerWidget->hide();
+        annotationsSettingsContainerWidget->hide();
+    }
+    else {
+        settingsContainerWidget->show();
+        sourcesContainerWidget->show();
+        annotationsSettingsContainerWidget->show();
+    }
+    // Change the mode
+    showMore = !showMore;
+}
 
 }   // namespace

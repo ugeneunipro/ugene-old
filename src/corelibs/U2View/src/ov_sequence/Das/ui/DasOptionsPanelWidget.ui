@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>262</width>
-    <height>348</height>
+    <height>378</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -21,16 +21,29 @@
   </property>
   <layout class="QVBoxLayout" name="mainLayout">
    <property name="spacing">
-    <number>3</number>
+    <number>5</number>
    </property>
    <property name="sizeConstraint">
     <enum>QLayout::SetMinAndMaxSize</enum>
    </property>
-   <property name="margin">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
     <number>0</number>
    </property>
    <item>
-    <layout class="QVBoxLayout" name="regionLayout"/>
+    <layout class="QVBoxLayout" name="regionLayout">
+     <property name="spacing">
+      <number>6</number>
+     </property>
+    </layout>
    </item>
    <item>
     <widget class="QWidget" name="regionSelectorContainerWidget" native="true">
@@ -38,13 +51,31 @@
       <property name="sizeConstraint">
        <enum>QLayout::SetMinAndMaxSize</enum>
       </property>
-      <property name="margin">
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
        <number>0</number>
       </property>
       <item>
        <widget class="QWidget" name="regionSelectorWidget" native="true">
         <layout class="QVBoxLayout" name="regionSelectorLayout">
-         <property name="margin">
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
           <number>0</number>
          </property>
         </layout>
@@ -54,21 +85,70 @@
     </widget>
    </item>
    <item>
-    <widget class="Line" name="line_2">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QLabel" name="similarityType">
+    <widget class="QLabel" name="databaseLabel">
      <property name="text">
-      <string>Similarity search:</string>
+      <string>Database:</string>
      </property>
     </widget>
    </item>
    <item>
-    <widget class="QComboBox" name="searchTypeComboBox"/>
+    <widget class="QComboBox" name="databaseComboBox">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="sizeAdjustPolicy">
+      <enum>QComboBox::AdjustToMinimumContentsLength</enum>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <spacer name="spacer1">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>5</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item>
+    <widget class="QLabel" name="minimumIdentityLabel">
+     <property name="text">
+      <string>Minimum Identity:</string>
+     </property>
+     <property name="margin">
+      <number>0</number>
+     </property>
+     <property name="indent">
+      <number>0</number>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QDoubleSpinBox" name="minimumIdentityDoubleSpinBox">
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+     <property name="suffix">
+      <string>%</string>
+     </property>
+     <property name="decimals">
+      <number>1</number>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="lblShowMoreLess">
+     <property name="text">
+      <string>Show more option...</string>
+     </property>
+    </widget>
    </item>
    <item>
     <widget class="QWidget" name="settingsContainerWidget" native="true">
@@ -76,7 +156,16 @@
       <property name="sizeConstraint">
        <enum>QLayout::SetMinAndMaxSize</enum>
       </property>
-      <property name="margin">
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
        <number>0</number>
       </property>
      </layout>
@@ -88,7 +177,16 @@
       <property name="spacing">
        <number>0</number>
       </property>
-      <property name="margin">
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
        <number>0</number>
       </property>
      </layout>
@@ -100,18 +198,33 @@
       <property name="sizeConstraint">
        <enum>QLayout::SetDefaultConstraint</enum>
       </property>
-      <property name="margin">
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
        <number>0</number>
       </property>
      </layout>
     </widget>
    </item>
    <item>
-    <widget class="Line" name="line">
+    <spacer name="spacer0">
      <property name="orientation">
-      <enum>Qt::Horizontal</enum>
+      <enum>Qt::Vertical</enum>
      </property>
-    </widget>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>10</height>
+      </size>
+     </property>
+    </spacer>
    </item>
    <item>
     <widget class="QLabel" name="idsLabel">
