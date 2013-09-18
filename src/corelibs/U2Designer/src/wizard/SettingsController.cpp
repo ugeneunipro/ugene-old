@@ -78,7 +78,6 @@ QWidget* SettingsController::createUrlSettingsWidget(U2OpStatus &/*os*/) {
     mainLayout->addWidget(label);
 
     lineEdit = new QLineEdit;
-    lineEdit->setPlaceholderText("default");
 
     QString settingName = sw->var();
     settingName.remove(0, SettingsWidget::SETTING_PREFIX.length());
