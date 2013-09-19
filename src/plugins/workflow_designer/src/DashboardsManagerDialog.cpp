@@ -19,7 +19,19 @@
  * MA 02110-1301, USA.
  */
 
+#include <QtGui/QMessageBox.h>
+
 #include "DashboardsManagerDialog.h"
+
+static const QString REMOVE_DASHBOARDS_MESSAGE_BOX_TITLE = QObject::tr( "Removing Dashboards" );
+static const QString REMOVE_MULTIPLE_DASHBOARDS_MESSAGE_BOX_TEXT
+    = QObject::tr( "The following dashboards are about to be deleted:" );
+static const QString REMOVE_SINGLE_DASHBOARD_MESSAGE_BOX_TEXT
+    = QObject::tr( "The following dashboard is about to be deleted:" );
+static const QString DASHBOARD_NAME_LIST_START = "<ul style=\"margin-top:5px;\"><li>";
+static const QString DASHBOARD_NAMES_DELIMITER = "</li><li>";
+static const QString DASHBOARD_NAME_LIST_END = "</li></ul>";
+static const int DASHBOARD_NAME_DISPLAYING_SYMBOLS_COUNT = 30;
 
 namespace U2 {
 
@@ -90,6 +102,36 @@ void DashboardsManagerDialog::sl_selectAll() {
 }
 
 void DashboardsManagerDialog::sl_remove() {
+    QList<QTreeWidgetItem *> selectedItems = listWidget->selectedItems( );
+    if ( selectedItems.isEmpty( ) ) {
+        return;
+    }
+    // build name list of selected dashboards
+    QString warningMessageText = ( 1 == selectedItems.count( ) )
+        ? REMOVE_SINGLE_DASHBOARD_MESSAGE_BOX_TEXT
+        : REMOVE_MULTIPLE_DASHBOARDS_MESSAGE_BOX_TEXT;
+    warningMessageText += DASHBOARD_NAME_LIST_START;
+    foreach ( QTreeWidgetItem *item, selectedItems ) {
+        QString dashboardName = item->data( 0, Qt::DisplayRole ).value<QString>( );
+        // cut long names
+        if ( DASHBOARD_NAME_DISPLAYING_SYMBOLS_COUNT < dashboardName.size( ) ) {
+            dashboardName = dashboardName.left( DASHBOARD_NAME_DISPLAYING_SYMBOLS_COUNT );
+            dashboardName += "...";
+        }
+        warningMessageText += dashboardName;
+        warningMessageText += DASHBOARD_NAMES_DELIMITER;
+    }
+    // remove last delimiter
+    warningMessageText = warningMessageText.left(
+        warningMessageText.length( ) - DASHBOARD_NAMES_DELIMITER.size( ) );
+    warningMessageText += DASHBOARD_NAME_LIST_END;
+
+    const int userDecision = QMessageBox::question( this, REMOVE_DASHBOARDS_MESSAGE_BOX_TITLE,
+        warningMessageText, tr( "Confirm" ), tr( "Cancel" ) );
+    if ( 0 != userDecision ) {
+        return;
+    }
+
     foreach (QTreeWidgetItem *item, listWidget->selectedItems()) {
         removed << item->data(0, Qt::UserRole).value<DashboardInfo>();
         delete item;
