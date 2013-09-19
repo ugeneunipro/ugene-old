@@ -71,6 +71,11 @@ QWidget * AssemblySettingsWidget::createReadsSettings() {
     QWidget * group = new QWidget(this);
     QVBoxLayout * layout = initLayout(group);
     AssemblyReadsArea * readsArea = ui->getReadsArea();
+    hint = new QLabel("", group);
+    hint->setWordWrap(true);
+    hint->setStyleSheet(
+        "color: green;"
+        "font: bold;");
 
     layout->addSpacing(TITLE_SPACING);
 
@@ -81,20 +86,26 @@ QWidget * AssemblySettingsWidget::createReadsSettings() {
         readsHighlightCombo->addItem(a->text());
         connect(a, SIGNAL(triggered()), SLOT(sl_cellRendererChanged()));
         if(a->isChecked()) {
-            readsHighlightCombo->setCurrentIndex(readsHighlightCombo->count() - 1);
+            readsHighlightCombo->setCurrentIndex(readsHighlightCombo->count() - 1);    
+            AssemblyCellRendererFactory* factory = ui->getWindow()->getCellRendererRegistry()->getFactoryById(AssemblyCellRendererFactory::DIFF_NUCLEOTIDES);
+            if (a->text() == factory->getName()){
+                hint->setText(tr("You should add refrence  first for correct dispalying of this highlighting"));
+            }else{
+                hint->setText("");
+            }
         }
     }
     connect(readsHighlightCombo, SIGNAL(currentIndexChanged(int)), SLOT(sl_changeCellRenderer(int)));
     layout->addWidget(readsHighlightCombo);
-
+    layout->addWidget(hint);
+    
     layout->addSpacing(ITEMS_SPACING);
 
     QLabel * aboutScrolling = new QLabel(tr("Scrolling can be optimized by drawing only reads' positions without content while scrolling:"), group);
     aboutScrolling->setWordWrap(true);
     aboutScrolling->setFixedWidth(165);
-    aboutScrolling->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Minimum);
+    aboutScrolling->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
     layout->addWidget(aboutScrolling);
-    layout->addSpacing(4);
 
     QCheckBox * optimizeScroll = new QCheckBox(tr("Optimize scrolling"), group);
     QAction * optimizeAction = readsArea->getOptimizeRenderAction();
@@ -122,7 +133,14 @@ void AssemblySettingsWidget::sl_changeCellRenderer(int index) {
     QList<QAction*> actions = ui->getReadsArea()->getCellRendererActions();
     CHECK(index >= 0,);
     SAFE_POINT(index <= actions.count(), "too big cell renderer action index",);
-    actions.at(index)->trigger();
+    QAction *selected = actions.at(index);
+    selected->trigger();
+    AssemblyCellRendererFactory* factory = ui->getWindow()->getCellRendererRegistry()->getFactoryById(AssemblyCellRendererFactory::DIFF_NUCLEOTIDES);
+    if (selected->text() == factory->getName()){
+        hint->setText(tr("You should add a refrence first for correct displaying of selected highlighting"));
+    }else{
+        hint->setText("");
+    }
 }
 
 // ------- Consensus ----------

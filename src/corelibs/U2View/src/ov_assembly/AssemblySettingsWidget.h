@@ -57,6 +57,7 @@ private:
     QComboBox * readsHighlightCombo;
     // Consensus
     QComboBox * algorithmCombo;
+    QLabel *hint;
 };
 
 
