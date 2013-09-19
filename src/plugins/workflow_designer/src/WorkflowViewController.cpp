@@ -59,6 +59,7 @@
 #include <U2Designer/Dashboard.h>
 #include <U2Designer/DelegateEditors.h>
 #include <U2Designer/DesignerUtils.h>
+#include <U2Designer/EstimationReporter.h>
 #include <U2Designer/GrouperEditor.h>
 #include <U2Designer/MarkerEditor.h>
 #include <U2Designer/WizardController.h>
@@ -1508,7 +1509,10 @@ void WorkflowView::sl_estimationTaskFinished() {
     CHECK(t->isFinished(), );
     estimateAction->setEnabled(true);
     CHECK(!t->hasError(), );
-    EstimationDialog *d = new EstimationDialog(t->result(), this);
+    QMessageBox *d = EstimationReporter::createTimeMessage(t->result());
+    QPushButton *rb = d->addButton(QObject::tr("Run workflow"), QMessageBox::AcceptRole);
+    connect(rb, SIGNAL(clicked()), SLOT(sl_launch()));
+    d->setParent(this);
     d->setWindowModality(Qt::ApplicationModal);
     d->show();
 }

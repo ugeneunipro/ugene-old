@@ -66,6 +66,34 @@ QWebView * EstimationReporter::generateReport(const Workflow::EstimationResult &
     return result;
 }
 
+static QString toTimeString(qint64 timeSec) {
+    qint64 hours = timeSec / 3600;
+    qint64 minutes = (timeSec - (hours * 3600)) / 60;
+    qint64 minutesUp = (timeSec + 59 - (hours * 3600)) / 60;
+
+    QString result;
+    QString m = QObject::tr("m");
+    QString h = QObject::tr("h");
+    if (minutes > 0 || hours > 0) {
+        result = QString::number(minutesUp) + m;
+    } else {
+        result = "< 1" + m;
+    }
+    if (hours > 0) {
+        result = QString::number(hours) + h + " " + result;
+    }
+    return result;
+}
+
+QMessageBox * EstimationReporter::createTimeMessage(const Workflow::EstimationResult &er) {
+    QMessageBox *result = new QMessageBox(
+        QMessageBox::Information,
+        QObject::tr("Workflow Estimation"),
+        QObject::tr("Approximate estimation time of the workflow run is ") + toTimeString(er.timeSec) + ".",
+        QMessageBox::Close);
+    return result;
+}
+
 ReportGenerationHelper::ReportGenerationHelper(QWebView *view) {
     loaded = false;
     loadedOk = false;
