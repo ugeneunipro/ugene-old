@@ -560,8 +560,17 @@ QString AssemblyModel::getReferenceUri(U2OpStatus & os) {
 
 void AssemblyModel::sl_unassociateReference() {
     if(!assembly.referenceId.isEmpty()) {
-        assembly.referenceId.clear();
+        QFile f(assembly.dbiId);
+        QFile::Permissions perm = f.permissions();
+
+        if(!perm.testFlag(QFile::WriteUser)){
+            QMessageBox::warning(QApplication::activeWindow(), tr("Warning"),
+                                 QString("You don't have enough rights to change file:\n%1").arg(assembly.dbiId),
+                                QMessageBox::Ok, QMessageBox::Ok);
+           return;
+        }
         U2OpStatusImpl status;
+        assembly.referenceId.clear();
         assemblyDbi->updateAssemblyObject(assembly, status);
         LOG_OP(status);
         unsetReference();
