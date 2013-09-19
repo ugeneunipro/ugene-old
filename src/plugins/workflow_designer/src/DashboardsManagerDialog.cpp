@@ -19,7 +19,7 @@
  * MA 02110-1301, USA.
  */
 
-#include <QtGui/QMessageBox.h>
+#include <QtGui/QMessageBox>
 
 #include "DashboardsManagerDialog.h"
 
