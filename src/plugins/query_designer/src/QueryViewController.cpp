@@ -443,6 +443,7 @@ void QueryScene::dropEvent(QGraphicsSceneDragDropEvent *event) {
     if(!event->mimeData()->hasText()) {
         return;
     }
+    QApplication::changeOverrideCursor(QCursor(Qt::ArrowCursor));
     const QString& mimeStr = event->mimeData()->text();
     if (AppContext::getQDActorProtoRegistry()->getAllIds().contains(mimeStr)) {
         QDActorPrototype* proto = AppContext::getQDActorProtoRegistry()->getProto(mimeStr);
