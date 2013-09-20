@@ -48,15 +48,10 @@ public:
     virtual void accept();
 
 protected slots:
-    //void sl_setPredefinedAnnotationName();
-    void sl_onRegionChanged(const U2Region&);
     void minPeriodChanged(int min);
     void maxPeriodChanged(int max);
     void presetSelected(int preset);
     void customization();
-    //void sl_hundredPercent();
-    //void sl_repeatParamsChanged(int);
-    //void sl_minMaxToggle(bool);
 
 private:
     U2Region getActiveRange(bool *ok = NULL) const;
@@ -64,7 +59,6 @@ private:
     QStringList getAvailableAnnotationNames() const;
     bool getRegions(QCheckBox* cb, QLineEdit* le, QVector<U2Region>& res);
     void prepareAMenu(QToolButton* tb, QLineEdit* le, const QStringList& names);
-    void updateStatus();
 
     //methods for results count estimation
     quint64 areaSize() const ;
