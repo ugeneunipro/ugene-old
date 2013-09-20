@@ -93,6 +93,7 @@ public:
     void addTick(qint64 timeMks, const QString &actor);
     void start();
     void pause();
+    void resume();
 
     void registerTask(Task *task, const QString &actor);
 
@@ -130,6 +131,7 @@ private:
     QList<Monitor::WorkerParamsInfo> workersParamsInfo;
     QString _outputDir;
     bool saveSchema;
+    bool started;
 
 protected:
     void setWorkerInfo(const QString &actorId, const Monitor::WorkerInfo &info);

@@ -1610,7 +1610,7 @@ void WorkflowView::sl_pause(bool isPause) {
             if (isPause) {
                 m->pause();
             } else {
-                m->start();
+                m->resume();
             }
         }
     }

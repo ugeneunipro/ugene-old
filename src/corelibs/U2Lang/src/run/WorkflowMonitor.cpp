@@ -35,7 +35,7 @@ namespace Workflow {
 using namespace Monitor;
 
 WorkflowMonitor::WorkflowMonitor(WorkflowAbstractIterationRunner *_task, Schema *_schema)
-: QObject(), schema(_schema), task(_task), saveSchema(false)
+: QObject(), schema(_schema), task(_task), saveSchema(false), started(false)
 {
     foreach (Actor *p, schema->getProcesses()) {
         procMap[p->getId()] = p;
@@ -120,11 +120,19 @@ void WorkflowMonitor::addTick(qint64 timeMks, const QString &actor) {
 }
 
 void WorkflowMonitor::start() {
+    SAFE_POINT(!started, "The schema is already started", );
+    started = true;
     setRunState(false);
 }
 
 void WorkflowMonitor::pause() {
+    SAFE_POINT(started, "The schema is not started yet", );
     setRunState(true);
+}
+
+void WorkflowMonitor::resume() {
+    SAFE_POINT(started, "The schema is not started yet", );
+    setRunState(false);
 }
 
 void WorkflowMonitor::registerTask(Task *task, const QString &actor) {
