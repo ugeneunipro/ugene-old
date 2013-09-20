@@ -23,6 +23,7 @@ ColorSchemaDialogController::~ColorSchemaDialogController(){
 }
 
 void ColorSchemaDialogController::paintEvent(QPaintEvent*){
+    QPainter dialogPainter(this);
     const int columns = 6;    
 
     const int rect_width = static_cast<double> (alphabetColorsFrame->size().width()) / columns ;
@@ -73,13 +74,15 @@ void ColorSchemaDialogController::paintEvent(QPaintEvent*){
             charsPlacement[it.key()] = nextRect;
         }
         hLineY += rh;
-        if(!it.hasNext()){break;}
+        if(!it.hasNext()) {
+            painter.fillRect(vLineX + 1, hLineY - rh + 1, alphabetColorsView->size().width() - vLineX - 1, rh - 1, dialogPainter.background());
+            break;
+        }
     }
     painter.drawLine(0, alphabetColorsView->size().height(), alphabetColorsView->size().width(), alphabetColorsView->size().height());
     painter.drawLine(alphabetColorsView->size().width(), 0, alphabetColorsView->size().width(), alphabetColorsView->size().height());
 
 
-    QPainter dialogPainter(this);
     dialogPainter.drawPixmap(alphabetColorsFrame->geometry().x(), alphabetColorsFrame->geometry().y(), *alphabetColorsView);
 }
 
