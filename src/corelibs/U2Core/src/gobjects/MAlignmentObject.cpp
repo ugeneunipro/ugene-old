@@ -210,8 +210,8 @@ int MAlignmentObject::getMaxWidthOfGapRegion( const U2Region &rows, int pos, int
     U2OpStatus &os )
 {
     MAlignment msa = getMAlignment( );
-    SAFE_POINT( U2Region( 0, msa.getNumRows( ) ).contains( rows ) && 0 <= pos && 0 <= maxGaps
-        && msa.getLength( ) > pos, "Illegal parameters of the gap region!", 0 );
+    SAFE_POINT_EXT( U2Region( 0, msa.getNumRows( ) ).contains( rows ) && 0 <= pos && 0 <= maxGaps
+        && msa.getLength( ) > pos, os.setError( "Illegal parameters of the gap region!" ), 0 );
 
     const int maxRemovedGaps = qBound(0, maxGaps, msa.getLength() - pos);
     // check if there is nothing to remove

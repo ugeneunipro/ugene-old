@@ -230,30 +230,29 @@ void WormsGLRenderer::createWorms()
     QMapIterator<int, BioPolymer> i(bioPolymerMap);
     while (i.hasNext()) {
         i.next();
-        int chainID = i.key();
-        const BioPolymer& bioPolymer = i.value();
-        Vector3D r1, r2,a,b;
-        Vector3D openingVector, closingVector;
         Worm worm;
+        const BioPolymer& bioPolymer = i.value();
         foreach (const BioPolymerModel& bpModel, bioPolymer.bpModels) {
-            WormModel wormModel;
             const QMap<int,Monomer> monomers = bpModel.monomerMap;
+            const bool atLeast2MonomersExist = ( 1 < monomers.size( ) );
             QMap<int,Monomer>::const_iterator iter(monomers.constBegin());
             // Calculate opening atom coords
-            Monomer m = iter.value();
-            r1 = iter.value().alphaCarbon.constData()->coord3d;
-            r2 = (++iter).value().alphaCarbon.constData()->coord3d;
+            Vector3D r1( iter.value().alphaCarbon.constData()->coord3d );
+            Vector3D r2( ( atLeast2MonomersExist ? ++iter : iter ).value().alphaCarbon.constData()
+                ->coord3d );
             
-            a = r1;
-            b = (r2 - r1) / 100.f;
+            Vector3D a( r1 );
+            Vector3D b( (r2 - r1) / 100.f );
+
+            WormModel wormModel;
             wormModel.openingAtom = a + b*(-10.f);
             // Calculate closing atom coords
             iter = bpModel.monomerMap.constEnd();
             r1 = (--iter).value().alphaCarbon.constData()->coord3d;
-            r2 = (--iter).value().alphaCarbon.constData()->coord3d;
+            r2 = ( atLeast2MonomersExist ? --iter : iter ).value().alphaCarbon.constData()->coord3d;
             a = r1;
             b = (r2 - r1) / 100.f;
-            wormModel.closingAtom = a + b*(-10.f);
+            wormModel.closingAtom = a + b * (-10.f);
             // Add worm-building atom coords 
             foreach (const Monomer& monomer, monomers) {
                 const SharedAtom& atom = monomer.alphaCarbon;
@@ -261,6 +260,7 @@ void WormsGLRenderer::createWorms()
             }
             worm.models.append(wormModel);
         }
+        const int chainID = i.key();
         wormMap.insert(chainID, worm);
     }
     
