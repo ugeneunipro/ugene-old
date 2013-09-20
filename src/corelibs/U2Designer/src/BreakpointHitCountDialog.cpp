@@ -67,19 +67,21 @@ BreakpointHitCountDialog::~BreakpointHitCountDialog() {
 void BreakpointHitCountDialog::sl_dialogAccepted() {
     bool conversionResult = true;
     hitCounterParameter = ui->hitParameterEdit->text().toInt(&conversionResult);
-    if(!conversionResult
-        && !hitCountersConditionsWithoutParameter.contains(ui->hitConditionCombo->currentText()))
+    if ( ( !conversionResult
+        && !hitCountersConditionsWithoutParameter.contains(
+        ui->hitConditionCombo->currentText( ) ) )
+        || 1 > hitCounterParameter )
     {
         QMessageBox::critical(this, tr(WRONG_INPUT_MESSAGE_BOX_TITLE),
             tr(WRONG_INPUT_MESSAGE_BOX_CONTENT));
         return;
     }
 
-    if(isHitCounterReset) {
+    if (isHitCounterReset) {
         emit si_resetHitCount();
     }
 
-    if(initialParameter != hitCounterParameter || initialCondition != chosenCondition) {
+    if (initialParameter != hitCounterParameter || initialCondition != chosenCondition) {
         emit si_hitCounterAssigned(chosenCondition, hitCounterParameter);
     }
     accept();

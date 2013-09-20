@@ -27,7 +27,7 @@ BreakpointMultipleHitCounter::BreakpointMultipleHitCounter(
     BreakpointHitCountCondition initCondition, quint32 initMultiple)
     : BaseBreakpointHitCounter(initCondition), multiple(initMultiple)
 {
-
+    SAFE_POINT( 0 < multiple, "Invalid value for hit counter!", );
 }
 
 bool BreakpointMultipleHitCounter::hit() {
