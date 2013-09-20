@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>262</width>
-    <height>378</height>
+    <height>411</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -99,6 +99,9 @@
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
+     <property name="toolTip">
+      <string>Database against which the search is performed: UniProtKB or clusters of sequences with 100%, 90% or 50% identity</string>
+     </property>
      <property name="sizeAdjustPolicy">
       <enum>QComboBox::AdjustToMinimumContentsLength</enum>
      </property>
@@ -132,6 +135,9 @@
    </item>
    <item>
     <widget class="QDoubleSpinBox" name="minimumIdentityDoubleSpinBox">
+     <property name="toolTip">
+      <string>Minimum percent identity between the input sequence region and BLAST results</string>
+     </property>
      <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
      </property>
@@ -288,7 +294,7 @@
      <item>
       <widget class="QPushButton" name="searchIdsButton">
        <property name="toolTip">
-        <string>Send request to Protein Identifier Cross-Reference (PICR) to get IDs of similar sequences</string>
+        <string>Send request to Uniprot BLAST to get IDs of similar sequences</string>
        </property>
        <property name="text">
         <string>Fetch IDs</string>

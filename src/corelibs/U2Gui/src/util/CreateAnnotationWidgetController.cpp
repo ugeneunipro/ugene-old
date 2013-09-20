@@ -250,6 +250,7 @@ void CreateAnnotationWidgetController::initLayout(AnnotationWidgetMode layoutMod
 
     // Save annotations group
     QGroupBox* groupSaveAnnots = new QGroupBox(w);
+    groupSaveAnnots->setToolTip(tr("Chose a file to store the annotations"));
     groupSaveAnnots->setTitle(tr("Save annotation(s) to"));
     QGridLayout* gridLayout = new QGridLayout(groupSaveAnnots);
 

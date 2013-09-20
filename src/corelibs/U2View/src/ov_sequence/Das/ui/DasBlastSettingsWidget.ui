@@ -56,6 +56,9 @@
        <height>0</height>
       </size>
      </property>
+     <property name="toolTip">
+      <string>Number of expected matches in a random database. The lower the value, the more likely the match is to be significant</string>
+     </property>
      <property name="sizeAdjustPolicy">
       <enum>QComboBox::AdjustToMinimumContentsLength</enum>
      </property>
@@ -81,6 +84,9 @@
        <width>1</width>
        <height>0</height>
       </size>
+     </property>
+     <property name="toolTip">
+      <string>Assigns a probability score for each position in an alignment</string>
      </property>
      <property name="currentIndex">
       <number>-1</number>
@@ -111,6 +117,9 @@
        <height>0</height>
       </size>
      </property>
+     <property name="toolTip">
+      <string>Filtering low-complexity regions replaces the regions with X's during the search to filter biologically unrelated results</string>
+     </property>
      <property name="sizeAdjustPolicy">
       <enum>QComboBox::AdjustToMinimumContentsLength</enum>
      </property>
@@ -137,6 +146,9 @@
        <height>0</height>
       </size>
      </property>
+     <property name="toolTip">
+      <string>Allows gaps to be introduced in the sequences when the comparison is done</string>
+     </property>
      <property name="sizeAdjustPolicy">
       <enum>QComboBox::AdjustToMinimumContentsLength</enum>
      </property>
@@ -162,6 +174,9 @@
        <width>1</width>
        <height>0</height>
       </size>
+     </property>
+     <property name="toolTip">
+      <string>Limits the number of returned results</string>
      </property>
      <property name="sizeAdjustPolicy">
       <enum>QComboBox::AdjustToMinimumContentsLength</enum>
