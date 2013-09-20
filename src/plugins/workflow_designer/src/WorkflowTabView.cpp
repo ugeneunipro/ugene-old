@@ -86,6 +86,8 @@ int WorkflowTabView::addDashboard(Dashboard *db) {
     tabBar()->setTabButton(idx, QTabBar::RightSide, closeButton);
     connect(closeButton, SIGNAL(clicked()), SLOT(sl_closeTab()));
     connect(db, SIGNAL(si_loadSchema(const QString &)), parent, SLOT(sl_loadScene(const QString &)));
+    connect(db, SIGNAL(si_hideLoadBtnHint()), this, SIGNAL(si_hideLoadBtnHint()));
+    connect(this, SIGNAL(si_hideLoadBtnHint()), db, SLOT(sl_hideLoadBtnHint()));
     emit si_countChanged();
     return idx;
 }
@@ -201,5 +203,6 @@ bool WorkflowTabView::eventFilter(QObject *watched, QEvent *event) {
     m.exec();
     return true;
 }
+
 
 } // U2

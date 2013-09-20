@@ -50,8 +50,16 @@ public:
 
     void loadSchema();
 
+    /** Modifies the application settings and emits signal for all dashboards */
+    void initiateHideLoadButtonHint();
+
 signals:
     void si_loadSchema(const QString &url);
+    void si_hideLoadBtnHint();
+
+public slots:
+    /** Hides the hint on the current dashboard instance */
+    void sl_hideLoadBtnHint();
 
 private slots:
     void sl_runStateChanged(bool paused);

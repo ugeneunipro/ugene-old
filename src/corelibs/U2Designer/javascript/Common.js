@@ -28,9 +28,10 @@ function wrapLongText(text) {
  * specifies not to show it anymore.
  */
 function hideLoadBtnHint() {
-    var hint = document.getElementById("load-btn-hint");
-    hint.setAttribute("style", "display: none");
-    agent.hideLoadButtonHint();
+    var hint = document.getElementById("load-btn-hint-container");
+    if (null != hint) {
+        hint.parentNode.removeChild(hint);
+    }
 }
 
 /**
@@ -50,7 +51,7 @@ function showLoadButton(showHint) {
                 "<div class='popover-content'>" +
                     "You can always open the original workflow for your results by clicking on this button." +
                     "<div style='text-align: center;'>" +
-                        "<button class='btn' onclick='hideLoadBtnHint()' style='margin-bottom: 4px; margin-top: 6px;'>OK, got it!</button>" +
+                            "<button class='btn' onclick='agent.hideLoadButtonHint()' style='margin-bottom: 4px; margin-top: 6px;'>OK, got it!</button>" +
                     "</div>" +
                 "</div>" +
             "</div>" +
@@ -70,12 +71,12 @@ function showFileButton(url) {
                     '<button class="btn dropdown-toggle" data-toggle="dropdown">' + 
                         '<span class="caret"></span>' +
                     '</button>' +
-	            '<ul class="dropdown-menu full-width">' +
-       	                '<li><a href="#" onclick="agent.openByOS(\'' + path + '\')">Open containing folder</a></li>' +
+                '<ul class="dropdown-menu full-width">' +
+                        '<li><a href="#" onclick="agent.openByOS(\'' + path + '\')">Open containing folder</a></li>' +
                         '<li><a href="#" onclick="agent.openByOS(\'' + path + fileName + '\')">Open by operating system</a></li>' + 
                     '</ul>' +
             '</div>' +
         '</div>';
-	return button;
+    return button;
 }
 

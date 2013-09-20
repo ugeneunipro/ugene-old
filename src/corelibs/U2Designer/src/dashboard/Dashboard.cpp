@@ -147,6 +147,10 @@ void Dashboard::sl_loaded(bool ok) {
         connect(monitor(), SIGNAL(si_runStateChanged(bool)), SLOT(sl_runStateChanged(bool)));
         connect(monitor(), SIGNAL(si_firstProblem()), SLOT(sl_addProblemsWidget()));
     }
+
+    if (!WorkflowSettings::isShowLoadButtonHint()) {
+        page()->mainFrame()->documentElement().evaluateJavaScript("hideLoadBtnHint()");
+    }
 }
 
 void Dashboard::sl_addProblemsWidget() {
@@ -278,6 +282,15 @@ void Dashboard::loadSchema() {
     emit si_loadSchema(url);
 }
 
+void Dashboard::initiateHideLoadButtonHint() {
+    WorkflowSettings::setShowLoadButtonHint(false);
+    emit si_hideLoadBtnHint();
+}
+
+void Dashboard::sl_hideLoadBtnHint() {
+    page()->mainFrame()->evaluateJavaScript("hideLoadBtnHint()");
+}
+
 /************************************************************************/
 /* DashboardWidget */
 /************************************************************************/
@@ -325,7 +338,8 @@ void JavascriptAgent::loadSchema() {
 }
 
 void JavascriptAgent::hideLoadButtonHint() {
-    WorkflowSettings::setShowLoadButtonHint(false);
+    SAFE_POINT(NULL != dashboard, "NULL dashboard!", );
+    dashboard->initiateHideLoadButtonHint();
 }
 
 /************************************************************************/

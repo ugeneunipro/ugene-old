@@ -51,6 +51,7 @@ public:
 
 signals:
     void si_countChanged();
+    void si_hideLoadBtnHint(); // should be common for all dashboards
 
 private slots:
     void sl_closeTab();
