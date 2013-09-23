@@ -27,6 +27,7 @@
 #include <U2Lang/WorkflowMonitor.h>
 #include <U2Lang/WorkflowSettings.h>
 #include <U2Lang/BaseAttributes.h>
+#include <U2Lang/ActorModel.h>
 
 #include <U2Core/Log.h>
 
@@ -224,6 +225,10 @@ void BaseWorker::restoreActualChannelsState() {
         assert(!channel->hasMessage());
         addMessagesFromBackupToAppropriratePort(channel);
     }
+}
+
+ExternalToolListener* BaseWorker::createLogListener() {
+    return context->getMonitor()->createWorkflowListener(actor->getLabel());
 }
 
 void BaseWorker::addMessagesFromBackupToAppropriratePort(CommunicationChannel *channel) {

@@ -90,7 +90,8 @@ Task *ConductGOWorker::tick() {
             return new FailTask(os.getError());
         }
 
-        Task* t = new ConductGOTask(settings, treatData);
+        ConductGOTask* t = new ConductGOTask(settings, treatData);
+        t->addListener(createLogListener());
         connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
         return t;
     }else if (inChannel->isEnded()) {

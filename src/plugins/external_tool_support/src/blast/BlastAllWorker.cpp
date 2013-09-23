@@ -399,7 +399,8 @@ Task* BlastAllWorker::tick() {
             cfg.xDropoffUnGA = 7;
         }
 
-        Task* t = new BlastAllSupportTask(cfg);
+        BlastAllSupportTask* t = new BlastAllSupportTask(cfg);
+        t->addListener(createLogListener());
         connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
         return t;
     } else if (input->isEnded()) {

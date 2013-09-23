@@ -37,7 +37,7 @@
 
 namespace U2 {
 
-class TopHatSupportTask : public Task
+class TopHatSupportTask : public ExternalToolSupportTask
 {
     Q_OBJECT
 

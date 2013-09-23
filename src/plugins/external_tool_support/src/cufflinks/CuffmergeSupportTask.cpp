@@ -36,7 +36,7 @@ namespace U2 {
 const QString CuffmergeSupportTask::outSubDirBaseName("cuffmerge_out");
 
 CuffmergeSupportTask::CuffmergeSupportTask(const CuffmergeSettings &_settings)
-: Task(tr("Running Cuffmerge task"), TaskFlags_FOSE_COSC), settings(_settings)
+: ExternalToolSupportTask(tr("Running Cuffmerge task"), TaskFlags_FOSE_COSC), settings(_settings)
 {
     mergeTask = NULL;
     fileNum = 0;
@@ -167,6 +167,7 @@ Task * CuffmergeSupportTask::createCuffmergeTask() {
 
     logParser.reset(new ExternalToolLogParser());
     mergeTask = new ExternalToolRunTask(ET_CUFFMERGE, args, logParser.data(), workingDir, addPaths);
+    setListenerForTask(mergeTask);
     return mergeTask;
 }
 

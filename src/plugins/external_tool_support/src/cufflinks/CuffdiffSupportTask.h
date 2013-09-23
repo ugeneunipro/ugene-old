@@ -68,7 +68,7 @@ struct CuffdiffSettings {
     QString workingDir;
 };
 
-class CuffdiffSupportTask : public Task {
+class CuffdiffSupportTask : public ExternalToolSupportTask {
     Q_OBJECT
 private:
     class LogParser : public ExternalToolLogParser {

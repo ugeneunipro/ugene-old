@@ -34,7 +34,7 @@ class Document;
 class SaveDocumentTask;
 class LoadDocumentTask;
 
-class ConductGOTask : public Task {
+class ConductGOTask : public ExternalToolSupportTask {
     Q_OBJECT
 public:
     ConductGOTask(const ConductGOSettings& _settings, const QList<SharedAnnotationData>& _treatAnn);

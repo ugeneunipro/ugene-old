@@ -117,7 +117,9 @@ ExternalToolRunTask* BlastPPlusSupportTask::createBlastPlusTask(){
 //     if(settings.programName == "gpu-blastp") {
 //        return new ExternalToolRunTask(GPU_BLASTP_TOOL_NAME, arguments, logParser, workingDirectory);
 //     } else {
-        return new ExternalToolRunTask(ET_BLASTP, arguments, logParser, workingDirectory);
-//     }
+    ExternalToolRunTask* runTask = new ExternalToolRunTask(ET_BLASTP, arguments, logParser, workingDirectory);
+    setListenerForTask(runTask);
+    return runTask;
+    //     }
 }
 }//namespace

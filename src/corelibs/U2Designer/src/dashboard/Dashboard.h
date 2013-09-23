@@ -78,7 +78,7 @@ private:
     QWebElement doc;
     bool initialized;
 
-    enum DashboardTab {OverviewDashTab, InputDashTab, OutputDashTab};
+    enum DashboardTab {OverviewDashTab, InputDashTab, OutputDashTab, ExternalToolsTab};
 
 private:
     void loadDocument();

@@ -47,7 +47,7 @@ namespace U2 {
 ////CAP3SupportTask
 
 CAP3SupportTask::CAP3SupportTask(const CAP3SupportTaskSettings& _settings) :
-        Task("CAP3SupportTask", TaskFlags_NR_FOSCOE),
+        ExternalToolSupportTask("CAP3SupportTask", TaskFlags_NR_FOSCOE),
         settings(_settings)
 {
     GCOUNTER( cvar, tvar, "CAP3SupportTask" );
@@ -100,6 +100,7 @@ QList<Task*> CAP3SupportTask::onSubTaskFinished(Task* subTask) {
         arguments.prepend( inputUrl.getURLString() );
         logParser = new CAP3LogParser();
         cap3Task = new ExternalToolRunTask(ET_CAP3, arguments, logParser);
+        setListenerForTask(cap3Task);
         cap3Task->setSubtaskProgressWeight(95);
         res.append(cap3Task);   
     } else if (subTask == cap3Task){

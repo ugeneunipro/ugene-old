@@ -38,7 +38,7 @@
 namespace U2 {
 
 class TCoffeeLogParser;
-class TCoffeeSupportTaskSettings {
+class TCoffeeSupportTaskSettings  {
 public:
     TCoffeeSupportTaskSettings() {reset();}
     void reset();
@@ -51,7 +51,7 @@ public:
 };
 
 
-class TCoffeeSupportTask : public Task {
+class TCoffeeSupportTask : public ExternalToolSupportTask {
     Q_OBJECT
 public:
     TCoffeeSupportTask(const MAlignment& _inputMsa, const GObjectReference& _objRef, const TCoffeeSupportTaskSettings& _settings);

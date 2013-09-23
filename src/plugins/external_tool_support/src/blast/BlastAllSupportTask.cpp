@@ -43,7 +43,7 @@
 namespace U2 {
 
 BlastAllSupportTask::BlastAllSupportTask(const BlastTaskSettings& _settings) :
-        Task("Run NCBI BlastAll task", TaskFlags_NR_FOSCOE),
+        ExternalToolSupportTask("Run NCBI BlastAll task", TaskFlags_NR_FOSCOE),
         settings(_settings)
 {
     GCOUNTER( cvar, tvar, "BlastAllSupportTask" );
@@ -202,6 +202,7 @@ QList<Task*> BlastAllSupportTask::onSubTaskFinished(Task* subTask) {
         } else {
             blastAllTask=new ExternalToolRunTask(ET_BLASTALL,arguments, logParser, workingDirectory);
         }
+        setListenerForTask(blastAllTask);
         blastAllTask->setSubtaskProgressWeight(95);
         res.append(blastAllTask);
     }

@@ -40,7 +40,7 @@ namespace U2 {
 enum CufflinksOutputFormat {CufflinksOutputFpkm, CufflinksOutputGtf};
 
 
-class CufflinksSupportTask : public Task
+class CufflinksSupportTask : public ExternalToolSupportTask
 {
     Q_OBJECT
 

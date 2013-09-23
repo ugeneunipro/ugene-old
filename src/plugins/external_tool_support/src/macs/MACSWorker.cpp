@@ -127,7 +127,8 @@ Task *MACSWorker::tick() {
             return new FailTask(os.getError());
         }
 
-        Task* t = new MACSTask(settings, treatData, conData);
+        MACSTask* t = new MACSTask(settings, treatData, conData);
+        t->addListener(createLogListener());
         connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
         return t;
     }else if (inChannel->isEnded()) {

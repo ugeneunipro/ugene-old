@@ -34,7 +34,7 @@ class Document;
 class SaveDocumentTask;
 class LoadDocumentTask;
 
-class SeqPosTask : public Task {
+class SeqPosTask : public ExternalToolSupportTask {
     Q_OBJECT
 public:
     SeqPosTask(const SeqPosSettings& _settings, const QList<SharedAnnotationData>& _treatAnn);

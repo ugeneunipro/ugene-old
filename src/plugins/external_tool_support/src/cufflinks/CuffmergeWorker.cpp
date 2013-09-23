@@ -261,7 +261,9 @@ CuffmergeSettings CuffmergeWorker::scanParameters() const {
 Task * CuffmergeWorker::createCuffmergeTask() {
     CuffmergeSettings result = scanParameters();
     result.anns = anns;
-    return new CuffmergeSupportTask(result);
+    CuffmergeSupportTask* supportTask = new CuffmergeSupportTask(result);
+    supportTask->addListener(createLogListener());
+    return supportTask;
 }
 
 } // namespace LocalWorkflow

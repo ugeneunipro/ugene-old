@@ -46,7 +46,7 @@ const QString Peak2GeneTask::BASE_DIR_NAME("peak2gene_tmp");
 const QString Peak2GeneTask::TREAT_NAME("treatment");
 
 Peak2GeneTask::Peak2GeneTask(const Peak2GeneSettings& _settings, const QList<SharedAnnotationData>& _treatAnn)
-: Task("Peak2gene annotation", TaskFlag_None)
+: ExternalToolSupportTask("Peak2gene annotation", TaskFlag_None)
 , settings(_settings)
 , treatAnn(_treatAnn)
 , treatDoc(NULL)
@@ -136,6 +136,7 @@ QList<Task*> Peak2GeneTask::onSubTaskFinished(Task* subTask) {
             
             logParser = new Peak2GeneLogParser();
             etTask = new ExternalToolRunTask(ET_PEAK2GENE, args, logParser, workingDir);
+            setListenerForTask(etTask);
             result << etTask;
     }
     else if(subTask == etTask){

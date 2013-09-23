@@ -31,7 +31,7 @@
 namespace U2 {
 
 GffreadSupportTask::GffreadSupportTask(const GffreadSettings &_settings)
-: Task(tr("Running Gffread task"), TaskFlags_NR_FOSE_COSC), settings(_settings), logParser(NULL)
+: ExternalToolSupportTask(tr("Running Gffread task"), TaskFlags_NR_FOSE_COSC), settings(_settings), logParser(NULL)
 {
 
 }
@@ -47,7 +47,9 @@ void GffreadSupportTask::prepare() {
     CHECK_OP(stateInfo, );
 
     logParser = new ExternalToolLogParser();
-    addSubTask(new ExternalToolRunTask(ET_GFFREAD, settings.getArguments(), logParser));
+    ExternalToolRunTask* runTask = new ExternalToolRunTask(ET_GFFREAD, settings.getArguments(), logParser);
+    setListenerForTask(runTask);
+    addSubTask(runTask);
 }
 
 QString GffreadSupportTask::result() const {

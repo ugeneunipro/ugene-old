@@ -150,6 +150,7 @@ Task* TCoffeeWorker::tick() {
         cfg.gapOpenPenalty=actor->getParameter(GAP_OPEN_PENALTY)->getAttributeValue<float>(context);
         cfg.gapExtenstionPenalty=actor->getParameter(GAP_EXT_PENALTY)->getAttributeValue<float>(context);
         cfg.numIterations=actor->getParameter(NUM_ITER)->getAttributeValue<int>(context);
+
         QString path=actor->getParameter(EXT_TOOL_PATH)->getAttributeValue<QString>(context);
         if(QString::compare(path, "default", Qt::CaseInsensitive) != 0){
             AppContext::getExternalToolRegistry()->getByName(ET_TCOFFEE)->setPath(path);
@@ -169,7 +170,9 @@ Task* TCoffeeWorker::tick() {
             algoLog.error(tr("An empty MSA '%1' has been supplied to T-Coffee.").arg(msa.getName()));
             return NULL;
         }
-        Task *t = new NoFailTaskWrapper(new TCoffeeSupportTask(msa, GObjectReference(), cfg));
+        TCoffeeSupportTask* supportTask = new TCoffeeSupportTask(msa, GObjectReference(), cfg);
+        supportTask->addListener(createLogListener());
+        Task *t = new NoFailTaskWrapper(supportTask);
         connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
         return t;
     } else if (input->isEnded()) {

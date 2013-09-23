@@ -34,7 +34,7 @@ class Document;
 class SaveDocumentTask;
 class LoadDocumentTask;
 
-class ConservationPlotTask : public Task {
+class ConservationPlotTask : public ExternalToolSupportTask {
     Q_OBJECT
 public:
     ConservationPlotTask(const ConservationPlotSettings& _settings, const QList<QList<SharedAnnotationData> >& plotData);

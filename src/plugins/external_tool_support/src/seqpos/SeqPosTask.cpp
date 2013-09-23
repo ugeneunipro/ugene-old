@@ -48,7 +48,7 @@ const QString SeqPosTask::BASE_SUBDIR_NAME("SeqPos");
 const QString SeqPosTask::TREAT_NAME("treatment");
 
 SeqPosTask::SeqPosTask(const SeqPosSettings& _settings, const QList<SharedAnnotationData>& _treatAnn)
-: Task("SeqPos annotation", TaskFlag_None)
+: ExternalToolSupportTask("SeqPos annotation", TaskFlag_None)
 , settings(_settings)
 , treatAnn(_treatAnn)
 , treatDoc(NULL)
@@ -140,6 +140,7 @@ QList<Task*> SeqPosTask::onSubTaskFinished(Task* subTask) {
 
 
             etTask = new ExternalToolRunTask(ET_SEQPOS, args, logParser, getSettings().outDir, QStringList() << rTool->getPath());
+            setListenerForTask(etTask);
             result << etTask;
     }
     return result;

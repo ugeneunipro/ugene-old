@@ -43,7 +43,7 @@
 
 namespace U2 {
 
-class BlastAllSupportTask : public Task {
+class BlastAllSupportTask : public ExternalToolSupportTask {
     Q_OBJECT
 public:
     BlastAllSupportTask(const BlastTaskSettings& settings);

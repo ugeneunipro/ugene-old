@@ -34,6 +34,14 @@ namespace U2 {
 namespace Workflow {
 using namespace Monitor;
 
+WorkerLogInfo::~WorkerLogInfo() {
+    foreach(WDListener* listener, logs) {
+        if(NULL != listener) {
+            delete listener;
+        }
+    }
+}
+
 WorkflowMonitor::WorkflowMonitor(WorkflowAbstractIterationRunner *_task, Schema *_schema)
 : QObject(), schema(_schema), task(_task), saveSchema(false), started(false)
 {
@@ -77,6 +85,10 @@ const QMap<QString, WorkerInfo> & WorkflowMonitor::getWorkersInfo() const {
 
 const QList<WorkerParamsInfo> & WorkflowMonitor::getWorkersParameters() const {
     return workersParamsInfo;
+}
+
+const QMap<QString, Monitor::WorkerLogInfo> & WorkflowMonitor::getWorkersLog() const {
+    return workersLog;
 }
 
 QString WorkflowMonitor::actorName(const QString &id) const {
@@ -204,6 +216,16 @@ void WorkflowMonitor::setSaveSchema(const Metadata &_meta) {
     saveSchema = true;
 }
 
+WDListener* WorkflowMonitor::createWorkflowListener(const QString& workerName) {
+    WorkerLogInfo& logInfo = workersLog[workerName];
+    WDListener* newListener = new WDListener(this, workerName, logInfo.logs.size() + 1);
+    logInfo.logs.append(newListener);
+    return newListener;
+}
+void WorkflowMonitor::onLogChanged(const WDListener* listener, int messageType, const QString& message) {
+    emit si_logChanged(listener->getToolName(), listener->getActorName(), listener->getRunNumber(), messageType, message);
+}
+
 /************************************************************************/
 /* FileInfo */
 /************************************************************************/
@@ -278,6 +300,13 @@ QStringList MonitorUtils::sortedByAppearanceActorIds(const WorkflowMonitor *m) {
         }
     }
     return result;
+}
+
+/************************************************************************/
+/* WDListener */
+/************************************************************************/
+void WDListener::addNewLogMessage(const QString& message, int messageType) {
+    monitor->onLogChanged(this, messageType, message);
 }
 
 } // Workflow

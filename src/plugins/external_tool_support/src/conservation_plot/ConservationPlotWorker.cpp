@@ -106,7 +106,8 @@ Task *ConservationPlotWorker::tick() {
         return new FailTask(os.getError());
     }
 
-    Task* t = new ConservationPlotTask(settings, plotData);
+    ConservationPlotTask* t = new ConservationPlotTask(settings, plotData);
+    t->addListener(createLogListener());
     connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
     return t;
 

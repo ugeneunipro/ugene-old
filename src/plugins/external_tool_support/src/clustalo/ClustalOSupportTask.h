@@ -93,7 +93,7 @@ public:
 };
 
 
-class ClustalOSupportTask : public Task {
+class ClustalOSupportTask : public ExternalToolSupportTask {
     Q_OBJECT
 public:
     ClustalOSupportTask(const MAlignment& _inputMsa, const GObjectReference& _objRef, const ClustalOSupportTaskSettings& settings);

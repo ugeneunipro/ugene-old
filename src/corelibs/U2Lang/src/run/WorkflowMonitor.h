@@ -24,11 +24,13 @@
 
 #include <U2Core/global.h>
 #include <U2Core/Task.h>
+#include <U2Core/ExternalToolRunTask.h>
 
 #include <U2Lang/WorkflowRunTask.h>
 
 namespace U2 {
 namespace Workflow {
+class WDListener;
 
 class Actor;
 
@@ -64,6 +66,13 @@ namespace Monitor {
         QList<Attribute*> parameters;
         Actor *actor;
     };
+    class U2LANG_EXPORT WorkerLogInfo {
+    public:
+        WorkerLogInfo(){}
+        ~WorkerLogInfo();
+        QList<WDListener*> logs;
+    };
+
     enum U2LANG_EXPORT TaskState {
         RUNNING,
         RUNNING_WITH_PROBLEMS,
@@ -82,6 +91,7 @@ public:
     const QList<Monitor::Problem> & getProblems() const;
     const QMap<QString, Monitor::WorkerInfo> & getWorkersInfo() const;
     const QList<Monitor::WorkerParamsInfo>  & getWorkersParameters() const;
+    const QMap<QString, Monitor::WorkerLogInfo> & getWorkersLog() const;
     QString actorName(const QString &id) const;
     int getDataProduced(const QString &actor) const;
 
@@ -102,6 +112,10 @@ public:
 
     void setSaveSchema(const Metadata &meta);
 
+    WDListener* createWorkflowListener(const QString& workerName);
+
+    void onLogChanged(const WDListener* listener, int messageType, const QString& message);
+
 public slots:
     void sl_progressChanged();
     void sl_taskStateChanged();
@@ -117,6 +131,7 @@ signals:
     void si_updateProducers();
     void si_report();
     void si_dirSet(const QString &dir);
+    void si_logChanged(QString toolName, QString actorName, int runNumber, int logType, QString lastLine);
 
 private:
     Schema *schema;
@@ -129,6 +144,7 @@ private:
     QList<Monitor::Problem> problems;
     QMap<QString, Monitor::WorkerInfo> workers;
     QList<Monitor::WorkerParamsInfo> workersParamsInfo;
+    QMap<QString, Monitor::WorkerLogInfo> workersLog;
     QString _outputDir;
     bool saveSchema;
     bool started;
@@ -144,6 +160,26 @@ public:
     static QMap< QString, QList<Monitor::FileInfo> > filesByActor(const WorkflowMonitor *m);
     static QStringList sortedByAppearanceActorIds(const WorkflowMonitor *m);
 };
+
+class U2LANG_EXPORT WDListener: public ExternalToolListener{
+public:
+    WDListener(WorkflowMonitor* _monitor, const QString& _actorName, int _runNumber)
+        : monitor(_monitor), actorName(_actorName), runNumber(_runNumber){}
+    ~WDListener(){}
+
+    void addNewLogMessage(const QString& message, int messageType);
+
+    const QString& getActorName() const {return actorName;}
+
+    int getRunNumber() const {return runNumber;}
+
+private:
+    WorkflowMonitor* monitor;
+    QString actorName;
+    int runNumber;
+};
+
+
 
 } // Workflow
 } // U2

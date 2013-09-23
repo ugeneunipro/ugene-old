@@ -103,7 +103,8 @@ Task *Peak2GeneWorker::tick() {
             return new FailTask(os.getError());
         }
 
-        Task* t = new Peak2GeneTask(settings, treatData);
+        Peak2GeneTask* t = new Peak2GeneTask(settings, treatData);
+        t->addListener(createLogListener());
         connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
         return t;
     }else if (inChannel->isEnded()) {

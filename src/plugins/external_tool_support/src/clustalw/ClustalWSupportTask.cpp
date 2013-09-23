@@ -58,7 +58,7 @@ void ClustalWSupportTaskSettings::reset() {
 }
 
 ClustalWSupportTask::ClustalWSupportTask(const MAlignment& _inputMsa, const GObjectReference& _objRef, const ClustalWSupportTaskSettings& _settings)
-    : Task("Run ClustalW alignment task", TaskFlags_NR_FOSCOE),
+    : ExternalToolSupportTask("Run ClustalW alignment task", TaskFlags_NR_FOSCOE),
       inputMsa(_inputMsa),
       objRef(_objRef),
       settings(_settings)
@@ -165,6 +165,7 @@ QList<Task*> ClustalWSupportTask::onSubTaskFinished(Task* subTask) {
         arguments << "-OUTFILE="+outputUrl;
         logParser=new ClustalWLogParser(inputMsa.getNumRows());
         clustalWTask=new ExternalToolRunTask(ET_CLUSTAL,arguments, logParser);
+        setListenerForTask(clustalWTask);
         clustalWTask->setSubtaskProgressWeight(95);
         res.append(clustalWTask);
     }else if(subTask==clustalWTask){

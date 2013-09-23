@@ -40,6 +40,7 @@
 #include "ProblemsWidget.h"
 #include "ResourcesWidget.h"
 #include "StatisticsWidget.h"
+#include "ExternalToolsWidget.h"
 
 #include "Dashboard.h"
 
@@ -142,7 +143,8 @@ void Dashboard::sl_loaded(bool ok) {
 
         new ParametersWidget(addWidget(tr("Parameters"), InputDashTab, 0), this);
 
-        new OutputFilesWidget(addWidget(tr("Output Files"), OutputDashTab, 0), this);
+        //new OutputFilesWidget(addWidget(tr("Output Files"), OutputDashTab, 0), this);
+        new ExternalToolsWidget(addWidget(tr("External Tools"), ExternalToolsTab, 0), this);
 
         connect(monitor(), SIGNAL(si_runStateChanged(bool)), SLOT(sl_runStateChanged(bool)));
         connect(monitor(), SIGNAL(si_firstProblem()), SLOT(sl_addProblemsWidget()));
@@ -219,8 +221,11 @@ QWebElement Dashboard::addWidget(const QString &title, DashboardTab dashTab, int
     else if (InputDashTab == dashTab) {
         dashTabId = "#input_tab";
     }
-    else if (OutputDashTab == dashTab) {
+    /*else if (OutputDashTab == dashTab) {
         dashTabId = "#output_tab";
+    }*/
+    else if (ExternalToolsTab == dashTab) {
+        dashTabId = "#ext_tools_tab";
     }
     else {
         FAIL("Unexpected dashboard tab ID!", QWebElement());
@@ -230,7 +235,7 @@ QWebElement Dashboard::addWidget(const QString &title, DashboardTab dashTab, int
 
     // Specify if the tab has left/right inner containers
     bool hasInnerContainers = true;
-    if (InputDashTab == dashTab) {
+    if (InputDashTab == dashTab || ExternalToolsTab == dashTab) {
         hasInnerContainers = false;
     }
 
@@ -253,12 +258,18 @@ QWebElement Dashboard::addWidget(const QString &title, DashboardTab dashTab, int
         mainContainer = tabContainer.findFirst(left ? ".left-container" : ".right-container");
         SAFE_POINT(!mainContainer.isNull(), "Can't find a container inside a tab!", QWebElement());
     }
-
-    mainContainer.appendInside(
-        "<div class=\"widget\">"
-            "<div class=\"title\"><div class=\"title-content\">" + title + "</div></div>"
-            "<div class=\"widget-content\"></div>"
-        "</div>");
+    
+    QString containersHTML;
+    if(ExternalToolsTab == dashTab) {
+        containersHTML = "<div class=\"widget external-tools\">";
+    }
+    else {
+        containersHTML = "<div class=\"widget\">";
+    }
+    containersHTML += "<div class=\"title\"><div class=\"title-content\">" + title + "</div></div>"
+        "<div class=\"widget-content\"></div>"
+        "</div>";
+    mainContainer.appendInside(containersHTML);
 
     QWebElement widget = mainContainer.lastChild();
     return widget.findFirst(".widget-content");

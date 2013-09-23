@@ -46,7 +46,7 @@ namespace U2 {
 
 */
 class MAFFTLogParser;
-class MAFFTSupportTaskSettings {
+class MAFFTSupportTaskSettings  {
 public:
     MAFFTSupportTaskSettings() {reset();}
     void reset();
@@ -60,7 +60,7 @@ public:
 };
 
 
-class MAFFTSupportTask : public Task {
+class MAFFTSupportTask : public ExternalToolSupportTask {
     Q_OBJECT
 public:
     MAFFTSupportTask(const MAlignment& _inputMsa, const GObjectReference& _objRef, const MAFFTSupportTaskSettings& settings);

@@ -277,7 +277,7 @@ void BowtieAssembleTask::prepare() {
         }
     }
     arguments.append(settings.resultFileName.getURLString());
-    ExternalToolRunTask *task = new ExternalToolRunTask(ET_BOWTIE, arguments, &logParser);
+    ExternalToolRunTask *task = new ExternalToolRunTask(ET_BOWTIE, arguments, &logParser, NULL);
     addSubTask(task);
 }
 

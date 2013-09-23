@@ -34,6 +34,11 @@ namespace U2 {
 class ExternalToolLogParser;
 class ExternalToolRunTaskHelper;
 class SaveDocumentTask;
+class ExternalToolListener;
+
+//using namespace Workflow;
+
+enum LogType {ERROR_LOG, OUTPUT_LOG, PROGRAM_PATH, ARGUMENTS};
 
 class U2CORE_EXPORT ProcessRun {
 public:
@@ -46,8 +51,10 @@ class U2CORE_EXPORT ExternalToolRunTask: public Task {
     Q_OBJECT
     friend class ExternalToolRunTaskHelper;
 public:
-    ExternalToolRunTask(const QString& toolName, const QStringList& arguments, ExternalToolLogParser*  logParser, const QString& workingDirectory = "", const QStringList& additionalPaths = QStringList());
+    ExternalToolRunTask(const QString& toolName, const QStringList& arguments, ExternalToolLogParser* logParser, const QString& workingDirectory = "", const QStringList& additionalPaths = QStringList());
     ~ExternalToolRunTask();
+
+    void addOutputListener(ExternalToolListener* outputListener);
 
     void run();
 
@@ -58,6 +65,22 @@ private:
     QString                 workingDirectory;
     QStringList             additionalPaths;
     QProcess*               externalToolProcess;
+    QScopedPointer<ExternalToolRunTaskHelper> helper;
+    ExternalToolListener*       listener;
+};
+
+class U2CORE_EXPORT ExternalToolSupportTask: public Task{
+public:
+    ExternalToolSupportTask(const QString& _name, TaskFlags f) 
+        : Task(_name, f){}
+    virtual ~ExternalToolSupportTask(){}
+
+    virtual void addListener(ExternalToolListener* listener){listeners.append(listener);}
+protected:
+    virtual void setListenerForTask(ExternalToolRunTask* runTask, int listenerNumber = 0);
+    virtual void setListenerForHelper(ExternalToolRunTaskHelper* helper, int listenerNumber = 0);
+private:
+    QList<ExternalToolListener*> listeners;
 };
 
 /** Part of ExternalToolRunTask that belongs to task run  thread -> get signals from that thread directly */
@@ -67,6 +90,8 @@ class U2CORE_EXPORT ExternalToolRunTaskHelper : public QObject {
 public:
     ExternalToolRunTaskHelper(ExternalToolRunTask* t);
     ExternalToolRunTaskHelper(QProcess *process, ExternalToolLogParser *logParser, U2OpStatus &os);
+
+    void addOutputListener(ExternalToolListener* listener);
 
 public slots:
     void sl_onReadyToReadLog();
@@ -78,6 +103,7 @@ private:
     ExternalToolLogParser *logParser;
     U2OpStatus &os;
     QByteArray              logData;
+    ExternalToolListener* listener;
 };
 
 class U2CORE_EXPORT ExternalToolSupportUtils : public QObject {
@@ -95,7 +121,7 @@ public:
         U2OpStatus &os);
     static void appendExistingFile(const QString &path, QStringList &files);
     static bool startExternalProcess(QProcess *process, const QString &program, const QStringList &arguments);
-    static ProcessRun prepareProcess(const QString &toolName, const QStringList &arguments, const QString &workingDirectory, const QStringList &additionalPaths, U2OpStatus &os);
+    static ProcessRun prepareProcess(const QString &toolName, const QStringList &arguments, const QString &workingDirectory, const QStringList &additionalPaths, U2OpStatus &os, ExternalToolListener* listener);
 };
 
 
@@ -123,6 +149,19 @@ private:
     
 protected:
     QStringList lastPartOfLog;
+};
+
+class U2CORE_EXPORT ExternalToolListener {
+public:
+    ExternalToolListener() {}
+    virtual ~ExternalToolListener(){}
+
+    virtual void addNewLogMessage(const QString& message, int messageType) = 0;
+
+    void setToolName(const QString& _toolName){toolName = _toolName;}
+    QString getToolName() const{ return toolName;}
+private:
+    QString toolName;
 };
 
 }//namespace

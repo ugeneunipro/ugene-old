@@ -19,43 +19,30 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_GFFRAD_SUPPORT_TASK_H_
-#define _U2_GFFRAD_SUPPORT_TASK_H_
+#ifndef _U2_LOG_WIDGET_H_
+#define _U2_LOG_WIDGET_H_
 
-#include <U2Core/Task.h>
-#include <U2Core/U2IdTypes.h>
-#include <U2Core/ExternalToolRunTask.h>
+#include "Dashboard.h"
+
 
 namespace U2 {
 
-class GffreadSettings {
-public:
-    QString transcriptsUrl; // GTF
-    QString genomeUrl; // FASTA (mutli-FASTA)
-    QString outputUrl; // FASTA
+using namespace Workflow::Monitor;
 
-    QStringList getArguments() const;
-};
-
-class ExternalToolLogParser;
-
-class GffreadSupportTask : public ExternalToolSupportTask {
+class ExternalToolsWidget : public DashboardWidget {
     Q_OBJECT
 public:
-    GffreadSupportTask(const GffreadSettings &settings);
-    ~GffreadSupportTask();
+    ExternalToolsWidget(const QWebElement &container, Dashboard *parent);
 
-    void prepare();
-    QString result() const;
-
+    void addInfoToWidget(QString toolName, QString actorName, int runNumber, int logType, QString lastLine);
+private slots:
+    void sl_onLogChanged(QString toolName, QString actorName, int runNumber, int logType, QString lastLine);
 private:
-    void checkFormat(const QString &url, const DocumentFormatId &target);
-
-private:
-    GffreadSettings settings;
-    ExternalToolLogParser *logParser;
+    static const QString LINE_BREAK;
+    static const QString BACK_SLASH;
+    static const QString SINGLE_QUOTE;
 };
 
-} // U2
+} // namespace U2
 
-#endif // _U2_GFFRAD_SUPPORT_TASK_H_
+#endif

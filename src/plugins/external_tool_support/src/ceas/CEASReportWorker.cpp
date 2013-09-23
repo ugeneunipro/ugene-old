@@ -83,6 +83,7 @@ Task *CEASReportWorker::tick() {
         }
 
         CEASSupportTask *t = new CEASSupportTask(settings);
+        t->addListener(createLogListener());
         connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
         return t;
     }if (inChannel->isEnded()) {

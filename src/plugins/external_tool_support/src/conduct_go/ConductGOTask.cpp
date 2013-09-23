@@ -48,7 +48,7 @@ const QString ConductGOTask::BASE_SUBDIR_NAME("ConductGO");
 const QString ConductGOTask::TREAT_NAME("treatment");
 
 ConductGOTask::ConductGOTask(const ConductGOSettings& _settings, const QList<SharedAnnotationData>& _treatAnn)
-: Task("ConductGO annotation", TaskFlag_None)
+: ExternalToolSupportTask("ConductGO annotation", TaskFlag_None)
 , settings(_settings)
 , treatAnn(_treatAnn)
 , treatDoc(NULL)
@@ -141,6 +141,7 @@ QList<Task*> ConductGOTask::onSubTaskFinished(Task* subTask) {
             SAFE_POINT(NULL != rTool, "R script tool wasn't found in the registry", result);
 
             etTask = new ExternalToolRunTask(ET_GO_ANALYSIS, args, logParser, getSettings().outDir, QStringList() << rTool->getPath());
+            setListenerForTask(etTask);
             result << etTask;
     }
     return result;

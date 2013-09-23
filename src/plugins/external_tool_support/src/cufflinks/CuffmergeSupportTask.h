@@ -41,7 +41,7 @@ struct CuffmergeSettings {
     QList< QList<SharedAnnotationData> > anns;
 };
 
-class CuffmergeSupportTask : public Task {
+class CuffmergeSupportTask : public ExternalToolSupportTask {
     Q_OBJECT
 public:
     CuffmergeSupportTask(const CuffmergeSettings &settings);

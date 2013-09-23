@@ -163,7 +163,7 @@ void BwaAlignTask::prepare() {
         arguments.append( getSAIPath( readSet.url.getURLString()) );
         arguments.append(indexPath);
         arguments.append(readSet.url.getURLString());
-        Task* alignTask = new ExternalToolRunTask(ET_BWA, arguments, &logParser);
+        Task* alignTask = new ExternalToolRunTask(ET_BWA, arguments, &logParser, NULL);
         addSubTask(alignTask);
         alignTasks.append(alignTask);
     }
@@ -192,7 +192,7 @@ QList<Task *> BwaAlignTask::onSubTaskFinished(Task *subTask) {
         }
 
         alignmentPerformed = true;
-        ExternalToolRunTask *task = new ExternalToolRunTask(ET_BWA, arguments, &logParser);
+        ExternalToolRunTask *task = new ExternalToolRunTask(ET_BWA, arguments, &logParser, NULL);
         result.append(task);
     }
 
@@ -300,7 +300,7 @@ void BwaSwAlignTask::prepare() {
     arguments.append( readSet.url.getURLString() );
     
     
-    Task* alignTask = new ExternalToolRunTask(ET_BWA, arguments, &logParser);
+    Task* alignTask = new ExternalToolRunTask(ET_BWA, arguments, &logParser, NULL);
     addSubTask(alignTask);
    
 }

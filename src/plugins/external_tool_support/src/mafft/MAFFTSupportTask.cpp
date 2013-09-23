@@ -52,7 +52,7 @@ void MAFFTSupportTaskSettings::reset() {
 }
 
 MAFFTSupportTask::MAFFTSupportTask(const MAlignment& _inputMsa, const GObjectReference& _objRef, const MAFFTSupportTaskSettings& _settings)
-    : Task("Run MAFFT alignment task", TaskFlags_NR_FOSCOE),
+    : ExternalToolSupportTask("Run MAFFT alignment task", TaskFlags_NR_FOSCOE),
       inputMsa(_inputMsa),
       objRef(_objRef),
       settings(_settings)
@@ -144,6 +144,7 @@ QList<Task*> MAFFTSupportTask::onSubTaskFinished(Task* subTask) {
         arguments <<url;
         logParser = new MAFFTLogParser(inputMsa.getNumRows(), settings.maxNumberIterRefinement, outputUrl);
         mAFFTTask = new ExternalToolRunTask(ET_MAFFT, arguments, logParser);
+        setListenerForTask(mAFFTTask);
         mAFFTTask->setSubtaskProgressWeight(95);
         res.append(mAFFTTask);
     } else if (subTask == mAFFTTask) {

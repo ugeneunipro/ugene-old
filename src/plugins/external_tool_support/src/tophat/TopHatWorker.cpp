@@ -632,7 +632,8 @@ void TopHatWorker::init() {
 }
 
 Task * TopHatWorker::runTophat() {
-    Task * topHatSupportTask = new TopHatSupportTask(settings);
+    TopHatSupportTask * topHatSupportTask = new TopHatSupportTask(settings);
+    topHatSupportTask->addListener(createLogListener());
     connect(topHatSupportTask, SIGNAL(si_stateChanged()), SLOT(sl_topHatTaskFinished()));
     settings.cleanupReads();
     return topHatSupportTask;

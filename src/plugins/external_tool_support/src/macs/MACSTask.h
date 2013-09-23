@@ -34,7 +34,7 @@ class Document;
 class SaveDocumentTask;
 class LoadDocumentTask;
 
-class MACSTask : public Task {
+class MACSTask : public ExternalToolSupportTask {
     Q_OBJECT
 public:
     MACSTask(const MACSSettings& _settings, const QList<SharedAnnotationData>& _treatAnn, const QList<SharedAnnotationData>& _conAnn);

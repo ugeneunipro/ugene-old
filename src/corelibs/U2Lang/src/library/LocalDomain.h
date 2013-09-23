@@ -22,6 +22,7 @@
 #ifndef _U2_WORKFLOW_LOCAL_DOMAIN_H_
 #define _U2_WORKFLOW_LOCAL_DOMAIN_H_
 
+#include <U2Core/ExternalToolRunTask.h>
 #include <U2Lang/IntegralBus.h>
 #include <U2Lang/IntegralBusModel.h>
 #include <U2Lang/WorkflowTransport.h>
@@ -81,6 +82,7 @@ public:
     // in case of the schema's pause
     Task *tick(bool &canResultBeCanceled);
 
+    ExternalToolListener* createLogListener();
 private:
     // bind values from input ports to script vars. 
     // This function is called before 'get' data from channel -> to set up parameters for scripting

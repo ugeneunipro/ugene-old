@@ -136,7 +136,8 @@ GffreadSettings GffreadWorker::takeSettings(U2OpStatus &os) {
 }
 
 Task * GffreadWorker::runGffread(const GffreadSettings &s) {
-    Task *t = new GffreadSupportTask(s);
+    GffreadSupportTask *t = new GffreadSupportTask(s);
+    t->addListener(createLogListener());
     connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
     return t;
 }

@@ -38,7 +38,7 @@ namespace U2 {
 const QString CuffdiffSupportTask::outSubDirBaseName("cuffdiff_out");
 
 CuffdiffSupportTask::CuffdiffSupportTask(const CuffdiffSettings &_settings)
-: Task(tr("Running Cuffdiff task"), TaskFlags_NR_FOSE_COSC), settings(_settings)
+: ExternalToolSupportTask(tr("Running Cuffdiff task"), TaskFlags_NR_FOSE_COSC), settings(_settings)
 {
     diffTask = NULL;
 }
@@ -176,6 +176,7 @@ Task * CuffdiffSupportTask::createCuffdiffTask() {
         arguments,
         logParser.data(),
         workingDir);
+    setListenerForTask(diffTask);
 
     return diffTask;
 }

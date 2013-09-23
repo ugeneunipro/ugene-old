@@ -102,7 +102,7 @@ private:
 };
 
 
-class CAP3SupportTask : public Task {
+class CAP3SupportTask : public ExternalToolSupportTask {
     Q_OBJECT
 public:
     CAP3SupportTask(const CAP3SupportTaskSettings& settings);

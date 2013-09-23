@@ -48,7 +48,7 @@ const QString MACSTask::TREAT_NAME("treatment");
 const QString MACSTask::CON_NAME("control");
 
 MACSTask::MACSTask(const MACSSettings& _settings, const QList<SharedAnnotationData>& _treatAnn, const QList<SharedAnnotationData>& _conAnn)
-: Task("MACS peak calling", TaskFlag_None)
+: ExternalToolSupportTask("MACS peak calling", TaskFlag_None)
 , settings(_settings)
 , treatAnn(_treatAnn)
 , conAnn(_conAnn)
@@ -173,6 +173,7 @@ QList<Task*> MACSTask::onSubTaskFinished(Task* subTask) {
 
             logParser = new MACSLogParser();
             etTask = new ExternalToolRunTask(ET_MACS, args, logParser, getSettings().outDir);
+            setListenerForTask(etTask);
             result << etTask;
         }
     }else if(subTask == etTask){

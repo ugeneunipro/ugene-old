@@ -56,7 +56,7 @@ private:
     QString outFileFormat;
 };
 
-class CEASSupportTask : public Task {
+class CEASSupportTask : public ExternalToolSupportTask {
     Q_OBJECT
 public:
     CEASSupportTask(const CEASTaskSettings &settings);

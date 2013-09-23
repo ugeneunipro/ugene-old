@@ -54,7 +54,7 @@ void ClustalOSupportTaskSettings::reset() {
 }
 
 ClustalOSupportTask::ClustalOSupportTask(const MAlignment& _inputMsa, const GObjectReference& _objRef, const ClustalOSupportTaskSettings& _settings)
-    : Task("Run ClustalO alignment task", TaskFlags_NR_FOSCOE),
+    : ExternalToolSupportTask("Run ClustalO alignment task", TaskFlags_NR_FOSCOE),
       inputMsa(_inputMsa),
       objRef(_objRef),
       settings(_settings)
@@ -146,6 +146,7 @@ QList<Task*> ClustalOSupportTask::onSubTaskFinished(Task* subTask) {
 
         logParser=new ClustalOLogParser();
         clustalOTask=new ExternalToolRunTask(ET_CLUSTALO,arguments, logParser);
+        setListenerForTask(clustalOTask);
         clustalOTask->setSubtaskProgressWeight(95);
         res.append(clustalOTask);
     }

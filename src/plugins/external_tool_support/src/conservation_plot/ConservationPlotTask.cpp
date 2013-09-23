@@ -46,7 +46,7 @@ namespace U2 {
 const QString ConservationPlotTask::BASE_DIR_NAME("ConservationPlot_tmp");
 
 ConservationPlotTask::ConservationPlotTask(const ConservationPlotSettings& _settings, const QList<QList<SharedAnnotationData> >& _plotData)
-: Task("ConservationPlot annotation", TaskFlag_None)
+: ExternalToolSupportTask("ConservationPlot annotation", TaskFlag_None)
 , settings(_settings)
 , treatDoc(NULL)
 , treatTask(NULL)
@@ -165,6 +165,7 @@ QList<Task*> ConservationPlotTask::onSubTaskFinished(Task* subTask) {
 
 
                 etTask = new ExternalToolRunTask(ET_CONSERVATION_PLOT, args, logParser, workingDir, QStringList() << rTool->getPath());
+                setListenerForTask(etTask);
                 result << etTask;
             }
             

@@ -94,7 +94,7 @@ class CallVariantsTaskSettings{
     QStringList getVarFilterArgs() const;
 };
 
-class SamtoolsMpileupTask : public Task{
+class SamtoolsMpileupTask : public ExternalToolSupportTask{
     Q_OBJECT
 public:
     SamtoolsMpileupTask(const CallVariantsTaskSettings &settings);
@@ -113,7 +113,7 @@ private:
     QString filteredFile;
 };
 
-class CallVariantsTask : public Task {
+class CallVariantsTask : public ExternalToolSupportTask {
     Q_OBJECT
 public:
     CallVariantsTask(const CallVariantsTaskSettings& _settings, DbiDataStorage* _store);

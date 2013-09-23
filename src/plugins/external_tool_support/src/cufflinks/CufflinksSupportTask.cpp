@@ -49,7 +49,7 @@ namespace U2 {
 const QString CufflinksSupportTask::outSubDirBaseName("cufflinks_out");
 
 CufflinksSupportTask::CufflinksSupportTask(const CufflinksSettings& _settings)
-    : Task(tr("Running Cufflinks task"), TaskFlags_NR_FOSE_COSC),
+    : ExternalToolSupportTask(tr("Running Cufflinks task"), TaskFlags_NR_FOSE_COSC),
       settings(_settings),
       logParser(NULL),
       tmpDoc(NULL),
@@ -166,10 +166,13 @@ ExternalToolRunTask * CufflinksSupportTask::runCufflinks() {
     logParser = new ExternalToolLogParser();
 
     // Create the Cufflinks task
-    return new ExternalToolRunTask(ET_CUFFLINKS,
+    
+    ExternalToolRunTask* runTask = new ExternalToolRunTask(ET_CUFFLINKS,
         arguments,
         logParser,
         workingDirectory);
+    setListenerForTask(runTask);
+    return runTask;
 }
 
 

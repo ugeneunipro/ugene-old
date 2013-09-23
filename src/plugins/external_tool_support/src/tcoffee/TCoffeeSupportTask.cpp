@@ -52,7 +52,7 @@ void TCoffeeSupportTaskSettings::reset() {
 }
 
 TCoffeeSupportTask::TCoffeeSupportTask(const MAlignment& _inputMsa, const GObjectReference& _objRef, const TCoffeeSupportTaskSettings& _settings)
-    : Task("Run T-Coffee alignment task", TaskFlags_NR_FOSCOE),
+    : ExternalToolSupportTask("Run T-Coffee alignment task", TaskFlags_NR_FOSCOE),
       inputMsa(_inputMsa),
       objRef(_objRef),
       settings(_settings)
@@ -143,6 +143,7 @@ QList<Task*> TCoffeeSupportTask::onSubTaskFinished(Task* subTask) {
         arguments <<"-outfile"<<outputUrl;
         logParser=new TCoffeeLogParser();
         tCoffeeTask=new ExternalToolRunTask(ET_TCOFFEE, arguments, logParser);
+        setListenerForTask(tCoffeeTask);
         tCoffeeTask->setSubtaskProgressWeight(95);
         res.append(tCoffeeTask);
     }else if(subTask==tCoffeeTask){

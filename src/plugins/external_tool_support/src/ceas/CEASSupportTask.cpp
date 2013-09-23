@@ -81,7 +81,7 @@ const QString & CEASTaskSettings::getWigData() const {
 const QString CEASSupportTask::BASE_DIR_NAME("ceas_report");
 
 CEASSupportTask::CEASSupportTask(const CEASTaskSettings &_settings)
-: Task("Running CEAS report task", TaskFlag_None),
+: ExternalToolSupportTask("Running CEAS report task", TaskFlag_None),
 settings(_settings), bedDoc(NULL), wigDoc(NULL),
 bedTask(NULL), wigTask(NULL), etTask(NULL), activeSubtasks(0), logParser(NULL)
 {
@@ -191,7 +191,9 @@ Task* CEASSupportTask::createETTask(){
     ExternalTool* rTool = AppContext::getExternalToolRegistry()->getByName(ET_R);
     SAFE_POINT(NULL != rTool, "R script tool wasn't found in the registry", new FailTask("R script tool wasn't found in the registry"));
 
-    res = new ExternalToolRunTask(ET_CEAS, args, logParser, workingDir, QStringList() << rTool->getPath());
+    ExternalToolRunTask* runTask = new ExternalToolRunTask(ET_CEAS, args, logParser, workingDir, QStringList() << rTool->getPath());
+    setListenerForTask(runTask);
+    res = runTask;
 
     return res;
 }

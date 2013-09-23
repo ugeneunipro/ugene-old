@@ -48,7 +48,7 @@ namespace U2 {
 const QString TopHatSupportTask::outSubDirBaseName("tophat_out");
 
 TopHatSupportTask::TopHatSupportTask(const TopHatSettings& _settings)
-    : Task(tr("Running TopHat task"), TaskFlags_NR_FOSE_COSC),
+    : ExternalToolSupportTask(tr("Running TopHat task"), TaskFlags_NR_FOSE_COSC),
       settings(_settings),
       logParser(NULL),
       tmpDoc(NULL),
@@ -215,11 +215,13 @@ ExternalToolRunTask * TopHatSupportTask::runTophat() {
     additionalPaths << QFileInfo(settings.bowtiePath).dir().absolutePath();
     additionalPaths << QFileInfo(settings.samtoolsPath).dir().absolutePath();
 
-    return new ExternalToolRunTask(ET_TOPHAT,
+    ExternalToolRunTask* runTask = new ExternalToolRunTask(ET_TOPHAT,
         arguments,
         logParser,
         workingDirectory,
         additionalPaths);
+    setListenerForTask(runTask);
+    return runTask;
 }
 
 QList<Task*> TopHatSupportTask::onSubTaskFinished(Task *subTask) {

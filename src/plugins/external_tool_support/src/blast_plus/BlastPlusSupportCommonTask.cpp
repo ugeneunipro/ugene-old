@@ -50,7 +50,7 @@
 namespace U2 {
 
 BlastPlusSupportCommonTask::BlastPlusSupportCommonTask(const BlastTaskSettings& _settings) :
-        Task("Run NCBI Blast+ task", TaskFlags_NR_FOSCOE),
+        ExternalToolSupportTask("Run NCBI Blast+ task", TaskFlags_NR_FOSCOE),
         settings(_settings)
 {
     GCOUNTER( cvar, tvar, "BlastPlusSupportCommonTask" );

@@ -51,7 +51,9 @@ ExternalToolRunTask::ExternalToolRunTask(const QString &_toolName, const QString
   toolName(_toolName),
   workingDirectory(_workingDirectory),
   additionalPaths(_additionalPaths),
-  externalToolProcess(NULL)
+  externalToolProcess(NULL),
+  helper(NULL),
+  listener(NULL)
 {
     coreLog.trace("Creating run task for: " + toolName);
 }
@@ -65,12 +67,14 @@ void ExternalToolRunTask::run(){
         return;
     }
 
-    ProcessRun pRun = ExternalToolSupportUtils::prepareProcess(toolName, arguments, workingDirectory, additionalPaths, stateInfo);
+    ProcessRun pRun = ExternalToolSupportUtils::prepareProcess(toolName, arguments, workingDirectory, additionalPaths, stateInfo, listener);
     CHECK_OP(stateInfo, );
     externalToolProcess = pRun.process;
 
-    QScopedPointer<ExternalToolRunTaskHelper> h(new ExternalToolRunTaskHelper(this));
-
+    helper.reset(new ExternalToolRunTaskHelper(this));
+    if(NULL != listener) {
+        helper->addOutputListener(listener);
+    }
     try {
         externalToolProcess->start(pRun.program, pRun.arguments);
         bool started = externalToolProcess->waitForStarted(START_WAIT_MSEC);
@@ -104,9 +108,31 @@ void ExternalToolRunTask::run(){
         }
     }
 }
+void ExternalToolRunTask::addOutputListener(ExternalToolListener* outputListener) {
+    if(helper) {
+        helper->addOutputListener(outputListener);
+    }
+    listener = outputListener;
+}
 
+////////////////////////////////////////
+//ExternalToolSupportTask
+void ExternalToolSupportTask::setListenerForTask(ExternalToolRunTask* runTask, int listenerNumber) {
+    if(listeners.size() > listenerNumber) {
+        runTask->addOutputListener(listeners.at(listenerNumber));
+    }
+}
+
+void ExternalToolSupportTask::setListenerForHelper(ExternalToolRunTaskHelper* helper, int listenerNumber) {
+    if(listeners.size() > listenerNumber) {
+        helper->addOutputListener(listeners.at(listenerNumber));
+    }
+}
+
+////////////////////////////////////////
+//ExternalToolRunTaskHelper
 ExternalToolRunTaskHelper::ExternalToolRunTaskHelper(ExternalToolRunTask* t)
-: process(t->externalToolProcess), logParser(t->logParser), os(t->stateInfo)
+: process(t->externalToolProcess), logParser(t->logParser), os(t->stateInfo), listener(NULL)
 {
     logData.resize(1000);
     connect(process, SIGNAL(readyReadStandardOutput()), SLOT(sl_onReadyToReadLog()));
@@ -114,7 +140,7 @@ ExternalToolRunTaskHelper::ExternalToolRunTaskHelper(ExternalToolRunTask* t)
 }
 
 ExternalToolRunTaskHelper::ExternalToolRunTaskHelper(QProcess *_process, ExternalToolLogParser *_logParser, U2OpStatus &_os)
-: process(_process), logParser(_logParser), os(_os)
+: process(_process), logParser(_logParser), os(_os), listener(NULL)
 {
     logData.resize(1000);
     connect(process, SIGNAL(readyReadStandardOutput()), SLOT(sl_onReadyToReadLog()));
@@ -133,6 +159,9 @@ void ExternalToolRunTaskHelper::sl_onReadyToReadLog(){
         //call log parser
         QString line = QString::fromLocal8Bit(logData.constData(), numberReadChars);
         logParser->parseOutput(line);
+        if(NULL != listener) {
+            listener->addNewLogMessage(line, OUTPUT_LOG);
+        }
         numberReadChars = process->read(logData.data(), logData.size());
     }
     os.setProgress(logParser->getProgress());
@@ -150,6 +179,9 @@ void ExternalToolRunTaskHelper::sl_onReadyToReadErrLog(){
         //call log parser
         QString line = QString::fromLocal8Bit(logData.constData(), numberReadChars);
         logParser->parseErrOutput(line);
+        if(NULL != listener) {
+            listener->addNewLogMessage(line, ERROR_LOG);
+        }
         numberReadChars = process->read(logData.data(), logData.size());
     }
     QString lastErr = logParser->getLastError();
@@ -157,6 +189,10 @@ void ExternalToolRunTaskHelper::sl_onReadyToReadErrLog(){
         os.setError(lastErr);
     }
     os.setProgress(logParser->getProgress());
+}
+
+void ExternalToolRunTaskHelper::addOutputListener(ExternalToolListener* _listener) {
+    listener = _listener;
 }
 
 ////////////////////////////////////////
@@ -172,7 +208,8 @@ void ExternalToolLogParser::parseOutput(const QString& partOfLog){
     lastPartOfLog.first()=lastLine+lastPartOfLog.first();
     lastLine=lastPartOfLog.takeLast();
     foreach(QString buf, lastPartOfLog){
-        if(buf.contains("error",Qt::CaseInsensitive)){
+        
+if(buf.contains("error",Qt::CaseInsensitive)){
             setLastError(buf);
         }else{
             ioLog.trace(buf);
@@ -291,7 +328,7 @@ bool ExternalToolSupportUtils::startExternalProcess(QProcess *process, const QSt
     return started;
 }
 
-ProcessRun ExternalToolSupportUtils::prepareProcess(const QString &toolName, const QStringList &arguments, const QString &workingDirectory, const QStringList &additionalPaths, U2OpStatus &os) {
+ProcessRun ExternalToolSupportUtils::prepareProcess(const QString &toolName, const QStringList &arguments, const QString &workingDirectory, const QStringList &additionalPaths, U2OpStatus &os, ExternalToolListener* listener) {
     ProcessRun result;
     result.process = NULL;
     result.arguments = arguments;
@@ -333,6 +370,11 @@ ProcessRun ExternalToolSupportUtils::prepareProcess(const QString &toolName, con
         algoLog.details(tr("Working directory is \"%1\"").arg(result.process->workingDirectory()));
     }
     algoLog.details(tr("Launching %1 tool: %2 %3").arg(toolName).arg(result.program).arg(arguments.join(" ")));
+    if(NULL != listener) {
+        listener->setToolName(toolName);
+        listener->addNewLogMessage(result.program, PROGRAM_PATH);
+        listener->addNewLogMessage(arguments.join("\n"), ARGUMENTS);
+    }
     return result;
 }
 

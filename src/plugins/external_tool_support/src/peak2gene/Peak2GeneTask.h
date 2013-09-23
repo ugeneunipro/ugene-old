@@ -34,7 +34,7 @@ class Document;
 class SaveDocumentTask;
 class LoadDocumentTask;
 
-class Peak2GeneTask : public Task {
+class Peak2GeneTask : public ExternalToolSupportTask {
     Q_OBJECT
 public:
     Peak2GeneTask(const Peak2GeneSettings& _settings, const QList<SharedAnnotationData>& _treatAnn);
