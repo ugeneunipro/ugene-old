@@ -227,9 +227,19 @@ DNAAlphabet* U2AlphabetUtils::deriveCommonAlphabet(DNAAlphabet* al1, DNAAlphabet
         return al1;
     }
     SAFE_POINT(al1 != NULL && al2 != NULL, "Alphabet is NULL", NULL);
+
+    // DNA extended alphabet is a subset of AMINO alphabet
+    if ( ( BaseDNAAlphabetIds::NUCL_DNA_EXTENDED( ) == al1->getId( )
+        && BaseDNAAlphabetIds::AMINO_DEFAULT( ) == al2->getId( ) )
+        || ( BaseDNAAlphabetIds::AMINO_DEFAULT( ) == al1->getId( )
+        && BaseDNAAlphabetIds::NUCL_DNA_EXTENDED( ) == al2->getId( ) ) )
+    {
+        return getById( BaseDNAAlphabetIds::AMINO_DEFAULT( ) );
+    }
     if (al1->getType() != al2->getType()) {
         return getById(BaseDNAAlphabetIds::RAW());
     }
+
     DNAAlphabet* resAl = al1->getNumAlphabetChars() >= al2->getNumAlphabetChars() ? al1 : al2;
     return resAl;
 }
