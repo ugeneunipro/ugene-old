@@ -56,12 +56,6 @@ public:
     
 }; // IntegralBusType
 
-class IntegralBusUtils {
-public:
-    static void remapBus(QStrStrMap &busMap, const ActorId &oldId, const ActorId &newId, const PortMapping &mapping);
-    static void remapPathedSlotString(QString &pathedSlotStr, const ActorId &oldId, const ActorId &newId, const PortMapping &mapping);
-};
-
 } //namespace Workflow
 
 } //namespace U2

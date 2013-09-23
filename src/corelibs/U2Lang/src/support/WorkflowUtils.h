@@ -63,6 +63,7 @@ public:
     
     static QList<Descriptor> findMatchingTypes(DataTypePtr set, DataTypePtr elementDataType);
     static QStringList findMatchingTypesAsStringList(DataTypePtr set, DataTypePtr elementDatatype);
+    static QStringList candidatesAsStringList(const QList<Descriptor> &candidates);
     static QList<Descriptor> findMatchingCandidates(DataTypePtr from, DataTypePtr to, const Descriptor & key);
     static QList<Descriptor> findMatchingCandidates(DataTypePtr from, DataTypePtr elementDatatype);
     static Descriptor getCurrentMatchingDescriptor(const QList<Descriptor> & candidates, DataTypePtr to, const Descriptor & key,

@@ -21,6 +21,8 @@
 
 #include <assert.h>
 
+#include <QPainter>
+
 #include <QtGui/QListWidget>
 #include <QtGui/QTableWidget>
 #include <QtGui/QHeaderView>
@@ -36,8 +38,10 @@
 #include <U2Lang/IntegralBus.h>
 #include <U2Lang/IntegralBusModel.h>
 #include <U2Lang/IntegralBusType.h>
-
+#include <U2Lang/WorkflowEnv.h>
 #include <U2Lang/WorkflowUtils.h>
+
+#include "support/IntegralBusUtils.h"
 
 #include "MapDatatypeEditor.h"
 
@@ -124,6 +128,9 @@ QWidget* MapDatatypeEditor::createGUI(DataTypePtr from, DataTypePtr to) {
         valueItem->setData(Qt::UserRole+1, qVariantFromValue<QList<Descriptor> >(candidates));
         if (elementDatatype->isList()) {
             valueItem->setData(Qt::UserRole+2, true);
+            valueItem->setData(Qt::UserRole+3, elementDatatype->getDatatypeByDescriptor()->getId());
+        } else {
+            valueItem->setData(Qt::UserRole+3, elementDatatype->getId());
         }
         table->setItem(i, VALUE_COLUMN, valueItem);
     }
@@ -287,41 +294,63 @@ QWidget *DescriptorListEditorDelegate::createEditor(QWidget *parent,
     return editor;
 }
 
+static int addItems(QStandardItemModel *cm, const QList<Descriptor> &list, bool isList, const QString &currentValue, int startIdx = 0) {
+    int currentIdx = -1;
+    int idx = startIdx;
+    foreach (const Descriptor &d, list) {
+        QStandardItem *item = new QStandardItem(d.getDisplayName());
+        item->setData(qVariantFromValue<Descriptor>(d));
+        item->setToolTip(d.getDisplayName());
+        if (isList) {
+            item->setCheckable(true);
+            item->setEditable(false);
+            item->setSelectable(false);
+            QStringList curList = currentValue.split(";");
+            item->setCheckState(curList.contains(d.getId())? Qt::Checked: Qt::Unchecked);
+        } else {
+            if (d == currentValue) {
+                currentIdx = idx;
+            }
+        }
+        cm->appendRow(item);
+        idx++;
+    }
+    return currentIdx;
+}
+
+static void addSeparator(QStandardItemModel *cm) {
+    QStandardItem *item = new QStandardItem("Text");
+    item->setFlags(item->flags() & ~( Qt::ItemIsEnabled | Qt::ItemIsSelectable));
+    cm->appendRow(item);
+}
+
 void DescriptorListEditorDelegate::setEditorData(QWidget *editor,
                                            const QModelIndex &index) const
 {
     QString current = index.model()->data(index, Qt::UserRole).value<Descriptor>().getId();
     QList<Descriptor> list = index.model()->data(index, Qt::UserRole+1).value<QList<Descriptor> >();
+    QString typeId = index.model()->data(index, Qt::UserRole+3).toString();
+    DataTypePtr type = WorkflowEnv::getDataTypeRegistry()->getById(typeId);
+    IntegralBusUtils::SplitResult r = IntegralBusUtils::splitCandidates(list, type);
+
     QComboBox *combo = static_cast<QComboBox*>(editor);
-    if (index.model()->data(index, Qt::UserRole+2).toBool()) {
-        QStringList curList = current.split(";");
-        QStandardItemModel* cm = new QStandardItemModel(list.size(), 1, combo);
-        for (int i = 0; i < list.size(); ++i) {
-            Descriptor d = list[i];
-            QStandardItem* item = new QStandardItem(d.getDisplayName());
-            item->setCheckable(true); item->setEditable(false); item->setSelectable(false);
-            item->setCheckState(curList.contains(d.getId())? Qt::Checked: Qt::Unchecked);
-            item->setData(qVariantFromValue<Descriptor>(d));
-            item->setToolTip(d.getDisplayName());
-            cm->setItem(i, item);
-        }
-        combo->setModel(cm);
-        QListView* vw = new QListView(combo);
+    combo->setItemDelegate(new ItemDelegateForHeaders());
+    QStandardItemModel *cm = qobject_cast<QStandardItemModel*>(combo->model());
+    combo->clear();
+    bool isList = index.model()->data(index, Qt::UserRole+2).toBool();
+
+    int currentIdx = addItems(cm, r.mainDescs, isList, current);
+    if (!r.otherDescs.isEmpty()) {
+        addSeparator(cm);
+        int currentIdx2 = addItems(cm, r.otherDescs, isList, current, r.mainDescs.size() + 1);
+        currentIdx = (-1 == currentIdx) ? currentIdx2 : currentIdx;
+    }
+
+    if (isList) {
+        QListView *vw = new QListView(combo);
         vw->setModel(cm);
         combo->setView(vw);
-        //vw->setEditTriggers(QAbstractItemView::AllEditTriggers);
     } else {
-        QStandardItemModel *cm = qobject_cast<QStandardItemModel*>(combo->model());
-        combo->clear();
-        int currentIdx = 0;
-        for (int i = 0; i < list.size(); ++i) {
-            combo->addItem(list[i].getDisplayName(), qVariantFromValue<Descriptor>(list[i]));
-            cm->item(i)->setToolTip(list[i].getDisplayName());
-            if (list[i] == current) {
-                currentIdx = i;
-            }
-        }
-
         combo->setCurrentIndex(currentIdx);
     }
 }
@@ -349,10 +378,33 @@ void DescriptorListEditorDelegate::setModelData(QWidget *editor, QAbstractItemMo
             value = qVariantFromValue<Descriptor>(Descriptor(ids.join(";"), tr("<List of values>"), tr("List of values")));
         }
     } else {
-        value = combo->itemData(combo->currentIndex());
+        value = combo->itemData(combo->currentIndex(), Qt::UserRole+1);
     }
     model->setData(index, value, Qt::UserRole);
     model->setData(index, value.value<Descriptor>().getDisplayName(), Qt::DisplayRole);
+}
+
+/************************************************************************/
+/* TestDelegate */
+/************************************************************************/
+ItemDelegateForHeaders::ItemDelegateForHeaders(QObject *parent)
+: QItemDelegate(parent)
+{
+
+}
+
+void ItemDelegateForHeaders::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const {
+    if (index.model()->flags(index).testFlag(Qt::ItemIsEnabled)) {
+        QItemDelegate::paint(painter, option, index);
+        return;
+    }
+
+    QFont font;
+    font.setBold(true);
+    font.setItalic(true);
+    painter->setFont(font);
+
+    painter->drawText(option.rect, Qt::AlignLeft | Qt::TextSingleLine, tr("Additional"));
 }
 
 }//namespace U2

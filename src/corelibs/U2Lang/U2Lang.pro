@@ -56,6 +56,7 @@ HEADERS += src/library/BaseActorCategories.h \
            src/support/BreakpointGreaterOrEqualHitCounter.h \
            src/support/BreakpointMultipleHitCounter.h \
            src/support/CoreLibConstants.h \
+           src/support/IntegralBusUtils.h \
            src/support/MapDatatypeEditor.h \
            src/support/MarkerUtils.h \
            src/support/MultipleAlignmentMessageTranslator.h \
@@ -152,6 +153,7 @@ SOURCES += src/library/BaseActorCategories.cpp \
            src/support/BreakpointGreaterOrEqualHitCounter.cpp \
            src/support/BreakpointMultipleHitCounter.cpp \
            src/support/CoreLibConstants.cpp \
+           src/support/IntegralBusUtils.cpp \
            src/support/MapDatatypeEditor.cpp \
            src/support/MarkerUtils.cpp \
            src/support/MultipleAlignmentMessageTranslator.cpp \

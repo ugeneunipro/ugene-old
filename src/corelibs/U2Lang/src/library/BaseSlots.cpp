@@ -67,7 +67,7 @@ const Descriptor BaseSlots::ASSEMBLY_SLOT() {
 }
 
 const Descriptor BaseSlots::DATASET_SLOT() {
-    return Descriptor(DATASET_SLOT_ID, tr("Dataset"), tr("Dataset name"));
+    return Descriptor(DATASET_SLOT_ID, tr("Dataset name"), tr("Dataset name"));
 }
 
 } // Workflow

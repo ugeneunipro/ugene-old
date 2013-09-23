@@ -28,6 +28,8 @@
 #include <U2Lang/IntegralBusType.h>
 #include <U2Lang/WorkflowUtils.h>
 
+#include "support/IntegralBusUtils.h"
+
 #include "ActorModel.h"
 
 namespace U2 {

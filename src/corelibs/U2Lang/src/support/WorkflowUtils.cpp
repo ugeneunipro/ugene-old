@@ -349,13 +349,17 @@ QList<Descriptor> WorkflowUtils::findMatchingTypes(DataTypePtr set, DataTypePtr 
     return result;
 }
 
-QStringList WorkflowUtils::findMatchingTypesAsStringList(DataTypePtr set, DataTypePtr elementDatatype) {
-    QList<Descriptor> descList = findMatchingTypes(set, elementDatatype);
+QStringList WorkflowUtils::candidatesAsStringList(const QList<Descriptor> &descList) {
     QStringList res;
-    foreach( const Descriptor & desc, descList ) {
+    foreach (const Descriptor &desc, descList) {
         res << desc.getId();
     }
     return res;
+}
+
+QStringList WorkflowUtils::findMatchingTypesAsStringList(DataTypePtr set, DataTypePtr elementDatatype) {
+    QList<Descriptor> descList = findMatchingTypes(set, elementDatatype);
+    return candidatesAsStringList(descList);
 }
 
 const Descriptor EMPTY_VALUES_DESC("", WorkflowUtils::tr("<empty>"), WorkflowUtils::tr("Default value"));

@@ -104,6 +104,12 @@ public:
     
 }; // DescriptorListEditorDelegate
 
+class ItemDelegateForHeaders : public QItemDelegate {
+public:
+    ItemDelegateForHeaders(QObject *parent = 0);
+    virtual void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
+};
+
 }//namespace U2
 
 #endif

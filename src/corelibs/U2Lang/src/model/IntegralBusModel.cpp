@@ -32,6 +32,7 @@
 
 #include "IntegralBusModel.h"
 #include "IntegralBusType.h"
+#include "support/IntegralBusUtils.h"
 
 /* TRANSLATOR U2::Workflow::IntegralBusPort */
 namespace U2 {
@@ -362,63 +363,47 @@ void IntegralBusPort::setupBusMap() {
 
         U2OpStatus2Log os;
         DataTypePtr elementDatatype = to->getDatatypeByDescriptor(key);
-        QStringList candidates = WorkflowUtils::findMatchingTypesAsStringList(from, elementDatatype);
+        QList<Descriptor> allCandidates = WorkflowUtils::findMatchingTypes(from, elementDatatype);
+        QList<Descriptor> candidates = IntegralBusUtils::splitCandidates(allCandidates, elementDatatype).mainDescs;
         if (elementDatatype->isList()) {
-            candidates += WorkflowUtils::findMatchingTypesAsStringList(from, elementDatatype->getDatatypeByDescriptor());
-            QString res = candidates.join(";");
+            candidates += WorkflowUtils::findMatchingTypes(from, elementDatatype->getDatatypeByDescriptor());
+            candidates = IntegralBusUtils::splitCandidates(candidates, elementDatatype->getDatatypeByDescriptor()).mainDescs;
+            QString res = WorkflowUtils::candidatesAsStringList(candidates).join(";");
             busMap.insert(key.getId(), res);
         } else if (candidates.size() == 0) {
             //no unambiguous match, reset
             busMap.insert(key.getId(), "");
         } else {
-            // for string type initial value - empty. Because string type is always a path to a file or a dataset and not needed to be bound
-            if( elementDatatype == BaseTypes::STRING_TYPE() ) {
-                // FIXME: should use special hints for descriptors?
-                foreach(const QString & str, candidates) {
-                    IntegralBusSlot slot = IntegralBusSlot::fromString(str, os);
-                    if (slot.getId() == BaseSlots::URL_SLOT().getId()) {
-                        candidates.removeAll(str);
-                    }else if (slot.getId() == BaseSlots::DATASET_SLOT().getId()) {
-                        candidates.removeAll(str);
-                    }
-                }
-                if(candidates.size() == 1) {
-                    busMap.insert(key.getId(), candidates.first());
-                } else {
-                    busMap.insert(key.getId(), "");
-                }
-            } else {
-                bool fl = false;
-                QMap<Port*,Link*> links = this->getLinks();
-                Port *port = links.keys().first();
-                DataTypePtr ptr = port->getOutputType();
-                if(ptr->isMap()) {
-                    foreach(const Descriptor & desc, ptr->getAllDescriptors()) {
-                        if(key.getId() == desc.getId()) {
-                            foreach(const QString &str, candidates) {
-                                IntegralBusSlot slot = IntegralBusSlot::fromString(str, os);
-                                if(slot.actorId() == port->owner()->getId()) {
-                                    busMap.insert(key.getId(), str);
-                                    fl = true;
-                                }
-                            }
-                        }
-                    }
-                }
-                else {
-                    if(key.getId() == ptr->getId()) {
-                        foreach(const QString &str, candidates) {
-                            IntegralBusSlot slot = IntegralBusSlot::fromString(str, os);
+            bool fl = false;
+            QMap<Port*,Link*> links = this->getLinks();
+            Port *port = links.keys().first();
+            DataTypePtr ptr = port->getOutputType();
+            if(ptr->isMap()) {
+                foreach(const Descriptor & desc, ptr->getAllDescriptors()) {
+                    if(key.getId() == desc.getId()) {
+                        foreach(const Descriptor &d, candidates) {
+                            IntegralBusSlot slot = IntegralBusSlot::fromString(d.getId(), os);
                             if(slot.actorId() == port->owner()->getId()) {
-                                busMap.insert(key.getId(), str);
+                                busMap.insert(key.getId(), d.getId());
                                 fl = true;
                             }
                         }
                     }
                 }
-                if(!fl) {
-                    busMap.insert(key.getId(), candidates.first());
+            }
+            else {
+                if(key.getId() == ptr->getId()) {
+                    foreach(const Descriptor &d, candidates) {
+                        IntegralBusSlot slot = IntegralBusSlot::fromString(d.getId(), os);
+                        if(slot.actorId() == port->owner()->getId()) {
+                            busMap.insert(key.getId(), d.getId());
+                            fl = true;
+                        }
+                    }
                 }
+            }
+            if(!fl) {
+                busMap.insert(key.getId(), candidates.first().getId());
             }
         }
     }
