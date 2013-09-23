@@ -22,6 +22,8 @@
 #include "RSupport.h"
 #include "ExternalToolSupportSettingsController.h"
 #include "ExternalToolSupportSettings.h"
+#include "conduct_go/ConductGOSupport.h"
+#include "seqpos/SeqPosSupport.h"
 
 #include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>
@@ -80,7 +82,9 @@ RModuleSupport::RModuleSupport(const QString& name, const QString& path) : Exter
     #endif
 #endif
 
-    validMessage = "[1] TRUE";
+    versionRegExp = QRegExp("(\\d+.\\d+.\\d+)");
+
+    validationArguments << "-e";
 
     toolKitName = "R";
     dependencies << ET_R;
@@ -88,88 +92,92 @@ RModuleSupport::RModuleSupport(const QString& name, const QString& path) : Exter
     muted = true;
 }
 
+QString RModuleSupport::getScript() const {
+    return QString("list<-installed.packages();list[grep('%1',list)];list['%1','Version'];");
+}
+
 RModuleGostatsSupport::RModuleGostatsSupport(const QString &name, const QString &path) : RModuleSupport(name, path) {
-    description += ET_R_GOSTATS + tr(": Rscript module for the cistrome pipeline");
-    validationArguments << "-e";
-    validationArguments << QString("print(require(%1))").arg(ET_R_GOSTATS);
+    description += ET_R_GOSTATS + tr(": Rscript module for the %1 tool").arg(ET_GO_ANALYSIS);
+    validationArguments << getScript().arg(ET_R_GOSTATS);
+    validMessage = QString("\"%1\"").arg(ET_R_GOSTATS);
 }
 
 RModuleGodbSupport::RModuleGodbSupport(const QString &name, const QString &path) : RModuleSupport(name, path) {
-    description += ET_R_GO_DB + tr(": Rscript module for the cistrome pipeline");
-    validationArguments << "-e";
-    validationArguments << QString("print(require(%1))").arg(ET_R_GO_DB);
+    description += ET_R_GO_DB + tr(": Rscript module for the %1 tool").arg(ET_GO_ANALYSIS);
+    validationArguments << getScript().arg(ET_R_GO_DB);
+    validMessage = QString("\"%1\"").arg(ET_R_GO_DB);
 }
 
 RModuleHgu133adbSupport::RModuleHgu133adbSupport(const QString &name, const QString &path) : RModuleSupport(name, path) {
-    description += ET_R_HGU133A_DB + tr(": Rscript module for the cistrome pipeline");
-    validationArguments << "-e";
-    validationArguments << QString("print(require(%1))").arg(ET_R_HGU133A_DB);
+    description += ET_R_HGU133A_DB + tr(": Rscript module for the %1 tool").arg(ET_GO_ANALYSIS);
+    validationArguments << getScript().arg(ET_R_HGU133A_DB);
+    validMessage = QString("\"%1\"").arg(ET_R_HGU133A_DB);
 }
 
 RModuleHgu133bdbSupport::RModuleHgu133bdbSupport(const QString &name, const QString &path) : RModuleSupport(name, path) {
-    description += ET_R_HGU133B_DB + tr(": Rscript module for the cistrome pipeline");
-    validationArguments << "-e";
-    validationArguments << QString("print(require(%1))").arg(ET_R_HGU133B_DB);
+    description += ET_R_HGU133B_DB + tr(": Rscript module for the %1 tool").arg(ET_GO_ANALYSIS);
+    validationArguments << getScript().arg(ET_R_HGU133B_DB);
+    validMessage = QString("\"%1\"").arg(ET_R_HGU133B_DB);
 }
 
 RModuleHgu133plus2dbSupport::RModuleHgu133plus2dbSupport(const QString &name, const QString &path) : RModuleSupport(name, path) {
-    description += ET_R_HGU1333PLUS2_DB + tr(": Rscript module for the cistrome pipeline");
-    validationArguments << "-e";
-    validationArguments << QString("print(require(%1))").arg(ET_R_HGU1333PLUS2_DB);
+    description += ET_R_HGU1333PLUS2_DB + tr(": Rscript module for the %1 tool").arg(ET_GO_ANALYSIS);
+    validationArguments << getScript().arg(ET_R_HGU1333PLUS2_DB);
+    validMessage = QString("\"%1\"").arg(ET_R_HGU1333PLUS2_DB);
 }
 
 RModuleHgu95av2dbSupport::RModuleHgu95av2dbSupport(const QString &name, const QString &path) : RModuleSupport(name, path) {
-    description += ET_R_HGU95AV2_DB + tr(": Rscript module for the cistrome pipeline");
-    validationArguments << "-e";
-    validationArguments << QString("print(require(%1))").arg(ET_R_HGU95AV2_DB);
+    description += ET_R_HGU95AV2_DB + tr(": Rscript module for the %1 tool").arg(ET_GO_ANALYSIS);
+    validationArguments << getScript().arg(ET_R_HGU95AV2_DB);
+    validMessage = QString("\"%1\"").arg(ET_R_HGU95AV2_DB);
 }
 
 RModuleMouse430a2dbSupport::RModuleMouse430a2dbSupport(const QString &name, const QString &path) : RModuleSupport(name, path) {
-    description += ET_R_MOUSE430A2_DB + tr(": Rscript module for the cistrome pipeline");
-    validationArguments << "-e";
-    validationArguments << QString("print(require(%1))").arg(ET_R_MOUSE430A2_DB);
+    description += ET_R_MOUSE430A2_DB + tr(": Rscript module for the %1 tool").arg(ET_GO_ANALYSIS);
+    validationArguments << getScript().arg(ET_R_MOUSE430A2_DB);
+    validMessage = QString("\"%1\"").arg(ET_R_MOUSE430A2_DB);
 }
 
 RModuleCelegansdbSupport::RModuleCelegansdbSupport(const QString &name, const QString &path) : RModuleSupport(name, path) {
-    description += ET_R_CELEGANS_DB + tr(": Rscript module for the cistrome pipeline");
-    validationArguments << "-e";
-    validationArguments << QString("print(require(%1))").arg(ET_R_CELEGANS_DB);
+    description += ET_R_CELEGANS_DB + tr(": Rscript module for the %1 tool").arg(ET_GO_ANALYSIS);
+    validationArguments << getScript().arg(ET_R_CELEGANS_DB);
+    validMessage = QString("\"%1\"").arg(ET_R_CELEGANS_DB);
 }
 
 RModuleDrosophila2dbSupport::RModuleDrosophila2dbSupport(const QString &name, const QString &path) : RModuleSupport(name, path) {
-    description += ET_R_DROSOPHILA2_DB + tr(": Rscript module for the cistrome pipeline");
-    validationArguments << "-e";
-    validationArguments << QString("print(require(%1))").arg(ET_R_DROSOPHILA2_DB);
+    description += ET_R_DROSOPHILA2_DB + tr(": Rscript module for the %1 tool").arg(ET_GO_ANALYSIS);
+    validationArguments << getScript().arg(ET_R_DROSOPHILA2_DB);
+    validMessage = QString("\"%1\"").arg(ET_R_DROSOPHILA2_DB);
 }
 
 RModuleOrghsegdbSupport::RModuleOrghsegdbSupport(const QString &name, const QString &path) : RModuleSupport(name, path) {
-    description += ET_R_ORG_HS_EG_DB + tr(": Rscript module for the cistrome pipeline");
-    validationArguments << "-e";
-    validationArguments << QString("print(require(%1))").arg(ET_R_ORG_HS_EG_DB);
+    description += ET_R_ORG_HS_EG_DB + tr(": Rscript module for the %1 tool").arg(ET_GO_ANALYSIS);
+    validationArguments << getScript().arg(ET_R_ORG_HS_EG_DB);
+    validMessage = QString("\"%1\"").arg(ET_R_ORG_HS_EG_DB);
 }
 
 RModuleOrgmmegdbSupport::RModuleOrgmmegdbSupport(const QString &name, const QString &path) : RModuleSupport(name, path) {
-    description += ET_R_ORG_MM_EG_DB + tr(": Rscript module for the cistrome pipeline");
-    validationArguments << "-e";
-    validationArguments << QString("print(require(%1))").arg(ET_R_ORG_MM_EG_DB);
+    description += ET_R_ORG_MM_EG_DB + tr(": Rscript module for the %1 tool").arg(ET_GO_ANALYSIS);
+    validationArguments << getScript().arg(ET_R_ORG_MM_EG_DB);
+    validMessage = QString("\"%1\"").arg(ET_R_ORG_MM_EG_DB);
 }
 
 RModuleOrgceegdbSupport::RModuleOrgceegdbSupport(const QString &name, const QString &path) : RModuleSupport(name, path) {
-    description += ET_R_ORG_CE_EG_DB + tr(": Rscript module for the cistrome pipeline");
-    validationArguments << "-e";
-    validationArguments << QString("print(require(%1))").arg(ET_R_ORG_CE_EG_DB);
+    description += ET_R_ORG_CE_EG_DB + tr(": Rscript module for the %1 tool").arg(ET_GO_ANALYSIS);
+    validationArguments << getScript().arg(ET_R_ORG_CE_EG_DB);
+    validMessage = QString("\"%1\"").arg(ET_R_ORG_CE_EG_DB);
 }
 
 RModuleOrgdmegdbSupport::RModuleOrgdmegdbSupport(const QString &name, const QString &path) : RModuleSupport(name, path) {
-    description += ET_R_ORG_DM_EG_DB + tr(": Rscript module for the cistrome pipeline");
-    validationArguments << "-e";
-    validationArguments << QString("print(require(%1))").arg(ET_R_ORG_DM_EG_DB);
+    description += ET_R_ORG_DM_EG_DB + tr(": Rscript module for the %1 tool").arg(ET_GO_ANALYSIS);
+    validationArguments << getScript().arg(ET_R_ORG_DM_EG_DB);
+    validMessage = QString("\"%1\"").arg(ET_R_ORG_DM_EG_DB);
 }
 
 RModuleSeqlogoSupport::RModuleSeqlogoSupport(const QString &name, const QString &path) : RModuleSupport(name, path) {
-    description += ET_R_SEQLOGO + tr(": Rscript module for the cistrome pipeline");
-    validationArguments << "-e";
-    validationArguments << QString("print(require(%1))").arg(ET_R_SEQLOGO);
+    description += ET_R_SEQLOGO + tr(": Rscript module for the %1 tool").arg(ET_SEQPOS);
+    validationArguments << getScript().arg(ET_R_SEQLOGO);
+    validMessage = QString("\"%1\"").arg(ET_R_SEQLOGO);
 }
 
 }   // namespace

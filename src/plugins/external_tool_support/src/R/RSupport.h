@@ -55,6 +55,8 @@ class RModuleSupport : public ExternalToolModule {
     Q_OBJECT
 public:
     RModuleSupport(const QString& name, const QString& path = "");
+protected:
+    QString getScript() const;
 };
 
 class RModuleGostatsSupport : public RModuleSupport {
