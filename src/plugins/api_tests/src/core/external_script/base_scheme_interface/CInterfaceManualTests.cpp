@@ -603,6 +603,8 @@ IMPLEMENT_TEST( CInterfaceManualTests, call_variants ) {
     CHECK_U2_ERROR( error );
     error = setSchemeElementAttribute( scheme, writeVariations, L"url-out", L"variations.snp" );
     CHECK_U2_ERROR( error );
+    error = setSchemeElementAttribute( scheme, writeVariations, L"accumulate", L"false" );
+    CHECK_U2_ERROR( error );
 
     error = addFlowToScheme( scheme, readAssembly, L"out-assembly", callVariants, L"in-assembly" );
     CHECK_U2_ERROR( error );
@@ -619,6 +621,10 @@ IMPLEMENT_TEST( CInterfaceManualTests, call_variants ) {
     CHECK_U2_ERROR( error );
     error = addSchemeActorsBinding( scheme, readAssembly, L"assembly", callVariants,
         L"in-assembly.assembly" );
+    CHECK_U2_ERROR( error );
+    error = addSchemeActorsBinding( scheme, readAssembly, L"dataset", callVariants,
+        L"in-assembly.dataset" );
+    CHECK_U2_ERROR( error );
     error = addSchemeActorsBinding( scheme, readAssembly, L"url", callVariants,
         L"in-assembly.url" );
     CHECK_U2_ERROR( error );
