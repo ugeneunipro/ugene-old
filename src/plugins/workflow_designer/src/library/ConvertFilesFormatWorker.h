@@ -45,7 +45,7 @@ class ConvertFilesFormatWorker: public BaseWorker {
 public:
     ConvertFilesFormatWorker(Actor* a) : BaseWorker(a), inputUrlPort(NULL), outputUrlPort(NULL), 
                                                         selectedFormat(QString()), selectedFormatExtensions(NULL), 
-                                                        excludedFormats(NULL) {};
+                                                        excludedFormats(NULL) {}
     void getSelectedFormatExtensions( );
     void getExcludedFormats( const QStringList &excludedFormatsIds );
     void init();

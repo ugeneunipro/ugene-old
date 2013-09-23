@@ -26,7 +26,7 @@ workflow "Extract transcript sequences"{
     }
     gffread {
         type:gffread;
-        name:"Extract transcript sequences with gffread";
+        name:"Extract Transcript Sequences with Gffread";
         url-out:extracted.fa;
     }
     files-conversion {
@@ -42,11 +42,11 @@ workflow "Extract transcript sequences"{
 
 
     .actor-bindings {
+        multiplexer-1.output-data->gffread.in-data
+        files-conversion-1.out-file->multiplexer-1.input-data-2
         get-file-list.out-url->files-conversion.in-file
         get-file-list-1.out-url->files-conversion-1.in-file
-        multiplexer-1.output-data->gffread.in-data
         files-conversion.out-file->multiplexer-1.input-data-1
-        files-conversion-1.out-file->multiplexer-1.input-data-2
     }
 
     files-conversion.url->gffread.in-data.genome
@@ -57,31 +57,31 @@ workflow "Extract transcript sequences"{
     .meta {
         visual {
             files-conversion {
-                pos:"-755 -478";
+                pos:"-734 -673";
                 style:simple;
                 in-file.angle:180;
                 out-file.angle:360;
             }
             files-conversion-1 {
-                pos:"-758 -311";
+                pos:"-737 -506";
                 style:simple;
                 in-file.angle:180;
                 out-file.angle:360;
             }
             get-file-list {
-                pos:"-931 -478";
+                pos:"-940 -672";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 out-url.angle:360;
             }
             get-file-list-1 {
-                pos:"-931 -311";
+                pos:"-940 -505";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 out-url.angle:360;
             }
             gffread {
-                pos:"-281 -386";
+                pos:"-260 -582";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 bounds:"-30 -30 153 120";
@@ -89,7 +89,7 @@ workflow "Extract transcript sequences"{
                 in-data.angle:180;
             }
             multiplexer-1 {
-                pos:"-574 -387";
+                pos:"-553 -582";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 input-data-1.angle:150;
@@ -109,7 +109,7 @@ workflow "Extract transcript sequences"{
                 text-pos:"-42.3047 -28";
             }
             multiplexer-1.output-data->gffread.in-data {
-                text-pos:"-45 -37";
+                text-pos:"-44 -62";
             }
         }
         wizard {

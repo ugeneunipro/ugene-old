@@ -35,7 +35,7 @@ workflow "ChIP-seq analysis"{
     }
     peak2gene-id {
         type:peak2gene-id;
-        name:"Annotate Peaks with peak2gene";
+        name:"Annotate Peaks with Peak2gene";
     }
     conduct-go-id {
         type:conduct-go-id;

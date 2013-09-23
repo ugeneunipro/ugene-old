@@ -26,7 +26,7 @@ workflow "Main Tuxedo: single-end reads"{
     }
     read-sequence {
         type:get-file-list;
-        name:"Read RNA-seq short reads";
+        name:"Read RNA-seq Short Reads";
         url-in {
             dataset:"Dataset 1";
         }
@@ -36,7 +36,7 @@ workflow "Main Tuxedo: single-end reads"{
     }
     files-conversion {
         type:files-conversion;
-        name:"File conversion";
+        name:"File Conversion";
         document-format:fastq;
         excluded-formats:fasta;
     }
@@ -60,37 +60,6 @@ workflow "Main Tuxedo: single-end reads"{
     read-sequence.url->files-conversion.in-file.url
 
     .meta {
-        estimations {
-            function tophatTime(reads, idx) {
-                return (idx/79) * (0.146052*reads*reads + 0.540541*reads + 11);
-            }
-            function cufflinksTime(reads, idx) {
-                return (idx/79) * (12*reads + 86);
-            }
-            function cuffdiffCuffmergeTime(reads, idx) {
-                return reads;
-            }
-            var datasets = utils.attributeValue("read-sequence.url-in");
-            var time = 0;
-            var fullReads = 0;
-            for (var i=0; i<datasets.length; i++) {
-                var set = datasets[i];
-                var reads = 0; // size of reads in Mb
-                for (var j=0; j<set.length; j++) {
-                    var url = set[j];
-                    reads += utils.fileSize(url) / (1024*1024);
-                }
-                var idxDir = utils.attributeValue("tophat.bowtie-index-dir");
-                var idxName = utils.attributeValue("tophat.bowtie-index-basename");
-                var idxVer = utils.attributeValue("tophat.bowtie-version");
-                var idx = utils.bowtieIndexSize(idxDir, idxName, idxVer) / (1024*1024); // size of index in Mb
-                time += tophatTime(reads, idx);
-                time += cufflinksTime(reads, idx);
-                fullReads += reads;
-            }
-            time += cuffdiffCuffmergeTime(fullReads);
-            [time];
-        }
         parameter-aliases {
             tophat.bowtie-index-basename {
                 alias:bowtie_index_basename;
@@ -123,7 +92,7 @@ workflow "Main Tuxedo: single-end reads"{
         }
         visual {
             cuffdiff {
-                pos:"-508 -340";
+                pos:"-319 -354";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 bounds:"-30 -30 119.25 136";
@@ -131,7 +100,7 @@ workflow "Main Tuxedo: single-end reads"{
                 in-assembly.angle:221.424;
             }
             cufflinks {
-                pos:"-508 -760";
+                pos:"-319 -774";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 bounds:"-30 -30 116.875 119";
@@ -139,7 +108,7 @@ workflow "Main Tuxedo: single-end reads"{
                 out-annotations.angle:289.911;
             }
             cuffmerge {
-                pos:"-508 -538";
+                pos:"-319 -552";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 bounds:"-30 -30 118.625 85";
@@ -147,19 +116,19 @@ workflow "Main Tuxedo: single-end reads"{
                 out-annotations.angle:297.3;
             }
             files-conversion {
-                pos:"-912 -760";
+                pos:"-723 -774";
                 style:simple;
                 in-file.angle:180;
                 out-file.angle:360;
             }
             read-sequence {
-                pos:"-1082 -760";
+                pos:"-944 -773";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 out-url.angle:360;
             }
             tophat {
-                pos:"-793 -760";
+                pos:"-604 -774";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 bounds:"-30 -30 120.75 102";
@@ -176,7 +145,7 @@ workflow "Main Tuxedo: single-end reads"{
                 text-pos:"-12 -30";
             }
             read-sequence.out-url->files-conversion.in-file {
-                text-pos:"-31 -31";
+                text-pos:"-41 -28";
             }
             tophat.out-assembly->cuffdiff.in-assembly {
                 text-pos:"-38.5 -24";
@@ -184,6 +153,37 @@ workflow "Main Tuxedo: single-end reads"{
             tophat.out-assembly->cufflinks.in-assembly {
                 text-pos:"-50 -40";
             }
+        }
+        estimations {
+function tophatTime(reads, idx) {
+                return (idx/79) * (0.146052*reads*reads + 0.540541*reads + 11);
+            }
+            function cufflinksTime(reads, idx) {
+                return (idx/79) * (12*reads + 86);
+            }
+            function cuffdiffCuffmergeTime(reads, idx) {
+                return reads;
+            }
+            var datasets = utils.attributeValue("read-sequence.url-in");
+            var time = 0;
+            var fullReads = 0;
+            for (var i=0; i<datasets.length; i++) {
+                var set = datasets[i];
+                var reads = 0; // size of reads in Mb
+                for (var j=0; j<set.length; j++) {
+                    var url = set[j];
+                    reads += utils.fileSize(url) / (1024*1024);
+                }
+                var idxDir = utils.attributeValue("tophat.bowtie-index-dir");
+                var idxName = utils.attributeValue("tophat.bowtie-index-basename");
+                var idxVer = utils.attributeValue("tophat.bowtie-version");
+                var idx = utils.bowtieIndexSize(idxDir, idxName, idxVer) / (1024*1024); // size of index in Mb
+                time += tophatTime(reads, idx);
+                time += cufflinksTime(reads, idx);
+                fullReads += reads;
+            }
+            time += cuffdiffCuffmergeTime(fullReads);
+            [time];
         }
         wizard {
             name:"Tuxedo Wizard";

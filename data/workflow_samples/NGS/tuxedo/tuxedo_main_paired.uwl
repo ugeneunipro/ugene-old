@@ -50,27 +50,27 @@ workflow "Main Tuxedo: paired-end reads"{
     }
     files-conversion {
         type:files-conversion;
-        name:"File conversion 1";
+        name:"File Conversion 1";
         document-format:fastq;
         excluded-formats:fasta;
     }
     files-conversion-1 {
         type:files-conversion;
-        name:"File conversion 2";
+        name:"File Conversion 2";
         document-format:fastq;
         excluded-formats:fasta;
     }
 
 
     .actor-bindings {
-        cuffmerge.out-annotations->cuffdiff.in-annotations
-        files-conversion.out-file->multiplexer.input-data-1
-        files-conversion-1.out-file->multiplexer.input-data-2
         cufflinks.out-annotations->cuffmerge.in-annotations
         tophat.out-assembly->cufflinks.in-assembly
         tophat.out-assembly->cuffdiff.in-assembly
-        read-sequence-1.out-url->files-conversion-1.in-file
         multiplexer.output-data->tophat.in-sequence
+        files-conversion-1.out-file->multiplexer.input-data-2
+        read-sequence-1.out-url->files-conversion-1.in-file
+        cuffmerge.out-annotations->cuffdiff.in-annotations
+        files-conversion.out-file->multiplexer.input-data-1
         read-sequence.out-url->files-conversion.in-file
     }
 
@@ -85,39 +85,6 @@ workflow "Main Tuxedo: paired-end reads"{
     read-sequence-1.url->files-conversion-1.in-file.url
 
     .meta {
-        estimations {
-            function tophatTime(reads, idx) {
-                return (idx/79) * (0.146052*reads*reads + 0.540541*reads + 11);
-            }
-            function cufflinksTime(reads, idx) {
-                return (idx/79) * (12*reads + 86);
-            }
-            function cuffdiffCuffmergeTime(reads, idx) {
-                return reads;
-            }
-            var datasets1 = utils.attributeValue("read-sequence.url-in");
-            var datasets2 = utils.attributeValue("read-sequence-1.url-in");
-            var time = 0;
-            var fullReads = 0;
-            for (var i=0; i<datasets1.length; i++) {
-                var set1 = datasets1[i];
-                var set2 = datasets2[i];
-                var reads = 0; // size of reads in Mb
-                for (var j=0; j<set1.length; j++) {
-                    reads += utils.fileSize(set1[j]) / (1024*1024);
-                    reads += utils.fileSize(set2[j]) / (1024*1024);
-                }
-                var idxDir = utils.attributeValue("tophat.bowtie-index-dir");
-                var idxName = utils.attributeValue("tophat.bowtie-index-basename");
-                var idxVer = utils.attributeValue("tophat.bowtie-version");
-                var idx = utils.bowtieIndexSize(idxDir, idxName, idxVer) / (1024*1024); // size of index in Mb
-                time += tophatTime(reads, idx);
-                time += cufflinksTime(reads, idx);
-                fullReads += reads;
-            }
-            time += cuffdiffCuffmergeTime(fullReads);
-            [time];
-        }
         parameter-aliases {
             tophat.bowtie-index-basename {
                 alias:bowtie_index_basename;
@@ -154,7 +121,7 @@ workflow "Main Tuxedo: paired-end reads"{
         }
         visual {
             cuffdiff {
-                pos:"-702 -342";
+                pos:"-601 -342";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 bounds:"-30 -30 147.25 118";
@@ -162,7 +129,7 @@ workflow "Main Tuxedo: paired-end reads"{
                 in-assembly.angle:15.4842;
             }
             cufflinks {
-                pos:"-387 -552";
+                pos:"-286 -552";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 bounds:"-30 -30 149.875 89";
@@ -170,7 +137,7 @@ workflow "Main Tuxedo: paired-end reads"{
                 out-annotations.angle:270;
             }
             cuffmerge {
-                pos:"-387 -342";
+                pos:"-286 -342";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 bounds:"-30 -30 150.625 89";
@@ -178,19 +145,19 @@ workflow "Main Tuxedo: paired-end reads"{
                 out-annotations.angle:222.797;
             }
             files-conversion {
-                pos:"-844 -725";
+                pos:"-743 -725";
                 style:simple;
                 in-file.angle:180;
                 out-file.angle:360;
             }
             files-conversion-1 {
-                pos:"-641 -582";
+                pos:"-540 -589";
                 style:simple;
                 in-file.angle:270.562;
                 out-file.angle:91.3169;
             }
             multiplexer {
-                pos:"-702 -747";
+                pos:"-601 -747";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 bounds:"-30 -30 149 88";
@@ -199,21 +166,21 @@ workflow "Main Tuxedo: paired-end reads"{
                 output-data.angle:351.68;
             }
             read-sequence {
-                pos:"-1111 -747";
+                pos:"-1037 -747";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 bounds:"-30 -30 147 61";
                 out-url.angle:351.506;
             }
             read-sequence-1 {
-                pos:"-700 -490";
+                pos:"-599 -490";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 bounds:"-30 -30 148 59";
                 out-url.angle:27.1497;
             }
             tophat {
-                pos:"-387 -747";
+                pos:"-286 -747";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 bounds:"-30 -30 149.75 89";
@@ -227,19 +194,19 @@ workflow "Main Tuxedo: paired-end reads"{
                 text-pos:"-43.5 -43";
             }
             files-conversion-1.out-file->multiplexer.input-data-2 {
-                text-pos:"23 -8";
+                text-pos:"9 -12";
             }
             files-conversion.out-file->multiplexer.input-data-1 {
-                text-pos:"-12 -24";
+                text-pos:"-19 -26";
             }
             multiplexer.output-data->tophat.in-sequence {
                 text-pos:"-48.5 -59";
             }
             read-sequence-1.out-url->files-conversion-1.in-file {
-                text-pos:"16 -17";
+                text-pos:"10 -14";
             }
             read-sequence.out-url->files-conversion.in-file {
-                text-pos:"-31 -24";
+                text-pos:"-41 -28";
             }
             tophat.out-assembly->cuffdiff.in-assembly {
                 text-pos:"-46.5 30";
@@ -247,6 +214,39 @@ workflow "Main Tuxedo: paired-end reads"{
             tophat.out-assembly->cufflinks.in-assembly {
                 text-pos:"3 -21";
             }
+        }
+        estimations {
+function tophatTime(reads, idx) {
+                return (idx/79) * (0.146052*reads*reads + 0.540541*reads + 11);
+            }
+            function cufflinksTime(reads, idx) {
+                return (idx/79) * (12*reads + 86);
+            }
+            function cuffdiffCuffmergeTime(reads, idx) {
+                return reads;
+            }
+            var datasets1 = utils.attributeValue("read-sequence.url-in");
+            var datasets2 = utils.attributeValue("read-sequence-1.url-in");
+            var time = 0;
+            var fullReads = 0;
+            for (var i=0; i<datasets1.length; i++) {
+                var set1 = datasets1[i];
+                var set2 = datasets2[i];
+                var reads = 0; // size of reads in Mb
+                for (var j=0; j<set1.length; j++) {
+                    reads += utils.fileSize(set1[j]) / (1024*1024);
+                    reads += utils.fileSize(set2[j]) / (1024*1024);
+                }
+                var idxDir = utils.attributeValue("tophat.bowtie-index-dir");
+                var idxName = utils.attributeValue("tophat.bowtie-index-basename");
+                var idxVer = utils.attributeValue("tophat.bowtie-version");
+                var idx = utils.bowtieIndexSize(idxDir, idxName, idxVer) / (1024*1024); // size of index in Mb
+                time += tophatTime(reads, idx);
+                time += cufflinksTime(reads, idx);
+                fullReads += reads;
+            }
+            time += cuffdiffCuffmergeTime(fullReads);
+            [time];
         }
         wizard {
             name:"Tuxedo Wizard";
