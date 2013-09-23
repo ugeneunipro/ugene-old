@@ -172,6 +172,26 @@ private:
 };
 
 /************************************************************************/
+/* UrlAndDatasetWidget */
+/************************************************************************/
+class U2LANG_EXPORT UrlAndDatasetWidget : public WizardWidget {
+public:
+    UrlAndDatasetWidget();
+
+    virtual void accept(WizardWidgetVisitor *visitor);
+    virtual void validate(const QList<Actor*> &actors, U2OpStatus &os) const;
+
+    void addInfo(const AttributeInfo &value);
+
+    QList<AttributeInfo> getInfos() const;
+
+    static const QString ID;
+
+private:
+    QList<AttributeInfo> infos;
+};
+
+/************************************************************************/
 /* Radio */
 /************************************************************************/
 class U2LANG_EXPORT RadioWidget : public WizardWidget {

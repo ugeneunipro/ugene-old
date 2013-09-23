@@ -19,27 +19,33 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_WIZARDWIDGETVISITOR_H_
-#define _U2_WIZARDWIDGETVISITOR_H_
+#ifndef _U2_URL_AND_DATASET_WIZARD_CONTROLLER_H_
+#define _U2_URL_AND_DATASET_WIZARD_CONTROLLER_H_
 
-#include <U2Lang/ElementSelectorWidget.h>
+#include <U2Designer/DatasetsController.h>
+
 #include <U2Lang/WizardWidget.h>
+
+#include "WidgetController.h"
 
 namespace U2 {
 
-class U2LANG_EXPORT WizardWidgetVisitor {
+class UrlAndDatasetWizardController : public WidgetController {
+    Q_OBJECT
 public:
-    virtual void visit(AttributeWidget *) = 0;
-    virtual void visit(WidgetsArea *) = 0;
-    virtual void visit(GroupWidget *) = 0;
-    virtual void visit(LogoWidget *) = 0;
-    virtual void visit(ElementSelectorWidget *) = 0;
-    virtual void visit(PairedReadsWidget *) = 0;
-    virtual void visit(UrlAndDatasetWidget *) = 0;
-    virtual void visit(RadioWidget *) = 0;
-    virtual void visit(SettingsWidget *) = 0;
+    UrlAndDatasetWizardController(WizardController *wc, UrlAndDatasetWidget *widget);
+    virtual ~UrlAndDatasetWizardController();
+
+    virtual QWidget * createGUI(U2OpStatus &os);
+
+private slots:
+    void sl_datasetsChanged();
+
+private:
+    UrlAndDatasetWidget *widget;
+    UrlAndDatasetController *dsc;
 };
 
 } // U2
 
-#endif // _U2_WIZARDWIDGETVISITOR_H_
+#endif // _U2_URL_AND_DATASET_WIZARD_CONTROLLER_H_

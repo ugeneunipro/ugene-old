@@ -27,8 +27,10 @@
 #include <U2Lang/BaseSlots.h>
 #include <U2Lang/BasePorts.h>
 #include <U2Lang/BaseActorCategories.h>
-#include <U2Designer/DelegateEditors.h>
 #include <U2Lang/BaseAttributes.h>
+#include <U2Lang/WorkflowMonitor.h>
+
+#include <U2Designer/DelegateEditors.h>
 
 #include <U2Core/DNASequence.h>
 #include <U2Core/DNATranslation.h>
@@ -151,6 +153,7 @@ void CallVariantsWorkerFactory::init() {
         QMap<Descriptor, DataTypePtr> assMap;
         assMap[BaseSlots::URL_SLOT()] = BaseTypes::STRING_TYPE();
         assMap[BaseSlots::ASSEMBLY_SLOT()] = BaseTypes::ASSEMBLY_TYPE();
+        assMap[BaseSlots::DATASET_SLOT()] = BaseTypes::STRING_TYPE();
         DataTypePtr inAssemblySet(new MapDataType(ASSEMBLY_PORT_ID, assMap));
         Descriptor idA(BasePorts::IN_ASSEMBLY_PORT_ID(), CallVariantsWorker::tr("Input assembly"), 
             CallVariantsWorker::tr("Position sorted alignment file"));
@@ -653,14 +656,19 @@ QString CallVariantsPrompter::composeRichDoc() {
     return doc;
 }
 
-
-CallVariantsWorker::CallVariantsWorker(Actor* a) : BaseWorker(a, false), refSeqPort(NULL), assemblyPort(NULL), output(NULL) {
+CallVariantsWorker::CallVariantsWorker(Actor* a)
+    : BaseWorker(a, false),
+      refSeqPort(NULL),
+      assemblyPort(NULL),
+      output(NULL) {
 }
 
 void CallVariantsWorker::init() {
     refSeqPort = ports.value(BasePorts::IN_SEQ_PORT_ID());
     assemblyPort = ports.value(BasePorts::IN_ASSEMBLY_PORT_ID());
     output = ports.value(BasePorts::OUT_VARIATION_TRACK_PORT_ID());
+
+    settings = getSettings();
 
     output->addComplement(refSeqPort);
     refSeqPort->addComplement(output);
@@ -671,56 +679,45 @@ bool CallVariantsWorker::isReady(){
         return false;
     }
     bool seqEnded = refSeqPort->isEnded();
-    bool assEnded = assemblyPort->isEnded();
     int seqHasMes = refSeqPort->hasMessage();
-    int assHasMes = assemblyPort->hasMessage();
-    return  (assHasMes || assEnded && (seqEnded || seqHasMes));
-    
+    return  (seqHasMes || seqEnded);
 }
 
 Task* CallVariantsWorker::tick() {
     U2OpStatus2Log os;
-
-    //get all assemblies
-    while(assemblyPort->hasMessage()){
-        takeAssembly(os);
-        CHECK_OP(os, new FailTask(os.getError()));
-    }
-    if (!assemblyPort->isEnded()) {
-        return NULL;
-    }
-
-    //get sequence
-    if (cache.isEmpty() && refSeqPort->hasMessage()) {
-        Message inputMessage = getMessageAndSetupScriptValues(refSeqPort);
-        if (inputMessage.isEmpty() || assemblyUrls.isEmpty()) {
-            output->transit();
-            return NULL;
-        }
-        QVariantMap data = inputMessage.getData().toMap();
-        if (!data.contains(BaseSlots::URL_SLOT().getId())){
-            os.setError(CallVariantsWorker::tr("Ref sequence URL slot is empty. Please, specify the URL slot"));
-            return new FailTask(os.getError());
-        }
-
-        CallVariantsTaskSettings settings = getSettings();
-        settings.refSeqUrl = data.value(BaseSlots::URL_SLOT().getId()).value<QString>();
-        settings.assemblyUrls = assemblyUrls;
-
-        Task* t = new CallVariantsTask(settings, context->getDataStorage());
-        connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
-
-        return t;
-    } 
 
     //put variant tracks
     while (!cache.isEmpty()) {
         output->put(cache.takeFirst());
     }
 
-    if (refSeqPort->isEnded()) {
-        setDone();
-        output->setEnded();
+    checkState(os);
+    CHECK_OP_EXT(os, setDone(), NULL);
+
+    //take assemblies from one dataset
+    if (assemblyPort->hasMessage() && settings.assemblyUrls.isEmpty()) {
+        takeAssembly(os);
+        CHECK_OP_EXT(os, processError(os), NULL);
+    } else if (settings.assemblyUrls.isEmpty() && !assemblyUrls.isEmpty()) {
+        settings.assemblyUrls = assemblyUrls;
+        assemblyUrls.clear();
+    }
+
+    //take reference sequence
+    if (refSeqPort->hasMessage() && settings.refSeqUrl.isEmpty()) {
+        takeReference(os);
+        CHECK_OP_EXT(os, processError(os), NULL);
+    }
+
+    //do
+    if (cache.isEmpty() && !settings.refSeqUrl.isEmpty() && !settings.assemblyUrls.isEmpty()) {
+        Task* t = new CallVariantsTask(settings, context->getDataStorage());
+        connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
+
+        settings.assemblyUrls.clear();
+        settings.refSeqUrl.clear();
+
+        return t;
     }
 
     return NULL;
@@ -743,15 +740,33 @@ void CallVariantsWorker::cleanup() {
 
 void CallVariantsWorker::takeAssembly(U2OpStatus &os) {
     Message m = getMessageAndSetupScriptValues(assemblyPort);
-    if (!m.isEmpty()) {
-        QVariantMap data = m.getData().toMap();
-        if (!data.contains(BaseSlots::URL_SLOT().getId())){
-            os.setError(CallVariantsWorker::tr("Assembly URL slot is empty. Please, specify the URL slot"));
-            return;
-        }
-        QString assemblyUrl = data.value(BaseSlots::URL_SLOT().getId()).value<QString>();
-        assemblyUrls.append(assemblyUrl);
+    CHECK(!m.isEmpty(), );
+
+    QVariantMap data = m.getData().toMap();
+    if (!data.contains(BaseSlots::URL_SLOT().getId())){
+        os.setError(tr("Assembly URL slot is empty. Please, specify the URL slot"));
+        return;
     }
+
+    QString dataset = data[BaseSlots::DATASET_SLOT().getId()].toString();
+    if (dataset != currentDatasetName) {
+        settings.assemblyUrls = assemblyUrls;
+        assemblyUrls.clear();
+        currentDatasetName = dataset;
+    }
+    assemblyUrls << data.value(BaseSlots::URL_SLOT().getId()).value<QString>();
+}
+
+void CallVariantsWorker::takeReference(U2OpStatus &os) {
+    Message m = getMessageAndSetupScriptValues(refSeqPort);
+    CHECK_EXT(!m.isEmpty(), output->transit(), );
+
+    QVariantMap data = m.getData().toMap();
+    if (!data.contains(BaseSlots::URL_SLOT().getId())){
+        os.setError(CallVariantsWorker::tr("Ref sequence URL slot is empty. Please, specify the URL slot"));
+        return;
+    }
+    settings.refSeqUrl = data.value(BaseSlots::URL_SLOT().getId()).value<QString>();
 }
 
 CallVariantsTaskSettings CallVariantsWorker::getSettings() {
@@ -806,6 +821,49 @@ CallVariantsTaskSettings CallVariantsWorker::getSettings() {
     settings.pvalueHwe = getValue<float>(PVALUE_HWE);
     settings.printFiltered = getValue<bool>(PRINT);
     return settings;
+}
+
+void CallVariantsWorker::processError(const U2OpStatus& os) {
+    settings.assemblyUrls.clear();
+    settings.refSeqUrl.clear();
+
+    WorkflowMonitor* wMonitor = monitor();
+    if (wMonitor) {
+        wMonitor->addError(os.getError(), actor->getId());
+    }
+}
+
+void CallVariantsWorker::checkState(U2OpStatus& os) {
+    if (hasAssembly() && !hasReference()) {
+        os.setError(tr("Not enough references"));
+        processError(os);
+        setDone();
+    } else if (!hasAssembly() && hasReference()) {
+        if (currentDatasetName.isEmpty()) {
+            os.setError(tr("The dataset slot is not binded, only the first reference sequence"
+                           "against all assemblies was processed."));
+        } else {
+            os.setError(tr("Not enough assemblies"));
+        }
+        processError(os);
+        setDone();
+    } else if (!hasAssembly() && !hasReference()) {
+        output->setEnded();
+        setDone();
+    }
+}
+
+bool CallVariantsWorker::hasAssembly() const {
+    return !assemblyUrls.isEmpty() ||
+            !settings.assemblyUrls.isEmpty() ||
+            !assemblyPort->isEnded() ||
+            assemblyPort->hasMessage();
+}
+
+bool CallVariantsWorker::hasReference() const {
+    return !settings.refSeqUrl.isEmpty() ||
+            !refSeqPort->isEnded() ||
+            refSeqPort->hasMessage();
 }
 
 /************************************************************************/

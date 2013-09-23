@@ -29,6 +29,7 @@
 namespace U2 {
 
 class DatasetsListWidget;
+class URLDelegate;
 class URLListController;
 class URLListWidget;
 class UrlItem;
@@ -117,6 +118,45 @@ private:
     QWidget * createDatasetWidget(const SetsPair &pair);
     int pairNumByCtrl(URLListController *ctrl) const;
     URLListController * pairedCtrl(URLListController *ctrl) const;
+};
+
+class U2DESIGNER_EXPORT UrlAndDatasetController : public DatasetsController {
+    Q_OBJECT
+public:
+    UrlAndDatasetController(const QList<Dataset>& urls, const QList<Dataset> &sets, const QString &_urlLabel, const QString &_datasetLabel);
+    virtual ~UrlAndDatasetController();
+
+    virtual void renameDataset(int dsNum, const QString &newName, U2OpStatus &os);
+    virtual void deleteDataset(int dsNum);
+    virtual void addDataset(const QString &name, U2OpStatus &os);
+    virtual void onUrlAdded(URLListController */*ctrl*/, URLContainer */*url*/) {}
+
+    QWidget * getWigdet();
+    QList<Dataset> getDatasets() const;
+    QList<Dataset> getUrls() const;
+
+protected:
+    virtual QStringList names() const;
+
+private slots:
+    void sl_urlChanged(QWidget *widget);
+
+private:
+    QString urlLabel;
+    QString datasetLabel;
+    typedef QPair<URLDelegate*, URLListController*> CtrlsPair;
+    QStringList urls;
+    QList<Dataset*> sets;
+    QList<CtrlsPair> ctrls;
+    DatasetsListWidget *datasetsWidget;
+
+private:
+    void initSets(const QList<Dataset> &_urls, const QList<Dataset> &sets);
+    void initialize();
+    QWidget *createDatasetPageWidget(Dataset *set);
+    QWidget *createUrlWidget(URLDelegate* ctrl, const QString &value);
+    QWidget *createDatasetWidget(URLListController* ctrl);
+    QString getUrlByDataset(Dataset *set) const;
 };
 
 /************************************************************************/

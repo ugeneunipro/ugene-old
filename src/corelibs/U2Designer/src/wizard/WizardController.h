@@ -131,6 +131,7 @@ public:
     virtual void visit(LogoWidget *lw);
     virtual void visit(ElementSelectorWidget *esw);
     virtual void visit(PairedReadsWidget *dsw);
+    virtual void visit(UrlAndDatasetWidget *dsw);
     virtual void visit(RadioWidget *rw);
     virtual void visit(SettingsWidget *sw);
 

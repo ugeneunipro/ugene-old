@@ -115,6 +115,7 @@ public:
     virtual void visit(GroupWidget *gw);
     virtual void visit(ElementSelectorWidget *esw);
     virtual void visit(PairedReadsWidget *dsw);
+    virtual void visit(UrlAndDatasetWidget *ldsw);
     virtual void visit(RadioWidget *rw);
     virtual void visit(SettingsWidget *sw);
 
@@ -168,8 +169,9 @@ public:
     virtual void visit(LogoWidget *lw);
     virtual void visit(ElementSelectorWidget *esw);
     virtual void visit(PairedReadsWidget *dsw);
+    virtual void visit(UrlAndDatasetWidget *ldsw);
     virtual void visit(RadioWidget *rw);
-    virtual void visit(SettingsWidget *rw);
+    virtual void visit(SettingsWidget *sw);
 
     const QString & getResult();
 

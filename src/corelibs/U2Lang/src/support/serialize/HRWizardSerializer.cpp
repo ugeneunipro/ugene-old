@@ -322,6 +322,14 @@ void WizardWidgetParser::visit(PairedReadsWidget *dsw) {
     }
 }
 
+void WizardWidgetParser::visit(UrlAndDatasetWidget *ldsw) {
+    pairs = HRSchemaSerializer::ParsedPairs(data, 0);
+    foreach (const StringPair &p, pairs.blockPairsList) {
+        ldsw->addInfo(parseInfo(p.first, p.second));
+        CHECK_OP(os, );
+    }
+}
+
 static RadioWidget::Value parseValue(const QString &valueDef, U2OpStatus &os) {
     HRSchemaSerializer::ParsedPairs pairs(valueDef, 0);
     if (!pairs.equalPairs.contains(HRWizardParser::ID)) {
@@ -482,6 +490,8 @@ WizardWidget * WizardWidgetParser::createWidget(const QString &id) {
         return new ElementSelectorWidget();
     } else if (PairedReadsWidget::ID == id) {
         return new PairedReadsWidget();
+    } else if (UrlAndDatasetWidget::ID == id) {
+        return new UrlAndDatasetWidget();
     } else if (RadioWidget::ID == id) {
         return new RadioWidget();
     } else if (SettingsWidget::ID == id) {
@@ -701,6 +711,15 @@ void WizardWidgetSerializer::visit(PairedReadsWidget *dsw) {
         dData += serializeInfo(info, depth + 1);
     }
     result = HRSchemaSerializer::makeBlock(PairedReadsWidget::ID,
+        HRSchemaSerializer::NO_NAME, dData, depth);
+}
+
+void WizardWidgetSerializer::visit(UrlAndDatasetWidget *ldsw) {
+    QString dData;
+    foreach (const AttributeInfo &info, ldsw->getInfos()) {
+        dData += serializeInfo(info, depth + 1);
+    }
+    result = HRSchemaSerializer::makeBlock(UrlAndDatasetWidget::ID,
         HRSchemaSerializer::NO_NAME, dData, depth);
 }
 

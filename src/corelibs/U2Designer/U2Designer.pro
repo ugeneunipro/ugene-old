@@ -35,6 +35,7 @@ HEADERS += src/BreakpointHitCountDialog.h \
            src/wizard/ElementSelectorController.h \
            src/wizard/PairedDatasetsController.h \
            src/wizard/PropertyWizardController.h \
+           src/wizard/UrlAndDatasetWizardController.h \
            src/wizard/RadioController.h \
            src/wizard/SelectorActors.h \
            src/wizard/SettingsController.h \
@@ -95,6 +96,7 @@ SOURCES += src/BreakpointHitCountDialog.cpp \
            src/wizard/ElementSelectorController.cpp \
            src/wizard/PairedDatasetsController.cpp \
            src/wizard/PropertyWizardController.cpp \
+           src/wizard/UrlAndDatasetWizardController.cpp \
            src/wizard/RadioController.cpp \
            src/wizard/SelectorActors.cpp \
            src/wizard/SettingsController.cpp \

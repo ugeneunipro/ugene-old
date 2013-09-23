@@ -34,6 +34,7 @@
 #include <U2Lang/WorkflowUtils.h>
 
 #include "ElementSelectorController.h"
+#include "UrlAndDatasetWizardController.h"
 #include "PairedDatasetsController.h"
 #include "PropertyWizardController.h"
 #include "RadioController.h"
@@ -463,6 +464,14 @@ void WidgetCreator::visit(ElementSelectorWidget *esw) {
 
 void WidgetCreator::visit(PairedReadsWidget *dsw) {
     PairedDatasetsController *controller = new PairedDatasetsController(wc, dsw);
+    controllers << controller;
+    U2OpStatusImpl os;
+    result = controller->createGUI(os);
+    fullWidth = true;
+}
+
+void WidgetCreator::visit(UrlAndDatasetWidget *ldsw) {
+    UrlAndDatasetWizardController *controller = new UrlAndDatasetWizardController(wc, ldsw);
     controllers << controller;
     U2OpStatusImpl os;
     result = controller->createGUI(os);

@@ -58,12 +58,19 @@ public:
 protected:
     IntegralBus *refSeqPort, *assemblyPort, *output;
 
+    CallVariantsTaskSettings settings;
     QList<Message> cache;
     QList<QString> assemblyUrls;
+    QString currentDatasetName;
 
 private:
     void takeAssembly(U2OpStatus &os);
+    void takeReference(U2OpStatus &os);
     CallVariantsTaskSettings getSettings();
+    void processError(const U2OpStatus& os);
+    void checkState(U2OpStatus& os);
+    bool hasAssembly() const;
+    bool hasReference() const;
 }; 
 
 class CallVariantsWorkerFactory : public DomainFactory {

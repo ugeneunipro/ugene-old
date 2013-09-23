@@ -117,6 +117,8 @@ void WriteVariationWorkerFactory::init() {
         QList<Attribute*> attrs;
         Attribute *docFormatAttr = NULL;
         {
+            attrs << new Attribute(BaseAttributes::ACCUMULATE_OBJS_ATTRIBUTE(), BaseTypes::BOOL_TYPE(), false, true);
+
             docFormatAttr = new Attribute(BaseAttributes::DOCUMENT_FORMAT_ATTRIBUTE(), BaseTypes::STRING_TYPE(), false, format);
             attrs << docFormatAttr;
         }

@@ -29,6 +29,7 @@
 #include <U2Lang/URLContainer.h>
 
 #include "DatasetsListWidget.h"
+#include "DelegateEditors.h"
 #include "DirectoryItem.h"
 #include "FileItem.h"
 #include "DatasetWidget.h"
@@ -467,6 +468,205 @@ URLListController * PairedReadsController::pairedCtrl(URLListController *ctrl) c
     } else {
         return cp.first;
     }
+}
+
+/************************************************************************/
+/* UrlAndDatasetController */
+/************************************************************************/
+UrlAndDatasetController::UrlAndDatasetController(const QList<Dataset> &_urls, const QList<Dataset> &_sets, const QString &_urlLabel, const QString &_datasetLabel)
+    : DatasetsController(), urlLabel(_urlLabel), datasetLabel(_datasetLabel), datasetsWidget(NULL)
+{
+    initSets(_urls, _sets);
+    initialize();
+    update();
+}
+
+void UrlAndDatasetController::initSets(const QList<Dataset> &_urls, const QList<Dataset> &s) {
+    foreach (Dataset urlSet, _urls) {
+        foreach (URLContainer* urlCon, urlSet.getUrls()) {
+            urls << urlCon->getUrl();
+        }
+    }
+
+    QList<Dataset>::ConstIterator it = s.constBegin();
+    for (; it != s.end(); it++) {
+        sets << new Dataset(*it);
+    }
+
+    while (sets.count() < urls.count()) {
+        sets << new Dataset();
+    }
+
+    while (urls.count() < sets.count()) {
+        urls << "";
+    }
+
+    // Set datasets names
+    for (int i = 0; i < urls.count(); ++i) {
+        QFileInfo info(urls[i]);
+        if (!info.fileName().isEmpty()) {
+            sets[i]->setName(info.fileName());
+        } else {
+            sets[i]->setName("Dataset " + QString::number(i + 1));
+        }
+    }
+}
+
+void UrlAndDatasetController::initialize() {
+    SAFE_POINT(sets.size() > 0, "0 datasets count", );
+    datasetsWidget = new DatasetsListWidget(this);
+
+    foreach (Dataset* set, sets) {
+        datasetsWidget->appendPage(set->getName(), createDatasetPageWidget(set));
+    }
+}
+
+QWidget * UrlAndDatasetController::createDatasetPageWidget(Dataset* set) {
+    CtrlsPair cp;
+
+    URLDelegate* urlDelegate = new URLDelegate("", "", false, false, false);
+    connect(urlDelegate, SIGNAL(commitData(QWidget*)), SLOT(sl_urlChanged(QWidget*)));
+
+    cp.first = urlDelegate;
+    cp.second = new URLListController(this, set);
+    ctrls << cp;
+
+    QWidget *widget = new QWidget;
+    QVBoxLayout* layout = new QVBoxLayout;
+    layout->setMargin(0);
+    layout->setContentsMargins(0, 4, 0, 4);
+    layout->setSpacing(6);
+    widget->setLayout(layout);
+
+    layout->addWidget(createUrlWidget(urlDelegate, getUrlByDataset(set)));
+    layout->addWidget(getLayout(cp.second->getWidget(), datasetLabel));
+    return widget;
+}
+
+QWidget * UrlAndDatasetController::createUrlWidget(URLDelegate* ctrl, const QString& value) {
+    URLWidget* urlWidget = qobject_cast<URLWidget*>(ctrl->createEditor(NULL, QStyleOptionViewItem(), QModelIndex()));
+    urlWidget->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
+    urlWidget->setValue(value);
+
+    QWidget* labeledWidget = new QWidget();
+    QHBoxLayout* labeledLayout = new QHBoxLayout;
+    labeledLayout->setContentsMargins(6, 8, 0, 7);
+
+    labeledLayout->addWidget(new QLabel(urlLabel));
+    labeledLayout->addWidget(urlWidget);
+    labeledWidget->setLayout(labeledLayout);
+
+    return labeledWidget;
+}
+
+QWidget * UrlAndDatasetController::createDatasetWidget(URLListController* ctrl) {
+    QGroupBox* result = new QGroupBox(datasetLabel);
+    QVBoxLayout* layout = new QVBoxLayout;
+    layout->setContentsMargins(0, 0, 0, 0);
+
+    layout->addWidget(ctrl->getWidget());
+    result->setLayout(layout);
+
+    return result;
+}
+
+UrlAndDatasetController::~UrlAndDatasetController() {
+    datasetsWidget->setParent(NULL);
+    delete datasetsWidget;
+
+    qDeleteAll(sets);
+}
+
+QWidget * UrlAndDatasetController::getWigdet() {
+    return datasetsWidget;
+}
+
+QList<Dataset> UrlAndDatasetController::getDatasets() const {
+    QList<Dataset> result;
+    foreach (Dataset* set, sets) {
+        result << *set;
+    }
+
+    return result;
+}
+
+QList<Dataset> UrlAndDatasetController::getUrls() const {
+    QList<Dataset> result;
+    for (int i = 0; i < urls.count(); ++i) {
+        QString a = sets[i]->getName();
+        Dataset set(sets[i]->getName());
+        set.addUrl(URLContainerFactory::createUrlContainer(urls[i]));
+        result << set;
+    }
+    return result;
+}
+
+void UrlAndDatasetController::sl_urlChanged(QWidget* widget) {
+    URLDelegate* urlDelegate = qobject_cast<URLDelegate*>(sender());
+    SAFE_POINT(urlDelegate, "URL delegate is NULL", );
+
+    URLWidget* editor = qobject_cast<URLWidget*>(widget);
+    SAFE_POINT(editor, "Unexpected widget", );
+
+    for (int i = 0; i < ctrls.count(); ++i) {
+        if (ctrls[i].first == urlDelegate) {
+            urls[i] = editor->value().toString();
+            update();
+            break;
+        }
+    }
+}
+
+void UrlAndDatasetController::renameDataset(int dsNum, const QString &newName, U2OpStatus &os) {
+    SAFE_POINT(dsNum < sets.size(), "Datasets: out of range", );
+
+    checkName(newName, os, sets[dsNum]->getName());
+    CHECK_OP(os, );
+
+    sets[dsNum]->setName(newName);
+    update();
+}
+
+void UrlAndDatasetController::deleteDataset(int dsNum) {
+    SAFE_POINT(dsNum < sets.size(), "Datasets: out of range", );
+    SAFE_POINT(dsNum < ctrls.size(), "Datasets ctrl: out of range", );
+
+    delete sets[dsNum];
+    sets.removeAt(dsNum);
+
+    urls.removeAt(dsNum);
+    ctrls.removeAt(dsNum);
+
+    // add empty default dataset is the last one is deleted
+    if (sets.isEmpty()) {
+        sets << new Dataset();
+        urls << "";
+        datasetsWidget->appendPage(sets.last()->getName(),
+            createDatasetPageWidget(sets.last()));
+    }
+    update();
+}
+
+void UrlAndDatasetController::addDataset(const QString &name, U2OpStatus &os) {
+    checkName(name, os);
+    CHECK_OP(os, );
+    sets << new Dataset(name);
+    urls << "";
+    datasetsWidget->appendPage(name,
+        createDatasetPageWidget(sets.last()));
+    update();
+}
+
+QStringList UrlAndDatasetController::names() const {
+    QStringList result;
+    foreach (Dataset* set, sets) {
+        result << set->getName();
+    }
+    return result;
+}
+
+QString UrlAndDatasetController::getUrlByDataset(Dataset *set) const {
+    return urls.at(sets.indexOf(set));
 }
 
 /************************************************************************/

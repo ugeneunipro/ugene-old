@@ -259,6 +259,36 @@ QList<AttributeInfo> PairedReadsWidget::getInfos() const {
 }
 
 /************************************************************************/
+/* UrlAndDatasetWidget */
+/************************************************************************/
+const QString UrlAndDatasetWidget::ID = "lineedit-and-dataset";
+
+UrlAndDatasetWidget::UrlAndDatasetWidget()
+: WizardWidget()
+{
+
+}
+
+void UrlAndDatasetWidget::accept(WizardWidgetVisitor *visitor) {
+    visitor->visit(this);
+}
+
+void UrlAndDatasetWidget::validate(const QList<Actor*> &actors, U2OpStatus &os) const {
+    foreach (const AttributeInfo &info, infos) {
+        info.validate(actors, os);
+        CHECK_OP(os, );
+    }
+}
+
+void UrlAndDatasetWidget::addInfo(const AttributeInfo &value) {
+    infos << value;
+}
+
+QList<AttributeInfo> UrlAndDatasetWidget::getInfos() const {
+    return infos;
+}
+
+/************************************************************************/
 /* RadioWidget */
 /************************************************************************/
 const QString RadioWidget::ID("radio");
