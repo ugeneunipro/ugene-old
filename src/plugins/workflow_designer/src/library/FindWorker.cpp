@@ -59,6 +59,7 @@ static const QString ERR_ATTR("max-mismatches-num");
 static const QString ALGO_ATTR("allow-ins-del");
 static const QString AMINO_ATTR("amino");
 static const QString AMBIGUOUS_ATTR("ambiguous");
+static const QString PATTERN_NAME_QUAL_ATTR( "pattern-name-qual" );
 
 const QString FindWorkerFactory::ACTOR_ID("search");
 
@@ -155,18 +156,22 @@ void FindWorkerFactory::init() {
             FindWorker::tr("Allow Insertions/Deletions"),
             FindWorker::tr("Takes into account possibility of insertions/deletions"
                 " when searching. By default substitutions are only considered."));
-                
+
         Descriptor ambigd(AMBIGUOUS_ATTR,
             FindWorker::tr("Support ambiguous bases"),
             FindWorker::tr("Performs correct handling of ambiguous bases. When this option"
             " is activated insertions and deletions are not considered. "));
 
-
         Descriptor amd(AMINO_ATTR,
             FindWorker::tr("Search in Translation"),
             FindWorker::tr("Translates a supplied nucleotide sequence to protein"
             " and searches in the translated sequence."));
-        
+
+        Descriptor patternNameQualifier(PATTERN_NAME_QUAL_ATTR,
+            FindWorker::tr("Qualifier name for pattern name"),
+            FindWorker::tr("Name of qualifier in result annotations which is containing "
+            "a pattern name."));
+
         a << new Attribute(nd, BaseTypes::STRING_TYPE(), true, "misc_feature");
         a << new Attribute(pd, BaseTypes::STRING_TYPE(), false);
         a << new Attribute(pf, BaseTypes::STRING_TYPE(), false);
@@ -176,7 +181,7 @@ void FindWorkerFactory::init() {
         a << new Attribute(ald, BaseTypes::BOOL_TYPE(), false, false);
         a << new Attribute(ambigd, BaseTypes::BOOL_TYPE(), false, false);
         a << new Attribute(amd, BaseTypes::BOOL_TYPE(), false, false);
-        
+        a << new Attribute(patternNameQualifier, BaseTypes::STRING_TYPE( ), false, "pattern_name");
     }
     
     Descriptor desc(ACTOR_ID,
@@ -451,46 +456,58 @@ void FindWorker::sl_taskFinished(Task* t) {
         FindAlgorithmTask * findTask = qobject_cast<FindAlgorithmTask*>(sub);
         if(findTask != NULL){
             //parameters pattern
-            if (!filePatterns.contains(sub)){
-                annData << findTask->popResults();
-                ptrns << patterns.value(findTask);
-            }else{ //file pattern
-                QString name = resultName;
-                if (useNames){
-                    QString pattName = filePatterns.value(findTask).first;
-                    if(!pattName.isEmpty()){
+            if ( !filePatterns.contains( sub ) ) {
+                annData << findTask->popResults( );
+                ptrns << patterns.value( findTask );
+            } else { //file pattern
+                const QString patternNameQualName = actor->getParameter( PATTERN_NAME_QUAL_ATTR )
+                    ->getAttributeValue<QString>( context ).left( GBFeatureUtils::MAX_KEY_LEN );
 
-                        QString newPatternName = pattName;
-                        if (newPatternName.length() >= GBFeatureUtils::MAX_KEY_LEN){
-                            newPatternName = pattName.left(GBFeatureUtils::MAX_KEY_LEN);
-                        }
-
-                        if (Annotation::isValidAnnotationName(newPatternName)){
-                            name = newPatternName;
-                        }
+                QString patternName = filePatterns.value( findTask ).first;
+                if ( !patternName.isEmpty( ) ) {
+                    patternName = patternName.left( GBFeatureUtils::MAX_KEY_LEN );
+                    if ( !Annotation::isValidAnnotationName( patternName ) ) {
+                        patternName = resultName;
                     }
                 }
-                const QList<SharedAnnotationData>& curResult = FindAlgorithmResult::toTable(findTask->popResults(), name);
-                result.append(curResult);
+                const QList<SharedAnnotationData> tmpResult = FindAlgorithmResult::toTable(
+                    findTask->popResults( ), useNames ? patternName : resultName );
+                foreach ( SharedAnnotationData annotation, tmpResult ) {
+                    if ( !patternName.isEmpty( ) ) {
+                        const U2Qualifier patternNameQual( patternNameQualName, patternName );
+                        annotation->qualifiers.push_back( patternNameQual );
+                    }
+                    result << annotation;
+                }
+                foreach ( SharedAnnotationData annotation, result ) {
+                    foreach ( U2Qualifier qual, annotation->qualifiers ) {
+                        qDebug( ) << annotation->name << "---" << qual.name << " : " << qual.value;
+                    }
+                }
                 if (output){
-                    algoLog.info(tr("Found %1 matches of pattern '%2'").arg(curResult.size()).arg(QString(filePatterns.value(findTask).second)));
+                    algoLog.info( tr( "Found %1 matches of pattern '%2'" ).arg( result.size( ) )
+                        .arg( QString( filePatterns.value( findTask ).second ) ) );
                 }
             }
             
-        }else{
+        } else {
             LoadPatternsFileTask * loadTask = qobject_cast<LoadPatternsFileTask*>(sub);
-            if (loadTask != NULL){
+            if (loadTask != NULL) {
                 namesPatterns = loadTask->getNamesPatterns();
             }
             return;
         }
     }
     if(output) {
-        const QList<SharedAnnotationData>& curResult = FindAlgorithmResult::toTable(annData, resultName);
-        result.append(curResult);
+        if ( result.isEmpty( ) ) {
+            result = FindAlgorithmResult::toTable(annData, resultName);
+        }
         QVariant v = qVariantFromValue<QList<SharedAnnotationData> >(result);
         output->put(Message(BaseTypes::ANNOTATION_TABLE_TYPE(), v));
-        algoLog.info(tr("Found %1 matches of pattern '%2'").arg(curResult.size()).arg(ptrns.join(PATTERN_DELIMITER)));
+        if ( !ptrns.isEmpty( ) ) {
+            algoLog.info(tr("Found %1 matches of pattern '%2'").arg(result.size())
+                .arg(ptrns.join(PATTERN_DELIMITER)));
+        }
     }
 }
 

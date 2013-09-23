@@ -69,7 +69,6 @@ private:
     QList<QByteArray> patternList;
     QMap<Task*, QByteArray> patterns;
     QMap<QString, QString> patternNames;
-    QMap<QString, QString> fastaHeaders;
 }; 
 
 class SWWorkerFactory : public DomainFactory {

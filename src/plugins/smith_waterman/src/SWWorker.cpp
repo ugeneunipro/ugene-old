@@ -41,6 +41,7 @@
 #include <U2Core/MAlignmentObject.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/U2OpStatusUtils.h>
+#include <U2Formats/GenbankFeatures.h>
 
 #include <U2Lang/IntegralBusModel.h>
 #include <U2Lang/WorkflowEnv.h>
@@ -77,6 +78,7 @@ static const QString FILTER_ATTR("filter-strategy");
 static const QString GAPOPEN_ATTR("gap-open-score");
 static const QString GAPEXT_ATTR("gap-ext-score");
 static const QString USE_PATTERN_NAME_ATTR("use-pattern-names");
+static const QString PATTERN_NAME_QUAL_ATTR( "pattern-name-qual" );
 
 const QString SWWorkerFactory::ACTOR_ID("ssearch");
 
@@ -173,6 +175,11 @@ void SWWorkerFactory::init() {
                        SWWorker::tr("Use Pattern Names"),
                        SWWorker::tr("Use a pattern name as an annotation name."));
 
+        Descriptor patternNameQualifier(PATTERN_NAME_QUAL_ATTR,
+                        SWWorker::tr("Qualifier name for pattern name"),
+                        SWWorker::tr("Name of qualifier in result annotations which is containing "
+                        "a pattern name."));
+
         a << new Attribute(mxd, BaseTypes::STRING_TYPE(), true, QString("Auto"));
         a << new Attribute(ald, BaseTypes::STRING_TYPE(), true);
         a << new Attribute(frd, BaseTypes::STRING_TYPE(), false, filterLst.isEmpty() ? QString() : filterLst.first());
@@ -183,6 +190,7 @@ void SWWorkerFactory::init() {
         a << new Attribute(ged, BaseTypes::NUM_TYPE(), false, -1.);
         a << new Attribute(pnd, BaseTypes::BOOL_TYPE(), false, true);
         a << new Attribute(nd, BaseTypes::STRING_TYPE(), false, "misc_feature");
+        a << new Attribute(patternNameQualifier, BaseTypes::STRING_TYPE(), false, "pattern_name");
     }
 
     Descriptor desc(ACTOR_ID,
@@ -354,9 +362,6 @@ Task* SWWorker::tick() {
         }
         patternList << ptrn.constData();
         patternNames.insert(ptrn.constData(), ptrn.getName());
-        if(!ptrn.info[DNAInfo::FASTA_HDR].toString().isEmpty()) {
-            fastaHeaders[ptrn.constData()] = ptrn.info[DNAInfo::FASTA_HDR].toString();
-        }
     }
     if (!patternPort->isEnded()) {
         return NULL;
@@ -481,15 +486,15 @@ Task* SWWorker::tick() {
             SmithWatermanSettings config(cfg);
             config.ptrn = p;
 
-            QString resultName = actor->getParameter(USE_PATTERN_NAME_ATTR)->getAttributeValue<bool>(context) ?
-                                     patternNames.value(p, defaultName) :
-                                     defaultName;
-            SmithWatermanReportCallbackAnnotImpl* rcb = new SmithWatermanReportCallbackAnnotImpl( NULL, resultName, QString());
+            QString resultName = actor->getParameter(USE_PATTERN_NAME_ATTR)
+                ->getAttributeValue<bool>(context) ? patternNames.value(p, defaultName)
+                : defaultName;
+            SmithWatermanReportCallbackAnnotImpl* rcb = new SmithWatermanReportCallbackAnnotImpl(
+                NULL, resultName, QString());
             config.resultCallback = rcb;
-            config.resultListener = new SmithWatermanResultListener(); //FIXME: where to delete?
+            config.resultListener = new SmithWatermanResultListener();
 
             Task * swTask = algo->getTaskInstance(config, tr("smith_waterman_task"));
-            rcb->setParent(swTask); // swTask will delete rcb
             callbacks.insert(swTask, rcb);
             patterns.insert(swTask, config.ptrn);
             subs << swTask;
@@ -517,17 +522,16 @@ void SWWorker::sl_taskFinished(Task* t) {
         SmithWatermanReportCallbackAnnotImpl* rcb = callbacks.take(sub);
         assert(rcb != NULL);
         if(rcb) {
+            // crop long names
+            const QString qualifierName = actor->getParameter(PATTERN_NAME_QUAL_ATTR)
+                ->getAttributeValue<QString>(context).left( GBFeatureUtils::MAX_KEY_LEN );
             foreach(SharedAnnotationData a, rcb->getAnotations()) {
                 QString pattern = patterns.value(sub);
                 if(!patternNames[pattern].isEmpty()) {
-                    a->qualifiers.push_back(U2Qualifier("pattern_name", patternNames[pattern]));
-                }
-                if(!fastaHeaders[pattern].isEmpty()) {
-                    a->qualifiers.push_back(U2Qualifier("fasta_header", fastaHeaders[pattern]));
+                    a->qualifiers.push_back(U2Qualifier(qualifierName, patternNames[pattern]));
                 }
                 annData << a;
             }
-            //annData << rcb->getAnotations();
         }
         ptrns << patterns.value(sub);
     }
