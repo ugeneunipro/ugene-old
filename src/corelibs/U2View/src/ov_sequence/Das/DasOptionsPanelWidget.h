@@ -68,7 +68,7 @@ private slots:
 
     void clearTableContent();
 
-    void sl_annotateClicked();
+    void sl_loadAnnotations();
     void sl_blastSearchFinish();
     void sl_onLoadAnnotationsFinish();
     void sl_onSequenceFocusChanged(ADVSequenceWidget*, ADVSequenceWidget*);
@@ -76,6 +76,7 @@ private slots:
     void sl_openInNewView();
     void sl_showLessClicked(const QString&);
     void sl_onRegionChanged(const U2Region& );
+    void sl_idDoubleClicked (const QModelIndex & );
 
 private:
     void initialize();

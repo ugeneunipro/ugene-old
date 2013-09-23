@@ -142,7 +142,7 @@ void DasOptionsPanelWidget::sl_searchIdsClicked() {
     checkState();
 }
 
-void DasOptionsPanelWidget::sl_annotateClicked() {
+void DasOptionsPanelWidget::sl_loadAnnotations() {
     annotationData.clear();
     QList<DASSource> featureSources = getFeatureSources();
 
@@ -384,7 +384,7 @@ void DasOptionsPanelWidget::connectSignals() {
             SLOT(sl_searchIdsClicked()));
     connect(annotateButton,
             SIGNAL(clicked()),
-            SLOT(sl_annotateClicked()));
+            SLOT(sl_loadAnnotations()));
     connect(annotatedDnaView,
             SIGNAL(si_focusChanged(ADVSequenceWidget*, ADVSequenceWidget*)),
             SLOT(sl_onSequenceFocusChanged(ADVSequenceWidget*, ADVSequenceWidget*)));
@@ -396,7 +396,7 @@ void DasOptionsPanelWidget::connectSignals() {
             SLOT(sl_searchIdsClicked()));
     connect(fetchAnnotationsAction,
             SIGNAL(triggered()),
-            SLOT(sl_annotateClicked()));
+            SLOT(sl_loadAnnotations()));
     connect(openInNewViewAction,
             SIGNAL(triggered()),
             SLOT(sl_openInNewView()));
@@ -406,6 +406,9 @@ void DasOptionsPanelWidget::connectSignals() {
      connect(regionSelector ,
             SIGNAL(si_regionChanged(const U2Region&)),
             SLOT(sl_onRegionChanged(const U2Region& )));
+     connect(idList, 
+            SIGNAL( doubleClicked ( const QModelIndex &  ) ),
+            SLOT( sl_idDoubleClicked (const QModelIndex & ) ));
 }
 
 void DasOptionsPanelWidget::checkState() {
@@ -626,5 +629,10 @@ void DasOptionsPanelWidget::sl_onRegionChanged( const U2Region& r){
         hintLabel->hide();
     }
 }
+
+void DasOptionsPanelWidget::sl_idDoubleClicked( const QModelIndex & ){
+    sl_loadAnnotations();
+}
+
 
 }   // namespace
