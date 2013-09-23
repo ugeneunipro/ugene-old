@@ -294,34 +294,48 @@ QWidget *DescriptorListEditorDelegate::createEditor(QWidget *parent,
     return editor;
 }
 
-static int addItems(QStandardItemModel *cm, const QList<Descriptor> &list, bool isList, const QString &currentValue, int startIdx = 0) {
-    int currentIdx = -1;
-    int idx = startIdx;
-    foreach (const Descriptor &d, list) {
-        QStandardItem *item = new QStandardItem(d.getDisplayName());
-        item->setData(qVariantFromValue<Descriptor>(d));
-        item->setToolTip(d.getDisplayName());
-        if (isList) {
-            item->setCheckable(true);
-            item->setEditable(false);
-            item->setSelectable(false);
-            QStringList curList = currentValue.split(";");
-            item->setCheckState(curList.contains(d.getId())? Qt::Checked: Qt::Unchecked);
-        } else {
-            if (d == currentValue) {
-                currentIdx = idx;
+namespace {
+    static int addItems(QStandardItemModel *cm, const QList<Descriptor> &list, bool isList, const QString &currentValue, int startIdx = 0) {
+        int currentIdx = -1;
+        int idx = startIdx;
+        foreach (const Descriptor &d, list) {
+            QStandardItem *item = new QStandardItem(d.getDisplayName());
+            item->setData(qVariantFromValue<Descriptor>(d));
+            item->setToolTip(d.getDisplayName());
+            if (isList) {
+                item->setCheckable(true);
+                item->setEditable(false);
+                item->setSelectable(false);
+                QStringList curList = currentValue.split(";");
+                item->setCheckState(curList.contains(d.getId())? Qt::Checked: Qt::Unchecked);
+            } else {
+                if (d == currentValue) {
+                    currentIdx = idx;
+                }
             }
+            cm->appendRow(item);
+            idx++;
         }
-        cm->appendRow(item);
-        idx++;
+        return currentIdx;
     }
-    return currentIdx;
-}
 
-static void addSeparator(QStandardItemModel *cm) {
-    QStandardItem *item = new QStandardItem("Text");
-    item->setFlags(item->flags() & ~( Qt::ItemIsEnabled | Qt::ItemIsSelectable));
-    cm->appendRow(item);
+    static QFont getAdditionalFont() {
+        QFont font;
+        font.setBold(true);
+        font.setItalic(true);
+        return font;
+    }
+
+    static QString getAddionalLabel() {
+        return QObject::tr("Additional");
+    }
+
+    static void addSeparator(QStandardItemModel *cm) {
+        QStandardItem *item = new QStandardItem(getAddionalLabel());
+        item->setFont(getAdditionalFont());
+        item->setFlags(item->flags() & ~( Qt::ItemIsEnabled | Qt::ItemIsSelectable));
+        cm->appendRow(item);
+    }
 }
 
 void DescriptorListEditorDelegate::setEditorData(QWidget *editor,
@@ -385,7 +399,7 @@ void DescriptorListEditorDelegate::setModelData(QWidget *editor, QAbstractItemMo
 }
 
 /************************************************************************/
-/* TestDelegate */
+/* ItemDelegateForHeaders */
 /************************************************************************/
 ItemDelegateForHeaders::ItemDelegateForHeaders(QObject *parent)
 : QItemDelegate(parent)
@@ -398,13 +412,8 @@ void ItemDelegateForHeaders::paint(QPainter *painter, const QStyleOptionViewItem
         QItemDelegate::paint(painter, option, index);
         return;
     }
-
-    QFont font;
-    font.setBold(true);
-    font.setItalic(true);
-    painter->setFont(font);
-
-    painter->drawText(option.rect, Qt::AlignLeft | Qt::TextSingleLine, tr("Additional"));
+    painter->setFont(getAdditionalFont());
+    painter->drawText(option.rect, Qt::AlignLeft | Qt::TextSingleLine, getAddionalLabel());
 }
 
 }//namespace U2
