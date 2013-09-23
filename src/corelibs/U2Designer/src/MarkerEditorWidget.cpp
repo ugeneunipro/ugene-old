@@ -54,11 +54,11 @@ MarkerEditorWidget::MarkerEditorWidget(QAbstractTableModel *markerModel, QWidget
 }
 
 void MarkerEditorWidget::sl_onAddButtonClicked() {
-    EditMarkerGroupDialog dlg(true, NULL, this);
+    Workflow::MarkerGroupListCfgModel *model = dynamic_cast<Workflow::MarkerGroupListCfgModel*>(table->model());
+    EditMarkerGroupDialog dlg(true, NULL, model, this);
 
     if (dlg.exec()) {
         Marker *newMarker = dlg.getMarker();
-        Workflow::MarkerGroupListCfgModel *model = dynamic_cast<Workflow::MarkerGroupListCfgModel*>(table->model());
         model->addMarker(newMarker);
     }
 }
@@ -71,7 +71,7 @@ void MarkerEditorWidget::sl_onEditButtonClicked() {
     }
 
     Workflow::MarkerGroupListCfgModel *model = dynamic_cast<Workflow::MarkerGroupListCfgModel*>(table->model());
-    EditMarkerGroupDialog dlg(false, model->getMarker(selected.first().row()), this);
+    EditMarkerGroupDialog dlg(false, model->getMarker(selected.first().row()), model, this);
 
     if (dlg.exec()) {
         Marker *newMarker = dlg.getMarker();

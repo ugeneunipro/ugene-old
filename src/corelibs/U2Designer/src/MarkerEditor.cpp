@@ -251,6 +251,25 @@ void MarkerGroupListCfgModel::replaceMarker(int row, Marker *newMarker) {
     emit si_markerEdited(markerId, oldName);
 }
 
+QString MarkerGroupListCfgModel::suggestName(const QString &type) {
+    QString result = type;
+    int idx = 1;
+    while (containsName(result)) {
+        result = type + "-" + QString::number(idx);
+        idx++;
+    }
+    return result;
+}
+
+bool MarkerGroupListCfgModel::containsName(const QString &name) {
+    foreach (Marker *m, getMarkers().values()) {
+        if (m->getName() == name) {
+            return true;
+        }
+    }
+    return false;
+}
+
 } // Workflow
 
 } // U2

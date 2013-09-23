@@ -29,6 +29,9 @@
 #include "ui_EditStringMarkerWidget.h"
 
 namespace U2 {
+namespace Workflow {
+    class MarkerGroupListCfgModel;
+}
 
 class Marker;
 class MarkerListCfgModel;
@@ -39,7 +42,7 @@ class MarkerListCfgModel;
 class EditMarkerGroupDialog : public QDialog, public Ui::EditMarkerGroupDialog {
     Q_OBJECT
 public:
-    EditMarkerGroupDialog(bool isNew, Marker *marker, QWidget *parent);
+    EditMarkerGroupDialog(bool isNew, Marker *marker, Workflow::MarkerGroupListCfgModel *allModel, QWidget *parent);
     ~EditMarkerGroupDialog();
     void accept();
 
@@ -53,6 +56,7 @@ private:
     Marker *marker;
     QString oldName;
     MarkerListCfgModel *markerModel;
+    Workflow::MarkerGroupListCfgModel *allModel;
     int currentTypeIndex;
 
     QStringList typeIds;

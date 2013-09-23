@@ -21,6 +21,7 @@
 
 #include <QMessageBox>
 
+#include <U2Designer/MarkerEditor.h>
 #include <U2Designer/MarkerEditorWidget.h>
 
 #include <U2Lang/Marker.h>
@@ -33,8 +34,8 @@ namespace U2 {
 /************************************************************************/
 /* EditMarkerGroupDialog */
 /************************************************************************/
-EditMarkerGroupDialog::EditMarkerGroupDialog(bool isNew, Marker *marker, QWidget *parent)
-: QDialog(parent), isNew(isNew), marker(NULL)
+EditMarkerGroupDialog::EditMarkerGroupDialog(bool isNew, Marker *marker, Workflow::MarkerGroupListCfgModel *_allModel, QWidget *parent)
+: QDialog(parent), isNew(isNew), marker(NULL), allModel(_allModel)
 {
     setupUi(this);
     {
@@ -70,6 +71,7 @@ EditMarkerGroupDialog::EditMarkerGroupDialog(bool isNew, Marker *marker, QWidget
     } else {
         this->setWindowTitle(tr("Create Marker Group"));
         this->marker = MarkerFactory::createInstanse(typeIds.at(typeBox->currentIndex()), QVariant());
+        sl_onTypeChanged(typeBox->currentIndex());
     }
     currentTypeIndex = typeBox->currentIndex();
 
@@ -208,6 +210,7 @@ void EditMarkerGroupDialog::sl_onTypeChanged(int newTypeIndex) {
     } else {
         typeBox->setCurrentIndex(currentTypeIndex);
     }
+    markerGroupNameEdit->setText(allModel->suggestName(marker->getType()));
 }
 
 bool EditMarkerGroupDialog::checkEditMarkerResult(const QString &oldName, const QString &newName, const QString &newValue, QString &message) {

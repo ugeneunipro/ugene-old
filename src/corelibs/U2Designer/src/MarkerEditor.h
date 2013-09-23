@@ -75,6 +75,8 @@ public:
     QMap<QString, Marker*> &getMarkers();
     void addMarker(Marker *newMarker);
     void replaceMarker(int row, Marker *newMarker);
+    QString suggestName(const QString &type);
+    bool containsName(const QString &name);
 
 signals:
     void si_markerEdited(const QString &markerId, const QString &oldMarkerName);
