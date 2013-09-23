@@ -61,6 +61,8 @@ function showLoadButton(showHint) {
 }
 
 function showFileButton(url) {
+    if (url.length == 0)
+        return "";
     var fileName = url.slice(url.lastIndexOf('/') + 1, url.length);
     var path = url.slice(0, url.lastIndexOf('/') + 1);
     var button = 
