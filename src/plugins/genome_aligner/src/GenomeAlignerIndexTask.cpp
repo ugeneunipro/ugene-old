@@ -196,6 +196,10 @@ void GenomeAlignerIndexTask::reformatSequence() {
             setError("Reference object type must be a sequence, but not a multiple alignment");
             return;
         }
+        if(NULL == seq->alphabet){
+            setError("Cannot define an alphabet for the reference sequence");
+            return;
+        }
         if (DNAAlphabet_NUCL != seq->alphabet->getType()) {
             setError("Unsupported file format: alphabet type is not NUCL");
             return;

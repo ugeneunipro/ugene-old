@@ -34,6 +34,7 @@
 #include <U2Core/Settings.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/GUrlUtils.h>
+#include <U2Core/L10n.h>
 
 #include <U2View/AnnotatedDNAView.h>
 #include <U2View/ADVSequenceObjectContext.h>
@@ -49,7 +50,6 @@ namespace U2 {
 #define DAS_UNIPROT "dasuniprot"    // hardcoded, taken from U2Core/DASSource.cpp
 // TODO: add combobox with all available sources.
 
-const QString DasOptionsPanelWidget::EXACT_SEARCH = tr("Exact sequence");
 const QString DasOptionsPanelWidget::BLAST_SEARCH = tr("BLAST");
 const QString DasOptionsPanelWidget::ALGORITHM_SETTINGS = tr("Algorithm settings");
 const QString DasOptionsPanelWidget::ANNOTATIONS_SETTINGS = tr("Annotations settings");
@@ -59,6 +59,9 @@ const QString DasOptionsPanelWidget::SELECTED_REGION = tr("Selected region");
 const QString DasOptionsPanelWidget::CUSTOM_REGION = tr("Custom region");
 
 const static QString SHOW_OPTIONS_LINK("show_options_link");
+
+#define MIN_SEQ_LENGTH 4
+#define MAX_SEQ_LENGTH 1900 //because a GET request can handle only 2048 characters
 
 DasBlastSettingsWidget::DasBlastSettingsWidget(QWidget* parent) : QWidget(parent) {
     setupUi(this);
@@ -95,19 +98,21 @@ UniprotBlastSettings DasBlastSettingsWidget::getSettings() {
     return settings;
 }
 
-DasOptionsPanelWidget::DasOptionsPanelWidget(AnnotatedDNAView* adv) :
-    annotatedDnaView(adv),
-    ctx(adv->getSequenceInFocus()),
-    selection(NULL),
-    settingsShowHideWidget(NULL),
-    blastSettingsWidget(NULL),
-    dasFeaturesListWidget(NULL),
-    annotationsWidgetController(NULL),
-    regionSelector(NULL),
-    fetchIdsAction(NULL),
-    fetchAnnotationsAction(NULL),
-    openInNewViewAction(NULL),
-    showMore(true){
+DasOptionsPanelWidget::DasOptionsPanelWidget(AnnotatedDNAView* adv)
+:annotatedDnaView(adv)
+,ctx(adv->getSequenceInFocus())
+,selection(NULL)
+,settingsShowHideWidget(NULL)
+,blastSettingsWidget(NULL)
+,dasFeaturesListWidget(NULL)
+,annotationsWidgetController(NULL)
+,regionSelector(NULL)
+,fetchIdsAction(NULL)
+,fetchAnnotationsAction(NULL)
+,openInNewViewAction(NULL)
+,showMore(true)
+,getIdsTask(NULL)
+{
     setupUi(this);
     initialize();
     connectSignals();
@@ -125,13 +130,16 @@ void DasOptionsPanelWidget::sl_searchIdsClicked() {
         return;
     }
 
-    idList->clearContents();
     SAFE_POINT (NULL != blastSettingsWidget, "BLAST settings widget is null", );
-    UniprotBlastTask* blastTask = new UniprotBlastTask(ctx->getSequenceData(getRegion()), blastSettingsWidget->getSettings());
-    connect(blastTask,
+
+    if (getIdsTask == NULL || getIdsTask->isCanceled() || getIdsTask->isFinished()){
+        getIdsTask = new UniprotBlastTask(ctx->getSequenceData(getRegion()), blastSettingsWidget->getSettings());
+        connect(getIdsTask,
             SIGNAL(si_stateChanged()),
             SLOT(sl_blastSearchFinish()));
-    AppContext::getTaskScheduler()->registerTopLevelTask(blastTask);
+        AppContext::getTaskScheduler()->registerTopLevelTask(getIdsTask);
+    }
+    checkState();
 }
 
 void DasOptionsPanelWidget::sl_annotateClicked() {
@@ -152,40 +160,44 @@ void DasOptionsPanelWidget::sl_annotateClicked() {
     AppContext::getTaskScheduler()->registerTopLevelTask(new MultiTask("Load DAS annotations for current sequence", loadDasObjectTasks));
 }
 
-void DasOptionsPanelWidget::sl_exactSearchFinish() {
-    GetDasIdsBySequenceTask* searchIdsTask = qobject_cast<GetDasIdsBySequenceTask*>(sender());
-    SAFE_POINT(searchIdsTask, "Sender is not defined", );
-
-    if (searchIdsTask->isFinished()) {
-        idList->clearContents();
-        QList<PicrElement> results = searchIdsTask->getResults();
-        for (int i = 0; i < results.count(); ++i) {
-            idList->insertRow(i);
-            idList->setItem(i, 0, new QTableWidgetItem(results[i].accessionNumber));
-            idList->setItem(i, 1, new QTableWidgetItem("100%"));
-        }
-
-        idList->setCurrentCell(0, 0);
-        checkState();
-    }
-}
-
 void DasOptionsPanelWidget::sl_blastSearchFinish() {
     UniprotBlastTask* blastTask = qobject_cast<UniprotBlastTask*>(sender());
     SAFE_POINT(blastTask, "Sender is not defined", );
 
-    if (blastTask->isFinished()) {
-        idList->clearContents();
+    if (blastTask != getIdsTask){
+        //context was switched while fetching IDs. I caused deleting of the widget
+        getIdsTask = blastTask;
+    }
+
+    checkState();
+    
+    if (getIdsTask == NULL || getIdsTask->isCanceled() || getIdsTask->hasError()){
+        getIdsTask = NULL;
+        return;
+    }
+
+    if (getIdsTask->isFinished()) {
+        UniprotBlastTask* blastTask = qobject_cast<UniprotBlastTask*>(getIdsTask);
+        if (blastTask == NULL){
+            getIdsTask = NULL;
+            return;
+        }
+        
+        clearTableContent();
+        
         QList<UniprotResult> results = blastTask->getResults();
         for (int i = 0; i < results.count(); ++i) {
             if (results[i].identity >= getMinIdentity()) {
-                idList->insertRow(i);
-                idList->setItem(i, 0, new QTableWidgetItem(results[i].accession));
-                idList->setItem(i, 1, new QTableWidgetItem(QString::number(results[i].identity) + "%"));
+                int rowNumber = idList->rowCount();
+                idList->insertRow(rowNumber);
+                idList->setItem(rowNumber, 0, new QTableWidgetItem(results[i].accession));
+                idList->setItem(rowNumber, 1, new QTableWidgetItem(QString::number(results[i].identity) + "%"));
             }
         }
 
         idList->setCurrentCell(0, 0);
+
+        getIdsTask = NULL;
         checkState();
     }
 }
@@ -194,7 +206,7 @@ void DasOptionsPanelWidget::sl_onLoadAnnotationsFinish() {
     LoadDASObjectTask* loadDasObjectTask = qobject_cast<LoadDASObjectTask*>(sender());
     SAFE_POINT(loadDasObjectTask, "Sender is not defined", );
 
-    if (loadDasObjectTask->isFinished()) {
+    if (loadDasObjectTask->isFinished() && loadDasObjectTasks.contains(loadDasObjectTask)) {
         loadDasObjectTasks.removeAll(loadDasObjectTask);
         mergeFeatures(loadDasObjectTask->getAnnotationData());
     }
@@ -229,6 +241,9 @@ void DasOptionsPanelWidget::sl_onSequenceFocusChanged(ADVSequenceWidget*, ADVSeq
     cm.hideAnnotationParameters = true;
     annotationsWidgetController->updateWidgetForAnnotationModel(cm);
 
+    //clear no sense results and tasks if the sequence is switched
+    clear();
+
     checkState();
 }
 
@@ -236,7 +251,6 @@ void DasOptionsPanelWidget::sl_onSelectionChanged(LRegionsSelection* _selection,
     Q_UNUSED(added);
     Q_UNUSED(removed);
     SAFE_POINT(selection == _selection, "Selection is invalid", );
-    updateRegionSelectorWidget();
     checkState();
 }
 
@@ -349,6 +363,19 @@ void DasOptionsPanelWidget::initialize() {
 
     idList->horizontalHeader()->setResizeMode(0, QHeaderView::Stretch);
     idList->horizontalHeader()->setResizeMode(1, QHeaderView::ResizeToContents);
+
+    //disable editing of the results
+    idList->setEditTriggers(QAbstractItemView::NoEditTriggers);
+
+    //only one ID can be selected for now
+    idList->setSelectionMode(QAbstractItemView::SingleSelection);
+
+    hintLabel->hide();
+    hintLabel->setStyleSheet(
+        "color: " + L10N::errorColorLabelStr() + ";"
+        "font: bold;");
+
+    sl_onRegionChanged(regionSelector->getRegion());
 }
 
 void DasOptionsPanelWidget::connectSignals() {
@@ -376,7 +403,9 @@ void DasOptionsPanelWidget::connectSignals() {
     connect(lblShowMoreLess,
             SIGNAL(linkActivated(const QString&)),
             SLOT(sl_showLessClicked(const QString&)));
-
+     connect(regionSelector ,
+            SIGNAL(si_regionChanged(const U2Region&)),
+            SLOT(sl_onRegionChanged(const U2Region& )));
 }
 
 void DasOptionsPanelWidget::checkState() {
@@ -401,6 +430,15 @@ void DasOptionsPanelWidget::checkState() {
     openActionIsEnabled &= !idList->selectedItems().isEmpty();
     openActionIsEnabled &= ctx->getAlphabet()->isAmino();
     openInNewViewAction->setEnabled(openActionIsEnabled);
+
+    if (getIdsTask == NULL || getIdsTask->isFinished() || getIdsTask->isCanceled()){
+        searchIdsButton->setEnabled(true);
+        fetchIdsAction->setEnabled(true);
+    }else{
+        searchIdsButton->setEnabled(false);
+        fetchIdsAction->setEnabled(false);
+    }
+    
 }
 
 QList<DASSource> DasOptionsPanelWidget::getFeatureSources() {
@@ -458,6 +496,7 @@ void DasOptionsPanelWidget::addAnnotations() {
     }
 
     SAFE_POINT(ctx, "Current sequence context is NULL", );
+    qint64 seqLength = ctx->getSequenceLength();
 
     bool annObjectIsOk = annotationsWidgetController->prepareAnnotationObject();
     SAFE_POINT(annObjectIsOk, "Cannot create an annotation object. Please check settings", );
@@ -470,13 +509,19 @@ void DasOptionsPanelWidget::addAnnotations() {
         if (!sdata.isEmpty()) {
             foreach (SharedAnnotationData d, sdata) {
                 Annotation* a = new Annotation(d);
-                //setRegion
+                
                 const U2Location& location = a->getLocation();
                 if (location->isSingleRegion() && location->regions.first() == U2_REGION_MAX) {
+                    //setRegion for full region sequence
                     U2Location newLoc = location;
                     newLoc->regions.clear();
                     newLoc->regions.append(U2Region(0, ctx->getSequenceLength()));
                     a->setLocation(newLoc);
+                }else{
+                    //cut annotations with the start position out of the current sequence
+                    if (location->regions.size() > 0 && location->regions.first().startPos >= seqLength){
+                        continue;
+                    }
                 }
                 annotationTableObject->getRootGroup()->getSubgroup(grname, true)->addAnnotation(a);
             }
@@ -535,6 +580,51 @@ void DasOptionsPanelWidget::updateShowOptions() {
     }
     // Change the mode
     showMore = !showMore;
+}
+
+void DasOptionsPanelWidget::clearTableContent(){
+    
+    idList->clearContents();
+    while(idList->rowCount() > 0){
+        idList->removeRow(0);
+    }
+    
+}
+
+DasOptionsPanelWidget::~DasOptionsPanelWidget(){
+    clear();
+}
+
+void DasOptionsPanelWidget::clear(){
+    clearTableContent();
+
+    foreach(Task* loadDASTask, loadDasObjectTasks){
+        if (loadDASTask != NULL && !loadDASTask->isFinished()){
+            loadDASTask->cancel();
+        }
+    }
+    loadDasObjectTasks.clear();
+
+    annotationData.clear();
+
+    if (getIdsTask != NULL && !getIdsTask->isFinished()){
+        getIdsTask->cancel();
+        getIdsTask = NULL;
+    }
+}
+
+void DasOptionsPanelWidget::sl_onRegionChanged( const U2Region& r){
+    clear();
+
+    if (r.length < MIN_SEQ_LENGTH){
+        hintLabel->setText(tr("Warning: Selected region is too short. It should be from 4 to 1900 amino acids."));
+        hintLabel->show();
+    }else if(r.length > MAX_SEQ_LENGTH){
+        hintLabel->setText(tr("Warning: Selected region is too long. It should be from 4 to 1900 amino acids."));
+        hintLabel->show();
+    }else{
+        hintLabel->hide();
+    }
 }
 
 }   // namespace

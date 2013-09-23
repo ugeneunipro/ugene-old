@@ -56,19 +56,26 @@ class DasOptionsPanelWidget : public QWidget, private Ui_DasOptionsPanelWidget {
     Q_OBJECT
 public:
     DasOptionsPanelWidget(AnnotatedDNAView* adv);
+    ~DasOptionsPanelWidget();
+
+    void clear();
+
     double getMinIdentity() { return minimumIdentityDoubleSpinBox->value(); }
 
 private slots:
     void sl_searchTypeChanged(int type);
     void sl_searchIdsClicked();
+
+    void clearTableContent();
+
     void sl_annotateClicked();
-    void sl_exactSearchFinish();
     void sl_blastSearchFinish();
     void sl_onLoadAnnotationsFinish();
     void sl_onSequenceFocusChanged(ADVSequenceWidget*, ADVSequenceWidget*);
     void sl_onSelectionChanged(LRegionsSelection* _selection, const QVector<U2Region>& added, const QVector<U2Region>& removed);
     void sl_openInNewView();
     void sl_showLessClicked(const QString&);
+    void sl_onRegionChanged(const U2Region& );
 
 private:
     void initialize();
@@ -100,9 +107,10 @@ private:
     QAction* fetchAnnotationsAction;
     QAction* openInNewViewAction;
 
+    Task* getIdsTask; 
+
     QMap<QString, QList<SharedAnnotationData> > annotationData;
 
-    const static QString EXACT_SEARCH;
     const static QString BLAST_SEARCH;
     const static QString ALGORITHM_SETTINGS;
     const static QString ANNOTATIONS_SETTINGS;

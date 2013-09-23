@@ -420,8 +420,18 @@ void UniprotBlastTask::run() {
     loop->exec();
     ioLog.trace("Download finished.");
 
+    if (isCanceled()){
+        return;
+    }
+    
     //parse output
     QByteArray replyData = replyHandler.getReplyData();
+
+    if (replyData.isEmpty()){
+        setError(tr("Reply from the BLAST server is empty. Similar sequences not found"));
+        return;
+    }
+    
 
     XmlUniprotParser parser;
     parser.parse(replyData);

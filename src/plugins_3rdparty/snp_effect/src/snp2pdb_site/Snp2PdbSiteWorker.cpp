@@ -87,7 +87,7 @@ QList<QVariantMap> Snp2PdbSiteWorker::getInputDataForRequest( const U2Variant& v
         inputData[SnpRequestKeys::SNP_2_PDB_SITE_PDB_ID] = gene.getAccession();
         inputData[SnpRequestKeys::SNP_2_PDB_SITE_CHAIN] = "A";
         // <`pdb_chain` `snp_position`       `source_aminoacid` -> `replacing_aminoacid`>
-        inputData[SnpRequestKeys::SNP_2_PDB_SITE_MUTATIONS] = QString("A %1       %2 -> %3").arg(aaPos+1).arg(QString::fromLatin1(aaSubs.first)).arg(QString::fromLatin1(aaSubs.second));
+        inputData[SnpRequestKeys::SNP_2_PDB_SITE_MUTATIONS] = QString("\"A %1       %2 -> %3\"").arg(aaPos+1).arg(QString::fromLatin1(aaSubs.first)).arg(QString::fromLatin1(aaSubs.second));
 
         res.append(inputData);
     }
