@@ -262,7 +262,7 @@ Task * CuffmergeWorker::createCuffmergeTask() {
     CuffmergeSettings result = scanParameters();
     result.anns = anns;
     CuffmergeSupportTask* supportTask = new CuffmergeSupportTask(result);
-    supportTask->addListener(createLogListener());
+    supportTask->addListeners(createLogListeners());
     return supportTask;
 }
 

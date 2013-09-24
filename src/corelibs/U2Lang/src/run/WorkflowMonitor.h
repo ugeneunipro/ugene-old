@@ -68,9 +68,10 @@ namespace Monitor {
     };
     class U2LANG_EXPORT WorkerLogInfo {
     public:
-        WorkerLogInfo(){}
+        WorkerLogInfo(): runNumber(0){}
         ~WorkerLogInfo();
-        QList<WDListener*> logs;
+        int runNumber;
+        QList<ExternalToolListener*> logs;
     };
 
     enum U2LANG_EXPORT TaskState {
@@ -112,7 +113,7 @@ public:
 
     void setSaveSchema(const Metadata &meta);
 
-    WDListener* createWorkflowListener(const QString& workerName);
+    QList<ExternalToolListener*> createWorkflowListeners(const QString& workerName, int listenersNumber = 1);
 
     void onLogChanged(const WDListener* listener, int messageType, const QString& message);
 

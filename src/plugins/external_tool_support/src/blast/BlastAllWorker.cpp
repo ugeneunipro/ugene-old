@@ -400,7 +400,7 @@ Task* BlastAllWorker::tick() {
         }
 
         BlastAllSupportTask* t = new BlastAllSupportTask(cfg);
-        t->addListener(createLogListener());
+        t->addListeners(createLogListeners());
         connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
         return t;
     } else if (input->isEnded()) {

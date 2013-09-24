@@ -104,7 +104,7 @@ Task *Peak2GeneWorker::tick() {
         }
 
         Peak2GeneTask* t = new Peak2GeneTask(settings, treatData);
-        t->addListener(createLogListener());
+        t->addListeners(createLogListeners());
         connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
         return t;
     }else if (inChannel->isEnded()) {

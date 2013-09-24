@@ -129,6 +129,12 @@ void ExternalToolSupportTask::setListenerForHelper(ExternalToolRunTaskHelper* he
     }
 }
 
+ExternalToolListener* ExternalToolSupportTask::getListener(int listenerNumber) {
+    if(listeners.size() > listenerNumber) {
+        return listeners.at(listenerNumber);
+    }
+}
+
 ////////////////////////////////////////
 //ExternalToolRunTaskHelper
 ExternalToolRunTaskHelper::ExternalToolRunTaskHelper(ExternalToolRunTask* t)
@@ -373,7 +379,9 @@ ProcessRun ExternalToolSupportUtils::prepareProcess(const QString &toolName, con
     if(NULL != listener) {
         listener->setToolName(toolName);
         listener->addNewLogMessage(result.program, PROGRAM_PATH);
-        listener->addNewLogMessage(arguments.join("\n"), ARGUMENTS);
+        QString argumentsLine = arguments.join(" ");
+        argumentsLine.replace(" -", "\n-");
+        listener->addNewLogMessage(argumentsLine, ARGUMENTS);
     }
     return result;
 }

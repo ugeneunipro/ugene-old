@@ -107,7 +107,7 @@ Task *ConservationPlotWorker::tick() {
     }
 
     ConservationPlotTask* t = new ConservationPlotTask(settings, plotData);
-    t->addListener(createLogListener());
+    t->addListeners(createLogListeners());
     connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
     return t;
 

@@ -96,8 +96,6 @@ function lwAddTreeNode(nodeName, activeTabName, activeTabId, content, contentTyp
                 addContent(launchNode, 'Error log', idBase + '_er', 'badge badge-important', content);
                 var launchSpan = document.getElementById(launchNodeId + '_span');
                 launchSpan.className = 'badge badge-important';
-                var activeTabSpan = document.getElementById(activeTabName + '_span');
-                activeTabSpan.className = 'badge badge-important';
             break;
         case "output":
             addContent(launchNode, 'Output log', idBase + '_out', 'badge badge-info', content);
@@ -134,7 +132,7 @@ function addContent(parentNode, contentHead, nodeId, contentType, content) {
     } else if(content) {
         node = addChildrenNode(parentNode, contentHead, '', contentType);
         content = content.replace(/^(<br>)+/, "");
-        addChildrenNode(node, content, nodeId, '');
+        addChildrenNode(node, content, nodeId, 'content');
     }
 }
 

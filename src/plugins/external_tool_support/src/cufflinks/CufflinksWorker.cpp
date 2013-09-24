@@ -364,7 +364,7 @@ Task * CufflinksWorker::tick() {
 
         // Create the task
         CufflinksSupportTask* cufflinksSupportTask = new CufflinksSupportTask(settings);
-        cufflinksSupportTask->addListener(createLogListener());
+        cufflinksSupportTask->addListeners(createLogListeners());
         connect(cufflinksSupportTask, SIGNAL(si_stateChanged()), SLOT(sl_cufflinksTaskFinished()));
 
         return cufflinksSupportTask;

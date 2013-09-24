@@ -227,8 +227,8 @@ void BaseWorker::restoreActualChannelsState() {
     }
 }
 
-ExternalToolListener* BaseWorker::createLogListener() {
-    return context->getMonitor()->createWorkflowListener(actor->getLabel());
+QList<ExternalToolListener*> BaseWorker::createLogListeners(int listenersNumber) {
+    return context->getMonitor()->createWorkflowListeners(actor->getLabel(), listenersNumber);
 }
 
 void BaseWorker::addMessagesFromBackupToAppropriratePort(CommunicationChannel *channel) {

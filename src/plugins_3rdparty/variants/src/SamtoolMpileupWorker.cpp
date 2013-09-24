@@ -712,9 +712,7 @@ Task* CallVariantsWorker::tick() {
     //do
     if (cache.isEmpty() && !settings.refSeqUrl.isEmpty() && !settings.assemblyUrls.isEmpty()) {
         CallVariantsTask* t = new CallVariantsTask(settings, context->getDataStorage());
-        t->addListener(createLogListener());
-        t->addListener(createLogListener());
-        t->addListener(createLogListener());
+        t->addListeners(createLogListeners(3));
         connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
 
         settings.assemblyUrls.clear();

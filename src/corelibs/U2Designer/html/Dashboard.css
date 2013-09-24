@@ -317,7 +317,8 @@ span.badge.run-info
 {
     background-color:#CC9966;
 }
-span.badge
+span.content
 {
     display: table-cell;
+    min-width: 800px;
 }

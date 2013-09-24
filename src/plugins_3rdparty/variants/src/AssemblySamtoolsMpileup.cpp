@@ -71,6 +71,7 @@ void CallVariantsTask::prepare(){
     }
 
     mpileupTask = new SamtoolsMpileupTask(settings);
+    mpileupTask->addListeners(getListeners());
     addSubTask(mpileupTask );
 }
 
@@ -175,19 +176,19 @@ void SamtoolsMpileupTask::prepare(){
 }
 
 void SamtoolsMpileupTask::run() {
-    ProcessRun samtools = ExternalToolSupportUtils::prepareProcess("SAMtools", settings.getMpiliupArgs(), "", QStringList(), stateInfo, NULL);
+    ProcessRun samtools = ExternalToolSupportUtils::prepareProcess("SAMtools", settings.getMpiliupArgs(), "", QStringList(), stateInfo, getListener(0));
     CHECK_OP(stateInfo, );
     QScopedPointer<QProcess> sp(samtools.process);
     QScopedPointer<ExternalToolRunTaskHelper> sh(new ExternalToolRunTaskHelper(samtools.process, new ExternalToolLogParser(), stateInfo));
     setListenerForHelper(sh.data(), 0);
 
-    ProcessRun bcftools = ExternalToolSupportUtils::prepareProcess("BCFtools", settings.getBcfViewArgs(), "", QStringList(), stateInfo, NULL);
+    ProcessRun bcftools = ExternalToolSupportUtils::prepareProcess("BCFtools", settings.getBcfViewArgs(), "", QStringList(), stateInfo, getListener(1));
     CHECK_OP(stateInfo, );
     QScopedPointer<QProcess> bp(bcftools.process);
     QScopedPointer<ExternalToolRunTaskHelper> bh(new ExternalToolRunTaskHelper(bcftools.process, new ExternalToolLogParser(), stateInfo));
     setListenerForHelper(bh.data(), 1);
 
-    ProcessRun vcfutils = ExternalToolSupportUtils::prepareProcess("vcfutils", settings.getVarFilterArgs(), "", QStringList(), stateInfo, NULL);
+    ProcessRun vcfutils = ExternalToolSupportUtils::prepareProcess("vcfutils", settings.getVarFilterArgs(), "", QStringList(), stateInfo, getListener(2));
     CHECK_OP(stateInfo, );
     QScopedPointer<QProcess> vp(vcfutils.process);
     QScopedPointer<ExternalToolRunTaskHelper> vh(new ExternalToolRunTaskHelper(vcfutils.process, new ExternalToolLogParser(), stateInfo));

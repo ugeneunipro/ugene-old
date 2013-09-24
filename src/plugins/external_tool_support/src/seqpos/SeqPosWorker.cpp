@@ -98,7 +98,7 @@ Task *SeqPosWorker::tick() {
         }
 
         SeqPosTask* t = new SeqPosTask(settings, treatData);
-        t->addListener(createLogListener());
+        t->addListeners(createLogListeners());
         connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
         return t;
     }else if (inChannel->isEnded()) {

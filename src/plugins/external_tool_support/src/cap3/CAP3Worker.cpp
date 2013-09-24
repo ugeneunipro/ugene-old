@@ -119,7 +119,7 @@ Task* CAP3Worker::tick() {
         cfg.inputFiles.append( actor->getParameter(INPUT_FILE_PATH)->getAttributeValue<QString>(context) );
 
         CAP3SupportTask* t = new CAP3SupportTask(cfg);
-        t->addListener(createLogListener());
+        t->addListeners(createLogListeners());
         connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
         return t;
     } else if (input->isEnded()) {

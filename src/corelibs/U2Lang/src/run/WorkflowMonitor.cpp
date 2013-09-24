@@ -35,7 +35,7 @@ namespace Workflow {
 using namespace Monitor;
 
 WorkerLogInfo::~WorkerLogInfo() {
-    foreach(WDListener* listener, logs) {
+    foreach(ExternalToolListener* listener, logs) {
         if(NULL != listener) {
             delete listener;
         }
@@ -216,11 +216,16 @@ void WorkflowMonitor::setSaveSchema(const Metadata &_meta) {
     saveSchema = true;
 }
 
-WDListener* WorkflowMonitor::createWorkflowListener(const QString& workerName) {
+QList<ExternalToolListener*> WorkflowMonitor::createWorkflowListeners(const QString& workerName, int listenersNumber) {
+    QList<ExternalToolListener*> listeners;
     WorkerLogInfo& logInfo = workersLog[workerName];
-    WDListener* newListener = new WDListener(this, workerName, logInfo.logs.size() + 1);
-    logInfo.logs.append(newListener);
-    return newListener;
+    logInfo.runNumber++;
+    for(int i = 0; i < listenersNumber; i++) {
+        WDListener* newListener = new WDListener(this, workerName, logInfo.runNumber);
+        listeners.append(newListener);
+    }
+    logInfo.logs.append(listeners);
+    return listeners;
 }
 void WorkflowMonitor::onLogChanged(const WDListener* listener, int messageType, const QString& message) {
     emit si_logChanged(listener->getToolName(), listener->getActorName(), listener->getRunNumber(), messageType, message);

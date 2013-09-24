@@ -261,7 +261,7 @@ Task* ClustalWWorker::tick() {
             return NULL;
         }
         ClustalWSupportTask* supportTask = new ClustalWSupportTask(msa, GObjectReference(), cfg);
-        supportTask->addListener(createLogListener());
+        supportTask->addListeners(createLogListeners());
         Task *t = new NoFailTaskWrapper(supportTask);
         connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
         return t;

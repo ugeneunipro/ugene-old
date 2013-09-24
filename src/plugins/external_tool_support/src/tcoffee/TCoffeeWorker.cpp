@@ -171,7 +171,7 @@ Task* TCoffeeWorker::tick() {
             return NULL;
         }
         TCoffeeSupportTask* supportTask = new TCoffeeSupportTask(msa, GObjectReference(), cfg);
-        supportTask->addListener(createLogListener());
+        supportTask->addListeners(createLogListeners());
         Task *t = new NoFailTaskWrapper(supportTask);
         connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
         return t;
