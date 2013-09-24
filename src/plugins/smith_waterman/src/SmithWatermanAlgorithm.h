@@ -79,19 +79,6 @@ protected:
         KeyOfPairAlignSeq(int _score, U2Region const & _intervalSeq1) {
             setValues(_score, _intervalSeq1);
         }
-//         KeyOfPairAlignSeq(int _score, U2Region const & _intervalSeq1, U2Region const & _intervalSeq2) {
-//             setValues(_score, _intervalSeq1, _intervalSeq2);
-//         }
-
-//         KeyOfPairAlignSeq() {
-//             score = 0;
-// 
-//             intervalSeq1.startPos = 0;
-//             intervalSeq1.len = 0;
-// 
-//             intervalSeq2.startPos = 0;;
-//             intervalSeq2.len = 0;
-//         };
 
         KeyOfPairAlignSeq() {
             score = 0;
@@ -100,19 +87,6 @@ protected:
             intervalSeq1.length = 0;
         };
 
-
-//         static void exchange(KeyOfPairAlignSeq & a, int & pos1, KeyOfPairAlignSeq & b, int & pos2) {
-//             KeyOfPairAlignSeq bufKey;
-//             int buf;
-// 
-//             buf = pos1;
-//             pos1 = pos2;
-//             pos2 = buf;
-// 
-//             bufKey = a;
-//             a = b;
-//             b = bufKey;
-//         }
         static void exchange(PairAlignSequences & a, PairAlignSequences & b) {
             PairAlignSequences bufKey;
 
@@ -120,12 +94,6 @@ protected:
             a = b;
             b = bufKey;
         }
-
-//         void setValues(int _score, U2Region const & _intervalSeq1, U2Region const & _intervalSeq2) {
-//             score = _score;
-//             intervalSeq1 = _intervalSeq1;
-//             intervalSeq2 = _intervalSeq2;
-//         }
 
         void setValues(int _score, U2Region const & _intervalSeq1) {
             score = _score;

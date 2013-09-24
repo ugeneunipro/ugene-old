@@ -72,6 +72,7 @@ struct SWDialogConfig {
 
         enableAdvancedMASettings = false;
         countOfLaunchesAlgorithm = 1;
+        addPatternSubsequenceAsQualifier = false;
     }
     QByteArray ptrn;
 
@@ -95,6 +96,7 @@ struct SWDialogConfig {
 
     bool enableAdvancedMASettings;
     int countOfLaunchesAlgorithm;
+    bool addPatternSubsequenceAsQualifier;
 };
 
 class U2VIEW_EXPORT SmithWatermanDialogController {

@@ -199,7 +199,8 @@ Task* QDSWActor::getAlgorithmTask(const QVector<U2Region>& searchLocation) {
     task = new Task(tr("SSearch"), TaskFlag_NoRun);
     foreach(const U2Region& r, searchLocation) {
         SmithWatermanSettings stngs(settings);
-        SmithWatermanReportCallbackAnnotImpl* rcb = new SmithWatermanReportCallbackAnnotImpl(NULL,"",QString());
+        SmithWatermanReportCallbackAnnotImpl* rcb = new SmithWatermanReportCallbackAnnotImpl( NULL,
+            QString( ), QString( ), false );
         stngs.resultCallback = rcb;
         stngs.resultListener = new SmithWatermanResultListener();
         stngs.globalRegion = r;

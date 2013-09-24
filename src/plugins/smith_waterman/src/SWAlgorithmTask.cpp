@@ -249,7 +249,6 @@ void SWAlgorithmTask::prepare() {
 }
 
 QList<PairAlignSequences> &  SWAlgorithmTask::getResult() {
-    
     removeResultFromOverlap(pairAlignSequences);
     SmithWatermanAlgorithm::sortByScore(pairAlignSequences);
 
@@ -287,13 +286,19 @@ void SWAlgorithmTask::onRegion(SequenceWalkerSubtask* t, TaskStateInfo& ti) {
     } else {
         assert(algType == SW_classic);
         sw = new SmithWatermanAlgorithm;
-    }    
-    
+    }
+
+    // this substitution is needed for the case when annotation are required as result
+    // as well as pattern subsequence
+    const SmithWatermanSettings::SWResultView resultView =
+        ( SmithWatermanSettings::ANNOTATIONS == sWatermanConfig.resultView
+        && sWatermanConfig.includePatternContent )
+        ? SmithWatermanSettings::MULTIPLE_ALIGNMENT : sWatermanConfig.resultView;
+
     quint64 t1 = GTimer::currentTimeMicros();
     sw->launch(sWatermanConfig.pSm, sWatermanConfig.ptrn, localSeq, 
-        sWatermanConfig.gapModel.scoreGapOpen + sWatermanConfig.gapModel.scoreGapExtd, 
-        sWatermanConfig.gapModel.scoreGapExtd, 
-        minScore, sWatermanConfig.resultView);
+        sWatermanConfig.gapModel.scoreGapOpen + sWatermanConfig.gapModel.scoreGapExtd,
+        sWatermanConfig.gapModel.scoreGapExtd, minScore, resultView);
     QString algName;
     if (algType == SW_cuda) {
         algName = "CUDA";

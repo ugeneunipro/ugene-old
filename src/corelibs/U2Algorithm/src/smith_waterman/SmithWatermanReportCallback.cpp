@@ -49,17 +49,15 @@ namespace U2 {
 // SmithWatermanReportCallbackAnnotImpl realization //////////////////////////////////////////////////////////////////////////
 
 SmithWatermanReportCallbackAnnotImpl::SmithWatermanReportCallbackAnnotImpl(
-                                AnnotationTableObject* _aobj,
-                                const QString& _annotationName,
-                                const QString& _annotationGroup,
-                                QObject* pOwn): 
-    QObject(pOwn), 
-    annotationName(_annotationName), annotationGroup(_annotationGroup), 
-    aObj(_aobj), autoReport(_aobj != NULL)
+    AnnotationTableObject* _aobj, const QString& _annotationName, const QString& _annotationGroup,
+    bool _addPatternSubseqToQual, QObject* pOwn)
+    : QObject(pOwn), annotationName(_annotationName), annotationGroup(_annotationGroup),
+    aObj(_aobj), autoReport(_aobj != NULL), addPatternSubseqToQual( _addPatternSubseqToQual )
 {
+
 }
 
-QString SmithWatermanReportCallbackAnnotImpl::report(const QList<SmithWatermanResult>& results) {    
+QString SmithWatermanReportCallbackAnnotImpl::report(const QList<SmithWatermanResult>& results) {
     if (autoReport && aObj.isNull()) {
         return tr("Annotation object not found.");
     }
@@ -69,7 +67,14 @@ QString SmithWatermanReportCallbackAnnotImpl::report(const QList<SmithWatermanRe
     }
 
     foreach (const SmithWatermanResult& res , results) {
-        anns.append(res.toAnnotation(annotationName));
+        SharedAnnotationData annotation = res.toAnnotation( annotationName );
+        if ( addPatternSubseqToQual && 0 != res.ptrnSubseq.length ) {
+            annotation->qualifiers.append( U2Qualifier( "pattern_subseq_start",
+                QString::number( res.ptrnSubseq.startPos ) ) );
+            annotation->qualifiers.append( U2Qualifier( "pattern_subseq_length",
+                QString::number( res.ptrnSubseq.length ) ) );
+        }
+        anns.append( annotation );
     }
 
     if (autoReport) {

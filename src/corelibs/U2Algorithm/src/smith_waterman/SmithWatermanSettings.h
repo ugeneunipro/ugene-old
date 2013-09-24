@@ -60,8 +60,11 @@ struct SmithWatermanSettings {
     SmithWatermanSettings() 
         : percentOfScore(0), complTT( NULL ), aminoTT( NULL ),
         resultListener( NULL ), resultFilter( NULL ),
-        resultCallback( NULL ), resultView(ANNOTATIONS) /*resultView is initialized with SWResultView::ANNOTATIONS for successful tests passing's sake,
-                                                          so when using in code resultView should be assigned explicitly*/ {
+        resultCallback( NULL ), resultView(ANNOTATIONS), includePatternContent( false )
+        /* @resultView is initialized with SWResultView::ANNOTATIONS
+            for successful tests passing's sake, so when using
+            in code @resultView should be assigned explicitly*/
+    {
         getResultViewNames(ANNOTATION_RESULT_VIEW, ANNOTATIONS);
         getResultViewNames(MULTIPLE_ALIGNMENT_RESULT_VIEW, MULTIPLE_ALIGNMENT);
     }
@@ -84,6 +87,9 @@ struct SmithWatermanSettings {
     SmithWatermanReportCallback* resultCallback;
 
     SWResultView resultView;
+    bool includePatternContent; // specifies whether the pattern subsequences appropriate
+                                // to reference subsequences are to be included to algorithm
+                                // results in case of annotation result view
 
     bool operator==(const SmithWatermanSettings& op) const {
         return  ptrn == op.ptrn && 

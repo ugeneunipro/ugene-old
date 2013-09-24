@@ -39,6 +39,8 @@
 
 #include <U2Gui/RegionSelector.h>
 
+class QCheckBox;
+
 namespace U2 {
 
 class SmithWatermanDialog: public QDialog, public Ui::SmithWatermanDialogBase {
@@ -103,6 +105,7 @@ private:
 
     ADVSequenceObjectContext* ctxSeq;
     CreateAnnotationWidgetController* annotationController;
+    QCheckBox *addPatternContentQualifier;
 
     RegionSelector* regionSelector;
 

@@ -37,15 +37,14 @@ public:
     virtual ~SmithWatermanReportCallback() {}
 };
 
-class U2ALGORITHM_EXPORT SmithWatermanReportCallbackAnnotImpl:  
-                                        public QObject,
-                                        public SmithWatermanReportCallback {
+class U2ALGORITHM_EXPORT SmithWatermanReportCallbackAnnotImpl : public QObject,
+    public SmithWatermanReportCallback
+{
     Q_OBJECT
 public:
     SmithWatermanReportCallbackAnnotImpl(AnnotationTableObject* _aobj,
-                                    const QString& _annotationName,
-                                    const QString& _annotationGroup, 
-                                    QObject* pOwn = 0);
+        const QString& _annotationName, const QString& _annotationGroup,
+        bool _addPatternSubseqToQual, QObject* pOwn = 0);
 
     virtual QString report(const QList<SmithWatermanResult>& result);    
     const QList<SharedAnnotationData>& getAnotations() const {return anns;}
@@ -56,6 +55,7 @@ private:
     QPointer<AnnotationTableObject> aObj;
     QList<SharedAnnotationData> anns;
     bool autoReport;
+    bool addPatternSubseqToQual;
 };
 
 class Project;

@@ -490,7 +490,7 @@ Task* SWWorker::tick() {
                 ->getAttributeValue<bool>(context) ? patternNames.value(p, defaultName)
                 : defaultName;
             SmithWatermanReportCallbackAnnotImpl* rcb = new SmithWatermanReportCallbackAnnotImpl(
-                NULL, resultName, QString());
+                NULL, resultName, QString(), false);
             config.resultCallback = rcb;
             config.resultListener = new SmithWatermanResultListener();
 

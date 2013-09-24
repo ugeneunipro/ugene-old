@@ -48,7 +48,8 @@ SmithWatermanAlgorithmOPENCL::SmithWatermanAlgorithmOPENCL()  :
         clCommandQueue(NULL), clContext(NULL), queryProfBuf(NULL),
         seqLibProfBuf(NULL), hDataMaxBuf(NULL), hDataUpBufTmp(NULL),
         hDataRecBufTmp(NULL), fDataUpBuf(NULL), directionsUpBufTmp(NULL),
-        directionsRecBufTmp(NULL), directionsMaxBuf(NULL)
+        directionsRecBufTmp(NULL), directionsMaxBuf(NULL), directionsMatrix(NULL),
+        backtraceBegins(NULL)
 {}
 
 quint64 SmithWatermanAlgorithmOPENCL::estimateNeededGpuMemory(const SMatrix& sm, QByteArray const & _patternSeq,
@@ -272,14 +273,12 @@ void SmithWatermanAlgorithmOPENCL::launch(const SMatrix& sm, QByteArray const & 
         sizeof(ScoreType) * (sizeRow), g_directionsRec, &err);
     if (hasOPENCLError(err, QString("Can't allocate %1 MB memory in GPU buffer").arg(QString::number(sizeof(ScoreType) * (sizeRow) / B_TO_MB_FACTOR)))) return;
 
-    directionsMatrix = NULL;
     if(NULL != g_directionsMatrix) {
         directionsMatrix = openCLHelper.clCreateBuffer_p(clContext, CL_MEM_READ_WRITE | CL_MEM_USE_HOST_PTR,
             sizeof(int) * queryLength * searchLen, g_directionsMatrix, &err);
         if(hasOPENCLError(err, QString("Can't allocate %1 MB memory in GPU buffer").arg(QString::number(sizeof(int) * queryLength * searchLen / B_TO_MB_FACTOR)))) return;
     }
 
-    backtraceBegins = NULL;
     if(NULL != g_backtraceBegins) {
         backtraceBegins = openCLHelper.clCreateBuffer_p(clContext, CL_MEM_READ_WRITE | CL_MEM_USE_HOST_PTR,
             sizeof(int) * 2 * sizeRow, g_backtraceBegins, &err);

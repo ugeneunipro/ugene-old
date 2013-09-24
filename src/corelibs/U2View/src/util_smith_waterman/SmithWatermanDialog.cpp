@@ -24,7 +24,8 @@
 #include <QtCore/QStringList>
 #include <QtGui/QMessageBox>
 #include <QtGui/QFileDialog>
-#include <QRegExp>
+#include <QtCore/QRegExp>
+#include <QtGui/QCheckBox>
 
 #include <U2Core/AppContext.h>
 #include <U2Core/Log.h>
@@ -295,7 +296,6 @@ void SmithWatermanDialog::fillTemplateButtonsList()
 
 void SmithWatermanDialog::addAnnotationWidget()
 {
-
     U2SequenceObject *dnaso = qobject_cast<U2SequenceObject*>(ctxSeq->getSequenceGObject());
     CreateAnnotationModel acm;
 
@@ -308,6 +308,12 @@ void SmithWatermanDialog::addAnnotationWidget()
     QVBoxLayout* l = new QVBoxLayout();
     l->setMargin(0);
     l->addWidget(caw);
+
+    addPatternContentQualifier = new QCheckBox(
+        tr( "Add qualifier with corresponding pattern subsequences to result annotations" ),
+        annotationsWidget );
+    l->addWidget( addPatternContentQualifier );
+
     annotationsWidget->setLayout(l);
     annotationsWidget->setMinimumSize(caw->layout()->minimumSize());
 } 
@@ -468,8 +474,10 @@ void SmithWatermanDialog::sl_bttnRun()
             AnnotationTableObject* obj = m.getAnnotationObject();
             QString annotationName = m.data->name;
             QString annotationGroup = m.groupName;
-        
-            config.resultCallback = new SmithWatermanReportCallbackAnnotImpl(obj, annotationName, annotationGroup);
+
+            config.resultCallback = new SmithWatermanReportCallbackAnnotImpl(obj, annotationName,
+                annotationGroup, addPatternContentQualifier->isChecked());
+            config.includePatternContent = addPatternContentQualifier->isChecked( );
         } else if (SmithWatermanSettings::MULTIPLE_ALIGNMENT == config.resultView){
             const U2SequenceObject * sequence = ctxSeq->getSequenceObject();
             config.resultCallback = new SmithWatermanReportCallbackMAImpl(alignmentFilesPath->text(), mObjectNameTmpl->text(),
@@ -480,7 +488,7 @@ void SmithWatermanDialog::sl_bttnRun()
         }
         config.resultListener = new SmithWatermanResultListener;
         
-        Task* task = realization->getTaskInstance(config, tr("SmithWatermanTask") );            
+        Task* task = realization->getTaskInstance(config, tr("SmithWatermanTask") );
         AppContext::getTaskScheduler()->registerTopLevelTask(task);
         saveDialogConfig();
         QDialog::accept();
@@ -700,21 +708,6 @@ void SmithWatermanDialog::loadDialogConfig()
         assert(0);
     }
 
-//    const SmithWatermanRangeType rangeType = dialogConfig->rangeType;
-//    switch (rangeType) {
-//    case (SmithWatermanRangeType_wholeSequence):
-//        radioWholeSequence->setChecked(true);
-//        break;
-//    case (SmithWatermanRangeType_selectedRange):
-//        radioSelectedRange->setChecked(true);
-//        break;
-//    case (SmithWatermanRangeType_customRange):
-//        radioCustomRange->setChecked(true);
-//        break;
-//    default:
-//        break;
-//    }
-
     const QByteArray& prevPattern = dialogConfig->ptrn;
     if (!prevPattern.isEmpty())
         teditPattern->setText(prevPattern);
@@ -772,6 +765,7 @@ void SmithWatermanDialog::loadDialogConfig()
         fillTemplateNamesFieldsByDefault();
 
     advOptions->setChecked(dialogConfig->enableAdvancedMASettings);
+    addPatternContentQualifier->setChecked( dialogConfig->addPatternSubsequenceAsQualifier );
 
     return;
 }
@@ -802,16 +796,7 @@ void SmithWatermanDialog::saveDialogConfig()
     dialogConfig->strand =  (radioBoth->isChecked()) ? 
                             (StrandOption_Both):
                             (dialogConfig->strand);
-    
-//    dialogConfig->rangeType =   (radioWholeSequence->isChecked()) ?
-//                                (SmithWatermanRangeType_wholeSequence):
-//                                (dialogConfig->rangeType);
-//    dialogConfig->rangeType =   (radioSelectedRange->isChecked()) ?
-//                                (SmithWatermanRangeType_selectedRange):
-//                                (dialogConfig->rangeType);
-//    dialogConfig->rangeType =   (radioCustomRange->isChecked()) ?
-//                                (SmithWatermanRangeType_customRange):
-//                                (dialogConfig->rangeType);
+
     const qint32 checkResultView = config.getResultViewKeyForString(resultViewVariants->currentText());
     assert(STRING_HAS_NO_KEY_MESSAGE != checkResultView);
     dialogConfig->resultView = static_cast<SmithWatermanSettings::SWResultView>(checkResultView);
@@ -837,40 +822,10 @@ void SmithWatermanDialog::saveDialogConfig()
     if(sender() == bttnRun)
         dialogConfig->countOfLaunchesAlgorithm++;
 
+    dialogConfig->addPatternSubsequenceAsQualifier = addPatternContentQualifier->isChecked( );
+
     return;
 }
-
-//void SmithWatermanDialog::sl_remoteRunButtonClicked() {
-//    // validate annotations controller first
-//    QString err = ac->validate();
-//    if( !err.isEmpty() ) {
-//        QMessageBox::critical( this, tr( "Error!" ), err );
-//        return;
-//    }
-//    if( !readParameters() ) {
-//        clearAll();
-//        return;
-//    }
-//
-//    RemoteMachineMonitor * rmm = AppContext::getRemoteMachineMonitor();
-//    assert(rmm);
-//    RemoteMachineSettings *rms = RemoteMachineMonitorDialogController::selectRemoteMachine(rmm, true);
-//    if (!rms) {
-//        return;
-//    }
-//    assert(rms->getMachineType() == RemoteMachineType_RemoteService);
-//
-//    ac->prepareAnnotationObject();
-//    const CreateAnnotationModel &m = ac->getModel();
-//    
-//    Task *t = new SmithWatermanSchemaRemoteTask(rms, config, m.getAnnotationObject(), m.data->name, m.groupName);
-//    Task *t = new SmithWatermanSchemaTask(config, m.getAnnotationObject(), m.data->name, m.groupName); // for local run
-//    AppContext::getTaskScheduler()->registerTopLevelTask(t);
-//    
-//    saveDialogConfig();
-//    QDialog::accept();
-//}
-
 
 void SmithWatermanDialogController::run(QWidget* p, ADVSequenceObjectContext* ctx, SWDialogConfig* dialogConfig)
 {
