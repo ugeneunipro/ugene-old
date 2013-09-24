@@ -6,7 +6,7 @@
 workflow "Call variants with SAMtools"{
 
     read-assembly {
-        type:read-assembly;
+        type:get-file-list;
         name:"Read Assembly (BAM/SAM)";
         url-in {
             dataset:Dataset;
@@ -22,7 +22,6 @@ workflow "Call variants with SAMtools"{
     write-variations {
         type:write-variations;
         name:"Write Variations";
-        accumulate:false;
         url-out:variations.snp;
         write-mode:0;
     }
@@ -41,11 +40,10 @@ workflow "Call variants with SAMtools"{
         read-sequence.out-url->files-conversion-1.in-file
         call_variants.out-variations->write-variations.in-variations
         files-conversion-1.out-file->call_variants.in-sequence
-        read-assembly.out-assembly->call_variants.in-assembly
+        read-assembly.out-url->call_variants.in-assembly
     }
 
     call_variants.variation-track->write-variations.in-variations.variation-track
-    read-assembly.assembly->call_variants.in-assembly.assembly
     read-assembly.dataset->call_variants.in-assembly.dataset
     read-assembly.url->call_variants.in-assembly.url
     files-conversion-1.url->call_variants.in-sequence.url
@@ -71,7 +69,7 @@ workflow "Call variants with SAMtools"{
                 pos:"-801 -554";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
-                out-assembly.angle:360;
+                out-url.angle:360;
             }
             read-sequence {
                 pos:"-801 -419";
@@ -92,7 +90,7 @@ workflow "Call variants with SAMtools"{
             files-conversion-1.out-file->call_variants.in-sequence {
                 text-pos:"-19 -31";
             }
-            read-assembly.out-assembly->call_variants.in-assembly {
+            read-assembly.out-url->call_variants.in-assembly {
                 text-pos:"-26.5 -30";
             }
             read-sequence.out-url->files-conversion-1.in-file {

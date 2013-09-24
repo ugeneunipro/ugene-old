@@ -582,7 +582,7 @@ IMPLEMENT_TEST( CInterfaceManualTests, call_variants ) {
 
     error = addElementToScheme( scheme, L"get-file-list", MAX_ELEMENT_NAME_LENGTH, readSequence );
     CHECK_U2_ERROR( error );
-    error = addElementToScheme( scheme, L"read-assembly", MAX_ELEMENT_NAME_LENGTH, readAssembly );
+    error = addElementToScheme( scheme, L"get-file-list", MAX_ELEMENT_NAME_LENGTH, readAssembly );
     CHECK_U2_ERROR( error );
     error = addElementToScheme( scheme, L"call_variants", MAX_ELEMENT_NAME_LENGTH, callVariants );
     CHECK_U2_ERROR( error );
@@ -603,10 +603,8 @@ IMPLEMENT_TEST( CInterfaceManualTests, call_variants ) {
     CHECK_U2_ERROR( error );
     error = setSchemeElementAttribute( scheme, writeVariations, L"url-out", L"variations.snp" );
     CHECK_U2_ERROR( error );
-    error = setSchemeElementAttribute( scheme, writeVariations, L"accumulate", L"false" );
-    CHECK_U2_ERROR( error );
 
-    error = addFlowToScheme( scheme, readAssembly, L"out-assembly", callVariants, L"in-assembly" );
+    error = addFlowToScheme( scheme, readAssembly, L"out-url", callVariants, L"in-assembly" );
     CHECK_U2_ERROR( error );
     error = addFlowToScheme( scheme, readSequence, L"out-url", filesConversion, L"in-file" );
     CHECK_U2_ERROR( error );
@@ -618,9 +616,6 @@ IMPLEMENT_TEST( CInterfaceManualTests, call_variants ) {
 
     error = addSchemeActorsBinding( scheme, callVariants, L"variation-track", writeVariations,
         L"in-variations.variation-track" );
-    CHECK_U2_ERROR( error );
-    error = addSchemeActorsBinding( scheme, readAssembly, L"assembly", callVariants,
-        L"in-assembly.assembly" );
     CHECK_U2_ERROR( error );
     error = addSchemeActorsBinding( scheme, readAssembly, L"dataset", callVariants,
         L"in-assembly.dataset" );
