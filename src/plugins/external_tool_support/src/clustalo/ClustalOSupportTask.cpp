@@ -67,10 +67,6 @@ ClustalOSupportTask::ClustalOSupportTask(const MAlignment& _inputMsa, const GObj
     logParser=NULL;
     resultMA.setName(inputMsa.getName());
     resultMA.setAlphabet(inputMsa.getAlphabet());
-    if (!inputMsa.getAlphabet()->isAmino()) {
-        stateInfo.setError(tr("Amino acid sequences must be supplied as input!"));
-        return;
-    }
 }
 
 ClustalOSupportTask::~ClustalOSupportTask() {

@@ -135,9 +135,6 @@ void ClustalOSupportContext::initViewContext(GObjectView* view) {
     if (msaed->getMSAObject() == NULL) {
         return;
     }
-    if(!msaed->getMSAObject()->getAlphabet()->isAmino()){
-        return;
-    }
     bool objLocked = msaed->getMSAObject()->isStateLocked();
 
     ClustalOSupportAction* alignAction = new ClustalOSupportAction(this, view, tr("Align with ClustalO..."), 2000);
