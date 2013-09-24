@@ -191,11 +191,11 @@ QList<qint64> MSAUtils::compareRowsAfterAlignment(const MAlignment& origMsa, MAl
     const QList<MAlignmentRow> origMsaRows = origMsa.getRows();
     for (int i = 0, n = newMsa.getNumRows(); i < n; ++i) {
         const MAlignmentRow& newMsaRow = newMsa.getRow(i);
-        QString rowName = newMsaRow.getName();
+        QString rowName = newMsaRow.getName().replace(" ", "_");
 
         bool rowFound = false;
         foreach (const MAlignmentRow& origMsaRow, origMsaRows) {
-            if (origMsaRow.getName() == rowName
+            if (origMsaRow.getName().replace(" ", "_") == rowName
                 && origMsaRow.getSequence().seq == newMsaRow.getSequence().seq)
             {
                 rowFound = true;

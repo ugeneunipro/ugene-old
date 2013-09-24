@@ -24,6 +24,7 @@ HEADERS += \
     src/core/util/MAlignmentImporterExporterUnitTests.h \
     src/UnitTestSuite.h \  
     src/core/util/MsaDbiUtilsUnitTests.h \
+	src/core/util/MsaUtilsUnitTests.h \
     src/core/format/sqlite_mod_dbi/ModDbiSQLiteSpecificUnitTests.h \
     src/core/format/sqlite_sequence_dbi/SequenceDbiSQLiteSpecificUnitTests.h
 SOURCES += \
@@ -48,5 +49,6 @@ SOURCES += \
     src/core/util/MAlignmentImporterExporterUnitTests.cpp \
     src/UnitTestSuite.cpp \  
     src/core/util/MsaDbiUtilsUnitTests.cpp \
+	src/core/util/MsaUtilsUnitTests.cpp \
     src/core/format/sqlite_mod_dbi/ModDbiSQLiteSpecificUnitTests.cpp \
     src/core/format/sqlite_sequence_dbi/SequenceDbiSQLiteSpecificUnitTests.cpp
