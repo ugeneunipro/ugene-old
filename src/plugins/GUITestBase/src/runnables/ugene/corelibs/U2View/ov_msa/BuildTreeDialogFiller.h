@@ -30,11 +30,12 @@ class BuildTreeDialogFiller : public Filler {
 public:
     enum consensusType{MAJORITYEXT,STRICTCONSENSUS,MAJORITY,M1};
     BuildTreeDialogFiller(U2OpStatus &os, QString _saveTree="default", int _model=0,
-                          double _alpha=0) : Filler(os, "CreatePhyTree"),
+                          double _alpha=0, bool _displayWithMsa=false) : Filler(os, "CreatePhyTree"),
         saveTree(_saveTree),
         model(_model),
         replicates(0),
-        alpha(_alpha){}
+        alpha(_alpha),
+        displayWithMsa(_displayWithMsa){}
 
     BuildTreeDialogFiller(U2OpStatus &os, int _replicates=0,QString _saveTree="default", int _seed = 5,
                           consensusType _type = MAJORITYEXT, double _fraction = 0.5) : Filler(os, "CreatePhyTree"),
@@ -51,6 +52,7 @@ private:
     int model,replicates,seed;
     double alpha,fraction;
     consensusType type;
+    bool displayWithMsa;
 };
 
 }

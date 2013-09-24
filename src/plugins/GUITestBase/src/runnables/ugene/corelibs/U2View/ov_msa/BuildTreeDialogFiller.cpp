@@ -26,6 +26,7 @@
 #include "api/GTLineEdit.h"
 #include "api/GTCheckBox.h"
 #include "api/GTDoubleSpinBox.h"
+#include "api/GTRadioButton.h"
 
 
 #include <QComboBox>
@@ -34,6 +35,7 @@
 #include <QGroupBox>
 #include <QCheckBox>
 #include <QDoubleSpinBox>
+#include <QRadioButton>
 
 namespace U2 {
 
@@ -47,6 +49,11 @@ void BuildTreeDialogFiller::run() {
     if(saveTree!="default"){
         QLineEdit* saveLineEdit = qobject_cast<QLineEdit*>(GTWidget::findWidget(os,"fileNameEdit"));
         GTLineEdit::setText(os,saveLineEdit, saveTree);
+    }
+
+    QRadioButton* displayInNewWindow = qobject_cast<QRadioButton*>(GTWidget::findWidget(os,"createNewView"));
+    if(!displayWithMsa) {
+        GTRadioButton::click(os, displayInNewWindow);
     }
 
     if(model){
