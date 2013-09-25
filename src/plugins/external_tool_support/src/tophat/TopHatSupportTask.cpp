@@ -272,8 +272,10 @@ QList<Task*> TopHatSupportTask::onSubTaskFinished(Task *subTask) {
         QList<Workflow::SharedDbiDataHandler> acceptedHitsResults;
         acceptedHitsResults = readDocTask->takeResult();
 
-        // FIXME: Currently only the first assembly object is taken into account
-        if (!acceptedHitsResults.isEmpty()) {
+        if (acceptedHitsResults.isEmpty()) {
+            setError(tr("There is no accepted hits in the result"));
+        } else {
+            // FIXME: Currently only the first assembly object is taken into account
             acceptedHits = acceptedHitsResults[0];
         }
     }
