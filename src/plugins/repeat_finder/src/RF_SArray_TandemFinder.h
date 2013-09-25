@@ -90,7 +90,7 @@ private:
     GObjectReference    annObjRef;
 
     QList<SharedAnnotationData> result;
-    const FindTandemsTaskSettings& s;
+    const FindTandemsTaskSettings s;
 };
 
 class TandemFinder: public Task, public SequenceWalkerCallback {
