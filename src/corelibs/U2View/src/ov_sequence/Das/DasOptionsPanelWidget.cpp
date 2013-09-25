@@ -374,6 +374,8 @@ void DasOptionsPanelWidget::initialize() {
     hintLabel->setStyleSheet(
         "color: " + L10N::errorColorLabelStr() + ";"
         "font: bold;");
+
+    sl_onRegionChanged(regionSelector->getRegion());
 }
 
 void DasOptionsPanelWidget::connectSignals() {
