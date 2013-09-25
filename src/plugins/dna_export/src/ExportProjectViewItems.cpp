@@ -55,6 +55,7 @@
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/MSAUtils.h>
 #include <U2Core/MultiTask.h>
+#include <U2Core/AppResources.h>
 
 #include <U2Gui/DialogUtils.h>
 #include <U2Gui/LastUsedDirHelper.h>
@@ -298,6 +299,21 @@ void ExportProjectViewItemsContoller::sl_saveSequencesAsAlignment() {
     }
 
     U2OpStatusImpl os;
+    MemoryLocker memoryLocker(os);
+
+    // checking memory consumption
+    foreach(GObject* obj, sequenceObjects) {
+        U2SequenceObject* dnaObj = qobject_cast<U2SequenceObject*>(obj);
+        if (dnaObj == NULL) {
+            continue;
+        }
+        memoryLocker.tryAcquire(dnaObj->getSequenceLength());
+    }
+    if (os.hasError()) {
+        QMessageBox::critical(NULL, L10N::errorTitle(), tr("Not enough memory error"));
+        return;
+    }
+
     MAlignment ma = MSAUtils::seq2ma(sequenceObjects, os, d.useGenbankHeader);
     if (os.hasError()) {
         QMessageBox::critical(NULL, L10N::errorTitle(), os.getError());
