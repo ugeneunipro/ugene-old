@@ -273,7 +273,7 @@ QList<Task*> TopHatSupportTask::onSubTaskFinished(Task *subTask) {
         acceptedHitsResults = readDocTask->takeResult();
 
         if (acceptedHitsResults.isEmpty()) {
-            setError(tr("There is no accepted hits in the result"));
+            setError(tr("There are no accepted hits in the result"));
         } else {
             // FIXME: Currently only the first assembly object is taken into account
             acceptedHits = acceptedHitsResults[0];
