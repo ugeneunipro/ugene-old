@@ -35,9 +35,33 @@ public:
         QList<Descriptor> otherDescs;
     };
 
-    static SplitResult splitCandidates(const QList<Descriptor> &candidates, DataTypePtr toElementDatatype);
+    static SplitResult splitCandidates(const QList<Descriptor> &candidates, const Descriptor &toDesc, DataTypePtr toDatatype);
     static void remapBus(QStrStrMap &busMap, const ActorId &oldId, const ActorId &newId, const PortMapping &mapping);
     static void remapPathedSlotString(QString &pathedSlotStr, const ActorId &oldId, const ActorId &newId, const PortMapping &mapping);
+};
+
+class CandidatesSplitter {
+public:
+    virtual bool canSplit(const Descriptor &toDesc, DataTypePtr toDatatype) = 0;
+    virtual IntegralBusUtils::SplitResult splitCandidates(const QList<Descriptor> &candidates);
+
+protected:
+    virtual bool isMain(const QString &candidateSlotId) = 0;
+};
+
+class CandidatesSplitterRegistry {
+public:
+    ~CandidatesSplitterRegistry();
+    static CandidatesSplitterRegistry * instance();
+
+    CandidatesSplitter * findSplitter(const Descriptor &toDesc, DataTypePtr toDatatype);
+
+private:
+    static CandidatesSplitterRegistry *_instance;
+    QList<CandidatesSplitter*> splitters;
+
+private:
+    CandidatesSplitterRegistry();
 };
 
 } // Workflow

@@ -364,10 +364,10 @@ void IntegralBusPort::setupBusMap() {
         U2OpStatus2Log os;
         DataTypePtr elementDatatype = to->getDatatypeByDescriptor(key);
         QList<Descriptor> allCandidates = WorkflowUtils::findMatchingTypes(from, elementDatatype);
-        QList<Descriptor> candidates = IntegralBusUtils::splitCandidates(allCandidates, elementDatatype).mainDescs;
+        QList<Descriptor> candidates = IntegralBusUtils::splitCandidates(allCandidates, key, elementDatatype).mainDescs;
         if (elementDatatype->isList()) {
             candidates += WorkflowUtils::findMatchingTypes(from, elementDatatype->getDatatypeByDescriptor());
-            candidates = IntegralBusUtils::splitCandidates(candidates, elementDatatype->getDatatypeByDescriptor()).mainDescs;
+            candidates = IntegralBusUtils::splitCandidates(candidates, key, elementDatatype->getDatatypeByDescriptor()).mainDescs;
             QString res = WorkflowUtils::candidatesAsStringList(candidates).join(";");
             busMap.insert(key.getId(), res);
         } else if (candidates.size() == 0) {

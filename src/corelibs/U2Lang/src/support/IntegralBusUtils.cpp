@@ -20,6 +20,7 @@
  */
 
 #include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <U2Lang/BaseSlots.h>
 #include <U2Lang/BaseTypes.h>
@@ -31,22 +32,10 @@
 namespace U2 {
 namespace Workflow {
 
-IntegralBusUtils::SplitResult IntegralBusUtils::splitCandidates(const QList<Descriptor> &candidates, DataTypePtr toElementDatatype) {
-    SplitResult r;
-    foreach (const Descriptor &c, candidates) {
-        if (BaseTypes::STRING_TYPE() == toElementDatatype) {
-            U2OpStatus2Log os;
-            IntegralBusSlot slot = IntegralBusSlot::fromString(c.getId(), os);
-            if (BaseSlots::URL_SLOT().getId() == slot.getId()
-                || BaseSlots::DATASET_SLOT().getId() == slot.getId()) {
-                r.otherDescs << c;
-                continue;
-            }
-        }
-        r.mainDescs << c;
-    }
-
-    return r;
+IntegralBusUtils::SplitResult IntegralBusUtils::splitCandidates(const QList<Descriptor> &candidates, const Descriptor &toDesc, DataTypePtr toDatatype) {
+    CandidatesSplitter *splitter = CandidatesSplitterRegistry::instance()->findSplitter(toDesc, toDatatype);
+    SAFE_POINT(NULL != splitter, "NULL splitter", SplitResult());
+    return splitter->splitCandidates(candidates);
 }
 
 void IntegralBusUtils::remapBus(QStrStrMap &busMap, const ActorId &oldId, const ActorId &newId, const PortMapping &mapping) {
@@ -96,6 +85,103 @@ void IntegralBusUtils::remapPathedSlotString(QString &pathedSlotStr, const Actor
         }
         pathedSlotStr += ">" + path.join(",");
     }
+}
+
+/************************************************************************/
+/* Splitters */
+/************************************************************************/
+class DefaultSplitter : public CandidatesSplitter {
+    bool canSplit(const Descriptor & /*toDesc*/, DataTypePtr /*toDatatype*/) {
+        return true;
+    }
+
+    bool isMain(const QString & /*candidateSlotId*/) {
+        return true;
+    }
+};
+
+class TextSplitter : public CandidatesSplitter {
+public:
+    bool canSplit(const Descriptor & /*toDesc*/, DataTypePtr toDatatype) {
+        return (BaseTypes::STRING_TYPE() == toDatatype);
+    }
+
+    bool isMain(const QString &candidateSlotId) {
+        return (BaseSlots::URL_SLOT().getId() != candidateSlotId
+            && BaseSlots::DATASET_SLOT().getId() != candidateSlotId);
+    }
+};
+
+class DatasetsSplitter : public CandidatesSplitter {
+public:
+    bool canSplit(const Descriptor &toDesc, DataTypePtr toDatatype) {
+        return (BaseTypes::STRING_TYPE() == toDatatype
+            && toDesc == BaseSlots::DATASET_SLOT());
+    }
+
+    bool isMain(const QString &candidateSlotId) {
+        return (BaseSlots::DATASET_SLOT().getId() == candidateSlotId);
+    }
+};
+
+class UrlSplitter : public CandidatesSplitter {
+    bool canSplit(const Descriptor &toDesc, DataTypePtr toDatatype) {
+        return (BaseTypes::STRING_TYPE() == toDatatype
+            && toDesc == BaseSlots::URL_SLOT());
+    }
+
+    bool isMain(const QString &candidateSlotId) {
+        return (BaseSlots::URL_SLOT().getId() == candidateSlotId);
+    }
+};
+
+/************************************************************************/
+/* CandidatesSplitter */
+/************************************************************************/
+IntegralBusUtils::SplitResult CandidatesSplitter::splitCandidates(const QList<Descriptor> &candidates) {
+    IntegralBusUtils::SplitResult r;
+    foreach (const Descriptor &c, candidates) {
+        U2OpStatus2Log os;
+        IntegralBusSlot slot = IntegralBusSlot::fromString(c.getId(), os);
+        if (slot.getId().isEmpty() || isMain(slot.getId())) {
+            r.mainDescs << c;
+        } else {
+            r.otherDescs << c;
+        }
+    }
+    return r;
+}
+
+/************************************************************************/
+/* CandidatesSplitterRegistry */
+/************************************************************************/
+CandidatesSplitterRegistry *CandidatesSplitterRegistry::_instance = NULL;
+CandidatesSplitterRegistry * CandidatesSplitterRegistry::instance() {
+    if (NULL == _instance) {
+        _instance = new CandidatesSplitterRegistry();
+    }
+    return _instance;
+}
+
+CandidatesSplitter * CandidatesSplitterRegistry::findSplitter(const Descriptor &toDesc, DataTypePtr toDatatype) {
+    foreach (CandidatesSplitter *splitter, splitters) {
+        if (splitter->canSplit(toDesc, toDatatype)) {
+            return splitter;
+        }
+    }
+    return NULL;
+}
+
+CandidatesSplitterRegistry::CandidatesSplitterRegistry() {
+    splitters << new UrlSplitter();
+    splitters << new DatasetsSplitter();
+    splitters << new TextSplitter();
+    splitters << new DefaultSplitter();
+}
+
+CandidatesSplitterRegistry::~CandidatesSplitterRegistry() {
+    qDeleteAll(splitters);
+    splitters.clear();
 }
 
 } // Workflow

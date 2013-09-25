@@ -132,6 +132,7 @@ QWidget* MapDatatypeEditor::createGUI(DataTypePtr from, DataTypePtr to) {
         } else {
             valueItem->setData(Qt::UserRole+3, elementDatatype->getId());
         }
+        valueItem->setData(Qt::UserRole+4, qVariantFromValue<Descriptor>(key));
         table->setItem(i, VALUE_COLUMN, valueItem);
     }
     
@@ -341,11 +342,11 @@ namespace {
 void DescriptorListEditorDelegate::setEditorData(QWidget *editor,
                                            const QModelIndex &index) const
 {
-    QString current = index.model()->data(index, Qt::UserRole).value<Descriptor>().getId();
     QList<Descriptor> list = index.model()->data(index, Qt::UserRole+1).value<QList<Descriptor> >();
+    Descriptor toDesc = index.model()->data(index, Qt::UserRole+4).value<Descriptor>();
     QString typeId = index.model()->data(index, Qt::UserRole+3).toString();
     DataTypePtr type = WorkflowEnv::getDataTypeRegistry()->getById(typeId);
-    IntegralBusUtils::SplitResult r = IntegralBusUtils::splitCandidates(list, type);
+    IntegralBusUtils::SplitResult r = IntegralBusUtils::splitCandidates(list, toDesc, type);
 
     QComboBox *combo = static_cast<QComboBox*>(editor);
     combo->setItemDelegate(new ItemDelegateForHeaders());
@@ -353,6 +354,7 @@ void DescriptorListEditorDelegate::setEditorData(QWidget *editor,
     combo->clear();
     bool isList = index.model()->data(index, Qt::UserRole+2).toBool();
 
+    QString current = index.model()->data(index, Qt::UserRole).value<Descriptor>().getId();
     int currentIdx = addItems(cm, r.mainDescs, isList, current);
     if (!r.otherDescs.isEmpty()) {
         addSeparator(cm);
