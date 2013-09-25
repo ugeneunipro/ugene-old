@@ -39,8 +39,6 @@
 #include "SaveSelectedSequenceFromMSADialogController.h"
 #include "ExportHighlightedDialogController.h"
 
-static const int -1 = -1;
-
 namespace U2 {
 
 class MSAEditor;
