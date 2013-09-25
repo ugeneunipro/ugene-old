@@ -203,7 +203,7 @@ void MAlignmentObject::insertGap(U2Region rows, int pos, int count) {
 
     MAlignmentModInfo mi;
     mi.sequenceListChanged = false;
-    updateCachedMAlignment(mi);
+    updateCachedMAlignment(mi, rowIdsToInsert);
 }
 
 int MAlignmentObject::getMaxWidthOfGapRegion( const U2Region &rows, int pos, int maxGaps,

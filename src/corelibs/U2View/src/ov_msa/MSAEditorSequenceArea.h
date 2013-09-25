@@ -39,6 +39,8 @@
 #include "SaveSelectedSequenceFromMSADialogController.h"
 #include "ExportHighlightedDialogController.h"
 
+static const int -1 = -1;
+
 namespace U2 {
 
 class MSAEditor;
@@ -368,14 +370,29 @@ private:
     void drawFocus(QPainter& p);
     void drawSelection(QPainter &p);
 
-    void fillSelectionWithGaps();
+    /**
+     * Inserts a region consisting of gaps only before the selection. The inserted region width
+     * is specified by @countOfGaps parameter if 0 < @countOfGaps, its height is equal to the
+     * current selection's height.
+     *
+     * If there is no selection in MSA then the method does nothing.
+     *
+     * If -1 == @countOfGaps then the inserting region width is equal to
+     * the selection's width. If 1 > @countOfGaps and -1 != @countOfGaps then nothing happens.
+     */
+    void insertGapsBeforeSelection( int countOfGaps = -1 );
 
     /**
-     * Reverse operation for @fillSelectionWithGaps( ),
-     * removes the region preceding the selection with the same size if it consists of gaps only.
-     * Otherwise, does nothing.
+     * Reverse operation for @insertGapsBeforeSelection( ),
+     * removes the region preceding the selection if it consists of gaps only.
+     *
+     * If there is no selection in MSA then the method does nothing.
+     *
+     * @countOfGaps specifies maximum width of the removed region.
+     * If -1 == @countOfGaps then count of removed gap columns is equal to
+     * the selection width. If 1 > @countOfGaps and -1 != @countOfGaps then nothing happens.
      */
-    void removeGapsPrecedingSelection( );
+    void removeGapsPrecedingSelection( int countOfGaps = -1 );
   
     void deleteOldCustomSchemes();
 

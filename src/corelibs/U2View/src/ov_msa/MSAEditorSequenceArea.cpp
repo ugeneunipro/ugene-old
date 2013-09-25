@@ -1022,7 +1022,7 @@ void MSAEditorSequenceArea::keyPressEvent(QKeyEvent *e) {
     }
     int key = e->key();
     bool shift = e->modifiers().testFlag(Qt::ShiftModifier);
-    bool ctrl = e->modifiers().testFlag(Qt::ControlModifier);
+    const bool ctrl = e->modifiers( ).testFlag( Qt::ControlModifier );
     static QPoint selectionStart(0, 0);
     static QPoint selectionEnd(0, 0);
     if (ctrl && (key == Qt::Key_Left || key == Qt::Key_Right || key == Qt::Key_Up || key == Qt::Key_Down)) {
@@ -1201,10 +1201,11 @@ void MSAEditorSequenceArea::keyPressEvent(QKeyEvent *e) {
             }
             break;
         case Qt::Key_Backspace:
-            removeGapsPrecedingSelection( );
+            removeGapsPrecedingSelection( ctrl ? 1 : -1 );
             break;
         case Qt::Key_Insert:
-            fillSelectionWithGaps();
+        case Qt::Key_Space:
+            insertGapsBeforeSelection( ctrl ? 1 : -1 );
             break;
         case Qt::Key_Shift:
             if (!selection.isNull()) {
@@ -1387,7 +1388,7 @@ void MSAEditorSequenceArea::setCursorPos(const QPoint& p) {
     updateActions();
 }
 
-void MSAEditorSequenceArea::removeGapsPrecedingSelection( ) {
+void MSAEditorSequenceArea::removeGapsPrecedingSelection( int countOfGaps ) {
     const MSAEditorSelection selectionBackup = selection;
     // check if selection exists
     if ( selectionBackup.isNull( ) ) {
@@ -1396,15 +1397,18 @@ void MSAEditorSequenceArea::removeGapsPrecedingSelection( ) {
 
     const QPoint selectionTopLeftCorner( selectionBackup.topLeft( ) );
     // don't perform the deletion if the selection is at the alignment start
-    if ( 0 == selectionTopLeftCorner.x( ) ) {
+    if ( 0 == selectionTopLeftCorner.x( ) || -1 > countOfGaps
+        || 0 == countOfGaps )
+    {
         return;
     }
 
-    QPoint topLeftCornerOfRemovedRegion( selectionTopLeftCorner.x( )
-        - selectionBackup.width( ), selectionTopLeftCorner.y( ) );
-    int removingRegionWidth = selectionBackup.width( );
+    int removedRegionWidth = ( -1 == countOfGaps ) ? selectionBackup.width( )
+        : countOfGaps;
+    QPoint topLeftCornerOfRemovedRegion( selectionTopLeftCorner.x( ) - removedRegionWidth,
+        selectionTopLeftCorner.y( ) );
     if ( 0 > topLeftCornerOfRemovedRegion.x( ) ) {
-        removingRegionWidth -= qAbs( topLeftCornerOfRemovedRegion.x( ) );
+        removedRegionWidth -= qAbs( topLeftCornerOfRemovedRegion.x( ) );
         topLeftCornerOfRemovedRegion.setX( 0 );
     }
 
@@ -1423,7 +1427,7 @@ void MSAEditorSequenceArea::removeGapsPrecedingSelection( ) {
     U2UseCommonUserModStep userModStep( maObj->getEntityRef( ), os );
 
     const int countOfDeletedSymbols = maObj->deleteGap( rowsContainingRemovedGaps,
-        topLeftCornerOfRemovedRegion.x( ), removingRegionWidth, os );
+        topLeftCornerOfRemovedRegion.x( ), removedRegionWidth, os );
 
     // if some symbols were actually removed and the selection is not located
     // at the alignment end, then it's needed to move the selection
@@ -1616,7 +1620,7 @@ void MSAEditorSequenceArea::sl_delCol() {
 }
 
 void MSAEditorSequenceArea::sl_fillCurrentSelectionWithGaps() {
-    fillSelectionWithGaps();
+    insertGapsBeforeSelection();
 }
 
 void MSAEditorSequenceArea::sl_goto() {
@@ -1989,8 +1993,15 @@ void MSAEditorSequenceArea::deleteCurrentSelection()
         return;
     }
 
-    const MAlignment& msa = maObj->getMAlignment();
-    if (selection.width() == msa.getLength() && selection.height() == msa.getNumRows()) {
+    const QRect areaBeforeSelection( 0, 0, selection.x( ), selection.height( ) );
+    const QRect areaAfterSelection( selection.x( ) + selection.width( ), selection.y( ),
+        maObj->getLength( ) - selection.x( ) - selection.width( ), selection.height( ) );
+    if ( maObj->isRegionEmpty( areaBeforeSelection.x( ), areaBeforeSelection.y( ),
+            areaBeforeSelection.width( ), areaBeforeSelection.height( ) )
+        && maObj->isRegionEmpty( areaAfterSelection.x( ), areaAfterSelection.y( ),
+            areaAfterSelection.width( ), areaAfterSelection.height( ) )
+        && selection.height( ) == maObj->getNumRows( ) )
+    {
         return;
     }
 
@@ -2133,34 +2144,39 @@ void MSAEditorSequenceArea::sl_updateCollapsingMode() {
     msaObject->updateCachedMAlignment(mi);
 }
 
-void MSAEditorSequenceArea::fillSelectionWithGaps( )
+void MSAEditorSequenceArea::insertGapsBeforeSelection( int countOfGaps )
 {
-    if (selection.isNull()) {
+    if ( selection.isNull( ) || 0 == countOfGaps || -1 > countOfGaps ) {
         return;
     }
-    assert(isInRange(selection.topLeft()));
-    assert(isInRange( QPoint(selection.x() + selection.width() - 1, selection.y() + selection.height() - 1) ) );
+    SAFE_POINT( isInRange( selection.topLeft( ) ),
+        "Top left corner of the selection has incorrect coords", );
+    SAFE_POINT( isInRange( QPoint( selection.x( ) + selection.width( ) - 1,
+        selection.y( ) + selection.height( ) - 1 ) ),
+        "Bottom right corner of the selection has incorrect coords", );
 
     // if this method was invoked during a region shifting
     // then shifting should be canceled
     cancelShiftTracking( );
 
-    MAlignmentObject* maObj = editor->getMSAObject();
-    if (maObj == NULL || maObj->isStateLocked()) {
+    MAlignmentObject *maObj = editor->getMSAObject( );
+    if ( NULL == maObj || maObj->isStateLocked( ) ) {
         return;
     }
     U2OpStatus2Log os;
-    U2UseCommonUserModStep userModStep(maObj->getEntityRef(), os);
-    SAFE_POINT_OP(os, );
+    U2UseCommonUserModStep userModStep( maObj->getEntityRef( ), os );
+    SAFE_POINT_OP( os, );
 
-    const MAlignment& msa = maObj->getMAlignment();
-    if (selection.width() == msa.getLength() && selection.height() == msa.getNumRows()) {
+    const MAlignment &msa = maObj->getMAlignment( );
+    if ( selection.width( ) == msa.getLength( ) && selection.height( ) == msa.getNumRows( ) ) {
         return;
     }
 
-    const U2Region& sequences = getSelectedRows();
-    maObj->insertGap(sequences,  selection.x() , selection.width());
-    moveSelection(selection.width(), 0);
+    const int removedRegionWidth = ( -1 == countOfGaps ) ? selection.width( )
+        : countOfGaps;
+    const U2Region& sequences = getSelectedRows( );
+    maObj->insertGap( sequences,  selection.x( ) , removedRegionWidth );
+    moveSelection( removedRegionWidth, 0 );
 }
 
 void MSAEditorSequenceArea::reverseComplementModification(ModificationType& type) {
