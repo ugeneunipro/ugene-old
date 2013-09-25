@@ -118,21 +118,18 @@ void ExternalToolRunTask::addOutputListener(ExternalToolListener* outputListener
 ////////////////////////////////////////
 //ExternalToolSupportTask
 void ExternalToolSupportTask::setListenerForTask(ExternalToolRunTask* runTask, int listenerNumber) {
-    if(listeners.size() > listenerNumber) {
-        runTask->addOutputListener(listeners.at(listenerNumber));
-    }
+    CHECK(listeners.size() > listenerNumber, );
+    runTask->addOutputListener(listeners.at(listenerNumber));
 }
 
 void ExternalToolSupportTask::setListenerForHelper(ExternalToolRunTaskHelper* helper, int listenerNumber) {
-    if(listeners.size() > listenerNumber) {
-        helper->addOutputListener(listeners.at(listenerNumber));
-    }
+    CHECK(listeners.size() > listenerNumber, );
+    helper->addOutputListener(listeners.at(listenerNumber));
 }
 
 ExternalToolListener* ExternalToolSupportTask::getListener(int listenerNumber) {
-    if(listeners.size() > listenerNumber) {
-        return listeners.at(listenerNumber);
-    }
+    CHECK(listeners.size() > listenerNumber, NULL);
+    return listeners.at(listenerNumber);
 }
 
 ////////////////////////////////////////
