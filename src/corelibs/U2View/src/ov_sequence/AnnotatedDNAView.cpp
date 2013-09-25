@@ -232,20 +232,22 @@ QWidget* AnnotatedDNAView::createWidget() {
 
     QList<OPFactoryFilterVisitorInterface*> filters;
 
-    DNAAlphabetType t = DNAAlphabet_NUCL;
-    ADVSequenceWidget* w = getSequenceWidgetInFocus();
-    bool enabled = w!=NULL;
-    if (enabled) {
-        ADVSequenceObjectContext* activeCtx =  w->getActiveSequenceContext();
-        if (activeCtx){
-            DNAAlphabet* alphabet = activeCtx->getAlphabet();
-            if (alphabet){
-                t = alphabet->getType();
+    ADVSequenceObjectContext* ctx;
+    DNAAlphabet *alphabet;
+    QList <DNAAlphabetType> alphabets;
+
+    for (int i = 0; i < seqViews.size(); i++) {
+        if (seqViews[i] != NULL) {
+            ctx = seqViews[i]->getActiveSequenceContext();
+            if (ctx) {
+                alphabet = ctx->getAlphabet();
+                if (alphabet) {
+                    alphabets.append(alphabet->getType());
+                }
             }
         }
     }
-
-    filters.append(new OPFactoryFilterVisitor(ObjViewType_SequenceView, t));
+    filters.append(new OPFactoryFilterVisitor(ObjViewType_SequenceView, alphabets));
 
     QList<OPWidgetFactory*> opWidgetFactoriesForSeqView = opWidgetFactoryRegistry->getRegisteredFactories(filters);
     foreach (OPWidgetFactory* factory, opWidgetFactoriesForSeqView) {

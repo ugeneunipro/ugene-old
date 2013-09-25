@@ -374,8 +374,6 @@ void DasOptionsPanelWidget::initialize() {
     hintLabel->setStyleSheet(
         "color: " + L10N::errorColorLabelStr() + ";"
         "font: bold;");
-
-    sl_onRegionChanged(regionSelector->getRegion());
 }
 
 void DasOptionsPanelWidget::connectSignals() {
@@ -433,6 +431,14 @@ void DasOptionsPanelWidget::checkState() {
     openActionIsEnabled &= !idList->selectedItems().isEmpty();
     openActionIsEnabled &= ctx->getAlphabet()->isAmino();
     openInNewViewAction->setEnabled(openActionIsEnabled);
+
+    if (ctx->getAlphabet()->getType() == DNAAlphabet_AMINO) {
+        setEnabled(true);
+        lblInfoMessage->hide();
+    } else {
+        setEnabled(false);
+        lblInfoMessage->show();
+    }
 
     if (getIdsTask == NULL || getIdsTask->isFinished() || getIdsTask->isCanceled()){
         searchIdsButton->setEnabled(true);

@@ -67,7 +67,7 @@ bool DasWidgetFactory::passFiltration( OPFactoryFilterVisitorInterface* filter )
 
     SAFE_POINT(filter != NULL, "OPWidgetFactory::passFiltration. Filter is null", res);
 
-    res = filter->typePass(getObjectViewType()) && filter->alphabetPass(DNAAlphabet_AMINO);
+    res = filter->typePass(getObjectViewType()) && filter->atLeastOneAlphabetPass(DNAAlphabet_AMINO);
 
     return res;
 }

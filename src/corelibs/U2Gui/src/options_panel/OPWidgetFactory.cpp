@@ -33,6 +33,14 @@ OPGroupParameters::OPGroupParameters(QString _groupId, QPixmap headerImage, QStr
 {
 }
 
+bool OPFactoryFilterVisitor::atLeastOneAlphabetPass(DNAAlphabetType factoryAlphabetType) {
+    for (int i = 0; i < objectAlphabets.size(); i++) {
+        if (objectAlphabets[i] == factoryAlphabetType)
+            return true;
+    }
+    return false;
+}
+
 OPWidgetFactory::OPWidgetFactory() {
 }
 

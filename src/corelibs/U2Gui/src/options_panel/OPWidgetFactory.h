@@ -55,6 +55,7 @@ public:
 
     virtual bool typePass(ObjectViewType factoryViewType) = 0;
     virtual bool alphabetPass(DNAAlphabetType factoryAlphabetType) = 0;
+    virtual bool atLeastOneAlphabetPass(DNAAlphabetType factoryAlphabetType) = 0;
 
 };
 
@@ -72,13 +73,20 @@ public:
         :OPFactoryFilterVisitorInterface()
         ,objectViewType(_objectViewType)
         ,objectAlphabetType(_objectAlphabetType){};
+    OPFactoryFilterVisitor(ObjectViewType _objectViewType, QList<DNAAlphabetType> _objectListAlphabet)
+        :OPFactoryFilterVisitorInterface()
+        ,objectViewType(_objectViewType)
+        ,objectAlphabetType(DNAAlphabet_RAW)
+        ,objectAlphabets(_objectListAlphabet){};
 
     virtual bool typePass(ObjectViewType factoryViewType){ return factoryViewType == objectViewType;}
     virtual bool alphabetPass(DNAAlphabetType factoryAlphabetType) { return factoryAlphabetType == objectAlphabetType;}
+    virtual bool atLeastOneAlphabetPass(DNAAlphabetType factoryAlphabetType);
 
 private:
     ObjectViewType objectViewType;
     DNAAlphabetType objectAlphabetType;
+    QList<DNAAlphabetType> objectAlphabets;
 
 };
 
