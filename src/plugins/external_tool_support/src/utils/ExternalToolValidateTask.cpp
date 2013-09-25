@@ -107,27 +107,23 @@ void ExternalToolValidateTask::run(){
         QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
         externalToolProcess->setProcessEnvironment(env);
 
-        try {
-            externalToolProcess->start(validation.executableFile, validation.arguments);
-            bool started = externalToolProcess->waitForStarted(3000);
+        externalToolProcess->start(validation.executableFile, validation.arguments);
+        bool started = externalToolProcess->waitForStarted(3000);
 
-            if(!started){
-                errorMsg = validation.possibleErrorsDescr.value(ExternalToolValidation::DEFAULT_DESCR_KEY, "");
-                if(!errorMsg.isEmpty()){
-                    stateInfo.setError(errorMsg);
-                }else{
-                    stateInfo.setError(tr("Tool does not start.<br>It is possible that the specified executable file <i>%1</i> for %2 tool is invalid. You can change the path to the executable file in the external tool settings in the global preferences.").arg(program).arg(toolName));
-                }
-                isValid=false;
-                return;
+        if(!started){
+            errorMsg = validation.possibleErrorsDescr.value(ExternalToolValidation::DEFAULT_DESCR_KEY, "");
+            if(!errorMsg.isEmpty()){
+                stateInfo.setError(errorMsg);
+            }else{
+                stateInfo.setError(tr("Tool does not start.<br>It is possible that the specified executable file <i>%1</i> for %2 tool is invalid. You can change the path to the executable file in the external tool settings in the global preferences.").arg(program).arg(toolName));
             }
-            while(!externalToolProcess->waitForFinished(1000)){
-                if (isCanceled()) {
-                    cancelProcess();
-                }
+            isValid=false;
+            return;
+        }
+        while(!externalToolProcess->waitForFinished(1000)){
+            if (isCanceled()) {
+                cancelProcess();
             }
-        } catch(...) {
-            setError(QString("%1 tool finished unexpectedly.").arg(toolName));
         }
 
         if(!parseLog(validation)){
