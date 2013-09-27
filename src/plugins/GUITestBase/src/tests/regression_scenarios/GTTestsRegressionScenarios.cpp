@@ -51,6 +51,7 @@
 #include "runnables/ugene/corelibs/U2Gui/DownloadRemoteFileDialogFiller.h"
 #include "runnables/ugene/ugeneui/SelectDocumentFormatDialogFiller.h"
 #include "runnables/ugene/ugeneui/SequenceReadingModeSelectorDialogFiller.h"
+#include "runnables/ugene/plugins/workflow_designer/StartupDialogFiller.h"
 #include "runnables/ugene/plugins_3rdparty/umuscle/MuscleDialogFiller.h"
 #include "runnables/ugene/plugins_3rdparty/kalign/KalignDialogFiller.h"
 #include "GTUtilsLog.h"
@@ -1472,6 +1473,17 @@ GUI_TEST_CLASS_DEFINITION( test_2021_5 )
         "TAGTTATTAA-----\nTAGTTATTAA-----\nTAGTTATTAA-----\nAAGCTTT---TAA--\n"
         "A--AGAATAATTA--\nAAGCTTTTAA-----" == finalMsaContent,
         "Unexpected MSA content has occurred" );
+}
+
+GUI_TEST_CLASS_DEFINITION( test_2089 )
+{
+    // 1. Start UGENE with a new *.ini file.
+    GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os, true, "!@#$%^&*()_+\";:?"));
+
+    // 2. Open WD
+    // 3. Set any folder without write access as workflow output directory. Click OK.
+    QMenu *menu = GTMenu::showMainMenu(os, MWMENU_TOOLS);
+    GTMenu::clickMenuItem(os, menu, QStringList() << "Workflow Designer");
 }
 
 GUI_TEST_CLASS_DEFINITION( test_2128 )

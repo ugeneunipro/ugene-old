@@ -24,13 +24,27 @@
 
 #include "GTUtilsDialog.h"
 
+class QLineEdit;
+class QWidget;
+
 namespace U2 {
 
 class StartupDialogFiller : public Filler
 {
 public:
-    StartupDialogFiller(U2OpStatus &_os):Filler(_os,"StartupDialog"){}
+    StartupDialogFiller(U2OpStatus &os, bool ok = false, QString wrongPath = "");
     void run();
+
+private:
+    bool ok;
+    QString wrongPath;
+
+private:
+    void clickButton(QWidget *dialog, const QString &text);
+    void dontUse(QWidget *dialog);
+    void use(QWidget *dialog);
+    QLineEdit * getPathEdit(QWidget *dialog);
 };
+
 }
 #endif // STARTUPDIALOGFILLER_H
