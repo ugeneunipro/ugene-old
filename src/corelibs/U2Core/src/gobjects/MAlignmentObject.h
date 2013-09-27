@@ -121,7 +121,23 @@ public:
     /** Method that affect the whole alignment, including sequences */
     void removeRegion(int startPos, int startRow, int nBases, int nRows, bool removeEmptyRows, bool track = true);
     void crop(U2Region window, const QSet<QString>& rowNames);
-    bool shiftRegion(int startPos, int startRow, int nBases, int nRows, int shift);
+    /**
+     * Performs shift of the region specified by parameters @startPos (leftmost column number),
+     * @startRow (top row number), @nBases (region width), @nRows (region height) in no more
+     * than @shift bases.
+     *
+     * @startPos and @startRow must be non-negative numbers, @nBases and @nRows - strictly
+     * positive. The sign of @shift parameter specifies the direction of shifting: positive
+     * for right direction, negative for left one. If 0 == @shift nothing happens.
+     *
+     * Shifting to the left may be performed only if a region preceding the selection
+     * and having the same height consists of gaps only. In this case selected region
+     * is moved to the left in the width of the preceding gap region but no more
+     * than |@shift| bases.
+     *
+     * Returns shift size, besides sign of the returning value specifies direction of the shift
+     */
+    int shiftRegion(int startPos, int startRow, int nBases, int nRows, int shift);
     void deleteColumnWithGaps(int requiredGapCount = GAP_COLUMN_ONLY);
     void updateCachedMAlignment(MAlignmentModInfo mi = MAlignmentModInfo(),
         const QList<qint64> &modifiedRowIds = QList<qint64>(),
@@ -136,7 +152,6 @@ signals:
     void si_completeStateChanged(bool complete);
     
 private:
-    
     /**
      * Returns maximum count of subsequent gap columns in the region that starts from column
      * with @pos number, has width of @maxGaps and includes the rows specified by @rows.

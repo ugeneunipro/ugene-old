@@ -1953,8 +1953,7 @@ void MSAEditorSequenceArea::sl_copyCurrentSelection()
     
 }
 
-bool MSAEditorSequenceArea::shiftSelectedRegion( int shift )
-{
+bool MSAEditorSequenceArea::shiftSelectedRegion( int shift ) {
     if (shift == 0) {
         return true;
     }
@@ -1970,13 +1969,16 @@ bool MSAEditorSequenceArea::shiftSelectedRegion( int shift )
             return true;
         }
 
-        const bool shiftOk = maObj->shiftRegion(x, y, width, height, shift);
-        if (shiftOk) {
-            int newCursorPosX = cursorPos.x() + shift >= 0 ? cursorPos.x() + shift : 0;
+        const int resultShift = maObj->shiftRegion( x, y, width, height, shift );
+        if ( 0 != resultShift ) {
+            int newCursorPosX = cursorPos.x() + resultShift >= 0 ? cursorPos.x() + resultShift : 0;
             setCursorPos(newCursorPosX);
-            moveSelection(shift, 0);
+            const MSAEditorSelection newSelection( x + resultShift, y, width, height );
+            setSelection( newSelection );
+            return true;
+        } else {
+            return false;
         }
-        return shiftOk;
     }
     return false;
 }

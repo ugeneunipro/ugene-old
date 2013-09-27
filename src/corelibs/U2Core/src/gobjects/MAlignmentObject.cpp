@@ -559,27 +559,27 @@ void MAlignmentObject::updateRowsOrder(const QList<qint64>& rowIds, U2OpStatus& 
     updateCachedMAlignment();
 }
 
-bool MAlignmentObject::shiftRegion( int startPos, int startRow, int nBases, int nRows, int shift )
+int MAlignmentObject::shiftRegion( int startPos, int startRow, int nBases, int nRows, int shift )
 {
-    SAFE_POINT(!isStateLocked(), "Alignment state is locked!", false );
-    SAFE_POINT(!isRegionEmpty(startPos, startRow, nBases, nRows), "Region is empty!", false );
+    SAFE_POINT(!isStateLocked(), "Alignment state is locked!", 0 );
+    SAFE_POINT(!isRegionEmpty(startPos, startRow, nBases, nRows), "Region is empty!", 0 );
+    SAFE_POINT( 0 <= startPos && 0 <= startRow && 0 < nBases && 0 < nRows,
+        "Invalid parameters of selected region encountered", 0 );
 
     int n = 0;
     if (shift > 0) {
         insertGap(U2Region(startRow,nRows), startPos, shift);
         n = shift;
-    } else {
-        if (startPos + shift < 0) {
-            return false;
+    } else if ( 0 < startPos ) {
+        if (0 > startPos + shift) {
+            shift = -startPos;
         }
         U2OpStatus2Log os;
-        n = deleteGap(U2Region(startRow, nRows), startPos + shift, -shift, os);
-        SAFE_POINT_OP( os, false );
+        n = -deleteGap(U2Region(startRow, nRows), startPos + shift, -shift, os);
+        SAFE_POINT_OP( os, 0 );
     }
-
-    return n > 0;
+    return n;
 }
-
 
 bool MAlignmentObject::isRegionEmpty(int startPos, int startRow, int numChars, int numRows) const
 {

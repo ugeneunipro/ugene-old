@@ -129,7 +129,7 @@ public:
     virtual void renameDataset(int dsNum, const QString &newName, U2OpStatus &os);
     virtual void deleteDataset(int dsNum);
     virtual void addDataset(const QString &name, U2OpStatus &os);
-    virtual void onUrlAdded(URLListController */*ctrl*/, URLContainer */*url*/) {}
+    virtual void onUrlAdded(URLListController *ctrl, URLContainer *url) {}
 
     QWidget * getWigdet();
     QList<Dataset> getDatasets() const;
