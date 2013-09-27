@@ -35,7 +35,7 @@ class GUITest;
 class GUITestLauncher: public Task {
     Q_OBJECT
 public:
-    GUITestLauncher();
+    GUITestLauncher(int _suiteNumber=0);
 
     virtual void run();
     virtual QString generateReport() const;
@@ -43,6 +43,7 @@ public:
 private:
     QList<GUITest *> tests;
     QMap<QString, QString> results;
+    int suiteNumber;
 
     static QStringList getTestProcessArguments(const QString &testName);
     static QProcessEnvironment getProcessEnvironment(const QString &testName);
@@ -56,6 +57,7 @@ private:
     bool initGUITestBase();
     void updateProgress(int finishedCount);
 };
+
 
 } // namespace
 

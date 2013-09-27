@@ -86,6 +86,10 @@ void GUITestService::sl_registerService() {
             registerAllTestsTask();
             break;
 
+        case RUN_TEST_SUITE:
+            registerTestSuiteTask();
+            break;
+
         case RUN_ALL_TESTS_BATCH:
             QTimer::singleShot(1000, this, SLOT(runAllGUITests()));
             break;
@@ -112,6 +116,10 @@ GUITestService::LaunchOptions GUITestService::getLaunchOptions(CMDLineRegistry* 
         return RUN_ALL_TESTS_BATCH;
     }
 
+    if (cmdLine->hasParameter(CMDLineCoreOptions::LAUNCH_GUI_TEST_SUITE)) {
+        return RUN_TEST_SUITE;
+    }
+
     return NONE;
 }
 
@@ -128,6 +136,30 @@ Task* GUITestService::createTestLauncherTask() const {
     Q_ASSERT(!testLauncher);
 
     Task *task = new GUITestLauncher();
+    Q_ASSERT(task);
+
+    return task;
+}
+
+void GUITestService::registerTestSuiteTask(){
+    testLauncher = createTestSuiteLauncherTask();
+    AppContext::getTaskScheduler()->registerTopLevelTask(testLauncher);
+
+    connect(AppContext::getTaskScheduler(), SIGNAL(si_stateChanged(Task*)), this, SLOT(sl_taskStateChanged(Task*)));
+}
+
+Task* GUITestService::createTestSuiteLauncherTask() const {
+
+    Q_ASSERT(!testLauncher);
+
+    CMDLineRegistry* cmdLine = AppContext::getCMDLineRegistry();
+    Q_ASSERT(cmdLine);
+
+    bool ok;
+    int suiteNumber = cmdLine->getParameterValue(CMDLineCoreOptions::LAUNCH_GUI_TEST_SUITE).toInt(&ok);
+    Q_ASSERT(ok);
+
+    Task *task = new GUITestLauncher(suiteNumber);
     Q_ASSERT(task);
 
     return task;
@@ -301,7 +333,7 @@ void GUITestService::sl_taskStateChanged(Task* t) {
     AppContext::getTaskScheduler()->disconnect(this);
 
     LaunchOptions launchedFor = getLaunchOptions(AppContext::getCMDLineRegistry());
-    if (launchedFor == RUN_ALL_TESTS) {
+    if (launchedFor == RUN_ALL_TESTS || RUN_TEST_SUITE) {
         AppContext::getTaskScheduler()->cancelAllTasks();
         AppContext::getMainWindow()->getQMainWindow()->close();
     }

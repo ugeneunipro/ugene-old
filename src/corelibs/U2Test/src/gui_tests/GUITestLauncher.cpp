@@ -36,12 +36,14 @@
 #define TIMEOUT 240000
 #endif
 #define LONG_TIMEOUT 7200000
+#define NUMBER_OF_TESTS_IN_SUTIE 300
 #define GUITESTING_REPORT_PREFIX "GUITesting"
 
 namespace U2 {
 
-GUITestLauncher::GUITestLauncher()
-: Task("gui_test_launcher", TaskFlags(TaskFlag_ReportingIsSupported) | TaskFlag_ReportingIsEnabled) {
+GUITestLauncher::GUITestLauncher(int _suiteNumber)
+    : Task("gui_test_launcher", TaskFlags(TaskFlag_ReportingIsSupported) | TaskFlag_ReportingIsEnabled),
+      suiteNumber(_suiteNumber) {
 
     tpm = Task::Progress_Manual;
 }
@@ -102,13 +104,26 @@ void GUITestLauncher::firstTestRunCheck(const QString& testName) {
 }
 
 bool GUITestLauncher::initGUITestBase() {
-
-    tests = AppContext::getGUITestBase()->getTests();
-    if (tests.isEmpty()) {
+    QList<GUITest *> list = AppContext::getGUITestBase()->getTests();
+    if (list.isEmpty()) {
         setError(tr("No tests to run"));
         return false;
     }
 
+    QList<QList<GUITest *> > suiteList;
+    if(suiteNumber){
+        for(int i=0; i<(list.length()/NUMBER_OF_TESTS_IN_SUTIE + 1);i++){
+            suiteList << list.mid(i*NUMBER_OF_TESTS_IN_SUTIE,NUMBER_OF_TESTS_IN_SUTIE);
+        }
+        if(suiteNumber<0 || suiteNumber>suiteList.size()){
+            setError(tr("Invalid suite number: %1. There are %2 suites").arg(suiteNumber).arg(suiteList.size()));
+            return false;
+        }
+        tests = suiteList.takeAt(suiteNumber - 1);
+    }
+    else{
+        tests = list;
+    }
     return true;
 }
 

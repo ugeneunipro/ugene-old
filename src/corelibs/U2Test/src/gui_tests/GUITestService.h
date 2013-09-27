@@ -42,7 +42,7 @@ class CMDLineRegistry;
 class U2TEST_EXPORT GUITestService: public Service {
     Q_OBJECT
 public:
-    enum LaunchOptions {NONE, RUN_ONE_TEST, RUN_ALL_TESTS, RUN_ALL_TESTS_BATCH};
+    enum LaunchOptions {NONE, RUN_ONE_TEST, RUN_ALL_TESTS, RUN_ALL_TESTS_BATCH, RUN_TEST_SUITE};
 
     GUITestService(QObject *parent = NULL);
     virtual ~GUITestService();
@@ -74,12 +74,14 @@ private:
     LaunchOptions getLaunchOptions(CMDLineRegistry* cmdLine) const;
 
     void registerAllTestsTask();
+    void registerTestSuiteTask();
     void registerServiceTask();
 
     void addServiceMenuItem();
     void deleteServiceMenuItem();
 
     Task* createTestLauncherTask() const;
+    Task* createTestSuiteLauncherTask() const;
     static void writeTestResult(const QString &result);
 
     void setQtFileDialogView();
