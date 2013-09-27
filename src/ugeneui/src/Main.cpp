@@ -363,7 +363,7 @@ int main(int argc, char **argv)
     qt_use_native_dialogs = useNative; //using local here for debugger
 #endif
 
-#ifdef Q_OS_MAC
+#if defined(Q_OS_MAC) || defined(Q_OS_LINUX)
     if (envList.indexOf("UGENE_GUI_TEST=1") >= 0) {
         QApplication::setAttribute(Qt::AA_DontUseNativeMenuBar);
     }
