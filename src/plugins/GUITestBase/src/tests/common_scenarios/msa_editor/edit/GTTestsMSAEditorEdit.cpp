@@ -887,6 +887,56 @@ GUI_TEST_CLASS_DEFINITION(test_0015){
 //6. Click button Select all
 //Expected result: all sequences are checked
 }
+
+GUI_TEST_CLASS_DEFINITION( test_0016 )
+{
+    // Perform scribbling
+    // 1. Open file with MSA
+    GTFileDialog::openFile( os, testDir + "_common_data/scenarios/msa", "ma.aln" );
+
+    // 2. Select some region in msa
+    GTUtilsMSAEditorSequenceArea::selectArea( os, QPoint( 0, 7 ), QPoint( 7, 14 ) );
+    GTKeyboardDriver::keyClick( os, 'c', GTKeyboardDriver::key["ctrl"] );
+    GTGlobals::sleep(200);
+    const QString selectionContent = GTClipboard::text( os );
+
+    // 3. Shift the selection to the right
+    QPoint mouseClickPosition( 7, 7 );
+    GTUtilsMSAEditorSequenceArea::moveTo( os, mouseClickPosition );
+    GTMouseDriver::click( os );
+    GTGlobals::sleep( 200 );
+    GTUtilsMSAEditorSequenceArea::checkSelectedRect( os,
+        QRect( QPoint( 4, 7 ), QPoint( 11, 14 ) ) );
+    GTKeyboardDriver::keyClick( os, 'c', GTKeyboardDriver::key["ctrl"] );
+    GTGlobals::sleep(200);
+    QString selectionAfterScribbling = GTClipboard::text( os );
+    CHECK_SET_ERR( selectionContent == selectionAfterScribbling, "Unexpected selection content" );
+
+    // 4. Shift the selection to the left
+    mouseClickPosition = QPoint( 4, 7 );
+    GTUtilsMSAEditorSequenceArea::moveTo( os, mouseClickPosition );
+    GTMouseDriver::click( os );
+    GTGlobals::sleep( 200 );
+    GTUtilsMSAEditorSequenceArea::checkSelectedRect( os,
+        QRect( QPoint( 1, 7 ), QPoint( 8, 14 ) ) );
+    GTKeyboardDriver::keyClick( os, 'c', GTKeyboardDriver::key["ctrl"] );
+    GTGlobals::sleep(200);
+    selectionAfterScribbling = GTClipboard::text( os );
+    CHECK_SET_ERR( selectionContent == selectionAfterScribbling, "Unexpected selection content" );
+
+    // 5. Shift the selection to the 1st base
+    mouseClickPosition = QPoint( 1, 7 );
+    GTUtilsMSAEditorSequenceArea::moveTo( os, mouseClickPosition );
+    GTMouseDriver::click( os );
+    GTGlobals::sleep( 200 );
+    GTUtilsMSAEditorSequenceArea::checkSelectedRect( os,
+        QRect( QPoint( 0, 7 ), QPoint( 7, 14 ) ) );
+    GTKeyboardDriver::keyClick( os, 'c', GTKeyboardDriver::key["ctrl"] );
+    GTGlobals::sleep(200);
+    selectionAfterScribbling = GTClipboard::text( os );
+    CHECK_SET_ERR( selectionContent == selectionAfterScribbling, "Unexpected selection content" );
+}
+
 } // namespace
 } // namespace U2
 
