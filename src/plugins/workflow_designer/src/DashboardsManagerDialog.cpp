@@ -20,6 +20,7 @@
  */
 
 #include <QtGui/QMessageBox>
+#include <QtGui/QPushButton>
 
 #include "DashboardsManagerDialog.h"
 
@@ -28,10 +29,12 @@ static const QString REMOVE_MULTIPLE_DASHBOARDS_MESSAGE_BOX_TEXT
     = QObject::tr( "The following dashboards are about to be deleted:" );
 static const QString REMOVE_SINGLE_DASHBOARD_MESSAGE_BOX_TEXT
     = QObject::tr( "The following dashboard is about to be deleted:" );
-static const QString DASHBOARD_NAME_LIST_START = "<ul style=\"margin-top:5px;\"><li>";
+static const QString DASHBOARD_NAME_LIST_START = "<ul style=\"margin-top:5px;margin-bottom:0px\"><li>";
 static const QString DASHBOARD_NAMES_DELIMITER = "</li><li>";
 static const QString DASHBOARD_NAME_LIST_END = "</li></ul>";
+static const QString SKIP_EXTENSION = "...";
 static const int DASHBOARD_NAME_DISPLAYING_SYMBOLS_COUNT = 30;
+static const int DASHBOARD_MAX_DISPLAING_NAME_COUNT = 5;
 
 namespace U2 {
 
@@ -102,33 +105,7 @@ void DashboardsManagerDialog::sl_selectAll() {
 }
 
 void DashboardsManagerDialog::sl_remove() {
-    QList<QTreeWidgetItem *> selectedItems = listWidget->selectedItems( );
-    if ( selectedItems.isEmpty( ) ) {
-        return;
-    }
-    // build name list of selected dashboards
-    QString warningMessageText = ( 1 == selectedItems.count( ) )
-        ? REMOVE_SINGLE_DASHBOARD_MESSAGE_BOX_TEXT
-        : REMOVE_MULTIPLE_DASHBOARDS_MESSAGE_BOX_TEXT;
-    warningMessageText += DASHBOARD_NAME_LIST_START;
-    foreach ( QTreeWidgetItem *item, selectedItems ) {
-        QString dashboardName = item->data( 0, Qt::DisplayRole ).value<QString>( );
-        // cut long names
-        if ( DASHBOARD_NAME_DISPLAYING_SYMBOLS_COUNT < dashboardName.size( ) ) {
-            dashboardName = dashboardName.left( DASHBOARD_NAME_DISPLAYING_SYMBOLS_COUNT );
-            dashboardName += "...";
-        }
-        warningMessageText += dashboardName;
-        warningMessageText += DASHBOARD_NAMES_DELIMITER;
-    }
-    // remove last delimiter
-    warningMessageText = warningMessageText.left(
-        warningMessageText.length( ) - DASHBOARD_NAMES_DELIMITER.size( ) );
-    warningMessageText += DASHBOARD_NAME_LIST_END;
-
-    const int userDecision = QMessageBox::question( this, REMOVE_DASHBOARDS_MESSAGE_BOX_TITLE,
-        warningMessageText, tr( "Confirm" ), tr( "Cancel" ) );
-    if ( 0 != userDecision ) {
+    if ( !confirmDashboardsRemoving( ) ) {
         return;
     }
 
@@ -136,6 +113,64 @@ void DashboardsManagerDialog::sl_remove() {
         removed << item->data(0, Qt::UserRole).value<DashboardInfo>();
         delete item;
     }
+}
+
+bool DashboardsManagerDialog::confirmDashboardsRemoving( ) const {
+    QList<QTreeWidgetItem *> selectedItems = listWidget->selectedItems( );
+    if ( selectedItems.isEmpty( ) ) {
+        return false;
+    }
+    // build name list of selected dashboards
+    QString warningMessageText = ( 1 == selectedItems.count( ) )
+        ? REMOVE_SINGLE_DASHBOARD_MESSAGE_BOX_TEXT
+        : REMOVE_MULTIPLE_DASHBOARDS_MESSAGE_BOX_TEXT;
+    warningMessageText += DASHBOARD_NAME_LIST_START;
+
+    QString fullDashboardNamesList;
+
+    const bool tooManyDashboardsSelected
+        = ( DASHBOARD_MAX_DISPLAING_NAME_COUNT < selectedItems.count( ) );
+    int dashboardCounter = 0;
+    foreach ( QTreeWidgetItem *item, selectedItems ) {
+        QString dashboardName = item->data( 0, Qt::DisplayRole ).value<QString>( );
+        if ( tooManyDashboardsSelected ) {
+            fullDashboardNamesList += " - " + dashboardName + "\n";
+        }
+
+        if ( DASHBOARD_MAX_DISPLAING_NAME_COUNT >= ++dashboardCounter ) {
+            // cut long names
+            if ( DASHBOARD_NAME_DISPLAYING_SYMBOLS_COUNT < dashboardName.size( ) ) {
+                dashboardName = dashboardName.left( DASHBOARD_NAME_DISPLAYING_SYMBOLS_COUNT );
+                dashboardName += SKIP_EXTENSION;
+            }
+            warningMessageText += dashboardName;
+            warningMessageText += DASHBOARD_NAMES_DELIMITER;
+        }
+    }
+    // remove last delimiter
+    warningMessageText = warningMessageText.left(
+        warningMessageText.length( ) - DASHBOARD_NAMES_DELIMITER.size( ) );
+    warningMessageText += DASHBOARD_NAME_LIST_END;
+    if ( tooManyDashboardsSelected ) {
+        warningMessageText += "<pre style=\"margin-top:0px;\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+            + SKIP_EXTENSION + "</pre>";
+    }
+
+    QMessageBox questionBox;
+    questionBox.setIcon( QMessageBox::Question );
+    questionBox.setWindowTitle( REMOVE_DASHBOARDS_MESSAGE_BOX_TITLE );
+    questionBox.setText( warningMessageText );
+    if ( tooManyDashboardsSelected ) {
+        questionBox.setDetailedText( fullDashboardNamesList );
+    }
+    QPushButton *confirmButton = questionBox.addButton( tr( "Confirm" ), QMessageBox::ApplyRole );
+    const QPushButton *cancelButton = questionBox.addButton( tr( "Cancel" ),
+        QMessageBox::RejectRole );
+    questionBox.setDefaultButton( confirmButton );
+    questionBox.exec( );
+
+    return ( dynamic_cast<const QAbstractButton *>( cancelButton )
+        != questionBox.clickedButton( ) );
 }
 
 } // U2

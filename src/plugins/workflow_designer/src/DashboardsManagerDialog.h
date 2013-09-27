@@ -47,6 +47,7 @@ private slots:
 private:
     void setupList();
     QList<QTreeWidgetItem*> allItems();
+    bool confirmDashboardsRemoving( ) const;
 
 private:
     ScanDashboardsDirTask *task;
