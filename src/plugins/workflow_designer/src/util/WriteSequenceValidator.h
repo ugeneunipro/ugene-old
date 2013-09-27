@@ -32,10 +32,16 @@ public:
     WriteSequenceValidator(const QString &attr, const QString &port, const QString &slot);
     virtual bool validate(const Configuration *cfg, QStringList &output) const;
 
+    static DocumentFormat * getFormatSafe(const Actor *actor);
+    static bool isAnnotationsSupported(const DocumentFormat *format);
+
 private:
-    DocumentFormat * getFormatSafe(const Actor *actor) const;
     bool isAnnotationsBinded(const Actor *actor) const;
-    bool isAnnotationsSupported(const DocumentFormat *format) const;
+};
+
+class WriteSequencePortValidator : public PortValidator {
+public:
+    bool validate(const IntegralBusPort *port, QStringList &problemList) const;
 };
 
 } // Workflow

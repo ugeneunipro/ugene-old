@@ -57,7 +57,7 @@ bool WriteSequenceValidator::validate(const Configuration *cfg, QStringList &out
     return result;
 }
 
-DocumentFormat * WriteSequenceValidator::getFormatSafe(const Actor *actor) const {
+DocumentFormat * WriteSequenceValidator::getFormatSafe(const Actor *actor) {
     Attribute *attr = actor->getParameter(BaseAttributes::DOCUMENT_FORMAT_ATTRIBUTE().getId());
     SAFE_POINT(NULL != attr, "NULL format attribute", NULL);
     QString formatId = attr->getAttributePureValue().toString();
@@ -74,8 +74,25 @@ bool WriteSequenceValidator::isAnnotationsBinded(const Actor *actor) const {
     return !bindData.isEmpty();
 }
 
-bool WriteSequenceValidator::isAnnotationsSupported(const DocumentFormat *format) const {
+bool WriteSequenceValidator::isAnnotationsSupported(const DocumentFormat *format) {
     return format->getSupportedObjectTypes().contains(GObjectTypes::ANNOTATION_TABLE);
+}
+
+bool WriteSequencePortValidator::validate(const IntegralBusPort *port, QStringList &problemList) const {
+    bool result = true;
+    Actor *actor = port->owner();
+
+    QStringList screenedSlots(BaseSlots::URL_SLOT().getId());
+
+    if (!isBinded(port, BaseSlots::ANNOTATION_TABLE_SLOT().getId())) {
+        DocumentFormat *format = WriteSequenceValidator::getFormatSafe(actor);
+        CHECK(NULL != format, result);
+        if (!WriteSequenceValidator::isAnnotationsSupported(format)) {
+            screenedSlots << BaseSlots::ANNOTATION_TABLE_SLOT().getId();
+        }
+    }
+    result &= ScreenedSlotValidator::validate(screenedSlots, port, problemList);
+    return result;
 }
 
 } // Workflow

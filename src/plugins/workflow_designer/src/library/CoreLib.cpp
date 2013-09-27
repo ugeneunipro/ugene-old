@@ -245,7 +245,8 @@ void CoreLib::init() {
             Attribute* splitAttr = new Attribute(BaseAttributes::SPLIT_SEQ_ATTRIBUTE(), BaseTypes::NUM_TYPE(), false, 1);
             splitAttr ->addRelation(new VisibilityRelation(BaseAttributes::DOCUMENT_FORMAT_ATTRIBUTE().getId(), BaseDocumentFormats::FASTA));
             a << splitAttr;
-            WriteDocActorProto *proto = new WriteDocActorProto(format, acd, p, pd.getId(), a, false);
+            WriteDocActorProto *proto = new WriteDocActorProto(format, acd, p, pd.getId(), a, false, false);
+            proto->setPortValidator(pd.getId(), new WriteSequencePortValidator());
             proto->setValidator(new WriteSequenceValidator(BaseAttributes::URL_OUT_ATTRIBUTE().getId(), BasePorts::IN_SEQ_PORT_ID(), BaseSlots::URL_SLOT().getId()));
             docFormatAttr->addRelation(new FileExtensionRelation(proto->getUrlAttr()->getId()));
             
