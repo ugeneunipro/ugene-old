@@ -43,12 +43,12 @@ class U2GUI_EXPORT DownloadRemoteFileDialog : public QDialog{
     QString resUrl;
     QString resUrls;
     static QString defaultDB;
-    
+
 public slots:
-    void sl_updateDbId(int idx);
+    void sl_onDbChanged(int idx);
     void sl_saveFilenameButtonClicked();
     void sl_linkActivated(const QString& link);
-    
+
 public:
     DownloadRemoteFileDialog(QWidget *p = NULL);
     DownloadRemoteFileDialog(const QString& ids, const QString& dbId, QWidget *p = NULL);
@@ -61,11 +61,9 @@ public:
 private:
     void setSaveFilename();
     bool isDefaultDb(const QString& dbId);
+    void setupHintText( const QString &sampleText = QString( ) );
 
-    Ui_DownloadRemoteFileDialog* ui;
-
-
-    
+    Ui_DownloadRemoteFileDialog *ui;
 };
 
 } // namespace

@@ -31,8 +31,6 @@
 #include "DownloadRemoteFileDialog.h"
 #include "SearchGenbankSequenceDialogController.h"
 
-
-
 namespace U2 {
 
 SearchGenbankSequenceDialogController::SearchGenbankSequenceDialogController(QWidget *p) : QDialog(p), searchTask(NULL)
@@ -45,21 +43,21 @@ SearchGenbankSequenceDialogController::SearchGenbankSequenceDialogController(QWi
 
     queryBlockController = new QueryBuilderController(this);
 
-    connect(ui->searchButton, SIGNAL(clicked()), SLOT(sl_searchButtonClicked()) );
-    connect(ui->downloadButton, SIGNAL(clicked()), SLOT(sl_downloadButtonClicked()) );
-    connect(ui->treeWidget, SIGNAL(itemSelectionChanged()), SLOT(sl_itemSelectionChanged()) );
-    
-    connect( AppContext::getTaskScheduler(), SIGNAL(si_stateChanged(Task*)), SLOT(sl_taskStateChanged(Task*)) );
+    connect( ui->searchButton, SIGNAL( clicked( ) ), SLOT( sl_searchButtonClicked( ) ) );
+    connect( ui->downloadButton, SIGNAL( clicked( ) ), SLOT( sl_downloadButtonClicked( ) ) );
+    connect( ui->treeWidget, SIGNAL( itemSelectionChanged( ) ),
+        SLOT( sl_itemSelectionChanged( ) ) );
+    connect( ui->treeWidget, SIGNAL( itemActivated ( QTreeWidgetItem *, int ) ),
+        SLOT( sl_downloadButtonClicked( ) ) );
+    connect( AppContext::getTaskScheduler( ), SIGNAL( si_stateChanged( Task* ) ),
+        SLOT( sl_taskStateChanged( Task * ) ) );
 
     ui->treeWidget->header()->setStretchLastSection(false);
-    ui->treeWidget->header()->setResizeMode(1, QHeaderView::Stretch);  
-
-
+    ui->treeWidget->header()->setResizeMode(1, QHeaderView::Stretch);
 }
 
 SearchGenbankSequenceDialogController::~SearchGenbankSequenceDialogController()
 {
-
 
 }
 
@@ -80,21 +78,22 @@ void SearchGenbankSequenceDialogController::setQueryText(const QString &queryTex
 
 void SearchGenbankSequenceDialogController::sl_searchButtonClicked()
 {
+    if ( !ui->searchButton->isEnabled( ) ) {
+        return;
+    }
     QString query = ui->queryEdit->toPlainText();
-
     if (query.isEmpty()) {
         return;
     }
-    
+
     int maxRet = ui->resultLimitBox->value();
     QString qUrl(EntrezUtils::NCBI_ESEARCH_URL.arg(ui->databaseBox->currentText()).arg(query).arg(maxRet));
     searchResultHandler.reset( new ESearchResultHandler() );
     searchTask = new EntrezQueryTask(searchResultHandler.data(), qUrl );
 
     AppContext::getTaskScheduler()->registerTopLevelTask(searchTask);
-
+    ui->searchButton->setDisabled( true );
 }
-
 
 void SearchGenbankSequenceDialogController::sl_taskStateChanged( Task* task )
 {
@@ -113,7 +112,6 @@ void SearchGenbankSequenceDialogController::sl_taskStateChanged( Task* task )
             }
             searchTask = NULL;
         } else if (task == summaryTask) {
-            
             assert(summaryResultHandler);
             const QList<EntrezSummary>& results = summaryResultHandler->getResults();
             
@@ -122,9 +120,10 @@ void SearchGenbankSequenceDialogController::sl_taskStateChanged( Task* task )
                 item->setText(0, desc.name);
                 item->setText(1, desc.title );
                 item->setText(2, QString("%1").arg(desc.size) );
-                ui->treeWidget->addTopLevelItem( item );   
+                ui->treeWidget->addTopLevelItem( item );
             }
             summaryTask = NULL;
+            ui->searchButton->setDisabled( false );
         }
     }
 }
@@ -140,7 +139,6 @@ void SearchGenbankSequenceDialogController::sl_downloadButtonClicked()
 
     DownloadRemoteFileDialog dlg(ids.join(";"), ui->databaseBox->currentText(), this);
     dlg.exec();
-    
 }
 
 void SearchGenbankSequenceDialogController::sl_itemSelectionChanged()
@@ -148,10 +146,7 @@ void SearchGenbankSequenceDialogController::sl_itemSelectionChanged()
     ui->downloadButton->setEnabled(ui->treeWidget->selectedItems().size() > 0);
 }
 
-
-
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-
 
 QueryBlockWidget::QueryBlockWidget(QueryBuilderController* controller, bool first)
     : conditionBox(NULL), termBox(NULL), queryEdit(NULL)
@@ -176,7 +171,7 @@ QueryBlockWidget::QueryBlockWidget(QueryBuilderController* controller, bool firs
 
     queryEdit = new QLineEdit(this);
     connect(queryEdit,  SIGNAL(textEdited(const QString&)), controller, SLOT(sl_updateQuery()) );
-    connect(queryEdit, SIGNAL(returnPressed()), controller, SLOT(sl_returnPressed()));
+    connect(queryEdit, SIGNAL(returnPressed()), controller, SLOT(sl_queryReturnPressed()));
 
 
     layout->addWidget(termBox);
@@ -196,17 +191,12 @@ QueryBlockWidget::QueryBlockWidget(QueryBuilderController* controller, bool firs
     }
 
     setLayout(layout);
-
-
 }
-
 
 QueryBlockWidget::~QueryBlockWidget()
 {
 
 }
-
-
 
 QString QueryBlockWidget::getQuery()
 {
@@ -228,7 +218,6 @@ QString QueryBlockWidget::getQuery()
 
 
     return query;
-
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -245,7 +234,6 @@ QueryBuilderController::~QueryBuilderController()
 {
 
 }
-
 
 void QueryBuilderController::sl_addQueryBlockWidget()
 {    
@@ -273,7 +261,6 @@ void QueryBuilderController::sl_removeQueryBlockWidget()
 
 }
 
-
 void QueryBuilderController::sl_updateQuery()
 {
     QString query;
@@ -285,11 +272,9 @@ void QueryBuilderController::sl_updateQuery()
 
 }
 
-void QueryBuilderController::sl_returnPressed()
+void QueryBuilderController::sl_queryReturnPressed()
 {
     parentController->sl_searchButtonClicked();
 }
-
-
 
 } //namespace 

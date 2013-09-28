@@ -37,7 +37,6 @@ class Ui_SearchGenbankSequenceDialog;
 
 namespace U2 {
 
-
 struct QueryBlock {
     QString type;
     QString term;
@@ -52,7 +51,6 @@ public:
 
     QStringList fields;
     QStringList rules;
-
 };
 
 class QueryBuilderController;
@@ -86,11 +84,8 @@ private slots:
     void sl_updateQuery();
     void sl_addQueryBlockWidget();
     void sl_removeQueryBlockWidget();
-    void sl_returnPressed();
-
-
+    void sl_queryReturnPressed();
 };
-
 
 class U2GUI_EXPORT SearchGenbankSequenceDialogController : public QDialog {
     Q_OBJECT
@@ -113,7 +108,6 @@ public slots:
     void sl_downloadButtonClicked();
     void sl_itemSelectionChanged();
     void sl_taskStateChanged(Task* task);
-
 };
 
 } // namespace

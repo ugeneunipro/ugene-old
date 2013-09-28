@@ -37,6 +37,7 @@
 #include <U2Core/Settings.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/DASSource.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <U2Gui/LastUsedDirHelper.h>
 
@@ -44,7 +45,8 @@
 #include "ui/ui_DownloadRemoteFileDialog.h"
 #include "OpenViewTask.h"
 
-#define SAVE_DIR QString("downloadremotefiledialog/savedir")
+static const QString SAVE_DIR("downloadremotefiledialog/savedir");
+static const QString HINT_STYLE_SHEET = "color:green; font:bold";
 
 namespace U2 {
 
@@ -54,13 +56,12 @@ DownloadRemoteFileDialog::DownloadRemoteFileDialog(QWidget *p):QDialog(p), isQue
     ui = new Ui_DownloadRemoteFileDialog;
     ui->setupUi(this);
 
-    
     ui->dasfeaturesWidget->setResizeMode(QListView::Adjust);
     ui->dasBox->hide();
     ui->formatBox->hide();
     ui->formatLabel->hide();
     adjustSize();
-    
+
     RemoteDBRegistry& registry = RemoteDBRegistry::getRemoteDBRegistry();
     const QList<QString> dataBases = registry.getDBs(); 
     foreach(const QString& dbName, dataBases) {
@@ -74,7 +75,7 @@ DownloadRemoteFileDialog::DownloadRemoteFileDialog(QWidget *p):QDialog(p), isQue
             ui->databasesBox->addItem(s.getName(), s.getId());
         }
     }
-    
+
     if (!defaultDB.isEmpty()) {
         int index = ui->databasesBox->findData(defaultDB);
         if (index != -1){
@@ -82,12 +83,14 @@ DownloadRemoteFileDialog::DownloadRemoteFileDialog(QWidget *p):QDialog(p), isQue
         }
     }
 
-    connect(ui->databasesBox, SIGNAL(currentIndexChanged ( int)), SLOT( sl_updateDbId(int)));
+    ui->hintLabel->setStyleSheet( HINT_STYLE_SHEET );
+
+    connect(ui->databasesBox, SIGNAL(currentIndexChanged ( int)), SLOT( sl_onDbChanged(int)));
     connect(ui->saveFilenameToolButton, SIGNAL(clicked()), SLOT(sl_saveFilenameButtonClicked()));
     connect(ui->hintLabel, SIGNAL(linkActivated(const QString&)), SLOT(sl_linkActivated(const QString& )));
 
-    sl_updateDbId(ui->databasesBox->currentIndex());
-    
+    sl_onDbChanged(ui->databasesBox->currentIndex());
+
     setSaveFilename();
 }
 
@@ -111,11 +114,13 @@ DownloadRemoteFileDialog::DownloadRemoteFileDialog( const QString& id, const QSt
     ui->idLineEdit->setText(id);
     ui->idLineEdit->setReadOnly(true);
 
+    delete ui->hintLabel;
+    ui->hintLabel = NULL;
+    setMinimumSize( 500, 0 );
+
     connect(ui->saveFilenameToolButton, SIGNAL(clicked()), SLOT(sl_saveFilenameButtonClicked()));
     setSaveFilename();
-
 }
-
 
 const QString DOWNLOAD_REMOTE_FILE_DOMAIN = "DownloadRemoteFileDialog";
 
@@ -144,7 +149,7 @@ QString DownloadRemoteFileDialog::getResourceId() const
 }
 
 QString DownloadRemoteFileDialog::getDBId() const
-{   
+{
     int curIdx = ui->databasesBox->currentIndex();
     if (curIdx == -1){
         return QString("");
@@ -233,19 +238,19 @@ DownloadRemoteFileDialog::~DownloadRemoteFileDialog() {
 bool DownloadRemoteFileDialog::isDefaultDb(const QString& dbId){
     RemoteDBRegistry& registry = RemoteDBRegistry::getRemoteDBRegistry();
 
-    return registry.hasDbId(dbId);       
+    return registry.hasDbId(dbId);
 }
 
-void DownloadRemoteFileDialog::sl_updateDbId( int idx ){
+void DownloadRemoteFileDialog::sl_onDbChanged( int idx ){
     QString dbId = getDBId();
     QString hint;
     QString description;
-    if (isDefaultDb(dbId)){
+    if (isDefaultDb(dbId)) {
         RemoteDBRegistry& registry = RemoteDBRegistry::getRemoteDBRegistry();
         hint = description = registry.getHint(dbId);
         ui->dasBox->hide();
         adjustSize();
-    }else{
+    } else {
         DASSourceRegistry * dasRegistry = AppContext::getDASSourceRegistry();
         if (dasRegistry){
             const DASSource& dasSource = dasRegistry->findById(dbId);
@@ -267,9 +272,7 @@ void DownloadRemoteFileDialog::sl_updateDbId( int idx ){
         ui->dasBox->show();
     }
 
-   // 
-    
-    ui->hintLabel->setText(hint);
+    setupHintText( hint );
     ui->idLineEdit->setToolTip(description);
 }
 
@@ -279,6 +282,14 @@ void DownloadRemoteFileDialog::sl_linkActivated( const QString& link ){
     }
 }
 
-
+void DownloadRemoteFileDialog::setupHintText( const QString &text ) {
+    SAFE_POINT( NULL != ui && NULL != ui->hintLabel, "Invalid dialog content!", );
+    const QString hintStart( tr( "Hint: " ) );
+    const QString hintSample = ( text.isEmpty( ) ? tr( "Use database unique identifier." ) : text )
+        + "<br>";
+    const QString hintEnd( tr( "You can download multiple items by separating IDs with space "
+        "or semicolon." ) );
+    ui->hintLabel->setText( hintStart + hintSample + hintEnd );
+}
 
 } //namespace 

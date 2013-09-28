@@ -106,11 +106,11 @@
    <item>
     <widget class="QTreeWidget" name="treeWidget">
      <property name="selectionMode">
-      <enum>QAbstractItemView::ContiguousSelection</enum>
+      <enum>QAbstractItemView::ExtendedSelection</enum>
      </property>
      <column>
       <property name="text">
-       <string>Id</string>
+       <string>ID</string>
       </property>
      </column>
      <column>

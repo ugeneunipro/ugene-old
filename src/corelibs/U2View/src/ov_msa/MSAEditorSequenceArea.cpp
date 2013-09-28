@@ -963,7 +963,7 @@ void MSAEditorSequenceArea::mouseReleaseEvent(QMouseEvent *e)
             U2UseCommonUserModStep userModStep( editor->getMSAObject( )->getEntityRef( ), os );
             shiftSelectedRegion( shift );
         }
-    } else {
+    } else if ( Qt::LeftButton == e->button( ) ) {
         updateSelection(newCurPos);
     }
     shifting = false;

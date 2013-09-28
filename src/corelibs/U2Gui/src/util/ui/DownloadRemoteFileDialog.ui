@@ -179,24 +179,6 @@
     </widget>
    </item>
    <item>
-    <widget class="QLabel" name="label_5">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="font">
-      <font>
-       <underline>true</underline>
-      </font>
-     </property>
-     <property name="text">
-      <string>Hint</string>
-     </property>
-    </widget>
-   </item>
-   <item>
     <widget class="QLabel" name="hintLabel">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -205,23 +187,10 @@
       </sizepolicy>
      </property>
      <property name="text">
-      <string>Use database unique identifier.</string>
+      <string/>
      </property>
      <property name="textInteractionFlags">
       <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QLabel" name="label_2">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text">
-      <string>You can download multiple items by separting IDs with space or semicolon.</string>
      </property>
     </widget>
    </item>
