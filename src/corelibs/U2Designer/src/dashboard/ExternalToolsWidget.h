@@ -24,20 +24,41 @@
 
 #include "Dashboard.h"
 
-
 namespace U2 {
 
 using namespace Workflow::Monitor;
 
+class ExternalToolsWidget;
+
+class ExternalToolsWidgetController : public QObject {
+    Q_OBJECT
+public:
+    ExternalToolsWidget* getWidget(const QWebElement &container, Dashboard *parent) const;
+    LogEntry getEntry(int index) const;
+    QList<LogEntry> getLog() const { return log; }
+
+signals:
+    void si_infoAdded(int index);
+
+public slots:
+    void sl_onLogChanged(U2::Workflow::Monitor::LogEntry entry);
+
+private:
+    QList<LogEntry> log;
+};
+
 class ExternalToolsWidget : public DashboardWidget {
     Q_OBJECT
 public:
-    ExternalToolsWidget(const QWebElement &container, Dashboard *parent);
+    ExternalToolsWidget(const QWebElement &container, Dashboard *parent, const ExternalToolsWidgetController* ctrl);
 
-    void addInfoToWidget(QString toolName, QString actorName, int runNumber, int logType, QString lastLine);
-private slots:
-    void sl_onLogChanged(QString toolName, QString actorName, int runNumber, int logType, QString lastLine);
+public slots:
+    void sl_onInfoChanged(int index);
 private:
+    void addInfoToWidget(const LogEntry &entry);
+
+    const ExternalToolsWidgetController* ctrl;
+
     static const QString LINE_BREAK;
     static const QString BACK_SLASH;
     static const QString SINGLE_QUOTE;

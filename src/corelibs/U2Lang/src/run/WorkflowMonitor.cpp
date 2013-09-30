@@ -222,7 +222,13 @@ QList<ExternalToolListener*> WorkflowMonitor::createWorkflowListeners(const QStr
     return listeners;
 }
 void WorkflowMonitor::onLogChanged(const WDListener* listener, int messageType, const QString& message) {
-    emit si_logChanged(listener->getToolName(), listener->getActorName(), listener->getRunNumber(), messageType, message);
+    U2::Workflow::Monitor::LogEntry entry;
+    entry.toolName = listener->getToolName();
+    entry.actorName = listener->getActorName();
+    entry.runNumber = listener->getRunNumber();
+    entry.logType = messageType;
+    entry.lastLine = message;
+    emit si_logChanged(entry);
 }
 
 /************************************************************************/

@@ -74,6 +74,18 @@ namespace Monitor {
         QList<ExternalToolListener*> logs;
     };
 
+    class U2LANG_EXPORT LogEntry {
+    public:
+        LogEntry() :
+            runNumber(0),
+            logType(0) {}
+        QString toolName;
+        QString actorName;
+        int runNumber;
+        int logType;
+        QString lastLine;
+    };
+
     enum U2LANG_EXPORT TaskState {
         RUNNING,
         RUNNING_WITH_PROBLEMS,
@@ -132,7 +144,7 @@ signals:
     void si_updateProducers();
     void si_report();
     void si_dirSet(const QString &dir);
-    void si_logChanged(QString toolName, QString actorName, int runNumber, int logType, QString lastLine);
+    void si_logChanged(U2::Workflow::Monitor::LogEntry entry);
 
 private:
     Schema *schema;
@@ -188,5 +200,6 @@ private:
 Q_DECLARE_METATYPE( U2::Workflow::Monitor::FileInfo )
 Q_DECLARE_METATYPE( U2::Workflow::Monitor::Problem )
 Q_DECLARE_METATYPE( U2::Workflow::Monitor::WorkerInfo )
+Q_DECLARE_METATYPE( U2::Workflow::Monitor::LogEntry )
 
 #endif // _U2_WORKFLOWMONITOR_H_

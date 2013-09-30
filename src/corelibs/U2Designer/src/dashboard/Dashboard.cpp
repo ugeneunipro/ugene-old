@@ -59,9 +59,13 @@ static const QString NAME_SETTING("name");
 Dashboard::Dashboard(const WorkflowMonitor *monitor, const QString &_name, QWidget *parent)
 : QWebView(parent), loaded(false), name(_name), opened(true), _monitor(monitor), initialized(false)
 {
+    etWidgetController = new ExternalToolsWidgetController;
+
     connect(this, SIGNAL(loadFinished(bool)), SLOT(sl_loaded(bool)));
     connect(_monitor, SIGNAL(si_report()), SLOT(sl_serialize()));
     connect(_monitor, SIGNAL(si_dirSet(const QString &)), SLOT(sl_setDirectory(const QString &)));
+    bool a = connect(_monitor, SIGNAL(si_logChanged(U2::Workflow::Monitor::LogEntry)),
+            etWidgetController, SLOT(sl_onLogChanged(U2::Workflow::Monitor::LogEntry)));
     setContextMenuPolicy(Qt::NoContextMenu);
     loadUrl = ":U2Designer/html/Dashboard.html";
     loadDocument();
@@ -70,11 +74,17 @@ Dashboard::Dashboard(const WorkflowMonitor *monitor, const QString &_name, QWidg
 Dashboard::Dashboard(const QString &dirPath, QWidget *parent)
 : QWebView(parent), loaded(false), dir(dirPath), opened(true), _monitor(NULL), initialized(false)
 {
+    etWidgetController = new ExternalToolsWidgetController;
+
     connect(this, SIGNAL(loadFinished(bool)), SLOT(sl_loaded(bool)));
     setContextMenuPolicy(Qt::NoContextMenu);
     loadUrl = dir + REPORT_SUB_DIR + DB_FILE_NAME;
     loadSettings();
     saveSettings();
+}
+
+Dashboard::~Dashboard() {
+    delete etWidgetController;
 }
 
 void Dashboard::onShow() {
@@ -144,7 +154,7 @@ void Dashboard::sl_loaded(bool ok) {
         new ParametersWidget(addWidget(tr("Parameters"), InputDashTab, 0), this);
 
         //new OutputFilesWidget(addWidget(tr("Output Files"), OutputDashTab, 0), this);
-        new ExternalToolsWidget(addWidget(tr("External Tools"), ExternalToolsTab, 0), this);
+        etWidgetController->getWidget(addWidget(tr("External Tools"), ExternalToolsTab, 0), this);
 
         connect(monitor(), SIGNAL(si_runStateChanged(bool)), SLOT(sl_runStateChanged(bool)));
         connect(monitor(), SIGNAL(si_firstProblem()), SLOT(sl_addProblemsWidget()));
@@ -156,7 +166,8 @@ void Dashboard::sl_loaded(bool ok) {
 }
 
 void Dashboard::sl_addProblemsWidget() {
-    ProblemsWidget *problems = new ProblemsWidget(addWidget(tr("Problems"), OverviewDashTab), this);
+    // Will be removed by parent
+    new ProblemsWidget(addWidget(tr("Problems"), OverviewDashTab), this);
 }
 
 void Dashboard::sl_serialize() {

@@ -32,11 +32,15 @@
 namespace U2 {
 using namespace Workflow;
 
+class ExternalToolsWidgetController;
+
 class U2DESIGNER_EXPORT Dashboard : public QWebView {
     Q_OBJECT
+    Q_DISABLE_COPY(Dashboard)
 public:
     Dashboard(const WorkflowMonitor *monitor, const QString &name, QWidget *parent);
     Dashboard(const QString &dirPath, QWidget *parent);
+    ~Dashboard();
 
     void onShow();
 
@@ -77,6 +81,7 @@ private:
     const WorkflowMonitor *_monitor;
     QWebElement doc;
     bool initialized;
+    ExternalToolsWidgetController* etWidgetController;
 
     enum DashboardTab {OverviewDashTab, InputDashTab, OutputDashTab, ExternalToolsTab};
 

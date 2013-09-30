@@ -31,65 +31,87 @@
 
 namespace U2 {
 
-    const QString ExternalToolsWidget::LINE_BREAK("break_line");
-    const QString ExternalToolsWidget::SINGLE_QUOTE("s_quote");
-    const QString ExternalToolsWidget::BACK_SLASH("b_slash");
+ExternalToolsWidget* ExternalToolsWidgetController::getWidget(const QWebElement &container, Dashboard *parent) const {
+    ExternalToolsWidget* widget = new ExternalToolsWidget(container, parent, this);
+    connect(this, SIGNAL(si_infoAdded(int)), widget, SLOT(sl_onInfoChanged(int)));
+    return widget;
+}
 
-    ExternalToolsWidget::ExternalToolsWidget(const QWebElement &container, Dashboard *parent)
-        : DashboardWidget(container, parent)
-    {
-        const WorkflowMonitor *workflowMonitor = dashboard->monitor();
-        SAFE_POINT(NULL != workflowMonitor, "NULL workflow monitor!", );
+LogEntry ExternalToolsWidgetController::getEntry(int index) const {
+    SAFE_POINT(index >= 0 && index < log.count(), "Invalid index", LogEntry());
+    return log.at(index);
+}
 
-        bool res = connect(workflowMonitor, SIGNAL(si_logChanged(QString, QString, int , int, QString)), SLOT(sl_onLogChanged(QString, QString, int , int, QString)));
+void ExternalToolsWidgetController::sl_onLogChanged(U2::Workflow::Monitor::LogEntry entry) {
+    log << entry;
+    emit si_infoAdded(log.count() - 1);
+}
 
-        const QMap<QString, Monitor::WorkerLogInfo> &workersLogInfo = workflowMonitor->getWorkersLog();
-        ExternalToolsWidget::container.evaluateJavaScript("lwInitConteiner(this, 'params_tab_id_0')");
+const QString ExternalToolsWidget::LINE_BREAK("break_line");
+const QString ExternalToolsWidget::SINGLE_QUOTE("s_quote");
+const QString ExternalToolsWidget::BACK_SLASH("b_slash");
+
+ExternalToolsWidget::ExternalToolsWidget(const QWebElement &_container,
+                                         Dashboard *parent,
+                                         const ExternalToolsWidgetController *_ctrl) :
+    DashboardWidget(_container, parent),
+    ctrl(_ctrl)
+{
+    SAFE_POINT(NULL != ctrl, "Controller is NULL", );
+
+    const WorkflowMonitor *workflowMonitor = dashboard->monitor();
+    SAFE_POINT(NULL != workflowMonitor, "NULL workflow monitor!", );
+
+    container.evaluateJavaScript("lwInitConteiner(this, 'params_tab_id_0')");
+
+    foreach (LogEntry entry, ctrl->getLog()) {
+        addInfoToWidget(entry);
     }
+}
 
-    void ExternalToolsWidget::sl_onLogChanged(QString toolName, QString actorName, int runNumber, int logType, QString lastLine) {
-        addInfoToWidget(toolName, actorName, runNumber, logType, lastLine);
+void ExternalToolsWidget::sl_onInfoChanged(int index) {
+    SAFE_POINT(sender() == ctrl, "Unexpected sender", );
+    addInfoToWidget(ctrl->getEntry(index));
+}
+
+void ExternalToolsWidget::addInfoToWidget(const LogEntry &entry) {
+    QString tabId = "log_tab_id_" + entry.actorName;
+
+    QString runId = entry.toolName + " run " + QString::number(entry.runNumber);
+    QString lastPartOfLog = entry.lastLine;
+
+    lastPartOfLog.replace(QRegExp("\\n"), LINE_BREAK);
+    lastPartOfLog.replace(QRegExp("\\r"), "");
+    lastPartOfLog.replace("'", SINGLE_QUOTE);
+    lastPartOfLog.replace('\\', BACK_SLASH);
+
+    QString addLogFunc = "lwAddTreeNode";
+    addLogFunc += "('" + runId + "', ";
+    addLogFunc += "'" + entry.actorName + "', ";
+    addLogFunc += "'" + tabId + "', ";
+
+    switch(entry.logType) {
+    case ERROR_LOG:
+        addLogFunc += "'" + lastPartOfLog + "', ";
+        addLogFunc += "'error')";
+        container.evaluateJavaScript(addLogFunc);
+        break;
+    case OUTPUT_LOG:
+        addLogFunc += "'" + lastPartOfLog + "', ";
+        addLogFunc += "'output')";
+        container.evaluateJavaScript(addLogFunc);
+        break;
+    case PROGRAM_PATH:
+        addLogFunc += "'" + lastPartOfLog + "', ";
+        addLogFunc += "'program')";
+        container.evaluateJavaScript(addLogFunc);
+        break;
+    case ARGUMENTS:
+        addLogFunc += "'" + lastPartOfLog + "', ";
+        addLogFunc += "'arguments')";
+        container.evaluateJavaScript(addLogFunc);
+        break;
     }
+}
 
-    void ExternalToolsWidget::addInfoToWidget(QString toolName, QString actorName, int runNumber, int logType, QString lastLine) {
-        int i = 0;
-
-        QString tabId = "log_tab_id_" + actorName;
-
-        QString runId = toolName + " run " + QString::number(runNumber);
-        QString lastPartOfLog = lastLine;
-
-        lastPartOfLog.replace(QRegExp("\\n"), LINE_BREAK);
-        lastPartOfLog.replace(QRegExp("\\r"), "");
-        lastPartOfLog.replace("'", SINGLE_QUOTE);
-        lastPartOfLog.replace('\\', BACK_SLASH);
-
-        QString addLogFunc = "lwAddTreeNode";
-        addLogFunc += "('" + runId + "', ";
-        addLogFunc += "'" + actorName + "', ";
-        addLogFunc += "'" + tabId + "', ";
-
-        switch(logType) {
-            case ERROR_LOG: 
-                addLogFunc += "'" + lastPartOfLog + "', ";
-                addLogFunc += "'error')";
-                container.evaluateJavaScript(addLogFunc);
-                break;
-            case OUTPUT_LOG:
-                addLogFunc += "'" + lastPartOfLog + "', ";
-                addLogFunc += "'output')";
-                container.evaluateJavaScript(addLogFunc);
-                break;
-            case PROGRAM_PATH:
-                addLogFunc += "'" + lastPartOfLog + "', ";
-                addLogFunc += "'program')";
-                container.evaluateJavaScript(addLogFunc);
-                break;
-            case ARGUMENTS:
-                addLogFunc += "'" + lastPartOfLog + "', ";
-                addLogFunc += "'arguments')";
-                container.evaluateJavaScript(addLogFunc);
-                break;
-        }
-    }
 } // namespace U2
