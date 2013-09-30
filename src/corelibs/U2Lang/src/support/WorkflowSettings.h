@@ -54,9 +54,6 @@ public:
     static bool isDebuggerEnabled();
     static void setDebuggerEnabled(bool v);
 
-    /*static bool failFast();
-    static void setFailFast(bool v);*/
-
     static QString defaultStyle();
     static void setDefaultStyle(const QString&);
 
@@ -74,10 +71,7 @@ public:
     
     static bool getScriptingMode();
     static void setScriptingMode(bool md);
-    
-    static bool runInSeparateProcess();
-    static void setRunInSeparateProcess(bool m);
-    
+
     static QString getCmdlineUgenePath();
 
     static void setExternalToolDirectory(const QString &newDir);

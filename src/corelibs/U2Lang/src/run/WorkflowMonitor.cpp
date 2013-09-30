@@ -26,8 +26,6 @@
 #include <U2Lang/WorkflowRunTask.h>
 #include <U2Lang/WorkflowUtils.h>
 
-#include "SeparateProcessMonitor.h"
-
 #include "WorkflowMonitor.h"
 
 namespace U2 {
@@ -102,7 +100,6 @@ void WorkflowMonitor::addOutputFile(const QString &url, const QString &producer)
     CHECK(!outputFiles.contains(info), );
 
     outputFiles << info;
-    cmdLog.trace(PackUtils::packFileInfo(info));
     emit si_newOutputFile(info);
 }
 
@@ -122,7 +119,6 @@ void WorkflowMonitor::addTaskError(Task *task, const QString &message) {
 void WorkflowMonitor::addTime(qint64 timeMks, const QString &actor) {
     WorkerInfo &info = workers[actor];
     info.timeMks += timeMks;
-    cmdLog.trace(PackUtils::packWorkerInfo(actor, info));
     emit si_workerInfoChanged(actor, info);
 }
 
@@ -192,7 +188,6 @@ void WorkflowMonitor::setWorkerInfo(const QString &actorId, const WorkerInfo &in
 }
 
 void WorkflowMonitor::setRunState(bool paused) {
-    cmdLog.trace(PackUtils::packRunState(paused));
     emit si_runStateChanged(paused);
 }
 
@@ -208,7 +203,6 @@ void WorkflowMonitor::addProblem(const Monitor::Problem &problem) {
     }
     problems << problem;
     emit si_newProblem(problem);
-    cmdLog.trace(PackUtils::packProblem(problem));
 }
 
 void WorkflowMonitor::setSaveSchema(const Metadata &_meta) {

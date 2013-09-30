@@ -91,17 +91,10 @@ PairwiseAlignmentHirschbergTask::PairwiseAlignmentHirschbergTask(PairwiseAlignme
     kalignSettings.termGapPenalty = settings->gapTerm;
     kalignSettings.secret = settings->bonusScore;
 
-    if(WorkflowSettings::runInSeparateProcess() && 0) {
-        assert(0);      //not implemented
-//        workflowKalignSubTask = new KalignGObjectRunFromSchemaTask(NULL, kalignSettings);
-        addSubTask(workflowKalignSubTask);
-    } else {
-        kalignSubTask = new KalignTask(*ma, kalignSettings);
-        setUseDescriptionFromSubtask(true);
-        setVerboseLogMode(true);
-        addSubTask(kalignSubTask);
-    }
-
+    kalignSubTask = new KalignTask(*ma, kalignSettings);
+    setUseDescriptionFromSubtask(true);
+    setVerboseLogMode(true);
+    addSubTask(kalignSubTask);
 }
 
 PairwiseAlignmentHirschbergTask::~PairwiseAlignmentHirschbergTask() {

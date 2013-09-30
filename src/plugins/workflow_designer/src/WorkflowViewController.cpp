@@ -1056,12 +1056,10 @@ void WorkflowView::sl_toggleLock(bool b) {
     running = !b;
     if (sender() != unlockAction) {
         unlockAction->setChecked(!running);
-        if(!WorkflowSettings::runInSeparateProcess()) {
-            breakpointView->setEnabled(b);
-            toggleDebugActionsState(!b);
-            investigationWidgets->deleteBusInvestigations();
-            investigationWidgets->resetInvestigations();
-        }
+        breakpointView->setEnabled(b);
+        toggleDebugActionsState(!b);
+        investigationWidgets->deleteBusInvestigations();
+        investigationWidgets->resetInvestigations();
         return;
     }
 
@@ -1359,9 +1357,6 @@ void WorkflowView::setupViewMenu(QMenu* m) {
 void WorkflowView::setupContextMenu(QMenu* m) {
     if(!debugInfo->isPaused()) {
         if (!unlockAction->isChecked()) {
-            if(WorkflowSettings::runInSeparateProcess()) {
-                m->addAction(unlockAction);
-            }
             return;
         }
 
@@ -1527,12 +1522,7 @@ void WorkflowView::localHostLaunch() {
     }
 
     const Schema *s = getSchema();
-    WorkflowAbstractRunner * t = NULL;
-    if(WorkflowSettings::runInSeparateProcess()) {
-        t = new WorkflowRunInProcessTask(*s);
-    } else {
-        t = new WorkflowRunTask(*s, ActorMap(), debugInfo);
-    }
+    WorkflowAbstractRunner * t = new WorkflowRunTask(*s, ActorMap(), debugInfo);
 
     t->setReportingEnabled(true);
     if (WorkflowSettings::monitorRun()) {
@@ -1587,11 +1577,9 @@ void WorkflowView::sl_launch() {
         }
         if(NULL != scene->getRunner()) {
             stopAction->setEnabled(true);
-            if(!WorkflowSettings::runInSeparateProcess()) {
-                pauseAction->setEnabled(true);
-                propertyEditor->setEnabled(false);
-                toggleDebugActionsState(true);
-            }
+            pauseAction->setEnabled(true);
+            propertyEditor->setEnabled(false);
+            toggleDebugActionsState(true);
         }
     }
 }
@@ -1628,8 +1616,7 @@ void WorkflowView::sl_stop() {
 }
 
 void WorkflowView::toggleDebugActionsState(bool enable) {
-    if(!WorkflowSettings::runInSeparateProcess() && WorkflowSettings::isDebuggerEnabled())
-    {
+    if(WorkflowSettings::isDebuggerEnabled()) {
         foreach(QAction *action, debugActions) {
             action->setVisible(enable);
         }
@@ -1787,7 +1774,6 @@ void WorkflowView::paintEvent(QPaintEvent *event) {
     toggleBreakpointAction->setVisible( isDebuggerEnabled );
     toggleBreakpointManager->setVisible( isDebuggerEnabled );
 
-    toggleBreakpointManager->setEnabled( !WorkflowSettings::runInSeparateProcess( ) );
     if (isWorkflowRunning) {
         if(debugInfo->isPaused()) {
             sl_onSelectionChanged();
@@ -2152,7 +2138,7 @@ void WorkflowView::sl_onSelectionChanged() {
     const int actorsCount = actorsSelected.size();
     editScriptAction->setEnabled(actorsCount == 1 && actorsSelected.first()->getScript() != NULL);
     editExternalToolAction->setEnabled(actorsCount == 1 && actorsSelected.first()->getProto()->isExternalTool());
-    toggleBreakpointAction->setEnabled(actorsCount > 0 && !WorkflowSettings::runInSeparateProcess());
+    toggleBreakpointAction->setEnabled(actorsCount > 0);
 
     WorkflowAbstractRunner *runner = scene->getRunner();
     if(NULL != runner && !actorsSelected.isEmpty()) {

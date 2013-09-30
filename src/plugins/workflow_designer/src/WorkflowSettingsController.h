@@ -50,7 +50,6 @@ public:
     bool snap2grid;
     bool lockRun;
     bool enableDebugger;
-    //bool failFast;
     QString style;
     QFont font;
     QString path;
@@ -59,7 +58,6 @@ public:
     QString workflowOutputDir;
     QColor color;
     bool showEmptyPorts;
-    bool runSchemaInSeparateProcess;
     bool useWorkflowOutputDir;
 };
 

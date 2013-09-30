@@ -132,9 +132,9 @@ MuscleMSAEditorContext::MuscleMSAEditorContext(QObject* p) : GObjectViewWindowCo
 void MuscleMSAEditorContext::initViewContext(GObjectView* view) {
     MSAEditor* msaed = qobject_cast<MSAEditor*>(view);
     assert(msaed!=NULL);
-	if (msaed->getMSAObject() == NULL) {
+    if (msaed->getMSAObject() == NULL) {
         return;
-	}
+    }
 
     bool objLocked = msaed->getMSAObject()->isStateLocked();
     MuscleAction* alignAction = new MuscleAction(this, view, tr("Align with MUSCLE..."), 1000);
@@ -167,7 +167,7 @@ void MuscleMSAEditorContext::buildMenu(GObjectView* v, QMenu* m) {
     QMenu* alignMenu = GUIUtils::findSubMenu(m, MSAE_MENU_ALIGN);
     SAFE_POINT(alignMenu != NULL, "alignMenu", );
     foreach(GObjectViewAction* a, actions) {
-		a->addToMenuWithOrder(alignMenu);
+        a->addToMenuWithOrder(alignMenu);
     }    
 }
 
@@ -176,7 +176,7 @@ void MuscleMSAEditorContext::sl_align() {
     assert(action!=NULL);
     MSAEditor* ed = action->getMSAEditor();
     MAlignmentObject* obj = ed->getMSAObject(); 
-    
+
     const QRect selection = action->getMSAEditor()->getCurrentSelection();
     MuscleTaskSettings s;
     if (!selection.isNull() ) {
@@ -197,11 +197,7 @@ void MuscleMSAEditorContext::sl_align() {
     
     
     AlignGObjectTask* muscleTask = NULL;
-    if(WorkflowSettings::runInSeparateProcess()) {
-        muscleTask = new MuscleGObjectRunFromSchemaTask(obj, s);
-    } else {
-        muscleTask = new MuscleGObjectTask(obj, s);
-    }
+    muscleTask = new MuscleGObjectRunFromSchemaTask(obj, s);
     if (dlg.translateToAmino()) {
         QString trId = dlg.getTranslationId();
         AppContext::getTaskScheduler()->registerTopLevelTask(new AlignInAminoFormTask(obj, muscleTask, trId));

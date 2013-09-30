@@ -19,8 +19,6 @@
  * MA 02110-1301, USA.
  */
 
-#include "run/SeparateProcessMonitor.h"
-
 #include "WorkflowRunTask.h"
 #include <U2Lang/DbiDataStorage.h>
 #include <U2Lang/WorkflowEnv.h>
@@ -517,153 +515,8 @@ void WorkflowIterationRunTask::sl_convertMessages2Documents(const Workflow::Link
     }
 }
 
-/*******************************************
- * WorkflowRunInProcessTask
- *******************************************/
-WorkflowRunInProcessTask::WorkflowRunInProcessTask(const Schema & sc) :
-WorkflowAbstractRunner(tr("Execute workflow in separate process"), TaskFlags(TaskFlag_NoRun) | TaskFlag_ReportingIsSupported | TaskFlag_OnlyNotificationReport) {
-    GCOUNTER(cvar, tvar, "WorkflowRunInProcessTask");
-
-    WorkflowIterationRunInProcessTask * t = new WorkflowIterationRunInProcessTask(sc);
-    monitors << t->getMonitor();
-    addSubTask(t);
-
-    setMaxParallelSubtasks(MAX_PARALLEL_SUBTASKS_AUTO);
-    
-    QTimer * timer = new QTimer(this);
-    connect(timer, SIGNAL(timeout()), SIGNAL(si_ticked()));
-    timer->start(TICK_UPDATE_INTERVAL);
-}
-
-Task::ReportResult WorkflowRunInProcessTask::report() {
-    propagateSubtaskError();
-    return ReportResult_Finished;
-}
-
-QList<WorkerState> WorkflowRunInProcessTask::getState(Actor * a) {
-    QList<WorkerState> ret;
-    foreach(Task * t, getSubtasks()) {
-        WorkflowIterationRunInProcessTask * it = qobject_cast<WorkflowIterationRunInProcessTask*>(t);
-        ret << it->getState(a->getId());
-    }
-    return ret;
-}
-
-int WorkflowRunInProcessTask::getMsgNum(const Link * l) {
-    int ret = 0;
-    foreach(Task* t, getSubtasks()) {
-        WorkflowIterationRunInProcessTask* rt = qobject_cast<WorkflowIterationRunInProcessTask*>(t);
-        ret += rt->getMsgNum(l);
-    }
-    return ret;
-}
-
-int WorkflowRunInProcessTask::getMsgPassed(const Link * l) {
-    int ret = 0;
-    foreach(Task* t, getSubtasks()) {
-        WorkflowIterationRunInProcessTask* rt = qobject_cast<WorkflowIterationRunInProcessTask*>(t);
-        ret += rt->getMsgPassed(l);
-    }
-    return ret;
-}
-
-/*******************************************
- * WorkflowIterationRunInProcessTask
- *******************************************/
-WorkflowIterationRunInProcessTask::WorkflowIterationRunInProcessTask(const Schema & sc) :
-WorkflowAbstractIterationRunner("Workflow run in process", TaskFlags_NR_FOSCOE), schema(new Schema()),
-saveSchemaTask(NULL), monitor(NULL), wfMonitor(NULL) {
-    tempFile.setFileTemplate(QString("%1/XXXXXX.uwl").arg(QDir::tempPath()));
-    if(!tempFile.open()) {
-        setError(tr("Cannot create temporary file for saving schema!"));
-        return;
-    }
-    Metadata meta; 
-    meta.url = tempFile.fileName();
-    tempFile.close();
-    
-    rmap = HRSchemaSerializer::deepCopy(sc, schema, stateInfo);
-    SAFE_POINT_OP(stateInfo, );
-    wfMonitor = new SeparateProcessMonitor(this, schema);
-    saveSchemaTask = new SaveWorkflowTask(schema, meta, true);
-    saveSchemaTask->setSubtaskProgressWeight(0);
-    addSubTask(saveSchemaTask);
-}
-
-WorkflowIterationRunInProcessTask::~WorkflowIterationRunInProcessTask() {
-    emit si_progressChanged();
-    delete wfMonitor;
-    delete schema;
-}
-
-QList<Task*> WorkflowIterationRunInProcessTask::onSubTaskFinished(Task* subTask) {
-    QList<Task*> res;
-    propagateSubtaskError();
-    if(hasError() || isCanceled()) {
-        return res;
-    }
-    if(saveSchemaTask == subTask) {
-        RunCmdlineWorkflowTaskConfig c(tempFile.fileName());
-        c.args << ("--" + WorkflowContextCMDLine::DEFAULT_OUTPUT_DIR);
-        monitor = new RunCmdlineWorkflowTask(c, wfMonitor);
-        connect(monitor, SIGNAL(si_logRead()), SIGNAL(si_updateProducers()));
-        monitor->setSubtaskProgressWeight(1);
-        res << monitor;
-    } else if(monitor == subTask) {
-        monitor = NULL;
-    } else {
-        assert(false);
-    }
-    return res;
-}
-
-Task::ReportResult WorkflowIterationRunInProcessTask::report() {
-    return ReportResult_Finished;
-}
-
-WorkerState WorkflowIterationRunInProcessTask::getState(const ActorId &actor) {
-    return monitor != NULL ? monitor->getState(rmap.value(actor)) : WorkerWaiting;
-}
-
-int WorkflowIterationRunInProcessTask::getMsgNum(const Link * l) {
-    if(monitor != NULL) {
-        ActorId srcId = rmap.value(l->source()->owner()->getId());
-        ActorId dstId = rmap.value(l->destination()->owner()->getId());
-        assert(!srcId.isEmpty() && !dstId.isEmpty());
-        return monitor->getMsgNum(QString("%1:%2").arg(srcId).arg(dstId));
-    } else {
-        return 0;
-    }
-}
-
-int WorkflowIterationRunInProcessTask::getMsgPassed(const Link * l) {
-    if(monitor != NULL) {
-        ActorId srcId = rmap.value(l->source()->owner()->getId());
-        ActorId dstId = rmap.value(l->destination()->owner()->getId());
-        assert(!srcId.isEmpty() && !dstId.isEmpty());
-        return monitor->getMsgPassed(QString("%1:%2").arg(srcId).arg(dstId));
-    } else {
-        return 0;
-    }
-}
-
-int WorkflowIterationRunInProcessTask::getDataProduced(const ActorId &actor) {
-    CHECK(NULL != monitor, 0);
-    int result = 0;
-    foreach (const QString &link, monitor->getActorLinks(actor)) {
-        result += monitor->getMsgNum(link);
-        result += monitor->getMsgPassed(link);
-        break;
-    }
-    return result;
-}
-
-WorkflowMonitor * WorkflowIterationRunInProcessTask::getMonitor() const {
-    return wfMonitor;
-}
-
 /***********************************
- * WorkflowRunInProcessMonitorTask
+ * RunCmdlineWorkflowTask
  ***********************************/
 static bool containsPrefix(const QStringList& list, const QString& prefix) {
     foreach(const QString& listItem, list) {
@@ -674,9 +527,8 @@ static bool containsPrefix(const QStringList& list, const QString& prefix) {
     return false;
 }
 
-
-RunCmdlineWorkflowTask::RunCmdlineWorkflowTask(const RunCmdlineWorkflowTaskConfig& _conf, SeparateProcessMonitor *_monitor)
-: Task(tr("Workflow process"), TaskFlag_NoRun), conf(_conf), proc(new QProcess(this)), monitor(_monitor)
+RunCmdlineWorkflowTask::RunCmdlineWorkflowTask(const RunCmdlineWorkflowTaskConfig& _conf)
+: Task(tr("Workflow process"), TaskFlag_NoRun), conf(_conf), proc(new QProcess(this))
 {
     processLogPrefix = "process:?>";
 }
@@ -837,9 +689,6 @@ void RunCmdlineWorkflowTask::sl_onReadStandardOutput() {
             setError(data.mid(errInd + ERROR_KEYWORD.size() + 1));
         }
         return;
-    }
-    if (NULL != monitor) {
-        monitor->parseLog(lines);
     }
 
     foreach (const QString &line, lines) {

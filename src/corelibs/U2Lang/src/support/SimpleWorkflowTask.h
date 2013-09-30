@@ -73,7 +73,7 @@ private:
     SaveDocumentTask*                   saveInputTask;
     QTemporaryFile                      inputTmpFile;
 
-    RunCmdlineWorkflowTask*    runWorkflowTask;
+    RunCmdlineWorkflowTask*             runWorkflowTask;
 
     QTemporaryFile                      resultTmpFile;
     LoadDocumentTask*                   loadResultTask;

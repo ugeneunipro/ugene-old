@@ -43,12 +43,10 @@ AppSettingsGUIPageState* WorkflowSettingsPageController::getSavedState() {
     state->snap2grid = WorkflowSettings::snap2Grid();
     state->lockRun = WorkflowSettings::monitorRun();
     state->enableDebugger = WorkflowSettings::isDebuggerEnabled();
-    //state->failFast = WorkflowSettings::failFast();
     state->style = WorkflowSettings::defaultStyle();
     state->font = WorkflowSettings::defaultFont();
     state->path = WorkflowSettings::getUserDirectory();
     state->color = WorkflowSettings::getBGColor();
-    state->runSchemaInSeparateProcess = WorkflowSettings::runInSeparateProcess();
     state->externalToolCfgDir = WorkflowSettings::getExternalToolDirectory();
     state->includedElementsDir = WorkflowSettings::getIncludedElementsDirectory();
     state->useWorkflowOutputDir = WorkflowSettings::isUseWorkflowOutputDirectory();
@@ -67,7 +65,6 @@ void WorkflowSettingsPageController::saveState(AppSettingsGUIPageState* s) {
     WorkflowSettings::setDefaultFont(state->font);
     WorkflowSettings::setUserDirectory(state->path);
     WorkflowSettings::setBGColor(state->color);
-    WorkflowSettings::setRunInSeparateProcess(state->runSchemaInSeparateProcess);
     WorkflowSettings::setExternalToolDirectory(state->externalToolCfgDir);
     WorkflowSettings::setIncludedElementsDirectory(state->includedElementsDir);
     WorkflowSettings::setUseWorkflowOutputDirectory(state->useWorkflowOutputDir);
@@ -90,7 +87,6 @@ WorkflowSettingsPageWidget::WorkflowSettingsPageWidget(WorkflowSettingsPageContr
     connect(workflowOutputButton, SIGNAL(clicked()), SLOT(sl_getWorkflowOutputDir()));
     colorWidget->setMinimumHeight(label->height());
     colorWidget->installEventFilter(this);
-//    runInSeparateProcessBox->setVisible(Version::appVersion().isDevVersion);
 }
 
 void WorkflowSettingsPageWidget::sl_getDirectory() {
@@ -132,7 +128,6 @@ void WorkflowSettingsPageWidget::setState(AppSettingsGUIPageState* s) {
     snapBox->setChecked(state->snap2grid);
     lockBox->setChecked(state->lockRun);
     debuggerBox->setChecked(state->enableDebugger);
-    //failBox->setChecked(state->failFast);
     int idx = styleCombo->findData(state->style);
     if (idx < 0) idx = 1; 
     styleCombo->setCurrentIndex(idx);
@@ -142,7 +137,6 @@ void WorkflowSettingsPageWidget::setState(AppSettingsGUIPageState* s) {
     QPalette pal = colorWidget->palette();
     pal.setColor(colorWidget->backgroundRole(), state->color);
     colorWidget->setPalette(pal);
-    runInSeparateProcessBox->setChecked(state->runSchemaInSeparateProcess);
     extToolDirEdit->setText(state->externalToolCfgDir);
     includedlDirEdit->setText(state->includedElementsDir);
     workflowOutputEdit->setText(state->workflowOutputDir);
@@ -155,12 +149,10 @@ AppSettingsGUIPageState* WorkflowSettingsPageWidget::getState(QString& ) const {
     state->snap2grid = snapBox->isChecked();
     state->lockRun = lockBox->isChecked();
     state->enableDebugger = debuggerBox->isChecked();
-    //state->failFast = failBox->isChecked();
     state->style = styleCombo->itemData(styleCombo->currentIndex()).toString();
     state->font = fontCombo->currentFont();
     state->path = dirEdit->text();
     state->color = colorWidget->palette().color(colorWidget->backgroundRole());
-    state->runSchemaInSeparateProcess = runInSeparateProcessBox->isChecked();
     state->externalToolCfgDir = extToolDirEdit->text();
     state->includedElementsDir = includedlDirEdit->text();
     state->useWorkflowOutputDir = workflowOutputBox->isChecked();

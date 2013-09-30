@@ -192,13 +192,9 @@ void KalignMSAEditorContext::sl_align() {
     }
     
     AlignGObjectTask * kalignTask = NULL;
-    if(WorkflowSettings::runInSeparateProcess()) {
-        kalignTask = new KalignGObjectRunFromSchemaTask(obj, s);
-    } else {
-        kalignTask = new KalignGObjectTask(obj, s);
-    }
+    kalignTask = new KalignGObjectRunFromSchemaTask(obj, s);
 
-	if (dlg.translateToAmino()) {
+    if (dlg.translateToAmino()) {
         AppContext::getTaskScheduler()->registerTopLevelTask(new AlignInAminoFormTask(obj, kalignTask,dlg.getTranslationId()));
     } else {
         AppContext::getTaskScheduler()->registerTopLevelTask(kalignTask);

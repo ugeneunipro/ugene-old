@@ -56,13 +56,6 @@ static QString findWorkflowPath(const QString & schemaName) {
     return QString();
 }
 
-/*static QString getFormatExt(const QString& docFormatId) {
-    DocumentFormat* df = BaseDocumentFormats::get(docFormatId);
-    SAFE_POINT(df, QString("Document format is not found: %1").arg(docFormatId) ,"");
-    return df->getSupportedDocumentFileExtensions().first();
-}*/
-
-
 SimpleInOutWorkflowTask::SimpleInOutWorkflowTask(const SimpleInOutWorkflowTaskConfig& _conf)
 : DocumentProviderTask(tr("Run workflow: %1").arg(_conf.schemaName), TaskFlags_NR_FOSCOE), conf(_conf)
 {
@@ -103,7 +96,7 @@ QList<Task*> SimpleInOutWorkflowTask::onSubTaskFinished(Task* subTask) {
     
     if (subTask == saveInputTask) {
         // run workflow
-        conf.extraArgs << "--in=" + inputTmpFile.fileName();        
+        conf.extraArgs << "--in=" + inputTmpFile.fileName();
         conf.extraArgs << "--out=" + resultTmpFile.fileName();
         conf.extraArgs << "--format=" + conf.outFormat;
         RunCmdlineWorkflowTaskConfig monitorConf(schemaPath, conf.extraArgs);

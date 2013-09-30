@@ -304,32 +304,14 @@ QList<Task*> KalignWithExtFileSpecifySupportTask::onSubTaskFinished( Task* subTa
         SAFE_POINT(currentDocument->getObjects().length() == 1, QString("Number of objects != 1 : %1").arg(loadDocumentTask->getURLString()), res);
         mAObject=qobject_cast<MAlignmentObject*>(currentDocument->getObjects().first());
         SAFE_POINT(mAObject != NULL, QString("MA object not found!: %1").arg(loadDocumentTask->getURLString()), res);
-        if (WorkflowSettings::runInSeparateProcess()) {
-            kalignGObjectTask = new KalignGObjectRunFromSchemaTask(mAObject, config);
-        } else {
-            kalignGObjectTask = new KalignGObjectTask(mAObject, config);
-        }
-        assert(kalignGObjectTask != NULL);
+
+        kalignGObjectTask = new KalignGObjectRunFromSchemaTask(mAObject, config);
         res.append(kalignGObjectTask);
     } else if (subTask == kalignGObjectTask){
         IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(config.outputFilePath));
         saveDocumentTask = new SaveDocumentTask(currentDocument,iof,config.outputFilePath);
         res.append(saveDocumentTask);
     } else if (subTask == saveDocumentTask){
-        //Project* proj = AppContext::getProject();
-        //if (proj == NULL) {
-        //    res.append(AppContext::getProjectLoader()->openWithProjectTask(currentDocument->getURL(), currentDocument->getGHintsMap()));
-        //} else {
-        //    Document* projDoc = proj->findDocumentByURL(currentDocument->getURL());
-        //    if (projDoc != NULL) {
-        //        projDoc->setLastUpdateTime();
-        //        res.append(new LoadUnloadedDocumentAndOpenViewTask(projDoc));
-        //    } else {
-        //        // Add document to project
-        //        res.append(new AddDocumentAndOpenViewTask(currentDocument));
-        //        cleanDoc = false;
-        //    }
-        //}
         Task* openTask = AppContext::getProjectLoader()->openWithProjectTask(config.outputFilePath);
         if (openTask != NULL) {
             res << openTask;
@@ -337,7 +319,5 @@ QList<Task*> KalignWithExtFileSpecifySupportTask::onSubTaskFinished( Task* subTa
     }
     return res;
 }
-//Task::ReportResult KalignWithExtFileSpecifySupportTask::report(){
-//    return ReportResult_Finished;
-//    }
+
 } //namespace

@@ -40,14 +40,12 @@ namespace U2 {
 #define SNAP_STATE                  SETTINGS + "snap2rid"
 #define LOCK_STATE                  SETTINGS + "monitorRun"
 #define DEBUGGER_STATE              SETTINGS + "enableDebugger"
-#define FAIL_STATE                  SETTINGS + "failFast"
 #define STYLE                       SETTINGS + "style"
 #define FONT                        SETTINGS + "font"
 #define DIR                         "workflow_settings/path"
 #define BG_COLOR                    SETTINGS + "bgcolor"
 #define RUN_MODE                    SETTINGS + "runMode"
 #define SCRIPT_MODE                 SETTINGS + "scriptMode"
-#define RUN_IN_SEPARATE_PROC        SETTINGS + "runInSeparateProcess"
 #define EXTERNAL_TOOL_WORKER_PATH   SETTINGS + "externalToolWorkerPath"
 #define INCLUDED_WORKER_PATH        SETTINGS + "includedWorkerPath"
 #define USE_WORKFLOW_OUTPUT_PATH    SETTINGS + "useWorkflowOutputPath"
@@ -90,14 +88,6 @@ bool WorkflowSettings::isDebuggerEnabled() {
 void WorkflowSettings::setDebuggerEnabled(bool v) {
     AppContext::getSettings()->setValue(DEBUGGER_STATE, v);
 }
-
-/*bool WorkflowSettings::failFast() {
-    return AppContext::getSettings()->getValue(FAIL_STATE, true).toBool();
-}
-
-void WorkflowSettings::setFailFast( bool v ) {
-    AppContext::getSettings()->setValue(FAIL_STATE, v);
-}*/
 
 QString WorkflowSettings::defaultStyle()
 {
@@ -266,28 +256,6 @@ bool WorkflowSettings::getScriptingMode() {
 void WorkflowSettings::setScriptingMode(bool md) {
     AppContext::getSettings()->setValue(SCRIPT_MODE, md);
 }
-
-bool WorkflowSettings::runInSeparateProcess() {
-    
-//#ifdef Q_OS_MAC
-    return false; //UGENE-1723
-//#endif
-    if (!AppContext::isGUIMode()) {
-        return false; //for command line mode ugene runs workflows in threads
-    }
-
-    bool res = AppContext::getSettings()->getValue(RUN_IN_SEPARATE_PROC, QVariant(true)).value<bool>();
-    if (res) {
-        QString path = getCmdlineUgenePath();
-        res = !path.isEmpty();
-    }
-    return res;
-}
-
-void WorkflowSettings::setRunInSeparateProcess(bool m) {
-    return AppContext::getSettings()->setValue(RUN_IN_SEPARATE_PROC, m);
-}
-
 
 static QStringList generateCandidatesWithExt(const QString & path) {
     QStringList res;

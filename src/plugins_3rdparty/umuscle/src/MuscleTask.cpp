@@ -106,9 +106,9 @@ MuscleTask::MuscleTask(const MAlignment& ma, const MuscleTaskSettings& _config)
     
     ctx->input_uIds = new unsigned[inputSubMA.getNumRows()];
     ctx->tmp_uIds = new unsigned[inputSubMA.getNumRows()];
-	for(unsigned i=0, n = inputSubMA.getNumRows(); i<n; i++) {
+    for(unsigned i=0, n = inputSubMA.getNumRows(); i<n; i++) {
         ctx->input_uIds[i] = i;
-	}
+    }
 
     if (config.nThreads == 1 || (config.op != MuscleTaskOp_Align)) {
         tpm = Task::Progress_Manual;
@@ -211,20 +211,20 @@ void MuscleTask::doAlign(bool refine) {
                 resultMA.addRow(row.getName(), emptySeq, os);
             }
             if (config.regionToAlign.startPos != 0) {
-				for(int i=0; i < nSeq; i++)  {
-					int regionLen = config.regionToAlign.startPos;
-					MAlignmentRow inputRow = inputMA.getRow(ids[i]).mid(0,regionLen, os);
-					resultMA.appendChars(i, inputRow.toByteArray(regionLen, os).constData(), regionLen);
-				}
+                for(int i=0; i < nSeq; i++)  {
+                    int regionLen = config.regionToAlign.startPos;
+                    MAlignmentRow inputRow = inputMA.getRow(ids[i]).mid(0,regionLen, os);
+                    resultMA.appendChars(i, inputRow.toByteArray(regionLen, os).constData(), regionLen);
+                }
             }
             resultMA += resultSubMA;
             if (config.regionToAlign.endPos() != inputMA.getLength()) {
                 int subStart = config.regionToAlign.endPos();
                 int subLen = inputMA.getLength() - config.regionToAlign.endPos();
-				for(int i = 0; i < nSeq; i++) {
-					MAlignmentRow inputRow = inputMA.getRow(ids[i]).mid(subStart, subLen, os);
-					resultMA.appendChars(i, inputRow.toByteArray(subLen, os).constData(), subLen);
-				}
+                for(int i = 0; i < nSeq; i++) {
+                    MAlignmentRow inputRow = inputMA.getRow(ids[i]).mid(subStart, subLen, os);
+                    resultMA.appendChars(i, inputRow.toByteArray(subLen, os).constData(), subLen);
+                }
             }
             delete[] ids;
             //TODO: check if there are GAP columns on borders and remove them        
@@ -267,22 +267,6 @@ MuscleAddSequencesToProfileTask::MuscleAddSequencesToProfileTask(MAlignmentObjec
     }
     setTaskName(tn);
 
-
-    //todo: create 'detect file format task'
-//     DocumentFormatConstraints c;
-//     c.checkRawData = true;
-//     c.supportedObjectTypes += GObjectTypes::MULTIPLE_ALIGNMENT; //MA here comes first because for a sequence format raw sequence can be used by default
-//     c.rawData = IOAdapterUtils::readFileHeader(fileWithSequencesOrProfile);
-//     QList<DocumentFormatId> formats = AppContext::getDocumentFormatRegistry()->selectFormats(c);
-//     if (formats.isEmpty()) {
-//         c.supportedObjectTypes.clear();
-//         c.supportedObjectTypes += GObjectTypes::SEQUENCE;
-//         formats = AppContext::getDocumentFormatRegistry()->selectFormats(c);
-//         if (formats.isEmpty()) {
-//             stateInfo.setError(tr("input_format_error"));
-//             return;
-//         }
-//     }
     QList<FormatDetectionResult> detectedFormats = DocumentUtils::detectFormat(fileWithSequencesOrProfile);    
     if (detectedFormats.isEmpty()) {
         setError("Unknown format");
@@ -550,31 +534,13 @@ QList<Task*> MuscleWithExtFileSpecifySupportTask::onSubTaskFinished(Task* subTas
             config.regionToAlign = U2Region(0, mAObject->getLength());
         }
 
-        if (WorkflowSettings::runInSeparateProcess()) {
-            muscleGObjectTask = new MuscleGObjectRunFromSchemaTask(mAObject, config);
-        } else {
-            muscleGObjectTask = new MuscleGObjectTask(mAObject, config);
-        }
+        muscleGObjectTask = new MuscleGObjectRunFromSchemaTask(mAObject, config);
         assert(muscleGObjectTask != NULL);
         res.append(muscleGObjectTask);
     } else if (subTask == muscleGObjectTask){
         saveDocumentTask = new SaveDocumentTask(currentDocument,AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(config.outputFilePath)),config.outputFilePath);
         res.append(saveDocumentTask);
     } else if (subTask == saveDocumentTask){
-        //Project* proj = AppContext::getProject();
-        //if (proj == NULL) {
-        //    res.append(AppContext::getProjectLoader()->openWithProjectTask(currentDocument->getURL(), currentDocument->getGHintsMap()));
-        //} else {
-        //    Document* projDoc = proj->findDocumentByURL(currentDocument->getURL());
-        //    if (projDoc) {
-        //        projDoc->setLastUpdateTime();
-        //        res.append(new LoadUnloadedDocumentAndOpenViewTask(projDoc));
-        //    } else {
-        //        // Add document to project
-        //        res.append(new AddDocumentAndOpenViewTask(currentDocument));
-        //        cleanDoc = false;
-        //    }
-        //}
         Task* openTask = AppContext::getProjectLoader()->openWithProjectTask(config.outputFilePath);
         if (openTask != NULL) {
             res << openTask;
@@ -586,7 +552,6 @@ QList<Task*> MuscleWithExtFileSpecifySupportTask::onSubTaskFinished(Task* subTas
 Task::ReportResult MuscleWithExtFileSpecifySupportTask::report(){
     return ReportResult_Finished;
 }
-
 
 //////////////////////////////////
 //MuscleGObjectRunFromSchemaTask
