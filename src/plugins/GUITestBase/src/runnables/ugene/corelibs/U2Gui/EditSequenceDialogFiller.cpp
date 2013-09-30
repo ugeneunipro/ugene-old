@@ -113,24 +113,27 @@ void InsertSequenceFiller::run()
 
     GTGlobals::sleep(1000);
 
-    QCheckBox *checkButton1 = dialog->findChild<QCheckBox*>(QString::fromUtf8("mergeAnnotationsBox"));
-    GT_CHECK(checkButton1 != NULL, "Check box not found");
-    GTCheckBox::setChecked(os, checkButton1, mergeAnnotations);
 
     if (saveToNewFile) {
+        QCheckBox *checkButton1 = dialog->findChild<QCheckBox*>(QString::fromUtf8("mergeAnnotationsBox"));
+        GT_CHECK(checkButton1 != NULL, "Check box not found");
+        GTCheckBox::setChecked(os, checkButton1, mergeAnnotations);
+
         QLineEdit *lineEdit = dialog->findChild<QLineEdit*>("filepathEdit");
         GT_CHECK(lineEdit != NULL, "line edit not found");
         GTLineEdit::setText(os, lineEdit, documentLocation);
+
+        QComboBox *comboBox = dialog->findChild<QComboBox*>();
+        GT_CHECK(comboBox != NULL, "ComboBox not found");
+
+        int index = comboBox->findText(comboBoxItems[format]);
+        GT_CHECK(index != -1, QString("item \"%1\" in combobox not found").arg(comboBoxItems[format]));
+        if (comboBox->currentIndex() != index){
+            GTComboBox::setCurrentIndex(os, comboBox, index);
+        }
     }
 
-    QComboBox *comboBox = dialog->findChild<QComboBox*>();
-    GT_CHECK(comboBox != NULL, "ComboBox not found");
-
-    int index = comboBox->findText(comboBoxItems[format]);
-    GT_CHECK(index != -1, QString("item \"%1\" in combobox not found").arg(comboBoxItems[format]));
-    if (comboBox->currentIndex() != index){
-        GTComboBox::setCurrentIndex(os, comboBox, index);
-    }
+   
 
     QPushButton *createButton = dialog->findChild<QPushButton*>(QString::fromUtf8("OKButton"));
     GT_CHECK(createButton != NULL, "Create button not found");

@@ -38,9 +38,11 @@
 #include "GTUtilsBookmarksTreeView.h"
 #include "GTUtilsAnnotationsTreeView.h"
 #include "GTUtilsDialog.h"
+#include "GTUtilsSequenceView.h"
 #include "GTUtilsProject.h"
 #include "GTUtilsMdi.h"
 #include "runnables/ugene/corelibs/U2View/utils_smith_waterman/SmithWatermanDialogBaseFiller.h"
+#include "runnables/ugene/corelibs/U2Gui/EditSequenceDialogFiller.h"
 #include "runnables/ugene/corelibs/U2View/ov_msa/ConsensusSelectorDialogFiller.h"
 #include "runnables/ugene/plugins/dotplot/DotPlotDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/RangeSelectionDialogFiller.h"
@@ -1648,6 +1650,32 @@ GUI_TEST_CLASS_DEFINITION( test_2160 )
     CHECK_SET_ERR( 18 == GTUtilsMSAEditorSequenceArea::getNameList( os ).size( ),
         "MSA row count unexpectedly changed" );
 }
+
+GUI_TEST_CLASS_DEFINITION( test_1924 )
+{   
+    //1. Open any sequence
+    GTFileDialog::openFile( os, dataDir + "samples/FASTA/", "human_T1.fa");
+    GTGlobals::sleep();
+
+    //2. Use context menu on the sequence     {Edit sequence -> Insert subsequence}
+    //3. Fill in "atcgtac" or any valid sequence containing lower case
+    Runnable *filler = new InsertSequenceFiller(os,
+        "atcgtac"
+        );
+    GTUtilsDialog::waitForDialog(os, filler);
+    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_ACTIONS), QStringList() <<  ADV_MENU_EDIT << ACTION_EDIT_INSERT_SUBSEQUENCE, GTGlobals::UseKey);
+    GTGlobals::sleep();
+
+    //4. Click OK
+    //Expected state: subsequence inserted
+    //Bug state: Warning message is shown first	
+
+    int sequenceLength = GTUtilsSequenceView::getLengthOfSequence(os);
+    CHECK_SET_ERR(sequenceLength == 199957, "Sequence length is " + QString::number(sequenceLength) + ", expected 199957");
+
+    QString sequenceBegin = GTUtilsSequenceView::getBeginOfSequenceAsString(os, 7);
+    CHECK_SET_ERR(sequenceBegin == "ATCGTAC", "Sequence starts with <" + sequenceBegin + ">, expected ATCGTAC");}
+
 
 } // GUITest_regression_scenarios namespace
 
