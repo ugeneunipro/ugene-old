@@ -1475,6 +1475,96 @@ GUI_TEST_CLASS_DEFINITION( test_2021_5 )
         "Unexpected MSA content has occurred" );
 }
 
+GUI_TEST_CLASS_DEFINITION( test_2021_6 )
+{
+    // 1. Open "data/samples/CLUSTAL/COI.aln".
+    GTFileDialog::openFile( os, dataDir + "samples/CLUSTALW/", "COI.aln" );
+
+    //2. Set cursor to the position 45 of the first line (after gaps).
+    const QPoint initialSelectionPos( 44, 0 );
+    GTUtilsMSAEditorSequenceArea::click( os, initialSelectionPos );
+    GTGlobals::sleep(200);
+
+    //3. Press BACKSPACE.
+    GTKeyboardDriver::keyPress( os, GTKeyboardDriver::key["back"] );
+    GTGlobals::sleep( 200 );
+
+    // 4. Expected state: the gap was deleted, selection moves to the previous symbol.
+    GTUtilsMSAEditorSequenceArea::selectArea( os, QPoint( 0, 0 ), QPoint( 43, 0 ) );
+    GTKeyboardDriver::keyClick( os, 'c', GTKeyboardDriver::key["ctrl"] );
+    GTGlobals::sleep( 200 );
+    const QString finalMsaContent = GTClipboard::text( os );
+    CHECK_SET_ERR(  "TAAGACTTCTAATTCGAGCCGAATTAGGTCAACCAGGATAC--C" == finalMsaContent,
+                    "Unexpected MSA content has occurred" );
+}
+
+GUI_TEST_CLASS_DEFINITION( test_2021_7 )
+{
+    // 1. Open "data/samples/CLUSTAL/COI.aln".
+    GTFileDialog::openFile( os, dataDir + "samples/CLUSTALW/", "COI.aln" );
+
+    //2. Select the 45 and 46 of the second line (two symbols after gaps).
+    GTUtilsMSAEditorSequenceArea::selectArea( os, QPoint( 44, 1 ), QPoint( 45, 1 ) );
+    GTGlobals::sleep(200);
+
+    //3. Press BACKSPACE.
+    GTKeyboardDriver::keyPress( os, GTKeyboardDriver::key["back"] );
+    GTGlobals::sleep( 200 );
+
+    // 4. Expected state: the gap was deleted, selection moves to the previous symbol.
+    GTUtilsMSAEditorSequenceArea::selectArea( os, QPoint( 0, 1 ), QPoint( 44, 1 ) );
+    GTKeyboardDriver::keyClick( os, 'c', GTKeyboardDriver::key["ctrl"] );
+    GTGlobals::sleep( 200 );
+    const QString finalMsaContent = GTClipboard::text( os );
+    CHECK_SET_ERR(  "TAAGCTTACTAATCCGGGCCGAATTAGGTCAACCTGGTTAT-CTA" == finalMsaContent,
+                    "Unexpected MSA content has occurred" );
+
+}
+
+GUI_TEST_CLASS_DEFINITION( test_2021_8 )
+{
+    // 1. Open "data/samples/CLUSTAL/COI.aln".
+    GTFileDialog::openFile( os, dataDir + "samples/CLUSTALW/", "COI.aln" );
+
+    //2. Select the 45 and 46 of the second line (two symbols after gaps).
+    GTUtilsMSAEditorSequenceArea::selectArea( os, QPoint( 44, 1 ), QPoint( 45, 1 ) );
+    GTGlobals::sleep(200);
+
+    //3. Press BACKSPACE.
+    GTKeyboardDriver::keyPress( os, GTKeyboardDriver::key["back"] );
+    GTGlobals::sleep( 200 );
+
+    // 4. Expected state: the gap was deleted, selection moves to the previous symbol.
+    GTUtilsMSAEditorSequenceArea::selectArea( os, QPoint( 0, 1 ), QPoint( 44, 1 ) );
+    GTKeyboardDriver::keyClick( os, 'c', GTKeyboardDriver::key["ctrl"] );
+    GTGlobals::sleep( 200 );
+    const QString finalMsaContent = GTClipboard::text( os );
+    CHECK_SET_ERR(  "TAAGCTTACTAATCCGGGCCGAATTAGGTCAACCTGGTTAT-CTA" == finalMsaContent,
+                    "Unexpected MSA content has occurred" );
+}
+
+GUI_TEST_CLASS_DEFINITION( test_2021_9 )
+{
+    // 1. Open "data/samples/CLUSTAL/COI.aln".
+    GTFileDialog::openFile( os, dataDir + "samples/CLUSTALW/", "COI.aln" );
+
+    //2. Select the 45 and 46 of the second line (two symbols after gaps).
+    GTUtilsMSAEditorSequenceArea::selectArea( os, QPoint( 44, 2 ), QPoint( 46, 2 ) );
+    GTGlobals::sleep(200);
+
+    //3. Press BACKSPACE.
+    GTKeyboardDriver::keyPress( os, GTKeyboardDriver::key["back"] );
+    GTGlobals::sleep( 200 );
+
+    // 4. Expected state: the gap was deleted, selection moves to the previous symbol.
+    GTUtilsMSAEditorSequenceArea::selectArea( os, QPoint( 0, 2 ), QPoint( 46, 2 ) );
+    GTKeyboardDriver::keyClick( os, 'c', GTKeyboardDriver::key["ctrl"] );
+    GTGlobals::sleep( 200 );
+    const QString finalMsaContent = GTClipboard::text( os );
+    CHECK_SET_ERR(  "TTAGTTTATTAATTCGAGCTGAACTAGGTCAACCAGGCTATTTAATT" == finalMsaContent,
+                    "Unexpected MSA content has occurred" );
+}
+
 GUI_TEST_CLASS_DEFINITION( test_2089 )
 {
     // 1. Start UGENE with a new *.ini file.
