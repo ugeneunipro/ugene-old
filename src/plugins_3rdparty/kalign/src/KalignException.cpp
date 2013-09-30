@@ -38,7 +38,7 @@ KalignException::KalignException(const char* _str) {
 }
 
 KalignException::KalignException() {
-	memset(str, 4096, '\0');
+        memset(str, '\0', 4096);
 }
 
 } // namespace U2

@@ -555,5 +555,5 @@ MuscleException::MuscleException(const char* _str) {
 }
 
 MuscleException::MuscleException() {
-    memset(str, 4096, '\0');
+    memset(str, '\0', 4096);
 }
