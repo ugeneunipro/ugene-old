@@ -231,7 +231,7 @@ public:
 
     DASAnnotationsSettings()
         :identityThreshold(0)
-        :maxResults(1){}
+        ,maxResults(1){}
     QByteArray sequence;
     UniprotBlastSettings blastSettings;
     QList<DASSource> featureSources;
