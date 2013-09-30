@@ -55,14 +55,14 @@ MAFFTSupportTask::MAFFTSupportTask(const MAlignment& _inputMsa, const GObjectRef
     : ExternalToolSupportTask("Run MAFFT alignment task", TaskFlags_NR_FOSCOE),
       inputMsa(_inputMsa),
       objRef(_objRef),
+      tmpDoc(NULL),
+      logParser(NULL),
+      saveTemporaryDocumentTask(NULL),
+      mAFFTTask(NULL),
+      loadTmpDocumentTask(NULL),
       settings(_settings)
 {
     GCOUNTER( cvar, tvar, "MAFFTSupportTask" );
-    saveTemporaryDocumentTask=NULL;
-    loadTmpDocumentTask=NULL;
-    mAFFTTask=NULL;
-    tmpDoc=NULL;
-    logParser=NULL;
     resultMA.setAlphabet(inputMsa.getAlphabet());
     resultMA.setName(inputMsa.getName());
 }
@@ -205,6 +205,7 @@ QList<Task*> MAFFTSupportTask::onSubTaskFinished(Task* subTask) {
                 {
                     U2OpStatus2Log os;
                     U2UseCommonUserModStep userModStep(obj->getEntityRef(), os);
+                    Q_UNUSED(userModStep);
                     if (os.hasError()) {
                         stateInfo.setError("Failed to apply the result of the alignment!");
                         return res;
@@ -253,15 +254,15 @@ Task::ReportResult MAFFTSupportTask::report(){
 //MAFFTWithExtFileSpecifySupportTask
 MAFFTWithExtFileSpecifySupportTask::MAFFTWithExtFileSpecifySupportTask(const MAFFTSupportTaskSettings& _settings) :
         Task("Run MAFFT alignment task", TaskFlags_NR_FOSCOE),
+        mAObject(NULL),
+        currentDocument(NULL),
+        cleanDoc(true),
+        saveDocumentTask(NULL),
+        loadDocumentTask(NULL),
+        mAFFTSupportTask(NULL),
         settings(_settings)
 {
     GCOUNTER( cvar, tvar, "MAFFTSupportTask" );
-    mAObject = NULL;
-    currentDocument = NULL;
-    saveDocumentTask = NULL;
-    loadDocumentTask = NULL;
-    mAFFTSupportTask = NULL;
-    cleanDoc = true;
 }
 MAFFTWithExtFileSpecifySupportTask::~MAFFTWithExtFileSpecifySupportTask(){
     if (cleanDoc){
@@ -340,8 +341,11 @@ MAFFTLogParser::MAFFTLogParser(int _countSequencesInMSA, int _countRefinementIte
         outputFileName(_outputFileName),
         isOutputFileCreated(false),
         firstDistanceMatrix(false),
+        secondDistanceMatrix(false),
         firstUPGMATree(false),
+        secondUPGMATree(false),
         firstProAlign(false),
+        secondProAlign(false),
         progress(0)
 {
     outFile.setFileName(outputFileName);
@@ -380,43 +384,61 @@ int MAFFTLogParser::getProgress(){
      Progressive alignment - 30-80%
      STEP 001-002-3 - 80-100%
     */
-    if(!lastPartOfLog.isEmpty()){
-        foreach(QString buf, lastPartOfLog){
-            if(buf.contains("Making")){
-                if(firstDistanceMatrix){
-                    progress=20;
-                }else{
-                    firstDistanceMatrix=true;
-                    progress=5;
+    if (!lastPartOfLog.isEmpty()) {
+        foreach (QString buf, lastPartOfLog) {
+            if (buf.contains("Making")) {
+                if (firstDistanceMatrix) {
+                    if (!secondDistanceMatrix) {
+                        secondDistanceMatrix = true;
+                    } else {
+                        progress = 40;
+                    }
+                } else {
+                    firstDistanceMatrix = true;
+                    progress = 5;
                 }
             }
-            if(buf.contains("Constructing")){
-                if(firstUPGMATree){
-                    progress=25;
-                }else{
-                    firstUPGMATree=true;
-                    progress=10;
+            if (buf.contains("Constructing")) {
+                if (firstUPGMATree) {
+                    if (!secondUPGMATree) {
+                        secondUPGMATree = true;
+                    } else {
+                        progress = 45;
+                    }
+                } else {
+                    firstUPGMATree = true;
+                    progress = 10;
                 }
             }
-            if(buf.contains("Progressive")){
-                if(!firstProAlign){
-                    firstProAlign=true;
-                    progress=15;
+            if (buf.contains("Progressive")) {
+                if (firstProAlign) {
+                    if (!secondProAlign) {
+                        secondProAlign = true;
+                    } else {
+                        progress = 55;
+                    }
+                } else {
+                    firstProAlign = true;
+                    progress = 15;
                 }
             }
         }
-        if(firstProAlign&&firstUPGMATree&&firstDistanceMatrix){
-            QString lastMessage=lastPartOfLog.last();
-            if(lastMessage.contains(QRegExp("STEP +\\d+ /"))){
+        if (firstProAlign && firstUPGMATree && firstDistanceMatrix) {
+            QString lastMessage = lastPartOfLog.last();
+            if (lastMessage.contains(QRegExp("STEP +\\d+ /"))) {
                 QRegExp rx("STEP +(\\d+) /");
-                assert(rx.indexIn(lastMessage)>-1);
+                assert(rx.indexIn(lastMessage) > -1);
                 rx.indexIn(lastMessage);
-                progress=rx.cap(1).toInt()*50/countSequencesInMSA+30;
-            }else if(lastMessage.contains(QRegExp("STEP +\\d+-"))){
+                if (!(secondProAlign && secondUPGMATree && secondDistanceMatrix)) {
+                    progress = rx.cap(1).toInt() * 25 / countSequencesInMSA + 15;
+                } else {
+                    progress = rx.cap(1).toInt() * 25 / countSequencesInMSA + 55;
+                }
+            } else if (lastMessage.contains(QRegExp("STEP +\\d+-"))) {
                 QRegExp rx("STEP +(\\d+)-");
-                assert(rx.indexIn(lastMessage)>-1);
+                assert(rx.indexIn(lastMessage) > -1);
                 rx.indexIn(lastMessage);
-                progress=rx.cap(1).toInt()*20/countRefinementIter+80;
+                progress = rx.cap(1).toInt() * 20 / countRefinementIter + 80;
             }
         }
     }

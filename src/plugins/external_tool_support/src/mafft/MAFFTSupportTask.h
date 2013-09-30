@@ -62,6 +62,7 @@ public:
 
 class MAFFTSupportTask : public ExternalToolSupportTask {
     Q_OBJECT
+    Q_DISABLE_COPY(MAFFTSupportTask)
 public:
     MAFFTSupportTask(const MAlignment& _inputMsa, const GObjectReference& _objRef, const MAFFTSupportTaskSettings& settings);
     ~MAFFTSupportTask();
@@ -89,6 +90,7 @@ class MAlignmentObject;
 
 class MAFFTWithExtFileSpecifySupportTask : public Task {
     Q_OBJECT
+    Q_DISABLE_COPY(MAFFTWithExtFileSpecifySupportTask)
 public:
     MAFFTWithExtFileSpecifySupportTask(const MAFFTSupportTaskSettings& settings);
     ~MAFFTWithExtFileSpecifySupportTask();
@@ -108,6 +110,7 @@ private:
 };
 
 class MAFFTLogParser : public ExternalToolLogParser {
+    Q_DISABLE_COPY(MAFFTLogParser)
 public:
     MAFFTLogParser(int countSequencesInMSA, int countRefinementIter, const QString& outputFileName);
     ~MAFFTLogParser(){ cleanup(); }
@@ -126,8 +129,11 @@ private:
     QString lastErrLine;
 
     bool    firstDistanceMatrix;
+    bool    secondDistanceMatrix;
     bool    firstUPGMATree;
+    bool    secondUPGMATree;
     bool    firstProAlign;
+    bool    secondProAlign;
     int     progress;
 };
 
