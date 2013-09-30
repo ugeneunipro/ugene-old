@@ -144,7 +144,6 @@ void CallVariantsWorkerFactory::init() {
     {
         QMap<Descriptor, DataTypePtr> refSeqMap;
         refSeqMap[BaseSlots::URL_SLOT()] = BaseTypes::STRING_TYPE();
-        refSeqMap[BaseSlots::DNA_SEQUENCE_SLOT()] = BaseTypes::DNA_SEQUENCE_TYPE();
         DataTypePtr inSet(new MapDataType(REF_SEQ_PORT_ID, refSeqMap));
         Descriptor id(BasePorts::IN_SEQ_PORT_ID(), CallVariantsWorker::tr("Input sequences"), 
             CallVariantsWorker::tr("A nucleotide reference sequence."));
@@ -152,7 +151,6 @@ void CallVariantsWorkerFactory::init() {
 
         QMap<Descriptor, DataTypePtr> assMap;
         assMap[BaseSlots::URL_SLOT()] = BaseTypes::STRING_TYPE();
-        assMap[BaseSlots::ASSEMBLY_SLOT()] = BaseTypes::ASSEMBLY_TYPE();
         assMap[BaseSlots::DATASET_SLOT()] = BaseTypes::STRING_TYPE();
         DataTypePtr inAssemblySet(new MapDataType(ASSEMBLY_PORT_ID, assMap));
         Descriptor idA(BasePorts::IN_ASSEMBLY_PORT_ID(), CallVariantsWorker::tr("Input assembly"), 
