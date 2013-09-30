@@ -25,12 +25,18 @@
 #include <U2Core/global.h>
 #include <U2Core/Task.h>
 
+#include <U2Core/DASSource.h>
+#include <U2Core/AnnotationTableObject.h>
+
 #include <QtCore/QEventLoop>
 #include <QtCore/QTimer>
 
 #include <QtNetwork/QNetworkReply>
 
 namespace U2 {
+
+#define MIN_SEQ_LENGTH 4
+#define MAX_SEQ_LENGTH 1900 //because a GET request can handle only 2048 characters
 
 class ReplyHandler : public QObject {
     Q_OBJECT
@@ -214,11 +220,65 @@ private:
     QByteArray              sequence;
     UniprotBlastSettings    settings;
 
-    QEventLoop*             loop;               // main task loop: enter at the task beginning, left on task finish or cancelling
+    QEventLoop*             loop;               // main task loop: enter at the task beginning, left on task finish or canceling
     QList<UniprotResult>    results;
 
     static const QByteArray BASE_URL;
 };
+
+class U2CORE_EXPORT DASAnnotationsSettings {
+public:
+
+    DASAnnotationsSettings()
+        :identityThreshold(0)
+        :maxResults(1){}
+    QByteArray sequence;
+    UniprotBlastSettings blastSettings;
+    QList<DASSource> featureSources;
+    qint64 identityThreshold;
+    qint64 maxResults;
+};
+
+typedef QMap<QString, QList<SharedAnnotationData> > DASGroup;
+
+class U2CORE_EXPORT DASAnnotationData{
+public:
+    DASAnnotationData(qint64 _seqLen, qint64 _identityThreshold)
+        :seqLen(_seqLen)
+        ,identityThreshold(_identityThreshold){}
+
+    QStringList getAccessionNumbers();
+    DASGroup getDasGroup(const QString& accNumber);
+    void addDasGroup(const QString& accNumber, DASGroup dasGroup);
+    bool contains (const QString& accessionNumber);
+    QList<SharedAnnotationData> prepareResults();
+
+private:
+    QMap<QString, DASGroup > dasData;
+    qint64 seqLen;
+    qint64 identityThreshold;
+};
+
+class U2CORE_EXPORT UniprotBlastAndLoadDASAnnotations : public Task{
+     Q_OBJECT
+public:
+    UniprotBlastAndLoadDASAnnotations (const DASAnnotationsSettings& _settings);
+
+    void prepare();
+    QList<Task*> onSubTaskFinished(Task* subTask);
+    QList<SharedAnnotationData> prepareResults();
+    QStringList getAccessionNumbers() {return dasData.getAccessionNumbers();}
+
+private:
+    DASAnnotationsSettings  settings;
+
+    UniprotBlastTask*       blastTask;
+    QList<Task*>            dasTasks;
+
+    DASAnnotationData       dasData;
+
+};
+
 
 }   // namespace U2
 

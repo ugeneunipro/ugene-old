@@ -1,0 +1,112 @@
+#@UGENE_WORKFLOW
+#Annotate with DAS. Finds similar protein sequence using remote BLAST. Using IDs of sequences found loads annotation for DAS sources. Nucleotide sequences are skipped if any supplied to input.
+
+
+
+workflow DAS_annotation{
+
+    read-sequence {
+        type:read-sequence;
+        name:"Read Sequence";
+        url-in {
+            dataset:"Dataset 1";
+        }
+    }
+    write-sequence {
+        type:write-sequence;
+        name:"Write Sequence";
+        document-format:genbank;
+    }
+    dasannotation-search {
+        type:dasannotation-search;
+        name:"Annotate with DAS";
+    }
+
+
+    .actor-bindings {
+        read-sequence.out-sequence->dasannotation-search.in-sequence
+        dasannotation-search.out-annotations->write-sequence.in-sequence
+    }
+
+    dasannotation-search.annotations->write-sequence.in-sequence.annotations
+    read-sequence.annotations->write-sequence.in-sequence.annotations
+    read-sequence.sequence->write-sequence.in-sequence.sequence
+    read-sequence.sequence->dasannotation-search.in-sequence.sequence
+
+    .meta {
+        parameter-aliases {
+            read-sequence.url-in {
+                alias:in;
+                description:"Input amino acid sequence";
+            }
+            write-sequence.url-out {
+                alias:out;
+                description:"Output annotated sequence";
+            }
+            dasannotation-search.db {
+                alias:db;
+                description:"Database against which the search is performed: UniProtKB or clusters of sequences with 100%, 90% or 50% identity.";
+            }
+            dasannotation-search.filtering {
+                alias:f;
+                description:"Low-complexity regions (e.g. stretches of cysteine in Q03751, or hydrophobic regions in membrane proteins) tend to produce spurious, insignificant matches with sequences in the database which have the same kind of low-complexity regions, but are unrelated biologically.";
+            }
+            dasannotation-search.fsources {
+                alias:s;
+                description:"The DAS sources to read features from.";
+            }
+            dasannotation-search.gapped {
+                alias:g;
+                description:"This will allow gaps to be introduced in the sequences when the comparison is done.";
+            }
+            dasannotation-search.identity {
+                alias:i;
+                description:"Minimum identity of a BLAST result and an input sequence.";
+            }
+            dasannotation-search.idsnumber {
+                alias:r;
+                description:"Use first IDs of similar sequences to load annotations";
+            }
+            dasannotation-search.matrix {
+                alias:m;
+                description:"The matrix assigns a probability score for each position in an alignment.";
+            }
+            dasannotation-search.maxres {
+                alias:h;
+                description:"Limits the number of returned alignments.";
+            }
+            dasannotation-search.threshold {
+                alias:t;
+                description:"The expectation value (E) threshold is a statistical measure of the number of expected matches in a random database. The lower the e-value, the more likely the match is to be significant.";
+            }
+        }
+        visual {
+            dasannotation-search {
+                pos:"-555 -555";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                in-sequence.angle:180;
+                out-annotations.angle:360;
+            }
+            read-sequence {
+                pos:"-750 -555";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                out-sequence.angle:360;
+            }
+            write-sequence {
+                pos:"-255 -555";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                in-sequence.angle:180;
+            }
+            dasannotation-search.out-annotations->write-sequence.in-sequence {
+                text-pos:"-44 -24";
+            }
+            read-sequence.out-sequence->dasannotation-search.in-sequence {
+                text-pos:"-27.5 -24";
+            }
+        }
+    }
+}
+

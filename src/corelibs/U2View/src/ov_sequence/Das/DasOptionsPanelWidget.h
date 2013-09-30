@@ -49,7 +49,7 @@ class DasBlastSettingsWidget : public QWidget, private Ui_DasBlastSettingsWidget
     Q_OBJECT
 public:
     DasBlastSettingsWidget(QWidget* parent = NULL);
-    UniprotBlastSettings getSettings();
+    UniprotBlastSettings getSettings(const QString& db);
 };
 
 class DasOptionsPanelWidget : public QWidget, private Ui_DasOptionsPanelWidget {

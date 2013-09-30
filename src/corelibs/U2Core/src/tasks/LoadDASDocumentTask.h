@@ -53,6 +53,8 @@ private:
     
 };
 
+
+
 class XMLDASFeaturesParser{
 public:
     XMLDASFeaturesParser();
@@ -78,6 +80,7 @@ public:
     virtual void run();
 
     DNASequence*    getSequence(){return seq;}
+    QString         getAccession(){return accNumber;}
     QMap<QString, QList<SharedAnnotationData> >    getAnnotationData(){return annotationData;}
 public slots:
     void sl_replyFinished(QNetworkReply* reply);

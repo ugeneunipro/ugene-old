@@ -443,7 +443,7 @@ void FetchSequenceByIdFromAnnotationFactory::init()
     //dr->registerEntry(inputType);
 
     Descriptor desc(ACTOR_ID,
-                    FetchSequenceByIdFromAnnotationWorker::tr("Fetch Sequences by ID from Annotaion"),
+                    FetchSequenceByIdFromAnnotationWorker::tr("Fetch Sequences by ID from Annotation"),
                     FetchSequenceByIdFromAnnotationWorker::tr("Parses annotations to find any IDs and fetches corresponding sequences."));
 
     QList<PortDescriptor*> pds;

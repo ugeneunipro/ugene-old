@@ -60,9 +60,6 @@ const QString DasOptionsPanelWidget::CUSTOM_REGION = tr("Custom region");
 
 const static QString SHOW_OPTIONS_LINK("show_options_link");
 
-#define MIN_SEQ_LENGTH 4
-#define MAX_SEQ_LENGTH 1900 //because a GET request can handle only 2048 characters
-
 DasBlastSettingsWidget::DasBlastSettingsWidget(QWidget* parent) : QWidget(parent) {
     setupUi(this);
 
@@ -88,8 +85,10 @@ DasBlastSettingsWidget::DasBlastSettingsWidget(QWidget* parent) : QWidget(parent
     hitsComboBox->setCurrentIndex(hitsComboBox->findText(UniprotBlastSettings::DEFAULT_HITS));
 }
 
-UniprotBlastSettings DasBlastSettingsWidget::getSettings() {
+U2::UniprotBlastSettings DasBlastSettingsWidget::getSettings( const QString& db )
+{
     UniprotBlastSettings settings;
+    settings.insert(UniprotBlastSettings::DATABASE, db);
     settings.insert(UniprotBlastSettings::THRESHOLD, thresholdComboBox->currentText());
     settings.insert(UniprotBlastSettings::MATRIX, matrixComboBox->itemData(matrixComboBox->currentIndex()).toString());
     settings.insert(UniprotBlastSettings::FILTERING, filteringComboBox->itemData(filteringComboBox->currentIndex()).toString());
@@ -133,7 +132,8 @@ void DasOptionsPanelWidget::sl_searchIdsClicked() {
     SAFE_POINT (NULL != blastSettingsWidget, "BLAST settings widget is null", );
 
     if (getIdsTask == NULL || getIdsTask->isCanceled() || getIdsTask->isFinished()){
-        getIdsTask = new UniprotBlastTask(ctx->getSequenceData(getRegion()), blastSettingsWidget->getSettings());
+        QString db = databaseComboBox->itemData(databaseComboBox->currentIndex()).toString();
+        getIdsTask = new UniprotBlastTask(ctx->getSequenceData(getRegion()), blastSettingsWidget->getSettings(db));
         connect(getIdsTask,
             SIGNAL(si_stateChanged()),
             SLOT(sl_blastSearchFinish()));
@@ -187,6 +187,10 @@ void DasOptionsPanelWidget::sl_blastSearchFinish() {
         
         QList<UniprotResult> results = blastTask->getResults();
         for (int i = 0; i < results.count(); ++i) {
+            if (results[i].accession.isEmpty()){
+                continue;
+            }
+            
             if (results[i].identity >= getMinIdentity()) {
                 int rowNumber = idList->rowCount();
                 idList->insertRow(rowNumber);
@@ -636,6 +640,8 @@ void DasOptionsPanelWidget::sl_onRegionChanged( const U2Region& r){
     }else{
         hintLabel->hide();
     }
+
+    checkState();
 }
 
 void DasOptionsPanelWidget::sl_idDoubleClicked( const QModelIndex & ){

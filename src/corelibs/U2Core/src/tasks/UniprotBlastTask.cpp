@@ -26,6 +26,8 @@
 #include <U2Core/NetworkConfiguration.h>
 #include <U2Core/U2SafePoints.h>
 
+#include <U2Core/LoadDASDocumentTask.h>
+
 #include <QtXml/QDomDocument>
 
 namespace U2 {
@@ -472,5 +474,149 @@ QString UniprotBlastTask::generateUrl() {
     url += "&" + settings.getString();
     return url;
 }
+
+//////////////////////////////////////////////////////////////////////////
+//UniprotBlastAndLoadDASAnnotations
+UniprotBlastAndLoadDASAnnotations::UniprotBlastAndLoadDASAnnotations( const DASAnnotationsSettings& _settings )
+:Task(tr("BLAST IDs and DAS annotations"), TaskFlags_FOSE_COSC | TaskFlag_NoRun)
+,settings(_settings)
+,dasData(_settings.sequence.length(), _settings.identityThreshold)
+,blastTask(NULL)
+{
+
+}
+
+void UniprotBlastAndLoadDASAnnotations::prepare(){
+    blastTask = new UniprotBlastTask(settings.sequence, settings.blastSettings);
+    addSubTask(blastTask);
+}
+
+static bool identityLessThan(const UniprotResult &a, const UniprotResult &b) {
+    return a.identity > b.identity;
+}
+
+QList<Task*> UniprotBlastAndLoadDASAnnotations::onSubTaskFinished( Task* subTask ){
+    QList<Task*> subtasks;
+
+    if (isCanceled()){
+        return subtasks;
+    }
+    
+    if (subTask == blastTask){
+        QList<UniprotResult> uniprotResults = blastTask->getResults();
+        //take first results with the highest identity
+        qSort(uniprotResults.begin(), uniprotResults.end(), identityLessThan);
+        for(int i = 0; dasTasks.size() < settings.maxResults && i<uniprotResults.size(); i++){
+            const UniprotResult& uniprotRes = uniprotResults.at(i);
+            if (uniprotRes.identity >= settings.identityThreshold){
+                if (uniprotRes.accession.isEmpty()){
+                    continue;
+                }
+                
+                foreach (DASSource featureSource, settings.featureSources) {
+                    LoadDASObjectTask* loadAnnotationsTask = new LoadDASObjectTask(uniprotRes.accession, featureSource, DASFeatures);
+                    dasTasks << loadAnnotationsTask;
+                }
+            }
+        }
+        subtasks = dasTasks;
+    }else if(dasTasks.contains(subTask)){
+        LoadDASObjectTask* loadDasObjectTask = qobject_cast<LoadDASObjectTask*>(subTask);
+        if (!loadDasObjectTask){
+            return subtasks;
+        }
+
+        dasTasks.removeAll(loadDasObjectTask);
+
+        dasData.addDasGroup(loadDasObjectTask->getAccession(), loadDasObjectTask->getAnnotationData());
+    }
+    return subtasks;
+}
+
+QList<SharedAnnotationData> UniprotBlastAndLoadDASAnnotations::prepareResults(){
+    return dasData.prepareResults();
+}
+
+
+//////////////////////////////////////////////////////////////////////////
+//DASAnnotationData
+QStringList DASAnnotationData::getAccessionNumbers(){
+    QStringList result;
+
+    result = dasData.keys();
+
+    return result;
+}
+
+DASGroup DASAnnotationData::getDasGroup( const QString& accNumber ){
+    DASGroup dasGroup;
+
+    if (contains(accNumber)){
+        dasGroup = dasData[accNumber];
+    }
+    
+    return dasGroup;
+}
+
+void DASAnnotationData::addDasGroup( const QString& accNumber, DASGroup dasGroup ){
+    if (!contains(accNumber)){
+        dasData.insert(accNumber, dasGroup);
+    }else{
+        DASGroup& curData = dasData[accNumber];
+        const QStringList& keys =  dasGroup.keys();
+        foreach(const QString& key, keys){
+            if (curData.contains(key)){
+                const QList<SharedAnnotationData>& curList = curData[key];
+                const QList<SharedAnnotationData>& tomergeList = dasGroup[key];
+                foreach(SharedAnnotationData d, tomergeList){
+                    if (!curList.contains(d)){
+                        curData[key].append(d);
+                    }
+                }
+            }else{
+                curData.insert(key, dasGroup[key]);
+            }
+        }
+    }
+}
+
+bool DASAnnotationData::contains( const QString& accessionNumber ){
+    return dasData.contains(accessionNumber);
+}
+
+QList<SharedAnnotationData> DASAnnotationData::prepareResults(){
+    QList<SharedAnnotationData> res;
+
+    QStringList accessionNumbers = dasData.keys();
+    foreach(const QString& key, accessionNumbers){
+        const DASGroup& dasGroup = dasData.value(key);
+        QStringList groupNames = dasGroup.keys();
+        foreach(const QString& groupKey, groupNames){
+            const QList<SharedAnnotationData>& sdata = dasGroup.value(groupKey);
+            foreach (SharedAnnotationData d, sdata) {
+                const U2Location& location = d->location;
+                if (location->isSingleRegion() && location->regions.first() == U2_REGION_MAX) {
+                    //setRegion for full region sequence
+                    U2Location newLoc = location;
+                    newLoc->regions.clear();
+                    newLoc->regions.append(U2Region(0, seqLen));
+                    d->location = location;
+                }else{
+                    //cut annotations with the start position out of the current sequence
+                    if (location->regions.size() > 0 && location->regions.first().startPos >= seqLen){
+                        continue;
+                    }
+                }
+                res.append(d);
+            }
+        }
+    }
+
+    return res;
+}
+
+
+
+
 
 }   // namespace U2
