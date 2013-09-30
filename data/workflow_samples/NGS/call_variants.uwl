@@ -31,23 +31,30 @@ workflow "Call variants with SAMtools"{
     }
     files-conversion-1 {
         type:files-conversion;
-        name:"File Conversion";
+        name:"To FASTA";
         document-format:fasta;
+    }
+    files-conversion-2 {
+        type:files-conversion;
+        name:"To BAM";
+        document-format:bam;
     }
 
 
     .actor-bindings {
-        read-sequence.out-url->files-conversion-1.in-file
         call_variants.out-variations->write-variations.in-variations
+        read-sequence.out-url->files-conversion-1.in-file
+        read-assembly.out-url->files-conversion-2.in-file
+        files-conversion-2.out-file->call_variants.in-assembly
         files-conversion-1.out-file->call_variants.in-sequence
-        read-assembly.out-url->call_variants.in-assembly
     }
 
     call_variants.variation-track->write-variations.in-variations.variation-track
     read-assembly.dataset->call_variants.in-assembly.dataset
-    read-assembly.url->call_variants.in-assembly.url
+    files-conversion-2.url->call_variants.in-assembly.url
     files-conversion-1.url->call_variants.in-sequence.url
     read-sequence.url->files-conversion-1.in-file.url
+    read-assembly.url->files-conversion-2.in-file.url
 
     .meta {
         visual {
@@ -64,6 +71,12 @@ workflow "Call variants with SAMtools"{
                 style:simple;
                 in-file.angle:196.858;
                 out-file.angle:15.3885;
+            }
+            files-conversion-2 {
+                pos:"-590 -532";
+                style:simple;
+                in-file.angle:170.538;
+                out-file.angle:343.856;
             }
             read-assembly {
                 pos:"-801 -554";
@@ -90,11 +103,14 @@ workflow "Call variants with SAMtools"{
             files-conversion-1.out-file->call_variants.in-sequence {
                 text-pos:"-19 -31";
             }
-            read-assembly.out-url->call_variants.in-assembly {
-                text-pos:"-26.5 -30";
+            files-conversion-2.out-file->call_variants.in-assembly {
+                text-pos:"-12 -24";
+            }
+            read-assembly.out-url->files-conversion-2.in-file {
+                text-pos:"-31 -24";
             }
             read-sequence.out-url->files-conversion-1.in-file {
-                text-pos:"-45 -32";
+                text-pos:"-31 -24";
             }
         }
         estimations {
