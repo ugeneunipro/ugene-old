@@ -168,7 +168,7 @@ QList<Task*> ReloadDocumentTask::onSubTaskFinished( Task* subTask ){
     QList<Task*> res;
 
     if (subTask == removeDocTask){
-        Task* openTask = AppContext::getProjectLoader()->openWithProjectTask(url);
+    Task* openTask = AppContext::getProjectLoader()->openWithProjectTask(url);
         if (openTask != NULL) {
             res.append(openTask);
         }

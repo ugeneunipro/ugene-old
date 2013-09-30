@@ -52,7 +52,7 @@ void FormatSettingsGUIPageController::saveState(AppSettingsGUIPageState* _state)
     CaseAnnotationsMode prevMode = s->getCaseAnnotationsMode();
     s->setCaseAnnotationsMode(state->caseMode);
     Project *p = AppContext::getProject();
-    if(state->caseMode != prevMode && p != NULL){        
+    if (state->caseMode != prevMode && p != NULL) {
         QList<Document*> docs = p->getDocuments(), toReload;
         foreach(Document *d, docs){
             if(d->isLoaded()){
@@ -63,7 +63,7 @@ void FormatSettingsGUIPageController::saveState(AppSettingsGUIPageState* _state)
             }
         }
         DocumentUpdater du;
-        du.ReloadDocuments(toReload);
+        du.reloadDocuments(toReload);
     }
 }
 

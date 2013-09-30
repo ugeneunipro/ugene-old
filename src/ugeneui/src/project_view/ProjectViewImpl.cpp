@@ -279,7 +279,7 @@ void DocumentUpdater::notifyUserAndReloadDocuments(const QList<Document*> & outd
 
     // setup multi task : reload documents + open views
 
-    ReloadDocuments(docs2Reload);
+    reloadDocuments(docs2Reload);
 }
 
 void DocumentUpdater::sl_updateTaskStateChanged() {
@@ -305,7 +305,7 @@ void DocumentUpdater::excludeDocumentsInTasks(const QList<Task*>& tasks, QList<D
     }
 }
 
-void DocumentUpdater::ReloadDocuments( QList<Document*> docs2Reload ){
+void DocumentUpdater::reloadDocuments( QList<Document*> docs2Reload ){
     Task* reloadTask = new Task(tr("Reload documents task"), TaskFlag_NoRun);
 
     QList<GObjectViewState*> states;
@@ -346,10 +346,6 @@ void DocumentUpdater::ReloadDocuments( QList<Document*> docs2Reload ){
             assert(view->isPersistent());
             AppContext::getMainWindow()->getMDIManager()->activateWindow(view);
             updateViewTask->addSubTask(view->getObjectView()->updateViewTask(state->getStateName(), state->getStateData()));
-        } else {
-            GObjectViewFactory* f = AppContext::getObjectViewFactoryRegistry()->getFactoryById(state->getViewFactoryId());
-            assert(f!=NULL);
-            updateViewTask->addSubTask(f->createViewTask(state->getViewName(), state->getStateData()));
         }
         delete state;
     }
@@ -482,7 +478,6 @@ void ProjectViewImpl::disable() {
     //All these QObjects are autodeleted when 'w' is deleted;
     projectTreeController = NULL;
     objectViewController = NULL;
-//    addNewDocumentAction = NULL;
 
     AppContextImpl::getApplicationContext()->setProjectView(NULL);
 
@@ -512,9 +507,6 @@ void ProjectViewImpl::restoreWidgetState(ProjectViewWidget* w) {
 }
 
 void ProjectViewImpl::initView() {
-    //w->objectBox->setTitle(tr("documents_label"));
-    //w->bookmarkBox->setTitle(tr("bookmarks_label"));
-    
     assert(projectTreeController == NULL);
     ProjectTreeControllerModeSettings s;
     s.groupMode = getLastGroupMode();
@@ -539,7 +531,7 @@ void ProjectViewImpl::initView() {
     assert(objectViewController == NULL);
     objectViewController = new ObjectViewTreeController(w->viewTreeWidget);
 
-    restoreWidgetState(w);    
+    restoreWidgetState(w);
 }
 
 

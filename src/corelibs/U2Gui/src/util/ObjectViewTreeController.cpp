@@ -29,7 +29,6 @@
 
 #include <QtCore/QEvent>
 #include <QtGui/QMenu>
-#include <QtGui/QMouseEvent>
 
 //TODO:
 // track factory registry and show only the states with factories available

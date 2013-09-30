@@ -125,10 +125,6 @@ void ProjectImpl::addDocument(Document* d) {
 
     docs.push_back(d);
 
-    /*QFileInfo file(d->getURLString());
-    qint64 memUseMB = file.size()/(1024*1024);
-    resourseUsage[d->getName()] = memUseMB;
-    resourceTracker->acquire(memUseMB);*/
     emit si_documentAdded(d);
     setModified(true);
     
@@ -160,7 +156,7 @@ void ProjectImpl::removeDocument(Document* d, bool autodelete) {
 
     setParentStateLockItem_static(d, NULL);
     docs.removeOne(d);
-    
+
     d->disconnect(this);
 
     d->setGHints(new GHintsDefaultImpl(d->getGHints()->getMap()));
