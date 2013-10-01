@@ -164,7 +164,9 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_1884);
     REGISTER_TEST(GUITest_regression_scenarios::test_1886_1);
     REGISTER_TEST(GUITest_regression_scenarios::test_1886_2);
+
     REGISTER_TEST(GUITest_regression_scenarios::test_1921);
+
     REGISTER_TEST(GUITest_regression_scenarios::test_2021_1);
     REGISTER_TEST(GUITest_regression_scenarios::test_2021_2);
     REGISTER_TEST(GUITest_regression_scenarios::test_2021_3);
@@ -175,6 +177,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_2021_8);
     REGISTER_TEST(GUITest_regression_scenarios::test_2021_9);
     REGISTER_TEST(GUITest_regression_scenarios::test_2089);
+    REGISTER_TEST(GUITest_regression_scenarios::test_2091);
     REGISTER_TEST(GUITest_regression_scenarios::test_2128);
     REGISTER_TEST(GUITest_regression_scenarios::test_2160);
     REGISTER_TEST(GUITest_regression_scenarios::test_1924);

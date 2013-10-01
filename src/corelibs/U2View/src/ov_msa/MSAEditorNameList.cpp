@@ -62,6 +62,7 @@ MSAEditorNameList::MSAEditorNameList(MSAEditorUI* _ui, QScrollBar* _nhBar)
     connect(copyCurrentSequenceAction, SIGNAL(triggered()), SLOT(sl_copyCurrentSequence()));
 
     removeCurrentSequenceAction = new QAction("Remove current sequence", this);
+    removeCurrentSequenceAction->setObjectName("Remove current sequence");
     connect(removeCurrentSequenceAction, SIGNAL(triggered()), SLOT(sl_removeCurrentSequence()));
         
     connect(editor, SIGNAL(si_buildPopupMenu(GObjectView* , QMenu*)), SLOT(sl_buildContextMenu(GObjectView*, QMenu*)));

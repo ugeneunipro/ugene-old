@@ -1589,6 +1589,32 @@ GUI_TEST_CLASS_DEFINITION( test_2089 )
     GTMenu::clickMenuItem(os, menu, QStringList() << "Workflow Designer");
 }
 
+
+GUI_TEST_CLASS_DEFINITION(test_2091) {
+    //1. Open "data/samples/CLUSTALW/COI.aln".
+    GTFileDialog::openFile(os, dataDir+"samples/CLUSTALW/", "COI.aln");
+
+    //Expected state: document are opened in the project view; MSA Editor are shown with test_alignment.
+    QTreeWidgetItem *msaDoc = GTUtilsProjectTreeView::findItem(os, "COI.aln");
+    QWidget *msaView = GTUtilsMdi::activeWindow(os);
+    CHECK(NULL != msaDoc, );
+    CHECK(NULL != msaView, );
+
+    //2. Select any sequence.
+    GTUtilsMSAEditorSequenceArea::click(os, QPoint( -5, 4));
+    QStringList originalNames = GTUtilsMSAEditorSequenceArea::getNameList(os);
+
+
+    //3. Call context menu on the name list area, select the {Edit -> Remove current sequence} menu item.
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_EDIT << "Remove current sequence"));
+    GTMouseDriver::click(os, Qt::RightButton);
+    //Expected state: the sequence is removed.
+    QStringList modifiedNames = GTUtilsMSAEditorSequenceArea::getNameList(os);
+
+    CHECK_SET_ERR(originalNames.length()-modifiedNames.length() == 1, "The number of sequences remained unchanged.");
+    CHECK_SET_ERR(!modifiedNames.contains("Montana_montana"), "Removed sequence is present in multiple alignment.");
+}
+
 GUI_TEST_CLASS_DEFINITION( test_2128 )
 {
     // 1. Open document "ma.aln" and save it to string
