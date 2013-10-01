@@ -67,6 +67,8 @@ void ResourcesWidget::sl_taskStateChanged(TaskState state) {
         running();
     } else if (Monitor::RUNNING_WITH_PROBLEMS == state) {
         runningWithProblems();
+    } else if (Monitor::FINISHED_WITH_PROBLEMS == state) {
+        finishedWithProblems();
     } else if (Monitor::FAILED == state) {
         failed();
     } else if (Monitor::SUCCESS == state) {
@@ -90,6 +92,12 @@ void ResourcesWidget::running() {
 void ResourcesWidget::runningWithProblems() {
     statusBar().removeClass("alert-info");
     statusMessage().setPlainText(tr("The workflow task is in progress. There are problems..."));
+}
+
+void ResourcesWidget::finishedWithProblems() {
+    statusBar().removeClass("alert-info");
+    statusBar().addClass("alert-warning");
+    statusMessage().setPlainText(tr("The workflow task has been finished with warnings!"));
 }
 
 void ResourcesWidget::failed() {

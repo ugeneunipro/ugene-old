@@ -30,7 +30,7 @@ namespace Workflow {
 class RequiredSlotsValidator : public PortValidator {
 public:
     RequiredSlotsValidator(const QList<Descriptor> &requiredSlots);
-    virtual bool validate(const IntegralBusPort *port, QStringList &errors) const;
+    virtual bool validate(const IntegralBusPort *port, ProblemList &problemList) const;
 
 private:
     QList<Descriptor> requiredSlots;

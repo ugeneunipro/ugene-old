@@ -22,9 +22,10 @@
 #include "QDScheme.h"
 #include "QDConstraint.h"
 
+#include <U2Core/DNASequenceObject.h>
 #include <U2Core/Log.h>
 
-#include <U2Core/DNASequenceObject.h>
+#include <U2Lang/SupportClass.h>
 
 
 namespace U2 {
@@ -679,11 +680,11 @@ bool QDScheme::isValid() const {
     bool res = true;
     foreach(QDActor* actor, getActors()) {
         QDActorParameters* cfg = actor->getParameters();
-        QStringList errorList;
-        if (!cfg->validate(errorList)) {
+        ProblemList problemList;
+        if (!cfg->validate(problemList)) {
             res = false;
-            foreach(const QString& errMsg, errorList) {
-                coreLog.error(QObject::tr("%1. %2").arg(cfg->getLabel()).arg(errMsg));
+            foreach(const Problem& problem, problemList) {
+                coreLog.error(QObject::tr("%1. %2").arg(cfg->getLabel()).arg(problem.message));
             }
         }
     }

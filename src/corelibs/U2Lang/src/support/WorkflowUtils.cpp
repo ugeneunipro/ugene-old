@@ -156,24 +156,20 @@ QStringList WorkflowUtils::expandToUrls(const QString& s) {
     return result;
 }
 
-static bool validateParameters(const Schema &schema, QList<ValidateError> &infoList) {
+static bool validateParameters(const Schema &schema, ProblemList &infoList) {
     bool good = true;
     foreach (Actor* a, schema.getProcesses()) {
-        QStringList l;
-        good &= a->validate(l);
-        foreach(const QString &error, l) {
-            QString id = a->getId();
-            //id = map.key(a->getId());
-            ValidateError item;
-            item[TEXT_REF] = error;
-            item[ACTOR_REF] = id;
-            infoList << item;
+        ProblemList problemList;
+        good &= a->validate(problemList);
+        foreach(Problem problem, problemList) {
+            problem.actor = a->getId();
+            infoList << problem;
         }
     }
     return good;
 }
 
-static bool validateExternalTools(Actor *a, QList<ValidateError> &infoList) {
+static bool validateExternalTools(Actor *a, ProblemList &infoList) {
     bool good = true;
     QStrStrMap tools = a->getProto()->getExternalTools();
     foreach (const QString &toolId, tools.keys()) {
@@ -185,31 +181,30 @@ static bool validateExternalTools(Actor *a, QList<ValidateError> &infoList) {
         bool valid = fromAttr ? !attr->isEmpty() : !tool->getPath().isEmpty();
         if (!valid) {
             good = false;
-            ValidateError item;
-            item[TEXT_REF] = WorkflowUtils::externalToolError(tool->getName());
-            item[ACTOR_REF] = a->getId();
-            infoList << item;
+            infoList << Problem(WorkflowUtils::externalToolError(tool->getName()),
+                                a->getId(),
+                                Problem::U2_ERROR);
         } else if (!fromAttr && !tool->isValid()) {
-            ValidateError item;
-            item[TEXT_REF] = WorkflowUtils::externalToolInvalidError(tool->getName());
-            item[ACTOR_REF] = a->getId();
-            infoList << item;
+            infoList << Problem(WorkflowUtils::externalToolInvalidError(tool->getName()),
+                                a->getId(),
+                                Problem::U2_WARNING);
         }
     }
     return good;
 }
 
-static bool validatePorts(Actor *a, QList<ValidateError> &infoList) {
+static bool validatePorts(Actor *a, ProblemList &infoList) {
     bool good = true;
     foreach(Port *p, a->getPorts()) {
-        QStringList l;
-        good &= p->validate(l);
-        if (!l.isEmpty()) {
-            foreach(QString s, l) {
-                ValidateError item;
-                item[TEXT_REF] = QString("%1 : %2").arg(a->getLabel()).arg(s);
-                item[PORT_REF] = p->getId();
-                item[ACTOR_REF] = a->getId();
+        ProblemList problemList;
+        good &= p->validate(problemList);
+        if (!problemList.isEmpty()) {
+            foreach(Problem problem, problemList) {
+                Problem item;
+                item.message = QString("%1 : %2").arg(a->getLabel()).arg(problem.message);
+                item.port = p->getId();
+                item.actor = a->getId();
+                item.type = problem.type;
                 infoList << item;
             }
         }
@@ -247,62 +242,71 @@ static bool hasSchemeCycles( const Schema &scheme ) {
     return true;
 }
 
-static bool validateScript(Actor *a, QList<ValidateError> &infoList) {
+static bool validateScript(Actor *a, ProblemList &infoList) {
     QScopedPointer<WorkflowScriptEngine> engine(new WorkflowScriptEngine(NULL));
     QScriptSyntaxCheckResult syntaxResult = engine->checkSyntax(a->getScript()->getScriptText());
 
     if (syntaxResult.state() != QScriptSyntaxCheckResult::Valid) {
-        ValidateError item;
-        item[TEXT_REF] = QObject::tr("%1 : Script syntax check failed! Line: %2, error: %3")
+        Problem problem;
+        problem.message = QObject::tr("%1 : Script syntax check failed! Line: %2, error: %3")
             .arg(a->getLabel())
             .arg(syntaxResult.errorLineNumber())
             .arg(syntaxResult.errorMessage());
-        item[ACTOR_REF] = a->getId();
-        infoList << item;
+        problem.actor = a->getId();
+        problem.type = Problem::U2_ERROR;
+        infoList << problem;
         return false;
     }
     return true;
 }
 
-bool WorkflowUtils::validate(const Schema &schema, QList<ValidateError> &infoList) {
+bool WorkflowUtils::validate(const Schema &schema, ProblemList &problemList) {
     bool good = true;
     std::auto_ptr<WorkflowScriptEngine> engine(new WorkflowScriptEngine(NULL));
     foreach (Actor *a, schema.getProcesses()) {
-        good &= validatePorts(a, infoList);
+        good &= validatePorts(a, problemList);
         if (a->getProto()->isScriptFlagSet()) {
-            good &= validateScript(a, infoList);
+            good &= validateScript(a, problemList);
         }
-        good &= validateExternalTools(a, infoList);
+        good &= validateExternalTools(a, problemList);
     }
     if ( !hasSchemeCycles( schema ) ) {
         good = false;
-        ValidateError item;
-        item[TEXT_REF] = QObject::tr( "The scheme contains a cycle" );
-        infoList.append( item );
+        problemList << Problem(QObject::tr( "The scheme contains a cycle" ));
     }
 
-    good &= validateParameters(schema, infoList);
+    good &= validateParameters(schema, problemList);
 
     return good;
 }
 
 // used in GUI schema validating
 bool WorkflowUtils::validate(const Schema &schema, QList<QListWidgetItem*> &infoList) {
-    QList<ValidateError> errors;
-    bool good = validate(schema, errors);
+    ProblemList problems;
+    bool good = validate(schema, problems);
 
-    foreach (const ValidateError &error, errors) {
+    foreach (const Problem &problem, problems) {
         QListWidgetItem *item = NULL;
-        if (!error.contains(ACTOR_REF)) {
-            item = new QListWidgetItem( QString( error[TEXT_REF].toString( ) ) );
+        if (problem.actor.isEmpty()) {
+            item = new QListWidgetItem( problem.type + ": " + problem.message);
         } else {
-            Actor *a = schema.actorById(error[ACTOR_REF].toString());
-            item = new QListWidgetItem( a->getProto()->getIcon(),
-                QString("%1 : %2").arg(a->getLabel()).arg(error[TEXT_REF].toString()));
+            Actor *a = schema.actorById(problem.actor);
+            item = new QListWidgetItem(QString("%1: %2").arg(a->getLabel()).arg(problem.message));
+
+            if (problem.type == Problem::U2_ERROR) {
+                item->setIcon(QIcon(":U2Lang/images/error.png"));
+            } else if (problem.type == Problem::U2_WARNING) {
+                item->setIcon(QIcon(":U2Lang/images/warning.png"));
+            } else {
+                item->setIcon(a->getProto()->getIcon());
+            }
         }
-        foreach (int ref, error.keys()) {
-            item->setData(ref, error[ref]);
-        }
+
+        item->setData(ACTOR_REF, problem.actor);
+        item->setData(PORT_REF, problem.port);
+        item->setData(TEXT_REF, problem.message);
+        item->setData(TYPE_REF, problem.type);
+
         infoList << item;
     }
 
@@ -311,16 +315,16 @@ bool WorkflowUtils::validate(const Schema &schema, QList<QListWidgetItem*> &info
 
 // used in cmdline schema validating
 bool WorkflowUtils::validate(const Workflow::Schema &schema, QStringList &errs) {
-    QList<ValidateError> errors;
-    bool good = validate(schema, errors);
+    ProblemList problems;
+    bool good = validate(schema, problems);
 
-    foreach (const ValidateError &error, errors) {
+    foreach (const Problem &problem, problems) {
         QString res = QString( );
-        if (!error.contains(ACTOR_REF)) {
-            res = error[TEXT_REF].toString();
+        if (problem.actor.isEmpty()) {
+            res = problem.message;
         } else {
-            Actor *a = schema.actorById(error[ACTOR_REF].toString());
-            QString message = error[TEXT_REF].toString();
+            Actor *a = schema.actorById(problem.actor);
+            QString message = problem.message;
             res = QString("%1: %2").arg(a->getLabel()).arg(message);
 
             QString option;

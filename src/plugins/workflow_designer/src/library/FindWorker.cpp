@@ -78,11 +78,11 @@ static const Descriptor pf(PATTERN_FILE_ATTR,
 /************************************************************************/
 class FindPatternsValidator : public ConfigurationValidator {
 public:
-    virtual bool validate(const Configuration *cfg, QStringList &output) const {
+    virtual bool validate(const Configuration *cfg, ProblemList &problemList) const {
         bool hasPattern = isPatternSet(cfg) || isPatternFileSet(cfg) || isPatternSlotBinded(cfg);
         if (!hasPattern) {
-            output << QObject::tr("Patterns are not set. Set the '%1' or '%2' parameter or bind the input text slot")
-                .arg(pd.getDisplayName()).arg(pf.getDisplayName());
+            problemList << Problem(QObject::tr("Patterns are not set. Set the '%1' or '%2' parameter or bind the input text slot")
+                .arg(pd.getDisplayName()).arg(pf.getDisplayName()));
         }
         return hasPattern;
     }

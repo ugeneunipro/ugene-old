@@ -112,7 +112,7 @@ class EmptySlotValidator : public ConfigurationValidator {
 public:
     EmptySlotValidator(const QString& slot): screenedSlot(slot) {}
 
-    virtual bool validate(const Configuration* cfg, QStringList& l) const {
+    virtual bool validate(const Configuration* cfg, ProblemList &problemList) const {
         const IntegralBusPort* vport = static_cast<const IntegralBusPort*>(cfg);
         assert(vport);
 
@@ -125,7 +125,7 @@ public:
             //assert(!slotName.isEmpty());
             if (it.value().isEmpty()) {
                 if (screenedSlot == slot) {
-                    l.append(IntegralBusPort::tr("Error! Empty input slot: %1").arg(slotName));
+                    problemList.append(Problem(IntegralBusPort::tr("Empty input slot: %1").arg(slotName)));
                     return false;
                 }
             }

@@ -272,7 +272,7 @@ protected:
 class U2LANG_EXPORT Prompter {
 public:
     virtual ActorDocument* createDescription(Actor*) = 0;
-    virtual ~Prompter() {};
+    virtual ~Prompter() {}
     
 }; // Prompter
 
@@ -295,8 +295,8 @@ class U2LANG_EXPORT ActorValidator : public ConfigurationValidator {
 public:
     virtual ~ActorValidator() { }
 
-    virtual bool validate(const Configuration *cfg, QStringList &errors) const;
-    virtual bool validate(const Actor *actor, QStringList &errors) const = 0;
+    virtual bool validate(const Configuration *cfg, ProblemList &problemList) const;
+    virtual bool validate(const Actor *actor, ProblemList &problemList) const = 0;
 
 protected:
     template<class T>

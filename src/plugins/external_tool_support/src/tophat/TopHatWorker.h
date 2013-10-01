@@ -137,12 +137,12 @@ public:
 
 class InputSlotsValidator : public PortValidator {
 public:
-    virtual bool validate(const IntegralBusPort *port, QStringList &l) const;
+    virtual bool validate(const IntegralBusPort *port, ProblemList &problemList) const;
 };
 
 class BowtieToolsValidator : public ActorValidator {
 public:
-    virtual bool validate(const Actor *actor, QStringList &output) const;
+    virtual bool validate(const Actor *actor, ProblemList &problemList) const;
 };
 
 class BowtieFilesRelation : public AttributeRelation {

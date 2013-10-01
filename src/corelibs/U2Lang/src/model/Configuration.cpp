@@ -100,13 +100,13 @@ void Configuration::setValidator(ConfigurationValidator* v) {
     validator = v;
 }
 
-bool Configuration::validate(QStringList& errorList) const {
+bool Configuration::validate(ProblemList &problemList) const {
     bool good = true;
     foreach(Attribute* a, getParameters()) {
-        good &= a->validate(errorList);
+        good &= a->validate(problemList);
     }
     if (validator) {
-        good &= validator->validate(this, errorList);
+        good &= validator->validate(this, problemList);
     }
     return good;
 }

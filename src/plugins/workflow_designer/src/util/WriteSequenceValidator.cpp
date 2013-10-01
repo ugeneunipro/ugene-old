@@ -25,6 +25,7 @@
 
 #include <U2Lang/BaseAttributes.h>
 #include <U2Lang/BaseSlots.h>
+#include <U2Lang/SupportClass.h>
 
 #include "WriteSequenceValidator.h"
 
@@ -37,8 +38,8 @@ WriteSequenceValidator::WriteSequenceValidator(const QString &attr, const QStrin
 
 }
 
-bool WriteSequenceValidator::validate(const Configuration *cfg, QStringList &output) const {
-    bool result = ScreenedParamValidator::validate(cfg, output);
+bool WriteSequenceValidator::validate(const Configuration *cfg, ProblemList &problemList) const {
+    bool result = ScreenedParamValidator::validate(cfg, problemList);
 
     const Actor *actor = dynamic_cast<const Actor*>(cfg);
     SAFE_POINT(NULL != actor, "NULL actor", NULL);
@@ -49,8 +50,8 @@ bool WriteSequenceValidator::validate(const Configuration *cfg, QStringList &out
     DocumentFormat *format = getFormatSafe(actor);
     CHECK(NULL != format, result);
     if (!isAnnotationsSupported(format)) {
-        QString warning = QObject::tr("Warning: The format %1 does not support annotations").arg(format->getFormatId().toUpper());
-        output << warning;
+        QString warning = QObject::tr("The format %1 does not support annotations").arg(format->getFormatId().toUpper());
+        problemList << Problem(warning, "", Problem::U2_WARNING);
         cmdLog.trace(warning);
     }
 
@@ -78,7 +79,7 @@ bool WriteSequenceValidator::isAnnotationsSupported(const DocumentFormat *format
     return format->getSupportedObjectTypes().contains(GObjectTypes::ANNOTATION_TABLE);
 }
 
-bool WriteSequencePortValidator::validate(const IntegralBusPort *port, QStringList &problemList) const {
+bool WriteSequencePortValidator::validate(const IntegralBusPort *port, ProblemList &problemList) const {
     bool result = true;
     Actor *actor = port->owner();
 

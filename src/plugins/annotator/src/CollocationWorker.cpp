@@ -66,11 +66,11 @@ const QString CollocationWorkerFactory::ACTOR_ID("collocated-annotation-search")
 
 class CollocationValidator : public ConfigurationValidator {
 public:
-    virtual bool validate(const Configuration* cfg, QStringList& output) const {
+    virtual bool validate(const Configuration* cfg, ProblemList &problemList) const {
         QString annotations = cfg->getParameter(ANN_ATTR)->getAttributeValueWithoutScript<QString>();
         QSet<QString> names = QSet<QString>::fromList(annotations.split(QRegExp("\\W+"), QString::SkipEmptyParts));
         if (names.size() < 2) {
-            output.append(CollocationWorker::tr("At least 2 annotations are required for collocation search."));
+            problemList.append(Problem(CollocationWorker::tr("At least 2 annotations are required for collocation search.")));
             return false;
         }
         return true;

@@ -19,36 +19,26 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_RESOURCESWIDGET_H_
-#define _U2_RESOURCESWIDGET_H_
-
-#include <U2Designer/Dashboard.h>
+#include "SupportClass.h"
 
 namespace U2 {
 
-using namespace Workflow::Monitor;
+/************************************************************************/
+/* Problem */
+/************************************************************************/
+const QString Problem::U2_ERROR = "error";
+const QString Problem::U2_WARNING = "warning";
 
-class ResourcesWidget : public DashboardWidget {
-    Q_OBJECT
-public:
-    ResourcesWidget(const QWebElement &container, Dashboard *parent);
+Problem::Problem(const QString &_message, const QString &_actor, const QString& _type)
+    : message(_message),
+      actor(_actor),
+      type(_type) {
+}
 
-private slots:
-    void sl_progressChanged(int progress);
-    void sl_taskStateChanged(Monitor::TaskState state);
+bool Problem::operator== (const Problem &other) const {
+    return (actor == other.actor) &&
+            (message == other.message) &&
+            (type == other.type);
+}
 
-private:
-    void running();
-    void runningWithProblems();
-    void finishedWithProblems();
-    void failed();
-    void success();
-    void canceled();
-
-    QWebElement statusBar();
-    QWebElement statusMessage();
-};
-
-} // U2
-
-#endif // _U2_RESOURCESWIDGET_H_
+}   // namespace U2

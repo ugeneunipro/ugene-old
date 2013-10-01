@@ -32,11 +32,11 @@ ProblemsWidget::ProblemsWidget(const QWebElement &content, Dashboard *parent)
     foreach (const Problem &info, dashboard->monitor()->getProblems()) {
         sl_newProblem(info);
     }
-    connect(dashboard->monitor(), SIGNAL(si_newProblem(const U2::Workflow::Monitor::Problem &)),
-        SLOT(sl_newProblem(const U2::Workflow::Monitor::Problem &)));
+    connect(dashboard->monitor(), SIGNAL(si_newProblem(const U2::Problem &)),
+        SLOT(sl_newProblem(const U2::Problem &)));
 }
 
-void ProblemsWidget::sl_newProblem(const U2::Workflow::Monitor::Problem &info) {
+void ProblemsWidget::sl_newProblem(const U2::Problem &info) {
     const WorkflowMonitor *m = dashboard->monitor();
     CHECK(NULL != m, );
     if (rows.contains(id(info))) {
@@ -61,6 +61,12 @@ QStringList ProblemsWidget::createRow(const Problem &info, bool multi) const {
         }
         prefix = QString("(%1) ").arg(count);
     }
+    if (!info.type.isEmpty()) {
+        // There should be an image
+        result << wrapLongText(info.type[0]);
+    } else {
+        result << "";
+    }
     result << wrapLongText(m->actorName(info.actor));
     result << wrapLongText(prefix + info.message);
     return result;
@@ -75,11 +81,11 @@ QStringList ProblemsWidget::createRow(const Problem &info) const {
 }
 
 QList<int> ProblemsWidget::widths() {
-    return QList<int>() << 30 << 70;
+    return QList<int>() << 7 << 30 << 63;
 }
 
 QStringList ProblemsWidget::header() {
-    return QStringList() << tr("Element") << tr("Message");
+    return QStringList() << "" << tr("Element") << tr("Message");
 }
 
 QList<QStringList> ProblemsWidget::data() {

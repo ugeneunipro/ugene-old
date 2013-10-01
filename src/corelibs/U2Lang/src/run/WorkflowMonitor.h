@@ -26,6 +26,7 @@
 #include <U2Core/Task.h>
 #include <U2Core/ExternalToolRunTask.h>
 
+#include <U2Lang/SupportClass.h>
 #include <U2Lang/WorkflowRunTask.h>
 
 namespace U2 {
@@ -43,15 +44,6 @@ namespace Monitor {
         QString actor;
 
         bool operator== (const FileInfo &other) const;
-    };
-    class U2LANG_EXPORT Problem {
-    public:
-        Problem( );
-        Problem(const QString &message, const QString &actor);
-        QString message;
-        QString actor;
-
-        bool operator== (const Problem &other) const;
     };
     class U2LANG_EXPORT WorkerInfo {
     public:
@@ -89,6 +81,7 @@ namespace Monitor {
     enum U2LANG_EXPORT TaskState {
         RUNNING,
         RUNNING_WITH_PROBLEMS,
+        FINISHED_WITH_PROBLEMS,
         CANCELLED,
         FAILED,
         SUCCESS
@@ -101,7 +94,7 @@ public:
     WorkflowMonitor(WorkflowAbstractIterationRunner *task, Schema *schema);
 
     const QList<Monitor::FileInfo> & getOutputFiles() const;
-    const QList<Monitor::Problem> & getProblems() const;
+    const ProblemList & getProblems() const;
     const QMap<QString, Monitor::WorkerInfo> & getWorkersInfo() const;
     const QList<Monitor::WorkerParamsInfo>  & getWorkersParameters() const;
     const QMap<QString, Monitor::WorkerLogInfo> & getWorkersLog() const;
@@ -109,7 +102,7 @@ public:
     int getDataProduced(const QString &actor) const;
 
     void addOutputFile(const QString &url, const QString &producer);
-    void addError(const QString &message, const QString &actor);
+    void addError(const QString &message, const QString &actor ,const QString &type = Problem::U2_ERROR);
     /** Can be called only one time for the task */
     void addTaskError(Task *task, const QString &message = "");
     void addTime(qint64 timeMks, const QString &actor);
@@ -136,7 +129,7 @@ public slots:
 signals:
     void si_firstProblem();
     void si_newOutputFile(const U2::Workflow::Monitor::FileInfo &info);
-    void si_newProblem(const U2::Workflow::Monitor::Problem &info);
+    void si_newProblem(const U2::Problem &info);
     void si_workerInfoChanged(const QString &actor, const U2::Workflow::Monitor::WorkerInfo &info);
     void si_progressChanged(int progress);
     void si_runStateChanged(bool paused);
@@ -154,7 +147,7 @@ private:
     QMap<Task*, Actor*> taskMap;
     QList<Task*> errorTasks;
     QList<Monitor::FileInfo> outputFiles;
-    QList<Monitor::Problem> problems;
+    ProblemList problems;
     QMap<QString, Monitor::WorkerInfo> workers;
     QList<Monitor::WorkerParamsInfo> workersParamsInfo;
     QMap<QString, Monitor::WorkerLogInfo> workersLog;
@@ -165,7 +158,8 @@ private:
 protected:
     void setWorkerInfo(const QString &actorId, const Monitor::WorkerInfo &info);
     void setRunState(bool paused);
-    void addProblem(const Monitor::Problem &problem);
+    void addProblem(const Problem &problem);
+    bool hasErrors() const;
 };
 
 class U2LANG_EXPORT MonitorUtils {
@@ -198,7 +192,6 @@ private:
 } // U2
 
 Q_DECLARE_METATYPE( U2::Workflow::Monitor::FileInfo )
-Q_DECLARE_METATYPE( U2::Workflow::Monitor::Problem )
 Q_DECLARE_METATYPE( U2::Workflow::Monitor::WorkerInfo )
 Q_DECLARE_METATYPE( U2::Workflow::Monitor::LogEntry )
 

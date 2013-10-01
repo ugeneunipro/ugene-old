@@ -64,6 +64,7 @@ HEADERS += src/library/BaseActorCategories.h \
            src/support/ScriptWorkerSerializer.h \
            src/support/SequenceMessageTranslator.h \
            src/support/SimpleWorkflowTask.h \
+           src/support/SupportClass.h \
            src/support/VariationTrackMessageTranslator.h \
            src/support/WorkflowBreakpoint.h \
            src/support/WorkflowBreakpointSharedInfo.h \
@@ -160,6 +161,7 @@ SOURCES += src/library/BaseActorCategories.cpp \
            src/support/ScriptWorkerSerializer.cpp \
            src/support/SequenceMessageTranslator.cpp \
            src/support/SimpleWorkflowTask.cpp \
+           src/support/SupportClass.cpp \
            src/support/VariationTrackMessageTranslator.cpp \
            src/support/WorkflowBreakpoint.cpp \
            src/support/WorkflowBreakpointSharedInfo.cpp \
@@ -200,3 +202,6 @@ TRANSLATIONS += transl/chinese.ts \
                 transl/czech.ts \
                 transl/english.ts \
                 transl/russian.ts
+
+RESOURCES += \
+    U2Lang.qrc

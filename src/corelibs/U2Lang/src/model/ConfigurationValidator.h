@@ -23,6 +23,7 @@
 #define _U2_WORKFLOW_CONFIGURATION_VALIDATOR_H_
 
 #include <U2Lang/Descriptor.h>
+#include <U2Lang/SupportClass.h>
 
 namespace U2 {
 
@@ -36,7 +37,7 @@ class Configuration;
 class U2LANG_EXPORT ConfigurationValidator {
 public:
     virtual ~ConfigurationValidator() { }
-    virtual bool validate(const Configuration*, QStringList& output) const = 0;
+    virtual bool validate(const Configuration*, ProblemList& problemList) const = 0;
     
 }; // ConfigurationValidator
 

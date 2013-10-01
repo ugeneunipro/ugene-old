@@ -72,7 +72,7 @@ public:
     // find matching data and assign it
     void setupBusMap();
     
-    virtual bool validate(QStringList&) const;
+    virtual bool validate(ProblemList& problemList) const;
     // reimplemented from Configuration
     virtual void remap(const QMap<ActorId, ActorId>&);
     virtual void updateBindings(const QMap<ActorId, ActorId> &actorsMapping);
@@ -116,8 +116,8 @@ class U2LANG_EXPORT ScreenedSlotValidator : public ConfigurationValidator {
 public:
     ScreenedSlotValidator(const QString& slot): screenedSlots(slot) {}
     ScreenedSlotValidator(const QStringList& slotList): screenedSlots(slotList) {}
-    static bool validate(const QStringList& screenedSlots, const IntegralBusPort*, QStringList& output);
-    virtual bool validate(const Configuration*, QStringList& output) const;
+    static bool validate(const QStringList& screenedSlots, const IntegralBusPort*, ProblemList &problemList);
+    virtual bool validate(const Configuration*, ProblemList& problemList) const;
         
 protected:
     QStringList screenedSlots;
@@ -133,7 +133,7 @@ public:
     ScreenedParamValidator(const QString& id, const QString& port, const QString& slot);
     virtual ~ScreenedParamValidator() {}
     
-    virtual bool validate(const Configuration*, QStringList& output) const;
+    virtual bool validate(const Configuration*, ProblemList& problemList) const;
     QString validate(const Configuration * cfg) const;
     
     QString getId() const {return id;}
@@ -177,8 +177,8 @@ private:
 
 class U2LANG_EXPORT PortValidator : public ConfigurationValidator {
 public:
-    virtual bool validate(const Configuration *cfg, QStringList &errors) const;
-    virtual bool validate(const IntegralBusPort *port, QStringList &errors) const = 0;
+    virtual bool validate(const Configuration *cfg, ProblemList &problemList) const;
+    virtual bool validate(const IntegralBusPort *port, ProblemList &problemList) const = 0;
 
 public:
     static QStrStrMap getBusMap(const IntegralBusPort *port);

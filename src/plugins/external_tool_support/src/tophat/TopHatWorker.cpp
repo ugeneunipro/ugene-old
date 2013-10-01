@@ -740,7 +740,7 @@ void DatasetData::replaceCurrent(const QString &dataset) {
 /************************************************************************/
 /* Validators */
 /************************************************************************/
-bool InputSlotsValidator::validate(const IntegralBusPort *port, QStringList &l) const {
+bool InputSlotsValidator::validate(const IntegralBusPort *port, ProblemList &problemList) const {
     QStrStrMap bm = port->getParameter(IntegralBusPort::BUS_MAP_ATTR_ID)->getAttributeValueWithoutScript<QStrStrMap>();
     bool data = isBinded(bm, IN_DATA_SLOT_ID);
     bool pairedData = isBinded(bm, PAIRED_IN_DATA_SLOT_ID);
@@ -750,13 +750,13 @@ bool InputSlotsValidator::validate(const IntegralBusPort *port, QStringList &l) 
     if (!data && !url) {
         QString dataName = slotName(port, IN_DATA_SLOT_ID);
         QString urlName = slotName(port, IN_URL_SLOT_ID);
-        l.append(IntegralBusPort::tr("Error! One of these slots must be not empty: '%1', '%2'").arg(dataName).arg(urlName));
+        problemList.append(IntegralBusPort::tr("Error! One of these slots must be not empty: '%1', '%2'").arg(dataName).arg(urlName));
         return false;
     }
 
     if ((data && pairedUrl) || (url && pairedData)) {
         if (pairedUrl) {
-            l.append(IntegralBusPort::tr("Error! You can not bind one of sequences slots and one of url slots simultaneously"));
+            problemList.append(IntegralBusPort::tr("Error! You can not bind one of sequences slots and one of url slots simultaneously"));
             return false;
         }
     }
@@ -764,7 +764,7 @@ bool InputSlotsValidator::validate(const IntegralBusPort *port, QStringList &l) 
     return true;
 }
 
-bool BowtieToolsValidator::validate( const Actor *actor, QStringList &output ) const {
+bool BowtieToolsValidator::validate( const Actor *actor, ProblemList &problemList ) const {
     Attribute *attr = actor->getParameter( TopHatWorkerFactory::BOWTIE_TOOL_PATH );
     SAFE_POINT( NULL != attr, "NULL attribute", false );
 
@@ -783,7 +783,7 @@ bool BowtieToolsValidator::validate( const Actor *actor, QStringList &output ) c
             {
                 topHatVersion = topHatVersion.isEmpty( ) ? "unknown" : topHatVersion;
                 bowtieVersion = bowtieVersion.isEmpty( ) ? "unknown" : bowtieVersion;
-                output << QObject::tr( "Bowtie and TopHat tools have incompatible versions. "
+                problemList << QObject::tr( "Bowtie and TopHat tools have incompatible versions. "
                     "Your TopHat's version is %1, Bowtie's one is %2. The following are "
                     "considered to be compatible: Bowtie < \"0.12.9\" and TopHat <= \"2.0.8\" or "
                     "Bowtie >= \"0.12.9\" and TopHat >= \"2.0.8.b\"" ).arg( topHatVersion,
@@ -798,7 +798,7 @@ bool BowtieToolsValidator::validate( const Actor *actor, QStringList &output ) c
 
     bool valid = attr->isDefaultValue( ) ? !bowTieTool->getPath( ).isEmpty( ) : !attr->isEmpty( );
     if ( !valid ) {
-        output << WorkflowUtils::externalToolError( bowTieTool->getName( ) );
+        problemList << WorkflowUtils::externalToolError( bowTieTool->getName( ) );
     }
     return valid;
 }

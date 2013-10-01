@@ -31,7 +31,7 @@ class DatasetValidator : public ActorValidator {
 public:
     virtual ~DatasetValidator() { }
 
-    virtual bool validate(const Actor *actor, QStringList &output) const;
+    virtual bool validate(const Actor *actor, ProblemList &problemList) const;
 };
 
 }   // namespace Workflow

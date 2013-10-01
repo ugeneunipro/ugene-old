@@ -2274,7 +2274,9 @@ void WorkflowView::commitWarningsToMonitor(WorkflowAbstractRunner* t) {
     for (int i = 0; i < infoList->count(); i++) {
         QListWidgetItem* warning = infoList->item(i);
         foreach (WorkflowMonitor* monitor, t->getMonitors()) {
-            monitor->addError(warning->data(TEXT_REF).toString(), warning->data(ACTOR_REF).toString());
+            monitor->addError(warning->data(TEXT_REF).toString(),
+                              warning->data(ACTOR_REF).toString(),
+                              warning->data(TYPE_REF).toString());
         }
     }
 }

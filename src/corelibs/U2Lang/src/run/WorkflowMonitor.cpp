@@ -103,8 +103,8 @@ void WorkflowMonitor::addOutputFile(const QString &url, const QString &producer)
     emit si_newOutputFile(info);
 }
 
-void WorkflowMonitor::addError(const QString &message, const QString &actor) {
-    addProblem(Problem(message, actor));
+void WorkflowMonitor::addError(const QString &message, const QString &actor, const QString &type) {
+    addProblem(Problem(message, actor, type));
     coreLog.error(message);
 }
 
@@ -174,8 +174,14 @@ void WorkflowMonitor::sl_taskStateChanged() {
         TaskState state = SUCCESS;
         if (task->isCanceled()) {
             state = CANCELLED;
-        } else if (task->hasError() || !problems.isEmpty()) {
+        } else if (task->hasError()) {
             state = FAILED;
+        } else if (!problems.isEmpty()) {
+            if (!hasErrors()) {
+                state = FINISHED_WITH_PROBLEMS;
+            } else {
+                state = FAILED;
+            }
         }
         emit si_taskStateChanged(state);
         emit si_report();
@@ -196,13 +202,20 @@ int WorkflowMonitor::getDataProduced(const QString &actor) const {
     return task->getDataProduced(actor);
 }
 
-void WorkflowMonitor::addProblem(const Monitor::Problem &problem) {
+void WorkflowMonitor::addProblem(const Problem &problem) {
     if (problems.isEmpty()) {
         emit si_firstProblem();
         emit si_taskStateChanged(RUNNING_WITH_PROBLEMS);
     }
     problems << problem;
     emit si_newProblem(problem);
+}
+
+bool WorkflowMonitor::hasErrors() const {
+    foreach (Problem problem, problems) {
+        CHECK(problem.type != Problem::U2_ERROR, true);
+    }
+    return false;
 }
 
 void WorkflowMonitor::setSaveSchema(const Metadata &_meta) {
@@ -248,25 +261,6 @@ FileInfo::FileInfo(const QString &_url, const QString &_producer)
 
 bool FileInfo::operator== (const FileInfo &other) const {
     return url == other.url;
-}
-
-/************************************************************************/
-/* Problem */
-/************************************************************************/
-Problem::Problem( )
-    : message( ), actor( )
-{
-
-}
-
-Problem::Problem(const QString &_message, const QString &_actor)
-: message(_message), actor(_actor)
-{
-
-}
-
-bool Problem::operator== (const Problem &other) const {
-    return (actor == other.actor) && (message == other.message);
 }
 
 /************************************************************************/

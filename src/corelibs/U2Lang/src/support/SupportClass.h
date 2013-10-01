@@ -19,36 +19,39 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_RESOURCESWIDGET_H_
-#define _U2_RESOURCESWIDGET_H_
+#ifndef _U2_SUPPORT_CLASS_H_
+#define _U2_SUPPORT_CLASS_H_
 
-#include <U2Designer/Dashboard.h>
+#include <U2Core/global.h>
+
+#include <QtCore/QString>
 
 namespace U2 {
 
-using namespace Workflow::Monitor;
+class Problem;
+typedef QList<Problem> ProblemList;
 
-class ResourcesWidget : public DashboardWidget {
-    Q_OBJECT
+#define ACTOR_REF (Qt::UserRole)
+#define PORT_REF (Qt::UserRole + 1)
+#define TEXT_REF (Qt::UserRole + 3)
+#define TYPE_REF (Qt::UserRole + 4)
+
+class U2LANG_EXPORT Problem {
 public:
-    ResourcesWidget(const QWebElement &container, Dashboard *parent);
+    Problem(const QString &message = "", const QString &actor = "", const QString &_type = U2_ERROR);
+    QString message;
+    QString actor;
+    QString type;
+    QString port;
 
-private slots:
-    void sl_progressChanged(int progress);
-    void sl_taskStateChanged(Monitor::TaskState state);
+    bool operator== (const Problem &other) const;
 
-private:
-    void running();
-    void runningWithProblems();
-    void finishedWithProblems();
-    void failed();
-    void success();
-    void canceled();
-
-    QWebElement statusBar();
-    QWebElement statusMessage();
+    static const QString U2_ERROR;
+    static const QString U2_WARNING;
 };
 
-} // U2
+}   // namespace U2
 
-#endif // _U2_RESOURCESWIDGET_H_
+Q_DECLARE_METATYPE( U2::Problem )
+
+#endif // _U2_SUPPORT_CLASS_H_

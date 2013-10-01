@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/U2Lang">
+        <file>images/error.png</file>
+        <file>images/warning.png</file>
+    </qresource>
+</RCC>

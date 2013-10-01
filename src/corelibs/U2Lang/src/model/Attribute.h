@@ -35,6 +35,7 @@
 #include <U2Lang/Datatype.h>
 #include <U2Lang/Descriptor.h>
 #include <U2Lang/ScriptLibrary.h>
+#include <U2Lang/SupportClass.h>
 #include <U2Lang/WorkflowContext.h>
 #include <U2Lang/WorkflowScriptEngine.h>
 
@@ -132,7 +133,7 @@ public:
      */
     virtual void updateActorIds(const QMap<ActorId, ActorId> &actorIdsMap);
 
-    virtual bool validate(QStringList &errorList);
+    virtual bool validate(ProblemList &problemList);
 
     
 private:

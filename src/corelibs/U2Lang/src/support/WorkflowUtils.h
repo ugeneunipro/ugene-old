@@ -29,6 +29,7 @@
 #include <U2Lang/ActorModel.h>
 #include <U2Lang/IntegralBusModel.h>
 #include <U2Lang/Schema.h>
+#include <U2Lang/SupportClass.h>
 #include <U2Lang/WorkflowContext.h>
 
 class QListWidgetItem;
@@ -36,7 +37,6 @@ class QListWidgetItem;
 namespace U2 {
 class Descriptor;
 class DocumentFormat;
-typedef QMap<int, QVariant> ValidateError;
 
 using namespace Workflow;
 
@@ -52,9 +52,6 @@ public:
     static const QString WD_XML_FORMAT_EXTENSION;
     static const QString HREF_PARAM_ID;
 
-    #define ACTOR_REF (Qt::UserRole)
-    #define PORT_REF (Qt::UserRole + 1)
-    #define TEXT_REF (Qt::UserRole + 3)
 
     // used in GUI schema validating
     static bool validate(const Workflow::Schema &s, QList<QListWidgetItem*> &errs);
@@ -125,7 +122,7 @@ public:
 
 private:
     static QStringList initExtensions();
-    static bool validate(const Workflow::Schema &s, QList<ValidateError> &infoList);
+    static bool validate(const Workflow::Schema &s, ProblemList &problemList);
     
 }; // WorkflowUtils
 

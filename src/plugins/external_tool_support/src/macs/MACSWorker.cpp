@@ -223,12 +223,12 @@ U2::MACSSettings MACSWorker::createMACSSettings( U2OpStatus & /*os*/ ){
 class MACSInputSlotsValidator : public PortValidator {
     public:
 
-    bool validate(const IntegralBusPort *port, QStringList &l) const {
+    bool validate(const IntegralBusPort *port, ProblemList &problemList) const {
         QVariant busMap = port->getParameter(Workflow::IntegralBusPort::BUS_MAP_ATTR_ID)->getAttributePureValue();
         bool data = isBinded(busMap.value<QStrStrMap>(), TREATMENT_SLOT_ID);
         if (!data){
             QString dataName = slotName(port, TREATMENT_SLOT_ID);
-            l.append(IntegralBusPort::tr("Error! The slot must be not empty: '%1'").arg(dataName));
+            problemList.append(Problem(IntegralBusPort::tr("The slot must be not empty: '%1'").arg(dataName)));
             return false;
         }
 
@@ -254,7 +254,7 @@ class MACSInputSlotsValidator : public PortValidator {
         }
 
         if (hasCommonElements){
-            l.append(MACSWorker::tr("Error: Input control and treatment annotations are the same"));
+            problemList.append(Problem(MACSWorker::tr("Input control and treatment annotations are the same")));
             return false;
         }
 

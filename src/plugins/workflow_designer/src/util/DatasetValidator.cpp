@@ -28,7 +28,7 @@
 namespace U2 {
 namespace Workflow {
 
-bool DatasetValidator::validate(const Actor *actor, QStringList &output) const {
+bool DatasetValidator::validate(const Actor *actor, ProblemList &problemList) const {
     // If parameter is incorrect, return true and skip validation: it is only a warning
     Attribute *urlAttr = actor->getParameter(BaseAttributes::URL_IN_ATTRIBUTE().getId());
     SAFE_POINT(urlAttr != NULL, "Attribute is NULL", true);
@@ -43,7 +43,7 @@ bool DatasetValidator::validate(const Actor *actor, QStringList &output) const {
         if (!fileSet.contains(fileUrl)) {
             fileSet << fileUrl;
         } else {
-            output << QString("Warning: file '%1' was specified several times!").arg(fileUrl);
+            problemList << Problem(QString("file '%1' was specified several times!").arg(fileUrl), "", Problem::U2_WARNING);
         }
     }
 
