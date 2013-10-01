@@ -32,6 +32,8 @@ HEADERS += src/ETSProjectViewItemsContoller.h \
            src/bowtie/BowtieSupport.h \
            src/bowtie/BowtieTask.h \
            src/bowtie2/Bowtie2Support.h \
+           src/bowtie2/Bowtie2Task.h \
+           src/bowtie2/Bowtie2SettingsWidget.h \
            src/bwa/BwaSettingsWidget.h \
            src/bwa/BwaSupport.h \
            src/bwa/BwaTask.h \
@@ -118,6 +120,7 @@ FORMS += src/ui/BlastAllSupportDialog.ui \
          src/ui/BlastDBCmdDialog.ui \
          src/ui/BowtieBuildSettings.ui \
          src/ui/BowtieSettings.ui \
+         src/ui/Bowtie2Settings.ui \
          src/ui/BwaBuildSettings.ui \
          src/ui/BwaSettings.ui \
          src/ui/BwaSwSettings.ui \
@@ -160,6 +163,8 @@ SOURCES += src/ETSProjectViewItemsContoller.cpp \
            src/bowtie/BowtieSupport.cpp \
            src/bowtie/BowtieTask.cpp \
            src/bowtie2/Bowtie2Support.cpp \
+           src/bowtie2/Bowtie2Task.cpp \
+           src/bowtie2/Bowtie2SettingsWidget.cpp \
            src/bwa/BwaSettingsWidget.cpp \
            src/bwa/BwaSupport.cpp \
            src/bwa/BwaTask.cpp \

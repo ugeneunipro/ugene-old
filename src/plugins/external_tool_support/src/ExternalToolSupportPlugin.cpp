@@ -82,6 +82,8 @@
 #include "bowtie/BowtieSettingsWidget.h"
 #include "bowtie/bowtie_tests/bowtieTests.h"
 #include "bowtie2/Bowtie2Support.h"
+#include "bowtie2/Bowtie2Task.h"
+#include "bowtie2/Bowtie2SettingsWidget.h"
 #include "bwa/BwaSupport.h"
 #include "bwa/BwaTask.h"
 #include "bwa/BwaSettingsWidget.h"
@@ -459,6 +461,8 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin():Plugin(tr("External tool 
 
     AppContext::getDnaAssemblyAlgRegistry()->registerAlgorithm(new DnaAssemblyAlgorithmEnv(BowtieTask::taskName, new BowtieTaskFactory(), 
         new BowtieGUIExtensionsFactory(), true/*Index*/, false /*Dbi*/, true/*Paired-reads*/));
+    AppContext::getDnaAssemblyAlgRegistry()->registerAlgorithm(new DnaAssemblyAlgorithmEnv(Bowtie2Task::taskName, new Bowtie2TaskFactory(),
+        new Bowtie2GUIExtensionsFactory(), true/*Index*/, false /*Dbi*/, true/*Paired-reads*/));
     AppContext::getDnaAssemblyAlgRegistry()->registerAlgorithm(new DnaAssemblyAlgorithmEnv(BwaTask::ALGORITHM_BWA_ALN, new BwaTaskFactory(),
         new BwaGUIExtensionsFactory(), true/*Index*/, false/*Dbi*/, true/*Paired*/));
     AppContext::getDnaAssemblyAlgRegistry()->registerAlgorithm(new DnaAssemblyAlgorithmEnv(BwaTask::ALGORITHM_BWA_SW, new BwaTaskFactory(),
