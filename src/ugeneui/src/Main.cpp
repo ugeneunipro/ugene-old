@@ -600,8 +600,9 @@ int main(int argc, char **argv)
         Q_UNUSED(guiTestService);
     }
 
+    QList<Task*> tasks;
     if ( !envList.contains(ENV_UGENE_DEV+QString("=1")) ) {
-        Shtirlitz::wakeup();
+        tasks << Shtirlitz::wakeup();
     }
 
     GReportableCounter launchCounter("ugeneui launch", "", 1);
@@ -610,7 +611,6 @@ int main(int argc, char **argv)
     //3 run QT GUI
     t1.stop();
 
-	QList<Task*> tasks;
     coreLog.info(AppContextImpl::tr("%1-bit version of UGENE started").arg(Version::appArchitecture));
     if(AppContext::getSettings()->getValue(ASK_VESRION_SETTING, true).toBool()) {
 		tasks << new CheckUpdatesTask(true);

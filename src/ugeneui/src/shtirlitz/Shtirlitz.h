@@ -34,16 +34,16 @@ class Shtirlitz;
 class Shtirlitz {
 public:
     //Sends all of the reports, if needed. 
-    static void wakeup();
+    static QList<Task*> wakeup();
     //Sends custom reports, created by somebody other than Shtirlitz.
-    static void sendCustomReport( const QString & customReport );
+    static Task * sendCustomReport( const QString & customReport );
     //Saves to settings gathered during the current launch info
     static void saveGatheredInfo();
 private:
     //Creates and sends counters info (statistics about UGENE main tasks usage)
-    static void sendCountersReport();
+    static Task * sendCountersReport();
     //Creates and sends system info: OS, hardware platform, etc.
-    static void sendSystemReport();
+    static Task * sendSystemReport();
 
     static QString formCountersReport();
     static QString formSystemReport(); 

@@ -90,7 +90,8 @@ const static char * firstTimeNotice =
 
 //Report about system is sent on the first launch of UGENE.
 //Statistical reports are sent once per DAYS_BETWEEN_REPORTS.
-void Shtirlitz::wakeup() {
+QList<Task*> Shtirlitz::wakeup() {
+    QList<Task*> result;
     Settings * s = AppContext::getSettings();
     bool thisVersionFirstLaunch, allVersionsFirstLaunch;
     getFirstLaunchInfo(thisVersionFirstLaunch, allVersionsFirstLaunch);
@@ -105,9 +106,9 @@ void Shtirlitz::wakeup() {
     }
     
     // Do nothing if Shtirlitz was disabled
-    if (QProcess::systemEnvironment().contains(ENV_UGENE_DEV)) {
-        return;
-    }
+     if (QProcess::systemEnvironment().contains(ENV_UGENE_DEV)) {
+         return result;
+     }
 
     bool enabledByUser = AppContext::getAppSettings()->getUserAppsSettings()->isStatisticsCollectionEnabled();
     
@@ -117,12 +118,12 @@ void Shtirlitz::wakeup() {
     if( thisVersionFirstLaunch && !enabledByUser) {
         QMessageBox::StandardButton answ = QMessageBox::question(QApplication::activeWindow(), tr("Statistical reports"), tr(firstTimeNotice), QMessageBox::Yes | QMessageBox::No );
         if( QMessageBox::Yes != answ ) {
-            AppContext::getAppSettings()->getUserAppsSettings()->setEnableCollectingStatistics( false );
-            return;
-        }
-        AppContext::getAppSettings()->getUserAppsSettings()->setEnableCollectingStatistics( true );
+             AppContext::getAppSettings()->getUserAppsSettings()->setEnableCollectingStatistics( false );
+             return result;
+         }
+         AppContext::getAppSettings()->getUserAppsSettings()->setEnableCollectingStatistics( true );
         coreLog.details( tr("Shtirlitz is sending the first-time report") );
-        sendSystemReport();
+        result << sendSystemReport();
         //Leave a mark that the first-time report was sent
     } 
 
@@ -134,16 +135,16 @@ void Shtirlitz::wakeup() {
 
         if( !prevDate.isValid() || daysPassed > DAYS_BETWEEN_REPORTS ) {
             coreLog.details( tr("%1 days passed passed since previous Shtirlitz's report. Shtirlitz is sending the new one.") );
-            sendCountersReport();
+            result << sendCountersReport();
             //and save the new date
             s->setValue( SETTINGS_PREVIOUS_REPORT_DATE, QDate::currentDate() );
         }
     }
+    return result;
 }
 
-void Shtirlitz::sendCustomReport( const QString & customReport ) {
-    Task * t = new ShtirlitzTask(customReport);
-    AppContext::getTaskScheduler()->registerTopLevelTask(t);
+Task * Shtirlitz::sendCustomReport( const QString & customReport ) {
+    return new ShtirlitzTask(customReport);
 }
 
 void Shtirlitz::saveGatheredInfo() {
@@ -175,14 +176,14 @@ bool Shtirlitz::enabled() {
     return AppContext::getAppSettings()->getUserAppsSettings()->isStatisticsCollectionEnabled();
 }
 
-void Shtirlitz::sendCountersReport() {
+Task * Shtirlitz::sendCountersReport() {
     QString countersReport = formCountersReport();
-    sendCustomReport(countersReport);
+    return sendCustomReport(countersReport);
 }
 
-void Shtirlitz::sendSystemReport() {
+Task * Shtirlitz::sendSystemReport() {
     QString systemReport = formSystemReport();
-    sendCustomReport(systemReport);
+    return sendCustomReport(systemReport);
 }
 
 //Tries to load saved counters from settings.
