@@ -374,8 +374,6 @@ void CreateAnnotationWidgetController::initLayout(AnnotationWidgetMode layoutMod
     complementButton->setIcon(iconComplement);
 
     if (layoutMode ==  normal) {
-        gridLayoutParams->setSizeConstraint(QLayout::SetMinAndMaxSize);
-
         groupNameLabel->setText(tr("Group name"));
         annotationNameLabel->setText(tr("Annotation name"));
         locationLabel->setText(tr("Location"));
