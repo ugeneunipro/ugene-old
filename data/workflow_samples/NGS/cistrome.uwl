@@ -6,6 +6,7 @@ workflow "ChIP-seq analysis with Cistrome tools" {
         wizard {
             auto-run: true;
             has-run-button: false;
+            has-defaults-button: false;
             name: "Configure Cistrome Pipeline";
             finish-label: "Setup";
             result {

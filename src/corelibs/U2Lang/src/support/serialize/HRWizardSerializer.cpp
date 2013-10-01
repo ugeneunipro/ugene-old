@@ -50,6 +50,7 @@ const QString HRWizardParser::RESULT("result");
 const QString HRWizardParser::FINISH_LABEL("finish-label");
 const QString HRWizardParser::TOOLTIP("tooltip");
 const QString HRWizardParser::HAS_RUN_BUTTON("has-run-button");
+const QString HRWizardParser::HAS_DEFAULTS_BUTTON("has-defaults-button");
 
 HRWizardParser::HRWizardParser(HRSchemaSerializer::Tokenizer &_tokenizer,
                                        const QMap<QString, Actor*> &_actorMap)
@@ -80,7 +81,8 @@ Wizard * HRWizardParser::takeResult() {
 
 Wizard * HRWizardParser::parseWizard(U2OpStatus &os) {
     bool autoRun = false;
-    bool noRunButton = false;
+    bool hasRunButton = true;
+    bool hasDefaultsButton = true;
     while (tokenizer.look() != HRSchemaSerializer::BLOCK_END) {
         QString tok = tokenizer.take();
         if (PAGE == tok) {
@@ -96,7 +98,10 @@ Wizard * HRWizardParser::parseWizard(U2OpStatus &os) {
             autoRun = ("true" == tokenizer.take());
         } else if (HAS_RUN_BUTTON == tok) {
             tokenizer.assertToken(HRSchemaSerializer::EQUALS_SIGN);
-            noRunButton = ("false" == tokenizer.take());
+            hasRunButton = ("false" != tokenizer.take());
+        } else if (HAS_DEFAULTS_BUTTON == tok) {
+            tokenizer.assertToken(HRSchemaSerializer::EQUALS_SIGN);
+            hasDefaultsButton = ("false" != tokenizer.take());
         } else if (RESULT == tok) {
             tokenizer.assertToken(HRSchemaSerializer::BLOCK_START);
             parseResult(os);
@@ -114,7 +119,8 @@ Wizard * HRWizardParser::parseWizard(U2OpStatus &os) {
     Wizard *result = takeResult();
     CHECK(NULL != result, NULL);
     result->setAutoRun(autoRun);
-    result->setHasRunButton(!noRunButton);
+    result->setHasRunButton(hasRunButton);
+    result->setHasDefaultsButton(hasDefaultsButton);
     return result;
 }
 
@@ -566,6 +572,9 @@ QString HRWizardSerializer::serialize(Wizard *wizard, int depth) {
 
     if (!wizard->hasRunButton()) {
         wizardData += HRSchemaSerializer::makeEqualsPair(HRWizardParser::HAS_RUN_BUTTON, "false", depth + 1);
+    }
+    if (!wizard->hasDefaultsButton()) {
+        wizardData += HRSchemaSerializer::makeEqualsPair(HRWizardParser::HAS_DEFAULTS_BUTTON, "false", depth + 1);
     }
 
     if (!wizard->getResults().isEmpty()) {

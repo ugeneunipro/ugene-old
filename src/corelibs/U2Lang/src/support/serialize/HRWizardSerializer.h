@@ -86,6 +86,7 @@ public:
     static const QString FINISH_LABEL;
     static const QString TOOLTIP;
     static const QString HAS_RUN_BUTTON;
+    static const QString HAS_DEFAULTS_BUTTON;
 };
 
 class U2LANG_EXPORT HRWizardSerializer {

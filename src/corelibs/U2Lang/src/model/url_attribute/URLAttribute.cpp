@@ -28,10 +28,11 @@
 
 namespace U2 {
 
-URLAttribute::URLAttribute(const Descriptor &d, const DataTypePtr type, bool required, const QVariant &defaultValue)
-: Attribute(d, type, required, defaultValue)
+URLAttribute::URLAttribute(const Descriptor &d, const DataTypePtr type, bool required)
+: Attribute(d, type, required)
 {
     sets << Dataset();
+    defaultValue = qVariantFromValue< QList<Dataset> >(sets);
     value = qVariantFromValue< QList<Dataset> >(sets);
 }
 
@@ -76,7 +77,7 @@ bool URLAttribute::isDefaultValue() const {
 }
 
 Attribute * URLAttribute::clone() {
-    URLAttribute *cloned = new URLAttribute(*this, type, required, defaultValue);
+    URLAttribute *cloned = new URLAttribute(*this, type, required);
     QList<Dataset> sets = value.value< QList<Dataset> >();
     QList<Dataset> clonedSets;
     foreach (const Dataset &dSet, sets) {

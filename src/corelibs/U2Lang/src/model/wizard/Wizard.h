@@ -57,6 +57,9 @@ public:
     bool hasRunButton() const;
     void setHasRunButton(bool value);
 
+    bool hasDefaultsButton() const;
+    void setHasDefaultsButton(bool value);
+
     static const QString DEFAULT_NAME;
 
 private:
@@ -65,6 +68,7 @@ private:
     QMap<QString, Variable> vars;
     bool autoRun;
     bool withRunButton;
+    bool withDefaultsButton;
     QMap<QString, QList<Predicate> > results;
     QString finishLabel;
 };

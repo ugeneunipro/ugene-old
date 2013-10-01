@@ -29,7 +29,7 @@ namespace U2 {
 
 class U2LANG_EXPORT URLAttribute : public Attribute {
 public:
-    URLAttribute(const Descriptor &d, const DataTypePtr type, bool required = false, const QVariant &defaultValue = QVariant());
+    URLAttribute(const Descriptor &d, const DataTypePtr type, bool required = false);
 
     virtual void setAttributeValue(const QVariant &newVal);
     virtual const QVariant & getAttributePureValue() const;

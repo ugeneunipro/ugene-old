@@ -76,7 +76,7 @@ WizardController::~WizardController() {
 
 QWizard * WizardController::createGui() {
     QWizard *result = new QWizard((QWidget*)AppContext::getMainWindow()->getQMainWindow());
-    setupRunButton(result);
+    setupButtons(result);
 
     int idx = 0;
     foreach (WizardPage *page, wizard->getPages()) {
@@ -100,15 +100,23 @@ QWizard * WizardController::createGui() {
     return result;
 }
 
-void WizardController::setupRunButton(QWizard *gui) {
-    CHECK(wizard->hasRunButton(), );
-    gui->setOption(QWizard::HaveCustomButton1);
-    gui->setButtonText(QWizard::CustomButton1, tr("Run"));
-    QAbstractButton *runButton = gui->button(QWizard::CustomButton1);
-    connect(runButton, SIGNAL(clicked()), SLOT(sl_run()));
-    connect(runButton, SIGNAL(clicked()), gui, SLOT(accept()));
+void WizardController::setupButtons(QWizard *gui) {
+    connect(gui, SIGNAL(customButtonClicked(int)), SLOT(sl_customButtonClicked(int)));
     QList<QWizard::WizardButton> order;
-    order << QWizard::Stretch << QWizard::BackButton << QWizard::NextButton << QWizard::FinishButton << QWizard::CustomButton1 << QWizard::CancelButton;
+    order << QWizard::Stretch << QWizard::BackButton << QWizard::NextButton << QWizard::FinishButton  << QWizard::CancelButton;
+
+    if (wizard->hasDefaultsButton()) {
+        gui->setOption(QWizard::HaveCustomButton2);
+        gui->setButtonText(QWizard::CustomButton2, tr("Defaults"));
+        gui->button(QWizard::CustomButton2)->setToolTip(tr("Set page values by default"));
+        order.prepend(QWizard::CustomButton2);
+    }
+    if (wizard->hasRunButton()) {
+        gui->setOption(QWizard::HaveCustomButton1);
+        gui->setButtonText(QWizard::CustomButton1, tr("Run"));
+        connect(gui->button(QWizard::CustomButton1), SIGNAL(clicked()), gui, SLOT(accept()));
+        order.insert(order.size() - 1, QWizard::CustomButton1);
+    }
     gui->setButtonLayout(order);
 }
 
@@ -116,8 +124,91 @@ bool WizardController::isRunAfterApply() const {
     return runAfterApply;
 }
 
-void WizardController::sl_run() {
+WizardPage * WizardController::findPage(QWizardPage *wPage) {
+    foreach (WizardPageController *ctrl, pageControllers) {
+        if (ctrl->getQtPage() == wPage) {
+            return ctrl->getPage();
+        }
+    }
+    return NULL;
+}
+
+void WizardController::run() {
     runAfterApply = true;
+}
+
+namespace {
+    class WidgetDefaulter : public WizardWidgetVisitor {
+    public:
+        WidgetDefaulter(WizardController *wc) : wc(wc) {}
+        void visit(AttributeWidget *aw) {
+            Attribute *attr = wc->getAttribute(aw->getInfo());
+            CHECK(NULL != attr, );
+            wc->setAttributeValue(aw->getInfo(), attr->getDefaultPureValue());
+        }
+        void visit(WidgetsArea *wa) {
+            foreach (WizardWidget *w, wa->getWidgets()) {
+                WidgetDefaulter defaulter(wc);
+                w->accept(&defaulter);
+            }
+        }
+        void visit(GroupWidget *gw) {
+            visit((WidgetsArea*)gw);
+        }
+        void visit(LogoWidget *) {}
+        void visit(ElementSelectorWidget *) {}
+        void visit(PairedReadsWidget *prw) {
+            foreach (const AttributeInfo &info, prw->getInfos()) {
+                Attribute *attr = wc->getAttribute(info);
+                CHECK(NULL != attr, );
+                wc->setAttributeValue(info, attr->getDefaultPureValue());
+            }
+        }
+        void visit(UrlAndDatasetWidget *udw) {
+            foreach (const AttributeInfo &info, udw->getInfos()) {
+                Attribute *attr = wc->getAttribute(info);
+                CHECK(NULL != attr, );
+                wc->setAttributeValue(info, attr->getDefaultPureValue());
+            }
+        }
+        void visit(RadioWidget *) {}
+        void visit(SettingsWidget *) {}
+
+    private:
+        WizardController *wc;
+    };
+
+    class PageDefaulter : public TemplatedPageVisitor {
+    public:
+        PageDefaulter(WizardController *wc) : wc(wc) {}
+        virtual void visit(DefaultPageContent *dp) {
+            WidgetDefaulter defaulter(wc);
+            dp->getParamsArea()->accept(&defaulter);
+        }
+
+    private:
+        WizardController *wc;
+    };
+}
+
+void WizardController::defaults(QWizardPage *wPage) {
+    WizardPage *page = findPage(wPage);
+    CHECK(NULL != page, );
+    TemplatedPageContent *content = page->getContent();
+
+    PageDefaulter defaulter(this);
+    content->accept(&defaulter);
+    wPage->initializePage();
+}
+
+void WizardController::sl_customButtonClicked(int which) {
+    if (QWizard::CustomButton1 == which) {
+        run();
+    } else if (QWizard::CustomButton2 == which) {
+        QWizard *w = dynamic_cast<QWizard*>(sender());
+        CHECK(NULL != w, );
+        defaults(w->currentPage());
+    }
 }
 
 void WizardController::assignParameters() {

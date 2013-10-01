@@ -25,10 +25,10 @@
 
 namespace U2 {
 
-WDWizardPage::WDWizardPage(WizardPageController *_controller, QWidget *parent)
-: QWizardPage(parent), controller(_controller)
+WDWizardPage::WDWizardPage(WizardPageController *controller, QWidget *parent)
+: QWizardPage(parent), controller(controller)
 {
-
+    controller->setQtPage(this);
 }
 
 WDWizardPage::~WDWizardPage() {
@@ -36,7 +36,7 @@ WDWizardPage::~WDWizardPage() {
 }
 
 void WDWizardPage::initializePage () {
-    controller->applyLayout(this);
+    controller->applyLayout();
 }
 
 static QAbstractButton * getRunButton(QWizard *w) {

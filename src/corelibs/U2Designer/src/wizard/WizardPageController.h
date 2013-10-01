@@ -37,10 +37,14 @@ public:
     WizardPageController(WizardController *wc, WizardPage *page);
     virtual ~WizardPageController();
 
-    void applyLayout(WDWizardPage *wPage);
+    void setQtPage(WDWizardPage *value);
+    WDWizardPage * getQtPage() const;
+    WizardPage * getPage() const;
+    void applyLayout();
     int nextId() const;
 
 private:
+    WDWizardPage *wPage;
     WizardController *wc;
     WizardPage *page;
     QList<WidgetController*> controllers;

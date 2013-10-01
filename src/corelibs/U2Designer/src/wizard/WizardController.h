@@ -87,6 +87,8 @@ public:
     QVariant getAttributeValue(const AttributeInfo &info) const;
     void setAttributeValue(const AttributeInfo &info, const QVariant &value);
 
+    Attribute * getAttribute(const AttributeInfo &info) const;
+
 private:
     bool broken;
     Schema *schema;
@@ -101,9 +103,8 @@ private:
     bool runAfterApply;
 
 private:
-    void setupRunButton(QWizard *wizard);
+    void setupButtons(QWizard *wizard);
     QWizardPage * createPage(WizardPage *page);
-    Attribute * getAttribute(const AttributeInfo &info) const;
     void registerSelector(ElementSelectorWidget *widget);
     void replaceCurrentActor(const QString &actorId, const QString &selectorValue);
     void assignParameters();
@@ -111,9 +112,12 @@ private:
     void saveDelegateTags();
     DelegateTags * getTags(const AttributeInfo &info);
     bool canSetValue(const AttributeInfo &info, const QVariant &value);
+    void run();
+    void defaults(QWizardPage *wPage);
+    WizardPage * findPage(QWizardPage *wPage);
 
 private slots:
-    void sl_run();
+    void sl_customButtonClicked(int num);
 };
 
 /************************************************************************/

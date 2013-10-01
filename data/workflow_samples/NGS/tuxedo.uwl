@@ -6,6 +6,7 @@ workflow "RNA-seq analysis with Tuxedo tools" {
         wizard {
             auto-run: true;
             has-run-button: false;
+            has-defaults-button: false;
             name: "Configure Tuxedo Pipeline";
             finish-label: "Setup";
             result {

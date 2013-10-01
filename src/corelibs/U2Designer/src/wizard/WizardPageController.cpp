@@ -30,8 +30,8 @@
 
 namespace U2 {
 
-WizardPageController::WizardPageController(WizardController *_wc, WizardPage *_page)
-: wc(_wc), page(_page)
+WizardPageController::WizardPageController(WizardController *wc, WizardPage *page)
+: wPage(NULL), wc(wc), page(page)
 {
 
 }
@@ -40,7 +40,19 @@ WizardPageController::~WizardPageController() {
 
 }
 
-void WizardPageController::applyLayout(WDWizardPage *wPage) {
+void WizardPageController::setQtPage(WDWizardPage *value) {
+    wPage = value;
+}
+
+WDWizardPage * WizardPageController::getQtPage() const {
+    return wPage;
+}
+
+WizardPage * WizardPageController::getPage() const {
+    return page;
+}
+
+void WizardPageController::applyLayout() {
     qDeleteAll(controllers);
     controllers.clear();
     QLayout *old = wPage->layout();
