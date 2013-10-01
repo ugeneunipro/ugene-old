@@ -1299,6 +1299,17 @@ GUI_TEST_CLASS_DEFINITION( test_1886_2 )
         "--TGAA\n--CGAT\n--CGAT\n--CGAT" == selectionContent, "MSA changing is failed" );
 }
 
+GUI_TEST_CLASS_DEFINITION( test_1921 )
+{
+//    1. Click rapidly on the "Show/hide log" button several (20) times (or use the Alt+3 hotkey).
+    GTGlobals::sleep(2000);
+    for (int i = 0; i < 20; i++) {
+        GTKeyboardDriver::keyClick(os, '3', GTKeyboardDriver::key["alt"]);
+        GTGlobals::sleep(20);
+    }
+//    Expected state: UGENE not crashes.
+}
+
 GUI_TEST_CLASS_DEFINITION( test_2021_1 )
 {
     // 1. Open document "ma.aln" and save it to string
