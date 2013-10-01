@@ -58,6 +58,7 @@
 #include "runnables/ugene/plugins_3rdparty/kalign/KalignDialogFiller.h"
 #include "GTUtilsLog.h"
 #include <U2View/ADVSingleSequenceWidget.h>
+#include <U2View/AnnotatedDNAViewFactory.h>
 
 
 #include <U2View/ADVConstants.h>
@@ -1576,6 +1577,19 @@ GUI_TEST_CLASS_DEFINITION( test_2021_9 )
     const QString finalMsaContent = GTClipboard::text( os );
     CHECK_SET_ERR(  "TTAGTTTATTAATTCGAGCTGAACTAGGTCAACCAGGCTATTTAATT" == finalMsaContent,
                     "Unexpected MSA content has occurred" );
+}
+
+GUI_TEST_CLASS_DEFINITION( test_2070 ){
+    GTLogTracer lt;
+    GTUtilsDialog::waitForDialog(os, new RemoteDBDialogFiller(os, "Q9IGQ6", 7));
+    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE),ACTION_PROJECTSUPPORT__ACCESS_REMOTE_DB, GTGlobals::UseKey);
+    GTGlobals::sleep();
+
+    GTGlobals::sleep(18000);
+    GTUtilsDocument::isDocumentLoaded(os, "Q9IGQ6_das.gb");
+    GTUtilsDocument::checkDocument(os, "Q9IGQ6_das.gb", AnnotatedDNAViewFactory::ID);
+    
+    GTUtilsLog::check(os, lt);
 }
 
 GUI_TEST_CLASS_DEFINITION( test_2089 )
