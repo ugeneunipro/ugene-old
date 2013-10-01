@@ -160,6 +160,7 @@ bool AssemblyBrowser::eventFilter(QObject* o, QEvent* e) {
                 if (e->type() == QEvent::DragEnter) {
                     de->acceptProposedAction();
                 } else {
+                    QApplication::changeOverrideCursor(Qt::ArrowCursor);//setting arrow cursor on Linux
                     QString err = tryAddObject(gomd->objPtr.data());
                     if(!err.isEmpty()) {
                         QMessageBox::critical(ui, tr("Error!"), err);
@@ -202,8 +203,8 @@ QString AssemblyBrowser::tryAddObject(GObject * obj) {
         //    }
         //}
         
-        bool setRef = true;
-        if(!errs.isEmpty()) {
+        bool setRef = model->checkPermissions(QFile::WriteUser);
+        if(!errs.isEmpty() && setRef) {
             errs << tr("\n  Continue?");
             QMessageBox::StandardButtons fl = QMessageBox::Ok | QMessageBox::Cancel;
             QMessageBox::StandardButton btn = QMessageBox::question(ui, tr("Errors"), errs.join("\n"), fl, QMessageBox::Ok);

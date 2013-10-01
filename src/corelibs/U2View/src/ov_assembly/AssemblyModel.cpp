@@ -282,8 +282,8 @@ void AssemblyModel::setAssembly(U2AssemblyDbi * dbi, const U2Assembly & assm) {
                     tr("A file '%1' with the reference sequence '%2' not found!\n"
                     "Try to open another file with a reference sequence and associate it with the assembly.").arg(refUrl).arg(refName),
                     QMessageBox::Ok, QMessageBox::Ok);
-
-                sl_unassociateReference();
+                if (checkPermissions(QFile::WriteUser,false))
+                    sl_unassociateReference();
             }
         }
         
@@ -408,6 +408,8 @@ bool AssemblyModel::referenceAssociated() const {
 }
 
 void AssemblyModel::setReference(U2SequenceObject* seqObj) {
+
+
     refObj = seqObj;
     if(seqObj != NULL) {
         connect(seqObj->getDocument(), SIGNAL(si_objectRemoved(GObject*)), SLOT(sl_referenceObjRemoved(GObject*)));
@@ -438,6 +440,7 @@ void AssemblyModel::associateWithReference(const U2CrossDatabaseReference & ref)
     assert(hasReference());
     assert(assemblyDbi != NULL);
     // save cross reference id to assembly
+
     assembly.referenceId = ref.id;
     U2OpStatusImpl status;
     assemblyDbi->updateAssemblyObject(assembly, status);
@@ -560,15 +563,9 @@ QString AssemblyModel::getReferenceUri(U2OpStatus & os) {
 
 void AssemblyModel::sl_unassociateReference() {
     if(!assembly.referenceId.isEmpty()) {
-        QFile f(assembly.dbiId);
-        QFile::Permissions perm = f.permissions();
+        if(!checkPermissions(QFile::WriteUser))
+            return;
 
-        if(!perm.testFlag(QFile::WriteUser)){
-            QMessageBox::warning(QApplication::activeWindow(), tr("Warning"),
-                                 QString("You don't have enough rights to change file:\n%1").arg(assembly.dbiId),
-                                QMessageBox::Ok, QMessageBox::Ok);
-           return;
-        }
         U2OpStatusImpl status;
         assembly.referenceId.clear();
         assemblyDbi->updateAssemblyObject(assembly, status);
@@ -576,6 +573,21 @@ void AssemblyModel::sl_unassociateReference() {
         unsetReference();
         emit si_referenceChanged();
     }
+}
+
+bool AssemblyModel::checkPermissions(QFile::Permission permission, bool showDialog){
+    QFile f(assembly.dbiId);
+    QFile::Permissions perm = f.permissions();
+
+    if(!perm.testFlag(permission)){
+        if(showDialog){
+            QMessageBox::warning(QApplication::activeWindow(), tr("Warning"),
+                                 tr("This action requires changing file:\n%1\nYou don't have enough rights to change file").arg(assembly.dbiId),
+                                QMessageBox::Ok, QMessageBox::Ok);
+        }
+       return false;
+    }
+    return true;
 }
 
 U2EntityRef AssemblyModel::getRefereneceEntityRef(){

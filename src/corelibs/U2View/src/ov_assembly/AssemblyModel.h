@@ -25,6 +25,7 @@
 #include <QtCore/QPointer>
 #include <QtCore/QMutex>
 #include <QtCore/QMutexLocker>
+#include <QtCore/QFile>
 #include <U2Core/U2DbiUtils.h>
 #include <U2Core/GObject.h>
 
@@ -91,6 +92,7 @@ public:
 
     const QList<VariantTrackObject*> &getTrackList() const;
     void addTrackObject(VariantTrackObject *trackObj);
+    bool checkPermissions(QFile::Permission, bool showDialog=true);
     
 private:
     /**
