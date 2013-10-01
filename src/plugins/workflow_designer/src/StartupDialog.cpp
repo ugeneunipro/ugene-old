@@ -49,6 +49,9 @@ StartupDialog::StartupDialog(QWidget *parent)
 
 void StartupDialog::sl_accepted(){
     QDir dir(outDirWidget->getChoosenDir());
+    if(!dir.exists()){
+        dir.mkpath(dir.absolutePath());
+    }
     QFile file(dir.filePath("ex1.txt"));
     if (!file.open(QIODevice::WriteOnly)){
         QMessageBox::critical(this, this->windowTitle(), tr("You have no write access to the directory. Please choose another one."));
