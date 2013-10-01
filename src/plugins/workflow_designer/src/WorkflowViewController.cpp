@@ -2725,9 +2725,13 @@ void WorkflowScene::setupLinkCtxMenu(const QString& href, Actor* actor, const QP
         Attribute *attribute = actor->getParameter(attributeId);
         QString urlStr;
         QStringList urlList = WorkflowUtils::getAttributeUrls(attribute);
-        if(urlList.size()==1){
-            urlStr = urlList.takeFirst();
+
+        foreach(QString url, urlList){
+            if(!QFileInfo(url).isDir()){
+                urlStr.append(url).append(';');
+            }
         }
+        urlStr = urlStr.left(urlStr.size()-1);
 
         if (!urlStr.isEmpty()) {
             QMenu menu;
