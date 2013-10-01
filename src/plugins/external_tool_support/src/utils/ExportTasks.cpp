@@ -87,6 +87,7 @@ ma(_ma), url(_url), trimAli(_trimAli), format(_format)
 {
     GCOUNTER( cvar, tvar, "ExportMSA2SequencesTask" );
     setVerboseLogMode(true);
+    stateInfo.setProgress(0);
 }
 
 void SaveMSA2SequencesTask::run() {
