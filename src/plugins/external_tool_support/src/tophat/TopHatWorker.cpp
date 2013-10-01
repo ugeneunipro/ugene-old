@@ -776,8 +776,8 @@ bool BowtieToolsValidator::validate( const Actor *actor, QStringList &output ) c
             SAFE_POINT( NULL != bowTieTool, "NULL bowtie tool", false );
             ExternalTool *topHatTool = AppContext::getExternalToolRegistry()->getByName( ET_TOPHAT );
             SAFE_POINT( NULL != topHatTool, "NULL tophat tool", false );
-            const QString &bowtieVersion = bowTieTool->getVersion( );
-            const QString &topHatVersion = topHatTool->getVersion( );
+            QString bowtieVersion = bowTieTool->getVersion( );
+            QString topHatVersion = topHatTool->getVersion( );
             if ( !( "0.12.9" > bowtieVersion && "2.0.8" >= topHatVersion )
                  && !( "0.12.9" <= bowtieVersion && "2.0.8b" <= topHatVersion ) )
             {
