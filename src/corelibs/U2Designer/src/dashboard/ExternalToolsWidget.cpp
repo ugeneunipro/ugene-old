@@ -31,9 +31,16 @@
 
 namespace U2 {
 
+ExternalToolsWidgetController::ExternalToolsWidgetController() {
+    timer = new QTimer;
+    timer->setInterval(1000);
+    timer->setSingleShot(true);
+    connect(timer, SIGNAL(timeout()), SLOT(sl_timerShouts()));
+}
+
 ExternalToolsWidget* ExternalToolsWidgetController::getWidget(const QWebElement &container, Dashboard *parent) const {
     ExternalToolsWidget* widget = new ExternalToolsWidget(container, parent, this);
-    connect(this, SIGNAL(si_infoAdded(int)), widget, SLOT(sl_onInfoChanged(int)));
+    connect(this, SIGNAL(si_update()), widget, SLOT(sl_onLogUpdate()));
     return widget;
 }
 
@@ -44,7 +51,13 @@ LogEntry ExternalToolsWidgetController::getEntry(int index) const {
 
 void ExternalToolsWidgetController::sl_onLogChanged(U2::Workflow::Monitor::LogEntry entry) {
     log << entry;
-    emit si_infoAdded(log.count() - 1);
+    if (!timer->isActive()) {
+        timer->start();
+    }
+}
+
+void ExternalToolsWidgetController::sl_timerShouts() {
+    emit si_update();
 }
 
 const QString ExternalToolsWidget::LINE_BREAK("break_line");
@@ -67,11 +80,31 @@ ExternalToolsWidget::ExternalToolsWidget(const QWebElement &_container,
     foreach (LogEntry entry, ctrl->getLog()) {
         addInfoToWidget(entry);
     }
+
+    lastEntryIndex = ctrl->getLogSize() - 1;
 }
 
-void ExternalToolsWidget::sl_onInfoChanged(int index) {
+void ExternalToolsWidget::sl_onLogUpdate() {
     SAFE_POINT(sender() == ctrl, "Unexpected sender", );
-    addInfoToWidget(ctrl->getEntry(index));
+
+    int lastLogIndex = ctrl->getLogSize() - 1;
+    LogEntry entry = ctrl->getEntry(lastEntryIndex + 1);
+
+    for (int i = lastEntryIndex + 1; i < lastLogIndex; i++) {
+        if (isSameNode(ctrl->getEntry(i), entry) &&
+                entry.logType != PROGRAM_PATH &&
+                entry.logType != ARGUMENTS) {
+            // accumulate
+            entry.lastLine += ctrl->getEntry(i).lastLine;
+        } else {
+            // node changed, commit
+            addInfoToWidget(entry);
+            entry = ctrl->getEntry(i);
+        }
+    }
+
+    addInfoToWidget(entry);
+    lastEntryIndex = lastLogIndex;
 }
 
 void ExternalToolsWidget::addInfoToWidget(const LogEntry &entry) {
@@ -112,6 +145,13 @@ void ExternalToolsWidget::addInfoToWidget(const LogEntry &entry) {
         container.evaluateJavaScript(addLogFunc);
         break;
     }
+}
+
+bool ExternalToolsWidget::isSameNode(const LogEntry& prev, const LogEntry& cur) const {
+    return prev.actorName == cur.actorName &&
+            prev.logType == cur.logType &&
+            prev.runNumber == cur.runNumber &&
+            prev.toolName == cur.toolName;
 }
 
 } // namespace U2

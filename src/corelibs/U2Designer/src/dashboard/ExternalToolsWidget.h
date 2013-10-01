@@ -32,19 +32,28 @@ class ExternalToolsWidget;
 
 class ExternalToolsWidgetController : public QObject {
     Q_OBJECT
+    Q_DISABLE_COPY(ExternalToolsWidgetController)
 public:
+    ExternalToolsWidgetController();
+    ~ExternalToolsWidgetController() { delete timer; }
+
     ExternalToolsWidget* getWidget(const QWebElement &container, Dashboard *parent) const;
     LogEntry getEntry(int index) const;
     QList<LogEntry> getLog() const { return log; }
+    int getLogSize() const { return log.count(); }
 
 signals:
-    void si_infoAdded(int index);
+    void si_update();
 
 public slots:
     void sl_onLogChanged(U2::Workflow::Monitor::LogEntry entry);
 
+private slots:
+    void sl_timerShouts();
+
 private:
     QList<LogEntry> log;
+    QTimer *timer;
 };
 
 class ExternalToolsWidget : public DashboardWidget {
@@ -53,10 +62,13 @@ public:
     ExternalToolsWidget(const QWebElement &container, Dashboard *parent, const ExternalToolsWidgetController* ctrl);
 
 public slots:
-    void sl_onInfoChanged(int index);
+    void sl_onLogUpdate();
+
 private:
     void addInfoToWidget(const LogEntry &entry);
+    bool isSameNode(const LogEntry& prev, const LogEntry& cur) const;
 
+    int lastEntryIndex;
     const ExternalToolsWidgetController* ctrl;
 
     static const QString LINE_BREAK;
