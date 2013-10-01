@@ -75,6 +75,12 @@ void FindAlgorithmTask::run() {
 }
 
 void FindAlgorithmTask::onResult(const FindAlgorithmResult& r) {
+    if (r.err == FindAlgorithmResult::NOT_ENOUGH_MEMORY_ERROR) {
+        stateInfo.cancelFlag = true;
+        const QString error = "Pattern is too big. Not enough memory.";
+        stateInfo.setError(error);
+        return;
+    }
     if(newResults.size() >= config.maxResult2Find){
         stateInfo.cancelFlag = true;
         return;

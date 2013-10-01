@@ -32,7 +32,12 @@ namespace U2 {
 
 class U2ALGORITHM_EXPORT FindAlgorithmResult {
 public:
+    static const int NOT_ENOUGH_MEMORY_ERROR;
+
+public:
     FindAlgorithmResult() : err(0) {}
+    FindAlgorithmResult(const int _err)
+        : err(_err){}
     FindAlgorithmResult(const U2Region& _r, bool t, U2Strand s, int _err) 
         : region(_r), translation(t), strand(s), err(_err){}
     

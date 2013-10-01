@@ -623,6 +623,9 @@ static void find_subst(
     currentPos = range.endPos();
 }
 
+// value 12 - standart "out of memory" error code in linux
+const int FindAlgorithmResult::NOT_ENOUGH_MEMORY_ERROR = 12;
+
 void FindAlgorithm::find(
                          FindAlgorithmResultsListener* rl, 
                          DNATranslation* aminoTT, // if aminoTT!=NULL -> pattern must contain amino data and sequence must contain DNA data
@@ -679,86 +682,95 @@ void FindAlgorithm::find(
     int width =  patternLen + maxErr;
     int height = patternLen;
 
-    StrandContext context[] = {
-        StrandContext(width, height, insDel, pattern), 
-        StrandContext(width, height, insDel, complPattern)
-    };
 
-    int onePercentLen = range.length/100;
-    int leftTillPercent = onePercentLen;
-    percentsCompleted = 0;
-    currentPos = range.startPos;
+    try {
+        StrandContext context[] = {
+            StrandContext(width, height, insDel, pattern),
+            StrandContext(width, height, insDel, complPattern)
+        };
 
-    int conStart = isDirect(strand)? 0 : 1;
-    int conEnd =  isComplement(strand) ? 2 : 1;
-    assert(conStart < conEnd);
-    for (int i=range.startPos, end = range.endPos(); i < end && !stopFlag; i++, leftTillPercent--) {
-        currentPos = i;
-        bool sShot_retflag = false;
-        for (int ci = conStart; ci < conEnd; ci++) {
-            StrandContext& ctx = context[ci];
-            DynTable& dt = ctx.dynTable;
-            const char* p = ctx.pattern;
-            FindAlgorithmResult& res = ctx.res; 
-            for (int j=0; j<patternLen; j++) {
-                bool matched = seq[i] == p[j];
-                dt.match(j, matched);
-            }
+        int onePercentLen = range.length/100;
+        int leftTillPercent = onePercentLen;
+        percentsCompleted = 0;
+        currentPos = range.startPos;
 
-            int err = dt.getLast();
-
-            if (!res.isEmpty() && (err > maxErr || (i-res.region.startPos) >= patternLen)) {
-                rl->onResult(res);
-                res.clear();
-                if (singleShot) {
-                    if( insDel ) {
-                        sShot_retflag = true;
-                    } else {
-                        return;
-                    }
+        int conStart = isDirect(strand)? 0 : 1;
+        int conEnd =  isComplement(strand) ? 2 : 1;
+        assert(conStart < conEnd);
+        for (int i=range.startPos, end = range.endPos(); i < end && !stopFlag; i++, leftTillPercent--) {
+            currentPos = i;
+            bool sShot_retflag = false;
+            for (int ci = conStart; ci < conEnd; ci++) {
+                StrandContext& ctx = context[ci];
+                DynTable& dt = ctx.dynTable;
+                const char* p = ctx.pattern;
+                FindAlgorithmResult& res = ctx.res;
+                for (int j=0; j<patternLen; j++) {
+                    bool matched = seq[i] == p[j];
+                    dt.match(j, matched);
                 }
-            }
 
-            if (err <= maxErr) {
-                int newLen = dt.getLastLen();
-                if (res.isEmpty() || res.err > err || (res.err == err && newLen < res.region.length)) {
-                    //                    assert(newLen + maxErr >= patternLen);
-                    int newStart = i-newLen+1;
-                    if (insDel || (range.contains(newStart) && range.contains(newStart + newLen - 1))) {//boundary check for mismatch mode                      
-                        assert(insDel || newLen == patternLen);
-                        assert(newStart >= range.startPos);
-                        assert(newStart+newLen <= range.endPos());
+                int err = dt.getLast();
 
-                        res.region.startPos = newStart;
-                        res.region.length = newLen;
-                        res.err = err;
-                        res.strand = (ci == 1) ? U2Strand::Complementary : U2Strand::Direct;
-                        res.translation = (aminoTT != NULL) ? true : false; 
-                        if( !insDel && singleShot ) {
-                            rl->onResult( res );
-                            res.clear();
+                if (!res.isEmpty() && (err > maxErr || (i-res.region.startPos) >= patternLen)) {
+                    rl->onResult(res);
+                    res.clear();
+                    if (singleShot) {
+                        if( insDel ) {
                             sShot_retflag = true;
+                        } else {
+                            return;
                         }
                     }
-                } 
-            }
+                }
 
-            dt.shiftColumn();
-            if (leftTillPercent == 0) {
-                percentsCompleted = qMin(percentsCompleted+1,100);
-                leftTillPercent = onePercentLen;
-            }
-        }//strand
-        if( sShot_retflag ) {
-            return;
-        }
-    } //base pos
+                if (err <= maxErr) {
+                    int newLen = dt.getLastLen();
+                    if (res.isEmpty() || res.err > err || (res.err == err && newLen < res.region.length)) {
+                        //                    assert(newLen + maxErr >= patternLen);
+                        int newStart = i-newLen+1;
+                        if (insDel || (range.contains(newStart) && range.contains(newStart + newLen - 1))) {//boundary check for mismatch mode
+                            assert(insDel || newLen == patternLen);
+                            assert(newStart >= range.startPos);
+                            assert(newStart+newLen <= range.endPos());
 
-    for (int i=0; i<2; i++) {
-        if (!context[i].res.isEmpty()) { //todo: order by startpos?
-            assert(insDel || context[i].res.region.length == patternLen);
-            rl->onResult(context[i].res);
+                            res.region.startPos = newStart;
+                            res.region.length = newLen;
+                            res.err = err;
+                            res.strand = (ci == 1) ? U2Strand::Complementary : U2Strand::Direct;
+                            res.translation = (aminoTT != NULL) ? true : false;
+                            if( !insDel && singleShot ) {
+                                rl->onResult( res );
+                                res.clear();
+                                sShot_retflag = true;
+                            }
+                        }
+                    }
+                }
+
+                dt.shiftColumn();
+                if (leftTillPercent == 0) {
+                    percentsCompleted = qMin(percentsCompleted+1,100);
+                    leftTillPercent = onePercentLen;
+                }
+            }//strand
+            if( sShot_retflag ) {
+                return;
+            }
+        } //base pos
+
+        for (int i=0; i<2; i++) {
+            if (!context[i].res.isEmpty()) { //todo: order by startpos?
+                assert(insDel || context[i].res.region.length == patternLen);
+                rl->onResult(context[i].res);
+            }
         }
+
+    }
+    catch (std::bad_alloc&) {
+        const FindAlgorithmResult result(FindAlgorithmResult::NOT_ENOUGH_MEMORY_ERROR);
+        rl->onResult( result );
+        return;
     }
 }
 
