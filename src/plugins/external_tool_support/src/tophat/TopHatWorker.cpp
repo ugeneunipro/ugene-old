@@ -764,24 +764,41 @@ bool InputSlotsValidator::validate(const IntegralBusPort *port, QStringList &l) 
     return true;
 }
 
-bool BowtieToolsValidator::validate(const Actor *actor, QStringList &output) const {
-    Attribute *attr = actor->getParameter(TopHatWorkerFactory::BOWTIE_TOOL_PATH);
-    SAFE_POINT(NULL != attr, "NULL attribute", false);
+bool BowtieToolsValidator::validate( const Actor *actor, QStringList &output ) const {
+    Attribute *attr = actor->getParameter( TopHatWorkerFactory::BOWTIE_TOOL_PATH );
+    SAFE_POINT( NULL != attr, "NULL attribute", false );
 
-    ExternalTool *tool = NULL;
+    ExternalTool *bowTieTool = NULL;
     {
-        int version = getValue<int>(actor, TopHatWorkerFactory::BOWTIE_VERSION);
-        if (1 == version) {
-            tool = AppContext::getExternalToolRegistry()->getByName(ET_BOWTIE);
+        int version = getValue<int>( actor, TopHatWorkerFactory::BOWTIE_VERSION );
+        if ( 1 == version ) {
+            bowTieTool = AppContext::getExternalToolRegistry( )->getByName( ET_BOWTIE );
+            SAFE_POINT( NULL != bowTieTool, "NULL bowtie tool", false );
+            ExternalTool *topHatTool = AppContext::getExternalToolRegistry()->getByName( ET_TOPHAT );
+            SAFE_POINT( NULL != topHatTool, "NULL tophat tool", false );
+            const QString &bowtieVersion = bowTieTool->getVersion( );
+            const QString &topHatVersion = topHatTool->getVersion( );
+            if ( !( "0.12.9" > bowtieVersion && "2.0.8" >= topHatVersion )
+                 && !( "0.12.9" <= bowtieVersion && "2.0.8b" <= topHatVersion ) )
+            {
+                topHatVersion = topHatVersion.isEmpty( ) ? "unknown" : topHatVersion;
+                bowtieVersion = bowtieVersion.isEmpty( ) ? "unknown" : bowtieVersion;
+                output << QObject::tr( "Bowtie and TopHat tools have incompatible versions. "
+                    "Your TopHat's version is %1, Bowtie's one is %2. The following are "
+                    "considered to be compatible: Bowtie < \"0.12.9\" and TopHat <= \"2.0.8\" or "
+                    "Bowtie >= \"0.12.9\" and TopHat >= \"2.0.8.b\"" ).arg( topHatVersion,
+                     bowtieVersion );
+                return false;
+            }
         } else {
-            tool = AppContext::getExternalToolRegistry()->getByName(ET_BOWTIE2_ALIGN);
+            bowTieTool = AppContext::getExternalToolRegistry( )->getByName( ET_BOWTIE2_ALIGN );
         }
-        SAFE_POINT(NULL != tool, "NULL bowtie tool", false);
+        SAFE_POINT( NULL != bowTieTool, "NULL bowtie tool", false );
     }
 
-    bool valid = attr->isDefaultValue() ? !tool->getPath().isEmpty() : !attr->isEmpty();
-    if (!valid) {
-        output << WorkflowUtils::externalToolError(tool->getName());
+    bool valid = attr->isDefaultValue( ) ? !bowTieTool->getPath( ).isEmpty( ) : !attr->isEmpty( );
+    if ( !valid ) {
+        output << WorkflowUtils::externalToolError( bowTieTool->getName( ) );
     }
     return valid;
 }
@@ -795,7 +812,7 @@ BowtieFilesRelation::BowtieFilesRelation(const QString &indexNameAttrId)
 
 }
 
-QVariant BowtieFilesRelation::getAffectResult(const QVariant &influencingValue, const QVariant &dependentValue, DelegateTags *infTags, DelegateTags *depTags) const {
+QVariant BowtieFilesRelation::getAffectResult(const QVariant &influencingValue, const QVariant &dependentValue, DelegateTags *infTags, DelegateTags *) const {
     QString bwtDir = influencingValue.toString();
     QString bwtFile = infTags->get(FILE_TAG).toString();
 
@@ -811,7 +828,7 @@ RelationType BowtieFilesRelation::getType() const {
     return CUSTOM_VALUE_CHANGER;
 }
 
-static QString getBowtieIndexName(const QString &dir, const QString &fileName, const QRegExp &dirRx, const QRegExp &revRx) {
+static QString getBowtieIndexName(const QString &, const QString &fileName, const QRegExp &dirRx, const QRegExp &revRx) {
     QString indexName;
     if (revRx.exactMatch(fileName)) {
         indexName = revRx.cap(1);
@@ -846,7 +863,7 @@ BowtieVersionRelation::BowtieVersionRelation(const QString &bwtVersionAttrId)
 
 }
 
-QVariant BowtieVersionRelation::getAffectResult(const QVariant &influencingValue, const QVariant &dependentValue, DelegateTags *infTags, DelegateTags *depTags) const {
+QVariant BowtieVersionRelation::getAffectResult(const QVariant &influencingValue, const QVariant &dependentValue, DelegateTags *infTags, DelegateTags *) const {
     QString bwtDir = influencingValue.toString();
     QString bwtFile = infTags->get(FILE_TAG).toString();
 

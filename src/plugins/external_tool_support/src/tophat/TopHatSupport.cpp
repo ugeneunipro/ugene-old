@@ -45,12 +45,13 @@ TopHatSupport::TopHatSupport(const QString& name, const QString& path)
     executableFileName = "tophat";
 #endif
 #endif
+    validationArguments << "--version";
 
-    validMessage = "tophat:";
+    validMessage = "TopHat ";
     description = "<i>TopHat</i> is a program that aligns RNA-Seq reads to a genome"
         " in order to identify exon-exon splice junctions. It is built on"
         " the ultrafast short read mapping program Bowtie.";
-
+    versionRegExp = QRegExp("(\\d+.\\d+.\\d+\\w?)");
     toolKitName = "TopHat";
 
     muted = true;
