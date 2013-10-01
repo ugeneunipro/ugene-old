@@ -34,6 +34,7 @@ class U2REMOTE_EXPORT SyncHTTP : public QNetworkAccessManager {
     Q_OBJECT
 public:
     SyncHTTP(QObject* parent=0);
+    ~SyncHTTP();
     QString syncGet(const QUrl& url);
     QString syncPost(const QUrl & url, QIODevice * data);
     QNetworkReply::NetworkError error() {return err;}
@@ -42,7 +43,7 @@ protected slots:
     virtual void finished(QNetworkReply*);
 
 private:
-    QEventLoop loop;
+    QEventLoop* loop;
     QNetworkReply::NetworkError err;
     QString errString;
 };

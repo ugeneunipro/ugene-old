@@ -61,6 +61,14 @@ void CheckUpdatesTask::run() {
         http.setProxy(nc->getProxy(QNetworkProxy::HttpProxy));
     }
     QString siteVersionText = http.syncGet(QUrl("http://"+SITE_URL + PAGE_NAME));
+    if (siteVersionText.isEmpty()){
+        if(!runOnStartup){
+            stateInfo.setError(  tr("Cannot load the current version."));
+        }else{
+            uiLog.error(tr("Cannot load the current version."));
+            startError = true;
+        }
+    }
     siteVersion = Version::parseVersion(siteVersionText);
     stateInfo.setDescription(QString());
 

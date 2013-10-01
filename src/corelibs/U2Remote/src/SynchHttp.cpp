@@ -20,36 +20,53 @@
  */
 
 #include "SynchHttp.h"
+#include <U2Core/U2SafePoints.h>
 #include <QtNetwork/QNetworkRequest>
 
 namespace U2 {
 
 SyncHTTP::SyncHTTP(QObject* parent)
 : QNetworkAccessManager(parent)
+,loop(NULL)
+,errString("")
 {
     connect(this,SIGNAL(finished(QNetworkReply*)),SLOT(finished(QNetworkReply*)));
 }
 
 QString SyncHTTP::syncGet(const QUrl& url) {
-    QNetworkRequest request = QNetworkRequest(url);
+    QNetworkRequest request(url);
     QNetworkReply *reply = get(request);
-    loop.exec();
+    SAFE_POINT(reply != NULL, "SyncHTTP::syncGet no reply is created", "");
+    if (loop == NULL){
+        loop = new QEventLoop();
+    }
+    loop->exec();
     err=reply->error();
     errString=reply->errorString();
     return QString(reply->readAll());
 }
 
 QString SyncHTTP::syncPost(const QUrl & url, QIODevice * data) {
-    QNetworkRequest request = QNetworkRequest(url);
+    QNetworkRequest request(url);
     QNetworkReply *reply = post(request, data);
-    loop.exec();
+    SAFE_POINT(reply != NULL, "SyncHTTP::syncGet no reply is created", "");
+    if (loop == NULL){
+        loop = new QEventLoop();
+    }
+    loop->exec();
     err=reply->error();
     errString=reply->errorString();
     return QString(reply->readAll());
 }
 
 void SyncHTTP::finished(QNetworkReply*) {
-    loop.exit();
+    SAFE_POINT(loop != NULL, "SyncHTTP::finished no event loop", );
+    loop->exit();
+}
+
+SyncHTTP::~SyncHTTP(){
+    delete loop;
+    loop = NULL;
 }
 
 }  // U2
