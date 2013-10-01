@@ -226,6 +226,10 @@ Task* PWMatrixSearchWorker::tick() {
 
 void PWMatrixSearchWorker::sl_taskFinished(Task* t) {
     QList<SharedAnnotationData> res;
+    SAFE_POINT( NULL != t, "Invalid task is encountered", );
+    if ( t->isCanceled( ) ) {
+        return;
+    }
     foreach(Task* sub, t->getSubtasks()) {
         WeightMatrixSingleSearchTask* sst = qobject_cast<WeightMatrixSingleSearchTask*>(sub);
         res += WeightMatrixSearchResult::toTable(sst->takeResults(), resultName);

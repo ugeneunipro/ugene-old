@@ -112,6 +112,10 @@ Task* SNPToolboxWorker::tick() {
 
 void SNPToolboxWorker::sl_taskFinished() {
     SNPToolboxTask *t = dynamic_cast<SNPToolboxTask*>(sender());
+    SAFE_POINT( NULL != t, "Invalid task is encountered", );
+    if ( t->isCanceled( ) ) {
+        return;
+    }
     if (!t->isFinished() || t->hasError()) {
         return;
     }

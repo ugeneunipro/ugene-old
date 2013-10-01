@@ -169,6 +169,9 @@ Task* SiteconBuildWorker::tick() {
 
 void SiteconBuildWorker::sl_taskFinished() {
     SiteconBuildTask* t = qobject_cast<SiteconBuildTask*>(sender());
+    if ( t->isCanceled( ) ) {
+        return;
+    }
     if (t->getState() != Task::State_Finished) return;
     SiteconModel model = t->getResult();
     QVariant v = qVariantFromValue<SiteconModel>(model);

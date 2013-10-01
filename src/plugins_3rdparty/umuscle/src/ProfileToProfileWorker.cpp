@@ -97,6 +97,9 @@ void ProfileToProfileWorker::cleanup() {
 
 void ProfileToProfileWorker::sl_taskFinished() {
     ProfileToProfileTask *t = dynamic_cast<ProfileToProfileTask*>(sender());
+    if ( t->isCanceled( ) ) {
+        return;
+    }
     if (!t->isFinished() || t->hasError()) {
         return;
     }

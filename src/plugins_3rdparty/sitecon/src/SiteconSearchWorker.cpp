@@ -263,6 +263,10 @@ Task* SiteconSearchWorker::tick() {
 
 void SiteconSearchWorker::sl_taskFinished(Task* t) {
     QList<SharedAnnotationData> res;
+    SAFE_POINT( NULL != t, "Invalid task is encountered", );
+    if ( t->isCanceled( ) ) {
+        return;
+    }
     foreach(Task* sub, t->getSubtasks()) {
         SiteconSearchTask* sst = qobject_cast<SiteconSearchTask*>(sub);
         res += SiteconSearchResult::toTable(sst->takeResults(), resultName);

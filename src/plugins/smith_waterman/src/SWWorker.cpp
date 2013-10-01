@@ -514,11 +514,15 @@ Task* SWWorker::tick() {
 void SWWorker::sl_taskFinished(Task* t) {
     QList<SharedAnnotationData> annData;
     MultiTask * multiSw = qobject_cast<MultiTask*>(t);
-    assert(multiSw != NULL);
+    SAFE_POINT( NULL != t, "Invalid task is encountered", );
     QList<Task*> subs = multiSw->getTasks();
-    assert(!subs.isEmpty());
+    SAFE_POINT( !subs.isEmpty(), "Invalid task is encountered", );
     QStringList ptrns;
     foreach(Task * sub, subs) {
+        SAFE_POINT( NULL != sub, "Invalid task is encountered", );
+        if ( sub->isCanceled( ) ) {
+            return;
+        }
         SmithWatermanReportCallbackAnnotImpl* rcb = callbacks.take(sub);
         assert(rcb != NULL);
         if(rcb) {

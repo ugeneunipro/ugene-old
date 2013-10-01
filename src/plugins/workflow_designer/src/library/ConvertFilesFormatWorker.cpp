@@ -228,6 +228,7 @@ void ConvertFilesFormatWorker::cleanup() {
 }
 
 void ConvertFilesFormatWorker::sl_taskFinished( Task *task ) {
+    SAFE_POINT( NULL != task, "Invalid task is encountered", );
     BamSamConversionTask *bsct = qobject_cast<BamSamConversionTask*>( task );
     if( bsct != NULL ) {
         outputUrlPort->put( Message( BaseTypes::STRING_TYPE(), bsct->getDestinationURL() ) );
@@ -239,6 +240,9 @@ void ConvertFilesFormatWorker::sl_taskFinished( Task *task ) {
         return;
     }
     SaveDocumentTask *sdt = qobject_cast<SaveDocumentTask*>( subTasks.last() );
+    if ( sdt->isCanceled( ) ) {
+        return;
+    }
     if( sdt == NULL ) {
         monitor()->addError( "Can not convert the file to selected format", getActorId() );
         return;

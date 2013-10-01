@@ -215,6 +215,10 @@ Task* HMMSearchWorker::tick() {
 }
  
 void HMMSearchWorker::sl_taskFinished(Task* t) {
+    SAFE_POINT( NULL != t, "Invalid task is encountered", );
+    if ( t->isCanceled( ) ) {
+        return;
+    }
     if (output) {
         QList<SharedAnnotationData> list;
         foreach(Task* sub, t->getSubtasks()) {

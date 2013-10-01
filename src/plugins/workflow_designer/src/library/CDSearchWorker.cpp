@@ -197,7 +197,11 @@ Task* CDSearchWorker::tick() {
     return NULL;
 }
 
-void CDSearchWorker::sl_taskFinished(Task*) {
+void CDSearchWorker::sl_taskFinished(Task* t) {
+    SAFE_POINT( NULL != t, "Invalid task is encountered", );
+    if ( t->isCanceled( ) ) {
+        return;
+    }
     if(output) {
         QList<SharedAnnotationData> res = cds->getCDSResults();
         QString annName = actor->getParameter(ANNOTATION_ATTR)->getAttributeValue<QString>(context);

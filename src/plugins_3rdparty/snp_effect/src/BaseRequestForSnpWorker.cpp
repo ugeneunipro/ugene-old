@@ -143,6 +143,9 @@ void BaseRequestForSnpWorker::sl_taskFinished( )
 {
     BaseSnpAnnotationTask *t = dynamic_cast<BaseSnpAnnotationTask *>( sender( ) );
     SAFE_POINT( NULL != t, "Invalid task is encountered", );
+    if ( t->isCanceled( ) ) {
+        return;
+    }
     if ( !t->isFinished( ) || t->hasError( ) ) {
         return;
     }

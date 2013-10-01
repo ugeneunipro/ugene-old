@@ -296,6 +296,10 @@ Task* GenerateDNAWorker::tick() {
 
 void GenerateDNAWorker::sl_taskFinished(Task* t) {
     DNASequenceGeneratorTask* task = qobject_cast<DNASequenceGeneratorTask*>(t);
+    SAFE_POINT( NULL != t, "Invalid task is encountered", );
+    if ( t->isCanceled( ) ) {
+        return;
+    }
     if (ch) {
         foreach(DNASequence seq, task->getSequences()) {
             SharedDbiDataHandler handler = context->getDataStorage()->putSequence(seq);

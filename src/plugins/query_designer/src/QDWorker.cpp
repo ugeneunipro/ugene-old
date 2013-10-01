@@ -242,6 +242,10 @@ void annObjToAnnDataList(AnnotationTableObject* annObj, QList<SharedAnnotationDa
 
 void QDWorker::sl_taskFinished(Task* t) {
     delete scheme;
+    SAFE_POINT( NULL != t, "Invalid task is encountered", );
+    if ( t->isCanceled( ) ) {
+        return;
+    }
     if (output) {
         QDScheduler* sched = qobject_cast<QDScheduler*>(t);
         QList<SharedAnnotationData> res;

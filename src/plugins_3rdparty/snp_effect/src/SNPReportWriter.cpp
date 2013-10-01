@@ -123,6 +123,10 @@ Task* SNPReportWriter::tick() {
 
 void SNPReportWriter::sl_taskFinished() {
     SNPReportWriterTask *t = dynamic_cast<SNPReportWriterTask*>(sender());
+    SAFE_POINT( NULL != t, "Invalid task is encountered", );
+    if ( t->isCanceled( ) ) {
+        return;
+    }
     if (!t->isFinished() || t->hasError()) {
         return;
     }

@@ -219,6 +219,9 @@ Task* SiteconReader::tick() {
 
 void SiteconReader::sl_taskFinished() {
     SiteconReadTask* t = qobject_cast<SiteconReadTask*>(sender());
+    if ( t->isCanceled( ) ) {
+        return;
+    }
     if (t->getState() != Task::State_Finished) return;
     if (output) {
         if (!t->hasError()) {
