@@ -93,7 +93,7 @@ RModuleSupport::RModuleSupport(const QString& name, const QString& path) : Exter
 }
 
 QString RModuleSupport::getScript() const {
-    return QString("list<-installed.packages();list[grep('%1',list)];list['%1','Version'];");
+    return QString("list <- installed.packages();list[grep('%1',list)];list['%1','Version'];");
 }
 
 RModuleGostatsSupport::RModuleGostatsSupport(const QString &name, const QString &path) : RModuleSupport(name, path) {
