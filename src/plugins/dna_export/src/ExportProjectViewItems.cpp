@@ -310,7 +310,7 @@ void ExportProjectViewItemsContoller::sl_saveSequencesAsAlignment() {
         memoryLocker.tryAcquire(dnaObj->getSequenceLength());
     }
     if (os.hasError()) {
-        QMessageBox::critical(NULL, L10N::errorTitle(), tr("Not enough memory error"));
+        QMessageBox::critical(NULL, L10N::errorTitle(), tr("Not enough memory"));
         return;
     }
 
