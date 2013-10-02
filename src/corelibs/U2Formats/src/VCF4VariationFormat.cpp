@@ -24,15 +24,16 @@
 namespace U2 {
 
 VCF4VariationFormat::VCF4VariationFormat(QObject *p)
-: AbstractVariationFormat(p, QStringList()<<"vcf")
+: AbstractVariationFormat(p, QStringList()<<"vcf", true)
 {
-    formatName = QString("VCF4");
+    formatName = QString("VCFv4");
 
     columnRoles.insert(0, ColumnRole_ChromosomeId);
     columnRoles.insert(1, ColumnRole_StartPos);
     columnRoles.insert(2, ColumnRole_PublicId);
     columnRoles.insert(3, ColumnRole_RefData);
     columnRoles.insert(4, ColumnRole_ObsData);
+    columnRoles.insert(5, ColumnRole_AdditionalInfo);
 
     maxColumnNumber = columnRoles.keys().last();
 

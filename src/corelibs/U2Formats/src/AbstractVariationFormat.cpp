@@ -33,19 +33,21 @@
 
 #include "AbstractVariationFormat.h"
 
+#include <QtCore/QStringList>
+
 namespace U2 {
 
 const QString AbstractVariationFormat::COMMENT_START("#");
 
-AbstractVariationFormat::AbstractVariationFormat(QObject *p, const QStringList &fileExts)
-: DocumentFormat(p, DocumentFormatFlags_SW, fileExts), sep(QString())
+AbstractVariationFormat::AbstractVariationFormat(QObject *p, const QStringList &fileExts, bool _isSupportHeader)
+: DocumentFormat(p, DocumentFormatFlags_SW, fileExts), isSupportHeader(_isSupportHeader), sep(QString())
 {
     supportedObjectTypes += GObjectTypes::VARIANT_TRACK;
     formatDescription = tr("SNP formats are used to store single-nucleotide polymorphism data");
     indexing = AbstractVariationFormat::ZeroBased;
 }
 
-#define READ_BUFF_SIZE 4095
+#define READ_BUFF_SIZE 12287
 #define CHR_PREFIX "chr"
 
 Document *AbstractVariationFormat::loadDocument(IOAdapter *io, const U2DbiRef &dbiRef, const QVariantMap &fs, U2OpStatus &os) {
@@ -63,6 +65,8 @@ Document *AbstractVariationFormat::loadDocument(IOAdapter *io, const U2DbiRef &d
     //TODO: load snps with chunks of fixed size to avoid memory consumption
     QMap<QString, QList<U2Variant> > snpsMap;
 
+    QString headerText;
+
     do {
         bool eolFound = true;
         os.setProgress(io->getProgress());
@@ -77,12 +81,14 @@ Document *AbstractVariationFormat::loadDocument(IOAdapter *io, const U2DbiRef &d
         }
 
         // skip comments
-        if (readBuff.startsWith('#')) {
+        QString line(readBuff);
+        line = line.left(len);
+        if (line.startsWith(COMMENT_START)) {
+            headerText += line;
             continue;
         }
 
-        QString line(readBuff);
-        QStringList columns = sep.isEmpty() ? line.split(QRegExp("\\s")) : line.split(sep);
+        QStringList columns = sep.isEmpty() ? line.split(QRegExp("\\s+")) : line.split(sep);
 
         if (columns.size() < maxColumnNumber) {
             continue;
@@ -120,6 +126,12 @@ Document *AbstractVariationFormat::loadDocument(IOAdapter *io, const U2DbiRef &d
                 case ColumnRole_PublicId:
                     v.publicId = columnData.toLatin1();
                     break;
+                case ColumnRole_AdditionalInfo: 
+                    v.additionalInfo = columnData.toLatin1();
+                    for(int i = columnNumber + 1; i < columns.size(); i++) {
+                        v.additionalInfo += "\t" + columns.at(i);
+                    }
+                    break;
                 default:
                     coreLog.trace("Warning: unknown column role (%, line %, column %)");
                     break;
@@ -142,6 +154,7 @@ Document *AbstractVariationFormat::loadDocument(IOAdapter *io, const U2DbiRef &d
     if (snpsMap.isEmpty()){
         U2VariantTrack track;
         track.sequenceName = "unknown";
+        track.fileHeader = headerText;
         dbi->getVariantDbi()->createVariantTrack(track, TrackType_All, os);
 
         U2EntityRef trackRef(dbiRef, track.id);
@@ -154,6 +167,7 @@ Document *AbstractVariationFormat::loadDocument(IOAdapter *io, const U2DbiRef &d
     foreach (const QString &seqName, snpsMap.keys().toSet()) {
         U2VariantTrack track;
         track.sequenceName = seqName;
+        track.fileHeader = headerText;
         dbi->getVariantDbi()->createVariantTrack(track, TrackType_All, os);
 
         const QList<U2Variant>& vars = snpsMap.value(seqName);
@@ -175,6 +189,8 @@ Document *AbstractVariationFormat::loadDocument(IOAdapter *io, const U2DbiRef &d
 FormatCheckResult AbstractVariationFormat::checkRawData(const QByteArray &dataPrefix, const GUrl &) const {
     QStringList lines = QString(dataPrefix).split("\n");
     int idx = 0;
+    int mismatchesNumber = 0;
+    int cellsNumber = 0;
     foreach (const QString &l, lines) {
         bool skipLastLine = (1 != lines.size()) && (idx == lines.size()-1);
         if (skipLastLine) {
@@ -184,6 +200,10 @@ FormatCheckResult AbstractVariationFormat::checkRawData(const QByteArray &dataPr
         QString line = l.simplified();
         idx++;
         if (line.startsWith(COMMENT_START)) {
+            bool isFormatMatched = line.contains("format=" + formatName);
+            if(isFormatMatched) {
+                return FormatDetection_Matched;
+            }
             continue;
         }
 
@@ -191,14 +211,50 @@ FormatCheckResult AbstractVariationFormat::checkRawData(const QByteArray &dataPr
         if (!this->checkFormatByColumnCount(cols.size())) {
             return FormatDetection_NotMatched;
         }
+
+        for(int columnNumber = 0; columnNumber < cols.size(); columnNumber++) {
+            cellsNumber++;
+            ColumnRole role = columnRoles.value(columnNumber, ColumnRole_Unknown);
+            QString col = cols.at(columnNumber);
+            bool isCorrect = !col.isEmpty();
+            if(!isCorrect) {
+                mismatchesNumber++;
+                continue;
+            }
+            QRegExp wordExp("\\D+");
+            switch(role) {
+                case ColumnRole_StartPos:
+                    col.toInt(&isCorrect);
+                    break;
+                case ColumnRole_EndPos:
+                    col.toInt(&isCorrect);
+                    break;
+                case ColumnRole_RefData:
+                    isCorrect = wordExp.exactMatch(col);
+                    break;
+                case ColumnRole_ObsData:
+                    isCorrect = wordExp.exactMatch(col);
+                    break;
+            }
+            if(!isCorrect) {
+                mismatchesNumber++;
+            }
+        }
+
     }
     if (0 == idx) {
         return FormatDetection_NotMatched;
+    }
+    if(cellsNumber > 0 && 0 == mismatchesNumber) {
+        return FormatDetection_Matched;
     }
     return FormatDetection_AverageSimilarity;
 }
 
 void AbstractVariationFormat::storeDocument(Document *doc, IOAdapter *io, U2OpStatus &os) {
+    if(!doc->getObjects().isEmpty()) {
+        storeHeader(doc->getObjects().at(0), io, os);
+    }
     foreach (GObject *obj, doc->getObjects()) {
         if (GObjectTypes::VARIANT_TRACK != obj->getGObjectType()) {
             continue;
@@ -271,6 +327,9 @@ void AbstractVariationFormat::storeTrack(IOAdapter *io, const VariantTrackObject
                     case ColumnRole_PublicId:
                         snpString += variant.publicId;
                         break;
+                    case ColumnRole_AdditionalInfo:
+                        snpString += variant.additionalInfo;
+                        break;
                     default:
                         coreLog.trace("Warning: unknown column role (%, line %, column %)");
                         break;
@@ -279,6 +338,21 @@ void AbstractVariationFormat::storeTrack(IOAdapter *io, const VariantTrackObject
         snpString += "\n";
         io->writeBlock(snpString);
     }
+}
+
+void AbstractVariationFormat::storeHeader(GObject *obj, IOAdapter *io, U2OpStatus &os) {
+    CHECK(isSupportHeader, );
+    CHECK(NULL != obj, );
+
+    CHECK(GObjectTypes::VARIANT_TRACK == obj->getGObjectType(), );
+
+    VariantTrackObject *trackObj = dynamic_cast<VariantTrackObject*>(obj);
+    CHECK(NULL != trackObj, );
+
+    U2VariantTrack track = trackObj->getVariantTrack(os);
+    CHECK_OP(os, );
+
+    io->writeBlock(track.fileHeader.toLatin1());
 }
 
 } // U2

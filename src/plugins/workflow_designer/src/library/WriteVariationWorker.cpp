@@ -26,6 +26,8 @@
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
 
+#include <U2Formats/AbstractVariationFormat.h>
+
 #include <U2Lang/ActorPrototypeRegistry.h>
 #include <U2Lang/BaseActorCategories.h>
 #include <U2Lang/BaseAttributes.h>
@@ -58,7 +60,7 @@ void WriteVariationWorker::data2doc(Document *doc, const QVariantMap &data) {
     SAFE_POINT(NULL, tr("Write variations: internal error"), );
 }
 
-void WriteVariationWorker::storeEntry(IOAdapter *io, const QVariantMap &data, int) {
+void WriteVariationWorker::storeEntry(IOAdapter *io, const QVariantMap &data, int entryNum) {
     CHECK(hasDataToWrite(data), );
     U2OpStatusImpl os;
     QScopedPointer<VariantTrackObject> trackObj(NULL);
@@ -73,6 +75,13 @@ void WriteVariationWorker::storeEntry(IOAdapter *io, const QVariantMap &data, in
     {
         QList<GObject*> tracks; tracks << trackObj.data();
         objectsMap[GObjectTypes::VARIANT_TRACK] = tracks;
+    }
+    if(1 == entryNum) {
+        AbstractVariationFormat* variationFormat = qobject_cast<AbstractVariationFormat*>(format);
+        if(NULL != variationFormat) {
+            variationFormat->storeHeader(trackObj.data(), io, os);
+            SAFE_POINT_OP(os, );
+        }
     }
     format->storeEntry(io, objectsMap, os);
     SAFE_POINT_OP(os, );

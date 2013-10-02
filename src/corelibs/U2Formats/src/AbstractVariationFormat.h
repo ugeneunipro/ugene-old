@@ -38,7 +38,8 @@ public:
         ColumnRole_ObsData,
         ColumnRole_PublicId,
         ColumnRole_ChromosomeId,
-        ColumnRole_Comment
+        ColumnRole_Comment,
+        ColumnRole_AdditionalInfo
     };
 
     enum PositionIndexing{
@@ -46,15 +47,17 @@ public:
         OneBased
     };
 
-    AbstractVariationFormat(QObject *p, const QStringList &fileExts);
+    AbstractVariationFormat(QObject *p, const QStringList &fileExts, bool _isSupportHeader = false);
 
     virtual const QString &getFormatName() const {return formatName;}
     virtual FormatCheckResult checkRawData(const QByteArray &dataPrefix, const GUrl &url) const;
     virtual void storeDocument(Document *d, IOAdapter *io, U2OpStatus &os);
     virtual void storeEntry(IOAdapter *io, const QMap< GObjectType, QList<GObject*> > &objectsMap, U2OpStatus &os);
+    virtual void storeHeader(GObject *obj, IOAdapter *io, U2OpStatus &os);
 
 protected:
     QString formatName;
+    bool isSupportHeader;
 
     QMap<int,ColumnRole> columnRoles;
     QString sep;

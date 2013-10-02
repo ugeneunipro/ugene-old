@@ -56,6 +56,9 @@ public:
     /** Track Type*/
     VariantTrackType trackType;
 
+    /** File header */
+    QString     fileHeader;
+
     // implement U2Object
     virtual U2DataType getType() { return U2Type::VariantTrack; }
 };
@@ -70,6 +73,7 @@ public:
     QByteArray  refData;
     QByteArray  obsData;
     QString     publicId; 
+    QString     additionalInfo;
 
 };
 

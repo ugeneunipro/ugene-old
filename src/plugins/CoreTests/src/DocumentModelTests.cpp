@@ -640,10 +640,6 @@ Task::ReportResult GTest_Compare_VCF_Files::report() {
     while(1) {
         QByteArray bytes1 = f1.readLine(READ_LINE_MAX_SZ);
 
-        if (bytes1[0]=='#'){
-            continue;
-        }
-
         QByteArray bytes2 = f2.readLine(READ_LINE_MAX_SZ);
 
         if(bytes1.isEmpty() || bytes2.isEmpty()) {
