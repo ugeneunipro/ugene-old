@@ -428,9 +428,6 @@ bool WizardController::canSetValue(const AttributeInfo &info, const QVariant &va
 
 void WizardController::setAttributeValue(const AttributeInfo &info, const QVariant &value) {
     values[info.toString()] = value;
-    if (propertyControllers.contains(info.toString())) {
-        propertyControllers[info.toString()]->updateGUI(value);
-    }
 
     // Check attribute relations
     Attribute *attr = getAttribute(info);

@@ -83,7 +83,9 @@ void BowtieWidgetController::sl_browse() {
     }
     lod.url = url;
 
-    wc->setAttributeValue(bw->idxDir, finalyze(url));
+    QString dirUrl = finalyze(url);
+    dirCtrl->updateGUI(dirUrl);
+    wc->setAttributeValue(bw->idxDir, dirUrl);
 }
 
 QString BowtieWidgetController::finalyze(const QString &url) {
