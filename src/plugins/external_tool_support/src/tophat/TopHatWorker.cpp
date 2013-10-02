@@ -776,18 +776,29 @@ bool BowtieToolsValidator::validate( const Actor *actor, ProblemList &problemLis
             SAFE_POINT( NULL != bowTieTool, "NULL bowtie tool", false );
             ExternalTool *topHatTool = AppContext::getExternalToolRegistry()->getByName( ET_TOPHAT );
             SAFE_POINT( NULL != topHatTool, "NULL tophat tool", false );
-            QString bowtieVersion = bowTieTool->getVersion( );
-            QString topHatVersion = topHatTool->getVersion( );
-            if ( !( "0.12.9" > bowtieVersion && "2.0.8" >= topHatVersion )
+
+            const QString &bowtieVersion = bowTieTool->getVersion( );
+            const QString &topHatVersion = topHatTool->getVersion( );
+
+            if ( topHatVersion.isEmpty( ) || bowtieVersion.isEmpty( ) ) {
+                const QString toolName = topHatVersion.isEmpty( ) ? "TopHat" : "Bowtie";
+                const QString message = QObject::tr( "%1 tool's version is undefined, "
+                    "this may cause some compatibility issues" ).arg( toolName );
+
+                Problem warning( message, actor->getLabel( ), Problem::U2_WARNING );
+                problemList << warning;
+                return true;
+            } else if ( !( "0.12.9" > bowtieVersion && "2.0.8" >= topHatVersion )
                  && !( "0.12.9" <= bowtieVersion && "2.0.8b" <= topHatVersion ) )
             {
-                topHatVersion = topHatVersion.isEmpty( ) ? "unknown" : topHatVersion;
-                bowtieVersion = bowtieVersion.isEmpty( ) ? "unknown" : bowtieVersion;
-                problemList << QObject::tr( "Bowtie and TopHat tools have incompatible versions. "
-                    "Your TopHat's version is %1, Bowtie's one is %2. The following are "
+                const QString message = QObject::tr( "Bowtie and TopHat tools have incompatible"
+                    "versions. Your TopHat's version is %1, Bowtie's one is %2. The following are "
                     "considered to be compatible: Bowtie < \"0.12.9\" and TopHat <= \"2.0.8\" or "
                     "Bowtie >= \"0.12.9\" and TopHat >= \"2.0.8.b\"" ).arg( topHatVersion,
                      bowtieVersion );
+
+                Problem error( message, actor->getLabel( ) );
+                problemList << error;
                 return false;
             }
         } else {
