@@ -1604,6 +1604,25 @@ GUI_TEST_CLASS_DEFINITION( test_2089 )
     GTMenu::clickMenuItem(os, menu, QStringList() << "Workflow Designer");
 }
 
+GUI_TEST_CLASS_DEFINITION( test_2122 ){
+//    1. Open some sequence translated to amino
+    GTFileDialog::openFile(os, testDir + "_common_data/fasta", "AMINO.fa");
+//    2. Click Option panel button "das annotations"
+    GTWidget::click(os,GTWidget::findWidget(os, "OP_DAS"));
+    GTGlobals::sleep(500);
+//    3. Click "show more options"
+    GTWidget::click(os,GTWidget::findWidget(os,"lblShowMoreLess"));
+    GTMouseDriver::moveTo(os,QPoint(GTMouseDriver::getMousePosition().x()-20,GTMouseDriver::getMousePosition().y()));
+    GTMouseDriver::click(os);
+//    Expected state:Algorithm settings, DAS features sourses, Annotation settings submenus appeared
+    QWidget* settingsContainerWidget = GTWidget::findWidget(os,"settingsContainerWidget");
+    QWidget* sourcesContainerWidget = GTWidget::findWidget(os,"sourcesContainerWidget");
+    QWidget* annotationsSettingsContainerWidget = GTWidget::findWidget(os,"annotationsSettingsContainerWidget");
+
+    CHECK_SET_ERR(settingsContainerWidget->isVisible(), "settingsContainerWidget is not visible");
+    CHECK_SET_ERR(sourcesContainerWidget->isVisible(), "sourcesContainerWidget is not visible");
+    CHECK_SET_ERR(annotationsSettingsContainerWidget->isVisible(), "annotationsSettingsContainerWidget is not visible");
+}
 
 GUI_TEST_CLASS_DEFINITION(test_2091) {
     //1. Open "data/samples/CLUSTALW/COI.aln".
@@ -1629,6 +1648,7 @@ GUI_TEST_CLASS_DEFINITION(test_2091) {
     CHECK_SET_ERR(originalNames.length()-modifiedNames.length() == 1, "The number of sequences remained unchanged.");
     CHECK_SET_ERR(!modifiedNames.contains("Montana_montana"), "Removed sequence is present in multiple alignment.");
 }
+
 
 GUI_TEST_CLASS_DEFINITION( test_2128 )
 {

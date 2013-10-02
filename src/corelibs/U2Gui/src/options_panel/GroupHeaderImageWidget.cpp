@@ -50,6 +50,8 @@ GroupHeaderImageWidget::GroupHeaderImageWidget(const QString& _groupId, const QP
     setMinimumSize(HEADER_MIN_SIZE, HEADER_MIN_SIZE);
 
     setHeaderDeselected();
+
+    this->setObjectName(groupId);
 }
 
 
