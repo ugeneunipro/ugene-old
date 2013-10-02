@@ -42,7 +42,7 @@ class CMDLineRegistry;
 class U2TEST_EXPORT GUITestService: public Service {
     Q_OBJECT
 public:
-    enum LaunchOptions {NONE, RUN_ONE_TEST, RUN_ALL_TESTS, RUN_ALL_TESTS_BATCH, RUN_TEST_SUITE};
+    enum LaunchOptions {NONE, RUN_ONE_TEST, RUN_ALL_TESTS, RUN_ALL_TESTS_BATCH, RUN_TEST_SUITE, RUN_CRAZY_USER_MODE};
 
     GUITestService(QObject *parent = NULL);
     virtual ~GUITestService();
@@ -50,7 +50,7 @@ public:
     void runTest(GUITests testsToRun);
 
 public slots:
-    // returns test error string or successResult
+    static void runGUICrazyUserTest();
     static void runGUITest();
     static void runGUITest(GUITest* t);
 
@@ -71,7 +71,7 @@ private:
     static void clearSandbox();
     static void removeDir(QString dirName);
 
-    LaunchOptions getLaunchOptions(CMDLineRegistry* cmdLine) const;
+    const LaunchOptions getLaunchOptions(CMDLineRegistry* cmdLine) const;
 
     void registerAllTestsTask();
     void registerTestSuiteTask();

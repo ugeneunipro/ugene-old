@@ -35,6 +35,7 @@ public:
 
     GTFileDialogUtils(U2OpStatus&, const QString&, const QString&, const QString& = "*.*", Button b = Open, GTGlobals::UseMethod = GTGlobals::UseMouse);
     GTFileDialogUtils(U2OpStatus&, const QString&, const QString&, qint64* _size);
+    GTFileDialogUtils(U2OpStatus&, const QString& filePath, GTGlobals::UseMethod method = GTGlobals::UseMouse);
     void openFileDialog();
     void run();
 

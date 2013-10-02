@@ -2,6 +2,9 @@ include (GUITestBase.pri)
 
 # Input
 HEADERS +=  src/GUITestBasePlugin.h \
+            src/tests/crazy_user/GUICrazyUserTest.h \
+            src/tests/crazy_user/GTRandomGUIActionFactory.h \
+            src/tests/crazy_user/GTAbstractGUIAction.h \
 #   Runnables
 #   Runnables / Qt
             src/runnables/qt/MessageBoxFiller.h \
@@ -158,6 +161,9 @@ HEADERS +=  src/GUITestBasePlugin.h \
     src/runnables/ugene/plugins/workflow_designer/AliasesDialogFiller.h \
     src/runnables/ugene/plugins/workflow_designer/RPackageDialorFiller.h
 SOURCES +=  src/GUITestBasePlugin.cpp \
+            src/tests/crazy_user/GUICrazyUserTest.cpp \
+            src/tests/crazy_user/GTRandomGUIActionFactory.cpp \
+            src/tests/crazy_user/GTAbstractGUIAction.cpp \
 #   Runnables
 #   Runnables / Qt
             src/runnables/qt/MessageBoxFiller.cpp \

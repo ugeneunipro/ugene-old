@@ -53,8 +53,25 @@ GTFileDialogUtils::GTFileDialogUtils(U2OpStatus &_os, const QString &_path, cons
     isForGetSize(false)
 
 {   path = QDir::cleanPath(QDir::currentPath() + "/" + _path);
-    if (path.at(path.count() - 1) != '/')
-         path += '/';
+    if (path.at(path.count() - 1) != '/') {
+        path += '/';
+    }
+}
+
+GTFileDialogUtils::GTFileDialogUtils(U2OpStatus &os, const QString &filePath, GTGlobals::UseMethod method) :
+    Filler(os, "QFileDialog"),
+    filters("*.*"),
+    button(Open),
+    method(method),
+    isForGetSize(false)
+
+{
+    QFileInfo fileInfo(filePath);
+    path = fileInfo.absoluteDir().absolutePath();
+    fileName = fileInfo.fileName();
+    if (path.at(path.count() - 1) != '/') {
+        path += '/';
+    }
 }
 
 GTFileDialogUtils::GTFileDialogUtils(U2OpStatus &_os, const QString &_path, const QString &_fileName,
@@ -69,7 +86,7 @@ GTFileDialogUtils::GTFileDialogUtils(U2OpStatus &_os, const QString &_path, cons
     path = QDir::cleanPath(QDir::currentPath() + "/" + _path);
     if (path.at(path.count() - 1) != '/') {
         path += '/';
-}
+    }
 }
 #define GT_METHOD_NAME "run"
 void GTFileDialogUtils::run()

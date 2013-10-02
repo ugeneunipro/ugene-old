@@ -46,6 +46,7 @@ public:
     static const QString LAUNCH_GUI_TEST;
     static const QString LAUNCH_GUI_TEST_BATCH;
     static const QString LAUNCH_GUI_TEST_SUITE;
+    static const QString LAUNCH_GUI_TEST_CRAZY_USER;
     static const QString USAGE;
     static const QString TMP_DIR;
         

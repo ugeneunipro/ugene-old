@@ -46,6 +46,7 @@ class U2TEST_EXPORT GUITest: public QObject, public GUITestIgnorable {
     Q_OBJECT
 public:
     GUITest(const QString &_name = "", bool _longTest=false) : name(_name), longTest(_longTest) {}
+    virtual ~GUITest(){}
 
     QString getName() const { return name; }
     bool isLong(){return longTest;}
@@ -56,6 +57,9 @@ public:
 
     virtual void run(U2OpStatus &os) = 0;
 private:
+    GUITest(const GUITest&);
+    GUITest& operator=(const GUITest&);
+
     QString name;
     bool longTest;
 };

@@ -58,7 +58,7 @@
 #include "tests/common_scenarios/repeat_finder/GTTestsRepeatFinder.h"
 #include "tests/common_scenarios/undo_redo/GTTestsUndoRedo.h"
 #include "tests/common_scenarios/NIAID_pipelines/GTTestsNiaidPipelines.h"
-
+#include "tests/crazy_user/GUICrazyUserTest.h"
 
 #define REGISTER_TEST(X) if (guiTestBase) guiTestBase->registerTest(new X())
 #define REGISTER_TEST_IGNORED_BY(X, BY, MESSAGE) \
@@ -93,6 +93,8 @@ GUITestBasePlugin::GUITestBasePlugin() : Plugin(tr("GUITestBase"), tr("GUI Test 
 }
 
 void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
+
+    REGISTER_TEST_IGNORED(GUITest_crazy_user::simple_crazy_user, "This is special crazy-user mode test, ignored by default");
 
 //////////////////////////////////////////////////////////////////////////
 // Regression scenarios/

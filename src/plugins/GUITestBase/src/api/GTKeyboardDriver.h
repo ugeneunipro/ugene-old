@@ -58,6 +58,9 @@ public:
     class keys : private QMap<QString, int> {
     public:
         keys();
+        const QStringList mapKeys() const {
+            return QMap::keys();
+        }
         int operator [] (const QString&) const;
     };
 

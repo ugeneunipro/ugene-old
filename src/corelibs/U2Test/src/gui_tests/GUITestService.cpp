@@ -75,7 +75,7 @@ GUITestService::~GUITestService() {
 
 void GUITestService::sl_registerService() {
 
-    LaunchOptions launchedFor = getLaunchOptions(AppContext::getCMDLineRegistry());
+    const LaunchOptions launchedFor = getLaunchOptions(AppContext::getCMDLineRegistry());
 
     switch (launchedFor) {
         case RUN_ONE_TEST:
@@ -94,14 +94,18 @@ void GUITestService::sl_registerService() {
             QTimer::singleShot(1000, this, SLOT(runAllGUITests()));
             break;
 
-        default:
+        case RUN_CRAZY_USER_MODE:
+            QTimer::singleShot(1000, this, SLOT(runGUICrazyUserTest()));
+            break;
+
         case NONE:
+        default:
             registerServiceTask();
             break;
     }
 }
 
-GUITestService::LaunchOptions GUITestService::getLaunchOptions(CMDLineRegistry* cmdLine) const {
+const GUITestService::LaunchOptions GUITestService::getLaunchOptions(CMDLineRegistry* cmdLine) const {
     CHECK(cmdLine, NONE);
 
     if (cmdLine->hasParameter(CMDLineCoreOptions::LAUNCH_GUI_TEST)) {
@@ -120,6 +124,10 @@ GUITestService::LaunchOptions GUITestService::getLaunchOptions(CMDLineRegistry* 
         return RUN_TEST_SUITE;
     }
 
+    if (cmdLine->hasParameter(CMDLineCoreOptions::LAUNCH_GUI_TEST_CRAZY_USER)) {
+        return RUN_CRAZY_USER_MODE;
+    }
+
     return NONE;
 }
 
@@ -132,12 +140,9 @@ void GUITestService::registerAllTestsTask() {
 }
 
 Task* GUITestService::createTestLauncherTask() const {
-
-    Q_ASSERT(!testLauncher);
+    SAFE_POINT(NULL == testLauncher,"",NULL);
 
     Task *task = new GUITestLauncher();
-    Q_ASSERT(task);
-
     return task;
 }
 
@@ -168,10 +173,10 @@ Task* GUITestService::createTestSuiteLauncherTask() const {
 GUITests GUITestService::preChecks() {
 
     GUITestBase* tb = AppContext::getGUITestBase();
-    Q_ASSERT(tb);
+    SAFE_POINT(NULL != tb,"",GUITests());
 
     GUITests additionalChecks = tb->getTests(GUITestBase::PreAdditional);
-    Q_ASSERT(additionalChecks.size()>0);
+    SAFE_POINT(additionalChecks.size()>0,"",GUITests());
 
     return additionalChecks;
 }
@@ -179,10 +184,10 @@ GUITests GUITestService::preChecks() {
 GUITests GUITestService::postChecks() {
 
     GUITestBase* tb = AppContext::getGUITestBase();
-    Q_ASSERT(tb);
+    SAFE_POINT(NULL != tb,"",GUITests());
 
     GUITests additionalChecks = tb->getTests(GUITestBase::PostAdditional);
-    Q_ASSERT(additionalChecks.size()>0);
+    SAFE_POINT(additionalChecks.size()>0,"",GUITests());
 
     return additionalChecks;
 }
@@ -193,10 +198,10 @@ void GUITestService::runAllGUITests() {
     GUITests postTests = postChecks();
 
     GUITests tests = AppContext::getGUITestBase()->getTests();
-    Q_ASSERT(!tests.isEmpty());
+    SAFE_POINT(false == tests.isEmpty(),"",);
 
     foreach(GUITest* t, tests) {
-        Q_ASSERT(t);
+        SAFE_POINT(NULL != t,"",);
         if (!t) {
             continue;
         }
@@ -244,18 +249,26 @@ void GUITestService::runAllGUITests() {
 void GUITestService::runGUITest() {
 
     CMDLineRegistry* cmdLine = AppContext::getCMDLineRegistry();
-    Q_ASSERT(cmdLine);
+    SAFE_POINT(NULL != cmdLine,"",);
     QString testName = cmdLine->getParameterValue(CMDLineCoreOptions::LAUNCH_GUI_TEST);
 
     GUITestBase *tb = AppContext::getGUITestBase();
-    Q_ASSERT(tb);
+    SAFE_POINT(NULL != tb,"",);
     GUITest *t = tb->getTest(testName);
 
     runGUITest(t);
 }
 
+void GUITestService::runGUICrazyUserTest() {
+    GUITestBase *tb = AppContext::getGUITestBase();
+    SAFE_POINT(tb,"",);
+    GUITest *t = tb->getTest("simple_crazy_user");
+
+    runGUITest(t);
+}
+
 void GUITestService::runGUITest(GUITest* t) {
-    Q_ASSERT(t);
+    SAFE_POINT(NULL != t,"",);
     TaskStateInfo os;
 
     GUITests tests = preChecks();
@@ -281,7 +294,7 @@ void GUITestService::runGUITest(GUITest* t) {
 void GUITestService::registerServiceTask() {
 
     Task *registerServiceTask = AppContext::getServiceRegistry()->registerServiceTask(this);
-    Q_ASSERT(registerServiceTask);
+    SAFE_POINT(NULL != registerServiceTask,"",);
 
     AppContext::getTaskScheduler()->registerTopLevelTask(registerServiceTask);
 }
@@ -308,7 +321,7 @@ void GUITestService::addServiceMenuItem() {
 
     deleteServiceMenuItem();
     runTestsAction = new QAction(tr("GUI testing"), this);
-    Q_ASSERT(runTestsAction);
+    SAFE_POINT(NULL != runTestsAction,"",);
     runTestsAction->setObjectName("action_guitest");
 
     connect(runTestsAction, SIGNAL(triggered()), SLOT(sl_registerTestLauncherTask()));
