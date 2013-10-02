@@ -51,6 +51,7 @@
 #include "runnables/qt/MessageBoxFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/util/ProjectTreeItemSelectorDialogBaseFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/DownloadRemoteFileDialogFiller.h"
+#include "runnables/ugene/corelibs/U2Gui/ConvertAssemblyToSAMDialogFiller.h"
 #include "runnables/ugene/ugeneui/SelectDocumentFormatDialogFiller.h"
 #include "runnables/ugene/ugeneui/SequenceReadingModeSelectorDialogFiller.h"
 #include "runnables/ugene/plugins/workflow_designer/StartupDialogFiller.h"
@@ -1671,6 +1672,21 @@ GUI_TEST_CLASS_DEFINITION( test_2128 )
     GTGlobals::sleep(200);
     const QString finalMsaContent = GTClipboard::text( os );
     CHECK_SET_ERR( initialMsaContent == finalMsaContent, "MSA has unexpectedly changed" );
+}
+
+GUI_TEST_CLASS_DEFINITION( test_2140 )
+{
+    //1. Use main menu {Tools->Dna assembly->convert UGENE assembly data base to SAM format}
+    //2. Select any .fasta file instead of .ugenedb file
+    //3. Click "convert"
+    //Expected state: UGENE not crashes. Error message is written to log
+
+    GTLogTracer l;
+    GTUtilsDialog::waitForDialog(os, new ConvertAssemblyToSAMDialogFiller(os, dataDir + "samples/FASTA/", "human_T1.fa"));
+    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_TOOLS),
+                          QStringList() << "DNA assembly" << "Convert UGENE Assembly data base to SAM format");
+
+    CHECK_SET_ERR(l.hasError() == true, "There is no error message in log");
 }
 
 GUI_TEST_CLASS_DEFINITION( test_2160 )
