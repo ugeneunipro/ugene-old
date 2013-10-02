@@ -36,6 +36,10 @@ public:
 
     virtual void _registerExternalToolWorker(ExternalProcessConfig *cfg);
     virtual void _registerScriptWorker(const QString &actorName);
+
+private:
+    static Descriptor generateUniqueSlotDescriptor( const QList<Descriptor> &existingSlots,
+        const DataConfig &dcfg );
 };
 
 } // Workflow

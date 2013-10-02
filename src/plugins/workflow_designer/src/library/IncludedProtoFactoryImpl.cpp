@@ -24,6 +24,7 @@
 #include <U2Lang/Aliasing.h>
 #include <U2Lang/BaseSlots.h>
 #include <U2Lang/BaseTypes.h>
+#include <U2Lang/HRSchemaSerializer.h>
 #include <U2Lang/LocalDomain.h>
 #include <U2Lang/WorkflowEnv.h>
 
@@ -126,7 +127,8 @@ ActorPrototype *IncludedProtoFactoryImpl::_getExternalToolProto(ExternalProcessC
             map[BaseSlots::ANNOTATION_TABLE_SLOT()] = BaseTypes::ANNOTATION_TABLE_TYPE();
             map[BaseSlots::DNA_SEQUENCE_SLOT()] = BaseTypes::DNA_SEQUENCE_TYPE();
         } else {
-            map[WorkflowUtils::getSlotDescOfDatatype(dtr->getById(dcfg.type))] = dtr->getById(dcfg.type);
+            const Descriptor slotDesc = generateUniqueSlotDescriptor( map.keys( ), dcfg );
+            map[slotDesc] = dtr->getById( dcfg.type );
         }
     }
     if(!map.isEmpty()) {
@@ -237,6 +239,27 @@ void IncludedProtoFactoryImpl::_registerExternalToolWorker(ExternalProcessConfig
 void IncludedProtoFactoryImpl::_registerScriptWorker(const QString &actorName) {
     DomainFactory* localDomain = WorkflowEnv::getDomainRegistry()->getById(LocalWorkflow::LocalDomainFactory::ID);
     localDomain->registerEntry(new LocalWorkflow::ScriptWorkerFactory(actorName));
+}
+
+Descriptor IncludedProtoFactoryImpl::generateUniqueSlotDescriptor(
+    const QList<Descriptor> &existingSlots, const DataConfig &dcfg )
+{
+    const DataTypeRegistry *dtr = WorkflowEnv::getDataTypeRegistry( );
+    Descriptor slotDesc = WorkflowUtils::getSlotDescOfDatatype(
+        dtr->getById( dcfg.type ) );
+    // add suffix to slot id if there is a slot with the same id
+    const int slotDuplicateCounterStart = 1;
+    int lastSuffixLength = -1;
+    for ( int i = slotDuplicateCounterStart; existingSlots.contains( slotDesc ); ++i ) {
+        if ( slotDuplicateCounterStart != i ) {
+            const int slotIdBaseLength = slotDesc.getId( ).length( ) - lastSuffixLength;
+            slotDesc.setId( slotDesc.getId( ).left( slotIdBaseLength ) );
+        }
+        const QString suffix = HRSchemaSerializer::DASH + QString::number( i );
+        lastSuffixLength = suffix.length( );
+        slotDesc.setId( slotDesc.getId( ) + suffix );
+    }
+    return slotDesc;
 }
 
 } // Workflow
