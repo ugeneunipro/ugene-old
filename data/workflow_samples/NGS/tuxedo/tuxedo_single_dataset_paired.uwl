@@ -215,9 +215,9 @@ function tophatTime(reads, idx) {
                     group {
                         title:"TopHat input";
                         label-size:180;
-                        tophat.bowtie-index-dir {
-                        }
-                        tophat.bowtie-index-basename {
+                        bowtie-index {
+                            tophat.bowtie-index-dir {}
+                            tophat.bowtie-index-basename {}
                         }
                         tophat.bowtie-version {
                         }

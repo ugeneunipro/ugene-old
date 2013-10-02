@@ -91,9 +91,11 @@ public:
     virtual ~DefaultPropertyController();
 
     virtual QWidget * createGUI(U2OpStatus & os);
+    void setNoDelegate(bool value);
 
 private:
     int labelSize;
+    bool noDelegate;
 
 private:
     PropertyWidget * createPropertyWidget(U2OpStatus &os);

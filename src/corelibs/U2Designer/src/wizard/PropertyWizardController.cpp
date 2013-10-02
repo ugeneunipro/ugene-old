@@ -99,7 +99,7 @@ void InUrlDatasetsController::sl_datasetsChanged() {
 /* DefaultPropertyController */
 /************************************************************************/
 DefaultPropertyController::DefaultPropertyController(WizardController *wc, AttributeWidget *widget, int _labelSize)
-: PropertyWizardController(wc, widget), labelSize(_labelSize)
+: PropertyWizardController(wc, widget), labelSize(_labelSize), noDelegate(false)
 {
 
 }
@@ -140,7 +140,11 @@ PropertyWidget * DefaultPropertyController::createPropertyWidget(U2OpStatus &os)
     PropertyWidget *result = NULL;
 
     if (NULL != delegate) {
-        result = delegate->createWizardWidget(os, NULL);
+        if (noDelegate) {
+            result = new DefaultPropertyWidget();
+        } else {
+            result = delegate->createWizardWidget(os, NULL);
+        }
         _tags = new DelegateTags(*delegate->tags());
         result->setDelegateTags(tags());
         CHECK_OP(os, NULL);
@@ -153,6 +157,10 @@ PropertyWidget * DefaultPropertyController::createPropertyWidget(U2OpStatus &os)
     }
 
     return result;
+}
+
+void DefaultPropertyController::setNoDelegate(bool value) {
+    noDelegate = value;
 }
 
 } // U2

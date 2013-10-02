@@ -444,20 +444,23 @@ NoFileURLWidget::NoFileURLWidget(const QString &type, bool multi, bool isPath, b
 
 static const QString FILE_TAG("file");
 
-QString NoFileURLWidget::finalyze(const QString &url) {
+QString NoFileURLWidget::finalyze(const QString &url, DelegateTags *tags) {
     QFileInfo info(url);
-    DelegateTags *t = const_cast<DelegateTags*>(tags());
     if (url.isEmpty() || info.isDir() || info.isRelative() || !info.exists()) {
-        if (NULL != t) {
-            t->set(FILE_TAG, "");
+        if (NULL != tags) {
+            tags->set(FILE_TAG, "");
         }
         return url;
     }
 
-    if (NULL != t) {
-        t->set(FILE_TAG, info.fileName());
+    if (NULL != tags) {
+        tags->set(FILE_TAG, info.fileName());
     }
     return info.dir().absolutePath();
+}
+
+QString NoFileURLWidget::finalyze(const QString &url) {
+    return finalyze(url, const_cast<DelegateTags*>(tags()));
 }
 
 } // U2

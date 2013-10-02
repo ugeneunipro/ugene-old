@@ -88,6 +88,7 @@ public:
     void setAttributeValue(const AttributeInfo &info, const QVariant &value);
 
     Attribute * getAttribute(const AttributeInfo &info) const;
+    DelegateTags * getTags(const AttributeInfo &info);
 
 private:
     bool broken;
@@ -110,7 +111,6 @@ private:
     void assignParameters();
     void applySettings();
     void saveDelegateTags();
-    DelegateTags * getTags(const AttributeInfo &info);
     bool canSetValue(const AttributeInfo &info, const QVariant &value);
     void run();
     void defaults(QWizardPage *wPage);
@@ -138,6 +138,7 @@ public:
     virtual void visit(UrlAndDatasetWidget *dsw);
     virtual void visit(RadioWidget *rw);
     virtual void visit(SettingsWidget *sw);
+    virtual void visit(BowtieWidget *sw);
 
     QWidget * getResult();
     QList<WidgetController*> & getControllers();

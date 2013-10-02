@@ -363,4 +363,22 @@ void SettingsWidget::setLabel(const QString &value) {
     _label = value;
 }
 
+/************************************************************************/
+/* BowtieWidget */
+/************************************************************************/
+const QString BowtieWidget::ID("bowtie-index");
+BowtieWidget::BowtieWidget()
+: WizardWidget(), idxDir("", ""), idxName("", "")
+{
+
+}
+
+void BowtieWidget::accept(WizardWidgetVisitor *visitor) {
+    visitor->visit(this);
+}
+
+void BowtieWidget::validate(const QList<Actor*> &actors, U2OpStatus &os) const {
+    
+}
+
 } // U2

@@ -24,22 +24,23 @@ HEADERS += src/BreakpointHitCountDialog.h \
            src/UrlItem.h \
            src/WorkflowGUIUtils.h \
            src/dashboard/Dashboard.h \
+           src/dashboard/ExternalToolsWidget.h \
            src/dashboard/OutputFilesWidget.h \
            src/dashboard/ParametersWidget.h \
            src/dashboard/ProblemsWidget.h \
            src/dashboard/ResourcesWidget.h \
            src/dashboard/StatisticsWidget.h \
            src/dashboard/TableWidget.h \
-           src/dashboard/ExternalToolsWidget.h \
            src/support/OutputDirectoryWidget.h \
            src/support/URLLineEdit.h \
+           src/wizard/BowtieWidgetController.h \
            src/wizard/ElementSelectorController.h \
            src/wizard/PairedDatasetsController.h \
            src/wizard/PropertyWizardController.h \
-           src/wizard/UrlAndDatasetWizardController.h \
            src/wizard/RadioController.h \
            src/wizard/SelectorActors.h \
            src/wizard/SettingsController.h \
+           src/wizard/UrlAndDatasetWizardController.h \
            src/wizard/WDWizardPage.h \
            src/wizard/WidgetController.h \
            src/wizard/WizardController.h \
@@ -86,22 +87,23 @@ SOURCES += src/BreakpointHitCountDialog.cpp \
            src/UrlItem.cpp \
            src/WorkflowGUIUtils.cpp \
            src/dashboard/Dashboard.cpp \
+           src/dashboard/ExternalToolsWidget.cpp \
            src/dashboard/OutputFilesWidget.cpp \
            src/dashboard/ParametersWidget.cpp \
            src/dashboard/ProblemsWidget.cpp \
            src/dashboard/ResourcesWidget.cpp \
            src/dashboard/StatisticsWidget.cpp \
            src/dashboard/TableWidget.cpp \
-           src/dashboard/ExternalToolsWidget.cpp \
            src/support/OutputDirectoryWidget.cpp \
            src/support/URLLineEdit.cpp \
+           src/wizard/BowtieWidgetController.cpp \
            src/wizard/ElementSelectorController.cpp \
            src/wizard/PairedDatasetsController.cpp \
            src/wizard/PropertyWizardController.cpp \
-           src/wizard/UrlAndDatasetWizardController.cpp \
            src/wizard/RadioController.cpp \
            src/wizard/SelectorActors.cpp \
            src/wizard/SettingsController.cpp \
+           src/wizard/UrlAndDatasetWizardController.cpp \
            src/wizard/WDWizardPage.cpp \
            src/wizard/WidgetController.cpp \
            src/wizard/WizardController.cpp \

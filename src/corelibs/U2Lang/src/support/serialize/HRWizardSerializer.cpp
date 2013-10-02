@@ -403,6 +403,18 @@ void WizardWidgetParser::visit(SettingsWidget *sw) {
     CHECK_OP(os, );
 }
 
+void WizardWidgetParser::visit(BowtieWidget *bw) {
+    pairs = HRSchemaSerializer::ParsedPairs(data, 0);
+    if (pairs.blockPairsList.size() != 2) {
+        os.setError("Not enough attributes for Bowtie index widget");
+        return;
+    }
+    bw->idxDir = parseInfo(pairs.blockPairsList[0].first, pairs.blockPairsList[0].second);
+    CHECK_OP(os, );
+    bw->idxName = parseInfo(pairs.blockPairsList[1].first, pairs.blockPairsList[1].second);
+    CHECK_OP(os, );
+}
+
 SelectorValue WizardWidgetParser::parseSelectorValue(ActorPrototype *srcProto, const QString &valueDef) {
     HRSchemaSerializer::ParsedPairs pairs(valueDef, 0);
     if (!pairs.equalPairs.contains(HRWizardParser::ID)) {
@@ -502,6 +514,8 @@ WizardWidget * WizardWidgetParser::createWidget(const QString &id) {
         return new RadioWidget();
     } else if (SettingsWidget::ID == id) {
         return new SettingsWidget();
+    } else if (BowtieWidget::ID == id) {
+        return new BowtieWidget();
     } else {
         return new AttributeWidget();
     }
@@ -754,6 +768,14 @@ void WizardWidgetSerializer::visit(SettingsWidget *sw) {
     rData += HRSchemaSerializer::makeEqualsPair(HRWizardParser::LABEL, sw->label(), depth + 1);
     result = HRSchemaSerializer::makeBlock(SettingsWidget::ID,
         HRSchemaSerializer::NO_NAME, rData, depth);
+}
+
+void WizardWidgetSerializer::visit(BowtieWidget *bw) {
+    QString bData;
+    bData += serializeInfo(bw->idxDir, depth + 1);
+    bData += serializeInfo(bw->idxName, depth + 1);
+    result = HRSchemaSerializer::makeBlock(BowtieWidget::ID,
+        HRSchemaSerializer::NO_NAME, bData, depth);
 }
 
 QString WizardWidgetSerializer::serializeSlotsMapping(const QList<SlotMapping> &mappings, int depth) const {

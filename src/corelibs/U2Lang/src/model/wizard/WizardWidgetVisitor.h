@@ -38,6 +38,7 @@ public:
     virtual void visit(UrlAndDatasetWidget *) = 0;
     virtual void visit(RadioWidget *) = 0;
     virtual void visit(SettingsWidget *) = 0;
+    virtual void visit(BowtieWidget *) = 0;
 };
 
 } // U2

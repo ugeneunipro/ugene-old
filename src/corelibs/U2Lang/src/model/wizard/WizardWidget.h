@@ -192,7 +192,7 @@ private:
 };
 
 /************************************************************************/
-/* Radio */
+/* RadioWidget */
 /************************************************************************/
 class U2LANG_EXPORT RadioWidget : public WizardWidget {
 public:
@@ -222,7 +222,7 @@ private:
 };
 
 /************************************************************************/
-/* Settings */
+/* SettingsWidget */
 /************************************************************************/
 class U2LANG_EXPORT SettingsWidget : public WizardWidget {
 public:
@@ -246,6 +246,23 @@ private:
     QString _var;
     QString _type;
     QString _label;
+};
+
+/************************************************************************/
+/* BowtieWidget */
+/************************************************************************/
+class U2LANG_EXPORT BowtieWidget : public WizardWidget {
+public:
+    BowtieWidget();
+
+    virtual void accept(WizardWidgetVisitor *visitor);
+    virtual void validate(const QList<Actor*> &actors, U2OpStatus &os) const;
+
+    static const QString ID;
+
+public:
+    AttributeInfo idxDir;
+    AttributeInfo idxName;
 };
 
 } // U2

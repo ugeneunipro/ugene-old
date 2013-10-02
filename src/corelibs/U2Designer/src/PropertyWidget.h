@@ -209,6 +209,8 @@ class NoFileURLWidget : public URLWidget {
 public:
     NoFileURLWidget(const QString &type, bool multi, bool isPath, bool saveFile, DelegateTags *tags, QWidget *parent = NULL);
 
+    static QString finalyze(const QString &url, DelegateTags *tags);
+
 protected:
     virtual QString finalyze(const QString &url);
 };

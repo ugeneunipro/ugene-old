@@ -33,12 +33,13 @@
 #include <U2Lang/WizardPage.h>
 #include <U2Lang/WorkflowUtils.h>
 
+#include "BowtieWidgetController.h"
 #include "ElementSelectorController.h"
-#include "UrlAndDatasetWizardController.h"
 #include "PairedDatasetsController.h"
 #include "PropertyWizardController.h"
 #include "RadioController.h"
 #include "SettingsController.h"
+#include "UrlAndDatasetWizardController.h"
 #include "WDWizardPage.h"
 #include "WizardPageController.h"
 
@@ -173,6 +174,15 @@ namespace {
         }
         void visit(RadioWidget *) {}
         void visit(SettingsWidget *) {}
+        void visit(BowtieWidget *bw) {
+            Attribute *dirAttr = wc->getAttribute(bw->idxDir);
+            CHECK(NULL != dirAttr, );
+            wc->setAttributeValue(bw->idxDir, dirAttr->getDefaultPureValue());
+
+            Attribute *nameAttr = wc->getAttribute(bw->idxName);
+            CHECK(NULL != nameAttr, );
+            wc->setAttributeValue(bw->idxName, nameAttr->getDefaultPureValue());
+        }
 
     private:
         WizardController *wc;
@@ -418,6 +428,9 @@ bool WizardController::canSetValue(const AttributeInfo &info, const QVariant &va
 
 void WizardController::setAttributeValue(const AttributeInfo &info, const QVariant &value) {
     values[info.toString()] = value;
+    if (propertyControllers.contains(info.toString())) {
+        propertyControllers[info.toString()]->updateGUI(value);
+    }
 
     // Check attribute relations
     Attribute *attr = getAttribute(info);
@@ -578,6 +591,13 @@ void WidgetCreator::visit(RadioWidget *rw) {
 
 void WidgetCreator::visit(SettingsWidget *sw) {
     SettingsController *controller = new SettingsController(wc, sw);
+    controllers << controller;
+    U2OpStatusImpl os;
+    result = controller->createGUI(os);
+}
+
+void WidgetCreator::visit(BowtieWidget *bw) {
+    BowtieWidgetController *controller = new BowtieWidgetController(wc, bw, labelSize);
     controllers << controller;
     U2OpStatusImpl os;
     result = controller->createGUI(os);

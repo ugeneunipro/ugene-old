@@ -87,6 +87,8 @@ public:
     static const QString TOOLTIP;
     static const QString HAS_RUN_BUTTON;
     static const QString HAS_DEFAULTS_BUTTON;
+    static const QString BWT_DIR;
+    static const QString BWT_IDX_NAME;
 };
 
 class U2LANG_EXPORT HRWizardSerializer {
@@ -119,6 +121,7 @@ public:
     virtual void visit(UrlAndDatasetWidget *ldsw);
     virtual void visit(RadioWidget *rw);
     virtual void visit(SettingsWidget *sw);
+    virtual void visit(BowtieWidget *sw);
 
 private:
     QString title;
@@ -173,6 +176,7 @@ public:
     virtual void visit(UrlAndDatasetWidget *ldsw);
     virtual void visit(RadioWidget *rw);
     virtual void visit(SettingsWidget *sw);
+    virtual void visit(BowtieWidget *sw);
 
     const QString & getResult();
 
