@@ -53,6 +53,8 @@ void GTMouseDriver::moveToP(U2::U2OpStatus &os, const int x, const int y)
 }
 #undef GT_METHOD_NAME
 
+void selectArea(U2::U2OpStatus &os, const QPoint& p){mousePos = p; selectArea(os, p.x(), p.y());}
+
 #define GT_METHOD_NAME "selectArea"
 void GTMouseDriver::selectArea(U2::U2OpStatus &os, const int x, const int y)
 {

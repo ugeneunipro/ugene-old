@@ -1167,7 +1167,9 @@ GUI_TEST_CLASS_DEFINITION(test_1708){
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<MSAE_MENU_ALIGN<<"align_with_kalign", GTGlobals::UseMouse));
     GTUtilsDialog::waitForDialog(os, new KalignDialogFiller(os,10));
     GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
-
+#ifdef Q_OS_MAC
+    GTGlobals::sleep(10000);
+#endif
     GTWidget::click(os, GTUtilsMdi::activeWindow(os));
     GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0,0), QPoint(9,1));
     GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);

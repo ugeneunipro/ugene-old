@@ -211,6 +211,7 @@ GTKeyboardDriver::keys::keys()
     ADD_KEY("right", kVK_RightArrow);
     ADD_KEY("down", kVK_DownArrow);
     ADD_KEY("delete", kVK_ForwardDelete);
+    ADD_KEY("back", kVK_Delete);
     ADD_KEY("help", kVK_Help);
     ADD_KEY("f1", kVK_F1);
     ADD_KEY("f2", kVK_F2);

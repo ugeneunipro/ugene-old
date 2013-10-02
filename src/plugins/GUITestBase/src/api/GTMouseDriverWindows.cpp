@@ -172,6 +172,14 @@ void GTMouseDriver::scroll(U2OpStatus &os, int value)
     SendInput(1, &event, sizeof(event));
 }
 
+#define GT_METHOD_NAME "selectArea"
+void GTMouseDriver::selectArea(U2OpStatus &os, const QPoint &p){
+   press(os);
+   moveTo(os, p);
+   release(os);
+}
+#undef GT_METHOD_NAME
+
 #undef GT_CLASS_NAME
 
 #endif

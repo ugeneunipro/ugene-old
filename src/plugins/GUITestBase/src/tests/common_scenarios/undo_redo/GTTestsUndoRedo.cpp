@@ -676,7 +676,9 @@ GUI_TEST_CLASS_DEFINITION(test_0010){//MUSCLE aligner undo test
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<MSAE_MENU_ALIGN<<"Align with muscle", GTGlobals::UseMouse));
     GTUtilsDialog::waitForDialog(os, new MuscleDialogFiller(os,MuscleDialogFiller::Default,false));
     GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
-
+#ifdef Q_OS_MAC
+    GTGlobals::sleep(10000);
+#endif
     GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep(500);
     QString changedAln = GTClipboard::text(os);
@@ -727,7 +729,9 @@ GUI_TEST_CLASS_DEFINITION(test_0011){//Kalign undo test
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<MSAE_MENU_ALIGN<<"align_with_kalign", GTGlobals::UseMouse));
     GTUtilsDialog::waitForDialog(os, new KalignDialogFiller(os));
     GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
-
+#ifdef Q_OS_MAC
+    GTGlobals::sleep(10000);
+#endif
     GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep(500);
     QString changedAln = GTClipboard::text(os);
@@ -777,7 +781,9 @@ GUI_TEST_CLASS_DEFINITION(test_0011_1){//Kalign undo test
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<MSAE_MENU_ALIGN<<"align_with_kalign", GTGlobals::UseMouse));
     GTUtilsDialog::waitForDialog(os, new KalignDialogFiller(os,100));
     GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
-
+#ifdef Q_OS_MAC
+    GTGlobals::sleep(10000);
+#endif
     GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep(500);
     QString changedAln = GTClipboard::text(os);
