@@ -31,12 +31,16 @@
 #include "utils/ExternalToolSupportAction.h"
 #include "ExternalToolSupportSettingsController.h"
 #include "ExternalToolSupportSettings.h"
+#include "BlastDBCmdSupport.h"
+#include "BlastDBCmdDialog.h"
+#include "BlastDBCmdSupportTask.h"
 
 #include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>
 #include <U2Core/UserApplicationsSettings.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/AnnotationSelection.h>
 
 #include <U2Gui/MainWindow.h>
 
@@ -215,10 +219,17 @@ void BlastPlusSupport::sl_runWithExtFileSpecify(){
 
 ////////////////////////////////////////
 //BlastPlusSupportContext
+
+#define BLAST_ANNOTATION_NAME "blast result"
+
 BlastPlusSupportContext::BlastPlusSupportContext(QObject* p) : GObjectViewWindowContext(p, ANNOTATED_DNA_VIEW_FACTORY_ID) {
     toolList << ET_BLASTN << ET_BLASTP << ET_BLASTX << ET_TBLASTN << ET_TBLASTX << ET_RPSBLAST;
     lastDBName="";
     lastDBPath="";
+    
+    fetchSequenceByIdAction = new QAction(tr("Fetch sequences by 'id'"), this);
+    connect(fetchSequenceByIdAction, SIGNAL(triggered()), SLOT(sl_fetchSequenceById()));
+
 }
 
 void BlastPlusSupportContext::initViewContext(GObjectView* view) {
@@ -233,12 +244,50 @@ void BlastPlusSupportContext::initViewContext(GObjectView* view) {
 }
 
 void BlastPlusSupportContext::buildMenu(GObjectView* view, QMenu* m) {
-        QList<GObjectViewAction *> actions = getViewActions(view);
-        QMenu* analyseMenu = GUIUtils::findSubMenu(m, ADV_MENU_ANALYSE);
-        SAFE_POINT(analyseMenu != NULL, "analyseMenu", );
-        foreach(GObjectViewAction* a, actions) {
-                a->addToMenuWithOrder(analyseMenu);
+    
+    QList<GObjectViewAction *> actions = getViewActions(view);
+    QMenu* analyseMenu = GUIUtils::findSubMenu(m, ADV_MENU_ANALYSE);
+    SAFE_POINT(analyseMenu != NULL, "analyseMenu", );
+    foreach(GObjectViewAction* a, actions) {
+        a->addToMenuWithOrder(analyseMenu);
+    }
+
+    AnnotatedDNAView* dnaView = qobject_cast<AnnotatedDNAView*>( view );
+    if (!dnaView) {
+        return;
+    }
+
+    bool isBlastResult = false, isShowId = false;
+
+    QString name;
+    if(!dnaView->getAnnotationsSelection()->getSelection().isEmpty()) {
+        name = dnaView->getAnnotationsSelection()->getSelection().first().annotation->getAnnotationName();
+    }
+
+    foreach(const AnnotationSelectionData &sel, dnaView->getAnnotationsSelection()->getSelection()) {
+        if(name != sel.annotation->getAnnotationName()) {
+            name = "";
         }
+        
+        QString id = sel.annotation->findFirstQualifierValue("id"); 
+        if(!id.isEmpty()) {
+            isShowId = true;
+            selectedId = id;
+        } 
+
+        isBlastResult = name == BLAST_ANNOTATION_NAME; 
+    }
+
+    if(isShowId && isBlastResult ) {
+        name = name.isEmpty() ? "" : "from '" + name + "'";
+        QMenu *fetchMenu = new QMenu(tr("Fetch sequences from local BLAST database"));
+        QMenu* exportMenu = GUIUtils::findSubMenu(m, ADV_MENU_EXPORT);
+        SAFE_POINT(exportMenu != NULL, "exportMenu", );
+        m->insertMenu(exportMenu->menuAction(), fetchMenu);
+        fetchSequenceByIdAction->setText(tr("Fetch sequences by 'id' %1").arg(name));
+        fetchMenu->addAction(fetchSequenceByIdAction);
+    }
+
 }
 
 void BlastPlusSupportContext::sl_showDialog() {
@@ -326,5 +375,22 @@ void BlastPlusSupportContext::sl_showDialog() {
         }
     }
 }
+
+void BlastPlusSupportContext::sl_fetchSequenceById()
+{
+    BlastDBCmdSupportTaskSettings settings;
+    BlastDBCmdDialog blastDBCmdDialog(settings, AppContext::getMainWindow()->getQMainWindow());
+    blastDBCmdDialog.setQueryId(selectedId);
+    if(blastDBCmdDialog.exec() != QDialog::Accepted){
+        return;
+    }
+
+    BlastDBCmdSupportTask* blastDBCmdSupportTask =new BlastDBCmdSupportTask(settings);
+    AppContext::getTaskScheduler()->registerTopLevelTask(blastDBCmdSupportTask);
+
+    
+}
+
+
 
 }//namespace

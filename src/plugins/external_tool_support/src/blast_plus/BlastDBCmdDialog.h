@@ -33,6 +33,7 @@ class BlastDBCmdDialog : public QDialog, public Ui_BlastDBCmdDialog {
     Q_OBJECT
 public:
     BlastDBCmdDialog( BlastDBCmdSupportTaskSettings& settings, QWidget* parent);
+    void setQueryId(const QString& queryId);
 private slots:
     void sl_onSelectInputDbButtonClick();
     void sl_onSelectOutputFileButtonClick();

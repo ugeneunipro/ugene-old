@@ -48,6 +48,7 @@ void BlastDBCmdDialog::sl_BlastDBCmd(){
     settings.databasePath = inputDbLineEdit->text();
     settings.outputPath = outputPathLineEdit->text();
     settings.isNuclDatabase = nucleotideTypeRadioButton->isChecked();
+    settings.addToProject = addToProjectBox->isChecked();
 
     accept();
 }
@@ -96,6 +97,11 @@ void BlastDBCmdDialog::update()
 void BlastDBCmdDialog::sl_onQueryLineEditTextChanged()
 {
     update();
+}
+
+void BlastDBCmdDialog::setQueryId( const QString& queryId )
+{
+    queryIdEdit->setText(queryId);
 }
 
 }//namespace

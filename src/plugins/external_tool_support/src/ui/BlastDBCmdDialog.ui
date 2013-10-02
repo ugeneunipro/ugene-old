@@ -68,9 +68,9 @@
         </property>
         <layout class="QHBoxLayout" name="horizontalLayout">
          <item>
-          <widget class="QRadioButton" name="proteinTypeRadioButton">
+          <widget class="QRadioButton" name="nucleotideTypeRadioButton">
            <property name="text">
-            <string>protein</string>
+            <string>nucleotide</string>
            </property>
            <property name="checked">
             <bool>true</bool>
@@ -78,9 +78,12 @@
           </widget>
          </item>
          <item>
-          <widget class="QRadioButton" name="nucleotideTypeRadioButton">
+          <widget class="QRadioButton" name="proteinTypeRadioButton">
            <property name="text">
-            <string>nucleotide</string>
+            <string>protein</string>
+           </property>
+           <property name="checked">
+            <bool>false</bool>
            </property>
           </widget>
          </item>
@@ -113,9 +116,9 @@
        </layout>
       </item>
       <item>
-       <widget class="QCheckBox" name="checkBox">
+       <widget class="QCheckBox" name="addToProjectBox">
         <property name="enabled">
-         <bool>false</bool>
+         <bool>true</bool>
         </property>
         <property name="text">
          <string>Add to project</string>

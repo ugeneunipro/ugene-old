@@ -54,6 +54,7 @@ public:
 
 protected slots:
     void sl_showDialog();
+    void sl_fetchSequenceById();
 
 protected:
     virtual void initViewContext(GObjectView* view);
@@ -62,6 +63,8 @@ private:
     QStringList toolList;
     QString lastDBPath;
     QString lastDBName;
+    QString selectedId;
+    QAction* fetchSequenceByIdAction;
 };
 
 }//namespace

@@ -42,6 +42,7 @@ public:
     QString         outputPath;
     QString         databasePath;
     bool            isNuclDatabase;
+    bool            addToProject;
 };
 
 
@@ -51,6 +52,7 @@ public:
     BlastDBCmdSupportTask(const BlastDBCmdSupportTaskSettings& settings);
     void prepare();
     Task::ReportResult report();
+    virtual QList<Task*> onSubTaskFinished(Task* subTask);
 private:
     ExternalToolLogParser*      logParser;
     ExternalToolRunTask*        blastDBCmdTask;

@@ -27,10 +27,10 @@
 #include <U2Core/DocumentModel.h>
 #include <U2Core/ExternalToolRegistry.h>
 #include <U2Core/ProjectModel.h>
-#include <U2Core/MAlignmentObject.h>
-
 #include <U2Core/AddDocumentTask.h>
 #include <U2Core/Log.h>
+
+#include <U2Gui/OpenViewTask.h>
 
 namespace U2 {
 
@@ -57,7 +57,7 @@ void BlastDBCmdSupportTask::prepare(){
     arguments << "-db" << settings.databasePath;
     arguments << "-dbtype" << (settings.isNuclDatabase ? "nucl" : "prot");
     arguments << "-entry" << settings.query;
-    arguments << "-logfile" << settings.outputPath+"MakeBLASTDB.log";
+    arguments << "-logfile" << settings.outputPath+".BlastDBCmd.log";
     arguments << "-out" << settings.outputPath;
     
     logParser=new ExternalToolLogParser();
@@ -67,6 +67,21 @@ void BlastDBCmdSupportTask::prepare(){
 }
 Task::ReportResult BlastDBCmdSupportTask::report(){
     return ReportResult_Finished;
+}
+
+QList<Task*> BlastDBCmdSupportTask::onSubTaskFinished( Task* subTask )
+{
+    QList<Task*> res;
+
+    if (subTask == blastDBCmdTask) {
+        if (settings.addToProject) {
+            IOAdapterFactory * iow = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
+            LoadDocumentTask* loadTask = new LoadDocumentTask(BaseDocumentFormats::FASTA, settings.outputPath, iow);
+            res.append( new AddDocumentAndOpenViewTask(loadTask) );
+        }
+    }
+    
+    return res;
 }
 
 }//namespace
