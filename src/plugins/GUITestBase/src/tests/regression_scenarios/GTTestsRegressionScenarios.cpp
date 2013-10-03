@@ -1598,7 +1598,7 @@ GUI_TEST_CLASS_DEFINITION( test_2070 ){
 GUI_TEST_CLASS_DEFINITION( test_2089 )
 {
     // 1. Start UGENE with a new *.ini file.
-    GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os, true, "!@#$%^&*()_+\";:?"));
+    GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os, true, "!@#$%^&*()_+\";:?/"));
 
     // 2. Open WD
     // 3. Set any folder without write access as workflow output directory. Click OK.

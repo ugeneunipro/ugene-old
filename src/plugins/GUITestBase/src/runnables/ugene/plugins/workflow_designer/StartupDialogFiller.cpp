@@ -39,6 +39,7 @@ StartupDialogFiller::StartupDialogFiller(U2OpStatus &os, bool _ok, QString _wron
 }
 
 void StartupDialogFiller::run(){
+    GTGlobals::sleep(1000);
     QWidget* dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog, "activeModalWidget is NULL");
 
@@ -65,8 +66,9 @@ void StartupDialogFiller::run(){
 void StartupDialogFiller::clickButton(QWidget *dialog, const QString &text) {
     QList<QPushButton*> list= dialog->findChildren<QPushButton*>();
     bool clicked = false;
+    QString s;
     foreach(QPushButton* but, list){
-        if (but->text() == text) {
+        if (but->text().contains(text)) {
             GTWidget::click(os,but);
             clicked = true;
         }

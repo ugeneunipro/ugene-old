@@ -132,7 +132,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001){
         GTGlobals::sleep();
     }
 }
-#define GT_CLASS_NAME "GTUtilsDialog::DotPlotFiller"
+#define GT_CLASS_NAME "GTUtilsDialog::WizardFiller0002"
 #define GT_METHOD_NAME "run"
 class WizardFiller0002:public WizardFiller{
 public:
@@ -167,9 +167,6 @@ public:
 
 GUI_TEST_CLASS_DEFINITION(test_0002){
 //    1. Open WD
-#ifndef Q_OS_LINUX
-    GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
-#endif
     QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
     GTMenu::clickMenuItem(os, menu, QStringList() << "Workflow Designer");
 //    2. Open tuxedo pipeline from samples
