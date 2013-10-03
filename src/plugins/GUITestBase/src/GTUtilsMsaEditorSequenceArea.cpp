@@ -71,17 +71,11 @@ void GTUtilsMSAEditorSequenceArea::selectArea(U2OpStatus &os, QPoint p1, QPoint 
     p2.rx() = p2.x()==-1 ? msaEditArea->getNumVisibleBases(true)-1 : p2.x();
     p1.ry() = p1.y()==-1 ? msaEditArea->getNumVisibleSequences(true)-1 : p1.y();
     p2.ry() = p2.y()==-1 ? msaEditArea->getNumVisibleSequences(true)-1 : p2.y();
-#ifdef Q_OS_MAC
+
     moveTo(os, p1);
     GTMouseDriver::press(os);
-    GTMouseDriver::selectAreaMac(os,convertCoordinates(os,p2));
-    GTMouseDriver::release(os);
-#else
-    moveTo(os, p1);
-    GTMouseDriver::press(os);
-    moveTo(os, p2);
-    GTMouseDriver::release(os);
-#endif
+    GTMouseDriver::selectArea(os,convertCoordinates(os,p2));
+
     GTGlobals::sleep();
 }
 #undef GT_METHOD_NAME

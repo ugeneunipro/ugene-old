@@ -59,7 +59,7 @@ public:
     public:
         keys();
         const QStringList mapKeys() const {
-            return QMap::keys();
+            return QMap<QString, int>::keys();
         }
         int operator [] (const QString&) const;
     };

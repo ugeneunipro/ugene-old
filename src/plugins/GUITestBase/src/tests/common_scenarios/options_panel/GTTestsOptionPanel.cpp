@@ -226,12 +226,6 @@ GUI_TEST_CLASS_DEFINITION(test_0004){
     GTMouseDriver::press(os);
 
     QPoint leftPoint=QPoint(point.x()-rect.center().x(),point.y());
-#ifdef Q_OS_MAC
-    GTMouseDriver::selectAreaMac(os,leftPoint);
-#else
-    GTMouseDriver::moveTo(os,leftPoint);
-#endif
-    GTMouseDriver::release(os);
 
     GTKeyboardDriver::keyClick(os,'c',GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep(500);

@@ -1322,7 +1322,7 @@ GUI_TEST_CLASS_DEFINITION( test_2021_1 )
     GTKeyboardDriver::keyClick( os, 'c', GTKeyboardDriver::key["ctrl"] );
     GTGlobals::sleep(200);
     const QString initialMsaContent = GTClipboard::text( os );
-    GTKeyboardDriver::keyPress( os, GTKeyboardDriver::key["esc"] );
+    GTKeyboardDriver::keyClick( os, GTKeyboardDriver::key["esc"] );
 
     // 2. Select a character in the sequence area
     const QPoint initialSelectionPos( 10, 10 );
@@ -1334,7 +1334,7 @@ GUI_TEST_CLASS_DEFINITION( test_2021_1 )
     int shiftCounter = 0;
     QPoint currentSelection = initialSelectionPos;
     while ( shiftCounter++ < totalShiftCount ) {
-        GTKeyboardDriver::keyPress( os, GTKeyboardDriver::key["space"] );
+        GTKeyboardDriver::keyClick( os, GTKeyboardDriver::key["space"] );
         GTGlobals::sleep(200);
     }
     currentSelection.rx( ) += totalShiftCount;
@@ -1342,7 +1342,7 @@ GUI_TEST_CLASS_DEFINITION( test_2021_1 )
     // 4. Remove gaps with "Backspace" key
     shiftCounter = 0;
     while ( shiftCounter++ < totalShiftCount ) {
-        GTKeyboardDriver::keyPress( os, GTKeyboardDriver::key["back"] );
+        GTKeyboardDriver::keyClick( os, GTKeyboardDriver::key["back"] );
         GTGlobals::sleep(200);
         currentSelection.rx( ) -= 1;
         GTUtilsMSAEditorSequenceArea::checkSelectedRect( os, QRect( currentSelection,
@@ -1365,7 +1365,7 @@ GUI_TEST_CLASS_DEFINITION( test_2021_2 )
     GTKeyboardDriver::keyClick( os, 'c', GTKeyboardDriver::key["ctrl"] );
     GTGlobals::sleep(200);
     const QString initialMsaContent = GTClipboard::text( os );
-    GTKeyboardDriver::keyPress( os, GTKeyboardDriver::key["esc"] );
+    GTKeyboardDriver::keyClick( os, GTKeyboardDriver::key["esc"] );
 
     // 2. Select a region in the sequence area
     const QPoint initialSelectionLeftTop( 5, 5 );
@@ -1381,7 +1381,7 @@ GUI_TEST_CLASS_DEFINITION( test_2021_2 )
     QPoint currentSelectionLeftTop = initialSelectionLeftTop;
     QPoint currentSelectionRightBottom = initialSelectionRightBottom;
     while ( shiftCounter++ < totalShiftCount ) {
-        GTKeyboardDriver::keyPress( os, GTKeyboardDriver::key["space"] );
+        GTKeyboardDriver::keyClick( os, GTKeyboardDriver::key["space"] );
         GTGlobals::sleep( 200 );
     }
     currentSelectionLeftTop.rx( ) += totalShiftCount * selectionWidth;
@@ -1392,7 +1392,7 @@ GUI_TEST_CLASS_DEFINITION( test_2021_2 )
     // 4. Remove gaps with "Backspace" key
     shiftCounter = 0;
     while ( shiftCounter++ < totalShiftCount ) {
-        GTKeyboardDriver::keyPress( os, GTKeyboardDriver::key["back"] );
+        GTKeyboardDriver::keyClick( os, GTKeyboardDriver::key["back"] );
         GTGlobals::sleep( 200 );
         currentSelectionLeftTop.rx( ) -= selectionWidth;
         currentSelectionRightBottom.rx( ) -= selectionWidth;
@@ -1423,7 +1423,7 @@ GUI_TEST_CLASS_DEFINITION( test_2021_3 )
     const int totalShiftCount = 6;
     int shiftCounter = 0;
     while ( shiftCounter++ < totalShiftCount ) {
-        GTKeyboardDriver::keyPress( os, GTKeyboardDriver::key["back"] );
+        GTKeyboardDriver::keyClick( os, GTKeyboardDriver::key["back"] );
         GTGlobals::sleep( 200 );
     }
 
@@ -1446,13 +1446,13 @@ GUI_TEST_CLASS_DEFINITION( test_2021_4 )
     GTKeyboardDriver::keyClick( os, 'c', GTKeyboardDriver::key["ctrl"] );
     GTGlobals::sleep(200);
     const QString initialMsaContent = GTClipboard::text( os );
-    GTKeyboardDriver::keyPress( os, GTKeyboardDriver::key["esc"] );
+    GTKeyboardDriver::keyClick( os, GTKeyboardDriver::key["esc"] );
 
     // 2. Select a region of trailing gaps
     GTUtilsMSAEditorSequenceArea::selectArea( os, QPoint( 17, 4 ), QPoint( 19, 6 ) );
 
     // 3. Press "Backspace"
-    GTKeyboardDriver::keyPress( os, GTKeyboardDriver::key["back"] );
+    GTKeyboardDriver::keyClick( os, GTKeyboardDriver::key["back"] );
     GTGlobals::sleep( 200 );
 
     // 4. Check that MSA does not changed
@@ -1478,7 +1478,7 @@ GUI_TEST_CLASS_DEFINITION( test_2021_5 )
     GTUtilsMSAEditorSequenceArea::selectArea( os, QPoint( 9, 0 ), QPoint( 16, 9 ) );
 
     // 3. Remove gap columns by pressing "Backspace" key
-    GTKeyboardDriver::keyPress( os, GTKeyboardDriver::key["back"] );
+    GTKeyboardDriver::keyClick( os, GTKeyboardDriver::key["back"] );
     GTGlobals::sleep( 200 );
 
     // 4. Check that all the empty columns were removed
@@ -1503,7 +1503,7 @@ GUI_TEST_CLASS_DEFINITION( test_2021_6 )
     GTGlobals::sleep(200);
 
     //3. Press BACKSPACE.
-    GTKeyboardDriver::keyPress( os, GTKeyboardDriver::key["back"] );
+    GTKeyboardDriver::keyClick( os, GTKeyboardDriver::key["back"] );
     GTGlobals::sleep( 200 );
 
     // 4. Expected state: the gap was deleted, selection moves to the previous symbol.
@@ -1525,7 +1525,7 @@ GUI_TEST_CLASS_DEFINITION( test_2021_7 )
     GTGlobals::sleep(200);
 
     //3. Press BACKSPACE.
-    GTKeyboardDriver::keyPress( os, GTKeyboardDriver::key["back"] );
+    GTKeyboardDriver::keyClick( os, GTKeyboardDriver::key["back"] );
     GTGlobals::sleep( 200 );
 
     // 4. Expected state: the gap was deleted, selection moves to the previous symbol.
@@ -1548,7 +1548,7 @@ GUI_TEST_CLASS_DEFINITION( test_2021_8 )
     GTGlobals::sleep(200);
 
     //3. Press BACKSPACE.
-    GTKeyboardDriver::keyPress( os, GTKeyboardDriver::key["back"] );
+    GTKeyboardDriver::keyClick( os, GTKeyboardDriver::key["back"] );
     GTGlobals::sleep( 200 );
 
     // 4. Expected state: the gap was deleted, selection moves to the previous symbol.
@@ -1570,7 +1570,7 @@ GUI_TEST_CLASS_DEFINITION( test_2021_9 )
     GTGlobals::sleep(200);
 
     //3. Press BACKSPACE.
-    GTKeyboardDriver::keyPress( os, GTKeyboardDriver::key["back"] );
+    GTKeyboardDriver::keyClick( os, GTKeyboardDriver::key["back"] );
     GTGlobals::sleep( 200 );
 
     // 4. Expected state: the gap was deleted, selection moves to the previous symbol.
@@ -1660,7 +1660,7 @@ GUI_TEST_CLASS_DEFINITION( test_2128 )
     GTKeyboardDriver::keyClick( os, 'c', GTKeyboardDriver::key["ctrl"] );
     GTGlobals::sleep(200);
     const QString initialMsaContent = GTClipboard::text( os );
-    GTKeyboardDriver::keyPress( os, GTKeyboardDriver::key["esc"] );
+    GTKeyboardDriver::keyClick( os, GTKeyboardDriver::key["esc"] );
 
     // 2. Select a region in the sequence area
     QRect currentSelection( QPoint( 2, 5 ), QPoint( 8, 11 ) );
@@ -1670,7 +1670,7 @@ GUI_TEST_CLASS_DEFINITION( test_2128 )
     // 3. Add gaps by pressing "Ctrl + Space" key
     const int totalShiftCount = 3;
     for ( int shiftCounter = 0; shiftCounter < totalShiftCount; ++shiftCounter ) {
-        GTKeyboardDriver::keyPress( os, GTKeyboardDriver::key["space"],
+        GTKeyboardDriver::keyClick( os, GTKeyboardDriver::key["space"],
             GTKeyboardDriver::key["ctrl"] );
         GTGlobals::sleep( 200 );
         currentSelection.moveRight( currentSelection.right( ) + 1 );
@@ -1680,7 +1680,7 @@ GUI_TEST_CLASS_DEFINITION( test_2128 )
 
     // 4. Remove gaps with "Ctrl + Backspace" key
     for ( int shiftCounter = 0; shiftCounter < totalShiftCount; ++shiftCounter ) {
-        GTKeyboardDriver::keyPress( os, GTKeyboardDriver::key["back"],
+        GTKeyboardDriver::keyClick( os, GTKeyboardDriver::key["back"],
             GTKeyboardDriver::key["ctrl"] );
         GTGlobals::sleep( 200 );
         currentSelection.moveLeft( currentSelection.left( ) - 1 );
