@@ -510,20 +510,20 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0035);
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0035_1);
 
-    REGISTER_TEST_IGNORED_LINUX(GUITest_common_scenarios_msa_editor::test_0036, "https://ugene.unipro.ru/tracker/browse/UGENE-1519");
-    REGISTER_TEST_IGNORED_LINUX(GUITest_common_scenarios_msa_editor::test_0036_1, "https://ugene.unipro.ru/tracker/browse/UGENE-1519");
-    REGISTER_TEST_IGNORED_LINUX(GUITest_common_scenarios_msa_editor::test_0036_2, "https://ugene.unipro.ru/tracker/browse/UGENE-1519");
-    REGISTER_TEST_IGNORED_LINUX(GUITest_common_scenarios_msa_editor::test_0036_3, "https://ugene.unipro.ru/tracker/browse/UGENE-1519");
+    REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0036);
+    REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0036_1);
+    REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0036_2);
+    REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0036_3);
 
-    REGISTER_TEST_IGNORED_LINUX(GUITest_common_scenarios_msa_editor::test_0037, "https://ugene.unipro.ru/tracker/browse/UGENE-1519");
-    REGISTER_TEST_IGNORED_LINUX(GUITest_common_scenarios_msa_editor::test_0037_1, "https://ugene.unipro.ru/tracker/browse/UGENE-1519");
-    REGISTER_TEST_IGNORED_LINUX(GUITest_common_scenarios_msa_editor::test_0037_2, "https://ugene.unipro.ru/tracker/browse/UGENE-1519");
+    REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0037);
+    REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0037_1);
+    REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0037_2);
 
-    REGISTER_TEST_IGNORED_LINUX(GUITest_common_scenarios_msa_editor::test_0038, "https://ugene.unipro.ru/tracker/browse/UGENE-1519");
-    REGISTER_TEST_IGNORED_LINUX(GUITest_common_scenarios_msa_editor::test_0038_1, "https://ugene.unipro.ru/tracker/browse/UGENE-1519");
-    REGISTER_TEST_IGNORED_LINUX(GUITest_common_scenarios_msa_editor::test_0038_2, "https://ugene.unipro.ru/tracker/browse/UGENE-1519");
-    REGISTER_TEST_IGNORED_LINUX(GUITest_common_scenarios_msa_editor::test_0038_3, "https://ugene.unipro.ru/tracker/browse/UGENE-1519");
-    REGISTER_TEST_IGNORED_LINUX(GUITest_common_scenarios_msa_editor::test_0038_4, "https://ugene.unipro.ru/tracker/browse/UGENE-1519");
+    REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0038);
+    REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0038_1);
+    REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0038_2);
+    REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0038_3);
+    REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0038_4);
 
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0039);
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0040);
