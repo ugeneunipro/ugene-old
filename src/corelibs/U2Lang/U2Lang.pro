@@ -8,7 +8,6 @@ HEADERS += src/library/BaseActorCategories.h \
            src/library/BaseTypes.h \
            src/library/LastReadyScheduler.h \
            src/library/LocalDomain.h \
-           src/model/ActorModel.h \
            src/model/ActorPrototypeRegistry.h \
            src/model/Aliasing.h \
            src/model/Attribute.h \
@@ -84,6 +83,11 @@ HEADERS += src/library/BaseActorCategories.h \
            src/library/script/ScriptEngineUtils.h \
            src/library/script/ScriptLibrary.h \
            src/library/script/SequencePrototype.h \
+           src/model/actor/Actor.h \
+           src/model/actor/ActorConfigurationEditor.h \
+           src/model/actor/ActorDocument.h \
+           src/model/actor/ActorPrototype.h \
+           src/model/actor/ActorValidator.h \
            src/model/url_attribute/Dataset.h \
            src/model/url_attribute/URLAttribute.h \
            src/model/url_attribute/URLContainer.h \
@@ -110,7 +114,6 @@ SOURCES += src/library/BaseActorCategories.cpp \
            src/library/BaseTypes.cpp \
            src/library/LastReadyScheduler.cpp \
            src/library/LocalDomain.cpp \
-           src/model/ActorModel.cpp \
            src/model/ActorPrototypeRegistry.cpp \
            src/model/Aliasing.cpp \
            src/model/Attribute.cpp \
@@ -180,6 +183,10 @@ SOURCES += src/library/BaseActorCategories.cpp \
            src/library/script/ScriptEngineUtils.cpp \
            src/library/script/ScriptLibrary.cpp \
            src/library/script/SequencePrototype.cpp \
+           src/model/actor/Actor.cpp \
+           src/model/actor/ActorConfigurationEditor.cpp \
+           src/model/actor/ActorPrototype.cpp \
+           src/model/actor/ActorValidator.cpp \
            src/model/url_attribute/Dataset.cpp \
            src/model/url_attribute/URLAttribute.cpp \
            src/model/url_attribute/URLContainer.cpp \
@@ -198,10 +205,8 @@ SOURCES += src/library/BaseActorCategories.cpp \
            src/support/serialize/HRSchemaSerializer.cpp \
            src/support/serialize/HRVisualSerializer.cpp \
            src/support/serialize/HRWizardSerializer.cpp
+RESOURCES += U2Lang.qrc
 TRANSLATIONS += transl/chinese.ts \
                 transl/czech.ts \
                 transl/english.ts \
                 transl/russian.ts
-
-RESOURCES += \
-    U2Lang.qrc

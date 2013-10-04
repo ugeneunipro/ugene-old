@@ -25,6 +25,7 @@
 #include <U2Core/U2OpStatus.h>
 
 #include <U2Lang/ActorModel.h>
+#include <U2Lang/Datatype.h>
 
 // destSlotId <-> sourceActorId:sourceSlotId
 typedef QPair<QString, QString> SlotPair;
