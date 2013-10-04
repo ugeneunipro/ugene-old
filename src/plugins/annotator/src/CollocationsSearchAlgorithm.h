@@ -22,6 +22,7 @@
 #ifndef _U2_COLLOCATION_SEARCH_ALGORITHM_H_
 #define _U2_COLLOCATION_SEARCH_ALGORITHM_H_
 
+#include <U2Core/SequenceWalkerTask.h>
 #include <U2Core/Task.h>
 #include <U2Core/U2Region.h>
 
@@ -60,12 +61,13 @@ private:
 class CollocationsAlgorithmSettings {
 public:
     CollocationsAlgorithmSettings()
-        : distance(-1), st(CollocationsAlgorithm::NormalSearch), includeBoundaries(true) {}
+        : distance(-1), st(CollocationsAlgorithm::NormalSearch), includeBoundaries(true), strand(StrandOption_Both) {}
     U2Region searchRegion;
     int distance;
     CollocationsAlgorithm::SearchType st;
     QString resultAnnotationsName;
     bool includeBoundaries;
+    StrandOption strand;
 };
 
 

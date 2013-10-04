@@ -81,6 +81,8 @@ CollocationsDialogController::CollocationsDialogController(QStringList _names, A
 
     updateState();
     setWindowIcon(QIcon(":/ugene/images/ugene_16.png"));
+
+    rbBoth->setChecked(true);
 }
 
 void CollocationsDialogController::updateState() {
@@ -194,6 +196,13 @@ void CollocationsDialogController::sl_searchClicked() {
     cfg.searchRegion = U2Region(0, ctx->getSequenceLength());
     if (!wholeAnnotationsBox->isChecked()) {
         cfg.st = CollocationsAlgorithm::PartialSearch;
+    }
+    if(rbDirect->isChecked()){
+        cfg.strand = StrandOption_DirectOnly;
+    }else if(rbComplement->isChecked()){
+        cfg.strand = StrandOption_ComplementOnly;
+    }else if (rbBoth->isChecked()){
+        cfg.strand = StrandOption_Both;
     }
     task = new CollocationSearchTask(aObjects, usedNames, cfg);
 
@@ -317,6 +326,11 @@ CollocationSearchTask::CollocationSearchTask(const QList<AnnotationTableObject*>
     foreach(AnnotationTableObject* ao, table) {
         foreach(Annotation* a, ao->getAnnotations()) {
             const QString& name = a->getAnnotationName();
+            if(a->getStrand().isDirect() && cfg.strand == StrandOption_ComplementOnly ||
+                a->getStrand().isCompementary() && cfg.strand == StrandOption_DirectOnly){
+                    items.remove(name);
+                    continue;
+            }
             if (names.contains(name)) {
                 CollocationsAlgorithmItem& item = getItem(name);
                 foreach(const U2Region& r, a->getRegions()) {
@@ -340,6 +354,11 @@ CollocationSearchTask::CollocationSearchTask(const QList<SharedAnnotationData> &
     }
     foreach(SharedAnnotationData a, table) {
         const QString& name = a->name;
+        if(a->getStrand().isDirect() && cfg.strand == StrandOption_ComplementOnly ||
+           a->getStrand().isCompementary() && cfg.strand == StrandOption_DirectOnly){
+               items.remove(name);
+               continue;
+        }
         if (names.contains(name)) {
             CollocationsAlgorithmItem& item = getItem(name);
             bool hasRegions = false;
@@ -362,6 +381,8 @@ CollocationsAlgorithmItem& CollocationSearchTask::getItem(const QString& name) {
     }
     return items[name];
 }
+
+
 
 void CollocationSearchTask::run() {
     CollocationsAlgorithm::find(items.values(), stateInfo, this, cfg);
