@@ -1763,7 +1763,37 @@ GUI_TEST_CLASS_DEFINITION( test_1924 )
     CHECK_SET_ERR(sequenceLength == 199957, "Sequence length is " + QString::number(sequenceLength) + ", expected 199957");
 
     QString sequenceBegin = GTUtilsSequenceView::getBeginOfSequenceAsString(os, 7);
-    CHECK_SET_ERR(sequenceBegin == "ATCGTAC", "Sequence starts with <" + sequenceBegin + ">, expected ATCGTAC");}
+    CHECK_SET_ERR(sequenceBegin == "ATCGTAC", "Sequence starts with <" + sequenceBegin + ">, expected ATCGTAC");
+
+}
+
+GUI_TEST_CLASS_DEFINITION( test_2174 ){   
+
+    //1. Open file _common_data/fasta/AMINO.fa
+    GTFileDialog::openFile( os, testDir + "_common_data/fasta/", "AMINO.fa");
+    GTGlobals::sleep();
+
+    //2. Open DAS option panel
+    GTWidget::click(os,GTWidget::findWidget(os, "OP_DAS"));
+    GTGlobals::sleep(500);
+
+    //3. Select region 1-2
+    GTRegionSelector::RegionSelectorSettings regionSelectorSettings(1, 2);
+    RegionSelector *regionSelector = qobject_cast<RegionSelector*>(GTWidget::findWidget(os, "range_selector"));
+    GTRegionSelector::setRegion(os, regionSelector, regionSelectorSettings);
+
+    GTKeyboardDriver::keyClick( os, GTKeyboardDriver::key["enter"] );
+    GTGlobals::sleep( 200 );
+
+    //Expected state: warning message appeares
+    
+    QLabel *warnignLabel = qobject_cast<QLabel*>(GTWidget::findWidget(os, "hintLabel"));
+    CHECK_SET_ERR(warnignLabel != NULL, "Cannot find the hint label");
+
+    QString warningText = warnignLabel->text();
+    CHECK_SET_ERR( warningText.startsWith("Warning"), "No warning message found");
+
+}
 
 
 } // GUITest_regression_scenarios namespace

@@ -212,7 +212,7 @@ void DASAnnotationWorkerFactory::init() {
         }
         {
             QVariantMap varMap;
-            varMap["50"] = "500";
+            varMap["50"] = "50";
             varMap["100"] = "100";
             varMap["250"] = "250";
             varMap["500"] = "500";
