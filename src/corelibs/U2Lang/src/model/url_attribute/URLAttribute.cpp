@@ -113,24 +113,24 @@ QStringList URLAttribute::emptyDatasetNames(bool &hasUrl) {
     return emptySets;
 }
 
-bool URLAttribute::validate(QStringList &errorList) {
+bool URLAttribute::validate(ProblemList &problemList) {
     if (!isRequiredAttribute()) {
         return true;
     }
     if (sets.isEmpty()) {
-        errorList << WorkflowUtils::tr("Required parameter has no datasets specified: %1").arg(getDisplayName());
+        problemList << Problem(WorkflowUtils::tr("Required parameter has no datasets specified: %1").arg(getDisplayName()));
         return false;
     }
     bool hasUrl = false;
     QStringList emptySets = emptyDatasetNames(hasUrl);
 
     if (!hasUrl) {
-        errorList << WorkflowUtils::tr("Required parameter has no input urls specified: %1").arg(getDisplayName());
+        problemList << Problem(WorkflowUtils::tr("Required parameter has no input urls specified: %1").arg(getDisplayName()));
         return false;
     }
     if (!emptySets.isEmpty()) {
         foreach (const QString &name, emptySets) {
-            errorList << WorkflowUtils::tr("Required parameter %1 has empty dataset: %2").arg(getDisplayName()).arg(name);
+            problemList << Problem(WorkflowUtils::tr("Required parameter %1 has empty dataset: %2").arg(getDisplayName()).arg(name));
         }
         return false;
     }

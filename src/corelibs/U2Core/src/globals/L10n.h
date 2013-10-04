@@ -39,13 +39,16 @@ public:
     static QString internalError() {return tr("Internal error!");}
 
     // messages to work with files
-    static QString errorOpeningFileRead(const GUrl& url) { return tr("Error opening URL for read: '%1'").arg(url.getURLString());}
-    static QString errorOpeningFileWrite(const GUrl& url) { return tr("Error opening URL for write: '%1'").arg(url.getURLString());}
-    static QString errorWritingFile(const GUrl& url) { return tr("Write error: '%1'").arg(url.getURLString());}
-    static QString errorReadingFile(const GUrl& url) { return tr("Read error: %1").arg(url.getURLString());}
-    static QString errorFileTooLarge(const GUrl& url) { return tr("File is too large: '%1'").arg(url.getURLString());}
-    static QString errorFileNotFound(const GUrl& url) {return tr("File not found %1").arg(url.getURLString());}
-    static QString errorIsNotAFile(const GUrl& url) {return tr("%1 is not a file").arg(url.getURLString());}
+    static QString errorOpeningFileRead(const GUrl &url) { return tr("Error opening file for reading: '%1'").arg(url.getURLString()); }
+    static QString errorOpeningFileWrite(const GUrl &url) { return tr("Error opening file for writing: '%1'").arg(url.getURLString()); }
+    static QString errorWritingFile(const GUrl &url) { return tr("Write error: '%1'").arg(url.getURLString()); }
+    static QString errorReadingFile(const GUrl &url) { return tr("Read error: %1").arg(url.getURLString()); }
+    static QString errorFileTooLarge(const GUrl &url) { return tr("File is too large: '%1'").arg(url.getURLString()); }
+    static QString errorFileNotFound(const GUrl &url) { return tr("File not found: '%1'").arg(url.getURLString()); }
+    static QString errorIsNotAFile(const GUrl &url) { return tr("'%1' is not a file").arg(url.getURLString()); }
+    static QString errorDirNotFound(const GUrl &url) { return tr("Directory not found: '%1'").arg(url.getURLString()); }
+    static QString errorOpeningDir(const GUrl &url) { return tr("Error opening directory: '%1'").arg(url.getURLString()); }
+    static QString errorIsNotADir(const GUrl &url) { return tr("'%1' is not a directory"); }
 
     static QString notValidFileFormat(const QString& type, const GUrl& url) {return tr("Invalid file format. Expected file format: %1,  File: %2").arg(type).arg(url.getURLString());}
     static QString notSupportedFileFormat(const GUrl& url) {return tr("Invalid file format! File: %1").arg(url.getURLString());}

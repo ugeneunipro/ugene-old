@@ -20,6 +20,7 @@
  */
 
 #include <U2Lang/HRSchemaSerializer.h>
+#include <U2Lang/WorkflowUtils.h>
 
 #include "URLContainer.h"
 
@@ -78,6 +79,10 @@ void FileUrlContainer::accept(URLContainerVisitor *visitor) {
     visitor->visit(this);
 }
 
+bool FileUrlContainer::validateUrl(ProblemList &problemList) {
+    return WorkflowUtils::validateInputFiles(url, problemList);
+}
+
 DirUrlContainer::DirUrlContainer(const QString &url)
 : URLContainer(url), recursive(false)
 {
@@ -109,6 +114,18 @@ URLContainer * DirUrlContainer::clone() {
 
 void DirUrlContainer::accept(URLContainerVisitor *visitor) {
     visitor->visit(this);
+}
+
+bool DirUrlContainer::validateUrl(ProblemList &problemList) {
+    bool res = true;
+    FilesIterator *it = getFileUrls();
+    SAFE_POINT(NULL != it, "NULL fileIterator!", false);
+    while (it->hasNext()) {
+        QString url = it->getNextFile();
+        bool urlIsValid = WorkflowUtils::validateInputFiles(url, problemList);
+        res = res && urlIsValid;
+    }
+    return res;
 }
 
 const QString & DirUrlContainer::getIncludeFilter() const {

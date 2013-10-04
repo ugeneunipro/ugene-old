@@ -27,6 +27,9 @@
 #include <U2Core/global.h>
 #include <U2Core/FilesIterator.h>
 
+#include <U2Lang/SupportClass.h>
+
+
 namespace U2 {
 
 class URLContainerVisitor;
@@ -41,6 +44,9 @@ public:
     virtual FilesIterator * getFileUrls() = 0;
     virtual URLContainer * clone() = 0;
     virtual void accept(URLContainerVisitor *visitor) = 0;
+
+    /** Validate the URL is present and readable */
+    virtual bool validateUrl(ProblemList &problemList) = 0;
 
 protected:
     QString url;
@@ -60,6 +66,9 @@ public:
     virtual FilesIterator * getFileUrls();
     virtual URLContainer * clone();
     virtual void accept(URLContainerVisitor *visitor);
+
+
+    virtual bool validateUrl(ProblemList &problemList);
 };
 
 class U2LANG_EXPORT DirUrlContainer : public URLContainer {
@@ -71,6 +80,12 @@ public:
     virtual FilesIterator * getFileUrls();
     virtual URLContainer * clone();
     virtual void accept(URLContainerVisitor *visitor);
+
+    /**
+    * Validates filtered files inside the directory
+    * are present and accessible for reading.
+    */
+    virtual bool validateUrl(ProblemList &problemList);
 
     const QString & getIncludeFilter() const;
     const QString & getExcludeFilter() const;

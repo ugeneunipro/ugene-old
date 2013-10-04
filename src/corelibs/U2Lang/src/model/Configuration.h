@@ -53,7 +53,7 @@ public:
     virtual bool hasParameter(const QString & name) const;
     
     // getters/setters
-    virtual ConfigurationEditor* getEditor();
+    virtual ConfigurationEditor* getEditor() const;
     void setEditor(ConfigurationEditor* ed);
     virtual ConfigurationValidator* getValidator();
     void setValidator(ConfigurationValidator* v);

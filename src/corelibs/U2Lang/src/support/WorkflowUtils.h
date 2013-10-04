@@ -40,6 +40,8 @@ class DocumentFormat;
 
 using namespace Workflow;
 
+enum UrlAttributeType {NotAnUrl, DatasetAttr, InputFile, InputDir, OutputFile, OutputDir};
+
 class U2LANG_EXPORT WorkflowUtils : public QObject {
     Q_OBJECT
 public:
@@ -117,8 +119,33 @@ public:
 
     static void schemaFromFile(const QString &url, Schema *schema, Metadata *meta, U2OpStatus &os);
 
-    /** Returns "true" if the attribute is used to keep input/output URL(s) */
-    static bool isUrlAttribute(Attribute *attr, Actor *actor);
+    /** Use it to check if the attribute contains URL(s) and what are they (input/output, etc.) */
+    static UrlAttributeType isUrlAttribute(Attribute *attr, const Actor *actor);
+
+    /**
+     * Validation of input files/directories.
+     * Empty input string is considered valid.
+     * Otherwise, the input string is split into separate URL(s) by ';'.
+     * For each input file: the URL must exist, be a file and have permissions to read from it.
+     * For each input directory: the URL must exist and be a directory.     
+     */
+    static bool validateInputFiles(QString urls, ProblemList &problemList);
+    static bool validateInputDirs(QString urls, ProblemList &problemList);
+
+    /**
+     * Validation of output file/directory.
+     * Empty URL is considered valid.
+     * For output URL it is verified that it is accessible for
+     * writing (the path can be absolute or relative to the Workflow Output Directory).
+     */
+    static bool validateOutputFile(QString url, ProblemList &problemList);
+    static bool validateOutputDir(QString url, ProblemList &problemList);
+
+    /**
+     * Validates input files in datasets are present and readable (i.e.
+     * filtered files in input directories are verified).
+     */
+    static bool validateDatasets(const QList<Dataset> &sets, ProblemList &problemList);
 
 private:
     static QStringList initExtensions();

@@ -34,6 +34,7 @@
 #include <U2Lang/BaseSlots.h>
 #include <U2Lang/IntegralBus.h>
 #include <U2Lang/URLAttribute.h>
+#include <U2Lang/WorkflowSettings.h>
 
 #include <U2Core/AnnotationTableObject.h>
 #include <U2Core/AppContext.h>
@@ -904,27 +905,183 @@ static bool isDatasetsAttr(Attribute *attr) {
     return (NULL != dsa);
 }
 
-bool WorkflowUtils::isUrlAttribute(Attribute *attr, Actor *actor) {
-    SAFE_POINT(NULL != attr, "NULL attribute!", false);
-    SAFE_POINT(NULL != actor, "NULL actor!", false);
+UrlAttributeType WorkflowUtils::isUrlAttribute(Attribute *attr, const Actor *actor) {
+    SAFE_POINT(NULL != attr, "NULL attribute!", NotAnUrl);
+    SAFE_POINT(NULL != actor, "NULL actor!", NotAnUrl);
 
     if (isDatasetsAttr(attr)) {
-        return true;
+        return DatasetAttr;
     }
 
     ConfigurationEditor *editor = actor->getEditor();
-    CHECK(NULL != editor, false);
+    CHECK(NULL != editor, NotAnUrl);
     PropertyDelegate *delegate = editor->getDelegate(attr->getId());
-    CHECK(NULL != delegate, false);
+    CHECK(NULL != delegate, NotAnUrl);
 
-    if (PropertyDelegate::OUTPUT_DIR == delegate->type()
-        || PropertyDelegate::OUTPUT_FILE == delegate->type()
-        || PropertyDelegate::INPUT_DIR == delegate->type()
-        || PropertyDelegate::INPUT_FILE == delegate->type()) {
+    if (PropertyDelegate::INPUT_FILE == delegate->type()) {
+        return InputFile;
+    }
+    if (PropertyDelegate::INPUT_DIR == delegate->type()) {
+        return InputDir;
+    }
+    if (PropertyDelegate::OUTPUT_FILE == delegate->type()) {
+        return OutputFile;
+    }
+    if (PropertyDelegate::OUTPUT_DIR == delegate->type()) {
+        return OutputDir;
+    }
+
+    return NotAnUrl;
+}
+
+/** Truncate the last ';' character */
+static void normalizeUrls(QString &urls) {
+    if (!urls.isEmpty() && (1 != urls.size()) && (urls[ urls.size() - 1 ] == ';')) {
+        urls.truncate(urls.size() - 1);
+    }
+}
+
+bool WorkflowUtils::validateInputFiles(QString urls, ProblemList &problemList) {
+    normalizeUrls(urls);
+    if (urls.isEmpty()) {
         return true;
     }
 
-    return false;
+    // Verify each URL
+    QStringList urlsList = urls.split(';');
+    bool res = true;
+    foreach (QString url, urlsList) {
+        QFileInfo fi(url);
+        if (!fi.exists()) {
+            problemList << Problem(L10N::errorFileNotFound(url));
+            res = false;
+        }
+        else if (!fi.isFile()) {
+            problemList << Problem(L10N::errorIsNotAFile(url));
+            res = false;
+        }
+        else {
+            QFile testReadAccess(url);
+            if (testReadAccess.open(QIODevice::ReadOnly)) {
+                testReadAccess.close();
+            }
+            else {
+                problemList << Problem(L10N::errorOpeningFileRead(url));
+                res = false;
+            }
+        }
+    }
+    return res;
+}
+
+bool WorkflowUtils::validateInputDirs(QString urls, ProblemList &problemList) {
+    normalizeUrls(urls);
+    if (urls.isEmpty()) {
+        return true;
+    }
+
+    QStringList urlsList = urls.split(';');
+    bool res = true;
+    foreach (QString url, urlsList) {
+        QFileInfo fi(url);
+        if (!fi.exists()) {
+            problemList << Problem(L10N::errorDirNotFound(url));
+            res = false;
+        }
+        else if (!fi.isDir()) {
+            problemList << Problem(L10N::errorIsNotADir(url));
+            res = false;
+        }
+    }
+    return res;
+}
+
+/**
+ * Input @dirAbsPath must be an absolute path to a directory (or empty).
+ * The method returns "true" if it is possible to create a file in it.
+ */
+static bool canWriteToPath(QString dirAbsPath) {
+    if (dirAbsPath.isEmpty()) {
+        return true;
+    }
+    QFileInfo fi(dirAbsPath);
+    SAFE_POINT(fi.dir().isAbsolute(), "Not an absolute path!", false);
+
+    // Find out the directory that exists
+    QDir existenDir(dirAbsPath);
+    while (!existenDir.exists()) {
+        // Get upper directory
+        QString dirPath = existenDir.path();
+        QString dirName = existenDir.dirName();
+        dirPath.remove( // remove dir name and slash (if any) from the path
+            dirPath.length() - dirName.length() - 1,
+            dirName.length() + 1);
+        if (dirPath.isEmpty()) {
+            return false;
+        }
+        existenDir.setPath(dirPath);
+    }
+
+    // Attempts to write a file to the directory.
+    // This assumes possibility to create any sub-directory, file, etc.
+    QFile file(existenDir.filePath("testWriteAccess.txt"));
+    if (!file.open(QIODevice::WriteOnly)) {
+        return false;
+    }
+    file.close();
+    file.remove();
+
+    return true;
+}
+
+bool WorkflowUtils::validateOutputFile(QString url, ProblemList &problemList) {
+    if (url.isEmpty()) {
+        return true;
+    }
+
+    QFileInfo fi(url);
+    if (fi.isRelative()) {
+        fi.setFile(QDir(WorkflowSettings::getWorkflowOutputDirectory()), url);
+    }
+
+    if (canWriteToPath(fi.absolutePath())) {
+        return true;
+    }
+    else {
+        problemList << Problem(tr("Can't access output file path: '%1'").arg(fi.absoluteFilePath()));
+        return false;
+    }
+}
+
+bool WorkflowUtils::validateOutputDir(QString url, ProblemList &problemList) {
+    if (url.isEmpty()) {
+        return true;
+    }
+
+    QFileInfo fi(url);
+    if (fi.isRelative()) {
+        fi.setFile(QDir(WorkflowSettings::getWorkflowOutputDirectory()), url);
+    }
+
+    if (canWriteToPath(fi.absoluteFilePath())) {
+        return true;
+    }
+    else {
+        problemList << Problem(tr("Can't output directory path: '%1', check permissions").arg(url));
+        return false;
+    }
+}
+
+bool WorkflowUtils::validateDatasets(const QList<Dataset> &sets, ProblemList &problemList) {
+    bool res = true;
+    foreach (const Dataset &set, sets) {
+        foreach (URLContainer* urlContainer, set.getUrls()) {
+            SAFE_POINT(NULL != urlContainer, "NULL URLContainer!", false);
+            bool urlIsValid = urlContainer->validateUrl(problemList);
+            res = res && urlIsValid;
+        }
+    }
+    return res;
 }
 
 /*****************************

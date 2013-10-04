@@ -89,11 +89,11 @@ void ParametersWidget::createWidget(const QList<WorkerParamsInfo> &workersParams
                 QString paramValue = WorkflowUtils::getStringForParameterDisplayRole(paramValueVariant);
 
                 QString createParamFunc;
-                if (WorkflowUtils::isUrlAttribute(param, info.actor)) {
-                    createParamFunc = "pwAddFilesParameter";
+                if (NotAnUrl == WorkflowUtils::isUrlAttribute(param, info.actor)) {
+                    createParamFunc = "pwAddCommonParameter";
                 }
                 else {
-                    createParamFunc = "pwAddCommonParameter";
+                    createParamFunc = "pwAddFilesParameter";
                 }
 
                 createParamFunc += "('" + tabId + "', ";

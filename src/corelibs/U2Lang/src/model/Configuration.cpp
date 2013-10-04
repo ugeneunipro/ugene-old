@@ -82,7 +82,7 @@ bool Configuration::hasParameter(const QString & name) const {
     return params.contains(name);
 }
 
-ConfigurationEditor * Configuration::getEditor() {
+ConfigurationEditor * Configuration::getEditor() const {
     return editor;
 }
 

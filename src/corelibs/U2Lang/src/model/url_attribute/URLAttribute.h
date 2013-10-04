@@ -37,7 +37,7 @@ public:
     virtual bool isDefaultValue() const;
     virtual bool isEmpty() const;
     virtual Attribute * clone();
-    virtual bool validate(QStringList &errorList);
+    virtual bool validate(ProblemList &problemList);
 
     QList<Dataset> & getDatasets();
     void updateValue();
