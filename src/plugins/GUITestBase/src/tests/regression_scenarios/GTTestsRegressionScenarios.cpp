@@ -1767,8 +1767,38 @@ GUI_TEST_CLASS_DEFINITION( test_1924 )
 
 }
 
-GUI_TEST_CLASS_DEFINITION( test_2174 ){   
+GUI_TEST_CLASS_DEFINITION( test_2172 ) {
+    GTLogTracer logTracer;
 
+    // 1. Open file _common_data/fasta/amino_multy.fa
+    GTUtilsDialog::waitForDialog( os, new SequenceReadingModeSelectorDialogFiller( os ) );
+    const QString filePath = testDir + "_common_data/fasta/amino_multy.fa";
+    GTUtilsProject::openFiles(os, QList<QUrl>( ) << filePath );
+    GTGlobals::sleep( );
+
+    // 2. Open DAS option panel
+    GTWidget::click( os, GTWidget::findWidget( os, "OP_DAS" ) );
+    GTGlobals::sleep( 200 );
+
+    // 3. Check that warning message exists
+    const QLabel *warnignLabel = qobject_cast<QLabel*>( GTWidget::findWidget( os, "hintLabel" ) );
+    CHECK_SET_ERR( NULL != warnignLabel, "Cannot find the hint label" );
+
+    QString warningText = warnignLabel->text( );
+    CHECK_SET_ERR( warningText.startsWith( "Warning" ), "No warning message found" );
+
+    // 4. Press the "Fetch IDs" button
+    QPushButton *fetchButton = qobject_cast<QPushButton *>( GTWidget::findWidget( os,
+        "searchIdsButton" ) );
+    CHECK_SET_ERR( NULL != fetchButton, "Cannot find the \"Fetch IDs\" button" );
+    fetchButton->click( );
+    GTGlobals::sleep( 200 );
+
+    // 5. Check error message in log
+    CHECK_SET_ERR( logTracer.hasError( ), "Error message expected in log" );
+}
+
+GUI_TEST_CLASS_DEFINITION( test_2174 ) {
     //1. Open file _common_data/fasta/AMINO.fa
     GTFileDialog::openFile( os, testDir + "_common_data/fasta/", "AMINO.fa");
     GTGlobals::sleep();
@@ -1792,9 +1822,7 @@ GUI_TEST_CLASS_DEFINITION( test_2174 ){
 
     QString warningText = warnignLabel->text();
     CHECK_SET_ERR( warningText.startsWith("Warning"), "No warning message found");
-
 }
-
 
 } // GUITest_regression_scenarios namespace
 
