@@ -2,8 +2,8 @@
 
 #include <U2Core/KnownMutationsDbi.h>
 #include <U2Core/KnownMutationsUtils.h>
-#include <U2Core/S3TablesUtils.h>
-#include <U2Formats/S3DatabaseUtils.h>
+#include <U2Core/SNPTablesUtils.h>
+#include <U2Formats/SNPDatabaseUtils.h>
 
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
@@ -78,7 +78,7 @@ void DamageEffectEvaluator::calcDamageEffectForTracks( const QList<U2VariantTrac
     os.setProgress(0);
 
     foreach(const U2VariantTrack& track, tracks){
-        U2DataId seqId = track.sequence.isEmpty() ? S3DatabaseUtils::getSequenceId(track.sequenceName, objectDbi) : track.sequence;
+        U2DataId seqId = track.sequence.isEmpty() ? SNPDatabaseUtils::getSequenceId(track.sequenceName, objectDbi) : track.sequence;
         KnownMutationsTrack knownTrack = getKnownMutationsTrack(seqId, os);
         seqCache.setSequenceId(seqId);
 
@@ -120,7 +120,7 @@ QList<DamageEffect> DamageEffectEvaluator::getDamageEffect( U2Variant& var, cons
         CHECK_OP(os, res);
 
         //calculate gene-based effect
-        U2DataId seqId = track.sequence.isEmpty() ? S3DatabaseUtils::getSequenceId(track.sequenceName, objectDbi) : track.sequence;
+        U2DataId seqId = track.sequence.isEmpty() ? SNPDatabaseUtils::getSequenceId(track.sequenceName, objectDbi) : track.sequence;
         seqCache.setSequenceId(seqId);
         const QList<DamageEffect>& effects = calcGeneEffect(var, track, os);
         res.append(effects);
@@ -134,7 +134,7 @@ void DamageEffectEvaluator::calcDamageEffect( U2Variant& var, const U2VariantTra
     if (!checkDbi(os)){
         return;
     }
-    U2DataId seqId = track.sequence.isEmpty() ? S3DatabaseUtils::getSequenceId(track.sequenceName, objectDbi) : track.sequence;
+    U2DataId seqId = track.sequence.isEmpty() ? SNPDatabaseUtils::getSequenceId(track.sequenceName, objectDbi) : track.sequence;
     seqCache.setSequenceId(seqId);
     if (effectType == DamageEffectFull || effectType == DamageEffectKnown){
         KnownMutationsTrack knownTrack = getKnownMutationsTrack(seqId, os);
@@ -159,7 +159,7 @@ void DamageEffectEvaluator::setDbiSession( U2Dbi* dbiSession ){
 
     varDbi = dbiSession->getVariantDbi();
 
-    s3Dbi = dbiSession->getS3TableDbi();
+    s3Dbi = dbiSession->getSNPTableDbi();
 }
 
 void DamageEffectEvaluator::setDbiDatabase( U2Dbi* dbiDb ){
@@ -296,7 +296,7 @@ DamageEffect DamageEffectEvaluator::calcKnownEffect( U2Variant &var, KnownMutati
         hasKnownMutations = true;
 
         //get special regions
-        U2DataId seqId = track.sequence.isEmpty() ? S3DatabaseUtils::getSequenceId(track.sequenceName, objectDbi) : track.sequence;
+        U2DataId seqId = track.sequence.isEmpty() ? SNPDatabaseUtils::getSequenceId(track.sequenceName, objectDbi) : track.sequence;
         bool inConserv = conservativeCache.isIntersect(VARIATION_REGION(var), seqId);
         bool inSegDup = superDupCache.isIntersect(VARIATION_REGION(var), seqId);
 
@@ -328,11 +328,11 @@ QList<DamageEffect> DamageEffectEvaluator::calcGeneEffect( U2Variant &var, const
         return res;
     }
     QList<Gene> genes;
-    U2DataId seqId = track.sequence.isEmpty() ? S3DatabaseUtils::getSequenceId(track.sequenceName, objectDbi) : track.sequence;
+    U2DataId seqId = track.sequence.isEmpty() ? SNPDatabaseUtils::getSequenceId(track.sequenceName, objectDbi) : track.sequence;
     if (useCache){
         genes = geneCache.overlappedGenes(VARIATION_REGION(var), seqId);
     }else{
-        genes = S3TablesUtils::findGenes(seqId, VARIATION_REGION(var), featureDbi, os);
+        genes = SNPTablesUtils::findGenes(seqId, VARIATION_REGION(var), featureDbi, os);
     }
 
     //VariationRelatedSettings* vrs = AppContext::getAppSettings()->getVariationRelatedSettings();
@@ -373,7 +373,7 @@ QList<DamageEffect> DamageEffectEvaluator::calcGeneEffect( U2Variant &var, const
         if (useCache){
             referenceTriplet = VariationPropertiesUtils::getDamagedTripletBufferedSeq(gene, nuclPos, seqCache, os);
         }else{
-            U2DataId seqId = track.sequence.isEmpty() ? S3DatabaseUtils::getSequenceId(track.sequenceName, objectDbi) : track.sequence;
+            U2DataId seqId = track.sequence.isEmpty() ? SNPDatabaseUtils::getSequenceId(track.sequenceName, objectDbi) : track.sequence;
             referenceTriplet = VariationPropertiesUtils::getDamagedTriplet(gene, nuclPos, seqId, sequenceDbi, os);
         }
         
@@ -454,7 +454,7 @@ QList<Gene> DamageEffectEvaluator::findGenes( const U2Variant& var, const U2Data
     if (useCache){
         genes = geneCache.overlappedGenes(VARIATION_REGION(var), seqId);
     }else{
-        genes = S3TablesUtils::findGenes(seqId, VARIATION_REGION(var), featureDbi, os);
+        genes = SNPTablesUtils::findGenes(seqId, VARIATION_REGION(var), featureDbi, os);
     }
 
     return genes;
@@ -491,13 +491,13 @@ QList<Gene> DamageEffectEvaluator::findRegulatedGenes( const U2Variant& var, con
         }
     }else{
         QList<Gene> curGenes;
-        curGenes = S3TablesUtils::findGenes(seqId, VARIATION_REGION(var), featureDbi, os);
+        curGenes = SNPTablesUtils::findGenes(seqId, VARIATION_REGION(var), featureDbi, os);
         if (!curGenes.isEmpty()){
             return genes; //variation is in a gene
         }
 
         //+ strand
-        curGenes = S3TablesUtils::findGenes(seqId, U2Region(var.startPos, PROMOTER_LEN), featureDbi, os);
+        curGenes = SNPTablesUtils::findGenes(seqId, U2Region(var.startPos, PROMOTER_LEN), featureDbi, os);
         foreach(const Gene& gene, curGenes){
             if (!gene.isComplemented()){
                 genes.append(gene);
@@ -505,7 +505,7 @@ QList<Gene> DamageEffectEvaluator::findRegulatedGenes( const U2Variant& var, con
         }
 
         //- strand
-        curGenes = S3TablesUtils::findGenes(seqId, U2Region(qMax((qint64)0, var.startPos-PROMOTER_LEN), PROMOTER_LEN), featureDbi, os);
+        curGenes = SNPTablesUtils::findGenes(seqId, U2Region(qMax((qint64)0, var.startPos-PROMOTER_LEN), PROMOTER_LEN), featureDbi, os);
         foreach(const Gene& gene, curGenes){
             if (gene.isComplemented()){
                 genes.append(gene);
@@ -529,7 +529,7 @@ bool DamageEffectEvaluator::isInGene( const U2Variant& var, const U2DataId& seqI
         
     }else{
         QList<Gene> genes;
-        genes = S3TablesUtils::findGenes(seqId, VARIATION_REGION(var), featureDbi, os);
+        genes = SNPTablesUtils::findGenes(seqId, VARIATION_REGION(var), featureDbi, os);
         res = !genes.isEmpty();
     }
 

@@ -47,7 +47,7 @@ class U2AssemblyDbi;
 class U2AttributeDbi;
 class U2VariantDbi;
 class U2ModDbi;
-class S3TablesDbi;
+class SNPTablesDbi;
 class KnownMutationsDbi;
 class U2OpStatus;
 class U2Dbi;
@@ -270,7 +270,7 @@ public:
     /**  
         FilterTableDbi related DBI routines 
     */
-    virtual S3TablesDbi* getS3TableDbi()  = 0;
+    virtual SNPTablesDbi* getSNPTableDbi()  = 0;
 
     /**  
         Dbi for prebuild mutations

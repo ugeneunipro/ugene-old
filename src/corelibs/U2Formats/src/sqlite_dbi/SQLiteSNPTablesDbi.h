@@ -1,6 +1,6 @@
 /**
  * UGENE - Integrated Bioinformatics Tools.
- * Copyright (C) 2008-2011 UniPro <ugene@unipro.ru>
+ * Copyright (C) 2008-2013 UniPro <ugene@unipro.ru>
  * http://ugene.unipro.ru
  *
  * This program is free software; you can redistribute it and/or
@@ -20,13 +20,13 @@
  */
 
 
-#ifndef _S3_SQLITEFILTERTABLEBI_H_
-#define _S3_SQLITEFILTERTABLEBI_H_
+#ifndef _U2_SQLITEFILTERTABLEBI_H_
+#define _U2_SQLITEFILTERTABLEBI_H_
 
 
 #include <U2Formats/SQLiteDbi.h>
 
-#include <U2Core/S3TablesDbi.h>
+#include <U2Core/SNPTablesDbi.h>
 #include <U2Core/U2Type.h>
 #include <U2Core/U2Dbi.h>
 #include <U2Core/U2Variant.h>
@@ -34,9 +34,9 @@
 namespace U2 {
     
 
-class SQLiteS3TablesDbi : public S3TablesDbi, public SQLiteChildDBICommon{
+class SQLiteSNPTablesDbi : public SNPTablesDbi, public SQLiteChildDBICommon{
 public:
-    SQLiteS3TablesDbi(SQLiteDbi* rootDbi);
+    SQLiteSNPTablesDbi(SQLiteDbi* rootDbi);
 
     void initSqlSchema(U2OpStatus& os);
 

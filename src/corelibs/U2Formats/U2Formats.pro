@@ -23,7 +23,7 @@ HEADERS += src/ABIFormat.h \
            src/GFFFormat.h \
            src/GTFFormat.h \
            src/Database.h \
-           src/S3DatabaseUtils.h \
+           src/SNPDatabaseUtils.h \
            src/IOLibUtils.h \
            src/MegaFormat.h \
            src/MSFFormat.h \
@@ -53,7 +53,7 @@ HEADERS += src/ABIFormat.h \
            src/sqlite_dbi/SQLitePackUtils.h \
            src/sqlite_dbi/SQLiteSequenceDbi.h \
            src/sqlite_dbi/SQLiteVariantDbi.h \
-           src/sqlite_dbi/SQLiteS3TablesDbi.h \
+           src/sqlite_dbi/SQLiteSNPTablesDbi.h \
            src/sqlite_dbi/SQLiteKnownMutationsDbi.h \
            src/tasks/ConvertAssemblyToSamTask.h \
            src/sqlite_dbi/assembly/AssemblyPackAlgorithm.h \
@@ -92,7 +92,7 @@ SOURCES += src/ABIFormat.cpp \
            src/SAMFormat.cpp \
            src/SCFFormat.cpp \
            src/Database.cpp \
-           src/S3DatabaseUtils.cpp \
+           src/SNPDatabaseUtils.cpp \
            src/SimpleSNPVariationFormat.cpp \
            src/StdResidueDictionary.cpp \
            src/StockholmFormat.cpp \
@@ -110,7 +110,7 @@ SOURCES += src/ABIFormat.cpp \
            src/sqlite_dbi/SQLitePackUtils.cpp \
            src/sqlite_dbi/SQLiteSequenceDbi.cpp \
            src/sqlite_dbi/SQLiteVariantDbi.cpp \
-           src/sqlite_dbi/SQLiteS3TablesDbi.cpp \
+           src/sqlite_dbi/SQLiteSNPTablesDbi.cpp \
            src/sqlite_dbi/SQLiteKnownMutationsDbi.cpp \
            src/tasks/ConvertAssemblyToSamTask.cpp \
            src/sqlite_dbi/assembly/AssemblyPackAlgorithm.cpp \

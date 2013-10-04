@@ -1,6 +1,6 @@
 /**
  * UGENE - Integrated Bioinformatics Tools.
- * Copyright (C) 2008-2011 UniPro <ugene@unipro.ru>
+ * Copyright (C) 2008-2013 UniPro <ugene@unipro.ru>
  * http://ugene.unipro.ru
  *
  * This program is free software; you can redistribute it and/or
@@ -18,15 +18,15 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301, USA.
  */
-#ifndef _S3_GENE_H_
-#define _S3_GENE_H_
+#ifndef _U2_GENE_H_
+#define _U2_GENE_H_
 
 #include <U2Core/U2Region.h>
 #include <U2Core/U2Type.h>
 
 namespace U2 {
 
-/* Class for S3 gene storage. Used in vizualization and filtration methods*/
+/* Class for U2 gene storage. Used in vizualization and filtration methods*/
 
 class U2CORE_EXPORT Gene {
 public:

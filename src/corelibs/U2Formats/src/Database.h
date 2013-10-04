@@ -1,6 +1,6 @@
 /**
  * UGENE - Integrated Bioinformatics Tools.
- * Copyright (C) 2008-2011 UniPro <ugene@unipro.ru>
+ * Copyright (C) 2008-2013 UniPro <ugene@unipro.ru>
  * http://ugene.unipro.ru
  *
  * This program is free software; you can redistribute it and/or
@@ -18,21 +18,21 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301, USA.
  */
-#ifndef _S3_DATABASE_H_
-#define _S3_DATABASE_H_
+#ifndef _U2_DATABASE_H_
+#define _U2_DATABASE_H_
 
 #include <U2Core/global.h>
 #include <U2Core/U2DbiUtils.h>
 
 namespace U2 {
 
-#define S3_DATABASE_SETTINGS_DIR QString("database/")
-#define S3_RECENT_DATABASES_LIST QString("recent/")
-#define S3_LAST_USED_DATABASE QString("last/")
+#define U2_DATABASE_SETTINGS_DIR QString("database/")
+#define U2_RECENT_DATABASES_LIST QString("recent/")
+#define U2_LAST_USED_DATABASE QString("last/")
 
-#define S3_DEFAULT_DATABASE_DESCR QString("Database with\nhuman genome sequences\ngene annotations\ndamage effect matrix")
-#define S3_HG19_DATABASE_DESCR QString("Database with\nhuman genome sequences(hg19): \nhttp://hgdownload.cse.ucsc.edu/goldenPath/hg19/database/ \ngene annotations (protein coding, tRNA, predicted genes)\ndamage effect matrix (improved SIFT)")
-#define S3_HG18_DATABASE_DESCR QString("Database with\nhuman genome sequences(hg18)\ngene annotations\ndamage effect matrix")
+#define U2_DEFAULT_DATABASE_DESCR QString("Database with\nhuman genome sequences\ngene annotations\ndamage effect matrix")
+#define U2_HG19_DATABASE_DESCR QString("Database with\nhuman genome sequences(hg19): \nhttp://hgdownload.cse.ucsc.edu/goldenPath/hg19/database/ \ngene annotations (protein coding, tRNA, predicted genes)\ndamage effect matrix (improved SIFT)")
+#define U2_HG18_DATABASE_DESCR QString("Database with\nhuman genome sequences(hg18)\ngene annotations\ndamage effect matrix")
 
 class U2Dbi;
 class U2OpStatus;

@@ -1,6 +1,6 @@
 /**
  * UGENE - Integrated Bioinformatics Tools.
- * Copyright (C) 2008-2011 UniPro <ugene@unipro.ru>
+ * Copyright (C) 2008-2013 UniPro <ugene@unipro.ru>
  * http://ugene.unipro.ru
  *
  * This program is free software; you can redistribute it and/or
@@ -18,8 +18,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301, USA.
  */
-#ifndef _S3_VARIATION_PROPERTIES_UTILS_H_
-#define _S3_VARIATION_PROPERTIES_UTILS_H_
+#ifndef _U2_VARIATION_PROPERTIES_UTILS_H_
+#define _U2_VARIATION_PROPERTIES_UTILS_H_
 
 #include <U2Core/Gene.h>
 
@@ -124,4 +124,4 @@ private:
 
 } //namespace
 
-#endif //_S3_VARIATION_PROPERTIES_UTILS_H_
+#endif //_U2_VARIATION_PROPERTIES_UTILS_H_

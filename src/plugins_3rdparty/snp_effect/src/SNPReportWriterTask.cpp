@@ -22,7 +22,7 @@
 #include "SNPReportWriterTask.h"
 #include "snp_toolbox/VariationInfo.h"
 
-#include <U2Formats/S3DatabaseUtils.h>
+#include <U2Formats/SNPDatabaseUtils.h>
 
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/IOAdapter.h>
@@ -47,7 +47,7 @@ void SNPReportWriterTask::run() {
     }
 
     //database
-    QScopedPointer<Database> database (S3DatabaseUtils::openDatabase(settings.dbPath));
+    QScopedPointer<Database> database (SNPDatabaseUtils::openDatabase(settings.dbPath));
     if (database.isNull()){
         setError(tr("Cannot open database file: %1").arg(settings.dbPath));
         return;
@@ -110,7 +110,7 @@ void SNPReportWriterTask::run() {
 
         while(snpIter->hasNext()){
             const U2Variant& var = snpIter->next();
-            U2DataId seqID = track.sequence.isEmpty() ? S3DatabaseUtils::getSequenceId(track.sequenceName, objectDbi) : track.sequence;
+            U2DataId seqID = track.sequence.isEmpty() ? SNPDatabaseUtils::getSequenceId(track.sequenceName, objectDbi) : track.sequence;
             //for in-gene only
             if (!deEval->isInGene(var, seqID)){
                 continue;
@@ -147,7 +147,7 @@ void SNPReportWriterTask::run() {
         }
         while(snpIter->hasNext()){
             const U2Variant& var = snpIter->next();
-            U2DataId seqID = track.sequence.isEmpty() ? S3DatabaseUtils::getSequenceId(track.sequenceName, objectDbi) : track.sequence;
+            U2DataId seqID = track.sequence.isEmpty() ? SNPDatabaseUtils::getSequenceId(track.sequenceName, objectDbi) : track.sequence;
             //for regulatory only
             if (deEval->isInGene(var, seqID)){
                 continue;

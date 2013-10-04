@@ -28,7 +28,7 @@
 #include "SQLiteVariantDbi.h"
 #include "SQLiteFeatureDbi.h"
 #include "SQLiteModDbi.h"
-#include "SQLiteS3TablesDbi.h"
+#include "SQLiteSNPTablesDbi.h"
 #include "SQLiteKnownMutationsDbi.h"
 
 #include <U2Core/U2SafePoints.h>
@@ -56,7 +56,7 @@ SQLiteDbi::SQLiteDbi() : U2AbstractDbi (SQLiteDbiFactory::ID){
     variantDbi = new SQLiteVariantDbi(this);
     featureDbi = new SQLiteFeatureDbi(this);
     operationsBlockTransaction = NULL;
-    filterTableDbi = new SQLiteS3TablesDbi(this);
+    filterTableDbi = new SQLiteSNPTablesDbi(this);
     knownMutationsDbi = new SQLiteKnownMutationsDbi(this);
 }
 
@@ -132,7 +132,7 @@ SQLiteModDbi* SQLiteDbi::getSQLiteModDbi() const {
     return modDbi;
 }
 
-S3TablesDbi* SQLiteDbi::getS3TableDbi(){
+SNPTablesDbi* SQLiteDbi::getSNPTableDbi(){
     return filterTableDbi;
 }
 

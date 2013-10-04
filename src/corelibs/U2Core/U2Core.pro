@@ -67,7 +67,7 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/dbi/U2SQLiteTripleStore.h \
            src/dbi/U2VariantDbi.h \
            src/dbi/KnownMutationsDbi.h \
-           src/dbi/S3TablesDbi.h \
+           src/dbi/SNPTablesDbi.h \
            src/globals/AppContext.h \
            src/globals/AppFileStorage.h \
            src/globals/AppGlobalObject.h \
@@ -194,7 +194,7 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/util/U2Bits.h \
            src/util/FeaturesQueryCache.h \
            src/util/KnownMutationsUtils.h \
-           src/util/S3TablesUtils.h \
+           src/util/SNPTablesUtils.h \
            src/util/VariationPropertiesUtils.h \
            src/util/U2FeatureUtils.h \
            src/util/U2OpStatusUtils.h \
@@ -346,7 +346,7 @@ SOURCES += src/cmdline/CMDLineCoreOptions.cpp \
            src/util/U2AssemblyUtils.cpp \
            src/util/U2AttributeUtils.cpp \
            src/util/U2Bits.cpp \
-           src/util/S3TablesUtils.cpp \
+           src/util/SNPTablesUtils.cpp \
            src/util/U2FeatureUtils.cpp \
            src/util/FeaturesQueryCache.cpp \
            src/util/KnownMutationsUtils.cpp \

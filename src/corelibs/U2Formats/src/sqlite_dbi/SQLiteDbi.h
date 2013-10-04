@@ -39,7 +39,7 @@ class SQLiteAttributeDbi;
 class SQLiteVariantDbi;
 class SQLiteFeatureDbi;
 class SQLiteModDbi;
-class SQLiteS3TablesDbi;
+class SQLiteSNPTablesDbi;
 class SQLiteKnownMutationsDbi;
 class DbRef;
 
@@ -130,7 +130,7 @@ public:
     virtual U2ModDbi*   getModDbi();
 
 
-    virtual S3TablesDbi* getS3TableDbi();
+    virtual SNPTablesDbi* getSNPTableDbi();
 
     virtual KnownMutationsDbi* getKnownMutationsDbi();
 
@@ -181,7 +181,7 @@ private:
     SQLiteFeatureDbi*                   featureDbi;
     SQLiteModDbi*                       modDbi;
     SQLiteTransaction*                  operationsBlockTransaction;
-    SQLiteS3TablesDbi*                  filterTableDbi;
+    SQLiteSNPTablesDbi*                  filterTableDbi;
     SQLiteKnownMutationsDbi*            knownMutationsDbi;
     
     friend class SQLiteObjectDbi;

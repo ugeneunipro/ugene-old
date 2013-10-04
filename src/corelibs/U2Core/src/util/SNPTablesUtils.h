@@ -1,6 +1,6 @@
 /**
  * UGENE - Integrated Bioinformatics Tools.
- * Copyright (C) 2008-2011 UniPro <ugene@unipro.ru>
+ * Copyright (C) 2008-2013 UniPro <ugene@unipro.ru>
  * http://ugene.unipro.ru
  *
  * This program is free software; you can redistribute it and/or
@@ -19,10 +19,10 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _S3_FILTERTABLEUTILS_H_
-#define _S3_FILTERTABLEUTILS_H_
+#ifndef _U2_FILTERTABLEUTILS_H_
+#define _U2_FILTERTABLEUTILS_H_
 
-#include <U2Core/S3TablesDbi.h>
+#include <U2Core/SNPTablesDbi.h>
 
 #include <U2Core/Gene.h>
 
@@ -37,7 +37,7 @@ namespace U2 {
 
 class SequenceQueryCache;
 
-class U2CORE_EXPORT S3TablesUtils{
+class U2CORE_EXPORT SNPTablesUtils{
 public:
     
     enum ExcludeFromGeneQuery{

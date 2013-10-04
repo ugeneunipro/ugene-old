@@ -1,4 +1,26 @@
-#include "S3TablesUtils.h"
+/**
+ * UGENE - Integrated Bioinformatics Tools.
+ * Copyright (C) 2008-2013 UniPro <ugene@unipro.ru>
+ * http://ugene.unipro.ru
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301, USA.
+ */
+
+
+#include "SNPTablesUtils.h"
 
 
 #include <U2Core/U2SafePoints.h>
@@ -20,7 +42,7 @@
 namespace U2 {
 
 
-QList<Gene> S3TablesUtils::findGenes(const QList<U2Feature> &features, U2FeatureDbi* dbi, U2OpStatus &opStatus){
+QList<Gene> SNPTablesUtils::findGenes(const QList<U2Feature> &features, U2FeatureDbi* dbi, U2OpStatus &opStatus){
     QList<U2::Gene> result;
     {
         foreach(const U2Feature& f, features){
@@ -35,7 +57,7 @@ QList<Gene> S3TablesUtils::findGenes(const QList<U2Feature> &features, U2Feature
     return result;
 }
 
-QList<U2::Gene> S3TablesUtils::findGenes(const U2DataId& seqId, const U2Region &region, U2FeatureDbi* dbi, U2OpStatus &opStatus, const QList<int>& excludeList) {
+QList<U2::Gene> SNPTablesUtils::findGenes(const U2DataId& seqId, const U2Region &region, U2FeatureDbi* dbi, U2OpStatus &opStatus, const QList<int>& excludeList) {
     //qint64 nTime = GTimer::currentTimeMicros();
     QList<U2::Gene> result;
     {
@@ -64,13 +86,13 @@ QList<U2::Gene> S3TablesUtils::findGenes(const U2DataId& seqId, const U2Region &
     return result;
 }
 
-U2::Gene S3TablesUtils::findGenesStep( const U2Feature &parentFeature, U2FeatureDbi* dbi, U2OpStatus &opStatus, const QList<int>& excludeList ){
+U2::Gene SNPTablesUtils::findGenesStep( const U2Feature &parentFeature, U2FeatureDbi* dbi, U2OpStatus &opStatus, const QList<int>& excludeList ){
     
     QVector<U2Region> exons;
     U2Region cdsRegion;
 
-    bool excludeExons = excludeList.contains(S3TablesUtils::ExcludeSubfeatures);
-    bool excludeCDS = excludeList.contains(S3TablesUtils::ExcludeCDS);
+    bool excludeExons = excludeList.contains(SNPTablesUtils::ExcludeSubfeatures);
+    bool excludeCDS = excludeList.contains(SNPTablesUtils::ExcludeCDS);
     if(!excludeCDS || !excludeExons){
         std::auto_ptr<U2DbiIterator<U2Feature> > subFeatureIterator(dbi->getSubFeatures(parentFeature.id, parentFeature.sequenceId, opStatus));
         while(subFeatureIterator->hasNext()){
@@ -93,7 +115,7 @@ U2::Gene S3TablesUtils::findGenesStep( const U2Feature &parentFeature, U2Feature
     QString altname;
     QString disease;
     QString type;
-    if(!excludeList.contains(S3TablesUtils::ExcludeNames)){
+    if(!excludeList.contains(SNPTablesUtils::ExcludeNames)){
         QList<U2FeatureKey> keys = dbi->getFeatureKeys(parentFeature.id, opStatus);
         foreach(const U2FeatureKey &key, keys) {
             if(key.name == U2FeatureKey_Name) {
@@ -127,12 +149,12 @@ static QList<U2::Gene> getGenesAround( const U2DataId& seqId, const U2Region &re
     query.featureName = U2FeatureGeneName;
     query.closestFeature = cOp;
     if (cOp == ComparisonOp_GT || cOp == ComparisonOp_GET){
-        if (excludeList.contains(S3TablesUtils::ExlcudeNonPromotersAround)){
+        if (excludeList.contains(SNPTablesUtils::ExlcudeNonPromotersAround)){
             query.strandQuery = Strand_Direct;
         }
         query.startPosOrderOp = OrderOp_Asc;
     }else if (cOp == ComparisonOp_LT || cOp == ComparisonOp_LET){
-        if (excludeList.contains(S3TablesUtils::ExlcudeNonPromotersAround)){
+        if (excludeList.contains(SNPTablesUtils::ExlcudeNonPromotersAround)){
             query.strandQuery = Strand_Compl;
         }
         query.startPosOrderOp = OrderOp_Desc;
@@ -144,7 +166,7 @@ static QList<U2::Gene> getGenesAround( const U2DataId& seqId, const U2Region &re
     }
     while(featureIterator->hasNext()) {
         U2Feature parentFeature = featureIterator->next();
-        Gene gene = S3TablesUtils::findGenesStep(parentFeature, dbi, opStatus, excludeList);
+        Gene gene = SNPTablesUtils::findGenesStep(parentFeature, dbi, opStatus, excludeList);
         if(opStatus.isCoR()){
             return QList<U2::Gene>();
         }
@@ -155,7 +177,7 @@ static QList<U2::Gene> getGenesAround( const U2DataId& seqId, const U2Region &re
     return res;
 }
 
-QList<U2::Gene> S3TablesUtils::findGenesAround( const U2DataId& seqId, const U2Region &region, U2FeatureDbi* dbi, U2OpStatus &opStatus, const QList<int>& excludeList ){
+QList<U2::Gene> SNPTablesUtils::findGenesAround( const U2DataId& seqId, const U2Region &region, U2FeatureDbi* dbi, U2OpStatus &opStatus, const QList<int>& excludeList ){
     QList<U2::Gene> res;
 
     SAFE_POINT(dbi!= NULL, "feature dbi is null", res);
@@ -167,23 +189,23 @@ QList<U2::Gene> S3TablesUtils::findGenesAround( const U2DataId& seqId, const U2R
     return res;
 }
 
-QList<DamageEffect> S3TablesUtils::getDamageEffectForVariant( const U2Variant& var, const U2DataId& seqId, U2Dbi* dbiDatabase, U2Dbi* dbiSession, DNATranslation* complTransl, DNATranslation* aaTransl, U2OpStatus& os ){
+QList<DamageEffect> SNPTablesUtils::getDamageEffectForVariant( const U2Variant& var, const U2DataId& seqId, U2Dbi* dbiDatabase, U2Dbi* dbiSession, DNATranslation* complTransl, DNATranslation* aaTransl, U2OpStatus& os ){
     QList<DamageEffect> result;
 
     SAFE_POINT(dbiSession!= NULL, "dbiSession is null", result);
     SAFE_POINT(dbiDatabase!= NULL, "dbiDatabase is null", result);
 
     //check if effect calculated
-    if(0!=dbiSession->getS3TableDbi()->checkNotAnnotated(var.id, os)){
+    if(0!=dbiSession->getSNPTableDbi()->checkNotAnnotated(var.id, os)){
         CHECK_OP(os, result);
 
         //calculate SIFT effect
-        QScopedPointer< U2DbiIterator<DamageEffect> >  deIt (dbiSession->getS3TableDbi()->getDamageEffectsForVariant(var.id, os));
+        QScopedPointer< U2DbiIterator<DamageEffect> >  deIt (dbiSession->getSNPTableDbi()->getDamageEffectsForVariant(var.id, os));
         QList<DamageEffect> calculatedEffect = U2DbiUtils::toList(deIt.data());
         CHECK_OP(os, result);
         result.append(calculatedEffect);
 
-        QList<Gene> genes = S3TablesUtils::findGenes(seqId, VARIATION_REGION(var), dbiDatabase->getFeatureDbi(), os);
+        QList<Gene> genes = SNPTablesUtils::findGenes(seqId, VARIATION_REGION(var), dbiDatabase->getFeatureDbi(), os);
 
         foreach(const Gene& gene, genes){
             float curEffect = damageEffectVal(var, seqId, gene, dbiDatabase, complTransl, aaTransl, os);
@@ -196,15 +218,15 @@ QList<DamageEffect> S3TablesUtils::getDamageEffectForVariant( const U2Variant& v
             effect.siftEffectValue = curEffect;
             result.append(effect);
 
-            dbiSession->getS3TableDbi()->createDamageEffect(effect, os);
+            dbiSession->getSNPTableDbi()->createDamageEffect(effect, os);
             CHECK_OP(os, result);
         }
 
         //mark as annotated
-        dbiSession->getS3TableDbi()->markAnnotated(var.id, os);
+        dbiSession->getSNPTableDbi()->markAnnotated(var.id, os);
         CHECK_OP(os, result);
     }else{
-        QScopedPointer< U2DbiIterator<DamageEffect> >  deIt (dbiSession->getS3TableDbi()->getDamageEffectsForVariant(var.id, os));
+        QScopedPointer< U2DbiIterator<DamageEffect> >  deIt (dbiSession->getSNPTableDbi()->getDamageEffectsForVariant(var.id, os));
         QList<DamageEffect> calculatedEffect = U2DbiUtils::toList(deIt.data());
         CHECK_OP(os, result);
         result.append(calculatedEffect);
@@ -213,7 +235,7 @@ QList<DamageEffect> S3TablesUtils::getDamageEffectForVariant( const U2Variant& v
     return result;
 }
 
-float S3TablesUtils::damageEffectVal( const U2Variant& var, const U2DataId& seqId, const Gene& gene, U2Dbi* dbiDatabase, DNATranslation* complTransl, DNATranslation* aaTransl, U2OpStatus& os, SequenceQueryCache* seqCache){
+float SNPTablesUtils::damageEffectVal( const U2Variant& var, const U2DataId& seqId, const Gene& gene, U2Dbi* dbiDatabase, DNATranslation* complTransl, DNATranslation* aaTransl, U2OpStatus& os, SequenceQueryCache* seqCache){
     float res = DAMAGE_EFFECT_UNDEFINED_SCORE;
 
     SAFE_POINT(dbiDatabase != NULL, "Database is null", res);
@@ -278,7 +300,7 @@ float S3TablesUtils::damageEffectVal( const U2Variant& var, const U2DataId& seqI
     return res;
 }
 
-void S3TablesUtils::calcDamageEffectForTrack( const U2VariantTrack& track, U2Dbi* dbiDatabase, U2Dbi* dbiSession, DNATranslation* complTransl, DNATranslation* aaTransl, U2OpStatus& os ){
+void SNPTablesUtils::calcDamageEffectForTrack( const U2VariantTrack& track, U2Dbi* dbiDatabase, U2Dbi* dbiSession, DNATranslation* complTransl, DNATranslation* aaTransl, U2OpStatus& os ){
     SAFE_POINT(dbiSession!= NULL, "dbiSession is null", );
     SAFE_POINT(dbiDatabase!= NULL, "dbiDatabase is null", );
 
@@ -300,7 +322,7 @@ void S3TablesUtils::calcDamageEffectForTrack( const U2VariantTrack& track, U2Dbi
     while (variantIt->hasNext()) {
         U2Variant var = variantIt->next();
 
-        if(0!=dbiSession->getS3TableDbi()->checkNotAnnotated(var.id, os)){
+        if(0!=dbiSession->getSNPTableDbi()->checkNotAnnotated(var.id, os)){
             QList<Gene> genes = geneCache.overlappedGenes(VARIATION_REGION(var), track.sequence);
 
             foreach(const Gene& gene, genes){
@@ -313,24 +335,24 @@ void S3TablesUtils::calcDamageEffectForTrack( const U2VariantTrack& track, U2Dbi
                 effect.affectedGeneName = gene.getName();
                 effect.siftEffectValue = curEffect;
 
-                dbiSession->getS3TableDbi()->createDamageEffect(effect, os);
+                dbiSession->getSNPTableDbi()->createDamageEffect(effect, os);
                 CHECK_OP(os, );
             }
 
             //mark as annotated
-            dbiSession->getS3TableDbi()->markAnnotated(var.id, os);
+            dbiSession->getSNPTableDbi()->markAnnotated(var.id, os);
             CHECK_OP(os, );
         }
 
     }
 }
 
-QList<Gene> S3TablesUtils::findRegulatedGenes( const U2DataId& seqId, const U2Region &region, U2FeatureDbi* dbi, U2OpStatus &opStatus, const QList<int>& excludeList  ){
+QList<Gene> SNPTablesUtils::findRegulatedGenes( const U2DataId& seqId, const U2Region &region, U2FeatureDbi* dbi, U2OpStatus &opStatus, const QList<int>& excludeList  ){
     QList<Gene> genes;
     QList<Gene> curGenes;
 
     //+ strand
-    curGenes = S3TablesUtils::findGenes(seqId, U2Region(region.startPos, PROMOTER_LEN), dbi, opStatus);
+    curGenes = SNPTablesUtils::findGenes(seqId, U2Region(region.startPos, PROMOTER_LEN), dbi, opStatus);
     foreach(const Gene& gene, curGenes){
         if (!gene.isComplemented() && !gene.getRegion().intersects(region)){
             genes.append(gene);
@@ -338,7 +360,7 @@ QList<Gene> S3TablesUtils::findRegulatedGenes( const U2DataId& seqId, const U2Re
     }
 
     //- strand
-    curGenes = S3TablesUtils::findGenes(seqId, U2Region(qMax((qint64)0, region.startPos-PROMOTER_LEN), PROMOTER_LEN), dbi, opStatus);
+    curGenes = SNPTablesUtils::findGenes(seqId, U2Region(qMax((qint64)0, region.startPos-PROMOTER_LEN), PROMOTER_LEN), dbi, opStatus);
     foreach(const Gene& gene, curGenes){
         if (gene.isComplemented() && !gene.getRegion().intersects(region)){
             genes.append(gene);

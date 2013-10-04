@@ -1,5 +1,5 @@
-#ifndef _S3_VARIATION_INFO_H_
-#define _S3_VARIATION_INFO_H_
+#ifndef _U2_VARIATION_INFO_H_
+#define _U2_VARIATION_INFO_H_
 
 #include "DamageEffectEvaluator.h"
 #include "SnpRequestKeys.h"
@@ -14,7 +14,7 @@
 
 namespace U2 {
 
-/* Class for S3 variation info storage. Contains variation description for each gene*/
+/* Class for U2 variation info storage. Contains variation description for each gene*/
 class VariationInfo : public QObject{
     Q_OBJECT
 public:
@@ -110,5 +110,5 @@ private:
 
 } //namespace
 
-#endif //_S3_VARIATION_INFO_H_
+#endif //_U2_VARIATION_INFO_H_
 

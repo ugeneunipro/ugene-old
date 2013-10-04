@@ -1,6 +1,6 @@
 #include "VariationInfo.h"
 
-#include <U2Core/S3TablesUtils.h>
+#include <U2Core/SNPTablesUtils.h>
 #include <U2Core/VariationPropertiesUtils.h>
 
 #include <U2Formats/Database.h>
@@ -571,9 +571,9 @@ QString VariationInfo::getNearGenes(const QList<Gene>& predefinedGenes){
     if (genesAround.isEmpty()){
         U2OpStatusImpl opStatus;
         QList<int> excludeList;
-        excludeList.append(S3TablesUtils::ExcludeSubfeatures);
-        excludeList.append(S3TablesUtils::ExcludeCDS);
-        genesAround = S3TablesUtils::findGenesAround(seqId, VARIATION_REGION(variant), AppContext::getSession()->getDatabase()->getDbi().dbi->getFeatureDbi(), opStatus, excludeList);
+        excludeList.append(SNPTablesUtils::ExcludeSubfeatures);
+        excludeList.append(SNPTablesUtils::ExcludeCDS);
+        genesAround = SNPTablesUtils::findGenesAround(seqId, VARIATION_REGION(variant), AppContext::getSession()->getDatabase()->getDbi().dbi->getFeatureDbi(), opStatus, excludeList);
         CHECK_OP(opStatus, text);
     }
     if (genesAround.size() == 2){

@@ -1,6 +1,6 @@
 /**
  * UGENE - Integrated Bioinformatics Tools.
- * Copyright (C) 2008-2011 UniPro <ugene@unipro.ru>
+ * Copyright (C) 2008-2013 UniPro <ugene@unipro.ru>
  * http://ugene.unipro.ru
  *
  * This program is free software; you can redistribute it and/or
@@ -19,7 +19,7 @@
  * MA 02110-1301, USA.
  */
 
-#include "S3DatabaseUtils.h"
+#include "SNPDatabaseUtils.h"
 
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
@@ -31,7 +31,7 @@ namespace U2 {
 
 #define S3_DATABASE_KEY "s3-database"
 
-Database* S3DatabaseUtils::openDatabase( const QString& path ){
+Database* SNPDatabaseUtils::openDatabase( const QString& path ){
     Database* res = NULL;
 
     if (QFile::exists(path)){
@@ -43,7 +43,7 @@ Database* S3DatabaseUtils::openDatabase( const QString& path ){
     return res;
 }
 
-U2DataId S3DatabaseUtils::getSequenceId( const QString& sequenceName, U2ObjectDbi* objectDbi ){
+U2DataId SNPDatabaseUtils::getSequenceId( const QString& sequenceName, U2ObjectDbi* objectDbi ){
     U2DataId seqId;
     if (sequenceName.isEmpty()){
         return seqId;

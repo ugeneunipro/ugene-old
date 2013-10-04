@@ -23,10 +23,10 @@
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/AppContext.h>
-#include <U2Core/S3TablesUtils.h>
+#include <U2Core/SNPTablesUtils.h>
 #include <U2Core/VariationPropertiesUtils.h>
 
-#include <U2Formats/S3DatabaseUtils.h>
+#include <U2Formats/SNPDatabaseUtils.h>
 
 #include <U2Lang/ActorPrototypeRegistry.h>
 #include <U2Lang/BaseActorCategories.h>
@@ -66,9 +66,9 @@ QList<QVariantMap> ProtStability1DWorker::getInputDataForRequest( const U2Varian
     U2SequenceDbi* sequenceDbi = dataBase->getSequenceDbi();
     SAFE_POINT(sequenceDbi!=NULL, "No sequence DBI", res);
 
-    U2DataId seqId = track.sequence.isEmpty() ? S3DatabaseUtils::getSequenceId(track.sequenceName, objDbi) : track.sequence;
+    U2DataId seqId = track.sequence.isEmpty() ? SNPDatabaseUtils::getSequenceId(track.sequenceName, objDbi) : track.sequence;
     U2OpStatusImpl os;
-    QList<Gene> genes = S3TablesUtils::findGenes(seqId, VARIATION_REGION(variant), featureDbi, os, QList<int>() << S3TablesUtils::ExcludeNames);
+    QList<Gene> genes = SNPTablesUtils::findGenes(seqId, VARIATION_REGION(variant), featureDbi, os, QList<int>() << SNPTablesUtils::ExcludeNames);
     CHECK_OP(os, res);
     foreach(const Gene& gene, genes){
         QVariantMap inputData;

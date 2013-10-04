@@ -1,8 +1,8 @@
-#ifndef _S3_DAMAGE_EFFECT_EVALUATOR_H_
-#define _S3_DAMAGE_EFFECT_EVALUATOR_H_
+#ifndef _U2_DAMAGE_EFFECT_EVALUATOR_H_
+#define _U2_DAMAGE_EFFECT_EVALUATOR_H_
 
 #include <U2Core/DamageEffect.h>
-#include <U2Core/S3TablesDbi.h>
+#include <U2Core/SNPTablesDbi.h>
 #include <U2Core/FeaturesQueryCache.h>
 #include <U2Core/VariationPropertiesUtils.h>
 #include <U2Core/KnownMutations.h>
@@ -47,7 +47,7 @@ public:
 
 private:
 
-    S3TablesDbi* s3Dbi;
+    SNPTablesDbi* s3Dbi;
     U2VariantDbi* varDbi;
     KnownMutationsDbi* knownMutationsDbi;
     U2AttributeDbi * atrDbi;
@@ -82,4 +82,4 @@ private:
 
 } //namespace
 
-#endif //_S3_DAMAGE_EFFECT_EVALUATOR_H_
+#endif //_U2_DAMAGE_EFFECT_EVALUATOR_H_

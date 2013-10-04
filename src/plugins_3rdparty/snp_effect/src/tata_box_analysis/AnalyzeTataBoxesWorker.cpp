@@ -25,7 +25,7 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/U2Region.h>
 #include <U2Core/Gene.h>
-#include <U2Core/S3TablesUtils.h>
+#include <U2Core/SNPTablesUtils.h>
 #include <U2Core/U2SequenceDbi.h>
 
 #include <U2Lang/ActorPrototypeRegistry.h>
@@ -37,7 +37,7 @@
 
 #include <U2Designer/DelegateEditors.h>
 
-#include <U2Formats/S3DatabaseUtils.h>
+#include <U2Formats/SNPDatabaseUtils.h>
 
 #include "AnalyzeTataBoxesTask.h"
 #include "AnalyzeTataBoxesWorker.h"
@@ -88,9 +88,9 @@ QList<Task *> AnalyzeTataBoxesWorker::createVariationProcessingTasks( const U2Va
     U2SequenceDbi* seqDbi = dbi->getSequenceDbi();
     SAFE_POINT(seqDbi!=NULL, "No sequence DBI", tasks);
 
-    U2DataId seqId = track.sequence.isEmpty() ? S3DatabaseUtils::getSequenceId(track.sequenceName, objDbi) : track.sequence;
+    U2DataId seqId = track.sequence.isEmpty() ? SNPDatabaseUtils::getSequenceId(track.sequenceName, objDbi) : track.sequence;
     U2OpStatusImpl os;
-    QList<Gene> genes = S3TablesUtils::findRegulatedGenes(seqId, VARIATION_REGION(var), featureDbi, os);
+    QList<Gene> genes = SNPTablesUtils::findRegulatedGenes(seqId, VARIATION_REGION(var), featureDbi, os);
     CHECK_OP(os, tasks);
     foreach(const Gene& gene, genes){
         QVariantMap inputData;

@@ -28,7 +28,7 @@
 #include <U2Core/U2VariantDbi.h>
 
 #include <U2Formats/Database.h>
-#include <U2Formats/S3DatabaseUtils.h>
+#include <U2Formats/SNPDatabaseUtils.h>
 
 #include <U2Lang/BasePorts.h>
 #include <U2Lang/BaseSlots.h>
@@ -107,7 +107,7 @@ Task* BaseRequestForSnpWorker::tick( )
         U2Dbi* dbDbi = NULL;
         QString dbPath = getValue<QString>( DB_SEQUENCE_PATH );
         if (!dbPath.isEmpty()){
-           db.reset(S3DatabaseUtils::openDatabase(dbPath ) );
+           db.reset(SNPDatabaseUtils::openDatabase(dbPath ) );
             if ( db.isNull( ) || NULL == db->getDbi( ).dbi ) {
                 outChannel->put( Message::getEmptyMapMessage( ) );
                 return NULL;
@@ -203,7 +203,7 @@ QByteArray BaseRequestForSnpWorker::getSequenceForVariant( const U2Variant &vari
     SAFE_POINT( NULL != objDbi, "No object dbi", result );
 
     const U2DataId seqId = track.sequence.isEmpty( ) ?
-        S3DatabaseUtils::getSequenceId( track.sequenceName, objDbi ) : track.sequence;
+        SNPDatabaseUtils::getSequenceId( track.sequenceName, objDbi ) : track.sequence;
 
     qint64 start = qMax( ( qint64 )0, variant.startPos - SNP_NEAR_REGION_LENGTH );
     qint64 end = variant.startPos + SNP_NEAR_REGION_LENGTH + 1; //include last char

@@ -32,7 +32,7 @@
 #include <U2Lang/BasePorts.h>
 #include <U2Lang/WorkflowEnv.h>
 
-#include <U2Formats/S3DatabaseUtils.h>
+#include <U2Formats/SNPDatabaseUtils.h>
 
 #include <U2Designer/DelegateEditors.h>
 
@@ -119,7 +119,7 @@ QByteArray RSnpToolsWorker::getSequenceForVariant( const U2Variant &variant,
     SAFE_POINT( NULL != objDbi, "No object dbi", result );
 
     const U2DataId seqId = track.sequence.isEmpty( ) ?
-        S3DatabaseUtils::getSequenceId( track.sequenceName, objDbi ) : track.sequence;
+        SNPDatabaseUtils::getSequenceId( track.sequenceName, objDbi ) : track.sequence;
 
     qint64 start = qMax( ( qint64 )0, variant.startPos - SNP_NEAR_REGION_LENGTH );
     qint64 end = variant.startPos + SNP_NEAR_REGION_LENGTH + 1; //include last char

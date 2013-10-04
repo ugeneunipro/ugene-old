@@ -1,6 +1,6 @@
 /**
  * UGENE - Integrated Bioinformatics Tools.
- * Copyright (C) 2008-2011 UniPro <ugene@unipro.ru>
+ * Copyright (C) 2008-2013 UniPro <ugene@unipro.ru>
  * http://ugene.unipro.ru
  *
  * This program is free software; you can redistribute it and/or
@@ -24,12 +24,12 @@
 
 #include <U2Formats/Database.h>
 
-#ifndef _S3_DATABASE_UTILS_
-#define _S3_DATABASE_UTILS_
+#ifndef _U2_DATABASE_UTILS_
+#define _U2_DATABASE_UTILS_
 
 namespace U2 {
 
-class U2FORMATS_EXPORT S3DatabaseUtils {
+class U2FORMATS_EXPORT SNPDatabaseUtils {
 public:
     static Database* openDatabase(const QString& path);
 
@@ -40,4 +40,4 @@ public:
 
 } // U2
 
-#endif // _S3_DATABASE_UTILS_
+#endif // _U2_DATABASE_UTILS_

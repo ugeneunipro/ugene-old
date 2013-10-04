@@ -38,7 +38,7 @@
 #include <U2Core/U2VariantDbi.h>
 #include <U2Core/U2ModDbi.h>
 
-#include <U2Core/S3TablesDbi.h>
+#include <U2Core/SNPTablesDbi.h>
 #include <U2Core/KnownMutationsDbi.h>
 
 
@@ -83,7 +83,7 @@ public:
 
     virtual U2ModDbi* getModDbi()  {return NULL;}
 
-    virtual S3TablesDbi* getS3TableDbi() {return NULL;}
+    virtual SNPTablesDbi* getSNPTableDbi() {return NULL;}
 
     virtual KnownMutationsDbi* getKnownMutationsDbi() {return NULL;}
     

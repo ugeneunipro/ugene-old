@@ -1,6 +1,6 @@
 /**
  * UGENE - Integrated Bioinformatics Tools.
- * Copyright (C) 2008-2011 UniPro <ugene@unipro.ru>
+ * Copyright (C) 2008-2013 UniPro <ugene@unipro.ru>
  * http://ugene.unipro.ru
  *
  * This program is free software; you can redistribute it and/or
@@ -20,10 +20,9 @@
  */
 
 
-#ifndef _S3_FILTERTABLEBI_H_
-#define _S3_FILTERTABLEBI_H_
+#ifndef _U2_FILTERTABLEBI_H_
+#define _U2_FILTERTABLEBI_H_
 
-//#include <S3Core/filters/FilteredVariantTrack.h>
 #include <U2Core/DamageEffect.h>
 
 #include <U2Core/U2Type.h>
@@ -41,9 +40,9 @@ namespace U2 {
             FilterTable
             FilterTableNames
             */
-class S3TablesDbi : public U2ChildDbi{
+class SNPTablesDbi : public U2ChildDbi{
 protected:
-    S3TablesDbi(U2Dbi* rootDbi) : U2ChildDbi(rootDbi){}
+    SNPTablesDbi(U2Dbi* rootDbi) : U2ChildDbi(rootDbi){}
 public:
 
     /* Creates damage effect instance */

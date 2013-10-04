@@ -22,7 +22,7 @@
 #include "SNPToolboxTask.h"
 #include "DamageEffectEvaluator.h"
 
-#include <U2Formats/S3DatabaseUtils.h>
+#include <U2Formats/SNPDatabaseUtils.h>
 #include <U2Core/U2SafePoints.h>
 
 #include <QtCore/QScopedPointer>
@@ -44,7 +44,7 @@ void SNPToolboxTask::run() {
     }
 
     //database
-    QScopedPointer<Database> database (S3DatabaseUtils::openDatabase(settings.dbPath));
+    QScopedPointer<Database> database (SNPDatabaseUtils::openDatabase(settings.dbPath));
     if (database.isNull()){
         setError(tr("Cannot open database file: %1").arg(settings.dbPath));
         return;

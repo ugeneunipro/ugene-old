@@ -1,6 +1,6 @@
 /**
  * UGENE - Integrated Bioinformatics Tools.
- * Copyright (C) 2008-2011 UniPro <ugene@unipro.ru>
+ * Copyright (C) 2008-2013 UniPro <ugene@unipro.ru>
  * http://ugene.unipro.ru
  *
  * This program is free software; you can redistribute it and/or
@@ -19,7 +19,7 @@
  * MA 02110-1301, USA.
  */
 
-#include "SQLiteS3TablesDbi.h"
+#include "SQLiteSNPTablesDbi.h"
 
 #include <U2Core/U2SqlHelpers.h>
 #include <U2Core/U2SafePoints.h>
@@ -74,9 +74,9 @@ static QString toOriginalChrName(const QString& seqName) {
     return res;
 }
 
-SQLiteS3TablesDbi::SQLiteS3TablesDbi(SQLiteDbi* rootDbi): S3TablesDbi(rootDbi), SQLiteChildDBICommon(rootDbi){}
+SQLiteSNPTablesDbi::SQLiteSNPTablesDbi(SQLiteDbi* rootDbi): SNPTablesDbi(rootDbi), SQLiteChildDBICommon(rootDbi){}
 
-void SQLiteS3TablesDbi::initSqlSchema(U2OpStatus& os){
+void SQLiteSNPTablesDbi::initSqlSchema(U2OpStatus& os){
     if (os.hasError()) {
         return;
     }
@@ -105,7 +105,7 @@ void SQLiteS3TablesDbi::initSqlSchema(U2OpStatus& os){
         " variant INTEGER NOT NULL UNIQUE)", db, os).execute();
 
 }
-void SQLiteS3TablesDbi::createDamageEffect( DamageEffect& effect, U2OpStatus& os ){
+void SQLiteSNPTablesDbi::createDamageEffect( DamageEffect& effect, U2OpStatus& os ){
     if (effect.variant.isEmpty()) {
         os.setError(SQLiteL10N::tr("Variant is not set!"));
         return;
@@ -142,12 +142,12 @@ void SQLiteS3TablesDbi::createDamageEffect( DamageEffect& effect, U2OpStatus& os
     SAFE_POINT_OP(os,); 
 }
 
-void SQLiteS3TablesDbi::createDamageEffectIndex( U2OpStatus& os ){
+void SQLiteSNPTablesDbi::createDamageEffectIndex( U2OpStatus& os ){
     SQLiteQuery("CREATE INDEX IF NOT EXISTS VarinatIndex ON DamageEffect(variant)" ,db, os).execute();
 }
 
 
-void SQLiteS3TablesDbi::removeDamageEffect( const DamageEffect& effect, U2OpStatus& os ){
+void SQLiteSNPTablesDbi::removeDamageEffect( const DamageEffect& effect, U2OpStatus& os ){
     SQLiteQuery q("DELETE FROM DamageEffect WHERE variant = ?1 AND geneName = ?2", db, os);
     q.bindDataId(1, effect.variant);
     q.bindString(2, effect.affectedGeneName);
@@ -155,7 +155,7 @@ void SQLiteS3TablesDbi::removeDamageEffect( const DamageEffect& effect, U2OpStat
     SAFE_POINT_OP(os,);
 }
 
-void SQLiteS3TablesDbi::removeAllDamageEffectForVariant(const U2Variant& variant, U2OpStatus& os){
+void SQLiteSNPTablesDbi::removeAllDamageEffectForVariant(const U2Variant& variant, U2OpStatus& os){
     SQLiteQuery q("DELETE FROM DamageEffect WHERE variant = ?1", db, os);
     q.bindDataId(1, variant.id);
     q.execute();
@@ -193,7 +193,7 @@ class SimpleDamageEffectLoader : public SqlRSLoader<DamageEffect> {
     }
 };
 
-U2DbiIterator<DamageEffect>* SQLiteS3TablesDbi::getDamageEffectsForVariant( const U2DataId& variantId, U2OpStatus& os ){
+U2DbiIterator<DamageEffect>* SQLiteSNPTablesDbi::getDamageEffectsForVariant( const U2DataId& variantId, U2OpStatus& os ){
     SQLiteTransaction t(db, os);
 
     QSharedPointer<SQLiteQuery> q = t.getPreparedQuery("SELECT variant, geneName, effectValue, avSift, lrt, phylop, pp2, mt, genomes1000, segmentalDuplication, conserved, "
@@ -216,7 +216,7 @@ class SimpleRegulatoryEffectLoader : public SqlRSLoader<RegulatoryEffect> {
 };
 
 
-void SQLiteS3TablesDbi::removeRegulatoryEffect(const RegulatoryEffect& effect, U2OpStatus& os){
+void SQLiteSNPTablesDbi::removeRegulatoryEffect(const RegulatoryEffect& effect, U2OpStatus& os){
     SQLiteQuery q("DELETE FROM RegulatoryEffect WHERE variant = ?1 AND geneId = ?2", db, os);
     q.bindDataId(1, effect.variant);
     q.bindDataId(2, effect.affectedGeneId);
@@ -224,14 +224,14 @@ void SQLiteS3TablesDbi::removeRegulatoryEffect(const RegulatoryEffect& effect, U
     SAFE_POINT_OP(os,);
 }
 
-void SQLiteS3TablesDbi::removeAllRegulatoryEffectForVariant(const U2Variant& variant, U2OpStatus& os){
+void SQLiteSNPTablesDbi::removeAllRegulatoryEffectForVariant(const U2Variant& variant, U2OpStatus& os){
     SQLiteQuery q("DELETE FROM RegulatoryEffect WHERE variant = ?1", db, os);
     q.bindDataId(1, variant.id);
     q.execute();
     SAFE_POINT_OP(os,);
 }
 
-    U2DbiIterator<RegulatoryEffect>* SQLiteS3TablesDbi::getRegulatoryEffectsForVariant(const U2DataId& variant, U2OpStatus& os){
+    U2DbiIterator<RegulatoryEffect>* SQLiteSNPTablesDbi::getRegulatoryEffectsForVariant(const U2DataId& variant, U2OpStatus& os){
     SQLiteTransaction t(db, os);
 
     QSharedPointer<SQLiteQuery> q = t.getPreparedQuery("SELECT variant, geneId, promoterPos "
@@ -242,7 +242,7 @@ void SQLiteS3TablesDbi::removeAllRegulatoryEffectForVariant(const U2Variant& var
 }
 
 /*
-void SQLiteS3TablesDbi::createFilterTable( FilterTable& table, const QString& filterName, U2OpStatus& os )
+void SQLiteSNPTablesDbi::createFilterTable( FilterTable& table, const QString& filterName, U2OpStatus& os )
 {
     if (filterName.isEmpty()) {
         os.setError(SQLiteL10N::tr("Filter name is not set!"));
@@ -277,7 +277,7 @@ void SQLiteS3TablesDbi::createFilterTable( FilterTable& table, const QString& fi
         " seqName TEXT)").arg(filterTableString) ,db, os).execute();
 }
 
-void SQLiteS3TablesDbi::removeFilterTable( const FilterTable& table, U2OpStatus& os )
+void SQLiteSNPTablesDbi::removeFilterTable( const FilterTable& table, U2OpStatus& os )
 {
     
     QString filterTableString = QString("table_%1").arg(SQLiteUtils::toDbiId(table.id));
@@ -291,7 +291,7 @@ void SQLiteS3TablesDbi::removeFilterTable( const FilterTable& table, U2OpStatus&
     SAFE_POINT_OP(os,);
 }
 */
-void SQLiteS3TablesDbi::renameFilterTable (const U2DataId& fTable, const QString& newName, U2OpStatus& os)
+void SQLiteSNPTablesDbi::renameFilterTable (const U2DataId& fTable, const QString& newName, U2OpStatus& os)
 {
     if (newName.isEmpty()) {
         os.setError(SQLiteL10N::tr("New filter name is not set!"));
@@ -305,7 +305,7 @@ void SQLiteS3TablesDbi::renameFilterTable (const U2DataId& fTable, const QString
     SAFE_POINT_OP(os,);
 }
 
-void SQLiteS3TablesDbi::addVariantsToTable( const U2DataId& fTable, const U2DataId& track, VariantTrackType tType, const QString& visualSeqName, U2DbiIterator<U2Variant>* it, U2OpStatus& os )
+void SQLiteSNPTablesDbi::addVariantsToTable( const U2DataId& fTable, const U2DataId& track, VariantTrackType tType, const QString& visualSeqName, U2DbiIterator<U2Variant>* it, U2OpStatus& os )
 {
     QString filterTableString = QString("table_%1").arg(SQLiteUtils::toDbiId(fTable));
 
@@ -333,7 +333,7 @@ void SQLiteS3TablesDbi::addVariantsToTable( const U2DataId& fTable, const U2Data
     
 }
 /*
-U2::FilterTable SQLiteS3TablesDbi::getFilterTableByName( const QString& filterName, U2OpStatus& os )
+U2::FilterTable SQLiteSNPTablesDbi::getFilterTableByName( const QString& filterName, U2OpStatus& os )
 {
     SQLiteQuery q("SELECT id, filterName FROM FilterTableNames WHERE filterName = ?1", db, os);
     q.bindBlob(1, filterName.toAscii() );
@@ -374,7 +374,7 @@ public:
 };
 
 
-U2DbiIterator<FilterTableItem>* SQLiteS3TablesDbi::getVariantsRange( const U2DataId& fTable, VariantTrackType tType, int offset, int limit, int sortColumn, bool sortAscending, U2OpStatus& os ){
+U2DbiIterator<FilterTableItem>* SQLiteSNPTablesDbi::getVariantsRange( const U2DataId& fTable, VariantTrackType tType, int offset, int limit, int sortColumn, bool sortAscending, U2OpStatus& os ){
     QString filterTableString = QString("table_%1").arg(SQLiteUtils::toDbiId(fTable));
     QString queryS;
     if (TrackType_All == tType){
@@ -396,7 +396,7 @@ U2DbiIterator<FilterTableItem>* SQLiteS3TablesDbi::getVariantsRange( const U2Dat
     return new SqlRSIterator<FilterTableItem>(q, new SimpleFilteredVariantLoader(), NULL, FilterTableItem(), os);
 }
 */
-int SQLiteS3TablesDbi::getVariantCount( const U2DataId& fTable, VariantTrackType tType, U2OpStatus& os ){
+int SQLiteSNPTablesDbi::getVariantCount( const U2DataId& fTable, VariantTrackType tType, U2OpStatus& os ){
     QString filterTableString = QString("table_%1").arg(SQLiteUtils::toDbiId(fTable));
     QString queryS;
 
@@ -418,7 +418,7 @@ int SQLiteS3TablesDbi::getVariantCount( const U2DataId& fTable, VariantTrackType
 
 
 
-void SQLiteS3TablesDbi::markNotAnnotated( const U2DataId& variant, U2OpStatus& os ){
+void SQLiteSNPTablesDbi::markNotAnnotated( const U2DataId& variant, U2OpStatus& os ){
     SQLiteTransaction t(db, os);
     static QString queryString("INSERT INTO NotAnnotatedVariations(variant) VALUES(?1)");
 
@@ -428,7 +428,7 @@ void SQLiteS3TablesDbi::markNotAnnotated( const U2DataId& variant, U2OpStatus& o
     SAFE_POINT_OP(os,); 
 }
 
-void SQLiteS3TablesDbi::markAnnotated( const U2DataId& variant, U2OpStatus& os ){
+void SQLiteSNPTablesDbi::markAnnotated( const U2DataId& variant, U2OpStatus& os ){
     SQLiteTransaction t(db, os);
     static QString queryString("DELETE FROM NotAnnotatedVariations WHERE variant = ?1");
 
@@ -439,7 +439,7 @@ void SQLiteS3TablesDbi::markAnnotated( const U2DataId& variant, U2OpStatus& os )
     SAFE_POINT_OP(os,);
 }
 
-int SQLiteS3TablesDbi::checkNotAnnotated( const U2DataId& variant, U2OpStatus& os ){
+int SQLiteSNPTablesDbi::checkNotAnnotated( const U2DataId& variant, U2OpStatus& os ){
     SQLiteTransaction t(db, os);
     static QString queryString("SELECT COUNT(*) FROM NotAnnotatedVariations WHERE variant = ?1");
 
@@ -453,11 +453,11 @@ int SQLiteS3TablesDbi::checkNotAnnotated( const U2DataId& variant, U2OpStatus& o
     return q1->getInt32(0); 
 }
 
-void SQLiteS3TablesDbi::createAnnotationsMarkerIndex( U2OpStatus& os ){
+void SQLiteSNPTablesDbi::createAnnotationsMarkerIndex( U2OpStatus& os ){
     SQLiteQuery("CREATE INDEX IF NOT EXISTS AnnotatedVariantsIndex ON NotAnnotatedVariations(variant)" ,db, os).execute();
 }
 
-void SQLiteS3TablesDbi::createIndexForFilterTable( const U2DataId& fTable, U2OpStatus& os ){
+void SQLiteSNPTablesDbi::createIndexForFilterTable( const U2DataId& fTable, U2OpStatus& os ){
     QString filterTableString = QString("table_%1").arg(SQLiteUtils::toDbiId(fTable));
 
     //for sorting by column
@@ -476,7 +476,7 @@ void SQLiteS3TablesDbi::createIndexForFilterTable( const U2DataId& fTable, U2OpS
     
 }
 
-void SQLiteS3TablesDbi::updateVariantFilterTable( const U2DataId& fTable, const U2DataId& varId, VariantTrackType tType, U2OpStatus& os ){
+void SQLiteSNPTablesDbi::updateVariantFilterTable( const U2DataId& fTable, const U2DataId& varId, VariantTrackType tType, U2OpStatus& os ){
     QString filterTableString = QString("table_%1").arg(SQLiteUtils::toDbiId(fTable));
     QString q1 = QString("UPDATE FilterTable_%1 ").arg(filterTableString);
 
