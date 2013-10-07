@@ -27,6 +27,12 @@
 namespace U2 {
 namespace Workflow {
 
+/**
+ * The options of the validator:
+ * min - the minimum count of datasets [0]
+ * max - the maximum count of datasets [INT_MAX]
+ * attribute - the datasets attribute id [url-in]
+ */
 class DatasetsCountValidator : public ActorValidator {
 public:
     virtual bool validate(const Actor *actor, ProblemList &problemList, const QMap<QString, QString> &options) const;

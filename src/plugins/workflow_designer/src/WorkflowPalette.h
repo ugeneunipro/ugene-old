@@ -32,6 +32,7 @@
 
 namespace U2 {
 using namespace Workflow;
+class NameFilterLayout;
 class WorkflowView;
 class WorkflowScene;
 class WorkflowPaletteElements;
@@ -49,8 +50,7 @@ public:
 
     QVariant saveState() const;
     void restoreState(const QVariant&);
-    
-    void setFocus();
+
 public slots:
     void resetSelection();
 
@@ -60,10 +60,9 @@ signals:
     void si_protoChanged();
     void si_protoListModified();
 private:
+    NameFilterLayout *nameFilter;
     WorkflowPaletteElements *elementsList;
     friend class PaletteDelegate;
-
-    QAction* delTextAction;
 };
 
 class WorkflowPaletteElements : public QTreeWidget {

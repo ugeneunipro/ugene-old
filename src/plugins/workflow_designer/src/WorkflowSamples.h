@@ -27,6 +27,7 @@
 #include <U2Core/Task.h>
 
 #include <QtGui/QAction>
+#include <QtGui/QHBoxLayout>
 #include <QtGui/QToolBox>
 #include <QtGui/QButtonGroup>
 #include <QtGui/QTreeWidget>
@@ -108,6 +109,7 @@ public:
 
 public slots:
     void cancelItem();
+    void sl_nameFilterChanged(const QString &nameFilter);
 protected:
     void resizeEvent(QResizeEvent *e) {
         QTreeWidget::resizeEvent(e);
@@ -124,8 +126,27 @@ signals:
     void sampleSelected(const QString&);
 private:
     void addCategory(const SampleCategory& cat);
+    void revisible(const QString &nameFilter);
 
     SamplePane* glass;
+};
+
+class NameFilterLayout : public QHBoxLayout {
+public:
+    NameFilterLayout(QWidget *parent);
+
+    QLineEdit * getNameEdit() const;
+
+    static bool filterMatched(const QString &nameFilter, const QString &name);
+
+private:
+    QLineEdit *nameEdit;
+    QAction *delTextAction;
+};
+
+class SamplesWrapper : public QWidget {
+public:
+    SamplesWrapper(SamplesWidget *samples, QWidget *parent);
 };
 
 }//namespace

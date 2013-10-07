@@ -22,6 +22,7 @@
 #include "WorkflowPalette.h"
 
 #include "CreateScriptWorker.h"
+#include "WorkflowSamples.h"
 #include "library/ScriptWorker.h"
 #include "library/ExternalProcessWorker.h"
 #include "library/CreateExternalProcessDialog.h"
@@ -64,25 +65,23 @@ WorkflowPalette::WorkflowPalette(ActorPrototypeRegistry* reg, QWidget *parent)
 : QWidget(parent)
 {
     setupUi(this);
+    nameFilter = new NameFilterLayout(NULL);
     elementsList = new WorkflowPaletteElements(reg, this);
     setFocusPolicy(Qt::NoFocus);
     setMouseTracking(true);
 
-    this->layout()->addWidget(elementsList);
-
-    delTextAction = new QAction(this);
-    delTextAction->setShortcut(QKeySequence(tr("Esc")));
-    this->addAction(delTextAction);
-
-    connect(delTextAction, SIGNAL(triggered()), filterNameEdit, SLOT(clear()));
+    QVBoxLayout *vl = dynamic_cast<QVBoxLayout*>(layout());
+    vl->addLayout(nameFilter);
+    vl->addWidget(elementsList);
 
     connect(elementsList, SIGNAL(processSelected(Workflow::ActorPrototype*)), SIGNAL(processSelected(Workflow::ActorPrototype*)));
     connect(elementsList, SIGNAL(si_protoDeleted(const QString &)), SIGNAL(si_protoDeleted(const QString &)));
     connect(elementsList, SIGNAL(si_protoChanged()), SIGNAL(si_protoChanged()));
     connect(elementsList, SIGNAL(si_protoListModified()), SIGNAL(si_protoListModified()));
 
-    connect(filterNameEdit, SIGNAL(textChanged(const QString &)), elementsList, SLOT(sl_nameFilterChanged(const QString &)));
-    this->setObjectName("palette");
+    connect(nameFilter->getNameEdit(), SIGNAL(textChanged(const QString &)), elementsList, SLOT(sl_nameFilterChanged(const QString &)));
+    setObjectName("palette");
+    setFocusProxy(nameFilter->getNameEdit());
 }
 
 QMenu* WorkflowPalette::createMenu(const QString &name) {
@@ -103,10 +102,6 @@ QVariant WorkflowPalette::saveState() const {
 
 void WorkflowPalette::restoreState(const QVariant& v) {
     elementsList->restoreState(v);
-}
-
-void WorkflowPalette::setFocus(){
-    filterNameEdit->setFocus();
 }
 
 class PaletteDelegate: public QItemDelegate {
@@ -282,17 +277,6 @@ void WorkflowPaletteElements::createMenu(QMenu *menu) {
     }
 }
 
-static bool filterMatched(const QString &nameFilter, const QString &name) {
-    static QRegExp spaces("\\s");
-    QStringList filterWords = nameFilter.split(spaces);
-    foreach (const QString &word, filterWords) {
-        if (!name.contains(word)) {
-            return false;
-        }
-    }
-    return true;
-}
-
 void WorkflowPaletteElements::setContent(ActorPrototypeRegistry* reg) {
     QMapIterator<Descriptor, QList<ActorPrototype*> > it(reg->getProtos());
     categoryMap.clear();
@@ -301,8 +285,9 @@ void WorkflowPaletteElements::setContent(ActorPrototypeRegistry* reg) {
         QTreeWidgetItem* category = NULL;
 
         foreach(ActorPrototype* proto, it.value()) {
-            QString name = proto->getDisplayName().toLower();
-            if (!filterMatched(nameFilter, name) && !filterMatched(nameFilter, it.key().getDisplayName().toLower())) {
+            QString name = proto->getDisplayName();
+            if (!NameFilterLayout::filterMatched(nameFilter, name) &&
+                !NameFilterLayout::filterMatched(nameFilter, it.key().getDisplayName())) {
                 continue;
             }
             if (NULL == category) {

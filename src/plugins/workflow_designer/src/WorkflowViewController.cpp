@@ -364,7 +364,7 @@ void WorkflowView::setupPalette() {
     tabs->insertTab(ElementsTab, palette, tr("Elements"));
     samples = new SamplesWidget(scene);
     samples->setObjectName("samples");
-    tabs->insertTab(SamplesTab, samples, tr("Samples"));
+    tabs->insertTab(SamplesTab, new SamplesWrapper(samples, this), tr("Samples"));
     tabs->setTabPosition(QTabWidget::North);
 
     connect(samples, SIGNAL(setupGlass(GlassPane*)), sceneView, SLOT(setGlass(GlassPane*)));
@@ -848,9 +848,8 @@ void WorkflowView::createActions() {
 }
 
 void WorkflowView::sl_findPrototype(){
-    if(tabs->currentWidget() != palette){return;}
-
-    palette->setFocus();
+    tabs->currentWidget()->setFocus();
+    CHECK(tabs->currentWidget() == palette, );
 
     static const int MIN_SIZE_FIND = 260;
     QList<int> sizes = splitter->sizes();

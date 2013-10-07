@@ -50,6 +50,7 @@
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QContextMenuEvent>
 #include <QtGui/QTextDocument>
+#include <QtGui/QLineEdit>
 
 Q_DECLARE_METATYPE(QTextDocument*);
 
@@ -125,6 +126,33 @@ void SamplesWidget::cancelItem() {
      } else {
          emit setupGlass(glass);
      }
+}
+
+void SamplesWidget::sl_nameFilterChanged(const QString &nameFilter) {
+    revisible(nameFilter);
+}
+
+void SamplesWidget::revisible(const QString &nameFilter) {
+    setMouseTracking(false);
+    for (int catIdx=0; catIdx<topLevelItemCount(); catIdx++) {
+        QTreeWidgetItem *category = topLevelItem(catIdx);
+        bool hasVisibleSamples = false;
+        QString catName = category->text(0);
+        for (int childIdx=0; childIdx<category->childCount(); childIdx++) {
+            QTreeWidgetItem *sample = category->child(childIdx);
+            QString name = sample->text(0);
+            if (!NameFilterLayout::filterMatched(nameFilter, name) &&
+                !NameFilterLayout::filterMatched(nameFilter, catName)) {
+                sample->setHidden(true);
+            } else {
+                sample->setHidden(false);
+                hasVisibleSamples = true;
+            }
+        }
+        category->setHidden(!hasVisibleSamples);
+        category->setExpanded(hasVisibleSamples);
+    }
+    setMouseTracking(true);
 }
 
 void SamplesWidget::addCategory( const SampleCategory& cat )
@@ -276,6 +304,62 @@ Task::ReportResult LoadSamplesTask::report()
 
 Task* SampleRegistry::init( const QStringList& lst) {
     return new LoadSamplesTask(lst);
+}
+
+/************************************************************************/
+/* NameFilterLayout */
+/************************************************************************/
+NameFilterLayout::NameFilterLayout(QWidget *parent)
+: QHBoxLayout(parent)
+{
+    setContentsMargins(0, 0, 0, 0);
+    setSpacing(6);
+    nameEdit = new QLineEdit();
+    nameEdit->setPlaceholderText(tr("Type to filter by name..."));
+
+    QLabel *label = new QLabel(tr("Name filter:"));
+    label->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+    nameEdit->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+    addWidget(label);
+    addWidget(nameEdit);
+
+    delTextAction = new QAction(this);
+    delTextAction->setShortcut(QKeySequence(tr("Esc")));
+    nameEdit->addAction(delTextAction);
+
+    connect(delTextAction, SIGNAL(triggered()), nameEdit, SLOT(clear()));
+}
+
+QLineEdit * NameFilterLayout::getNameEdit() const {
+    return nameEdit;
+}
+
+bool NameFilterLayout::filterMatched(const QString &nameFilter, const QString &name) {
+    static QRegExp spaces("\\s");
+    QStringList filterWords = nameFilter.split(spaces);
+    foreach (const QString &word, filterWords) {
+        if (!name.contains(word, Qt::CaseInsensitive)) {
+            return false;
+        }
+    }
+    return true;
+}
+
+/************************************************************************/
+/* SamplesWrapper */
+/************************************************************************/
+SamplesWrapper::SamplesWrapper(SamplesWidget *samples, QWidget *parent)
+: QWidget(parent)
+{
+    QVBoxLayout *vl = new QVBoxLayout(this);
+    vl->setContentsMargins(0, 3, 0, 0);
+    vl->setSpacing(3);
+    NameFilterLayout *hl = new NameFilterLayout(NULL);
+    vl->addLayout(hl);
+    vl->addWidget(samples);
+
+    connect(hl->getNameEdit(), SIGNAL(textChanged(const QString &)), samples, SLOT(sl_nameFilterChanged(const QString &)));
+    setFocusProxy(hl->getNameEdit());
 }
 
 } //namespace
