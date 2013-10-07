@@ -61,7 +61,8 @@ DNASequenceGeneratorDialog::DNASequenceGeneratorDialog(QWidget* p) : QDialog(p) 
     SaveDocumentGroupControllerConfig conf;
     conf.dfc.addFlagToExclude(DocumentFormatFlag_SingleObjectFormat);
     conf.dfc.addFlagToSupport(DocumentFormatFlag_SupportWriting);
-    conf.dfc.supportedObjectTypes += GObjectTypes::SEQUENCE;
+    conf.dfc.supportedObjectTypes << GObjectTypes::SEQUENCE << GObjectTypes::MULTIPLE_ALIGNMENT;
+    conf.dfc.allowPartialTypeMapping = true;
     conf.parentWidget = this;
     conf.fileNameEdit = outputEdit;
     conf.formatCombo = formatCombo;

@@ -454,7 +454,7 @@ public:
      * Does not trim the original alignment.
      * Can increase the overall alignment length.
      */
-    void addRow(const QString& name, const QByteArray& bytes, U2OpStatus& os);    
+    void addRow(const QString& name, const QByteArray& bytes, U2OpStatus& os);
     void addRow(const QString& name, const QByteArray& bytes, int rowIndex, U2OpStatus& os);
     void addRow(const U2MsaRow& rowInDb, const DNASequence& sequence, U2OpStatus& os);
 

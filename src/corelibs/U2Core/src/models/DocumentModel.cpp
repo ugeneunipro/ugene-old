@@ -174,6 +174,8 @@ bool DocumentFormat::checkConstraints(const DocumentFormatConstraints& c) const 
     foreach (GObjectType objType, c.supportedObjectTypes) {
         if (!supportedObjectTypes.contains(objType)) { // the object type is not in the supported list
             return false;
+        } else if ( c.allowPartialTypeMapping ) { // at least one type is supported
+            return true;
         }
     }
     

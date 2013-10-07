@@ -24,7 +24,7 @@
 
 #include <U2Core/Task.h>
 #include <U2Core/DNASequence.h>
-
+#include <U2Core/U2Sequence.h>
 
 namespace U2 {
 
@@ -118,12 +118,14 @@ private:
 class GenerateDNASequenceTask : public Task {
     Q_OBJECT
 public:
-    GenerateDNASequenceTask(const QMap<char, qreal>& baseContent_, int length_, int window_, int count_, int seed_);
+    GenerateDNASequenceTask( const QMap<char, qreal>& baseContent_, int length_, int window_,
+        int count_, int seed_ );
 
-    void prepare();
-    void run();
+    void prepare( );
+    void run( );
 
-    QList< QByteArray > getResult() const { return result; }
+    QList<U2Sequence> getResults( ) const { return results; }
+    U2DbiRef getDbiRef( ) const { return dbiRef; }
 
 private:
     QMap<char, qreal> baseContent;
@@ -131,7 +133,8 @@ private:
     int window;
     int count;
     int seed;
-    QList< QByteArray > result;
+    QList<U2Sequence> results;
+    U2DbiRef dbiRef;
 };
 
 class DNASequenceGeneratorTask : public Task {
@@ -140,9 +143,18 @@ public:
     DNASequenceGeneratorTask(const DNASequenceGeneratorConfig& cfg_);
     QList<Task*> onSubTaskFinished(Task* subTask);
     QList<DNASequence> getSequences() const { return results; }
+
 private:
+    QList<Task*> onLoadRefTaskFinished( );
+    QList<Task*> onEvalTaskFinished( );
+    QList<Task*> onGenerateTaskFinished( );
+    QList<Task*> onSaveTaskFinished( );
+
+    void addSequencesToMsaDoc( Document *source );
+    void addSequencesToSeqDoc( Document *source );
+
     static EvaluateBaseContentTask* createEvaluationTask(Document* doc, QString& err);
-private:
+
     DNASequenceGeneratorConfig cfg;
     LoadDocumentTask* loadRefTask;
     EvaluateBaseContentTask* evalTask;

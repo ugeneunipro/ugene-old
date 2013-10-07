@@ -215,8 +215,12 @@ protected:
 
 class DocumentFormatConstraints {
 public:
-    DocumentFormatConstraints() : flagsToSupport(0), flagsToExclude(0), 
-                                checkRawData(false), minDataCheckResult(FormatDetection_VeryLowSimilarity){}
+    DocumentFormatConstraints()
+        : flagsToSupport(0), flagsToExclude(0), checkRawData(false),
+        minDataCheckResult(FormatDetection_VeryLowSimilarity), allowPartialTypeMapping(false)
+    {
+
+    }
 
     void clear() {
         flagsToSupport = 0;
@@ -224,6 +228,7 @@ public:
         checkRawData = false;
         rawData.clear();
         minDataCheckResult = FormatDetection_VeryLowSimilarity;
+        allowPartialTypeMapping = false;
     }
     void addFlagToSupport(DocumentFormatFlag f) {flagsToSupport |= f;}
     void addFlagToExclude(DocumentFormatFlag f) {flagsToExclude |= f;}
@@ -236,7 +241,7 @@ public:
     bool                    checkRawData;
     QByteArray              rawData;
     FormatDetectionScore    minDataCheckResult;
-
+    bool                    allowPartialTypeMapping;
 };
 
 class DocumentImportersRegistry;
