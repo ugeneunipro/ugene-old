@@ -19,10 +19,12 @@
  * MA 02110-1301, USA.
  */
 
+#include <U2Core/U2OpStatusUtils.h>
 #include "SchemeSimilarityUtils.h"
 
 #include "CInterfaceManualTests.h"
 
+static const int MAX_ELEMENT_NAME_LENGTH = 100;
 static const QString PROPER_WD_SCHEMES_PATH = PATH_PREFIX_DATA + QString( ":workflow_samples" );
 
 namespace U2 {

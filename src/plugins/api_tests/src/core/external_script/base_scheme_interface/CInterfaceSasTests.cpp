@@ -19,11 +19,13 @@
  * MA 02110-1301, USA.
  */
 
+#include <U2Core/AppContext.h>
 #include <U2Core/GAutoDeleteList.h>
 
 #include <U2Lang/ActorPrototypeRegistry.h>
 #include <U2Lang/ActorModel.h>
 #include <U2Lang/WorkflowEnv.h>
+#include <U2Core/U2OpStatusUtils.h>
 
 #include "SchemeSimilarityUtils.h"
 #include "CInterfaceSasTests.h"

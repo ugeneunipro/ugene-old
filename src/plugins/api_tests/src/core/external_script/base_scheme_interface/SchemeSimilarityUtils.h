@@ -23,42 +23,33 @@
 #define _U2_SCHEME_SIMILARITY_UTILS_H_
 
 #include <QtCore/QFile>
-#include <U2Core/AppContext.h>
-#include <U2Core/AppSettings.h>
-#include <U2Core/U2OpStatusUtils.h>
-#include <U2Lang/HRSchemaSerializer.h>
-#include <U2Script/U2Script.h>
-#include <U2Test/TestRunnerSettings.h>
-
 #include <U2Core/U2OpStatus.h>
-#include "SchemeSimilarityUtils.h"
+#include <U2Script/U2Script.h>
 
-static const QString TEMP_SCHEMES_DIR_PATH = QDir::tempPath( );
-static const int MAX_ELEMENT_NAME_LENGTH = 100;
-static const int SUBSTRING_NOT_FOUND = -1;
-
-#define CHECK_U2_ERROR( errorCode ) CHECK_TRUE( U2_OK == errorCode, QString::fromWCharArray( getErrorString( errorCode ) ) )
+#define CHECK_U2_ERROR( errorCode ) \
+    CHECK_TRUE( U2_OK == errorCode, QString::fromWCharArray( getErrorString( errorCode ) ) )
 
 namespace U2 {
 
 class SchemeSimilarityUtils {
-    public:
-        static void            checkSchemesSimilarity( SchemeHandle assembledScheme,
-            const QString &pathToProperScheme, U2OpStatus &stateInfo );
+public:
+    static void             checkSchemesSimilarity( SchemeHandle assembledScheme,
+                                const QString &pathToProperScheme, U2OpStatus &stateInfo );
 
-    private:
-        static int              getSchemeDescriptionStartPos( const QString &schemeContent );
-        static int              getSchemeDescriptionEndPos( const QString &schemeContent );
-        static QString          getSchemeContentByHandle( SchemeHandle scheme,
-            U2OpStatus &stateInfo );
-        static QString          getSchemeContentByFilePath( const QString &pathToScheme,
-            U2OpStatus &stateInfo );
-        static QString          readFileContent( QFile &file, U2OpStatus &stateInfo );
-        static void             skipSchemeSpecificNames( QString &schemeContent );
-        static QStringList      getNonSpaceStatementsFromScheme( const QString &schemeContent );
-        static void             skipElementNames( QString &schemeContent );
-        static void             skipElementIds( QString &schemeContent );
-        static void             skipActorBindingsBlockBoundaries( QString &schemeContent );
+private:
+    static int              getSchemeDescriptionStartPos( const QString &schemeContent );
+    static int              getSchemeDescriptionEndPos( const QString &schemeContent );
+    static QString          getSchemeContentByHandle( SchemeHandle scheme,
+                                U2OpStatus &stateInfo );
+    static QString          getSchemeContentByFilePath( const QString &pathToScheme,
+                                U2OpStatus &stateInfo );
+    static QString          readFileContent( QFile &file, U2OpStatus &stateInfo );
+    static void             skipSchemeSpecificNames( QString &schemeContent );
+    static QStringList      getNonSpaceStatementsFromScheme( const QString &schemeContent );
+    static void             skipElementNames( QString &schemeContent );
+    static void             skipElementIds( QString &schemeContent );
+    static void             skipActorBindingsBlockBoundaries( QString &schemeContent );
+    static void             skipValidatorBlocks( QString &schemeContent );
 };
 
 } // namespace U2

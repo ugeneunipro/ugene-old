@@ -19,10 +19,15 @@
  * MA 02110-1301, USA.
  */
 
+#include <U2Lang/HRSchemaSerializer.h>
+
 #include "SchemeSimilarityUtils.h"
 
+static const QString TEMP_SCHEMES_DIR_PATH = QDir::tempPath( );
+static const int SUBSTRING_NOT_FOUND = -1;
+
 namespace U2 {
-    
+
 void SchemeSimilarityUtils::checkSchemesSimilarity( SchemeHandle assembledScheme,
     const QString &pathToProperScheme, U2OpStatus &stateInfo )
 {
@@ -104,6 +109,7 @@ void SchemeSimilarityUtils::skipSchemeSpecificNames( QString &schemeContent ) {
     skipElementNames( schemeContent );
     skipElementIds( schemeContent );
     skipActorBindingsBlockBoundaries( schemeContent );
+    skipValidatorBlocks( schemeContent );
 }
 
 void SchemeSimilarityUtils::skipElementNames( QString &schemeContent ) {
@@ -150,6 +156,40 @@ void SchemeSimilarityUtils::skipElementIds( QString &schemeContent ) {
             }
             elementIdPos = schemeContent.indexOf( elementId, elementIdPos );
         }
+    }
+}
+
+void SchemeSimilarityUtils::skipValidatorBlocks( QString &schemeContent ) {
+    const QRegExp validatorBlockStartPattern( "\\s+\\" + HRSchemaSerializer::VALIDATOR + "\\s+" );
+    int validatorBlockStartPos = 0;
+    int validatorBlockEndPos = 0;
+    Q_FOREVER {
+        validatorBlockStartPos = schemeContent.indexOf( validatorBlockStartPattern,
+            validatorBlockEndPos );
+        if ( SUBSTRING_NOT_FOUND == validatorBlockStartPos ) {
+            break;
+        }
+
+        int currentBracePos = schemeContent.indexOf( HRSchemaSerializer::BLOCK_START,
+            validatorBlockStartPos );
+        int braceCount = 1;
+        while ( 0 != braceCount ) {
+            const int blockStartPos = schemeContent.indexOf( HRSchemaSerializer::BLOCK_START,
+                currentBracePos + 1 );
+            const int blockEndPos = schemeContent.indexOf( HRSchemaSerializer::BLOCK_END,
+                currentBracePos + 1 );
+            if ( blockStartPos < blockEndPos ) {
+                ++braceCount;
+                currentBracePos = blockStartPos;
+            } else {
+                --braceCount;
+                currentBracePos = blockEndPos;
+            }
+        }
+        validatorBlockEndPos = currentBracePos + 1;
+        schemeContent.replace( validatorBlockStartPos,
+            validatorBlockEndPos - validatorBlockStartPos, QString( ) );
+        validatorBlockEndPos = validatorBlockStartPos;
     }
 }
 
