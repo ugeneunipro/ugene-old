@@ -159,7 +159,8 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/api/GTTableView.h  \
     src/runnables/ugene/corelibs/U2Gui/AppSettingsDialogFiller.h \
     src/runnables/ugene/plugins/workflow_designer/AliasesDialogFiller.h \
-    src/runnables/ugene/plugins/workflow_designer/RPackageDialorFiller.h
+    src/runnables/ugene/plugins/workflow_designer/RPackageDialorFiller.h \
+    src/api/GTGraphicsItem.h
 SOURCES +=  src/GUITestBasePlugin.cpp \
             src/tests/crazy_user/GUICrazyUserTest.cpp \
             src/tests/crazy_user/GTRandomGUIActionFactory.cpp \
@@ -323,4 +324,5 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/api/GTTableView.cpp \
     src/runnables/ugene/corelibs/U2Gui/AppSettingsDialogFiller.cpp \
     src/runnables/ugene/plugins/workflow_designer/AliasesDialogFiller.cpp \
-    src/runnables/ugene/plugins/workflow_designer/RPackageDialorFiller.cpp
+    src/runnables/ugene/plugins/workflow_designer/RPackageDialorFiller.cpp \
+    src/api/GTGraphicsItem.cpp

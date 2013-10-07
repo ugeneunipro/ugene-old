@@ -26,10 +26,10 @@
 #include "api/GTTreeWidget.h"
 #include "GTUtilsMdi.h"
 #include "api/GTTabWidget.h"
+#include "api/GTGraphicsItem.h"
 
 #include <U2View/MSAEditor.h>
 #include <QTreeWidget>
-#include <QGraphicsItem>
 #include <QGraphicsView>
 #include <U2Core/AppContext.h>
 #include "../../workflow_designer/src/WorkflowViewItems.h"
@@ -94,8 +94,12 @@ void GTUtilsWorkflowDesigner::addAlgorithm(U2OpStatus &os, QString algName){
     GT_CHECK(alg!=NULL,"algorithm is NULL");
 
     selectAlgorithm(os,alg);
-    GTWidget::click(os, GTWidget::findWidget(os,"sceneView"));
-    GTGlobals::sleep(1000);
+    QWidget* w = GTWidget::findWidget(os,"sceneView");
+
+    int workerNum = getWorkers(os).size();
+    QPoint p(w->rect().topLeft() + QPoint(100+300*(workerNum-(workerNum/2)*2),100 + 200*(workerNum/2)));//shifting workers position
+    GTWidget::click(os, w,Qt::LeftButton, p);
+    GTGlobals::sleep(500);
 }
 #undef GT_METHOD_NAME
 
@@ -236,9 +240,9 @@ WorkflowPortItem* GTUtilsWorkflowDesigner::getPortById(U2OpStatus &os, WorkflowP
     }
     GT_CHECK_RESULT(false, "port with id " + id + "not found",NULL);
 }
-
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "getItemRect"
 QRect GTUtilsWorkflowDesigner::getItemRect(U2OpStatus &os,QString itemName){
 //TODO: support finding items when there are several similar workers in scheme
     QGraphicsView* sceneView = qobject_cast<QGraphicsView*>(GTWidget::findWidget(os,"sceneView"));
@@ -251,21 +255,47 @@ QRect GTUtilsWorkflowDesigner::getItemRect(U2OpStatus &os,QString itemName){
         if (textItemO) {
             QString text = textItemO->toPlainText();
             if (text.contains(itemName,Qt::CaseInsensitive)) {
-               QPointF scenePButton = it->mapToScene(it->boundingRect().bottomRight());
-               QPoint viewP = sceneView->mapFromScene(scenePButton);
-               QPoint globalBottomRightPos = sceneView->viewport()->mapToGlobal(viewP);
-
-               QPointF scenePTop = it->mapToScene(it->boundingRect().topLeft());
-               viewP = sceneView->mapFromScene(scenePTop);
-               QPoint globalTopLeftPos = sceneView->viewport()->mapToGlobal(viewP);
-
-               QRect globalRect(globalTopLeftPos,globalBottomRightPos);
-
-               return globalRect;
+                return GTGraphicsItem::getGraphicsItemRect(os, it);
             }
         }
     }
    return QRect();
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "connect"
+void GTUtilsWorkflowDesigner::connect(U2OpStatus &os, WorkflowProcessItem * from , WorkflowProcessItem * to){
+    QGraphicsView* sceneView = qobject_cast<QGraphicsView*>(from->scene()->views().at(0));
+    GT_CHECK(sceneView,"sceneView not found")
+    QList<WorkflowPortItem*> fromList = from->getPortItems();
+    QList<WorkflowPortItem*> toList = to->getPortItems();
+
+    foreach(WorkflowPortItem* fromPort, fromList){
+        foreach(WorkflowPortItem* toPort, toList){
+            if(fromPort->getPort()->canBind(toPort->getPort())){
+                GTMouseDriver::moveTo(os,GTGraphicsItem::getItemCenter(os,fromPort));
+                GTMouseDriver::press(os);
+                GTMouseDriver::moveTo(os,GTGraphicsItem::getItemCenter(os,toPort));
+                GTMouseDriver::release(os);
+                return;
+            }
+        }
+    }
+
+    GT_CHECK(false,"no suitable ports to connect");
+}
+#undef GT_METHOD_NAME
+
+QList<WorkflowProcessItem*> GTUtilsWorkflowDesigner::getWorkers(U2OpStatus &os){
+    QList<WorkflowProcessItem*> result;
+    QGraphicsView* sceneView = qobject_cast<QGraphicsView*>(GTWidget::findWidget(os,"sceneView"));
+    QList<QGraphicsItem *> items = sceneView->items();
+    foreach(QGraphicsItem* it, items){
+        WorkflowProcessItem* worker = qgraphicsitem_cast<WorkflowProcessItem*>(it);
+        if(worker)
+            result.append(worker);
+    }
+    return result;
 }
 
 #undef GT_CLASS_NAME
