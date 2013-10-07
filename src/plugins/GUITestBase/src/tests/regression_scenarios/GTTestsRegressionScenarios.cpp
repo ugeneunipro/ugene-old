@@ -1767,6 +1767,30 @@ GUI_TEST_CLASS_DEFINITION( test_1924 )
 
 }
 
+GUI_TEST_CLASS_DEFINITION( test_2169 ) {
+    // 1. Open "data/PDB/1CF7.pdb".
+    GTFileDialog::openFile(os, dataDir + "samples/PDB", "1CF7.pdb");
+
+    // 2. Open the DAS widget on the options panel
+    GTWidget::click(os, GTWidget::findWidget(os, "OP_DAS"));
+    GTGlobals::sleep(500);
+
+    QWidget *dasPanel = GTWidget::findWidget(os, "DasOptionsPanelWidget");
+    CHECK(NULL != dasPanel, );
+    QWidget *regionSelector = GTWidget::findWidget(os, "range_selector");
+    CHECK(NULL != regionSelector, );
+
+    GTWidget::click(os, GTWidget::findWidget(os,"ADV_single_sequence_widget_0"));
+    GTGlobals::sleep(500);
+    CHECK_SET_ERR(dasPanel->isEnabled(), "DAS panel is disabled for amino acid sequence");
+    CHECK_SET_ERR(regionSelector->isEnabled(), "DAS panel child is disabled for amino acid sequence");
+
+    GTWidget::click(os, GTWidget::findWidget(os,"ADV_single_sequence_widget_2"));
+    GTGlobals::sleep(500);
+    CHECK_SET_ERR(!dasPanel->isEnabled(), "DAS panel is enabled for nucleic acid sequence");
+    CHECK_SET_ERR(!regionSelector->isEnabled(), "DAS panel child is enabled for nucleic acid sequence");
+}
+
 GUI_TEST_CLASS_DEFINITION( test_2172 ) {
     GTLogTracer logTracer;
 

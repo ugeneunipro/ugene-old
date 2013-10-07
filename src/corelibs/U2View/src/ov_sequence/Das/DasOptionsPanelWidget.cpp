@@ -117,6 +117,7 @@ DasOptionsPanelWidget::DasOptionsPanelWidget(AnnotatedDNAView* adv)
     connectSignals();
     checkState();
     updateShowOptions();
+    setObjectName("DasOptionsPanelWidget");
 }
 
 void DasOptionsPanelWidget::sl_searchTypeChanged(int type) {
