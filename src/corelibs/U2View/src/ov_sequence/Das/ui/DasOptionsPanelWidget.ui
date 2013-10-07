@@ -216,7 +216,7 @@
       </size>
      </property>
      <property name="toolTip">
-      <string>Select an ID to fetch annotations from DAS</string>
+      <string>Select ID(s) to fetch annotations from DAS</string>
      </property>
      <property name="selectionBehavior">
       <enum>QAbstractItemView::SelectRows</enum>
@@ -260,7 +260,7 @@
      <item>
       <widget class="QPushButton" name="annotateButton">
        <property name="toolTip">
-        <string>Load annotations from DAS by ID of a selected sequence</string>
+        <string>Load annotations from DAS by selected ID(s)</string>
        </property>
        <property name="text">
         <string>Fetch Annotations</string>

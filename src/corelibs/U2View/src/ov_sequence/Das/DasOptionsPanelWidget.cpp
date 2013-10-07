@@ -144,18 +144,39 @@ void DasOptionsPanelWidget::sl_searchIdsClicked() {
 }
 
 void DasOptionsPanelWidget::sl_loadAnnotations() {
+    QStringList accessionNumbers;
+    if (!idList->selectionModel()->hasSelection()){
+        //if only one id in the list try accessing the current item
+        if (idList->rowCount() == 1){
+            accessionNumbers.append(idList->item(idList->currentRow(), 0)->text());
+        }
+        
+    }else{
+        QSet<int> usedRows;
+        QModelIndexList indexList = idList->selectionModel()->selectedIndexes();
+        foreach (QModelIndex index, indexList) {
+            int row = index.row();
+            if (usedRows.contains(row)){
+                continue;
+            }else{
+                usedRows.insert(row);
+            }
+            accessionNumbers.append(idList->item(row, 0)->text());
+        }
+    }
+    
     annotationData.clear();
     QList<DASSource> featureSources = getFeatureSources();
 
-    QString accessionNumber = idList->item(idList->currentRow(), 0)->text();
-
     loadDasObjectTasks.clear();
-    foreach (DASSource featureSource, featureSources) {
-        LoadDASObjectTask * loadAnnotationsTask = new LoadDASObjectTask(accessionNumber, featureSource, DASFeatures);
-        connect(loadAnnotationsTask,
-                SIGNAL(si_stateChanged()),
-                SLOT(sl_onLoadAnnotationsFinish()));
-        loadDasObjectTasks << loadAnnotationsTask;
+    foreach(const QString &accNumber, accessionNumbers){
+        foreach (DASSource featureSource, featureSources) {
+            LoadDASObjectTask * loadAnnotationsTask = new LoadDASObjectTask(accNumber, featureSource, DASFeatures);
+            connect(loadAnnotationsTask,
+                    SIGNAL(si_stateChanged()),
+                    SLOT(sl_onLoadAnnotationsFinish()));
+            loadDasObjectTasks << loadAnnotationsTask;
+        }
     }
 
     AppContext::getTaskScheduler()->registerTopLevelTask(new MultiTask("Load DAS annotations for current sequence", loadDasObjectTasks));
@@ -371,9 +392,6 @@ void DasOptionsPanelWidget::initialize() {
 
     //disable editing of the results
     idList->setEditTriggers(QAbstractItemView::NoEditTriggers);
-
-    //only one ID can be selected for now
-    idList->setSelectionMode(QAbstractItemView::SingleSelection);
 
     hintLabel->hide();
     hintLabel->setStyleSheet(
