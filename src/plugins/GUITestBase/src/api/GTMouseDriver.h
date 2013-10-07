@@ -31,9 +31,7 @@ class GTMouseDriver {
 public:
     // fails if given coordinates are not in the screen's rect
     // Linux: fails if there is an opening X display error
-    static void moveTo(U2OpStatus &os, const QPoint& p) { mousePos = p; moveToP(os, p.x(), p.y()); }
-
-    static void selectArea(U2::U2OpStatus &os, const QPoint& p);
+    static void moveTo(U2OpStatus &os, const QPoint& p) {mousePos = p; moveToP(os, p.x(), p.y()); }
 
     // fails if press or release fails
     // Linux: fails if there is an opening X display error
@@ -51,6 +49,7 @@ public:
     static QPoint getMousePosition() { return mousePos; }
 private:
     static QPoint mousePos;
+    static Qt::MouseButtons bp;
 
     static void moveToP(U2::U2OpStatus &os, const int x, const int y); // platform-depended realization of moveTo
     static void selectArea(U2::U2OpStatus &os, const int x, const int y);

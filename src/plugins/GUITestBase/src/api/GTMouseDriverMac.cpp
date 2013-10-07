@@ -33,10 +33,15 @@ namespace U2 {
 #ifdef  Q_OS_MAC
 #define GT_CLASS_NAME "GTMouseDriverMac"
 QPoint GTMouseDriver::mousePos = QPoint(-1, -1);
+Qt::MouseButtons GTMouseDriver::bp = Qt::NoButton;
 
 #define GT_METHOD_NAME "moveToP"
 void GTMouseDriver::moveToP(U2::U2OpStatus &os, const int x, const int y)
 {
+    if(bp.testFlag(Qt::LeftButton)){
+        selectArea(os,x,y);
+        return;
+    }
     CGDirectDisplayID displayID = CGMainDisplayID();
     size_t horres = CGDisplayPixelsWide (displayID);
     size_t vertres = CGDisplayPixelsHigh (displayID);
@@ -52,8 +57,6 @@ void GTMouseDriver::moveToP(U2::U2OpStatus &os, const int x, const int y)
     GTGlobals::sleep(100);
 }
 #undef GT_METHOD_NAME
-
-void GTMouseDriver::selectArea(U2::U2OpStatus &os, const QPoint& p){mousePos = p; selectArea(os, p.x(), p.y());}
 
 #define GT_METHOD_NAME "selectArea"
 void GTMouseDriver::selectArea(U2::U2OpStatus &os, const int x, const int y)
@@ -77,6 +80,7 @@ void GTMouseDriver::selectArea(U2::U2OpStatus &os, const int x, const int y)
 #define GT_METHOD_NAME "press"
 void GTMouseDriver::press(U2::U2OpStatus &os, Qt::MouseButton button)
 {
+    bp |= button;
     QPoint mousePos = QCursor::pos();
     CGEventType eventType = button == Qt::LeftButton ? kCGEventLeftMouseDown :
                                 button == Qt::RightButton ? kCGEventRightMouseDown:
@@ -93,6 +97,7 @@ void GTMouseDriver::press(U2::U2OpStatus &os, Qt::MouseButton button)
 #define GT_METHOD_NAME "release"
 void GTMouseDriver::release(U2::U2OpStatus &os, Qt::MouseButton button)
 {
+    bp ^= button;
     QPoint mousePos = QCursor::pos();
     CGEventType eventType = button == Qt::LeftButton ? kCGEventLeftMouseUp :
                                 button == Qt::RightButton ? kCGEventRightMouseUp:
@@ -155,3 +160,4 @@ void GTMouseDriver::scroll(U2OpStatus &os, int value)
 
 #endif // Q_OS_MAC
 } //namespace
+
