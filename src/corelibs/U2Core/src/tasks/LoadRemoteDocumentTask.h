@@ -26,10 +26,12 @@
 #include <U2Core/GUrl.h>
 #include <U2Core/NetworkConfiguration.h>
 
-#include <QtCore/QEventLoop>
 #include <QtCore/QUrl>
 #include <QtNetwork/QNetworkReply>
 #include <QtXml/QXmlReader>
+
+class QEventLoop;
+class QTimer;
 
 namespace U2 {
 
@@ -159,29 +161,44 @@ private:
     QString accNumber, dbName;
 };
 
+class U2CORE_EXPORT BaseEntrezRequestTask : public Task {
+    Q_OBJECT
+public:
+    BaseEntrezRequestTask( const QString &taskName );
+    virtual ~BaseEntrezRequestTask( );
+
+protected slots:
+    virtual void sl_replyFinished( QNetworkReply *reply ) = 0;
+    void sl_onError( QNetworkReply::NetworkError error );
+    void sl_uploadProgress( qint64 bytesSent, qint64 bytesTotal );
+
+protected:
+    // method should be called from the thread where @networkManager is actually used
+    void createLoopAndNetworkManager( );
+
+    QEventLoop *loop;
+    QNetworkAccessManager *networkManager;
+};
 
 // This task makes queries to NCBI Entrez search engine, using eTools
 // First step: query eSearch to get global Entrez index
 // Second step: query eFetch to download file by index
 // About eTools: http://www.ncbi.nlm.nih.gov/bookshelf/br.fcgi?book=coursework&part=eutils
 
-class U2CORE_EXPORT LoadDataFromEntrezTask : public Task {
+class U2CORE_EXPORT LoadDataFromEntrezTask : public BaseEntrezRequestTask {
     Q_OBJECT
 public:
-    LoadDataFromEntrezTask(const QString& dbId, const QString& accNumber, const QString& retType, const QString& fullPath);
-    ~LoadDataFromEntrezTask();
-    
-    virtual void run();
-    
-public slots:
+    LoadDataFromEntrezTask(const QString& dbId, const QString& accNumber, const QString& retType,
+        const QString& fullPath);
+
+    void run();
+
+private slots:
     void sl_replyFinished(QNetworkReply* reply);
-    void sl_onError(QNetworkReply::NetworkError error);
-    void sl_uploadProgress( qint64 bytesSent, qint64 bytesTotal);
+
 private:
-    QEventLoop* loop;
     QNetworkReply* searchReply;
     QNetworkReply* downloadReply;
-    QNetworkAccessManager* networkManager;
     QXmlSimpleReader xmlReader;
     QString db, accNumber;
     bool copyDataMode;
@@ -189,23 +206,19 @@ private:
     QString fullPath, format;
 };
 
-class U2CORE_EXPORT EntrezQueryTask : public Task {
+class U2CORE_EXPORT EntrezQueryTask : public BaseEntrezRequestTask {
     Q_OBJECT
 public:
     EntrezQueryTask( QXmlDefaultHandler* resultHandler, const QString& query );
-    ~EntrezQueryTask();
 
-    virtual void run();
-    const QXmlDefaultHandler* getResultHandler() const { return resultHandler; }
+    void run();
+    const QXmlDefaultHandler* getResultHandler() const;
 
-    public slots:
-        void sl_replyFinished(QNetworkReply* reply);
-        void sl_onError(QNetworkReply::NetworkError error);
-        void sl_uploadProgress( qint64 bytesSent, qint64 bytesTotal);
+private slots:
+    void sl_replyFinished(QNetworkReply* reply);
+
 private:
-    QEventLoop* loop;
     QNetworkReply* queryReply;
-    QNetworkAccessManager* networkManager;
     QXmlDefaultHandler* resultHandler;
     QXmlSimpleReader xmlReader;
     QString query;

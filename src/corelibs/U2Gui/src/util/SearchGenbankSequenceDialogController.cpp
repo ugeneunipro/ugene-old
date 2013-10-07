@@ -33,7 +33,8 @@
 
 namespace U2 {
 
-SearchGenbankSequenceDialogController::SearchGenbankSequenceDialogController(QWidget *p) : QDialog(p), searchTask(NULL)
+SearchGenbankSequenceDialogController::SearchGenbankSequenceDialogController(QWidget *p)
+    : QDialog( p ), searchTask( NULL ), summaryTask( NULL )
 {
     ui = new Ui_SearchGenbankSequenceDialog();
     ui->setupUi(this);
@@ -58,7 +59,13 @@ SearchGenbankSequenceDialogController::SearchGenbankSequenceDialogController(QWi
 
 SearchGenbankSequenceDialogController::~SearchGenbankSequenceDialogController()
 {
-
+    // if dialog was closed during query execution
+    if ( NULL != summaryTask && !summaryTask->isFinished( ) ) {
+        summaryTask->cancel( );
+    }
+    if ( NULL != searchTask && !searchTask->isFinished( ) ) {
+        searchTask->cancel( );
+    }
 }
 
 void SearchGenbankSequenceDialogController::addQueryBlockWidget(QWidget *w)
@@ -102,12 +109,14 @@ void SearchGenbankSequenceDialogController::sl_taskStateChanged( Task* task )
             ui->treeWidget->clear();
             const QStringList& results =  searchResultHandler->getIdList();
             if (results.size() == 0) {
-                QMessageBox::information(this, windowTitle(), tr("No results found corresponding to the query.") );
+                QMessageBox::information(this, windowTitle(),
+                    tr("No results found corresponding to the query") );
+                ui->searchButton->setEnabled( true );
             } else {
                 QString ids = results.join(",");
                 QString query(EntrezUtils::NCBI_ESUMMARY_URL.arg(ui->databaseBox->currentText()).arg(ids));
                 summaryResultHandler.reset( new ESummaryResultHandler() );
-                summaryTask = new EntrezQueryTask( summaryResultHandler.data() , query);
+                summaryTask = new EntrezQueryTask( summaryResultHandler.data( ), query );
                 AppContext::getTaskScheduler()->registerTopLevelTask(summaryTask);
             }
             searchTask = NULL;
@@ -123,7 +132,7 @@ void SearchGenbankSequenceDialogController::sl_taskStateChanged( Task* task )
                 ui->treeWidget->addTopLevelItem( item );
             }
             summaryTask = NULL;
-            ui->searchButton->setDisabled( false );
+            ui->searchButton->setEnabled( true );
         }
     }
 }
