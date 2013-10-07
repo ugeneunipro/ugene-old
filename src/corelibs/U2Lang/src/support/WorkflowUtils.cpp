@@ -1084,6 +1084,22 @@ bool WorkflowUtils::validateDatasets(const QList<Dataset> &sets, ProblemList &pr
     return res;
 }
 
+QScriptValue WorkflowUtils::datasetsToScript(const QList<Dataset> &sets, QScriptEngine &engine) {
+    QScriptValue setsArray = engine.newArray(sets.size());
+
+    for (int setIdx = 0; setIdx < sets.size(); setIdx++) {
+        Dataset set = sets[setIdx];
+        QScriptValue urls = engine.newArray(set.getUrls().size());
+        for (int urlIdx = 0; urlIdx < set.getUrls().size(); urlIdx++) {
+            QString url = set.getUrls()[urlIdx]->getUrl();
+            urls.setProperty(urlIdx, engine.newVariant(url));
+        }
+        setsArray.setProperty(setIdx, urls);
+    }
+
+    return setsArray;
+}
+
 /*****************************
  * PrompterBaseImpl
  *****************************/

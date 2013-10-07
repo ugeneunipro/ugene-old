@@ -87,6 +87,7 @@ HEADERS += src/library/BaseActorCategories.h \
            src/model/actor/ActorConfigurationEditor.h \
            src/model/actor/ActorDocument.h \
            src/model/actor/ActorPrototype.h \
+           src/model/actor/ActorScriptValidator.h \
            src/model/actor/ActorValidator.h \
            src/model/url_attribute/Dataset.h \
            src/model/url_attribute/URLAttribute.h \
@@ -186,6 +187,7 @@ SOURCES += src/library/BaseActorCategories.cpp \
            src/model/actor/Actor.cpp \
            src/model/actor/ActorConfigurationEditor.cpp \
            src/model/actor/ActorPrototype.cpp \
+           src/model/actor/ActorScriptValidator.cpp \
            src/model/actor/ActorValidator.cpp \
            src/model/url_attribute/Dataset.cpp \
            src/model/url_attribute/URLAttribute.cpp \

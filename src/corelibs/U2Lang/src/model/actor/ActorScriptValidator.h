@@ -19,33 +19,40 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_WORKFLOW_ENVIMPL_H_
-#define _U2_WORKFLOW_ENVIMPL_H_
+#ifndef _U2_ACTORSCRIPTVALIDATOR_H_
+#define _U2_ACTORSCRIPTVALIDATOR_H_
 
-#include <U2Lang/WorkflowEnv.h>
+#include "ActorValidator.h"
 
 namespace U2 {
-
 namespace Workflow {
 
-/**
- * Workflow environment container implementation
- */
-class U2LANG_EXPORT WorkflowEnvImpl : public WorkflowEnv {
-protected:
-    virtual ~WorkflowEnvImpl();
+class ActorScriptValidator : public ActorValidator {
+public:
+    virtual bool validate(const Actor *actor, ProblemList &problemList, const QMap<QString, QString> &options) const;
+};
 
-    virtual DataTypeRegistry * initDataRegistry();
-    virtual ActorPrototypeRegistry * initProtoRegistry();
-    virtual DomainFactoryRegistry * initDomainRegistry();
-    virtual DataTypeValueFactoryRegistry * initDataTypeValueFactoryRegistry();
-    virtual ExternalToolCfgRegistry * initExternalToolCfgRegistry();
-    virtual SchemaActorsRegistry * initSchemaActorsRegistry();
-    virtual WorkflowTasksRegistry * initWorkflowTasksRegistry();
-    virtual ActorValidatorRegistry * initActorValidatorRegistry();
-}; // WorkflowEnvImpl
+class ValidationContext : public QObject {
+    Q_OBJECT
+public:
+    ValidationContext(QScriptEngine &engine, const Actor *actor);
+
+    ProblemList problems() const;
+    bool hasErrors() const;
+
+public slots:
+    QScriptValue attributeValue(const QString &attrId);
+    void error(const QString &message);
+    void warning(const QString &message);
+
+private:
+    QScriptEngine &engine;
+    const Actor *actor;
+    QStringList errors;
+    QStringList warnings;
+};
 
 } // Workflow
 } // U2
 
-#endif // _U2_WORKFLOW_ENVIMPL_H_
+#endif // _U2_ACTORSCRIPTVALIDATOR_H_

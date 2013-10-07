@@ -124,6 +124,9 @@ const QString HRSchemaSerializer::EXC_FILTER            = "exclude-name-filter";
 const QString HRSchemaSerializer::INC_FILTER            = "include-name-filter";
 const QString HRSchemaSerializer::RECURSIVE             = "recursive";
 const QString HRSchemaSerializer::ESTIMATIONS           = "estimations";
+const QString HRSchemaSerializer::VALIDATOR             = ".validator";
+const QString HRSchemaSerializer::V_TYPE                = "type";
+const QString HRSchemaSerializer::V_SCRIPT              = "script";
 
 template <class T>
 static void setIfNotNull(const T & what, T * to) {
@@ -313,7 +316,6 @@ void HRSchemaSerializer::Tokenizer::tokenizeSchema(const QString & d) {
     bool pageDef = false;
     bool pageDefHeader = false;
     bool estDef = false;
-    bool estDefHeader = false;
     do {
         QString line = stream.readLine().trimmed();
         if(line.isEmpty()) {
@@ -338,12 +340,13 @@ void HRSchemaSerializer::Tokenizer::tokenizeSchema(const QString & d) {
         }
         if (ESTIMATIONS_DEPTH == depth) {
             estDef = line.startsWith(ESTIMATIONS);
-            //estDefHeader = true;
-        } else {
-            //estDefHeader = false;
         }
-        if(isBlockLine(line) &&
-            ((estDef && !isElemDef) || (pageDef && !pageDefHeader) || (isElemDef && !elemDefHeader))) {
+
+        if(isBlockLine(line) && (
+            (estDef && !isElemDef)
+            || (pageDef && !pageDefHeader)
+            || (isElemDef && !elemDefHeader)
+            )) {
             tokenizeBlock(line, stream);
             continue;
         }
@@ -908,12 +911,47 @@ Actor* HRSchemaSerializer::parseElementsDefinition(Tokenizer & tokenizer, const 
             proc->getParameter(key)->getAttributeScript().setScriptText(pairs.blockPairs.value(key));
         }
     }
-    
+
     foreach( const QString & key, pairs.equalPairs.keys() ) {
         proc->getParameter(key)->setAttributeValue(getAttrValue(proc, key, pairs.equalPairs.value(key)));
     }
 
+    foreach (const QString &valDef, pairs.blockPairs.values(VALIDATOR)) {
+        U2OpStatus2Log os;
+        ValidatorDesc desc = parseValidator(valDef, os);
+        if (!os.hasError()) {
+            proc->addCustomValidator(desc);
+        }
+    }
+
     return proc;
+}
+
+ValidatorDesc HRSchemaSerializer::parseValidator(const QString &desc, U2OpStatus &os) {
+    ValidatorDesc result;
+    ParsedPairs pairs(desc, 0);
+    if (!pairs.equalPairs.contains(V_TYPE)) {
+        os.setError(tr("No validator type"));
+        return result;
+    }
+    result.type = pairs.equalPairs.take(V_TYPE);
+    int blocks = 0;
+    if (V_SCRIPT == result.type) {
+        blocks = 1;
+        if (!pairs.blockPairs.contains(V_SCRIPT)) {
+            os.setError(tr("Script validator has not a script"));
+            return result;
+        }
+    }
+
+    if (blocks > pairs.blockPairs.size()) {
+        os.setError(tr("Too many blocks in validator definition"));
+        return result;
+    }
+
+    result.options.unite(pairs.equalPairs);
+    result.options.unite(pairs.blockPairs);
+    return result;
 }
 
 GrouperSlotAction HRSchemaSerializer::parseAction(Tokenizer &tokenizer) {
@@ -1877,6 +1915,21 @@ static QString inUrlDefinitionBlocks(const QString &attrId, const QList<Dataset>
     return res;
 }
 
+static QString validatorDefinition(const ValidatorDesc &desc, int depth) {
+    QString result;
+    QMap<QString, QString> options = desc.options;
+    result += HRSchemaSerializer::makeEqualsPair(HRSchemaSerializer::V_TYPE, desc.type, depth);
+    if (HRSchemaSerializer::V_SCRIPT == desc.type) {
+        QString script = options.take(HRSchemaSerializer::V_SCRIPT);
+        result += HRSchemaSerializer::makeBlock(HRSchemaSerializer::V_SCRIPT, HRSchemaSerializer::NO_NAME,
+            makeIndent(depth+1) + script + HRSchemaSerializer::NEW_LINE, depth, false, false);
+    }
+    foreach (const QString &key, options.keys()) {
+        result += HRSchemaSerializer::makeEqualsPair(key, options[key], depth);
+    }
+    return result;
+}
+
 static QString elementsDefinitionBlock(Actor * actor, bool copyMode) {
     assert(actor != NULL);
     QString res;
@@ -1926,6 +1979,11 @@ static QString elementsDefinitionBlock(Actor * actor, bool copyMode) {
                 res += HRSchemaSerializer::makeEqualsPair(attributeId, valueStr);
             }
         }
+    }
+
+    foreach (const ValidatorDesc &desc, actor->getCustomValidators()) {
+        res += HRSchemaSerializer::makeBlock(HRSchemaSerializer::VALIDATOR, HRSchemaSerializer::NO_NAME,
+            validatorDefinition(desc, 3), 2, false, false);
     }
 
     return res;

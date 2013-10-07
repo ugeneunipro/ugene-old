@@ -764,7 +764,7 @@ bool InputSlotsValidator::validate(const IntegralBusPort *port, ProblemList &pro
     return true;
 }
 
-bool BowtieToolsValidator::validate( const Actor *actor, ProblemList &problemList ) const {
+bool BowtieToolsValidator::validate( const Actor *actor, ProblemList &problemList, const QMap<QString, QString> &/*options*/ ) const {
     Attribute *attr = actor->getParameter( TopHatWorkerFactory::BOWTIE_TOOL_PATH );
     SAFE_POINT( NULL != attr, "NULL attribute", false );
 

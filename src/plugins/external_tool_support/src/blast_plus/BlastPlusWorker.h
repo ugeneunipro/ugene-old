@@ -69,7 +69,7 @@ public:
 
 class ToolsValidator : public ActorValidator {
 public:
-    virtual bool validate(const Actor *actor, ProblemList &problemList) const;
+    virtual bool validate(const Actor *actor, ProblemList &problemList, const QMap<QString, QString> &options) const;
 
 private:
     ExternalTool * getTool(const QString &program) const;

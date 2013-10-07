@@ -12,6 +12,7 @@ HEADERS += src/ActorCfgModel.h \
            src/InvestigationDataModel.h \
            src/ItemViewStyle.h \
            src/PortAliasesConfigurationDialog.h \
+           src/RPackageInstallerDialog.h \
            src/SceneSerializer.h \
            src/SchemaAliasesConfigurationDialogImpl.h \
            src/StartupDialog.h \
@@ -68,13 +69,13 @@ HEADERS += src/ActorCfgModel.h \
            src/library/WriteAssemblyWorkers.h \
            src/library/WriteVariationWorker.h \
            src/tasks/ReadAssemblyTask.h \
+           src/util/DatasetsCountValidator.h \
+           src/util/DatasetValidator.h \
            src/util/GrouperActionUtils.h \
            src/util/RequiredSlotsValidator.h \
            src/util/SaveSchemaImageUtils.h \
            src/util/WorkerNameValidator.h \
-           src/util/WriteSequenceValidator.h \
-           src/util/DatasetValidator.h \
-    src/RPackageInstallerDialog.h
+           src/util/WriteSequenceValidator.h
 FORMS += src/ui/ChooseItemDialog.ui \
          src/ui/CreateScriptBlockDialog.ui \
          src/ui/DashboardsManagerDialog.ui \
@@ -83,12 +84,12 @@ FORMS += src/ui/ChooseItemDialog.ui \
          src/ui/ImportSchemaDialog.ui \
          src/ui/PaletteWidget.ui \
          src/ui/PortAliasesConfigurationDialog.ui \
+         src/ui/RPackageInstallerDialog.ui \
          src/ui/SchemaAliasesConfigurationDialog.ui \
          src/ui/StartupDialog.ui \
          src/ui/WorkflowEditorWidget.ui \
          src/ui/WorkflowMetaDialog.ui \
-         src/ui/WorkflowSettingsWidget.ui \
-    src/ui/RPackageInstallerDialog.ui
+         src/ui/WorkflowSettingsWidget.ui
 SOURCES += src/ActorCfgModel.cpp \
            src/BreakpointManagerView.cpp \
            src/ChooseItemDialog.cpp \
@@ -100,6 +101,7 @@ SOURCES += src/ActorCfgModel.cpp \
            src/InvestigationDataModel.cpp \
            src/ItemViewStyle.cpp \
            src/PortAliasesConfigurationDialog.cpp \
+           src/RPackageInstallerDialog.cpp \
            src/SceneSerializer.cpp \
            src/SchemaAliasesConfigurationDialogImpl.cpp \
            src/StartupDialog.cpp \
@@ -156,15 +158,12 @@ SOURCES += src/ActorCfgModel.cpp \
            src/library/WriteAssemblyWorkers.cpp \
            src/library/WriteVariationWorker.cpp \
            src/tasks/ReadAssemblyTask.cpp \
+           src/util/DatasetsCountValidator.cpp \
+           src/util/DatasetValidator.cpp \
            src/util/GrouperActionUtils.cpp \
            src/util/RequiredSlotsValidator.cpp \
            src/util/SaveSchemaImageUtils.cpp \
            src/util/WorkerNameValidator.cpp \
-           src/util/WriteSequenceValidator.cpp \
-           src/util/DatasetValidator.cpp \
-    src/RPackageInstallerDialog.cpp
+           src/util/WriteSequenceValidator.cpp
 RESOURCES += workflow_designer.qrc
 TRANSLATIONS += transl/english.ts transl/russian.ts
-
-
-

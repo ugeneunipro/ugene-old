@@ -120,7 +120,10 @@ public:
     static const QString INC_FILTER;
     static const QString RECURSIVE;
     static const QString ESTIMATIONS;
-    
+    static const QString VALIDATOR;
+    static const QString V_TYPE;
+    static const QString V_SCRIPT;
+
 public:
     struct U2LANG_EXPORT ReadFailed {
         ReadFailed(const QString & msg) : what(msg) {}
@@ -185,6 +188,7 @@ public:
     static void parseBodyHeader(Tokenizer & tokenizer, Metadata * meta, bool needName = true);
     static Actor* parseElementsDefinition(Tokenizer & tokenizer, const QString & actorName, QMap<QString, Actor*> & actorMap, 
                                             QMap<ActorId, ActorId>* idMap = NULL);
+    static ValidatorDesc parseValidator(const QString &desc, U2OpStatus &os);
     static void parseGrouperOutSlots(Actor *proc, const QStringList &outSlots, const QString &attrId);
     static void parseFunctionDefinition(Tokenizer & tokenizer, QMap<QString, Actor*> & actorMap);
     static void parseMarkerDefinition(Actor *proc, const QString &markerId, ParsedPairs &pairs);

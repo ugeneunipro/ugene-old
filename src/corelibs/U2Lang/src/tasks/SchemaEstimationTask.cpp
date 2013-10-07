@@ -159,7 +159,7 @@ QScriptValue ExtimationsUtilsClass::attributeValue(const QString &attrStr) {
         return engine.newVariant(value);
     }
 
-    return prepareDatasets(value.value< QList<Dataset> >());
+    return WorkflowUtils::datasetsToScript(value.value< QList<Dataset> >(), engine);
 }
 
 qint64 ExtimationsUtilsClass::fileSize(const QString &url) {

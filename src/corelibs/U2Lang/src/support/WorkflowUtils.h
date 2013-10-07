@@ -147,6 +147,8 @@ public:
      */
     static bool validateDatasets(const QList<Dataset> &sets, ProblemList &problemList);
 
+    static QScriptValue datasetsToScript(const QList<Dataset> &sets, QScriptEngine &engine);
+
 private:
     static QStringList initExtensions();
     static bool validate(const Workflow::Schema &s, ProblemList &problemList);

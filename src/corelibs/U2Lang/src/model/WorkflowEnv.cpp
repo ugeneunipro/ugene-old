@@ -40,6 +40,7 @@ bool WorkflowEnv::init(WorkflowEnv* env) {
     env->ecfgReg = env->initExternalToolCfgRegistry();
     env->schemaActorsReg = env->initSchemaActorsRegistry();
     env->workflowTasksRegistry = env->initWorkflowTasksRegistry();
+    env->actorValidatorRegistry = env->initActorValidatorRegistry();
     return true;
 }
 

@@ -28,7 +28,7 @@
 namespace U2 {
 namespace Workflow {
 
-bool DatasetValidator::validate(const Actor *actor, ProblemList &problemList) const {
+bool DatasetValidator::validate(const Actor *actor, ProblemList &problemList, const QMap<QString, QString> &/*options*/) const {
     // If parameter is incorrect, return true and skip validation: it is only a warning
     Attribute *urlAttr = actor->getParameter(BaseAttributes::URL_IN_ATTRIBUTE().getId());
     SAFE_POINT(urlAttr != NULL, "Attribute is NULL", true);

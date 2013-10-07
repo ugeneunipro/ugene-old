@@ -25,6 +25,7 @@
 #include <U2Lang/CoreLibConstants.h>
 #include <U2Lang/GrouperOutSlot.h>
 #include <U2Lang/GrouperSlotAttribute.h>
+#include <U2Lang/WorkflowEnv.h>
 #include <U2Lang/WorkflowUtils.h>
 
 #include "ActorDocument.h"
@@ -351,6 +352,25 @@ void Actor::updateDelegateTags() {
             rel->updateDelegateTags(influencing->getAttributePureValue(), dependentDelegate->tags());
         }
     }
+}
+
+void Actor::addCustomValidator(const ValidatorDesc &desc) {
+    customValidators << desc;
+}
+
+const QList<ValidatorDesc> & Actor::getCustomValidators() const {
+    return customValidators;
+}
+
+bool Actor::validate(ProblemList &problemList) const {
+    bool result = Configuration::validate(problemList);
+    foreach (const ValidatorDesc &desc, customValidators) {
+        ActorValidator *v = WorkflowEnv::getActorValidatorRegistry()->findValidator(desc.type);
+        if (NULL != v) {
+            result &= v->validate(this, problemList, desc.options);
+        }
+    }
+    return result;
 }
 
 } // Workflow

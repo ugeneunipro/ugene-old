@@ -33,50 +33,56 @@ class ActorDocument;
 class ActorPrototype;
 class Port;
 
+class U2LANG_EXPORT ValidatorDesc {
+public:
+    QString type;
+    QMap<QString, QString> options;
+};
+
 /**
  * It is a configuration - it has set of named attributes
  * with set of Ports and links between them
  *
  * represents one of ActorPrototypes
- * Peer is needed for saving Worker that is associated with current actor (see SimplestSequentialScheduler::tick())
+ * Peer is needed for saving Worker that is associated with current actor (see LastReadyScheduler::tick())
  */
 class U2LANG_EXPORT Actor: public QObject, public Configuration, public Peer {
     Q_OBJECT
 public:
     virtual ~Actor();
-    
+
     ActorPrototype* getProto() const;
-    
+
     // this id is an actor block name at the *.uwl file
     ActorId getId() const;
     void setId(const ActorId &id);
-    
+
     QString getLabel() const;
     void setLabel(const QString& l);
-    
+
     Port* getPort(const QString& id) const;
     QList<Port*> getPorts() const;
     QList<Port*> getInputPorts() const;
     QList<Port*> getOutputPorts() const;
-    
+
     // reimplemented: Configuration::setParameter
     virtual void setParameter(const QString& name, const QVariant& val);
-    
+
     // NULL if description not set by user
     ActorDocument* getDescription() const;
     void setDescription(ActorDocument* d);
-    
+
     const QMap<QString, QString> & getParamAliases() const;
     QMap<QString, QString> & getParamAliases();
     bool hasParamAliases() const;
-    
+
     const QMap<QString, QString> & getAliasHelp() const;
     QMap<QString, QString> & getAliasHelp();
     bool hasAliasHelp() const;
-    
+
     // reimplemented: Configuration::remap
     virtual void remap(const QMap<ActorId, ActorId>&);
-    
+
     AttributeScript *getScript() const;
     void setScript(AttributeScript* _script);
 
@@ -96,15 +102,19 @@ public:
 
     void updateDelegateTags();
 
+    void addCustomValidator(const ValidatorDesc &desc);
+    const QList<ValidatorDesc> & getCustomValidators() const;
+    virtual bool validate(ProblemList &problemList) const;
+
 signals:
     void si_labelChanged();
     void si_modified();
-    
+
 protected:
     friend class ActorPrototype;
     Actor(const ActorId &actorId, ActorPrototype* proto, AttributeScript *script);
     Actor(const Actor&);
-    
+
 protected:
     ActorId id;
     // name of actor
@@ -131,6 +141,7 @@ protected:
     AttributeScript * condition;
     // an actor could be a subactor of some another
     ActorId owner;
+    QList<ValidatorDesc> customValidators;
 
 private:
     // setups variables for script

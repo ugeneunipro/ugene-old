@@ -19,33 +19,21 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_WORKFLOW_ENVIMPL_H_
-#define _U2_WORKFLOW_ENVIMPL_H_
+#ifndef _U2_DATASETSCOUNTVALIDATOR_H_
+#define _U2_DATASETSCOUNTVALIDATOR_H_
 
-#include <U2Lang/WorkflowEnv.h>
+#include <U2Lang/ActorModel.h>
 
 namespace U2 {
-
 namespace Workflow {
 
-/**
- * Workflow environment container implementation
- */
-class U2LANG_EXPORT WorkflowEnvImpl : public WorkflowEnv {
-protected:
-    virtual ~WorkflowEnvImpl();
-
-    virtual DataTypeRegistry * initDataRegistry();
-    virtual ActorPrototypeRegistry * initProtoRegistry();
-    virtual DomainFactoryRegistry * initDomainRegistry();
-    virtual DataTypeValueFactoryRegistry * initDataTypeValueFactoryRegistry();
-    virtual ExternalToolCfgRegistry * initExternalToolCfgRegistry();
-    virtual SchemaActorsRegistry * initSchemaActorsRegistry();
-    virtual WorkflowTasksRegistry * initWorkflowTasksRegistry();
-    virtual ActorValidatorRegistry * initActorValidatorRegistry();
-}; // WorkflowEnvImpl
+class DatasetsCountValidator : public ActorValidator {
+public:
+    virtual bool validate(const Actor *actor, ProblemList &problemList, const QMap<QString, QString> &options) const;
+    static const QString ID;
+};
 
 } // Workflow
 } // U2
 
-#endif // _U2_WORKFLOW_ENVIMPL_H_
+#endif // _U2_DATASETSCOUNTVALIDATOR_H_

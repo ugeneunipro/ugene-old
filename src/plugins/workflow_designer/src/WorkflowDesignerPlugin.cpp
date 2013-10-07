@@ -30,6 +30,7 @@
 #include "library/IncludedProtoFactoryImpl.h"
 
 #include <util/SaveSchemaImageUtils.h>
+#include <util/DatasetsCountValidator.h>
 
 #include <U2Lang/IncludedProtoFactory.h>
 #include <U2Lang/WorkflowEnv.h>
@@ -101,6 +102,7 @@ WorkflowDesignerPlugin::WorkflowDesignerPlugin()
     registerWorkflowTasks();
     processCMDLineOptions();
     Workflow::CoreLib::initIncludedWorkers();
+    WorkflowEnv::getActorValidatorRegistry()->addValidator(DatasetsCountValidator::ID, new DatasetsCountValidator());
 }
 
 void WorkflowDesignerPlugin::processCMDLineOptions() {

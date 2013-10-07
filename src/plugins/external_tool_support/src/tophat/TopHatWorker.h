@@ -142,7 +142,7 @@ public:
 
 class BowtieToolsValidator : public ActorValidator {
 public:
-    virtual bool validate(const Actor *actor, ProblemList &problemList) const;
+    virtual bool validate(const Actor *actor, ProblemList &problemList, const QMap<QString, QString> &options) const;
 };
 
 class BowtieFilesRelation : public AttributeRelation {
