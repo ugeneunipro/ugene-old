@@ -37,6 +37,10 @@ workflow "Main Tuxedo: paired-end reads"{
         url-in {
             dataset:"Dataset 2";
         }
+        .validator {
+            type:datasets-count;
+            min:2;
+        }
     }
     read-sequence-1 {
         type:get-file-list;
@@ -46,6 +50,10 @@ workflow "Main Tuxedo: paired-end reads"{
         }
         url-in {
             dataset:"Dataset 2";
+        }
+        .validator {
+            type:datasets-count;
+            min:2;
         }
     }
     files-conversion {

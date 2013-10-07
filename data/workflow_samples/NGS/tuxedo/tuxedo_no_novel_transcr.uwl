@@ -23,6 +23,10 @@ workflow "Multiple datasets Tuxedo: single-end reads"{
         url-in {
             dataset:"Dataset 2";
         }
+        .validator {
+            type:datasets-count;
+            min:2;
+        }
     }
     read-annotations {
         type:read-annotations;

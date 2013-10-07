@@ -33,6 +33,10 @@ workflow "Main Tuxedo: single-end reads"{
         url-in {
             dataset:"Dataset 2";
         }
+        .validator {
+            type:datasets-count;
+            min:2;
+        }
     }
     files-conversion {
         type:files-conversion;
