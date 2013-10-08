@@ -119,6 +119,7 @@ public slots:
     QString absolute(const QString &url);
     void loadSchema();
     void hideLoadButtonHint();
+    void setClipboardText(const QString &text);
 
 private:
     Dashboard *dashboard;

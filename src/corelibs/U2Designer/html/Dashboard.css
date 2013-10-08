@@ -322,3 +322,8 @@ span.content
     display: table-cell;
     min-width: 800px;
 }
+.dropdown-menu.context
+{
+    display: block; 
+    position: absolute; margin-bottom: 5px; *width: 180px;
+}

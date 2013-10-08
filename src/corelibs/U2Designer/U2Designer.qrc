@@ -7,6 +7,7 @@
         <file>javascript/Common.js</file>
         <file>javascript/ParametersWidget.js</file>
         <file>javascript/ExternalToolsWidget.js</file>
+        <file>javascript/ContextMenu.js</file>
         <file>images/add.png</file>
         <file>images/background.png</file>
         <file>images/background-menu.png</file>

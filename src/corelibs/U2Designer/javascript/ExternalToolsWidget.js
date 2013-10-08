@@ -29,6 +29,7 @@ function lwInitConteiner(container, activeTabId) {
         '</div>';
 
     container.innerHTML = mainHtml;
+    initializeCopyMenu();
 }
 
 function addChildrenElement(parentObject, elemTag, elemHTML) {
@@ -38,12 +39,13 @@ function addChildrenElement(parentObject, elemTag, elemHTML) {
     return newElem;
 }
 function addChildrenNode(parentNode, nodeContent, spanId, nodeClass) {
-    
+
     var newListElem = addChildrenElement(parentNode, 'LI', '');
     var span = addChildrenElement(newListElem, 'span', nodeContent);
     span.setAttribute('title', 'Collapse this branch');
 
     span.setAttribute('onclick', 'collapseNode(this)');
+    span.setAttribute('onmouseup', 'return contextmenu(event, this);');
 
     span.id = spanId;
     span.className = nodeClass;
@@ -102,21 +104,21 @@ function lwAddTreeNode(nodeName, activeTabName, activeTabId, content, contentTyp
             break;
         case "tool_name":
              if(null === infoNode) {
-                infoNode = addChildrenNode(launchNode, 'Run info', '', 'badge run-info');
+                infoNode = addChildrenNode(launchNode, 'Run info', idBase + '_id1', 'badge run-info');
                 infoNode.id = launchNodeId + '_info';
              }
              addContent(infoNode, 'Tool name', idBase + '_tool', 'badge tool-info', content);
              break;
         case "program":
             if(null === infoNode) {
-                infoNode = addChildrenNode(launchNode, 'Run info', '', 'badge run-info');
+                infoNode = addChildrenNode(launchNode, 'Run info', idBase + '_id2', 'badge run-info');
                 infoNode.id = launchNodeId + '_info';
             }
             addContent(infoNode, 'Executable file', idBase + '_program', 'badge program-path', content);
             break;
         case "arguments":
             if(null === infoNode) {
-                infoNode = addChildrenNode(launchNode, 'Launch info', '', 'badge run-info');
+                infoNode = addChildrenNode(launchNode, 'Launch info', idBase + '_id3', 'badge run-info');
                 infoNode.id = launchNodeId + '_info';
             }
             addContent(infoNode, 'Arguments', idBase + '_args', 'badge tool-args', content);
@@ -130,7 +132,7 @@ function addContent(parentNode, contentHead, nodeId, contentType, content) {
     if(node !== null) {
         node.innerHTML += content;
     } else if(content) {
-        node = addChildrenNode(parentNode, contentHead, '', contentType);
+        node = addChildrenNode(parentNode, contentHead, nodeId + '_label', contentType);
         content = content.replace(/^(<br>)+/, "");
         addChildrenNode(node, content, nodeId, 'content');
     }

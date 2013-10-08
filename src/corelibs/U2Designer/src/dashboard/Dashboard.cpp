@@ -23,6 +23,8 @@
 #include <QFile>
 #include <QMessageBox>
 #include <QWebFrame>
+#include <QApplication>
+#include <QClipboard>
 
 #include <U2Core/AppContext.h>
 #include <U2Core/GUrlUtils.h>
@@ -362,6 +364,9 @@ void JavascriptAgent::loadSchema() {
 void JavascriptAgent::hideLoadButtonHint() {
     SAFE_POINT(NULL != dashboard, "NULL dashboard!", );
     dashboard->initiateHideLoadButtonHint();
+}
+void JavascriptAgent::setClipboardText(const QString &text) {
+    QApplication::clipboard()->setText(text);
 }
 
 /************************************************************************/

@@ -27,6 +27,7 @@
     <script type="text/javascript" src="qrc:javascript/jquery/jquery.js"></script>
     <script type="text/javascript" src="qrc:javascript/bootstrap/js/bootstrap.js"></script>
     <script type="text/javascript" src="qrc:U2Designer/javascript/Common.js"></script>
+    <script type="text/javascript" src="qrc:U2Designer/javascript/ContextMenu.js"></script>
     <script type="text/javascript" src="qrc:U2Designer/javascript/ParametersWidget.js"></script>
     <script type="text/javascript" src="qrc:U2Designer/javascript/ExternalToolsWidget.js"></script>
     <script type="text/javascript" language="javascript">
@@ -68,6 +69,7 @@
             document.getElementById("timer").innerHTML = timeToString(hour, min, sec);
             sec++;
         }
+        addEventListeners();
     </script>
 </head>
 <body>
