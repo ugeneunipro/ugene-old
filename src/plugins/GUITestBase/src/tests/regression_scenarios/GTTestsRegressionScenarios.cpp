@@ -1767,6 +1767,45 @@ GUI_TEST_CLASS_DEFINITION( test_1924 )
 
 }
 
+GUI_TEST_CLASS_DEFINITION( test_2164 ) {
+    // 1. Open "_common_data/fasta/AMINO.fa".
+    GTFileDialog::openFile(os, testDir + "_common_data/fasta/", "AMINO.fa");
+
+    // 2. Open the DAS widget on the options panel
+    GTWidget::click(os, GTWidget::findWidget(os, "OP_DAS"));
+    GTGlobals::sleep(500);
+    QWidget *dasPanel = GTWidget::findWidget(os, "DasOptionsPanelWidget");
+    CHECK(NULL != dasPanel, );
+    
+    //3. Press "Fetch IDs".
+    QWidget *searchIdsButton = GTWidget::findWidget(os, "searchIdsButton");
+    GTWidget::click(os, searchIdsButton);
+    GTGlobals::sleep(500);
+    
+    //Expected: the "Fetch ID" button is disabled until the task is finished or canceled.
+    CHECK_SET_ERR(!searchIdsButton->isEnabled(), "Fetch IDs is enabled!");
+    TaskScheduler* scheduller = AppContext::getTaskScheduler();
+    GTGlobals::sleep(5000);
+    while(!scheduller->getTopLevelTasks().isEmpty()){
+        GTGlobals::sleep();
+    }
+    CHECK_SET_ERR(searchIdsButton->isEnabled(), "Fetch IDs is disabled!");
+    //4. Right click on the results table.
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() <<"Fetch IDs"));
+    GTWidget::click(os, GTWidget::findWidget(os, "idList"), Qt::RightButton);
+
+    //Expected: the context menu action "Fetch IDs" is disabled until the task is finished or canceled.
+    CHECK_SET_ERR(!searchIdsButton->isEnabled(), "Fetch IDs is enabled!");
+    GTGlobals::sleep(500);
+    TaskScheduler* scheduller1 = AppContext::getTaskScheduler();
+    GTGlobals::sleep(5000);
+    while(!scheduller1->getTopLevelTasks().isEmpty()){
+       GTGlobals::sleep();
+    }
+    CHECK_SET_ERR(searchIdsButton->isEnabled(), "Fetch IDs is disabled!");
+    GTGlobals::sleep(500);
+}
+
 GUI_TEST_CLASS_DEFINITION( test_2169 ) {
     // 1. Open "data/PDB/1CF7.pdb".
     GTFileDialog::openFile(os, dataDir + "samples/PDB", "1CF7.pdb");

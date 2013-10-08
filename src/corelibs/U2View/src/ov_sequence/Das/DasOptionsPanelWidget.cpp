@@ -381,6 +381,7 @@ void DasOptionsPanelWidget::initialize() {
     // Setup context menu of the idList widget
     idList->setContextMenuPolicy(Qt::ActionsContextMenu);
     fetchIdsAction = new QAction("Fetch IDs", idList);
+    fetchIdsAction->setObjectName("Fetch IDs");
     fetchAnnotationsAction = new QAction("Fetch Annotations", idList);
     openInNewViewAction = new QAction("Open in a new view", idList);
     idList->addAction(fetchIdsAction);
