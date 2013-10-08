@@ -27,7 +27,7 @@
 #include "utils/ExternalToolSupportAction.h"
 
 #define ET_CLUSTALO "ClustalO"
-#define CLUSTALO_TMP_DIR "clustalо"
+#define CLUSTALO_TMP_DIR "clustalo"
 
 namespace U2 {
 
