@@ -20,6 +20,7 @@
  */
 
 #include "PythonSupport.h"
+#include "seqpos/SeqPosSupport.h"
 #include "ExternalToolSupportSettingsController.h"
 #include "ExternalToolSupportSettings.h"
 
@@ -44,18 +45,18 @@ PythonSupport::PythonSupport(const QString& name, const QString& path) : Externa
         warnIcon = QIcon(":external_tool_support/images/python_warn.png");
     }
 #ifdef Q_OS_WIN
-    executableFileName="python.exe";
+    executableFileName = "python.exe";
 #else
     #if defined(Q_OS_LINUX) || defined(Q_OS_MAC)
-    executableFileName="python2.7";
+    executableFileName = "python2.7";
     #endif
 #endif
-    validMessage="Python ";
+    validMessage = "Python ";
     validationArguments << "--version";
     
-    description+=tr("Python scripts interpreter");
-    versionRegExp=QRegExp("(\\d+.\\d+.\\d+)");
-    toolKitName="python";
+    description += tr("Python scripts interpreter");
+    versionRegExp = QRegExp("(\\d+.\\d+.\\d+)");
+    toolKitName = "python";
 
     muted = true;
 
@@ -65,6 +66,48 @@ PythonSupport::PythonSupport(const QString& name, const QString& path) : Externa
 void PythonSupport::sl_toolValidationStatusChanged(bool isValid) {
     Q_UNUSED(isValid);
     ScriptingTool::onPathChanged(this);
+}
+
+
+PythonModuleSupport::PythonModuleSupport(const QString &name) :
+    ExternalToolModule(name) {
+    if (AppContext::getMainWindow()) {
+        icon = QIcon(":external_tool_support/images/python.png");
+        grayIcon = QIcon(":external_tool_support/images/python_gray.png");
+        warnIcon = QIcon(":external_tool_support/images/python_warn.png");
+    }
+#ifdef Q_OS_WIN
+    executableFileName = "python.exe";
+#else
+    #if defined(Q_OS_LINUX) || defined(Q_OS_MAC)
+    executableFileName = "python2.7";
+    #endif
+#endif
+
+    validationArguments << "-c";
+
+    toolKitName = "python";
+    dependencies << ET_PYTHON;
+
+    muted = true;
+}
+
+PythonModuleDjangoSupport::PythonModuleDjangoSupport(const QString &name) :
+    PythonModuleSupport(name) {
+    description += ET_PYTHON_DJANGO + tr(": Python module for the %1 tool").arg(ET_SEQPOS);
+
+    validationArguments << "import django;print(\"django version: \", django.VERSION);";
+    validMessage = "django version:";
+    versionRegExp = QRegExp("(\\d+,\\d+,\\d+)");
+}
+
+PythonModuleNumpySupport::PythonModuleNumpySupport(const QString &name) :
+    PythonModuleSupport(name) {
+    description += ET_PYTHON_NUMPY + tr(": Python module for the %1 tool").arg(ET_SEQPOS);
+
+    validationArguments << "import numpy;print(\"numpy version: \", numpy.__version__);";
+    validMessage = "numpy version:";
+    versionRegExp = QRegExp("(\\d+.\\d+.\\d+)");
 }
 
 

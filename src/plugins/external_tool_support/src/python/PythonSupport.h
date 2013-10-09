@@ -25,7 +25,9 @@
 #include <U2Core/ExternalToolRegistry.h>
 #include "utils/ExternalToolSupportAction.h"
 
-#define ET_PYTHON "embedded python"
+#define ET_PYTHON "python"
+#define ET_PYTHON_DJANGO "django"
+#define ET_PYTHON_NUMPY "numpy"
 
 namespace U2 {
 
@@ -35,6 +37,24 @@ public:
     PythonSupport(const QString& name, const QString& path = "");
 private slots:
     void sl_toolValidationStatusChanged(bool isValid);
+};
+
+class PythonModuleSupport : public ExternalToolModule {
+    Q_OBJECT
+public:
+    PythonModuleSupport(const QString& name);
+};
+
+class PythonModuleDjangoSupport : public PythonModuleSupport {
+    Q_OBJECT
+public:
+    PythonModuleDjangoSupport(const QString& name);
+};
+
+class PythonModuleNumpySupport : public PythonModuleSupport {
+    Q_OBJECT
+public:
+    PythonModuleNumpySupport(const QString& name);
 };
 
 }//namespace

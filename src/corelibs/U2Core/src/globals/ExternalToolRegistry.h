@@ -118,8 +118,8 @@ protected:
 class U2CORE_EXPORT ExternalToolModule : public ExternalTool {
     Q_OBJECT
 public:
-    ExternalToolModule(const QString& name, const QString& path = "") :
-        ExternalTool(name, path) { isModuleTool = true; }
+    ExternalToolModule(const QString& name) :
+        ExternalTool(name, "") { isModuleTool = true; }
 };
 
 class U2CORE_EXPORT ExternalToolValidationListener : public QObject {

@@ -23,7 +23,6 @@ changeCoreInstallNames ${PRODUCT_NAME}
 
 mkdir "${TARGET_EXE_DIR}/../Frameworks"
 mkdir "${TARGET_EXE_DIR}/plugins"
-mkdir "${TARGET_EXE_DIR}/data"
 
 echo copying translations
 cp $DEBUG_DIR/transl_*.qm "$TARGET_EXE_DIR"
@@ -31,9 +30,14 @@ cp -R ./qt_menu.nib "${TARGET_EXE_DIR}/../Resources"
 find "${TARGET_EXE_DIR}/../Resources/qt_menu.nib" -name ".svn" | xargs rm -rf
 
 echo copying data dir
-
-cp -R "$DEBUG_DIR/../../data" "${TARGET_EXE_DIR}/"
-find $TARGET_EXE_DIR -name ".svn" | xargs rm -rf
+if [ "$1" == "-test" ]
+    then
+    ln -s "../../../../../../data" "${TARGET_EXE_DIR}/data"
+else
+    mkdir "${TARGET_EXE_DIR}/data"
+    cp -R "$DEBUG_DIR/../../data" "${TARGET_EXE_DIR}/"
+    find $TARGET_EXE_DIR -name ".svn" | xargs rm -rf
+fi
 
 if [ -e "../../cistrome" ]; then
     ln -s "../../../../../../../cistrome" "${TARGET_EXE_DIR}/data/cistrome"

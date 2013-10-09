@@ -54,7 +54,7 @@ private slots:
 class RModuleSupport : public ExternalToolModule {
     Q_OBJECT
 public:
-    RModuleSupport(const QString& name, const QString& path = "");
+    RModuleSupport(const QString& name);
 protected:
     QString getScript() const;
 };
@@ -62,85 +62,85 @@ protected:
 class RModuleGostatsSupport : public RModuleSupport {
     Q_OBJECT
 public:
-    RModuleGostatsSupport(const QString& name, const QString& path = "");
+    RModuleGostatsSupport(const QString& name);
 };
 
 class RModuleGodbSupport : public RModuleSupport {
     Q_OBJECT
 public:
-    RModuleGodbSupport(const QString& name, const QString& path = "");
+    RModuleGodbSupport(const QString& name);
 };
 
 class RModuleHgu133adbSupport : public RModuleSupport {
     Q_OBJECT
 public:
-    RModuleHgu133adbSupport(const QString& name, const QString& path = "");
+    RModuleHgu133adbSupport(const QString& name);
 };
 
 class RModuleHgu133bdbSupport : public RModuleSupport {
     Q_OBJECT
 public:
-    RModuleHgu133bdbSupport(const QString& name, const QString& path = "");
+    RModuleHgu133bdbSupport(const QString& name);
 };
 
 class RModuleHgu133plus2dbSupport : public RModuleSupport {
     Q_OBJECT
 public:
-    RModuleHgu133plus2dbSupport(const QString& name, const QString& path = "");
+    RModuleHgu133plus2dbSupport(const QString& name);
 };
 
 class RModuleHgu95av2dbSupport : public RModuleSupport {
     Q_OBJECT
 public:
-    RModuleHgu95av2dbSupport(const QString& name, const QString& path = "");
+    RModuleHgu95av2dbSupport(const QString& name);
 };
 
 class RModuleMouse430a2dbSupport : public RModuleSupport {
     Q_OBJECT
 public:
-    RModuleMouse430a2dbSupport(const QString& name, const QString& path = "");
+    RModuleMouse430a2dbSupport(const QString& name);
 };
 
 class RModuleCelegansdbSupport : public RModuleSupport {
     Q_OBJECT
 public:
-    RModuleCelegansdbSupport(const QString& name, const QString& path = "");
+    RModuleCelegansdbSupport(const QString& name);
 };
 
 class RModuleDrosophila2dbSupport : public RModuleSupport {
     Q_OBJECT
 public:
-    RModuleDrosophila2dbSupport(const QString& name, const QString& path = "");
+    RModuleDrosophila2dbSupport(const QString& name);
 };
 
 class RModuleOrghsegdbSupport : public RModuleSupport {
     Q_OBJECT
 public:
-    RModuleOrghsegdbSupport(const QString& name, const QString& path = "");
+    RModuleOrghsegdbSupport(const QString& name);
 };
 
 class RModuleOrgmmegdbSupport : public RModuleSupport {
     Q_OBJECT
 public:
-    RModuleOrgmmegdbSupport(const QString& name, const QString& path = "");
+    RModuleOrgmmegdbSupport(const QString& name);
 };
 
 class RModuleOrgceegdbSupport : public RModuleSupport {
     Q_OBJECT
 public:
-    RModuleOrgceegdbSupport(const QString& name, const QString& path = "");
+    RModuleOrgceegdbSupport(const QString& name);
 };
 
 class RModuleOrgdmegdbSupport : public RModuleSupport {
     Q_OBJECT
 public:
-    RModuleOrgdmegdbSupport(const QString& name, const QString& path = "");
+    RModuleOrgdmegdbSupport(const QString& name);
 };
 
 class RModuleSeqlogoSupport : public RModuleSupport {
     Q_OBJECT
 public:
-    RModuleSeqlogoSupport(const QString& name, const QString& path = "");
+    RModuleSeqlogoSupport(const QString& name);
 };
 
 }   // namespace

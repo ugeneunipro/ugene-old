@@ -184,19 +184,18 @@ private:
 /************************************************************************/
 /* ExternalToolSupportPlugin */
 /************************************************************************/
-ExternalToolSupportPlugin::ExternalToolSupportPlugin():Plugin(tr("External tool support"),tr("Runs other external tools")) {
+ExternalToolSupportPlugin::ExternalToolSupportPlugin() :
+    Plugin(tr("External tool support"), tr("Runs other external tools")) {
     //External tools registry keeps order of items added
     //it is important because there might be dependencies
 
-    //python
-    PythonSupport* pythonSupport = new PythonSupport(ET_PYTHON);
-    AppContext::getExternalToolRegistry()->registerEntry(pythonSupport);
+    // python with modules
+    AppContext::getExternalToolRegistry()->registerEntry(new PythonSupport(ET_PYTHON));
+    AppContext::getExternalToolRegistry()->registerEntry(new PythonModuleDjangoSupport(ET_PYTHON_DJANGO));
+    AppContext::getExternalToolRegistry()->registerEntry(new PythonModuleNumpySupport(ET_PYTHON_NUMPY));
 
-    //Rscript
-    RSupport *rSupport = new RSupport(ET_R);
-    AppContext::getExternalToolRegistry()->registerEntry(rSupport);
-
-    // R modules
+    // Rscript with modules
+    AppContext::getExternalToolRegistry()->registerEntry(new RSupport(ET_R));
     AppContext::getExternalToolRegistry()->registerEntry(new RModuleGostatsSupport(ET_R_GOSTATS));
     AppContext::getExternalToolRegistry()->registerEntry(new RModuleGodbSupport(ET_R_GO_DB));
     AppContext::getExternalToolRegistry()->registerEntry(new RModuleHgu133adbSupport(ET_R_HGU133A_DB));
