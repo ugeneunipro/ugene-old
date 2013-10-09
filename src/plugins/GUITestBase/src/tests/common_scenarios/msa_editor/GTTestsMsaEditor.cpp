@@ -3489,7 +3489,7 @@ GUI_TEST_CLASS_DEFINITION(test_0040){//UGENE crashes when opening several files
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0041) {
-    // Shifting region in the Alignment Editor
+    // Shifting region in the Alignment Editor (UGENE-2127)
     // 
     // 1. Open file data/samples/CLUSTALW/COI.aln
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
