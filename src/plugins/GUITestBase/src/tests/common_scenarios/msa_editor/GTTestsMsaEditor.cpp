@@ -3488,6 +3488,35 @@ GUI_TEST_CLASS_DEFINITION(test_0040){//UGENE crashes when opening several files
 
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0041) {
+    // Shifting region in the Alignment Editor
+    // 
+    // 1. Open file data/samples/CLUSTALW/COI.aln
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
+    int oldLength = GTUtilsMSAEditorSequenceArea::getLength(os);
+    // 2. Select the first column.
+    GTUtilsMSAEditorSequenceArea::selectColumnInConsensus(os, 0);
+    // Expected state: column became selected
+    GTUtilsMSAEditorSequenceArea::checkSelectedRect(os, QRect(0, 0, 1, 18));
+
+    // 3. Drag the selection with mouse to 5 bases to the right.
+    GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(0,0));
+    GTMouseDriver::press(os);
+    GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(5,0));
+    GTMouseDriver::release(os);
+    // Expected state: alignment moved to 5 bases to the right.
+
+    // 4. Drag the selection with mouse to one base to the left.
+    GTMouseDriver::press(os);
+    GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(4,0));
+    GTMouseDriver::release(os);
+    // Expected state: alignment  moved to one bases to the left.
+
+    // Check results
+    int newLength = GTUtilsMSAEditorSequenceArea::getLength(os);
+    CHECK_SET_ERR(4 == newLength - oldLength, QString("Wrong length of changed alignment"));
+}
+
 GUI_TEST_CLASS_DEFINITION(test_fake) {
 }
 
