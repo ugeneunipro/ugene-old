@@ -915,6 +915,45 @@ void MSAEditorSequenceArea::updateSelection( const QPoint& newPos) {
     }
 }
 
+void MSAEditorSequenceArea::updateSelection() {
+    CHECK(!baseSelection.isNull(), );
+
+    if (!ui->isCollapsibleMode()) {
+        setSelection(baseSelection);
+        return;
+    }
+    MSACollapsibleItemModel* m = ui->getCollapseModel();
+    CHECK(NULL != m, );
+
+    int startPos = baseSelection.y();
+    int endPos = startPos + baseSelection.height();
+
+    // convert selected rows indexes to indexes of selected collapsible items
+    int newStart = m->displayedRowsCount();
+    int newEnd = 0;
+    for(int i = startPos; i < endPos; i++) {
+        int rowPos = m->rowToMap(i);
+        if(rowPos < 0) {
+            continue;
+        }
+        newStart = qMin(newStart, rowPos);
+        newEnd = qMax(newEnd, rowPos + 1);
+    }
+
+    int selectionHeight = newEnd - newStart;
+    // accounting of collapsing children items
+    int itemIndex = m->itemAt(newStart);
+    if (selectionHeight <= 1 && itemIndex >= 0) {
+        const MSACollapsableItem& collapsibleItem = m->getItem(itemIndex);
+        if(startPos == collapsibleItem.row && !collapsibleItem.isCollapsed) {
+            selectionHeight = qMax(selectionHeight, collapsibleItem.numRows);
+        }
+    }
+
+    MSAEditorSelection s(selection.topLeft().x(), newStart, selection.width(), selectionHeight);
+    setSelection(s);
+}
+
 
 void MSAEditorSequenceArea::mouseMoveEvent( QMouseEvent* e )
 {
@@ -1367,6 +1406,8 @@ void MSAEditorSequenceArea::setSelection(const MSAEditorSelection& s) {
     }
 
     U2Region selectedRowsRegion = getSelectedRows();
+    baseSelection = MSAEditorSelection(selection.topLeft().x(), getSelectedRows().startPos, selection.width(), selectedRowsRegion.length);
+
     selectedRowNames.clear();
     for(int x = selectedRowsRegion.startPos; x < selectedRowsRegion.endPos(); x++)
         selectedRowNames.append(editor->getMSAObject()->getRow(x).getName());
@@ -1745,6 +1786,8 @@ void MSAEditorSequenceArea::sl_modelChanged() {
             return;
         }
     }
+    updateSelection();
+
     completeRedraw = true;
     updateVScrollBar();
     update();
@@ -2119,6 +2162,7 @@ void MSAEditorSequenceArea::sl_setCollapsingMode(bool enabled) {
     }
 
     ui->setCollapsibleMode(enabled);
+    updateSelection();
     updateVScrollBar();
 }
 

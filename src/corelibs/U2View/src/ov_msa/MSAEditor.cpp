@@ -806,6 +806,7 @@ MSAEditorUI::MSAEditorUI(MSAEditor* _editor)
     setLayout(mainLayout);
 
     connect(collapseModel, SIGNAL(toggled()), offsetsView, SLOT(sl_modelChanged()));
+    connect(collapseModel, SIGNAL(toggled()), seqArea,     SLOT(sl_modelChanged()));
 }
 
 QWidget* MSAEditorUI::createLabelWidget(const QString& text, Qt::Alignment ali){

@@ -207,6 +207,9 @@ public:
 
     void updateSelection(const QPoint& newMousePos);
 
+    // update selection when collapsible model changed
+    void updateSelection();
+
     void setSelection(const MSAEditorSelection& sel);
 
     void moveSelection(int dx, int dy);
@@ -419,7 +422,8 @@ private:
     bool                shiftingWasPerformed; // specifies whether a user has shifted a selection
     QPoint              origin; // global window coordinates
     QPoint              cursorPos; // mouse cursor position in alignment coordinates
-    MSAEditorSelection  selection;
+    MSAEditorSelection  selection; // selection with rows indexes in collapsible model coordinates
+    MSAEditorSelection  baseSelection; // selection with rows indexes in absolute coordinates
     QList<int>          selectedRows;
     QStringList         selectedRowNames;
 
