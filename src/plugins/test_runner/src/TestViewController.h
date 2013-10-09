@@ -83,6 +83,8 @@ protected:
     virtual bool onCloseEvent();
 
 private:
+    void togglePopupMenuItems(bool enabled);
+
     void updateState();
     
     void createAndRunTask(const QList<GTestState*>& testsToRun);

@@ -849,6 +849,15 @@ void TestViewController::sl_stopSuitesActions() {
     task->cancel();
 }
 
+void TestViewController::togglePopupMenuItems(bool enabled) {
+
+    removeTestSuiteAction->setEnabled(enabled);
+    refreshAction->setEnabled(enabled);
+    saveSelectedSuitesAction->setEnabled(enabled);
+    setTestsChangeExcludedAction->setEnabled(enabled);
+    setTestsDisabledAction->setEnabled(enabled);
+}
+
 void TestViewController::createAndRunTask(const QList<GTestState*>& testsToRun) {
     bool ok;
     startRunTime = QTime::currentTime();
@@ -858,6 +867,7 @@ void TestViewController::createAndRunTask(const QList<GTestState*>& testsToRun) 
     }
     TestRunnerTask* ttask = new TestRunnerTask(testsToRun, service->getEnv(),numberTestsToRun);
 
+    togglePopupMenuItems(false);
     task = ttask;
     connect(AppContext::getTaskScheduler(), SIGNAL(si_stateChanged(Task*)), SLOT(sl_taskStateChanged(Task*)));
 
@@ -873,6 +883,8 @@ void TestViewController::sl_taskStateChanged(Task* t) {
     if (!t->isFinished()) {
         return;
     }
+    togglePopupMenuItems(true);
+
     task = NULL;
     AppContext::getTaskScheduler()->disconnect(this);
     endRunTime=QTime::currentTime();
