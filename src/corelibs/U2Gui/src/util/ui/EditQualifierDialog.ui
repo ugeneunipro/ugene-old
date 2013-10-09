@@ -26,7 +26,7 @@
      <item>
       <widget class="QLineEdit" name="nameEdit">
        <property name="maxLength">
-        <number>20</number>
+        <number>19</number>
        </property>
       </widget>
      </item>
@@ -93,22 +93,6 @@
     <hint type="sourcelabel">
      <x>351</x>
      <y>161</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>241</x>
-     <y>91</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>nameEdit</sender>
-   <signal>returnPressed()</signal>
-   <receiver>EditQualifierDialog</receiver>
-   <slot>accept()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>257</x>
-     <y>19</y>
     </hint>
     <hint type="destinationlabel">
      <x>241</x>
