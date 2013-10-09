@@ -41,6 +41,7 @@
 #include "GTUtilsSequenceView.h"
 #include "GTUtilsProject.h"
 #include "GTUtilsMdi.h"
+#include "GTUtilsTaskTreeView.h"
 #include "runnables/ugene/corelibs/U2View/utils_smith_waterman/SmithWatermanDialogBaseFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/EditSequenceDialogFiller.h"
 #include "runnables/ugene/corelibs/U2View/ov_msa/ConsensusSelectorDialogFiller.h"
@@ -1828,6 +1829,21 @@ GUI_TEST_CLASS_DEFINITION( test_2169 ) {
     GTGlobals::sleep(500);
     CHECK_SET_ERR(!dasPanel->isEnabled(), "DAS panel is enabled for nucleic acid sequence");
     CHECK_SET_ERR(!regionSelector->isEnabled(), "DAS panel child is enabled for nucleic acid sequence");
+}
+
+GUI_TEST_CLASS_DEFINITION( test_2171 )
+{
+    //1. Open file _common_data/fasta/AMINO.fa
+    GTFileDialog::openFile( os, testDir + "_common_data/fasta", "AMINO.fa");
+    //2. Open DAS option panel
+    GTWidget::click( os, GTWidget::findWidget( os, "OP_DAS" ) );
+    //3. Click fetch IDs
+    GTWidget::click( os, GTWidget::findWidget( os, "searchIdsButton" ) );
+    //4. Cancel task  "Fetch IDs"
+    GTUtilsTaskTreeView::cancelTask(os, "Get an ID for the sequence");
+    //Expected state: task canceled
+    QTreeWidget *taskTreeWidget = GTUtilsTaskTreeView::getTreeWidget(os);
+    CHECK_SET_ERR(taskTreeWidget->invisibleRootItem()->childCount() == 0, "Task is not canceled");
 }
 
 GUI_TEST_CLASS_DEFINITION( test_2172 ) {
