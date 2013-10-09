@@ -59,6 +59,9 @@ class AutoAnnotationObject;
 class AutoAnnotationsUpdater;
 class OptionsPanel;
 
+class CodonTableView;
+class CodonTableAction;
+
 class U2VIEW_EXPORT AnnotatedDNAView : public GObjectView {
     Q_OBJECT
 public:
@@ -211,6 +214,7 @@ private:
     void removeAutoAnnotations(ADVSequenceObjectContext* seqCtx);
     void cancelAutoAnnotationUpdates(AutoAnnotationObject* aaObj, bool* existsRemovedTasks = NULL);
     void addGraphs(ADVSequenceObjectContext* seqCtx);
+    void addCodonTable(ADVSequenceObjectContext* seqCtx);
     void importDocAnnotations(Document* doc);
 
     void seqWidgetMove(const QPoint& pos);
@@ -220,6 +224,9 @@ private:
     QScrollArea*        scrollArea;
     QWidget*            scrolledWidget;
     QVBoxLayout*        scrolledWidgetLayout;
+
+    CodonTableView*     codonTableView;
+    CodonTableAction*   showCodonTableAction;
     
     QAction*            createAnnotationAction;
     QAction*            findPatternAction;

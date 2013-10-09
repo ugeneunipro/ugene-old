@@ -69,6 +69,7 @@
 
 #include <U2View/FindPatternWidgetFactory.h>
 #include <U2View/SecStructPredictUtils.h>
+#include <U2View/CodonTable.h>
 
 #include <QtGui/QAction>
 #include <QtGui/QMenu>
@@ -99,6 +100,9 @@ AnnotatedDNAView::AnnotatedDNAView(const QString& viewName, const QList<U2Sequen
     annotationsView = NULL;
     focusedWidget = NULL;
     replacedSeqWidget = NULL;
+
+    codonTableView = NULL;
+    showCodonTableAction = NULL;
 
     createAnnotationAction = (new ADVAnnotationCreation(this))->getCreateAnnotationAction();
 
@@ -162,6 +166,10 @@ QWidget* AnnotatedDNAView::createWidget() {
     //mainSplitter->setOpaqueResize(false);
     mainSplitter->setMaximumHeight(200);
     connect(mainSplitter, SIGNAL(splitterMoved(int, int)), SLOT(sl_splitterMoved(int, int)));
+
+    codonTableView = new CodonTableView(this);
+    mainSplitter->addWidget(codonTableView);
+    mainSplitter->setSizes(QList <int>() << codonTableView->maximumHeight() );
 
     mainSplitter->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(mainSplitter, SIGNAL(customContextMenuRequested(const QPoint &)), SLOT(sl_onContextMenuRequested(const QPoint &)));
@@ -474,6 +482,12 @@ void AnnotatedDNAView::buildStaticToolbar(QToolBar* tb) {
         }
     }
 
+    if (codonTableView) {
+        showCodonTableAction = new CodonTableAction(codonTableView);
+        showCodonTableAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_T));
+        tb->addAction(showCodonTableAction);
+    }
+
     GObjectView::buildStaticToolbar(tb);
 
     tb->addSeparator();
@@ -647,6 +661,7 @@ void AnnotatedDNAView::addSequenceWidget(ADVSequenceWidget* v) {
         c->addSequenceWidget(v);
         addAutoAnnotations(c);
         addGraphs(c);
+        addCodonTable(c);
     }
     scrolledWidgetLayout->addWidget(v);
     v->setVisible(true);
@@ -984,6 +999,16 @@ void AnnotatedDNAView::addGraphs(ADVSequenceObjectContext* seqCtx)
     }
 }
 
+void AnnotatedDNAView::addCodonTable(ADVSequenceObjectContext *seqCtx) {
+    if (codonTableView == NULL) {
+        return;
+    }
+
+    foreach (ADVSequenceWidget* seqWidget, seqCtx->getSequenceWidgets()) {
+        CodonTableAction *ctAction = new CodonTableAction(codonTableView);
+        seqWidget->addADVSequenceWidgetAction(ctAction);
+    }
+}
 
 void AnnotatedDNAView::sl_onDocumentAdded(Document* d) {
     GObjectView::sl_onDocumentAdded(d);
@@ -1269,7 +1294,7 @@ void AnnotatedDNAView::sl_reverseSequence()
     Task* t = new ReverseSequenceTask(seqObj,annotations, seqCtx->getSequenceSelection(), complTr);
     AppContext::getTaskScheduler()->registerTopLevelTask(t);
     connect(t, SIGNAL(si_stateChanged()), SLOT(sl_sequenceModifyTaskStateChanged()));
-}   
+}
 
 bool AnnotatedDNAView::areAnnotationsInRange(const QList<Annotation*> &toCheck){
     foreach (Annotation *a, toCheck) {

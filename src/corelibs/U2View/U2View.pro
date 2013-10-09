@@ -128,6 +128,7 @@ HEADERS += src/Init.h \
            src/ov_sequence/find_pattern/FindPatternTask.h \
            src/ov_sequence/find_pattern/FindPatternWidget.h \
            src/ov_sequence/find_pattern/FindPatternWidgetFactory.h \
+           src/ov_sequence/codon_table/CodonTable.h \
            src/ov_sequence/sequence_info/CharOccurTask.h \
            src/ov_sequence/sequence_info/DinuclOccurTask.h \
            src/ov_sequence/sequence_info/SequenceInfo.h \
@@ -328,6 +329,7 @@ SOURCES += src/Init.cpp \
            src/ov_sequence/sequence_info/DinuclOccurTask.cpp \
            src/ov_sequence/sequence_info/SequenceInfo.cpp \
            src/ov_sequence/sequence_info/SequenceInfoFactory.cpp \
+           src/ov_sequence/codon_table/CodonTable.cpp \
            src/ov_text/SimpleTextObjectView.cpp \
            src/ov_text/SimpleTextObjectViewTasks.cpp \
            src/phyltree/BranchSettingsDialog.cpp \
