@@ -39,6 +39,21 @@ namespace U2 {
 
 const QString AbstractVariationFormat::COMMENT_START("#");
 
+QList<U2Variant> splitVariants(const U2Variant& v, const QList<QString>& altAllel){
+    QList<U2Variant> res;
+
+    foreach(const QString& alt, altAllel){
+        U2Variant var = v;
+
+        var.obsData = alt.toLatin1();
+
+        res.append(var);
+    }
+
+    return res;
+}
+
+
 AbstractVariationFormat::AbstractVariationFormat(QObject *p, const QStringList &fileExts, bool _isSupportHeader)
 : DocumentFormat(p, DocumentFormatFlags_SW, fileExts), isSupportHeader(_isSupportHeader), sep(QString())
 {
@@ -61,6 +76,8 @@ Document *AbstractVariationFormat::loadDocument(IOAdapter *io, const U2DbiRef &d
 
     QByteArray readBuff(READ_BUFF_SIZE + 1, 0);
     char* buff = readBuff.data();
+
+    SplitAlleles splitting = fs.contains(DocumentReadingMode_SplitVariationAlleles)? AbstractVariationFormat::Split : AbstractVariationFormat::NoSplit;
 
     //TODO: load snps with chunks of fixed size to avoid memory consumption
     QMap<QString, QList<U2Variant> > snpsMap;
@@ -94,6 +111,8 @@ Document *AbstractVariationFormat::loadDocument(IOAdapter *io, const U2DbiRef &d
             continue;
         }
 
+        QList<QString> altAllele;
+
         U2Variant v;
         QString seqName;
 
@@ -121,7 +140,11 @@ Document *AbstractVariationFormat::loadDocument(IOAdapter *io, const U2DbiRef &d
                     v.refData = columnData.toLatin1();
                     break;
                 case ColumnRole_ObsData:
-                    v.obsData = columnData.toLatin1();
+                    if (splitting == AbstractVariationFormat::Split){
+                        altAllele = columnData.trimmed().split(',');
+                    }else{
+                        v.obsData = columnData.toLatin1();
+                    }
                     break;
                 case ColumnRole_PublicId:
                     v.publicId = columnData.toLatin1();
@@ -143,7 +166,17 @@ Document *AbstractVariationFormat::loadDocument(IOAdapter *io, const U2DbiRef &d
             v.publicId = QString("%1v%2").arg(prefix).arg(snpsMap[seqName].count() + 1).toLatin1();
         }
 
-        snpsMap[seqName].append(v);
+        if (splitting == AbstractVariationFormat::Split){
+            const QList<U2Variant>& allelVariants = splitVariants(v, altAllele);
+            if (altAllele.isEmpty()){
+                continue;
+            }
+            snpsMap[seqName].append(allelVariants);
+        }else{
+            snpsMap[seqName].append(v);
+        }
+
+        
 
     } while (!io->isEof());
 

@@ -28,6 +28,19 @@
 namespace U2 {
 namespace LocalWorkflow {
 
+
+
+class ReadVariationProto : public GenericReadDocProto {
+public:
+    enum SplitAlleles{
+        NOSPLIT,
+        SPLIT
+    };
+    static const QString SPLIT_ATTR;
+
+    ReadVariationProto();
+}; // ReadVariationProto
+
 class ReadVariationWorker : public GenericDocReader {
     Q_OBJECT
 public:
@@ -39,12 +52,9 @@ protected:
 
 protected:
     virtual Task * createReadTask(const QString &url, const QString &datasetName);
+private:
+    ReadVariationProto::SplitAlleles splitMode;
 }; // ReadVariationWorker
-
-class ReadVariationProto : public GenericReadDocProto {
-public:
-    ReadVariationProto();
-}; // ReadVariationProto
 
 class ReadVariationWorkerFactory : public DomainFactory {
 public:
@@ -59,7 +69,7 @@ public:
 class ReadVariationTask : public Task {
     Q_OBJECT
 public:
-    ReadVariationTask(const QString &url, const QString &datasetName, DbiDataStorage *storage);
+    ReadVariationTask(const QString &url, const QString &datasetName, DbiDataStorage *storage, bool splitAlleles = false);
     virtual ~ReadVariationTask();
 
     virtual void prepare();
@@ -71,6 +81,7 @@ private:
     QString url;
     QString datasetName;
     DbiDataStorage *storage;
+    bool splitAlleles;
     QList<QVariantMap> results;
 };
 

@@ -104,6 +104,9 @@ typedef QFlags<DocumentFormatFlag> DocumentFormatFlags;
 /** Set of hints that can be processed during document storing */
 #define DocumentWritingMode_SimpleNames                 "simple-names"
 
+/** Hint for splitting variations*/
+#define DocumentReadingMode_SplitVariationAlleles        "split-alleles"
+
 
 class U2CORE_EXPORT DocumentFormat: public QObject {
     Q_OBJECT

@@ -47,6 +47,15 @@ public:
         OneBased
     };
 
+    //Variation1: chr1 123 G A,C
+    //to
+    //Variation1.1: chr1 123 G A
+    //Variation1.2: chr1 123 G C
+    enum SplitAlleles{
+        Split = 0,
+        NoSplit
+    };
+
     AbstractVariationFormat(QObject *p, const QStringList &fileExts, bool _isSupportHeader = false);
 
     virtual const QString &getFormatName() const {return formatName;}

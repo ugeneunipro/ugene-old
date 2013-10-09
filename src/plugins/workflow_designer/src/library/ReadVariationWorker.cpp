@@ -54,19 +54,22 @@ const QString ReadVariationWorkerFactory::ACTOR_ID("read-variations");
 /************************************************************************/
 ReadVariationWorker::ReadVariationWorker(Actor *p)
 : GenericDocReader(p)
+,splitMode(ReadVariationProto::NOSPLIT)
 {
 
 }
 
 void ReadVariationWorker::init() {
     GenericDocReader::init();
+    splitMode = ReadVariationProto::SplitAlleles(getValue<int>(ReadVariationProto::SPLIT_ATTR));
     IntegralBus *outBus = dynamic_cast<IntegralBus*>(ch);
     assert(outBus);
     mtype = outBus->getBusType();
 }
 
 Task * ReadVariationWorker::createReadTask(const QString &url, const QString &datasetName) {
-    return new ReadVariationTask(url, datasetName, context->getDataStorage());
+    bool splitAlleles = (splitMode == ReadVariationProto::SPLIT);
+    return new ReadVariationTask(url, datasetName, context->getDataStorage(), splitAlleles);
 }
 
 void ReadVariationWorker::onTaskFinished(Task *task) {
@@ -79,8 +82,8 @@ void ReadVariationWorker::onTaskFinished(Task *task) {
 /************************************************************************/
 /* Task */
 /************************************************************************/
-ReadVariationTask::ReadVariationTask(const QString &url, const QString &_datasetName, DbiDataStorage *storage)
-: Task(tr("Read variations from %1").arg(url), TaskFlag_None), url(url), datasetName(_datasetName), storage(storage)
+ReadVariationTask::ReadVariationTask(const QString &url, const QString &_datasetName, DbiDataStorage *storage, bool _splitAlleles)
+: Task(tr("Read variations from %1").arg(url), TaskFlag_None), url(url), datasetName(_datasetName), storage(storage), splitAlleles(_splitAlleles)
 {
 
 }
@@ -134,6 +137,9 @@ void ReadVariationTask::run() {
     ioLog.info(tr("Reading variations from %1 [%2]").arg(url).arg(format->getFormatName()));
     IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(url));
     QVariantMap hints;
+    if (splitAlleles){
+        hints[DocumentReadingMode_SplitVariationAlleles] = true;
+    }
     hints.insert(DocumentFormat::DBI_REF_HINT, qVariantFromValue(storage->getDbiRef()));
     std::auto_ptr<Document> doc(format->loadDocument(iof, url, hints, stateInfo));
     CHECK_OP(stateInfo, );
@@ -155,6 +161,7 @@ void ReadVariationTask::run() {
 /************************************************************************/
 /* Factory */
 /************************************************************************/
+const QString ReadVariationProto::SPLIT_ATTR("split-mode");
 ReadVariationProto::ReadVariationProto()
 : GenericReadDocProto(ReadVariationWorkerFactory::ACTOR_ID)
 {
@@ -172,6 +179,22 @@ ReadVariationProto::ReadVariationProto()
             ReadVariationWorker::tr("Variation track"));
 
         ports << new PortDescriptor(outDesc, outTypeSet, false, true);
+    }
+
+    Descriptor md(ReadVariationProto::SPLIT_ATTR, ReadVariationWorker::tr("Split Alleles"),
+        ReadVariationWorker::tr("If the file contains variations with multiple alleles (chr1 100 C G,A), <i>No split</i> mode sends them \"as is\" to the output, "
+        "while <i>Split</i> splits them into two variations (chr1 100 C G and chr1 100 C A)."));
+
+    attrs << new Attribute(md, BaseTypes::NUM_TYPE(), true, NOSPLIT);
+
+    QMap<QString, PropertyDelegate*> delegates;
+    {
+        QVariantMap modeMap;
+        QString splitStr = ReadVariationWorker::tr("Split");
+        QString nosplitmergeStr = ReadVariationWorker::tr("No split");
+        modeMap[splitStr] = SPLIT;
+        modeMap[nosplitmergeStr] = NOSPLIT;
+        getEditor()->addDelegate(new ComboBoxDelegate(modeMap), SPLIT_ATTR);
     }
 
     setPrompter(new ReadDocPrompter(ReadVariationWorker::tr("Reads variations from <u>%1</u>.")));
