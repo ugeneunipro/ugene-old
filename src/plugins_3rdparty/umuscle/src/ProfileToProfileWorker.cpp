@@ -242,7 +242,7 @@ Worker * ProfileToProfileWorkerFactory::createWorker(Actor *a) {
 /* Prompter */
 /************************************************************************/
 QString ProfileToProfilePrompter::composeRichDoc() {
-    return "Aligns second profile to master profile with MUSCLE aligner";
+    return "Aligns second profile to master profile with MUSCLE aligner.";
 }
 
 } // LocalWorkflow

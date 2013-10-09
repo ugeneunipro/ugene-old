@@ -199,7 +199,7 @@ void RSnpToolsWorkerFactory::init( )
     }
 
     Descriptor protoDesc( RSnpToolsWorkerFactory::ACTOR_ID,
-        QObject::tr( "Detect transcription factors with rSNP-Tools" ),
+        QObject::tr( "Detect Transcription Factors with rSNP-Tools" ),
         QObject::tr( "Identification of transcription factor binding sites in the DNA "
             "which have been modified by polymorphic mutation." ) );
 

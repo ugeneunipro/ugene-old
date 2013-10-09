@@ -308,12 +308,12 @@ void DASFetcherFactory::init()
     {
         Descriptor annidd(ANNID_ID,
             DASFetcherWorker::tr("Feature Sources"),
-            DASFetcherWorker::tr("The DAS sources to read features from"));
+            DASFetcherWorker::tr("The DAS sources to read features from."));
         attrs << new Attribute(annidd, BaseTypes::STRING_TYPE(), true, defaultFeatures);
 
         Descriptor dbidd(DBID_ID,
                          DASFetcherWorker::tr("Reference Source"),
-                         DASFetcherWorker::tr("The DAS source to read reference from"));
+                         DASFetcherWorker::tr("The DAS source to read reference from."));
         
         
         Attribute* seqAtr = new Attribute(dbidd, BaseTypes::STRING_TYPE(), true, defaultDB.getId());
@@ -324,14 +324,14 @@ void DASFetcherFactory::init()
 
         Descriptor seqidd(SEQID_ID,
             DASFetcherWorker::tr("Resource ID(s)"),
-            DASFetcherWorker::tr("Semicolon-separated list of resource ID`s in the source"));
+            DASFetcherWorker::tr("Semicolon-separated list of resource ID`s in the source."));
 
 
         attrs << new Attribute(seqidd, BaseTypes::STRING_TYPE(), true, "");
 
         Descriptor fullpathd(PATH_ID, 
                          DASFetcherWorker::tr("Save file to directory"), 
-                         DASFetcherWorker::tr("The directory to store sequence files loaded from the source"));
+                         DASFetcherWorker::tr("The directory to store sequence files loaded from the source."));
         attrs << new Attribute(fullpathd, BaseTypes::STRING_TYPE(), true, DEFAULT_PATH);
     }
     

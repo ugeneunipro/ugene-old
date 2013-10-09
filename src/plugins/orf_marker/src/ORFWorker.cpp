@@ -80,17 +80,17 @@ void ORFWorkerFactory::init() {
         p << new PortDescriptor(od, DataTypePtr(new MapDataType("orf.annotations", outM)), false /*input*/, true /*multi*/);
     }
     {
-        Descriptor nd(NAME_ATTR, ORFWorker::tr("Annotate as"), ORFWorker::tr("Name of the result annotations marking found ORFs"));
+        Descriptor nd(NAME_ATTR, ORFWorker::tr("Annotate as"), ORFWorker::tr("Name of the result annotations marking found ORFs."));
         Descriptor ttd(ID_ATTR, ORFWorker::tr("Genetic code"), ORFWorker::tr("Which genetic code should be used for translating the input nucleotide sequence."));
-        Descriptor ld(LEN_ATTR, ORFWorker::tr("Min length, bp:"), QApplication::translate("ORFDialogBase", "Ignore ORFs shorter than the specified length", 0, QApplication::UnicodeUTF8));
+        Descriptor ld(LEN_ATTR, ORFWorker::tr("Min length, bp:"), QApplication::translate("ORFDialogBase", "Ignore ORFs shorter than the specified length.", 0, QApplication::UnicodeUTF8));
         Descriptor fd(FIT_ATTR, ORFWorker::tr("Require stop codon"), QApplication::translate("ORFDialogBase", "Require stop codon", 0, QApplication::UnicodeUTF8));
         Descriptor ind(INIT_ATTR, ORFWorker::tr("Require init codon"), QApplication::translate("ORFDialogBase", "\n""Ignore boundary ORFs which last beyond the search region\n""(i.e. have no stop codon within the range).\n", 0, QApplication::UnicodeUTF8));
         Descriptor ad(ALT_ATTR, ORFWorker::tr("Allow alternative codons"), QApplication::translate("ORFDialogBase", "\n"
             "               Allow ORFs starting with alternative initiation codons,\n"
             "               accordingly to the current translation table.\n", 0, QApplication::UnicodeUTF8));
-        Descriptor isc(ISC_ATTR, ORFWorker::tr("Include stop codon"), ORFWorker::tr("The result annotation will includes stop codon if this option is set"));
-        Descriptor mr(RES_ATTR,ORFWorker::tr("Max result"),ORFWorker::tr("Find results not achieved by specified count"));
-        Descriptor lr(LIMIT_ATTR,ORFWorker::tr("Limit results"),ORFWorker::tr("The amount of results will be limited id that option is setted"));
+        Descriptor isc(ISC_ATTR, ORFWorker::tr("Include stop codon"), ORFWorker::tr("The result annotation will includes stop codon if this option is set."));
+        Descriptor mr(RES_ATTR,ORFWorker::tr("Max result"),ORFWorker::tr("Find results not achieved by specified count."));
+        Descriptor lr(LIMIT_ATTR,ORFWorker::tr("Limit results"),ORFWorker::tr("The amount of results will be limited id that option is setted."));
         
         a << new Attribute(nd, BaseTypes::STRING_TYPE(), true, QVariant("ORF"));
         a << new Attribute(ttd, BaseTypes::STRING_TYPE(), false, QVariant(DNATranslationID(1)));

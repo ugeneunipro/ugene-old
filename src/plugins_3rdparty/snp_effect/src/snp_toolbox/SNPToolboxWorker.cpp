@@ -180,7 +180,7 @@ void SNPToolboxWorkerFactory::init() {
     }
 
     Descriptor protoDesc(SNPToolboxWorkerFactory::ACTOR_ID,
-    SNPToolboxWorker::tr("Annotate variations with SNPToolbox"),
+    SNPToolboxWorker::tr("Annotate Variations with SNPToolbox"),
     SNPToolboxWorker::tr("Assess damage effect and find intersected genes with SNPToolbox algorithms."));
 
     ActorPrototype *proto = new IntegralBusActorPrototype(protoDesc, p, attrs);

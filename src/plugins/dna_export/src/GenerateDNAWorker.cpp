@@ -191,7 +191,7 @@ void GenerateDNAWorkerFactory::init() {
  **************************/
 
 QString GenerateDNAPrompter::composeRichDoc() {
-    return tr("Generates random DNA sequence(s)");
+    return tr("Generates random DNA sequence(s).");
 }
 
 /**************************

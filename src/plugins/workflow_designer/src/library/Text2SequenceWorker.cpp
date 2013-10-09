@@ -158,13 +158,13 @@ void Text2SequenceWorkerFactory::init() {
     // attributes description
     QList<Attribute*> attrs;
     {
-        Descriptor seqNameDesc(SEQ_NAME_ATTR_ID, Text2SequenceWorker::tr("Sequence name"), Text2SequenceWorker::tr("Result sequence name"));
+        Descriptor seqNameDesc(SEQ_NAME_ATTR_ID, Text2SequenceWorker::tr("Sequence name"), Text2SequenceWorker::tr("Result sequence name."));
         Descriptor alphabetDesc(ALPHABET_ATTR_ID, Text2SequenceWorker::tr("Sequence alphabet"), 
-            Text2SequenceWorker::tr("Select one of the listed alphabets or choose auto to auto-detect"));
+            Text2SequenceWorker::tr("Select one of the listed alphabets or choose auto to auto-detect."));
         Descriptor skipSymbolsDesc(SKIP_SYM_ATTR_ID, Text2SequenceWorker::tr("Skip unknown symbols"), 
-            Text2SequenceWorker::tr("Do not include symbols that are not contained in alphabet"));
+            Text2SequenceWorker::tr("Do not include symbols that are not contained in alphabet."));
         Descriptor replaceSymbolsDesc(REPLACE_SYM_ATTR_ID, Text2SequenceWorker::tr("Replace unknown symbols with"),
-            Text2SequenceWorker::tr("Replace unknown symbols with given character"));
+            Text2SequenceWorker::tr("Replace unknown symbols with given character."));
         
         attrs << new Attribute(seqNameDesc, BaseTypes::STRING_TYPE(), /* required */ true, QVariant(SEQ_NAME_ATTR_DEF_VAL));
         attrs << new Attribute(alphabetDesc, BaseTypes::STRING_TYPE(), false, QVariant(ALPHABET_ATTR_ID_DEF_VAL));
@@ -174,7 +174,7 @@ void Text2SequenceWorkerFactory::init() {
     
     Descriptor protoDesc(Text2SequenceWorkerFactory::ACTOR_ID, 
         Text2SequenceWorker::tr("Convert Text to Sequence"), 
-        Text2SequenceWorker::tr("Converts input text to sequence"));
+        Text2SequenceWorker::tr("Converts input text to sequence."));
     ActorPrototype * proto = new IntegralBusActorPrototype(protoDesc, portDescs, attrs);
     
     // proto delegates

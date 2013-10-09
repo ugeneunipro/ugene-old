@@ -186,7 +186,7 @@ Worker* SiteconWorkerFactory::createWorker(Actor* a) {
 }
 
 QString SiteconReadPrompter::composeRichDoc() {
-    return tr("Read model(s) from <u>%1</u>").arg(getHyperlink(BaseAttributes::URL_IN_ATTRIBUTE().getId(), getURL(BaseAttributes::URL_IN_ATTRIBUTE().getId())));
+    return tr("Read model(s) from <u>%1</u>.").arg(getHyperlink(BaseAttributes::URL_IN_ATTRIBUTE().getId(), getURL(BaseAttributes::URL_IN_ATTRIBUTE().getId())));
 }
 
 QString SiteconWritePrompter::composeRichDoc() {

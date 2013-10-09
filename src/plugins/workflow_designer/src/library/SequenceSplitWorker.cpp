@@ -244,10 +244,10 @@ void SequenceSplitWorkerFactory::init() {
                                    SequenceSplitWorker::tr("Complement the annotated regions if the corresponding annotation is located on complement strand.") );
         Descriptor extendLeftDesc( EXTEND_LEFT_ATTR,
                                    SequenceSplitWorker::tr("Extend left"),
-                                   SequenceSplitWorker::tr("Extend the resulted regions to left") );
+                                   SequenceSplitWorker::tr("Extend the resulted regions to left.") );
         Descriptor extendRightDesc( EXTEND_RIGHT_ATTR,
                                     SequenceSplitWorker::tr("Extend right"),
-                                    SequenceSplitWorker::tr("Extend the resulted regions to right") );
+                                    SequenceSplitWorker::tr("Extend the resulted regions to right.") );
         Descriptor gapLengthDesc( GAP_LENGTH_ATTR, 
                                   SequenceSplitWorker::tr("Gap length"),
                                   SequenceSplitWorker::tr("Insert gap of specified length between merged locations of annotation.") );
@@ -261,7 +261,7 @@ void SequenceSplitWorkerFactory::init() {
 
     Descriptor desc( SequenceSplitWorkerFactory::ACTOR, 
                      SequenceSplitWorker::tr("Get Sequences by Annotations"), 
-                     SequenceSplitWorker::tr("Creates sequences from annotated regions of input sequence") );
+                     SequenceSplitWorker::tr("Creates sequences from annotated regions of input sequence.") );
     ActorPrototype * proto = new IntegralBusActorPrototype( desc, portDescs, attribs );
 
     //create delegates for attribute editing

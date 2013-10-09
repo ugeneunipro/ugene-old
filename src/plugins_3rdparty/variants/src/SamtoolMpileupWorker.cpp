@@ -167,7 +167,7 @@ void CallVariantsWorkerFactory::init() {
     }
 
     Descriptor desc(ACTOR_ID, CallVariantsWorker::tr("Call Variants with SAMtools"), 
-        CallVariantsWorker::tr("Calls SNPs and INDELS with SAMtools mpileup and bcftools")
+        CallVariantsWorker::tr("Calls SNPs and INDELS with SAMtools mpileup and bcftools.")
         );
 
 
@@ -176,130 +176,130 @@ void CallVariantsWorkerFactory::init() {
 
     Descriptor illumina13Encoding(ILLUMINA13,
         CallVariantsWorker::tr("Illumina-1.3+ encoding"),
-        CallVariantsWorker::tr("Assume the quality is in the Illumina 1.3+ encoding. (mpileup)(-6)"));
+        CallVariantsWorker::tr("Assume the quality is in the Illumina 1.3+ encoding (mpileup)(-6)."));
 
     Descriptor useOrphan(USE_ORPHAN,
         CallVariantsWorker::tr("Count anomalous read pairs"),
-        CallVariantsWorker::tr("Do not skip anomalous read pairs in variant calling.(mpileup)(-A)"));
+        CallVariantsWorker::tr("Do not skip anomalous read pairs in variant calling(mpileup)(-A)."));
 
     Descriptor disableBaq(DISABLE_BAQ,
         CallVariantsWorker::tr("Disable BAQ computation"),
         CallVariantsWorker::tr("Disable probabilistic realignment for the computation of base "
         "alignment quality (BAQ). BAQ is the Phred-scaled probability of a read base being misaligned. "
-        "Applying this option greatly helps to reduce false SNPs caused by misalignments. (mpileup)(-B)"));
+        "Applying this option greatly helps to reduce false SNPs caused by misalignments (mpileup)(-B)."));
 
     Descriptor capqThres(CAPQ_THRES,
         CallVariantsWorker::tr("Mapping quality downgrading coefficient"),
         CallVariantsWorker::tr("Coefficient for downgrading mapping quality for reads containing excessive mismatches. "
         "Given a read with a phred-scaled probability q of being generated from the mapped position, the new mapping quality "
-        "is about sqrt((INT-q)/INT)*INT. A zero value disables this functionality; if enabled, the recommended value for BWA is 50. (mpileup)(-C)"));
+        "is about sqrt((INT-q)/INT)*INT. A zero value disables this functionality; if enabled, the recommended value for BWA is 50 (mpileup)(-C)."));
 
     Descriptor maxDepth(MAX_DEPTH,
         CallVariantsWorker::tr("Max number of reads per input BAM"),
-        CallVariantsWorker::tr("At a position, read maximally the number of reads per input BAM. (mpileup)(-d)"));
+        CallVariantsWorker::tr("At a position, read maximally the number of reads per input BAM (mpileup)(-d)."));
 
     Descriptor extBaq(EXT_BAQ,
         CallVariantsWorker::tr("Extended BAQ computation"),
         CallVariantsWorker::tr("Extended BAQ computation. This option helps sensitivity especially for MNPs,"
-        " but may hurt specificity a little bit. (mpileup)(-E)"));
+        " but may hurt specificity a little bit (mpileup)(-E)."));
 
     Descriptor bed(BED,
         CallVariantsWorker::tr("BED or position list file"),
         CallVariantsWorker::tr("BED or position list file containing a list of regions or sites where"
-        " pileup or BCF should be generated. (mpileup)(-l)"));
+        " pileup or BCF should be generated (mpileup)(-l)."));
 
     Descriptor reg(REG,
         CallVariantsWorker::tr("Pileup region"),
-        CallVariantsWorker::tr("Only generate pileup in region STR. (mpileup)(-r)"));
+        CallVariantsWorker::tr("Only generate pileup in region STR (mpileup)(-r)."));
 
     Descriptor minMq(MIN_MQ,
         CallVariantsWorker::tr("Minimum mapping quality"),
-        CallVariantsWorker::tr("Minimum mapping quality for an alignment to be used. (mpileup)(-q)"));
+        CallVariantsWorker::tr("Minimum mapping quality for an alignment to be used (mpileup)(-q)."));
 
     Descriptor minBaseq(MIN_BASEQ,
         CallVariantsWorker::tr("Minimum base quality"),
-        CallVariantsWorker::tr("Minimum base quality for a base to be considered. (mpileup)(-Q)"));
+        CallVariantsWorker::tr("Minimum base quality for a base to be considered (mpileup)(-Q)."));
 
     Descriptor extq(EXTQ,
         CallVariantsWorker::tr("Gap extension error"),
-        CallVariantsWorker::tr("Phred-scaled gap extension sequencing error probability. Reducing INT leads to longer indels. (mpileup)(-e)"));
+        CallVariantsWorker::tr("Phred-scaled gap extension sequencing error probability. Reducing INT leads to longer indels (mpileup)(-e)."));
  
     Descriptor tandemq(TANDEMQ,
         CallVariantsWorker::tr("Homopolymer errors coefficient"),
-        CallVariantsWorker::tr("Coefficient for modeling homopolymer errors. Given an l-long homopolymer run, the sequencing error of an indel of size s is modeled as INT*s/l. (mpileup)(-h)"));
+        CallVariantsWorker::tr("Coefficient for modeling homopolymer errors. Given an l-long homopolymer run, the sequencing error of an indel of size s is modeled as INT*s/l (mpileup)(-h)."));
 
     Descriptor noIndel(NO_INDEL,
         CallVariantsWorker::tr("No INDELs"),
-        CallVariantsWorker::tr("Do not perform INDEL calling. (mpileup)(-I)"));
+        CallVariantsWorker::tr("Do not perform INDEL calling (mpileup)(-I)."));
 
     Descriptor maxIndelDepth(MAX_INDEL_DEPTH,
         CallVariantsWorker::tr("Max INDEL depth"),
-        CallVariantsWorker::tr("Skip INDEL calling if the average per-sample depth is above INT. (mpileup)(-L)"));
+        CallVariantsWorker::tr("Skip INDEL calling if the average per-sample depth is above INT (mpileup)(-L)."));
 
     Descriptor openq(OPENQ,
         CallVariantsWorker::tr("Gap open error"),
-        CallVariantsWorker::tr("Phred-scaled gap open sequencing error probability. Reducing INT leads to more indel calls. (mpileup)(-o)"));
+        CallVariantsWorker::tr("Phred-scaled gap open sequencing error probability. Reducing INT leads to more indel calls (mpileup)(-o)."));
 
     Descriptor plList(PL_LIST,
         CallVariantsWorker::tr("List of platforms for indels"),
         CallVariantsWorker::tr("Comma dilimited list of platforms (determined by @RG-PL) from which indel candidates are obtained."
-        "It is recommended to collect indel candidates from sequencing technologies that have low indel error rate such as ILLUMINA. (mpileup)(-P)"));
+        "It is recommended to collect indel candidates from sequencing technologies that have low indel error rate such as ILLUMINA (mpileup)(-P)."));
 
     //bcf view
     Descriptor keepalt(KEEPALT,
         CallVariantsWorker::tr("Retain all possible alternate"),
-        CallVariantsWorker::tr("Retain all possible alternate alleles at variant sites. By default, the view command discards unlikely alleles. (bcf view)(-A)"));
+        CallVariantsWorker::tr("Retain all possible alternate alleles at variant sites. By default, the view command discards unlikely alleles (bcf view)(-A)."));
 
     Descriptor fixPl(FIX_PL,
         CallVariantsWorker::tr("Indicate PL"),
-        CallVariantsWorker::tr("Indicate PL is generated by r921 or before (ordering is different). (bcf view)(-F)"));
+        CallVariantsWorker::tr("Indicate PL is generated by r921 or before (ordering is different) (bcf view)(-F)."));
 
     Descriptor noGeo(NO_GENO,
         CallVariantsWorker::tr("No genotype information"),
-        CallVariantsWorker::tr("Suppress all individual genotype information. (bcf view)(-G)"));
+        CallVariantsWorker::tr("Suppress all individual genotype information (bcf view)(-G)."));
 
     Descriptor acgtO(ACGT_ONLY,
         CallVariantsWorker::tr("A/C/G/T only"),
-        CallVariantsWorker::tr("Skip sites where the REF field is not A/C/G/T (bcf view)(-N)"));
+        CallVariantsWorker::tr("Skip sites where the REF field is not A/C/G/T (bcf view)(-N)."));
 
     Descriptor bcfBed(BCF_BED,
         CallVariantsWorker::tr("List of sites"),
-        CallVariantsWorker::tr("List of sites at which information are outputted (bcf view)(-l)"));
+        CallVariantsWorker::tr("List of sites at which information are outputted (bcf view)(-l)."));
 
     Descriptor qcall(QCALL,
         CallVariantsWorker::tr("QCALL likelihood"),
-        CallVariantsWorker::tr("Output the QCALL likelihood format. (bcf view)(-Q)"));
+        CallVariantsWorker::tr("Output the QCALL likelihood format (bcf view)(-Q)."));
 
     Descriptor attrSamples(SAMPLES,
         CallVariantsWorker::tr("List of samples"),
         CallVariantsWorker::tr("List of samples to use. The first column in the input gives"
         " the sample names and the second gives the ploidy, which can only be 1 or 2. When "
         "the 2nd column is absent, the sample ploidy is assumed to be 2. In the output, the ordering of samples "
-        "will be identical to the one in FILE.  (bcf view)(-s)"));
+        "will be identical to the one in FILE (bcf view)(-s)."));
 
     Descriptor minSmpl(MIN_SMPL_FRAC,
         CallVariantsWorker::tr("Min samples fraction"),
-        CallVariantsWorker::tr("skip loci where the fraction of samples covered by reads is below FLOAT. (bcf view)(-d)"));
+        CallVariantsWorker::tr("skip loci where the fraction of samples covered by reads is below FLOAT (bcf view)(-d)."));
 
     Descriptor callGt(CALL_GT,
         CallVariantsWorker::tr("Per-sample genotypes"),
-        CallVariantsWorker::tr("Call per-sample genotypes at variant sites. (bcf view)(-g)"));
+        CallVariantsWorker::tr("Call per-sample genotypes at variant sites (bcf view)(-g)."));
     
     Descriptor indelFrac(INDEL_FRAC,
         CallVariantsWorker::tr("INDEL-to-SNP Ratio"),
-        CallVariantsWorker::tr("Ratio of INDEL-to-SNP mutation rate. (bcf view)(-i)"));
+        CallVariantsWorker::tr("Ratio of INDEL-to-SNP mutation rate (bcf view)(-i)."));
 
     Descriptor pref(PREF,
         CallVariantsWorker::tr("Max P(ref|D)"),
-        CallVariantsWorker::tr("A site is considered to be a variant if P(ref|D)<FLOAT. (bcf view)(-p)"));
+        CallVariantsWorker::tr("A site is considered to be a variant if P(ref|D)<FLOAT (bcf view)(-p)."));
 
     Descriptor ptype(PTYPE,
         CallVariantsWorker::tr("Prior allele frequency spectrum."),
-        CallVariantsWorker::tr("If STR can be full, cond2, flat or the file consisting of error output from a previous variant calling run. (bcf view)(-P)"));
+        CallVariantsWorker::tr("If STR can be full, cond2, flat or the file consisting of error output from a previous variant calling run (bcf view)(-P)."));
 
     Descriptor theta(THETA,
         CallVariantsWorker::tr("Mutation rate"),
-        CallVariantsWorker::tr("Scaled mutation rate for variant calling. (bcf view)(-t)"));
+        CallVariantsWorker::tr("Scaled mutation rate for variant calling (bcf view)(-t)."));
 
     Descriptor ccall(CCALL,
         CallVariantsWorker::tr("Pair/trio calling"),
@@ -307,59 +307,59 @@ void CallVariantsWorkerFactory::init() {
         " applied to configure the trio members and their ordering. In the file supplied to the option -s, the "
         "first sample must be the child, the second the father and the third the mother. The valid values of STR "
         "are ‘pair’, ‘trioauto’, ‘trioxd’ and ‘trioxs’, where ‘pair’ calls differences between two input samples, and ‘trioxd’ (‘trioxs’)"
-        "specifies that the input is from the X chromosome non-PAR regions and the child is a female (male). (bcf view)(-T)"));
+        "specifies that the input is from the X chromosome non-PAR regions and the child is a female (male) (bcf view)(-T)."));
 
     Descriptor n1(N1,
         CallVariantsWorker::tr("N group-1 samples"),
         CallVariantsWorker::tr("Number of group-1 samples. This option is used for dividing the samples "
         "into two groups for contrast SNP calling or association test. When this option is in use, the following"
-        "VCF INFO will be outputted: PC2, PCHI2 and QCHI2. (bcf view)(-1)"));
+        "VCF INFO will be outputted: PC2, PCHI2 and QCHI2 (bcf view)(-1)."));
 
     Descriptor n_perm(N_PERM,
         CallVariantsWorker::tr("N permutations"),
-        CallVariantsWorker::tr("Number of permutations for association test (effective only with -1). (bcf view)(-U)"));
+        CallVariantsWorker::tr("Number of permutations for association test (effective only with -1) (bcf view)(-U)."));
 
     Descriptor min_perm_p(MIN_PERM_P,
         CallVariantsWorker::tr("Min P(chi^2)"),
-        CallVariantsWorker::tr("Only perform permutations for P(chi^2)<FLOAT (N permutations). (bcf view)(-X)"));
+        CallVariantsWorker::tr("Only perform permutations for P(chi^2)<FLOAT (N permutations) (bcf view)(-X)."));
 
     //varFilter
     Descriptor minQual(MIN_QUAL,
         CallVariantsWorker::tr("Minimum RMS quality"),
-        CallVariantsWorker::tr("Minimum RMS mapping quality for SNPs. (varFilter) (-Q)"));
+        CallVariantsWorker::tr("Minimum RMS mapping quality for SNPs (varFilter) (-Q)."));
     Descriptor minDep(MIN_DEP,
         CallVariantsWorker::tr("Minimum read depth"),
-        CallVariantsWorker::tr("Minimum read depth. (varFilter) (-d)"));
+        CallVariantsWorker::tr("Minimum read depth (varFilter) (-d)."));
     Descriptor maxDep(MAX_DEP,
         CallVariantsWorker::tr("Maximum read depth"),
-        CallVariantsWorker::tr("Maximum read depth. (varFilter) (-D)"));
+        CallVariantsWorker::tr("Maximum read depth (varFilter) (-D)."));
     Descriptor minAlt(MIN_ALT,
         CallVariantsWorker::tr("Alternate bases"),
-        CallVariantsWorker::tr("Minimum number of alternate bases. (varFilter) (-a)"));
+        CallVariantsWorker::tr("Minimum number of alternate bases (varFilter) (-a)."));
     Descriptor gapSize(GAP_SIZE,
         CallVariantsWorker::tr("Gap size"),
-        CallVariantsWorker::tr("SNP within INT bp around a gap to be filtered. (varFilter) (-w)"));
+        CallVariantsWorker::tr("SNP within INT bp around a gap to be filtered (varFilter) (-w)."));
     Descriptor window(WINDOW,
         CallVariantsWorker::tr("Window size"),
-        CallVariantsWorker::tr("Window size for filtering adjacent gaps. (varFilter) (-W)"));
+        CallVariantsWorker::tr("Window size for filtering adjacent gaps (varFilter) (-W)."));
     Descriptor pvalue1(PVALUE1,
         CallVariantsWorker::tr("Strand bias"),
-        CallVariantsWorker::tr("Minimum P-value for strand bias (given PV4). (varFilter) (-1)"));
+        CallVariantsWorker::tr("Minimum P-value for strand bias (given PV4) (varFilter) (-1)."));
     Descriptor pvalue2(PVALUE2,
         CallVariantsWorker::tr("BaseQ bias"),
-        CallVariantsWorker::tr("Minimum P-value for baseQ bias. (varFilter) (-2)"));
+        CallVariantsWorker::tr("Minimum P-value for baseQ bias (varFilter) (-2)."));
     Descriptor pvalue3(PVALUE3,
         CallVariantsWorker::tr("MapQ bias"),
-        CallVariantsWorker::tr("Minimum P-value for mapQ bias. (varFilter) (-3)"));
+        CallVariantsWorker::tr("Minimum P-value for mapQ bias (varFilter) (-3)."));
     Descriptor pvalue4(PVALUE4,
         CallVariantsWorker::tr("End distance bias"),
-        CallVariantsWorker::tr("Minimum P-value for end distance bias. (varFilter) (-4)"));
+        CallVariantsWorker::tr("Minimum P-value for end distance bias (varFilter) (-4)."));
     Descriptor pvalueHwe(PVALUE_HWE,
         CallVariantsWorker::tr("HWE"),
-        CallVariantsWorker::tr("Minimum P-value for HWE (plus F<0). (varFilter) (-e)"));
+        CallVariantsWorker::tr("Minimum P-value for HWE (plus F<0) (varFilter) (-e)."));
     Descriptor printF(PRINT,
         CallVariantsWorker::tr("Log filtered"),
-        CallVariantsWorker::tr("Print filtered variants into the log. (varFilter) (-p)"));
+        CallVariantsWorker::tr("Print filtered variants into the log (varFilter) (-p)."));
 
     attributes << new Attribute(illumina13Encoding, BaseTypes::BOOL_TYPE(), false, QVariant(false));
     attributes << new Attribute(useOrphan, BaseTypes::BOOL_TYPE(), false, QVariant(false));

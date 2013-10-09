@@ -279,7 +279,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../src/QDWorker.cpp" line="87"/>
-        <source>Schema file</source>
+        <source>Schema file.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

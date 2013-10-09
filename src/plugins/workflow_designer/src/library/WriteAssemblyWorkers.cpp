@@ -155,7 +155,7 @@ void WriteAssemblyWorkerFactory::init() {
         WriteBAMWorker::tr("Assembly"));
     Descriptor protoDesc(WriteAssemblyWorkerFactory::ACTOR_ID,
         WriteBAMWorker::tr("Write Assembly"),
-        WriteBAMWorker::tr("Writes all supplied assemblies to file(s) in selected format"));
+        WriteBAMWorker::tr("Writes all supplied assemblies to file(s) in selected format."));
 
     QList<PortDescriptor*> portDescs;
     {
@@ -178,7 +178,7 @@ void WriteAssemblyWorkerFactory::init() {
 
         Descriptor indexDescr(INDEX_ATTRIBUTE_ID,
             BaseWriteAssemblyWorker::tr("Build index (BAM only)"),
-            BaseWriteAssemblyWorker::tr("Build BAM index for the target BAM file. The file .bai will be created in the same directory"));
+            BaseWriteAssemblyWorker::tr("Build BAM index for the target BAM file. The file .bai will be created in the same directory."));
 
         Attribute *indexAttr = new Attribute(indexDescr, BaseTypes::BOOL_TYPE(), false, true);
         indexAttr->addRelation(new VisibilityRelation(BaseAttributes::DOCUMENT_FORMAT_ATTRIBUTE().getId(), BaseDocumentFormats::BAM));

@@ -69,7 +69,7 @@ void RemoteBLASTWorkerFactory::init() {
     p << new PortDescriptor(outd, DataTypePtr(new MapDataType("blast.ncbi.annotations", outM)), false, true);
     
     Descriptor db(DATABASE,RemoteBLASTWorker::tr("Database"),
-        RemoteBLASTWorker::tr("Select the database to search through. Available databases are blastn, blastp and cdd"));
+        RemoteBLASTWorker::tr("Select the database to search through. Available databases are blastn, blastp and cdd."));
     Descriptor evalue(EXPECT,RemoteBLASTWorker::tr("Expected value"),
         RemoteBLASTWorker::tr("This parameter specifies the statistical significance threshold of reporting matches against the database sequences."));
     Descriptor hits(MAX_HITS,RemoteBLASTWorker::tr("Max hits"),
@@ -77,9 +77,9 @@ void RemoteBLASTWorkerFactory::init() {
     Descriptor short_seq(SHORT_SEQ,RemoteBLASTWorker::tr("Short sequence"),
         RemoteBLASTWorker::tr("Optimize search for short sequences."));
     Descriptor entrezQuery(ENTREZ_QUERY,RemoteBLASTWorker::tr("Entrez query"),
-        RemoteBLASTWorker::tr("Enter an Entrez query to limit search"));
+        RemoteBLASTWorker::tr("Enter an Entrez query to limit search."));
     Descriptor annotateAs(ANNOTATION_NAME,RemoteBLASTWorker::tr("Annotate as"),
-        RemoteBLASTWorker::tr("Name for annotations"));
+        RemoteBLASTWorker::tr("Name for annotations."));
     Descriptor output(ORIGINAL_OUT, RemoteBLASTWorker::tr("BLAST output"),
         RemoteBLASTWorker::tr("Location of BLAST output file. This parameter insignificant for cdd search."));
 
@@ -95,7 +95,7 @@ void RemoteBLASTWorkerFactory::init() {
     a << new Attribute(output, BaseTypes::STRING_TYPE(),false);
 
     Descriptor desc(ACTOR_ID, RemoteBLASTWorker::tr("Remote BLAST"), 
-        RemoteBLASTWorker::tr("Finds annotations for DNA sequence in remote database")
+        RemoteBLASTWorker::tr("Finds annotations for DNA sequence in remote database.")
         );
     ActorPrototype* proto = new IntegralBusActorPrototype(desc, p, a);
     QMap<QString, PropertyDelegate*> delegates; 
@@ -141,7 +141,7 @@ QString RemoteBLASTPrompter::composeRichDoc() {
     QString unsetStr = "<font color='red'>"+tr("unset")+"</font>";
     QString producerName = tr(" from <u>%1</u>").arg(producer ? producer->getLabel() : unsetStr);
 
-    QString doc = tr("For sequence %1 find annotations in database <u>%2</u>")
+    QString doc = tr("For sequence %1 find annotations in database <u>%2</u>.")
         .arg(producerName).arg(getHyperlink(DATABASE, getRequiredParam(DATABASE)));
     return doc;
 }

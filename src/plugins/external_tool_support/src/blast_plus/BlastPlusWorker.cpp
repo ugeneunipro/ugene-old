@@ -81,25 +81,25 @@ void BlastPlusWorkerFactory::init() {
     p << new PortDescriptor(oud, DataTypePtr(new MapDataType("blast.plus.annotations", outM)), false /*input*/, true /*multi*/);
     
     Descriptor pn(BLASTPLUS_PROGRAM_NAME, BlastPlusWorker::tr("Search type"),
-                   BlastPlusWorker::tr("Select type of BLAST+ searches"));
+                   BlastPlusWorker::tr("Select type of BLAST+ searches."));
     Descriptor dp(BLASTPLUS_DATABASE_PATH, BlastPlusWorker::tr("Database Path"),
-                   BlastPlusWorker::tr("Path with database files"));
+                   BlastPlusWorker::tr("Path with database files."));
     Descriptor dn(BLASTPLUS_DATABASE_NAME, BlastPlusWorker::tr("Database Name"),
-                   BlastPlusWorker::tr("Base name for BLAST+ DB files"));
+                   BlastPlusWorker::tr("Base name for BLAST+ DB files."));
     Descriptor ev(BLASTPLUS_EXPECT_VALUE, BlastPlusWorker::tr("Expected value"),
                    BlastPlusWorker::tr("This setting specifies the statistical significance threshold for reporting matches against database sequences."));
     Descriptor gn(BLASTPLUS_GROUP_NAME, BlastPlusWorker::tr("Annotate as"),
-                   BlastPlusWorker::tr("Name for annotations"));
+                   BlastPlusWorker::tr("Name for annotations."));
     Descriptor etp(BLASTPLUS_EXT_TOOL_PATH, BlastPlusWorker::tr("Tool Path"),
-                   BlastPlusWorker::tr("External tool path"));
+                   BlastPlusWorker::tr("External tool path."));
     Descriptor tdp(BLASTPLUS_TMP_DIR_PATH, BlastPlusWorker::tr("Temporary directory"),
-                   BlastPlusWorker::tr("Directory for temporary files"));
+                   BlastPlusWorker::tr("Directory for temporary files."));
     Descriptor output(BLASTPLUS_ORIGINAL_OUT, BlastPlusWorker::tr("BLAST output"),
                    BlastPlusWorker::tr("Location of BLAST output file."));
     Descriptor outtype(BLASTPLUS_OUT_TYPE, BlastPlusWorker::tr("BLAST output type"),
                    BlastPlusWorker::tr("Type of BLAST output file."));
     Descriptor ga(BLASTPLUS_GAPPED_ALN, BlastPlusWorker::tr("Gapped alignment"),
-                   BlastPlusWorker::tr("Perform gapped alignment"));
+                   BlastPlusWorker::tr("Perform gapped alignment."));
 
     a << new Attribute(pn, BaseTypes::STRING_TYPE(), true, QVariant("blastn"));
     a << new Attribute(dp, BaseTypes::STRING_TYPE(), true, QVariant(""));
@@ -120,7 +120,7 @@ void BlastPlusWorkerFactory::init() {
     a << new Attribute(outtype, BaseTypes::STRING_TYPE(), false, QVariant("5"));
 
     Descriptor desc(ACTOR_ID, BlastPlusWorker::tr("Local BLAST+ Search"),
-        BlastPlusWorker::tr("Finds annotations for DNA sequence in local database"));
+        BlastPlusWorker::tr("Finds annotations for DNA sequence in local database."));
     ActorPrototype* proto = new IntegralBusActorPrototype(desc, p, a);
     QMap<QString, PropertyDelegate*> delegates;
 
@@ -189,7 +189,7 @@ QString BlastPlusPrompter::composeRichDoc() {
     Actor* producer = input->getProducer(BaseSlots::DNA_SEQUENCE_SLOT().getId());
     QString unsetStr = "<font color='red'>"+tr("unset")+"</font>";
     QString producerName = tr(" from <u>%1</u>").arg(producer ? producer->getLabel() : unsetStr);
-    QString doc = tr("For sequence <u>%1</u> find annotations in database <u>%2</u>")
+    QString doc = tr("For sequence <u>%1</u> find annotations in database <u>%2</u>.")
         .arg(producerName).arg(getHyperlink(BLASTPLUS_DATABASE_NAME, getRequiredParam(BLASTPLUS_DATABASE_NAME)));
 
     return doc;

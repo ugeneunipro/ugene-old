@@ -70,10 +70,10 @@ void SiteconBuildWorker::registerProto() {
     p << new PortDescriptor(od, DataTypePtr(new MapDataType("sitecon.build.out", outM)), false /*input*/, true /*multi*/);
     
     {
-        Descriptor wd(WINDOW_ATTR, SiteconBuildWorker::tr("Window size, bp"), QApplication::translate("SiteconBuildDialog", "win_tip", 0, QApplication::UnicodeUTF8));
-        Descriptor ld(LEN_ATTR, SiteconBuildWorker::tr("Calibration length"), QApplication::translate("SiteconBuildDialog", "seq_len_tip", 0, QApplication::UnicodeUTF8));
-        Descriptor sd(SEED_ATTR, SiteconBuildWorker::tr("Random seed"), QApplication::translate("SiteconBuildDialog", "seed_tip", 0, QApplication::UnicodeUTF8));
-        Descriptor ad(ALG_ATTR, SiteconBuildWorker::tr("Weight algorithm"), QApplication::translate("SiteconBuildDialog", "algo_tip", 0, QApplication::UnicodeUTF8));
+        Descriptor wd(WINDOW_ATTR, SiteconBuildWorker::tr("Window size, bp"), SiteconBuildWorker::tr("Window size."));
+        Descriptor ld(LEN_ATTR, SiteconBuildWorker::tr("Calibration length"), SiteconBuildWorker::tr("Calibration length."));
+        Descriptor sd(SEED_ATTR, SiteconBuildWorker::tr("Random seed"), SiteconBuildWorker::tr("Random seed."));
+        Descriptor ad(ALG_ATTR, SiteconBuildWorker::tr("Weight algorithm"), SiteconBuildWorker::tr("Weight algorithm."));
 
         a << new Attribute(wd, BaseTypes::NUM_TYPE(), false, 40);
         a << new Attribute(ld, BaseTypes::NUM_TYPE(), false, 1000*1000);

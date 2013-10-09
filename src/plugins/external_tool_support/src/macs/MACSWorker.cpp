@@ -316,14 +316,14 @@ void MACSWorkerFactory::init() {
              MACSWorker::tr("Name"),
              MACSWorker::tr("The name string of the experiment. MACS will use this string NAME"
              " to create output files like 'NAME_peaks.xls', 'NAME_negative_peaks.xls', 'NAME_peaks.bed',"
-             " 'NAME_summits.bed', 'NAME_model.r' and so on. So please avoid any confliction between these filenames and your existing files. (--name)"));
+             " 'NAME_summits.bed', 'NAME_model.r' and so on. So please avoid any confliction between these filenames and your existing files (--name)."));
          Descriptor wiggleOut(WIGGLE_OUTPUT,
              MACSWorker::tr("Wiggle output"),
-             MACSWorker::tr("If this flag is on, MACS will store the fragment pileup in wiggle format for the whole genome data instead of for every chromosomes. (--wig) (--single-profile)"));
+             MACSWorker::tr("If this flag is on, MACS will store the fragment pileup in wiggle format for the whole genome data instead of for every chromosomes (--wig) (--single-profile)."));
          Descriptor wiggleSpace(WIGGLE_SPACE,
              MACSWorker::tr("Wiggle space"),
              MACSWorker::tr("By default, the resolution for saving wiggle files is 10 bps,i.e.,"
-             " MACS will save the raw tag count every 10 bps. You can change it along with '--wig' option. (--space)"));
+             " MACS will save the raw tag count every 10 bps. You can change it along with '--wig' option (--space)."));
         Descriptor gsizeDesc(GENOME_SIZE_ATTR_ID,
             MACSWorker::tr("Genome size (Mbp)"),
             MACSWorker::tr("Homo sapience - 2700 Mbp<br>"
@@ -333,38 +333,38 @@ void MACSWorkerFactory::init() {
             " It's the mappable genome size or effective genome size"
             " which is defined as the genome size which can be sequenced."
             " Because of the repetitive features on the chromosomes, the actual mappable"
-            " genome size will be smaller than the original size, about 90% or 70% of the genome size. (--gsize)"));
+            " genome size will be smaller than the original size, about 90% or 70% of the genome size (--gsize)."));
         Descriptor pvalueDesc(P_VALUE_ATTR_ID,
             MACSWorker::tr("P-value"),
-            MACSWorker::tr("P-value cutoff. Default is 0.00001, for looser results, try 0.001 instead. (--pvalue)"));
+            MACSWorker::tr("P-value cutoff. Default is 0.00001, for looser results, try 0.001 instead (--pvalue)."));
         Descriptor qvalueDesc(Q_VALUE_ATTR_ID,
             MACSWorker::tr("Q-value"),
             MACSWorker::tr("Minimum FDR (q-value) cutoff for peak detection."));
         Descriptor useModelDesc(USE_MODEL_ATTR_ID,
             MACSWorker::tr("Use model"),
-            MACSWorker::tr("Whether or not to use MACS paired peaks model. (--nomodel)"));
+            MACSWorker::tr("Whether or not to use MACS paired peaks model (--nomodel)."));
         Descriptor modelFoldDesc(MODEL_FOLD_ATTR_ID,
             MACSWorker::tr("Model fold"),
             MACSWorker::tr("Select the regions within MFOLD range of high-confidence enrichment ratio against."
             " <b>Model fold</b> is available when <b>Use model</b> is true, which is the foldchange"
             " to chose paired peaks to build paired peaks model. Users need to set a lower(smaller)"
-            " and upper(larger) number for fold change so that MACS will only use the peaks within these foldchange range to build model. (--mfold)"));
+            " and upper(larger) number for fold change so that MACS will only use the peaks within these foldchange range to build model (--mfold)."));
         Descriptor shiftSizeDesc(SHIFT_SIZE_ATTR_ID,
             MACSWorker::tr("Shift size"),
             MACSWorker::tr("An arbitrary shift value used as a half of the fragment size when model is not built."
             " <b>Shift size</b> is available when <b>Use model</b> is false, which will represent the HALF of the fragment size of your sample."
             " If your sonication and size selection size is 300 bps, after you trim out nearly 100 bps adapters,"
-            " the fragment size is about 200 bps, so you can specify 100 here. (--shiftsize)"));
+            " the fragment size is about 200 bps, so you can specify 100 here (--shiftsize)."));
         Descriptor keepDupDesc(KEEP_DUBLICATES_ATTR_ID,
             MACSWorker::tr("Keep duplicates"),
             MACSWorker::tr("It controls the MACS behavior towards duplicate tags at the exact same location -- the same coordination and the same strand."
             " The default <b>auto</b> option makes MACS calculate the maximum tags at the exact same location based on binomal distribution using 1e-5 as "
-            "pvalue cutoff; and the <b>all</b> option keeps every tags. If an <b>integer</b> is given, at most this number of tags will be kept at the same location. (--keep-dup)"));
+            "pvalue cutoff; and the <b>all</b> option keeps every tags. If an <b>integer</b> is given, at most this number of tags will be kept at the same location (--keep-dup)."));
         Descriptor bandWDesc(BAND_WIDTH_ATTR_ID,
             MACSWorker::tr("Band width"),
             MACSWorker::tr("The band width which is used to scan the genome for model building."
             " You can set this parameter as the sonication fragment size expected from wet experiment."
-            " Used only while building the shifting model. (--bw)"));
+            " Used only while building the shifting model (--bw)."));
         Descriptor extFrDesc(EXT_FR_ATTR_ID,
             MACSWorker::tr("Extended fragment pileup"),
             MACSWorker::tr("Whether or not to generate extended fragment pileup, local lambda and score tracks at every bp."));
@@ -372,31 +372,31 @@ void MACSWorkerFactory::init() {
         //optional
         Descriptor tagSizeDesc(TAG_SIZE_ATTR_ID,
             MACSWorker::tr("Tag size (optional)"),
-            MACSWorker::tr("Length of reads. Determined from first 10 reads if not specified (input <b>0</b>). (--tsize)"));
+            MACSWorker::tr("Length of reads. Determined from first 10 reads if not specified (input <b>0</b>) (--tsize)."));
 
         //advanced
         Descriptor useLambdaDesc(USE_LAMBDA_ATTR_ID,
             MACSWorker::tr("Use lambda"),
-            MACSWorker::tr("Whether to use local lambda model which can use the local bias at peak regions to throw out false positives. (--nolambda)"));
+            MACSWorker::tr("Whether to use local lambda model which can use the local bias at peak regions to throw out false positives (--nolambda)."));
         Descriptor smallNearbyDesc(SMALL_NEARBY_ATTR_ID,
             MACSWorker::tr("Small nearby region"),
             MACSWorker::tr("The small nearby region in basepairs to calculate dynamic lambda."
-            " This is used to capture the bias near the peak summit region. Invalid if there is no control data. (--slocal)"));
+            " This is used to capture the bias near the peak summit region. Invalid if there is no control data (--slocal)."));
         Descriptor LargeNearbyDesc(LARGE_NEARBY_ATTR_ID,
             MACSWorker::tr("Large nearby region"),
             MACSWorker::tr("The large nearby region in basepairs to calculate dynamic lambda. "
-            " This is used to capture the surround bias. (--llocal)"));
+            " This is used to capture the surround bias (--llocal)."));
         Descriptor autoBimodalDesc(AUTO_BIMODAL_ATTR_ID,
             MACSWorker::tr("Auto bimodal"),
             MACSWorker::tr("Whether turn on the auto pair model process."
             "If set, when MACS failed to build paired model, it will use the nomodel"
-            "settings, the “Shift size” parameter to shift and extend each tags. (--on-auto)"));
+            "settings, the “Shift size” parameter to shift and extend each tags (--on-auto)."));
         Descriptor scaleLargeDesc(SCALE_LARGE_ATTR_ID,
             MACSWorker::tr("Scale to large"),
             MACSWorker::tr(" When set, scale the small sample up to the bigger sample."
             "By default, the bigger dataset will be scaled down towards the smaller dataset,"
             "which will lead to smaller p/qvalues and more specific results."
-            "Keep in mind that scaling down will bring down background noise more. (--to-large)"));
+            "Keep in mind that scaling down will bring down background noise more (--to-large)."));
         Descriptor shiftControlDesc(SHIFT_CONTROL_ATTR_ID,
             MACSWorker::tr("Shift control"),
             MACSWorker::tr("When set, control tags will be shifted just as ChIP tags according to their strand "

@@ -649,7 +649,7 @@ DNAAlphabetType HMMIO::convertHMMAlphabet(int atype) {
 HMMReadTask::HMMReadTask(const QString& _url) 
 : Task("", TaskFlag_None), hmm(NULL), url(_url) 
 {
-    QString tn = tr("Read HMM profile '%1'").arg(QFileInfo(url).fileName());
+    QString tn = tr("Read HMM profile '%1'.").arg(QFileInfo(url).fileName());
     setTaskName(tn);
 }
 

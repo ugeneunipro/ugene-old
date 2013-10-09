@@ -84,7 +84,7 @@ void QDWorkerFactory::init() {
         p << new PortDescriptor(od, DataTypePtr(new MapDataType("query.annotations", outM)), false /*input*/, true /*multi*/);
     }
     {
-        Descriptor sd(SCHEMA_ATTR, QDWorker::tr("Schema"), QDWorker::tr("Schema file"));
+        Descriptor sd(SCHEMA_ATTR, QDWorker::tr("Schema"), QDWorker::tr("Schema file."));
         Descriptor od(OFFSET_ATTR, QDWorker::tr("Offset"),
             QDWorker::tr("Specifies left and right offsets for merged annotation (if 'Merge' parameter is set to true)."));
         Descriptor sad(OUTPUT_ATTR, QDWorker::tr("Merge"),

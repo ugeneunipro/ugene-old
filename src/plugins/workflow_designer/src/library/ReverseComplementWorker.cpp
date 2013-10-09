@@ -45,7 +45,7 @@ void RCWorkerFactory::init() {
     p << new PortDescriptor(outd, DataTypePtr(new MapDataType("rc.outpur.sequence", inM)), false, true);
 
     Descriptor opType(OP_TYPE,RCWorker::tr("Operation type"),
-        RCWorker::tr("Select what to do with sequence"));
+        RCWorker::tr("Select what to do with sequence."));
     attrs << new Attribute(opType, BaseTypes::STRING_TYPE(),true,"reverse-complement");
 
     Descriptor desc(ACTOR_ID, RCWorker::tr("Reverse Complement"), 
@@ -77,7 +77,7 @@ QString RCWorkerPrompter::composeRichDoc() {
     QString op = type == "norev" ? "complement" : type == "nocompl" ? "reverse" : "reverse-complement";
     op = getHyperlink(OP_TYPE, op);
 
-    QString res = tr("Converts each input sequence from %1 into its %2 counterpart").arg(producerName).arg(op);
+    QString res = tr("Converts each input sequence %1 into its %2 counterpart").arg(producerName).arg(op);
     return res;
 }
 

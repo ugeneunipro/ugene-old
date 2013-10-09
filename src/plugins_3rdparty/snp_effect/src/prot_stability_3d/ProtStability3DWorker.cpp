@@ -160,7 +160,7 @@ void ProtStability3DWorkerFactory::init( )
     Descriptor protoDesc( ProtStability3DWorkerFactory::ACTOR_ID,
         QObject::tr( "ProtStability3D" ),
         QObject::tr( "Identification of the SNP influence on"
-            "protein tertiary structure thermodynamic stability" ) );
+            "protein tertiary structure thermodynamic stability." ) );
 
     ActorPrototype *proto = new IntegralBusActorPrototype( protoDesc, p, a );
     proto->setPrompter( new ProtStability3DPrompter( ) );

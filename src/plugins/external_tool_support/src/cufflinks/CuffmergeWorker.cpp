@@ -76,7 +76,7 @@ void CuffmergeWorkerFactory::init()
         Descriptor refAnnotation(REF_ANNOTATION,
             CuffmergeWorker::tr("Reference annotation"),
             CuffmergeWorker::tr("Merge the input assemblies together with"
-            " this reference annotation"));
+            " this reference annotation."));
 
         Descriptor refSeq(REF_SEQ,
             CuffmergeWorker::tr("Reference sequence"),
@@ -87,19 +87,19 @@ void CuffmergeWorkerFactory::init()
 
         Descriptor minIso(MIN_ISOFORM_FRACTION,
             CuffmergeWorker::tr("Minimum isoform fraction"),
-            CuffmergeWorker::tr("Discard isoforms with abundance below this"));
+            CuffmergeWorker::tr("Discard isoforms with abundance below this."));
 
         Descriptor cuffcompareToolPath(CUFFCOMPARE_TOOL_PATH,
             CuffmergeWorker::tr("Cuffcompare tool path"),
-            CuffmergeWorker::tr("The path to the Cuffcompare external tool in UGENE"));
+            CuffmergeWorker::tr("The path to the Cuffcompare external tool in UGENE."));
 
         Descriptor extToolPath(EXT_TOOL_PATH,
             CuffmergeWorker::tr("Cuffmerge tool path"),
-            CuffmergeWorker::tr("The path to the Cuffmerge external tool in UGENE"));
+            CuffmergeWorker::tr("The path to the Cuffmerge external tool in UGENE."));
 
         Descriptor tmpDir(TMP_DIR_PATH,
             CuffmergeWorker::tr("Temporary directory"),
-            CuffmergeWorker::tr("The directory for temporary files"));
+            CuffmergeWorker::tr("The directory for temporary files."));
 
         attributes << new Attribute(outDir, BaseTypes::STRING_TYPE(), true, "");
         attributes << new Attribute(refAnnotation, BaseTypes::STRING_TYPE(), false, QVariant(""));

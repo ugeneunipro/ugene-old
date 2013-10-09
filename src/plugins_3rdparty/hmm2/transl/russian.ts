@@ -874,7 +874,7 @@
     <name>U2::HMMReadTask</name>
     <message>
         <location filename="../src/HMMIO.cpp" line="652"/>
-        <source>Read HMM profile &apos;%1&apos;</source>
+        <source>Read HMM profile &apos;%1&apos;.</source>
         <translation>Чтение HMM профайла &apos;%1&apos;</translation>
     </message>
 </context>
@@ -1259,7 +1259,7 @@
     <name>U2::LocalWorkflow::HMMReadPrompter</name>
     <message>
         <location filename="../src/HMMIOWorker.cpp" line="169"/>
-        <source>Read HMM profile(s) from %1</source>
+        <source>Read HMM profile(s) from %1.</source>
         <translation>Загрузить HMM профайл(ы) из %1</translation>
     </message>
 </context>
@@ -1388,7 +1388,7 @@
     </message>
     <message>
         <location filename="../src/u_search/HMMSearchWorker.cpp" line="81"/>
-        <source>Searches each input sequence for significantly similar sequence matches to all specified HMM profiles. In case several profiles were supplied, searches with all profiles one by one and outputs united set of annotations for each sequence</source>
+        <source>Searches each input sequence for significantly similar sequence matches to all specified HMM profiles. In case several profiles were supplied, searches with all profiles one by one and outputs united set of annotations for each sequence.</source>
         <translation>Ищет значимые совпадения с указанными HMM профайлами в каждой входной последовательности и выдаёт набор аннотированных регионов. Профайлов может быть несколько, поиск отработает для каждого профайла и выдаст общий набор аннотаций для каждой последовательности.</translation>
     </message>
 </context>

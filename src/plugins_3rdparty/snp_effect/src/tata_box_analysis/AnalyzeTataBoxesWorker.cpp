@@ -180,8 +180,8 @@ void AnalyzeTataBoxesWorkerFactory::init( )
     }
 
     Descriptor protoDesc( AnalyzeTataBoxesWorkerFactory::ACTOR_ID,
-        QObject::tr( "Determine SNP effect on TATA-boxes" ),
-        QObject::tr( "Define the influence of SNP on TATA-boxes belonging to the sequence" ) );
+        QObject::tr( "Determine SNP Effect on TATA-boxes" ),
+        QObject::tr( "Define the influence of SNP on TATA-boxes belonging to the sequence." ) );
 
     ActorPrototype *proto = new IntegralBusActorPrototype( protoDesc, p, a );
     proto->setPrompter( new AnalyzeTataBoxesPrompter( ) );

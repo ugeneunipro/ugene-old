@@ -109,7 +109,7 @@ ReadAssemblyProto::ReadAssemblyProto()
 : GenericReadDocProto(ReadAssemblyWorkerFactory::ACTOR_ID)
 {
     setDisplayName(ReadAssemblyWorker::tr("Read Assembly"));
-    setDocumentation(ReadAssemblyWorker::tr("Reads assembly from files"));
+    setDocumentation(ReadAssemblyWorker::tr("Reads assembly from files."));
 
     { // ports description
         QMap<Descriptor, DataTypePtr> outTypeMap;

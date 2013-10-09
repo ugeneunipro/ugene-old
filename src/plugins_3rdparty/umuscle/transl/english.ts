@@ -171,7 +171,7 @@
     </message>
     <message>
         <location filename="../src/MuscleWorker.cpp" line="83"/>
-        <source>Whole alignment or column range e.g. &lt;b&gt;1..100&lt;/b&gt;</source>
+        <source>Whole alignment or column range e.g. &lt;b&gt;1..100&lt;/b&gt;.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

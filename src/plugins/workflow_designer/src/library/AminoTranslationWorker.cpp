@@ -175,10 +175,10 @@ void AminoTranslationWorkerFactory::init(){
     }
     QList<Attribute*> a;
 
-    Descriptor pt(POS_2_TRANSLATE_ATTR, AminoTranslationWorker::tr("Translate from "), AminoTranslationWorker::tr("What position would sequence translated from : first, second, third or from all positions"));
+    Descriptor pt(POS_2_TRANSLATE_ATTR, AminoTranslationWorker::tr("Translate from "), AminoTranslationWorker::tr("What position would sequence translated from : first, second, third or from all positions."));
     a << new Attribute(pt, BaseTypes::STRING_TYPE(), false, QVariant("all"));   
 
-    Descriptor atd(AUTO_TRANSLATION_ATTR, AminoTranslationWorker::tr("Auto selected genetic code"), AminoTranslationWorker::tr("Set if genetic code will be selected automatically"));
+    Descriptor atd(AUTO_TRANSLATION_ATTR, AminoTranslationWorker::tr("Auto selected genetic code"), AminoTranslationWorker::tr("Set if genetic code will be selected automatically."));
     a << new Attribute(atd, BaseTypes::BOOL_TYPE(), true, QVariant(true));
 
     Descriptor desc(ACTOR_ID,

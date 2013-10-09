@@ -1178,7 +1178,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../src/blast/BlastAllWorker.cpp" line="122"/>
-        <source>For sequence &lt;u&gt;%1&lt;/u&gt; find annotations in database &lt;u&gt;%2&lt;/u&gt;</source>
+        <source>For sequence &lt;u&gt;%1&lt;/u&gt; find annotations in database &lt;u&gt;%2&lt;/u&gt;.</source>
         <translation>Pro sekvenci &lt;u&gt;%1&lt;/u&gt; najít poznámky v databázi &lt;u&gt;%2&lt;/u&gt;</translation>
     </message>
 </context>
@@ -1211,7 +1211,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../src/blast/BlastAllWorker.cpp" line="49"/>
-        <source>Select type of BLAST searches</source>
+        <source>Select type of BLAST searches.</source>
         <translation>Vybrat typ hledání BLAST</translation>
     </message>
     <message>
@@ -1281,7 +1281,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../src/blast/BlastAllWorker.cpp" line="75"/>
-        <source>Finds annotations for DNA sequence in local database</source>
+        <source>Finds annotations for DNA sequence in local database.</source>
         <translation>Najde poznámky k sekvenci DNA v místní databázi</translation>
     </message>
     <message>
@@ -1309,7 +1309,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../src/blast_plus/BlastPlusWorker.cpp" line="137"/>
-        <source>For sequence &lt;u&gt;%1&lt;/u&gt; find annotations in database &lt;u&gt;%2&lt;/u&gt;</source>
+        <source>For sequence &lt;u&gt;%1&lt;/u&gt; find annotations in database &lt;u&gt;%2&lt;/u&gt;.</source>
         <translation>Pro sekvenci &lt;u&gt;%1&lt;/u&gt; najít poznámky v databázi &lt;u&gt;%2&lt;/u&gt;</translation>
     </message>
 </context>
@@ -1412,7 +1412,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../src/blast_plus/BlastPlusWorker.cpp" line="90"/>
-        <source>Finds annotations for DNA sequence in local database</source>
+        <source>Finds annotations for DNA sequence in local database.</source>
         <translation>Najde poznámky k sekvenci DNA v místní databázi</translation>
     </message>
     <message>
@@ -1761,7 +1761,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../src/tcoffee/TCoffeeWorker.cpp" line="50"/>
-        <source>Number of iteration on the progressive alignment&lt;br&gt;0 - no iteration, -1 - Nseq iterations</source>
+        <source>Number of iteration on the progressive alignment.&lt;br&gt;0 - no iteration, -1 - Nseq iterations.</source>
         <translation>Počet opakování při postupném zarovnání&lt;br&gt;0 - žádné opakování, -1 - Nseq opakování</translation>
     </message>
     <message>

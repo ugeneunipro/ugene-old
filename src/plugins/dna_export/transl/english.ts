@@ -1651,7 +1651,7 @@ var %2; //parsed line number</source>
     <name>U2::LocalWorkflow::GenerateDNAPrompter</name>
     <message>
         <location filename="../src/GenerateDNAWorker.cpp" line="194"/>
-        <source>Generates random DNA sequence(s)</source>
+        <source>Generates random DNA sequence(s).</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1896,7 +1896,7 @@ var %2; //parsed line number</source>
     <message>
         <location filename="../src/ImportQualityScoresWorker.cpp" line="78"/>
         <source>Add corresponding PHRED quality scores to the sequences.
-You can use this worker to convert .fasta and .qual pair to fastq format</source>
+You can use this worker to convert .fasta and .qual pair to fastq format.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1967,7 +1967,7 @@ You can use this worker to convert .fasta and .qual pair to fastq format</source
     </message>
     <message>
         <location filename="../src/WriteAnnotationsWorker.cpp" line="217"/>
-        <source>String which separates values in CSV files</source>
+        <source>String which separates values in CSV files.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1977,7 +1977,7 @@ You can use this worker to convert .fasta and .qual pair to fastq format</source
     </message>
     <message>
         <location filename="../src/WriteAnnotationsWorker.cpp" line="221"/>
-        <source>Add names of sequences into CSV file</source>
+        <source>Add names of sequences into CSV file.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

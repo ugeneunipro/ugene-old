@@ -157,8 +157,8 @@ void Snp2PdbSiteWorkerFactory::init( )
     }
 
     Descriptor protoDesc( Snp2PdbSiteWorkerFactory::ACTOR_ID,
-        QObject::tr( "SNP effect on PDB sites" ),
-        QObject::tr( "Identification of the SNP influence on PDB sites" ) );
+        QObject::tr( "SNP Effect on PDB Sites" ),
+        QObject::tr( "Identification of the SNP influence on PDB sites." ) );
 
     ActorPrototype *proto = new IntegralBusActorPrototype( protoDesc, p, a );
     proto->setPrompter( new Snp2PdbSitePrompter( ) );

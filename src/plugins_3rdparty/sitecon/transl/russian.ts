@@ -368,7 +368,7 @@ Must be: windows size is not greater than TFBS alignment length, recommended: wi
     <name>U2::LocalWorkflow::SiteconReadPrompter</name>
     <message>
         <location filename="../src/SiteconIOWorkers.cpp" line="188"/>
-        <source>Read model(s) from &lt;u&gt;%1&lt;/u&gt;</source>
+        <source>Read model(s) from &lt;u&gt;%1&lt;/u&gt;.</source>
         <translation>Загрузить профайлы SITECON из &lt;u&gt;%1&lt;/u&gt;.</translation>
     </message>
 </context>
@@ -501,7 +501,7 @@ Must be: windows size is not greater than TFBS alignment length, recommended: wi
     </message>
     <message>
         <location filename="../src/SiteconSearchWorker.cpp" line="82"/>
-        <source>Annotation name for marking found regions</source>
+        <source>Annotation name for marking found regions.</source>
         <translation>Имя аннотации для разметки найденных регионов.</translation>
     </message>
     <message>

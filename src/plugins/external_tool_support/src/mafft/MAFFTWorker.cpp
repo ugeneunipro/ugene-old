@@ -69,15 +69,15 @@ void MAFFTWorkerFactory::init() {
     p << new PortDescriptor(oud, DataTypePtr(new MapDataType("mafft.out.msa", outM)), false /*input*/, true /*multi*/);
     
     Descriptor gop(GAP_OPEN_PENALTY, MAFFTWorker::tr("Gap Open Penalty"),
-                   MAFFTWorker::tr("Gap Open Penalty"));
+                   MAFFTWorker::tr("Gap Open Penalty."));
     Descriptor gep(GAP_EXT_PENALTY, MAFFTWorker::tr("Offset"),
-                   MAFFTWorker::tr("Works like gap extension penalty"));
+                   MAFFTWorker::tr("Works like gap extension penalty."));
     Descriptor tgp(NUM_ITER, MAFFTWorker::tr("Max Iteration"),
-                   MAFFTWorker::tr("Maximum number of iterative refinement"));
+                   MAFFTWorker::tr("Maximum number of iterative refinement."));
     Descriptor etp(EXT_TOOL_PATH, MAFFTWorker::tr("Tool Path"),
-                   MAFFTWorker::tr("External tool path"));
+                   MAFFTWorker::tr("External tool path."));
     Descriptor tdp(TMP_DIR_PATH, MAFFTWorker::tr("Temporary directory"),
-                   MAFFTWorker::tr("Directory for temporary files"));
+                   MAFFTWorker::tr("Directory for temporary files."));
 
     a << new Attribute(gop, BaseTypes::NUM_TYPE(), false, QVariant(1.53));
     a << new Attribute(gep, BaseTypes::NUM_TYPE(), false, QVariant(0.00));

@@ -85,26 +85,26 @@ void BlastAllWorkerFactory::init() {
     p << new PortDescriptor(oud, DataTypePtr(new MapDataType("blast.seq", outM)), false /*input*/, true /*multi*/);
     
     Descriptor pn(BLASTALL_PROGRAM_NAME, BlastAllWorker::tr("Search type"),
-                   BlastAllWorker::tr("Select type of BLAST searches"));
+                   BlastAllWorker::tr("Select type of BLAST searches."));
     Descriptor dp(BLASTALL_DATABASE_PATH, BlastAllWorker::tr("Database Path"),
-                   BlastAllWorker::tr("Path with database files"));
+                   BlastAllWorker::tr("Path with database files."));
     Descriptor dn(BLASTALL_DATABASE_NAME, BlastAllWorker::tr("Database Name"),
-                   BlastAllWorker::tr("Base name for BLAST DB files"));
+                   BlastAllWorker::tr("Base name for BLAST DB files."));
     Descriptor ev(BLASTALL_EXPECT_VALUE, BlastAllWorker::tr("Expected value"),
                    BlastAllWorker::tr("This setting specifies the statistical significance threshold for reporting matches against database sequences."));
     Descriptor gn(BLASTALL_GROUP_NAME, BlastAllWorker::tr("Annotate as"),
-                   BlastAllWorker::tr("Name for annotations"));
+                   BlastAllWorker::tr("Name for annotations."));
     Descriptor etp(BLASTALL_EXT_TOOL_PATH, BlastAllWorker::tr("Tool Path"),
-                   BlastAllWorker::tr("External tool path"));
+                   BlastAllWorker::tr("External tool path."));
     Descriptor tdp(BLASTALL_TMP_DIR_PATH, BlastAllWorker::tr("Temporary directory"),
-                   BlastAllWorker::tr("Directory for temporary files"));
+                   BlastAllWorker::tr("Directory for temporary files."));
 
     Descriptor output(BLASTALL_ORIGINAL_OUT, BlastAllWorker::tr("BLAST output"),
                    BlastAllWorker::tr("Location of BLAST output file."));
     Descriptor outtype(BLASTALL_OUT_TYPE, BlastAllWorker::tr("BLAST output type"),
                    BlastAllWorker::tr("Type of BLAST output file."));
     Descriptor ga(BLASTALL_GAPPED_ALN, BlastAllWorker::tr("Gapped alignment"),
-                   BlastAllWorker::tr("Perform gapped alignment"));
+                   BlastAllWorker::tr("Perform gapped alignment."));
 //    Descriptor umb(USE_MEGABLAST, BlastAllWorker::tr("Use MEGABLAST"),
 //                   BlastAllWorker::tr("Activates MEGABLAST algorithm for blastn search"));
 //    Descriptor ws(WORD_SIZE, BlastAllWorker::tr("Word size"),
@@ -153,7 +153,7 @@ void BlastAllWorkerFactory::init() {
     a << new Attribute(outtype, BaseTypes::STRING_TYPE(), false, QVariant("7"));
 
     Descriptor desc(ACTOR_ID, BlastAllWorker::tr("Local BLAST Search"),
-        BlastAllWorker::tr("Finds annotations for DNA sequence in local database"));
+        BlastAllWorker::tr("Finds annotations for DNA sequence in local database."));
     ActorPrototype* proto = new IntegralBusActorPrototype(desc, p, a);
     QMap<QString, PropertyDelegate*> delegates;
 
@@ -296,7 +296,7 @@ QString BlastAllPrompter::composeRichDoc() {
     Actor* producer = input->getProducer(BaseSlots::DNA_SEQUENCE_SLOT().getId());
     QString unsetStr = "<font color='red'>"+tr("unset")+"</font>";
     QString producerName = tr(" from <u>%1</u>").arg(producer ? producer->getLabel() : unsetStr);
-    QString doc = tr("For sequence %1 find annotations in database <u>%2</u>")
+    QString doc = tr("For sequence %1 find annotations in database <u>%2</u>.")
         .arg(producerName).arg(getHyperlink(BLASTALL_DATABASE_NAME, getRequiredParam(BLASTALL_DATABASE_NAME)));
 
     return doc;

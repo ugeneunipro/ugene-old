@@ -201,7 +201,7 @@ void GffreadWorkerFactory::init() {
 
     QList<Attribute*> attrs;
     {
-        Descriptor od(OUT_URL_ATTR_ID, QObject::tr("Output sequences"), QObject::tr("The url to the output file with the extracted sequences"));
+        Descriptor od(OUT_URL_ATTR_ID, QObject::tr("Output sequences"), QObject::tr("The url to the output file with the extracted sequences."));
         attrs << new Attribute(od, BaseTypes::STRING_TYPE(), true);
     }
 
@@ -211,8 +211,8 @@ void GffreadWorkerFactory::init() {
     }
 
     Descriptor desc(ACTOR_ID,
-        QObject::tr("Extract transcript sequences with gffread"),
-        QObject::tr("Extract transcript sequences from the genomic sequence(s) with gffread"));
+        QObject::tr("Extract Transcript Sequences with gffread"),
+        QObject::tr("Extract transcript sequences from the genomic sequence(s) with gffread."));
     ActorPrototype *proto = new IntegralBusActorPrototype(desc, ports, attrs);
     proto->setPrompter(new GffreadPrompter());
     proto->setEditor(new DelegateEditor(delegates));

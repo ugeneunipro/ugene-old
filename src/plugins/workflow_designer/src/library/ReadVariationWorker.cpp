@@ -159,7 +159,7 @@ ReadVariationProto::ReadVariationProto()
 : GenericReadDocProto(ReadVariationWorkerFactory::ACTOR_ID)
 {
     setDisplayName(ReadVariationWorker::tr("Read Variations"));
-    setDocumentation(ReadVariationWorker::tr("Reads variations from files and produces variations tracks"));
+    setDocumentation(ReadVariationWorker::tr("Reads variations from files and produces variations tracks."));
     {
         QMap<Descriptor, DataTypePtr> outTypeMap;
         outTypeMap[BaseSlots::VARIATION_TRACK_SLOT()] = BaseTypes::VARIATION_TRACK_TYPE();

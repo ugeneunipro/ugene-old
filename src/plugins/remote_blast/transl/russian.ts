@@ -597,7 +597,7 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Запрос к удаленной базе данных</translation>
     </message>
     <message>
-        <source>Finds annotations for DNA sequence in remote database</source>
+        <source>Finds annotations for DNA sequence in remote database.</source>
         <translation type="obsolete">Находит аннотации для ДНК последовательностей в удаленной базе данных</translation>
     </message>
 </context>
@@ -674,7 +674,7 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete"> из %1</translation>
     </message>
     <message>
-        <source>For sequence &lt;u&gt;%1&lt;/u&gt; find annotations in database &lt;u&gt;%2&lt;/u&gt;</source>
+        <source>For sequence &lt;u&gt;%1&lt;/u&gt; find annotations in database &lt;u&gt;%2&lt;/u&gt;.</source>
         <translation type="obsolete">Для последовательности &lt;u&gt;%1&lt;/u&gt; находит аннотации в базе данных &lt;u&gt;%2&lt;/u&gt;</translation>
     </message>
     <message>
@@ -786,7 +786,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../src/RemoteBLASTWorker.cpp" line="91"/>
-        <source>Finds annotations for DNA sequence in remote database</source>
+        <source>Finds annotations for DNA sequence in remote database.</source>
         <translation type="unfinished">Находит аннотации для ДНК последовательностей в удаленной базе данных</translation>
     </message>
     <message>
@@ -912,7 +912,7 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Запрос к удаленной базе данных</translation>
     </message>
     <message>
-        <source>Finds annotations for DNA sequence in remote database</source>
+        <source>Finds annotations for DNA sequence in remote database.</source>
         <translation type="obsolete">Находит аннотации для ДНК последовательностей в удаленной базе данных</translation>
     </message>
     <message>

@@ -205,22 +205,22 @@ void ConservationPlotWorkerFactory::init() {
              ConservationPlotWorker::tr("File to store phastcons results (BMP)."));
          Descriptor titleDescr(TITLE,
              ConservationPlotWorker::tr("Title"),
-             ConservationPlotWorker::tr("Title of the figure (--title)"));
+             ConservationPlotWorker::tr("Title of the figure (--title)."));
          Descriptor labelDescr(LABEL,
              ConservationPlotWorker::tr("Label"),
-             ConservationPlotWorker::tr("Label of data in the figure (--bed-label)"));
+             ConservationPlotWorker::tr("Label of data in the figure (--bed-label)."));
          Descriptor assemblyVersion(ASSEMBLY_VER,
              ConservationPlotWorker::tr("Assembly version"),
-             ConservationPlotWorker::tr("The directory to store phastcons scores (--phasdb)"));
+             ConservationPlotWorker::tr("The directory to store phastcons scores (--phasdb)."));
          Descriptor windowSizeDescr(WINDOW_S,
              ConservationPlotWorker::tr("Window width"),
-             ConservationPlotWorker::tr("Window width centered at middle of regions. (-w)"));
+             ConservationPlotWorker::tr("Window width centered at middle of regions (-w)."));
          Descriptor heightDescr(HEIGHT,
              ConservationPlotWorker::tr("Height"),
-             ConservationPlotWorker::tr("Height of plot. (--height)"));
+             ConservationPlotWorker::tr("Height of plot (--height)."));
          Descriptor widthDescr(WIDTH,
              ConservationPlotWorker::tr("Width"),
-             ConservationPlotWorker::tr("Width of plot. (--width)"));
+             ConservationPlotWorker::tr("Width of plot (--width)."));
 
 
         attrs << new Attribute(outFile, BaseTypes::STRING_TYPE(), true, QVariant(""));
@@ -267,7 +267,7 @@ void ConservationPlotWorkerFactory::init() {
     }
 
     Descriptor protoDesc(ConservationPlotWorkerFactory::ACTOR_ID,
-    ConservationPlotWorker::tr("Build conservation plot"),
+    ConservationPlotWorker::tr("Build Conservation Plot"),
     ConservationPlotWorker::tr("Plots the PhastCons scores profiles."));
 
     ActorPrototype *proto = new IntegralBusActorPrototype(protoDesc, portDescs, attrs);

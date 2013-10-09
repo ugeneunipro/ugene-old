@@ -72,8 +72,8 @@ void HMMBuildWorkerFactory::init() {
         p << new PortDescriptor(od, DataTypePtr(new MapDataType("hmm.build", outM)), false /*input*/, true /*multi*/);
     }
 
-    Descriptor mod(MODE_ATTR, HMMBuildWorker::tr("HMM strategy"), HMMBuildWorker::tr("Specifies kind of alignments you want to allow"));
-    Descriptor nad(NAME_ATTR, HMMBuildWorker::tr("Profile name"), HMMBuildWorker::tr("Descriptive name of the HMM profile"));
+    Descriptor mod(MODE_ATTR, HMMBuildWorker::tr("HMM strategy"), HMMBuildWorker::tr("Specifies kind of alignments you want to allow."));
+    Descriptor nad(NAME_ATTR, HMMBuildWorker::tr("Profile name"), HMMBuildWorker::tr("Descriptive name of the HMM profile."));
     // int     nsample;      // number of random seqs to sample
     // int     seed;         // random number seed             
     // int     fixedlen;     // fixed length, or 0 if unused

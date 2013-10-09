@@ -794,7 +794,7 @@ it is better to leave the list intact.</source>
     </message>
     <message>
         <location filename="../src/library/MSA2SequenceWorker.cpp" line="139"/>
-        <source>Split alignment%1 into sequences</source>
+        <source>Split alignment%1 into sequences.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -882,7 +882,7 @@ it is better to leave the list intact.</source>
     </message>
     <message>
         <location filename="../src/library/AminoTranslationWorker.cpp" line="178"/>
-        <source>What position would sequence translated from : first, second, third or from all positions</source>
+        <source>What position would sequence translated from : first, second, third or from all positions.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -892,7 +892,7 @@ it is better to leave the list intact.</source>
     </message>
     <message>
         <location filename="../src/library/AminoTranslationWorker.cpp" line="181"/>
-        <source>Set if genetic code will be selected automatically</source>
+        <source>Set if genetic code will be selected automatically.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -930,7 +930,7 @@ it is better to leave the list intact.</source>
     </message>
     <message>
         <location filename="../src/library/AssemblyToSequenceWorker.cpp" line="191"/>
-        <source>Split %1 assemblies into sequences(reads) and puts them to the output</source>
+        <source>Split %1 assemblies into sequences(reads) and puts them to the output.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -938,7 +938,7 @@ it is better to leave the list intact.</source>
     <name>U2::LocalWorkflow::AssemblyToSequencesTask</name>
     <message>
         <location filename="../src/library/AssemblyToSequenceWorker.cpp" line="87"/>
-        <source>Split assembly into sequences</source>
+        <source>Split Assembly into Sequences</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -946,12 +946,12 @@ it is better to leave the list intact.</source>
     <name>U2::LocalWorkflow::AssemblyToSequencesWorker</name>
     <message>
         <location filename="../src/library/AssemblyToSequenceWorker.cpp" line="165"/>
-        <source>Split assembly into sequences</source>
+        <source>Split Assembly into Sequences</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/library/AssemblyToSequenceWorker.cpp" line="166"/>
-        <source>Splits assembly into sequences(reads)</source>
+        <source>Splits assembly into sequences(reads).</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1002,7 +1002,7 @@ it is better to leave the list intact.</source>
     </message>
     <message>
         <location filename="../src/library/WriteAssemblyWorkers.cpp" line="178"/>
-        <source>Build BAM index for the target BAM file. The file .bai will be created in the same directory</source>
+        <source>Build BAM index for the target BAM file. The file .bai will be created in the same directory.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1020,7 +1020,7 @@ it is better to leave the list intact.</source>
     </message>
     <message>
         <location filename="../src/library/CDSearchWorker.cpp" line="140"/>
-        <source>For sequence %1 find conserved domains in database &lt;u&gt;%2&lt;/u&gt;</source>
+        <source>For sequence %1 find conserved domains in database &lt;u&gt;%2&lt;/u&gt;.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1053,7 +1053,7 @@ it is better to leave the list intact.</source>
     </message>
     <message>
         <location filename="../src/library/CDSearchWorker.cpp" line="68"/>
-        <source>Currently, CD-Search is offered with the following search databases:&lt;br&gt;&lt;ul&gt;&lt;li&gt;&lt;b&gt;CDD&lt;/b&gt; - this is a superset including &lt;a href=&quot;http://www.ncbi.nlm.nih.gov/Structure/cdd/cdd_help.shtml#CDSource_NCBI_curated&quot;&gt;NCBI-curated domains&lt;/a&gt; and &lt;a href=&quot;http://www.ncbi.nlm.nih.gov/Structure/cdd/cdd_help.shtml#CDSource_external&quot;&gt;data imported&lt;/a&gt; from Pfam, SMART, COG, PRK, and TIGRFAM.&lt;/li&gt;&lt;li&gt;&lt;b&gt;Pfam&lt;/b&gt; - a mirror of a recent Pfam-A database of curated seed alignments. Pfam version numbers do change with incremental updates. As with SMART, families describing very short motifs or peptides may be missing from the  mirror. An HMM-based search engine is offered on the &lt;a href=&quot;http://pfam.sanger.ac.uk/&quot;&gt;Pfam&lt;/a&gt; site.&lt;/li&gt;&lt;li&gt;&lt;b&gt;SMART&lt;/b&gt; - a mirror of a recent SMART set of domain alignments. Note that some SMART families may be missing from the mirror due to update delays or because they describe very short conserved peptides and/or motifs, which would be difficult to detect using the CD-Search service. You may want to try the HMM-based search service offered on the &lt;a href=&quot;http://smart.embl-heidelberg.de&quot;&gt;SMART&lt;/a&gt; site. Note also that some SMART domains are not mirrored in CD because they represent &quot;superfamilies&quot; encompassing several individual, but related, domains; the corresponding seed alignments may not be available from the source database in these cases. Note also that SMART version numbers do not change with incremental updates of the source database (and the mirrored CD-Search database).&lt;/li&gt; &lt;li&gt;&lt;b&gt;TIGRFAM&lt;/b&gt; - a mirror of a recent TIGRFAM set of domain alignments. An HMM-based search engine is offered on the &lt;a href=&quot;http://www.jcvi.org/cms/research/projects/tigrfams/overview/&quot;&gt;&lt;!-- a href=&quot;http://blast.jcvi.org/web-hmm/&quot; --&gt;TIGRFAM&lt;/a&gt; site.&lt;/li&gt;&lt;li&gt;&lt;b&gt;COG&lt;/b&gt; - a mirror of the current COG database of orthologous protein families focusing on prokaryotes. Seed alignments have been generated by an automated process. An alternative search engine, &quot;Cognitor&quot;, which runs protein-BLAST against a database of COG-assigned sequences, is offered on the &lt;a href=&quot;http://www.ncbi.nlm.nih.gov/COG&quot;&gt;COG&lt;/a&gt; site.&lt;/li&gt;&lt;li&gt;&lt;b&gt;KOG&lt;/b&gt; - a eukaryotic counterpart to the COG database.  KOGs are not included in the CDD superset, but are searchable as a separate data set.&lt;/li&gt;&lt;/ul&gt;&lt;br&gt;More information about each database is provided in the section on &lt;a href=&quot;http://www.ncbi.nlm.nih.gov/Structure/cdd/cdd_help.shtml#CDSource&quot;&gt;Where does CDD content come from?&lt;/a&gt;</source>
+        <source>Currently, CD-Search is offered with the following search databases:&lt;br&gt;&lt;ul&gt;&lt;li&gt;&lt;b&gt;CDD&lt;/b&gt; - this is a superset including &lt;a href=&quot;http://www.ncbi.nlm.nih.gov/Structure/cdd/cdd_help.shtml#CDSource_NCBI_curated&quot;&gt;NCBI-curated domains&lt;/a&gt; and &lt;a href=&quot;http://www.ncbi.nlm.nih.gov/Structure/cdd/cdd_help.shtml#CDSource_external&quot;&gt;data imported&lt;/a&gt; from Pfam, SMART, COG, PRK, and TIGRFAM.&lt;/li&gt;&lt;li&gt;&lt;b&gt;Pfam&lt;/b&gt; - a mirror of a recent Pfam-A database of curated seed alignments. Pfam version numbers do change with incremental updates. As with SMART, families describing very short motifs or peptides may be missing from the  mirror. An HMM-based search engine is offered on the &lt;a href=&quot;http://pfam.sanger.ac.uk/&quot;&gt;Pfam&lt;/a&gt; site.&lt;/li&gt;&lt;li&gt;&lt;b&gt;SMART&lt;/b&gt; - a mirror of a recent SMART set of domain alignments. Note that some SMART families may be missing from the mirror due to update delays or because they describe very short conserved peptides and/or motifs, which would be difficult to detect using the CD-Search service. You may want to try the HMM-based search service offered on the &lt;a href=&quot;http://smart.embl-heidelberg.de&quot;&gt;SMART&lt;/a&gt; site. Note also that some SMART domains are not mirrored in CD because they represent &quot;superfamilies&quot; encompassing several individual, but related, domains; the corresponding seed alignments may not be available from the source database in these cases. Note also that SMART version numbers do not change with incremental updates of the source database (and the mirrored CD-Search database).&lt;/li&gt; &lt;li&gt;&lt;b&gt;TIGRFAM&lt;/b&gt; - a mirror of a recent TIGRFAM set of domain alignments. An HMM-based search engine is offered on the &lt;a href=&quot;http://www.jcvi.org/cms/research/projects/tigrfams/overview/&quot;&gt;&lt;!-- a href=&quot;http://blast.jcvi.org/web-hmm/&quot; --&gt;TIGRFAM&lt;/a&gt; site.&lt;/li&gt;&lt;li&gt;&lt;b&gt;COG&lt;/b&gt; - a mirror of the current COG database of orthologous protein families focusing on prokaryotes. Seed alignments have been generated by an automated process. An alternative search engine, &quot;Cognitor&quot;, which runs protein-BLAST against a database of COG-assigned sequences, is offered on the &lt;a href=&quot;http://www.ncbi.nlm.nih.gov/COG&quot;&gt;COG&lt;/a&gt; site.&lt;/li&gt;&lt;li&gt;&lt;b&gt;KOG&lt;/b&gt; - a eukaryotic counterpart to the COG database.  KOGs are not included in the CDD superset, but are searchable as a separate data set.&lt;/li&gt;&lt;/ul&gt;&lt;br&gt;More information about each database is provided in the section on &lt;a href=&quot;http://www.ncbi.nlm.nih.gov/Structure/cdd/cdd_help.shtml#CDSource&quot;&gt;Where does CDD content come from?&lt;/a&gt;.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1186,7 +1186,7 @@ it is better to leave the list intact.</source>
     </message>
     <message>
         <location filename="../src/library/StatisticWorkers.cpp" line="58"/>
-        <source>Evaluates statistics for DNA sequences</source>
+        <source>Evaluates statistics for DNA sequences.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1373,7 +1373,7 @@ it is better to leave the list intact.</source>
     </message>
     <message>
         <location filename="../src/library/FilterAnnotationsWorker.cpp" line="114"/>
-        <source>Selects the name filter: accept specified names or accept all except specified</source>
+        <source>Selects the name filter: accept specified names or accept all except specified.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1383,7 +1383,7 @@ it is better to leave the list intact.</source>
     </message>
     <message>
         <location filename="../src/library/FilterAnnotationsWorker.cpp" line="122"/>
-        <source>Filters annotations by name</source>
+        <source>Filters annotations by name.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1510,7 +1510,7 @@ it is better to leave the list intact.</source>
     </message>
     <message>
         <location filename="../src/library/FindWorker.cpp" line="105"/>
-        <source>Load pattern from file in any sequence format or in newline-delimited format</source>
+        <source>Load pattern from file in any sequence format or in newline-delimited format.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1520,7 +1520,7 @@ it is better to leave the list intact.</source>
     </message>
     <message>
         <location filename="../src/library/FindWorker.cpp" line="109"/>
-        <source>If patterns are loaded from a file, use names of pattern sequences as annotation names. The name from the parameters is used by default</source>
+        <source>If patterns are loaded from a file, use names of pattern sequences as annotation names. The name from the parameters is used by default.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1664,7 +1664,7 @@ it is better to leave the list intact.</source>
     </message>
     <message>
         <location filename="../src/library/GetFileListWorker.cpp" line="106"/>
-        <source>Produces ulrs to files from specified directories</source>
+        <source>Produces ulrs to files from specified directories.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1672,7 +1672,7 @@ it is better to leave the list intact.</source>
     <name>U2::LocalWorkflow::GroupPrompter</name>
     <message>
         <location filename="../src/library/GroupWorker.cpp" line="257"/>
-        <source>Groups all incoming messages into one message</source>
+        <source>Groups all incoming messages into one message.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1778,7 +1778,7 @@ it is better to leave the list intact.</source>
     </message>
     <message>
         <location filename="../src/library/ImportAnnotationsWorker.cpp" line="169"/>
-        <source>Read input annotation table and merge it with supplied annotation tables</source>
+        <source>Read input annotation table and merge it with supplied annotation tables.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2086,7 +2086,7 @@ it is better to leave the list intact.</source>
     </message>
     <message>
         <location filename="../src/library/ReverseComplementWorker.cpp" line="48"/>
-        <source>Select what to do with sequence</source>
+        <source>Select what to do with sequence.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2135,7 +2135,7 @@ it is better to leave the list intact.</source>
     </message>
     <message>
         <location filename="../src/library/ReverseComplementWorker.cpp" line="80"/>
-        <source>Converts each input sequence from %1 into its %2 counterpart</source>
+        <source>Converts each input sequence %1 into its %2 counterpart</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2179,7 +2179,7 @@ it is better to leave the list intact.</source>
     </message>
     <message>
         <location filename="../src/library/ReadAnnotationsWorker.cpp" line="102"/>
-        <source>Reads annotations from files</source>
+        <source>Reads annotations from files.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2199,7 +2199,7 @@ it is better to leave the list intact.</source>
     </message>
     <message>
         <location filename="../src/library/ReadAnnotationsWorker.cpp" line="119"/>
-        <source>If the file contains more than one annotation table, &lt;i&gt;Split&lt;/i&gt; mode sends them &quot;as is&quot; to the output, while &lt;i&gt;Merge&lt;/i&gt; appends all the annotation tables and outputs the sole merged annotation table.</source>
+        <source>If the file contains more than one annotation table, &lt;i&gt;Split&lt;/i&gt; mode sends them &quot;as is&quot; to the output, while &lt;i&gt;Merge&lt;/i&gt; appends all the annotation tables and outputs the sole merged annotation table. In &lt;i&gt;Merge files&lt;/i&gt; is the same as &lt;i&gt;Merge&lt;/i&gt; but it operates with all annotation tables from all files of one dataset.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2227,7 +2227,7 @@ it is better to leave the list intact.</source>
     </message>
     <message>
         <location filename="../src/library/ReadAssemblyWorker.cpp" line="111"/>
-        <source>Reads assembly from files</source>
+        <source>Reads assembly from files.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2279,7 +2279,7 @@ it is better to leave the list intact.</source>
     </message>
     <message>
         <location filename="../src/library/ReadVariationWorker.cpp" line="166"/>
-        <source>Reads variations from files and produces variations tracks</source>
+        <source>Reads variations from files and produces variations tracks.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2357,7 +2357,7 @@ it is better to leave the list intact.</source>
     <message>
         <location filename="../src/library/RemoteDBFetcherWorker.cpp" line="244"/>
         <location filename="../src/library/RemoteDBFetcherWorker.cpp" line="474"/>
-        <source>The database to read from</source>
+        <source>The database to read from.</source>
         <translation>Выберите удаленную базу данных, из которой требуется загрузить данные.</translation>
     </message>
     <message>
@@ -2367,7 +2367,7 @@ it is better to leave the list intact.</source>
     </message>
     <message>
         <location filename="../src/library/RemoteDBFetcherWorker.cpp" line="249"/>
-        <source>Semicolon-separated list of resource ID`s in the database</source>
+        <source>Semicolon-separated list of resource ID`s in the database.</source>
         <translation>Список идентификаторов ресурсов в базе данных. Различные значения отделяются друг от друга с помощью &quot;;&quot;.
 &lt;p&gt; Например: &quot;NC_001363;D11266&quot;.</translation>
     </message>
@@ -2380,7 +2380,7 @@ it is better to leave the list intact.</source>
     <message>
         <location filename="../src/library/RemoteDBFetcherWorker.cpp" line="254"/>
         <location filename="../src/library/RemoteDBFetcherWorker.cpp" line="469"/>
-        <source>The directory to store sequence files loaded from a database</source>
+        <source>The directory to store sequence files loaded from a database.</source>
         <translation>Директория, в которую будут сохранены файлы, загруженные из базы данных.</translation>
     </message>
     <message>
@@ -2574,7 +2574,7 @@ it is better to leave the list intact.</source>
     </message>
     <message>
         <location filename="../src/library/SequenceSplitWorker.cpp" line="247"/>
-        <source>Extend the resulted regions to left</source>
+        <source>Extend the resulted regions to left.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2584,7 +2584,7 @@ it is better to leave the list intact.</source>
     </message>
     <message>
         <location filename="../src/library/SequenceSplitWorker.cpp" line="250"/>
-        <source>Extend the resulted regions to right</source>
+        <source>Extend the resulted regions to right.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2604,7 +2604,7 @@ it is better to leave the list intact.</source>
     </message>
     <message>
         <location filename="../src/library/SequenceSplitWorker.cpp" line="264"/>
-        <source>Creates sequences from annotated regions of input sequence</source>
+        <source>Creates sequences from annotated regions of input sequence.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2781,7 +2781,7 @@ it is better to leave the list intact.</source>
     </message>
     <message>
         <location filename="../src/library/Text2SequenceWorker.cpp" line="177"/>
-        <source>Converts input text to sequence</source>
+        <source>Converts input text to sequence.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2844,7 +2844,7 @@ it is better to leave the list intact.</source>
     </message>
     <message>
         <location filename="../src/library/WriteAssemblyWorkers.cpp" line="153"/>
-        <source>Writes all supplied assemblies to file(s) in selected format</source>
+        <source>Writes all supplied assemblies to file(s) in selected format.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2893,7 +2893,7 @@ it is better to leave the list intact.</source>
     </message>
     <message>
         <location filename="../src/library/WriteVariationWorker.cpp" line="97"/>
-        <source>Writes all supplied variations to file(s) in selected format</source>
+        <source>Writes all supplied variations to file(s) in selected format.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3006,7 +3006,7 @@ it is better to leave the list intact.</source>
     </message>
     <message>
         <location filename="../src/library/CoreLib.cpp" line="183"/>
-        <source>Write strings to a file</source>
+        <source>Write strings to a file.</source>
         <translation>Запись текстовых данных в файл</translation>
     </message>
     <message>
@@ -3088,7 +3088,7 @@ it is better to leave the list intact.</source>
         <translation type="obsolete">Формат документа</translation>
     </message>
     <message>
-        <source>Document format of output file</source>
+        <source>Document format of output file.</source>
         <translation type="obsolete">Формат документа выходного файла</translation>
     </message>
     <message>
@@ -3123,7 +3123,7 @@ it is better to leave the list intact.</source>
     </message>
     <message>
         <location filename="../src/library/CoreLib.cpp" line="200"/>
-        <source>Writes all supplied alignments to file(s) in selected format</source>
+        <source>Writes all supplied alignments to file(s) in selected format.</source>
         <translation>Запись всех входных выравниваний в файл(ы) в выбранном формате</translation>
     </message>
     <message>

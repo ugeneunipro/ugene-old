@@ -2111,7 +2111,7 @@ for long deletions (-L)</source>
     </message>
     <message>
         <location filename="../src/blast/BlastAllWorker.cpp" line="299"/>
-        <source>For sequence %1 find annotations in database &lt;u&gt;%2&lt;/u&gt;</source>
+        <source>For sequence %1 find annotations in database &lt;u&gt;%2&lt;/u&gt;.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2144,7 +2144,7 @@ for long deletions (-L)</source>
     </message>
     <message>
         <location filename="../src/blast/BlastAllWorker.cpp" line="88"/>
-        <source>Select type of BLAST searches</source>
+        <source>Select type of BLAST searches.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2154,7 +2154,7 @@ for long deletions (-L)</source>
     </message>
     <message>
         <location filename="../src/blast/BlastAllWorker.cpp" line="90"/>
-        <source>Path with database files</source>
+        <source>Path with database files.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2164,7 +2164,7 @@ for long deletions (-L)</source>
     </message>
     <message>
         <location filename="../src/blast/BlastAllWorker.cpp" line="92"/>
-        <source>Base name for BLAST DB files</source>
+        <source>Base name for BLAST DB files.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2184,7 +2184,7 @@ for long deletions (-L)</source>
     </message>
     <message>
         <location filename="../src/blast/BlastAllWorker.cpp" line="96"/>
-        <source>Name for annotations</source>
+        <source>Name for annotations.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2194,7 +2194,7 @@ for long deletions (-L)</source>
     </message>
     <message>
         <location filename="../src/blast/BlastAllWorker.cpp" line="98"/>
-        <source>External tool path</source>
+        <source>External tool path.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2204,7 +2204,7 @@ for long deletions (-L)</source>
     </message>
     <message>
         <location filename="../src/blast/BlastAllWorker.cpp" line="100"/>
-        <source>Directory for temporary files</source>
+        <source>Directory for temporary files.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2234,7 +2234,7 @@ for long deletions (-L)</source>
     </message>
     <message>
         <location filename="../src/blast/BlastAllWorker.cpp" line="107"/>
-        <source>Perform gapped alignment</source>
+        <source>Perform gapped alignment.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2244,7 +2244,7 @@ for long deletions (-L)</source>
     </message>
     <message>
         <location filename="../src/blast/BlastAllWorker.cpp" line="156"/>
-        <source>Finds annotations for DNA sequence in local database</source>
+        <source>Finds annotations for DNA sequence in local database.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2282,7 +2282,7 @@ for long deletions (-L)</source>
     </message>
     <message>
         <location filename="../src/blast_plus/BlastPlusWorker.cpp" line="194"/>
-        <source>For sequence &lt;u&gt;%1&lt;/u&gt; find annotations in database &lt;u&gt;%2&lt;/u&gt;</source>
+        <source>For sequence &lt;u&gt;%1&lt;/u&gt; find annotations in database &lt;u&gt;%2&lt;/u&gt;.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2315,7 +2315,7 @@ for long deletions (-L)</source>
     </message>
     <message>
         <location filename="../src/blast_plus/BlastPlusWorker.cpp" line="84"/>
-        <source>Select type of BLAST+ searches</source>
+        <source>Select type of BLAST+ searches.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2325,7 +2325,7 @@ for long deletions (-L)</source>
     </message>
     <message>
         <location filename="../src/blast_plus/BlastPlusWorker.cpp" line="86"/>
-        <source>Path with database files</source>
+        <source>Path with database files.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2335,7 +2335,7 @@ for long deletions (-L)</source>
     </message>
     <message>
         <location filename="../src/blast_plus/BlastPlusWorker.cpp" line="88"/>
-        <source>Base name for BLAST+ DB files</source>
+        <source>Base name for BLAST+ DB files.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2355,7 +2355,7 @@ for long deletions (-L)</source>
     </message>
     <message>
         <location filename="../src/blast_plus/BlastPlusWorker.cpp" line="92"/>
-        <source>Name for annotations</source>
+        <source>Name for annotations.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2365,7 +2365,7 @@ for long deletions (-L)</source>
     </message>
     <message>
         <location filename="../src/blast_plus/BlastPlusWorker.cpp" line="94"/>
-        <source>External tool path</source>
+        <source>External tool path.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2375,7 +2375,7 @@ for long deletions (-L)</source>
     </message>
     <message>
         <location filename="../src/blast_plus/BlastPlusWorker.cpp" line="96"/>
-        <source>Directory for temporary files</source>
+        <source>Directory for temporary files.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2405,7 +2405,7 @@ for long deletions (-L)</source>
     </message>
     <message>
         <location filename="../src/blast_plus/BlastPlusWorker.cpp" line="102"/>
-        <source>Perform gapped alignment</source>
+        <source>Perform gapped alignment.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2415,7 +2415,7 @@ for long deletions (-L)</source>
     </message>
     <message>
         <location filename="../src/blast_plus/BlastPlusWorker.cpp" line="124"/>
-        <source>Finds annotations for DNA sequence in local database</source>
+        <source>Finds annotations for DNA sequence in local database.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2810,7 +2810,7 @@ for long deletions (-L)</source>
     </message>
     <message>
         <location filename="../src/tcoffee/TCoffeeWorker.cpp" line="73"/>
-        <source>Number of iteration on the progressive alignment&lt;br&gt;0 - no iteration, -1 - Nseq iterations</source>
+        <source>Number of iteration on the progressive alignment.&lt;br&gt;0 - no iteration, -1 - Nseq iterations.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

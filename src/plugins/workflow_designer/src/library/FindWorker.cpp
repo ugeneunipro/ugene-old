@@ -71,7 +71,7 @@ static const Descriptor pd(PATTERN_ATTR,
 
 static const Descriptor pf(PATTERN_FILE_ATTR,
               FindWorker::tr("Pattern file"),
-              FindWorker::tr("Load pattern from file in any sequence format or in newline-delimited format"));
+              FindWorker::tr("Load pattern from file in any sequence format or in newline-delimited format."));
 
 /************************************************************************/
 /* FindPatternsValidator */
@@ -146,7 +146,7 @@ void FindWorkerFactory::init() {
 
         Descriptor un(USE_NAMES_ATTR,
             FindWorker::tr("Use pattern name"),
-            FindWorker::tr("If patterns are loaded from a file, use names of pattern sequences as annotation names. The name from the parameters is used by default"));
+            FindWorker::tr("If patterns are loaded from a file, use names of pattern sequences as annotation names. The name from the parameters is used by default."));
 
         Descriptor ed(ERR_ATTR, FindWorker::tr("Max Mismatches"),
             FindWorker::tr("Maximum number of mismatches between a substring"

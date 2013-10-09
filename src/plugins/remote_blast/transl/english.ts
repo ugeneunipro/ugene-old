@@ -488,7 +488,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../src/RemoteBLASTWorker.cpp" line="137"/>
-        <source>For sequence %1 find annotations in database &lt;u&gt;%2&lt;/u&gt;</source>
+        <source>For sequence %1 find annotations in database &lt;u&gt;%2&lt;/u&gt;.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -581,7 +581,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../src/RemoteBLASTWorker.cpp" line="91"/>
-        <source>Finds annotations for DNA sequence in remote database</source>
+        <source>Finds annotations for DNA sequence in remote database.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

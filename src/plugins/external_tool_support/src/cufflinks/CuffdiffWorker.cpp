@@ -149,7 +149,7 @@ void CuffdiffWorkerFactory::init()
 
         Descriptor libraryType(LIBRARY_TYPE,
             CuffdiffWorker::tr("Library type"),
-            CuffdiffWorker::tr("Specifies RNA-Seq protocol"));
+            CuffdiffWorker::tr("Specifies RNA-Seq protocol."));
 
         Descriptor maskFile(MASK_FILE,
             CuffdiffWorker::tr("Mask file"),
@@ -170,25 +170,25 @@ void CuffdiffWorkerFactory::init()
 
         Descriptor fdr(FDR,
             CuffdiffWorker::tr("FDR"),
-            CuffdiffWorker::tr("The allowed false discovery rate used in testing"));
+            CuffdiffWorker::tr("The allowed false discovery rate used in testing."));
 
         Descriptor maxMleIterations(MAX_MLE_ITERATIONS,
             CuffdiffWorker::tr("Max MLE iterations"),
             CuffdiffWorker::tr("Sets the number of iterations allowed during maximum"
-            " likelihood estimation of abundances"));
+            " likelihood estimation of abundances."));
 
         Descriptor emitCountTables(EMIT_COUNT_TABLES,
             CuffdiffWorker::tr("Emit count tables"),
             CuffdiffWorker::tr("Include information about the fragment counts, fragment"
-            " count variances, and fitted variance model into the report"));
+            " count variances, and fitted variance model into the report."));
 
         Descriptor extToolPath(EXT_TOOL_PATH,
             CuffdiffWorker::tr("Cuffdiff tool path"),
-            CuffdiffWorker::tr("The path to the Cuffdiff external tool in UGENE"));
+            CuffdiffWorker::tr("The path to the Cuffdiff external tool in UGENE."));
 
         Descriptor tmpDir(TMP_DIR_PATH,
             CuffdiffWorker::tr("Temporary directory"),
-            CuffdiffWorker::tr("The directory for temporary files"));
+            CuffdiffWorker::tr("The directory for temporary files."));
 
         attributes << new Attribute(outDir, BaseTypes::STRING_TYPE(), true, "");
         attributes << new Attribute(timeSeriesAnalysis, BaseTypes::BOOL_TYPE(), false, QVariant(false));

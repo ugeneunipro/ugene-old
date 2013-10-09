@@ -80,7 +80,7 @@ void DASAnnotationWorkerFactory::init() {
         outM[BaseSlots::ANNOTATION_TABLE_SLOT()] = BaseTypes::ANNOTATION_TABLE_TYPE();
         p << new PortDescriptor(od, DataTypePtr(new MapDataType("dasannotation.annotations", outM)), false /*input*/, true /*multi*/);
     }
-    Descriptor idsn(IDS_NUMBER, DASAnnotationWorker::tr("Max result IDs"), DASAnnotationWorker::tr("Use first IDs of similar sequences to load annotations"));
+    Descriptor idsn(IDS_NUMBER, DASAnnotationWorker::tr("Max result IDs"), DASAnnotationWorker::tr("Use first IDs of similar sequences to load annotations."));
     Descriptor db(DB, DASAnnotationWorker::tr("Database"), DASAnnotationWorker::tr("Database against which the search is performed: UniProtKB or clusters of sequences with 100%, 90% or 50% identity."));
     Descriptor identity(IDENTITY, DASAnnotationWorker::tr("Min identity"), DASAnnotationWorker::tr("Minimum identity of a BLAST result and an input sequence."));
     Descriptor f_sources(FEATURE_SOURCES, DASAnnotationWorker::tr("Feature sources"), DASAnnotationWorker::tr("The DAS sources to read features from."));

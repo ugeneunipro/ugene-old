@@ -84,7 +84,7 @@ void AssemblyToSequencesWorker::sl_taskFinished() {
 /************************************************************************/
 AssemblyToSequencesTask::AssemblyToSequencesTask(const Message &_message, const QVariantMap &_ctx,
                                                  IntegralBus *_channel, DbiDataStorage *_storage)
-: Task(tr("Split assembly into sequences"), TaskFlag_None),
+: Task(tr("Split Assembly into Sequences"), TaskFlag_None),
 message(_message), ctx(_ctx), channel(_channel), storage(_storage)
 {
 
@@ -163,7 +163,7 @@ void AssemblyToSequencesWorkerFactory::init() {
 
     Descriptor protoDesc(AssemblyToSequencesWorkerFactory::ACTOR_ID,
         AssemblyToSequencesWorker::tr("Split assembly into sequences"),
-        AssemblyToSequencesWorker::tr("Splits assembly into sequences(reads)"));
+        AssemblyToSequencesWorker::tr("Splits assembly into sequences(reads)."));
 
     ActorPrototype *proto = new IntegralBusActorPrototype(protoDesc, portDescs, attrs);
     proto->setEditor(new DelegateEditor(QMap<QString, PropertyDelegate*>()));
@@ -188,7 +188,7 @@ QString AssemblyToSequencesPrompter::composeRichDoc() {
     Actor* producer = input->getProducer(BaseSlots::ASSEMBLY_SLOT().getId());
     QString producerName = tr("<u>%1</u>").arg(producer ? producer->getLabel() : unsetStr);
 
-    QString res = tr("Split %1 assemblies into sequences(reads) and puts them to the output").arg(producerName).arg(producerName);
+    QString res = tr("Split %1 assemblies into sequences(reads) and puts them to the output.").arg(producerName).arg(producerName);
     return res;
 }
 

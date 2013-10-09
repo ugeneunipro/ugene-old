@@ -44,7 +44,7 @@
         <translation></translation>
     </message>
     <message>
-        <source>Ignore ORFs shorter than the specified length</source>
+        <source>Ignore ORFs shorter than the specified length.</source>
         <translation></translation>
     </message>
     <message>
@@ -56,7 +56,7 @@
         <translation></translation>
     </message>
     <message>
-        <source>Specifies that each ORF found must start with the start codon</source>
+        <source>Specifies that each ORF found must start with the start codon.</source>
         <translation></translation>
     </message>
     <message>
@@ -88,7 +88,7 @@
         <translation></translation>
     </message>
     <message>
-        <source>Find Open Reading Frames in sequence</source>
+        <source>Find Open Reading Frames in sequence.</source>
         <translation></translation>
     </message>
     <message>
@@ -218,7 +218,7 @@ Ignore boundary ORFs which last beyond the search region
         <translation></translation>
     </message>
     <message>
-        <source>Name of the result annotations marking found ORFs</source>
+        <source>Name of the result annotations marking found ORFs.</source>
         <translation></translation>
     </message>
     <message>
@@ -242,7 +242,7 @@ Ignore boundary ORFs which last beyond the search region
         <translation></translation>
     </message>
     <message>
-        <source>The result annotation will includes stop codon if this option is set</source>
+        <source>The result annotation will includes stop codon if this option is set.</source>
         <translation></translation>
     </message>
     <message>

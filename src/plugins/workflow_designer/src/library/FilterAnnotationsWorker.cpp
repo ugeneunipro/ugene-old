@@ -111,7 +111,7 @@ void FilterAnnotationsWorkerFactory::init() {
                                         "which will be accepted or filtered. Use space as the separator.") );
         Descriptor whichFilterDesc( WHICH_FILTER_ATTR,
             FilterAnnotationsWorker::tr("Accept or filter"),
-            FilterAnnotationsWorker::tr("Selects the name filter: accept specified names or accept all except specified") );
+            FilterAnnotationsWorker::tr("Selects the name filter: accept specified names or accept all except specified.") );
 
         attribs << new Attribute( filterNamesDesc, BaseTypes::STRING_TYPE(), /*required*/true );
         attribs << new Attribute( whichFilterDesc, BaseTypes::BOOL_TYPE(), /*required*/ false, QVariant(true) );
@@ -119,7 +119,7 @@ void FilterAnnotationsWorkerFactory::init() {
 
     Descriptor desc( FilterAnnotationsWorkerFactory::ACTOR_ID,
         FilterAnnotationsWorker::tr("Filter Annotations by Name"), 
-        FilterAnnotationsWorker::tr("Filters annotations by name") );
+        FilterAnnotationsWorker::tr("Filters annotations by name.") );
     ActorPrototype * proto = new IntegralBusActorPrototype( desc, portDescs, attribs );
 
     proto->setPrompter( new FilterAnnotationsPrompter() );

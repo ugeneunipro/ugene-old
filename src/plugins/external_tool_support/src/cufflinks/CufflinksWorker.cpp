@@ -130,7 +130,7 @@ void CufflinksWorkerFactory::init()
 
     // Description of the element
     Descriptor cufflinksDescriptor(ACTOR_ID,
-        CufflinksWorker::tr("Assemble Transcripts with Cufflinks"),
+        CufflinksWorker::tr("Assembly Transcripts with Cufflinks"),
         CufflinksWorker::tr("Cufflinks accepts aligned RNA-Seq reads"
         " and assembles the alignments into a parsimonious set of"
         " transcripts. Cufflinks then estimates the relative abundances"
@@ -147,7 +147,7 @@ void CufflinksWorkerFactory::init()
         CufflinksWorker::tr("Tells Cufflinks to use the supplied reference"
         " annotation to estimate isoform expression. Cufflinks will not"
         " assemble novel transcripts and the program will ignore alignments"
-        " not structurally compatible with any reference transcript"));
+        " not structurally compatible with any reference transcript."));
 
     Descriptor rabtAnnotation(RABT_ANNOTATION,
         CufflinksWorker::tr("RABT annotation"),
@@ -159,7 +159,7 @@ void CufflinksWorkerFactory::init()
 
     Descriptor libraryType(LIBRARY_TYPE,
         CufflinksWorker::tr("Library type"),
-        CufflinksWorker::tr("Specifies RNA-Seq protocol"));
+        CufflinksWorker::tr("Specifies RNA-Seq protocol."));
 
     Descriptor maskFile(MASK_FILE,
         CufflinksWorker::tr("Mask file"),
@@ -203,11 +203,11 @@ void CufflinksWorkerFactory::init()
 
     Descriptor extToolPath(EXT_TOOL_PATH,
         CufflinksWorker::tr("Cufflinks tool path"),
-        CufflinksWorker::tr("The path to the Cufflinks external tool in UGENE"));
+        CufflinksWorker::tr("The path to the Cufflinks external tool in UGENE."));
 
     Descriptor tmpDir(TMP_DIR_PATH,
         CufflinksWorker::tr("Temporary directory"),
-        CufflinksWorker::tr("The directory for temporary files"));
+        CufflinksWorker::tr("The directory for temporary files."));
 
     attributes << new Attribute(outDir, BaseTypes::STRING_TYPE(), true, "");
     attributes << new Attribute(refAnnotation, BaseTypes::STRING_TYPE(), false, QVariant(""));

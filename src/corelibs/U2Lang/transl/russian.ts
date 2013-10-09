@@ -1062,7 +1062,7 @@
     </message>
     <message>
         <location filename="../src/library/BaseAttributes.cpp" line="38"/>
-        <source>Semicolon-separated list of paths to the input files</source>
+        <source>Semicolon-separated list of paths to the input files.</source>
         <translation>Список путей к входным файлам, разделенных ";".</translation>
     </message>
     <message>
@@ -1072,7 +1072,7 @@
     </message>
     <message>
         <location filename="../src/library/BaseAttributes.cpp" line="42"/>
-        <source>Location of output data file. If this attribute is set, slot &quot;Location&quot; in port will not be used</source>
+        <source>Location of output data file. If this attribute is set, slot &quot;Location&quot; in port will not be used.</source>
         <translation>Путь до выходного файла данных. Если даный атрибут задан, то слот &quot;Путь к файлу&quot; порта не будет задействован</translation>
     </message>
     <message>
@@ -1092,7 +1092,7 @@
     </message>
     <message>
         <location filename="../src/library/BaseAttributes.cpp" line="51"/>
-        <source>Document format of output file</source>
+        <source>Document format of output file.</source>
         <translation>Формат выходного файла</translation>
     </message>
     <message>
@@ -1304,7 +1304,7 @@
         <translation type="obsolete">Текст</translation>
     </message>
     <message>
-        <source>Location of output data file. If this attribute is set, slot &quot;Location&quot; in port will not be used</source>
+        <source>Location of output data file. If this attribute is set, slot &quot;Location&quot; in port will not be used.</source>
         <translation type="obsolete">Путь до выходного файла данных. Если даный атрибут задан, то слот &quot;Путь к файлу&quot; порта не будет задействован</translation>
     </message>
     <message>

@@ -79,9 +79,9 @@ void MuscleWorkerFactory::init() {
                             "<p>Otherwise, MUSCLE re-arranges sequences so that similar sequences are adjacent in the output file."
                             " This makes the alignment easier to evaluate by eye. "));
     Descriptor mi(MAX_ITERATIONS_ATTR, MuscleWorker::tr("Max iterations"), 
-        MuscleWorker::tr("Maximum number of iterations"));
+        MuscleWorker::tr("Maximum number of iterations."));
     Descriptor ra(RANGE_ATTR, MuscleWorker::tr("Region to align"), 
-        MuscleWorker::tr("Whole alignment or column range e.g. <b>1..100</b>"));
+        MuscleWorker::tr("Whole alignment or column range e.g. <b>1..100</b>."));
     
     a << new Attribute(mod, BaseTypes::NUM_TYPE(), false, 0);
     a << new Attribute(sd, BaseTypes::BOOL_TYPE(), false, true);

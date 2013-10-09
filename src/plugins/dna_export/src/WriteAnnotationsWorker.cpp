@@ -213,11 +213,11 @@ void WriteAnnotationsWorkerFactory::init() {
         Attribute *nameAttr = new Attribute(annotationsNameDesc, BaseTypes::STRING_TYPE(), false, QVariant(ANNOTATIONS_NAME_DEF_VAL));
         attrs << nameAttr;
         Descriptor separatorDesc(SEPARATOR, WriteAnnotationsWorker::tr("CSV separator"), 
-            WriteAnnotationsWorker::tr("String which separates values in CSV files"));
+            WriteAnnotationsWorker::tr("String which separates values in CSV files."));
         attrs << new Attribute(separatorDesc, BaseTypes::STRING_TYPE(), false, QVariant(SEPARATOR_DEFAULT_VALUE));
 
         Descriptor writeNamesDesc(WRITE_NAMES, WriteAnnotationsWorker::tr("Write sequence names"), 
-            WriteAnnotationsWorker::tr("Add names of sequences into CSV file"));
+            WriteAnnotationsWorker::tr("Add names of sequences into CSV file."));
         attrs << new Attribute(writeNamesDesc, BaseTypes::BOOL_TYPE(), false, false);
 
         docFormatAttr->addRelation(new FileExtensionRelation(urlAttr->getId()));

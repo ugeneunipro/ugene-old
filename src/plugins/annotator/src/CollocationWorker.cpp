@@ -103,13 +103,13 @@ void CollocationWorkerFactory::init() {
     static const QString newAnnsStr = CollocationWorker::tr("Create new annotations");
     {
         //U2Region             searchRegion;
-        Descriptor nd(NAME_ATTR, CollocationWorker::tr("Result annotation"), CollocationWorker::tr("Name of the result annotations to mark found collocations"));
+        Descriptor nd(NAME_ATTR, CollocationWorker::tr("Result annotation"), CollocationWorker::tr("Name of the result annotations to mark found collocations."));
         Descriptor ad(ANN_ATTR, CollocationWorker::tr("Group of annotations"), CollocationWorker::tr("A list of annotation names to search. Found regions will contain all the named annotations."));
-        Descriptor ld(LEN_ATTR, CollocationWorker::tr("Region size"), CollocationWorker::tr("Effectively this is the maximum allowed distance between the interesting annotations in a group"));
-        Descriptor fd(FIT_ATTR, CollocationWorker::tr("Must fit into region"), CollocationWorker::tr("Whether the interesting annotations should entirely fit into the specified region to form a group"));
-        Descriptor td(TYPE_ATTR, CollocationWorker::tr("Result type"), CollocationWorker::tr("Copy original annotations or annotate found regions with new ones"));
+        Descriptor ld(LEN_ATTR, CollocationWorker::tr("Region size"), CollocationWorker::tr("Effectively this is the maximum allowed distance between the interesting annotations in a group."));
+        Descriptor fd(FIT_ATTR, CollocationWorker::tr("Must fit into region"), CollocationWorker::tr("Whether the interesting annotations should entirely fit into the specified region to form a group."));
+        Descriptor td(TYPE_ATTR, CollocationWorker::tr("Result type"), CollocationWorker::tr("Copy original annotations or annotate found regions with new ones."));
         Descriptor id(INC_BOUNDARY_ATTR, CollocationWorker::tr("Include boundaries"),
-            CollocationWorker::tr("Include most left and most right boundary annotations regions into result or exclude them"));
+            CollocationWorker::tr("Include most left and most right boundary annotations regions into result or exclude them."));
         Attribute *nameAttr = new Attribute(nd, BaseTypes::STRING_TYPE(), true, QVariant("misc_feature"));
         Attribute *typeAttr = new Attribute(td, BaseTypes::STRING_TYPE(), false, NEW_TYPE_ATTR);
         Attribute *boundAttr = new Attribute(id, BaseTypes::BOOL_TYPE(), false, true);

@@ -184,7 +184,7 @@ void CoreLib::init() {
         DataTypePtr dtl(new MapDataType(Descriptor("in.text"), m));
 
         QList<PortDescriptor*> p; QList<Attribute*> a;
-        Descriptor acd(CoreLibConstants::WRITE_TEXT_PROTO_ID, tr("Write Plain Text"), tr("Write strings to a file"));
+        Descriptor acd(CoreLibConstants::WRITE_TEXT_PROTO_ID, tr("Write Plain Text"), tr("Write strings to a file."));
         Descriptor pd(BasePorts::IN_TEXT_PORT_ID(), tr("Plain text"), tr("Plain text"));
         p << new PortDescriptor(pd, dtl, true);
         a << new Attribute(BaseAttributes::ACCUMULATE_OBJS_ATTRIBUTE(), BaseTypes::BOOL_TYPE(), false, true);
@@ -202,7 +202,7 @@ void CoreLib::init() {
         if( !supportedFormats.isEmpty() ) {
             DocumentFormatId format = supportedFormats.contains( BaseDocumentFormats::CLUSTAL_ALN ) ? BaseDocumentFormats::CLUSTAL_ALN : supportedFormats.first();
             QList<PortDescriptor*> p; QList<Attribute*> a;
-            Descriptor acd(CoreLibConstants::WRITE_MSA_PROTO_ID, tr("Write Alignment"), tr("Writes all supplied alignments to file(s) in selected format"));
+            Descriptor acd(CoreLibConstants::WRITE_MSA_PROTO_ID, tr("Write Alignment"), tr("Writes all supplied alignments to file(s) in selected format."));
             Descriptor pd(BasePorts::IN_MSA_PORT_ID(), tr("Multiple sequence alignment"), tr("Multiple sequence alignment"));
             p << new PortDescriptor(pd, writeMAType, true);
             Attribute *docFormatAttr = new Attribute(BaseAttributes::DOCUMENT_FORMAT_ATTRIBUTE(), BaseTypes::STRING_TYPE(), false, format);

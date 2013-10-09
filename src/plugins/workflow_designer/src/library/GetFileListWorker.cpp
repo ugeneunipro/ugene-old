@@ -104,7 +104,7 @@ void GetFileListWorkerFactory::init() {
 
     Descriptor protoDesc(GetFileListWorkerFactory::ACTOR_ID,
         GetFileListWorker::tr("File List"),
-        GetFileListWorker::tr("Produces ulrs to files from specified directories"));
+        GetFileListWorker::tr("Produces ulrs to files from specified directories."));
 
     ActorPrototype *proto = new IntegralBusActorPrototype(protoDesc, portDescs, attrs);
     proto->setEditor(new DelegateEditor(QMap<QString, PropertyDelegate*>()));

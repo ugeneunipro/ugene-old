@@ -110,7 +110,7 @@ ReadAnnotationsProto::ReadAnnotationsProto()
 : GenericReadDocProto(ReadAnnotationsWorkerFactory::ACTOR_ID)
 {
     setDisplayName(ReadAnnotationsWorker::tr("Read Annotations"));
-    setDocumentation(ReadAnnotationsWorker::tr("Reads annotations from files"));
+    setDocumentation(ReadAnnotationsWorker::tr("Reads annotations from files."));
 
     { // ports description
         QMap<Descriptor, DataTypePtr> outTypeMap;
@@ -128,8 +128,8 @@ ReadAnnotationsProto::ReadAnnotationsProto()
 
     Descriptor md(ReadAnnotationsProto::MODE_ATTR, ReadAnnotationsWorker::tr("Mode"),
         ReadAnnotationsWorker::tr("If the file contains more than one annotation table, <i>Split</i> mode sends them \"as is\" to the output, "
-        "while <i>Merge</i> appends all the annotation tables and outputs the sole merged annotation table."
-        "In <i>Merge files</i> is the same as <i>Merge</m> but it operates with all annotation tables from all files of one dataset."));
+        "while <i>Merge</i> appends all the annotation tables and outputs the sole merged annotation table." 
+        "In <i>Merge files</i> is the same as <i>Merge</i> but it operates with all annotation tables from all files of one dataset."));
 
 
     attrs << new Attribute(md, BaseTypes::NUM_TYPE(), true, MERGE);

@@ -190,7 +190,7 @@ This is analogous to the standard Smith/Waterman algorithm or the hmmsw program 
         <location filename="../src/u_build/HMMBuildWorker.cpp" line="88"/>
         <source>fixed_tip</source>
         <translation>Fix the length of the random sequences to &lt;n&gt;, where &lt;n&gt; is a positive (and reasonably sized) integer. 
-The default is instead to generate sequences with a variety of different lengths, controlled by a Gaussian (normal) distribution</translation>
+The default is instead to generate sequences with a variety of different lengths, controlled by a Gaussian (normal) distribution.</translation>
     </message>
     <message>
         <location filename="../src/u_calibrate/ui/HMMCalibrateDialog.ui" line="112"/>
@@ -201,7 +201,7 @@ The default is instead to generate sequences with a variety of different lengths
         <location filename="../src/u_calibrate/ui/HMMCalibrateDialog.ui" line="153"/>
         <location filename="../src/u_build/HMMBuildWorker.cpp" line="90"/>
         <source>mean_tip</source>
-        <translation>Mean length of the synthetic sequences, positive real number. The default value is 325</translation>
+        <translation>Mean length of the synthetic sequences, positive real number. The default value is 325.</translation>
     </message>
     <message>
         <location filename="../src/u_calibrate/ui/HMMCalibrateDialog.ui" line="172"/>
@@ -215,7 +215,7 @@ The default is instead to generate sequences with a variety of different lengths
         <translation>Number of synthetic sequences.
  If &lt;n&gt; is less than about 1000, the fit to the EVD may fail
 Higher numbers of &lt;n&gt; will give better determined EVD parameters. 
-The default is 5000; it was empirically chosen as a tradeoff between accuracy and computation time</translation>
+The default is 5000; it was empirically chosen as a tradeoff between accuracy and computation time.</translation>
     </message>
     <message>
         <location filename="../src/u_calibrate/ui/HMMCalibrateDialog.ui" line="232"/>
@@ -317,7 +317,7 @@ You can use this option to generate reproducible results for different hmmcalibr
         <location filename="../src/u_search/ui/HMMSearchDialog.ui" line="134"/>
         <location filename="../src/u_search/HMMSearchWorker.cpp" line="72"/>
         <source>results_score_cutoff_tip</source>
-        <translation>Score based filtering is an alternative to E-value filtering to exclude low-probability hits from result</translation>
+        <translation>Score based filtering is an alternative to E-value filtering to exclude low-probability hits from result.</translation>
     </message>
     <message>
         <location filename="../src/u_search/ui/HMMSearchDialog.ui" line="121"/>
@@ -333,7 +333,7 @@ You can use this option to generate reproducible results for different hmmcalibr
         <location filename="../src/u_search/ui/HMMSearchDialog.ui" line="225"/>
         <location filename="../src/u_search/HMMSearchWorker.cpp" line="71"/>
         <source>results_evalue_cutoff_tip</source>
-        <translation>E-value filtering can be used to exclude low-probability hits from result</translation>
+        <translation>E-value filtering can be used to exclude low-probability hits from result.</translation>
     </message>
     <message>
         <location filename="../src/u_search/ui/HMMSearchDialog.ui" line="270"/>
@@ -877,7 +877,7 @@ You can use this option to generate reproducible results for different hmmcalibr
     <name>U2::HMMReadTask</name>
     <message>
         <location filename="../src/HMMIO.cpp" line="652"/>
-        <source>Read HMM profile &apos;%1&apos;</source>
+        <source>Read HMM profile &apos;%1&apos;.</source>
         <translation></translation>
     </message>
 </context>
@@ -1254,7 +1254,7 @@ You can use this option to generate reproducible results for different hmmcalibr
     <name>U2::LocalWorkflow::HMMReadPrompter</name>
     <message>
         <location filename="../src/HMMIOWorker.cpp" line="169"/>
-        <source>Read HMM profile(s) from %1</source>
+        <source>Read HMM profile(s) from %1.</source>
         <translation></translation>
     </message>
 </context>
@@ -1383,7 +1383,7 @@ You can use this option to generate reproducible results for different hmmcalibr
     </message>
     <message>
         <location filename="../src/u_search/HMMSearchWorker.cpp" line="81"/>
-        <source>Searches each input sequence for significantly similar sequence matches to all specified HMM profiles. In case several profiles were supplied, searches with all profiles one by one and outputs united set of annotations for each sequence</source>
+        <source>Searches each input sequence for significantly similar sequence matches to all specified HMM profiles. In case several profiles were supplied, searches with all profiles one by one and outputs united set of annotations for each sequence.</source>
         <translation></translation>
     </message>
 </context>

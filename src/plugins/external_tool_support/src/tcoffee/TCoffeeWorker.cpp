@@ -71,12 +71,12 @@ void TCoffeeWorkerFactory::init() {
     Descriptor gep(GAP_EXT_PENALTY, TCoffeeWorker::tr("Gap Extension Penalty"),
                    TCoffeeWorker::tr("Gap Extension Penalty. Positive values give rewards to gaps and prevent the alignment of unrelated segments."));
     Descriptor tgp(NUM_ITER, TCoffeeWorker::tr("Max Iteration"),
-                   TCoffeeWorker::tr("Number of iteration on the progressive alignment<br>"
-                                     "0 - no iteration, -1 - Nseq iterations"));
+                   TCoffeeWorker::tr("Number of iteration on the progressive alignment.<br>"
+                                     "0 - no iteration, -1 - Nseq iterations."));
     Descriptor etp(EXT_TOOL_PATH, TCoffeeWorker::tr("Tool Path"),
-                   TCoffeeWorker::tr("External tool path"));
+                   TCoffeeWorker::tr("External tool path."));
     Descriptor tdp(TMP_DIR_PATH, TCoffeeWorker::tr("Temporary directory"),
-                   TCoffeeWorker::tr("Directory for temporary files"));
+                   TCoffeeWorker::tr("Directory for temporary file.s"));
 
     a << new Attribute(gop, BaseTypes::NUM_TYPE(), false, QVariant(-50));
     a << new Attribute(gep, BaseTypes::NUM_TYPE(), false, QVariant(0));

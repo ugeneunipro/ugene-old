@@ -1288,7 +1288,7 @@ var %2; //číslo zpracovaného řádku</translation>
     <message>
         <location filename="../src/ImportQualityScoresWorker.cpp" line="53"/>
         <source>Add corresponding PHRED quality scores to the sequences.
-You can use this worker to convert .fasta and .qual pair to fastq format</source>
+You can use this worker to convert .fasta and .qual pair to fastq format.</source>
         <translation>Přidat odpovídající zápisy vlastností PHRED do sekvencí.
 Tohoto dělníka můžete využít na převod dvojice .fasta a .qual na fastq</translation>
     </message>

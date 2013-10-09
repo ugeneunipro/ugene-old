@@ -166,7 +166,7 @@ void ImportAnnotationsWorkerFactory::init() {
 
     Descriptor protoDesc(ImportAnnotationsWorkerFactory::ACTOR_ID, 
         ImportAnnotationsWorker::tr("Merge Annotations"), 
-        ImportAnnotationsWorker::tr("Read input annotation table and merge it with supplied annotation tables"));
+        ImportAnnotationsWorker::tr("Read input annotation table and merge it with supplied annotation tables."));
     ActorPrototype * proto = new IntegralBusActorPrototype(protoDesc, portDescs, attrs);
 
     //proto delegates

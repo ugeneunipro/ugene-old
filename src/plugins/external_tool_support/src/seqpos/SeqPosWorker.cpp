@@ -250,23 +250,23 @@ void SeqPosWorkerFactory::init() {
              SeqPosWorker::tr("The directory to store seqpos results."));
          Descriptor genAssembly(GENOME_ASSEMBLY,
              SeqPosWorker::tr("Genome assembly version"),
-             SeqPosWorker::tr("UCSC database version (GENOME)"));
+             SeqPosWorker::tr("UCSC database version (GENOME)."));
          Descriptor findDeNovo(FIND_DE_NOVO,
              SeqPosWorker::tr("De novo motifs"),
-             SeqPosWorker::tr("Run de novo motif search (-d)"));
+             SeqPosWorker::tr("Run de novo motif search (-d)."));
          Descriptor motifDB(MOTIF_DB,
              SeqPosWorker::tr("Motif database"),
-             SeqPosWorker::tr("Known motif collections. (-m). Warning: computation time increases with selecting additional databases. "
+             SeqPosWorker::tr("Known motif collections (-m). Warning: computation time increases with selecting additional databases. "
              "It is recommended to use cistrome.xml. It is a comprehensive collection of motifs from the other databases with similar motifs deleted."));
          Descriptor outName(OUT_NAME,
              SeqPosWorker::tr("Output file name"),
-             SeqPosWorker::tr("Name of the output file which stores new motifs found during a de novo search. (-n)"));
+             SeqPosWorker::tr("Name of the output file which stores new motifs found during a de novo search (-n)."));
          Descriptor regW(REG_WIDTH,
              SeqPosWorker::tr("Region width"),
-             SeqPosWorker::tr("Width of the region to be scanned for motifs; depends on a resolution of assay. (-w)"));
+             SeqPosWorker::tr("Width of the region to be scanned for motifs; depends on a resolution of assay (-w)."));
          Descriptor pVal(P_VAL,
              SeqPosWorker::tr("Pvalue cutoff"),
-             SeqPosWorker::tr("Pvalue cutoff for the motif significance. (-p)"));
+             SeqPosWorker::tr("Pvalue cutoff for the motif significance (-p)."));
 
 
         attrs << new Attribute(outDir, BaseTypes::STRING_TYPE(), true, QVariant(""));

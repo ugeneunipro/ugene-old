@@ -168,7 +168,7 @@ void ProtStability1DWorkerFactory::init( )
     Descriptor protoDesc( ProtStability1DWorkerFactory::ACTOR_ID,
         QObject::tr( "ProtStability1D" ),
         QObject::tr( "Identification of the SNP influence on"
-            "protein primary structure thermodynamic stability" ) );
+            "protein primary structure thermodynamic stability." ) );
 
     ActorPrototype *proto = new IntegralBusActorPrototype( protoDesc, p, a );
     proto->setPrompter( new ProtStability1DPrompter( ) );

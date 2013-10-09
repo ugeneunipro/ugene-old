@@ -203,8 +203,8 @@ QDORFActorPrototype::QDORFActorPrototype() {
      "               Allow ORFs starting with alternative initiation codons,\n"
      "               accordingly to the current translation table.\n", 0, QApplication::UnicodeUTF8));
      Descriptor mld(MAX_LENGTH_ATTR, QDORFActor::tr("Max length"), QDORFActor::tr("Maximum length of annotation allowed."));
-     Descriptor fd(FIT_ATTR, QDORFActor::tr("Require stop codon"), QDORFActor::tr("Require stop codon"));
-     Descriptor mr(RES_ATTR,QDORFActor::tr("Max result"),QDORFActor::tr("Find results not achieved by specified count"));
+     Descriptor fd(FIT_ATTR, QDORFActor::tr("Require stop codon"), QDORFActor::tr("Require stop codon."));
+     Descriptor mr(RES_ATTR,QDORFActor::tr("Max result"),QDORFActor::tr("Find results not achieved by specified count."));
      Descriptor lr(LIMIT_ATTR,QDORFActor::tr("Limit results"),QDORFActor::tr("The amount of results will be limited id that option is setted"));
 
      attributes << new Attribute(ttd, BaseTypes::STRING_TYPE(), false, QVariant(DNATranslationID(1)));

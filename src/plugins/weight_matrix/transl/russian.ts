@@ -279,7 +279,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Annotation name for marking found regions</source>
+        <source>Annotation name for marking found regions.</source>
         <translation type="obsolete">Имя аннотации для обозначения найденных регионов</translation>
     </message>
     <message>
@@ -501,7 +501,7 @@
     <name>U2::LocalWorkflow::PFMatrixReadPrompter</name>
     <message>
         <location filename="../src/WeightMatrixIOWorkers.cpp" line="410"/>
-        <source>Read model(s) from &lt;u&gt;%1&lt;/u&gt;</source>
+        <source>Read model(s) from &lt;u&gt;%1&lt;/u&gt;.</source>
         <translation>Чтение матриц из &lt;u&gt;%1&lt;/u&gt;</translation>
     </message>
 </context>
@@ -614,7 +614,7 @@
     <name>U2::LocalWorkflow::PWMatrixReadPrompter</name>
     <message>
         <location filename="../src/WeightMatrixIOWorkers.cpp" line="195"/>
-        <source>Read model(s) from &lt;u&gt;%1&lt;/u&gt;</source>
+        <source>Read model(s) from &lt;u&gt;%1&lt;/u&gt;.</source>
         <translation>Чтение матриц из &lt;u&gt;%1&lt;/u&gt;</translation>
     </message>
 </context>
@@ -688,7 +688,7 @@
     </message>
     <message>
         <location filename="../src/WeightMatrixSearchWorker.cpp" line="78"/>
-        <source>Annotation name for marking found regions</source>
+        <source>Annotation name for marking found regions.</source>
         <translation>Имя аннотации для обозначения найденных регионов</translation>
     </message>
     <message>

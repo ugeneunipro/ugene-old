@@ -175,10 +175,10 @@ void GeneByGeneReportWorkerFactory::init() {
         Descriptor existingFile(EXISTING_FILE,
             GeneByGeneReportWorker::tr("Existing file"),
             GeneByGeneReportWorker::tr("If a target report already exists you should specify how to handle that. "
-            "<b>Merge<\b> two table in one. <b>Overwrite<\b> or <b>Rename<\b> existing file."));
+            "<b>Merge</b> two table in one. <b>Overwrite</b> or <b>Rename</b> existing file."));
         Descriptor identitiDescr(IDENTITY,
             GeneByGeneReportWorker::tr("Identity cutoff"),
-            GeneByGeneReportWorker::tr("Identity between gene sequence length and annotation length in per cent. BLAST identity (if specified) is checked after"));
+            GeneByGeneReportWorker::tr("Identity between gene sequence length and annotation length in per cent. BLAST identity (if specified) is checked after."));
 
 
         attrs << new Attribute(outFile, BaseTypes::STRING_TYPE(), true, QVariant(""));
@@ -209,7 +209,7 @@ void GeneByGeneReportWorkerFactory::init() {
     }
 
     Descriptor protoDesc(GeneByGeneReportWorkerFactory::ACTOR_ID,
-        GeneByGeneReportWorker::tr("Gene-by-gene approach report"),
+        GeneByGeneReportWorker::tr("Gene-by-gene Approach Report"),
         GeneByGeneReportWorker::tr("Output a table of genes found in a reference sequence."));
 
     ActorPrototype *proto = new IntegralBusActorPrototype(protoDesc, portDescs, attrs);

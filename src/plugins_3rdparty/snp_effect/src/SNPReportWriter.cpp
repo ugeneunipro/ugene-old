@@ -210,7 +210,7 @@ void SNPReportWriterFactory::init() {
     }
 
     Descriptor protoDesc(SNPReportWriterFactory::ACTOR_ID,
-        SNPReportWriter::tr("Write SNP report"),
+        SNPReportWriter::tr("Write SNP Report"),
         SNPReportWriter::tr("Use variations and their effects to write a report."));
 
     ActorPrototype *proto = new IntegralBusActorPrototype(protoDesc, p, attrs);

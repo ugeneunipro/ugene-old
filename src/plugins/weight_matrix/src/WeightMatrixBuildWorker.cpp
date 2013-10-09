@@ -84,9 +84,8 @@ void PWMatrixBuildWorker::registerProto() {
     }
 
     {
-        Descriptor td(TYPE_ATTR, PWMatrixBuildWorker::tr("Matrix type"), 
-            QApplication::translate("PWMBuildDialog", "type_tip", 0, QApplication::UnicodeUTF8));
-        a << new Attribute(td, BaseTypes::BOOL_TYPE(), true, false /* false = mononucleic, true = dinucleic */);
+        Descriptor td(TYPE_ATTR, PWMatrixBuildWorker::tr("Matrix type"), PWMatrixBuildWorker::tr("Dinucleic matrices are more detailed, while mononucleic one are more useful for small input data sets."));
+            a << new Attribute(td, BaseTypes::BOOL_TYPE(), true, false /* false = mononucleic, true = dinucleic */);
     }
 
     Descriptor desc(ACTOR_ID, tr("Build Weight Matrix"),
@@ -182,8 +181,7 @@ void PFMatrixBuildWorker::registerProto() {
     p << new PortDescriptor(od, DataTypePtr(new MapDataType("fmatrix.build.out", outM)), false /*input*/, true /*multi*/);
     
     {
-        Descriptor td(TYPE_ATTR, PWMatrixBuildWorker::tr("Matrix type"), 
-            QApplication::translate("PWMBuildDialog", "type_tip", 0, QApplication::UnicodeUTF8));
+        Descriptor td(TYPE_ATTR, PWMatrixBuildWorker::tr("Matrix type"), PWMatrixBuildWorker::tr("Dinucleic matrices are more detailed, while mononucleic one are more useful for small input data sets."));
         a << new Attribute(td, BaseTypes::BOOL_TYPE(), true, false /* false = mononucleic, true = dinucleic */);
     }
 
@@ -271,12 +269,12 @@ void PFMatrixConvertWorker::registerProto() {
     p << new PortDescriptor(od, DataTypePtr(new MapDataType("fmatrix.convert.out", outM)), false /*input*/, true /*multi*/);
     
     {
-        Descriptor ad(ALG_ATTR, PWMatrixBuildWorker::tr("Weight algorithm"), QApplication::translate("PWMBuildDialog", "algo_tip", 0, QApplication::UnicodeUTF8));
+        Descriptor ad(ALG_ATTR, PWMatrixBuildWorker::tr("Weight algorithm"), PWMatrixBuildWorker::tr("Different weight algorithms uses different functions to build weight matrices. It allows us to get better precision on different data sets. Log-odds, NLG and Match algorithms are sensitive to input matrices with zero values, so some of them may not work on those matrices."));
         a << new Attribute(ad, BaseTypes::STRING_TYPE(), true, BuiltInPWMConversionAlgorithms::BVH_ALGO);
     }
 
     {
-        Descriptor td(TYPE_ATTR, PWMatrixBuildWorker::tr("Matrix type"), QApplication::translate("PWMBuildDialog", "type_tip", 0, QApplication::UnicodeUTF8));
+        Descriptor td(TYPE_ATTR, PWMatrixBuildWorker::tr("Matrix type"), PWMatrixBuildWorker::tr("Dinucleic matrices are more detailed, while mononucleic one are more useful for small input data sets."));
         a << new Attribute(td, BaseTypes::BOOL_TYPE(), true, false /* false = mononucleic, true = dinucleic */);
     }
 

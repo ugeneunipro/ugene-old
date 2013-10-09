@@ -66,7 +66,7 @@ QString ConvertFilesFormatPrompter::composeRichDoc() {
     QString unsetStr = "<font color='red'>"+tr("unset")+"</font>";
     QString producerName = tr(" from <u>%1</u>").arg(producer ? producer->getLabel() : unsetStr);
 
-    QString doc = tr("Convert file %1 to selected format if it is not excluded").arg(producerName);
+    QString doc = tr("Convert file %1 to selected format if it is not excluded.").arg(producerName);
     return doc;
 }
 
@@ -100,7 +100,7 @@ void ConvertFilesFormatWorkerFactory::init() {
     a << new Attribute( BaseAttributes::DOCUMENT_FORMAT_ATTRIBUTE(), BaseTypes::STRING_TYPE(), true );
 
     Descriptor excludedFormats(EXCLUDED_FORMATS_ID, ConvertFilesFormatWorker::tr("Excluded formats"),
-                                                    ConvertFilesFormatWorker::tr("Input file won't be converted to any of selected formats"));
+                                                    ConvertFilesFormatWorker::tr("Input file won't be converted to any of selected formats."));
     a << new Attribute( excludedFormats, BaseTypes::STRING_TYPE(), false );
 
     Descriptor desc( ACTOR_ID, ConvertFilesFormatWorker::tr("File Format Conversion"),

@@ -37,12 +37,12 @@ namespace U2 {
 namespace Workflow {
 
 const Descriptor BaseAttributes::URL_IN_ATTRIBUTE() {
-    return Descriptor(URL_IN_ATTR_ID, tr("Input file(s)"), tr("Semicolon-separated list of paths to the input files"));
+    return Descriptor(URL_IN_ATTR_ID, tr("Input file(s)"), tr("Semicolon-separated list of paths to the input files."));
 }
 
 const Descriptor BaseAttributes::URL_OUT_ATTRIBUTE() {
     return Descriptor(URL_OUT_ATTR_ID, tr("Output file"), tr("Location of output data file. If this attribute is set," 
-        " slot \"Location\" in port will not be used"));
+        " slot \"Location\" in port will not be used."));
 }
 
 const Descriptor BaseAttributes::URL_LOCATION_ATTRIBUTE() {
@@ -50,7 +50,7 @@ const Descriptor BaseAttributes::URL_LOCATION_ATTRIBUTE() {
 }
 
 const Descriptor BaseAttributes::DOCUMENT_FORMAT_ATTRIBUTE() {
-    return Descriptor(DOCUMENT_FORMAT_ATTR_ID, tr("Document format"), tr("Document format of output file"));
+    return Descriptor(DOCUMENT_FORMAT_ATTR_ID, tr("Document format"), tr("Document format of output file."));
 }
 
 const Descriptor BaseAttributes::ACCUMULATE_OBJS_ATTRIBUTE() {
@@ -60,7 +60,7 @@ const Descriptor BaseAttributes::ACCUMULATE_OBJS_ATTRIBUTE() {
 }
 
 const Descriptor BaseAttributes::SPLIT_SEQ_ATTRIBUTE(){
-    return Descriptor(SPLIT_ATTR, tr("Split sequence"), tr("Split each incoming sequence on several parts"));
+    return Descriptor(SPLIT_ATTR, tr("Split sequence"), tr("Split each incoming sequence on several parts."));
 }
 
 const Descriptor BaseAttributes::READ_BY_LINES_ATTRIBUTE() {

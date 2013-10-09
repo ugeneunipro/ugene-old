@@ -75,7 +75,7 @@ void PWMatrixSearchWorker::registerProto() {
     }
     {
         Descriptor nd(NAME_ATTR, PWMatrixSearchWorker::tr("Result annotation"), 
-            PWMatrixSearchWorker::tr("Annotation name for marking found regions"));
+            PWMatrixSearchWorker::tr("Annotation name for marking found regions."));
         Descriptor scd(SCORE_ATTR, PWMatrixSearchWorker::tr("Min score"), 
             QApplication::translate("PWMSearchDialog", "min_err_tip", 0, QApplication::UnicodeUTF8));
         

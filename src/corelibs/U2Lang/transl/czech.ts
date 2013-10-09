@@ -1065,7 +1065,7 @@
     </message>
     <message>
         <location filename="../src/library/BaseAttributes.cpp" line="42"/>
-        <source>Location of output data file. If this attribute is set, slot &quot;Location&quot; in port will not be used</source>
+        <source>Location of output data file. If this attribute is set, slot &quot;Location&quot; in port will not be used.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1085,7 +1085,7 @@
     </message>
     <message>
         <location filename="../src/library/BaseAttributes.cpp" line="51"/>
-        <source>Document format of output file</source>
+        <source>Document format of output file.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

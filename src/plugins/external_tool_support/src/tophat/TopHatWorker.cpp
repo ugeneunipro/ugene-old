@@ -209,15 +209,15 @@ void TopHatWorkerFactory::init()
 
     Descriptor mateInnerDistance(MATE_INNER_DISTANCE,
         TopHatWorker::tr("Mate inner distance"),
-        TopHatWorker::tr("The expected (mean) inner distance between mate pairs"));
+        TopHatWorker::tr("The expected (mean) inner distance between mate pairs."));
 
     Descriptor mateStandardDeviation(MATE_STANDARD_DEVIATION,
         TopHatWorker::tr("Mate standard deviation"),
-        TopHatWorker::tr("The standard deviation for the distribution on inner distances between mate pairs"));
+        TopHatWorker::tr("The standard deviation for the distribution on inner distances between mate pairs."));
 
     Descriptor libraryType(LIBRARY_TYPE,
         TopHatWorker::tr("Library type"),
-        TopHatWorker::tr("Specifies RNA-Seq protocol"));
+        TopHatWorker::tr("Specifies RNA-Seq protocol."));
 
     Descriptor noNovelJunctions(NO_NOVEL_JUNCTIONS,
         TopHatWorker::tr("No novel junctions"),
@@ -227,11 +227,11 @@ void TopHatWorkerFactory::init()
 
     Descriptor rawJunctions(RAW_JUNCTIONS,
         TopHatWorker::tr("Raw junctions"),
-        TopHatWorker::tr("The list of raw junctions"));
+        TopHatWorker::tr("The list of raw junctions."));
 
     Descriptor knownTranscript(KNOWN_TRANSCRIPT,
         TopHatWorker::tr("Known transcript file"),
-        TopHatWorker::tr("A set of gene model annotations and/or known transcripts"));
+        TopHatWorker::tr("A set of gene model annotations and/or known transcripts."));
 
     Descriptor maxMultihits(MAX_MULTIHITS,
         TopHatWorker::tr("Max multihits"),
@@ -254,18 +254,18 @@ void TopHatWorkerFactory::init()
 
     Descriptor fusionSearch(FUSION_SEARCH,
         TopHatWorker::tr("Fusion search"),
-        TopHatWorker::tr("Turn on fusion mapping"));
+        TopHatWorker::tr("Turn on fusion mapping."));
 
     Descriptor transcriptomeOnly(TRANSCRIPTOME_ONLY,
         TopHatWorker::tr("Transcriptome only"),
         TopHatWorker::tr("Only align the reads to the transcriptome and report only"
-        " those mappings as genomic mappings"));
+        " those mappings as genomic mappings."));
 
     Descriptor transcriptomeMaxHits(TRANSCRIPTOME_MAX_HITS,
         TopHatWorker::tr("Transcriptome max hits"),
         TopHatWorker::tr("Maximum number of mappings allowed for a read, when aligned"
         " to the transcriptome (any reads found with more than this number of"
-        " mappings will be discarded)"));
+        " mappings will be discarded)."));
 
     Descriptor prefilterMultihits(PREFILTER_MULTIHITS,
         TopHatWorker::tr("Prefilter multihits"),
@@ -289,7 +289,7 @@ void TopHatWorkerFactory::init()
     Descriptor spliceMismatches(SPLICE_MISMATCHES,
         TopHatWorker::tr("Splice mismatches"),
         TopHatWorker::tr("The maximum number of mismatches that may appear in"
-        " the <i>anchor</i> region of a spliced alignment"));
+        " the <i>anchor</i> region of a spliced alignment."));
 
     Descriptor readMismatches(READ_MISMATCHES,
         TopHatWorker::tr("Read mismatches"),
@@ -310,7 +310,7 @@ void TopHatWorkerFactory::init()
 
     Descriptor bowtieVersion(BOWTIE_VERSION,
         TopHatWorker::tr("Bowtie version"),
-        TopHatWorker::tr("Specifies which Bowtie version should be used"));
+        TopHatWorker::tr("Specifies which Bowtie version should be used."));
 
     Descriptor bowtieNMode(BOWTIE_N_MODE,
         TopHatWorker::tr("Bowtie -n mode"),
@@ -321,7 +321,7 @@ void TopHatWorkerFactory::init()
 
     Descriptor bowtieToolPath(BOWTIE_TOOL_PATH,
         TopHatWorker::tr("Bowtie tool path"),
-        TopHatWorker::tr("The path to the Bowtie external tool"));
+        TopHatWorker::tr("The path to the Bowtie external tool."));
 
     Descriptor samtoolsPath(SAMTOOLS_TOOL_PATH,
         TopHatWorker::tr("SAMtools tool path"),
@@ -330,11 +330,11 @@ void TopHatWorkerFactory::init()
 
     Descriptor extToolPath(EXT_TOOL_PATH,
         TopHatWorker::tr("TopHat tool path"),
-        TopHatWorker::tr("The path to the TopHat external tool in UGENE"));
+        TopHatWorker::tr("The path to the TopHat external tool in UGENE."));
 
     Descriptor tmpDir(TMP_DIR_PATH,
         TopHatWorker::tr("Temporary directory"),
-        TopHatWorker::tr("The directory for temporary files"));
+        TopHatWorker::tr("The directory for temporary files."));
 
     attributes << new Attribute(outDir, BaseTypes::STRING_TYPE(), true, "");
     {

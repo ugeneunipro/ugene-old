@@ -224,16 +224,16 @@ void Peak2GeneWorkerFactory::init() {
              Peak2GeneWorker::tr("Select which type of genes need to output. "
              "<b>up</b> for genes upstream to peak summit, "
              "<b>down</b> for genes downstream to peak summit, "
-             "<b>all</b> for both <b>up</b> and <b>down</b>. (--op)"));
+             "<b>all</b> for both <b>up</b> and <b>down</b> (--op)."));
          Descriptor symbol(SYMBOL,
              Peak2GeneWorker::tr("Official gene symbols"),
-             Peak2GeneWorker::tr("Output <b>official gene symbol</b> instead of <b>refseq name</b>. (--symbol)"));
+             Peak2GeneWorker::tr("Output <b>official gene symbol</b> instead of <b>refseq name</b> (--symbol)."));
          Descriptor p2g_distance(DISTANCE,
              Peak2GeneWorker::tr("Distance"),
-             Peak2GeneWorker::tr("Set a number which unit is base. It will get the refGenes in n bases from peak center. (--distance)"));
+             Peak2GeneWorker::tr("Set a number which unit is base. It will get the refGenes in n bases from peak center (--distance)."));
          Descriptor p2g_genome(GENOME,
              Peak2GeneWorker::tr("Genome file"),
-             Peak2GeneWorker::tr("Select a genome file (sqlite3 file) to search refGenes. (--genome)"));
+             Peak2GeneWorker::tr("Select a genome file (sqlite3 file) to search refGenes (--genome)."));
 
          Attribute* annGrAttr = NULL;
          if (dataPath){
@@ -288,7 +288,7 @@ void Peak2GeneWorkerFactory::init() {
      }
 
     Descriptor protoDesc(Peak2GeneWorkerFactory::ACTOR_ID,
-        Peak2GeneWorker::tr("Annotate peaks with peak2gene"),
+        Peak2GeneWorker::tr("Annotate Peaks with peak2gene"),
         Peak2GeneWorker::tr("Gets refGenes near the ChIP regions identified by a peak-caller."));
 
     ActorPrototype *proto = new IntegralBusActorPrototype(protoDesc, portDescs, attrs);

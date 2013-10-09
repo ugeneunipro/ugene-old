@@ -244,17 +244,17 @@ void RemoteDBFetcherFactory::init()
     {
         Descriptor dbidd(DBID_ID,
                          RemoteDBFetcherWorker::tr("Database"),
-                         RemoteDBFetcherWorker::tr("The database to read from"));
+                         RemoteDBFetcherWorker::tr("The database to read from."));
         attrs << new Attribute(dbidd, BaseTypes::STRING_TYPE(), true, cuteDbNames.value(defaultDB, defaultDB));
 
         Descriptor seqidd(SEQID_ID,
                          RemoteDBFetcherWorker::tr("Resource ID(s)"),
-                         RemoteDBFetcherWorker::tr("Semicolon-separated list of resource ID`s in the database"));
+                         RemoteDBFetcherWorker::tr("Semicolon-separated list of resource ID`s in the database."));
         attrs << new Attribute(seqidd, BaseTypes::STRING_TYPE(), true, "");
 
         Descriptor fullpathd(PATH_ID, 
                          RemoteDBFetcherWorker::tr("Save file to directory"), 
-                         RemoteDBFetcherWorker::tr("The directory to store sequence files loaded from a database"));
+                         RemoteDBFetcherWorker::tr("The directory to store sequence files loaded from a database."));
         attrs << new Attribute(fullpathd, BaseTypes::STRING_TYPE(), true, DEFAULT_PATH);
     }
     
@@ -469,12 +469,12 @@ void FetchSequenceByIdFromAnnotationFactory::init()
 
         Descriptor fullpathd(PATH_ID,
                          RemoteDBFetcherWorker::tr("Save file to directory"),
-                         RemoteDBFetcherWorker::tr("The directory to store sequence files loaded from a database"));
+                         RemoteDBFetcherWorker::tr("The directory to store sequence files loaded from a database."));
         attrs << new Attribute(fullpathd, BaseTypes::STRING_TYPE(), true, DEFAULT_PATH);
 
         Descriptor dbidd(DBID_ID,
                          RemoteDBFetcherWorker::tr("NCBI database"),
-                         RemoteDBFetcherWorker::tr("The database to read from"));
+                         RemoteDBFetcherWorker::tr("The database to read from."));
         attrs << new Attribute(dbidd, BaseTypes::STRING_TYPE(), true, GENBANK_NUCLEOTIDE_ID);
     }
 

@@ -44,18 +44,18 @@ void DNAStatWorkerFactory::init() {
         portDescs << new PortDescriptor( outDesc, DataTypePtr(new MapDataType("filter.anns", outputMap)), /*input*/false, /*multi*/true );
     }
 
-    attribs << new Attribute(Descriptor(GCCONTENT, DNAStatWorker::tr("GC-content"), DNAStatWorker::tr("Evaluate GC-content")), 
+    attribs << new Attribute(Descriptor(GCCONTENT, DNAStatWorker::tr("GC-content"), DNAStatWorker::tr("Evaluate GC-content.")), 
         BaseTypes::BOOL_TYPE(),false, true);
-    attribs << new Attribute(Descriptor(GC1CONTENT, DNAStatWorker::tr("GC1-content"), DNAStatWorker::tr("Evaluate GC1-content")), 
+    attribs << new Attribute(Descriptor(GC1CONTENT, DNAStatWorker::tr("GC1-content"), DNAStatWorker::tr("Evaluate GC1-content.")), 
         BaseTypes::BOOL_TYPE(),false, true);
-    attribs << new Attribute(Descriptor(GC2CONTENT, DNAStatWorker::tr("GC2-content"), DNAStatWorker::tr("Evaluate GC2-content")), 
+    attribs << new Attribute(Descriptor(GC2CONTENT, DNAStatWorker::tr("GC2-content"), DNAStatWorker::tr("Evaluate GC2-content.")), 
         BaseTypes::BOOL_TYPE(),false, true);
-    attribs << new Attribute(Descriptor(GC3CONTENT, DNAStatWorker::tr("GC3-content"), DNAStatWorker::tr("Evaluate GC3-content")), 
+    attribs << new Attribute(Descriptor(GC3CONTENT, DNAStatWorker::tr("GC3-content"), DNAStatWorker::tr("Evaluate GC3-content.")), 
         BaseTypes::BOOL_TYPE(),false, true);
 
     Descriptor desc( ACTOR_ID,
         DNAStatWorker::tr("DNA Statistics"), 
-        DNAStatWorker::tr("Evaluates statistics for DNA sequences") );
+        DNAStatWorker::tr("Evaluates statistics for DNA sequences.") );
     ActorPrototype * proto = new IntegralBusActorPrototype( desc, portDescs, attribs );
     proto->setPrompter( new DNAStatWorkerPrompter() );
     proto->setEditor(new DelegateEditor(QMap<QString, PropertyDelegate*>()));
@@ -66,7 +66,7 @@ void DNAStatWorkerFactory::init() {
 }
 
 QString DNAStatWorkerPrompter::composeRichDoc() {
-    return tr("Evaluates GC-Content and GC3-Content");
+    return tr("Evaluates GC-Content and GC3-Content.");
 }
 
 

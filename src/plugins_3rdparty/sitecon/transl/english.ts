@@ -318,22 +318,22 @@ Must be: windows size is not greater than TFBS alignment length, recommended: wi
     <message>
         <location filename="../src/SiteconBuildWorker.cpp" line="73"/>
         <source>Window size, bp</source>
-        <translation></translation>
+        <translation>Window size.</translation>
     </message>
     <message>
         <location filename="../src/SiteconBuildWorker.cpp" line="74"/>
         <source>Calibration length</source>
-        <translation></translation>
+        <translation>Calibration length.</translation>
     </message>
     <message>
         <location filename="../src/SiteconBuildWorker.cpp" line="75"/>
         <source>Random seed</source>
-        <translation></translation>
+        <translation>Random seed</translation>
     </message>
     <message>
         <location filename="../src/SiteconBuildWorker.cpp" line="76"/>
         <source>Weight algorithm</source>
-        <translation></translation>
+        <translation>Weight algorithm.</translation>
     </message>
     <message>
         <location filename="../src/SiteconBuildWorker.cpp" line="60"/>
@@ -360,7 +360,7 @@ Must be: windows size is not greater than TFBS alignment length, recommended: wi
     <name>U2::LocalWorkflow::SiteconReadPrompter</name>
     <message>
         <location filename="../src/SiteconIOWorkers.cpp" line="188"/>
-        <source>Read model(s) from &lt;u&gt;%1&lt;/u&gt;</source>
+        <source>Read model(s) from &lt;u&gt;%1&lt;/u&gt;.</source>
         <translation></translation>
     </message>
 </context>
@@ -489,7 +489,7 @@ Must be: windows size is not greater than TFBS alignment length, recommended: wi
     </message>
     <message>
         <location filename="../src/SiteconSearchWorker.cpp" line="82"/>
-        <source>Annotation name for marking found regions</source>
+        <source>Annotation name for marking found regions.</source>
         <translation></translation>
     </message>
     <message>

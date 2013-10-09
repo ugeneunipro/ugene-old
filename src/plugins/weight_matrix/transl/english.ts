@@ -83,14 +83,14 @@
         <location filename="../src/WeightMatrixBuildWorker.cpp" line="82"/>
         <location filename="../src/WeightMatrixBuildWorker.cpp" line="277"/>
         <source>algo_tip</source>
-        <translation>Different weight algorithms uses different functions to build weight matrices. It allows us to get better precision on different data sets. Log-odds, NLG and Match algorithms are sensitive to input matrices with zero values, so some of them may not work on those matrices</translation>
+        <translation>Different weight algorithms uses different functions to build weight matrices. It allows us to get better precision on different data sets. Log-odds, NLG and Match algorithms are sensitive to input matrices with zero values, so some of them may not work on those matrices.</translation>
     </message>
     <message>
         <location filename="../src/WeightMatrixBuildWorker.cpp" line="88"/>
         <location filename="../src/WeightMatrixBuildWorker.cpp" line="188"/>
         <location filename="../src/WeightMatrixBuildWorker.cpp" line="282"/>
         <source>type_tip</source>
-        <translation>Dinucleic matrices are more detailed, while mononucleic one are more useful for small input data sets</translation>
+        <translation>Dinucleic matrices are more detailed, while mononucleic one are more useful for small input data sets.</translation>
     </message>
 </context>
 <context>
@@ -450,7 +450,7 @@
     <name>U2::LocalWorkflow::PFMatrixReadPrompter</name>
     <message>
         <location filename="../src/WeightMatrixIOWorkers.cpp" line="410"/>
-        <source>Read model(s) from &lt;u&gt;%1&lt;/u&gt;</source>
+        <source>Read model(s) from &lt;u&gt;%1&lt;/u&gt;.</source>
         <translation></translation>
     </message>
 </context>
@@ -551,7 +551,7 @@
     <name>U2::LocalWorkflow::PWMatrixReadPrompter</name>
     <message>
         <location filename="../src/WeightMatrixIOWorkers.cpp" line="195"/>
-        <source>Read model(s) from &lt;u&gt;%1&lt;/u&gt;</source>
+        <source>Read model(s) from &lt;u&gt;%1&lt;/u&gt;.</source>
         <translation></translation>
     </message>
 </context>
@@ -625,7 +625,7 @@
     </message>
     <message>
         <location filename="../src/WeightMatrixSearchWorker.cpp" line="78"/>
-        <source>Annotation name for marking found regions</source>
+        <source>Annotation name for marking found regions.</source>
         <translation></translation>
     </message>
     <message>
