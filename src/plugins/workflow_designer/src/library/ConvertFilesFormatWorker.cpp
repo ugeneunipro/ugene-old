@@ -310,10 +310,11 @@ QList<Task*> ConvertFilesFormatTask::onSubTaskFinished( Task *subTask ) {
 
 void BamSamConversionTask::run() {
     U2OpStatusImpl status;
+    BAMUtils::ConvertOption options(samToBam);
     if( samToBam ) {
-        BAMUtils::convertToSamOrBam( sourceURL, destinationURL, status, samToBam );
+        BAMUtils::convertToSamOrBam( sourceURL, destinationURL, options, status );
     } else {
-        BAMUtils::convertToSamOrBam( destinationURL, sourceURL, status, samToBam );
+        BAMUtils::convertToSamOrBam( destinationURL, sourceURL, options, status );
     }
     if( status.hasError() ) {
         stateInfo.setError( status.getError() );

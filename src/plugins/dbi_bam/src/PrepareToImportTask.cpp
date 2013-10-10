@@ -61,9 +61,9 @@ void PrepareToImportTask::run() {
             dirPath.append("/");
         }
         destinationURL = dirPath + currentURL.fileName() + ".bam";
-        bool samToBam = true;
         stateInfo.setDescription( "Converting SAM to BAM" );
-        BAMUtils::convertToSamOrBam( currentURL, destinationURL, status, samToBam );
+        BAMUtils::ConvertOption options(true);
+        BAMUtils::convertToSamOrBam( currentURL, destinationURL, options, status );
         if( !checkStatus( status ) ) {
             return;
         }

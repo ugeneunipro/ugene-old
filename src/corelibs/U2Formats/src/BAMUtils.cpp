@@ -59,20 +59,30 @@ static void closeFiles(samfile_t *in, samfile_t *out) {
     }
 }
 
-void BAMUtils::convertToSamOrBam(const GUrl &samUrl, const GUrl &bamUrl, U2OpStatus &os, bool samToBam ) {
+BAMUtils::ConvertOption::ConvertOption(bool samToBam, GUrl referenceUrl)
+: samToBam(samToBam), referenceUrl(referenceUrl)
+{
+
+}
+
+void BAMUtils::convertToSamOrBam(const GUrl &samUrl, const GUrl &bamUrl, const ConvertOption &options, U2OpStatus &os ) {
     const QByteArray samFileName = samUrl.getURLString().toLocal8Bit();
     const QByteArray bamFileName = bamUrl.getURLString().toLocal8Bit();
 
-    QByteArray sourceName = (samToBam)? samFileName : bamFileName;
-    QByteArray targetName = (samToBam)? bamFileName : samFileName;
+    QByteArray sourceName = (options.samToBam)? samFileName : bamFileName;
+    QByteArray targetName = (options.samToBam)? bamFileName : samFileName;
 
     samfile_t *in = NULL;
     samfile_t *out = NULL;
 
     // open files
     {
-        QByteArray readMode = ( samToBam ) ? "r" : "rb";
-        in = samopen(sourceName.constData(), readMode, NULL);
+        QByteArray readMode = ( options.samToBam ) ? "r" : "rb";
+        void *aux = NULL;
+        if (options.samToBam && !options.referenceUrl.isEmpty()) {
+            aux = samfaipath(options.referenceUrl.getURLString().toLocal8Bit().constData());
+        }
+        in = samopen(sourceName.constData(), readMode, aux);
         if (NULL == in) {
             os.setError(QString("[main_samview] fail to open \"%1\" for reading").arg(sourceName.constData()));
             closeFiles(in, out);
@@ -83,7 +93,7 @@ void BAMUtils::convertToSamOrBam(const GUrl &samUrl, const GUrl &bamUrl, U2OpSta
             closeFiles(in, out);
             return;
         }
-        QByteArray writeMode = ( samToBam ) ? "wb" : "wh";
+        QByteArray writeMode = ( options.samToBam ) ? "wb" : "wh";
         out = samopen(targetName.constData(), writeMode, in->header);
         if (NULL == out) {
             os.setError(QString("[main_samview] fail to open \"%1\" for writing").arg(targetName.constData()));

@@ -32,10 +32,16 @@ class GObject;
 
 class U2FORMATS_EXPORT BAMUtils : public QObject {
 public:
+    class U2FORMATS_EXPORT ConvertOption {
+    public:
+        ConvertOption(bool samToBam, GUrl referenceUrl = GUrl());
+        bool samToBam;
+        GUrl referenceUrl;
+    };
     /**
      * Returns the url to the output BAM or SAM file
      */
-    static void convertToSamOrBam(const GUrl &samUrl, const GUrl &bamUrl, U2OpStatus &os, bool samToBam );
+    static void convertToSamOrBam(const GUrl &samUrl, const GUrl &bamUrl, const ConvertOption &options, U2OpStatus &os );
 
     static bool isSortedBam(const GUrl &bamUrl, U2OpStatus &os);
 
