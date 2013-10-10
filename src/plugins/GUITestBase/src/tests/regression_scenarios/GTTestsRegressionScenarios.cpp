@@ -29,6 +29,7 @@
 #include "api/GTMenu.h"
 #include "api/GTAction.h"
 #include "api/GTWidget.h"
+#include "api/GTTableView.h"
 #include "api/GTTreeWidget.h"
 #include "api/GTLineEdit.h"
 #include "api/GTComboBox.h"
@@ -1807,6 +1808,54 @@ GUI_TEST_CLASS_DEFINITION( test_2164 ) {
     GTGlobals::sleep(500);
 }
 
+GUI_TEST_CLASS_DEFINITION( test_2167 ) {
+    // 1. Open "_common_data/fasta/AMINO.fa".
+    GTFileDialog::openFile(os, testDir + "_common_data/fasta/", "AMINO.fa");
+
+    // 2. Open the DAS widget on the options panel
+    GTWidget::click(os, GTWidget::findWidget(os, "OP_DAS"));
+    GTGlobals::sleep(500);
+    QWidget *dasPanel = GTWidget::findWidget(os, "DasOptionsPanelWidget");
+    CHECK_SET_ERR(NULL != dasPanel, "DasOptionsPanelWidget is NULL!");
+
+    // 3. Click "Fetch ids".
+    QWidget *searchIdsButton = GTWidget::findWidget(os, "searchIdsButton");
+    GTWidget::click(os, searchIdsButton);
+    GTGlobals::sleep(500);
+
+    TaskScheduler* scheduller = AppContext::getTaskScheduler();
+    while (!scheduller->getTopLevelTasks().isEmpty()){
+       GTGlobals::sleep();
+    }
+
+    // 4. Select a result id in the table.
+    QTableWidget* resultsView = qobject_cast<QTableWidget*>(GTWidget::findWidget(os, "idList"));
+    CHECK_SET_ERR(NULL != resultsView, "Results widget is NULL!");
+    QPoint p1 = resultsView->mapFromGlobal(GTTableView::getCellPosition(os, resultsView, 0, 3));
+    GTWidget::click(os, resultsView, Qt::LeftButton, p1);
+
+    int count1 = resultsView->model()->rowCount();
+    QString value1 = resultsView->itemAt(p1)->text();
+
+    // 5. Click "Fetch ids" once again.
+    GTWidget::click(os, searchIdsButton);
+    GTGlobals::sleep(500);
+
+    while (!scheduller->getTopLevelTasks().isEmpty()){
+       GTGlobals::sleep();
+    }
+
+    // Expected: the table contains only the last results. There are no previous items and additional empty lines.
+    QPoint p2 = resultsView->mapFromGlobal(GTTableView::getCellPosition(os, resultsView, 0, 3));
+    GTWidget::click(os, resultsView, Qt::LeftButton, p2);
+
+    int count2 = resultsView->model()->rowCount();
+    QString value2 = resultsView->itemAt(p2)->text();
+
+    CHECK_SET_ERR(count1 == count2, "There are empty rows!");
+    CHECK_SET_ERR(value1 == value2, "Results differ!");
+}
+
 GUI_TEST_CLASS_DEFINITION( test_2169 ) {
     // 1. Open "data/PDB/1CF7.pdb".
     GTFileDialog::openFile(os, dataDir + "samples/PDB", "1CF7.pdb");
@@ -1943,3 +1992,4 @@ GUI_TEST_CLASS_DEFINITION( test_2186 ) {
 } // GUITest_regression_scenarios namespace
 
 } // U2 namespace
+
