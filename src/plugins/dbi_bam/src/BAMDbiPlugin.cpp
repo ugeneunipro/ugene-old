@@ -237,6 +237,7 @@ QList<Task*> BAMImporterTask::onSubTaskFinished(Task* subTask) {
     }
     if( loadInfoTask == subTask ) {
         GUrl srcUrl = loadInfoTask->getSourceUrl();
+        QString refUrl;
         if (hintedDbiUrl.isEmpty()) {
             destUrl = srcUrl.dirPath() + "/" + srcUrl.fileName() + ".ugenedb";
         } else {
@@ -249,6 +250,7 @@ QList<Task*> BAMImporterTask::onSubTaskFinished(Task* subTask) {
             int rc = convertDialog.exec();
             if (rc == QDialog::Accepted) {
                 destUrl = convertDialog.getDestinationUrl();
+                refUrl = convertDialog.getReferenceUrl();
                 convert = true;
             } else {
                 convert = false;
@@ -256,7 +258,7 @@ QList<Task*> BAMImporterTask::onSubTaskFinished(Task* subTask) {
             }
         }
         if (convert) {
-            prepareToImportTask = new PrepareToImportTask( loadInfoTask->getSourceUrl(), loadInfoTask->isSam() );
+            prepareToImportTask = new PrepareToImportTask( loadInfoTask->getSourceUrl(), loadInfoTask->isSam(), refUrl );
             res << prepareToImportTask;
         }
    } else if ( prepareToImportTask == subTask && prepareToImportTask->isNewURL() ) {

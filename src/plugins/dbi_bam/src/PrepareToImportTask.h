@@ -28,18 +28,21 @@
 namespace U2 {
 namespace BAM {
 
-class PrepareToImportTask : public Task 
-{
-private:
-    GUrl sourceURL;
-    bool samFormat;
-    bool newURL;
+class PrepareToImportTask : public Task {
 public:
-    PrepareToImportTask( const GUrl& url, bool sam );
+    PrepareToImportTask( const GUrl& assebmlyUrl, bool sam, const QString& refUrl );
     void run();
-    bool checkStatus( U2OpStatusImpl &status );
     const GUrl& getSourceUrl() const;
     bool isNewURL();
+
+private:
+    GUrl sourceURL;
+    QString refUrl;
+    bool samFormat;
+    bool newURL;
+
+private:
+    void checkReferenceFile();
 }; 
 
 } // namespace BAM

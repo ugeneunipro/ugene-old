@@ -182,6 +182,9 @@ faidx_t *fai_read(FILE *fp)
 void fai_destroy(faidx_t *fai)
 {
 	int i;
+	if (NULL == fai) {
+		return;
+	}
 	for (i = 0; i < fai->n; ++i) free(fai->name[i]);
 	free(fai->name);
 	kh_destroy(s, fai->hash);

@@ -49,37 +49,61 @@ ConvertToSQLiteDialog::ConvertToSQLiteDialog(const GUrl& _sourceUrl, BAMInfo& _b
     this->setObjectName(tr("Import BAM file"));
 
     connect(ui.bamInfoButton, SIGNAL(clicked()), SLOT(sl_bamInfoButtonClicked()));
+    connect(ui.refUrlButton, SIGNAL(clicked()), SLOT(sl_refUrlButtonClicked()));
     connect(ui.selectAllToolButton, SIGNAL(clicked()), SLOT(sl_selectAll()));
     connect(ui.selectNoneToolButton, SIGNAL(clicked()), SLOT(sl_unselectAll()));
     connect(ui.inverseSelectionToolButton, SIGNAL(clicked()), SLOT(sl_inverseSelection()));
     ui.indexNotAvailableLabel->setVisible(sam ? false : !bamInfo.hasIndex());
-    
-    ui.tableWidget->setColumnCount(3);
-    ui.tableWidget->setRowCount(bamInfo.getHeader().getReferences().count());
-    QStringList header; header << BAMDbiPlugin::tr("Assembly name") << BAMDbiPlugin::tr("Length") << BAMDbiPlugin::tr("URI");
-    ui.tableWidget->setHorizontalHeaderLabels(header);
-    ui.tableWidget->horizontalHeader()->setStretchLastSection(true);    
-    {
-        int i = 0;
-        foreach(const Header::Reference& ref, bamInfo.getHeader().getReferences()) {
-            QTableWidgetItem* checkbox = new QTableWidgetItem();
-            checkbox->setFlags(Qt::ItemIsUserCheckable | Qt::ItemIsEnabled);            
-            checkbox->setText(ref.getName());
-            ui.tableWidget->setItem(i, 0, checkbox);
-            QTableWidgetItem* item = new QTableWidgetItem(FormatUtils::formatNumberWithSeparators(ref.getLength()));
-            item->setFlags(Qt::ItemIsEnabled);
-            ui.tableWidget->setItem(i, 1, item);
-            ui.tableWidget->setCellWidget(i, 2, new QLabel("<a href=\"" + ref.getUri() + "\">" + ref.getUri() + "</a>"));
-            checkbox->setCheckState(Qt::Checked);
-            i++;
+
+    if (sam && bamInfo.getHeader().getReferences().isEmpty()) {
+        hideReferencesTable();
+    } else {
+        hideReferenceUrl();
+        hideReferenceMessage();
+        ui.tableWidget->setColumnCount(3);
+        ui.tableWidget->setRowCount(bamInfo.getHeader().getReferences().count());
+        QStringList header; header << BAMDbiPlugin::tr("Assembly name") << BAMDbiPlugin::tr("Length") << BAMDbiPlugin::tr("URI");
+        ui.tableWidget->setHorizontalHeaderLabels(header);
+        ui.tableWidget->horizontalHeader()->setStretchLastSection(true);    
+        {
+            int i = 0;
+            foreach(const Header::Reference& ref, bamInfo.getHeader().getReferences()) {
+                QTableWidgetItem* checkbox = new QTableWidgetItem();
+                checkbox->setFlags(Qt::ItemIsUserCheckable | Qt::ItemIsEnabled);            
+                checkbox->setText(ref.getName());
+                ui.tableWidget->setItem(i, 0, checkbox);
+                QTableWidgetItem* item = new QTableWidgetItem(FormatUtils::formatNumberWithSeparators(ref.getLength()));
+                item->setFlags(Qt::ItemIsEnabled);
+                ui.tableWidget->setItem(i, 1, item);
+                ui.tableWidget->setCellWidget(i, 2, new QLabel("<a href=\"" + ref.getUri() + "\">" + ref.getUri() + "</a>"));
+                checkbox->setCheckState(Qt::Checked);
+                i++;
+            }
         }
+        ui.tableWidget->verticalHeader()->setDefaultSectionSize(QFontMetrics(QFont()).height() + 5);
     }
-    ui.tableWidget->verticalHeader()->setDefaultSectionSize(QFontMetrics(QFont()).height() + 5);
     ui.importUnmappedBox->setCheckState(bamInfo.isUnmappedSelected() ? Qt::Checked : Qt::Unchecked);
     ui.destinationUrlEdit->setText(sourceUrl.dirPath() + "/" + sourceUrl.fileName() + ".ugenedb");
     ui.sourceUrlView->setText(QDir::cleanPath(sourceUrl.getURLString()));
     ui.okButton->setFocus();
     connect(ui.tableWidget, SIGNAL(itemChanged(QTableWidgetItem*)), SLOT(sl_assemblyCheckChanged(QTableWidgetItem*)));
+    adjustSize();
+    resize(500, height());
+}
+
+void ConvertToSQLiteDialog::hideReferenceUrl() {
+    ui.refUrlLabel->hide();
+    ui.refUrlEdit->hide();
+    ui.refUrlButton->hide();
+}
+
+void ConvertToSQLiteDialog::hideReferencesTable() {
+    ui.selectionButtons->hide();
+    ui.tableWidget->hide();
+}
+
+void ConvertToSQLiteDialog::hideReferenceMessage() {
+    ui.referenceWarningLabel->setVisible(false);
 }
 
 void ConvertToSQLiteDialog::sl_selectAll() {
@@ -195,9 +219,24 @@ void ConvertToSQLiteDialog::sl_bamInfoButtonClicked() {
         }
         dialog.layout()->addWidget(new QLabel(BAMDbiPlugin::tr("Programs:")));
         dialog.layout()->addWidget(table);
-    }        
+    }
     dialog.resize(qMin(600, QApplication::desktop()->screenGeometry().width()), dialog.sizeHint().height());
     dialog.exec();
+}
+
+void ConvertToSQLiteDialog::sl_refUrlButtonClicked() {
+    GUrl currentUrl = ui.refUrlEdit->text();
+    if (ui.refUrlEdit->text().isEmpty()) {
+        currentUrl = sourceUrl;
+    } else {
+        currentUrl = ui.refUrlEdit->text();
+    }
+    QString dir = currentUrl.dirPath() + "/" + currentUrl.baseFileName();
+    QString value = QFileDialog::getOpenFileName(this, QObject::tr("Reference File"), dir);
+    if(!value.isEmpty()) {
+        ui.refUrlEdit->setText(value);
+        hideReferenceMessage();
+    }
 }
 
 void ConvertToSQLiteDialog::sl_assemblyCheckChanged(QTableWidgetItem * item) {
@@ -208,12 +247,42 @@ const GUrl &ConvertToSQLiteDialog::getDestinationUrl()const {
     return destinationUrl;
 }
 
+QString ConvertToSQLiteDialog::getReferenceUrl()const {
+    return ui.refUrlEdit->text();
+}
+
 bool ConvertToSQLiteDialog::addToProject() const {
     return ui.addToProjectBox->isChecked();
 }
 
 void ConvertToSQLiteDialog::hideAddToProjectOption() {
     ui.addToProjectBox->hide();
+}
+
+bool ConvertToSQLiteDialog::referenceFromFile() {
+    return ui.refUrlEdit->isVisible();
+}
+
+bool ConvertToSQLiteDialog::checkReferencesState() {
+    if (referenceFromFile()) {
+        if (ui.refUrlEdit->text().isEmpty()) {
+            QMessageBox::critical(this, windowTitle(), BAMDbiPlugin::tr("Please select the file with the reference sequence"));
+            return false;
+        }
+    } else {
+        bool selected = false;
+        foreach(const bool& i, bamInfo.getSelected()) {
+            if(i) {
+                selected = true;
+                break;
+            }
+        }
+        if(!selected && !bamInfo.isUnmappedSelected()) {
+            QMessageBox::critical(this, windowTitle(), BAMDbiPlugin::tr("Please select assemblies to be imported"));
+            return false;
+        }
+    }
+    return true;
 }
 
 void ConvertToSQLiteDialog::accept() {
@@ -240,18 +309,10 @@ void ConvertToSQLiteDialog::accept() {
         
 
     }else{
-        bool selected = false;
-        foreach(const bool& i, bamInfo.getSelected()) {
-            if(i) {
-                selected = true;
-                break;
-            }
-        }
-        if(!selected && !bamInfo.isUnmappedSelected()) {
-            QMessageBox::critical(this, windowTitle(), BAMDbiPlugin::tr("Please select assemblies to be imported"));
+        if (!checkReferencesState()) {
             return;
         }
-        
+
         Project * prj = AppContext::getProject();
         if(prj != NULL) {
             Document * destDoc = prj->findDocumentByURL(destinationUrl);

@@ -39,6 +39,7 @@ public:
     ConvertToSQLiteDialog(const GUrl& sourceUrl, BAMInfo& bamInfo, bool sam);
 
     const GUrl &getDestinationUrl()const;
+    QString getReferenceUrl()const;
     bool        addToProject() const;
     void        hideAddToProjectOption();
 public slots:
@@ -48,9 +49,17 @@ private slots:
     void on_destinationUrlButton_clicked();
     void sl_assemblyCheckChanged(QTableWidgetItem * item);
     void sl_bamInfoButtonClicked();
+    void sl_refUrlButtonClicked();
     void sl_selectAll();
     void sl_unselectAll();
     void sl_inverseSelection();
+
+private:
+    void hideReferenceUrl();
+    void hideReferencesTable();
+    void hideReferenceMessage();
+    bool referenceFromFile();
+    bool checkReferencesState();
 
 private:
     Ui::ConvertToSQLiteDialog ui;

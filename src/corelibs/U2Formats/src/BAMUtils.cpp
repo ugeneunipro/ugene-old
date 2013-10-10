@@ -59,7 +59,7 @@ static void closeFiles(samfile_t *in, samfile_t *out) {
     }
 }
 
-BAMUtils::ConvertOption::ConvertOption(bool samToBam, GUrl referenceUrl)
+BAMUtils::ConvertOption::ConvertOption(bool samToBam, const QString &referenceUrl)
 : samToBam(samToBam), referenceUrl(referenceUrl)
 {
 
@@ -80,7 +80,7 @@ void BAMUtils::convertToSamOrBam(const GUrl &samUrl, const GUrl &bamUrl, const C
         QByteArray readMode = ( options.samToBam ) ? "r" : "rb";
         void *aux = NULL;
         if (options.samToBam && !options.referenceUrl.isEmpty()) {
-            aux = samfaipath(options.referenceUrl.getURLString().toLocal8Bit().constData());
+            aux = samfaipath(options.referenceUrl.toLocal8Bit().constData());
         }
         in = samopen(sourceName.constData(), readMode, aux);
         if (NULL == in) {

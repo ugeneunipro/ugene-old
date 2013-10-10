@@ -34,9 +34,9 @@ class U2FORMATS_EXPORT BAMUtils : public QObject {
 public:
     class U2FORMATS_EXPORT ConvertOption {
     public:
-        ConvertOption(bool samToBam, GUrl referenceUrl = GUrl());
+        ConvertOption(bool samToBam, const QString &referenceUrl = "");
         bool samToBam;
-        GUrl referenceUrl;
+        QString referenceUrl;
     };
     /**
      * Returns the url to the output BAM or SAM file
