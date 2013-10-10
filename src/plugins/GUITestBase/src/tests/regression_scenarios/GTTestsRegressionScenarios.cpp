@@ -1903,6 +1903,43 @@ GUI_TEST_CLASS_DEFINITION( test_2174 ) {
     CHECK_SET_ERR( warningText.startsWith("Warning"), "No warning message found");
 }
 
+GUI_TEST_CLASS_DEFINITION( test_2186 ) {
+//    1. Open file _common_data/fasta/amino_multy.fa
+    GTUtilsDialog::waitForDialog(os, new SequenceReadingModeSelectorDialogFiller(os, SequenceReadingModeSelectorDialogFiller::Separate));
+    GTFileDialog::openFile( os, testDir + "_common_data/fasta/", "amino_multy.fa");
+    GTGlobals::sleep(500);
+//    2. Open the DAS widget on the options panel
+    GTWidget::click(os,GTWidget::findWidget(os,"ADV_single_sequence_widget_0"));
+    GTWidget::click(os,GTWidget::findWidget(os, "OP_DAS"));
+    GTGlobals::sleep(500);
+//    3. Select first sequence, select region 1-100
+    GTRegionSelector::RegionSelectorSettings regionSelectorSettings(1, 100);
+    RegionSelector *regionSelector = qobject_cast<RegionSelector*>(GTWidget::findWidget(os, "range_selector"));
+    GTRegionSelector::setRegion(os, regionSelector, regionSelectorSettings);
+
+    GTKeyboardDriver::keyClick( os, GTKeyboardDriver::key["enter"] );
+    GTGlobals::sleep( 200 );
+//    4. Click fetch IDs
+    GTWidget::click( os, GTWidget::findWidget( os, "searchIdsButton" ) );
+    TaskScheduler* scheduller = AppContext::getTaskScheduler();
+    while(!scheduller->getTopLevelTasks().isEmpty()){
+        GTGlobals::sleep();
+    }
+//    Expected state:2 IDs are found
+    GTGlobals::sleep();
+    QTableWidget* idList = qobject_cast<QTableWidget*>(GTWidget::findWidget(os, "idList"));
+    CHECK_SET_ERR(idList,"idList widget not found");
+    CHECK_SET_ERR(idList->rowCount()==2,QString("idList contains %1 rows, expected 2").arg(idList->rowCount()));
+
+//    5. select second sequence
+    GTWidget::click(os,GTWidget::findWidget(os,"ADV_single_sequence_widget_1"));
+    GTGlobals::sleep(500);
+//    Expected state: IDs table on option panel cleared
+     CHECK_SET_ERR(idList->rowCount()==0,QString("idList contains %1 rows, expected 0").arg(idList->rowCount()));
+
+
+}
+
 } // GUITest_regression_scenarios namespace
 
 } // U2 namespace
