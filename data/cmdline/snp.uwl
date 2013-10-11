@@ -6,7 +6,7 @@
 workflow "Call variants with SAMtools"{
 
     read-assembly {
-        type:read-assembly;
+        type:get-file-list;
         name:"Read Assembly (BAM/SAM)";
         url-in {
             dataset:Dataset;
@@ -31,26 +31,33 @@ workflow "Call variants with SAMtools"{
     }
     files-conversion-1 {
         type:files-conversion;
-        name:"File conversion";
+        name:"To FASTA";
         document-format:fasta;
+    }
+    files-conversion-2 {
+        type:files-conversion;
+        name:"To BAM";
+        document-format:bam;
     }
 
 
     .actor-bindings {
         call_variants.out-variations->write-variations.in-variations
         read-sequence.out-url->files-conversion-1.in-file
-        read-assembly.out-assembly->call_variants.in-assembly
+        read-assembly.out-url->files-conversion-2.in-file
+        files-conversion-2.out-file->call_variants.in-assembly
         files-conversion-1.out-file->call_variants.in-sequence
     }
 
     call_variants.variation-track->write-variations.in-variations.variation-track
-    read-assembly.assembly->call_variants.in-assembly.assembly
-    read-assembly.url->call_variants.in-assembly.url
+    read-assembly.dataset->call_variants.in-assembly.dataset
+    files-conversion-2.url->call_variants.in-assembly.url
     files-conversion-1.url->call_variants.in-sequence.url
     read-sequence.url->files-conversion-1.in-file.url
+    read-assembly.url->files-conversion-2.in-file.url
 
     .meta {
-        parameter-aliases {
+    parameter-aliases {
             read-assembly.url-in {
                 alias:bam;
                 description:"Input sorted BAM file(s)";
@@ -234,33 +241,40 @@ workflow "Call variants with SAMtools"{
         }
         visual {
             call_variants {
-                pos:"-450 -480";
+                pos:"-460 -495";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 in-assembly.angle:150;
-                in-sequence.angle:210;
+                in-sequence.angle:207.181;
                 out-variations.angle:360;
             }
             files-conversion-1 {
-                pos:"-600 -435";
+                pos:"-587 -456";
                 style:simple;
-                in-file.angle:198.435;
+                in-file.angle:196.858;
                 out-file.angle:15.3885;
             }
-            read-assembly {
-                pos:"-780 -540";
-                style:ext;
-                bg-color-ext:"0 128 128 64";
-                out-assembly.angle:360;
+            files-conversion-2 {
+                pos:"-590 -532";
+                style:simple;
+                in-file.angle:170.538;
+                out-file.angle:343.856;
             }
-            read-sequence {
-                pos:"-780 -405";
+            read-assembly {
+                pos:"-801 -554";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 out-url.angle:360;
             }
+            read-sequence {
+                pos:"-801 -419";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                bounds:"-30 -30 71.25 84";
+                out-url.angle:360;
+            }
             write-variations {
-                pos:"-135 -480";
+                pos:"-156 -495";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 in-variations.angle:180;
@@ -269,14 +283,42 @@ workflow "Call variants with SAMtools"{
                 text-pos:"-49 -43";
             }
             files-conversion-1.out-file->call_variants.in-sequence {
-                text-pos:"-19 -28";
+                text-pos:"-19 -31";
             }
-            read-assembly.out-assembly->call_variants.in-assembly {
-                text-pos:"-26.5 -24";
+            files-conversion-2.out-file->call_variants.in-assembly {
+                text-pos:"-12 -24";
+            }
+            read-assembly.out-url->files-conversion-2.in-file {
+                text-pos:"-31 -24";
             }
             read-sequence.out-url->files-conversion-1.in-file {
-                text-pos:"-29 -32";
+                text-pos:"-31 -24";
             }
+        }
+        estimations {
+function samtoolsTime(bam, ref) {
+                return (ref/236) * (25*bam + 4);
+            }
+			function samtoolsRAM(bam, ref) {
+                return (ref + 50);
+            }
+            var bamSets = utils.attributeValue("read-assembly.url-in");
+			var refSets = utils.attributeValue("read-sequence.url-in");
+            var time = 0;
+            var ram = 0;
+            for (var i=0; i<bamSets.length; i++) {
+                var bamSet = bamSets[i];
+                var bam = 0; // size of bams in Mb
+                for (var j=0; j<bamSet.length; j++) {
+                    var url = bamSet[j];
+                    bam += utils.fileSize(url) / (1024*1024);
+                }
+				var refUrl = refSets[i][0];
+				var ref = utils.fileSize(refUrl) / (1024*1024);  // size of ref in Mb
+                time += samtoolsTime(bam, ref);
+                ram += samtoolsRAM(bam, ref);
+            }
+            [time, ram];
         }
         wizard {
             name:"Call Variants Wizard";
@@ -287,12 +329,13 @@ workflow "Call variants with SAMtools"{
                 parameters-area {
                     group {
                         title:"Input files";
-                        label-size:120;
-                        read-sequence.url-in {
-                            label:"Reference sequence file";
-                        }
-                        read-assembly.url-in {
-                            label:"BAM/SAM file";
+                        lineedit-and-dataset {
+                            read-sequence.url-in {
+                                label:"Reference sequence file";
+                            }
+                            read-assembly.url-in {
+                                label:"BAM/SAM file";
+                            }
                         }
                     }
                 }
