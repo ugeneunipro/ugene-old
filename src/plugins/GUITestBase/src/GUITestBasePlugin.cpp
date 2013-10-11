@@ -52,6 +52,7 @@
 #include "tests/common_scenarios/options_panel/GTTestsOptionPanel.h"
 #include "tests/common_scenarios/dp_view/GTTestsDpView.h"
 #include "tests/common_scenarios/Assembling/Assembly_browser/GTTestsAssemblyBrowser.h"
+#include "tests/common_scenarios/Assembling/bowtie2/GTTestsBowtie2.h"
 #include "tests/common_scenarios/Query_Designer/GTTestsQuerryDesigner.h"
 #include "tests/common_scenarios/workflow_designer/GTTestsWorkflowDesigner.h"
 #include "tests/common_scenarios/tree_viewer/GTTestsCommonScenariousTreeviewer.h"
@@ -822,6 +823,11 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_Assembly_browser::test_0001);
     REGISTER_TEST(GUITest_Assembly_browser::test_0002);
     REGISTER_TEST(GUITest_Assembly_browser::test_0004);
+
+/////////////////////////////////////////////////////////////////////////
+// Common scenarios/Assembling/bowtie2
+/////////////////////////////////////////////////////////////////////////
+    REGISTER_TEST(GUITest_Bowtie2::test_0005);
 
 /////////////////////////////////////////////////////////////////////////
 // Common scenarios/Query designer

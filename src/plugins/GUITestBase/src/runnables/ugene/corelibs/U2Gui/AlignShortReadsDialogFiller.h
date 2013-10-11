@@ -29,18 +29,31 @@ namespace U2 {
 
     class AlignShortReadsFiller : public Filler {
     public:
-        AlignShortReadsFiller(U2OpStatus &_os, const QString &_path, const QString &_FileName,
-                              const QString &_path1, const QString &_FileName1, bool _samBox=false) :
-            Filler(_os, "AssemblyToRefDialog"),
-            path(_path),
-            fileName(_FileName),
-            path1(_path1),
-            fileName1(_FileName1),
-            samBox(_samBox){}
+        AlignShortReadsFiller(U2OpStatus &os,
+            const QString &path,
+            const QString &FileName,
+            const QString &path1,
+            const QString &FileName1,
+            bool samBox = true,
+            bool prebuilt = false,
+            const QString &method = "UGENE Genome Aligner") :
+            Filler(os, "AssemblyToRefDialog"),
+            path(path),
+            fileName(FileName),
+            path1(path1),
+            fileName1(FileName1),
+            method(method),
+            samBox(samBox),
+            prebuilt(prebuilt){}
         virtual void run();
     private:
-        const QString path, fileName, path1, fileName1;
+        QString path;
+        QString fileName;
+        QString path1;
+        QString fileName1;
+        QString method;
         bool samBox;
+        bool prebuilt;
     };
 }
 

@@ -40,7 +40,7 @@ void AlignShortReadsFiller::run() {
 
     QComboBox* methodNamesBox = dialog->findChild<QComboBox*>("methodNamesBox");
     for(int i=0; i<methodNamesBox->count();i++){
-        if(methodNamesBox->itemText(i)=="UGENE Genome Aligner"){
+        if(methodNamesBox->itemText(i)==method){
             GTComboBox::setCurrentIndex(os,methodNamesBox,i);
         }
     }
@@ -53,7 +53,13 @@ void AlignShortReadsFiller::run() {
     GTUtilsDialog::waitForDialog(os, ob1);
     GTWidget::click(os, GTWidget::findWidget(os, "addShortreadsButton", dialog));
 
-    GTCheckBox::setChecked(os,dialog->findChild<QCheckBox*>("samBox"),true);
+    GTCheckBox::setChecked(os,dialog->findChild<QCheckBox*>("prebuiltIndexCheckBox"),prebuilt);
+
+    QCheckBox *samCheckBox = dialog->findChild<QCheckBox*>("samBox");
+    GT_CHECK(samCheckBox, "samBox is NULL");
+    if (samCheckBox->isEnabled()) {
+        GTCheckBox::setChecked(os,dialog->findChild<QCheckBox*>("samBox"),samBox);
+    }
     GTGlobals::sleep(500);
     GTWidget::click(os, GTWidget::findWidget(os, "assembleyButton", dialog));
 
