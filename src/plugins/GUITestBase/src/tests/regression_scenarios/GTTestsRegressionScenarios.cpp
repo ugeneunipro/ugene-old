@@ -1989,6 +1989,50 @@ GUI_TEST_CLASS_DEFINITION( test_2186 ) {
 
 }
 
+GUI_TEST_CLASS_DEFINITION( test_2188 ) {
+    class Helper {
+    public:
+        Helper(const QString &dataDir, const QString &testDir, U2OpStatus &os) {
+            dir = testDir + "_common_data/scenarios/sandbox/";
+            fileName = "regression_test_2188.fa";
+            url = dir + fileName;
+            bool copied = QFile::copy(dataDir + "samples/FASTA/human_T1.fa", url);
+            if (!copied) {
+                os.setError("Can not copy the file");
+                url = "";
+            }
+        }
+
+        QString url;
+        QString dir;
+        QString fileName;
+    };
+
+    // 1. Open the file "data/samples/FASTA/human_T1.fa"
+    Helper helper(dataDir, testDir, os);
+    CHECK_OP(os, );
+    GTFileDialog::openFile( os, helper.dir, helper.fileName );
+    GTGlobals::sleep(500);
+
+    // 2. At the same time open the file with a text editor
+    // 3. Change something and save
+    // Expected state: Dialog suggesting file to reload has appeared in UGENE
+    // 4. Press "Yes to All" button
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Yes));
+    QFile file(helper.url);
+    bool opened = file.open(QIODevice::Append);
+    CHECK_SET_ERR(opened, "Can not open the file for writing");
+    qint64 writed = file.write("AAAAAAAAAA");
+    CHECK_SET_ERR(10 == writed, "Can not write to the file");
+    file.close();
+    GTGlobals::sleep(6000);
+
+    // Expected state: All the sequences were reloaded and displayed correctly in sequence view
+    int length = GTUtilsSequenceView::getLengthOfSequence(os);
+    CHECK_OP(os, );
+    CHECK_SET_ERR(199960 == length, "The file lenght is wrong");
+}
+
 } // GUITest_regression_scenarios namespace
 
 } // U2 namespace
