@@ -584,18 +584,17 @@ int MAlignmentObject::shiftRegion( int startPos, int startRow, int nBases, int n
 bool MAlignmentObject::isRegionEmpty(int startPos, int startRow, int numChars, int numRows) const
 {
     MAlignment msa = getMAlignment();
-    bool emptyBlock = true;
-    for (int row = startRow; row < startRow + numRows; ++row ) {
+    bool isBlockEmpty = true;
+    for (int row = startRow; row < startRow + numRows && isBlockEmpty; ++row ) {
         for( int pos = startPos; pos < startPos + numChars; ++pos ) {
             const MAlignmentRow& r = msa.getRows().at(row);
             if (r.charAt(pos) != MAlignment_GapChar) {
-                emptyBlock = false;
+                isBlockEmpty = false;
                 break;
             }
         }
     }
-
-    return emptyBlock;
+    return isBlockEmpty;
 }
 
 DNAAlphabet* MAlignmentObject::getAlphabet() const {

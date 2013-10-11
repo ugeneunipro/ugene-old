@@ -1992,8 +1992,6 @@ void MSAEditorSequenceArea::sl_copyCurrentSelection()
         }
     }    
     QApplication::clipboard()->setText(selText);
-        
-    
 }
 
 bool MSAEditorSequenceArea::shiftSelectedRegion( int shift ) {
@@ -2014,9 +2012,19 @@ bool MSAEditorSequenceArea::shiftSelectedRegion( int shift ) {
 
         const int resultShift = maObj->shiftRegion( x, y, width, height, shift );
         if ( 0 != resultShift ) {
-            int newCursorPosX = cursorPos.x() + resultShift >= 0 ? cursorPos.x() + resultShift : 0;
-            setCursorPos(newCursorPosX);
-            const MSAEditorSelection newSelection( x + resultShift, y, width, height );
+            int newCursorPosX = cursorPos.x( ) + resultShift >= 0
+                ? cursorPos.x( ) + resultShift : 0;
+            setCursorPos( newCursorPosX );
+
+            MSACollapsibleItemModel* collapseModel = ui->getCollapseModel( );
+            const int selectionTop = collapseModel->rowToMap( y );
+            SAFE_POINT( -1 != selectionTop, "Unexpected selection area", true );
+            const int selectionBottom = collapseModel->rowToMap( y + height - 1 );
+            SAFE_POINT( -1 != selectionBottom && selectionBottom >= selectionTop,
+                "Unexpected selection area", true );
+
+            const MSAEditorSelection newSelection( x + resultShift, selectionTop, width,
+                selectionBottom - selectionTop + 1 );
             setSelection( newSelection );
             return true;
         } else {
