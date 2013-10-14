@@ -22,6 +22,9 @@
 #include "GTUtilsDialog.h"
 
 #include "api/GTMenu.h"
+#include "api/GTAction.h"
+#include "api/GTWidget.h"
+#include "api/GTGlobals.h"
 #include "runnables/ugene/corelibs/U2Gui/AlignShortReadsDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/ImportBAMFileDialogFiller.h"
 
@@ -40,10 +43,12 @@ GUI_TEST_CLASS_DEFINITION(test_0003) {
     GTFileDialog::openFile(os, testDir + "_common_data/sam/", "out.sam");
 
     QWidget* dialog = QApplication::activeModalWidget();
-    GT_CHECK(dialog, "activeModalWidget is NULL");
+    CHECK_SET_ERR(dialog, "activeModalWidget is NULL");
 
     //QLineEdit *sourceUrl = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "sourceUrlView", dialog));
     //GTLineEdit::setText(os, sourceUrl, sourceUrlView);
+
+   // GTUtilsDialog::waitForDialog(os, "Import BAM file");
 
     GTWidget::click(os,GTWidget::findWidget(os,"refUrlButton"));
     GTFileDialog::openFile(os, testDir + "_common_data/bam/", "small.bam.sorted.bam.bai");
