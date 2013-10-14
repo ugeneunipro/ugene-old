@@ -144,7 +144,7 @@ void MACSWorker::cleanup() {
 
 void MACSWorker::sl_taskFinished() {
     MACSTask *t = dynamic_cast<MACSTask*>(sender());
-    if (!t->isFinished() || t->hasError()) {
+    if (!t->isFinished() || t->hasError() || t->isCanceled()) {
         return;
     }
 

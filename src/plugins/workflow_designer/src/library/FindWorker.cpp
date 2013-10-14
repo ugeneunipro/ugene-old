@@ -455,6 +455,9 @@ void FindWorker::sl_taskFinished(Task* t) {
     foreach(Task * sub, subs) {
         FindAlgorithmTask * findTask = qobject_cast<FindAlgorithmTask*>(sub);
         if(findTask != NULL){
+            if (findTask->isCanceled() || findTask->hasError()){
+                return;
+            }
             //parameters pattern
             if ( !filePatterns.contains( sub ) ) {
                 annData << findTask->popResults( );

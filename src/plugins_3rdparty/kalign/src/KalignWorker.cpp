@@ -179,6 +179,10 @@ void KalignWorker::sl_taskFinished() {
         return;
     }
 
+    if (t->isCanceled()) {
+        return;
+    }
+
     SAFE_POINT(NULL != output, "NULL output!", );
     send(t->resultMA);
     algoLog.info(tr("Aligned %1 with Kalign").arg(t->resultMA.getName()));

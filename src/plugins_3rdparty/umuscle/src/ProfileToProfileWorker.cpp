@@ -151,6 +151,10 @@ QList<Task*> ProfileToProfileTask::onSubTaskFinished(Task *subTask) {
         return tasks;
     }
 
+    if(subTask->isCanceled()) {
+        return tasks;
+    }
+
     appendResult(subTask);
     tasks << createAlignTasks();
 

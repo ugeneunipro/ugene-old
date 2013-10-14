@@ -276,6 +276,9 @@ void ClustalWWorker::sl_taskFinished() {
     NoFailTaskWrapper *wrapper = qobject_cast<NoFailTaskWrapper*>(sender());
     CHECK(wrapper->isFinished(), );
     ClustalWSupportTask* t = qobject_cast<ClustalWSupportTask*>(wrapper->originalTask());
+    if (t->isCanceled()){
+        return;
+    }
     if (t->hasError()) {
         coreLog.error(t->getError());
         return;

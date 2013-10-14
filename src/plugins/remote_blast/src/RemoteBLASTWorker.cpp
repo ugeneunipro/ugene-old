@@ -245,7 +245,7 @@ Task* RemoteBLASTWorker::tick() {
 
 void RemoteBLASTWorker::sl_taskFinished() {
     RemoteBLASTTask * t = qobject_cast<RemoteBLASTTask*>(sender());
-    if (t->getState() != Task::State_Finished || t->hasError()) {
+    if (t->getState() != Task::State_Finished || t->hasError() || t->isCanceled()) {
         return;
     }
 

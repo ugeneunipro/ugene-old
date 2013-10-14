@@ -124,7 +124,7 @@ void ConservationPlotWorker::cleanup() {
 
 void ConservationPlotWorker::sl_taskFinished() {
     ConservationPlotTask *t = dynamic_cast<ConservationPlotTask*>(sender());
-    if (!t->isFinished() || t->hasError()) {
+    if (!t->isFinished() || t->hasError() || t->isCanceled()) {
         return;
     }
 

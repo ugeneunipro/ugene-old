@@ -79,6 +79,10 @@ void GffreadWorker::sl_taskFinished() {
     GffreadSupportTask *t = dynamic_cast<GffreadSupportTask*>(sender());
     CHECK(t->isFinished() && !t->hasError(), );
 
+    if(t->isCanceled()){
+        return;
+    }
+
     sendResult(t->result());
     monitor()->addOutputFile(t->result(), getActorId());
 }

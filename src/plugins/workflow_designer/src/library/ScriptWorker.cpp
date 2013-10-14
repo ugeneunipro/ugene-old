@@ -238,7 +238,7 @@ Task * ScriptWorker::tick() {
 void ScriptWorker::sl_taskFinished() {
     taskFinished = true;
     ScriptWorkerTask *t = qobject_cast<ScriptWorkerTask*>(sender());
-    if (t->getState() != Task::State_Finished || t->hasError()) {
+    if (t->getState() != Task::State_Finished || t->hasError() || t->isCanceled()) {
         return;
     }
 

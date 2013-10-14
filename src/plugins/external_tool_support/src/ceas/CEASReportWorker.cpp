@@ -98,7 +98,7 @@ void CEASReportWorker::cleanup() {
 
 void CEASReportWorker::sl_taskFinished() {
     CEASSupportTask *t = dynamic_cast<CEASSupportTask*>(sender());
-    if (!t->isFinished() || t->hasError()) {
+    if (!t->isFinished() || t->hasError() || t->isCanceled()) {
         return;
     }
 

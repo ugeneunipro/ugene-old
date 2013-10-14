@@ -113,7 +113,7 @@ void SeqPosWorker::cleanup() {
 
 void SeqPosWorker::sl_taskFinished() {
     SeqPosTask *t = dynamic_cast<SeqPosTask*>(sender());
-    if (!t->isFinished() || t->hasError()) {
+    if (!t->isFinished() || t->hasError() || t->isCanceled()) {
         return;
     }
     

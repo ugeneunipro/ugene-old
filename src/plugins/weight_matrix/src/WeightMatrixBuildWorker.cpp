@@ -154,7 +154,9 @@ Task* PWMatrixBuildWorker::tick() {
 
 void PWMatrixBuildWorker::sl_taskFinished() {
     PWMatrixBuildTask* t = qobject_cast<PWMatrixBuildTask*>(sender());
-    if (t->getState() != Task::State_Finished) return;
+    if (t->getState() != Task::State_Finished || t->isCanceled() || t->hasError()){
+        return;
+    }
     PWMatrix model = t->getResult();
     QVariant v = qVariantFromValue<PWMatrix>(model);
     output->put(Message(mtype, v));
@@ -242,7 +244,9 @@ Task* PFMatrixBuildWorker::tick() {
 
 void PFMatrixBuildWorker::sl_taskFinished() {
     PFMatrixBuildTask* t = qobject_cast<PFMatrixBuildTask*>(sender());
-    if (t->getState() != Task::State_Finished) return;
+    if (t->getState() != Task::State_Finished || t->isCanceled() || t->hasError()){
+        return;
+    }
     PFMatrix model = t->getResult();
     QVariant v = qVariantFromValue<PFMatrix>(model);
     output->put(Message(mtype, v));
@@ -341,7 +345,9 @@ Task* PFMatrixConvertWorker::tick() {
 
 void PFMatrixConvertWorker::sl_taskFinished() {
     PWMatrixBuildTask* t = qobject_cast<PWMatrixBuildTask*>(sender());
-    if (t->getState() != Task::State_Finished) return;
+    if (t->getState() != Task::State_Finished || t->isCanceled() || t->hasError()){
+        return;
+    }
     PWMatrix model = t->getResult();
     QVariant v = qVariantFromValue<PWMatrix>(model);
     output->put(Message(mtype, v));

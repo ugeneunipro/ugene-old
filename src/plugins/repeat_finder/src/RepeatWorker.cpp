@@ -281,7 +281,9 @@ Task* RepeatWorker::tick() {
 
 void RepeatWorker::sl_taskFinished() {
     FindRepeatsToAnnotationsTask* t = qobject_cast<FindRepeatsToAnnotationsTask*>(sender());
-    if (t->getState() != Task::State_Finished || t->hasError()) return;
+    if (t->getState() != Task::State_Finished || t->hasError() || t->isCanceled()){
+        return;
+    }
     if (output) {
         const QList<SharedAnnotationData>& res = t->importAnnotations();
         QVariant v = qVariantFromValue<QList<SharedAnnotationData> >(res);

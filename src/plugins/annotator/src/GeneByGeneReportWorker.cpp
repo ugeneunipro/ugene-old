@@ -122,7 +122,7 @@ void GeneByGeneReportWorker::cleanup() {
 
 void GeneByGeneReportWorker::sl_taskFinished() {
     GeneByGeneReportTask *t = dynamic_cast<GeneByGeneReportTask*>(sender());
-    if (!t->isFinished() || t->hasError()) {
+    if (!t->isFinished() || t->hasError() || t->isCanceled()) {
         return;
     }
 

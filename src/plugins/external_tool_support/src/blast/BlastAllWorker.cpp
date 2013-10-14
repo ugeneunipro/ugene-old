@@ -412,7 +412,9 @@ Task* BlastAllWorker::tick() {
 
 void BlastAllWorker::sl_taskFinished() {
     BlastAllSupportTask* t = qobject_cast<BlastAllSupportTask*>(sender());
-    if (t->getState() != Task::State_Finished) return;
+    if (t->getState() != Task::State_Finished || t->isCanceled() || t->hasError()){
+        return;
+    }
 
     if(output) {
         QList<SharedAnnotationData> res = t->getResultedAnnotations();

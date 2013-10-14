@@ -147,8 +147,7 @@ void RemoteDBFetcherWorker::sl_taskFinished() {
     LoadRemoteDocumentTask *loadTask = qobject_cast<LoadRemoteDocumentTask*>(sender());
     assert(loadTask);
 
-    if (loadTask->getState() != Task::State_Finished)
-    {
+    if (loadTask->getState() != Task::State_Finished || loadTask->isCanceled() || loadTask->hasError()) {
         return;
     }
 
@@ -368,8 +367,7 @@ void FetchSequenceByIdFromAnnotationWorker::sl_taskFinished() {
     LoadRemoteDocumentTask *loadTask = qobject_cast<LoadRemoteDocumentTask*>(sender());
     assert(loadTask);
 
-    if (loadTask->getState() != Task::State_Finished)
-    {
+    if (loadTask->getState() != Task::State_Finished || loadTask->isCanceled() || loadTask->hasError()) {
         return;
     }
 

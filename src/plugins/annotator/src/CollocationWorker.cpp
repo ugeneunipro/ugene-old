@@ -245,7 +245,9 @@ Task* CollocationWorker::tick() {
 
 void CollocationWorker::sl_taskFinished() {
     CollocationSearchTask* t = qobject_cast<CollocationSearchTask*>(sender());
-    if (t->getState() != Task::State_Finished) return;
+    if (t->getState() != Task::State_Finished || t->isCanceled() || t->hasError()){
+        return;
+    }
     QList<SharedAnnotationData> list = t->popResultAnnotations();
     if (output) {
         QVariant v = qVariantFromValue<QList<SharedAnnotationData> >(list);

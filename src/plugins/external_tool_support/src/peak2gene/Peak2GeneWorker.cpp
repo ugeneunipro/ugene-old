@@ -120,7 +120,7 @@ void Peak2GeneWorker::cleanup() {
 
 void Peak2GeneWorker::sl_taskFinished() {
     Peak2GeneTask *t = dynamic_cast<Peak2GeneTask*>(sender());
-    if (!t->isFinished() || t->hasError()) {
+    if (!t->isFinished() || t->hasError() || t->isCanceled()) {
         return;
     }
 

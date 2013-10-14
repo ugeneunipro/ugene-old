@@ -48,7 +48,7 @@ public:
     virtual Task* tick();
     virtual void cleanup();
 private slots:
-    void sl_taskFinished();
+    void sl_taskFinished(Task *t);
 private:
     IntegralBus *input, *output;
     QList<SharedAnnotationData> inputAnns;

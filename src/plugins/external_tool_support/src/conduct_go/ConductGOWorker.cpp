@@ -106,7 +106,7 @@ void ConductGOWorker::cleanup() {
 
 void ConductGOWorker::sl_taskFinished() {
     ConductGOTask *t = dynamic_cast<ConductGOTask*>(sender());
-    if (!t->isFinished() || t->hasError()) {
+    if (!t->isFinished() || t->hasError() || t->isCanceled()) {
         return;
     }
 

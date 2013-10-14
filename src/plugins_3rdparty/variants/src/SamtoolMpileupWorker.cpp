@@ -724,7 +724,9 @@ Task* CallVariantsWorker::tick() {
 
 void CallVariantsWorker::sl_taskFinished() {
     CallVariantsTask* t = qobject_cast<CallVariantsTask*>(sender());
-    if (t->getState() != Task::State_Finished) return;
+    if (t->getState() != Task::State_Finished || t->isCanceled() || t->hasError()){
+        return;
+    }
 
     DataTypePtr mtype = output->getBusType();
     const QList<QVariantMap>& res = t->getResults();

@@ -219,7 +219,7 @@ Task * CuffmergeWorker::tick() {
 
 void CuffmergeWorker::sl_taskFinished() {
     CuffmergeSupportTask *t = dynamic_cast<CuffmergeSupportTask*>(sender());
-    if (!t->isFinished()) {
+    if (!t->isFinished() || t->isCanceled() || t->hasError()) {
         return;
     }
 

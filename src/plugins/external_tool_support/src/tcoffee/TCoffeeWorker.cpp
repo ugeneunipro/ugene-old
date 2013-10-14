@@ -186,6 +186,9 @@ void TCoffeeWorker::sl_taskFinished() {
     NoFailTaskWrapper *wrapper = qobject_cast<NoFailTaskWrapper*>(sender());
     CHECK(wrapper->isFinished(), );
     TCoffeeSupportTask* t = qobject_cast<TCoffeeSupportTask*>(wrapper->originalTask());
+    if (t->isCanceled()) {
+        return;
+    }
     if (t->hasError()) {
         coreLog.error(t->getError());
         return;

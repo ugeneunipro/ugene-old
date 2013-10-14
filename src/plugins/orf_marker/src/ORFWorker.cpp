@@ -291,7 +291,9 @@ Task* ORFWorker::tick() {
 
 void ORFWorker::sl_taskFinished() {
     ORFFindTask* t = qobject_cast<ORFFindTask*>(sender());
-    if (t->getState() != Task::State_Finished) return;
+    if (t->getState() != Task::State_Finished || t->isCanceled() || t->hasError()){
+        return;
+    }
     QList<ORFFindResult> res = t->popResults();
     if (output) {
         QVariant v = qVariantFromValue<QList<SharedAnnotationData> >(ORFFindResult::toTable(res, resultName));

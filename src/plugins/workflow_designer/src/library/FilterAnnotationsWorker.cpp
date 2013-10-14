@@ -69,7 +69,7 @@ Task* FilterAnnotationsWorker::tick() {
         QString namesStr = actor->getParameter( FILTER_NAMES_ATTR )->getAttributeValue<QString>(context);
 
         Task* t = new FilterAnnotationsTask(inputAnns, namesStr, accept);
-        connect(new TaskSignalMapper(t), SIGNAL(si_taskFinished(Task*)), SLOT(sl_taskFinished()));
+        connect(new TaskSignalMapper(t), SIGNAL(si_taskFinished(Task*)), SLOT(sl_taskFinished(Task*)));
         return t;
     } else if (input->isEnded()) {
         setDone();
@@ -78,7 +78,10 @@ Task* FilterAnnotationsWorker::tick() {
     return NULL;
 }
 
-void FilterAnnotationsWorker::sl_taskFinished() {
+void FilterAnnotationsWorker::sl_taskFinished(Task *t) {
+    if(t->isCanceled() || t->hasError() || t->hasError()){
+        return;
+    }
     output->put( Message(BaseTypes::ANNOTATION_TABLE_TYPE(), qVariantFromValue(inputAnns)) );
 }
 

@@ -131,7 +131,9 @@ Task* CAP3Worker::tick() {
 
 void CAP3Worker::sl_taskFinished() {
     CAP3SupportTask* t = qobject_cast<CAP3SupportTask*>(sender());
-    if (t->getState() != Task::State_Finished) return;
+    if (t->getState() != Task::State_Finished || t->isCanceled() || t->hasError()){
+        return;
+    }
 
     MAlignment al = t->getResultAlignment()->getMAlignment();
     SAFE_POINT(NULL != output, "NULL output!", );

@@ -189,6 +189,9 @@ void MAFFTWorker::sl_taskFinished() {
     NoFailTaskWrapper *wrapper = qobject_cast<NoFailTaskWrapper*>(sender());
     CHECK(wrapper->isFinished(), );
     MAFFTSupportTask* t = qobject_cast<MAFFTSupportTask*>(wrapper->originalTask());
+    if(t->isCanceled()){
+        return;
+    }
     if (t->hasError()) {
         coreLog.error(t->getError());
         return;

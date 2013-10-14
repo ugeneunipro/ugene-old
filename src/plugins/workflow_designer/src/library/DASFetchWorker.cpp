@@ -179,13 +179,11 @@ void DASFetcherWorker::sl_taskFinished() {
         return;
     }
 
-    if (loadTask->getState() != Task::State_Finished)
-    {
+    if (loadTask->getState() != Task::State_Finished || loadTask->isCanceled()){
         return;
     }
 
-    if (loadTask->hasError())
-    {
+    if (loadTask->hasError()) {
         loadTask->setError(tr("failed to load item from DAS source : %3").arg(loadTask->getError()));
         return;
     }

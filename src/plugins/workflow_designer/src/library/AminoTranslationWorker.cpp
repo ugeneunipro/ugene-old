@@ -359,7 +359,8 @@ void AminoTranslationWorker::cleanup(){
 
 void AminoTranslationWorker::sl_taskFinished(){
     TranslateSequence2AminoTask* translate2AminoTask = qobject_cast<TranslateSequence2AminoTask*>(sender());
-    if (translate2AminoTask->getState() != Task::State_Finished) {
+    if (translate2AminoTask->getState() != Task::State_Finished ||
+        translate2AminoTask->isCanceled() || translate2AminoTask->hasError()) {
         return;
     }
     
