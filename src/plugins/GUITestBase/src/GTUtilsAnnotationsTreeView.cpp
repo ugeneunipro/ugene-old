@@ -158,6 +158,7 @@ QPoint GTUtilsAnnotationsTreeView::getItemCenter(U2OpStatus &os, const QString &
 
     return GTTreeWidget::getItemCenter(os, item);
 }
+
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME
 

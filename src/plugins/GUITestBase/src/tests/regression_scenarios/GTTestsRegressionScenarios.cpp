@@ -45,9 +45,11 @@
 #include "GTUtilsTaskTreeView.h"
 #include "runnables/ugene/corelibs/U2View/utils_smith_waterman/SmithWatermanDialogBaseFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/EditSequenceDialogFiller.h"
+#include "runnables/ugene/corelibs/U2Gui/EditAnnotationDialogFiller.h"
 #include "runnables/ugene/corelibs/U2View/ov_msa/ConsensusSelectorDialogFiller.h"
 #include "runnables/ugene/plugins/dotplot/DotPlotDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/RangeSelectionDialogFiller.h"
+#include "runnables/ugene/corelibs/U2Gui/FindTandemsDialogFiller.h"
 #include "runnables/qt/PopupChooser.h"
 #include "runnables/ugene/corelibs/U2Gui/AlignShortReadsDialogFiller.h"
 #include "runnables/qt/MessageBoxFiller.h"
@@ -2064,6 +2066,41 @@ GUI_TEST_CLASS_DEFINITION( test_2188 ) {
     int length = GTUtilsSequenceView::getLengthOfSequence(os);
     CHECK_OP(os, );
     CHECK_SET_ERR(199960 == length, "The file lenght is wrong");
+}
+
+GUI_TEST_CLASS_DEFINITION( test_2187 ) {
+    //1. Open "data/samples/FASTA/human_T1.fa"
+    //d:\src\ugene\trunk\test\_common_data\scenarios\_regression\2187\seq.fa
+
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/_regression/2187/", "seq.fa");
+    GTUtilsDocument::checkDocument(os, "seq.fa");
+
+    //2. Open {Actions -> Analyze -> Find tandems...}
+    //3. Click ok
+
+    Runnable * tDialog = new FindTandemsDialogFiller(os, testDir + "_common_data/scenarios/sandbox/result_2187.gb");
+    GTUtilsDialog::waitForDialog(os, tDialog);
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_ANALYSE
+        << "find_tandems_action", GTGlobals::UseMouse));
+    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
+    GTGlobals::sleep();
+
+    QTreeWidget *treeWidget = GTUtilsAnnotationsTreeView::getTreeWidget(os);
+    CHECK_SET_ERR(treeWidget != NULL, "Tree widget is NULL");
+
+    QTreeWidgetItem *annotationsRoot = GTUtilsAnnotationsTreeView::findItem(os, "repeat_unit");
+    GTMouseDriver::moveTo(os, GTTreeWidget::getItemCenter(os, annotationsRoot->child(0)));
+    GTMouseDriver::doubleClick(os);
+
+    Runnable *filler = new EditAnnotationChecker(os, "repeat_unit", "join(251..251,252..252,253..253,254..254,255..255,256..256,257..257,258..258,259..259)");
+    GTUtilsDialog::waitForDialog(os, filler);
+
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["F2"]);
+    GTGlobals::sleep();
+
+    GTUtilsMdi::click(os, GTGlobals::Close);
+    GTMouseDriver::click(os);
 }
 
 } // GUITest_regression_scenarios namespace

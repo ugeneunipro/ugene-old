@@ -35,6 +35,7 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/runnables/ugene/corelibs/U2Gui/EditGroupAnnotationsDialogFiller.h \
             src/runnables/ugene/corelibs/U2Gui/ExportChromatogramFiller.h \
             src/runnables/ugene/corelibs/U2Gui/FindRepeatsDialogFiller.h \
+			src/runnables/ugene/corelibs/U2Gui/FindTandemsDialogFiller.h \
             src/runnables/ugene/corelibs/U2Gui/ImportBAMFileDialogFiller.h \
             src/runnables/ugene/corelibs/U2Gui/AlignShortReadsDialogFiller.h \
             src/runnables/ugene/corelibs/U2Gui/ExportImageDialogFiller.h \
@@ -197,6 +198,7 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/runnables/ugene/corelibs/U2Gui/EditGroupAnnotationsDialogFiller.cpp \
             src/runnables/ugene/corelibs/U2Gui/ExportChromatogramFiller.cpp \
             src/runnables/ugene/corelibs/U2Gui/FindRepeatsDialogFiller.cpp \
+			src/runnables/ugene/corelibs/U2Gui/FindTandemsDialogFiller.cpp \
             src/runnables/ugene/corelibs/U2Gui/AlignShortReadsDialogFiller.cpp \
             src/runnables/ugene/corelibs/U2Gui/ImportBAMFileDialogFiller.cpp \
             src/runnables/ugene/corelibs/U2Gui/ExportImageDialogFiller.cpp \
