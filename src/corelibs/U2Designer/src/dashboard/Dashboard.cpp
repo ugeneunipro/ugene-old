@@ -271,18 +271,12 @@ QWebElement Dashboard::addWidget(const QString &title, DashboardTab dashTab, int
         mainContainer = tabContainer.findFirst(left ? ".left-container" : ".right-container");
         SAFE_POINT(!mainContainer.isNull(), "Can't find a container inside a tab!", QWebElement());
     }
-    
-    QString containersHTML;
-    if(ExternalToolsTab == dashTab) {
-        containersHTML = "<div class=\"widget external-tools\">";
-    }
-    else {
-        containersHTML = "<div class=\"widget\">";
-    }
-    containersHTML += "<div class=\"title\"><div class=\"title-content\">" + title + "</div></div>"
-        "<div class=\"widget-content\"></div>"
-        "</div>";
-    mainContainer.appendInside(containersHTML);
+
+    mainContainer.appendInside(
+        "<div class=\"widget\">"
+            "<div class=\"title\"><div class=\"title-content\">" + title + "</div></div>"
+            "<div class=\"widget-content\"></div>"
+        "</div>");
 
     QWebElement widget = mainContainer.lastChild();
     return widget.findFirst(".widget-content");

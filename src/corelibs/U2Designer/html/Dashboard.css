@@ -50,11 +50,6 @@ body {
     border: 1px solid #ddd;
     -webkit-border-radius: 6px;
 }
-.widget.external-tools 
-{
-    width: 1050px;
-    display: table-cell;
-}
 
 .widget .title {
     position: absolute;
@@ -200,6 +195,7 @@ table.table-fixed {
 .long-text {
     overflow: hidden;
     white-space: nowrap;
+    text-overflow: ellipsis;
 }
 
 .load-btn {
@@ -229,8 +225,7 @@ table.table-fixed {
 
 .tree 
 {
-    width: 1034px;
-    display: table-cell;
+    width: 1015px;
     background-color:#fbfbfb;
     min-height:20px;
     padding:8px;
@@ -284,6 +279,12 @@ table.table-fixed {
     border:1px solid #94a0b4;
     color:#000
 }
+
+span.badge
+{
+    word-break: break-all;
+    -webkit-hyphens: auto;
+}
 span.badge.program-path
 {
     background-color:#BCBC90;
@@ -319,11 +320,14 @@ span.badge.run-info
 }
 span.content
 {
-    display: table-cell;
-    min-width: 800px;
+    word-break: break-all;
+    -webkit-hyphens: auto;
+    width: 830px;
 }
 .dropdown-menu.context
 {
     display: block; 
-    position: absolute; margin-bottom: 5px; *width: 180px;
+    position: absolute; 
+    margin-bottom: 5px; 
+    *width: 180px;
 }

@@ -87,24 +87,25 @@ ExternalToolsWidget::ExternalToolsWidget(const QWebElement &_container,
 void ExternalToolsWidget::sl_onLogUpdate() {
     SAFE_POINT(sender() == ctrl, "Unexpected sender", );
 
-    int lastLogIndex = ctrl->getLogSize() - 1;
+    int lastLogIndex = ctrl->getLogSize();
     LogEntry entry = ctrl->getEntry(lastEntryIndex + 1);
+    ++lastEntryIndex;
 
-    for (int i = lastEntryIndex + 1; i < lastLogIndex; i++) {
-        if (isSameNode(ctrl->getEntry(i), entry) &&
+    for (; lastEntryIndex < lastLogIndex - 1; lastEntryIndex++) {
+        LogEntry curEntry = ctrl->getEntry(lastEntryIndex + 1);
+        if (isSameNode(curEntry, entry) &&
                 entry.logType != PROGRAM_PATH &&
                 entry.logType != ARGUMENTS) {
             // accumulate
-            entry.lastLine += ctrl->getEntry(i).lastLine;
+            entry.lastLine += curEntry.lastLine;
         } else {
             // node changed, commit
             addInfoToWidget(entry);
-            entry = ctrl->getEntry(i);
+            entry = curEntry;
         }
     }
 
     addInfoToWidget(entry);
-    lastEntryIndex = lastLogIndex;
 }
 
 void ExternalToolsWidget::addInfoToWidget(const LogEntry &entry) {

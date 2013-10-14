@@ -41,6 +41,7 @@ function addChildrenElement(parentObject, elemTag, elemHTML) {
 function addChildrenNode(parentNode, nodeContent, spanId, nodeClass) {
 
     var newListElem = addChildrenElement(parentNode, 'LI', '');
+    newListElem.className = 'parent_li';
     var span = addChildrenElement(newListElem, 'span', nodeContent);
     span.setAttribute('title', 'Collapse this branch');
 
@@ -50,17 +51,18 @@ function addChildrenNode(parentNode, nodeContent, spanId, nodeClass) {
     span.id = spanId;
     span.className = nodeClass;
     var newList = addChildrenElement(newListElem, 'UL', '');
+
     return newList;
 }
 
 function collapseNode(element) {
         var children = $(element).parent('li.parent_li').find(' > ul > li');
-        if (children.is(":visible")) {
-            children.hide('fast');
-            $(element).attr('title', 'Expand this branch').find(' > i').addClass('icon-plus-sign').removeClass('icon-minus-sign');
+        if (children.is(":visible") == $(element).is(":visible")) {
+            children.hide(0);
+            $(element).attr('title', 'Expand this branch');
         } else {
-            children.show('fast');
-            $(element).attr('title', 'Collapse this branch').find(' > i').addClass('icon-minus-sign').removeClass('icon-plus-sign');
+            children.show(0);
+            $(element).attr('title', 'Collapse this branch');
         }
 };
 
@@ -71,16 +73,22 @@ function lwAddTreeNode(nodeName, activeTabName, activeTabId, content, contentTyp
         var rootList = root.getElementsByTagName('ul')[0];
         actorTab = addChildrenNode(rootList, '<i class="icon-minus-sign"></i>' + activeTabName, activeTabName + '_span', 'badge tool-node');
         actorTab.id = activeTabName;
+        var activeTabSpan = document.getElementById(activeTabName + '_span');
     }
 
     var launchNodeId = activeTabName + nodeName + "_l";
     var launchNode = document.getElementById(launchNodeId);
+    var idBase = activeTabId + nodeName;
+    var isLaunchNodeCreated = false;
     if(null === launchNode) {
+        isLaunchNodeCreated = true;
+        var activeTabSpan = document.getElementById(activeTabName + '_span');
         launchNode = addChildrenNode(actorTab, nodeName, launchNodeId + '_span', 'badge badge-success');
         launchNode.id = launchNodeId;
+        if(activeTabSpan.getAttribute('title') === 'Expand this branch') {
+            collapseNode(activeTabSpan);
+        }
     }
-
-    var idBase = activeTabId + nodeName;
     if(content) {
         content = content.replace(/break_line/g, '<br>');
         content = content.replace(/(<br>){3,}/g, '<br><br>');
@@ -88,44 +96,57 @@ function lwAddTreeNode(nodeName, activeTabName, activeTabId, content, contentTyp
         content = content.replace(/b_slash/g, '\\');
     }
     else {
-        enabledCollapsing();
         return;
     }
+
     var infoNode;
     infoNode = document.getElementById(launchNodeId + '_info');
+    var launchSpan = document.getElementById(launchNodeId + '_span');
     switch(contentType) {
         case "error":
                 addContent(launchNode, 'Error log', idBase + '_er', 'badge badge-important', content);
-                var launchSpan = document.getElementById(launchNodeId + '_span');
                 launchSpan.className = 'badge badge-important';
             break;
         case "output":
             addContent(launchNode, 'Output log', idBase + '_out', 'badge badge-info', content);
             break;
-        case "tool_name":
-             if(null === infoNode) {
-                infoNode = addChildrenNode(launchNode, 'Run info', idBase + '_id1', 'badge run-info');
-                infoNode.id = launchNodeId + '_info';
-             }
-             addContent(infoNode, 'Tool name', idBase + '_tool', 'badge tool-info', content);
-             break;
         case "program":
             if(null === infoNode) {
-                infoNode = addChildrenNode(launchNode, 'Run info', idBase + '_id2', 'badge run-info');
-                infoNode.id = launchNodeId + '_info';
+                infoNode = addInfoNode(launchNode);
             }
             addContent(infoNode, 'Executable file', idBase + '_program', 'badge program-path', content);
             break;
         case "arguments":
             if(null === infoNode) {
-                infoNode = addChildrenNode(launchNode, 'Launch info', idBase + '_id3', 'badge run-info');
-                infoNode.id = launchNodeId + '_info';
+                infoNode = addInfoNode(launchNode);
             }
             addContent(infoNode, 'Arguments', idBase + '_args', 'badge tool-args', content);
             break;
     }
-    enabledCollapsing();
+    if(isLaunchNodeCreated && launchSpan.getAttribute('title') !== 'Expand this branch'){
+        launchSpan = document.getElementById(launchNodeId + '_span');
+        collapseNode(launchSpan);
+    }
 }
+
+function addInfoNode(launchNode) {
+    if(null === launchNode) {
+        return null;
+    }
+    var launchNodeId = launchNode.id;
+    infoNode = addChildrenNode(launchNode, 'Run info', launchNodeId + '_info_span', 'badge run-info');
+    infoNode.id = launchNodeId + '_info';
+
+    var launchSpan = document.getElementById(launchNodeId + '_span');
+    if(null === launchSpan) {
+        return infoNode;
+    }
+    if(launchSpan.getAttribute('title') === 'Expand this branch') {
+        collapseNode(launchSpan);
+    }
+    return infoNode;
+}
+
 function addContent(parentNode, contentHead, nodeId, contentType, content) {
     var node = document.getElementById(nodeId);
 
@@ -135,9 +156,12 @@ function addContent(parentNode, contentHead, nodeId, contentType, content) {
         node = addChildrenNode(parentNode, contentHead, nodeId + '_label', contentType);
         content = content.replace(/^(<br>)+/, "");
         addChildrenNode(node, content, nodeId, 'content');
+        var parentSpan = document.getElementById(parentNode.id + '_span');
+        if(null === parentSpan) {
+            return;
+        }
+        if(parentSpan.getAttribute('title') === 'Expand this branch') {
+            collapseNode(parentSpan);
+        }
     }
-}
-
-function enabledCollapsing() { 
-    $('.tree li:has(ul)').addClass('parent_li').find(' > span').attr('title', 'Collapse this branch');
 }
