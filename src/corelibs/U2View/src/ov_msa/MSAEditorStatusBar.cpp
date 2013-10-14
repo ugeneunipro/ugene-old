@@ -154,67 +154,73 @@ bool MSAEditorStatusWidget::eventFilter(QObject*, QEvent* ev) {
     return false;
 }
 
-void MSAEditorStatusWidget::sl_findNext() {
-    QByteArray pat = searchEdit->text().toLocal8Bit();
-    if (pat.isEmpty()) {
+void MSAEditorStatusWidget::sl_findNext( ) {
+    QByteArray pat = searchEdit->text( ).toLocal8Bit( );
+    if ( pat.isEmpty( ) ) {
         return;
     }
-    const MAlignment& ma = aliObj->getMAlignment();
-    if (!ma.getAlphabet()->isCaseSensitive()) {
-        pat = pat.toUpper();
+    const MAlignment ma = aliObj->getMAlignment( );
+    if ( !ma.getAlphabet( )->isCaseSensitive( ) ) {
+        pat = pat.toUpper( );
     }
-    int aliLen = ma.getLength();
-    int nSeq = ma.getNumRows();
-    QPoint pos = seqArea->getSelection().topLeft();
+    const int aliLen = ma.getLength( );
+    const int nSeq = seqArea->getNumDisplayedSequences( );
+    QPoint selectionTopLeft = seqArea->getSelection( ).topLeft( );
 
-    if (pos == lastSearchPos) {
-        pos.setX(pos.x() + 1);
+    if ( selectionTopLeft == lastSearchPos ) {
+        selectionTopLeft.setX( selectionTopLeft.x( ) + 1 );
     }
-    for (int s = pos.y(); s < nSeq; s++) {
-        const MAlignmentRow& row = ma.getRow(s);
+    for (int s = selectionTopLeft.y(); s < nSeq; s++) {
+        const U2Region rowsAtPosition = seqArea->getRowsAt( s );
+        SAFE_POINT( 0 <= rowsAtPosition.startPos, "Invalid row number!", );
+        const MAlignmentRow &row = ma.getRow( rowsAtPosition.startPos );
         // if s == pos.y -> search from the current base, otherwise search from the seq start
-        int p = (s == pos.y()) ? pos.x() : 0; 
-        for (; p < (aliLen - pat.length() + 1); p++) {
-            char c = row.charAt(p);
-            if (c != MAlignment_GapChar && MSAUtils::equalsIgnoreGaps(row, p, pat)) {
+        int p = ( s == selectionTopLeft.y( ) ) ? selectionTopLeft.x( ) : 0; 
+        for ( ; p < ( aliLen - pat.length( ) + 1 ); p++ ) {
+            char c = row.charAt( p );
+            if ( MAlignment_GapChar != c && MSAUtils::equalsIgnoreGaps( row, p, pat ) ) {
                 // select the result now
-                MSAEditorSelection sel(p,s, pat.length(), 1);
-                seqArea->setSelection(sel);
-                seqArea->highlightCurrentSelection();
-                seqArea->centerPos(sel.topLeft());
-                lastSearchPos = seqArea->getSelection().topLeft();
+                MSAEditorSelection sel( p, s, pat.length( ), 1 );
+                seqArea->setSelection( sel );
+                seqArea->setSelectionHighlighting( );
+                seqArea->centerPos( sel.topLeft( ) );
+                lastSearchPos = seqArea->getSelection( ).topLeft( );
                 return;
             }
         }
     }
 }
 
-void MSAEditorStatusWidget::sl_findPrev() {
-    QByteArray pat = searchEdit->text().toLocal8Bit();
-    if (pat.isEmpty()) {
+void MSAEditorStatusWidget::sl_findPrev( ) {
+    QByteArray pat = searchEdit->text( ).toLocal8Bit( );
+    if ( pat.isEmpty( ) ) {
         return;
     }
-    const MAlignment& ma = aliObj->getMAlignment();
-    if (!ma.getAlphabet()->isCaseSensitive()) {
-        pat = pat.toUpper();
+    const MAlignment ma = aliObj->getMAlignment();
+    if ( !ma.getAlphabet( )->isCaseSensitive( ) ) {
+        pat = pat.toUpper( );
     }
-    int aliLen = ma.getLength();
-    QPoint pos = seqArea->getSelection().topLeft();
-    if (pos == lastSearchPos) {
-        pos.setX(pos.x() - 1);
+    int aliLen = ma.getLength( );
+    QPoint pos = seqArea->getSelection( ).topLeft( );
+    if ( pos == lastSearchPos ) {
+        pos.setX( pos.x( ) - 1 );
     }
-    for (int s = pos.y(); s >= 0; s--) {
-        const MAlignmentRow& row = ma.getRow(s);
+    for ( int s = pos.y( ); 0 <= s; s-- ) {
+        const U2Region rowsAtPosition = seqArea->getRowsAt( s );
+        SAFE_POINT( 0 <= rowsAtPosition.startPos, "Invalid row number!", );
+        const MAlignmentRow &row = ma.getRow( rowsAtPosition.startPos );
         //if s == pos.y -> search from the current base, otherwise search from the seq end
-        int p = (s == pos.y() ? pos.x() : (aliLen - pat.length() + 1));
-        while (p >=0) {
-            if (row.charAt(p) != MAlignment_GapChar && MSAUtils::equalsIgnoreGaps(row, p, pat)) {
+        int p = ( s == pos.y( ) ? pos.x( ) : ( aliLen - pat.length( ) + 1) );
+        while ( 0 <= p ) {
+            if ( MAlignment_GapChar != row.charAt( p )
+                && MSAUtils::equalsIgnoreGaps( row, p, pat ) )
+            {
                 // select the result now
-                MSAEditorSelection sel(p,s, pat.length(), 1);
-                seqArea->setSelection(sel);
-                seqArea->highlightCurrentSelection();
-                seqArea->centerPos(sel.topLeft());
-                lastSearchPos = seqArea->getSelection().topLeft();
+                MSAEditorSelection sel( p, s, pat.length( ), 1 );
+                seqArea->setSelection( sel );
+                seqArea->setSelectionHighlighting( );
+                seqArea->centerPos( sel.topLeft( ) );
+                lastSearchPos = seqArea->getSelection( ).topLeft( );
                 return;
             }
             p--;

@@ -469,8 +469,7 @@ void MSAEditorSequenceArea::drawAll() {
 
 void MSAEditorSequenceArea::drawContent(QPainter& p) {
     MAlignmentObject* maObj = editor->getMSAObject();
-    
-    assert(maObj!=NULL);
+    SAFE_POINT( NULL != maObj, "Invalid MSA object occurred!", );
 
     p.fillRect(cachedView->rect(), Qt::white);
     p.setFont(editor->getFont());
@@ -482,7 +481,7 @@ void MSAEditorSequenceArea::drawContent(QPainter& p) {
     int lastPos = getLastVisibleBase(true);
     int w = width();
     int h = height();
-    const MAlignment& msa = maObj->getMAlignment();
+    const MAlignment msa = maObj->getMAlignment();
     U2Region baseYRange = getSequenceYRange(firstVisibleSeq, true);
 
     QVector<U2Region> range;
@@ -492,10 +491,8 @@ void MSAEditorSequenceArea::drawContent(QPainter& p) {
         range.append(U2Region(firstVisibleSeq, lastVisibleSeq - firstVisibleSeq + 1));
     }
 
-    const MSAEditor *editor = ui->getEditor();
-    const MAlignment alignment = editor->getMSAObject()->getMAlignment();
     U2OpStatusImpl os;
-    const int refSeq = alignment.getRowIndexByRowId(editor->getReferenceRowId(), os);
+    const int refSeq = msa.getRowIndexByRowId(editor->getReferenceRowId(), os);
     QString refSeqName = editor->getReferenceRowName();
     const MAlignmentRow *r = NULL;
     if (MAlignmentRow::invalidRowId() != refSeq) {
@@ -597,15 +594,13 @@ void MSAEditorSequenceArea::drawFocus(QPainter& p) {
     }
 }
 
-
 bool MSAEditorSequenceArea::isPosInRange(int p) const {
     return p >= 0 && p < editor->getAlignmentLen();
 }
 
-bool MSAEditorSequenceArea::isSeqInRange(int s) const {
-    return s >= 0 && s < ui->collapseModel->displayedRowsCount();
+bool MSAEditorSequenceArea::isSeqInRange( int s ) const {
+    return ( s >= 0 && s < getNumDisplayedSequences( ) );
 }
-
 
 bool MSAEditorSequenceArea::isPosVisible(int pos, bool countClipped) const {
     if (pos < getFirstVisibleBase() || pos > getLastVisibleBase(countClipped)) {
@@ -620,7 +615,6 @@ bool MSAEditorSequenceArea::isSeqVisible(int seq, bool countClipped) const {
     }
     return true;
 }
-
 
 void MSAEditorSequenceArea::setFirstVisibleBase(int pos) {
     Q_ASSERT(isPosInRange(pos));
@@ -830,6 +824,12 @@ int MSAEditorSequenceArea::getNumVisibleSequences(bool countClipped) const {
     return res;
 }
 
+int MSAEditorSequenceArea::getNumDisplayedSequences( ) const {
+    MSACollapsibleItemModel *model = ui->getCollapseModel( );
+    SAFE_POINT( NULL != model, "Invalid collapsible item model!", -1 );
+    return model->displayedRowsCount( );
+}
+
 int MSAEditorSequenceArea::getColumnNumByX(int x, bool selecting) const {
     int colOffs = x / editor->getColumnWidth();
     int pos = startPos + colOffs;
@@ -866,7 +866,7 @@ int MSAEditorSequenceArea::getSequenceNumByY(int y) const {
     if (seq < 0) {
         seq = 0;
     }
-    int countOfVisibleSeqs = ui->getCollapseModel()->displayedRowsCount();
+    const int countOfVisibleSeqs = getNumDisplayedSequences( );
     if (seq >= countOfVisibleSeqs) {
         seq = countOfVisibleSeqs - 1;
     }
@@ -986,7 +986,7 @@ void MSAEditorSequenceArea::mouseReleaseEvent(QMouseEvent *e)
     QPoint newCurPos = coordToAbsolutePos(e->pos());
 
     int firstVisibleSeq = ui->seqArea->getFirstVisibleSequence();
-    int visibleRowsNums = ui->getCollapseModel()->displayedRowsCount() - 1;
+    int visibleRowsNums = getNumDisplayedSequences( ) - 1;
 
     int yPosWithValidations = qMax(firstVisibleSeq, newCurPos.y());
     yPosWithValidations     = qMin(yPosWithValidations, visibleRowsNums + firstVisibleSeq);
@@ -1360,8 +1360,7 @@ QPoint MSAEditorSequenceArea::coordToPos(const QPoint& coord) const {
     //Y: row
     int lastSeq = getLastVisibleSequence(true);
     if (ui->isCollapsibleMode()) {
-        MSACollapsibleItemModel* m = ui->getCollapseModel();
-        lastSeq = m->displayedRowsCount();
+        lastSeq = getNumDisplayedSequences( );
     }
     for (int i=getFirstVisibleSequence(); i<=lastSeq; i++) {
         U2Region r = getSequenceYRange(i, false);
@@ -1462,8 +1461,7 @@ void MSAEditorSequenceArea::removeGapsPrecedingSelection( int countOfGaps ) {
     // then shifting should be canceled
     cancelShiftTracking( );
 
-    const U2Region rowsContainingRemovedGaps( topLeftCornerOfRemovedRegion.y( ),
-        selectionBackup.height( ) );
+    const U2Region rowsContainingRemovedGaps( getSelectedRows( ) );
     U2OpStatus2Log os;
     U2UseCommonUserModStep userModStep( maObj->getEntityRef( ), os );
 
@@ -1492,8 +1490,9 @@ void MSAEditorSequenceArea::sl_alignmentChanged(const MAlignment&, const MAlignm
     setFirstVisibleBase(qBound(0, startPos, aliLen-countWidthForBases(false)));
     setFirstVisibleSequence(qBound(0, startSeq, nSeq - countHeightForSequences(false)));
 
-    setCursorPos(qMin(cursorPos.x(), aliLen-1), qMin(cursorPos.y(), ui->getCollapseModel()->displayedRowsCount() - 1));
-    
+    setCursorPos( qMin( cursorPos.x( ), aliLen-1 ),
+        qMin( cursorPos.y( ), ui->seqArea->getNumDisplayedSequences( ) - 1 ) );
+
     QPoint selTopLeft( qMin(selection.x(), aliLen - 1),  qMin(selection.y(), nSeq - 1) );
     QPoint selBottomRight( qMin(selection.x() + selection.width() - 1, aliLen - 1), qMin(selection.y() + selection.height() - 1, nSeq -1 ) );
 
@@ -1886,6 +1885,13 @@ void MSAEditorSequenceArea::cancelSelection()
     setSelection(emptySelection);
 }
 
+void MSAEditorSequenceArea::setSelectionHighlighting( bool highlight ) {
+    if ( highlightSelection != highlight ) {
+        highlightSelection = highlight;
+        update( );
+    }
+}
+
 void MSAEditorSequenceArea::updateHBarPosition( int base )
 {
     if (base <= getFirstVisibleBase() ) {
@@ -1906,8 +1912,6 @@ void MSAEditorSequenceArea::updateVBarPosition( int seq )
     } else {
         svBar->setupRepeatAction(QAbstractSlider::SliderNoAction);
     }
-
-    
 }
 
 void MSAEditorSequenceArea::sl_delCurrentSelection()
@@ -1995,18 +1999,18 @@ void MSAEditorSequenceArea::sl_copyCurrentSelection()
 }
 
 bool MSAEditorSequenceArea::shiftSelectedRegion( int shift ) {
-    if (shift == 0) {
+    if ( 0 == shift ) {
         return true;
     }
 
-    MAlignmentObject* maObj = editor->getMSAObject();
-    if ( !maObj->isStateLocked() ) {
-        const U2Region rows = getSelectedRows();
-        const int x = selection.x();
+    MAlignmentObject *maObj = editor->getMSAObject( );
+    if ( !maObj->isStateLocked( ) ) {
+        const U2Region rows = getSelectedRows( );
+        const int x = selection.x( );
         const int y = rows.startPos;
-        const int width = selection.width();
+        const int width = selection.width( );
         const int height = rows.length;
-        if (maObj->isRegionEmpty(x, y, width, height)) {
+        if ( maObj->isRegionEmpty( x, y, width, height ) ) {
             return true;
         }
 
@@ -2016,10 +2020,10 @@ bool MSAEditorSequenceArea::shiftSelectedRegion( int shift ) {
                 ? cursorPos.x( ) + resultShift : 0;
             setCursorPos( newCursorPosX );
 
-            MSACollapsibleItemModel* collapseModel = ui->getCollapseModel( );
-            const int selectionTop = collapseModel->rowToMap( y );
+            MSACollapsibleItemModel *collapseModel = ui->getCollapseModel( );
+            const int selectionTop = collapseModel->rowToMap( selection.getRect( ).top( ) );
             SAFE_POINT( -1 != selectionTop, "Unexpected selection area", true );
-            const int selectionBottom = collapseModel->rowToMap( y + height - 1 );
+            const int selectionBottom = collapseModel->rowToMap( selection.getRect( ).bottom( ) );
             SAFE_POINT( -1 != selectionBottom && selectionBottom >= selectionTop,
                 "Unexpected selection area", true );
 

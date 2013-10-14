@@ -173,8 +173,16 @@ public:
     int getFirstVisibleSequence() const {return startSeq;} 
     
     int getLastVisibleSequence(bool countClipped) const;
-
+    /*
+     * Returns count of sequences that are visible on a screen.
+     * @countClipped specifies whether include to result count or not last partially displayed row.
+     */
     int getNumVisibleSequences(bool countClipped) const;
+    /*
+     * Returns count of sequences that are drawn on the widget by taking into account
+     * collapsed rows.
+     */
+    int getNumDisplayedSequences( ) const;
 
     U2Region getSequenceYRange(int seqNum, bool useVirtualCoords) const;
 
@@ -225,7 +233,7 @@ public:
 
     void cancelSelection();
 
-    void highlightCurrentSelection() { highlightSelection = true; update(); }
+    void setSelectionHighlighting( bool highlight = true );
 
     void deleteCurrentSelection();
 

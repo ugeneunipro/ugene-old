@@ -340,7 +340,8 @@ void MSAEditorNameList::keyPressEvent (QKeyEvent *e) {
 }
 
 void MSAEditorNameList::mousePressEvent(QMouseEvent *e) {
-    if ((e->button() == Qt::LeftButton)){
+    if ((e->button() == Qt::LeftButton)) {
+        ui->seqArea->setSelectionHighlighting( false );
         if(Qt::ShiftModifier == e->modifiers()) {
             QWidget::mousePressEvent(e);
             scribbling = true;
@@ -447,7 +448,7 @@ void MSAEditorNameList::mouseReleaseEvent( QMouseEvent *e )
             shifting = false;
         } else {
             int firstVisibleRow = ui->seqArea->getFirstVisibleSequence();
-            int lastVisibleRow = ui->getCollapseModel()->displayedRowsCount() + firstVisibleRow - 1;
+            int lastVisibleRow = ui->seqArea->getNumDisplayedSequences( ) + firstVisibleRow - 1;
             bool selectionContainsSeqs = (startSelectingSeq <= lastVisibleRow || newSeq <= lastVisibleRow);
             
             if(selectionContainsSeqs) {
@@ -474,7 +475,8 @@ void MSAEditorNameList::mouseReleaseEvent( QMouseEvent *e )
 void MSAEditorNameList::updateSelection( int newSeq )
 {
     if (newSeq != -1) {
-        int lastVisibleRow = ui->getCollapseModel()->displayedRowsCount() + ui->seqArea->getFirstVisibleSequence() - 1;
+        int lastVisibleRow = ui->seqArea->getNumDisplayedSequences( )
+            + ui->seqArea->getFirstVisibleSequence( ) - 1;
         curSeq = qMin(curSeq, lastVisibleRow);
         int startSeq = qMin(curSeq,newSeq);
         int width = editor->getAlignmentLen();
@@ -847,8 +849,7 @@ qint64 MSAEditorNameList::sequenceIdAtPos( QPoint p ) {
     qint64 result = MAlignmentRow::invalidRowId();
     curSeq = ui->seqArea->getSequenceNumByY(p.y());
     if (ui->isCollapsibleMode()) {
-        MSACollapsibleItemModel* m = ui->getCollapseModel();
-        if(curSeq >= m->displayedRowsCount()){
+        if ( curSeq >= ui->seqArea->getNumDisplayedSequences( ) ) {
             return result;
         }
     }
