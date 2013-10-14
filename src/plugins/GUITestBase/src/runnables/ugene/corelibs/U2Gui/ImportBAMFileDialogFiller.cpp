@@ -36,8 +36,16 @@ void ImportBAMFileFiller::run() {
     QWidget* dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog, "activeModalWidget is NULL");
 
-    GTWidget::click(os, GTWidget::findWidget(os, "selectAllToolButton", dialog));
-    GTWidget::click(os, GTWidget::findWidget(os,"okButton" , dialog));
+    //QLineEdit *sourceUrl = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "sourceUrlView", dialog));
+    //GTLineEdit::setText(os, sourceUrl, sourceUrlView);
+
+    //GTWidget::click(os,GTWidget::findWidget(os,"refUrlButton"));
+
+    //QLineEdit *referenceSeq = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "refUrlLabel", dialog));
+    //GTLineEdit::setText(os, referenceSeq, refUrlLabel);
+
+    //GTWidget::click(os, GTWidget::findWidget(os, "selectAllToolButton", dialog));
+    //GTWidget::click(os, GTWidget::findWidget(os,"okButton" , dialog));
 }
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME

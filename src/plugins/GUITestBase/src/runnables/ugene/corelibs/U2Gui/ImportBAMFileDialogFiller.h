@@ -28,9 +28,14 @@ namespace U2 {
 
     class ImportBAMFileFiller : public Filler {
     public:
-        ImportBAMFileFiller(U2OpStatus &_os) : Filler(_os, "Import BAM file"){}
+        ImportBAMFileFiller(U2OpStatus &_os) : 
+          Filler(_os, "Import BAM file"){}
+
+
+          //, const QString &_refUrlLabel,         refUrlLabel(_refUrlLabel)
         virtual void run();
     private:
+        //const QString refUrlLabel;
 
     };
 }

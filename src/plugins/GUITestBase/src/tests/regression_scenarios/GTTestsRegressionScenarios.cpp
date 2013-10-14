@@ -1768,6 +1768,39 @@ GUI_TEST_CLASS_DEFINITION( test_1924 )
     CHECK_SET_ERR(sequenceBegin == "ATCGTAC", "Sequence starts with <" + sequenceBegin + ">, expected ATCGTAC");
 
 }
+GUI_TEST_CLASS_DEFINITION( test_2163 ) {
+    // 1. Open "_common_data/fasta/AMINO.fa".
+    GTFileDialog::openFile(os, testDir + "_common_data/fasta/", "AMINO.fa");
+
+    // 2. Open the DAS widget on the options panel
+    GTWidget::click(os, GTWidget::findWidget(os, "OP_DAS"));
+    GTGlobals::sleep(500);
+    QWidget *dasPanel = GTWidget::findWidget(os, "DasOptionsPanelWidget");
+    CHECK(NULL != dasPanel, );
+    
+    //3. Press "Fetch IDs".
+    QWidget *searchIdsButton = GTWidget::findWidget(os, "searchIdsButton");
+    GTWidget::click(os, searchIdsButton);
+    GTGlobals::sleep(500);
+    
+    //4. Double click on the results table.
+    TaskScheduler* scheduller = AppContext::getTaskScheduler();
+    GTGlobals::sleep(5000);
+    while(!scheduller->getTopLevelTasks().isEmpty()){
+        GTGlobals::sleep();
+    }
+    QWidget *idList = GTWidget::findWidget(os, "idList");
+    GTWidget::click(os, idList);
+    GTMouseDriver::doubleClick(os);
+    GTGlobals::sleep();
+
+    // 4. Select a result id in the table.
+    QTableWidget* resultsView = qobject_cast<QTableWidget*>(GTWidget::findWidget(os, "idList"));
+    CHECK_SET_ERR(NULL != resultsView, "Results widget is NULL!");
+//    CHECK_SET_ERR(!resultsView->ItemIsEditable(), "Fetch IDs is editable!");
+
+
+}
 
 GUI_TEST_CLASS_DEFINITION( test_2164 ) {
     // 1. Open "_common_data/fasta/AMINO.fa".

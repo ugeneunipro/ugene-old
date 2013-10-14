@@ -53,6 +53,7 @@
 #include "tests/common_scenarios/dp_view/GTTestsDpView.h"
 #include "tests/common_scenarios/Assembling/Assembly_browser/GTTestsAssemblyBrowser.h"
 #include "tests/common_scenarios/Assembling/bowtie2/GTTestsBowtie2.h"
+#include "tests/common_scenarios/Assembling/sam/GTTestsSAM.h"
 #include "tests/common_scenarios/Query_Designer/GTTestsQuerryDesigner.h"
 #include "tests/common_scenarios/workflow_designer/GTTestsWorkflowDesigner.h"
 #include "tests/common_scenarios/tree_viewer/GTTestsCommonScenariousTreeviewer.h"
@@ -186,6 +187,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_2128);
     REGISTER_TEST(GUITest_regression_scenarios::test_2140);
     REGISTER_TEST(GUITest_regression_scenarios::test_2160);
+    REGISTER_TEST(GUITest_regression_scenarios::test_2163);
     REGISTER_TEST(GUITest_regression_scenarios::test_2164);
     REGISTER_TEST(GUITest_regression_scenarios::test_2167);
     REGISTER_TEST(GUITest_regression_scenarios::test_2169);
@@ -828,6 +830,11 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 // Common scenarios/Assembling/bowtie2
 /////////////////////////////////////////////////////////////////////////
     REGISTER_TEST(GUITest_Bowtie2::test_0005);
+
+    /////////////////////////////////////////////////////////////////////////
+// Common scenarios/Assembling/sam
+/////////////////////////////////////////////////////////////////////////
+    REGISTER_TEST(GUITest_SAM::test_0003);
 
 /////////////////////////////////////////////////////////////////////////
 // Common scenarios/Query designer
