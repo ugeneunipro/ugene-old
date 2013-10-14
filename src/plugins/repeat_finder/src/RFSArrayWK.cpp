@@ -167,12 +167,18 @@ void RFSArrayWKAlgorithm::calculate(RFSArrayWKSubtask* t) {
             for (; c <= CMAX && posA < dataAEnd && posS < dataSEnd; posA++, posS++) {
                 int popVal = PCHAR_MATCHES(posA - W, posS - W) ? 0 : 1;
                 int pushVal = PCHAR_MATCHES(posA, posS) ? 0 : 1;
-                allMismatches += pushVal;
+                //allMismatches += pushVal - popVal;
                 assert(c>=0);
                 c += pushVal - popVal;
             }
+
             int len = posS - startS;
             int lastCheckedS = s + len - (W - q + 1); // the first point of the last window checked
+            
+            const char *posAA = startA, *posSS = startS;
+            for (int ppppos = 0; ppppos < len ; posAA++, posSS++, ppppos++) {
+                allMismatches += PCHAR_MATCHES(posAA, posSS) ? 0 : 1;
+            }
             
             //now shift to the first mismatch pos and save value in diags
             const char* firstMismatchPosS = dataS + lastCheckedS - 1;
