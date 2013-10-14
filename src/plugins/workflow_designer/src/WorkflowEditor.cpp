@@ -537,6 +537,10 @@ void WorkflowEditor::sl_linkActivated(const QString& url) {
         table->selectionModel()->reset();
     }
     table->setCurrentIndex(modelIndex);
+    QWidget *w = table->indexWidget(modelIndex);
+    PropertyWidget *pw = dynamic_cast<PropertyWidget*>(w);
+    CHECK(NULL != pw, );
+    pw->activate();
 }
 
 void WorkflowEditor::setSpecialPanelEnabled(bool isEnabled) {

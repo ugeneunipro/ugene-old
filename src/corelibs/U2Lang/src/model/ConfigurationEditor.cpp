@@ -52,6 +52,10 @@ void PropertyWidget::setRequired() {
 
 }
 
+void PropertyWidget::activate() {
+
+}
+
 const DelegateTags * PropertyWidget::tags() const {
     return _tags;
 }

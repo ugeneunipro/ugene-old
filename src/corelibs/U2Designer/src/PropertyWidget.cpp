@@ -385,6 +385,12 @@ void URLWidget::setRequired() {
     urlLine->setPlaceholderText(L10N::required());
 }
 
+void URLWidget::activate() {
+    if (urlLine->text().isEmpty()) {
+        sl_browse();
+    }
+}
+
 void URLWidget::sl_browse() {
     bool useOutDir = WorkflowSettings::isUseWorkflowOutputDirectory();
     if (!useOutDir || !urlLine->saveFile) {

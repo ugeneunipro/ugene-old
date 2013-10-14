@@ -178,6 +178,7 @@ public:
     virtual QVariant value();
     virtual void setValue(const QVariant &value);
     virtual void setRequired();
+    virtual void activate();
 
 signals:
     void finished();
