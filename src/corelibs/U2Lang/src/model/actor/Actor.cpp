@@ -362,6 +362,42 @@ const QList<ValidatorDesc> & Actor::getCustomValidators() const {
     return customValidators;
 }
 
+/**
+ * Validates an attribute with URL(s), considering its type.
+ * Attributes with scripts are ignored (the method returns "true").
+ */
+static bool validateUrlAttribute(Attribute *attr, UrlAttributeType urlType, ProblemList &infoList) {
+    SAFE_POINT(NULL != attr, "NULL attribute!", false);
+    SAFE_POINT(NotAnUrl != urlType, "Can't pass not an URL to the method!", false);
+
+    if (!attr->getAttributeScript().isEmpty()) {
+        return true;
+    }
+
+    bool res;
+    QString urls = attr->getAttributePureValue().toString();
+    switch (urlType) {
+        case DatasetAttr:
+            res = WorkflowUtils::validateDatasets(attr->getAttributePureValue().value< QList<Dataset> >(), infoList);
+            break;
+        case InputFile:
+            res = WorkflowUtils::validateInputFiles(urls, infoList);
+            break;
+        case InputDir:
+            res = WorkflowUtils::validateInputDirs(urls, infoList);
+            break;
+        case OutputFile:
+            res = WorkflowUtils::validateOutputFile(urls, infoList);
+            break;
+        case OutputDir:
+            res = WorkflowUtils::validateOutputDir(urls, infoList);
+            break;
+        default:
+            FAIL("Unexpected value of the URL attribute!", false);
+    }
+    return res;
+}
+
 bool Actor::validate(ProblemList &problemList) const {
     bool result = Configuration::validate(problemList);
     foreach (const ValidatorDesc &desc, customValidators) {
@@ -370,6 +406,20 @@ bool Actor::validate(ProblemList &problemList) const {
             result &= v->validate(this, problemList, desc.options);
         }
     }
+
+    // Validate URL parameters
+    bool urlsRes = true;
+    foreach (Attribute *attr, getParameters()) {
+        SAFE_POINT(NULL != attr, "NULL attribute!", false);
+        UrlAttributeType urlType = WorkflowUtils::isUrlAttribute(attr, this);
+
+        if (urlType != NotAnUrl) {
+            bool urlAttrValid = validateUrlAttribute(attr, urlType, problemList);
+            urlsRes = urlsRes && urlAttrValid;
+        }
+    }
+    result = result && urlsRes;
+
     return result;
 }
 
