@@ -179,6 +179,7 @@ QueryBlockWidget::QueryBlockWidget(QueryBuilderController* controller, bool firs
     connect(termBox, SIGNAL(currentIndexChanged(int)), controller, SLOT(sl_updateQuery()) );
 
     queryEdit = new QLineEdit(this);
+    queryEdit->setObjectName("queryEdit");
     connect(queryEdit,  SIGNAL(textEdited(const QString&)), controller, SLOT(sl_updateQuery()) );
     connect(queryEdit, SIGNAL(returnPressed()), controller, SLOT(sl_queryReturnPressed()));
 
