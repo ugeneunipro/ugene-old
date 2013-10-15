@@ -2103,6 +2103,40 @@ GUI_TEST_CLASS_DEFINITION( test_2187 ) {
     GTMouseDriver::click(os);
 }
 
+GUI_TEST_CLASS_DEFINITION( test_2224 )
+{
+    // 1. Open document "ma.aln"
+    GTFileDialog::openFile( os, testDir + "_common_data/scenarios/msa", "ma.aln" );
+
+    // 2. Save the initial content
+    GTUtilsMSAEditorSequenceArea::selectArea( os, QPoint( 0, 0 ), QPoint( 11, 17 ) );
+    GTKeyboardDriver::keyClick( os, 'c', GTKeyboardDriver::key["ctrl"] );
+    GTGlobals::sleep(200);
+    const QString initialContent = GTClipboard::text( os );
+
+    // 2.1. Remove selection
+    GTKeyboardDriver::keyClick( os, GTKeyboardDriver::key["esc"] );
+    GTGlobals::sleep(200);
+    GTUtilsMSAEditorSequenceArea::checkSelectedRect( os, QRect( ) );
+
+    // 3. Select a region in the sequence area
+    GTUtilsMSAEditorSequenceArea::selectArea( os, QPoint( 0, 4 ), QPoint( 7, 12 ) );
+
+    // 4. Shift the region in one base
+    GTUtilsMSAEditorSequenceArea::selectArea( os, QPoint( 6, 7 ), QPoint( 7, 7 ) );
+
+    // 5. Click in the leftmost column of the selected region
+    GTUtilsMSAEditorSequenceArea::click( os, QPoint( 1, 7 ) );
+
+    // 7. Check the result state
+    GTUtilsMSAEditorSequenceArea::selectArea( os, QPoint( 0, 0 ), QPoint( 11, 17 ) );
+    GTKeyboardDriver::keyClick( os, 'c', GTKeyboardDriver::key["ctrl"] );
+    GTGlobals::sleep(200);
+    const QString undoneContent = GTClipboard::text( os );
+    CHECK_SET_ERR( undoneContent == initialContent,
+        "Scribbling works wrong. Found text is:\n" + undoneContent );
+}
+
 } // GUITest_regression_scenarios namespace
 
 } // U2 namespace
