@@ -1318,6 +1318,47 @@ GUI_TEST_CLASS_DEFINITION( test_1921 )
 //    Expected state: UGENE not crashes.
 }
 
+GUI_TEST_CLASS_DEFINITION( test_2006 )
+{
+    const int MSA_WIDTH = 50;
+    const int MSA_HEIGHT = 3;
+
+    // 1. Open "data/samples/CLUSTAL/COI.aln" and save it's part to a string
+    GTFileDialog::openFile( os, dataDir + "samples/CLUSTALW/", "COI.aln" );
+    GTUtilsMSAEditorSequenceArea::selectArea( os, QPoint( 0, 0 ), QPoint( MSA_WIDTH, MSA_HEIGHT ) );
+    GTKeyboardDriver::keyClick( os, 'c', GTKeyboardDriver::key["ctrl"] );
+    GTGlobals::sleep(200);
+    const QString initialMsaContent = GTClipboard::text( os );
+    GTKeyboardDriver::keyClick( os, GTKeyboardDriver::key["esc"] );
+
+    // 2. Select the second symbol in the first line
+    const QPoint initialSelectionPos( 1, 0 );
+    GTUtilsMSAEditorSequenceArea::click( os, initialSelectionPos );
+    GTGlobals::sleep(200);
+
+    // 3. Drag it to the first symbol in the first line
+    const QPoint mouseDragPosition( 1, 0 );
+    GTUtilsMSAEditorSequenceArea::moveTo( os, mouseDragPosition );
+    GTMouseDriver::press( os );
+    GTGlobals::sleep( 200 );
+    GTUtilsMSAEditorSequenceArea::moveTo( os, mouseDragPosition + QPoint( 0, 0 ) );
+    GTMouseDriver::release( os );
+    GTGlobals::sleep( 200 );
+
+    // 4. Check that the content has not been changed
+    GTUtilsMSAEditorSequenceArea::selectArea( os, QPoint( 0, 0 ), QPoint( MSA_WIDTH, MSA_HEIGHT ) );
+    GTKeyboardDriver::keyClick( os, 'c', GTKeyboardDriver::key["ctrl"] );
+    GTGlobals::sleep(200);
+    const QString finalMsaContent = GTClipboard::text( os );
+    CHECK_SET_ERR( initialMsaContent == finalMsaContent, "MSA has unexpectedly changed" );
+
+    // 5. Check that "Undo" and "Redo" buttons are disabled
+    const QAbstractButton *undo = GTAction::button( os, "msa_action_undo" );
+    CHECK_SET_ERR( !undo->isEnabled( ), "Undo button is unexpectedly enabled" );
+    const QAbstractButton *redo = GTAction::button( os, "msa_action_redo" );
+    CHECK_SET_ERR( !redo->isEnabled( ), "Redo button is unexpectedly enabled" );
+}
+
 GUI_TEST_CLASS_DEFINITION( test_2021_1 )
 {
     // 1. Open document "ma.aln" and save it to string
