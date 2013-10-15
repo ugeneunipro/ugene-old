@@ -28,16 +28,16 @@ namespace U2 {
 
     class ImportBAMFileFiller : public Filler {
     public:
-        ImportBAMFileFiller(U2OpStatus &_os) : 
-          Filler(_os, "Import BAM file"){}
-
-
-          //, const QString &_refUrlLabel,         refUrlLabel(_refUrlLabel)
-        virtual void run();
-    private:
-        //const QString refUrlLabel;
-
-    };
+        ImportBAMFileFiller(U2OpStatus &_os, const QString &_dbPath = "", const QString &_dbFileName = "") : 
+          Filler(_os, "Import BAM file"),
+              databasePath(_dbPath),
+              databaseFileName(_dbFileName){}
+           virtual void run();
+        private:
+            const QString databasePath;
+            const QString databaseFileName;
+            };
+   
 }
 
 #endif

@@ -1791,16 +1791,27 @@ GUI_TEST_CLASS_DEFINITION( test_2163 ) {
     while(!scheduller->getTopLevelTasks().isEmpty()){
         GTGlobals::sleep();
     }
-    QWidget *idList = GTWidget::findWidget(os, "idList");
+    QTableWidget *idList = qobject_cast<QTableWidget*>(GTWidget::findWidget(os, "idList"));
     GTWidget::click(os, idList);
-    GTMouseDriver::doubleClick(os);
     GTGlobals::sleep();
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
 
     // 4. Select a result id in the table.
-    QTableWidget* resultsView = qobject_cast<QTableWidget*>(GTWidget::findWidget(os, "idList"));
-    CHECK_SET_ERR(NULL != resultsView, "Results widget is NULL!");
-//    CHECK_SET_ERR(!resultsView->ItemIsEditable(), "Fetch IDs is editable!");
+   // QPoint p1 = idList->mapFromGlobal(GTTableView::getCellPosition(os, idList, 0, 3));
+    //GTWidget::click(os, idList, Qt::LeftButton, p1);
 
+    //int count1 = idList->model()->rowCount();
+   // QString value1 = idList->itemAt(p1)->text();
+
+    // Expected: the table contains only the last results. There are no previous items and additional empty lines.
+   // QPoint p2 = idList->mapFromGlobal(GTTableView::getCellPosition(os, idList, 0, 3));
+   // GTWidget::click(os, idList, Qt::LeftButton, p2);
+
+   // int count2 = idList->model()->rowCount();
+   // QString value2 = idList->itemAt(p2)->text();
+
+    //CHECK_SET_ERR(count1 == count2, "There are empty rows!");
+   // CHECK_SET_ERR(value1 == value2, "Results differ!");
 
 }
 

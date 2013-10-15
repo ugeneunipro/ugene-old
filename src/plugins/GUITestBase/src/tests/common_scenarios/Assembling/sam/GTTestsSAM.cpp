@@ -20,15 +20,17 @@
  */
 
 #include "GTUtilsDialog.h"
-
+#include "GTTestsSAM.h"
 #include "api/GTMenu.h"
 #include "api/GTAction.h"
 #include "api/GTWidget.h"
 #include "api/GTGlobals.h"
 #include "runnables/ugene/corelibs/U2Gui/AlignShortReadsDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/ImportBAMFileDialogFiller.h"
+#include "runnables/ugene/corelibs/U2Gui/ConvertAssemblyToSAMDialogFiller.h"
 
-#include "GTTestsSAM.h"
+
+
 
 namespace U2 {
 namespace GUITest_SAM {
@@ -38,35 +40,8 @@ GUI_TEST_CLASS_DEFINITION(test_0003) {
     // Expected: 1) The import dialog is shown.
     // 2) There are no table with the sequences check boxes in the dialog.
     // 3) The reference line edit, button and warning are shown.
-    
-    //GTUtilsDialog::waitForDialog(os,new ImportBAMFileFiller(os, "_common_data/bam/small.bam.sorted.bam.bai"));
+    GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os, testDir + "_common_data/bam/", "small.bam.sorted.bam.bai"));
     GTFileDialog::openFile(os, testDir + "_common_data/sam/", "out.sam");
-
-    QWidget* dialog = QApplication::activeModalWidget();
-    CHECK_SET_ERR(dialog, "activeModalWidget is NULL");
-
-    //QLineEdit *sourceUrl = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "sourceUrlView", dialog));
-    //GTLineEdit::setText(os, sourceUrl, sourceUrlView);
-
-   // GTUtilsDialog::waitForDialog(os, "Import BAM file");
-
-    GTWidget::click(os,GTWidget::findWidget(os,"refUrlButton"));
-    GTFileDialog::openFile(os, testDir + "_common_data/bam/", "small.bam.sorted.bam.bai");
-    GTWidget::click(os, GTWidget::findWidget(os,"okButton" , dialog));
-
-
-    // 2. Click the reference sequence browse button. Choose "_common_data/bam/small.bam.sorted.bam.bai".
-    // Expected: the warning is not shown.
-//    QWidget* dialog = QApplication::activeModalWidget();
-//    GT_CHECK(dialog, "activeModalWidget is NULL");
-//    GTWidget::click(os, GTWidget::findWidget(os,"setDbPathButton",dialog));
-
-//    GTWidget::click(os, GTWidget::findWidget(os, "convertButton", dialog));
-
-
-
-//    QWidget* importDialog = qobject_cast<QWidget*>(GTWidget::findWidget(os, "idList"));
-//    CHECK_SET_ERR(NULL != importDialog, "Import dialog is NULL!");
 
 }
 
