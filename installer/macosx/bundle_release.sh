@@ -55,24 +55,34 @@ cp "$RELEASE_DIR/ugenem.app/Contents/MacOS/ugenem" "$TARGET_EXE_DIR"
 echo copying console binary
 cp "$RELEASE_DIR/ugenecl.app/Contents/MacOS/ugenecl" "$TARGET_EXE_DIR"
 changeCoreInstallNames ugenecl
-changeQtInstallNames ugenecl
-cp ./ugene "$TARGET_EXE_DIR"
-cp ./install.sh "$TARGET_EXE_DIR"
 
-echo copying qt libraries - plugin dependencies
-cp $PATH_TO_QT/libQtOpenGL.4.dylib "${TARGET_EXE_DIR}/../Frameworks/libQtOpenGL.4.dylib"
-install_name_tool -id @executable_path/../Frameworks/libQtOpenGL.4.dylib ${TARGET_EXE_DIR}/../Frameworks/libQtOpenGL.4.dylib
-changeQtInstallNames ../Frameworks/libQtOpenGL.4.dylib
-cp $PATH_TO_QT/libQtSvg.4.dylib "${TARGET_EXE_DIR}/../Frameworks/libQtSvg.4.dylib"
-install_name_tool -id @executable_path/../Frameworks/libQtSvg.4.dylib ${TARGET_EXE_DIR}/../Frameworks/libQtSvg.4.dylib
-changeQtInstallNames ../Frameworks/libQtSvg.4.dylib
-if [ "$1" == "-test" ]
-    then
-        cp $PATH_TO_QT/libQtTest.4.dylib "${TARGET_EXE_DIR}/../Frameworks/libQtTest.4.dylib"
-        install_name_tool -id @executable_path/../Frameworks/libQtTest.4.dylib ${TARGET_EXE_DIR}/../Frameworks/libQtTest.4.dylib
-        changeQtInstallNames ../Frameworks/libQtTest.4.dylib
+#if macdeployqt has argument -executable, use it, otherwise set qt libraries manually;
+MDQ_SUPPORT_EXE=`macdeployqt --help 2>&1 | grep "executable"`
+if [ -n "$MDQ_SUPPORT_EXE" ]; then
+    MAC_DEPLOY_QT_ARGS='-executable='$TARGET_EXE_DIR'/ugenecl -executable='$TARGET_EXE_DIR'/ugenem'
+    echo $MAC_DEPLOY_QT_ARGS
+else
+    changeQtInstallNames ugenecl
+    changeQtInstallNames ugenem
+
+    echo copying qt libraries - plugin dependencies
+    cp $PATH_TO_QT/libQtOpenGL.4.dylib "${TARGET_EXE_DIR}/../Frameworks/libQtOpenGL.4.dylib"
+    install_name_tool -id @executable_path/../Frameworks/libQtOpenGL.4.dylib ${TARGET_EXE_DIR}/../Frameworks/libQtOpenGL.4.dylib
+    changeQtInstallNames ../Frameworks/libQtOpenGL.4.dylib
+    cp $PATH_TO_QT/libQtSvg.4.dylib "${TARGET_EXE_DIR}/../Frameworks/libQtSvg.4.dylib"
+    install_name_tool -id @executable_path/../Frameworks/libQtSvg.4.dylib ${TARGET_EXE_DIR}/../Frameworks/libQtSvg.4.dylib
+    changeQtInstallNames ../Frameworks/libQtSvg.4.dylib
+    if [ "$1" == "-test" ]
+        then
+            cp $PATH_TO_QT/libQtTest.4.dylib "${TARGET_EXE_DIR}/../Frameworks/libQtTest.4.dylib"
+            install_name_tool -id @executable_path/../Frameworks/libQtTest.4.dylib ${TARGET_EXE_DIR}/../Frameworks/libQtTest.4.dylib
+            changeQtInstallNames ../Frameworks/libQtTest.4.dylib
+    fi
 fi
 
+cp ./ugene "$TARGET_EXE_DIR"
+#deprecated:
+#cp ./install.sh "$TARGET_EXE_DIR"
 
 echo Copying core shared libs
 
@@ -144,7 +154,7 @@ fi
 
 echo
 echo macdeployqt running...
-macdeployqt "$TARGET_APP_DIR" 
+macdeployqt "$TARGET_APP_DIR" $MAC_DEPLOY_QT_ARGS
 
 mv "$TARGET_APP_DIR" "$TARGET_APP_DIR_RENAMED"
 

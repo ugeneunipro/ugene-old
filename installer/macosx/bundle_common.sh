@@ -80,6 +80,9 @@ changeCoreInstallNames () {
 
 #This function sets correct relative pathes for linking qt libraries
 changeQtInstallNames () {
+   if [ ! -e "$PATH_TO_QT/libQtCore.4.dylib" ]; then
+        return 0;
+   fi
    if [ "$1" ]
    then
         echo "Changing qt install names for $1"
