@@ -77,15 +77,15 @@ namespace U2 {
  */
 enum U2CigarOp {
     U2CigarOp_Invalid = 0,
-    U2CigarOp_D = 1, // deleted
-    U2CigarOp_I = 2, // inserted
-    U2CigarOp_H = 3, // hard-clipped
-    U2CigarOp_M = 4, // alignment match
-    U2CigarOp_N = 5, // skipped
-    U2CigarOp_P = 6, // padded
+    U2CigarOp_D = 1,  // deleted
+    U2CigarOp_I = 2,  // inserted
+    U2CigarOp_H = 3,  // hard-clipped
+    U2CigarOp_M = 4,  // alignment match
+    U2CigarOp_N = 5,  // skipped
+    U2CigarOp_P = 6,  // padded
     U2CigarOp_S = 7,  // soft-clipped
-    U2CigarOp_EQ = 8,  // sequence match
-    U2CigarOp_X = 9,  // sequence mismatch
+    U2CigarOp_EQ = 8, // sequence match
+    U2CigarOp_X = 9   // sequence mismatch
 };
 
 /** 
@@ -163,7 +163,7 @@ public:
 class U2CORE_EXPORT U2AssemblyReadData : public U2Entity, public QSharedData {
 public:
     U2AssemblyReadData() : leftmostPos(0), effectiveLen(0),
-        packedViewRow(0), mappingQuality(255), rnext("*"), pnext(0){}
+        packedViewRow(0), mappingQuality(255), flags(0), rnext("*"), pnext(0){}
 
 
     /** Name of the read, ASCII string */

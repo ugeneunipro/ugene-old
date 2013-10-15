@@ -23,6 +23,7 @@
 
 #include <U2Core/AppContext.h>
 #include <U2Core/AssemblyObject.h>
+#include <U2Core/DNASequenceObject.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2DbiUtils.h>
@@ -30,6 +31,7 @@
 #include <U2Core/U2AssemblyDbi.h>
 #include <U2Core/U2ObjectDbi.h>
 #include <U2Core/U2SafePoints.h>
+#include <U2Core/U2SequenceDbi.h>
 
 namespace U2 {
 
@@ -94,6 +96,20 @@ Document* DbiDocumentFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef,
                 name = "Assembly";
             }
             objects.append(new AssemblyObject(ref, name, QVariantMap()));
+            documentRef = srcDbiRef;
+        } else if (U2Type::Sequence == objectType) {
+            ref.entityId = id;
+            U2OpStatusImpl status;
+            QString name = handle.dbi->getSequenceDbi()->getSequenceObject(id, status).visualName;
+            if(status.hasError()) {
+                coreLog.error(status.getError());
+                continue;
+            }
+            if (name.isEmpty()) {
+                assert(false);
+                name = "Sequence";
+            }
+            objects.append(new U2SequenceObject(name, ref, QVariantMap()));
             documentRef = srcDbiRef;
         }
     }

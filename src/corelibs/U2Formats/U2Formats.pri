@@ -11,7 +11,7 @@ UGENE_RELATIVE_DESTDIR = ''
 
 DEFINES+= QT_FATAL_ASSERT BUILDING_U2FORMATS_DLL
 
-LIBS += -L../../_release -lU2Core -lU2Algorithm
+LIBS += -L../../_release -lU2Core -lU2Algorithm -lU2Gui
 LIBS += -lugenedb -lsamtools
 
 # Force re-linking when lib changes
@@ -29,8 +29,8 @@ INCLUDEPATH += ../../libs_3rdparty/sqlite3/src
 
     CONFIG(debug, debug|release) {
         DESTDIR=../../_debug
-        LIBS -= -L../../_release -lU2Core -lU2Algorithm -lugenedb -lsamtools
-        LIBS += -L../../_debug -lU2Cored -lU2Algorithmd -lugenedbd -lsamtoolsd
+        LIBS -= -L../../_release -lU2Core -lU2Algorithm -lU2Gui -lugenedb -lsamtools
+        LIBS += -L../../_debug -lU2Cored -lU2Algorithmd -lU2Guid -lugenedbd -lsamtoolsd
 
         unix:POST_TARGETDEPS -= ../../_release/libsamtools.a
         unix:POST_TARGETDEPS += ../../_debug/libsamtoolsd.a

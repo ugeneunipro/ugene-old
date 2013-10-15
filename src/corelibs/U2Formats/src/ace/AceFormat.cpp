@@ -19,7 +19,7 @@
  * MA 02110-1301, USA.
  */
 
-#include "ACEFormat.h"
+#include "AceFormat.h"
 #include <U2Formats/DocumentFormatUtils.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/L10n.h>
@@ -45,7 +45,7 @@ const QString ACEFormat::BQ = "BQ";
 ACEFormat::ACEFormat(QObject* p) : DocumentFormat(p, DocumentFormatFlags(0), QStringList("ace")) {
     formatName = tr("ACE");
     formatDescription = tr("ACE is a format used for storing information about genomic confgurations");
-    supportedObjectTypes+=GObjectTypes::MULTIPLE_ALIGNMENT;
+    supportedObjectTypes+=GObjectTypes::ASSEMBLY;
 }
 
 static int modifyLine(QString &line, int pos){
@@ -400,6 +400,8 @@ static inline int getSmallestOffset(const QMap<QString, int>& posMap) {
 }
 
 void ACEFormat::load(IOAdapter *io, const U2DbiRef& dbiRef, QList<GObject*> &objects, U2OpStatus &os) {
+    FAIL(tr("Not implemented"), );
+
     QByteArray readBuff(READ_BUFF_SIZE+1, 0);
     char* buff = readBuff.data();
     qint64 len = 0;
