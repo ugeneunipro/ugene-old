@@ -25,6 +25,7 @@
 #include "api/GTAction.h"
 #include "api/GTWidget.h"
 #include "api/GTGlobals.h"
+#include "GTUtilsLog.h"
 #include "runnables/ugene/corelibs/U2Gui/AlignShortReadsDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/ImportBAMFileDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/ConvertAssemblyToSAMDialogFiller.h"
@@ -40,9 +41,14 @@ GUI_TEST_CLASS_DEFINITION(test_0003) {
     // Expected: 1) The import dialog is shown.
     // 2) There are no table with the sequences check boxes in the dialog.
     // 3) The reference line edit, button and warning are shown.
+    // 2. Click the reference sequence browse button. Choose "_common_data/bam/small.bam.sorted.bam.bai".
+    // Expected: the warning is not shown.
+    // 3. Click "Import".
+    // Expected: the import task is started and finished with the error that reference format is unknown.
+    GTLogTracer l;
     GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os, testDir + "_common_data/bam/", "small.bam.sorted.bam.bai"));
     GTFileDialog::openFile(os, testDir + "_common_data/sam/", "out.sam");
-
+    CHECK_SET_ERR(l.hasError() == true, "There is no error message in log");
 }
 
 } // GUITest_SAM
