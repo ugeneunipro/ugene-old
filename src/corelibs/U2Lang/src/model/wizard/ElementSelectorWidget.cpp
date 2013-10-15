@@ -87,7 +87,7 @@ Workflow::Actor * ElementSelectorWidget::validateActorId(QList<Workflow::Actor*>
         }
     }
     if (NULL == result) {
-        os.setError(QObject::tr("The schema does not contain an element with this id: %1").arg(actorId));
+        os.setError(QObject::tr("The workflow does not contain an element with this id: %1").arg(actorId));
     }
     return result;
 }

@@ -136,10 +136,10 @@ enum {ElementsTab,SamplesTab};
 #define WS 1000
 #define MAX_FILE_SIZE 1000000
 
-static const QString XML_SCHEMA_WARNING = WorkflowView::tr("You opened obsolete schema in XML format. It is strongly recommended"
-                                                           " to clear working space and create schema from scratch.");
+static const QString XML_SCHEMA_WARNING = WorkflowView::tr("You opened obsolete workflow in XML format. It is strongly recommended"
+                                                           " to clear working space and create workflow from scratch.");
 
-static const QString XML_SCHEMA_APOLOGIZE = WorkflowView::tr("Sorry! This schema is obsolete and cannot be opened.");
+static const QString XML_SCHEMA_APOLOGIZE = WorkflowView::tr("Sorry! This workflow is obsolete and cannot be opened.");
 
 static const QString BREAKPOINT_MANAGER_LABEL = QObject::tr( "Breakpoints" );
 static const int ABSENT_WIDGET_TAB_NUMBER = -1;
@@ -600,32 +600,32 @@ void WorkflowView::rescale(bool updateGui) {
 }
 
 void WorkflowView::createActions() {
-    runAction = new QAction(tr("&Run scheme"), this);
-    runAction->setObjectName("Run scheme");
+    runAction = new QAction(tr("&Run workflow"), this);
+    runAction->setObjectName("Run workflow");
     runAction->setIcon(QIcon(":workflow_designer/images/run.png"));
     runAction->setShortcut(QKeySequence("Ctrl+R"));
     connect(runAction, SIGNAL(triggered()), SLOT(sl_launch()));
     connect(runAction, SIGNAL(triggered()), debugInfo, SLOT(sl_resumeTriggerActivated()));
 
-    stopAction = new QAction(tr("S&top scheme"), this);
+    stopAction = new QAction(tr("S&top workflow"), this);
     stopAction->setIcon(QIcon(":workflow_designer/images/stopTask.png"));
     stopAction->setEnabled(false);
     connect(stopAction, SIGNAL(triggered()), debugInfo, SLOT(sl_executionFinished()));
     connect(stopAction, SIGNAL(triggered()), SLOT(sl_stop()));
 
-    validateAction = new QAction(tr("&Validate scheme"), this);
-    validateAction->setObjectName("Validate scheme");
+    validateAction = new QAction(tr("&Validate workflow"), this);
+    validateAction->setObjectName("Validate workflow");
     validateAction->setIcon(QIcon(":workflow_designer/images/ok.png"));
     validateAction->setShortcut(QKeySequence("Ctrl+E"));
     connect(validateAction, SIGNAL(triggered()), SLOT(sl_validate()));
 
-    estimateAction = new QAction(tr("&Estimate scheme"), this);
-    estimateAction->setObjectName("Run scheme");
+    estimateAction = new QAction(tr("&Estimate workflow"), this);
+    estimateAction->setObjectName("Run workflow");
     estimateAction->setIcon(QIcon(":core/images/sum.png"));
     estimateAction->setShortcut(QKeySequence("Ctrl+R"));
     connect(estimateAction, SIGNAL(triggered()), SLOT(sl_estimate()));
 
-    pauseAction = new QAction(tr("&Pause scheme"), this);
+    pauseAction = new QAction(tr("&Pause workflow"), this);
     pauseAction->setIcon(QIcon(":workflow_designer/images/pause.png"));
     pauseAction->setShortcut(QKeySequence("Ctrl+P"));
     pauseAction->setEnabled(false);
@@ -656,18 +656,18 @@ void WorkflowView::createActions() {
     connect(tickReadyAction, SIGNAL(triggered()), bottomTabs, SLOT(update()));
     debugActions.append(tickReadyAction);
 
-    newAction = new QAction(tr("&New scheme"), this);
+    newAction = new QAction(tr("&New workflow"), this);
     newAction->setIcon(QIcon(":workflow_designer/images/filenew.png"));
     newAction->setShortcuts(QKeySequence::New);
     connect(newAction, SIGNAL(triggered()), SLOT(sl_newScene()));
 
-    saveAction = new QAction(tr("&Save scheme"), this);
+    saveAction = new QAction(tr("&Save workflow"), this);
     saveAction->setIcon(QIcon(":workflow_designer/images/filesave.png"));
     saveAction->setShortcut(QKeySequence::Save);
     saveAction->setShortcutContext(Qt::WindowShortcut);
     connect(saveAction, SIGNAL(triggered()), SLOT(sl_saveScene()));
     
-    saveAsAction = new QAction(tr("&Save scheme as..."), this);
+    saveAsAction = new QAction(tr("&Save workflow as..."), this);
     saveAsAction->setIcon(QIcon(":workflow_designer/images/filesaveas.png"));
     connect(saveAsAction, SIGNAL(triggered()), SLOT(sl_saveSceneAs()));
 
@@ -687,13 +687,13 @@ void WorkflowView::createActions() {
         connect(toggleDashboard, SIGNAL(triggered()), SLOT(sl_toggleDashboard()));
     }
 
-    loadAction = new QAction(tr("&Load schema"), this);
+    loadAction = new QAction(tr("&Load workflow"), this);
     loadAction->setIcon(QIcon(":workflow_designer/images/fileopen.png"));
     loadAction->setShortcut(QKeySequence("Ctrl+L"));
-    loadAction->setObjectName("Load schema");
+    loadAction->setObjectName("Load workflow");
     connect(loadAction, SIGNAL(triggered()), SLOT(sl_loadScene()));
 
-    exportAction = new QAction(tr("&Export scheme as image"), this);
+    exportAction = new QAction(tr("&Export workflow as image"), this);
     exportAction->setIcon(QIcon(":workflow_designer/images/export.png"));
     exportAction->setShortcut(QKeySequence("Ctrl+Shift+S"));
     connect(exportAction, SIGNAL(triggered()), SLOT(sl_exportScene()));
@@ -731,7 +731,7 @@ void WorkflowView::createActions() {
     configurePortAliasesAction->setIcon(QIcon(":workflow_designer/images/port_relationship.png"));
     connect(configurePortAliasesAction, SIGNAL(triggered()), SLOT(sl_configurePortAliases()));
 
-    importSchemaToElement = new QAction(tr("Import scheme to element..."), this);
+    importSchemaToElement = new QAction(tr("Import workflow to element..."), this);
     importSchemaToElement->setIcon(QIcon(":workflow_designer/images/import.png"));
     connect(importSchemaToElement, SIGNAL(triggered()), SLOT(sl_importSchemaToElement()));
 
@@ -1446,7 +1446,7 @@ void WorkflowView::sl_pickInfo(QListWidgetItem* info) {
 
 bool WorkflowView::sl_validate(bool notify) {
     if(schema->getProcesses().isEmpty()) {
-        QMessageBox::warning(this, tr("Empty schema!"), tr("Nothing to run: empty workflow schema"));
+        QMessageBox::warning(this, tr("Empty workflow!"), tr("Nothing to run: empty workflow"));
         return false;
     }
     
@@ -1471,17 +1471,17 @@ bool WorkflowView::sl_validate(bool notify) {
         bottomTabs->hide();
     }
     if (!good) {
-        QMessageBox::warning(this, tr("Schema cannot be executed"), 
-            tr("Please fix issues listed in the error list (located under schema)."));
+        QMessageBox::warning(this, tr("Workflow cannot be executed"), 
+            tr("Please fix issues listed in the error list (located under workflow)."));
     } else {
         if (notify) {
-            QString message = tr("Schema is valid.\n");
+            QString message = tr("Workflow is valid.\n");
             if (lst.isEmpty()) {
                 message += tr("Well done!");
             } else {
                 message += tr("There are non-critical warnings.");
             }
-            QMessageBox::information(this, tr("Schema is valid"), message);
+            QMessageBox::information(this, tr("Workflow is valid"), message);
         }
     }
     return good;
@@ -1790,7 +1790,7 @@ void WorkflowView::sl_configureParameterAliases() {
         ret = dlg.exec();
         if( ret == QDialog::Accepted ) {
             if(!dlg.validateModel()) {
-                QMessageBox::critical( this, tr("Bad input!"), tr("Aliases for schema parameters should be different!") );
+                QMessageBox::critical( this, tr("Bad input!"), tr("Aliases for workflow parameters should be different!") );
                 continue;
             }
             // clear aliases before inserting new
@@ -1823,11 +1823,10 @@ void WorkflowView::sl_configureParameterAliases() {
 void WorkflowView::sl_createGalaxyConfig() {
     bool schemeContainsAliases = schema->hasParamAliases();
     if( !schemeContainsAliases ) {
-        QMessageBox::critical( this, tr("Bad input!"), tr("Scheme does not contain any parameter aliases") );
+        QMessageBox::critical( this, tr("Bad input!"), tr("Workflow does not contain any parameter aliases") );
         return;
     }
     if( meta.url.isEmpty() ) {
-        QMessageBox::critical( this, tr("Bad input!"), tr("Save scheme before its usage") );
         return;
     }
     GalaxyConfigConfigurationDialogImpl dlg( meta.url, this );
@@ -1888,7 +1887,7 @@ void WorkflowView::sl_configurePortAliases() {
 void WorkflowView::sl_importSchemaToElement() {
     QString error;
     if (!schema->getWizards().isEmpty()) {
-        error = WorkflowView::tr("The schema contains a wizard. Sorry, but current version of "
+        error = WorkflowView::tr("The workflow contains a wizard. Sorry, but current version of "
             "UGENE doesn't support of wizards in the includes.");
         QMessageBox::critical(this, tr("Error"), error);
     } else if (WorkflowUtils::validateSchemaForIncluding(*schema, error)) {
@@ -2302,7 +2301,7 @@ void WorkflowView::sl_loadScene() {
 
     QString dir = AppContext::getSettings()->getValue(LAST_DIR, QString("")).toString();
     QString filter = DesignerUtils::getSchemaFileFilter(true, true);
-    QString url = QFileDialog::getOpenFileName(0, tr("Open workflow schema file"), dir, filter);
+    QString url = QFileDialog::getOpenFileName(0, tr("Open workflow file"), dir, filter);
     if (!url.isEmpty()) {
         AppContext::getSettings()->setValue(LAST_DIR, QFileInfo(url).absoluteDir().absolutePath());
         sl_loadScene(url, false);
@@ -2339,7 +2338,7 @@ void WorkflowView::sl_newScene() {
     bottomTabs->hide();
     scene->sl_reset();
     meta.reset();
-    meta.name = tr("New schema");
+    meta.name = tr("New workflow");
     schema->reset();
     sl_updateTitle();
     scene->setModified(false);
@@ -2401,7 +2400,7 @@ bool WorkflowView::confirmModified() {
     if (scene->isModified() && !scene->items().isEmpty()) {
         AppContext::getMainWindow()->getMDIManager()->activateWindow(this);
         int ret = QMessageBox::question(this, tr("Workflow Designer"),
-            tr("The schema has been modified.\n"
+            tr("The workflow has been modified.\n"
             "Do you want to save changes?"),
             QMessageBox::Save | QMessageBox::Discard
             | QMessageBox::Cancel,

@@ -74,7 +74,7 @@ const QString GalaxyConfigTask::GALAXY_PATH_OPTION     = "galaxy-path";
 
 GalaxyConfigTask::GalaxyConfigTask( const QString &_schemePath, const QString &_ugenePath, 
                                     const QString &_galaxyPath, const QString &_destinationPath ) :
-Task( tr( "Create Galaxy config from existing workflow scheme" ), TaskFlag_None ), schemePath(_schemePath), ugenePath(_ugenePath),
+Task( tr( "Create Galaxy config from existing workflow" ), TaskFlag_None ), schemePath(_schemePath), ugenePath(_ugenePath),
                                                                                    galaxyPath(_galaxyPath), destinationPath(_destinationPath) 
 {
 }
@@ -226,7 +226,7 @@ bool GalaxyConfigTask::getGalaxyPath() {
 
 bool GalaxyConfigTask::getSchemeName() {
     if( !schemePath.length() || !QFile::exists( schemePath ) ) {
-        stateInfo.setError( "Scheme file is incorrect. Check it exists" );
+        stateInfo.setError( "Workflow file is incorrect. Check it exists" );
         return false;
     }
     schemeName = schemePath.split("/").last();
@@ -237,7 +237,7 @@ bool GalaxyConfigTask::getSchemeContent() {
     QFile schemeFile( schemePath );
     QFileInfo schemeFileInfo( schemePath );
     if( !schemeFileInfo.isReadable() ) {
-        stateInfo.setError( QString("Scheme file %1 is not readable by this user").arg( schemePath) );
+        stateInfo.setError( QString("Workflow file %1 is not readable by this user").arg( schemePath) );
         return false;
     }
     if( !schemeFile.open(QIODevice::ReadOnly ) ) {
@@ -251,7 +251,7 @@ bool GalaxyConfigTask::getSchemeContent() {
 }
 
 void GalaxyConfigTask::setError( const QString &keyword ) {
-    stateInfo.setError( QString("Scheme file is corrupted. It does not contain %1 keyword").arg(keyword) );
+    stateInfo.setError( QString("Workflow file is corrupted. It does not contain %1 keyword").arg(keyword) );
 }
 
 bool GalaxyConfigTask::getHelpMessage() {
@@ -281,7 +281,7 @@ bool GalaxyConfigTask::getWorkflowName() {
     nameStartPosition += HRSchemaSerializer::BODY_START.length() + 1;
     const int nameEndPosition = schemeContent.indexOf( HRSchemaSerializer::BLOCK_START, nameStartPosition );
     CHECK_OPERATIONS( nameEndPosition != SUBSTRING_NOT_FOUND, 
-                      stateInfo.setError( "Scheme file is corrupted. It does not contain start of body block" ),
+                      stateInfo.setError( "Workflow file is corrupted. It does not contain start of body block" ),
                       return false;
     );
     const int nameLength = nameEndPosition - nameStartPosition;
@@ -303,11 +303,11 @@ bool GalaxyConfigTask::getParameterValue( const QString &keyword, const int sear
     const int parameterStartPosition = schemeContent.indexOf( HRSchemaSerializer::COLON, keywordPosition ) + 1,
               parameterEndPosition = schemeContent.indexOf( HRSchemaSerializer::SEMICOLON, parameterStartPosition );
     CHECK_OPERATIONS( parameterStartPosition != SUBSTRING_NOT_FOUND,
-                      stateInfo.setError( "Scheme file is corrupted. Begin of alias value is not found" ),
+                      stateInfo.setError( "Workflow file is corrupted. Begin of alias value is not found" ),
                       return false;
                     );
     CHECK_OPERATIONS( parameterEndPosition != SUBSTRING_NOT_FOUND,
-                      stateInfo.setError( "Scheme file is corrupted. End of alias value is not found" ),
+                      stateInfo.setError( "Worklow file is corrupted. End of alias value is not found" ),
                       return false;
                     );
     const int parameterLength = parameterEndPosition - parameterStartPosition;
@@ -334,7 +334,7 @@ bool GalaxyConfigTask::defineAliases() {
     while ( elementNameStartPosition < visualKeywordPosition ) {
         const int elementNameEndPosition = schemeContent.indexOf( HRSchemaSerializer::DOT, elementNameStartPosition );
         CHECK_OPERATIONS( elementNameEndPosition != SUBSTRING_NOT_FOUND, 
-                          stateInfo.setError( "Scheme file contains wrong alias" ),
+                          stateInfo.setError( "Workflow file contains wrong alias" ),
                           return false;
                         );
         const int elementNameLength = elementNameEndPosition - elementNameStartPosition;
@@ -874,7 +874,7 @@ bool GalaxyConfigTask::createConfigForGalaxy() {
 
     galaxyConfigFile.close();
     coreLog.info("Tool config was created");
-    coreLog.info("Scheme config path is " + schemeConfigPath);
+    coreLog.info("Workflow config path is " + schemeConfigPath);
     return true;
 }
 

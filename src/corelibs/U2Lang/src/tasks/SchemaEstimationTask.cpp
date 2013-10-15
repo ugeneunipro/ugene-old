@@ -41,7 +41,7 @@ EstimationResult::EstimationResult() {
 }
 
 SchemaEstimationTask::SchemaEstimationTask(const Schema *_schema, const Metadata *_meta)
-: Task(tr("Schema estimation task"), TaskFlag_None), schema(_schema), meta(_meta)
+: Task(tr("Workflow estimation task"), TaskFlag_None), schema(_schema), meta(_meta)
 {
 
 }

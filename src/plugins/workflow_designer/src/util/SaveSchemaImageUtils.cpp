@@ -41,11 +41,11 @@ Logger log("Save schema image task");
  * ProduceSchemaImageLinkTask
  ********************************/
 ProduceSchemaImageLinkTask::ProduceSchemaImageLinkTask(const QString & schemaName) 
-: Task(tr("Save workflow schema image"), TaskFlags_NR_FOSCOE), schema(NULL) {
+: Task(tr("Save workflow image"), TaskFlags_NR_FOSCOE), schema(NULL) {
     
     schemaPath = WorkflowUtils::findPathToSchemaFile( schemaName );
     if( schemaPath.isEmpty() ) {
-        setError( tr( "Cannot find schema: %1" ).arg( schemaName ) );
+        setError( tr( "Cannot find workflow: %1" ).arg( schemaName ) );
         return;
     }
 }
@@ -128,7 +128,7 @@ static QString makeArgumentPair( const QString & argName, const QString & value 
 static QString getSchemaGraphInExtendedDotNotation(Schema * schema, const Metadata & meta) {
     assert(schema != NULL);
     QString graph = "digraph{";
-    graph += QString("label=\"Schema %1\";").arg(meta.name);
+    graph += QString("label=\"Workflow %1\";").arg(meta.name);
     graph += QString("compound=true;");
     graph += QString("rankdir=LR;");
     graph += QString("bgcolor=white;");

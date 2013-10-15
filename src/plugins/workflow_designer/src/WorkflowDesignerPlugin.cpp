@@ -161,7 +161,7 @@ void WorkflowDesignerPlugin::registerCMDLineHelp() {
         RUN_WORKFLOW,
         tr("Runs the specified task."),
         tr("Runs the specified task. A path to a user-defined UGENE workflow"
-           " schema can be used as a task name."),
+           " be used as a task name."),
         tr("<task_name> [<task_parameter>=value ...]"));
 
     cmdLineRegistry->registerCMDLineHelpProvider( taskSection );
@@ -177,7 +177,7 @@ void WorkflowDesignerPlugin::registerCMDLineHelp() {
     CMDLineHelpProvider * galaxyConfigSection = new CMDLineHelpProvider(
         GalaxyConfigTask::GALAXY_CONFIG_OPTION,
         tr("Creates new Galaxy tool config."),
-        tr("Creates new Galaxy tool config from existing workflow schema. Paths to UGENE"
+        tr("Creates new Galaxy tool config from existing workflow. Paths to UGENE"
         " and Galaxy can be set"),
         tr("<uwl-file> [--ugene-path=value] [--galaxy-path=value]"));
 

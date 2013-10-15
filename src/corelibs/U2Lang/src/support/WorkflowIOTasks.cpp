@@ -38,13 +38,13 @@ using namespace Workflow;
  * LoadWorkflowTask
  ************************************/
 LoadWorkflowTask::LoadWorkflowTask(Schema* s, Workflow::Metadata* m, const QString& u):
-Task(tr("Loading schema"), TaskFlag_None),
+Task(tr("Loading workflow"), TaskFlag_None),
     url(u), schema(s), meta(m) {
     assert(schema != NULL);
 }
 
 void LoadWorkflowTask::run() {
-    ioLog.details(tr("Loading workflow schema from file: %1").arg(url));
+    ioLog.details(tr("Loading workflow from file: %1").arg(url));
 
     QFile file(url);
     if (!file.open(QIODevice::ReadOnly)) {
@@ -106,7 +106,7 @@ LoadWorkflowTask::FileFormat LoadWorkflowTask::detectFormat(const QString & rawD
  * SaveWorkflowTask
  ************************************/
 SaveWorkflowTask::SaveWorkflowTask(Schema* schema, const Metadata& meta, bool copyMode) :
-Task(tr("Save workflow schema task"), TaskFlag_None), url(meta.url) {
+Task(tr("Save workflow task"), TaskFlag_None), url(meta.url) {
     assert(schema != NULL);
     rawData = HRSchemaSerializer::schema2String(*schema, &meta, copyMode);
 }

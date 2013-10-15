@@ -265,7 +265,7 @@ void WorkflowIterationRunTask::prepare() {
     
     bool res = schema->expand();
     if (!res) {
-        stateInfo.setError(tr("Failed to preprocess the schema. Some of included files are broken"));
+        stateInfo.setError(tr("Failed to preprocess the workflow. Some of included files are broken"));
         return;
     }
     DomainFactory* df = WorkflowEnv::getDomainRegistry()->getById(schema->getDomain());
@@ -379,7 +379,7 @@ Task::ReportResult WorkflowIterationRunTask::report() {
         scheduler->cleanup();
         if (!scheduler->isDone()) {
             if(!hasError() && !isCanceled()) {
-                setError(tr("No workers are ready, while not all workers are done. Schema is broken?"));
+                setError(tr("No workers are ready, while not all workers are done. Workflow is broken?"));
             }
         }
     }

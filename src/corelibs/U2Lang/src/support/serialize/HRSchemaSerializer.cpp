@@ -601,7 +601,7 @@ bool HRSchemaSerializer::isHeaderLine(const QString &line) {
 void HRSchemaSerializer::checkHeaderLine(const QString &line, Tokenizer &tokenizer) {
     if(!isHeaderLine(line)) {
         if( tokenizer.notEmpty() && line + " " + tokenizer.take() == OLD_XML_HEADER ) {
-             throw ReadFailed(tr("XML schema format is obsolete and not supported"));
+             throw ReadFailed(tr("XML workflow format is obsolete and not supported"));
         }
         throw ReadFailed(tr("Bad header: expected '%1', got '%2'").arg(HEADER_LINE).arg(line));
      }
@@ -761,7 +761,7 @@ void HRSchemaSerializer::parseBodyHeader(Tokenizer & tokenizer, Metadata * meta,
     
     if(tokenizer.look() == BLOCK_START) {
         if(needName) {
-            coreLog.details(tr("Schema name not specified"));
+            coreLog.details(tr("Workflow name not specified"));
         }
     } else {
         setIfNotNull<QString>(tokenizer.take(), meta == NULL ? NULL : &meta->name);

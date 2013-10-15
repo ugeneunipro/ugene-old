@@ -101,7 +101,7 @@ void SequencesToMSAWorker::sl_onTaskFinished(Task* t) {
         outPort->put( Message(BaseTypes::MULTIPLE_ALIGNMENT_TYPE(), qVariantFromValue<SharedDbiDataHandler>(msaId)) );
     }
 
-    SAFE_POINT(inPort->isEnded(), "Internal error. The scheme is broken", );
+    SAFE_POINT(inPort->isEnded(), "Internal error. The workflow is broken", );
     if (inPort->isEnded()) {
         outPort->setEnded();
         setDone();

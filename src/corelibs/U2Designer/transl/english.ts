@@ -424,7 +424,7 @@
     <name>WorkflowUtils</name>
     <message>
         <location filename="../src/DesignerUtils.cpp" line="35"/>
-        <source>UGENE workflow schemes</source>
+        <source>UGENE workflows</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

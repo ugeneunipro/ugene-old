@@ -552,7 +552,7 @@ Actor * WorkflowUtils::findActorByParamAlias(const QList<Actor*> & procs, const 
         return NULL;
     } else if( actors.size() > 1 ) {
         if(writeLog) {
-            coreLog.error(WorkflowUtils::tr("%1 actors in schema have '%2' alias").arg(actors.size()).arg(alias));
+            coreLog.error(WorkflowUtils::tr("%1 actors in workflow have '%2' alias").arg(actors.size()).arg(alias));
         }
     }
     
@@ -649,7 +649,7 @@ bool WorkflowUtils::validateSchemaForIncluding(const Schema &s, QString &error) 
 
     const QList<PortAlias> &portAliases = s.getPortAliases();
     if (portAliases.isEmpty()) {
-        error = tr("The schema has not any aliased ports");
+        error = tr("The workflow has not any aliased ports");
         return false;
     }
 

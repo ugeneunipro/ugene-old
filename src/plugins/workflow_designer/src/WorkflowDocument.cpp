@@ -74,15 +74,15 @@ GObject* WorkflowGObject::clone(const U2DbiRef&, U2OpStatus&) const {
 
 WorkflowDocFormat::WorkflowDocFormat(QObject* p) 
 : DocumentFormat(p, DocumentFormatFlags_W1, QStringList(WorkflowUtils::WD_FILE_EXTENSIONS) << WorkflowUtils::WD_XML_FORMAT_EXTENSION),
-  formatName(tr("Workflow Schema")) {
+  formatName(tr("Workflow")) {
     supportedObjectTypes += WorkflowGObject::TYPE;
     formatDescription = tr("WorkflowDoc is a format used for creating/editing/storing/retrieving"
-        "workflow schema with the text file");
+        "workflow with the text file");
 }
 
 Document* WorkflowDocFormat::createNewLoadedDocument(IOAdapterFactory* io, const QString& url, U2OpStatus& os, const QVariantMap& fs) {
     Document* d = DocumentFormat::createNewLoadedDocument(io, url, os, fs);
-    GObject* o = new WorkflowGObject(tr("Workflow Schema"), "");
+    GObject* o = new WorkflowGObject(tr("Workflow"), "");
     d->addObject(o);
     return d;
 }
@@ -107,7 +107,7 @@ Document* WorkflowDocFormat::loadDocument(IOAdapter* io, const U2DbiRef& targetD
     
     QList<GObject*> objects;
     QString data = QString::fromUtf8(rawData.data(), rawData.size());
-    objects.append(new WorkflowGObject(tr("Workflow Schema"), data));
+    objects.append(new WorkflowGObject(tr("Workflow"), data));
     return new Document(this, io->getFactory(), io->getURL(), targetDb, objects, hints);
 }
 

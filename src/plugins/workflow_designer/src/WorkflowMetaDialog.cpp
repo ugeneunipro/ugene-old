@@ -75,7 +75,7 @@ void WorkflowMetaDialog::sl_onBrowse() {
         url = AppContext::getSettings()->getValue(LAST_DIR, QString("")).toString();
     }
     QString filter = DesignerUtils::getSchemaFileFilter(false);
-    url = QFileDialog::getSaveFileName(0, tr("Save workflow schema to file"), url, filter);
+    url = QFileDialog::getSaveFileName(0, tr("Save workflow to file"), url, filter);
     if (!url.isEmpty()) {
         AppContext::getSettings()->setValue(LAST_DIR, QFileInfo(url).absoluteDir().absolutePath());
         urlEdit->setText(url);

@@ -157,7 +157,7 @@ void RemoteWorkflowRunTask::prepare()
     taskSettings.insert(CoreLibConstants::DATA_IN_ATTR, inputUrls);
     taskSettings.insert(CoreLibConstants::DATA_OUT_ATTR, outputUrls);
 
-    rsLog.trace("Schema is preprocessed for sending to remote service");
+    rsLog.trace("Workflow is preprocessed for sending to remote service");
 
 #ifdef _DEBUG
     assert(!WorkflowUtils::WD_FILE_EXTENSIONS.isEmpty());

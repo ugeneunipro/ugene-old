@@ -243,7 +243,7 @@ p, li { white-space: pre-wrap; }
     <name>ImportSchemaDialog</name>
     <message>
         <location filename="../src/ui/ImportSchemaDialog.ui" line="14"/>
-        <source>Import schema to element</source>
+        <source>Import workflow to element</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -332,7 +332,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../src/ui/SchemaAliasesConfigurationDialog.ui" line="69"/>
-        <source>Schema parameter</source>
+        <source>Workflow parameter</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -365,7 +365,7 @@ p, li { white-space: pre-wrap; }
     <name>SchemaConfigurationDialog</name>
     <message>
         <location filename="../src/ui/SchemaConfigurationDialog.ui" line="13"/>
-        <source>Configure Schema</source>
+        <source>Configure Workflow</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -696,7 +696,7 @@ You could also reset the dialog to the initial state.</source>
     </message>
     <message>
         <location filename="../src/IterationListWidget.cpp" line="315"/>
-        <source>If you need to process each item in the list with different schema parameters,
+        <source>If you need to process each item in the list with different workflow parameters,
 the Designer can create separate iterations for each item now.
 Otherwise, if all items should be processed uniformly,
 it is better to leave the list intact.</source>
@@ -2296,7 +2296,7 @@ it is better to leave the list intact.</source>
     <name>U2::LocalWorkflow::SchemaWorker</name>
     <message>
         <location filename="../src/library/SchemaWorker.cpp" line="59"/>
-        <source>Some schema is in this element</source>
+        <source>Some workflow is in this element</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2760,12 +2760,12 @@ it is better to leave the list intact.</source>
     <name>U2::ProduceSchemaImageLinkTask</name>
     <message>
         <location filename="../src/util/SaveSchemaImageUtils.cpp" line="44"/>
-        <source>Save workflow schema image</source>
+        <source>Save workflow workflow image</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/util/SaveSchemaImageUtils.cpp" line="48"/>
-        <source>Cannot find schema: %1</source>
+        <source>Cannot find workflow: %1</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3144,7 +3144,7 @@ it is better to leave the list intact.</source>
     </message>
     <message>
         <location filename="../src/WorkflowDesignerPlugin.cpp" line="149"/>
-        <source>Runs the specified task. A path to a user-defined UGENE workflow schema can be used as a task name.</source>
+        <source>Runs the specified task. A path to a user-defined UGENE workflow can be used as a task name.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3197,12 +3197,12 @@ it is better to leave the list intact.</source>
         <location filename="../src/WorkflowDocument.cpp" line="77"/>
         <location filename="../src/WorkflowDocument.cpp" line="85"/>
         <location filename="../src/WorkflowDocument.cpp" line="110"/>
-        <source>Workflow Schema</source>
+        <source>Workflow</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/WorkflowDocument.cpp" line="79"/>
-        <source>WorkflowDoc is a format used for creating/editing/storing/retrievingworkflow schema with the text file</source>
+        <source>WorkflowDoc is a format used for creating/editing/storing/retrieving workflow with the text file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3284,7 +3284,7 @@ it is better to leave the list intact.</source>
     <name>U2::WorkflowMetaDialog</name>
     <message>
         <location filename="../src/WorkflowMetaDialog.cpp" line="78"/>
-        <source>Save workflow schema to file</source>
+        <source>Save workflow to file</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3351,12 +3351,12 @@ it is better to leave the list intact.</source>
     </message>
     <message>
         <location filename="../src/cmdline/WorkflowCMDLineTasks.cpp" line="89"/>
-        <source>Cannot find schema: %1</source>
+        <source>Cannot find workflow: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/cmdline/WorkflowCMDLineTasks.cpp" line="118"/>
-        <source>alias &apos;%1&apos; not set in schema</source>
+        <source>alias &apos;%1&apos; not set in workflow</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3371,7 +3371,7 @@ it is better to leave the list intact.</source>
     </message>
     <message>
         <location filename="../src/cmdline/WorkflowCMDLineTasks.cpp" line="139"/>
-        <source>Incorrect value for &apos;%1&apos;, null or default value passed to schema</source>
+        <source>Incorrect value for &apos;%1&apos;, null or default value passed to workflow</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3437,12 +3437,12 @@ it is better to leave the list intact.</source>
     </message>
     <message>
         <location filename="../src/WorkflowViewController.cpp" line="140"/>
-        <source>You opened obsolete schema in XML format. It is strongly recommended to clear working space and create schema from scratch.</source>
+        <source>You opened obsolete workflow in XML format. It is strongly recommended to clear working space and create workflow from scratch.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/WorkflowViewController.cpp" line="143"/>
-        <source>Sorry! This schema is obsolete and cannot be opened.</source>
+        <source>Sorry! This workflow is obsolete and cannot be opened.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3487,32 +3487,32 @@ it is better to leave the list intact.</source>
     </message>
     <message>
         <location filename="../src/WorkflowViewController.cpp" line="310"/>
-        <source>&amp;Run schema</source>
+        <source>&amp;Run workflow</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/WorkflowViewController.cpp" line="315"/>
-        <source>S&amp;top schema</source>
+        <source>S&amp;top workflow</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/WorkflowViewController.cpp" line="319"/>
-        <source>&amp;Validate schema</source>
+        <source>&amp;Validate workflow</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/WorkflowViewController.cpp" line="324"/>
-        <source>&amp;New schema</source>
+        <source>&amp;New workflow</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/WorkflowViewController.cpp" line="329"/>
-        <source>&amp;Save schema</source>
+        <source>&amp;Save workflow</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/WorkflowViewController.cpp" line="338"/>
-        <source>&amp;Save schema as...</source>
+        <source>&amp;Save workflow as...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3522,12 +3522,12 @@ it is better to leave the list intact.</source>
     </message>
     <message>
         <location filename="../src/WorkflowViewController.cpp" line="345"/>
-        <source>&amp;Load schema</source>
+        <source>&amp;Load workflow</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/WorkflowViewController.cpp" line="350"/>
-        <source>&amp;Export schema</source>
+        <source>&amp;Export workflow</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3655,7 +3655,7 @@ it is better to leave the list intact.</source>
     </message>
     <message>
         <location filename="../src/WorkflowViewController.cpp" line="368"/>
-        <source>Import schema to element...</source>
+        <source>Import workflow to element...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3675,32 +3675,32 @@ it is better to leave the list intact.</source>
     </message>
     <message>
         <location filename="../src/WorkflowViewController.cpp" line="1024"/>
-        <source>Empty schema!</source>
+        <source>Empty workflow!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/WorkflowViewController.cpp" line="1024"/>
-        <source>Nothing to run: empty workflow schema</source>
+        <source>Nothing to run: empty workflow</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/WorkflowViewController.cpp" line="1047"/>
-        <source>Schema cannot be executed</source>
+        <source>Workflow cannot be executed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/WorkflowViewController.cpp" line="1048"/>
-        <source>Please fix issues listed in the error list (located under schema).</source>
+        <source>Please fix issues listed in the error list (located under workflow).</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/WorkflowViewController.cpp" line="1051"/>
-        <source>Schema is valid</source>
+        <source>Workflow is valid</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/WorkflowViewController.cpp" line="1052"/>
-        <source>Schema is valid.
+        <source>Workflow is valid.
 Well done!</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3721,12 +3721,12 @@ Well done!</source>
     </message>
     <message>
         <location filename="../src/WorkflowViewController.cpp" line="1170"/>
-        <source>Aliases for schema parameters should be different!</source>
+        <source>Aliases for workflow parameters should be different!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/WorkflowViewController.cpp" line="1247"/>
-        <source>The schema contains a wizard. Sorry, but current version of UGENE doesn&apos;t support of wizards in the includes.</source>
+        <source>The workflow contains a wizard. Sorry, but current version of UGENE doesn&apos;t support of wizards in the includes.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3742,12 +3742,12 @@ Well done!</source>
     </message>
     <message>
         <location filename="../src/WorkflowViewController.cpp" line="1571"/>
-        <source>Open workflow schema file</source>
+        <source>Open workflow file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/WorkflowViewController.cpp" line="1600"/>
-        <source>New schema</source>
+        <source>New workflow</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3757,7 +3757,7 @@ Well done!</source>
     </message>
     <message>
         <location filename="../src/WorkflowViewController.cpp" line="1660"/>
-        <source>The schema has been modified.
+        <source>The workflow has been modified.
 Do you want to save changes?</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3910,7 +3910,7 @@ Do you want to save changes?</source>
     </message>
     <message>
         <location filename="../src/ui/WorkflowSettingsWidget.ui" line="156"/>
-        <source>Directory for included schema elements</source>
+        <source>Directory for included workflow elements</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

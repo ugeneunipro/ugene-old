@@ -86,7 +86,7 @@ void WorkflowRunFromCMDLineBase::processLoadSchemaTask( const QString & schemaNa
 LoadWorkflowTask * WorkflowRunFromCMDLineBase::prepareLoadSchemaTask( const QString & schemaName ) {
     QString pathToSchema = WorkflowUtils::findPathToSchemaFile( schemaName );
     if( pathToSchema.isEmpty() ) {
-        coreLog.error( tr( "Cannot find schema: %1" ).arg( schemaName ) );
+        coreLog.error( tr( "Cannot find workflow: %1" ).arg( schemaName ) );
         return NULL;
     }
 
@@ -115,7 +115,7 @@ static void setSchemaCMDLineOptions( Schema * schema, int optionsStartAtIdx ) {
         Actor * actor = WorkflowUtils::findActorByParamAlias( schema->getProcesses(), paramAlias, paramName );
         if( actor == NULL ) {
             assert( paramName.isEmpty() );
-            coreLog.details( WorkflowRunFromCMDLineBase::tr( "alias '%1' not set in schema" ).arg( paramAlias ) );
+            coreLog.details( WorkflowRunFromCMDLineBase::tr( "alias '%1' not set in workflow" ).arg( paramAlias ) );
             continue;
         }
 
@@ -136,7 +136,7 @@ static void setSchemaCMDLineOptions( Schema * schema, int optionsStartAtIdx ) {
         bool isOk;
         QVariant value = valueFactory->getValueFromString( param.second, &isOk );
         if(!isOk){
-            coreLog.error( WorkflowRunFromCMDLineBase::tr( "Incorrect value for '%1', null or default value passed to schema" ).
+            coreLog.error( WorkflowRunFromCMDLineBase::tr( "Incorrect value for '%1', null or default value passed to workflow" ).
                 arg( param.first ));
             continue;
         }

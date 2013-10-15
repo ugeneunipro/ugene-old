@@ -286,7 +286,7 @@ void SchemaSerializer::updatePortBindings(const QList<Actor*> & procs) {
                     if(inP != NULL && inPType->isMap() && inPTypeMap.keys().size() == 1) {
                         Descriptor d = inPTypeMap.keys().at(0);
                         QString newVal = actorId + ":" + d.getId();
-                        coreLog.details(QString("remapping old xml schema for key %1: old value: %2, new value: %3").
+                        coreLog.details(QString("remapping old xml workflow for key %1: old value: %2, new value: %3").
                             arg(key).arg(val).arg(newVal));
                         port->setBusMapValue(key, newVal);
                     }

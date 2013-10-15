@@ -251,7 +251,7 @@ void WorkflowEditor::commitDatasets(const QString &attrId, const QList<Dataset> 
 }
 
 void WorkflowEditor::sendModified() {
-    uiLog.trace("committing schema data");
+    uiLog.trace("committing workflow data");
     owner->onModified();
 }
 

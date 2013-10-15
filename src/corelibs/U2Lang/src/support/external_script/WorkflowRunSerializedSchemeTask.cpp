@@ -106,7 +106,7 @@ QList<Task *> WorkflowRunSerializedSchemeTask::onSubTaskFinished( Task *subtask 
 LoadWorkflowTask * WorkflowRunSerializedSchemeTask::createLoadSchemeTask( ) {
     const QString approvedPath = WorkflowUtils::findPathToSchemaFile( pathToScheme );
     if( approvedPath.isEmpty( ) ) {
-        setError( tr( "Cannot find schema: %1" ).arg( pathToScheme ) );
+        setError( tr( "Cannot find workflow: %1" ).arg( pathToScheme ) );
         return NULL;
     }
 

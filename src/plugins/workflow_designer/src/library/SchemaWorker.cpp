@@ -56,7 +56,7 @@ void SchemaWorker::cleanup() {
 }
 
 QString SchemaWorkerPrompter::composeRichDoc() {
-    return SchemaWorker::tr("Some schema is in this element");
+    return SchemaWorker::tr("Some workflow is in this element");
 }
 
 bool SchemaWorkerFactory::init(Schema *schema, const QString &name, const QString &actorFilePath) {
