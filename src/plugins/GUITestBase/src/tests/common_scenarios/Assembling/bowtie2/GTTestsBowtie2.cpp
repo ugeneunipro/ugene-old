@@ -22,13 +22,49 @@
 #include "GTUtilsDialog.h"
 
 #include "api/GTMenu.h"
+#include "api/GTFile.h"
 #include "runnables/ugene/corelibs/U2Gui/AlignShortReadsDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/ImportBAMFileDialogFiller.h"
+#include "runnables/ugene/corelibs/U2Gui/BuildIndexDialogFiller.h"
 
 #include "GTTestsBowtie2.h"
 
 namespace U2 {
 namespace GUITest_Bowtie2 {
+
+GUI_TEST_CLASS_DEFINITION(test_0001) {
+    //1. {Tools -> Align to reference -> build index}
+    //2. Fill the dialog:
+    //  {Align short reads method} : Bowtie2
+    //  {Reference sequence} : _common_data/fasta/human_T1_cutted.fa
+    //  {Index file name} : _tmp/bowtie2/human_T1_cutted
+    // And click Start.
+    GTUtilsDialog::waitForDialog(os, new BuildIndexDialogFiller(os,
+                                            testDir + "_common_data/fasta/",
+                                            "human_T1_cutted.fa",
+                                            "Bowtie2",
+                                            false,
+                                            testDir + "_tmp/",
+                                            "human_T1_cutted"));
+
+    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_TOOLS),
+                          QStringList() << "Align to reference" << "Build index" );
+
+    // Expected state: there are six files as result:
+    //human_T1_cutted.1.bt2, human_T1_cutted.2.bt2, human_T1_cutted.3.bt2, human_T1_cutted.4.bt2,
+    //human_T1_cutted.rev.1.bt2, human_T1_cutted.rev.2.bt2
+    QStringList indexList;
+    for (int i = 0; i < 4; i++) {
+        indexList << testDir + "_tmp/human_T1_cutted." + QString::number(i + 1) + ".bt2";
+    }
+    indexList << testDir + "_tmp/human_T1_cutted.rev.1.bt2";
+    indexList << testDir + "_tmp/human_T1_cutted.rev.2.bt2";
+
+    GTGlobals::sleep(500);
+    for (int i = 0; i < indexList.size(); i++){
+        CHECK_SET_ERR(GTFile::check(os, indexList[i]), "Index file " + indexList[i] + " is missing!");
+    }
+}
 
 GUI_TEST_CLASS_DEFINITION(test_0005) {
     GTUtilsDialog::waitForDialog(os, new AlignShortReadsFiller(os,

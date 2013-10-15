@@ -39,6 +39,9 @@ public:
     // restores file and deletes backup. fail if there is no backup or can't write to the given file
     static void restore(U2OpStatus &os, const QString&);
 
+    // checks if file exists
+    static bool check(U2OpStatus &os, const QString&);
+
     static const QString backupPostfix;
 };
 

@@ -40,6 +40,7 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/runnables/ugene/corelibs/U2Gui/AlignShortReadsDialogFiller.h \
             src/runnables/ugene/corelibs/U2Gui/ExportImageDialogFiller.h \
             src/runnables/ugene/corelibs/U2Gui/ConvertAssemblyToSAMDialogFiller.h \
+            src/runnables/ugene/corelibs/U2Gui/BuildIndexDialogFiller.h \
 #   Runnables / UGENE / corelibs / U2View
             src/runnables/ugene/corelibs/U2View/utils_smith_waterman/SmithWatermanDialogBaseFiller.h \
             src/runnables/ugene/corelibs/U2View/ov_msa/DeleteGapsDialogFiller.h \
@@ -203,6 +204,7 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/runnables/ugene/corelibs/U2Gui/ImportBAMFileDialogFiller.cpp \
             src/runnables/ugene/corelibs/U2Gui/ExportImageDialogFiller.cpp \
             src/runnables/ugene/corelibs/U2Gui/ConvertAssemblyToSAMDialogFiller.cpp \
+            src/runnables/ugene/corelibs/U2Gui/BuildIndexDialogFiller.cpp \
 #   Runnables / UGENE / corelibs / U2View
             src/runnables/ugene/corelibs/U2View/utils_smith_waterman/SmithWatermanDialogBaseFiller.cpp \
             src/runnables/ugene/corelibs/U2View/ov_msa/DeleteGapsDialogFiller.cpp \

@@ -1854,6 +1854,34 @@ GUI_TEST_CLASS_DEFINITION( test_2164 ) {
     GTGlobals::sleep(500);
 }
 
+GUI_TEST_CLASS_DEFINITION( test_2165 ) {
+    GTLogTracer l;
+    //1. Open human_t1
+    GTFileDialog::openFile(os, dataDir+"samples/FASTA/", "human_T1.fa");
+
+    //2. Copy the whole sequence to the clipboard
+    GTWidget::click(os, GTWidget::findWidget(os, "annotated_DNA_scrollarea"));
+    GTUtilsDialog::waitForDialog(os, new selectSequenceRegionDialogFiller(os));
+    GTWidget::click(os, GTWidget::findWidget(os, "select_range_action"));
+    GTGlobals::sleep(500);
+
+    GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
+
+    //3. Past the whole sequence to the find pattern field
+    GTWidget::click(os, GTWidget::findWidget(os, "OP_FIND_PATTERN"));
+    GTWidget::click(os, GTWidget::findWidget(os, "textPattern"));
+
+    GTKeyboardDriver::keyClick(os, 'v', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(500);
+
+    //4. Press the "Search" button
+    GTWidget::click(os, GTWidget::findWidget(os, "btnSearch"));
+    GTGlobals::sleep(500);
+
+    //Expected: UGENE finds the sequence or shows a error message
+    CHECK_SET_ERR(l.hasError() == true, "Error message expected in log");
+}
+
 GUI_TEST_CLASS_DEFINITION( test_2167 ) {
     // 1. Open "_common_data/fasta/AMINO.fa".
     GTFileDialog::openFile(os, testDir + "_common_data/fasta/", "AMINO.fa");
