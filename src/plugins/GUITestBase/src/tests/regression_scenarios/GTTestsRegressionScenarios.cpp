@@ -58,6 +58,7 @@
 #include "runnables/ugene/corelibs/U2Gui/ConvertAssemblyToSAMDialogFiller.h"
 #include "runnables/ugene/ugeneui/SelectDocumentFormatDialogFiller.h"
 #include "runnables/ugene/ugeneui/SequenceReadingModeSelectorDialogFiller.h"
+#include "runnables/ugene/ugeneui/NCBISearchDialogFiller.h"
 #include "runnables/ugene/plugins/workflow_designer/StartupDialogFiller.h"
 #include "runnables/ugene/plugins_3rdparty/umuscle/MuscleDialogFiller.h"
 #include "runnables/ugene/plugins_3rdparty/kalign/KalignDialogFiller.h"
@@ -2215,6 +2216,24 @@ GUI_TEST_CLASS_DEFINITION( test_2224 )
     const QString undoneContent = GTClipboard::text( os );
     CHECK_SET_ERR( undoneContent == initialContent,
         "Scribbling works wrong. Found text is:\n" + undoneContent );
+}
+
+GUI_TEST_CLASS_DEFINITION( test_2225_1 ){
+    Runnable *filler = new NCBISearchDialogFiller(os, "rat", true);
+
+    GTUtilsDialog::waitForDialog(os, filler);
+
+    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), ACTION_PROJECTSUPPORT__SEARCH_GENBANK, GTGlobals::UseKey);
+    GTGlobals::sleep();
+}
+
+GUI_TEST_CLASS_DEFINITION( test_2225_2 ){
+    Runnable *filler = new NCBISearchDialogFiller(os, "rat");
+
+    GTUtilsDialog::waitForDialog(os, filler);
+
+    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), ACTION_PROJECTSUPPORT__SEARCH_GENBANK, GTGlobals::UseKey);
+    GTGlobals::sleep();
 }
 
 } // GUITest_regression_scenarios namespace

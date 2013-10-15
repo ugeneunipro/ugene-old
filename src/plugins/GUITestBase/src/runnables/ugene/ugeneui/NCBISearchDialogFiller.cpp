@@ -35,12 +35,19 @@ void NCBISearchDialogFiller::run(){
     QWidget* dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog, "activeModalWidget is NULL");
 
-    QLineEdit* queryEdit = qobject_cast<QLineEdit*>(GTWidget::findWidget(os,"queryEdit"));
-    GT_CHECK(queryEdit,"queryEdit line not found");
-    GTLineEdit::setText(os, queryEdit, query);
+    GTGlobals::sleep(500);
+
+    QLineEdit* queryEditLE = qobject_cast<QLineEdit*>(GTWidget::findWidget(os,"queryEditLineEdit", dialog));
+    GT_CHECK(queryEditLE != NULL,"queryEdit line not found");
+    GTLineEdit::setText(os, queryEditLE, query);
 
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
     GTGlobals::sleep(3000);
+
+    if (doubleEnter) {
+        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
+        GTGlobals::sleep(3000);
+    }
 
     GTWidget::click(os, GTWidget::findWidget(os, "closeButton"));
 }
