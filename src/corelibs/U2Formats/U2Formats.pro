@@ -3,6 +3,7 @@ include (U2Formats.pri)
 # Input
 HEADERS += src/ABIFormat.h \
            src/AbstractVariationFormat.h \
+           src/ACEFormat.h \
            src/ASNFormat.h \
            src/BAMUtils.h \
            src/BedFormat.h \
@@ -42,11 +43,6 @@ HEADERS += src/ABIFormat.h \
            src/StreamSequenceWriter.h \
            src/SwissProtPlainTextFormat.h \
            src/VCF4VariationFormat.h \
-           src/ace/ConvertAceToSqliteDialog.h \
-           src/ace/ConvertAceToSqliteTask.h \
-           src/ace/AceFormat.h \
-           src/ace/AceImporter.h \
-           src/ace/AceImportUtils.h \
            src/sqlite_dbi/SQLiteAssemblyDbi.h \
            src/sqlite_dbi/SQLiteAttributeDbi.h \
            src/sqlite_dbi/SQLiteDbi.h \
@@ -59,14 +55,14 @@ HEADERS += src/ABIFormat.h \
            src/sqlite_dbi/SQLiteVariantDbi.h \
            src/sqlite_dbi/SQLiteSNPTablesDbi.h \
            src/sqlite_dbi/SQLiteKnownMutationsDbi.h \
+           src/tasks/ConvertAssemblyToSamTask.h \
            src/sqlite_dbi/assembly/AssemblyPackAlgorithm.h \
            src/sqlite_dbi/assembly/MultiTableAssemblyAdapter.h \
            src/sqlite_dbi/assembly/RTreeAssemblyAdapter.h \
-           src/sqlite_dbi/assembly/SingleTableAssemblyAdapter.h \
-           src/tasks/ConvertAssemblyToSamTask.h
-FORMS += src/ace/ui/ConvertAceToSqliteDialog.ui
+           src/sqlite_dbi/assembly/SingleTableAssemblyAdapter.h
 SOURCES += src/ABIFormat.cpp \
            src/AbstractVariationFormat.cpp \
+           src/ACEFormat.cpp \
            src/ASNFormat.cpp \
            src/BAMUtils.cpp \
            src/BedFormat.cpp \
@@ -104,11 +100,6 @@ SOURCES += src/ABIFormat.cpp \
            src/StreamSequenceWriter.cpp \
            src/SwissProtPlainTextFormat.cpp \
            src/VCF4VariationFormat.cpp \
-           src/ace/ConvertAceToSqliteDialog.cpp \
-           src/ace/ConvertAceToSqliteTask.cpp \
-           src/ace/AceFormat.cpp \
-           src/ace/AceImporter.cpp \
-           src/ace/AceImportUtils.cpp \
            src/sqlite_dbi/SQLiteAssemblyDbi.cpp \
            src/sqlite_dbi/SQLiteAttributeDbi.cpp \
            src/sqlite_dbi/SQLiteDbi.cpp \
@@ -121,11 +112,11 @@ SOURCES += src/ABIFormat.cpp \
            src/sqlite_dbi/SQLiteVariantDbi.cpp \
            src/sqlite_dbi/SQLiteSNPTablesDbi.cpp \
            src/sqlite_dbi/SQLiteKnownMutationsDbi.cpp \
+           src/tasks/ConvertAssemblyToSamTask.cpp \
            src/sqlite_dbi/assembly/AssemblyPackAlgorithm.cpp \
            src/sqlite_dbi/assembly/MultiTableAssemblyAdapter.cpp \
            src/sqlite_dbi/assembly/RTreeAssemblyAdapter.cpp \
-           src/sqlite_dbi/assembly/SingleTableAssemblyAdapter.cpp \
-           src/tasks/ConvertAssemblyToSamTask.cpp
+           src/sqlite_dbi/assembly/SingleTableAssemblyAdapter.cpp
 RESOURCES += U2Formats.qrc
 TRANSLATIONS += transl/chinese.ts \
                 transl/czech.ts \
