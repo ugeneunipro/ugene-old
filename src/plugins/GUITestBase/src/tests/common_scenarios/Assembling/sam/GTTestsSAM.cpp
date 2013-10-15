@@ -36,6 +36,22 @@
 namespace U2 {
 namespace GUITest_SAM {
 
+GUI_TEST_CLASS_DEFINITION(test_0002) {
+    // 1. Open "samples/Assembly/chrM.sam".
+    //    Expected:
+    //      1) The import dialog is shown.
+    //      2) There are no table with the sequences check boxes in the dialog.
+    //      3) The reference line edit, button and warning are shown.
+    // 2. Click the reference sequence browse button. Choose "samples/PDB/1CF7.PDB".
+    //    Expected: the warning is not shown.
+    // 3. Click "Import".
+    //    Expected: the import task is started and finished with the error that PDB reference is not supported.
+    GTLogTracer l;
+    GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os, dataDir + "samples/PDB", "1CF7.PDB"));
+    GTFileDialog::openFile(os, dataDir + "samples/Assembly", "chrM.sam");
+    CHECK_SET_ERR(l.hasError() == true, "There is no error message in log");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_0003) {
     // 1. Open "_common_data/sam/out.sam".
     // Expected: 1) The import dialog is shown.
