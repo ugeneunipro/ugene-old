@@ -42,6 +42,14 @@ public:
     QString format;
     QString description;
 
+    bool isStringValue() const;
+    bool isFileUrl() const;
+    bool isSequence() const;
+    bool isAnnotations() const;
+    bool isAnnotatedSequence() const;
+    bool isAlignment() const;
+    bool isText() const;
+
     bool operator ==(const DataConfig &other) const;
 
     static DocumentFormatId StringValue;

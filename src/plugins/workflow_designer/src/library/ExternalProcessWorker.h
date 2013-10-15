@@ -40,30 +40,27 @@ public:
         ExternalToolCfgRegistry * reg = WorkflowEnv::getExternalCfgRegistry();
         cfg = reg->getConfigByName(actor->getProto()->getId());
         commandLine = cfg->cmdLine;
-        done = false;
-        busy = false;
     }
     bool isReady();
-    bool isDone();
     Task* tick();
     void init();
     void cleanup();
 
 private slots:
     void sl_onTaskFinishied();
-    
-private:
-    const QString generateAndCreateURL(const QString &extention, const QString &name);
 
+private:
+    void applyAttributes(QString &execString);
+    QStringList applyInputMessage(QString &execString, const DataConfig &dataCfg, const QVariantMap &data, U2OpStatus &os);
+    QString prepareOutput(QString &execString, const DataConfig &dataCfg, U2OpStatus &os);
+
+private:
     IntegralBus *output;
     QList<IntegralBus*> inputs;
     QString commandLine;
     ExternalProcessConfig *cfg;
 
     QStringList inputUrls;
-    QMap<QString, DataConfig> outputUrls;
-    bool done;
-    bool busy;
 };
 
 class ExternalProcessWorkerFactory: public DomainFactory {
@@ -83,10 +80,15 @@ public:
 class LaunchExternalToolTask: public Task {
     Q_OBJECT
 public:
-    LaunchExternalToolTask(const QString &execString);
+    LaunchExternalToolTask(const QString &execString, const QMap<QString, DataConfig> &outputUrls);
+    ~LaunchExternalToolTask();
+
     void run();
 
+    QMap<QString, DataConfig> takeOutputUrls();
+
 private:
+    QMap<QString, DataConfig> outputUrls;
     QStringList parseCombinedArgString(const QString &program);
 
 private:

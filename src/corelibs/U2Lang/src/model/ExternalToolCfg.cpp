@@ -19,12 +19,43 @@
  * MA 02110-1301, USA.
  */
 
+#include <U2Core/BaseDocumentFormats.h>
+
+#include <U2Lang/BaseTypes.h>
 #include <U2Lang/ExternalToolCfg.h>
 
 namespace U2 {
 
 DocumentFormatId DataConfig::StringValue = DocumentFormatId("string-value");
 DocumentFormatId DataConfig::OutputFileUrl = DocumentFormatId("output-file-url");
+
+bool DataConfig::isStringValue() const {
+    return (BaseTypes::STRING_TYPE()->getId() == type) && (StringValue == format);
+}
+
+bool DataConfig::isFileUrl() const {
+    return (OutputFileUrl == format);
+}
+
+bool DataConfig::isSequence() const {
+    return (BaseTypes::DNA_SEQUENCE_TYPE()->getId() == type);
+}
+
+bool DataConfig::isAnnotations() const {
+    return (BaseTypes::ANNOTATION_TABLE_TYPE()->getId() == type);
+}
+
+bool DataConfig::isAnnotatedSequence() const {
+    return (SEQ_WITH_ANNS == type);
+}
+
+bool DataConfig::isAlignment() const {
+    return (BaseTypes::MULTIPLE_ALIGNMENT_TYPE()->getId() == type);
+}
+
+bool DataConfig::isText() const {
+    return (BaseTypes::STRING_TYPE()->getId() == type) && (BaseDocumentFormats::PLAIN_TEXT == format);
+}
 
 bool DataConfig::operator ==(const DataConfig &other) const {
     return attrName == other.attrName
