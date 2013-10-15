@@ -45,13 +45,13 @@
 #include <U2Formats/SAMFormat.h>
 #include <U2Formats/NEXUSFormat.h>
 #include <U2Formats/MegaFormat.h>
-#include <U2Formats/ACEFormat.h>
 #include <U2Formats/PDWFormat.h>
 #include <U2Formats/SwissProtPlainTextFormat.h>
 #include <U2Formats/SQLiteDbi.h>
 #include <U2Formats/SimpleSNPVariationFormat.h>
 #include <U2Formats/VCF4VariationFormat.h>
 #include <U2Formats/DifferentialFormat.h>
+#include <U2Formats/AceImporter.h>
 
 namespace U2 {
 
@@ -178,10 +178,7 @@ void DocumentFormatRegistryImpl::init() {
     MegaFormat *meg = new MegaFormat(this);
     registerFormat(meg);
 
-    // Switched off, because of UGENE-2046
-    // It should be switched on in UGENE-2047
-//    ACEFormat *ace = new ACEFormat(this);
-//    registerFormat(ace);
+    importSupport.addDocumentImporter(new AceImporter());
 
     PDWFormat *pdw = new PDWFormat(this);
     registerFormat(pdw);
