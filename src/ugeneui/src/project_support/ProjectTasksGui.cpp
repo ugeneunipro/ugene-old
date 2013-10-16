@@ -24,6 +24,7 @@
 #include "ProjectServiceImpl.h"
 #include "ProjectImpl.h"
 #include "ProjectLoaderImpl.h"
+#include "ui/ui_SaveProjectDialog.h"
 
 #include <AppContextImpl.h>
 
@@ -44,6 +45,8 @@
 #include <U2Core/UnloadedObject.h>
 #include <U2Core/GObjectUtils.h>
 #include <U2Core/U2SafePoints.h>
+#include <U2Core/Settings.h>
+#include <U2Core/UserApplicationsSettings.h>
 
 #include <U2Gui/ObjectViewModel.h>
 #include <U2Gui/UnloadDocumentTask.h>
@@ -142,11 +145,28 @@ void SaveProjectTask::prepare() {
     }
     QList<Task *> ssTasks;
     if (url.isEmpty() && (!proj->getGObjectViewStates().isEmpty() || proj->getDocuments().size() > 0)) {
-        //ask if to save project
-        QWidget* w  = AppContext::getMainWindow()->getQMainWindow();
-        int code = QMessageBox::question(w, U2_APP_TITLE, tr("Save current project?"), QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel, QMessageBox::Yes);
-        if (code == QMessageBox::Yes) {
-            ProjectDialogController d(ProjectDialogController::Save_Project, w);
+        //show "save project?" dialog, if needed
+        int savedSaveProjectState = AppContext::getAppSettings()->getUserAppsSettings()->getAskToSaveProject();
+
+        QWidget* mainWindow = AppContext::getMainWindow()->getQMainWindow();
+        int code = savedSaveProjectState;
+        if (QDialogButtonBox::NoButton == savedSaveProjectState) {
+            // QMessageBox::NoButton is a special invalid button state, represents that no saved choise was made
+            SaveProjectDialogController saveProjectDialog(mainWindow);
+            code = saveProjectDialog.exec();
+
+            if (QDialogButtonBox::Cancel != code && true == saveProjectDialog.dontAskCheckBox->isChecked()) {
+                AppContext::getAppSettings()->getUserAppsSettings()->setAskToSaveProject(code);
+            }
+        }
+
+        if (code == QDialogButtonBox::Cancel) {
+            cancel();
+            return;
+        }
+
+        if (code == QDialogButtonBox::Yes) {
+            ProjectDialogController d(ProjectDialogController::Save_Project, mainWindow);
             int rc = d.exec();
             if (rc == QDialog::Accepted) {
                 AppContext::getProject()->setProjectName(d.projectNameEdit->text());
@@ -159,9 +179,6 @@ void SaveProjectTask::prepare() {
                 cancel();
                 return;
             }
-        } else if (code == QMessageBox::Cancel) {
-            cancel();
-            return;
         }
     }
 

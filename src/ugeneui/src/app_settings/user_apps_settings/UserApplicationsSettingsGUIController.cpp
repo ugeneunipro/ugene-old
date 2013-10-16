@@ -30,6 +30,7 @@
 #include <QtCore/QFile>
 #include <QtGui/QFileDialog>
 #include <QtGui/QStyleFactory>
+#include <QtGui/QDialogButtonBox>
 
 #include "U2Core/TmpDirChecker.h"
 
@@ -74,6 +75,7 @@ AppSettingsGUIPageState* UserApplicationsSettingsPageController::getSavedState()
     state->translFile = s->getTranslationFile();
     state->useDefaultWebBrowser = s->useDefaultWebBrowser();
     state->openLastProjectFlag = s->openLastProjectAtStartup();
+    state->askToSaveProject = s->getAskToSaveProject();
     state->style = s->getVisualStyle();
     state->downloadsDirPath = s->getDownloadDirPath();
     state->temporaryDirPath = s->getUserTemporaryDirPath();
@@ -91,6 +93,7 @@ void UserApplicationsSettingsPageController::saveState(AppSettingsGUIPageState* 
     st->setTranslationFile(state->translFile);
     st->setUseDefaultWebBrowser(state->useDefaultWebBrowser);
     st->setOpenLastProjectAtStartup(state->openLastProjectFlag);
+    st->setAskToSaveProject(state->askToSaveProject);
     st->setDownloadDirPath(state->downloadsDirPath);
     st->setEnableCollectingStatistics(state->enableStatistics);
     st->setTabbedWindowLayout(state->tabbedWindowLayout);
@@ -169,6 +172,11 @@ void UserApplicationsSettingsPageWidget::setState(AppSettingsGUIPageState* s) {
     }
 
     autoOpenProjectBox->setChecked(state->openLastProjectFlag);
+    askToSaveProject->addItem(tr("Ask to save new project on exit"), QDialogButtonBox::NoButton);
+    askToSaveProject->addItem(tr("Don't save new project on exit"), QDialogButtonBox::No);
+    askToSaveProject->addItem(tr("Always save new project on exit"), QDialogButtonBox::Yes);
+    askToSaveProject->setCurrentIndex(askToSaveProject->findData(state->askToSaveProject));
+
     resetSettingsBox->setChecked(state->resetSettings);
 }
 
@@ -189,6 +197,7 @@ AppSettingsGUIPageState* UserApplicationsSettingsPageWidget::getState(QString& e
     }
     state->translFile = langCombo->itemData(langCombo->currentIndex()).toString();
     state->openLastProjectFlag = autoOpenProjectBox->isChecked();
+    state->askToSaveProject = askToSaveProject->itemData(askToSaveProject->currentIndex()).toInt();
     state->style = styleCombo->currentText();
     state->downloadsDirPath = downloadsDirPathEdit->text();
     state->temporaryDirPath = tmpDirPathEdit->text();

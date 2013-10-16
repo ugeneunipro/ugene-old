@@ -604,6 +604,21 @@ void ProjectLoaderImpl::sl_searchGenbankEntry()
 
 }
 
+//////////////////////////////////////////////////////////////////////////
+//SaveProjectDialogController
+//////////////////////////////////////////////////////////////////////////
+
+SaveProjectDialogController::SaveProjectDialogController(QWidget *w) : QDialog(w) {
+    setupUi(this);
+    setModal(true);
+
+    connect(buttonBox, SIGNAL(clicked(QAbstractButton *)), this, SLOT(sl_clicked(QAbstractButton *)));
+}
+
+void SaveProjectDialogController::sl_clicked(QAbstractButton *button) {
+
+    done(buttonBox->standardButton(button));
+}
 
 //////////////////////////////////////////////////////////////////////////
 //ProjectDialogController

@@ -45,6 +45,9 @@ public:
     bool openLastProjectAtStartup() const;
     void setOpenLastProjectAtStartup(bool v);
 
+    int getAskToSaveProject() const;
+    void setAskToSaveProject(int v);
+
     //a style selected by user
     QString getVisualStyle() const;
     void setVisualStyle(const QString& newStyle);

@@ -34,6 +34,7 @@
 #include <QtGui/QApplication>
 #include <QtGui/QStyle>
 #include <QtGui/QStyleFactory>
+#include <QtGui/QDialogButtonBox>
 #if (QT_VERSION >= 0x050000)
 #include <QStandardPaths>
 #endif
@@ -46,6 +47,7 @@ namespace U2 {
 #define USE_DEFAULT_WEB_BROWSER     QString("use_default_web_browser")
 #define TRANSLATION     QString("translation_file")
 #define LAST_PROJECT_FLAG QString("open_last_project")
+#define SAVE_PROJECT_STATE QString("save_project")
 #define VISUAL_STYLE    QString("style")
 #define DOWNLOAD_DIR    QString("download_file")
 #define RECENTLY_DOWNLOADED QString("recently_downloaded")
@@ -104,6 +106,14 @@ bool UserAppsSettings::openLastProjectAtStartup() const {
 
 void UserAppsSettings::setOpenLastProjectAtStartup(bool v) {
     return AppContext::getSettings()->setValue(SETTINGS_ROOT + LAST_PROJECT_FLAG, v);
+}
+
+int UserAppsSettings::getAskToSaveProject() const {
+    return AppContext::getSettings()->getValue(SETTINGS_ROOT + SAVE_PROJECT_STATE, QDialogButtonBox::NoButton).toInt();
+}
+
+void UserAppsSettings::setAskToSaveProject(int v) {
+    AppContext::getSettings()->setValue(SETTINGS_ROOT + SAVE_PROJECT_STATE, v);
 }
 
 bool UserAppsSettings::resetSettings() const {

@@ -69,7 +69,7 @@
          <string>Multiple documents</string>
         </property>
         <attribute name="buttonGroup">
-         <string>buttonGroup</string>
+         <string notr="true">buttonGroup</string>
         </attribute>
        </widget>
       </item>
@@ -79,7 +79,7 @@
          <string>Tabbed documents</string>
         </property>
         <attribute name="buttonGroup">
-         <string>buttonGroup</string>
+         <string notr="true">buttonGroup</string>
         </attribute>
        </widget>
       </item>
@@ -172,6 +172,26 @@
          <string>auto_open_project_at_startup</string>
         </property>
        </widget>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_11">
+        <item>
+         <widget class="QComboBox" name="askToSaveProject"/>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer_2">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
       </item>
      </layout>
     </widget>

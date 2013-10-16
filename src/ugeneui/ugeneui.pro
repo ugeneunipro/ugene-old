@@ -40,6 +40,7 @@ FORMS += src/app_settings/ui/AppSettingsDialog.ui \
          src/project_support/ui/DocumentFormatSelectorDialog.ui \
          src/project_support/ui/ExportProjectDialog.ui \
          src/project_support/ui/SequenceReadingModeSelectorDialog.ui \
+         src/project_support/ui/SaveProjectDialog.ui \
          src/project_view/ui/ProjectViewWidget.ui \
          src/script/ui/ScriptLibraryEditor.ui \
          src/app_settings/format_settings/ui/FormatSettingsWidget.ui \
