@@ -373,11 +373,27 @@ ProcessRun ExternalToolSupportUtils::prepareProcess(const QString &toolName, con
     if(NULL != listener) {
         listener->setToolName(toolName);
         listener->addNewLogMessage(result.program, PROGRAM_PATH);
-        QString argumentsLine = arguments.join(" ");
+        QString argumentsLine = ExternalToolSupportUtils::prepareArgumentsForCmdLine(arguments);
         argumentsLine.replace(" -", "\n-");
+
         listener->addNewLogMessage(argumentsLine, ARGUMENTS);
     }
     return result;
 }
 
+QString ExternalToolSupportUtils::prepareArgumentsForCmdLine(const QStringList &arguments) {
+    QString argumentsLine;
+    foreach(QString argumentStr, arguments) {
+        //Find start of the parameter value 
+        int startIndex = argumentStr.indexOf('=') + 1;
+        //Add quotes if parameter contains whitespace characters
+        QString valueStr = argumentStr.mid(startIndex);
+        if (valueStr.contains(' ') || valueStr.contains('\t')) {
+            argumentStr.append('"');
+            argumentStr.insert(startIndex, '"');
+        }
+        argumentsLine += ' ' + argumentStr;
+    }
+    return argumentsLine;
+}
 }//namespace

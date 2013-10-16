@@ -274,8 +274,8 @@ table.table-fixed {
 .tree li:last-child::before {
     height:26px
 }
-.tree li.parent_li>span:hover, .tree li.parent_li>span:hover+ul li span {
-    background:#eee;
+span.hoverIntent, span.hoverIntent+ul li span {
+    background-color:#eee;
     border:1px solid #94a0b4;
     color:#000
 }
@@ -317,6 +317,7 @@ span.badge.badge-info
 span.badge.run-info
 {
     background-color:#CC9966;
+    position: relative; 
 }
 span.content
 {
@@ -330,4 +331,28 @@ span.content
     position: absolute; 
     margin-bottom: 5px; 
     *width: 180px;
+}
+.copyRunInfo 
+{
+    position: absolute; 
+    display: inline-block;
+    background-image: url("qrc:U2Designer/images/copy.png");
+    background-repeat: no-repeat;
+    background-position:center;
+    border: 1px solid #999;
+    border-left: 2px solid white;
+    height: inherit;
+    width: 22px;
+    -webkit-border-radius: 0 6px 6px 0;
+    margin-top: -4px;
+    margin-bottom: 0px;
+    margin-left: 3px;
+    padding: 0;
+    background-color: inherit;
+}
+.copyRunInfo.hoverIntent {
+    background-color: #333333;
+}
+.copyRunInfo.hoverIntent.pressed {
+    background-color: #b8b8b8;
 }

@@ -46,6 +46,8 @@ function addChildrenNode(parentNode, nodeContent, spanId, nodeClass) {
     span.setAttribute('title', 'Collapse this branch');
 
     span.setAttribute('onclick', 'collapseNode(this)');
+    span.setAttribute('onmouseover', 'highlightElement(this, event, true)');
+    span.setAttribute('onmouseout', 'highlightElement(this, event, false)');
     span.setAttribute('onmouseup', 'return contextmenu(event, this);');
 
     span.id = spanId;
@@ -71,7 +73,7 @@ function lwAddTreeNode(nodeName, activeTabName, activeTabId, content, contentTyp
     if(actorTab === null) {
         var root = document.getElementById("treeRoot");
         var rootList = root.getElementsByTagName('ul')[0];
-        actorTab = addChildrenNode(rootList, '<i class="icon-minus-sign"></i>' + activeTabName, activeTabName + '_span', 'badge tool-node');
+        actorTab = addChildrenNode(rootList, activeTabName, activeTabName + '_span', 'badge tool-node');
         actorTab.id = activeTabName;
         var activeTabSpan = document.getElementById(activeTabName + '_span');
     }
@@ -85,6 +87,20 @@ function lwAddTreeNode(nodeName, activeTabName, activeTabId, content, contentTyp
         var activeTabSpan = document.getElementById(activeTabName + '_span');
         launchNode = addChildrenNode(actorTab, nodeName, launchNodeId + '_span', 'badge badge-success');
         launchNode.id = launchNodeId;
+        var launchSpan = document.getElementById(launchNodeId + '_span');
+
+        var copyRunInfoButton = document.createElement('button');
+        copyRunInfoButton.className = "copyRunInfo";
+        copyRunInfoButton.setAttribute("title", "Copy external tool run string");
+        copyRunInfoButton.setAttribute("onclick", "copyRunInfo(event, \'" + idBase + "\'); return false;");
+
+        copyRunInfoButton.setAttribute('onmousedown', 'return onButtonPressed(this, event);');
+        copyRunInfoButton.setAttribute('onmouseup',   'return onButtonReleased(this, event);');
+
+        copyRunInfoButton.setAttribute('onmouseover', 'highlightElement(this, event, true)');
+        copyRunInfoButton.setAttribute('onmouseout', 'highlightElement(this, event, false)');
+
+        launchSpan.appendChild(copyRunInfoButton);
         if(activeTabSpan.getAttribute('title') === 'Expand this branch') {
             collapseNode(activeTabSpan);
         }
@@ -128,6 +144,18 @@ function lwAddTreeNode(nodeName, activeTabName, activeTabId, content, contentTyp
         collapseNode(launchSpan);
     }
 }
+function onButtonPressed(element, event) {
+    if(1 === event.which) {
+        $(element).addClass('pressed');
+    }
+    event.stopPropagation();
+    return false;
+}
+function onButtonReleased(element, event) {
+    $(element).removeClass('pressed');
+    event.stopPropagation();
+    return false;
+}
 
 function addInfoNode(launchNode) {
     if(null === launchNode) {
@@ -164,4 +192,38 @@ function addContent(parentNode, contentHead, nodeId, contentType, content) {
             collapseNode(parentSpan);
         }
     }
+}
+
+function copyRunInfo(event, idBase) {
+    var resultString = "";
+
+    resultString += '\"' + getElementText(idBase + '_program') + "\" ";
+    resultString += getElementText(idBase + '_args');
+    agent.setClipboardText(resultString);
+    event.stopPropagation();
+}
+//Get text of the element without linebreak symbols
+function getElementText(elementId) {
+    var pathNode = document.getElementById(elementId);
+    var resultString = "";
+    if(pathNode !== null) {
+        resultString = pathNode.innerHTML;
+        resultString = resultString.replace(/<br>/g, ' ');
+    }
+    return resultString;
+}
+
+function highlightElement(element, e, isHighlighted)  {
+    if(true === isHighlighted) {
+        $('li span').removeClass('hoverIntent')
+        $(element).addClass('hoverIntent');
+        e.stopPropagation();
+    }
+    else {
+        $(element).removeClass('hoverIntent');
+    }
+}
+
+function setElementBackground(element, backgroundColor) {
+    element.style.backgroundColor = backgroundColor;
 }
