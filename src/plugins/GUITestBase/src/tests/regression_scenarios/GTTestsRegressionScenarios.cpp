@@ -638,7 +638,11 @@ GUI_TEST_CLASS_DEFINITION(test_1093) {
 
 //    3. Press 'Align'
 //    Expected state: message window appears "The short reads can't be mapped to the reference sequence!"
-    GTUtilsDialog::waitForDialog(os, new AlignShortReadsFiller(os, testDir + "_common_data/scenarios/_regression/1093/","refrence.fa", testDir + "_common_data/scenarios/_regression/1093/", "read.fa",true)) ;
+    AlignShortReadsFiller::Parameters parameters("_common_data/scenarios/_regression/1093/",
+                                                 "refrence.fa",
+                                                 testDir + "_common_data/scenarios/_regression/1093/",
+                                                 "read.fa");
+    GTUtilsDialog::waitForDialog(os, new AlignShortReadsFiller(os, &parameters)) ;
     GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok));
 
     GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_TOOLS), QStringList() << "Align to reference" << "Align short reads");
@@ -820,7 +824,11 @@ GUI_TEST_CLASS_DEFINITION(test_1190){//add AlignShortReadsFiller
 
 //1) Align shortreads with genome aligner
 //Tools -> Align to reference -> Align short reads
-    GTUtilsDialog::waitForDialog(os, new AlignShortReadsFiller(os, testDir + "_common_data/fasta/","N.fa", testDir + "_common_data/fasta/", "RAW.fa",true)) ;
+    AlignShortReadsFiller::Parameters parameters(testDir + "_common_data/fasta/",
+                                                 "N.fa",
+                                                 testDir + "_common_data/fasta/",
+                                                 "RAW.fa");
+    GTUtilsDialog::waitForDialog(os, new AlignShortReadsFiller(os, &parameters)) ;
     QMenu *menu = GTMenu::showMainMenu(os, MWMENU_TOOLS);
     GTLogTracer l;
 
@@ -1755,6 +1763,15 @@ GUI_TEST_CLASS_DEFINITION( test_2140 )
                           QStringList() << "DNA assembly" << "Convert UGENE Assembly data base to SAM format");
 
     CHECK_SET_ERR(l.hasError() == true, "There is no error message in log");
+}
+
+GUI_TEST_CLASS_DEFINITION( test_2157 )
+{
+//    1. Open file "https://ugene.unipro.ru/tracker/secure/attachment/12864/pdb1a07.ent.gz".
+    GTFileDialog::openFile(os, testDir + "_common_data/pdb/", "pdb1a07.ent.gz");
+
+//    Expected state: UGENE displays sequence and 3d structure
+    GTUtilsMdi::findWindow(os, "pdb1a07.ent.gz");
 }
 
 GUI_TEST_CLASS_DEFINITION( test_2160 )

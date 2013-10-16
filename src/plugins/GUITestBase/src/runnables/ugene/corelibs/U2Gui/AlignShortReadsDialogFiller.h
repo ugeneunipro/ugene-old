@@ -27,34 +27,146 @@
 
 namespace U2 {
 
-    class AlignShortReadsFiller : public Filler {
+// Copy file with reference sequence into sandbox: test can create an index for it in the same dir.
+// Also, result file will be created in the same dir.
+class AlignShortReadsFiller : public Filler {
+public:
+    class Parameters {
     public:
-        AlignShortReadsFiller(U2OpStatus &os,
-            const QString &path,
-            const QString &FileName,
-            const QString &path1,
-            const QString &FileName1,
-            bool samBox = true,
-            bool prebuilt = false,
-            const QString &method = "UGENE Genome Aligner") :
-            Filler(os, "AssemblyToRefDialog"),
-            path(path),
-            fileName(FileName),
-            path1(path1),
-            fileName1(FileName1),
-            method(method),
-            samBox(samBox),
-            prebuilt(prebuilt){}
-        virtual void run();
+        enum AlignmentMethod {
+            Bwa,
+            BwaSw,
+            Bowtie,
+            Bowtie2,
+            UgeneGenomeAligner
+        };
+
+        enum Library {
+            SingleEnd,
+            PairedEnd
+        };
+
+        Parameters(const QString& refDir = "",
+                   const QString& refFileName = "",
+                   const QString& readsDir = "",
+                   const QString& readsFileName = "",
+                   AlignmentMethod alignmentMethod = UgeneGenomeAligner) :
+            alignmentMethod(alignmentMethod),
+            refDir(refDir),
+            refFileName(refFileName),
+            readsDir(readsDir),
+            readsFileName(readsFileName),
+            library(SingleEnd),
+            prebuiltIndex(false),
+            samOutput(true),
+            useDefaultResultPath(true) {
+            alignmentMethodMap.insert(Bwa, "BWA");
+            alignmentMethodMap.insert(BwaSw, "BWA_SW");
+            alignmentMethodMap.insert(Bowtie, "Bowtie");
+            alignmentMethodMap.insert(Bowtie2, "Bowtie2");
+            alignmentMethodMap.insert(UgeneGenomeAligner, "UGENE Genome Aligner");
+
+            libraryMap.insert(SingleEnd, "Single-end");
+            libraryMap.insert(PairedEnd, "Paired-end");
+        }
+        virtual ~Parameters() {}
+
+        const QString getAlignmentMethod() const { return alignmentMethodMap[alignmentMethod]; }
+        const QString getLibrary() const { return libraryMap[library]; }
+
+        AlignmentMethod alignmentMethod;
+        QString refDir;
+        QString refFileName;
+        QString resultDir;
+        QString resultFileName;
+        QString readsDir;
+        QString readsFileName;
+        Library library;
+        bool prebuiltIndex;
+        bool samOutput;
+        bool useDefaultResultPath;
+
     private:
-        QString path;
-        QString fileName;
-        QString path1;
-        QString fileName1;
-        QString method;
-        bool samBox;
-        bool prebuilt;
+        QMap<AlignmentMethod, QString> alignmentMethodMap;
+        QMap<Library, QString> libraryMap;
     };
+
+    class Bowtie2Parameters : public Parameters {
+    public:
+        enum Mode {
+            EntToEnd,
+            Local
+        };
+
+        Bowtie2Parameters(const QString& refDir = "",
+                          const QString& refFileName = "",
+                          const QString& readsDir = "",
+                          const QString& readsFileName = "") :
+            Parameters(refDir, refFileName, readsDir, readsFileName, Bowtie2),
+            mode(EntToEnd),
+            numberOfMismatches(0),
+            seedLengthCheckBox(false),
+            seedLength(20),
+            addColumnsToAllowGapsCheckBox(false),
+            addColumnsToAllowGaps(15),
+            disallowGapsCheckBox(false),
+            disallowGaps(4),
+            seedCheckBox(false),
+            seed(0),
+            threads(4),
+            noUnpairedAlignments(false),
+            noDiscordantAlignments(false),
+            noForwardOrientation(false),
+            noReverseComplementOrientation(false),
+            noOverlappingMates(false),
+            noMatesContainingOneAnother(false) {
+            modeMap.insert(EntToEnd, "--end-to-end");
+            modeMap.insert(Local, "--local");
+        }
+
+        const QString getMode() const { return modeMap[mode]; }
+
+        // Additional parameters:
+        Mode mode;
+        int numberOfMismatches;
+        bool seedLengthCheckBox;
+        int seedLength;
+        bool addColumnsToAllowGapsCheckBox;
+        int addColumnsToAllowGaps;
+        bool disallowGapsCheckBox;
+        int disallowGaps;
+        bool seedCheckBox;
+        int seed;
+        int threads;
+
+        // Flags:
+        bool noUnpairedAlignments;
+        bool noDiscordantAlignments;
+        bool noForwardOrientation;
+        bool noReverseComplementOrientation;
+        bool noOverlappingMates;
+        bool noMatesContainingOneAnother;
+
+    private:
+        QMap<Mode, QString> modeMap;
+    };
+
+    AlignShortReadsFiller(U2OpStatus &os, Parameters* parameters) :
+        Filler(os, "AssemblyToRefDialog"),
+        parameters(parameters) {
+        CHECK_SET_ERR(parameters, "Invalid filler parameters: NULL pointer");
+    }
+
+    virtual void run();
+
+private:
+    void setCommonParameters(QWidget* dialog);
+    void setAdditionalParameters(QWidget* dialog);
+    void setBowtie2AdditionalParameters(Bowtie2Parameters* bowtie2Parameters, QWidget* dialog);
+
+    Parameters* parameters;
+};
+
 }
 
 #endif

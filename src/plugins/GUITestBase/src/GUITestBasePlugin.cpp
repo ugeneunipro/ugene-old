@@ -187,6 +187,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_2122);
     REGISTER_TEST(GUITest_regression_scenarios::test_2128);
     REGISTER_TEST(GUITest_regression_scenarios::test_2140);
+    REGISTER_TEST(GUITest_regression_scenarios::test_2157);
     REGISTER_TEST(GUITest_regression_scenarios::test_2160);
     REGISTER_TEST(GUITest_regression_scenarios::test_2163);
     REGISTER_TEST(GUITest_regression_scenarios::test_2164);
@@ -836,6 +837,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 // Common scenarios/Assembling/bowtie2
 /////////////////////////////////////////////////////////////////////////
     REGISTER_TEST(GUITest_Bowtie2::test_0001);
+    REGISTER_TEST(GUITest_Bowtie2::test_0003);
     REGISTER_TEST(GUITest_Bowtie2::test_0005);
 
     /////////////////////////////////////////////////////////////////////////

@@ -52,6 +52,20 @@ void GTComboBox::setCurrentIndex(U2OpStatus& os, QComboBox *comboBox, int index)
     currIndex = comboBox->currentIndex();
     GT_CHECK(currIndex == index, "Can't set index");
 }
+
+void GTComboBox::setIndexWithText(U2OpStatus& os, QComboBox *comboBox, const QString& text) {
+    GT_CHECK(comboBox != NULL, "QComboBox* == NULL");
+
+    int index = comboBox->findText(text);
+    GT_CHECK(index != -1, "Text was not found");
+
+    setCurrentIndex(os, comboBox, index);
+    CHECK_OP(os, );
+
+    QString currentText = comboBox->currentText();
+    GT_CHECK(currentText == text, "Can't set text");
+}
+
 #undef GT_METHOD_NAME
 
 #undef GT_CLASS_NAME
