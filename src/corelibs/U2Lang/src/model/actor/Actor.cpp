@@ -365,6 +365,7 @@ const QList<ValidatorDesc> & Actor::getCustomValidators() const {
 /**
  * Validates an attribute with URL(s), considering its type.
  * Attributes with scripts are ignored (the method returns "true").
+ * Attributes with value "Default" (case-insensitive) are ignored.
  */
 static bool validateUrlAttribute(Attribute *attr, UrlAttributeType urlType, ProblemList &infoList) {
     SAFE_POINT(NULL != attr, "NULL attribute!", false);
@@ -374,8 +375,12 @@ static bool validateUrlAttribute(Attribute *attr, UrlAttributeType urlType, Prob
         return true;
     }
 
-    bool res;
     QString urls = attr->getAttributePureValue().toString();
+    if (urls.toLower() == "default") {
+        return true;
+    }
+
+    bool res;
     switch (urlType) {
         case DatasetAttr:
             res = WorkflowUtils::validateDatasets(attr->getAttributePureValue().value< QList<Dataset> >(), infoList);

@@ -117,12 +117,16 @@ void DirUrlContainer::accept(URLContainerVisitor *visitor) {
 }
 
 bool DirUrlContainer::validateUrl(ProblemList &problemList) {
-    bool res = true;
+    bool res = WorkflowUtils::validateInputDirs(url, problemList);
+    if (!res) {
+        return false;
+    }
+
     FilesIterator *it = getFileUrls();
     SAFE_POINT(NULL != it, "NULL fileIterator!", false);
     while (it->hasNext()) {
-        QString url = it->getNextFile();
-        bool urlIsValid = WorkflowUtils::validateInputFiles(url, problemList);
+        QString fileUrl = it->getNextFile();
+        bool urlIsValid = WorkflowUtils::validateInputFiles(fileUrl, problemList);
         res = res && urlIsValid;
     }
     return res;
