@@ -110,6 +110,12 @@ void ColorSchemaDialogController::mouseReleaseEvent(QMouseEvent * event){
         it.next();
         if(it.value().contains(event->pos().x() - alphabetColorsFrame->geometry().x(), event->pos().y() - alphabetColorsFrame->geometry().y())){
             QColorDialog d;
+#ifdef Q_OS_MAC
+            // A workaround because of UGENE-2263
+            // Another way should be found.
+            // I suppose, that it is bug in the Qt libraries (Qt-4.8.5 for mac)
+            d.setOption(QColorDialog::DontUseNativeDialog);
+#endif
             int res = d.exec();
             if(res == QDialog::Accepted){
                 newColors[it.key()] = d.selectedColor();                
