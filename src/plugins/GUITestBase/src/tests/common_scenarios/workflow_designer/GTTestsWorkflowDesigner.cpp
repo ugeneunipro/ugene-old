@@ -233,7 +233,7 @@ GUI_TEST_CLASS_DEFINITION(test_0003){
     GTKeyboardDriver::keySequence(os,s+"T1.gb");
     GTWidget::click(os,GTUtilsMdi::activeWindow(os));
 
-    GTWidget::click(os,GTAction::button(os,"Run scheme"));
+    GTWidget::click(os,GTAction::button(os,"Run workflow"));
 
     GTGlobals::sleep();
 //    2. If you don't want result file (T1.gb) in UGENE run directory, change this property in write genbank worker.Run schema.
@@ -248,8 +248,8 @@ GUI_TEST_CLASS_DEFINITION(test_0005){
     QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
     GTMenu::clickMenuItem(os, menu, QStringList() << "Workflow Designer");
 //2. Press button Validate schema
-    GTUtilsDialog::waitForDialog(os,new MessageBoxDialogFiller(os, QMessageBox::Ok,"Nothing to run: empty workflow schema"));
-    GTWidget::click(os,GTAction::button(os,"Validate scheme"));
+    GTUtilsDialog::waitForDialog(os,new MessageBoxDialogFiller(os, QMessageBox::Ok,"Nothing to run: empty workflow"));
+    GTWidget::click(os,GTAction::button(os,"Validate workflow"));
 //Expected state: message box which warns of validating empty schema has appeared
 }
 
