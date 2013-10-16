@@ -836,9 +836,10 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 /////////////////////////////////////////////////////////////////////////
 // Common scenarios/Assembling/bowtie2
 /////////////////////////////////////////////////////////////////////////
-    REGISTER_TEST(GUITest_Bowtie2::test_0001);
-    REGISTER_TEST(GUITest_Bowtie2::test_0003);
-    REGISTER_TEST(GUITest_Bowtie2::test_0005);
+    REGISTER_TEST_IGNORED_WINDOWS(GUITest_Bowtie2::test_0001, "Restore when this tool becomes available");
+    REGISTER_TEST_IGNORED_WINDOWS(GUITest_Bowtie2::test_0003, "Restore when this tool becomes available");
+    REGISTER_TEST_IGNORED_WINDOWS(GUITest_Bowtie2::test_0004, "Restore when this tool becomes available");
+    REGISTER_TEST_IGNORED_WINDOWS(GUITest_Bowtie2::test_0005, "Restore when this tool becomes available");
 
     /////////////////////////////////////////////////////////////////////////
 // Common scenarios/Assembling/sam

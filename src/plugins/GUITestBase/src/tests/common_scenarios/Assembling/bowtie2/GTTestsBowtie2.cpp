@@ -132,6 +132,80 @@ GUI_TEST_CLASS_DEFINITION(test_0003) {
     GTGlobals::sleep();
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0004) {
+//    File will be copied to the sandbox
+//    1. {Tools -> Align to reference -> Align short reads}
+//    2. Fill the dialog:
+//        {Alignment method} : Bowtie2
+//        {Reference sequence} : _common_data/bowtie2/index/human_T1_cutted.fa
+//        {Library} : single-end
+//        {Prebuilt index} : unchecked
+//        {Short reads} : _common_data/fasta/shuffled.fa
+
+//    Parameters:
+//        {Mode} : --local
+//        {Number of mismatches} : 1
+//        {Seed length (--L)} : checked (24)
+//        {Add columns to allow gaps (--dpad)} : checked (13)
+//        {Disallow gaps (--gbar)} : checked (5)
+//        {Seed (--seed)} : checked (23)
+//        {Threads} : 3 (depends on CPU cores)
+
+//    Flags:
+//        {No unpaired alignments (--no-mixed)} : checked
+//        {No discordant alignments (--no-discordant)} : unchecked
+//        {No forward orientation (--nofw)} : unchecked
+//        {No reverse-complement orientation (--norc)} : checked
+//        {No overlapping mates (--no-overlap)} : checked
+//        {No mates containing one another (--no-contain)} : unchecked
+
+    GTFile::copy(os, testDir + "_common_data/bowtie2/index/human_T1_cutted.fa",
+                 testDir + "_common_data/scenarios/sandbox/human_T1_cutted.fa");
+    CHECK_OP(os, );
+
+    AlignShortReadsFiller::Bowtie2Parameters bowtie2Parameters(testDir + "_common_data/bowtie2/index",
+                                                               "human_T1_cutted.fa",
+                                                               testDir + "_common_data/fasta",
+                                                               "shuffled.fa");
+
+    // Parameters
+    bowtie2Parameters.mode = AlignShortReadsFiller::Bowtie2Parameters::Local;
+    bowtie2Parameters.numberOfMismatches = 1;
+    bowtie2Parameters.seedLengthCheckBox = true;
+    bowtie2Parameters.seedLength = 24;
+    bowtie2Parameters.addColumnsToAllowGapsCheckBox = true;
+    bowtie2Parameters.addColumnsToAllowGaps = 13;
+    bowtie2Parameters.disallowGapsCheckBox = true;
+    bowtie2Parameters.disallowGaps = 5;
+    bowtie2Parameters.seedCheckBox = true;
+    bowtie2Parameters.seed = 23;
+    bowtie2Parameters.threads = 3;
+
+    // Flags
+    bowtie2Parameters.noUnpairedAlignments = true;
+    bowtie2Parameters.noDiscordantAlignments = false;
+    bowtie2Parameters.noForwardOrientation = false;
+    bowtie2Parameters.noReverseComplementOrientation = true;
+    bowtie2Parameters.noOverlappingMates = false;
+    bowtie2Parameters.noMatesContainingOneAnother = false;
+
+    AlignShortReadsFiller* alignShortReadsFiller = new AlignShortReadsFiller(os, &bowtie2Parameters);
+    CHECK_OP(os, );
+    GTUtilsDialog::waitForDialog(os, alignShortReadsFiller);
+    CHECK_OP(os, );
+
+    QMenu* mainMenu = GTMenu::showMainMenu(os, MWMENU_TOOLS);
+    CHECK_OP(os, );
+    GTMenu::clickMenuItem(os, mainMenu, QStringList() << "Align to reference" << "Align short reads");
+    CHECK_OP(os, );
+
+    ImportBAMFileFiller* importBAMFileFiller = new ImportBAMFileFiller(os);
+    CHECK_OP(os, );
+    GTUtilsDialog::waitForDialog(os, importBAMFileFiller);
+    CHECK_OP(os, );
+    GTGlobals::sleep();
+}
+
 GUI_TEST_CLASS_DEFINITION(test_0005) {
     AlignShortReadsFiller::Bowtie2Parameters bowtie2Parameters(testDir + "_common_data/scenarios/assembly/bowtie2/index/",
                                                                "e_coli_1000.1.bt2",
