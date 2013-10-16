@@ -313,28 +313,18 @@ QList<resType> calculateOnGPU(const char * seqLib, int seqLibLength, ScoreType* 
                         row--;
                         column--;
                     } else if(U2::SmithWatermanAlgorithm::LEFT == globalMatrix[seqLibLength * row + column]) {
-                        res.pairAlign[pairAlignOffset++] = U2::SmithWatermanAlgorithm::LEFT;
+                        res.pairAlign[pairAlignOffset++] = U2::SmithWatermanAlgorithm::UP;
                         column--;
                     } else if(U2::SmithWatermanAlgorithm::UP == globalMatrix[seqLibLength * row + column]) {
-                        res.pairAlign[pairAlignOffset++] = U2::SmithWatermanAlgorithm::UP;
+                        res.pairAlign[pairAlignOffset++] = U2::SmithWatermanAlgorithm::LEFT;
                         row--;
                     }
                     if(0 >= row || 0 >= column) {
                         break;
                     }
                 }
-
-                QByteArray tmpAlignment = res.pairAlign;
-                tmpAlignment.replace(U2::SmithWatermanAlgorithm::LEFT, U2::SmithWatermanAlgorithm::UP);
-                for(qint32 i = 0; i < res.pairAlign.length(); ++i) {
-                    if(U2::SmithWatermanAlgorithm::UP == res.pairAlign[i]) {
-                        tmpAlignment[i] = U2::SmithWatermanAlgorithm::LEFT;
-                    }
-                }
-                res.pairAlign = tmpAlignment;
-
                 res.patternSubseq.startPos = row;
-                res.patternSubseq.length = backtraceBegins[2 * j] - row;
+                res.patternSubseq.length = backtraceBegins[2 * j] - row + 1;
             }
             
             pas.append(res);

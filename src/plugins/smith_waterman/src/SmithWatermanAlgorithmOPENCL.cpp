@@ -582,28 +582,18 @@ void SmithWatermanAlgorithmOPENCL::launch(const SMatrix& sm, QByteArray const & 
                         row--;
                         column--;
                     } else if(LEFT == g_directionsMatrix[searchLen * row + column]) {
-                        tmp.pairAlignment[pairAlignOffset++] = LEFT;
+                        tmp.pairAlignment[pairAlignOffset++] = UP;
                         column--;
                     } else if(UP == g_directionsMatrix[searchLen * row + column]) {
-                        tmp.pairAlignment[pairAlignOffset++] = UP;
+                        tmp.pairAlignment[pairAlignOffset++] = LEFT;
                         row--;
                     }
                     if(0 >= row || 0 >= column) {
                         break;
                     }
                 }
-
-                QByteArray tmpAlignment = tmp.pairAlignment;
-                tmpAlignment.replace(LEFT, UP);
-                for(qint32 i = 0; i < tmp.pairAlignment.length(); ++i) {
-                    if(UP == tmp.pairAlignment[i]) {
-                        tmpAlignment[i] = LEFT;
-                    }
-                }
-                tmp.pairAlignment = tmpAlignment;
-
                 tmp.ptrnSubseqInterval.startPos = row;
-                tmp.ptrnSubseqInterval.length = g_backtraceBegins[2 * j] - row;
+                tmp.ptrnSubseqInterval.length = g_backtraceBegins[2 * j] - row + 1;
             }
             pairAlignmentStrings.append(tmp);
             tmp.pairAlignment.clear();
