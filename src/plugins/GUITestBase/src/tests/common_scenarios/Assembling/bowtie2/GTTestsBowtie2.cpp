@@ -44,7 +44,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
                                             "human_T1_cutted.fa",
                                             "Bowtie2",
                                             false,
-                                            testDir + "_tmp/",
+                                            testDir + "_common_data/scenarios/sandbox/",
                                             "human_T1_cutted"));
 
     GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_TOOLS),
@@ -55,10 +55,10 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
     //human_T1_cutted.rev.1.bt2, human_T1_cutted.rev.2.bt2
     QStringList indexList;
     for (int i = 0; i < 4; i++) {
-        indexList << testDir + "_tmp/human_T1_cutted." + QString::number(i + 1) + ".bt2";
+        indexList << testDir + "_common_data/scenarios/sandbox/human_T1_cutted." + QString::number(i + 1) + ".bt2";
     }
-    indexList << testDir + "_tmp/human_T1_cutted.rev.1.bt2";
-    indexList << testDir + "_tmp/human_T1_cutted.rev.2.bt2";
+    indexList << testDir + "_common_data/scenarios/sandbox/human_T1_cutted.rev.1.bt2";
+    indexList << testDir + "_common_data/scenarios/sandbox/human_T1_cutted.rev.2.bt2";
 
     GTGlobals::sleep(500);
     for (int i = 0; i < indexList.size(); i++){
