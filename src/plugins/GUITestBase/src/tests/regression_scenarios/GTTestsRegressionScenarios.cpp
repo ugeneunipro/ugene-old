@@ -1991,7 +1991,7 @@ GUI_TEST_CLASS_DEFINITION( test_2167 ) {
 
 GUI_TEST_CLASS_DEFINITION( test_2169 ) {
     // 1. Open "data/PDB/1CF7.pdb".
-    GTFileDialog::openFile(os, dataDir + "samples/PDB", "1CF7.pdb");
+    GTFileDialog::openFile(os, dataDir + "samples/PDB", "1CF7.PDB");
 
     // 2. Open the DAS widget on the options panel
     GTWidget::click(os, GTWidget::findWidget(os, "OP_DAS"));
