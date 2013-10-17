@@ -111,6 +111,7 @@ public:
      */
     virtual U2DbiIterator<U2AssemblyRead> *getReadsByRow(const U2DataId &assemblyId, const U2Region &r, qint64 minRow, qint64 maxRow, U2OpStatus &os);
     virtual qint64 getMaxPackedRow(const U2DataId &assemblyId, const U2Region &r, U2OpStatus &os);
+    virtual bool isDatabaseReadOnly() const;
 
 private:
     SamtoolsBasedDbi &dbi;

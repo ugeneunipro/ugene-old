@@ -158,7 +158,7 @@ public:
         returns true if database is read-only
      */
 
-    virtual bool isDatabaseReadOnly() const;
+    virtual bool isDatabaseReadOnly() const = 0;
 
     /**
         Removes reads from assembly.

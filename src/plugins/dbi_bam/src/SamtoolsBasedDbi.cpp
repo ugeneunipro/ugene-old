@@ -578,6 +578,11 @@ U2DbiIterator<U2AssemblyRead> * SamtoolsBasedAssemblyDbi::getReadsByRow(const U2
     return NULL;
 }
 
+bool SamtoolsBasedAssemblyDbi::isDatabaseReadOnly() const{
+    //unsupported
+    return false;
+}
+
 U2DbiIterator<U2AssemblyRead> * SamtoolsBasedAssemblyDbi::getReadsByName(const U2DataId &assemblyId, const QByteArray &name, U2OpStatus &os) {
     int id = SamtoolsBasedAssemblyDbi::toSamtoolsId(assemblyId, os);
     CHECK_OP(os, NULL);
