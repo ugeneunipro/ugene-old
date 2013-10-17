@@ -28,11 +28,12 @@
 #include "GTUtilsProject.h"
 #include "GTUtilsDialog.h"
 #include "GTUtilsProjectTreeView.h"
-#include "runnables/qt/MessageBoxFiller.h"
+#include "runnables/ugene/ugeneui/SaveProjectDialogFiller.h"
 
 #include <U2Core/AppContext.h>
 #include <U2Core/ProjectModel.h>
 #include <U2Gui/ObjectViewModel.h>
+//#include <QtGui/QApplication>
 
 namespace U2 {
 
@@ -103,7 +104,7 @@ GUI_TEST_CLASS_DEFINITION(post_test_0001) {
         GTKeyboardDriver::keyClick(os, 'a', key);
         GTGlobals::sleep(100);
 
-        GTUtilsDialog::waitForDialog(os, new MessageBoxNoToAllOrNo(os));
+        GTUtilsDialog::waitForDialog(os, new SaveProjectDialogFiller(os, QDialogButtonBox::No));
         GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
         GTGlobals::sleep(100);
 #ifdef Q_OS_MAC

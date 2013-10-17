@@ -37,6 +37,7 @@
 #include <QtGui/QApplication>
 #include "runnables/qt/PopupChooser.h"
 #include "runnables/ugene/corelibs/U2Gui/CreateDocumentFromTextDialogFiller.h"
+#include "runnables/ugene/ugeneui/SaveProjectDialogFiller.h"
 
 namespace U2 {
 
@@ -879,7 +880,7 @@ GUI_TEST_CLASS_DEFINITION(test_0012) {
     GTUtilsDocument::checkDocument(os, "result.fa");
     GTGlobals::sleep();
 
-    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::No));
+    GTUtilsDialog::waitForDialog(os, new SaveProjectDialogFiller(os, QDialogButtonBox::No));
     GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), ACTION_PROJECTSUPPORT__CLOSE_PROJECT);
     GTGlobals::sleep();
 
@@ -905,7 +906,7 @@ GUI_TEST_CLASS_DEFINITION(test_0012_1) {
     GTUtilsDocument::checkDocument(os, "result.gb");
     GTGlobals::sleep();
 
-    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::No));
+    GTUtilsDialog::waitForDialog(os, new SaveProjectDialogFiller(os, QDialogButtonBox::No));
     GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), ACTION_PROJECTSUPPORT__CLOSE_PROJECT);
     GTGlobals::sleep();
 
@@ -930,7 +931,7 @@ GUI_TEST_CLASS_DEFINITION(test_0012_2) {
     GTUtilsDocument::checkDocument(os, "result.fa");
     GTGlobals::sleep();
 
-    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::No));
+    GTUtilsDialog::waitForDialog(os, new SaveProjectDialogFiller(os, QDialogButtonBox::No));
     GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), ACTION_PROJECTSUPPORT__CLOSE_PROJECT);
     GTGlobals::sleep();
 

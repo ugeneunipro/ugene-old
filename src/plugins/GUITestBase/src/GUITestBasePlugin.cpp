@@ -187,6 +187,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_2122);
     REGISTER_TEST(GUITest_regression_scenarios::test_2128);
     REGISTER_TEST(GUITest_regression_scenarios::test_2140);
+    REGISTER_TEST(GUITest_regression_scenarios::test_2156);
     REGISTER_TEST(GUITest_regression_scenarios::test_2157);
     REGISTER_TEST(GUITest_regression_scenarios::test_2160);
     REGISTER_TEST(GUITest_regression_scenarios::test_2163);
@@ -837,6 +838,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 // Common scenarios/Assembling/bowtie2
 /////////////////////////////////////////////////////////////////////////
     REGISTER_TEST_IGNORED_WINDOWS(GUITest_Bowtie2::test_0001, "Restore when this tool becomes available");
+    REGISTER_TEST_IGNORED_WINDOWS(GUITest_Bowtie2::test_0002, "Restore when this tool becomes available");
     REGISTER_TEST_IGNORED_WINDOWS(GUITest_Bowtie2::test_0003, "Restore when this tool becomes available");
     REGISTER_TEST_IGNORED_WINDOWS(GUITest_Bowtie2::test_0004, "Restore when this tool becomes available");
     REGISTER_TEST_IGNORED_WINDOWS(GUITest_Bowtie2::test_0005, "Restore when this tool becomes available");

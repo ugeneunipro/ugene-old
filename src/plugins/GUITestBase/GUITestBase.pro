@@ -165,7 +165,8 @@ HEADERS +=  src/GUITestBasePlugin.h \
     src/runnables/ugene/plugins/workflow_designer/AliasesDialogFiller.h \
     src/runnables/ugene/plugins/workflow_designer/RPackageDialorFiller.h \
     src/api/GTGraphicsItem.h \
-    src/runnables/ugene/ugeneui/NCBISearchDialogFiller.h
+    src/runnables/ugene/ugeneui/NCBISearchDialogFiller.h \
+    src/runnables/ugene/ugeneui/SaveProjectDialogFiller.h
 SOURCES +=  src/GUITestBasePlugin.cpp \
             src/tests/crazy_user/GUICrazyUserTest.cpp \
             src/tests/crazy_user/GTRandomGUIActionFactory.cpp \
@@ -335,4 +336,5 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
     src/runnables/ugene/plugins/workflow_designer/AliasesDialogFiller.cpp \
     src/runnables/ugene/plugins/workflow_designer/RPackageDialorFiller.cpp \
     src/api/GTGraphicsItem.cpp \
-    src/runnables/ugene/ugeneui/NCBISearchDialogFiller.cpp
+    src/runnables/ugene/ugeneui/NCBISearchDialogFiller.cpp \
+    src/runnables/ugene/ugeneui/SaveProjectDialogFiller.cpp

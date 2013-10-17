@@ -46,6 +46,7 @@
 #include "runnables/ugene/corelibs/U2Gui/ExportDocumentDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/DownloadRemoteFileDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/CreateAnnotationWidgetFiller.h"
+#include "runnables/ugene/ugeneui/SaveProjectDialogFiller.h"
 
 #include <U2View/AnnotatedDNAViewFactory.h>
 #include <U2View/MSAEditorFactory.h>
@@ -406,7 +407,7 @@ GUI_TEST_CLASS_DEFINITION(test_0030) {
     GTLogTracer logTracer;
     GTUtilsProject::openFiles(os, dataDir + "samples/FASTA/human_T1.fa");
 
-    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Cancel));
+    GTUtilsDialog::waitForDialog(os, new SaveProjectDialogFiller(os, QDialogButtonBox::Cancel));
     GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), ACTION_PROJECTSUPPORT__CLOSE_PROJECT);
     GTGlobals::sleep();
 

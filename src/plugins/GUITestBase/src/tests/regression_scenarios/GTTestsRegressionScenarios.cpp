@@ -1765,6 +1765,22 @@ GUI_TEST_CLASS_DEFINITION( test_2140 )
     CHECK_SET_ERR(l.hasError() == true, "There is no error message in log");
 }
 
+GUI_TEST_CLASS_DEFINITION( test_2156 ){
+//    1. Open "data/samples/CLUSTALW/COI.aln".
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/","COI.aln");
+//    2. Select six symbols (45-50) of the first line.
+    GTUtilsMSAEditorSequenceArea::selectArea(os,QPoint(44,0),QPoint(49,0));
+//    3. Press BACKSPACE.
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["back"]);
+//    Expected state: three gaps before the selected area are removed.
+    GTWidget::click(os, GTUtilsMdi::activeWindow(os));
+    GTUtilsMSAEditorSequenceArea::selectArea(os,QPoint(41,0),QPoint(44,0));
+    GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
+    QString clipboardText = GTClipboard::text(os);
+    CHECK_SET_ERR(clipboardText == "CTAA", QString("Expected: CTAA, found: %1").arg(clipboardText) );
+
+}
+
 GUI_TEST_CLASS_DEFINITION( test_2157 )
 {
 //    1. Open file "https://ugene.unipro.ru/tracker/secure/attachment/12864/pdb1a07.ent.gz".

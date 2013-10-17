@@ -43,6 +43,7 @@
 #include <api/GTFileDialog.h>
 #include "runnables/ugene/ugeneui/SequenceReadingModeSelectorDialogFiller.h"
 #include "runnables/qt/PopupChooser.h"
+#include "runnables/ugene/ugeneui/SaveProjectDialogFiller.h"
 
 namespace U2{
 
@@ -61,7 +62,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
     GTGlobals::sleep();
 
 //  3. Close project
-    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::No));
+    GTUtilsDialog::waitForDialog(os, new SaveProjectDialogFiller(os, QDialogButtonBox::No));
     GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), ACTION_PROJECTSUPPORT__CLOSE_PROJECT);
     GTGlobals::sleep();
 }
@@ -83,7 +84,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002_1) {
     GTGlobals::sleep();
 
     // 3. Close project
-    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::No));
+    GTUtilsDialog::waitForDialog(os, new SaveProjectDialogFiller(os, QDialogButtonBox::No));
     GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), ACTION_PROJECTSUPPORT__CLOSE_PROJECT);
     GTGlobals::sleep();
 }
@@ -106,7 +107,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002_2) {
     GTGlobals::sleep();
 
     // 3. Close project
-    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::No));
+    GTUtilsDialog::waitForDialog(os,new SaveProjectDialogFiller(os, QDialogButtonBox::No));
     GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), ACTION_PROJECTSUPPORT__CLOSE_PROJECT);
     GTGlobals::sleep();
 }

@@ -139,7 +139,9 @@ void AlignShortReadsFiller::setBowtie2AdditionalParameters(Bowtie2Parameters* bo
     QSpinBox* seedlenSpinBox = qobject_cast<QSpinBox*>(GTWidget::findWidget(os, "seedlenSpinBox", dialog));
     CHECK_OP(os, );
     GT_CHECK(seedlenSpinBox, "seedlenSpinBox is NULL");
-    GTSpinBox::setValue(os, seedlenSpinBox, bowtie2Parameters->seedLength);
+    if(seedlenCheckBox->isChecked()){
+        GTSpinBox::setValue(os, seedlenSpinBox, bowtie2Parameters->seedLength);
+    }
     CHECK_OP(os, );
 
     QCheckBox* dpadCheckBox = qobject_cast<QCheckBox*>(GTWidget::findWidget(os, "dpadCheckBox", dialog));
@@ -151,19 +153,23 @@ void AlignShortReadsFiller::setBowtie2AdditionalParameters(Bowtie2Parameters* bo
     QSpinBox* dpadSpinBox = qobject_cast<QSpinBox*>(GTWidget::findWidget(os, "dpadSpinBox", dialog));
     CHECK_OP(os, );
     GT_CHECK(dpadSpinBox, "dpadSpinBox is NULL");
-    GTSpinBox::setValue(os, dpadSpinBox, bowtie2Parameters->addColumnsToAllowGaps);
+    if(dpadCheckBox->isChecked()){
+        GTSpinBox::setValue(os, dpadSpinBox, bowtie2Parameters->addColumnsToAllowGaps);
+    }
     CHECK_OP(os, );
 
     QCheckBox* gbarCheckBox = qobject_cast<QCheckBox*>(GTWidget::findWidget(os, "gbarCheckBox", dialog));
     CHECK_OP(os, );
     GT_CHECK(gbarCheckBox, "gbarCheckBox is NULL");
-    GTCheckBox::setChecked(os, gbarCheckBox, bowtie2Parameters->disallowGapsCheckBox);
+        GTCheckBox::setChecked(os, gbarCheckBox, bowtie2Parameters->disallowGapsCheckBox);
     CHECK_OP(os, );
 
     QSpinBox* gbarSpinBox = qobject_cast<QSpinBox*>(GTWidget::findWidget(os, "gbarSpinBox", dialog));
     CHECK_OP(os, );
     GT_CHECK(gbarSpinBox, "gbarSpinBox is NULL");
-    GTSpinBox::setValue(os, gbarSpinBox, bowtie2Parameters->disallowGaps);
+    if(gbarCheckBox->isChecked()){
+        GTSpinBox::setValue(os, gbarSpinBox, bowtie2Parameters->disallowGaps);
+    }
     CHECK_OP(os, );
 
     QCheckBox* seedCheckBox = qobject_cast<QCheckBox*>(GTWidget::findWidget(os, "seedCheckBox", dialog));
@@ -175,7 +181,9 @@ void AlignShortReadsFiller::setBowtie2AdditionalParameters(Bowtie2Parameters* bo
     QSpinBox* seedSpinBox = qobject_cast<QSpinBox*>(GTWidget::findWidget(os, "seedSpinBox", dialog));
     CHECK_OP(os, );
     GT_CHECK(seedSpinBox, "seedSpinBox is NULL");
-    GTSpinBox::setValue(os, seedSpinBox, bowtie2Parameters->seed);
+    if(seedCheckBox->isChecked()){
+        GTSpinBox::setValue(os, seedSpinBox, bowtie2Parameters->seed);
+    }
     CHECK_OP(os, );
 
     QSpinBox* threadsSpinBox = qobject_cast<QSpinBox*>(GTWidget::findWidget(os, "threadsSpinBox", dialog));
