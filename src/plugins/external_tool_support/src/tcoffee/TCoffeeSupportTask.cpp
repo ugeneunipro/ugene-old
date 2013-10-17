@@ -123,6 +123,7 @@ QList<Task*> TCoffeeSupportTask::onSubTaskFinished(Task* subTask) {
         return res;
     }
     QString outputUrl = url+".msf";
+    QString outputDNDUrl = url+".dnd";
     if(subTask==saveTemporaryDocumentTask){
         QStringList arguments;
         if(url.contains(" ")){
@@ -141,6 +142,7 @@ QList<Task*> TCoffeeSupportTask::onSubTaskFinished(Task* subTask) {
             arguments <<"-iterate"<<QString::number(settings.numIterations);
         }
         arguments <<"-outfile"<<outputUrl;
+        arguments <<"-newtree"<<outputDNDUrl;
         logParser=new TCoffeeLogParser();
         tCoffeeTask=new ExternalToolRunTask(ET_TCOFFEE, arguments, logParser);
         setListenerForTask(tCoffeeTask);
