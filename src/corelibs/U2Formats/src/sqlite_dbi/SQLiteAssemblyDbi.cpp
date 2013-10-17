@@ -259,7 +259,7 @@ void SQLiteAssemblyDbi::updateAssemblyObject(U2Assembly& assembly, U2OpStatus& o
     SAFE_POINT_OP(os, );
 }
 
-const bool SQLiteAssemblyDbi::isDatabaseReadOnly(){
+bool SQLiteAssemblyDbi::isDatabaseReadOnly() const{
     return (SQLiteUtils::isDatabaseReadOnly(db, "main")==1);
 }
 

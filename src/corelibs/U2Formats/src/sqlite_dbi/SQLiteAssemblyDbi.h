@@ -93,7 +93,7 @@ public:
         0 if database is read-write
         -1 if dbName is wrong
      */
-    virtual const bool isDatabaseReadOnly();
+    virtual bool isDatabaseReadOnly() const;
 
 
     /** 

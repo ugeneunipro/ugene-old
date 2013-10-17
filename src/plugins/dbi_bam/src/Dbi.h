@@ -140,9 +140,12 @@ public:
 
     virtual qint64 getMaxEndPos(const U2DataId& assemblyId, U2OpStatus &os);
 
+    virtual bool isDatabaseReadOnly() const {return SQLiteUtils::isDatabaseReadOnly(&dbRef,"main");}
+
     static U2AssemblyRead alignmentToRead(const Alignment &alignment);
 
     U2AssemblyRead getReadById(const U2DataId& rowId, U2OpStatus &os);
+
 
 private:
     qint64 getMaxReadLength(const U2DataId& assemblyId, const U2Region &r);
