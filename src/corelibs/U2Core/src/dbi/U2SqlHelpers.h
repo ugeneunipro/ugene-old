@@ -82,6 +82,9 @@ public:
     /** Checks if the table exists in database */
     static bool isTableExists(const QString& tableName, DbRef* db, U2OpStatus& os);
 
+    /** returns 1 if the database is read-only, 0 if it is read/write, or -1 if dbName is not the name of a database on connection */
+    static int isDatabaseReadOnly(const DbRef* db, QString dbName);//dbName is usualy "main"
+
     /** Writes Memory counters */
     static bool getMemoryHint(int& currentMemory, int &maxMemory, int resetMax);
 };

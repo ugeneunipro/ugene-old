@@ -101,6 +101,8 @@ public:
     static bool canRemoveGObjectFromDocument(GObject* obj);
 
     static void removeDocumentsContainigGObjectFromProject(GObject* obj);
+
+    static QFile::Permissions getPermissions(Document* doc);
 };
 
 }//namespace

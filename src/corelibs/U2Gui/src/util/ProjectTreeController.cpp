@@ -47,6 +47,7 @@
 #include <QtGui/QMenu>
 #include <QtGui/QMessageBox>
 #include <QtGui/QKeyEvent>
+#include <QtGui/QApplication>
 
 /* TRANSLATOR U2::ProjectTreeController */
 
@@ -719,6 +720,12 @@ void ProjectTreeController::sl_onToggleReadonly() {
         return;
     }
     Document* doc = docsInSelection.toList().first();
+    if (!DocumentUtils::getPermissions(doc).testFlag(QFile::WriteUser)){
+        QMessageBox::warning(QApplication::activeWindow(), tr("Warning"),
+                             tr("This action requires changing file:\n%1\nYou don't have enough rights to change file").arg(doc->getURLString()),
+                            QMessageBox::Ok);
+        return;
+    }
     if (doc->hasUserModLock()) {
         doc->setUserModLock(false);
     } else {

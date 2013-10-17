@@ -45,6 +45,8 @@
 #include <U2Core/GObjectUtils.h>
 #include <U2Core/GObjectTypes.h>
 #include <U2Core/VariantTrackObject.h>
+#include <U2Core/U2SqlHelpers.h>
+
 
 #include <U2Gui/ObjectViewTasks.h>
 
@@ -218,7 +220,7 @@ qint64 AssemblyModel::getModelHeight(U2OpStatus & os) {
             if(attr.hasValidId()) {
                 if(attr.version == assembly.version) {
                     cachedModelHeight = attr.value;
-                } else {
+                } else if(checkPermissions(QFile::WriteUser,false)) {
                     U2AttributeUtils::removeAttribute(attributeDbi, attr.id, os);
                     LOG_OP(os);
                 }
@@ -459,7 +461,7 @@ qint64 AssemblyModel::getReadsNumber(U2OpStatus & os) {
                 // ...check its version...
                 if(attr.version == assembly.version) {
                     cachedReadsNumber = attr.value;
-                } else {
+                } else if(checkPermissions(QFile::WriteUser, false)) {
                     // ...and remove if it's obsolete
                     U2AttributeUtils::removeAttribute(attributeDbi, attr.id, os);
                     LOG_OP(os);
@@ -576,6 +578,7 @@ void AssemblyModel::sl_unassociateReference() {
 }
 
 bool AssemblyModel::checkPermissions(QFile::Permission permission, bool showDialog){
+    bool res = assemblyDbi->isDatabaseReadOnly();
     QFile f(assembly.dbiId);
     QFile::Permissions perm = f.permissions();
 
@@ -586,6 +589,11 @@ bool AssemblyModel::checkPermissions(QFile::Permission permission, bool showDial
                                 QMessageBox::Ok, QMessageBox::Ok);
         }
        return false;
+    }
+    if(res){
+        QMessageBox::warning(QApplication::activeWindow(),tr("Warning"),
+                             tr("Database is opened in read-only mode. It might happen because file \n%1\n is read only. If not try to reload file").arg(assembly.dbiId));
+        return false;
     }
     return true;
 }

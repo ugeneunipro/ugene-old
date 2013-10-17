@@ -214,6 +214,10 @@ void DocumentUtils::removeDocumentsContainigGObjectFromProject(GObject *obj)
     }
 }
 
+QFile::Permissions DocumentUtils::getPermissions(Document *doc){
+    return QFile(doc->getURLString()).permissions();
+}
+
 QString FormatDetectionResult::getFormatDescriptionText() const {
     QString text = format == NULL ? importer->getImporterDescription() : format->getFormatDescription();
     return text;
@@ -223,5 +227,7 @@ QString FormatDetectionResult::getFormatOrImporterName() const {
     QString name = format == NULL ? importer->getImporterName() : format->getFormatName();
     return name;
 }
+
+
 
 } //namespace

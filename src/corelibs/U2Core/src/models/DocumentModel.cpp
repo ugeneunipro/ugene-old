@@ -38,8 +38,10 @@
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/UnloadedObject.h>
+#include <U2Core/DocumentUtils.h>
 
 #include <QtCore/QFileInfo>
+
 
 #include <memory>
 
@@ -471,6 +473,9 @@ void Document::loadFrom(Document* sourceDoc) {
         modLocks[DocumentModLock_FORMAT_AS_INSTANCE] = new StateLock(dLock->getUserDesc());
         lockState(modLocks[DocumentModLock_FORMAT_AS_INSTANCE]);
     }
+    if(!DocumentUtils::getPermissions(sourceDoc).testFlag(QFile::WriteUser)){
+        setUserModLock(true);
+    }
 
     dbiRef = sourceDoc->dbiRef;
     documentOwnsDbiResources = sourceDoc->isDocumentOwnsDbiResources();
@@ -725,6 +730,7 @@ void Document::setLastUpdateTime() {
         lastUpdateTime = fi.lastModified();
     }
 }
+
 void Document::propagateModLocks(Document* doc)  const {
     for (int i = 0; i < DocumentModLock_NUM_LOCKS; i++) {
         StateLock* lock = modLocks[i];
@@ -735,8 +741,6 @@ void Document::propagateModLocks(Document* doc)  const {
         }
     }
 }
-
-
 
 DocumentMimeData::DocumentMimeData( Document* obj ) 
     : objPtr(obj){

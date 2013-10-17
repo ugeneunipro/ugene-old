@@ -117,9 +117,18 @@ void DocumentUpdater::update() {
     // build list of documents which files were modified between calls to sl_update()
     QList<Document*> outdatedDocs;
     QList<Document *> removedDocs;
+    QList<Document *> outdatedPermDocs;
     foreach(Document* doc, docs2check) {
         if (!doc->isLoaded()) {
             continue;
+        }
+        QFileInfo fi(doc->getURLString());
+        QFile::Permissions perm= DocumentUtils::getPermissions(doc);
+        if (perm==0) {// the document was not loaded or saved
+            continue;
+        }
+        if (!doc->hasUserModLock() && !perm.testFlag(QFile::WriteUser) && fi.exists()) { // file was modified
+            outdatedPermDocs.append(doc);
         }
 
         DbiDocumentFormat* dbiFormat = qobject_cast<DbiDocumentFormat*>(doc->getDocumentFormat());
@@ -127,9 +136,7 @@ void DocumentUpdater::update() {
             continue;
         }
 
-        QFileInfo fi(doc->getURLString());
         QDateTime updTime = doc->getLastUpdateTime();
-
         // last update time is updated by save/load tasks
         // if it's a null the document was not loaded or saved => reload is pointless
         // if it's not a null and file not exists => file was deleted (don't reload)
@@ -146,9 +153,10 @@ void DocumentUpdater::update() {
     
     if(!outdatedDocs.isEmpty())
         notifyUserAndReloadDocuments(outdatedDocs);
-
     if(!removedDocs.isEmpty())
         notifyUserAndProcessRemovedDocuments(removedDocs);
+    if(!outdatedPermDocs.isEmpty())
+        reloadDocsWithNewPermisions(outdatedPermDocs);
 }
 
 bool DocumentUpdater::isAnyDialogOpened() const
@@ -280,6 +288,24 @@ void DocumentUpdater::notifyUserAndReloadDocuments(const QList<Document*> & outd
     // setup multi task : reload documents + open views
 
     reloadDocuments(docs2Reload);
+}
+
+void DocumentUpdater::reloadDocsWithNewPermisions(const QList<Document *> &outdatedPermDocs){
+    coreLog.trace(QString("Permisions for %1 docs changed!").arg(outdatedPermDocs.size()));
+    if(isAnyDialogOpened())
+        return;
+
+    QListIterator<Document*> iter(outdatedPermDocs);
+    while (iter.hasNext()) {
+        Document* doc = iter.next();
+        QMessageBox::information(
+            dynamic_cast<QWidget *>(AppContext::getMainWindow()),
+            U2_APP_TITLE,
+            tr("Permision for document '%1' was changed outside UGENE. It should be reloaded.").arg(doc->getName()),
+            QMessageBox::Ok);
+        if(!doc->hasUserModLock())//don't unlock documents when changing permissions
+            doc->setUserModLock(!DocumentUtils::getPermissions(doc).testFlag(QFile::WriteUser));
+    }
 }
 
 void DocumentUpdater::sl_updateTaskStateChanged() {

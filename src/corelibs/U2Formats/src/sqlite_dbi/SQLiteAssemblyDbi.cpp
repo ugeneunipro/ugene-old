@@ -243,6 +243,7 @@ void SQLiteAssemblyDbi::createAssemblyObject(U2Assembly& assembly, const QString
  
 void SQLiteAssemblyDbi::updateAssemblyObject(U2Assembly& assembly, U2OpStatus& os) {
     SQLiteTransaction t(db, os);
+
     
     SQLiteQuery q("UPDATE Assembly SET reference = ?1 WHERE object = ?2", db, os);
     q.bindDataId(1, assembly.referenceId);
@@ -256,6 +257,10 @@ void SQLiteAssemblyDbi::updateAssemblyObject(U2Assembly& assembly, U2OpStatus& o
 
     SQLiteObjectDbi::incrementVersion(assembly.id, db, os);
     SAFE_POINT_OP(os, );
+}
+
+const bool SQLiteAssemblyDbi::isDatabaseReadOnly(){
+    return (SQLiteUtils::isDatabaseReadOnly(db, "main")==1);
 }
 
 void SQLiteAssemblyDbi::removeReads(const U2DataId& assemblyId, const QList<U2DataId>& rowIds, U2OpStatus& os){

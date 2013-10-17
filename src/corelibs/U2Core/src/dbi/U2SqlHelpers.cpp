@@ -108,6 +108,11 @@ bool SQLiteUtils::isTableExists(const QString& tableName, DbRef* db, U2OpStatus&
     return q.step();
 }
 
+int SQLiteUtils::isDatabaseReadOnly(const DbRef *db, QString dbName){
+    int res = sqlite3_db_readonly(db->handle, dbName.toUtf8());
+    return res;
+}
+
 bool SQLiteUtils::getMemoryHint(int& currentMemory, int &maxMemory, int resetMax) {
 
     return SQLITE_OK == sqlite3_status(SQLITE_STATUS_MEMORY_USED, &currentMemory, &maxMemory, resetMax);
@@ -226,7 +231,7 @@ bool SQLiteQuery::step() {
     assert(st != NULL);
     
     int rc = sqlite3_step(st);
-    if (rc == SQLITE_DONE) {
+    if (rc == SQLITE_DONE || rc == SQLITE_READONLY) {
         return false; 
     } else if (rc == SQLITE_ROW) {
         return true;
