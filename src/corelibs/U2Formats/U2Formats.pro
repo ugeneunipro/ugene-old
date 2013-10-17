@@ -8,6 +8,7 @@ HEADERS += src/ABIFormat.h \
            src/BedFormat.h \
            src/ClustalWAlnFormat.h \
            src/ColumnDataParser.h \
+           src/Database.h \
            src/DifferentialFormat.h \
            src/DNAQualityIOUtils.h \
            src/DocumentFormatUtils.h \
@@ -21,8 +22,6 @@ HEADERS += src/ABIFormat.h \
            src/GenbankPlainTextFormat.h \
            src/GFFFormat.h \
            src/GTFFormat.h \
-           src/Database.h \
-           src/SNPDatabaseUtils.h \
            src/IOLibUtils.h \
            src/MegaFormat.h \
            src/MSFFormat.h \
@@ -36,34 +35,36 @@ HEADERS += src/ABIFormat.h \
            src/SAMFormat.h \
            src/SCFFormat.h \
            src/SimpleSNPVariationFormat.h \
+           src/SNPDatabaseUtils.h \
            src/StdResidueDictionary.h \
            src/StockholmFormat.h \
            src/StreamSequenceReader.h \
            src/StreamSequenceWriter.h \
            src/SwissProtPlainTextFormat.h \
            src/VCF4VariationFormat.h \
-           src/ace/ConvertAceToSqliteDialog.h \
-           src/ace/ConvertAceToSqliteTask.h \
            src/ace/AceFormat.h \
            src/ace/AceImporter.h \
            src/ace/AceImportUtils.h \
+           src/ace/ConvertAceToSqliteDialog.h \
+           src/ace/ConvertAceToSqliteTask.h \
            src/sqlite_dbi/SQLiteAssemblyDbi.h \
            src/sqlite_dbi/SQLiteAttributeDbi.h \
            src/sqlite_dbi/SQLiteDbi.h \
            src/sqlite_dbi/SQLiteFeatureDbi.h \
+           src/sqlite_dbi/SQLiteKnownMutationsDbi.h \
            src/sqlite_dbi/SQLiteModDbi.h \
            src/sqlite_dbi/SQLiteMsaDbi.h \
            src/sqlite_dbi/SQLiteObjectDbi.h \
            src/sqlite_dbi/SQLitePackUtils.h \
            src/sqlite_dbi/SQLiteSequenceDbi.h \
-           src/sqlite_dbi/SQLiteVariantDbi.h \
            src/sqlite_dbi/SQLiteSNPTablesDbi.h \
-           src/sqlite_dbi/SQLiteKnownMutationsDbi.h \
+           src/sqlite_dbi/SQLiteVariantDbi.h \
+           src/tasks/ConvertAssemblyToSamTask.h \
+           src/tasks/ConvertFileTask.h \
            src/sqlite_dbi/assembly/AssemblyPackAlgorithm.h \
            src/sqlite_dbi/assembly/MultiTableAssemblyAdapter.h \
            src/sqlite_dbi/assembly/RTreeAssemblyAdapter.h \
-           src/sqlite_dbi/assembly/SingleTableAssemblyAdapter.h \
-           src/tasks/ConvertAssemblyToSamTask.h
+           src/sqlite_dbi/assembly/SingleTableAssemblyAdapter.h
 FORMS += src/ace/ui/ConvertAceToSqliteDialog.ui
 SOURCES += src/ABIFormat.cpp \
            src/AbstractVariationFormat.cpp \
@@ -72,6 +73,7 @@ SOURCES += src/ABIFormat.cpp \
            src/BedFormat.cpp \
            src/ClustalWAlnFormat.cpp \
            src/ColumnDataParser.cpp \
+           src/Database.cpp \
            src/DifferentialFormat.cpp \
            src/DNAQualityIOUtils.cpp \
            src/DocumentFormatUtils.cpp \
@@ -95,37 +97,37 @@ SOURCES += src/ABIFormat.cpp \
            src/RawDNASequenceFormat.cpp \
            src/SAMFormat.cpp \
            src/SCFFormat.cpp \
-           src/Database.cpp \
-           src/SNPDatabaseUtils.cpp \
            src/SimpleSNPVariationFormat.cpp \
+           src/SNPDatabaseUtils.cpp \
            src/StdResidueDictionary.cpp \
            src/StockholmFormat.cpp \
            src/StreamSequenceReader.cpp \
            src/StreamSequenceWriter.cpp \
            src/SwissProtPlainTextFormat.cpp \
            src/VCF4VariationFormat.cpp \
-           src/ace/ConvertAceToSqliteDialog.cpp \
-           src/ace/ConvertAceToSqliteTask.cpp \
            src/ace/AceFormat.cpp \
            src/ace/AceImporter.cpp \
            src/ace/AceImportUtils.cpp \
+           src/ace/ConvertAceToSqliteDialog.cpp \
+           src/ace/ConvertAceToSqliteTask.cpp \
            src/sqlite_dbi/SQLiteAssemblyDbi.cpp \
            src/sqlite_dbi/SQLiteAttributeDbi.cpp \
            src/sqlite_dbi/SQLiteDbi.cpp \
            src/sqlite_dbi/SQLiteFeatureDbi.cpp \
+           src/sqlite_dbi/SQLiteKnownMutationsDbi.cpp \
            src/sqlite_dbi/SQLiteModDbi.cpp \
            src/sqlite_dbi/SQLiteMsaDbi.cpp \
            src/sqlite_dbi/SQLiteObjectDbi.cpp \
            src/sqlite_dbi/SQLitePackUtils.cpp \
            src/sqlite_dbi/SQLiteSequenceDbi.cpp \
-           src/sqlite_dbi/SQLiteVariantDbi.cpp \
            src/sqlite_dbi/SQLiteSNPTablesDbi.cpp \
-           src/sqlite_dbi/SQLiteKnownMutationsDbi.cpp \
+           src/sqlite_dbi/SQLiteVariantDbi.cpp \
+           src/tasks/ConvertAssemblyToSamTask.cpp \
+           src/tasks/ConvertFileTask.cpp \
            src/sqlite_dbi/assembly/AssemblyPackAlgorithm.cpp \
            src/sqlite_dbi/assembly/MultiTableAssemblyAdapter.cpp \
            src/sqlite_dbi/assembly/RTreeAssemblyAdapter.cpp \
-           src/sqlite_dbi/assembly/SingleTableAssemblyAdapter.cpp \
-           src/tasks/ConvertAssemblyToSamTask.cpp
+           src/sqlite_dbi/assembly/SingleTableAssemblyAdapter.cpp
 RESOURCES += U2Formats.qrc
 TRANSLATIONS += transl/chinese.ts \
                 transl/czech.ts \

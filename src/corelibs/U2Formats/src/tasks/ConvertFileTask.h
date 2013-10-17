@@ -36,6 +36,7 @@ public:
 
     void prepare();
     QList<Task*> onSubTaskFinished(Task *subTask);
+    GUrl getSourceURL() const;
     QString getResult() const;
 
 private:

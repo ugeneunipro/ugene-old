@@ -59,8 +59,8 @@ QList<Task*> ConvertFileTask::onSubTaskFinished(Task *subTask) {
     SAFE_POINT_EXT(loadTask == subTask, setError("Unknown subtask"), result);
 
     bool mainThread = false;
-    QScopedPointer<Document> srcDoc(loadTask->takeDocument(mainThread));
-    SAFE_POINT_EXT(NULL != srcDoc.data(), setError("NULL document"), result);
+    Document *srcDoc = loadTask->getDocument(mainThread);
+    SAFE_POINT_EXT(NULL != srcDoc, setError("NULL document"), result);
 
     DocumentFormatRegistry *dfr = AppContext::getDocumentFormatRegistry();
     DocumentFormat *df = dfr->getFormatById(targetFormat);
@@ -83,9 +83,15 @@ QList<Task*> ConvertFileTask::onSubTaskFinished(Task *subTask) {
     targetUrl = GUrlUtils::rollFileName(workingDir + fileName, QSet<QString>());
 
     IOAdapterFactory *iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(srcDoc->getURL()));
-    saveTask = new SaveDocumentTask(srcDoc.take(), iof, targetUrl, SaveDoc_DestroyAfter);
+    Document *dstDoc = srcDoc->getSimpleCopy(df, iof, srcDoc->getURL());
+
+    saveTask = new SaveDocumentTask(dstDoc, iof, targetUrl);
     result << saveTask;
     return result;
+}
+
+GUrl ConvertFileTask::getSourceURL() const {
+    return sourceURL;
 }
 
 QString ConvertFileTask::getResult() const {
