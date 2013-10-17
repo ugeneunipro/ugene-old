@@ -39,6 +39,7 @@
 #include <U2Core/UserApplicationsSettings.h>
 #include <U2Designer/DelegateEditors.h>
 #include <U2Formats/BAMUtils.h>
+#include <U2Formats/ConvertFileTask.h>
 #include <U2Lang/ActorPrototypeRegistry.h>
 #include <U2Lang/BaseAttributes.h>
 #include <U2Lang/BaseTypes.h>
@@ -213,7 +214,7 @@ Task* ConvertFilesFormatWorker::tick() {
 
              t = new BamSamConversionTask( sourceURL, GUrl(destinationURL), samToBam );
          } else {
-             t = new ConvertFilesFormatTask( sourceURL, selectedFormat, workingDir );
+             t = new ConvertFileTask( sourceURL, selectedFormat, workingDir );
          }
          connect(new TaskSignalMapper(t), SIGNAL(si_taskFinished(Task*)), SLOT(sl_taskFinished(Task*)));
          return t;
@@ -229,83 +230,20 @@ void ConvertFilesFormatWorker::cleanup() {
 
 void ConvertFilesFormatWorker::sl_taskFinished( Task *task ) {
     SAFE_POINT( NULL != task, "Invalid task is encountered", );
+    CHECK(!task->isCanceled(), );
     BamSamConversionTask *bsct = qobject_cast<BamSamConversionTask*>( task );
     if( bsct != NULL ) {
         outputUrlPort->put( Message( BaseTypes::STRING_TYPE(), bsct->getDestinationURL() ) );
         monitor()->addOutputFile( bsct->getDestinationURL(), getActorId() );
         return;
     }
-    QList <Task*> subTasks = task->getSubtasks();
-    if( subTasks.empty() ) {
-        return;
-    }
-    SaveDocumentTask *sdt = qobject_cast<SaveDocumentTask*>( subTasks.last() );
-    if ( sdt->isCanceled( ) ) {
-        return;
-    }
-    if( sdt == NULL ) {
-        monitor()->addError( "Can not convert the file to selected format", getActorId() );
-        return;
-    }
-    QFile outputFile( sdt->getURL().getURLString() );
-    Message resultMessage( BaseTypes::STRING_TYPE(), sdt->getURL().getURLString() );
+    ConvertFileTask *cft = dynamic_cast<ConvertFileTask*>( task );
+    CHECK(NULL != cft, );
+
+    QFile outputFile( cft->getResult() );
+    Message resultMessage( BaseTypes::STRING_TYPE(), cft->getResult() );
     outputUrlPort->put(resultMessage);
-    monitor()->addOutputFile( sdt->getURL().getURLString(), getActorId() );
-}
-
-void ConvertFilesFormatTask::prepare() {
-    Task *t = LoadDocumentTask::getDefaultLoadDocTask( sourceURL );
-    if( t == NULL ) {
-        isTaskLoadDocument = false;
-        return;
-    }
-    this->addSubTask( t );
-}
-
-QList<Task*> ConvertFilesFormatTask::onSubTaskFinished( Task *subTask ) {
-    if( !isTaskLoadDocument ) {
-        return QList<Task*>();
-    }
-    LoadDocumentTask *ldt = qobject_cast<LoadDocumentTask*>(subTask);
-    if( ldt == NULL ) {
-        return QList<Task*>();
-    }
-    bool mainThread = false;
-    Document *srcDoc = ldt->getDocument( mainThread );
-    if( srcDoc == NULL ) {
-        return QList<Task*>();
-    }
-
-    const DocumentFormatRegistry *dfr =  AppContext::getDocumentFormatRegistry();
-    DocumentFormat *df = dfr->getFormatById(selectedFormat);
-    
-    const QSet <GObjectType> selectedFormatObjectsTypes = df->getSupportedObjectTypes();
-    QSet <GObjectType> inputFormatObjectTypes;
-    QListIterator <GObject*> objectsIterator( srcDoc->getObjects() );
-    while( objectsIterator.hasNext() ) {
-        inputFormatObjectTypes.insert( objectsIterator.next()->getGObjectType() );
-    }
-    inputFormatObjectTypes.intersect( selectedFormatObjectsTypes );
-    if( inputFormatObjectTypes.empty() ) {
-        return QList<Task*>();
-    }
-
-    IOAdapterFactory *iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById( IOAdapterUtils::url2io( srcDoc->getURL() ) );
-    Document *dstDoc = srcDoc->getSimpleCopy( df, iof, srcDoc->getURL() );
-
-    QString fileName = srcDoc->getName();
-    fileName.append("." + selectedFormat);
-    QString destinationURL = workingDir + fileName;
-    destinationURL = GUrlUtils::rollFileName( destinationURL, QSet<QString>() );
-    
-    Task *sdt = new SaveDocumentTask(dstDoc, iof, destinationURL);
-    if( sdt == NULL ) {
-        return QList<Task*>();
-    }
-    isTaskLoadDocument = false;
-    QList<Task*> taskList;
-    taskList << sdt;
-    return taskList;
+    monitor()->addOutputFile( cft->getResult(), getActorId() );
 }
 
 void BamSamConversionTask::run() {

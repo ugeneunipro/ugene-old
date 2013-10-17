@@ -70,24 +70,6 @@ public:
     Worker* createWorker(Actor* a) { return new ConvertFilesFormatWorker(a); }
 }; //ConvertFilesFormatWorkerFactory
 
-class ConvertFilesFormatTask : public Task {
-private:
-    GUrl sourceURL;
-    QString selectedFormat;
-    QString workingDir;
-    QList<SharedDbiDataHandler> result;
-    bool isTaskLoadDocument;
-public:
-    ConvertFilesFormatTask( const GUrl &url, const QString &_selectedFormat, const QString &dir ) : 
-                                             Task( "Conversion file format task", TaskFlags_NR_FOSCOE ), 
-                                             sourceURL( url ), selectedFormat( _selectedFormat ),
-                                             workingDir( dir ), isTaskLoadDocument(true) {}
-    void prepare();
-    QList<Task*> onSubTaskFinished( Task *subTask );
-}; //ConvertFilesFormatTask
-
-
-
 class BamSamConversionTask : public Task {
     Q_OBJECT
 private:
