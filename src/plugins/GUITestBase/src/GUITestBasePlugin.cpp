@@ -846,6 +846,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 /////////////////////////////////////////////////////////////////////////
     REGISTER_TEST(GUITest_SAM::test_0002);
     REGISTER_TEST(GUITest_SAM::test_0003);
+    REGISTER_TEST(GUITest_SAM::test_0004);
 
 /////////////////////////////////////////////////////////////////////////
 // Common scenarios/Query designer
@@ -869,6 +870,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST_IGNORED_WINDOWS(GUITest_common_scenarios_workflow_designer::test_0010,"no such scheme on windows");
     REGISTER_TEST(GUITest_common_scenarios_workflow_designer::test_0013);
     REGISTER_TEST(GUITest_common_scenarios_workflow_designer::test_0015);
+    REGISTER_TEST(GUITest_common_scenarios_workflow_designer::test_0017);
 
 
 

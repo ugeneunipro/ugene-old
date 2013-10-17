@@ -44,6 +44,7 @@
 #include "GTUtilsWorkflowDesigner.h"
 #include "GTUtilsMdi.h"
 #include "GTUtilsApp.h"
+#include "GTUtilsLog.h"
 
 #include <QGraphicsItem>
 #include <QtGui/QTextEdit>
@@ -513,6 +514,19 @@ GUI_TEST_CLASS_DEFINITION(test_0016){
 //    10. Press button "Configure command line aliases"
 //    Expected state: alias must be named 'zzz'
 }
+
+GUI_TEST_CLASS_DEFINITION(test_0017){
+    //Test for UGENE-2202
+    GTLogTracer l;
+    GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os, true, testDir + "_common_data/scenarios/sandbox/somedir"));
+    //1. Open Workflow Designer
+    QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
+    GTMenu::clickMenuItem(os, menu, QStringList() << "Workflow Designer");
+    //2. Write the path to the directory which does not exist(in the StartupDialogFiller).
+    //3. Click OK(in the StartupDialogFiller).
+    CHECK_SET_ERR(!l.hasError(), "There are error messages about write access in WD directory");
+}
+
 } // namespace GUITest_common_scenarios_workflow_designer
 
 } // namespace U2

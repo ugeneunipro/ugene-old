@@ -67,5 +67,22 @@ GUI_TEST_CLASS_DEFINITION(test_0003) {
     CHECK_SET_ERR(l.hasError() == true, "There is no error message in log");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0004) {
+    // 1. Open "samples/Assembly/chrM.sam".
+    //    Expected:
+    //      1) The import dialog is shown.
+    //      2) There are no table with the sequences check boxes in the dialog.
+    //      3) The reference line edit, button and warning are shown.
+    // 2. Click the reference sequence browse button. Choose "samples/Assembly/chrM.fa".
+    //    Expected: the warning is not shown.
+    // 3. Click "Import".
+    //    1) Expected: the import task is started and finished successfully.
+    //    2) Assembly browser is opened with the imported assembly.
+    GTLogTracer l;
+    GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os, dataDir + "samples/Assembly", "chrM.fa"));
+    GTFileDialog::openFile(os, dataDir + "samples/Assembly", "chrM.sam");
+    CHECK_SET_ERR(!l.hasError(), "Open 'samples/Assembly/chrM.sam' finished with error");
+}
+
 } // GUITest_SAM
 } // U2
