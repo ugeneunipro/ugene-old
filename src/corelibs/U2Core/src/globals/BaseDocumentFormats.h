@@ -64,6 +64,8 @@ public:
     static const DocumentFormatId BAM;
     static const DocumentFormatId UGENEDB;
     static const DocumentFormatId DIFF;
+    static const DocumentFormatId PHYLIP_SEQUENTIAL;
+    static const DocumentFormatId PHYLIP_INTERLEAVED;
 
     static DocumentFormat* get(const DocumentFormatId& formatId);
 };

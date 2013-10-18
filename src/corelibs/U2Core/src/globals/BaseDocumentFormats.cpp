@@ -56,6 +56,8 @@ const DocumentFormatId BaseDocumentFormats::VCF4("vcf");
 const DocumentFormatId BaseDocumentFormats::BAM("bam");
 const DocumentFormatId BaseDocumentFormats::UGENEDB("usqlite");
 const DocumentFormatId BaseDocumentFormats::DIFF("diff");
+const DocumentFormatId BaseDocumentFormats::PHYLIP_SEQUENTIAL("phylip-sequential");
+const DocumentFormatId BaseDocumentFormats::PHYLIP_INTERLEAVED("phylip-interleaved");
 
 DocumentFormat* BaseDocumentFormats::get(const DocumentFormatId& formatId) {
     return AppContext::getDocumentFormatRegistry()->getFormatById(formatId);

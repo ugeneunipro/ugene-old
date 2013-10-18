@@ -30,6 +30,7 @@ HEADERS += src/ABIFormat.h \
            src/NEXUSParser.h \
            src/PDBFormat.h \
            src/PDWFormat.h \
+           src/PhylipFormat.h \
            src/PlainTextFormat.h \
            src/RawDNASequenceFormat.h \
            src/SAMFormat.h \
@@ -93,6 +94,7 @@ SOURCES += src/ABIFormat.cpp \
            src/NEXUSFormat.cpp \
            src/PDBFormat.cpp \
            src/PDWFormat.cpp \
+           src/PhylipFormat.cpp \
            src/PlainTextFormat.cpp \
            src/RawDNASequenceFormat.cpp \
            src/SAMFormat.cpp \

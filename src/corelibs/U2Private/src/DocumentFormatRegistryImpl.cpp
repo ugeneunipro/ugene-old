@@ -52,6 +52,7 @@
 #include <U2Formats/VCF4VariationFormat.h>
 #include <U2Formats/DifferentialFormat.h>
 #include <U2Formats/AceImporter.h>
+#include <U2Formats/PhylipFormat.h>
 
 namespace U2 {
 
@@ -191,6 +192,12 @@ void DocumentFormatRegistryImpl::init() {
 
     DifferentialFormat *diff = new DifferentialFormat(this);
     registerFormat(diff);
+
+    PhylipSequentialFormat *phSeq = new PhylipSequentialFormat(this);
+    registerFormat(phSeq);
+
+    PhylipInterleavedFormat *phIn = new PhylipInterleavedFormat(this);
+    registerFormat(phIn);
 
     AppContext::getDbiRegistry()->registerDbiFactory(new SQLiteDbiFactory());
     DocumentFormatFlags flags(DocumentFormatFlag_SupportWriting);
