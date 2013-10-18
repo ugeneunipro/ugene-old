@@ -33,6 +33,7 @@
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SequenceUtils.h>
 
+#include <QtCore/QListIterator>
 
 namespace U2 {
 
@@ -55,27 +56,7 @@ bool MSAUtils::equalsIgnoreGaps(const MAlignmentRow& row, int startPos, const QB
 MAlignment MSAUtils::seq2ma(const QList<DNASequence>& list, U2OpStatus& os) {
     MAlignment ma(MA_OBJECT_NAME);
     foreach(const DNASequence& seq, list) {
-        DNAAlphabet* al = ma.getAlphabet();
-        if (al == NULL) {
-            al = seq.alphabet;
-        } else {
-            al = U2AlphabetUtils::deriveCommonAlphabet(al, seq.alphabet);
-            if (al == NULL) {
-                if (ma.getAlphabet() == NULL && seq.alphabet == NULL){
-                    os.setError(tr("Alphabets of the alignment and the sequence cannot be derived"));
-                    break;
-                }
-                if (ma.getAlphabet() != NULL && ma.getAlphabet()->getType() == DNAAlphabet_AMINO && (seq.alphabet == NULL || seq.alphabet->isNucleic())) {
-                    al = ma.getAlphabet();
-                } else if (ma.getAlphabet() != NULL && ma.getAlphabet()->getId() == BaseDNAAlphabetIds::NUCL_DNA_EXTENDED()) {
-                    al = seq.alphabet;
-                } else {
-                    os.setError(tr("Sequences have different alphabets."));
-                    break;
-                }                
-            }
-        }
-        ma.setAlphabet(al);
+        updateAlignmentAlphabet(ma, seq.alphabet, os);
         //TODO: handle memory overflow
         ma.addRow(seq.getName(), seq.seq, os);
     }
@@ -83,28 +64,104 @@ MAlignment MSAUtils::seq2ma(const QList<DNASequence>& list, U2OpStatus& os) {
     return ma;
 }
 
-MAlignment MSAUtils::seq2ma(const QList<GObject*>& list, U2OpStatus& os, bool useGenbankHeader) {
-    QList<DNASequence> dnaList;
+namespace Utils {
+MAlignmentObject* prepareSequenceHeadersList(const QList<GObject*>& list, bool useGenbankHeader, QList<U2SequenceObject*> &dnaList, QList<QString> &nameList) {
     foreach(GObject* obj, list) {
         U2SequenceObject* dnaObj = qobject_cast<U2SequenceObject*>(obj);
         if (dnaObj == NULL) {
             if (MAlignmentObject* maObj = qobject_cast<MAlignmentObject*>(obj)) {
-                return maObj->getMAlignment();
+                return maObj;
             }
             continue;
         }
+
+        QString rowName = dnaObj->getSequenceName();
         if (useGenbankHeader) {
-            DNASequence seq = dnaObj->getWholeSequence();
             QString sourceName = dnaObj->getStringAttribute(DNAInfo::SOURCE);
-            if (!sourceName.isEmpty()) {
-                seq.setName(sourceName);
+            if (false == sourceName.isEmpty()) {
+                rowName = sourceName;
             }
-            dnaList << seq;
-        } else {
-            dnaList << dnaObj->getWholeSequence();
+        }
+
+        dnaList << dnaObj;
+        nameList << rowName;
+    }
+    return NULL;
+}
+} // namespace Utils
+
+MAlignment MSAUtils::seq2ma(const QList<GObject*>& list, U2OpStatus& os, bool useGenbankHeader) {
+    QList<U2SequenceObject*> dnaList;
+    QList<QString> nameList;
+
+    MAlignmentObject *obj = Utils::prepareSequenceHeadersList(list, useGenbankHeader, dnaList, nameList);
+    if (NULL != obj) {
+        return obj->getMAlignment();
+    }
+
+    MAlignment ma(MA_OBJECT_NAME);
+
+    int i = 0;
+    SAFE_POINT(dnaList.size() == nameList.size(), "DNA list size differs from name list size", MAlignment());
+    QListIterator<U2SequenceObject*> listIterator(dnaList);
+    QListIterator<QString> nameIterator(nameList);
+    while (true == listIterator.hasNext()) {
+        const U2SequenceObject& seq = *(listIterator.next());
+        const QString& objName = nameIterator.next();
+
+        DNAAlphabet* alphabet = seq.getAlphabet();
+        updateAlignmentAlphabet(ma, alphabet, os);
+        CHECK_OP(os, MAlignment());
+
+        ma.addRow(objName, QByteArray(""), os);
+        CHECK_OP(os, MAlignment());
+
+        SAFE_POINT(i < ma.getNumRows(), "Row count differ from expected after adding row", MAlignment());
+        appendSequenceToAlignmentRow(ma, i, seq, os);
+        CHECK_OP(os, MAlignment());
+        i++;
+    }
+
+    return ma;
+}
+
+void MSAUtils::appendSequenceToAlignmentRow(MAlignment& ma, int rowIndex, const U2SequenceObject& seq, U2OpStatus& os, U2Region region) {
+    if (true == region.isEmpty()) {
+        region = U2Region(0, seq.getSequenceLength());
+    }
+    const qint64 blockReadFromBD = 128000;
+
+    qint64 sequenceLength = seq.getSequenceLength();
+    for (qint64 startPosition = region.startPos; startPosition<region.length; startPosition+=blockReadFromBD) {
+        U2Region readRegion(startPosition, qMin(blockReadFromBD, sequenceLength - startPosition));
+        QByteArray readedData = seq.getSequenceData(readRegion);
+        ma.appendChars(rowIndex, readedData.constData(), readedData.size());
+        CHECK_OP(os, );
+    }
+}
+
+void MSAUtils::updateAlignmentAlphabet(MAlignment& ma, DNAAlphabet* alphabet, U2OpStatus& os) {
+    DNAAlphabet* al = ma.getAlphabet();
+    if (al == NULL) {
+        al = alphabet;
+    } else {
+        al = U2AlphabetUtils::deriveCommonAlphabet(al, alphabet);
+        if (al == NULL) {
+            if (ma.getAlphabet() == NULL && alphabet == NULL){
+                os.setError(tr("Alphabets of the alignment and the sequence cannot be derived"));
+                return;
+            }
+            if (ma.getAlphabet() != NULL && ma.getAlphabet()->getType() == DNAAlphabet_AMINO && (alphabet == NULL || alphabet->isNucleic())) {
+                al = ma.getAlphabet();
+            } else if (ma.getAlphabet() != NULL && ma.getAlphabet()->getId() == BaseDNAAlphabetIds::NUCL_DNA_EXTENDED()) {
+                al = alphabet;
+            } else {
+                os.setError(tr("Sequences have different alphabets."));
+                return;
+            }                
         }
     }
-    return seq2ma(dnaList, os);
+    ma.setAlphabet(al);
 }
 
 QList<DNASequence> MSAUtils::ma2seq(const MAlignment& ma, bool trimGaps) {
