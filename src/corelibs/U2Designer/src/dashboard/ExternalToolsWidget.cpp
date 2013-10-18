@@ -31,17 +31,19 @@
 
 namespace U2 {
 
-ExternalToolsWidgetController::ExternalToolsWidgetController() {
+ExternalToolsWidgetController::ExternalToolsWidgetController() : toolsWidget(NULL) {
     timer = new QTimer;
     timer->setInterval(1000);
     timer->setSingleShot(true);
     connect(timer, SIGNAL(timeout()), SLOT(sl_timerShouts()));
 }
 
-ExternalToolsWidget* ExternalToolsWidgetController::getWidget(const QWebElement &container, Dashboard *parent) const {
-    ExternalToolsWidget* widget = new ExternalToolsWidget(container, parent, this);
-    connect(this, SIGNAL(si_update()), widget, SLOT(sl_onLogUpdate()));
-    return widget;
+ExternalToolsWidget* ExternalToolsWidgetController::getWidget(const QWebElement &container, Dashboard *parent) {
+    if(NULL == toolsWidget) {
+        toolsWidget = new ExternalToolsWidget(container, parent, this);
+        connect(this, SIGNAL(si_update()), toolsWidget, SLOT(sl_onLogUpdate()));
+    }
+    return toolsWidget;
 }
 
 LogEntry ExternalToolsWidgetController::getEntry(int index) const {
@@ -51,7 +53,7 @@ LogEntry ExternalToolsWidgetController::getEntry(int index) const {
 
 void ExternalToolsWidgetController::sl_onLogChanged(U2::Workflow::Monitor::LogEntry entry) {
     log << entry;
-    if (!timer->isActive()) {
+    if (!timer->isActive() && NULL != toolsWidget) {
         timer->start();
     }
 }
@@ -87,11 +89,11 @@ ExternalToolsWidget::ExternalToolsWidget(const QWebElement &_container,
 void ExternalToolsWidget::sl_onLogUpdate() {
     SAFE_POINT(sender() == ctrl, "Unexpected sender", );
 
-    int lastLogIndex = ctrl->getLogSize();
+    int lastLogIndex = ctrl->getLogSize() - 1;
     LogEntry entry = ctrl->getEntry(lastEntryIndex + 1);
     ++lastEntryIndex;
 
-    for (; lastEntryIndex < lastLogIndex - 1; lastEntryIndex++) {
+    for (; lastEntryIndex < lastLogIndex; lastEntryIndex++) {
         LogEntry curEntry = ctrl->getEntry(lastEntryIndex + 1);
         if (isSameNode(curEntry, entry) &&
                 entry.logType != PROGRAM_PATH &&

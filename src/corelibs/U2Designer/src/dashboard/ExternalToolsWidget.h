@@ -37,7 +37,7 @@ public:
     ExternalToolsWidgetController();
     ~ExternalToolsWidgetController() { delete timer; }
 
-    ExternalToolsWidget* getWidget(const QWebElement &container, Dashboard *parent) const;
+    ExternalToolsWidget* getWidget(const QWebElement &container, Dashboard *parent);
     LogEntry getEntry(int index) const;
     QList<LogEntry> getLog() const { return log; }
     int getLogSize() const { return log.count(); }
@@ -52,6 +52,7 @@ private slots:
     void sl_timerShouts();
 
 private:
+    ExternalToolsWidget* toolsWidget;
     QList<LogEntry> log;
     QTimer *timer;
 };
