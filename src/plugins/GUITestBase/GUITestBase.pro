@@ -17,6 +17,8 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/runnables/ugene/ugeneui/ExportProjectDialogFiller.h \
             src/runnables/ugene/ugeneui/SelectDocumentFormatDialogFiller.h \
             src/runnables/ugene/ugeneui/SequenceReadingModeSelectorDialogFiller.h \
+            src/runnables/ugene/ugeneui/NCBISearchDialogFiller.h \
+            src/runnables/ugene/ugeneui/SaveProjectDialogFiller.h \
 #   Runnables / UGENE / corelibs
 #   Runnables / UGENE / corelibs / U2Gui
             src/runnables/ugene/corelibs/U2Gui/ExportDocumentDialogFiller.h \
@@ -35,12 +37,13 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/runnables/ugene/corelibs/U2Gui/EditGroupAnnotationsDialogFiller.h \
             src/runnables/ugene/corelibs/U2Gui/ExportChromatogramFiller.h \
             src/runnables/ugene/corelibs/U2Gui/FindRepeatsDialogFiller.h \
-			src/runnables/ugene/corelibs/U2Gui/FindTandemsDialogFiller.h \
+            src/runnables/ugene/corelibs/U2Gui/FindTandemsDialogFiller.h \
             src/runnables/ugene/corelibs/U2Gui/ImportBAMFileDialogFiller.h \
             src/runnables/ugene/corelibs/U2Gui/AlignShortReadsDialogFiller.h \
             src/runnables/ugene/corelibs/U2Gui/ExportImageDialogFiller.h \
             src/runnables/ugene/corelibs/U2Gui/ConvertAssemblyToSAMDialogFiller.h \
             src/runnables/ugene/corelibs/U2Gui/BuildIndexDialogFiller.h \
+            src/runnables/ugene/corelibs/U2Gui/AppSettingsDialogFiller.h \
 #   Runnables / UGENE / corelibs / U2View
             src/runnables/ugene/corelibs/U2View/utils_smith_waterman/SmithWatermanDialogBaseFiller.h \
             src/runnables/ugene/corelibs/U2View/ov_msa/DeleteGapsDialogFiller.h \
@@ -71,6 +74,8 @@ HEADERS +=  src/GUITestBasePlugin.h \
 #   Runnables / UGENE / plugins / workflow_designer
             src/runnables/ugene/plugins/workflow_designer/WizardFiller.h \
             src/runnables/ugene/plugins/workflow_designer/StartupDialogFiller.h \
+            src/runnables/ugene/plugins/workflow_designer/AliasesDialogFiller.h \
+            src/runnables/ugene/plugins/workflow_designer/RPackageDialorFiller.h \
 #   Utils classes
             src/GTUtilsApp.h \
             src/GTUtilsDialog.h \
@@ -124,6 +129,7 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/tests/common_scenarios/Assembling/sam/GTTestsSAM.h \
             src/tests/common_scenarios/Query_Designer/GTTestsQuerryDesigner.h \
             src/tests/common_scenarios/workflow_designer/GTTestsWorkflowDesigner.h \
+            src/tests/common_scenarios/workflow_designer/parameters_validation/GTTestsWorkflowParemeterValidation.h \
             src/tests/common_scenarios/tree_viewer/GTTestsCommonScenariousTreeviewer.h \
             src/tests/common_scenarios/repeat_finder/GTTestsRepeatFinder.h \
             src/tests/common_scenarios/undo_redo/GTTestsUndoRedo.h \
@@ -161,12 +167,8 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/api/GTAction.h \
             src/api/GTDoubleSpinBox.h \
             src/api/GTTableView.h  \
-    src/runnables/ugene/corelibs/U2Gui/AppSettingsDialogFiller.h \
-    src/runnables/ugene/plugins/workflow_designer/AliasesDialogFiller.h \
-    src/runnables/ugene/plugins/workflow_designer/RPackageDialorFiller.h \
-    src/api/GTGraphicsItem.h \
-    src/runnables/ugene/ugeneui/NCBISearchDialogFiller.h \
-    src/runnables/ugene/ugeneui/SaveProjectDialogFiller.h
+            src/api/GTGraphicsItem.h
+
 SOURCES +=  src/GUITestBasePlugin.cpp \
             src/tests/crazy_user/GUICrazyUserTest.cpp \
             src/tests/crazy_user/GTRandomGUIActionFactory.cpp \
@@ -183,6 +185,8 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/runnables/ugene/ugeneui/ExportProjectDialogFiller.cpp \
             src/runnables/ugene/ugeneui/SelectDocumentFormatDialogFiller.cpp \
             src/runnables/ugene/ugeneui/SequenceReadingModeSelectorDialogFiller.cpp \
+            src/runnables/ugene/ugeneui/NCBISearchDialogFiller.cpp \
+            src/runnables/ugene/ugeneui/SaveProjectDialogFiller.cpp \
 #   Runnables / UGENE / corelibs
 #   Runnables / UGENE / corelibs / U2Gui
             src/runnables/ugene/corelibs/U2Gui/ExportDocumentDialogFiller.cpp \
@@ -201,12 +205,13 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/runnables/ugene/corelibs/U2Gui/EditGroupAnnotationsDialogFiller.cpp \
             src/runnables/ugene/corelibs/U2Gui/ExportChromatogramFiller.cpp \
             src/runnables/ugene/corelibs/U2Gui/FindRepeatsDialogFiller.cpp \
-			src/runnables/ugene/corelibs/U2Gui/FindTandemsDialogFiller.cpp \
+            src/runnables/ugene/corelibs/U2Gui/FindTandemsDialogFiller.cpp \
             src/runnables/ugene/corelibs/U2Gui/AlignShortReadsDialogFiller.cpp \
             src/runnables/ugene/corelibs/U2Gui/ImportBAMFileDialogFiller.cpp \
             src/runnables/ugene/corelibs/U2Gui/ExportImageDialogFiller.cpp \
             src/runnables/ugene/corelibs/U2Gui/ConvertAssemblyToSAMDialogFiller.cpp \
             src/runnables/ugene/corelibs/U2Gui/BuildIndexDialogFiller.cpp \
+            src/runnables/ugene/corelibs/U2Gui/AppSettingsDialogFiller.cpp \
 #   Runnables / UGENE / corelibs / U2View
             src/runnables/ugene/corelibs/U2View/utils_smith_waterman/SmithWatermanDialogBaseFiller.cpp \
             src/runnables/ugene/corelibs/U2View/ov_msa/DeleteGapsDialogFiller.cpp \
@@ -236,6 +241,8 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
 #   Runnables / UGENE / plugins / workflow_designer
             src/runnables/ugene/plugins/workflow_designer/WizardFiller.cpp \
             src/runnables/ugene/plugins/workflow_designer/StartupDialogFiller.cpp \
+            src/runnables/ugene/plugins/workflow_designer/AliasesDialogFiller.cpp \
+            src/runnables/ugene/plugins/workflow_designer/RPackageDialorFiller.cpp \
 #   Utils classes
             src/GTUtilsApp.cpp \
             src/GTUtilsDialog.cpp \
@@ -289,6 +296,7 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/tests/common_scenarios/Assembling/sam/GTTestsSAM.cpp \
             src/tests/common_scenarios/Query_Designer/GTTestsQuerryDesigner.cpp \
             src/tests/common_scenarios/workflow_designer/GTTestsWorkflowDesigner.cpp \
+            src/tests/common_scenarios/workflow_designer/parameters_validation/GTTestsWorkflowParemeterValidation.cpp \
             src/tests/common_scenarios/tree_viewer/GTTestsCommonScenariousTreeviewer.cpp \
             src/tests/common_scenarios/repeat_finder/GTTestsRepeatFinder.cpp \
             src/tests/common_scenarios/undo_redo/GTTestsUndoRedo.cpp \
@@ -332,9 +340,4 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/api/GTAction.cpp \
             src/api/GTDoubleSpinBox.cpp \
             src/api/GTTableView.cpp \
-    src/runnables/ugene/corelibs/U2Gui/AppSettingsDialogFiller.cpp \
-    src/runnables/ugene/plugins/workflow_designer/AliasesDialogFiller.cpp \
-    src/runnables/ugene/plugins/workflow_designer/RPackageDialorFiller.cpp \
-    src/api/GTGraphicsItem.cpp \
-    src/runnables/ugene/ugeneui/NCBISearchDialogFiller.cpp \
-    src/runnables/ugene/ugeneui/SaveProjectDialogFiller.cpp
+            src/api/GTGraphicsItem.cpp
