@@ -29,6 +29,7 @@
 #include "GTUtilsDialog.h"
 #include "GTUtilsProjectTreeView.h"
 #include "runnables/ugene/ugeneui/SaveProjectDialogFiller.h"
+#include "runnables/qt/MessageBoxFiller.h"
 
 #include <U2Core/AppContext.h>
 #include <U2Core/ProjectModel.h>
@@ -105,6 +106,7 @@ GUI_TEST_CLASS_DEFINITION(post_test_0001) {
         GTGlobals::sleep(100);
 
         GTUtilsDialog::waitForDialog(os, new SaveProjectDialogFiller(os, QDialogButtonBox::No));
+        GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::No));
         GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
         GTGlobals::sleep(100);
 #ifdef Q_OS_MAC
