@@ -27,10 +27,13 @@
 #include "GTUtilsMdi.h"
 #include "api/GTTabWidget.h"
 #include "api/GTGraphicsItem.h"
+#include "api/GTFileDialog.h"
 
 #include <U2View/MSAEditor.h>
 #include <QTreeWidget>
-#include <QGraphicsView>
+#include <QtGui/QToolButton>
+#include <QtGui/QGraphicsView>
+#include <QtGui/QListWidget>
 #include <U2Core/AppContext.h>
 #include "../../workflow_designer/src/WorkflowViewItems.h"
 
@@ -298,5 +301,44 @@ QList<WorkflowProcessItem*> GTUtilsWorkflowDesigner::getWorkers(U2OpStatus &os){
     return result;
 }
 
+#define GT_METHOD_NAME "setDatasetInputFile"
+void GTUtilsWorkflowDesigner::setDatasetInputFile(U2OpStatus &os, QString filePath, QString fileName){
+    QWidget* DatasetWidget = GTWidget::findWidget(os, "DatasetWidget");
+    GT_CHECK(DatasetWidget, "DatasetWidget not found");
+
+    QWidget* addFileButton = GTWidget::findWidget(os, "addFileButton", DatasetWidget);
+    GT_CHECK(addFileButton, "addFileButton not found");
+
+    GTFileDialogUtils *ob = new GTFileDialogUtils(os, filePath, fileName,"*.*", GTFileDialogUtils::Open, GTGlobals::UseKey);
+    GTUtilsDialog::waitForDialog(os, ob);
+
+    GTWidget::click(os, addFileButton);
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "setDatasetInputFolder"
+void GTUtilsWorkflowDesigner::setDatasetInputFolder(U2OpStatus &os, QString filePath){
+    QWidget* DatasetWidget = GTWidget::findWidget(os, "DatasetWidget");
+    GT_CHECK(DatasetWidget, "DatasetWidget not found");
+
+    QWidget* addDirButton = GTWidget::findWidget(os, "addDirButton", DatasetWidget);
+    GT_CHECK(addDirButton, "addFileButton not found");
+
+    GTFileDialogUtils *ob = new GTFileDialogUtils(os, filePath, "","*.*", GTFileDialogUtils::Choose, GTGlobals::UseMouse);
+    GTUtilsDialog::waitForDialog(os, ob);
+
+    GTWidget::click(os, addDirButton);
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "checkErrorList"
+int GTUtilsWorkflowDesigner::checkErrorList(U2OpStatus &os, QString error){
+    QListWidget* w = qobject_cast<QListWidget*>(GTWidget::findWidget(os,"infoList"));
+    GT_CHECK_RESULT(w, "ErrorList widget not found", 0);
+
+    QList<QListWidgetItem *> list =  w->findItems(error,Qt::MatchContains);
+    return list.size();
+}
+#undef GT_METHOD_NAME
 #undef GT_CLASS_NAME
 } // namespace

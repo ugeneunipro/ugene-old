@@ -30,7 +30,7 @@ namespace U2 {
 class GTFileDialogUtils : public Filler {
 friend class GTFileDialogUtils_list;
 public:
-    enum Button {Open, Cancel, Save};
+    enum Button {Open, Cancel, Save, Choose};
     enum ViewMode {List, Detail};
 
     GTFileDialogUtils(U2OpStatus&, const QString&, const QString&, const QString& = "*.*", Button b = Open, GTGlobals::UseMethod = GTGlobals::UseMouse);

@@ -539,6 +539,7 @@ void WorkflowView::addBottomWidgetsToInfoSplitter() {
     bottomTabs = new QTabWidget(infoSplitter);
 
     infoList = new QListWidget(this);
+    infoList->setObjectName("infoList");
     connect(infoList, SIGNAL(itemDoubleClicked(QListWidgetItem*)), SLOT(sl_pickInfo(QListWidgetItem*)));
 
     QWidget* w = new QWidget(bottomTabs);

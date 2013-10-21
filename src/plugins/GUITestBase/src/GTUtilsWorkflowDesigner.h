@@ -34,24 +34,55 @@ class WorkflowPortItem;
 class GTUtilsWorkflowDesigner {
 public:
     enum tab {algoriths,samples};
+
+    //reterns item from samples or algorithms tab
     static QTreeWidgetItem* findTreeItem(U2OpStatus &os, QString itemName,tab t);
+
+    //returns item form samples tab
     static QTreeWidgetItem* findSamplesTreeItem(U2OpStatus &os, QString itemName);
+
+    //adds alogritm with worker with name algName to workflow scene
     static void addAlgorithm(U2OpStatus &os, QString algName);
+
+    //adds sample scheme with name sampName to workflow scene
     static void addSample(U2OpStatus &os, QString sampName);
-    static void selectAlgorithm(U2OpStatus &os, QTreeWidgetItem *algorithm);
-    static void selectSample(U2OpStatus &os, QTreeWidgetItem *sample);
+
+    //expands samples/Elements tabwidget if collapsed
     static void expandTabs(U2OpStatus &os);
 
+    //returns center of worker on workflow scene in global coordinates
     static QPoint getItemCenter(U2OpStatus &os,QString itemName);
-    static QRect getItemRect(U2OpStatus &os,QString itemName);
+
+    //returs worker placed on workflow scene which contains item name
+    static WorkflowProcessItem* getWorker(U2OpStatus &os, QString itemName,const GTGlobals::FindOptions &options = GTGlobals::FindOptions());
+
+    //returns WorkflowPortItem of worker which with ID "id"
+    static WorkflowPortItem* getPortById(U2OpStatus &os,WorkflowProcessItem* worker, QString id);
+
+    //connects worker "from" with worker "to"
+    static void connect(U2OpStatus &os, WorkflowProcessItem*from, WorkflowProcessItem*to);
+
+    //returns all workers placed on workflow scene
+    static QList<WorkflowProcessItem*> getWorkers(U2OpStatus &os);
+
+    //sets input file with path "filePath" and name "filename" dataset
+    //this method should be called after selecting worker which contains dataset on scene
+    static void setDatasetInputFile(U2OpStatus &os, QString filePath, QString fileName);
+
+    //sets input folder with path "filePath" to dataset
+    static void setDatasetInputFolder(U2OpStatus &os, QString filePath);
+
+    //returns number of items in error list which contain "error"
+    static int checkErrorList(U2OpStatus &os, QString error);
+
     static int getItemLeft(U2OpStatus &os, QString itemName);
     static int getItemRight(U2OpStatus &os, QString itemName);
     static int getItemTop(U2OpStatus &os, QString itemName);
     static int getItemBottom(U2OpStatus &os, QString itemName);
-    static WorkflowProcessItem* getWorker(U2OpStatus &os, QString itemName,const GTGlobals::FindOptions &options = GTGlobals::FindOptions());
-    static WorkflowPortItem* getPortById(U2OpStatus &os,WorkflowProcessItem* worker, QString id);
-    static void connect(U2OpStatus &os, WorkflowProcessItem*from, WorkflowProcessItem*to);
-    static QList<WorkflowProcessItem*> getWorkers(U2OpStatus &os);
+private:
+    static void selectAlgorithm(U2OpStatus &os, QTreeWidgetItem *algorithm);
+    static void selectSample(U2OpStatus &os, QTreeWidgetItem *sample);
+    static QRect getItemRect(U2OpStatus &os,QString itemName);
 };
 
 } // namespace

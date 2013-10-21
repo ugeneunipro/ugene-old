@@ -99,6 +99,10 @@ void GTFileDialogUtils::run()
     GTGlobals::sleep(200);
     setPath();
     GTGlobals::sleep(200);
+    if(button == Choose){
+        GTKeyboardDriver::keyClick(os,GTKeyboardDriver::key["enter"]);
+        return;
+    }
     clickButton(Open);
     GTGlobals::sleep(200);
     //setFilter();
@@ -202,35 +206,8 @@ void GTFileDialogUtils::setPath()
 {
     QLineEdit* lineEdit = fileDialog->findChild<QLineEdit*>(FILE_NAME_LINE_EDIT);
     GT_CHECK(lineEdit != 0, QString("line edit \"1\" not found").arg(FILE_NAME_LINE_EDIT));
-GTLineEdit::setText(os,lineEdit,path);
+    GTLineEdit::setText(os,lineEdit,path);
 
-    /*QPoint linePos;
-
-    switch(method) {
-    case GTGlobals::UseMouse:
-        if (! lineEdit->hasFocus()) {
-            linePos = fileDialog->mapToGlobal(lineEdit->geometry().center());
-            GTMouseDriver::moveTo(os, linePos);
-            GTMouseDriver::click(os);
-        }
-        break;
-
-    case GTGlobals::UseKey:
-        while (! lineEdit->hasFocus()) {
-            GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["tab"]);
-            GTGlobals::sleep(100);
-        }
-        break;
-    }
-
-    GTKeyboardDriver::keySequence(os, path);
-    for (int i = 0; i < 20; i++) { // wait 2 sec
-        if (lineEdit->text() == path) {
-            return;
-        }
-        GTGlobals::sleep(100);
-    }
-*/
     GT_CHECK(lineEdit->text() == path, "Can't open file \"" + lineEdit->text() + "\"");
 }
 #undef GT_METHOD_NAME
@@ -320,6 +297,7 @@ void GTFileDialogUtils::clickButton(Button btn)
     button[Open] = "Open";
     button[Cancel] = "Cancel";
     button[Save] = "Save";
+    button[Choose] = "Choose";
     QPushButton *button_to_click = NULL;
 
     foreach(QPushButton *b, buttons) {
