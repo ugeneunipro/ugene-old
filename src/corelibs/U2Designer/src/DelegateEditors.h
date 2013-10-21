@@ -182,6 +182,7 @@ public:
       }
 
       void getItems( QVariantMap &items ) const;
+      QVariantMap getItems() const;
 
 signals:
     void si_valueChanged( const QString & newVal ) const;

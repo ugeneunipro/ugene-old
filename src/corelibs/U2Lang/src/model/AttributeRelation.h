@@ -94,6 +94,22 @@ public:
     virtual RelationType getType() const {return FILE_EXTENSION;}
 };
 
+/**
+ * Possible values of one attribute depends on current value of another
+ */
+class U2LANG_EXPORT ValuesRelation : public AttributeRelation {
+public:
+    ValuesRelation(const QString &relatedAttrId, const QVariantMap &_dependencies)
+        : AttributeRelation(relatedAttrId), dependencies(_dependencies){}
+    virtual RelationType getType() const {return CUSTOM_VALUE_CHANGER;}
+
+    virtual QVariant getAffectResult(const QVariant &influencingValue, const QVariant &dependentValue,
+        DelegateTags *infTags, DelegateTags *depTags) const;
+    virtual void updateDelegateTags(const QVariant &influencingValue, DelegateTags *dependentTags) const;
+private:
+    QVariantMap dependencies;
+};
+
 } // U2 namespace
 
 #endif // _U2_ATTRIBUTE_RELATION_H_

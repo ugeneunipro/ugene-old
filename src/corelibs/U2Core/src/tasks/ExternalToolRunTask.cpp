@@ -396,4 +396,69 @@ QString ExternalToolSupportUtils::prepareArgumentsForCmdLine(const QStringList &
     }
     return argumentsLine;
 }
+
+QVariantMap ExternalToolSupportUtils::getScoresGapDependencyMap() {
+    QVariantMap map;
+    QVariantMap gaps;
+    gaps["2 2"] = "2 2";
+    gaps["1 2"] = "1 2";
+    gaps["0 2"] = "0 2";
+    gaps["2 1"] = "2 1";
+    gaps["1 1"] = "1 1";
+    map.insert("1 -4", gaps);
+    map.insert("1 -3", gaps);
+
+    gaps.clear();
+    gaps["2 2"] = "2 2";
+    gaps["1 2"] = "1 2";
+    gaps["0 2"] = "0 2";
+    gaps["3 1"] = "3 1";
+    gaps["2 1"] = "2 1";
+    gaps["1 1"] = "1 1";
+    map.insert("1 -2", gaps);
+
+    gaps.clear();
+    gaps["4 2"] = "4 2";
+    gaps["3 2"] = "3 2";
+    gaps["2 2"] = "2 2";
+    gaps["1 2"] = "1 2";
+    gaps["0 2"] = "0 2";
+    gaps["4 1"] = "4 1";
+    gaps["3 1"] = "3 1";
+    gaps["2 1"] = "2 1";
+    map.insert("1 -1", gaps);
+
+    gaps.clear();
+    gaps["4 4"] = "4 4";
+    gaps["2 4"] = "2 4";
+    gaps["0 4"] = "0 4";
+    gaps["4 2"] = "4 2";
+    gaps["2 2"] = "2 2";
+    map.insert("2 -7", gaps);
+    map.insert("2 -5", gaps);
+
+    gaps.clear();
+    gaps["6 4"] = "6 4";
+    gaps["4 4"] = "4 4";
+    gaps["2 4"] = "2 4";
+    gaps["0 4"] = "0 4";
+    gaps["3 3"] = "3 3";
+    gaps["6 2"] = "6 2";
+    gaps["5 2"] = "5 2";
+    gaps["4 2"] = "4 2";
+    gaps["2 2"] = "2 2";
+    map.insert("2 -3", gaps);
+
+    gaps.clear();
+    gaps["12 8"] = "12 8";
+    gaps["6 5"] = "6 5";
+    gaps["5 5"] = "5 5";
+    gaps["4 5"] = "4 5";
+    gaps["3 5"] = "3 5";
+    map.insert("4 -5", gaps);
+    map.insert("5 -4", gaps);
+
+    return map;
+}
+
 }//namespace

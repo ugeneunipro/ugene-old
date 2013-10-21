@@ -59,6 +59,8 @@ const QString BlastAllWorkerFactory::ACTOR_ID("blast");
 #define BLASTALL_GROUP_NAME     QString("result-name")
 #define BLASTALL_EXT_TOOL_PATH  QString("tool-path")
 #define BLASTALL_TMP_DIR_PATH   QString("temp-dir")
+#define BLASTALL_GAP_COSTS_VALUE       QString("gap-costs")
+#define BLASTALL_MATCH_SCORES_VALUE    QString("match-scores")
 
 //Additional options
 #define BLASTALL_ORIGINAL_OUT   QString("blast-output") //path for output file
@@ -105,6 +107,12 @@ void BlastAllWorkerFactory::init() {
                    BlastAllWorker::tr("Type of BLAST output file."));
     Descriptor ga(BLASTALL_GAPPED_ALN, BlastAllWorker::tr("Gapped alignment"),
                    BlastAllWorker::tr("Perform gapped alignment."));
+
+    Descriptor gc(BLASTALL_GAP_COSTS_VALUE, BlastAllWorker::tr("Gap costs"),
+                   BlastAllWorker::tr("Cost to create and extend a gap in an alignment."));
+    Descriptor ms(BLASTALL_MATCH_SCORES_VALUE, BlastAllWorker::tr("Match scores"),
+                   BlastAllWorker::tr("Reward and penalty for matching and mismatching bases."));
+
 //    Descriptor umb(USE_MEGABLAST, BlastAllWorker::tr("Use MEGABLAST"),
 //                   BlastAllWorker::tr("Activates MEGABLAST algorithm for blastn search"));
 //    Descriptor ws(WORD_SIZE, BlastAllWorker::tr("Word size"),
@@ -148,6 +156,13 @@ void BlastAllWorkerFactory::init() {
 //    matrixAttr->addRelation(PROGRAM_NAME,"tblastx");
 //    a << matrixAttr;
 //    a << new Attribute(gc, BaseTypes::STRING_TYPE(), false, QVariant("default"));
+
+    a << new Attribute(gc, BaseTypes::STRING_TYPE(), false, "2 2");
+
+    Attribute* msAttr = new Attribute(ms, BaseTypes::STRING_TYPE(), false, "1 -3");
+    QVariantMap scoresGapDependency = ExternalToolSupportUtils::getScoresGapDependencyMap();
+    msAttr->addRelation(new ValuesRelation(BLASTALL_GAP_COSTS_VALUE, scoresGapDependency));
+    a << msAttr;
 
     a << new Attribute(output, BaseTypes::STRING_TYPE(), false, QVariant(""));
     a << new Attribute(outtype, BaseTypes::STRING_TYPE(), false, QVariant("7"));
@@ -277,6 +292,20 @@ void BlastAllWorkerFactory::init() {
         delegates[BLASTALL_OUT_TYPE] = new ComboBoxDelegate(m);
     }
 
+    {
+        QVariantMap m;
+        const QList <QString> matchValues = scoresGapDependency.keys();
+        for (int i = 0; i < matchValues.size(); i++) {
+            m[matchValues.at(i)] = matchValues.at(i);
+        }
+        delegates[BLASTALL_MATCH_SCORES_VALUE] = new ComboBoxDelegate(m);;
+    }
+
+    {
+        const QVariantMap m = scoresGapDependency.value("1 -3").toMap();
+        delegates[BLASTALL_GAP_COSTS_VALUE] = new ComboBoxDelegate(m);
+    }
+
     proto->setEditor(new DelegateEditor(delegates));
     proto->setPrompter(new BlastAllPrompter());
     proto->setIconPath(":external_tool_support/images/ncbi.png");
@@ -398,6 +427,13 @@ Task* BlastAllWorker::tick() {
             cfg.xDropoffGA = 15;
             cfg.xDropoffUnGA = 7;
         }
+
+        QString gapCosts = getValue<QString>(BLASTALL_GAP_COSTS_VALUE);
+        cfg.gapOpenCost = gapCosts.split(" ").at(0).toInt();
+        cfg.gapExtendCost = gapCosts.split(" ").at(1).toInt();
+        QString matchScores = getValue<QString>(BLASTALL_MATCH_SCORES_VALUE);
+        cfg.matchReward = matchScores.split(" ").at(0).toInt();
+        cfg.mismatchPenalty = matchScores.split(" ").at(1).toInt();
 
         BlastAllSupportTask* t = new BlastAllSupportTask(cfg);
         t->addListeners(createLogListeners());

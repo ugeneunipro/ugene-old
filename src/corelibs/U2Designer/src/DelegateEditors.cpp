@@ -172,7 +172,7 @@ QWidget *ComboBoxDelegate::createEditor(QWidget *parent,
                                        const QStyleOptionViewItem &/* option */,
                                        const QModelIndex &/* index */) const
 {
-    ComboBoxWidget *editor = new ComboBoxWidget(items, parent);
+    ComboBoxWidget *editor = new ComboBoxWidget(getItems(), parent);
     connect(editor, SIGNAL(valueChanged(const QString &)),
         SLOT(sl_commit()));
     connect(editor, SIGNAL(valueChanged(const QString &)),
@@ -197,13 +197,23 @@ void ComboBoxDelegate::setModelData(QWidget *editor, QAbstractItemModel *model,
 }
 
 QVariant ComboBoxDelegate::getDisplayValue(const QVariant& val) const {
-    QString display = items.key(val);
+    QString display = getItems().key(val);
     emit si_valueChanged( display );
     return QVariant( display );
 }
 
 void ComboBoxDelegate::getItems( QVariantMap &items ) const {
-    items = this->items;
+    items = getItems();
+}
+
+QVariantMap ComboBoxDelegate::getItems() const {
+    DelegateTags *t = tags();
+    if (t != NULL) {
+        if (t->get("AvailableValues") != QVariant()) {
+            return t->get("AvailableValues").toMap();
+        }
+    }
+    return items;
 }
 
 void ComboBoxDelegate::sl_commit() {

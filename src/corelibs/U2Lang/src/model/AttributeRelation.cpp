@@ -138,4 +138,21 @@ void FileExtensionRelation::updateDelegateTags(const QVariant &influencingValue,
     }
 }
 
+QVariant ValuesRelation::getAffectResult(const QVariant &influencingValue, const QVariant &dependentValue,
+                                         DelegateTags */*infTags*/, DelegateTags *depTags) const {
+    updateDelegateTags(influencingValue, depTags);
+    QVariantMap items = dependencies.value(influencingValue.toString()).toMap();
+    if (items != QVariant()) {
+        return items.value(items.keys().first());
+    }
+    return dependentValue;
+}
+
+void ValuesRelation::updateDelegateTags(const QVariant &influencingValue, DelegateTags *dependentTags) const {
+    QVariantMap items = dependencies.value(influencingValue.toString()).toMap();
+    if (items != QVariant()) {
+        dependentTags->set("AvailableValues", items);
+    }
+}
+
 } // U2

@@ -42,7 +42,6 @@
 namespace U2 {
 namespace LocalWorkflow {
 
-
 const QString RemoteBLASTWorkerFactory::ACTOR_ID("blast-ncbi");
 
 const QString DATABASE("db");
@@ -52,6 +51,8 @@ const QString SHORT_SEQ("short-sequence");
 const QString ENTREZ_QUERY("entrez-query");
 const QString ANNOTATION_NAME("result-name");
 const QString ORIGINAL_OUT("blast-output");
+const QString GAP_COSTS("gap-costs");
+const QString MATCH_SCORES("match-scores");
 
 void RemoteBLASTWorkerFactory::init() {
     QList<PortDescriptor*> p; 
@@ -83,6 +84,11 @@ void RemoteBLASTWorkerFactory::init() {
     Descriptor output(ORIGINAL_OUT, RemoteBLASTWorker::tr("BLAST output"),
         RemoteBLASTWorker::tr("Location of BLAST output file. This parameter insignificant for cdd search."));
 
+    Descriptor gapCosts(GAP_COSTS, RemoteBLASTWorker::tr("Gap costs"),
+        RemoteBLASTWorker::tr("Cost to create and extend a gap in an alignment."));
+    Descriptor matchScores(MATCH_SCORES, RemoteBLASTWorker::tr("Match scores"),
+        RemoteBLASTWorker::tr("Reward and penalty for matching and mismatching bases."));
+
     a << new Attribute(db,BaseTypes::STRING_TYPE(),true,"ncbi-blastn");
     a << new Attribute(evalue,BaseTypes::STRING_TYPE(),false,10);
     a << new Attribute(hits,BaseTypes::NUM_TYPE(),false,10);
@@ -93,6 +99,13 @@ void RemoteBLASTWorkerFactory::init() {
     a << entrezQueryAttr;
     a << new Attribute(annotateAs,BaseTypes::STRING_TYPE(),false);
     a << new Attribute(output, BaseTypes::STRING_TYPE(),false);
+
+    a << new Attribute(gapCosts, BaseTypes::STRING_TYPE(), false, "2 2");
+
+    Attribute* msAttr = new Attribute(matchScores, BaseTypes::STRING_TYPE(), false, "1 -3");
+    QVariantMap scoresGapDependency = ExternalToolSupportUtils::getScoresGapDependencyMap();
+    msAttr->addRelation(new ValuesRelation(GAP_COSTS, scoresGapDependency));
+    a << msAttr;
 
     Descriptor desc(ACTOR_ID, RemoteBLASTWorker::tr("Remote BLAST"), 
         RemoteBLASTWorker::tr("Finds annotations for DNA sequence in remote database.")
@@ -122,6 +135,20 @@ void RemoteBLASTWorkerFactory::init() {
         m["singleStep"] = 1.0;
         m["decimals"] = 6;
         delegates[EXPECT] = new DoubleSpinBoxDelegate(m);
+    }
+
+    {
+        QVariantMap m;
+        const QList <QString> matchValues = scoresGapDependency.keys();
+        for (int i = 0; i < matchValues.size(); i++) {
+            m[matchValues.at(i)] = matchValues.at(i);
+        }
+        delegates[MATCH_SCORES] = new ComboBoxDelegate(m);;
+    }
+
+    {
+        const QVariantMap m = scoresGapDependency.value("1 -3").toMap();
+        delegates[GAP_COSTS] = new ComboBoxDelegate(m);
     }
 
     delegates[ORIGINAL_OUT] = new URLDelegate("(*.xml)","xml file");
@@ -233,6 +260,12 @@ Task* RemoteBLASTWorker::tick() {
         cfg.query = seq.seq;
         cfg.retries = 60;
         cfg.filterResult = 0;
+
+        addParametr(cfg.params, ReqParams::gapCost, getValue<QString>(GAP_COSTS));
+        QString matchScores = getValue<QString>(MATCH_SCORES);
+        addParametr(cfg.params, ReqParams::matchScore, matchScores.split(" ").first());
+        addParametr(cfg.params, ReqParams::mismatchScore, matchScores.split(" ").last());
+
         Task* t = new RemoteBLASTTask(cfg);
         connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
         return t;

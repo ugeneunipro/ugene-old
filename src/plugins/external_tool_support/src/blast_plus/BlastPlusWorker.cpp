@@ -61,6 +61,8 @@ const QString BlastPlusWorkerFactory::ACTOR_ID("blast-plus");
 #define BLASTPLUS_GROUP_NAME    "result-name"
 #define BLASTPLUS_EXT_TOOL_PATH "tool-path"
 #define BLASTPLUS_TMP_DIR_PATH  "temp-dir"
+#define BLASTPLUS_GAP_COSTS_VALUE       "gap-costs"
+#define BLASTPLUS_MATCH_SCORES_VALUE    "match-scores"
 
 //Additional options
 #define BLASTPLUS_ORIGINAL_OUT  "blast-output"  //path for output file
@@ -101,6 +103,11 @@ void BlastPlusWorkerFactory::init() {
     Descriptor ga(BLASTPLUS_GAPPED_ALN, BlastPlusWorker::tr("Gapped alignment"),
                    BlastPlusWorker::tr("Perform gapped alignment."));
 
+    Descriptor gc(BLASTPLUS_GAP_COSTS_VALUE, BlastPlusWorker::tr("Gap costs"),
+                   BlastPlusWorker::tr("Cost to create and extend a gap in an alignment."));
+    Descriptor ms(BLASTPLUS_MATCH_SCORES_VALUE, BlastPlusWorker::tr("Match scores"),
+                   BlastPlusWorker::tr("Reward and penalty for matching and mismatching bases."));
+
     a << new Attribute(pn, BaseTypes::STRING_TYPE(), true, QVariant("blastn"));
     a << new Attribute(dp, BaseTypes::STRING_TYPE(), true, QVariant(""));
     a << new Attribute(dn, BaseTypes::STRING_TYPE(), true, QVariant(""));
@@ -115,6 +122,13 @@ void BlastPlusWorkerFactory::init() {
     gaAttr->addRelation(new VisibilityRelation(BLASTPLUS_PROGRAM_NAME,"blastx"));
     gaAttr->addRelation(new VisibilityRelation(BLASTPLUS_PROGRAM_NAME,"tblastn"));
     a << gaAttr;
+
+    a << new Attribute(gc, BaseTypes::STRING_TYPE(), false, "2 2");
+
+    Attribute* msAttr = new Attribute(ms, BaseTypes::STRING_TYPE(), false, "1 -3");
+    QVariantMap scoresGapDependency = ExternalToolSupportUtils::getScoresGapDependencyMap();
+    msAttr->addRelation(new ValuesRelation(BLASTPLUS_GAP_COSTS_VALUE, scoresGapDependency));
+    a << msAttr;
 
     a << new Attribute(output, BaseTypes::STRING_TYPE(), false, QVariant(""));
     a << new Attribute(outtype, BaseTypes::STRING_TYPE(), false, QVariant("5"));
@@ -164,6 +178,21 @@ void BlastPlusWorkerFactory::init() {
 //        m["BLAST archive format (ASN.1)"] = 11;
         delegates[BLASTPLUS_OUT_TYPE] = new ComboBoxDelegate(m);
     }
+
+    {
+        QVariantMap m;
+        const QList <QString> matchValues = scoresGapDependency.keys();
+        for (int i = 0; i < matchValues.size(); i++) {
+            m[matchValues.at(i)] = matchValues.at(i);
+        }
+        delegates[BLASTPLUS_MATCH_SCORES_VALUE] = new ComboBoxDelegate(m);;
+    }
+
+    {
+        const QVariantMap m = scoresGapDependency.value("1 -3").toMap();
+        delegates[BLASTPLUS_GAP_COSTS_VALUE] = new ComboBoxDelegate(m);
+    }
+
     delegates[BLASTPLUS_ORIGINAL_OUT] = new URLDelegate("", "out file", false);
     delegates[BLASTPLUS_DATABASE_PATH] = new URLDelegate("", "Database Directory", false, true, false);
     delegates[BLASTPLUS_EXT_TOOL_PATH] = new URLDelegate("", "executable", false, false, false);
@@ -301,6 +330,13 @@ Task* BlastPlusWorker::tick() {
             cfg.xDropoffGA = 15;
             cfg.xDropoffUnGA = 7;
         }
+
+        QString gapCosts = getValue<QString>(BLASTPLUS_GAP_COSTS_VALUE);
+        cfg.gapOpenCost = gapCosts.split(" ").at(0).toInt();
+        cfg.gapExtendCost = gapCosts.split(" ").at(1).toInt();
+        QString matchScores = getValue<QString>(BLASTPLUS_MATCH_SCORES_VALUE);
+        cfg.matchReward = matchScores.split(" ").at(0).toInt();
+        cfg.mismatchPenalty = matchScores.split(" ").at(1).toInt();
 
         Task * t=NULL;
         if(cfg.programName == "blastn"){
