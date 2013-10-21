@@ -19,15 +19,10 @@ workflow "Call variants with SAMtools"{
             dataset:Dataset;
         }
     }
-    write-variations {
-        type:write-variations;
-        name:"Write Variations";
-        url-out:variations.snp;
-        write-mode:0;
-    }
     call_variants {
         type:call_variants;
         name:"Call Variants";
+        variants-url:variations.vcf;
     }
     files-conversion-1 {
         type:files-conversion;
@@ -42,14 +37,12 @@ workflow "Call variants with SAMtools"{
 
 
     .actor-bindings {
-        call_variants.out-variations->write-variations.in-variations
         read-sequence.out-url->files-conversion-1.in-file
         read-assembly.out-url->files-conversion-2.in-file
         files-conversion-2.out-file->call_variants.in-assembly
         files-conversion-1.out-file->call_variants.in-sequence
     }
 
-    call_variants.variation-track->write-variations.in-variations.variation-track
     read-assembly.dataset->call_variants.in-assembly.dataset
     files-conversion-2.url->call_variants.in-assembly.url
     files-conversion-1.url->call_variants.in-sequence.url
@@ -90,15 +83,6 @@ workflow "Call variants with SAMtools"{
                 bg-color-ext:"0 128 128 64";
                 bounds:"-30 -30 71.25 84";
                 out-url.angle:360;
-            }
-            write-variations {
-                pos:"-156 -495";
-                style:ext;
-                bg-color-ext:"0 128 128 64";
-                in-variations.angle:180;
-            }
-            call_variants.out-variations->write-variations.in-variations {
-                text-pos:"-49 -43";
             }
             files-conversion-1.out-file->call_variants.in-sequence {
                 text-pos:"-19 -31";
@@ -303,11 +287,7 @@ function samtoolsTime(bam, ref) {
                     group {
                         title:"Output file";
                         label-size:100;
-                        write-variations.url-out {
-                        }
-                        write-variations.document-format {
-                        }
-                        write-variations.write-mode {
+                        call_variants.variants-url {
                         }
                     }
                 }

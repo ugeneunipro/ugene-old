@@ -576,7 +576,7 @@ IMPLEMENT_TEST( CInterfaceManualTests, search_TFBS ) {
 
 IMPLEMENT_TEST( CInterfaceManualTests, call_variants ) {
     wchar_t readSequence[MAX_ELEMENT_NAME_LENGTH], readAssembly[MAX_ELEMENT_NAME_LENGTH],
-        callVariants[MAX_ELEMENT_NAME_LENGTH], writeVariations[MAX_ELEMENT_NAME_LENGTH],
+        callVariants[MAX_ELEMENT_NAME_LENGTH],
         convertSequence[MAX_ELEMENT_NAME_LENGTH], convertBam[MAX_ELEMENT_NAME_LENGTH];
     SchemeHandle scheme = NULL;
     U2ErrorType error = createScheme( NULL, &scheme );
@@ -587,9 +587,6 @@ IMPLEMENT_TEST( CInterfaceManualTests, call_variants ) {
     error = addElementToScheme( scheme, L"get-file-list", MAX_ELEMENT_NAME_LENGTH, readAssembly );
     CHECK_U2_ERROR( error );
     error = addElementToScheme( scheme, L"call_variants", MAX_ELEMENT_NAME_LENGTH, callVariants );
-    CHECK_U2_ERROR( error );
-    error = addElementToScheme( scheme, L"write-variations", MAX_ELEMENT_NAME_LENGTH,
-        writeVariations );
     CHECK_U2_ERROR( error );
     error = addElementToScheme( scheme, L"files-conversion", MAX_ELEMENT_NAME_LENGTH,
         convertSequence );
@@ -605,10 +602,7 @@ IMPLEMENT_TEST( CInterfaceManualTests, call_variants ) {
     CHECK_U2_ERROR( error );
     error = setSchemeElementAttribute( scheme, convertBam, L"document-format", L"bam" );
     CHECK_U2_ERROR( error );
-
-    error = setSchemeElementAttribute( scheme, writeVariations, L"write-mode", L"0" );
-    CHECK_U2_ERROR( error );
-    error = setSchemeElementAttribute( scheme, writeVariations, L"url-out", L"variations.snp" );
+    error = setSchemeElementAttribute( scheme, callVariants, L"variants-url", L"variations.vcf" );
     CHECK_U2_ERROR( error );
 
     error = addFlowToScheme( scheme, readAssembly, L"out-url", convertBam, L"in-file" );
@@ -617,14 +611,9 @@ IMPLEMENT_TEST( CInterfaceManualTests, call_variants ) {
     CHECK_U2_ERROR( error );
     error = addFlowToScheme( scheme, readSequence, L"out-url", convertSequence, L"in-file" );
     CHECK_U2_ERROR( error );
-    error = addFlowToScheme( scheme, callVariants, L"out-variations", writeVariations,
-        L"in-variations" );
-    CHECK_U2_ERROR( error );
     error = addFlowToScheme( scheme, convertSequence, L"out-file", callVariants, L"in-sequence" );
     CHECK_U2_ERROR( error );
 
-    error = addSchemeActorsBinding( scheme, callVariants, L"variation-track", writeVariations,
-        L"in-variations.variation-track" );
     CHECK_U2_ERROR( error );
     error = addSchemeActorsBinding( scheme, readAssembly, L"dataset", callVariants,
         L"in-assembly.dataset" );
