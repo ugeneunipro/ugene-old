@@ -55,7 +55,7 @@ private:
     DnaAssemblyToRefTaskSettings settings;
     bool viewResult;
     bool justBuildIndex;
-    int convertionTasksCount;
+    int conversionTasksCount;
     DnaAssemblyMultiTask *assemblyTask;
 };
 

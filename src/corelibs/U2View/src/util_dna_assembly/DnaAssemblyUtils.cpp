@@ -184,7 +184,7 @@ ConvertFileTask * getConvertTask(const GUrl &url, const QStringList &targetForma
         CHECK_OP(stateInfo, ); \
         if (NULL != task) { \
             addSubTask(task); \
-            convertionTasksCount++; \
+            conversionTasksCount++; \
             toConvert << url.getURLString(); \
         } \
     }
@@ -226,7 +226,7 @@ QString DnaAssemblySupport::unknownText(const QList<GUrl> &unknownFormatFiles) {
 /************************************************************************/
 DnaAssemblyTaskWithConversions::DnaAssemblyTaskWithConversions(const DnaAssemblyToRefTaskSettings &settings, bool viewResult, bool justBuildIndex)
 : Task("Dna assembly task", TaskFlags_NR_FOSCOE), settings(settings), viewResult(viewResult),
-    justBuildIndex(justBuildIndex), convertionTasksCount(0), assemblyTask(NULL)
+    justBuildIndex(justBuildIndex), conversionTasksCount(0), assemblyTask(NULL)
 {
 
 }
@@ -247,7 +247,7 @@ void DnaAssemblyTaskWithConversions::prepare() {
         PREPARE_FILE(settings.refSeqUrl, env->getRefrerenceFormats());
     }
 
-    if (0 == convertionTasksCount) {
+    if (0 == conversionTasksCount) {
         assemblyTask = new DnaAssemblyMultiTask(settings, viewResult, justBuildIndex);
         addSubTask(assemblyTask);
     }
@@ -260,7 +260,7 @@ QList<Task*> DnaAssemblyTaskWithConversions::onSubTaskFinished(Task *subTask) {
 
     ConvertFileTask *convertTask = dynamic_cast<ConvertFileTask*>(subTask);
     if (NULL != convertTask) {
-        SAFE_POINT_EXT(convertionTasksCount > 0, setError("Convertions task count error"), result);
+        SAFE_POINT_EXT(conversionTasksCount > 0, setError("Conversions task count error"), result);
         if (convertTask->getSourceURL() == settings.refSeqUrl) {
             settings.refSeqUrl = convertTask->getResult();
         }
@@ -270,9 +270,9 @@ QList<Task*> DnaAssemblyTaskWithConversions::onSubTaskFinished(Task *subTask) {
                 i->url = convertTask->getResult();
             }
         }
-        convertionTasksCount--;
+        conversionTasksCount--;
 
-        if (0 == convertionTasksCount) {
+        if (0 == conversionTasksCount) {
             assemblyTask = new DnaAssemblyMultiTask(settings, viewResult, justBuildIndex);
             result << assemblyTask;
         }
