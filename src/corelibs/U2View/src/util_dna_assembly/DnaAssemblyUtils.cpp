@@ -142,7 +142,7 @@ enum Result {
     INCORRECT
 };
 
-static Result isCorrectFormat(const GUrl &url, const QStringList &targetFormats, QString &detectedFormat = QString()) {
+static Result isCorrectFormat(const GUrl &url, const QStringList &targetFormats, QString &detectedFormat) {
     DocumentUtils::Detection r = DocumentUtils::detectFormat(url, detectedFormat);
     CHECK(DocumentUtils::UNKNOWN != r, UNKNOWN);
 
@@ -154,7 +154,8 @@ static Result isCorrectFormat(const GUrl &url, const QStringList &targetFormats,
 }
 
 ConvertFileTask * getConvertTask(const GUrl &url, const QStringList &targetFormats, U2OpStatus &os) {
-    Result r = isCorrectFormat(url, targetFormats);
+    QString detectedFormat;
+    Result r = isCorrectFormat(url, targetFormats, detectedFormat);
     if (UNKNOWN == r) {
         os.setError(QString("Unknown file format: %1").arg(url.getURLString()));
         return NULL;
