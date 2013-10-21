@@ -22,7 +22,7 @@
 #ifndef _U2_DNA_ASSEMBLEY_UTILS_H_
 #define _U2_DNA_ASSEMBLEY_UTILS_H_
 
-#include <U2Core/global.h>
+#include <U2Algorithm/DnaAssemblyMultiTask.h>
 
 namespace U2 {
 
@@ -33,25 +33,31 @@ class U2VIEW_EXPORT DnaAssemblySupport : public QObject {
 public:
     DnaAssemblySupport();
 
+    static QMap<QString, QString> toConvert(const DnaAssemblyToRefTaskSettings &settings, QList<GUrl> &unknownFormatFiles);
+    static QString toConvertText(const QMap<QString, QString> &files);
+    static QString unknownText(const QList<GUrl> &unknownFormatFiles);
+
 private slots:
     void sl_showDnaAssemblyDialog();
     void sl_showBuildIndexDialog();
     void sl_showConvertToSamDialog();
 
-}; 
+};
 
-// class DnaAssemblyLoadShortReadsTask : public Task {
-//     Q_OBJECT
-// public:
-//     DnaAssemblyLoadShortReadsTask(DnaAssemblyToRefTaskSettings& settings, const QList<GUrl>& shortReads);
-//     virtual void prepare();
-//     QList<Task*> onSubTaskFinished(Task* subTask);
-//     QList<DN
-//     virtual ReportResult report();
-// private:
-//     DnaAssemblyToRefTaskSettings& settings;
-//     const QList<GUrl>& shortReads;
-// }; 
+class U2VIEW_EXPORT DnaAssemblyTaskWithConversions : public Task {
+public:
+    DnaAssemblyTaskWithConversions(const DnaAssemblyToRefTaskSettings &settings, bool viewResult = false, bool justBuildIndex = false);
+
+    void prepare();
+    QList<Task*> onSubTaskFinished(Task *subTask);
+
+private:
+    DnaAssemblyToRefTaskSettings settings;
+    bool viewResult;
+    bool justBuildIndex;
+    int convertionTasksCount;
+    DnaAssemblyMultiTask *assemblyTask;
+};
 
 } // U2
 

@@ -30,6 +30,7 @@
 #include <U2Core/DocumentUtils.h>
 #include <U2Core/GUrlUtils.h>
 #include <U2Core/ExternalToolRegistry.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <U2Formats/SAMFormat.h>
 
@@ -37,6 +38,8 @@
 #include <U2Gui/AppSettingsGUI.h>
 
 #include <U2Algorithm/DnaAssemblyAlgRegistry.h>
+
+#include <U2View/DnaAssemblyUtils.h>
 
 #include "DnaAssemblyDialog.h"
 #include "DnaAssemblyGUIExtension.h"
@@ -228,7 +231,27 @@ void DnaAssemblyDialog::accept() {
         for( int i =0; i < numItems; ++i) {
             lastShortReadsUrls.append(shortReadsTable->topLevelItem(i)->data(0,0).toString());
         }
-        
+
+        QList<GUrl> unknownFormatFiles;
+        QMap<QString, QString> toConvert = DnaAssemblySupport::toConvert(DnaAssemblyGUIUtils::getSettings(this), unknownFormatFiles);
+        if (!unknownFormatFiles.isEmpty()) {
+            QString filesText = DnaAssemblySupport::unknownText(unknownFormatFiles);
+            QMessageBox::warning(this,
+                tr("DNA Assembly"),
+                tr("These files have the unknown format:\n\n") + filesText);
+            return;
+        }
+        if (!toConvert.isEmpty()) {
+            QString filesText = DnaAssemblySupport::toConvertText(toConvert);
+            QMessageBox::StandardButton res = QMessageBox::information(this,
+                tr("DNA Assembly"),
+                tr("These files have the incompatible format:\n\n") + filesText +
+                tr("\n\nDo you want to convert the files and run the aligner?"),
+                QMessageBox::Yes | QMessageBox::No);
+            if (QMessageBox::No == res) {
+                return;
+            }
+        }
         QDialog::accept();
     }
 }
@@ -429,19 +452,26 @@ void DnaAssemblyDialog::sl_onLibraryTypeChanged()
     }
 }
 
+DnaAssemblyToRefTaskSettings DnaAssemblyGUIUtils::getSettings(DnaAssemblyDialog *dialog) {
+    DnaAssemblyToRefTaskSettings s;
+    SAFE_POINT(NULL != dialog, "NULL dialog", s);
+    s.samOutput = dialog->isSamOutput();
+    s.refSeqUrl = dialog->getRefSeqUrl();
+    s.algName = dialog->getAlgorithmName();
+    s.resultFileName = dialog->getResultFileName();
+    s.setCustomSettings(dialog->getCustomSettings());
+    s.shortReadSets = dialog->getShortReadSets();
+    s.prebuiltIndex = dialog->isPrebuiltIndex();
+
+    return s;
+}
+
 void DnaAssemblyGUIUtils::runAssembly2ReferenceDialog(const QStringList& shortReadUrls, const QString& refSeqUrl) {
     DnaAssemblyDialog dlg(QApplication::activeWindow(), shortReadUrls, refSeqUrl);
     if (dlg.exec()) {
-        DnaAssemblyToRefTaskSettings s;
-        s.samOutput = dlg.isSamOutput();
-        s.refSeqUrl = dlg.getRefSeqUrl();
-        s.algName = dlg.getAlgorithmName();
-        s.resultFileName = dlg.getResultFileName();
-        s.setCustomSettings( dlg.getCustomSettings() );
-        s.shortReadSets = dlg.getShortReadSets();
-        s.prebuiltIndex = dlg.isPrebuiltIndex();
+        DnaAssemblyToRefTaskSettings s = getSettings(&dlg);
         s.openView = true;
-        Task* assemblyTask = new DnaAssemblyMultiTask(s, true);
+        Task* assemblyTask = new DnaAssemblyTaskWithConversions(s, true);
         AppContext::getTaskScheduler()->registerTopLevelTask(assemblyTask);
     }
 }

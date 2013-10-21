@@ -52,6 +52,8 @@ void ConvertFileTask::prepare() {
 
 QList<Task*> ConvertFileTask::onSubTaskFinished(Task *subTask) {
     QList<Task*> result;
+    CHECK(!subTask->hasError(), result);
+    CHECK(!hasError(), result);
 
     if (saveTask == subTask) {
         return result;

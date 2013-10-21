@@ -26,11 +26,21 @@
 
 namespace U2 {
 
-DnaAssemblyAlgorithmEnv::DnaAssemblyAlgorithmEnv(const QString& _id, DnaAssemblyToRefTaskFactory* _tf, 
-                                                 DnaAssemblyGUIExtensionsFactory* _g, bool indexSupported, 
-                                                 bool _sd, bool _pe)
-: id(_id), taskFactory(_tf), guiExtFactory(_g), supportsIndexFiles(indexSupported), supportsDbi(_sd), supportsPEReads(_pe)
+DnaAssemblyAlgorithmEnv::DnaAssemblyAlgorithmEnv(
+    const QString &id,
+    DnaAssemblyToRefTaskFactory *taskFactory,
+    DnaAssemblyGUIExtensionsFactory *guiExtFactory,
+    bool supportsIndexFiles,
+    bool supportsDbi,
+    bool supportsPEReads,
+    const QStringList &refrerenceFormats,
+    const QStringList &readsFormats)
+: id(id), taskFactory(taskFactory), guiExtFactory(guiExtFactory),
+supportsIndexFiles(supportsIndexFiles), supportsDbi(supportsDbi),
+supportsPEReads(supportsPEReads), refrerenceFormats(refrerenceFormats),
+readsFormats(readsFormats)
 {
+
 }
 
 DnaAssemblyAlgorithmEnv::~DnaAssemblyAlgorithmEnv() {

@@ -29,6 +29,8 @@
 
 #include <QtGui/QWidget>
 
+#include <U2Algorithm/DnaAssemblyTask.h>
+
 namespace U2 {
 
 class DnaAssemblyAlgorithmBaseWidget : public QWidget {
@@ -68,9 +70,11 @@ public:
     virtual bool hasBuildIndexWidget() = 0;
 };
 
+class DnaAssemblyDialog;
 class U2VIEW_EXPORT DnaAssemblyGUIUtils : public QObject {
 public:
     static void runAssembly2ReferenceDialog(const QStringList& shortReadUrls = QStringList(), const QString& refSeqUrl = QString());
+    static DnaAssemblyToRefTaskSettings getSettings(DnaAssemblyDialog *dialog);
 };
 
 } // U2

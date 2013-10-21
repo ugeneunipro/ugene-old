@@ -24,6 +24,7 @@
 
 #include <QtCore/QList>
 #include <QtCore/QString>
+#include <QtCore/QStringList>
 #include <QtCore/QMutex>
 #include <QtCore/QObject>
 
@@ -57,9 +58,14 @@ private:
 
 class U2ALGORITHM_EXPORT DnaAssemblyAlgorithmEnv {
 public:
-    DnaAssemblyAlgorithmEnv(const QString& id, DnaAssemblyToRefTaskFactory* tf , 
-        DnaAssemblyGUIExtensionsFactory* guiExt, bool supportsIndexFiles, bool supportsDbi,
-        bool supportsPairedEndLibrary = false);
+    DnaAssemblyAlgorithmEnv(const QString &id,
+        DnaAssemblyToRefTaskFactory *tf ,
+        DnaAssemblyGUIExtensionsFactory *guiExt,
+        bool supportsIndexFiles,
+        bool supportsDbi,
+        bool supportsPairedEndLibrary,
+        const QStringList &refrerenceFormats,
+        const QStringList &readsFormats);
 
     virtual ~DnaAssemblyAlgorithmEnv();
     
@@ -67,7 +73,9 @@ public:
     bool isIndexFilesSupported() const {return supportsIndexFiles;}
     bool isDbiSupported() const {return supportsDbi;}
     bool supportsPairedEndLibrary() const { return supportsPEReads; }
-    
+    QStringList getRefrerenceFormats() const { return refrerenceFormats; }
+    QStringList getReadsFormats() const { return readsFormats; }
+
     DnaAssemblyToRefTaskFactory* getTaskFactory() const {return taskFactory;}
     DnaAssemblyGUIExtensionsFactory* getGUIExtFactory() const {return guiExtFactory;}
 
@@ -81,6 +89,8 @@ protected:
     bool supportsIndexFiles;
     bool supportsDbi;
     bool supportsPEReads;
+    QStringList refrerenceFormats;
+    QStringList readsFormats;
 };
 
 } // namespace

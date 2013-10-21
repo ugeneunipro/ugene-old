@@ -27,6 +27,7 @@
 #include <U2Core/DocumentImport.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/IOAdapterUtils.h>
+#include <U2Core/U2SafePoints.h>
 
 namespace U2 {
 
@@ -152,6 +153,26 @@ QList<FormatDetectionResult> DocumentUtils::detectFormat(IOAdapter *io, const Fo
     QString ext = GUrlUtils::getUncompressedExtension(io->getURL());
     result = detectFormat( rawData, ext , io->getURL(), conf);
     return result;
+}
+
+DocumentUtils::Detection DocumentUtils::detectFormat(const GUrl &url, QString &resultId) {
+    FormatDetectionConfig cfg;
+    cfg.bestMatchesOnly = false;
+    cfg.useImporters = true;
+    QList<FormatDetectionResult> formats = DocumentUtils::detectFormat(url, cfg);
+    CHECK(formats.size() > 0, UNKNOWN);
+
+    DocumentFormat *format = formats.first().format;
+    DocumentImporter *importer = formats.first().importer;
+    if (NULL != format) {
+        resultId = format->getFormatId();
+        return FORMAT;
+    } else if (NULL != importer) {
+        resultId = importer->getId();
+        return IMPORTER;
+    } else {
+        FAIL("NULL format and importer", UNKNOWN);
+    }
 }
 
 QList<DocumentFormat*> DocumentUtils::toFormats(const QList<FormatDetectionResult>& infos) {

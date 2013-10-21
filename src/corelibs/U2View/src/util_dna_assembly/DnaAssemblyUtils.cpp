@@ -34,9 +34,11 @@
 #include <U2Algorithm/DnaAssemblyAlgRegistry.h>
 #include <U2Algorithm/DnaAssemblyMultiTask.h>
 #include <U2Formats/ConvertAssemblyToSamTask.h>
+#include <U2Formats/ConvertFileTask.h>
 #include <U2Gui/OpenViewTask.h>
 #include <U2Core/AddDocumentTask.h>
 #include <U2Core/MultiTask.h>
+#include <U2Core/DocumentUtils.h>
 
 #include "DnaAssemblyUtils.h"
 #include "DnaAssemblyDialog.h"
@@ -96,7 +98,7 @@ void DnaAssemblySupport::sl_showDnaAssemblyDialog()
         s.shortReadSets = dlg.getShortReadSets();
         s.prebuiltIndex = dlg.isPrebuiltIndex();
         s.openView = true;
-        Task* assemblyTask = new DnaAssemblyMultiTask(s, true);
+        Task* assemblyTask = new DnaAssemblyTaskWithConversions(s, true);
         AppContext::getTaskScheduler()->registerTopLevelTask(assemblyTask);
     }
  
@@ -121,7 +123,7 @@ void DnaAssemblySupport::sl_showBuildIndexDialog()
         s.setCustomSettings( dlg.getCustomSettings() );
         s.openView = false;
         s.prebuiltIndex = false;
-        Task* assemblyTask = new DnaAssemblyMultiTask(s, false, true);
+        Task* assemblyTask = new DnaAssemblyTaskWithConversions(s, false, true);
         AppContext::getTaskScheduler()->registerTopLevelTask(assemblyTask);
     }
 }
@@ -133,7 +135,150 @@ void DnaAssemblySupport::sl_showConvertToSamDialog() {
         AppContext::getTaskScheduler()->registerTopLevelTask(convertTask);
     }
 }
+namespace {
+enum Result {
+    UNKNOWN,
+    CORRECT,
+    INCORRECT
+};
 
+static Result isCorrectFormat(const GUrl &url, const QStringList &targetFormats, QString &detectedFormat = QString()) {
+    DocumentUtils::Detection r = DocumentUtils::detectFormat(url, detectedFormat);
+    CHECK(DocumentUtils::UNKNOWN != r, UNKNOWN);
+
+    bool correct = targetFormats.contains(detectedFormat);
+    if (correct) {
+        return CORRECT;
+    }
+    return INCORRECT;
+}
+
+ConvertFileTask * getConvertTask(const GUrl &url, const QStringList &targetFormats, U2OpStatus &os) {
+    Result r = isCorrectFormat(url, targetFormats);
+    if (UNKNOWN == r) {
+        os.setError(QString("Unknown file format: %1").arg(url.getURLString()));
+        return NULL;
+    }
+
+    if (INCORRECT == r) {
+        QDir dir = QFileInfo(url.getURLString()).absoluteDir();
+        return new ConvertFileTask(url, targetFormats.first(), dir.absolutePath());
+    }
+    return NULL;
+}
+}
+
+#define CHECK_FILE(url, targetFormats) \
+    QString format; \
+    Result r = isCorrectFormat(url, targetFormats, format); \
+    if (UNKNOWN == r) { \
+        unknownFormatFiles << url; \
+    } else if (INCORRECT == r) { \
+        result[url.getURLString()] = format; \
+    }
+
+#define PREPARE_FILE(url, targetFormats) \
+    if (!toConvert.contains(url.getURLString())) { \
+        ConvertFileTask *task = getConvertTask(url, targetFormats, stateInfo); \
+        CHECK_OP(stateInfo, ); \
+        if (NULL != task) { \
+            addSubTask(task); \
+            convertionTasksCount++; \
+            toConvert << url.getURLString(); \
+        } \
+    }
+
+QMap<QString, QString> DnaAssemblySupport::toConvert(const DnaAssemblyToRefTaskSettings &settings, QList<GUrl> &unknownFormatFiles) {
+    QMap<QString, QString> result;
+    DnaAssemblyAlgorithmEnv *env= AppContext::getDnaAssemblyAlgRegistry()->getAlgorithm(settings.algName);
+    SAFE_POINT(NULL != env, "Unknown algorithm: " + settings.algName, result);
+
+    foreach (const GUrl &url, settings.getShortReadUrls()) {
+        CHECK_FILE(url, env->getReadsFormats());
+    }
+
+    if (!settings.prebuiltIndex) {
+        CHECK_FILE(settings.refSeqUrl, env->getRefrerenceFormats());
+    }
+    return result;
+}
+
+QString DnaAssemblySupport::toConvertText(const QMap<QString, QString> &files) {
+    QStringList strings;
+    foreach (const QString &url, files.keys()) {
+        QString format = files[url];
+        strings << url + " [" + format + "]";
+    }
+    return strings.join("\n");
+}
+
+QString DnaAssemblySupport::unknownText(const QList<GUrl> &unknownFormatFiles) {
+    QStringList strings;
+    foreach (const GUrl &url, unknownFormatFiles) {
+        strings << url.getURLString();
+    }
+    return strings.join("\n");
+}
+
+/************************************************************************/
+/* DnaAssemblyTaskWithConversions */
+/************************************************************************/
+DnaAssemblyTaskWithConversions::DnaAssemblyTaskWithConversions(const DnaAssemblyToRefTaskSettings &settings, bool viewResult, bool justBuildIndex)
+: Task("Dna assembly task", TaskFlags_NR_FOSCOE), settings(settings), viewResult(viewResult),
+    justBuildIndex(justBuildIndex), convertionTasksCount(0), assemblyTask(NULL)
+{
+
+}
+
+void DnaAssemblyTaskWithConversions::prepare() {
+    DnaAssemblyAlgorithmEnv *env= AppContext::getDnaAssemblyAlgRegistry()->getAlgorithm(settings.algName);
+    if (env == NULL) {
+        setError(QString("Algorithm %1 is not found").arg(settings.algName));
+        return;
+    }
+
+    QSet<QString> toConvert;
+    foreach (const GUrl &url, settings.getShortReadUrls()) {
+        PREPARE_FILE(url, env->getReadsFormats());
+    }
+
+    if (!settings.prebuiltIndex) {
+        PREPARE_FILE(settings.refSeqUrl, env->getRefrerenceFormats());
+    }
+
+    if (0 == convertionTasksCount) {
+        assemblyTask = new DnaAssemblyMultiTask(settings, viewResult, justBuildIndex);
+        addSubTask(assemblyTask);
+    }
+}
+
+QList<Task*> DnaAssemblyTaskWithConversions::onSubTaskFinished(Task *subTask) {
+    QList<Task*> result;
+    CHECK(!subTask->hasError(), result);
+    CHECK(!hasError(), result);
+
+    ConvertFileTask *convertTask = dynamic_cast<ConvertFileTask*>(subTask);
+    if (NULL != convertTask) {
+        SAFE_POINT_EXT(convertionTasksCount > 0, setError("Convertions task count error"), result);
+        if (convertTask->getSourceURL() == settings.refSeqUrl) {
+            settings.refSeqUrl = convertTask->getResult();
+        }
+
+        for (QList<ShortReadSet>::Iterator i=settings.shortReadSets.begin(); i != settings.shortReadSets.end(); i++) {
+            if (convertTask->getSourceURL() == i->url) {
+                i->url = convertTask->getResult();
+            }
+        }
+        convertionTasksCount--;
+
+        if (0 == convertionTasksCount) {
+            assemblyTask = new DnaAssemblyMultiTask(settings, viewResult, justBuildIndex);
+            result << assemblyTask;
+        }
+    }
+
+    return result;
+}
 
 } // U2
 

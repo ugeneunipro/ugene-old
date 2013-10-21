@@ -94,6 +94,16 @@ public:
     static QList<FormatDetectionResult> detectFormat(const QByteArray& rawData, const QString& ext = QString(), 
                                             const GUrl& url = GUrl(), const FormatDetectionConfig& conf = FormatDetectionConfig());
 
+    /*
+        Find the best matching document format and stores it in @resultId.
+    */
+    enum Detection {
+        UNKNOWN,
+        FORMAT,
+        IMPORTER
+    };
+    static Detection detectFormat(const GUrl &url, QString &resultId);
+
     static QList<DocumentFormat*> toFormats(const QList<FormatDetectionResult>& infos);
 
     static bool canAddGObjectsToDocument(Document* doc, const GObjectType& type);

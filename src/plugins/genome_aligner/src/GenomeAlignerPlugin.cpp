@@ -79,14 +79,17 @@ GenomeAlignerPlugin::GenomeAlignerPlugin() : Plugin( tr("UGENE Genome Aligner"),
     
     bool guiMode = AppContext::getMainWindow();
     DnaAssemblyGUIExtensionsFactory* guiFactory = guiMode ? new GenomeAlignerGuiExtFactory(): NULL;
-    DnaAssemblyAlgorithmEnv* algo = new DnaAssemblyAlgorithmEnv("UGENE Genome Aligner", new GenomeAlignerTask::Factory, guiFactory, true, true);
+    QStringList referenceFormats(BaseDocumentFormats::FASTA);
+    referenceFormats << BaseDocumentFormats::PLAIN_GENBANK;
+    referenceFormats << BaseDocumentFormats::FASTQ;
+    QStringList readsFormats;
+    readsFormats << BaseDocumentFormats::FASTA;
+    readsFormats << BaseDocumentFormats::FASTQ;
+    readsFormats << BaseDocumentFormats::PLAIN_GENBANK;
+    DnaAssemblyAlgorithmEnv* algo = new DnaAssemblyAlgorithmEnv("UGENE Genome Aligner", new GenomeAlignerTask::Factory, guiFactory, true, true, false, referenceFormats, readsFormats);
     bool res = registry->registerAlgorithm(algo);
     Q_UNUSED(res);
     assert(res);
-   
-    //LocalWorkflow::GenomeAlignerWorkerFactory::init();
-    //LocalWorkflow::GenomeAlignerBuildWorkerFactory::init();
-    //LocalWorkflow::GenomeAlignerIndexReaderWorkerFactory::init();
 
     registerCMDLineHelp();
     processCMDLineOptions();
