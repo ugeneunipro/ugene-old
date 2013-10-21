@@ -54,7 +54,7 @@ ExportMSA2MSADialog::ExportMSA2MSADialog(const QString& defaultFileName, const D
     conf.saveTitle = tr("Export alignment");
     saveContoller = new SaveDocumentGroupController(conf, this);
 
-    DNAAlphabet* al = AppContext::getDNAAlphabetRegistry()->findById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT());
+    const DNAAlphabet* al = AppContext::getDNAAlphabetRegistry()->findById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT());
     DNATranslationRegistry* tr = AppContext::getDNATranslationRegistry();
     QList<DNATranslation*> aminoTs = tr->lookupTranslation(al, DNATranslationType_NUCL_2_AMINO);
     assert(!aminoTs.empty());

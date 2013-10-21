@@ -48,7 +48,7 @@ public:
     StateLock*                  stateLock;
 
 private:
-    DNAAlphabet *msaAlphabet;
+    const DNAAlphabet *msaAlphabet;
     QList<U2SequenceObject*>    seqList;
     QStringList                 errorList;
 

@@ -79,7 +79,7 @@ public:
     QByteArray getSequence() const;
     int getLength() const;
     bool isInverted() const { return reverseCompl; }
-    DNAAlphabet* getAlphabet() const;
+    const DNAAlphabet* getAlphabet() const;
     QByteArray getSourceSequence() const;
     const DNAFragmentTerm& getLeftTerminus() const;
     const DNAFragmentTerm& getRightTerminus() const;

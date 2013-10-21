@@ -1002,7 +1002,7 @@ void ADVSingleSequenceHeaderWidget::paintEvent(QPaintEvent *e) {
     p.drawLine(0, height()-1, width(), height()-1);
 }
 
-QString ADVSingleSequenceHeaderWidget::getShortAlphabetName(DNAAlphabet* al) {
+QString ADVSingleSequenceHeaderWidget::getShortAlphabetName(const DNAAlphabet* al) {
     DNAAlphabetType type = al->getType();
     if (type == DNAAlphabet_RAW) {
         return tr("raw");

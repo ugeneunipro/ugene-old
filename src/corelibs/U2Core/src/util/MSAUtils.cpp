@@ -64,7 +64,7 @@ MAlignment MSAUtils::seq2ma(const QList<DNASequence>& list, U2OpStatus& os) {
     return ma;
 }
 
-namespace Utils {
+namespace {
 MAlignmentObject* prepareSequenceHeadersList(const QList<GObject*>& list, bool useGenbankHeader, QList<U2SequenceObject*> &dnaList, QList<QString> &nameList) {
     foreach(GObject* obj, list) {
         U2SequenceObject* dnaObj = qobject_cast<U2SequenceObject*>(obj);
@@ -88,13 +88,13 @@ MAlignmentObject* prepareSequenceHeadersList(const QList<GObject*>& list, bool u
     }
     return NULL;
 }
-} // namespace Utils
+} // unnamed namespace
 
 MAlignment MSAUtils::seq2ma(const QList<GObject*>& list, U2OpStatus& os, bool useGenbankHeader) {
     QList<U2SequenceObject*> dnaList;
     QList<QString> nameList;
 
-    MAlignmentObject *obj = Utils::prepareSequenceHeadersList(list, useGenbankHeader, dnaList, nameList);
+    MAlignmentObject *obj = prepareSequenceHeadersList(list, useGenbankHeader, dnaList, nameList);
     if (NULL != obj) {
         return obj->getMAlignment();
     }
@@ -109,7 +109,7 @@ MAlignment MSAUtils::seq2ma(const QList<GObject*>& list, U2OpStatus& os, bool us
         const U2SequenceObject& seq = *(listIterator.next());
         const QString& objName = nameIterator.next();
 
-        DNAAlphabet* alphabet = seq.getAlphabet();
+        const DNAAlphabet* alphabet = seq.getAlphabet();
         updateAlignmentAlphabet(ma, alphabet, os);
         CHECK_OP(os, MAlignment());
 
@@ -140,8 +140,8 @@ void MSAUtils::appendSequenceToAlignmentRow(MAlignment& ma, int rowIndex, const 
     }
 }
 
-void MSAUtils::updateAlignmentAlphabet(MAlignment& ma, DNAAlphabet* alphabet, U2OpStatus& os) {
-    DNAAlphabet* al = ma.getAlphabet();
+void MSAUtils::updateAlignmentAlphabet(MAlignment& ma, const DNAAlphabet* alphabet, U2OpStatus& os) {
+    const DNAAlphabet* al = ma.getAlphabet();
     if (al == NULL) {
         al = alphabet;
     } else {
@@ -168,7 +168,7 @@ QList<DNASequence> MSAUtils::ma2seq(const MAlignment& ma, bool trimGaps) {
     QList<DNASequence> lst;
     QBitArray gapCharMap = TextUtils::createBitMap(MAlignment_GapChar);
     int len = ma.getLength();
-    DNAAlphabet* al = ma.getAlphabet();
+    const DNAAlphabet* al = ma.getAlphabet();
     U2OpStatus2Log os;
     foreach(const MAlignmentRow& row, ma.getRows()) {
         DNASequence s(row.getName(), row.toByteArray(len, os), al);

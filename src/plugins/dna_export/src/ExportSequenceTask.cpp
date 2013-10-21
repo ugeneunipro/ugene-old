@@ -274,7 +274,7 @@ void ExportAnnotationSequenceSubTask::run() {
         foreach(const SharedAnnotationData& ad, ei.annotations) {
             QList<QByteArray> annSequence = U1SequenceUtils::extractRegions(ei.sequence.seq, ad->location->regions, 
                                             ad->getStrand().isCompementary() ? ei.complTT : NULL);
-            DNAAlphabet* al = ei.sequence.alphabet;
+            const DNAAlphabet* al = ei.sequence.alphabet;
             if (ei.aminoTT != NULL) {
                 QList<QByteArray> aminoRegions = U1SequenceUtils::translateRegions(annSequence, ei.aminoTT, ad->isJoin());
                 annSequence = aminoRegions;

@@ -355,7 +355,7 @@ Task* BlastAllWorker::tick() {
         }
         cfg.querySequence=seq.seq;
 
-        DNAAlphabet *alp = U2AlphabetUtils::findBestAlphabet(seq.seq);
+        const DNAAlphabet *alp = U2AlphabetUtils::findBestAlphabet(seq.seq);
         cfg.alphabet=alp;
         //TO DO: Check alphabet
         if(seq.alphabet->isAmino()) {

@@ -52,8 +52,8 @@ EntropyGraphFactory::EntropyGraphFactory(QObject* p)
 #define MAX_CHARS_IN_ALPHABET 7
 #define MAX_INDEX_SIZE 512
 
-bool EntropyGraphFactory::isEnabled(U2SequenceObject* o) const {
-    DNAAlphabet* al = o->getAlphabet();
+bool EntropyGraphFactory::isEnabled(const U2SequenceObject* o) const {
+    const DNAAlphabet* al = o->getAlphabet();
     return al->isNucleic() && al->getAlphabetChars().size() <= MAX_CHARS_IN_ALPHABET;
 }
 

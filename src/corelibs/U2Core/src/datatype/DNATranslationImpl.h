@@ -29,7 +29,7 @@ namespace U2 {
 
 class DNATranslation1to1Impl : public DNATranslation {
 public:
-    DNATranslation1to1Impl(const QString& id, const QString& _name, DNAAlphabet* src, DNAAlphabet* dst, QByteArray mapper121);
+    DNATranslation1to1Impl(const QString& id, const QString& _name, const DNAAlphabet* src, const DNAAlphabet* dst, QByteArray mapper121);
 
     virtual qint64 translate(const char* src, qint64 src_len, char* dst, qint64 dst_capacity) const;
     virtual int translate(char* src_and_dst, int len) const;
@@ -201,7 +201,7 @@ enum DNATranslationRole {
 
 class DNATranslation3to1Impl : public DNATranslation {
 public:
-    DNATranslation3to1Impl(const QString& _id, const QString& _name, DNAAlphabet* src, DNAAlphabet* dst,
+    DNATranslation3to1Impl(const QString& _id, const QString& _name, const DNAAlphabet* src, const DNAAlphabet* dst,
         const QList<Mapping3To1<char> >& mapping, char defaultChar, const QMap<DNATranslationRole,QList<Triplet> >& roles);
     virtual ~DNATranslation3to1Impl();
 
@@ -275,7 +275,7 @@ enum BackTranslationMode {
 class DNATranslation1to3Impl : public DNATranslation {
 public:    
 
-    DNATranslation1to3Impl(const QString& _id, const QString& _name, DNAAlphabet* src, DNAAlphabet* dst,
+    DNATranslation1to3Impl(const QString& _id, const QString& _name, const DNAAlphabet* src, const DNAAlphabet* dst,
         const BackTranslationRules& rules);
     virtual ~DNATranslation1to3Impl();
 

@@ -40,7 +40,7 @@ public:
     DNAFlexGraphFactory(QObject*);
     virtual QList<GSequenceGraphData*> createGraphs(GSequenceGraphView*);
     virtual GSequenceGraphDrawer* getDrawer(GSequenceGraphView*);
-    virtual bool isEnabled(U2SequenceObject*) const;
+    virtual bool isEnabled(const U2SequenceObject*) const;
 
 private:
     /** Default size of "window" on a graph */

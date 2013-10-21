@@ -39,8 +39,8 @@ GCFramePlotFactory::GCFramePlotFactory(QObject* p)
 
 }
 
-bool GCFramePlotFactory::isEnabled(U2SequenceObject* o) const {
-    DNAAlphabet* al = o->getAlphabet();
+bool GCFramePlotFactory::isEnabled(const U2SequenceObject* o) const {
+    const DNAAlphabet* al = o->getAlphabet();
     return al->isNucleic();
 }
 

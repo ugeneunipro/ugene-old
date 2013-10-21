@@ -42,9 +42,9 @@ public:
 
     QStringList getMatrixNames() const;
 
-    QList<SMatrix> selectMatricesByAlphabet(DNAAlphabet* al) const;
+    QList<SMatrix> selectMatricesByAlphabet(const DNAAlphabet* al) const;
     
-    QStringList selectMatrixNamesByAlphabet(DNAAlphabet* al) const;
+    QStringList selectMatrixNamesByAlphabet(const DNAAlphabet* al) const;
 
     void registerMatrix(const SMatrix& m);
 

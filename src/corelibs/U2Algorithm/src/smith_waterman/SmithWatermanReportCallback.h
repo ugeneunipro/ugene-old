@@ -86,7 +86,7 @@ public:
                                         const QString & _refSubseqTemplate, const QString & _ptrnSubseqTemplate,
                                         const QByteArray & _refSequence, const QByteArray & _pattern,
                                         const QString & _refSeqName, const QString & _patternName,
-                                      DNAAlphabet * _alphabet, WhatDoYouWantFromMe _plan = SequenceView_Search);
+                                      const DNAAlphabet * _alphabet, WhatDoYouWantFromMe _plan = SequenceView_Search);
 
     //Smith-Waterman alignment in MSA Editor (in new window)
     SmithWatermanReportCallbackMAImpl(const QString & _resultDirPath, const QString & _mobjectName,
@@ -118,7 +118,7 @@ private:
     QString ptrnSubseqTemplate;
     QByteArray refSequenceData;
     QByteArray ptrnSequenceData;
-    DNAAlphabet * alphabet;
+    const DNAAlphabet * alphabet;
     TagExpansionPossibleData expansionInfo;
 
     U2EntityRef firstSequenceRef;

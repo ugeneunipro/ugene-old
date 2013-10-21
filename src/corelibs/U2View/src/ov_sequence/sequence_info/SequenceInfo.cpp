@@ -110,7 +110,7 @@ void SequenceInfo::updateCharOccurLayout()
     ADVSequenceObjectContext* activeSequenceContext = annotatedDnaView->getSequenceInFocus();
     if (0 != activeSequenceContext)
     {
-        DNAAlphabet* activeSequenceAlphabet = activeSequenceContext->getAlphabet();
+        const DNAAlphabet* activeSequenceAlphabet = activeSequenceContext->getAlphabet();
         SAFE_POINT(0 != activeSequenceAlphabet, "An active sequence alphabet is NULL!",);
 
         if ((activeSequenceAlphabet->isNucleic()) ||
@@ -132,7 +132,7 @@ void SequenceInfo::updateDinuclLayout()
     ADVSequenceObjectContext* activeSequenceContext = annotatedDnaView->getSequenceInFocus();
     SAFE_POINT(0 != activeSequenceContext, "A sequence context is NULL!",);
 
-    DNAAlphabet* activeSequenceAlphabet = activeSequenceContext->getAlphabet();
+    const DNAAlphabet* activeSequenceAlphabet = activeSequenceContext->getAlphabet();
     SAFE_POINT(0 != activeSequenceAlphabet, "An active sequence alphabet is NULL!",);
 
     QString alphabetId = activeSequenceAlphabet->getId();
@@ -310,7 +310,7 @@ void SequenceInfo::launchCalculations(QString subgroupId)
 
     U2SequenceObject* seqObj = activeContext->getSequenceObject();
     U2EntityRef seqRef = seqObj->getSequenceRef();
-    DNAAlphabet* alphabet = activeContext->getAlphabet();
+    const DNAAlphabet* alphabet = activeContext->getAlphabet();
 
     if (subgroupId.isEmpty() || subgroupId == CHAR_OCCUR_GROUP_ID)
     {

@@ -311,7 +311,7 @@ char *U1AnnotationUtils::applyLowerCaseRegions(char *seq, qint64 first, qint64 l
     return seq;
 }
 
-QString U1AnnotationUtils::guessAminoTranslation(AnnotationTableObject* ao, DNAAlphabet* al){
+QString U1AnnotationUtils::guessAminoTranslation(const AnnotationTableObject* ao, const DNAAlphabet* al){
     DNATranslation* res = NULL;    
     DNATranslationRegistry* tr = AppContext::getDNATranslationRegistry();
 

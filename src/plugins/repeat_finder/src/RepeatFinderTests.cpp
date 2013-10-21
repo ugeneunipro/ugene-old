@@ -311,7 +311,7 @@ void GTest_FindTandemRepeatsTask::prepare() {
     //this->getContext(this,"")
     //new DNAAlphabetRegistryImpl(
 //    TaskResourceUsage* tru = AppContext::getTaskScheduler()->getTaskResources(NULL).constData();
-    DNAAlphabet* alph = AppContext::getDNAAlphabetRegistry()->findById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT());
+    const DNAAlphabet* alph = AppContext::getDNAAlphabetRegistry()->findById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT());
     seqObj = new DNASequence(QString("sequence"), sequence.toLatin1(), alph );
     if (seqObj == NULL){
         stateInfo.setError("can't find sequence1");

@@ -133,7 +133,7 @@ QString DNAFragment::getName() const
     return annotatedFragment->getAnnotationName();
 }
 
-DNAAlphabet* DNAFragment::getAlphabet() const
+const DNAAlphabet* DNAFragment::getAlphabet() const
 {
     assert(!isEmpty());
     return dnaObj->getAlphabet();
@@ -156,7 +156,7 @@ QByteArray DNAFragment::getSequence() const
     assert(!seq.isEmpty());
 
     if (reverseCompl) {
-        DNAAlphabet* al = dnaObj->getAlphabet();
+        const DNAAlphabet* al = dnaObj->getAlphabet();
         DNATranslation* transl = AppContext::getDNATranslationRegistry()->lookupComplementTranslation(al);
         transl->translate(seq.data(), seq.size());
         TextUtils::reverse(seq.data(), seq.size());
@@ -311,7 +311,7 @@ void DNAFragment::updateRightTerm()
 
 void DNAFragment::toRevCompl( QByteArray& seq )
 {
-    DNAAlphabet* al = dnaObj->getAlphabet();
+    const DNAAlphabet* al = dnaObj->getAlphabet();
     DNATranslation* transl = AppContext::getDNATranslationRegistry()->lookupComplementTranslation(al);
     transl->translate(seq.data(), seq.size());
     TextUtils::reverse(seq.data(), seq.size());

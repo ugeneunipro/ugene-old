@@ -854,7 +854,7 @@ void PanViewRenderArea::drawSequenceSelection(QPainter& p) {
     int halfNum = rfm.boundingRect('1').height() / 2;
     int rty = ly + halfNum;
     
-    DNAAlphabet* alphabet = panView->getSequenceContext()->getSequenceObject()->getAlphabet();
+    const DNAAlphabet* alphabet = panView->getSequenceContext()->getSequenceObject()->getAlphabet();
     QString unitType;
     if (alphabet->isAmino()) {
         unitType = "aa";

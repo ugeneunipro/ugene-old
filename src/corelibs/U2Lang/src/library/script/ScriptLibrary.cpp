@@ -194,7 +194,7 @@ QScriptValue WorkflowScriptLibrary::concatSequence(QScriptContext *ctx, QScriptE
         return ctx->throwError(QObject::tr("Incorrect number of arguments"));
     }
     QByteArray result;
-    DNAAlphabet *alph = AppContext::getDNAAlphabetRegistry()->findById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT());
+    const DNAAlphabet *alph = AppContext::getDNAAlphabetRegistry()->findById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT());
     for(int i = 0; i < ctx->argumentCount();i++) {
         DNASequence dna = getSequence(ctx, engine, i);
         if(dna.seq.isEmpty()) {

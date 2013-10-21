@@ -54,7 +54,7 @@ public:
     GObject*            getSequenceGObject() const;
     
     qint64 getSequenceLength() const;
-    DNAAlphabet* getAlphabet() const;
+    const DNAAlphabet* getAlphabet() const;
     QByteArray getSequenceData(const U2Region& r) const;
     U2EntityRef getSequenceRef() const;
     bool        isRowChoosed()   ;
@@ -95,7 +95,7 @@ signals:
     void si_translationRowsChanged();
 
 private:
-    void guessAminoTT(AnnotationTableObject* ao);
+    void guessAminoTT(const AnnotationTableObject* ao);
 
 
     AnnotatedDNAView*               view;

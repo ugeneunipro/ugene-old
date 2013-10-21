@@ -80,7 +80,7 @@ public:
     /** Const getters */
     char charAt(int seqNum, int pos) const;
     bool isRegionEmpty(int x, int y, int width, int height) const;
-    DNAAlphabet* getAlphabet() const;
+    const DNAAlphabet* getAlphabet() const;
     qint64 getLength() const;
     qint64 getNumRows() const;
     const MAlignmentRow& getRow(int row) const;

@@ -44,7 +44,7 @@ IMPLEMENT_TEST(MsaUtilsUnitTests, one_name_with_spaces) {
     U2EntityRef msaRef(dbiRef, msaId);
 
     // Prepare input data
-    DNAAlphabet* alphabet = U2AlphabetUtils::getById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT());
+    const DNAAlphabet* alphabet = U2AlphabetUtils::getById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT());
     MAlignment ma1("nigguz1_one_name_with_spaces", alphabet);
     ma1.addRow("diss1", "AAAA--AAA", -1, os);
     CHECK_NO_ERROR(os);
@@ -79,7 +79,7 @@ IMPLEMENT_TEST(MsaUtilsUnitTests, two_names_with_spaces){
     U2EntityRef msaRef(dbiRef, msaId);
 
     // Prepare input data
-    DNAAlphabet* alphabet = U2AlphabetUtils::getById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT());
+    const DNAAlphabet* alphabet = U2AlphabetUtils::getById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT());
     MAlignment ma1("nigguz1_two_names_with_spaces", alphabet);
     ma1.addRow("diss1", "AAAA--AAA", -1, os);
     CHECK_NO_ERROR(os);
@@ -115,7 +115,7 @@ IMPLEMENT_TEST(MsaUtilsUnitTests, all_names_with_spaces){
     U2EntityRef msaRef(dbiRef, msaId);
 
     // Prepare input data
-    DNAAlphabet* alphabet = U2AlphabetUtils::getById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT());
+    const DNAAlphabet* alphabet = U2AlphabetUtils::getById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT());
     MAlignment ma1("nigguz1_all_names_with_spaces", alphabet);
     ma1.addRow("diss 1", "AAAA--AAA", -1, os);
     CHECK_NO_ERROR(os);

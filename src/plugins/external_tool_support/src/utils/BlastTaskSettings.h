@@ -129,7 +129,7 @@ public:
     int             numberOfHits;           //-K Number of best hits from a region to keep. Off by default.  If used a value of 100 is recommended.
 
     bool            isNucleotideSeq;
-    DNAAlphabet*    alphabet;
+    const DNAAlphabet*    alphabet;
     //settings for annotations
     bool                    needCreateAnnotations;
     AnnotationTableObject*  aobj;

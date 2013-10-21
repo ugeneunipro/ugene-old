@@ -72,7 +72,7 @@ Task* QDCDDActor::getAlgorithmTask(const QVector<U2Region>& location) {
 
     settings.retries = 60;
 
-    DNAAlphabet* alph = dnaSeq.alphabet;
+    const DNAAlphabet* alph = dnaSeq.alphabet;
     settings.complT = GObjectUtils::findComplementTT(dnaSeq.alphabet);
     settings.aminoT = NULL;
     if (!alph->isAmino()) {

@@ -380,7 +380,7 @@ FindPatternWidget::FindPatternWidget(AnnotatedDNAView* _annotatedDnaView)
         connect(usePatternNamesCheckBox, SIGNAL(clicked()), SLOT(sl_onUsePatternNamesClicked()));
         layoutAnnots->addWidget(usePatternNamesCheckBox);
 
-        DNAAlphabet* alphabet = activeContext->getAlphabet();
+        const DNAAlphabet* alphabet = activeContext->getAlphabet();
         isAminoSequenceSelected = alphabet->isAmino();
 
         initLayout();
@@ -736,7 +736,7 @@ void FindPatternWidget::sl_onFocusChanged(
     Q_UNUSED(currentWidget);
     ADVSequenceObjectContext* activeContext = annotatedDnaView->getSequenceInFocus();
     if (activeContext != 0) {
-        DNAAlphabet* alphabet = activeContext->getAlphabet();
+        const DNAAlphabet* alphabet = activeContext->getAlphabet();
         isAminoSequenceSelected = alphabet->isAmino();
         updateLayout();
 
@@ -1424,7 +1424,7 @@ bool FindPatternWidget::checkAlphabet( const QString& pattern ){
     ADVSequenceObjectContext* activeContext = annotatedDnaView->getSequenceInFocus();
     SAFE_POINT(NULL != activeContext, "Internal error: there is no sequence in focus on pattern search!", false);
 
-    DNAAlphabet* alphabet = activeContext->getAlphabet();
+    const DNAAlphabet* alphabet = activeContext->getAlphabet();
     if (!isAminoSequenceSelected && SeqTranslIndex_Translation == boxSeqTransl->currentIndex()) {
         DNATranslation* translation = activeContext->getAminoTT();
         SAFE_POINT(NULL != translation, "Failed to get translation on pattern search!", false);

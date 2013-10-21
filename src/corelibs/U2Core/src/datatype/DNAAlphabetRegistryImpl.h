@@ -34,13 +34,13 @@ public:
     DNAAlphabetRegistryImpl(DNATranslationRegistry* tr);
     ~DNAAlphabetRegistryImpl();
 
-    virtual bool registerAlphabet(DNAAlphabet* a);
+    virtual bool registerAlphabet(const DNAAlphabet* a);
 
-    virtual void unregisterAlphabet(DNAAlphabet* a);
+    virtual void unregisterAlphabet(const DNAAlphabet* a);
 
-    virtual DNAAlphabet* findById(const QString& id) const;
+    virtual const DNAAlphabet* findById(const QString& id) const;
 
-    virtual QList<DNAAlphabet*> getRegisteredAlphabets() const {return alphabets;}
+    virtual QList<const DNAAlphabet*> getRegisteredAlphabets() const {return alphabets;}
 
 private:
     void initBaseAlphabets();
@@ -51,7 +51,7 @@ private:
     void regPtables(const char* amino, const int* prob, const char* n1, const char* n2, const char* n3,
         const QString& id, const QString& name);
 
-    QList<DNAAlphabet*> alphabets;
+    QList<const DNAAlphabet*> alphabets;
     DNATranslationRegistry* treg;
 };
 

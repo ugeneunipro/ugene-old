@@ -36,7 +36,7 @@ DNAAlphabetRegistryImpl::DNAAlphabetRegistryImpl(DNATranslationRegistry* _tr) {
 }
 
 DNAAlphabetRegistryImpl::~DNAAlphabetRegistryImpl() {
-    foreach(DNAAlphabet* a, alphabets) {
+    foreach(const DNAAlphabet* a, alphabets) {
         delete a;
     }
     alphabets.clear();
@@ -49,7 +49,7 @@ static bool alphabetComplexityComparator(const DNAAlphabet* a1, const DNAAlphabe
 }
 
 
-bool DNAAlphabetRegistryImpl::registerAlphabet(DNAAlphabet* a) {
+bool DNAAlphabetRegistryImpl::registerAlphabet(const DNAAlphabet* a) {
     if (findById(a->getId())!=NULL) {
         return false;
     }
@@ -59,13 +59,13 @@ bool DNAAlphabetRegistryImpl::registerAlphabet(DNAAlphabet* a) {
     return true;
 }
 
-void DNAAlphabetRegistryImpl::unregisterAlphabet(DNAAlphabet* a) {
+void DNAAlphabetRegistryImpl::unregisterAlphabet(const DNAAlphabet* a) {
     int n = alphabets.removeAll(a);
     assert(n==1); Q_UNUSED(n);
 }
 
-DNAAlphabet* DNAAlphabetRegistryImpl::findById(const QString& id) const {
-    foreach(DNAAlphabet* al, alphabets) {
+const DNAAlphabet* DNAAlphabetRegistryImpl::findById(const QString& id) const {
+    foreach(const DNAAlphabet* al, alphabets) {
         if (al->getId() == id) {
             return al;
         }

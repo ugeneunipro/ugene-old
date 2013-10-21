@@ -241,14 +241,13 @@ QWidget* AnnotatedDNAView::createWidget() {
     QList<OPFactoryFilterVisitorInterface*> filters;
 
     ADVSequenceObjectContext* ctx;
-    DNAAlphabet *alphabet;
     QList <DNAAlphabetType> alphabets;
 
     for (int i = 0; i < seqViews.size(); i++) {
         if (seqViews[i] != NULL) {
             ctx = seqViews[i]->getActiveSequenceContext();
             if (ctx) {
-                alphabet = ctx->getAlphabet();
+                const DNAAlphabet *alphabet = ctx->getAlphabet();
                 if (alphabet) {
                     alphabets.append(alphabet->getType());
                 }

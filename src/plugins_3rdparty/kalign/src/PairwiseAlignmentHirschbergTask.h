@@ -75,7 +75,7 @@ protected:
     KalignTask* kalignSubTask;
     KalignGObjectRunFromSchemaTask* workflowKalignSubTask;
     MAlignment* ma;
-    DNAAlphabet* alphabet;
+    const DNAAlphabet* alphabet;
 };
 
 }   //namespace

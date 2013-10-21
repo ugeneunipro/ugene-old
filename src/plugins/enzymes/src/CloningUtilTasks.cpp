@@ -436,7 +436,7 @@ void LigateFragmentsTask::prepare()
         assert(location.size() > 0);
         
         // check alphabet consistency
-        DNAAlphabet* fragmentAlphabet = dnaFragment.getAlphabet();
+        const DNAAlphabet* fragmentAlphabet = dnaFragment.getAlphabet();
         if (resultAlphabet == NULL ) {
             resultAlphabet = fragmentAlphabet;
         } else if (resultAlphabet != fragmentAlphabet) {

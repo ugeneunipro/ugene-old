@@ -71,7 +71,7 @@ private:
 
 struct AutoAnnotationConstraints {
     AutoAnnotationConstraints() : alphabet(NULL), hints(NULL) {}
-    DNAAlphabet* alphabet;
+    const DNAAlphabet* alphabet;
     GHints* hints;
 };
 

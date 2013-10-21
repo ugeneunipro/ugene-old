@@ -320,7 +320,7 @@ void SmithWatermanDialog::addAnnotationWidget()
 
 void SmithWatermanDialog::setParameters()
 {
-    DNAAlphabet* alphabet = ctxSeq->getAlphabet();
+    const DNAAlphabet* alphabet = ctxSeq->getAlphabet();
     QStringList matrixList = substMatrixRegistry->selectMatrixNamesByAlphabet(alphabet);
     if (!matrixList.isEmpty())
         bttnViewMatrix->setEnabled(true);
@@ -425,7 +425,7 @@ void SmithWatermanDialog::sl_bttnViewMatrix()
 
 void SmithWatermanDialog::sl_translationToggled(bool checked)
 {
-    DNAAlphabet* alphabet = 0;
+    const DNAAlphabet* alphabet = 0;
     if (checked) {
         DNATranslation* aminoTT = ctxSeq->getAminoTT();
         alphabet = aminoTT->getDstAlphabet();
@@ -612,7 +612,7 @@ bool SmithWatermanDialog::readResultFilter()
 
 bool SmithWatermanDialog::readPattern(DNATranslation* aminoTT)
 {
-    DNAAlphabet* al = 0;
+    const DNAAlphabet* al = 0;
     if (0 == aminoTT) {
         assert(config.pSm.getAlphabet() != NULL);
         al = config.pSm.getAlphabet(); 

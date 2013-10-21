@@ -29,7 +29,7 @@ namespace U2 {
 
 #define DEFAULT_FILL_VALUE -1000000.0f
 
-SMatrix::SMatrix(const QString& _name, DNAAlphabet* _alphabet, const QList<SScore>& rawMatrix, const QString& _description)
+SMatrix::SMatrix(const QString& _name, const DNAAlphabet* _alphabet, const QList<SScore>& rawMatrix, const QString& _description)
 : name(_name), description(_description), alphabet(_alphabet)
 {
     validCharacters = alphabet->getAlphabetChars();

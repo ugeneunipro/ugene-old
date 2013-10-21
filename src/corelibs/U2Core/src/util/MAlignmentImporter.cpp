@@ -66,7 +66,7 @@ U2EntityRef MAlignmentImporter::createAlignment(const U2DbiRef& dbiRef, const MA
 
 U2Msa MAlignmentImporter::importMsaObject(const DbiConnection& con, const MAlignment& al, U2OpStatus& os) {
     U2Msa msa;
-    DNAAlphabet* alphabet = al.getAlphabet();
+    const DNAAlphabet* alphabet = al.getAlphabet();
     SAFE_POINT(NULL != alphabet, "The alignment alphabet is NULL during importing!", U2Msa());
 
     msa.alphabet.id = alphabet->getId();
@@ -120,7 +120,7 @@ QList<U2Sequence> MAlignmentImporter::importSequences(const DbiConnection& con, 
         sequence.circular = dnaSeq.circular;
         sequence.length = dnaSeq.length();
         
-        DNAAlphabet* alphabet = dnaSeq.alphabet;
+        const DNAAlphabet* alphabet = dnaSeq.alphabet;
         if (NULL == alphabet) {
             alphabet = U2AlphabetUtils::findBestAlphabet(dnaSeq.constData(), dnaSeq.length());
         }

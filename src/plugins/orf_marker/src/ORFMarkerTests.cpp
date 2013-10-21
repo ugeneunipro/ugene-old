@@ -47,7 +47,7 @@ namespace U2 {
 #define CIRCULAR_ATTR  "circular_search"
 
 Translator::Translator(const U2SequenceObject *s, const QString& tid) : seq(s), complTransl(NULL), aminoTransl(NULL) {
-    DNAAlphabet* al = seq->getAlphabet();
+    const DNAAlphabet* al = seq->getAlphabet();
     DNATranslationRegistry* tr = AppContext::getDNATranslationRegistry();
     aminoTransl = tr->lookupTranslation(al, DNATranslationType_NUCL_2_AMINO, ("NCBI-GenBank #" + tid));
     assert(aminoTransl);

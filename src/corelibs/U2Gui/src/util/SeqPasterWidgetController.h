@@ -41,16 +41,16 @@ public:
     QString validate(); 
     DNASequence getSequence() const {return resultSeq;}
     void disableCustomSettings();
-    void setPreferredAlphabet(DNAAlphabet *alp);
+    void setPreferredAlphabet(const DNAAlphabet *alp);
     void selectText();
     void setEventFilter(QObject* evFilter);
 
-    static QByteArray getNormSequence(DNAAlphabet * alph, const QByteArray & seq, bool replace, QChar replaceChar);
+    static QByteArray getNormSequence(const DNAAlphabet * alph, const QByteArray & seq, bool replace, QChar replaceChar);
     
 private slots:
     void sl_currentindexChanged(const QString&);
 private:
-    DNAAlphabet *preferred;
+    const DNAAlphabet *preferred;
     DNASequence resultSeq;
     Ui_SeqPasterWidget* ui;
     bool additionalWarning;

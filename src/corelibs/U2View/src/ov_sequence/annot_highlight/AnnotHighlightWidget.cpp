@@ -230,7 +230,7 @@ void AnnotHighlightWidget::findAllAnnotationsNamesForSequence()
     QList<ADVSequenceObjectContext*> seqObjContexts = annotatedDnaView->getSequenceContexts();
 
     foreach (ADVSequenceObjectContext* seqContext, seqObjContexts) {
-        DNAAlphabet* seqAlphabet = seqContext->getAlphabet();
+        const DNAAlphabet* seqAlphabet = seqContext->getAlphabet();
         bool isAminoSeq = seqAlphabet->isAmino();
 
         QSet<AnnotationTableObject*> seqAnnotTableObjects = seqContext->getAnnotationObjects(true);

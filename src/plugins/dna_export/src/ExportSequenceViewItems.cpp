@@ -421,7 +421,7 @@ void ADVExportContext::sl_saveSelectedSequences() {
     }
     assert(d.file.length() > 0);
 
-    DNAAlphabet* al = seqCtx->getAlphabet();
+    const DNAAlphabet* al = seqCtx->getAlphabet();
 
     ExportSequenceTaskSettings s;
     ExportUtils::loadDNAExportSettingsFromDlg(s,d);
@@ -573,7 +573,7 @@ void ADVExportContext::prepareMAFromAnnotations(MAlignment& ma, bool translate, 
     CHECK_EXT(selection.size() >= 2, os.setError(tr("At least 2 annotations are required")), );
     
     // check that all sequences are present and have the same alphabets
-    DNAAlphabet* al = NULL;
+    const DNAAlphabet* al = NULL;
     DNATranslation* complTT = NULL;
     foreach(const AnnotationSelectionData& a, selection) {
         AnnotationTableObject* ao = a.annotation->getGObject();
@@ -583,7 +583,7 @@ void ADVExportContext::prepareMAFromAnnotations(MAlignment& ma, bool translate, 
             al = seqCtx->getAlphabet();
             complTT = seqCtx->getComplementTT();
         } else {
-            DNAAlphabet* al2 = seqCtx->getAlphabet();
+            const DNAAlphabet* al2 = seqCtx->getAlphabet();
             //BUG524: support alphabet reduction
             CHECK_EXT(al->getType() == al2->getType(), os.setError(tr("Different sequence alphabets")), );
             al = al->getMap().count(true) >= al2->getMap().count(true) ? al : al2;
@@ -617,7 +617,7 @@ void ADVExportContext::prepareMAFromAnnotations(MAlignment& ma, bool translate, 
 void ADVExportContext::prepareMAFromSequences(MAlignment& ma, bool translate, U2OpStatus& os) {
     SAFE_POINT_EXT(ma.isEmpty(), os.setError(tr("Illegal parameter: Input alignment is not empty!")), );
 
-    DNAAlphabet* al = translate ? AppContext::getDNAAlphabetRegistry()->findById(BaseDNAAlphabetIds::AMINO_DEFAULT()) : NULL;
+    const DNAAlphabet* al = translate ? AppContext::getDNAAlphabetRegistry()->findById(BaseDNAAlphabetIds::AMINO_DEFAULT()) : NULL;
 
     //derive alphabet
     int nItems = 0;
@@ -627,7 +627,7 @@ void ADVExportContext::prepareMAFromSequences(MAlignment& ma, bool translate, U2
             continue;
         }
         nItems += c->getSequenceSelection()->getSelectedRegions().count();
-        DNAAlphabet* seqAl = c->getAlphabet();
+        const DNAAlphabet* seqAl = c->getAlphabet();
         if (al == NULL) {
             al = seqAl;
         } else if (al != seqAl) {
@@ -653,7 +653,7 @@ void ADVExportContext::prepareMAFromSequences(MAlignment& ma, bool translate, U2
         if (seqCtx->getSequenceSelection()->isEmpty()) {
             continue;
         }
-        DNAAlphabet* seqAl = seqCtx->getAlphabet();
+        const DNAAlphabet* seqAl = seqCtx->getAlphabet();
         DNATranslation* aminoTT = ((translate || forceTranslation) && seqAl->isNucleic()) ? seqCtx->getAminoTT() : NULL;
         foreach(const U2Region& r, seqCtx->getSequenceSelection()->getSelectedRegions()) {
             maxLen = qMax(maxLen, r.length);
@@ -769,7 +769,7 @@ void ADVExportContext::sl_getSequenceById() {
 void ADVExportContext::fetchSequencesFromRemoteDB(const QString & listId) {
 //    const QList<AnnotationSelectionData>& selection = view->getAnnotationsSelection()->getSelection();
 //    AnnotationTableObject *ao = selection.first().annotation->getGObject();
-    DNAAlphabet* seqAl = view->getSequenceObjectsWithContexts().first()->getAlphabet();
+    const DNAAlphabet* seqAl = view->getSequenceObjectsWithContexts().first()->getAlphabet();
 
     QString db;
     if(seqAl->getId() == BaseDNAAlphabetIds::NUCL_DNA_DEFAULT()) {

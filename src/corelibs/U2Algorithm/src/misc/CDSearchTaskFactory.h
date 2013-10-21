@@ -44,7 +44,7 @@ class U2ALGORITHM_EXPORT CDSearchSettings {
 public:
     CDSearchSettings() : ev(0.01f), alp(NULL) {}
     float ev;
-    DNAAlphabet* alp;
+    const DNAAlphabet* alp;
     QByteArray query;
     QString localDbFolder;
     QString dbName;

@@ -49,8 +49,8 @@ BaseContentGraphFactory::BaseContentGraphFactory(GType t, QObject* p)
     }
 }
 
-bool BaseContentGraphFactory::isEnabled(U2SequenceObject* o) const {
-    DNAAlphabet* al = o->getAlphabet();
+bool BaseContentGraphFactory::isEnabled(const U2SequenceObject* o) const {
+    const DNAAlphabet* al = o->getAlphabet();
     return al->isNucleic();
 }
 

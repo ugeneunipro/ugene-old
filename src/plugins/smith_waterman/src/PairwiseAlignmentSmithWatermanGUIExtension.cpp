@@ -57,7 +57,7 @@ void PairwiseAlignmentSmithWatermanMainWidget::initParameters() {
     gapExtd->setMinimum(SW_MIN_GAP_EXTD);
     gapExtd->setMaximum(SW_MAX_GAP_EXTD);
 
-    DNAAlphabet* al = U2AlphabetUtils::getById(externSettings->value(PairwiseAlignmentTaskSettings::PA_ALPHABET, "").toString());
+    const DNAAlphabet* al = U2AlphabetUtils::getById(externSettings->value(PairwiseAlignmentTaskSettings::PA_ALPHABET, "").toString());
     SAFE_POINT(NULL != al, "Alphabet not found.", );
     SubstMatrixRegistry* matrixReg = AppContext::getSubstMatrixRegistry();
     SAFE_POINT(matrixReg, "SubstMatrixRegistry is NULL.", );

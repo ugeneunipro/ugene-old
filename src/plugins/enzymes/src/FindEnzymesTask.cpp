@@ -316,7 +316,7 @@ void FindSingleEnzymeTask::onRegion(SequenceDbiWalkerSubtask* t, TaskStateInfo& 
         return;
     }
 
-    DNAAlphabet* seqAlphabet = dnaSequenceObject.getAlphabet();
+    const DNAAlphabet* seqAlphabet = dnaSequenceObject.getAlphabet();
     SAFE_POINT(seqAlphabet != NULL, tr("Failed to get sequence alphabet"), );
 
     bool useExtendedComparator = enzyme->alphabet->getId() == BaseDNAAlphabetIds::NUCL_DNA_EXTENDED() 

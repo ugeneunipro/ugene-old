@@ -752,7 +752,7 @@ P7_HMM * UHMMFormatReader::readHMMER2ASCII() {
                             throw UHMMFormatReaderException(tr("ALPH section must precede HMM"));
                         } else {
                             QString val(valueStr);
-                            DNAAlphabet* al = U2AlphabetUtils::findBestAlphabet(val.remove(QRegExp("\\s+")).toLatin1());
+                            const DNAAlphabet* al = U2AlphabetUtils::findBestAlphabet(val.remove(QRegExp("\\s+")).toLatin1());
                             if(al == NULL || !al->isNucleic()) {
                                 throw UHMMFormatReaderException(tr("Unknown alphabet"));
                             } else {

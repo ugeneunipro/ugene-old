@@ -127,7 +127,7 @@ void MSAGeneralTab::initializeParameters() {
     // Consensus type combobox
     MSAConsensusAlgorithmRegistry* reg = AppContext::getMSAConsensusAlgorithmRegistry();
     SAFE_POINT(NULL != reg, "Consensus algorithm registry is NULL.", );
-    DNAAlphabet* alphabet = msa->getMSAObject()->getAlphabet();
+    const DNAAlphabet* alphabet = msa->getMSAObject()->getAlphabet();
     QList<MSAConsensusAlgorithmFactory*> algos = reg->getAlgorithmFactories(MSAConsensusAlgorithmFactory::getAphabetFlags(alphabet));
 
     foreach(const MSAConsensusAlgorithmFactory* algo, algos) {

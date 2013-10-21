@@ -64,9 +64,9 @@ public:
 
     char getDefaultSymbol() const {return defSym;}
 
-    bool isDefault(){return id.contains("DEFAULT");}
+    bool isDefault() const {return id.contains("DEFAULT");}
 
-    bool isExtended(){return id.contains("EXTENDED");}
+    bool isExtended() const {return id.contains("EXTENDED");}
 
     bool isRaw() const {return type == DNAAlphabet_RAW;}
     
@@ -95,13 +95,13 @@ private:
 
 class U2CORE_EXPORT DNAAlphabetRegistry : public QObject {
 public:
-    virtual bool registerAlphabet(DNAAlphabet* a) = 0;
+    virtual bool registerAlphabet(const DNAAlphabet* a) = 0;
 
-    virtual void unregisterAlphabet(DNAAlphabet* a) = 0;
+    virtual void unregisterAlphabet(const DNAAlphabet* a) = 0;
 
-    virtual DNAAlphabet* findById(const QString& id) const = 0;
+    virtual const DNAAlphabet* findById(const QString& id) const = 0;
 
-    virtual QList<DNAAlphabet*> getRegisteredAlphabets() const =  0;
+    virtual QList<const DNAAlphabet*> getRegisteredAlphabets() const =  0;
 };
 
 }//namespace

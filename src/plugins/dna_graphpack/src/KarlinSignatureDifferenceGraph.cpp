@@ -44,8 +44,8 @@ KarlinGraphFactory::KarlinGraphFactory(QObject* p)
 }
 
 //+
-bool KarlinGraphFactory::isEnabled(U2SequenceObject* o) const {
-    DNAAlphabet* al = o->getAlphabet();
+bool KarlinGraphFactory::isEnabled(const U2SequenceObject* o) const {
+    const DNAAlphabet* al = o->getAlphabet();
     return al->isNucleic();
 }
 
@@ -98,7 +98,7 @@ void KarlinGraphAlgorithm::calculate(QVector<float>& res, U2SequenceObject* o, c
     int nSteps = GSequenceGraphUtils::getNumSteps(vr, d->window, d->step);
     res.reserve(nSteps);
 
-    DNAAlphabet* al = o->getAlphabet();
+    const DNAAlphabet* al = o->getAlphabet();
     assert(al->isNucleic());
     
     DNATranslationRegistry* tr = AppContext::getDNATranslationRegistry();

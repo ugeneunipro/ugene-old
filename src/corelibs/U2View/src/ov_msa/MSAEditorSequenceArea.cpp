@@ -220,7 +220,7 @@ void MSAEditorSequenceArea::prepareColorSchemeMenuActions() {
         return;
     }
 
-    DNAAlphabet* al = maObj->getAlphabet();
+    const DNAAlphabet* al = maObj->getAlphabet();
     if (!al){
         return;
     }

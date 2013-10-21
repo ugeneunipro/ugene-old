@@ -148,7 +148,7 @@ QString VariationInfo::getInGeneEffectInfo( const QString& geneName, QMap<Report
             damagedTriplet = damagedTriplet.toUpper();
             QByteArray variedTriplet;
 
-            DNAAlphabet* alphabet = AppContext::getDNAAlphabetRegistry()->findById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT());
+            const DNAAlphabet* alphabet = AppContext::getDNAAlphabetRegistry()->findById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT());
             SAFE_POINT(alphabet != NULL, "No Alphabet", result);
 
             if (gene.isComplemented()){

@@ -94,7 +94,7 @@ const quint8 SmithWatermanReportCallbackMAImpl::countOfSimultLoadedMADocs = 5;
 SmithWatermanReportCallbackMAImpl::SmithWatermanReportCallbackMAImpl(const QString & _resultFolderName,
     const QString & _mobjectNamesTemplate, const QString & _refSubseqTemplate, const QString & _ptrnSubseqTemplate,
     const QByteArray & _refSequence, const QByteArray & _pattern, const QString & _refSeqName, const QString & _patternName,
-    DNAAlphabet * _alphabet, WhatDoYouWantFromMe _plan)
+    const DNAAlphabet * _alphabet, WhatDoYouWantFromMe _plan)
     : plan(_plan), resultDirPath(_resultFolderName), mobjectNamesTemplate(_mobjectNamesTemplate), refSubseqTemplate(_refSubseqTemplate),
     ptrnSubseqTemplate(_ptrnSubseqTemplate), refSequenceData(_refSequence), ptrnSequenceData(_pattern), alphabet(_alphabet), expansionInfo(_refSeqName, _patternName) {
 }

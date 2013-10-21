@@ -75,7 +75,7 @@ void DNAFlexViewContext::sl_showDNAFlexDialog()
     ADVSequenceObjectContext* seqCtx = annotView->getSequenceInFocus();
     SAFE_POINT(seqCtx != NULL, "no sequence to perform flex search",);
 
-    DNAAlphabet *alphabet = seqCtx->getAlphabet();
+    const DNAAlphabet *alphabet = seqCtx->getAlphabet();
     SAFE_POINT(alphabet->isNucleic(), "alphabet is not nucleic, dialog should not have been invoked",);
 
     if (alphabet->getId() == BaseDNAAlphabetIds::NUCL_DNA_DEFAULT())

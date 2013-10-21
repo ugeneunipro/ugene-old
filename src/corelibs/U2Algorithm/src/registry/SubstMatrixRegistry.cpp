@@ -54,7 +54,7 @@ QStringList SubstMatrixRegistry::getMatrixNames() const {
     return result;
 }
 
-QList<SMatrix> SubstMatrixRegistry::selectMatricesByAlphabet(DNAAlphabet* al) const {
+QList<SMatrix> SubstMatrixRegistry::selectMatricesByAlphabet(const DNAAlphabet* al) const {
     QMutexLocker lock(&mutex);
     QList<SMatrix> result;
     foreach(const SMatrix& m, getMatrices()) {
@@ -65,11 +65,11 @@ QList<SMatrix> SubstMatrixRegistry::selectMatricesByAlphabet(DNAAlphabet* al) co
     return result;
 }
 
-QStringList SubstMatrixRegistry::selectMatrixNamesByAlphabet(DNAAlphabet* al) const {
+QStringList SubstMatrixRegistry::selectMatrixNamesByAlphabet(const DNAAlphabet* al) const {
     QMutexLocker lock(&mutex);
     QStringList result;
     foreach(const SMatrix& m, matrixByName.values()) {
-        DNAAlphabet* mAlpha = m.getAlphabet();
+        const DNAAlphabet* mAlpha = m.getAlphabet();
         if (al->getType() == mAlpha->getType() && al->getNumAlphabetChars() <= mAlpha->getNumAlphabetChars()) {
             QByteArray aChars = al->getAlphabetChars(), mChars = mAlpha->getAlphabetChars();
             bool addToResult = true;
@@ -136,7 +136,7 @@ SMatrix SubstMatrixRegistry::parseMatrix(const QString& name, const QByteArray& 
     QByteArray alphaRow;
     QList<SScore> charScores;
     QString description;
-    DNAAlphabet* alphabet = NULL;
+    const DNAAlphabet* alphabet = NULL;
     QByteArray mappedAlphas; //cache of mapped characters. Used to check that no character is mapped twice
     // put comments into description
     for (int i=0; i < lines.length(); i++) {

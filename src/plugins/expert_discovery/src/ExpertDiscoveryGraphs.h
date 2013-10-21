@@ -63,7 +63,7 @@ public:
     ExpertDiscoveryScoreGraphFactory(QObject*, ExpertDiscoveryData& data, int _edSeqNumber, SequenceType sType);
     virtual QList<GSequenceGraphData*> createGraphs(GSequenceGraphView*);
     virtual GSequenceGraphDrawer* getDrawer(GSequenceGraphView*);
-    virtual bool isEnabled(U2SequenceObject*) const;
+    virtual bool isEnabled(const U2SequenceObject*) const;
 
 private:
     int edSeqNumber;

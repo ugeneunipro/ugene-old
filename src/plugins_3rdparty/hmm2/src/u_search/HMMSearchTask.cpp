@@ -236,7 +236,7 @@ QList<SharedAnnotationData> HMMSearchTask::getResultsAsAnnotations(const QString
     return annotations;
 }
 
-bool HMMSearchTask::checkAlphabets(int hmmAlType, DNAAlphabet* seqAl, DNATranslation*& complTrans, DNATranslation*& aminoTrans) 
+bool HMMSearchTask::checkAlphabets(int hmmAlType, const DNAAlphabet* seqAl, DNATranslation*& complTrans, DNATranslation*& aminoTrans) 
 {
     assert(stateInfo.getError().isEmpty());
     DNAAlphabetType hmmAl = HMMIO::convertHMMAlphabet(hmmAlType);

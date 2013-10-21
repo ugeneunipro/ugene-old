@@ -393,7 +393,7 @@ void XMLDASSequenceParser::parse( const QByteArray& data ){
         QString sequenceId = seqElement.attribute(DAS_SEQ_ID).trimmed();
         QByteArray sequence = seqElement.text().toLatin1().trimmed();
 
-        DNAAlphabet* a = U2AlphabetUtils::findBestAlphabet(sequence.data(), sequence.size());
+        const DNAAlphabet* a = U2AlphabetUtils::findBestAlphabet(sequence.data(), sequence.size());
 
         seq = new DNASequence(sequenceId, sequence, a);
         

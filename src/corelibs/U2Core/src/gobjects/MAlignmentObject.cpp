@@ -296,7 +296,7 @@ void MAlignmentObject::addRow(U2MsaRow& rowInDb, const DNASequence& seq, int row
 
     MAlignment msa = getMAlignment();
 
-    DNAAlphabet* newAlphabet = U2AlphabetUtils::deriveCommonAlphabet(seq.alphabet, getAlphabet());
+    const DNAAlphabet* newAlphabet = U2AlphabetUtils::deriveCommonAlphabet(seq.alphabet, getAlphabet());
     assert(newAlphabet != NULL);
     msa.setAlphabet(newAlphabet);
 
@@ -597,7 +597,7 @@ bool MAlignmentObject::isRegionEmpty(int startPos, int startRow, int numChars, i
     return isBlockEmpty;
 }
 
-DNAAlphabet* MAlignmentObject::getAlphabet() const {
+const DNAAlphabet* MAlignmentObject::getAlphabet() const {
     return cachedMAlignment.getAlphabet();
 }
 

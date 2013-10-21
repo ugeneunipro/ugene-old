@@ -46,7 +46,7 @@ void PairwiseAlignmentHirschbergMainWidget::initParameters() {
     DNAAlphabetRegistry* alphabetReg = AppContext::getDNAAlphabetRegistry();
     SAFE_POINT(NULL != alphabetReg, "DNAAlphabetRegistry is NULL.", );
     QString alphabetId = externSettings->value(PairwiseAlignmentTaskSettings::PA_ALPHABET, "").toString();
-    DNAAlphabet* alphabet = alphabetReg->findById(alphabetId);
+    const DNAAlphabet* alphabet = alphabetReg->findById(alphabetId);
     SAFE_POINT(NULL != alphabet, QString("Alphabet %1 not found").arg(alphabetId), );
 
     if (alphabet->isNucleic()) {

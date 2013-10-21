@@ -666,7 +666,7 @@ public:
     const MAlignment* ma;
 };
 
-MAlignment::MAlignment(const QString& _name, DNAAlphabet* al, const QList<MAlignmentRow>& r) 
+MAlignment::MAlignment(const QString& _name, const DNAAlphabet* al, const QList<MAlignmentRow>& r) 
 : alphabet(al), rows(r)
 {
     MAStateCheck check(this);
@@ -681,7 +681,7 @@ MAlignment::MAlignment(const QString& _name, DNAAlphabet* al, const QList<MAlign
     }
 }
 
-void MAlignment::setAlphabet(DNAAlphabet* al) {
+void MAlignment::setAlphabet(const DNAAlphabet* al) {
     SAFE_POINT(NULL != al, "Internal error: attempted to set NULL alphabet fro an alignment!",);
     alphabet = al;
 }

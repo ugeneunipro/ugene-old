@@ -268,7 +268,7 @@ QList<Task*> DNASequenceGeneratorTask::onGenerateTaskFinished( ) {
         saveTask = new SaveDocumentTask(doc, SaveDoc_Overwrite);
         resultTasks << saveTask;
     } else { // TODO: avoid high memory consumption here
-        DNAAlphabet *alp = cfg.getAlphabet( );
+        const DNAAlphabet *alp = cfg.getAlphabet( );
         SAFE_POINT( NULL != alp, "Generated sequence has invalid alphabet", resultTasks );
         const U2DbiRef dbiRef = generateTask->getDbiRef( );
         const QString baseSeqName = cfg.getSequenceName( );
@@ -297,7 +297,7 @@ void DNASequenceGeneratorTask::addSequencesToMsaDoc( Document *source )
         "Invalid document format", );
     SAFE_POINT( NULL != generateTask, "Invalid generate task", );
     const U2DbiRef dbiRef = generateTask->getDbiRef( );
-    DNAAlphabet *alp = cfg.alphabet;
+    const DNAAlphabet *alp = cfg.alphabet;
     SAFE_POINT( NULL != alp, "Generated sequence has invalid alphabet", );
     const QString baseSeqName = cfg.getSequenceName( );
     const QList<U2Sequence> seqs = generateTask->getResults( );

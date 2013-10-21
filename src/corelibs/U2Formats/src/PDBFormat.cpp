@@ -928,7 +928,7 @@ Document* PDBFormat::createDocumentFromBioStruct3D(const U2DbiRef& dbiRef, BioSt
         // Create dna sequence object
         QByteArray sequence = bioStruct.getRawSequenceByChainId(key);
         QString sequenceName(QString(bioStruct.pdbId) + QString(" chain %1 sequence").arg(key));
-        DNAAlphabet* al = U2AlphabetUtils::findBestAlphabet(sequence);
+        const DNAAlphabet* al = U2AlphabetUtils::findBestAlphabet(sequence);
         DNASequence dnaSeq(sequenceName, sequence, al);
         dnaSeq.info.insert(DNAInfo::DEFINITION, sequenceName);
         dnaSeq.info.insert(DNAInfo::COMMENT, bioStruct.descr);

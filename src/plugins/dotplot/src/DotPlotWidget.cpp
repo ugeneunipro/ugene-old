@@ -714,7 +714,7 @@ bool DotPlotWidget::sl_showSettingsDialog(bool disableLoad) {
     Q_ASSERT(sequenceY->getSequenceObject());
 
 
-    DNAAlphabet *al = sequenceX->getAlphabet();
+    const DNAAlphabet *al = sequenceX->getAlphabet();
     RFAlgorithm alg = d.getAlgo();
     if ((al->getId() == BaseDNAAlphabetIds::NUCL_DNA_DEFAULT()) || (al->getId() == BaseDNAAlphabetIds::NUCL_RNA_DEFAULT())) {
         al = sequenceY->getAlphabet();

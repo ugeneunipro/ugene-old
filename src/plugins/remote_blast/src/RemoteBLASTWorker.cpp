@@ -213,7 +213,7 @@ Task* RemoteBLASTWorker::tick() {
         DNASequence seq = seqObj->getWholeSequence();
         
         seq.info.clear();
-        DNAAlphabet *alp = U2AlphabetUtils::findBestAlphabet(seq.seq);
+        const DNAAlphabet *alp = U2AlphabetUtils::findBestAlphabet(seq.seq);
         /*if(seq.length()>MAX_BLAST_SEQ_LEN) {
             log.error(tr("The sequence is too long"));
             return NULL;

@@ -88,7 +88,7 @@ struct RepeatFinderSettings {
 
     RepeatFinderSettings(
         RFResultsListener* _l, const char *_seqX, int _sizeX, bool _inverted,
-        const char *_seqY, int _sizeY, DNAAlphabet *_al, int _w, int _mismatches,
+        const char *_seqY, int _sizeY, const DNAAlphabet *_al, int _w, int _mismatches,
         RFAlgorithm _alg, int _nThreads = MAX_PARALLEL_SUBTASKS_AUTO
     )
     :   l(_l), seqX(_seqX), sizeX(_sizeX), inverted(_inverted),
@@ -103,7 +103,7 @@ struct RepeatFinderSettings {
     bool                inverted;
     const char *        seqY;
     int                 sizeY;
-    DNAAlphabet *       al;
+    const DNAAlphabet *       al;
     int                 w;
     int                 mismatches;
     RFAlgorithm         alg;

@@ -47,7 +47,7 @@ public:
     static QList<DNASequence> ma2seq(const MAlignment& ma, bool trimGaps);
 
     // sets alphabet if no alignment alphabet was set; checks is the new alphabet equal old alphabet, otherwise sets error
-    static void updateAlignmentAlphabet(MAlignment& ma, DNAAlphabet* a, U2OpStatus& os);
+    static void updateAlignmentAlphabet(MAlignment& ma, const DNAAlphabet* a, U2OpStatus& os);
 
     // doesn't update alphabet, appends sequence data to a given row. If region is not set, using whole sequence data
     static void appendSequenceToAlignmentRow(MAlignment& ma, int rowIndex, const U2SequenceObject& seq, U2OpStatus& os, U2Region region = U2Region());

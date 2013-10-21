@@ -159,7 +159,7 @@ QList<DNASequence> DocumentFormatUtils::toSequences(const GObject* obj) {
     }
     const MAlignmentObject* maObj = qobject_cast<const MAlignmentObject*>(obj);
     CHECK(maObj != NULL, res ); //MAlignmentObject is NULL
-    DNAAlphabet* al = maObj->getAlphabet();
+    const DNAAlphabet* al = maObj->getAlphabet();
     U2OpStatus2Log os;
     foreach(const MAlignmentRow& row, maObj->getMAlignment().getRows()) {
         DNASequence seq;
@@ -249,7 +249,7 @@ U2SequenceObject* DocumentFormatUtils::addMergedSequenceObjectDeprecated(const U
                                                                 U2OpStatus& os)
 {
     if (contigNames.size() == 1) {
-        DNAAlphabet* al = U2AlphabetUtils::findBestAlphabet(mergedSequence);
+        const DNAAlphabet* al = U2AlphabetUtils::findBestAlphabet(mergedSequence);
         const QString& name = contigNames.first();
         DNASequence seq(name, mergedSequence, al );
         return DocumentFormatUtils::addSequenceObjectDeprecated(dbiRef, name, objects, seq, os);
@@ -258,7 +258,7 @@ U2SequenceObject* DocumentFormatUtils::addMergedSequenceObjectDeprecated(const U
     assert(contigNames.size() >= 2);
     assert(contigNames.size() == mergedMapping.size());
 
-    DNAAlphabet* al = U2AlphabetUtils::findBestAlphabet(mergedSequence, mergedMapping);
+    const DNAAlphabet* al = U2AlphabetUtils::findBestAlphabet(mergedSequence, mergedMapping);
     char defSym = al->getDefaultSymbol();
     //fill gaps with defSym
     for (int i = 1; i < mergedMapping.size(); i++) {

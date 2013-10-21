@@ -302,7 +302,7 @@ QByteArray VariationPropertiesUtils::getCodingSequence( const Gene& gene, const 
 
     
     if(gene.isComplemented()){
-        DNAAlphabet* alphabet = AppContext::getDNAAlphabetRegistry()->findById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT());
+        const DNAAlphabet* alphabet = AppContext::getDNAAlphabetRegistry()->findById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT());
         SAFE_POINT(alphabet != NULL, "No Alphabet", res);
 
         QList<DNATranslation*> translList = AppContext::getDNATranslationRegistry()->lookupTranslation(alphabet, DNATranslationType_NUCL_2_COMPLNUCL);
@@ -318,7 +318,7 @@ QByteArray VariationPropertiesUtils::getCodingSequence( const Gene& gene, const 
 QByteArray VariationPropertiesUtils::getAASequence( const QByteArray& nuclSeq){
     QByteArray res;
 
-    DNAAlphabet* alphabet = AppContext::getDNAAlphabetRegistry()->findById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT());
+    const DNAAlphabet* alphabet = AppContext::getDNAAlphabetRegistry()->findById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT());
     SAFE_POINT(alphabet != NULL, "No Alphabet", res);
 
     QList<DNATranslation*> translList = AppContext::getDNATranslationRegistry()->lookupTranslation(alphabet, DNATranslationType_NUCL_2_AMINO);
@@ -514,7 +514,7 @@ QPair< QByteArray, QByteArray > VariationPropertiesUtils::getAASubstitution( U2D
 
     QByteArray observedTriplet = referenceTriplet;
     if (gene.isComplemented()){
-        DNAAlphabet* alphabet = AppContext::getDNAAlphabetRegistry()->findById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT());
+        const DNAAlphabet* alphabet = AppContext::getDNAAlphabetRegistry()->findById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT());
         SAFE_POINT(alphabet != NULL, "No Alphabet", res);
 
         QList<DNATranslation*> translList = AppContext::getDNATranslationRegistry()->lookupTranslation(alphabet, DNATranslationType_NUCL_2_COMPLNUCL);
@@ -531,7 +531,7 @@ QPair< QByteArray, QByteArray > VariationPropertiesUtils::getAASubstitution( U2D
         return res;
     }
 
-    DNAAlphabet* alphabet = AppContext::getDNAAlphabetRegistry()->findById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT());
+    const DNAAlphabet* alphabet = AppContext::getDNAAlphabetRegistry()->findById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT());
     SAFE_POINT(alphabet != NULL, "No Alphabet", res);
 
     QList<DNATranslation*> translList = AppContext::getDNATranslationRegistry()->lookupTranslation(alphabet, DNATranslationType_NUCL_2_AMINO);

@@ -42,7 +42,7 @@ const QString MAlignmentTestUtils::alignmentName = "Test alignment name";
 
 MAlignment MAlignmentTestUtils::initTestAlignment() {
     DNAAlphabetRegistry* alphabetRegistry = AppContext::getDNAAlphabetRegistry();
-    DNAAlphabet* alphabet = alphabetRegistry->findById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT());
+    const DNAAlphabet* alphabet = alphabetRegistry->findById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT());
 
     QByteArray firstSequence("---AG-T");
     QByteArray secondSequence("AG-CT-TAA");
@@ -120,7 +120,7 @@ IMPLEMENT_TEST(MAlignmentUnitTests, alphabet_setAlphabet) {
     MAlignment almnt = MAlignmentTestUtils::initTestAlignment();
 
     DNAAlphabetRegistry* alphabetRegistry = AppContext::getDNAAlphabetRegistry();
-    DNAAlphabet* newAlphabet = alphabetRegistry->findById(BaseDNAAlphabetIds::NUCL_DNA_EXTENDED());
+    const DNAAlphabet* newAlphabet = alphabetRegistry->findById(BaseDNAAlphabetIds::NUCL_DNA_EXTENDED());
     almnt.setAlphabet(newAlphabet);
 
     if (NULL == almnt.getAlphabet() || NULL == newAlphabet) {

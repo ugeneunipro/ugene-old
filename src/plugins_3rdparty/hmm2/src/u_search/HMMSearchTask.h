@@ -50,7 +50,7 @@ public:
     QList< Task* > onSubTaskFinished( Task* subTask );
 
 private:
-    bool checkAlphabets(int hmmAl, DNAAlphabet* seqAl, DNATranslation*& complTrans, DNATranslation*& aminoTrans);
+    bool checkAlphabets(int hmmAl, const DNAAlphabet* seqAl, DNATranslation*& complTrans, DNATranslation*& aminoTrans);
 
     SequenceWalkerTask* getSWSubtask();
 private:

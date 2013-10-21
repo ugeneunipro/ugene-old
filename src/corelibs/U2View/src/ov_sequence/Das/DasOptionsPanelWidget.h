@@ -90,7 +90,7 @@ private:
     void mergeFeatures(const QMap<QString, QList<SharedAnnotationData> >& newAnnotations);
     void addAnnotations();
     U2Region getRegion();
-    bool regionIsOk();
+    bool regionIsOk() const;
 
 private:
     AnnotatedDNAView* annotatedDnaView;

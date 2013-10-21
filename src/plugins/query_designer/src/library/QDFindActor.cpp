@@ -95,7 +95,7 @@ Task* QDFindActor::getAlgorithmTask(const QVector<U2Region>& location) {
         return new FailTask(err);
     }
 
-    DNAAlphabet* ptrnAl = U2AlphabetUtils::findBestAlphabet(settings.pattern);
+    const DNAAlphabet* ptrnAl = U2AlphabetUtils::findBestAlphabet(settings.pattern);
     if (ptrnAl->getType()!=DNAAlphabet_NUCL) {
         QString err = tr("%1: pattern has to be nucleic").arg(getParameters()->getLabel());
         return new FailTask(err);

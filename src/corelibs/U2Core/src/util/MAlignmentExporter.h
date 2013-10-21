@@ -44,18 +44,18 @@ public:
                                         MAlignmentExporter();
 
     MAlignment                          getAlignment(const U2DbiRef& dbiRef, const U2DataId& msaId,
-                                            U2OpStatus& os);
+                                            U2OpStatus& os) const;
     QList<MAlignmentRowReplacementData> getAlignmentRows(const U2DbiRef& dbiRef, const U2DataId& msaId,
-                                            const QList<qint64> rowIds, U2OpStatus& os);
+                                            const QList<qint64> rowIds, U2OpStatus& os) const;
 
 private:
-    QList<U2MsaRow>                     exportRows(const U2DataId&, U2OpStatus&);
-    QList<U2MsaRow>                     exportRows(const U2DataId&, const QList<qint64> rowIds, U2OpStatus&);
-    QList<DNASequence>                  exportSequencesOfRows(QList<U2MsaRow>, U2OpStatus&);
-    QVariantMap                         exportAlignmentInfo(const U2DataId&, U2OpStatus&);
-    U2Msa                               exportAlignmentObject(const U2DataId&, U2OpStatus&);
+    QList<U2MsaRow>                     exportRows(const U2DataId&, U2OpStatus&) const;
+    QList<U2MsaRow>                     exportRows(const U2DataId&, const QList<qint64> rowIds, U2OpStatus&) const;
+    QList<DNASequence>                  exportSequencesOfRows(QList<U2MsaRow>, U2OpStatus&) const;
+    QVariantMap                         exportAlignmentInfo(const U2DataId&, U2OpStatus&) const;
+    U2Msa                               exportAlignmentObject(const U2DataId&, U2OpStatus&) const;
 
-    DbiConnection                       con;
+    mutable DbiConnection                       con;
 };
 
 } // namespace

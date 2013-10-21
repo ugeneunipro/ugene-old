@@ -40,7 +40,7 @@ class RFSArrayWAlgorithm : public RFAlgorithmBase {
     friend class RFSArrayWSubtask;
 public:
     RFSArrayWAlgorithm(RFResultsListener* rl, const char* seqX, int sizeX, 
-                    const char* seqY, int sizeY, DNAAlphabet *al, int w);
+                    const char* seqY, int sizeY, const DNAAlphabet *al, int w);
     
     void prepare();
     

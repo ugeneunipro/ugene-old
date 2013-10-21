@@ -115,7 +115,7 @@ Task::ReportResult GTest_DNASequenceAlphabet::report() {
         return ReportResult_Finished;
     }
 
-    DNAAlphabet *tempAlphabet = mySequence->getAlphabet();
+    const DNAAlphabet *tempAlphabet = mySequence->getAlphabet();
     assert(tempAlphabet!=NULL);
 
     if (tempAlphabet->getId() != alphabetId){   
@@ -220,7 +220,7 @@ Task::ReportResult GTest_DNASequenceAlphabetType::report() {
         stateInfo.setError(QString("can't cast to sequence from: %1").arg(obj->getGObjectName()));
         return ReportResult_Finished;
     }
-    DNAAlphabet *tempAlphabet = mySequence->getAlphabet();
+    const DNAAlphabet *tempAlphabet = mySequence->getAlphabet();
     if( tempAlphabet->getType() != alphabetType){   
         stateInfo.setError(QString("Alphabet type not matched: %1, expected %2").arg(tempAlphabet->getType()).arg(alphabetType));
     }
@@ -255,7 +255,7 @@ Task::ReportResult GTest_DNASequenceAlphabetId::report() {
         stateInfo.setError(QString("can't cast to sequence from: %1").arg(obj->getGObjectName()));
         return ReportResult_Finished;
     }
-    DNAAlphabet *tempAlphabet = mySequence->getAlphabet();
+    const DNAAlphabet *tempAlphabet = mySequence->getAlphabet();
     if( tempAlphabet->getId() != alpId){    
         stateInfo.setError(QString("Alphabet id not matched: %1 expected %2").arg(tempAlphabet->getId()).arg(alpId));
     }

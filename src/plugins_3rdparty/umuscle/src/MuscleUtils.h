@@ -58,12 +58,12 @@ private:
 };
 
 int ugene_printf(FILE *f, const char *format, ...);
-ALPHA convertAlpha(DNAAlphabet* al);
-void setupAlphaAndScore(DNAAlphabet* al, TaskStateInfo& ti);
+ALPHA convertAlpha(const DNAAlphabet* al);
+void setupAlphaAndScore(const DNAAlphabet* al, TaskStateInfo& ti);
 void convertMAlignment2MSA(MSA& muscleMSA, const MAlignment& ma, bool fixAlpha);
 void convertMAlignment2SecVect(SeqVect& sv, const MAlignment& ma, bool fixAlpha);
-void convertMSA2MAlignment(MSA& msa, DNAAlphabet* al, MAlignment& res);
-void prepareAlignResults(MSA& msa, DNAAlphabet* al, MAlignment& ma, bool mhack);
+void convertMSA2MAlignment(MSA& msa, const DNAAlphabet* al, MAlignment& res);
+void prepareAlignResults(MSA& msa, const DNAAlphabet* al, MAlignment& ma, bool mhack);
 
 } //namespace
 

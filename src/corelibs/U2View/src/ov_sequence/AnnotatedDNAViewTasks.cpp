@@ -145,10 +145,10 @@ static QString deriveViewName(const QList<U2SequenceObject*>& seqObjects) {
 }
 
 static const int MAX_SEQS_COUNT = 5;
-static void showAlphapetWarning(const QList<U2SequenceObject*> &seqObjects) {
+static void showAlphabetWarning(const QList<U2SequenceObject*> &seqObjects) {
     QStringList rawSeqs;
     foreach (U2SequenceObject *seqObj, seqObjects) {
-        DNAAlphabet *alphabet = seqObj->getAlphabet();
+        const DNAAlphabet *alphabet = seqObj->getAlphabet();
         if (DNAAlphabet_RAW == alphabet->getType()) {
             rawSeqs << seqObj->getSequenceName();
         }
@@ -229,7 +229,7 @@ void OpenAnnotatedDNAViewTask::open() {
     MWMDIManager* mdiManager =  AppContext::getMainWindow()->getMDIManager();
     mdiManager->addMDIWindow(w);
 
-    showAlphapetWarning(seqObjects);
+    showAlphabetWarning(seqObjects);
 
 }
 

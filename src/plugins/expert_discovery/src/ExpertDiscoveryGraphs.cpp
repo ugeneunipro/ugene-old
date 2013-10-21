@@ -122,8 +122,8 @@ ExpertDiscoveryScoreGraphFactory::ExpertDiscoveryScoreGraphFactory(QObject* pare
 /**
  * Verification
  */
-bool ExpertDiscoveryScoreGraphFactory::isEnabled(U2SequenceObject* sequenceObject) const {
-    DNAAlphabet* alphabet = sequenceObject->getAlphabet();
+bool ExpertDiscoveryScoreGraphFactory::isEnabled(const U2SequenceObject* sequenceObject) const {
+    const DNAAlphabet* alphabet = sequenceObject->getAlphabet();
     return alphabet->getId() == BaseDNAAlphabetIds::NUCL_DNA_DEFAULT();
 }
 

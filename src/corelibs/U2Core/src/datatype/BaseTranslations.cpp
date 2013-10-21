@@ -165,8 +165,8 @@ void DNAAlphabetRegistryImpl::reg4tables(const char* amino, const char* role, co
     const QString& id, const QString& name) 
 {
     {
-        DNAAlphabet* srcAlphabet = findById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT());
-        DNAAlphabet* dstAlphabet = findById(BaseDNAAlphabetIds::AMINO_DEFAULT());
+        const DNAAlphabet* srcAlphabet = findById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT());
+        const DNAAlphabet* dstAlphabet = findById(BaseDNAAlphabetIds::AMINO_DEFAULT());
 
         QList<Mapping3To1<char> > map;
         QMap<DNATranslationRole,QList<Triplet> > codons;
@@ -179,8 +179,8 @@ void DNAAlphabetRegistryImpl::reg4tables(const char* amino, const char* role, co
 
     //extended NUCL DNA to AMINO -> all extended symbols lead to "unknown"
     {
-        DNAAlphabet* srcAlphabet = findById(BaseDNAAlphabetIds::NUCL_DNA_EXTENDED());
-        DNAAlphabet* dstAlphabet = findById(BaseDNAAlphabetIds::AMINO_DEFAULT());
+        const DNAAlphabet* srcAlphabet = findById(BaseDNAAlphabetIds::NUCL_DNA_EXTENDED());
+        const DNAAlphabet* dstAlphabet = findById(BaseDNAAlphabetIds::AMINO_DEFAULT());
 
         QList<Mapping3To1<char> > map;
         QMap<DNATranslationRole,QList<Triplet> > codons;
@@ -197,8 +197,8 @@ void DNAAlphabetRegistryImpl::reg4tables(const char* amino, const char* role, co
     QByteArray an3(n3);
     const char* rn3 = an3.replace('T', 'U');
     {
-        DNAAlphabet* srcAlphabet = findById(BaseDNAAlphabetIds::NUCL_RNA_DEFAULT());
-        DNAAlphabet* dstAlphabet = findById(BaseDNAAlphabetIds::AMINO_DEFAULT());
+        const DNAAlphabet* srcAlphabet = findById(BaseDNAAlphabetIds::NUCL_RNA_DEFAULT());
+        const DNAAlphabet* dstAlphabet = findById(BaseDNAAlphabetIds::AMINO_DEFAULT());
 
         QList<Mapping3To1<char> > map;
         QMap<DNATranslationRole,QList<Triplet> > codons;
@@ -210,8 +210,8 @@ void DNAAlphabetRegistryImpl::reg4tables(const char* amino, const char* role, co
     }
 
     {
-        DNAAlphabet* srcAlphabet = findById(BaseDNAAlphabetIds::NUCL_RNA_EXTENDED());
-        DNAAlphabet* dstAlphabet = findById(BaseDNAAlphabetIds::AMINO_DEFAULT());
+        const DNAAlphabet* srcAlphabet = findById(BaseDNAAlphabetIds::NUCL_RNA_EXTENDED());
+        const DNAAlphabet* dstAlphabet = findById(BaseDNAAlphabetIds::AMINO_DEFAULT());
 
         QList<Mapping3To1<char> > map;
         QMap<DNATranslationRole,QList<Triplet> > codons;
@@ -227,8 +227,8 @@ void DNAAlphabetRegistryImpl::regPtables(const char* amino, const int* prob, con
     const QString& id, const QString& name) 
 {
     {
-        DNAAlphabet* srcAlphabet = findById(BaseDNAAlphabetIds::AMINO_DEFAULT());
-        DNAAlphabet* dstAlphabet = findById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT());
+        const DNAAlphabet* srcAlphabet = findById(BaseDNAAlphabetIds::AMINO_DEFAULT());
+        const DNAAlphabet* dstAlphabet = findById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT());
 
         BackTranslationRules map;
         fill1To3(map, srcAlphabet, dstAlphabet, amino, prob, n1, n2, n3);
@@ -251,8 +251,8 @@ void DNAAlphabetRegistryImpl::initBaseTranslations() {
 
     //default NUCL DNA complement
     {
-        DNAAlphabet* srcAlphabet = findById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT());
-        DNAAlphabet* dstAlphabet = srcAlphabet;
+        const DNAAlphabet* srcAlphabet = findById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT());
+        const DNAAlphabet* dstAlphabet = srcAlphabet;
 
         QByteArray map = TextUtils::createMap(srcAlphabet->getMap(), 'N');
 
@@ -269,8 +269,8 @@ void DNAAlphabetRegistryImpl::initBaseTranslations() {
 
     //default NUCL RNA complement
     {
-        DNAAlphabet* srcAlphabet = findById(BaseDNAAlphabetIds::NUCL_RNA_DEFAULT());
-        DNAAlphabet* dstAlphabet = srcAlphabet;
+        const DNAAlphabet* srcAlphabet = findById(BaseDNAAlphabetIds::NUCL_RNA_DEFAULT());
+        const DNAAlphabet* dstAlphabet = srcAlphabet;
 
         QByteArray map = TextUtils::createMap(srcAlphabet->getMap(), 'N');
 
@@ -288,8 +288,8 @@ void DNAAlphabetRegistryImpl::initBaseTranslations() {
     //extended NUCL DNA complement
     {
         //source: http://www.geneinfinity.org/sp_nucsymbols.html
-        DNAAlphabet* srcAlphabet = findById(BaseDNAAlphabetIds::NUCL_DNA_EXTENDED());
-        DNAAlphabet* dstAlphabet = srcAlphabet;
+        const DNAAlphabet* srcAlphabet = findById(BaseDNAAlphabetIds::NUCL_DNA_EXTENDED());
+        const DNAAlphabet* dstAlphabet = srcAlphabet;
 
         QByteArray map = TextUtils::createMap(srcAlphabet->getMap(), 'N');
         MAP('A','T');
@@ -317,8 +317,8 @@ void DNAAlphabetRegistryImpl::initBaseTranslations() {
     //extended NUCL RNA complement
     {
         //source: http://www.geneinfinity.org/sp_nucsymbols.html
-        DNAAlphabet* srcAlphabet = findById(BaseDNAAlphabetIds::NUCL_RNA_EXTENDED());
-        DNAAlphabet* dstAlphabet = srcAlphabet;
+        const DNAAlphabet* srcAlphabet = findById(BaseDNAAlphabetIds::NUCL_RNA_EXTENDED());
+        const DNAAlphabet* dstAlphabet = srcAlphabet;
 
         QByteArray map = TextUtils::createMap(srcAlphabet->getMap(), 'N');
         MAP('A','U');

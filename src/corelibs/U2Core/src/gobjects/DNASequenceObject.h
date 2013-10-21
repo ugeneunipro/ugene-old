@@ -65,7 +65,7 @@ public:
     
     void setCircular(bool v);
 
-    DNAAlphabet* getAlphabet() const;
+    const DNAAlphabet* getAlphabet() const;
 
     void replaceRegion(const U2Region& region, const DNASequence& seq, U2OpStatus& os);
 
@@ -103,7 +103,7 @@ signals:
     void si_sequenceChanged();
 
 protected:
-    mutable DNAAlphabet*    cachedAlphabet;
+    mutable const DNAAlphabet*    cachedAlphabet;
     mutable qint64          cachedLength;
     mutable QString         cachedName;
     mutable TriState        cachedCircular;

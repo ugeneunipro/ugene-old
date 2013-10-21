@@ -326,7 +326,7 @@ Task::ReportResult UHMM3SWSearchTask::report() {
     return ReportResult_Finished;
 }
 
-bool UHMM3SWSearchTask::checkAlphabets( int hmmAl, DNAAlphabet* seqAl ) {
+bool UHMM3SWSearchTask::checkAlphabets( int hmmAl, const DNAAlphabet* seqAl ) {
     assert( !hasError() );
     assert( NULL != seqAl );
     assert( 0 <= hmmAl );
@@ -349,7 +349,7 @@ bool UHMM3SWSearchTask::checkAlphabets( int hmmAl, DNAAlphabet* seqAl ) {
     return true;
 }
 
-bool UHMM3SWSearchTask::setTranslations( int hmmAl, DNAAlphabet* seqAl ) {
+bool UHMM3SWSearchTask::setTranslations( int hmmAl, const DNAAlphabet* seqAl ) {
     assert( !hasError() );
     assert( NULL != seqAl );
     assert( 0 <= hmmAl );

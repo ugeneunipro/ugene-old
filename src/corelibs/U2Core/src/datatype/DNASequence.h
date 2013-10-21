@@ -34,12 +34,12 @@ class DNAAlphabet;
 
 class U2CORE_EXPORT DNASequence {
 public:
-    DNASequence(const QString& name, const QByteArray& s = QByteArray(), DNAAlphabet* a = NULL);
-    DNASequence(const QByteArray& s = QByteArray(), DNAAlphabet* a = NULL) : seq(s), alphabet(a), circular(false), quality(NULL) {}
+    DNASequence(const QString& name, const QByteArray& s = QByteArray(), const DNAAlphabet* a = NULL);
+    DNASequence(const QByteArray& s = QByteArray(), const DNAAlphabet* a = NULL) : seq(s), alphabet(a), circular(false), quality(NULL) {}
  
     QVariantMap     info;
     QByteArray      seq;
-    DNAAlphabet*    alphabet;
+    const DNAAlphabet*    alphabet;
     bool            circular;
     DNAQuality      quality;
     

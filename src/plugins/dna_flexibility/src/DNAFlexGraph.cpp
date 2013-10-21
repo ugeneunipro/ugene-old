@@ -54,8 +54,8 @@ DNAFlexGraphFactory::DNAFlexGraphFactory(QObject* parent)
 /**
  * Verifies that the sequence alphabet is standard DNA alphabet
  */
-bool DNAFlexGraphFactory::isEnabled(U2SequenceObject* sequenceObject) const {
-    DNAAlphabet* alphabet = sequenceObject->getAlphabet();
+bool DNAFlexGraphFactory::isEnabled(const U2SequenceObject* sequenceObject) const {
+    const DNAAlphabet* alphabet = sequenceObject->getAlphabet();
     return alphabet->getId() == BaseDNAAlphabetIds::NUCL_DNA_DEFAULT();
 }
 

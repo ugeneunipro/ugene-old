@@ -103,7 +103,7 @@ void PDWFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& f
             seqName = readPdwValue(readBuff, PDW_DNANAME_TAG);
         } else if (readBuff.startsWith(PDW_SEQUENCE_TAG)) {
             QByteArray seq = parseSequence(io, os);
-            DNAAlphabet* alphabet = U2AlphabetUtils::findBestAlphabet(seq);
+            const DNAAlphabet* alphabet = U2AlphabetUtils::findBestAlphabet(seq);
             DNASequence dnaSeq(seqName, seq , alphabet);
             if (isCircular) {
                 DNALocusInfo loi;

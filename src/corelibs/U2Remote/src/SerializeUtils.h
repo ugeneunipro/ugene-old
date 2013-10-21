@@ -159,7 +159,7 @@ inline bool SerializeUtils::deserializeValue<char*>( const QVariant & data, char
 }
 
 template<>
-inline QVariant SerializeUtils::serializeValue<DNAAlphabet*>( DNAAlphabet * const& al ) {
+inline QVariant SerializeUtils::serializeValue<const DNAAlphabet*>( const DNAAlphabet * const& al ) {
     FAIL("Obsolete! Not implemented!", QVariant());
 
     // QVariantList res;
@@ -174,7 +174,7 @@ inline QVariant SerializeUtils::serializeValue<DNAAlphabet*>( DNAAlphabet * cons
 }
 
 template<>
-inline bool SerializeUtils::deserializeValue<DNAAlphabet*>( const QVariant & data, DNAAlphabet ** al ) {
+inline bool SerializeUtils::deserializeValue<const DNAAlphabet*>( const QVariant & data, const DNAAlphabet ** al ) {
     FAIL("Obsolete! Not implemented!", false);
 
     //if( NULL == al ) {
@@ -211,7 +211,7 @@ inline QVariant SerializeUtils::serializeValue<DNASequence>( const DNASequence &
     //QVariantList res;
     //res << serializeValue<QVariantMap>( sequence.info );
     //res << serializeValue<QByteArray>( sequence.seq );
-    //res << serializeValue<DNAAlphabet*>( sequence.alphabet );
+    //res << serializeValue<const DNAAlphabet*>( sequence.alphabet );
     //return res;
 }
 
@@ -232,7 +232,7 @@ inline bool SerializeUtils::deserializeValue<DNASequence>( const QVariant & data
 
     //if( !deserializeValue<QVariantMap>( args[0], &seq->info ) ) { return false; }
     //if( !deserializeValue<QByteArray>( args[1], &seq->seq ) ) { return false; }
-    //if( !deserializeValue<DNAAlphabet*>( args[2], &seq->alphabet ) ) { return false; }
+    //if( !deserializeValue<const DNAAlphabet*>( args[2], &seq->alphabet ) ) { return false; }
     //assert( NULL != seq->alphabet );
 
     //return true;
@@ -311,7 +311,7 @@ inline QVariant SerializeUtils::serializeValue<MAlignment>( const MAlignment & m
     FAIL("Obsolete! Not implemented!", QVariant());
 
     //QVariantList res;
-    //res << serializeValue<DNAAlphabet*>( ma.getAlphabet());
+    //res << serializeValue<const DNAAlphabet*>( ma.getAlphabet());
     //res << serializeValue< QList<MAlignmentRow> >( ma.getRows() );
     //res << serializeValue<int>( ma.getLength() );
     //res << serializeValue<QVariantMap>( ma.getInfo() );
@@ -333,8 +333,8 @@ inline bool SerializeUtils::deserializeValue<MAlignment>( const QVariant & data,
     //    return false;
     //}
     //
-    //DNAAlphabet* al = NULL;
-    //if( !deserializeValue<DNAAlphabet*>( args[0], &al) ) { return false; }
+    //const DNAAlphabet* al = NULL;
+    //if( !deserializeValue<const DNAAlphabet*>( args[0], &al) ) { return false; }
 
     //QList<MAlignmentRow> rows;
     //if( !deserializeValue< QList<MAlignmentRow> >( args[1], &rows) ) { return false; }

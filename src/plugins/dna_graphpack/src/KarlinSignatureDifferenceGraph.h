@@ -38,7 +38,7 @@ public:
     KarlinGraphFactory(QObject* p);
     virtual QList<GSequenceGraphData*> createGraphs(GSequenceGraphView* v);
     virtual GSequenceGraphDrawer* getDrawer(GSequenceGraphView* v);
-    virtual bool isEnabled(U2SequenceObject* o) const;
+    virtual bool isEnabled(const U2SequenceObject* o) const;
 };
 
 class KarlinGraphAlgorithm : public GSequenceGraphAlgorithm {

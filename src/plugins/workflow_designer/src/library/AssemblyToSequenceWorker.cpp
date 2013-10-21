@@ -117,7 +117,7 @@ void AssemblyToSequencesTask::run() {
     CHECK(NULL != iter.data(), );
 
     // 4. export reads to sequences and send messages
-    DNAAlphabet *alphabet = AppContext::getDNAAlphabetRegistry()->findById(BaseDNAAlphabetIds::NUCL_DNA_EXTENDED());
+    const DNAAlphabet *alphabet = AppContext::getDNAAlphabetRegistry()->findById(BaseDNAAlphabetIds::NUCL_DNA_EXTENDED());
     DataTypePtr busType = channel->getBusType();
     while (iter->hasNext()) {
         if (this->isCanceled()) {

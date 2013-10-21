@@ -852,7 +852,7 @@ void AssemblyReadsArea::exportReads(const QList<U2AssemblyRead> & reads) {
 
         QList<GObject*> objs;
         foreach(const U2AssemblyRead & r, reads) {
-            DNAAlphabet * al = U2AlphabetUtils::findBestAlphabet(r->readSequence);
+            const DNAAlphabet * al = U2AlphabetUtils::findBestAlphabet(r->readSequence);
             DNASequence seq = DNASequence(r->name, r->readSequence, al);
             seq.quality = DNAQuality(r->quality, DNAQualityType_Sanger);
             U2SequenceObject* seqObj = DocumentFormatUtils::addSequenceObjectDeprecated(doc->getDbiRef(), seq.getName(), objs, seq, os);

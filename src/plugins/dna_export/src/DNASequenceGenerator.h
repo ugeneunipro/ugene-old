@@ -41,7 +41,7 @@ public:
     DNASequenceGeneratorConfig()
         : addToProj(false), saveDoc(true), format(NULL), alphabet(NULL), length(0), numSeqs(1), useRef(true), window() {}
 
-    DNAAlphabet* getAlphabet() const { assert(alphabet); return alphabet; }
+    const DNAAlphabet* getAlphabet() const { assert(alphabet); return alphabet; }
 
     bool useReference() const { return useRef; }
 
@@ -68,7 +68,7 @@ public:
     // output document format
     DocumentFormat* format;
     // output sequence alphabet
-    DNAAlphabet* alphabet;
+    const DNAAlphabet* alphabet;
     // output sequence length
     int length;
     // number of sequences to generate
@@ -107,11 +107,11 @@ public:
 
     QMap<char, qreal> getResult() const { return result; }
 
-    DNAAlphabet* getAlphabet() const { return alp; }
+    const DNAAlphabet* getAlphabet() const { return alp; }
 
 private:
     GObject* _obj;
-    DNAAlphabet* alp;
+    const DNAAlphabet* alp;
     QMap<char, qreal> result;
 };
 

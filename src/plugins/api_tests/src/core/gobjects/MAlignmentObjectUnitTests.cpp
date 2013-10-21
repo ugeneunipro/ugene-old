@@ -55,7 +55,7 @@ MAlignment MAlignmentObjectTestData::getTestAlignment() {
 
     QString alignmentName = "Test alignment";
     DNAAlphabetRegistry* alphabetRegistry = AppContext::getDNAAlphabetRegistry();
-    DNAAlphabet* alphabet = alphabetRegistry->findById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT());
+    const DNAAlphabet* alphabet = alphabetRegistry->findById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT());
 
     QByteArray firstSequence("---AG-T");
     QByteArray secondSequence("AG-CT-TAA");
@@ -76,7 +76,7 @@ MAlignment MAlignmentObjectTestData::getTestAlignment2() {
 
     QString alignmentName = "Test alignment";
     DNAAlphabetRegistry* alphabetRegistry = AppContext::getDNAAlphabetRegistry();
-    DNAAlphabet* alphabet = alphabetRegistry->findById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT());
+    const DNAAlphabet* alphabet = alphabetRegistry->findById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT());
 
     QByteArray firstSequence("AC-GT--AAA");
     QByteArray secondSequence("-ACACA-GT");
@@ -97,7 +97,7 @@ MAlignment MAlignmentObjectTestData::getTestAlignmentWithTrailingGaps( ) {
 
     QString alignmentName = "Alignment with trailing gaps";
     DNAAlphabetRegistry *alphabetRegistry = AppContext::getDNAAlphabetRegistry( );
-    DNAAlphabet *alphabet = alphabetRegistry->findById( BaseDNAAlphabetIds::NUCL_DNA_DEFAULT( ) );
+    const DNAAlphabet *alphabet = alphabetRegistry->findById( BaseDNAAlphabetIds::NUCL_DNA_DEFAULT( ) );
     
     QByteArray firstSequence(  "AC-GT--AAA----" );
     QByteArray secondSequence( "-ACA---GTT----" );

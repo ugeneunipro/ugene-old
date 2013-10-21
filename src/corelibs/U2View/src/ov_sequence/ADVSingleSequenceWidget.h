@@ -231,7 +231,7 @@ protected slots:
 
 private:
     void updateActiveState();
-    QString getShortAlphabetName(DNAAlphabet* al);
+    QString getShortAlphabetName(const DNAAlphabet* al);
 
     ADVSingleSequenceWidget*        ctx;
     QToolBar*                       toolBar;

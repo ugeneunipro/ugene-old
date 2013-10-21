@@ -32,7 +32,7 @@ namespace U2 {
 //factory method
 RFAlgorithmBase* RFAlgorithmBase::createTask(RFResultsListener* l, const char *seqX, int sizeX, 
                                               const char *seqY, int sizeY, 
-                                              DNAAlphabet *al, int w, int mismatches,  
+                                              const DNAAlphabet *al, int w, int mismatches,  
                                               RFAlgorithm alg, int nThreads)
 {
     assert(l!=NULL);

@@ -158,7 +158,7 @@ void PWMBuildDialogController::sl_inFileButtonClicked() {
             for (int i = 0, n = pfm.getType() == PFM_MONONUCLEOTIDE ? 4 : 16; i < n; i++) {
                 size += pfm.getValue(i, 0);
             }
-            DNAAlphabet* al = AppContext::getDNAAlphabetRegistry()->findById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT());
+            const DNAAlphabet* al = AppContext::getDNAAlphabetRegistry()->findById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT());
             MAlignment ma(QString("Temporary alignment"), al);
             QList<MAlignmentRow> rows;
             for (int i = 0; i < size; i++) {

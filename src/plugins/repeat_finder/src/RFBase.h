@@ -80,7 +80,7 @@ public:
     static RFAlgorithmBase* createTask(RFResultsListener* l,
                                         const char *seqx, int sizeX,
                                         const char *seqY, int sizeY,
-                                        DNAAlphabet *al, int w,
+                                        const DNAAlphabet *al, int w,
                                         int mismatches = 0, RFAlgorithm alg = RFAlgorithm_Auto,
                                         int nThreads = MAX_PARALLEL_SUBTASKS_AUTO);
     static char getUnknownChar(const DNAAlphabetType &type);

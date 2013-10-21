@@ -56,7 +56,7 @@ public:
 
 class U2CORE_EXPORT DNATranslation {
 public:
-    DNATranslation(const QString& _id, const QString& _name, DNAAlphabet* src, DNAAlphabet* dst);
+    DNATranslation(const QString& _id, const QString& _name, const DNAAlphabet* src, const DNAAlphabet* dst);
     virtual ~DNATranslation(){}
 
     virtual qint64 translate(const char* src, qint64 src_len, char* dst, qint64 dst_capacity) const = 0;
@@ -67,9 +67,9 @@ public:
 
     DNATranslationType getDNATranslationType() const {return type;}
 
-    DNAAlphabet* getSrcAlphabet() const {return srcAlphabet;}
+    const DNAAlphabet* getSrcAlphabet() const {return srcAlphabet;}
 
-    DNAAlphabet* getDstAlphabet() const {return dstAlphabet;}
+    const DNAAlphabet* getDstAlphabet() const {return dstAlphabet;}
 
     virtual bool isOne2One() const {return false;}
     
@@ -95,8 +95,8 @@ protected:
     DNATranslationType type;
     QString name;
     QString id;
-    DNAAlphabet* srcAlphabet;
-    DNAAlphabet* dstAlphabet;
+    const DNAAlphabet* srcAlphabet;
+    const DNAAlphabet* dstAlphabet;
 };
 
 
@@ -105,7 +105,7 @@ public:
     DNATranslationRegistry(QObject* p=0) :QObject(p){}
     ~DNATranslationRegistry();
 
-    DNATranslation* getStandardGeneticCodeTranslation(DNAAlphabet* srcAlphabet);
+    DNATranslation* getStandardGeneticCodeTranslation(const DNAAlphabet* srcAlphabet);
 
     QStringList getDNATranlations() const;
 
@@ -115,15 +115,15 @@ public:
 
     void registerDNATranslation(DNATranslation* t);
 
-    QList<DNATranslation*> lookupTranslation(DNAAlphabet* srcAlphabet, DNATranslationType type);
+    QList<DNATranslation*> lookupTranslation(const DNAAlphabet* srcAlphabet, DNATranslationType type);
 
-    DNATranslation* lookupTranslation(DNAAlphabet* srcAlphabet, DNATranslationType type, const QString& id);
+    DNATranslation* lookupTranslation(const DNAAlphabet* srcAlphabet, DNATranslationType type, const QString& id);
 
     DNATranslation* lookupTranslation(const QString& id);
 
-    DNATranslation* lookupTranslation(DNAAlphabet* srcAlphabet, const QString& id);
+    DNATranslation* lookupTranslation(const DNAAlphabet* srcAlphabet, const QString& id);
 
-    DNATranslation* lookupComplementTranslation(DNAAlphabet* srcAlphabet);
+    DNATranslation* lookupComplementTranslation(const DNAAlphabet* srcAlphabet);
 
 private:
     QList<DNATranslation*> translations;

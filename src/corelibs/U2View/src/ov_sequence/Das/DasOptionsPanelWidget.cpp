@@ -438,11 +438,10 @@ void DasOptionsPanelWidget::connectSignals() {
 void DasOptionsPanelWidget::checkState() {
     SAFE_POINT(ctx, "Active sequence context is NULL.", );
 
-    bool ok = regionIsOk();
-    DNAAlphabet* alphabet = ctx->getAlphabet();
+    const DNAAlphabet* alphabet = ctx->getAlphabet();
     SAFE_POINT(alphabet != NULL, "DasOptionsPanelWidget::checkState", )
-    ok &= alphabet->isAmino();
 
+    bool ok = regionIsOk() && alphabet->isAmino();
     searchIdsButton->setEnabled(ok);
     fetchIdsAction->setEnabled(ok);
 
@@ -576,7 +575,7 @@ U2Region DasOptionsPanelWidget::getRegion() {
     return U2Region(0, ctx->getSequenceLength());
 }
 
-bool DasOptionsPanelWidget::regionIsOk() {
+bool DasOptionsPanelWidget::regionIsOk() const {
     bool result=false;
     U2Region region = regionSelector->getRegion(&result);
     return result;

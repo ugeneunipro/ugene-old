@@ -98,7 +98,7 @@ ExportSequencesDialog::ExportSequencesDialog(bool m, bool allowComplement, bool 
     }
 
     if (allowTranslation) {
-        DNAAlphabet* al = AppContext::getDNAAlphabetRegistry()->findById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT());
+        const DNAAlphabet* al = AppContext::getDNAAlphabetRegistry()->findById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT());
         DNATranslationRegistry* tr = AppContext::getDNATranslationRegistry();
         QList<DNATranslation*> aminoTs = tr->lookupTranslation(al, DNATranslationType_NUCL_2_AMINO);
         if (!aminoTs.empty()) {
@@ -111,7 +111,7 @@ ExportSequencesDialog::ExportSequencesDialog(bool m, bool allowComplement, bool 
     }
 
     if (allowBackTranslation) {
-        DNAAlphabet* al = AppContext::getDNAAlphabetRegistry()->findById(BaseDNAAlphabetIds::AMINO_DEFAULT());
+        const DNAAlphabet* al = AppContext::getDNAAlphabetRegistry()->findById(BaseDNAAlphabetIds::AMINO_DEFAULT());
         DNATranslationRegistry* treg = AppContext::getDNATranslationRegistry();
         QList<DNATranslation*> nucleicTs = treg->lookupTranslation(al, DNATranslationType_AMINO_2_NUCL);
         QTreeWidget *tree = new QTreeWidget();

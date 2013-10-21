@@ -62,7 +62,7 @@ bool U2SequenceObject::checkConstraints(const GObjectConstraints* c) const {
         }
     }
     if (dnac->alphabetType != DNAAlphabet_RAW) {
-        DNAAlphabet* dalphabet = getAlphabet();
+        const DNAAlphabet* dalphabet = getAlphabet();
         SAFE_POINT(dalphabet != NULL, "U2SequenceObject::no alphabet", false);
         DNAAlphabetType aType = dalphabet->getType();
         if (dnac->alphabetType != aType) {
@@ -107,7 +107,7 @@ DNASequence U2SequenceObject::getSequence(const U2Region &region) const {
     U2Sequence seq;
     bool seqGet = false;
 
-    DNAAlphabet* alpha = cachedAlphabet;
+    const DNAAlphabet* alpha = cachedAlphabet;
     if (!cachedAlphabet) {
         FETCH_SEQUENCE(seqGet, seq, entityRef);
         cachedAlphabet = alpha = U2AlphabetUtils::getById(seq.alphabet);
@@ -150,7 +150,7 @@ bool U2SequenceObject::isCircular() const {
     return cachedCircular == TriState_Yes;
 }
 
-DNAAlphabet* U2SequenceObject::getAlphabet() const {
+const DNAAlphabet* U2SequenceObject::getAlphabet() const {
     if (cachedAlphabet == NULL) {
         U2OpStatus2Log os;
         DbiConnection con(entityRef.dbiRef, os);

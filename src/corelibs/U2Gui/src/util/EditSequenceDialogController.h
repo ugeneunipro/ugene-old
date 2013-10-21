@@ -59,7 +59,7 @@ protected:
 struct U2GUI_EXPORT EditSequencDialogConfig {
     EditSequenceDialogMode mode;
     U2Region source;
-    DNAAlphabet* alphabet;
+    const DNAAlphabet* alphabet;
     QByteArray initialText;
     QVector<U2Region> selectionRegions; 
 };

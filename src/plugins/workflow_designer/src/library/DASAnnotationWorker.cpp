@@ -318,7 +318,7 @@ Task* DASAnnotationWorker::tick() {
             return NULL;
         }
         
-        DNAAlphabet* alphabet = seqObj->getAlphabet();
+        const DNAAlphabet* alphabet = seqObj->getAlphabet();
         if (alphabet && alphabet->getType() == DNAAlphabet_AMINO) {
             
             Task* t = new UniprotBlastAndLoadDASAnnotations(cfg);

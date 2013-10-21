@@ -300,7 +300,7 @@ void MuscleAdapter::align2Profiles(const MAlignment& ma1, const MAlignment& ma2,
 
 void MuscleAdapter::align2ProfilesUnsafe(const MAlignment& ma1, const MAlignment& ma2, MAlignment& res, TaskStateInfo& ti) {
     assert(!ma1.isEmpty() && !ma2.isEmpty());
-    DNAAlphabet* al = U2AlphabetUtils::deriveCommonAlphabet(ma1.getAlphabet(), ma2.getAlphabet());
+    const DNAAlphabet* al = U2AlphabetUtils::deriveCommonAlphabet(ma1.getAlphabet(), ma2.getAlphabet());
     CHECK_EXT(al != NULL, ti.setError(  tr("Incompatible alphabets") ), );
 
     MuscleContext *ctx = getMuscleContext();
@@ -485,7 +485,7 @@ void MuscleAdapter::addUnalignedSequencesToProfile(const MAlignment& ma, const M
 
 
 void MuscleAdapter::addUnalignedSequencesToProfileUnsafe(const MAlignment& ma, const MAlignment& unalignedSeqs, MAlignment& res, TaskStateInfo& ti) {
-    DNAAlphabet* al = U2AlphabetUtils::deriveCommonAlphabet(ma.getAlphabet(), unalignedSeqs.getAlphabet());
+    const DNAAlphabet* al = U2AlphabetUtils::deriveCommonAlphabet(ma.getAlphabet(), unalignedSeqs.getAlphabet());
     CHECK_EXT(al != NULL, ti.setError(tr("Incompatible alphabets")), );
         
     // init muscle

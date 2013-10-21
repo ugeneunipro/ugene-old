@@ -39,13 +39,13 @@ QWidget(p), preferred(0), additionalWarning(needWarning)
         ui->sequenceEdit->setPlainText(initText);
     }
 
-    QList<DNAAlphabet*> alps = AppContext::getDNAAlphabetRegistry()->getRegisteredAlphabets();
-    foreach(DNAAlphabet *a, alps){
+    QList<const DNAAlphabet*> alps = AppContext::getDNAAlphabetRegistry()->getRegisteredAlphabets();
+    foreach(const DNAAlphabet *a, alps){
         ui->alphabetBox->addItem(a->getName(), a->getId());
     }
     connect(ui->alphabetBox, SIGNAL(currentIndexChanged(const QString&)), SLOT(sl_currentindexChanged(const QString&)));
 }
-QByteArray SeqPasterWidgetController::getNormSequence(DNAAlphabet * alph, const QByteArray & seq, bool replace, QChar replaceChar) {
+QByteArray SeqPasterWidgetController::getNormSequence(const DNAAlphabet * alph, const QByteArray & seq, bool replace, QChar replaceChar) {
     assert(alph != NULL);
     QByteArray ret;
     if(alph->getId() == BaseDNAAlphabetIds::RAW()){
@@ -82,7 +82,7 @@ QString SeqPasterWidgetController::validate(){
  
     QByteArray seq = ((ui->sequenceEdit->document())->toPlainText()).toUtf8();
     seq = QString(seq).remove(QRegExp("\\s")).toLatin1();
-    DNAAlphabet *alph = NULL;
+    const DNAAlphabet *alph = NULL;
     if(ui->groupBox->isChecked()){
         alph = U2AlphabetUtils::getById((ui->alphabetBox->itemData(ui->alphabetBox->currentIndex())).toString());
     }else{
@@ -143,7 +143,7 @@ void SeqPasterWidgetController::disableCustomSettings(){
 	//ui->groupBox->hide();
 }
 
-void SeqPasterWidgetController::setPreferredAlphabet( DNAAlphabet *alp ){
+void SeqPasterWidgetController::setPreferredAlphabet( const DNAAlphabet *alp ){
     preferred = alp;
 }
 

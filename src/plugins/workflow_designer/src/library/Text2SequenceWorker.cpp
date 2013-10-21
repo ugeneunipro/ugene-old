@@ -102,7 +102,7 @@ Task * Text2SequenceWorker::tick() {
         }
         QByteArray txt = inputMessage.getData().toMap().value(BaseSlots::TEXT_SLOT().getId()).value<QString>().toUtf8();
         
-        DNAAlphabet * alphabet = (alId == ALPHABET_ATTR_ID_DEF_VAL) ? U2AlphabetUtils::findBestAlphabet(txt) : U2AlphabetUtils::getById(alId);
+        const DNAAlphabet * alphabet = (alId == ALPHABET_ATTR_ID_DEF_VAL) ? U2AlphabetUtils::findBestAlphabet(txt) : U2AlphabetUtils::getById(alId);
         if (alphabet == NULL) {
             QString msg;
             if(alId == ALPHABET_ATTR_ID_DEF_VAL) {
@@ -181,8 +181,8 @@ void Text2SequenceWorkerFactory::init() {
     QMap<QString, PropertyDelegate*> delegates;
     {
         QVariantMap alMap;
-        QList<DNAAlphabet*> alps = AppContext::getDNAAlphabetRegistry()->getRegisteredAlphabets();
-        foreach(DNAAlphabet *a, alps){
+        QList<const DNAAlphabet*> alps = AppContext::getDNAAlphabetRegistry()->getRegisteredAlphabets();
+        foreach(const DNAAlphabet *a, alps){
             alMap[a->getName()] = Text2SequenceWorker::cuteAlIdNames[a->getId()];
         }
         alMap[ALPHABET_ATTR_ID_DEF_VAL] = ALPHABET_ATTR_ID_DEF_VAL;
@@ -219,7 +219,7 @@ QString Text2SequencePrompter::composeRichDoc() {
         seqAlStr = getHyperlink(ALPHABET_ATTR_ID, tr("Automatically detect sequence alphabet"));
     } else {
         alId = Text2SequenceWorker::cuteAlIdNames.key(alId, "");
-        DNAAlphabet * alphabet = AppContext::getDNAAlphabetRegistry()->findById(alId);
+        const DNAAlphabet * alphabet = AppContext::getDNAAlphabetRegistry()->findById(alId);
         QString alphStr = getHyperlink(ALPHABET_ATTR_ID, alphabet ? alphabet->getName() : unsetStr);
         seqAlStr = tr("Set sequence alphabet to %1").arg(alphStr);
     }

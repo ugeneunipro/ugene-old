@@ -1384,7 +1384,7 @@ IMPLEMENT_TEST(MsaDbiUtilsUnitTests, updateMsa_empty) {
     U2EntityRef msaRef(dbiRef, msaId);
 
     // Prepare input data
-    DNAAlphabet* alphabet = U2AlphabetUtils::getById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT());
+    const DNAAlphabet* alphabet = U2AlphabetUtils::getById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT());
     MAlignment ma(MsaDbiUtilsTestUtils::alignmentName, alphabet);
     ma.addRow("1", "AAAA--AAA", -1, os);
     CHECK_NO_ERROR(os);
@@ -1443,7 +1443,7 @@ IMPLEMENT_TEST(MsaDbiUtilsUnitTests, updateMsa_nothingNew) {
     U2EntityRef msaRef(dbiRef, msaId);
 
     // Prepare input data
-    DNAAlphabet* alphabet = U2AlphabetUtils::getById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT());
+    const DNAAlphabet* alphabet = U2AlphabetUtils::getById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT());
     MAlignment ma(MsaDbiUtilsTestUtils::alignmentName, alphabet);
     ma.addRow("1", "AAAA--AAA", -1, os);
     CHECK_NO_ERROR(os);
@@ -1506,7 +1506,7 @@ IMPLEMENT_TEST(MsaDbiUtilsUnitTests, updateMsa_newOrder) {
     U2EntityRef msaRef(dbiRef, msaId);
 
     // Prepare input data
-    DNAAlphabet* alphabet = U2AlphabetUtils::getById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT());
+    const DNAAlphabet* alphabet = U2AlphabetUtils::getById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT());
     MAlignment ma(MsaDbiUtilsTestUtils::alignmentName, alphabet);
     ma.addRow("1", "AAAA--AAA", -1, os);
     CHECK_NO_ERROR(os);
@@ -1572,7 +1572,7 @@ IMPLEMENT_TEST(MsaDbiUtilsUnitTests, updateMsa_newName) {
     U2EntityRef msaRef(dbiRef, msaId);
 
     // Prepare input data
-    DNAAlphabet* alphabet = U2AlphabetUtils::getById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT());
+    const DNAAlphabet* alphabet = U2AlphabetUtils::getById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT());
     MAlignment ma(MsaDbiUtilsTestUtils::alignmentName, alphabet);
     ma.addRow("1", "AAAA--AAA", -1, os);
     CHECK_NO_ERROR(os);
@@ -1638,7 +1638,7 @@ IMPLEMENT_TEST(MsaDbiUtilsUnitTests, updateMsa_newAlphabet) {
     U2EntityRef msaRef(dbiRef, msaId);
 
     // Prepare input data
-    DNAAlphabet* alphabet = U2AlphabetUtils::getById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT());
+    const DNAAlphabet* alphabet = U2AlphabetUtils::getById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT());
     MAlignment ma(MsaDbiUtilsTestUtils::alignmentName, alphabet);
     ma.addRow("1", "AAAA--AAA", -1, os);
     CHECK_NO_ERROR(os);
@@ -1656,7 +1656,7 @@ IMPLEMENT_TEST(MsaDbiUtilsUnitTests, updateMsa_newAlphabet) {
     CHECK_NO_ERROR(os);
 
     // Change alignment alphabet
-    DNAAlphabet* newAlphabet = U2AlphabetUtils::getById(BaseDNAAlphabetIds::NUCL_DNA_EXTENDED());
+    const DNAAlphabet* newAlphabet = U2AlphabetUtils::getById(BaseDNAAlphabetIds::NUCL_DNA_EXTENDED());
     ma.setAlphabet(newAlphabet);
 
     // Test call with new alphabet
@@ -1705,7 +1705,7 @@ IMPLEMENT_TEST(MsaDbiUtilsUnitTests, updateMsa_newContent) {
     U2EntityRef msaRef(dbiRef, msaId);
 
     // Prepare input data
-    DNAAlphabet* alphabet = U2AlphabetUtils::getById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT());
+    const DNAAlphabet* alphabet = U2AlphabetUtils::getById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT());
     MAlignment ma(MsaDbiUtilsTestUtils::alignmentName, alphabet);
     ma.addRow("1", "AAAA--AAA", -1, os);
     CHECK_NO_ERROR(os);
@@ -1771,7 +1771,7 @@ IMPLEMENT_TEST(MsaDbiUtilsUnitTests, updateMsa_newSequence) {
     U2EntityRef msaRef(dbiRef, msaId);
 
     // Prepare input data
-    DNAAlphabet* alphabet = U2AlphabetUtils::getById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT());
+    const DNAAlphabet* alphabet = U2AlphabetUtils::getById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT());
     MAlignment ma(MsaDbiUtilsTestUtils::alignmentName, alphabet);
     ma.addRow("1", "AAAA--AAA", -1, os);
     CHECK_NO_ERROR(os);
@@ -1856,7 +1856,7 @@ IMPLEMENT_TEST(MsaDbiUtilsUnitTests, updateMsa_additionalRows) {
     U2EntityRef msaRef(dbiRef, msaId);
 
     // Prepare input data
-    DNAAlphabet* alphabet = U2AlphabetUtils::getById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT());
+    const DNAAlphabet* alphabet = U2AlphabetUtils::getById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT());
     MAlignment ma(MsaDbiUtilsTestUtils::alignmentName, alphabet);
     ma.addRow("1", "AAAA--AAA", -1, os);
     CHECK_NO_ERROR(os);
@@ -1925,7 +1925,7 @@ IMPLEMENT_TEST(MsaDbiUtilsUnitTests, updateMsa_removeRows) {
     U2EntityRef msaRef(dbiRef, msaId);
 
     // Prepare input data
-    DNAAlphabet* alphabet = U2AlphabetUtils::getById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT());
+    const DNAAlphabet* alphabet = U2AlphabetUtils::getById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT());
     MAlignment ma(MsaDbiUtilsTestUtils::alignmentName, alphabet);
     ma.addRow("1", "AAAA--AAA", -1, os);
     CHECK_NO_ERROR(os);
@@ -1994,7 +1994,7 @@ IMPLEMENT_TEST(MsaDbiUtilsUnitTests, updateMsa_clear) {
     U2EntityRef msaRef(dbiRef, msaId);
 
     // Prepare input data
-    DNAAlphabet* alphabet = U2AlphabetUtils::getById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT());
+    const DNAAlphabet* alphabet = U2AlphabetUtils::getById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT());
     MAlignment ma(MsaDbiUtilsTestUtils::alignmentName, alphabet);
     ma.addRow("1", "AAAA--AAA", -1, os);
     CHECK_NO_ERROR(os);

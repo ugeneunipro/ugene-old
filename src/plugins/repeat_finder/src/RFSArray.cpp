@@ -31,7 +31,7 @@
 namespace U2 {
 
 RFSArrayWAlgorithm::RFSArrayWAlgorithm(RFResultsListener* rl, const char* seqX, int sizeX, 
-                                       const char* seqY, int sizeY,  DNAAlphabet *al, int w) 
+                                       const char* seqY, int sizeY,  const DNAAlphabet *al, int w) 
 : RFAlgorithmBase(rl, seqX, sizeX, seqY, sizeY, al->getType(), w, w, TaskFlags_FOSCOE)
 {
     indexTask = NULL;

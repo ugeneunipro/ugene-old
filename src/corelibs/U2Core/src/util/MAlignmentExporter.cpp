@@ -39,7 +39,7 @@ MAlignmentExporter::MAlignmentExporter()
 
 }
 
-MAlignment MAlignmentExporter::getAlignment(const U2DbiRef& dbiRef, const U2DataId& msaId, U2OpStatus& os) {
+MAlignment MAlignmentExporter::getAlignment(const U2DbiRef& dbiRef, const U2DataId& msaId, U2OpStatus& os) const {
     SAFE_POINT(!con.isOpen(), OPENED_DBI_CONNECTION_ERROR, MAlignment());
     con.open(dbiRef, false, os);
     CHECK_OP(os, MAlignment());
@@ -69,7 +69,7 @@ MAlignment MAlignmentExporter::getAlignment(const U2DbiRef& dbiRef, const U2Data
     U2Msa msa = exportAlignmentObject(msaId, os);
     CHECK_OP(os, MAlignment());
 
-    DNAAlphabet* alphabet = U2AlphabetUtils::getById(msa.alphabet);
+    const DNAAlphabet* alphabet = U2AlphabetUtils::getById(msa.alphabet);
     al.setAlphabet(alphabet);
     al.setName(msa.visualName);
 
@@ -77,7 +77,7 @@ MAlignment MAlignmentExporter::getAlignment(const U2DbiRef& dbiRef, const U2Data
 }
 
 QList<MAlignmentRowReplacementData> MAlignmentExporter::getAlignmentRows(const U2DbiRef& dbiRef,
-    const U2DataId& msaId, const QList<qint64> rowIds, U2OpStatus& os)
+    const U2DataId& msaId, const QList<qint64> rowIds, U2OpStatus& os) const
 {
     SAFE_POINT(!con.isOpen(), OPENED_DBI_CONNECTION_ERROR, QList<MAlignmentRowReplacementData>());
     con.open(dbiRef, false, os);
@@ -98,7 +98,7 @@ QList<MAlignmentRowReplacementData> MAlignmentExporter::getAlignmentRows(const U
     return result;
 }
 
-QList<U2MsaRow> MAlignmentExporter::exportRows(const U2DataId& msaId, U2OpStatus& os) {
+QList<U2MsaRow> MAlignmentExporter::exportRows(const U2DataId& msaId, U2OpStatus& os) const {
     U2MsaDbi* msaDbi = con.dbi->getMsaDbi();
     SAFE_POINT(NULL != msaDbi, NULL_MSA_DBI_ERROR, QList<U2MsaRow>());
 
@@ -106,7 +106,7 @@ QList<U2MsaRow> MAlignmentExporter::exportRows(const U2DataId& msaId, U2OpStatus
 }
 
 QList<U2MsaRow> MAlignmentExporter::exportRows( const U2DataId &msaId, const QList<qint64> rowIds,
-    U2OpStatus &os )
+    U2OpStatus &os ) const
 {
     U2MsaDbi* msaDbi = con.dbi->getMsaDbi( );
     SAFE_POINT( NULL != msaDbi, NULL_MSA_DBI_ERROR, QList<U2MsaRow>( ) );
@@ -119,7 +119,7 @@ QList<U2MsaRow> MAlignmentExporter::exportRows( const U2DataId &msaId, const QLi
 }
 
 
-QList<DNASequence> MAlignmentExporter::exportSequencesOfRows(QList<U2MsaRow> rows, U2OpStatus& os) {
+QList<DNASequence> MAlignmentExporter::exportSequencesOfRows(QList<U2MsaRow> rows, U2OpStatus& os) const {
     U2SequenceDbi* sequenceDbi = con.dbi->getSequenceDbi();
     SAFE_POINT(NULL != sequenceDbi, "NULL Sequence Dbi during exporting rows sequences!", QList<DNASequence>());
 
@@ -144,7 +144,7 @@ QList<DNASequence> MAlignmentExporter::exportSequencesOfRows(QList<U2MsaRow> row
     return sequences;
 }
 
-QVariantMap MAlignmentExporter::exportAlignmentInfo(const U2DataId& msaId, U2OpStatus& os) {
+QVariantMap MAlignmentExporter::exportAlignmentInfo(const U2DataId& msaId, U2OpStatus& os) const {
     U2AttributeDbi* attrDbi = con.dbi->getAttributeDbi();
     SAFE_POINT(NULL != attrDbi, "NULL Attribute Dbi during exporting an alignment info!", QVariantMap());
 
@@ -166,7 +166,7 @@ QVariantMap MAlignmentExporter::exportAlignmentInfo(const U2DataId& msaId, U2OpS
     return alInfo;
 }
 
-U2Msa MAlignmentExporter::exportAlignmentObject(const U2DataId& msaId, U2OpStatus& os) {
+U2Msa MAlignmentExporter::exportAlignmentObject(const U2DataId& msaId, U2OpStatus& os) const {
     U2MsaDbi* msaDbi = con.dbi->getMsaDbi();
     SAFE_POINT(NULL != msaDbi, "NULL MSA Dbi during exporting an alignment object!", U2Msa());
 

@@ -36,7 +36,7 @@ NWAligner::NWAligner(const QByteArray &seq1, const QByteArray &seq2)
 : PairwiseAligner(seq1, seq2), fMatrix(NULL)
 {
     GTIMER(cvar, tvar, "NWAligner::NWAligner");
-    DNAAlphabet *alphabet = U2AlphabetUtils::findBestAlphabet(seq1 + seq2);
+    const DNAAlphabet *alphabet = U2AlphabetUtils::findBestAlphabet(seq1 + seq2);
     if (alphabet->getId() == BaseDNAAlphabetIds::NUCL_DNA_DEFAULT()) {
         alphabet = AppContext::getDNAAlphabetRegistry()->findById(BaseDNAAlphabetIds::NUCL_DNA_EXTENDED());
     }
@@ -55,8 +55,8 @@ NWAligner::~NWAligner() {
 
 void NWAligner::reassignSMatrixByAlphabet(const QByteArray &newSeq) {
     GTIMER(cvar, tvar, "NWAligner::reassignSMatrixByAlphabet");
-    DNAAlphabet *alphabet = U2AlphabetUtils::findBestAlphabet(newSeq);
-    DNAAlphabet *newAlphabet = U2AlphabetUtils::deriveCommonAlphabet(alphabet, sMatrix.getAlphabet());
+    const DNAAlphabet *alphabet = U2AlphabetUtils::findBestAlphabet(newSeq);
+    const DNAAlphabet *newAlphabet = U2AlphabetUtils::deriveCommonAlphabet(alphabet, sMatrix.getAlphabet());
     if (newAlphabet != sMatrix.getAlphabet()) {
         sMatrix = AppContext::getSubstMatrixRegistry()->selectMatricesByAlphabet(newAlphabet).first();
     }

@@ -89,7 +89,7 @@ void CreateFragmentDialog::accept()
 
     if (leftEndBox->isChecked()) {
         leftOverhang = lCustomOverhangEdit->text();
-        DNAAlphabet* alph = U2AlphabetUtils::findBestAlphabet(leftOverhang.toLatin1());
+        const DNAAlphabet* alph = U2AlphabetUtils::findBestAlphabet(leftOverhang.toLatin1());
         if (!alph->isNucleic()) {
             QMessageBox::warning(this, windowTitle(),tr("5'overhang contains unsupported symbols!"));
             return;
@@ -99,7 +99,7 @@ void CreateFragmentDialog::accept()
 
     if (rightEndBox->isChecked()) {
         rightOverhang = rCustomOverhangEdit->text();
-        DNAAlphabet* alph = U2AlphabetUtils::findBestAlphabet(rightOverhang.toLatin1());
+        const DNAAlphabet* alph = U2AlphabetUtils::findBestAlphabet(rightOverhang.toLatin1());
         if (!alph->isNucleic()) {
             QMessageBox::warning(this, windowTitle(),tr("3'overhang contains unsupported symbols!"));
             return;

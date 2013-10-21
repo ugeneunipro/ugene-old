@@ -123,7 +123,7 @@ private:
     QList<Annotation*> annotations;
     LigateFragmentsTaskConfig cfg;
     Document* resultDoc;
-    DNAAlphabet* resultAlphabet;
+    const DNAAlphabet* resultAlphabet;
     QMap<Annotation*,int> offsetMap;
     
 

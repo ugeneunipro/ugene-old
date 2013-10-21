@@ -212,7 +212,7 @@ static void importGroupSequences2newObject(const QList<U2SequenceObject*>& seqOb
 
 void processOldObjects(const QList<GObject* > & objs, 
                        QHash< U2SequenceObject*, QList<AnnotationTableObject*> >& annotationsBySequenceObjectName, 
-                       QMap<DNAAlphabetType, QList<U2SequenceObject*> >& mapObjects2Alpabets, const QString& url, const QString& fileName, const QVariantMap& hints, U2OpStatus& os)
+                       QMap<DNAAlphabetType, QList<U2SequenceObject*> >& mapObjects2Alphabets, const QString& url, const QString& fileName, const QVariantMap& hints, U2OpStatus& os)
 {
     U2SequenceObject* seqObj = NULL;        
     int currentObject = -1;
@@ -223,8 +223,8 @@ void processOldObjects(const QList<GObject* > & objs,
         if (annObj == NULL) {
             seqObj = qobject_cast<U2SequenceObject*>(obj);
             CHECK_EXT(seqObj != NULL, os.setError("No sequence and annotations are found"), );
-            DNAAlphabet* seqAl = seqObj->getAlphabet(); 
-            mapObjects2Alpabets[seqAl->getType()].append(seqObj);
+            const DNAAlphabet* seqAl = seqObj->getAlphabet(); 
+            mapObjects2Alphabets[seqAl->getType()].append(seqObj);
 
             continue;
         }
@@ -235,8 +235,8 @@ void processOldObjects(const QList<GObject* > & objs,
             sequenceRef.objName = seqObj->getGObjectName();
             annObj->addObjectRelation(GObjectRelation(sequenceRef, GObjectRelationRole::SEQUENCE));
 
-            DNAAlphabet* seqAl = seqObj->getAlphabet();
-            mapObjects2Alpabets[seqAl->getType()].append(seqObj);
+            const DNAAlphabet* seqAl = seqObj->getAlphabet();
+            mapObjects2Alphabets[seqAl->getType()].append(seqObj);
         }
 
         QList<GObjectRelation> seqRelations = annObj->findRelatedObjectsByRole(GObjectRelationRole::SEQUENCE);

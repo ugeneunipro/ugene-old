@@ -35,7 +35,7 @@ DamageEffectEvaluator::DamageEffectEvaluator(U2Dbi* dbiSession, U2Dbi* dbiDataba
 ,seqCache(NULL, U2DataId())
 {
 
-    DNAAlphabet* alphabet = AppContext::getDNAAlphabetRegistry()->findById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT());
+    const DNAAlphabet* alphabet = AppContext::getDNAAlphabetRegistry()->findById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT());
     SAFE_POINT(alphabet != NULL, "No Alphabet",);
 
     QList<DNATranslation*> translList = AppContext::getDNATranslationRegistry()->lookupTranslation(alphabet, DNATranslationType_NUCL_2_AMINO);

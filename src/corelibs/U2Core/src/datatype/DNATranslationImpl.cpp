@@ -28,7 +28,7 @@
 namespace U2 {
 
 
-DNATranslation1to1Impl::DNATranslation1to1Impl(const QString& id, const QString& _name, DNAAlphabet* src, DNAAlphabet* dst, QByteArray mapper121)
+DNATranslation1to1Impl::DNATranslation1to1Impl(const QString& id, const QString& _name, const DNAAlphabet* src, const DNAAlphabet* dst, QByteArray mapper121)
 : DNATranslation(id, _name, src, dst)
 {
     map = mapper121;
@@ -50,7 +50,7 @@ int DNATranslation1to1Impl::translate(char* src_and_dst, int len) const {
 /// 3->1
 
 DNATranslation3to1Impl::DNATranslation3to1Impl(const QString& _id, const QString& _name, 
-                                               DNAAlphabet* src, DNAAlphabet* dst, 
+                                               const DNAAlphabet* src, const DNAAlphabet* dst, 
                                                const QList<Mapping3To1<char> >& rm, char dc,
                                                const QMap<DNATranslationRole,QList<Triplet> >& _roles)
 :  DNATranslation(_id, _name, src, dst), index(rm, dc), roles(_roles)
@@ -184,7 +184,7 @@ void Index3To1::init(const QByteArray& alphabetChars) {
 //////////////////////////////////////////////////////////////////////////
 /// 1->3
 DNATranslation1to3Impl::DNATranslation1to3Impl(const QString& _id, const QString& _name, 
-                                               DNAAlphabet* src, DNAAlphabet* dst,
+                                               const DNAAlphabet* src, const DNAAlphabet* dst,
                                                const BackTranslationRules& rules)
 :  DNATranslation(_id, _name, src, dst), index(rules)
 {

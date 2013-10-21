@@ -146,8 +146,8 @@ public:
     ReportResult report();
     
 private:
-    bool setTranslations( int hmmAl, DNAAlphabet* seqAl );
-    bool checkAlphabets( int hmmAl, DNAAlphabet* seqAl );
+    bool setTranslations( int hmmAl, const DNAAlphabet* seqAl );
+    bool checkAlphabets( int hmmAl, const DNAAlphabet* seqAl );
     SequenceWalkerTask* getSWSubtask();
     
 private:

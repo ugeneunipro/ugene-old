@@ -78,7 +78,7 @@ public:
     int             cutDirect; //starts from the first char in direct strand
     int             cutComplement; // starts from the first char in complement strand, negative->right offset
     QString         organizm;
-    DNAAlphabet*    alphabet;
+    const DNAAlphabet*    alphabet;
 };
 
 

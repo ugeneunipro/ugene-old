@@ -42,7 +42,7 @@ ADVSequenceObjectContext::ADVSequenceObjectContext(AnnotatedDNAView* v, U2Sequen
 {
     selection = new DNASequenceSelection(seqObj, this);
     clarifyAminoTT = false;
-    DNAAlphabet* al  = getAlphabet();
+    const DNAAlphabet* al  = getAlphabet();
     if (al->isNucleic()) {
         DNATranslationRegistry* tr = AppContext::getDNATranslationRegistry();
         complTT = GObjectUtils::findComplementTT(seqObj->getAlphabet());
@@ -81,8 +81,8 @@ ADVSequenceObjectContext::ADVSequenceObjectContext(AnnotatedDNAView* v, U2Sequen
     }
 }
 
-void ADVSequenceObjectContext::guessAminoTT(AnnotationTableObject* ao) {
-    DNAAlphabet* al  = getAlphabet();
+void ADVSequenceObjectContext::guessAminoTT(const AnnotationTableObject* ao) {
+    const DNAAlphabet* al  = getAlphabet();
     assert(al->isNucleic());
     DNATranslation* res = NULL;    
     DNATranslationRegistry* tr = AppContext::getDNATranslationRegistry();
@@ -111,7 +111,7 @@ qint64 ADVSequenceObjectContext::getSequenceLength() const {
     return seqObj->getSequenceLength();
 }
 
-DNAAlphabet* ADVSequenceObjectContext::getAlphabet() const {
+const DNAAlphabet* ADVSequenceObjectContext::getAlphabet() const {
     return seqObj->getAlphabet();
 }
 
@@ -227,7 +227,7 @@ QMenu* ADVSequenceObjectContext::createTranslationsMenu() {
 }
 
 void ADVSequenceObjectContext::setAminoTranslation(const QString& tid) {
-    DNAAlphabet* al = getAlphabet();
+    const DNAAlphabet* al = getAlphabet();
     DNATranslation* aTT = AppContext::getDNATranslationRegistry()->lookupTranslation(al, DNATranslationType_NUCL_2_AMINO, tid);
     assert(aTT!=NULL);
     if (aTT == aminoTT) {

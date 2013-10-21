@@ -258,7 +258,7 @@ Task* ORFWorker::tick() {
             return NULL;
         }
         
-        DNAAlphabet* alphabet = seqObj->getAlphabet();
+        const DNAAlphabet* alphabet = seqObj->getAlphabet();
         if (alphabet && alphabet->getType() == DNAAlphabet_NUCL) {
             ORFAlgorithmSettings config(cfg);
             config.searchRegion.length = seqObj->getSequenceLength();

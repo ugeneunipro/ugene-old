@@ -539,7 +539,7 @@ void MsaDbiUtils::updateMsa(const U2EntityRef& msaRef, const MAlignment& al, U2O
     SAFE_POINT(NULL != attrDbi, "NULL Attribute Dbi!", );
 
     //// UPDATE MSA OBJECT
-    DNAAlphabet* alphabet = al.getAlphabet();
+    const DNAAlphabet* alphabet = al.getAlphabet();
     SAFE_POINT(NULL != alphabet, "The alignment alphabet is NULL!", );
 
     U2Msa msaObj;
@@ -611,7 +611,7 @@ void MsaDbiUtils::updateMsa(const U2EntityRef& msaRef, const MAlignment& al, U2O
             sequence.circular = rowSeq.circular;
             sequence.length = rowSeq.length();
 
-            DNAAlphabet* alphabet = rowSeq.alphabet;
+            const DNAAlphabet* alphabet = rowSeq.alphabet;
             if (NULL == alphabet) {
                 alphabet = U2AlphabetUtils::findBestAlphabet(rowSeq.constData(), rowSeq.length());
             }

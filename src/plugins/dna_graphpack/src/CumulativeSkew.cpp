@@ -53,7 +53,7 @@ CumulativeSkewGraphFactory::CumulativeSkewGraphFactory(GCumulativeSkewType t, QO
 }
 
 bool CumulativeSkewGraphFactory::isEnabled(U2SequenceObject* o) const {
-    DNAAlphabet* al = o->getAlphabet();
+    const DNAAlphabet* al = o->getAlphabet();
     return al->isNucleic();
 }
 

@@ -306,7 +306,7 @@ public:
      * The name must be provided if this is not default alignment.
      */
     MAlignment(const QString& name = QString(), 
-               DNAAlphabet* alphabet = NULL,
+               const DNAAlphabet* alphabet = NULL,
                const QList<MAlignmentRow>& rows = QList<MAlignmentRow>());
         
     /**
@@ -322,13 +322,13 @@ public:
     void setName(const QString& newName) { MAlignmentInfo::setName(info, newName); }
 
     /** Returns the alphabet of the alignment */
-    DNAAlphabet* getAlphabet() const { return alphabet; }
+    const DNAAlphabet* getAlphabet() const { return alphabet; }
 
     /**
      * Sets the alphabet of the alignment, the value can't be NULL.
      * Warning: rows already present in the alignment are not verified to correspond to this alphabet
      */
-    void setAlphabet(DNAAlphabet* al);
+    void setAlphabet(const DNAAlphabet* al);
 
     /** Returns the alignment info */
     QVariantMap getInfo() const { return info; }
@@ -526,7 +526,7 @@ private:
     int calculateMinLength() const;
 
     /** Alphabet for all sequences in the alignment */
-    DNAAlphabet*            alphabet;
+    const DNAAlphabet*            alphabet;
 
     /** Alignment rows (each row = sequence + gap model) */
     QList<MAlignmentRow>    rows;

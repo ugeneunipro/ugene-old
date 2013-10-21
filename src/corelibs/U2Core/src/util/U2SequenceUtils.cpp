@@ -49,7 +49,7 @@ DNAAlphabetType U2SequenceUtils::alphabetType(const U2EntityRef& ref, U2OpStatus
     U2Sequence seq = con.dbi->getSequenceDbi()->getSequenceObject(ref.entityId, os);
     CHECK_OP(os, res);
     
-    DNAAlphabet* al = AppContext::getDNAAlphabetRegistry()->findById(seq.alphabet.id);
+    const DNAAlphabet* al = AppContext::getDNAAlphabetRegistry()->findById(seq.alphabet.id);
     CHECK_EXT(al != NULL, os.setError(tr("Alphabet is not found!")), res);
     
     return al->getType();
@@ -312,11 +312,11 @@ void U2SequenceImporter::startSequence(const U2DbiRef& dbiRef, const QString& vi
 
 void U2SequenceImporter::addBlock(const char* data, qint64 len, U2OpStatus& os) {
     // derive common alphabet
-    DNAAlphabet* blockAl = U2AlphabetUtils::findBestAlphabet(data, len);
+    const DNAAlphabet* blockAl = U2AlphabetUtils::findBestAlphabet(data, len);
     CHECK_EXT(blockAl != NULL, os.setError("Failed to match sequence alphabet!"), );
 
-    DNAAlphabet* oldAl = U2AlphabetUtils::getById(sequence.alphabet);
-    DNAAlphabet* resAl = blockAl;
+    const DNAAlphabet* oldAl = U2AlphabetUtils::getById(sequence.alphabet);
+    const DNAAlphabet* resAl = blockAl;
     if (oldAl != NULL) {
         if(oldAl->getType() == DNAAlphabet_AMINO && resAl->getType() == DNAAlphabet_NUCL){
             resAl = oldAl;
@@ -477,11 +477,11 @@ void U2MemorySequenceImporter::addBlock(const char* data, qint64 len, U2OpStatus
     }
 
     // derive common alphabet
-    DNAAlphabet* blockAl = U2AlphabetUtils::findBestAlphabet(data, len);
+    const DNAAlphabet* blockAl = U2AlphabetUtils::findBestAlphabet(data, len);
     CHECK_EXT(blockAl != NULL, os.setError("Failed to match sequence alphabet!"), );
 
-    DNAAlphabet* oldAl = U2AlphabetUtils::getById(sequence.alphabet);
-    DNAAlphabet* resAl = blockAl;
+    const DNAAlphabet* oldAl = U2AlphabetUtils::getById(sequence.alphabet);
+    const DNAAlphabet* resAl = blockAl;
     if (oldAl != NULL) {
         if(oldAl->getType() == DNAAlphabet_AMINO && resAl->getType() == DNAAlphabet_NUCL){
             resAl = oldAl;

@@ -126,7 +126,7 @@ void DNAStatProfileTask::run(){
         DNAStatProfileTask::tr("Sequence length:") + "</b></td><td>" + QString::number(seqLen) + "</td></tr>\n";
     resultText += "<tr><td><b>Molecule Type:</b></td><td>" + ctx->getSequenceObject()->getAlphabet()->getName() + "</td></tr>\n";
 
-    DNAAlphabet* al = dnaObj->getAlphabet();
+    const DNAAlphabet* al = dnaObj->getAlphabet();
     if (al->isNucleic()) {
 
         double gcContent = 100.0 * (nG + nC) / (double) seqLen;

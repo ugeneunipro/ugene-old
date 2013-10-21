@@ -61,7 +61,7 @@ public:
 
     static GObject*         selectObjectByReference(const GObjectReference& r, UnloadedObjectFilter f);
 
-    static DNATranslation*  findComplementTT(DNAAlphabet* al);
+    static DNATranslation*  findComplementTT(const DNAAlphabet* al);
 
     static DNATranslation*  findAminoTT(U2SequenceObject* so, bool fromHintsOnly, const QString& table = NULL);
 
