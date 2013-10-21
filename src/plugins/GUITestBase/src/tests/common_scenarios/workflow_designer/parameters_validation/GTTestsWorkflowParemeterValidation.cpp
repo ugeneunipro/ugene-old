@@ -25,11 +25,11 @@
 #include "api/GTMouseDriver.h"
 #include "api/GTTableView.h"
 #include "api/GTWidget.h"
-
-#include "runnables/qt/MessageBoxFiller.h"
-
 #include "GTUtilsDialog.h"
 #include "GTUtilsMdi.h"
+#include "runnables/qt/MessageBoxFiller.h"
+#include "runnables/ugene/plugins/workflow_designer/StartupDialogFiller.h"
+
 #include "GTUtilsWorkflowDesigner.h"
 
 #include "GTTestsWorkflowParemeterValidation.h"
@@ -37,6 +37,7 @@
 namespace U2 {
 
 namespace GUITest_common_scenarios_workflow_parameters_validation {
+
 GUI_TEST_CLASS_DEFINITION(test_0001){
     // 1. Open WD sample "Align Sequences with MUSCLE
     QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
@@ -64,11 +65,11 @@ GUI_TEST_CLASS_DEFINITION(test_0001){
     public:
         RenameHelper(const QString &url, U2OpStatus &os)
             : file(url), renamed(false) {
-            oldName = file.fileName();
-            renamed = file.rename("wd_pv_0001.aln");
-            if (!renamed) {
-                os.setError("Can not rename the file");
-            }
+                oldName = file.fileName();
+                renamed = file.rename("wd_pv_0001.aln");
+                if (!renamed) {
+                    os.setError("Can not rename the file");
+                }
         }
         ~RenameHelper() {
             if (renamed) {
@@ -93,6 +94,60 @@ GUI_TEST_CLASS_DEFINITION(test_0001){
     GTUtilsWorkflowDesigner::checkErrorList(os, "Read alignment: File not found:");
 }
 
+GUI_TEST_CLASS_DEFINITION( test_0003 ) {
+    //1. Create the following workflow { Read Sequence -> Find Pattern -> Write Sequence }
+    //GTUtilsDialog::waitForDialog( os, new StartupDialogFiller( os ) );
+
+    QMenu *menu=GTMenu::showMainMenu( os, MWMENU_TOOLS );
+    GTMenu::clickMenuItem( os, menu, QStringList( ) << "Workflow Designer" );
+
+    GTUtilsWorkflowDesigner::addAlgorithm( os, "Read Sequence" );
+    GTUtilsWorkflowDesigner::addAlgorithm( os, "Find Pattern" );
+    GTUtilsWorkflowDesigner::addAlgorithm( os, "Write Sequence" );
+
+    WorkflowProcessItem *seqReader = GTUtilsWorkflowDesigner::getWorker( os, "Read Sequence" );
+    WorkflowProcessItem *patternFinder = GTUtilsWorkflowDesigner::getWorker( os, "Find Pattern" );
+    WorkflowProcessItem *seqWriter = GTUtilsWorkflowDesigner::getWorker( os, "Write Sequence" );
+
+    GTUtilsWorkflowDesigner::connect( os, seqReader, patternFinder );
+    GTUtilsWorkflowDesigner::connect( os, patternFinder, seqWriter );
+
+    //2. Set some name for an output file
+
+    GTMouseDriver::moveTo( os, GTUtilsWorkflowDesigner::getItemCenter( os, "Write Sequence" ) );
+    GTMouseDriver::click( os );
+    QTableView *table = qobject_cast<QTableView *>( GTWidget::findWidget( os, "table" ) );
+    CHECK_SET_ERR( table, "tableView not found" );
+    GTMouseDriver::moveTo( os, GTTableView::getCellPosition( os, table, 1, 3 ) );
+    GTMouseDriver::click( os );
+    GTKeyboardDriver::keySequence( os, "sequence.gb" );
+    GTWidget::click( os, GTUtilsMdi::activeWindow( os ) );
+
+    //3. Add some valid sequence file as input
+
+    GTMouseDriver::moveTo( os, GTUtilsWorkflowDesigner::getItemCenter( os, "Read Sequence" ) );
+    GTMouseDriver::click( os );
+    QString dirPath = testDir + "_common_data/fasta/";
+    GTUtilsWorkflowDesigner::setDatasetInputFile( os, dirPath, "fa1.fa" );
+
+    //4. Set some nonexistent path to a file as the "Pattern file" parameter of the "Find Substrings" worker
+
+    GTMouseDriver::moveTo( os, GTUtilsWorkflowDesigner::getItemCenter( os, "Find Pattern" ) );
+    GTMouseDriver::click( os );
+    GTMouseDriver::moveTo( os, GTTableView::getCellPosition( os, table, 1, 2 ) );
+    GTMouseDriver::click( os );
+    GTKeyboardDriver::keySequence( os, "pattern_file.txt" );
+    GTWidget::click( os, GTUtilsMdi::activeWindow( os ) );
+
+    //5. In WD press the "Validate" button
+    GTUtilsDialog::waitForDialog( os, new MessageBoxDialogFiller( os, QMessageBox::Ok,
+        "Please fix issues listed in the error list (located under workflow)." ) );
+    GTWidget::click( os,GTAction::button( os,"Validate workflow" ) );
+    GTGlobals::sleep( 200 );
+
+    //Expected state: The "File not found" error has appeared in the "Error list"
+    GTUtilsWorkflowDesigner::checkErrorList( os, "File not found" );
+}
 
 } // namespace GUITest_common_scenarios_workflow_designer
 

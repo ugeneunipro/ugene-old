@@ -86,6 +86,7 @@ void NewColorSchemeCreator::run(){
 #define GT_CLASS_NAME "CreateAlignmentColorSchemeDialogFiller"
 #define GT_METHOD_NAME "run"
 void CreateAlignmentColorSchemeDialogFiller::run(){
+    GTGlobals::sleep( 500 );
     QWidget* dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog, "activeModalWidget is NULL");
 
@@ -98,6 +99,7 @@ void CreateAlignmentColorSchemeDialogFiller::run(){
     GT_CHECK(alphabetComboBox, "alphabetComboBox lineEdit not found ");
 
     GTComboBox::setCurrentIndex(os, alphabetComboBox, al);
+    GTGlobals::sleep( 500 );
 
     GTUtilsDialog::waitForDialog(os, new ColorSchemeDialogFiller(os));
     GTWidget::click(os, GTWidget::findWidget(os, "createButton"));

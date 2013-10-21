@@ -54,6 +54,7 @@
 #include "runnables/ugene/corelibs/U2Gui/AlignShortReadsDialogFiller.h"
 #include "runnables/qt/MessageBoxFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/util/ProjectTreeItemSelectorDialogBaseFiller.h"
+#include "runnables/ugene/corelibs/U2Gui/AppSettingsDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/DownloadRemoteFileDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/ConvertAssemblyToSAMDialogFiller.h"
 #include "runnables/ugene/ugeneui/SelectDocumentFormatDialogFiller.h"
@@ -1678,6 +1679,24 @@ GUI_TEST_CLASS_DEFINITION( test_2122 ){
     CHECK_SET_ERR(settingsContainerWidget->isVisible(), "settingsContainerWidget is not visible");
     CHECK_SET_ERR(sourcesContainerWidget->isVisible(), "sourcesContainerWidget is not visible");
     CHECK_SET_ERR(annotationsSettingsContainerWidget->isVisible(), "annotationsSettingsContainerWidget is not visible");
+}
+
+GUI_TEST_CLASS_DEFINITION( test_2124 ) {
+    // 1. Open "data/samples/CLUSTALW/ty3.aln.gz".
+    GTFileDialog::openFile( os, dataDir + "samples/CLUSTALW/", "ty3.aln.gz" );
+
+    // 2. Call the context menu on the sequence area.
+    const QString colorSchemeName = "Scheme";
+    GTUtilsDialog::waitForDialog( os, new PopupChooser( os, QStringList( ) << "Colors"
+        << "Custom schemes" << "Create new color scheme" ) );
+    GTUtilsDialog::waitForDialog( os, new NewColorSchemeCreator( os, colorSchemeName,
+        NewColorSchemeCreator::nucl ) );
+    GTMouseDriver::click( os, Qt::RightButton );
+
+    // 3. Create a new color scheme for the amino alphabet.
+    GTUtilsDialog::waitForDialog( os, new PopupChooser( os, QStringList( ) << "Colors"
+        << "Custom schemes" << colorSchemeName ) );
+    GTMouseDriver::click( os, Qt::RightButton );
 }
 
 GUI_TEST_CLASS_DEFINITION(test_2091) {
