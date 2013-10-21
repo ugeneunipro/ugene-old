@@ -279,6 +279,14 @@ void FindRepeatsDialog::accept() {
     settings.seqRegion = U2Region(0, seqPart.length());
     settings.reportSeqShift = settings.reportSeq2Shift = range.startPos;
 
+    if(settings.seqRegion.length >= 80000000 && identPerc < 100){
+        if(QMessageBox::warning(QApplication::activeWindow(), tr("Warning"),
+            tr("Search with given identity %1% and length more then 80m bps can take very long time. Approximate repeat searching time for 80m bp with 95% identity is 40 minutes on Intel Core 2 Quad Q9500. Do you want to continue?")
+            .arg(identPerc), QMessageBox::Ok, QMessageBox::Cancel) == QMessageBox::Cancel){
+                return QDialog::reject();
+        }
+    }
+
     FindRepeatsToAnnotationsTask* t = new FindRepeatsToAnnotationsTask(settings, seqPart, 
         cam.data->name, cam.groupName, cam.annotationObjectRef);
 

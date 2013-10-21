@@ -52,7 +52,9 @@ void RFSArrayWKAlgorithm::prepare() {
     }
     // ARRAY_SIZE is smaller than SEARCH_SIZE. Allocate diags only for ARRAY_SIZE elements ->
     // when ARRAY_SIZE diags are processed, 0 one becomes unused and ARRAY_SIZE+1 one is placed to 0 cell
+    diagOffsets.reserve(ARRAY_SIZE);
     diagOffsets.resize(ARRAY_SIZE);
+
     if (diagOffsets.isEmpty()) {
         stateInfo.setError(tr("Memory allocation error, size: %1").arg(ARRAY_SIZE));
         return;
