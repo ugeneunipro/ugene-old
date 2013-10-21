@@ -2251,6 +2251,38 @@ GUI_TEST_CLASS_DEFINITION( test_2224 )
         "Scribbling works wrong. Found text is:\n" + undoneContent );
 }
 
+GUI_TEST_CLASS_DEFINITION( test_2224_flow )
+{
+    // 1. Open file {_common_data/scenarios/msa/ma.aln"
+    GTFileDialog::openFile( os, testDir + "_common_data/scenarios/msa", "ma.aln" );
+
+    // copy the initial MSA
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0, 0), QPoint(11, 17));
+    GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(500);
+    QString initialMSA = GTClipboard::text(os);
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["esc"]);
+
+    // 2. Select some region starting from the 1st column and ending in the 8th one
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0, 2), QPoint(7, 6));
+
+    // 3. Drag it to the right in one column
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(4, 4), QPoint(5, 4));
+
+    // 4. Click left mouse button in the leftmost side of the selected region
+    GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(1, 4));
+    GTMouseDriver::click(os);
+
+    // copy the result MSA
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["esc"]);
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0, 0), QPoint(11, 17));
+    GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(500);
+    QString resultMSA = GTClipboard::text(os);
+
+    CHECK_SET_ERR(initialMSA == resultMSA, "The result MSA is wrong");
+}
+
 GUI_TEST_CLASS_DEFINITION( test_2225_1 ){
     Runnable *filler = new NCBISearchDialogFiller(os, "rat", true);
 
