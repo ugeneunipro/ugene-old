@@ -178,6 +178,8 @@ public:
     virtual QVariant getAttributeValue(const AttributeInfo &info) const;
     virtual void setAttributeValue(const AttributeInfo &info, const QVariant &value);
 
+    bool isShowSamplesHint() const;
+
 public slots:
     void sl_updateUi();
     void sl_rescaleScene(const QString &scale);

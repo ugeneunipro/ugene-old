@@ -2573,6 +2573,14 @@ void WorkflowView::setAttributeValue(const AttributeInfo &info, const QVariant &
     attr->setAttributeValue(value);
 }
 
+bool WorkflowView::isShowSamplesHint() const {
+    SAFE_POINT(NULL != samples, "NULL samples widget", false);
+    SAFE_POINT(NULL != schema, "NULL schema", false);
+    const bool emptySchema = (0 == schema->getProcesses().size());
+    return samples->isVisible() && emptySchema;
+
+}
+
 /********************************
  * WorkflowScene
  ********************************/

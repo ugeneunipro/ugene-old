@@ -226,7 +226,9 @@ SamplePane::SamplePane(WorkflowScene *_scene) : item(NULL), scene(_scene) {
 
 void SamplePane::paint(QPainter* painter)
 {
-    if (!item && !scene->items().size()) {
+    const WorkflowView *ctrl = scene->getController();
+    SAFE_POINT(NULL != ctrl, "NULL workflow controller", );
+    if (!item && ctrl->isShowSamplesHint()) {
         DesignerGUIUtils::paintSamplesArrow(painter);
         return;
     }
