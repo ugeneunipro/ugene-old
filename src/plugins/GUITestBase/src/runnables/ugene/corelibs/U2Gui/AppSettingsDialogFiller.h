@@ -38,5 +38,33 @@ private:
     style itemStyle;
     int r,g,b;
 };
+
+class NewColorSchemeCreator: public Filler{
+public:
+    enum alphabet{amino,nucl};
+    NewColorSchemeCreator(U2OpStatus &_os, QString _schemeName, alphabet _al): Filler(_os,"AppSettingsDialog"),
+        schemeName(_schemeName), al(_al){}
+    virtual void run();
+private:
+    QString schemeName;
+    alphabet al;
+};
+
+class CreateAlignmentColorSchemeDialogFiller: public Filler{
+public:
+
+    CreateAlignmentColorSchemeDialogFiller(U2OpStatus &os, QString _schemeName, NewColorSchemeCreator::alphabet _al):
+        Filler(os, "CreateMSAScheme"), al(_al), schemeName(_schemeName){}
+    virtual void run();
+private:
+    QString schemeName;
+    NewColorSchemeCreator::alphabet al;
+};
+
+class ColorSchemeDialogFiller: public Filler{
+public:
+    ColorSchemeDialogFiller(U2OpStatus &os): Filler(os, "ColorSchemaDialog"){}
+    virtual void run();
+};
 }
 #endif // APPSETTINGSDIALOGFILLER_H

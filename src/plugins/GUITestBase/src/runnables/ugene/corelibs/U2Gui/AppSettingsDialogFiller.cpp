@@ -25,14 +25,18 @@
 #include "api/GTTreeWidget.h"
 #include "api/GTMouseDriver.h"
 #include "api/GTComboBox.h"
+#include "api/GTLineEdit.h"
+#include "api/GTKeyboardDriver.h"
 
 #include <QtGui/QApplication>
 #include <QtGui/QTreeWidget>
 #include <QtGui/QComboBox>
+#include <QtGui/QDialogButtonBox>
+#include <QtGui/QAbstractButton>
 
 namespace U2{
 
-#define GT_CLASS_NAME "GTUtilsDialog::AppSettingsDialogFiller"
+#define GT_CLASS_NAME "AppSettingsDialogFiller"
 #define GT_METHOD_NAME "run"
 void AppSettingsDialogFiller::run(){
 
@@ -63,4 +67,60 @@ void AppSettingsDialogFiller::run(){
 }
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME
+
+#define GT_CLASS_NAME "NewColorSchemeCreator"
+#define GT_METHOD_NAME "run"
+void NewColorSchemeCreator::run(){
+    QWidget* dialog = QApplication::activeModalWidget();
+    GT_CHECK(dialog, "activeModalWidget is NULL");
+
+    QWidget* addSchemaButton = GTWidget::findWidget(os, "addSchemaButton");
+    GT_CHECK (addSchemaButton, "addSchemaButton not found");
+
+    GTUtilsDialog::waitForDialog(os, new CreateAlignmentColorSchemeDialogFiller(os, schemeName, al));
+    GTWidget::click(os, addSchemaButton);
+}
+#undef GT_METHOD_NAME
+#undef GT_CLASS_NAME
+
+#define GT_CLASS_NAME "CreateAlignmentColorSchemeDialogFiller"
+#define GT_METHOD_NAME "run"
+void CreateAlignmentColorSchemeDialogFiller::run(){
+    QWidget* dialog = QApplication::activeModalWidget();
+    GT_CHECK(dialog, "activeModalWidget is NULL");
+
+    QLineEdit* schemeNameLine = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "schemeName"));
+    GT_CHECK(schemeNameLine, "schemeName lineEdit not found ");
+
+    GTLineEdit::setText(os,schemeNameLine, schemeName);
+
+    QComboBox *alphabetComboBox = qobject_cast<QComboBox*>(GTWidget::findWidget(os,"alphabetComboBox"));
+    GT_CHECK(alphabetComboBox, "alphabetComboBox lineEdit not found ");
+
+    GTComboBox::setCurrentIndex(os, alphabetComboBox, al);
+
+    GTUtilsDialog::waitForDialog(os, new ColorSchemeDialogFiller(os));
+    GTWidget::click(os, GTWidget::findWidget(os, "createButton"));
+}
+#undef GT_METHOD_NAME
+#undef GT_CLASS_NAME
+
+#define GT_CLASS_NAME "ColorSchemeDialogFiller"
+#define GT_METHOD_NAME "run"
+void ColorSchemeDialogFiller::run(){
+    QWidget* dialog = QApplication::activeModalWidget();
+    GT_CHECK(dialog, "activeModalWidget is NULL");
+
+    QList<QAbstractButton* > list = dialog->findChildren<QAbstractButton*>();
+    foreach(QAbstractButton* b, list){
+        if (b->text().contains("ok",Qt::CaseInsensitive)){
+            GTWidget::click(os, b);
+            return;
+        }
+    }
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);//if ok button not found
+}
+#undef GT_METHOD_NAME
+#undef GT_CLASS_NAME
+//QDialogButtonBox *buttonBox;
 }
