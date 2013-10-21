@@ -35,6 +35,7 @@
 #include <U2Core/DNASequence.h>
 #include <U2Core/DNATranslation.h>
 #include <U2Core/DNAAlphabet.h>
+#include <U2Core/GUrlUtils.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/GObjectTypes.h>
 #include <U2Core/L10n.h>
@@ -56,6 +57,8 @@ const QString CallVariantsWorkerFactory::ACTOR_ID("call_variants");
 
 static const QString REF_SEQ_PORT_ID("ref-seq-port-id");
 static const QString ASSEMBLY_PORT_ID("assembly-port-id");
+
+const QString OUT_URL("variants-url");
 
 //mpileup
 const QString ILLUMINA13("illumina13-encoding");
@@ -159,6 +162,7 @@ void CallVariantsWorkerFactory::init() {
 
         QMap<Descriptor, DataTypePtr> varMap;
         varMap[BaseSlots::VARIATION_TRACK_SLOT()] = BaseTypes::VARIATION_TRACK_TYPE();
+        varMap[BaseSlots::URL_SLOT()] = BaseTypes::STRING_TYPE();
         DataTypePtr outVariants(new MapDataType("variants", varMap));
         Descriptor idV(BasePorts::OUT_VARIATION_TRACK_PORT_ID(), CallVariantsWorker::tr("Output variations"), 
             CallVariantsWorker::tr("Output tracks with SNPs and short INDELs"));
@@ -173,6 +177,10 @@ void CallVariantsWorkerFactory::init() {
 
     //attributes
     QList<Attribute*> attributes;
+
+    Descriptor outUrl(OUT_URL,
+        CallVariantsWorker::tr("Output variants file"),
+        CallVariantsWorker::tr("The url to the file with the extracted variations."));
 
     Descriptor illumina13Encoding(ILLUMINA13,
         CallVariantsWorker::tr("Illumina-1.3+ encoding"),
@@ -361,6 +369,7 @@ void CallVariantsWorkerFactory::init() {
         CallVariantsWorker::tr("Log filtered"),
         CallVariantsWorker::tr("Print filtered variants into the log (varFilter) (-p)."));
 
+    attributes << new Attribute(outUrl, BaseTypes::STRING_TYPE(), true, "");
     attributes << new Attribute(illumina13Encoding, BaseTypes::BOOL_TYPE(), false, QVariant(false));
     attributes << new Attribute(useOrphan, BaseTypes::BOOL_TYPE(), false, QVariant(false));
     attributes << new Attribute(disableBaq, BaseTypes::BOOL_TYPE(), false, QVariant(false));
@@ -616,6 +625,7 @@ void CallVariantsWorkerFactory::init() {
         delegates[PVALUE_HWE] = new DoubleSpinBoxDelegate(vm);
     }
 
+    delegates[OUT_URL] = new URLDelegate("", "", false, false, true, NULL, "vcf");
     delegates[BCF_BED] = new URLDelegate("", "", false, false, false);
     delegates[SAMPLES] = new URLDelegate("", "", false, false, false);
 
@@ -709,6 +719,7 @@ Task* CallVariantsWorker::tick() {
 
     //do
     if (cache.isEmpty() && !settings.refSeqUrl.isEmpty() && !settings.assemblyUrls.isEmpty()) {
+        settings.variationsUrl = GUrlUtils::rollFileName(getValue<QString>(OUT_URL), "_", QSet<QString>());
         CallVariantsTask* t = new CallVariantsTask(settings, context->getDataStorage());
         t->addListeners(createLogListeners(3));
         connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
@@ -734,6 +745,7 @@ void CallVariantsWorker::sl_taskFinished() {
         cache.append(Message(mtype, m));
     }
     t->clearResults();
+    monitor()->addOutputFile(t->getResultUrl(), getActorId());
 }
 
 void CallVariantsWorker::cleanup() {

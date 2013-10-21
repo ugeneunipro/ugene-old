@@ -35,6 +35,7 @@ namespace LocalWorkflow{
 class CallVariantsTaskSettings{
     public:
 
+    QString variationsUrl;
     QList<QString> assemblyUrls;
     QString refSeqUrl; // TODO: change to sequence ID
 
@@ -102,15 +103,12 @@ public:
     void prepare();
     void run();
 
-    const QString& getBcfOutputFilePath(){return filteredFile;}
-
 private:
     void start(const ProcessRun &pRun, const QString &toolName);
     void checkExitCode(QProcess *process, const QString &toolName);
 
 private:
     CallVariantsTaskSettings settings;
-    QString filteredFile;
 };
 
 class CallVariantsTask : public ExternalToolSupportTask {
@@ -119,11 +117,10 @@ public:
     CallVariantsTask(const CallVariantsTaskSettings& _settings, DbiDataStorage* _store);
 
     void prepare();
-    void run();
     QList<Task*> onSubTaskFinished(Task* subTask);
-    ReportResult report();
 
     const QList<QVariantMap>& getResults(){return results;}
+    QString getResultUrl(){return settings.variationsUrl;}
     void clearResults(){results.clear();}
 
     static QString tmpFilePath(const QString &baseName, const QString &ext, U2OpStatus &os);

@@ -45,7 +45,7 @@ namespace U2 {
 namespace LocalWorkflow{
 
 CallVariantsTask::CallVariantsTask( const CallVariantsTaskSettings& _settings, DbiDataStorage* _store )
-:ExternalToolSupportTask(tr("Call variants for %1").arg(_settings.refSeqUrl), TaskFlag_None)
+:ExternalToolSupportTask(tr("Call variants for %1").arg(_settings.refSeqUrl), TaskFlag_NoRun)
 ,settings(_settings)
 ,loadTask(NULL)
 ,mpileupTask(NULL)
@@ -53,7 +53,6 @@ CallVariantsTask::CallVariantsTask( const CallVariantsTaskSettings& _settings, D
 {
     setMaxParallelSubtasks(1);
 }
-
 
 void CallVariantsTask::prepare(){
     if (settings.assemblyUrls.size() < 1){
@@ -75,10 +74,6 @@ void CallVariantsTask::prepare(){
     addSubTask(mpileupTask );
 }
 
-
-void CallVariantsTask::run(){
-        
-}
 QList<Task*> CallVariantsTask::onSubTaskFinished( Task* subTask ){
     QList<Task*>res;
 
@@ -91,10 +86,7 @@ QList<Task*> CallVariantsTask::onSubTaskFinished( Task* subTask ){
     }
 
     if (subTask == mpileupTask) {
-        GUrl url(mpileupTask->getBcfOutputFilePath());
-        if( url.isEmpty() ) {
-            return res;
-        }
+        const GUrl url(settings.variationsUrl);
         IOAdapterFactory * iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById( IOAdapterUtils::url2io( url ) );
         if ( iof == NULL ) {
             return res;
@@ -119,22 +111,13 @@ QList<Task*> CallVariantsTask::onSubTaskFinished( Task* subTask ){
 
             QVariantMap m;
             SharedDbiDataHandler handler = storage->getDataHandler(varObj->getEntityRef());
-            m.insert(BaseSlots::VARIATION_TRACK_SLOT().getId(), qVariantFromValue<SharedDbiDataHandler>(handler));
+            m[BaseSlots::VARIATION_TRACK_SLOT().getId()] = qVariantFromValue<SharedDbiDataHandler>(handler);
+            m[BaseSlots::URL_SLOT().getId()] = settings.variationsUrl;
             results.append(m);
         }
    }
 
     return res;
-}
-
-Task::ReportResult CallVariantsTask::report(){
-    if (!mpileupTask || mpileupTask->hasError()){
-        return ReportResult_Finished;
-    }
-
-    GUrlUtils::removeFile(mpileupTask->getBcfOutputFilePath(), stateInfo);
-
-    return ReportResult_Finished;
 }
 
 QString CallVariantsTask::tmpFilePath(const QString &baseName, const QString &ext, U2OpStatus &os) {
@@ -169,10 +152,13 @@ void SamtoolsMpileupTask::prepare(){
         }
     }
 
-    //prepare tmp files
-    QString tmpDirPath = AppContext::getAppSettings()->getUserAppsSettings()->getCurrentProcessTemporaryDirPath(CALL_VARIANTS_DIR);
-    filteredFile = GUrlUtils::prepareTmpFileLocation(tmpDirPath, "filtered", "vcf", stateInfo);
-    CHECK_OP(stateInfo, );
+    const QDir outDir = QFileInfo(settings.variationsUrl).absoluteDir();
+    if (!outDir.exists()) {
+        const bool created = outDir.mkpath(outDir.absolutePath());
+        if (!created) {
+            setError(tr("Can not create the directory: ") + outDir.absolutePath());
+        }
+    }
 }
 
 void SamtoolsMpileupTask::run() {
@@ -196,7 +182,7 @@ void SamtoolsMpileupTask::run() {
 
     samtools.process->setStandardOutputProcess(bcftools.process);
     bcftools.process->setStandardOutputProcess(vcfutils.process);
-    vcfutils.process->setStandardOutputFile(filteredFile);
+    vcfutils.process->setStandardOutputFile(settings.variationsUrl);
 
     start(samtools, "SAMtools");
     CHECK_OP(stateInfo, );
