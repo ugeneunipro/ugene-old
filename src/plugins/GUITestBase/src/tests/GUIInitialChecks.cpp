@@ -146,8 +146,11 @@ GUI_TEST_CLASS_DEFINITION(post_test_0003) {     //if this post test detect any p
         QDir d;
         svnProcess->setWorkingDirectory(d.absoluteFilePath(workingDir));
         svnProcess->start("svn", QStringList()<<"st");
-        //CHECK_SET_ERR(!svnProcess->waitForStarted(2000), "SVN process wont start");
-        while(!svnProcess->waitForFinished(30000));
+        if ( !svnProcess->waitForStarted( 2000 ) ) {
+            coreLog.info( "SVN process hasn't start!" );
+            continue;
+        }
+        while (!svnProcess->waitForFinished(30000));
         //CHECK_SET_ERR(svnProcess->exitCode() != EXIT_FAILURE, "SVN process finished wrong");
         QStringList output = QString(svnProcess->readAllStandardOutput()).split('\n');
         bool needUpdate = false;
