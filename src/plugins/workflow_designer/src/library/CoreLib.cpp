@@ -42,6 +42,7 @@
 #include "library/AminoTranslationWorker.h"
 #include "library/AssemblyToSequenceWorker.h"
 #include "library/ConvertFilesFormatWorker.h"
+#include "library/ExtractConsensusWorker.h"
 #include "library/GetFileListWorker.h"
 #include "library/GroupWorker.h"
 #include "library/PassFilterWorker.h"
@@ -297,6 +298,7 @@ void CoreLib::init() {
     ReadAnnotationsWorkerFactory::init();
     ConvertFilesFormatWorkerFactory::init();
     DASAnnotationWorkerFactory::init();
+    ExtractConsensusWorkerFactory::init();
 
     initUsersWorkers();
     initExternalToolsWorkers();

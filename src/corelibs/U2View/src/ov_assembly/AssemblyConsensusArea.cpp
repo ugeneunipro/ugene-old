@@ -235,11 +235,11 @@ void AssemblyConsensusArea::sl_exportConsensus() {
     settings.region = getModel()->getGlobalRegion();
     settings.model = getModel();
     settings.consensusAlgorithm = consensusAlgorithm;
+    settings.saveToFile = true;
     settings.formatId = defaultFormat->getFormatId();
     settings.seqObjName = getModel()->getAssembly().visualName + "_consensus";
     settings.addToProject = true;
     settings.keepGaps = true;
-    settings.circular = false;
 
     QFileInfo db(getModel()->getAssembly().dbiId);
     QString ext = defaultFormat->getSupportedDocumentFileExtensions().first();

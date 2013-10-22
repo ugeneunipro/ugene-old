@@ -79,6 +79,7 @@ ExportConsensusDialog::ExportConsensusDialog(QWidget *p, const ExportConsensusTa
 
 void ExportConsensusDialog::accept() {
     bool isRegionOk;
+    settings.saveToFile = true;
     settings.fileName = saveController->getSaveFileName();
     settings.formatId = saveController->getFormatIdToSave();
     settings.seqObjName = sequenceNameLineEdit->text();

@@ -38,7 +38,7 @@ struct ConsensusInfo {
     QString algorithmId;
 };
 
-struct AssemblyConsensusTaskSettings {
+struct U2VIEW_EXPORT AssemblyConsensusTaskSettings {
     QSharedPointer<AssemblyConsensusAlgorithm> consensusAlgorithm;
     QSharedPointer<AssemblyModel> model;
     U2Region region;

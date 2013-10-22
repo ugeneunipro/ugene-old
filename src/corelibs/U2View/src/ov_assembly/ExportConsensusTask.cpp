@@ -42,14 +42,21 @@ ExportConsensusTask::ExportConsensusTask(const ExportConsensusTaskSettings &sett
 }
 
 void ExportConsensusTask::prepare() {
-    SAFE_POINT_EXT(!settings.fileName.isEmpty(), setError(tr("File name cannot be empty")),);
+    U2DbiRef dbiRef;
+    if (settings.saveToFile) {
+        SAFE_POINT_EXT(!settings.fileName.isEmpty(), setError(tr("File name cannot be empty")),);
 
-    DocumentFormat * df = AppContext::getDocumentFormatRegistry()->getFormatById(settings.formatId);
-    SAFE_POINT_EXT(df != NULL, setError(tr("Internal: couldn't find document format with id '%1'").arg(settings.formatId)),);
+        DocumentFormat * df = AppContext::getDocumentFormatRegistry()->getFormatById(settings.formatId);
+        SAFE_POINT_EXT(df != NULL, setError(tr("Internal: couldn't find document format with id '%1'").arg(settings.formatId)),);
 
-    IOAdapterFactory * iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(settings.fileName));
-    resultDocument = df->createNewLoadedDocument(iof, settings.fileName, stateInfo);
-    CHECK_OP(stateInfo, );
+        IOAdapterFactory * iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(settings.fileName));
+        resultDocument = df->createNewLoadedDocument(iof, settings.fileName, stateInfo);
+        CHECK_OP(stateInfo, );
+
+        dbiRef = resultDocument->getDbiRef();
+    } else {
+        dbiRef = settings.targetDbi;
+    }
 
     // If the input region length is more than REGION_TO_ANALAYZE,
     // divide the analysis into iterations
@@ -76,20 +83,22 @@ void ExportConsensusTask::prepare() {
     consensusTask->setSubtaskProgressWeight(100);
     addSubTask(consensusTask);
 
-    seqImporter.startSequence(resultDocument->getDbiRef(), settings.seqObjName, settings.circular, stateInfo);
+    seqImporter.startSequence(dbiRef, settings.seqObjName, false, stateInfo);
     CHECK_OP(stateInfo, );
 
-    SaveDocFlags saveFlags = SaveDoc_Overwrite;
-    addSubTask(new SaveDocumentTask(resultDocument, saveFlags));
+    if (settings.saveToFile) {
+        SaveDocFlags saveFlags = SaveDoc_Overwrite;
+        addSubTask(new SaveDocumentTask(resultDocument, saveFlags));
 
-    Project * p = AppContext::getProject();
-    if(p != NULL && p->findDocumentByURL(resultDocument->getURL()) != NULL) {
-        // if already has such document in project, do not add
-        settings.addToProject = false;
-    }
+        Project * p = AppContext::getProject();
+        if(p != NULL && p->findDocumentByURL(resultDocument->getURL()) != NULL) {
+            // if already has such document in project, do not add
+            settings.addToProject = false;
+        }
 
-    if(settings.addToProject) {
-        addSubTask(new AddDocumentAndOpenViewTask(takeDocument()));
+        if(settings.addToProject) {
+            addSubTask(new AddDocumentAndOpenViewTask(takeDocument()));
+        }
     }
 }
 
@@ -100,10 +109,12 @@ QList<Task*> ExportConsensusTask::onSubTaskFinished(Task *finished) {
     }
 
     if(finished == consensusTask) {
-        U2Sequence u2seq = seqImporter.finalizeSequence(stateInfo);
+        resultSequence = seqImporter.finalizeSequence(stateInfo);
         CHECK_OP(stateInfo, newSubTasks);
-        U2SequenceObject * seqObj = new U2SequenceObject(u2seq.visualName, U2EntityRef(resultDocument->getDbiRef(), u2seq.id));
-        resultDocument->addObject(seqObj);
+        if (settings.saveToFile) {
+            U2SequenceObject * seqObj = new U2SequenceObject(resultSequence.visualName, U2EntityRef(resultDocument->getDbiRef(), resultSequence.id));
+            resultDocument->addObject(seqObj);
+        }
     }
     return newSubTasks;
 }
@@ -122,6 +133,10 @@ void ExportConsensusTask::reportResult(const ConsensusInfo &result) {
     }
     seqImporter.addBlock(consensus.constData(), consensus.length(), stateInfo);
     CHECK_OP(stateInfo,);
+}
+
+U2Sequence ExportConsensusTask::getResult() const {
+    return resultSequence;
 }
 
 

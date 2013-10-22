@@ -31,16 +31,20 @@
 
 namespace U2 {
 
-struct ExportConsensusTaskSettings : public AssemblyConsensusTaskSettings {
-    DocumentFormatId formatId;
-    QString fileName;
+struct U2VIEW_EXPORT ExportConsensusTaskSettings : public AssemblyConsensusTaskSettings {
     QString seqObjName;
     bool addToProject;
     bool keepGaps;
-    bool circular;
+
+    bool saveToFile;
+    /* true */
+    DocumentFormatId formatId;
+    QString fileName;
+    /* false */
+    U2DbiRef targetDbi;
 };
 
-class ExportConsensusTask : public DocumentProviderTask, ConsensusSettingsQueue {
+class U2VIEW_EXPORT ExportConsensusTask : public DocumentProviderTask, ConsensusSettingsQueue {
 public:
     ExportConsensusTask(const ExportConsensusTaskSettings &settings_);
 
@@ -53,7 +57,10 @@ public:
     virtual AssemblyConsensusTaskSettings getNextSettings();
     virtual void reportResult(const ConsensusInfo &result);
 
+    U2Sequence getResult() const;
+
 private:
+    U2Sequence resultSequence;
     ExportConsensusTaskSettings settings;
     AssemblyConsensusWorker * consensusTask;
     U2SequenceImporter seqImporter;

@@ -36,7 +36,7 @@ class Task;
 class U2SequenceObject;
 class VariantTrackObject;
 
-class AssemblyModel : public QObject {
+class U2VIEW_EXPORT AssemblyModel : public QObject {
     Q_OBJECT
 public:
     //TODO refactor 
