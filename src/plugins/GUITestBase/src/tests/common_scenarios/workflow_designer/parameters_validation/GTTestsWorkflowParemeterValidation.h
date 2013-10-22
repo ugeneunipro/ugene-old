@@ -33,6 +33,7 @@ namespace GUITest_common_scenarios_workflow_parameters_validation {
 
 GUI_TEST_CLASS_DECLARATION(test_0001)
 GUI_TEST_CLASS_DECLARATION(test_0003)
+GUI_TEST_CLASS_DECLARATION(test_0005)
 
 #undef GUI_TEST_PREFIX
 } // namespace U2

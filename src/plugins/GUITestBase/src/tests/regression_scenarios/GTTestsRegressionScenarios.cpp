@@ -1873,17 +1873,17 @@ GUI_TEST_CLASS_DEFINITION( test_2163 ) {
     GTGlobals::sleep(500);
     QWidget *dasPanel = GTWidget::findWidget(os, "DasOptionsPanelWidget");
     CHECK(NULL != dasPanel, );
-    
+   
     //3. Press "Fetch IDs".
     QWidget *searchIdsButton = GTWidget::findWidget(os, "searchIdsButton");
     GTWidget::click(os, searchIdsButton);
     GTGlobals::sleep(500);
-    
-    //4. Double click on the results table.
+   
+   //4. Double click on the results table.
     TaskScheduler* scheduller = AppContext::getTaskScheduler();
     GTGlobals::sleep(5000);
     while(!scheduller->getTopLevelTasks().isEmpty()){
-        GTGlobals::sleep();
+       GTGlobals::sleep();
     }
     QTableWidget *idList = qobject_cast<QTableWidget*>(GTWidget::findWidget(os, "idList"));
     GTWidget::click(os, idList);
@@ -1891,21 +1891,21 @@ GUI_TEST_CLASS_DEFINITION( test_2163 ) {
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
 
     // 4. Select a result id in the table.
-   // QPoint p1 = idList->mapFromGlobal(GTTableView::getCellPosition(os, idList, 0, 3));
-    //GTWidget::click(os, idList, Qt::LeftButton, p1);
+    QPoint p1 = idList->mapFromGlobal(GTTableView::getCellPosition(os, idList, 0, 3));
+    GTWidget::click(os, idList, Qt::LeftButton, p1);
 
-    //int count1 = idList->model()->rowCount();
-   // QString value1 = idList->itemAt(p1)->text();
+    int count1 = idList->model()->rowCount();
+    QString value1 = idList->itemAt(p1)->text();
 
-    // Expected: the table contains only the last results. There are no previous items and additional empty lines.
-   // QPoint p2 = idList->mapFromGlobal(GTTableView::getCellPosition(os, idList, 0, 3));
-   // GTWidget::click(os, idList, Qt::LeftButton, p2);
+    //Expected: the table contains only the last results. There are no previous items and additional empty lines.
+    QPoint p2 = idList->mapFromGlobal(GTTableView::getCellPosition(os, idList, 0, 3));
+    GTWidget::click(os, idList, Qt::LeftButton, p2);
 
-   // int count2 = idList->model()->rowCount();
-   // QString value2 = idList->itemAt(p2)->text();
+    int count2 = idList->model()->rowCount();
+    QString value2 = idList->itemAt(p2)->text();
 
-    //CHECK_SET_ERR(count1 == count2, "There are empty rows!");
-   // CHECK_SET_ERR(value1 == value2, "Results differ!");
+    CHECK_SET_ERR(count1 == count2, "There are empty rows!");
+    CHECK_SET_ERR(value1 == value2, "Results differ!");
 
 }
 
