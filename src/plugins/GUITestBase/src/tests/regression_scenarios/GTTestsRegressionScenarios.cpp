@@ -1769,6 +1769,82 @@ GUI_TEST_CLASS_DEFINITION( test_2128 )
     CHECK_SET_ERR( initialMsaContent == finalMsaContent, "MSA has unexpectedly changed" );
 }
 
+GUI_TEST_CLASS_DEFINITION( test_2128_1 )
+{
+    // 1. Open "data/samples/CLUSTAL/COI.aln".
+    GTFileDialog::openFile( os, dataDir + "samples/CLUSTALW/", "COI.aln" );
+
+    //2. Select the six first symbols in the first sequence and press Space. 
+    GTUtilsMSAEditorSequenceArea::selectArea( os, QPoint( 0, 0 ), QPoint( 5, 0 ) );
+    GTKeyboardDriver::keyClick( os, GTKeyboardDriver::key["space"] );
+    GTGlobals::sleep( 2000 );
+
+    // Expected state: The first symbol T is on the 7 position.
+    GTKeyboardDriver::keyClick( os, GTKeyboardDriver::key["esc"] );
+    GTGlobals::sleep(200);
+    const QPoint initialSelectionPos( 6, 0 );
+    GTUtilsMSAEditorSequenceArea::click( os, initialSelectionPos );
+    GTGlobals::sleep( 2000 );
+    GTKeyboardDriver::keyClick( os, 'c', GTKeyboardDriver::key["ctrl"] );
+    GTGlobals::sleep( 200 );
+    GTKeyboardDriver::keyClick( os, GTKeyboardDriver::key["esc"] );
+    GTGlobals::sleep(200);
+    const QString finalMsaContent = GTClipboard::text( os );
+    CHECK_SET_ERR(  "T" == finalMsaContent,
+                    "Unexpected MSA content has occurred" );
+
+    //3. Press the Ctrl + Space. 
+    GTUtilsMSAEditorSequenceArea::selectArea( os, QPoint( 6, 0 ), QPoint( 12, 0 ) );
+    GTKeyboardDriver::keyClick( os, GTKeyboardDriver::key["space"], GTKeyboardDriver::key["ctrl"] );
+    GTGlobals::sleep( 200 );
+
+    // Expected state: The first symbol T is on the 8 position.
+    GTKeyboardDriver::keyClick( os, GTKeyboardDriver::key["esc"] );
+    GTGlobals::sleep(200);
+    GTUtilsMSAEditorSequenceArea::selectArea( os, QPoint( 7, 0 ), QPoint( 7, 0 ) );
+    GTKeyboardDriver::keyClick( os, 'c', GTKeyboardDriver::key["ctrl"] );
+    GTGlobals::sleep( 200 );
+    GTKeyboardDriver::keyClick( os, GTKeyboardDriver::key["esc"] );
+    GTGlobals::sleep(200);
+    const QString finalMsaContent1 = GTClipboard::text( os );
+    CHECK_SET_ERR(  "T" == finalMsaContent1,
+                    "Unexpected MSA content has occurred" );
+    
+    //4. Press the Ctrl + Backspace. 
+    GTUtilsMSAEditorSequenceArea::selectArea( os, QPoint( 7, 0 ), QPoint( 13, 0 ) );
+    GTKeyboardDriver::keyClick( os, GTKeyboardDriver::key["back"], GTKeyboardDriver::key["ctrl"] );
+    GTGlobals::sleep( 200 );
+
+    // Expected state: The first symbol T is on the 8 position.
+    GTKeyboardDriver::keyClick( os, GTKeyboardDriver::key["esc"] );
+    GTGlobals::sleep(200);
+    GTUtilsMSAEditorSequenceArea::selectArea( os, QPoint( 6, 0 ), QPoint( 6, 0 ) );
+    GTKeyboardDriver::keyClick( os, 'c', GTKeyboardDriver::key["ctrl"] );
+    GTGlobals::sleep( 200 );
+    GTKeyboardDriver::keyClick( os, GTKeyboardDriver::key["esc"] );
+    GTGlobals::sleep(200);
+    const QString finalMsaContent2 = GTClipboard::text( os );
+    CHECK_SET_ERR(  "T" == finalMsaContent2,
+                    "Unexpected MSA content has occurred" );
+
+    //5. Press the Backspace. 
+    GTUtilsMSAEditorSequenceArea::selectArea( os, QPoint( 6, 0 ), QPoint( 12, 0 ) );
+    GTKeyboardDriver::keyClick( os, GTKeyboardDriver::key["back"] );
+    GTGlobals::sleep( 200 );
+
+    // Expected state: The first symbol T is on the 1 position.
+    GTKeyboardDriver::keyClick( os, GTKeyboardDriver::key["esc"] );
+    GTGlobals::sleep(200);
+    GTUtilsMSAEditorSequenceArea::selectArea( os, QPoint( 0, 0 ), QPoint( 0, 0 ) );
+    GTKeyboardDriver::keyClick( os, 'c', GTKeyboardDriver::key["ctrl"] );
+    GTGlobals::sleep( 200 );
+    GTKeyboardDriver::keyClick( os, GTKeyboardDriver::key["esc"] );
+    GTGlobals::sleep(200);
+    const QString finalMsaContent3 = GTClipboard::text( os );
+    CHECK_SET_ERR(  "T" == finalMsaContent3,
+                    "Unexpected MSA content has occurred" );
+}
+
 GUI_TEST_CLASS_DEFINITION( test_2140 )
 {
     //1. Use main menu {Tools->Dna assembly->convert UGENE assembly data base to SAM format}
