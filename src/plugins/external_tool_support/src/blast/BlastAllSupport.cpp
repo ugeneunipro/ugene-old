@@ -59,7 +59,7 @@ BlastAllSupport::BlastAllSupport(const QString& name, const QString& path) : Ext
         grayIcon = QIcon(":external_tool_support/images/ncbi_gray.png");
         warnIcon = QIcon(":external_tool_support/images/ncbi_warn.png");
     }
-    if(ET_BLASTALL == name) {
+
 #ifdef Q_OS_WIN
         executableFileName="blastall.exe";
 #else
@@ -67,28 +67,13 @@ BlastAllSupport::BlastAllSupport(const QString& name, const QString& path) : Ext
         executableFileName="blastall";
     #endif
 #endif
-        validationArguments<<"--help";
-        validMessage="blastall";
-        description=tr("The <i>blastall</i> is the old program developed and distributed " \
-                       "by the NCBI for running BLAST searches. The NCBI recommends " \
-                       "that people start using the programs of the BLAST+ package instead.");
-        versionRegExp=QRegExp("blastall (\\d+\\.\\d+\\.\\d+)");
-        toolKitName="BLAST";
-    } else if(ET_CUDA_BLASTP == name) {
-#ifdef Q_OS_WIN
-        executableFileName="CUDA-BLASTP.exe";
-#else
-    #if defined(Q_OS_LINUX) || defined(Q_OS_MAC)
-        executableFileName="CUDA-BLASTP";
-    #endif
-#endif
-        validationArguments<<"--help";
-        validMessage="Specify any particular device to be used";
-        description=tr("The <i>blastall</i> is the old program developed and distributed " \
-                       "by the NCBI for running BLAST searches. The NCBI recommends " \
-                       "that people start using the programs of the BLAST+ package instead.");
-        toolKitName="CUDA-BLAST";
-    }
+    validationArguments<<"--help";
+    validMessage="blastall";
+    description=tr("The <i>blastall</i> is the old program developed and distributed " \
+                   "by the NCBI for running BLAST searches. The NCBI recommends " \
+                   "that people start using the programs of the BLAST+ package instead.");
+    versionRegExp=QRegExp("blastall (\\d+\\.\\d+\\.\\d+)");
+    toolKitName="BLAST";
     lastDBName="";
     lastDBPath="";
 }

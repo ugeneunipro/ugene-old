@@ -26,7 +26,6 @@
 #include "utils/ExternalToolSupportAction.h"
 
 #define ET_FORMATDB "FormatDB"
-#define ET_CUDA_FORMATDB "CUDA-FormatDB"
 #define ET_MAKEBLASTDB "MakeBLASTDB"
 #define ET_GPU_MAKEBLASTDB "GPU-MakeBLASTDB"
 namespace U2 {

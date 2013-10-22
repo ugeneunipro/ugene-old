@@ -367,12 +367,6 @@ void ExternalToolSupportSettingsPageWidget::sl_itemSelectionChanged() {
                           "BLAST can be used to infer functional and evolutionary relationships between sequences as well as help identify members of gene families."));
 
     }
-    else if (name == "CUDA-BLAST") {
-        descriptionTextEdit->setText(tr("The <i>Basic Local Alignment Search Tool</i> (BLAST) finds regions of local similarity between sequences. "
-                           "The program compares nucleotide or protein sequences to sequence databases and calculates the statistical significance of matches. "
-                          "BLAST can be used to infer functional and evolutionary relationships between sequences as well as help identify members of gene families."));
-
-    }
     else if (name == "BLAST+") {
         descriptionTextEdit->setText(tr("<i>BLAST+</i> is a new version of the BLAST package from the NCBI."));
     }

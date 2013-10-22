@@ -286,10 +286,6 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin() :
     FormatDBSupport* formatDBTool = new FormatDBSupport(ET_FORMATDB);
     etRegistry->registerEntry(formatDBTool);
 
-    //FormatDB from CUDA-BlastP
-    FormatDBSupport* cudaFormatDBTool = new FormatDBSupport(ET_CUDA_FORMATDB);
-    etRegistry->registerEntry(cudaFormatDBTool);
-
     //MakeBLASTDB from BLAST+
     FormatDBSupport* makeBLASTDBTool = new FormatDBSupport(ET_MAKEBLASTDB);
     etRegistry->registerEntry(makeBLASTDBTool);
@@ -301,10 +297,6 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin() :
     //BlastAll
     BlastAllSupport* blastallTool = new BlastAllSupport(ET_BLASTALL);
     etRegistry->registerEntry(blastallTool);
-
-    //CUDA-BlastP
-    BlastAllSupport* cudaBlastPTool = new BlastAllSupport(ET_CUDA_BLASTP);
-    etRegistry->registerEntry(cudaBlastPTool);
 
     BlastPlusSupport* blastNPlusTool = new BlastPlusSupport(ET_BLASTN);
     etRegistry->registerEntry(blastNPlusTool);

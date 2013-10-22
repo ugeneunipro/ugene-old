@@ -67,11 +67,11 @@ BlastPlusSupportRunDialog::BlastPlusSupportRunDialog(U2SequenceObject* _dnaso, Q
     wdgt->setMinimumHeight(150);
     verticalLayout_4->addWidget(wdgt);
 
-    programName->removeItem(3);//cuda-blastp
+    //programName->removeItem(3);//cuda-blastp
     if(dnaso->getAlphabet()->getType() == DNAAlphabet_AMINO){
         programName->removeItem(0);//blastn
-        programName->removeItem(2);//blastx
-        programName->removeItem(3);//tblastx
+        programName->removeItem(1);//blastx
+        programName->removeItem(2);//tblastx
         settings.isNucleotideSeq=false;
     }else{
         programName->removeItem(1);//blastp

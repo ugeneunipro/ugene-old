@@ -121,17 +121,13 @@ QList<Task*> BlastAllSupportTask::onSubTaskFinished(Task* subTask) {
     if(subTask==saveTemporaryDocumentTask){
         delete tmpDoc;//sequenceObject also deleted at this place
         QStringList arguments;
-        if("cuda-blastp" != settings.programName) {
-            arguments <<"-p"<< settings.programName;
-        }
+        arguments <<"-p"<< settings.programName;
         if(!settings.filter.isEmpty()){
             arguments <<"-F"<<settings.filter;
         }
         arguments <<"-d"<< settings.databaseNameAndPath;
         arguments <<"-e"<< QString::number(settings.expectValue);
-        if("cuda-blastp" != settings.programName) {
-            arguments <<"-n"<< (settings.megablast ? "T" : "F");
-        }
+        arguments <<"-n"<< (settings.megablast ? "T" : "F");
         arguments <<"-W"<< QString::number(settings.wordSize);
         if(!settings.isDefaultCosts){
             arguments <<"-G"<< QString::number(settings.gapOpenCost);
@@ -146,10 +142,8 @@ QList<Task*> BlastAllSupportTask::onSubTaskFinished(Task* subTask) {
                 arguments <<"-M"<< settings.matrix;
             }
         }
-        if("cuda-blastp" != settings.programName) {
-            if(settings.numberOfHits != 0){
-                arguments <<"-K" << QString::number(settings.numberOfHits);
-            }
+        if(settings.numberOfHits != 0){
+            arguments <<"-K" << QString::number(settings.numberOfHits);
         }
         arguments <<"-i"<< url;
         if (settings.programName != "tblastx"){
@@ -197,11 +191,7 @@ QList<Task*> BlastAllSupportTask::onSubTaskFinished(Task* subTask) {
 
         logParser=new ExternalToolLogParser();
         QString workingDirectory=QFileInfo(url).absolutePath();
-        if("cuda-blastp" == settings.programName) {
-            blastAllTask=new ExternalToolRunTask(ET_CUDA_BLASTP,arguments, logParser, workingDirectory);
-        } else {
-            blastAllTask=new ExternalToolRunTask(ET_BLASTALL,arguments, logParser, workingDirectory);
-        }
+        blastAllTask=new ExternalToolRunTask(ET_BLASTALL,arguments, logParser, workingDirectory);
         setListenerForTask(blastAllTask);
         blastAllTask->setSubtaskProgressWeight(95);
         res.append(blastAllTask);

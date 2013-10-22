@@ -53,7 +53,7 @@ FormatDBSupport::FormatDBSupport(const QString& name, const QString& path) : Ext
         grayIcon = QIcon(":external_tool_support/images/ncbi_gray.png");
         warnIcon = QIcon(":external_tool_support/images/ncbi_warn.png");
     }
-    assert((name == ET_FORMATDB)||(name == ET_CUDA_FORMATDB)||(name == ET_MAKEBLASTDB)||(name == ET_GPU_MAKEBLASTDB));
+    assert((name == ET_FORMATDB)||(name == ET_MAKEBLASTDB)||(name == ET_GPU_MAKEBLASTDB));
     if(name == ET_FORMATDB){
 #ifdef Q_OS_WIN
     executableFileName="formatdb.exe";
@@ -70,20 +70,6 @@ FormatDBSupport::FormatDBSupport(const QString& name, const QString& path) : Ext
 
     versionRegExp=QRegExp("formatdb (\\d+\\.\\d+\\.\\d+)");
     toolKitName="BLAST";
-    }else if(name == ET_CUDA_FORMATDB){
-#ifdef Q_OS_WIN
-    executableFileName="CUDA-formatdb.exe";
-#else
-    #if defined(Q_OS_LINUX) || defined(Q_OS_MAC)
-    executableFileName="CUDA-formatdb";
-    #endif
-#endif
-    validMessage="formatdb";
-    description=tr("The <i>formatdb</i> formats protein or"
-        " nucleotide source databases before these databases"
-        " can be searched by <i>blastall</i>.");
-
-    toolKitName="CUDA-BLAST";
     }else if(name == ET_MAKEBLASTDB){
 #ifdef Q_OS_WIN
     executableFileName="makeblastdb.exe";

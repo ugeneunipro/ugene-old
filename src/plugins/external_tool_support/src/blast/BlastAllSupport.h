@@ -26,7 +26,6 @@
 #include <U2Gui/ObjectViewModel.h>
 
 #define ET_BLASTALL "BlastAll"
-#define ET_CUDA_BLASTP "CUDA-BlastP"
 #define BLASTALL_TMP_DIR    "blast_all"
 
 namespace U2 {
