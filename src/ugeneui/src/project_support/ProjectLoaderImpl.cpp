@@ -262,6 +262,34 @@ void ProjectLoaderImpl::updateRecentProjectsMenu() {
     }
 }
 
+namespace {
+/**
+ * If there are only unsupported documents which are needed to load
+ * then it is not needed to show the project because it will be empty
+ */
+void prepareDocTab(const QList<AD2P_DocumentInfo> &docsInfo, const QList<AD2P_ProviderInfo> &docProviders) {
+    CHECK(docProviders.isEmpty(), );
+    foreach(const AD2P_DocumentInfo &info, docsInfo) {
+        const DocumentFormat *df = AppContext::getDocumentFormatRegistry()->getFormatById(info.formatId);
+        if (NULL == df) {
+            continue;
+        }
+        const GObjectType t = df->getSupportedObjectTypes().toList().first();
+        if (GObjectTypes::getTypeInfo(t).type != GObjectTypes::UNKNOWN) {
+            // the project will not be empty
+            return;
+        }
+    }
+
+    const MainWindow *mw = AppContext::getMainWindow();
+    CHECK(NULL != mw, );
+    MWDockManager *dm = mw->getDockManager();
+    CHECK(NULL != dm, );
+
+    dm->dontActivateNextTime(MWDockArea_Left);
+}
+}
+
 #define MAX_DOCS_TO_OPEN_VIEWS 5
 #define MAX_OBJECT_PER_DOC 5000000
 
@@ -427,6 +455,8 @@ Task* ProjectLoaderImpl::openWithProjectTask(const QList<GUrl>& _urls, const QVa
     if (docsInfo.isEmpty() && docProviders.isEmpty()) {
         return NULL;
     }
+
+    prepareDocTab(docsInfo, docProviders);
     return new AddDocumentsToProjectTask(docsInfo, docProviders);
 }
 

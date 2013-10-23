@@ -68,6 +68,8 @@ public:
 
     virtual QWidget* toggleDock(const QString& widgetObjName);
 
+    virtual void dontActivateNextTime(MWDockArea a);
+
 protected:
     bool eventFilter(QObject *obj, QEvent *event);
 

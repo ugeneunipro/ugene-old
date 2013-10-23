@@ -209,6 +209,8 @@ public:
     virtual QWidget* activateDock(const QString& widgetObjName) = 0;
 
     virtual QWidget* toggleDock(const QString& widgetObjName) = 0;
+
+    virtual void dontActivateNextTime(MWDockArea a) = 0;
 };
 
 }//namespace

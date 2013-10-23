@@ -502,6 +502,10 @@ void MWDockManagerImpl::toggleDock(DockData* d) {
     }
 }
 
+void MWDockManagerImpl::dontActivateNextTime(MWDockArea a) {
+    lastActiveDocksState[a] = "";
+}
+
 
 void MWDockManagerImpl::saveDockGeometry(DockData* dd) {
 	const QString& id = dd->wrapWidget->w->objectName();
