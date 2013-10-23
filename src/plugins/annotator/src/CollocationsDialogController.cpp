@@ -131,6 +131,10 @@ void CollocationsDialogController::sl_addName() {
     QString name = ((QAction*)sender())->text();
     assert(allNames.contains(name));
     assert(!usedNames.contains(name));
+
+    bool remove = false;
+    //UGENE-2318 inserting and removed unused item because of QT bug
+    if(annotationsTree->topLevelItemCount() == 1) remove = true;
     
     usedNames.insert(name);
     AnnotationSettingsRegistry* asr = AppContext::getAnnotationsSettingsRegistry();
@@ -144,7 +148,16 @@ void CollocationsDialogController::sl_addName() {
     minusButton->setText("-");
     minusButton->setObjectName(name);
     annotationsTree->insertTopLevelItem(annotationsTree->topLevelItemCount()-1, item);
-    annotationsTree->setItemWidget(item, 1, minusButton);    
+    annotationsTree->setItemWidget(item, 1, minusButton);
+
+    //UGENE-2318
+    if(remove){
+        QTreeWidgetItem* ii = new QTreeWidgetItem();
+        int index = annotationsTree->topLevelItemCount()-1;
+        annotationsTree->insertTopLevelItem(index, ii);
+        annotationsTree->takeTopLevelItem(index);
+        delete ii;
+    }
 
     connect(minusButton, SIGNAL(clicked()), SLOT(sl_minusClicked()));
     updateState();
