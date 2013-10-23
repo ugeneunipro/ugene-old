@@ -1638,6 +1638,35 @@ GUI_TEST_CLASS_DEFINITION( test_2021_9 )
                     "Unexpected MSA content has occurred" );
 }
 
+GUI_TEST_CLASS_DEFINITION( test_2030 ) {
+    // 1. Open {_common_data/scenarios/msa/ma_one_line.aln}
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma_one_line.aln");
+
+    // 2. Set cursor to the end of the line
+    const QPoint endLinePos( 11, 0 );
+    GTUtilsMSAEditorSequenceArea::click( os, endLinePos );
+    GTGlobals::sleep(200);
+
+    // 3. Insert four gaps with SPACE.
+    for (int i = 0; i < 4; ++i) {
+        GTKeyboardDriver::keyClick( os, GTKeyboardDriver::key["space"] );
+        GTGlobals::sleep( 500 );
+    }
+
+    // 4. Set cursor to the beginning of the line
+    const QPoint begLinePos( 0, 0 );
+    GTUtilsMSAEditorSequenceArea::click( os, begLinePos );
+    GTGlobals::sleep(200);
+
+    // 5. Delete one symbol with DELETE
+    GTKeyboardDriver::keyClick( os, GTKeyboardDriver::key["delete"] );
+    GTGlobals::sleep( 200 );
+
+    // Expected state: line length is 15.
+    CHECK_SET_ERR( 15 == GTUtilsMSAEditorSequenceArea::getLength( os ),
+        "Unexpected MSA length!" );
+}
+
 GUI_TEST_CLASS_DEFINITION( test_2070 ){
     GTLogTracer lt;
     GTUtilsDialog::waitForDialog(os, new RemoteDBDialogFiller(os, "Q9IGQ6", 7));
