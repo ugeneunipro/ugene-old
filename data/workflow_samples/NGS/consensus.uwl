@@ -1,0 +1,107 @@
+#@UGENE_WORKFLOW
+#Uses input assemblies to extract the consensus sequences and save them to a FASTA.
+
+
+
+workflow "Extract consensus"{
+
+    read-assembly {
+        type:read-assembly;
+        name:"Read Assembly";
+        url-in {
+            dataset:"Dataset 1";
+        }
+    }
+    write-sequence {
+        type:write-sequence;
+        name:"Write Sequence";
+        url-out:consensus.fa;
+    }
+    extract-consensus {
+        type:extract-consensus;
+        name:"Extract Consensus from Assembly";
+    }
+
+
+    .actor-bindings {
+        extract-consensus.out-sequence->write-sequence.in-sequence
+        read-assembly.out-assembly->extract-consensus.in-assembly
+    }
+
+    extract-consensus.sequence->write-sequence.in-sequence.sequence
+    read-assembly.assembly->extract-consensus.in-assembly.assembly
+
+    .meta {
+        parameter-aliases {
+            read-assembly.url-in {
+                alias:in;
+            }
+            write-sequence.url-out {
+                alias:out;
+            }
+            extract-consensus.algorithm {
+                alias:algo;
+            }
+            extract-consensus.keep-gaps {
+                alias:gaps;
+            }
+        }
+        visual {
+            extract-consensus {
+                pos:"-645 -585";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                in-assembly.angle:180;
+                out-sequence.angle:360;
+            }
+            read-assembly {
+                pos:"-840 -585";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                out-assembly.angle:360;
+            }
+            write-sequence {
+                pos:"-360 -585";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                in-sequence.angle:180;
+            }
+            extract-consensus.out-sequence->write-sequence.in-sequence {
+                text-pos:"-37 -24";
+            }
+            read-assembly.out-assembly->extract-consensus.in-assembly {
+                text-pos:"-26.5 -24";
+            }
+        }
+        wizard {
+            name:"Extract Consensus Wizard";
+            page {
+                id:1;
+                title:"Extract Consensus";
+                parameters-area {
+                    group {
+                        title:"Input parameters";
+                        label-size:120;
+                        read-assembly.url-in {
+                            label:"Assembly";
+                        }
+                        extract-consensus.algorithm {
+                            label:"Algorithm";
+                        }
+                        extract-consensus.keep-gaps {
+                            label:"Keep gaps";
+                        }
+                    }
+                    group {
+                        title:"Extracted consensus";
+                        label-size:120;
+                        write-sequence.url-out {
+                            label:"Output file";
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
