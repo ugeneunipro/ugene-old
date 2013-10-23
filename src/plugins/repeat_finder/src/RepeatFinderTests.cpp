@@ -250,31 +250,29 @@ void GTest_FindSingleSequenceRepeatsTask::run() {
     qSort(expectedResults);
 
     //check all subtasks
-    foreach(Task* t, getSubtasks()) {
-        FindRepeatsTask* sub = qobject_cast<FindRepeatsTask*>(t);
-        QVector<RFResult> calcResults = sub->getResults();
-        if (expectedResults.size()!=calcResults.size()) {
-            stateInfo.setError(QString("Results count not matched, num = %1, expected = %2, alg = %3")
-                            .arg(calcResults.size()).arg(expectedResults.size()).arg(getAlgName(sub->getSettings().algo)));
-            return;
-        }
-        qSort(calcResults);
+    FindRepeatsTask* sub = qobject_cast<FindRepeatsTask*>(getSubtasks()[0]);
+    QVector<RFResult> calcResults = sub->getResults();
+    if (expectedResults.size()!=calcResults.size()) {
+        stateInfo.setError(QString("Results count not matched, num = %1, expected = %2, alg = %3")
+                        .arg(calcResults.size()).arg(expectedResults.size()).arg(getAlgName(sub->getSettings().algo)));
+        return;
+    }
+    qSort(calcResults);
 
-        for (int i=0, n = expectedResults.size(); i < n; i++) {
-            RFResult re = expectedResults[i];
-            RFResult rc = calcResults[i];
-            if (re!=rc || ((re.c>=0) && (re.c != rc.c))) {
-                QString errorString = QString("Results not matched, expected(%1, %2, %3), computed(%4, %5, %6), algo = %7")
-                    .arg(re.x).arg(re.y).arg(re.l).arg(rc.x).arg(rc.y).arg(rc.l).arg(getAlgName(sub->getSettings().algo));
+    for (int i=0, n = expectedResults.size(); i < n; i++) {
+        RFResult re = expectedResults[i];
+        RFResult rc = calcResults[i];
+        if (re!=rc || ((re.c>=0) && (re.c != rc.c))) {
+            QString errorString = QString("Results not matched, expected(%1, %2, %3), computed(%4, %5, %6), algo = %7")
+                .arg(re.x).arg(re.y).arg(re.l).arg(rc.x).arg(rc.y).arg(rc.l).arg(getAlgName(sub->getSettings().algo));
 
-                if (re.c>=0) {
-                    errorString = QString("Results not matched, expected(%1, %2, %3, %4), computed(%5, %6, %7, %8), algo = %9")
-                        .arg(re.x).arg(re.y).arg(re.l).arg(re.c).arg(rc.x).arg(rc.y).arg(rc.l).arg(rc.c).arg(getAlgName(sub->getSettings().algo));
-                }
-
-                stateInfo.setError(errorString);
-                return;
+            if (re.c>=0) {
+                errorString = QString("Results not matched, expected(%1, %2, %3, %4), computed(%5, %6, %7, %8), algo = %9")
+                    .arg(re.x).arg(re.y).arg(re.l).arg(re.c).arg(rc.x).arg(rc.y).arg(rc.l).arg(rc.c).arg(getAlgName(sub->getSettings().algo));
             }
+
+            stateInfo.setError(errorString);
+            return;
         }
     }
 }
