@@ -70,6 +70,8 @@ private:
     QTreeWidgetItem* insertChild(QTreeWidgetItem* rootItem, const QString& name, int pos, bool isModule = false);
     ExternalTool* isMasterWithModules(const QList<ExternalTool*>& toolsList) const;
     void setToolState(ExternalTool* tool);
+    QString getToolStateDescription(ExternalTool* tool) const;
+    void setDescription(ExternalTool* tool);
 
 private slots:
     void sl_toolPathChanged();

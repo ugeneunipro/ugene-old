@@ -256,11 +256,13 @@ void ExternalToolSupportSettingsPageWidget::setToolState(ExternalTool* tool) {
     externalToolsInfo[tool->getName()].valid = tool->isValid();
     QLabel* moduleToolLabel = qobject_cast<QLabel*>(treeWidget->itemWidget(item, 1));
     QString moduleToolState;
+    QString toolStateDesc;
 
     if (tool->isValid()) {
         item->setIcon(0, AppContext::getExternalToolRegistry()->getByName(tool->getName())->getIcon());
         moduleToolState = INSTALLED;
     } else if (!tool->getPath().isEmpty()) {
+        toolStateDesc = getToolStateDescription(tool);
         item->setIcon(0, AppContext::getExternalToolRegistry()->getByName(tool->getName())->getWarnIcon());
         moduleToolState = NOT_INSTALLED;
     } else {
@@ -273,11 +275,74 @@ void ExternalToolSupportSettingsPageWidget::setToolState(ExternalTool* tool) {
     }
 
     externalToolsInfo[tool->getName()].path = tool->getPath();
-    externalToolsInfo[tool->getName()].version = tool->getVersion();
+    if (!tool->getVersion().isEmpty()) {
+        externalToolsInfo[tool->getName()].version = tool->getVersion();
+    } else {
+        externalToolsInfo[tool->getName()].version = "unknown";
+    }
 
-    descriptionTextEdit->setText(AppContext::getExternalToolRegistry()->getByName(tool->getName())->getDescription());
-    descriptionTextEdit->setText(descriptionTextEdit->toHtml() + tr("<br>Version: ") + externalToolsInfo[tool->getName()].version);
-    descriptionTextEdit->setText(descriptionTextEdit->toHtml() + tr("<br>Binary path: ") + externalToolsInfo[tool->getName()].path);
+    QList<QTreeWidgetItem*> selectedItems = treeWidget->selectedItems();
+    CHECK(selectedItems.length() > 0, );
+    QString selectedName = selectedItems.at(0)->text(0);
+
+    if (selectedName == tool->getName()) {
+        setDescription(tool);
+    }
+}
+
+QString ExternalToolSupportSettingsPageWidget::getToolStateDescription(ExternalTool *tool) const {
+    QString result;
+
+    SAFE_POINT(tool, "Tool pointer is NULL", result);
+    ExternalToolRegistry* etRegistry = AppContext::getExternalToolRegistry();
+    SAFE_POINT(etRegistry, "External tool registry is NULL", result);
+    ExternalToolManager* etManager = etRegistry->getManager();
+    SAFE_POINT(etManager, "External tool manager is NULL", result);
+
+    ExternalToolManager::ExternalToolState state = etManager->getToolState(tool->getName());
+
+    if (state == ExternalToolManager::NotValidByDependency) {
+        result = tr("External tool '%1' cannot be validated as it "
+                    "depends on other tools, some of which are not valid. "
+                    "The list of tools is the following: ").arg(tool->getName());
+
+        QStringList invalidDependencies;
+        QStringList dependencies = tool->getDependencies();
+        foreach (const QString& masterName, dependencies) {
+            if (ExternalToolManager::Valid != etManager->getToolState(masterName)) {
+                invalidDependencies << masterName;
+            }
+        }
+
+        result += invalidDependencies.join(", ") + tr("<br><br>");
+    }
+
+    return result;
+}
+
+void ExternalToolSupportSettingsPageWidget::setDescription(ExternalTool* tool) {
+    QString desc = tr("No description");
+
+    if (tool) {
+        desc = getToolStateDescription(tool);
+        desc += tool->getDescription();
+
+        if (tool->isValid()) {
+            desc += tr("<br><br>Version: ");
+            if (!externalToolsInfo[tool->getName()].version.isEmpty()) {
+                desc += externalToolsInfo[tool->getName()].version;
+            } else {
+                desc += tr("unknown");
+            }
+        }
+
+        if (!externalToolsInfo[tool->getName()].path.isEmpty()) {
+            desc += tr("<br><br>Binary path: ");
+            desc += externalToolsInfo[tool->getName()].path;
+        }
+    }
+
+    descriptionTextEdit->setText(desc);
 }
 
 AppSettingsGUIPageState* ExternalToolSupportSettingsPageWidget::getState(QString& err) const {
@@ -403,15 +468,7 @@ void ExternalToolSupportSettingsPageWidget::sl_itemSelectionChanged() {
             "This pipeline is aimed to provide the following analysis steps: peak calling and annotating, motif search and gene ontology."));
     } else { //no description or tool custom description
         ExternalTool* tool = AppContext::getExternalToolRegistry()->getByName(name);
-        if (!tool) {
-            descriptionTextEdit->setText(tr("No description"));
-        } else {
-            descriptionTextEdit->setText(tool->getDescription());
-            if (!externalToolsInfo[name].version.isEmpty()){
-                descriptionTextEdit->setText(descriptionTextEdit->toHtml() + tr("<br>Version: ") + externalToolsInfo[name].version);
-                descriptionTextEdit->setText(descriptionTextEdit->toHtml() + tr("<br>Binary path: ") + externalToolsInfo[name].path);
-            }
-        }
+        setDescription(tool);
     }
 }
 
