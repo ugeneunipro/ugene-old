@@ -36,7 +36,7 @@
 
 #include "GTTestsWorkflowParemeterValidation.h"
 
-extern Q_CORE_EXPORT int qt_ntfs_permission_lookup;
+//extern Q_CORE_EXPORT int qt_ntfs_permission_lookup;
 namespace U2 {
 
 namespace GUITest_common_scenarios_workflow_parameters_validation {
@@ -151,11 +151,12 @@ GUI_TEST_CLASS_DEFINITION( test_0003 ) {
     //Expected state: The "File not found" error has appeared in the "Error list"
     GTUtilsWorkflowDesigner::checkErrorList( os, "File not found" );
 }
-
+//TODO: do not use qt_ntfs_permission_lookup here.I'm serious.
 GUI_TEST_CLASS_DEFINITION(test_0005){
-    
     GTLogTracer l;
-    GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os, true, testDir + "_common_data/scenarios/sandbox"));
+    QDir* d = new QDir(testDir + "_common_data/scenarios/sandbox");
+    bool b = d->mkdir("permDir");
+    GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os, true, testDir + "_common_data/scenarios/sandbox/permDir"));
     // 1. Open WD sample "Align Sequences with MUSCLE
     QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
     GTMenu::clickMenuItem(os, menu, QStringList() << "Workflow Designer");
@@ -168,7 +169,7 @@ GUI_TEST_CLASS_DEFINITION(test_0005){
     GTMouseDriver::click(os);
     GTMouseDriver::moveTo(os,GTTableView::getCellPosition(os,table,1,1));
     GTMouseDriver::click(os);
-    QString s = QFileInfo(testDir + "_common_data/scenarios/sandbox/").absoluteFilePath();
+    QString s = QFileInfo(testDir + "_common_data/scenarios/sandbox/permDir").absoluteFilePath();
     GTKeyboardDriver::keySequence(os, s+"/wd_pv_0001.sto");
     GTWidget::click(os,GTUtilsMdi::activeWindow(os));
 
@@ -176,12 +177,12 @@ GUI_TEST_CLASS_DEFINITION(test_0005){
     GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os,"Read alignment"));
     GTMouseDriver::click(os);
     GTUtilsWorkflowDesigner::setDatasetInputFile(os, testDir + "_common_data/clustal/", "align.aln");
-    GTGlobals::sleep(20000);
+    GTGlobals::sleep(2000);
     
-    qt_ntfs_permission_lookup++; // turn checking on
-    QFile dir(testDir + "_common_data/scenarios/sandbox/");
+    QFile dir(testDir + "_common_data/scenarios/sandbox/permDir");
     CHECK_SET_ERR(dir.exists(), "Sandbox not found");
     QFile::Permissions p = dir.permissions();
+
     p &= ~QFile::WriteOwner;
     p &= ~QFile::WriteUser;
     p &= ~QFile::WriteGroup;
@@ -197,8 +198,8 @@ GUI_TEST_CLASS_DEFINITION(test_0005){
     // Expected state: The "File not found" error has appeared in the "Error list"
     GTUtilsWorkflowDesigner::checkErrorList(os, "Read alignment: File not found:");
     CHECK_SET_ERR(l.hasError(), "There are no error messages about write access in WD directory");
-     qt_ntfs_permission_lookup--;
     }
+
 
 } // namespace GUITest_common_scenarios_workflow_designer
 
