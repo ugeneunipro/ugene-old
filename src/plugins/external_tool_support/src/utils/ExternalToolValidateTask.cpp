@@ -265,19 +265,14 @@ void ExternalToolSearchAndValidateTask::prepare() {
             QStringList paths;
 #endif
 #endif
-            // UGENE-1781: Remove python external tool search in PATH
-            // It should be fixed without crutches.
-            if (tool->getName() != ET_PYTHON) {
-                foreach (const QString& curPath, paths) {
-                    QString exePath = curPath + "/" + tool->getExecutableFileName();
-                    QFileInfo fileExe(exePath);
-                    if (fileExe.exists()) {
-                        toolPaths << exePath;
-                    }
+            foreach (const QString& curPath, paths) {
+                QString exePath = curPath + "/" + tool->getExecutableFileName();
+                QFileInfo fileExe(exePath);
+                if (fileExe.exists()) {
+                    toolPaths << exePath;
                 }
             }
         }
-
     }
 
     if (!toolPaths.isEmpty()) {
