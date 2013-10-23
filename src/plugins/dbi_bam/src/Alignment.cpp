@@ -177,11 +177,21 @@ void Alignment::setAuxData(const QList<U2AuxData> &aux) {
     this->aux = aux;
 }
 
-int Alignment::computeLength(const Alignment &alignment) {
+int Alignment::computeLength(const QList<CigarOperation> &cigar) {
     int length = 0;
-    foreach(const Alignment::CigarOperation &operation, alignment.getCigar()) {
+    foreach(const Alignment::CigarOperation &operation, cigar) {
         if((operation.getOperation() != Alignment::CigarOperation::Insertion)) {
             length += operation.getLength();
+        }
+    }
+    return length;
+}
+
+int Alignment::computeLength(const QList<U2CigarToken> &cigar) {
+    int length = 0;
+    foreach(const U2CigarToken &operation, cigar) {
+        if((operation.op != U2CigarOp_I)) {
+            length += operation.count;
         }
     }
     return length;

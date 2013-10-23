@@ -89,7 +89,8 @@ public:
     void setQuality(const QByteArray &quality);
     void setAuxData(const QList<U2AuxData> &aux);
 
-    static int computeLength(const Alignment &alignment);
+    static int computeLength(const QList<CigarOperation> &cigar);
+    static int computeLength(const QList<U2CigarToken> &cigar);
 private:
     int referenceId;
     int position;

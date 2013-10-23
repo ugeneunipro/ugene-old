@@ -256,7 +256,7 @@ void Dbi::buildIndex(U2OpStatus &os) {
                     VirtualOffset alignmentOffset = reader->getOffset();
                     Alignment alignment = reader->readAlignment();
                     if(-1 != alignment.getReferenceId()) {
-                        qint64 readLength = Alignment::computeLength(alignment);
+                        qint64 readLength = Alignment::computeLength(alignment.getCigar());
                         qint64 endPosition = alignment.getPosition() + readLength;
                         if(alignment.getPosition() - columnStarts[alignment.getReferenceId()] > COLUMN_DISTANCE) {
                             packedRows[alignment.getReferenceId()] = 0;
@@ -751,7 +751,7 @@ U2AssemblyRead AssemblyDbi::alignmentToRead(const Alignment &alignment) {
     U2AssemblyRead row(new U2AssemblyReadData());
     row->name = alignment.getName();
     row->leftmostPos = alignment.getPosition();
-    row->effectiveLen = Alignment::computeLength(alignment);
+    row->effectiveLen = Alignment::computeLength(alignment.getCigar());
     row->readSequence = alignment.getSequence();
     row->quality = alignment.getQuality();
     row->mappingQuality = alignment.getMapQuality();

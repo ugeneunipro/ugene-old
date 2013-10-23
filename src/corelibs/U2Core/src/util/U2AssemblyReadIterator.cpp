@@ -19,6 +19,8 @@
  * MA 02110-1301, USA.
  */
 
+#include <U2Core/U2SafePoints.h>
+
 #include "U2AssemblyReadIterator.h"
 
 
@@ -80,6 +82,7 @@ bool U2AssemblyReadIterator::hasNext() const {
 char U2AssemblyReadIterator::nextLetter() {
     assert(hasNext());
     skip();
+    SAFE_POINT(offsetInCigar < cigar.size(), "CIGAR out of range", 0);
     if(offsetInToken != cigar.at(offsetInCigar).count) { //staying in the current token
         offsetInToken++;
     } else { //current token is finished
