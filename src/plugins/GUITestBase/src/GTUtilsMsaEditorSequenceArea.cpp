@@ -186,6 +186,50 @@ void GTUtilsMSAEditorSequenceArea::checkConsensus(U2OpStatus &os, QString cons){
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "selectSequence"
+void GTUtilsMSAEditorSequenceArea::selectSequence(U2OpStatus &os, QString seqName) {
+    MSAEditorSequenceArea *msaEditArea = qobject_cast<MSAEditorSequenceArea*>
+            (GTWidget::findWidget(os, "msa_editor_sequence_area"));
+    CHECK_SET_ERR(msaEditArea != NULL, "MsaEditorSequenceArea not found");
+
+    QStringList names = getNameList(os);
+    int row = 0;
+    while (names[row] != seqName) {
+        row++;
+    }
+    click(os, QPoint(-5, row));
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "isSequenceSelected"
+bool GTUtilsMSAEditorSequenceArea::isSequenceSelected(U2OpStatus &os, QString seqName) {
+    MSAEditorSequenceArea *msaEditArea = qobject_cast<MSAEditorSequenceArea*>
+            (GTWidget::findWidget(os, "msa_editor_sequence_area"));
+    CHECK_SET_ERR_RESULT(msaEditArea != NULL, "MsaEditorSequenceArea not found", false);
+
+    QStringList names = getNameList(os);
+    int row = 0;
+    while ((names[row] != seqName) && (row < names.size())) {
+        row++;
+    }
+    if (msaEditArea->getRowsAt(row) == msaEditArea->getSelectedRows()) {
+        return true;
+    }
+    return false;
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "isSequenceVisible"
+bool GTUtilsMSAEditorSequenceArea::isSequenceVisible(U2OpStatus &os, QString seqName) {
+    MSAEditorSequenceArea *msaEditArea = qobject_cast<MSAEditorSequenceArea*>
+            (GTWidget::findWidget(os, "msa_editor_sequence_area"));
+    CHECK_SET_ERR_RESULT(msaEditArea != NULL, "MsaEditorSequenceArea not found", false);
+
+    QStringList names = getNameList(os);
+    return names.contains(seqName);
+}
+#undef GT_METHOD_NAME
+
 #define GT_METHOD_NAME "selectColumnInConsensus"
 void GTUtilsMSAEditorSequenceArea::selectColumnInConsensus( U2OpStatus &os, int columnNumber ) {
     QWidget *activeWindow = GTUtilsMdi::activeWindow( os );

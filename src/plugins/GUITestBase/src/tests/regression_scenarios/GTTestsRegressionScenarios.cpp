@@ -30,6 +30,7 @@
 #include "api/GTAction.h"
 #include "api/GTWidget.h"
 #include "api/GTTableView.h"
+#include "api/GTToolbar.h"
 #include "api/GTTreeWidget.h"
 #include "api/GTLineEdit.h"
 #include "api/GTComboBox.h"
@@ -1659,6 +1660,58 @@ GUI_TEST_CLASS_DEFINITION( test_2089 )
     // 3. Set any folder without write access as workflow output directory. Click OK.
     QMenu *menu = GTMenu::showMainMenu(os, MWMENU_TOOLS);
     GTMenu::clickMenuItem(os, menu, QStringList() << "Workflow Designer");
+}
+
+GUI_TEST_CLASS_DEFINITION( test_2100_1 ){
+    //1. Open COI.aln
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
+
+    //2. Select Hetrodes_pupus_EF540832
+    GTUtilsMSAEditorSequenceArea::selectSequence(os, QString("Hetrodes_pupus_EF540832"));
+
+    //2. Click toolbutton "Enable collapsing"
+    GTWidget::click(os, GTToolbar::getWidgetForActionName(os, GTToolbar::getToolbar(os, "mwtoolbar_activemdi"), "Enable collapsing"));
+
+    //Expected state: Hetrodes_pupus_EF540832 is still selected
+    CHECK_SET_ERR( GTUtilsMSAEditorSequenceArea::isSequenceSelected(os, QString("Hetrodes_pupus_EF540832")),
+                   "Required sequence is not selected");
+}
+
+GUI_TEST_CLASS_DEFINITION( test_2100_2 ){
+    //1. Open COI.aln
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
+
+    //2. Click toolbutton "Enable collapsing"
+    GTWidget::click(os, GTToolbar::getWidgetForActionName(os, GTToolbar::getToolbar(os, "mwtoolbar_activemdi"), "Enable collapsing"));
+
+    //expected state: Mecopoda_elongata__Ishigaki__J and Mecopoda_elongata__Sumatra_ are collapsed
+    CHECK_SET_ERR( !GTUtilsMSAEditorSequenceArea::isSequenceVisible(os, QString("Mecopoda_elongata__Sumatra_")),
+                   "Required sequence is not collapsed");
+
+    //3. Select Mecopoda_sp.__Malaysia_
+    GTUtilsMSAEditorSequenceArea::selectSequence(os, QString("Mecopoda_sp.__Malaysia_"));
+
+    //4. Expand Mecopoda_elongata__Ishigaki__J
+
+
+    //Expected state: Mecopoda_sp.__Malaysia_ is still selected
+    CHECK_SET_ERR( GTUtilsMSAEditorSequenceArea::isSequenceSelected(os, QString("Mecopoda_sp.__Malaysia_")),
+                   "Expected sequence is not selected");
+}
+
+GUI_TEST_CLASS_DEFINITION( test_2100_3 ){
+    //1. Open COI.aln
+    GTFileDialog::openFile(os, dataDir+"samples/CLUSTALW/", "COI.aln");
+
+    //2. Click toolbutton "Enable collapsing"
+    GTWidget::click(os, GTToolbar::getWidgetForActionName(os, GTToolbar::getToolbar(os, "mwtoolbar_activemdi"), "Enable collapsing"));
+
+    //3. Select Mecopoda_sp.__Malaysia_
+    GTUtilsMSAEditorSequenceArea::selectSequence(os, QString("Mecopoda_sp.__Malaysia_"));
+
+    //4. Expand Select Mecopoda_sp.__Malaysia_
+    //Expected state: Mecopoda_elongata__Ishigaki__J and Mecopoda_elongata__Sumatra_ are selected
+
 }
 
 GUI_TEST_CLASS_DEFINITION( test_2122 ){

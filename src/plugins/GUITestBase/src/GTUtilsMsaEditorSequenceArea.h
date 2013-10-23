@@ -51,6 +51,10 @@ public:
     static QPoint convertCoordinates(U2OpStatus &os, const QPoint p);
     static void click(U2OpStatus &os, QPoint p = QPoint(0, 0));
 
+    static void selectSequence(U2OpStatus &os, QString seqName);
+    static bool isSequenceSelected(U2OpStatus &os, QString seqName);
+    static bool isSequenceVisible(U2OpStatus &os, QString seqName);
+
     static bool offsetsVisible(U2OpStatus &os);
 };
 
