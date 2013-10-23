@@ -97,6 +97,57 @@ GUI_TEST_CLASS_DEFINITION(test_0001){
     GTUtilsWorkflowDesigner::checkErrorList(os, "Read alignment: File not found:");
 }
 
+GUI_TEST_CLASS_DEFINITION( test_0002 ) {
+//    Workflow dataset input directory validation
+
+//    1. Open WD sample "Align Sequences with MUSCLE"
+    QMenu* menu = GTMenu::showMainMenu(os, MWMENU_TOOLS);
+    GTMenu::clickMenuItem(os, menu, QStringList() << "Workflow Designer");
+    GTUtilsWorkflowDesigner::addSample(os, "Align sequences with MUSCLE");
+
+//    2. Set some name for an output file
+    QTableView* table = qobject_cast<QTableView*>(GTWidget::findWidget(os, "table"));
+    CHECK_SET_ERR(table, "tableView not found");
+    QPoint writeAlignmentCenter = GTUtilsWorkflowDesigner::getItemCenter(os, "Write alignment");
+    GTMouseDriver::moveTo(os, writeAlignmentCenter);
+    GTMouseDriver::click(os);
+    QPoint cellPoint = GTTableView::getCellPosition(os, table, 1, 1);
+    GTMouseDriver::moveTo(os, cellPoint);
+    GTMouseDriver::click(os);
+    QString dirPath = QFileInfo(testDir + "_common_data/scenarios/sandbox/").absoluteFilePath();
+    GTKeyboardDriver::keySequence(os, dirPath + "/wd_pv_0002.sto");
+    QWidget* activeWindow = GTUtilsMdi::activeWindow(os);
+    CHECK_SET_ERR(activeWindow, "Active window wasn't found");
+    GTWidget::click(os, activeWindow);
+
+//    3. Create a new empty directory somewhere (e.g. in the "test/_tmp" directory)
+    QDir outputDir(testDir + "_common_data/scenarios/sandbox/wd_pv_0002_out/1/2/3/4/");
+    bool success = outputDir.mkpath(outputDir.absolutePath());
+    CHECK_SET_ERR(success, QString("Can't create a new directory: '%1'").arg(outputDir.absolutePath()));
+
+//    4. Add that directory as input in WD
+    QPoint readAlignmentCenter = GTUtilsWorkflowDesigner::getItemCenter(os, "Read alignment");
+    GTMouseDriver::moveTo(os, readAlignmentCenter);
+    GTMouseDriver::click(os);
+    GTUtilsWorkflowDesigner::setDatasetInputFolder(os, outputDir.absolutePath());
+    GTGlobals::sleep(2000);
+    GTWidget::click(os, activeWindow);
+
+//    5. Delete this directory
+    outputDir.rmpath(outputDir.absolutePath());
+
+//    6. In WD press the "Validate" button
+    MessageBoxDialogFiller* filler = new MessageBoxDialogFiller(os, QMessageBox::Ok, "Please fix issues listed in the error list (located under workflow).");
+    GTUtilsDialog::waitForDialog(os, filler);
+    QAbstractButton* validateButton = GTAction::button(os, "Validate workflow");
+    CHECK_SET_ERR(validateButton, "Validate button wasn't found");
+    GTWidget::click(os, validateButton);
+    GTGlobals::sleep(2000);
+
+//    Expected state: The "Directory not found" error has appeared in the "Error list"
+    GTUtilsWorkflowDesigner::checkErrorList(os, "Read alignment: Directory not found:");
+}
+
 GUI_TEST_CLASS_DEFINITION( test_0003 ) {
     //1. Create the following workflow { Read Sequence -> Find Pattern -> Write Sequence }
     //GTUtilsDialog::waitForDialog( os, new StartupDialogFiller( os ) );

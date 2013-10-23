@@ -32,8 +32,8 @@ namespace U2{
 #define GT_CLASS_NAME "GTUtilsDialog::StartupDialogFiller"
 #define GT_METHOD_NAME "run"
 
-StartupDialogFiller::StartupDialogFiller(U2OpStatus &os, bool _ok, QString _wrongPath)
-: Filler(os,"StartupDialog"), ok(_ok), wrongPath(_wrongPath)
+StartupDialogFiller::StartupDialogFiller(U2OpStatus &os, bool _ok, QString _path, bool _isPathValid)
+    : Filler(os,"StartupDialog"), ok(_ok), path(_path), isPathValid(_isPathValid)
 {
 
 }
@@ -48,17 +48,19 @@ void StartupDialogFiller::run(){
         return;
     }
 
-    if (!wrongPath.isEmpty()) {
+    if (!path.isEmpty()) {
         QLineEdit *pathEdit = getPathEdit(dialog);
         CHECK(NULL != pathEdit, );
         QString rightPath = pathEdit->text();
-        pathEdit->setText(wrongPath);
+        pathEdit->setText(path);
 
-        GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok));
-        use(dialog);
-        CHECK_OP(os, );
+        if (!isPathValid) {
+            GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok));
+            use(dialog);
+            CHECK_OP(os, );
 
-        pathEdit->setText(rightPath);
+            pathEdit->setText(rightPath);
+        }
     }
     use(dialog);
 }

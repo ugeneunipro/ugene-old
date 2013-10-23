@@ -207,6 +207,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_2186);
     REGISTER_TEST(GUITest_regression_scenarios::test_2187);
     REGISTER_TEST(GUITest_regression_scenarios::test_2188);
+    REGISTER_TEST(GUITest_regression_scenarios::test_2202);
     REGISTER_TEST(GUITest_regression_scenarios::test_2224);
     REGISTER_TEST(GUITest_regression_scenarios::test_2224_flow);
     REGISTER_TEST(GUITest_regression_scenarios::test_2225_1);
@@ -885,6 +886,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 // Common scenarios/Workflow designer/Workflow parameters validation
 /////////////////////////////////////////////////////////////////////////
     REGISTER_TEST(GUITest_common_scenarios_workflow_parameters_validation::test_0001);
+    REGISTER_TEST(GUITest_common_scenarios_workflow_parameters_validation::test_0002);
     REGISTER_TEST(GUITest_common_scenarios_workflow_parameters_validation::test_0003);
     REGISTER_TEST(GUITest_common_scenarios_workflow_parameters_validation::test_0005);
 

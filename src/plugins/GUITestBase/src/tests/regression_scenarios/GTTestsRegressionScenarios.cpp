@@ -1654,7 +1654,7 @@ GUI_TEST_CLASS_DEFINITION( test_2070 ){
 GUI_TEST_CLASS_DEFINITION( test_2089 )
 {
     // 1. Start UGENE with a new *.ini file.
-    GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os, true, "!@#$%^&*()_+\";:?/"));
+    GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os, true, "!@#$%^&*()_+\";:?/", false));
 
     // 2. Open WD
     // 3. Set any folder without write access as workflow output directory. Click OK.
@@ -2363,6 +2363,28 @@ GUI_TEST_CLASS_DEFINITION( test_2187 ) {
 
     GTUtilsMdi::click(os, GTGlobals::Close);
     GTMouseDriver::click(os);
+}
+
+GUI_TEST_CLASS_DEFINITION( test_2202 )
+{
+//    1. Open Workflow Designer first time (e.g. remove UGENE.ini before it).
+//    Expected: the dialog appears.
+
+//    2. Write the path to the directory which does not exist.
+
+//    3. Click OK.
+//    Expected: the directory is created, there are no error messages about write access.
+
+    QDir workflowOutputDir(testDir + "_common_data/scenarios/sandbox/regression_test_2202/1/2/3/4/");
+    CHECK_SET_ERR(!workflowOutputDir.exists(), "Dir already exists");
+
+    GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os, true, workflowOutputDir.absolutePath()));
+    QMenu* menu = GTMenu::showMainMenu(os, MWMENU_TOOLS);
+
+    GTMenu::clickMenuItem(os, menu, QStringList() << "Workflow Designer");
+
+    GTGlobals::sleep();
+    CHECK_SET_ERR(workflowOutputDir.exists(), "Dir wasn't created");
 }
 
 GUI_TEST_CLASS_DEFINITION( test_2224 )

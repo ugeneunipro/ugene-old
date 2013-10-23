@@ -32,12 +32,13 @@ namespace U2 {
 class StartupDialogFiller : public Filler
 {
 public:
-    StartupDialogFiller(U2OpStatus &os, bool ok = false, QString wrongPath = "");
+    StartupDialogFiller(U2OpStatus &os, bool ok = false, QString path = "", bool isPathValid = true);
     void run();
 
 private:
     bool ok;
-    QString wrongPath;
+    QString path;
+    bool isPathValid;
 
 private:
     void clickButton(QWidget *dialog, const QString &text);
