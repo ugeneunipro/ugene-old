@@ -592,5 +592,24 @@ IMPLEMENT_TEST( CInterfaceSasTests, text2sequence_sas ) {
 
     releaseScheme( scheme );
 }
+IMPLEMENT_TEST( CInterfaceSasTests, extract_consensus_sas ) {
+    SchemeHandle scheme = NULL;
+    U2ErrorType error = createSas( L"extract-consensus", NULL, NULL, &scheme );
+    CHECK_U2_ERROR( error );
+    QString readerName;
+    error = getActorDisplayName( "read-assembly", readerName );
+    CHECK_U2_ERROR( error );
+    gauto_array<wchar_t> wReaderName( toDisposableWString( readerName ) );
+    error = setSchemeElementAttribute( scheme, wReaderName.get( ), L"url-in.dataset",
+        L"Dataset 1" );
+    CHECK_U2_ERROR( error );
+
+    U2OpStatusImpl stateInfo;
+    SchemeSimilarityUtils::checkSchemesSimilarity( scheme,
+        PROPER_WD_SCHEMES_PATH + "consensus.uwl", stateInfo );
+    CHECK_NO_ERROR( stateInfo );
+
+    releaseScheme( scheme );
+}
 
 } // namespace U2

@@ -1531,4 +1531,44 @@ IMPLEMENT_TEST( CInterfaceManualTests, merge_sequence_annotation ) {
     releaseScheme( scheme );
 }
 
+IMPLEMENT_TEST( CInterfaceManualTests, consensus ) {
+    wchar_t readAssembly[MAX_ELEMENT_NAME_LENGTH];
+    wchar_t extractConsensus[MAX_ELEMENT_NAME_LENGTH];
+    wchar_t writeSequence[MAX_ELEMENT_NAME_LENGTH];
+    SchemeHandle scheme = NULL;
+    U2ErrorType error = createScheme( NULL, &scheme );
+    CHECK_U2_ERROR( error );
+
+    error = addElementToScheme( scheme, L"read-assembly", MAX_ELEMENT_NAME_LENGTH, readAssembly );
+    CHECK_U2_ERROR( error );
+    error = addElementToScheme( scheme, L"extract-consensus", MAX_ELEMENT_NAME_LENGTH, extractConsensus );
+    CHECK_U2_ERROR( error );
+    error = addElementToScheme( scheme, L"write-sequence", MAX_ELEMENT_NAME_LENGTH, writeSequence );
+    CHECK_U2_ERROR( error );
+
+    error = setSchemeElementAttribute( scheme, readAssembly, L"url-in.dataset", L"Dataset 1" );
+    CHECK_U2_ERROR( error );
+    error = setSchemeElementAttribute( scheme, writeSequence, L"url-out", L"consensus.fa" );
+    CHECK_U2_ERROR( error );
+
+    error = addFlowToScheme( scheme, extractConsensus, L"out-sequence", writeSequence, L"in-sequence" );
+    CHECK_U2_ERROR( error );
+    error = addFlowToScheme( scheme, readAssembly, L"out-assembly", extractConsensus, L"in-assembly" );
+    CHECK_U2_ERROR( error );
+
+    error = addSchemeActorsBinding( scheme, extractConsensus, L"sequence", writeSequence,
+        L"in-sequence.sequence" );
+    CHECK_U2_ERROR( error );
+    error = addSchemeActorsBinding( scheme, readAssembly, L"assembly", extractConsensus,
+        L"in-assembly.assembly" );
+    CHECK_U2_ERROR( error );
+
+    U2OpStatusImpl stateInfo;
+    SchemeSimilarityUtils::checkSchemesSimilarity( scheme,
+        PROPER_WD_SCHEMES_PATH + "/NGS/consensus.uwl", stateInfo );
+    CHECK_NO_ERROR( stateInfo );
+
+    releaseScheme( scheme );
+}
+
 } // namespace U2

@@ -48,6 +48,7 @@ DECLARE_TEST( CInterfaceManualTests, tuxedo_single_dataset_paired );
 DECLARE_TEST( CInterfaceManualTests, find_sequences );
 DECLARE_TEST( CInterfaceManualTests, gene_by_gene_report );
 DECLARE_TEST( CInterfaceManualTests, merge_sequence_annotation );
+DECLARE_TEST( CInterfaceManualTests, consensus );
 
 } // namespace U2
 
@@ -72,5 +73,6 @@ DECLARE_METATYPE( CInterfaceManualTests, tuxedo_single_dataset_paired );
 DECLARE_METATYPE( CInterfaceManualTests, find_sequences );
 DECLARE_METATYPE( CInterfaceManualTests, gene_by_gene_report );
 DECLARE_METATYPE( CInterfaceManualTests, merge_sequence_annotation );
+DECLARE_METATYPE( CInterfaceManualTests, consensus );
 
 #endif // _U2_C_INTERFACE_MANUAL_TESTS_H_

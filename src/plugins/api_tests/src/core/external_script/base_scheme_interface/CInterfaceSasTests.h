@@ -54,6 +54,7 @@ DECLARE_TEST( CInterfaceSasTests, reverse_complement_sas );
 DECLARE_TEST( CInterfaceSasTests, split_alignment_into_sequences_sas );
 DECLARE_TEST( CInterfaceSasTests, split_assembly_into_sequences_sas );
 DECLARE_TEST( CInterfaceSasTests, text2sequence_sas );
+DECLARE_TEST( CInterfaceSasTests, extract_consensus_sas );
 
 } // namespace U2
 
@@ -84,5 +85,6 @@ DECLARE_METATYPE( CInterfaceSasTests, reverse_complement_sas );
 DECLARE_METATYPE( CInterfaceSasTests, split_alignment_into_sequences_sas );
 DECLARE_METATYPE( CInterfaceSasTests, split_assembly_into_sequences_sas );
 DECLARE_METATYPE( CInterfaceSasTests, text2sequence_sas );
+DECLARE_METATYPE( CInterfaceSasTests, extract_consensus_sas );
 
 #endif // _U2_C_INTERFACE_SAS_TESTS_H_
