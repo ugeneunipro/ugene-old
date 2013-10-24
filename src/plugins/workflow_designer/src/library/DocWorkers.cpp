@@ -690,7 +690,7 @@ void SeqWriter::storeEntry(IOAdapter *io, const QVariantMap &data, int entryNum)
 
 void SeqWriter::takeParameters(U2OpStatus &os) {
     BaseDocWriter::takeParameters(os);
-    SAFE_POINT_OP(os, );
+    SAFE_POINT_OP( os, );
 
     Attribute *splitAttr = actor->getParameter(BaseAttributes::SPLIT_SEQ_ATTRIBUTE().getId());
     if (format->getFormatId() == BaseDocumentFormats::FASTA && splitAttr != NULL) {

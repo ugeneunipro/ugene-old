@@ -59,6 +59,8 @@ private:
     void getNewSubtasks();
     void terminateMessageLoop();
     void pause();
+
+    QList<Task *> processedSubtasks;
 };
 
 

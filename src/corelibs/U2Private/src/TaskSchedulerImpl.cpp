@@ -1012,8 +1012,9 @@ void TaskThread::getNewSubtasks() {
         TaskSchedulerImpl *scheduler = dynamic_cast<TaskSchedulerImpl *>(AppContext::getTaskScheduler());
         assert(NULL != scheduler);
         foreach (Task *subtask, ti->task->getSubtasks()) {
-            if (subtask->isFinished()) {
+            if (subtask->isFinished() && !processedSubtasks.contains(subtask)) {
                 scheduler->onSubTaskFinished(this, subtask);
+                processedSubtasks << subtask;
                 break;
             }
         }

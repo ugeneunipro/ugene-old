@@ -201,8 +201,9 @@ Task::ReportResult WorkflowRunTask::report() {
 WorkflowIterationRunTask::WorkflowIterationRunTask(const Schema& sh,
     WorkflowDebugStatus *initDebugInfo)
     : WorkflowAbstractIterationRunner(tr("Workflow run"),
-    (getAdditionalFlags() | TaskFlag_FailOnSubtaskCancel)), context(NULL),
-    schema(new Schema()), scheduler(NULL), debugInfo(initDebugInfo), isNextTickRestoring(false)
+    (getAdditionalFlags() | TaskFlag_CancelOnSubtaskCancel | TaskFlag_FailOnSubtaskError)),
+    context(NULL), schema(new Schema()), scheduler(NULL), debugInfo(initDebugInfo),
+    isNextTickRestoring(false)
 {
 
     rmap = HRSchemaSerializer::deepCopy(sh, schema, stateInfo);

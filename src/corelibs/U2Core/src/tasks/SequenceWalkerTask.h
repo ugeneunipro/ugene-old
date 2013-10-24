@@ -71,7 +71,7 @@ class U2CORE_EXPORT SequenceWalkerTask : public Task {
     Q_OBJECT
 public:
     SequenceWalkerTask(const SequenceWalkerConfig& config, SequenceWalkerCallback* callback, 
-        const QString& name, TaskFlags tf = TaskFlags_NR_FOSCOE);
+        const QString& name, TaskFlags tf = TaskFlags_NR_FOSE_COSC);
     
     SequenceWalkerCallback*     getCallback() const {return callback;}
     const SequenceWalkerConfig& getConfig() const {return config;}
