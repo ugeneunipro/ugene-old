@@ -29,6 +29,7 @@
 #include "GTUtilsMdi.h"
 #include "GTUtilsLog.h"
 #include <QFile>
+#include <QtCore/QDir>
 #include "runnables/qt/MessageBoxFiller.h"
 #include "runnables/ugene/plugins/workflow_designer/StartupDialogFiller.h"
 
@@ -251,6 +252,67 @@ GUI_TEST_CLASS_DEFINITION(test_0005){
     CHECK_SET_ERR(l.hasError(), "There are no error messages about write access in WD directory");
     }
 
+
+GUI_TEST_CLASS_DEFINITION( test_0006 ) {
+    //1. Create the following workflow { Read Sequence -> CD-Search -> Write Sequence }
+    //GTUtilsDialog::waitForDialog( os, new StartupDialogFiller( os ) );
+
+    QMenu *menu=GTMenu::showMainMenu( os, MWMENU_TOOLS );
+    GTMenu::clickMenuItem( os, menu, QStringList( ) << "Workflow Designer" );
+
+    GTUtilsWorkflowDesigner::addAlgorithm( os, "Read Sequence" );
+    GTUtilsWorkflowDesigner::addAlgorithm( os, "CD-Search" );
+    GTUtilsWorkflowDesigner::addAlgorithm( os, "Write Sequence" );
+
+    WorkflowProcessItem *seqReader = GTUtilsWorkflowDesigner::getWorker( os, "Read Sequence" );
+    WorkflowProcessItem *patternFinder = GTUtilsWorkflowDesigner::getWorker( os, "CD-Search" );
+    WorkflowProcessItem *seqWriter = GTUtilsWorkflowDesigner::getWorker( os, "Write Sequence" );
+
+    GTUtilsWorkflowDesigner::connect( os, seqReader, patternFinder );
+    GTUtilsWorkflowDesigner::connect( os, patternFinder, seqWriter );
+
+    //2. Set some name for an output file
+
+    GTMouseDriver::moveTo( os, GTUtilsWorkflowDesigner::getItemCenter( os, "Write Sequence" ) );
+    GTMouseDriver::click( os );
+    QTableView *table = qobject_cast<QTableView *>( GTWidget::findWidget( os, "table" ) );
+    CHECK_SET_ERR( table, "tableView not found" );
+    GTMouseDriver::moveTo( os, GTTableView::getCellPosition( os, table, 1, 3 ) );
+    GTMouseDriver::click( os );
+    GTKeyboardDriver::keySequence( os, "sequence.gb" );
+    GTWidget::click( os, GTUtilsMdi::activeWindow( os ) );
+
+    //3. Add some valid sequence file as input
+
+    GTMouseDriver::moveTo( os, GTUtilsWorkflowDesigner::getItemCenter( os, "Read Sequence" ) );
+    GTMouseDriver::click( os );
+    QString dirPath = testDir + "_common_data/fasta/";
+    GTUtilsWorkflowDesigner::setDatasetInputFile( os, dirPath, "fa1.fa" );
+
+    //4. Create an empty directory somewhere (e.g. in the "test/_tmp" directory)
+    QDir newDir(testDir);
+    newDir.mkdir("_empty_tmp");
+
+    //5. Set the path to this directory as the "Database directory" parameter of the "CD-Search" worker
+    GTMouseDriver::moveTo( os, GTUtilsWorkflowDesigner::getItemCenter( os, "CD-Search" ) );
+    GTMouseDriver::click( os );
+    GTMouseDriver::moveTo( os, GTTableView::getCellPosition( os, table, 1, 2 ) );
+    GTMouseDriver::click( os );
+    GTKeyboardDriver::keySequence( os, testDir + "_empty_tmp");
+    GTWidget::click( os, GTUtilsMdi::activeWindow( os ) );
+
+    //6. Remove this directory
+    newDir.rmdir("_empty_tmp");
+
+    //7. In WD press the "Validate" button
+    GTUtilsDialog::waitForDialog( os, new MessageBoxDialogFiller( os, QMessageBox::Ok,
+        "Please fix issues listed in the error list (located under workflow)." ) );
+    GTWidget::click( os,GTAction::button( os,"Validate workflow" ) );
+    GTGlobals::sleep( 200 );
+
+    //Expected state: The "File not found" error has appeared in the "Error list"
+    GTUtilsWorkflowDesigner::checkErrorList( os, "Directory not found" );
+}
 
 } // namespace GUITest_common_scenarios_workflow_designer
 
