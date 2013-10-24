@@ -43,6 +43,7 @@ public:
     QLineEdit*                  fileNameEdit;       // edit for file name
     DocumentFormatId            defaultFormatId;    // format selected by default
     QWidget*                    parentWidget;       // parent widget for file dialog
+    QString                     objectName;         // custom object name
 };
 
 /* Controls 'save document' fields :
