@@ -324,6 +324,13 @@ QStringList MSAEditorSequenceArea::getAvailableHighlightingSchemes() const{
     return allSchemas;
 }
 
+bool MSAEditorSequenceArea::hasAminoAlphabet() {
+    MAlignmentObject* maObj = editor->getMSAObject();
+    SAFE_POINT(NULL != maObj, "MAlignmentObject is null in MSAEditorSequenceArea::hasAminoAlphabet()", false);
+    const DNAAlphabet* alphabet = maObj->getAlphabet();
+    SAFE_POINT(NULL != maObj, "DNAAlphabet is null in MSAEditorSequenceArea::hasAminoAlphabet()", false);
+    return DNAAlphabet_AMINO == alphabet->getType();
+}
 
 void MSAEditorSequenceArea::sl_customColorSettingsChanged(){    
     DNAAlphabetType atype = editor->getMSAObject()->getAlphabet()->getType();

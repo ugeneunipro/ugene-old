@@ -57,6 +57,8 @@ public:
     static bool isSequenceVisible(U2OpStatus &os, QString seqName);
 
     static bool offsetsVisible(U2OpStatus &os);
+
+    static bool hasAminoAlphabet(U2OpStatus &os);
 };
 
 } // namespace

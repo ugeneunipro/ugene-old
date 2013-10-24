@@ -253,6 +253,7 @@ public:
 
     QStringList getAvailableHighlightingSchemes() const;
 
+    bool hasAminoAlphabet();
 private:
     // emulating cursor mode with
 

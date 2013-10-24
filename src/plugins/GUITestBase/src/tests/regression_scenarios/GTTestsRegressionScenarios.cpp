@@ -1969,6 +1969,21 @@ GUI_TEST_CLASS_DEFINITION( test_2128_1 )
                     "Unexpected MSA content has occurred" );
 }
 
+GUI_TEST_CLASS_DEFINITION( test_2138 )
+{
+    //1. Open _common_data/scenarios/_regression/2138/1.fa
+    //2. Press "Join sequences into alignment..." radio button
+    //3. Press "OK" button
+
+    GTUtilsDialog::waitForDialog(os, new SequenceReadingModeSelectorDialogFiller(os, SequenceReadingModeSelectorDialogFiller::Join));
+    GTUtilsProject::openFiles(os, testDir + "_common_data/scenarios/_regression/2138/1.fa");
+
+    GTGlobals::sleep(1000);
+    //Expected state: alignment has been opened and whole msa alphabet is amino
+    bool isAmino = GTUtilsMSAEditorSequenceArea::hasAminoAlphabet(os);
+    CHECK_SET_ERR(true == isAmino, "Aligment has wrong alphabet type");
+}
+
 GUI_TEST_CLASS_DEFINITION( test_2140 )
 {
     //1. Use main menu {Tools->Dna assembly->convert UGENE assembly data base to SAM format}

@@ -267,6 +267,17 @@ void GTUtilsMSAEditorSequenceArea::selectColumnInConsensus( U2OpStatus &os, int 
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "hasAminoAlphabet"
+bool GTUtilsMSAEditorSequenceArea::hasAminoAlphabet(U2OpStatus &os)
+{
+    MSAEditorSequenceArea *msaEditArea = qobject_cast<MSAEditorSequenceArea*>(GTWidget::findWidget(os, "msa_editor_sequence_area"));
+    CHECK_SET_ERR_RESULT(msaEditArea != NULL, "MsaEditorSequenceArea not found", -1);
+
+    return msaEditArea->hasAminoAlphabet();
+}
+#undef GT_METHOD_NAME
+
+
 #undef GT_CLASS_NAME
 
 } // namespace
