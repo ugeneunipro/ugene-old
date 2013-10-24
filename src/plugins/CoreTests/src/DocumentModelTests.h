@@ -166,6 +166,7 @@ private:
     QString doc1Path;
     QString doc2Path;
     bool byLines;
+    QStringList commentsStartWith;
     
 };
 

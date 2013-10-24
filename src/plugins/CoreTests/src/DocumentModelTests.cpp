@@ -475,6 +475,7 @@ static const QString DOC2_ATTR_ID = "doc2";
 static const QString TMP_ATTR_ID  = "temp";
 static const QString TMP_ATTR_SPLITTER = ",";
 static const QString BY_LINES_ATTR_ID = "by_lines";
+static const QString COMMENTS_START_WITH = "comments_start_with";
 
 void GTest_CompareFiles::replacePrefix(QString &path) {
     QString result;
@@ -539,6 +540,12 @@ void GTest_CompareFiles::init(XMLTestFormat *tf, const QDomElement& el) {
         doc1Path = (tmpDocNums.contains("1") ? env->getVar("TEMP_DATA_DIR") : env->getVar("COMMON_DATA_DIR")) + "/" + doc1Path;
         doc2Path = (tmpDocNums.contains("2") ? env->getVar("TEMP_DATA_DIR") : env->getVar("COMMON_DATA_DIR")) + "/" + doc2Path;
         byLines = !el.attribute(BY_LINES_ATTR_ID).isEmpty();
+        if(el.attribute(COMMENTS_START_WITH).isEmpty()){
+            commentsStartWith=QStringList();
+        }else{
+            QString commentsStartWithString=el.attribute(COMMENTS_START_WITH);
+            commentsStartWith=commentsStartWithString.split(",");
+        }
     }
     else {
         // Only "doc1" and "doc2" attributes are specified,
@@ -580,12 +587,31 @@ Task::ReportResult GTest_CompareFiles::report() {
             bytes1 = bytes1.trimmed();
             bytes2 = bytes2.trimmed();
         }
-        
-        if( bytes1 != bytes2 ) {
-            setError(QString("The files are not equal at line %1."
-                "The first file contains '%2'' and the second contains '%3'!")
-                .arg(lineNum).arg(QString(bytes1)).arg(QString(bytes2)));
-            return ReportResult_Finished;
+        if(commentsStartWith.isEmpty()){
+            if( bytes1 != bytes2 ) {
+                setError(QString("The files are not equal at line %1."
+                    "The first file contains '%2'' and the second contains '%3'!")
+                    .arg(lineNum).arg(QString(bytes1)).arg(QString(bytes2)));
+                return ReportResult_Finished;
+            }
+        }else{
+            foreach (QString commentStartWith, commentsStartWith) {
+                if(!bytes1.startsWith(commentStartWith.toLatin1()) && !bytes2.startsWith(commentStartWith.toLatin1())){
+                    if( bytes1 != bytes2 ) {
+                        setError(QString("The files are not equal at line %1."
+                            "The first file contains '%2'' and the second contains '%3'!")
+                            .arg(lineNum).arg(QString(bytes1)).arg(QString(bytes2)));
+                        return ReportResult_Finished;
+                    }
+                }else
+                if(!(bytes1.startsWith(commentStartWith.toLatin1())&&bytes2.startsWith(commentStartWith.toLatin1()))){
+                    setError(QString("The files have comments and are not equal at line %1."
+                        "The first file contains '%2'' and the second contains '%3'!")
+                        .arg(lineNum).arg(QString(bytes1)).arg(QString(bytes2)));
+                    return ReportResult_Finished;
+                }
+
+            }
         }
         
         if(bytes1.endsWith("\n") || byLines) {
@@ -599,7 +625,7 @@ Task::ReportResult GTest_CompareFiles::report() {
 /*******************************
  * GTest_Compare_VCF_Files
  *******************************/
-const int NUMDER_OF_COLUMNS = 5;
+const int NUMBER_OF_COLUMNS = 5;
 void GTest_Compare_VCF_Files::init(XMLTestFormat *tf, const QDomElement& el) {
     Q_UNUSED(tf);
 
@@ -655,7 +681,7 @@ Task::ReportResult GTest_Compare_VCF_Files::report() {
         for(int i=0; i<size; i++){
             if (bytes1[i]=='\t'){
                 tabCounter++;
-                if(tabCounter==NUMDER_OF_COLUMNS){
+                if(tabCounter==NUMBER_OF_COLUMNS){
                     break;
                 }
             }
