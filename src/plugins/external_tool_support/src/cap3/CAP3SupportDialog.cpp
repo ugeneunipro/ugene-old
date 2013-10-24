@@ -89,7 +89,7 @@ void CAP3SupportDialog::accept()
     settings.maxGapLength = maxGapLengthBox->value();
     settings.matchScoreFactor = matchScoreFactorBox->value();
     settings.mismatchScoreFactor = mismatchScoreFactorBox->value();
-    settings.overlapPercentIdentetyCutoff = overlapPercentIdentityBox->value();
+    settings.overlapPercentIdentityCutoff = overlapPercentIdentityBox->value();
     settings.overlapLengthCutoff = overlapLengthCutoffBox->value();
     settings.overlapSimilarityScoreCutoff = overlapSimilarityScoreCutoffBox->value();
     settings.maxNumberOfWordMatches = maxNumWordMatchesBox->value();
@@ -102,7 +102,7 @@ void CAP3SupportDialog::accept()
 void CAP3SupportDialog::sl_onAddButtonClicked()
 {
     LastUsedDirHelper lod;
-    QStringList fileNames = QFileDialog::getOpenFileNames(this, tr("Add sequences to assembly"), lod.dir);
+    QStringList fileNames = QFileDialog::getOpenFileNames(this, tr("Add Sequences to Assembly"), lod.dir);
     if (fileNames.isEmpty()) {
         return;
     }
@@ -133,7 +133,7 @@ void CAP3SupportDialog::sl_onSpecifyOutputPathButtonClicked()
 {
     
     LastUsedDirHelper lod;
-    lod.url = QFileDialog::getSaveFileName(this, tr("Set result contig file name"), lod.dir, tr("ACE format (*.ace)"));
+    lod.url = QFileDialog::getSaveFileName(this, tr("Set Result Contig File Name"), lod.dir, tr("ACE format (*.ace)"));
     if (!lod.url.isEmpty()) {
         GUrl result = lod.url;
         if (result.lastFileSuffix().isEmpty()) {

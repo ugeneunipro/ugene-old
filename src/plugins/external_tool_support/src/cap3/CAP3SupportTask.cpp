@@ -63,16 +63,11 @@ CAP3SupportTask::CAP3SupportTask(const CAP3SupportTaskSettings& _settings) :
 
 
 void CAP3SupportTask::prepare(){
-    
-    
-    //Add new subdir for temporary files
-    
     tmpDirUrl = ExternalToolSupportUtils::createTmpDir(CAP3_TMP_DIR, stateInfo);
     CHECK_OP(stateInfo, );
     
     prepareDataForCAP3Task = new PrepareInputForCAP3Task(settings.inputFiles, tmpDirUrl);
     addSubTask(prepareDataForCAP3Task);
-
 }
 
 
@@ -80,18 +75,18 @@ void CAP3SupportTask::prepare(){
 
 QList<Task*> CAP3SupportTask::onSubTaskFinished(Task* subTask) {
     QList<Task*> res;
-    
+
     propagateSubtaskError();
-    
+
     if(hasError() || isCanceled()) {
         return res;
     }
-    
+
     if (subTask == prepareDataForCAP3Task) {
         assert(!prepareDataForCAP3Task->getPreparedPath().isEmpty());
         GUrl inputUrl = prepareDataForCAP3Task->getPreparedPath();
         if (prepareDataForCAP3Task->onlyCopyInputFiles()) {
-            tmpOutputUrl = inputUrl.getURLString()+ CAP3_EXT;     
+            tmpOutputUrl = inputUrl.getURLString()+ CAP3_EXT;
         } else {
             tmpOutputUrl = inputUrl.dirPath() + "/" + inputUrl.baseFileName() + CAP3_EXT; 
         }
@@ -102,9 +97,10 @@ QList<Task*> CAP3SupportTask::onSubTaskFinished(Task* subTask) {
         cap3Task = new ExternalToolRunTask(ET_CAP3, arguments, logParser);
         setListenerForTask(cap3Task);
         cap3Task->setSubtaskProgressWeight(95);
-        res.append(cap3Task);   
-    } else if (subTask == cap3Task){
-        if(!QFile::exists(tmpOutputUrl)){
+        res.append(cap3Task);
+    }
+    else if (subTask == cap3Task) {
+        if (!QFile::exists(tmpOutputUrl)) {
             if(AppContext::getExternalToolRegistry()->getByName(ET_CAP3)->isValid()){
                 stateInfo.setError(tr("Output file not found"));
             }else{
@@ -116,64 +112,23 @@ QList<Task*> CAP3SupportTask::onSubTaskFinished(Task* subTask) {
         }
         
         IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
-        copyResultTask = new CopyDataTask(iof, tmpOutputUrl, iof, settings.outputFilePath );
+        copyResultTask = new CopyDataTask(iof, tmpOutputUrl, iof, settings.outputFilePath);
         res.append(copyResultTask);
         
-    } else if (subTask == copyResultTask) {
-        
+    }
+    else if (subTask == copyResultTask) {
         if( !QFile::exists(settings.outputFilePath)) {
             stateInfo.setError(tr("Output file not found: copy from tmp dir failed."));
             return res;
         }
-
-        Project * p = AppContext::getProject();
-        Document * oldDoc = NULL;
-        // If document already in project, just open view if needed, it will be updated automatically
-        if(p != NULL && (oldDoc = p->findDocumentByURL(settings.outputFilePath)) != NULL) {
-            if(settings.openView) {
-                if(oldDoc->isLoaded()) {
-                    res.append(new OpenViewTask(oldDoc));
-                } else {
-                    res.append(new LoadUnloadedDocumentAndOpenViewTask(oldDoc));
-                }
-            }
-            return res;
-        }
-
-        loadTmpDocumentTask=
-                new LoadDocumentTask(BaseDocumentFormats::ACE,
-                                     settings.outputFilePath,
-                                     AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE));
-        loadTmpDocumentTask->setSubtaskProgressWeight(5);
-        res.append(loadTmpDocumentTask);
-
-    } else if( subTask == loadTmpDocumentTask  ) {
-        
-        Document* doc = loadTmpDocumentTask->takeDocument();
-        SAFE_POINT(doc != NULL, "Failed loading result document", res);
-        
-        if (doc->getObjects().size() == 0) {
-            QFile::remove(doc->getURLString());
-            delete doc;
-            setError(tr("No assembly is found for provided reads"));
-            return res;
-        }
-        
-        maObject = qobject_cast<MAlignmentObject*>( doc->getObjects().first() );
-        if (settings.openView) {
-            if (AppContext::getProject() == NULL) {
-                res.append( AppContext::getProjectLoader()->createNewProjectTask() );
-            }
-
-            res.append(new AddDocumentAndOpenViewTask(doc));
-        }
-        
+        outputFile = settings.outputFilePath;
     }
-
     return res;
-
 }
 
+QString CAP3SupportTask::getOutputFile() const {
+    return outputFile;
+}
 
 Task::ReportResult CAP3SupportTask::report() {
     U2OpStatus2Log os;
@@ -198,12 +153,9 @@ int CAP3LogParser::getProgress() {
 PrepareInputForCAP3Task::PrepareInputForCAP3Task( const QStringList& inputFiles, const QString& outputDirPath)
 :Task("PrepareInputForCAP3Task", TaskFlags_FOSCOE), inputUrls(inputFiles), outputDir(outputDirPath), onlyCopyFiles(false)
 {
-
-
 }
 
 void PrepareInputForCAP3Task::prepare() {
-    
     if (inputUrls.size() == 1) {
         const QString& inputFileUrl = inputUrls.first();
         
@@ -217,16 +169,15 @@ void PrepareInputForCAP3Task::prepare() {
         }
     } 
     
-    
-    if (onlyCopyFiles) {    
-        // short path: copy single FASTA file along with quality and constraints to target dir
+    if (onlyCopyFiles) {
+        // Short path: copy single FASTA file along with quality and constraints to target dir
         QString inputFileUrl = inputUrls.first();
         filesToCopy.append(inputFileUrl);
         QString inputFileUrlBase = GUrl(inputFileUrl).baseFileName();
         QString inputFileDir = GUrl(inputFileUrl).dirPath();
         QString qualFileUrl = inputFileDir + "/" + inputFileUrlBase + ".qual";
         if (QFile::exists(qualFileUrl)) {
-            filesToCopy.append(qualFileUrl);        
+            filesToCopy.append(qualFileUrl);
         }
         QString constraintsFileUrl = inputFileDir+ "/" + inputFileUrlBase + ".con";
         if (QFile::exists(constraintsFileUrl)) {
@@ -239,10 +190,9 @@ void PrepareInputForCAP3Task::prepare() {
             addSubTask(copyTask);
         }
         preparedPath = outputDir + "/" + GUrl(inputFileUrl).fileName();
-
-    } else {
-        // long path: load each file, save sequences and qualities to output dir
-        
+    }
+    else {
+        // Long path: load each file, save sequences and qualities to output dir
         QList<GUrl> inputGUrls;
         foreach( const QString& url, inputUrls) {
             inputGUrls.append(url);
@@ -260,9 +210,7 @@ void PrepareInputForCAP3Task::prepare() {
             setError(tr("Failed to initialize sequence writer."));
             return;
         }
-        
-    } 
-
+    }
 }
 
 void PrepareInputForCAP3Task::run()
@@ -270,7 +218,7 @@ void PrepareInputForCAP3Task::run()
     if (hasError() || onlyCopyFiles) {
         return;
     }
-    
+
     while (seqReader.hasNext()) {
         if (isCanceled()) {
             return;
@@ -280,7 +228,7 @@ void PrepareInputForCAP3Task::run()
             setError(seqReader.getErrorMessage());
             return;
         }
-        // avoid names dublicating
+        // avoid names duplication
         QByteArray seqName = seq->getName().toLatin1();
         seqName.replace(' ','_');
         seq->setName(seqName);
@@ -297,17 +245,14 @@ void PrepareInputForCAP3Task::run()
             }
         }
     }
-    
     preparedPath = seqWriter.getOutputPath().getURLString();
     seqWriter.close();
-
-
 }
-
 
 QStringList CAP3SupportTaskSettings::getArgumentsList()
 {
     QStringList res;
+
     res += "-a"; res += QString("%1").arg(bandExpansionSize);
     res += "-b"; res += QString("%1").arg(baseQualityDiffCutoff);
     res += "-c"; res += QString("%1").arg(baseQualityClipCutoff);
@@ -317,11 +262,11 @@ QStringList CAP3SupportTaskSettings::getArgumentsList()
     res += "-m"; res += QString("%1").arg(matchScoreFactor);
     res += "-n"; res += QString("%1").arg(mismatchScoreFactor);
     res += "-o"; res += QString("%1").arg(overlapLengthCutoff);
-    res += "-p"; res += QString("%1").arg(overlapPercentIdentetyCutoff);
+    res += "-p"; res += QString("%1").arg(overlapPercentIdentityCutoff);
     res += "-s"; res += QString("%1").arg(overlapSimilarityScoreCutoff);
     res += "-t"; res += QString("%1").arg(maxNumberOfWordMatches);
     res += "-y"; res += QString("%1").arg(clippingRange);
-    
+
     return res;
 }
 

@@ -77,6 +77,7 @@
 #include "blast_plus/BlastPlusWorker.h"
 #include "blast_plus/BlastDBCmdSupport.h"
 #include "cap3/CAP3Support.h"
+#include "cap3/CAP3Worker.h"
 #include "bowtie/BowtieSupport.h"
 #include "bowtie/BowtieTask.h"
 #include "bowtie/BowtieSettingsWidget.h"
@@ -537,6 +538,7 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin() :
     LocalWorkflow::ConservationPlotWorkerFactory::init();
     LocalWorkflow::SeqPosWorkerFactory::init();
     LocalWorkflow::ConductGOWorkerFactory::init();
+    LocalWorkflow::CAP3WorkerFactory::init();
 
     if (AppContext::getMainWindow()) {
         //Add project view service

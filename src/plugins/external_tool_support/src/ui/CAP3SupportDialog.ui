@@ -17,7 +17,7 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>Contig Assembly With CAP3</string>
+   <string>Contig Assembly with CAP3</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_6">
    <item row="0" column="0" colspan="3">

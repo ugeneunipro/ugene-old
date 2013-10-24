@@ -24,6 +24,7 @@
 
 #include <U2Lang/LocalDomain.h>
 #include <U2Lang/WorkflowUtils.h>
+
 #include "CAP3SupportTask.h"
 
 namespace U2 {
@@ -52,11 +53,26 @@ private slots:
     void sl_taskFinished();
 
 protected:
-    IntegralBus *input, *output;
-    QString resultName,transId;
-    CAP3SupportTaskSettings cfg;
-    
-}; 
+    IntegralBus *input;
+
+    CAP3SupportTaskSettings settings;
+    QStringList inputSeqUrls; // contains URL(s) from a current dataset
+    QString currentDatasetName; // used on each tick() to split URL(s) in datasets
+    int datasetNumber;
+
+private:
+    /** Use data filled by a user to init the CAP3 settings */
+    void initSettings();
+
+    /** Init external tool and temporary directory paths */
+    void initPaths();
+
+    /**
+     * Corrects output file name, if required (for several datasets).
+     * Runs the CAP3 task and cleans up input URL(s) in the settings.
+     */
+    Task * runCap3();
+};
 
 class CAP3WorkerFactory : public DomainFactory {
 public:

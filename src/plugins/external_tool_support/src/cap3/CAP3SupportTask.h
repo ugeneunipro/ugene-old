@@ -54,10 +54,10 @@ public:
         mismatchScoreFactor = -5;
         overlapSimilarityScoreCutoff = 900;
         overlapLengthCutoff = 40;
-        overlapPercentIdentetyCutoff = 80;
+        overlapPercentIdentityCutoff = 80;
         maxNumberOfWordMatches = 300;
         clippingRange = 250;
-        reverseReads = 1;
+        reverseReads = true;
     }
     
     QStringList getArgumentsList();
@@ -75,11 +75,11 @@ public:
     int matchScoreFactor;
     int mismatchScoreFactor;
     int overlapLengthCutoff;
-    int overlapPercentIdentetyCutoff;
+    int overlapPercentIdentityCutoff;
     int overlapSimilarityScoreCutoff;
     int maxNumberOfWordMatches;
     int clippingRange;
-    int reverseReads;
+    bool reverseReads;
 
 };
 
@@ -108,6 +108,13 @@ public:
     CAP3SupportTask(const CAP3SupportTaskSettings& settings);
     void prepare();
     MAlignmentObject* getResultAlignment() { return maObject; }
+
+    /**
+     * Returns output file URL if the file has already been produced
+     * Otherwise, returns an empty string
+     */
+    QString getOutputFile() const;
+
     Task::ReportResult report();
     QList<Task*> onSubTaskFinished(Task* subTask);
 private:
@@ -120,6 +127,7 @@ private:
     CopyDataTask*               copyResultTask;
     CAP3LogParser*              logParser;
     CAP3SupportTaskSettings     settings;
+    QString                     outputFile;
 };
 
 class CAP3LogParser : public ExternalToolLogParser {
