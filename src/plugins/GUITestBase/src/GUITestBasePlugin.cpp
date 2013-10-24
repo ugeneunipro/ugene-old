@@ -896,7 +896,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 /////////////////////////////////////////////////////////////////////////
 // Common scenarios/NIAID_pipelines
 /////////////////////////////////////////////////////////////////////////
-    REGISTER_TEST(GUITest_common_scenarios_NIAID_pipelines::test_0001);
+    REGISTER_TEST_IGNORED(GUITest_common_scenarios_NIAID_pipelines::test_0001,"outdated");
     REGISTER_TEST(GUITest_common_scenarios_NIAID_pipelines::test_0002);
 /////////////////////////////////////////////////////////////////////////
 // Common scenarios/Tree viewer

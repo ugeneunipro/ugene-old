@@ -211,6 +211,7 @@ int GTUtilsWorkflowDesigner::getItemBottom(U2OpStatus &os, QString itemName){
 #define GT_METHOD_NAME "getWorker"
 WorkflowProcessItem* GTUtilsWorkflowDesigner::getWorker(U2OpStatus &os,QString itemName,const GTGlobals::FindOptions &options){
     QGraphicsView* sceneView = qobject_cast<QGraphicsView*>(GTWidget::findWidget(os,"sceneView"));
+    GT_CHECK_RESULT(sceneView, "sceneView not found", NULL);
     QList<QGraphicsItem *> items = sceneView->items();
 
     foreach(QGraphicsItem* it, items) {
