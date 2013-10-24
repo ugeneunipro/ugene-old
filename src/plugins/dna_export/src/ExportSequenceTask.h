@@ -50,6 +50,7 @@ public:
         formatId = BaseDocumentFormats::FASTA;
         mostProbable = true;
         saveAnnotations = false;
+        sequenceName = QString( );
     }
 
     QList<ExportSequenceItem> items;            // sequences to export
@@ -66,6 +67,8 @@ public:
     bool                saveAnnotations;        // Store available annotations for sequences into result file too
 
     DocumentFormatId    formatId;
+
+    QString             sequenceName;             // custom sequence name
 };
 
 /** Exports sequences a file */

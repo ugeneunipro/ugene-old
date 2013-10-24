@@ -324,9 +324,12 @@ void ADVExportContext::sl_saveSelectedAnnotationsSequence() {
 
     QString fileExt = AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::FASTA)->getSupportedDocumentFileExtensions().first();
     GUrl seqUrl = view->getSequenceInFocus()->getSequenceGObject()->getDocument()->getURL();
-    GUrl defaultUrl = GUrlUtils::rollFileName(seqUrl.dirPath() + "/" + seqUrl.baseFileName() + "_annotation." + fileExt, DocumentUtils::getNewDocFileNameExcludesHint());
+    const QString fileBaseName = seqUrl.baseFileName( );
+    GUrl defaultUrl = GUrlUtils::rollFileName(seqUrl.dirPath() + "/" + fileBaseName + "_annotation." + fileExt, DocumentUtils::getNewDocFileNameExcludesHint());
 
-    ExportSequencesDialog d(true, allowComplement, allowTranslation, allowBackTranslation, defaultUrl.getURLString(), BaseDocumentFormats::FASTA, AppContext::getMainWindow()->getQMainWindow());
+    ExportSequencesDialog d(true, allowComplement, allowTranslation, allowBackTranslation,
+        defaultUrl.getURLString(), fileBaseName, BaseDocumentFormats::FASTA,
+        AppContext::getMainWindow()->getQMainWindow());
     d.setWindowTitle("Export Sequence of Selected Annotations");
     d.disableAllFramesOption(true); // only 1 frame is suitable
     d.disableStrandOption(true);    // strand is already recorded in annotation
@@ -410,10 +413,12 @@ void ADVExportContext::sl_saveSelectedSequences() {
 
     QString fileExt = AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::FASTA)->getSupportedDocumentFileExtensions().first();
     GUrl seqUrl = seqCtx->getSequenceGObject()->getDocument()->getURL();
-    GUrl defaultUrl = GUrlUtils::rollFileName(seqUrl.dirPath() + "/" + seqUrl.baseFileName() + "_region." + fileExt, DocumentUtils::getNewDocFileNameExcludesHint());
+    const QString fileBaseName = seqUrl.baseFileName();
+    GUrl defaultUrl = GUrlUtils::rollFileName(seqUrl.dirPath() + "/" + fileBaseName + "_region." + fileExt, DocumentUtils::getNewDocFileNameExcludesHint());
 
-    ExportSequencesDialog d(merge, complement, amino, nucleic, defaultUrl.getURLString(), BaseDocumentFormats::FASTA, AppContext::getMainWindow()->getQMainWindow());
-//    d.setWindowTitle(sequence2SequenceAction->text());
+    ExportSequencesDialog d(merge, complement, amino, nucleic, defaultUrl.getURLString(),
+        fileBaseName, BaseDocumentFormats::FASTA, AppContext::getMainWindow()->getQMainWindow());
+
     d.setWindowTitle("Export Selected Sequence Region");
     int rc = d.exec();
     if (rc == QDialog::Rejected) {

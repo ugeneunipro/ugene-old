@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>539</width>
-    <height>452</height>
+    <height>466</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -25,6 +25,23 @@
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <layout class="QGridLayout" name="gridLayout_3">
+     <item row="2" column="0">
+      <widget class="QCheckBox" name="withAnnotationsBox">
+       <property name="text">
+        <string>Export with annotations</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="0">
+      <widget class="QCheckBox" name="addToProjectBox">
+       <property name="text">
+        <string>Add document to the project</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
      <item row="0" column="0">
       <widget class="QLabel" name="fileLabel">
        <property name="text">
@@ -52,24 +69,21 @@
      <item row="1" column="1" colspan="2">
       <widget class="QComboBox" name="formatCombo"/>
      </item>
+     <item row="4" column="0">
+      <widget class="QCheckBox" name="customSeqNameBox">
+       <property name="text">
+        <string>Use custom sequence name</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="1" colspan="2">
+      <widget class="QLineEdit" name="sequenceNameEdit">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
     </layout>
-   </item>
-   <item>
-    <widget class="QCheckBox" name="withAnnotationsBox">
-     <property name="text">
-      <string>Export with annotations</string>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QCheckBox" name="addToProjectBox">
-     <property name="text">
-      <string>Add document to the project</string>
-     </property>
-     <property name="checked">
-      <bool>true</bool>
-     </property>
-    </widget>
    </item>
    <item>
     <widget class="QGroupBox" name="translationBox">
@@ -304,6 +318,31 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>fileNameEdit</tabstop>
+  <tabstop>fileButton</tabstop>
+  <tabstop>formatCombo</tabstop>
+  <tabstop>withAnnotationsBox</tabstop>
+  <tabstop>addToProjectBox</tabstop>
+  <tabstop>customSeqNameBox</tabstop>
+  <tabstop>sequenceNameEdit</tabstop>
+  <tabstop>directStrandButton</tabstop>
+  <tabstop>complementStrandButton</tabstop>
+  <tabstop>bothStrandsButton</tabstop>
+  <tabstop>translateButton</tabstop>
+  <tabstop>allTFramesButton</tabstop>
+  <tabstop>translationTableButton</tabstop>
+  <tabstop>translationTableCombo</tabstop>
+  <tabstop>backTranslateButton</tabstop>
+  <tabstop>mostFrequentlyButton</tabstop>
+  <tabstop>frequencyDistributionButton</tabstop>
+  <tabstop>organismCombo</tabstop>
+  <tabstop>separateButton</tabstop>
+  <tabstop>mergeButton</tabstop>
+  <tabstop>mergeSpinBox</tabstop>
+  <tabstop>exportButton</tabstop>
+  <tabstop>cancelButton</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>
@@ -313,8 +352,8 @@
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>454</x>
-     <y>142</y>
+     <x>528</x>
+     <y>456</y>
     </hint>
     <hint type="destinationlabel">
      <x>251</x>
@@ -329,12 +368,12 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>369</x>
-     <y>69</y>
+     <x>518</x>
+     <y>379</y>
     </hint>
     <hint type="destinationlabel">
-     <x>428</x>
-     <y>95</y>
+     <x>517</x>
+     <y>406</y>
     </hint>
    </hints>
   </connection>
@@ -345,12 +384,12 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>99</x>
-     <y>93</y>
+     <x>119</x>
+     <y>184</y>
     </hint>
     <hint type="destinationlabel">
-     <x>266</x>
-     <y>93</y>
+     <x>350</x>
+     <y>184</y>
     </hint>
    </hints>
   </connection>
@@ -361,12 +400,12 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>112</x>
-     <y>204</y>
+     <x>132</x>
+     <y>269</y>
     </hint>
     <hint type="destinationlabel">
-     <x>112</x>
-     <y>228</y>
+     <x>133</x>
+     <y>293</y>
     </hint>
    </hints>
   </connection>
@@ -377,12 +416,12 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>112</x>
-     <y>204</y>
+     <x>132</x>
+     <y>269</y>
     </hint>
     <hint type="destinationlabel">
-     <x>365</x>
-     <y>228</y>
+     <x>517</x>
+     <y>293</y>
     </hint>
    </hints>
   </connection>
@@ -393,12 +432,12 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>112</x>
-     <y>204</y>
+     <x>132</x>
+     <y>269</y>
     </hint>
     <hint type="destinationlabel">
-     <x>112</x>
-     <y>252</y>
+     <x>69</x>
+     <y>319</y>
     </hint>
    </hints>
   </connection>
@@ -409,12 +448,12 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>112</x>
-     <y>204</y>
+     <x>132</x>
+     <y>269</y>
     </hint>
     <hint type="destinationlabel">
-     <x>365</x>
-     <y>252</y>
+     <x>441</x>
+     <y>319</y>
     </hint>
    </hints>
   </connection>
@@ -425,12 +464,28 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>100</x>
-     <y>139</y>
+     <x>120</x>
+     <y>184</y>
     </hint>
     <hint type="destinationlabel">
-     <x>100</x>
-     <y>160</y>
+     <x>120</x>
+     <y>209</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>customSeqNameBox</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>sequenceNameEdit</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>161</x>
+     <y>106</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>197</x>
+     <y>103</y>
     </hint>
    </hints>
   </connection>

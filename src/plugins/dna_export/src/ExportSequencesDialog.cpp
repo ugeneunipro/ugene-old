@@ -42,10 +42,12 @@
 
 namespace U2 {
 
-ExportSequencesDialog::ExportSequencesDialog(bool m, bool allowComplement, bool allowTranslation, bool allowBackTranslation, const QString& defaultFileName,  const DocumentFormatId& id, QWidget* p) 
-: QDialog(p) 
+ExportSequencesDialog::ExportSequencesDialog( bool m, bool allowComplement, bool allowTranslation,
+    bool allowBackTranslation, const QString& defaultFileName, const QString &sourceFileBaseName,
+    const DocumentFormatId& id, QWidget* p )
+    : QDialog( p ), sequenceName( sourceFileBaseName )
 {
-    setupUi(this);    
+    setupUi(this);
 
     SaveDocumentGroupControllerConfig conf;
     conf.dfc.addFlagToExclude(DocumentFormatFlag_SingleObjectFormat);
@@ -58,6 +60,7 @@ ExportSequencesDialog::ExportSequencesDialog(bool m, bool allowComplement, bool 
     conf.defaultFormatId = id;
     conf.defaultFileName = defaultFileName;
     conf.saveTitle = tr("Export Sequences");
+    conf.objectName = QString( );
     saveGroupContoller = new SaveDocumentGroupController(conf, this);
 
     multiMode = m;
@@ -66,8 +69,9 @@ ExportSequencesDialog::ExportSequencesDialog(bool m, bool allowComplement, bool 
     translateAllFrames = false;
     addToProject = false;
 
+    sequenceNameEdit->setText( sequenceName );
     withAnnotationsBox->setEnabled(false);
-    
+
     if (!allowComplement) {
         directStrandButton->setEnabled(false);
         complementStrandButton->setEnabled(false);
@@ -198,6 +202,7 @@ void ExportSequencesDialog::updateModel() {
         // save it in root sequence directory
         file = QFileInfo(saveGroupContoller->getDefaultFileName()).absoluteDir().absolutePath() + "/" + file;
     }
+    sequenceName = ( customSeqNameBox->isChecked( ) ) ? sequenceNameEdit->text( ) : QString( );
     
     formatId = saveGroupContoller->getFormatIdToSave();
     useSpecificTable = translationTableButton->isChecked();

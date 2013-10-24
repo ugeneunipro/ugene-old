@@ -209,13 +209,14 @@ void ExportSequenceTask::run() {
     }
 
     QSet<QString> usedNames;
-    foreach(const ExportSequenceItem& ri, resultItems) {
-        QString name = ri.sequence.getName();
+    foreach ( ExportSequenceItem ri, resultItems ) {
+        QString name = config.sequenceName.isEmpty( ) ? ri.sequence.getName( ) : config.sequenceName;
         if (name.isEmpty()) {
             name = "sequence";
         }
         name = ExportUtils::genUniqueName(usedNames, name);
         usedNames.insert(name);
+        ri.sequence.setName( name );
         U2EntityRef seqRef = U2SequenceUtils::import(resultDocument->getDbiRef(), ri.sequence, stateInfo);
         CHECK_OP(stateInfo, );
         U2SequenceObject* seqObj = new U2SequenceObject(name, seqRef);
