@@ -254,6 +254,7 @@ GUI_TEST_CLASS_DEFINITION(test_0005){
 
 
 GUI_TEST_CLASS_DEFINITION( test_0006 ) {
+    //Workflow worker directory parameter validation
     //1. Create the following workflow { Read Sequence -> CD-Search -> Write Sequence }
     //GTUtilsDialog::waitForDialog( os, new StartupDialogFiller( os ) );
 
