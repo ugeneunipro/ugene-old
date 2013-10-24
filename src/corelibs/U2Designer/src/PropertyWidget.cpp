@@ -289,30 +289,42 @@ void ComboBoxWithChecksWidget::setValue(const QVariant &value) {
       
     const QList<QString>& keys = items.keys();
     int i = 0;
+
+    QStandardItem* ghostItem = new QStandardItem();
+    cm->setItem(i++, ghostItem);
+
     foreach(const QString& key, keys){
         bool checked = curList.contains(key, Qt::CaseInsensitive);
         items[key] = checked;
         QStandardItem* item = new QStandardItem(key);
-        item->setCheckable(true); item->setEditable(false); item->setSelectable(false);
+        item->setCheckable(true);
+        item->setEditable(false);
+        item->setSelectable(false);
         item->setCheckState((checked)? Qt::Checked: Qt::Unchecked);
         item->setData(key);
         cm->setItem(i++, item);
     }
     comboBox->setModel(cm);
+
     QListView* vw = new QListView(comboBox);
     vw->setModel(cm);
+    vw->setRowHidden(0, true);
+
     comboBox->setView(vw);
+    ghostItem->setText(ComboBoxWithChecksWidget::value().toString());
     connect(cm, SIGNAL(itemChanged( QStandardItem * )), this,
         SLOT(sl_itemChanged( QStandardItem * )));
 }
 
 void ComboBoxWithChecksWidget::sl_valueChanged(int) {
+    comboBox->setCurrentIndex(0);
     emit si_valueChanged(value());
 }
 
 void ComboBoxWithChecksWidget::sl_itemChanged( QStandardItem * item ){
     QStandardItem* standardItem  = item;
     QString key = standardItem->data().toString();
+
     if (items.contains(key)){
         Qt::CheckState checkState = standardItem->checkState();
         if(checkState == Qt::Checked){
@@ -322,6 +334,8 @@ void ComboBoxWithChecksWidget::sl_itemChanged( QStandardItem * item ){
         }
         sl_valueChanged(0);
     }
+
+    comboBox->setItemText(0, value().toString());
 }
 
 /************************************************************************/
