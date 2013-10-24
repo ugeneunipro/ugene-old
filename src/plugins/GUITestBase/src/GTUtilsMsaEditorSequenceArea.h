@@ -53,6 +53,7 @@ public:
 
     static void selectSequence(U2OpStatus &os, QString seqName);
     static bool isSequenceSelected(U2OpStatus &os, QString seqName);
+    static int getSelectedSequencesNum(U2OpStatus &os);
     static bool isSequenceVisible(U2OpStatus &os, QString seqName);
 
     static bool offsetsVisible(U2OpStatus &os);

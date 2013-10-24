@@ -1638,6 +1638,48 @@ GUI_TEST_CLASS_DEFINITION( test_2021_9 )
                     "Unexpected MSA content has occurred" );
 }
 
+GUI_TEST_CLASS_DEFINITION( test_2026 ) {
+    // 1. Open data/samples/CLUSTALW/COI.aln
+    GTFileDialog::openFile( os, dataDir + "samples/CLUSTALW/", "COI.aln" );
+
+    // 2. Select Montana_montana in name list
+    GTUtilsMSAEditorSequenceArea::selectSequence(os, QString("Montana_montana"));
+
+    // 3. Press shift, click down_arrow 4 times. Release shift.
+    GTKeyboardDriver::keyPress(os, GTKeyboardDriver::key["shift"]);
+    for (int i = 0; i < 4; ++i) {
+        GTKeyboardDriver::keyClick( os, GTKeyboardDriver::key["down"] );
+        GTGlobals::sleep( 500 );
+    }
+    GTKeyboardDriver::keyRelease(os, GTKeyboardDriver::key["shift"]);
+    GTGlobals::sleep(3000);
+
+    // Expected state: 5 sequences are selected
+    CHECK_SET_ERR( 6 == GTUtilsMSAEditorSequenceArea::getSelectedSequencesNum(os),
+        "Unexpected number of selected sequences");
+    CHECK_SET_ERR( GTUtilsMSAEditorSequenceArea::isSequenceSelected(os, QString("Montana_montana")),
+        "Expected sequence is not selected");
+    CHECK_SET_ERR( GTUtilsMSAEditorSequenceArea::isSequenceSelected(os, QString("Zychia_baranovi")),
+        "Expected sequence is not selected");
+
+    // 4. Release shift. Press shift again and click down arrow
+    GTKeyboardDriver::keyPress(os, GTKeyboardDriver::key["shift"]);
+    GTKeyboardDriver::keyClick( os, GTKeyboardDriver::key["down"] );
+    GTGlobals::sleep( 500 );
+    GTKeyboardDriver::keyRelease(os, GTKeyboardDriver::key["shift"]);
+    GTGlobals::sleep(3000);
+
+    // Expected state: 6 sequences selected
+    CHECK_SET_ERR( 6 == GTUtilsMSAEditorSequenceArea::getSelectedSequencesNum(os),
+        "Unexpected number of selected sequences");
+    CHECK_SET_ERR( GTUtilsMSAEditorSequenceArea::isSequenceSelected(os, QString("Montana_montana")),
+        "Expected sequence is not selected");
+    CHECK_SET_ERR( GTUtilsMSAEditorSequenceArea::isSequenceSelected(os, QString("Zychia_baranovi")),
+        "Expected sequence is not selected");
+    CHECK_SET_ERR( GTUtilsMSAEditorSequenceArea::isSequenceSelected(os, QString("Tettigonia_viridissima")),
+        "Expected sequence is not selected");
+}
+
 GUI_TEST_CLASS_DEFINITION( test_2030 ) {
     // 1. Open {_common_data/scenarios/msa/ma_one_line.aln}
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma_one_line.aln");

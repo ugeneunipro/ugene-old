@@ -219,6 +219,16 @@ bool GTUtilsMSAEditorSequenceArea::isSequenceSelected(U2OpStatus &os, QString se
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME
+int GTUtilsMSAEditorSequenceArea::getSelectedSequencesNum(U2OpStatus &os) {
+    MSAEditorSequenceArea *msaEditArea = qobject_cast<MSAEditorSequenceArea*>
+        (GTWidget::findWidget(os, "msa_editor_sequence_area"));
+    CHECK_SET_ERR_RESULT(msaEditArea != NULL, "MsaEditorSequenceArea not found", 0);
+
+    return msaEditArea->getSelectedRows().length;
+}
+#undef GT_METHOD_NAME
+
 #define GT_METHOD_NAME "isSequenceVisible"
 bool GTUtilsMSAEditorSequenceArea::isSequenceVisible(U2OpStatus &os, QString seqName) {
     MSAEditorSequenceArea *msaEditArea = qobject_cast<MSAEditorSequenceArea*>
