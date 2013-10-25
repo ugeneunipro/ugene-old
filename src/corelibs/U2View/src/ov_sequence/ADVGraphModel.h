@@ -53,12 +53,12 @@ private:
 class U2VIEW_EXPORT GSequenceGraphWindowData {
 public:
     GSequenceGraphWindowData() :  step(0), window(0){}
-    GSequenceGraphWindowData(int _step, int w) :  step(_step), window(w){}
+    GSequenceGraphWindowData(qint64 _step, qint64 w) :  step(_step), window(w){}
 
     virtual ~GSequenceGraphWindowData(){};
 
-    int step;
-    int window;
+    qint64 step;
+    qint64 window;
 };
 
 class U2VIEW_EXPORT GSequenceGraphMinMaxCutOffData {
@@ -101,6 +101,7 @@ public:
     const GSequenceGraphWindowData& getWindowData() {return wdata;}
     const GSequenceGraphMinMaxCutOffData& getCutOffData() {return commdata;}
     const ColorMap& getColors() {return lineColors;}
+	void setColors(const ColorMap& colorMap) {lineColors = colorMap;}
 
     static bool isUnknownValue(float value) {return qFuzzyCompare(value, UNKNOWN_VAL);}
 

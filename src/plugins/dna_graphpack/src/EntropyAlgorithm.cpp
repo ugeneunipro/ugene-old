@@ -67,11 +67,6 @@ QList<GSequenceGraphData*> EntropyGraphFactory::createGraphs(GSequenceGraphView*
     return res;
 }
 
-GSequenceGraphDrawer* EntropyGraphFactory::getDrawer(GSequenceGraphView* v) {
-    GSequenceGraphWindowData wd(50, 500);
-    return new GSequenceGraphDrawer(v, wd);
-}
-
 
 //////////////////////////////////////////////////////////////////////////
 // EntropyGraphAlgorithm

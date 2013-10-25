@@ -43,7 +43,6 @@ WindowStepSelectorWidget::WindowStepSelectorWidget(QWidget* p, const U2Region& w
     
     stepsPerWindowEdit = new QSpinBox(this);
     stepsPerWindowEdit->setRange(1, winRange.endPos());
-    assert(win % step == 0);
     stepsPerWindowEdit->setValue(win/step);
     stepsPerWindowEdit->setAlignment(Qt::AlignRight);
     

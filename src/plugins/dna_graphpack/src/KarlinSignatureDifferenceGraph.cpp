@@ -58,12 +58,6 @@ QList<GSequenceGraphData*> KarlinGraphFactory::createGraphs(GSequenceGraphView* 
     res.append(d);
     return res;
 }
-//+
-GSequenceGraphDrawer* KarlinGraphFactory::getDrawer(GSequenceGraphView* v) {
-    GSequenceGraphWindowData wd(24, 240);
-    return new GSequenceGraphDrawer(v, wd);
-}
-
 
 //////////////////////////////////////////////////////////////////////////
 // KarlinGraphAlgorithm

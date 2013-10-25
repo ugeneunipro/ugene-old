@@ -67,14 +67,15 @@ QList<GSequenceGraphData*> GCFramePlotFactory::createGraphs(GSequenceGraphView* 
 }
 
 GSequenceGraphDrawer* GCFramePlotFactory::getDrawer(GSequenceGraphView* v) {
-    GSequenceGraphWindowData wd(10, 30);
+	GSequenceGraphDrawer* d =  GSequenceGraphFactory::getDrawer(v);
 
     QMap<QString, QColor> colors;
     colors.insert(OFFSET_NULL, Qt::red);
     colors.insert(OFFSET_ONE, Qt::green);
     colors.insert(OFFSET_TWO, Qt::blue);
 
-    return new GSequenceGraphDrawer(v, wd, colors);
+	d->setColors(colors);
+	return d;
 }
 
 

@@ -64,11 +64,6 @@ QList<GSequenceGraphData*> BaseContentGraphFactory::createGraphs(GSequenceGraphV
     return res;
 }
 
-GSequenceGraphDrawer* BaseContentGraphFactory::getDrawer(GSequenceGraphView* v) {
-    GSequenceGraphWindowData wd(10, 30);
-    return new GSequenceGraphDrawer(v, wd);
-}
-
 
 //////////////////////////////////////////////////////////////////////////
 // BaseContentGraphAlgorithm

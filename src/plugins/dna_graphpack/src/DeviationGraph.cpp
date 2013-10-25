@@ -66,11 +66,6 @@ QList<GSequenceGraphData*> DeviationGraphFactory::createGraphs(GSequenceGraphVie
     return res;
 }
 
-GSequenceGraphDrawer* DeviationGraphFactory::getDrawer(GSequenceGraphView* v) {
-    GSequenceGraphWindowData wd(10, 30);
-    return new GSequenceGraphDrawer(v, wd);
-}
-
 
 //////////////////////////////////////////////////////////////////////////
 // DeviationGraphAlgorithm

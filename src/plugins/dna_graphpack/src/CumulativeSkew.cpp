@@ -67,11 +67,6 @@ QList<GSequenceGraphData*> CumulativeSkewGraphFactory::createGraphs(GSequenceGra
     return res;
 }
 
-GSequenceGraphDrawer* CumulativeSkewGraphFactory::getDrawer(GSequenceGraphView* v) {
-    GSequenceGraphWindowData wd(199, 199);
-    return new GSequenceGraphDrawer(v, wd);
-}
-
 
 //////////////////////////////////////////////////////////////////////////
 // CumulativeSkewGraphAlgorithm

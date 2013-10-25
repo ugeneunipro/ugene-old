@@ -79,8 +79,7 @@ void DNAGraphPackViewContext::initViewContext(GObjectView* view)
         SIGNAL(si_sequenceWidgetAdded(ADVSequenceWidget*)),
         SLOT(sl_sequenceWidgetAdded(ADVSequenceWidget*)));
 
-    foreach(ADVSequenceWidget* sequenceWidget, annotView->getSequenceWidgets())
-    {
+    foreach(ADVSequenceWidget* sequenceWidget, annotView->getSequenceWidgets()) {
         sl_sequenceWidgetAdded(sequenceWidget);
     }
 }

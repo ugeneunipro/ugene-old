@@ -39,7 +39,6 @@ class EntropyGraphFactory : public GSequenceGraphFactory {
 public:
     EntropyGraphFactory(QObject* p);
     virtual QList<GSequenceGraphData*> createGraphs(GSequenceGraphView* v);
-    virtual GSequenceGraphDrawer* getDrawer(GSequenceGraphView* v);
     virtual bool isEnabled(const U2SequenceObject* o) const;
 };
 

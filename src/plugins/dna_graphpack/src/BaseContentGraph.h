@@ -40,7 +40,6 @@ public:
     enum GType { GC, AG };
     BaseContentGraphFactory(GType t, QObject* p);
     virtual QList<GSequenceGraphData*> createGraphs(GSequenceGraphView* v);
-    virtual GSequenceGraphDrawer* getDrawer(GSequenceGraphView* v);
     virtual bool isEnabled(const U2SequenceObject* o) const;
 private:
     QBitArray map;

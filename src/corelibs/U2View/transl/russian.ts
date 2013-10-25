@@ -5878,7 +5878,7 @@ Please select file to align.</source>
     <message>
         <location filename="../src/ov_sequence/WindowStepSelectorWidget.cpp" line="52"/>
         <source>Steps per window:</source>
-        <translation>Шаг окна</translation>
+        <translation>Шагов на окно</translation>
     </message>
     <message>
         <location filename="../src/ov_sequence/WindowStepSelectorWidget.cpp" line="72"/>
