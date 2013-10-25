@@ -70,6 +70,7 @@ QWidget * SpinBoxDelegate::createEditor(QWidget *parent,
 {
     SpinBoxWidget *editor = new SpinBoxWidget(spinProperties, parent);
     connect(editor, SIGNAL(valueChanged(int)), SIGNAL(si_valueChanged(int)));
+    connect(editor, SIGNAL(valueChanged(int)), SLOT(sl_commit()));
 
     currentEditor = editor;
 
@@ -110,6 +111,12 @@ void SpinBoxDelegate::getItems(QVariantMap &items ) const {
     items = this->spinProperties;
 }
 
+void SpinBoxDelegate::sl_commit() {
+    SpinBoxWidget* editor = static_cast<SpinBoxWidget*>(sender());
+    CHECK(editor != NULL, );
+    emit commitData(editor);
+}
+
 /********************************
 * DoubleSpinBoxDelegate
 ********************************/
@@ -124,14 +131,16 @@ DoubleSpinBoxDelegate::DoubleSpinBoxDelegate(const QVariantMap &props, QObject *
 }
 
 PropertyWidget * DoubleSpinBoxDelegate::createWizardWidget(U2OpStatus & /*os*/, QWidget *parent) const {
-    return new DoubleSpinBoxWidget(spinProperties, parent);
+    return (PropertyWidget*)createEditor(parent, QStyleOptionViewItem(), QModelIndex());
 }
 
 QWidget * DoubleSpinBoxDelegate::createEditor(QWidget *parent,
                                        const QStyleOptionViewItem &/* option */,
                                        const QModelIndex &/* index */) const
 {
-    return new DoubleSpinBoxWidget(spinProperties, parent);
+    DoubleSpinBoxWidget* editor = new DoubleSpinBoxWidget(spinProperties, parent);
+    connect(editor, SIGNAL(si_valueChanged(QVariant)), SLOT(sl_commit()));
+    return editor;
 }
 
 void DoubleSpinBoxDelegate::setEditorData(QWidget *editor,
@@ -159,6 +168,12 @@ QVariant DoubleSpinBoxDelegate::getDisplayValue( const QVariant& v) const {
 
 void DoubleSpinBoxDelegate::getItems( QVariantMap &items ) const {
     items = this->spinProperties;
+}
+
+void DoubleSpinBoxDelegate::sl_commit() {
+    DoubleSpinBoxWidget* editor = static_cast<DoubleSpinBoxWidget*>(sender());
+    CHECK(editor != NULL, );
+    emit commitData(editor);
 }
 
 /********************************

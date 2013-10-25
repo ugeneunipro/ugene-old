@@ -131,12 +131,15 @@ public:
 
 signals:
     void si_valueChanged(int);
+private slots:
+    void sl_commit();
 private:
     QVariantMap spinProperties;
     mutable QPointer<SpinBoxWidget> currentEditor;
 };
 
 class U2DESIGNER_EXPORT DoubleSpinBoxDelegate : public PropertyDelegate {
+    Q_OBJECT
 public:
     DoubleSpinBoxDelegate(const QVariantMap& props = QVariantMap(), QObject *parent = 0);
     virtual ~DoubleSpinBoxDelegate() {}
@@ -158,6 +161,8 @@ public:
 
     static const int DEFAULT_DECIMALS_VALUE;
 
+private slots:
+    void sl_commit();
 private:
     QVariantMap spinProperties;
 };
