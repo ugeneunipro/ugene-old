@@ -65,6 +65,7 @@
 #include "runnables/ugene/plugins_3rdparty/umuscle/MuscleDialogFiller.h"
 #include "runnables/ugene/plugins_3rdparty/kalign/KalignDialogFiller.h"
 #include "GTUtilsLog.h"
+#include "GTUtilsWorkflowDesigner.h"
 #include <U2View/ADVSingleSequenceWidget.h>
 #include <U2View/AnnotatedDNAViewFactory.h>
 
@@ -1997,6 +1998,37 @@ GUI_TEST_CLASS_DEFINITION( test_2140 )
                           QStringList() << "DNA assembly" << "Convert UGENE Assembly data base to SAM format");
 
     CHECK_SET_ERR(l.hasError() == true, "There is no error message in log");
+}
+
+GUI_TEST_CLASS_DEFINITION( test_2150 ){
+    // 1. Open Workflow Designer.
+    QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
+    GTMenu::clickMenuItem(os, menu, QStringList() << "Workflow Designer");
+    // 2. Open the "Align sequences with MUSCLE" sample scheme.
+    GTUtilsWorkflowDesigner::addSample(os, "Align sequences with MUSCLE");
+
+    // 3. Set "data/samples/CLUSTALW/ty3.aln.gz" as the input file.
+    GTMouseDriver::moveTo(os,GTUtilsWorkflowDesigner::getItemCenter(os,"Read alignment"));
+    GTMouseDriver::click(os);
+    GTUtilsWorkflowDesigner::setDatasetInputFile(os, dataDir + "samples/CLUSTALW/", "ty3.aln.gz");
+
+    // 4. Set some name to the result file.
+    QTableView* table = qobject_cast<QTableView*>(GTWidget::findWidget(os,"table"));
+    CHECK_SET_ERR(table,"tableView not found");
+    GTMouseDriver::moveTo(os,GTUtilsWorkflowDesigner::getItemCenter(os,"Write alignment"));
+    GTMouseDriver::click(os);
+    GTMouseDriver::moveTo(os,GTTableView::getCellPosition(os,table,1,1));
+    GTMouseDriver::click(os);
+    QString s = QFileInfo(testDir + "_common_data/scenarios/sandbox/").absoluteFilePath();
+    GTKeyboardDriver::keySequence(os, s+"/2150_0001.sto");
+    GTWidget::click(os,GTUtilsMdi::activeWindow(os));
+
+    // 5. Run the workflow.
+    GTWidget::click(os,GTAction::button(os,"Run workflow"));
+    GTGlobals::sleep(1000);
+
+    // 6. During the workflow execution open the "Tasks" panel in the bottom, find in the task tree the "MUSCLE alignment" subtask and cancel it.
+    GTUtilsTaskTreeView::cancelTask(os, "MUSCLE alignment");
 }
 
 GUI_TEST_CLASS_DEFINITION( test_2156 ){
