@@ -53,6 +53,7 @@
 #include "tests/common_scenarios/dp_view/GTTestsDpView.h"
 #include "tests/common_scenarios/Assembling/Assembly_browser/GTTestsAssemblyBrowser.h"
 #include "tests/common_scenarios/Assembling/bowtie2/GTTestsBowtie2.h"
+#include "tests/common_scenarios/Assembling/dna_assembly/GTTestsDnaAssembly.h"
 #include "tests/common_scenarios/Assembling/sam/GTTestsSAM.h"
 #include "tests/common_scenarios/Query_Designer/GTTestsQuerryDesigner.h"
 #include "tests/common_scenarios/workflow_designer/GTTestsWorkflowDesigner.h"
@@ -854,6 +855,11 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST_IGNORED_WINDOWS(GUITest_Bowtie2::test_0003, "Restore when this tool becomes available");
     REGISTER_TEST_IGNORED_WINDOWS(GUITest_Bowtie2::test_0004, "Restore when this tool becomes available");
     REGISTER_TEST_IGNORED_WINDOWS(GUITest_Bowtie2::test_0005, "Restore when this tool becomes available");
+
+/////////////////////////////////////////////////////////////////////////
+// Common scenarios/Assembling/dna_assembly
+/////////////////////////////////////////////////////////////////////////
+    REGISTER_TEST(GUITest_dna_assembly::test_0001);
 
     /////////////////////////////////////////////////////////////////////////
 // Common scenarios/Assembling/sam

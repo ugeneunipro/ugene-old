@@ -90,8 +90,10 @@ void AlignShortReadsFiller::setCommonParameters(QWidget* dialog) {
     QComboBox* libraryComboBox = qobject_cast<QComboBox*>(GTWidget::findWidget(os, "libraryComboBox", dialog));
     CHECK_OP(os, );
     GT_CHECK(libraryComboBox, "libraryComboBox is NULL");
-    GTComboBox::setIndexWithText(os, libraryComboBox, parameters->getLibrary());
-    CHECK_OP(os, );
+    if (libraryComboBox->isEnabled()) {
+        GTComboBox::setIndexWithText(os, libraryComboBox, parameters->getLibrary());
+        CHECK_OP(os, );
+    }
 
     QCheckBox* prebuiltIndexCheckBox = qobject_cast<QCheckBox*>(GTWidget::findWidget(os, "prebuiltIndexCheckBox", dialog));
     CHECK_OP(os, );

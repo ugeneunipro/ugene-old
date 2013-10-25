@@ -19,24 +19,20 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_GUITEST_BOWTIE2_H_
-#define _U2_GUITEST_BOWTIE2_H_
+#ifndef _U2_GUITEST_DNA_ASSEMBLY_H_
+#define _U2_GUITEST_DNA_ASSEMBLY_H_
 
 #include <U2Test/GUITestBase.h>
 
 namespace U2 {
-namespace GUITest_Bowtie2 {
+namespace GUITest_dna_assembly {
 #undef GUI_TEST_PREFIX
-#define GUI_TEST_PREFIX "GUITest_Bowtie2_"
+#define GUI_TEST_PREFIX "GUITest_dna_assembly_"
 
 GUI_TEST_CLASS_DECLARATION(test_0001)
-GUI_TEST_CLASS_DECLARATION(test_0002)
-GUI_TEST_CLASS_DECLARATION(test_0003)
-GUI_TEST_CLASS_DECLARATION(test_0004)
-GUI_TEST_CLASS_DECLARATION(test_0005)
 
 #undef GUI_TEST_PREFIX
-} // GUITest_Bowtie2
+} // GUITest_dna_assembly
 } // U2
 
-#endif // _U2_GUITEST_BOWTIE2_H_
+#endif // _U2_GUITEST_DNA_ASSEMBLY_H_
