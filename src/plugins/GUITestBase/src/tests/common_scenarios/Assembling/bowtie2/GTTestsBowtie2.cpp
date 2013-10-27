@@ -117,6 +117,12 @@ GUI_TEST_CLASS_DEFINITION(test_0002){
     CHECK_OP(os, );
     GTMenu::clickMenuItem(os, mainMenu, QStringList() << "Align to reference" << "Align short reads");
     CHECK_OP(os, );
+
+    ImportBAMFileFiller* importBAMFileFiller = new ImportBAMFileFiller(os);
+    CHECK_OP(os, );
+    GTUtilsDialog::waitForDialog(os, importBAMFileFiller);
+    CHECK_OP(os, );
+    GTGlobals::sleep();
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0003) {

@@ -3477,7 +3477,7 @@ GUI_TEST_CLASS_DEFINITION(test_0040){//UGENE crashes when opening several files
     human_T1.copy(dataDir + "/samples/CLUSTALW/human_T1.fa");
     GTFileDialog::openFileList(os,dataDir + "samples/CLUSTALW/",QStringList()<<"COI.aln"<<"human_T1.fa");
 
-    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os,QMessageBox::No));
+    //GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os,QMessageBox::No));
     QTreeWidgetItem* human = GTUtilsProjectTreeView::findItem(os,"human_T1.fa");
     CHECK_SET_ERR(human, "human_T1.fa not added to project");
     QTreeWidgetItem* COI = GTUtilsProjectTreeView::findItem(os,"COI.aln");

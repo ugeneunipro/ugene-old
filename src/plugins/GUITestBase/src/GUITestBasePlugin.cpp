@@ -197,7 +197,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_2128_1);
     REGISTER_TEST(GUITest_regression_scenarios::test_2138);
     REGISTER_TEST(GUITest_regression_scenarios::test_2140);
-    REGISTER_TEST(GUITest_regression_scenarios::test_2150);
+    //REGISTER_TEST(GUITest_regression_scenarios::test_2150);
     REGISTER_TEST(GUITest_regression_scenarios::test_2156);
     REGISTER_TEST(GUITest_regression_scenarios::test_2157);
     REGISTER_TEST(GUITest_regression_scenarios::test_2160);
@@ -511,13 +511,13 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0026_1);
 
     REGISTER_TEST_LINUX(GUITest_common_scenarios_msa_editor::test_0026_2_linux, "Linux version of test");
-    REGISTER_TEST_LINUX(GUITest_common_scenarios_msa_editor::test_0026_2_windows, "Windows version of test");
+    REGISTER_TEST_WINDOWS(GUITest_common_scenarios_msa_editor::test_0026_2_windows, "Windows version of test");
 
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0027);
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0027_1);
 
     REGISTER_TEST_LINUX(GUITest_common_scenarios_msa_editor::test_0028_linux, "Linux version of test");
-    REGISTER_TEST_LINUX(GUITest_common_scenarios_msa_editor::test_0028_windows, "Windows version of test");
+    REGISTER_TEST_WINDOWS(GUITest_common_scenarios_msa_editor::test_0028_windows, "Windows version of test");
 
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0029);
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0029_1);
@@ -556,7 +556,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0038_3);
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0038_4);
 
-    REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0039);
+    REGISTER_TEST_IGNORED(GUITest_common_scenarios_msa_editor::test_0039, "https://ugene.unipro.ru/tracker/browse/UGENE-2360");
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0040);
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0041);
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_fake);
