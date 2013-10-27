@@ -31,7 +31,7 @@ namespace U2 {
 
 #define GT_METHOD_NAME "text"
 QString GTClipboard::text(U2OpStatus &os) {
-
+    GTGlobals::sleep(300);
 // check that clipboard contains text
     QClipboard *clipboard = QApplication::clipboard();
     GT_CHECK_RESULT(clipboard != NULL, "Clipboard is NULL", "");

@@ -217,15 +217,13 @@ GUI_TEST_CLASS_DEFINITION(test_0004){
     QWidget *w=GTWidget::findWidget(os,"Characters Occurrence");
     GTWidget::click(os, w);
 
-    QLabel *l=w->findChild<QLabel*>();
     QPoint point=GTMouseDriver::getMousePosition();
-    QRect rect=l->geometry();
 
-    QPoint rightPoint=QPoint(point.x()+rect.center().x(),point.y());
-    GTMouseDriver::moveTo(os,rightPoint);
+    GTMouseDriver::moveTo(os, point - QPoint(15,0));//move 15 pix left
     GTMouseDriver::press(os);
 
-    QPoint leftPoint=QPoint(point.x()-rect.center().x(),point.y());
+    GTMouseDriver::moveTo(os,point + QPoint(80,0));//move 80 pix right
+    GTMouseDriver::release(os);
 
     GTKeyboardDriver::keyClick(os,'c',GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep(500);
