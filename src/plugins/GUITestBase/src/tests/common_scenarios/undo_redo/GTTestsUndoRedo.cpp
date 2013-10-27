@@ -781,9 +781,10 @@ GUI_TEST_CLASS_DEFINITION(test_0011_1){//Kalign undo test
     GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
 #ifdef Q_OS_MAC
     GTGlobals::sleep(10000);
+#else
+    GTGlobals::sleep(3000);
 #endif
     GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
-    GTGlobals::sleep(500);
     QString changedAln = GTClipboard::text(os);
     CHECK_SET_ERR(changedAln==expectedAln, "Unexpected alignment" + changedAln);
 
