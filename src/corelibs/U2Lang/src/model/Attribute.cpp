@@ -28,6 +28,7 @@
 #include "Attribute.h"
 
 namespace U2 {
+using namespace WorkflowSerialize;
 
 /*************************************
  *  Attribute
@@ -40,10 +41,10 @@ Attribute::Attribute(const Descriptor& d, const DataTypePtr t, bool req, const Q
 
 void Attribute::debugCheckAttributeId() const {
     QString id = getId(); Q_UNUSED(id);
-    assert(id != HRSchemaSerializer::TYPE_ATTR);
-    assert(id != HRSchemaSerializer::NAME_ATTR);
-    assert(id != HRSchemaSerializer::SCRIPT_ATTR);
-    assert(id != HRSchemaSerializer::ELEM_ID_ATTR);
+    assert(id != Constants::TYPE_ATTR);
+    assert(id != Constants::NAME_ATTR);
+    assert(id != Constants::SCRIPT_ATTR);
+    assert(id != Constants::ELEM_ID_ATTR);
 }
 
 const DataTypePtr Attribute::getAttributeType()const {

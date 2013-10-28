@@ -139,7 +139,7 @@ void FileExtensionRelation::updateDelegateTags(const QVariant &influencingValue,
 }
 
 QVariant ValuesRelation::getAffectResult(const QVariant &influencingValue, const QVariant &dependentValue,
-                                         DelegateTags */*infTags*/, DelegateTags *depTags) const {
+                                         DelegateTags * /*infTags*/, DelegateTags *depTags) const {
     updateDelegateTags(influencingValue, depTags);
     QVariantMap items = dependencies.value(influencingValue.toString()).toMap();
     if (items != QVariant()) {

@@ -36,19 +36,20 @@
 #include "SchemeWrapper.h"
 
 static const QString TMP_FILE_NAME_BASE =   "scheme_for_script";
-static QString NAME_ATTR_PATTERN =          "\\s" + U2::HRSchemaSerializer::NAME_ATTR + "\\s*"
-                                                + U2::HRSchemaSerializer::EQUALS_SIGN;
-static QString TYPE_ATTR_PATTERN =          "\\s" + U2::HRSchemaSerializer::TYPE_ATTR + "\\s*"
-                                                + U2::HRSchemaSerializer::EQUALS_SIGN;
-static QString BLOCK_START_PATTERN =        "[\\s\"]\\" + U2::HRSchemaSerializer::BLOCK_START
+static QString NAME_ATTR_PATTERN =          "\\s" + U2::WorkflowSerialize::Constants::NAME_ATTR + "\\s*"
+                                                + U2::WorkflowSerialize::Constants::EQUALS_SIGN;
+static QString TYPE_ATTR_PATTERN =          "\\s" + U2::WorkflowSerialize::Constants::TYPE_ATTR + "\\s*"
+                                                + U2::WorkflowSerialize::Constants::EQUALS_SIGN;
+static QString BLOCK_START_PATTERN =        "[\\s\"]\\" + U2::WorkflowSerialize::Constants::BLOCK_START
                                                 + "[\\s\"]";
-static QString BLOCK_END_PATTERN =          "[\\s\\"+ U2::HRSchemaSerializer::SEMICOLON + "]\\"
-                                                + U2::HRSchemaSerializer::BLOCK_END + "\\s";
+static QString BLOCK_END_PATTERN =          "[\\s\\"+ U2::WorkflowSerialize::Constants::SEMICOLON + "]\\"
+                                                + U2::WorkflowSerialize::Constants::BLOCK_END + "\\s";
 static QString DEFAULT_DATASET_NAME =       "Dataset";
 
 static int SUBSTRING_NOT_FOUND =            -1;
 
 namespace U2 {
+using namespace WorkflowSerialize;
 
 SchemeWrapper::SchemeWrapper( const QString &initPathToScheme, U2ErrorType *result )
     : pathToScheme( ), schemeContent( ), elementNamesAndIds( ), commentLinesPositions( )
@@ -91,7 +92,7 @@ U2ErrorType SchemeWrapper::addReaderAndGetItsName( const QString &readerType,
     const QString &inputFilePath, QString &name )
 {
     const QString inputFileAttributeName = Workflow::BaseAttributes::URL_IN_ATTRIBUTE( ).getId( )
-        + HRSchemaSerializer::DOT + HRSchemaSerializer::FILE_URL;
+        + Constants::DOT + Constants::FILE_URL;
     return addElementWithAttributeAndGetItsName( readerType, inputFileAttributeName, inputFilePath,
         name );
 }
@@ -117,7 +118,7 @@ U2ErrorType SchemeWrapper::setElementAttribute( const QString &elementName,
         &elementDescEndPosition );
     CHECK( U2_OK == result, result );
 
-    QStringList attributesHierarchy = attributeName.split( HRSchemaSerializer::DOT );
+    QStringList attributesHierarchy = attributeName.split( Constants::DOT );
     bool attributeExists = false;
     result = WorkflowElementFacade::doesElementHaveParameter( elementType,
         attributesHierarchy[0], &attributeExists );
@@ -127,7 +128,7 @@ U2ErrorType SchemeWrapper::setElementAttribute( const QString &elementName,
     bool replaceIfExists = true;
     QStringList valuesTuple( attributeValue );
     if ( Workflow::BaseAttributes::URL_IN_ATTRIBUTE( ) == attributesHierarchy[0] ) {
-        if ( HRSchemaSerializer::DATASET_NAME == attributesHierarchy.last( ) ) {
+        if ( Constants::DATASET_NAME == attributesHierarchy.last( ) ) {
             result = getBoundariesOfUrlInAttribute( attributeValue, false,
                 &elementDescStartPosition, &elementDescEndPosition );
             CHECK( U2_OK != result, U2_INVALID_STRING ); // dataset with the given name already exists
@@ -136,8 +137,8 @@ U2ErrorType SchemeWrapper::setElementAttribute( const QString &elementName,
             &elementDescStartPosition, &elementDescEndPosition, deepestAttributeName,
             replaceIfExists );
         CHECK( U2_OK == result, result );
-        if ( HRSchemaSerializer::FILE_URL == deepestAttributeName ) {
-            valuesTuple = attributeValue.split( HRSchemaSerializer::SEMICOLON,
+        if ( Constants::FILE_URL == deepestAttributeName ) {
+            valuesTuple = attributeValue.split( Constants::SEMICOLON,
                 QString::SkipEmptyParts );
         }
     }
@@ -166,7 +167,7 @@ U2ErrorType SchemeWrapper::getElementAttribute( const QString &elementName,
         &elementDescEndPosition );
     CHECK( U2_OK == result, result );
 
-    QStringList attributesHierarchy = attributeName.split( HRSchemaSerializer::DOT );
+    QStringList attributesHierarchy = attributeName.split( Constants::DOT );
     bool attributeExists = false;
     result = WorkflowElementFacade::doesElementHaveParameter( elementType,
         attributesHierarchy[0], &attributeExists );
@@ -197,12 +198,12 @@ U2ErrorType SchemeWrapper::addNewElementAndGetItsName( const QString &elementTyp
     U2ErrorType result = setUniqueElementNameAndId( elementType, elementName, newElementId );
     CHECK( U2_OK == result, result );
     QString newElementBlockContent;
-    newElementBlockContent += HRSchemaSerializer::makeEqualsPair( HRSchemaSerializer::TYPE_ATTR,
+    newElementBlockContent += HRSchemaSerializer::makeEqualsPair( Constants::TYPE_ATTR,
         elementType );
-    newElementBlockContent += HRSchemaSerializer::makeEqualsPair( HRSchemaSerializer::NAME_ATTR,
+    newElementBlockContent += HRSchemaSerializer::makeEqualsPair( Constants::NAME_ATTR,
         elementName );
     QString newElementBlock = HRSchemaSerializer::makeBlock( newElementId,
-        HRSchemaSerializer::NO_NAME, newElementBlockContent );
+        Constants::NO_NAME, newElementBlockContent );
 
     int newElementBlockInsertPosition = SUBSTRING_NOT_FOUND;
     result = getSchemeDescriptionStart( &newElementBlockInsertPosition );
@@ -211,7 +212,7 @@ U2ErrorType SchemeWrapper::addNewElementAndGetItsName( const QString &elementTyp
     newElementBlockInsertPosition = schemeContent.indexOf( QRegExp( "[\\w\\n]" ),
         newElementBlockInsertPosition );
     CHECK( SUBSTRING_NOT_FOUND != newElementBlockInsertPosition, U2_INVALID_SCHEME );
-    if ( HRSchemaSerializer::NEW_LINE[0] == schemeContent[newElementBlockInsertPosition] ) {
+    if ( Constants::NEW_LINE[0] == schemeContent[newElementBlockInsertPosition] ) {
         ++newElementBlockInsertPosition;
     } else {
         newElementBlockInsertPosition -= 2;
@@ -232,7 +233,7 @@ U2ErrorType SchemeWrapper::addFlow( const QString &srcElementName, const QString
     CHECK( U2_OK == result, result );
     // validation end
     int flowDescriptionInsertPosition = schemeContent.indexOf(
-        getBlockStartPattern( HRSchemaSerializer::ACTOR_BINDINGS ) );
+        getBlockStartPattern( Constants::ACTOR_BINDINGS ) );
     if ( SUBSTRING_NOT_FOUND == flowDescriptionInsertPosition ) {
         result = addActorBindingsBlock( &flowDescriptionInsertPosition );
         CHECK( U2_OK == result, result );
@@ -242,14 +243,14 @@ U2ErrorType SchemeWrapper::addFlow( const QString &srcElementName, const QString
     CHECK( SUBSTRING_NOT_FOUND != flowDescriptionInsertPosition, U2_INVALID_SCHEME );
     flowDescriptionInsertPosition = qMax(
         schemeContent.lastIndexOf( QRegExp( BLOCK_START_PATTERN ), flowDescriptionInsertPosition ),
-        schemeContent.lastIndexOf( HRSchemaSerializer::NEW_LINE, flowDescriptionInsertPosition ) );
+        schemeContent.lastIndexOf( Constants::NEW_LINE, flowDescriptionInsertPosition ) );
     CHECK( SUBSTRING_NOT_FOUND != flowDescriptionInsertPosition, U2_INVALID_SCHEME );
     ++flowDescriptionInsertPosition;
 
     const QString flowDescription = HRSchemaSerializer::makeArrowPair(
-        elementNamesAndIds[srcElementName] + HRSchemaSerializer::DOT + srcPortName,
-        elementNamesAndIds[dstElementName] + HRSchemaSerializer::DOT + dstPortName, 2 )
-        + HRSchemaSerializer::NEW_LINE;
+        elementNamesAndIds[srcElementName] + Constants::DOT + srcPortName,
+        elementNamesAndIds[dstElementName] + Constants::DOT + dstPortName, 2 )
+        + Constants::NEW_LINE;
     result = insertStringToScheme( flowDescriptionInsertPosition, flowDescription );
     CHECK( U2_OK == result, U2_INVALID_SCHEME );
     return U2_OK;
@@ -258,9 +259,9 @@ U2ErrorType SchemeWrapper::addFlow( const QString &srcElementName, const QString
 U2ErrorType SchemeWrapper::addActorsBinding( const QString &srcElementName,
     const QString &srcSlotName, const QString &dstElementName, const QString &dstPortAndSlotNames )
 {
-    const int dstPortAndSlotDelimeterPos = dstPortAndSlotNames.indexOf( HRSchemaSerializer::DOT );
+    const int dstPortAndSlotDelimeterPos = dstPortAndSlotNames.indexOf( Constants::DOT );
     CHECK( SUBSTRING_NOT_FOUND != dstPortAndSlotDelimeterPos, U2_INVALID_STRING );
-    CHECK( SUBSTRING_NOT_FOUND == dstPortAndSlotNames.indexOf( HRSchemaSerializer::DOT,
+    CHECK( SUBSTRING_NOT_FOUND == dstPortAndSlotNames.indexOf( Constants::DOT,
         dstPortAndSlotDelimeterPos + 1 ), U2_INVALID_STRING );
     const QString dstPortName = dstPortAndSlotNames.left( dstPortAndSlotDelimeterPos );
     const QString dstSlotName = dstPortAndSlotNames.mid( dstPortAndSlotDelimeterPos + 1 );
@@ -272,23 +273,23 @@ U2ErrorType SchemeWrapper::addActorsBinding( const QString &srcElementName,
     // validation end
 
     int bindingDescriptionPosition = schemeContent.indexOf( getBlockStartPattern(
-        HRSchemaSerializer::META_START ) );
+        Constants::META_START ) );
     if ( SUBSTRING_NOT_FOUND == bindingDescriptionPosition ) {
         bindingDescriptionPosition = schemeContent.lastIndexOf( QRegExp( BLOCK_END_PATTERN ) );
         CHECK( SUBSTRING_NOT_FOUND != bindingDescriptionPosition, U2_INVALID_SCHEME );
-        bindingDescriptionPosition = schemeContent.lastIndexOf( HRSchemaSerializer::NEW_LINE,
+        bindingDescriptionPosition = schemeContent.lastIndexOf( Constants::NEW_LINE,
             bindingDescriptionPosition );
     } else {
         QRegExp flowsDescriptionEndPattern( BLOCK_END_PATTERN );
         bindingDescriptionPosition = qMax( flowsDescriptionEndPattern.lastIndexIn( schemeContent,
-            bindingDescriptionPosition ), schemeContent.lastIndexOf( HRSchemaSerializer::NEW_LINE,
+            bindingDescriptionPosition ), schemeContent.lastIndexOf( Constants::NEW_LINE,
             bindingDescriptionPosition ) );
         CHECK( SUBSTRING_NOT_FOUND != bindingDescriptionPosition, U2_INVALID_SCHEME );
     }
     const QString bindingDescription = HRSchemaSerializer::makeArrowPair(
-        elementNamesAndIds[srcElementName] + HRSchemaSerializer::DOT + srcSlotName,
-        elementNamesAndIds[dstElementName] + HRSchemaSerializer::DOT + dstPortName
-        + HRSchemaSerializer::DOT + dstSlotName ) + HRSchemaSerializer::NEW_LINE;
+        elementNamesAndIds[srcElementName] + Constants::DOT + srcSlotName,
+        elementNamesAndIds[dstElementName] + Constants::DOT + dstPortName
+        + Constants::DOT + dstSlotName ) + Constants::NEW_LINE;
     result = insertStringToScheme( bindingDescriptionPosition, bindingDescription );
     CHECK( U2_OK == result, result );
     return U2_OK;
@@ -392,11 +393,11 @@ U2ErrorType SchemeWrapper::createSas( const QString &elementType, const QString 
 
         // bind the reader's and the element's slots
         result = newSas->addActorsBinding( readerName, elementInputSlot, elementName,
-            inputElementPortId  + HRSchemaSerializer::DOT + elementInputSlot );
+            inputElementPortId  + Constants::DOT + elementInputSlot );
         CHECK_DEL_OBJECT( result, newSas );
         // bind the element's and the writer's slots
         result = newSas->addActorsBinding( elementName, elementOutputSlot, writerName,
-            inputWriterPortId + HRSchemaSerializer::DOT + elementOutputSlot );
+            inputWriterPortId + Constants::DOT + elementOutputSlot );
         CHECK_DEL_OBJECT( result, newSas );
 
         // bind unbinded reader's and writer's slots
@@ -416,7 +417,7 @@ U2ErrorType SchemeWrapper::createSas( const QString &elementType, const QString 
                 && Workflow::BaseSlots::URL_SLOT( ) != readerSlot )
             {
                 result = newSas->addActorsBinding( readerName, readerSlot, writerName,
-                    inputWriterPortId + HRSchemaSerializer::DOT + readerSlot );
+                    inputWriterPortId + Constants::DOT + readerSlot );
                 CHECK_DEL_OBJECT( result, newSas );
             }
         }
@@ -490,8 +491,8 @@ U2ErrorType SchemeWrapper::getEnclosingElementBoundaries( const QString &element
         typeAttributePosition = schemeContent.indexOf( typeAttributePattern, *start );
     }
     // make founded boundaries contain an integer number of UWL strings
-    *end = schemeContent.lastIndexOf( QRegExp( "[(" + HRSchemaSerializer::BLOCK_END + ")\\"
-        + HRSchemaSerializer::SEMICOLON + "]" ), *end - 1 );
+    *end = schemeContent.lastIndexOf( QRegExp( "[(" + Constants::BLOCK_END + ")\\"
+        + Constants::SEMICOLON + "]" ), *end - 1 );
     CHECK( SUBSTRING_NOT_FOUND != *end, U2_INVALID_SCHEME );
     *end += 2;
     *start = schemeContent.indexOf( QRegExp( "[\\n\\w]" ), *start + 1 );
@@ -504,12 +505,12 @@ U2ErrorType SchemeWrapper::checkBracesBalanceInRange( int startPos, int endPos, 
     CHECK( 0 < startPos && 0 < endPos && ( schemeContent.length( ) - 1 ) > startPos
         && ( schemeContent.length( ) - 1 ) > endPos, U2_NUM_ARG_OUT_OF_RANGE );
     *disbalance = 0;
-    const QRegExp bracesPattern( "[\\" + HRSchemaSerializer::BLOCK_START + "\\"
-        + HRSchemaSerializer::BLOCK_END + "][\\s\"\\" + HRSchemaSerializer::SEMICOLON + "]" );
+    const QRegExp bracesPattern( "[\\" + Constants::BLOCK_START + "\\"
+        + Constants::BLOCK_END + "][\\s\"\\" + Constants::SEMICOLON + "]" );
     int searchPosition = schemeContent.indexOf( bracesPattern, startPos + 1 );
     while ( searchPosition < endPos && searchPosition != SUBSTRING_NOT_FOUND ) {
         // suppose that `BLOCK_START` and `BLOCK_END` start with different symbols
-        if ( HRSchemaSerializer::BLOCK_START[0] == schemeContent[searchPosition] ) {
+        if ( Constants::BLOCK_START[0] == schemeContent[searchPosition] ) {
             ++( *disbalance );
         } else {
             --( *disbalance );
@@ -587,7 +588,7 @@ U2ErrorType SchemeWrapper::fillElementNamesFromSchemeContent( ) {
             blockEnd = blockEndPattern.indexIn( schemeContent, blockEnd + 1 );
         }
         elementNameStart = schemeContent.indexOf( letterOrNumberPattern, elementNameStart );
-        elementNameEnd = schemeContent.indexOf( HRSchemaSerializer::SEMICOLON, elementNameStart );
+        elementNameEnd = schemeContent.indexOf( Constants::SEMICOLON, elementNameStart );
         elementNameEnd = schemeContent.lastIndexOf( letterOrNumberPattern, elementNameEnd );
 
         CHECK_EXT( SUBSTRING_NOT_FOUND != elementNameStart, elementNamesAndIds.clear( ),
@@ -614,10 +615,10 @@ U2ErrorType SchemeWrapper::fillElementNamesFromSchemeContent( ) {
 }
 
 void SchemeWrapper::initSchemeContentWithEmptyScheme( ) {
-    HRSchemaSerializer::addPart( schemeContent, HRSchemaSerializer::HEADER_LINE );
+    HRSchemaSerializer::addPart( schemeContent, Constants::HEADER_LINE );
 
     HRSchemaSerializer::addPart( schemeContent, HRSchemaSerializer::makeBlock(
-        HRSchemaSerializer::BODY_START, HRSchemaSerializer::NO_NAME, QString( ), 0, true ) );
+        Constants::BODY_START, Constants::NO_NAME, QString( ), 0, true ) );
 }
 
 U2ErrorType SchemeWrapper::addActorBindingsBlock( int *position ) {
@@ -625,20 +626,20 @@ U2ErrorType SchemeWrapper::addActorBindingsBlock( int *position ) {
     const int schemeDescriptionEndPos = schemeContent.lastIndexOf(
         QRegExp( BLOCK_END_PATTERN ) );
     CHECK( SUBSTRING_NOT_FOUND != schemeDescriptionEndPos, U2_INVALID_SCHEME );
-    const QRegExp metaStartPattern = getBlockStartPattern( HRSchemaSerializer::META_START );
+    const QRegExp metaStartPattern = getBlockStartPattern( Constants::META_START );
     const int metaStartPos = metaStartPattern.lastIndexIn( schemeContent,
         schemeDescriptionEndPos );
     int lastBlockEndPos = schemeContent.lastIndexOf( QRegExp( BLOCK_END_PATTERN ),
         ( SUBSTRING_NOT_FOUND == metaStartPos ) ? schemeDescriptionEndPos : metaStartPos );
     CHECK( SUBSTRING_NOT_FOUND != lastBlockEndPos, U2_INVALID_SCHEME );
-    lastBlockEndPos = schemeContent.lastIndexOf( HRSchemaSerializer::BLOCK_END, lastBlockEndPos );
+    lastBlockEndPos = schemeContent.lastIndexOf( Constants::BLOCK_END, lastBlockEndPos );
     CHECK( SUBSTRING_NOT_FOUND != lastBlockEndPos, U2_INVALID_SCHEME );
-    const QString dataflowDescription = HRSchemaSerializer::NEW_LINE + HRSchemaSerializer::NEW_LINE
-        + HRSchemaSerializer::makeBlock( HRSchemaSerializer::ACTOR_BINDINGS,
-        HRSchemaSerializer::NO_NAME, QString( ) ) + HRSchemaSerializer::NEW_LINE;
+    const QString dataflowDescription = Constants::NEW_LINE + Constants::NEW_LINE
+        + HRSchemaSerializer::makeBlock( Constants::ACTOR_BINDINGS,
+        Constants::NO_NAME, QString( ) ) + Constants::NEW_LINE;
     U2ErrorType result = insertStringToScheme( lastBlockEndPos + 1, dataflowDescription );
     CHECK( U2_OK == result, U2_INVALID_SCHEME );
-    *position = schemeContent.indexOf( HRSchemaSerializer::ACTOR_BINDINGS, lastBlockEndPos );
+    *position = schemeContent.indexOf( Constants::ACTOR_BINDINGS, lastBlockEndPos );
     return U2_OK;
 }
 
@@ -653,7 +654,7 @@ U2ErrorType SchemeWrapper::setUniqueElementNameAndId( const QString &elementType
     if ( elementNamesAndIds.contains( elementName ) ) {
         elementName = WorkflowUtils::createUniqueString( elementName, " ",
             elementNamesAndIds.keys( ) );
-        elementId = WorkflowUtils::createUniqueString( elementId, HRSchemaSerializer::DASH,
+        elementId = WorkflowUtils::createUniqueString( elementId, Constants::DASH,
             elementNamesAndIds.values( ) );
     }
     return U2_OK;
@@ -686,23 +687,23 @@ U2ErrorType SchemeWrapper::getElementType( const QString &elementName, QString &
             }
         }
     }
-    elementTypeAttrStartPos +=  HRSchemaSerializer::TYPE_ATTR.length( ) + 2;
+    elementTypeAttrStartPos +=  Constants::TYPE_ATTR.length( ) + 2;
     elementTypeAttrStartPos = schemeContent.indexOf( letterOrQuotePattern,
         elementTypeAttrStartPos );
     CHECK( SUBSTRING_NOT_FOUND != elementTypeAttrStartPos
         && elementTypeAttrStartPos < elementDescEndPosition, U2_INVALID_SCHEME );
 
-    int elementTypeAttrEndPos = schemeContent.indexOf( HRSchemaSerializer::SEMICOLON,
+    int elementTypeAttrEndPos = schemeContent.indexOf( Constants::SEMICOLON,
         elementTypeAttrStartPos );
     CHECK( SUBSTRING_NOT_FOUND != elementTypeAttrEndPos, U2_INVALID_SCHEME );
     elementTypeAttrEndPos = schemeContent.lastIndexOf( letterOrQuotePattern,
         elementTypeAttrEndPos );
     CHECK( SUBSTRING_NOT_FOUND != elementTypeAttrEndPos, U2_INVALID_SCHEME );
     
-    if ( HRSchemaSerializer::QUOTE[0] == schemeContent[elementTypeAttrStartPos] ) {
+    if ( Constants::QUOTE[0] == schemeContent[elementTypeAttrStartPos] ) {
         ++elementTypeAttrStartPos;
     }
-    if ( HRSchemaSerializer::QUOTE[0] != schemeContent[elementTypeAttrEndPos] ) {
+    if ( Constants::QUOTE[0] != schemeContent[elementTypeAttrEndPos] ) {
         ++elementTypeAttrEndPos;
     }
     type = schemeContent.mid( elementTypeAttrStartPos,
@@ -714,7 +715,7 @@ U2ErrorType SchemeWrapper::getElementType( const QString &elementName, QString &
 bool SchemeWrapper::validateSchemeContent( ) const {
     Workflow::Schema *scheme = new Workflow::Schema( );
     const QString conversionResult = HRSchemaSerializer::string2Schema( schemeContent, scheme );
-    CHECK( HRSchemaSerializer::NO_ERROR == conversionResult && NULL != scheme, false );
+    CHECK( Constants::NO_ERROR == conversionResult && NULL != scheme, false );
     QStringList validationErrors;
     bool result = WorkflowUtils::validate( *scheme, validationErrors );
     delete scheme;
@@ -749,7 +750,7 @@ U2ErrorType SchemeWrapper::setElementAttributeInRange( const QString &attributeN
         // suppose that element descriptions starts with new line in UWL format,
         // i.e. all indents are retained
         const int tabsCount = ( schemeContent.indexOf( QRegExp( "\\w" ), start ) - start )
-            / HRSchemaSerializer::TAB.length( );
+            / Constants::TAB.length( );
         const QString attributeString = HRSchemaSerializer::makeEqualsPair( attributeName,
             attributeValue, tabsCount );
         result = insertStringToScheme( end, attributeString );
@@ -769,12 +770,12 @@ U2ErrorType SchemeWrapper::getElementAttributeFromRange( const QString &attribut
         CHECK( U2_OK == result, result );
         if ( SUBSTRING_NOT_FOUND != valueStart && SUBSTRING_NOT_FOUND != valueEnd ) {
             valuesTuple.append( schemeContent.mid( valueStart, valueEnd - valueStart )
-                .remove( HRSchemaSerializer::QUOTE ) );
+                .remove( Constants::QUOTE ) );
         }
         valueStart = valueEnd;
         valueEnd = end;
     } while ( SUBSTRING_NOT_FOUND != valueStart && SUBSTRING_NOT_FOUND != valueEnd );
-    attributeValue = valuesTuple.join( HRSchemaSerializer::SEMICOLON );
+    attributeValue = valuesTuple.join( Constants::SEMICOLON );
     return U2_OK;
 }
 
@@ -810,8 +811,8 @@ U2ErrorType SchemeWrapper::getBlockBoundaries( const QString &blockName, int *st
         result = checkBracesBalanceInRange( *start, blockEnd, &bracesBalance );
         CHECK( U2_OK == result, U2_INVALID_CALL );
     }
-    *end = schemeContent.lastIndexOf( QRegExp( "[(" + HRSchemaSerializer::BLOCK_END + ")\\"
-        + HRSchemaSerializer::SEMICOLON + "]" ), blockEnd - 1 );
+    *end = schemeContent.lastIndexOf( QRegExp( "[(" + Constants::BLOCK_END + ")\\"
+        + Constants::SEMICOLON + "]" ), blockEnd - 1 );
     CHECK( SUBSTRING_NOT_FOUND != *end, U2_INVALID_SCHEME );
     *end += 2;
     return U2_OK;
@@ -858,8 +859,8 @@ U2ErrorType SchemeWrapper::getBoundariesOfUrlInAttribute( const QString &dataset
     U2ErrorType result = getBlockBoundaries( urlBlockName, &blockStart, &blockEnd );
     CHECK( U2_OK == result, U2_INVALID_CALL );
     if ( SUBSTRING_NOT_FOUND == blockStart ) {
-        const QRegExp simpleAttributePattern( "[\\s\\" + HRSchemaSerializer::SEMICOLON + "]"
-            + urlBlockName + "\\s*\\" + HRSchemaSerializer::EQUALS_SIGN );
+        const QRegExp simpleAttributePattern( "[\\s\\" + Constants::SEMICOLON + "]"
+            + urlBlockName + "\\s*\\" + Constants::EQUALS_SIGN );
         blockStart = schemeContent.indexOf( simpleAttributePattern, *start );
         if ( SUBSTRING_NOT_FOUND != blockStart && blockStart < blockEnd ) {
             return U2_OK;
@@ -875,14 +876,14 @@ U2ErrorType SchemeWrapper::getBoundariesOfUrlInAttribute( const QString &dataset
         QString foundDatasetName;
         do {
             int datasetNameStart = blockStart, datasetNameEnd = blockEnd;
-            result = getAttributeValuePositionFromRange( HRSchemaSerializer::DATASET_NAME,
+            result = getAttributeValuePositionFromRange( Constants::DATASET_NAME,
                 &datasetNameStart, &datasetNameEnd );
             CHECK( U2_OK == result, result );
             CHECK( SUBSTRING_NOT_FOUND != datasetNameStart
                 && SUBSTRING_NOT_FOUND != datasetNameEnd, U2_INVALID_STRING );
             foundDatasetName = schemeContent.mid( datasetNameStart,
                 datasetNameEnd - datasetNameStart );
-            foundDatasetName.remove( HRSchemaSerializer::QUOTE );
+            foundDatasetName.remove( Constants::QUOTE );
             if ( foundDatasetName != datasetName ) {
                 blockStart = blockEnd;
                 blockEnd = *end;
@@ -901,18 +902,18 @@ U2ErrorType SchemeWrapper::getBoundariesOfUrlInAttribute( const QString &dataset
 }
 
 void SchemeWrapper::skipComments( ) {
-    const int schemeHeaderStart = schemeContent.indexOf( HRSchemaSerializer::HEADER_LINE );
-    int commentStartPosition = schemeContent.lastIndexOf( HRSchemaSerializer::SERVICE_SYM );
+    const int schemeHeaderStart = schemeContent.indexOf( Constants::HEADER_LINE );
+    int commentStartPosition = schemeContent.lastIndexOf( Constants::SERVICE_SYM );
     while ( SUBSTRING_NOT_FOUND != commentStartPosition
         && schemeHeaderStart != commentStartPosition )
     {
-        const int commentLineEnd = schemeContent.indexOf( HRSchemaSerializer::NEW_LINE,
+        const int commentLineEnd = schemeContent.indexOf( Constants::NEW_LINE,
             commentStartPosition ) + 1;
         const int commentLength = commentLineEnd - commentStartPosition;
         const QString commentLine = schemeContent.mid( commentStartPosition, commentLength );
         commentLinesPositions[ commentStartPosition ] = commentLine;
         schemeContent.remove( commentStartPosition,  commentLength );
-        commentStartPosition = schemeContent.lastIndexOf( HRSchemaSerializer::SERVICE_SYM,
+        commentStartPosition = schemeContent.lastIndexOf( Constants::SERVICE_SYM,
             commentStartPosition );
     }
 }
@@ -948,7 +949,7 @@ U2ErrorType SchemeWrapper::replaceStringInScheme( int i, int len, const QString 
 U2ErrorType SchemeWrapper::getSchemeDescriptionStart( int *pos ) const {
     QRegExp blockStartPattern( BLOCK_START_PATTERN );
     QRegExp schemeNamePattern( "\"[^\"]*\"" );
-    *pos = schemeContent.indexOf( HRSchemaSerializer::BODY_START );
+    *pos = schemeContent.indexOf( Constants::BODY_START );
     CHECK( SUBSTRING_NOT_FOUND != *pos, U2_INVALID_SCHEME );
     int bodyBlockStartPos = blockStartPattern.indexIn( schemeContent, *pos );
     CHECK( SUBSTRING_NOT_FOUND != bodyBlockStartPos, U2_INVALID_SCHEME );
@@ -988,20 +989,20 @@ U2ErrorType SchemeWrapper::getAttributeValuePositionFromRange( const QString &at
     CHECK( 0 < *start && 0 < *end && *start < *end && *start < schemeContent.length( )
         && *end < schemeContent.length( ), U2_NUM_ARG_OUT_OF_RANGE );
     const QRegExp letterOrNumberPattern( "\\w" );
-    const QRegExp attributeNamePattern = QRegExp( "[\\s\\" + HRSchemaSerializer::SEMICOLON + "]"
-        + attributeName + "\\s*\\" + HRSchemaSerializer::EQUALS_SIGN );
+    const QRegExp attributeNamePattern = QRegExp( "[\\s\\" + Constants::SEMICOLON + "]"
+        + attributeName + "\\s*\\" + Constants::EQUALS_SIGN );
     const int attributePosition = attributeNamePattern.indexIn( schemeContent, *start );
     if ( SUBSTRING_NOT_FOUND != attributePosition && attributePosition < *end ) {
         int valueStartPosition = attributePosition + attributeNamePattern.matchedLength( );
         const int firstValueSymbolPos = schemeContent.indexOf( letterOrNumberPattern,
             valueStartPosition );
-        const int firstOpenQuotePos = schemeContent.indexOf( HRSchemaSerializer::QUOTE,
+        const int firstOpenQuotePos = schemeContent.indexOf( Constants::QUOTE,
             valueStartPosition );
         const bool quotesExist = ( SUBSTRING_NOT_FOUND != firstOpenQuotePos
             && firstOpenQuotePos < firstValueSymbolPos );
         valueStartPosition = quotesExist ? firstOpenQuotePos : firstValueSymbolPos;
-        int valueEndPosition = quotesExist ? schemeContent.indexOf( HRSchemaSerializer::QUOTE,
-            firstOpenQuotePos + 1 ) + 1 : schemeContent.indexOf( HRSchemaSerializer::SEMICOLON,
+        int valueEndPosition = quotesExist ? schemeContent.indexOf( Constants::QUOTE,
+            firstOpenQuotePos + 1 ) + 1 : schemeContent.indexOf( Constants::SEMICOLON,
             valueStartPosition );
         CHECK( SUBSTRING_NOT_FOUND != valueEndPosition, U2_INVALID_SCHEME );
         *start = valueStartPosition;
@@ -1024,18 +1025,18 @@ U2ErrorType SchemeWrapper::getUrlInAttributePositionByName( const QStringList &a
     CHECK( Workflow::BaseAttributes::URL_IN_ATTRIBUTE( ) == attributesHierarchy[0],
         U2_INVALID_CALL );
     deepestAttributeName = ( 1 < attributesHierarchy.size( ) ) ? attributesHierarchy.last( )
-        : HRSchemaSerializer::FILE_URL ;
-    CHECK( HRSchemaSerializer::FILE_URL == deepestAttributeName
-        || HRSchemaSerializer::DATASET_NAME == deepestAttributeName
-        || HRSchemaSerializer::DIRECTORY_URL == deepestAttributeName, U2_INVALID_NAME );
+        : Constants::FILE_URL ;
+    CHECK( Constants::FILE_URL == deepestAttributeName
+        || Constants::DATASET_NAME == deepestAttributeName
+        || Constants::DIRECTORY_URL == deepestAttributeName, U2_INVALID_NAME );
     QString datasetName;
     if ( 2 < attributesHierarchy.size( ) ) {
         QStringList datasetNameParts = attributesHierarchy;
         datasetNameParts.removeAt( 0 );
         datasetNameParts.removeAt( datasetNameParts.length( ) - 1 );
-        datasetName = datasetNameParts.join( HRSchemaSerializer::DOT );
+        datasetName = datasetNameParts.join( Constants::DOT );
     }
-    if ( HRSchemaSerializer::DATASET_NAME == deepestAttributeName && createIfNotExists ) {
+    if ( Constants::DATASET_NAME == deepestAttributeName && createIfNotExists ) {
         result = insertUrlInAttributeInRange( start, end );
         replaceIfExists = true;
     } else {
@@ -1057,24 +1058,24 @@ U2ErrorType SchemeWrapper::insertUrlInAttributeInRange( int *start, int *end ) {
     CHECK( 0 < *start && 0 < *end && *start < *end && *start < schemeContent.length( )
         && *end < schemeContent.length( ), U2_NUM_ARG_OUT_OF_RANGE );
     const QString urlBlockName = Workflow::BaseAttributes::URL_IN_ATTRIBUTE( ).getId( );
-    QString blockContent( HRSchemaSerializer::makeEqualsPair( HRSchemaSerializer::DATASET_NAME,
+    QString blockContent( HRSchemaSerializer::makeEqualsPair( Constants::DATASET_NAME,
         DEFAULT_DATASET_NAME, 3 ) );
     QString newBlock = HRSchemaSerializer::makeBlock( urlBlockName,
-        HRSchemaSerializer::NO_NAME, blockContent, 2 );
+        Constants::NO_NAME, blockContent, 2 );
     U2ErrorType result = insertStringToScheme( *end, newBlock );
     CHECK( U2_OK == result, result );
     *start = *end;
-    *start = schemeContent.indexOf( HRSchemaSerializer::NEW_LINE,
+    *start = schemeContent.indexOf( Constants::NEW_LINE,
         *start );
     *end += newBlock.length( );
     *end = schemeContent.lastIndexOf( QRegExp( BLOCK_END_PATTERN ), *end );
-    *end = schemeContent.lastIndexOf( HRSchemaSerializer::SEMICOLON, *end ) + 2;
+    *end = schemeContent.lastIndexOf( Constants::SEMICOLON, *end ) + 2;
     return U2_OK;
 }
 
 QRegExp SchemeWrapper::getBlockStartPattern( const QString &blockName ) {
     return QRegExp( "\\s" + QRegExp::escape( blockName ) + "\\s*"
-        + QRegExp::escape( HRSchemaSerializer::BLOCK_START ) );
+        + QRegExp::escape( Constants::BLOCK_START ) );
 }
 
 } // namespace U2

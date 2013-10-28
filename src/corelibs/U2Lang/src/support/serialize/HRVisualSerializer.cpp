@@ -25,6 +25,7 @@
 #include "HRVisualSerializer.h"
 
 namespace U2 {
+using namespace WorkflowSerialize;
 
 static const QString SCALE              = "scale";
 static const QString POSITION_ATTR      = "pos";
@@ -53,24 +54,24 @@ HRVisualParser::~HRVisualParser() {
 
 void HRVisualParser::parse(U2OpStatus &os) {
     try {
-        while(data.tokenizer.look() != HRSchemaSerializer::BLOCK_END) {
+        while(data.tokenizer.look() != Constants::BLOCK_END) {
             QString tok = data.tokenizer.take();
             QString next = data.tokenizer.take();
-            if (next == HRSchemaSerializer::BLOCK_START) {
+            if (next == Constants::BLOCK_START) {
                 QString actorName = str2aid(tok);
                 parseVisualActorParams(tok);
-                data.tokenizer.assertToken(HRSchemaSerializer::BLOCK_END);
-            } else if(next == HRSchemaSerializer::DATAFLOW_SIGN) {
+                data.tokenizer.assertToken(Constants::BLOCK_END);
+            } else if(next == Constants::DATAFLOW_SIGN) {
                 QString to = data.tokenizer.take();
                 parseLinkVisualBlock(tok, to);
-            } else if (next == HRSchemaSerializer::EQUALS_SIGN) {
+            } else if (next == Constants::EQUALS_SIGN) {
                 QString value = data.tokenizer.take();
                 if (SCALE == tok) {
                     parseScale(value);
                 }
             }
         }
-    } catch(HRSchemaSerializer::ReadFailed e) {
+    } catch(ReadFailed e) {
         os.setError(e.what);
     }
 }
@@ -88,12 +89,12 @@ void HRVisualParser::parseScale(const QString &scaleStr) {
 
 void HRVisualParser::parseVisualActorParams(const QString &actorId) {
     if(!data.actorMap.contains(actorId)) {
-        throw HRSchemaSerializer::ReadFailed(HRVisualParser::tr("%1 element undefined in visual block").arg(actorId));
+        throw ReadFailed(HRVisualParser::tr("%1 element undefined in visual block").arg(actorId));
     }
 
-    HRSchemaSerializer::ParsedPairs pairs(data.tokenizer);
+    ParsedPairs pairs(data.tokenizer);
     if(!pairs.blockPairs.isEmpty()) {
-        throw HRSchemaSerializer::ReadFailed(HRVisualParser::tr("No other blocks allowed in visual block '%1'").arg(actorId));
+        throw ReadFailed(HRVisualParser::tr("No other blocks allowed in visual block '%1'").arg(actorId));
     }
 
     ActorVisualData visual(actorId);
@@ -114,18 +115,18 @@ void HRVisualParser::parseVisualActorParams(const QString &actorId) {
     }
 
     foreach (const QString &key, pairs.equalPairs.keys()) {
-        QStringList list = key.split(HRSchemaSerializer::DOT);
+        QStringList list = key.split(Constants::DOT);
         if(list.size() == 2 && list.at(1) == PORT_ANGLE) {
             QString portId = list.at(0);
             Port *port = data.actorMap[actorId]->getPort(portId);
             if (port == NULL) {
-                throw HRSchemaSerializer::ReadFailed(HRVisualParser::tr("Cannot find port '%1' at %2 element").arg(portId).arg(actorId));
+                throw ReadFailed(HRVisualParser::tr("Cannot find port '%1' at %2 element").arg(portId).arg(actorId));
             }
             bool ok = false;
             QString strVal = pairs.equalPairs.value(key);
             qreal orientation = strVal.toDouble(&ok);
             if(!ok) {
-                throw HRSchemaSerializer::ReadFailed(HRVisualParser::tr("Cannot parse real number from: '%1'").arg(strVal));
+                throw ReadFailed(HRVisualParser::tr("Cannot parse real number from: '%1'").arg(strVal));
             }
             visual.setPortAngle(portId, orientation);
         } else {
@@ -136,33 +137,33 @@ void HRVisualParser::parseVisualActorParams(const QString &actorId) {
 }
 
 void HRVisualParser::parseLinkVisualBlock(const QString &from, const QString &to) {
-    bool hasBlock = data.tokenizer.look() == HRSchemaSerializer::BLOCK_START;
+    bool hasBlock = data.tokenizer.look() == Constants::BLOCK_START;
     QString srcActorId = HRSchemaSerializer::parseAt(from, 0);
     Actor *srcActor = data.actorMap.value(srcActorId);
     if(srcActor == NULL) {
-        throw HRSchemaSerializer::ReadFailed(HRVisualParser::tr("Undefined element id: '%1'").arg(srcActorId));
+        throw ReadFailed(HRVisualParser::tr("Undefined element id: '%1'").arg(srcActorId));
     }
     QString srcPortId = HRSchemaSerializer::parseAt(from, 1);
     Port *srcPort = srcActor->getPort(srcPortId);
     if(srcPort == NULL) {
-        throw HRSchemaSerializer::ReadFailed(HRVisualParser::tr("Cannot find '%1' port at '%2'").arg(srcPortId).arg(srcActorId));
+        throw ReadFailed(HRVisualParser::tr("Cannot find '%1' port at '%2'").arg(srcPortId).arg(srcActorId));
     }
 
     QString dstActorId = HRSchemaSerializer::parseAt(to, 0);
     Actor *dstActor = data.actorMap.value(dstActorId);
     if(dstActor == NULL) {
-        throw HRSchemaSerializer::ReadFailed(HRVisualParser::tr("Undefined element id: '%1'").arg(dstActorId));
+        throw ReadFailed(HRVisualParser::tr("Undefined element id: '%1'").arg(dstActorId));
     }
     QString dstPortId = HRSchemaSerializer::parseAt(to, 1);
     Port *dstPort = dstActor->getPort(dstPortId);
     if(dstPort == NULL) {
-        throw HRSchemaSerializer::ReadFailed(HRVisualParser::tr("Cannot find '%1' port at '%2'").arg(dstPortId).arg(dstActorId));
+        throw ReadFailed(HRVisualParser::tr("Cannot find '%1' port at '%2'").arg(dstPortId).arg(dstActorId));
     }
 
     if(hasBlock) {
-        data.tokenizer.assertToken(HRSchemaSerializer::BLOCK_START);
-        HRSchemaSerializer::ParsedPairs pairs(data.tokenizer);
-        data.tokenizer.assertToken(HRSchemaSerializer::BLOCK_END);
+        data.tokenizer.assertToken(Constants::BLOCK_START);
+        ParsedPairs pairs(data.tokenizer);
+        data.tokenizer.assertToken(Constants::BLOCK_END);
 
         QString textPos = pairs.equalPairs.take(TEXT_POS_ATTR);
         if (!textPos.isEmpty()) {
@@ -176,7 +177,7 @@ void HRVisualParser::parseLinkVisualBlock(const QString &from, const QString &to
 
     if (data.isGraphDefined()) {
         if (!data.schema->getActorBindingsGraph().contains(srcPort, dstPort)) {
-            throw HRSchemaSerializer::ReadFailed(HRSchemaSerializer::tr("Undefined data-flow link: '%1'. Define it in actor-bindings").arg(from));
+            throw ReadFailed(HRSchemaSerializer::tr("Undefined data-flow link: '%1'. Define it in actor-bindings").arg(from));
         }
     } else {
         QPair<Port*, Port*> link(srcPort, dstPort);
@@ -231,7 +232,7 @@ QRectF HRVisualParser::string2Rect(const QString &str, U2OpStatus &os) {
     return QRectF(string2Point(list.at(0) + " " + list.at(1), os), string2Point(list.at(2) + " " + list.at(3), os));
 }
 
-void HRVisualParser::parseStyleData(ActorVisualData &visual, const QString &styleId, HRSchemaSerializer::ParsedPairs &pairs) {
+void HRVisualParser::parseStyleData(ActorVisualData &visual, const QString &styleId, ParsedPairs &pairs) {
     QString bgColor = pairs.equalPairs.take(BG_COLOR + styleId);
     if (!bgColor.isEmpty()) {
         U2OpStatus2Log os;
@@ -285,7 +286,7 @@ QString HRVisualSerializer::serialize(int depth) {
         vData += linkVisualData(link, p, depth + 1);
     }
 
-    return HRSchemaSerializer::makeBlock(HRSchemaSerializer::VISUAL_START, HRSchemaSerializer::NO_NAME, vData, depth);
+    return HRSchemaSerializer::makeBlock(Constants::VISUAL_START, Constants::NO_NAME, vData, depth);
 }
 
 QString HRVisualSerializer::actorVisualData(const ActorVisualData &visual, int depth) {
@@ -317,17 +318,17 @@ QString HRVisualSerializer::actorVisualData(const ActorVisualData &visual, int d
 
     foreach (const QString &portId, visual.getAngleMap().keys()) {
         qreal a = visual.getAngleMap()[portId];
-        aData += HRSchemaSerializer::makeEqualsPair(portId + HRSchemaSerializer::DOT + PORT_ANGLE,
+        aData += HRSchemaSerializer::makeEqualsPair(portId + Constants::DOT + PORT_ANGLE,
             QString::number(a), depth + 1);
     }
     return HRSchemaSerializer::makeBlock(visual.getActorId(),
-        HRSchemaSerializer::NO_NAME, aData, depth);
+        Constants::NO_NAME, aData, depth);
 }
 
 QString HRVisualSerializer::linkVisualData(const QString &link, const QPointF &p, int depth) {
     QString lData;
     lData += HRSchemaSerializer::makeEqualsPair(TEXT_POS_ATTR, point2String(p), depth + 1);
-    return HRSchemaSerializer::makeBlock(link, HRSchemaSerializer::NO_NAME, lData, depth);
+    return HRSchemaSerializer::makeBlock(link, Constants::NO_NAME, lData, depth);
 }
 
 QString HRVisualSerializer::point2String(const QPointF &point) {

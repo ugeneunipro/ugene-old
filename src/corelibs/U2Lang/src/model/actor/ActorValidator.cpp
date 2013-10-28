@@ -26,6 +26,7 @@
 #include "ActorValidator.h"
 
 namespace U2 {
+using namespace WorkflowSerialize;
 namespace Workflow {
 
 bool ActorValidator::validate(const Configuration *cfg, ProblemList &problemList) const {
@@ -40,7 +41,7 @@ ActorValidatorRegistry::~ActorValidatorRegistry() {
 }
 
 ActorValidatorRegistry::ActorValidatorRegistry() {
-    addValidator(HRSchemaSerializer::V_SCRIPT, new ActorScriptValidator());
+    addValidator(Constants::V_SCRIPT, new ActorScriptValidator());
 }
 
 bool ActorValidatorRegistry::addValidator(const QString &id, ActorValidator *validator) {

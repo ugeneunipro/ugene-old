@@ -24,25 +24,27 @@
 
 #include <U2Core/U2OpStatus.h>
 
-#include <U2Lang/HRSchemaSerializer.h>
 #include <U2Lang/Variable.h>
 #include <U2Lang/Wizard.h>
 #include <U2Lang/WizardPage.h>
 #include <U2Lang/WizardWidget.h>
 #include <U2Lang/WizardWidgetVisitor.h>
 
-namespace U2 {
+#include "Tokenizer.h"
 
-class U2LANG_EXPORT HRWizardParser : public QObject {
+namespace U2 {
+namespace WorkflowSerialize {
+
+class HRWizardParser : public QObject {
     Q_OBJECT
 public:
-    HRWizardParser(HRSchemaSerializer::Tokenizer &tokenizer, const QMap<QString, Actor*> &actorMap);
+    HRWizardParser(Tokenizer &tokenizer, const QMap<QString, Actor*> &actorMap);
     virtual ~HRWizardParser();
 
     Wizard * parseWizard(U2OpStatus &os);
 
 private:
-    HRSchemaSerializer::Tokenizer &tokenizer;
+    Tokenizer &tokenizer;
     const QMap<QString, Actor*> &actorMap;
     QString wizardName;
     QString finishLabel;
@@ -58,7 +60,7 @@ private:
     void parseResult(U2OpStatus &os);
     void finilizePagesOrder(U2OpStatus &os);
     Wizard * takeResult();
-    void parseNextIds(HRSchemaSerializer::ParsedPairs &pairs, WizardPage *page, U2OpStatus &os);
+    void parseNextIds(ParsedPairs &pairs, WizardPage *page, U2OpStatus &os);
 
 public:
     static const QString WIZARD;
@@ -130,7 +132,7 @@ private:
     QMap<QString, Variable> &vars;
     U2OpStatus &os;
 
-    HRSchemaSerializer::ParsedPairs pairs;
+    ParsedPairs pairs;
 
 private:
     void getLabelSize(WidgetsArea *wa);
@@ -146,7 +148,7 @@ private:
 
 class PageContentParser : public TemplatedPageVisitor {
 public:
-    PageContentParser(HRSchemaSerializer::ParsedPairs &pairs,
+    PageContentParser(ParsedPairs &pairs,
         const QMap<QString, Actor*> &actorMap,
         QMap<QString, Variable> &vars,
         U2OpStatus &os);
@@ -154,7 +156,7 @@ public:
     virtual void visit(DefaultPageContent *content);
 
 private:
-    HRSchemaSerializer::ParsedPairs &pairs;
+    ParsedPairs &pairs;
     const QMap<QString, Actor*> &actorMap;
     QMap<QString, Variable> &vars;
     U2OpStatus &os;
@@ -205,6 +207,7 @@ private:
     QString result;
 };
 
+} // WorkflowSerialize
 } // U2
 
 #endif // _U2_HRWIZARDSERIALIZER_H_

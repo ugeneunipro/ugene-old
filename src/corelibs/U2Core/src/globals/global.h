@@ -117,6 +117,7 @@
 #define PATH_PREFIX_SCRIPTS "scripts"
 
 typedef QMap<QString, QString> QStrStrMap;
+typedef QPair<QString, QString> StringPair;
 
 namespace U2 {
 

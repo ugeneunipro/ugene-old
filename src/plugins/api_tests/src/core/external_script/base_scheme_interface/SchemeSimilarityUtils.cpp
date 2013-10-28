@@ -27,6 +27,7 @@ static const QString TEMP_SCHEMES_DIR_PATH = QDir::tempPath( );
 static const int SUBSTRING_NOT_FOUND = -1;
 
 namespace U2 {
+using namespace WorkflowSerialize;
 
 void SchemeSimilarityUtils::checkSchemesSimilarity( SchemeHandle assembledScheme,
     const QString &pathToProperScheme, U2OpStatus &stateInfo )
@@ -54,13 +55,13 @@ void SchemeSimilarityUtils::checkSchemesSimilarity( SchemeHandle assembledScheme
 }
 
 int SchemeSimilarityUtils::getSchemeDescriptionStartPos( const QString &schemeContent ) {
-    return schemeContent.indexOf( HRSchemaSerializer::BLOCK_START ) + 1;
+    return schemeContent.indexOf( Constants::BLOCK_START ) + 1;
 }
 
 int SchemeSimilarityUtils::getSchemeDescriptionEndPos( const QString &schemeContent ) {
-    int result = schemeContent.indexOf( HRSchemaSerializer::META_START );
+    int result = schemeContent.indexOf( Constants::META_START );
     if ( -1 == result ) {
-        result = schemeContent.lastIndexOf( HRSchemaSerializer::BLOCK_END );
+        result = schemeContent.lastIndexOf( Constants::BLOCK_END );
     }
     return result;
 }
@@ -82,7 +83,7 @@ QString SchemeSimilarityUtils::getSchemeContentByHandle( SchemeHandle scheme,
     schemeFile.remove( );
     CHECK_OP( stateInfo, QString( ) );
 
-    CHECK_EXT( schemeContent.startsWith( HRSchemaSerializer::HEADER_LINE ),
+    CHECK_EXT( schemeContent.startsWith( Constants::HEADER_LINE ),
         stateInfo.setError( "The file with scheme doesn't start with header line" );
     schemeFile.remove( ), QString( ) );
     return schemeContent;
@@ -113,42 +114,42 @@ void SchemeSimilarityUtils::skipSchemeSpecificNames( QString &schemeContent ) {
 }
 
 void SchemeSimilarityUtils::skipElementNames( QString &schemeContent ) {
-    int nextNameAttributePosition = schemeContent.indexOf( QRegExp( HRSchemaSerializer::NAME_ATTR + "\\s*" + HRSchemaSerializer::COLON ) );
+    int nextNameAttributePosition = schemeContent.indexOf( QRegExp( Constants::NAME_ATTR + "\\s*" + Constants::COLON ) );
     while ( SUBSTRING_NOT_FOUND != nextNameAttributePosition ) {
-        const int nameStartPos = schemeContent.indexOf( HRSchemaSerializer::COLON,
+        const int nameStartPos = schemeContent.indexOf( Constants::COLON,
             nextNameAttributePosition ) + 1;
-        const int nameEndPos = schemeContent.indexOf( HRSchemaSerializer::SEMICOLON,
+        const int nameEndPos = schemeContent.indexOf( Constants::SEMICOLON,
             nameStartPos );
         schemeContent.replace( nameStartPos, nameEndPos - nameStartPos, "\"\"" );
-        nextNameAttributePosition = schemeContent.indexOf( HRSchemaSerializer::NAME_ATTR + HRSchemaSerializer::COLON ,
+        nextNameAttributePosition = schemeContent.indexOf( Constants::NAME_ATTR + Constants::COLON ,
             nameStartPos );
     }
 }
 
 void SchemeSimilarityUtils::skipElementIds( QString &schemeContent ) {
-    const QRegExp elementIdStartPattern( HRSchemaSerializer::NEW_LINE + HRSchemaSerializer::TAB
+    const QRegExp elementIdStartPattern( Constants::NEW_LINE + Constants::TAB
         + "\\w" );
     int elementIdEndPos = 0;
     int elementIdStartPos = 0;
     Q_FOREVER {
         elementIdStartPos = schemeContent.indexOf( elementIdStartPattern, elementIdEndPos )
-            + HRSchemaSerializer::NEW_LINE.length( ) + HRSchemaSerializer::TAB.length( );
+            + Constants::NEW_LINE.length( ) + Constants::TAB.length( );
         if ( SUBSTRING_NOT_FOUND == elementIdStartPos || elementIdStartPos < elementIdEndPos ) {
             break;
         }
-        elementIdEndPos = schemeContent.indexOf( HRSchemaSerializer::BLOCK_START,
+        elementIdEndPos = schemeContent.indexOf( Constants::BLOCK_START,
             elementIdStartPos ) - 1;
         const QString elementId = schemeContent
             .mid( elementIdStartPos, elementIdEndPos - elementIdStartPos ).trimmed( );
         schemeContent.replace( elementIdStartPos, elementId.length( ), QString( ) );
-        const int elementDescEnd = schemeContent.indexOf( HRSchemaSerializer::BLOCK_END,
+        const int elementDescEnd = schemeContent.indexOf( Constants::BLOCK_END,
             elementIdStartPos );
 
         int elementIdPos = schemeContent.indexOf( elementId, elementDescEnd );
         while ( SUBSTRING_NOT_FOUND != elementIdPos ) {
             QChar nextSymbol = schemeContent[elementIdPos + elementId.length( )];
-            if ( !nextSymbol.isLetterOrNumber( ) && HRSchemaSerializer::DASH[0] != nextSymbol
-                && HRSchemaSerializer::COLON[0] != schemeContent[elementIdPos - 1] )
+            if ( !nextSymbol.isLetterOrNumber( ) && Constants::DASH[0] != nextSymbol
+                && Constants::COLON[0] != schemeContent[elementIdPos - 1] )
             {
                 schemeContent.replace( elementIdPos, elementId.length( ), QString( ) );
             } else {
@@ -160,7 +161,7 @@ void SchemeSimilarityUtils::skipElementIds( QString &schemeContent ) {
 }
 
 void SchemeSimilarityUtils::skipValidatorBlocks( QString &schemeContent ) {
-    const QRegExp validatorBlockStartPattern( "\\s+\\" + HRSchemaSerializer::VALIDATOR + "\\s+" );
+    const QRegExp validatorBlockStartPattern( "\\s+\\" + Constants::VALIDATOR + "\\s+" );
     int validatorBlockStartPos = 0;
     int validatorBlockEndPos = 0;
     Q_FOREVER {
@@ -170,13 +171,13 @@ void SchemeSimilarityUtils::skipValidatorBlocks( QString &schemeContent ) {
             break;
         }
 
-        int currentBracePos = schemeContent.indexOf( HRSchemaSerializer::BLOCK_START,
+        int currentBracePos = schemeContent.indexOf( Constants::BLOCK_START,
             validatorBlockStartPos );
         int braceCount = 1;
         while ( 0 != braceCount ) {
-            const int blockStartPos = schemeContent.indexOf( HRSchemaSerializer::BLOCK_START,
+            const int blockStartPos = schemeContent.indexOf( Constants::BLOCK_START,
                 currentBracePos + 1 );
-            const int blockEndPos = schemeContent.indexOf( HRSchemaSerializer::BLOCK_END,
+            const int blockEndPos = schemeContent.indexOf( Constants::BLOCK_END,
                 currentBracePos + 1 );
             if ( blockStartPos < blockEndPos ) {
                 ++braceCount;
@@ -199,7 +200,7 @@ QStringList SchemeSimilarityUtils::getNonSpaceStatementsFromScheme( const QStrin
     const int schemeDescEndPos = getSchemeDescriptionEndPos( schemeContent );
 
     QStringList statements = schemeContent.mid( schemeDescStartPos,
-        schemeDescEndPos - schemeDescStartPos ).split( HRSchemaSerializer::NEW_LINE,
+        schemeDescEndPos - schemeDescStartPos ).split( Constants::NEW_LINE,
         QString::SkipEmptyParts );
     for ( int i = 0; i < statements.length( ); ++i ) {
         statements[i] = statements[i].trimmed( );
@@ -211,16 +212,16 @@ QStringList SchemeSimilarityUtils::getNonSpaceStatementsFromScheme( const QStrin
 }
 
 void SchemeSimilarityUtils::skipActorBindingsBlockBoundaries( QString &schemeContent ) {
-    const QString actorBindingsLine( HRSchemaSerializer::NEW_LINE + HRSchemaSerializer::TAB
-        + HRSchemaSerializer::ACTOR_BINDINGS );
+    const QString actorBindingsLine( Constants::NEW_LINE + Constants::TAB
+        + Constants::ACTOR_BINDINGS );
     const int actorBindingsLineStart = schemeContent.indexOf( actorBindingsLine );
     if ( SUBSTRING_NOT_FOUND != actorBindingsLineStart ) {
-        const int actorBindingsLineEnd = schemeContent.indexOf( HRSchemaSerializer::BLOCK_START,
+        const int actorBindingsLineEnd = schemeContent.indexOf( Constants::BLOCK_START,
             actorBindingsLineStart ) + 1;
         schemeContent.remove( actorBindingsLineStart,
             actorBindingsLineEnd - actorBindingsLineStart );
-        const QString actorBindingsEndBlock( HRSchemaSerializer::NEW_LINE + HRSchemaSerializer::TAB
-            + HRSchemaSerializer::BLOCK_END );
+        const QString actorBindingsEndBlock( Constants::NEW_LINE + Constants::TAB
+            + Constants::BLOCK_END );
         const int actorBindingsBlockEndPos = schemeContent.indexOf( actorBindingsEndBlock,
             actorBindingsLineStart );
         schemeContent.remove( actorBindingsBlockEndPos, actorBindingsEndBlock.length( ) );

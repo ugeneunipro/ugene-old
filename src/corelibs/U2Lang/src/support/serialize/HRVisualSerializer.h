@@ -43,7 +43,7 @@ private:
     void parseVisualActorParams(const QString &actorId);
     void parseLinkVisualBlock(const QString &from, const QString &to);
     void parseStyleData(ActorVisualData &visual, const QString &styleId,
-        HRSchemaSerializer::ParsedPairs &pairs);
+        ParsedPairs &pairs);
     void parseScale(const QString &scaleStr);
 
     static QPointF string2Point(const QString &str, U2OpStatus &os);

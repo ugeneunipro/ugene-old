@@ -36,6 +36,7 @@
 
 
 namespace U2 {
+using namespace WorkflowSerialize;
 namespace Workflow {
 
 const static QString INPUT_PORT_TYPE("input-for-");
@@ -255,7 +256,7 @@ Descriptor IncludedProtoFactoryImpl::generateUniqueSlotDescriptor(
             const int slotIdBaseLength = slotDesc.getId( ).length( ) - lastSuffixLength;
             slotDesc.setId( slotDesc.getId( ).left( slotIdBaseLength ) );
         }
-        const QString suffix = HRSchemaSerializer::DASH + QString::number( i );
+        const QString suffix = Constants::DASH + QString::number( i );
         lastSuffixLength = suffix.length( );
         slotDesc.setId( slotDesc.getId( ) + suffix );
     }

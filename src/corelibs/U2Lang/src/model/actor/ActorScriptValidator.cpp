@@ -25,6 +25,7 @@
 #include "ActorScriptValidator.h"
 
 namespace U2 {
+using namespace WorkflowSerialize;
 namespace Workflow {
 
 /************************************************************************/
@@ -38,7 +39,7 @@ bool ActorScriptValidator::validate(const Actor *actor, ProblemList &problemList
         engine.globalObject().setProperty("ctx", ctx);
     }
 
-    engine.evaluate(options[HRSchemaSerializer::V_SCRIPT]);
+    engine.evaluate(options[Constants::V_SCRIPT]);
     if (engine.hasUncaughtException()) {
         coreLog.error(QObject::tr("Exception during script execution! Line: %1, error: %2")
             .arg(engine.uncaughtExceptionLineNumber())

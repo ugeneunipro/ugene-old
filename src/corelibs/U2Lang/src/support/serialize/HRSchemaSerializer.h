@@ -35,152 +35,20 @@
 #include <U2Lang/GrouperOutSlot.h>
 #include <U2Lang/URLContainer.h>
 
+#include "Utils.h"
 
 namespace U2 {
 
 using namespace Workflow;
+using namespace WorkflowSerialize;
 
 class ExternalProcessConfig;
 class DataConfig;
 class AttributeConfig;
-class WorkflowSchemaReaderData;
-
-typedef QPair<QString, QString> StringPair;
 
 class U2LANG_EXPORT HRSchemaSerializer : public QObject {
     Q_OBJECT
 public:
-    static const QString BLOCK_START;
-    static const QString BLOCK_END;
-    static const QString SERVICE_SYM;
-    static const QString QUOTE;
-    static const QString NEW_LINE;
-    static const QString UNKNOWN_ERROR;
-    static const QString NO_ERROR;
-    static const QString HEADER_LINE;
-    static const QString DEPRECATED_HEADER_LINE;
-    static const QString OLD_XML_HEADER;
-    static const QString INCLUDE;
-    static const QString INCLUDE_AS;
-    static const QString BODY_START;
-    static const QString META_START;
-    static const QString DOT_ITERATION_START;
-    static const QString ITERATION_START;
-    static const QString DATAFLOW_SIGN;
-    static const QString EQUALS_SIGN;
-    static const QString UNDEFINED_CONSTRUCT;
-    static const QString TYPE_ATTR;
-    static const QString SCRIPT_ATTR;
-    static const QString NAME_ATTR;
-    static const QString ELEM_ID_ATTR;
-    static const QString DOT;
-    static const QString DASH;
-    static const QString ITERATION_ID;
-    static const QString PARAM_ALIASES_START;
-    static const QString PORT_ALIASES_START;
-    static const QString PATH_THROUGH;
-
-    // -------------- backward compatibility --------------
-        static const QString ALIASES_HELP_START;
-        static const QString OLD_ALIASES_START;
-    // ----------------------------------------------------
-
-    static const QString VISUAL_START;
-    static const QString UNDEFINED_META_BLOCK;
-    static const QString TAB;
-    static const QString NO_NAME;
-    static const QString COLON;
-    static const QString SEMICOLON;
-    static const QString INPUT_START;
-    static const QString OUTPUT_START;
-    static const QString ATTRIBUTES_START;
-    static const QString TYPE_PORT;
-    static const QString FORMAT_PORT;
-    static const QString CMDLINE;
-    static const QString DESCRIPTION;
-    static const QString PROMPTER;
-    static const QString FUNCTION_START;
-    static const QString COMMA;
-    static const QString MARKER;
-    static const QString MARKER_TYPE;
-    static const QString MARKER_NAME;
-    static const QString QUAL_NAME;
-    static const QString ANN_NAME;
-    static const QString ACTOR_BINDINGS;
-    static const QString SOURCE_PORT;
-    static const QString ALIAS;
-    static const QString IN_SLOT;
-    static const QString ACTION;
-    static const QString OUT_SLOT_ATTR;
-    static const QString DATASET_NAME;
-    static const QString DIRECTORY_URL;
-    static const QString FILE_URL;
-    static const QString PATH;
-    static const QString EXC_FILTER;
-    static const QString INC_FILTER;
-    static const QString RECURSIVE;
-    static const QString ESTIMATIONS;
-    static const QString VALIDATOR;
-    static const QString V_TYPE;
-    static const QString V_SCRIPT;
-
-public:
-    struct U2LANG_EXPORT ReadFailed {
-        ReadFailed(const QString & msg) : what(msg) {}
-        QString what;
-    }; // ReadFailed
-    
-    class U2LANG_EXPORT Tokenizer {
-    public:
-        void tokenizeSchema(const QString & data);
-        void tokenize(const QString & data, int unparseableBlockDepth = INT_MAX);
-        void tokenizeLine(const QString & line, QTextStream & s);
-        void tokenizeBlock(const QString & line, QTextStream & s);
-        void addToken(const QString & t);
-        void appendToken(const QString & t, bool skipEmpty = true);
-        void removeCommentTokens();
-        void assertToken(const QString & etalon);
-        
-        QString take();
-        QString look() const;
-        bool notEmpty()const {return !tokens.isEmpty();}
-        
-        enum States {
-            START_WORD
-        }; // States
-        
-        QStringList tokens;
-        int depth;
-    }; // Tokenizer
-
-    class U2LANG_EXPORT ParsedPairs {
-    public:
-        ParsedPairs(Tokenizer & tokenizer, bool bigBlocks = false);
-        ParsedPairs(const QString & data, int unparseableBlockDepth = INT_MAX);
-        ParsedPairs() {}
-        QMap<QString, QString> equalPairs;
-        QMap<QString, QString> blockPairs;
-
-        QList<StringPair> equalPairsList;
-        QList<StringPair> blockPairsList;
-        
-        static QPair<QString, QString> parseOneEqual(Tokenizer & tokenizer);
-    private:
-        void init(Tokenizer & tokenizer, bool bigBlocks);
-    }; // ParsedPairs
-
-    class U2LANG_EXPORT FlowGraph {
-    public:
-        FlowGraph( const QList<QPair<Port*, Port*> >& d );
-        bool findPath(Actor * from, Port * to) const;
-        void removeDuplicates();
-        void minimize();
-        
-        QMap<Port*, QList<Port*> > graph;
-        QList<QPair<Port*, Port*> > dataflowLinks;
-        int findRecursion;
-    }; // FlowGraph
-    
     typedef QMap<ActorId, QString> NamesMap;
     
     static void parseHeader(Tokenizer & tokenizer, Metadata * meta);
@@ -251,36 +119,6 @@ private:
     static URLContainer * parseDirectoryUrl(Tokenizer &tokenizer);
     static void checkHeaderLine(const QString &line, Tokenizer &tokenizer);
 };
-
-class WorkflowSchemaReaderData {
-public:
-    WorkflowSchemaReaderData(const QString & bytes, Schema * s, Metadata * m, QMap<ActorId, ActorId>* im) 
-        : schema(s), meta(m), idMap(im) {
-        graphDefined = false;
-        tokenizer.tokenizeSchema(bytes);
-    }
-
-    HRSchemaSerializer::Tokenizer tokenizer;
-    Schema * schema;
-    Metadata * meta;
-    QMap<QString, Actor*> actorMap;
-    QList<QPair<Port*, Port*> > dataflowLinks;
-    QList<QPair<Port*, Port*> > links;
-    QMap<ActorId, ActorId> * idMap;
-    QList<PortAlias> portAliases;
-    QList<Wizard*> wizards;
-
-    bool isGraphDefined() const {
-        return graphDefined;
-    }
-
-    void defineGraph() {
-        graphDefined = true;
-    }
-
-private:
-    bool graphDefined;
-}; // WorkflowSchemaReaderData
 
 } // U2
 

@@ -40,6 +40,7 @@
 /* TRANSLATOR U2::IOAdapter */
 
 namespace U2 {
+using namespace WorkflowSerialize;
 
 const GObjectType WorkflowGObject::TYPE("workflow-obj");
 const GObjectViewFactoryId WorkflowViewFactory::ID("workflow-view-factory");
@@ -99,7 +100,7 @@ Document* WorkflowDocFormat::loadDocument(IOAdapter* io, const U2DbiRef& targetD
     }
     
     if (checkRawData(rawData).score != FormatDetection_Matched) {
-        os.setError(tr("Invalid header. %1 expected").arg(HRSchemaSerializer::HEADER_LINE));
+        os.setError(tr("Invalid header. %1 expected").arg(Constants::HEADER_LINE));
         rawData.clear();
         return NULL;
     }

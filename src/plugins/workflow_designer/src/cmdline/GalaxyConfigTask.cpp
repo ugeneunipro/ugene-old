@@ -34,6 +34,7 @@
 #include "GalaxyConfigTask.h"
 
 namespace U2 {
+using namespace WorkflowSerialize;
 
 /*******************************************
 * GalaxyConfigTask
@@ -158,12 +159,12 @@ void GalaxyConfigTask::tryToFindInPath( const QString &objectName, QString &obje
     }
     int currPos = objectNamePosition;
     for( ; currPos >= 0; currPos-- ) {
-        if( QString(pathVariable[currPos]) == HRSchemaSerializer::COLON ) {
+        if( QString(pathVariable[currPos]) == Constants::COLON ) {
             break;
         }
     }
     const int pathStartPosition = currPos + 1,
-              pathEndPosition = pathVariable.indexOf( HRSchemaSerializer::COLON, objectNamePosition ),
+              pathEndPosition = pathVariable.indexOf( Constants::COLON, objectNamePosition ),
               pathLength = pathEndPosition - pathStartPosition;
     objectPath = pathVariable.mid( pathStartPosition, pathLength );
     
@@ -256,30 +257,30 @@ void GalaxyConfigTask::setError( const QString &keyword ) {
 
 bool GalaxyConfigTask::getHelpMessage() {
     galaxyHelpMessage = "\n**Description**\n";
-    int commentStartPosition = schemeContent.indexOf( HRSchemaSerializer::HEADER_LINE );
+    int commentStartPosition = schemeContent.indexOf( Constants::HEADER_LINE );
     if( commentStartPosition == SUBSTRING_NOT_FOUND ) {
-        setError( HRSchemaSerializer::HEADER_LINE );
+        setError( Constants::HEADER_LINE );
         return false;
     }
-    commentStartPosition += HRSchemaSerializer::HEADER_LINE.length();
-    const int commentEndPosition = schemeContent.lastIndexOf( HRSchemaSerializer::BODY_START );
+    commentStartPosition += Constants::HEADER_LINE.length();
+    const int commentEndPosition = schemeContent.lastIndexOf( Constants::BODY_START );
     if( commentEndPosition == SUBSTRING_NOT_FOUND ) {
-        setError( HRSchemaSerializer::BODY_START );
+        setError( Constants::BODY_START );
         return false;
     }
     const int commentLength = commentEndPosition - commentStartPosition;
 
     QString comment = QString();
     comment = schemeContent.mid( commentStartPosition, commentLength );
-    comment.replace( HRSchemaSerializer::SERVICE_SYM, "\n" );
+    comment.replace( Constants::SERVICE_SYM, "\n" );
     galaxyHelpMessage += comment;
     return true;
 }
 
 bool GalaxyConfigTask::getWorkflowName() {
-    int nameStartPosition = schemeContent.lastIndexOf( HRSchemaSerializer::BODY_START );
-    nameStartPosition += HRSchemaSerializer::BODY_START.length() + 1;
-    const int nameEndPosition = schemeContent.indexOf( HRSchemaSerializer::BLOCK_START, nameStartPosition );
+    int nameStartPosition = schemeContent.lastIndexOf( Constants::BODY_START );
+    nameStartPosition += Constants::BODY_START.length() + 1;
+    const int nameEndPosition = schemeContent.indexOf( Constants::BLOCK_START, nameStartPosition );
     CHECK_OPERATIONS( nameEndPosition != SUBSTRING_NOT_FOUND, 
                       stateInfo.setError( "Workflow file is corrupted. It does not contain start of body block" ),
                       return false;
@@ -294,14 +295,14 @@ bool GalaxyConfigTask::getWorkflowName() {
 
 bool GalaxyConfigTask::getParameterValue( const QString &keyword, const int searchFrom, QString &parameterValue, int &nextSearchFrom ) {
     const int keywordPosition = schemeContent.indexOf( keyword, searchFrom );
-    const int blockEndPosition = schemeContent.indexOf( HRSchemaSerializer::BLOCK_END, searchFrom );
-    if( keyword == HRSchemaSerializer::DESCRIPTION && ( keywordPosition == - 1 || blockEndPosition < keywordPosition ) ) {
+    const int blockEndPosition = schemeContent.indexOf( Constants::BLOCK_END, searchFrom );
+    if( keyword == Constants::DESCRIPTION && ( keywordPosition == - 1 || blockEndPosition < keywordPosition ) ) {
         nextSearchFrom = searchFrom;
         return true;
     }
 
-    const int parameterStartPosition = schemeContent.indexOf( HRSchemaSerializer::COLON, keywordPosition ) + 1,
-              parameterEndPosition = schemeContent.indexOf( HRSchemaSerializer::SEMICOLON, parameterStartPosition );
+    const int parameterStartPosition = schemeContent.indexOf( Constants::COLON, keywordPosition ) + 1,
+              parameterEndPosition = schemeContent.indexOf( Constants::SEMICOLON, parameterStartPosition );
     CHECK_OPERATIONS( parameterStartPosition != SUBSTRING_NOT_FOUND,
                       stateInfo.setError( "Workflow file is corrupted. Begin of alias value is not found" ),
                       return false;
@@ -318,21 +319,21 @@ bool GalaxyConfigTask::getParameterValue( const QString &keyword, const int sear
 }
 
 bool GalaxyConfigTask::defineAliases() {
-    int aliasesStartPosition = schemeContent.indexOf( HRSchemaSerializer::PARAM_ALIASES_START );
+    int aliasesStartPosition = schemeContent.indexOf( Constants::PARAM_ALIASES_START );
     CHECK_OPERATIONS( aliasesStartPosition != SUBSTRING_NOT_FOUND, 
-        setError( HRSchemaSerializer::PARAM_ALIASES_START ),
+        setError( Constants::PARAM_ALIASES_START ),
         return false;
     );
-    aliasesStartPosition += HRSchemaSerializer::PARAM_ALIASES_START.length();
-    const int visualKeywordPosition = schemeContent.indexOf( HRSchemaSerializer::VISUAL_START, aliasesStartPosition );
+    aliasesStartPosition += Constants::PARAM_ALIASES_START.length();
+    const int visualKeywordPosition = schemeContent.indexOf( Constants::VISUAL_START, aliasesStartPosition );
     CHECK_OPERATIONS( visualKeywordPosition != SUBSTRING_NOT_FOUND, 
-        setError( HRSchemaSerializer::VISUAL_START ),
+        setError( Constants::VISUAL_START ),
         return false;
     );
 
     int elementNameStartPosition = schemeContent.indexOf( QRegExp("[a-z]"), aliasesStartPosition );
     while ( elementNameStartPosition < visualKeywordPosition ) {
-        const int elementNameEndPosition = schemeContent.indexOf( HRSchemaSerializer::DOT, elementNameStartPosition );
+        const int elementNameEndPosition = schemeContent.indexOf( Constants::DOT, elementNameStartPosition );
         CHECK_OPERATIONS( elementNameEndPosition != SUBSTRING_NOT_FOUND, 
                           stateInfo.setError( "Workflow file contains wrong alias" ),
                           return false;
@@ -342,7 +343,7 @@ bool GalaxyConfigTask::defineAliases() {
         elementName.replace(QRegExp("[0-9]$"),"");
 
         const int elementAliasStartPosition = elementNameEndPosition + 1,
-                  elementAliasEndPosition = schemeContent.indexOf( HRSchemaSerializer::BLOCK_START, elementAliasStartPosition );
+                  elementAliasEndPosition = schemeContent.indexOf( Constants::BLOCK_START, elementAliasStartPosition );
         const int elementAliasLength = elementAliasEndPosition - elementAliasStartPosition;
         QString elementAlias = schemeContent.mid( elementAliasStartPosition, elementAliasLength );
         elementAlias.replace(" ","");
@@ -352,10 +353,10 @@ bool GalaxyConfigTask::defineAliases() {
         int aliasNameEndPosition = -1,
             aliasDescriptionEndPosition = -1;
 
-        if( !getParameterValue( HRSchemaSerializer::ALIAS, elementAliasEndPosition, aliasName, aliasNameEndPosition ) ) {
+        if( !getParameterValue( Constants::ALIAS, elementAliasEndPosition, aliasName, aliasNameEndPosition ) ) {
             return false;
         }
-        if( !getParameterValue( HRSchemaSerializer::DESCRIPTION, aliasNameEndPosition, aliasDescription, aliasDescriptionEndPosition ) ) {
+        if( !getParameterValue( Constants::DESCRIPTION, aliasNameEndPosition, aliasDescription, aliasDescriptionEndPosition ) ) {
             return false;
         }
 
@@ -502,7 +503,7 @@ void GalaxyConfigTask::writeFormatAttribute( const QString &resultType ) {
     selectedFormatsIterator = selectedFormats.begin();
     while( selectedFormatsIterator != selectedFormats.end() - 1 ) {
         resultFormatString += *selectedFormatsIterator;
-        resultFormatString += HRSchemaSerializer::COMMA;
+        resultFormatString += Constants::COMMA;
         selectedFormatsIterator++;
     }
     resultFormatString += (*selectedFormatsIterator);
@@ -520,10 +521,10 @@ void GalaxyConfigTask::writeLabelAttribute( const QStringList &elementParameters
         aliasDescription += element.getAttribute( attributeName )->getDocumentation();
     }
     aliasDescription = aliasDescription.trimmed();
-    if( aliasDescription.startsWith( HRSchemaSerializer::QUOTE ) ) {
+    if( aliasDescription.startsWith( Constants::QUOTE ) ) {
         aliasDescription.remove( 0, 1 );
     }
-    if( aliasDescription.endsWith( HRSchemaSerializer::QUOTE ) ) {
+    if( aliasDescription.endsWith( Constants::QUOTE ) ) {
         aliasDescription.remove( aliasDescription.length() - 1, 1 );
     }
     galaxyConfigOutput.writeAttribute( LABEL, aliasDescription );
@@ -539,8 +540,8 @@ bool GalaxyConfigTask::writeInputElements() {
         const QString elementName = (currAliasIterator).key(),
                       aliasName = (currAliasIterator).value().at(1);
 
-        galaxyConfigOutput.writeAttribute( HRSchemaSerializer::NAME_ATTR, aliasName );
-        galaxyConfigOutput.writeAttribute( HRSchemaSerializer::TYPE_ATTR, DATA );
+        galaxyConfigOutput.writeAttribute( Constants::NAME_ATTR, aliasName );
+        galaxyConfigOutput.writeAttribute( Constants::TYPE_ATTR, DATA );
 
         ActorPrototype *currElement = getElementFromActorPrototypeRegistry( elementName );
         assert( NULL != currElement );
@@ -605,7 +606,7 @@ bool GalaxyConfigTask::tryToWriteSimpleType( const PropertyDelegate * pd, QStrin
     } else {
         return false;
     }
-    galaxyConfigOutput.writeAttribute( HRSchemaSerializer::TYPE_ATTR, attributeType );
+    galaxyConfigOutput.writeAttribute( Constants::TYPE_ATTR, attributeType );
     return true;
 }
 
@@ -656,15 +657,15 @@ bool GalaxyConfigTask::tryToWriteComplexType( PropertyDelegate *pd, const QStrin
     assert( pd != NULL );
     if( isDelegateComboBox(pd) ) {
         attributeType = "select";
-        galaxyConfigOutput.writeAttribute( HRSchemaSerializer::TYPE_ATTR, attributeType );
+        galaxyConfigOutput.writeAttribute( Constants::TYPE_ATTR, attributeType );
         writeSelectAttribute( *pd );
     } else if( isDelegateComboBoxWithChecks(pd) ) {
         attributeType = "drill_down";
-        galaxyConfigOutput.writeAttribute( HRSchemaSerializer::TYPE_ATTR, attributeType );
+        galaxyConfigOutput.writeAttribute( Constants::TYPE_ATTR, attributeType );
         galaxyConfigOutput.writeAttribute( DISPLAY, "checkbox" );
         galaxyConfigOutput.writeAttribute( HIERARCHY, "recurse" );
         galaxyConfigOutput.writeAttribute( MULTIPLE, "true" );
-        galaxyConfigOutput.writeAttribute( SEPARATOR, HRSchemaSerializer::COMMA );
+        galaxyConfigOutput.writeAttribute( SEPARATOR, Constants::COMMA );
         writeDrillDownAttribute( *pd );
     } 
     else if( isDelegateSpinBox(pd) ) {
@@ -677,12 +678,12 @@ bool GalaxyConfigTask::tryToWriteComplexType( PropertyDelegate *pd, const QStrin
         } else {
             attributeType = "integer";
         }
-        galaxyConfigOutput.writeAttribute( HRSchemaSerializer::TYPE_ATTR, attributeType );
+        galaxyConfigOutput.writeAttribute( Constants::TYPE_ATTR, attributeType );
         writeMinAndMaxAttributes( *pd );
     } 
     else if( isDelegateStringList(pd) ) {
         attributeType = "text";
-        galaxyConfigOutput.writeAttribute( HRSchemaSerializer::TYPE_ATTR, attributeType );
+        galaxyConfigOutput.writeAttribute( Constants::TYPE_ATTR, attributeType );
     }
     return true;
 }
@@ -723,7 +724,7 @@ bool GalaxyConfigTask::writeOptionElements() {
 
         const QString elementName = (currAliasIterator).key(),
                       aliasName = (currAliasIterator).value().at(1);
-        galaxyConfigOutput.writeAttribute( HRSchemaSerializer::NAME_ATTR, aliasName );
+        galaxyConfigOutput.writeAttribute( Constants::NAME_ATTR, aliasName );
        
         ActorPrototype *currElement = getElementFromActorPrototypeRegistry( elementName );
         assert( NULL != currElement );
@@ -832,7 +833,7 @@ bool GalaxyConfigTask::writeOutputsUnit() {
         
         galaxyConfigOutput.writeStartElement( DATA );
         writeFormatAttributeForOutputElement( resultType ); 
-        galaxyConfigOutput.writeAttribute( HRSchemaSerializer::NAME_ATTR, aliasName );
+        galaxyConfigOutput.writeAttribute( Constants::NAME_ATTR, aliasName );
         tryToWriteChangeFormatAttribute( *currElement, usedOptionElements );
         galaxyConfigOutput.writeEndElement(); 
         outputElementsIterator++;
@@ -840,7 +841,7 @@ bool GalaxyConfigTask::writeOutputsUnit() {
 
     galaxyConfigOutput.writeStartElement( DATA );
     galaxyConfigOutput.writeAttribute( FORMAT, "txt" );
-    galaxyConfigOutput.writeAttribute( HRSchemaSerializer::NAME_ATTR, WORKFLOW_RUN_LOG );
+    galaxyConfigOutput.writeAttribute( Constants::NAME_ATTR, WORKFLOW_RUN_LOG );
     galaxyConfigOutput.writeAttribute( "label", WORKFLOW_RUN_LOG );
     galaxyConfigOutput.writeEndElement();
 

@@ -31,8 +31,6 @@ namespace U2 {
 
 class CMDLineHelpProvider;
 
-typedef QPair<QString, QString> StringPair;
-
 /*  Reads command arguments into UGENE's command line parameters 
     
     Convention:

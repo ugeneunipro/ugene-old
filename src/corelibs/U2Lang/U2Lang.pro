@@ -105,9 +105,12 @@ HEADERS += src/library/BaseActorCategories.h \
            src/support/external_script/ScriptableScheduler.h \
            src/support/external_script/ScriptContext.h \
            src/support/external_script/WorkflowRunSerializedSchemeTask.h \
+           src/support/serialize/Constants.h \
            src/support/serialize/HRSchemaSerializer.h \
            src/support/serialize/HRVisualSerializer.h \
-           src/support/serialize/HRWizardSerializer.h
+           src/support/serialize/HRWizardSerializer.h \
+           src/support/serialize/Tokenizer.h \
+           src/support/serialize/Utils.h
 SOURCES += src/library/BaseActorCategories.cpp \
            src/library/BaseAttributes.cpp \
            src/library/BasePorts.cpp \
@@ -204,9 +207,12 @@ SOURCES += src/library/BaseActorCategories.cpp \
            src/support/external_script/ScriptableScheduler.cpp \
            src/support/external_script/ScriptContext.cpp \
            src/support/external_script/WorkflowRunSerializedSchemeTask.cpp \
+           src/support/serialize/Constants.cpp \
            src/support/serialize/HRSchemaSerializer.cpp \
            src/support/serialize/HRVisualSerializer.cpp \
-           src/support/serialize/HRWizardSerializer.cpp
+           src/support/serialize/HRWizardSerializer.cpp \
+           src/support/serialize/Tokenizer.cpp \
+           src/support/serialize/Utils.cpp
 RESOURCES += U2Lang.qrc
 TRANSLATIONS += transl/chinese.ts \
                 transl/czech.ts \
