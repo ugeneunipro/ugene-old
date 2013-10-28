@@ -135,6 +135,7 @@ qint64 ConvertAceToSqliteTask::importAssemblies(IOAdapter &ioAdapter) {
     U2OpStatusChildImpl os(&stateInfo, U2OpStatusMapping(0, 50));
     QScopedPointer<AceReader> aceReader;
     aceReader.reset(new AceReader(ioAdapter, os));
+    CHECK_OP(os, totalReadsImported);
 
     QScopedPointer<AceIterator> iterator;
     iterator.reset(new AceIterator(*aceReader, stateInfo));
@@ -189,6 +190,7 @@ qint64 ConvertAceToSqliteTask::importAssemblies(IOAdapter &ioAdapter) {
         CHECK_OP(stateInfo, totalReadsImported);
 
         totalReadsImported += aceAssembly.getReadsCount();
+        assemblyNum++;
     }
 
     return totalReadsImported;

@@ -133,6 +133,7 @@ AceReader::AceReader(IOAdapter& _io, U2OpStatus &_os) :
 
     contigsCount = getContigCount(headerLine);
     CHECK_OP((*os), );
+    CHECK_EXT(contigsCount > 0, os->setError((tr("There is no assemblies in input file"))), );
 }
 
 Assembly AceReader::getAssembly() {
