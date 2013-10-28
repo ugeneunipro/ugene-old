@@ -210,6 +210,7 @@ public:
 
     // returns valid position if coords are out of visible area
     QPoint coordToAbsolutePos(const QPoint& coord) const;
+    QPoint coordToAbsolutePosOutOfRange(const QPoint& coord) const;
 
     const MSAEditorSelection& getSelection() const { assert(checkState()); return selection; }
 

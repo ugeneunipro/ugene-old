@@ -965,7 +965,7 @@ void MSAEditorSequenceArea::updateSelection() {
 void MSAEditorSequenceArea::mouseMoveEvent( QMouseEvent* e )
 {
     if ( e->buttons( ) & Qt::LeftButton ) {
-        QPoint newCurPos = coordToAbsolutePos(e->pos());
+        QPoint newCurPos = coordToAbsolutePosOutOfRange(e->pos());
         if (isInRange(newCurPos)) {
             updateHBarPosition(newCurPos.x());
             updateVBarPosition(newCurPos.y());
@@ -1357,6 +1357,15 @@ int MSAEditorSequenceArea::coordToPos(int x) const {
 QPoint MSAEditorSequenceArea::coordToAbsolutePos(const QPoint& coord) const {
     int column = getColumnNumByX(coord.x(), selecting);
     int row = getSequenceNumByY(coord.y());
+
+    return QPoint(column, row);
+}
+
+QPoint MSAEditorSequenceArea::coordToAbsolutePosOutOfRange(const QPoint& coord) const {
+    CHECK(editor->getColumnWidth() > 0, QPoint(0, 0));
+    CHECK(editor->getRowHeight() > 0, QPoint(0, 0));
+    int column = startPos + (coord.x() / editor->getColumnWidth());
+    int row = startSeq + (coord.y() / editor->getRowHeight());
 
     return QPoint(column, row);
 }
