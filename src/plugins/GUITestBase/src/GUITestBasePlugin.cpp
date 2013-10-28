@@ -54,6 +54,7 @@
 #include "tests/common_scenarios/Assembling/Assembly_browser/GTTestsAssemblyBrowser.h"
 #include "tests/common_scenarios/Assembling/bowtie2/GTTestsBowtie2.h"
 #include "tests/common_scenarios/Assembling/dna_assembly/GTTestsDnaAssembly.h"
+#include "tests/common_scenarios/Assembling/dna_assembly/conversions/GTTestsDnaAssemblyConversions.h"
 #include "tests/common_scenarios/Assembling/sam/GTTestsSAM.h"
 #include "tests/common_scenarios/Query_Designer/GTTestsQuerryDesigner.h"
 #include "tests/common_scenarios/workflow_designer/GTTestsWorkflowDesigner.h"
@@ -188,6 +189,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2026, "holding 'shift' does not work (at least on Windows)");
     REGISTER_TEST(GUITest_regression_scenarios::test_2030);
     REGISTER_TEST(GUITest_regression_scenarios::test_2070);
+    REGISTER_TEST(GUITest_regression_scenarios::test_2077);
     REGISTER_TEST(GUITest_regression_scenarios::test_2089);
     REGISTER_TEST(GUITest_regression_scenarios::test_2100_1);
     REGISTER_TEST(GUITest_regression_scenarios::test_2100_2);
@@ -861,6 +863,11 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 // Common scenarios/Assembling/dna_assembly
 /////////////////////////////////////////////////////////////////////////
     REGISTER_TEST(GUITest_dna_assembly::test_0001);
+
+    /////////////////////////////////////////////////////////////////////////
+    // Common scenarios/Assembling/dna_assembly/conversions
+    /////////////////////////////////////////////////////////////////////////
+    REGISTER_TEST(GUITest_dna_assembly_conversions::test_0004);
 
     /////////////////////////////////////////////////////////////////////////
 // Common scenarios/Assembling/sam

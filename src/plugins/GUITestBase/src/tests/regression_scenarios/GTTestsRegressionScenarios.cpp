@@ -68,7 +68,10 @@
 #include "GTUtilsWorkflowDesigner.h"
 #include <U2View/ADVSingleSequenceWidget.h>
 #include <U2View/AnnotatedDNAViewFactory.h>
+#include "runnables/qt/MessageBoxFiller.h"
+#include "runnables/ugene/plugins/workflow_designer/StartupDialogFiller.h"
 
+#include "GTUtilsWorkflowDesigner.h"
 
 #include <U2View/ADVConstants.h>
 #include <U2View/MSAEditor.h>
@@ -1722,6 +1725,44 @@ GUI_TEST_CLASS_DEFINITION( test_2070 ){
     
     GTUtilsLog::check(os, lt);
 }
+GUI_TEST_CLASS_DEFINITION( test_2077 ){
+    // 1) Open WD
+
+    // 2) Add elements "Read Sequence" and "Write sequence" to the scheme
+    // 3) Connect "Read Sequence" to "Write sequence"
+
+    QMenu *menu=GTMenu::showMainMenu( os, MWMENU_TOOLS );
+    GTMenu::clickMenuItem( os, menu, QStringList( ) << "Workflow Designer" );
+
+    GTUtilsWorkflowDesigner::addAlgorithm( os, "Read Sequence" );
+    GTUtilsWorkflowDesigner::addAlgorithm( os, "Write Sequence" );
+
+    WorkflowProcessItem *seqReader = GTUtilsWorkflowDesigner::getWorker( os, "Read Sequence" );
+    WorkflowProcessItem *seqWriter = GTUtilsWorkflowDesigner::getWorker( os, "Write Sequence" );
+
+    GTUtilsWorkflowDesigner::connect( os, seqReader, seqWriter );
+
+    // 4) Add file "human_T1.fa" to "Read Sequence" twice 
+
+    GTMouseDriver::moveTo( os, GTUtilsWorkflowDesigner::getItemCenter( os, "Read Sequence" ) );
+    GTMouseDriver::click( os );
+    QString dirPath = dataDir + "samples/FASTA/";
+    GTUtilsWorkflowDesigner::setDatasetInputFile( os, dirPath, "human_T1.fa" );
+
+    GTMouseDriver::moveTo( os, GTUtilsWorkflowDesigner::getItemCenter( os, "Read Sequence" ) );
+    GTMouseDriver::click( os );
+    QString dirPath1 = dataDir + "samples/FASTA/";
+    GTUtilsWorkflowDesigner::setDatasetInputFile( os, dirPath1, "human_T1.fa" );
+
+    // 5) Validate scheme
+    GTUtilsDialog::waitForDialog( os, new MessageBoxDialogFiller( os, QMessageBox::Ok,
+        "Please fix issues listed in the error list (located under workflow)." ) );
+    GTWidget::click( os,GTAction::button( os,"Validate workflow" ) );
+    GTGlobals::sleep( 200 );
+
+    //Expected state: The "File not found" error has appeared in the "Error list"
+    GTUtilsWorkflowDesigner::checkErrorList( os, "file '../human_T1.fa' was specified several times" );
+    }
 
 GUI_TEST_CLASS_DEFINITION( test_2089 )
 {
