@@ -91,7 +91,7 @@
     </widget>
    </item>
    <item>
-    <spacer name="spacer1">
+    <spacer name="dbBottomSpacer">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
      </property>
@@ -176,14 +176,37 @@
     </widget>
    </item>
    <item>
-    <spacer name="spacer0">
+    <spacer name="optionsBottomSpacer">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
      </property>
      <property name="sizeHint" stdset="0">
       <size>
        <width>20</width>
-       <height>10</height>
+       <height>5</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item>
+    <widget class="QPushButton" name="searchIdsButton">
+     <property name="toolTip">
+      <string>Send request to Uniprot BLAST to get IDs of similar sequences</string>
+     </property>
+     <property name="text">
+      <string>Fetch IDs</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <spacer name="tableTopSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>7</height>
       </size>
      </property>
     </spacer>
@@ -243,20 +266,23 @@
     </widget>
    </item>
    <item>
+    <spacer name="tableBottomSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>5</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item>
     <layout class="QVBoxLayout" name="verticalLayout">
      <property name="sizeConstraint">
       <enum>QLayout::SetMinAndMaxSize</enum>
      </property>
-     <item>
-      <widget class="QPushButton" name="searchIdsButton">
-       <property name="toolTip">
-        <string>Send request to Uniprot BLAST to get IDs of similar sequences</string>
-       </property>
-       <property name="text">
-        <string>Fetch IDs</string>
-       </property>
-      </widget>
-     </item>
      <item>
       <widget class="QPushButton" name="annotateButton">
        <property name="toolTip">
@@ -299,7 +325,7 @@
     </widget>
    </item>
    <item>
-    <spacer name="spacer">
+    <spacer name="bottomSpacer">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
      </property>

@@ -384,9 +384,9 @@ void DasOptionsPanelWidget::initialize() {
     fetchIdsAction->setObjectName("Fetch IDs");
     fetchAnnotationsAction = new QAction("Fetch Annotations", idList);
     openInNewViewAction = new QAction("Open in a new view", idList);
-    idList->addAction(fetchIdsAction);
     idList->addAction(fetchAnnotationsAction);
     idList->addAction(openInNewViewAction);
+    idList->addAction(fetchIdsAction);
 
     idList->horizontalHeader()->setResizeMode(0, QHeaderView::Stretch);
     idList->horizontalHeader()->setResizeMode(1, QHeaderView::ResizeToContents);
