@@ -1244,20 +1244,23 @@ void MAlignment::check() const {
 #endif
 }
 
-bool MAlignment::sortRowsByList(const QStringList& order) {
-    CHECK(getNumRows() == order.size(), false);
-
+bool MAlignment::sortRowsByList(const QStringList& rowsOrder) {
     MAStateCheck check(this);
 
-    QList<MAlignmentRow> sortedRows;
-    QStringList rowsNames = getRowNames();
-    int size = rows.size();
-    for(int i = 0; i < size; i++) {
-        int rowIndex = rowsNames.indexOf(order.at(i));
-        CHECK(rowIndex >= 0, false);
-        const MAlignmentRow& curRow = rows.at(rowIndex);
-        sortedRows.append(curRow);
+    const QStringList& rowNames = getRowNames();
+    foreach(const QString& rowName, rowNames) {
+        CHECK(rowsOrder.contains(rowName), false);
     }
+
+    QList<MAlignmentRow> sortedRows;
+    foreach(const QString& rowName, rowsOrder) {
+        int rowIndex = rowNames.indexOf(rowName);
+        if(rowIndex >= 0) {
+            const MAlignmentRow& curRow = rows.at(rowIndex);
+            sortedRows.append(curRow);
+        }
+    }
+
     rows = sortedRows;
     return true;
 }

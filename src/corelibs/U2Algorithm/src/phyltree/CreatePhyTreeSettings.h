@@ -24,8 +24,9 @@
 
 #include <U2Core/global.h>
 #include <U2Core/GUrl.h>
-#include <QString>
-#include <QList>
+#include <QtCore/QString>
+#include <QtCore/QList>
+#include <QtCore/QStringList>
 
 namespace U2{
 
@@ -46,6 +47,7 @@ public:
     double fraction;
     QString consensusID;
     int mb_ngen;
+    QStringList rowsOrder;
 
     QString mrBayesSettingsScript;
 };

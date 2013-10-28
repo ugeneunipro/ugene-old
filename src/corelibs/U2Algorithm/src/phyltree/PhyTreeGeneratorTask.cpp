@@ -53,6 +53,11 @@ void PhyTreeGeneratorLauncherTask::prepare(){
     if (generator == NULL) {
         stateInfo.setError(tr("Tree construction algorithm %1 not found").arg(algId));
     }else{
+        const QStringList& rowsOrder = settings.rowsOrder;
+        if(rowsOrder.size() >= inputMA.getRowNames().size()) {
+            inputMA.sortRowsByList(rowsOrder);
+        }
+
         task = dynamic_cast<PhyTreeGeneratorTask*>(generator->createCalculatePhyTreeTask(inputMA,settings));
         addSubTask(task);
     }

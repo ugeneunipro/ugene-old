@@ -96,6 +96,7 @@ void MSAEditorTreeManager::buildTreeWithDialog() {
 
     int rc = dlg.exec();
     CHECK(rc == QDialog::Accepted, );
+    settings.rowsOrder = msaObject->getMAlignment().getRowNames();
     buildTree(settings);
 }
 
