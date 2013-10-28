@@ -28,7 +28,7 @@
 
 #include <U2Core/global.h>
 #include <QtCore/QDirIterator>
-#include <QtCore/QStack>
+#include <QtCore/QQueue>
 
 namespace U2 {
 
@@ -79,7 +79,7 @@ private:
 private:
     int deepLevel;
     
-    QStack< QPair<QString, int> > data;
+    QQueue< QPair<QString, int> > data;
 
     QString curPath;
     

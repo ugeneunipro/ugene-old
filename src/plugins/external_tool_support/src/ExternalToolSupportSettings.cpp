@@ -141,7 +141,7 @@ LimitedDirIterator::LimitedDirIterator( const QDir &dir, int deepLevels )
     if (deepLevel < 0){
         deepLevel = 0;
     }
-    data.push(qMakePair(dir.absolutePath(), 0));
+    data.enqueue(qMakePair(dir.absolutePath(), 0));
 }
 
 bool LimitedDirIterator::hasNext(){
@@ -162,13 +162,13 @@ QString LimitedDirIterator::filePath(){
 
 void LimitedDirIterator::fetchNext(){
     if (!data.isEmpty()){
-        QPair<QString, int> nextPath = data.pop();
+        QPair<QString, int> nextPath = data.dequeue();
         curPath = nextPath.first;
         if (deepLevel > nextPath.second){
             QDir curDir(curPath);
             QStringList subdirs = curDir.entryList(QDir::NoDotAndDotDot | QDir::Dirs);
             foreach(const QString& subdir, subdirs){
-                data.push(qMakePair(curPath+ "/" + subdir, nextPath.second + 1));
+                data.enqueue(qMakePair(curPath+ "/" + subdir, nextPath.second + 1));
             }
         }
     }
