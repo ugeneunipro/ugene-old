@@ -69,9 +69,9 @@ QString SmithWatermanReportCallbackAnnotImpl::report(const QList<SmithWatermanRe
     foreach (const SmithWatermanResult& res , results) {
         SharedAnnotationData annotation = res.toAnnotation( annotationName );
         if ( addPatternSubseqToQual && 0 != res.ptrnSubseq.length ) {
-            annotation->qualifiers.append( U2Qualifier( "pattern_subseq_start",
+            annotation->qualifiers.append( U2Qualifier( "pattern_match_start",
                 QString::number( res.ptrnSubseq.startPos ) ) );
-            annotation->qualifiers.append( U2Qualifier( "pattern_subseq_length",
+            annotation->qualifiers.append( U2Qualifier( "pattern_match_len",
                 QString::number( res.ptrnSubseq.length ) ) );
         }
         anns.append( annotation );

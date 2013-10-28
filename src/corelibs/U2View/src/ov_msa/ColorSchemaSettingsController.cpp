@@ -295,7 +295,7 @@ QList<CustomColorSchema> ColorSchemaSettingsUtils::getSchemas(){
 
 
 ColorSchemaSettingsPageController::ColorSchemaSettingsPageController(QObject* p) 
-: AppSettingsGUIPageController(tr("Alignment color scheme"), ColorSchemaSettingsPageId, p) {}
+: AppSettingsGUIPageController(tr("Alignment Color Scheme"), ColorSchemaSettingsPageId, p) {}
 
 
 AppSettingsGUIPageState* ColorSchemaSettingsPageController::getSavedState() {
