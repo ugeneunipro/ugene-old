@@ -37,6 +37,8 @@ public:
     virtual QStringList header();
     virtual QList<QStringList> data();
 
+    static QString problemImage(const Problem &info);
+
 private slots:
     void sl_newProblem(const U2::Problem &info);
 

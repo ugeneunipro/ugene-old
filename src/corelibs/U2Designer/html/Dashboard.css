@@ -356,3 +356,9 @@ span.content
 .copyRunInfo.hoverIntent.pressed {
     background-color: #b8b8b8;
 }
+.problem-icon {
+    height: 20px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}

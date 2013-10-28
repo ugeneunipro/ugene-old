@@ -46,6 +46,23 @@ void ProblemsWidget::sl_newProblem(const U2::Problem &info) {
     }
 }
 
+QString ProblemsWidget::problemImage(const Problem &info) {
+    CHECK(!info.type.isEmpty(), "");
+
+    QString image = "qrc:U2Lang/images/";
+    QString tooltip;
+    if (Problem::U2_ERROR == info.type) {
+        image += "error.png";
+        tooltip = tr("Error");
+    } else if (Problem::U2_WARNING == info.type) {
+        image += "warning.png";
+        tooltip = tr("Warning");
+    } else {
+        FAIL("Unknown type: " + info.type, "");
+    }
+    return "<img src=\"" + image + "\" title=\"" + tooltip + "\" class=\"problem-icon\"/>";
+}
+
 QStringList ProblemsWidget::createRow(const Problem &info, bool multi) const {
     QStringList result;
     const WorkflowMonitor *m = dashboard->monitor();
@@ -61,12 +78,8 @@ QStringList ProblemsWidget::createRow(const Problem &info, bool multi) const {
         }
         prefix = QString("(%1) ").arg(count);
     }
-    if (!info.type.isEmpty()) {
-        // There should be an image
-        result << wrapLongText(info.type[0]);
-    } else {
-        result << "";
-    }
+
+    result << problemImage(info);
     result << wrapLongText(m->actorName(info.actor));
     result << wrapLongText(prefix + info.message);
     return result;
@@ -81,11 +94,11 @@ QStringList ProblemsWidget::createRow(const Problem &info) const {
 }
 
 QList<int> ProblemsWidget::widths() {
-    return QList<int>() << 7 << 30 << 63;
+    return QList<int>() << 10 << 30 << 60;
 }
 
 QStringList ProblemsWidget::header() {
-    return QStringList() << "" << tr("Element") << tr("Message");
+    return QStringList() << tr("Type") << tr("Element") << tr("Message");
 }
 
 QList<QStringList> ProblemsWidget::data() {
