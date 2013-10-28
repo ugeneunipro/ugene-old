@@ -130,6 +130,7 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/tests/common_scenarios/Assembling/sam/GTTestsSAM.h \
             src/tests/common_scenarios/Query_Designer/GTTestsQuerryDesigner.h \
             src/tests/common_scenarios/workflow_designer/GTTestsWorkflowDesigner.h \
+            src/tests/common_scenarios/workflow_designer/estimating/GTTestsWorkflowEstimating.h \
             src/tests/common_scenarios/workflow_designer/parameters_validation/GTTestsWorkflowParemeterValidation.h \
             src/tests/common_scenarios/tree_viewer/GTTestsCommonScenariousTreeviewer.h \
             src/tests/common_scenarios/repeat_finder/GTTestsRepeatFinder.h \
@@ -169,7 +170,6 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/api/GTDoubleSpinBox.h \
             src/api/GTTableView.h  \
             src/api/GTGraphicsItem.h
-
 SOURCES +=  src/GUITestBasePlugin.cpp \
             src/tests/crazy_user/GUICrazyUserTest.cpp \
             src/tests/crazy_user/GTRandomGUIActionFactory.cpp \
@@ -298,6 +298,7 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/tests/common_scenarios/Assembling/sam/GTTestsSAM.cpp \
             src/tests/common_scenarios/Query_Designer/GTTestsQuerryDesigner.cpp \
             src/tests/common_scenarios/workflow_designer/GTTestsWorkflowDesigner.cpp \
+            src/tests/common_scenarios/workflow_designer/estimating/GTTestsWorkflowEstimating.cpp \
             src/tests/common_scenarios/workflow_designer/parameters_validation/GTTestsWorkflowParemeterValidation.cpp \
             src/tests/common_scenarios/tree_viewer/GTTestsCommonScenariousTreeviewer.cpp \
             src/tests/common_scenarios/repeat_finder/GTTestsRepeatFinder.cpp \

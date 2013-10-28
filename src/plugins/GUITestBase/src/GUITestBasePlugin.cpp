@@ -57,6 +57,7 @@
 #include "tests/common_scenarios/Assembling/sam/GTTestsSAM.h"
 #include "tests/common_scenarios/Query_Designer/GTTestsQuerryDesigner.h"
 #include "tests/common_scenarios/workflow_designer/GTTestsWorkflowDesigner.h"
+#include "tests/common_scenarios/workflow_designer/estimating/GTTestsWorkflowEstimating.h"
 #include "tests/common_scenarios/workflow_designer/parameters_validation/GTTestsWorkflowParemeterValidation.h"
 #include "tests/common_scenarios/tree_viewer/GTTestsCommonScenariousTreeviewer.h"
 #include "tests/common_scenarios/repeat_finder/GTTestsRepeatFinder.h"
@@ -900,6 +901,11 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_workflow_parameters_validation::test_0003);
     REGISTER_TEST(GUITest_common_scenarios_workflow_parameters_validation::test_0005);
     REGISTER_TEST(GUITest_common_scenarios_workflow_parameters_validation::test_0006);
+
+/////////////////////////////////////////////////////////////////////////
+// Common scenarios/Workflow designer/Estimating
+/////////////////////////////////////////////////////////////////////////
+    REGISTER_TEST(GUITest_common_scenarios_workflow_estimating::test_0001);
 
 /////////////////////////////////////////////////////////////////////////
 // Common scenarios/NIAID_pipelines
