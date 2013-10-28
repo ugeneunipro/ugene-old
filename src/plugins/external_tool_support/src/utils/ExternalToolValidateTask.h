@@ -30,34 +30,45 @@ namespace U2 {
 
 class ExternalToolLogParser;
 class ExternalToolValidation;
+class ExternalToolSearchTask;
 
-class ExternalToolValidateTask: public Task {
+class ExternalToolValidateTask : public Task {
     Q_OBJECT
 public:
-    ExternalToolValidateTask(const QString& toolName);
-    ExternalToolValidateTask(const QString& toolName, const QString& path);
-    ~ExternalToolValidateTask();
+    ExternalToolValidateTask(const QString& toolName, TaskFlags flags = TaskFlag_None);
+    virtual ~ExternalToolValidateTask() {}
 
-    void prepare();
-    void run();
-    Task::ReportResult report();
+    virtual Task::ReportResult report() = 0;
 
-    void cancelProcess();
     bool isValidTool()  { return isValid; }
     QString getToolName()  { return toolName; }
-    QString getToolPath()  { return program; }
+    QString getToolPath()  { return toolPath; }
     QString getToolVersion()  { return version; }
+
+protected:
+    QString toolName;
+    QString toolPath;
+    QString version;
+    bool isValid;
+};
+
+class ExternalToolJustValidateTask: public ExternalToolValidateTask {
+    Q_OBJECT
+    Q_DISABLE_COPY(ExternalToolJustValidateTask)
+public:
+    ExternalToolJustValidateTask(const QString& toolName, const QString& path);
+    virtual ~ExternalToolJustValidateTask();
+
+    virtual void run();
+    virtual Task::ReportResult report();
+
+    void cancelProcess();
 
 private:
     bool parseLog(const ExternalToolValidation& validation);
     void checkVersion(const QString& partOfLog);
 
-    
-    QString     program;
-    QString     toolName;
-    QString     version;
     QString     errorMsg;
-    bool        isValid;
 
     QList<ExternalToolValidation> validations; //original tool validation is the last one
     
@@ -70,32 +81,20 @@ private:
 
 };
 
-class ExternalToolSearchAndValidateTask : public Task {
+class ExternalToolSearchAndValidateTask : public ExternalToolValidateTask {
     Q_OBJECT
 public:
-    ExternalToolSearchAndValidateTask(const QString& toolName, const QString& path = QString::null);
+    ExternalToolSearchAndValidateTask(const QString& toolName);
 
-    void prepare();
-    QList<Task*> onSubTaskFinished(Task *subTask);
-    Task::ReportResult report();
-
-    bool isValidTool();
-    QString getToolName();
-    QString getToolPath();
-    QString getToolVersion();
+    virtual QList<Task*> onSubTaskFinished(Task *subTask);
+    virtual Task::ReportResult report();
 
 private:
-    QString     toolName;
     QStringList toolPaths;
-    bool        isValid;
-    QString     program;
-    QString     version;
     QString     errorMsg;
     bool        toolIsFound;
-    QString     path;
-    ExternalToolValidateTask* validateTask;
-
-    static const QString TOOLS;
+    ExternalToolSearchTask*     searchTask;
+    ExternalToolJustValidateTask*   validateTask;
 };
 
 class ExternalToolsValidateTask : public SequentialMultiTask {

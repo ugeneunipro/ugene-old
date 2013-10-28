@@ -89,6 +89,12 @@ RModuleSupport::RModuleSupport(const QString& name) : ExternalToolModule(name) {
     toolKitName = "R";
     dependencies << ET_R;
 
+    errorDescriptions.insert("character(0)", tr("R module is not installed. "
+                                                "Install module or set path "
+                                                "to another R scripts interpreter "
+                                                "with installed module in "
+                                                "the External Tools settings"));
+
     muted = true;
 }
 

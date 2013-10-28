@@ -89,6 +89,12 @@ PythonModuleSupport::PythonModuleSupport(const QString &name) :
     toolKitName = "python";
     dependencies << ET_PYTHON;
 
+    errorDescriptions.insert("No module named", tr("Python module is not installed. "
+                                                   "Install module or set path "
+                                                   "to another Python scripts interpreter "
+                                                   "with installed module in "
+                                                   "the External Tools settings"));
+
     muted = true;
 }
 

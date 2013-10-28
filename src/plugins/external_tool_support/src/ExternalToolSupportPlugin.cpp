@@ -169,7 +169,7 @@ public:
                     QString exePath = curPath+"/"+curTool->getExecutableFileName();
                     QFileInfo fileExe(exePath);
                     if(fileExe.exists() && (curTool->getPath()=="")){
-                        ExternalToolValidateTask* validateTask=new ExternalToolValidateTask(curTool->getName(), exePath);
+                        ExternalToolJustValidateTask* validateTask=new ExternalToolJustValidateTask(curTool->getName(), exePath);
                         connect(validateTask, SIGNAL(si_stateChanged()), plugin, SLOT(sl_validateTaskStateChanged()));
                         addSubTask(validateTask);
                     }
