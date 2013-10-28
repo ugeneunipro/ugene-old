@@ -1,5 +1,5 @@
 #@UGENE_WORKFLOW
-#If you have a list of files with sequences and separate files with annotation and you want to merge sequences and annotation, this scheme might help you.
+#If you have a list of files with sequences and separate files with annotation and you want to merge sequences and annotation, this workflow might help you.
 #
 #For instance, you have sequence in FASTA format and separate annotation in GFF. You want to merge them and write annotated sequences into Genbank files.
 #

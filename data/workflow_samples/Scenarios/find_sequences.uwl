@@ -1,7 +1,7 @@
 #@UGENE_WORKFLOW
-#This simple scheme finds patterns in you sequences and save them as annotations.
+#This simple workflow finds patterns in you sequences and save them as annotations.
 #
-#You can use the scheme to map primers, regulatory signals, genes, etc.
+#You can use the workflow to map primers, regulatory signals, genes, etc.
 #
 #It loads any set of sequences from your files or folders and finds patterns in them. Just specify a dataset for the algorithm in the "Read sequence" element.
 #

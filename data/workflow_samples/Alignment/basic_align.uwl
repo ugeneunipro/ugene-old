@@ -1,7 +1,7 @@
 #@UGENE_WORKFLOW
 #Performs multiple sequence alignment with MUSCLE algorithm and saves the resulting alignment to Stockholm document. Source data can be of any format containing sequences or alignments.
 #
-#To use this schema, you need to specify locations for input and output file(s). To do this, select a corresponding task, so its' parameters appear in Property Inspector panel, and specify desired value(s) for "URL" parameter. Then you can launch the schema with pressing Ctrl+R keys.
+#To use this workflow, you need to specify locations for input and output file(s). To do this, select a corresponding task, so its' parameters appear in Property Inspector panel, and specify desired value(s) for "URL" parameter. Then you can launch the workflow with pressing Ctrl+R keys.
 
 workflow "Align sequences with MUSCLE"{
     read-msa {

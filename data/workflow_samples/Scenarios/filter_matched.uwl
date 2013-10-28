@@ -1,5 +1,5 @@
 #@UGENE_WORKFLOW
-#Using that scheme you can select (or reject) only those sequence that match any pattern you input.
+#Using this workflow you can select (or reject) only those sequence that match any pattern you input.
 #
 #To find sequences matching a pattern:
 #1. In Read Sequence element specify a list of sequences you need to filter

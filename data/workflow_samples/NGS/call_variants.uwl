@@ -1,5 +1,5 @@
 #@UGENE_WORKFLOW
-#Call variants for an input assembly and a reference sequence using SAMtools mpileup and bcftool
+#Call variants for an input assembly and a reference sequence using SAMtools mpileup and bcftool.
 
 
 

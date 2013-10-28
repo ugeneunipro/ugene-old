@@ -1,8 +1,8 @@
 #@UGENE_WORKFLOW
-#Converts multiple alignment file(s) of any format to ClustalW document(s). If source file is a sequence format (e.g. FASTA), all contained sequences are added to the result alignment. Yet no real alignment is performed, this particular shema illustrates pure data format conversion.
+#Converts multiple alignment file(s) of any format to ClustalW document(s). If source file is a sequence format (e.g. FASTA), all contained sequences are added to the result alignment. Yet no real alignment is performed, this particular workflow illustrates pure data format conversion.
 #
-#To get this schema working, you only need to select "Alignment Reader" task, so its' parameters appear in Property Inspector panel, and specify source file(s) at "URL" field.  Launch the schema with pressing Ctrl+R shortcut.
-#After running the schema, target clustal file will appear in the same folder as the source file, with the same name but different extension (".aln"). 
+#To get this workflow working, you only need to select "Alignment Reader" task, so its' parameters appear in Property Inspector panel, and specify source file(s) at "URL" field.  Launch the workflow with pressing Ctrl+R shortcut.
+#After running the workflow, target clustal file will appear in the same folder as the source file, with the same name but different extension (".aln"). 
 #If several input files were selected, several clustal files will be generated accordingly.
 #You can override the target file location by editing "URL" parameter of "Write ClustalW" task. 
 

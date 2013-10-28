@@ -1,5 +1,5 @@
 #@UGENE_WORKFLOW
-#Builds a new profile HMM from input alignment, calibrates the HMM and saves to a file. Then runs a test HMM search over sample sequence and saves test results to Genbank file.To run this schema, you need to specify appropriate locations for input/output files. This is achieved by selecting a task and editing interesting parameters in Property Inspector panel.Optionally, fine tune the build/search parameters as you see fit. Then schedule the workflow for execution by pressing CTRL+R shortcut. You can watch its" progress in a Task View of UGENE.
+#Builds a new profile HMM from input alignment, calibrates the HMM and saves to a file. Then runs a test HMM search over sample sequence and saves test results to Genbank file. To run this workflow, you need to specify appropriate locations for input/output files. This is achieved by selecting a task and editing interesting parameters in Property Inspector panel.Optionally, fine tune the build/search parameters as you see fit. Then schedule the workflow for execution by pressing CTRL+R shortcut. You can watch its" progress in a Task View of UGENE.
 
 workflow "Build HMM from alignment and test it"{
     read-sequence {

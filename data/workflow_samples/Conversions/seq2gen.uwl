@@ -1,8 +1,8 @@
 #@UGENE_WORKFLOW
 #Converts sequence file(s) of any format (including PDB, aligments etc) to Genbank document(s). If source format supports annotations, they are also saved as feature tables in target file. Sequence meta-information (accessions etc) is preserved as well.
 #
-#To get this schema working, you only need to select "Sequence Reader" task, so its' parameters appear in Property Inspector panel, and specify source file(s) at "URL" field.  Launch the schema with pressing Ctrl+R keys.
-#After running the schema, target genbank file will appear in the same folder as the source file, with the same name but different extension (".gb" by default). If several input files were selected, several output files will be generated.
+#To get this workflow working, you only need to select "Sequence Reader" task, so its' parameters appear in Property Inspector panel, and specify source file(s) at "URL" field.  Launch the workflow with pressing Ctrl+R keys.
+#After running the workflow, target genbank file will appear in the same folder as the source file, with the same name but different extension (".gb" by default). If several input files were selected, several output files will be generated.
 #You can override the target file location by editing "URL" parameter of "Write Genbank" task. In this case all data from different sources will be saved to the single location (unless you change "Accumulate objects" parameter, see related docs).
 
 workflow "Convert sequence to Genbank"{
