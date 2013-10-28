@@ -30,7 +30,7 @@ namespace GUITest_dna_assembly {
 
 GUI_TEST_CLASS_DEFINITION(test_0001) {
     AlignShortReadsFiller::Parameters parameters(
-        dataDir + "samples/fasta/",
+        dataDir + "samples/FASTA/",
         "human_T1.fa",
         testDir + "_common_data/scenarios/dna_assembly/",
         "shread.fa");

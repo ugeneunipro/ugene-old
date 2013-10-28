@@ -186,12 +186,12 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_2021_7);
     REGISTER_TEST(GUITest_regression_scenarios::test_2021_8);
     REGISTER_TEST(GUITest_regression_scenarios::test_2021_9);
-    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2026, "holding 'shift' does not work (at least on Windows)");
+    REGISTER_TEST_IGNORED_WINDOWS(GUITest_regression_scenarios::test_2026, "holding 'shift' does not work (at least on Windows)");
     REGISTER_TEST(GUITest_regression_scenarios::test_2030);
     REGISTER_TEST(GUITest_regression_scenarios::test_2032);
     REGISTER_TEST(GUITest_regression_scenarios::test_2070);
+    REGISTER_TEST_IGNORED_LINUX(GUITest_regression_scenarios::test_2089, "no forbidden folder characters on linux");
     REGISTER_TEST(GUITest_regression_scenarios::test_2077);
-    REGISTER_TEST(GUITest_regression_scenarios::test_2089);
     REGISTER_TEST(GUITest_regression_scenarios::test_2100_1);
     REGISTER_TEST(GUITest_regression_scenarios::test_2100_2);
     REGISTER_TEST(GUITest_regression_scenarios::test_2100_3);
@@ -242,7 +242,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_project::test_0020);
     REGISTER_TEST(GUITest_common_scenarios_project::test_0021);
     REGISTER_TEST(GUITest_common_scenarios_project::test_0023);
-    REGISTER_TEST_IGNORED(GUITest_common_scenarios_project::test_0025, "https://ugene.unipro.ru/tracker/browse/UGENE-1618");
+    REGISTER_TEST(GUITest_common_scenarios_project::test_0025);
     REGISTER_TEST(GUITest_common_scenarios_project::test_0026);
     REGISTER_TEST(GUITest_common_scenarios_project::test_0028);
     REGISTER_TEST(GUITest_common_scenarios_project::test_0030);
@@ -314,7 +314,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_sequence_edit::test_0003);
     REGISTER_TEST(GUITest_common_scenarios_sequence_edit::test_0004);
     REGISTER_TEST(GUITest_common_scenarios_sequence_edit::test_0005);
-    REGISTER_TEST_IGNORED(GUITest_common_scenarios_sequence_edit::test_0006,"https://ugene.unipro.ru/tracker/browse/UGENE-1868");
+    REGISTER_TEST(GUITest_common_scenarios_sequence_edit::test_0006);
     REGISTER_TEST(GUITest_common_scenarios_sequence_edit::test_0007);
     REGISTER_TEST(GUITest_common_scenarios_sequence_edit::test_0008);
     REGISTER_TEST(GUITest_common_scenarios_sequence_edit::test_0009);
@@ -812,7 +812,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 /////////////////////////////////////////////////////////////////////////
 // Common scenarios/smith_waterman_dialog
 /////////////////////////////////////////////////////////////////////////
-    REGISTER_TEST_IGNORED(GUITest_common_scenarios_sw_dialog::test_0001,"https://ugene.unipro.ru/tracker/browse/UGENE-1957");
+    REGISTER_TEST(GUITest_common_scenarios_sw_dialog::test_0001);
     REGISTER_TEST(GUITest_common_scenarios_sw_dialog::test_0002);
 
 /////////////////////////////////////////////////////////////////////////
@@ -887,7 +887,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 /////////////////////////////////////////////////////////////////////////
 // Common scenarios/Workflow designer
 /////////////////////////////////////////////////////////////////////////
-    REGISTER_TEST_IGNORED(GUITest_common_scenarios_workflow_designer::test_0001,"https://ugene.unipro.ru/tracker/browse/UGENE-1820");
+    REGISTER_TEST_IGNORED(GUITest_common_scenarios_workflow_designer::test_0001,"out of date");
     REGISTER_TEST_IGNORED_WINDOWS(GUITest_common_scenarios_workflow_designer::test_0002,"no such scheme on windows");
     REGISTER_TEST_IGNORED_WINDOWS(GUITest_common_scenarios_workflow_designer::test_0002_1,"no such scheme on windows");
     REGISTER_TEST_IGNORED_WINDOWS(GUITest_common_scenarios_workflow_designer::test_0003,"no such scheme on windows");
@@ -972,7 +972,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_undo_redo::test_0011);
     REGISTER_TEST(GUITest_common_scenarios_undo_redo::test_0011_1);
 
-    REGISTER_TEST_IGNORED(GUITest_common_scenarios_undo_redo::test_0012,"https://ugene.unipro.ru/tracker/browse/UGENE-1679");
+    REGISTER_TEST(GUITest_common_scenarios_undo_redo::test_0012);
 }
 
 void GUITestBasePlugin::registerAdditionalChecks(GUITestBase *guiTestBase) {

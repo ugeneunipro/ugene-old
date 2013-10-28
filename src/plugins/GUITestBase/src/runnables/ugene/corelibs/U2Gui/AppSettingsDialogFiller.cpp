@@ -79,6 +79,8 @@ void NewColorSchemeCreator::run(){
 
     GTUtilsDialog::waitForDialog(os, new CreateAlignmentColorSchemeDialogFiller(os, schemeName, al));
     GTWidget::click(os, addSchemaButton);
+
+    GTWidget::click(os,GTWidget::findWidget(os,"okButton"));
 }
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME
@@ -90,19 +92,20 @@ void CreateAlignmentColorSchemeDialogFiller::run(){
     QWidget* dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog, "activeModalWidget is NULL");
 
-    QLineEdit* schemeNameLine = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "schemeName"));
+    QWidget* w = GTWidget::findWidget(os, "schemeName",dialog);
+    QLineEdit* schemeNameLine = qobject_cast<QLineEdit*>(w);
     GT_CHECK(schemeNameLine, "schemeName lineEdit not found ");
 
     GTLineEdit::setText(os,schemeNameLine, schemeName);
 
-    QComboBox *alphabetComboBox = qobject_cast<QComboBox*>(GTWidget::findWidget(os,"alphabetComboBox"));
+    QComboBox *alphabetComboBox = qobject_cast<QComboBox*>(GTWidget::findWidget(os,"alphabetComboBox",dialog));
     GT_CHECK(alphabetComboBox, "alphabetComboBox lineEdit not found ");
 
     GTComboBox::setCurrentIndex(os, alphabetComboBox, al);
     GTGlobals::sleep( 500 );
 
     GTUtilsDialog::waitForDialog(os, new ColorSchemeDialogFiller(os));
-    GTWidget::click(os, GTWidget::findWidget(os, "createButton"));
+    GTWidget::click(os, GTWidget::findWidget(os, "createButton",dialog));
 }
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME
