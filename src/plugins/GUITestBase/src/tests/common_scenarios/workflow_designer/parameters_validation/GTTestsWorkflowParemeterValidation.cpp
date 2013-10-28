@@ -43,6 +43,7 @@ namespace U2 {
 namespace GUITest_common_scenarios_workflow_parameters_validation {
 
 GUI_TEST_CLASS_DEFINITION(test_0001){
+    GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
     // 1. Open WD sample "Align Sequences with MUSCLE
     QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
     GTMenu::clickMenuItem(os, menu, QStringList() << "Workflow Designer");
@@ -100,7 +101,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001){
 
 GUI_TEST_CLASS_DEFINITION( test_0002 ) {
 //    Workflow dataset input directory validation
-
+    GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
 //    1. Open WD sample "Align Sequences with MUSCLE"
     QMenu* menu = GTMenu::showMainMenu(os, MWMENU_TOOLS);
     GTMenu::clickMenuItem(os, menu, QStringList() << "Workflow Designer");
@@ -130,7 +131,7 @@ GUI_TEST_CLASS_DEFINITION( test_0002 ) {
     QPoint readAlignmentCenter = GTUtilsWorkflowDesigner::getItemCenter(os, "Read alignment");
     GTMouseDriver::moveTo(os, readAlignmentCenter);
     GTMouseDriver::click(os);
-    GTUtilsWorkflowDesigner::setDatasetInputFolder(os, outputDir.absolutePath());
+    GTUtilsWorkflowDesigner::setDatasetInputFolder(os, outputDir.path());
     GTGlobals::sleep(2000);
     GTWidget::click(os, activeWindow);
 
@@ -151,7 +152,7 @@ GUI_TEST_CLASS_DEFINITION( test_0002 ) {
 
 GUI_TEST_CLASS_DEFINITION( test_0003 ) {
     //1. Create the following workflow { Read Sequence -> Find Pattern -> Write Sequence }
-    //GTUtilsDialog::waitForDialog( os, new StartupDialogFiller( os ) );
+    GTUtilsDialog::waitForDialog( os, new StartupDialogFiller( os ) );
 
     QMenu *menu=GTMenu::showMainMenu( os, MWMENU_TOOLS );
     GTMenu::clickMenuItem( os, menu, QStringList( ) << "Workflow Designer" );
@@ -206,8 +207,9 @@ GUI_TEST_CLASS_DEFINITION( test_0003 ) {
 //TODO: do not use qt_ntfs_permission_lookup here.I'm serious.
 GUI_TEST_CLASS_DEFINITION(test_0005){
     GTLogTracer l;
-    QDir* d = new QDir(testDir + "_common_data/scenarios/sandbox");
-    bool b = d->mkdir("permDir");
+    QDir d(testDir + "_common_data/scenarios/sandbox/permDir");
+    bool sucsess = d.mkpath(d.absolutePath());
+    CHECK_SET_ERR(sucsess,QString("Can't create a new directory: '%1'").arg(d.absolutePath()));
     GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os, true, testDir + "_common_data/scenarios/sandbox/permDir"));
     // 1. Open WD sample "Align Sequences with MUSCLE
     QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
@@ -248,6 +250,12 @@ GUI_TEST_CLASS_DEFINITION(test_0005){
     GTGlobals::sleep(2000);
 
     // Expected state: The "File not found" error has appeared in the "Error list"
+    p |= QFile::WriteOwner;
+    p |= QFile::WriteUser;
+    p |= QFile::WriteGroup;
+    p |= QFile::WriteOther;
+    res =  dir.setPermissions(p);
+    CHECK_SET_ERR(res, "Fucking test");
     GTUtilsWorkflowDesigner::checkErrorList(os, "Read alignment: File not found:");
     CHECK_SET_ERR(l.hasError(), "There are no error messages about write access in WD directory");
     }

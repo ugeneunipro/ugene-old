@@ -155,7 +155,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001){
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0002){
-    //GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
+    GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
     //GTUtilsDialog::waitForDialog(os,new RPackageDialorFiller(os));
     //1. Start UGENE. Open workflow schema file from data\cmdline\pfm-build.uws
     GTFileDialog::openFile(os,dataDir + "cmdline/","pwm-build.uwl");
@@ -315,8 +315,7 @@ GUI_TEST_CLASS_DEFINITION(test_0006_1){
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0007){
-    GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
-    //GTUtilsDialog::waitForDialog(os,new RPackageDialorFiller(os));
+    //GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
 //1. Do menu {Settings->Prefrences}
     GTUtilsDialog::waitForDialog(os,new AppSettingsDialogFiller(os,255,0,0));
     QMenu* menu=GTMenu::showMainMenu(os, MWMENU_SETTINGS);

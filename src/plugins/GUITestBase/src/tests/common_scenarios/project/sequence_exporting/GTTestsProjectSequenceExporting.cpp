@@ -38,6 +38,7 @@
 #include "GTUtilsMdi.h"
 #include "GTUtilsSequenceView.h"
 #include "runnables/qt/PopupChooser.h"
+#include "runnables/qt/MessageBoxFiller.h"
 #include "runnables/ugene/plugins/dna_export/ExportSequencesDialogFiller.h"
 #include "runnables/ugene/plugins/dna_export/ExportAnnotationsDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/CreateDocumentFromTextDialogFiller.h"
@@ -298,6 +299,16 @@ GUI_TEST_CLASS_DEFINITION(test_0007) {
     GTMouseDriver::click(os, Qt::RightButton);
 
     GTGlobals::sleep();
+
+    GTWidget::click(os, GTUtilsProjectTreeView::getTreeWidget(os));
+    GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(100);
+
+    //GTUtilsDialog::waitForDialog(os, new SaveProjectDialogFiller(os, QDialogButtonBox::No));
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::NoToAll));
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+
+    GTGlobals::sleep(500);
 }
 
 }
