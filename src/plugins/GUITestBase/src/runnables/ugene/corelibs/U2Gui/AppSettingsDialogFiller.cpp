@@ -74,6 +74,16 @@ void NewColorSchemeCreator::run(){
     QWidget* dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog, "activeModalWidget is NULL");
 
+    QTreeWidget* tree = qobject_cast<QTreeWidget*>(GTWidget::findWidget(os,"tree"));
+    GT_CHECK(tree, "tree widger not found");
+
+    QList<QTreeWidgetItem*> items = GTTreeWidget::getItems(tree->invisibleRootItem());
+    foreach (QTreeWidgetItem* item,items){
+        if(item->text(0)=="  Alignment Color Scheme"){
+            GTMouseDriver::moveTo(os,GTTreeWidget::getItemCenter(os,item));
+            GTMouseDriver::click(os);
+        }
+    }
     QWidget* addSchemaButton = GTWidget::findWidget(os, "addSchemaButton");
     GT_CHECK (addSchemaButton, "addSchemaButton not found");
 
