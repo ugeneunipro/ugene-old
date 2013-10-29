@@ -253,8 +253,6 @@ private slots:
     void sl_convertMessages2Documents(const Workflow::Link *bus, const QString &messageType,
         int messageNumber);
 
-    void sl_rInstallationStateChanged();
-
 protected:
     bool onCloseEvent();
     virtual void paintEvent(QPaintEvent *event);
@@ -287,7 +285,6 @@ private:
     void loadSceneFromObject();
     void loadUiSettings();
     void checkOutputDir();
-    void checkRPackage();
 
     // dashboards
     void setupActions();

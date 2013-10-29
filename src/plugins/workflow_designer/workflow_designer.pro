@@ -12,7 +12,6 @@ HEADERS += src/ActorCfgModel.h \
            src/InvestigationDataModel.h \
            src/ItemViewStyle.h \
            src/PortAliasesConfigurationDialog.h \
-           src/RPackageInstallerDialog.h \
            src/SceneSerializer.h \
            src/SchemaAliasesConfigurationDialogImpl.h \
            src/StartupDialog.h \
@@ -85,7 +84,6 @@ FORMS += src/ui/ChooseItemDialog.ui \
          src/ui/ImportSchemaDialog.ui \
          src/ui/PaletteWidget.ui \
          src/ui/PortAliasesConfigurationDialog.ui \
-         src/ui/RPackageInstallerDialog.ui \
          src/ui/SchemaAliasesConfigurationDialog.ui \
          src/ui/StartupDialog.ui \
          src/ui/WorkflowEditorWidget.ui \
@@ -102,7 +100,6 @@ SOURCES += src/ActorCfgModel.cpp \
            src/InvestigationDataModel.cpp \
            src/ItemViewStyle.cpp \
            src/PortAliasesConfigurationDialog.cpp \
-           src/RPackageInstallerDialog.cpp \
            src/SceneSerializer.cpp \
            src/SchemaAliasesConfigurationDialogImpl.cpp \
            src/StartupDialog.cpp \
