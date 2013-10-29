@@ -222,6 +222,8 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_2224_flow);
     REGISTER_TEST(GUITest_regression_scenarios::test_2225_1);
     REGISTER_TEST(GUITest_regression_scenarios::test_2225_2);
+    REGISTER_TEST(GUITest_regression_scenarios::test_2267_1);
+    REGISTER_TEST(GUITest_regression_scenarios::test_2267_2);
 
 //////////////////////////////////////////////////////////////////////////
 // Common scenarios/project/

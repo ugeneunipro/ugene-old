@@ -26,26 +26,29 @@
 
 namespace U2 {
 
-    class EditQualifierFiller : public Filler {
-    public:
-        EditQualifierFiller(U2OpStatus &_os, const QString &_qualifierName, const QString &_valueName, GTGlobals::UseMethod method = GTGlobals::UseMouse)
-            :Filler(_os, "EditQualifierDialog"), qualifierName(_qualifierName), valueName(_valueName), useMethod(method){}
-        virtual void run();
-    private:
-        QString qualifierName;
-        QString valueName;
-        GTGlobals::UseMethod useMethod;
-    };
+class EditQualifierFiller : public Filler {
+public:
+    EditQualifierFiller(U2OpStatus &_os, const QString &_qualifierName, const QString &_valueName, GTGlobals::UseMethod method = GTGlobals::UseMouse, bool _noCheck = false, bool _closeErrorMessageBox = false)
+        :Filler(_os, "EditQualifierDialog"), qualifierName(_qualifierName), valueName(_valueName), useMethod(method), noCheck(_noCheck), closeErrormessageBox(_closeErrorMessageBox){}
+    virtual void run();
+private:
+    QString qualifierName;
+    QString valueName;
+    GTGlobals::UseMethod useMethod;
+    bool noCheck;
+    bool closeErrormessageBox;
+};
 
-    class RenameQualifierFiller : public Filler {
-    public:
-        RenameQualifierFiller(U2OpStatus &_os, const QString &_newName, GTGlobals::UseMethod method = GTGlobals::UseMouse)
-            :Filler(_os, ""), newName(_newName), useMethod(method){}
-        virtual void run();
-    private:
-        QString newName;
-        GTGlobals::UseMethod useMethod;
-        };
+class RenameQualifierFiller : public Filler {
+public:
+    RenameQualifierFiller(U2OpStatus &_os, const QString &_newName, GTGlobals::UseMethod method = GTGlobals::UseMouse)
+        :Filler(_os, ""), newName(_newName), useMethod(method){}
+    virtual void run();
+private:
+    QString newName;
+    GTGlobals::UseMethod useMethod;
+};
+
 }
 
 #endif

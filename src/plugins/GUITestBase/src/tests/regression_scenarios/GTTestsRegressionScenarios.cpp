@@ -55,6 +55,8 @@
 #include "runnables/ugene/corelibs/U2Gui/AlignShortReadsDialogFiller.h"
 #include "runnables/qt/MessageBoxFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/util/ProjectTreeItemSelectorDialogBaseFiller.h"
+#include "runnables/ugene/corelibs/U2Gui/CreateAnnotationWidgetFiller.h"
+#include "runnables/ugene/corelibs/U2Gui/EditQualifierDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/AppSettingsDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/DownloadRemoteFileDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/ConvertAssemblyToSAMDialogFiller.h"
@@ -2695,6 +2697,51 @@ GUI_TEST_CLASS_DEFINITION( test_2225_2 ){
 
     GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), ACTION_PROJECTSUPPORT__SEARCH_GENBANK, GTGlobals::UseKey);
     GTGlobals::sleep();
+}
+
+GUI_TEST_CLASS_DEFINITION( test_2267_1 ){
+//     1. Open human_T1.fa
+// 
+    GTFileDialog::openFile(os, dataDir+"samples/FASTA/", "human_T1.fa");
+
+//     2. Select random subsequence, press Ctrl+N, press Enter
+// 
+    GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, true, "DDD", "D", "10..16"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ADV_MENU_ADD" << "create_annotation_action"));
+    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
+    GTGlobals::sleep();
+//     3. Press Insert, press '1' key until there is no new symbols in lineedit
+// 
+    Runnable *filler = new EditQualifierFiller(os, "111111111111111111111111111111111111111111111111111111111111111111111111111111111", "val", GTGlobals::UseMouse, true);
+    GTUtilsDialog::waitForDialog(os, filler);
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_ADD << "add_qualifier_action"));
+    GTMouseDriver::moveTo(os, GTUtilsAnnotationsTreeView::getItemCenter(os, "D"));
+    GTMouseDriver::click(os, Qt::RightButton);
+//     4. Press Enter
+//     Expected state: Edit qualifier window closes
+}
+
+GUI_TEST_CLASS_DEFINITION( test_2267_2 ){
+//     1. Open human_T1.fa
+// 
+    GTFileDialog::openFile(os, dataDir+"samples/FASTA/", "human_T1.fa");
+//     2. Select random subsequence, press Ctrl+N, press Enter
+// 
+    GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, true, "DDD", "D", "10..16"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ADV_MENU_ADD" << "create_annotation_action"));
+    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
+    GTGlobals::sleep();
+//     3. Press Insert, set the name of qualifier: '))()((_'
+// 
+//     4. Press Enter
+//     Expected state: Error message appears once
+    Runnable *filler = new EditQualifierFiller(os, "))()((_", "val", GTGlobals::UseMouse, true, true);
+    GTUtilsDialog::waitForDialog(os, filler);
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_ADD << "add_qualifier_action"));
+    GTMouseDriver::moveTo(os, GTUtilsAnnotationsTreeView::getItemCenter(os, "D"));
+    GTMouseDriver::click(os, Qt::RightButton);
 }
 
 } // GUITest_regression_scenarios namespace

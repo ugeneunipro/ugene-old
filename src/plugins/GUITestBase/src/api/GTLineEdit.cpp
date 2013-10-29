@@ -31,7 +31,7 @@ namespace U2 {
 #define GT_CLASS_NAME "GTLineEdit"
 
 #define GT_METHOD_NAME ""
-void GTLineEdit::setText(U2OpStatus& os, QLineEdit* lineEdit, const QString &str) {
+void GTLineEdit::setText(U2OpStatus& os, QLineEdit* lineEdit, const QString &str, bool noCheck /*= false*/) {
 
     GT_CHECK(lineEdit != NULL, "lineEdit is NULL");
     GTWidget::setFocus(os, lineEdit);
@@ -44,6 +44,10 @@ void GTLineEdit::setText(U2OpStatus& os, QLineEdit* lineEdit, const QString &str
 
     GTKeyboardDriver::keySequence(os, str);
     GTGlobals::sleep(500);
+
+    if(noCheck){
+        return;
+    }
 
     QString s = lineEdit->text();
     GT_CHECK(s == str, "Can't set text, set text differs from a given string");

@@ -28,6 +28,7 @@
 #include "api/GTCheckBox.h"
 #include "api/GTKeyboardDriver.h"
 #include "api/GTKeyboardUtils.h"
+#include "runnables/qt/MessageBoxFiller.h"
 
 #include <QtCore/QDir>
 #include <QtGui/QApplication>
@@ -47,15 +48,30 @@ void EditQualifierFiller::run()
 
     QLineEdit *nameEdit = dialog->findChild<QLineEdit*>("nameEdit");
     GT_CHECK(nameEdit != NULL, "line edit not found");
-    GTLineEdit::setText(os, nameEdit, qualifierName);
+    GTLineEdit::setText(os, nameEdit, qualifierName, noCheck);
 
     QTextEdit *valueEdit = dialog->findChild<QTextEdit*>("valueEdit");
     GT_CHECK(valueEdit != NULL, "value line edit not found");
     GTTextEdit::setText(os, valueEdit, valueName);
 
     QPushButton* okButton = dialog->findChild<QPushButton*>("okButton");
-    GT_CHECK(okButton != NULL, "okButton is NULL");
-    GTWidget::click(os, okButton);
+    GT_CHECK(okButton != NULL, "okButton is NULL"); 
+
+    //GTWidget::click(os, okButton);
+    
+    if(closeErrormessageBox){
+        GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok));
+        GTGlobals::sleep();
+        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["Enter"]);
+        GTGlobals::sleep();
+
+        GTLineEdit::setText(os, nameEdit, "nice_name", noCheck);
+        GTTextEdit::setText(os, valueEdit, "nice_val");
+        GTWidget::click(os, okButton);
+    }else{
+        GTWidget::click(os, okButton);
+    }
+    
 }
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME
@@ -63,7 +79,7 @@ void EditQualifierFiller::run()
 #define GT_CLASS_NAME "GTUtilsDialog::RenameQualifierFiller"
 #define GT_METHOD_NAME "run"
 void RenameQualifierFiller::run()
-    {
+{
     QWidget *dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog != NULL, "dialog not found");
 
@@ -73,7 +89,7 @@ void RenameQualifierFiller::run()
 
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["Enter"]);
     GTGlobals::sleep();
-    }
+}
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME
 
