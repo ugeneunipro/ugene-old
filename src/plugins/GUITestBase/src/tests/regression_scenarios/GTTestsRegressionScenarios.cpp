@@ -1374,6 +1374,37 @@ GUI_TEST_CLASS_DEFINITION( test_2006 )
     CHECK_SET_ERR( !redo->isEnabled( ), "Redo button is unexpectedly enabled" );
 }
 
+GUI_TEST_CLASS_DEFINITION( test_2007 )
+{
+    // 1. Open "_common_data/scenarios/msa/ma_empty_line.aln (and save it to string)
+    GTFileDialog::openFile( os, testDir + "_common_data/scenarios/msa", "ma_empty_line.aln" );
+    GTUtilsMSAEditorSequenceArea::selectArea( os, QPoint( 0, 0 ), QPoint( 11, 4 ) );
+    GTKeyboardDriver::keyClick( os, 'c', GTKeyboardDriver::key["ctrl"] );
+    GTGlobals::sleep(200);
+    const QString initialMsaContent = GTClipboard::text( os );
+    GTKeyboardDriver::keyClick( os, GTKeyboardDriver::key["esc"] );
+
+    // 2. Select the fourth column of the second, third and fourth lines
+    GTUtilsMSAEditorSequenceArea::selectArea( os, QPoint( 3, 1 ), QPoint( 3, 3 ) );
+    GTGlobals::sleep(200);
+
+    // 3. Drag it to the left.
+    const QPoint mouseDragPosition( 3, 2 );
+    GTUtilsMSAEditorSequenceArea::moveTo( os, mouseDragPosition );
+    GTMouseDriver::press( os );
+    GTGlobals::sleep( 200 );
+    GTUtilsMSAEditorSequenceArea::moveTo( os, mouseDragPosition - QPoint( 1, 0 ) );
+    GTMouseDriver::release( os );
+    GTGlobals::sleep( 200 );
+
+    // Expected state: nothing happens
+    GTUtilsMSAEditorSequenceArea::selectArea( os, QPoint( 0, 0 ), QPoint( 11, 4 ) );
+    GTKeyboardDriver::keyClick( os, 'c', GTKeyboardDriver::key["ctrl"] );
+    GTGlobals::sleep(200);
+    const QString finalMsaContent = GTClipboard::text( os );
+    CHECK_SET_ERR( initialMsaContent == finalMsaContent, "MSA has changed unexpectedly!" );
+}
+
 GUI_TEST_CLASS_DEFINITION( test_2021_1 )
 {
     // 1. Open document "ma.aln" and save it to string
