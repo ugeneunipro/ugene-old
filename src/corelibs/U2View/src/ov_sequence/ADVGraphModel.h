@@ -101,7 +101,7 @@ public:
     const GSequenceGraphWindowData& getWindowData() {return wdata;}
     const GSequenceGraphMinMaxCutOffData& getCutOffData() {return commdata;}
     const ColorMap& getColors() {return lineColors;}
-	void setColors(const ColorMap& colorMap) {lineColors = colorMap;}
+    void setColors(const ColorMap& colorMap) {lineColors = colorMap;}
 
     static bool isUnknownValue(float value) {return qFuzzyCompare(value, UNKNOWN_VAL);}
 

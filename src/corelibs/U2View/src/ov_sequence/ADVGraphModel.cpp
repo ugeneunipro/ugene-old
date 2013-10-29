@@ -204,9 +204,9 @@ void GSequenceGraphDrawer::draw(QPainter& p, QList<GSequenceGraphData*> graphs, 
 void GSequenceGraphDrawer::sl_frameRangeChanged(GSequenceGraphData *graph, const QRect &rect) {
     foreach(GraphLabel *label, graph->graphLabels.getLabels()) {
         int res = updateStaticLabels(graph, label, rect);
-		if (res == 0) {
+        if (res == 0) {
             label->show();
-		}
+        }
     }
 }
 void GSequenceGraphDrawer::sl_labelAdded(GSequenceGraphData *graph, GraphLabel *label, const QRect &rect) {
@@ -220,15 +220,15 @@ void  GSequenceGraphDrawer::sl_labelMoved(GSequenceGraphData *graph, GraphLabel 
 void  GSequenceGraphDrawer::sl_labelsColorChange(GSequenceGraphData *graph) {
     QColor color;
 
-	if  (lineColors.contains(graph->graphName)) {
+    if  (lineColors.contains(graph->graphName)) {
         color = lineColors.value(graph->graphName);
-	} else {
+    } else {
         color = lineColors.value(DEFAULT_COLOR);
-	}
+    }
 
-	foreach(GraphLabel *label, graph->graphLabels.getLabels()) {
+    foreach(GraphLabel *label, graph->graphLabels.getLabels()) {
         label->setColor(color, color);
-	}
+    }
 
     graph->graphLabels.getMovingLabel().setColor(color, Qt::red);
 }
@@ -420,9 +420,9 @@ void GSequenceGraphDrawer::selectExtremumPoints(GSequenceGraphData *graph, const
     int posOfMax, posOfMin;
 
     PairVector points;
-	if(sequenceLength <= 0) {
+    if(sequenceLength <= 0) {
         return;
-	}
+    }
     calculatePoints(graph, points, globalMin, globalMax, sequenceLength);
 
     int pos = startPos;
@@ -461,29 +461,29 @@ int GSequenceGraphDrawer::updateStaticLabels(GSequenceGraphData *graph, GraphLab
 {
     int nPoints = rect.width();
     PairVector points;
-	if (nPoints <= 0) {
+    if (nPoints <= 0) {
         return 1;
-	}
+    }
     calculatePoints(graph, points, globalMin, globalMax, nPoints);
 
     QColor color;
-	if (lineColors.contains(graph->graphName)) {
+    if (lineColors.contains(graph->graphName)) {
         color = lineColors.value(graph->graphName);
-	} else {
+    } else {
         color = lineColors.value(DEFAULT_COLOR);
-	}
+    }
     label->setColor(color, color);
 
     qint64 sequenceLength = view->getSequenceLength();
     int position = label->getPosition() * nPoints / sequenceLength;
-	if (position < 0 || position >= nPoints) {
+    if (position < 0 || position >= nPoints) {
         return 1;
-	}
+    }
 
     int errorCode = calculateLabelData(rect, points, label);
-	if (errorCode!=0) {
+    if (errorCode!=0) {
         return errorCode;
-	}
+    }
 
     QRectF boundingRect = label->getHintRect();
 
@@ -494,21 +494,21 @@ int GSequenceGraphDrawer::updateStaticLabels(GSequenceGraphData *graph, GraphLab
     int x = label->getCoord().x();
     int y = label->getCoord().y();
 
-	if (x + width/2 - 1 > nPoints - 2) {
+    if (x + width/2 - 1 > nPoints - 2) {
         x = nPoints - width - 2;
-	} else {
+    } else {
         x = (x > width/2 + 1) ? (x - width/2 - 1) : 2;
-	}
+    }
 
-	if (rect.top() > y - label->getSize() - height) {
+    if (rect.top() > y - label->getSize() - height) {
         label->setHintRect(QRect(x, y + label->getSize() + 1, width, height));
-	} else {
+    } else {
         label->setHintRect(QRect(x, y - label->getSize() - height, width, height));
-	}
+    }
 
-	if (label->attachedLabel != NULL) {
+    if (label->attachedLabel != NULL) {
         calculatePositionOfLabel(label, nPoints);
-	}
+    }
 
     return 0;
 }
@@ -522,11 +522,11 @@ void GSequenceGraphDrawer::calculatePositionOfLabel(GraphLabel *label, int nPoin
         attachedLabel = attachedLabel->attachedLabel;
     }
     int x = label->getCoord().x();
-	if (x + groupWidth/2 - 1 > nPoints) {
+    if (x + groupWidth/2 - 1 > nPoints) {
         x = nPoints - groupWidth/2;
-	} else {
+    } else {
         x = (x > groupWidth/2) ? x : groupWidth/2;
-	}
+    }
 
     attachedLabel = label;
     while(NULL != attachedLabel) {
@@ -542,9 +542,9 @@ void GSequenceGraphDrawer::calculatePositionOfLabel(GraphLabel *label, int nPoin
 void GSequenceGraphDrawer::updateMovingLabels(GSequenceGraphData *graph, GraphLabel *label, const QRect &rect)
 {
     int errorCode = updateStaticLabels(graph, label, rect);
-	if (errorCode != 0) {
+    if (errorCode != 0) {
         return;
-	}
+    }
     QRect textRect = label->getHintRect();
     int height = textRect.height();
     if(mLabelCoordY + height + label->getSize() > label->getCoord().y()) {
@@ -563,9 +563,9 @@ int GSequenceGraphDrawer::calculateLabelData(const QRect &rect, const PairVector
     int graphHeight = rect.bottom() - rect.top() - 2;
     const U2Region& visibleRange = view->getVisibleRange();
     int xcoordInRect;
-	if (visibleRange.contains(label->getPosition())) {
+    if (visibleRange.contains(label->getPosition())) {
         xcoordInRect = qRound((label->getPosition() - visibleRange.startPos) * rect.width() / visibleRange.length);
-	} else {
+    } else {
         label->hide();
         return 1;
     }
@@ -575,9 +575,9 @@ int GSequenceGraphDrawer::calculateLabelData(const QRect &rect, const PairVector
     }
     int nPoints = rect.width();
     float value = calculateLabelValue(nPoints, points, label, xcoordInRect);
-	if (2 * globalMax == value) {
+    if (2 * globalMax == value) {
         return 1;
-	}
+    }
     int ycoordInRect;
     QString text;
     float heightScalingFactor = (globalMin == globalMax) ? 1 : graphHeight / (globalMax - globalMin);
@@ -585,11 +585,11 @@ int GSequenceGraphDrawer::calculateLabelData(const QRect &rect, const PairVector
         float maxValue = points.firstPoints.at(xcoordInRect);
         float minValue = points.secondPoints.at(xcoordInRect);
         int pos = qRound(label->getPosition());
-		if(maxValue != minValue) {
+        if(maxValue != minValue) {
             text = GSequenceGraphView::tr("[%2, max:%3, min:%4]").arg(QString::number(pos)).arg(QString::number(maxValue)).arg(QString::number(minValue));
-		} else {
+        } else {
             text = GSequenceGraphView::tr("[%2, %3]").arg(QString::number(pos)).arg(QString::number(maxValue));
-		}
+        }
     
         float avgValue = (maxValue + minValue) / 2;
         label->setValue(avgValue);
@@ -630,9 +630,9 @@ float GSequenceGraphDrawer::calculateLabelValue(int nPoints, const PairVector &p
         }
         nextValue = points.firstPoints.at(nextX);
     }
-	if (prevX != nextX) {
+    if (prevX != nextX) {
         value = prevValue + (nextValue-prevValue)*(xcoordInRect - prevX)/(nextX-prevX);
-	}
+    }
 
     const int comparisonWindowSize = 50;
 
@@ -640,11 +640,11 @@ float GSequenceGraphDrawer::calculateLabelValue(int nPoints, const PairVector &p
     startPos = qMin(startPos, nPoints - comparisonWindowSize/2 - 1);
     U2Region comparisonWindow(startPos, comparisonWindowSize/2);
     bool isExtremum = isExtremumPoint(nPoints, points, value, comparisonWindow);
-	if(true == isExtremum) {
+    if(true == isExtremum) {
         label->mark();
-	} else {
+    } else {
         label->unmark();
-	}
+    }
 
     return value;
 }
@@ -656,53 +656,53 @@ bool GSequenceGraphDrawer::isExtremumPoint(int npoints, const PairVector& points
     const QVector<float> &firstPoints = points.firstPoints;
     for(int x = comparisonWindow.startPos; counter <= length; x++)
     {
-		if (x >= npoints - 2) {
+        if (x >= npoints - 2) {
             break;
-		}
-		if (isUnknownValue(firstPoints.at(x))) {
+        }
+        if (isUnknownValue(firstPoints.at(x))) {
             continue;
-		}
+        }
         counter++;
         float comparedValue = firstPoints.at(x);
         if(true == qFuzzyCompare(value, comparedValue)) {
-			if(0 == compareRes) {
+            if(0 == compareRes) {
                 return false;
-			}
+            }
             compareRes = 0;
         } else {
             bool condition = value > comparedValue;
-			if((true == condition && compareRes == -1) || (false == condition && compareRes == 1)) {
+            if((true == condition && compareRes == -1) || (false == condition && compareRes == 1)) {
                 return false;
-			}
+            }
             compareRes = condition ? 1 : -1;
         }
     }
     counter = 0;
     for(int x = comparisonWindow.startPos; counter <= length; x--) {
-		if (x <= 0) {
+        if (x <= 0) {
             break;
-		}
-		if (isUnknownValue(firstPoints.at(x))) {
+        }
+        if (isUnknownValue(firstPoints.at(x))) {
             continue;
-		}
+        }
         counter++;
         float comparedValue = firstPoints.at(x);
         if (qFuzzyCompare(value, comparedValue)) {
-			if (compareRes == 0) {
+            if (compareRes == 0) {
                 return false;
-			}
+            }
             compareRes = 0;
         } else {
             bool condition = value > comparedValue;
-			if ((condition && compareRes == -1) || (!condition && compareRes == 1)) {
+            if ((condition && compareRes == -1) || (!condition && compareRes == 1)) {
                 return false;
-			}
+            }
             compareRes = condition ? 1 : -1;
         }
     }
-	if (compareRes == 0|| compareRes == -2) {
+    if (compareRes == 0|| compareRes == -2) {
         return false;
-	}
+    }
     return true;
 }
 

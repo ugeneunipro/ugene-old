@@ -43,8 +43,8 @@ public:
         : QObject(p), graphName(_name){}
 
     virtual QList<GSequenceGraphData*> createGraphs(GSequenceGraphView* v) = 0;
-	
-	virtual GSequenceGraphDrawer* getDrawer(GSequenceGraphView* v);
+    
+    virtual GSequenceGraphDrawer* getDrawer(GSequenceGraphView* v);
 
     virtual bool isEnabled(const U2SequenceObject* o) const  = 0;
 
