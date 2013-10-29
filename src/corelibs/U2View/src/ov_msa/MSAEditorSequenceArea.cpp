@@ -936,16 +936,8 @@ void MSAEditorSequenceArea::updateSelection() {
     int endPos = startPos + baseSelection.height();
 
     // convert selected rows indexes to indexes of selected collapsible items
-    int newStart = m->displayedRowsCount();
-    int newEnd = 0;
-    for(int i = startPos; i < endPos; i++) {
-        int rowPos = m->rowToMap(i);
-        if(rowPos < 0) {
-            continue;
-        }
-        newStart = qMin(newStart, rowPos);
-        newEnd = qMax(newEnd, rowPos + 1);
-    }
+    int newStart = m->rowToMap(startPos);
+    int newEnd = m->rowToMap(endPos);
 
     int selectionHeight = newEnd - newStart;
     // accounting of collapsing children items
@@ -1957,25 +1949,23 @@ U2Region MSAEditorSequenceArea::getSelectedRows() const {
 
     int startSeq = 0;
     int endSeq = 0;
+    
+    int startItemIdx = m->itemAt(startPos);
 
-    startSeq = m->mapToRow(startPos);
-    if(startSeq < 0) {
-        int startItemIdx = m->itemAt(startPos);
-        if (startItemIdx >= 0) {
-            const MSACollapsableItem& startItem = m->getItem(startItemIdx);
-            startSeq = startItem.row;
-        }
+    if (startItemIdx >= 0) {
+        const MSACollapsableItem& startItem = m->getItem(startItemIdx);
+        startSeq = startItem.row;
+    } else {
+        startSeq = m->mapToRow(startPos);
     }
 
-    endSeq = m->mapToRow(endPos) + 1;
-    int endItemIdx = m->itemAt(endPos) ;
+    int endItemIdx = m->itemAt(endPos);
+    
     if (endItemIdx >= 0) {
         const MSACollapsableItem& endItem = m->getItem(endItemIdx);
-        bool areChildrenItemsSelected = endItem.isCollapsed;
-        if(endSeq <= 0 || areChildrenItemsSelected) {
-            int collapsingChildrensNum = areChildrenItemsSelected ? endItem.numRows : 1;
-            endSeq = endItem.row + collapsingChildrensNum;
-        }
+        endSeq = endItem.row + endItem.numRows;
+    } else {
+        endSeq = m->mapToRow(endPos) + 1;
     }
 
     return U2Region(startSeq, endSeq - startSeq);
