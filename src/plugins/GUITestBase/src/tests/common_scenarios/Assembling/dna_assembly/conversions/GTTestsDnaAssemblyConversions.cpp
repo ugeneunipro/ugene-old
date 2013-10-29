@@ -77,7 +77,7 @@ GUI_TEST_CLASS_DEFINITION(test_0004) {
     CHECK_OP(os, );
     GTMenu::clickMenuItem(os, mainMenu, QStringList() << "Align to reference" << "Align short reads");
     CHECK_OP(os, );
-    GTGlobals::sleep(5000);
+    GTGlobals::sleep(1000);
 
     CHECK_SET_ERR(!l.hasError( ), "Error message expected in log");
     GTFile::check(os, "_common_data/e_coli/e_coli_1000.gff.fasta");
