@@ -19,6 +19,7 @@
  * MA 02110-1301, USA.
  */
 
+#include "OldUWL.h"
 #include "HRSchemaSerializer.h"
 #include "HRWizardSerializer.h"
 #include "Utils.h"
@@ -285,7 +286,7 @@ void Tokenizer::tokenizeLine(const QString & l, QTextStream & s) {
                 finishAtQuote = true;
             }
             continue;
-        } else if (ch == Constants::FUNCTION_START.at(0)) {
+        } else if (ch == OldConstants::MARKER_START.at(0)) {
             if (finishAtQuote) {
                 curToken.append(ch);
             } else {

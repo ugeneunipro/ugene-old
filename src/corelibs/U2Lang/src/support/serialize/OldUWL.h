@@ -19,30 +19,29 @@
  * MA 02110-1301, USA.
  */
 
-#include <U2Lang/Attribute.h>
-#include <U2Lang/Marker.h>
+#ifndef _U2_OLDUWL_H_
+#define _U2_OLDUWL_H_
 
-#ifndef _MARKER_ATTRIBUTE_H_
-#define _MARKER_ATTRIBUTE_H_
+#include "Tokenizer.h"
 
 namespace U2 {
+namespace Workflow {
+    class Actor;
+}
+namespace WorkflowSerialize {
 
-class U2LANG_EXPORT MarkerAttribute : public Attribute {
+class OldUWL {
 public:
-    MarkerAttribute(const Descriptor& d, const DataTypePtr type, bool required = false, const QVariant & defaultValue = QVariant());
-    virtual void setAttributeValue(const QVariant & newVal);
-    virtual const QVariant &getAttributePureValue() const;
-    virtual bool isDefaultValue() const;
-    virtual Attribute *clone();
-    virtual AttributeGroup getGroup();
-
-    QList<Marker*> & getMarkers();
-    bool contains(const QString &markerId) const;
-
-private:
-    QList<Marker*> markers;
+    static void parseMarkerDefinition(Tokenizer &tokenizer, QMap<QString, Workflow::Actor*> &actorMap);
+    static void parseOldAttributes(Workflow::Actor *proc, ParsedPairs &pairs);
 };
 
-} //U2
+class OldConstants {
+public:
+    static const QString MARKER_START;
+};
 
-#endif // _MARKER_ATTRIBUTE_H_
+} // WorkflowSerialize
+} // U2
+
+#endif // _U2_OLDUWL_H_

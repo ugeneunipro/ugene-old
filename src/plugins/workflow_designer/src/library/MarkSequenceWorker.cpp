@@ -42,8 +42,11 @@ namespace U2 {
 namespace LocalWorkflow {
 
 const QString MarkSequenceWorkerFactory::ACTOR_ID("mark-sequence");
-static const QString SEQ_TYPESET_ID("seq.content");
-static const QString MARKED_SEQ_TYPESET_ID("marker.seq.content");
+namespace {
+    const QString SEQ_TYPESET_ID("seq.content");
+    const QString MARKED_SEQ_TYPESET_ID("marker.seq.content");
+    const QString MARKER_ATTR_ID("marker");
+}
 
 /*******************************
  * MarkSequenceWorker
@@ -75,11 +78,9 @@ Task *MarkSequenceWorker::tick() {
         DNASequence seq = seqObj->getWholeSequence();
         QList<SharedAnnotationData> anns = QVariantUtils::var2ftl(data.value(BaseSlots::ANNOTATION_TABLE_SLOT().getId()).toList());
 
-        MarkerAttribute *attr = dynamic_cast<MarkerAttribute*>(actor->getParameter("markers"));
+        MarkerAttribute *attr = dynamic_cast<MarkerAttribute*>(actor->getParameter(MARKER_ATTR_ID));
         QVariantMap m;
-        foreach (QString markerId, attr->getMarkers().keys()) {
-            Marker *marker = attr->getMarkers().value(markerId);
-
+        foreach (Marker *marker, attr->getMarkers()) {
             QString res;
             if (SEQUENCE == marker->getGroup()) {
                 res = marker->getMarkingResult(qVariantFromValue<DNASequence>(seq));
@@ -130,7 +131,8 @@ void MarkSequenceWorkerFactory::init() {
         MarkSequenceWorker::tr("Sequence Marker"),
         MarkSequenceWorker::tr("Adds one or several marks to the input sequence depending on the sequence properties. "
                                "Use this element, for example, in conjunction with the Filter element."));
-    attrs << new MarkerAttribute(Descriptor("markers", MarkSequenceWorker::tr("Markers"), MarkSequenceWorker::tr("Markers.")), BaseTypes::STRING_TYPE(), false);
+    Descriptor markerDesc(MARKER_ATTR_ID, MarkSequenceWorker::tr("Markers"), MarkSequenceWorker::tr("Markers."));
+    attrs << new MarkerAttribute(markerDesc, BaseTypes::STRING_TYPE(), false);
 
     ActorPrototype *proto = new IntegralBusActorPrototype(protoDesc, portDescs, attrs);
 

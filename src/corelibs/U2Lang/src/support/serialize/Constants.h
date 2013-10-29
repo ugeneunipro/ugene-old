@@ -78,11 +78,8 @@ public:
     static const QString CMDLINE;
     static const QString DESCRIPTION;
     static const QString PROMPTER;
-    static const QString FUNCTION_START;
     static const QString COMMA;
     static const QString MARKER;
-    static const QString MARKER_TYPE;
-    static const QString MARKER_NAME;
     static const QString QUAL_NAME;
     static const QString ANN_NAME;
     static const QString ACTOR_BINDINGS;

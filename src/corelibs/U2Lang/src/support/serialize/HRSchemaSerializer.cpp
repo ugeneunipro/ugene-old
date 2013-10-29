@@ -50,6 +50,7 @@
 
 #include "Constants.h"
 #include "HRVisualSerializer.h"
+#include "OldUWL.h"
 
 #include "HRSchemaSerializer.h"
 
@@ -120,7 +121,7 @@ QString HRSchemaSerializer::valueString(const QString & s) {
     if( str.contains(QRegExp("\\s") ) || str.contains(Constants::SEMICOLON) || 
         str.contains(Constants::EQUALS_SIGN) || str.contains(Constants::DATAFLOW_SIGN) || 
         str.contains(Constants::BLOCK_START) || str.contains(Constants::BLOCK_END) ||
-        str.contains(Constants::FUNCTION_START)) {
+        str.contains(OldConstants::MARKER_START)) {
         return quotedString(str);
     } else {
         return str;
@@ -438,6 +439,8 @@ Actor* HRSchemaSerializer::parseElementsDefinition(Tokenizer & tokenizer, const 
         idMap->insert(oldId, proc->getId());
     }
 
+    OldUWL::parseOldAttributes(proc, pairs);
+
     foreach(const QString & key, pairs.blockPairs.uniqueKeys()) {
         Attribute *a = proc->getParameter(key);
         if (NULL == a) {
@@ -445,6 +448,8 @@ Actor* HRSchemaSerializer::parseElementsDefinition(Tokenizer & tokenizer, const 
         }
         if (GROUPER_SLOT_GROUP == a->getGroup()) {
             parseGrouperOutSlots(proc, pairs.blockPairs.values(key), key);
+        } else if (MARKER_GROUP == a->getGroup()) {
+            parseMarkers(proc, pairs.blockPairs.values(key), key);
         } else if (NULL != dynamic_cast<URLAttribute*>(a)) {
             QList<Dataset> sets = parseUrlAttribute(a->getId(), pairs.blockPairsList);
             a->setAttributeValue(qVariantFromValue< QList<Dataset> >(sets));
@@ -626,87 +631,13 @@ QString HRSchemaSerializer::parseAt(const QString & dottedStr, int ind) {
     return list.size() > ind ? list.at(ind) : "";
 }
 
-static QString parseAfter(const QString & dottedStr, int ind) {
+QString HRSchemaSerializer::parseAfter(const QString & dottedStr, int ind) {
     QStringList list = dottedStr.split(Constants::DOT);
     QString res;
     for(int i = ind + 1; i < list.size(); ++i) {
         res += list.at(i) + Constants::DOT;
     }
     return res.mid(0, res.size() - Constants::DOT.size());
-}
-
-void HRSchemaSerializer::parseFunctionDefinition(Tokenizer &tokenizer, QMap<QString, Actor*> &actorMap) {
-    QString name = tokenizer.take();
-    QString actorName = parseAt(name, 0);
-    QString functionName = parseAfter(name, 0);
-    if (!actorMap.contains(actorName)) {
-        throw ReadFailed(tr("Unknown actor name \"%1\" at a function definition").arg(actorName));
-    }
-    tokenizer.assertToken(Constants::BLOCK_START);
-
-    ParsedPairs pairs(tokenizer);
-    QString functionType = pairs.equalPairs.take(Constants::TYPE_ATTR);
-    if(functionType.isEmpty()) {
-        throw ReadFailed(tr("Type attribute is not set for %1 function").arg(functionName));
-    }
-    if (functionType == Constants::MARKER) {
-        HRSchemaSerializer::parseMarkerDefinition(actorMap[actorName], functionName, pairs);
-    }
-}
-
-void HRSchemaSerializer::parseMarkerDefinition(Actor *proc, const QString &markerId, ParsedPairs &pairs) {
-    MarkerAttribute *markerAttr = dynamic_cast<MarkerAttribute*>(proc->getParameter("markers"));
-    if (NULL == markerAttr) {
-        throw ReadFailed(tr("%1 actor has not markers attribute").arg(proc->getId()));
-    }
-    QString markerType = pairs.equalPairs.take(Constants::MARKER_TYPE);
-    QString markerName = pairs.equalPairs.take(Constants::MARKER_NAME);
-    QMap<QString, Marker*> &markersMap = markerAttr->getMarkers();
-    if(markerType.isEmpty()) {
-        throw ReadFailed(tr("Type attribute is not set for %1 marker").arg(markerId));
-    }
-    if(markerName.isEmpty()) {
-        throw ReadFailed(tr("Name attribute is not set for %1 marker").arg(markerId));
-    }
-    if (!markersMap.contains(markerId)) {
-        throw ReadFailed(tr("Unknown %1 marker at %2 actor").arg(markerId).arg(proc->getId()));
-    } else if (NULL != markersMap.value(markerId)) {
-        throw ReadFailed(tr("Redefinition of %1 marker at %2 actor").arg(markerId).arg(proc->getId()));
-    }
-
-    Marker *marker = NULL;
-
-    if (markerType == MarkerTypes::QUAL_INT_VALUE_MARKER_ID
-     || markerType == MarkerTypes::QUAL_TEXT_VALUE_MARKER_ID
-     || markerType == MarkerTypes::QUAL_FLOAT_VALUE_MARKER_ID) {
-        QString qualName = pairs.equalPairs.take(Constants::QUAL_NAME);
-        if(qualName.isEmpty()) {
-            throw ReadFailed(tr("Qualifier name attribute is not set for %1 marker").arg(markerId));
-        }
-        marker = new QualifierMarker(markerType, markerName, qualName);
-    } else if (MarkerTypes::ANNOTATION_LENGTH_MARKER_ID == markerType
-     || MarkerTypes::ANNOTATION_COUNT_MARKER_ID == markerType) {
-        QString annName = pairs.equalPairs.take(Constants::ANN_NAME);
-        marker = new AnnotationMarker(markerType, markerName, annName);
-    } else if (MarkerTypes::TEXT_MARKER_ID == markerType) {
-        marker = new TextMarker(markerType, markerName);
-    } else {
-        marker = new SequenceMarker(markerType, markerName);
-    }
-    foreach(const QString & key, pairs.equalPairs.keys()) {
-        marker->addValue(key, pairs.equalPairs.value(key));
-    }
-
-    markersMap.insert(markerId, marker);
-    // TODO: make common way to get marked object output port
-    assert(1 == proc->getOutputPorts().size());
-    Port *outPort = proc->getOutputPorts().at(0);
-    assert(outPort->getOutputType()->isMap());
-    QMap<Descriptor, DataTypePtr> outTypeMap = outPort->getOutputType()->getDatatypesMap();
-    Descriptor newSlot = MarkerSlots::getSlotByMarkerType(markerType, markerName);
-    outTypeMap[newSlot] = BaseTypes::STRING_TYPE();
-    DataTypePtr newType(new MapDataType(dynamic_cast<Descriptor&>(*(outPort->getType())), outTypeMap));
-    outPort->setNewType(newType);
 }
 
 QMap<ActorId, QVariantMap> HRSchemaSerializer::parseIteration(Tokenizer & tokenizer,
@@ -1141,8 +1072,8 @@ static void parseBody(WorkflowSchemaReaderData & data) {
             tokenizer.assertToken(Constants::BLOCK_START);
             HRSchemaSerializer::parseActorBindings(tokenizer, data);
             tokenizer.assertToken(Constants::BLOCK_END);
-        } else if (tok == Constants::FUNCTION_START) {
-            HRSchemaSerializer::parseFunctionDefinition(tokenizer, data.actorMap);
+        } else if (tok == OldConstants::MARKER_START) {
+            OldUWL::parseMarkerDefinition(tokenizer, data.actorMap);
             tokenizer.assertToken(Constants::BLOCK_END);
         } else if(next == Constants::DATAFLOW_SIGN) {
             data.dataflowLinks << HRSchemaSerializer::parseDataflow(tokenizer, tok, data.actorMap);
@@ -1491,6 +1422,8 @@ static QString elementsDefinitionBlock(Actor * actor, bool copyMode) {
         assert(attribute != NULL);
         if (attribute->getGroup() == GROUPER_SLOT_GROUP) {
             res += HRSchemaSerializer::grouperOutSlotsDefinition(attribute);
+        } else if (MARKER_GROUP == attribute->getGroup()) {
+            res += HRSchemaSerializer::markersDefinition(attribute);
         } else {
             if (attribute->getId() == BaseAttributes::URL_IN_ATTRIBUTE().getId()) {
                 QVariant v = attribute->getAttributePureValue();
@@ -1571,47 +1504,29 @@ QString HRSchemaSerializer::elementsDefinition(const QList<Actor*> & procs, cons
     return res + Constants::NEW_LINE;
 }
 
-static QString markerDefinitionBlock(Marker *marker, bool ) {
+static QString markerDefinitionBlock(Marker *marker, int tabsNum) {
     assert(marker != NULL);
     QString res;
-    res += HRSchemaSerializer::makeEqualsPair(Constants::TYPE_ATTR, Constants::MARKER);
-    res += HRSchemaSerializer::makeEqualsPair(Constants::MARKER_TYPE, marker->getType());
-    res += HRSchemaSerializer::makeEqualsPair(Constants::MARKER_NAME, marker->getName());
+    res += HRSchemaSerializer::makeEqualsPair(Constants::TYPE_ATTR, marker->getType(), tabsNum);
+    res += HRSchemaSerializer::makeEqualsPair(Constants::NAME_ATTR, marker->getName(), tabsNum);
 
-    if (QUALIFIER == marker->getGroup()) {
+     if (QUALIFIER == marker->getGroup()) {
         const QString &qualName = dynamic_cast<QualifierMarker*>(marker)->getQualifierName();
         if (!qualName.isEmpty()) {
-            res += HRSchemaSerializer::makeEqualsPair(Constants::QUAL_NAME, qualName);
+            res += HRSchemaSerializer::makeEqualsPair(Constants::QUAL_NAME, qualName, tabsNum);
         }
     } else if (ANNOTATION == marker->getGroup()) {
         const QString &annName = dynamic_cast<AnnotationMarker*>(marker)->getAnnotationName();
         if (!annName.isEmpty()) {
-            res += HRSchemaSerializer::makeEqualsPair(Constants::ANN_NAME, annName);
+            res += HRSchemaSerializer::makeEqualsPair(Constants::ANN_NAME, annName, tabsNum);
         }
     }
 
     foreach(QString key, marker->getValues().keys()) {
         QString val = marker->getValues().value(key);
-        res += HRSchemaSerializer::makeEqualsPair("\"" + key + "\"", val);
+        res += HRSchemaSerializer::makeEqualsPair("\"" + key + "\"", val, tabsNum);
     }
     return res;
-}
-
-QString HRSchemaSerializer::markersDefinition(const QList<Actor*> & procs, const NamesMap & nmap, bool copyMode) {
-    QString res;
-    foreach( Actor * actor, procs) {
-        foreach (Attribute *attr, actor->getAttributes()) {
-            if (MARKER_GROUP == attr->getGroup()) {
-                MarkerAttribute *mAttr = dynamic_cast<MarkerAttribute*>(attr);
-                foreach (QString markerId, mAttr->getMarkers().keys()) {
-                    QString blockName = Constants::FUNCTION_START + nmap[actor->getId()] + Constants::DOT;
-                    blockName += markerId;
-                    res += makeBlock(blockName, Constants::NO_NAME, markerDefinitionBlock(mAttr->getMarkers().value(markerId), copyMode));
-                }
-            }
-        }
-    }
-    return res + Constants::NEW_LINE;
 }
 
 static QString actorBindingsBlock(const ActorBindingsGraph & graph, const HRSchemaSerializer::NamesMap &nmap, bool ) {
@@ -1825,7 +1740,6 @@ static QString bodyItself(const Schema & schema, const Metadata * meta, bool cop
     HRSchemaSerializer::NamesMap nmap = HRSchemaSerializer::generateElementNames(schema.getProcesses());
     QString res;
     res += HRSchemaSerializer::elementsDefinition(schema.getProcesses(), nmap, copyMode);
-    res += HRSchemaSerializer::markersDefinition(schema.getProcesses(), nmap, copyMode);
     res += HRSchemaSerializer::actorBindings(schema.getActorBindingsGraph(), nmap, copyMode);
     res += HRSchemaSerializer::dataflowDefinition(schema.getProcesses(), nmap);
     res += HRSchemaSerializer::makeBlock(Constants::META_START, schema.getTypeName(), metaData(schema, meta, nmap));
@@ -1848,7 +1762,6 @@ QString HRSchemaSerializer::items2String(const QList<Actor*> &actors, const Meta
     QString iData;
     HRSchemaSerializer::NamesMap nmap = HRSchemaSerializer::generateElementNames(actors);
     iData += HRSchemaSerializer::elementsDefinition(actors, nmap);
-    iData += HRSchemaSerializer::markersDefinition(actors, nmap);
     iData += HRSchemaSerializer::dataflowDefinition(actors, nmap);
     iData += HRSchemaSerializer::makeBlock(Constants::META_START, Constants::NO_NAME, itemsMetaData(actors, meta, nmap));
 
@@ -1963,5 +1876,78 @@ Actor* HRSchemaSerializer::deprecatedActorsReplacer(const QString &id, const QSt
     return a;
 }
 
+void HRSchemaSerializer::parseMarkers(Actor *proc, const QStringList &markerDefs, const QString &attrId) {
+    MarkerAttribute *attr = dynamic_cast<MarkerAttribute*>(proc->getParameter(attrId));
+    if (NULL == attr) {
+        throw ReadFailed(tr("%1 actor has not marker attribute").arg(proc->getId()));
+    }
+
+    SAFE_POINT(1 == proc->getOutputPorts().size(), "Wrong out ports count", );
+    Port *outPort = proc->getOutputPorts().first();
+    QMap<Descriptor, DataTypePtr> outTypeMap = outPort->getOutputType()->getDatatypesMap();
+
+    foreach (const QString &def, markerDefs) {
+        Marker *marker = parseMarker(def);
+        SAFE_POINT_EXT(NULL != marker, throw ReadFailed("NULL marker"), );
+
+        Descriptor newSlot = MarkerSlots::getSlotByMarkerType(marker->getType(), marker->getName());
+        outTypeMap[newSlot] = BaseTypes::STRING_TYPE();
+        attr->getMarkers() << marker;
+    }
+
+    DataTypePtr newType(new MapDataType(dynamic_cast<Descriptor&>(*(outPort->getType())), outTypeMap));
+    outPort->setNewType(newType);
+}
+
+Marker * HRSchemaSerializer::parseMarker(ParsedPairs &pairs, const QString &MARKER_TYPE, const QString &MARKER_NAME) {
+    const QString markerType = pairs.equalPairs.take(MARKER_TYPE);
+    const QString markerName = pairs.equalPairs.take(MARKER_NAME);
+    if (markerName.isEmpty()) {
+        throw ReadFailed(tr("Name attribute is not set for the marker"));
+    }
+    if (markerType.isEmpty()) {
+        throw ReadFailed(tr("Type attribute is not set for %1 marker").arg(markerName));
+    }
+
+    Marker *marker = NULL;
+    if (markerType == MarkerTypes::QUAL_INT_VALUE_MARKER_ID
+        || markerType == MarkerTypes::QUAL_TEXT_VALUE_MARKER_ID
+        || markerType == MarkerTypes::QUAL_FLOAT_VALUE_MARKER_ID) {
+            const QString qualName = pairs.equalPairs.take(Constants::QUAL_NAME);
+            if (qualName.isEmpty()) {
+                throw ReadFailed(tr("Qualifier name attribute is not set for %1 marker").arg(markerName));
+            }
+            marker = new QualifierMarker(markerType, markerName, qualName);
+    } else if (MarkerTypes::ANNOTATION_LENGTH_MARKER_ID == markerType
+        || MarkerTypes::ANNOTATION_COUNT_MARKER_ID == markerType) {
+            QString annName = pairs.equalPairs.take(Constants::ANN_NAME);
+            marker = new AnnotationMarker(markerType, markerName, annName);
+    } else if (MarkerTypes::TEXT_MARKER_ID == markerType) {
+        marker = new TextMarker(markerType, markerName);
+    } else {
+        marker = new SequenceMarker(markerType, markerName);
+    }
+    foreach(const QString &key, pairs.equalPairs.keys()) {
+        marker->addValue(key, pairs.equalPairs.value(key));
+    }
+
+    return marker;
+}
+
+Marker * HRSchemaSerializer::parseMarker(const QString &def) {
+    ParsedPairs pairs(def);
+    return parseMarker(pairs, Constants::TYPE_ATTR, Constants::NAME_ATTR);
+}
+
+QString HRSchemaSerializer::markersDefinition(Attribute *attribute) {
+    MarkerAttribute *mAttr = dynamic_cast<MarkerAttribute*>(attribute);
+    SAFE_POINT(NULL != mAttr, "NULL marker attribute", "");
+    QString res;
+
+    foreach (Marker *marker, mAttr->getMarkers()) {
+        res += makeBlock(attribute->getId(), Constants::NO_NAME, markerDefinitionBlock(marker, 3), 2);
+    }
+    return res + Constants::NEW_LINE;
+}
 
 } // U2

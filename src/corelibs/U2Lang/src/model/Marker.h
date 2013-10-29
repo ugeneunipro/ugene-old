@@ -59,16 +59,6 @@ public:
     static const Descriptor TEXT();
 };
 
-//class U2LANG_EXPORT MarkerAttributes : public QObject {
-//    Q_OBJECT
-//public:
-//    static const Descriptor LENGTH_MARKER_ATTRIBUTE();
-//    static const Descriptor ANNOTATION_COUNT_MARKER_ATTRIBUTE();
-//    static const Descriptor ANNOTATION_VALUE_MARKER_ATTRIBUTE();
-//    static const Descriptor FILENAME_MARKER_ATTRIBUTE();
-//
-//};
-
 class U2LANG_EXPORT MarkerSlots : public QObject {
     Q_OBJECT
 public:

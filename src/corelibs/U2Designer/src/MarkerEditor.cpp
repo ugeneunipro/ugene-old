@@ -82,11 +82,12 @@ void MarkerEditor::setConfiguration(Actor *actor) {
     markerModel = new MarkerGroupListCfgModel(this, mAttr->getMarkers());
     connect(markerModel, SIGNAL(si_markerEdited(const QString &, const QString &)), SLOT(sl_onMarkerEdited(const QString &, const QString &)));
     connect(markerModel, SIGNAL(si_markerAdded(const QString &)), SLOT(sl_onMarkerAdded(const QString &)));
-    connect(markerModel, SIGNAL(si_markerRemoved(const QString &, const QString &)), SLOT(sl_onMarkerRemoved(const QString &, const QString &)));
+    connect(markerModel, SIGNAL(si_markerRemoved(const QString &)), SLOT(sl_onMarkerRemoved(const QString &)));
 }
 
-void MarkerEditor::sl_onMarkerEdited(const QString &markerId, const QString &oldMarkerName) {
-    Marker *marker = markerModel->getMarkers().value(markerId);
+void MarkerEditor::sl_onMarkerEdited(const QString &newMarkerName, const QString &oldMarkerName) {
+    Marker *marker = markerModel->getMarker(newMarkerName);
+    SAFE_POINT(NULL != marker, "NULL marker", );
 
     { // TODO: make common way to get marked object output port
         assert(1 == cfg->getOutputPorts().size());
@@ -103,8 +104,9 @@ void MarkerEditor::sl_onMarkerEdited(const QString &markerId, const QString &old
     emit si_configurationChanged();
 }
 
-void MarkerEditor::sl_onMarkerAdded(const QString &markerId) {
-    Marker *marker = markerModel->getMarkers().value(markerId);
+void MarkerEditor::sl_onMarkerAdded(const QString &markerName) {
+    Marker *marker = markerModel->getMarker(markerName);
+    SAFE_POINT(NULL != marker, "NULL marker", );
 
     { // TODO: make common way to get marked object output port
         assert(1 == cfg->getOutputPorts().size());
@@ -119,8 +121,7 @@ void MarkerEditor::sl_onMarkerAdded(const QString &markerId) {
     }
 }
 
-void MarkerEditor::sl_onMarkerRemoved(const QString &markerId, const QString &markerName) {
-    Q_UNUSED(markerId);
+void MarkerEditor::sl_onMarkerRemoved(const QString &markerName) {
     { // TODO: make common way to get marked object output port
         assert(1 == cfg->getOutputPorts().size());
         Port *outPort = cfg->getOutputPorts().at(0);
@@ -137,7 +138,7 @@ void MarkerEditor::sl_onMarkerRemoved(const QString &markerId, const QString &ma
 /* ***********************************************************************
 * MarkerCfgModel
 * ***********************************************************************/
-MarkerGroupListCfgModel::MarkerGroupListCfgModel(QObject *parent, QMap<QString, Marker*> &markers)
+MarkerGroupListCfgModel::MarkerGroupListCfgModel(QObject *parent, QList<Marker*> &markers)
 : QAbstractTableModel(parent), markers(markers)
 {
 
@@ -197,58 +198,60 @@ bool MarkerGroupListCfgModel::removeRows(int row, int count, const QModelIndex &
     if (1 != count) {
         return true;
     }
-    QMap<QString, Marker*>::iterator i = markers.begin();
-    i += row;
-    QString markerId = markers.key(*i);
-    QString markerName = (*i)->getName();
+    Marker *toRemove = markers.at(row);
+    QString markerName = toRemove->getName();
     beginRemoveRows(QModelIndex(), row, row+count-1);
-    markers.remove(markerId);
+    markers.removeAt(row);
     endRemoveRows();
 
-    emit si_markerRemoved(markerId, markerName);
+    emit si_markerRemoved(markerName);
 
     return true;
 }
 
-Marker *MarkerGroupListCfgModel::getMarker(int row) {
-    QMap<QString, Marker*>::iterator i = markers.begin() + row;
-    
-    return *i;
+Marker * MarkerGroupListCfgModel::getMarker(int row) const {
+    SAFE_POINT(row < markers.size(), "Markers: out of range", NULL);
+    return markers.at(row);
 }
 
-QMap<QString, Marker*> &MarkerGroupListCfgModel::getMarkers() {
+Marker * MarkerGroupListCfgModel::getMarker(const QString &markerName) const {
+    foreach (Marker *marker, markers) {
+        if (marker->getName() == markerName) {
+            return marker;
+        }
+    }
+    return NULL;
+}
+
+
+QList<Marker*> & MarkerGroupListCfgModel::getMarkers() {
     return markers;
 }
 
 void MarkerGroupListCfgModel::addMarker(Marker *newMarker) {
-    // TODO: generate id not using crazy methods like this
-    QString markerId;
-    if (markers.keys().isEmpty()) {
-        markerId = "m1";
-    } else {
-        markerId = markers.keys().last()+"m";
-        while (markers.keys().last() >= markerId) {
-            markerId = "m" + QByteArray::number(qrand());
-        }
-    }
-
     beginInsertRows(QModelIndex(), rowCount(QModelIndex()), rowCount(QModelIndex()) + 1);
-    markers.insert(markerId, newMarker);
+    markers.insert(markers.size(), newMarker);
     endInsertRows();
 
-    emit si_markerAdded(markerId);
+    emit si_markerAdded(newMarker->getName());
 }
 
 void MarkerGroupListCfgModel::replaceMarker(int row, Marker *newMarker) {
-    QString markerId = markers.keys().at(row);
+    Marker *oldMarker = getMarker(row);
+    CHECK(NULL != oldMarker, );
 
-    Marker *oldMarker = markers.value(markerId);
+    beginRemoveRows(QModelIndex(), rowCount(QModelIndex()), rowCount(QModelIndex()) + 1);
+    markers.removeAt(row);
+    endRemoveRows();
+
     QString oldName = oldMarker->getName();
     delete oldMarker;
 
-    markers.insert(markerId, newMarker);
+    beginInsertRows(QModelIndex(), rowCount(QModelIndex()), rowCount(QModelIndex()) + 1);
+    markers.insert(row, newMarker);
+    endInsertRows();
 
-    emit si_markerEdited(markerId, oldName);
+    emit si_markerEdited(newMarker->getName(), oldName);
 }
 
 QString MarkerGroupListCfgModel::suggestName(const QString &type) {
@@ -262,7 +265,7 @@ QString MarkerGroupListCfgModel::suggestName(const QString &type) {
 }
 
 bool MarkerGroupListCfgModel::containsName(const QString &name) {
-    foreach (Marker *m, getMarkers().values()) {
+    foreach (Marker *m, getMarkers()) {
         if (m->getName() == name) {
             return true;
         }

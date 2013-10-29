@@ -103,11 +103,11 @@ void MarkerEditorWidget::sl_onItemSelected(const QModelIndex &) {
 
 bool MarkerEditorWidget::checkEditMarkerGroupResult(const QString &oldName, Marker *newMarker, QString &message) {
     Workflow::MarkerGroupListCfgModel *model = dynamic_cast<Workflow::MarkerGroupListCfgModel*>(table->model());
-    QMap<QString, Marker*> &markers = model->getMarkers();
+    QList<Marker*> &markers = model->getMarkers();
 
 
     if (oldName != newMarker->getName()) {
-        foreach (Marker *m, markers.values()) {
+        foreach (Marker *m, markers) {
             if (m->getName() == newMarker->getName()) {
                 message.append(tr("Duplicate marker's name: %1").arg(newMarker->getName()));
                 return false;
@@ -120,9 +120,9 @@ bool MarkerEditorWidget::checkEditMarkerGroupResult(const QString &oldName, Mark
 
 bool MarkerEditorWidget::checkAddMarkerGroupResult(Marker *newMarker, QString &message) {
     Workflow::MarkerGroupListCfgModel *model = dynamic_cast<Workflow::MarkerGroupListCfgModel*>(table->model());
-    QMap<QString, Marker*> &markers = model->getMarkers();
+    QList<Marker*> &markers = model->getMarkers();
 
-    foreach (Marker *m, markers.values()) {
+    foreach (Marker *m, markers) {
         if (m->getName() == newMarker->getName()) {
             message.append(tr("Duplicate marker's name: %1").arg(newMarker->getName()));
             return false;

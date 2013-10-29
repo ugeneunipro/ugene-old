@@ -42,9 +42,10 @@ namespace U2 {
 using namespace Workflow;
 using namespace WorkflowSerialize;
 
-class ExternalProcessConfig;
-class DataConfig;
 class AttributeConfig;
+class DataConfig;
+class ExternalProcessConfig;
+class Marker;
 
 class U2LANG_EXPORT HRSchemaSerializer : public QObject {
     Q_OBJECT
@@ -58,10 +59,9 @@ public:
                                             QMap<ActorId, ActorId>* idMap = NULL);
     static ValidatorDesc parseValidator(const QString &desc, U2OpStatus &os);
     static void parseGrouperOutSlots(Actor *proc, const QStringList &outSlots, const QString &attrId);
-    static void parseFunctionDefinition(Tokenizer & tokenizer, QMap<QString, Actor*> & actorMap);
-    static void parseMarkerDefinition(Actor *proc, const QString &markerId, ParsedPairs &pairs);
     static QPair<Port*, Port*> parseDataflow(Tokenizer & tokenizer, const QString & srcTok, const QMap<QString, Actor*> & actorMap);
     static QString parseAt(const QString & dottedStr, int ind);
+    static QString parseAfter(const QString & dottedStr, int ind);
     static QMap<ActorId, QVariantMap> parseIteration(Tokenizer & tokenizer,
                                         const QMap<QString, Actor*> & actorMap, bool pasteMode = false);
     static void parseActorBindings(Tokenizer &tokenizer, WorkflowSchemaReaderData &data);
@@ -89,7 +89,7 @@ public:
     static QString scriptBlock(const QString & scriptText, int tabsNum = 3);
     static QString includesDefinition(const QList<Actor*> & procs);
     static QString elementsDefinition(const QList<Actor*> & procs, const NamesMap & nmap, bool copyMode = false);
-    static QString markersDefinition(const QList<Actor*> & procs, const NamesMap & nmap, bool copyMode = false);
+    static QString markersDefinition(Attribute *attribute);
     static QString grouperOutSlotsDefinition(Attribute *attribute);
     static QString actorBindings(const ActorBindingsGraph & graph, const NamesMap &nmap, bool copyMode = false);
     static QString dataflowDefinition(const QList<Actor*> & procs, const NamesMap & nmap);
@@ -112,12 +112,16 @@ public:
 
     static void saveSchema(Schema *schema, Metadata *meta, const QString &url, U2OpStatus &os);
 
+    static Marker * parseMarker(ParsedPairs &pairs, const QString &MARKER_TYPE, const QString &MARKER_NAME);
+
 private:
     static GrouperSlotAction parseAction(Tokenizer &tokenizer);
     static QList<Dataset> parseUrlAttribute(const QString attrId, QList<StringPair> &blockPairs);
     static void deprecatedUrlAttribute(Actor *proc, const QString &urls);
     static URLContainer * parseDirectoryUrl(Tokenizer &tokenizer);
     static void checkHeaderLine(const QString &line, Tokenizer &tokenizer);
+    static void parseMarkers(Actor *proc, const QStringList &markers, const QString &attrId);
+    static Marker * parseMarker(const QString &def);
 };
 
 } // U2

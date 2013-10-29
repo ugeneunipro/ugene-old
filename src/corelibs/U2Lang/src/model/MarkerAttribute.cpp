@@ -19,7 +19,9 @@
  * MA 02110-1301, USA.
  */
 
-#include <U2Lang/MarkerAttribute.h>
+#include <U2Core/U2SafePoints.h>
+
+#include "MarkerAttribute.h"
 
 namespace U2 {
 
@@ -30,27 +32,15 @@ MarkerAttribute::MarkerAttribute(const Descriptor& d, const DataTypePtr type, bo
 }
 
 void MarkerAttribute::setAttributeValue(const QVariant &newVal) {
-    value = newVal;
-    QString line = newVal.toString();
-    QStringList markerIds = line.split(",");
-
-    for (int i = 0; i < markerIds.size(); i++) {
-        markers.insert(markerIds.at(i).trimmed(), NULL);
-    }
+    FAIL("marker set value", );
 }
 
 const QVariant &MarkerAttribute::getAttributePureValue() const {
-    QString result;
-    bool first = true;
-
-    foreach (QString markerId, markers.keys()) {
-        if (!first) {
-            result += ", ";
-        }
-        result += markerId;
-        first = false;
+    QStringList names;
+    foreach (Marker *marker, markers) {
+        names << marker->getName();
     }
-    const_cast<QVariant&>(value) = qVariantFromValue(result);
+    const_cast<QVariant&>(value) = names.join(",");
     return value;
 }
 
@@ -66,8 +56,20 @@ AttributeGroup MarkerAttribute::getGroup() {
     return MARKER_GROUP;
 }
 
-QMap<QString, Marker*> &MarkerAttribute::getMarkers() {
+QList<Marker*> & MarkerAttribute::getMarkers() {
     return markers;
+}
+
+bool MarkerAttribute::contains(const QString &markerId) const {
+    foreach (Marker *marker, markers) {
+        if (NULL == marker) {
+            continue;
+        }
+        if (marker->getName() == markerId) {
+            return true;
+        }
+    }
+    return false;
 }
 
 } //U2
