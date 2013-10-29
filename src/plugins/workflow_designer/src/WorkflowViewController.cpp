@@ -2150,6 +2150,7 @@ void WorkflowView::runWizard(Wizard *w) {
         }
         scene->sl_updateDocs();
         scene->setModified();
+        propertyEditor->update();
         if (controller.isRunAfterApply()) {
             sl_launch();
         }
