@@ -79,7 +79,13 @@ void DotPlotFilesDialog::sl_openFirstFile() {
         FormatDetectionConfig conf;
         conf.useImporters = true;
         conf.bestMatchesOnly = true;
-        FormatDetectionResult format = DocumentUtils::detectFormat(lod.url, conf).at(0); //get moslty matched format
+        QList<FormatDetectionResult> results = DocumentUtils::detectFormat(lod.url, conf);
+        if (results.isEmpty()){
+            firstFileEdit->setText("");
+            lod.url = "";
+            return;
+        }
+        FormatDetectionResult format = results.at(0); //get moslty matched format
         bool multySeq = format.rawDataCheckResult.properties.value(RawDataCheckResult_MultipleSequences).toBool();
         if(multySeq){
             mergeFirstCheckBox->setChecked(true);
@@ -105,7 +111,13 @@ void DotPlotFilesDialog::sl_openSecondFile() {
         FormatDetectionConfig conf;
         conf.useImporters = true;
         conf.bestMatchesOnly = true;
-        FormatDetectionResult format = DocumentUtils::detectFormat(lod.url, conf).at(0);//get moslty matched format
+        QList<FormatDetectionResult> results = DocumentUtils::detectFormat(lod.url, conf);
+        if (results.isEmpty()){
+            secondFileEdit->setText("");
+            lod.url = "";
+            return;
+        }
+        FormatDetectionResult format = results.at(0); //get moslty matched format
         bool multySeq = format.rawDataCheckResult.properties.value(RawDataCheckResult_MultipleSequences).toBool();
         if(multySeq){
             mergeSecondCheckBox->setChecked(true);
