@@ -28,7 +28,6 @@
 #include <U2Core/GHints.h>
 #include <U2Core/Log.h>
 #include <U2Core/U2SafePoints.h>
-#include <U2Core/U2OpStatusUtils.h>
 
 #include <U2Core/LoadDocumentTask.h>
 #include <U2Core/SaveDocumentTask.h>
@@ -268,8 +267,7 @@ void GTest_DocumentFormat::init(XMLTestFormat *tf, const QDomElement& el) {
 
 Task::ReportResult GTest_DocumentFormat::report() {
     
-    U2OpStatus2Log opStatus;
-    QList<FormatDetectionResult> formats = DocumentUtils::detectFormat(GUrl(docUrl), opStatus);
+    QList<FormatDetectionResult> formats = DocumentUtils::detectFormat(GUrl(docUrl));
     if(formats.isEmpty()) {
         stateInfo.setError(QString("Can't detect format for file %1").arg(docUrl));
         return ReportResult_Finished;
