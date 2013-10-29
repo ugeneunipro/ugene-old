@@ -205,7 +205,7 @@ void ReadAnnotationsTask::run() {
             break;
         }
     }
-    CHECK_EXT(NULL != format, stateInfo.setError(tr("Unsupported document format")), );
+    CHECK_EXT(NULL != format, stateInfo.setError(tr("Unsupported document format: %1").arg(url));, );
 
     ioLog.info(tr("Reading annotations from %1 [%2]").arg(url).arg(format->getFormatName()));
     IOAdapterFactory *iof = AppContext::getIOAdapterRegistry()->

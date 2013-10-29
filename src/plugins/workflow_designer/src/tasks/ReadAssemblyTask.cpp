@@ -144,7 +144,7 @@ void ConvertToIndexedBamTask::addConvertedFile(const GUrl &url) {
 /* ReadAssemblyTask */
 /************************************************************************/
 ReadAssemblyTask::ReadAssemblyTask(const QString &url, const QString &datasetName, WorkflowContext *_ctx)
-: ReadDocumentTask(url, tr("Read assembly from %1").arg(url), datasetName, TaskFlag_None),
+: ReadDocumentTask(url, tr("Read assembly from %1").arg(url), datasetName, TaskFlags_FOSE_COSC),
 ctx(_ctx), format(NULL), doc(NULL), convertTask(NULL), importTask(NULL)
 {
 
@@ -193,7 +193,7 @@ void ReadAssemblyTask::prepare() {
     }
 
     if (format == NULL) {
-        stateInfo.setError(tr("Unsupported document format"));
+        stateInfo.setError(tr("Unsupported document format: %1").arg(getUrl()));
         return;
     }
 }
@@ -201,7 +201,13 @@ void ReadAssemblyTask::prepare() {
 QList<Task*> ReadAssemblyTask::onSubTaskFinished(Task *subTask) {
     QList<Task*> result;
     CHECK(NULL != subTask, result);
-    CHECK(!subTask->hasError(), result);
+    if (subTask->hasError()) {
+        if (convertTask == subTask) {
+            taskLog.error(subTask->getError());
+            setError(tr("Can not read assemblies from the file: %1").arg(getUrl()));
+        }
+        return result;
+    }
 
     if (importTask == subTask) {
         doc = importTask->takeDocument(false);
@@ -255,7 +261,12 @@ void ReadAssemblyTask::run() {
     CHECK(NULL != docPtr.get(), );
     docPtr->setDocumentOwnsDbiResources(false);
 
-    foreach(GObject* go, docPtr->findGObjectByType(GObjectTypes::ASSEMBLY)) {
+    QList<GObject*> assemblies = docPtr->findGObjectByType(GObjectTypes::ASSEMBLY);
+    if (assemblies.isEmpty()) {
+        setError(tr("No assemblies in the file: %1").arg(getUrl()));
+        return;
+    }
+    foreach(GObject* go, assemblies) {
         AssemblyObject *assemblyObj = dynamic_cast<AssemblyObject*>(go);
         CHECK_EXT(NULL != assemblyObj, taskLog.error(tr("Incorrect assembly object in %1").arg(url)), );
 

@@ -349,7 +349,7 @@ Task * BaseDocWriter::tick() {
 Task* BaseDocWriter::processDocs()
 {
     if(adapters.isEmpty()) {
-        coreLog.error(tr("nothing to write"));
+        monitor()->addError(tr("Nothing to write"), getActorId(), Problem::U2_WARNING);
     }
     if (docs.isEmpty()) {
         return NULL;

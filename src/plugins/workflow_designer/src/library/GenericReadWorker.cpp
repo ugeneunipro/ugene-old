@@ -90,8 +90,9 @@ Task * GenericDocReader::tick() {
     if (!sendMessages && files->hasNext()) {
         QString newUrl = files->getNextFile();
         Task *t = createReadTask(newUrl, files->getLastDatasetName());
-        connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
-        return t;
+        NoFailTaskWrapper *wrapper = new NoFailTaskWrapper(t);
+        connect(wrapper, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
+        return wrapper;
     } else if (!files->hasNext()) {
         // the cache is empty and the no more URLs -> finish the worker
         setDone();
@@ -105,9 +106,14 @@ bool GenericDocReader::isDone() {
 }
 
 void GenericDocReader::sl_taskFinished() {
-    Task *t = qobject_cast<Task*>(sender());
-    SAFE_POINT(NULL != t, "NULL wrapper task", );
-    CHECK(t->isFinished() && !t->hasError(), );
+    NoFailTaskWrapper *wrapper = qobject_cast<NoFailTaskWrapper*>(sender());
+    SAFE_POINT(NULL != wrapper, "NULL wrapper task", );
+    Task *t = wrapper->originalTask();
+    CHECK(t->isFinished(), );
+    if (t->hasError()) {
+        monitor()->addTaskError(wrapper, t->getError());
+        return;
+    }
     onTaskFinished(t);
 }
 
@@ -184,7 +190,7 @@ void LoadMSATask::run() {
         }
     }
     if (format == NULL) {
-        stateInfo.setError(  tr("Unsupported document format") );
+        stateInfo.setError( tr("Unsupported document format: %1").arg(url) );
         return;
     }
     ioLog.info(tr("Reading MSA from %1 [%2]").arg(url).arg(format->getFormatName()));
@@ -271,7 +277,7 @@ void LoadSeqTask::prepare() {
         }
     }
     if (format == NULL) {
-        stateInfo.setError(tr("Unsupported document format"));
+        stateInfo.setError(tr("Unsupported document format: %1").arg(url));
         return;
     }
 

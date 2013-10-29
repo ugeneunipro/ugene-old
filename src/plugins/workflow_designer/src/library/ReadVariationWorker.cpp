@@ -131,7 +131,7 @@ void ReadVariationTask::run() {
     }
 
     if (format == NULL) {
-        stateInfo.setError(tr("Unsupported document format"));
+        stateInfo.setError(tr("Unsupported document format: %1").arg(url));
         return;
     }
     ioLog.info(tr("Reading variations from %1 [%2]").arg(url).arg(format->getFormatName()));
