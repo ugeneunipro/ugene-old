@@ -58,8 +58,21 @@ void ResourcesWidget::sl_progressChanged(int progress) {
     bar.setStyleProperty("width", QString::number(progress) + "%");
 }
 
-static bool isFinished(TaskState state) {
-    return (Monitor::SUCCESS == state) || (Monitor::CANCELLED == state) || (Monitor::FAILED == state);
+namespace {
+    bool isFinished(TaskState state) {
+        switch (state) {
+            case Monitor::RUNNING:
+            case Monitor::RUNNING_WITH_PROBLEMS:
+                return false;
+            case Monitor::FINISHED_WITH_PROBLEMS:
+            case Monitor::CANCELLED:
+            case Monitor::FAILED:
+            case Monitor::SUCCESS:
+                return true;
+            default:
+                FAIL("Unknown state", false);
+        }
+    }
 }
 
 void ResourcesWidget::sl_taskStateChanged(TaskState state) {
