@@ -375,8 +375,7 @@ void DasOptionsPanelWidget::initialize() {
     cm.sequenceLen = ctx->getSequenceLength();
     cm.hideAnnotationParameters = true;
     annotationsWidgetController = new CreateAnnotationWidgetController(cm, this, optPanel);
-
-    annotationsSettingsContainerLayout->addWidget(new ShowHideSubgroupWidget(ANNOTATIONS_SETTINGS, ANNOTATIONS_SETTINGS, annotationsWidgetController->getWidget(), false));
+    annotationsSettingsContainerLayout->addWidget(annotationsWidgetController->getWidget());
 
     // Setup context menu of the idList widget
     idList->setContextMenuPolicy(Qt::ActionsContextMenu);

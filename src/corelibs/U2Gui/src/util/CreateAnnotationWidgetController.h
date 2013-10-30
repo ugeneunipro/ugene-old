@@ -35,6 +35,7 @@
 #include <QtGui/QLabel>
 #include <QtGui/QGroupBox>
 
+#include <U2Gui/ShowHideSubgroupWidget.h>
 
 namespace U2 {
 
@@ -100,6 +101,8 @@ public:
     QWidget* getWidget() const {return w;}
 
     const CreateAnnotationModel&    getModel() const {return model;}
+
+    QCheckBox* getUsePatternNameCheckBox() { return usePatternNamesCheckBox; }
     
     //receiver object must have sl_setPredefinedAnnotationName(), TODO: move this utility to a separate class
     static QMenu* createAnnotationNamesMenu(QWidget* p, QObject* receiver);
@@ -108,6 +111,8 @@ public:
 
     /** It is called from the constructor and updateWidgetForAnnotationModel(...) */
     void commonWidgetUpdate(const CreateAnnotationModel& model);
+
+    void setUsePatternNameCheckBoxVisible() { usePatternNamesCheckBox->setVisible(true); }
 
 signals:
     void si_annotationNamesEdited();
@@ -137,7 +142,7 @@ private:
     QString GROUP_NAME_AUTO;
 
     // Widget layout
-    QGroupBox* groupAnnotParams;
+    ShowHideSubgroupWidget* annotParamsWidget;
     QLineEdit* newFileEdit;
     QLineEdit* annotationNameEdit;
     QLineEdit* groupNameEdit;
@@ -154,6 +159,7 @@ private:
     QLabel* annotationNameLabel;
     QLabel* groupNameLabel;
     QLabel* locationLabel;
+    QCheckBox* usePatternNamesCheckBox;
 };
 
 

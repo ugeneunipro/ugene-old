@@ -39,6 +39,7 @@
 #include <U2View/ADVSequenceWidget.h>
 
 #include <U2Gui/LastUsedDirHelper.h>
+#include <U2Gui/ShowHideSubgroupWidget.h>
 
 #include <U2Core/DocumentUtils.h>
 #include <U2Gui/DialogUtils.h>
@@ -350,6 +351,9 @@ const static QString SHOW_OPTIONS_LINK("show_options_link");
 const int FindPatternWidget::DEFAULT_RESULTS_NUM_LIMIT = 100000;
 const int FindPatternWidget::DEFAULT_REGEXP_RESULT_LENGTH_LIMIT = 10000;
 
+const QString FindPatternWidget::ALGORITHM_SETTINGS = tr("Search algorithm");
+const QString FindPatternWidget::SEARCH_IN_SETTINGS = tr("Search in");
+const QString FindPatternWidget::OTHER_SETTINGS= tr("Other settings");
 
 FindPatternWidget::FindPatternWidget(AnnotatedDNAView* _annotatedDnaView)
     : annotatedDnaView(_annotatedDnaView)
@@ -371,14 +375,8 @@ FindPatternWidget::FindPatternWidget(AnnotatedDNAView* _annotatedDnaView)
         setContentsMargins(0, 0, 0, 0);
         
         annotsWidget = annotController->getWidget();
-        layoutAnnots->addWidget(annotsWidget);
-        layoutAnnots->setSpacing(0);
-        layoutAnnots->setContentsMargins(0, 0, 0, 0);
-
-        usePatternNamesCheckBox = new QCheckBox(tr("Use pattern name"));
-        usePatternNamesCheckBox->setToolTip(tr("Use names of patterns as annotations names. In case the patterns are in FASTA format"));
-        connect(usePatternNamesCheckBox, SIGNAL(clicked()), SLOT(sl_onUsePatternNamesClicked()));
-        layoutAnnots->addWidget(usePatternNamesCheckBox);
+        usePatternNamesCheckBox = annotController->getUsePatternNameCheckBox();
+        annotController->setUsePatternNameCheckBoxVisible();
 
         const DNAAlphabet* alphabet = activeContext->getAlphabet();
         isAminoSequenceSelected = alphabet->isAmino();
@@ -395,7 +393,6 @@ FindPatternWidget::FindPatternWidget(AnnotatedDNAView* _annotatedDnaView)
         connect(findPatternEventFilter, SIGNAL(si_enterPressed()), SLOT(sl_onEnterInPatternFieldPressed()));
         
         setFocusProxy(textPattern);
-        QWidget::setTabOrder(btnSearch, lblShowMoreLess);
         
         currentSelection = NULL;
         showHideMessage(true, UseMultiplePatternsTip);
@@ -404,71 +401,21 @@ FindPatternWidget::FindPatternWidget(AnnotatedDNAView* _annotatedDnaView)
     }
 }
 
-
-void FindPatternWidget::updateShowOptions()
-{
-    // Change the label
-    QString linkText = showMore ? tr("Show more options") : tr("Show less options");
-    linkText = QString("<a href=\"%1\" style=\"color: palette(shadow)\">").arg(SHOW_OPTIONS_LINK)
-        + linkText
-        + QString("</a>");
-
-    lblShowMoreLess->setText(linkText);
-    lblShowMoreLess->setTextInteractionFlags(Qt::LinksAccessibleByKeyboard | Qt::LinksAccessibleByMouse);
-    
-    QWidget * bottomFocus = (btnSearch->isEnabled()) ? static_cast<QWidget *>(btnSearch) :
-                                                       static_cast<QWidget *>(lblShowMoreLess);
-    // Show/hide the additional options
-    if (showMore) {
-        groupAlgorithm->hide();
-        groupSearchIn->hide();
-        groupOther->hide();
-        annotsWidget->hide();
-        usePatternNamesCheckBox->hide();
-        loadFromFileGroupBox->hide();
-
-        setMinimumSize(QSize(170, 150));
-
-        QWidget::setTabOrder(textPattern, bottomFocus);
-    }
-    else {
-        groupAlgorithm->show();
-        groupSearchIn->show();
-        groupOther->show();
-        annotsWidget->show();
-        usePatternNamesCheckBox->show();
-        loadFromFileGroupBox->show();
-
-        setMinimumSize(QSize(170, 1013));
-        
-        QWidget::setTabOrder(annotsWidget, bottomFocus);
-        QWidget::setTabOrder(usePatternNamesCheckBox, bottomFocus);
-        boxAlgorithm->setFocus();
-
-        int checkButtonSize = 25;
-        int width = groupOther->layout()->contentsRect().width();
-        validateCheckBoxSize(removeOverlapsBox, width - checkButtonSize);
-        validateCheckBoxSize(boxUseMaxResult, width - checkButtonSize);
-    }
-    QWidget::setTabOrder(bottomFocus, lblShowMoreLess);
-    // Change the mode
-    showMore = !showMore;
-}
-
-
 void FindPatternWidget::initLayout()
 {
     setMinimumSize(QSize(170, 150));
-
-    // Hide all additional options
-    showMore = true;
-    updateShowOptions();
 
     initAlgorithmLayout();
     initStrandSelection();
     initSeqTranslSelection();
     initRegionSelection();
     initResultsLimit();
+
+    subgroupsLayout->setSpacing(0);
+    subgroupsLayout->addWidget(new ShowHideSubgroupWidget(ALGORITHM_SETTINGS, ALGORITHM_SETTINGS, widgetAlgorithm, true));
+    subgroupsLayout->addWidget(new ShowHideSubgroupWidget(SEARCH_IN_SETTINGS, SEARCH_IN_SETTINGS, widgetSearchIn, true));
+    subgroupsLayout->addWidget(new ShowHideSubgroupWidget(OTHER_SETTINGS, OTHER_SETTINGS, widgetOther, false));
+    subgroupsLayout->addWidget(annotsWidget);
 
     lblErrorMessage->hide();
     lblErrorMessage->setStyleSheet(
@@ -573,7 +520,6 @@ void FindPatternWidget::initResultsLimit()
 
 void FindPatternWidget::connectSlots()
 {
-    connect(lblShowMoreLess, SIGNAL(linkActivated(const QString&)), SLOT(sl_showLessClicked(const QString&)));
     connect(boxAlgorithm, SIGNAL(currentIndexChanged(int)), SLOT(sl_onAlgorithmChanged(int)));
     connect(boxRegion, SIGNAL(currentIndexChanged(int)), SLOT(sl_onRegionOptionChanged(int)));
     connect(textPattern, SIGNAL(textChanged()), SLOT(sl_onSearchPatternChanged()));
@@ -608,14 +554,6 @@ void FindPatternWidget::sl_enableBoxMaxResult(int checkBoxState)
         boxMaxResult->setEnabled(false);
     }
 }
-
-
-void FindPatternWidget::sl_showLessClicked(const QString& link)
-{
-    SAFE_POINT(SHOW_OPTIONS_LINK == link, "Incorrect link!",);
-    updateShowOptions();
-}
-
 
 void FindPatternWidget::sl_onAlgorithmChanged(int index)
 {
@@ -1171,8 +1109,6 @@ void FindPatternWidget::sl_onTabInPatternFieldPressed()
 {
     if (btnSearch->isEnabled()) {
         btnSearch->setFocus(Qt::TabFocusReason);
-    } else if (!showMore) {
-        lblShowMoreLess->setFocus(Qt::TabFocusReason);
     } else {
         boxAlgorithm->setFocus(Qt::TabFocusReason);
     }
@@ -1452,7 +1388,6 @@ bool FindPatternWidget::checkPatternRegion( const QString& pattern ){
     bool regionIsCorrect = false;
     qint64 regionLength = getCompleteSearchRegion(regionIsCorrect, activeContext->getSequenceLength()).length;
 
-//    qint64 regionLength = editEnd->text().toLongLong() - editStart->text().toLongLong() + 1;
     SAFE_POINT(regionLength > 0 && true == regionIsCorrect,
                "Incorrect region length when enabling/disabling the pattern search button.", false);
 

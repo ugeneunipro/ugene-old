@@ -86,8 +86,6 @@ public:
     FindPatternWidget(AnnotatedDNAView*);
 
 private slots:
-    void sl_showLessClicked(const QString&);
-
     void sl_onAlgorithmChanged(int);
     void sl_onRegionOptionChanged(int);
     void sl_enableBoxMaxResult(int checkBoxState);
@@ -137,7 +135,6 @@ private:
     void initRegionSelection();
     void initResultsLimit();
     void updateLayout();
-    void updateShowOptions();
     void connectSlots();
     void tunePercentBox();
     int getMaxError(const QString& pattern) const;
@@ -192,7 +189,6 @@ private:
     bool annotModelPrepared;
 
     bool isAminoSequenceSelected;
-    bool showMore;
     bool regionIsCorrect;
     int selectedAlgorithm;
     QString patternString;
@@ -219,6 +215,10 @@ private:
 
     static const int DEFAULT_RESULTS_NUM_LIMIT;
     static const int DEFAULT_REGEXP_RESULT_LENGTH_LIMIT;
+
+    static const QString ALGORITHM_SETTINGS;
+    static const QString SEARCH_IN_SETTINGS;
+    static const QString OTHER_SETTINGS;
 };
 
 } // namespace

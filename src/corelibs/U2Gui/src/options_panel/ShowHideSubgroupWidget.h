@@ -44,6 +44,8 @@ public:
     void showProgress();
     void hideProgress();
 
+    void setPermanentlyOpen(bool isOpened);
+
 signals:
     void si_subgroupStateChanged(QString id);
 
@@ -68,6 +70,8 @@ public:
     bool isArrowOpened() { return isOpened; }
     void showProgressWithTimeout();
     void hideProgress();
+
+    void setOpened(bool isOpened);
 
 signals:
     void si_arrowHeaderPressed(bool isSubgroupOpened);

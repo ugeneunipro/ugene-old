@@ -84,6 +84,20 @@ void ShowHideSubgroupWidget::hideProgress()
     arrowHeaderWidget->hideProgress();
 }
 
+void ShowHideSubgroupWidget::setPermanentlyOpen(bool isOpened) {
+    arrowHeaderWidget->setOpened(isOpened);
+    if (isOpened) {
+        disconnect(arrowHeaderWidget, SIGNAL(si_arrowHeaderPressed(bool)),
+            this, SLOT(updateSubgroupState(bool)));
+
+        arrowHeaderWidget->setAttribute(Qt::WA_TransparentForMouseEvents);
+    } else {
+        connect(arrowHeaderWidget, SIGNAL(si_arrowHeaderPressed(bool)),
+            this, SLOT(updateSubgroupState(bool)));
+        arrowHeaderWidget->setAttribute(Qt::WA_TransparentForMouseEvents, false);
+    }
+}
+
 
 ArrowHeaderWidget::ArrowHeaderWidget(QString caption, bool _isOpened)
     : isOpened(_isOpened)
@@ -155,18 +169,24 @@ void ArrowHeaderWidget::hideProgress()
     progressMovie->setPaused(true);
 }
 
+void ArrowHeaderWidget::setOpened(bool _isOpened) {
+
+    if (_isOpened != isOpened) {
+        if (isOpened) {
+            arrow->setPixmap(QPixmap(":core/images/arrow_right.png"));
+            isOpened = false;
+        } else {
+            arrow->setPixmap(QPixmap(":core/images/arrow_down.png"));
+            isOpened = true;
+        }
+        emit si_arrowHeaderPressed(isOpened);
+    }
+}
+
 
 void ArrowHeaderWidget::mousePressEvent(QMouseEvent * /* event */)
 {
-    if (isOpened) {
-        arrow->setPixmap(QPixmap(":core/images/arrow_right.png"));
-        isOpened = false;
-    } else {
-        arrow->setPixmap(QPixmap(":core/images/arrow_down.png"));
-        isOpened = true;
-    }
-
-    emit si_arrowHeaderPressed(isOpened);
+    setOpened(!isOpened);
 }
 
 } // namespace

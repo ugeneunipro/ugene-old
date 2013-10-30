@@ -217,9 +217,9 @@ void CreateAnnotationWidgetController::commonWidgetUpdate(const CreateAnnotation
     }
 
     if (model.hideAnnotationParameters) {
-        groupAnnotParams->hide();
+        annotParamsWidget->hide();
     } else {
-        groupAnnotParams->show();
+        annotParamsWidget->show();
     }
 }
 
@@ -227,7 +227,6 @@ void CreateAnnotationWidgetController::commonWidgetUpdate(const CreateAnnotation
 void CreateAnnotationWidgetController::initLayout(AnnotationWidgetMode layoutMode)
 {
     QSizePolicy sizePolicy;
-
     if (layoutMode == normal) {
         w->resize(492, 218);
         sizePolicy = QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Minimum);
@@ -241,28 +240,33 @@ void CreateAnnotationWidgetController::initLayout(AnnotationWidgetMode layoutMod
         sizePolicy = QSizePolicy(QSizePolicy::Minimum, QSizePolicy::Preferred);
         w->setMinimumSize(QSize(170, 0));
     }
+    sizePolicy = QSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
     w->setSizePolicy(sizePolicy);
 
     w->setWindowTitle(tr("Create Annotations"));
 
     QVBoxLayout* mainLayout = new QVBoxLayout(w);
     mainLayout->setContentsMargins(0, 0, 0, 0);
+    mainLayout->setSpacing(0);
 
-    // Save annotations group
-    QGroupBox* groupSaveAnnots = new QGroupBox(w);
-    groupSaveAnnots->setToolTip(tr("Chose a file to store the annotations"));
-    groupSaveAnnots->setTitle(tr("Save annotation(s) to"));
-    QGridLayout* gridLayout = new QGridLayout(groupSaveAnnots);
+    // Save annotation widget
+    QWidget* saveAnnotsWgt = new QWidget(w);
+    saveAnnotsWgt->setToolTip(tr("Chose a file to store the annotations"));
+    saveAnnotsWgt->setContentsMargins(0, 0, 0, 0);
 
-    existingObjectRB = new QRadioButton(groupSaveAnnots);
+    QGridLayout* gridLayout = new QGridLayout(saveAnnotsWgt);
+    gridLayout->setContentsMargins(0, 0, 0, 0);
+    saveAnnotsWgt->setLayout(gridLayout);
+
+    existingObjectRB = new QRadioButton(saveAnnotsWgt);
     existingObjectRB ->setObjectName("existingObjectRB");
 
     existingObjectRB->setChecked(true);
     existingObjectRB->setText(tr("Existing table"));
-    existingObjectCombo = new QComboBox(groupSaveAnnots);
+    existingObjectCombo = new QComboBox(saveAnnotsWgt);
     existingObjectCombo->setObjectName("existingObjectCombo");
 
-    existingObjectButton = new QToolButton(groupSaveAnnots);
+    existingObjectButton = new QToolButton(saveAnnotsWgt);
     existingObjectButton->setObjectName("existingObjectButton");
 
     QIcon loadSelectedDocIcon;
@@ -273,16 +277,16 @@ void CreateAnnotationWidgetController::initLayout(AnnotationWidgetMode layoutMod
         QIcon::Off);
     existingObjectButton->setIcon(loadSelectedDocIcon);
     existingObjectButton->setText("...");
-    newFileRB = new QRadioButton(groupSaveAnnots);
+    newFileRB = new QRadioButton(saveAnnotsWgt);
     newFileRB->setObjectName("newFileRB");
     newFileRB->setText(tr("Create new table"));
-    newFileEdit = new QLineEdit(groupSaveAnnots);
+    newFileEdit = new QLineEdit(saveAnnotsWgt);
     newFileEdit->setEnabled(false);
     newFileEdit->setObjectName("newFilePath");
-    newFileButton = new QToolButton(groupSaveAnnots);
+    newFileButton = new QToolButton(saveAnnotsWgt);
     newFileButton->setEnabled(false);
     newFileButton->setText("...");
-    useAutoAnnotationsRB = new QRadioButton(groupSaveAnnots);
+    useAutoAnnotationsRB = new QRadioButton(saveAnnotsWgt);
     useAutoAnnotationsRB->setText(tr("Use auto-annotations table"));
 
     if (layoutMode == normal) {
@@ -320,58 +324,65 @@ void CreateAnnotationWidgetController::initLayout(AnnotationWidgetMode layoutMod
     }
 
     // Annotation parameters group
-    groupAnnotParams = new QGroupBox(w);
-    groupAnnotParams->setTitle(tr("Annotation parameters"));
+    QWidget *annotParams = new QWidget(w);
+    annotParamsWidget = new ShowHideSubgroupWidget("annotparams", "Annotation parameters", annotParams, true);
 
-    QGridLayout* gridLayoutParams = new QGridLayout(groupAnnotParams);
-    groupNameLabel = new QLabel(groupAnnotParams);
+    QGridLayout* gridLayoutParams = new QGridLayout(annotParams);
+    gridLayoutParams->setContentsMargins(0, 0, 0, 0);
+    groupNameLabel = new QLabel(annotParams);
     QSizePolicy sizePolicy1(QSizePolicy::Maximum, QSizePolicy::Preferred);
     sizePolicy1.setHorizontalStretch(0);
     sizePolicy1.setVerticalStretch(0);
     sizePolicy1.setHeightForWidth(groupNameLabel->sizePolicy().hasHeightForWidth());
     groupNameLabel->setSizePolicy(sizePolicy1);
 
-    groupNameEdit = new QLineEdit(groupAnnotParams);
+    groupNameEdit = new QLineEdit(annotParams);
     groupNameEdit->setObjectName("groupNameEdit");
     connect(groupNameEdit, SIGNAL(textEdited(const QString&)), SLOT(sl_groupNameEdited(const QString&)));
     connect(groupNameEdit, SIGNAL(textChanged(const QString&)), SLOT(sl_groupNameEdited(const QString&)));
 
-    groupNameButton = new QToolButton(groupAnnotParams);
+    groupNameButton = new QToolButton(annotParams);
     QIcon iconGroupAuto;
     iconGroupAuto.addFile(QString::fromUtf8(":/core/images/group_auto.png"), QSize(), QIcon::Normal, QIcon::Off);
     groupNameButton->setText("...");
     groupNameButton->setToolTip(tr("Predefined group names"));
     groupNameButton->setIcon(iconGroupAuto);
 
-    annotationNameLabel = new QLabel(groupAnnotParams);
+    annotationNameLabel = new QLabel(annotParams);
 
-    annotationNameEdit = new QLineEdit(groupAnnotParams);
+    annotationNameEdit = new QLineEdit(annotParams);
     annotationNameEdit->setObjectName("annotationNameEdit");
     connect(annotationNameEdit, SIGNAL(textEdited(const QString&)), SLOT(sl_annotationNameEdited(const QString&)));
     connect(annotationNameEdit, SIGNAL(textChanged(const QString&)), SLOT(sl_annotationNameEdited(const QString&)));
 
     annotationNameEdit->setMaxLength(100);
 
-    showNameGroupsButton = new QToolButton(groupAnnotParams);
+    showNameGroupsButton = new QToolButton(annotParams);
     QIcon iconPredefAnnot;
     iconPredefAnnot.addFile(QString::fromUtf8(":/core/images/predefined_annotation_groups.png"), QSize(), QIcon::Normal, QIcon::Off);
     showNameGroupsButton->setIcon(iconPredefAnnot);
     showNameGroupsButton->setToolTip(tr("Predefined annotation names"));
     showNameGroupsButton->setText(QString());
     
-    locationLabel = new QLabel(groupAnnotParams);
+    locationLabel = new QLabel(annotParams);
 
-    locationEdit = new QLineEdit(groupAnnotParams);
+    locationEdit = new QLineEdit(annotParams);
     locationEdit->setObjectName("locationEdit");
 
     locationEdit->setToolTip(tr("Annotation location in GenBank format"));
 
-    complementButton = new QToolButton(groupAnnotParams);
+    complementButton = new QToolButton(annotParams);
     QIcon iconComplement;
     iconComplement.addFile(QString::fromUtf8(":/core/images/do_complement.png"), QSize(), QIcon::Normal, QIcon::Off);
     complementButton->setToolTip(tr("Add/remove complement flag"));
     complementButton->setText("...");
     complementButton->setIcon(iconComplement);
+
+    // optional - only for FindPatternWidget
+    usePatternNamesCheckBox = new QCheckBox(tr("Use pattern name"));
+    usePatternNamesCheckBox->setToolTip(tr("Use names of patterns as annotations names. In case the patterns are in FASTA format"));
+    usePatternNamesCheckBox->setVisible(false);
+    connect(usePatternNamesCheckBox, SIGNAL(clicked(bool)), annotationNameEdit, SLOT(setDisabled(bool)));
 
     if (layoutMode ==  normal) {
         groupNameLabel->setText(tr("Group name"));
@@ -387,6 +398,7 @@ void CreateAnnotationWidgetController::initLayout(AnnotationWidgetMode layoutMod
         gridLayoutParams->addWidget(locationLabel, 2, 0, 1, 1);
         gridLayoutParams->addWidget(locationEdit, 2, 1, 1, 1);
         gridLayoutParams->addWidget(complementButton, 2, 2, 1, 1);
+        gridLayoutParams->addWidget(usePatternNamesCheckBox, 3, 0, 1, 2);
     }
     else {
         groupNameLabel->setText(tr("Group name:"));
@@ -402,11 +414,19 @@ void CreateAnnotationWidgetController::initLayout(AnnotationWidgetMode layoutMod
         gridLayoutParams->addWidget(locationLabel, 4, 0, 1, 1);
         gridLayoutParams->addWidget(locationEdit, 5, 0, 1, 1);
         gridLayoutParams->addWidget(complementButton, 5, 1, 1, 1);
+        gridLayoutParams->addWidget(usePatternNamesCheckBox, 6, 0, 1, 2);
     }
 
     // Set layout, connect slots
-    mainLayout->addWidget(groupSaveAnnots);
-    mainLayout->addWidget(groupAnnotParams);
+    ShowHideSubgroupWidget *save = new ShowHideSubgroupWidget("save_params", tr("Save annotation(s) to"), saveAnnotsWgt, false);
+    if (layoutMode == normal) {
+        save->setPermanentlyOpen(true);
+        annotParamsWidget->setPermanentlyOpen(true);
+    }
+
+    mainLayout->addWidget(save);
+    mainLayout->addWidget(annotParamsWidget);
+
     w->setLayout(mainLayout);
 
     QWidget::setTabOrder(groupNameEdit, groupNameButton);
@@ -418,7 +438,7 @@ void CreateAnnotationWidgetController::initLayout(AnnotationWidgetMode layoutMod
     QObject::connect(newFileRB, SIGNAL(toggled(bool)), newFileButton, SLOT(setEnabled(bool)));
     QObject::connect(existingObjectRB, SIGNAL(toggled(bool)), existingObjectCombo, SLOT(setEnabled(bool)));
     QObject::connect(existingObjectRB, SIGNAL(toggled(bool)), existingObjectButton, SLOT(setEnabled(bool)));
-    QObject::connect(useAutoAnnotationsRB, SIGNAL(toggled(bool)), groupAnnotParams, SLOT(setDisabled(bool)));
+    QObject::connect(useAutoAnnotationsRB, SIGNAL(toggled(bool)), annotParamsWidget, SLOT(setDisabled(bool)));
 }
 
 
