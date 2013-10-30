@@ -6,6 +6,8 @@
 #include "faidx.h"
 #include "sam.h"
 
+extern char * SAMTOOLS_ERROR_MESSAGE;
+
 #define TYPE_BAM  1
 #define TYPE_READ 2
 
@@ -43,6 +45,7 @@ samfile_t *samopen(const char *fn, const char *mode, const void *aux)
 {
 	samfile_t *fp;
 	fp = (samfile_t*)calloc(1, sizeof(samfile_t));
+	SAMTOOLS_ERROR_MESSAGE = NULL;
 	if (strchr(mode, 'r')) { // read
 		fp->type |= TYPE_READ;
 		if (strchr(mode, 'b')) { // binary
@@ -127,6 +130,7 @@ void samclose(samfile_t *fp)
 
 int samread(samfile_t *fp, bam1_t *b)
 {
+	SAMTOOLS_ERROR_MESSAGE = NULL;
 	if (fp == 0 || !(fp->type & TYPE_READ)) return -1; // not open for reading
 	if (fp->type & TYPE_BAM) return bam_read1(fp->x.bam, b);
 	else return sam_read1(fp->x.tamr, fp->header, b);
@@ -164,6 +168,7 @@ int sampileup(samfile_t *fp, int mask, bam_pileup_f func, void *func_data)
 char *samfaipath(const char *fn_ref)
 {
 	char *fn_list = 0;
+	SAMTOOLS_ERROR_MESSAGE = NULL;
 	if (fn_ref == 0) return 0;
 	fn_list = (char *)calloc(strlen(fn_ref) + 5, 1);
 	strcat(strcpy(fn_list, fn_ref), ".fai");

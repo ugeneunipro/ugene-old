@@ -1,3 +1,4 @@
+#include <signal.h>
 #include <zlib.h>
 #include <stdio.h>
 #include <ctype.h>
@@ -13,6 +14,8 @@
 #include "sam_header.h"
 #include "kseq.h"
 #include "khash.h"
+
+char * SAMTOOLS_ERROR_MESSAGE;
 
 KSTREAM_INIT(gzFile, gzread, 16384)
 KHASH_MAP_INIT_STR(ref, uint64_t)
@@ -164,7 +167,8 @@ static inline uint8_t *alloc_data(bam1_t *b, int size)
 static inline void parse_error(int64_t n_lines, const char * __restrict msg)
 {
 	fprintf(stderr, "Parse error at line %lld: %s\n", (long long)n_lines, msg);
-	abort();
+	SAMTOOLS_ERROR_MESSAGE = msg;
+	raise(SIGABRT);
 }
 static inline void append_text(bam_header_t *header, kstring_t *str)
 {
@@ -177,14 +181,15 @@ static inline void append_text(bam_header_t *header, kstring_t *str)
         if ( !header->text ) 
         {
             fprintf(stderr,"realloc failed to alloc %ld bytes\n", y);
-            abort();
+            SAMTOOLS_ERROR_MESSAGE = "realloc failed to alloc bytes\n";
+            raise(SIGABRT);
         }
     }
     // Sanity check
     if ( header->l_text+str->l+1 >= header->n_text )
     {
         fprintf(stderr,"append_text FIXME: %ld>=%ld, x=%ld,y=%ld\n",  header->l_text+str->l+1,header->n_text,x,y);
-        abort();
+        raise(SIGABRT);
     }
 	strncpy(header->text + header->l_text, str->s, str->l+1); // we cannot use strcpy() here.
 	header->l_text += str->l + 1;
