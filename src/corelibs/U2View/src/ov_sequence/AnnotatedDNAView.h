@@ -153,6 +153,8 @@ public:
      */
     QString tryAddObject(GObject* obj);
 
+    CodonTableView* getCodonTableView() {return codonTableView; }
+
 protected:
     virtual QWidget* createWidget();
     virtual bool onObjectRemoved(GObject* o);

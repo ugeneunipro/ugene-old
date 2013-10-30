@@ -161,6 +161,12 @@ static bool parseCutFile(const QString& url, char* amino, int* prob, char* n1, c
     return false;
 }
 
+static void regCodon(DNATranslationRegistry *treg, char symbol, const char *shortName, QString fullName, const char* link, DNACodonGroup gr) {
+    DNACodon *c = new DNACodon(symbol, QString(shortName), fullName, gr);
+    c->setLink(link);
+    treg->registerDNACodon(c);
+};
+
 void DNAAlphabetRegistryImpl::reg4tables(const char* amino, const char* role, const char* n1, const char* n2, const char* n3,
     const QString& id, const QString& name) 
 {
@@ -561,7 +567,31 @@ void DNAAlphabetRegistryImpl::initBaseTranslations() {
                     regPtables(amino, prob, n1, n2, n3, "BackTranslation/" + fileName, readableName);
             }
         }
-    } 
+    }
+
+    // init codon info
+    regCodon(treg, 'A', "Ala", tr("Alanine"),       "http://en.wikipedia.org/wiki/Alanine",         DNACodonGroup_NONPOLAR);
+    regCodon(treg, 'C', "Cys", tr("Cysteine"),      "http://en.wikipedia.org/wiki/Cysteine" ,       DNACodonGroup_POLAR);
+    regCodon(treg, 'D', "Asp", tr("Aspartic acid"), "http://en.wikipedia.org/wiki/Aspartic_acid",   DNACodonGroup_ACIDIC);
+    regCodon(treg, 'E', "Glu", tr("Glutamic acid"), "http://en.wikipedia.org/wiki/Glutamic_acid",   DNACodonGroup_ACIDIC);
+    regCodon(treg, 'F', "Phe", tr("Phenylalanine"), "http://en.wikipedia.org/wiki/Phenylalanine",   DNACodonGroup_NONPOLAR);
+    regCodon(treg, 'G', "Gly", tr("Glycine"),       "http://en.wikipedia.org/wiki/Glycine",         DNACodonGroup_NONPOLAR);
+    regCodon(treg, 'H', "His", tr("Histidine"),     "http://en.wikipedia.org/wiki/Histidine",       DNACodonGroup_BASIC);
+    regCodon(treg, 'I', "Ile", tr("Isoleucine"),    "http://en.wikipedia.org/wiki/Isoleucine",      DNACodonGroup_NONPOLAR);
+    regCodon(treg, 'K', "Lys", tr("Lysine"),        "http://en.wikipedia.org/wiki/Lysine",          DNACodonGroup_BASIC);
+    regCodon(treg, 'L', "Leu", tr("Leucine"),       "http://en.wikipedia.org/wiki/Leucine",         DNACodonGroup_NONPOLAR);
+    regCodon(treg, 'M', "Met", tr("Methionine"),    "http://en.wikipedia.org/wiki/Methionine",      DNACodonGroup_NONPOLAR);
+    regCodon(treg, 'N', "Asn", tr("Asparagine"),    "http://en.wikipedia.org/wiki/Asparagine",      DNACodonGroup_POLAR);
+    regCodon(treg, 'P', "Pro", tr("Proline"),       "http://en.wikipedia.org/wiki/Proline",         DNACodonGroup_NONPOLAR);
+    regCodon(treg, 'Q', "Gln", tr("Glutamine"),     "http://en.wikipedia.org/wiki/Glutamine",       DNACodonGroup_POLAR);
+    regCodon(treg, 'R', "Arg", tr("Arginine"),      "http://en.wikipedia.org/wiki/Arginine",        DNACodonGroup_BASIC);
+    regCodon(treg, 'S', "Ser", tr("Serine"),        "http://en.wikipedia.org/wiki/Serine",          DNACodonGroup_POLAR);
+    regCodon(treg, 'T', "Thr", tr("Threonine"),     "http://en.wikipedia.org/wiki/Threonine",       DNACodonGroup_POLAR);
+    regCodon(treg, 'V', "Val", tr("Valine"),        "http://en.wikipedia.org/wiki/Valine",          DNACodonGroup_NONPOLAR);
+    regCodon(treg, 'W', "Trp", tr("Tryptophan"),    "http://en.wikipedia.org/wiki/Tryptophan",      DNACodonGroup_NONPOLAR);
+    regCodon(treg, 'Y', "Tyr", tr("Tyrosine"),      "http://en.wikipedia.org/wiki/Tyrosine",        DNACodonGroup_POLAR);
+    regCodon(treg, '*', "*",   tr("Stop codon"),    "http://en.wikipedia.org/wiki/Stop_codon",      DNACodonGroup_STOP);
+
 }
 
 } //namespace

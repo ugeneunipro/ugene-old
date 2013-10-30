@@ -1,6 +1,8 @@
 #ifndef _U2_CODON_TABLE_H_
 #define _U2_CODON_TABLE_H_
 
+#include <U2Core/DNATranslation.h>
+
 #include <U2View/GSequenceLineViewAnnotated.h>
 #include <U2View/ADVSplitWidget.h>
 #include <U2View/ADVSequenceWidget.h>
@@ -28,15 +30,23 @@ public:
 
 public slots:
     void sl_setVisible();
+    void sl_setAminoTranslation();
+    void sl_onSequenceFocusChanged(ADVSequenceWidget* from, ADVSequenceWidget* to);
 private:
-    void addItemToTable(QTableWidget *table, int row, int column, QString text, QColor backgroundColor = QColor(0, 0, 0, 0),
-                        int rowSpan = 1, int columnSpan = 1);
-    void addItemToTable(QTableWidget *table, int row, int column, QString text, int rowSpan = 1, int columnSpan = 1);
+    QTableWidget *table;
 
-    void addItemToTable(QTableWidget *table, int row, int column,
+    void addItemToTable(int row, int column, QString text, QColor backgroundColor = QColor(0, 0, 0, 0),
+                        int rowSpan = 1, int columnSpan = 1);
+    void addItemToTable(int row, int column, QString text, int rowSpan = 1, int columnSpan = 1);
+    void addItemToTable(int row, int column,
                         QString text, QColor backgroundColor,
                         QString link,
                         int rowSpan = 1, int columnSpan = 1);
+    void addItemToTable(int row, int column, DNACodon *codon);
+
+    void setAminoTranslation(const QString &trId);
+    void spanEqualCells();
+    QColor getColor(DNACodonGroup gr);
 };
 
 class CodonTableAction : public ADVSequenceWidgetAction {

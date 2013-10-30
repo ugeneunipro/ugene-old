@@ -106,11 +106,20 @@ void DNATranslationRegistry::registerDNATranslation(DNATranslation* t) {
     translations.push_back(t);
 }
 
+void DNATranslationRegistry::registerDNACodon(DNACodon* codon) {
+    codons.push_back(codon);
+}
+
 DNATranslationRegistry::~DNATranslationRegistry() {
     foreach(DNATranslation* t, translations) {
         delete t;
     }
     translations.clear();
+
+    foreach(DNACodon* c, codons) {
+        delete c;
+    }
+    codons.clear();
 }
 
 QList<DNATranslation*> DNATranslationRegistry::lookupTranslation(const DNAAlphabet* srcAlphabet, DNATranslationType type) {
@@ -173,6 +182,15 @@ DNATranslation* DNATranslationRegistry::lookupComplementTranslation(const DNAAlp
     } else {
         FAIL("Complement translation not supported for alphabet", NULL);
     }
+}
+
+DNACodon* DNATranslationRegistry::lookupCodon(char symbol) {
+    foreach (DNACodon* c, codons) {
+        if (c->getSymbol() == symbol) {
+            return c;
+        }
+    }
+    return NULL;
 }
 
 }//namespace

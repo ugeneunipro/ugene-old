@@ -99,6 +99,34 @@ protected:
     const DNAAlphabet* dstAlphabet;
 };
 
+enum DNACodonGroup {
+    DNACodonGroup_POLAR,
+    DNACodonGroup_NONPOLAR,
+    DNACodonGroup_BASIC,
+    DNACodonGroup_ACIDIC,
+    DNACodonGroup_STOP
+};
+
+class U2CORE_EXPORT DNACodon {
+public:
+    DNACodon(char s, QString code, QString name, DNACodonGroup gr)
+        : symbol(s), threeLetterCode(code), fullName(name), group(gr) {}
+    virtual ~DNACodon(){}
+    void setLink(QString _link) {link = _link; }
+
+    char            getSymbol() const { return symbol; }
+    QString         getTreeLetterCode() const { return threeLetterCode; }
+    QString         getFullName() const { return fullName; }
+    DNACodonGroup   getCodonGroup() const { return group; }
+    QString         getLink() const {return link; }
+private:
+    char            symbol;
+    QString         threeLetterCode;
+    QString         fullName;
+    QString         link;
+    DNACodonGroup   group;
+};
+
 
 class U2CORE_EXPORT DNATranslationRegistry : public QObject {
 public:
@@ -115,6 +143,8 @@ public:
 
     void registerDNATranslation(DNATranslation* t);
 
+    void registerDNACodon(DNACodon* codon);
+
     QList<DNATranslation*> lookupTranslation(const DNAAlphabet* srcAlphabet, DNATranslationType type);
 
     DNATranslation* lookupTranslation(const DNAAlphabet* srcAlphabet, DNATranslationType type, const QString& id);
@@ -125,8 +155,11 @@ public:
 
     DNATranslation* lookupComplementTranslation(const DNAAlphabet* srcAlphabet);
 
+    DNACodon* lookupCodon(char symbol);
+
 private:
     QList<DNATranslation*> translations;
+    QList<DNACodon*> codons;
 };
 
 } //namespace

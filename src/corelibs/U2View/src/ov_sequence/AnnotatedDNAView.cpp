@@ -101,8 +101,12 @@ AnnotatedDNAView::AnnotatedDNAView(const QString& viewName, const QList<U2Sequen
     focusedWidget = NULL;
     replacedSeqWidget = NULL;
 
-    codonTableView = NULL;
-    showCodonTableAction = NULL;
+    codonTableView = new CodonTableView(this);
+    connect(this, SIGNAL(si_focusChanged(ADVSequenceWidget*,ADVSequenceWidget*)),
+            codonTableView, SLOT(sl_onSequenceFocusChanged(ADVSequenceWidget*,ADVSequenceWidget*)));
+    showCodonTableAction = new CodonTableAction(codonTableView);
+    showCodonTableAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_T));
+    showCodonTableAction->setEnabled(false);
 
     createAnnotationAction = (new ADVAnnotationCreation(this))->getCreateAnnotationAction();
 
@@ -167,7 +171,6 @@ QWidget* AnnotatedDNAView::createWidget() {
     mainSplitter->setMaximumHeight(200);
     connect(mainSplitter, SIGNAL(splitterMoved(int, int)), SLOT(sl_splitterMoved(int, int)));
 
-    codonTableView = new CodonTableView(this);
     mainSplitter->addWidget(codonTableView);
     mainSplitter->setSizes(QList <int>() << codonTableView->maximumHeight() );
 
@@ -481,12 +484,6 @@ void AnnotatedDNAView::buildStaticToolbar(QToolBar* tb) {
         }
     }
 
-    if (codonTableView) {
-        showCodonTableAction = new CodonTableAction(codonTableView);
-        showCodonTableAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_T));
-        tb->addAction(showCodonTableAction);
-    }
-
     GObjectView::buildStaticToolbar(tb);
 
     tb->addSeparator();
@@ -660,7 +657,10 @@ void AnnotatedDNAView::addSequenceWidget(ADVSequenceWidget* v) {
         c->addSequenceWidget(v);
         addAutoAnnotations(c);
         addGraphs(c);
-        addCodonTable(c);
+        if (c->getAminoTT() != NULL) {
+            addCodonTable(c);
+            showCodonTableAction->setEnabled(true);
+        }
     }
     scrolledWidgetLayout->addWidget(v);
     v->setVisible(true);
@@ -1004,8 +1004,7 @@ void AnnotatedDNAView::addCodonTable(ADVSequenceObjectContext *seqCtx) {
     }
 
     foreach (ADVSequenceWidget* seqWidget, seqCtx->getSequenceWidgets()) {
-        CodonTableAction *ctAction = new CodonTableAction(codonTableView);
-        seqWidget->addADVSequenceWidgetAction(ctAction);
+        seqWidget->addADVSequenceWidgetAction(showCodonTableAction);
     }
 }
 

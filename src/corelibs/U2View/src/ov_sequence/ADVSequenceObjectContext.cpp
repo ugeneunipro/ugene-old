@@ -33,6 +33,7 @@
 #include <U2Core/GObjectRelationRoles.h>
 #include <U2Core/GObjectUtils.h>
 #include <U2Core/U2SafePoints.h>
+#include <U2View/CodonTable.h>
 
 
 namespace U2 {
@@ -53,12 +54,14 @@ ADVSequenceObjectContext::ADVSequenceObjectContext(AnnotatedDNAView* v, U2Sequen
         if (!aminoTs.empty()) {
             aminoTT = aminoTT == NULL ? tr->getStandardGeneticCodeTranslation(al) : aminoTT;
             translations = new QActionGroup(this);
+            CodonTableView *ct = v->getCodonTableView();
             foreach(DNATranslation* t, aminoTs) {
                 QAction* a = translations->addAction(t->getTranslationName());
                 a->setCheckable(true);
                 a->setChecked(aminoTT == t);
                 a->setData(QVariant(t->getTranslationId()));
                 connect(a, SIGNAL(triggered()), SLOT(sl_setAminoTranslation()));
+                connect(a, SIGNAL(triggered()), ct, SLOT(sl_setAminoTranslation()));
             }
             visibleFrames = new QActionGroup(this);
             visibleFrames->setExclusive(false);
