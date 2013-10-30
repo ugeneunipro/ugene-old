@@ -294,21 +294,7 @@ void ConvertToSQLiteDialog::accept() {
     } else if(!destinationUrl.isLocalFile()) {
         ui.destinationUrlEdit->setFocus(Qt::OtherFocusReason);
         QMessageBox::critical(this, windowTitle(), BAMDbiPlugin::tr("Destination URL must point to a local file"));
-    } else if(!GUrlUtils::canWriteFile(destinationUrl.getURLString())){
-        QString defaultDataDestinationUrl;
-
-        defaultDataDestinationUrl = GUrlUtils::getDefaultDataPath();
-        defaultDataDestinationUrl += "/" + destinationUrl.fileName();
-
-        QMessageBox::critical(this, windowTitle(), BAMDbiPlugin::tr("Cannot write to %1. You may change permissions or a file path. Destination is changed to default UGENE data path: %2")
-            .arg(destinationUrl.getURLString()).arg(defaultDataDestinationUrl));
-
-        if (!defaultDataDestinationUrl.isEmpty()){
-            ui.destinationUrlEdit->setText(defaultDataDestinationUrl);
-        }
-        
-
-    }else{
+    } else {
         if (!checkReferencesState()) {
             return;
         }
@@ -339,17 +325,19 @@ void ConvertToSQLiteDialog::accept() {
                                                BAMDbiPlugin::tr("Append"), 
                                                BAMDbiPlugin::tr("Cancel"), 2);
             switch(result) {
-                case 0: 
-                    {
-                        bool ok = QFile::remove(destinationUrl.getURLString());
-                        if(!ok) {
-                            QMessageBox::critical(this, windowTitle(), BAMDbiPlugin::tr("Destination file '%1' cannot be removed").arg(destinationUrl.getURLString()));
-                            return;
-                        }    
-                    }
-                case 1:
-                    QDialog::accept();
-                    break;
+            case 0: 
+                {
+                    bool ok = QFile::remove(destinationUrl.getURLString());
+                    if(!ok) {
+                        QMessageBox::critical(this, windowTitle(), BAMDbiPlugin::tr("Destination file '%1' cannot be removed").arg(destinationUrl.getURLString()));
+                        return;
+                    }    
+                }
+                QDialog::accept();
+                break;
+            case 1:
+                QDialog::accept();
+                break;
             }
         } else {
             QDialog::accept();
