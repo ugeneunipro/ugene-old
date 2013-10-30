@@ -36,7 +36,7 @@
 #define TIMEOUT 240000
 #endif
 #define LONG_TIMEOUT 7200000
-#define NUMBER_OF_TESTS_IN_SUTIE 300
+#define NUMBER_OF_TESTS_IN_SUTIE 350
 #define GUITESTING_REPORT_PREFIX "GUITesting"
 
 namespace U2 {
@@ -104,6 +104,7 @@ void GUITestLauncher::firstTestRunCheck(const QString& testName) {
 }
 
 bool GUITestLauncher::initGUITestBase() {
+    GUITestBase* b = AppContext::getGUITestBase();
     QList<GUITest *> list = AppContext::getGUITestBase()->getTests();
     if (list.isEmpty()) {
         setError(tr("No tests to run"));
