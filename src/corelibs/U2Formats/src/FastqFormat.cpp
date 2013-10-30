@@ -63,30 +63,38 @@ FormatCheckResult FastqFormat::checkRawData(const QByteArray& rawData, const GUr
     const char* data = rawData.constData();
     int size = rawData.size();
 
-    int sequenceCount = 0, qualCount = 0;
+    int sequenceCount = 0;
+    int qualCount = 0;
     int state = STATE_START_PARSING;
 
     QList<QByteArray> lines = rawData.split('\n');
 
+    int lastSequenceLength = 0;
+    int lastQualityLength = 0;
     foreach (const QByteArray& line, lines) {
         if (line.isEmpty()) {
             continue;
         }
-        if (line.startsWith('@')
-            && (STATE_START_PARSING == state || STATE_QUALITY == state)
+        if (line.startsWith('@') &&
+            ((STATE_START_PARSING == state)  ||
+            (STATE_QUALITY == state && lastQualityLength == lastSequenceLength))
             && (line.length() > 1) && QChar(line.at(1)).isLetter()) {
             sequenceCount++;
             state = STATE_SEQ_HEADER;
+            lastSequenceLength = 0;
         } else if(line.startsWith('+') && STATE_SEQ == state){
             qualCount++;
             state = STATE_QUALITY_HEADER;
+            lastQualityLength = 0;
         } else if (STATE_SEQ_HEADER == state || STATE_SEQ == state) {
             if (!QChar(line[0]).isLetter()) {
                 return FormatDetection_NotMatched;
             }
             state = STATE_SEQ;
+            lastSequenceLength += line.length();
         } else if (STATE_QUALITY_HEADER == state || STATE_QUALITY == state) {
             state = STATE_QUALITY;
+            lastQualityLength += line.length();
         } else {
             return FormatDetection_NotMatched;
         }
@@ -97,7 +105,7 @@ FormatCheckResult FastqFormat::checkRawData(const QByteArray& rawData, const GUr
         return FormatDetection_NotMatched;
     }
 
-    //check whats every seq had its own qual
+    //check thats every seq had its own qual
     if (STATE_QUALITY_HEADER == state || STATE_QUALITY == state){
         if (sequenceCount != qualCount) {
             return FormatDetection_NotMatched;
