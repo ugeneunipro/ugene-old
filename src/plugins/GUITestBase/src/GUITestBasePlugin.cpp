@@ -178,6 +178,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 
     REGISTER_TEST(GUITest_regression_scenarios::test_2006);
     REGISTER_TEST(GUITest_regression_scenarios::test_2007);
+    REGISTER_TEST(GUITest_regression_scenarios::test_2012);
     REGISTER_TEST(GUITest_regression_scenarios::test_2021_1);
     REGISTER_TEST(GUITest_regression_scenarios::test_2021_2);
     REGISTER_TEST(GUITest_regression_scenarios::test_2021_3);
@@ -872,6 +873,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     // Common scenarios/Assembling/dna_assembly/conversions
     /////////////////////////////////////////////////////////////////////////
     REGISTER_TEST(GUITest_dna_assembly_conversions::test_0001);
+    REGISTER_TEST(GUITest_dna_assembly_conversions::test_0003);
     REGISTER_TEST(GUITest_dna_assembly_conversions::test_0004);
 
     /////////////////////////////////////////////////////////////////////////

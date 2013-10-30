@@ -30,6 +30,7 @@ namespace GUITest_dna_assembly_conversions {
 #define GUI_TEST_PREFIX "GUITest_dna_assembly_conversions_"
 
 GUI_TEST_CLASS_DECLARATION(test_0001)
+GUI_TEST_CLASS_DECLARATION(test_0003)
 GUI_TEST_CLASS_DECLARATION(test_0004)
 
 #undef GUI_TEST_PREFIX

@@ -22,6 +22,7 @@
 #include "api/GTMenu.h"
 #include "runnables/qt/MessageBoxFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/AlignShortReadsDialogFiller.h"
+#include "runnables/qt/MessageBoxFiller.h"
 
 #include "GTTestsDnaAssemblyConversions.h"
 #include "GTUtilsLog.h"
@@ -55,6 +56,36 @@ GUI_TEST_CLASS_DEFINITION( test_0001 ) {
     CHECK_SET_ERR( !l.hasError( ), "Error message expected in log" );
     GTFile::check( os, "_common_data/e_coli/NC_008253.gb.fasta" );
     GTFile::check( os, "_common_data/e_coli/e_coli_1000.gff.fasta" );
+}
+
+GUI_TEST_CLASS_DEFINITION( test_0003 ) {
+//     1. Click the menu Tools -> Align to reference -> Align short reads.
+//     2. Fill in the dialog:
+//     {Alignment method} BWA
+//     {Reference sequence} _common_data/e_coli/NC_008253.fa
+//     {Short reads} _common_data/bam/scerevisiae.bam.bai
+    GTLogTracer l;
+    AlignShortReadsFiller::Parameters parameters(
+        testDir + "_common_data/e_coli/",
+        "NC_008253.gb",
+        testDir + "_common_data/bam/",
+        "scerevisiae.bam.bai", 
+        AlignShortReadsFiller::Parameters::Bwa );
+
+    AlignShortReadsFiller *alignShortReadsFiller = new AlignShortReadsFiller( os, &parameters );
+    CHECK_OP( os, );
+    GTUtilsDialog::waitForDialog( os, alignShortReadsFiller );
+    CHECK_OP( os, );
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok));
+    CHECK_OP( os, );
+    QMenu *mainMenu = GTMenu::showMainMenu( os, MWMENU_TOOLS );
+    CHECK_OP( os, );
+    GTMenu::clickMenuItem( os, mainMenu, QStringList( ) << "Align to reference"
+        << "Align short reads" );
+    CHECK_OP( os, );
+    GTGlobals::sleep( 5000 );
+//     3. Click start:
+//     Expected: the error dialog appears. It tells that the short reads file has the unknown format.
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0004) {

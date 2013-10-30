@@ -52,6 +52,12 @@ void AlignShortReadsFiller::run() {
     GT_CHECK(assembleyButton, "assembleyButton is NULL");
     GTWidget::click(os, assembleyButton);
     CHECK_OP(os, );
+    GTGlobals::sleep(5000);
+    if (!dialog->isVisible()){
+        return;
+    }
+    QWidget* cancelButton = GTWidget::findWidget(os, "cancelButton", dialog);
+    GTWidget::click(os, cancelButton);
 }
 
 void AlignShortReadsFiller::setCommonParameters(QWidget* dialog) {

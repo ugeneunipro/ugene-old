@@ -1407,6 +1407,15 @@ GUI_TEST_CLASS_DEFINITION( test_2007 )
     CHECK_SET_ERR( initialMsaContent == finalMsaContent, "MSA has changed unexpectedly!" );
 }
 
+GUI_TEST_CLASS_DEFINITION( test_2012 ){
+    //1. Open {data/samples/CLUSTALW/COI.aln}.
+    GTFileDialog::openFile( os, dataDir + "samples/CLUSTALW/", "COI.aln" );
+
+    //2. Open the "General" tab on the options panel.
+    //3. Set focus to the reference sequence name line edit and enter 'm' into it.
+
+}
+
 GUI_TEST_CLASS_DEFINITION( test_2021_1 )
 {
     // 1. Open document "ma.aln" and save it to string
