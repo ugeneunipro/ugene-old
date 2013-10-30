@@ -43,21 +43,21 @@ public:
     CAP3SupportTaskSettings() 
     {
         openView = true;
-        bandExpansionSize = 20;
-        baseQualityDiffCutoff = 20;
-        baseQualityClipCutoff = 12;
-        maxQScoreSum = 200;
-        maxGapLength = 20;
-        gapPenaltyFactor = 6;
-        maxOverhangPercent = 20;
-        matchScoreFactor = 2;
-        mismatchScoreFactor = -5;
-        overlapSimilarityScoreCutoff = 900;
-        overlapLengthCutoff = 40;
-        overlapPercentIdentityCutoff = 80;
-        maxNumberOfWordMatches = 300;
-        clippingRange = 250;
-        reverseReads = true;
+        bandExpansionSize = defaultBandExpansionSize;
+        baseQualityDiffCutoff = defaultBaseQualityDiffCutoff;
+        baseQualityClipCutoff = defaultBaseQualityClipCutoff;
+        maxQScoreSum = defaultMaxQScoreSum;
+        maxGapLength = defaultMaxGapLength;
+        gapPenaltyFactor = defaultGapPenaltyFactor;
+        maxOverhangPercent = defaultMaxOverhangPercent;
+        matchScoreFactor = defaultMatchScoreFactor;
+        mismatchScoreFactor = defaultMismatchScoreFactor;
+        overlapSimilarityScoreCutoff = defaultOverlapSimilarityScoreCutoff;
+        overlapLengthCutoff = defaultOverlapLengthCutoff;
+        overlapPercentIdentityCutoff = defaultOverlapPercentIdentityCutoff;
+        maxNumberOfWordMatches = defaultMaxNumberOfWordMatches;
+        clippingRange = defaultClippingRange;
+        reverseReads = defaultReverseReads;
     }
     
     QStringList getArgumentsList();
@@ -81,6 +81,21 @@ public:
     int clippingRange;
     bool reverseReads;
 
+    static const int defaultBandExpansionSize = 20;
+    static const int defaultBaseQualityDiffCutoff = 20;
+    static const int defaultBaseQualityClipCutoff = 12;
+    static const int defaultMaxQScoreSum = 200;
+    static const int defaultMaxGapLength = 20;
+    static const int defaultGapPenaltyFactor = 6;
+    static const int defaultMaxOverhangPercent = 20;
+    static const int defaultMatchScoreFactor = 2;
+    static const int defaultMismatchScoreFactor = -5;
+    static const int defaultOverlapSimilarityScoreCutoff = 900;
+    static const int defaultOverlapLengthCutoff = 40;
+    static const int defaultOverlapPercentIdentityCutoff = 90;
+    static const int defaultMaxNumberOfWordMatches = 300;
+    static const int defaultClippingRange = 100;
+    static const bool defaultReverseReads = true;
 };
 
 class PrepareInputForCAP3Task : public Task {

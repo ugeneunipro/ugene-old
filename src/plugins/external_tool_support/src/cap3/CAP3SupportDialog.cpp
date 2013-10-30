@@ -46,6 +46,29 @@ CAP3SupportDialog::CAP3SupportDialog(CAP3SupportTaskSettings& s, QWidget* parent
     connect(removeAllButton, SIGNAL(clicked()), SLOT(sl_onRemoveAllButtonClicked()));
     connect(specifyOutputPathButton, SIGNAL(clicked()), SLOT(sl_onSpecifyOutputPathButtonClicked()));
 
+    initSettings();
+}
+
+void CAP3SupportDialog::initSettings() {
+    bandExpansionBox->setValue(settings.bandExpansionSize);
+    baseQualityDiffCutoffBox->setValue(settings.baseQualityDiffCutoff);
+    baseQualityClipCutoffBox->setValue(settings.baseQualityClipCutoff);
+    maxQScoreDiffBox->setValue(settings.maxQScoreSum);
+    maxGapLengthBox->setValue(settings.maxGapLength);
+    gapPenaltyFactorBox->setValue(settings.gapPenaltyFactor);
+    matchScoreFactorBox->setValue(settings.matchScoreFactor);
+    mismatchScoreFactorBox->setValue(settings.mismatchScoreFactor);
+    overlapLengthCutoffBox->setValue(settings.overlapLengthCutoff);
+    overlapPercentIdentityBox->setValue(settings.overlapPercentIdentityCutoff);
+    if (settings.reverseReads) {
+        reverseReadsBox->setChecked(true);
+    }
+    else {
+        reverseReadsBox->setChecked(false);
+    }
+    overlapSimilarityScoreCutoffBox->setValue(settings.overlapSimilarityScoreCutoff);
+    maxNumWordMatchesBox->setValue(settings.maxNumberOfWordMatches);
+    clippingRangeBox->setValue(settings.clippingRange);
 }
 
 void CAP3SupportDialog::accept()

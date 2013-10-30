@@ -237,20 +237,20 @@ void CAP3WorkerFactory::init() {
         CAP3Worker::tr("The directory for temporary files."));
 
     attributes << new Attribute(outputFile, BaseTypes::STRING_TYPE(), true, "result.ace");
-    attributes << new Attribute(clippingCutoff, BaseTypes::NUM_TYPE(), false, QVariant(12));
-    attributes << new Attribute(clippingRange, BaseTypes::NUM_TYPE(), false, QVariant(250));
-    attributes << new Attribute(diffCutoff, BaseTypes::NUM_TYPE(), false, QVariant(20));
-    attributes << new Attribute(diffMaxQscore, BaseTypes::NUM_TYPE(), false, QVariant(200));
-    attributes << new Attribute(matchScoreFactor, BaseTypes::NUM_TYPE(), false, QVariant(2));
-    attributes << new Attribute(mismatchScoreFactor, BaseTypes::NUM_TYPE(), false, QVariant(-5));
-    attributes << new Attribute(gapPenaltyFactor, BaseTypes::NUM_TYPE(), false, QVariant(6));
-    attributes << new Attribute(overlapSimScoreCutoff, BaseTypes::NUM_TYPE(), false, QVariant(900));
-    attributes << new Attribute(overlapLengthCutoff, BaseTypes::NUM_TYPE(), false, QVariant(40));
-    attributes << new Attribute(overlapPercIdCutoff, BaseTypes::NUM_TYPE(), false, QVariant(80));
-    attributes << new Attribute(maxNumWordMatches, BaseTypes::NUM_TYPE(), false, QVariant(300));
-    attributes << new Attribute(bandExpSize, BaseTypes::NUM_TYPE(), false, QVariant(20));
-    attributes << new Attribute(maxGapInOverlap, BaseTypes::NUM_TYPE(), false, QVariant(20));
-    attributes << new Attribute(assemblyReverse, BaseTypes::BOOL_TYPE(), false, QVariant(true));
+    attributes << new Attribute(clippingCutoff, BaseTypes::NUM_TYPE(), false, QVariant(CAP3SupportTaskSettings::defaultBaseQualityClipCutoff));
+    attributes << new Attribute(clippingRange, BaseTypes::NUM_TYPE(), false, QVariant(CAP3SupportTaskSettings::defaultClippingRange));
+    attributes << new Attribute(diffCutoff, BaseTypes::NUM_TYPE(), false, QVariant(CAP3SupportTaskSettings::defaultBaseQualityDiffCutoff));
+    attributes << new Attribute(diffMaxQscore, BaseTypes::NUM_TYPE(), false, QVariant(CAP3SupportTaskSettings::defaultMaxQScoreSum));
+    attributes << new Attribute(matchScoreFactor, BaseTypes::NUM_TYPE(), false, QVariant(CAP3SupportTaskSettings::defaultMatchScoreFactor));
+    attributes << new Attribute(mismatchScoreFactor, BaseTypes::NUM_TYPE(), false, QVariant(CAP3SupportTaskSettings::defaultMismatchScoreFactor));
+    attributes << new Attribute(gapPenaltyFactor, BaseTypes::NUM_TYPE(), false, QVariant(CAP3SupportTaskSettings::defaultGapPenaltyFactor));
+    attributes << new Attribute(overlapSimScoreCutoff, BaseTypes::NUM_TYPE(), false, QVariant(CAP3SupportTaskSettings::defaultOverlapSimilarityScoreCutoff));
+    attributes << new Attribute(overlapLengthCutoff, BaseTypes::NUM_TYPE(), false, QVariant(CAP3SupportTaskSettings::defaultOverlapLengthCutoff));
+    attributes << new Attribute(overlapPercIdCutoff, BaseTypes::NUM_TYPE(), false, QVariant(CAP3SupportTaskSettings::defaultOverlapPercentIdentityCutoff));
+    attributes << new Attribute(maxNumWordMatches, BaseTypes::NUM_TYPE(), false, QVariant(CAP3SupportTaskSettings::defaultMaxNumberOfWordMatches));
+    attributes << new Attribute(bandExpSize, BaseTypes::NUM_TYPE(), false, QVariant(CAP3SupportTaskSettings::defaultBandExpansionSize));
+    attributes << new Attribute(maxGapInOverlap, BaseTypes::NUM_TYPE(), false, QVariant(CAP3SupportTaskSettings::defaultMaxGapLength));
+    attributes << new Attribute(assemblyReverse, BaseTypes::BOOL_TYPE(), false, QVariant(CAP3SupportTaskSettings::defaultReverseReads));
     attributes << new Attribute(extToolPath, BaseTypes::STRING_TYPE(), true, QVariant(L10N::defaultStr()));
     attributes << new Attribute(tmpDir, BaseTypes::STRING_TYPE(), true, QVariant(L10N::defaultStr()));
 

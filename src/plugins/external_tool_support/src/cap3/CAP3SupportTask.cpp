@@ -263,6 +263,7 @@ QStringList CAP3SupportTaskSettings::getArgumentsList()
     res += "-n"; res += QString("%1").arg(mismatchScoreFactor);
     res += "-o"; res += QString("%1").arg(overlapLengthCutoff);
     res += "-p"; res += QString("%1").arg(overlapPercentIdentityCutoff);
+    res += "-r"; res += QString("%1").arg((int)reverseReads);
     res += "-s"; res += QString("%1").arg(overlapSimilarityScoreCutoff);
     res += "-t"; res += QString("%1").arg(maxNumberOfWordMatches);
     res += "-y"; res += QString("%1").arg(clippingRange);

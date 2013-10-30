@@ -41,6 +41,8 @@ private slots:
     void sl_onSpecifyOutputPathButtonClicked();
 private:
     CAP3SupportTaskSettings& settings;
+
+    void initSettings();
 };
 
 
