@@ -106,11 +106,19 @@ showInfoAction(0), exportToSamAction(0)
         const U2EntityRef& ref= gobject->getEntityRef();
         model = QSharedPointer<AssemblyModel>(new AssemblyModel(DbiConnection(ref.dbiRef, dbiOpStatus)));
         sl_assemblyLoaded();
+        CHECK_OP(dbiOpStatus, );
     }   
     onObjectAdded(gobject);
 }
 
 bool AssemblyBrowser::checkValid(U2OpStatus &os) {
+    if (dbiOpStatus.hasError()) {
+        os.setError(tr("Error opening open assembly browser for %1, assembly %2")
+            .arg(gobject->getDocument()->getURLString())
+            .arg(gobject->getGObjectName())) ;
+        return false;
+    }
+
     // before opening view, check for incorrect reference length attribute
     qint64 modelLen = model->getModelLength(os);
     CHECK_OP(os, false);
@@ -555,6 +563,8 @@ void AssemblyBrowser::sl_assemblyLoaded() {
     GTIMER(c1, t1, "AssemblyBrowser::sl_assemblyLoaded");
     LOG_OP(dbiOpStatus);
     U2Dbi * dbi = model->getDbiConnection().dbi;
+    CHECK(NULL != dbi, );
+
     assert(U2DbiState_Ready == dbi->getState());
 
     U2AssemblyDbi * assmDbi = dbi->getAssemblyDbi();

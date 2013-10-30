@@ -122,7 +122,12 @@ void DocumentUpdater::update() {
         if (!doc->isLoaded()) {
             continue;
         }
+
         QFileInfo fi(doc->getURLString());
+        if(!fi.exists()) { // file was removed from its directory
+            removedDocs.append(doc);
+        }
+
         QFile::Permissions perm= DocumentUtils::getPermissions(doc);
         if (perm==0) {// the document was not loaded or saved
             continue;
@@ -146,9 +151,6 @@ void DocumentUpdater::update() {
         if (fi.lastModified() != updTime && fi.exists()) { // file was modified
             outdatedDocs.append(doc);
         }
-        if(!fi.exists()) { // file was removed from its directory
-            removedDocs.append(doc);
-        }
     }
     
     if(!outdatedDocs.isEmpty())
@@ -171,12 +173,21 @@ bool DocumentUpdater::isAnyDialogOpened() const
 }
 
 bool DocumentUpdater::makeDecision(Document *doc, QListIterator<Document*> &iter) {
-    QMessageBox::StandardButton btn = QMessageBox::question(
-        dynamic_cast<QWidget *>(AppContext::getMainWindow()),
-        U2_APP_TITLE,
-        tr("Document '%1' was removed from its original directory. Do you wish to save it? "
-        "Otherwise it will be removed from current project.").arg(doc->getName()),
-        QMessageBox::Yes | QMessageBox::No | QMessageBox::NoToAll);
+    QMessageBox::StandardButton btn = QMessageBox::NoButton;
+
+    // don't try to save dbi format files, just delete from project
+    if (qobject_cast<DbiDocumentFormat*>(doc->getDocumentFormat())) {
+        btn = QMessageBox::No;
+    }
+
+    if (QMessageBox::NoButton == btn) {
+        btn = QMessageBox::question(
+            dynamic_cast<QWidget *>(AppContext::getMainWindow()),
+            U2_APP_TITLE,
+            tr("Document '%1' was removed from its original directory. Do you wish to save it? "
+            "Otherwise it will be removed from current project.").arg(doc->getName()),
+            QMessageBox::Yes | QMessageBox::No | QMessageBox::NoToAll);
+    }
 
     switch (btn) {
     case QMessageBox::Yes: {
