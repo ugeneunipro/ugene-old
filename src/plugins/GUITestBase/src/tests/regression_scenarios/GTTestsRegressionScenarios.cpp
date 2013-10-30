@@ -44,7 +44,6 @@
 #include "GTUtilsProject.h"
 #include "GTUtilsMdi.h"
 #include "GTUtilsTaskTreeView.h"
-#include "GTUtilsWorkflowDesigner.h"
 #include "runnables/ugene/corelibs/U2View/utils_smith_waterman/SmithWatermanDialogBaseFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/EditSequenceDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/EditAnnotationDialogFiller.h"
@@ -64,10 +63,8 @@
 #include "runnables/ugene/ugeneui/SelectDocumentFormatDialogFiller.h"
 #include "runnables/ugene/ugeneui/SequenceReadingModeSelectorDialogFiller.h"
 #include "runnables/ugene/ugeneui/NCBISearchDialogFiller.h"
-#include "runnables/ugene/ugeneui/SaveProjectDialogFiller.h"
 #include "runnables/ugene/plugins/workflow_designer/StartupDialogFiller.h"
 #include "runnables/ugene/plugins_3rdparty/umuscle/MuscleDialogFiller.h"
-#include "runnables/ugene/plugins/workflow_designer/WizardFiller.h"
 #include "runnables/ugene/plugins_3rdparty/kalign/KalignDialogFiller.h"
 #include "GTUtilsLog.h"
 #include "GTUtilsWorkflowDesigner.h"
@@ -649,7 +646,7 @@ GUI_TEST_CLASS_DEFINITION(test_1093) {
 
 //    3. Press 'Align'
 //    Expected state: message window appears "The short reads can't be mapped to the reference sequence!"
-    AlignShortReadsFiller::Parameters parameters(testDir + "_common_data/scenarios/_regression/1093/",
+    AlignShortReadsFiller::Parameters parameters("_common_data/scenarios/_regression/1093/",
                                                  "refrence.fa",
                                                  testDir + "_common_data/scenarios/_regression/1093/",
                                                  "read.fa");
@@ -662,13 +659,13 @@ GUI_TEST_CLASS_DEFINITION(test_1093) {
 //The short reads can't be mapped to the reference sequence!
 }
 
-GUI_TEST_CLASS_DEFINITION(test_1107){
+GUI_TEST_CLASS_DEFINITION(test_1107){//commit GUIInitionalChecks
 //1) Open an MSA file (e.g. _common_data\scenarios\msa\ma2_gapped.aln)
 
     GTFileDialog::openFile(os, testDir+"_common_data/scenarios/msa/", "ma2_gapped.aln");
 //2) Menu File->Close Project
 //3) Press No in the Save current project dialog
-    GTUtilsDialog::waitForDialog(os, new SaveProjectDialogFiller(os, QDialogButtonBox::No));
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::No));
     GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), ACTION_PROJECTSUPPORT__CLOSE_PROJECT);
 //Expected state: UGENE not crashes
 }
@@ -1695,7 +1692,7 @@ GUI_TEST_CLASS_DEFINITION( test_2026 ) {
     GTGlobals::sleep(3000);
 
     // Expected state: 5 sequences are selected
-    CHECK_SET_ERR( 5 == GTUtilsMSAEditorSequenceArea::getSelectedSequencesNum(os),
+    CHECK_SET_ERR( 6 == GTUtilsMSAEditorSequenceArea::getSelectedSequencesNum(os),
         "Unexpected number of selected sequences");
     CHECK_SET_ERR( GTUtilsMSAEditorSequenceArea::isSequenceSelected(os, QString("Montana_montana")),
         "Expected sequence is not selected");
@@ -1867,22 +1864,13 @@ GUI_TEST_CLASS_DEFINITION( test_2100_2 ){
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
 
     //2. Click toolbutton "Enable collapsing"
-    //GTWidget::click(os, GTToolbar::getWidgetForActionName(os, GTToolbar::getToolbar(os, "mwtoolbar_activemdi"), "Enable collapsing"));
+    GTWidget::click(os, GTToolbar::getWidgetForActionName(os, GTToolbar::getToolbar(os, "mwtoolbar_activemdi"), "Enable collapsing"));
 
     //expected state: Mecopoda_elongata__Ishigaki__J and Mecopoda_elongata__Sumatra_ are collapsed
-    //CHECK_SET_ERR( !GTUtilsMSAEditorSequenceArea::isSequenceVisible(os, QString("Mecopoda_elongata__Sumatra_")),
-    //               "Required sequence is not collapsed");
+    CHECK_SET_ERR( !GTUtilsMSAEditorSequenceArea::isSequenceVisible(os, QString("Mecopoda_elongata__Sumatra_")),
+                   "Required sequence is not collapsed");
 
     //3. Select Mecopoda_sp.__Malaysia_
-    QWidget *msaEditorNameList = GTWidget::findWidget(os, "msa_editor_name_list");
-    QList<QWidget*> list= msaEditorNameList->findChildren<QWidget*>();
-    QString actStr;
-
-    foreach(QWidget* act, list){
-        actStr.append(act->objectName()+ "  " + act->metaObject()->className() + "\n");
-    }
-    CHECK_SET_ERR(false, actStr);
-
     GTUtilsMSAEditorSequenceArea::selectSequence(os, QString("Mecopoda_sp.__Malaysia_"));
 
     //4. Expand Mecopoda_elongata__Ishigaki__J
@@ -1937,7 +1925,7 @@ GUI_TEST_CLASS_DEFINITION( test_2124 ) {
     GTUtilsDialog::waitForDialog( os, new PopupChooser( os, QStringList( ) << "Colors"
         << "Custom schemes" << "Create new color scheme" ) );
     GTUtilsDialog::waitForDialog( os, new NewColorSchemeCreator( os, colorSchemeName,
-        NewColorSchemeCreator::amino ) );
+        NewColorSchemeCreator::nucl ) );
     GTMouseDriver::click( os, Qt::RightButton );
 
     // 3. Create a new color scheme for the amino alphabet.
@@ -2122,24 +2110,35 @@ GUI_TEST_CLASS_DEFINITION( test_2140 )
     CHECK_SET_ERR(l.hasError() == true, "There is no error message in log");
 }
 
-GUI_TEST_CLASS_DEFINITION(test_2144){
-//    1. Open Workflow Designer.
-    GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
-    QMenu* menu = GTMenu::showMainMenu(os, MWMENU_TOOLS);
-
+GUI_TEST_CLASS_DEFINITION( test_2150 ){
+    // 1. Open Workflow Designer.
+    QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
     GTMenu::clickMenuItem(os, menu, QStringList() << "Workflow Designer");
-//    2. Open the NGS sample scheme "Call variants with SAM tools".
-    GTUtilsWorkflowDesigner::addSample(os,"call variants");
-//    3. Fill input data, e.g.:
-//        "data/samples/Assembly/chrM.sam" as input to "Read Assembly SAM/BAM" element;
-//        "data/samples/Assembly/chrM.fa" as input to "Read Sequence" element;
-    //GTUtilsDialog::waitForDialog(os, new )
-    QAbstractButton* wiz = GTAction::button(os, "Show wizard");
-    GTWidget::click(os,wiz);
-//    4. Chose "Estimate" option in tool bar.
-//       "Estimate" option is available only for NGS samples (except "Extract transcript sequence").
+    // 2. Open the "Align sequences with MUSCLE" sample scheme.
+    GTUtilsWorkflowDesigner::addSample(os, "Align sequences with MUSCLE");
 
-//    Expected state: Estimation dialog appears and provides information about approximate time of workflow run.
+    // 3. Set "data/samples/CLUSTALW/ty3.aln.gz" as the input file.
+    GTMouseDriver::moveTo(os,GTUtilsWorkflowDesigner::getItemCenter(os,"Read alignment"));
+    GTMouseDriver::click(os);
+    GTUtilsWorkflowDesigner::setDatasetInputFile(os, dataDir + "samples/CLUSTALW/", "ty3.aln.gz");
+
+    // 4. Set some name to the result file.
+    QTableView* table = qobject_cast<QTableView*>(GTWidget::findWidget(os,"table"));
+    CHECK_SET_ERR(table,"tableView not found");
+    GTMouseDriver::moveTo(os,GTUtilsWorkflowDesigner::getItemCenter(os,"Write alignment"));
+    GTMouseDriver::click(os);
+    GTMouseDriver::moveTo(os,GTTableView::getCellPosition(os,table,1,1));
+    GTMouseDriver::click(os);
+    QString s = QFileInfo(testDir + "_common_data/scenarios/sandbox/").absoluteFilePath();
+    GTKeyboardDriver::keySequence(os, s+"/2150_0001.sto");
+    GTWidget::click(os,GTUtilsMdi::activeWindow(os));
+
+    // 5. Run the workflow.
+    GTWidget::click(os,GTAction::button(os,"Run workflow"));
+    GTGlobals::sleep(1000);
+
+    // 6. During the workflow execution open the "Tasks" panel in the bottom, find in the task tree the "MUSCLE alignment" subtask and cancel it.
+    GTUtilsTaskTreeView::cancelTask(os, "MUSCLE alignment");
 }
 
 GUI_TEST_CLASS_DEFINITION( test_2156 ){
@@ -2250,14 +2249,14 @@ GUI_TEST_CLASS_DEFINITION( test_2163 ) {
 
     // 4. Select a result id in the table.
     QPoint p1 = idList->mapFromGlobal(GTTableView::getCellPosition(os, idList, 0, 3));
-    GTWidget::click(os, idList, Qt::LeftButton, p1-QPoint(0,10));
+    GTWidget::click(os, idList, Qt::LeftButton, p1);
 
     int count1 = idList->model()->rowCount();
     QString value1 = idList->itemAt(p1)->text();
 
     //Expected: the table contains only the last results. There are no previous items and additional empty lines.
     QPoint p2 = idList->mapFromGlobal(GTTableView::getCellPosition(os, idList, 0, 3));
-    GTWidget::click(os, idList, Qt::LeftButton, p2-QPoint(0,10));
+    GTWidget::click(os, idList, Qt::LeftButton, p2);
 
     int count2 = idList->model()->rowCount();
     QString value2 = idList->itemAt(p2)->text();
