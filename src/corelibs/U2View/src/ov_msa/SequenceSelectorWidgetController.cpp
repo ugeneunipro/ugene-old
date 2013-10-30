@@ -35,6 +35,7 @@ SequenceSelectorWidgetController::SequenceSelectorWidgetController(MSAEditor* _m
 
     seqLineEdit->setText(msa->getReferenceRowName());
     seqLineEdit->setCursorPosition(CURSOR_START_POSITION);
+    seqLineEdit->setObjectName("sequenceLineEdit");
     completer = new BaseCompleter(filler, seqLineEdit);
     updateCompleter();
 

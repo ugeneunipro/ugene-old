@@ -1412,8 +1412,30 @@ GUI_TEST_CLASS_DEFINITION( test_2012 ){
     GTFileDialog::openFile( os, dataDir + "samples/CLUSTALW/", "COI.aln" );
 
     //2. Open the "General" tab on the options panel.
-    //3. Set focus to the reference sequence name line edit and enter 'm' into it.
+    GTWidget::click(os, GTWidget::findWidget(os, "OP_MSA_GENERAL"));
+    GTGlobals::sleep(500);
+    QLineEdit *sequencelineEdit = (QLineEdit*)GTWidget::findWidget(os, "sequenceLineEdit");
+    CHECK(NULL != sequencelineEdit, );
 
+    GTLineEdit::setText(os, sequencelineEdit, "m");
+    GTGlobals::sleep(500);
+
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["down"]);
+    GTGlobals::sleep(500);
+
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["down"]);
+    GTGlobals::sleep(500);
+
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["down"]);
+    GTGlobals::sleep(500);
+
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
+    GTGlobals::sleep(500);
+
+    QString selectedSequence = sequencelineEdit->text();
+    CHECK("Mecopoda_elongata__Sumatra_" == selectedSequence, );
+
+    //3. Set focus to the reference sequence name line edit and enter 'm' into it.
 }
 
 GUI_TEST_CLASS_DEFINITION( test_2021_1 )

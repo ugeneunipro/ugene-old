@@ -49,6 +49,7 @@ QWidget* MSAGeneralTabFactory::createWidget(GObjectView* objView){
         NULL);
 
     MSAGeneralTab *widget = new MSAGeneralTab(msa);
+    widget->setObjectName("MsaGeneralTab");
     return widget;
 }
 
