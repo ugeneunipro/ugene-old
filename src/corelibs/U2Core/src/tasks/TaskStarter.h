@@ -32,11 +32,17 @@ namespace U2
 class U2CORE_EXPORT TaskStarter : public QObject {
     Q_OBJECT
 public:
-    TaskStarter(Task* t) : QObject(t), t(t) {}
+    enum StartCondition {
+        NoCondition,
+        NoProject
+    };
+
+    TaskStarter(Task* t, StartCondition condition = NoCondition) : QObject(t), t(t), condition(condition) {}
 public slots:
     void registerTask();
 private:
     Task* t;
+    StartCondition condition;
 };
 
 } //namespace

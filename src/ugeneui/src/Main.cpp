@@ -224,29 +224,24 @@ public:
         return res;
     }
 
-    bool event(QEvent *event)
-    {
-        switch (event->type()) {
-        case QEvent::FileOpen:
-            {
-                QStringList urls(static_cast<QFileOpenEvent *>(event)->file());
-                openAfterPluginsLoaded(urls);
-            }
+    bool event(QEvent *event) {
+        if (QEvent::FileOpen == event->type()) {
+            QStringList urls(static_cast<QFileOpenEvent *>(event)->file());
+            openAfterPluginsLoaded(urls);
             return true;
-        default:
-            return QApplication::event(event);
         }
+        return QApplication::event(event);
     }
 
-    void openAfterPluginsLoaded(QStringList urls) {
+    void openAfterPluginsLoaded(const QStringList& urls, TaskStarter::StartCondition condition = TaskStarter::NoCondition) {
         OpenWithProjectTask * task = new OpenWithProjectTask(urls);
         PluginSupport * pluginSupport = AppContext::getPluginSupport();
 
-        if(pluginSupport->isAllPluginsLoaded()) {
-            AppContext::getTaskScheduler()->registerTopLevelTask(task);
+        TaskStarter* taskStarter = new TaskStarter(task, condition);
+        if (pluginSupport->isAllPluginsLoaded()) {
+            taskStarter->registerTask();
         } else {
-            connect( pluginSupport, SIGNAL( si_allStartUpPluginsLoaded() ),
-                     new TaskStarter( task ), SLOT( registerTask() ) );
+            connect(pluginSupport, SIGNAL(si_allStartUpPluginsLoaded()), taskStarter, SLOT(registerTask()));
         }
     }
 };
@@ -589,7 +584,7 @@ int main(int argc, char **argv)
 
         if( !urls.isEmpty() ) {
             // defer loading until all plugins/services loaded
-            app.openAfterPluginsLoaded(urls);
+            app.openAfterPluginsLoaded(urls, TaskStarter::NoProject);
         }
     }
 
