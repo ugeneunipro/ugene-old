@@ -34,7 +34,7 @@ copy %RELEASE_DIR%\transl_cs.qm %OUTPUT_DIR%
 copy %RELEASE_DIR%\transl_zh.qm %OUTPUT_DIR%
 
 REM copy data
-svn export %U_ROOT%\data %OUTPUT_DIR%\data
+xcopy /I /S %U_ROOT%\data %OUTPUT_DIR%\data
 copy %U_ROOT%\data\manuals\*.pdf %OUTPUT_DIR%\data\manuals\
 
 REM copy libs 
