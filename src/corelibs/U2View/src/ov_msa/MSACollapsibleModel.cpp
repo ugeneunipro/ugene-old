@@ -26,9 +26,12 @@ void MSACollapsibleItemModel::reset(const QVector<U2Region>& itemRegions) {
 }
 
 void MSACollapsibleItemModel::reset() {
-    items.clear();
-    positions.clear();
-    emit toggled();
+    const bool modelExists = ( !items.isEmpty( ) || !positions.isEmpty( ) );
+    if ( modelExists ) {
+        items.clear( );
+        positions.clear( );
+        emit toggled( );
+    }
 }
 
 void MSACollapsibleItemModel::collapseAll(bool collapse) {
