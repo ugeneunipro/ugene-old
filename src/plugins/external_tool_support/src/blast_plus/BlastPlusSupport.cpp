@@ -242,7 +242,11 @@ void BlastPlusSupportContext::initViewContext(GObjectView* view) {
     addViewAction(queryAction);
     connect(queryAction, SIGNAL(triggered()), SLOT(sl_showDialog()));
 }
-
+static void setActionFontItalic(QAction* action, bool italic) {
+    QFont font = action->font();
+    font.setItalic(italic);
+    action->setFont(font);
+}
 void BlastPlusSupportContext::buildMenu(GObjectView* view, QMenu* m) {
     
     QList<GObjectViewAction *> actions = getViewActions(view);
@@ -285,6 +289,8 @@ void BlastPlusSupportContext::buildMenu(GObjectView* view, QMenu* m) {
         SAFE_POINT(exportMenu != NULL, "exportMenu", );
         m->insertMenu(exportMenu->menuAction(), fetchMenu);
         fetchSequenceByIdAction->setText(tr("Fetch sequences by 'id' %1").arg(name));
+        bool emptyToolPath = AppContext::getExternalToolRegistry()->getByName(ET_BLASTDBCMD)->getPath().isEmpty();
+        setActionFontItalic(fetchSequenceByIdAction, emptyToolPath);
         fetchMenu->addAction(fetchSequenceByIdAction);
     }
 
@@ -378,6 +384,27 @@ void BlastPlusSupportContext::sl_showDialog() {
 
 void BlastPlusSupportContext::sl_fetchSequenceById()
 {
+    if (AppContext::getExternalToolRegistry()->getByName(ET_BLASTDBCMD)->getPath().isEmpty()){
+        QMessageBox msgBox;
+        msgBox.setWindowTitle("BLAST+ " + QString(ET_BLASTDBCMD));
+        msgBox.setText(tr("Path for BLAST+ %1 tool not selected.").arg(ET_BLASTDBCMD));
+        msgBox.setInformativeText(tr("Do you want to select it now?"));
+        msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+        msgBox.setDefaultButton(QMessageBox::Yes);
+        int ret = msgBox.exec();
+        switch (ret) {
+           case QMessageBox::Yes:
+               AppContext::getAppSettingsGUI()->showSettingsDialog(ExternalToolSupportSettingsPageId);
+               break;
+           case QMessageBox::No:
+               return;
+               break;
+           default:
+               assert(NULL);
+               break;
+        }
+    }
+
     BlastDBCmdSupportTaskSettings settings;
     BlastDBCmdDialog blastDBCmdDialog(settings, AppContext::getMainWindow()->getQMainWindow());
     blastDBCmdDialog.setQueryId(selectedId);
