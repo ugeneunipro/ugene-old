@@ -19,13 +19,6 @@
 * MA 02110-1301, USA.
 */
 
-
-/************************************************************************/
-/* Color Schema Settings Controller                                   */
-/************************************************************************/
-
-
-
 #include "ColorSchemaSettingsController.h"
 
 #include "ColorSchemaDialogController.h"
@@ -36,6 +29,7 @@
 #include <U2Core/UserApplicationsSettings.h>
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/IOAdapter.h>
+#include <U2Core/L10n.h>
 #include <U2Core/Log.h>
 #include <U2Core/GUrlUtils.h>
 #include <U2Core/U2SafePoints.h>
@@ -47,19 +41,16 @@
 
 #include <memory>
 
-#define SETTINGS_ROOT          QString("/color_schema_settings/")
-#define SETTINGS_SUB_DIRECTORY QString("MSA_schemes")
-#define COLOR_SCHEMA_DIR       QString("colors_scheme_dir")
-#define AMINO_KEYWORD          QString("AMINO")
-#define NUCL_KEYWORD           QString("NUCL")
-#define NUCL_DEFAULT_KEYWORD   QString("NUCL_DEFAULT")
-#define NUCL_EXTENDED_KEYWORD  QString("NUCL_EXTENDED")
+const QString SETTINGS_ROOT = "/color_schema_settings/";
+const QString SETTINGS_SUB_DIRECTORY = "MSA_schemes";
+const QString COLOR_SCHEMA_DIR = "colors_scheme_dir";
+const QString AMINO_KEYWORD = "AMINO";
+const QString NUCL_KEYWORD = "NUCL";
+const QString NUCL_DEFAULT_KEYWORD = "NUCL_DEFAULT";
+const QString NUCL_EXTENDED_KEYWORD = "NUCL_EXTENDED";
+const QString NAME_FILTERS = ".csmsa"; //WARNING if add more then one filter, change corresponding functions
 
-#define NAME_FILTERS           QString(".csmsa") //WARNING if add more then one filter, change corresponding functions
-
-
-namespace U2{
-
+namespace U2 {
 
 enum DefaultStrategy{
     DefaultStrategy_Void,
@@ -270,8 +261,6 @@ static bool getSchemaColors(CustomColorSchema& customSchema){
     return true;
 }
 
-
-
 QList<CustomColorSchema> ColorSchemaSettingsUtils::getSchemas(){
     QList<CustomColorSchema> customSchemas;
 
@@ -447,7 +436,10 @@ CreateColorSchemaDialog::CreateColorSchemaDialog(CustomColorSchema* _newSchema, 
     alphabetComboBox->insertItem(1, QString(tr("Nucleotide")), DNAAlphabet_NUCL);
 
     connect(alphabetComboBox, SIGNAL(currentIndexChanged(int)), SLOT(sl_alphabetChanged(int)));
-    extendedModeBox->setVisible(false);
+    extendedModeBox->setVisible( false );
+    validLabel->setStyleSheet( "color: " + L10N::errorColorLabelStr( ) + "; font: bold;" );
+    validLabel->setVisible( false );
+    adjustSize( );
 
     connect(schemeName, SIGNAL(textEdited ( const QString&)), SLOT(sl_schemaNameEdited(const QString&)));
     connect(createButton, SIGNAL(clicked()), SLOT(sl_createSchema()));
@@ -471,42 +463,49 @@ bool CreateColorSchemaDialog::isNameExist(const QString& text){
 
 bool CreateColorSchemaDialog::isSchemaNameValid(const QString& text, QString& description){
     if(text.isEmpty()){
-        description = "Name of scheme is empty";
+        description = tr( "Name of scheme is empty." );
         return false;
     }
     for(int i = 0; i < text.length(); ++i){
         if(!text[i].isDigit() && !text[i].isLetter() && text[i] != QChar('_') && !text[i].isSpace()){
-            description = "Name must consist of only from letter, digits, spaces and ""_"" simbols";
+            description = tr( "Name has to consist of letters, digits, spaces" ) + "<br>"
+                + tr( "or underscore symbols only." );
             return false;
-        }        
+        }
     }
     if(isNameExist(text)){
-        description = "Color scheme with the same name already exist";
+        description = tr( "Color scheme with the same name already exists." );
         return false;
     }
     return true;
 }
 
-void CreateColorSchemaDialog::sl_schemaNameEdited(const QString& text){
+void CreateColorSchemaDialog::sl_schemaNameEdited( const QString &text ) {
     QString description;
-    if(isSchemaNameValid(text, description)){
-        validLabel->clear();
-    }
-    else{
-        validLabel->setText("<font color='red'> Not valid: " + description + "</font>");
+    const bool isNameValid = isSchemaNameValid( text, description );
+    validLabel->setVisible( !isNameValid );
+    adjustSize( );
+    if ( isNameValid ) {
+        validLabel->clear( );
+    } else {
+        validLabel->setText( "Warning: " + description );
     }
 }
 
-void CreateColorSchemaDialog::sl_alphabetChanged(int index){
-    if (index < 0 || index >= alphabetComboBox->count()){return;}
-        
-    if(static_cast<DNAAlphabetType>(alphabetComboBox->itemData(index).toInt()) == DNAAlphabet_AMINO){
-        extendedModeBox->setVisible(false);
-        extendedModeBox->setChecked(false);
+void CreateColorSchemaDialog::sl_alphabetChanged( int index ) {
+    if ( 0 > index || index >= alphabetComboBox->count( ) ) {
+        return;
     }
-    else{
-        extendedModeBox->setVisible(true);
+
+    if ( DNAAlphabet_AMINO == static_cast<DNAAlphabetType>(
+        alphabetComboBox->itemData( index ).toInt( ) ) )
+    {
+        extendedModeBox->setVisible( false );
+        extendedModeBox->setChecked( false );
+    } else {
+        extendedModeBox->setVisible( true );
     }
+    adjustSize( );
 }
 
 int CreateColorSchemaDialog::createNewScheme(){
@@ -532,11 +531,11 @@ void CreateColorSchemaDialog::sl_createSchema(){
 
     QMap<char, QColor> alpColors = getDefaultSchemaColors(type, defaultAlpType, DefaultStrategy_UgeneColors);
 
-    ColorSchemaDialogController controller(alpColors);    
+    ColorSchemaDialogController controller(alpColors);
     int r = controller.adjustAlphabetColors();
     if(r == QDialog::Rejected){return;}
     
-    newSchema->name = schemeName->text() ;    
+    newSchema->name = schemeName->text();
     newSchema->type = type;
     newSchema->defaultAlpType = defaultAlpType;
 

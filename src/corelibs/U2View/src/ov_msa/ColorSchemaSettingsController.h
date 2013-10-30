@@ -29,83 +29,84 @@
 
 namespace U2 {
 
-    /************************************************************************/
-    /* Color Schema Settings Controller                                   */
-    /************************************************************************/
-#define ColorSchemaSettingsPageId     QString("ColorSchemaSettings")
+const QString ColorSchemaSettingsPageId = "ColorSchemaSettings";
 
-    class CustomColorSchema{
-    public:
-        QString name;
-        DNAAlphabetType type;
-        bool defaultAlpType;
-        QMap<char, QColor> alpColors;
-    };
+class CustomColorSchema{
+public:
+    QString name;
+    DNAAlphabetType type;
+    bool defaultAlpType;
+    QMap<char, QColor> alpColors;
+};
 
-    class ColorSchemaSettingsUtils {
-    public:
-        static QList<CustomColorSchema> getSchemas();
-    };
+class ColorSchemaSettingsUtils {
+public:
+    static QList<CustomColorSchema> getSchemas();
+};
 
-    class ColorSchemaSettingsPageController : public AppSettingsGUIPageController {
-        Q_OBJECT
-    public:
-        ColorSchemaSettingsPageController(QObject* p = NULL);
+class ColorSchemaSettingsPageController : public AppSettingsGUIPageController {
+    Q_OBJECT
+public:
+    ColorSchemaSettingsPageController(QObject* p = NULL);
 
-        virtual AppSettingsGUIPageState* getSavedState();
+    virtual AppSettingsGUIPageState* getSavedState();
 
-        virtual void saveState(AppSettingsGUIPageState* s);
+    virtual void saveState(AppSettingsGUIPageState* s);
 
-        virtual AppSettingsGUIPageWidget* createWidget(AppSettingsGUIPageState* data);
+    virtual AppSettingsGUIPageWidget* createWidget(AppSettingsGUIPageState* data);
+
 signals:
     void si_customSettingsChanged();
-    };
+};
 
     
 
-    class ColorSchemaSettingsPageState : public AppSettingsGUIPageState {
-        Q_OBJECT
-    public:
-        QString colorsDir;
-        QList<CustomColorSchema> customSchemas;
-    };
+class ColorSchemaSettingsPageState : public AppSettingsGUIPageState {
+    Q_OBJECT
+public:
+    QString colorsDir;
+    QList<CustomColorSchema> customSchemas;
+};
 
-    class ColorSchemaSettingsPageWidget: public AppSettingsGUIPageWidget, public Ui_ColorSchemaSettingsWidget {
-        Q_OBJECT
-    public:
-        ColorSchemaSettingsPageWidget(ColorSchemaSettingsPageController* ctrl);
+class ColorSchemaSettingsPageWidget: public AppSettingsGUIPageWidget, public Ui_ColorSchemaSettingsWidget {
+    Q_OBJECT
+public:
+    ColorSchemaSettingsPageWidget(ColorSchemaSettingsPageController* ctrl);
 
-        virtual void setState(AppSettingsGUIPageState* state);
+    virtual void setState(AppSettingsGUIPageState* state);
 
-        virtual AppSettingsGUIPageState* getState(QString& err) const;
+    virtual AppSettingsGUIPageState* getState(QString& err) const;
 
-        private slots:
-            void sl_onColorsDirButton();
-            void sl_onChangeColorSchema();
-            void sl_onAddColorSchema();
-            void sl_onDeleteColorSchema();
-            void sl_schemaChanged(int);
-    private:        
-        QList<CustomColorSchema> customSchemas;
-    };
+private slots:
+    void sl_onColorsDirButton();
+    void sl_onChangeColorSchema();
+    void sl_onAddColorSchema();
+    void sl_onDeleteColorSchema();
+    void sl_schemaChanged(int);
+
+private:
+    QList<CustomColorSchema> customSchemas;
+};
     
-    class CreateColorSchemaDialog: public QDialog, public Ui_CreateMSAScheme{
-        Q_OBJECT
-    public:
-        CreateColorSchemaDialog(CustomColorSchema*, QStringList usedNames);
-        int createNewScheme();
-        private slots:
-            void sl_createSchema();
-            void sl_cancel();
-            void sl_schemaNameEdited(const QString&);
-            void sl_alphabetChanged(int);
-    private:
-        bool isNameExist(const QString&);
-        bool isSchemaNameValid(const QString&, QString&);
-    private:
-        QStringList usedNames;
-        CustomColorSchema* newSchema;
-    };
+class CreateColorSchemaDialog: public QDialog, public Ui_CreateMSAScheme{
+    Q_OBJECT
+public:
+    CreateColorSchemaDialog(CustomColorSchema*, QStringList usedNames);
+    int createNewScheme();
+
+private slots:
+    void sl_createSchema();
+    void sl_cancel();
+    void sl_schemaNameEdited(const QString&);
+    void sl_alphabetChanged(int);
+
+private:
+    bool isNameExist(const QString&);
+    bool isSchemaNameValid(const QString&, QString&);
+
+    QStringList usedNames;
+    CustomColorSchema* newSchema;
+};
 
 } // U2
 
