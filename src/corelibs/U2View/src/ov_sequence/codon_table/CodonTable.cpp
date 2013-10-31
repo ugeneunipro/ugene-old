@@ -102,8 +102,6 @@ void CodonTableView::sl_setAminoTranslation() {
     if (a != NULL) {
         QString tid = a->data().toString();
         setAminoTranslation(tid);
-        table->resize(table->width() - 1, table->height());
-        table->updateGeometry();
     }
 }
 
@@ -115,7 +113,6 @@ void CodonTableView::sl_onSequenceFocusChanged(ADVSequenceWidget */*from*/, ADVS
     CHECK(ctx.first()->getAminoTT() != NULL, );
 
     setAminoTranslation(ctx.first()->getAminoTT()->getTranslationId());
-    table->repaint();
 }
 
 void CodonTableView::setAminoTranslation(const QString& trId) {
@@ -141,6 +138,8 @@ void CodonTableView::setAminoTranslation(const QString& trId) {
         }
     }
     spanEqualCells();
+    table->resize(table->width() - 1, table->height());
+    table->updateGeometry();
 };
 
 void CodonTableView::spanEqualCells() {
