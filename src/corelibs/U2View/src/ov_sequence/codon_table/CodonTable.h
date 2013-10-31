@@ -35,12 +35,15 @@ public slots:
 private:
     QTableWidget *table;
 
-    void addItemToTable(int row, int column, QString text, QColor backgroundColor = QColor(0, 0, 0, 0),
-                        int rowSpan = 1, int columnSpan = 1);
-    void addItemToTable(int row, int column, QString text, int rowSpan = 1, int columnSpan = 1);
     void addItemToTable(int row, int column,
-                        QString text, QColor backgroundColor,
-                        QString link,
+                        const QString& text, const QColor& backgroundColor = QColor(0, 0, 0, 0),
+                        int rowSpan = 1, int columnSpan = 1);
+    void addItemToTable(int row, int column,
+                        const QString& text,
+                        int rowSpan = 1, int columnSpan = 1);
+    void addItemToTable(int row, int column,
+                        const QString& text, const QColor& backgroundColor,
+                        const QString& link,
                         int rowSpan = 1, int columnSpan = 1);
     void addItemToTable(int row, int column, DNACodon *codon);
 

@@ -171,7 +171,7 @@ void CodonTableView::spanEqualCells() {
     }
 }
 
-void CodonTableView::addItemToTable(int row, int column, QString text, QColor backgroundColor, int rowSpan, int columnSpan) {
+void CodonTableView::addItemToTable(int row, int column, const QString& text, const QColor& backgroundColor, int rowSpan, int columnSpan) {
     QTableWidgetItem *item = new QTableWidgetItem(text);
 
     QFont font = item->font();
@@ -187,11 +187,11 @@ void CodonTableView::addItemToTable(int row, int column, QString text, QColor ba
     table->setItem(row, column, item);
 }
 
-void CodonTableView::addItemToTable(int row, int column, QString text, int rowSpan, int columnSpan) {
+void CodonTableView::addItemToTable(int row, int column, const QString& text, int rowSpan, int columnSpan) {
     addItemToTable(row, column, text, QColor(0, 0, 0, 0), rowSpan, columnSpan);
 }
 
-void CodonTableView::addItemToTable(int row, int column, QString text, QColor backgroundColor, QString link, int rowSpan, int columnSpan) {
+void CodonTableView::addItemToTable(int row, int column, const QString& text, const QColor& backgroundColor, const QString& link, int rowSpan, int columnSpan) {
     table->removeCellWidget(row, column);
 
     QColor appTextColor = QApplication::palette().text().color();

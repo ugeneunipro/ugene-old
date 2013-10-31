@@ -54,7 +54,7 @@ ADVSequenceObjectContext::ADVSequenceObjectContext(AnnotatedDNAView* v, U2Sequen
         if (!aminoTs.empty()) {
             aminoTT = aminoTT == NULL ? tr->getStandardGeneticCodeTranslation(al) : aminoTT;
             translations = new QActionGroup(this);
-            CodonTableView *ct = v->getCodonTableView();
+            const CodonTableView *ct = v->getCodonTableView();
             foreach(DNATranslation* t, aminoTs) {
                 QAction* a = translations->addAction(t->getTranslationName());
                 a->setCheckable(true);

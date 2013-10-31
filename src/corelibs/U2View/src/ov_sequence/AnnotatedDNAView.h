@@ -153,7 +153,7 @@ public:
      */
     QString tryAddObject(GObject* obj);
 
-    CodonTableView* getCodonTableView() {return codonTableView; }
+    const CodonTableView* getCodonTableView() const {return codonTableView; }
 
 protected:
     virtual QWidget* createWidget();
