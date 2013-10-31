@@ -864,20 +864,20 @@ int MSAEditorSequenceArea::getXByColumnNum(int columnNum) const {
 int MSAEditorSequenceArea::getSequenceNumByY(int y) const {
     int seqOffs = y / editor->getRowHeight();
     int seq = startSeq + seqOffs;
+    const int countOfVisibleSeqs = getNumDisplayedSequences( );
     if (!selecting) {
-        if ((seq >= editor->getNumSequences()) || (seq < 0)) {
+        if ((seqOffs >= countOfVisibleSeqs) || (seq < 0)) {
             return -1;
         }
     }
     else {
-    if (seq < 0) {
-        seq = 0;
+        if (seq < 0) {
+            seq = 0;
+        }
+        if (seq >= countOfVisibleSeqs) {
+            seq = countOfVisibleSeqs - 1;
+        }
     }
-    const int countOfVisibleSeqs = getNumDisplayedSequences( );
-    if (seq >= countOfVisibleSeqs) {
-        seq = countOfVisibleSeqs - 1;
-    }
-}
     return seq;
 }
 
@@ -941,10 +941,10 @@ void MSAEditorSequenceArea::updateSelection() {
 
     int selectionHeight = newEnd - newStart;
     // accounting of collapsing children items
-    int itemIndex = m->itemAt(endPos);
+    int itemIndex = m->itemAt(newEnd);
     if (selectionHeight <= 1 && itemIndex >= 0) {
         const MSACollapsableItem& collapsibleItem = m->getItem(itemIndex);
-        if(endPos == collapsibleItem.row && !collapsibleItem.isCollapsed) {
+        if(newEnd == collapsibleItem.row && !collapsibleItem.isCollapsed) {
             newEnd = collapsibleItem.row ;
             selectionHeight = qMax(selectionHeight, endPos - newStart + collapsibleItem.numRows);
         }
