@@ -124,7 +124,7 @@ void DocumentUpdater::update() {
         }
 
         QFileInfo fi(doc->getURLString());
-        if(!fi.exists()) { // file was removed from its directory
+        if (!doc->isModified() && !fi.exists()) { // file was removed from its directory
             removedDocs.append(doc);
         }
 
