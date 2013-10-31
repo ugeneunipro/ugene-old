@@ -72,6 +72,7 @@ private:
     void setToolState(ExternalTool* tool);
     QString getToolStateDescription(ExternalTool* tool) const;
     void setDescription(ExternalTool* tool);
+    QString warn(const QString& text) const;
 
 private slots:
     void sl_toolPathChanged();

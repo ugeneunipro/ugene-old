@@ -302,9 +302,9 @@ QString ExternalToolSupportSettingsPageWidget::getToolStateDescription(ExternalT
     ExternalToolManager::ExternalToolState state = etManager->getToolState(tool->getName());
 
     if (state == ExternalToolManager::NotValidByDependency) {
-        result = tr("External tool '%1' cannot be validated as it "
-                    "depends on other tools, some of which are not valid. "
-                    "The list of tools is the following: ").arg(tool->getName());
+        QString text = tr("External tool '%1' cannot be validated as it "
+                          "depends on other tools, some of which are not valid. "
+                          "The list of tools is the following: ").arg(tool->getName());
 
         QStringList invalidDependencies;
         QStringList dependencies = tool->getDependencies();
@@ -314,7 +314,22 @@ QString ExternalToolSupportSettingsPageWidget::getToolStateDescription(ExternalT
             }
         }
 
-        result += invalidDependencies.join(", ") + tr("<br><br>");
+        result = warn(text + invalidDependencies.join(", ")) + "<br><br>";
+    }
+
+    if (state == ExternalToolManager::NotValid) {
+        if (tool->isModule()) {
+            QStringList toolDependencies = tool->getDependencies();
+            SAFE_POINT(!toolDependencies.isEmpty(), QString("Empty dependency list for "
+                                                            "the '%1' module tool").arg(tool->getName()), result);
+            QString masterName = toolDependencies.first();
+            QString text = tr("'%1' is %2 module and it is not installed. "
+                              "Install it and restart UGENE or set another "
+                              "%2 with already installed '%1' module.")
+                           .arg(tool->getName()).arg(masterName);
+
+            result = warn(text) + "<br><br>";
+        }
     }
 
     return result;
@@ -343,6 +358,10 @@ void ExternalToolSupportSettingsPageWidget::setDescription(ExternalTool* tool) {
     }
 
     descriptionTextEdit->setText(desc);
+}
+
+QString ExternalToolSupportSettingsPageWidget::warn(const QString& text) const {
+    return "<span style=\"color:" + L10N::errorColorLabelStr( ) + "; font:bold;\">" + text + "</span>";
 }
 
 AppSettingsGUIPageState* ExternalToolSupportSettingsPageWidget::getState(QString& err) const {
