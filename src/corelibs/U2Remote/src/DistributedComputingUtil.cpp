@@ -62,8 +62,6 @@ DistributedComputingUtil::DistributedComputingUtil() {
         QAction * showRemoteMachinesMonitor = new QAction( QIcon( ":core/images/remote_machine_monitor.png" ),
                                                            tr( "Remote machines monitor..." ), this );
         showRemoteMachinesMonitor->setObjectName("Remote machines monitor");
-        connect( showRemoteMachinesMonitor, SIGNAL( triggered() ), SLOT( sl_showRemoteMachinesMonitor() ) );
-        AppContext::getMainWindow()->getTopLevelMenu( MWMENU_SETTINGS )->addAction( showRemoteMachinesMonitor );
     }
 }
 

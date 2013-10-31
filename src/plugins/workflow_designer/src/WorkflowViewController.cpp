@@ -764,8 +764,6 @@ void WorkflowView::createActions() {
         remoteMachineRunMode->setObjectName("Remote machine");
         remoteMachineRunMode->setCheckable( true );
         remoteMachineRunMode->setChecked( REMOTE_MACHINE == runMode );
-        runModeActions << remoteMachineRunMode;
-        connect( remoteMachineRunMode, SIGNAL( triggered() ), SLOT( sl_setRunMode() ) );
     }
 
     { // scripting mode
