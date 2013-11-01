@@ -89,6 +89,7 @@ private:
     void parseRdAndQaTag(U2::IOAdapter *io, char *buff, QSet<QByteArray> &names, Assembly::Sequence &read);
     int getClearRangeStart(const QByteArray &cur_line);
     int getClearRangeEnd(const QByteArray &cur_line);
+    void formatSequence(QByteArray& data);
     QString tr(const char * text) const { return QObject::tr(text); }
 
     IOAdapter *io;
@@ -106,6 +107,7 @@ private:
     static const int LAST_QA_POS;
 
     static const QByteArray AS;
+    static const QByteArray BS;
     static const QByteArray CO;
     static const QByteArray BQ;
     static const QByteArray AF;

@@ -19,6 +19,8 @@
  * MA 02110-1301, USA.
  */
 
+#include <U2Core/AppContext.h>
+#include <U2Core/DNAAlphabet.h>
 #include <U2Core/TextUtils.h>
 #include <U2Core/U2AbstractDbi.h>
 #include <U2Core/U2SafePoints.h>
@@ -110,6 +112,7 @@ const int AceReader::FIRST_QA_POS = 3;
 const int AceReader::LAST_QA_POS = 4;
 
 const QByteArray AceReader::AS = "AS";
+const QByteArray AceReader::BS = "BS";
 const QByteArray AceReader::CO = "CO";
 const QByteArray AceReader::BQ = "BQ";
 const QByteArray AceReader::AF = "AF";
@@ -275,8 +278,8 @@ void AceReader::parseConsensus(IOAdapter *io, char *buff, QSet<QByteArray> &name
     line = (QByteArray::fromRawData(buff, len)).trimmed();
     CHECK_EXT(line.startsWith(BQ), os->setError(tr("BQ keyword hasn't been found")), );
 
-    consensus.data = consensus.data.toUpper();
-    CHECK_EXT(checkSeq(consensus.data), os->setError(tr("Bad consensus data")), );
+    formatSequence(consensus.data);
+    CHECK_EXT(checkSeq(consensus.data), os->setError(tr("Unexpected symbols in consensus data")), );
 }
 
 QByteArray AceReader::getName(const QByteArray &line) {
@@ -285,50 +288,76 @@ QByteArray AceReader::getName(const QByteArray &line) {
 
     QByteArray name = line.simplified();
 
+    // Cut off tag
     curIdx = name.indexOf(space);
     CHECK_EXT(-1 != curIdx, os->setError(tr("Can't find a sequence name in current line")), "");
 
     name = name.mid(curIdx + 1);
 
     curIdx = name.indexOf(space);
-    CHECK_EXT(-1 != curIdx, os->setError(tr("Can't find a sequence name in current line")), "");
+    if (-1 != curIdx) {
+        // There is something else in this line
+        name = name.mid(0, curIdx);
+    }
 
-    name = name.mid(0, curIdx);
     CHECK_EXT(!name.isEmpty(), os->setError(tr("An empty sequence name")), "");
     return name;
 }
 
 bool AceReader::checkSeq(const QByteArray &seq) {
-    for (int i = 0; i < seq.length(); i++){
-        if (seq[i] != 'A' && seq[i] != 'C' && seq[i] != 'G' && seq[i] != 'T' && seq[i] != 'N' && seq[i] != '*' && seq[i] != 'X') {
-            return false;
-        }
-    }
-    return true;
+    DNAAlphabetRegistry* alRegistry = AppContext::getDNAAlphabetRegistry();
+    SAFE_POINT(alRegistry, "Alphabet registry is NULL", false);
+    const DNAAlphabet* al = alRegistry->findById(BaseDNAAlphabetIds::NUCL_DNA_EXTENDED());
+    SAFE_POINT(al, "Alphabet is NULL", false);
+
+    return al->containsAll(seq.constData(), seq.length());
 }
 
 void AceReader::parseAfTag(U2::IOAdapter *io, char *buff, int count, QMap<QByteArray, int> &posMap, QMap<QByteArray, bool> &complMap, QSet<QByteArray> &names) {
     int readsCount = count;
+    QByteArray afBlock;
     QByteArray readLine;
     QByteArray name;
     qint64 len = 0;
     int readPos = 0;
     int complStrand = 0;
 
-    while (readsCount > 0) {
-        do {    // skip unused BQ part
-            skipBreaks(io, buff, &len);
-            CHECK_OP((*os), );
-            readLine = (QByteArray::fromRawData(buff, len)).trimmed();
-        } while (!readLine.startsWith(AF));
-        CHECK_EXT(readLine.startsWith(AF), os->setError(tr("There is no AF note")), );
+    do {    // skip unused BQ part
+        skipBreaks(io, buff, &len);
+        CHECK_OP((*os), );
+        readLine = (QByteArray::fromRawData(buff, len)).trimmed();
+    } while (!readLine.startsWith(AF));
 
-        name = getName(readLine);
+    do {    // Read all AF entries
+        afBlock += readLine + " ";
+        skipBreaks(io, buff, &len);
+        CHECK_OP((*os), );
+        readLine = (QByteArray::fromRawData(buff, len)).trimmed();
+    } while (!readLine.startsWith(BS));
+    afBlock.simplified();
+
+    while (!afBlock.isEmpty()) {
+        QByteArray afLine = afBlock;
+        int afIndex = 0;
+
+        // the first AF entry won't be found: it hasn't space before
+        if (-1 != (afIndex = afBlock.indexOf(" " + AF))) {
+            afLine = afBlock.mid(0, afIndex);
+            afBlock.remove(0, afIndex + 1);     // with space before AF
+        } else {
+            afBlock.clear();
+        }
+
+        afLine.replace('\n', "");
+
+        SAFE_POINT_EXT(afLine.startsWith(AF), os->setError(tr("Invalid AF tag")), );
+
+        name = getName(afLine);
         CHECK_OP((*os), );
 
-        readPos = readsPos(readLine);
+        readPos = readsPos(afLine);
         CHECK_OP((*os), );
-        complStrand = readsComplement(readLine);
+        complStrand = readsComplement(afLine);
         CHECK_OP((*os), );
 
         posMap.insert(name, readPos);
@@ -336,12 +365,16 @@ void AceReader::parseAfTag(U2::IOAdapter *io, char *buff, int count, QMap<QByteA
         bool cur_compl = (complStrand == 1);
         complMap.insert(name, cur_compl);
 
-        CHECK_EXT(!names.contains(name), os->setError(tr("A name is duplicated")), );
+        QList<QByteArray> b = names.toList();
+
+        CHECK_EXT(!names.contains(name), os->setError(tr("A name is duplicated: %1").arg(QString(name))), );
         names.insert(name);
 
         readsCount--;
-        os->setProgress(io->getProgress());
     }
+
+    CHECK_EXT(0 == readsCount, os->setError(tr("Not all reads were found")), );
+    os->setProgress(io->getProgress());
 }
 
 int AceReader::readsPos(const QByteArray &cur_line) {
@@ -412,7 +445,7 @@ int AceReader::getSmallestOffset(const QMap<QByteArray, int> &posMap) {
 }
 
 void AceReader::parseRdAndQaTag(U2::IOAdapter *io, char *buff, QSet<QByteArray> &names, Assembly::Sequence &read) {
-    QByteArray line;
+    QByteArray rdBlock;
     qint64 len = 0;
     bool ok = true;
     char aceQStartChar = 'Q';
@@ -421,35 +454,46 @@ void AceReader::parseRdAndQaTag(U2::IOAdapter *io, char *buff, QSet<QByteArray> 
     do {    // skip unused BS part
         skipBreaks(io, buff, &len);
         CHECK_OP((*os), );
-        line = (QByteArray::fromRawData(buff, len)).trimmed();
-    } while (!line.startsWith(RD));
-    CHECK_EXT(line.startsWith(RD), os->setError(tr("There is no read note")), );
+        rdBlock = (QByteArray::fromRawData(buff, len)).trimmed();
+    } while (!rdBlock.startsWith(RD));
+    CHECK_EXT(rdBlock.startsWith(RD), os->setError(tr("There is no read note")), );
 
-    read.name = getName(line);
-    CHECK_OP((*os), );
-
-    do {
+    do {    // read the tail of RD part
         len = io->readUntil(buff, READ_BUFF_SIZE, aceQStart, IOAdapter::Term_Exclude, &ok);
-        CHECK_EXT(len > 0, os->setError(tr("No sequence")), );
-        len = TextUtils::remove(buff, len, TextUtils::WHITES);
+        CHECK_EXT(len > 0, os->setError(tr("Unexpected end of file")), );
         buff[len] = 0;
-        read.data.append(buff);
+        rdBlock += QByteArray(" ") + QByteArray(buff);
         os->setProgress(io->getProgress());
     } while (!ok);
+    rdBlock = rdBlock.simplified();
+
+    QList<QByteArray> rdSplitted = rdBlock.split(' ');
+    // Magic numbers: RD tag, name, three numbers, sequence data
+    CHECK_EXT(6 <= rdSplitted.count(), os->setError(tr("Invalid RD part")), );
+    SAFE_POINT_EXT(RD == rdSplitted[0], os->setError(tr("Can't find the RD tag")), );
+    read.name = rdSplitted[1];
+
+    for (int chain = 5; chain < rdSplitted.count(); chain++) {
+        read.data += rdSplitted[chain];
+    }
 
     len = io->readUntil(buff, READ_BUFF_SIZE, TextUtils::LINE_BREAKS, IOAdapter::Term_Include, &ok);
-    line = (QByteArray::fromRawData(buff, len)).trimmed();
-    CHECK_EXT(line.startsWith(QA), os->setError(tr("QA keyword hasn't been found")), );
+    QByteArray qaBlock = (QByteArray::fromRawData(buff, len)).trimmed();
+    CHECK_EXT(qaBlock.startsWith(QA), os->setError(tr("QA keyword hasn't been found")), );
 
-    int clearRangeStart = getClearRangeStart(line);
+    int clearRangeStart = getClearRangeStart(qaBlock);
     CHECK_OP((*os), );
-    int clearRangeEnd = getClearRangeEnd(line);
+    int clearRangeEnd = getClearRangeEnd(qaBlock);
     CHECK_OP((*os), );
 
-    CHECK_EXT(clearRangeStart <= clearRangeEnd && clearRangeEnd <= read.data.length(), os->setError(tr("QA error bad range")), );
+    int l = read.data.length();
 
-    read.data = read.data.toUpper();
-    CHECK_EXT(checkSeq(read.data), os->setError(tr("Bad sequence data")), );
+    CHECK_EXT(clearRangeStart <= clearRangeEnd &&
+              clearRangeEnd - clearRangeStart <= read.data.length(),
+              os->setError(tr("QA error bad range")), );
+
+    formatSequence(read.data);
+    CHECK_EXT(checkSeq(read.data), os->setError(tr("Unexpected symbols in sequence data")), );
 
     CHECK_EXT(names.contains(read.name), os->setError(tr("A name is not match with AF names")), );
     names.remove(read.name);
@@ -469,6 +513,12 @@ int AceReader::getClearRangeEnd(const QByteArray &cur_line) {
     CHECK_OP_EXT((*os), os->setError(tr("Can't find clear range end in current line")), 0);
     CHECK_EXT(result > 0, os->setError(tr("Clear range end is invalid")), 0);
     return result;
+}
+
+void AceReader::formatSequence(QByteArray& data) {
+    data.toUpper();
+    data.replace('X', 'N');
+    data.replace('*', 'N');
 }
 
 ///////////////////////////////////
