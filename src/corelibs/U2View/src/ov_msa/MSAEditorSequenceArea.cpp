@@ -1503,9 +1503,6 @@ void MSAEditorSequenceArea::sl_alignmentChanged(const MAlignment&, const MAlignm
     setFirstVisibleBase(qBound(0, startPos, aliLen-countWidthForBases(false)));
     setFirstVisibleSequence(qBound(0, startSeq, nSeq - countHeightForSequences(false)));
 
-    setCursorPos( qMin( cursorPos.x( ), aliLen-1 ),
-        qMin( cursorPos.y( ), ui->seqArea->getNumDisplayedSequences( ) - 1 ) );
-
     if ( ( selection.x( ) > aliLen - 1 ) || ( selection.y( ) > nSeq - 1 ) ) {
         cancelSelection( );
     } else {
@@ -2039,15 +2036,7 @@ bool MSAEditorSequenceArea::shiftSelectedRegion( int shift ) {
                 ? cursorPos.x( ) + resultShift : 0;
             setCursorPos( newCursorPosX );
 
-            MSACollapsibleItemModel *collapseModel = ui->getCollapseModel( );
-            const int selectionTop = selection.getRect( ).top( );
-            SAFE_POINT( -1 != selectionTop, "Unexpected selection area", true );
-            const int selectionBottom = selection.getRect( ).bottom( );
-            SAFE_POINT( -1 != selectionBottom && selectionBottom >= selectionTop,
-                "Unexpected selection area", true );
-
-            const MSAEditorSelection newSelection( x + resultShift, selectionTop, width,
-                selectionBottom - selectionTop + 1 );
+            const MSAEditorSelection newSelection( x + resultShift, y, width, height );
             setSelection( newSelection );
             return true;
         } else {
