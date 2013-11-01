@@ -64,6 +64,7 @@
 #include "runnables/ugene/ugeneui/SequenceReadingModeSelectorDialogFiller.h"
 #include "runnables/ugene/ugeneui/NCBISearchDialogFiller.h"
 #include "runnables/ugene/plugins/workflow_designer/StartupDialogFiller.h"
+#include "runnables/ugene/plugins/external_tools/TCoffeeDailogFiller.h"
 #include "runnables/ugene/plugins_3rdparty/umuscle/MuscleDialogFiller.h"
 #include "runnables/ugene/plugins_3rdparty/kalign/KalignDialogFiller.h"
 #include "GTUtilsLog.h"
@@ -74,6 +75,9 @@
 #include "runnables/ugene/plugins/workflow_designer/StartupDialogFiller.h"
 
 #include "GTUtilsWorkflowDesigner.h"
+
+#include <U2Core/AppContext.h>
+#include <U2Core/ExternalToolRegistry.h>
 
 #include <U2View/ADVConstants.h>
 #include <U2View/MSAEditor.h>
@@ -1990,6 +1994,64 @@ GUI_TEST_CLASS_DEFINITION(test_2091) {
     CHECK_SET_ERR(!modifiedNames.contains("Montana_montana"), "Removed sequence is present in multiple alignment.");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_2093_1) {
+//    1. Run a scheme, e.g. "Call variants with SAMtools" from the NGS samples (or any other like read->write).
+    QMenu* menu = GTMenu::showMainMenu(os, MWMENU_TOOLS);
+    CHECK_SET_ERR(menu, "Main menu not found");
+    GTMenu::clickMenuItem(os, menu, QStringList() << "Workflow Designer");
+
+    // Simple scheme: read file list.
+    GTUtilsWorkflowDesigner::addAlgorithm(os, "File list");
+    GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "File list"));
+    GTMouseDriver::click(os);
+    QString dirPath = dataDir + "samples/FASTA/";
+    GTUtilsWorkflowDesigner::setDatasetInputFile(os, dirPath, "human_T1.fa");
+
+    QToolBar* wdToolbar = GTToolbar::getToolbar(os, "mwtoolbar_activemdi");
+    CHECK_SET_ERR(wdToolbar, "Toolbar not found");
+    GTToolbar::getWidgetForActionName(os, wdToolbar, "Run workflow");
+
+    GTGlobals::sleep();
+
+//    2. Select "Load schema" button on the dashboard menu line.
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Discard));
+
+    // We must click to the "Load schema" button on dashboard's toolbar.
+    // The follow code is incorrect, it should be fixed.
+    QWidget* loadSchemaButton = GTWidget::findWidget(os, "Load schema");
+    CHECK_SET_ERR(loadSchemaButton, "Load schema button not found");
+    GTWidget::click(os, loadSchemaButton);
+
+    GTGlobals::sleep();
+
+//    Expected result: the scheme with parameters is loaded.
+    QWidget* wdElement = GTWidget::findWidget(os, "File list");
+    CHECK_SET_ERR(wdElement, "Schema wasn't loaded");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_2093_2) {
+    // 1. Open WD.
+    QMenu* menu = GTMenu::showMainMenu(os, MWMENU_TOOLS);
+    CHECK_SET_ERR(menu, "Main menu not found");
+    GTMenu::clickMenuItem(os, menu, QStringList() << "Workflow Designer");
+
+    // 2. Open any shema with the "Load workflow" button on the toolbar (not the "Open" button!)
+    QString schemaPath = testDir + "_common_data/scenarios/workflow designer/222.uwl";
+    GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, schemaPath));
+
+    QToolBar* wdToolbar = GTToolbar::getToolbar(os, "mwtoolbar_activemdi");
+    CHECK_SET_ERR(wdToolbar, "Toolbar not found");
+    QWidget* loadButton = GTToolbar::getWidgetForActionName(os, wdToolbar, "Load workflow");
+    CHECK_SET_ERR(loadButton, "Load button not found");
+    GTWidget::click(os, loadButton);
+
+    GTGlobals::sleep();
+
+    // Expected result: the scheme with parameters is loaded.
+    QWidget* wdElement = GTWidget::findWidget(os, "Read-sequence");
+    CHECK_SET_ERR(wdElement, "Schema wasn't loaded");
+}
+
 
 GUI_TEST_CLASS_DEFINITION( test_2128 )
 {
@@ -2773,6 +2835,106 @@ GUI_TEST_CLASS_DEFINITION( test_2267_2 ){
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_ADD << "add_qualifier_action"));
     GTMouseDriver::moveTo(os, GTUtilsAnnotationsTreeView::getItemCenter(os, "D"));
     GTMouseDriver::click(os, Qt::RightButton);
+}
+
+GUI_TEST_CLASS_DEFINITION( test_2268 ) {
+    class PermissionsSetter {
+    public:
+        PermissionsSetter() {}
+
+        ~PermissionsSetter() {
+            foreach (const QString& path, previousState.keys()) {
+                QFile file(path);
+                QFile::Permissions p = file.permissions();
+
+                p = previousState.value(path, p);
+                file.setPermissions(p);
+            }
+        }
+
+        bool setPermissions(const QString& path, QFile::Permissions perm, bool recursive = true) {
+            if (recursive) {
+                return setRecursive(path, perm);
+            } else {
+                return setOnce(path, perm);
+            }
+        }
+
+    private:
+        bool setRecursive(const QString& path, QFile::Permissions perm) {
+            QFileInfo fileInfo(path);
+            CHECK(fileInfo.exists(), false);
+            CHECK(!fileInfo.isSymLink(), false);
+
+            if (fileInfo.isDir()) {
+                QDir dir(path);
+                foreach (const QString& entryPath, dir.entryList(QDir::Dirs | QDir::Files | QDir::NoDotAndDotDot | QDir::NoSymLinks)) {
+                    bool res = setRecursive(path + "/" + entryPath, perm);
+                    CHECK(res, res);
+                }
+            }
+
+            bool res = setOnce(path, perm);
+
+            return res;
+        }
+
+        bool setOnce(const QString& path, QFile::Permissions perm) {
+            QFileInfo fileInfo(path);
+            CHECK(fileInfo.exists(), false);
+            CHECK(!fileInfo.isSymLink(), false);
+
+            QFile file(path);
+            QFile::Permissions p = file.permissions();
+            previousState.insert(path, p);
+
+            p &= perm;
+            return file.setPermissions(p);
+        }
+
+        QMap<QString, QFile::Permissions> previousState;
+    };
+
+//    1. Forbid write access to the t-coffee directory (chmod 555 %t-coffee-dir%).
+    // Permissions will be returned to the original state, if UGENE won't crash.
+    ExternalToolRegistry* etRegistry = AppContext::getExternalToolRegistry();
+    CHECK_SET_ERR(etRegistry, "External tool registry is NULL");
+    ExternalTool* tCoffee = etRegistry->getByName("T-Coffee");
+    CHECK_SET_ERR(tCoffee, "T-coffee tool is NULL");
+    QFileInfo toolPath(tCoffee->getPath());
+    CHECK_SET_ERR(toolPath.exists(), "T-coffee tool is not set");
+
+    QDir toolDir = toolPath.dir();
+    toolDir.cdUp();
+
+    PermissionsSetter permSetter;
+    QFile::Permissions p = QFile::WriteOwner |
+                           QFile::WriteUser |
+                           QFile::WriteGroup |
+                           QFile::WriteOther;
+    bool res = permSetter.setPermissions(toolDir.path(), ~p);
+    CHECK_SET_ERR(res, "Can't set permissions");
+
+//    2. Open "sample/CLUSTALW/COI.aln".
+    GTFileDialog::openFile(os, dataDir + "/samples/CLUSTALW/", "COI.aln");
+
+//    3. Right click on the MSA -> Align -> Align with T-Coffee.
+//    4. Click the "Align" button.
+    GTLogTracer lt;
+    GTUtilsDialog::waitForDialog(os, new TCoffeeDailogFiller(os));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_ALIGN << "Align with T-Coffee", GTGlobals::UseMouse));
+    QMenu* contextMenu = GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
+    CHECK_SET_ERR(contextMenu, "Context menu not found");
+
+//    Expected: the t-coffee task started and finished well.
+    TaskScheduler* scheduler = AppContext::getTaskScheduler();
+    CHECK_SET_ERR(scheduler, "Task scheduler is NULL");
+    GTGlobals::sleep(5000);
+    while(!scheduler->getTopLevelTasks().isEmpty()){
+       GTGlobals::sleep();
+    }
+
+    GTUtilsLog::check(os, lt);
 }
 
 } // GUITest_regression_scenarios namespace

@@ -194,6 +194,8 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_2070);
     REGISTER_TEST_IGNORED_LINUX(GUITest_regression_scenarios::test_2089, "no forbidden folder characters on linux");
     REGISTER_TEST(GUITest_regression_scenarios::test_2077);
+    REGISTER_TEST(GUITest_regression_scenarios::test_2093_1);
+    REGISTER_TEST(GUITest_regression_scenarios::test_2093_2);
     REGISTER_TEST(GUITest_regression_scenarios::test_2100_1);
     REGISTER_TEST(GUITest_regression_scenarios::test_2100_2);
     REGISTER_TEST(GUITest_regression_scenarios::test_2100_3);
@@ -225,6 +227,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_2225_2);
     REGISTER_TEST(GUITest_regression_scenarios::test_2267_1);
     REGISTER_TEST(GUITest_regression_scenarios::test_2267_2);
+    REGISTER_TEST(GUITest_regression_scenarios::test_2268);
 
 //////////////////////////////////////////////////////////////////////////
 // Common scenarios/project/
