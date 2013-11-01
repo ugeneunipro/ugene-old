@@ -220,14 +220,27 @@ int MSAUtils::getRowIndexByName( const MAlignment& ma, const QString& name )
 MAlignmentObject* MSAUtils::seqObjs2msaObj(const QList<GObject*>& objects, U2OpStatus& os, bool useGenbankHeader){
     if (objects.isEmpty()) {
         return NULL;
-    }    
+    }
+    
     MAlignment ma = seq2ma(objects, os, useGenbankHeader);
-    const U2DbiRef& dbiRef = objects.first()->getEntityRef().dbiRef;
 
     if (ma.isEmpty()) {
         return NULL;
     }
     ma.trim();
+
+    int pos = 0;
+    bool breakedNice = false;
+    foreach(GObject *o, objects){
+        if(o->getGObjectType() == GObjectTypes::SEQUENCE){
+            breakedNice = true;
+            break;
+        }
+        pos++;
+    }
+    SAFE_POINT(breakedNice, tr("There is no sequence objects in given file, unable to convert it in multiple alignment"), NULL);
+
+    const U2DbiRef& dbiRef = objects.at(pos)->getEntityRef().dbiRef;
     
     U2EntityRef msaRef = MAlignmentImporter::createAlignment(dbiRef, ma, os);
     CHECK_OP(os, NULL);
