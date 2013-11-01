@@ -81,10 +81,17 @@ bool StreamShortReadWriter::init( const GUrl& url ) {
     return res;   
 }
 
-bool StreamShortReadWriter::writeNextSequence( const DNASequence& seq ) {   
+bool StreamShortReadWriter::writeNextSequence( const DNASequence& seq ) {
     U2OpStatus2Log os;
     fastaFormat->storeSequence(seq, io, os);
     
+    return !os.hasError();
+}
+
+bool StreamShortReadWriter::writeNextSequence(const U2SequenceObject *seq) {
+    U2OpStatus2Log os;
+    fastaFormat->storeSequence(seq, io, os);
+
     return !os.hasError();
 }
 

@@ -288,54 +288,76 @@ Document* FastaFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const
     return doc;
 }
 
-#define SAVE_LINE_LEN 70
-static void saveSequence(IOAdapter* io, const DNASequence& sequence, U2OpStatus& os) {
-    //writing header;
-
-    // TODO better header out of info tags
-    /*QString hdr = seqObj->getDNASequence().info.value(DNAInfo::FASTA_HDR).toString();
-    if (hdr.isEmpty()) {
-        hdr = seqObj->getGObjectName();
-    }*/
-
+static void writeHeaderToFile( IOAdapter* io, const QString &sequenceName, U2OpStatus &os ) {
     QByteArray block;
-    QString hdr = sequence.getName();
-    block.append(FastaFormat::FASTA_HEADER_START_SYMBOL).append(hdr).append('\n');
-    if (io->writeBlock( block ) != block.length()) {
-        os.setError(L10N::errorWritingFile(io->getURL()));
-        return;
-    }
-    const char* seq = sequence.seq.constData();
-    int len = sequence.seq.length();
-    for (int i = 0; i < len; i += SAVE_LINE_LEN ) {
-        int chunkSize = qMin( SAVE_LINE_LEN, len - i );
-        if (io->writeBlock( seq + i, chunkSize ) != chunkSize || !io->writeBlock( "\n", 1 )) {
-            os.setError(L10N::errorWritingFile(io->getURL()));
-            return;
-        }
+    block.append( FastaFormat::FASTA_HEADER_START_SYMBOL ).append( sequenceName ).append( '\n' );
+    if ( io->writeBlock( block ) != block.length( ) ) {
+        os.setError( L10N::errorWritingFile( io->getURL( ) ) );
     }
 }
 
+static void writeBlockToFile( IOAdapter* io, const char *block, int blockSize, U2OpStatus &os ) {
+    if ( io->writeBlock( block, blockSize ) != blockSize || !io->writeBlock( "\n", 1 ) ) {
+        os.setError( L10N::errorWritingFile( io->getURL( ) ) );
+    }
+}
+
+#define SAVE_LINE_LEN 1024 * 1024
+
+static void saveSequence( IOAdapter* io, const U2SequenceObject *sequence, U2OpStatus& os ) {
+    writeHeaderToFile( io, sequence->getSequenceName( ), os );
+    CHECK_OP( os, );
+
+    const int len = sequence->getSequenceLength( );
+    for ( int i = 0; i < len; i += SAVE_LINE_LEN ) {
+        int chunkSize = qMin( SAVE_LINE_LEN, len - i );
+        const QByteArray chunkContent = sequence->getSequenceData( U2Region( i, chunkSize ), os );
+        CHECK_OP( os, );
+        writeBlockToFile( io, chunkContent.constData( ), chunkSize, os );
+        CHECK_OP( os, );
+    }
+}
+
+static void saveSequence(IOAdapter* io, const DNASequence& sequence, U2OpStatus& os) {
+    writeHeaderToFile( io, sequence.getName( ), os );
+    CHECK_OP( os, );
+
+    const char *seq = sequence.seq.constData( );
+    const int len = sequence.seq.length( );
+    for ( int i = 0; i < len; i += SAVE_LINE_LEN ) {
+        const int chunkSize = qMin( SAVE_LINE_LEN, len - i );
+        writeBlockToFile( io, seq + i, chunkSize, os );
+        CHECK_OP( os, );
+    }
+}
 
 void FastaFormat::storeDocument( Document* doc, IOAdapter* io, U2OpStatus& os ) {
     //TODO: check saved op states!!!
-    foreach( GObject* o, doc->getObjects() ) {
-        QList<DNASequence> sequences = DocumentFormatUtils::toSequences(o);
-        foreach(const DNASequence& s, sequences) {
-            saveSequence(io, s, os);
-            CHECK_OP(os, );
+    foreach( GObject *o, doc->getObjects( ) ) {
+        U2SequenceObject *seqObj = dynamic_cast<U2SequenceObject *>( o );
+        if ( NULL != seqObj ) {
+            saveSequence( io, seqObj, os );
+            CHECK_OP( os, );
+        } else {
+            QList<DNASequence> sequences = DocumentFormatUtils::toSequences( o );
+            foreach( const DNASequence &s, sequences ) {
+                saveSequence( io, s, os );
+                CHECK_OP( os, );
+            }
         }
     }
 }
 
-void FastaFormat::storeEntry(IOAdapter *io, const QMap< GObjectType, QList<GObject*> > &objectsMap, U2OpStatus &os) {
-    SAFE_POINT(objectsMap.contains(GObjectTypes::SEQUENCE), "Fasta entry storing: no sequences", );
-    const QList<GObject*> &seqs = objectsMap[GObjectTypes::SEQUENCE];
-    SAFE_POINT(1 == seqs.size(), "Fasta entry storing: sequence objects count error", );
+void FastaFormat::storeEntry( IOAdapter *io, const QMap<GObjectType, QList<GObject *> > &objectsMap,
+    U2OpStatus &os )
+{
+    SAFE_POINT( objectsMap.contains( GObjectTypes::SEQUENCE ), "Fasta entry storing: no sequences", );
+    const QList<GObject *> &seqs = objectsMap[GObjectTypes::SEQUENCE];
+    SAFE_POINT( 1 == seqs.size( ), "Fasta entry storing: sequence objects count error", );
 
-    U2SequenceObject *seq = dynamic_cast<U2SequenceObject*>(seqs.first());
-    SAFE_POINT(NULL != seq, "Fasta entry storing: NULL sequence object", );
-    saveSequence(io, seq->getWholeSequence(), os);
+    U2SequenceObject *seq = dynamic_cast<U2SequenceObject *>( seqs.first( ) );
+    SAFE_POINT( NULL != seq, "Fasta entry storing: NULL sequence object", );
+    saveSequence(io, seq, os);
 }
 
 DNASequence *FastaFormat::loadSequence(IOAdapter* io, U2OpStatus& os) {
@@ -402,6 +424,10 @@ DNASequence *FastaFormat::loadSequence(IOAdapter* io, U2OpStatus& os) {
 
 void FastaFormat::storeSequence(const DNASequence& sequence, IOAdapter* io, U2OpStatus& os) {
     saveSequence(io, sequence, os);
+}
+
+void FastaFormat::storeSequence( const U2SequenceObject *sequence, IOAdapter *io, U2OpStatus &os ) {
+    saveSequence( io, sequence, os );
 }
 
 static QString skipComments(const QString &userInput, U2OpStatus &os) {

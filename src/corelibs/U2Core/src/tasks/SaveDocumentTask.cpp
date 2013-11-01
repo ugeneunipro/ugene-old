@@ -82,16 +82,8 @@ void SaveDocumentTask::run() {
     DocumentFormat* df = doc->getDocumentFormat();
 
     QString originalFilePath = url.getURLString();
-    bool originalFileExists = false;
-    if (url.isLocalFile()) {
-        QFile file(originalFilePath);
-        originalFileExists = file.open(QIODevice::ReadOnly);
-        qint64 fileSize = file.size();
-        if (fileSize == 0) {
-            originalFileExists = false;
-        }
-        file.close();
-    }
+    const bool originalFileExists = ( url.isLocalFile( ) ) ? QFile::exists( originalFilePath )
+        : false;
 
     if (url.isLocalFile() && originalFileExists) {
         // make tmp file

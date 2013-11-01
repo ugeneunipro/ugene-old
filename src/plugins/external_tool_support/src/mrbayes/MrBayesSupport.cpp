@@ -53,7 +53,7 @@ MrBayesSupport::MrBayesSupport(const QString& name, const QString& path) : Exter
 #endif
     validationArguments<<"";
     validMessage="MrBayes";
-    description=tr("<i>MrBayes</i> MrBayes is a program for the Bayesian estimation of phylogeny." 
+    description=tr("<i>MrBayes</i> is a program for the Bayesian estimation of phylogeny." 
                    "Bayesian inference of phylogeny is based upon a quantity called the posterior "
                    "probability distribution of trees, which is the probability of a tree conditioned "
                    "on the observations. The conditioning is accomplished using Bayes's theorem. "

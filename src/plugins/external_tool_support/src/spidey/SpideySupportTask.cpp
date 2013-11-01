@@ -211,7 +211,7 @@ void PrepareInputForSpideyTask::run()
     QString dnaPath = outputDir + "/" + DNA_NAME;
     StreamShortReadWriter dnaWriter;
     dnaWriter.init(dnaPath);
-    if (!dnaWriter.writeNextSequence(dnaObj->getWholeSequence())) {
+    if (!dnaWriter.writeNextSequence(dnaObj)) {
         setError(tr("Failed to write DNA sequence  %1").arg(dnaObj->getSequenceName()));
         return;
     }
@@ -224,7 +224,7 @@ void PrepareInputForSpideyTask::run()
     QString mRnaPath = outputDir + "/" + MRNA_NAME;
     StreamShortReadWriter mRnaWriter;
     mRnaWriter.init(mRnaPath);
-    if (!mRnaWriter.writeNextSequence(mRnaObj->getWholeSequence())) {
+    if (!mRnaWriter.writeNextSequence(mRnaObj)) {
        setError(tr("Failed to write DNA sequence  %1").arg(mRnaObj->getSequenceName()));
        return;
     }

@@ -41,7 +41,8 @@ public:
     virtual DNASequence *loadSequence( IOAdapter* io, U2OpStatus& os);
 
     void storeSequence(const DNASequence& sequence, IOAdapter* io, U2OpStatus& os);
-    
+    void storeSequence(const U2SequenceObject *sequence, IOAdapter *io, U2OpStatus &os);
+
     virtual void storeDocument(Document* d, IOAdapter* io, U2OpStatus& os);
 
     virtual FormatCheckResult checkRawData(const QByteArray& rawData, const GUrl& = GUrl()) const;

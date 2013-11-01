@@ -75,6 +75,7 @@ public:
     StreamShortReadWriter( bool writeQualityExplicitly = false);
     bool init(const GUrl& url);
     bool writeNextSequence(const DNASequence& seq);
+    bool writeNextSequence(const U2SequenceObject *seq);
     const GUrl& getOutputPath() { return ouputPath; }
     void close();
 }; 
