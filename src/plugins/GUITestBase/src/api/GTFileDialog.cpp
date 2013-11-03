@@ -261,6 +261,13 @@ void GTFileDialogUtils::selectFile()
             GTGlobals::sleep(100);
         }
 
+        /***needed for checking first file on linux***/
+        GTGlobals::sleep(200);
+        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["down"]);
+        GTGlobals::sleep(200);
+        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["up"]);
+        GTGlobals::sleep(200);
+
         while (qobject_cast<QFileDialog*>(fileDialog)->selectedFiles().indexOf(path + fileName) == -1) {
             GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["down"]);
             GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["space"]);

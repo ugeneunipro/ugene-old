@@ -31,6 +31,7 @@ namespace GUITest_common_scenarios_workflow_estimating {
 #define GUI_TEST_PREFIX "GUITest_common_scenarios_workflow_estimating_"
 
 GUI_TEST_CLASS_DECLARATION(test_0001)
+GUI_TEST_CLASS_DECLARATION(test_0002)
 
 }
 

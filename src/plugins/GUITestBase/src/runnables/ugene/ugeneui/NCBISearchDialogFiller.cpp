@@ -20,11 +20,14 @@
  */
 
 #include "NCBISearchDialogFiller.h"
+#include "runnables/ugene/corelibs/U2Gui/DownloadRemoteFileDialogFiller.h"
+
 #include <QApplication>
-#include <QtGui/QLineEdit>
+#include <QtGui/QTreeWidget>
 
 #include "api/GTWidget.h"
 #include "api/GTLineEdit.h"
+#include "api/GTSpinBox.h"
 #include "api/GTKeyboardDriver.h"
 namespace U2 {
 
@@ -44,10 +47,31 @@ void NCBISearchDialogFiller::run(){
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
     GTGlobals::sleep(3000);
 
+
+    if (resultLimit!=-1){
+        QSpinBox* resultLimitBox = qobject_cast<QSpinBox*>(GTWidget::findWidget(os, "resultLimitBox", dialog));
+        GTSpinBox::setValue(os, resultLimitBox, resultLimit, GTGlobals::UseKeyBoard);
+        GTWidget::click(os, GTWidget::findWidget(os, "searchButton"));
+        GTGlobals::sleep(3000);
+        int i = getResultNumber();
+        GT_CHECK(i==resultLimit,QString("unexpected number of results. Expected: %1, found: %2").arg(resultLimit).arg(i))
+    }
+
     if (doubleEnter) {
         GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
         GTGlobals::sleep(3000);
+        GTWidget::click(os, GTWidget::findWidget(os, "closeButton"));
+        return;
     }
+
+    GTUtilsDialog::waitForDialog(os, new RemoteDBDialogFiller(os,"JN561323",0,false,QString(),GTGlobals::UseMouse,1));
+    QTreeWidget* w = dialog->findChild<QTreeWidget*>("treeWidget");
+    GT_CHECK(w, "treeWidget not found");
+
+    GTWidget::click(os, w, Qt::LeftButton, QPoint(10,35));//fast fix, clicking first result
+    GTWidget::click(os, GTWidget::findWidget(os, "downloadButton"));
+
+
 
     GTWidget::click(os, GTWidget::findWidget(os, "closeButton"));
 }
@@ -56,6 +80,17 @@ void NCBISearchDialogFiller::run(){
 #define GT_METHOD_NAME "shownCorrect"
 bool NCBISearchDialogFiller::shownCorrect(){
     return true;
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "NCBISearchDialogFiller::getResultNumber"
+int NCBISearchDialogFiller::getResultNumber(){
+    QWidget* dialog = QApplication::activeModalWidget();
+    GT_CHECK_RESULT(dialog, "activeModalWidget is NULL",-1);
+
+    QTreeWidget* w = dialog->findChild<QTreeWidget*>("treeWidget");
+    GT_CHECK_RESULT(w, "treeWidget not found",-1);
+    return w->topLevelItemCount();
 }
 #undef GT_METHOD_NAME
 

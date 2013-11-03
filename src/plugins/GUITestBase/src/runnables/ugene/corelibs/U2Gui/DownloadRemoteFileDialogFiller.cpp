@@ -47,6 +47,10 @@ void RemoteDBDialogFiller::run() {
     QComboBox *databasesBox = qobject_cast<QComboBox*>(GTWidget::findWidget(os, "databasesBox", dialog));
     GTComboBox::setCurrentIndex(os, databasesBox, DBItemNum);
 
+    if (outFormatVal!=-1){
+        QComboBox* formatBox = qobject_cast<QComboBox*>(GTWidget::findWidget(os, "formatBox"));
+        GTComboBox::setCurrentIndex(os, formatBox, outFormatVal);
+    }
     if (pressCancel) {
         QAbstractButton *rejectButton = qobject_cast<QAbstractButton*>(GTWidget::findWidget(os, "rejectButton", dialog));
         GTWidget::click(os, rejectButton);

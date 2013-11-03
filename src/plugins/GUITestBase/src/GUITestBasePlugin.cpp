@@ -175,6 +175,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 
     REGISTER_TEST(GUITest_regression_scenarios::test_1921);
     REGISTER_TEST(GUITest_regression_scenarios::test_1924);
+    REGISTER_TEST(GUITest_regression_scenarios::test_1986);
 
     REGISTER_TEST(GUITest_regression_scenarios::test_2006);
     REGISTER_TEST(GUITest_regression_scenarios::test_2007);
@@ -188,6 +189,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_2021_7);
     REGISTER_TEST(GUITest_regression_scenarios::test_2021_8);
     REGISTER_TEST(GUITest_regression_scenarios::test_2021_9);
+    REGISTER_TEST(GUITest_regression_scenarios::test_2024);
     REGISTER_TEST_IGNORED_WINDOWS(GUITest_regression_scenarios::test_2026, "holding 'shift' does not work (at least on Windows)");
     REGISTER_TEST(GUITest_regression_scenarios::test_2030);
     REGISTER_TEST(GUITest_regression_scenarios::test_2032);
@@ -923,6 +925,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 // Common scenarios/Workflow designer/Estimating
 /////////////////////////////////////////////////////////////////////////
     REGISTER_TEST(GUITest_common_scenarios_workflow_estimating::test_0001);
+    REGISTER_TEST(GUITest_common_scenarios_workflow_estimating::test_0002);
 
 /////////////////////////////////////////////////////////////////////////
 // Common scenarios/NIAID_pipelines

@@ -64,7 +64,17 @@ namespace U2 {
 
 namespace GUITest_common_scenarios_workflow_designer {
 GUI_TEST_CLASS_DEFINITION(test_0001){
-    GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
+    QMenu *menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
+    GTMenu::clickMenuItem(os, menu, QStringList() << "Workflow Designer");
+
+    GTUtilsWorkflowDesigner::addSample(os, "call variants");
+
+    GTMouseDriver::moveTo( os, GTUtilsWorkflowDesigner::getItemCenter( os, "call variants" ) );
+    GTMouseDriver::click( os );
+
+    GTUtilsWorkflowDesigner::setParameter(os, "List of sample", "olololo", GTUtilsWorkflowDesigner::textValue);
+
+ /*   GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
     //GTUtilsDialog::waitForDialog(os,new RPackageDialorFiller(os));
     QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
 

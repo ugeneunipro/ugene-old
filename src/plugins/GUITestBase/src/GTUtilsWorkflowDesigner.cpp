@@ -360,28 +360,31 @@ void GTUtilsWorkflowDesigner::setParameter(U2OpStatus &os, QString parameter, QV
     GTGlobals::sleep(500);
 
     //SET VALUE
-    bool* ok;
+    bool ok = true;
     switch(type){
     case(spinValue):{
-        int spinVal = value.toInt(ok);
+        int spinVal = value.toInt(&ok);
         GT_CHECK(ok,"Wrong input. Int requaered for GTUtilsWorkflowDesigner::spinValue")
         QSpinBox* box = qobject_cast<QSpinBox*>(table->findChild<QSpinBox*>());
         GT_CHECK(box, "spinBox not found. Widget in this cell might be not QSpinBox");
         GTSpinBox::setValue(os, box, spinVal, GTGlobals::UseKeyBoard);
+        break;
     }
     case(doubleSpinValue):{
-        double spinVal = value.toDouble(ok);
+        double spinVal = value.toDouble(&ok);
         GT_CHECK(ok,"Wrong input. Double requaered for GTUtilsWorkflowDesigner::doubleSpinValue")
         QDoubleSpinBox* box = qobject_cast<QDoubleSpinBox*>(table->findChild<QDoubleSpinBox*>());
         GT_CHECK(box, "QDoubleSpinBox not found. Widget in this cell might be not QDoubleSpinBox");
         GTDoubleSpinbox::setValue(os, box, spinVal, GTGlobals::UseKeyBoard);
+        break;
     }
     case(comboValue):{
-        int comboVal = value.toInt(ok);
+        int comboVal = value.toInt(&ok);
         GT_CHECK(ok,"Wrong input. Int requaered for GTUtilsWorkflowDesigner::ComboValue")
         QComboBox* box = qobject_cast<QComboBox*>(table->findChild<QComboBox*>());
         GT_CHECK(box, "QComboBox not found. Widget in this cell might be not QComboBox");
         GTComboBox::setCurrentIndex(os, box, comboVal);
+        break;
     }
     case(textValue):{
         QString lineVal = value.toString();

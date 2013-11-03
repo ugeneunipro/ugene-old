@@ -28,14 +28,21 @@ namespace U2 {
 class NCBISearchDialogFiller : public Filler
 {
 public:
-    NCBISearchDialogFiller(U2OpStatus &os, QString _query, bool _doubleEnter = false) : Filler(os, "SearchGenbankSequenceDialog"),
-        query(_query), doubleEnter(_doubleEnter){}
+    NCBISearchDialogFiller(U2OpStatus &os, QString _query, bool _doubleEnter = false, int _resultLimit=-1) :
+        Filler(os, "SearchGenbankSequenceDialog"),
+        query(_query),
+        doubleEnter(_doubleEnter),
+        resultLimit(_resultLimit){}
     virtual void run();
 
 private:
     QString query;
-    bool shownCorrect();
+
     bool doubleEnter;
+    int resultLimit;
+
+    bool shownCorrect();
+    int getResultNumber();
 };
 
 }//namespace

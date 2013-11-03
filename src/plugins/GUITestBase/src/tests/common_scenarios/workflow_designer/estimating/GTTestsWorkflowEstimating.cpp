@@ -22,6 +22,7 @@
 #include "api/GTMenu.h"
 #include "api/GTWidget.h"
 #include "api/GTAction.h"
+#include "api/GTMouseDriver.h"
 #include "GTUtilsWorkflowDesigner.h"
 #include "GTUtilsLog.h"
 #include "GTUtilsDialog.h"
@@ -44,6 +45,27 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
     //Expected state: a warning message box appears: user should fix all errors.
     GTUtilsDialog::waitForDialog( os, new MessageBoxDialogFiller( os, QMessageBox::Ok,
         "Please fix issues listed in the error list (located under workflow)." ) );
+    GTWidget::click(os,GTAction::button(os,"Estimate workflow"));
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0002) {
+    //1. Open WD.
+    //2. Open any NGS pipeline, e.g. Call Variants.
+    QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
+    GTMenu::clickMenuItem(os, menu, QStringList() << "Workflow Designer");
+    GTUtilsWorkflowDesigner::addSample(os, "Call variants with SAMtools");
+//    3. Set valid input data.
+    GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "read assembly"));
+    GTMouseDriver::click(os);
+    GTUtilsWorkflowDesigner::setDatasetInputFile(os, testDir + "_common_data/NIAID_pipelines/Call_variants/input_data/c_elegans", "c_elegans_test.bam");
+
+    GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "Read Sequence"));
+    GTMouseDriver::click(os);
+    GTUtilsWorkflowDesigner::setDatasetInputFile(os, testDir + "_common_data/NIAID_pipelines/Call_variants/input_data/c_elegans", "c.elegans_chr2.fasta");
+//    4. Click an "Estimate scheme" button on the toolbar.
+//    Expected state: an info message box appears: there is a time estimation for the set input data and two buttons: close and run.
+    GTUtilsDialog::waitForDialog( os, new MessageBoxDialogFiller( os, QMessageBox::Close,
+        "Approximate estimation time of the workflow run is" ) );
     GTWidget::click(os,GTAction::button(os,"Estimate workflow"));
 }
 

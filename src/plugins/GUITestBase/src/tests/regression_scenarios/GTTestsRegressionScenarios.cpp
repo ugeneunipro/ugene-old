@@ -1710,6 +1710,22 @@ GUI_TEST_CLASS_DEFINITION( test_2021_9 )
                     "Unexpected MSA content has occurred" );
 }
 
+GUI_TEST_CLASS_DEFINITION(test_2024){
+//    1. Open WD
+    QMenu *menu=GTMenu::showMainMenu( os, MWMENU_TOOLS );
+    GTMenu::clickMenuItem( os, menu, QStringList( ) << "Workflow Designer" );
+
+//    2. Add element "Local BLAST Search"
+    GTUtilsWorkflowDesigner::addAlgorithm( os, "Local BLAST Search" );
+    GTMouseDriver::moveTo(os,GTUtilsWorkflowDesigner::getItemCenter(os, "blast"));
+    GTMouseDriver::click(os);
+
+//    Expected state: element has parameters "gap cost" and "match score"
+    GTUtilsWorkflowDesigner::setParameter(os, "gap cost", 2, GTUtilsWorkflowDesigner::comboValue);
+    GTUtilsWorkflowDesigner::setParameter(os, "Match scores", 1, GTUtilsWorkflowDesigner::comboValue);
+
+}
+
 GUI_TEST_CLASS_DEFINITION( test_2026 ) {
     // 1. Open data/samples/CLUSTALW/COI.aln
     GTFileDialog::openFile( os, dataDir + "samples/CLUSTALW/", "COI.aln" );
@@ -2313,6 +2329,38 @@ GUI_TEST_CLASS_DEFINITION( test_1924 )
     QString sequenceBegin = GTUtilsSequenceView::getBeginOfSequenceAsString(os, 7);
     CHECK_SET_ERR(sequenceBegin == "ATCGTAC", "Sequence starts with <" + sequenceBegin + ">, expected ATCGTAC");
 
+}
+
+GUI_TEST_CLASS_DEFINITION(test_1986){
+//1. Run UGENE
+//2. Use main toolbar { File -> Search NCBI Genbank }
+    GTUtilsDialog::waitForDialog(os, new NCBISearchDialogFiller(os, "human", false,5));
+
+    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), ACTION_PROJECTSUPPORT__SEARCH_GENBANK);
+    GTGlobals::sleep();
+//Expected state: the "NCBI Sequence Search" dialog has appeared
+
+//3. Type "human" to the request string
+
+//4. In the dialog's right bottom corner set "Result limit" to 5
+
+//5. Press the "Search" button
+
+//Expected state: only 5 results has appeared in the "Results" list
+
+//6. Choose some result sequence
+
+//7. Press the "Download" button
+
+//Expected state: the "Fetch Data from Remote Database" dialog has appeared, it has the "Output format" combobox
+
+//8. Select "fasta" output format
+
+//9. Press "OK"
+
+    GTMouseDriver::moveTo(os,GTUtilsProjectTreeView::getItemCenter(os, "JN561323.fasta"));
+
+//Expected state: the chosen sequence has been downloaded, saved in FASTA format and displayed in sequence view
 }
 GUI_TEST_CLASS_DEFINITION( test_2163 ) {
     // 1. Open "_common_data/fasta/AMINO.fa".
