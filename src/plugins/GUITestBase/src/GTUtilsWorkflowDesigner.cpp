@@ -28,12 +28,19 @@
 #include "api/GTTabWidget.h"
 #include "api/GTGraphicsItem.h"
 #include "api/GTFileDialog.h"
+#include "api/GTTableView.h"
+#include "api/GTSpinBox.h"
+#include "api/GTDoubleSpinBox.h"
+#include "api/GTLineEdit.h"
+#include "api/GTComboBox.h"
 
 #include <U2View/MSAEditor.h>
 #include <QTreeWidget>
 #include <QtGui/QToolButton>
 #include <QtGui/QGraphicsView>
 #include <QtGui/QListWidget>
+#include <QtGui/QTableView>
+#include <QtGui/QSpinBox>
 #include <U2Core/AppContext.h>
 #include "../../workflow_designer/src/WorkflowViewItems.h"
 
@@ -329,6 +336,64 @@ void GTUtilsWorkflowDesigner::setDatasetInputFolder(U2OpStatus &os, QString file
     GTUtilsDialog::waitForDialog(os, ob);
 
     GTWidget::click(os, addDirButton);
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "setParameter"
+void GTUtilsWorkflowDesigner::setParameter(U2OpStatus &os, QString parameter, QVariant value, valueType type){
+    QTableView* table = qobject_cast<QTableView*>(GTWidget::findWidget(os,"table"));
+    CHECK_SET_ERR(table,"tableView not found");
+
+    //FIND CELL
+    QAbstractItemModel* model = table->model();
+    int iMax = model->rowCount();
+    int row = -1;
+    for(int i = 0; i<iMax; i++){
+        QString s = model->data(model->index(i,0)).toString();
+        if (s.contains(parameter,Qt::CaseInsensitive))
+            row = i;
+    }
+    GT_CHECK(row != -1, "parameter not found");
+    table->scrollTo(model->index(row,1));
+    GTMouseDriver::moveTo(os,GTTableView::getCellPosition(os,table,1,row));
+    GTMouseDriver::click(os);
+    GTGlobals::sleep(500);
+
+    //SET VALUE
+    bool* ok;
+    switch(type){
+    case(spinValue):{
+        int spinVal = value.toInt(ok);
+        GT_CHECK(ok,"Wrong input. Int requaered for GTUtilsWorkflowDesigner::spinValue")
+        QSpinBox* box = qobject_cast<QSpinBox*>(table->findChild<QSpinBox*>());
+        GT_CHECK(box, "spinBox not found. Widget in this cell might be not QSpinBox");
+        GTSpinBox::setValue(os, box, spinVal, GTGlobals::UseKeyBoard);
+    }
+    case(doubleSpinValue):{
+        double spinVal = value.toDouble(ok);
+        GT_CHECK(ok,"Wrong input. Double requaered for GTUtilsWorkflowDesigner::doubleSpinValue")
+        QDoubleSpinBox* box = qobject_cast<QDoubleSpinBox*>(table->findChild<QDoubleSpinBox*>());
+        GT_CHECK(box, "QDoubleSpinBox not found. Widget in this cell might be not QDoubleSpinBox");
+        GTDoubleSpinbox::setValue(os, box, spinVal, GTGlobals::UseKeyBoard);
+    }
+    case(comboValue):{
+        int comboVal = value.toInt(ok);
+        GT_CHECK(ok,"Wrong input. Int requaered for GTUtilsWorkflowDesigner::ComboValue")
+        QComboBox* box = qobject_cast<QComboBox*>(table->findChild<QComboBox*>());
+        GT_CHECK(box, "QComboBox not found. Widget in this cell might be not QComboBox");
+        GTComboBox::setCurrentIndex(os, box, comboVal);
+    }
+    case(textValue):{
+        QString lineVal = value.toString();
+        QLineEdit* line = qobject_cast<QLineEdit*>(table->findChild<QLineEdit*>());
+        GT_CHECK(line, "QLineEdit not found. Widget in this cell might be not QLineEdit");
+        GTLineEdit::setText(os, line, lineVal);
+    }
+    }
+    /*foreach(QObject* o, table->children()){
+        s.append(o->metaObject()->className()).append("\n");
+    }
+    GT_CHECK(false, s);*/
 }
 #undef GT_METHOD_NAME
 

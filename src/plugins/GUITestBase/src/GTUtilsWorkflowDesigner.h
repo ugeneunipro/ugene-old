@@ -34,6 +34,7 @@ class WorkflowPortItem;
 class GTUtilsWorkflowDesigner {
 public:
     enum tab {algoriths,samples};
+    enum valueType{spinValue, doubleSpinValue, comboValue, textValue};
 
     //reterns item from samples or algorithms tab
     static QTreeWidgetItem* findTreeItem(U2OpStatus &os, QString itemName,tab t);
@@ -71,6 +72,8 @@ public:
 
     //sets input folder with path "filePath" to dataset
     static void setDatasetInputFolder(U2OpStatus &os, QString filePath);
+
+    static void setParameter(U2OpStatus& os, QString parameter, QVariant value, valueType type);
 
     //returns number of items in error list which contain "error"
     static int checkErrorList(U2OpStatus &os, QString error);
