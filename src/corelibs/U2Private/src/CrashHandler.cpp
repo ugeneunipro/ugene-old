@@ -349,7 +349,7 @@ void CrashHandler::setupHandler() {
 #define SA_FLAGS (SA_ONSTACK | SA_SIGINFO)
 
     stack_t sigstk;
-    sigstk.ss_sp = malloc(SIGSTKSZ * 2);
+    sigstk.ss_sp = (char*) malloc(SIGSTKSZ * 2);
     sigstk.ss_size = SIGSTKSZ * 2;
     sigstk.ss_flags = 0;
     if (sigaltstack(&sigstk,0) < 0) {

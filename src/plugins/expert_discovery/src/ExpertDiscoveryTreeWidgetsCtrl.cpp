@@ -198,7 +198,7 @@ void EDProjectTree::updateSequenceBase(EItemType type){
 void EDProjectTree::sl_propChanged(EDProjectItem* item, const EDPIProperty* prop, QString newVal){
     switch (item->getType()) {
         case PIT_CS_FOLDER: 
-            if (prop->getName().compare("Name", Qt::CaseInsensitive) == NULL) {
+            if (prop->getName().compare("Name", Qt::CaseInsensitive) == 0) {
                 EDPICSDirectory* pPI = dynamic_cast<EDPICSDirectory*>(item);
                 CSFolder* pFolder = findFolder(pPI);
                 const CSFolder* pParentFolder = pFolder->getParentFolder();

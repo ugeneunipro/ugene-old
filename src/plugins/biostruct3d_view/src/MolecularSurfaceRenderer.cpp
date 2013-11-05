@@ -80,9 +80,21 @@ void DotsRenderer::drawSurface( MolecularSurface& surface )
     glBegin(GL_POINTS);
     foreach(const Face& face, surface.getFaces()) {
         float vct[3][3] = {
-            {face.v[0].x,face.v[0].y,face.v[0].z},
-            {face.v[1].x,face.v[1].y,face.v[1].z},
-            {face.v[2].x,face.v[2].y,face.v[2].z},
+            {
+                static_cast<float>(face.v[0].x),
+                static_cast<float>(face.v[0].y),
+                static_cast<float>(face.v[0].z),
+            },
+            {
+                static_cast<float>(face.v[1].x),
+                static_cast<float>(face.v[1].y),
+                static_cast<float>(face.v[1].z),
+            },
+            {
+                static_cast<float>(face.v[2].x),
+                static_cast<float>(face.v[2].y),
+                static_cast<float>(face.v[2].z),
+            },
         };
         glVertex3fv(vct[0]);
         glVertex3fv(vct[1]);

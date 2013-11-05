@@ -44,7 +44,7 @@ namespace U2 {
 
  public:
 
-    TestViewReporter(TestViewController* parent,QTreeWidget* tree=NULL,int runTime=NULL);
+    TestViewReporter(TestViewController* parent,QTreeWidget* tree=NULL,int runTime=-1);
     QString getReportText() {return curReportText;}
     bool saveAs(const QString url,const QString data);
 
