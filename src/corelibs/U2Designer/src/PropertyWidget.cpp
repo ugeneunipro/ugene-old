@@ -174,7 +174,6 @@ ComboBoxWithUrlWidget::ComboBoxWithUrlWidget(const QVariantMap &items, bool _isP
 {
     comboBox = new QComboBox(this);
     addMainWidget(comboBox);
-    setStyleSheet("{background-color: green;}");
 
     foreach (const QString &key, items.keys()) {
         comboBox->addItem(key, items[key]);
