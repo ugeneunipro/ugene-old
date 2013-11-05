@@ -42,7 +42,7 @@ HEADERS += src/AppSettingsGUI.h \
            src/util/GScrollBar.h \
            src/util/GUIUtils.h \
            src/util/HBar.h \
-           src/util/ImportDialogs.h \
+           src/util/ImportDialogsFactories.h \
            src/util/LastUsedDirHelper.h \
            src/util/ObjectViewTreeController.h \
            src/util/PositionSelector.h \
@@ -64,9 +64,9 @@ HEADERS += src/AppSettingsGUI.h \
            src/util/SuggestCompleter.h \
            src/util/TextEditorDialog.h \
            src/util/TreeWidgetUtils.h \
-           src/util/logview/LogView.h
-FORMS += src/util/ui/AceImportDialog.ui \
-         src/util/ui/AddNewDocumentDialog.ui \
+           src/util/logview/LogView.h \
+           src/util/ImportDialogs/AceImportDialog.h
+FORMS += src/util/ui/AddNewDocumentDialog.ui \
          src/util/ui/AuthentificationDialog.ui \
          src/util/ui/BreakpointConditionEditDialog.ui \
          src/util/ui/CreateDocumentFromTextDialog.ui \
@@ -84,7 +84,8 @@ FORMS += src/util/ui/AceImportDialog.ui \
          src/util/ui/ScriptEditorDialog.ui \
          src/util/ui/SearchGenbankSequenceDialog.ui \
          src/util/ui/SeqPasterWidget.ui \
-         src/util/ui/TextEditorDialog.ui
+         src/util/ui/TextEditorDialog.ui \
+         src/util/ImportDialogs/ui/AceImportDialog.ui
 SOURCES += src/MainWindow.cpp \
            src/Notification.cpp \
            src/NotificationWidget.cpp \
@@ -122,7 +123,7 @@ SOURCES += src/MainWindow.cpp \
            src/util/GScrollBar.cpp \
            src/util/GUIUtils.cpp \
            src/util/HBar.cpp \
-           src/util/ImportDialogs.cpp \
+           src/util/ImportDialogsFactories.cpp \
            src/util/LastUsedDirHelper.cpp \
            src/util/ObjectViewTreeController.cpp \
            src/util/PositionSelector.cpp \
@@ -143,7 +144,8 @@ SOURCES += src/MainWindow.cpp \
            src/util/SuggestCompleter.cpp \
            src/util/TextEditorDialog.cpp \
            src/util/TreeWidgetUtils.cpp \
-           src/util/logview/LogView.cpp
+           src/util/logview/LogView.cpp \
+           src/util/ImportDialogs/AceImportDialog.cpp
 RESOURCES += U2Gui.qrc
 TRANSLATIONS += transl/chinese.ts \
                 transl/czech.ts \

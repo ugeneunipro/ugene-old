@@ -22,11 +22,7 @@
 #ifndef _U2_IMPORT_DIALOGS_H_
 #define _U2_IMPORT_DIALOGS_H_
 
-#include "ui_AceImportDialog.h"
-
 #include <U2Core/DocumentImport.h>
-
-#include <U2Formats/AceImporter.h>
 
 namespace U2 {
 
@@ -37,21 +33,6 @@ namespace U2 {
 class U2GUI_EXPORT ImportDialogFactories {
 public:
     static void registerFactories();
-};
-
-class AceImportDialog : public ImportDialog, public Ui_AceImportDialog {
-    Q_OBJECT
-public:
-    AceImportDialog(const QVariantMap& settings);
-
-private slots:
-    void sl_selectFileClicked();
-
-protected:
-    bool isValid();
-    void applySettings();
-
-    static const QString EXTENSION;
 };
 
 class AceImportDialogFactory : public ImportDialogFactory {

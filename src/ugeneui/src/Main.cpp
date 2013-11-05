@@ -71,7 +71,7 @@
 #include <U2Algorithm/SplicedAlignmentTaskRegistry.h>
 #include <U2Algorithm/PairwiseAlignmentRegistry.h>
 
-#include <U2Gui/ImportDialogs.h>
+#include <U2Gui/ImportDialogsFactories.h>
 #include <U2Gui/ObjectViewModel.h>
 #include <U2Gui/OPWidgetFactoryRegistry.h>
 #include <U2Gui/BaseDocumentFormatConfigurators.h>
