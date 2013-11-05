@@ -24,16 +24,40 @@
 
 #include <U2Core/DocumentModel.h>
 
+#include <QtGui/QDialog>
+
 namespace U2 {
 
 class DocumentImporter;
 class DocumentProviderTask;
 class FormatDetectionResult;
 
+class ImportDialog : public QDialog {
+    Q_OBJECT
+public:
+    ImportDialog(const QVariantMap& _settings) : settings(_settings) {}
+
+    const QVariantMap& getSettings() const { return settings; }
+
+public slots:
+    virtual void accept();
+
+protected:
+    virtual bool isValid() { return true; }     // it is not const method: derived class can do something non-const
+    virtual void applySettings() = 0;
+
+    QVariantMap settings;
+};
+
+class ImportDialogFactory {
+public:
+    virtual ImportDialog* getDialog(const QVariantMap& settings) const = 0;
+};
 
 /** Registry for all DocumentImportHandlers */
 class U2CORE_EXPORT DocumentImportersRegistry: public QObject {
     Q_OBJECT
+    Q_DISABLE_COPY(DocumentImportersRegistry)
 public:
     DocumentImportersRegistry(QObject* p = NULL) : QObject(p) {}
     ~DocumentImportersRegistry();
@@ -53,8 +77,11 @@ private:
 
 class U2CORE_EXPORT DocumentImporter : public QObject {
     Q_OBJECT
+    Q_DISABLE_COPY(DocumentImporter)
 public:
-    DocumentImporter(const QString& _id, const QString& _name, QObject* o = NULL) : QObject(o), id(_id), name(_name){}
+    DocumentImporter(const QString& _id, const QString& _name, QObject* o = NULL) : QObject(o), id(_id), name(_name), dialogFactory(NULL) {}
+
+    virtual ~DocumentImporter() { delete dialogFactory; }
 
     virtual FormatCheckResult checkRawData(const QByteArray& rawData, const GUrl& url) = 0;
     
@@ -67,12 +94,15 @@ public:
     const QString& getId() const {return id;}
 
     const QList<QString>& getSupportedFileExtensions() const {return extensions;}
+
+    void setDialogFactory(ImportDialogFactory* factory);
     
 protected:
-    QString         id;
-    QString         name;
-    QList<QString>  extensions;
-    QString         importerDescription;
+    QString                 id;
+    QString                 name;
+    QList<QString>          extensions;
+    QString                 importerDescription;
+    ImportDialogFactory*    dialogFactory;
 };
 
 } //namespace

@@ -33,7 +33,7 @@ class LoadDocumentTask;
 class AceImporterTask : public DocumentProviderTask {
     Q_OBJECT
 public:
-    AceImporterTask(const GUrl &url, bool useGui, const QVariantMap &hints);
+    AceImporterTask(const GUrl &url, const QVariantMap& settings, const QVariantMap &hints = QVariantMap());
 
     virtual QList<Task*> onSubTaskFinished(Task* subTask);
     virtual void prepare();
@@ -60,6 +60,10 @@ public:
 
     virtual FormatCheckResult checkRawData(const QByteArray& rawData, const GUrl& url);
     virtual DocumentProviderTask* createImportTask(const FormatDetectionResult& res, bool showWizard, const QVariantMap &hints);
+
+    static const QString ID;
+    static const QString SRC_URL;
+    static const QString DEST_URL;
 };
 
 }   // namespace U2

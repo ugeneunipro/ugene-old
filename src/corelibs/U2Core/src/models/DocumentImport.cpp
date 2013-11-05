@@ -45,5 +45,19 @@ void DocumentImportersRegistry::addDocumentImporter(DocumentImporter* i) {
     }
 }
 
+void DocumentImporter::setDialogFactory(ImportDialogFactory* factory) {
+    if (dialogFactory) {
+        delete dialogFactory;
+    }
+    dialogFactory = factory;
+}
+
+void ImportDialog::accept() {
+    if (!isValid()) {
+        return;
+    }
+    applySettings();
+    QDialog::accept();
+}
 
 } //namespace

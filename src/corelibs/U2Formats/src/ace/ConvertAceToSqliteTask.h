@@ -46,6 +46,7 @@ private:
     qint64 packReads();
     void updateAttributeDbi();
 
+    bool destFileWasChanged;        // if it is true, this file will be deleted on error: it is already corrupted
     const GUrl sourceUrl;
     const GUrl destinationUrl;
     U2Dbi* dbi;

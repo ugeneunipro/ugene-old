@@ -71,6 +71,7 @@
 #include <U2Algorithm/SplicedAlignmentTaskRegistry.h>
 #include <U2Algorithm/PairwiseAlignmentRegistry.h>
 
+#include <U2Gui/ImportDialogs.h>
 #include <U2Gui/ObjectViewModel.h>
 #include <U2Gui/OPWidgetFactoryRegistry.h>
 #include <U2Gui/BaseDocumentFormatConfigurators.h>
@@ -417,6 +418,7 @@ int main(int argc, char **argv)
     
     DocumentFormatRegistryImpl* dfr = new DocumentFormatRegistryImpl();
     appContext->setDocumentFormatRegistry(dfr);
+    ImportDialogFactories::registerFactories();
     
     PluginSupportImpl* psp = new PluginSupportImpl();
     appContext->setPluginSupport(psp);

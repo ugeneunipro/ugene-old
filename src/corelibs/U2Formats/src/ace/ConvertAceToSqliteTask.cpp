@@ -43,6 +43,7 @@ namespace U2 {
 
 ConvertAceToSqliteTask::ConvertAceToSqliteTask(const GUrl &_sourceUrl, const GUrl &_destinationUrl) :
     Task(tr("Convert ACE to UGENE database (%1)").arg(_destinationUrl.fileName()), TaskFlag_None),
+    destFileWasChanged(false),
     sourceUrl(_sourceUrl),
     destinationUrl(_destinationUrl),
     dbi(NULL) {
@@ -69,6 +70,7 @@ void ConvertAceToSqliteTask::run() {
         return;
     }
 
+    destFileWasChanged = true;
     bool append = QFile::exists(destinationUrl.getURLString());
 
     DbiConnection dbiHandle(U2DbiRef(SQLITE_DBI_ID, destinationUrl.getURLString()), true, stateInfo);
@@ -111,7 +113,8 @@ void ConvertAceToSqliteTask::run() {
 }
 
 Task::ReportResult ConvertAceToSqliteTask::report() {
-    if (stateInfo.isCoR() && destinationUrl.isLocalFile()) {
+    if (destFileWasChanged && stateInfo.isCoR() && destinationUrl.isLocalFile()) {
+        // Do not remove file, if it wasn't changed, it can be valid.
         QFile::remove(destinationUrl.getURLString());
     }
     return ReportResult_Finished;
@@ -155,14 +158,6 @@ qint64 ConvertAceToSqliteTask::importAssemblies(IOAdapter &ioAdapter) {
         reference.length = aceReference.data.length();
         reference.visualName = aceReference.name;
         reference.alphabet = U2AlphabetUtils::findBestAlphabet(aceReference.data)->getId();
-        seqDbi->createSequenceObject(reference, "/", stateInfo);
-        CHECK_OP(stateInfo, totalReadsImported);
-
-        QVariantMap hints;
-        hints[U2SequenceDbiHints::EMPTY_SEQUENCE] = true;
-        hints[U2SequenceDbiHints::UPDATE_SEQUENCE_LENGTH] = true;
-        seqDbi->updateSequenceData(reference.id, U2_REGION_MAX, aceReference.data, hints, stateInfo);
-        CHECK_OP(stateInfo, totalReadsImported);
 
         assembly.visualName = aceAssembly.getName();
 
@@ -187,6 +182,15 @@ qint64 ConvertAceToSqliteTask::importAssemblies(IOAdapter &ioAdapter) {
 
         BufferedDbiIterator<U2AssemblyRead> readsIterator(reads);
         assDbi->addReads(assembly.id, &readsIterator, stateInfo);
+        CHECK_OP(stateInfo, totalReadsImported);
+
+        seqDbi->createSequenceObject(reference, "/", stateInfo);
+        CHECK_OP(stateInfo, totalReadsImported);
+
+        QVariantMap hints;
+        hints[U2SequenceDbiHints::EMPTY_SEQUENCE] = true;
+        hints[U2SequenceDbiHints::UPDATE_SEQUENCE_LENGTH] = true;
+        seqDbi->updateSequenceData(reference.id, U2_REGION_MAX, aceReference.data, hints, stateInfo);
         CHECK_OP(stateInfo, totalReadsImported);
 
         totalReadsImported += aceAssembly.getReadsCount();

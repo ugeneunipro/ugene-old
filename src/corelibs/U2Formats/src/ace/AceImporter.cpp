@@ -26,7 +26,6 @@
 #include <U2Formats/AceFormat.h>
 
 #include "AceImporter.h"
-#include "ConvertAceToSqliteDialog.h"
 #include "ConvertAceToSqliteTask.h"
 
 namespace U2 {
@@ -35,13 +34,12 @@ namespace U2 {
 //// AceImporterTask
 ///////////////////////////////////
 
-AceImporterTask::AceImporterTask(const GUrl& url, bool _useGui, const QVariantMap &hints) :
+AceImporterTask::AceImporterTask(const GUrl& url, const QVariantMap& settings, const QVariantMap &hints) :
     DocumentProviderTask(tr("ACE file import: %1").arg(url.fileName()), TaskFlags_NR_FOSE_COSC),
     convertTask(NULL),
     loadDocTask(NULL),
-    useGui(_useGui),
     srcUrl(url),
-    destUrl(NULL) {
+    destUrl(settings.value(AceImporter::DEST_URL).toString()) {
     if (hints.contains(DocumentFormat::DBI_REF_HINT)) {
         U2DbiRef ref = hints.value(DocumentFormat::DBI_REF_HINT).value<U2DbiRef>();
         hintedDbiUrl = ref.dbiId;
@@ -53,18 +51,12 @@ AceImporterTask::AceImporterTask(const GUrl& url, bool _useGui, const QVariantMa
 void AceImporterTask::prepare() {
     startTime = TimeCounter::getCounter();
 
-    if (hintedDbiUrl.isEmpty()) {
-        destUrl = srcUrl.dirPath() + "/" + srcUrl.fileName() + ".ugenedb";
-    } else {
-        destUrl = hintedDbiUrl;
-    }
-
-    if (useGui) {
-        ConvertAceToSqliteDialog convertDialog(srcUrl);
-        convertDialog.hideAddToProjectOption();
-        int rc = convertDialog.exec();
-        CHECK_EXT(rc == QDialog::Accepted, stateInfo.setCanceled(true), );
-        destUrl = convertDialog.getDestinationUrl();
+    if (destUrl.isEmpty()) {
+        if (hintedDbiUrl.isEmpty()) {
+            destUrl = srcUrl.dirPath() + "/" + srcUrl.fileName() + ".ugenedb";
+        } else {
+            destUrl = hintedDbiUrl;
+        }
     }
 
     convertTask = new ConvertAceToSqliteTask(srcUrl, destUrl);
@@ -103,8 +95,12 @@ Task::ReportResult AceImporterTask::report() {
 //// AceImporter
 ///////////////////////////////////
 
+const QString AceImporter::ID = "ace-importer";
+const QString AceImporter::SRC_URL = "source_url";
+const QString AceImporter::DEST_URL = "destination_url";
+
 AceImporter::AceImporter() :
-    DocumentImporter("ace-importer", tr("ACE file importer")) {
+    DocumentImporter(ID, tr("ACE file importer")) {
     ACEFormat aceFormat(NULL);
     extensions << aceFormat.getSupportedDocumentFileExtensions();
     importerDescription = tr("ACE files importer is used to convert conventional ACE files into UGENE database format." \
@@ -118,7 +114,24 @@ FormatCheckResult AceImporter::checkRawData(const QByteArray& rawData, const GUr
 }
 
 DocumentProviderTask* AceImporter::createImportTask(const FormatDetectionResult& res, bool showWizard, const QVariantMap &hints) {
-    return new AceImporterTask(res.url, showWizard, hints);
+    QVariantMap settings;
+    AceImporterTask* task = NULL;
+    settings.insert(SRC_URL, res.url.getURLString());
+
+    if (showWizard && dialogFactory) {
+        ImportDialog* dialog = dialogFactory->getDialog(settings);
+        int result = dialog->exec();
+        settings = dialog->getSettings();
+        delete dialog;
+        task = new AceImporterTask(res.url, settings, hints);
+        if (result == QDialog::Rejected) {
+            task->cancel();
+        }
+    } else {
+        task = new AceImporterTask(res.url, settings, hints);
+    }
+
+    return task;
 }
 
 }   // namespace U2

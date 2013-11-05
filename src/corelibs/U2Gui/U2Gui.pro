@@ -42,6 +42,7 @@ HEADERS += src/AppSettingsGUI.h \
            src/util/GScrollBar.h \
            src/util/GUIUtils.h \
            src/util/HBar.h \
+           src/util/ImportDialogs.h \
            src/util/LastUsedDirHelper.h \
            src/util/ObjectViewTreeController.h \
            src/util/PositionSelector.h \
@@ -64,7 +65,8 @@ HEADERS += src/AppSettingsGUI.h \
            src/util/TextEditorDialog.h \
            src/util/TreeWidgetUtils.h \
            src/util/logview/LogView.h
-FORMS += src/util/ui/AddNewDocumentDialog.ui \
+FORMS += src/util/ui/AceImportDialog.ui \
+         src/util/ui/AddNewDocumentDialog.ui \
          src/util/ui/AuthentificationDialog.ui \
          src/util/ui/BreakpointConditionEditDialog.ui \
          src/util/ui/CreateDocumentFromTextDialog.ui \
@@ -120,6 +122,7 @@ SOURCES += src/MainWindow.cpp \
            src/util/GScrollBar.cpp \
            src/util/GUIUtils.cpp \
            src/util/HBar.cpp \
+           src/util/ImportDialogs.cpp \
            src/util/LastUsedDirHelper.cpp \
            src/util/ObjectViewTreeController.cpp \
            src/util/PositionSelector.cpp \
