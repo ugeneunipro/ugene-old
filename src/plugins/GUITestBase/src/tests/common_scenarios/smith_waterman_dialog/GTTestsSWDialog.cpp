@@ -1,4 +1,4 @@
-﻿/**
+/**
  * UGENE - Integrated Bioinformatics Tools.
  * Copyright (C) 2008-2013 UniPro <ugene@unipro.ru>
  * http://ugene.unipro.ru
@@ -127,7 +127,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
     GTMenu::showMainMenu(os, MWMENU_ACTIONS);
     GTGlobals::sleep();
 
-// 4. Сlose sequence view, then reopen it
+// 4. Close sequence view, then reopen it
     GTUtilsMdi::click(os, GTGlobals::Close);
     GTMouseDriver::click(os);
 
