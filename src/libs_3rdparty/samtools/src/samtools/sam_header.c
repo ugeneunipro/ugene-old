@@ -376,19 +376,22 @@ static HeaderLine *sam_header_line_parse(const char *headerLine)
     while (*from)
     {
         while (*to && *to!='\t') to++;
+        if (to-from > 3) { // 3 = tag_name and ":". E.g. "ID:Bowtie"
+            if ( !required_tags[itype] && !optional_tags[itype] )
+            {
+                // CO is a special case, it can contain anything, including tabs
+                if ( *to ) { to++; continue; }
+                tag = new_tag("  ",from,to-1);
+            }
+            else
+                tag = new_tag(from,from+3,to-1);
 
-        if ( !required_tags[itype] && !optional_tags[itype] )
-        {
-            // CO is a special case, it can contain anything, including tabs
-            if ( *to ) { to++; continue; }
-            tag = new_tag("  ",from,to-1);
+            if ( header_line_has_tag(hline,tag->key) ) 
+                    debug("The tag '%c%c' present (at least) twice on line [%s]\n", tag->key[0],tag->key[1], headerLine);
+            hline->tags = list_append(hline->tags, tag);
+        } else {
+            debug("Too short tag description on line [%s]\n", headerLine);
         }
-        else
-            tag = new_tag(from,from+3,to-1);
-
-        if ( header_line_has_tag(hline,tag->key) ) 
-                debug("The tag '%c%c' present (at least) twice on line [%s]\n", tag->key[0],tag->key[1], headerLine);
-        hline->tags = list_append(hline->tags, tag);
 
         from = to;
         while (*to && *to=='\t') to++;

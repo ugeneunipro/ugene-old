@@ -52,16 +52,6 @@ extern "C" {
 
 namespace U2 {
 
-static void closeFiles(samfile_t *in, samfile_t *out) {
-    if (NULL != in) {
-        samclose(in);
-    }
-
-    if (NULL != out) {
-        samclose(out);
-    }
-}
-
 BAMUtils::ConvertOption::ConvertOption(bool samToBam, const QString &referenceUrl)
 : samToBam(samToBam), referenceUrl(referenceUrl)
 {
@@ -69,6 +59,16 @@ BAMUtils::ConvertOption::ConvertOption(bool samToBam, const QString &referenceUr
 }
 
 namespace {
+    void closeFiles(samfile_t *in, samfile_t *out) {
+        if (NULL != in) {
+            samclose(in);
+        }
+
+        if (NULL != out) {
+            samclose(out);
+        }
+    }
+
     jmp_buf env;
 
     void onAbort(int signum) {
