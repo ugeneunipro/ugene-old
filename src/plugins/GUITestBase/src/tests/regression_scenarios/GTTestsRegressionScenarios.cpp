@@ -2884,7 +2884,36 @@ GUI_TEST_CLASS_DEFINITION( test_2267_2 ){
     GTMouseDriver::moveTo(os, GTUtilsAnnotationsTreeView::getItemCenter(os, "D"));
     GTMouseDriver::click(os, Qt::RightButton);
 }
+GUI_TEST_CLASS_DEFINITION( test_2281 ){
+    //GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
+    // 1. Open WD sample "Align Sequences with MUSCLE
+    QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
+    GTMenu::clickMenuItem(os, menu, QStringList() << "Workflow Designer");
+   // GTUtilsWorkflowDesigner::addSample(os, "Align sequences with MUSCLE");
+    GTGlobals::sleep(500);
+    QGraphicsView* sceneView = qobject_cast<QGraphicsView*>(GTWidget::findWidget(os,"sceneView"));
+//    GT_CHECK_RESULT(sceneView, "sceneView not found", NULL);
+    QList<QGraphicsItem *> items = sceneView->items();
+    QString s;
+    foreach(QGraphicsItem* it, items) {
+        QGraphicsObject *itObj = it->toGraphicsObject();
 
+        QGraphicsTextItem* textItemO = qobject_cast<QGraphicsTextItem*>(itObj);
+        if (textItemO) {
+            QString text = textItemO->toPlainText();
+            s.append(text + "  ");
+        }
+    }
+    /*QList<QWidget*> list = AppContext::getMainWindow()->getQMainWindow()->findChildren<QWidget*>();
+    
+    foreach(QWidget* w, list){
+        s.append(w->metaObject()->className()).append("  " + w->objectName()).append('\n');
+        
+
+        }*/
+    CHECK_SET_ERR(false, s)
+    GTGlobals::sleep(1000);
+    }
 GUI_TEST_CLASS_DEFINITION( test_2268 ) {
     class PermissionsSetter {
     public:
