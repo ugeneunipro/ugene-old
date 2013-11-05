@@ -32,7 +32,7 @@ class DocumentImporter;
 class DocumentProviderTask;
 class FormatDetectionResult;
 
-class ImportDialog : public QDialog {
+class U2CORE_EXPORT ImportDialog : public QDialog {
     Q_OBJECT
 public:
     ImportDialog(const QVariantMap& _settings) : settings(_settings) {}
