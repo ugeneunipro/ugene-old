@@ -171,7 +171,8 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/api/GTDoubleSpinBox.h \
             src/api/GTTableView.h  \
             src/api/GTGraphicsItem.h \
-    src/runnables/ugene/plugins/external_tools/TCoffeeDailogFiller.h
+    src/runnables/ugene/plugins/external_tools/TCoffeeDailogFiller.h \
+    src/runnables/ugene/plugins/annotator/FindAnnotationCollocationsDialogFiller.h
 
 SOURCES +=  src/GUITestBasePlugin.cpp \
             src/tests/crazy_user/GUICrazyUserTest.cpp \
@@ -348,4 +349,5 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/api/GTDoubleSpinBox.cpp \
             src/api/GTTableView.cpp \
             src/api/GTGraphicsItem.cpp \
-    src/runnables/ugene/plugins/external_tools/TCoffeeDailogFiller.cpp
+    src/runnables/ugene/plugins/external_tools/TCoffeeDailogFiller.cpp \
+    src/runnables/ugene/plugins/annotator/FindAnnotationCollocationsDialogFiller.cpp
