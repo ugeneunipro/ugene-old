@@ -36,7 +36,7 @@ namespace U2 {
 
 class CAP3LogParser;
 class CopyDataTask;
-class LoadDocumentTask;
+class DocumentProviderTask;
 
 class CAP3SupportTaskSettings {
 public:
@@ -122,7 +122,6 @@ class CAP3SupportTask : public ExternalToolSupportTask {
 public:
     CAP3SupportTask(const CAP3SupportTaskSettings& settings);
     void prepare();
-    MAlignmentObject* getResultAlignment() { return maObject; }
 
     /**
      * Returns output file URL if the file has already been produced
@@ -132,17 +131,30 @@ public:
 
     Task::ReportResult report();
     QList<Task*> onSubTaskFinished(Task* subTask);
+
 private:
-    MAlignmentObject*           maObject;
-    QString                     tmpDirUrl, tmpOutputUrl;
-    Document*                   newDoc;
-    LoadDocumentTask*           loadTmpDocumentTask;
+    QString                     tmpDirUrl;
+    QString                     tmpOutputUrl;
     PrepareInputForCAP3Task*    prepareDataForCAP3Task;
     ExternalToolRunTask*        cap3Task;
     CopyDataTask*               copyResultTask;
     CAP3LogParser*              logParser;
     CAP3SupportTaskSettings     settings;
     QString                     outputFile;
+};
+
+class RunCap3AndOpenResultTask : public Task {
+    Q_OBJECT
+public:
+    RunCap3AndOpenResultTask(const CAP3SupportTaskSettings& settings);
+
+    virtual void prepare();
+    virtual QList<Task*> onSubTaskFinished(Task *subTask);
+
+private:
+    CAP3SupportTask*        cap3Task;
+    DocumentProviderTask*   loadTask;
+    bool                    openView;
 };
 
 class CAP3LogParser : public ExternalToolLogParser {

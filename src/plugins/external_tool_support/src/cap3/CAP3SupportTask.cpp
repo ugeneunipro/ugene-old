@@ -23,18 +23,19 @@
 #include "CAP3Support.h"
 
 #include <U2Core/AppContext.h>
-#include <U2Core/U2SafePoints.h>
-#include <U2Core/U2OpStatusUtils.h>
-#include <U2Core/Counter.h>
-#include <U2Core/DocumentModel.h>
-#include <U2Core/ExternalToolRegistry.h>
-#include <U2Core/ProjectModel.h>
-#include <U2Core/MAlignmentObject.h>
-#include <U2Core/CopyDataTask.h>
-#include <U2Core/DocumentUtils.h>
 #include <U2Core/AddDocumentTask.h>
-#include <U2Core/LoadDocumentTask.h>
+#include <U2Core/CopyDataTask.h>
+#include <U2Core/Counter.h>
+#include <U2Core/DocumentImport.h>
+#include <U2Core/DocumentModel.h>
+#include <U2Core/DocumentUtils.h>
+#include <U2Core/ExternalToolRegistry.h>
 #include <U2Core/IOAdapter.h>
+#include <U2Core/IOAdapterUtils.h>
+#include <U2Core/LoadDocumentTask.h>
+#include <U2Core/ProjectModel.h>
+#include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <U2Formats/DNAQualityIOUtils.h>
 
@@ -47,18 +48,15 @@ namespace U2 {
 ////CAP3SupportTask
 
 CAP3SupportTask::CAP3SupportTask(const CAP3SupportTaskSettings& _settings) :
-        ExternalToolSupportTask("CAP3SupportTask", TaskFlags_NR_FOSCOE),
-        settings(_settings)
+    ExternalToolSupportTask("CAP3SupportTask", TaskFlags_NR_FOSE_COSC),
+    prepareDataForCAP3Task(NULL),
+    cap3Task(NULL),
+    copyResultTask(NULL),
+    logParser(NULL),
+    settings(_settings)
 {
     GCOUNTER( cvar, tvar, "CAP3SupportTask" );
     setMaxParallelSubtasks(1);
-    newDoc = NULL;
-    logParser = NULL;
-    loadTmpDocumentTask = NULL;
-    copyResultTask = NULL;
-    cap3Task = NULL;
-    prepareDataForCAP3Task = NULL;
-    maObject = NULL;
 }
 
 
@@ -134,6 +132,60 @@ Task::ReportResult CAP3SupportTask::report() {
     U2OpStatus2Log os;
     ExternalToolSupportUtils::removeTmpDir(tmpDirUrl,os);
     return ReportResult_Finished;
+}
+
+//////////////////////////////////////////
+////RunCap3AndOpenResultTask
+RunCap3AndOpenResultTask::RunCap3AndOpenResultTask(const CAP3SupportTaskSettings &settings) :
+    Task(tr("CAP3 run and open result task"), TaskFlags_NR_FOSE_COSC),
+    cap3Task(new CAP3SupportTask(settings)),
+    loadTask(NULL),
+    openView(settings.openView)
+{
+    GCOUNTER( cvar, tvar, "RunCap3AndOpenResultTask" );
+    cap3Task->setSubtaskProgressWeight(95);
+}
+
+void RunCap3AndOpenResultTask::prepare() {
+    SAFE_POINT_EXT(cap3Task, setError(tr("Invalid CAP3 task")), );
+    addSubTask(cap3Task);
+}
+
+QList<Task*> RunCap3AndOpenResultTask::onSubTaskFinished(Task *subTask) {
+    QList<Task*> subTasks;
+
+    if (subTask->isCanceled() || subTask->hasError()) {
+        return subTasks;
+    }
+
+
+    if (subTask == cap3Task) {
+        GUrl url(cap3Task->getOutputFile());
+        loadTask = LoadDocumentTask::getCommonLoadDocTask(url);
+        SAFE_POINT_EXT(loadTask, setError(tr("Load document task is NULL")), subTasks);
+        subTasks << loadTask;
+    } else if (subTask == loadTask) {
+        Document* doc = loadTask->takeDocument();
+        SAFE_POINT(doc, "Failed loading result document", subTasks);
+
+        if (doc->getObjects().size() == 0) {
+            delete doc;
+            setError(tr("No assembly is found for provided reads"));
+            return subTasks;
+        }
+
+        if (openView) {
+            if (!AppContext::getProject()) {
+                ProjectLoader* loader = AppContext::getProjectLoader();
+                SAFE_POINT_EXT(loader, setError(tr("Project loader is NULL")), subTasks);
+                subTasks << loader->createNewProjectTask();
+            }
+
+            subTasks << new AddDocumentAndOpenViewTask(doc);
+        }
+    }
+
+    return subTasks;
 }
 
 //////////////////////////////////////////

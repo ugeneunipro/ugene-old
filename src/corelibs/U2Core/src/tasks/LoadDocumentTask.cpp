@@ -27,6 +27,7 @@
 #include <U2Core/ProjectModel.h>
 #include <U2Core/Log.h>
 #include <U2Core/ResourceTracker.h>
+#include <U2Core/DocumentImport.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/GObjectReference.h>
 #include <U2Core/GObject.h>
@@ -266,6 +267,36 @@ LoadDocumentTask * LoadDocumentTask::getDefaultLoadDocTask(const GUrl& url) {
     }
     DocumentFormat * df = dfs.first().format;
     return new LoadDocumentTask( df->getFormatId(), url, iof );
+}
+
+DocumentProviderTask * LoadDocumentTask::getCommonLoadDocTask( const GUrl & url ) {
+    if( url.isEmpty() ) {
+        return NULL;
+    }
+
+    IOAdapterFactory * iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById( IOAdapterUtils::url2io( url ) );
+    if ( iof == NULL ) {
+        return NULL;
+    }
+
+    FormatDetectionConfig conf;
+    conf.useImporters = true;
+    QList<FormatDetectionResult> dfs = DocumentUtils::detectFormat(url, conf);
+    if( dfs.isEmpty() ) {
+        return NULL;
+    }
+
+    DocumentFormat * df = dfs.first().format;
+    DocumentImporter * di = dfs.first().importer;
+    DocumentProviderTask* task = NULL;
+
+    if (df) {
+        task = new LoadDocumentTask( df->getFormatId(), url, iof );
+    } else if (di) {
+        task = di->createImportTask(dfs.first(), true, QVariantMap());
+    }
+
+    return task;
 }
 
 static bool isLoadToMem(const DocumentFormatId& id){
