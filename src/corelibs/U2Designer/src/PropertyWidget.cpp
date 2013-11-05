@@ -174,23 +174,26 @@ ComboBoxWithUrlWidget::ComboBoxWithUrlWidget(const QVariantMap &items, bool _isP
 {
     comboBox = new QComboBox(this);
     addMainWidget(comboBox);
+    setStyleSheet("{background-color: green;}");
 
     foreach (const QString &key, items.keys()) {
         comboBox->addItem(key, items[key]);
     }
-#ifdef Q_OS_MAC
-    QString style = "QComboBox {"
-                    "height: 24px;"
-                    "min-height: 24px;"
-                    "max-height: 24px;"
-                    "}";
-    comboBox->setStyleSheet(style);
-#endif
+
     QToolButton * toolButton = new QToolButton(this);
     toolButton->setText("...");
     toolButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred);
     connect(toolButton, SIGNAL(clicked()), SLOT(sl_browse()));
     layout()->addWidget(toolButton);
+
+#ifdef Q_OS_MAC
+    toolButton->setMinimumHeight(18);
+    QString style = "QComboBox {"
+                    "min-height: 19px;"
+                    "max-height: 24px;"
+                    "}";
+    comboBox->setStyleSheet(style);
+#endif
 
     connect(comboBox, SIGNAL(activated(const QString &)),
         this, SIGNAL(valueChanged(const QString &)));
