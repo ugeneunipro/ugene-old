@@ -58,6 +58,11 @@ static const QString NAME_SETTING("name");
 /************************************************************************/
 /* Dashboard */
 /************************************************************************/
+const QString Dashboard::EXT_TOOLS_TAB_ID = "#ext_tools_tab";
+const QString Dashboard::OVERVIEW_TAB_ID = "#overview_tab";
+const QString Dashboard::INPUT_TAB_ID = "#input_tab";
+//const QString Dashboard::OUTPUT_TAB_ID = "#output_tab";
+
 Dashboard::Dashboard(const WorkflowMonitor *monitor, const QString &_name, QWidget *parent)
 : QWebView(parent), loaded(false), name(_name), opened(true), _monitor(monitor), initialized(false)
 {
@@ -156,7 +161,8 @@ void Dashboard::sl_loaded(bool ok) {
         new ParametersWidget(addWidget(tr("Parameters"), InputDashTab, 0), this);
 
         //new OutputFilesWidget(addWidget(tr("Output Files"), OutputDashTab, 0), this);
-        etWidgetController->getWidget(addWidget(tr("External Tools"), ExternalToolsTab, 0), this);
+
+        createExternalToolTab();
 
         connect(monitor(), SIGNAL(si_runStateChanged(bool)), SLOT(sl_runStateChanged(bool)));
         connect(monitor(), SIGNAL(si_firstProblem()), SLOT(sl_addProblemsWidget()));
@@ -218,6 +224,31 @@ void Dashboard::loadSettings() {
     name = s.value(NAME_SETTING).toString();
 }
 
+void Dashboard::createExternalToolTab() {
+    SAFE_POINT(etWidgetController, "External tools widget controller is NULL", );
+    const WorkflowMonitor* mon = monitor();
+    SAFE_POINT(mon, "Monitor is NULL", );
+
+    foreach (const WorkerParamsInfo& info, mon->getWorkersParameters()) {
+        SAFE_POINT(info.actor, "Actor is NULL", );
+        const ActorPrototype* proto = info.actor->getProto();
+        SAFE_POINT(proto, "Actor prototype is NULL", );
+
+        if (!proto->getExternalTools().isEmpty()) {
+            QString addTabJs = "addTab('" + EXT_TOOLS_TAB_ID + "','" + tr("External Tools") + "')";
+
+            QWebPage* mainPage = page();
+            SAFE_POINT(mainPage, "Page is NULL", );
+            QWebFrame* mainFrame = mainPage->mainFrame();
+            SAFE_POINT(mainFrame, "Main frame is NULL", );
+
+            mainFrame->documentElement().evaluateJavaScript(addTabJs);
+            etWidgetController->getWidget(addWidget(tr("External Tools"), ExternalToolsTab, 0), this);
+            break;
+        }
+    }
+}
+
 int Dashboard::containerSize(const QWebElement &insideElt, const QString &name) {
     QWebElement cont = insideElt.findFirst(name);
     SAFE_POINT(!cont.isNull(), "NULL container", 0);
@@ -229,16 +260,16 @@ QWebElement Dashboard::addWidget(const QString &title, DashboardTab dashTab, int
     // Find the tab
     QString dashTabId;
     if (OverviewDashTab == dashTab) {
-        dashTabId = "#overview_tab";
+        dashTabId = OVERVIEW_TAB_ID;
     }
     else if (InputDashTab == dashTab) {
-        dashTabId = "#input_tab";
+        dashTabId = INPUT_TAB_ID;
     }
     /*else if (OutputDashTab == dashTab) {
-        dashTabId = "#output_tab";
+        dashTabId = OUTPUT_TAB_ID;
     }*/
     else if (ExternalToolsTab == dashTab) {
-        dashTabId = "#ext_tools_tab";
+        dashTabId = EXT_TOOLS_TAB_ID;
     }
     else {
         FAIL("Unexpected dashboard tab ID!", QWebElement());

@@ -85,6 +85,11 @@ private:
 
     enum DashboardTab {OverviewDashTab, InputDashTab, OutputDashTab, ExternalToolsTab};
 
+    static const QString EXT_TOOLS_TAB_ID;
+    static const QString OVERVIEW_TAB_ID;
+    static const QString INPUT_TAB_ID;
+//    static const QString OUTPUT_TAB_ID;
+
 private:
     void loadDocument();
     /** Returns the content area of the widget */
@@ -96,6 +101,8 @@ private:
     void serialize(U2OpStatus &os);
     void saveSettings();
     void loadSettings();
+
+    void createExternalToolTab();
 };
 
 class DashboardWidget : public QObject {

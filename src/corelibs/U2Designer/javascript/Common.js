@@ -82,3 +82,8 @@ function showFileButton(url) {
     return button;
 }
 
+function addTab(tabId, tabName) {
+    var tabsList = document.getElementsByClassName("nav nav-pills dash-nav")[0];
+    var newTab = "<li class=''><a href='" + tabId + "' data-toggle='tab' class='dash-tab-name'>" + tabName + "</a></li>";
+    tabsList.insertAdjacentHTML('beforeend', newTab);
+}
