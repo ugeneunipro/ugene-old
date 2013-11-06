@@ -2029,6 +2029,8 @@ bool MSAEditorSequenceArea::shiftSelectedRegion( int shift ) {
         if ( maObj->isRegionEmpty( x, y, width, height ) ) {
             return true;
         }
+        // backup current selection for the case when selection might disappear
+        const MSAEditorSelection selectionBackup = selection;
 
         const int resultShift = maObj->shiftRegion( x, y, width, height, shift );
         if ( 0 != resultShift ) {
@@ -2036,7 +2038,8 @@ bool MSAEditorSequenceArea::shiftSelectedRegion( int shift ) {
                 ? cursorPos.x( ) + resultShift : 0;
             setCursorPos( newCursorPosX );
 
-            const MSAEditorSelection newSelection( x + resultShift, y, width, height );
+            const MSAEditorSelection newSelection( selectionBackup.x( ) + resultShift, 
+                selectionBackup.y( ), selectionBackup.width( ), selectionBackup.height( ) );
             setSelection( newSelection );
             return true;
         } else {
