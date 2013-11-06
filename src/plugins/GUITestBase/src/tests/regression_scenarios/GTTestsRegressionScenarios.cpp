@@ -1235,6 +1235,22 @@ GUI_TEST_CLASS_DEFINITION(test_1720){
 //Expected state: project view with document "D11266.gb", no error messages in log appear
 }
 
+GUI_TEST_CLASS_DEFINITION( test_1813 )
+{
+    // 1) Select the menu {File->Access remote database}
+    // 2) Fill the "Fetch Data from Remote Database" dialog with the next values:
+    //      Resource ID: I7G8J3
+    //      Database: UniProt (DAS)
+    // 3) Press "OK"
+    GTUtilsDialog::waitForDialog(os, new RemoteDBDialogFiller(os, "I7G8J3", 7));
+    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE),ACTION_PROJECTSUPPORT__ACCESS_REMOTE_DB, GTGlobals::UseKey);
+
+    // Expected: the sequence view with I7G8J3 sequence is opened. UGENE does not crash.
+    GTGlobals::sleep(10000);
+    GTUtilsDocument::isDocumentLoaded(os, "I7G8J3_das.gb");
+    GTUtilsDocument::checkDocument(os, "I7G8J3_das.gb", AnnotatedDNAViewFactory::ID);
+}
+
 GUI_TEST_CLASS_DEFINITION( test_1884 )
 {
     // 1. Open document "ma.aln"
