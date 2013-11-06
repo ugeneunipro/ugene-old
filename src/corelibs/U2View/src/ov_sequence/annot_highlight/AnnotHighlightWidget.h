@@ -35,6 +35,7 @@ namespace U2 {
 class ADVSequenceObjectContext;
 class ADVSequenceWidget;
 class AnnotatedDNAView;
+class PVRowsManager;
 
 /** Label that can be pressed with two states: show all types or types for sequence only */
 class ShowAllAnnotTypesLabel : public QLabel
@@ -73,10 +74,11 @@ private slots:
     void sl_onAnnotationModified(const AnnotationModification& annotModifs);
     void sl_onAnnotationObjectAdded(AnnotationTableObject*);
     void sl_onAnnotationObjectRemoved(AnnotationTableObject*);
-
+    void sl_onNextAnnotationClick();
+    void sl_onPrevAnnotationClick();
 private:
+    qint64 olololololo;
     void initLayout();
-
     /**
      * Annotation types tree and settings are not shown.
      * A label describes that there are no annotations.
@@ -118,6 +120,18 @@ private:
      */
     void findAllAnnotationsNamesInSettings();
 
+    Annotation* binSearch();
+
+    void annotationNavigate(bool isForward);
+
+    bool isValidIndex(const QList<Annotation*>& annotForNextPrev, int position);
+
+    int searchAnnotWithEqualsStartPos(const QList<AnnotationTableObject*>& items, QList<Annotation*> &annotForNextPrev, const Annotation* prev, int currentPosition);
+
+    bool isNext(bool isForward, qint64 startPos, qint64 endPos, qint64 minPos);
+
+    qint64 searchNextPosition(const QList<AnnotationTableObject*>& items, int endPos, bool isForward, qint64* currentPosition);
+
     AnnotatedDNAView* annotatedDnaView;
 
     /**
@@ -132,6 +146,8 @@ private:
     ShowAllAnnotTypesLabel* showAllLabel;
     QLabel* settingsTitle;
     AnnotHighlightSettingsWidget* annotSettingsWidget;
+    QPushButton* nextAnnotation;
+    QPushButton* prevAnnotation;
 };
 
 } // namespace
