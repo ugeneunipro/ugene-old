@@ -54,7 +54,7 @@ CodonTableView::CodonTableView(AnnotatedDNAView *view)
     nucleobases << "U" << "C" << "A" << "G";
     addItemToTable(0, 0, tr("1st base"), 2, 1);
     addItemToTable(0, 1, tr("2nd base"), 1, 8);
-    addItemToTable(0, 9, tr("3nd base"), 2, 1);
+    addItemToTable(0, 9, tr("3rd base"), 2, 1);
     for (int i = 0; i < 4; i++) {
         // 1 column
         addItemToTable(2 + i*4, 0, nucleobases[i], 4, 1);
@@ -266,6 +266,7 @@ CodonTableAction::CodonTableAction(CodonTableView *_view)
 {
     addToBar = true;
     connect(this, SIGNAL(triggered()), view, SLOT(sl_setVisible()));
+    setToolTip("Codon table");
 }
 
 }
