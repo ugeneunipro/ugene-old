@@ -72,6 +72,10 @@ void OpenMSAEditorTask::open() {
     }
     if (msaObject.isNull()) {
         Document* doc = documentsToLoad.first();
+        if(!doc){
+            stateInfo.setError(tr("Documet removed from project"));
+            return;
+        }
         QList<GObject*> objects;
         if (unloadedReference.isValid()) {
             GObject* obj = doc->findGObjectByName(unloadedReference.objName);
