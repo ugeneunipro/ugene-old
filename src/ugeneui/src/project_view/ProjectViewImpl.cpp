@@ -69,7 +69,7 @@ namespace U2 {
 /* TRANSLATOR U2::ProjectViewImpl */
 /* TRANSLATOR U2::ProjectTreeController */
 
-#define SETTINGS_ROOT QString("projecview/")
+const QString ProjectViewImpl::SETTINGS_ROOT("projecview/");
 
 #define UPDATER_TIMEOUT 3000
 
@@ -411,13 +411,13 @@ ProjectViewWidget::ProjectViewWidget() {
 }
 
 static ProjectTreeGroupMode getLastGroupMode() {
-    int n = AppContext::getSettings()->getValue(SETTINGS_ROOT + "groupMode", ProjectTreeGroupMode_ByDocument).toInt();
+    int n = AppContext::getSettings()->getValue(ProjectViewImpl::SETTINGS_ROOT + "groupMode", ProjectTreeGroupMode_ByDocument).toInt();
     n = qBound((int)ProjectTreeGroupMode_Min, n, (int)ProjectTreeGroupMode_Max);
     return (ProjectTreeGroupMode)n;
 }
 
 static void saveGroupMode(ProjectTreeGroupMode m) {
-    AppContext::getSettings()->setValue(SETTINGS_ROOT + "groupMode", (int)m);
+    AppContext::getSettings()->setValue(ProjectViewImpl::SETTINGS_ROOT + "groupMode", (int)m);
 }
 
 

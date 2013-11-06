@@ -101,6 +101,8 @@ public:
 
     void exportAnnotations(QList<Annotation*> &annotations, const GUrl &dstUrl);
 
+    static const QString SETTINGS_ROOT;
+
 protected:
     /// returns NULL if no actions are required to enable service
     virtual Task* createServiceEnablingTask();

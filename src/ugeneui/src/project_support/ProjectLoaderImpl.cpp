@@ -25,6 +25,7 @@
 #include "MultipleDocumentsReadingModeSelectorController.h"
 #include "ProjectTasksGui.h"
 #include "ProjectImpl.h"
+#include "project_view/ProjectViewImpl.h"
 
 #include <U2Core/AddDocumentTask.h>
 #include <U2Core/Settings.h>
@@ -286,7 +287,10 @@ void prepareDocTab(const QList<AD2P_DocumentInfo> &docsInfo, const QList<AD2P_Pr
     MWDockManager *dm = mw->getDockManager();
     CHECK(NULL != dm, );
 
-    dm->dontActivateNextTime(MWDockArea_Left);
+    { // do not activate the tab
+        dm->dontActivateNextTime(MWDockArea_Left);
+        AppContext::getSettings()->setValue(ProjectViewImpl::SETTINGS_ROOT + "firstShow", false);
+    }
 }
 }
 
