@@ -137,13 +137,17 @@ void OpenViewTask::prepare()
     }
 
     //try open new view
-    GObjectSelection os; os.addToSelection(docObjects);
-    MultiGSelection ms; ms.addSelection(&os);
+    GObjectSelection os;
+    os.addToSelection(docObjects);
+    MultiGSelection ms;
+    ms.addSelection(&os);
+
     QList<GObjectViewState*> sl = GObjectViewUtils::selectStates(ms, AppContext::getProject()->getGObjectViewStates());
     if (sl.size() == 1) {
         GObjectViewState* state = sl.first();
+        SAFE_POINT_EXT(state, setError(tr("State is NULL")), );
         GObjectViewFactory* f = AppContext::getObjectViewFactoryRegistry()->getFactoryById(state->getViewFactoryId());
-        assert(f!=NULL);
+        SAFE_POINT_EXT(f, setError(tr("GObject factory is NULL")), );
         res.append(f->createViewTask(state->getViewName(), state->getStateData()));
     } else {
         Task* openViewTask = createOpenViewTask(ms);
@@ -167,10 +171,12 @@ void OpenViewTask::prepare()
                 if (seqDoc->isLoaded()) { //try open sequence view 
                     GObject* seqObj = seqDoc->findGObjectByName(rel.ref.objName);
                     if (seqObj!=NULL && seqObj->getGObjectType() == GObjectTypes::SEQUENCE) {
-                        GObjectSelection os2; os2.addToSelection(seqObj);
-                        MultiGSelection ms2; ms2.addSelection(&os2);
+                        GObjectSelection os2;
+                        os2.addToSelection(seqObj);
+                        MultiGSelection ms2;
+                        ms2.addSelection(&os2);
                         Task* openViewTask = createOpenViewTask(ms2);
-                        if (openViewTask!=NULL) {
+                        if (openViewTask != NULL) {
                             openViewTask->setSubtaskProgressWeight(0);
                             res.append(openViewTask);
                         }
@@ -181,6 +187,24 @@ void OpenViewTask::prepare()
             } 
             if (!res.isEmpty()) { //one view is ok
                 break;
+            }
+        }
+
+        if (res.isEmpty()) {
+            // no view can be opened -> check another special case: loaded object contains assemblies with their references
+            // -> load assemblies and their references and open view for the first assembly;
+            QList<GObject*> objList = doc->findGObjectByType(GObjectTypes::ASSEMBLY);
+            if (!objList.isEmpty()) {
+                GObjectSelection os2;
+                os2.addToSelection(objList.first());
+                MultiGSelection ms2;
+                ms2.addSelection(&os2);
+
+                Task* openViewTask = createOpenViewTask(ms2);
+                if (openViewTask != NULL) {
+                    openViewTask->setSubtaskProgressWeight(0);
+                    res.append(openViewTask);
+                }
             }
         }
     }
