@@ -152,7 +152,7 @@ void PhylipSequentialFormat::storeEntry(IOAdapter *io, const QMap<GObjectType, Q
             line = line.left(MAX_NAME_LEN);
         }
         io->writeBlock(line);
-        QByteArray sequence = ma.getRow(i).getCore();
+        QByteArray sequence = ma.getRow(i).toByteArray(numberOfCharacters, os);
         int blockCounter = 0;
         while ((blockCounter*SEQ_BLOCK_SIZE) <= numberOfCharacters) {
             line.clear();
@@ -271,7 +271,7 @@ void PhylipInterleavedFormat::storeEntry(IOAdapter *io, const QMap<GObjectType, 
             line = line.left(MAX_NAME_LEN);
         }
 
-        QByteArray sequence = ma.getRow(i).getCore();
+        QByteArray sequence = ma.getRow(i).toByteArray(numberOfCharacters, os);
         line.append(sequence.left(INT_BLOCK_SIZE));
         line.append('\n');
 
