@@ -45,9 +45,9 @@
 
 const QString SETTINGS_LASTDIR = "save_align_files/last_dir";
 
-extern const QChar OPEN_SQUARE_BRACKET;
-extern const QChar CLOSE_SQUARE_BRACKET;
-extern const QChar SHORTHAND_AND_LABEL_SEPARATOR;
+extern const char OPEN_SQUARE_BRACKET;
+extern const char CLOSE_SQUARE_BRACKET;
+extern const char SHORTHAND_AND_LABEL_SEPARATOR;
 extern const qint32 STRING_HAS_NO_KEY_MESSAGE;
 
 const quint8 COUNT_OF_TEMPLATE_BUTTONS_IN_ROW = 2;

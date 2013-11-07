@@ -36,9 +36,9 @@
 #include <QtCore/QBitArray>
 #include <QtCore/QStringList>
 
-const QChar OPEN_SQUARE_BRACKET = '[';
-const QChar CLOSE_SQUARE_BRACKET = ']';
-const QChar SHORTHAND_AND_LABEL_SEPARATOR = ' ';
+const char OPEN_SQUARE_BRACKET = '[';
+const char CLOSE_SQUARE_BRACKET = ']';
+const char SHORTHAND_AND_LABEL_SEPARATOR = ' ';
 
 extern const QString SEQ_NAME_PREFIX_TAG_SHORTHAND;
 extern const QString PTRN_NAME_PREFIX_TAG_SHORTHAND;
