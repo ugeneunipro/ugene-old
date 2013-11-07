@@ -212,6 +212,7 @@ void BlastRunCommonDialog::sl_restoreDefault(){
     sl_onMatrixChanged(0);
     evalueSpinBox->setValue(10);
     needRestoreDefault=false;
+    bothStrandsButton->setChecked(true);
 }
 void BlastRunCommonDialog::sl_megablastChecked(){
     if(megablastCheckBox->isChecked()){
@@ -248,8 +249,7 @@ void BlastRunCommonDialog::sl_onProgNameChange(int index){
     settings.programName=programName->currentText();
     if(programName->currentText() == "blastn"){//nucl
         programName->setToolTip(tr("Direct nucleotide alignment"));
-        gappedAlignmentCheckBox->setEnabled(true);
-        thresholdSpinBox->setValue(0);
+        gappedAlignmentCheckBox->setEnabled(true);thresholdSpinBox->setValue(0);
     }else if(programName->currentText() == "blastp"){//amino
         programName->setToolTip(tr("Direct protein alignment"));
         gappedAlignmentCheckBox->setEnabled(true);
@@ -273,6 +273,7 @@ void BlastRunCommonDialog::sl_onProgNameChange(int index){
     }else{
         assert(0);
     }
+    enableStrandBox( (programName->currentText() == "blastn") || ( programName->currentText().contains("blastx") ) );
 
     if(programName->currentText() == "blastn"){
         megablastCheckBox->setEnabled(true);
@@ -349,6 +350,14 @@ void BlastRunCommonDialog::getSettings(BlastTaskSettings &localSettings){
     localSettings.numberOfHits=numberOfHitsSpinBox->value();
     localSettings.numberOfProcessors=numberOfCPUSpinBox->value();
 
+    if (directStrandButton->isChecked()) {
+        settings.directStrand = TriState_Yes;
+    } else if (complStrandButton->isChecked()) {
+        settings.directStrand = TriState_No;
+    } else {
+        settings.directStrand = TriState_Unknown;
+    }
+
     localSettings.gapOpenCost=costsComboBox->currentText().split(" ").at(0).toInt();
     localSettings.gapExtendCost=costsComboBox->currentText().split(" ").at(1).toInt();
     //setup filters
@@ -406,4 +415,12 @@ void BlastRunCommonDialog::getSettings(BlastTaskSettings &localSettings){
         localSettings.isDefaultThreshold=false;
     }
 }
+
+void BlastRunCommonDialog::enableStrandBox( bool enable )
+{
+    bothStrandsButton->setEnabled(enable);
+    directStrandButton->setEnabled(enable);
+    complStrandButton->setEnabled(enable);
+}
+
 }//namespace

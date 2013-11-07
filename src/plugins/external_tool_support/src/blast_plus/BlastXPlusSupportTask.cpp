@@ -53,6 +53,13 @@ ExternalToolRunTask* BlastXPlusSupportTask::createBlastPlusTask(){
     }else{
         arguments <<"-word_size"<< QString::number(settings.wordSize);
     }
+    
+    if (settings.directStrand == TriState_Yes) {
+        arguments << "-strand" << "plus";
+    } else if (settings.directStrand == TriState_No) {
+        arguments << "-strand" << "minus";
+    }
+
     if(!settings.isDefaultCosts){
         arguments <<"-gapopen"<< QString::number(settings.gapOpenCost);
         arguments <<"-gapextend"<< QString::number(settings.gapExtendCost);

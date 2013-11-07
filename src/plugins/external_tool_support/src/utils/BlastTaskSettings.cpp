@@ -61,6 +61,7 @@ void BlastTaskSettings::reset() {
     windowSize=0;
     threshold=0;
     isDefaultThreshold=true;
+    directStrand = TriState_Unknown;
 }
 
 }//namespace

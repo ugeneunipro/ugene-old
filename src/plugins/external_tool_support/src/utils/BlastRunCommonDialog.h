@@ -50,6 +50,7 @@ protected slots:
     void sl_restoreDefault();//=
 protected:
     void getSettings(BlastTaskSettings& settings);
+    void enableStrandBox(bool enable);
 
     BlastTaskSettings                   settings;
     bool                                needRestoreDefault;

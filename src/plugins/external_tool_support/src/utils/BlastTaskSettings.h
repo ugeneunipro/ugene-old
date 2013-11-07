@@ -135,6 +135,7 @@ public:
     AnnotationTableObject*  aobj;
     QString                 groupName;
     int                     offsInGlobalSeq;
+    TriState                directStrand;
 
 };
 }
