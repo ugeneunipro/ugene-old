@@ -20,7 +20,7 @@
  */
 
 
-#include "workflowmetadialogFiller.h"
+#include "WorkflowMetadialogFiller.h"
 #include "api/GTWidget.h"
 #include "api/GTLineEdit.h"
 
