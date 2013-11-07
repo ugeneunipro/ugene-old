@@ -3080,7 +3080,53 @@ GUI_TEST_CLASS_DEFINITION( test_2268 ) {
     GTUtilsLog::check(os, lt);
 }
 
-<<<<<<< .mine
+GUI_TEST_CLASS_DEFINITION( test_2269 ){
+    //1. Use main menu: {tools->Align short reeds}
+    //2. Select Bowtie2 as alignment method
+    //3. Try to set incorrect value in "Seed lingth" spinbox(Correct boundaries are: >3, <32)
+    AlignShortReadsFiller::Bowtie2Parameters parameters(testDir + "_common_data/scenarios/_regression/1093/",
+                                                        "refrence.fa",
+                                                        testDir + "_common_data/scenarios/_regression/1093/",
+                                                        "read.fa");
+    parameters.seedLengthCheckBox = true;
+    parameters.seedLength = 33;
+
+    GTUtilsDialog::waitForDialog(os, new AlignShortReadsFiller(os, &parameters));
+    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_TOOLS), QStringList() << "Align to reference" << "Align short reads");
+
+    CHECK_SET_ERR( !os.hasError(), "Uncorrect value is available");
+}
+
+GUI_TEST_CLASS_DEFINITION( test_2281 ){
+    //GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
+    // 1. Open WD sample "Align Sequences with MUSCLE
+    QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
+    GTMenu::clickMenuItem(os, menu, QStringList() << "Workflow Designer");
+   // GTUtilsWorkflowDesigner::addSample(os, "Align sequences with MUSCLE");
+    GTGlobals::sleep(500);
+    QGraphicsView* sceneView = qobject_cast<QGraphicsView*>(GTWidget::findWidget(os,"sceneView"));
+//    GT_CHECK_RESULT(sceneView, "sceneView not found", NULL);
+    QList<QGraphicsItem *> items = sceneView->items();
+    QString s;
+    foreach(QGraphicsItem* it, items) {
+        QGraphicsObject *itObj = it->toGraphicsObject();
+        QGraphicsTextItem* textItemO = qobject_cast<QGraphicsTextItem*>(itObj);
+        if (textItemO) {
+            QString text = textItemO->toPlainText();
+            s.append(text + "  ");
+        }
+    }
+    /*QList<QWidget*> list = AppContext::getMainWindow()->getQMainWindow()->findChildren<QWidget*>();
+
+    foreach(QWidget* w, list){
+        s.append(w->metaObject()->className()).append("  " + w->objectName()).append('\n');
+
+
+        }*/
+    CHECK_SET_ERR(false, s)
+    GTGlobals::sleep(1000);
+}
+
 GUI_TEST_CLASS_DEFINITION( test_2318 ) {
     class FirstItemPopupChooser : public PopupChooser {
     public:
@@ -3146,55 +3192,6 @@ GUI_TEST_CLASS_DEFINITION( test_2318 ) {
     GTWidget::click(os, farButton);
 }
 
-=======
-GUI_TEST_CLASS_DEFINITION( test_2269 ){
-    //1. Use main menu: {tools->Align short reeds}
-    //2. Select Bowtie2 as alignment method
-    //3. Try to set incorrect value in "Seed lingth" spinbox(Correct boundaries are: >3, <32)
-    AlignShortReadsFiller::Bowtie2Parameters parameters(testDir + "_common_data/scenarios/_regression/1093/",
-                                                        "refrence.fa",
-                                                        testDir + "_common_data/scenarios/_regression/1093/",
-                                                        "read.fa");
-    parameters.seedLengthCheckBox = true;
-    parameters.seedLength = 33;
-
-    GTUtilsDialog::waitForDialog(os, new AlignShortReadsFiller(os, &parameters));
-    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_TOOLS), QStringList() << "Align to reference" << "Align short reads");
-
-    CHECK_SET_ERR( !os.hasError(), "Uncorrect value is available");
-}
-
-GUI_TEST_CLASS_DEFINITION( test_2281 ){
-    //GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
-    // 1. Open WD sample "Align Sequences with MUSCLE
-    QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
-    GTMenu::clickMenuItem(os, menu, QStringList() << "Workflow Designer");
-   // GTUtilsWorkflowDesigner::addSample(os, "Align sequences with MUSCLE");
-    GTGlobals::sleep(500);
-    QGraphicsView* sceneView = qobject_cast<QGraphicsView*>(GTWidget::findWidget(os,"sceneView"));
-//    GT_CHECK_RESULT(sceneView, "sceneView not found", NULL);
-    QList<QGraphicsItem *> items = sceneView->items();
-    QString s;
-    foreach(QGraphicsItem* it, items) {
-        QGraphicsObject *itObj = it->toGraphicsObject();
-        QGraphicsTextItem* textItemO = qobject_cast<QGraphicsTextItem*>(itObj);
-        if (textItemO) {
-            QString text = textItemO->toPlainText();
-            s.append(text + "  ");
-        }
-    }
-    /*QList<QWidget*> list = AppContext::getMainWindow()->getQMainWindow()->findChildren<QWidget*>();
-
-    foreach(QWidget* w, list){
-        s.append(w->metaObject()->className()).append("  " + w->objectName()).append('\n');
-
-
-        }*/
-    CHECK_SET_ERR(false, s)
-    GTGlobals::sleep(1000);
-}
-
->>>>>>> .r5328
 } // GUITest_regression_scenarios namespace
 
 } // U2 namespace
