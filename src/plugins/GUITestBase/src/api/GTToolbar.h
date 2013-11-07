@@ -34,6 +34,7 @@ public:
 
     static QWidget* getWidgetForAction(U2OpStatus &os, const QToolBar *toolbar, QAction *action);
     static QWidget* getWidgetForActionName(U2OpStatus &os, const QToolBar *toolbar, const QString &actionName);
+    static QWidget* getWidgetForActionTooltip(U2OpStatus &os, const QToolBar *toolbar, const QString &tooltip);
 
 
 private:

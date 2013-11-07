@@ -57,6 +57,15 @@ QAction* GUIUtils::findActionByData(QList<QAction*> actions, const QString& data
         return NULL;
 }
 
+QAction* GUIUtils::findActionByText(QList<QAction*> actions, const QString& text){
+    foreach(QAction* action, actions) {
+        if(action->text() == text){
+            return action;
+        }
+    }
+    return NULL;
+}
+
 
 QAction* GUIUtils::findAction(const QList<QAction*>& actions, const QString& name) {
     foreach(QAction* a, actions) {

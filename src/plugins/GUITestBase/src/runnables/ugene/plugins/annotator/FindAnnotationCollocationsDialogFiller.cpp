@@ -20,40 +20,59 @@
  */
 
 #include "FindAnnotationCollocationsDialogFiller.h"
+
 #include <QtGui/QApplication>
+
 #include "api/GTWidget.h"
 
-namespace U2{
+namespace U2 {
+
 #define GT_CLASS_NAME "GTUtilsDialog::FindAnnotationCollocationsDialogFiller"
+
 #define GT_METHOD_NAME "run"
-void FindAnnotationCollocationsDialogFiller::run(){
+void FindAnnotationCollocationsDialogFiller::run() {
     QWidget* dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog, "activeModalWidget is NULL");
 
-    GTWidget::click(os, GTWidget::findWidget(os, "cancelButton"));
+    GTWidget::click(os, GTWidget::findWidget(os, "cancelButton", dialog));
 }
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "getPlusButton"
-QToolButton* FindAnnotationCollocationsDialogFiller::getPlusButton(){
+QToolButton* FindAnnotationCollocationsDialogFiller::getPlusButton() const {
     QToolButton* result = NULL;
     QWidget* dialog = QApplication::activeModalWidget();
     GT_CHECK_RESULT(dialog, "activeModalWidget is NULL", NULL);
 
     QList<QToolButton*> toolList = dialog->findChildren<QToolButton*>();
-    foreach(QToolButton* but, toolList){
-        if (but->text() == "+")
+    foreach (QToolButton* but, toolList) {
+        if (but->text() == "+") {
             result = but;
+        }
     }
 
     GT_CHECK_RESULT(result, "PlusButton not found", NULL);
     return result;
 }
 #undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "getMinusButtons"
+QList<QToolButton*> FindAnnotationCollocationsDialogFiller::getMinusButtons() const {
+    QList<QToolButton*> result;
+    QWidget* dialog = QApplication::activeModalWidget();
+    GT_CHECK_RESULT(dialog, "activeModalWidget is NULL", result);
+
+    QList<QToolButton*> toolList = dialog->findChildren<QToolButton*>();
+    foreach (QToolButton* but, toolList) {
+        if (but->text() == "-") {
+            result << but;
+        }
+    }
+
+    return result;
+}
+#undef GT_METHOD_NAME
+
 #undef GT_CLASS_NAME
 
-
-
-
-
-}
+}   // namespace U2

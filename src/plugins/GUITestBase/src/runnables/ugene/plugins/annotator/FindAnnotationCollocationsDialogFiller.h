@@ -19,20 +19,23 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef FINDANNOTATIONCOLLOCATIONSDIALOGFILLER_H
-#define FINDANNOTATIONCOLLOCATIONSDIALOGFILLER_H
+#ifndef _U2_FIND_ANNOTATION_COLLOCATIONS_DIALOG_FILLER_H_
+#define _U2_FIND_ANNOTATION_COLLOCATIONS_DIALOG_FILLER_H_
 
 #include "GTUtilsDialog.h"
+
 #include <QtGui/QToolButton>
 
 namespace U2 {
 
-class FindAnnotationCollocationsDialogFiller : public Filler
-{
+class FindAnnotationCollocationsDialogFiller : public Filler {
 public:
-    FindAnnotationCollocationsDialogFiller(U2OpStatus &os): Filler(os,"FindAnnotationCollocationsDialog"){}
+    FindAnnotationCollocationsDialogFiller(U2OpStatus &os): Filler(os, "FindAnnotationCollocationsDialog"){}
     virtual void run();
-    QToolButton* getPlusButton();
+    QToolButton* getPlusButton() const;
+    QList<QToolButton*> getMinusButtons() const;
 };
-}//namespace
-#endif // FINDANNOTATIONCOLLOCATIONSDIALOGFILLER_H
+
+} //namespace U2
+
+#endif // _U2_FIND_ANNOTATION_COLLOCATIONS_DIALOG_FILLER_H_

@@ -19,70 +19,70 @@
  * MA 02110-1301, USA.
  */
 
-#include "../../GTUtilsMsaEditorSequenceArea.h"
-#include "../../GTUtilsEscClicker.h"
 #include "GTTestsRegressionScenarios.h"
-#include "api/GTGlobals.h"
-#include "api/GTMouseDriver.h"
-#include "api/GTKeyboardDriver.h"
-#include "api/GTFileDialog.h"
-#include "api/GTMenu.h"
+
 #include "api/GTAction.h"
-#include "api/GTWidget.h"
+#include "api/GTCheckBox.h"
+#include "api/GTClipboard.h"
+#include "api/GTComboBox.h"
+#include "api/GTFileDialog.h"
+#include "api/GTGlobals.h"
+#include "api/GTKeyboardDriver.h"
+#include "api/GTLineEdit.h"
+#include "api/GTMenu.h"
+#include "api/GTMouseDriver.h"
+#include "api/GTSpinBox.h"
 #include "api/GTTableView.h"
 #include "api/GTToolbar.h"
 #include "api/GTTreeWidget.h"
-#include "api/GTLineEdit.h"
-#include "api/GTComboBox.h"
-#include "api/GTClipboard.h"
-#include "api/GTCheckBox.h"
-#include "api/GTSpinBox.h"
-#include "GTUtilsProjectTreeView.h"
-#include "GTUtilsOptionsPanel.h"
-#include "GTUtilsBookmarksTreeView.h"
+#include "api/GTWidget.h"
+
 #include "GTUtilsAnnotationsTreeView.h"
+#include "GTUtilsBookmarksTreeView.h"
 #include "GTUtilsDialog.h"
-#include "GTUtilsSequenceView.h"
-#include "GTUtilsProject.h"
+#include "GTUtilsEscClicker.h"
+#include "GTUtilsLog.h"
 #include "GTUtilsMdi.h"
+#include "GTUtilsMsaEditorSequenceArea.h"
+#include "GTUtilsOptionsPanel.h"
+#include "GTUtilsProject.h"
+#include "GTUtilsProjectTreeView.h"
+#include "GTUtilsSequenceView.h"
 #include "GTUtilsTaskTreeView.h"
-#include "runnables/ugene/corelibs/U2View/utils_smith_waterman/SmithWatermanDialogBaseFiller.h"
-#include "runnables/ugene/corelibs/U2Gui/EditSequenceDialogFiller.h"
-#include "runnables/ugene/corelibs/U2Gui/EditAnnotationDialogFiller.h"
-#include "runnables/ugene/corelibs/U2View/ov_msa/ConsensusSelectorDialogFiller.h"
-#include "runnables/ugene/plugins/dotplot/DotPlotDialogFiller.h"
-#include "runnables/ugene/corelibs/U2Gui/RangeSelectionDialogFiller.h"
-#include "runnables/ugene/corelibs/U2Gui/FindTandemsDialogFiller.h"
+#include "GTUtilsWorkflowDesigner.h"
+
+#include "runnables/qt/MessageBoxFiller.h"
 #include "runnables/qt/PopupChooser.h"
 #include "runnables/ugene/corelibs/U2Gui/AlignShortReadsDialogFiller.h"
-#include "runnables/qt/MessageBoxFiller.h"
-#include "runnables/ugene/corelibs/U2Gui/util/ProjectTreeItemSelectorDialogBaseFiller.h"
-#include "runnables/ugene/corelibs/U2Gui/CreateAnnotationWidgetFiller.h"
-#include "runnables/ugene/corelibs/U2Gui/EditQualifierDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/AppSettingsDialogFiller.h"
-#include "runnables/ugene/corelibs/U2Gui/DownloadRemoteFileDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/ConvertAssemblyToSAMDialogFiller.h"
-#include "runnables/ugene/ugeneui/SelectDocumentFormatDialogFiller.h"
-#include "runnables/ugene/ugeneui/SequenceReadingModeSelectorDialogFiller.h"
-#include "runnables/ugene/ugeneui/NCBISearchDialogFiller.h"
-#include "runnables/ugene/plugins/workflow_designer/StartupDialogFiller.h"
+#include "runnables/ugene/corelibs/U2Gui/CreateAnnotationWidgetFiller.h"
+#include "runnables/ugene/corelibs/U2Gui/DownloadRemoteFileDialogFiller.h"
+#include "runnables/ugene/corelibs/U2Gui/EditAnnotationDialogFiller.h"
+#include "runnables/ugene/corelibs/U2Gui/EditQualifierDialogFiller.h"
+#include "runnables/ugene/corelibs/U2Gui/EditSequenceDialogFiller.h"
+#include "runnables/ugene/corelibs/U2Gui/FindTandemsDialogFiller.h"
+#include "runnables/ugene/corelibs/U2Gui/RangeSelectionDialogFiller.h"
+#include "runnables/ugene/corelibs/U2Gui/util/ProjectTreeItemSelectorDialogBaseFiller.h"
+#include "runnables/ugene/corelibs/U2View/ov_msa/ConsensusSelectorDialogFiller.h"
+#include "runnables/ugene/corelibs/U2View/utils_smith_waterman/SmithWatermanDialogBaseFiller.h"
+#include "runnables/ugene/plugins/annotator/FindAnnotationCollocationsDialogFiller.h"
+#include "runnables/ugene/plugins/dotplot/DotPlotDialogFiller.h"
 #include "runnables/ugene/plugins/workflow_designer/WorkflowMetadialogFiller.h"
 #include "runnables/ugene/plugins/external_tools/TCoffeeDailogFiller.h"
-#include "runnables/ugene/plugins_3rdparty/umuscle/MuscleDialogFiller.h"
-#include "runnables/ugene/plugins_3rdparty/kalign/KalignDialogFiller.h"
-#include "GTUtilsLog.h"
-#include "GTUtilsWorkflowDesigner.h"
-#include <U2View/ADVSingleSequenceWidget.h>
-#include <U2View/AnnotatedDNAViewFactory.h>
-#include "runnables/qt/MessageBoxFiller.h"
 #include "runnables/ugene/plugins/workflow_designer/StartupDialogFiller.h"
-
-#include "GTUtilsWorkflowDesigner.h"
+#include "runnables/ugene/plugins_3rdparty/kalign/KalignDialogFiller.h"
+#include "runnables/ugene/plugins_3rdparty/umuscle/MuscleDialogFiller.h"
+#include "runnables/ugene/ugeneui/NCBISearchDialogFiller.h"
+#include "runnables/ugene/ugeneui/SelectDocumentFormatDialogFiller.h"
+#include "runnables/ugene/ugeneui/SequenceReadingModeSelectorDialogFiller.h"
 
 #include <U2Core/AppContext.h>
 #include <U2Core/ExternalToolRegistry.h>
 
 #include <U2View/ADVConstants.h>
+#include <U2View/ADVSingleSequenceWidget.h>
+#include <U2View/AnnotatedDNAViewFactory.h>
 #include <U2View/MSAEditor.h>
 
 namespace U2 {
@@ -3080,6 +3080,73 @@ GUI_TEST_CLASS_DEFINITION( test_2268 ) {
     GTUtilsLog::check(os, lt);
 }
 
+<<<<<<< .mine
+GUI_TEST_CLASS_DEFINITION( test_2318 ) {
+    class FirstItemPopupChooser : public PopupChooser {
+    public:
+        FirstItemPopupChooser(U2OpStatus& os) :
+            PopupChooser(os, QStringList()) {}
+
+        virtual void run() {
+            GTGlobals::sleep(1000);
+            GTMouseDriver::release(os);
+            GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["down"]);
+            GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
+        }
+    };
+
+    class PlusClicker : public FindAnnotationCollocationsDialogFiller {
+    public:
+        PlusClicker(U2OpStatus& os, const QString& _annName) :
+            FindAnnotationCollocationsDialogFiller(os),
+            annName(_annName) {}
+
+        virtual void run() {
+            QToolButton* plusButton = getPlusButton();
+            CHECK_SET_ERR(plusButton, "First plus toolbutton is NULL");
+            firstSize = plusButton->size();
+
+            GTUtilsDialog::waitForDialog(os, new FirstItemPopupChooser(os));
+            GTWidget::click(os, plusButton);
+
+            GTGlobals::sleep();
+            plusButton = getPlusButton();
+            CHECK_SET_ERR(plusButton, "Second plus toolbutton is NULL");
+            secondSize = plusButton->size();
+
+            bool result = test();
+            CHECK_SET_ERR(result, "Incorrect result");
+
+            FindAnnotationCollocationsDialogFiller::run();
+        }
+
+    private:
+        bool test() const {
+            return firstSize == secondSize;
+        }
+
+        QString annName;
+        QSize firstSize;
+        QSize secondSize;
+    };
+
+//    1) Open {data/samples/murine.gb}
+    GTFileDialog::openFile(os, dataDir + "/samples/Genbank/", "murine.gb");
+
+//    2) Use context menu: {Analyze -> Find annotated regions}
+//    3) Click plus button, select any annotation
+//    Expected state: plus button changes place, its size wasn't change
+    QToolBar* toolbar = GTToolbar::getToolbar(os, "mwtoolbar_activemdi");
+    CHECK_SET_ERR(toolbar, "Toolbar is NULL");
+    QWidget* farButton = GTToolbar::getWidgetForActionTooltip(os, toolbar, "Find annotated regions...");
+    CHECK_SET_ERR(farButton, "Find annotated region button is NULL");
+
+    // Expected state is checked in PlusClicker
+    GTUtilsDialog::waitForDialog(os, new PlusClicker(os, "CDS"));
+    GTWidget::click(os, farButton);
+}
+
+=======
 GUI_TEST_CLASS_DEFINITION( test_2269 ){
     //1. Use main menu: {tools->Align short reeds}
     //2. Select Bowtie2 as alignment method
@@ -3127,6 +3194,7 @@ GUI_TEST_CLASS_DEFINITION( test_2281 ){
     GTGlobals::sleep(1000);
 }
 
+>>>>>>> .r5328
 } // GUITest_regression_scenarios namespace
 
 } // U2 namespace
