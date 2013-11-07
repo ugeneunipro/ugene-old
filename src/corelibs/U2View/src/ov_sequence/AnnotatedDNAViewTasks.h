@@ -41,6 +41,9 @@ public:
     static void updateTitle(AnnotatedDNAView* v);
 
 private:
+    void populateSeqObjectRefs( GObject *object, QList<Document *> &docsToLoad,
+        QSet<GObject *> &refsAdded );
+
     QList<GObjectReference> sequenceObjectRefs;
 };
 
