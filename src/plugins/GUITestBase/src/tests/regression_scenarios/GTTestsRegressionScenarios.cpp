@@ -66,6 +66,7 @@
 #include "runnables/ugene/ugeneui/SequenceReadingModeSelectorDialogFiller.h"
 #include "runnables/ugene/ugeneui/NCBISearchDialogFiller.h"
 #include "runnables/ugene/plugins/workflow_designer/StartupDialogFiller.h"
+#include "runnables/ugene/plugins/workflow_designer/WorkflowMetadialogFiller.h"
 #include "runnables/ugene/plugins/external_tools/TCoffeeDailogFiller.h"
 #include "runnables/ugene/plugins_3rdparty/umuscle/MuscleDialogFiller.h"
 #include "runnables/ugene/plugins_3rdparty/kalign/KalignDialogFiller.h"
@@ -1251,6 +1252,46 @@ GUI_TEST_CLASS_DEFINITION( test_1813 )
     GTGlobals::sleep(10000);
     GTUtilsDocument::isDocumentLoaded(os, "I7G8J3_das.gb");
     GTUtilsDocument::checkDocument(os, "I7G8J3_das.gb", AnnotatedDNAViewFactory::ID);
+}
+
+GUI_TEST_CLASS_DEFINITION( test_1821 ) {
+    QString workflowOutputDirPath( testDir + "_common_data/scenarios/sandbox" );
+    QDir workflowOutputDir( workflowOutputDirPath );
+
+    GTUtilsDialog::waitForDialog( os, new StartupDialogFiller( os, true,
+        workflowOutputDir.absolutePath( ) ) );
+
+    //1. Open WD
+    QMenu* menu=GTMenu::showMainMenu( os, MWMENU_TOOLS );
+    GTMenu::clickMenuItem( os, menu, QStringList( ) << "Workflow Designer" );
+    GTGlobals::sleep( 500 );
+
+    //2. Select "Align sequences with MUSCLE"
+    GTUtilsWorkflowDesigner::addSample( os, "Align sequences with MUSCLE" );
+    GTGlobals::sleep( 500 );
+
+    //3. Change the value of the scale spinbox. E.g. set it to 75%
+    QComboBox *scaleCombo = dynamic_cast<QComboBox *>( GTWidget::findWidget( os, "wdScaleCombo" ) );
+    CHECK_SET_ERR( NULL != scaleCombo, "Unable to find scale combobox!" );
+    GTComboBox::setIndexWithText( os, scaleCombo, "75%" );
+
+    //4. Store the scheme to some file using "Save scheme as" button
+    GTUtilsDialog::waitForDialog( os, new WorkflowMetaDialogFiller( os,
+        workflowOutputDir.absolutePath( ) + "/" + "test.uwl", "Scheme") );
+    GTMenu::clickMenuItem( os, GTMenu::showMainMenu( os, MWMENU_ACTIONS ),
+        QStringList( ) <<  "Save workflow action", GTGlobals::UseKey );
+
+    //5. Close WD
+    GTUtilsMdi::click( os, GTGlobals::Close );
+    GTMouseDriver::click( os );
+
+    //6. Open the file containing the saved scheme using "Open" button
+    GTFileDialog::openFile( os, workflowOutputDirPath, "test.uwl" );
+
+    //Expected state: scheme is opened in WD, its scale is 75%
+    scaleCombo = dynamic_cast<QComboBox *>( GTWidget::findWidget( os, "wdScaleCombo" ) );
+    CHECK_SET_ERR( NULL != scaleCombo, "Unable to find scale combobox!" );
+    CHECK_SET_ERR( scaleCombo->currentText( ) == "75%", "Unexpected scale value!" );
 }
 
 GUI_TEST_CLASS_DEFINITION( test_1884 )

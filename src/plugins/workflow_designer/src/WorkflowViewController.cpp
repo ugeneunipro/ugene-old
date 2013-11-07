@@ -168,6 +168,7 @@ static QComboBox * scaleCombo(WorkflowView *parent) {
     QObject::connect(sceneScaleCombo, SIGNAL(currentIndexChanged(const QString &)), parent, SLOT(sl_rescaleScene(const QString &)));
     // Some visual modifications for Mac:
     sceneScaleCombo->lineEdit()->setStyleSheet("QLineEdit {margin-right: 1px;}");
+    sceneScaleCombo->setObjectName( "wdScaleCombo" );
     return sceneScaleCombo;
 }
 
@@ -644,6 +645,7 @@ void WorkflowView::createActions() {
     saveAsAction = new QAction(tr("&Save workflow as..."), this);
     saveAsAction->setIcon(QIcon(":workflow_designer/images/filesaveas.png"));
     connect(saveAsAction, SIGNAL(triggered()), SLOT(sl_saveSceneAs()));
+    saveAsAction->setObjectName( "Save workflow action" );
 
     showWizard = new QAction(tr("Show wizard"), this);
     showWizard->setObjectName("Show wizard");
