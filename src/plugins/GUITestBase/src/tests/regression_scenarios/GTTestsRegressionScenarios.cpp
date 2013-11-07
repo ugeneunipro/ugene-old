@@ -35,6 +35,8 @@
 #include "api/GTLineEdit.h"
 #include "api/GTComboBox.h"
 #include "api/GTClipboard.h"
+#include "api/GTCheckBox.h"
+#include "api/GTSpinBox.h"
 #include "GTUtilsProjectTreeView.h"
 #include "GTUtilsOptionsPanel.h"
 #include "GTUtilsBookmarksTreeView.h"
@@ -1342,6 +1344,42 @@ GUI_TEST_CLASS_DEFINITION( test_1886_2 )
     const QString selectionContent = GTClipboard::text( os );
     CHECK_SET_ERR( "--TGAC\n--TGAT\n--AGAC\n--AGAT\n--AGAT\n"
         "--TGAA\n--CGAT\n--CGAT\n--CGAT" == selectionContent, "MSA changing is failed" );
+}
+
+GUI_TEST_CLASS_DEFINITION( test_1919 )
+{
+    //1) Create the WD scheme: File list -> File conversions.
+    //2) Set input file: a BAM file (e.g _common_data/bam/scerevisiae.bam).
+    //3) Set the result format of the converter: BAM
+    //4) Run the scheme.
+    //Expected: the scheme is finished well, no errors appeared.
+
+    GTLogTracer l;
+
+    QMenu *menu=GTMenu::showMainMenu( os, MWMENU_TOOLS );
+    GTMenu::clickMenuItem( os, menu, QStringList() << "Workflow Designer" );
+
+    GTUtilsWorkflowDesigner::addAlgorithm( os, "File List" );
+    GTUtilsWorkflowDesigner::addAlgorithm( os, "File Format Conversion" );
+
+    WorkflowProcessItem* fileList = GTUtilsWorkflowDesigner::getWorker(os, "File List");
+    WorkflowProcessItem* fileConversion = GTUtilsWorkflowDesigner::getWorker(os, "File Format Conversion");
+
+    GTUtilsWorkflowDesigner::connect(os, fileList, fileConversion);
+
+    GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "File List"));
+    GTMouseDriver::click(os);
+    GTUtilsWorkflowDesigner::setDatasetInputFile(os, testDir + "_common_data/bam", "scerevisiae.bam");
+
+    GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "File Format Conversion"));
+    GTMouseDriver::click(os);
+    GTUtilsWorkflowDesigner::setParameter(os, "Document format", 1, GTUtilsWorkflowDesigner::comboValue);
+
+    // add setting source url in input data
+
+    //GTWidget::click(os,GTAction::button(os,"Run workflow"));
+
+    GTUtilsLog::check(os, l);
 }
 
 GUI_TEST_CLASS_DEFINITION( test_1921 )
@@ -2900,36 +2938,7 @@ GUI_TEST_CLASS_DEFINITION( test_2267_2 ){
     GTMouseDriver::moveTo(os, GTUtilsAnnotationsTreeView::getItemCenter(os, "D"));
     GTMouseDriver::click(os, Qt::RightButton);
 }
-GUI_TEST_CLASS_DEFINITION( test_2281 ){
-    //GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
-    // 1. Open WD sample "Align Sequences with MUSCLE
-    QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
-    GTMenu::clickMenuItem(os, menu, QStringList() << "Workflow Designer");
-   // GTUtilsWorkflowDesigner::addSample(os, "Align sequences with MUSCLE");
-    GTGlobals::sleep(500);
-    QGraphicsView* sceneView = qobject_cast<QGraphicsView*>(GTWidget::findWidget(os,"sceneView"));
-//    GT_CHECK_RESULT(sceneView, "sceneView not found", NULL);
-    QList<QGraphicsItem *> items = sceneView->items();
-    QString s;
-    foreach(QGraphicsItem* it, items) {
-        QGraphicsObject *itObj = it->toGraphicsObject();
 
-        QGraphicsTextItem* textItemO = qobject_cast<QGraphicsTextItem*>(itObj);
-        if (textItemO) {
-            QString text = textItemO->toPlainText();
-            s.append(text + "  ");
-        }
-    }
-    /*QList<QWidget*> list = AppContext::getMainWindow()->getQMainWindow()->findChildren<QWidget*>();
-    
-    foreach(QWidget* w, list){
-        s.append(w->metaObject()->className()).append("  " + w->objectName()).append('\n');
-        
-
-        }*/
-    CHECK_SET_ERR(false, s)
-    GTGlobals::sleep(1000);
-    }
 GUI_TEST_CLASS_DEFINITION( test_2268 ) {
     class PermissionsSetter {
     public:
@@ -3028,6 +3037,53 @@ GUI_TEST_CLASS_DEFINITION( test_2268 ) {
     }
 
     GTUtilsLog::check(os, lt);
+}
+
+GUI_TEST_CLASS_DEFINITION( test_2269 ){
+    //1. Use main menu: {tools->Align short reeds}
+    //2. Select Bowtie2 as alignment method
+    //3. Try to set incorrect value in "Seed lingth" spinbox(Correct boundaries are: >3, <32)
+    AlignShortReadsFiller::Bowtie2Parameters parameters(testDir + "_common_data/scenarios/_regression/1093/",
+                                                        "refrence.fa",
+                                                        testDir + "_common_data/scenarios/_regression/1093/",
+                                                        "read.fa");
+    parameters.seedLengthCheckBox = true;
+    parameters.seedLength = 33;
+
+    GTUtilsDialog::waitForDialog(os, new AlignShortReadsFiller(os, &parameters));
+    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_TOOLS), QStringList() << "Align to reference" << "Align short reads");
+
+    CHECK_SET_ERR( !os.hasError(), "Uncorrect value is available");
+}
+
+GUI_TEST_CLASS_DEFINITION( test_2281 ){
+    //GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
+    // 1. Open WD sample "Align Sequences with MUSCLE
+    QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
+    GTMenu::clickMenuItem(os, menu, QStringList() << "Workflow Designer");
+   // GTUtilsWorkflowDesigner::addSample(os, "Align sequences with MUSCLE");
+    GTGlobals::sleep(500);
+    QGraphicsView* sceneView = qobject_cast<QGraphicsView*>(GTWidget::findWidget(os,"sceneView"));
+//    GT_CHECK_RESULT(sceneView, "sceneView not found", NULL);
+    QList<QGraphicsItem *> items = sceneView->items();
+    QString s;
+    foreach(QGraphicsItem* it, items) {
+        QGraphicsObject *itObj = it->toGraphicsObject();
+        QGraphicsTextItem* textItemO = qobject_cast<QGraphicsTextItem*>(itObj);
+        if (textItemO) {
+            QString text = textItemO->toPlainText();
+            s.append(text + "  ");
+        }
+    }
+    /*QList<QWidget*> list = AppContext::getMainWindow()->getQMainWindow()->findChildren<QWidget*>();
+
+    foreach(QWidget* w, list){
+        s.append(w->metaObject()->className()).append("  " + w->objectName()).append('\n');
+
+
+        }*/
+    CHECK_SET_ERR(false, s)
+    GTGlobals::sleep(1000);
 }
 
 } // GUITest_regression_scenarios namespace

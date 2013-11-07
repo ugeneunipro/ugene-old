@@ -37,7 +37,7 @@ void GTComboBox::setCurrentIndex(U2OpStatus& os, QComboBox *comboBox, int index)
     int comboCount = comboBox->count();
     GT_CHECK(index>=0 && index<comboCount, "invalid index");
 
-    int currIndex = comboBox->currentIndex();
+    int currIndex = comboBox->currentIndex() == -1 ? 0 : comboBox->currentIndex();
     QString directionKey = index > currIndex ? "down" : "up";
 
     GTWidget::setFocus(os, comboBox);

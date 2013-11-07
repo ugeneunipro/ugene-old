@@ -51,6 +51,8 @@ void GTSpinBox::setValue(U2OpStatus& os, QSpinBox *spinBox, int v, GTGlobals::Us
 
             GTMouseDriver::moveTo(os, spinBox->mapToGlobal(arrowPos));
             while (spinBox->value() != v) {
+                GT_CHECK( (spinBox->value() != spinBox->maximum()) && (spinBox->value() != spinBox->minimum()),
+                          "Chosen value is not available in spin box");
                 GTMouseDriver::click(os);
                 GTGlobals::sleep(100);
             }
@@ -65,6 +67,8 @@ void GTSpinBox::setValue(U2OpStatus& os, QSpinBox *spinBox, int v, GTGlobals::Us
 
             GTWidget::setFocus(os, spinBox);
             while (spinBox->value() != v) {
+                GT_CHECK( (spinBox->value() != spinBox->maximum()) && (spinBox->value() != spinBox->minimum()),
+                          "Chosen value is not available in spin box");
                 GTKeyboardDriver::keyClick(os, key);
                 GTGlobals::sleep(100);
             }
