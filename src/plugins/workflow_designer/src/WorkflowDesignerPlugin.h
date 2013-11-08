@@ -50,6 +50,7 @@ private:
     
 private slots:
     void sl_saveSchemaImageTaskFinished();
+    void sl_initWorkers();
     
 };
 

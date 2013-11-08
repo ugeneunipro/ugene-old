@@ -79,7 +79,6 @@ WorkflowDesignerPlugin::WorkflowDesignerPlugin()
         AppContext::getObjectViewFactoryRegistry()->registerGObjectViewFactory(new WorkflowViewFactory(this));
     }
     IncludedProtoFactory::init(new IncludedProtoFactoryImpl());
-    Workflow::CoreLib::init();
 
     AppContext::getDocumentFormatRegistry()->registerFormat(new WorkflowDocFormat(this));
     
@@ -99,10 +98,11 @@ WorkflowDesignerPlugin::WorkflowDesignerPlugin()
     //}
     
     registerCMDLineHelp();
-    registerWorkflowTasks();
     processCMDLineOptions();
-    Workflow::CoreLib::initIncludedWorkers();
     WorkflowEnv::getActorValidatorRegistry()->addValidator(DatasetsCountValidator::ID, new DatasetsCountValidator());
+
+    CHECK(AppContext::getPluginSupport(), );
+    connect(AppContext::getPluginSupport(), SIGNAL(si_allStartUpPluginsLoaded()), SLOT(sl_initWorkers()));
 }
 
 void WorkflowDesignerPlugin::processCMDLineOptions() {
@@ -188,6 +188,12 @@ void WorkflowDesignerPlugin::registerCMDLineHelp() {
     //TODO: bug UGENE-23
     //cmdLineRegistry->registerCMDLineHelpProvider( remoteMachineSectionArguments );
     //cmdLineRegistry->registerCMDLineHelpProvider( remoteMachineSection );
+}
+
+void WorkflowDesignerPlugin::sl_initWorkers() {
+    Workflow::CoreLib::init();
+    registerWorkflowTasks();
+    Workflow::CoreLib::initIncludedWorkers();
 }
 
 class CloseDesignerTask : public Task {
