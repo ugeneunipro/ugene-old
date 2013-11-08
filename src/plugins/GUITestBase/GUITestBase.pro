@@ -133,6 +133,7 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/tests/common_scenarios/workflow_designer/GTTestsWorkflowDesigner.h \
             src/tests/common_scenarios/workflow_designer/estimating/GTTestsWorkflowEstimating.h \
             src/tests/common_scenarios/workflow_designer/parameters_validation/GTTestsWorkflowParemeterValidation.h \
+            src/tests/common_scenarios/workflow_designer/scripting/GTTestsWorkflowScripting.h \
             src/tests/common_scenarios/tree_viewer/GTTestsCommonScenariousTreeviewer.h \
             src/tests/common_scenarios/repeat_finder/GTTestsRepeatFinder.h \
             src/tests/common_scenarios/undo_redo/GTTestsUndoRedo.h \
@@ -306,6 +307,7 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/tests/common_scenarios/workflow_designer/GTTestsWorkflowDesigner.cpp \
             src/tests/common_scenarios/workflow_designer/estimating/GTTestsWorkflowEstimating.cpp \
             src/tests/common_scenarios/workflow_designer/parameters_validation/GTTestsWorkflowParemeterValidation.cpp \
+            src/tests/common_scenarios/workflow_designer/scripting/GTTestsWorkflowScripting.cpp \
             src/tests/common_scenarios/tree_viewer/GTTestsCommonScenariousTreeviewer.cpp \
             src/tests/common_scenarios/repeat_finder/GTTestsRepeatFinder.cpp \
             src/tests/common_scenarios/undo_redo/GTTestsUndoRedo.cpp \

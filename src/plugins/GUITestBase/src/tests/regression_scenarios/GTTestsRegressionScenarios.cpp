@@ -64,7 +64,9 @@
 #include "runnables/ugene/corelibs/U2Gui/FindTandemsDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/RangeSelectionDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/util/ProjectTreeItemSelectorDialogBaseFiller.h"
+#include "runnables/ugene/corelibs/U2View/ov_msa/BuildTreeDialogFiller.h"
 #include "runnables/ugene/corelibs/U2View/ov_msa/ConsensusSelectorDialogFiller.h"
+#include "runnables/ugene/corelibs/U2View/ov_msa/LicenseAgreemntDialogFiller.h"
 #include "runnables/ugene/corelibs/U2View/utils_smith_waterman/SmithWatermanDialogBaseFiller.h"
 #include "runnables/ugene/plugins/annotator/FindAnnotationCollocationsDialogFiller.h"
 #include "runnables/ugene/plugins/dotplot/DotPlotDialogFiller.h"
@@ -3125,6 +3127,23 @@ GUI_TEST_CLASS_DEFINITION( test_2281 ){
         }*/
     CHECK_SET_ERR(false, s)
     GTGlobals::sleep(1000);
+}
+
+GUI_TEST_CLASS_DEFINITION( test_2309 ) {
+    // 1. Open file "data/samples/CLUSTALW/COI.aln"
+    GTFileDialog::openFile(os, dataDir+"samples/CLUSTALW/", "COI.aln");
+
+    // 2. Build tree for the alignment
+    GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os, testDir + "_common_data/scenarios/sandbox/2309.nwk", 0, 0, true));
+    GTUtilsDialog::waitForDialog(os,new LicenseAgreemntDialogFiller(os));
+    QAbstractButton *tree= GTAction::button(os,"Build Tree");
+    GTWidget::click(os, tree);
+    GTGlobals::sleep(500);
+
+    QAbstractButton *refresh= GTAction::button(os,"Refresh tree");
+    CHECK(NULL != refresh, );
+    GTWidget::click(os, refresh);
+    GTGlobals::sleep(500);
 }
 
 GUI_TEST_CLASS_DEFINITION( test_2318 ) {
