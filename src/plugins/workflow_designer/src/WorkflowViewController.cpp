@@ -118,6 +118,7 @@
 #include "library/ExternalProcessWorker.h"
 #include "library/ScriptWorker.h"
 #include "WorkflowInvestigationWidgetsController.h"
+#include "RPackageInstallerDialog.h"
 
 /* TRANSLATOR U2::LocalWorkflow::WorkflowView*/
 
@@ -168,7 +169,6 @@ static QComboBox * scaleCombo(WorkflowView *parent) {
     QObject::connect(sceneScaleCombo, SIGNAL(currentIndexChanged(const QString &)), parent, SLOT(sl_rescaleScene(const QString &)));
     // Some visual modifications for Mac:
     sceneScaleCombo->lineEdit()->setStyleSheet("QLineEdit {margin-right: 1px;}");
-    sceneScaleCombo->setObjectName( "wdScaleCombo" );
     return sceneScaleCombo;
 }
 
@@ -321,6 +321,7 @@ pasteCount(0), debugInfo(new WorkflowDebugStatus(this)), debugActions()
 
     propertyEditor->reset();
     checkOutputDir();
+//    checkRPackage();
 }
 
 WorkflowView::~WorkflowView() {
@@ -508,6 +509,32 @@ void WorkflowView::sl_breakpointIsReached(const U2::ActorId &actor) {
     breakpointView->onBreakpointReached(actor);
 }
 
+void WorkflowView::checkRPackage() {
+    CHECK(AppContext::getSettings()->getValue(CHECK_R_PACKAGE, true).toBool(), );
+
+    ExternalToolRegistry* etRegistry = AppContext::getExternalToolRegistry();
+    SAFE_POINT(NULL != etRegistry, "External tool registry is NULL", );
+
+    ExternalTool* rTool = etRegistry->getByName("Rscript");
+    CHECK_EXT(NULL != rTool, AppContext::getSettings()->setValue(CHECK_R_PACKAGE, true), );
+    CHECK_EXT(rTool->isValid(), AppContext::getSettings()->setValue(CHECK_R_PACKAGE, true), );
+
+    RPackageInstallerDialog d(this);
+    if (QDialog::Accepted == d.exec()) {
+        CHECK(!d.filePathLineEdit->text().isEmpty(), );
+        rLogParser = new ExternalToolLogParser;
+        ExternalToolRunTask* rTask = new ExternalToolRunTask(rTool->getName(),
+                                                             QStringList() << d.filePathLineEdit->text(),
+                                                             rLogParser,
+                                                             "",
+                                                             QStringList() << rTool->getPath());
+        connect(rTask, SIGNAL(si_stateChanged()), SLOT(sl_rInstallationStateChanged()));
+        AppContext::getTaskScheduler()->registerTopLevelTask(rTask);
+    } else {
+        AppContext::getSettings()->setValue(CHECK_R_PACKAGE, !d.doNotRemindCheckBox->isChecked());
+    }
+}
+
 void WorkflowView::addBottomWidgetsToInfoSplitter() {
     bottomTabs = new QTabWidget(infoSplitter);
 
@@ -546,10 +573,18 @@ void WorkflowView::sl_rescaleScene(const QString &scale)
 
 static void updateComboBox(QComboBox *scaleComboBox, int scalePercent) {
     QString value = QString("%1%2").arg(scalePercent).arg(percentStr);
+    bool isOk = true;
     for (int i=0; i<scaleComboBox->count(); i++) {
         if (scaleComboBox->itemText(i) == value) {
             scaleComboBox->setCurrentIndex(i);
             return;
+        } else{
+            QString itemText = scaleComboBox->itemText(i).mid(0, scaleComboBox->itemText(i).size() - percentStr.size());
+            if (itemText.toInt(&isOk) > scalePercent && isOk){
+                scaleComboBox->insertItem(i, value);
+                scaleComboBox->setCurrentIndex(i);
+                return;
+            }
         }
     }
     scaleComboBox->addItem(value);
@@ -594,10 +629,9 @@ void WorkflowView::createActions() {
     connect(validateAction, SIGNAL(triggered()), SLOT(sl_validate()));
 
     estimateAction = new QAction(tr("&Estimate workflow"), this);
-    estimateAction->setObjectName("Estimate workflow");
+    estimateAction->setObjectName("Run workflow");
     estimateAction->setIcon(QIcon(":core/images/sum.png"));
     estimateAction->setShortcut(QKeySequence("Ctrl+R"));
-    estimateAction->setObjectName("Estimate workflow");
     connect(estimateAction, SIGNAL(triggered()), SLOT(sl_estimate()));
 
     pauseAction = new QAction(tr("&Pause workflow"), this);
@@ -645,7 +679,6 @@ void WorkflowView::createActions() {
     saveAsAction = new QAction(tr("&Save workflow as..."), this);
     saveAsAction->setIcon(QIcon(":workflow_designer/images/filesaveas.png"));
     connect(saveAsAction, SIGNAL(triggered()), SLOT(sl_saveSceneAs()));
-    saveAsAction->setObjectName( "Save workflow action" );
 
     showWizard = new QAction(tr("Show wizard"), this);
     showWizard->setObjectName("Show wizard");
@@ -766,6 +799,8 @@ void WorkflowView::createActions() {
         remoteMachineRunMode->setObjectName("Remote machine");
         remoteMachineRunMode->setCheckable( true );
         remoteMachineRunMode->setChecked( REMOTE_MACHINE == runMode );
+        runModeActions << remoteMachineRunMode;
+        connect( remoteMachineRunMode, SIGNAL( triggered() ), SLOT( sl_setRunMode() ) );
     }
 
     { // scripting mode
@@ -1704,6 +1739,33 @@ WorkflowProcessItem *WorkflowView::findItemById(ActorId actor) const {
     return NULL;
 }
 
+void WorkflowView::sl_rInstallationStateChanged() {
+    ExternalToolRunTask* rTask = qobject_cast<ExternalToolRunTask*>(sender());
+    SAFE_POINT(NULL != rTask, "Unexpected message sender", );
+
+    if (rTask->isFinished()) {
+        delete rLogParser;
+        if (rTask->hasError() || rTask->isCanceled()) {
+            AppContext::getSettings()->setValue(CHECK_R_PACKAGE, true);
+            QMessageBox result(QMessageBox::Warning,
+                               tr("Error"),
+                               tr("R packages for the cistrome pipeline installation fails. "
+                                  "The right work of the cistorme pipeline is not garanteed. "
+                                  "Try to start the cistrome R packages installation script manually."),
+                               QMessageBox::Close);
+            result.exec();
+        } else {
+            AppContext::getSettings()->setValue(CHECK_R_PACKAGE, false);
+            QMessageBox result(QMessageBox::Information,
+                               tr("Success"),
+                               tr("R packages for the cistrome pipeline were successfully installed. "
+                                  "Now you can use the cistrome pipeline."),
+                               QMessageBox::Close);
+            result.exec();
+        }
+    }
+}
+
 void WorkflowView::paintEvent(QPaintEvent *event) {
     const bool isWorkflowRunning = ( NULL != scene->getRunner( ) );
     const bool isDebuggerEnabled = WorkflowSettings::isDebuggerEnabled( );
@@ -2150,7 +2212,6 @@ void WorkflowView::runWizard(Wizard *w) {
         }
         scene->sl_updateDocs();
         scene->setModified();
-        propertyEditor->update();
         if (controller.isRunAfterApply()) {
             sl_launch();
         }
