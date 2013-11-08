@@ -898,6 +898,30 @@ void WorkflowView::sl_externalAction() {
     }
 }
 
+namespace {
+    QString copyIntoUgene(const QString &url, U2OpStatus &os) {
+        QDir dir(WorkflowSettings::getExternalToolDirectory());
+        if (!dir.exists()) {
+            bool created = dir.mkpath(dir.absolutePath());
+            if (!created) {
+                os.setError(QObject::tr("Can not create the directory: ") + dir.absolutePath());
+                return "";
+            }
+        }
+        QString filePath = dir.absolutePath() + "/" + QFileInfo(url).fileName();
+        if (QFile::exists(filePath)) {
+            os.setError(QObject::tr("The file '%1' already exists").arg(filePath));
+            return "";
+        }
+        bool copied = QFile::copy(url, filePath);
+        if (!copied) {
+            os.setError(QObject::tr("Can not copy the file here: ") + filePath);
+            return "";
+        }
+        return filePath;
+    }
+}
+
 void WorkflowView::sl_appendExternalToolWorker() {
     QString filter = DialogUtils::prepareFileFilter(WorkflowUtils::tr("UGENE workflow element"), QStringList() << "etc", true);
     QString url = QFileDialog::getOpenFileName(this, tr("Add element"), QString(), filter);
@@ -911,22 +935,26 @@ void WorkflowView::sl_appendExternalToolWorker() {
         data.resize(MAX_FILE_SIZE);
         data.fill(0);
         io->readBlock(data.data(), MAX_FILE_SIZE);
+        io->close();
 
-        ExternalProcessConfig *cfg = HRSchemaSerializer::string2Actor(data.data());
-        if(cfg) {
+        QScopedPointer<ExternalProcessConfig> cfg(HRSchemaSerializer::string2Actor(data.data()));
+        if(cfg.data()) {
             if (WorkflowEnv::getProtoRegistry()->getProto(cfg->name)) {
                 coreLog.error("Element with this name already exists");
             } else {
-                cfg->filePath = url;
-                LocalWorkflow::ExternalProcessWorkerFactory::init(cfg);
+                U2OpStatus2Log os;
+                QString internalUrl = copyIntoUgene(url, os);
+                CHECK_OP(os, );
+                cfg->filePath = internalUrl;
+                LocalWorkflow::ExternalProcessWorkerFactory::init(cfg.data());
                 ActorPrototype *proto = WorkflowEnv::getProtoRegistry()->getProto(cfg->name);
                 QRectF rect = scene->sceneRect();
                 addProcess(createActor(proto, QVariantMap()), rect.center());
+                cfg.take();
             }
         } else {
             coreLog.error(tr("Can't load element."));
         }
-        io->close();
     }
 }
 
