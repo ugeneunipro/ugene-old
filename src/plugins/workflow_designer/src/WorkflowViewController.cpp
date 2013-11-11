@@ -770,12 +770,14 @@ void WorkflowView::createActions() {
 
     { // scripting mode
         QAction * notShowScriptAction = new QAction( tr( "Hide scripting options" ), this );
+        notShowScriptAction->setObjectName("Hide scripting options");
         notShowScriptAction->setCheckable( true );
         scriptingActions << notShowScriptAction;
         notShowScriptAction->setChecked(!scriptingMode);
         connect( notShowScriptAction, SIGNAL( triggered() ), SLOT( sl_changeScriptMode() ) );
 
         QAction * showScriptAction = new QAction( tr( "Show scripting options" ), this );
+        showScriptAction->setObjectName("Show scripting options");
         showScriptAction->setCheckable( true );
         showScriptAction->setChecked(scriptingMode);
         scriptingActions << showScriptAction;
