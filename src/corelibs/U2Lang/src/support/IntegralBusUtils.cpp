@@ -87,14 +87,56 @@ void IntegralBusUtils::remapPathedSlotString(QString &pathedSlotStr, const Actor
     }
 }
 
+namespace {
+    enum StringSlotType {
+        TEXT,
+        URL,
+        DATASET
+    };
+
+    bool isUrlSlot(const Descriptor &slot) {
+        const QString id = slot.getId();
+        return id.contains(BaseSlots::URL_SLOT().getId());
+    }
+    bool isDatasetSlot(const Descriptor &slot) {
+        return (BaseSlots::DATASET_SLOT() == slot);
+    }
+
+    StringSlotType getSlotType(const Descriptor &slot) {
+        if (isUrlSlot(slot)) {
+            return URL;
+        }
+        if (isDatasetSlot(slot)) {
+            return DATASET;
+        }
+        return TEXT;
+    }
+}
+
+QList<Descriptor> IntegralBusUtils::getSlotsByType(const QMap<Descriptor, DataTypePtr> &busMap, const Descriptor &slot, const DataTypePtr &type) {
+    QList<Descriptor> result = busMap.keys(type);
+    CHECK(BaseTypes::STRING_TYPE() == type, result);
+    CHECK(result.size() > 1, result);
+
+    const StringSlotType targetType = getSlotType(slot);
+    foreach (const Descriptor &desc, result) {
+        if (targetType != getSlotType(desc)) {
+            result.removeOne(desc);
+        }
+    }
+    return result;
+}
+
 /************************************************************************/
 /* Splitters */
 /************************************************************************/
 class DefaultSplitter : public CandidatesSplitter {
+public:
     bool canSplit(const Descriptor & /*toDesc*/, DataTypePtr /*toDatatype*/) {
         return true;
     }
 
+protected:
     bool isMain(const QString & /*candidateSlotId*/) {
         return true;
     }
@@ -106,6 +148,7 @@ public:
         return (BaseTypes::STRING_TYPE() == toDatatype);
     }
 
+protected:
     bool isMain(const QString &candidateSlotId) {
         return (BaseSlots::URL_SLOT().getId() != candidateSlotId
             && BaseSlots::DATASET_SLOT().getId() != candidateSlotId);
@@ -115,21 +158,22 @@ public:
 class DatasetsSplitter : public CandidatesSplitter {
 public:
     bool canSplit(const Descriptor &toDesc, DataTypePtr toDatatype) {
-        return (BaseTypes::STRING_TYPE() == toDatatype
-            && toDesc == BaseSlots::DATASET_SLOT());
+        return ((BaseTypes::STRING_TYPE() == toDatatype) && isDatasetSlot(toDesc));
     }
 
+protected:
     bool isMain(const QString &candidateSlotId) {
         return (BaseSlots::DATASET_SLOT().getId() == candidateSlotId);
     }
 };
 
 class UrlSplitter : public CandidatesSplitter {
+public:
     bool canSplit(const Descriptor &toDesc, DataTypePtr toDatatype) {
-        return (BaseTypes::STRING_TYPE() == toDatatype
-            && toDesc == BaseSlots::URL_SLOT());
+        return ((BaseTypes::STRING_TYPE() == toDatatype) && isUrlSlot(toDesc));
     }
 
+protected:
     bool isMain(const QString &candidateSlotId) {
         return (BaseSlots::URL_SLOT().getId() == candidateSlotId);
     }
@@ -173,6 +217,7 @@ CandidatesSplitter * CandidatesSplitterRegistry::findSplitter(const Descriptor &
 }
 
 CandidatesSplitterRegistry::CandidatesSplitterRegistry() {
+    // The order is needed
     splitters << new UrlSplitter();
     splitters << new DatasetsSplitter();
     splitters << new TextSplitter();

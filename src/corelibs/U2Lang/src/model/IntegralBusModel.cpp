@@ -42,8 +42,9 @@ namespace Workflow {
  * IntegralBusPort
  *******************************/
 static void filterAmbiguousSlots(QList<Descriptor>& keys, const QMap<Descriptor, DataTypePtr>& map, QStrStrMap& result) {
-    foreach(DataTypePtr val, map) {
-        const QList<Descriptor> lst = map.keys(val);
+    foreach(const Descriptor &slot, map.keys()) {
+        DataTypePtr val = map[slot];
+        const QList<Descriptor> lst = IntegralBusUtils::getSlotsByType(map, slot, val);
         if (lst.size() != 1) {
             foreach(Descriptor d, lst) {
                 result.insert(d.getId(), "");
