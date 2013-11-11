@@ -209,7 +209,7 @@ void AceReader::skipBreaks(IOAdapter *io, char *buff, qint64 *len) {
     bool lineOk = true;
     *len = io->readUntil(buff, READ_BUFF_SIZE, TextUtils::LINE_BREAKS, IOAdapter::Term_Include, &lineOk);
     CHECK_EXT(*len != 0, os->setError(tr("Unexpected end of file")), );
-    CHECK_EXT(lineOk, os->setError(tr("Line is too long")), );
+    CHECK_EXT(lineOk || io->isEof(), os->setError(tr("Line is too long")), );
 }
 
 int AceReader::getContigCount(const QByteArray &cur_line) {
