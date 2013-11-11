@@ -655,7 +655,7 @@ GUI_TEST_CLASS_DEFINITION(test_1093) {
 
 //    3. Press 'Align'
 //    Expected state: message window appears "The short reads can't be mapped to the reference sequence!"
-    AlignShortReadsFiller::Parameters parameters("_common_data/scenarios/_regression/1093/",
+    AlignShortReadsFiller::Parameters parameters(testDir + "_common_data/scenarios/_regression/1093/",
                                                  "refrence.fa",
                                                  testDir + "_common_data/scenarios/_regression/1093/",
                                                  "read.fa");
@@ -1251,7 +1251,7 @@ GUI_TEST_CLASS_DEFINITION( test_1813 )
     GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE),ACTION_PROJECTSUPPORT__ACCESS_REMOTE_DB, GTGlobals::UseKey);
 
     // Expected: the sequence view with I7G8J3 sequence is opened. UGENE does not crash.
-    GTGlobals::sleep(10000);
+    GTGlobals::sleep(20000);
     GTUtilsDocument::isDocumentLoaded(os, "I7G8J3_das.gb");
     GTUtilsDocument::checkDocument(os, "I7G8J3_das.gb", AnnotatedDNAViewFactory::ID);
 }
@@ -2929,7 +2929,7 @@ GUI_TEST_CLASS_DEFINITION( test_2225_1 ){
 }
 
 GUI_TEST_CLASS_DEFINITION( test_2225_2 ){
-    Runnable *filler = new NCBISearchDialogFiller(os, "rat");
+    Runnable *filler = new NCBISearchDialogFiller(os, "rat", true);
 
     GTUtilsDialog::waitForDialog(os, filler);
 

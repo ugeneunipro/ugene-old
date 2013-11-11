@@ -3483,6 +3483,7 @@ GUI_TEST_CLASS_DEFINITION(test_0040){//UGENE crashes when opening several files
     QTreeWidgetItem* COI = GTUtilsProjectTreeView::findItem(os,"COI.aln");
     CHECK_SET_ERR(COI, "COI.aln not added to project");
 
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::No));
     QFile(dataDir + "/samples/CLUSTALW/human_T1.fa").remove();
     GTGlobals::sleep();
 

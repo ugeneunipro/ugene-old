@@ -71,8 +71,6 @@ void NCBISearchDialogFiller::run(){
     GTWidget::click(os, w, Qt::LeftButton, QPoint(10,35));//fast fix, clicking first result
     GTWidget::click(os, GTWidget::findWidget(os, "downloadButton"));
 
-
-
     GTWidget::click(os, GTWidget::findWidget(os, "closeButton"));
 }
 #undef GT_METHOD_NAME
