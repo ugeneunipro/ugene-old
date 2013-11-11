@@ -3211,6 +3211,41 @@ GUI_TEST_CLASS_DEFINITION( test_2318 ) {
     GTWidget::click(os, farButton);
 }
 
+GUI_TEST_CLASS_DEFINITION( test_2377 ) {
+    GTLogTracer l;
+
+    GTUtilsDialog::waitForDialog( os, new StartupDialogFiller( os, true ) );
+
+    QMenu *menu=GTMenu::showMainMenu( os, MWMENU_TOOLS );
+    GTMenu::clickMenuItem( os, menu, QStringList( ) << "Workflow Designer" );
+
+    const QString assemblyReaderName = "Read Assembly";
+    const QString assemblyWriterName = "Write Assembly";
+
+    GTUtilsWorkflowDesigner::addAlgorithm( os, assemblyReaderName );
+    GTUtilsWorkflowDesigner::addAlgorithm( os, assemblyWriterName );
+
+    WorkflowProcessItem *assemblyReader = GTUtilsWorkflowDesigner::getWorker( os,
+        assemblyReaderName );
+    WorkflowProcessItem *assemblyWriter = GTUtilsWorkflowDesigner::getWorker( os,
+        assemblyWriterName );
+
+    GTUtilsWorkflowDesigner::connect( os, assemblyReader, assemblyWriter );
+
+    GTMouseDriver::moveTo( os, GTUtilsWorkflowDesigner::getItemCenter( os, assemblyReaderName ) );
+    GTMouseDriver::click( os );
+    GTUtilsWorkflowDesigner::setDatasetInputFile( os, testDir + "_common_data/sam", "crash.sam" );
+
+    GTMouseDriver::moveTo( os, GTUtilsWorkflowDesigner::getItemCenter( os, assemblyWriterName ) );
+    GTMouseDriver::click( os );
+    GTUtilsWorkflowDesigner::setParameter( os, "Output file",
+        testDir + "_common_data/scenarios/sandbox", GTUtilsWorkflowDesigner::textValue );
+
+    GTWidget::click( os, GTAction::button( os, "Run workflow" ) );
+
+    CHECK_SET_ERR( l.hasError( ), "Error message expected!" );
+}
+
 } // GUITest_regression_scenarios namespace
 
 } // U2 namespace

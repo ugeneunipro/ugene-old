@@ -239,6 +239,8 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_2309);
     REGISTER_TEST(GUITest_regression_scenarios::test_2318);
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2281, "This test can't found hints. Check it.");
+    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2377, "Nonexistent file is used in test description"
+        "(https://ugene.unipro.ru/svn/ugene/test/scenarios/Regression%20scenarios/2377/test_0001.txt). Restore test after changing the file");
 
 //////////////////////////////////////////////////////////////////////////
 // Common scenarios/project/
@@ -940,6 +942,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 // Common scenarios/Workflow designer/Name filter
 /////////////////////////////////////////////////////////////////////////
     REGISTER_TEST_IGNORED(GUITest_common_scenarios_workflow_name_filter::test_0001,"can not set focus to name filter line edit");
+    REGISTER_TEST_IGNORED(GUITest_common_scenarios_workflow_name_filter::test_0003,"can not set focus to name filter line edit");
 
 /////////////////////////////////////////////////////////////////////////
 // Common scenarios/Workflow designer/Scripting
