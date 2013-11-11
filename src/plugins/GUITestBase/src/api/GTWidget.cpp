@@ -86,6 +86,22 @@ QWidget* GTWidget::findWidget(U2OpStatus &os, const QString &widgetName, QWidget
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "findWidget"
+void GTWidget::getAllWidgetsInfo(U2OpStatus &os, QWidget *parent){
+    if(parent == NULL){
+        parent = qobject_cast<QWidget*>(AppContext::getMainWindow()->getQMainWindow());
+    }
+
+    QList<QWidget*> list= parent->findChildren<QWidget*>();
+    QString actStr;
+
+    foreach(QWidget* act, list){
+        actStr.append(act->objectName()+ "  " + act->metaObject()->className() + "\n");
+    }
+    CHECK_SET_ERR(false, actStr);
+}
+#undef GT_METHOD_NAME
+
 #undef GT_CLASS_NAME
 
 } //namespace

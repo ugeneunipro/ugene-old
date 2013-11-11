@@ -174,6 +174,8 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/api/GTGraphicsItem.h \
     src/runnables/ugene/plugins/external_tools/TCoffeeDailogFiller.h \
     src/runnables/ugene/plugins/annotator/FindAnnotationCollocationsDialogFiller.h \
+    src/runnables/ugene/plugins/workflow_designer/workflowmetadialogFiller.h \
+    src/runnables/ugene/plugins/workflow_designer/CreateElementWithScriptDialogFiller.h \
     src/runnables/ugene/plugins/workflow_designer/WorkflowMetadialogFiller.h
 
 SOURCES +=  src/GUITestBasePlugin.cpp \
@@ -354,4 +356,6 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/api/GTGraphicsItem.cpp \
     src/runnables/ugene/plugins/external_tools/TCoffeeDailogFiller.cpp \
     src/runnables/ugene/plugins/annotator/FindAnnotationCollocationsDialogFiller.cpp \
-    src/runnables/ugene/plugins/workflow_designer/WorkflowMetadialogFiller.cpp
+    src/runnables/ugene/plugins/workflow_designer/workflowmetadialogFiller.cpp \
+    src/runnables/ugene/plugins/workflow_designer/CreateElementWithScriptDialogFiller.cpp
+

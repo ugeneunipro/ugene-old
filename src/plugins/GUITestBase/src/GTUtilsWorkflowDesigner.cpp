@@ -91,6 +91,30 @@ QTreeWidgetItem* GTUtilsWorkflowDesigner::findTreeItem(U2OpStatus &os,QString it
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "getVisibleSamples"
+QList<QTreeWidgetItem*> GTUtilsWorkflowDesigner::getVisibleSamples(U2OpStatus &os){
+    QTreeWidget* w=qobject_cast<QTreeWidget*>(GTWidget::findWidget(os,"samples"));
+    GT_CHECK_RESULT(w!=NULL,"WorkflowPaletteElements is null", QList<QTreeWidgetItem*>());
+
+    QList<QTreeWidgetItem*> outerList = w->findItems("",Qt::MatchContains);
+    QList<QTreeWidgetItem*> resultList;
+    for (int i=0;i<outerList.count();i++){
+        QList<QTreeWidgetItem*> innerList;
+
+        for(int j=0;j<outerList.value(i)->childCount();j++ ){
+           innerList.append(outerList.value(i)->child(j));
+        }
+
+        foreach(QTreeWidgetItem* item, innerList){
+            if(!item->isHidden()){
+                resultList.append(item);
+            }
+        }
+    }
+    return resultList;
+}
+#undef GT_METHOD_NAME
+
 #define GT_METHOD_NAME "addAlgorithm"
 void GTUtilsWorkflowDesigner::addAlgorithm(U2OpStatus &os, QString algName){
     expandTabs(os);
@@ -393,10 +417,33 @@ void GTUtilsWorkflowDesigner::setParameter(U2OpStatus &os, QString parameter, QV
         GTLineEdit::setText(os, line, lineVal);
     }
     }
-    /*foreach(QObject* o, table->children()){
-        s.append(o->metaObject()->className()).append("\n");
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "setParameterScripting"
+void GTUtilsWorkflowDesigner::setParameterScripting(U2OpStatus &os, QString parameter, QString scriptMode){
+    QTableView* table = qobject_cast<QTableView*>(GTWidget::findWidget(os,"table"));
+    CHECK_SET_ERR(table,"tableView not found");
+
+    //FIND CELL
+    QAbstractItemModel* model = table->model();
+    int iMax = model->rowCount();
+    int row = -1;
+    for(int i = 0; i<iMax; i++){
+        QString s = model->data(model->index(i,0)).toString();
+        if (s.contains(parameter,Qt::CaseInsensitive))
+            row = i;
     }
-    GT_CHECK(false, s);*/
+    GT_CHECK(row != -1, "parameter not found");
+    table->scrollTo(model->index(row,1));
+    GTMouseDriver::moveTo(os,GTTableView::getCellPosition(os,table,2,row));
+    GTMouseDriver::click(os);
+    GTGlobals::sleep(500);
+
+    //SET VALUE
+    QComboBox* box = qobject_cast<QComboBox*>(table->findChild<QComboBox*>());
+    GT_CHECK(box, "QComboBox not found. Scripting might be unavaluable for this parameter");
+    GTComboBox::setIndexWithText(os, box, scriptMode);
 }
 #undef GT_METHOD_NAME
 

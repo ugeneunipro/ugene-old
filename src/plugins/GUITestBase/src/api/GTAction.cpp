@@ -60,6 +60,31 @@ QAbstractButton* GTAction::button(U2OpStatus &os, const QString &actionName, QOb
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "button"
+QAbstractButton* GTAction::button(U2OpStatus &os, const QAction* a, QObject *parent) {
+
+    GT_CHECK_RESULT(a != NULL, "action is NULL", NULL);
+
+    QList<QWidget*> associated = a->associatedWidgets();
+    foreach(QWidget* w, associated) {
+        QAbstractButton *tb = qobject_cast<QAbstractButton*>(w);
+        if (tb) {
+            if (parent) {
+                QList<QToolButton*> childButtons = parent->findChildren<QToolButton*>(); // da. daa.
+                if (childButtons.contains(dynamic_cast<QToolButton*>(tb))) {
+                    return tb;
+                }
+            }
+            else {
+                return tb;
+            }
+        }
+    }
+
+    return NULL;
+}
+#undef GT_METHOD_NAME
+
 #define GT_METHOD_NAME "getAction"
 QAction* GTAction::findAction(U2OpStatus &os, const QString &actionName, QObject *parent) {
 
@@ -69,6 +94,28 @@ QAction* GTAction::findAction(U2OpStatus &os, const QString &actionName, QObject
     QAction* a = parent->findChild<QAction*>(actionName);
 
     return a;
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "findActionByText"
+QAction* GTAction::findActionByText(U2OpStatus &os, const QString &text, QObject *parent) {
+
+    if (parent == NULL) {
+        parent = AppContext::getMainWindow()->getQMainWindow();
+    }
+    QList<QAction*> list = parent->findChildren<QAction*>();
+    QList<QAction*> resultList;
+
+    foreach(QAction* act, list){
+        if(act->text()==text){
+            resultList<<act;
+        }
+    }
+
+    GT_CHECK_RESULT(resultList.count()!=0,"action not found", NULL);
+    GT_CHECK_RESULT(resultList.count()<2, QString("There are %1 actions with this text").arg(resultList.count()), NULL);
+
+    return resultList.takeFirst();
 }
 #undef GT_METHOD_NAME
 

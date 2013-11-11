@@ -32,7 +32,11 @@ public:
     // returns first QAbstractButton associated with an action with a given name
     static QAbstractButton* button(U2OpStatus &os, const QString &actionName, QObject *parent = NULL);
 
+    static QAbstractButton* button(U2OpStatus &os, const QAction* a, QObject *parent = NULL);
+
     static QAction* findAction(U2OpStatus &os, const QString &actionName, QObject *parent = NULL);
+
+    static QAction* findActionByText(U2OpStatus &os, const QString &text, QObject *parent = NULL);
 };
 
 } //namespace

@@ -42,6 +42,9 @@ public:
     //returns item form samples tab
     static QTreeWidgetItem* findSamplesTreeItem(U2OpStatus &os, QString itemName);
 
+    //reterns item from samples or algorithms tab
+    static QList<QTreeWidgetItem*> getVisibleSamples(U2OpStatus &os);
+
     //adds alogritm with worker with name algName to workflow scene
     static void addAlgorithm(U2OpStatus &os, QString algName);
 
@@ -73,7 +76,10 @@ public:
     //sets input folder with path "filePath" to dataset
     static void setDatasetInputFolder(U2OpStatus &os, QString filePath);
 
+    //sets oneparameter worker parameter
     static void setParameter(U2OpStatus& os, QString parameter, QVariant value, valueType type);
+
+    static void setParameterScripting(U2OpStatus& os, QString parameter, QString scriptMode);
 
     //returns number of items in error list which contain "error"
     static int checkErrorList(U2OpStatus &os, QString error);

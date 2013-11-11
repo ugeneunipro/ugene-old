@@ -53,7 +53,7 @@
 #include "../../workflow_designer/src/WorkflowViewItems.h"
 #include <U2Lang/WorkflowSettings.h>
 
-
+#include "runnables/ugene/plugins/workflow_designer/CreateElementWithScriptDialogFiller.h"
 namespace U2 {
 
 //8 - text
@@ -64,21 +64,29 @@ namespace U2 {
 
 namespace GUITest_common_scenarios_workflow_designer {
 GUI_TEST_CLASS_DEFINITION(test_0001){
-    QMenu *menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
-    GTMenu::clickMenuItem(os, menu, QStringList() << "Workflow Designer");
 
-    GTUtilsWorkflowDesigner::addSample(os, "call variants");
-
-    GTMouseDriver::moveTo( os, GTUtilsWorkflowDesigner::getItemCenter( os, "call variants" ) );
-    GTMouseDriver::click( os );
-
-    GTUtilsWorkflowDesigner::setParameter(os, "List of sample", "olololo", GTUtilsWorkflowDesigner::textValue);
-
- /*   GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
+    //GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
     //GTUtilsDialog::waitForDialog(os,new RPackageDialorFiller(os));
     QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
+    GTMenu::clickMenuItem(os, menu, QStringList() << "Workflow Designer");
+    GTGlobals::sleep(500);
 
-    WizardFiller::pairValList list;
+    GTUtilsWorkflowDesigner::addAlgorithm(os, "Call Variants");
+    GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "Call Variants"));
+    GTMouseDriver::click(os);
+
+
+    GTUtilsDialog::waitForDialog(os, new ScriptEditorDialogFiller(os, "ololo", "trololo"));
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<"Show scripting options"));
+    GTWidget::click(os, GTAction::button(os, GTAction::findActionByText(os, "Scripting mode")));
+
+    GTUtilsWorkflowDesigner::setParameterScripting(os, "Gap size", "user");
+
+//    QAbstractButton* edit = GTAction::button(os, GTAction::findActionByText(os, "Edit script of the element..."));
+//    GTWidget::click(os, edit);
+
+    /*WizardFiller::pairValList list;
     list.append(WizardFiller::pairValLabel("bowtie version",new WizardFiller::ComboBoxValue(0)));
     list.append(WizardFiller::pairValLabel("bowtie index directory", new WizardFiller::lineEditValue
                                            (testDir + "_common_data/NIAID_pipelines/tuxedo_pipeline/data/index",true)));
@@ -95,7 +103,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001){
                                                            testDir + "_common_data/NIAID_pipelines/tuxedo_pipeline/data","wbc_aln.fastq",list));
 
 
-    GTMenu::clickMenuItem(os, menu, QStringList() << "Workflow Designer");
+
 
     GTUtilsWorkflowDesigner::addSample(os,"tuxedo tools");
 

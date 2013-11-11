@@ -36,6 +36,9 @@ public:
 
     // finds widget with the given object name using given FindOptions. Parent widget is QMainWindow, if not set
     static QWidget *findWidget(U2OpStatus &os, const QString &widgetName, QWidget *parentWidget = NULL, const GTGlobals::FindOptions& = GTGlobals::FindOptions());
+
+    //this method writes info about all widgets to opStatus
+    static void getAllWidgetsInfo(U2OpStatus &os, QWidget* parent=NULL);
 };
 
 } //namespace
