@@ -1509,6 +1509,7 @@ void WorkflowView::sl_estimationTaskFinished() {
     CHECK(!t->hasError(), );
     QMessageBox *d = EstimationReporter::createTimeMessage(t->result());
     QPushButton *rb = d->addButton(QObject::tr("Run workflow"), QMessageBox::AcceptRole);
+    rb->setObjectName("Run workflow");
     connect(rb, SIGNAL(clicked()), SLOT(sl_launch()));
     d->setParent(this);
     d->setWindowModality(Qt::ApplicationModal);

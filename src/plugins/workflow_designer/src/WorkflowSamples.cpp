@@ -317,6 +317,7 @@ NameFilterLayout::NameFilterLayout(QWidget *parent)
     setContentsMargins(0, 0, 0, 0);
     setSpacing(6);
     nameEdit = new QLineEdit();
+    nameEdit->setObjectName("nameFilterLineEdit");
     nameEdit->setPlaceholderText(tr("Type to filter by name..."));
 
     QLabel *label = new QLabel(tr("Name filter:"));

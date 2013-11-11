@@ -59,6 +59,7 @@
 #include "tests/common_scenarios/Query_Designer/GTTestsQuerryDesigner.h"
 #include "tests/common_scenarios/workflow_designer/GTTestsWorkflowDesigner.h"
 #include "tests/common_scenarios/workflow_designer/estimating/GTTestsWorkflowEstimating.h"
+#include "tests/common_scenarios/workflow_designer/name_filter/GTTestsWorkflowNameFilter.h"
 #include "tests/common_scenarios/workflow_designer/parameters_validation/GTTestsWorkflowParemeterValidation.h"
 #include "tests/common_scenarios/workflow_designer/scripting/GTTestsWorkflowScripting.h"
 #include "tests/common_scenarios/tree_viewer/GTTestsCommonScenariousTreeviewer.h"
@@ -934,6 +935,11 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 /////////////////////////////////////////////////////////////////////////
     REGISTER_TEST(GUITest_common_scenarios_workflow_estimating::test_0001);
     REGISTER_TEST(GUITest_common_scenarios_workflow_estimating::test_0002);
+
+/////////////////////////////////////////////////////////////////////////
+// Common scenarios/Workflow designer/Name filter
+/////////////////////////////////////////////////////////////////////////
+    REGISTER_TEST_IGNORED(GUITest_common_scenarios_workflow_name_filter::test_0001,"can not set focus to name filter line edit");
 
 /////////////////////////////////////////////////////////////////////////
 // Common scenarios/Workflow designer/Scripting

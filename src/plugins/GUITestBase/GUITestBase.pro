@@ -132,6 +132,7 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/tests/common_scenarios/Query_Designer/GTTestsQuerryDesigner.h \
             src/tests/common_scenarios/workflow_designer/GTTestsWorkflowDesigner.h \
             src/tests/common_scenarios/workflow_designer/estimating/GTTestsWorkflowEstimating.h \
+            src/tests/common_scenarios/workflow_designer/name_filter/GTTestsWorkflowNameFilter.h \
             src/tests/common_scenarios/workflow_designer/parameters_validation/GTTestsWorkflowParemeterValidation.h \
             src/tests/common_scenarios/workflow_designer/scripting/GTTestsWorkflowScripting.h \
             src/tests/common_scenarios/tree_viewer/GTTestsCommonScenariousTreeviewer.h \
@@ -308,6 +309,7 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/tests/common_scenarios/Query_Designer/GTTestsQuerryDesigner.cpp \
             src/tests/common_scenarios/workflow_designer/GTTestsWorkflowDesigner.cpp \
             src/tests/common_scenarios/workflow_designer/estimating/GTTestsWorkflowEstimating.cpp \
+            src/tests/common_scenarios/workflow_designer/name_filter/GTTestsWorkflowNameFilter.cpp \
             src/tests/common_scenarios/workflow_designer/parameters_validation/GTTestsWorkflowParemeterValidation.cpp \
             src/tests/common_scenarios/workflow_designer/scripting/GTTestsWorkflowScripting.cpp \
             src/tests/common_scenarios/tree_viewer/GTTestsCommonScenariousTreeviewer.cpp \
