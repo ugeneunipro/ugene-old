@@ -637,6 +637,7 @@ void WorkflowView::createActions() {
     connect(newAction, SIGNAL(triggered()), SLOT(sl_newScene()));
 
     saveAction = new QAction(tr("&Save workflow"), this);
+    saveAction->setObjectName("Save workflow");
     saveAction->setIcon(QIcon(":workflow_designer/images/filesave.png"));
     saveAction->setShortcut(QKeySequence::Save);
     saveAction->setShortcutContext(Qt::WindowShortcut);
@@ -790,10 +791,12 @@ void WorkflowView::createActions() {
     connect(unlockAction, SIGNAL(toggled(bool)), SLOT(sl_toggleLock(bool)));
 
     createScriptAction = new QAction(tr("Create element with script..."), this);
+    createScriptAction->setObjectName("createScriptAction");
     createScriptAction->setIcon(QIcon(":workflow_designer/images/script.png"));
     connect(createScriptAction, SIGNAL(triggered()), SLOT(sl_createScript()));
 
     editScriptAction = new QAction(tr("Edit script of the element..."),this);
+    editScriptAction->setObjectName("editScriptAction");
     editScriptAction->setIcon(QIcon(":workflow_designer/images/script_edit.png"));
     editScriptAction->setEnabled(false); // because user need to select actor with script to enable it
     connect(editScriptAction, SIGNAL(triggered()), SLOT(sl_editScript()));

@@ -3140,10 +3140,14 @@ GUI_TEST_CLASS_DEFINITION( test_2309 ) {
     GTWidget::click(os, tree);
     GTGlobals::sleep(500);
 
+    QStringList initialNames = GTUtilsMSAEditorSequenceArea::getNameList(os);
     QAbstractButton *refresh= GTAction::button(os,"Refresh tree");
     CHECK(NULL != refresh, );
     GTWidget::click(os, refresh);
     GTGlobals::sleep(500);
+
+    QStringList newNames = GTUtilsMSAEditorSequenceArea::getNameList(os);
+    CHECK_SET_ERR(newNames == initialNames, "Wrong sequences order");
 }
 
 GUI_TEST_CLASS_DEFINITION( test_2318 ) {
