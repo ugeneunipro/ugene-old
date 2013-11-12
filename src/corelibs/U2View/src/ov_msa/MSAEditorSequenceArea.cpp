@@ -701,12 +701,12 @@ void MSAEditorSequenceArea::validateRanges() {
 }
 
 void MSAEditorSequenceArea::sl_onHScrollMoved(int pos) {
-    assert(pos >=0 && pos <= editor->getAlignmentLen() - getNumVisibleBases(false));    
+    assert(pos >=0 && pos <= editor->getAlignmentLen() - getNumVisibleBases(false));
     setFirstVisibleBase(pos);
 }
 
 void MSAEditorSequenceArea::sl_onVScrollMoved(int seq) {
-    assert(seq >=0 && seq <= editor->getNumSequences() - getNumVisibleSequences(false));    
+    assert(seq >=0 && seq <= editor->getNumSequences() - getNumVisibleSequences(false));
     setFirstVisibleSequence(seq);
 }
 
@@ -2041,6 +2041,12 @@ bool MSAEditorSequenceArea::shiftSelectedRegion( int shift ) {
             const MSAEditorSelection newSelection( selectionBackup.x( ) + resultShift, 
                 selectionBackup.y( ), selectionBackup.width( ), selectionBackup.height( ) );
             setSelection( newSelection );
+            if ( ( selectionBackup.getRect( ).right( ) == getLastVisibleBase( false )
+                && resultShift > 0 )
+                || ( selectionBackup.x( ) == getFirstVisibleBase( ) && 0 > resultShift ) )
+            {
+                setFirstVisibleBase( startPos + resultShift );
+            }
             return true;
         } else {
             return false;
