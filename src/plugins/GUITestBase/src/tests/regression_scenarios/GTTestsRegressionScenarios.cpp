@@ -78,6 +78,7 @@
 #include "runnables/ugene/ugeneui/NCBISearchDialogFiller.h"
 #include "runnables/ugene/ugeneui/SelectDocumentFormatDialogFiller.h"
 #include "runnables/ugene/ugeneui/SequenceReadingModeSelectorDialogFiller.h"
+#include "runnables/ugene/ugeneui/SaveProjectDialogFiller.h"
 
 #include <U2Core/AppContext.h>
 #include <U2Core/ExternalToolRegistry.h>
@@ -674,7 +675,7 @@ GUI_TEST_CLASS_DEFINITION(test_1107){//commit GUIInitionalChecks
     GTFileDialog::openFile(os, testDir+"_common_data/scenarios/msa/", "ma2_gapped.aln");
 //2) Menu File->Close Project
 //3) Press No in the Save current project dialog
-    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::No));
+    GTUtilsDialog::waitForDialog(os, new SaveProjectDialogFiller(os, QDialogButtonBox::No));
     GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), ACTION_PROJECTSUPPORT__CLOSE_PROJECT);
 //Expected state: UGENE not crashes
 }
@@ -788,10 +789,9 @@ GUI_TEST_CLASS_DEFINITION(test_1165){
 GUI_TEST_CLASS_DEFINITION(test_1189){
 //1) Open samples/FASTA/human_T1.fa
     GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
-//2) Press Ctrl+F, click "Show more options"
+//2) Press Ctrl+F
     GTKeyboardDriver::keyClick(os, 'f', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep(500);
-    GTWidget::click(os, GTWidget::findWidget(os, "lblShowMoreLess"));
 //3) Select any region of the sequence
     GTUtilsDialog::waitForDialog(os, new selectSequenceRegionDialogFiller(os,100,200));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<"Select"<< "Sequence region"));
@@ -812,10 +812,9 @@ GUI_TEST_CLASS_DEFINITION(test_1189){
 GUI_TEST_CLASS_DEFINITION(test_1189_1){
 //1) Open samples/FASTA/human_T1.fa
     GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
-//2) Press Ctrl+F, click "Show more options"
+//2) Press Ctrl+F
     GTKeyboardDriver::keyClick(os, 'f', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep(500);
-    GTWidget::click(os, GTWidget::findWidget(os, "lblShowMoreLess"));
 //3) Select any region of the sequence
     GTWidget::click(os, GTWidget::findWidget(os,"ADV_single_sequence_widget_0"));
     QPoint p;
@@ -968,9 +967,9 @@ GUI_TEST_CLASS_DEFINITION(test_1255){
     GTFileDialog::openFile(os, dataDir+"samples/FASTA/", "human_T1.fa");
 //2. Open Find Pattern on the Option Panel. Enter a vaild pattern
     GTKeyboardDriver::keyClick(os, 'f', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(200);
     GTKeyboardDriver::keySequence(os, "TA");
 //3. Input invalid annotation name (empty, too long, illegal)
-    GTWidget::click(os, GTWidget::findWidget(os, "lblShowMoreLess"));
     GTWidget::click(os, GTWidget::findWidget(os, "titleWidget"));
     for (int i=0; i<15; i++){
         GTKeyboardDriver::keyClick(os,GTKeyboardDriver::key["down"]);
@@ -1222,7 +1221,7 @@ GUI_TEST_CLASS_DEFINITION(test_1708){
 
 GUI_TEST_CLASS_DEFINITION(test_1720){
 //1. Use menu {File->Access remote database...}
-    GTUtilsDialog::waitForDialog(os, new RemoteDBDialogFiller(os, "D11266", 0));
+    GTUtilsDialog::waitForDialog(os, new RemoteDBDialogFiller(os, 0));
     GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE),ACTION_PROJECTSUPPORT__ACCESS_REMOTE_DB, GTGlobals::UseKey);
 
     GTLogTracer l;
@@ -1230,7 +1229,7 @@ GUI_TEST_CLASS_DEFINITION(test_1720){
 //2. Fill field "Resource ID" with value D11266. Click "OK"
 
 //3. Use menu {File->Access remote database...}
-    GTUtilsDialog::waitForDialog(os, new RemoteDBDialogFiller(os, "D11266", 0));
+    GTUtilsDialog::waitForDialog(os, new RemoteDBDialogFiller(os, 0));
     GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE),ACTION_PROJECTSUPPORT__ACCESS_REMOTE_DB, GTGlobals::UseKey);
 
     GTGlobals::sleep(8000);
@@ -1247,7 +1246,7 @@ GUI_TEST_CLASS_DEFINITION( test_1813 )
     //      Resource ID: I7G8J3
     //      Database: UniProt (DAS)
     // 3) Press "OK"
-    GTUtilsDialog::waitForDialog(os, new RemoteDBDialogFiller(os, "I7G8J3", 7));
+    GTUtilsDialog::waitForDialog(os, new RemoteDBDialogFiller(os, 7));
     GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE),ACTION_PROJECTSUPPORT__ACCESS_REMOTE_DB, GTGlobals::UseKey);
 
     // Expected: the sequence view with I7G8J3 sequence is opened. UGENE does not crash.
@@ -1840,7 +1839,7 @@ GUI_TEST_CLASS_DEFINITION( test_2026 ) {
     GTGlobals::sleep(3000);
 
     // Expected state: 5 sequences are selected
-    CHECK_SET_ERR( 6 == GTUtilsMSAEditorSequenceArea::getSelectedSequencesNum(os),
+    CHECK_SET_ERR( 5 == GTUtilsMSAEditorSequenceArea::getSelectedSequencesNum(os),
         "Unexpected number of selected sequences");
     CHECK_SET_ERR( GTUtilsMSAEditorSequenceArea::isSequenceSelected(os, QString("Montana_montana")),
         "Expected sequence is not selected");
@@ -1932,7 +1931,7 @@ GUI_TEST_CLASS_DEFINITION( test_2032 ) {
 
 GUI_TEST_CLASS_DEFINITION( test_2070 ){
     GTLogTracer lt;
-    GTUtilsDialog::waitForDialog(os, new RemoteDBDialogFiller(os, "Q9IGQ6", 7));
+    GTUtilsDialog::waitForDialog(os, new RemoteDBDialogFiller(os, 7));
     GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE),ACTION_PROJECTSUPPORT__ACCESS_REMOTE_DB, GTGlobals::UseKey);
     GTGlobals::sleep();
 
@@ -2051,9 +2050,7 @@ GUI_TEST_CLASS_DEFINITION( test_2122 ){
     GTWidget::click(os,GTWidget::findWidget(os, "OP_DAS"));
     GTGlobals::sleep(500);
 //    3. Click "show more options"
-    GTWidget::click(os,GTWidget::findWidget(os,"lblShowMoreLess"));
-    GTMouseDriver::moveTo(os,QPoint(GTMouseDriver::getMousePosition().x()-20,GTMouseDriver::getMousePosition().y()));
-    GTMouseDriver::click(os);
+    GTWidget::click(os,GTWidget::findWidget(os,"lblShowMoreLess"),Qt::LeftButton,QPoint(10,10));
 //    Expected state:Algorithm settings, DAS features sourses, Annotation settings submenus appeared
     QWidget* settingsContainerWidget = GTWidget::findWidget(os,"settingsContainerWidget");
     QWidget* sourcesContainerWidget = GTWidget::findWidget(os,"sourcesContainerWidget");
@@ -2073,7 +2070,7 @@ GUI_TEST_CLASS_DEFINITION( test_2124 ) {
     GTUtilsDialog::waitForDialog( os, new PopupChooser( os, QStringList( ) << "Colors"
         << "Custom schemes" << "Create new color scheme" ) );
     GTUtilsDialog::waitForDialog( os, new NewColorSchemeCreator( os, colorSchemeName,
-        NewColorSchemeCreator::nucl ) );
+        NewColorSchemeCreator::amino ) );
     GTMouseDriver::click( os, Qt::RightButton );
 
     // 3. Create a new color scheme for the amino alphabet.
@@ -2455,7 +2452,7 @@ GUI_TEST_CLASS_DEFINITION(test_1986){
 
 //9. Press "OK"
 
-    GTMouseDriver::moveTo(os,GTUtilsProjectTreeView::getItemCenter(os, "JN561323.fasta"));
+    GTMouseDriver::moveTo(os,GTUtilsProjectTreeView::getItemCenter(os, "XR_325540.fasta"));
 
 //Expected state: the chosen sequence has been downloaded, saved in FASTA format and displayed in sequence view
 }

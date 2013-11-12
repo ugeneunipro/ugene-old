@@ -258,7 +258,8 @@ GUI_TEST_CLASS_DEFINITION(test_0004) {
     GTMenu::clickMenuItem(os, mainMenu, QStringList() << "Align to reference" << "Align short reads");
     CHECK_OP(os, );
 
-    ImportBAMFileFiller* importBAMFileFiller = new ImportBAMFileFiller(os);
+    ImportBAMFileFiller* importBAMFileFiller = new ImportBAMFileFiller(os,
+                    testDir + "_common_data/scenarios/sandbox/human_T1_cutted.sam.ugenedb");
     CHECK_OP(os, );
     GTUtilsDialog::waitForDialog(os, importBAMFileFiller);
     CHECK_OP(os, );

@@ -34,6 +34,7 @@
 #include "runnables/qt/PopupChooser.h"
 #include "runnables/ugene/plugins/dna_export/ExportSequencesDialogFiller.h"
 #include "runnables/ugene/ugeneui/SequenceReadingModeSelectorDialogFiller.h"
+#include "runnables/qt/MessageBoxFiller.h"
 #include <U2View/DetView.h>
 #include <U2Core/AppContext.h>
 #include <U2View/ADVConstants.h>
@@ -482,7 +483,9 @@ GUI_TEST_CLASS_DEFINITION(test_0018) {
     CHECK_SET_ERR(2249 == length, QString("Sequence length mismatch. Expected: %1. Actual: %2").arg(2249).arg(length));
 
     QString mergedFileName = testDir + "_common_data/fasta/merged_document.gb";
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::No));
     QFile::remove(mergedFileName);
+    GTGlobals::sleep(1000);
 }
 
 } // namespace GUITest_common_scenarios_sequence_view

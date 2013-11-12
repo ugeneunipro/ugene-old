@@ -44,6 +44,13 @@ void ImportBAMFileFiller::run() {
         GTUtilsDialog::waitForDialog(os, ob);
         GTWidget::click(os, GTWidget::findWidget(os,"refUrlButton",dialog));
         }
+
+    if (!destinationUrl.isEmpty()){
+        QLineEdit* destinationUrlEdit = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "destinationUrlEdit", dialog));
+        GT_CHECK(destinationUrlEdit, "destinationUrlEdit not found");
+        GTLineEdit::setText(os, destinationUrlEdit, destinationUrl);
+    }
+
     GTWidget::click(os, GTWidget::findWidget(os, "okButton", dialog));
     }
 

@@ -45,26 +45,26 @@ void NCBISearchDialogFiller::run(){
     GTLineEdit::setText(os, queryEditLE, query);
 
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
-    GTGlobals::sleep(3000);
+    GTGlobals::sleep(5000);
 
 
     if (resultLimit!=-1){
         QSpinBox* resultLimitBox = qobject_cast<QSpinBox*>(GTWidget::findWidget(os, "resultLimitBox", dialog));
         GTSpinBox::setValue(os, resultLimitBox, resultLimit, GTGlobals::UseKeyBoard);
         GTWidget::click(os, GTWidget::findWidget(os, "searchButton"));
-        GTGlobals::sleep(3000);
+        GTGlobals::sleep(5000);
         int i = getResultNumber();
         GT_CHECK(i==resultLimit,QString("unexpected number of results. Expected: %1, found: %2").arg(resultLimit).arg(i))
     }
 
     if (doubleEnter) {
         GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
-        GTGlobals::sleep(3000);
+        GTGlobals::sleep(5000);
         GTWidget::click(os, GTWidget::findWidget(os, "closeButton"));
         return;
     }
 
-    GTUtilsDialog::waitForDialog(os, new RemoteDBDialogFiller(os,"JN561323",0,false,QString(),GTGlobals::UseMouse,1));
+    GTUtilsDialog::waitForDialog(os, new RemoteDBDialogFiller(os,0,false,QString(),GTGlobals::UseMouse,1));
     QTreeWidget* w = dialog->findChild<QTreeWidget*>("treeWidget");
     GT_CHECK(w, "treeWidget not found");
 

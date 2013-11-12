@@ -47,7 +47,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
     // 3. Click "Import".
     //    Expected: the import task is started and finished with the error that PDB reference is not supported.
     GTLogTracer l;
-    GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os, dataDir + "samples/PDB", "1CF7.PDB"));
+    GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os, "", dataDir + "samples/PDB", "1CF7.PDB"));
     GTFileDialog::openFile(os, dataDir + "samples/Assembly", "chrM.sam");
     CHECK_SET_ERR(l.hasError() == true, "There is no error message in log");
 }
@@ -62,7 +62,7 @@ GUI_TEST_CLASS_DEFINITION(test_0003) {
     // 3. Click "Import".
     // Expected: the import task is started and finished with the error that reference format is unknown.
     GTLogTracer l;
-    GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os, testDir + "_common_data/bam/", "small.bam.sorted.bam.bai"));
+    GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os, "", testDir + "_common_data/bam/", "small.bam.sorted.bam.bai"));
     GTFileDialog::openFile(os, testDir + "_common_data/sam/", "out.sam");
     CHECK_SET_ERR(l.hasError() == true, "There is no error message in log");
 }
@@ -79,7 +79,7 @@ GUI_TEST_CLASS_DEFINITION(test_0004) {
     //    1) Expected: the import task is started and finished successfully.
     //    2) Assembly browser is opened with the imported assembly.
     GTLogTracer l;
-    GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os, dataDir + "samples/Assembly", "chrM.fa"));
+    GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os, "", dataDir + "samples/Assembly", "chrM.fa"));
     GTFileDialog::openFile(os, dataDir + "samples/Assembly", "chrM.sam");
     CHECK_SET_ERR(!l.hasError(), "Open 'samples/Assembly/chrM.sam' finished with error");
 }
