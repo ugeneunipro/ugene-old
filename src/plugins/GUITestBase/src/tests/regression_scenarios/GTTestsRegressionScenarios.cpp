@@ -3235,12 +3235,13 @@ GUI_TEST_CLASS_DEFINITION( test_2377 ) {
 
     GTMouseDriver::moveTo( os, GTUtilsWorkflowDesigner::getItemCenter( os, assemblyReaderName ) );
     GTMouseDriver::click( os );
-    GTUtilsWorkflowDesigner::setDatasetInputFile( os, testDir + "_common_data/sam", "crash.sam" );
+    GTUtilsWorkflowDesigner::setDatasetInputFile( os, testDir + "_common_data/sam",
+        "broken_without_reads.sam" );
 
     GTMouseDriver::moveTo( os, GTUtilsWorkflowDesigner::getItemCenter( os, assemblyWriterName ) );
     GTMouseDriver::click( os );
-    GTUtilsWorkflowDesigner::setParameter( os, "Output file",
-        testDir + "_common_data/scenarios/sandbox", GTUtilsWorkflowDesigner::textValue );
+    GTUtilsWorkflowDesigner::setParameter( os, "Output file", "test_out",
+        GTUtilsWorkflowDesigner::textValue );
 
     GTWidget::click( os, GTAction::button( os, "Run workflow" ) );
 
