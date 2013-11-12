@@ -368,7 +368,7 @@ SplitterHeaderWidget::SplitterHeaderWidget(BioStruct3DSplitter* sp) : splitter(s
 
 
     // Menu toolbar
-    HBar* toolbar = new HBar(this);
+    toolbar = new HBar(this);
     toolbar->layout()->setSpacing(10);
     toolbar->layout()->setMargin(0);
     
@@ -399,69 +399,65 @@ SplitterHeaderWidget::SplitterHeaderWidget(BioStruct3DSplitter* sp) : splitter(s
     activeWidgetBox = new QComboBox(this);
     toolbar->addWidget(activeWidgetBox);
     
-    restoreDefaultsButton = new QToolButton(this);
-    restoreDefaultsButton->setToolTip(tr("Restore Default View"));
-    restoreDefaultsButton->setIcon(QIcon(":biostruct3d_view/images/restore.png"));
-    restoreDefaultsButton->setFixedWidth(20);
-    toolbar->addWidget(restoreDefaultsButton);
-    connect(restoreDefaultsButton, SIGNAL(pressed()), this, SLOT(sl_restoreDefaults()));
-    
-    zoomInButton = new QToolButton(this);
-    zoomInButton->setToolTip(tr("Zoom In"));
-    zoomInButton->setIcon(QIcon(":core/images/zoom_in.png"));
-    zoomInButton->setFixedWidth(20);
-    toolbar->addWidget(zoomInButton);
-    connect(zoomInButton, SIGNAL(pressed()), this, SLOT(sl_zoomIn()));
+    restoreDefaultsAction = new QAction(this);
+    restoreDefaultsAction->setText(tr("Restore Default View"));
+    restoreDefaultsAction->setIcon(QIcon(":biostruct3d_view/images/restore.png"));
+    connect(restoreDefaultsAction, SIGNAL(triggered()), SLOT(sl_restoreDefaults()));
+    addToolbarAction(restoreDefaultsAction);
 
+    zoomInAction = new QAction(this);
+    zoomInAction->setText(tr("Zoom In"));
+    zoomInAction->setIcon(QIcon(":core/images/zoom_in.png"));
+    connect(zoomInAction, SIGNAL(triggered()), SLOT(sl_zoomIn()));
+    addToolbarAction(zoomInAction);
 
-    zoomOutButton = new QToolButton(this);
-    zoomOutButton->setIcon(QIcon(":core/images/zoom_out.png"));
-    zoomOutButton->setToolTip(tr("Zoom Out"));
-    zoomOutButton->setFixedWidth(20);
-    toolbar->addWidget(zoomOutButton);
-    connect(zoomOutButton, SIGNAL(pressed()), this, SLOT(sl_zoomOut()));
+    zoomOutAction = new QAction(this);
+    zoomOutAction->setIcon(QIcon(":core/images/zoom_out.png"));
+    zoomOutAction->setText(tr("Zoom Out"));
+    connect(zoomOutAction, SIGNAL(triggered()), SLOT(sl_zoomOut()));
+    addToolbarAction(zoomOutAction);
 
-    syncLockButton = new QToolButton(this);
-    syncLockButton->setIcon(QIcon(":biostruct3d_view/images/lock.png"));
-    syncLockButton->setToolTip(tr("Synchronize 3D Structure Views"));
-    syncLockButton->setFixedWidth(20);
-    syncLockButton->setCheckable(true);
-    toolbar->addWidget(syncLockButton);
-    connect(syncLockButton, SIGNAL(toggled(bool)), this, SLOT(sl_toggleSyncLock(bool)));
+    syncLockAction = new QAction(this);
+    syncLockAction->setIcon(QIcon(":biostruct3d_view/images/lock.png"));
+    syncLockAction->setText(tr("Synchronize 3D Structure Views"));
+    syncLockAction->setCheckable(true);
+    connect(syncLockAction, SIGNAL(triggered(bool)), SLOT(sl_toggleSyncLock(bool)));
+    addToolbarAction(syncLockAction);
     
-    displayMenuButton = new QToolButton(this);
-    displayMenuButton->setText(tr("Display"));
-    toolbar->addWidget(displayMenuButton);
-    connect(displayMenuButton, SIGNAL(pressed()), this, SLOT(sl_showDisplayMenu()));
-    
+    displayMenuAction = new QAction(this);
+    displayMenuAction->setText(tr("Display"));
+    connect(displayMenuAction, SIGNAL(triggered()), SLOT(sl_showDisplayMenu()));
+    addToolbarAction(displayMenuAction);
+
     if (webActionMap.count() != 0) {
-        webMenuButton = new QToolButton(this);
-        webMenuButton->setText(tr("Links"));
-        toolbar->addWidget(webMenuButton);
-        connect(webMenuButton, SIGNAL(pressed()), this, SLOT(sl_showWebMenu()));
+        webMenuAction = new QAction(this);
+        webMenuAction->setText(tr("Links"));
+        connect(webMenuAction, SIGNAL(triggered()), SLOT(sl_showWebMenu()));
+        addToolbarAction(webMenuAction);
     }
 
-    addModelButton = new QToolButton(this);
-    addModelButton->setText(tr("Add"));
-    toolbar->addWidget(addModelButton);
-    connect(addModelButton, SIGNAL(pressed()), this, SLOT(sl_addModel()));
+    addModelAction = new QAction(this);
+    addModelAction->setText(tr("Add"));
+    connect(addModelAction, SIGNAL(triggered()), SLOT(sl_addModel()));
+    addToolbarAction(addModelAction);
     
     // TODO: add settings functionality
+    // Note: do not use widgets on the toolbar, use actions instead
     //settingsMenuButton = new QToolButton(this);
     //settingsMenuButton->setText(tr("settings"));
     // toolbar->addWidget(settingsMenuButton);
-   
-    widgetStateMenuButton = new QToolButton(this);
-    widgetStateMenuButton->setIcon(QIcon(":core/images/adv_widget_menu.png"));
-    widgetStateMenuButton->setFixedWidth(20);
-    toolbar->addWidget(widgetStateMenuButton);
-    connect(widgetStateMenuButton, SIGNAL(pressed()), this, SLOT(sl_showStateMenu()));
 
+    widgetStateMenuAction = new QAction(this);
+    widgetStateMenuAction->setIcon(QIcon(":core/images/adv_widget_menu.png"));
+    widgetStateMenuAction->setText(tr("Toggle view"));
+    widgetStateMenuAction->setToolTip(tr("Toggle view"));
+    connect(widgetStateMenuAction, SIGNAL(triggered()), this, SLOT(sl_showStateMenu()));
+    addToolbarAction(widgetStateMenuAction);
 }
 
 void SplitterHeaderWidget::sl_showStateMenu()
 {
-    QPointer<QToolButton> widgetStateMenuButtonPtr(widgetStateMenuButton);
+    QPointer<QAbstractButton> widgetStateMenuButtonPtr(qobject_cast<QAbstractButton*>(toolbar->widgetForAction(widgetStateMenuAction)));
 
     QMenu m;
     
@@ -480,7 +476,7 @@ void SplitterHeaderWidget::sl_showStateMenu()
 
 void SplitterHeaderWidget::sl_showDisplayMenu()
 {
-    QPointer<QToolButton> displayMenuButtonPtr(displayMenuButton);
+    QPointer<QAbstractButton> displayMenuButtonPtr(qobject_cast<QAbstractButton*>(toolbar->widgetForAction(displayMenuAction)));
 
     BioStruct3DGLWidget* activeWidget = getActiveWidget(); 
     
@@ -506,24 +502,25 @@ void SplitterHeaderWidget::sl_zoomOut()
     w->zoom(ZOOM_DELTA);
 }
 
-void SplitterHeaderWidget::sl_showSettingsMenu()
-{
-    QPointer<QToolButton> settingsMenuButtonPtr(settingsMenuButton);
+// TODO: add settings functionality
+//void SplitterHeaderWidget::sl_showSettingsMenu()
+//{
+//    QPointer<QToolButton> settingsMenuButtonPtr(settingsMenuButton);
     
-    QMenu m;
+//    QMenu m;
     
-    const QList<QAction* > settingsMenuActions = splitter->getSettingsMenuActions();
-    foreach (QAction* action, settingsMenuActions) {
-        m.addAction(action);
-    }
-    m.exec(QCursor::pos());
+//    const QList<QAction* > settingsMenuActions = splitter->getSettingsMenuActions();
+//    foreach (QAction* action, settingsMenuActions) {
+//        m.addAction(action);
+//    }
+//    m.exec(QCursor::pos());
     
-    if (!settingsMenuButtonPtr.isNull()) { //if not self closed
-        settingsMenuButtonPtr->setDown(false);
-    }
+//    if (!settingsMenuButtonPtr.isNull()) { //if not self closed
+//        settingsMenuButtonPtr->setDown(false);
+//    }
 
 
-}
+//}
 
 void SplitterHeaderWidget::sl_restoreDefaults()
 {
@@ -589,16 +586,30 @@ BioStruct3DGLWidget* SplitterHeaderWidget::getActiveWidget()
     return qobject_cast<BioStruct3DGLWidget*>(frame->getGLWidget());
 }
 
+void SplitterHeaderWidget::addToolbarAction(QAction* action) {
+    if (!toolbar || !action) {
+        return;
+    }
+
+    toolbar->addAction(action);
+    QPointer<QAbstractButton> buttonPtr(qobject_cast<QAbstractButton*>(toolbar->widgetForAction(action)));
+    if (!buttonPtr.isNull()) {
+        buttonPtr->setObjectName(action->objectName());
+        if (!action->icon().isNull()) {
+            buttonPtr->setFixedWidth(20);
+        }
+    }
+}
+
 
 void SplitterHeaderWidget::enableToolbar() {
     activeWidgetBox->setEnabled(true);
-    restoreDefaultsButton->setEnabled(true);
-    zoomInButton->setEnabled(true);
-    zoomOutButton->setEnabled(true);
-    displayMenuButton->setEnabled(true);
-    widgetStateMenuButton->setEnabled(true);
-    syncLockButton->setEnabled(splitter->getGLFrameManager()->getGLFrames().count() > 1);
-
+    restoreDefaultsAction->setEnabled(true);
+    zoomInAction->setEnabled(true);
+    zoomOutAction->setEnabled(true);
+    displayMenuAction->setEnabled(true);
+    widgetStateMenuAction->setEnabled(true);
+    syncLockAction->setEnabled(splitter->getGLFrameManager()->getGLFrames().count() > 1);
 }
 
 
@@ -620,12 +631,12 @@ void SplitterHeaderWidget::updateToolbar() {
     int numVisibleWidgets = splitter->getNumVisibleWidgets();
         
     activeWidgetBox->setEnabled(true);
-    restoreDefaultsButton->setEnabled(true);
-    zoomInButton->setEnabled(true);
-    zoomOutButton->setEnabled(true);
-    syncLockButton->setEnabled(numVisibleWidgets > 1);
-    displayMenuButton->setEnabled(true);
-    widgetStateMenuButton->setEnabled(!splitter->getChildWidgets().isEmpty());
+    restoreDefaultsAction->setEnabled(true);
+    zoomInAction->setEnabled(true);
+    zoomOutAction->setEnabled(true);
+    syncLockAction->setEnabled(numVisibleWidgets > 1);
+    displayMenuAction->setEnabled(true);
+    widgetStateMenuAction->setEnabled(!splitter->getChildWidgets().isEmpty());
 }
 
 void SplitterHeaderWidget::sl_toggleBioStruct3DWidget( bool show )
@@ -648,7 +659,7 @@ void SplitterHeaderWidget::sl_toggleBioStruct3DWidget( bool show )
 
 void SplitterHeaderWidget::sl_addModel()
 {
-    QPointer<QToolButton> addModelButtonPtr(addModelButton);
+    QPointer<QAbstractButton> addModelButtonPtr(qobject_cast<QAbstractButton*>(toolbar->widgetForAction(addModelAction)));
     
     if (!addModelButtonPtr.isNull()) { //if not self closed
         addModelButtonPtr->setDown(false);
@@ -670,7 +681,7 @@ void SplitterHeaderWidget::sl_addModel()
 
 void SplitterHeaderWidget::sl_showWebMenu()
 {
-    QPointer<QToolButton> webMenuButtonPtr(webMenuButton);
+    QPointer<QAbstractButton> webMenuButtonPtr(qobject_cast<QAbstractButton*>(toolbar->widgetForAction(webMenuAction)));
     
     QMenu m;
     QString pdbId(getActiveWidget()->getBioStruct3D().pdbId);
@@ -818,4 +829,5 @@ Task::ReportResult AddModelToSplitterTask::report()
 
     return ReportResult_Finished;
 }
+
 } //namespace

@@ -161,7 +161,9 @@ void ADVSingleSequenceWidget::init() {
     if (seqCtx->getAminoTT() != NULL) {        
         QMenu* ttMenu = seqCtx->createTranslationsMenu();
         tbMenues.append(ttMenu);
-        addButtonWithActionToToolbar(ttMenu->menuAction(), hBar)->setPopupMode(QToolButton::InstantPopup);
+        QToolButton* button = addButtonWithActionToToolbar(ttMenu->menuAction(), hBar);
+        SAFE_POINT(button, QString("ToolButton for %1 is NULL").arg(ttMenu->menuAction()->objectName()), );
+        button->setPopupMode(QToolButton::InstantPopup);
         buttonTabOrederedNames->append(ttMenu->menuAction()->objectName());
         hBar->addSeparator();
     } else {
@@ -187,22 +189,23 @@ void ADVSingleSequenceWidget::init() {
     addButtonWithActionToToolbar(panView->getZoomToSequenceAction(), hBar);
     buttonTabOrederedNames->append(panView->getZoomToSequenceAction()->objectName());
 
-    hBar->addWidget(panView->getPanViewActions());
+    QToolButton* panViewToolButton = addButtonWithActionToToolbar(panView->getPanViewActions(), hBar);
+    SAFE_POINT(panViewToolButton, "Pan view tool button is NULL", );
+    panViewToolButton->setPopupMode(QToolButton::InstantPopup);
     buttonTabOrederedNames->append(panView->getPanViewActions()->objectName());
-    
-    widgetStateMenuButton = new QToolButton(this);
-    widgetStateMenuButton->setIcon(QIcon(":core/images/adv_widget_menu.png"));
+
+    widgetStateMenuAction = new QAction(QIcon(":core/images/adv_widget_menu.png"), tr("Toggle view"), this);
+    widgetStateMenuAction->setObjectName("toggle_view_button_" + getSequenceObject()->getGObjectName());
+    widgetStateMenuAction->setToolTip(tr("Toggle view"));
+    connect(widgetStateMenuAction, SIGNAL(triggered()), SLOT(sl_showStateMenu()));
+    widgetStateMenuButton = addButtonWithActionToToolbar(widgetStateMenuAction, hBar);
+    SAFE_POINT(widgetStateMenuButton, "widgetStateMenuButton is NULL", );
     widgetStateMenuButton->setFixedWidth(20);
-    widgetStateMenuButton->setToolTip(tr("Toggle view"));
-    widgetStateMenuButton->setObjectName("toggle_view_button_" + getSequenceObject()->getGObjectName());
-    connect(widgetStateMenuButton, SIGNAL(pressed()), SLOT(sl_showStateMenu()));
+    buttonTabOrederedNames->append(widgetStateMenuAction->objectName());
 
     closeViewAction = new QAction(tr("Remove sequence"), this);
     closeViewAction->setObjectName("remove_sequence");
     connect(closeViewAction, SIGNAL(triggered()), SLOT(sl_closeView()));
-
-    hBar->addWidget(widgetStateMenuButton);
-    buttonTabOrederedNames->append(widgetStateMenuButton->objectName());
 
     dynamic_cast<HBar *>(hBar)->setButtonTabOrderList(buttonTabOrederedNames);
 
@@ -226,12 +229,15 @@ ADVSingleSequenceWidget::~ADVSingleSequenceWidget() {
 }
 
 QToolButton* ADVSingleSequenceWidget::addButtonWithActionToToolbar(QAction * buttonAction, QToolBar * toolBar) const {
-    assert(NULL != buttonAction && NULL != toolBar && !buttonAction->objectName().isEmpty());
+    SAFE_POINT(NULL != buttonAction, "buttonAction is NULL", NULL);
+    SAFE_POINT(NULL != toolBar, "toolBar is NULL", NULL);
+    SAFE_POINT(!buttonAction->objectName().isEmpty(), "Action's object name is empty", NULL);
 
-    QToolButton* button = new QToolButton(toolBar);
-    button->setDefaultAction(buttonAction);
+    toolBar->addAction(buttonAction);
+    QToolButton* button = qobject_cast<QToolButton*>(toolBar->widgetForAction(buttonAction));
+
+    SAFE_POINT(button, QString("ToolButton for %1 is NULL").arg(buttonAction->objectName()), NULL);
     button->setObjectName(buttonAction->objectName());
-    toolBar->addWidget(button);
 
     return button;
 }
@@ -546,15 +552,15 @@ void ADVSingleSequenceWidget::addADVSequenceWidgetAction(ADVSequenceWidgetAction
     ADVSequenceWidget::addADVSequenceWidgetAction(a);
     if (a->addToBar) {
         QToolBar* tb = headerWidget->getToolBar();
-        QToolButton* tt = new QToolButton(tb);
+        tb->insertAction(tb->actions().first(), a);
+        QToolButton* tt = qobject_cast<QToolButton*>(tb->widgetForAction(a));
+        SAFE_POINT(tt, QString("ToolButton for %1 is NULL").arg(a->objectName()), );
         tt->setObjectName(a->objectName());
-        tt->setDefaultAction(a);
         
-        if (a->menu()!=NULL) {
+        if (a->menu() != NULL) {
             tt->setPopupMode(QToolButton::InstantPopup);
         }
 
-        tb->insertWidget(tb->actions().first(), tt);
         buttonTabOrederedNames->prepend(a->objectName());
     }
 }

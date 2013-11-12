@@ -121,8 +121,8 @@ PanView::PanView(QWidget* p, ADVSequenceObjectContext* ctx) : GSequenceLineViewA
     zoomToSequenceAction->setObjectName("action_zoom_to_sequence_" + ctx->getSequenceObject()->getGObjectName());
     connect(zoomToSequenceAction, SIGNAL(triggered()), SLOT(sl_zoomToSequence()));
 
-    panViewToolButton = new QToolButton();
-    panViewToolButton->setObjectName("ManageRowsAction");
+    panViewAction = new QAction(QIcon(":/core/images/zoom_rows.png"), tr("Manage Rows in Zoom View"), this);
+    panViewAction->setObjectName("ManageRowsAction");
     
     QMenu *menu = new QMenu();
     showAllAnnotations = new QAction(tr("Show All Rows"), menu);
@@ -151,10 +151,7 @@ PanView::PanView(QWidget* p, ADVSequenceObjectContext* ctx) : GSequenceLineViewA
     menu->addAction(decrease5PanViewHeight);
     menu->addAction(resetAnnotations);
     
-    panViewToolButton->setPopupMode(QToolButton::InstantPopup);
-    panViewToolButton->setMenu(menu);
-    panViewToolButton->setIcon(QIcon(":/core/images/zoom_rows.png"));
-    panViewToolButton->setToolTip(tr("Manage Rows in Zoom View"));
+    panViewAction->setMenu(menu);
 
     toggleMainRulerAction = new QAction(tr("Show Main Ruler"), this);
     toggleMainRulerAction->setObjectName("Show Main Ruler");
@@ -388,7 +385,7 @@ void PanView::updateActions() {
         resetAnnotations->setEnabled(false);
     }
     //showAllAnnotations->setEnabled(!((PanViewRenderArea*)renderArea)->isAllLinesShown());
-    panViewToolButton->setEnabled(isVisible() && (increasePanViewHeight->isEnabled() || decreasePanViewHeight->isEnabled() || 
+    panViewAction->setEnabled(isVisible() && (increasePanViewHeight->isEnabled() || decreasePanViewHeight->isEnabled() ||
         increase5PanViewHeight->isEnabled() || decrease5PanViewHeight->isEnabled() || resetAnnotations->isEnabled()));
 }
 
@@ -593,7 +590,7 @@ void PanView::hideEvent( QHideEvent *ev ){
     zoomOutAction->setDisabled(true);
     zoomToSelectionAction->setDisabled(true);
     zoomToSequenceAction->setDisabled(true);
-    panViewToolButton->setDisabled(true);
+    panViewAction->setDisabled(true);
     QWidget::hideEvent(ev);
 }
 

@@ -39,6 +39,7 @@ class GObjectView;
 class SplitterHeaderWidget;
 class Document;
 class GLFrameManager;
+class HBar;
 
 /*!
 * @class BioStruct3DSplitter BioStruct3DSplitter.h
@@ -157,7 +158,7 @@ class DBLinksFile {
     QList<DBLink> links;
 public:
     bool load();
-    QList<DBLink> getLinks() { return links; };
+    QList<DBLink> getLinks() { return links; }
 };
 
 
@@ -185,18 +186,19 @@ public:
 
 private:    
     BioStruct3DSplitter* splitter;
-    QToolButton* widgetStateMenuButton;
-    QToolButton* addModelButton;
-    QToolButton* settingsMenuButton;
-    QToolButton* webMenuButton;
-    QToolButton* displayMenuButton;
-    QToolButton* restoreDefaultsButton;
-    QToolButton* zoomInButton;
-    QToolButton* zoomOutButton;
-    QToolButton* syncLockButton;
+    QAction* widgetStateMenuAction;
+    QAction* addModelAction;
+    QAction* webMenuAction;
+    QAction* displayMenuAction;
+    QAction* restoreDefaultsAction;
+    QAction* zoomInAction;
+    QAction* zoomOutAction;
+    QAction* syncLockAction;
     QComboBox* activeWidgetBox;
     QMap<QAction*,QString> webActionMap;
     QList<QAction*> toggleActions;
+
+    HBar* toolbar;
     
 protected:
     bool eventFilter(QObject *obj, QEvent *event);
@@ -210,7 +212,7 @@ private slots:
     void sl_addModel();
     void sl_showStateMenu();
     void sl_showDisplayMenu();
-    void sl_showSettingsMenu();
+//    void sl_showSettingsMenu();    // TODO: add settings functionality
     void sl_showWebMenu();
     void sl_zoomIn();
     void sl_zoomOut();
@@ -220,6 +222,7 @@ private slots:
 
 private:
     BioStruct3DGLWidget* getActiveWidget();
+    void addToolbarAction(QAction *action);
     void updateToolbar();
     void updateActiveWidgetBox();
     void enableToolbar();
@@ -227,9 +230,5 @@ private:
     void setActiveView(BioStruct3DGLWidget* glWidget);
 
 };
-
-
-
-
 
 } //namespace

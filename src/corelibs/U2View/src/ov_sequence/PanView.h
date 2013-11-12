@@ -81,7 +81,7 @@ public:
 
     virtual QAction* getZoomToSequenceAction() const {return zoomToSequenceAction;}
 
-    QToolButton* getPanViewActions() const {return panViewToolButton;}
+    QAction* getPanViewActions() const {return panViewAction;}
 
     // [0..seqLen)
     virtual void setVisibleRange(const U2Region& reg, bool signal = true);
@@ -173,7 +173,7 @@ public:
     QAction*            decrease5PanViewHeight;
     QAction*            resetAnnotations;
     QAction*            showAllAnnotations;
-    QToolButton*        panViewToolButton;
+    QAction*            panViewAction;
 
     PVRowsManager*      rowsManager;
     QScrollBar*         rowBar;

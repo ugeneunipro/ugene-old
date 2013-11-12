@@ -71,8 +71,6 @@ public:
 
     DetView* getDetView() const {return detView;}
 
-    QToolButton* getWidgetStateMenuButton() const {return widgetStateMenuButton;}
-
     virtual void centerPosition(int pos, QWidget* skipView = NULL);
     
     ADVSequenceObjectContext*   getActiveSequenceContext() const {return (seqContexts.isEmpty()) ? NULL : seqContexts.first();}
@@ -198,6 +196,7 @@ private:
     QAction*        createNewRulerAction;
     QAction*        shotScreenAction;
     QAction*        closeViewAction;
+    QAction*        widgetStateMenuAction;
     
     QList<QMenu*>   tbMenues;
     QToolButton*    ttButton;
