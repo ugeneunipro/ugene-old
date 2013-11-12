@@ -449,7 +449,7 @@ void ProjectTreeController::sl_onCloseEditor(QWidget*,QAbstractItemDelegate::End
             QMessageBox::critical(0, "Error", tr("Duplicate object names are not allowed"));
             return;
 
-        } else if (!newName.contains(invalidCharactersRegExp)) {
+        } else if (newName.contains(invalidCharactersRegExp)) {
             QMessageBox::critical(0, "Error", tr("The name can't contain any of the following characters: %1").arg(invalidCharacters));
             return;
         }
