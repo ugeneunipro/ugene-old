@@ -35,7 +35,9 @@ void RemoteDBDialogFiller::run() {
 
     QWidget* dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog, "activeModalWidget is NULL");
-    GTGlobals::sleep(500);
+
+    QLineEdit *idLineEdit = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "idLineEdit", dialog));
+    GTLineEdit::setText(os, idLineEdit, resID);
 
     QLineEdit *saveFilenameLineEdit = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "saveFilenameLineEdit", dialog));
     if(!saveDirPath.isEmpty()){
