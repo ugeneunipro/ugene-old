@@ -255,7 +255,7 @@ GUI_TEST_CLASS_DEFINITION(test_0005){
     p |= QFile::WriteGroup;
     p |= QFile::WriteOther;
     res =  dir.setPermissions(p);
-    CHECK_SET_ERR(res, "Fucking test");
+    CHECK_SET_ERR(res, "Not good test");
     GTUtilsWorkflowDesigner::checkErrorList(os, "Read alignment: File not found:");
     CHECK_SET_ERR(l.hasError(), "There are no error messages about write access in WD directory");
     }

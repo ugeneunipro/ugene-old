@@ -22,6 +22,8 @@
 #include "GTUtilsDialog.h"
 #include "GTUtilsWorkflowDesigner.h"
 #include "api/GTAction.h"
+#include "api/GTFile.h"
+#include "api/GTAction.h"
 #include "api/GTFileDialog.h"
 #include "api/GTMenu.h"
 #include "api/GTMouseDriver.h"
@@ -29,11 +31,72 @@
 #include "runnables/ugene/plugins/workflow_designer/CreateElementWithScriptDialogFiller.h"
 #include "runnables/ugene/plugins/workflow_designer/WorkflowMetadialogFiller.h"
 #include "../../workflow_designer/src/WorkflowViewItems.h"
-
 #include "GTTestsWorkflowScripting.h"
+#include "api/GTKeyboardDriver.h"
+#include "api/GTKeyboardUtils.h"
+#include "api/GTGlobals.h"
+#include "api/GTTreeWidget.h"
+#include "api/GTAction.h"
+#include "api/GTSpinBox.h"
+#include "api/GTTableView.h"
+#include "GTUtilsWorkflowDesigner.h"
+#include "runnables/qt/PopupChooser.h"
+#include "runnables/qt/MessageBoxFiller.h"
+#include "runnables/ugene/corelibs/U2Gui/AppSettingsDialogFiller.h"
+#include "runnables/ugene/plugins/workflow_designer/WizardFiller.h"
+#include "runnables/ugene/plugins/workflow_designer/StartupDialogFiller.h"
+#include "runnables/ugene/plugins/workflow_designer/AliasesDialogFiller.h"
+#include "runnables/ugene/plugins/workflow_designer/RPackageDialorFiller.h"
+#include "runnables/ugene/ugeneui/SequenceReadingModeSelectorDialogFiller.h"
+#include "GTUtilsWorkflowDesigner.h"
+#include "GTUtilsMdi.h"
+#include "GTUtilsApp.h"
+#include "GTUtilsLog.h"
+#include <QGraphicsItem>
+#include <QtGui/QTextEdit>
+#include <U2Core/AppContext.h>
+#include <QProcess>
+#include "../../workflow_designer/src/WorkflowViewItems.h"
+#include <U2Lang/WorkflowSettings.h>
+
+#include "runnables/ugene/plugins/workflow_designer/CreateElementWithScriptDialogFiller.h"
 
 namespace U2 {
 namespace GUITest_common_scenarios_workflow_scripting {
+
+GUI_TEST_CLASS_DEFINITION(test_0003) {
+    QMenu *menu = GTMenu::showMainMenu(os, MWMENU_TOOLS);
+    GTMenu::clickMenuItem(os, menu, QStringList() << "Workflow Designer");
+    GTGlobals::sleep(500);
+
+    GTUtilsWorkflowDesigner::addAlgorithm(os, "Read Sequence");
+    WorkflowProcessItem *reader = GTUtilsWorkflowDesigner::getWorker(os, "Read Sequence");
+    GTGlobals::sleep(2000);
+    GTUtilsWorkflowDesigner::addAlgorithm(os, "Write FASTA");
+    WorkflowProcessItem *writer = GTUtilsWorkflowDesigner::getWorker(os, "Write FASTA");
+    GTUtilsWorkflowDesigner::connect(os, reader, writer);
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<"Show scripting options"));
+    GTWidget::click(os, GTAction::button(os, GTAction::findActionByText(os, "Scripting mode")));
+
+    GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os,"Write FASTA"));
+    GTMouseDriver::click(os);
+
+    GTUtilsDialog::waitForDialog(os, new ScriptEditorDialogFiller(os, "", "url_out = url + \".result.fa\";"));
+    GTUtilsWorkflowDesigner::setParameterScripting(os, "output file", "user script");
+
+    GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os,"Read sequence"));
+    GTMouseDriver::click(os);
+
+    QString dirPath = dataDir + "samples/FASTA/";
+    GTUtilsWorkflowDesigner::setDatasetInputFile( os, dirPath, "human_T1.fa" );
+    GTWidget::click( os,GTAction::button( os,"Run workflow" ) );
+    GTGlobals::sleep( 200 );
+
+    GTFileDialog::openFile(os, dataDir+"samples/FASTA/", "human_T1.fa.result.fa");
+
+}
+
 
 GUI_TEST_CLASS_DEFINITION(test_0004) {
     QMenu *menu = GTMenu::showMainMenu(os, MWMENU_TOOLS);

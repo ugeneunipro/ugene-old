@@ -3127,6 +3127,39 @@ GUI_TEST_CLASS_DEFINITION( test_2281 ){
     GTGlobals::sleep(1000);
 }
 
+GUI_TEST_CLASS_DEFINITION( test_2306 ) {
+    // 1. Open file "data/samples/CLUSTALW/COI.aln"
+    GTFileDialog::openFile(os, dataDir+"samples/CLUSTALW/", "COI.aln");
+
+    // 2. Turn on collapsing mode in MSA
+    GTWidget::click(os, GTToolbar::getWidgetForActionName(os, GTToolbar::getToolbar(os, "mwtoolbar_activemdi"), "Enable collapsing"));
+
+    //expected state: Mecopoda_elongata__Ishigaki__J and Mecopoda_elongata__Sumatra_ are collapsed
+    CHECK_SET_ERR( !GTUtilsMSAEditorSequenceArea::isSequenceVisible(os, QString("Mecopoda_elongata__Sumatra_")),
+        "Required sequence is not collapsed");
+
+    GTUtilsMSAEditorSequenceArea::selectArea( os, QPoint( 5, 10 ), QPoint( 15, 15 ) );
+
+    // 3. Shift the region but don't release left mouse button
+    const QPoint mouseDragPosition( 12, 12 );
+    GTUtilsMSAEditorSequenceArea::moveTo( os, mouseDragPosition );
+    GTMouseDriver::press( os );
+    GTUtilsMSAEditorSequenceArea::moveTo( os, mouseDragPosition + QPoint( 3, 0 ) );
+    GTGlobals::sleep( 200 );
+    GTMouseDriver::release( os );
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["esc"]);
+    GTGlobals::sleep( 200 );
+    
+    // 4. Call context menu
+        GTMouseDriver::press( os );
+    GTUtilsMSAEditorSequenceArea::selectArea( os, QPoint( 5, 10 ), QPoint( 7, 15 ) );
+    GTKeyboardDriver::keyClick( os, 'c', GTKeyboardDriver::key["ctrl"] );
+    GTGlobals::sleep( 200 );
+    const QString finalMsaContent = GTClipboard::text( os );
+    CHECK_SET_ERR("---\n---\n---\n---\n---\n---\n---" == finalMsaContent, "Unexpected MSA content has occurred" );
+
+
+    }
 GUI_TEST_CLASS_DEFINITION( test_2309 ) {
     // 1. Open file "data/samples/CLUSTALW/COI.aln"
     GTFileDialog::openFile(os, dataDir+"samples/CLUSTALW/", "COI.aln");
