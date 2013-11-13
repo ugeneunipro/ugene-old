@@ -36,6 +36,9 @@ public:
     enum tab {algoriths,samples};
     enum valueType{spinValue, doubleSpinValue, comboValue, textValue};
 
+    //opens WorkflowDesigner
+    void openWorkfolwDesigner(U2OpStatus &os);
+
     //reterns item from samples or algorithms tab
     static QTreeWidgetItem* findTreeItem(U2OpStatus &os, QString itemName,tab t);
 

@@ -1221,7 +1221,7 @@ GUI_TEST_CLASS_DEFINITION(test_1708){
 
 GUI_TEST_CLASS_DEFINITION(test_1720){
 //1. Use menu {File->Access remote database...}
-    GTUtilsDialog::waitForDialog(os, new RemoteDBDialogFiller(os, 0));
+    GTUtilsDialog::waitForDialog(os, new RemoteDBDialogFiller(os, "", 0));
     GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE),ACTION_PROJECTSUPPORT__ACCESS_REMOTE_DB, GTGlobals::UseKey);
 
     GTLogTracer l;
@@ -1229,7 +1229,7 @@ GUI_TEST_CLASS_DEFINITION(test_1720){
 //2. Fill field "Resource ID" with value D11266. Click "OK"
 
 //3. Use menu {File->Access remote database...}
-    GTUtilsDialog::waitForDialog(os, new RemoteDBDialogFiller(os, 0));
+    GTUtilsDialog::waitForDialog(os, new RemoteDBDialogFiller(os, "", 0));
     GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE),ACTION_PROJECTSUPPORT__ACCESS_REMOTE_DB, GTGlobals::UseKey);
 
     GTGlobals::sleep(8000);
@@ -1246,7 +1246,7 @@ GUI_TEST_CLASS_DEFINITION( test_1813 )
     //      Resource ID: I7G8J3
     //      Database: UniProt (DAS)
     // 3) Press "OK"
-    GTUtilsDialog::waitForDialog(os, new RemoteDBDialogFiller(os, 7));
+    GTUtilsDialog::waitForDialog(os, new RemoteDBDialogFiller(os, "", 7));
     GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE),ACTION_PROJECTSUPPORT__ACCESS_REMOTE_DB, GTGlobals::UseKey);
 
     // Expected: the sequence view with I7G8J3 sequence is opened. UGENE does not crash.
@@ -1931,7 +1931,7 @@ GUI_TEST_CLASS_DEFINITION( test_2032 ) {
 
 GUI_TEST_CLASS_DEFINITION( test_2070 ){
     GTLogTracer lt;
-    GTUtilsDialog::waitForDialog(os, new RemoteDBDialogFiller(os, 7));
+    GTUtilsDialog::waitForDialog(os, new RemoteDBDialogFiller(os, "", 7));
     GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE),ACTION_PROJECTSUPPORT__ACCESS_REMOTE_DB, GTGlobals::UseKey);
     GTGlobals::sleep();
 

@@ -64,7 +64,7 @@ void NCBISearchDialogFiller::run(){
         return;
     }
 
-    GTUtilsDialog::waitForDialog(os, new RemoteDBDialogFiller(os,0,false,QString(),GTGlobals::UseMouse,1));
+    GTUtilsDialog::waitForDialog(os, new RemoteDBDialogFiller(os,"",0,false,QString(),GTGlobals::UseMouse,1));
     QTreeWidget* w = dialog->findChild<QTreeWidget*>("treeWidget");
     GT_CHECK(w, "treeWidget not found");
 

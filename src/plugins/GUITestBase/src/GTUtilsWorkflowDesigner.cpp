@@ -33,6 +33,7 @@
 #include "api/GTDoubleSpinBox.h"
 #include "api/GTLineEdit.h"
 #include "api/GTComboBox.h"
+#include "api/GTMenu.h"
 
 #include <U2View/MSAEditor.h>
 #include <QTreeWidget>
@@ -46,6 +47,14 @@
 
 namespace U2 {
 #define GT_CLASS_NAME "GTUtilsWorkflowDesigner"
+
+#define GT_METHOD_NAME "openWorkfolwDesigner"
+void GTUtilsWorkflowDesigner::openWorkfolwDesigner(U2OpStatus &os){
+    QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
+    GTMenu::clickMenuItem(os, menu, QStringList() << "Workflow Designer");
+    GTGlobals::sleep(500);
+}
+#undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "findTreeItem"
 QTreeWidgetItem* GTUtilsWorkflowDesigner::findTreeItem(U2OpStatus &os,QString itemName, tab t){
