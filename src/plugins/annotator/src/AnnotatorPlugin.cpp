@@ -42,6 +42,7 @@
 
 #include "CollocationWorker.h"
 #include "GeneByGeneReportWorker.h"
+#include "CustomPatternAnnotationTask.h"
 
 namespace U2 {
 
@@ -51,11 +52,22 @@ extern "C" Q_DECL_EXPORT Plugin* U2_PLUGIN_INIT_FUNC() {
     return plug;
 }
 
+#define PLASMID_FEATURES_GROUP_NAME "plasmid_features"
+
 AnnotatorPlugin::AnnotatorPlugin() : Plugin(tr("dna_annotator_plugin"), tr("dna_annotator_plugin_desc")), viewCtx(NULL)
 {
     if (AppContext::getMainWindow()) {
         viewCtx = new AnnotatorViewContext(this);
         viewCtx->init();
+
+        QString customAnnotationDir = QDir::searchPaths( PATH_PREFIX_DATA ).first() + "/custom_annotations";
+        QString plasmidFeaturesPath = customAnnotationDir + "/plasmid_features.txt";
+        SharedFeatureStore store( new FeatureStore(PLASMID_FEATURES_GROUP_NAME, plasmidFeaturesPath));
+        if (store->load()) {
+            CustomPatternAutoAnnotationUpdater* aaUpdater = new CustomPatternAutoAnnotationUpdater(store);
+            AppContext::getAutoAnnotationsSupport()->registerAutoAnnotationsUpdater(aaUpdater);
+        }
+
     }
     LocalWorkflow::CollocationWorkerFactory::init();
     LocalWorkflow::GeneByGeneReportWorkerFactory::init();
