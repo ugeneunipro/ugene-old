@@ -1,4 +1,3 @@
-#include <signal.h>
 #include <zlib.h>
 #include <stdio.h>
 #include <ctype.h>
@@ -15,6 +14,7 @@
 #include "kseq.h"
 #include "khash.h"
 
+const int READ_ERROR_CODE = -51;
 char * SAMTOOLS_ERROR_MESSAGE;
 
 KSTREAM_INIT(gzFile, gzread, 16384)
@@ -168,9 +168,11 @@ static inline void parse_error(int64_t n_lines, const char * __restrict msg)
 {
 	fprintf(stderr, "Parse error at line %lld: %s\n", (long long)n_lines, msg);
 	SAMTOOLS_ERROR_MESSAGE = msg;
-	raise(SIGABRT);
 }
-static inline void append_text(bam_header_t *header, kstring_t *str)
+typedef int bool;
+#define true 1
+#define false 0
+static inline bool append_text(bam_header_t *header, kstring_t *str)
 {
 	size_t x = header->l_text, y = header->l_text + str->l + 2; // 2 = 1 byte dret + 1 byte null
 	kroundup32(x); kroundup32(y);
@@ -182,19 +184,26 @@ static inline void append_text(bam_header_t *header, kstring_t *str)
         {
             fprintf(stderr,"realloc failed to alloc %ld bytes\n", y);
             SAMTOOLS_ERROR_MESSAGE = "realloc failed to alloc bytes\n";
-            raise(SIGABRT);
+            return false;
         }
     }
     // Sanity check
     if ( header->l_text+str->l+1 >= header->n_text )
     {
         fprintf(stderr,"append_text FIXME: %ld>=%ld, x=%ld,y=%ld\n",  header->l_text+str->l+1,header->n_text,x,y);
-        raise(SIGABRT);
+        return false;
     }
 	strncpy(header->text + header->l_text, str->s, str->l+1); // we cannot use strcpy() here.
 	header->l_text += str->l + 1;
 	header->text[header->l_text] = 0;
+    return true;
 }
+
+#define PARSE_ERROR(n_lines, msg)  \
+{ \
+    parse_error(n_lines, msg); \
+    return READ_ERROR_CODE; \
+} \
 
 int sam_header_parse(bam_header_t *h)
 {
@@ -225,11 +234,15 @@ bam_header_t *sam_header_read(tamFile fp)
 	kstring_t *str = fp->str;
 	while ((ret = ks_getuntil(fp->ks, KS_SEP_TAB, str, &dret)) >= 0 && str->s[0] == '@') { // skip header
 		str->s[str->l] = dret; // note that str->s is NOT null terminated!!
-		append_text(header, str);
+        if (!append_text(header, str)) {
+            return NULL;
+        }
 		if (dret != '\n') {
 			ret = ks_getuntil(fp->ks, '\n', str, &dret);
 			str->s[str->l] = '\n'; // NOT null terminated!!
-			append_text(header, str);
+            if (!append_text(header, str)) {
+                return NULL;
+            }
 		}
 		++fp->n_lines;
 	}
@@ -299,7 +312,7 @@ int sam_read1(tamFile fp, bam_header_t *header, bam1_t *b)
 		if (str->s[0] != '*') {
 			for (s = str->s; *s; ++s) {
 				if ((isalpha(*s)) || (*s=='=')) ++c->n_cigar;
-				else if (!isdigit(*s)) parse_error(fp->n_lines, "invalid CIGAR character");
+				else if (!isdigit(*s)) PARSE_ERROR(fp->n_lines, "invalid CIGAR character");
 			}
 			b->data = alloc_data(b, doff + c->n_cigar * 4);
 			for (i = 0, s = str->s; i != c->n_cigar; ++i) {
@@ -314,11 +327,11 @@ int sam_read1(tamFile fp, bam_header_t *header, bam1_t *b)
 				else if (op == 'P') op = BAM_CPAD;
 				else if (op == '=') op = BAM_CEQUAL;
 				else if (op == 'X') op = BAM_CDIFF;
-				else parse_error(fp->n_lines, "invalid CIGAR operation");
+				else PARSE_ERROR(fp->n_lines, "invalid CIGAR operation");
 				s = t + 1;
 				bam1_cigar(b)[i] = x << BAM_CIGAR_SHIFT | op;
 			}
-			if (*s) parse_error(fp->n_lines, "unmatched CIGAR operation");
+			if (*s) PARSE_ERROR(fp->n_lines, "unmatched CIGAR operation");
 			c->bin = bam_reg2bin(c->pos, bam_calend(c, bam1_cigar(b)));
 			doff += c->n_cigar * 4;
 		} else {
@@ -348,7 +361,7 @@ int sam_read1(tamFile fp, bam_header_t *header, bam1_t *b)
 			if (c->n_cigar && c->l_qseq != (int32_t)bam_cigar2qlen(c, bam1_cigar(b))) {
 			  fprintf(stderr, "Line %ld, sequence length %i vs %i from CIGAR\n",
 				  (long)fp->n_lines, c->l_qseq, (int32_t)bam_cigar2qlen(c, bam1_cigar(b)));
-			  parse_error(fp->n_lines, "CIGAR and sequence length are inconsistent");
+			  PARSE_ERROR(fp->n_lines, "CIGAR and sequence length are inconsistent");
 			}
 			p = (uint8_t*)alloc_data(b, doff + c->l_qseq + (c->l_qseq+1)/2) + doff;
 			memset(p, 0, (c->l_qseq+1)/2);
@@ -358,7 +371,7 @@ int sam_read1(tamFile fp, bam_header_t *header, bam1_t *b)
 		if (ks_getuntil(ks, KS_SEP_TAB, str, &dret) < 0) return -6; // qual
 		z += str->l + 1;
 		if (strcmp(str->s, "*") && c->l_qseq != strlen(str->s))
-			parse_error(fp->n_lines, "sequence and quality are inconsistent");
+			PARSE_ERROR(fp->n_lines, "sequence and quality are inconsistent");
 		p += (c->l_qseq+1)/2;
 		if (strcmp(str->s, "*") == 0) for (i = 0; i < c->l_qseq; ++i) p[i] = 0xff;
 		else for (i = 0; i < c->l_qseq; ++i) p[i] = str->s[i] - 33;
@@ -370,7 +383,7 @@ int sam_read1(tamFile fp, bam_header_t *header, bam1_t *b)
 			uint8_t *s, type, key[2];
 			z += str->l + 1;
 			if (str->l < 6 || str->s[2] != ':' || str->s[4] != ':')
-				parse_error(fp->n_lines, "missing colon in auxiliary data");
+				PARSE_ERROR(fp->n_lines, "missing colon in auxiliary data");
 			key[0] = str->s[0]; key[1] = str->s[1];
 			type = str->s[3];
 			s = alloc_data(b, doff + 3) + doff;
@@ -426,11 +439,11 @@ int sam_read1(tamFile fp, bam_header_t *header, bam1_t *b)
 				int size = 1 + (str->l - 5) + 1;
 				if (type == 'H') { // check whether the hex string is valid
 					int i;
-					if ((str->l - 5) % 2 == 1) parse_error(fp->n_lines, "length of the hex string not even");
+					if ((str->l - 5) % 2 == 1) PARSE_ERROR(fp->n_lines, "length of the hex string not even");
 					for (i = 0; i < str->l - 5; ++i) {
 						int c = toupper(str->s[5 + i]);
 						if (!((c >= '0' && c <= '9') || (c >= 'A' && c <= 'F')))
-							parse_error(fp->n_lines, "invalid hex character");
+							PARSE_ERROR(fp->n_lines, "invalid hex character");
 					}
 				}
 				s = alloc_data(b, doff + size) + doff;
@@ -441,7 +454,7 @@ int sam_read1(tamFile fp, bam_header_t *header, bam1_t *b)
 			} else if (type == 'B') {
 				int32_t n = 0, Bsize, k = 0, size;
 				char *p;
-				if (str->l < 8) parse_error(fp->n_lines, "too few values in aux type B");
+				if (str->l < 8) PARSE_ERROR(fp->n_lines, "too few values in aux type B");
 				Bsize = bam_aux_type2size(str->s[5]); // the size of each element
 				for (p = (char*)str->s + 6; *p; ++p) // count the number of elements in the array
 					if (*p == ',') ++n;
@@ -457,9 +470,9 @@ int sam_read1(tamFile fp, bam_header_t *header, bam1_t *b)
 				else if (str->s[5] == 'i') while (p < str->s + str->l) ((int32_t*)s)[k++]  = (int32_t)strtol(p, &p, 0),  ++p;
 				else if (str->s[5] == 'I') while (p < str->s + str->l) ((uint32_t*)s)[k++] = (uint32_t)strtol(p, &p, 0), ++p;
 				else if (str->s[5] == 'f') while (p < str->s + str->l) ((float*)s)[k++]    = (float)strtod(p, &p),       ++p;
-				else parse_error(fp->n_lines, "unrecognized array type");
+				else PARSE_ERROR(fp->n_lines, "unrecognized array type");
 				s += Bsize * n; doff += size;
-			} else parse_error(fp->n_lines, "unrecognized type");
+			} else PARSE_ERROR(fp->n_lines, "unrecognized type");
 			if (dret == '\n' || dret == '\r') break;
 		}
 	}

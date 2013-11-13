@@ -6,6 +6,7 @@
 #include "faidx.h"
 #include "sam.h"
 
+extern const int READ_ERROR_CODE;
 extern char * SAMTOOLS_ERROR_MESSAGE;
 
 #define TYPE_BAM  1
@@ -57,6 +58,10 @@ samfile_t *samopen(const char *fn, const char *mode, const void *aux)
 			fp->x.tamr = sam_open(fn);
 			if (fp->x.tamr == 0) goto open_err_ret;
 			fp->header = sam_header_read(fp->x.tamr);
+            if (NULL == fp->header) {
+                free(fp);
+                return NULL;
+            }
 			if (fp->header->n_targets == 0) { // no @SQ fields
 				if (aux) { // check if aux is present
 					bam_header_t *textheader = fp->header;

@@ -32,9 +32,6 @@
 #include <U2Core/U2DbiUtils.h>
 #include <U2Core/U2SafePoints.h>
 
-#include <csetjmp>
-#include <csignal>
-
 #include <SamtoolsAdapter.h>
 
 extern "C" {
@@ -69,12 +66,6 @@ namespace {
         }
     }
 
-    jmp_buf env;
-
-    void onAbort(int signum) {
-        longjmp(env, 1);
-    }
-
     QString openFileError(const QByteArray &file) {
         return QObject::tr("Fail to open \"%1\" for reading").arg(file.constData());
     }
@@ -96,22 +87,16 @@ namespace {
     }
 }
 
-#define SAMTOOL_BEGIN() \
-    { \
-        void (*previousHandler)(int) = SIG_DFL; \
-        if (0 == setjmp(env)) { \
-             previousHandler = signal(SIGABRT, &onAbort)
-
-#define SAMTOOL_END(msg) \
+#define SAMTOOL_CHECK(cond, msg) \
+    if (!(cond)) {\
+        if (NULL != SAMTOOLS_ERROR_MESSAGE) { \
+            os.setError(SAMTOOLS_ERROR_MESSAGE); \
         } else { \
-            if (NULL != SAMTOOLS_ERROR_MESSAGE) { \
-                os.setError(SAMTOOLS_ERROR_MESSAGE); \
-            } else { \
-                os.setError(msg); \
-            } \
+            os.setError(msg); \
         } \
-        signal(SIGABRT, previousHandler); \
-    }
+        closeFiles(in, out); \
+        return; \
+    } \
 
 void BAMUtils::convertToSamOrBam(const GUrl &samUrl, const GUrl &bamUrl, const ConvertOption &options, U2OpStatus &os ) {
     const QByteArray samFileName = samUrl.getURLString().toLocal8Bit();
@@ -128,48 +113,33 @@ void BAMUtils::convertToSamOrBam(const GUrl &samUrl, const GUrl &bamUrl, const C
         QByteArray readMode = ( options.samToBam ) ? "r" : "rb";
         void *aux = NULL;
         if (options.samToBam && !options.referenceUrl.isEmpty()) {
-            SAMTOOL_BEGIN();
             aux = samfaipath(options.referenceUrl.toLocal8Bit().constData());
-            SAMTOOL_END(faiError(options.referenceUrl.toLocal8Bit()));
+            SAMTOOL_CHECK(NULL != aux, faiError(options.referenceUrl.toLocal8Bit()));
         }
 
-        SAMTOOL_BEGIN();
         in = samopen(sourceName.constData(), readMode, aux);
-        SAMTOOL_END(openFileError(sourceName));
+        SAMTOOL_CHECK(NULL != in, openFileError(sourceName));
+        SAMTOOL_CHECK(NULL != in->header, headerError(sourceName));
 
-        if (NULL == in) {
-            os.setError(openFileError(sourceName));
-            closeFiles(in, out);
-            return;
-        }
-        if (NULL == in->header) {
-            os.setError(headerError(sourceName));
-            closeFiles(in, out);
-            return;
-        }
         QByteArray writeMode = ( options.samToBam ) ? "wb" : "wh";
-
-        SAMTOOL_BEGIN();
         out = samopen(targetName.constData(), writeMode, in->header);
-        SAMTOOL_END(openFileError(targetName));
-
-        if (NULL == out) {
-            os.setError(openFileError(targetName));
-            closeFiles(in, out);
-            return;
-        }
+        SAMTOOL_CHECK(NULL != out, openFileError(targetName));
     }
     // convert files
     bam1_t *b = bam_init1();
     int r;
     {
-        SAMTOOL_BEGIN();
         while ((r = samread(in, b)) >= 0) { // read one alignment from `in'
             samwrite(out, b); // write the alignment to `out'
         }
-        SAMTOOL_END(readsError(sourceName));
 
-        if (r < -1) {
+        if (READ_ERROR_CODE == r) {
+            if (NULL != SAMTOOLS_ERROR_MESSAGE) {
+                os.setError(SAMTOOLS_ERROR_MESSAGE);
+            } else {
+                os.setError(readsError(sourceName));
+            }
+        } else if (r < -1) {
             os.setError(truncatedError(sourceName));
         }
         bam_destroy1(b);
