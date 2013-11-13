@@ -62,6 +62,7 @@
 #include "runnables/ugene/corelibs/U2Gui/EditQualifierDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/EditSequenceDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/FindTandemsDialogFiller.h"
+#include "runnables/ugene/corelibs/U2Gui/ImportBAMFileDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/RangeSelectionDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/util/ProjectTreeItemSelectorDialogBaseFiller.h"
 #include "runnables/ugene/corelibs/U2View/ov_msa/BuildTreeDialogFiller.h"
@@ -3210,6 +3211,27 @@ GUI_TEST_CLASS_DEFINITION( test_2318 ) {
     // Expected state is checked in PlusClicker
     GTUtilsDialog::waitForDialog(os, new PlusClicker(os, "CDS"));
     GTWidget::click(os, farButton);
+}
+
+GUI_TEST_CLASS_DEFINITION( test_2375 ) {
+//    1. Open {_common_data/sam/broken_invalid_cigar.sam}
+//    Expected state: import dialog appears.
+
+//    2. Fill the import dialog with valid data. Begin the importing.
+//    Expected state: importing fails, UGENE doesn't crash.
+    QString destUrl = testDir + "_common_data/scenarios/sandbox/test_2375.ugenedb";
+    GTLogTracer logtracer;
+    GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os, destUrl));
+    GTFileDialog::openFile(os, testDir + "_common_data/sam/", "broken_invalid_cigar.sam");
+
+    TaskScheduler* scheduler = AppContext::getTaskScheduler();
+    CHECK_SET_ERR(scheduler, "Task scheduler is NULL");
+    GTGlobals::sleep(5000);
+    while (!scheduler->getTopLevelTasks().isEmpty()) {
+        GTGlobals::sleep();
+    }
+
+    CHECK_SET_ERR(logtracer.hasError(), "There wasn't errors in the log");
 }
 
 GUI_TEST_CLASS_DEFINITION( test_2377 ) {

@@ -236,9 +236,10 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_2267_2);
     REGISTER_TEST(GUITest_regression_scenarios::test_2268);
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2269, "impossible to catch expected error in opStatus without stopping test");
+    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2281, "This test can't found hints. Check it.");
     REGISTER_TEST(GUITest_regression_scenarios::test_2309);
     REGISTER_TEST(GUITest_regression_scenarios::test_2318);
-    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2281, "This test can't found hints. Check it.");
+    REGISTER_TEST(GUITest_regression_scenarios::test_2375);
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2377, "Nonexistent file is used in test description"
         "(https://ugene.unipro.ru/svn/ugene/test/scenarios/Regression%20scenarios/2377/test_0001.txt). Restore test after changing the file");
 
