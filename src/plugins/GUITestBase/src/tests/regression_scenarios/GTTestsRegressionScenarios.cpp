@@ -3296,12 +3296,11 @@ GUI_TEST_CLASS_DEFINITION( test_2377 ) {
     GTMouseDriver::moveTo( os, GTUtilsWorkflowDesigner::getItemCenter( os, assemblyWriterName ) );
     GTMouseDriver::click( os );
     GTUtilsWorkflowDesigner::setParameter( os, "Output file", "test",
-		GTUtilsWorkflowDesigner::textValue );
-
+        GTUtilsWorkflowDesigner::textValue );
 
     GTWidget::click( os, GTAction::button( os, "Run workflow" ) );
 
-	GTGlobals::sleep(5000);
+    GTGlobals::sleep(5000);
     CHECK_SET_ERR( l.hasError( ), "Error message expected!" );
 }
 
