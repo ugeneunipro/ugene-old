@@ -19,50 +19,77 @@
  * MA 02110-1301, USA.
  */
 
+#include "GTTestsWorkflowScripting.h"
+#include "GTUtilsApp.h"
 #include "GTUtilsDialog.h"
+#include "GTUtilsLog.h"
+#include "GTUtilsMdi.h"
 #include "GTUtilsWorkflowDesigner.h"
+
 #include "api/GTAction.h"
 #include "api/GTFile.h"
-#include "api/GTAction.h"
+#include "api/GTGlobals.h"
 #include "api/GTFileDialog.h"
-#include "api/GTMenu.h"
-#include "api/GTMouseDriver.h"
-#include "api/GTWidget.h"
-#include "runnables/ugene/plugins/workflow_designer/CreateElementWithScriptDialogFiller.h"
-#include "runnables/ugene/plugins/workflow_designer/WorkflowMetadialogFiller.h"
-#include "../../workflow_designer/src/WorkflowViewItems.h"
-#include "GTTestsWorkflowScripting.h"
 #include "api/GTKeyboardDriver.h"
 #include "api/GTKeyboardUtils.h"
-#include "api/GTGlobals.h"
-#include "api/GTTreeWidget.h"
-#include "api/GTAction.h"
+#include "api/GTMenu.h"
+#include "api/GTMouseDriver.h"
 #include "api/GTSpinBox.h"
 #include "api/GTTableView.h"
-#include "GTUtilsWorkflowDesigner.h"
-#include "runnables/qt/PopupChooser.h"
+#include "api/GTTreeWidget.h"
+#include "api/GTWidget.h"
+
 #include "runnables/qt/MessageBoxFiller.h"
+#include "runnables/qt/PopupChooser.h"
 #include "runnables/ugene/corelibs/U2Gui/AppSettingsDialogFiller.h"
-#include "runnables/ugene/plugins/workflow_designer/WizardFiller.h"
-#include "runnables/ugene/plugins/workflow_designer/StartupDialogFiller.h"
 #include "runnables/ugene/plugins/workflow_designer/AliasesDialogFiller.h"
-#include "runnables/ugene/plugins/workflow_designer/RPackageDialorFiller.h"
+#include "runnables/ugene/plugins/workflow_designer/CreateElementWithScriptDialogFiller.h"
+#include "runnables/ugene/plugins/workflow_designer/StartupDialogFiller.h"
+#include "runnables/ugene/plugins/workflow_designer/WizardFiller.h"
+#include "runnables/ugene/plugins/workflow_designer/WorkflowMetadialogFiller.h"
 #include "runnables/ugene/ugeneui/SequenceReadingModeSelectorDialogFiller.h"
-#include "GTUtilsWorkflowDesigner.h"
-#include "GTUtilsMdi.h"
-#include "GTUtilsApp.h"
-#include "GTUtilsLog.h"
-#include <QGraphicsItem>
-#include <QtGui/QTextEdit>
-#include <U2Core/AppContext.h>
-#include <QProcess>
+
 #include "../../workflow_designer/src/WorkflowViewItems.h"
+
+#include <U2Core/AppContext.h>
 #include <U2Lang/WorkflowSettings.h>
 
-#include "runnables/ugene/plugins/workflow_designer/CreateElementWithScriptDialogFiller.h"
+#include <QtCore/QProcess>
+#include <QtGui/QGraphicsItem>
+#include <QtGui/QTextEdit>
 
 namespace U2 {
 namespace GUITest_common_scenarios_workflow_scripting {
+
+GUI_TEST_CLASS_DEFINITION(test_0001) {
+//    1. Open WD. Press toolbar button "Create script object".
+//    Expected state: Create element with script dialog appears.
+
+//    2. Fill the next field in dialog:
+//        {Name} 123
+
+//    3. Click OK button.
+
+//    GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
+    QMenu *menu = GTMenu::showMainMenu(os, MWMENU_TOOLS);
+    GTMenu::clickMenuItem(os, menu, QStringList() << "Workflow Designer");
+    GTGlobals::sleep(500);
+
+    GTUtilsDialog::waitForDialog(os, new CreateElementWithScriptDialogFiller(os, "123"));
+    GTWidget::click(os, GTAction::button(os, "createScriptAction"));
+
+//    4. Select created worker. Press toolbar button "Edit script text".
+//    Expected state: Script editor dialog appears.
+
+//    5. Paste "#$%not a script asdasd321 123" at the script text area. Click "Check syntax" button
+//    Expected state: messagebox "Script syntax check failed!" appears.
+
+    GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "123"));
+    GTMouseDriver::click(os);
+
+    GTUtilsDialog::waitForDialog(os, new ScriptEditorDialogSyntaxChecker(os, "#$%not a script asdasd321 123", "Script syntax check failed!"));
+    GTWidget::click(os, GTAction::button(os, "editScriptAction"));
+}
 
 GUI_TEST_CLASS_DEFINITION(test_0003) {
     QMenu *menu = GTMenu::showMainMenu(os, MWMENU_TOOLS);
@@ -96,7 +123,6 @@ GUI_TEST_CLASS_DEFINITION(test_0003) {
     GTFileDialog::openFile(os, dataDir+"samples/FASTA/", "human_T1.fa.result.fa");
 
 }
-
 
 GUI_TEST_CLASS_DEFINITION(test_0004) {
     QMenu *menu = GTMenu::showMainMenu(os, MWMENU_TOOLS);
