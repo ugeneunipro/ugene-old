@@ -34,7 +34,7 @@ namespace U2 {
 
 class AnnotationTableObject;
 
-class FindPatternTask : public Task
+class U2VIEW_EXPORT FindPatternTask : public Task
 {
     Q_OBJECT
 
