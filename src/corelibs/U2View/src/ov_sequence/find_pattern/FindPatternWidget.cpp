@@ -417,10 +417,10 @@ void FindPatternWidget::initLayout()
     subgroupsLayout->addWidget(new ShowHideSubgroupWidget(OTHER_SETTINGS, OTHER_SETTINGS, widgetOther, false));
     subgroupsLayout->addWidget(annotsWidget);
 
-    lblErrorMessage->hide();
     lblErrorMessage->setStyleSheet(
         "color: " + L10N::errorColorLabelStr() + ";"
         "font: bold;");
+    lblErrorMessage->setText("");
 
     updateLayout();
 
@@ -827,10 +827,8 @@ void FindPatternWidget::showHideMessage( bool show, MessageFlag messageFlag, con
             }
         }
         lblErrorMessage->setText(text);
-        lblErrorMessage->show();
     }
     else {
-        lblErrorMessage->hide();
         lblErrorMessage->setText("");
     }
 }
