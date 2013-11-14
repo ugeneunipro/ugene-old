@@ -154,7 +154,9 @@ void GSequenceGraphView::moveLabel(float xPos) {
         label.show();
         label.raise();
         label.attachedLabel = prevLabel;
+        setMouseTracking(false);
         emit si_labelMoved(graph, &label, static_cast<GSequenceGraphViewRA*>(renderArea)->getGraphRect());
+        setMouseTracking(true);
         prevLabel = &label;
     }
 }
