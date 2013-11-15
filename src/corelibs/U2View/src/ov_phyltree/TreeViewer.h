@@ -222,7 +222,7 @@ protected:
     void defaultZoom();
 
     virtual void onLayoutChanged(const TreeLayout& ) {}
-    virtual void updateTreeSettings(bool setDefaultZoom = true);
+    void updateTreeSettings(bool setDefaultZoom = true);
 signals:
     void si_settingsChanged();
 protected slots:

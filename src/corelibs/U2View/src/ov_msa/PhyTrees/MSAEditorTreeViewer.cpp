@@ -595,10 +595,7 @@ void MSAEditorTreeViewerUI::updateSettings(const TreeSettings &settings) {
     bool widthChanged = treeSettings.width_coef == settings.width_coef;
     treeSettings = settings;
     updateTreeSettings(widthChanged);
-}
 
-void MSAEditorTreeViewerUI::updateTreeSettings(bool setDefaultZoom) {
-    TreeViewerUI::updateTreeSettings(setDefaultZoom);
     MSAEditor* msa = curMSATreeViewer->getMsaEditor();
     CHECK(NULL != msa, );
     msa->getUI()->getSequenceArea()->onVisibleRangeChanged();
