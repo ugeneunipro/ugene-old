@@ -123,6 +123,7 @@ protected:
 
     virtual void onLayoutChanged(const TreeLayout& layout);
     virtual void updateSettings(const TreeSettings &settings);
+    virtual void updateTreeSettings(bool setDefaultZoom = true);
 signals:
     void si_collapseModelChangedInTree(const QStringList* visibleSeqs);
     void si_seqOrderChanged(QStringList* order);
