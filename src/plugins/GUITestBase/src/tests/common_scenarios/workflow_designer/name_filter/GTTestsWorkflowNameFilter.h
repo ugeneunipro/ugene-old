@@ -32,6 +32,7 @@ namespace GUITest_common_scenarios_workflow_name_filter {
 #define GUI_TEST_PREFIX "GUITest_common_scenarios_workflow_name_filter_"
 
 GUI_TEST_CLASS_DECLARATION(test_0001)
+GUI_TEST_CLASS_DECLARATION(test_0002)
 GUI_TEST_CLASS_DECLARATION(test_0003)
 
 #undef GUI_TEST_PREFIX

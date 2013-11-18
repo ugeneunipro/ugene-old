@@ -22,6 +22,7 @@
 #include "api/GTMenu.h"
 #include "api/GTWidget.h"
 #include "api/GTLineEdit.h"
+#include "api/GTKeyboardDriver.h"
 
 #include "runnables/ugene/plugins/workflow_designer/StartupDialogFiller.h"
 #include "GTTestsWorkflowNameFilter.h"
@@ -66,6 +67,67 @@ GUI_TEST_CLASS_DEFINITION( test_0001 ) {
         }
     }
     CHECK_SET_ERR(count == 2, "Wrong number of visible items in sample tree");
+}
+
+GUI_TEST_CLASS_DEFINITION( test_0002 ) {
+    GTUtilsDialog::waitForDialog( os, new StartupDialogFiller( os, true ) );
+
+    // 1. Open WD.
+    QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
+    GTMenu::clickMenuItem(os, menu, QStringList() << "Workflow Designer");
+
+    // 2. Open the samples tab.
+    GTWidget::click(os, GTWidget::findWidget(os, "samples"));
+
+    // 3. Press Ctrl+F.
+    //Expected: the "Name filter" line edit has the focus
+    GTKeyboardDriver::keyClick( os, 'f', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(200);
+    // 4. Write "align muscle".
+    //Expected: There is the muscle alignment sample after filtering.
+    GTKeyboardDriver::keySequence(os, "align muscle");
+    GTGlobals::sleep(200);
+
+    // Expected: There are two samples after filtering.
+    QTreeWidget *samples;
+    samples = qobject_cast<QTreeWidget*>(GTWidget::findWidget(os, "samples"));
+    CHECK(samples, );
+
+    int count = 0;
+    QList<QTreeWidgetItem*> outerList = samples->findItems("",Qt::MatchContains);
+    for (int i = 0; i < outerList.size(); i++) {
+        QList<QTreeWidgetItem*> innerList;
+        for (int j = 0;j < outerList.value(i)->childCount(); j++){
+            innerList.append(outerList.value(i)->child(j));
+        }
+        foreach (QTreeWidgetItem* item, innerList) {
+            if (!item->isHidden()) {
+                count++;
+            }
+        }
+    }
+    CHECK_SET_ERR(count == 1, "Wrong number of visible items in sample tree with 'align muscle' filter");
+
+    //5. Press Esc.
+    //Expected: the name filter is clear, all samples are shown.
+
+    GTKeyboardDriver::keyClick(os,GTKeyboardDriver::key["esc"]);
+    GTGlobals::sleep(200);
+
+    int hiddenItemsCount = 0;
+    QList<QTreeWidgetItem*> newOuterList = samples->findItems("",Qt::MatchContains);
+    for (int i = 0; i < newOuterList.size(); i++) {
+        QList<QTreeWidgetItem*> innerList;
+        for (int j = 0;j < newOuterList.value(i)->childCount(); j++){
+            innerList.append(newOuterList.value(i)->child(j));
+        }
+        foreach (QTreeWidgetItem* item, innerList) {
+            if (item->isHidden()) {
+                hiddenItemsCount++;
+            }
+        }
+    }
+    CHECK_SET_ERR(hiddenItemsCount == 0, "Wrong number of visible items in sample tree");
 }
 
 GUI_TEST_CLASS_DEFINITION( test_0003 ) {

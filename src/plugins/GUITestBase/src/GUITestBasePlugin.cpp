@@ -945,6 +945,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 // Common scenarios/Workflow designer/Name filter
 /////////////////////////////////////////////////////////////////////////
     REGISTER_TEST_IGNORED(GUITest_common_scenarios_workflow_name_filter::test_0001,"can not set focus to name filter line edit");
+    REGISTER_TEST(GUITest_common_scenarios_workflow_name_filter::test_0002);
     REGISTER_TEST_IGNORED(GUITest_common_scenarios_workflow_name_filter::test_0003,"can not set focus to name filter line edit");
 
 /////////////////////////////////////////////////////////////////////////
