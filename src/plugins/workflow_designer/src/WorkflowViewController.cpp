@@ -546,10 +546,18 @@ void WorkflowView::sl_rescaleScene(const QString &scale)
 
 static void updateComboBox(QComboBox *scaleComboBox, int scalePercent) {
     QString value = QString("%1%2").arg(scalePercent).arg(percentStr);
+    bool isOk = true;
     for (int i=0; i<scaleComboBox->count(); i++) {
         if (scaleComboBox->itemText(i) == value) {
             scaleComboBox->setCurrentIndex(i);
             return;
+        } else{
+            QString itemText = scaleComboBox->itemText(i).mid(0, scaleComboBox->itemText(i).size() - percentStr.size());
+            if (itemText.toInt(&isOk) > scalePercent && isOk){
+                scaleComboBox->insertItem(i, value);
+                scaleComboBox->setCurrentIndex(i);
+                return;
+            }
         }
     }
     scaleComboBox->addItem(value);
