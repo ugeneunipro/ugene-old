@@ -1296,6 +1296,34 @@ GUI_TEST_CLASS_DEFINITION( test_1821 ) {
     CHECK_SET_ERR( scaleCombo->currentText( ) == "75%", "Unexpected scale value!" );
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1860) {
+    // 1) Open Workflow Desinder
+    GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
+    QMenu *menu=GTMenu::showMainMenu( os, MWMENU_TOOLS );
+    GTMenu::clickMenuItem( os, menu, QStringList( ) << "Workflow Designer" );
+
+    const QString textReaderName = "Read Plain Text";
+    const QString textWriterName = "Write Plain Text";
+
+    //2) Add elements: "Write plain text" and "Read plain text"
+    GTUtilsWorkflowDesigner::addAlgorithm( os, textReaderName);
+    GTUtilsWorkflowDesigner::addAlgorithm( os, textWriterName);
+
+    WorkflowProcessItem *textReader = GTUtilsWorkflowDesigner::getWorker( os, textReaderName);
+    WorkflowProcessItem *textWriter = GTUtilsWorkflowDesigner::getWorker( os, textWriterName);
+
+    //3) Connect them to each other
+    GTUtilsWorkflowDesigner::connect(os, textReader, textWriter);
+
+    //4) Try to set output file
+
+    GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, textWriterName));
+    GTMouseDriver::click(os);
+    GTUtilsWorkflowDesigner::setParameter(os, "Output file", "test", GTUtilsWorkflowDesigner::textValue );
+    GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, textReaderName));
+    GTMouseDriver::click(os);
+}
+
 GUI_TEST_CLASS_DEFINITION( test_1884 )
 {
     // 1. Open document "ma.aln"

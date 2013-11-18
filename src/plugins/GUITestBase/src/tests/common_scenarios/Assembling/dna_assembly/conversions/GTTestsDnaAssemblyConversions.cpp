@@ -58,6 +58,32 @@ GUI_TEST_CLASS_DEFINITION( test_0001 ) {
     GTFile::check( os, "_common_data/e_coli/e_coli_1000.gff.fasta" );
 }
 
+GUI_TEST_CLASS_DEFINITION( test_0002 ) {
+    GTLogTracer l;
+    AlignShortReadsFiller::Parameters parameters(
+        testDir + "_common_data/e_coli/",
+        "NC_008253.gff",
+        testDir + "_common_data/e_coli/",
+        "e_coli_1000.fastq", AlignShortReadsFiller::Parameters::Bowtie);
+
+    AlignShortReadsFiller *alignShortReadsFiller = new AlignShortReadsFiller( os, &parameters );
+    CHECK_OP( os, );
+    GTUtilsDialog::waitForDialog( os, alignShortReadsFiller );
+    CHECK_OP( os, );
+    GTUtilsDialog::waitForDialog( os, new MessageBoxDialogFiller( os, QMessageBox::Yes ) );
+    CHECK_OP( os, );
+
+    QMenu *mainMenu = GTMenu::showMainMenu( os, MWMENU_TOOLS );
+    CHECK_OP( os, );
+    GTMenu::clickMenuItem( os, mainMenu, QStringList( ) << "Align to reference"
+        << "Align short reads" );
+    CHECK_OP( os, );
+    GTGlobals::sleep( 5000 );
+
+    CHECK_SET_ERR( !l.hasError( ), "Error message expected in log" );
+    GTFile::check( os, "_common_data/e_coli/NC_008253.gff.fasta" );
+}
+
 GUI_TEST_CLASS_DEFINITION( test_0003 ) {
 //     1. Click the menu Tools -> Align to reference -> Align short reads.
 //     2. Fill in the dialog:

@@ -173,6 +173,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_1720);
     REGISTER_TEST(GUITest_regression_scenarios::test_1813);
     REGISTER_TEST(GUITest_regression_scenarios::test_1821);
+    REGISTER_TEST(GUITest_regression_scenarios::test_1860);
     REGISTER_TEST(GUITest_regression_scenarios::test_1884);
     REGISTER_TEST_IGNORED_MAC(GUITest_regression_scenarios::test_1886_1, "not for mac");
     REGISTER_TEST_IGNORED_MAC(GUITest_regression_scenarios::test_1886_2, "not for mac");
@@ -890,6 +891,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     // Common scenarios/Assembling/dna_assembly/conversions
     /////////////////////////////////////////////////////////////////////////
     REGISTER_TEST(GUITest_dna_assembly_conversions::test_0001);
+    REGISTER_TEST(GUITest_dna_assembly_conversions::test_0002);
     REGISTER_TEST(GUITest_dna_assembly_conversions::test_0003);
     REGISTER_TEST(GUITest_dna_assembly_conversions::test_0004);
 
