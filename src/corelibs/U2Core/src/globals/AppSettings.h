@@ -36,7 +36,7 @@ class TestRunnerSettings;
 
 class U2CORE_EXPORT AppSettings {
 public:
-    AppSettings() : nc(NULL), userAppsSettings(NULL), ri(NULL), trs(NULL) {}
+    AppSettings() : nc(NULL), userAppsSettings(NULL), ri(NULL), trs(NULL), formatSettings(NULL) {}
 
     virtual ~AppSettings(){}
 

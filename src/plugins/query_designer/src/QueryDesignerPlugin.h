@@ -25,6 +25,7 @@
 #include <U2Gui/ObjectViewModel.h>
 #include <U2Core/PluginModel.h>
 #include <U2Core/ServiceModel.h>
+#include <U2Core/ServiceTypes.h>
 
 
 namespace U2 {
@@ -55,7 +56,7 @@ private slots:
 class QueryDesignerService : public Service {
     Q_OBJECT
 public:
-    QueryDesignerService() : Service(124, tr("Query Designer"), "") {}
+    QueryDesignerService() : Service(Service_QueryDesigner, tr("Query Designer"), "") {}
     bool closeViews();
 protected:
     virtual Task* createServiceEnablingTask();

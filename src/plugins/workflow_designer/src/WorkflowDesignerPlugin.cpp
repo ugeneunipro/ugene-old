@@ -40,6 +40,7 @@
 #include <U2Gui/MainWindow.h>
 #include <U2Core/Settings.h>
 #include <U2Core/Task.h>
+#include <U2Core/ServiceTypes.h>
 
 #include <U2Core/CMDLineRegistry.h>
 #include <U2Core/CMDLineHelpProvider.h>
@@ -217,7 +218,7 @@ Task* WorkflowDesignerService::createServiceDisablingTask(){
 }
 
 WorkflowDesignerService::WorkflowDesignerService() 
-: Service(123, tr("Workflow Designer"), ""),
+: Service(Service_WorkflowDesigner, tr("Workflow Designer"), ""),
 designerAction(NULL), managerAction(NULL)
 {
 }

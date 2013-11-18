@@ -26,6 +26,7 @@
 #include <U2Core/PluginModel.h>
 #include <U2Core/CMDLineRegistry.h>
 #include <U2Core/CMDLineCoreOptions.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <QtCore/QTimerEvent>
 
@@ -35,10 +36,10 @@ namespace U2 {
 
 ServiceRegistryImpl::~ServiceRegistryImpl() {
     foreach(Service* s, services) {
-        assert(s->isDisabled());
+        CHECK_OPERATIONS(s->isDisabled(), assert(false), continue);
         delete s;
     }
-    assert(activeServiceTasks.isEmpty());
+    SAFE_POINT(activeServiceTasks.isEmpty(), QString("There are active service tasks before deleting service registry"), );
 }
 
 QList<Service*> ServiceRegistryImpl::findServices(ServiceType t ) const {
@@ -53,26 +54,27 @@ QList<Service*> ServiceRegistryImpl::findServices(ServiceType t ) const {
 
 
 /// Returns 'true' if a service with the specified ServiceType is registered and enabled
-Task* ServiceRegistryImpl::registerServiceTask(Service* s) {
-    return new RegisterServiceTask(this, s);
+Task* ServiceRegistryImpl::registerServiceTask(Service* s, bool lockServiceResource) {
+    return new RegisterServiceTask(this, s, lockServiceResource);
 }
 
-Task* ServiceRegistryImpl::unregisterServiceTask(Service* s) {
-    return new UnregisterServiceTask(this, s);
+Task* ServiceRegistryImpl::unregisterServiceTask(Service* s, bool lockServiceResource) {
+    return new UnregisterServiceTask(this, s, lockServiceResource);
 }
 
 
 
-Task* ServiceRegistryImpl::enableServiceTask(Service* s) {
-    return new EnableServiceTask(this, s);
+Task* ServiceRegistryImpl::enableServiceTask(Service* s, bool lockServiceResource) {
+    return new EnableServiceTask(this, s, lockServiceResource);
 }
 
-Task* ServiceRegistryImpl::disableServiceTask(Service* s) {
-    return new DisableServiceTask(this, s, true);
+Task* ServiceRegistryImpl::disableServiceTask(Service* s, bool lockServiceResource) {
+    return new DisableServiceTask(this, s, true, lockServiceResource);
 }
 
 
 void ServiceRegistryImpl::setServiceState(Service* s, ServiceState state) {
+    SAFE_POINT(services.contains(s), "Service has already unregistered",);
     if (s->getState() == state) {
         return;
     }
@@ -80,6 +82,7 @@ void ServiceRegistryImpl::setServiceState(Service* s, ServiceState state) {
 
     initiateServicesCheckTask();
 }
+
 
 void ServiceRegistryImpl::initiateServicesCheckTask() {
     if (!timerIsActive) {
@@ -96,7 +99,7 @@ void ServiceRegistryImpl::timerEvent(QTimerEvent *event) {
     timerIsActive = false;
     Service* s = findServiceReadyToEnable();
     if (s!=NULL) {
-        AppContext::getTaskScheduler()->registerTopLevelTask(new EnableServiceTask(this, s));
+        AppContext::getTaskScheduler()->registerTopLevelTask(new EnableServiceTask(this, s, true));
     }
 }
 
@@ -135,22 +138,25 @@ Service* ServiceRegistryImpl::findServiceReadyToEnable() const {
 
 /// RegisterServiceTask
 
-RegisterServiceTask::RegisterServiceTask(ServiceRegistryImpl* _sr, Service* _s) 
-: Task(tr("Register '%1' service").arg(_s->getName()), TaskFlag_NoRun), sr(_sr), s(_s)
+AbstractServiceTask::AbstractServiceTask(QString taskName, TaskFlags flag, ServiceRegistryImpl* _sr, Service* _s, bool lockServiceResource)
+: Task(taskName, flag), sr(_sr), s(_s) {
+    SAFE_POINT_EXT(sr, stateInfo.setError("Pointer to ServiceRegistryImpl is null"),);
+    SAFE_POINT_EXT(s, stateInfo.setError("Pointer to Service is null"),);
+
+    if(lockServiceResource) {
+        addTaskResource(TaskResourceUsage(s->getType().id, 1, true));
+    }
+}
+
+RegisterServiceTask::RegisterServiceTask(ServiceRegistryImpl* _sr, Service* _s, bool lockServiceResource) 
+: AbstractServiceTask(tr("Register '%1' service").arg(_s->getName()), TaskFlag_NoRun, _sr, _s, lockServiceResource)
 {
-    assert(s->getState() == ServiceState_Disabled_New);
-    assert(!sr->services.contains(s));
 }
 
 void RegisterServiceTask::prepare() {
-    if (sr->services.contains(s)) {
-        stateInfo.setError(  tr("Service is already registered '%1'").arg(s->getName()) );
-        return;
-    }
-    if (s->getState() != ServiceState_Disabled_New) {
-        stateInfo.setError(  tr("Illegal service state: %1").arg(s->getName()) );
-        return;
-    }
+    sr->activeServiceTasks.push_back(this);
+    CHECK_EXT(!sr->services.contains(s), stateInfo.setError(tr("Service has already registered")),);
+    CHECK_EXT(s->getState() == ServiceState_Disabled_New, stateInfo.setError(tr("Illegal service state: %1").arg(s->getName())),);
 
     foreach(Service* rs, sr->services) {
         if (rs->getType() == s->getType() && (s->getFlags().testFlag(ServiceFlag_Singleton) || s->getFlags().testFlag(ServiceFlag_Singleton))) {
@@ -161,15 +167,19 @@ void RegisterServiceTask::prepare() {
 
     sr->services.append(s);
     emit sr->si_serviceRegistered(s);
-    addSubTask(new EnableServiceTask(sr, s));
+    addSubTask(new EnableServiceTask(sr, s, false));
+}
+
+Task::ReportResult RegisterServiceTask::report() {
+    sr->activeServiceTasks.removeAll(this);
+    return ReportResult_Finished;
 }
 
 ///EnableServiceTask
 
-EnableServiceTask::EnableServiceTask(ServiceRegistryImpl* _sr, Service* _s) 
-: Task(tr("Enable '%1' service").arg(_s->getName()), TaskFlag_NoRun), sr(_sr), s(_s)
+EnableServiceTask::EnableServiceTask(ServiceRegistryImpl* _sr, Service* _s, bool lockServiceResource) 
+: AbstractServiceTask(tr("Enable '%1' service").arg(_s->getName()), TaskFlag_NoRun, _sr, _s, lockServiceResource)
 {
-    assert(sr && s && s->isDisabled());
 }
 
 static bool findCircular(ServiceRegistryImpl* sr, Service* s, int currentDepth =0);
@@ -177,12 +187,10 @@ static bool checkAllParentsEnabled(ServiceRegistryImpl* sr, Service* s);
 
 void EnableServiceTask::prepare() {
 //TODO: improve messaging. The service name is already mentioned in task name!
-
     sr->activeServiceTasks.push_back(this);
-    if (s->isEnabled()) {
-        stateInfo.setError(tr("Service is already enabled: %1").arg(s->getName()));
-        return;
-    }
+    CHECK_EXT(s->isDisabled(), stateInfo.setError(tr("Service is enabled")),);
+    CHECK_EXT(sr->services.contains(s), stateInfo.setError(tr("Service is not registered")),);
+
     bool circular = findCircular(sr, s);
     if (circular) {
         sr->setServiceState(s, ServiceState_Disabled_CircularDependency);
@@ -248,26 +256,22 @@ static bool checkAllParentsEnabled(ServiceRegistryImpl* sr, Service* s) {
 }
 
 /// UnregisterServiceTask
-UnregisterServiceTask::UnregisterServiceTask(ServiceRegistryImpl* _sr, Service* _s) 
-: Task(tr("Unregister '%1' service").arg(_s->getName()), TaskFlag_NoRun), sr(_sr), s(_s)
+UnregisterServiceTask::UnregisterServiceTask(ServiceRegistryImpl* _sr, Service* _s, bool lockServiceResource) 
+: AbstractServiceTask(tr("Unregister '%1' service").arg(_s->getName()), TaskFlag_NoRun, _sr, _s, lockServiceResource)
 {
-    assert(sr->services.contains(s));
 }
 
 void UnregisterServiceTask::prepare() {
-    if (!sr->services.contains(s)) {
-        stateInfo.setError(  tr("Service is not registered: %1").arg(s->getName()) );
-        return;
-    }
+    sr->activeServiceTasks.push_back(this);
+    CHECK_EXT(sr->services.contains(s), stateInfo.setError(tr("Service is not registered")),);
     if (s->isEnabled()) {
-        addSubTask(new DisableServiceTask(sr, s, false));
+        addSubTask(new DisableServiceTask(sr, s, false, false));
     }
 }
 
 Task::ReportResult UnregisterServiceTask::report() {
-    if (stateInfo.hasError()) {
-        return ReportResult_Finished;
-    }
+    sr->activeServiceTasks.removeAll(this);
+    CHECK_OP(stateInfo, ReportResult_Finished);
     if (s->isDisabled()) {
         assert(sr->services.count(s) == 1);
         sr->services.removeAll(s);
@@ -279,10 +283,9 @@ Task::ReportResult UnregisterServiceTask::report() {
 
 
 /// DisableServiceTask
-DisableServiceTask::DisableServiceTask(ServiceRegistryImpl* _sr, Service* _s, bool _manual) 
-: Task(tr("Disable '%1' service").arg(_s->getName()), TaskFlags_NR_FOSCOE), sr(_sr), s(_s), manual(_manual)
+DisableServiceTask::DisableServiceTask(ServiceRegistryImpl* _sr, Service* _s, bool _manual, bool lockServiceResource) 
+: AbstractServiceTask(tr("Disable '%1' service").arg(_s->getName()), TaskFlags_NR_FOSCOE, _sr, _s, lockServiceResource), manual(_manual)
 {
-    assert(sr->services.contains(s) && s->isEnabled());
 }
 
 static QList<Service*> getDirectChilds(ServiceRegistryImpl* sr, ServiceType st);
@@ -294,8 +297,11 @@ bool DisableServiceTask::isGUITesting() const {
 
 void DisableServiceTask::prepare() {
     sr->activeServiceTasks.push_back(this);
-    const QList<Task*>& activeTopTasks = AppContext::getTaskScheduler()->getTopLevelTasks();
 
+    CHECK_EXT(sr->services.contains(s), stateInfo.setError(tr("Service is not registered")),);
+    CHECK_EXT(s->isEnabled(), stateInfo.setError(tr("Service is not enabled")),);
+
+    const QList<Task*>& activeTopTasks = AppContext::getTaskScheduler()->getTopLevelTasks();
     int nTopLevelTasks = activeTopTasks.count();
     if (nTopLevelTasks > 1) { // [parent] of DisableServiceTask
         foreach(Task* t, activeTopTasks) {
@@ -304,20 +310,12 @@ void DisableServiceTask::prepare() {
         stateInfo.setError(  tr("Active task was found") );
         return;
     }
-    if (!sr->services.contains(s)) {
-        stateInfo.setError(  tr("Service is not registered: %1").arg(s->getName()) );
-        return;
-    }
-    if (!s->isEnabled()) {
-        stateInfo.setError(  tr("Service is not enabled: %1").arg(s->getName()) );
-        return;
-    }
     bool stopChilds = sr->findServices(s->getType()).size() == 1;
     if (stopChilds) {
         QList<Service*> childsToDisable = getDirectChilds(sr, s->getType());
         foreach(Service* c, childsToDisable) {
             if (c->isEnabled()) {
-                addSubTask(new DisableServiceTask(sr, c, false));
+                addSubTask(new DisableServiceTask(sr, c, false, false));
             }
         }
     }
@@ -353,3 +351,4 @@ static QList<Service*> getDirectChilds(ServiceRegistryImpl* sr, ServiceType st) 
 
 
 }//namespace
+

@@ -39,6 +39,7 @@ class DisableServiceTask;
 class U2PRIVATE_EXPORT ServiceRegistryImpl : public ServiceRegistry {
     Q_OBJECT
 
+    friend class AbstractServiceTask;
     friend class RegisterServiceTask;
     friend class EnableServiceTask;
     friend class UnregisterServiceTask;
@@ -54,13 +55,13 @@ public:
     /// Finds service with the specified ServiceType
     virtual QList<Service*> findServices(ServiceType t) const;
 
-    virtual Task* registerServiceTask(Service* s);
+    virtual Task* registerServiceTask(Service* s, bool lockServiceResource);
 
-    virtual Task* unregisterServiceTask(Service* s);
+    virtual Task* unregisterServiceTask(Service* s, bool lockServiceResource);
 
-    virtual Task* enableServiceTask(Service* s);
+    virtual Task* enableServiceTask(Service* s, bool lockServiceResource);
 
-    virtual Task* disableServiceTask(Service* s);
+    virtual Task* disableServiceTask(Service* s, bool lockServiceResource);
 
     void unregisterPluginServices(Plugin* p);
 
@@ -79,62 +80,58 @@ protected:
 private:
     QList<Service*> services;
     bool            timerIsActive;
-    QList<Task*> activeServiceTasks;
+    QList<Task*>    activeServiceTasks;
 };
 
-class RegisterServiceTask : public Task {
+class AbstractServiceTask : public Task {
     Q_OBJECT
-public:
-    RegisterServiceTask(ServiceRegistryImpl* sr, Service* s);
+protected:
+    AbstractServiceTask(QString taskName, TaskFlags flag, ServiceRegistryImpl* _sr, Service* _s, bool lockServiceResource);
 
-    virtual void prepare();
-
-private:
     ServiceRegistryImpl* sr;
     Service* s;
 };
 
-class EnableServiceTask : public Task {
+class RegisterServiceTask : public AbstractServiceTask {
     Q_OBJECT
 public:
-    EnableServiceTask(ServiceRegistryImpl* sr, Service* s);
+    RegisterServiceTask(ServiceRegistryImpl* sr, Service* s, bool lockServiceResource);
 
     virtual void prepare();
 
     virtual ReportResult report();
-
-private:
-    ServiceRegistryImpl* sr;
-    Service* s;
 };
 
-class UnregisterServiceTask : public Task {
+class EnableServiceTask : public AbstractServiceTask {
     Q_OBJECT
 public:
-    UnregisterServiceTask(ServiceRegistryImpl* sr, Service* s);
+    EnableServiceTask(ServiceRegistryImpl* sr, Service* s, bool lockServiceResource);
 
     virtual void prepare();
 
     virtual ReportResult report();
-
-private:
-    ServiceRegistryImpl* sr;
-    Service* s;
 };
 
-
-class DisableServiceTask : public Task {
+class UnregisterServiceTask : public AbstractServiceTask {
     Q_OBJECT
 public:
-    DisableServiceTask(ServiceRegistryImpl* sr, Service* s, bool manual);
-
-    virtual void prepare();
+    UnregisterServiceTask(ServiceRegistryImpl* sr, Service* s, bool lockServiceResource);
 
     virtual ReportResult report();
 
+    virtual void prepare();
+};
+
+
+class DisableServiceTask : public AbstractServiceTask {
+    Q_OBJECT
+public:
+    DisableServiceTask(ServiceRegistryImpl* sr, Service* s, bool manual, bool lockServiceResource);
+
+    virtual ReportResult report();
+
+    virtual void prepare();
 private:
-    ServiceRegistryImpl* sr;
-    Service* s;
     bool manual;
 
     bool isGUITesting() const;
