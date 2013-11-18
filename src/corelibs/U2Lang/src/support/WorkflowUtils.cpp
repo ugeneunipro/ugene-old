@@ -157,108 +157,116 @@ QStringList WorkflowUtils::expandToUrls(const QString& s) {
     return result;
 }
 
-static bool validateParameters(const Schema &schema, ProblemList &infoList) {
-    bool good = true;
-    foreach (Actor* a, schema.getProcesses()) {
-        ProblemList problemList;
-        good &= a->validate(problemList);
-        foreach(Problem problem, problemList) {
-            problem.actor = a->getId();
-            infoList << problem;
-        }
-    }
-    return good;
-}
-
-static bool validateExternalTools(Actor *a, ProblemList &infoList) {
-    bool good = true;
-    QStrStrMap tools = a->getProto()->getExternalTools();
-    foreach (const QString &toolId, tools.keys()) {
-        Attribute *attr = a->getParameter(tools[toolId]);
-        ExternalTool *tool = AppContext::getExternalToolRegistry()->getByName(toolId);
-        SAFE_POINT(NULL != tool, "NULL tool", false);
-
-        bool fromAttr = (NULL != attr) && !attr->isDefaultValue();
-        bool valid = fromAttr ? !attr->isEmpty() : !tool->getPath().isEmpty();
-        if (!valid) {
-            good = false;
-            infoList << Problem(WorkflowUtils::externalToolError(tool->getName()),
-                                a->getId(),
-                                Problem::U2_ERROR);
-        } else if (!fromAttr && !tool->isValid()) {
-            infoList << Problem(WorkflowUtils::externalToolInvalidError(tool->getName()),
-                                a->getId(),
-                                Problem::U2_WARNING);
-        }
-    }
-    return good;
-}
-
-static bool validatePorts(Actor *a, ProblemList &infoList) {
-    bool good = true;
-    foreach(Port *p, a->getPorts()) {
-        ProblemList problemList;
-        good &= p->validate(problemList);
-        if (!problemList.isEmpty()) {
+namespace {
+    bool validateParameters(const Schema &schema, ProblemList &infoList) {
+        bool good = true;
+        foreach (Actor* a, schema.getProcesses()) {
+            ProblemList problemList;
+            good &= a->validate(problemList);
             foreach(Problem problem, problemList) {
-                Problem item;
-                item.message = QString("%1 : %2").arg(a->getLabel()).arg(problem.message);
-                item.port = p->getId();
-                item.actor = a->getId();
-                item.type = problem.type;
-                infoList << item;
+                problem.actor = a->getId();
+                infoList << problem;
             }
         }
+        return good;
     }
-    return good;
-}
 
-static bool graphDepthFirstSearch( Actor *vertex, QList<Actor *> &visitedVertices ) {
-    visitedVertices.append( vertex );
-    const QList<Port *> outputPorts = vertex->getOutputPorts( );
-    QList<Actor *> receivingVertices;
-    foreach ( Port *outputPort, outputPorts ) {
-        foreach ( Port *receivingPort, outputPort->getLinks( ).keys( ) ) {
-            receivingVertices.append( receivingPort->owner( ) );
+    bool validateExternalTools(Actor *a, ProblemList &infoList) {
+        bool good = true;
+        QStrStrMap tools = a->getProto()->getExternalTools();
+        foreach (const QString &toolId, tools.keys()) {
+            Attribute *attr = a->getParameter(tools[toolId]);
+            ExternalTool *tool = AppContext::getExternalToolRegistry()->getByName(toolId);
+            SAFE_POINT(NULL != tool, "NULL tool", false);
+
+            bool fromAttr = (NULL != attr) && !attr->isDefaultValue();
+            bool valid = fromAttr ? !attr->isEmpty() : !tool->getPath().isEmpty();
+            if (!valid) {
+                good = false;
+                infoList << Problem(WorkflowUtils::externalToolError(tool->getName()),
+                                    a->getId(),
+                                    Problem::U2_ERROR);
+            } else if (!fromAttr && !tool->isValid()) {
+                infoList << Problem(WorkflowUtils::externalToolInvalidError(tool->getName()),
+                                    a->getId(),
+                                    Problem::U2_WARNING);
+            }
         }
+        return good;
     }
-    foreach ( Actor *receivingVertex, receivingVertices ) {
-        if ( visitedVertices.contains( receivingVertex ) ) {
+
+    bool validatePorts(Actor *a, ProblemList &infoList) {
+        bool good = true;
+        foreach(Port *p, a->getPorts()) {
+            ProblemList problemList;
+            good &= p->validate(problemList);
+            if (!problemList.isEmpty()) {
+                foreach(Problem problem, problemList) {
+                    Problem item;
+                    item.message = QString("%1 : %2").arg(a->getLabel()).arg(problem.message);
+                    item.port = p->getId();
+                    item.actor = a->getId();
+                    item.type = problem.type;
+                    infoList << item;
+                }
+            }
+        }
+        return good;
+    }
+
+    bool graphDepthFirstSearch( Actor *vertex, QList<Actor *> &visitedVertices ) {
+        visitedVertices.append( vertex );
+        const QList<Port *> outputPorts = vertex->getOutputPorts( );
+        QList<Actor *> receivingVertices;
+        foreach ( Port *outputPort, outputPorts ) {
+            foreach ( Port *receivingPort, outputPort->getLinks( ).keys( ) ) {
+                receivingVertices.append( receivingPort->owner( ) );
+            }
+        }
+        foreach ( Actor *receivingVertex, receivingVertices ) {
+            if ( visitedVertices.contains( receivingVertex ) ) {
+                return false;
+            } else {
+                return graphDepthFirstSearch( receivingVertex, visitedVertices );
+            }
+        }
+        return true;
+    }
+
+    // the returning values signals about cycles existence in the scheme
+    bool hasSchemeCycles( const Schema &scheme ) {
+        foreach ( Actor *vertex, scheme.getProcesses( ) ) {
+            QList<Actor *> visitedVertices;
+            if ( !graphDepthFirstSearch( vertex, visitedVertices ) ) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    bool validateScript(Actor *a, ProblemList &infoList) {
+        SAFE_POINT(NULL != a, "NULL actor", false);
+        SAFE_POINT(NULL != a->getScript(), "NULL script", false);
+        const QString scriptText = a->getScript()->getScriptText();
+        if (scriptText.simplified().isEmpty()) {
+            infoList << Problem(QObject::tr("Empty script text"), a->getId());
             return false;
-        } else {
-            return graphDepthFirstSearch( receivingVertex, visitedVertices );
         }
-    }
-    return true;
-}
+        QScopedPointer<WorkflowScriptEngine> engine(new WorkflowScriptEngine(NULL));
+        QScriptSyntaxCheckResult syntaxResult = engine->checkSyntax(scriptText);
 
-// the returning values signals about cycles existence in the scheme
-static bool hasSchemeCycles( const Schema &scheme ) {
-    foreach ( Actor *vertex, scheme.getProcesses( ) ) {
-        QList<Actor *> visitedVertices;
-        if ( !graphDepthFirstSearch( vertex, visitedVertices ) ) {
+        if (syntaxResult.state() != QScriptSyntaxCheckResult::Valid) {
+            Problem problem;
+            problem.message = QObject::tr("Script syntax check failed! Line: %1, error: %2")
+                .arg(syntaxResult.errorLineNumber())
+                .arg(syntaxResult.errorMessage());
+            problem.actor = a->getId();
+            problem.type = Problem::U2_ERROR;
+            infoList << problem;
             return false;
         }
+        return true;
     }
-    return true;
-}
-
-static bool validateScript(Actor *a, ProblemList &infoList) {
-    QScopedPointer<WorkflowScriptEngine> engine(new WorkflowScriptEngine(NULL));
-    QScriptSyntaxCheckResult syntaxResult = engine->checkSyntax(a->getScript()->getScriptText());
-
-    if (syntaxResult.state() != QScriptSyntaxCheckResult::Valid) {
-        Problem problem;
-        problem.message = QObject::tr("%1 : Script syntax check failed! Line: %2, error: %3")
-            .arg(a->getLabel())
-            .arg(syntaxResult.errorLineNumber())
-            .arg(syntaxResult.errorMessage());
-        problem.actor = a->getId();
-        problem.type = Problem::U2_ERROR;
-        infoList << problem;
-        return false;
-    }
-    return true;
 }
 
 bool WorkflowUtils::validate(const Schema &schema, ProblemList &problemList) {
