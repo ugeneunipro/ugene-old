@@ -121,6 +121,7 @@
 #include <QtGui/QApplication>
 #include <QtGui/QIcon>
 
+#include <U2Core/UserActionsWriter.h>
 
 
 /* TRANSLATOR U2::AppContextImpl */
@@ -344,6 +345,7 @@ int main(int argc, char **argv)
     LogCacheExt logsCache;
     initLogsCache(logsCache, envList);
     LogCache::setAppGlobalInstance(&logsCache);
+    app.installEventFilter(new UserActionsWriter());
     coreLog.details(AppContextImpl::tr("UGENE initialization started"));
     GCOUNTER( cvar, tvar, "ugeneui" );
 

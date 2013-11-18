@@ -22,6 +22,7 @@
 #include "Log.h"
 #include <U2Core/Timer.h>
 #include <U2Core/U2SafePoints.h>
+#include <U2Core/LogCache.h>
 
 #include <QtCore/QSet>
 
@@ -81,6 +82,12 @@ void LogServer::message(const LogMessage& m)
     }
 }
 
+void LogServer::message(const LogMessage& m, LogListener* listener)
+{
+    QMutexLocker l(&listenerMutex);
+    listener->onMessage(m);
+}
+
 
 Logger::Logger(const QString& category1) {
     static int test = 0;
@@ -120,7 +127,6 @@ Logger::~Logger() {
 //    s->categories.removeOne(this);
 //    categoryNames.clear();
 }
-
 
 LogMessage::LogMessage(const QStringList& cat, LogLevel l, const QString& m) 
 : categories(cat), level(l), text(m), time(GTimer::currentTimeMicros()) 

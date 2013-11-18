@@ -59,7 +59,7 @@ public:
     
     static void log(LogLevel level, const QString& message, const QStringList& categoryies);
 
-    void message(LogLevel level, const QString& msg);
+    virtual void message(LogLevel level, const QString& msg);
     
     void message(LogLevel level, const QString& msg, const QString& extraCategory);
 
@@ -75,7 +75,7 @@ public:
 
     const QStringList& getCategories() const {return categoryNames;}
 
-private:
+protected:
     void init();
     QStringList categoryNames;
 };
@@ -89,6 +89,7 @@ public:
 class U2CORE_EXPORT LogServer : public QObject {
     Q_OBJECT
     friend class Logger;
+    friend class UiLogger;
 public:
     LogServer();
     static LogServer* getInstance();
@@ -100,6 +101,7 @@ public:
 
 private:
     void message(const LogMessage& m);
+    void message(const LogMessage& m, LogListener* listener);
 
     QList<Logger*> loggers;
     QList<LogListener*> listeners;
@@ -127,17 +129,20 @@ private:
 #define ULOG_CAT_TASKS              "Tasks"
 // Log category for UI related events
 #define ULOG_CAT_USER_INTERFACE     "User Interface"
+// Log category for user's actions
+#define ULOG_CAT_USER_ACTIONS    "User Actions"
 
 
 static Logger algoLog(ULOG_CAT_ALGORITHM);
 static Logger cmdLog(ULOG_CAT_CONSOLE);
-static Logger coreLog(ULOG_CAT_CORE_SERVICES); 
+static Logger coreLog(ULOG_CAT_CORE_SERVICES);
 static Logger ioLog(ULOG_CAT_IO);
 static Logger rsLog(ULOG_CAT_REMOTE_SERVICE);
 static Logger perfLog(ULOG_CAT_PERFORMANCE);
 static Logger scriptLog(ULOG_CAT_SCRIPTS);
 static Logger taskLog(ULOG_CAT_TASKS);
 static Logger uiLog(ULOG_CAT_USER_INTERFACE);
+static Logger userActLog(ULOG_CAT_USER_ACTIONS);
 
 
 }//namespace

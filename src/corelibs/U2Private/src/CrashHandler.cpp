@@ -31,7 +31,7 @@
 #include <U2Core/Version.h>
 
 
-#define MAX_CRASH_MESSAGES_TO_SEND 70
+#define MAX_CRASH_MESSAGES_TO_SEND 500
 
 #if defined(Q_OS_WIN32)
   #ifdef UGENE_X86_64 //see http://social.msdn.microsoft.com/Forums/en-US/vcgeneral/thread/4dc15026-884c-4f8a-8435-09d0111d708d/
@@ -323,6 +323,8 @@ void CrashHandler::setupHandler() {
     crashLogCache->filter.filters.append(LogFilterItem(ULOG_CAT_CONSOLE, LogLevel_ERROR));
     crashLogCache->filter.filters.append(LogFilterItem(ULOG_CAT_CORE_SERVICES, LogLevel_DETAILS));
     crashLogCache->filter.filters.append(LogFilterItem(ULOG_CAT_TASKS, LogLevel_DETAILS));
+    crashLogCache->filter.filters.append(LogFilterItem(ULOG_CAT_USER_ACTIONS, LogLevel_TRACE));
+
 
 #if defined( Q_OS_WIN )
     addHandlerFunc = NULL;

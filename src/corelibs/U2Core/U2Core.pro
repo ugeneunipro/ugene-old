@@ -200,7 +200,8 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/util/U2OpStatusUtils.h \
            src/util/U2SequenceUtils.h \
            src/util/U2VariationUtils.h \
-    src/tasks/UniprotBlastTask.h
+        src/tasks/UniprotBlastTask.h \
+    src/globals/UserActionsWriter.h
 SOURCES += src/cmdline/CMDLineCoreOptions.cpp \
            src/cmdline/CMDLineRegistry.cpp \
            src/cmdline/CMDLineUtils.cpp \
@@ -353,7 +354,8 @@ SOURCES += src/cmdline/CMDLineCoreOptions.cpp \
            src/util/VariationPropertiesUtils.cpp \
            src/util/U2SequenceUtils.cpp \
            src/util/U2VariationUtils.cpp \
-    src/tasks/UniprotBlastTask.cpp
+    src/tasks/UniprotBlastTask.cpp \
+    src/globals/UserActionsWriter.cpp
 TRANSLATIONS += transl/chinese.ts \
                 transl/czech.ts \
                 transl/english.ts \
