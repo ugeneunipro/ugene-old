@@ -90,6 +90,8 @@ public:
 
     static void waitForDialog(U2OpStatus &os, Runnable *r);
 
+    static void waitForDialogWhichMayRunOrNot(U2OpStatus &os, Runnable *r);
+
     // deletes all GUIDialogWaiters, sets err if there are unfinished waiters
     static void cleanup(U2OpStatus &os, CleanupSettings s = FailOnUnfinished);
 private:

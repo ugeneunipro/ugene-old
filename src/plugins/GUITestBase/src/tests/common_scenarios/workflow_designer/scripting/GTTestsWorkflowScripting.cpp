@@ -48,7 +48,6 @@
 #include "runnables/ugene/plugins/workflow_designer/WizardFiller.h"
 #include "runnables/ugene/plugins/workflow_designer/WorkflowMetadialogFiller.h"
 #include "runnables/ugene/ugeneui/SequenceReadingModeSelectorDialogFiller.h"
-
 #include "../../workflow_designer/src/WorkflowViewItems.h"
 
 #include <U2Core/AppContext.h>
@@ -125,6 +124,7 @@ GUI_TEST_CLASS_DEFINITION(test_0003) {
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0004) {
+    GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
     QMenu *menu = GTMenu::showMainMenu(os, MWMENU_TOOLS);
     GTMenu::clickMenuItem(os, menu, QStringList() << "Workflow Designer");
     GTGlobals::sleep(500);

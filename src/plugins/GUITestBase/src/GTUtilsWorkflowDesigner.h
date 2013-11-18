@@ -37,7 +37,7 @@ public:
     enum valueType{spinValue, doubleSpinValue, comboValue, textValue};
 
     //opens WorkflowDesigner
-    void openWorkfolwDesigner(U2OpStatus &os);
+    static void openWorkfolwDesigner(U2OpStatus &os);
 
     //reterns item from samples or algorithms tab
     static QTreeWidgetItem* findTreeItem(U2OpStatus &os, QString itemName,tab t);
@@ -72,6 +72,7 @@ public:
     //returns all workers placed on workflow scene
     static QList<WorkflowProcessItem*> getWorkers(U2OpStatus &os);
 
+    static void createDataset(U2OpStatus& os, QString datasetName = "");
     //sets input file with path "filePath" and name "filename" dataset
     //this method should be called after selecting worker which contains dataset on scene
     static void setDatasetInputFile(U2OpStatus &os, QString filePath, QString fileName);
@@ -81,6 +82,9 @@ public:
 
     //sets oneparameter worker parameter
     static void setParameter(U2OpStatus& os, QString parameter, QVariant value, valueType type);
+
+    //gets oneparameter worker parameter
+    static QVariant getParameter(U2OpStatus& os, QString parameter);
 
     static void setParameterScripting(U2OpStatus& os, QString parameter, QString scriptMode);
 

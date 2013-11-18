@@ -39,7 +39,6 @@
 #include "runnables/ugene/plugins/workflow_designer/WizardFiller.h"
 #include "runnables/ugene/plugins/workflow_designer/StartupDialogFiller.h"
 #include "runnables/ugene/plugins/workflow_designer/AliasesDialogFiller.h"
-#include "runnables/ugene/plugins/workflow_designer/RPackageDialorFiller.h"
 #include "runnables/ugene/ugeneui/SequenceReadingModeSelectorDialogFiller.h"
 #include "GTUtilsWorkflowDesigner.h"
 #include "GTUtilsMdi.h"
@@ -65,25 +64,15 @@ namespace U2 {
 namespace GUITest_common_scenarios_workflow_designer {
 GUI_TEST_CLASS_DEFINITION(test_0001){
 
-    //GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
-    //GTUtilsDialog::waitForDialog(os,new RPackageDialorFiller(os));
-    QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
-    GTMenu::clickMenuItem(os, menu, QStringList() << "Workflow Designer");
-    GTGlobals::sleep(500);
 
-    GTUtilsWorkflowDesigner::addAlgorithm(os, "Call Variants");
-    GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "Call Variants"));
+    GTUtilsWorkflowDesigner::openWorkfolwDesigner(os);
+    GTUtilsWorkflowDesigner::addAlgorithm(os, "File List");
+    GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "File List"));
     GTMouseDriver::click(os);
 
-
-    GTUtilsDialog::waitForDialog(os, new ScriptEditorDialogFiller(os, "ololo", "trololo"));
-
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<"Show scripting options"));
-    GTWidget::click(os, GTAction::button(os, GTAction::findActionByText(os, "Scripting mode")));
-
-    GTUtilsWorkflowDesigner::setParameterScripting(os, "Gap size", "user");
-
-//    QAbstractButton* edit = GTAction::button(os, GTAction::findActionByText(os, "Edit script of the element..."));
+    GTUtilsWorkflowDesigner::createDataset(os, "some name");
+    //GTWidget::getAllWidgetsInfo(os, table);
+    //    QAbstractButton* edit = GTAction::button(os, GTAction::findActionByText(os, "Edit script of the element..."));
 //    GTWidget::click(os, edit);
 
     /*WizardFiller::pairValList list;
@@ -174,7 +163,6 @@ GUI_TEST_CLASS_DEFINITION(test_0001){
 
 GUI_TEST_CLASS_DEFINITION(test_0002){
     GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
-    //GTUtilsDialog::waitForDialog(os,new RPackageDialorFiller(os));
     //1. Start UGENE. Open workflow schema file from data\cmdline\pfm-build.uws
     GTFileDialog::openFile(os,dataDir + "cmdline/","pwm-build.uwl");
     GTGlobals::sleep(1000);
@@ -204,7 +192,6 @@ GUI_TEST_CLASS_DEFINITION(test_0002){
 
 GUI_TEST_CLASS_DEFINITION(test_0002_1){
     GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
-    //GTUtilsDialog::waitForDialog(os,new RPackageDialorFiller(os));
     //1. Start UGENE. Open workflow schema file from data\cmdline\pfm-build.uws
     GTFileDialog::openFile(os,dataDir + "cmdline/","pwm-build.uwl");
     GTGlobals::sleep(1000);
@@ -238,7 +225,6 @@ GUI_TEST_CLASS_DEFINITION(test_0002_1){
 
 GUI_TEST_CLASS_DEFINITION(test_0003){
     GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
-    //GTUtilsDialog::waitForDialog(os,new RPackageDialorFiller(os));
 //    1. Start UGENE. Open workflow schema file from \common data\workflow\remoteDBReaderTest.uws
     GTFileDialog::openFile(os,testDir + "_common_data/workflow/","remoteDBReaderTest.uws");
 //    Expected state: workflow schema opened in Workflow designer
@@ -262,7 +248,6 @@ GUI_TEST_CLASS_DEFINITION(test_0003){
 
 GUI_TEST_CLASS_DEFINITION(test_0005){
     GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
-    //GTUtilsDialog::waitForDialog(os,new RPackageDialorFiller(os));
 //1. Open WD
     QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
     GTMenu::clickMenuItem(os, menu, QStringList() << "Workflow Designer");
@@ -276,7 +261,6 @@ GUI_TEST_CLASS_DEFINITION(test_0006){
 #ifndef Q_OS_LINUX
     //GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
 #endif
-    //GTUtilsDialog::waitForDialog(os,new RPackageDialorFiller(os));
 //1. Do menu Settings->Prefrences
     GTUtilsDialog::waitForDialog(os,new AppSettingsDialogFiller(os,AppSettingsDialogFiller::minimal));
     QMenu* menu=GTMenu::showMainMenu(os, MWMENU_SETTINGS);
@@ -305,7 +289,6 @@ GUI_TEST_CLASS_DEFINITION(test_0006){
 
 GUI_TEST_CLASS_DEFINITION(test_0006_1){
     //GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
-    //GTUtilsDialog::waitForDialog(os,new RPackageDialorFiller(os));
 //1. Do menu Settings->Prefrences
     GTUtilsDialog::waitForDialog(os,new AppSettingsDialogFiller(os,AppSettingsDialogFiller::extended));
     QMenu* menu=GTMenu::showMainMenu(os, MWMENU_SETTINGS);
@@ -359,7 +342,6 @@ GUI_TEST_CLASS_DEFINITION(test_0007){
 
 GUI_TEST_CLASS_DEFINITION(test_0009){
     GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
-    //GTUtilsDialog::waitForDialog(os,new RPackageDialorFiller(os));
 //    1. Open schema from examples
     QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
     GTMenu::clickMenuItem(os, menu, QStringList() << "Workflow Designer");
@@ -396,7 +378,6 @@ GUI_TEST_CLASS_DEFINITION(test_0009){
 
 GUI_TEST_CLASS_DEFINITION(test_0010){
     GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
-    //GTUtilsDialog::waitForDialog(os,new RPackageDialorFiller(os));
 //    1. Open WD
     QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
     GTMenu::clickMenuItem(os, menu, QStringList() << "Workflow Designer");
@@ -426,7 +407,6 @@ GUI_TEST_CLASS_DEFINITION(test_0010){
 
 GUI_TEST_CLASS_DEFINITION(test_0013){
     GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
-    //GTUtilsDialog::waitForDialog(os,new RPackageDialorFiller(os));
 //    1. Load any sample in WD
     QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
     GTMenu::clickMenuItem(os, menu, QStringList() << "Workflow Designer");
@@ -465,7 +445,6 @@ GUI_TEST_CLASS_DEFINITION(test_0013){
 
 GUI_TEST_CLASS_DEFINITION(test_0015){
     GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
-    //GTUtilsDialog::waitForDialog(os,new RPackageDialorFiller(os));
 //    1. open WD.
     QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
     GTMenu::clickMenuItem(os, menu, QStringList() << "Workflow Designer");
@@ -484,7 +463,6 @@ GUI_TEST_CLASS_DEFINITION(test_0015){
 
 GUI_TEST_CLASS_DEFINITION(test_0015_1){//DIFFERENCE:file is loaded
     GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
-   // GTUtilsDialog::waitForDialog(os,new RPackageDialorFiller(os));
 //    1. open WD.
     GTFileDialog::openFile(os,dataDir + "cmdline/","pwm-build.uwl");
     GTGlobals::sleep(1000);
@@ -501,7 +479,6 @@ GUI_TEST_CLASS_DEFINITION(test_0015_1){//DIFFERENCE:file is loaded
 }
 GUI_TEST_CLASS_DEFINITION(test_0016){
     GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
-    //GTUtilsDialog::waitForDialog(os,new RPackageDialorFiller(os));
 //    1. open WD.
     QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
     GTMenu::clickMenuItem(os, menu, QStringList() << "Workflow Designer");

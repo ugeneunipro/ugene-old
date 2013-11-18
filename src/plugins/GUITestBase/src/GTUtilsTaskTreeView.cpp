@@ -25,7 +25,10 @@
 #include "api/GTWidget.h"
 #include "runnables/qt/PopupChooser.h"
 
+#include <U2Core/Task.h>
 #include <U2Gui/MainWindow.h>
+#include <U2Core/AppContext.h>
+
 #include <QtGui/QTreeWidget>
 
 namespace U2 {
@@ -34,6 +37,13 @@ namespace U2 {
 
 const QString GTUtilsTaskTreeView::widgetName = DOCK_TASK_TREE_VIEW;
 
+void GTUtilsTaskTreeView::waitTaskFinidhed(){
+    TaskScheduler* scheduller = AppContext::getTaskScheduler();
+    GTGlobals::sleep(5000);
+    while(!scheduller->getTopLevelTasks().isEmpty()){
+       GTGlobals::sleep();
+    }
+}
 void GTUtilsTaskTreeView::openView(U2OpStatus& os) {
     GTGlobals::FindOptions options;
     options.failIfNull = false;

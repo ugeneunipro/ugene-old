@@ -46,6 +46,7 @@ DatasetsListWidget::DatasetsListWidget(DatasetsController *_ctrl)
     newTabButton->setCursor(Qt::ArrowCursor);
     newTabButton->setAutoRaise(true);
     newTabButton->setText("+");
+    newTabButton->setObjectName("+");
     newTabButton->setToolTip(tr("Add dataset"));
     QIcon addIcon = QIcon(QString(":U2Designer/images/add.png"));
     newTabButton->setIcon(addIcon);

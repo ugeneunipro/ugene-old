@@ -86,6 +86,33 @@ QWidget* GTWidget::findWidget(U2OpStatus &os, const QString &widgetName, QWidget
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "findButtonByText"
+QAbstractButton* GTWidget::findButtonByText(U2OpStatus &os, const QString &text, QWidget *parentWidget, const GTGlobals::FindOptions& options) {
+
+    if (parentWidget == NULL) {
+        parentWidget = AppContext::getMainWindow()->getQMainWindow();
+    }
+    QList<QAbstractButton*> buttonList = parentWidget->findChildren<QAbstractButton*>();
+    QList<QAbstractButton*> foundButtonList;
+    QStringList sL;
+
+    foreach(QAbstractButton* but, buttonList){
+        sL.append(but->text());
+        if (!but->text().compare(text, Qt::CaseInsensitive)){
+            foundButtonList << but;
+        }
+    }
+
+    GT_CHECK_RESULT(foundButtonList.count()<=1, QString("there are %1 buttons with such text").arg(foundButtonList.count()), NULL);
+
+    if (options.failIfNull) {
+        GT_CHECK_RESULT(!foundButtonList.count()==0, "button with this text not found", NULL);
+    }
+
+    return foundButtonList.takeFirst();
+}
+#undef GT_METHOD_NAME
+
 #define GT_METHOD_NAME "findWidget"
 void GTWidget::getAllWidgetsInfo(U2OpStatus &os, QWidget *parent){
     if(parent == NULL){
@@ -96,11 +123,13 @@ void GTWidget::getAllWidgetsInfo(U2OpStatus &os, QWidget *parent){
     QString actStr;
 
     foreach(QWidget* act, list){
-        actStr.append(act->objectName()+ "  " + act->metaObject()->className() + "\n");
+        actStr.append(act->objectName()+ "  " + act->metaObject()->className() + "  " + QString("%1").arg(act->isVisible()) + "\n");
     }
     CHECK_SET_ERR(false, actStr);
 }
 #undef GT_METHOD_NAME
+
+
 
 #undef GT_CLASS_NAME
 

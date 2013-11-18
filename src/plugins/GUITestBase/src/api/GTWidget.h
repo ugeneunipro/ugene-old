@@ -23,6 +23,7 @@
 #define _U2_GUI_GTWIDGET_H_
 
 #include "api/GTGlobals.h"
+#include <QtGui/QAbstractButton>
 
 namespace U2 {
 
@@ -37,6 +38,7 @@ public:
     // finds widget with the given object name using given FindOptions. Parent widget is QMainWindow, if not set
     static QWidget *findWidget(U2OpStatus &os, const QString &widgetName, QWidget *parentWidget = NULL, const GTGlobals::FindOptions& = GTGlobals::FindOptions());
 
+    static QAbstractButton *findButtonByText(U2OpStatus &os, const QString &text, QWidget *parentWidget = NULL, const GTGlobals::FindOptions& = GTGlobals::FindOptions());
     //this method writes info about all widgets to opStatus
     static void getAllWidgetsInfo(U2OpStatus &os, QWidget* parent=NULL);
 };

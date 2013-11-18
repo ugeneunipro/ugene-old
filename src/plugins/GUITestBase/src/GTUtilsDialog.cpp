@@ -126,6 +126,16 @@ void GTUtilsDialog::waitForDialog(U2OpStatus &os, Runnable *r) {
     waitForDialog(os, r, settings);
 }
 
+void GTUtilsDialog::waitForDialogWhichMayRunOrNot(U2OpStatus &os, Runnable *r) {
+    GUIDialogWaiter::WaitSettings settings;
+    Filler* f = dynamic_cast<Filler*>(r);
+    if (f) {
+        settings = f->getSettings();
+    }
+
+    GUIDialogWaiter *waiter = new GUIDialogWaiter(os, r, settings);
+}
+
 #define GT_METHOD_NAME "checkAllFinished"
 void GTUtilsDialog::checkAllFinished(U2OpStatus &os) {
 

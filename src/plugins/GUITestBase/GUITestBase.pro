@@ -75,7 +75,6 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/runnables/ugene/plugins/workflow_designer/WizardFiller.h \
             src/runnables/ugene/plugins/workflow_designer/StartupDialogFiller.h \
             src/runnables/ugene/plugins/workflow_designer/AliasesDialogFiller.h \
-            src/runnables/ugene/plugins/workflow_designer/RPackageDialorFiller.h \
 #   Utils classes
             src/GTUtilsApp.h \
             src/GTUtilsDialog.h \
@@ -177,7 +176,8 @@ HEADERS +=  src/GUITestBasePlugin.h \
     src/runnables/ugene/plugins/annotator/FindAnnotationCollocationsDialogFiller.h \
     src/runnables/ugene/plugins/workflow_designer/workflowmetadialogFiller.h \
     src/runnables/ugene/plugins/workflow_designer/CreateElementWithScriptDialogFiller.h \
-    src/runnables/ugene/plugins/workflow_designer/WorkflowMetadialogFiller.h
+    src/runnables/ugene/plugins/workflow_designer/WorkflowMetadialogFiller.h \
+    src/runnables/ugene/plugins/workflow_designer/DatasetNameEditDialogFiller.h
 
 SOURCES +=  src/GUITestBasePlugin.cpp \
             src/tests/crazy_user/GUICrazyUserTest.cpp \
@@ -252,7 +252,6 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/runnables/ugene/plugins/workflow_designer/WizardFiller.cpp \
             src/runnables/ugene/plugins/workflow_designer/StartupDialogFiller.cpp \
             src/runnables/ugene/plugins/workflow_designer/AliasesDialogFiller.cpp \
-            src/runnables/ugene/plugins/workflow_designer/RPackageDialorFiller.cpp \
 #   Utils classes
             src/GTUtilsApp.cpp \
             src/GTUtilsDialog.cpp \
@@ -359,5 +358,6 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
     src/runnables/ugene/plugins/external_tools/TCoffeeDailogFiller.cpp \
     src/runnables/ugene/plugins/annotator/FindAnnotationCollocationsDialogFiller.cpp \
     src/runnables/ugene/plugins/workflow_designer/workflowmetadialogFiller.cpp \
-    src/runnables/ugene/plugins/workflow_designer/CreateElementWithScriptDialogFiller.cpp
+    src/runnables/ugene/plugins/workflow_designer/CreateElementWithScriptDialogFiller.cpp \
+    src/runnables/ugene/plugins/workflow_designer/DatasetNameEditDialogFiller.cpp
 

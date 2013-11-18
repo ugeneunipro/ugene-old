@@ -34,6 +34,7 @@
 #include "api/GTLineEdit.h"
 #include "api/GTComboBox.h"
 #include "api/GTMenu.h"
+#include "runnables/ugene/plugins/workflow_designer/DatasetNameEditDialogFiller.h"
 
 #include <U2View/MSAEditor.h>
 #include <QTreeWidget>
@@ -357,6 +358,20 @@ void GTUtilsWorkflowDesigner::setDatasetInputFile(U2OpStatus &os, QString filePa
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "createDataset"
+void GTUtilsWorkflowDesigner::createDataset(U2OpStatus &os, QString datasetName){
+    QWidget* DatasetWidget = GTWidget::findWidget(os, "DatasetWidget");
+    GT_CHECK(DatasetWidget, "DatasetWidget not found");
+
+    QWidget* plusButton = GTWidget::findButtonByText(os, "+");
+    GT_CHECK(plusButton, "plusButton not found");
+
+    GTUtilsDialog::waitForDialog(os, new DatasetNameEditDialogFiller(os, datasetName));
+
+    GTWidget::click(os, plusButton);
+}
+#undef GT_METHOD_NAME
+
 #define GT_METHOD_NAME "setDatasetInputFolder"
 void GTUtilsWorkflowDesigner::setDatasetInputFolder(U2OpStatus &os, QString filePath){
     QWidget* DatasetWidget = GTWidget::findWidget(os, "DatasetWidget");
@@ -426,6 +441,26 @@ void GTUtilsWorkflowDesigner::setParameter(U2OpStatus &os, QString parameter, QV
         GTLineEdit::setText(os, line, lineVal);
     }
     }
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "getParameter"
+QVariant GTUtilsWorkflowDesigner::getParameter(U2OpStatus &os, QString parameter){
+    QTableView* table = qobject_cast<QTableView*>(GTWidget::findWidget(os,"table"));
+    GT_CHECK_RESULT(table,"tableView not found", QVariant());
+
+    QAbstractItemModel* model = table->model();
+    GT_CHECK_RESULT(model,"model not found", QVariant());
+    int iMax = model->rowCount();
+    int row = -1;
+    for(int i = 0; i<iMax; i++){
+        QString s = model->data(model->index(i,0)).toString();
+        if (s.contains(parameter,Qt::CaseInsensitive))
+            row = i;
+    }
+    GT_CHECK_RESULT(row != -1, "parameter not found",QVariant());
+
+    return model->data(model->index(row,1));
 }
 #undef GT_METHOD_NAME
 
