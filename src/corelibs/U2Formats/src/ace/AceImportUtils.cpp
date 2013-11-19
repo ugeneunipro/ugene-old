@@ -516,7 +516,7 @@ int AceReader::getClearRangeEnd(const QByteArray &cur_line) {
 }
 
 void AceReader::formatSequence(QByteArray& data) {
-    data.toUpper();
+    data = data.toUpper();
     data.replace('X', 'N');
     data.replace('*', 'N');
 }
