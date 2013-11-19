@@ -35,6 +35,7 @@
 #include "api/GTComboBox.h"
 #include "api/GTMenu.h"
 #include "runnables/ugene/plugins/workflow_designer/DatasetNameEditDialogFiller.h"
+#include "runnables/ugene/plugins/workflow_designer/StartupDialogFiller.h"
 
 #include <U2View/MSAEditor.h>
 #include <QTreeWidget>
@@ -51,6 +52,9 @@ namespace U2 {
 
 #define GT_METHOD_NAME "openWorkfolwDesigner"
 void GTUtilsWorkflowDesigner::openWorkfolwDesigner(U2OpStatus &os){
+    GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os, true));
+    GTUtilsDialog::waitForDialogWhichMayRunOrNot(os, new StartupDialogFiller(os));
+
     QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
     GTMenu::clickMenuItem(os, menu, QStringList() << "Workflow Designer");
     GTGlobals::sleep(500);
@@ -445,7 +449,7 @@ void GTUtilsWorkflowDesigner::setParameter(U2OpStatus &os, QString parameter, QV
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "getParameter"
-QVariant GTUtilsWorkflowDesigner::getParameter(U2OpStatus &os, QString parameter){
+QString GTUtilsWorkflowDesigner::getParameter(U2OpStatus &os, QString parameter){
     QTableView* table = qobject_cast<QTableView*>(GTWidget::findWidget(os,"table"));
     GT_CHECK_RESULT(table,"tableView not found", QVariant());
 
@@ -460,7 +464,8 @@ QVariant GTUtilsWorkflowDesigner::getParameter(U2OpStatus &os, QString parameter
     }
     GT_CHECK_RESULT(row != -1, "parameter not found",QVariant());
 
-    return model->data(model->index(row,1));
+    QVariant var = model->data(model->index(row,1));
+    return var.toString();
 }
 #undef GT_METHOD_NAME
 

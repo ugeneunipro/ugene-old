@@ -84,7 +84,7 @@ public:
     static void setParameter(U2OpStatus& os, QString parameter, QVariant value, valueType type);
 
     //gets oneparameter worker parameter
-    static QVariant getParameter(U2OpStatus& os, QString parameter);
+    static QString getParameter(U2OpStatus& os, QString parameter);
 
     static void setParameterScripting(U2OpStatus& os, QString parameter, QString scriptMode);
 
