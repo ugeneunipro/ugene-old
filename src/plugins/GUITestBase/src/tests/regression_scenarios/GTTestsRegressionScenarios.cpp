@@ -3332,6 +3332,49 @@ GUI_TEST_CLASS_DEFINITION( test_2377 ) {
     CHECK_SET_ERR( l.hasError( ), "Error message expected!" );
 }
 
+GUI_TEST_CLASS_DEFINITION( test_2406 ) {
+//    1. Create the {Read Sequence -> Write Sequence} workflow.
+    GTUtilsWorkflowDesigner::openWorkfolwDesigner(os);
+
+    const QString sequenceReaderName = "Read Sequence";
+    const QString sequenceWriterName = "Write Sequence";
+
+    GTUtilsWorkflowDesigner::addAlgorithm(os, sequenceReaderName);
+    GTUtilsWorkflowDesigner::addAlgorithm(os, sequenceWriterName);
+
+    WorkflowProcessItem *sequenceReader = GTUtilsWorkflowDesigner::getWorker(os, sequenceReaderName);
+    WorkflowProcessItem *sequenceWriter = GTUtilsWorkflowDesigner::getWorker(os, sequenceWriterName);
+
+    CHECK_SET_ERR(NULL != sequenceReader, "Sequence reader element is NULL");
+    CHECK_SET_ERR(NULL != sequenceWriter, "Sequence writer element is NULL");
+
+    GTUtilsWorkflowDesigner::connect(os, sequenceReader, sequenceWriter);
+
+//    2. Click on the output file field and input "TEST" file name and press Enter.
+//    Expected: TEST file name appears in the output file name field
+    GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, sequenceWriterName));
+    GTMouseDriver::click(os);
+    GTUtilsWorkflowDesigner::setParameter(os, "Output file", "TEST", GTUtilsWorkflowDesigner::textValue);
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
+
+    const QString expectedPreValue = "TEST";
+    const QString resultPreValue = GTUtilsWorkflowDesigner::getParameter(os, "Output file");
+    CHECK_SET_ERR(expectedPreValue == resultPreValue,
+                  QString("Unexpected value: expected '%1' get '%2'").
+                  arg(expectedPreValue).arg(resultPreValue));
+
+//    3. Change the file format to the genbank
+//    Expected: TEST.gb file name appears in the output file name field
+    GTUtilsWorkflowDesigner::setParameter(os, "Document format", 2 /*"genbank"*/, GTUtilsWorkflowDesigner::comboValue);
+
+    const QString expectedPostValue = "TEST.gb";
+    const QString resultPostValue = GTUtilsWorkflowDesigner::getParameter(os, "Output file");
+    CHECK_SET_ERR(expectedPostValue == resultPostValue,
+                  QString("Unexpected value: expected '%1' get '%2'").
+                  arg(expectedPostValue).arg(resultPostValue));
+}
+
 } // GUITest_regression_scenarios namespace
 
 } // U2 namespace
