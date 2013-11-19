@@ -30,6 +30,7 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/ProjectModel.h>
 #include <U2Core/FormatUtils.h>
+#include <U2Core/L10n.h>
 #include <U2Gui/ObjectViewModel.h>
 #include "BAMDbiPlugin.h"
 #include "BaiReader.h"
@@ -42,11 +43,16 @@ namespace BAM {
 ConvertToSQLiteDialog::ConvertToSQLiteDialog(const GUrl& _sourceUrl, BAMInfo& _bamInfo, bool sam) : QDialog(QApplication::activeWindow()), sourceUrl(_sourceUrl), bamInfo(_bamInfo) {
     ui.setupUi(this);
     if (sam) {
-        setWindowTitle(tr("Import SAM file"));
+        setWindowTitle(tr("Import SAM File"));
     } else {
-        setWindowTitle(tr("Import BAM file"));
+        setWindowTitle(tr("Import BAM File"));
     }
-    this->setObjectName(tr("Import BAM file"));
+    this->setObjectName(tr("Import BAM File"));
+
+    const QString warningMessageStyleSheet( "color: " + L10N::errorColorLabelStr( )
+        + "; font: bold;" );
+    ui.indexNotAvailableLabel->setStyleSheet( warningMessageStyleSheet );
+    ui.referenceWarningLabel->setStyleSheet( warningMessageStyleSheet );
 
     connect(ui.bamInfoButton, SIGNAL(clicked()), SLOT(sl_bamInfoButtonClicked()));
     connect(ui.refUrlButton, SIGNAL(clicked()), SLOT(sl_refUrlButtonClicked()));
@@ -64,12 +70,12 @@ ConvertToSQLiteDialog::ConvertToSQLiteDialog(const GUrl& _sourceUrl, BAMInfo& _b
         ui.tableWidget->setRowCount(bamInfo.getHeader().getReferences().count());
         QStringList header; header << BAMDbiPlugin::tr("Assembly name") << BAMDbiPlugin::tr("Length") << BAMDbiPlugin::tr("URI");
         ui.tableWidget->setHorizontalHeaderLabels(header);
-        ui.tableWidget->horizontalHeader()->setStretchLastSection(true);    
+        ui.tableWidget->horizontalHeader()->setStretchLastSection(true);
         {
             int i = 0;
             foreach(const Header::Reference& ref, bamInfo.getHeader().getReferences()) {
                 QTableWidgetItem* checkbox = new QTableWidgetItem();
-                checkbox->setFlags(Qt::ItemIsUserCheckable | Qt::ItemIsEnabled);            
+                checkbox->setFlags(Qt::ItemIsUserCheckable | Qt::ItemIsEnabled);
                 checkbox->setText(ref.getName());
                 ui.tableWidget->setItem(i, 0, checkbox);
                 QTableWidgetItem* item = new QTableWidgetItem(FormatUtils::formatNumberWithSeparators(ref.getLength()));
@@ -128,20 +134,13 @@ void ConvertToSQLiteDialog::sl_bamInfoButtonClicked() {
     const Header& header = bamInfo.getHeader();
     QDialog dialog(this);
     dialog.setWindowTitle(BAMDbiPlugin::tr("%1 file info").arg(sourceUrl.getURLString()));    
-    /*QTextEdit* textEdit = new QTextEdit();
-    QString text = header.getText();
-    textEdit->setPlainText(text.replace("\t@", "\n@"));
-    textEdit->setReadOnly(true);
-    textEdit->setLineWrapMode(QTextEdit::NoWrap);
     dialog.setLayout(new QVBoxLayout());
-    dialog.layout()->addWidget(textEdit);*/    
-    dialog.setLayout(new QVBoxLayout());    
-    
+
     {
         QTableWidget* table = new QTableWidget();
         table->setColumnCount(2);
         table->setHorizontalHeaderLabels(QStringList() << BAMDbiPlugin::tr("Property name") << BAMDbiPlugin::tr("Value"));
-        table->horizontalHeader()->setStretchLastSection(true);                
+        table->horizontalHeader()->setStretchLastSection(true);
         table->verticalHeader()->setVisible(false);
 
         QList<QPair<QString, QString> > list;
