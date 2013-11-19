@@ -451,10 +451,10 @@ void GTUtilsWorkflowDesigner::setParameter(U2OpStatus &os, QString parameter, QV
 #define GT_METHOD_NAME "getParameter"
 QString GTUtilsWorkflowDesigner::getParameter(U2OpStatus &os, QString parameter){
     QTableView* table = qobject_cast<QTableView*>(GTWidget::findWidget(os,"table"));
-    GT_CHECK_RESULT(table,"tableView not found", QVariant());
+    GT_CHECK_RESULT(table,"tableView not found", "");
 
     QAbstractItemModel* model = table->model();
-    GT_CHECK_RESULT(model,"model not found", QVariant());
+    GT_CHECK_RESULT(model,"model not found", "");
     int iMax = model->rowCount();
     int row = -1;
     for(int i = 0; i<iMax; i++){
@@ -462,7 +462,7 @@ QString GTUtilsWorkflowDesigner::getParameter(U2OpStatus &os, QString parameter)
         if (s.contains(parameter,Qt::CaseInsensitive))
             row = i;
     }
-    GT_CHECK_RESULT(row != -1, "parameter not found",QVariant());
+    GT_CHECK_RESULT(row != -1, "parameter not found","");
 
     QVariant var = model->data(model->index(row,1));
     return var.toString();
