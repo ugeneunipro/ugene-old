@@ -373,7 +373,7 @@ void GTest_ImportBrokenDocument::init(XMLTestFormat* tf, const QDomElement& el) 
         url = env->getVar("COMMON_DATA_DIR") + "/" + urlAttr;
     }
 
-    destUrl = getTempDir(env) + "/" + urlAttr.mid(urlAttr.lastIndexOf("/")) + ".ugenedb";
+    destUrl = getTempDir(env) + "/" + url.mid(url.lastIndexOf("/")) + ".ugenedb";
 
     message = el.attribute("message");
 
