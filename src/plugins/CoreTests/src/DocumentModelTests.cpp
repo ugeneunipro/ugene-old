@@ -23,10 +23,12 @@
 
 #include <U2Core/AppContext.h>
 #include <U2Core/IOAdapter.h>
+#include <U2Core/DocumentImport.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/GObject.h>
 #include <U2Core/GHints.h>
 #include <U2Core/Log.h>
+#include <U2Core/U2DbiRegistry.h>
 #include <U2Core/U2SafePoints.h>
 
 #include <U2Core/LoadDocumentTask.h>
@@ -208,7 +210,6 @@ void GTest_LoadBrokenDocument::init(XMLTestFormat* tf, const QDomElement& el) {
     IOAdapterId         io = el.attribute("io");
     IOAdapterFactory*   iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(io);
     DocumentFormatId    format = el.attribute("format");
-    QVariantMap         fs;
 
     tempFile = (dir == "temp");
 
@@ -242,6 +243,183 @@ void GTest_LoadBrokenDocument::cleanup() {
     if (tempFile) {
         QFile::remove(url);
     }
+}
+
+/*******************************
+ * GTest_ImportDocument
+ *******************************/
+void GTest_ImportDocument::init(XMLTestFormat*, const QDomElement& el) {
+    importTask = NULL;
+    contextAdded = false;
+    docContextName = el.attribute("index");
+    needVerifyLog = false;
+
+    if (NULL != el.attribute("message")) {
+        expectedLogMessage = el.attribute("message");
+    }
+
+    if (NULL != el.attribute("message2")) {
+        expectedLogMessage2 = el.attribute("message2");
+    }
+
+    if (NULL != el.attribute("no-message")) {
+        unexpectedLogMessage = el.attribute("no-message");
+    }
+
+    QString dir = el.attribute("dir");
+    if(dir == "temp"){
+        tempFile = true;
+        url = getTempDir(env) + "/" + el.attribute("url");
+    } else{
+        tempFile = false;
+        QString commonDataDir = env->getVar("COMMON_DATA_DIR");
+        url =  commonDataDir + "/" + el.attribute("url");
+    }
+
+    DocumentFormatId formatId = el.attribute("format");
+    if (formatId.isEmpty()) {
+        stateInfo.setError( QString("doc_format_is_not_specified"));
+        return;
+    }
+
+    destUrl = getTempDir(env) + "/" + url.mid(url.lastIndexOf("/")) + ".ugenedb";
+
+    FormatDetectionConfig conf;
+    conf.useImporters = true;
+    QList<FormatDetectionResult> detectionRes = DocumentUtils::detectFormat(url, conf);
+    CHECK_EXT(!detectionRes.isEmpty(), setError("Format is not recognized"), );
+
+    FormatDetectionResult* bestRes = NULL;
+    for (int i = 0; i < detectionRes.size(); ++i) {
+        if (NULL != detectionRes[i].importer && detectionRes[i].importer->getFormatIds().contains(formatId)) {
+            bestRes = &detectionRes[i];
+            break;
+        }
+    }
+    CHECK_EXT(NULL != bestRes && NULL != bestRes->importer, setError(QString("Can't find an importer for format: %1").arg(formatId)), );
+
+    QVariantMap hints;
+    U2DbiRef destDb(SQLITE_DBI_ID, destUrl);
+    QVariant variant;
+    variant.setValue<U2DbiRef>(destDb);
+    hints.insert(DocumentFormat::DBI_REF_HINT, variant);
+    importTask = bestRes->importer->createImportTask(*bestRes, false, hints);
+
+    addSubTask(importTask);
+}
+
+void GTest_ImportDocument::cleanup() {
+    if (contextAdded) {
+        removeContext(docContextName);
+    }
+
+    if (tempFile) {
+        QFile::remove(url);
+    }
+
+    QFile::remove(destUrl);
+}
+
+void GTest_ImportDocument::prepare() {
+    QStringList expectedMessages;
+    QStringList unexpectedMessages;
+
+    if (!expectedLogMessage.isEmpty()) {
+        expectedMessages << expectedLogMessage;
+    }
+
+    if (!expectedLogMessage2.isEmpty()) {
+        expectedMessages << expectedLogMessage2;
+    }
+
+    if (!unexpectedLogMessage.isEmpty()){
+        unexpectedMessages << unexpectedLogMessage;
+    }
+    if (expectedLogMessage.length() != 0 || unexpectedMessages.length() != 0) {
+        needVerifyLog = true;
+        logHelper.initMessages(expectedMessages, unexpectedMessages);
+    }
+}
+
+Task::ReportResult GTest_ImportDocument::report() {
+    if (NULL != importTask && importTask->hasError()) {
+        stateInfo.setError(importTask->getError());
+    } else if (!docContextName.isEmpty()) {
+        addContext(docContextName, importTask->getDocument());
+        contextAdded = true;
+
+        if (needVerifyLog && GTest_LogHelper_Invalid == logHelper.verifyStatus()) {
+            stateInfo.setError("Log is incorrect!");
+        }
+    }
+    return ReportResult_Finished;
+}
+
+/*******************************
+* GTest_ImportBrokenDocument
+*******************************/
+void GTest_ImportBrokenDocument::init(XMLTestFormat* tf, const QDomElement& el) {
+    Q_UNUSED(tf);
+
+    QString             urlAttr = el.attribute("url");
+    QString             dir = el.attribute("dir");
+    DocumentFormatId    formatId = el.attribute("format");
+
+    tempFile = (dir == "temp");
+
+    if (dir == "temp") {
+        url = getTempDir(env) + "/" + urlAttr;
+    } else {
+        url = env->getVar("COMMON_DATA_DIR") + "/" + urlAttr;
+    }
+
+    destUrl = getTempDir(env) + "/" + urlAttr.mid(urlAttr.lastIndexOf("/")) + ".ugenedb";
+
+    message = el.attribute("message");
+
+    FormatDetectionConfig conf;
+    conf.useImporters = true;
+    QList<FormatDetectionResult> detectionRes = DocumentUtils::detectFormat(url, conf);
+    CHECK_EXT(!detectionRes.isEmpty(), setError("Format is not recognized"), );
+
+    FormatDetectionResult* bestRes = NULL;
+    for (int i = 0; i < detectionRes.size(); ++i) {
+        if (NULL != detectionRes[i].importer && detectionRes[i].importer->getFormatIds().contains(formatId)) {
+            bestRes = &detectionRes[i];
+            break;
+        }
+    }
+    CHECK_EXT(NULL != bestRes && NULL != bestRes->importer, setError(QString("Can't find an importer for format: %1").arg(formatId)), );
+
+    QVariantMap hints;
+    U2DbiRef destDb(SQLITE_DBI_ID, destUrl);
+    QVariant variant;
+    variant.setValue<U2DbiRef>(destDb);
+    hints.insert(DocumentFormat::DBI_REF_HINT, variant);
+    importTask = bestRes->importer->createImportTask(*bestRes, false, hints);
+
+    addSubTask(importTask);
+}
+
+Task::ReportResult GTest_ImportBrokenDocument::report() {
+    Document* doc = importTask->getDocument();
+    if (doc == NULL && importTask->hasError()) {
+        CHECK(!message.isEmpty(), ReportResult_Finished);
+        if (importTask->getError().contains(message)) {
+            return ReportResult_Finished;
+        }
+        stateInfo.setError(QString("expected message is not found"));
+        return ReportResult_Finished;
+    }
+    stateInfo.setError(QString("file read without errors"));
+    return ReportResult_Finished;
+}
+
+void GTest_ImportBrokenDocument::cleanup() {
+    if (tempFile) {
+        QFile::remove(url);
+    }
+    QFile::remove(destUrl);
 }
 
 /*******************************
@@ -788,6 +966,8 @@ QList<XMLTestFactory*> DocumentModelTests::createTestFactories() {
     QList<XMLTestFactory*> res;
     res.append(GTest_LoadDocument::createFactory());
     res.append(GTest_LoadBrokenDocument::createFactory());
+    res.append(GTest_ImportDocument::createFactory());
+    res.append(GTest_ImportBrokenDocument::createFactory());
     res.append(GTest_DocumentFormat::createFactory());
     res.append(GTest_DocumentNumObjects::createFactory());
     res.append(GTest_DocumentObjectNames::createFactory());

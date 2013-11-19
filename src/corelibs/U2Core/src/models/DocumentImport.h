@@ -93,6 +93,8 @@ public:
 
     const QString& getId() const {return id;}
 
+    const QStringList& getFormatIds() const {return formatIds;}
+
     const QList<QString>& getSupportedFileExtensions() const {return extensions;}
 
     void setDialogFactory(ImportDialogFactory* factory);
@@ -100,6 +102,7 @@ public:
 protected:
     QString                 id;
     QString                 name;
+    QStringList             formatIds;
     QList<QString>          extensions;
     QString                 importerDescription;
     ImportDialogFactory*    dialogFactory;

@@ -34,6 +34,7 @@ class Document;
 class GObject;
 class LoadDocumentTask;
 class SaveDocumentTask;
+class DocumentProviderTask;
 
 class GTest_LoadDocument : public GTest {
     Q_OBJECT
@@ -88,6 +89,50 @@ public:
 private:
     LoadDocumentTask*   loadTask;
     QString url;
+    bool tempFile;
+    QString message;
+};
+
+class GTest_ImportDocument : public GTest {
+    Q_OBJECT
+public:
+    SIMPLE_XML_TEST_BODY_WITH_FACTORY(GTest_ImportDocument, "import-document");
+
+    ReportResult report();
+    void prepare();
+
+    virtual void cleanup();
+
+
+private:
+    QString                 docContextName;
+    DocumentProviderTask*   importTask;
+    bool                    contextAdded;
+    bool                    tempFile;
+    QString                 url;
+    QString                 destUrl;
+    GTestLogHelper          logHelper;
+
+    QString expectedLogMessage;
+    QString expectedLogMessage2;
+    QString unexpectedLogMessage;
+
+    bool                needVerifyLog;
+};
+
+class GTest_ImportBrokenDocument : public GTest {
+    Q_OBJECT
+public:
+    SIMPLE_XML_TEST_BODY_WITH_FACTORY_EXT(GTest_ImportBrokenDocument, "import-broken-document", TaskFlags(TaskFlag_NoRun)| TaskFlag_FailOnSubtaskCancel);
+
+    Document* getDocument() const;
+    ReportResult report();
+    void cleanup();
+
+private:
+    DocumentProviderTask*   importTask;
+    QString url;
+    QString destUrl;
     bool tempFile;
     QString message;
 };

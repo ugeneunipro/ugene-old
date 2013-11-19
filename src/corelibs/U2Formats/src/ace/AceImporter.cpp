@@ -38,8 +38,11 @@ AceImporterTask::AceImporterTask(const GUrl& url, const QVariantMap& settings, c
     DocumentProviderTask(tr("ACE file import: %1").arg(url.fileName()), TaskFlags_NR_FOSE_COSC),
     convertTask(NULL),
     loadDocTask(NULL),
-    srcUrl(url),
-    destUrl(settings.value(AceImporter::DEST_URL).toString()) {
+    srcUrl(url) {
+    if (settings.contains(AceImporter::DEST_URL)) {
+        destUrl = GUrl(settings.value(AceImporter::DEST_URL).toString());
+    }
+
     if (hints.contains(DocumentFormat::DBI_REF_HINT)) {
         U2DbiRef ref = hints.value(DocumentFormat::DBI_REF_HINT).value<U2DbiRef>();
         hintedDbiUrl = ref.dbiId;
@@ -103,6 +106,7 @@ AceImporter::AceImporter() :
     DocumentImporter(ID, tr("ACE file importer")) {
     ACEFormat aceFormat(NULL);
     extensions << aceFormat.getSupportedDocumentFileExtensions();
+    formatIds << aceFormat.getFormatId();
     importerDescription = tr("ACE files importer is used to convert conventional ACE files into UGENE database format." \
                              "Having ACE file converted into UGENE DB format you get an fast and efficient interface " \
                              "to your data with an option to change the content");
