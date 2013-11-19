@@ -556,6 +556,7 @@ void ProjectTreeController::sl_onContextMenuRequested(const QPoint&) {
     }
     if (unloadSelectedDocumentsAction->isEnabled()) {
         m.addAction(unloadSelectedDocumentsAction);
+        unloadSelectedDocumentsAction->setObjectName( ACTION_PROJECT__UNLOAD_SELECTED);
     }
     m.setObjectName("popMenu");
     m.exec(QCursor::pos());

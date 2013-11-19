@@ -3375,6 +3375,29 @@ GUI_TEST_CLASS_DEFINITION( test_2406 ) {
                   arg(expectedPostValue).arg(resultPostValue));
 }
 
+GUI_TEST_CLASS_DEFINITION(test_2407) {
+    GTLogTracer l;
+    GTFileDialog::openFile(os, testDir+"_common_data/clustal/", "10000_sequences.aln");
+
+    GTGlobals::sleep(20000);
+
+    QTreeWidgetItem *item = GTUtilsProjectTreeView::findItem(os, "10000_sequences.aln");
+    GTMouseDriver::moveTo(os, GTTreeWidget::getItemCenter(os, item));
+        
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Yes));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<ACTION_PROJECT__UNLOAD_SELECTED));
+    GTMouseDriver::click(os, Qt::RightButton);
+    GTGlobals::sleep(5000);
+
+    GTMouseDriver::moveTo(os, GTTreeWidget::getItemCenter(os, item));
+    GTMouseDriver::doubleClick(os);
+
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+
+    CHECK_SET_ERR( !l.hasError( ), "File not removed from project!" );
+
+    }
+
 } // GUITest_regression_scenarios namespace
 
 } // U2 namespace
