@@ -129,6 +129,11 @@ QList<Task*> TestRunnerTask::onSubTaskFinished(Task* subTask) {
                     newEnv->setVar("TEMP_DATA_DIR", suiteDir + newEnv->getVar("TEMP_DATA_DIR"));
                 }
 
+                QDir tmpDir(newEnv->getVar("TEMP_DATA_DIR"));
+                if (!tmpDir.exists()) {
+                    tmpDir.mkpath(tmpDir.absolutePath());
+                }
+
                 QString workflowSamplePath = QDir::searchPaths(PATH_PREFIX_DATA).first() + "/workflow_samples/";
                 newEnv->setVar("WORKFLOW_SAMPLES_DIR", workflowSamplePath);
 
