@@ -31,7 +31,7 @@
 #include <U2Core/Version.h>
 
 
-#define MAX_CRASH_MESSAGES_TO_SEND 500
+#define MAX_CRASH_MESSAGES_TO_SEND 70
 
 #if defined(Q_OS_WIN32)
   #ifdef UGENE_X86_64 //see http://social.msdn.microsoft.com/Forums/en-US/vcgeneral/thread/4dc15026-884c-4f8a-8435-09d0111d708d/
