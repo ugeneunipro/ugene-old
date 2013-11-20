@@ -3274,6 +3274,44 @@ GUI_TEST_CLASS_DEFINITION( test_2318 ) {
     GTWidget::click(os, farButton);
 }
 
+GUI_TEST_CLASS_DEFINITION( test_2364 ) {
+    //1. Open WD.'
+    QMenu *menu=GTMenu::showMainMenu( os, MWMENU_TOOLS );
+    GTMenu::clickMenuItem( os, menu, QStringList( ) << "Workflow Designer" );
+
+    //2. Create a workflow: Read sequence -> Write sequence.
+    GTUtilsWorkflowDesigner::addAlgorithm(os, "Read sequence");
+    GTUtilsWorkflowDesigner::addAlgorithm(os, "Write sequence");
+
+    GTUtilsWorkflowDesigner::connect(os, GTUtilsWorkflowDesigner::getWorker(os, "Read sequence"),
+                                         GTUtilsWorkflowDesigner::getWorker(os, "Write sequence"));
+
+    //3. Set the input sequence file: "data/samples/FASTA/human_T1.fa".
+    GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "Read sequence"));
+    GTMouseDriver::click(os);
+    GTUtilsWorkflowDesigner::setDatasetInputFile(os, dataDir + "samples/FASTA", "human_T1.fa");
+
+    //4. Set the output file: "out.fa".
+    GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "Write sequence"));
+    GTMouseDriver::click(os);
+    GTUtilsWorkflowDesigner::setParameter(os, "Output file", "out.fa", GTUtilsWorkflowDesigner::textValue);
+
+    //5. Validate the workflow.
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok));
+    GTWidget::click(os, GTAction::button(os,"Validate workflow"));
+    GTGlobals::sleep(1000);
+
+    //Expected: the workflow has the warning about FASTA format and annotations.
+    CHECK_SET_ERR(GTUtilsWorkflowDesigner::checkErrorList(os, "") != 0, "There is no any messages in infoLog");
+
+    //6. Run the workflow.
+    GTWidget::click(os,GTAction::button(os,"Run workflow"));
+    GTGlobals::sleep(500);
+
+    //Expected: the button "Load schema" is shown.
+    // expected button is in dashboard - it can't be checked for now
+}
+
 GUI_TEST_CLASS_DEFINITION( test_2375 ) {
 //    1. Open {_common_data/sam/broken_invalid_cigar.sam}
 //    Expected state: import dialog appears.
