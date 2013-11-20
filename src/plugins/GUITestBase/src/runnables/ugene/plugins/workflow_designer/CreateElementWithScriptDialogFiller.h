@@ -39,12 +39,15 @@ private:
 class ScriptEditorDialogFiller: public Filler
 {
 public:
-    ScriptEditorDialogFiller(U2OpStatus& os, QString _url = "", QString _text = ""): Filler(os, "ScriptEditorDialog"),
+    ScriptEditorDialogFiller(U2OpStatus& os, QString _url = "", QString _text = "", bool _checkSyntax = false, QString _checkSyntaxResult = ""): Filler(os, "ScriptEditorDialog"),
         url(_url),
-        text(_text){}
+        text(_text),
+        checkSyntax(_checkSyntax),
+        checkSyntaxResult(_checkSyntaxResult){};
     virtual void run();
 private:
-    QString url,text;
+    QString url,text, checkSyntaxResult;
+    bool checkSyntax;
 };
 
 class ScriptEditorDialogSyntaxChecker: public Filler

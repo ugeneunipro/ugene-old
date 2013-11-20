@@ -236,6 +236,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_2267_1);
     REGISTER_TEST(GUITest_regression_scenarios::test_2267_2);
     REGISTER_TEST(GUITest_regression_scenarios::test_2268);
+    REGISTER_TEST(GUITest_regression_scenarios::test_2316);
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2269, "impossible to catch expected error in opStatus without stopping test");
     REGISTER_TEST(GUITest_regression_scenarios::test_2306);
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2281, "This test can't found hints. Check it.");
@@ -957,6 +958,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 // Common scenarios/Workflow designer/Scripting
 /////////////////////////////////////////////////////////////////////////
     REGISTER_TEST(GUITest_common_scenarios_workflow_scripting::test_0001);
+    REGISTER_TEST(GUITest_common_scenarios_workflow_scripting::test_0002);
     REGISTER_TEST(GUITest_common_scenarios_workflow_scripting::test_0003);
     REGISTER_TEST(GUITest_common_scenarios_workflow_scripting::test_0004);
 

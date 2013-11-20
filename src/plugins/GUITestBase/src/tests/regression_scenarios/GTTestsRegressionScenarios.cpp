@@ -3103,6 +3103,20 @@ GUI_TEST_CLASS_DEFINITION( test_2268 ) {
     GTUtilsLog::check(os, lt);
 }
 
+GUI_TEST_CLASS_DEFINITION( test_2316 ) {
+    GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os, true));
+    GTFileDialog::openFile(os, dataDir+"samples/../workflow_samples/Alignment", "basic_align.uwl");
+
+    GTGlobals::sleep(5000);
+
+    CHECK_SET_ERR(!GTUtilsProjectTreeView::isVisible(os), "Project tree view is visible");
+
+//     1. Start UGENE
+// 
+//     2. Drag an .uwl file inside UGENE to open a workflow
+//     Expected state: now the project view is collapsed if a file.uwl is drag'n'dropped to UGENE when there is no project yet.
+}
+
 GUI_TEST_CLASS_DEFINITION( test_2269 ){
     //1. Use main menu: {tools->Align short reeds}
     //2. Select Bowtie2 as alignment method

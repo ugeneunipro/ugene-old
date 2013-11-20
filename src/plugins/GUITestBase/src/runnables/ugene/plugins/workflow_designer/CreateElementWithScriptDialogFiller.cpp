@@ -66,6 +66,11 @@ void ScriptEditorDialogFiller::run(){
     edit->setText(text);
 
     GTGlobals::sleep(1000);
+    if(checkSyntax){
+        GTUtilsDialog::waitForDialog(os,new MessageBoxDialogFiller(os, QMessageBox::Ok, checkSyntaxResult));
+        GTWidget::click(os, GTWidget::findWidget(os, "checkButton", dialog));
+        GTGlobals::sleep(1000);
+    }
     GTWidget::click(os, GTWidget::findWidget(os, "okButton", dialog));
 }
 #undef GT_METHOD_NAME

@@ -68,6 +68,7 @@ void GTUtilsProjectTreeView::toggleView(U2OpStatus& os) {
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "rename"
 void GTUtilsProjectTreeView::rename(U2OpStatus &os, const QString &itemName, const QString &newItemName) {
 
     GTMouseDriver::moveTo(os, getItemCenter(os, itemName));
@@ -79,6 +80,7 @@ void GTUtilsProjectTreeView::rename(U2OpStatus &os, const QString &itemName, con
 
     GTGlobals::sleep(500);
 }
+#undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "getItemCenter"
 QPoint GTUtilsProjectTreeView::getItemCenter(U2OpStatus &os, const QString &itemName) {
@@ -122,6 +124,7 @@ void GTUtilsProjectTreeView::scrollTo(U2OpStatus &os, const QString &itemName)
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "getTreeWidget"
 QTreeWidget* GTUtilsProjectTreeView::getTreeWidget(U2OpStatus &os) {
 
     openView(os);
@@ -129,7 +132,9 @@ QTreeWidget* GTUtilsProjectTreeView::getTreeWidget(U2OpStatus &os) {
     QTreeWidget *treeWidget = qobject_cast<QTreeWidget*>(GTWidget::findWidget(os, widgetName));
     return treeWidget;
 }
+#undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "getProjectTreeItemName"
 QString GTUtilsProjectTreeView::getProjectTreeItemName(ProjViewItem* projViewItem) {
 
     if (projViewItem->isDocumentItem()) {
@@ -152,6 +157,7 @@ QString GTUtilsProjectTreeView::getProjectTreeItemName(ProjViewItem* projViewIte
 
     return "";
 }
+#undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "findItem"
 QTreeWidgetItem* GTUtilsProjectTreeView::findItem(U2OpStatus &os, const QString &itemName, const GTGlobals::FindOptions &options) {
@@ -230,7 +236,6 @@ void GTUtilsProjectTreeView::itemModificationCheck(U2OpStatus &os, QTreeWidgetIt
     bool modState = !(QVariant() == data);
     GT_CHECK(modState == modified, "Document's " + item->text(0) + " modification state not equal with expected");
 }
-
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "itemActiveCheck"
@@ -240,6 +245,19 @@ void GTUtilsProjectTreeView::itemActiveCheck(U2OpStatus &os, QTreeWidgetItem* it
 
     bool modState = !(QVariant() == data);
     GT_CHECK(modState == active, "Document's " + item->text(0) + " active state not equal with expected");
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "isVisible"
+bool GTUtilsProjectTreeView::isVisible( U2OpStatus &os ){
+    GTGlobals::FindOptions options;
+    options.failIfNull = false;
+    QWidget *documentTreeWidget = GTWidget::findWidget(os, widgetName, NULL, options);
+    if (documentTreeWidget) {
+        return true;
+    }else{
+        return false;
+    }
 }
 #undef GT_METHOD_NAME
 

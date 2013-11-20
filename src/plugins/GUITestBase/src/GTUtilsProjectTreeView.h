@@ -62,6 +62,8 @@ public:
     // check if a given item is bold, i.e. active
     static void itemActiveCheck(U2OpStatus &os, QTreeWidgetItem* item, bool active = true);
 
+    static bool isVisible(U2OpStatus &os);
+
     static const QString widgetName;
 };
 

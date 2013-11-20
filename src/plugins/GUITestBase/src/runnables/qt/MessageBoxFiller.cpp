@@ -37,8 +37,9 @@ void MessageBoxDialogFiller::run() {
     GT_CHECK(messageBox != NULL, "messageBox is NULL");
 
     if(message!=""){
+        QString actualText = messageBox->text();
         GT_CHECK(messageBox->text().contains(message,Qt::CaseInsensitive),
-                 QString("Expected: %1, found: %2").arg(message).arg(messageBox->text()));
+                 QString("Expected: %1, found: %2").arg(message).arg(actualText));
     }
 
     QAbstractButton* button = messageBox->button(b);

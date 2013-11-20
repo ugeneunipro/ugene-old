@@ -90,6 +90,31 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
     GTWidget::click(os, GTAction::button(os, "editScriptAction"));
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0002) {
+// 	WD Scripts check syntax doesn't work (0001728)
+// 
+// 	1. Open WD. Do toolbar menu "Scripting mode->Show scripting options". Place write FASTA worker on field.
+
+    GTUtilsWorkflowDesigner::openWorkfolwDesigner(os);
+
+    GTUtilsWorkflowDesigner::addAlgorithm(os, "Write FASTA");
+    WorkflowProcessItem *writer = GTUtilsWorkflowDesigner::getWorker(os, "Write FASTA");
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<"Show scripting options"));
+    GTWidget::click(os, GTAction::button(os, GTAction::findActionByText(os, "Scripting mode")));
+
+//  2. Select this worker, select menu item "user script" from "output file" parameter.
+//  Expected state: Script editor dialog appears.
+// 
+//  3. Paste "#$%not a script asdasd321 123" at the script text area. Click "Check syntax" button
+//  Expected state: messagebox "Script syntax check failed!" appears.
+    GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os,"Write FASTA"));
+    GTMouseDriver::click(os);
+
+    GTUtilsDialog::waitForDialog(os, new ScriptEditorDialogFiller(os, "", "#$%not a script asdasd321 123", true, "Script syntax check failed! Line: 1, error: Expected `end of file'"));
+    GTUtilsWorkflowDesigner::setParameterScripting(os, "output file", "user script");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_0003) {
     QMenu *menu = GTMenu::showMainMenu(os, MWMENU_TOOLS);
     GTMenu::clickMenuItem(os, menu, QStringList() << "Workflow Designer");
