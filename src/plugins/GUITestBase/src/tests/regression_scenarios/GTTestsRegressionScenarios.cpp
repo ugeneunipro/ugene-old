@@ -1222,7 +1222,7 @@ GUI_TEST_CLASS_DEFINITION(test_1708){
 
 GUI_TEST_CLASS_DEFINITION(test_1720){
 //1. Use menu {File->Access remote database...}
-    GTUtilsDialog::waitForDialog(os, new RemoteDBDialogFiller(os, "", 0));
+    GTUtilsDialog::waitForDialog(os, new RemoteDBDialogFiller(os, "D11266", 0));
     GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE),ACTION_PROJECTSUPPORT__ACCESS_REMOTE_DB, GTGlobals::UseKey);
 
     GTLogTracer l;
@@ -1230,7 +1230,7 @@ GUI_TEST_CLASS_DEFINITION(test_1720){
 //2. Fill field "Resource ID" with value D11266. Click "OK"
 
 //3. Use menu {File->Access remote database...}
-    GTUtilsDialog::waitForDialog(os, new RemoteDBDialogFiller(os, "", 0));
+    GTUtilsDialog::waitForDialog(os, new RemoteDBDialogFiller(os, "D11266", 0));
     GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE),ACTION_PROJECTSUPPORT__ACCESS_REMOTE_DB, GTGlobals::UseKey);
 
     GTGlobals::sleep(8000);
@@ -1247,7 +1247,7 @@ GUI_TEST_CLASS_DEFINITION( test_1813 )
     //      Resource ID: I7G8J3
     //      Database: UniProt (DAS)
     // 3) Press "OK"
-    GTUtilsDialog::waitForDialog(os, new RemoteDBDialogFiller(os, "", 7));
+    GTUtilsDialog::waitForDialog(os, new RemoteDBDialogFiller(os, "I7G8J3", 7));
     GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE),ACTION_PROJECTSUPPORT__ACCESS_REMOTE_DB, GTGlobals::UseKey);
 
     // Expected: the sequence view with I7G8J3 sequence is opened. UGENE does not crash.
@@ -1837,8 +1837,7 @@ GUI_TEST_CLASS_DEFINITION( test_2021_9 )
 
 GUI_TEST_CLASS_DEFINITION(test_2024){
 //    1. Open WD
-    QMenu *menu=GTMenu::showMainMenu( os, MWMENU_TOOLS );
-    GTMenu::clickMenuItem( os, menu, QStringList( ) << "Workflow Designer" );
+    GTUtilsWorkflowDesigner::openWorkfolwDesigner(os);
 
 //    2. Add element "Local BLAST Search"
     GTUtilsWorkflowDesigner::addAlgorithm( os, "Local BLAST Search" );
@@ -1960,7 +1959,7 @@ GUI_TEST_CLASS_DEFINITION( test_2032 ) {
 
 GUI_TEST_CLASS_DEFINITION( test_2070 ){
     GTLogTracer lt;
-    GTUtilsDialog::waitForDialog(os, new RemoteDBDialogFiller(os, "", 7));
+    GTUtilsDialog::waitForDialog(os, new RemoteDBDialogFiller(os, "Q9IGQ6", 7));
     GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE),ACTION_PROJECTSUPPORT__ACCESS_REMOTE_DB, GTGlobals::UseKey);
     GTGlobals::sleep();
 
@@ -1976,8 +1975,7 @@ GUI_TEST_CLASS_DEFINITION( test_2077 ){
     // 2) Add elements "Read Sequence" and "Write sequence" to the scheme
     // 3) Connect "Read Sequence" to "Write sequence"
 
-    QMenu *menu=GTMenu::showMainMenu( os, MWMENU_TOOLS );
-    GTMenu::clickMenuItem( os, menu, QStringList( ) << "Workflow Designer" );
+    GTUtilsWorkflowDesigner::openWorkfolwDesigner(os);
 
     GTUtilsWorkflowDesigner::addAlgorithm( os, "Read Sequence" );
     GTUtilsWorkflowDesigner::addAlgorithm( os, "Write Sequence" );
@@ -2135,9 +2133,7 @@ GUI_TEST_CLASS_DEFINITION(test_2091) {
 
 GUI_TEST_CLASS_DEFINITION(test_2093_1) {
 //    1. Run a scheme, e.g. "Call variants with SAMtools" from the NGS samples (or any other like read->write).
-    QMenu* menu = GTMenu::showMainMenu(os, MWMENU_TOOLS);
-    CHECK_SET_ERR(menu, "Main menu not found");
-    GTMenu::clickMenuItem(os, menu, QStringList() << "Workflow Designer");
+    GTUtilsWorkflowDesigner::openWorkfolwDesigner(os);
 
     // Simple scheme: read file list.
     GTUtilsWorkflowDesigner::addAlgorithm(os, "File list");
@@ -2164,15 +2160,13 @@ GUI_TEST_CLASS_DEFINITION(test_2093_1) {
     GTGlobals::sleep();
 
 //    Expected result: the scheme with parameters is loaded.
-    QWidget* wdElement = GTWidget::findWidget(os, "File list");
+    WorkflowProcessItem* wdElement = GTUtilsWorkflowDesigner::getWorker(os, "File list");
     CHECK_SET_ERR(wdElement, "Schema wasn't loaded");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_2093_2) {
     // 1. Open WD.
-    QMenu* menu = GTMenu::showMainMenu(os, MWMENU_TOOLS);
-    CHECK_SET_ERR(menu, "Main menu not found");
-    GTMenu::clickMenuItem(os, menu, QStringList() << "Workflow Designer");
+    GTUtilsWorkflowDesigner::openWorkfolwDesigner(os);
 
     // 2. Open any shema with the "Load workflow" button on the toolbar (not the "Open" button!)
     QString schemaPath = testDir + "_common_data/scenarios/workflow designer/222.uwl";
@@ -2187,7 +2181,8 @@ GUI_TEST_CLASS_DEFINITION(test_2093_2) {
     GTGlobals::sleep();
 
     // Expected result: the scheme with parameters is loaded.
-    QWidget* wdElement = GTWidget::findWidget(os, "Read-sequence");
+
+    WorkflowProcessItem* wdElement = GTUtilsWorkflowDesigner::getWorker(os, "Read sequence");
     CHECK_SET_ERR(wdElement, "Schema wasn't loaded");
 }
 
@@ -3095,7 +3090,7 @@ GUI_TEST_CLASS_DEFINITION( test_2268 ) {
     GTUtilsDialog::waitForDialog(os, new TCoffeeDailogFiller(os));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_ALIGN << "Align with T-Coffee", GTGlobals::UseMouse));
     QMenu* contextMenu = GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
-    CHECK_SET_ERR(contextMenu, "Context menu not found");
+    //CHECK_SET_ERR(contextMenu, "Context menu not found");
 
 //    Expected: the t-coffee task started and finished well.
     TaskScheduler* scheduler = AppContext::getTaskScheduler();

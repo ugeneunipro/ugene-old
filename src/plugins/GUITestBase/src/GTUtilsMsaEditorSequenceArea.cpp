@@ -212,7 +212,7 @@ bool GTUtilsMSAEditorSequenceArea::isSequenceSelected(U2OpStatus &os, QString se
     while ((names[row] != seqName) && (row < names.size())) {
         row++;
     }
-    if (msaEditArea->getRowsAt(row) == msaEditArea->getSelectedRows()) {
+    if (msaEditArea->getSelectedRows().contains(msaEditArea->getRowsAt(row))) {
         return true;
     }
     return false;
