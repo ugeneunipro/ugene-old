@@ -103,6 +103,7 @@ signals:
     void processItemAdded();
     void processDblClicked();
     void configurationChanged();
+    void si_itemDeleted(const ActorId &id);
 
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent);
@@ -242,7 +243,6 @@ private slots:
 
     void sl_toggleBreakpointManager();
 
-    void sl_toggleBreakpoint();
     void sl_breakpointAdded(const ActorId &actor);
     void sl_breakpointRemoved(const ActorId &actor);
     void sl_breakpointIsReached(const U2::ActorId &actor);

@@ -34,6 +34,7 @@ class QTreeWidget;
 class QTreeWidgetItem;
 class QToolBar;
 class QAction;
+class QGraphicsScene;
 
 namespace U2 {
 
@@ -43,8 +44,12 @@ class WorkflowDebugStatus;
 class BreakpointManagerView : public QWidget {
     Q_OBJECT
 public:
-    BreakpointManagerView(WorkflowDebugStatus *initDebugInfo, Schema *initScheme, QWidget *parent = NULL);
+    BreakpointManagerView(WorkflowDebugStatus *initDebugInfo, Schema *initScheme, QGraphicsScene *scene, QWidget *parent = NULL);
     void onBreakpointReached(ActorId actor);
+
+    QAction* getNewBreakpointAction() { return newBreakpointAction; }
+
+    bool eventFilter(QObject *object, QEvent *event);
 
 signals:
     void si_highlightingRequested(const ActorId &actor);
@@ -52,12 +57,14 @@ signals:
 protected:
     virtual void paintEvent(QPaintEvent *event);
 
+public slots:
+    void sl_breakpointRemoved(const ActorId &actorId);
+    void sl_deleteAllBreakpoints();
+
 private slots:
     void sl_breakpointAdded(const ActorId &actorId);
-    void sl_breakpointRemoved(const ActorId &actorId);
     void sl_newBreakpoint();
     void sl_deleteSelectedBreakpoint();
-    void sl_deleteAllBreakpoints();
     void sl_disableAllBreakpoints();
     void sl_breakpointsSelectionChanged();
     void sl_breakpointStateChanged(int state);
@@ -91,6 +98,7 @@ private:
     void setBreakpointBackgroundColor(QTreeWidgetItem *breakpoint, const QColor &newBackground);
 
     WorkflowDebugStatus *debugInfo;
+    QGraphicsScene *scene;
     Schema *scheme;
 
     QTreeWidget *breakpointsList;

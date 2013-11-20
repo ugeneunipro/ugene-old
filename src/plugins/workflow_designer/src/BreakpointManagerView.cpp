@@ -26,6 +26,7 @@
 #include <QtGui/QToolBar>
 #include <QtGui/QCheckBox>
 #include <QtGui/QMenu>
+#include <QtGui/QGraphicsScene>
 
 #include <U2Lang/WorkflowDebugStatus.h>
 #include <U2Lang/WorkflowSettings.h>
@@ -35,6 +36,7 @@
 #include <U2Designer/NewBreakpointDialog.h>
 
 #include "BreakpointManagerView.h"
+#include "WorkflowViewItems.h"
 
 const char *VIEW_ELEMENT_NAME_COLUMN_TITLE = "Element Name";
 const char *VIEW_LABELS_COLUMN_TITLE = "Labels";
@@ -68,7 +70,8 @@ QMap<BreakpointConditionParameter, HitCondition>
     = QMap<BreakpointConditionParameter, HitCondition>();
 
 BreakpointManagerView::BreakpointManagerView(WorkflowDebugStatus *initDebugInfo, Schema *initScheme,
-    QWidget *parent) : QWidget(parent), debugInfo(initDebugInfo), scheme(initScheme),
+                                             QGraphicsScene *scene, QWidget *parent)
+    : QWidget(parent), debugInfo(initDebugInfo), scheme(initScheme), scene(scene),
     breakpointsList(NULL), actorConnections(), newBreakpointAction(NULL), allExistingLabels(),
     deleteAllBreakpointsAction(NULL), deleteSelectedBreakpointAction(NULL), hitCountAction(NULL),
     disableAllBreakpointsAction(NULL), highlightItemWithBreakpoint(NULL), editLabelsAction(NULL),
@@ -113,6 +116,8 @@ BreakpointManagerView::BreakpointManagerView(WorkflowDebugStatus *initDebugInfo,
     }
 
     hide();
+
+    installEventFilter(this);
 }
 
 void BreakpointManagerView::createActions() {
@@ -120,17 +125,21 @@ void BreakpointManagerView::createActions() {
     newBreakpointAction->setIcon(QIcon(":workflow_designer/images/breakpoint.png"));
     newBreakpointAction->setShortcut(QKeySequence("Ctrl+B"));
     connect(newBreakpointAction, SIGNAL(triggered()), SLOT(sl_newBreakpoint()));
+    connect(newBreakpointAction, SIGNAL(triggered()), scene, SLOT(update()));
     newBreakpointAction->setEnabled(true);
 
     deleteAllBreakpointsAction = new QAction(tr("Delete &all breakpoints"), this);
     deleteAllBreakpointsAction->setIcon(QIcon(":workflow_designer/images/delete_all_breakpoints.png"));
     deleteAllBreakpointsAction->setShortcut(QKeySequence("Shift+Del"));
+    deleteAllBreakpointsAction->setShortcutContext(Qt::WidgetShortcut);
     connect(deleteAllBreakpointsAction, SIGNAL(triggered()), SLOT(sl_deleteAllBreakpoints()));
     deleteAllBreakpointsAction->setEnabled(false);
 
     deleteSelectedBreakpointAction = new QAction(tr("&Delete"), this);
     deleteSelectedBreakpointAction->setIcon(QIcon(":workflow_designer/images/delete_selected_breakpoints.png"));
     deleteSelectedBreakpointAction->setShortcut(QKeySequence("Del"));
+    deleteSelectedBreakpointAction->setShortcutContext(Qt::WidgetShortcut);
+
     connect(deleteSelectedBreakpointAction, SIGNAL(triggered()), SLOT(sl_deleteSelectedBreakpoint()));
     deleteSelectedBreakpointAction->setEnabled(false);
     deleteSelectedBreakpointAction->setToolTip(tr("Delete the selected breakpoints"));
@@ -225,15 +234,37 @@ void BreakpointManagerView::sl_breakpointRemoved(const ActorId &actorId) {
 }
 
 void BreakpointManagerView::sl_newBreakpoint() {
-    QStringList actorsLabels;
-    foreach(Actor *actor, scheme->getProcesses()) {
-        actorsLabels << actor->getLabel();
-    }
+    // if there is any selected items - add breakpoints automatically
+    if (scene->selectedItems().size() != 0) {
+        foreach(QGraphicsItem *item, scene->selectedItems()) {
+            if(WorkflowProcessItemType == item->type()) {
+                WorkflowProcessItem *processItem = qgraphicsitem_cast<WorkflowProcessItem*>(item);
+                SAFE_POINT(NULL != processItem, "WorkflowProcessItem is NULL!",);
+                if(processItem->isBreakpointInserted() && !processItem->isBreakpointEnabled()) {
+                    processItem->toggleBreakpointState();
+                    debugInfo->setBreakpointEnabled(processItem->getProcess()->getId(), true);
+                } else {
+                    processItem->toggleBreakpoint();
+                }
+                if(processItem->isBreakpointInserted()) {
+                    debugInfo->addBreakpointToActor(processItem->getProcess()->getId());
+                } else {
+                    debugInfo->removeBreakpointFromActor(processItem->getProcess()->getId());
+                }
+            }
+        }
+    } else {
+        // no items selected - launch new breakpoint dialog
+        QStringList actorsLabels;
+        foreach(Actor *actor, scheme->getProcesses()) {
+            actorsLabels << actor->getLabel();
+        }
 
-    NewBreakpointDialog dialog(actorsLabels, this);
-    
-    connect(&dialog, SIGNAL(si_newBreakpointCreated(const QString &)), SLOT(sl_addBreakpoint(const QString &)));
-    dialog.exec();
+        NewBreakpointDialog dialog(actorsLabels, this);
+
+        connect(&dialog, SIGNAL(si_newBreakpointCreated(const QString &)), SLOT(sl_addBreakpoint(const QString &)));
+        dialog.exec();
+    }
 }
 
 void BreakpointManagerView::sl_addBreakpoint(const QString &elementName) {
@@ -519,6 +550,22 @@ void BreakpointManagerView::onBreakpointReached(ActorId actor) {
     }
     setBreakpointBackgroundColor(item, BREAKPOINT_HIGHLIGHTING_COLOR);
     lastReachedBreakpoint = item;
+}
+
+bool BreakpointManagerView::eventFilter(QObject * /*object*/, QEvent *event) {
+    CHECK(NULL != event, false);
+    if (event->type() == QEvent::KeyPress) {
+        QKeyEvent *keyEvent = static_cast<QKeyEvent*>(event);
+        CHECK(NULL != keyEvent, false);
+
+        if ((keyEvent->modifiers() && Qt::ShiftModifier) && (keyEvent->key() == Qt::Key_Delete)) {
+            sl_deleteAllBreakpoints();
+        }
+        if (keyEvent->matches(QKeySequence::Delete)) {
+            sl_deleteSelectedBreakpoint();
+        }
+    }
+    return true;
 }
 
 void BreakpointManagerView::setBreakpointBackgroundColor(QTreeWidgetItem *breakpoint,

@@ -524,9 +524,11 @@ void WorkflowView::addBottomWidgetsToInfoSplitter() {
     w->hide();
     bottomTabs->addTab(w, tr("Error list"));
 
-    breakpointView = new BreakpointManagerView(debugInfo, schema);
+    breakpointView = new BreakpointManagerView(debugInfo, schema, scene);
     connect(breakpointView, SIGNAL(si_highlightingRequested(const ActorId &)),
         SLOT(sl_highlightingRequested(const ActorId &)));
+    connect(scene, SIGNAL(si_itemDeleted(const ActorId &)),
+            breakpointView, SLOT(sl_breakpointRemoved(const ActorId &)));
     if ( WorkflowSettings::isDebuggerEnabled( ) ) {
         bottomTabs->addTab( breakpointView, BREAKPOINT_MANAGER_LABEL );
     }
@@ -622,12 +624,8 @@ void WorkflowView::createActions() {
     connect(nextStepAction, SIGNAL(triggered()), debugInfo, SLOT(sl_isolatedStepTriggerActivated()));
     debugActions.append(nextStepAction);
 
-    toggleBreakpointAction = new QAction(tr("Toggle &breakpoint"), this);
-    toggleBreakpointAction->setIcon(QIcon(":workflow_designer/images/breakpoint.png"));
-    toggleBreakpointAction->setShortcut(QKeySequence("Ctrl+B"));
+    toggleBreakpointAction = breakpointView->getNewBreakpointAction();
     toggleBreakpointAction->setEnabled(false);
-    connect(toggleBreakpointAction, SIGNAL(triggered()), SLOT(sl_toggleBreakpoint()));
-    connect(toggleBreakpointAction, SIGNAL(triggered()), scene, SLOT(update()));
 
     tickReadyAction = new QAction(tr("Process one &message"), this);
     tickReadyAction->setIcon(QIcon(":workflow_designer/images/process_one_message.png"));
@@ -735,10 +733,10 @@ void WorkflowView::createActions() {
     connect(copyAction, SIGNAL(triggered()), SLOT(sl_copyItems()));
     addAction(copyAction);
 
-    cutAction = new QAction(tr("Cu&t"), this);
+    cutAction = new QAction(tr("Cu&t"), sceneView);
     cutAction->setIcon(QIcon(":workflow_designer/images/editcut.png"));
     cutAction->setShortcuts(QKeySequence::Cut);
-    cutAction->setShortcutContext(Qt::WidgetWithChildrenShortcut);
+    cutAction->setShortcutContext(Qt::WidgetShortcut);
     connect(cutAction, SIGNAL(triggered()), SLOT(sl_cutItems()));
     addAction(cutAction);
 
@@ -1638,26 +1636,6 @@ void WorkflowView::toggleDebugActionsState(bool enable) {
     }
 }
 
-void WorkflowView::sl_toggleBreakpoint() {
-    foreach(QGraphicsItem *item, scene->selectedItems()) {
-        if(WorkflowProcessItemType == item->type()) {
-            WorkflowProcessItem *processItem = qgraphicsitem_cast<WorkflowProcessItem*>(item);
-            Q_ASSERT(NULL != processItem);
-            if(processItem->isBreakpointInserted() && !processItem->isBreakpointEnabled()) {
-                processItem->toggleBreakpointState();
-                debugInfo->setBreakpointEnabled(processItem->getProcess()->getId(), true);
-            } else {
-                processItem->toggleBreakpoint();
-            }
-            if(processItem->isBreakpointInserted()) {
-                debugInfo->addBreakpointToActor(processItem->getProcess()->getId());
-            } else {
-                debugInfo->removeBreakpointFromActor(processItem->getProcess()->getId());
-            }
-        }
-    }
-}
-
 void WorkflowView::propagateBreakpointToSceneItem(ActorId actor) {
     WorkflowProcessItem* processItem = findItemById(actor);
     Q_ASSERT(processItem->isBreakpointInserted());
@@ -1754,6 +1732,7 @@ void WorkflowView::paintEvent(QPaintEvent *event) {
     } else if ( !isDebuggerEnabled
         && ABSENT_WIDGET_TAB_NUMBER != bottomTabs->indexOf( breakpointView ) )
     {
+        breakpointView->sl_deleteAllBreakpoints();
         bottomTabs->removeTab( bottomTabs->indexOf( breakpointView ) );
     }
     foreach ( QAction *action, debugActions ) {
@@ -2125,7 +2104,7 @@ void WorkflowView::sl_onSelectionChanged() {
     const int actorsCount = actorsSelected.size();
     editScriptAction->setEnabled(actorsCount == 1 && actorsSelected.first()->getScript() != NULL);
     editExternalToolAction->setEnabled(actorsCount == 1 && actorsSelected.first()->getProto()->isExternalTool());
-    toggleBreakpointAction->setEnabled(actorsCount > 0);
+    toggleBreakpointAction->setEnabled(scene->items().size() != 0);
 
     WorkflowAbstractRunner *runner = scene->getRunner();
     if(NULL != runner && !actorsSelected.isEmpty()) {
@@ -2619,6 +2598,9 @@ void WorkflowScene::sl_deleteItem() {
         }
     }
     foreach(WorkflowProcessItem *it, items) {
+        if ( it->getProcess() != NULL ) {
+            emit si_itemDeleted( it->getProcess()->getId() );
+        }
         controller->removeProcessItem(it);
         setModified();
     }
