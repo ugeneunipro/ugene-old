@@ -22,27 +22,36 @@
 #ifndef _U2_GRAPHICS_BUTTON_ITEM_H_
 #define _U2_GRAPHICS_BUTTON_ITEM_H_
 
-#include <QtGui/QAbstractGraphicsShapeItem>
+#include <QtGui/QGraphicsEllipseItem>
+#include <QtGui/QBrush>
 
 namespace U2 {
 
-class GraphicsButtonItem: public QAbstractGraphicsShapeItem {
-    static const qreal radiusMin, radiusMax;
-
+class GraphicsButtonItem: public QGraphicsEllipseItem {
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *e);
     void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *e);
+
+    void hoverEnterEvent(QGraphicsSceneHoverEvent *event);
+    void hoverLeaveEvent(QGraphicsSceneHoverEvent *event);
     
 public:
     GraphicsButtonItem();
-    QRectF boundingRect() const;
-    QPainterPath shape() const;
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
 
     bool isSelectedTop();
     void collapse();
     void swapSiblings();
     bool isCollapsed();
+
+    void setSelected(bool selected);
+private:
+    void setHighlighting(bool enabled);
+
+    static const qreal radiusMin;
+    static const qreal radiusMax;
+    static const QBrush highlightingBrush;
+    static const QBrush ordinaryBrush;
+    bool isSelected;
 };
 
 }//namespace;

@@ -22,7 +22,9 @@
 #include "GraphicsButtonItem.h"
 #include "GraphicsBranchItem.h"
 #include "GraphicsRectangularBranchItem.h"
-#include <QtGui/QPainter>
+#include <U2Core/U2SafePoints.h>
+
+#include <QtGui/QPainter> 
 #include <QtGui/QPen>
 #include <QtGui/QGraphicsSceneMouseEvent>
 #include <QtCore/QList>
@@ -31,45 +33,22 @@
 
 namespace U2 {
 
-const qreal GraphicsButtonItem::radiusMin = 2.0;
-const qreal GraphicsButtonItem::radiusMax = 5.0;
+const qreal GraphicsButtonItem::radiusMin = 3.0;
+const qreal GraphicsButtonItem::radiusMax = 4.0;
+const QBrush GraphicsButtonItem::highlightingBrush = QBrush(QColor(170, 170, 230));
+const QBrush GraphicsButtonItem::ordinaryBrush = QBrush(Qt::gray);
 
-GraphicsButtonItem::GraphicsButtonItem() {
+
+GraphicsButtonItem::GraphicsButtonItem() 
+    : QGraphicsEllipseItem(QRectF(-radiusMin, -radiusMin, 2 * radiusMin, 2 * radiusMin)), isSelected(false) {
     setPen(QColor(0, 0, 0));
-    setBrush(Qt::gray);
+    setBrush(ordinaryBrush);
     setAcceptHoverEvents(true);
     setAcceptedMouseButtons(Qt::LeftButton);
     setZValue(2);
     setFlag(QGraphicsItem::ItemIsSelectable);
     setFlag(QGraphicsItem::ItemIgnoresTransformations);
-}
-
-QRectF GraphicsButtonItem::boundingRect() const {
-    return QRectF(-radiusMax, -radiusMax, 2 * radiusMax, 2 * radiusMax);
-}
-
-QPainterPath GraphicsButtonItem::shape() const {
-    QPainterPath path;
-    path.addEllipse(boundingRect());
-    return path;
-}
-
-void GraphicsButtonItem::paint(QPainter *painter, const QStyleOptionGraphicsItem*, QWidget*) {
-
-    QBrush br(Qt::gray);
-
-    int radius = radiusMin;
-    bool mouseHovered = isUnderMouse();
-    bool itemSelected = isSelected();
-
-    if (mouseHovered || itemSelected) {
-        radius = radiusMax;
-        br = QBrush(QColor(0, 0, 255));
-    }
-    painter->setPen(pen());
-    painter->setBrush(br);
-    painter->drawEllipse(QPointF(0, 0), radius, radius);
-
+    setToolTip(QObject::tr("Left click to select the branch\nDouble-click to collapse the branch"));
 }
 
 void GraphicsButtonItem::mousePressEvent(QGraphicsSceneMouseEvent *e) {
@@ -81,7 +60,7 @@ void GraphicsButtonItem::mousePressEvent(QGraphicsSceneMouseEvent *e) {
     if (leftButton && p!=NULL) {
         bool newSelection = true;
         if (shiftPressed) {
-            newSelection = !isSelected();
+            newSelection = !isSelected;
         }
         p->setSelectedRecurs(newSelection, true);
 
@@ -90,10 +69,48 @@ void GraphicsButtonItem::mousePressEvent(QGraphicsSceneMouseEvent *e) {
     }
 }
 
+
 void GraphicsButtonItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *e) {
     uiLog.trace("Tree button double-clicked");
     collapse();
     QAbstractGraphicsShapeItem::mouseDoubleClickEvent(e);
+}
+
+void GraphicsButtonItem::hoverEnterEvent(QGraphicsSceneHoverEvent *event) {
+    if(isSelected) {
+        return;
+    }
+    QGraphicsItem::hoverEnterEvent(event);
+    setHighlighting(true);
+}
+void GraphicsButtonItem::hoverLeaveEvent(QGraphicsSceneHoverEvent *event) {
+    if(isSelected) {
+        return;
+    }
+    QGraphicsItem::hoverLeaveEvent(event);
+    setHighlighting(false);
+}
+
+void GraphicsButtonItem::setSelected(bool selected){
+    isSelected = selected;
+    if(selected) {
+        setHighlighting(true);
+    }
+    else {
+        setHighlighting(false);
+    }
+}
+
+void GraphicsButtonItem::setHighlighting(bool enabled) {
+    if(enabled) {
+        setRect(QRectF(-radiusMax, -radiusMax, 2 * radiusMax, 2 * radiusMax));
+        setBrush(highlightingBrush);
+    }
+    else {
+        setRect(QRectF(-radiusMin, -radiusMin, 2 * radiusMin, 2 * radiusMin));
+        setBrush(ordinaryBrush);
+    }
+    update();
 }
 
 void GraphicsButtonItem::collapse() {
@@ -128,7 +145,7 @@ void GraphicsButtonItem::swapSiblings() {
 }
 
 bool GraphicsButtonItem::isSelectedTop() {
-    if (!isSelected()) {
+    if (!isSelected) {
         return false;
     }
     GraphicsBranchItem *branchItem = dynamic_cast<GraphicsBranchItem*>(parentItem());
