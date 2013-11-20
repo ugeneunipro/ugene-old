@@ -139,6 +139,23 @@ void DotPlotFilesDialog::accept() {
         secondFileName = firstFileName;
     }
 
+    FormatDetectionConfig conf;
+    QList<FormatDetectionResult> results = DocumentUtils::detectFormat(firstFileName, conf);
+    if (results.isEmpty()){
+        QMessageBox mb(QMessageBox::Critical, tr("Select files"), tr("Unable to detect format of given file %1.\r\nSelect valid file to build dotplot").arg(firstFileEdit->text()));
+        firstFileEdit->setText("");
+        mb.exec();
+        return;
+    }
+
+    results = DocumentUtils::detectFormat(secondFileName, conf);
+    if (results.isEmpty()){
+        QMessageBox mb(QMessageBox::Critical, tr("Select files"), tr("Unable to detect format of given file %1.\r\nSelect valid file to build dotplot").arg(secondFileEdit->text()));
+        firstFileEdit->setText("");
+        mb.exec();
+        return;
+    }
+
     if (!firstFileName.isEmpty() && !secondFileName.isEmpty()) {
         QDialog::accept();
     }
