@@ -52,7 +52,6 @@ namespace U2 {
 
 #define GT_METHOD_NAME "openWorkfolwDesigner"
 void GTUtilsWorkflowDesigner::openWorkfolwDesigner(U2OpStatus &os){
-    GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os, true));
     GTUtilsDialog::waitForDialogWhichMayRunOrNot(os, new StartupDialogFiller(os));
 
     QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
@@ -443,6 +442,7 @@ void GTUtilsWorkflowDesigner::setParameter(U2OpStatus &os, QString parameter, QV
         QLineEdit* line = qobject_cast<QLineEdit*>(table->findChild<QLineEdit*>());
         GT_CHECK(line, "QLineEdit not found. Widget in this cell might be not QLineEdit");
         GTLineEdit::setText(os, line, lineVal);
+        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
     }
     }
 }
