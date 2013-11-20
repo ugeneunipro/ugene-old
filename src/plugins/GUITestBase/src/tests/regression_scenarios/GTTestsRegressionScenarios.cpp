@@ -3332,6 +3332,38 @@ GUI_TEST_CLASS_DEFINITION( test_2377 ) {
     CHECK_SET_ERR( l.hasError( ), "Error message expected!" );
 }
 
+GUI_TEST_CLASS_DEFINITION( test_2378 ) {
+    GTLogTracer l;
+    GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os, testDir + "_common_data/scenarios/sandbox/test_2378.ugenedb"));
+    GTFileDialog::openFile(os, testDir + "_common_data/sam/", "scerevisiae.sam");
+    CHECK_SET_ERR(!l.hasError( ), "Error message");
+}
+
+GUI_TEST_CLASS_DEFINITION( test_2378_1 ) {
+    GTLogTracer l;
+    // 1. Open WD
+    GTUtilsWorkflowDesigner::openWorkfolwDesigner(os);
+
+    // 2. Create scheme: read assembly->write assembly
+    // 3. set _common_data\sam\scerevisiae.sam as input file
+    GTUtilsWorkflowDesigner::addAlgorithm(os, "Read Assembly");
+    GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "Read Assembly"));
+    GTMouseDriver::click(os);
+    GTUtilsWorkflowDesigner::setDatasetInputFile(os, testDir + "_common_data/sam", "scerevisiae.sam");
+
+    GTUtilsWorkflowDesigner::addAlgorithm(os, "Write Assembly");
+    GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "Write Assembly"));
+    GTMouseDriver::click(os);
+    GTUtilsWorkflowDesigner::setParameter(os, "Output file", testDir + "_common_data/scenarios/sandbox/test_2378_1.bam", GTUtilsWorkflowDesigner::textValue);
+
+    GTUtilsWorkflowDesigner::connect(os, GTUtilsWorkflowDesigner::getWorker(os, "Read Assembly"), GTUtilsWorkflowDesigner::getWorker(os, "Write Assembly"));
+
+    // 4. Run scheme
+    GTWidget::click( os, GTAction::button( os, "Run workflow" ) );
+    GTGlobals::sleep(5000);
+    CHECK_SET_ERR(!l.hasError( ), "Error message");
+}
+
 GUI_TEST_CLASS_DEFINITION( test_2406 ) {
 //    1. Create the {Read Sequence -> Write Sequence} workflow.
     GTUtilsWorkflowDesigner::openWorkfolwDesigner(os);

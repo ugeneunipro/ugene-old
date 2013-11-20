@@ -29,7 +29,7 @@ namespace U2 {
     class ImportBAMFileFiller : public Filler {
     public:
         ImportBAMFileFiller(U2OpStatus &_os, const QString _destinationUrl = "", const QString &_dbPath = "", const QString &_dbFileName = "") :
-          Filler(_os, "Import BAM file"),
+          Filler(_os, "Import BAM File"),
               databasePath(_dbPath),
               databaseFileName(_dbFileName),
               destinationUrl(_destinationUrl){}
