@@ -43,10 +43,11 @@ namespace U2 {
 
 ConvertAceToSqliteTask::ConvertAceToSqliteTask(const GUrl &_sourceUrl, const GUrl &_destinationUrl) :
     Task(tr("Convert ACE to UGENE database (%1)").arg(_destinationUrl.fileName()), TaskFlag_None),
-    destFileWasChanged(false),
+    append(false),
     sourceUrl(_sourceUrl),
     destinationUrl(_destinationUrl),
-    dbi(NULL) {
+    dbi(NULL)
+{
     GCOUNTER(cvar, tvar, "ConvertAceToUgenedb");
     tpm = Progress_Manual;
 }
@@ -70,8 +71,7 @@ void ConvertAceToSqliteTask::run() {
         return;
     }
 
-    destFileWasChanged = true;
-    bool append = QFile::exists(destinationUrl.getURLString());
+    append = QFile::exists(destinationUrl.getURLString());
 
     DbiConnection dbiHandle(U2DbiRef(SQLITE_DBI_ID, destinationUrl.getURLString()), true, stateInfo);
     CHECK_OP(stateInfo, );
@@ -113,10 +113,15 @@ void ConvertAceToSqliteTask::run() {
 }
 
 Task::ReportResult ConvertAceToSqliteTask::report() {
-    if (destFileWasChanged && stateInfo.isCoR() && destinationUrl.isLocalFile()) {
-        // Do not remove file, if it wasn't changed, it can be valid.
-        QFile::remove(destinationUrl.getURLString());
+    if (stateInfo.isCoR() && destinationUrl.isLocalFile()) {
+        if (!append) {
+            QFile::remove(destinationUrl.getURLString());
+        } else {
+            // Do not remove file if it was appended.
+            removeCorruptedAssembly();
+        }
     }
+
     return ReportResult_Finished;
 }
 
@@ -170,6 +175,8 @@ qint64 ConvertAceToSqliteTask::importAssemblies(IOAdapter &ioAdapter) {
         CHECK_OP(stateInfo, totalReadsImported);
         assembly.referenceId = crossDbRef.id;
 
+        corruptedAssembly = assembly;
+
         U2AssemblyReadsImportInfo & importInfo = importInfos[assemblyNum];
         assDbi->createAssemblyObject(assembly, "/", NULL, importInfo, stateInfo);
         CHECK_OP(stateInfo, totalReadsImported);
@@ -195,6 +202,8 @@ qint64 ConvertAceToSqliteTask::importAssemblies(IOAdapter &ioAdapter) {
 
         totalReadsImported += aceAssembly.getReadsCount();
         assemblyNum++;
+
+        corruptedAssembly = U2Assembly();
     }
 
     return totalReadsImported;
@@ -295,6 +304,47 @@ void ConvertAceToSqliteTask::updateAttributeDbi() {
         }
         stateInfo.setProgress(stateInfo.getProgress() + progressStep);
     }
+}
+
+void ConvertAceToSqliteTask::removeCorruptedAssembly() {
+    if (corruptedAssembly.id.isEmpty()) {
+        return;
+    }
+
+    // stateInfo can already have error
+    U2OpStatusImpl os;
+
+    U2ObjectDbi* objDbi = dbi->getObjectDbi();
+    SAFE_POINT(NULL != objDbi, "Object DBI is NULL", );
+    U2AssemblyDbi* assDbi = dbi->getAssemblyDbi();
+    SAFE_POINT(NULL != assDbi, "Assembly DBI is NULL", );
+    U2CrossDatabaseReferenceDbi* crossDbi = dbi->getCrossDatabaseReferenceDbi();
+    SAFE_POINT(NULL != crossDbi, "Cross reference DBI is NULL", );
+
+    // remove the assembly object
+    objDbi->removeObject(corruptedAssembly.id, os);
+    CHECK_OP(os, );
+
+    // remove reads of the corrupted assembly
+    QScopedPointer<U2DbiIterator<U2AssemblyRead> > readsIterator(assDbi->getReads(corruptedAssembly.id, U2_REGION_MAX, os));
+    CHECK_OP(os, );
+    QList<U2DataId> readIds;
+    while (readsIterator->hasNext()) {
+        readIds << readsIterator->peek()->id;
+    }
+
+    assDbi->removeReads(corruptedAssembly.id, readIds, os);
+    CHECK_OP(os, );
+
+    // remove the reference sequence
+    U2CrossDatabaseReference crossRef = crossDbi->getCrossReference(corruptedAssembly.referenceId, os);
+    CHECK_OP(os, );
+    objDbi->removeObject(crossRef.dataRef.entityId, os);
+    CHECK_OP(os, );
+
+    // remove cross reference object
+    objDbi->removeObject(corruptedAssembly.referenceId, os);
+    CHECK_OP(os, );
 }
 
 }   // namespace U2

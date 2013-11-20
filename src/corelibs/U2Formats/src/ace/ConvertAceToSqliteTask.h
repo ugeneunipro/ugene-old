@@ -45,11 +45,13 @@ private:
     qint64 importAssemblies(IOAdapter &ioAdapter);
     qint64 packReads();
     void updateAttributeDbi();
+    void removeCorruptedAssembly();
 
-    bool destFileWasChanged;        // if it is true, this file will be deleted on error: it is already corrupted
+    bool append;        // if it is appended, it won't be removed on error
     const GUrl sourceUrl;
     const GUrl destinationUrl;
     U2Dbi* dbi;
+    U2Assembly corruptedAssembly;
 
     QMap<int, Assembly::Sequence> references;
     QMap<int, U2Assembly> assemblies;
