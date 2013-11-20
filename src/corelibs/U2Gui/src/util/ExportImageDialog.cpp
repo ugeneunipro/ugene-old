@@ -220,7 +220,8 @@ bool ExportImageDialog::exportToBitmap(){
 //    return (result && image.save(filename));
     rect.setRight( this->getWidth() );
     rect.setBottom( this->getHeight() );
-    QPixmap image = QPixmap::grabWidget( widget, rect );
+    QPixmap image = QPixmap::grabWidget(widget, widget->rect());
+    image = image.scaled(rect.size(), Qt::KeepAspectRatio);
     if(hasQuality()){
         return image.save(filename, qPrintable(format),getQuality());
     }else{

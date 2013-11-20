@@ -35,7 +35,7 @@
 
 namespace U2 {
 
-ExportImageCVDialog::ExportImageCVDialog(CircularView * widget ) : ExportImageDialog(widget,false,true), cvWidget(widget)
+ExportImageCVDialog::ExportImageCVDialog(CircularView * widget ) : ExportImageDialog(widget,true,true), cvWidget(widget)
 {
 }
 

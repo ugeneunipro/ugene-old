@@ -56,7 +56,7 @@ bool ExportImage3DGLDialog::exportToPDF(){
 bool ExportImage3DGLDialog::exportToBitmap(){
     
     glWidget->setImageRenderingMode(true);
-    QPixmap image = glWidget->renderPixmap(getWidth(), getHeight());
+    QPixmap image = glWidget->renderPixmap().scaled(getWidth(), getHeight(), Qt::KeepAspectRatio);
     glWidget->setImageRenderingMode(false);
 
     if(hasQuality()){
