@@ -3164,6 +3164,31 @@ GUI_TEST_CLASS_DEFINITION( test_2281 ){
     GTGlobals::sleep(1000);
 }
 
+GUI_TEST_CLASS_DEFINITION( test_2282 ) {
+    // 1. Open "chrM.sorted.bam" file using {File->Open} menu in UGENE.
+    //    Expected state: "Import BAM file" dialog has appeared.
+    // 2. Press "Enter".
+    //    Expected state:
+    //      1) The dialog has been closed.
+    //      2) A new project has been created.
+    QString assFileName = testDir + "_common_data/scenarios/sandbox/test_2282.chrM.sorted.ugenedb";
+    QString assDocName = "test_2282.chrM.sorted.ugenedb";
+    GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os, assFileName));
+    GTFileDialog::openFile(os, testDir + "_common_data/bam/", "chrM.sorted.bam");
+    GTGlobals::sleep(5000);
+
+    //      3) The Project View with document "chrM.sorted.bam.ugenedb" has been opened.
+    QTreeWidgetItem *assDoc = GTUtilsProjectTreeView::findItem(os, assDocName);
+    CHECK(NULL != assDoc, );
+
+    // 3. Delete "chrM.sorted.bam.ugenedb" from the file system (i.e. not from UGENE).
+    bool deleteResult = QFile::remove(assFileName);
+    CHECK(true == deleteResult, );
+
+    // Expected state: the project has been removed.
+    GTUtilsProject::checkProject(os, GTUtilsProject::NotExists);
+}
+
 GUI_TEST_CLASS_DEFINITION( test_2306 ) {
     // 1. Open file "data/samples/CLUSTALW/COI.aln"
     GTFileDialog::openFile(os, dataDir+"samples/CLUSTALW/", "COI.aln");

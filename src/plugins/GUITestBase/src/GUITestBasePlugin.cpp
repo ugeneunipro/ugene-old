@@ -236,6 +236,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_2267_1);
     REGISTER_TEST(GUITest_regression_scenarios::test_2267_2);
     REGISTER_TEST(GUITest_regression_scenarios::test_2268);
+    REGISTER_TEST(GUITest_regression_scenarios::test_2282);
     REGISTER_TEST(GUITest_regression_scenarios::test_2316);
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2269, "impossible to catch expected error in opStatus without stopping test");
     REGISTER_TEST(GUITest_regression_scenarios::test_2306);
