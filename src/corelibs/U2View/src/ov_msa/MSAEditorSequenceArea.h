@@ -146,6 +146,7 @@ private:
 
 class U2VIEW_EXPORT MSAEditorSequenceArea : public QWidget {
     Q_OBJECT
+    Q_DISABLE_COPY(MSAEditorSequenceArea)
 public:
     MSAEditorSequenceArea(MSAEditorUI* ui, GScrollBar* hb, GScrollBar* vb);
     ~MSAEditorSequenceArea();
@@ -260,7 +261,7 @@ private:
 
     void setCursorPos(const QPoint& p);
 
-    void setCursorPos(int x, int y) { setCursorPos(QPoint(x, y)); };
+    void setCursorPos(int x, int y) { setCursorPos(QPoint(x, y)); }
     
     void setCursorPos(int pos) { setCursorPos(QPoint(pos, cursorPos.y())); }
 
@@ -357,7 +358,7 @@ private slots:
     void sl_referenceSeqChanged(qint64);
 
     void sl_resetCollapsibleModel();
-    void sl_setCollapsingRegions(const QStringList* visibleSequences);
+    void sl_setCollapsingRegions(const QList<QStringList>&);
     void sl_useDots();
     void sl_fontChanged(QFont font);
 

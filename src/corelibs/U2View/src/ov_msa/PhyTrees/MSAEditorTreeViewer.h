@@ -99,11 +99,12 @@ class MSAEditorTreeViewerUI: public TreeViewerUI {
 
 public:
     MSAEditorTreeViewerUI(MSAEditorTreeViewer* treeViewer);
-    ~MSAEditorTreeViewerUI(){}
+    virtual ~MSAEditorTreeViewerUI(){
+        //Clear groups highlighting in the MSAEditor
+        emit si_groupColorsChanged(GroupColorSchema());
+    }
 
     QStringList* getOrderedSeqNames();
-
-    const QStringList* getVisibleSeqsList();
 
     U2Region getTreeSize(); 
     void setTreeVerticalSize(int size);
@@ -114,7 +115,6 @@ public:
     
     void setSynchronizeMode(SynchronizationMode syncMode);
 protected:
-    virtual void mouseDoubleClickEvent(QMouseEvent *e);
     virtual void mousePressEvent(QMouseEvent *e);
     virtual void wheelEvent(QWheelEvent *e);
     virtual void mouseMoveEvent(QMouseEvent *me);
@@ -125,7 +125,7 @@ protected:
     virtual void updateSettings(const TreeSettings &settings);
     virtual void updateTreeSettings(bool setDefaultZoom = true);
 signals:
-    void si_collapseModelChangedInTree(const QStringList* visibleSeqs);
+    void si_collapseModelChangedInTree(const QList<QStringList>&);
     void si_seqOrderChanged(QStringList* order);
     void si_treeZoomedIn();
     void si_treeZoomedOut();
@@ -135,12 +135,12 @@ public slots:
 private slots:
     void sl_selectionChanged(const QStringList& selection);
     void sl_sequenceNameChanged(QString prevName, QString newName);
-    virtual void sl_collapseTriggered();
     void sl_onHeightChanged(int height, bool isMinimumSize, bool isMaximumSize);
     void sl_onReferenceSeqChanged(qint64);
     void sl_onSceneRectChanged(const QRectF&);
     virtual void sl_rectLayoutRecomputed();
     void sl_onVisibleRangeChanged(QStringList visibleSeqs, int height);
+    virtual void sl_onBranchCollapsed(GraphicsRectangularBranchItem* branch);
 
 private:
     void highlightBranches();
@@ -159,6 +159,14 @@ private:
 
     bool hasMinSize;
     bool hasMaxSize;
+};
+
+class MSAEditorTreeViewerUtils {
+public:
+    static QList<QStringList> getCollapsedGroups(const GraphicsBranchItem* root);
+private:
+    MSAEditorTreeViewerUtils();
+    static QStringList getSeqsNamesInBranch(const GraphicsBranchItem* branch);
 };
 
 }//namespace

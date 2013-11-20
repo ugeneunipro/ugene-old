@@ -81,27 +81,30 @@ public:
     void setWidth(qreal w);
     void setDist (qreal d) { dist = d; }
     virtual void collapse();
-    void setSelectedRecurs(bool sel, bool recursively);
-    bool isCollapsed();
+    void setSelectedRecurs(bool sel, bool selectChilds);
+    void setSelected(bool sel);
+    bool isCollapsed() const;
 
     void updateSettings(const BranchSettings& branchSettings);
     void updateChildSettings(const BranchSettings& branchSettings);
     void updateTextSettings(const QFont& font, const QColor& color);
 
-    const BranchSettings& getBranchSettings() {return settings;}
+    const BranchSettings& getBranchSettings() const {return settings;}
 
-    GraphicsBranchItem* getCorrespondingItem() {return correspondingItem;}
+    GraphicsBranchItem* getCorrespondingItem() const {return correspondingItem;}
     void setCorrespondingItem(GraphicsBranchItem* cItem) {correspondingItem = cItem;}
 
-    const QList<QGraphicsItem*> getChildItems() {return childItems();}
+    const QList<QGraphicsItem*> getChildItems() const {return childItems();}
 
     void setBranchLength(int newLength) {branchLength = newLength;}
-    int getBranchLength() {return branchLength;}
+    int getBranchLength() const {return branchLength;}
 
-    QGraphicsItem* getParentItem() {return parentItem();}
+    QGraphicsItem* getParentItem() const {return parentItem();}
 
     void setLenghtCoef(int newCoef) {lengthCoef = newCoef;}
-    int getLengthCoef() {return lengthCoef;}
+    int getLengthCoef() const {return lengthCoef;}
+
+    QRectF visibleChildrenBoundingRect () const;
 };
 
 }//namespace;

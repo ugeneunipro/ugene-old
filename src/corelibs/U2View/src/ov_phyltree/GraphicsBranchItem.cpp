@@ -114,7 +114,7 @@ void GraphicsBranchItem::collapse() {
     }
 }
 
-void GraphicsBranchItem::setSelectedRecurs(bool sel, bool recursively) {
+void GraphicsBranchItem::setSelectedRecurs(bool sel, bool selectChilds) {
 
     int penWidth = settings.branchThickness;
     if (sel) {
@@ -123,24 +123,42 @@ void GraphicsBranchItem::setSelectedRecurs(bool sel, bool recursively) {
 
     QPen thisPen = this->pen();
     thisPen.setWidth(penWidth);
-    setPen(thisPen);
 
+    if (!selectChilds) {
+        setPen(thisPen);
+        setSelected(sel);
+        scene()->update();
+        return;
+    }
+
+    //Set selected for child items
+    QStack<GraphicsBranchItem*> graphicsItems;
+    graphicsItems.push(this);
+    do {
+        GraphicsBranchItem* branchItem = graphicsItems.pop();
+
+        QPen branchPen = branchItem->pen();
+        branchPen.setWidth(penWidth);
+
+        branchItem->setSelected(sel);
+        branchItem->setPen(branchPen);
+
+        foreach(QGraphicsItem* graphItem, branchItem->childItems()) {
+            GraphicsBranchItem *childItem = dynamic_cast<GraphicsBranchItem*>(graphItem);
+            if(childItem) {
+                graphicsItems.push(childItem);
+            }
+        }
+    } while(!graphicsItems.isEmpty());
+
+    scene()->update();
+}
+
+void GraphicsBranchItem::setSelected(bool sel) {
     if (buttonItem) {
         buttonItem->setSelected(sel);
     }
-
-    if (recursively) {
-        foreach(QGraphicsItem* graphItem, this->childItems()) {
-            GraphicsBranchItem *branchItem = dynamic_cast<GraphicsBranchItem*>(graphItem);
-
-            if (branchItem) {
-                 branchItem->setSelectedRecurs(sel, recursively);
-            }
-            
-        }
-    }
-    this->setSelected(sel);
-    scene()->update();
+    QAbstractGraphicsShapeItem::setSelected(sel);
 }
 
 void GraphicsBranchItem::initText(qreal d) {
@@ -250,7 +268,7 @@ void GraphicsBranchItem::setWidth(qreal w) {
     width = w;
 }
 
-bool GraphicsBranchItem::isCollapsed(){
+bool GraphicsBranchItem::isCollapsed() const{
     return collapsed;
 }
 
@@ -274,8 +292,29 @@ void GraphicsBranchItem::paint(QPainter* painter,const QStyleOptionGraphicsItem*
     }
     else {
         if(NULL != nameItemSelection) {
-        nameItemSelection->hide();
+            nameItemSelection->hide();
         }
     }
 }
+
+QRectF GraphicsBranchItem::visibleChildrenBoundingRect () const {
+    QRectF childsBoundingRect;
+    QStack<const QGraphicsItem*> graphicsItems;
+    graphicsItems.push(this);
+    do {
+        const QGraphicsItem* branchItem = graphicsItems.pop();
+
+        QList<QGraphicsItem*> items = branchItem->childItems();
+
+        foreach(QGraphicsItem* graphItem, items) {
+            if(!graphItem->isVisible()) {
+                continue;
+            }
+            childsBoundingRect |= graphItem->sceneBoundingRect();
+            graphicsItems.push(graphItem);
+        }
+    } while(!graphicsItems.isEmpty());
+    return childsBoundingRect;
+}
+
 } //namespace

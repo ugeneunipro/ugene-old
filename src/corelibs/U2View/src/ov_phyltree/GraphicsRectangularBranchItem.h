@@ -31,7 +31,8 @@ class PhyNode;
 class PhyBranch;
 class GraphicsButtonItem;
 
-class GraphicsRectangularBranchItem: public GraphicsBranchItem {
+class GraphicsRectangularBranchItem: public QObject, public GraphicsBranchItem {
+    Q_OBJECT
 public:
     static const qreal DEFAULT_WIDTH;
     static const qreal MAXIMUM_WIDTH;
@@ -58,20 +59,25 @@ public:
     void setDirection(Direction d);
 
     void collapse();
+    void setCollapsed(bool isCollapsed) {collapsed = isCollapsed;}
     void swapSiblings();
     void redrawBranches(int& current, qreal& minDistance, qreal& maxDistance, PhyNode* root);
 
     void setPhyBranch(PhyBranch* p);
     const PhyBranch* getPhyBranch() const {return phyBranch;}
     GraphicsRectangularBranchItem* getChildItemByPhyBranch(const PhyBranch* branch);
+
+    void drawCollapsedRegion();
+    void branchCollapsed(GraphicsRectangularBranchItem* branch) {emit si_branchCollapsed(branch);}
+
+signals:
+    void si_branchCollapsed(GraphicsRectangularBranchItem* collapsedBranch);
 private:
     qreal height;
     int cur_height_coef;
     Direction direction;
     PhyBranch* phyBranch;
-
 };
-
 }//namespace;
 
 #endif

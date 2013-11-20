@@ -160,6 +160,7 @@ protected:
 
 class TreeViewerUI: public QGraphicsView {
     Q_OBJECT
+    Q_DISABLE_COPY(TreeViewerUI)
 
 public:
     TreeViewerUI(TreeViewer* treeViewer);
@@ -200,7 +201,7 @@ public:
     enum TreeLayout {
         TreeLayout_Rectangular,
         TreeLayout_Circular,
-        TreeLayout_Unrooted,
+        TreeLayout_Unrooted
     };
 
     virtual void setTreeLayout(TreeLayout newLayout);
@@ -229,6 +230,7 @@ protected slots:
     virtual void sl_swapTriggered();
     virtual void sl_collapseTriggered();
     virtual void sl_rectLayoutRecomputed();
+    virtual void sl_onBranchCollapsed(GraphicsRectangularBranchItem*);
 private slots:
     void sl_printTriggered();
     void sl_captureTreeTriggered();
@@ -240,7 +242,6 @@ private slots:
     void sl_circularLayoutTriggered();
     void sl_unrootedLayoutTriggered();
     void sl_layoutRecomputed();
-    void sl_chrootTriggered();
     void sl_textSettingsTriggered();
     void sl_treeSettingsTriggered();
 
@@ -253,7 +254,7 @@ private slots:
 private:
     enum LabelType {
         LabelType_SequnceName = 1,
-        LabelType_Distance = 2,
+        LabelType_Distance = 2
     };
     typedef QFlags<LabelType> LabelTypes;
 

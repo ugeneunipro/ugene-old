@@ -2378,44 +2378,30 @@ void MSAEditorSequenceArea::sl_resetCollapsibleModel() {
     editor->resetCollapsibleModel();
 }
 
-void MSAEditorSequenceArea::sl_setCollapsingRegions(const QStringList* visibleSequences) {
+void MSAEditorSequenceArea::sl_setCollapsingRegions(const QList<QStringList>& collapsedGroups) {
+    MSACollapsibleItemModel* m = ui->getCollapseModel();
+    SAFE_POINT(NULL != m, "Incorrect pointer to MSACollapsibleItemModel",);
+    m->reset();
+
     MAlignmentObject* msaObject = editor->getMSAObject();
-    QVector<int> seqIndexes;
     MAlignment ma = msaObject->getMAlignment();
     QStringList rowNames = ma.getRowNames();
-    foreach(QString seqName, *visibleSequences) {
-        int index = rowNames.indexOf(seqName);
-        if(index >= 0) {
-            seqIndexes.append(index);
-        }
-    }
-
-    int seqNums = seqIndexes.size();
-    CHECK(seqNums > 0,);
-
-    qSort(seqIndexes.begin(), seqIndexes.end());
-
     QVector<U2Region> collapsedRegions;
-    
-    int prevIndex = -1;
-    int maxIndex = 0;
-    for(int i = 0; i < seqNums; i++) {
-        int curIndex = seqIndexes.at(i);
-        maxIndex = qMax(maxIndex, curIndex);
-        if(-1 == prevIndex && curIndex > 0) {
-            collapsedRegions.append(U2Region(0, curIndex));
-            prevIndex = curIndex;
-            continue;
+
+    //Calculate regions of the groups
+    foreach(const QStringList& seqsGroup, collapsedGroups) {
+        int regionStart = rowNames.size(), regionEnd = 0;
+        foreach(const QString& seqName, seqsGroup) {
+            int seqPos = rowNames.indexOf(seqName);
+            regionStart = qMin(seqPos, regionStart);
+            regionEnd = qMax(seqPos, regionEnd);
         }
-        if(curIndex - prevIndex > 1) {
-            collapsedRegions.append(U2Region(prevIndex+1, curIndex - prevIndex - 1));
+        if(regionStart > 0 && regionEnd <= rowNames.size() && regionEnd > regionStart) {
+            collapsedRegions.append(U2Region(regionStart, regionEnd - regionStart + 1));
         }
-        prevIndex = curIndex;
     }
-    int endGroupSize = rowNames.size() - maxIndex - 1;
-    if(endGroupSize > 0) {
-        collapsedRegions.append(U2Region(maxIndex+1, endGroupSize));
-    }
+    //Function 'reset' in 'MSACollapsibleItemModel' work only with sorted regions
+    qSort(collapsedRegions);
 
     if (msaObject == NULL || msaObject->isStateLocked()) {
         if (collapseModeSwitchAction->isChecked()) {
@@ -2423,21 +2409,19 @@ void MSAEditorSequenceArea::sl_setCollapsingRegions(const QStringList* visibleSe
         }
         return;
     }
-    MSACollapsibleItemModel* m = ui->getCollapseModel();
-    if(ui->isCollapsibleMode()) {
-        m->reset(collapsedRegions);
+    
+    ui->setCollapsibleMode(true);
 
-        MAlignmentModInfo mi;
-        msaObject->updateCachedMAlignment(mi);
-    }
-    else {
-        m->reset();
-    }
+    m->reset(collapsedRegions);
+
+    MAlignmentModInfo mi;
+    msaObject->updateCachedMAlignment(mi);
+
     updateVScrollBar();
 }
 
 int MSAEditorSequenceArea::getHeight(){
-    return editor->getRowHeight() * (getNumVisibleSequences(true) - 1);
+    return editor->getRowHeight() * (getNumDisplayedSequences() - 1);
 }
 
 QString MSAEditorSequenceArea::exportHighligtning( int startPos, int endPos, int startingIndex, bool keepGaps, bool dots ){
