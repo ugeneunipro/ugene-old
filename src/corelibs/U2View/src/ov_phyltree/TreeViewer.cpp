@@ -922,7 +922,7 @@ void TreeViewerUI::sl_swapTriggered() {
 void TreeViewerUI::collapseSelected() {
     phyObject->update();
 
-    QList<QGraphicsItem *>& childItems = this->items();
+    QList<QGraphicsItem *> childItems = this->items();
     foreach (QGraphicsItem *graphItem, childItems) {
         GraphicsButtonItem *buttonItem = dynamic_cast<GraphicsButtonItem*>(graphItem);
 
