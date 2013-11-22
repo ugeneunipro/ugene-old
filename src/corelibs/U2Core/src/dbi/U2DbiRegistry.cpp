@@ -20,6 +20,8 @@
  */
 
 #include <U2Core/AppContext.h>
+#include <U2Core/CMDLineCoreOptions.h>
+#include <U2Core/CMDLineRegistry.h>
 #include <U2Core/Log.h>
 #include <U2Core/U2DbiRegistry.h>
 #include <U2Core/U2OpStatusUtils.h>
@@ -34,7 +36,9 @@
 
 namespace U2 {
 
-    U2DbiRegistry::U2DbiRegistry(QObject *parent) : QObject(parent), lock(QMutex::Recursive) {
+static const QString SESSION_TMP_DBI_ALIAS("session");
+
+U2DbiRegistry::U2DbiRegistry(QObject *parent) : QObject(parent), lock(QMutex::Recursive) {
     pool = new U2DbiPool(this);
     sessionDbiConnection = NULL;
     sessionDbiInitDone = false;
@@ -150,16 +154,67 @@ void U2DbiRegistry::deallocateTmpDbi(const TmpDbiRef& ref, U2OpStatus& os) {
     }
 }
 
+namespace {
+    QString createNewDatabase(const QString &alias, U2OpStatus &os) {
+        QString tmpDirPath = AppContext::getAppSettings()->getUserAppsSettings()->getCurrentProcessTemporaryDirPath();
+        return GUrlUtils::prepareTmpFileLocation(tmpDirPath, alias, "ugenedb", os);
+    }
+
+    QString getDatabaseFromCMDLine(U2OpStatus &os) {
+        CMDLineRegistry *cmdlineReg = AppContext::getCMDLineRegistry();
+        SAFE_POINT_EXT(NULL != cmdlineReg, os.setError("NULL cmdline registry"), "");
+        if (!cmdlineReg->hasParameter(CMDLineCoreOptions::SESSION_DB)) {
+            os.setError("The session database path is not supplied through the cmd line argument");
+            return "";
+        }
+        return cmdlineReg->getParameterValue(CMDLineCoreOptions::SESSION_DB);
+    }
+
+    /**
+     * Returns true if the path to the correct (openable) session database is
+     * supplied with the cmdline argument
+     */
+    bool useDatabaseFromCMDLine(const QString &alias) {
+        if (SESSION_TMP_DBI_ALIAS != alias) {
+            return false;
+        }
+
+        CMDLineRegistry *cmdlineReg = AppContext::getCMDLineRegistry();
+        SAFE_POINT(NULL != cmdlineReg, "NULL cmdline registry", false);
+        if (!cmdlineReg->hasParameter(CMDLineCoreOptions::SESSION_DB)) {
+            return false;
+        }
+
+        U2DbiRef ref;
+        ref.dbiId = cmdlineReg->getParameterValue(CMDLineCoreOptions::SESSION_DB);
+        ref.dbiFactoryId = DEFAULT_DBI_ID;
+
+        // Check if the connection can be established
+        U2OpStatus2Log os;
+        DbiConnection con(ref, true, os);
+        if (os.hasError()) {
+            return false;
+        }
+        return true;
+    }
+
+    U2DbiRef getDbiRef(const QString &alias, U2OpStatus &os) {
+        U2DbiRef res;
+        res.dbiFactoryId = DEFAULT_DBI_ID;
+        if (useDatabaseFromCMDLine(alias)) {
+            res.dbiId = getDatabaseFromCMDLine(os);
+        } else {
+            res.dbiId = createNewDatabase(alias, os);
+        }
+        return res;
+    }
+}
+
 U2DbiRef U2DbiRegistry::allocateTmpDbi(const QString& alias, U2OpStatus& os) {
     QMutexLocker m(&lock);
 
-    U2DbiRef res;
-    QString tmpDirPath = AppContext::getAppSettings()->getUserAppsSettings()->getCurrentProcessTemporaryDirPath();
-    QString url = GUrlUtils::prepareTmpFileLocation(tmpDirPath, alias, "ugenedb", os);
+    U2DbiRef res = getDbiRef(alias, os);
     CHECK_OP(os, res);
-
-    res.dbiId = url;
-    res.dbiFactoryId = DEFAULT_DBI_ID;
 
     {
         // Create a tmp dbi file (the DbiConnection is opened with "bool create = true", and released)

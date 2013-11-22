@@ -149,11 +149,11 @@ static bool isGenbankHeaderUsed(const QVariantMap& hints, const QString& urlGenb
 
 static U2SequenceObject* storeSequenceUseGenbankHeader(const QVariantMap& hints, const QString& urlGenbank, const QString& seqName, U2OpStatus& os){
     qint64 sequenceLength = hints[RawDataCheckResult_HeaderSequenceLength + urlGenbank].toLongLong();
-    TmpDbiHandle dbiHandle(SESSION_TMP_DBI_ALIAS, os);
+    const U2DbiRef dbiRef = AppContext::getDbiRegistry()->getSessionTmpDbiRef(os);
     CHECK_OP(os, NULL);
 
     U2SequenceImporter seqImport;
-    seqImport.startSequence(dbiHandle.getDbiRef(), seqName, false, os);
+    seqImport.startSequence(dbiRef, seqName, false, os);
     CHECK_OP(os, NULL);
 
     QByteArray symbolsOfNotExistingSequence(sequenceLength, 'N');
@@ -164,7 +164,7 @@ static U2SequenceObject* storeSequenceUseGenbankHeader(const QVariantMap& hints,
     U2Sequence u2seq = seqImport.finalizeSequence(os);
     CHECK_OP(os, NULL);
 
-    return new U2SequenceObject(u2seq.visualName, U2EntityRef(dbiHandle.getDbiRef(), u2seq.id));
+    return new U2SequenceObject(u2seq.visualName, U2EntityRef(dbiRef, u2seq.id));
 }
 
 //TODO move to AnnotationUtils ?

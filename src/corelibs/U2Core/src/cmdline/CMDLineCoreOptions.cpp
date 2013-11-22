@@ -45,6 +45,7 @@ const QString CMDLineCoreOptions::LAUNCH_GUI_TEST_SUITE = "gui-test-suite";
 const QString CMDLineCoreOptions::LAUNCH_GUI_TEST_CRAZY_USER = "gui-test-crazy-user";
 const QString CMDLineCoreOptions::USAGE         = "usage";
 const QString CMDLineCoreOptions::TMP_DIR       = "tmp-dir";
+const QString CMDLineCoreOptions::SESSION_DB    = "session-db";
 
 
 void CMDLineCoreOptions::initHelp() {
@@ -75,11 +76,21 @@ void CMDLineCoreOptions::initHelp() {
         "Path to temporary folder",
         "",
         tr( "<path_to_file>" ));
-    
+
+    CMDLineHelpProvider * sessionDatabaseSection = new CMDLineHelpProvider(
+        SESSION_DB,
+        tr("Path to the session database file"),
+        tr("Session database is stored in the temporary file that is created for every UGENE run.\n"
+        "But it can be supplied with the command line argument.\n"
+        "If the supplied file does not exist it will be created.\n"
+        "The session database file is removed after closing of UGENE."),
+        tr( "<path_to_file>" ));
+
     cmdLineRegistry->registerCMDLineHelpProvider( helpSection );
     cmdLineRegistry->registerCMDLineHelpProvider( loadSettingsFileSection );
     cmdLineRegistry->registerCMDLineHelpProvider( translSection );
-    cmdLineRegistry->registerCMDLineHelpProvider( tmpDirSection);
+    cmdLineRegistry->registerCMDLineHelpProvider( tmpDirSection );
+    cmdLineRegistry->registerCMDLineHelpProvider( sessionDatabaseSection);
 }
 
 } // U2

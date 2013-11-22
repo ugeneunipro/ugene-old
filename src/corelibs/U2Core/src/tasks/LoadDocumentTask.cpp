@@ -403,12 +403,11 @@ static Document* loadFromMultipleFiles(IOAdapterFactory* iof, QVariantMap& fs, U
     GUrl newUrl(newStringUrl, GUrl_File);
     DocumentFormat* df= AppContext::getDocumentFormatRegistry()->getFormatById(fs[ProjectLoaderHint_MultipleFilesMode_RealDocumentFormat].toString());
     QList<GObject*> newObjects;
-    
-    TmpDbiHandle dbiHandle(SESSION_TMP_DBI_ALIAS, os);
+
     U2DbiRef ref;
     if(fs.value(DocumentReadingMode_SequenceMergeGapSize, -1) != - 1){
-       ref = dbiHandle.getDbiRef();
-       newObjects << U1SequenceUtils::mergeSequences(docs, ref, newStringUrl, fs, os);
+        ref = AppContext::getDbiRegistry()->getSessionTmpDbiRef(os);
+        newObjects << U1SequenceUtils::mergeSequences(docs, ref, newStringUrl, fs, os);
     }
     else if(fs.value(DocumentReadingMode_SequenceAsAlignmentHint).toBool()){                
         newObjects << MSAUtils::seqDocs2msaObj(docs, os);
@@ -536,10 +535,11 @@ Document* LoadDocumentTask::createCopyRestructuredWithHints(Document* doc, U2OpS
             return NULL;
         }
         //resultDoc = U1SequenceUtils::mergeSequences(doc, mergeGap, os);
-        TmpDbiHandle dbiHandle(SESSION_TMP_DBI_ALIAS, os);
-        QList<GObject*> objects = U1SequenceUtils::mergeSequences(doc, dbiHandle.getDbiRef(), hints, os);
+        const U2DbiRef dbiRef = AppContext::getDbiRegistry()->getSessionTmpDbiRef(os);
+        CHECK_OP(os, NULL);
+        QList<GObject*> objects = U1SequenceUtils::mergeSequences(doc, dbiRef, hints, os);
         Document* resultDoc = new Document(doc->getDocumentFormat(), doc->getIOAdapterFactory(), doc->getURL(), 
-            dbiHandle.getDbiRef(), objects, hints, tr("File content was merged"));
+            dbiRef, objects, hints, tr("File content was merged"));
         doc->propagateModLocks(resultDoc);
 
         if (os.hasError()) {
