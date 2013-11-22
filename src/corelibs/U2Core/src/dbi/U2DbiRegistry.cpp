@@ -255,8 +255,6 @@ U2Dbi* U2DbiPool::openDbi(const U2DbiRef& ref, bool create, U2OpStatus& os) {
     U2Dbi* dbi = NULL;
     QString url = ref.dbiId;
 
-    ioLog.trace(QString("DbiPool: Opening DBI. Url: %1, factory: %2").arg(url).arg(ref.dbiFactoryId));
-
     if (url.isEmpty()) {
         os.setError(tr("No URL provided!"));
         return NULL;
@@ -311,7 +309,6 @@ void U2DbiPool::releaseDbi(U2Dbi* dbi, U2OpStatus& os) {
         return;
     }
     int cnt = --dbiCountersByUrl[url];
-    ioLog.trace(QString("DbiPool: decreasing reference count. Url: %1, ref-count: %2").arg(url).arg(cnt));
     if (cnt > 0) {
         return;
     }
