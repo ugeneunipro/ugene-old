@@ -55,7 +55,9 @@ SaveAlignmentTask::SaveAlignmentTask(const MAlignment& _ma, const QString& _file
     setTaskName(tr("Export alignment to '%1'").arg(QFileInfo(fileName).fileName()));
     setVerboseLogMode(true);
 
-    assert(!ma.isEmpty());
+    if (ma.isEmpty()) {
+        setError(tr("An alignment is empty"));
+    }
 }
 
 void SaveAlignmentTask::run() {

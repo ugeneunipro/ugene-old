@@ -44,6 +44,7 @@ class MSAEditorSelection;
 
 class MSAEditorNameList: public QWidget {
     Q_OBJECT
+    Q_DISABLE_COPY(MSAEditorNameList)
 public:
     MSAEditorNameList(MSAEditorUI* ui, QScrollBar* nhBar);
     virtual ~MSAEditorNameList();

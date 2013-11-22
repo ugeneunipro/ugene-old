@@ -192,6 +192,8 @@ public:
 
     void setFirstVisibleSequence(int seq);
 
+    bool isAlignmentEmpty() const { return editor->isAlignmentEmpty(); }
+
     bool isPosInRange(int p) const;
     
     bool isSeqInRange(int s) const;
@@ -289,9 +291,9 @@ public:
 
     QString exportHighligtning(int startPos, int endPos, int startingIndex, bool keepGaps, bool dots);
 
-    MSAColorScheme* getCurrentColorScheme(){return colorScheme;};
-    MSAHighlightingScheme* getCurrentHighlightingScheme(){return highlitingScheme;};
-    bool getUseDotsCheckedState(){return useDotsAction->isChecked();};
+    MSAColorScheme* getCurrentColorScheme(){return colorScheme;}
+    MSAHighlightingScheme* getCurrentHighlightingScheme(){return highlitingScheme;}
+    bool getUseDotsCheckedState(){return useDotsAction->isChecked();}
 
     void onVisibleRangeChanged();
 signals:

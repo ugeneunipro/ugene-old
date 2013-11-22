@@ -125,6 +125,10 @@ void SequenceSelectorWidgetController::sl_seqLineEditEditingFinished() {
 } 
 
 void SequenceSelectorWidgetController::sl_addSeqClicked() {
+    if (msa->isAlignmentEmpty()) {
+        return;
+    }
+
     const MAlignmentRow selectedRow = msa->getMSAObject()->getRow(msa->getCurrentSelection().y());
     setSequenceId(selectedRow.getRowId());
     emit si_selectionChanged();

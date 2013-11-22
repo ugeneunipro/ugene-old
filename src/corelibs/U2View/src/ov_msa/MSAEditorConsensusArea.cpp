@@ -140,22 +140,27 @@ void MSAEditorConsensusArea::resizeEvent(QResizeEvent *e) {
 
 void MSAEditorConsensusArea::paintEvent(QPaintEvent *e) {
     QSize s = size();
-    QSize sas = ui->seqArea->size(); Q_UNUSED(sas);
+    QSize sas = ui->seqArea->size();
+
     if (sas.width() != s.width()) { //this can happen due to the manual layouting performed by MSAEditor -> just wait for the next resize+paint
         return;
     }
+
     assert(s.width() == sas.width());
+
     if (cachedView->size() != s) {
         assert(completeRedraw);
         delete cachedView;
         cachedView = new QPixmap(s);
     }
+
     if (completeRedraw) {
         QPainter pCached(cachedView);
         pCached.fillRect(cachedView->rect(), Qt::white);
         drawContent( pCached );
         completeRedraw = false;
     }
+
     QPainter p(this);
     p.drawPixmap(0, 0, *cachedView);
     drawSelection(p);
@@ -170,6 +175,10 @@ void MSAEditorConsensusArea::drawContent(QPainter& p ) {
 }
 
 void MSAEditorConsensusArea::drawSelection(QPainter& p) {
+    if (ui->seqArea->isAlignmentEmpty()) {
+        return;
+    }
+
     QFont f = ui->editor->getFont();
     f.setWeight(QFont::DemiBold);
     p.setFont(f);
@@ -185,6 +194,10 @@ void MSAEditorConsensusArea::drawSelection(QPainter& p) {
 }
 
 void MSAEditorConsensusArea::drawConsensus(QPainter& p) {
+    if (ui->seqArea->isAlignmentEmpty()) {
+        return;
+    }
+
     //draw consensus
     p.setPen(Qt::black);
     
@@ -221,6 +234,10 @@ void MSAEditorConsensusArea::drawConsensusChar(QPainter& p, int pos, bool select
 #define RULER_NOTCH_SIZE 3
 
 void MSAEditorConsensusArea::drawRuler(QPainter& p) {
+    if (ui->seqArea->isAlignmentEmpty()) {
+        return;
+    }
+
     //draw ruler
     p.setPen(Qt::darkGray);
 
@@ -257,12 +274,16 @@ void MSAEditorConsensusArea::drawRuler(QPainter& p) {
 }
 
 void MSAEditorConsensusArea::drawHistogram(QPainter& p) {
+    if (ui->seqArea->isAlignmentEmpty()) {
+        return;
+    }
+
     QColor c("#255060");
     p.setPen(c);
     U2Region yr = getYRange(MSAEditorConsElement_HISTOGRAM);
     yr.startPos++; yr.length-=2; //keep borders
     QBrush brush(c, Qt::Dense4Pattern);
-    QVector<int> counts(256, 0);
+
     for (int pos = ui->seqArea->getFirstVisibleBase(), lastPos = ui->seqArea->getLastVisibleBase(true); pos <= lastPos; pos++) {
         U2Region xr = ui->seqArea->getBaseXRange(pos, true);
         int percent = consensusCache->getConsensusCharPercent(pos);
@@ -357,7 +378,6 @@ void MSAEditorConsensusArea::sl_copyConsensusSequenceWithGaps() {
     QApplication::clipboard()->setText(consensusCache->getConsensusLine(true));
 }
 
-
 void MSAEditorConsensusArea::sl_configureConsensusAction() {
     assert(consensusDialog == NULL);
     MSAConsensusAlgorithmFactory* algoFactory = consensusCache->getConsensusAlgorithm()->getFactory();
@@ -377,7 +397,6 @@ void MSAEditorConsensusArea::sl_configureConsensusAction() {
         setConsensusAlgorithm(algoFactory);
     }
 }
-
 
 void MSAEditorConsensusArea::updateThresholdInfoInConsensusDialog() {
     const MSAConsensusAlgorithm* algo = getConsensusAlgorithm();
@@ -399,7 +418,6 @@ void MSAEditorConsensusArea::sl_changeConsensusAlgorithm(const QString& algoId) 
     }
     emit si_consensusAlgorithmChanged(algoId);
 }
-
 
 QString MSAEditorConsensusArea::getLastUsedAlgoSettingsKey() const {
     const DNAAlphabet* al = editor->getMSAObject()->getAlphabet();
@@ -465,7 +483,6 @@ void MSAEditorConsensusArea::sl_changeConsensusThreshold(int val) {
     emit si_consensusThresholdChanged(val);
 }
 
-
 void MSAEditorConsensusArea::mousePressEvent(QMouseEvent *e) {
     int x = e->x();
     if (e->buttons() & Qt::LeftButton) {
@@ -494,8 +511,12 @@ void MSAEditorConsensusArea::mouseMoveEvent( QMouseEvent *e )
     QWidget::mouseMoveEvent(e);
 }
 
-void MSAEditorConsensusArea::mouseReleaseEvent( QMouseEvent *e )
-{
+void MSAEditorConsensusArea::mouseReleaseEvent( QMouseEvent *e ) {
+    if (ui->seqArea->isAlignmentEmpty()) {
+        QWidget::mouseReleaseEvent(e);
+        return;
+    }
+
     if (e->button() == Qt::LeftButton) {
         int newPos = ui->seqArea->getColumnNumByX(e->x(), selecting);
         updateSelection(newPos);
@@ -510,7 +531,6 @@ void MSAEditorConsensusArea::mouseReleaseEvent( QMouseEvent *e )
 
 void MSAEditorConsensusArea::updateSelection(int newPos)
 {
-    
     if (newPos == curPos) {
         return;
     }

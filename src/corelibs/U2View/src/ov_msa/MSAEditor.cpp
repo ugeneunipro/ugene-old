@@ -116,6 +116,11 @@ MSAEditor::MSAEditor(const QString& viewName, GObject* obj)
 : GObjectView(MSAEditorFactory::ID, viewName), ui(NULL), treeManager(this) {
 
     msaObject = qobject_cast<MAlignmentObject*>(obj);
+
+    if (0 == msaObject->getLength() || 0 == msaObject->getNumRows()) {
+        msaObject->crop(U2_REGION_MAX, QSet<QString>());
+    }
+
     objects.append(msaObject);
     onObjectAdded(msaObject);
 
@@ -491,6 +496,10 @@ int MSAEditor::getAlignmentLen() const {
 
 int MSAEditor::getNumSequences() const {
     return msaObject->getNumRows();
+}
+
+bool MSAEditor::isAlignmentEmpty() const {
+    return getAlignmentLen() == 0 || getNumSequences() == 0;
 }
 
 void MSAEditor::sl_onContextMenuRequested(const QPoint & pos) {

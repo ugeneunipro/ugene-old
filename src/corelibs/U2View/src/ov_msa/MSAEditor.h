@@ -76,7 +76,7 @@ class PairwiseAlignmentTask;
 
 class SNPSettings {
 public:
-    SNPSettings() : seqId(MAlignmentRow::invalidRowId()) { };
+    SNPSettings() : seqId(MAlignmentRow::invalidRowId()) { }
     QPoint clickPoint;
     qint64 seqId;
 };
@@ -108,6 +108,7 @@ public:
 
 class U2VIEW_EXPORT MSAEditor : public GObjectView {
     Q_OBJECT
+    Q_DISABLE_COPY(MSAEditor)
 
     friend class OpenSavedMSAEditorTask;
     friend class MSAEditorTreeViewerUI;
@@ -124,7 +125,7 @@ public:
 
     virtual QVariantMap saveState();
 
-    virtual OptionsPanel* getOptionsPanel(){return optionsPanel;};
+    virtual OptionsPanel* getOptionsPanel(){return optionsPanel;}
     
     MAlignmentObject* getMSAObject() const {return msaObject;}
 
@@ -133,6 +134,8 @@ public:
     int getAlignmentLen() const;
     
     int getNumSequences() const;
+
+    bool isAlignmentEmpty() const;
 
     const QRect& getCurrentSelection() const;
     
@@ -167,7 +170,7 @@ public:
 
     void resetCollapsibleModel();
 
-    void exportHighlighted(){sl_exportHighlighted();};
+    void exportHighlighted(){sl_exportHighlighted();}
 
 signals:
     void si_fontChanged(const QFont& f);
@@ -279,7 +282,7 @@ public:
     MSAEditor* getEditor() const {return editor;}
     QAction* getUndoAction() const;
     QAction* getRedoAction() const;
-    QAction* getCopySelectionAction() const {return copySelectionAction;};
+    QAction* getCopySelectionAction() const {return copySelectionAction;}
 
     bool isCollapsibleMode() const { return collapsibleMode; }
     void setCollapsibleMode(bool collapse) { collapsibleMode = collapse; }

@@ -50,6 +50,7 @@ enum MSAEditorConsElement {
 
 class U2VIEW_EXPORT MSAEditorConsensusArea : public QWidget {
     Q_OBJECT
+    Q_DISABLE_COPY(MSAEditorConsensusArea)
 public:
     MSAEditorConsensusArea(MSAEditorUI* ui);
     ~MSAEditorConsensusArea();
@@ -132,7 +133,6 @@ private:
     //works in interactive mode with the view -> so we need to cache it
     ConsensusSelectorDialogController* consensusDialog;
 };
-
 
 }//namespace
 #endif

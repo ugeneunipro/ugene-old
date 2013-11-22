@@ -104,7 +104,6 @@ lockedIcon(":core/images/lock.png"), unlockedIcon(":core/images/lock_open.png")
     updateLock();
 }
 
-
 void MSAEditorStatusWidget::updateLock() {
     bool locked = aliObj->isStateLocked();
     lockLabel->setPixmap(locked ? lockedIcon : unlockedIcon);
@@ -118,13 +117,15 @@ void MSAEditorStatusWidget::updateCoords() {
     QFontMetrics fm(linesLabel->font());
 
     QString lpattern = QString(tr("Ln %1 / %2"));
-    QString ltext = lpattern.arg(pos.y() + 1).arg(nSeq);
+    qint64 shownLine = seqArea->isAlignmentEmpty() ? pos.y() : pos.y() + 1;
+    QString ltext = lpattern.arg(shownLine).arg(nSeq);
     linesLabel->setText(ltext);
     linesLabel->setToolTip(tr("Line %1 of %2").arg(pos.y() + 1).arg(nSeq));
     linesLabel->setMinimumWidth(10 + fm.width(lpattern.arg(nSeq).arg(nSeq)));
     
     QString cpattern = QString(tr("Col %1 / %2"));
-    QString ctext = cpattern.arg(pos.x() + 1).arg(aliLen);
+    qint64 shownCol = seqArea->isAlignmentEmpty() ? pos.x() : pos.x() + 1;
+    QString ctext = cpattern.arg(shownCol).arg(aliLen);
     colsLabel->setText(ctext);
     colsLabel->setToolTip(tr("Column %1 of %2").arg(pos.x() + 1).arg(aliLen));
     colsLabel->setMinimumWidth(10 + fm.width(cpattern.arg(aliLen).arg(aliLen)));
@@ -136,7 +137,6 @@ void MSAEditorStatusWidget::updateCoords() {
     posLabel->setToolTip(tr("Position %1 of %2").arg(pp.first).arg(pp.second));
     posLabel->setMinimumWidth(10 + fm.width(ppattern.arg(pp.second).arg(pp.second)));
 }
-
 
 bool MSAEditorStatusWidget::eventFilter(QObject*, QEvent* ev) {
     if (ev->type() == QEvent::KeyPress) {
@@ -155,6 +155,10 @@ bool MSAEditorStatusWidget::eventFilter(QObject*, QEvent* ev) {
 }
 
 void MSAEditorStatusWidget::sl_findNext( ) {
+    if (seqArea->isAlignmentEmpty()) {
+        return;
+    }
+
     QByteArray pat = searchEdit->text( ).toLocal8Bit( );
     if ( pat.isEmpty( ) ) {
         return;
@@ -192,6 +196,10 @@ void MSAEditorStatusWidget::sl_findNext( ) {
 }
 
 void MSAEditorStatusWidget::sl_findPrev( ) {
+    if (seqArea->isAlignmentEmpty()) {
+        return;
+    }
+
     QByteArray pat = searchEdit->text( ).toLocal8Bit( );
     if ( pat.isEmpty( ) ) {
         return;

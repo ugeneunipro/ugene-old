@@ -94,7 +94,11 @@ MSAEditorNameList::~MSAEditorNameList() {
 }
 
 void MSAEditorNameList::updateActions() {
-    copyCurrentSequenceAction->setEnabled(true);
+    SAFE_POINT(NULL != ui, "MSA Editor UI is NULL", );
+    MSAEditorSequenceArea* seqArea = ui->getSequenceArea();
+    SAFE_POINT(NULL != seqArea, "MSA Editor sequence area is NULL", );
+
+    copyCurrentSequenceAction->setEnabled(!seqArea->isAlignmentEmpty());
     
     MAlignmentObject* maObj = editor->getMSAObject();
     if (maObj){
@@ -140,7 +144,6 @@ void MSAEditorNameList::updateScrollBar() {
     connect(nhBar, SIGNAL(valueChanged(int)), SLOT(sl_nameBarMoved(int)));
 }
 
-
 void MSAEditorNameList::sl_buildStaticMenu(GObjectView* v, QMenu* m) {
     Q_UNUSED(v);
     buildMenu(m);
@@ -152,7 +155,6 @@ void MSAEditorNameList::sl_buildContextMenu(GObjectView* v, QMenu* m) {
 }
 
 void MSAEditorNameList::buildMenu(QMenu* m) {    
-    
     if ( !rect().contains( mapFromGlobal(QCursor::pos()) ) )  {
         return;
     } 
@@ -195,6 +197,7 @@ void MSAEditorNameList::sl_copyCurrentSequence() {
 void MSAEditorNameList::sl_alignmentChanged(const MAlignment&, const MAlignmentModInfo& mi) {
     if (mi.sequenceListChanged) {
         completeRedraw = true;
+        updateActions();
         updateScrollBar();
         update();
     }
@@ -220,6 +223,7 @@ void MSAEditorNameList::sl_removeCurrentSequence() {
         }
     }
 }
+
 void MSAEditorNameList::sl_selectReferenceSequence() {
     MAlignmentObject* maObj = editor->getMSAObject();
     if (maObj) {
@@ -237,7 +241,6 @@ void MSAEditorNameList::sl_lockedStateChanged() {
 }
 
 void MSAEditorNameList::resizeEvent(QResizeEvent* e) {
-
     completeRedraw = true;
     updateScrollBar();
     QWidget::resizeEvent(e);
@@ -340,22 +343,31 @@ void MSAEditorNameList::keyPressEvent (QKeyEvent *e) {
 }
 
 void MSAEditorNameList::mousePressEvent(QMouseEvent *e) {
+    SAFE_POINT(ui, "MSA Editor UI is NULL", );
+    MSAEditorSequenceArea* seqArea = ui->getSequenceArea();
+    SAFE_POINT(seqArea, "MSA Editor sequence area", );
+
+    if (seqArea->isAlignmentEmpty()) {
+        QWidget::mousePressEvent(e);
+        return;
+    }
+
     if ((e->button() == Qt::LeftButton)) {
-        ui->seqArea->setSelectionHighlighting( false );
+        seqArea->setSelectionHighlighting( false );
         if(Qt::ShiftModifier == e->modifiers()) {
             QWidget::mousePressEvent(e);
             scribbling = true;
             return;
         }
         origin = e->pos();
-        curSeq = ui->seqArea->getSequenceNumByY(e->y());
+        curSeq = seqArea->getSequenceNumByY(e->y());
         if (ui->isCollapsibleMode()) {
             MSACollapsibleItemModel* m = ui->getCollapseModel();
             if(curSeq >= m->displayedRowsCount()){
                 curSeq = m->getLastPos();
             }
             if (m->isTopLevel(curSeq)) {
-                const U2Region& yRange = ui->seqArea->getSequenceYRange(curSeq, true);
+                const U2Region& yRange = seqArea->getSequenceYRange(curSeq, true);
                 bool selected = isRowInSelection(curSeq);
                 QRect textRect = calculateTextRect(yRange, selected);
                 QRect buttonRect = calculateButtonRect(textRect);
@@ -367,13 +379,13 @@ void MSAEditorNameList::mousePressEvent(QMouseEvent *e) {
             }
         }
         startSelectingSeq = curSeq;
-        MSAEditorSelection s = ui->seqArea->getSelection();
+        MSAEditorSelection s = seqArea->getSelection();
         if ( s.getRect().contains(0,curSeq) ) {
             if (!ui->isCollapsibleMode()) {
                 shifting = true;
             }
         } else {
-            if (!ui->seqArea->isSeqInRange(startSelectingSeq) ) {
+            if (!seqArea->isSeqInRange(startSelectingSeq) ) {
                 if (e->y() < origin.y()) {
                     startSelectingSeq = 0;
                 } else {
@@ -382,10 +394,10 @@ void MSAEditorNameList::mousePressEvent(QMouseEvent *e) {
             }
             rubberBand->setGeometry(QRect(origin, QSize()));
             rubberBand->show();
-            ui->seqArea->cancelSelection();
+            seqArea->cancelSelection();
             scribbling = true;
         }
-        if ( ui->seqArea->isSeqInRange(curSeq) ) {
+        if ( seqArea->isSeqInRange(curSeq) ) {
             singleSelecting = true;
             scribbling = true;
         }
@@ -491,7 +503,6 @@ void MSAEditorNameList::wheelEvent (QWheelEvent * we) {
     ui->seqArea->getVBar()->triggerAction(toMin ? QAbstractSlider::SliderSingleStepSub : QAbstractSlider::SliderSingleStepAdd);
     QWidget::wheelEvent(we);
 }
-
 
 void MSAEditorNameList::sl_startChanged(const QPoint& p, const QPoint& prev) {
     if (p.y() == prev.y()) {
@@ -601,8 +612,17 @@ void MSAEditorNameList::drawAll() {
 
 void MSAEditorNameList::drawContent(QPainter& p) {
     p.fillRect(cachedView->rect(), Qt::white);
-    int startSeq = ui->seqArea->getFirstVisibleSequence();
-    int lastSeq = ui->seqArea->getLastVisibleSequence(true);
+
+    SAFE_POINT(NULL != ui, "MSA Editor UI is NULL", );
+    MSAEditorSequenceArea* seqArea = ui->getSequenceArea();
+    SAFE_POINT(NULL != seqArea, "MSA Editor sequence area is NULL", );
+
+    if (seqArea->isAlignmentEmpty()) {
+        return;
+    }
+
+    int startSeq = seqArea->getFirstVisibleSequence();
+    int lastSeq = seqArea->getLastVisibleSequence(true);
 
     if (labels) {
         labels->setObjectName("");
@@ -617,7 +637,7 @@ void MSAEditorNameList::drawContent(QPainter& p) {
         MSACollapsibleItemModel* m = ui->getCollapseModel();
         QVector<U2Region> range;
         m->getVisibleRows(startSeq, lastSeq, range);
-        U2Region yRange = ui->seqArea->getSequenceYRange(startSeq, true);
+        U2Region yRange = seqArea->getSequenceYRange(startSeq, true);
         int numRows = al.getNumRows();
 
         int pos = startSeq;
@@ -754,7 +774,6 @@ void MSAEditorNameList::drawSelection(QPainter& p) {
     
     p.setPen(QPen(Qt::gray, 1, Qt::DashLine));
     p.drawRect(itemsRect);
-
 }
 
 void MSAEditorNameList::drawFocus(QPainter& p) {
