@@ -461,7 +461,7 @@ bool ExpertDiscoveryLoadPosNegMrkTask::loadAnnotationFromUgeneDocument(MarkingBa
                        foreach(U2Region reg, regions){
                            if (reg.endPos() >= reg.startPos && reg.startPos >= 0) {
                                mrk.set(a->getAnnotationName().toStdString(), "UGENE Annotation",
-                                   DDisc::Interval(startPos, endPos));
+                                   DDisc::Interval(reg.startPos, reg.endPos()));
                            }
                        }
                     }
