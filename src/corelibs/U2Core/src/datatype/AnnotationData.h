@@ -33,10 +33,6 @@ namespace U2 {
 
 class U2CORE_EXPORT AnnotationData : public QSharedData {
 public:
-    QString                 name;
-    U2Location              location;
-    QVector<U2Qualifier>    qualifiers;
-    
     AnnotationData() {location = new U2LocationData();}
 
     inline AnnotationData& operator= ( const AnnotationData & a );
@@ -62,6 +58,10 @@ public:
     void setLocationOperator(U2LocationOperator o)  {location->op = o;}
 
     const QVector<U2Region>& getRegions() const {return location->regions;}
+
+    QString                 name;
+    U2Location              location;
+    QVector<U2Qualifier>    qualifiers;
 };
 
 typedef QSharedDataPointer<AnnotationData> SharedAnnotationData;

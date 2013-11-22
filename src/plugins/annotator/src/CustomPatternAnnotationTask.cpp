@@ -3,8 +3,8 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/Counter.h>
 #include <U2Core/DNAAlphabet.h>
+#include <U2Core/DNATranslation.h>
 #include <U2View/FindPatternTask.h>
-
 
 #include "CustomPatternAnnotationTask.h"
 

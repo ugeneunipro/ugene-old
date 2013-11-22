@@ -459,14 +459,11 @@ bool ExpertDiscoveryLoadPosNegMrkTask::loadAnnotationFromUgeneDocument(MarkingBa
                     foreach(Annotation* a, annotations){
                        const QVector<U2Region>& regions =  a->getRegions();
                        foreach(U2Region reg, regions){
-                           //reg.length;
-                           int startPos = reg.startPos;
-                           int endPos = reg.startPos + reg.length - 1;
-                           if (endPos >= startPos && startPos >= 0) {
-                               mrk.set(a->getAnnotationName().toStdString(), "UGENE Annotation", DDisc::Interval(startPos, endPos));
+                           if (reg.endPos() >= reg.startPos && reg.startPos >= 0) {
+                               mrk.set(a->getAnnotationName().toStdString(), "UGENE Annotation",
+                                   DDisc::Interval(startPos, endPos));
                            }
                        }
-                           
                     }
                 }
              }

@@ -58,7 +58,10 @@ inline bool U2FeatureLocation::operator==(const U2FeatureLocation& l) const {
 */
 class U2CORE_EXPORT U2Feature: public U2Entity {
 public:
-    U2Feature() : version(0), treeVersion(0) {}
+    U2Feature( ) : version( 0 ), treeVersion( 0 ) { }
+
+    bool operator== ( const U2Feature &f ) const { return f.id == id; }
+    bool operator!= ( const U2Feature &f ) const { return !( *this == f ); }
 
     /** Sequence this annotation is related to */
     U2DataId                    sequenceId;
@@ -98,7 +101,7 @@ public:
     /** Constructs new feature key instance with key and value set */
     U2FeatureKey(const QString& _name, const QString& _value) : name(_name), value(_value){}
 
-    /** feature key is valid if  its name and value is not empty */
+    /** feature key is valid if  its name is not empty */
     bool isValid() const {return !name.isEmpty();}
 
     /** Any two keys are equal if their names & values are equal */

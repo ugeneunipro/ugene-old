@@ -54,6 +54,7 @@
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/L10n.h>
 #include <U2Core/U2DbiRegistry.h>
+#include <U2Core/U2DbiUtils.h>
 
 #include <QtCore/QFileInfo>
 

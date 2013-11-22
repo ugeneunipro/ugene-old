@@ -154,6 +154,11 @@ public:
      */
     virtual void updateParentId(const U2DataId& featureId, const U2DataId& parentId, U2OpStatus& os) = 0;
     /**
+     * Updates feature sequence
+     * Requires: U2DbiFeature_WriteFeature feature support
+     */
+    virtual void updateSequenceId(const U2DataId& featureId, const U2DataId& seqId, U2OpStatus& os) = 0;
+    /**
      * Removes the feature from database
      * Requires: U2DbiFeature_WriteFeature feature support
      */
@@ -161,16 +166,18 @@ public:
     /**
      * Returns features that matched the query. Returns NULL if error occurs
      */
-    virtual U2DbiIterator<U2Feature>* getFeaturesByRegion(const U2Region& reg, const QString& featureName, const U2DataId& seqId, U2OpStatus& os) = 0;
+    virtual U2DbiIterator<U2Feature> * getFeaturesByRegion( const U2Region &reg,
+        const U2DataId &parentId, const QString &featureName, const U2DataId &seqId,
+        U2OpStatus &os, bool contains = false ) = 0;
 
-    virtual U2DbiIterator<U2Feature>* getFeaturesByParent(const U2DataId& parentId, const QString& featureName, const U2DataId& seqId, U2OpStatus& os) = 0;
+    virtual U2DbiIterator<U2Feature> * getSubFeatures( const U2DataId &parentId,
+        const QString &featureName, const U2DataId &seqId, U2OpStatus &os ) = 0;
 
-    virtual U2DbiIterator<U2Feature>* getSubFeatures(const U2DataId& parentId, const U2DataId& seqId, U2OpStatus& os) = 0;
-
-    virtual U2DbiIterator<U2Feature>* getFeaturesBySequence(const QString& featureName, const U2DataId& seqId, U2OpStatus& os) = 0;
+    virtual U2DbiIterator<U2Feature> * getFeaturesBySequence( const QString& featureName,
+        const U2DataId& seqId, U2OpStatus& os ) = 0;
 
 protected:
-    U2FeatureDbi(U2Dbi *rootDbi) : U2ChildDbi(rootDbi) { }
+    U2FeatureDbi( U2Dbi *rootDbi ) : U2ChildDbi( rootDbi ) { }
 };
 
 } //namespace

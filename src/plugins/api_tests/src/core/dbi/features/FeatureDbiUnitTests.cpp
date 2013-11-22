@@ -650,33 +650,7 @@ IMPLEMENT_TEST( FeatureDbiUnitTests, getFeaturesByRegion ) {
     U2Feature feature3 = FeatureTestData::createTestFeature3( seq, os );
     CHECK_NO_ERROR( os );
     U2DbiIterator<U2Feature> *iter = featureDbi->getFeaturesByRegion( U2Region( 900, 200 ),
-        "misc_feature", seq.id, os );
-    CHECK_NO_ERROR( os );
-
-    while ( iter->hasNext( ) ) {
-        U2Feature current = iter->next( );
-        CHECK_TRUE( ( current.id == feature1.id ) || ( current.id == feature3.id ),
-            "Unexpected feature ID" );
-    }
-}
-
-IMPLEMENT_TEST( FeatureDbiUnitTests, getFeaturesByParent ) {
-    U2FeatureDbi *featureDbi = FeatureTestData::getFeatureDbi( );
-    U2SequenceDbi *sequenceDbi = FeatureTestData::getSequenceDbi( );
-
-    U2OpStatusImpl os;
-    U2Sequence seq;
-    sequenceDbi->createSequenceObject( seq, "", os );
-    CHECK_NO_ERROR( os );
-
-    U2Feature feature2 = FeatureTestData::createTestFeature2( seq, os );
-    CHECK_NO_ERROR( os );
-    U2Feature feature1 = FeatureTestData::createTestFeature1( seq, os, feature2 );
-    CHECK_NO_ERROR( os );
-    U2Feature feature3 = FeatureTestData::createTestFeature3( seq, os, feature2 );
-    CHECK_NO_ERROR( os );
-    U2DbiIterator<U2Feature> *iter = featureDbi->getFeaturesByParent( feature2.id, "misc_feature",
-        seq.id, os );
+        U2DataId( ), "misc_feature", seq.id, os );
     CHECK_NO_ERROR( os );
 
     while ( iter->hasNext( ) ) {
@@ -701,7 +675,7 @@ IMPLEMENT_TEST( FeatureDbiUnitTests, getSubFeatures ) {
     CHECK_NO_ERROR( os );
     U2Feature feature3 = FeatureTestData::createTestFeature3( seq, os, feature2 );
     CHECK_NO_ERROR( os );
-    U2DbiIterator<U2Feature> *iter = featureDbi->getSubFeatures( feature2.id, seq.id, os );
+    U2DbiIterator<U2Feature> *iter = featureDbi->getSubFeatures( feature2.id, QString( ), seq.id, os );
     CHECK_NO_ERROR( os );
 
     while ( iter->hasNext( ) ) {

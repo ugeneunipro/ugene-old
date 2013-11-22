@@ -22,36 +22,33 @@
 #ifndef _U2_FEATURE_KEYS_H_
 #define _U2_FEATURE_KEYS_H_
 
+#include <QtCore/QString>
 
 namespace U2 {
 
-#define U2FeatureGeneName       "Gene"
-#define U2FeatureExonName       "Exon"
-#define U2FeatureCDSName        "CDS"
+const QString U2FeatureGeneName =                   "Gene";
+const QString U2FeatureExonName =                   "Exon";
+const QString U2FeatureCDSName =                    "CDS";
 
-#define U2FeatureSuperDupName       "SD"
-#define U2FeatureConservativeName   "CR"
+const QString U2FeatureSuperDupName =               "SD";
+const QString U2FeatureConservativeName =           "CR";
 
-#define U2FeatureKey_Name       "name"
-#define U2FeatureKey_AltName    "alt_name"
-#define U2FeatureKey_Note       "note"
-#define U2FeatureKey_Group      "group"
-#define U2FeatureKey_Accession  "accession"
-#define U2FeatureKey_KnownType  "known"
-#define U2FeatureKey_Disease    "disease"
-    
+const QString U2FeatureKey_Name =                   "name";
+const QString U2FeatureKey_AltName =                "alt_name";
+const QString U2FeatureKey_Note =                   "note";
+const QString U2FeatureKey_Accession =              "accession";
+const QString U2FeatureKey_KnownType =              "known";
+const QString U2FeatureKey_Disease =                "disease";
 
-
-
-//Since feature keys are used to store groups and operations, the most rare symbols combination is used
+//Since feature keys are used to store operations and region types, the most rare symbols combination is used
 //to avoid adding qualifier with the same name
 //Also it is short to reduce required space in the db
 
-#define U2FeatureKeyGroup           "#~g"
+const QString U2FeatureKeyOperation =               "#~o";
+const QString U2FeatureKeyOperationOrder =          "#~oo";
+const QString U2FeatureKeyOperationJoin =           "#~oj";
 
-#define U2FeatureKeyOperation       "#~o"
-#define U2FeatureKeyOperationOrder  "#~oo"
-#define U2FeatureKeyOperationJoin   "#~oj"
+const QString U2FeatureKeyGrouping =                "#~g";
 
 } //namespace
 

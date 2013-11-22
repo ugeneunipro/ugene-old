@@ -19,10 +19,6 @@
  * MA 02110-1301, USA.
  */
 
-
-#include "SNPTablesUtils.h"
-
-
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/U2DbiUtils.h>
 #include <U2Core/Timer.h>
@@ -38,17 +34,17 @@
 
 #include <memory>
 
+#include "SNPTablesUtils.h"
 
 namespace U2 {
 
-
 QList<Gene> SNPTablesUtils::findGenes(const QList<U2Feature> &features, U2FeatureDbi* dbi, U2OpStatus &opStatus){
-    QList<U2::Gene> result;
+    QList<Gene> result;
     {
         foreach(const U2Feature& f, features){
             Gene gene = findGenesStep(f, dbi, opStatus);
             if(opStatus.isCoR()) {
-                return QList<U2::Gene>();
+                return QList<Gene>();
             }
             result.append(gene);
 
@@ -57,13 +53,13 @@ QList<Gene> SNPTablesUtils::findGenes(const QList<U2Feature> &features, U2Featur
     return result;
 }
 
-QList<U2::Gene> SNPTablesUtils::findGenes(const U2DataId& seqId, const U2Region &region, U2FeatureDbi* dbi, U2OpStatus &opStatus, const QList<int>& excludeList) {
+QList<Gene> SNPTablesUtils::findGenes(const U2DataId& seqId, const U2Region &region, U2FeatureDbi* dbi, U2OpStatus &opStatus, const QList<int>& excludeList) {
     //qint64 nTime = GTimer::currentTimeMicros();
-    QList<U2::Gene> result;
+    QList<Gene> result;
     {
-        std::auto_ptr<U2DbiIterator<U2Feature> > featureIterator(dbi->getFeaturesByRegion(region, U2FeatureGeneName, seqId, opStatus));
+        std::auto_ptr<U2DbiIterator<U2Feature> > featureIterator(dbi->getFeaturesByRegion(region, U2DataId( ), U2FeatureGeneName, seqId, opStatus));
         if(opStatus.isCoR()) {
-            return QList<U2::Gene>();
+            return QList<Gene>();
         }
         while(featureIterator->hasNext()) {
 
@@ -75,7 +71,7 @@ QList<U2::Gene> SNPTablesUtils::findGenes(const U2DataId& seqId, const U2Region 
              Gene gene = findGenesStep(parentFeature, dbi, opStatus, excludeList);
 //             perfLog.trace(QString("Find subs time (millis)= %1").arg(GTimer::millisBetween(nTime, GTimer::currentTimeMicros())));
              if(opStatus.isCoR()){
-                 return QList<U2::Gene>();
+                 return QList<Gene>();
              }
 // 
              result.append(gene);
@@ -86,7 +82,7 @@ QList<U2::Gene> SNPTablesUtils::findGenes(const U2DataId& seqId, const U2Region 
     return result;
 }
 
-U2::Gene SNPTablesUtils::findGenesStep( const U2Feature &parentFeature, U2FeatureDbi* dbi, U2OpStatus &opStatus, const QList<int>& excludeList ){
+Gene SNPTablesUtils::findGenesStep( const U2Feature &parentFeature, U2FeatureDbi* dbi, U2OpStatus &opStatus, const QList<int>& excludeList ){
     
     QVector<U2Region> exons;
     U2Region cdsRegion;
@@ -94,7 +90,7 @@ U2::Gene SNPTablesUtils::findGenesStep( const U2Feature &parentFeature, U2Featur
     bool excludeExons = excludeList.contains(SNPTablesUtils::ExcludeSubfeatures);
     bool excludeCDS = excludeList.contains(SNPTablesUtils::ExcludeCDS);
     if(!excludeCDS || !excludeExons){
-        std::auto_ptr<U2DbiIterator<U2Feature> > subFeatureIterator(dbi->getSubFeatures(parentFeature.id, parentFeature.sequenceId, opStatus));
+        std::auto_ptr<U2DbiIterator<U2Feature> > subFeatureIterator(dbi->getSubFeatures(parentFeature.id, QString( ), parentFeature.sequenceId, opStatus));
         while(subFeatureIterator->hasNext()){
             U2Feature subFeature = subFeatureIterator->next();
             if(subFeature.name == U2FeatureExonName && !excludeExons){
@@ -133,15 +129,15 @@ U2::Gene SNPTablesUtils::findGenesStep( const U2Feature &parentFeature, U2Featur
             }
         }
     } 
-    U2::Gene gene = U2::Gene(parentFeature.id, name, accession, altname, note, geneRegion, cdsRegion, exons, complemented);
+    Gene gene = Gene(parentFeature.id, name, accession, altname, note, geneRegion, cdsRegion, exons, complemented);
     gene.setDisease(disease);
     gene.setType(type);
 
     return gene;
 }
 
-static QList<U2::Gene> getGenesAround( const U2DataId& seqId, const U2Region &region, U2FeatureDbi* dbi, U2OpStatus &opStatus, ComparisonOp cOp, const QList<int>& excludeList){
-    QList<U2::Gene> res;
+static QList<Gene> getGenesAround( const U2DataId& seqId, const U2Region &region, U2FeatureDbi* dbi, U2OpStatus &opStatus, ComparisonOp cOp, const QList<int>& excludeList){
+    QList<Gene> res;
 
     FeatureQuery query;
     query.sequenceId = seqId;
@@ -162,13 +158,13 @@ static QList<U2::Gene> getGenesAround( const U2DataId& seqId, const U2Region &re
     
     std::auto_ptr<U2DbiIterator<U2Feature> > featureIterator(dbi->getFeatures(query, opStatus));
     if(opStatus.isCoR()) {
-        return QList<U2::Gene>();
+        return QList<Gene>();
     }
     while(featureIterator->hasNext()) {
         U2Feature parentFeature = featureIterator->next();
         Gene gene = SNPTablesUtils::findGenesStep(parentFeature, dbi, opStatus, excludeList);
         if(opStatus.isCoR()){
-            return QList<U2::Gene>();
+            return QList<Gene>();
         }
 
         res.append(gene);
@@ -177,8 +173,8 @@ static QList<U2::Gene> getGenesAround( const U2DataId& seqId, const U2Region &re
     return res;
 }
 
-QList<U2::Gene> SNPTablesUtils::findGenesAround( const U2DataId& seqId, const U2Region &region, U2FeatureDbi* dbi, U2OpStatus &opStatus, const QList<int>& excludeList ){
-    QList<U2::Gene> res;
+QList<Gene> SNPTablesUtils::findGenesAround( const U2DataId& seqId, const U2Region &region, U2FeatureDbi* dbi, U2OpStatus &opStatus, const QList<int>& excludeList ){
+    QList<Gene> res;
 
     SAFE_POINT(dbi!= NULL, "feature dbi is null", res);
     SAFE_POINT(!seqId.isEmpty(), "seq id is empty", res);

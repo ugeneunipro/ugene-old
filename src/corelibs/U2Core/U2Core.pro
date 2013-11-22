@@ -5,7 +5,9 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/cmdline/CMDLineHelpProvider.h \
            src/cmdline/CMDLineRegistry.h \
            src/cmdline/CMDLineUtils.h \
+           src/datatype/Annotation.h \
            src/datatype/AnnotationData.h \
+           src/datatype/AnnotationGroup.h \
            src/datatype/AnnotationSettings.h \
            src/datatype/BioStruct3D.h \
            src/datatype/DASSource.h \
@@ -200,12 +202,14 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/util/U2OpStatusUtils.h \
            src/util/U2SequenceUtils.h \
            src/util/U2VariationUtils.h \
-        src/tasks/UniprotBlastTask.h \
-    src/globals/UserActionsWriter.h
+           src/tasks/UniprotBlastTask.h \
+           src/globals/UserActionsWriter.h
 SOURCES += src/cmdline/CMDLineCoreOptions.cpp \
            src/cmdline/CMDLineRegistry.cpp \
            src/cmdline/CMDLineUtils.cpp \
+           src/datatype/Annotation.cpp \
            src/datatype/AnnotationData.cpp \
+           src/datatype/AnnotationGroup.cpp \
            src/datatype/AnnotationSettings.cpp \
            src/datatype/BaseAlphabets.cpp \
            src/datatype/BaseTranslations.cpp \
@@ -354,8 +358,8 @@ SOURCES += src/cmdline/CMDLineCoreOptions.cpp \
            src/util/VariationPropertiesUtils.cpp \
            src/util/U2SequenceUtils.cpp \
            src/util/U2VariationUtils.cpp \
-    src/tasks/UniprotBlastTask.cpp \
-    src/globals/UserActionsWriter.cpp
+           src/tasks/UniprotBlastTask.cpp \
+           src/globals/UserActionsWriter.cpp
 TRANSLATIONS += transl/chinese.ts \
                 transl/czech.ts \
                 transl/english.ts \

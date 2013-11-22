@@ -28,15 +28,14 @@
 
 #include <unittest.h>
 
-
 namespace U2 {
 
 class FeaturesTableObjectTestData {
 public:
-    static void init();
-    static void shutdown();
+    static void init( );
+    static void shutdown( );
 
-    static U2FeatureDbi * getFeatureDbi();
+    static U2FeatureDbi * getFeatureDbi( );
 
 protected:
     static TestDbiProvider dbiProvider;
@@ -45,18 +44,40 @@ private:
     static U2FeatureDbi * featureDbi;
 };
 
-DECLARE_TEST(FeatureTableObjectUnitTest, createEmptyFeaturesTableObject);
+DECLARE_TEST( FeatureTableObjectUnitTest, createEmptyFeaturesTableObject );
 // annotation interface tests
-DECLARE_TEST(FeatureTableObjectUnitTest, addAnnotationSingleRegion);
-DECLARE_TEST(FeatureTableObjectUnitTest, addAnnotationMultipleRegion);
+DECLARE_TEST( FeatureTableObjectUnitTest, addAnnotationSingleRegion );
+DECLARE_TEST( FeatureTableObjectUnitTest, addAnnotationMultipleRegion );
+DECLARE_TEST( FeatureTableObjectUnitTest, getAnnotations );
+DECLARE_TEST( FeatureTableObjectUnitTest, getRootGroup );
+DECLARE_TEST( FeatureTableObjectUnitTest, addAnnotationsToRootGroup );
+DECLARE_TEST( FeatureTableObjectUnitTest, addAnnotationsToSubgroup );
+DECLARE_TEST( FeatureTableObjectUnitTest, removeAnnotation );
+DECLARE_TEST( FeatureTableObjectUnitTest, removeAnnotations );
+DECLARE_TEST( FeatureTableObjectUnitTest, clone );
+DECLARE_TEST( FeatureTableObjectUnitTest, getAnnotationsByName );
+DECLARE_TEST( FeatureTableObjectUnitTest, getAnnotatedRegions );
+DECLARE_TEST( FeatureTableObjectUnitTest, getAnnotationsByRegion );
+DECLARE_TEST( FeatureTableObjectUnitTest, checkConstraints );
 // feature interface tests
 DECLARE_TEST(FeatureTableObjectUnitTest, addFeatureSingleRegion);
 
 }//namespace
 
-DECLARE_METATYPE(FeatureTableObjectUnitTest, createEmptyFeaturesTableObject)
-DECLARE_METATYPE(FeatureTableObjectUnitTest, addAnnotationSingleRegion)
-DECLARE_METATYPE(FeatureTableObjectUnitTest, addAnnotationMultipleRegion)
+DECLARE_METATYPE( FeatureTableObjectUnitTest, createEmptyFeaturesTableObject )
+DECLARE_METATYPE( FeatureTableObjectUnitTest, addAnnotationSingleRegion )
+DECLARE_METATYPE( FeatureTableObjectUnitTest, addAnnotationMultipleRegion )
+DECLARE_METATYPE( FeatureTableObjectUnitTest, getAnnotations )
+DECLARE_METATYPE( FeatureTableObjectUnitTest, getRootGroup )
+DECLARE_METATYPE( FeatureTableObjectUnitTest, addAnnotationsToRootGroup )
+DECLARE_METATYPE( FeatureTableObjectUnitTest, addAnnotationsToSubgroup )
+DECLARE_METATYPE( FeatureTableObjectUnitTest, removeAnnotation )
+DECLARE_METATYPE( FeatureTableObjectUnitTest, removeAnnotations )
+DECLARE_METATYPE( FeatureTableObjectUnitTest, clone )
+DECLARE_METATYPE( FeatureTableObjectUnitTest, getAnnotationsByName )
+DECLARE_METATYPE( FeatureTableObjectUnitTest, getAnnotatedRegions )
+DECLARE_METATYPE( FeatureTableObjectUnitTest, getAnnotationsByRegion )
+DECLARE_METATYPE( FeatureTableObjectUnitTest, checkConstraints )
 DECLARE_METATYPE(FeatureTableObjectUnitTest, addFeatureSingleRegion)
 
 #endif //_U2_FEATURE_TABLE_OBJECT_TESTS_H_

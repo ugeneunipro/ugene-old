@@ -179,7 +179,7 @@ bool SpecialRegionsCache::isIntersect( const U2Region& varRegion, const U2DataId
 
 void SpecialRegionsCache::fetchData( const U2DataId& newSeqId ){
     U2OpStatusImpl os;
-    QScopedPointer< U2DbiIterator<U2Feature> > fIter (featureDbi->getFeaturesByParent(parent.id, QString(), newSeqId, os));
+    QScopedPointer< U2DbiIterator<U2Feature> > fIter (featureDbi->getSubFeatures(parent.id, QString( ), newSeqId, os));
     CHECK_OP(os, );
 
     cachedRegions.clear();

@@ -85,7 +85,6 @@ DECLARE_TEST( FeatureDbiUnitTests, updateParentId );
 DECLARE_TEST( FeatureDbiUnitTests, removeFeature );
 /** Return features that matched the query */
 DECLARE_TEST( FeatureDbiUnitTests, getFeaturesByRegion );
-DECLARE_TEST( FeatureDbiUnitTests, getFeaturesByParent );
 DECLARE_TEST( FeatureDbiUnitTests, getSubFeatures );
 DECLARE_TEST( FeatureDbiUnitTests, getFeaturesBySequence );
 
@@ -105,7 +104,6 @@ DECLARE_METATYPE( FeatureDbiUnitTests, updateName );
 DECLARE_METATYPE( FeatureDbiUnitTests, updateParentId );
 DECLARE_METATYPE( FeatureDbiUnitTests, removeFeature );
 DECLARE_METATYPE( FeatureDbiUnitTests, getFeaturesByRegion );
-DECLARE_METATYPE( FeatureDbiUnitTests, getFeaturesByParent );
 DECLARE_METATYPE( FeatureDbiUnitTests, getSubFeatures );
 DECLARE_METATYPE( FeatureDbiUnitTests, getFeaturesBySequence );
 

@@ -73,17 +73,8 @@ public:
     */
     U2LocationRegionType    regionType;
 
-
-    /** Annotation region extends further to the left */
-    bool                    truncateLeft;
-
-    /** Annotation region extends further to the right  */
-    bool                    truncateRight;
-
     /** Annotated regions coordinates */
     QVector<U2Region>         regions;
-
-
 
     /** Constructs empty location */
     U2LocationData() { reset(); }
@@ -108,8 +99,7 @@ public:
 };
 
 inline bool U2LocationData::operator==(const U2LocationData& l) const {
-    bool res = regions == l.regions && strand == l.strand && op == l.op && regionType == l.regionType 
-        && truncateLeft == l.truncateLeft && truncateRight == l.truncateRight;
+    bool res = regions == l.regions && strand == l.strand && op == l.op && regionType == l.regionType;
     return res;
 }
 
@@ -158,10 +148,7 @@ inline void U2LocationData::reset() {
     strand = U2Strand::Direct; 
     op = U2LocationOperator_Join; 
     regionType = U2LocationRegionType_Default;
-    truncateLeft = false;
-    truncateRight = false;
 }
-
 
 } // namespace
 

@@ -34,7 +34,7 @@ class SQLiteQuery;
 class SQLiteFeatureDbi : public U2FeatureDbi, public SQLiteChildDBICommon {
 public:
 
-   SQLiteFeatureDbi(SQLiteDbi* dbi);
+    SQLiteFeatureDbi(SQLiteDbi* dbi);
 
     virtual void initSqlSchema(U2OpStatus& os);
 
@@ -95,6 +95,11 @@ public:
      */
     virtual void updateParentId(const U2DataId& featureId, const U2DataId& parentId, U2OpStatus& os);
     /**
+     * Updates feature sequence
+     * Requires: U2DbiFeature_WriteFeature feature support
+     */
+    virtual void updateSequenceId(const U2DataId& featureId, const U2DataId& seqId, U2OpStatus& os);
+    /**
      * Removes the feature from database
      * Requires: U2DbiFeature_WriteFeature feature support
      */
@@ -102,16 +107,19 @@ public:
     /**
      * Returns features that matched the query. Returns NULL if error occurs
      */
-    virtual U2DbiIterator<U2Feature>* getFeaturesByRegion(const U2Region& reg, const QString& featureName, const U2DataId& seqId, U2OpStatus& os);
+    virtual U2DbiIterator<U2Feature> * getFeaturesByRegion( const U2Region &reg,
+        const U2DataId &parentId, const QString &featureName, const U2DataId &seqId,
+        U2OpStatus &os, bool contains );
 
-    virtual U2DbiIterator<U2Feature>* getFeaturesByParent(const U2DataId& parentId, const QString& featureName, const U2DataId& seqId, U2OpStatus& os);
+    virtual U2DbiIterator<U2Feature> * getSubFeatures( const U2DataId &parentId,
+        const QString &featureName, const U2DataId &seqId, U2OpStatus &os );
 
-    virtual U2DbiIterator<U2Feature>* getSubFeatures(const U2DataId& parentId, const U2DataId& seqId, U2OpStatus& os);
-
-    virtual U2DbiIterator<U2Feature>* getFeaturesBySequence(const QString& featureName, const U2DataId& seqId, U2OpStatus& os);
+    virtual U2DbiIterator<U2Feature> * getFeaturesBySequence( const QString &featureName,
+        const U2DataId& seqId, U2OpStatus &os );
 
 private:
-    QSharedPointer<SQLiteQuery> createFeatureQuery(const QString& selectPart, const FeatureQuery& fq, bool useOrder, U2OpStatus& os, SQLiteTransaction* trans = NULL);
+    QSharedPointer<SQLiteQuery> createFeatureQuery( const QString &selectPart,
+        const FeatureQuery &fq, bool useOrder, U2OpStatus &os, SQLiteTransaction *trans = NULL );
 };
 
 } //namespace

@@ -80,7 +80,6 @@ public:
 
 
 class  U2CORE_EXPORT Annotation {
-    friend class FeaturesTableObject;
     friend class AnnotationGroup;
     friend class AnnotationTableObject;
 
@@ -158,10 +157,8 @@ private:
     bool                                    caseAnnotation;
 };
 
-
 class U2CORE_EXPORT AnnotationGroup {
     friend class AnnotationTableObject;
-    friend class FeaturesTableObject;
 public:
     AnnotationGroup(AnnotationTableObject* p, const QString& _name, AnnotationGroup* parentGrp);
     ~AnnotationGroup();
@@ -231,7 +228,7 @@ public:
     void setToDelete(const QList<Annotation*>& _anns, AnnotationGroup *_parentGroup, int counter);
     void releaseLocker();
     bool isLocked() const;
-    void sl_Clean();
+    void sl_clean();
     
 private:
     QList<Annotation*> anns;
@@ -261,7 +258,6 @@ class U2CORE_EXPORT AnnotationTableObject: public GObject {
     Q_OBJECT
     friend class Annotation;
     friend class AnnotationGroup;
-    friend class FeaturesTableObject;
 
 public:
     AnnotationTableObject(const QString& objectName, const QVariantMap& hintsMap = QVariantMap());
@@ -332,7 +328,6 @@ public:
 };
 
 bool U2CORE_EXPORT annotationLessThanByRegion(const Annotation* a1, const Annotation* a2);
-bool U2CORE_EXPORT annotationGreaterThanByRegion(const Annotation* a1, const Annotation* a2);
 
 }//namespace
 
