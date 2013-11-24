@@ -770,7 +770,12 @@ GUI_TEST_CLASS_DEFINITION(test_0011){
 
 GUI_TEST_CLASS_DEFINITION(test_0011_1){
 //    Collapse/expand action in phylogenetic tree (0002168)
-
+    int nodeWidth;
+#ifdef Q_OS_MAC
+    nodeWidth = 6;
+#else
+    nodeWidth = 10;
+#endif
 //    1. Open file _common_data/scenario/tree_view/COI.nwk
     GTFileDialog::openFile(os,testDir + "_common_data/scenarios/tree_view/", "COI.nwk");
     GTGlobals::sleep(500);
@@ -780,7 +785,7 @@ GUI_TEST_CLASS_DEFINITION(test_0011_1){
     QList<QGraphicsItem*> nodeList;
 
     foreach(QGraphicsItem* item, list){
-        if(item->boundingRect().width()==10){
+        if(item->boundingRect().width()==nodeWidth){
             nodeList.append(item);
         }
     }
@@ -819,7 +824,12 @@ GUI_TEST_CLASS_DEFINITION(test_0011_1){
 
 GUI_TEST_CLASS_DEFINITION(test_0011_2){
 //    Collapse/expand action in phylogenetic tree (0002168)
-
+    int nodeWidth;
+#ifdef Q_OS_MAC
+    nodeWidth = 6;
+#else
+    nodeWidth = 10;
+#endif
 //    1. Open file _common_data/scenario/tree_view/COI.nwk
     GTFileDialog::openFile(os,testDir + "_common_data/scenarios/tree_view", "COI.nwk");
     GTGlobals::sleep(500);
@@ -829,7 +839,7 @@ GUI_TEST_CLASS_DEFINITION(test_0011_2){
     QList<QGraphicsItem*> nodeList;
 
     foreach(QGraphicsItem* item, list){
-        if(item->boundingRect().width()==10){
+        if(item->boundingRect().width()==nodeWidth){
             nodeList.append(item);
         }
     }
