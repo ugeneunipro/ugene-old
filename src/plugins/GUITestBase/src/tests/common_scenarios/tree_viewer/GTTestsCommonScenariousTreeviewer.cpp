@@ -711,7 +711,12 @@ GUI_TEST_CLASS_DEFINITION(test_0010){
 
 GUI_TEST_CLASS_DEFINITION(test_0011){
 //    Collapse/expand action in phylogenetic tree (0002168)
-
+    int nodeWidth;
+#ifdef Q_OS_MAC
+    nodeWidth = 6;
+#else
+    nodeWidth = 10;
+#endif
 //    1. Open file _common_data/scenario/tree_view/COI.nwk
     GTFileDialog::openFile(os,testDir + "_common_data/scenarios/tree_view/", "COI.nwk");
     GTGlobals::sleep(500);
@@ -719,13 +724,15 @@ GUI_TEST_CLASS_DEFINITION(test_0011){
     QGraphicsView* treeView = qobject_cast<QGraphicsView*>(GTWidget::findWidget(os, "treeView"));
     QList<QGraphicsItem*> list = treeView->scene()->items();
     QList<QGraphicsItem*> nodeList;
-
+    QList<int> intList;
     foreach(QGraphicsItem* item, list){
-        if(item->boundingRect().width()==10){
+        intList<<item->boundingRect().width();
+        if(item->boundingRect().width()==nodeWidth){
             nodeList.append(item);
         }
     }
 
+    CHECK_SET_ERR(!nodeList.isEmpty(), "nodeList is empty");
     QGraphicsItem* node = nodeList.last();
     QPointF sceneCoord = node->mapToScene(node->boundingRect().center());
     QPoint viewCord = treeView->mapFromScene(sceneCoord);
