@@ -69,27 +69,37 @@ Task::ReportResult TmpDirChecker::report()
     return ReportResult_Finished;
 }
 
+QString TmpDirChecker::getNewFilePath(const QString &dirPath, const QString &baseName) {
+    QString filePath;
+    int idx = 0;
+    do {
+        filePath = dirPath + "/" + baseName + "_" + QString::number(idx) + ".tmp";
+        idx++;
+    } while (QFile::exists(filePath));
+    return filePath;
+}
+
+bool TmpDirChecker::checkWritePermissions(const QString &dirPath) {
+    QDir dir(dirPath);
+    if (!dir.exists()) {
+        return false;
+    }
+
+    QFile tmpFile(getNewFilePath(dir.absolutePath(), "checkWritePermissions"));
+    if (!tmpFile.open(QIODevice::WriteOnly)) {
+        return false;
+    }
+
+    tmpFile.close();
+    tmpFile.remove();
+    return true;
+}
+
 bool TmpDirChecker::checkPath(QString &path)
 {
     QDir dir;
     dir.mkpath(path);
-    QFile tmpFile(path + "/forCheck");
-    if (!tmpFile.open(QIODevice::WriteOnly)) {
-//#ifdef Q_OS_MAC
-//        //Mac menu differs from menus of other systems. Maybe something else?
-//        setError("You do not have permission to write to \"" + path +
-//            "\" directory. Please, set the valid temp directory in preferences (Unipro UGENE->Preferences->General->Path to temporary files)");
-//#else
-//        setError("You do not have permission to write to \"" + path +
-//            "\" directory. Please, set the valid temp directory in preferences (Tools->Preferences->General->Path to temporary files)");
-//#endif
-        return false;
-    } else {
-        tmpFile.close();
-        tmpFile.remove();
-    }
-
-    return true;
+    return checkWritePermissions(path);
 }
 
 }   //namespace U2

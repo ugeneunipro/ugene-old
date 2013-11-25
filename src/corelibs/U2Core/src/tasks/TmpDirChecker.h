@@ -35,6 +35,9 @@ public:
     ReportResult report();
     bool checkPath(QString &path);
 
+    static bool checkWritePermissions(const QString &dirPath);
+    static QString getNewFilePath(const QString &dirPath, const QString &baseName);
+
 signals:
     void si_checkFailed(QString path);
 

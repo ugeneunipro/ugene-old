@@ -130,6 +130,26 @@ private:
     }
 };
 
+class CrashHandlerArgsHelper {
+public:
+    CrashHandlerArgsHelper();
+    ~CrashHandlerArgsHelper();
+
+    int getMaxReportSize() const;
+    QStringList getArguments() const;
+    void setReportData(const QString &data);
+
+private:
+    QString filePath;
+    QFile file;
+    QString report;
+    bool useFile;
+
+private:
+    static QString findTempDir(U2OpStatus &os);
+    static QString findFilePathToWrite(U2OpStatus &os);
+};
+
 
 } //namespace
 

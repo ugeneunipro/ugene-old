@@ -26,12 +26,16 @@
 
 #include <U2Core/AppContext.h>
 #include <U2Core/Task.h>
+#include <U2Core/TmpDirChecker.h>
 #include <U2Core/Log.h>
 #include <U2Core/Timer.h>
+#include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/Version.h>
 
 
-#define MAX_CRASH_MESSAGES_TO_SEND 70
+static const QString REPORT_FILE_ARG("-f");
+static const int MAX_PLAIN_LOG = 70;
+static const int MAX_FILE_LOG = 500;
 
 #if defined(Q_OS_WIN32)
   #ifdef UGENE_X86_64 //see http://social.msdn.microsoft.com/Forums/en-US/vcgeneral/thread/4dc15026-884c-4f8a-8435-09d0111d708d/
@@ -381,6 +385,7 @@ void CrashHandler::setupHandler() {
 
 void CrashHandler::runMonitorProcess(const QString &exceptionType)
 {
+    CrashHandlerArgsHelper helper;
     QString path = AppContext::getWorkingDirectoryPath() + "/ugenem";
 
 #ifndef Q_OS_WIN
@@ -413,7 +418,7 @@ void CrashHandler::runMonitorProcess(const QString &exceptionType)
     if (!logMessages.isEmpty()) {
         QList<LogMessage*>::iterator it;
         int i;
-        for(i = 0, it = --logMessages.end(); i <= MAX_CRASH_MESSAGES_TO_SEND && it!= logMessages.begin(); i++, it--) {
+        for(i = 0, it = --logMessages.end(); i <= helper.getMaxReportSize() && it!= logMessages.begin(); i++, it--) {
             LogMessage* msg = *it;
             messageLog.prepend("[" + GTimer::createDateTime(msg->time).toString("hh:mm:ss.zzz") + "] " + "[" + msg->categories.first() + "] " + msg->text + "\n");
         }
@@ -463,8 +468,8 @@ void CrashHandler::runMonitorProcess(const QString &exceptionType)
 
     static QMutex mutex;
     QMutexLocker lock(&mutex);
-
-    QProcess::startDetached(path, QStringList() << reportText.toUtf8().toBase64());
+    helper.setReportData(reportText);
+    QProcess::startDetached(path, helper.getArguments());
     exit(1);
 }
 
@@ -489,5 +494,69 @@ void CrashHandler::getSubTasks(Task *t, QString& list, int lvl) {
 
 }
 
+/************************************************************************/
+/* CrashHandlerArgsHelper */
+/************************************************************************/
+CrashHandlerArgsHelper::CrashHandlerArgsHelper()
+: useFile(false)
+{
+    U2OpStatusImpl os;
+    filePath = findFilePathToWrite(os);
+    CHECK_OP(os, );
+
+    file.setFileName(filePath);
+    useFile = file.open(QIODevice::WriteOnly);
+}
+
+CrashHandlerArgsHelper::~CrashHandlerArgsHelper() {
+    if (file.isOpen()) {
+        file.close();
+    }
+}
+
+int CrashHandlerArgsHelper::getMaxReportSize() const {
+    if (useFile) {
+        return MAX_FILE_LOG;
+    }
+    return MAX_PLAIN_LOG;
+}
+
+QStringList CrashHandlerArgsHelper::getArguments() const {
+    QStringList args;
+    if (useFile) {
+        args << REPORT_FILE_ARG << filePath;
+    } else {
+        args << report.toUtf8().toBase64();
+    }
+    return args;
+}
+
+void CrashHandlerArgsHelper::setReportData(const QString &data) {
+    if (useFile) {
+        QByteArray bytes = data.toUtf8();
+        file.write(bytes);
+        file.close();
+    } else {
+        report = data;
+    }
+}
+
+QString CrashHandlerArgsHelper::findTempDir(U2OpStatus &os) {
+    if (TmpDirChecker::checkWritePermissions(QDir::tempPath())) {
+        return QDir::tempPath();
+    }
+    if (TmpDirChecker::checkWritePermissions(QDir::homePath())) {
+        return QDir::homePath();
+    }
+    os.setError("No accessible dir");
+    return "";
+}
+
+QString CrashHandlerArgsHelper::findFilePathToWrite(U2OpStatus &os) {
+    QString dirPath = findTempDir(os);
+    CHECK_OP(os, "");
+
+    return TmpDirChecker::getNewFilePath(dirPath, "crash_report");
+}
 
 }
