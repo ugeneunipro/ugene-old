@@ -243,6 +243,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2281, "This test can't found hints. Check it.");
     REGISTER_TEST(GUITest_regression_scenarios::test_2309);
     REGISTER_TEST(GUITest_regression_scenarios::test_2318);
+    REGISTER_TEST(GUITest_regression_scenarios::test_2360);
     REGISTER_TEST(GUITest_regression_scenarios::test_2364);
     REGISTER_TEST(GUITest_regression_scenarios::test_2375);
     REGISTER_TEST(GUITest_regression_scenarios::test_2377);
@@ -250,6 +251,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_2378_1);
     REGISTER_TEST(GUITest_regression_scenarios::test_2406);
     REGISTER_TEST(GUITest_regression_scenarios::test_2407);
+    REGISTER_TEST(GUITest_regression_scenarios::test_2415);
 
 //////////////////////////////////////////////////////////////////////////
 // Common scenarios/project/

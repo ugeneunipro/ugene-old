@@ -70,6 +70,7 @@
 #include "runnables/ugene/corelibs/U2View/ov_msa/LicenseAgreemntDialogFiller.h"
 #include "runnables/ugene/corelibs/U2View/utils_smith_waterman/SmithWatermanDialogBaseFiller.h"
 #include "runnables/ugene/plugins/annotator/FindAnnotationCollocationsDialogFiller.h"
+#include "runnables/ugene/plugins/dna_export/ExportMSA2MSADialogFiller.h"
 #include "runnables/ugene/plugins/dotplot/DotPlotDialogFiller.h"
 #include "runnables/ugene/plugins/workflow_designer/WorkflowMetadialogFiller.h"
 #include "runnables/ugene/plugins/external_tools/TCoffeeDailogFiller.h"
@@ -3308,6 +3309,22 @@ GUI_TEST_CLASS_DEFINITION( test_2318 ) {
     GTWidget::click(os, farButton);
 }
 
+GUI_TEST_CLASS_DEFINITION( test_2360 ) {
+    // 1. Open "data/samples/COI.aln".
+    GTFileDialog::openFile(os, dataDir+"samples/CLUSTALW/", "COI.aln");
+
+    // 2. Right click on document in project.
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "COI.aln"));
+
+    // 3. Choose the context menu {Export/Import->Export nucleic alignment to amino translation}.
+    // Expected state: Export dialog appears.
+    // 4. Set "File format to use" to PHYLIP Sequantial.
+    // 5. Click "Export".
+    GTUtilsDialog::waitForDialog(os, new ExportMSA2MSADialogFiller(os, 6));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_IMPORT_MENU_ACTION << ACTION_PROJECT__EXPORT_TO_AMINO_ACTION));
+    GTMouseDriver::click(os, Qt::RightButton);
+}
+
 GUI_TEST_CLASS_DEFINITION( test_2364 ) {
     //1. Open WD.'
     QMenu *menu=GTMenu::showMainMenu( os, MWMENU_TOOLS );
@@ -3500,7 +3517,29 @@ GUI_TEST_CLASS_DEFINITION(test_2407) {
 
     CHECK_SET_ERR( !l.hasError( ), "File not removed from project!" );
 
-    }
+}
+
+GUI_TEST_CLASS_DEFINITION( test_2415 ) {
+    // 1. Open "samples/FASTA/human_T1.fa".
+    GTFileDialog::openFile(os, dataDir+"samples/FASTA/", "human_T1.fa");
+
+    // 2. Right click on the object sequence name in the project view.
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "human_T1 (UCSC April 2002 chr7:115977709-117855134)"));
+
+    // 3. Click the menu {Edit -> Rename}.
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__EDIT_MENU << "Rename"));
+    GTMouseDriver::click(os, Qt::RightButton);
+
+    // 4. Enter the new name: "name".
+    GTKeyboardDriver::keySequence(os, "name");
+
+    // 5. Press Enter.
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
+
+    // Expected state: the sequence is renamed.
+    QTreeWidgetItem *item = GTUtilsProjectTreeView::findItem(os, "name");
+    CHECK_SET_ERR(NULL != item, "Object is not renamed");
+}
 
 } // GUITest_regression_scenarios namespace
 
