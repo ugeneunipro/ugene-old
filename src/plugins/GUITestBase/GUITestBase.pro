@@ -177,7 +177,8 @@ HEADERS +=  src/GUITestBasePlugin.h \
     src/runnables/ugene/plugins/workflow_designer/workflowmetadialogFiller.h \
     src/runnables/ugene/plugins/workflow_designer/CreateElementWithScriptDialogFiller.h \
     src/runnables/ugene/plugins/workflow_designer/WorkflowMetadialogFiller.h \
-    src/runnables/ugene/plugins/workflow_designer/DatasetNameEditDialogFiller.h
+    src/runnables/ugene/plugins/workflow_designer/DatasetNameEditDialogFiller.h \
+    src/runnables/ugene/ugeneui/ConvertAceToSqliteDialogFiller.h
 
 SOURCES +=  src/GUITestBasePlugin.cpp \
             src/tests/crazy_user/GUICrazyUserTest.cpp \
@@ -359,5 +360,6 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
     src/runnables/ugene/plugins/annotator/FindAnnotationCollocationsDialogFiller.cpp \
     src/runnables/ugene/plugins/workflow_designer/workflowmetadialogFiller.cpp \
     src/runnables/ugene/plugins/workflow_designer/CreateElementWithScriptDialogFiller.cpp \
-    src/runnables/ugene/plugins/workflow_designer/DatasetNameEditDialogFiller.cpp
+    src/runnables/ugene/plugins/workflow_designer/DatasetNameEditDialogFiller.cpp \
+    src/runnables/ugene/ugeneui/ConvertAceToSqliteDialogFiller.cpp
 
