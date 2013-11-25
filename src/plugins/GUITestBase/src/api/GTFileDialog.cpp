@@ -101,8 +101,11 @@ void GTFileDialogUtils::run()
     GTGlobals::sleep(200);
     selectFile();
     GTGlobals::sleep(200);
-
-    clickButton(button);
+    if(method == GTGlobals::UseKey){
+        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
+    }else{
+        clickButton(button);
+    }
 
 }
 #undef GT_METHOD_NAME
@@ -172,6 +175,8 @@ void GTFileDialogUtils::openFileDialog()
     case GTGlobals::UseKey:
         GTKeyboardDriver::keyClick(os, 'O', GTKeyboardDriver::key["ctrl"]);
         break;
+    default:
+        break;
     }
     GTGlobals::sleep(500);
 }
@@ -212,26 +217,14 @@ void GTFileDialogUtils::selectFile()
     QPoint indexCenter;
 
     switch(method) {
-    case GTGlobals::UseKey:
-        while (! w->hasFocus()) {
-            GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["tab"]);
-            GTGlobals::sleep(100);
-        }
+    case GTGlobals::UseKey:{
+        QLineEdit* lineEdit = fileDialog->findChild<QLineEdit*>(FILE_NAME_LINE_EDIT);
+        GT_CHECK(lineEdit != 0, QString("line edit \"1\" not found").arg(FILE_NAME_LINE_EDIT));
+        GTLineEdit::setText(os,lineEdit,fileName);
 
-        /***needed for checking first file on linux***/
-        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["space"]);
-        GTGlobals::sleep(200);
-        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["down"]);
-        GTGlobals::sleep(200);
-        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["up"]);
-        GTGlobals::sleep(200);
-
-        while (qobject_cast<QFileDialog*>(fileDialog)->selectedFiles().indexOf(path + fileName) == -1) {
-            GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["down"]);
-            GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["space"]);
-            GTGlobals::sleep(100);
-        }
+        GTWidget::click(os,lineEdit);
         break;
+    }
 
     case GTGlobals::UseMouse:
         w->scrollTo(index);
@@ -239,6 +232,8 @@ void GTFileDialogUtils::selectFile()
         indexCenter.setY(indexCenter.y() + w->header()->rect().height());
         GTMouseDriver::moveTo(os, w->mapToGlobal(indexCenter));
         GTMouseDriver::click(os);
+        break;
+    default:
         break;
     }
 
@@ -277,6 +272,8 @@ void GTFileDialogUtils::clickButton(Button btn)
         GTWidget::click(os, button_to_click);
         GTGlobals::sleep(100);
         break;
+    default:
+        break;
     }
 }
 #undef GT_METHOD_NAME
@@ -302,6 +299,8 @@ void GTFileDialogUtils::setViewMode(ViewMode v)
             GTGlobals::sleep(100);
         }
         GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["space"]);
+        break;
+    default:
         break;
     }
 

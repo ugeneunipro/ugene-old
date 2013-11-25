@@ -2740,7 +2740,7 @@ GUI_TEST_CLASS_DEFINITION( test_2174 ) {
 GUI_TEST_CLASS_DEFINITION( test_2186 ) {
 //    1. Open file _common_data/fasta/amino_multy.fa
     GTUtilsDialog::waitForDialog(os, new SequenceReadingModeSelectorDialogFiller(os, SequenceReadingModeSelectorDialogFiller::Separate));
-    GTFileDialog::openFile( os, testDir + "_common_data/fasta/", "amino_multy.fa");
+    GTFileDialog::openFile( os, testDir + "_common_data/fasta", "amino_multy.fa");
     GTGlobals::sleep(500);
 //    2. Open the DAS widget on the options panel
     GTWidget::click(os,GTWidget::findWidget(os,"ADV_single_sequence_widget_0"));
@@ -3175,7 +3175,7 @@ GUI_TEST_CLASS_DEFINITION( test_2282 ) {
     QString assFileName = testDir + "_common_data/scenarios/sandbox/test_2282.chrM.sorted.ugenedb";
     QString assDocName = "test_2282.chrM.sorted.ugenedb";
     GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os, assFileName));
-    GTFileDialog::openFile(os, testDir + "_common_data/bam/", "chrM.sorted.bam");
+    GTFileDialog::openFile(os, testDir + "_common_data/bam", "chrM.sorted.bam");
     GTGlobals::sleep(5000);
 
     //      3) The Project View with document "chrM.sorted.bam.ugenedb" has been opened.
@@ -3229,15 +3229,24 @@ GUI_TEST_CLASS_DEFINITION( test_2309 ) {
 
     // 2. Build tree for the alignment
     GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os, testDir + "_common_data/scenarios/sandbox/2309.nwk", 0, 0, true));
-    GTUtilsDialog::waitForDialog(os,new LicenseAgreemntDialogFiller(os));
+    GTUtilsDialog::waitForDialogWhichMayRunOrNot(os,new LicenseAgreemntDialogFiller(os));
     QAbstractButton *tree= GTAction::button(os,"Build Tree");
     GTWidget::click(os, tree);
     GTGlobals::sleep(500);
 
     QStringList initialNames = GTUtilsMSAEditorSequenceArea::getNameList(os);
     QAbstractButton *refresh= GTAction::button(os,"Refresh tree");
+
     CHECK(NULL != refresh, );
-    GTWidget::click(os, refresh);
+    if(refresh->isVisible()){
+        GTWidget::click(os, refresh);
+    }else{
+        GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<"Refresh tree"));
+        QToolBar* toolBar = qobject_cast<QToolBar*>(refresh->parent());
+        GTMouseDriver::moveTo(os, toolBar->mapToGlobal(toolBar->geometry().bottomRight())-QPoint(5,15));
+        GTMouseDriver::click(os);
+    }
+
     GTGlobals::sleep(500);
 
     QStringList newNames = GTUtilsMSAEditorSequenceArea::getNameList(os);
@@ -3479,6 +3488,7 @@ GUI_TEST_CLASS_DEFINITION( test_2406 ) {
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
 
+    GTGlobals::sleep(500);
     const QString expectedPreValue = "TEST";
     const QString resultPreValue = GTUtilsWorkflowDesigner::getParameter(os, "Output file");
     CHECK_SET_ERR(expectedPreValue == resultPreValue,
