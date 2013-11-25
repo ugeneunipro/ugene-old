@@ -28,6 +28,7 @@
 #include "api/GTFileDialog.h"
 #include "api/GTGlobals.h"
 #include "api/GTKeyboardDriver.h"
+#include "api/GTKeyboardUtils.h"
 #include "api/GTLineEdit.h"
 #include "api/GTMenu.h"
 #include "api/GTMouseDriver.h"
@@ -81,6 +82,7 @@
 #include "runnables/ugene/ugeneui/SelectDocumentFormatDialogFiller.h"
 #include "runnables/ugene/ugeneui/SequenceReadingModeSelectorDialogFiller.h"
 #include "runnables/ugene/ugeneui/SaveProjectDialogFiller.h"
+#include "runnables/ugene/corelibs/U2Gui/PositionSelectorFiller.h"
 
 #include <U2Core/AppContext.h>
 #include <U2Core/ExternalToolRegistry.h>
@@ -3527,6 +3529,42 @@ GUI_TEST_CLASS_DEFINITION(test_2407) {
 
     CHECK_SET_ERR( !l.hasError( ), "File not removed from project!" );
 
+}
+
+GUI_TEST_CLASS_DEFINITION( test_2410 ) {
+    GTFileDialog::openFile( os, dataDir + "samples/FASTA/", "human_T1.fa" );
+
+    GTGlobals::sleep( );
+
+    GTUtilsDialog::waitForDialog(os, new selectSequenceRegionDialogFiller( os, 166740, 166755 ) );
+
+    QWidget *sequenceWidget = GTWidget::findWidget( os, "ADV_single_sequence_widget_0" );
+    CHECK_SET_ERR( NULL != sequenceWidget, "sequenceWidget is not present" );
+
+    GTWidget::click( os, sequenceWidget );
+    GTKeyboardUtils::selectAll( os );
+
+    QWidget *graphAction = GTWidget::findWidget( os, "GraphMenuAction", sequenceWidget, false );
+    Runnable *chooser = new PopupChooser( os, QStringList( ) << "GC Content (%)" );
+    GTUtilsDialog::waitForDialog( os, chooser );
+
+    GTWidget::click( os, graphAction );
+
+    GTWidget::click( os, GTAction::button( os,
+        "action_zoom_in_human_T1 (UCSC April 2002 chr7:115977709-117855134)" ) );
+
+    QWidget *renderArea = GTWidget::findWidget( os, "GSequenceGraphViewRenderArea", sequenceWidget );
+    const QPoint mouseInitialPos( 4 * renderArea->width( ) / 7, renderArea->height( ) / 2 );
+    GTWidget::click(os, renderArea, Qt::LeftButton, mouseInitialPos );
+    GTGlobals::sleep( 200 );
+
+    const QPoint mouseInitialAbsPos = GTMouseDriver::getMousePosition( );
+    const int rightMouseLimit = mouseInitialAbsPos.x( ) * 1.3;
+
+    for ( int x = mouseInitialAbsPos.x( ); x < rightMouseLimit; x += 5 ) {
+        const QPoint currentPos( x, mouseInitialAbsPos.y( ) );
+        GTMouseDriver::moveTo( os, currentPos );
+    }
 }
 
 GUI_TEST_CLASS_DEFINITION( test_2415 ) {

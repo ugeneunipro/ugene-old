@@ -309,6 +309,7 @@ void GSequenceGraphView::onVisibleRangeChanged(bool signal) {
 //////////////////////////////////////////////////////////////////////////
 // RA
 GSequenceGraphViewRA::GSequenceGraphViewRA(GSequenceGraphView* g) : GSequenceLineViewRenderArea(g) {
+    setObjectName( "GSequenceGraphViewRenderArea" );
     headerFont=  new QFont("Courier", 10);
     headerHeight = 20;
 }
