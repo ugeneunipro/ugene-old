@@ -21,6 +21,7 @@
 
 #include <QtGui/QApplication>
 #include <QtGui/QMessageBox>
+#include <QtCore/QFile>
 #include <QtCore/QTextStream>
 #include "SendReportDialog.h"
 #ifdef Q_OS_LINUX
