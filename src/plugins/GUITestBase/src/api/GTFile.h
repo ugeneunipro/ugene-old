@@ -30,6 +30,8 @@ class GTFile {
 public:
     static bool equals(U2OpStatus &os, const QString&, const QString&);
 
+    static qint64 getSize(U2OpStatus &os, const QString&);
+
     // backup file to the file with backupPostfix. fail the given file can't be opened
     static void backup(U2OpStatus &os, const QString&);
 

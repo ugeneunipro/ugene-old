@@ -46,6 +46,18 @@ bool GTFile::equals(U2OpStatus &os, const QString& path1, const QString& path2) 
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "getSize"
+qint64 GTFile::getSize(U2OpStatus &os, const QString &path){
+    QFile f(path);
+    bool ok = f.open(QIODevice::ReadOnly);
+    GT_CHECK_RESULT(ok, "file " + path + "not found",-1);
+
+    int size = f.size();
+    f.close();
+    return size;
+}
+#undef GT_METHOD_NAME
+
 #define GT_METHOD_NAME "copy"
 void GTFile::copy(U2OpStatus &os, const QString& from, const QString& to) {
 

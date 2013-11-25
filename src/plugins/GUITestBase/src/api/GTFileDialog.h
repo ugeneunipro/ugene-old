@@ -33,28 +33,23 @@ public:
     enum Button {Open, Cancel, Save, Choose};
     enum ViewMode {List, Detail};
 
-    GTFileDialogUtils(U2OpStatus&, const QString&, const QString&, const QString& = "*.*", Button b = Open, GTGlobals::UseMethod = GTGlobals::UseMouse);
-    GTFileDialogUtils(U2OpStatus&, const QString&, const QString&, qint64* _size);
+    GTFileDialogUtils(U2OpStatus&, const QString&, const QString&, Button b = Open, GTGlobals::UseMethod = GTGlobals::UseMouse);
     GTFileDialogUtils(U2OpStatus&, const QString& filePath, GTGlobals::UseMethod method = GTGlobals::UseMouse);
     void openFileDialog();
     void run();
 
 private:
 
-    void setFilter();
     void setPath();
     void setName();
     void selectFile();
     void clickButton(Button);
     void setViewMode(ViewMode);
-    qint64 getSize();
 
     QWidget *fileDialog;
-    QString path, fileName, filters;
+    QString path, fileName;
     Button button;
     GTGlobals::UseMethod method;
-    bool isForGetSize;
-    qint64* size;
 };
 class GTFileDialogUtils_list : public GTFileDialogUtils{
 public:
@@ -70,10 +65,8 @@ private:
 class GTFileDialog {
 public:
     enum Button {Open, Cancel};
-    static void openFile(U2OpStatus &os, const QString &path, const QString &fileName,
-        const QString &filters = "*.*", Button button = Open, GTGlobals::UseMethod m = GTGlobals::UseMouse);
+    static void openFile(U2OpStatus &os, const QString &path, const QString &fileName, Button button = Open, GTGlobals::UseMethod m = GTGlobals::UseMouse);
     static void openFileList(U2OpStatus &, const QString &, const QStringList &);
-    static qint64 getSize(U2OpStatus &os, const QString &path, const QString &fileName);
 };
 
 } // namespace

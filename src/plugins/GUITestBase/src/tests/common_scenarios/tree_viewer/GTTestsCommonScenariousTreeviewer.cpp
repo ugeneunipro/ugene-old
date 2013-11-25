@@ -29,6 +29,7 @@
 #include "api/GTMenu.h"
 #include "api/GTGlobals.h"
 #include "api/GTAction.h"
+#include "api/GTFile.h"
 #include "GTUtilsProjectTreeView.h"
 #include "GTUtilsMdi.h"
 #include "GTUtilsLog.h"
@@ -53,6 +54,7 @@
 namespace U2 {
 
 namespace GUITest_common_scenarios_tree_viewer {
+const int nodeWidth = 6;
 GUI_TEST_CLASS_DEFINITION(test_0001){
 //Screenshoting MSA editor (regression test)
 
@@ -75,7 +77,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001){
     GTUtilsDialog::waitForDialog(os, new ExportImage(os,testDir + "_common_data/scenarios/sandbox/image.svg", 4,50));
     GTWidget::click(os,GTWidget::findWidget(os,"cameraMenu"));
 
-    GTFileDialog::getSize(os,testDir + "_common_data/scenarios/sandbox/","image.jpeg");
+    GTFile::getSize(os,testDir + "_common_data/scenarios/sandbox/image.jpeg");
 //Expected state: images on screenshots same as on your screen
 }
 
@@ -101,7 +103,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001_1){
     GTUtilsDialog::waitForDialog(os, new ExportImage(os,testDir + "_common_data/scenarios/sandbox/image.svg", 4,50));
     GTMenu::showContextMenu(os, GTWidget::findWidget(os,"treeView"));
 
-    GTFileDialog::getSize(os,testDir + "_common_data/scenarios/sandbox/","image.jpeg");
+    GTFile::getSize(os,testDir + "_common_data/scenarios/sandbox/image.jpeg");
 //Expected state: images on screenshots same as on your screen
 }
 
@@ -127,7 +129,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001_2){
     GTUtilsDialog::waitForDialog(os, new ExportImage(os,testDir + "_common_data/scenarios/sandbox/image.svg", 4,50));
     GTMenu::showMainMenu(os, MWMENU_ACTIONS);
 
-    GTFileDialog::getSize(os,testDir + "_common_data/scenarios/sandbox/","image.jpeg");
+    GTFile::getSize(os,testDir + "_common_data/scenarios/sandbox/image.jpeg");
 //Expected state: images on screenshots same as on your screen
 }
 
@@ -711,12 +713,6 @@ GUI_TEST_CLASS_DEFINITION(test_0010){
 
 GUI_TEST_CLASS_DEFINITION(test_0011){
 //    Collapse/expand action in phylogenetic tree (0002168)
-    int nodeWidth;
-#ifdef Q_OS_MAC
-    nodeWidth = 6;
-#else
-    nodeWidth = 10;
-#endif
 //    1. Open file _common_data/scenario/tree_view/COI.nwk
     GTFileDialog::openFile(os,testDir + "_common_data/scenarios/tree_view/", "COI.nwk");
     GTGlobals::sleep(500);
@@ -724,9 +720,8 @@ GUI_TEST_CLASS_DEFINITION(test_0011){
     QGraphicsView* treeView = qobject_cast<QGraphicsView*>(GTWidget::findWidget(os, "treeView"));
     QList<QGraphicsItem*> list = treeView->scene()->items();
     QList<QGraphicsItem*> nodeList;
-    QList<int> intList;
+
     foreach(QGraphicsItem* item, list){
-        intList<<item->boundingRect().width();
         if(item->boundingRect().width()==nodeWidth){
             nodeList.append(item);
         }
@@ -770,12 +765,6 @@ GUI_TEST_CLASS_DEFINITION(test_0011){
 
 GUI_TEST_CLASS_DEFINITION(test_0011_1){
 //    Collapse/expand action in phylogenetic tree (0002168)
-    int nodeWidth;
-#ifdef Q_OS_MAC
-    nodeWidth = 6;
-#else
-    nodeWidth = 10;
-#endif
 //    1. Open file _common_data/scenario/tree_view/COI.nwk
     GTFileDialog::openFile(os,testDir + "_common_data/scenarios/tree_view/", "COI.nwk");
     GTGlobals::sleep(500);
@@ -790,6 +779,7 @@ GUI_TEST_CLASS_DEFINITION(test_0011_1){
         }
     }
 
+    CHECK_SET_ERR(!nodeList.isEmpty(), "nodeList is empty");
     QGraphicsItem* node = nodeList.last();
     QPointF sceneCoord = node->mapToScene(node->boundingRect().center());
     QPoint viewCord = treeView->mapFromScene(sceneCoord);
@@ -824,12 +814,6 @@ GUI_TEST_CLASS_DEFINITION(test_0011_1){
 
 GUI_TEST_CLASS_DEFINITION(test_0011_2){
 //    Collapse/expand action in phylogenetic tree (0002168)
-    int nodeWidth;
-#ifdef Q_OS_MAC
-    nodeWidth = 6;
-#else
-    nodeWidth = 10;
-#endif
 //    1. Open file _common_data/scenario/tree_view/COI.nwk
     GTFileDialog::openFile(os,testDir + "_common_data/scenarios/tree_view", "COI.nwk");
     GTGlobals::sleep(500);
@@ -844,6 +828,7 @@ GUI_TEST_CLASS_DEFINITION(test_0011_2){
         }
     }
 
+    CHECK_SET_ERR(!nodeList.isEmpty(), "nodeList is empty");
     QGraphicsItem* node = nodeList.first();
     QPointF sceneCoord = node->mapToScene(node->boundingRect().center());
     QPoint viewCord = treeView->mapFromScene(sceneCoord);
@@ -911,11 +896,12 @@ GUI_TEST_CLASS_DEFINITION(test_0012){
 //3. Choose any node and do the context menu command "Swap siblings"
     QList<QGraphicsItem*> nodeList;
     foreach(QGraphicsItem* item, list){
-        if(item->boundingRect().width()==10){
+        if(item->boundingRect().width()==nodeWidth){
             nodeList.append(item);
         }
     }
 
+    CHECK_SET_ERR(!nodeList.isEmpty(), "nodeList is empty");
     QGraphicsItem* node = nodeList.at(1);
     QPointF sceneCoord = node->mapToScene(node->boundingRect().center());
     QPoint viewCord = treeView->mapFromScene(sceneCoord);

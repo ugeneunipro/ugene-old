@@ -129,9 +129,9 @@ GUI_TEST_CLASS_DEFINITION(test_0001_3) {
 
 GUI_TEST_CLASS_DEFINITION(test_0001_4) {
 
-    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/" , "translations_nucl.aln", "*.*", GTFileDialog::Cancel);
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/" , "translations_nucl.aln", GTFileDialog::Cancel);
     GTGlobals::sleep();
-    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/" , "translations_nucl.aln", "*.*", GTFileDialog::Open);
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/" , "translations_nucl.aln", GTFileDialog::Open);
     GTGlobals::sleep();
 
     int length = GTUtilsMSAEditorSequenceArea::getLength(os);
@@ -2724,10 +2724,10 @@ GUI_TEST_CLASS_DEFINITION(test_0026_2_linux){
 //    3. fill dialog:
 //    file name: test/_common_data/scenarios/sandbox/image.bmp
 //    press OK
-    qint64 bigSize = GTFileDialog::getSize(os,testDir + "_common_data/scenarios/sandbox/","bigImage.jpeg");
-    qint64 smallSize = GTFileDialog::getSize(os,testDir + "_common_data/scenarios/sandbox/","smallImage.jpeg");
+    qint64 bigSize = GTFile::getSize(os,testDir + "_common_data/scenarios/sandbox/bigImage.jpeg");
+    qint64 smallSize = GTFile::getSize(os,testDir + "_common_data/scenarios/sandbox/smallImage.jpeg");
 
-    CHECK_SET_ERR(bigSize==685968 && smallSize==165426, QString().setNum(bigSize) + "  " + QString().setNum(smallSize));
+    CHECK_SET_ERR(bigSize==703705 && smallSize==169819, QString().setNum(bigSize) + "  " + QString().setNum(smallSize));
 //    Expected state: image is exported
 }
 
@@ -2748,8 +2748,8 @@ GUI_TEST_CLASS_DEFINITION(test_0026_2_windows){
 //    3. fill dialog:
 //    file name: test/_common_data/scenarios/sandbox/image.bmp
 //    press OK
-    qint64 bigSize = GTFileDialog::getSize(os,testDir + "_common_data/scenarios/sandbox/","bigImage.jpeg");
-    qint64 smallSize = GTFileDialog::getSize(os,testDir + "_common_data/scenarios/sandbox/","smallImage.jpeg");
+    qint64 bigSize = GTFile::getSize(os,testDir + "_common_data/scenarios/sandbox/bigImage.jpeg");
+    qint64 smallSize = GTFile::getSize(os,testDir + "_common_data/scenarios/sandbox/smallImage.jpeg");
 
     CHECK_SET_ERR(bigSize > 700000 && bigSize < 900000  && smallSize > 145000 && smallSize < 195000, QString().setNum(bigSize) + "  " + QString().setNum(smallSize));
 //    Expected state: image is exported
@@ -2794,7 +2794,7 @@ GUI_TEST_CLASS_DEFINITION(test_0028_linux){
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
 //    2. press "export as SVG" on toolbar
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os,QStringList()<<MSAE_MENU_EXPORT<<"Export as SVG"));
-    GTFileDialogUtils *ob = new GTFileDialogUtils(os, testDir + "_common_data/scenarios/sandbox/", "test.svg", "*.*", GTFileDialogUtils::Save);
+    GTFileDialogUtils *ob = new GTFileDialogUtils(os, testDir + "_common_data/scenarios/sandbox/", "test.svg", GTFileDialogUtils::Save);
     GTUtilsDialog::waitForDialog(os,ob);
 
     GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
@@ -2803,7 +2803,7 @@ GUI_TEST_CLASS_DEFINITION(test_0028_linux){
 //    3. fill dialog:
 //    file name: test/_common_data/scenarios/sandbox/image.bmp
 //    press Save
-    qint64 fileSize = GTFileDialog::getSize(os,testDir + "_common_data/scenarios/sandbox/", "test.svg");
+    qint64 fileSize = GTFile::getSize(os,testDir + "_common_data/scenarios/sandbox/test.svg");
     CHECK_SET_ERR(fileSize==727634, "Expected size: 727634, Current size: " + QString().setNum(fileSize));
 //    Expected state:  SVG is exported
 
@@ -2814,7 +2814,7 @@ GUI_TEST_CLASS_DEFINITION(test_0028_windows){
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
 //    2. press "export as SVG" on toolbar
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os,QStringList()<<MSAE_MENU_EXPORT<<"Export as SVG"));
-    GTFileDialogUtils *ob = new GTFileDialogUtils(os, testDir + "_common_data/scenarios/sandbox/", "test.svg", "*.*", GTFileDialogUtils::Save);
+    GTFileDialogUtils *ob = new GTFileDialogUtils(os, testDir + "_common_data/scenarios/sandbox/", "test.svg", GTFileDialogUtils::Save);
     GTUtilsDialog::waitForDialog(os,ob);
 
     GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
@@ -2823,7 +2823,7 @@ GUI_TEST_CLASS_DEFINITION(test_0028_windows){
 //    3. fill dialog:
 //    file name: test/_common_data/scenarios/sandbox/image.bmp
 //    press Save
-    qint64 fileSize = GTFileDialog::getSize(os,testDir + "_common_data/scenarios/sandbox/", "test.svg");
+    qint64 fileSize = GTFile::getSize(os,testDir + "_common_data/scenarios/sandbox/test.svg");
     CHECK_SET_ERR(fileSize > 740000 && fileSize < 980000, "Current size: " + QString().setNum(fileSize));
 //    Expected state:  SVG is exported
 
@@ -3017,7 +3017,7 @@ GUI_TEST_CLASS_DEFINITION(test_0032){
     GTGlobals::sleep(500);
 
     qint64 size = 0;
-    size = GTFileDialog::getSize(os, testDir + "_common_data/scenarios/sandbox/","stat.html");
+    size = GTFile::getSize(os, testDir + "_common_data/scenarios/sandbox/stat.html");
     CHECK_SET_ERR(size > 0, "file not found");
 //    3. Fill dialog: Profile mode:Counts
 //            Save profile to file: checked
@@ -3038,7 +3038,7 @@ GUI_TEST_CLASS_DEFINITION(test_0032_1){//DIFFERENCE: csv format is used
     GTGlobals::sleep(500);
 
     qint64 size = 0;
-    size = GTFileDialog::getSize(os, testDir + "_common_data/scenarios/sandbox/","stat.csv");
+    size = GTFile::getSize(os, testDir + "_common_data/scenarios/sandbox/stat.csv");
     CHECK_SET_ERR(size > 0, "file not found");
 //    3. Fill dialog:Profile mode:Counts
 //            Save profile to file: checked
@@ -3147,14 +3147,14 @@ GUI_TEST_CLASS_DEFINITION(test_0035){
 //        Save profile to file: checked
 //        File path: test/_common_data/scenarios/sandbox/matrix.html(matrix.csv)
 //        Click "Generate"
-    qint64 size = GTFileDialog::getSize(os,testDir + "_common_data/scenarios/sandbox/","matrix.html");
+    qint64 size = GTFile::getSize(os,testDir + "_common_data/scenarios/sandbox/matrix.html");
     CHECK_SET_ERR(size!=0,"file not created");
 //Expected state: Alignment profile file created
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0035_1){
 //1. Open document test/_common_data/scenarios/msa/ma2_gapped.aln
-    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/" , "ma2_gapped.aln");
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/","ma2_gapped.aln");
 //2. Do MSA area context menu->Statistics->generate distance matrix
     Runnable* dis = new DistanceMatrixDialogFiller(os,DistanceMatrixDialogFiller::CSV,testDir + "_common_data/scenarios/sandbox/matrix.html");
     GTUtilsDialog::waitForDialog(os, dis);
@@ -3170,7 +3170,7 @@ GUI_TEST_CLASS_DEFINITION(test_0035_1){
 //        Save profile to file: checked
 //        File path: test/_common_data/scenarios/sandbox/matrix.html(matrix.csv)
 //        Click "Generate"
-    qint64 size = GTFileDialog::getSize(os,testDir + "_common_data/scenarios/sandbox/","matrix.csv");
+    qint64 size = GTFile::getSize(os,testDir + "_common_data/scenarios/sandbox/matrix.csv");
     CHECK_SET_ERR(size!=0,"file not created");
 //Expected state: Alignment profile file created
 }

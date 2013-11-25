@@ -1251,7 +1251,7 @@ GUI_TEST_CLASS_DEFINITION( test_1813 )
     GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE),ACTION_PROJECTSUPPORT__ACCESS_REMOTE_DB, GTGlobals::UseKey);
 
     // Expected: the sequence view with I7G8J3 sequence is opened. UGENE does not crash.
-    GTGlobals::sleep(20000);
+    GTGlobals::sleep(40000);
     GTUtilsDocument::isDocumentLoaded(os, "I7G8J3_das.gb");
     GTUtilsDocument::checkDocument(os, "I7G8J3_das.gb", AnnotatedDNAViewFactory::ID);
 }
@@ -1466,7 +1466,7 @@ GUI_TEST_CLASS_DEFINITION( test_1921 )
 
 GUI_TEST_CLASS_DEFINITION( test_2006 )
 {
-    const int MSA_WIDTH = 50;
+    const int MSA_WIDTH = 40;
     const int MSA_HEIGHT = 3;
 
     // 1. Open "data/samples/CLUSTAL/COI.aln" and save it's part to a string

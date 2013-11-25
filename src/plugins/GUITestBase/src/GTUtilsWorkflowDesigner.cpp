@@ -354,7 +354,7 @@ void GTUtilsWorkflowDesigner::setDatasetInputFile(U2OpStatus &os, QString filePa
     QWidget* addFileButton = GTWidget::findWidget(os, "addFileButton", DatasetWidget);
     GT_CHECK(addFileButton, "addFileButton not found");
 
-    GTFileDialogUtils *ob = new GTFileDialogUtils(os, filePath, fileName,"*.*", GTFileDialogUtils::Open, GTGlobals::UseKey);
+    GTFileDialogUtils *ob = new GTFileDialogUtils(os, filePath, fileName, GTFileDialogUtils::Open, GTGlobals::UseKey);
     GTUtilsDialog::waitForDialog(os, ob);
 
     GTWidget::click(os, addFileButton);
@@ -383,7 +383,7 @@ void GTUtilsWorkflowDesigner::setDatasetInputFolder(U2OpStatus &os, QString file
     QWidget* addDirButton = GTWidget::findWidget(os, "addDirButton", DatasetWidget);
     GT_CHECK(addDirButton, "addFileButton not found");
 
-    GTFileDialogUtils *ob = new GTFileDialogUtils(os, filePath, "","*.*", GTFileDialogUtils::Choose, GTGlobals::UseMouse);
+    GTFileDialogUtils *ob = new GTFileDialogUtils(os, filePath, "", GTFileDialogUtils::Choose, GTGlobals::UseMouse);
     GTUtilsDialog::waitForDialog(os, ob);
 
     GTWidget::click(os, addDirButton);

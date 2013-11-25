@@ -44,13 +44,11 @@ namespace U2 {
 #define GT_CLASS_NAME "GTFileDialogUtils"
 
 GTFileDialogUtils::GTFileDialogUtils(U2OpStatus &_os, const QString &_path, const QString &_fileName,
-                                     const QString &_filters, Button _button, GTGlobals::UseMethod _method) :
+                                     Button _button, GTGlobals::UseMethod _method) :
     Filler(_os, "QFileDialog"),
     fileName(_fileName),
-    filters(_filters),
     button(_button),
-    method(_method),
-    isForGetSize(false)
+    method(_method)
 
 {   path = QDir::cleanPath(QDir::currentPath() + "/" + _path);
     if (path.at(path.count() - 1) != '/') {
@@ -60,10 +58,8 @@ GTFileDialogUtils::GTFileDialogUtils(U2OpStatus &_os, const QString &_path, cons
 
 GTFileDialogUtils::GTFileDialogUtils(U2OpStatus &os, const QString &filePath, GTGlobals::UseMethod method) :
     Filler(os, "QFileDialog"),
-    filters("*.*"),
     button(Open),
-    method(method),
-    isForGetSize(false)
+    method(method)
 
 {
     QFileInfo fileInfo(filePath);
@@ -74,20 +70,6 @@ GTFileDialogUtils::GTFileDialogUtils(U2OpStatus &os, const QString &filePath, GT
     }
 }
 
-GTFileDialogUtils::GTFileDialogUtils(U2OpStatus &_os, const QString &_path, const QString &_fileName,
-                                     qint64 *_size):
-    Filler(_os, "QFileDialog"),
-    fileName(_fileName),
-    button(Cancel),
-    method(GTGlobals::UseMouse),
-    isForGetSize(true),
-    size(_size)
-{
-    path = QDir::cleanPath(QDir::currentPath() + "/" + _path);
-    if (path.at(path.count() - 1) != '/') {
-        path += '/';
-    }
-}
 #define GT_METHOD_NAME "run"
 void GTFileDialogUtils::run()
 {
@@ -100,27 +82,25 @@ void GTFileDialogUtils::run()
     setPath();
     GTGlobals::sleep(200);
     if(button == Choose){
-        GTKeyboardDriver::keyClick(os,GTKeyboardDriver::key["enter"]);
+        clickButton(button);
         return;
     }
+
     clickButton(Open);
     GTGlobals::sleep(200);
-    //setFilter();
+
     if(button == Save){//saving file
         setName();
-    }
-    else{//opening file or getting size
-        GTGlobals::sleep(200);
-        setViewMode(Detail);
-        GTGlobals::sleep(200);
-        selectFile();
-        GTGlobals::sleep(200);
+        clickButton(button);
+        return;
     }
 
-    if (isForGetSize){
-        qint64 i = getSize();
-        *size = i;
-    }
+    //opening file or getting size
+    GTGlobals::sleep(200);
+    setViewMode(Detail);
+    GTGlobals::sleep(200);
+    selectFile();
+    GTGlobals::sleep(200);
 
     clickButton(button);
 
@@ -128,8 +108,7 @@ void GTFileDialogUtils::run()
 #undef GT_METHOD_NAME
 
 GTFileDialogUtils_list::GTFileDialogUtils_list(U2OpStatus &_os, const QString &_path, const QStringList &_fileNameList) :
-    GTFileDialogUtils(_os,_path, "", "*.*" ,Open, GTGlobals::UseMouse),
-//    path(_path),
+    GTFileDialogUtils(_os,_path, "", Open, GTGlobals::UseMouse),
     fileNameList(_fileNameList)
 {
     path = QDir::cleanPath(QDir::currentPath() + "/" + _path);
@@ -150,16 +129,12 @@ void GTFileDialogUtils_list::run(){
     GTGlobals::sleep(200);
     clickButton(Open);
     GTGlobals::sleep(200);
-
-    GTGlobals::sleep(200);
     setViewMode(Detail);
     GTGlobals::sleep(200);
     setNameList(os,fileNameList);
     GTGlobals::sleep(200);
 
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
-    //clickButton(Open);
-    //GTKeyboardDriver::keyRelease(os, GTKeyboardDriver::key["ctrl"]);
 }
 #undef GT_METHOD_NAME
 
@@ -209,6 +184,7 @@ void GTFileDialogUtils::setPath()
     GTLineEdit::setText(os,lineEdit,path);
 
     GT_CHECK(lineEdit->text() == path, "Can't open file \"" + lineEdit->text() + "\"");
+    GTWidget::click(os,lineEdit);
 }
 #undef GT_METHOD_NAME
 
@@ -219,26 +195,7 @@ void GTFileDialogUtils::setName()
     GT_CHECK(lineEdit != 0, QString("line edit \"1\" not found").arg(FILE_NAME_LINE_EDIT));
 
     GTLineEdit::setText(os, lineEdit,fileName);
-}
-#undef GT_METHOD_NAME
-
-#define GT_METHOD_NAME "setFilter"
-void GTFileDialogUtils::setFilter()
-{
-    QComboBox *cmb = fileDialog->findChild<QComboBox*>("fileTypeCombo");
-    GT_CHECK(cmb != NULL, "combobox, which contains files filters, not found");
-
-    int index = -1;
-    for (int i = 0; i < cmb->count(); i++ ) {
-        if (cmb->itemText(i).contains(filters)) {
-            index = i;
-            break;
-        }
-    }
-
-    GT_CHECK(index != -1, QString("item \"%1\" in combobox not found").arg(filters));
-
-    GTComboBox::setCurrentIndex(os, cmb, index/*, method*/);
+    GTWidget::click(os,lineEdit);
 }
 #undef GT_METHOD_NAME
 
@@ -262,6 +219,7 @@ void GTFileDialogUtils::selectFile()
         }
 
         /***needed for checking first file on linux***/
+        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["space"]);
         GTGlobals::sleep(200);
         GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["down"]);
         GTGlobals::sleep(200);
@@ -276,15 +234,7 @@ void GTFileDialogUtils::selectFile()
         break;
 
     case GTGlobals::UseMouse:
-        if (! w->viewport()->rect().contains(w->visualRect(index))) {
-            GTMouseDriver::moveTo(os, w->mapToGlobal(w->geometry().center()));
-            GTMouseDriver::click(os);
-        }
-        while (! w->viewport()->rect().contains(w->visualRect(index))) {
-            GTMouseDriver::scroll(os, -1);
-            GTGlobals::sleep(100);
-        }
-
+        w->scrollTo(index);
         indexCenter = w->visualRect(index).center();
         indexCenter.setY(indexCenter.y() + w->header()->rect().height());
         GTMouseDriver::moveTo(os, w->mapToGlobal(indexCenter));
@@ -299,43 +249,33 @@ void GTFileDialogUtils::selectFile()
 #define GT_METHOD_NAME "clickButton"
 void GTFileDialogUtils::clickButton(Button btn)
 {
-    QList<QPushButton*> buttons = fileDialog->findChildren<QPushButton *>();
     QMap<Button, QString> button;
-    button[Open] = "Open";
-    button[Cancel] = "Cancel";
-    button[Save] = "Save";
-    button[Choose] = "Choose";
-    QPushButton *button_to_click = NULL;
+    button[Open] = "&Open";
+    button[Cancel] = "&Cancel";
+    button[Save] = "&Save";
+    button[Choose] = "&Choose";
 
-    foreach(QPushButton *b, buttons) {
-        if (b->text().contains(button[btn])) {
-            button_to_click = b;
-            break;
-        }
-    }
+    QAbstractButton *button_to_click = GTWidget::findButtonByText(os, button[btn],fileDialog);
     GT_CHECK(button_to_click != NULL, "button not found");
 
     while (! button_to_click->isEnabled()) {
         GTGlobals::sleep(100);
     }
 
-    QPoint btn_pos;
-    int key = 0, key_pos;
+    GTGlobals::sleep(500);
 
     switch(method) {
     case GTGlobals::UseKey:
-        key_pos = button_to_click->text().indexOf('&');
-        if (key_pos != -1) {
-            key = (button_to_click->text().at(key_pos + 1)).toLatin1();
-            GTKeyboardDriver::keyClick(os, key, GTKeyboardDriver::key["alt"]);
-            break;
+        while (! button_to_click->hasFocus()) {
+            GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["tab"]);
+            GTGlobals::sleep(100);
         }
+        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
+        break;
 
     case GTGlobals::UseMouse:
-        btn_pos = button_to_click->mapToGlobal(button_to_click->rect().center());
-        GTMouseDriver::moveTo(os, btn_pos);
-        GTMouseDriver::click(os);
-        GTMouseDriver::click(os); //second click is needed for Linux
+        GTWidget::click(os, button_to_click);
+        GTGlobals::sleep(100);
         break;
     }
 }
@@ -353,8 +293,7 @@ void GTFileDialogUtils::setViewMode(ViewMode v)
 
     switch(method) {
     case GTGlobals::UseMouse:
-        GTMouseDriver::moveTo(os, w->mapToGlobal(w->rect().center()));
-        GTMouseDriver::click(os);
+        GTWidget::click(os, w);
         break;
 
     case GTGlobals::UseKey:
@@ -370,28 +309,10 @@ void GTFileDialogUtils::setViewMode(ViewMode v)
 }
 #undef GT_METHOD_NAME
 
-#define GT_METHOD_NAME "getsize"
-qint64 GTFileDialogUtils::getSize()
-{
-    QTreeView *w = fileDialog->findChild<QTreeView*>("treeView");
-    GT_CHECK_RESULT(w != NULL, "widget, which contains list of file, not found",0);
-
-    QFileSystemModel *model = qobject_cast<QFileSystemModel*>(w->model());
-    QModelIndex index = model->index(path + fileName);
-    GT_CHECK_RESULT(index.isValid(), "File <" + path + fileName + "> not found",0);
-
-    qint64 size;
-    size = model->size(index);
-    GTGlobals::sleep(100);
-
-    return size;
-}
-#undef GT_METHOD_NAME
-
 void GTFileDialog::openFile(U2OpStatus &os, const QString &path, const QString &fileName,
-                            const QString &filters, Button button, GTGlobals::UseMethod m)
+                            Button button, GTGlobals::UseMethod m)
 {
-    GTFileDialogUtils *ob = new GTFileDialogUtils(os, path, fileName, filters, (GTFileDialogUtils::Button)button, m);
+    GTFileDialogUtils *ob = new GTFileDialogUtils(os, path, fileName, (GTFileDialogUtils::Button)button, m);
     GTUtilsDialog::waitForDialog(os, ob);
 
     ob->openFileDialog();
@@ -407,19 +328,6 @@ void GTFileDialog::openFileList(U2OpStatus &os, const QString &path, const QStri
     ob->openFileDialog();
 
     GTGlobals::sleep();
-}
-
-qint64 GTFileDialog::getSize(U2OpStatus &os,const QString &path, const QString &fileName)
-{
-    qint64 sizePtr = 0;
-    GTFileDialogUtils *ob = new GTFileDialogUtils(os, path, fileName, &sizePtr);
-    GTUtilsDialog::waitForDialog(os, ob);
-
-    ob->openFileDialog();
-
-    GTGlobals::sleep();
-
-    return sizePtr;
 }
 
 #undef GT_CLASS_NAME

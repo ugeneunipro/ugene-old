@@ -65,12 +65,14 @@ namespace GUITest_common_scenarios_workflow_designer {
 GUI_TEST_CLASS_DEFINITION(test_0001){
 
 
-    GTUtilsWorkflowDesigner::openWorkfolwDesigner(os);
+   /* GTUtilsWorkflowDesigner::openWorkfolwDesigner(os);
     GTUtilsWorkflowDesigner::addSample(os, "call variants");
 
     GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "call variants"));
     GTMouseDriver::click(os);
-GTUtilsWorkflowDesigner::getParameter(os, "Max number of reads per input BAM");
+    GTUtilsWorkflowDesigner::getParameter(os, "Max number of reads per input BAM");*/
+    int i = GTFile::getSize(os, dataDir + "cmdline/pwm-build.uwl");
+    CHECK_SET_ERR(false, QString("%1").arg(i));
     /*GTUtilsWorkflowDesigner::createDataset(os, "some name");*/
     //GTWidget::getAllWidgetsInfo(os, table);
     //    QAbstractButton* edit = GTAction::button(os, GTAction::findActionByText(os, "Edit script of the element..."));
