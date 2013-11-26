@@ -36,9 +36,11 @@
 #include <U2Lang/MapDatatypeEditor.h>
 #include <U2Lang/URLAttribute.h>
 #include <U2Lang/WorkflowUtils.h>
+#include "TableViewTabKey.h"
 
 #include <QtGui/QAction>
 #include <QtGui/QHeaderView>
+#include <QtGui/QKeyEvent>
 
 #define MAIN_SPLITTER "main.splitter"
 #define TAB_SPLITTER "tab.splitter"
@@ -99,9 +101,9 @@ customWidget(NULL), subject(NULL), actor(NULL)
 
     connect(table->selectionModel(), SIGNAL(currentChanged(QModelIndex, QModelIndex)), SLOT(sl_showPropDoc()));
     connect(table->model(), SIGNAL(dataChanged(QModelIndex, QModelIndex)), SLOT(handleDataChanged(QModelIndex, QModelIndex)));
-    
     // FIXME
     //connect(doc, SIGNAL(customContextMenuRequested(const QPoint &)), SLOT(sl_contextMenuForDoc(const QPoint &)));
+    table->setTabKeyNavigation(true);
 }
 
 void WorkflowEditor::setEditable(bool editable) {
@@ -516,7 +518,7 @@ void WorkflowEditor::restoreState(const QVariant& v) {
 }
 
 bool WorkflowEditor::eventFilter(QObject* object, QEvent* event) {
-    if (event->type() == QEvent::Shortcut || 
+    if (event->type() == QEvent::Shortcut ||
         event->type() == QEvent::ShortcutOverride)
     {
         if (object == doc)
@@ -525,7 +527,7 @@ bool WorkflowEditor::eventFilter(QObject* object, QEvent* event) {
             return true;
         }
     }
-    return false;
+    return QObject::eventFilter(object, event);
 }
 
 void WorkflowEditor::sl_linkActivated(const QString& url) {
