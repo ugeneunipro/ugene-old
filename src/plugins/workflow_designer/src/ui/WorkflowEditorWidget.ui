@@ -211,7 +211,7 @@ QGroupBox::indicator:checked {
             <property name="childrenCollapsible">
              <bool>false</bool>
             </property>
-            <widget class="TableViewTabKey" name="table">
+            <widget class="U2::TableViewTabKey" name="table">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                <horstretch>0</horstretch>
@@ -379,9 +379,9 @@ QGroupBox::indicator:checked {
  </widget>
  <customwidgets>
   <customwidget>
-   <class>TableViewTabKey</class>
+   <class>U2::TableViewTabKey</class>
    <extends>QTableView</extends>
-   <header>tableviewtabkey.h</header>
+   <header>TableViewTabKey.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

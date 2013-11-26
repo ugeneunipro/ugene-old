@@ -76,7 +76,7 @@ HEADERS += src/ActorCfgModel.h \
            src/util/SaveSchemaImageUtils.h \
            src/util/WorkerNameValidator.h \
            src/util/WriteSequenceValidator.h \
-           src/TableViewTabKey.h
+    src/TableViewTabKey.h
 FORMS += src/ui/ChooseItemDialog.ui \
            src/ui/CreateScriptBlockDialog.ui \
            src/ui/DashboardsManagerDialog.ui \
@@ -165,6 +165,6 @@ SOURCES += src/ActorCfgModel.cpp \
            src/util/SaveSchemaImageUtils.cpp \
            src/util/WorkerNameValidator.cpp \
            src/util/WriteSequenceValidator.cpp \
-           src/TableViewTabKey.cpp
+    src/TableViewTabKey.cpp
 RESOURCES += workflow_designer.qrc
 TRANSLATIONS += transl/english.ts transl/russian.ts
