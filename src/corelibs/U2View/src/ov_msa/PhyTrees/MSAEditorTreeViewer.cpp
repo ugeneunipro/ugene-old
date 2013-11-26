@@ -131,7 +131,7 @@ MSAEditorTreeViewerUI::MSAEditorTreeViewerUI(MSAEditorTreeViewer* treeViewer)
     connect(scene(), SIGNAL(sceneRectChanged(const QRectF&)), SLOT(sl_onSceneRectChanged(const QRectF&)));
 
     QRectF rect = scene()->sceneRect();
-    subgroupSelector = scene()->addLine(0.0, rect.bottom(), 0.0, rect.top(), QPen(Qt::blue));
+    subgroupSelector = scene()->addLine(0.0, rect.bottom(), 0.0, rect.top(), QPen(QColor(103, 138, 186)));
     setAlignment(Qt::AlignTop | Qt::AlignLeft);
 }
 
@@ -446,6 +446,9 @@ void MSAEditorTreeViewerUI::highlightBranches() {
     }
     do {
         GraphicsRectangularBranchItem* node = graphicsItems.pop();
+        if(!node->isVisible()) {
+            continue;
+        }
         qreal node1Pos = node->sceneBoundingRect().left();
         qreal node2Pos = node->sceneBoundingRect().right();
         if(node2Pos > subgroupSelectorPos && node1Pos < subgroupSelectorPos) {
