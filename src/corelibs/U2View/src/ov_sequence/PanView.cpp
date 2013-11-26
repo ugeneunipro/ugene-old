@@ -730,7 +730,7 @@ void PanViewRenderArea::drawCustomRulers(GraphUtils::RulerConfig c,  QPainter& p
         qint64 mainRuler = visibleRange.startPos + offsetToFirstNotch; 
         qint64 newStartPos = visibleRange.startPos - ri.offset + offsetToFirstNotch;
         qint64 lim = startPos + ri.offset;
-        for(; mainRuler < lim; mainRuler += c.predefinedChunk, newStartPos += c.predefinedChunk);
+        for(; mainRuler < lim; mainRuler += c.predefinedChunk, newStartPos += c.predefinedChunk) ;
         c.correction = newStartPos;
         GraphUtils::drawRuler(p, QPoint(x, y), rulerWidth, startPos, endPos, rulerFont, c);
     }

@@ -178,6 +178,9 @@ WorkerState LastReadyScheduler::getWorkerState(const ActorId &id) {
                     break;
                 case WorkerReady:
                     someReady = true;
+                    break;
+                default:
+                    break;
             }
         }
         if (someWaiting) {
@@ -185,7 +188,8 @@ WorkerState LastReadyScheduler::getWorkerState(const ActorId &id) {
         } else if (someReady) {
             return WorkerReady;
         } else {
-            assert(someDone); Q_UNUSED(someDone);
+            assert(someDone);
+            Q_UNUSED(someDone);
             return WorkerDone;
         }
     } else {

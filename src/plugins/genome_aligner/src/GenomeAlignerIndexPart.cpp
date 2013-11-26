@@ -103,18 +103,17 @@ bool IndexPart::load(int part) {
     needRead = 1*sizeof(SAType);
     buff = (char*)&(saLengths[currentPart]);
     size = partFiles[part]->read(buff, needRead);
-    SAFE_POINT(size == needRead, "Index format error", false);
-    SAFE_POINT(saLengths[currentPart] >= 0, "Index format error", false);
+    SAFE_POINT(static_cast<quint64>(size) == needRead, "Index format error", false);
 
     needRead = saLengths[currentPart]*sizeof(SAType);
     buff = (char*)sArray;
     size = partFiles[part]->read(buff, needRead);
-    SAFE_POINT(size == needRead, "Index format error", false);
+    SAFE_POINT(static_cast<quint64>(size) == needRead, "Index format error", false);
 
     needRead = saLengths[currentPart]*sizeof(BMType);
     buff = (char*)bitMask;
     size = partFiles[part]->read(buff, needRead);
-    SAFE_POINT(size == needRead, "Index format error", false);
+    SAFE_POINT(static_cast<quint64>(size) == needRead, "Index format error", false);
 
     uchar *bitSeq = new uchar[1 + seqLengths[currentPart]/4];
     size = partFiles[part]->read((char*)bitSeq, 1 + seqLengths[currentPart]/4);

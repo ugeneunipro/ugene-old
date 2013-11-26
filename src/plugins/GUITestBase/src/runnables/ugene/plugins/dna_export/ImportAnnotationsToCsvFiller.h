@@ -78,12 +78,17 @@ namespace U2 {
                                         bool _removeQuotesButton, const QString &_defaultAnnotationName, const RoleParameters& roleParameters = RoleParameters(), GTGlobals::UseMethod method = GTGlobals::UseMouse);
         virtual void run();
     private:
-        QString fileToRead, resultFile;
+        QString fileToRead;
+        QString resultFile;
         fileFormat format;
-        bool addResultFileToProject, columnSeparator, script;
+        bool addResultFileToProject;
+        bool columnSeparator;
+        bool script;
         int numberOfLines;
-        QString separator, skipAllLinesStartsWith;
-        bool interpretMultipleAsSingle, removeQuotesButton;
+        QString separator;
+        QString skipAllLinesStartsWith;
+        bool interpretMultipleAsSingle;
+        bool removeQuotesButton;
         QString defaultAnnotationName;
         QMap<fileFormat, QString> comboBoxItems;
         RoleParameters roleParameters;

@@ -63,7 +63,6 @@ AnalyzeTataBoxesWorker::AnalyzeTataBoxesWorker( Actor *p )
 static U2Region getTataRegion(const Gene& gene){
     U2Region res;
 
-    qint64 start = -1;
     if (gene.isComplemented()){
         res = U2Region(gene.getRegion().endPos() + TATA_OFFSET_SMALL, TATA_OFFSET_BIG - TATA_OFFSET_SMALL); //upped bound of the sequence is not checked
     }else{

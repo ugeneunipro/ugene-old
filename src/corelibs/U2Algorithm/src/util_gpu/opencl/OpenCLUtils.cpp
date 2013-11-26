@@ -81,7 +81,7 @@ size_t OpenCLUtils::getPreferredWorkGroupSize(
                 cl_kernel kernel,
                 cl_device_id deviceId,
                 const OpenCLHelper& openCLHelper,
-                cl_int &err) {
+                cl_int &/*err*/) {
 
     cl_int err2 = 0;
     size_t preferredWorkGroupSize = 0;

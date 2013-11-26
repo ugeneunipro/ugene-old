@@ -146,8 +146,8 @@ void GeneQueryCache::setFeatureDbi( U2FeatureDbi* _featureDbi ){
 //////////////////////////////////////////////////////////////////////////
 //SpecialRegionsCache
 SpecialRegionsCache::SpecialRegionsCache( U2FeatureDbi* _featureDbi, const QString& _specialFeaturesName )
-:featureDbi(_featureDbi)
-,name(_specialFeaturesName)
+:name(_specialFeaturesName)
+,featureDbi(_featureDbi)
 ,lastNfo(0){
     init();
 }

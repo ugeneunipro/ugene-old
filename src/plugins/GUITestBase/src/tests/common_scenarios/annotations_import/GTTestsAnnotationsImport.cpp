@@ -276,7 +276,7 @@ GUI_TEST_CLASS_DEFINITION(test_0003_2) {
     GTUtilsProjectTreeView::findItem(os, "result.gb");
     GTGlobals::sleep();
 
-    QTreeWidgetItem *item = GTUtilsAnnotationsTreeView::findItem(os, "a1", false);
+    GTUtilsAnnotationsTreeView::findItem(os, "a1", false);
 
 }
 GUI_TEST_CLASS_DEFINITION(test_0004) {

@@ -35,8 +35,8 @@ namespace U2 {
 SNPReportWriterTask::SNPReportWriterTask(const SNPReportWriterSettings& _settings, const QList<U2VariantTrack>& _tracks, const U2DbiRef& _dbiRef)
 : Task("Generating and writing an SNP report", TaskFlag_None)
 , settings(_settings)
-, dbiRef(_dbiRef)
 , tracks(_tracks)
+, dbiRef(_dbiRef)
 {
     tpm = Progress_Manual;
 }

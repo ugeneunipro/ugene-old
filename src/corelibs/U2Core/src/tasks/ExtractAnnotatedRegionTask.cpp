@@ -76,7 +76,6 @@ void ExtractAnnotatedRegionTask::run() {
             QByteArray preSeq = inputSeq.seq.mid(preStart, preLen);
             resParts.prepend(preSeq);
 
-            int shiftVal = -preLen;
             for (int i = 0; i < safeLocation.size(); ++i) {
                 safeLocation[i].startPos -= preLen;
                 safeLocation[i].length += preLen;

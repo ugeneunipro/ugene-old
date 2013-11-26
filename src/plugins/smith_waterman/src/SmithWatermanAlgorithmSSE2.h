@@ -34,12 +34,12 @@ class SmithWatermanAlgorithmSSE2 : public SmithWatermanAlgorithm {
 public:
     typedef qint16 ScoreType;
 
-    virtual void launch(const SMatrix& substitutionMatrix, QByteArray const & _patternSeq,
-        QByteArray const & _searchSeq, int _gapOpen, int _gapExtension, int _minScore,
+    virtual void launch(const SMatrix& substitutionMatrix, const QByteArray & _patternSeq,
+        const QByteArray & _searchSeq, int _gapOpen, int _gapExtension, int _minScore,
         SmithWatermanSettings::SWResultView resultView);
     
-    static quint64 estimateNeededRamAmount(const SMatrix& sm, QByteArray const & _patternSeq,
-        QByteArray const & _searchSeq, const qint32 gapOpen, const qint32 gapExtension,
+    static quint64 estimateNeededRamAmount(const QByteArray & _patternSeq,
+        const QByteArray & _searchSeq, const qint32 gapOpen, const qint32 gapExtension,
         const quint32 minScore, const quint32 maxScore,
         const SmithWatermanSettings::SWResultView resultView);
 

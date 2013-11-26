@@ -70,14 +70,13 @@ void MsaUndoRedoFramework::sl_lockedStateChanged() {
     checkUndoRedoEnabled();
 }
 
-void MsaUndoRedoFramework::sl_alignmentChanged(const MAlignment& /* maBefore*/ , const MAlignmentModInfo& modInfo) {
+void MsaUndoRedoFramework::sl_alignmentChanged(const MAlignment& /* maBefore*/ , const MAlignmentModInfo& /*modInfo*/) {
     checkUndoRedoEnabled();
 }
 
 void MsaUndoRedoFramework::checkUndoRedoEnabled() {
     SAFE_POINT(maObj != NULL, "NULL MSA Object!", );
 
-    bool b = maObj->isStateLocked();
     if (maObj->isStateLocked() || !stateComplete) {
         undoAction->setEnabled(false);
         redoAction->setEnabled(false);

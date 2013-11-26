@@ -38,6 +38,7 @@ namespace U2 {
 
 class U2DESIGNER_EXPORT EditBreakpointLabelsDialog : public QDialog {
     Q_OBJECT
+    Q_DISABLE_COPY(EditBreakpointLabelsDialog)
 public:
     EditBreakpointLabelsDialog(const QStringList &existingLabels = QStringList(),
         const QStringList &initCallingBreakpointLabels = QStringList(), QWidget *parent = 0,

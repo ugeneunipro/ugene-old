@@ -35,7 +35,6 @@ namespace U2 {
 class ADVSequenceObjectContext;
 class ADVSequenceWidget;
 class AnnotatedDNAView;
-class PVRowsManager;
 
 /** Label that can be pressed with two states: show all types or types for sequence only */
 class ShowAllAnnotTypesLabel : public QLabel

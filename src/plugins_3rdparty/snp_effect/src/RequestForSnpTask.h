@@ -35,8 +35,8 @@ public:
     BaseSnpAnnotationTask (const QVariantMap &inputData, const U2Variant& var, const QString& description="");
 
     virtual QVariantMap         getResult( ) = 0;
-    const U2Variant&            getVariant( ){return variant;};
-    const U2DataId&             getFeatureId( ){return featureId;};
+    const U2Variant&            getVariant( ){return variant;}
+    const U2DataId&             getFeatureId( ){return featureId;}
 
 protected:
     U2DataId                    featureId;

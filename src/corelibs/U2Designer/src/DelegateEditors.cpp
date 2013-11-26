@@ -39,7 +39,7 @@
 
 namespace U2 {
 
-DelegateEditor::DelegateEditor(const DelegateEditor &other) {
+DelegateEditor::DelegateEditor(const DelegateEditor &other) : ConfigurationEditor(other) {
     foreach (const QString &id, other.delegates.keys()) {
         delegates[id] = other.delegates[id]->clone();
     }

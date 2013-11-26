@@ -110,7 +110,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001){
     }
 
     bool eq;
-//*****************************************
+// *****************************************
     //tophat1
     eq = GTFile::equals(os,testDir + "_common_data/NIAID_pipelines/tuxedo_pipeline/data_to_compare_with/test_0001/tophat_out/junctions.bed",
                              testDir + "_common_data/scenarios/sandbox/tophat_out/junctions.bed");
@@ -132,8 +132,8 @@ GUI_TEST_CLASS_DEFINITION(test_0001){
     eq = GTFile::equals(os,testDir + "_common_data/NIAID_pipelines/tuxedo_pipeline/data_to_compare_with/test_0002/tophat_out/insertions.bed",
                              testDir + "_common_data/scenarios/sandbox/tophat_out_1/insertions.bed");
     CHECK_SET_ERR(eq,"insertions.bed2 files are not equal");
-//*****************************************
-/*    //cufflinks1
+// *****************************************
+    //cufflinks1
     eq = GTFile::equals(os,testDir + "_common_data/NIAID_pipelines/tuxedo_pipeline/data_to_compare_with/test_0001/cufflinks_out/skipped.gtf",
                              testDir + "_common_data/scenarios/sandbox/cufflinks_out/skipped.gtf");
     CHECK_SET_ERR(eq,"skipped.gtf files are not equal");

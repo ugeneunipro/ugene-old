@@ -300,6 +300,7 @@ void GTFileDialogUtils::setViewMode(ViewMode v)
         }
         GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["space"]);
         break;
+
     default:
         break;
     }

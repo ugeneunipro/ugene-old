@@ -3097,8 +3097,7 @@ GUI_TEST_CLASS_DEFINITION( test_2268 ) {
     GTLogTracer lt;
     GTUtilsDialog::waitForDialog(os, new TCoffeeDailogFiller(os));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_ALIGN << "Align with T-Coffee", GTGlobals::UseMouse));
-    QMenu* contextMenu = GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
-    //CHECK_SET_ERR(contextMenu, "Context menu not found");
+    GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
 
 //    Expected: the t-coffee task started and finished well.
     TaskScheduler* scheduler = AppContext::getTaskScheduler();

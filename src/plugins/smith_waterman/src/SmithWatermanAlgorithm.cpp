@@ -39,7 +39,7 @@ SmithWatermanAlgorithm::SmithWatermanAlgorithm() {
 
 quint64 SmithWatermanAlgorithm::estimateNeededRamAmount(const qint32 gapOpen,
     const qint32 gapExtension, const quint32 minScore, const quint32 maxScore,
-    QByteArray const & patternSeq, QByteArray const & searchSeq,
+    const QByteArray & patternSeq, const QByteArray & searchSeq,
     const SmithWatermanSettings::SWResultView resultView)
 {
     const double b_to_mb_factor = 1048576.0;
@@ -89,7 +89,7 @@ bool SmithWatermanAlgorithm::calculateMatrixLength() {
 }
 
 void SmithWatermanAlgorithm::setValues(const SMatrix& _substitutionMatrix, 
-        QByteArray const & _patternSeq, QByteArray const & _searchSeq, 
+        const QByteArray & _patternSeq, const QByteArray & _searchSeq,
         int _gapOpen, int _gapExtension, int _minScore, SmithWatermanSettings::SWResultView _resultView)
 {
     substitutionMatrix = _substitutionMatrix;
@@ -102,7 +102,7 @@ void SmithWatermanAlgorithm::setValues(const SMatrix& _substitutionMatrix,
 }
 
 void SmithWatermanAlgorithm::launch(const SMatrix& _substitutionMatrix, 
-        QByteArray const & _patternSeq, QByteArray const & _searchSeq, 
+        const QByteArray & _patternSeq, const QByteArray & _searchSeq,
         int _gapOpen, int _gapExtension, int _minScore, SmithWatermanSettings::SWResultView _resultView)
 {
     setValues(_substitutionMatrix, _patternSeq, _searchSeq, _gapOpen, _gapExtension, _minScore,

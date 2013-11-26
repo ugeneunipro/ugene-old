@@ -277,7 +277,7 @@ Qt::ItemFlags RFSTreeModel::flags(const QModelIndex &index) const {
     return 0;
 }
 
-QVariant RFSTreeModel::headerData(int section, Qt::Orientation orientation, int role) const {
+QVariant RFSTreeModel::headerData(int /*section*/, Qt::Orientation /*orientation*/, int /*role*/) const {
     return QVariant();
 }
 
@@ -318,7 +318,7 @@ int RFSTreeModel::rowCount(const QModelIndex &parent) const {
     return parentItem->children().size();
 }
 
-int RFSTreeModel::columnCount(const QModelIndex &parent) const {
+int RFSTreeModel::columnCount(const QModelIndex &/*parent*/) const {
     return 1;
 }
 

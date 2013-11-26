@@ -31,7 +31,6 @@
 #include <U2View/AnnotatedDNAView.h>
 #include <U2View/ADVSingleSequenceWidget.h>
 #include <U2View/PanView.h>
-#include <U2View/PanViewRows.h>
 
 namespace U2 {
 
@@ -279,7 +278,7 @@ void AnnotHighlightWidget::annotationNavigate(bool isForward) {
     QList<Annotation*> annotForNextPrev;
     currentIdx = searchAnnotWithEqualsStartPos(items, annotForNextPrev, prev, currentPosition);
     currentIdx += 2 * isForward - 1;
-    PVRowsManager* pm = widgetInFocus->getPanView()->getRowsManager();
+
     if (!isValidIndex(annotForNextPrev, currentIdx)) {
         if (!annotForNextPrev.empty()) {
             annotForNextPrev.clear();

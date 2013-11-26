@@ -45,9 +45,11 @@ ExportDocumentDialogController::ExportDocumentDialogController(Document* d, QWid
     ui->fileNameEdit->setText(saveController->getDefaultFileName());
 }
 
-ExportDocumentDialogController::ExportDocumentDialogController(GObject *object, QWidget *parent,
-    const QString &initUrl) : QDialog(parent), ui(new Ui_ExportDocumentDialog()),
-    sourceObject(object), sourceDoc(NULL)
+ExportDocumentDialogController::ExportDocumentDialogController(GObject *object, QWidget *parent, const QString &initUrl) :
+    QDialog(parent),
+    ui(new Ui_ExportDocumentDialog()),
+    sourceDoc(NULL),
+    sourceObject(object)
 {
     ui->setupUi(this);
     QList<GObject *> objectList;

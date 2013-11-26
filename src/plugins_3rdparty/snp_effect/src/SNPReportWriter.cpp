@@ -144,7 +144,7 @@ void SNPReportWriter::cleanup(){
     dbiRef = U2DbiRef();
 }
 
-SNPReportWriterSettings SNPReportWriter::createSNPWriterSettings( U2OpStatus &os ){
+SNPReportWriterSettings SNPReportWriter::createSNPWriterSettings( U2OpStatus &/*os*/ ){
     SNPReportWriterSettings settings;
 
     settings.reportPath = getValue<QString>(REPORT_PATH);

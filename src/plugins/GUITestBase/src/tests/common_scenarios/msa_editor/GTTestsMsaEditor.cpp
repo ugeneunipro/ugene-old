@@ -3519,6 +3519,7 @@ GUI_TEST_CLASS_DEFINITION(test_0041) {
 }
 
 GUI_TEST_CLASS_DEFINITION(test_fake) {
+    Q_UNUSED(os);
 }
 
 } // namespace GUITest_common_scenarios_msa_editor

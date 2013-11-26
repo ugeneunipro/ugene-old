@@ -121,7 +121,7 @@ void ConductGOWorker::sl_taskFinished() {
     }
 }
 
-U2::ConductGOSettings ConductGOWorker::createConductGOSettings( U2OpStatus &os ){
+U2::ConductGOSettings ConductGOWorker::createConductGOSettings( U2OpStatus &/*os*/ ){
     ConductGOSettings settings;
 
     settings.outDir = getValue<QString>(OUTPUT_DIR);

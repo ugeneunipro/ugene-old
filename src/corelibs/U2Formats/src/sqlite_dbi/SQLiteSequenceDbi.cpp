@@ -192,6 +192,7 @@ void SQLiteSequenceDbi::updateSequenceData(const U2DataId& sequenceId, const U2R
     ModificationAction updateAction(dbi, sequenceId);
     U2TrackModType trackMod = updateAction.prepare(os);
     SAFE_POINT_OP(os, );
+    Q_UNUSED(trackMod);
 
     updateSequenceData(updateAction, sequenceId, regionToReplace, dataToInsert, hints, os);
     SAFE_POINT_OP(os, );

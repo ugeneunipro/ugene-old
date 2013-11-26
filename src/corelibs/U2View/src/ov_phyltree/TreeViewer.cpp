@@ -1114,9 +1114,6 @@ void TreeViewerUI::sl_rectLayoutRecomputed() {
 }
 
 void TreeViewerUI::sl_onBranchCollapsed(GraphicsRectangularBranchItem*) {
-    qreal curHScale = horizontalScale;
-    qreal curVScale = verticalScale;
-
     QTransform curTransform = viewportTransform();
     setTransformationAnchor(NoAnchor);
 

@@ -486,8 +486,6 @@ void AceReader::parseRdAndQaTag(U2::IOAdapter *io, char *buff, QSet<QByteArray> 
     int clearRangeEnd = getClearRangeEnd(qaBlock);
     CHECK_OP((*os), );
 
-    int l = read.data.length();
-
     CHECK_EXT(clearRangeStart <= clearRangeEnd &&
               clearRangeEnd - clearRangeStart <= read.data.length(),
               os->setError(tr("QA error bad range")), );

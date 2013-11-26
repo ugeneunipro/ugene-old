@@ -71,8 +71,9 @@ Dashboard::Dashboard(const WorkflowMonitor *monitor, const QString &_name, QWidg
     connect(this, SIGNAL(loadFinished(bool)), SLOT(sl_loaded(bool)));
     connect(_monitor, SIGNAL(si_report()), SLOT(sl_serialize()));
     connect(_monitor, SIGNAL(si_dirSet(const QString &)), SLOT(sl_setDirectory(const QString &)));
-    bool a = connect(_monitor, SIGNAL(si_logChanged(U2::Workflow::Monitor::LogEntry)),
+    connect(_monitor, SIGNAL(si_logChanged(U2::Workflow::Monitor::LogEntry)),
             etWidgetController, SLOT(sl_onLogChanged(U2::Workflow::Monitor::LogEntry)));
+
     setContextMenuPolicy(Qt::NoContextMenu);
     loadUrl = ":U2Designer/html/Dashboard.html";
     loadDocument();

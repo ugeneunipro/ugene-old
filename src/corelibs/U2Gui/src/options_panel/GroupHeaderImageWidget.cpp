@@ -55,7 +55,7 @@ GroupHeaderImageWidget::GroupHeaderImageWidget(const QString& _groupId, const QP
 }
 
 
-void GroupHeaderImageWidget::mousePressEvent(QMouseEvent* event)
+void GroupHeaderImageWidget::mousePressEvent(QMouseEvent* /*event*/)
 {
     SAFE_POINT(NULL != groupId, "Internal error: group header with NULL group ID was pressed.",);
 

@@ -121,7 +121,9 @@ private:
     int                 curSeq;
     int                 startSelectingSeq;
     QPoint              origin;
-    bool                scribbling, shifting, singleSelecting;
+    bool                scribbling;
+    bool                shifting;
+    bool                singleSelecting;
     GroupColorSchema    groupColors;
 
     QRubberBand*        rubberBand;

@@ -98,7 +98,7 @@ QScriptValue LinkDataScriptLibrary::fetchFile(QScriptContext *ctx, QScriptEngine
 
     QNetworkRequest request(LINKDATA_API_URL.arg(workId).arg(filename));
     QNetworkAccessManager networkManager;
-    QNetworkReply *reply = networkManager.get(request);
+    networkManager.get(request);
     QEventLoop eventLoop;
     LinkDataRequestHandler handler(&eventLoop);
     handler.connect(&networkManager, SIGNAL(finished(QNetworkReply*)), SLOT(sl_onReplyFinished(QNetworkReply*)));

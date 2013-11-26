@@ -36,12 +36,6 @@ namespace U2{
 
 IMPLEMENT_TEST(MsaUtilsUnitTests, one_name_with_spaces) {
     U2OpStatusImpl os;
-    U2MsaDbi* msaDbi = MsaDbiUtilsTestUtils::getMsaDbi();
-    U2SequenceDbi* seqDbi = MsaDbiUtilsTestUtils::getSequenceDbi();
-    U2DataId msaId = msaDbi->createMsaObject("", MsaDbiUtilsTestUtils::alignmentName, BaseDNAAlphabetIds::NUCL_DNA_DEFAULT(), os);
-    CHECK_NO_ERROR(os);
-    U2DbiRef dbiRef(msaDbi->getRootDbi()->getFactoryId(), msaDbi->getRootDbi()->getDbiId());
-    U2EntityRef msaRef(dbiRef, msaId);
 
     // Prepare input data
     const DNAAlphabet* alphabet = U2AlphabetUtils::getById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT());
@@ -71,12 +65,6 @@ IMPLEMENT_TEST(MsaUtilsUnitTests, one_name_with_spaces) {
 
 IMPLEMENT_TEST(MsaUtilsUnitTests, two_names_with_spaces){
     U2OpStatusImpl os;
-    U2MsaDbi* msaDbi = MsaDbiUtilsTestUtils::getMsaDbi();
-    U2SequenceDbi* seqDbi = MsaDbiUtilsTestUtils::getSequenceDbi();
-    U2DataId msaId = msaDbi->createMsaObject("", MsaDbiUtilsTestUtils::alignmentName, BaseDNAAlphabetIds::NUCL_DNA_DEFAULT(), os);
-    CHECK_NO_ERROR(os);
-    U2DbiRef dbiRef(msaDbi->getRootDbi()->getFactoryId(), msaDbi->getRootDbi()->getDbiId());
-    U2EntityRef msaRef(dbiRef, msaId);
 
     // Prepare input data
     const DNAAlphabet* alphabet = U2AlphabetUtils::getById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT());
@@ -107,12 +95,6 @@ IMPLEMENT_TEST(MsaUtilsUnitTests, two_names_with_spaces){
 
 IMPLEMENT_TEST(MsaUtilsUnitTests, all_names_with_spaces){
     U2OpStatusImpl os;
-    U2MsaDbi* msaDbi = MsaDbiUtilsTestUtils::getMsaDbi();
-    U2SequenceDbi* seqDbi = MsaDbiUtilsTestUtils::getSequenceDbi();
-    U2DataId msaId = msaDbi->createMsaObject("", MsaDbiUtilsTestUtils::alignmentName, BaseDNAAlphabetIds::NUCL_DNA_DEFAULT(), os);
-    CHECK_NO_ERROR(os);
-    U2DbiRef dbiRef(msaDbi->getRootDbi()->getFactoryId(), msaDbi->getRootDbi()->getDbiId());
-    U2EntityRef msaRef(dbiRef, msaId);
 
     // Prepare input data
     const DNAAlphabet* alphabet = U2AlphabetUtils::getById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT());

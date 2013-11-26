@@ -72,6 +72,7 @@ void RemoteMachineMonitor::saveSettings() {
 QVariant RemoteMachineMonitor::serializeMachines() const {
     QVariantList res;
     foreach( const RemoteMachineSettingsPtr& item, items ) {
+        Q_UNUSED(item);
         QVariantList itemRes;
         // call leads to FAIL("Obsolete! Not implemented!", "");
 //         QString data = SerializeUtils::serializeRemoteMachineSettings(item);

@@ -19,11 +19,10 @@
  * MA 02110-1301, USA.
  */
 
+#include "RemoteServicePingTask.h"
+
 #include <U2Remote/SerializeUtils.h>
 #include <U2Core/Log.h>
-
-#include "RemoteServiceMachine.h"
-#include "RemoteServicePingTask.h"
 
 namespace U2 {
 

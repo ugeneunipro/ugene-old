@@ -19,8 +19,8 @@ public:
     CodonTableView(AnnotatedDNAView *view);
 
     virtual bool acceptsGObject(GObject*) {return false;}
-    virtual void updateState(const QVariantMap& m) {}
-    virtual void saveState(QVariantMap& m){}
+    virtual void updateState(const QVariantMap&) {}
+    virtual void saveState(QVariantMap&){}
 
     static const QColor NONPOLAR_COLOR;
     static const QColor POLAR_COLOR;

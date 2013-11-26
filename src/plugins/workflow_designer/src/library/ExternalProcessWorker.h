@@ -79,6 +79,7 @@ public:
 
 class LaunchExternalToolTask: public Task {
     Q_OBJECT
+    Q_DISABLE_COPY(LaunchExternalToolTask)
 public:
     LaunchExternalToolTask(const QString &execString, const QMap<QString, DataConfig> &outputUrls);
     ~LaunchExternalToolTask();
@@ -91,7 +92,6 @@ private:
     QMap<QString, DataConfig> outputUrls;
     QStringList parseCombinedArgString(const QString &program);
 
-private:
     QString execString;
 };
 

@@ -32,10 +32,13 @@ const int DEFAULT_CONDITION_EVAL_RESULT = -1;
 namespace U2 {
 
 BreakpointConditionChecker::BreakpointConditionChecker(const QString &initConditionText,
-    Workflow::WorkflowContext *context) : conditionText(initConditionText),
+    Workflow::WorkflowContext *context) :
+    conditionText(initConditionText),
+    engine((NULL == context) ? NULL : new WorkflowScriptEngine(context)),
+    enabled(false),
+    parameter(IS_TRUE),
     lastConditionEvaluation(DEFAULT_CONDITION_EVAL_RESULT),
-    engine((NULL == context) ? NULL : new WorkflowScriptEngine(context)), enabled(false),
-    parameter(IS_TRUE), engineGuard()
+    engineGuard()
 {
     if (NULL != engine) {
         WorkflowScriptLibrary::initEngine(engine);

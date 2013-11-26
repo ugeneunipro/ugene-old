@@ -115,6 +115,7 @@ public:
 template<>
 inline QVariant SerializeUtils::serializeValue<char*>( char * const& str ) {
     FAIL("Obsolete! Not implemented!", QVariant());
+    Q_UNUSED(str);
 
     // QVariantList res;
     //if( NULL == str ) {
@@ -131,6 +132,8 @@ inline QVariant SerializeUtils::serializeValue<char*>( char * const& str ) {
 template<>
 inline bool SerializeUtils::deserializeValue<char*>( const QVariant & data, char ** str ) {
     FAIL("Obsolete! Not implemented!", false);
+    Q_UNUSED(data);
+    Q_UNUSED(str);
 
     //if( NULL == str ) {
     //    return false;
@@ -161,6 +164,7 @@ inline bool SerializeUtils::deserializeValue<char*>( const QVariant & data, char
 template<>
 inline QVariant SerializeUtils::serializeValue<const DNAAlphabet*>( const DNAAlphabet * const& al ) {
     FAIL("Obsolete! Not implemented!", QVariant());
+    Q_UNUSED(al);
 
     // QVariantList res;
     //if( NULL != al ) {
@@ -176,6 +180,8 @@ inline QVariant SerializeUtils::serializeValue<const DNAAlphabet*>( const DNAAlp
 template<>
 inline bool SerializeUtils::deserializeValue<const DNAAlphabet*>( const QVariant & data, const DNAAlphabet ** al ) {
     FAIL("Obsolete! Not implemented!", false);
+    Q_UNUSED(data);
+    Q_UNUSED(al);
 
     //if( NULL == al ) {
     //    return false;
@@ -206,6 +212,7 @@ inline bool SerializeUtils::deserializeValue<const DNAAlphabet*>( const QVariant
 template<>
 inline QVariant SerializeUtils::serializeValue<DNASequence>( const DNASequence & sequence ) {
     FAIL("Obsolete! Not implemented!", QVariant());
+    Q_UNUSED(sequence);
 
     //assert( !sequence.isNull() && NULL != sequence.alphabet );
     //QVariantList res;
@@ -218,6 +225,8 @@ inline QVariant SerializeUtils::serializeValue<DNASequence>( const DNASequence &
 template<>
 inline bool SerializeUtils::deserializeValue<DNASequence>( const QVariant & data, DNASequence * seq ) {
     FAIL("Obsolete! Not implemented!", false);
+    Q_UNUSED(data);
+    Q_UNUSED(seq);
 
     //if( NULL == seq ) {
     //    return false;
@@ -241,6 +250,7 @@ inline bool SerializeUtils::deserializeValue<DNASequence>( const QVariant & data
 template<>
 inline QVariant SerializeUtils::serializeValue<MAlignmentRow>( const MAlignmentRow & row) {
     FAIL("Obsolete! Not implemented!", QVariant());
+    Q_UNUSED(row);
 
     //QVariantList res;
     //res << serializeValue<QString>( row.getName() );
@@ -252,6 +262,7 @@ inline QVariant SerializeUtils::serializeValue<MAlignmentRow>( const MAlignmentR
 template<>
 inline QVariant SerializeUtils::serializeValue< QList<MAlignmentRow> >( const QList< MAlignmentRow> & items ) {
     FAIL("Obsolete! Not implemented!", QVariant());
+    Q_UNUSED(items);
 
     //QVariantList res;
     //foreach( const MAlignmentRow & item, items ) {
@@ -263,6 +274,8 @@ inline QVariant SerializeUtils::serializeValue< QList<MAlignmentRow> >( const QL
 template<>
 inline bool SerializeUtils::deserializeValue<MAlignmentRow>( const QVariant & data, MAlignmentRow* row ) {
     FAIL("Obsolete! Not implemented!", false);
+    Q_UNUSED(data);
+    Q_UNUSED(row);
 
     //if( !data.canConvert( QVariant::List ) ) {
     //    return false;
@@ -292,6 +305,8 @@ inline bool SerializeUtils::deserializeValue<MAlignmentRow>( const QVariant & da
 template<>
 inline bool SerializeUtils::deserializeValue< QList<MAlignmentRow> >( const QVariant & data, QList< MAlignmentRow > * itemList ) {
     FAIL("Obsolete! Not implemented!", false);
+    Q_UNUSED(data);
+    Q_UNUSED(itemList);
 
     //if( !data.canConvert( QVariant::List ) ) {
     //    return false;
@@ -309,6 +324,7 @@ inline bool SerializeUtils::deserializeValue< QList<MAlignmentRow> >( const QVar
 template<>
 inline QVariant SerializeUtils::serializeValue<MAlignment>( const MAlignment & ma ) {
     FAIL("Obsolete! Not implemented!", QVariant());
+    Q_UNUSED(ma);
 
     //QVariantList res;
     //res << serializeValue<const DNAAlphabet*>( ma.getAlphabet());
@@ -321,6 +337,8 @@ inline QVariant SerializeUtils::serializeValue<MAlignment>( const MAlignment & m
 template<>
 inline bool SerializeUtils::deserializeValue<MAlignment>( const QVariant & data, MAlignment * ma ) {
     FAIL("Obsolete! Not implemented!", false);
+    Q_UNUSED(data);
+    Q_UNUSED(ma);
 
     //if( NULL == ma ) {
     //    return false;
@@ -354,6 +372,7 @@ inline bool SerializeUtils::deserializeValue<MAlignment>( const QVariant & data,
 template<>
 inline QVariant SerializeUtils::serializeValue<VirtualFileSystem>( const VirtualFileSystem & vfs ) {
     FAIL("Obsolete! Not implemented!", QVariant());
+    Q_UNUSED(vfs);
 
     //QVariantList res;
     //
@@ -373,6 +392,8 @@ inline QVariant SerializeUtils::serializeValue<VirtualFileSystem>( const Virtual
 template<>
 inline bool SerializeUtils::deserializeValue<VirtualFileSystem>( const QVariant & data, VirtualFileSystem * val ) {
     FAIL("Obsolete! Not implemented!", false);
+    Q_UNUSED(data);
+    Q_UNUSED(val);
 
     //if( NULL == val ) {
     //    return false;

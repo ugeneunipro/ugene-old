@@ -5,14 +5,14 @@ namespace U2 {
 Gene::Gene(const U2DataId& _featureId, QString& _name, const QString& _accession, const QString& _altname, const QString& _note, const U2Region& _region, const U2Region& _cdsRegion, QVector<U2Region>& _exons, bool complemented)
 :featureId(_featureId)
 ,name(_name)
+,altname(_altname)
 ,accession(_accession)
+,disease("")
 ,note(_note)
 ,region(_region)
 ,cdsRegion(_cdsRegion)
 ,exons(_exons)
 ,complement(complemented)
-,altname(_altname)
-,disease("")
 {
 }
 

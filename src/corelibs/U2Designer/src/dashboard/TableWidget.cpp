@@ -64,6 +64,7 @@ void TableWidget::addEmptyRows() {
     while (rowIdx < MIN_ROW_COUNT) {
         QString row = "<tr class=\"empty-row\">";
         foreach (const QString &h, header()) {
+            Q_UNUSED(h);
             row += "<td>&nbsp;</td>";
         }
         row += "</tr>";

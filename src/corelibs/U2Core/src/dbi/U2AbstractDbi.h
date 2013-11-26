@@ -156,12 +156,12 @@ public:
         U2DbiUtils::logNotSupported(U2DbiFeature_UndoRedo, getRootDbi(), os);
     }
 
-    virtual bool canUndo(const U2DataId& msaId, U2OpStatus& os) {
+    virtual bool canUndo(const U2DataId& /*msaId*/, U2OpStatus& os) {
         U2DbiUtils::logNotSupported(U2DbiFeature_UndoRedo, getRootDbi(), os);
         return false;
     }
 
-    virtual bool canRedo(const U2DataId& objId, U2OpStatus& os) {
+    virtual bool canRedo(const U2DataId& /*objId*/, U2OpStatus& os) {
         U2DbiUtils::logNotSupported(U2DbiFeature_UndoRedo, getRootDbi(), os);
         return false;
     }

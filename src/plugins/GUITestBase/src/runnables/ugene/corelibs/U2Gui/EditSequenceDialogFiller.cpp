@@ -108,6 +108,8 @@ void InsertSequenceFiller::run()
             GTWidget::setFocus(os, checkButton);
             GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["space"]);
             break;
+        default:
+            break;
         }
     }
 

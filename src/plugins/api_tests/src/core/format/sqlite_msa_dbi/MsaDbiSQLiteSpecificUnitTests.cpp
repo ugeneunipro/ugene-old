@@ -954,8 +954,6 @@ IMPLEMENT_TEST(MsaDbiSQLiteSpecificUnitTests, updateRowContent_redo) {
     newRow.sequenceId = oldRow.sequenceId;
     qint64 msaModStepsNum = MsaSQLiteSpecificTestData::getModStepsNum(msaId, os);
     CHECK_NO_ERROR(os);
-    qint64 seqModStepsNum = MsaSQLiteSpecificTestData::getModStepsNum(oldRow.sequenceId, os);
-    CHECK_NO_ERROR(os);
 
     // Call test function
     sqliteDbi->getMsaDbi()->updateRowContent(msaId, rowId, newSeq, newRow.gaps, os);

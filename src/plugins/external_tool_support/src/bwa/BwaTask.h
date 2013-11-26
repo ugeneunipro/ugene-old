@@ -81,8 +81,7 @@ class BwaSwAlignTask : public Task {
 public:
     BwaSwAlignTask(const QString &indexPath, const DnaAssemblyToRefTaskSettings &settings);
     void prepare();
-protected slots:
-    QList<Task *> onSubTaskFinished(Task *subTask);
+
 private:
     BwaAlignTask::LogParser logParser;
     const QString indexPath;

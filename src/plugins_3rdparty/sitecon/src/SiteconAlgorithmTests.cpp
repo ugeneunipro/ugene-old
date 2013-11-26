@@ -303,7 +303,7 @@ void GTest_CalculateFirstTypeError::run() {
 }
 
 Task::ReportResult GTest_CalculateFirstTypeError::report() {
-    int s = expectedResult.size(), i = offset + 1;
+    int i = offset + 1;
     foreach(int exp, expectedResult) {
         int act = qRound(result[i] * 10000);
         //printf("Expected: %i", exp);
@@ -392,7 +392,7 @@ void GTest_CalculateSecondTypeError::run() {
 }
 
 Task::ReportResult GTest_CalculateSecondTypeError::report() {
-    int s = expectedResult.size(), i = offset + 1; 
+    int i = offset + 1;
     foreach(int exp, expectedResult) {
         int act = qRound(1/result[i]);
         printf("Expected: %i", exp);

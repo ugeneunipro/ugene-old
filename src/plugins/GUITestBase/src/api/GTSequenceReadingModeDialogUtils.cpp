@@ -93,6 +93,8 @@ void GTSequenceReadingModeDialogUtils::selectMode()
             GTWidget::setFocus(os, radioButton);
             GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["space"]);
             break;
+        default:
+            break;
         }
     }
 
@@ -156,6 +158,8 @@ void GTSequenceReadingModeDialogUtils::selectSaveDocument()
                 GTGlobals::sleep(100);
             }
             GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["space"]);
+        default:
+            break;
         }
     }
 }
@@ -218,6 +222,8 @@ void GTSequenceReadingModeDialogUtils::changeSpinBoxValue(QSpinBox *sb, int val)
                 GTKeyboardDriver::keyClick(os, key);
                 GTGlobals::sleep(100);
             }
+        default:
+            break;
         }
     }
 }

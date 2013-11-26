@@ -290,6 +290,7 @@ void SQLiteMsaDbi::updateRowContent(const U2DataId& msaId, qint64 rowId, const Q
     ModificationAction updateAction(dbi, msaId);
     U2TrackModType trackMod = updateAction.prepare(os);
     SAFE_POINT_OP(os, );
+    Q_UNUSED(trackMod);
 
     // Get the row object
     U2MsaRow row = getRow(msaId, rowId, os);
@@ -636,6 +637,7 @@ void SQLiteMsaDbi::updateGapModel(const U2DataId& msaId, qint64 msaRowId, const 
     ModificationAction updateAction(dbi, msaId);
     U2TrackModType trackMod = updateAction.prepare(os);
     SAFE_POINT_OP(os, );
+    Q_UNUSED(trackMod);
 
     updateGapModel(updateAction, msaId, msaRowId, gapModel, os);
     SAFE_POINT_OP(os, );

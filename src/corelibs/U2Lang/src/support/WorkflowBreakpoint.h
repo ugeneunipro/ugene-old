@@ -36,6 +36,7 @@ class BaseBreakpointHitCounter;
 class AttributeScript;
 
 class WorkflowBreakpoint {
+    Q_DISABLE_COPY(WorkflowBreakpoint)
 public:
     WorkflowBreakpoint(const ActorId &actor, Workflow::WorkflowContext *context = NULL);
     ~WorkflowBreakpoint();

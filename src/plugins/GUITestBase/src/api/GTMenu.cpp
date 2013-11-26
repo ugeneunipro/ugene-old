@@ -68,6 +68,9 @@ QMenu* GTMenu::showMainMenu(U2OpStatus &os, const QString &menuName, GTGlobals::
 
         GTKeyboardDriver::keyClick(os, key, GTKeyboardDriver::key["alt"]);
         break;
+
+    default:
+        break;
     }
 
     GTGlobals::sleep(1000);
@@ -98,12 +101,9 @@ QMenu* GTMenu::showContextMenu(U2OpStatus &os, const QWidget *ground, GTGlobals:
         break;
 
     case GTGlobals::UseKey:
-//        while (! ground->hasFocus()) {
-//            GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["tab"]);
-//            GTGlobals::sleep(100);
-//        }
-
         GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["context_menu"]);
+        break;
+    default:
         break;
     }
 
@@ -197,6 +197,8 @@ QAction* GTMenu::clickMenuItem(U2OpStatus &os, const QMenu *menu, const QString 
         if (!openMenuOnly || clickingSubMenu) {
             GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
         }
+        break;
+    default:
         break;
     }
     QMenu* activePopupMenu = qobject_cast<QMenu*>(QApplication::activePopupWidget());

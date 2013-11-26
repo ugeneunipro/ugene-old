@@ -38,7 +38,7 @@ public:
     GTCrazyUserMonitor() : timer(NULL) {
         timer = new QTimer();
 
-        bool ok = timer->connect(timer, SIGNAL(timeout()), this, SLOT(checkActiveWidget()));
+        timer->connect(timer, SIGNAL(timeout()), this, SLOT(checkActiveWidget()));
         timer->start(10000);
     }
     virtual ~GTCrazyUserMonitor() {

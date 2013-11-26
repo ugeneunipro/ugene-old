@@ -106,10 +106,10 @@ DasOptionsPanelWidget::DasOptionsPanelWidget(AnnotatedDNAView* adv)
 ,dasFeaturesListWidget(NULL)
 ,annotationsWidgetController(NULL)
 ,regionSelector(NULL)
+,showMore(true)
 ,fetchIdsAction(NULL)
 ,fetchAnnotationsAction(NULL)
 ,openInNewViewAction(NULL)
-,showMore(true)
 ,getIdsTask(NULL)
 {
     setupUi(this);

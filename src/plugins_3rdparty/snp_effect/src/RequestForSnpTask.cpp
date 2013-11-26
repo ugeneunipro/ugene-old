@@ -31,8 +31,8 @@ namespace U2 {
 //BaseSnpAnnotationTask
 BaseSnpAnnotationTask::BaseSnpAnnotationTask( const QVariantMap& _inputData, const U2Variant& var, const QString& description )
 :Task(!description.isEmpty() ? description : QString("SNP Annotation task"), TaskFlag_NoRun)
-,variant(var)
 ,inputData(_inputData)
+,variant(var)
 {
     if (inputData.contains(SnpRequestKeys::SNP_FEATURE_ID_KEY)){
         featureId = inputData.take(SnpRequestKeys::SNP_FEATURE_ID_KEY).toByteArray();

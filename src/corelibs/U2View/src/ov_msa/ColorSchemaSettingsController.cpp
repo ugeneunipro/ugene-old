@@ -163,7 +163,7 @@ static void getDefaultUgeneColors(DNAAlphabetType type, QMap<char, QColor>& alph
     }
 }
 
-static QMap<char, QColor> getDefaultSchemaColors(DNAAlphabetType type, bool defaultAlpType, DefaultStrategy strategy){
+static QMap<char, QColor> getDefaultSchemaColors(DNAAlphabetType type, bool defaultAlpType, DefaultStrategy /*strategy*/){
     QList<const DNAAlphabet*> alphabets = AppContext::getDNAAlphabetRegistry()->getRegisteredAlphabets();
     QMap<DNAAlphabetType, QByteArray > alphabetChars;
     foreach(const DNAAlphabet* alphabet, alphabets){ // default initialization

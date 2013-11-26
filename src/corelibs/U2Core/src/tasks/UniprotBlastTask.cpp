@@ -480,8 +480,8 @@ QString UniprotBlastTask::generateUrl() {
 UniprotBlastAndLoadDASAnnotations::UniprotBlastAndLoadDASAnnotations( const DASAnnotationsSettings& _settings )
 :Task(tr("BLAST IDs and DAS annotations"), TaskFlags_FOSE_COSC | TaskFlag_NoRun)
 ,settings(_settings)
-,dasData(_settings.sequence.length(), _settings.identityThreshold)
 ,blastTask(NULL)
+,dasData(_settings.sequence.length(), _settings.identityThreshold)
 {
 
 }

@@ -37,7 +37,8 @@ class DamageEffect : U2Entity{
 public:
 
     DamageEffect():
-    siftEffectValue             (DAMAGE_EFFECT_UNDEFINED_SCORE)
+    affectedGeneName("")
+    ,siftEffectValue             (DAMAGE_EFFECT_UNDEFINED_SCORE)
     ,avSift                     (DAMAGE_EFFECT_UNDEFINED_SCORE)
     ,ljb_lrt                    (DAMAGE_EFFECT_UNDEFINED_SCORE)
     ,ljb_phylop                 (DAMAGE_EFFECT_UNDEFINED_SCORE)
@@ -51,11 +52,10 @@ public:
     ,hapmap                     (DAMAGE_EFFECT_UNDEFINED_SCORE)
     ,gerpScore                  (DAMAGE_EFFECT_UNDEFINED_SCORE)
     ,inDbSNP(false)
-    ,affectedGeneName("")
     ,discardFilter("")
     ,coding(false)
     ,frameshift(false)
-    {};
+    {}
 
     
     U2DataId    variant;    /* related variant */

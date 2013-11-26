@@ -26,7 +26,7 @@
 
 namespace U2{
 
-static QString toInnerColumn(int column) {
+/*static QString toInnerColumn(int column) {
     QString res;
     switch(column) {
     case 0  : res = "publicId";  break;
@@ -37,9 +37,9 @@ static QString toInnerColumn(int column) {
     default : res = "publicId"; break;
     }
     return res;
-}
+}*/
 
-static QString toSqlOrderOp(bool sortAscending) {
+/*static QString toSqlOrderOp(bool sortAscending) {
     QString res;
 
     if(sortAscending){
@@ -49,7 +49,7 @@ static QString toSqlOrderOp(bool sortAscending) {
     }
 
     return res;
-}
+}*/
 
 static QString toSortingChrName(const QString& seqName) {
     QString res = seqName;
@@ -64,7 +64,7 @@ static QString toSortingChrName(const QString& seqName) {
     return res;
 }
 
-static QString toOriginalChrName(const QString& seqName) {
+/*static QString toOriginalChrName(const QString& seqName) {
     QString res = seqName;
     QString endChar = seqName.right(1);
     //chr01, chr02, ..., chr09
@@ -72,7 +72,7 @@ static QString toOriginalChrName(const QString& seqName) {
         res = "chr"+endChar;
     }
     return res;
-}
+}*/
 
 SQLiteSNPTablesDbi::SQLiteSNPTablesDbi(SQLiteDbi* rootDbi): SNPTablesDbi(rootDbi), SQLiteChildDBICommon(rootDbi){}
 

@@ -71,13 +71,6 @@ QWidget* MSAEditorTreeViewer::createWidget() {
     return view;
 }
 
-void MSAEditorTreeViewer::setTreeVerticalSize(int size) {
-    MSAEditorTreeViewerUI* msaUI = dynamic_cast<MSAEditorTreeViewerUI*>(ui);
-    CHECK(NULL != msaUI, );
-    //msaUI->setTreeVerticalSize(size);
-    //msa->getUI()->getSequenceArea()->onVisibleRangeChanged();
-} 
-
 void MSAEditorTreeViewer::setCreatePhyTreeSettings(const CreatePhyTreeSettings& _buildSettings) {
     buildSettings = _buildSettings;
     refreshTreeAction->setEnabled(true);
@@ -133,10 +126,6 @@ MSAEditorTreeViewerUI::MSAEditorTreeViewerUI(MSAEditorTreeViewer* treeViewer)
     QRectF rect = scene()->sceneRect();
     subgroupSelector = scene()->addLine(0.0, rect.bottom(), 0.0, rect.top(), QPen(QColor(103, 138, 186)));
     setAlignment(Qt::AlignTop | Qt::AlignLeft);
-}
-
-void MSAEditorTreeViewerUI::setTreeVerticalSize(int size) {
-    //sl_onHeightChanged(size, false, false);
 }
 
 ColorGenerator::ColorGenerator(int _countOfColors, qreal _lightness): countOfColors(_countOfColors), delta(0.1), hue(0.0), lightness(_lightness){
@@ -395,17 +384,6 @@ void MSAEditorTreeViewerUI::onLayoutChanged(const TreeLayout& layout) {
     else {
         subgroupSelector->hide();
     }
-}
-
-
-void MSAEditorTreeViewerUI::sl_onHeightChanged(int height, bool isMinimumSize, bool isMaximumSize) {
-    CHECK(curLayoutIsRectangular && isSinchronized, );
-    int treeHeight = getTreeSize().length;
-    CHECK(0 != treeHeight  && 0 != height, );
-    qreal zoomCoef = (qreal)(height - 5) / treeHeight;
-
-    hasMaxSize = isMaximumSize;
-    hasMinSize = isMinimumSize;
 }
 
 void MSAEditorTreeViewerUI::sl_onReferenceSeqChanged(qint64) {

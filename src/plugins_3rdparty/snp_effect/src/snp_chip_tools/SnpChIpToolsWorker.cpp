@@ -52,7 +52,7 @@ SnpChipToolsWorker::SnpChipToolsWorker( Actor *p )
 }
 
 QList<QVariantMap> SnpChipToolsWorker::getInputDataForRequest( const U2Variant& variant,
-    const U2VariantTrack& track, U2Dbi* dataBase )
+    const U2VariantTrack& /*track*/, U2Dbi* /*dataBase*/ )
 {
     QList<QVariantMap> result;
     QVariantMap inputData;

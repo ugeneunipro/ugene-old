@@ -272,11 +272,7 @@ void EMBLGenbankAbstractDocument::load(const U2DbiRef& dbiRef, IOAdapter* io, QL
 }
 
 DNASequence* EMBLGenbankAbstractDocument::loadSequence(IOAdapter* io, U2OpStatus& os) {
-
-    QStringList contigs;
     QSet<QString> usedNames;
-
-    GObjectReference sequenceRef(GObjectReference(io->getURL().getURLString(), "", GObjectTypes::SEQUENCE));
 
     QByteArray sequenceData;
     U2MemorySequenceImporter seqImporter(sequenceData);
@@ -284,7 +280,6 @@ DNASequence* EMBLGenbankAbstractDocument::loadSequence(IOAdapter* io, U2OpStatus
     ParserState st(getFormatId() == BaseDocumentFormats::PLAIN_GENBANK ? 12 : 5, io, NULL, os);
     st.buff = readBuffer.data();
 
-    qint64 sequenceStart = 0;
     int sequenceSize = 0;
     int fullSequenceSize = 0;
 

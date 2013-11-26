@@ -80,7 +80,6 @@ BrowserSupportPlugin::BrowserSupportPlugin() : Plugin(tr("BrowserSupport"), tr("
     connect(QApplication::clipboard(), SIGNAL(changed(QClipboard::Mode)), SLOT(sl_clipboardCheck()));
 }
 
-static bool clipboardRead = false;
 static QString prevClipboard;
 
 QString BrowserSupportPlugin::saveToTmp(QString &data) {
@@ -89,7 +88,6 @@ QString BrowserSupportPlugin::saveToTmp(QString &data) {
 
     U2OpStatus2Log os;
     QString fileName = GUrlUtils::prepareTmpFileLocation(tmpDirPath, "clipboard_data", "clipboard", os);
-    int i = 100;
 
     QFile file(fileName);
     file.open(QIODevice::WriteOnly | QIODevice::Text);

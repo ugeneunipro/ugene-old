@@ -36,16 +36,16 @@ class SmithWatermanAlgorithm {
 
 public:
     SmithWatermanAlgorithm();
-    virtual ~SmithWatermanAlgorithm() {};
+    virtual ~SmithWatermanAlgorithm() {}
 
-    virtual void launch(const SMatrix& m, QByteArray const & _patternSeq, QByteArray const & _searchSeq,
+    virtual void launch(const SMatrix& m, const QByteArray  & _patternSeq, const QByteArray & _searchSeq,
         int _gapOpen, int _gapExtension, int _minScore, SmithWatermanSettings::SWResultView _resultView);
     
     QList<PairAlignSequences> getResults();
     static void sortByScore(QList<PairAlignSequences> & pairAlignmentStrings);
     static quint64 estimateNeededRamAmount(const qint32 gapOpen, const qint32 gapExtension,
                                            const quint32 minScore, const quint32 maxScore,
-                                           QByteArray const & patternSeq, QByteArray const & searchSeq,
+                                           const QByteArray & patternSeq, const QByteArray & searchSeq,
                                            const SmithWatermanSettings::SWResultView resultView);
     static const char STOP;
     static const char UP;
@@ -56,7 +56,7 @@ protected:
     bool calculateMatrixLength();
     bool isValidParams();
     void setValues(const SMatrix& _substitutionMatrix, 
-        QByteArray const & _patternSeq, QByteArray const & _searchSeq, 
+        const QByteArray & _patternSeq, const QByteArray & _searchSeq,
         int _gapOpen, int _gapExtension, int _minScore, SmithWatermanSettings::SWResultView _resultView);
 
     QList<PairAlignSequences> pairAlignmentStrings;

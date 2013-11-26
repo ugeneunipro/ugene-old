@@ -871,7 +871,7 @@ MSAHighlightingScheme::MSAHighlightingScheme( QObject* p, MSAHighlightingSchemeF
     
 }
 
-void MSAHighlightingScheme::process( const char refChar, char &seqChar, bool &color ){
+void MSAHighlightingScheme::process( const char /*refChar*/, char &seqChar, bool &color ){
     if (useDots && !color){
         seqChar = '.';
     }

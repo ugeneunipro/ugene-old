@@ -42,11 +42,13 @@ public:
     ScriptEditorDialogFiller(U2OpStatus& os, QString _url = "", QString _text = "", bool _checkSyntax = false, QString _checkSyntaxResult = ""): Filler(os, "ScriptEditorDialog"),
         url(_url),
         text(_text),
-        checkSyntax(_checkSyntax),
-        checkSyntaxResult(_checkSyntaxResult){};
+        checkSyntaxResult(_checkSyntaxResult),
+        checkSyntax(_checkSyntax) {}
     virtual void run();
 private:
-    QString url,text, checkSyntaxResult;
+    QString url;
+    QString text;
+    QString checkSyntaxResult;
     bool checkSyntax;
 };
 

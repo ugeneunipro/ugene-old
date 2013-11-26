@@ -39,7 +39,7 @@ RadioController::~RadioController() {
 
 }
 
-QWidget * RadioController::createGUI(U2OpStatus &os) {
+QWidget * RadioController::createGUI(U2OpStatus &/*os*/) {
     QWidget *result = new QWidget();
     QVBoxLayout *l = new QVBoxLayout(result);
     l->setMargin(0);

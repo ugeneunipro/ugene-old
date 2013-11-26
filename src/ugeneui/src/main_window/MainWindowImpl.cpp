@@ -114,7 +114,6 @@ void MWStub::dropEvent(QDropEvent *event)
         if (event->mimeData()->hasUrls()) {
             urls = GUrlUtils::qUrls2gUrls(event->mimeData()->urls());
         }else if(event->mimeData()->hasFormat(DocumentMimeData::MIME_TYPE)){
-            const DocumentMimeData *docData = static_cast<const DocumentMimeData *>(event->mimeData());
             urls = GUrlUtils::qUrls2gUrls(event->mimeData()->urls());
         }
         if(!urls.isEmpty()){
@@ -144,7 +143,7 @@ void MWStub::dropEvent(QDropEvent *event)
     }
 }
 
-bool MWStub::focusNextPrevChild(bool next) {
+bool MWStub::focusNextPrevChild(bool /*next*/) {
     return false;
 }
 
@@ -500,6 +499,10 @@ void FixedMdiArea::setViewMode( QMdiArea::ViewMode mode )
 }
 
 void FixedMdiArea::closeSubWindow(int idx) {
+    Q_UNUSED(idx);
+    // We use Qt greater than 4.8.0
+    // this workaround can be removed
+    // do it accurately
 #if QT_VERSION < 0x040800 //In Qt version 4.8.0 was added default behavior for closing tab.
     subWindowList().at(idx)->close();
 #endif

@@ -71,11 +71,23 @@ QMap<BreakpointConditionParameter, HitCondition>
 
 BreakpointManagerView::BreakpointManagerView(WorkflowDebugStatus *initDebugInfo, Schema *initScheme,
                                              QGraphicsScene *scene, QWidget *parent)
-    : QWidget(parent), debugInfo(initDebugInfo), scheme(initScheme), scene(scene),
-    breakpointsList(NULL), actorConnections(), newBreakpointAction(NULL), allExistingLabels(),
-    deleteAllBreakpointsAction(NULL), deleteSelectedBreakpointAction(NULL), hitCountAction(NULL),
-    disableAllBreakpointsAction(NULL), highlightItemWithBreakpoint(NULL), editLabelsAction(NULL),
-    setConditionAction(NULL), breakpointStateControls(), lastReachedBreakpoint(NULL)
+    : QWidget(parent),
+      debugInfo(initDebugInfo),
+      scene(scene),
+      scheme(initScheme),
+      breakpointsList(NULL),
+      actorConnections(),
+      breakpointStateControls(),
+      allExistingLabels(),
+      lastReachedBreakpoint(NULL),
+      newBreakpointAction(NULL),
+      deleteSelectedBreakpointAction(NULL),
+      deleteAllBreakpointsAction(NULL),
+      disableAllBreakpointsAction(NULL),
+      highlightItemWithBreakpoint(NULL),
+      hitCountAction(NULL),
+      editLabelsAction(NULL),
+      setConditionAction(NULL)
 {
     Q_ASSERT(NULL != debugInfo && NULL != scheme);
 
@@ -576,7 +588,7 @@ void BreakpointManagerView::setBreakpointBackgroundColor(QTreeWidgetItem *breakp
     }
 }
 
-void BreakpointManagerView::paintEvent(QPaintEvent *event) {
+void BreakpointManagerView::paintEvent(QPaintEvent */*event*/) {
     static const QColor nonActiveColor = breakpointsList->palette().window().color();
     if(!this->isEnabled()) {
         foreach(QTreeWidgetItem *item, breakpointsList->findItems(QString(), Qt::MatchContains)) {

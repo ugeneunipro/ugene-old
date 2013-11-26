@@ -1226,7 +1226,7 @@ QRectF WorkflowHighlightItem::boundingRect() const {
         * sizeFactor, parentBoundary.width() * sizeFactor, parentBoundary.height() * sizeFactor);
 }
 
-void WorkflowHighlightItem::paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget) {
+void WorkflowHighlightItem::paint(QPainter * painter, const QStyleOptionGraphicsItem * /*option*/, QWidget * /*widget*/) {
     if(0 != countOfAnimationStepsLeft) {
         painter->setPen(BORDER_COLOR);
         painter->drawRoundedRect(boundingRect(), 5, 5);

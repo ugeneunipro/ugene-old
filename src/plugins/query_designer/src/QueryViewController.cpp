@@ -506,7 +506,7 @@ void QueryScene::addActor(QDActor* actor, const QPointF& pos) {
         addItem(uv);
         uv->setObjectName("QDElement");
         QPointF p(pos.x() + dx, y);
-        while(ajustPosForNewItem(uv, p));
+        while(ajustPosForNewItem(uv, p)) ;
         uv->setPos(p);
         dx += UNIT_PADDING + uv->boundingRect().width();
     }

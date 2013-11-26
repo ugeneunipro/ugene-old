@@ -498,7 +498,7 @@ void ExternalProcessWorker::cleanup() {
 /* LaunchExternalToolTask */
 /************************************************************************/
 LaunchExternalToolTask::LaunchExternalToolTask(const QString &execString, const QMap<QString, DataConfig> &outputUrls)
-: Task("Launch external process task", TaskFlag_None), execString(execString), outputUrls(outputUrls)
+: Task(tr("Launch external process task"), TaskFlag_None), outputUrls(outputUrls), execString(execString)
 {
 
 }

@@ -32,8 +32,8 @@ namespace U2 {
 SNPToolboxTask::SNPToolboxTask(const SNPToolboxSettings& _settings, const U2VariantTrack& _track, const U2DbiRef& _dbiRef)
 : Task("SNPToolbox variations annotation", TaskFlag_None)
 , settings(_settings)
-, dbiRef(_dbiRef)
 , track(_track)
+, dbiRef(_dbiRef)
 {
 
 }

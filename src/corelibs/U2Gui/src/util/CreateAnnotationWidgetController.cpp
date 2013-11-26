@@ -704,11 +704,11 @@ void CreateAnnotationWidgetController::sl_documentsComboUpdated(){
     commonWidgetUpdate(model);
 }
 
-void CreateAnnotationWidgetController::sl_annotationNameEdited( const QString& text ){
+void CreateAnnotationWidgetController::sl_annotationNameEdited( const QString& /*text*/ ){
     emit si_annotationNamesEdited();
 }
 
-void CreateAnnotationWidgetController::sl_groupNameEdited( const QString& text ){
+void CreateAnnotationWidgetController::sl_groupNameEdited( const QString& /*text*/ ){
     emit si_annotationNamesEdited();
 }
 

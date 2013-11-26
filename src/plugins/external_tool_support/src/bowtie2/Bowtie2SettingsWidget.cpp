@@ -92,7 +92,7 @@ QMap<QString,QVariant> Bowtie2SettingsWidget::getDnaAssemblyCustomSettings() {
     return settings;
 }
 
-bool Bowtie2SettingsWidget::isParametersOk(QString& error) {
+bool Bowtie2SettingsWidget::isParametersOk(QString& /*error*/) {
 
     ExternalTool* bowtie2 = AppContext::getExternalToolRegistry()->getByName(ET_BOWTIE2_ALIGN);
     ExternalTool* bowtie2Build = AppContext::getExternalToolRegistry()->getByName(ET_BOWTIE2_BUILD);

@@ -1,4 +1,5 @@
-/** * UGENE - Integrated Bioinformatics Tools.
+/**
+ * UGENE - Integrated Bioinformatics Tools.
  * Copyright (C) 2008-2013 UniPro <ugene@unipro.ru>
  * http://ugene.unipro.ru
  *
@@ -266,7 +267,7 @@ IMPLEMENT_TEST( FeatureTableObjectUnitTest, addFeatureSingleRegion ) {
 }
 
 IMPLEMENT_TEST( FeatureTableObjectUnitTest, getAnnotations ) {
-    U2FeatureDbi *featureDbi = FeaturesTableObjectTestData::getFeatureDbi( );
+    FeaturesTableObjectTestData::getFeatureDbi( );
 
     const QString aname1 = "aname1";
     const QString aname2 = "aname2";
@@ -309,7 +310,7 @@ IMPLEMENT_TEST( FeatureTableObjectUnitTest, getAnnotations ) {
 }
 
 IMPLEMENT_TEST( FeatureTableObjectUnitTest, getRootGroup ) {
-    U2FeatureDbi *featureDbi = FeaturesTableObjectTestData::getFeatureDbi( );
+    FeaturesTableObjectTestData::getFeatureDbi( );
 
     const QString aname = "aname_single";
     const QString grname = "agroupename_single";
@@ -332,7 +333,7 @@ IMPLEMENT_TEST( FeatureTableObjectUnitTest, getRootGroup ) {
 }
 
 IMPLEMENT_TEST( FeatureTableObjectUnitTest, addAnnotationsToRootGroup ) {
-    U2FeatureDbi *featureDbi = FeaturesTableObjectTestData::getFeatureDbi( );
+    FeaturesTableObjectTestData::getFeatureDbi( );
 
     const QString aname1 = "aname1";
     const QString aname2 = "aname2";
@@ -385,7 +386,7 @@ IMPLEMENT_TEST( FeatureTableObjectUnitTest, addAnnotationsToRootGroup ) {
 }
 
 IMPLEMENT_TEST( FeatureTableObjectUnitTest, addAnnotationsToSubgroup ) {
-    U2FeatureDbi *featureDbi = FeaturesTableObjectTestData::getFeatureDbi( );
+    FeaturesTableObjectTestData::getFeatureDbi( );
 
     const QString aname1 = "aname1";
     const QString aname2 = "aname2";
@@ -429,7 +430,7 @@ IMPLEMENT_TEST( FeatureTableObjectUnitTest, addAnnotationsToSubgroup ) {
 }
 
 IMPLEMENT_TEST( FeatureTableObjectUnitTest, removeAnnotation ) {
-    U2FeatureDbi *featureDbi = FeaturesTableObjectTestData::getFeatureDbi( );
+    FeaturesTableObjectTestData::getFeatureDbi( );
 
     const QString aname1 = "aname1";
     const QString aname2 = "aname2";
@@ -479,7 +480,7 @@ IMPLEMENT_TEST( FeatureTableObjectUnitTest, removeAnnotation ) {
 }
 
 IMPLEMENT_TEST( FeatureTableObjectUnitTest, removeAnnotations ) {
-    U2FeatureDbi *featureDbi = FeaturesTableObjectTestData::getFeatureDbi( );
+    FeaturesTableObjectTestData::getFeatureDbi( );
 
     const QString aname1 = "aname1";
     const QString aname2 = "aname2";
@@ -525,7 +526,7 @@ IMPLEMENT_TEST( FeatureTableObjectUnitTest, removeAnnotations ) {
 }
 
 IMPLEMENT_TEST( FeatureTableObjectUnitTest, clone ) {
-    U2FeatureDbi *featureDbi = FeaturesTableObjectTestData::getFeatureDbi( );
+    FeaturesTableObjectTestData::getFeatureDbi( );
 
     const QString aname1 = "aname1";
     const QString aname2 = "aname2";
@@ -583,7 +584,7 @@ IMPLEMENT_TEST( FeatureTableObjectUnitTest, clone ) {
 }
 
 IMPLEMENT_TEST( FeatureTableObjectUnitTest, getAnnotationsByName ) {
-    U2FeatureDbi *featureDbi = FeaturesTableObjectTestData::getFeatureDbi( );
+    FeaturesTableObjectTestData::getFeatureDbi( );
 
     const QString aname1 = "aname1";
     const QString aname2 = "aname2";
@@ -620,7 +621,7 @@ IMPLEMENT_TEST( FeatureTableObjectUnitTest, getAnnotationsByName ) {
 }
 
 IMPLEMENT_TEST( FeatureTableObjectUnitTest, getAnnotatedRegions ) {
-    U2FeatureDbi *featureDbi = FeaturesTableObjectTestData::getFeatureDbi( );
+    FeaturesTableObjectTestData::getFeatureDbi( );
 
     const QString aname1 = "aname1";
     const QString aname2 = "aname2";
@@ -661,7 +662,7 @@ IMPLEMENT_TEST( FeatureTableObjectUnitTest, getAnnotatedRegions ) {
 }
 
 IMPLEMENT_TEST( FeatureTableObjectUnitTest, getAnnotationsByRegion ) {
-    U2FeatureDbi *featureDbi = FeaturesTableObjectTestData::getFeatureDbi( );
+    FeaturesTableObjectTestData::getFeatureDbi( );
 
     const QString aname1 = "aname1";
     const QString aname2 = "aname2";
@@ -701,7 +702,7 @@ IMPLEMENT_TEST( FeatureTableObjectUnitTest, getAnnotationsByRegion ) {
 }
 
 IMPLEMENT_TEST( FeatureTableObjectUnitTest, checkConstraints ) {
-    U2FeatureDbi *featureDbi = FeaturesTableObjectTestData::getFeatureDbi( );
+    FeaturesTableObjectTestData::getFeatureDbi( );
 
     const QString aname1 = "aname1";
     const QString aname2 = "aname2";
@@ -740,4 +741,3 @@ IMPLEMENT_TEST( FeatureTableObjectUnitTest, checkConstraints ) {
 }
 
 }//namespace
- 

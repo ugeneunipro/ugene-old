@@ -37,6 +37,7 @@ namespace U2 {
 
 QString SerializeUtils::serializeRemoteMachineSettings( const RemoteMachineSettingsPtr& machineSettings ) {
     FAIL("Obsolete! Not implemented!", "");
+    Q_UNUSED(machineSettings);
 
     //assert( NULL != machineSettings );
     //return HEADER_COMMENT "\n" + machineSettings->serialize();
@@ -44,6 +45,7 @@ QString SerializeUtils::serializeRemoteMachineSettings( const RemoteMachineSetti
 
 RemoteMachineSettingsPtr SerializeUtils::deserializeRemoteMachineSettingsFromFile( const QString & machinePath) {
     FAIL("Obsolete! Not implemented!", RemoteMachineSettingsPtr());
+    Q_UNUSED(machinePath);
 
     //QFile file( machinePath );
     //if( !file.open( QIODevice::ReadOnly ) ) {
@@ -80,7 +82,7 @@ RemoteMachineSettingsPtr SerializeUtils::deserializeRemoteMachineSettingsFromFil
 }
 */
 
-static QString getDefaultProtocolId( ) {
+/*static QString getDefaultProtocolId( ) {
     FAIL("Obsolete! Not implemented!", "");
 
     //QString res;
@@ -91,10 +93,12 @@ static QString getDefaultProtocolId( ) {
     //}
 
     //return res;
-}
+}*/
 
 RemoteMachineSettingsPtr SerializeUtils::deserializeRemoteMachineSettings( const QString & data, QString * retProtoId ) {
     FAIL("Obsolete! Not implemented!", RemoteMachineSettingsPtr());
+    Q_UNUSED(data);
+    Q_UNUSED(retProtoId);
 
     //QString protoId = getDefaultProtocolId();
     //ProtocolInfo * protoInfo = AppContext::getProtocolInfoRegistry()->getProtocolInfo( protoId );

@@ -57,8 +57,10 @@ bool DnaAssemblyDialog::samOutput = false;
 #define MATE_UPSTREAM           "Upstream"
 #define MATE_DOWNSTREAM         "Downstream"
 
-DnaAssemblyDialog::DnaAssemblyDialog(QWidget* p, const QStringList& shortReadsUrls, const QString& refSeqUrl)
-: QDialog(p), assemblyRegistry(AppContext::getDnaAssemblyAlgRegistry()), customGUI(NULL)
+DnaAssemblyDialog::DnaAssemblyDialog(QWidget* p, const QStringList& /*shortReadsUrls*/, const QString& refSeqUrl)           // !!! check
+: QDialog(p),
+  assemblyRegistry(AppContext::getDnaAssemblyAlgRegistry()),
+  customGUI(NULL)
 {
     setupUi(this);
     QStringList names = assemblyRegistry->getRegisteredAlgorithmIds();

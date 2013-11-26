@@ -33,6 +33,7 @@ class WorkflowScriptEngine;
 enum BreakpointConditionParameter;
 
 class BreakpointConditionChecker {
+    Q_DISABLE_COPY(BreakpointConditionChecker)
 public:
     BreakpointConditionChecker(const QString &initConditionText,
         Workflow::WorkflowContext *context = NULL);
@@ -49,6 +50,7 @@ public:
     BreakpointConditionParameter getConditionParameter() const;
 
 private:
+
     QString conditionText;
     WorkflowScriptEngine *engine;
     bool enabled;

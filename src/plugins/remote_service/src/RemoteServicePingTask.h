@@ -22,13 +22,12 @@
 #ifndef _REMOTE_SERVICE_PING_TASK_H_
 #define _REMOTE_SERVICE_PING_TASK_H_
 
+#include "RemoteServiceMachine.h"
+
 #include <U2Core/Task.h>
 #include <memory>
 
 namespace U2 {
-
- class RemoteServiceMachine;
- class RemoteServiceMachineFactory;
 
 class RemoteServicePingTask : public Task {
     Q_OBJECT

@@ -29,7 +29,7 @@ namespace U2 {
 
 class SNPReportWriterSettings{
 public:
-    SNPReportWriterSettings(){};
+    SNPReportWriterSettings(){}
     
     QString regulatoryReportPath;
     QString reportPath;

@@ -120,7 +120,7 @@ void GSequenceGraphView::mouseMoveEvent(QMouseEvent *me) {
     update();
     GSequenceLineView::mouseMoveEvent(me);
 }
-void GSequenceGraphView::leaveEvent(QEvent *le) {
+void GSequenceGraphView::leaveEvent(QEvent */*le*/) {
     hideLabel();
 }
 
@@ -140,6 +140,7 @@ void GSequenceGraphView::getLabelPositions(QList<QVariant> &labelPositions) {
 }
 void GSequenceGraphView::createLabelsOnPositions(const QList<QVariant>& positions) {
     foreach (GSequenceGraphData *graph, graphs) {
+        Q_UNUSED(graph);
         foreach(const QVariant &val, positions) {
             float pos = val.value<float>();
             addLabel(pos);

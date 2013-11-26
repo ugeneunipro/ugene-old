@@ -86,7 +86,7 @@ QAbstractButton* GTAction::button(U2OpStatus &os, const QAction* a, QObject *par
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "getAction"
-QAction* GTAction::findAction(U2OpStatus &os, const QString &actionName, QObject *parent) {
+QAction* GTAction::findAction(U2OpStatus &/*os*/, const QString &actionName, QObject *parent) {
 
     if (parent == NULL) {
         parent = AppContext::getMainWindow()->getQMainWindow();

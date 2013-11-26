@@ -38,10 +38,10 @@ public:
         Filler(os, "BuildIndexFromRefDialog"),
         refPath(_refPath),
         refFileName(_refFileName),
-        method(_method),
-        useDefaultIndexName(_useDefaultIndexName),
         indPath(_indPath),
-        indFileName(_indFileName) {}
+        indFileName(_indFileName),
+        method(_method),
+        useDefaultIndexName(_useDefaultIndexName) {}
     virtual void run();
 private:
     QString refPath;

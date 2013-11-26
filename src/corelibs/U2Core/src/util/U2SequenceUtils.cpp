@@ -503,7 +503,7 @@ void U2MemorySequenceImporter::addBlock(const char* data, qint64 len, U2OpStatus
 }
 
 void U2MemorySequenceImporter::addDefaultSymbolsBlock(int n, U2OpStatus& os) {
-    SAFE_POINT(n >= 0, QString("Invalid number of symbols: %1").arg(n), );
+    SAFE_POINT_EXT(n >= 0, os.setError(QObject::tr("Invalid number of symbols: %1").arg(n)), );
     char defaultChar = U2AlphabetUtils::getDefaultSymbol(sequence.alphabet);
     QByteArray a(n, defaultChar);
 

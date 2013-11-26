@@ -98,7 +98,6 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
     GTUtilsWorkflowDesigner::openWorkfolwDesigner(os);
 
     GTUtilsWorkflowDesigner::addAlgorithm(os, "Write FASTA");
-    WorkflowProcessItem *writer = GTUtilsWorkflowDesigner::getWorker(os, "Write FASTA");
 
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<"Show scripting options"));
     GTWidget::click(os, GTAction::button(os, GTAction::findActionByText(os, "Scripting mode")));

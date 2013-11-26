@@ -54,6 +54,7 @@ public:
 
 class DasOptionsPanelWidget : public QWidget, private Ui_DasOptionsPanelWidget {
     Q_OBJECT
+    Q_DISABLE_COPY(DasOptionsPanelWidget)
 public:
     DasOptionsPanelWidget(AnnotatedDNAView* adv);
     ~DasOptionsPanelWidget();
@@ -92,7 +93,6 @@ private:
     U2Region getRegion();
     bool regionIsOk() const;
 
-private:
     AnnotatedDNAView* annotatedDnaView;
     ADVSequenceObjectContext* ctx;
     DNASequenceSelection* selection;

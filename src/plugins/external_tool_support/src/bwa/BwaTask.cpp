@@ -305,14 +305,6 @@ void BwaSwAlignTask::prepare() {
    
 }
 
-QList<Task *> BwaSwAlignTask::onSubTaskFinished(Task *subTask) {
-    QList<Task *> result;
-
-    return result;
-}
- 
-
-
 
 // BwaTask
 

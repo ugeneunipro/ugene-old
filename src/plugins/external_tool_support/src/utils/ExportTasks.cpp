@@ -49,7 +49,11 @@ namespace U2 {
 //////////////////////////////////////////////////////////////////////////
 // DNAExportAlignmentTask
 SaveAlignmentTask::SaveAlignmentTask(const MAlignment& _ma, const QString& _fileName, DocumentFormatId _f, const QVariantMap& _hints)
-: Task("", TaskFlag_None), ma(_ma), fileName(_fileName), format(_f), hints(_hints)
+: Task("", TaskFlag_None),
+  ma(_ma),
+  fileName(_fileName),
+  hints(_hints),
+  format(_f)
 {
     GCOUNTER( cvar, tvar, "ExportAlignmentTask" );
     setTaskName(tr("Export alignment to '%1'").arg(QFileInfo(fileName).fileName()));

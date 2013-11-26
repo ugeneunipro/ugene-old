@@ -142,8 +142,12 @@ void ExtractConsensusWorker::sendResult(const SharedDbiDataHandler &seqId) {
 /* ExtractConsensusTaskHelper */
 /************************************************************************/
 ExtractConsensusTaskHelper::ExtractConsensusTaskHelper(const QString &algoId, bool keepGaps, const U2EntityRef &assembly, const U2DbiRef &targetDbi)
-: Task(tr("Extract consensus"), TaskFlags_NR_FOSCOE), algoId(algoId), keepGaps(keepGaps),
-assembly(assembly), exportTask(NULL), targetDbi(targetDbi)
+: Task(tr("Extract consensus"), TaskFlags_NR_FOSCOE),
+  algoId(algoId),
+  keepGaps(keepGaps),
+  assembly(assembly),
+  targetDbi(targetDbi),
+  exportTask(NULL)
 {
 
 }
@@ -219,7 +223,7 @@ Worker * ExtractConsensusWorkerFactory::createWorker(Actor *actor) {
 
 void ExtractConsensusWorkerFactory::init() {
     AssemblyConsensusAlgorithmRegistry *reg = AppContext::getAssemblyConsensusAlgorithmRegistry();
-    SAFE_POINT_EXT(NULL != reg, "NULL registry", );
+    SAFE_POINT(NULL != reg, "NULL registry", );
 
     const Descriptor desc(ACTOR_ID,
         QObject::tr("Extract Consensus from Assembly"),

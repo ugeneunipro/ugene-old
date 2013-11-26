@@ -940,8 +940,14 @@ void TaskSchedulerImpl::onSubTaskFinished(TaskThread *thread, Task *subtask) {
 }
 
 TaskThread::TaskThread(TaskInfo* _ti)
-    : ti(_ti), finishEventListener(NULL), unconsideredNewSubtasks(), subtasksLocker(),
-    newSubtasksObtained(false), pauser(), isPaused(false), pauseLocker()
+    : ti(_ti),
+      finishEventListener(NULL),
+      subtasksLocker(),
+      unconsideredNewSubtasks(),
+      newSubtasksObtained(false),
+      pauser(),
+      isPaused(false),
+      pauseLocker()
 {
     if(ti->task->hasFlags(TaskFlag_RunMessageLoopOnly)) {
         moveToThread(this);

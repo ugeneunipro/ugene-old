@@ -1121,7 +1121,7 @@ GUI_TEST_CLASS_DEFINITION(test_0012)
     QWidget *detailsViewSe2 = GTWidget::findWidget(os, "det_view_se2");
 
     GTGlobals::sleep();
-    CHECK_SET_ERR(detailsViewSe1->isHidden() && detailsViewSe1->isHidden(),
+    CHECK_SET_ERR(detailsViewSe1->isHidden() && detailsViewSe2->isHidden(),
         "details views for both sequences has not been closed");
 
 // TODO: Expected state: position indicator(Yellow triangle) on overview has disappered from overview
@@ -1151,7 +1151,7 @@ GUI_TEST_CLASS_DEFINITION(test_0012_1)
 
     GTGlobals::sleep();
     GTGlobals::sleep();
-    CHECK_SET_ERR(detailsViewSe1->isHidden() && detailsViewSe1->isHidden(),
+    CHECK_SET_ERR(detailsViewSe1->isHidden() && detailsViewSe2->isHidden(),
         "details views for both sequences has not been closed");
 
     // TODO: Expected state: position indicator(Yellow triangle) on overview has disappered from overview
@@ -1176,7 +1176,7 @@ GUI_TEST_CLASS_DEFINITION(test_0012_2)
     QWidget *detailsViewSe2 = GTWidget::findWidget(os, "det_view_se2");
 
     GTGlobals::sleep();
-    CHECK_SET_ERR(detailsViewSe1->isHidden() && detailsViewSe1->isHidden(),
+    CHECK_SET_ERR(detailsViewSe1->isHidden() && detailsViewSe2->isHidden(),
         "details views for both sequences has not been closed");
 
     Runnable *chooser1 = new PopupChooser(os, QStringList() << "toggleDetailsView");
@@ -1220,7 +1220,7 @@ GUI_TEST_CLASS_DEFINITION(test_0013)
     QWidget *detailsViewSe2 = GTWidget::findWidget(os, "det_view_se2");
 
     GTGlobals::sleep();
-    CHECK_SET_ERR(detailsViewSe1->isHidden() && detailsViewSe1->isHidden(),
+    CHECK_SET_ERR(detailsViewSe1->isHidden() && detailsViewSe2->isHidden(),
         "details views for both sequences has not been closed");
 
 // TODO: Expected state: position indicator (Grey dotted line rectangle)  has disappered from zoom view
@@ -1250,7 +1250,7 @@ GUI_TEST_CLASS_DEFINITION(test_0013_1)
     QWidget *detailsViewSe2 = GTWidget::findWidget(os, "det_view_se2");
 
     GTGlobals::sleep();
-    CHECK_SET_ERR(detailsViewSe1->isHidden() && detailsViewSe1->isHidden(),
+    CHECK_SET_ERR(detailsViewSe1->isHidden() && detailsViewSe2->isHidden(),
         "details views for both sequences has not been closed");
 
     // TODO: Expected state: position indicator (Grey dotted line rectangle)  has disappered from zoom view
@@ -1276,7 +1276,7 @@ GUI_TEST_CLASS_DEFINITION(test_0013_2)
     QWidget *detailsViewSe2 = GTWidget::findWidget(os, "det_view_se2");
 
     GTGlobals::sleep();
-    CHECK_SET_ERR(detailsViewSe1->isHidden() && detailsViewSe1->isHidden(),
+    CHECK_SET_ERR(detailsViewSe1->isHidden() && detailsViewSe2->isHidden(),
         "details views for both sequences has not been closed");
 
     Runnable *chooser1 = new PopupChooser(os, QStringList() << "toggleDetailsView");

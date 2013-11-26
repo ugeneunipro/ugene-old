@@ -649,7 +649,7 @@ QMap<ActorId, QVariantMap> HRSchemaSerializer::parseIteration(Tokenizer & tokeni
 
     QMap<ActorId, QVariantMap> cfg;
     bool ok = false;
-    int id = idPair.second.toInt(&ok);
+    idPair.second.toInt(&ok);
     if(!ok) {
         throw ReadFailed(tr("Cannot parse integer from '%1': iteration id").arg(idPair.second));
     }
@@ -1604,7 +1604,7 @@ QString HRSchemaSerializer::dataflowDefinition(const QList<Actor*> & procs, cons
     return res + Constants::NEW_LINE;
 }
 
-static QString elementsIterationData(const QVariantMap & data) {
+/*static QString elementsIterationData(const QVariantMap & data) {
     QString res;
     foreach( const QString & attributeId, data.uniqueKeys() ) {
         assert(!attributeId.contains(QRegExp("\\s")));
@@ -1621,7 +1621,7 @@ static QString elementsIterationData(const QVariantMap & data) {
 
     }
     return res;
-}
+}*/
 
 static QString visualData(const Schema & schema, const HRSchemaSerializer::NamesMap& nmap) {
     QString res;

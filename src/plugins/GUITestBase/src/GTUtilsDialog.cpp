@@ -133,7 +133,7 @@ void GTUtilsDialog::waitForDialogWhichMayRunOrNot(U2OpStatus &os, Runnable *r) {
         settings = f->getSettings();
     }
 
-    GUIDialogWaiter *waiter = new GUIDialogWaiter(os, r, settings);
+    new GUIDialogWaiter(os, r, settings);
 }
 
 #define GT_METHOD_NAME "checkAllFinished"

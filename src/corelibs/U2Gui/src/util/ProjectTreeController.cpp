@@ -1433,8 +1433,8 @@ ProjItemDelegate::ProjItemDelegate(QObject *parent) : QItemDelegate(parent) {
 
 }
 
-QWidget * ProjItemDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &option,
-    const QModelIndex &index) const
+QWidget * ProjItemDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &/*option*/,
+    const QModelIndex &/*index*/) const
 {
     QLineEdit *editor = new QLineEdit(parent);
     return editor;

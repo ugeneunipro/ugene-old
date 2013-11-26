@@ -517,7 +517,6 @@ void AnnotationsTreeView::sl_onAnnotationsAdded(const QList<Annotation*>& as) {
         }
         if (dndAdded.contains(a)) {
             dndHit++;
-            int size = dndAdded.size();
             if (dndHit == dndAdded.size()) {
                 if (!ctx->areAnnotationsInRange(dndAdded)) {
                     QMessageBox::warning(this, L10N::warningTitle(), AnnotationsTreeView::tr(

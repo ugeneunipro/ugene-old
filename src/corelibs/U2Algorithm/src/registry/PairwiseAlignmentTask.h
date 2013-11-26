@@ -40,9 +40,7 @@ class PairwiseAlignmentSettings;
 class PairwiseAlignmentTask;
 class PairwiseAlignmentTaskFactory;
 
-class U2ALGORITHM_EXPORT PairwiseAlignmentTaskSettings : public QObject {
-    Q_OBJECT
-
+class U2ALGORITHM_EXPORT PairwiseAlignmentTaskSettings {
 public:
     PairwiseAlignmentTaskSettings();
     PairwiseAlignmentTaskSettings(const QVariantMap& someSettings);
@@ -58,20 +56,15 @@ public:
     void setResultFileName(QString newFileName);
     virtual bool isValid() const;
 
-public:
     QString algorithmName;
     QString realizationName;
-    U2EntityRef firstSequenceRef;           //could`n be in customSettings. Set manually.
-    U2EntityRef secondSequenceRef;          //could`n be in customSettings. Set manually.
-    U2EntityRef msaRef;                     //could`n be in customSettings. Set manually.
+    U2EntityRef firstSequenceRef;           //couldn't be in customSettings. Set manually.
+    U2EntityRef secondSequenceRef;          //couldn't be in customSettings. Set manually.
+    U2EntityRef msaRef;                     //couldn't be in customSettings. Set manually.
     bool inNewWindow;
-    U2AlphabetId alphabet;                  //could`n be in customSettings. Set manually.
+    U2AlphabetId alphabet;                  //couldn't be in customSettings. Set manually.
     GUrl resultFileName;                    //could be in customSettings as a string only.
 
-protected:
-    QVariantMap customSettings;
-
-public:
     static const QString PA_DEFAULT_NAME;
     static const QString PA_RESULT_FILE_NAME;
     static const QString PA_ALGIRITHM_NAME;
@@ -80,6 +73,9 @@ public:
     static const QString PA_SECOND_SEQUENCE_REF;
     static const QString PA_IN_NEW_WINDOW;
     static const QString PA_ALPHABET;
+
+protected:
+    QVariantMap customSettings;
 };
 
 class U2ALGORITHM_EXPORT PairwiseAlignmentTask : public Task {

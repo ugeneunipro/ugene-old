@@ -1,4 +1,3 @@
-
 /**
  * UGENE - Integrated Bioinformatics Tools.
  * Copyright (C) 2008-2013 UniPro <ugene@unipro.ru>
@@ -385,10 +384,10 @@ static void findInAmino_regExp(FindAlgorithmResultsListener* rl,
                               DNATranslation* complTT,
                               FindAlgorithmStrand strand,
                               const char* seq,
-                              qint64 seqLen,
+                              qint64 /*seqLen*/,
                               const U2Region& range,
                               const char* pattern,
-                              int patternLen,
+                              int /*patternLen*/,
                               bool singleShot,
                               int maxRegExpResult,
                               int& stopFlag,

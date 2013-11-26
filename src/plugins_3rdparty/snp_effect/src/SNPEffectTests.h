@@ -34,8 +34,8 @@ enum SNPResultType{
 class GTest_SNPResultTable {
 public:
     GTest_SNPResultTable():
-    initialized(false)
-    ,resultType(SNPResultInGene){};
+      resultType(SNPResultInGene)
+      ,initialized(false) {}
 
     bool init(const QString& fileName, SNPResultType _resultType);
     QStringList findSNPRaw(const QString& chrName, const QString& allele, qint64 pos, const QString& geneId);
@@ -56,7 +56,7 @@ private:
 class GTest_FindInSNPResultTable : public GTest {
     Q_OBJECT
 public:
-    SIMPLE_XML_TEST_BODY_WITH_FACTORY_EXT(GTest_FindInSNPResultTable, "find-in-snp-result-table", TaskFlags_NR_FOSCOE);
+    SIMPLE_XML_TEST_BODY_WITH_FACTORY_EXT(GTest_FindInSNPResultTable, "find-in-snp-result-table", TaskFlags_NR_FOSCOE)
 
     void prepare();
     ReportResult report();

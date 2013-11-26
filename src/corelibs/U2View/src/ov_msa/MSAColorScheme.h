@@ -340,15 +340,15 @@ class MSAHighlightingSchemeEmpty : public MSAHighlightingScheme{
     Q_OBJECT
 public:
     MSAHighlightingSchemeEmpty(QObject* p, MSAHighlightingSchemeFactory* f, MAlignmentObject* o):
-        MSAHighlightingScheme(p, f, o){};
-    virtual void process(const char refChar, char &seqChar, bool &color){};
+        MSAHighlightingScheme(p, f, o){}
+    virtual void process(const char /*refChar*/, char &/*seqChar*/, bool &/*color*/){}
 };
 
 class MSAHighlightingSchemeAgreements : public MSAHighlightingScheme{
     Q_OBJECT
 public:
     MSAHighlightingSchemeAgreements(QObject* p, MSAHighlightingSchemeFactory* f, MAlignmentObject* o):
-        MSAHighlightingScheme(p, f, o){};
+        MSAHighlightingScheme(p, f, o){}
     virtual void process(const char refChar, char &seqChar, bool &color);
 };
 
@@ -356,7 +356,7 @@ class MSAHighlightingSchemeDisagreements : public MSAHighlightingScheme{
     Q_OBJECT
 public:
     MSAHighlightingSchemeDisagreements(QObject* p, MSAHighlightingSchemeFactory* f, MAlignmentObject* o)
-        :MSAHighlightingScheme(p, f, o){};
+        :MSAHighlightingScheme(p, f, o){}
     virtual void process(const char refChar, char &seqChar, bool &color);
 };
 
@@ -364,7 +364,7 @@ class MSAHighlightingSchemeTransitions : public MSAHighlightingScheme{
     Q_OBJECT
 public:
     MSAHighlightingSchemeTransitions(QObject* p, MSAHighlightingSchemeFactory* f, MAlignmentObject* o)
-        :MSAHighlightingScheme(p, f, o){};
+        :MSAHighlightingScheme(p, f, o){}
     virtual void process(const char refChar, char &seqChar, bool &color);
 };
 
@@ -372,7 +372,7 @@ class MSAHighlightingSchemeTransversions : public MSAHighlightingScheme{
     Q_OBJECT
 public:
     MSAHighlightingSchemeTransversions(QObject* p, MSAHighlightingSchemeFactory* f, MAlignmentObject* o)
-        :MSAHighlightingScheme(p, f, o){};
+        :MSAHighlightingScheme(p, f, o){}
     virtual void process(const char refChar, char &seqChar, bool &color);
 };
 
@@ -380,7 +380,7 @@ class MSAHighlightingSchemeGaps : public MSAHighlightingScheme{
     Q_OBJECT
 public:
     MSAHighlightingSchemeGaps(QObject* p, MSAHighlightingSchemeFactory* f, MAlignmentObject* o)
-        :MSAHighlightingScheme(p, f, o){};
+        :MSAHighlightingScheme(p, f, o){}
     virtual void process(const char refChar, char &seqChar, bool &color);
 };
 

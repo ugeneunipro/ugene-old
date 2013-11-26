@@ -54,7 +54,7 @@ class CreateAlignmentColorSchemeDialogFiller: public Filler{
 public:
 
     CreateAlignmentColorSchemeDialogFiller(U2OpStatus &os, QString _schemeName, NewColorSchemeCreator::alphabet _al):
-        Filler(os, "CreateMSAScheme"), al(_al), schemeName(_schemeName){}
+        Filler(os, "CreateMSAScheme"), schemeName(_schemeName), al(_al){}
     virtual void run();
 private:
     QString schemeName;

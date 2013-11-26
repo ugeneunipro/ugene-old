@@ -34,6 +34,7 @@ class SaveDocumentGroupController;
 
 class U2GUI_EXPORT ExportDocumentDialogController : public QDialog {
     Q_OBJECT
+    Q_DISABLE_COPY(ExportDocumentDialogController)
 public:
     ExportDocumentDialogController(Document* d, QWidget* p);
     ExportDocumentDialogController(GObject *object, QWidget *parent, const QString &initUrl = "");

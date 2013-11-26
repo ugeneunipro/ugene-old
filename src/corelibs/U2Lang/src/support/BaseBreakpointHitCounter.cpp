@@ -89,7 +89,7 @@ BaseBreakpointHitCounter * BaseBreakpointHitCounter::createInstance(
         Q_ASSERT(false);
     }
     Q_ASSERT(NULL != result);
-    Q_ASSERT(NULL != conversionResult);
+    Q_ASSERT(conversionResult);
 
     return result;
 }

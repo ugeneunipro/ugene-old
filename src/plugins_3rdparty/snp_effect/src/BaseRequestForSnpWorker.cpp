@@ -282,6 +282,9 @@ void BaseRequestForSnpWorker::clearCache(){
 
 QList< QVariantMap> BaseRequestForSnpWorker::getInputDataForRequest( const U2Variant& variant, const U2VariantTrack& track, U2Dbi* dataBase ){
     FAIL("Not impelemented", QList< QVariantMap> ());
+    Q_UNUSED(variant);
+    Q_UNUSED(track);
+    Q_UNUSED(dataBase);
 }
 
 } // namespace LocalWorkflow

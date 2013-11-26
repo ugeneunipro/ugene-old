@@ -40,8 +40,8 @@ CreateDocumentFiller::CreateDocumentFiller(U2OpStatus &_os, const QString &_past
                                            const QString &_documentLocation = QString(),
                                            documentFormat _format = FASTA, const QString &_sequenceName = QString(), 
                                            bool saveFile = false, GTGlobals::UseMethod method):
-Filler(_os, "CreateDocumentFromTextDialog"), customSettings(_customSettings), alphabet(_alphabet), skipUnknownSymbols(_skipUnknownSymbols), symbol(_symbol),
-replaceUnknownSymbols(_replaceUnknownSymbols), format(_format), saveFile(saveFile), useMethod(method) 
+Filler(_os, "CreateDocumentFromTextDialog"), customSettings(_customSettings), alphabet(_alphabet), skipUnknownSymbols(_skipUnknownSymbols), replaceUnknownSymbols(_replaceUnknownSymbols),
+  symbol(_symbol), format(_format), saveFile(saveFile), useMethod(method)
 {
     sequenceName = _sequenceName;
     pasteDataHere = _pasteDataHere;
@@ -134,8 +134,8 @@ CancelCreateDocumentFiller::CancelCreateDocumentFiller(U2OpStatus &_os, const QS
                                            const QString &_documentLocation = QString(),
                                            documentFormat _format = FASTA, const QString &_sequenceName = QString(), 
                                            bool saveFile = false, GTGlobals::UseMethod method):
-Filler(_os, "CreateDocumentFromTextDialog"), customSettings(_customSettings), alphabet(_alphabet), skipUnknownSymbols(_skipUnknownSymbols), symbol(_symbol),
-replaceUnknownSymbols(_replaceUnknownSymbols), format(_format), saveFile(saveFile), useMethod(method) 
+Filler(_os, "CreateDocumentFromTextDialog"), customSettings(_customSettings), alphabet(_alphabet), skipUnknownSymbols(_skipUnknownSymbols), replaceUnknownSymbols(_replaceUnknownSymbols),
+  symbol(_symbol), format(_format), saveFile(saveFile), useMethod(method)
     {
     sequenceName = _sequenceName;
     pasteDataHere = _pasteDataHere;

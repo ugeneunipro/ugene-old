@@ -56,7 +56,7 @@ public:
     } 
 
     RFResult(int _x, int _y, int _len, int _c, QString _fragment) 
-        : x(_x), y(_y), l(_len), c(_c), fragment(_fragment)
+        : fragment(_fragment), x(_x), y(_y), l(_len), c(_c)
     {   
         if(_c==0) c=l; else c = _c;
     }

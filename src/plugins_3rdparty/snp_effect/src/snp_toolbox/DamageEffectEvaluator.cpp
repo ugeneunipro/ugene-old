@@ -20,19 +20,20 @@
 namespace U2 {
 
 DamageEffectEvaluator::DamageEffectEvaluator(U2Dbi* dbiSession, U2Dbi* dbiDatabase, bool _useCache )
-:useCache(_useCache)
+:s3Dbi(NULL)
 ,varDbi(NULL)
 ,knownMutationsDbi(NULL)
 ,atrDbi(NULL)
 ,featureDbi(NULL)
 ,sequenceDbi(NULL)
 ,objectDbi(NULL)
-,complTransl(NULL)
-,aaTransl(NULL)
+,useCache(_useCache)
 ,superDupCache(NULL, U2FeatureSuperDupName)
 ,conservativeCache(NULL, U2FeatureConservativeName)
 ,geneCache(NULL)
 ,seqCache(NULL, U2DataId())
+,complTransl(NULL)
+,aaTransl(NULL)
 {
 
     const DNAAlphabet* alphabet = AppContext::getDNAAlphabetRegistry()->findById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT());
@@ -192,15 +193,15 @@ void DamageEffectEvaluator::initCaches(){
 
 bool DamageEffectEvaluator::checkDbi( U2OpStatus &os ){
 
-    SAFE_POINT(featureDbi != NULL, "Feature Dbi is null", false);
+    SAFE_POINT_EXT(featureDbi != NULL, os.setError("Feature Dbi is null"), false);
 
-    SAFE_POINT(atrDbi != NULL, "Attribute Dbi is null", false);
+    SAFE_POINT_EXT(atrDbi != NULL, os.setError("Attribute Dbi is null"), false);
 
-    SAFE_POINT(sequenceDbi != NULL, "sequence Dbi is null", false);
+    SAFE_POINT_EXT(sequenceDbi != NULL, os.setError("sequence Dbi is null"), false);
 
-    SAFE_POINT(objectDbi != NULL, "object Dbi is null", false);
+    SAFE_POINT_EXT(objectDbi != NULL, os.setError("object Dbi is null"), false);
 
-    SAFE_POINT(knownMutationsDbi != NULL, "knownMutationsDbi is null", false);
+    SAFE_POINT_EXT(knownMutationsDbi != NULL, os.setError("knownMutationsDbi is null"), false);
 
     return true;
 }
@@ -274,7 +275,7 @@ DamageEffect DamageEffectEvaluator::formatDamageEffect( const U2Variant& var, co
     return res;
 }
 
-DamageEffect DamageEffectEvaluator::formatDamageEffect( const U2Variant& var, const QString& geneName, bool isExonic, bool isFrameshift, float siftVal, U2OpStatus& os ){
+DamageEffect DamageEffectEvaluator::formatDamageEffect( const U2Variant& var, const QString& geneName, bool isExonic, bool isFrameshift, float siftVal, U2OpStatus& /*os*/ ){
     DamageEffect res;
 
     res.variant = var.id;

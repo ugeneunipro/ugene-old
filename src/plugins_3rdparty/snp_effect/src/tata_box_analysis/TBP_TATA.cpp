@@ -17,7 +17,7 @@ double sqrt(),  exp(),  log();
 
 double TBP_MeanFreq (char *S)
 {
-    double X, x;int N, Length, TBPLen=14, TBPStart=3;char *s;
+    double X, x;int N, Length, TBPLen=14/*, TBPStart=3*/;char *s;
     s=&S[0];Length=strlen(s);if (Length < TBPLen)return(-12345.);
     X=0.;N=0;s=&S[0];
     x=TBP_NatTATA_via_PWM_dsDNA_ssDNA(s);return(x);

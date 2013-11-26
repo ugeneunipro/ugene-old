@@ -263,7 +263,7 @@ void CoreLib::init() {
             lenMap["maximum"] = QVariant(100); 
             SpinBoxDelegate* spinDelegate  = new SpinBoxDelegate(lenMap);
 
-            proto->getEditor()->addDelegate(new ComboBoxDelegate(m), BaseAttributes::DOCUMENT_FORMAT_ATTRIBUTE().getId());
+            proto->getEditor()->addDelegate(comboDelegate, BaseAttributes::DOCUMENT_FORMAT_ATTRIBUTE().getId());
             proto->getEditor()->addDelegate(spinDelegate, BaseAttributes::SPLIT_SEQ_ATTRIBUTE().getId());
             proto->setPrompter(new WriteDocPrompter(tr("Save all sequences from <u>%1</u> to <u>%2</u>."), BaseSlots::DNA_SEQUENCE_SLOT().getId()));
             r->registerProto(BaseActorCategories::CATEGORY_DATASINK(), proto);

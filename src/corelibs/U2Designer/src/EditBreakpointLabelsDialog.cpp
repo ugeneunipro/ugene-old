@@ -32,8 +32,11 @@ namespace U2 {
 
 EditBreakpointLabelsDialog::EditBreakpointLabelsDialog(const QStringList &existingLabels,
     const QStringList &initCallingBreakpointLabels, QWidget *parent, Qt::WindowFlags f)
-    : QDialog(parent, f), callingBreakpointLabels(initCallingBreakpointLabels),
-    applienceControlsForLabels(), newLabelsAdded(), ui(new Ui::EditBreakpointLabelsDialog())
+    : QDialog(parent, f),
+      applienceControlsForLabels(),
+      callingBreakpointLabels(initCallingBreakpointLabels),
+      newLabelsAdded(),
+      ui(new Ui::EditBreakpointLabelsDialog())
 {
     ui->setupUi(this);
     ui->addLabelButton->setEnabled(false);

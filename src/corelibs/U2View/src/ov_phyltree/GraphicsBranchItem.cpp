@@ -184,7 +184,17 @@ void GraphicsBranchItem::initText(qreal d) {
 }
 
 GraphicsBranchItem::GraphicsBranchItem(bool withButton)
-: correspondingItem(NULL), buttonItem(NULL), distanceText(NULL), nameText(NULL), collapsed(false), branchLength(0), lengthCoef(1), nameItemSelection(NULL) {
+: correspondingItem(NULL),
+  buttonItem(NULL),
+  branchLength(0),
+  nameItemSelection(NULL),
+  distanceText(NULL),
+  nameText(NULL),
+  width(0),
+  dist(0),
+  collapsed(false),
+  lengthCoef(1)
+{
 
     setFlag(QGraphicsItem::ItemIsSelectable);
     setAcceptHoverEvents(false);
@@ -202,7 +212,14 @@ GraphicsBranchItem::GraphicsBranchItem(bool withButton)
 }
 
 GraphicsBranchItem::GraphicsBranchItem(const QString& name)
-: correspondingItem(NULL), buttonItem(NULL), distanceText(NULL), collapsed(false), branchLength(0), lengthCoef(1), nameItemSelection(NULL) {
+: correspondingItem(NULL),
+  buttonItem(NULL),
+  branchLength(0),
+  nameItemSelection(NULL),
+  distanceText(NULL),
+  collapsed(false),
+  lengthCoef(1)
+{
 
     setFlag(QGraphicsItem::ItemIsSelectable);
     setAcceptHoverEvents(false);
@@ -226,7 +243,17 @@ GraphicsBranchItem::GraphicsBranchItem(const QString& name)
 }
 
 GraphicsBranchItem::GraphicsBranchItem(qreal d, bool withButton)
-: correspondingItem(NULL), buttonItem(NULL), distanceText(NULL), nameText(NULL), collapsed(false), branchLength(0), lengthCoef(1), nameItemSelection(NULL) {
+: correspondingItem(NULL),
+  buttonItem(NULL),
+  branchLength(0),
+  nameItemSelection(NULL),
+  distanceText(NULL),
+  nameText(NULL),
+  width(0),
+  dist(0),
+  collapsed(false),
+  lengthCoef(1)
+{
 
     setFlag(QGraphicsItem::ItemIsSelectable);
     setAcceptHoverEvents(false);

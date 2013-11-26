@@ -251,7 +251,6 @@ QDFindGcActorPrototype::QDFindGcActorPrototype() {
 
     {
         QVariantMap bm; bm["minimum"] = 0; bm["maximum"] = 100; bm["suffix"] = "%";
-        minGcD;
         delegates[REGION_START_ATTR] = new SpinBoxDelegate(bm);
 
         QVariantMap m; m["minimum"] = 0; m["maximum"] = 100; m["suffix"] = "%";

@@ -691,6 +691,8 @@ void SmithWatermanDialog::loadDialogConfig()
     case (SmithWatermanSearchType_inTranslation):
         radioTranslation->setChecked(true);
         break;
+    default:
+        break;
     }
     
     const StrandOption strand = dialogConfig->strand;

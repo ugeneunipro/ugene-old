@@ -241,7 +241,7 @@ bool DownloadRemoteFileDialog::isDefaultDb(const QString& dbId){
     return registry.hasDbId(dbId);
 }
 
-void DownloadRemoteFileDialog::sl_onDbChanged( int idx ){
+void DownloadRemoteFileDialog::sl_onDbChanged( int /*idx*/ ){
     QString dbId = getDBId();
     QString hint;
     QString description;

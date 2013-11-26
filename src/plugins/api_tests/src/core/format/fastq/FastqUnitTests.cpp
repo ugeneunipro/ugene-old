@@ -20,7 +20,7 @@ void FastqFormatTestData::init() {
     QString tmpFile = QDir::temp().absoluteFilePath(QFileInfo(originalFile).fileName());
     IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
     ioAdapter = iof->createIOAdapter();
-    bool open = ioAdapter->open(tmpFile, IOAdapterMode_Append);
+    /*bool open = */ioAdapter->open(tmpFile, IOAdapterMode_Append);
     //CHECK_EQUAL(true, open, "ioAdapter is not opened");
     format = (FastqFormat*)AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::FASTQ);
     //CHECK_NOT_EQUAL(NULL, format, "Format is NULL");

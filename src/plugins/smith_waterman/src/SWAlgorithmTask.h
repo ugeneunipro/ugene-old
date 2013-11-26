@@ -87,11 +87,11 @@ class SWResultsPostprocessingTask : public Task{
     Q_OBJECT
 public:
     SWResultsPostprocessingTask(SmithWatermanSettings &_sWatermanConfig, QList<SmithWatermanResult> &_resultList, QList<PairAlignSequences> &_resPAS);
-    ~SWResultsPostprocessingTask(){};
+    ~SWResultsPostprocessingTask(){}
 
     void prepare();
     void run();
-    ReportResult report(){return ReportResult_Finished;};
+    ReportResult report(){return ReportResult_Finished;}
 private:
     SmithWatermanSettings sWatermanConfig;
     QList<SmithWatermanResult> resultList;
@@ -105,7 +105,6 @@ public:
 
     virtual bool convertCustomSettings();
 
-public:
     //all settings except sMatrix and pointers must be set up through customSettings and then must be converted by convertCustomSettings().
     SmithWatermanReportCallbackMAImpl* reportCallback;
     SmithWatermanResultListener* resultListener;
@@ -117,7 +116,6 @@ public:
     QString sMatrixName;
     SMatrix sMatrix;        //initialized by convertCustomSettings()
 
-public:
     static const QString PA_SW_GAP_OPEN;
     static const QString PA_SW_GAP_EXTD;
     static const QString PA_SW_PERCENT_OF_SCORE;

@@ -75,7 +75,7 @@ void MSAEditorTreeManager::loadRelatedTrees() {
     msaObject = editor->getMSAObject();
     QList<GObjectRelation> relatedTrees = editor->getMSAObject()->findRelatedObjectsByRole(GObjectRelationRole::PHYLOGENETIC_TREE); 
     CHECK(!relatedTrees.isEmpty(),);
-    TaskScheduler* scheduler = AppContext::getTaskScheduler();
+
     foreach(const GObjectRelation rel, relatedTrees) {
         const QString& treeFileName = rel.getDocURL();
         loadTreeFromFile(treeFileName);
@@ -179,7 +179,7 @@ void MSAEditorTreeManager::sl_openTree() {
         if(!d->isLoaded()) {
             phyTree = treeGeneratorTask->getResult();
             LoadUnloadedDocumentTask* t = new LoadUnloadedDocumentTask(d);
-            bool res = connect(new TaskSignalMapper(t), SIGNAL(si_taskSucceeded(Task*)), SLOT(sl_onPhyTreeDocLoaded(Task*)));
+            connect(new TaskSignalMapper(t), SIGNAL(si_taskSucceeded(Task*)), SLOT(sl_onPhyTreeDocLoaded(Task*)));
             AppContext::getTaskScheduler()->registerTopLevelTask(t);
             return;
         }
@@ -254,8 +254,6 @@ void MSAEditorTreeManager::sl_openTreeTaskFinished(Task* t) {
                 treeView->setCreatePhyTreeSettings(settings);
                 treeView->setParentAignmentName(msaObject->getMAlignment().getName());
             }
-
-            const TreeViewerUI* treeUI = treeView->getTreeViewerUI();
 
             treeView->setMSAEditor(editor);
             treeView->setSynchronizationMode(settings.syncAlignmentWithTree ? FullSynchronization : OnlySeqsSelection);

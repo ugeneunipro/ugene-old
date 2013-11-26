@@ -78,7 +78,7 @@ public:
 
     static void sleep(int msec = 2000);
     static void sendEvent(QObject *obj, QEvent *e);
-    static void GUITestFail(){uiLog.trace("\nGT_DEBUG_MESSAGE !!!FIRST FAIL");};
+    static void GUITestFail(){uiLog.trace("\nGT_DEBUG_MESSAGE !!!FIRST FAIL");}
 };
 
 } //namespace

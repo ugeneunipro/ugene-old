@@ -652,7 +652,7 @@ void GalaxyConfigTask::writeMinAndMaxAttributes( const PropertyDelegate &pd ) {
     galaxyConfigOutput.writeAttribute( MAX, maxValue );
 }
 
-bool GalaxyConfigTask::tryToWriteComplexType( PropertyDelegate *pd, const QString &attributeName ) {
+bool GalaxyConfigTask::tryToWriteComplexType( PropertyDelegate *pd, const QString &/*attributeName*/ ) {
     QString attributeType = QString();
     assert( pd != NULL );
     if( isDelegateComboBox(pd) ) {

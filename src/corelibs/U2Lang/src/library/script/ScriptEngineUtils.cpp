@@ -68,7 +68,7 @@ SharedDbiDataHandler ScriptEngineUtils::getDbiId(QScriptEngine *engine, const QS
     return SharedDbiDataHandler();
 }
 
-SharedDbiDataHandler ScriptEngineUtils::getDbiId(QScriptEngine *engine, const QScriptValue &value) {
+SharedDbiDataHandler ScriptEngineUtils::getDbiId(QScriptEngine */*engine*/, const QScriptValue &value) {
     if (value.isVariant()) {
         QVariant var = value.toVariant();
         if (var.canConvert<SharedDbiDataHandler>()) {

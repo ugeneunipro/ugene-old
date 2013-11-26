@@ -54,7 +54,7 @@ private:
 enum SynchronizationMode {
     FullSynchronization,
     OnlySeqsSelection,
-    WithoutSynchronization,
+    WithoutSynchronization
 };
 
 class MSAEditorTreeViewer: public TreeViewer {
@@ -68,8 +68,6 @@ public:
 
     void setCreatePhyTreeSettings(const CreatePhyTreeSettings& _buildSettings);
     void setParentAignmentName(const QString& _alignmentName) {alignmentName = _alignmentName;}
-
-    void setTreeVerticalSize(int size);
 
     QAction* getSortSeqsAction() const {return sortSeqAction;}
     void setSynchronizationMode(SynchronizationMode newSyncMode);
@@ -107,7 +105,6 @@ public:
     QStringList* getOrderedSeqNames();
 
     U2Region getTreeSize(); 
-    void setTreeVerticalSize(int size);
 
     virtual void setTreeLayout(TreeLayout newLayout);
 
@@ -135,7 +132,6 @@ public slots:
 private slots:
     void sl_selectionChanged(const QStringList& selection);
     void sl_sequenceNameChanged(QString prevName, QString newName);
-    void sl_onHeightChanged(int height, bool isMinimumSize, bool isMaximumSize);
     void sl_onReferenceSeqChanged(qint64);
     void sl_onSceneRectChanged(const QRectF&);
     virtual void sl_rectLayoutRecomputed();

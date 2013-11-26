@@ -1084,13 +1084,11 @@ GUI_TEST_CLASS_DEFINITION(test_0015) {
     GTGlobals::sleep();
 
     GTGlobals::sleep();
-    QAction *showComplementAction = GTAction::findAction(os, "complement_action");
     QAbstractButton* complement = GTAction::button(os, "complement_action");
     GTGlobals::sleep();
     CHECK_SET_ERR(complement -> isEnabled() == false, "button is not disabled");
 
     GTGlobals::sleep();
-    QAction *showTranslationAction = GTAction::findAction(os, "translation_action");
     QAbstractButton* translation = GTAction::button(os, "translation_action");
     GTGlobals::sleep();
     CHECK_SET_ERR(translation -> isEnabled() == false, "button is not disabled");
@@ -1101,13 +1099,11 @@ GUI_TEST_CLASS_DEFINITION(test_0015) {
     GTGlobals::sleep();
 
     GTGlobals::sleep();
-    QAction *showComplementAction1 = GTAction::findAction(os, "complement_action");
     QAbstractButton* complement1 = GTAction::button(os, "complement_action");
     GTGlobals::sleep();
     CHECK_SET_ERR(complement1 -> isEnabled() == true, "button is not enabled");
 
     GTGlobals::sleep();
-    QAction *showTranslationAction1 = GTAction::findAction(os, "translation_action");
     QAbstractButton* translation1 = GTAction::button(os, "translation_action");
     GTGlobals::sleep();
     CHECK_SET_ERR(translation1 -> isEnabled() == true, "button is not enabled");
@@ -1131,13 +1127,11 @@ GUI_TEST_CLASS_DEFINITION(test_0015_1) {
     GTGlobals::sleep();
 
     GTGlobals::sleep();
-    QAction *showComplementAction = GTAction::findAction(os, "complement_action");
     QAbstractButton* complement = GTAction::button(os, "complement_action");
     GTGlobals::sleep();
     CHECK_SET_ERR(complement -> isEnabled() == false, "button is not disabled");
 
     GTGlobals::sleep();
-    QAction *showTranslationAction = GTAction::findAction(os, "translation_action");
     QAbstractButton* translation = GTAction::button(os, "translation_action");
     GTGlobals::sleep();
     CHECK_SET_ERR(translation -> isEnabled() == false, "button is not disabled");
@@ -1148,13 +1142,11 @@ GUI_TEST_CLASS_DEFINITION(test_0015_1) {
     GTGlobals::sleep();
 
     GTGlobals::sleep();
-    QAction *showComplementAction1 = GTAction::findAction(os, "complement_action");
     QAbstractButton* complement1 = GTAction::button(os, "complement_action");
     GTGlobals::sleep();
     CHECK_SET_ERR(complement1 -> isEnabled() == true, "button is not enabled");
 
     GTGlobals::sleep();
-    QAction *showTranslationAction1 = GTAction::findAction(os, "translation_action");
     QAbstractButton* translation1 = GTAction::button(os, "translation_action");
     GTGlobals::sleep();
     CHECK_SET_ERR(translation1 -> isEnabled() == true, "button is not enabled");
@@ -1178,13 +1170,11 @@ GUI_TEST_CLASS_DEFINITION(test_0015_2) {
     GTGlobals::sleep();
 
     GTGlobals::sleep();
-    QAction *showTranslationAction = GTAction::findAction(os, "complement_action");
     QAbstractButton* complement = GTAction::button(os, "complement_action");
     GTGlobals::sleep();
     CHECK_SET_ERR(complement -> isEnabled() == false, "button is not disabled");
 
     GTGlobals::sleep();
-    QAction *showComplementAction = GTAction::findAction(os, "translation_action");
     QAbstractButton* translation = GTAction::button(os, "translation_action");
     GTGlobals::sleep();
     CHECK_SET_ERR(translation -> isEnabled() == false, "button is not disabled");
@@ -1195,13 +1185,11 @@ GUI_TEST_CLASS_DEFINITION(test_0015_2) {
     GTGlobals::sleep();
 
     GTGlobals::sleep();
-    QAction *showComplementAction1 = GTAction::findAction(os, "complement_action");
     QAbstractButton* complement1 = GTAction::button(os, "complement_action");
     GTGlobals::sleep();
     CHECK_SET_ERR(complement1 -> isEnabled() == true, "button is not enabled");
 
     GTGlobals::sleep();
-    QAction *showTranslationAction1 = GTAction::findAction(os, "translation_action");
     QAbstractButton* translation1 = GTAction::button(os, "translation_action");
     GTGlobals::sleep();
     CHECK_SET_ERR(translation1 -> isEnabled() == true, "button is not enabled");

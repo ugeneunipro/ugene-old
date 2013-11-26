@@ -24,26 +24,30 @@ namespace U2 {
 //////////////////////////////////////////////////////////////////////////
 //VariationInfo
 VariationInfo::VariationInfo( const U2Variant& var, const U2DataId& _seqId, U2SequenceDbi* _seqDbi, U2AttributeDbi* _attrDbi, const QString& _sequenceName)
-:variant(var)
+:seqDbi(_seqDbi)
+,attrDbi(_attrDbi)
+,variant(var)
 ,seqId(_seqId)
 ,sequenceName(_sequenceName)
 ,genesFound(false)
 ,effectLoaded(false)
-,seqDbi(_seqDbi)
-,attrDbi(_attrDbi)
+,complTransl(NULL)
+,aaTransl(NULL)
 {
     initOrderColumns();
 }
 
 VariationInfo::VariationInfo( const U2Variant& var, const U2DataId& _seqId, const QList<Gene>& _genes, U2SequenceDbi* _seqDbi, U2AttributeDbi* _attrDbi, const QString& _sequenceName)
-:variant(var)
+:seqDbi(_seqDbi)
+,attrDbi(_attrDbi)
+,variant(var)
 ,seqId(_seqId)
 ,sequenceName(_sequenceName)
 ,genes(_genes)
 ,genesFound(true)
 ,effectLoaded(false)
-,seqDbi(_seqDbi)
-,attrDbi(_attrDbi)
+,complTransl(NULL)
+,aaTransl(NULL)
 {
     initOrderColumns();
 }
@@ -560,33 +564,13 @@ bool VariationInfo::isIntergenic(){
     return false;
 }
 
-QString VariationInfo::getNearGenes(const QList<Gene>& predefinedGenes){
+QString VariationInfo::getNearGenes(){
     QString text;
     if (!isIntergenic()){
         return text;
     }
+
     text = "INTERGENIC.";
-    /*QList<Gene> genesAround = predefinedGenes;
-    
-    if (genesAround.isEmpty()){
-        U2OpStatusImpl opStatus;
-        QList<int> excludeList;
-        excludeList.append(SNPTablesUtils::ExcludeSubfeatures);
-        excludeList.append(SNPTablesUtils::ExcludeCDS);
-        genesAround = SNPTablesUtils::findGenesAround(seqId, VARIATION_REGION(variant), AppContext::getSession()->getDatabase()->getDbi().dbi->getFeatureDbi(), opStatus, excludeList);
-        CHECK_OP(opStatus, text);
-    }
-    if (genesAround.size() == 2){
-        QString genename1;
-        QString genename2;
-        genename1 = genesAround.at(0).getName();
-        genename2 = genesAround.at(1).getName();
-        text.append(QString(" Between %1 and %2").arg(genename1).arg(genename2));
-    }else if (genesAround.size() == 1){
-        QString genename1;
-        genename1 = genesAround.at(0).getName();
-        text.append(QString(" Near %1").arg(genename1));
-    }*/
     return text;
 }
 

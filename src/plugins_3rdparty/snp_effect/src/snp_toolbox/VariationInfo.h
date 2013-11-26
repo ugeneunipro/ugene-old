@@ -74,7 +74,7 @@ public:
     Gene getGeneByName(const QString& name) const;
 
     bool isIntergenic();
-    QString getNearGenes(const QList<Gene>& predefinedGenes = QList<Gene>());
+    QString getNearGenes();
 
     static QList<ReportColumns> getInGeneOrder();
     static QList<ReportColumns> getOutGeneOrder();

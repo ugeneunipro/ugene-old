@@ -62,7 +62,7 @@ public:
     };
 
     AppResource(int id, int _maxUse, const QString& _name, const QString& _suffix = QString()) 
-        : resourceId(id), _maxUse(_maxUse), name(_name), suffix(_suffix), systemUse(0) {}
+        : name(_name), suffix(_suffix), resourceId(id), _maxUse(_maxUse), systemUse(0) {}
 
     virtual ~AppResource(){}
 
@@ -155,6 +155,7 @@ public:
     }
 
     virtual void release(int n, MemoryLockType lt = TaskMemory) {
+        Q_UNUSED(n);
         Q_UNUSED(lt);
         resource->unlock();
     }

@@ -38,10 +38,13 @@ namespace U2 {
 BreakpointHitCountDialog::BreakpointHitCountDialog(const QStringList &hitCountConditions,
     const QString &conditionOnLaunch, quint32 hitCountParameterOnLaunch, quint32 hitCountOnLaunch,
     const QStringList &hitCountersListWithoutParameter, QWidget *parent, Qt::WindowFlags f)
-    : QDialog(parent, f), isHitCounterReset(false), chosenCondition(conditionOnLaunch),
-    hitCounterParameter(LOWER_BOUNDARY_FOR_HIT_COUNTER_PARAMETER),
-    initialCondition(conditionOnLaunch), initialParameter(hitCountParameterOnLaunch),
-    hitCountersConditionsWithoutParameter(hitCountersListWithoutParameter)
+    : QDialog(parent, f),
+      initialCondition(conditionOnLaunch),
+      initialParameter(hitCountParameterOnLaunch),
+      hitCountersConditionsWithoutParameter(hitCountersListWithoutParameter),
+      chosenCondition(conditionOnLaunch),
+      hitCounterParameter(LOWER_BOUNDARY_FOR_HIT_COUNTER_PARAMETER),
+      isHitCounterReset(false)
 {
     ui = new Ui_BreakpointHitCountDialog();
     ui->setupUi(this);

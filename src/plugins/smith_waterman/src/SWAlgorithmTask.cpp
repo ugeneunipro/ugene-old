@@ -181,7 +181,7 @@ void SWAlgorithmTask::setupTask(int maxScore) {
         case SW_sse2:
 #ifdef SW2_BUILD_WITH_SSE2
             addTaskResource(TaskResourceUsage(RESOURCE_MEMORY,
-                SmithWatermanAlgorithmSSE2::estimateNeededRamAmount(sWatermanConfig.pSm, sWatermanConfig.ptrn,
+                SmithWatermanAlgorithmSSE2::estimateNeededRamAmount(sWatermanConfig.ptrn,
                     sWatermanConfig.sqnc.left(c.chunkSize * c.nThreads), sWatermanConfig.gapModel.scoreGapOpen,
                     sWatermanConfig.gapModel.scoreGapExtd, minScore, maxScore, sWatermanConfig.resultView),
                 true));
@@ -740,7 +740,7 @@ void PairwiseAlignmentSmithWatermanTask::setupTask() {
         case SW_sse2:
 #ifdef SW2_BUILD_WITH_SSE2
             addTaskResource(TaskResourceUsage(RESOURCE_MEMORY,
-                SmithWatermanAlgorithmSSE2::estimateNeededRamAmount(settings->sMatrix, *ptrn,
+                SmithWatermanAlgorithmSSE2::estimateNeededRamAmount(*ptrn,
                     sqnc->left(c.chunkSize * c.nThreads), settings->gapOpen, settings->gapExtd,
                     minScore, maxScore, SmithWatermanSettings::MULTIPLE_ALIGNMENT),
                 true));

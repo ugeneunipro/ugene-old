@@ -237,7 +237,7 @@ void BaseWorker::addMessagesFromBackupToAppropriratePort(CommunicationChannel *c
     }
 }
 
-bool BaseWorker::canTaskBeCanceled(Task *workerTask) const {
+bool BaseWorker::canTaskBeCanceled(Task */*workerTask*/) const {
     return false;
 }
 

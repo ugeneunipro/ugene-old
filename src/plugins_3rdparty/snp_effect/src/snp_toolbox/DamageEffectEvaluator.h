@@ -27,6 +27,7 @@ enum DamageEffectType{
 };
 
 class DamageEffectEvaluator {
+    Q_DISABLE_COPY(DamageEffectEvaluator)
 public:
     DamageEffectEvaluator (U2Dbi* dbiSession, U2Dbi* dbiDatabase, bool useCache = true);
     virtual ~DamageEffectEvaluator();

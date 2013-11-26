@@ -173,8 +173,8 @@ DataBunch* GenomeAlignerFindTask::waitForDataBunch() {
     }
 }
 
-#define CHECK_BREAK(a) {if (!(a)) {algoLog.trace("Break because of ![" #a "]"); break;}}
-#define CHECK_CONTINUE(a) {if (!(a)) {algoLog.trace("Continue because of ![" #a "]"); continue;}}
+#define GA_CHECK_BREAK(a) {if (!(a)) {algoLog.trace("Break because of ![" #a "]"); break;}}
+#define GA_CHECK_CONTINUE(a) {if (!(a)) {algoLog.trace("Continue because of ![" #a "]"); continue;}}
 
 ShortReadAlignerCPU::ShortReadAlignerCPU(int taskNo, GenomeAlignerIndex *i, AlignContext *s, GenomeAlignerWriteTask *w)
 : Task("ShortReadAlignerCPU", TaskFlag_None), taskNo(taskNo), index(i), alignContext(s), writeTask(w)
@@ -206,13 +206,13 @@ void ShortReadAlignerCPU::run() {
 
         do {
             DataBunch *dataBunch = parent->waitForDataBunch();
-            CHECK_BREAK(dataBunch);
+            GA_CHECK_BREAK(dataBunch);
             algoLog.trace(QString("[%1] Got for aligning").arg(taskNo));
 
             quint64 t0=0, fullStart = GTimer::currentTimeMicros();
 
             int length = dataBunch->bitValuesV.size();
-            CHECK_BREAK(length);
+            GA_CHECK_BREAK(length);
 
             dataBunch->prepareSorted();
             int binaryFound = 0;
@@ -233,7 +233,7 @@ void ShortReadAlignerCPU::run() {
             int skipped = 0;
             for (int i = 0; i < length; i++) {
                 ShortReadData srData(dataBunch, i);
-                CHECK_CONTINUE(srData.valid);
+                GA_CHECK_CONTINUE(srData.valid);
                 if (alignContext->bestMode && srData.haveExactResult()) {
                     skipped++;
                     continue;
@@ -293,11 +293,11 @@ void ShortReadAlignerOpenCL::run() {
 
         do {
             DataBunch *dataBunch = parent->waitForDataBunch();
-            CHECK_BREAK(dataBunch);
+            GA_CHECK_BREAK(dataBunch);
             algoLog.trace(QString("[%1] Got for aligning").arg(taskNo));
 
             int length = dataBunch->bitValuesV.size();
-            CHECK_BREAK(length);
+            GA_CHECK_BREAK(length);
 
             BinarySearchResult* binarySearchResults = index->bitMaskBinarySearchOpenCL(dataBunch->bitValuesV.constData(), dataBunch->bitValuesV.size(), 
                 dataBunch->windowSizes.constData());
@@ -309,7 +309,7 @@ void ShortReadAlignerOpenCL::run() {
             int skipped = 0;
             for (int i = 0; i < length; i++) {
                 ShortReadData srData(dataBunch, i);
-                CHECK_CONTINUE(srData.valid);
+                GA_CHECK_CONTINUE(srData.valid);
                 if (alignContext->bestMode && srData.haveExactResult()) {
                     skipped++;
                     continue;

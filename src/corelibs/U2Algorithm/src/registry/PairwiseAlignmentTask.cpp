@@ -39,9 +39,15 @@ PairwiseAlignmentTaskSettings::PairwiseAlignmentTaskSettings(const QVariantMap& 
 }
 
 PairwiseAlignmentTaskSettings::PairwiseAlignmentTaskSettings(const PairwiseAlignmentTaskSettings &s) :
-    algorithmName(s.algorithmName), realizationName(s.realizationName), firstSequenceRef(s.firstSequenceRef),
-    secondSequenceRef(s.secondSequenceRef), msaRef(s.msaRef), inNewWindow(s.inNewWindow), alphabet(s.alphabet),
-    resultFileName(s.resultFileName), customSettings(s.customSettings) {
+    algorithmName(s.algorithmName),
+    realizationName(s.realizationName),
+    firstSequenceRef(s.firstSequenceRef),
+    secondSequenceRef(s.secondSequenceRef),
+    msaRef(s.msaRef),
+    inNewWindow(s.inNewWindow),
+    alphabet(s.alphabet),
+    resultFileName(s.resultFileName),
+    customSettings(s.customSettings) {
 }
 
 PairwiseAlignmentTaskSettings::~PairwiseAlignmentTaskSettings() {

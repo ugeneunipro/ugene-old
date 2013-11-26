@@ -99,7 +99,7 @@ void GTFile::restore(U2OpStatus &os, const QString& path) {
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "check"
-bool GTFile::check(U2OpStatus &os, const QString& path) {
+bool GTFile::check(U2OpStatus &/*os*/, const QString& path) {
     QFile file(path);
     return file.exists();
 }

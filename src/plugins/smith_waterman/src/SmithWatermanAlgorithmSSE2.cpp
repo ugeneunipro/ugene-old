@@ -60,8 +60,8 @@ using namespace std;
 
 namespace U2 {
     
-quint64 SmithWatermanAlgorithmSSE2::estimateNeededRamAmount(const SMatrix& sm, QByteArray
-    const & _patternSeq, QByteArray const & _searchSeq, const qint32 gapOpen,
+quint64 SmithWatermanAlgorithmSSE2::estimateNeededRamAmount(const QByteArray
+    & _patternSeq, const QByteArray & _searchSeq, const qint32 gapOpen,
     const qint32 gapExtension, const quint32 minScore, const quint32 maxScore,
     const SmithWatermanSettings::SWResultView resultView)
 {
@@ -92,8 +92,8 @@ quint64 SmithWatermanAlgorithmSSE2::estimateNeededRamAmount(const SMatrix& sm, Q
     return memNeeded / b_to_mb_factor;
 }
 
-void SmithWatermanAlgorithmSSE2::launch(const SMatrix& _substitutionMatrix, QByteArray const & _patternSeq,
-    QByteArray const & _searchSeq, int _gapOpen, int _gapExtension, int _minScore, SmithWatermanSettings::SWResultView _resultView) {
+void SmithWatermanAlgorithmSSE2::launch(const SMatrix& _substitutionMatrix, const QByteArray & _patternSeq,
+    const QByteArray & _searchSeq, int _gapOpen, int _gapExtension, int _minScore, SmithWatermanSettings::SWResultView _resultView) {
     setValues(_substitutionMatrix, _patternSeq, _searchSeq, _gapOpen, _gapExtension, _minScore, _resultView);
     int maxScore = 0;
     if (isValidParams() && calculateMatrixLength()) {

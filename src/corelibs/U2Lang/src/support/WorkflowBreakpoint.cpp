@@ -25,8 +25,10 @@
 namespace U2 {
 
 WorkflowBreakpoint::WorkflowBreakpoint(const ActorId &actor, Workflow::WorkflowContext *context)
-    : actorId(actor), enabled(true),
-    hitCounter(BaseBreakpointHitCounter::createInstance()), conditionChecker(QString(), context)
+    : enabled(true),
+      actorId(actor),
+      hitCounter(BaseBreakpointHitCounter::createInstance()),
+      conditionChecker(QString(), context)
 {
 
 }

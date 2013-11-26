@@ -36,7 +36,7 @@ public:
     GTAbstractGUIAction(Priority priority) : priority(priority), obj(NULL){}
     virtual ~GTAbstractGUIAction(){}
 
-    GTAbstractGUIAction(const GTAbstractGUIAction& a) : obj(a.obj), priority(a.priority) {}
+    GTAbstractGUIAction(const GTAbstractGUIAction& a) : Runnable(a), priority(a.priority), obj(a.obj) {}
 
     virtual void init(QObject* obj) {
         this->obj = obj;

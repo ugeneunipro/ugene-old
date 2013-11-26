@@ -88,7 +88,6 @@ QList< QPair<QString,QString> > QDRepeatActor::saveConfiguration() const
         }
     }
 
-    Attribute* fa = cfg->getParameter(NESTED_ATTR);
     for (int i=0; i<res.size(); i++) 
     {
         QPair<QString, QString>& attr = res[i];

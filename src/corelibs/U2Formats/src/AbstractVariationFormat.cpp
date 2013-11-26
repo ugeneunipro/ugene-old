@@ -268,6 +268,8 @@ FormatCheckResult AbstractVariationFormat::checkRawData(const QByteArray &dataPr
                 case ColumnRole_ObsData:
                     isCorrect = wordExp.exactMatch(col);
                     break;
+                default:
+                    break;
             }
             if(!isCorrect) {
                 mismatchesNumber++;

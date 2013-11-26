@@ -45,8 +45,8 @@ ImportAnnotationsToCsvFiller::ImportAnnotationsToCsvFiller(U2OpStatus &_os, cons
         const QString &_skipAllLinesStartsWith, bool _interpretMultipleAsSingle,
         bool _removeQuotesButton, const QString &_defaultAnnotationName, const RoleParameters& _roleParameters, GTGlobals::UseMethod method):
 Filler(_os, "ImportAnnotationsFromCSVDialog"), fileToRead(_fileToRead), resultFile(_resultFile), format(_format), 
-       addResultFileToProject(_addResultFileToProject), columnSeparator(_columnSeparator), separator(_separator), 
-       script(_script), numberOfLines(_numberOfLines), 
+       addResultFileToProject(_addResultFileToProject), columnSeparator(_columnSeparator), script(_script),
+       numberOfLines(_numberOfLines), separator(_separator),
        skipAllLinesStartsWith(_skipAllLinesStartsWith), interpretMultipleAsSingle(_interpretMultipleAsSingle),
        removeQuotesButton(_removeQuotesButton), defaultAnnotationName(_defaultAnnotationName), roleParameters(_roleParameters), useMethod(method) {
 

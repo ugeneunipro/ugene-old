@@ -450,7 +450,10 @@ void EntrezQueryTask::run( )
     stateInfo.progress = 0;
     ioLog.trace( "Entrez query task started..." );
     createLoopAndNetworkManager( );
-    NetworkConfiguration *nc = AppContext::getAppSettings( )->getNetworkConfiguration( );
+
+    NetworkConfiguration* nc = AppContext::getAppSettings( )->getNetworkConfiguration( );
+    QNetworkProxy proxy = nc->getProxyByUrl( query );
+    networkManager->setProxy( proxy );
 
     QUrl request( query );
     ioLog.trace( QString( "Sending request: %1" ).arg( query ) );

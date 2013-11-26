@@ -41,14 +41,12 @@ public:
 
     virtual bool convertCustomSettings();
 
-public:
     //all settings except translationTable must be set up through customSettings and then must be converted by convertCustomSettings().
     int gapOpen;
     int gapExtd;
     int gapTerm;
     int bonusScore;
 
-public:
     static const QString PA_H_GAP_OPEN;
     static const QString PA_H_GAP_EXTD;
     static const QString PA_H_GAP_TERM;

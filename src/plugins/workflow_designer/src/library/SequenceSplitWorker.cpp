@@ -179,8 +179,6 @@ void SequenceSplitWorker::cleanup() {
 }
 
 void SequenceSplitWorker::sl_onTaskFinished( Task * ) {
-    int count = 0;
-
     QVariantMap channelContext = outPort->getContext();
     foreach( Task * t, ssTasks ) {
         ExtractAnnotatedRegionTask * ssT = qobject_cast<ExtractAnnotatedRegionTask *>(t);

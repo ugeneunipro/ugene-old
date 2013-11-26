@@ -31,7 +31,7 @@ MarkerAttribute::MarkerAttribute(const Descriptor& d, const DataTypePtr type, bo
 
 }
 
-void MarkerAttribute::setAttributeValue(const QVariant &newVal) {
+void MarkerAttribute::setAttributeValue(const QVariant &/*newVal*/) {
     FAIL("marker set value", );
 }
 

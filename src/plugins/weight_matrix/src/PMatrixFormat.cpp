@@ -53,7 +53,7 @@ Document* PFMatrixFormat::createNewLoadedDocument( IOAdapterFactory* io, const Q
     return d;
 }
 
-U2::FormatCheckResult PFMatrixFormat::checkRawData( const QByteArray& rawData, const GUrl& url ) const{
+U2::FormatCheckResult PFMatrixFormat::checkRawData( const QByteArray& rawData, const GUrl& /*url*/ ) const{
     const char* data = rawData.constData();
     int size = rawData.size();
     if(TextUtils::contains(TextUtils::BINARY, data, size)){

@@ -30,7 +30,7 @@ namespace U2 {
 SequenceDbiWalkerTask::SequenceDbiWalkerTask(const SequenceDbiWalkerConfig& c, SequenceDbiWalkerCallback* cb, const QString& name, TaskFlags tf) 
 : Task(name, tf), config(c), callback(cb)
 {
-    assert(config.chunkSize > config.overlapSize); // if chunk == overlap -> infinite loop occurs
+    assert(config.chunkSize > static_cast<uint>(config.overlapSize)); // if chunk == overlap -> infinite loop occurs
     assert(cb != NULL);
     assert(config.strandToWalk == StrandOption_DirectOnly || config.complTrans!=NULL);
 

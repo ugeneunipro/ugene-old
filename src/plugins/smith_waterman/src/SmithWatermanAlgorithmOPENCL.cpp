@@ -52,15 +52,15 @@ SmithWatermanAlgorithmOPENCL::SmithWatermanAlgorithmOPENCL()  :
         backtraceBegins(NULL)
 {}
 
-quint64 SmithWatermanAlgorithmOPENCL::estimateNeededGpuMemory(const SMatrix& sm, QByteArray const & _patternSeq,
-                                                                QByteArray const & _searchSeq) {
+quint64 SmithWatermanAlgorithmOPENCL::estimateNeededGpuMemory(const SMatrix& sm, const QByteArray & _patternSeq,
+                                                                const QByteArray & _searchSeq) {
     const quint64 queryLength = _patternSeq.size();
     const quint64 searchLen = _searchSeq.size();
     const quint64 subLen = sm.getAlphabet()->getNumAlphabetChars();
     const QByteArray & alphChars = sm.getAlphabet()->getAlphabetChars();
     const quint64 profLen = subLen * (queryLength + 1) * (alphChars[ alphChars.size()-1 ] + 1);
     quint32 queryDevider = 1;
-    if (queryLength > MAX_SHARED_VECTOR_LENGTH) {
+    if (queryLength > static_cast<quint64>(MAX_SHARED_VECTOR_LENGTH)) {
         queryDevider = (queryLength + MAX_SHARED_VECTOR_LENGTH - 1) / MAX_SHARED_VECTOR_LENGTH;
     }
 
@@ -78,8 +78,8 @@ quint64 SmithWatermanAlgorithmOPENCL::estimateNeededGpuMemory(const SMatrix& sm,
     return memToAlloc; //factor 8/5 is used because OpenCL won't allocate all or almost all available GPU memory
 }
 
-quint64 SmithWatermanAlgorithmOPENCL::estimateNeededRamAmount(const SMatrix& sm, QByteArray const & _patternSeq,
-                                                                QByteArray const & _searchSeq,
+quint64 SmithWatermanAlgorithmOPENCL::estimateNeededRamAmount(const SMatrix& sm, const QByteArray & _patternSeq,
+                                                                const QByteArray & _searchSeq,
                                                                 const SmithWatermanSettings::SWResultView resultView) {
     const quint64 queryLength = _patternSeq.size();
     const quint64 searchLen = _searchSeq.size();
@@ -143,7 +143,7 @@ bool hasOPENCLError(int err, QString errorMessage) {
     }
 }
 
-void SmithWatermanAlgorithmOPENCL::launch(const SMatrix& sm, QByteArray const & _patternSeq, QByteArray const & _searchSeq,
+void SmithWatermanAlgorithmOPENCL::launch(const SMatrix& sm, const QByteArray & _patternSeq, const QByteArray & _searchSeq,
     int _gapOpen, int _gapExtension, int _minScore, SmithWatermanSettings::SWResultView _resultView) {
 
     setValues(sm, _patternSeq, _searchSeq, _gapOpen, _gapExtension, _minScore, _resultView);

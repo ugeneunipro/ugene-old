@@ -492,7 +492,7 @@ class ExecStringValidator : public QValidator {
 public:
     ExecStringValidator(QObject *parent = 0)
         : QValidator(parent) {}
-    State validate(QString &input, int &pos) const {
+    State validate(QString &input, int &/*pos*/) const {
         if (input.contains("\"")) {
             return Invalid;
         }

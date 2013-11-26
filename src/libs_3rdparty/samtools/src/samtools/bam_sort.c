@@ -311,7 +311,7 @@ static int change_SO(bam_header_t *h, const char *so)
                 *p = '\n'; // change back
                 if (strncmp(q + 4, so, p - q - 4) != 0) {
                     beg = q;
-                    for (q += 4; *q != '\n' && *q != '\t'; ++q);
+                    for (q += 4; *q != '\n' && *q != '\t'; ++q) {}
                     end = q;
                 } else return 0; // no need to change
             } else beg = end = p, *p = '\n';
@@ -439,7 +439,7 @@ void bam_sort_core_ext(int is_by_qname, const char *fn, const char *prefix, size
 		}
 		free(fns);
 	}
-	for (k = 0; k < max_mem / BAM_CORE_SIZE; ++k) {
+        for (k = 0; (size_t)k < max_mem / BAM_CORE_SIZE; ++k) {
 		if (buf[k]) {
 			free(buf[k]->data);
 			free(buf[k]);

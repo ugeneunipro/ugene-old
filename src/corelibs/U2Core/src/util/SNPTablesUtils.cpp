@@ -63,7 +63,7 @@ QList<Gene> SNPTablesUtils::findGenes(const U2DataId& seqId, const U2Region &reg
         }
         while(featureIterator->hasNext()) {
 
-            qint64 nTime = GTimer::currentTimeMicros();
+//            qint64 nTime = GTimer::currentTimeMicros();
 
             U2Feature parentFeature = featureIterator->next();
 //             perfLog.trace(QString("Find parent time (millis)= %1").arg(GTimer::millisBetween(nTime, GTimer::currentTimeMicros())));
@@ -343,7 +343,7 @@ void SNPTablesUtils::calcDamageEffectForTrack( const U2VariantTrack& track, U2Db
     }
 }
 
-QList<Gene> SNPTablesUtils::findRegulatedGenes( const U2DataId& seqId, const U2Region &region, U2FeatureDbi* dbi, U2OpStatus &opStatus, const QList<int>& excludeList  ){
+QList<Gene> SNPTablesUtils::findRegulatedGenes( const U2DataId& seqId, const U2Region &region, U2FeatureDbi* dbi, U2OpStatus &opStatus, const QList<int>& /*excludeList*/  ){
     QList<Gene> genes;
     QList<Gene> curGenes;
 

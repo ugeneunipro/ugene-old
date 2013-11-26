@@ -27,6 +27,7 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/CMDLineCoreOptions.h>
 #include <U2Core/Timer.h>
+#include <U2Core/U2SafePoints.h>
 #include <U2Gui/MainWindow.h>
 #include <QtCore/QMap>
 
@@ -105,7 +106,8 @@ void GUITestLauncher::firstTestRunCheck(const QString& testName) {
 
 bool GUITestLauncher::initGUITestBase() {
     GUITestBase* b = AppContext::getGUITestBase();
-    QList<GUITest *> list = AppContext::getGUITestBase()->getTests();
+    SAFE_POINT(NULL != b, "Test base is NULL", false);
+    QList<GUITest *> list = b->getTests();
     if (list.isEmpty()) {
         setError(tr("No tests to run"));
         return false;

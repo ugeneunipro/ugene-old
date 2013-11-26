@@ -510,7 +510,7 @@ void GFFFormat::storeDocument(Document* doc, IOAdapter* io, U2OpStatus& os){
             QVector<U2Qualifier> qualVec = ann->getQualifiers();
             //generating unique ID for joined annotation
             if((location.size() > 1) && !ann->isValidQualifierName("ID")){
-                for(;knownIDs.contains(QString::number(joinID));joinID++);
+                for(;knownIDs.contains(QString::number(joinID));joinID++) {}
                 qualVec.append(U2Qualifier("ID", QString::number(joinID)));
             }
             foreach(const U2Region r, location){

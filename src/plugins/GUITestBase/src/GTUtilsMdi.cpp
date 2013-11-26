@@ -60,12 +60,15 @@ void GTUtilsMdi::click(U2OpStatus &os, GTGlobals::WindowAction action) {
     case GTGlobals::Maximize:
         mdiWindow->showMaximized();
         break;
-    case GTGlobals::Close:
+    case GTGlobals::Close: {
         int left = mdiWindow->rect().left();
         int top = mdiWindow->rect().top();
         QPoint p(left+15,top-10);
         GTMouseDriver::moveTo(os, mdiWindow->mapToGlobal(p));
         GTMouseDriver::click(os);
+        break;
+    }
+    default:
         break;
     }
 #endif

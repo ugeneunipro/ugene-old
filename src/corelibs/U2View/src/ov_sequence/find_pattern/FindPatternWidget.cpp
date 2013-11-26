@@ -161,8 +161,12 @@ private:
 class RegExpPatternsWalker {
 public:
     RegExpPatternsWalker(const QString &_patternsString, int _cursor = 0)
-        : patternsString(_patternsString.toLatin1()), cursor(_cursor), current(-1),
-          header(false), comment(false) {
+        : patternsString(_patternsString.toLatin1()),
+          cursor(_cursor),
+          current(-1),
+          comment(false),
+          header(false)
+    {
         // RegExp alphabet:
         regExpSlashedSymbols = "abBfnrtvx0dDsSwW";
         regExpUnslashedSymbols = "^$.,+*{}[]()?!-|&\\:=";
@@ -1395,7 +1399,7 @@ bool FindPatternWidget::checkPatternRegion( const QString& pattern ){
     return true;
 }
 
-void FindPatternWidget::sl_onSelectedRegionChanged( LRegionsSelection* thiz, const QVector<U2Region>& added, const QVector<U2Region>& removed ){
+void FindPatternWidget::sl_onSelectedRegionChanged( LRegionsSelection* /*thiz*/, const QVector<U2Region>& /*added*/, const QVector<U2Region>& /*removed*/ ){
     if(!currentSelection->getSelectedRegions().isEmpty()){
         U2Region r = currentSelection->getSelectedRegions().first();
         editStart->setText(QString::number(r.startPos + 1));

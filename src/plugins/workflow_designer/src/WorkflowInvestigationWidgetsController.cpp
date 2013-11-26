@@ -40,11 +40,19 @@ const char *SHOW_ALL_COLUMNS_ACTION_NAME = "Show all columns";
 namespace U2 {
 
 WorkflowInvestigationWidgetsController::WorkflowInvestigationWidgetsController(QWidget *parent)
-    : QObject(qobject_cast<QObject *>(parent)), investigationView(NULL), investigatedLink(NULL),
-    investigationModel(NULL), investigatorName(), wasDisplayed(false),
-    exportInvestigationAction(NULL), copyToClipboardAction(NULL), hideThisColumnAction(NULL),
-    hideAllColumnsButThisAction(NULL), showAllColumnsAction(NULL),
-    selectedColumn(DEFAULT_SELECTED_COLUMN), columnWidths()
+    : QObject(qobject_cast<QObject *>(parent)),
+      investigationView(NULL),
+      investigationModel(NULL),
+      investigatedLink(NULL),
+      investigatorName(),
+      wasDisplayed(false),
+      exportInvestigationAction(NULL),
+      copyToClipboardAction(NULL),
+      hideThisColumnAction(NULL),
+      hideAllColumnsButThisAction(NULL),
+      showAllColumnsAction(NULL),
+      selectedColumn(DEFAULT_SELECTED_COLUMN),
+      columnWidths()
 {
     QTabWidget *container = dynamic_cast<QTabWidget *>(parent);
     Q_ASSERT(NULL != container);
@@ -225,7 +233,7 @@ void WorkflowInvestigationWidgetsController::sl_currentInvestigationUpdateRespon
     }
 }
 
-void WorkflowInvestigationWidgetsController::sl_countOfMessagesResponse(const Workflow::Link *bus,
+void WorkflowInvestigationWidgetsController::sl_countOfMessagesResponse(const Workflow::Link */*bus*/,
     int countOfMessages)
 {
     investigationModel->insertRows(0, countOfMessages, QModelIndex());

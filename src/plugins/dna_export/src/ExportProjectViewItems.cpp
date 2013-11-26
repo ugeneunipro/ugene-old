@@ -468,7 +468,6 @@ void ExportProjectViewItemsContoller::sl_exportAnnotations(QList<Annotation*> &a
         return;
     }
 
-    Annotation* first = annotations.first();
     QString fileName = GUrlUtils::rollFileName(dstUrl.dirPath() + "/" + dstUrl.baseFileName() + "_annotations.csv", 
         DocumentUtils::getNewDocFileNameExcludesHint());
 

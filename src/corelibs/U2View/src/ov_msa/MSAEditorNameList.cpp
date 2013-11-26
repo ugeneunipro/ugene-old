@@ -41,7 +41,11 @@ static const int CROSS_SIZE = 9;
 #define CHILDREN_OFFSET 8
 
 MSAEditorNameList::MSAEditorNameList(MSAEditorUI* _ui, QScrollBar* _nhBar) 
-    : labels(NULL), ui(_ui), nhBar(_nhBar), editor(_ui->editor), singleSelecting(false)
+    : labels(NULL),
+      ui(_ui),
+      nhBar(_nhBar),
+      singleSelecting(false),
+      editor(_ui->editor)
 {
     setObjectName("msa_editor_name_list");
     setFocusPolicy(Qt::WheelFocus);

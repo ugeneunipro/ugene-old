@@ -35,7 +35,7 @@ const double B_TO_MB_FACTOR = 1048576.0;
 
 namespace U2 {
     
-quint64 SmithWatermanAlgorithmCUDA::estimateNeededGpuMemory( const SMatrix& sm, QByteArray const & _patternSeq, QByteArray const & _searchSeq, SmithWatermanSettings::SWResultView resultView) {
+quint64 SmithWatermanAlgorithmCUDA::estimateNeededGpuMemory( const SMatrix& sm, const QByteArray & _patternSeq, const QByteArray & _searchSeq, SmithWatermanSettings::SWResultView resultView) {
     const QByteArray & alphChars = sm.getAlphabet()->getAlphabetChars();
     int subLen = alphChars.size();
     int qLen = _patternSeq.size();
@@ -44,7 +44,7 @@ quint64 SmithWatermanAlgorithmCUDA::estimateNeededGpuMemory( const SMatrix& sm, 
     return sw_cuda_cpp::estimateNeededGpuMemory(_searchSeq.size(), profLen, qLen, resultView) / B_TO_MB_FACTOR;
 }
 
-quint64 SmithWatermanAlgorithmCUDA::estimateNeededRamAmount(const SMatrix& sm, QByteArray const & _patternSeq, QByteArray const & _searchSeq, const SmithWatermanSettings::SWResultView resultView) {
+quint64 SmithWatermanAlgorithmCUDA::estimateNeededRamAmount(const SMatrix& sm, const QByteArray & _patternSeq, const QByteArray & _searchSeq, const SmithWatermanSettings::SWResultView resultView) {
     const int qLen = _patternSeq.size();
     const int subLen = sm.getAlphabet()->getNumAlphabetChars();
     const QByteArray & alphChars = sm.getAlphabet()->getAlphabetChars();
@@ -55,7 +55,7 @@ quint64 SmithWatermanAlgorithmCUDA::estimateNeededRamAmount(const SMatrix& sm, Q
     return memToAlloc / B_TO_MB_FACTOR;
 }
 
-void SmithWatermanAlgorithmCUDA::launch(const SMatrix& sm, QByteArray const & _patternSeq, QByteArray const & _searchSeq,
+void SmithWatermanAlgorithmCUDA::launch(const SMatrix& sm, const QByteArray & _patternSeq, const QByteArray & _searchSeq,
     int _gapOpen, int _gapExtension, int _minScore, SmithWatermanSettings::SWResultView resultView) {
     
     algoLog.details("START SmithWatermanAlgorithmCUDA::launch");

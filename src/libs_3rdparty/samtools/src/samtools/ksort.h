@@ -187,7 +187,7 @@ typedef struct {
 			if (__sort_lt(a[1], a[0])) { swap_tmp = a[0]; a[0] = a[1]; a[1] = swap_tmp; } \
 			return;														\
 		}																\
-		for (d = 2; 1ul<<d < n; ++d);									\
+                for (d = 2; 1ul<<d < n; ++d) {}									\
 		stack = (ks_isort_stack_t*)malloc(sizeof(ks_isort_stack_t) * ((sizeof(size_t)*d)+2)); \
 		top = stack; s = a; t = a + (n-1); d <<= 1;						\
 		while (1) {														\

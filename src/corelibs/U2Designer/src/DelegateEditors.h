@@ -66,9 +66,12 @@ public:
     virtual void addDelegate( PropertyDelegate * del, const QString & name ) { delegates.insert( name, del ); }
     virtual void commit() {}
     virtual ConfigurationEditor *clone() {return new DelegateEditor(*this);}
+
 protected:
     QMap<QString, PropertyDelegate*> delegates;
-    
+
+private:
+    DelegateEditor& operator = (const DelegateEditor&);
 }; // DelegateEditor
 
 class U2DESIGNER_EXPORT URLDelegate : public PropertyDelegate {

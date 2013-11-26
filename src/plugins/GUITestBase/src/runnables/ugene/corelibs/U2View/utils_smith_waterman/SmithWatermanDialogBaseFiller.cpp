@@ -56,8 +56,8 @@ namespace U2 {
 SmithWatermanDialogFiller::SmithWatermanDialogFiller(U2OpStatus &_os, const QString& _pattern,
     const GTRegionSelector::RegionSelectorSettings& _s, SwRealization _realization)
     : Filler(_os, "SmithWatermanDialogBase"), button(Search), pattern(_pattern), s(_s),
-    resultView(SmithWatermanSettings::ANNOTATIONS), resultFilesPath(""), realization(_realization),
-    autoSetupAlgorithmParams(false) {}
+    resultView(SmithWatermanSettings::ANNOTATIONS), resultFilesPath(""),
+    autoSetupAlgorithmParams(false), realization(_realization) {}
 
 void SmithWatermanDialogFiller::run() {
     QWidget* dialog = QApplication::activeModalWidget();

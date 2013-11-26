@@ -36,6 +36,7 @@ namespace U2 {
 
 class U2DESIGNER_EXPORT BreakpointHitCountDialog : public QDialog {
     Q_OBJECT
+    Q_DISABLE_COPY(BreakpointHitCountDialog)
 public:
     BreakpointHitCountDialog(const QStringList &hitCountConditions, const QString &conditionOnLaunch
         = "", quint32 hitCountParameterOnLaunch = LOWER_BOUNDARY_FOR_HIT_COUNTER_PARAMETER,

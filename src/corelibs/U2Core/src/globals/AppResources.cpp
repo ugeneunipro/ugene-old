@@ -153,6 +153,7 @@ size_t AppResourcePool::getCurrentAppMemory() {
     bool result = GetProcessMemoryInfo(GetCurrentProcess(), &memCounter, sizeof( memCounter ));
     return memCounter.WorkingSetSize;
 #endif
+    return -1;
 }
 
 bool AppResourcePool::isSSE2Enabled() {

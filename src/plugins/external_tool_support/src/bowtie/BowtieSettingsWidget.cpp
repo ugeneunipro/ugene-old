@@ -94,7 +94,7 @@ void BowtieSettingsWidget::buildIndexUrl(const GUrl &) {
     // do nothing
 }
 
-bool BowtieSettingsWidget::isParametersOk(QString& error) {
+bool BowtieSettingsWidget::isParametersOk(QString& /*error*/) {
     
     ExternalTool* bowtie = AppContext::getExternalToolRegistry()->getByName(ET_BOWTIE);
     ExternalTool* bowtieBuild = AppContext::getExternalToolRegistry()->getByName(ET_BOWTIE_BUILD);

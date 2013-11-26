@@ -129,7 +129,7 @@ void SNPToolboxWorker::sl_taskFinished() {
 void SNPToolboxWorker::cleanup(){
 }
 
-SNPToolboxSettings SNPToolboxWorker::createSNPToolboxSettings( U2OpStatus &os ){
+SNPToolboxSettings SNPToolboxWorker::createSNPToolboxSettings( U2OpStatus &/*os*/ ){
     SNPToolboxSettings settings;
 
     settings.dbPath = actor->getParameter(DB_PATH)->getAttributeValue<QString>(context);
