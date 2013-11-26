@@ -21,6 +21,7 @@
 
 #include "QDFindPolyRegionsActor.h"
 
+#include <U2Core/DNAAlphabet.h>
 #include <U2Core/U2Region.h>
 #include <U2Core/TaskSignalMapper.h>
 #include <U2Core/FailTask.h>
@@ -154,7 +155,11 @@ Task* QDFindPolyActor::getAlgorithmTask( const QVector<U2Region>& location ) {
 
     settings.strand = getStrandToRun();
     if (settings.strand != QDStrand_DirectOnly) {
-        DNATranslation* complTT = AppContext::getDNATranslationRegistry()->lookupComplementTranslation(scheme->getSequence().alphabet);
+        DNATranslation* complTT = NULL;
+        if (scheme->getSequence().alphabet->isNucleic()) {
+            complTT = AppContext::getDNATranslationRegistry()->
+                lookupComplementTranslation(scheme->getSequence().alphabet);
+        }
         if (complTT != NULL) {
             settings.complTT = complTT;
         } else {

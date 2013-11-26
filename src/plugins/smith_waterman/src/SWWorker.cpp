@@ -445,9 +445,12 @@ Task* SWWorker::tick() {
 
         // translations
         cfg.strand = getStrand(actor->getParameter(BaseAttributes::STRAND_ATTRIBUTE().getId())->getAttributeValue<QString>(context));
-        if (cfg.strand != StrandOption_DirectOnly/* && seq.alphabet->getType() == DNAAlphabet_NUCL*/) {
-            DNATranslation* compTT = AppContext::getDNATranslationRegistry()->
-                                                lookupComplementTranslation(seq.alphabet);
+        if (cfg.strand != StrandOption_DirectOnly) {
+            DNATranslation* compTT = NULL;
+            if (seq.alphabet->isNucleic()) {
+                compTT = AppContext::getDNATranslationRegistry()->
+                    lookupComplementTranslation(seq.alphabet);
+            }
             if (compTT != NULL) {
                 cfg.complTT = compTT;
             } else {

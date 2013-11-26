@@ -382,9 +382,12 @@ Task* FindWorker::tick() {
         
         // translations
         cfg.strand = getStrand(actor->getParameter(BaseAttributes::STRAND_ATTRIBUTE().getId())->getAttributeValue<QString>(context));
-        if(cfg.strand != FindAlgorithmStrand_Direct /*&& seq.alphabet->getType() == DNAAlphabet_NUCL*/) {
-            DNATranslation* compTT = AppContext::getDNATranslationRegistry()->
+        if(cfg.strand != FindAlgorithmStrand_Direct) {
+            DNATranslation* compTT = NULL;
+            if (seq.alphabet->isNucleic()) {
+                compTT = AppContext::getDNATranslationRegistry()->
                 lookupComplementTranslation(seq.alphabet);
+            }
             if (compTT != NULL) {
                 cfg.complementTT = compTT ;
             } else {

@@ -160,8 +160,11 @@ Task* QDSWActor::getAlgorithmTask(const QVector<U2Region>& searchLocation) {
     settings.sqnc = dnaSeq.seq;
 
     if (settings.strand != StrandOption_DirectOnly) {
-        DNATranslation* compTT = AppContext::getDNATranslationRegistry()->
-            lookupComplementTranslation(dnaSeq.alphabet);
+        DNATranslation* compTT = NULL;
+        if (dnaSeq.alphabet->isNucleic()) {
+            compTT = AppContext::getDNATranslationRegistry()->
+                lookupComplementTranslation(dnaSeq.alphabet);
+        }
         if (compTT != NULL) {
             settings.complTT = compTT;
         } else {

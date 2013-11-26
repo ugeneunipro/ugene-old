@@ -81,7 +81,11 @@ Task* QDFindActor::getAlgorithmTask(const QVector<U2Region>& location) {
     }
 
     if (settings.strand != FindAlgorithmStrand_Direct) {
-        DNATranslation* compTT = AppContext::getDNATranslationRegistry()->lookupComplementTranslation(scheme->getSequence().alphabet);
+        DNATranslation* compTT = NULL;
+        if (scheme->getSequence().alphabet->isNucleic()) {
+            compTT = AppContext::getDNATranslationRegistry()->
+                lookupComplementTranslation(scheme->getSequence().alphabet);
+        }
         if (compTT  != NULL) {
             settings.complementTT = compTT ;
         } else {
