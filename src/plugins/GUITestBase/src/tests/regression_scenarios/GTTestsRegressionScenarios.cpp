@@ -82,6 +82,7 @@
 #include "runnables/ugene/ugeneui/SelectDocumentFormatDialogFiller.h"
 #include "runnables/ugene/ugeneui/SequenceReadingModeSelectorDialogFiller.h"
 #include "runnables/ugene/ugeneui/SaveProjectDialogFiller.h"
+#include "runnables/ugene/ugeneui/ConvertAceToSqliteDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/PositionSelectorFiller.h"
 
 #include <U2Core/AppContext.h>
@@ -1254,7 +1255,7 @@ GUI_TEST_CLASS_DEFINITION( test_1813 )
     GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE),ACTION_PROJECTSUPPORT__ACCESS_REMOTE_DB, GTGlobals::UseKey);
 
     // Expected: the sequence view with I7G8J3 sequence is opened. UGENE does not crash.
-    GTGlobals::sleep(40000);
+    GTGlobals::sleep(20000);
     GTUtilsDocument::isDocumentLoaded(os, "I7G8J3_das.gb");
     GTUtilsDocument::checkDocument(os, "I7G8J3_das.gb", AnnotatedDNAViewFactory::ID);
 }
@@ -1469,7 +1470,7 @@ GUI_TEST_CLASS_DEFINITION( test_1921 )
 
 GUI_TEST_CLASS_DEFINITION( test_2006 )
 {
-    const int MSA_WIDTH = 40;
+    const int MSA_WIDTH = 50;
     const int MSA_HEIGHT = 3;
 
     // 1. Open "data/samples/CLUSTAL/COI.aln" and save it's part to a string
@@ -2960,7 +2961,11 @@ GUI_TEST_CLASS_DEFINITION( test_2225_2 ){
     GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), ACTION_PROJECTSUPPORT__SEARCH_GENBANK, GTGlobals::UseKey);
     GTGlobals::sleep();
 }
+GUI_TEST_CLASS_DEFINITION( test_2259 ){
+    QMenu* menu=GTMenu::showMainMenu(os, MWMENU_SETTINGS);
+    GTMenu::clickMenuItem(os, menu, QStringList() << "action__settings");
 
+    }
 GUI_TEST_CLASS_DEFINITION( test_2267_1 ){
 //     1. Open human_T1.fa
 // 
@@ -3119,7 +3124,6 @@ GUI_TEST_CLASS_DEFINITION( test_2316 ) {
 //     2. Drag an .uwl file inside UGENE to open a workflow
 //     Expected state: now the project view is collapsed if a file.uwl is drag'n'dropped to UGENE when there is no project yet.
 }
-
 GUI_TEST_CLASS_DEFINITION( test_2269 ){
     //1. Use main menu: {tools->Align short reeds}
     //2. Select Bowtie2 as alignment method
@@ -3167,6 +3171,18 @@ GUI_TEST_CLASS_DEFINITION( test_2281 ){
     GTGlobals::sleep(1000);
 }
 
+GUI_TEST_CLASS_DEFINITION( test_2292 ){
+    GTLogTracer l;
+
+    QString destName = testDir + "_common_data/ugenedb/example-alignment.ugenedb";
+    GTUtilsDialog::waitForDialog(os, new ConvertAceToSqliteDialogFiller(os, destName));
+    GTFileDialog::openFile(os, testDir+"_common_data/ugenedb/", "example-alignment.ugenedb");
+    GTFileDialog::openFile(os, dataDir+"samples/ACE", "K26.ace");
+
+
+    GTGlobals::sleep();
+    //CHECK_SET_ERR( l.hasError( ), "Error message expected!" );
+}
 GUI_TEST_CLASS_DEFINITION( test_2282 ) {
     // 1. Open "chrM.sorted.bam" file using {File->Open} menu in UGENE.
     //    Expected state: "Import BAM file" dialog has appeared.
@@ -3254,7 +3270,6 @@ GUI_TEST_CLASS_DEFINITION( test_2309 ) {
     QStringList newNames = GTUtilsMSAEditorSequenceArea::getNameList(os);
     CHECK_SET_ERR(newNames == initialNames, "Wrong sequences order");
 }
-
 GUI_TEST_CLASS_DEFINITION( test_2318 ) {
     class FirstItemPopupChooser : public PopupChooser {
     public:
@@ -3335,7 +3350,6 @@ GUI_TEST_CLASS_DEFINITION( test_2360 ) {
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_IMPORT_MENU_ACTION << ACTION_PROJECT__EXPORT_TO_AMINO_ACTION));
     GTMouseDriver::click(os, Qt::RightButton);
 }
-
 GUI_TEST_CLASS_DEFINITION( test_2364 ) {
     //1. Open WD.'
     QMenu *menu=GTMenu::showMainMenu( os, MWMENU_TOOLS );
@@ -3529,7 +3543,7 @@ GUI_TEST_CLASS_DEFINITION(test_2407) {
 
     CHECK_SET_ERR( !l.hasError( ), "File not removed from project!" );
 
-}
+    }
 
 GUI_TEST_CLASS_DEFINITION( test_2410 ) {
     GTFileDialog::openFile( os, dataDir + "samples/FASTA/", "human_T1.fa" );

@@ -25,11 +25,14 @@
 #include <QtGui/QDialogButtonBox>
 #include "api/GTLineEdit.h"
 #include "api/GTWidget.h"
+#include "runnables/qt/MessageBoxFiller.h"
 namespace U2{
 
 #define GT_CLASS_NAME "GTUtilsDialog::SaveProjectAsDialogFiller"
 #define GT_METHOD_NAME "run"
 void ConvertAceToSqliteDialogFiller::run(){
+    
+    GTUtilsDialog::waitForDialogWhichMayRunOrNot(os, new MessageBoxDialogFiller(os, QMessageBox::Ok));
     QWidget* dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog, "activeModalWidget is NULL");
 
@@ -37,7 +40,7 @@ void ConvertAceToSqliteDialogFiller::run(){
     GT_CHECK(leDest, "destination URL lineedit not found");
     GTLineEdit::setText(os, leDest, leDestUrl);
 
-    GTWidget::click(os, GTWidget::findButtonByText(os, "&ok",dialog));
+    GTWidget::click(os, GTWidget::findButtonByText(os, "OK",dialog));
 
 }
 #undef GT_METHOD_NAME
