@@ -83,7 +83,8 @@ MSAExportContext::MSAExportContext(MSAEditor* e) : editor(e) {
 }
 
 void MSAExportContext::updateActions() {
-    translateMSAAction->setEnabled(editor->getMSAObject()->getAlphabet()->isNucleic());    
+    translateMSAAction->setEnabled(editor->getMSAObject()->getAlphabet()->isNucleic() &&
+                                   !editor->isAlignmentEmpty());
 }
 
 void MSAExportContext::buildMenu(QMenu* m) {
