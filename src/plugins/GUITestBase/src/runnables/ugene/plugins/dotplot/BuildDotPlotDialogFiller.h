@@ -31,19 +31,22 @@ namespace U2 {
         BuildDotPlotFiller(U2OpStatus &_os, const QString &_firstFileEdit,
                            const QString &_secondFileEdit="", bool _mergeFirstBoxChecked = false,
                            bool _oneSequenceBoxChecked=false, bool _mergeSecondBoxChecked=false,
-                           int _gapFirstVal=5, int _gapSecondVal=5) : Filler(_os, "DotPlotFilesDialog"),
+                           int _gapFirstVal=5, int _gapSecondVal=5,
+                           bool cancel = false) : Filler(_os, "DotPlotFilesDialog"),
             mergeFirstBoxChecked(_mergeFirstBoxChecked),
             oneSequenceBoxChecked(_oneSequenceBoxChecked),
             mergeSecondBoxChecked(_mergeSecondBoxChecked),
             firstFileEdit(_firstFileEdit),
             secondFileEdit(_secondFileEdit),
-            gapFirstVal(_gapFirstVal),gapSecondVal(_gapSecondVal){}
+            gapFirstVal(_gapFirstVal),gapSecondVal(_gapSecondVal),
+            cancel(cancel){}
         virtual void run();
     private:
         bool mergeFirstBoxChecked, oneSequenceBoxChecked,mergeSecondBoxChecked;
         const QString firstFileEdit;
         const QString secondFileEdit;
         int gapFirstVal, gapSecondVal;
+        bool cancel;
     };
 }
 

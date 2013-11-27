@@ -72,6 +72,7 @@
 #include "runnables/ugene/corelibs/U2View/utils_smith_waterman/SmithWatermanDialogBaseFiller.h"
 #include "runnables/ugene/plugins/annotator/FindAnnotationCollocationsDialogFiller.h"
 #include "runnables/ugene/plugins/dna_export/ExportMSA2MSADialogFiller.h"
+#include "runnables/ugene/plugins/dotplot/BuildDotPlotDialogFiller.h"
 #include "runnables/ugene/plugins/dotplot/DotPlotDialogFiller.h"
 #include "runnables/ugene/plugins/workflow_designer/WorkflowMetadialogFiller.h"
 #include "runnables/ugene/plugins/external_tools/TCoffeeDailogFiller.h"
@@ -3140,6 +3141,16 @@ GUI_TEST_CLASS_DEFINITION( test_2269 ){
     CHECK_SET_ERR( !os.hasError(), "Uncorrect value is available");
 }
 
+GUI_TEST_CLASS_DEFINITION( test_2270 ){
+    //1. Open file "data/cmdline/snp.uwl"
+    //Ecpected state: scheme opened in WD without problems
+
+    GTLogTracer lt;
+    GTFileDialog::openFile(os, dataDir+"cmdline/", "snp.uwl");
+    GTGlobals::sleep(500);
+    GTUtilsLog::check(os, lt);
+}
+
 GUI_TEST_CLASS_DEFINITION( test_2281 ){
     //GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
     // 1. Open WD sample "Align Sequences with MUSCLE
@@ -3334,6 +3345,23 @@ GUI_TEST_CLASS_DEFINITION( test_2318 ) {
     GTWidget::click(os, farButton);
 }
 
+GUI_TEST_CLASS_DEFINITION( test_2352 ) {
+    //1. Close current project or open empty UGENE
+    //2. Open menu {Tools->Build dotplot...}
+    //3. Select any binary file as first file in dialog
+    //Expected state: file is not selected, no crash
+
+    QString bin = QCoreApplication::applicationFilePath();
+    GTUtilsDialog::waitForDialog(os, new BuildDotPlotFiller(os, bin, bin, false, false, false, 5, 5,
+                                                            true));
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok));
+
+    QMenu *menu=GTMenu::showMainMenu( os, MWMENU_TOOLS );
+    GTMenu::clickMenuItem( os, menu, QStringList( ) << "Build dotplot" );
+
+    GTGlobals::sleep();
+}
+
 GUI_TEST_CLASS_DEFINITION( test_2360 ) {
     // 1. Open "data/samples/COI.aln".
     GTFileDialog::openFile(os, dataDir+"samples/CLUSTALW/", "COI.aln");
@@ -3349,6 +3377,7 @@ GUI_TEST_CLASS_DEFINITION( test_2360 ) {
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_IMPORT_MENU_ACTION << ACTION_PROJECT__EXPORT_TO_AMINO_ACTION));
     GTMouseDriver::click(os, Qt::RightButton);
 }
+
 GUI_TEST_CLASS_DEFINITION( test_2364 ) {
     //1. Open WD.'
     QMenu *menu=GTMenu::showMainMenu( os, MWMENU_TOOLS );

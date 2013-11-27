@@ -54,6 +54,10 @@ void BuildDotPlotFiller::run() {
     }
 
     GTWidget::click(os, GTWidget::findWidget(os, "startButton", dialog));
+
+    if (cancel) {
+        GTWidget::click(os, GTWidget::findWidget(os, "cancelButton", dialog));
+    }
 }
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME
