@@ -45,7 +45,7 @@ namespace U2 {
 #define START_WAIT_MSEC 3000
 
 ExternalToolRunTask::ExternalToolRunTask(const QString &_toolName, const QStringList &_arguments, ExternalToolLogParser *_logParser, const QString &_workingDirectory, const QStringList &_additionalPaths)
-: Task(_toolName + " run task", TaskFlag_None),
+: Task(_toolName + tr("tool"), TaskFlag_None),
   arguments(_arguments),
   logParser(_logParser),
   toolName(_toolName),
@@ -70,6 +70,20 @@ void ExternalToolRunTask::run(){
     ProcessRun pRun = ExternalToolSupportUtils::prepareProcess(toolName, arguments, workingDirectory, additionalPaths, stateInfo, listener);
     CHECK_OP(stateInfo, );
     externalToolProcess = pRun.process;
+
+    if (!inputFile.isEmpty()) {
+        externalToolProcess->setStandardInputFile(inputFile);
+    }
+    if (!outputFile.isEmpty()) {
+        externalToolProcess->setStandardOutputFile(outputFile);
+    }
+    if (!additionalEnvVariables.isEmpty()) {
+        QProcessEnvironment processEnvironment = externalToolProcess->processEnvironment();
+        foreach (const QString& envVarName, additionalEnvVariables.keys()) {
+            processEnvironment.insert(envVarName, additionalEnvVariables.value(envVarName));
+        }
+        externalToolProcess->setProcessEnvironment(processEnvironment);
+    }
 
     helper.reset(new ExternalToolRunTaskHelper(this));
     if(NULL != listener) {

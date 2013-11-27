@@ -22,12 +22,11 @@
 #ifndef _U2_EXTERNAL_TOOL_RUN_TASK_H
 #define _U2_EXTERNAL_TOOL_RUN_TASK_H
 
-#include <QPointer>
-
 #include <U2Core/AnnotationData.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/Task.h>
 #include <QtCore/QProcess>
+
 
 namespace U2 {
 
@@ -49,6 +48,7 @@ public:
 
 class U2CORE_EXPORT ExternalToolRunTask: public Task {
     Q_OBJECT
+    Q_DISABLE_COPY(ExternalToolRunTask)
     friend class ExternalToolRunTaskHelper;
 public:
     ExternalToolRunTask(const QString& toolName, const QStringList& arguments, ExternalToolLogParser* logParser, const QString& workingDirectory = "", const QStringList& additionalPaths = QStringList());
@@ -58,12 +58,19 @@ public:
 
     void run();
 
+    void setStandartInputFile(const QString& file) { inputFile = file; }
+    void setStandartOutputFile(const QString& file) { outputFile = file; }
+    void setAdditionalEnvVariables(const  QMap<QString, QString> &envVariable) {additionalEnvVariables = envVariable; }
+
 private:
     QStringList             arguments;
     ExternalToolLogParser*  logParser;
     QString                 toolName;
     QString                 workingDirectory;
+    QString                 inputFile;
+    QString                 outputFile;
     QStringList             additionalPaths;
+    QMap <QString, QString> additionalEnvVariables;
     QProcess*               externalToolProcess;
     QScopedPointer<ExternalToolRunTaskHelper> helper;
     ExternalToolListener*       listener;
