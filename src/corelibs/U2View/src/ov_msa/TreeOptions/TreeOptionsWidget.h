@@ -117,11 +117,13 @@ public:
     ~AddTreeWidget(){}
 
 private slots:
-    void sl_onAddTreeTriggered();
+    void sl_onOpenTreeTriggered();
+    void sl_onBuildTreeTriggered();
 private:
     MSAEditor*   editor;
 
-    QPushButton* addTreeButton;
+    QPushButton* openTreeButton;
+    QPushButton* buildTreeButton;
     QLabel*      addTreeHint;
 };
 

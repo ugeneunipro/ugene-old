@@ -62,9 +62,6 @@
 
 #include <ov_phyltree/TreeViewerTasks.h>
 
-#include "AddTreeDialog.h"
-
-
 namespace U2 {
 MSAEditorTreeManager::MSAEditorTreeManager(MSAEditor* _editor )
  : QObject(_editor), editor(_editor), msaObject(NULL), treeGeneratorTask(NULL), addExistingTree(false) {
@@ -269,7 +266,7 @@ void MSAEditorTreeManager::sl_openTreeTaskFinished(Task* t) {
 }
 
 
-void MSAEditorTreeManager::addTreeToMSA() {
+void MSAEditorTreeManager::openTreeFromFile() {
     LastUsedDirHelper h;
     QString filter = DialogUtils::prepareDocumentsFileFilter(BaseDocumentFormats::NEWICK, false, QStringList());
     QString file = QFileDialog::getOpenFileName(QApplication::activeWindow(), tr("Select files to open..."), h.dir,  filter);
@@ -323,18 +320,6 @@ void MSAEditorTreeManager::loadTreeFromFile(const QString& treeFileName) {
             Task* task = new MSAEditorOpenTreeViewerTask(treeObject, this);
             scheduler->registerTopLevelTask(task);
         }
-    }
-}
-
-void MSAEditorTreeManager::showAddTreeDialog() {
-    AddTreeDialog dlg(editor->getUI(), editor);
-    int rc = dlg.exec();
-    CHECK(rc == QDialog::Accepted, );
-    if(dlg.buildTreeCheck->isChecked()) {
-        buildTreeWithDialog();
-    }
-    else {
-        addTreeToMSA();
     }
 }
 

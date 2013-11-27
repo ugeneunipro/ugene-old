@@ -68,7 +68,6 @@ HEADERS += src/Init.h \
                    src/ov_msa/PhyTrees/MSAEditorTreeViewer.h \
                    src/ov_msa/PhyTrees/MSAEditorMultiTreeViewer.h \
                    src/ov_msa/PhyTrees/MSAEditorTreeManager.h \
-                   src/ov_msa/PhyTrees/AddTreeDialog.h \
 		   src/ov_msa/SequenceSelectorWidgetController.h \	  
            src/ov_msa/MsaEditorUserModStepController.h \
            src/ov_msa/ExportHighlightedDialogController.h \
@@ -170,7 +169,6 @@ FORMS += src/ov_assembly/ui/ExportConsensusDialog.ui \
          src/ov_msa/ui/ColorSchemaDialog.ui \
          src/ov_msa/ui/ColorSchemaSettingsWidget.ui \
          src/ov_msa/ui/CreateMSAScheme.ui \
-         src/ov_msa/ui/AddPhyTreeDialog.ui \
          src/ov_msa/ui/TreeOptionsWidget.ui \
          src/ov_msa/ui/MSADistancesColumnSettingsWidget.ui \
 		 src/ov_msa/ui/SequenceSelectorWidget.ui \
@@ -265,7 +263,6 @@ SOURCES += src/Init.cpp \
                    src/ov_msa/PhyTrees/MSAEditorTreeViewer.cpp \
                    src/ov_msa/PhyTrees/MSAEditorMultiTreeViewer.cpp \
                    src/ov_msa/PhyTrees/MSAEditorTreeManager.cpp \
-                   src/ov_msa/PhyTrees/AddTreeDialog.cpp \
 		   src/ov_msa/SequenceSelectorWidgetController.cpp \	
            src/ov_msa/MsaEditorUserModStepController.cpp \
            src/ov_msa/ExportHighlightedDialogController.cpp \		   

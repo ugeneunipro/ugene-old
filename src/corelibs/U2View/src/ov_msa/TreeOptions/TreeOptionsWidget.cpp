@@ -370,27 +370,37 @@ void TreeOptionsWidget::updateShowPenOpLabel(QString newText) {
 
 
 
-AddTreeWidget::AddTreeWidget(MSAEditor* msa): editor(msa), addTreeButton(NULL), addTreeHint(NULL) {
+AddTreeWidget::AddTreeWidget(MSAEditor* msa)
+    : editor(msa), openTreeButton(NULL), buildTreeButton(NULL), addTreeHint(NULL) 
+{
     QVBoxLayout* mainLayout = initLayout(this);
     mainLayout->setSpacing(0);
 
-    addTreeHint = new QLabel(tr("There are no available tree views. \n Please, press 'Add tree' button."), this);
+    addTreeHint = new QLabel(tr("There are no displayed trees so settings \n are hidden."), this);
 
     mainLayout->addWidget(addTreeHint);
 
     QHBoxLayout* buttonLayout = new QHBoxLayout(this);
-    buttonLayout->setSpacing(0);
-    QSpacerItem* horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+    buttonLayout->setContentsMargins(0, 5, 0, 0);
+
+    openTreeButton = new QPushButton(QIcon(":ugene/images/advanced_open.png"), tr("Open tree"), this);
+    buttonLayout->addWidget(openTreeButton);
+    QSpacerItem* horizontalSpacer = new QSpacerItem(20, 20, QSizePolicy::Fixed, QSizePolicy::Minimum);
     buttonLayout->addSpacerItem(horizontalSpacer);
-    addTreeButton = new QPushButton(tr("Add tree"), this);
-    buttonLayout->addWidget(addTreeButton);
+    buildTreeButton = new QPushButton(QIcon(":core/images/phylip.png"), tr("Build tree"), this);
+    buttonLayout->addWidget(buildTreeButton);
 
     mainLayout->addLayout(buttonLayout);
 
-    connect(addTreeButton, SIGNAL(clicked()), SLOT(sl_onAddTreeTriggered()));
+    connect(openTreeButton, SIGNAL(clicked()), SLOT(sl_onOpenTreeTriggered()));
+    connect(buildTreeButton, SIGNAL(clicked()), SLOT(sl_onBuildTreeTriggered()));
 }
-void AddTreeWidget::sl_onAddTreeTriggered() {
-    editor->getTreeManager()->showAddTreeDialog();
+void AddTreeWidget::sl_onOpenTreeTriggered() {
+    editor->getTreeManager()->openTreeFromFile();
+}
+
+void AddTreeWidget::sl_onBuildTreeTriggered() {
+    editor->getTreeManager()->buildTreeWithDialog();
 }
 
 }

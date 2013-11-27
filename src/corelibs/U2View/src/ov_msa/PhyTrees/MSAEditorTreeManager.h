@@ -45,11 +45,10 @@ public:
 
     void loadRelatedTrees();
 
-    void addTreeToMSA();
+    void openTreeFromFile();
 
     void buildTreeWithDialog();
 
-    void showAddTreeDialog();
 private slots:
     void sl_openTree();
     void sl_openTreeTaskFinished(Task* t);

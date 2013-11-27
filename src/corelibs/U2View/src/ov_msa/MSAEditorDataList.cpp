@@ -440,11 +440,11 @@ MSAEditorUpdatedTabWidget::MSAEditorUpdatedTabWidget(MSAEditor* _msa, QWidget* p
 void MSAEditorUpdatedTabWidget::sl_addTabTriggered() {
     emit si_widgetSelected(this);
 
-    msa->getTreeManager()->showAddTreeDialog();
+    msa->getTreeManager()->openTreeFromFile();
 }
 
 void MSAEditorUpdatedTabWidget::addExistingTree() {
-    msa->getTreeManager()->addTreeToMSA();
+    msa->getTreeManager()->openTreeFromFile();
 }
 
 MSAEditorTabWidgetArea::MSAEditorTabWidgetArea(MSAEditor* _msa, QWidget* parent )
