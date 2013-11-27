@@ -94,6 +94,63 @@
 #include <U2View/AnnotatedDNAViewFactory.h>
 #include <U2View/MSAEditor.h>
 
+class PermissionsSetter {
+public:
+    PermissionsSetter() {}
+
+    ~PermissionsSetter() {
+        foreach (const QString& path, previousState.keys()) {
+            QFile file(path);
+            QFile::Permissions p = file.permissions();
+
+            p = previousState.value(path, p);
+            file.setPermissions(p);
+        }
+    }
+
+    bool setPermissions(const QString& path, QFile::Permissions perm, bool recursive = true) {
+        if (recursive) {
+            return setRecursive(path, perm);
+        } else {
+            return setOnce(path, perm);
+        }
+    }
+
+private:
+    bool setRecursive(const QString& path, QFile::Permissions perm) {
+        QFileInfo fileInfo(path);
+        CHECK(fileInfo.exists(), false);
+        CHECK(!fileInfo.isSymLink(), false);
+
+        if (fileInfo.isDir()) {
+            QDir dir(path);
+            foreach (const QString& entryPath, dir.entryList(QDir::Dirs | QDir::Files | QDir::NoDotAndDotDot | QDir::NoSymLinks)) {
+                bool res = setRecursive(path + "/" + entryPath, perm);
+                CHECK(res, res);
+            }
+        }
+
+        bool res = setOnce(path, perm);
+
+        return res;
+    }
+
+    bool setOnce(const QString& path, QFile::Permissions perm) {
+        QFileInfo fileInfo(path);
+        CHECK(fileInfo.exists(), false);
+        CHECK(!fileInfo.isSymLink(), false);
+
+        QFile file(path);
+        QFile::Permissions p = file.permissions();
+        previousState.insert(path, p);
+
+        p &= perm;
+        return file.setPermissions(p);
+    }
+
+    QMap<QString, QFile::Permissions> previousState;
+};
+
 namespace U2 {
 
 namespace GUITest_regression_scenarios {
@@ -1301,8 +1358,60 @@ GUI_TEST_CLASS_DEFINITION( test_1821 ) {
     CHECK_SET_ERR( scaleCombo->currentText( ) == "75%", "Unexpected scale value!" );
 }
 
+GUI_TEST_CLASS_DEFINITION( test_1859 ) {
+    QString workflowOutputDirPath( testDir + "_common_data/scenarios/sandbox" );
+    QDir workflowOutputDir( workflowOutputDirPath );
+    const QString outputFilePath = workflowOutputDir.absolutePath( ) + "/test.gb";
+
+    // 1) Open Workflow Designer
+    GTUtilsWorkflowDesigner::openWorkflowDesigner( os );
+
+    const QString annReaderName = "Read Annotations";
+    const QString annWriterName = "Write Annotations";
+
+    // 2) Build workflow of elements: "Write Annotations" and "Read Annotations"
+    GTUtilsWorkflowDesigner::addAlgorithm( os, annReaderName );
+    GTUtilsWorkflowDesigner::addAlgorithm( os, annWriterName );
+
+    WorkflowProcessItem *annReader = GTUtilsWorkflowDesigner::getWorker( os, annReaderName );
+    WorkflowProcessItem *annWriter = GTUtilsWorkflowDesigner::getWorker( os, annWriterName );
+
+    GTUtilsWorkflowDesigner::connect(os, annReader, annWriter );
+
+    // 3) Set output file
+
+    GTMouseDriver::moveTo( os, GTUtilsWorkflowDesigner::getItemCenter( os, annWriterName ) );
+    GTMouseDriver::click( os );
+    GTUtilsWorkflowDesigner::setParameter( os, "Output file", outputFilePath,
+        GTUtilsWorkflowDesigner::textValue );
+
+    // 4) Set input file
+    GTMouseDriver::moveTo( os, GTUtilsWorkflowDesigner::getItemCenter( os, annReaderName ) );
+    GTMouseDriver::click( os );
+    GTUtilsWorkflowDesigner::setDatasetInputFile( os, dataDir + "samples/Genbank", "sars.gb" );
+
+    GTLogTracer lt;
+
+    // 5) Run workflow
+    GTWidget::click( os,GTAction::button( os,"Run workflow" ) );
+    GTGlobals::sleep( );
+
+    // 6) Block file for writing
+    PermissionsSetter permSetter;
+    QFile::Permissions p = QFile::WriteOwner | QFile::WriteUser | QFile::WriteGroup
+        | QFile::WriteOther;
+    bool res = permSetter.setPermissions( outputFilePath, ~p );
+    CHECK_SET_ERR( res, "Can't set permissions" );
+
+    // 7) Run workflow again
+    GTWidget::click( os,GTAction::button( os,"Run workflow" ) );
+    GTGlobals::sleep( );
+
+    GTUtilsLog::check( os, lt );
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1860) {
-    // 1) Open Workflow Desinder
+    // 1) Open Workflow Designer
     GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
     QMenu *menu=GTMenu::showMainMenu( os, MWMENU_TOOLS );
     GTMenu::clickMenuItem( os, menu, QStringList( ) << "Workflow Designer" );
@@ -1842,7 +1951,7 @@ GUI_TEST_CLASS_DEFINITION( test_2021_9 )
 
 GUI_TEST_CLASS_DEFINITION(test_2024){
 //    1. Open WD
-    GTUtilsWorkflowDesigner::openWorkfolwDesigner(os);
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
 
 //    2. Add element "Local BLAST Search"
     GTUtilsWorkflowDesigner::addAlgorithm( os, "Local BLAST Search" );
@@ -1980,7 +2089,7 @@ GUI_TEST_CLASS_DEFINITION( test_2077 ){
     // 2) Add elements "Read Sequence" and "Write sequence" to the scheme
     // 3) Connect "Read Sequence" to "Write sequence"
 
-    GTUtilsWorkflowDesigner::openWorkfolwDesigner(os);
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
 
     GTUtilsWorkflowDesigner::addAlgorithm( os, "Read Sequence" );
     GTUtilsWorkflowDesigner::addAlgorithm( os, "Write Sequence" );
@@ -2138,7 +2247,7 @@ GUI_TEST_CLASS_DEFINITION(test_2091) {
 
 GUI_TEST_CLASS_DEFINITION(test_2093_1) {
 //    1. Run a scheme, e.g. "Call variants with SAMtools" from the NGS samples (or any other like read->write).
-    GTUtilsWorkflowDesigner::openWorkfolwDesigner(os);
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
 
     // Simple scheme: read file list.
     GTUtilsWorkflowDesigner::addAlgorithm(os, "File list");
@@ -2171,7 +2280,7 @@ GUI_TEST_CLASS_DEFINITION(test_2093_1) {
 
 GUI_TEST_CLASS_DEFINITION(test_2093_2) {
     // 1. Open WD.
-    GTUtilsWorkflowDesigner::openWorkfolwDesigner(os);
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
 
     // 2. Open any shema with the "Load workflow" button on the toolbar (not the "Open" button!)
     QString schemaPath = testDir + "_common_data/scenarios/workflow designer/222.uwl";
@@ -3013,63 +3122,6 @@ GUI_TEST_CLASS_DEFINITION( test_2267_2 ){
 }
 
 GUI_TEST_CLASS_DEFINITION( test_2268 ) {
-    class PermissionsSetter {
-    public:
-        PermissionsSetter() {}
-
-        ~PermissionsSetter() {
-            foreach (const QString& path, previousState.keys()) {
-                QFile file(path);
-                QFile::Permissions p = file.permissions();
-
-                p = previousState.value(path, p);
-                file.setPermissions(p);
-            }
-        }
-
-        bool setPermissions(const QString& path, QFile::Permissions perm, bool recursive = true) {
-            if (recursive) {
-                return setRecursive(path, perm);
-            } else {
-                return setOnce(path, perm);
-            }
-        }
-
-    private:
-        bool setRecursive(const QString& path, QFile::Permissions perm) {
-            QFileInfo fileInfo(path);
-            CHECK(fileInfo.exists(), false);
-            CHECK(!fileInfo.isSymLink(), false);
-
-            if (fileInfo.isDir()) {
-                QDir dir(path);
-                foreach (const QString& entryPath, dir.entryList(QDir::Dirs | QDir::Files | QDir::NoDotAndDotDot | QDir::NoSymLinks)) {
-                    bool res = setRecursive(path + "/" + entryPath, perm);
-                    CHECK(res, res);
-                }
-            }
-
-            bool res = setOnce(path, perm);
-
-            return res;
-        }
-
-        bool setOnce(const QString& path, QFile::Permissions perm) {
-            QFileInfo fileInfo(path);
-            CHECK(fileInfo.exists(), false);
-            CHECK(!fileInfo.isSymLink(), false);
-
-            QFile file(path);
-            QFile::Permissions p = file.permissions();
-            previousState.insert(path, p);
-
-            p &= perm;
-            return file.setPermissions(p);
-        }
-
-        QMap<QString, QFile::Permissions> previousState;
-    };
-
 //    1. Forbid write access to the t-coffee directory (chmod 555 %t-coffee-dir%).
     // Permissions will be returned to the original state, if UGENE won't crash.
     ExternalToolRegistry* etRegistry = AppContext::getExternalToolRegistry();
@@ -3484,7 +3536,7 @@ GUI_TEST_CLASS_DEFINITION( test_2378 ) {
 GUI_TEST_CLASS_DEFINITION( test_2378_1 ) {
     GTLogTracer l;
     // 1. Open WD
-    GTUtilsWorkflowDesigner::openWorkfolwDesigner(os);
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
 
     // 2. Create scheme: read assembly->write assembly
     // 3. set _common_data\sam\scerevisiae.sam as input file
@@ -3544,7 +3596,7 @@ GUI_TEST_CLASS_DEFINITION( test_2382_1 ) {
 
 GUI_TEST_CLASS_DEFINITION( test_2406 ) {
 //    1. Create the {Read Sequence -> Write Sequence} workflow.
-    GTUtilsWorkflowDesigner::openWorkfolwDesigner(os);
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
 
     const QString sequenceReaderName = "Read Sequence";
     const QString sequenceWriterName = "Write Sequence";

@@ -95,7 +95,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
 // 
 // 	1. Open WD. Do toolbar menu "Scripting mode->Show scripting options". Place write FASTA worker on field.
 
-    GTUtilsWorkflowDesigner::openWorkfolwDesigner(os);
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
 
     GTUtilsWorkflowDesigner::addAlgorithm(os, "Write FASTA");
 

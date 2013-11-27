@@ -50,8 +50,8 @@
 namespace U2 {
 #define GT_CLASS_NAME "GTUtilsWorkflowDesigner"
 
-#define GT_METHOD_NAME "openWorkfolwDesigner"
-void GTUtilsWorkflowDesigner::openWorkfolwDesigner(U2OpStatus &os){
+#define GT_METHOD_NAME "openWorkflowDesigner"
+void GTUtilsWorkflowDesigner::openWorkflowDesigner(U2OpStatus &os){
     GTUtilsDialog::waitForDialogWhichMayRunOrNot(os, new StartupDialogFiller(os));
 
     QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
