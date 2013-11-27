@@ -305,15 +305,30 @@ QList<Task*> LoadRemoteDocumentAndOpenViewTask::onSubTaskFinished( Task* subTask
 
 
 AddDocumentAndOpenViewTask::AddDocumentAndOpenViewTask( Document* doc, const AddDocumentTaskConfig& conf)
-:Task(tr("Opening view for document: %1").arg(doc->getURL().fileName()), TaskFlags_NR_FOSE_COSC)
+:Task(tr("Opening view for document: 'NONAME'"), TaskFlags_NR_FOSE_COSC)
 {
+    if(doc != NULL){
+        GUrl url = doc->getURL();
+        setTaskName(tr("Opening view for document: %1").arg(url.fileName()));
+    }else{
+        setError(tr("Provided document is NULL"));
+        return;
+    }
     setMaxParallelSubtasks(1);
     addSubTask(new AddDocumentTask(doc, conf));
 } 
 
 AddDocumentAndOpenViewTask::AddDocumentAndOpenViewTask( DocumentProviderTask* dp, const AddDocumentTaskConfig& conf )
-:Task(tr("Opening view for document: %1").arg(dp->getDocumentDescription()), TaskFlags_NR_FOSE_COSC)
+:Task(tr("Opening view for document: 'NONAME'"), TaskFlags_NR_FOSE_COSC)
 {
+    if(dp != NULL && dp->getDocument() != NULL){
+        Document *doc = dp->getDocument();
+        GUrl url = doc->getURL();
+        setTaskName(tr("Opening view for document: %1").arg(url.fileName()));
+    }else{
+        setError(tr("Provided document, or it provider is NULL"));
+        return;
+    }
     setMaxParallelSubtasks(1);
     addSubTask(new AddDocumentTask(dp, conf));
 } 
