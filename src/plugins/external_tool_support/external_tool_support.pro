@@ -91,6 +91,8 @@ HEADERS += src/ETSProjectViewItemsContoller.h \
            src/python/PythonSupport.h \
            src/samtools/BcfToolsSupport.h \
            src/samtools/SamToolsExtToolSupport.h \
+           src/samtools/TabixSupportTask.h \
+           src/samtools/TabixSupport.h \
            src/seqpos/SeqPosSettings.h \
            src/seqpos/SeqPosSupport.h \
            src/seqpos/SeqPosTask.h \
@@ -110,6 +112,9 @@ HEADERS += src/ETSProjectViewItemsContoller.h \
            src/utils/ExportTasks.h \
            src/utils/ExternalToolSupportAction.h \
            src/utils/ExternalToolValidateTask.h \
+           src/vcftools/VcfConsensusWorker.h \
+           src/vcftools/VcfConsensusSupport.h \
+           src/vcftools/VcfConsensusSupportTask.h \
            src/vcfutils/VcfutilsSupport.h \
            src/bowtie/bowtie_tests/bowtieTests.h \
            src/bwa/bwa_tests/bwaTests.h \
@@ -223,6 +228,8 @@ SOURCES += src/ETSProjectViewItemsContoller.cpp \
            src/python/PythonSupport.cpp \
            src/samtools/BcfToolsSupport.cpp \
            src/samtools/SamToolsExtToolSupport.cpp \
+           src/samtools/TabixSupportTask.cpp \
+           src/samtools/TabixSupport.cpp \
            src/seqpos/SeqPosSettings.cpp \
            src/seqpos/SeqPosSupport.cpp \
            src/seqpos/SeqPosTask.cpp \
@@ -242,6 +249,9 @@ SOURCES += src/ETSProjectViewItemsContoller.cpp \
            src/utils/ExportTasks.cpp \
            src/utils/ExternalToolSupportAction.cpp \
            src/utils/ExternalToolValidateTask.cpp \
+           src/vcftools/VcfConsensusWorker.cpp \
+           src/vcftools/VcfConsensusSupport.cpp \
+           src/vcftools/VcfConsensusSupportTask.cpp \
            src/vcfutils/VcfutilsSupport.cpp \
            src/bowtie/bowtie_tests/bowtieTests.cpp \
            src/bwa/bwa_tests/bwaTests.cpp \

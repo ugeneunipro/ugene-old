@@ -90,6 +90,9 @@
 #include "bwa/BwaSettingsWidget.h"
 #include "bwa/bwa_tests/bwaTests.h"
 #include "samtools/SamToolsExtToolSupport.h"
+#include "samtools/TabixSupport.h"
+#include "vcftools/VcfConsensusWorker.h"
+#include "vcftools/VcfConsensusSupport.h"
 #include "spidey/SpideySupport.h"
 #include "spidey/SpideySupportTask.h"
 #include "cufflinks/CuffdiffWorker.h"
@@ -346,6 +349,14 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin() :
     BcfToolsSupport* bcfToolsSupport = new BcfToolsSupport(ET_BCFTOOLS);
     AppContext::getExternalToolRegistry()->registerEntry(bcfToolsSupport);
 
+    // Tabix
+    TabixSupport* tabixSupport = new TabixSupport(ET_TABIX);
+    AppContext::getExternalToolRegistry()->registerEntry(tabixSupport);
+
+    // VcfConsensus
+    VcfConsensusSupport* vcfConsSupport = new VcfConsensusSupport(ET_VCF_CONSENSUS);
+    AppContext::getExternalToolRegistry()->registerEntry(vcfConsSupport);
+
     // Spidey
     SpideySupport* spideySupport = new SpideySupport(ET_SPIDEY);
     etRegistry->registerEntry(spideySupport);
@@ -539,6 +550,7 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin() :
     LocalWorkflow::SeqPosWorkerFactory::init();
     LocalWorkflow::ConductGOWorkerFactory::init();
     LocalWorkflow::CAP3WorkerFactory::init();
+    LocalWorkflow::VcfConsensusWorkerFactory::init();
 
     if (AppContext::getMainWindow()) {
         //Add project view service
