@@ -113,7 +113,7 @@ MSAHighlightingTab::MSAHighlightingTab(MSAEditor* m):msa(m){
     connect(highlightingScheme, SIGNAL(currentIndexChanged(const QString &)), seqArea,
         SLOT(sl_changeColorSchemeOutside(const QString &)));
     connect(highlightingScheme, SIGNAL(currentIndexChanged(const QString &)), SLOT(sl_updateHint()));
-    connect(useDots, SIGNAL(stateChanged(int)), seqArea, SLOT(sl_useDots(int)));
+    connect(useDots, SIGNAL(stateChanged(int)), seqArea, SLOT(sl_doUseDots()));
 
     connect(seqArea, SIGNAL(si_highlightingChanged()), SLOT(sl_sync()));
 
@@ -146,9 +146,9 @@ void MSAHighlightingTab::sl_sync(){
     highlightingScheme->setCurrentIndex(highlightingScheme->findText(sh->getFactory()->getName()));
 
 
-    disconnect(useDots, SIGNAL(stateChanged(int)), seqArea, SLOT(sl_useDots(int))); //disconnect-connect to prevent infinite loop
+    disconnect(useDots, SIGNAL(stateChanged(int)), seqArea, SLOT(sl_doUseDots())); //disconnect-connect to prevent infinite loop
     useDots->setChecked(seqArea->getUseDotsCheckedState());
-    connect(useDots, SIGNAL(stateChanged(int)), seqArea, SLOT(sl_useDots(int)));
+    connect(useDots, SIGNAL(stateChanged(int)), seqArea, SLOT(sl_doUseDots()));
     sl_updateHint();
 }
 

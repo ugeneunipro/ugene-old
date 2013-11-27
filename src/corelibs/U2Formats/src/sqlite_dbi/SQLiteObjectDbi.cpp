@@ -982,9 +982,8 @@ void SQLiteObjectDbiUtils::renameObject(SQLiteDbi *dbi, U2Object &object, const 
     Q_UNUSED(t);
 
     ModificationAction updateAction(dbi, object.id);
-    U2TrackModType trackMod = updateAction.prepare(os);
+    updateAction.prepare(os);
     SAFE_POINT_OP(os, );
-    Q_UNUSED(trackMod);
 
     renameObject(updateAction, dbi, object, newName, os);
     SAFE_POINT_OP(os, );

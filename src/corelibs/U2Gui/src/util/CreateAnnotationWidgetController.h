@@ -128,8 +128,8 @@ private slots:
     void sl_documentsComboUpdated();
 
     //edit slots
-    void sl_annotationNameEdited(const QString& text);
-    void sl_groupNameEdited(const QString& text);
+    void sl_annotationNameEdited();
+    void sl_groupNameEdited();
 
 private:
     void initLayout(AnnotationWidgetMode layoutMode);

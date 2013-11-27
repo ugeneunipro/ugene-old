@@ -253,26 +253,6 @@ void ScriptWorker::sl_taskFinished() {
         }
     }
 
-    /*QScriptValue ctx = t->getEngine()->globalObject().property("ctx");
-    CHECK(!ctx.isNull() && !ctx.isUndefined(), );
-    QScriptValue out = ctx.property(ActorContext::OUTPUT);
-    CHECK(!out.isNull() && !out.isUndefined(), );
-    foreach (Port *port, actor->getOutputPorts()) {
-        IntegralBus *bus = ports[port->getId()];
-        QScriptValue portArray = out.property(port->getId());
-        CHECK(!portArray.isNull() && !portArray.isUndefined(), );
-
-        QVariantMap map;
-        QMap<Descriptor, DataTypePtr> types = port->getOwnTypeMap();
-        foreach (const Descriptor &slotDesc, port->getOutputType()->getDatatypesMap().keys()) {
-            QScriptValue value = portArray.property(slotDesc.getId());
-            CHECK(!value.isNull() && !value.isUndefined(), );
-
-            QVariant v = ScriptEngineUtils::fromScriptValue(t->getEngine(), value, types[slotDesc.getId()]);
-            map[slotDesc.getId()] = v;
-        }
-        bus->put(Message(bus->getBusType(), map));
-    }*/
     QVariantMap map;
     bool hasSeqArray = false;
     foreach(const Descriptor &desc, ptr->getAllDescriptors()) {

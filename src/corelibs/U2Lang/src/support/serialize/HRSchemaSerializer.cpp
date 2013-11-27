@@ -1604,25 +1604,6 @@ QString HRSchemaSerializer::dataflowDefinition(const QList<Actor*> & procs, cons
     return res + Constants::NEW_LINE;
 }
 
-/*static QString elementsIterationData(const QVariantMap & data) {
-    QString res;
-    foreach( const QString & attributeId, data.uniqueKeys() ) {
-        assert(!attributeId.contains(QRegExp("\\s")));
-        QVariant value = data.value(attributeId);
-        assert(!value.isNull());
-        if (value.canConvert<QString>()) {
-            QString valueStr = value.toString();
-            if(!valueStr.isEmpty()) {
-                res += HRSchemaSerializer::makeEqualsPair(attributeId, valueStr, 3);
-            }
-        } else if (value.canConvert< QList<Dataset> >()) {
-            res += inUrlDefinitionBlocks(attributeId, value.value< QList<Dataset> >(), 3);
-        }
-
-    }
-    return res;
-}*/
-
 static QString visualData(const Schema & schema, const HRSchemaSerializer::NamesMap& nmap) {
     QString res;
     foreach(Link* link, schema.getFlows()) {

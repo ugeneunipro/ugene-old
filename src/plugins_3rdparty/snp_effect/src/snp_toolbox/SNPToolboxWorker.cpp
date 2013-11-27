@@ -85,10 +85,7 @@ Task* SNPToolboxWorker::tick() {
 
         }
 
-        SNPToolboxSettings settings = createSNPToolboxSettings(os);
-        if (os.hasError()) {
-            return new FailTask(os.getError());
-        }
+        SNPToolboxSettings settings = createSNPToolboxSettings();
 
         U2DbiRef dbiRef = trackObj->getEntityRef().dbiRef;
         U2VariantTrack track = trackObj->getVariantTrack(os);
@@ -129,7 +126,7 @@ void SNPToolboxWorker::sl_taskFinished() {
 void SNPToolboxWorker::cleanup(){
 }
 
-SNPToolboxSettings SNPToolboxWorker::createSNPToolboxSettings( U2OpStatus &/*os*/ ){
+SNPToolboxSettings SNPToolboxWorker::createSNPToolboxSettings(){
     SNPToolboxSettings settings;
 
     settings.dbPath = actor->getParameter(DB_PATH)->getAttributeValue<QString>(context);

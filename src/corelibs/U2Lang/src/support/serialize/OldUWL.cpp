@@ -44,7 +44,7 @@ namespace {
     const QString MARKER_NAME("marker-name");
     const QString MARKERS("markers");
 
-    void parseOldMarker(Actor *proc, const QString &/*markerId*/, ParsedPairs &pairs) {
+    void parseOldMarker(Actor *proc, ParsedPairs &pairs) {
         MarkerAttribute *markerAttr = dynamic_cast<MarkerAttribute*>(proc->getParameter(Constants::MARKER));
         if (NULL == markerAttr) {
             throw ReadFailed(QObject::tr("%1 actor has not markers attribute").arg(proc->getId()));
@@ -91,7 +91,7 @@ void OldUWL::parseMarkerDefinition(Tokenizer &tokenizer, QMap<QString, Actor*> &
         throw ReadFailed(QObject::tr("Unknown function type \"%1\" for the marker %2").arg(functionType).arg(markerId));
     }
 
-    parseOldMarker(actorMap[actorName], markerId, pairs);
+    parseOldMarker(actorMap[actorName], pairs);
 }
 
 void OldUWL::parseOldAttributes(Actor *proc, ParsedPairs &pairs) {

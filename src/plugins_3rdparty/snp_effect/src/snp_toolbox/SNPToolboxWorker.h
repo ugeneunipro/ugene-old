@@ -46,7 +46,7 @@ private:
     IntegralBus *output;
 
 private:
-    SNPToolboxSettings createSNPToolboxSettings(U2OpStatus &os);
+    SNPToolboxSettings createSNPToolboxSettings();
 
 private slots:
     void sl_taskFinished();

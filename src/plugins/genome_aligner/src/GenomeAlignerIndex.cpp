@@ -80,9 +80,9 @@ void GenomeAlignerIndex::serialize(const QString &refFileName) {
     data += QByteArray::number(seqPartSize, 10) + ", ";
     data += QByteArray::number(objCount, 10) + "\n";
     data += seqObjName + "\n";
-    for (size_t i=0; i < static_cast<quint64>(objCount); i++) {
+    for (qint64 i=0; i < objCount; i++) {
         data += QByteArray::number(objLens[i], 10);
-        if (static_cast<quint64>(objCount-1) == i) {
+        if (objCount-1 == i) {
             data += "\n";
         } else {
             data += ", ";

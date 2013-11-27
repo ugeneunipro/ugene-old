@@ -21,7 +21,6 @@
 
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/U2DbiUtils.h>
-#include <U2Core/Timer.h>
 #include <U2Core/U2AttributeDbi.h>
 #include <U2Core/U2AttributeUtils.h>
 #include <U2Core/AppContext.h>
@@ -63,17 +62,12 @@ QList<Gene> SNPTablesUtils::findGenes(const U2DataId& seqId, const U2Region &reg
         }
         while(featureIterator->hasNext()) {
 
-//            qint64 nTime = GTimer::currentTimeMicros();
-
             U2Feature parentFeature = featureIterator->next();
-//             perfLog.trace(QString("Find parent time (millis)= %1").arg(GTimer::millisBetween(nTime, GTimer::currentTimeMicros())));
-//             //perfLog.trace(QString("Filtration time one feature Time (millis)= %1").arg(GTimer::millisBetween(nTime, GTimer::currentTimeMicros())));
              Gene gene = findGenesStep(parentFeature, dbi, opStatus, excludeList);
-//             perfLog.trace(QString("Find subs time (millis)= %1").arg(GTimer::millisBetween(nTime, GTimer::currentTimeMicros())));
              if(opStatus.isCoR()){
                  return QList<Gene>();
              }
-// 
+
              result.append(gene);
 
         }

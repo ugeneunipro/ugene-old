@@ -338,8 +338,8 @@ void CreateAnnotationWidgetController::initLayout(AnnotationWidgetMode layoutMod
 
     groupNameEdit = new QLineEdit(annotParams);
     groupNameEdit->setObjectName("groupNameEdit");
-    connect(groupNameEdit, SIGNAL(textEdited(const QString&)), SLOT(sl_groupNameEdited(const QString&)));
-    connect(groupNameEdit, SIGNAL(textChanged(const QString&)), SLOT(sl_groupNameEdited(const QString&)));
+    connect(groupNameEdit, SIGNAL(textEdited(const QString&)), SLOT(sl_groupNameEdited()));
+    connect(groupNameEdit, SIGNAL(textChanged(const QString&)), SLOT(sl_groupNameEdited()));
 
     groupNameButton = new QToolButton(annotParams);
     QIcon iconGroupAuto;
@@ -352,8 +352,8 @@ void CreateAnnotationWidgetController::initLayout(AnnotationWidgetMode layoutMod
 
     annotationNameEdit = new QLineEdit(annotParams);
     annotationNameEdit->setObjectName("annotationNameEdit");
-    connect(annotationNameEdit, SIGNAL(textEdited(const QString&)), SLOT(sl_annotationNameEdited(const QString&)));
-    connect(annotationNameEdit, SIGNAL(textChanged(const QString&)), SLOT(sl_annotationNameEdited(const QString&)));
+    connect(annotationNameEdit, SIGNAL(textEdited(const QString&)), SLOT(sl_annotationNameEdited()));
+    connect(annotationNameEdit, SIGNAL(textChanged(const QString&)), SLOT(sl_annotationNameEdited()));
 
     annotationNameEdit->setMaxLength(100);
 
@@ -704,11 +704,11 @@ void CreateAnnotationWidgetController::sl_documentsComboUpdated(){
     commonWidgetUpdate(model);
 }
 
-void CreateAnnotationWidgetController::sl_annotationNameEdited( const QString& /*text*/ ){
+void CreateAnnotationWidgetController::sl_annotationNameEdited(){
     emit si_annotationNamesEdited();
 }
 
-void CreateAnnotationWidgetController::sl_groupNameEdited( const QString& /*text*/ ){
+void CreateAnnotationWidgetController::sl_groupNameEdited(){
     emit si_annotationNamesEdited();
 }
 

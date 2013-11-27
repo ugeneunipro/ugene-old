@@ -354,12 +354,16 @@ void BaseEntrezRequestTask::sl_uploadProgress( qint64 bytesSent, qint64 bytesTot
     stateInfo.progress = bytesSent / bytesTotal * 100;
 }
 
-void BaseEntrezRequestTask::createLoopAndNetworkManager( )
+void BaseEntrezRequestTask::createLoopAndNetworkManager(const QString& queryString)
 {
     SAFE_POINT( NULL == networkManager, "Attempting to initialize network manager twice", );
     networkManager = new QNetworkAccessManager;
     connect( networkManager, SIGNAL( finished( QNetworkReply * ) ), this,
         SLOT( sl_replyFinished( QNetworkReply* ) ) );
+
+    NetworkConfiguration* nc = AppContext::getAppSettings( )->getNetworkConfiguration( );
+    QNetworkProxy proxy = nc->getProxyByUrl( queryString );
+    networkManager->setProxy( proxy );
 
     SAFE_POINT( NULL == loop, "Attempting to initialize loop twice", );
     loop = new QEventLoop;
@@ -379,14 +383,13 @@ void LoadDataFromEntrezTask::run( )
 {
     stateInfo.progress = 0;
     ioLog.trace( "Load data from Entrez started..." );
-    createLoopAndNetworkManager( );
-    NetworkConfiguration* nc = AppContext::getAppSettings( )->getNetworkConfiguration( );
 
     ioLog.trace( "Downloading file..." );
     // Step one: download the file
     QString traceFetchUrl = QString( EntrezUtils::NCBI_EFETCH_URL ).arg( db ).arg( accNumber ).arg( format );
-    QNetworkProxy proxy = nc->getProxyByUrl( traceFetchUrl );
-    networkManager->setProxy( proxy );
+
+    createLoopAndNetworkManager(traceFetchUrl);
+
     ioLog.trace( traceFetchUrl );
     QUrl requestUrl( EntrezUtils::NCBI_EFETCH_URL.arg( db ).arg( accNumber ).arg( format ) );
     downloadReply = networkManager->get( QNetworkRequest( requestUrl ) );
@@ -449,11 +452,8 @@ void EntrezQueryTask::run( )
 {
     stateInfo.progress = 0;
     ioLog.trace( "Entrez query task started..." );
-    createLoopAndNetworkManager( );
 
-    NetworkConfiguration* nc = AppContext::getAppSettings( )->getNetworkConfiguration( );
-    QNetworkProxy proxy = nc->getProxyByUrl( query );
-    networkManager->setProxy( proxy );
+    createLoopAndNetworkManager(query);
 
     QUrl request( query );
     ioLog.trace( QString( "Sending request: %1" ).arg( query ) );

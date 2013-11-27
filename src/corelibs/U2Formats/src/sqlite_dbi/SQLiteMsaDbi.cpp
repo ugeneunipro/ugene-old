@@ -635,9 +635,8 @@ void SQLiteMsaDbi::updateGapModel(const U2DataId& msaId, qint64 msaRowId, const 
     Q_UNUSED(t);
 
     ModificationAction updateAction(dbi, msaId);
-    U2TrackModType trackMod = updateAction.prepare(os);
+    updateAction.prepare(os);
     SAFE_POINT_OP(os, );
-    Q_UNUSED(trackMod);
 
     updateGapModel(updateAction, msaId, msaRowId, gapModel, os);
     SAFE_POINT_OP(os, );

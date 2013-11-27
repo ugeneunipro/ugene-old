@@ -120,7 +120,7 @@ private slots:
     /** A sequence part was added, removed or replaced */
     void sl_onSequenceModified(ADVSequenceObjectContext*);
 
-    void sl_onSelectedRegionChanged(LRegionsSelection* thiz, const QVector<U2Region>& added, const QVector<U2Region>& removed);
+    void sl_onSelectedRegionChanged();
 
     /** annotation name/group name was changed */
     void sl_onAnotationNameEdited();

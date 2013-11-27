@@ -572,8 +572,8 @@ void FindPatternWidget::sl_onAlgorithmChanged(int index)
 void FindPatternWidget::sl_onRegionOptionChanged(int index)
 {
     if (currentSelection != NULL){
-        disconnect(currentSelection, SIGNAL(si_selectionChanged(LRegionsSelection* , const QVector<U2Region>&, const QVector<U2Region>&)), 
-            this, SLOT(sl_onSelectedRegionChanged(LRegionsSelection* , const QVector<U2Region>&, const QVector<U2Region>&)) );
+        disconnect(currentSelection, SIGNAL(si_selectionChanged(LRegionsSelection*, const QVector<U2Region>&, const QVector<U2Region>&)),
+            this, SLOT(sl_onSelectedRegionChanged()));
     }
     if (boxRegion->itemData(index).toInt() == RegionSelectionIndex_WholeSequence) {
         editStart->hide();
@@ -597,12 +597,12 @@ void FindPatternWidget::sl_onRegionOptionChanged(int index)
     }else if(boxRegion->itemData(index).toInt() == RegionSelectionIndex_CurrentSelectedRegion) {
         currentSelection = annotatedDnaView->getSequenceInFocus()->getSequenceSelection();
         connect(currentSelection, SIGNAL(si_selectionChanged(LRegionsSelection* , const QVector<U2Region>&, const QVector<U2Region>&)), 
-            this, SLOT(sl_onSelectedRegionChanged(LRegionsSelection* , const QVector<U2Region>&, const QVector<U2Region>&)) );
+            this, SLOT(sl_onSelectedRegionChanged()) );
         editStart->show();
         lblStartEndConnection->show();
         editEnd->show();
 
-        sl_onSelectedRegionChanged(NULL, QVector<U2Region>(), QVector<U2Region>());
+        sl_onSelectedRegionChanged();
     }
 }
 
@@ -692,11 +692,11 @@ void FindPatternWidget::sl_onFocusChanged(
 
         if(boxRegion->itemData(boxRegion->currentIndex()).toInt() == RegionSelectionIndex_CurrentSelectedRegion){
             disconnect(currentSelection, SIGNAL(si_selectionChanged(LRegionsSelection* , const QVector<U2Region>&, const QVector<U2Region>&)), 
-                this, SLOT(sl_onSelectedRegionChanged(LRegionsSelection* , const QVector<U2Region>&, const QVector<U2Region>&)) );
+                this, SLOT(sl_onSelectedRegionChanged()) );
             currentSelection = annotatedDnaView->getSequenceInFocus()->getSequenceSelection();
             connect(currentSelection, SIGNAL(si_selectionChanged(LRegionsSelection* , const QVector<U2Region>&, const QVector<U2Region>&)), 
-                this, SLOT(sl_onSelectedRegionChanged(LRegionsSelection* , const QVector<U2Region>&, const QVector<U2Region>&)) );
-             sl_onSelectedRegionChanged(NULL, QVector<U2Region>(), QVector<U2Region>());            
+                this, SLOT(sl_onSelectedRegionChanged()) );
+             sl_onSelectedRegionChanged();
         }
     }
 }
@@ -1399,7 +1399,7 @@ bool FindPatternWidget::checkPatternRegion( const QString& pattern ){
     return true;
 }
 
-void FindPatternWidget::sl_onSelectedRegionChanged( LRegionsSelection* /*thiz*/, const QVector<U2Region>& /*added*/, const QVector<U2Region>& /*removed*/ ){
+void FindPatternWidget::sl_onSelectedRegionChanged(){
     if(!currentSelection->getSelectedRegions().isEmpty()){
         U2Region r = currentSelection->getSelectedRegions().first();
         editStart->setText(QString::number(r.startPos + 1));

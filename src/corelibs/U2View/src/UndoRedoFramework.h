@@ -41,7 +41,7 @@ public:
     QAction* getRedoAction() const { return redoAction; }
 
 private slots:
-    void sl_alignmentChanged(const MAlignment& maBefore, const MAlignmentModInfo& modInfo);
+    void sl_alignmentChanged();
     void sl_lockedStateChanged();
     void sl_completeStateChanged(bool _stateComplete);
 

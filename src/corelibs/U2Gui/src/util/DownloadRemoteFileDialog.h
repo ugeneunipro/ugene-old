@@ -45,7 +45,7 @@ class U2GUI_EXPORT DownloadRemoteFileDialog : public QDialog{
     static QString defaultDB;
 
 public slots:
-    void sl_onDbChanged(int idx);
+    void sl_onDbChanged();
     void sl_saveFilenameButtonClicked();
     void sl_linkActivated(const QString& link);
 

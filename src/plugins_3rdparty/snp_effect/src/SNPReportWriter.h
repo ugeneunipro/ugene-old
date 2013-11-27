@@ -47,7 +47,7 @@ private:
     U2DbiRef dbiRef;
 
 private:
-    SNPReportWriterSettings createSNPWriterSettings(U2OpStatus &os);
+    SNPReportWriterSettings createSNPWriterSettings();
 
 private slots:
     void sl_taskFinished();

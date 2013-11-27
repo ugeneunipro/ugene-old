@@ -305,7 +305,7 @@ signals:
 
 public slots:
     void sl_changeColorSchemeOutside(const QString &name);
-    void sl_useDots(int);
+    void sl_doUseDots();
 
 protected:
     void resizeEvent(QResizeEvent *);

@@ -174,7 +174,7 @@ protected slots:
 
 protected:
     // method should be called from the thread where @networkManager is actually used
-    void createLoopAndNetworkManager( );
+    void createLoopAndNetworkManager(const QString &queryString);
 
     QEventLoop *loop;
     QNetworkAccessManager *networkManager;

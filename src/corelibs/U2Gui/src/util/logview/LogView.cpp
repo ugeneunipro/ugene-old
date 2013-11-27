@@ -37,15 +37,6 @@
 
 namespace U2 {
 
-/*static void checkThread() {
-#ifdef _DEBUG
-    QThread* appThread = QApplication::instance()->thread();
-    QThread* thisThread = QThread::currentThread();
-    assert (appThread == thisThread);
-#endif
-}*/
-
-
 #define MAX_VISIBLE_MESSAGES 1000
 
 LogViewWidget::LogViewWidget(const LogFilter& filter) : messageCounter(0), connected(false) {

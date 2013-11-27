@@ -85,11 +85,11 @@ DownloadRemoteFileDialog::DownloadRemoteFileDialog(QWidget *p):QDialog(p), isQue
 
     ui->hintLabel->setStyleSheet( HINT_STYLE_SHEET );
 
-    connect(ui->databasesBox, SIGNAL(currentIndexChanged ( int)), SLOT( sl_onDbChanged(int)));
+    connect(ui->databasesBox, SIGNAL(currentIndexChanged ( int)), SLOT( sl_onDbChanged()));
     connect(ui->saveFilenameToolButton, SIGNAL(clicked()), SLOT(sl_saveFilenameButtonClicked()));
     connect(ui->hintLabel, SIGNAL(linkActivated(const QString&)), SLOT(sl_linkActivated(const QString& )));
 
-    sl_onDbChanged(ui->databasesBox->currentIndex());
+    sl_onDbChanged();
 
     setSaveFilename();
 }
@@ -241,7 +241,7 @@ bool DownloadRemoteFileDialog::isDefaultDb(const QString& dbId){
     return registry.hasDbId(dbId);
 }
 
-void DownloadRemoteFileDialog::sl_onDbChanged( int /*idx*/ ){
+void DownloadRemoteFileDialog::sl_onDbChanged(){
     QString dbId = getDBId();
     QString hint;
     QString description;

@@ -65,16 +65,12 @@ void SNPReportWriter::init() {
 Task* SNPReportWriter::tick() {
     U2OpStatus2Log os;
 
-    SNPReportWriterSettings settings = createSNPWriterSettings(os);
-    if (os.hasError()) {
-        return new FailTask(os.getError());
-    }
+    SNPReportWriterSettings settings = createSNPWriterSettings();
 
     while (inChannel->hasMessage()) {
         Message m = getMessageAndSetupScriptValues(inChannel);
         QVariantMap data = m.getData().toMap();
 
-        QVariant inVar;
         if (!data.contains(BaseSlots::VARIATION_TRACK_SLOT().getId())) {
             os.setError("Variations slot is empty");
             return new FailTask(os.getError());
@@ -144,7 +140,7 @@ void SNPReportWriter::cleanup(){
     dbiRef = U2DbiRef();
 }
 
-SNPReportWriterSettings SNPReportWriter::createSNPWriterSettings( U2OpStatus &/*os*/ ){
+SNPReportWriterSettings SNPReportWriter::createSNPWriterSettings(){
     SNPReportWriterSettings settings;
 
     settings.reportPath = getValue<QString>(REPORT_PATH);

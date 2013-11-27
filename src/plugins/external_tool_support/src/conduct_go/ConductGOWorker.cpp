@@ -85,10 +85,7 @@ Task *ConductGOWorker::tick() {
 
         const QList<SharedAnnotationData>& treatData = QVariantUtils::var2ftl(treatVar.toList());
 
-        ConductGOSettings settings = createConductGOSettings(os);
-        if (os.hasError()) {
-            return new FailTask(os.getError());
-        }
+        ConductGOSettings settings = createConductGOSettings();
 
         ConductGOTask* t = new ConductGOTask(settings, treatData);
         t->addListeners(createLogListeners());
@@ -121,7 +118,7 @@ void ConductGOWorker::sl_taskFinished() {
     }
 }
 
-U2::ConductGOSettings ConductGOWorker::createConductGOSettings( U2OpStatus &/*os*/ ){
+U2::ConductGOSettings ConductGOWorker::createConductGOSettings(){
     ConductGOSettings settings;
 
     settings.outDir = getValue<QString>(OUTPUT_DIR);

@@ -46,7 +46,7 @@ private:
     IntegralBus *inChannel;
 
 private:
-    ConductGOSettings createConductGOSettings(U2OpStatus &os);
+    ConductGOSettings createConductGOSettings();
 
 private slots:
     void sl_taskFinished();

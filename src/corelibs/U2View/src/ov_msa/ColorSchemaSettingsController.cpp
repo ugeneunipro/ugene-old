@@ -163,7 +163,7 @@ static void getDefaultUgeneColors(DNAAlphabetType type, QMap<char, QColor>& alph
     }
 }
 
-static QMap<char, QColor> getDefaultSchemaColors(DNAAlphabetType type, bool defaultAlpType, DefaultStrategy /*strategy*/){
+static QMap<char, QColor> getDefaultSchemaColors(DNAAlphabetType type, bool defaultAlpType){
     QList<const DNAAlphabet*> alphabets = AppContext::getDNAAlphabetRegistry()->getRegisteredAlphabets();
     QMap<DNAAlphabetType, QByteArray > alphabetChars;
     foreach(const DNAAlphabet* alphabet, alphabets){ // default initialization
@@ -233,7 +233,7 @@ static bool getSchemaColors(CustomColorSchema& customSchema){
             coreLog.info(QString("%1: alphabet of scheme not defined").arg(customSchema.name));
             return false;
         }
-        alphColors = getDefaultSchemaColors(type, defaultAlpType, DefaultStrategy_Void);
+        alphColors = getDefaultSchemaColors(type, defaultAlpType);
         break;
     }
     QMap<char, QColor> tmpHelper;
@@ -529,7 +529,7 @@ void CreateColorSchemaDialog::sl_createSchema(){
         }
     }
 
-    QMap<char, QColor> alpColors = getDefaultSchemaColors(type, defaultAlpType, DefaultStrategy_UgeneColors);
+    QMap<char, QColor> alpColors = getDefaultSchemaColors(type, defaultAlpType);
 
     ColorSchemaDialogController controller(alpColors);
     int r = controller.adjustAlphabetColors();

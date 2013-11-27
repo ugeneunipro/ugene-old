@@ -139,8 +139,7 @@ void GSequenceGraphView::getLabelPositions(QList<QVariant> &labelPositions) {
     graphs.at(0)->graphLabels.getLabelPositions(labelPositions);
 }
 void GSequenceGraphView::createLabelsOnPositions(const QList<QVariant>& positions) {
-    foreach (GSequenceGraphData *graph, graphs) {
-        Q_UNUSED(graph);
+    for (int i = 0; i < graphs.size(); ++i) {
         foreach(const QVariant &val, positions) {
             float pos = val.value<float>();
             addLabel(pos);

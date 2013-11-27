@@ -358,7 +358,7 @@ void MSAEditorSequenceArea::sl_changeColorSchemeOutside( const QString &name ){
     if(a){a->trigger();}
 }
 
-void MSAEditorSequenceArea::sl_useDots(int /*i*/){
+void MSAEditorSequenceArea::sl_doUseDots(){
     useDotsAction->trigger();
 }
 
