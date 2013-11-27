@@ -40,6 +40,11 @@ void PhyTreeObject::setTree(const PhyTree& _tree) {
     emit si_phyTreeChanged();
 }
 
+void PhyTreeObject::rerootPhyTree(PhyNode* node) {
+    PhyTreeUtils::rerootPhyTree(tree, node);
+    emit si_phyTreeChanged();
+}
+
 bool PhyTreeObject::treesAreAlike( const PhyTree& tree1, const PhyTree& tree2 )
 {
     

@@ -27,6 +27,8 @@
 
 namespace U2 {
 
+class PhyTreeObject;
+
 class GraphicsButtonItem: public QGraphicsEllipseItem {
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *e);
@@ -44,6 +46,8 @@ public:
     bool isCollapsed();
 
     void setSelected(bool selected);
+
+    void rerootTree(PhyTreeObject* treeObject);
 private:
     void setHighlighting(bool enabled);
 

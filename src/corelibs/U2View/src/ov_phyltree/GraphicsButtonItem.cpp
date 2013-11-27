@@ -23,7 +23,7 @@
 #include "GraphicsBranchItem.h"
 #include "GraphicsRectangularBranchItem.h"
 #include <U2Core/U2SafePoints.h>
-
+#include <U2Core/PhyTreeObject.h>
 #include <QtGui/QPainter> 
 #include <QtGui/QPen>
 #include <QtGui/QGraphicsSceneMouseEvent>
@@ -168,6 +168,29 @@ bool GraphicsButtonItem::isCollapsed(){
     }
     return false;
     
+}
+
+void GraphicsButtonItem::rerootTree(PhyTreeObject* treeObject) {
+    uiLog.trace("Rerooting of the PhyTree");
+    SAFE_POINT(NULL != treeObject, "Null pointer argument 'treeObject' was passed to 'PhyTreeUtils::rerootPhyTree' function",);
+
+    GraphicsBranchItem *branchItem = dynamic_cast<GraphicsBranchItem*>(parentItem());
+    CHECK(NULL != branchItem , );
+
+    GraphicsRectangularBranchItem *rectBranchItem = dynamic_cast<GraphicsRectangularBranchItem*>(branchItem);
+    if(NULL == rectBranchItem){
+        CHECK(branchItem->getCorrespondingItem(), );
+
+        rectBranchItem = dynamic_cast<GraphicsRectangularBranchItem*>(branchItem->getCorrespondingItem());
+        CHECK(NULL != rectBranchItem,);
+    }
+
+    const PhyBranch* nodeBranch = rectBranchItem->getPhyBranch();
+    CHECK(NULL != nodeBranch, );
+    PhyNode* newRoot = nodeBranch->node2;
+    CHECK(NULL != newRoot, );
+
+    treeObject->rerootPhyTree(newRoot);
 }
 
 }//namespace

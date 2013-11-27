@@ -68,6 +68,7 @@ public:
 };
 
 class U2CORE_EXPORT PhyNode {
+    Q_DISABLE_COPY(PhyNode)
     friend class PhyTreeUtils;
     friend class PhyTreeData;
 public:
@@ -77,6 +78,11 @@ public:
     bool isConnected(const PhyNode* node) const;
 
     PhyNode* getParentNode();
+    void setParentNode(PhyNode* newParent, double distance);
+
+    QList<PhyNode*> getChildrenNodes() const;
+
+    const PhyBranch* getParentBranch() const;
 
     void swapBranches(int firstBrunch, int secondBranch){branches.swap(firstBrunch, secondBranch);}
 
@@ -87,6 +93,8 @@ public:
 
     double getBranchesDistance(int branchNumber) const { return branches.at(branchNumber)->distance;}
     void setBranchesDistance(int branchNumber, double _distance) { branches.at(branchNumber)->distance = _distance;}
+
+    double getDistanceToRoot();
 
     void removeBrunch(PhyBranch* brunch) {branches.removeAll(brunch);}
 
@@ -99,6 +107,7 @@ public:
     bool equals(PhyNode* other);
     void print(QList<PhyNode*>& nodes, int distance, int tab);
     void dumpBranches() const;
+
     ~PhyNode();
 
     QList<PhyBranch*>   branches;
@@ -109,6 +118,7 @@ private:
 class U2CORE_EXPORT PhyTreeUtils {
 public:
     static int getNumSeqsFromNode(const PhyNode *node, const QSet<QString>& names);
+    static void rerootPhyTree(PhyTree& phyTree, PhyNode* node);
 };
 
 }//namespace

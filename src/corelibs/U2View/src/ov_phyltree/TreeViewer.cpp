@@ -419,8 +419,12 @@ TreeViewerUI::TreeViewerUI(TreeViewer* treeViewer): phyObject(treeViewer->getPhy
     //chrootAction->setEnabled(false); //not implemented yet
 
     swapAction = buttonPopup->addAction(QObject::tr("Swap Siblings"));
-    connect(swapAction, SIGNAL(triggered(bool)), SLOT(sl_swapTriggered()));
+    connect(swapAction, SIGNAL(triggered()), SLOT(sl_swapTriggered()));
     swapAction->setObjectName("Swap Siblings");
+
+    rerootAction = buttonPopup->addAction(QObject::tr("Reroot tree"));
+    connect(rerootAction, SIGNAL(triggered()), SLOT(sl_rerootTriggered()));
+    rerootAction->setObjectName("Reroot tree");
 
     buttonPopup->addAction(zoomToAction);
 
@@ -919,6 +923,16 @@ void TreeViewerUI::sl_swapTriggered() {
     setTransformationAnchor(AnchorUnderMouse);
 }
 
+void TreeViewerUI::sl_rerootTriggered() {
+    foreach (QGraphicsItem *graphItem, items()) {
+        GraphicsButtonItem *buttonItem = dynamic_cast<GraphicsButtonItem*>(graphItem);
+        if (buttonItem != NULL && buttonItem->isSelectedTop()) {
+            buttonItem->rerootTree(phyObject);
+            break;
+        }
+    }
+}
+
 void TreeViewerUI::collapseSelected() {
     phyObject->update();
 
@@ -1025,6 +1039,7 @@ void TreeViewerUI::sl_contTriggered(bool on) {
 void TreeViewerUI::sl_rectangularLayoutTriggered() {
     if (layout != TreeLayout_Rectangular) {
         swapAction->setEnabled(true);
+        rerootAction->setEnabled(true);
         root->setSelectedRecurs(false, true); // clear selection
 
         layout = TreeLayout_Rectangular;
@@ -1352,6 +1367,7 @@ void TreeViewerUI::updateActionsState(){
     QList<QGraphicsItem*> updatingItems = this->scene()->selectedItems();
     collapseAction->setEnabled(!updatingItems.isEmpty());
     swapAction->setEnabled(!updatingItems.isEmpty());
+    rerootAction->setEnabled(!updatingItems.isEmpty());
 }
 
 void TreeViewerUI::updateLayout()

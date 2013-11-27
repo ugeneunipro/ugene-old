@@ -244,6 +244,7 @@ private slots:
     void sl_layoutRecomputed();
     void sl_textSettingsTriggered();
     void sl_treeSettingsTriggered();
+    void sl_rerootTriggered();
 
     void sl_setSettingsTriggered();
     void sl_branchSettings();
@@ -300,6 +301,7 @@ private:
     const TreeViewer*   curTreeViewer;
 
     QAction*            swapAction;
+    QAction*            rerootAction;
     QAction*            zoomToAction;
     QAction*            zoomOutAction;
     QAction*            zoomToAllAction;

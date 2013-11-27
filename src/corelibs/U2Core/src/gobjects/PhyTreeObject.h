@@ -37,6 +37,8 @@ public:
 
     virtual const PhyTree& getTree() const {return tree;}
     void setTree(const PhyTree& _tree);
+
+    void rerootPhyTree(PhyNode* node);
     // Warning!
     // PhyBranches can be accessed and modified!
     // TODO: move branches to private data, add getters and setters
