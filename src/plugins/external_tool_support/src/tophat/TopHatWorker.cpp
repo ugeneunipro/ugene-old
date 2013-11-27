@@ -456,7 +456,7 @@ void TopHatWorkerFactory::init()
     }
 
     delegates[OUT_DIR] = new URLDelegate("", "", false, true /*path*/);
-    delegates[BOWTIE_INDEX_DIR] = new URLDelegate("", "", false, false, false, NULL, "", true);
+    delegates[BOWTIE_INDEX_DIR] = new URLDelegate("", "", false, true, false, NULL, "", true);
     delegates[BOWTIE_TOOL_PATH] = new URLDelegate("", "executable", false, false, false);
     delegates[SAMTOOLS_TOOL_PATH] = new URLDelegate("", "executable", false, false, false);
     delegates[REF_SEQ] = new URLDelegate(DialogUtils::prepareDocumentsFileFilter(true), "", false, false, false);

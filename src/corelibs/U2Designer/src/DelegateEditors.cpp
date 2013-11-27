@@ -337,6 +337,7 @@ URLDelegate::URLDelegate(const QString& filter, const QString& type, bool multi,
 URLWidget * URLDelegate::createWidget(QWidget *parent) const {
     URLWidget *result;
     if (noFilesMode) {
+        bool isPath = false; // noFilesMode: choose a file but its dir will be committed
         result = new NoFileURLWidget(lastDirType, multi, isPath, saveFile, tags(), parent);
     } else {
         result = new URLWidget(lastDirType, multi, isPath, saveFile, tags(), parent);

@@ -110,7 +110,7 @@ DelegateTags::DelegateTags(QObject *parent)
 
 }
 
-DelegateTags::DelegateTags(const DelegateTags &other) : QObject(parent()) {
+DelegateTags::DelegateTags(const DelegateTags &other) {
     tags = other.tags;
 }
 
