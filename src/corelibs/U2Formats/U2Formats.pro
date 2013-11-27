@@ -60,6 +60,7 @@ HEADERS += src/ABIFormat.h \
            src/sqlite_dbi/SQLiteSequenceDbi.h \
            src/sqlite_dbi/SQLiteSNPTablesDbi.h \
            src/sqlite_dbi/SQLiteVariantDbi.h \
+           src/tasks/BgzipTask.h \
            src/tasks/ConvertAssemblyToSamTask.h \
            src/tasks/ConvertFileTask.h \
            src/sqlite_dbi/assembly/AssemblyPackAlgorithm.h \
@@ -124,6 +125,7 @@ SOURCES += src/ABIFormat.cpp \
            src/sqlite_dbi/SQLiteSequenceDbi.cpp \
            src/sqlite_dbi/SQLiteSNPTablesDbi.cpp \
            src/sqlite_dbi/SQLiteVariantDbi.cpp \
+           src/tasks/BgzipTask.cpp \
            src/tasks/ConvertAssemblyToSamTask.cpp \
            src/tasks/ConvertFileTask.cpp \
            src/sqlite_dbi/assembly/AssemblyPackAlgorithm.cpp \
