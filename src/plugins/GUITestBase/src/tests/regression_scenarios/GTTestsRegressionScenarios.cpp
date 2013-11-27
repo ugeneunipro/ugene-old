@@ -3506,6 +3506,42 @@ GUI_TEST_CLASS_DEFINITION( test_2378_1 ) {
     CHECK_SET_ERR(!l.hasError( ), "Error message");
 }
 
+GUI_TEST_CLASS_DEFINITION( test_2382 ) {
+    // 1. Open "_common_data/ace/capres4.ace".
+    // 2. "Import ACE file" dialog appeared. Press ok.
+    // Expected state: export succeeded, assembly is displayed.
+    GTLogTracer l;
+
+    QString sandboxDir = testDir + "_common_data/scenarios/sandbox/";
+    QString assDocName = "test_2382.ugenedb";
+    GTUtilsDialog::waitForDialog(os, new ConvertAceToSqliteDialogFiller(os, sandboxDir + assDocName));
+    GTFileDialog::openFile(os, testDir + "_common_data/ace/", "capres4.ace");
+
+    GTGlobals::sleep();
+    CHECK_SET_ERR( !l.hasError( ), "There must be no errors!" );
+
+    QTreeWidgetItem *assDoc = GTUtilsProjectTreeView::findItem(os, assDocName);
+    CHECK_SET_ERR(NULL != assDoc, "Result document was not found!");
+}
+
+GUI_TEST_CLASS_DEFINITION( test_2382_1 ) {
+    // 1. Open "_common_data/ace/test_new_.cap.ace".
+    // 2. "Import ACE file" dialog appeared. Press ok.
+    // Expected state: export succeeded, assembly is displayed.
+    GTLogTracer l;
+
+    QString sandboxDir = testDir + "_common_data/scenarios/sandbox/";
+    QString assDocName = "test_2382_1.ugenedb";
+    GTUtilsDialog::waitForDialog(os, new ConvertAceToSqliteDialogFiller(os, sandboxDir + assDocName));
+    GTFileDialog::openFile(os, testDir + "_common_data/ace/", "test_new_.cap.ace");
+
+    GTGlobals::sleep();
+    CHECK_SET_ERR( !l.hasError( ), "There must be no errors!" );
+
+    QTreeWidgetItem *assDoc = GTUtilsProjectTreeView::findItem(os, assDocName);
+    CHECK_SET_ERR(NULL != assDoc, "Result document was not found!");
+}
+
 GUI_TEST_CLASS_DEFINITION( test_2406 ) {
 //    1. Create the {Read Sequence -> Write Sequence} workflow.
     GTUtilsWorkflowDesigner::openWorkfolwDesigner(os);
