@@ -376,7 +376,8 @@ AddTreeWidget::AddTreeWidget(MSAEditor* msa)
     QVBoxLayout* mainLayout = initLayout(this);
     mainLayout->setSpacing(0);
 
-    addTreeHint = new QLabel(tr("There are no displayed trees so settings \n are hidden."), this);
+    addTreeHint = new QLabel(tr("There are no displayed trees so settings are hidden."), this);
+    addTreeHint->setWordWrap(true);
 
     mainLayout->addWidget(addTreeHint);
 
@@ -384,10 +385,14 @@ AddTreeWidget::AddTreeWidget(MSAEditor* msa)
     buttonLayout->setContentsMargins(0, 5, 0, 0);
 
     openTreeButton = new QPushButton(QIcon(":ugene/images/advanced_open.png"), tr("Open tree"), this);
+    openTreeButton->setMinimumWidth(20);
     buttonLayout->addWidget(openTreeButton);
-    QSpacerItem* horizontalSpacer = new QSpacerItem(20, 20, QSizePolicy::Fixed, QSizePolicy::Minimum);
+
+    QSpacerItem* horizontalSpacer = new QSpacerItem(15, 15, QSizePolicy::Fixed, QSizePolicy::Minimum);
     buttonLayout->addSpacerItem(horizontalSpacer);
+
     buildTreeButton = new QPushButton(QIcon(":core/images/phylip.png"), tr("Build tree"), this);
+    buildTreeButton->setMinimumWidth(20);
     buttonLayout->addWidget(buildTreeButton);
 
     mainLayout->addLayout(buttonLayout);
