@@ -114,10 +114,12 @@ void GraphicsButtonItem::setHighlighting(bool enabled) {
 }
 
 void GraphicsButtonItem::collapse() {
-    GraphicsBranchItem *p = dynamic_cast<GraphicsBranchItem*>(parentItem());
-    Q_ASSERT(p);
-    if (p) {
-        p->collapse();
+    GraphicsBranchItem *branch = dynamic_cast<GraphicsBranchItem*>(parentItem());
+    SAFE_POINT(NULL != branch, "Collapsing is impossible because button has not parent branch",);
+
+    GraphicsBranchItem *parentBranch = dynamic_cast<GraphicsBranchItem*>(branch->parentItem());
+    if(NULL != parentBranch) {
+        branch->collapse();
     }
 }
 

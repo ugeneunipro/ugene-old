@@ -1365,9 +1365,14 @@ void TreeViewerUI::updateActionsState(){
     }
 
     QList<QGraphicsItem*> updatingItems = this->scene()->selectedItems();
-    collapseAction->setEnabled(!updatingItems.isEmpty());
-    swapAction->setEnabled(!updatingItems.isEmpty() && layout != TreeLayout_Unrooted);
-    rerootAction->setEnabled(!updatingItems.isEmpty() && layout != TreeLayout_Unrooted);
+
+    bool thereIsSelection = !updatingItems.isEmpty();
+    bool rootIsSelected = root->isSelected();
+    collapseAction->setEnabled(thereIsSelection && !rootIsSelected);
+
+    bool treeIsRooted = layout != TreeLayout_Unrooted;
+    swapAction->setEnabled(thereIsSelection && treeIsRooted);
+    rerootAction->setEnabled(thereIsSelection && !rootIsSelected && treeIsRooted);
 }
 
 void TreeViewerUI::updateLayout()
