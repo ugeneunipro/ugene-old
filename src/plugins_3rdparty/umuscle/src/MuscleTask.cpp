@@ -102,7 +102,7 @@ MuscleTask::MuscleTask(const MAlignment& ma, const MuscleTaskSettings& _config)
     if (config.alignRegion && config.regionToAlign.length != inputMA.getLength()) {
         assert(config.regionToAlign.length > 0);
         inputSubMA = inputMA.mid(config.regionToAlign.startPos, config.regionToAlign.length);
-        CHECK_EXT(inputSubMA == MAlignment(), setError(tr("Stopping MUSCLE task, because of error in MAlignment::mid function")), );
+        CHECK_EXT(inputSubMA != MAlignment(), setError(tr("Stopping MUSCLE task, because of error in MAlignment::mid function")), );
     }
     
     ctx->input_uIds = new unsigned[inputSubMA.getNumRows()];
