@@ -1302,6 +1302,21 @@ GUI_TEST_CLASS_DEFINITION(test_1720){
 //Expected state: project view with document "D11266.gb", no error messages in log appear
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1811) {
+    GTUtilsDialog::waitForDialog(os, new RemoteDBDialogFiller(os, "Q9IGQ6", 8));
+    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), ACTION_PROJECTSUPPORT__ACCESS_REMOTE_DB, GTGlobals::UseKey);
+
+    GTGlobals::sleep(8000);//some time needed for request
+}
+GUI_TEST_CLASS_DEFINITION(test_1811_1) {
+    GTUtilsDialog::waitForDialog(os, new RemoteDBDialogFiller(os, "A0N8V2", 5));
+    GTUtilsDialog::waitForDialog(os, new SelectDocumentFormatDialogFiller(os));
+    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), ACTION_PROJECTSUPPORT__ACCESS_REMOTE_DB, GTGlobals::UseKey);
+
+    GTGlobals::sleep(10000);//some time needed for request
+    GTUtilsDocument::isDocumentLoaded(os, "A0N8V2.txt");
+}
+
 GUI_TEST_CLASS_DEFINITION( test_1813 )
 {
     // 1) Select the menu {File->Access remote database}
