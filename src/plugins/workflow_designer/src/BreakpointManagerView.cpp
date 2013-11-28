@@ -313,6 +313,8 @@ void BreakpointManagerView::removeBreakpointFromList(QTreeWidgetItem *item) {
     const int removedActorsCount = actorConnections.remove(item);
     Q_ASSERT(1 == removedActorsCount || 0 == removedActorsCount || removedControlsCount
         != removedActorsCount);
+    Q_UNUSED(removedControlsCount);
+
     if(1 == removedActorsCount) {
         if(lastReachedBreakpoint == item) {
             lastReachedBreakpoint = NULL;

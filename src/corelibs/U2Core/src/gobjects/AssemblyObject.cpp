@@ -94,6 +94,7 @@ U2EntityRef AssemblyObject::dbi2dbiClone(const AssemblyObject *const srcObj, con
     U2DbiIterator<U2AssemblyRead> *iter = srcAssemblyDbi->getReads(srcObjId, U2Region(0, assemblyLength), os);
     QScopedPointer< U2DbiIterator<U2AssemblyRead> > iterPtr(iter);
     CHECK_OP(os, U2EntityRef());
+    Q_UNUSED(iterPtr);
 
     dstAssemblyDbi->addReads(assembly.id, iter, os);
     CHECK_OP(os, U2EntityRef());

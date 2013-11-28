@@ -63,7 +63,7 @@ BreakpointConditionEditDialog::~BreakpointConditionEditDialog() {
 void BreakpointConditionEditDialog::sl_dialogAccepted() {
     emit si_conditionSwitched(ui->conditionBox->isChecked());
 
-    HitCondition hitCondition;
+    HitCondition hitCondition = initHitCondition;
     if (ui->isTrueButton->isChecked()) {
         hitCondition = CONDITION_IS_TRUE;
     } else if (ui->hasChangedButton->isChecked()) {

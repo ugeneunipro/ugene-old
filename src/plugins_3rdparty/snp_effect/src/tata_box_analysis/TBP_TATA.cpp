@@ -239,7 +239,7 @@ double TBP_NatTATA_95conf_interval (char *s)
     extern double sqrt (double);
 
     double x,y, z;
-    char *seq, nat_nucl, mut_nucl, mut[26];
+    char *seq, nat_nucl, mut_nucl = 0, mut[26];
     int i,j,k;
 
     seq=&s[0]; x=TBP_NatTATA_via_PWM_dsDNA_ssDNA(seq); if(x<-50.) return (x);

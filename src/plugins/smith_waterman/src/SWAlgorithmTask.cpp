@@ -504,6 +504,7 @@ PairwiseAlignmentSmithWatermanTask::PairwiseAlignmentSmithWatermanTask(PairwiseA
     assert(settings != NULL);
     bool isValid = settings->convertCustomSettings();
     assert(isValid == true);
+    Q_UNUSED(isValid);
 
     U2OpStatus2Log os;
     DbiConnection con(settings->msaRef.dbiRef, os);

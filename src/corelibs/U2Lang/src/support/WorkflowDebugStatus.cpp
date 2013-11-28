@@ -211,6 +211,7 @@ void WorkflowDebugStatus::removeBreakpoint(WorkflowBreakpoint *breakpoint) {
     ActorId owner = breakpoint->getActorId();
     const int removedCount = breakpoints.removeAll(breakpoint);
     Q_ASSERT(1 == removedCount);
+    Q_UNUSED(removedCount);
     delete breakpoint;
     emit si_breakpointRemoved(owner);
 }

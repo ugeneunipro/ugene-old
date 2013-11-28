@@ -73,7 +73,7 @@ void SmithWatermanDialogFiller::run() {
     
     GTTabWidget::setCurrentIndex(os, tabWidget, 1);
     QComboBox * resultViewVariants = qobject_cast<QComboBox *>(GTWidget::findWidget(os, "resultViewVariants", dialog));
-    int resultViewIndex;
+    int resultViewIndex = 0;
     if(SmithWatermanSettings::MULTIPLE_ALIGNMENT == resultView) {
         resultViewIndex = 0;
     } else if(SmithWatermanSettings::ANNOTATIONS == resultView) {

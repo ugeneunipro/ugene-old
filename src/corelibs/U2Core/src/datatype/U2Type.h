@@ -125,8 +125,8 @@ public:
 */
 class U2CORE_EXPORT U2EntityRef {
 public:
-    U2EntityRef() {}
-    U2EntityRef(const U2DbiRef& _dbiRef, const U2DataId& _entityId) : dbiRef(_dbiRef),entityId(_entityId){}
+    U2EntityRef() : version(0) {}
+    U2EntityRef(const U2DbiRef& _dbiRef, const U2DataId& _entityId) : dbiRef(_dbiRef),entityId(_entityId),version(0){}
     bool isValid() const {return dbiRef.isValid() && !entityId.isEmpty();}
 
     /** database  id */

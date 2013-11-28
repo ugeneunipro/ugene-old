@@ -159,7 +159,7 @@ void SmithWatermanAlgorithm::sortByScore( QList<PairAlignSequences> & res) {
 
 void SmithWatermanAlgorithm::calculateMatrixForMultipleAlignmentResult() {
     int subst, max, max1;
-    int i, j, n, e1, f1, x; unsigned int xpos;
+    int i, j, n, e1, f1, x; unsigned int xpos = 0;
     unsigned int src_n = searchSeq.length(), pat_n = patternSeq.length();
     unsigned char *src = (unsigned char*)searchSeq.data(), *pat = (unsigned char*)patternSeq.data();
 
@@ -281,7 +281,7 @@ void SmithWatermanAlgorithm::calculateMatrixForMultipleAlignmentResult() {
 
 void SmithWatermanAlgorithm::calculateMatrixForAnnotationsResult() {
 
-    int subst, max, pos, max1;
+    int subst, max, pos = 0, max1;
     int i, j, n, e1, f1, fpos;
     unsigned int src_n = searchSeq.length(), pat_n = patternSeq.length();
     unsigned char *src = (unsigned char*)searchSeq.data(), *pat = (unsigned char*)patternSeq.data();

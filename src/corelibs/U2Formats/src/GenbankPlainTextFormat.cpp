@@ -743,7 +743,7 @@ static void writeSequence(IOAdapter* io, U2SequenceObject* ao, QList<U2Region> l
 
     QByteArray seq;
     qint64 slen = ao->getSequenceLength();
-    const char* sequence;
+    const char* sequence = NULL;
     const char* spaces = TextUtils::SPACE_LINE.constData();
     QByteArray num;
     bool ok = true;

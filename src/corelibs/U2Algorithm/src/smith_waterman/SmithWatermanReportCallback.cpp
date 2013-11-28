@@ -333,8 +333,8 @@ QString SmithWatermanReportCallbackMAImpl::planFor_MSA_Alignment_InCurrentWindow
     QList<U2MsaRow> rows = sourceMsaConnection.dbi->getMsaDbi()->getRows(sourceMsaRef.entityId, os);
     CHECK_OP(os, tr("Failed to get msa from dbi"));
 
-    U2MsaRow* refRow;
-    U2MsaRow* ptrnRow;
+    U2MsaRow* refRow = NULL;
+    U2MsaRow* ptrnRow = NULL;
 
     for (int  i = 0; i < rows.length(); ++i) {
         if (rows[i].sequenceId == refSequence->id) {

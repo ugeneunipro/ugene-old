@@ -142,7 +142,7 @@ void MSAEditorTreeManager::sl_openTree() {
 
     Project* p = AppContext::getProject();
     d = NULL;
-    PhyTreeObject *newObj;
+    PhyTreeObject *newObj = NULL;
     TaskScheduler* scheduler = AppContext::getTaskScheduler();
     QString treeFileName = settings.fileUrl.getURLString();
     if (treeFileName.isEmpty()) {

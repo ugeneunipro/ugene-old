@@ -56,6 +56,7 @@ WorkflowInvestigationWidgetsController::WorkflowInvestigationWidgetsController(Q
 {
     QTabWidget *container = dynamic_cast<QTabWidget *>(parent);
     Q_ASSERT(NULL != container);
+    Q_UNUSED(container);
 
     exportInvestigationAction = new QAction(
         QIcon(":workflow_designer/images/document_convert.png"),
@@ -207,6 +208,7 @@ void WorkflowInvestigationWidgetsController::sl_currentInvestigationUpdateRespon
     const WorkflowInvestigationData &investigationInfo, const Workflow::Link *bus)
 {
     Q_ASSERT(bus == investigatedLink);
+    Q_UNUSED(bus);
     if(!investigationInfo.isEmpty()) {
         const int rowInsertionStartPosition = investigationModel->loadedRowCount();
         if(!investigationModel->headerData(0, Qt::Horizontal, Qt::DisplayRole).isValid()) {

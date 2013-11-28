@@ -77,7 +77,7 @@ void WizardFiller::setParameters(U2OpStatus &os, pairValList list,int i){
 
             lineEditValue* strVal = dynamic_cast<lineEditValue*>(pair.val);
             if(strVal){
-                QLineEdit* lineEd;
+                QLineEdit* lineEd = NULL;
                 foreach(QWidget* w, yList){
                     QLineEdit* line = dynamic_cast<QLineEdit*>(w);
                     if (line)
@@ -90,7 +90,7 @@ void WizardFiller::setParameters(U2OpStatus &os, pairValList list,int i){
             }
             spinBoxValue* spinVal = dynamic_cast<spinBoxValue*>(pair.val);
             if(spinVal){
-                QSpinBox* spinBox;
+                QSpinBox* spinBox = NULL;
                 foreach(QWidget* w, yList){
                     QSpinBox* spin = dynamic_cast<QSpinBox*>(w);
                     if (spin)
@@ -101,7 +101,7 @@ void WizardFiller::setParameters(U2OpStatus &os, pairValList list,int i){
             }
             doubleSpinBoxValue* doubleSpinVal = dynamic_cast<doubleSpinBoxValue*>(pair.val);
             if(doubleSpinVal){
-                QDoubleSpinBox* doubleSpinBox;
+                QDoubleSpinBox* doubleSpinBox = NULL;
                 foreach(QWidget* w, yList){
                     QDoubleSpinBox* spin = dynamic_cast<QDoubleSpinBox*>(w);
                     if (spin)
@@ -112,7 +112,7 @@ void WizardFiller::setParameters(U2OpStatus &os, pairValList list,int i){
             }
             ComboBoxValue* comboVal = dynamic_cast<ComboBoxValue*>(pair.val);
             if(comboVal){
-                QComboBox* comboBox;
+                QComboBox* comboBox = NULL;
                 foreach(QWidget* w, yList){
                     QComboBox* combo = dynamic_cast<QComboBox*>(w);
                     if (combo)
