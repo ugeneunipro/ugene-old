@@ -590,7 +590,7 @@ void BreakpointManagerView::setBreakpointBackgroundColor(QTreeWidgetItem *breakp
     }
 }
 
-void BreakpointManagerView::paintEvent(QPaintEvent */*event*/) {
+void BreakpointManagerView::paintEvent(QPaintEvent * /*event*/) {
     static const QColor nonActiveColor = breakpointsList->palette().window().color();
     if(!this->isEnabled()) {
         foreach(QTreeWidgetItem *item, breakpointsList->findItems(QString(), Qt::MatchContains)) {

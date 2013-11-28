@@ -235,7 +235,7 @@ void WorkflowInvestigationWidgetsController::sl_currentInvestigationUpdateRespon
     }
 }
 
-void WorkflowInvestigationWidgetsController::sl_countOfMessagesResponse(const Workflow::Link */*bus*/,
+void WorkflowInvestigationWidgetsController::sl_countOfMessagesResponse(const Workflow::Link * /*bus*/,
     int countOfMessages)
 {
     investigationModel->insertRows(0, countOfMessages, QModelIndex());

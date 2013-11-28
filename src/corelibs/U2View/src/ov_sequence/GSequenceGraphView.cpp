@@ -120,7 +120,7 @@ void GSequenceGraphView::mouseMoveEvent(QMouseEvent *me) {
     update();
     GSequenceLineView::mouseMoveEvent(me);
 }
-void GSequenceGraphView::leaveEvent(QEvent */*le*/) {
+void GSequenceGraphView::leaveEvent(QEvent * /*le*/) {
     hideLabel();
 }
 

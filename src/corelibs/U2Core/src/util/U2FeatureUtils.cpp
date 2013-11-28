@@ -419,7 +419,6 @@ QList<U2Feature> U2FeatureUtils::getAnnotatingFeaturesByRegion( const U2DataId &
     }
 
     return result;
-    return result;
 }
 
 bool U2FeatureUtils::isGroupFeature( const U2DataId &featureId, const U2DbiRef &dbiRef,
