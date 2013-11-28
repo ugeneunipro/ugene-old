@@ -417,7 +417,7 @@ QList<U2Feature> U2FeatureUtils::getAnnotatingFeaturesByRegion( const U2DataId &
                 os, contains );
         }
     }
-
+    return result;
     return result;
 }
 

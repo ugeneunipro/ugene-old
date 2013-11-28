@@ -36,6 +36,7 @@ const QString U2FeatureConservativeName =           "CR";
 const QString U2FeatureKey_Name =                   "name";
 const QString U2FeatureKey_AltName =                "alt_name";
 const QString U2FeatureKey_Note =                   "note";
+const QString U2FeatureKey_Group =                  "group";
 const QString U2FeatureKey_Accession =              "accession";
 const QString U2FeatureKey_KnownType =              "known";
 const QString U2FeatureKey_Disease =                "disease";

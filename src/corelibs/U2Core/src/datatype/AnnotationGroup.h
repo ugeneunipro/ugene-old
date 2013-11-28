@@ -50,9 +50,15 @@ public:
 
     void                    removeSubgroup( __AnnotationGroup &g );
 
+<<<<<<< HEAD
     QString                 getName( ) const;
 
     void                    setName( const QString &newName );
+=======
+    QString                 getGroupName( ) const;
+
+    void                    setGroupName( const QString &newName );
+>>>>>>> some functions of U2FeatureUtils separated for annotations and annotation groups. also consistency checks were added
 
     QString                 getGroupPath( ) const;
 

@@ -165,7 +165,11 @@ void __AnnotationGroup::removeSubgroup( __AnnotationGroup &g ) {
     SAFE_POINT( false, "Attempting to remove a subgroup belonging to another group!", );
 }
 
+<<<<<<< HEAD
 QString __AnnotationGroup::getName( ) const {
+=======
+QString __AnnotationGroup::getGroupName( ) const {
+>>>>>>> some functions of U2FeatureUtils separated for annotations and annotation groups. also consistency checks were added
     U2OpStatusImpl os;
     const U2Feature feature = U2FeatureUtils::getFeatureById( featureId,
         parentObject->getEntityRef( ).dbiRef, os );
@@ -173,7 +177,11 @@ QString __AnnotationGroup::getName( ) const {
     return feature.name;
 }
 
+<<<<<<< HEAD
 void __AnnotationGroup::setName( const QString &newName ) {
+=======
+void __AnnotationGroup::setGroupName( const QString &newName ) {
+>>>>>>> some functions of U2FeatureUtils separated for annotations and annotation groups. also consistency checks were added
     SAFE_POINT( !newName.isEmpty( ), "Attempting to set an empty name for a group!", );
     U2OpStatusImpl os;
     U2FeatureUtils::updateFeatureName( featureId, newName, parentObject->getEntityRef( ).dbiRef, os );

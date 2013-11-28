@@ -197,6 +197,8 @@ QList<__Annotation> FeaturesTableObject::getAnnotationsByRegion( const U2Region 
             entityRef.dbiRef, region, os, contains );
         SAFE_POINT_OP( os, result );
     }
+    return results;
+}
 
     return convertFeaturesToAnnotations( featureIds );
 }
