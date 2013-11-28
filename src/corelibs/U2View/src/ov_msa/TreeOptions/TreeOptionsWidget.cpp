@@ -388,7 +388,7 @@ AddTreeWidget::AddTreeWidget(MSAEditor* msa)
     openTreeButton->setMinimumWidth(20);
     buttonLayout->addWidget(openTreeButton);
 
-    QSpacerItem* horizontalSpacer = new QSpacerItem(15, 15, QSizePolicy::Fixed, QSizePolicy::Minimum);
+    QSpacerItem* horizontalSpacer = new QSpacerItem(20, 20, QSizePolicy::Fixed, QSizePolicy::Minimum);
     buttonLayout->addSpacerItem(horizontalSpacer);
 
     buildTreeButton = new QPushButton(QIcon(":core/images/phylip.png"), tr("Build tree"), this);
