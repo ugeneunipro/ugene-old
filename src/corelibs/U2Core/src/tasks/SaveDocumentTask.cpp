@@ -82,7 +82,9 @@ void SaveDocumentTask::run() {
     DocumentFormat* df = doc->getDocumentFormat();
 
     QString originalFilePath = url.getURLString();
-    const bool originalFileExists = ( url.isLocalFile( ) ) ? QFile::exists( originalFilePath )
+    QFile originalFile( originalFilePath );
+    const bool originalFileExists = ( url.isLocalFile( ) )
+        ? originalFile.exists( ) && 0 != originalFile.size( )
         : false;
 
     if (url.isLocalFile() && originalFileExists) {
@@ -110,10 +112,9 @@ void SaveDocumentTask::run() {
         // remove old file and rename tmp file
         CHECK_OP(stateInfo, );
 
-        QFile file(originalFilePath);
-        bool originalFileExists = file.open(QIODevice::ReadOnly);
+        bool originalFileExists = originalFile.open(QIODevice::ReadOnly);
         if (originalFileExists) {
-            originalFileExists = !file.remove();
+            originalFileExists = !originalFile.remove();
         }
         CHECK_EXT(originalFileExists == false, stateInfo.setError(tr("Can't remove original file to place tmp file instead")), );
 
