@@ -65,7 +65,7 @@ namespace U2 {
         QString toolbarTypeCheck = "QToolBar";
         GT_CHECK_RESULT((toolbar != NULL) && (0 == toolbarTypeCheck.compare(toolbar->metaObject()->className())), "Toolbar not found", NULL); //the found widget is not a qtoolbar or doesn't exist
         QAction *action = GUIUtils::findActionByText(toolbar->actions(), tooltip);
-        GT_CHECK_RESULT(action != NULL, "No action with such tooltip:" + tooltip, NULL);
+        GT_CHECK_RESULT(action != NULL, "No action with such tooltip: " + tooltip, NULL);
         return GTToolbar::getWidgetForAction(os, toolbar, action);
     }
 #undef GT_METHOD_NAME

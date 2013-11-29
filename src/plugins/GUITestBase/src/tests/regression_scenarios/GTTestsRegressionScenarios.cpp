@@ -64,6 +64,7 @@
 #include "runnables/ugene/corelibs/U2Gui/EditSequenceDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/FindTandemsDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/ImportBAMFileDialogFiller.h"
+#include "runnables/ugene/corelibs/U2Gui/PositionSelectorFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/RangeSelectionDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/util/ProjectTreeItemSelectorDialogBaseFiller.h"
 #include "runnables/ugene/corelibs/U2View/ov_msa/BuildTreeDialogFiller.h"
@@ -79,12 +80,12 @@
 #include "runnables/ugene/plugins/workflow_designer/StartupDialogFiller.h"
 #include "runnables/ugene/plugins_3rdparty/kalign/KalignDialogFiller.h"
 #include "runnables/ugene/plugins_3rdparty/umuscle/MuscleDialogFiller.h"
+#include "runnables/ugene/ugeneui/ConvertAceToSqliteDialogFiller.h"
+#include "runnables/ugene/ugeneui/CreateNewProjectWidgetFiller.h"
 #include "runnables/ugene/ugeneui/NCBISearchDialogFiller.h"
 #include "runnables/ugene/ugeneui/SelectDocumentFormatDialogFiller.h"
 #include "runnables/ugene/ugeneui/SequenceReadingModeSelectorDialogFiller.h"
 #include "runnables/ugene/ugeneui/SaveProjectDialogFiller.h"
-#include "runnables/ugene/ugeneui/ConvertAceToSqliteDialogFiller.h"
-#include "runnables/ugene/corelibs/U2Gui/PositionSelectorFiller.h"
 
 #include <U2Core/AppContext.h>
 #include <U2Core/ExternalToolRegistry.h>
@@ -152,6 +153,8 @@ private:
 };
 
 namespace U2 {
+
+#define MAIN_TOOLBAR "mwtoolbar_activemdi"
 
 namespace GUITest_regression_scenarios {
 
@@ -2466,6 +2469,34 @@ GUI_TEST_CLASS_DEFINITION( test_2140 )
     CHECK_SET_ERR(l.hasError() == true, "There is no error message in log");
 }
 
+GUI_TEST_CLASS_DEFINITION( test_2144 )
+{
+//    1. Open Workflow Designer.
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+
+//    2. Open the NGS sample scheme "Call variants with SAM tools".
+    GTUtilsWorkflowDesigner::addSample(os, "Call variants with SAMtools");
+
+//    3. Fill input data, e.g.:
+//        "data/samples/Assembly/chrM.sam" as input to "Read Assembly SAM/BAM" element;
+//        "data/samples/Assembly/chrM.fa" as input to "Read Sequence" element;
+    GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "Read Assembly (BAM/SAM)"));
+    GTMouseDriver::click(os);
+    GTUtilsWorkflowDesigner::setDatasetInputFile(os, dataDir + "samples/Assembly/", "chrM.sam");
+
+    GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "Read Sequence"));
+    GTMouseDriver::click(os);
+    GTUtilsWorkflowDesigner::setDatasetInputFile(os, dataDir + "samples/Assembly/", "chrM.fa");
+
+//    4. Chose "Estimate" option in tool bar.
+//       "Estimate" option is available only for NGS samples (except "Extract transcript sequence").
+//    Expected state: Estimation dialog appears and provides information about approximate time of workflow run.
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os,
+                                                                QMessageBox::Close,
+                                                                "Approximate estimation time of the workflow run is" ));
+    GTWidget::click(os, GTAction::button(os, "Estimate workflow"));
+}
+
 GUI_TEST_CLASS_DEFINITION( test_2150 ){
     // 1. Open Workflow Designer.
     QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
@@ -3571,6 +3602,69 @@ GUI_TEST_CLASS_DEFINITION( test_2378_1 ) {
     GTWidget::click( os, GTAction::button( os, "Run workflow" ) );
     GTGlobals::sleep(5000);
     CHECK_SET_ERR(!l.hasError( ), "Error message");
+}
+
+GUI_TEST_CLASS_DEFINITION( test_2379 ) {
+    class CreateProjectFiller : public Filler {
+        // It is a local support class, it is the same as SaveProjectAsDialogFiller,
+        // but it clicks the final button with keyboard.
+        // I know that it is bad practice to create so useless classes, but I don't need to extend the original class.
+        // Do not move it to another place: if you need the same filler than extand the original class.
+    public:
+        CreateProjectFiller(U2OpStatus &_os,
+                            const QString &_projectName,
+                            const QString &_projectFolder,
+                            const QString &_projectFile) :
+            Filler(_os, "CreateNewProjectDialog"),
+            projectName(_projectName),
+            projectFolder(_projectFolder),
+            projectFile(_projectFile) {}
+
+        virtual void run() {
+            GTGlobals::sleep();
+            QWidget* dialog = QApplication::activeModalWidget();
+            if (NULL == dialog) {
+                os.setError("activeModalWidget is NULL");
+                return;
+            }
+
+            QLineEdit *projectNameEdit = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "projectNameEdit", dialog));
+            GTLineEdit::setText(os, projectNameEdit, projectName);
+
+            QLineEdit *projectFolderEdit = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "projectFolderEdit", dialog));
+            GTLineEdit::setText(os, projectFolderEdit, projectFolder);
+
+            QLineEdit *projectFileEdit = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "projectFileEdit", dialog));
+            GTLineEdit::setText(os, projectFileEdit, projectFile);
+
+//            QAbstractButton *createButton = qobject_cast<QAbstractButton*>(GTWidget::findWidget(os, "createButton", dialog));
+//            GTWidget::setFocus(os, createButton);
+            GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
+
+            GTGlobals::sleep();
+        }
+
+    private:
+        const QString projectName;
+        const QString projectFolder;
+        const QString projectFile;
+    };
+
+//    0. Create a project that will be "existing" in the second step
+    QString projectName = "test_2379";
+    QString projectFolder = testDir + "_common_data/scenarios/sandbox";
+    QString projectFile = "test_2379";
+
+    GTUtilsDialog::waitForDialog(os, new CreateProjectFiller(os, projectName, projectFolder, projectFile));
+    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), ACTION_PROJECTSUPPORT__NEW_PROJECT);
+    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), ACTION_PROJECTSUPPORT__CLOSE_PROJECT);
+
+//    1. Press "Create new project" button
+//    2. Specify the path to an existing project
+//    3. Press "Create" button by using keyboard
+//    Expected state: only one dialog with warning message appeared
+    GTUtilsDialog::waitForDialog(os, new CreateProjectFiller(os, projectName, projectFolder, projectFile));
+    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), ACTION_PROJECTSUPPORT__NEW_PROJECT);
 }
 
 GUI_TEST_CLASS_DEFINITION( test_2382 ) {

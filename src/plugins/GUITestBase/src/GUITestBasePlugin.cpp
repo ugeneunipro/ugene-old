@@ -216,6 +216,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_2128_1);
     REGISTER_TEST(GUITest_regression_scenarios::test_2138);
     REGISTER_TEST(GUITest_regression_scenarios::test_2140);
+    REGISTER_TEST_IGNORED_MAC(GUITest_regression_scenarios::test_2144, "Can't set a dataset parameter in WD: native dialog");
     //REGISTER_TEST(GUITest_regression_scenarios::test_2150);
     REGISTER_TEST(GUITest_regression_scenarios::test_2156);
     REGISTER_TEST(GUITest_regression_scenarios::test_2157);
@@ -255,6 +256,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_2377);
     REGISTER_TEST(GUITest_regression_scenarios::test_2378);
     REGISTER_TEST(GUITest_regression_scenarios::test_2378_1);
+    REGISTER_TEST(GUITest_regression_scenarios::test_2379);
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2382, "Failed because of https://ugene.unipro.ru/tracker/browse/UGENE-2477");
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2382_1, "Failed because of https://ugene.unipro.ru/tracker/browse/UGENE-2477");
     REGISTER_TEST(GUITest_regression_scenarios::test_2401);
