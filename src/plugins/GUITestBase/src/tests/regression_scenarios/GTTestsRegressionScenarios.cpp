@@ -3609,6 +3609,39 @@ GUI_TEST_CLASS_DEFINITION( test_2382_1 ) {
     CHECK_SET_ERR(NULL != assDoc, "Result document was not found!");
 }
 
+GUI_TEST_CLASS_DEFINITION( test_2401 ) {
+    // 1. Open the file "_common_data/ace/ace_test_1.ace".
+    // 2. Set the ugenedb path for import: "_common_data/scenarios/sandbox/2401.ugenedb".
+    // 3. Click OK
+    QString sandbox = testDir + "_common_data/scenarios/sandbox/";
+    QString fileName = "2401.ugenedb";
+    QString ugenedb = sandbox + fileName;
+    GTUtilsDialog::waitForDialog(os, new ConvertAceToSqliteDialogFiller(os, ugenedb));
+    GTFileDialog::openFile(os, testDir + "_common_data/ace/", "ace_test_1.ace");
+
+    // Expected: the file is imported without errors, the assembly is opened.
+    // 4. Close the project.
+    GTUtilsDialog::waitForDialog(os, new SaveProjectDialogFiller(os, QDialogButtonBox::No));
+    GTKeyboardDriver::keyClick(os, 'q', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep();
+
+    // 5. Open the file "_common_data/ace/ace_test_11_(error).ace".
+    // 6. Set the same ugenedb path for import: "_common_data/scenarios/sandbox/2401.ugenedb".
+    // 7. Click OK.
+    // 8. Click Append.
+    GTUtilsDialog::waitForDialog(os, new ConvertAceToSqliteDialogFiller(os, ugenedb, ConvertAceToSqliteDialogFiller::APPEND));
+    GTFileDialog::openFile(os, testDir + "_common_data/ace/", "ace_test_11_(error).ace");
+
+    // Expected: the file is not imported but "2401.ugenedb" still exists.
+    CHECK_SET_ERR(QFile::exists(GUrl(ugenedb).getURLString()), "ugenedb file does not exist");
+
+    // 9. Open the file "2401.ugenedb".
+    GTFileDialog::openFile(os, sandbox, fileName);
+    // Expected: assembly is opened without errors.
+    QTreeWidgetItem *item = GTUtilsProjectTreeView::findItem(os, fileName);
+    CHECK_SET_ERR(NULL != item, "No assembly");
+}
+
 GUI_TEST_CLASS_DEFINITION( test_2406 ) {
 //    1. Create the {Read Sequence -> Write Sequence} workflow.
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);

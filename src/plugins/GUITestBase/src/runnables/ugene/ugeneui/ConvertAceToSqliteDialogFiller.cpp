@@ -31,8 +31,25 @@ namespace U2{
 #define GT_CLASS_NAME "GTUtilsDialog::SaveProjectAsDialogFiller"
 #define GT_METHOD_NAME "run"
 void ConvertAceToSqliteDialogFiller::run(){
-    
-    GTUtilsDialog::waitForDialogWhichMayRunOrNot(os, new MessageBoxDialogFiller(os, QMessageBox::Ok));
+    QString button;
+    switch (action) {
+        case NOT_SET:
+        case REPLACE:
+            button = "Replace";
+            break;
+        case APPEND:
+            button = "Append";
+            break;
+        case CANCEL:
+            button = "Cancel";
+            break;
+    }
+    MessageBoxDialogFiller *mbf = new MessageBoxDialogFiller(os, button);
+    if (NOT_SET == action) {
+        GTUtilsDialog::waitForDialogWhichMayRunOrNot(os, mbf);
+    } else {
+        GTUtilsDialog::waitForDialog(os, mbf);
+    }
     QWidget* dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog, "activeModalWidget is NULL");
 

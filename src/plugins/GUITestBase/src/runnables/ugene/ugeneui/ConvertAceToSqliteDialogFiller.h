@@ -30,11 +30,13 @@ namespace U2 {
 class ConvertAceToSqliteDialogFiller : public Filler
 {
 public:
-    ConvertAceToSqliteDialogFiller(U2OpStatus& _os, QString _leDest): Filler(_os, "AceImportDialog"),
-        leDestUrl(_leDest){}
+    enum OutFileAction { NOT_SET, REPLACE, APPEND, CANCEL };
+    ConvertAceToSqliteDialogFiller(U2OpStatus& _os, QString _leDest, OutFileAction action = NOT_SET): Filler(_os, "AceImportDialog"),
+        leDestUrl(_leDest), action(action) {}
     virtual void run();
 private:
     QString leDestUrl;
+    OutFileAction action;
 };
 }
 #endif // CONVERTACETOSQLITEDIALOGFILLER_H
