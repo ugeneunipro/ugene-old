@@ -1456,6 +1456,35 @@ GUI_TEST_CLASS_DEFINITION(test_1860) {
     GTMouseDriver::click(os);
 }
 
+GUI_TEST_CLASS_DEFINITION( test_1883 ){
+// 1. Open file "data/samples/CLUSTALW/COI.aln"
+    GTFileDialog::openFile( os, testDir + "_common_data/scenarios/msa", "ma.aln" );
+// 2. Select any area in sequence view
+    const int startRowNumber = 6;
+    const int alignmentLength = 12;
+    GTUtilsMSAEditorSequenceArea::click( os, QPoint( -5, startRowNumber ) );
+    GTGlobals::sleep( 200 );
+    GTUtilsMSAEditorSequenceArea::checkSelectedRect( os, QRect( 0, startRowNumber,
+        alignmentLength, 1 ) );
+// 3. Use context menu: "Edit -> Replace selected rows with complement" or "reverse" or "reverse-complement"
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_EDIT
+        << "replace_selected_rows_with_reverse") );
+    GTMouseDriver::click(os, Qt::RightButton);
+// Expected state: the bases in the selected area were replaced accordingly to the chosen variant
+    GTKeyboardDriver::keyClick( os, 'c', GTKeyboardDriver::key["ctrl"] );
+    GTGlobals::sleep(200);
+    QString selectionContent = GTClipboard::text( os );
+    CHECK_SET_ERR( "AATTATTAGACT" == selectionContent, "MSA changing is failed" );
+// 4. Press "Ctrl + Z"
+    GTKeyboardDriver::keyClick( os, 'z', GTKeyboardDriver::key["ctrl"] );
+    GTGlobals::sleep(200);
+// Expected result: all rows in the selection were restored
+    GTKeyboardDriver::keyClick( os, 'c', GTKeyboardDriver::key["ctrl"] );
+    GTGlobals::sleep(200);
+    selectionContent = GTClipboard::text( os );
+    CHECK_SET_ERR( "TCAGATTATTAA" == selectionContent, "MSA changing is failed" );
+}
+
 GUI_TEST_CLASS_DEFINITION( test_1884 )
 {
     // 1. Open document "ma.aln"
