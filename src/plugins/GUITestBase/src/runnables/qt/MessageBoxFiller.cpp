@@ -42,6 +42,16 @@ void MessageBoxDialogFiller::run() {
                  QString("Expected: %1, found: %2").arg(message).arg(actualText));
     }
 
+    if(buttonText!=""){
+        QList<QAbstractButton*> list = messageBox->buttons();
+        foreach(QAbstractButton* but, list){
+            if(but->text().contains(buttonText,Qt::CaseInsensitive)){
+                GTWidget::click(os, but);
+                return;
+            }
+        }
+    }
+
     QAbstractButton* button = messageBox->button(b);
     GT_CHECK(button != NULL, "There is no such button in messagebox");
 
