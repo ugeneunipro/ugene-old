@@ -57,8 +57,6 @@ void ReplyHandler::sendRequest() {
     QNetworkReply* reply = networkManager->get(request);
     connect(reply, SIGNAL(error(QNetworkReply::NetworkError)),
             this, SLOT(sl_onError(QNetworkReply::NetworkError)));
-    connect(reply, SIGNAL(uploadProgress(qint64, qint64)),
-            this, SLOT(sl_uploadProgress(qint64, qint64)));
 }
 
 void ReplyHandler::sl_replyFinished(QNetworkReply *reply) {
@@ -69,7 +67,12 @@ void ReplyHandler::sl_replyFinished(QNetworkReply *reply) {
     if (reply->rawHeader(CONTENT_TYPE) == XML_CONTENT_TYPE) {
         // Downloading of the result file is finished.
         // Leave the event loop.
-        ioLog.trace("An xml was received");
+        if (url.endsWith(".xml")) {
+            ioLog.trace("An xml was received");
+        } else {
+            os->setError(tr("Can't receive result from the server: nothing to download"));
+        }
+
         emit si_step(DownloadingComplete);
         emit si_finish();
     }
@@ -87,46 +90,41 @@ void ReplyHandler::sl_replyFinished(QNetworkReply *reply) {
         sendRequest();
     }
 
-    else if (reply->hasRawHeader(RETRY)) {
-        if (replyData == COMPLETED) {
-            //The blast job is done, we can dowload a xml file.
-            emit si_step(WaitingComplete);
+    else if (replyData == COMPLETED) {
+        //The blast job is done, we can dowload a xml file.
+        emit si_step(WaitingComplete);
 
-            url.chop(QString(".stat").length());
-            url += ".xml";
-            ioLog.trace(QString("The blast job is complete, downloading results from \'%1\'").arg(url));
-            sendRequest();
-        } else if (replyData == RUNNING) {
-            // The blast job is unfinished.
-            // Please, wait.
-            emit si_step(Waiting);
+        url.chop(QString(".stat").length());
+        url += ".xml";
+        ioLog.trace(QString("The blast job is complete, downloading results from \'%1\'").arg(url));
+        sendRequest();
 
-            QByteArray waitFor = reply->rawHeader(RETRY);
-            bool ok = false;
-            int interval = waitFor.toInt(&ok);
-            if (ok == false || interval <= 0) {
-                interval = 10;
-            }
+    } else if (replyData == RUNNING) {
+        // The blast job is unfinished.
+        // Please, wait.
+        emit si_step(Waiting);
 
-            ioLog.trace("Still running the blast job...");
-            QTimer::singleShot(interval, this, SLOT(sl_timerShouts()));
+        QByteArray waitFor = reply->rawHeader(RETRY);
+        bool ok = false;
+        int interval = waitFor.toInt(&ok);
+        if (ok == false || interval <= 0) {
+            interval = 10;
         }
+
+        ioLog.trace("Still running the blast job...");
+        QTimer::singleShot(interval, this, SLOT(sl_timerShouts()));
     }
 
     else {
-        os->setError("Unexpected server responce");
+        os->setError(tr("Unexpected server response"));
         emit si_finish();
     }
 }
 
 
 void ReplyHandler::sl_onError(QNetworkReply::NetworkError error) {
-    os->setError(QString("NetworkReply error %1").arg(error));
+    os->setError(tr("Network request error %1").arg(error));
     emit si_finish();
-}
-
-void ReplyHandler::sl_uploadProgress(qint64 bytesSent, qint64 bytesTotal) {
-    os->progress = bytesSent/ bytesTotal * 100;
 }
 
 void ReplyHandler::sl_timerShouts() {

@@ -61,7 +61,6 @@ signals:
 private slots:
     void sl_replyFinished(QNetworkReply* reply);
     void sl_onError(QNetworkReply::NetworkError error);
-    void sl_uploadProgress(qint64 bytesSent, qint64 bytesTotal);
     void sl_timerShouts();
 
 private:
