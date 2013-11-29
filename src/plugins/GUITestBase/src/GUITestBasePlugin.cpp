@@ -216,20 +216,19 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_2128_1);
     REGISTER_TEST(GUITest_regression_scenarios::test_2138);
     REGISTER_TEST(GUITest_regression_scenarios::test_2140);
-    REGISTER_TEST_IGNORED_MAC(GUITest_regression_scenarios::test_2144, "Can't set a dataset parameter in WD: native dialog");
-    //REGISTER_TEST(GUITest_regression_scenarios::test_2150);
+    REGISTER_TEST(GUITest_regression_scenarios::test_2150);
     REGISTER_TEST(GUITest_regression_scenarios::test_2156);
     REGISTER_TEST(GUITest_regression_scenarios::test_2157);
     REGISTER_TEST(GUITest_regression_scenarios::test_2160);
-    REGISTER_TEST(GUITest_regression_scenarios::test_2163);
+    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2163,"https://ugene.unipro.ru/tracker/browse/UGENE-2497");
     REGISTER_TEST(GUITest_regression_scenarios::test_2164);
     REGISTER_TEST(GUITest_regression_scenarios::test_2165);
-    REGISTER_TEST(GUITest_regression_scenarios::test_2167);
+    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2167,"https://ugene.unipro.ru/tracker/browse/UGENE-2497");
     REGISTER_TEST(GUITest_regression_scenarios::test_2169);
     REGISTER_TEST(GUITest_regression_scenarios::test_2171);
     REGISTER_TEST(GUITest_regression_scenarios::test_2172);
     REGISTER_TEST(GUITest_regression_scenarios::test_2174);
-    REGISTER_TEST(GUITest_regression_scenarios::test_2186);
+    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2186, "https://ugene.unipro.ru/tracker/browse/UGENE-2497");
     REGISTER_TEST(GUITest_regression_scenarios::test_2187);
     REGISTER_TEST(GUITest_regression_scenarios::test_2188);
     REGISTER_TEST(GUITest_regression_scenarios::test_2202);
@@ -501,9 +500,9 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0009_1);
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0009_2);
 
-    REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0010);
-    REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0010_1);
-    REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0010_2);
+    REGISTER_TEST_IGNORED(GUITest_common_scenarios_msa_editor::test_0010,"https://ugene.unipro.ru/tracker/browse/UGENE-2496");
+    REGISTER_TEST_IGNORED(GUITest_common_scenarios_msa_editor::test_0010_1,"https://ugene.unipro.ru/tracker/browse/UGENE-2496");
+    REGISTER_TEST_IGNORED(GUITest_common_scenarios_msa_editor::test_0010_2,"https://ugene.unipro.ru/tracker/browse/UGENE-2496");
 
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0011);
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0011_1);
@@ -514,7 +513,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0012_2);
 
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0013);
-    REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0013_1);
+    REGISTER_TEST_IGNORED(GUITest_common_scenarios_msa_editor::test_0013_1,"https://ugene.unipro.ru/tracker/browse/UGENE-2496");
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0013_2);
 
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0014);
@@ -891,17 +890,17 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 // Common scenarios/Assembling/Assembly browser
 /////////////////////////////////////////////////////////////////////////
     REGISTER_TEST(GUITest_Assembly_browser::test_0001);
-    REGISTER_TEST(GUITest_Assembly_browser::test_0002);
+    REGISTER_TEST_IGNORED(GUITest_Assembly_browser::test_0002,"https://ugene.unipro.ru/tracker/browse/UGENE-2496");
     REGISTER_TEST(GUITest_Assembly_browser::test_0004);
 
 /////////////////////////////////////////////////////////////////////////
 // Common scenarios/Assembling/bowtie2
 /////////////////////////////////////////////////////////////////////////
     REGISTER_TEST_IGNORED_WINDOWS(GUITest_Bowtie2::test_0001, "Restore when this tool becomes available");
-    REGISTER_TEST_IGNORED_WINDOWS(GUITest_Bowtie2::test_0002, "Restore when this tool becomes available");
-    REGISTER_TEST_IGNORED_WINDOWS(GUITest_Bowtie2::test_0003, "Restore when this tool becomes available");
-    REGISTER_TEST_IGNORED_WINDOWS(GUITest_Bowtie2::test_0004, "Restore when this tool becomes available");
-    REGISTER_TEST_IGNORED_WINDOWS(GUITest_Bowtie2::test_0005, "Restore when this tool becomes available");
+    REGISTER_TEST_IGNORED(GUITest_Bowtie2::test_0002, "https://ugene.unipro.ru/tracker/browse/UGENE-2496");
+    REGISTER_TEST_IGNORED(GUITest_Bowtie2::test_0003, "https://ugene.unipro.ru/tracker/browse/UGENE-2496");
+    REGISTER_TEST_IGNORED(GUITest_Bowtie2::test_0004, "https://ugene.unipro.ru/tracker/browse/UGENE-2496");
+    REGISTER_TEST_IGNORED(GUITest_Bowtie2::test_0005, "https://ugene.unipro.ru/tracker/browse/UGENE-2496");
 
 /////////////////////////////////////////////////////////////////////////
 // Common scenarios/Assembling/dna_assembly
@@ -919,9 +918,9 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     /////////////////////////////////////////////////////////////////////////
 // Common scenarios/Assembling/sam
 /////////////////////////////////////////////////////////////////////////
-    REGISTER_TEST(GUITest_SAM::test_0002);
-    REGISTER_TEST(GUITest_SAM::test_0003);
-    REGISTER_TEST(GUITest_SAM::test_0004);
+    REGISTER_TEST_IGNORED(GUITest_SAM::test_0002,"https://ugene.unipro.ru/tracker/browse/UGENE-2496");
+    REGISTER_TEST_IGNORED(GUITest_SAM::test_0003,"https://ugene.unipro.ru/tracker/browse/UGENE-2496");
+    REGISTER_TEST_IGNORED(GUITest_SAM::test_0004,"https://ugene.unipro.ru/tracker/browse/UGENE-2496");
 
 /////////////////////////////////////////////////////////////////////////
 // Common scenarios/Query designer

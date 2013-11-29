@@ -98,7 +98,7 @@ QAbstractButton* GTWidget::findButtonByText(U2OpStatus &os, const QString &text,
 
     foreach(QAbstractButton* but, buttonList){
         sL.append(but->text());
-        if (!but->text().compare(text, Qt::CaseInsensitive)){
+        if (but->text().contains(text, Qt::CaseInsensitive)){
             foundButtonList << but;
         }
     }
@@ -106,7 +106,7 @@ QAbstractButton* GTWidget::findButtonByText(U2OpStatus &os, const QString &text,
     GT_CHECK_RESULT(foundButtonList.count()<=1, QString("there are %1 buttons with such text").arg(foundButtonList.count()), NULL);
 
     if (options.failIfNull) {
-        GT_CHECK_RESULT(!foundButtonList.count()==0, "button with this text not found", NULL);
+        GT_CHECK_RESULT(!foundButtonList.count()==0, QString("button with this text <%1> not found").arg(text), NULL);
     }
 
     return foundButtonList.takeFirst();

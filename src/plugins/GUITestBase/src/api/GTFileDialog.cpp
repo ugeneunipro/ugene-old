@@ -78,16 +78,16 @@ void GTFileDialogUtils::run()
                    "file dialog not found");
 
     fileDialog = dialog;
-    GTGlobals::sleep(200);
+    GTGlobals::sleep(300);
     setPath();
-    GTGlobals::sleep(200);
+    GTGlobals::sleep(300);
     if(button == Choose){
         clickButton(button);
         return;
     }
 
     clickButton(Open);
-    GTGlobals::sleep(200);
+    GTGlobals::sleep(300);
 
     if(button == Save){//saving file
         setName();
@@ -96,11 +96,11 @@ void GTFileDialogUtils::run()
     }
 
     //opening file or getting size
-    GTGlobals::sleep(200);
+    GTGlobals::sleep(300);
     setViewMode(Detail);
-    GTGlobals::sleep(200);
+    GTGlobals::sleep(300);
     selectFile();
-    GTGlobals::sleep(200);
+    GTGlobals::sleep(300);
     if(method == GTGlobals::UseKey){
         GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
     }else{
@@ -245,10 +245,10 @@ void GTFileDialogUtils::selectFile()
 void GTFileDialogUtils::clickButton(Button btn)
 {
     QMap<Button, QString> button;
-    button[Open] = "&Open";
-    button[Cancel] = "&Cancel";
-    button[Save] = "&Save";
-    button[Choose] = "&Choose";
+    button[Open] = "Open";
+    button[Cancel] = "Cancel";
+    button[Save] = "Save";
+    button[Choose] = "Choose";
 
     QAbstractButton *button_to_click = GTWidget::findButtonByText(os, button[btn],fileDialog);
     GT_CHECK(button_to_click != NULL, "button not found");

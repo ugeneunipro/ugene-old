@@ -48,6 +48,7 @@ public:
     GUIDialogWaiter(U2OpStatus &os, Runnable* _r, const WaitSettings& settings = WaitSettings());
     virtual ~GUIDialogWaiter();
 
+    WaitSettings getSettings(){return settings;}
     static const int timerPeriod = 100;
 
     bool hadRun;

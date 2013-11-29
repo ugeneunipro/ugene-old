@@ -141,7 +141,7 @@ void GTUtilsDialog::checkAllFinished(U2OpStatus &os) {
 
     foreach(GUIDialogWaiter* w, pool) {
         GT_CHECK(w, "NULL GUIDialogWaiter");
-        GT_CHECK(w->hadRun, "Waiter hadn't run");
+        GT_CHECK(w->hadRun, QString("%1 hadn't run").arg((w->getSettings().objectName)));
     }
 }
 #undef GT_METHOD_NAME

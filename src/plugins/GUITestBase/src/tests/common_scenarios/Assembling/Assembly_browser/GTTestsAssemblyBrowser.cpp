@@ -34,6 +34,7 @@
 #include "GTUtilsSequenceView.h"
 #include "GTUtilsMdi.h"
 #include "runnables/qt/PopupChooser.h"
+#include "runnables/qt/MessageBoxFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/CreateAnnotationWidgetFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/EditAnnotationDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/EditGroupAnnotationsDialogFiller.h"
@@ -83,6 +84,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
 
 GUI_TEST_CLASS_DEFINITION(test_0002) {
 //1. open view for _common_data\scenarios\assembly\example-alignment.bam
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, "replace" ));
     GTUtilsDialog::waitForDialog(os,new ImportBAMFileFiller(os));
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/assembly/", "example-alignment.bam");
 //2. convert bam file to example-alignment.ugenedb
@@ -91,6 +93,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0004) {
+
 //1. open view for _common_data\scenarios\assembly\example-alignment.bam(.bam открывает окно экспорта)
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/assembly/", "example-alignment.ugenedb");
 //2. open file samples/FASTA/human_T1.fa
