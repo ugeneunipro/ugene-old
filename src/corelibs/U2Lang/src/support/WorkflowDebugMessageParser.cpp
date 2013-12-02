@@ -19,6 +19,8 @@
  * MA 02110-1301, USA.
  */
 
+#include <QtCore/QtGlobal>
+
 #include <U2Lang/Descriptor.h>
 #include <U2Lang/BaseSlots.h>
 #include <U2Lang/WorkflowContext.h>
