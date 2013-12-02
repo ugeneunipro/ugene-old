@@ -36,9 +36,11 @@ class ExportAnnotationsDialog;
 
 class U2GUI_EXPORT ExportAnnotationsDialog : public QDialog {
     Q_OBJECT
+    Q_DISABLE_COPY( ExportAnnotationsDialog )
 public:
                                     ExportAnnotationsDialog( const QString &filename,
                                             QWidget *parent );
+                                    ~ExportAnnotationsDialog( );
 
     QString                         fileFormat( ) const;
     QString                         filePath( ) const;

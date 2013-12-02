@@ -70,6 +70,10 @@ ExportAnnotationsDialog::ExportAnnotationsDialog( const QString &filename, QWidg
     sl_onFormatChanged( ui->formatsBox->currentText( ) );
 }
 
+ExportAnnotationsDialog::~ExportAnnotationsDialog( ) {
+    delete ui;
+}
+
 void ExportAnnotationsDialog::sl_onFormatChanged( const QString &newFormat ) {
     const bool isNewFormatCsv = ( newFormat == CSV_FORMAT_ID );
     ui->exportSequenceCheck->setEnabled( isNewFormatCsv );
