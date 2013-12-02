@@ -154,8 +154,6 @@ private:
 
 namespace U2 {
 
-#define MAIN_TOOLBAR "mwtoolbar_activemdi"
-
 namespace GUITest_regression_scenarios {
 
 GUI_TEST_CLASS_DEFINITION(test_0734) {
@@ -3503,6 +3501,76 @@ GUI_TEST_CLASS_DEFINITION( test_2318 ) {
     // Expected state is checked in PlusClicker
     GTUtilsDialog::waitForDialog(os, new PlusClicker(os, "CDS"));
     GTWidget::click(os, farButton);
+}
+
+GUI_TEST_CLASS_DEFINITION( test_2351 ) {
+//    1. Run UGENE
+//    2. Press the "New Project" button on the main toolbar
+//    Expected state: the "Create new project" dialog has appeared
+//    3. Press the "Create" button or press the "Enter" key
+//    4. Repeat steps 2 and 3 as fast as you can more than 10 times
+//    Expected state: UGENE does not crash
+    class RapidProjectCreator : public Filler {
+    public:
+        RapidProjectCreator(U2OpStatus& os, const QString& _projectName, const QString& _projectFolder, const QString& _projectFile) :
+            Filler(os, "CreateNewProjectDialog"),
+            projectName(_projectName),
+            projectFolder(_projectFolder),
+            projectFile(_projectFile) {}
+
+        virtual void run() {
+            QWidget* dialog = QApplication::activeModalWidget();
+            if (NULL == dialog) {
+                os.setError("Modal dialog not found");
+                return;
+            }
+
+            QLineEdit *projectNameEdit = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "projectNameEdit", dialog));
+            if (NULL == projectNameEdit) {
+                os.setError("projectNameEdit not found");
+                return;
+            }
+            projectNameEdit->setText(projectName);
+
+            QLineEdit *projectFolderEdit = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "projectFolderEdit", dialog));
+            if (NULL == projectFolderEdit) {
+                os.setError("projectFolderEdit not found");
+                return;
+            }
+            projectFolderEdit->setText(projectFolder);
+
+            QLineEdit *projectFileEdit = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "projectFileEdit", dialog));
+            if (NULL == projectFileEdit) {
+                os.setError("projectFileEdit not found");
+                return;
+            }
+            projectFileEdit->setText(projectFile);
+
+            QAbstractButton *createButton = qobject_cast<QAbstractButton*>(GTWidget::findWidget(os, "createButton", dialog));
+            if (NULL == createButton) {
+                os.setError("createButton not found");
+                return;
+            }
+            createButton->click();
+        }
+
+    private:
+        const QString projectName;
+        const QString projectFolder;
+        const QString projectFile;
+    };
+
+    const QString projectName = "test_2351";
+    const QString projectFolder = testDir + "_common_data/scenarios/sandbox";
+    const QString projectFile = "test_2351";
+
+    for (int i = 0; i < 15; ++i) {
+        GTUtilsDialog::waitForDialog(os, new RapidProjectCreator(os, projectName, projectFolder, projectFile));
+        GTWidget::click(os,
+                        GTToolbar::getWidgetForActionName(os,
+                                                          GTToolbar::getToolbar(os, MWTOOLBAR_MAIN),
+                                                          ACTION_PROJECTSUPPORT__NEW_PROJECT));
+    }
 }
 
 GUI_TEST_CLASS_DEFINITION( test_2352 ) {
