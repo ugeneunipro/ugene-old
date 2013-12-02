@@ -2557,6 +2557,39 @@ GUI_TEST_CLASS_DEFINITION( test_2150 ){
     GTUtilsTaskTreeView::cancelTask(os, "MUSCLE alignment");
 }
 
+GUI_TEST_CLASS_DEFINITION( test_2152 ){
+    //1. Open WD
+    //2. Create a scheme with the following elements: File list, Assembly Sequences with CAP3
+    //3. Put _common_data/cap3/region1.fa,
+    //       _common_data/cap3/region2.fa,
+    //       _common_data/cap3/region3.fa,
+    //       _common_data/cap3/region4.fa as an input sequences
+    //4. Run the scheme
+    //Expected state: the dashboard appears, the WD task has been finished without errors.
+
+    GTLogTracer l;
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+
+    GTUtilsWorkflowDesigner::addAlgorithm( os, "File List" );
+    GTUtilsWorkflowDesigner::addAlgorithm( os, "Assembly Sequences with CAP3" );
+
+    WorkflowProcessItem* fileList = GTUtilsWorkflowDesigner::getWorker(os, "File List");
+    WorkflowProcessItem* fileCAP3 = GTUtilsWorkflowDesigner::getWorker(os, "Assembly Sequences with CAP3");
+
+    GTUtilsWorkflowDesigner::connect(os, fileList, fileCAP3);
+
+    GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "File List"));
+    GTMouseDriver::click(os);
+    GTUtilsWorkflowDesigner::setDatasetInputFile(os, testDir + "_common_data/cap3", "region1.fa");
+    GTUtilsWorkflowDesigner::setDatasetInputFile(os, testDir + "_common_data/cap3", "region2.fa");
+    GTUtilsWorkflowDesigner::setDatasetInputFile(os, testDir + "_common_data/cap3", "region3.fa");
+    GTUtilsWorkflowDesigner::setDatasetInputFile(os, testDir + "_common_data/cap3", "region4.fa");
+
+    GTWidget::click(os,GTAction::button(os,"Run workflow"));
+
+    GTUtilsLog::check(os, l);
+}
+
 GUI_TEST_CLASS_DEFINITION( test_2156 ){
 //    1. Open "data/samples/CLUSTALW/COI.aln".
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/","COI.aln");
