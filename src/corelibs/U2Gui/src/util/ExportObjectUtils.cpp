@@ -19,7 +19,7 @@
  * MA 02110-1301, USA.
  */
 
-#include <QtGui/QApplication.h>
+#include <QtGui/QApplication>
 #include <QtGui/QMessageBox>
 
 #include <U2Core/AnnotationTableObject.h>
@@ -49,7 +49,6 @@ void ExportObjectUtils::exportAnnotations( const QList<Annotation *> &inputAnnot
         return;
     }
 
-    Annotation *first = annotations.first( );
     QString fileName = GUrlUtils::rollFileName( dstUrl.dirPath( ) + "/" + dstUrl.baseFileName( )
         + "_annotations.csv", DocumentUtils::getNewDocFileNameExcludesHint( ) );
 
@@ -62,7 +61,7 @@ void ExportObjectUtils::exportAnnotations( const QList<Annotation *> &inputAnnot
 
     // TODO: lock documents or use shared-data objects
     // same as in ADVExportContext::sl_saveSelectedAnnotations()
-    qStableSort( annotations.begin(), annotations.end(), Annotation::annotationLessThan );
+    qStableSort( annotations.begin( ), annotations.end( ), Annotation::annotationLessThan );
 
     // run task
     Task * t = NULL;
