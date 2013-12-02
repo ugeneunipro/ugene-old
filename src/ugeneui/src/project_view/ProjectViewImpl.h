@@ -97,10 +97,6 @@ public:
 
     void setSaveProjectOnCloseEnabled(bool enabled) { saveProjectOnClose = enabled; }
 
-    void exportObject2Document(GObject *object, const QString &url, bool tracePath);
-
-    void exportAnnotations(QList<Annotation*> &annotations, const GUrl &dstUrl);
-
     static const QString SETTINGS_ROOT;
 
 protected:

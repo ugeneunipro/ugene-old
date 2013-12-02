@@ -481,15 +481,17 @@ void WorkflowIterationRunTask::sl_pauseStateChanged(bool isPaused) {
     }
 }
 
-void WorkflowIterationRunTask::sl_busInvestigationIsRequested(const Workflow::Link *bus,
-    int messageNumber)
+void WorkflowIterationRunTask::sl_busInvestigationIsRequested( const Workflow::Link *bus,
+    int messageNumber )
 {
-    CommunicationChannel *channel = lmap.value(getKey(bus));
-    if(NULL != channel && debugInfo->isPaused()) {
-        QQueue<Message> messages = channel->getMessages(messageNumber, messageNumber);
-        WorkflowInvestigationData data = WorkflowDebugMessageParser(messages, context)
-            .getAllMessageValues();
-        debugInfo->respondToInvestigator(data, bus);
+    CommunicationChannel *channel = lmap.value( getKey( bus ) );
+    if ( NULL != channel && debugInfo->isPaused( ) ) {
+        QQueue<Message> messages = channel->getMessages( messageNumber, messageNumber );
+        WorkflowDebugMessageParser *parser = debugInfo->getMessageParser( );
+        SAFE_POINT( NULL != parser, "Invalid debug message parser!", );
+        parser->setSourceData( messages );
+        WorkflowInvestigationData data = parser->getAllMessageValues( );
+        debugInfo->respondToInvestigator( data, bus );
     }
 }
 
@@ -503,15 +505,17 @@ void WorkflowIterationRunTask::sl_singleStepIsRequested(const ActorId &actor) {
     }
 }
 
-void WorkflowIterationRunTask::sl_convertMessages2Documents(const Workflow::Link *bus,
-    const QString &messageType, int messageNumber, const QString &schemeName)
+void WorkflowIterationRunTask::sl_convertMessages2Documents( const Workflow::Link *bus,
+    const QString &messageType, int messageNumber, const QString &schemeName )
 {
-    CommunicationChannel *channel = lmap.value(getKey(bus));
-    if(NULL != channel && debugInfo->isPaused()) {
-        QQueue<Message> messages = channel->getMessages(messageNumber, messageNumber);
-        if(!messages.isEmpty()) {
-            WorkflowDebugMessageParser(messages, context).convertMessagesToDocuments(messageType,
-                schemeName, messageNumber);
+    CommunicationChannel *channel = lmap.value( getKey( bus ) );
+    if ( NULL != channel && debugInfo->isPaused( ) ) {
+        QQueue<Message> messages = channel->getMessages( messageNumber, messageNumber );
+        if ( !messages.isEmpty( ) ) {
+            WorkflowDebugMessageParser *parser = debugInfo->getMessageParser( );
+            SAFE_POINT( NULL != parser, "Invalid debug message parser!", );
+            parser->setSourceData( messages );
+            parser->convertMessagesToDocuments( messageType, schemeName, messageNumber );
         }
     }
 }

@@ -50,14 +50,7 @@ public:
 
     virtual const GObjectSelection* getGObjectSelection() const = 0;
 
-//    virtual QAction* getAddNewDocumentAction() const = 0;
-
-//    virtual QAction* getAddExistingDocumentAction() const = 0;
-
     virtual void highlightItem(Document*) = 0;
-
-    virtual void exportObject2Document(GObject *object, const QString &url = QString(), bool tracePath = true) = 0;
-    virtual void exportAnnotations(QList<Annotation *> &annotations, const GUrl &dstUrl) = 0;
 
 signals:
     void si_onDocTreePopupMenuRequested(QMenu& m);

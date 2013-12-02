@@ -30,6 +30,13 @@ HEADERS += src/ActorCfgModel.h \
            src/WorkflowViewItems.h \
            src/cmdline/GalaxyConfigTask.h \
            src/cmdline/WorkflowCMDLineTasks.h \
+           src/debug_messages_translation/AnnotationsMessageTranslator.h \
+           src/debug_messages_translation/AssemblyMessageTranslator.h \
+           src/debug_messages_translation/BaseMessageTranslator.h \
+           src/debug_messages_translation/MultipleAlignmentMessageTranslator.h \
+           src/debug_messages_translation/SequenceMessageTranslator.h \
+           src/debug_messages_translation/VariationTrackMessageTranslator.h \
+           src/debug_messages_translation/WorkflowDebugMessageParserImpl.h \
            src/library/AminoTranslationWorker.h \
            src/library/AssemblyToSequenceWorker.h \
            src/library/BaseDocWorker.h \
@@ -119,6 +126,13 @@ SOURCES += src/ActorCfgModel.cpp \
            src/WorkflowViewItems.cpp \
            src/cmdline/GalaxyConfigTask.cpp \
            src/cmdline/WorkflowCMDLineTasks.cpp \
+           src/debug_messages_translation/AnnotationsMessageTranslator.cpp \
+           src/debug_messages_translation/AssemblyMessageTranslator.cpp \
+           src/debug_messages_translation/BaseMessageTranslator.cpp \
+           src/debug_messages_translation/MultipleAlignmentMessageTranslator.cpp \
+           src/debug_messages_translation/SequenceMessageTranslator.cpp \
+           src/debug_messages_translation/VariationTrackMessageTranslator.cpp \
+           src/debug_messages_translation/WorkflowDebugMessageParserImpl.cpp \
            src/library/AminoTranslationWorker.cpp \
            src/library/AssemblyToSequenceWorker.cpp \
            src/library/BaseDocWorker.cpp \

@@ -19,7 +19,7 @@
  * MA 02110-1301, USA.
  */
 
-#include <QtCore/QVariant>
+#include <QtCore/QScopedPointer>
 
 #include <U2Core/MAlignmentObject.h>
 #include <U2Lang/WorkflowContext.h>
@@ -35,35 +35,32 @@ const char *ROW_NAMES_LABEL = " Row names: ";
 
 namespace U2 {
 
+using namespace Workflow;
+
 MultipleAlignmentMessageTranslator::MultipleAlignmentMessageTranslator(
     const QVariant &atomicMessage, WorkflowContext *initContext)
     : BaseMessageTranslator(atomicMessage, initContext)
 {
-    Q_ASSERT(source.canConvert<SharedDbiDataHandler>());
-    SharedDbiDataHandler malignmentId = source.value<SharedDbiDataHandler>();
-    std::auto_ptr<MAlignmentObject> malignmentObject(StorageUtils::getMsaObject(
-        context->getDataStorage(), malignmentId));
-    Q_ASSERT(NULL != malignmentObject.get());
-    malignment = malignmentObject->getMAlignment();
+    SAFE_POINT( source.canConvert<SharedDbiDataHandler>( ), "Invalid MSA data supplied!", );
+    SharedDbiDataHandler malignmentId = source.value<SharedDbiDataHandler>( );
+    QScopedPointer<MAlignmentObject> malignmentObject( StorageUtils::getMsaObject(
+        context->getDataStorage( ), malignmentId ) );
+    SAFE_POINT( NULL != malignmentObject.data( ), "Invalid MSA object detected!", );
+    malignment = malignmentObject->getMAlignment( );
 }
 
-MultipleAlignmentMessageTranslator::~MultipleAlignmentMessageTranslator() {
+QString MultipleAlignmentMessageTranslator::getTranslation( ) const {
+    const QString alignmentName = malignment.getName( );
+    const QString displayingName = ( alignmentName.isEmpty( ) )
+        ? QObject::tr( EMPTY_ALIGNMENT_NAME_LABEL ) : ( "'" + alignmentName + "'" );
 
-}
-
-QString MultipleAlignmentMessageTranslator::getTranslation() const {
-    const QString alignmentName = malignment.getName();
-    const QString displayingName = (alignmentName.isEmpty())
-        ? QObject::tr(EMPTY_ALIGNMENT_NAME_LABEL) : ("'" + alignmentName + "'");
-
-    QString result = QString().append(QObject::tr(ALIGNMENT_NAME_LABEL)
-        + displayingName + INFO_TAGS_SEPARATOR);
-    result.append(QObject::tr(ALIGNMENT_LENGTH_LABEL) + QString::number(malignment.getLength())
-        + INFO_TAGS_SEPARATOR);
-    result.append(QObject::tr(COUNT_OF_ROWS_LABEL) + QString::number(malignment.getNumRows())
-        + INFO_TAGS_SEPARATOR);
-    result.append(QObject::tr(ROW_NAMES_LABEL) + "'" + malignment.getRowNames().join("', '")
-        + "'");
+    QString result = QObject::tr( ALIGNMENT_NAME_LABEL ) + displayingName + INFO_TAGS_SEPARATOR;
+    result += QObject::tr( ALIGNMENT_LENGTH_LABEL ) + QString::number( malignment.getLength( ) )
+        + INFO_TAGS_SEPARATOR;
+    result += QObject::tr( COUNT_OF_ROWS_LABEL ) + QString::number( malignment.getNumRows( ) )
+        + INFO_TAGS_SEPARATOR;
+    result += QObject::tr( ROW_NAMES_LABEL ) + "'" + malignment.getRowNames( ).join( "', '" )
+        + "'";
 
     return result;
 }

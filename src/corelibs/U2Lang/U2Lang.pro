@@ -44,11 +44,8 @@ HEADERS += src/library/BaseActorCategories.h \
            src/model/WorkflowScriptEngine.h \
            src/model/WorkflowTransport.h \
            src/run/WorkflowMonitor.h \
-           src/support/AnnotationsMessageTranslator.h \
-           src/support/AssemblyMessageTranslator.h \
            src/support/AttributeInfo.h \
            src/support/BaseBreakpointHitCounter.h \
-           src/support/BaseMessageTranslator.h \
            src/support/BreakpointConditionChecker.h \
            src/support/BreakpointEqualHitCounter.h \
            src/support/BreakpointGreaterOrEqualHitCounter.h \
@@ -57,14 +54,11 @@ HEADERS += src/library/BaseActorCategories.h \
            src/support/IntegralBusUtils.h \
            src/support/MapDatatypeEditor.h \
            src/support/MarkerUtils.h \
-           src/support/MultipleAlignmentMessageTranslator.h \
            src/support/NoFailTaskWrapper.h \
            src/support/SchemaSerializer.h \
            src/support/ScriptWorkerSerializer.h \
-           src/support/SequenceMessageTranslator.h \
            src/support/SimpleWorkflowTask.h \
            src/support/SupportClass.h \
-           src/support/VariationTrackMessageTranslator.h \
            src/support/WorkflowBreakpoint.h \
            src/support/WorkflowBreakpointSharedInfo.h \
            src/support/WorkflowDebugMessageParser.h \
@@ -150,11 +144,8 @@ SOURCES += src/library/BaseActorCategories.cpp \
            src/model/WorkflowScriptEngine.cpp \
            src/model/WorkflowTransport.cpp \
            src/run/WorkflowMonitor.cpp \
-           src/support/AnnotationsMessageTranslator.cpp \
-           src/support/AssemblyMessageTranslator.cpp \
            src/support/AttributeInfo.cpp \
            src/support/BaseBreakpointHitCounter.cpp \
-           src/support/BaseMessageTranslator.cpp \
            src/support/BreakpointConditionChecker.cpp \
            src/support/BreakpointEqualHitCounter.cpp \
            src/support/BreakpointGreaterOrEqualHitCounter.cpp \
@@ -163,14 +154,11 @@ SOURCES += src/library/BaseActorCategories.cpp \
            src/support/IntegralBusUtils.cpp \
            src/support/MapDatatypeEditor.cpp \
            src/support/MarkerUtils.cpp \
-           src/support/MultipleAlignmentMessageTranslator.cpp \
            src/support/NoFailTaskWrapper.cpp \
            src/support/SchemaSerializer.cpp \
            src/support/ScriptWorkerSerializer.cpp \
-           src/support/SequenceMessageTranslator.cpp \
            src/support/SimpleWorkflowTask.cpp \
            src/support/SupportClass.cpp \
-           src/support/VariationTrackMessageTranslator.cpp \
            src/support/WorkflowBreakpoint.cpp \
            src/support/WorkflowBreakpointSharedInfo.cpp \
            src/support/WorkflowDebugMessageParser.cpp \

@@ -19,39 +19,23 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_EXPORT_ANNOTATIONS_2_CSV_TASK_H_
-#define _U2_EXPORT_ANNOTATIONS_2_CSV_TASK_H_
+#ifndef _U2_SEQUENCE_MESSAGE_TRANSLATOR_H_
+#define _U2_SEQUENCE_MESSAGE_TRANSLATOR_H_
 
-#include <U2Core/Task.h>
-#include <U2Core/DNATranslation.h>
+#include "BaseMessageTranslator.h"
 
 namespace U2 {
 
-class Annotation;
-
-class ExportAnnotations2CSVTask : public Task {
-    Q_OBJECT
+class SequenceMessageTranslator : public BaseMessageTranslator {
 public:
-    ExportAnnotations2CSVTask(
-        const QList<Annotation*>& annotations,
-        const QByteArray& sequence,
-        const QString& seqName,
-        DNATranslation *complementTranslation,
-        bool exportSequence, bool exportSequenceName, const QString& url, bool append = false, QString sep = ",");
+    SequenceMessageTranslator( const QVariant &atomicMessage, Workflow::WorkflowContext *initContext );
 
-    void run();
-private:
-    QList<Annotation*> annotations;
-    QByteArray sequence;
-    QString seqName;
-    DNATranslation *complementTranslation;
-    bool exportSequence;
-    bool exportSequenceName;
-    QString url;
-    bool append;
-    QString separator;
+    QString getTranslation( ) const;
+
+protected:
+    U2SequenceObject *sequenceObject;
 };
 
 } // namespace U2
 
-#endif 
+#endif // _U2_SEQUENCE_MESSAGE_TRANSLATOR_H_

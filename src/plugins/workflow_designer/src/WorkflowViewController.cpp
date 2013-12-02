@@ -114,6 +114,7 @@
 #include "WorkflowViewItems.h"
 #include "WorkflowViewItems.h"
 #include "BreakpointManagerView.h"
+#include "debug_messages_translation/WorkflowDebugMessageParserImpl.h"
 #include "library/CreateExternalProcessDialog.h"
 #include "library/ExternalProcessWorker.h"
 #include "library/ScriptWorker.h"
@@ -1535,6 +1536,7 @@ void WorkflowView::localHostLaunch() {
     }
 
     const Schema *s = getSchema();
+    debugInfo->setMessageParser( new WorkflowDebugMessageParserImpl( ) );
     WorkflowAbstractRunner * t = new WorkflowRunTask(*s, ActorMap(), debugInfo);
 
     t->setReportingEnabled(true);

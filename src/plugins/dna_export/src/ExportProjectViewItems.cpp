@@ -27,8 +27,6 @@
 #include "ExportMSA2SequencesDialog.h"
 #include "ExportMSA2MSADialog.h"
 #include "ExportChromatogramDialog.h"
-#include "ExportAnnotationsDialog.h"
-#include "ExportAnnotations2CSVTask.h"
 #include "ExportUtils.h"
 #include "ExportQualityScoresTask.h"
 #include "ImportAnnotationsFromCSVDialog.h"
@@ -58,6 +56,9 @@
 #include <U2Core/AppResources.h>
 
 #include <U2Gui/DialogUtils.h>
+#include <U2Gui/ExportAnnotationsDialog.h>
+#include <U2Gui/ExportAnnotations2CSVTask.h>
+#include <U2Gui/ExportObjectUtils.h>
 #include <U2Gui/LastUsedDirHelper.h>
 #include <U2Gui/GUIUtils.h>
 #include <U2Gui/MainWindow.h>
@@ -487,7 +488,7 @@ void ExportProjectViewItemsContoller::sl_exportAnnotations(QList<Annotation*> &a
     if(d.fileFormat() == ExportAnnotationsDialog::CSV_FORMAT_ID) {
         t = new ExportAnnotations2CSVTask(annotations, QByteArray(), QString(), NULL, false, false, d.filePath());
     } else {
-        t = ExportUtils::saveAnnotationsTask(d.filePath(), d.fileFormat(), annotations);
+        t = ExportObjectUtils::saveAnnotationsTask(d.filePath(), d.fileFormat(), annotations);
     }
     AppContext::getTaskScheduler()->registerTopLevelTask(t);
 }

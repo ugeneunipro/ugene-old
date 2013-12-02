@@ -55,6 +55,7 @@
 #include <U2Gui/LastUsedDirHelper.h>
 #include <U2Gui/DialogUtils.h>
 #include <U2Gui/ExportDocumentDialogController.h>
+#include <U2Gui/ExportObjectUtils.h>
 
 #include <U2View/AnnotatedDNAView.h>
 #include <U2View/ADVSequenceWidget.h>
@@ -302,7 +303,7 @@ void DocumentUpdater::notifyUserAndReloadDocuments(const QList<Document*> & outd
 }
 
 void DocumentUpdater::reloadDocsWithNewPermisions(const QList<Document *> &outdatedPermDocs){
-    coreLog.trace(QString("Permisions for %1 docs changed!").arg(outdatedPermDocs.size()));
+    coreLog.trace(QString("Permissions for %1 docs changed!").arg(outdatedPermDocs.size()));
     if(isAnyDialogOpened())
         return;
 
@@ -312,7 +313,7 @@ void DocumentUpdater::reloadDocsWithNewPermisions(const QList<Document *> &outda
         QMessageBox::information(
             dynamic_cast<QWidget *>(AppContext::getMainWindow()),
             U2_APP_TITLE,
-            tr("Permision for document '%1' was changed outside UGENE. It should be reloaded.").arg(doc->getName()),
+            tr("Permission for document '%1' was changed outside UGENE. It should be reloaded.").arg(doc->getName()),
             QMessageBox::Ok);
         if(!doc->hasUserModLock())//don't unlock documents when changing permissions
             doc->setUserModLock(!DocumentUtils::getPermissions(doc).testFlag(QFile::WriteUser));
@@ -630,9 +631,7 @@ void ProjectViewImpl::sl_onSaveSelectedDocs() {
     if (!modifiedDocs.isEmpty()) {
         AppContext::getTaskScheduler()->registerTopLevelTask(new SaveMiltipleDocuments(modifiedDocs, false));
     }
-
 }
-
 
 void ProjectViewImpl::updateMWTitle() {
     Project* p  = AppContext::getProject();
@@ -746,7 +745,6 @@ void ProjectViewImpl::sl_onActivated( Document* d){
     GObjectSelection gs;
     DocumentSelection ds; 
 
-    
     if (d->isLoaded()){
         //find view for loaded objects in document    
         gs.addToSelection(d->getObjects());
@@ -756,8 +754,7 @@ void ProjectViewImpl::sl_onActivated( Document* d){
         ds.addToSelection(QList<Document*>() << d);
         ms.addSelection(&ds);
     }
-    
-    
+
     QMenu activeViewsMenu(tr("active_views_menu"), NULL);
     QList<QAction*> openActions;
     QList<GObjectViewFactory*> fs = AppContext::getObjectViewFactoryRegistry()->getAllFactories();
@@ -775,13 +772,11 @@ void ProjectViewImpl::sl_onActivated( Document* d){
         QAction* a = openActions.first();
         a->trigger();
         return;
-    } 
+    }
     foreach(QAction* a, openActions) {
         activeViewsMenu.addAction(a);
     }
     activeViewsMenu.exec(QCursor::pos());
-  
-
 }
 
 
@@ -1067,63 +1062,7 @@ void ProjectViewImpl::sl_exportDocument() {
         return;
     }
     ExportDocumentDialogController dialog(srcDoc, w);
-    export2Document(dialog);
-}
-
-void ProjectViewImpl::exportObject2Document(GObject *object, const QString &url, bool tracePath) {
-    if(NULL == object || object->isUnloaded()) {
-        return;
-    }
-    ExportDocumentDialogController dialog(object, w, url);
-    export2Document(dialog, tracePath);
-}
-
-void ProjectViewImpl::export2Document(ExportDocumentDialogController &dialog, bool tracePath) const {
-    int result = dialog.exec();
-    if (result == QDialog::Accepted) {
-        if (tracePath) {
-            LastUsedDirHelper h;
-            h.url = dialog.getDocumentURL();
-        }
-        QString dstUrl = dialog.getDocumentURL();
-        if (dstUrl.isEmpty()) {
-            return;
-        }
-        if (AppContext::getProject()->findDocumentByURL(dstUrl)) {
-            QMessageBox::critical(w, tr("Error"), tr("Document with the same URL is added to the project. \n Remove it from the project first."));
-            return;
-        }
-        bool addToProject = dialog.getAddToProjectFlag();
-
-        IOAdapterFactory *iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(dstUrl));
-        CHECK_EXT(iof != NULL, coreLog.error(QString("Can not create IO factory for %1").arg(dstUrl)), );
-        DocumentFormatRegistry *dfr =  AppContext::getDocumentFormatRegistry();
-        DocumentFormatId formatId = dialog.getDocumentFormatId();
-        DocumentFormat *df = dfr->getFormatById(formatId);
-        CHECK_EXT(df != NULL, coreLog.error(QString("Unknown document format IO factory: %1").arg(formatId)), );
-
-        U2OpStatusImpl os;
-        Document *srcDoc = dialog.getSourceDoc();
-        Document *dstDoc = NULL;
-        if(NULL == srcDoc) {
-            dstDoc = df->createNewLoadedDocument(iof, dstUrl, os);
-            dstDoc->addObject(dialog.getSourceObject());
-        } else {
-            dstDoc = srcDoc->getSimpleCopy(df, iof, dstUrl);
-        }
-
-        SaveDocFlags flags = SaveDocFlags(SaveDoc_Roll) | SaveDoc_DestroyButDontUnload;
-        if (addToProject) {
-            flags |= SaveDoc_OpenAfter;
-        }
-        SaveDocumentTask *t = new SaveDocumentTask(dstDoc, iof, dstUrl, flags);
-        AppContext::getTaskScheduler()->registerTopLevelTask(t);
-    }
-}
-
-void ProjectViewImpl::exportAnnotations(QList<Annotation*> &annotations, const GUrl &dstUrl)
-{
-    emit si_annotationsExportRequested(annotations, dstUrl);
+    ExportObjectUtils::export2Document(dialog);
 }
 
 void ProjectViewImpl::highlightItem(Document* doc){

@@ -19,8 +19,6 @@
  * MA 02110-1301, USA.
  */
 
-#include <QtCore/QVariant>
-
 #include <U2Lang/WorkflowContext.h>
 #include <U2Lang/DbiDataHandler.h>
 
@@ -34,31 +32,30 @@ const int COUNT_OF_DISPLAYING_SEQUENCE_SYMBOLS = 100;
 
 namespace U2 {
 
-SequenceMessageTranslator::SequenceMessageTranslator(const QVariant &atomicMessage, WorkflowContext *initContext)
-    : BaseMessageTranslator(atomicMessage, initContext)
+using namespace Workflow;
+
+SequenceMessageTranslator::SequenceMessageTranslator( const QVariant &atomicMessage,
+    WorkflowContext *initContext )
+    : BaseMessageTranslator( atomicMessage, initContext )
 {
-    Q_ASSERT(source.canConvert<SharedDbiDataHandler>());
-    SharedDbiDataHandler sequenceId = source.value<SharedDbiDataHandler>();
-    sequenceObject = StorageUtils::getSequenceObject(context->getDataStorage(), sequenceId);
-    Q_ASSERT(NULL != sequenceObject);
+    SAFE_POINT( source.canConvert<SharedDbiDataHandler>( ), "Invalid sequence data supplied!", );
+    SharedDbiDataHandler sequenceId = source.value<SharedDbiDataHandler>( );
+    sequenceObject = StorageUtils::getSequenceObject( context->getDataStorage( ), sequenceId );
+    SAFE_POINT( NULL != sequenceObject, "Invalid sequence object!", );
 }
 
-SequenceMessageTranslator::~SequenceMessageTranslator() {
-
-}
-
-QString SequenceMessageTranslator::getTranslation() const {
-    QString result = QString().append(QObject::tr(SEQUENCE_NAME_LABEL)
-        + sequenceObject->getSequenceName() + INFO_TAGS_SEPARATOR);
-    const int sequenceLength = sequenceObject->getSequenceLength();
-    result.append(QObject::tr(SEQUENCE_LENGTH_LABEL) + QString::number(sequenceLength)
-        + INFO_TAGS_SEPARATOR);
-    result.append(QObject::tr(SEQUENCE_CONTENT_LABEL)
-        + sequenceObject->getSequenceData(U2Region(0, COUNT_OF_DISPLAYING_SEQUENCE_SYMBOLS)));
-    if(sequenceLength > COUNT_OF_DISPLAYING_SEQUENCE_SYMBOLS) {
-        result.append(QObject::tr(SEQUENCE_CONTENT_ENDING));
+QString SequenceMessageTranslator::getTranslation( ) const {
+    QString result = QObject::tr( SEQUENCE_NAME_LABEL ) + sequenceObject->getSequenceName( )
+        + INFO_TAGS_SEPARATOR;
+    const int sequenceLength = sequenceObject->getSequenceLength( );
+    result += QObject::tr( SEQUENCE_LENGTH_LABEL ) + QString::number( sequenceLength )
+        + INFO_TAGS_SEPARATOR;
+    result += QObject::tr( SEQUENCE_CONTENT_LABEL )
+        + sequenceObject->getSequenceData( U2Region( 0, COUNT_OF_DISPLAYING_SEQUENCE_SYMBOLS ) );
+    if ( sequenceLength > COUNT_OF_DISPLAYING_SEQUENCE_SYMBOLS ) {
+        result += QObject::tr( SEQUENCE_CONTENT_ENDING );
     }
-    
+
     return result;
 }
 

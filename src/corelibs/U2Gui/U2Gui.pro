@@ -34,8 +34,11 @@ HEADERS += src/AppSettingsGUI.h \
            src/util/DownloadRemoteFileDialog.h \
            src/util/EditQualifierDialog.h \
            src/util/EditSequenceDialogController.h \
+           src/util/ExportAnnotations2CSVTask.h \
+           src/util/ExportAnnotationsDialog.h \
            src/util/ExportDocumentDialogController.h \
            src/util/ExportImageDialog.h \
+           src/util/ExportObjectUtils.h \
            src/util/GlassView.h \
            src/util/GObjectComboBoxController.h \
            src/util/GraphUtils.h \
@@ -74,6 +77,7 @@ FORMS += src/util/ui/AddNewDocumentDialog.ui \
          src/util/ui/DownloadRemoteFileDialog.ui \
          src/util/ui/EditQualifierDialog.ui \
          src/util/ui/EditSequenceDialog.ui \
+         src/util/ui/ExportAnnotationsDialog.ui \
          src/util/ui/ExportDocumentDialog.ui \
          src/util/ui/ExportImageDialog.ui \
          src/util/ui/FormatSettingsDialog.ui \
@@ -115,8 +119,11 @@ SOURCES += src/MainWindow.cpp \
            src/util/DownloadRemoteFileDialog.cpp \
            src/util/EditQualifierDialog.cpp \
            src/util/EditSequenceDialogController.cpp \
+           src/util/ExportAnnotations2CSVTask.cpp \
+           src/util/ExportAnnotationsDialog.cpp \
            src/util/ExportDocumentDialogController.cpp \
            src/util/ExportImageDialog.cpp \
+           src/util/ExportObjectUtils.cpp \
            src/util/GlassView.cpp \
            src/util/GObjectComboBoxController.cpp \
            src/util/GraphUtils.cpp \

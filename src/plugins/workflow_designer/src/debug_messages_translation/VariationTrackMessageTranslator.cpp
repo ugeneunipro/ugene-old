@@ -19,6 +19,7 @@
  * MA 02110-1301, USA.
  */
 
+#include <QtCore/QScopedPointer>
 #include <QtCore/QVariant>
 
 #include <U2Core/U2OpStatusUtils.h>
@@ -32,32 +33,33 @@ const char *VARIATIONS_COUNT_LABEL = "Count of variations: ";
 
 namespace U2 {
 
-VariationTrackMessageTranslator::VariationTrackMessageTranslator(const QVariant &atomicMessage, WorkflowContext *initContext)
-    : BaseMessageTranslator(atomicMessage, initContext)
+using namespace Workflow;
+
+VariationTrackMessageTranslator::VariationTrackMessageTranslator( const QVariant &atomicMessage,
+    WorkflowContext *initContext )
+    : BaseMessageTranslator( atomicMessage, initContext )
 {
-    SAFE_POINT(source.canConvert<SharedDbiDataHandler>(), "Message doesn't contain dbi reference", );
-    SharedDbiDataHandler dbId = source.value<SharedDbiDataHandler>();
-    std::auto_ptr<VariantTrackObject> variantTrackObject(StorageUtils::getVariantTrackObject(context->getDataStorage(), dbId));
-    SAFE_POINT(NULL != variantTrackObject.get(), "Couldn't obtain variant object", );
-    variantTrackRef = variantTrackObject->getEntityRef();
+    SAFE_POINT( source.canConvert<SharedDbiDataHandler>( ), "Message doesn't contain dbi reference", );
+    SharedDbiDataHandler dbId = source.value<SharedDbiDataHandler>( );
+    QScopedPointer<VariantTrackObject> variantTrackObject( StorageUtils::getVariantTrackObject(
+        context->getDataStorage( ), dbId ) );
+    SAFE_POINT( NULL != variantTrackObject.data( ), "Couldn't obtain variant object", );
+    variantTrackRef = variantTrackObject->getEntityRef( );
 }
 
-VariationTrackMessageTranslator::~VariationTrackMessageTranslator() {
-
-}
-
-QString VariationTrackMessageTranslator::getTranslation() const {
+QString VariationTrackMessageTranslator::getTranslation( ) const {
     U2OpStatusImpl os;
-    DbiConnection connection(variantTrackRef.dbiRef, os);
-    SAFE_POINT_OP(os, "Couldn't establish dbi connection");
+    DbiConnection connection( variantTrackRef.dbiRef, os );
+    SAFE_POINT_OP( os, QString( ) );
 
-    U2VariantDbi *dbi = connection.dbi->getVariantDbi();
+    U2VariantDbi *dbi = connection.dbi->getVariantDbi( );
+    SAFE_POINT( NULL != dbi, "Invalid variation DBI!", QString( ) );
     const U2DataId variantId = variantTrackRef.entityId;
-    const int variantCount = dbi->getVariantCount(variantId, os);
-    SAFE_POINT_OP(os, "Couldn't obtain variant count");
+    const int variantCount = dbi->getVariantCount( variantId, os );
+    SAFE_POINT_OP( os, QString( ) );
 
-    QString result = QString().append(QObject::tr(VARIATIONS_COUNT_LABEL)
-        + QString::number(variantCount));
+    QString result = QObject::tr( VARIATIONS_COUNT_LABEL )
+        + QString::number( variantCount );
 
     return result;
 }

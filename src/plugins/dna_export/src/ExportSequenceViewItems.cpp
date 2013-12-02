@@ -23,8 +23,6 @@
 #include "ExportUtils.h"
 #include "ExportSequenceTask.h"
 #include "ExportSequencesDialog.h"
-#include "ExportAnnotationsDialog.h"
-#include "ExportAnnotations2CSVTask.h"
 #include "ExportSequences2MSADialog.h"
 #include "ExportBlastResultDialog.h"
 #include "GetSequenceByIdDialog.h"
@@ -50,16 +48,18 @@
 #include <U2Core/AnnotationSelection.h>
 #include <U2Core/DNASequenceSelection.h>
 #include <U2Core/GObjectRelationRoles.h>
+#include <U2Core/TextUtils.h>
+#include <U2Core/LoadRemoteDocumentTask.h>
 
 #include <U2View/AnnotatedDNAView.h>
 #include <U2View/ADVSequenceObjectContext.h>
 #include <U2View/ADVConstants.h>
 
-
 #include <U2Gui/DialogUtils.h>
+#include <U2Gui/ExportAnnotationsDialog.h>
+#include <U2Gui/ExportAnnotations2CSVTask.h>
+#include <U2Gui/ExportObjectUtils.h>
 #include <U2Gui/GUIUtils.h>
-#include <U2Core/TextUtils.h>
-#include <U2Core/LoadRemoteDocumentTask.h>
 #include <U2Gui/OpenViewTask.h>
 
 #include <QtGui/QMainWindow>
@@ -504,7 +504,7 @@ void ADVExportContext::sl_saveSelectedAnnotations() {
             sequenceContext->getSequenceObject()->getSequenceName(),
             sequenceContext->getComplementTT(), d.exportSequence(), d.exportSequenceNames(), d.filePath());
     } else {
-        t = ExportUtils::saveAnnotationsTask(d.filePath(), d.fileFormat(), annotationList);
+        t = ExportObjectUtils::saveAnnotationsTask(d.filePath(), d.fileFormat(), annotationList);
     }
     AppContext::getTaskScheduler()->registerTopLevelTask(t);
 }

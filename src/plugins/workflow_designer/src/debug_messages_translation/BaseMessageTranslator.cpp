@@ -19,41 +19,26 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_EXPORT_ANNOTATIONS_2_CSV_DIALOG_H_
-#define _U2_EXPORT_ANNOTATIONS_2_CSV_DIALOG_H_
+#include <U2Lang/WorkflowContext.h>
 
-#include <QtGui/QDialog>
-#include <ui/ui_ExportAnnotationsDialog.h>
+#include "BaseMessageTranslator.h"
 
 namespace U2 {
 
-class ExportAnnotationsDialog : public QDialog, public Ui::ExportAnnotationsDialog {
-    Q_OBJECT
-    Q_DISABLE_COPY(ExportAnnotationsDialog)
-public:
-    static const QString CSV_FORMAT_ID;
-    
-public:
-    explicit ExportAnnotationsDialog(const QString & filename, QWidget *parent);
-    
-    QString filePath()const;
-    bool exportSequence()const;
-    bool exportSequenceNames() const;
-    void setExportSequenceVisible(bool value);
-    
-    QString fileFormat()const;
+using namespace Workflow;
 
-protected:
-    virtual void changeEvent(QEvent *e);
+BaseMessageTranslator::BaseMessageTranslator( const QVariant &atomicMessage,
+    WorkflowContext *initContext ) : source( atomicMessage ), context( initContext )
+{
 
-private slots:
-    void sl_onChooseFileButtonClicked();
-    void sl_onFormatChanged(const QString &);
+}
 
-private:
-    QList<QString> supportedFormatsExts;
-};
+BaseMessageTranslator::~BaseMessageTranslator( ) {
+
+}
+
+QString BaseMessageTranslator::getTranslation( ) const {
+    return source.toString( );
+}
 
 } // namespace U2
-
-#endif 

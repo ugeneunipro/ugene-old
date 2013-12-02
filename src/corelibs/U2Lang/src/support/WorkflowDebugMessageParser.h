@@ -22,41 +22,33 @@
 #ifndef _U2_WORKFLOW_DEBUG_MESSAGE_PARSER_H_
 #define _U2_WORKFLOW_DEBUG_MESSAGE_PARSER_H_
 
-#include "WorkflowInvestigationData.h"
+#include <U2Lang/WorkflowInvestigationData.h>
 
 namespace U2 {
 
-using namespace Workflow;
+namespace Workflow {
 
-class Workflow::Message;
-class Workflow::WorkflowContext;
-class BaseMessageTranslator;
-class GObject;
+class WorkflowContext;
+class Message;
 
-class WorkflowDebugMessageParser {
+}
+
+class U2LANG_EXPORT WorkflowDebugMessageParser {
 public:
-    WorkflowDebugMessageParser(const QQueue<Message> &initSource, WorkflowContext *initContext);
-    ~WorkflowDebugMessageParser();
+                                        WorkflowDebugMessageParser( );
 
-    WorkflowInvestigationData getAllMessageValues();
-    void convertMessagesToDocuments(const QString &convertedType, const QString &schemeName,
-        quint32 messageNumber);
+    void                                setContext( Workflow::WorkflowContext *context );
+    void                                setSourceData( const QQueue<Workflow::Message> &sourceData );
 
-private:
-    void initParsedInfo();
-    QString convertToString(const QString &contentIdentifier, const QVariant &content) const;
-    QString getMessageTypeFromIdentifier(const QString &messageIdentifier) const;
-    BaseMessageTranslator *createMessageTranslator(const QString &messageType,
-        const QVariant &messageData, WorkflowContext *context) const;
-    GObject *fetchObjectFromMessage(const QString &messageType, const QVariant &messageData,
-        WorkflowContext *context) const;
+    virtual WorkflowInvestigationData   getAllMessageValues( ) = 0;
+    virtual void                        convertMessagesToDocuments( const QString &convertedType,
+                                            const QString &schemeName, quint32 messageNumber ) = 0;
 
-    QQueue<QVariantMap> sourceMessages;
-    QStringList messageTypes;
-    WorkflowInvestigationData parsedInfo;
-    WorkflowContext *context;
+protected:
+    QQueue<QVariantMap>                 sourceMessages;
+    Workflow::WorkflowContext *         context;
 
-    static QStringList possibleMessageTypes;
+    static QStringList                  possibleMessageTypes;
 };
 
 } // namespace U2

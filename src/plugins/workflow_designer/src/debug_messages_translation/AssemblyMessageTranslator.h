@@ -19,28 +19,25 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_ANNOTATIONS_MESSAGE_TRANSLATOR_H_
-#define _U2_ANNOTATIONS_MESSAGE_TRANSLATOR_H_
-
-#include <QtCore/QList>
-
-#include <U2Core/AnnotationData.h>
+#ifndef _U2_ASSEMBLY_MESSAGE_TRANSLATOR_H_
+#define _U2_ASSEMBLY_MESSAGE_TRANSLATOR_H_
 
 #include "BaseMessageTranslator.h"
 
 namespace U2 {
 
-class AnnotationsMessageTranslator : public BaseMessageTranslator {
-public:
-    AnnotationsMessageTranslator(const QVariant &atomicMessage, WorkflowContext *initContext);
-    virtual ~AnnotationsMessageTranslator();
+class U2EntityRef;
 
-    virtual QString getTranslation() const;
+class AssemblyMessageTranslator : public BaseMessageTranslator {
+public:
+    AssemblyMessageTranslator(const QVariant &atomicMessage, Workflow::WorkflowContext *initContext);
+
+    QString getTranslation() const;
 
 protected:
-    QList<SharedAnnotationData> annotations;
+    U2EntityRef assemblyRef;
 };
 
 } // namespace U2
 
-#endif // _U2_ANNOTATIONS_MESSAGE_TRANSLATOR_H_
+#endif // _U2_ASSEMBLY_MESSAGE_TRANSLATOR_H_

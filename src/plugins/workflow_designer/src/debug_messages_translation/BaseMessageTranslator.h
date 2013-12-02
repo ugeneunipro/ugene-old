@@ -19,26 +19,41 @@
  * MA 02110-1301, USA.
  */
 
+#ifndef _U2_BASE_MESSAGE_TRANSLATOR_H_
+#define _U2_BASE_MESSAGE_TRANSLATOR_H_
+
+#include <QtCore/QString>
 #include <QtCore/QVariant>
-
-#include <U2Lang/WorkflowContext.h>
-
-#include "BaseMessageTranslator.h"
 
 namespace U2 {
 
-BaseMessageTranslator::BaseMessageTranslator(const QVariant &atomicMessage,
-    WorkflowContext *initContext) : source(atomicMessage), context(initContext)
-{
+namespace Workflow {
+
+class WorkflowContext;
 
 }
 
-BaseMessageTranslator::~BaseMessageTranslator() {
+// the string is supposed to be used as separator
+// between different pieces of information obtained from 
+// translated message
+const QString INFO_TAGS_SEPARATOR = ";";
+const QString INFO_FEATURES_SEPARATOR = ",";
 
-}
+/* The type is intended for converting messages' content into QString
+for visualizing them during a scheme's execution */
 
-QString BaseMessageTranslator::getTranslation() const {
-    return source.toString();
-}
+class BaseMessageTranslator {
+public:
+    BaseMessageTranslator( const QVariant &atomicMessage, Workflow::WorkflowContext *initContext );
+    virtual ~BaseMessageTranslator( );
+
+    virtual QString getTranslation( ) const;
+
+protected:
+    const QVariant source;
+    Workflow::WorkflowContext *context;
+};
 
 } // namespace U2
+
+#endif // _U2_BASE_MESSAGE_TRANSLATOR_H_

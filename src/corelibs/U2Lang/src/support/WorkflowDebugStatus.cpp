@@ -22,6 +22,7 @@
 #include <QtCore/QCoreApplication>
 
 #include "WorkflowBreakpointSharedInfo.h"
+#include "WorkflowDebugMessageParser.h"
 #include "WorkflowDebugStatus.h"
 
 const QString INVESTIGATION_TABLE_TYPE = "Type";
@@ -32,18 +33,31 @@ namespace U2 {
 QList<BreakpointLabel> WorkflowDebugStatus::existingBreakpointLabels = QList<BreakpointLabel>();
 
 WorkflowDebugStatus::WorkflowDebugStatus(QObject *parent)
-    : QObject(parent), breakpoints(), paused(false), isStepIsolated(false), context(NULL)
+    : QObject(parent), paused(false), isStepIsolated(false), context(NULL), parser(NULL)
 {
 
 }
 
 WorkflowDebugStatus::~WorkflowDebugStatus() {
     qDeleteAll(breakpoints);
+    delete parser;
 }
 
 void WorkflowDebugStatus::setContext(WorkflowContext *initContext) {
-    Q_ASSERT(NULL != initContext);
+    SAFE_POINT( NULL != initContext, "Invalid workflow context!", );
     context = initContext;
+    if ( Q_LIKELY( NULL != parser ) ) {
+        parser->setContext( initContext );
+    }
+}
+
+void WorkflowDebugStatus::setMessageParser( WorkflowDebugMessageParser *initParser ) {
+    SAFE_POINT( NULL != initParser, "Invalid workflow context!", );
+    parser = initParser;
+}
+
+WorkflowDebugMessageParser * WorkflowDebugStatus::getMessageParser( ) const {
+    return parser;
 }
 
 void WorkflowDebugStatus::setPause(bool pause) {

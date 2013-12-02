@@ -37,16 +37,20 @@ class WorkflowBreakpoint;
 enum BreakpointHitCountCondition;
 class AttributeScript;
 enum BreakpointConditionParameter;
+class WorkflowDebugMessageParser;
 
 using namespace Workflow;
 
 class U2LANG_EXPORT WorkflowDebugStatus : public QObject {
     Q_OBJECT
+    Q_DISABLE_COPY( WorkflowDebugStatus )
 public:
     explicit WorkflowDebugStatus(QObject *parent = NULL);
     ~WorkflowDebugStatus();
 
     void setContext(WorkflowContext *initContext);
+    void setMessageParser(WorkflowDebugMessageParser *initParser);
+    WorkflowDebugMessageParser *getMessageParser( ) const;
 
     // the method should be invoked before the running
     // of an actor's task. If it has a breakpoint,
@@ -139,6 +143,7 @@ private:
     bool paused;
     bool isStepIsolated;
     WorkflowContext *context;
+    WorkflowDebugMessageParser *parser;
 
     static QList<BreakpointLabel> existingBreakpointLabels;
 };

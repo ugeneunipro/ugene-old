@@ -19,26 +19,26 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_VARIATION_TRACK_MESSAGE_TRANSLATOR_H_
-#define _U2_VARIATION_TRACK_MESSAGE_TRANSLATOR_H_
+#ifndef _U2_ANNOTATIONS_MESSAGE_TRANSLATOR_H_
+#define _U2_ANNOTATIONS_MESSAGE_TRANSLATOR_H_
+
+#include <U2Core/AnnotationData.h>
 
 #include "BaseMessageTranslator.h"
 
 namespace U2 {
 
-class U2EntityRef;
-
-class VariationTrackMessageTranslator : public BaseMessageTranslator {
+class AnnotationsMessageTranslator : public BaseMessageTranslator {
 public:
-    VariationTrackMessageTranslator(const QVariant &atomicMessage, WorkflowContext *initContext);
-    virtual ~VariationTrackMessageTranslator();
+    AnnotationsMessageTranslator( const QVariant &atomicMessage,
+        Workflow::WorkflowContext *initContext );
 
-    virtual QString getTranslation() const;
+    QString getTranslation( ) const;
 
 protected:
-    U2EntityRef variantTrackRef;
+    QList<SharedAnnotationData> annotations;
 };
 
 } // namespace U2
 
-#endif // _U2_VARIATION_TRACK_MESSAGE_TRANSLATOR_H_
+#endif // _U2_ANNOTATIONS_MESSAGE_TRANSLATOR_H_

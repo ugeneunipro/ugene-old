@@ -45,8 +45,8 @@
 #include <U2Designer/DelegateEditors.h>
 
 #include <U2Gui/DialogUtils.h>
+#include <U2Gui/ExportAnnotations2CSVTask.h>
 
-#include "ExportAnnotations2CSVTask.h"
 #include "WriteAnnotationsWorker.h"
 
 namespace U2 {

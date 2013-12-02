@@ -8,8 +8,6 @@ HEADERS += src/CSVColumnConfiguration.h \
            src/DNASequenceGenerator.h \
            src/DNASequenceGeneratorDialog.h \
            src/ExportAlignmentViewItems.h \
-           src/ExportAnnotations2CSVTask.h \
-           src/ExportAnnotationsDialog.h \
            src/ExportBlastResultDialog.h \
            src/ExportChromatogramDialog.h \
            src/ExportMSA2MSADialog.h \
@@ -33,7 +31,6 @@ HEADERS += src/CSVColumnConfiguration.h \
 FORMS += src/ui/BaseContentDialog.ui \
          src/ui/CSVColumnConfigurationDialog.ui \
          src/ui/DNASequenceGeneratorDialog.ui \
-         src/ui/ExportAnnotationsDialog.ui \
          src/ui/ExportBlastResultDialog.ui \
          src/ui/ExportChromatogramDialog.ui \
          src/ui/ExportMSA2MSADialog.ui \
@@ -48,8 +45,6 @@ SOURCES += src/CSVColumnConfigurationDialog.cpp \
            src/DNASequenceGenerator.cpp \
            src/DNASequenceGeneratorDialog.cpp \
            src/ExportAlignmentViewItems.cpp \
-           src/ExportAnnotations2CSVTask.cpp \
-           src/ExportAnnotationsDialog.cpp \
            src/ExportBlastResultDialog.cpp \
            src/ExportChromatogramDialog.cpp \
            src/ExportMSA2MSADialog.cpp \

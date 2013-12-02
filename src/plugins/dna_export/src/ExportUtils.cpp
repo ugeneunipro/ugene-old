@@ -70,31 +70,4 @@ QString ExportUtils::genUniqueName(const QSet<QString>& names, QString prefix) {
     return name;
 }
 
-Task * ExportUtils::saveAnnotationsTask(const QString & filepath, const DocumentFormatId & format, const QList<Annotation*> & annList) {
-    SaveDocFlags fl(SaveDoc_Roll);
-    fl |= SaveDoc_DestroyAfter;
-    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(filepath));
-    DocumentFormat * df = AppContext::getDocumentFormatRegistry()->getFormatById(format);
-    U2OpStatus2Log os;
-    Document * doc = df->createNewLoadedDocument(iof, filepath, os);
-    CHECK_OP(os, NULL);
-    
-    // object and annotations will be deleted when savedoc task will delete doc
-    AnnotationTableObject * att = new AnnotationTableObject("exported_annotations");
-    bool setAttName = false;
-    foreach(Annotation * a, annList) {
-        if(!setAttName && a->getGObject() != NULL) {
-            QString newName = a->getGObject()->getGObjectName();
-            assert(!newName.isEmpty());
-            att->setGObjectName(newName);
-            setAttName = true;
-        }
-        QString groupName = a->getGroups().isEmpty() ? "" : a->getGroups().first()->getGroupName();
-        att->addAnnotation(new Annotation(a->data()), groupName);
-    }
-    att->setModified(false);
-    doc->addObject(att);
-    return new SaveDocumentTask(doc, fl, DocumentUtils::getNewDocFileNameExcludesHint());
-}
-
 }//namespace

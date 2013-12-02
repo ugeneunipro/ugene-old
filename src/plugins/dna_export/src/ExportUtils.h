@@ -43,8 +43,6 @@ public:
 
     // generates unique name using prefix + numbers
     static QString genUniqueName(const QSet<QString>& names, QString prefix);
-    
-    static Task * saveAnnotationsTask(const QString & filepath, const DocumentFormatId & format, const QList<Annotation*> & annList);
 };
 
 }//namespace

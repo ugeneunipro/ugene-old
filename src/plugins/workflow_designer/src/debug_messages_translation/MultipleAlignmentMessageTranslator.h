@@ -19,39 +19,28 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_BASE_MESSAGE_TRANSLATOR_H_
-#define _U2_BASE_MESSAGE_TRANSLATOR_H_
+#ifndef _U2_MULTIPLE_ALIGNMENT_MESSAGE_TRANSLATOR_H_
+#define _U2_MULTIPLE_ALIGNMENT_MESSAGE_TRANSLATOR_H_
 
-class QVariant;
-class QString;
+#include <U2Core/MAlignment.h>
 
-// the string is supposed to be used as separator
-// between different pieces of information obtained from 
-// translated message
-const QString INFO_TAGS_SEPARATOR = ";";
-const QString INFO_FEATURES_SEPARATOR = ",";
+#include "BaseMessageTranslator.h"
 
 namespace U2 {
 
-using namespace Workflow;
+class MAlignment;
 
-class Workflow::WorkflowContext;
-
-/* The type is intended for converting messages' content into QString
-for visualizing them during a scheme's execution */
-
-class BaseMessageTranslator {
+class MultipleAlignmentMessageTranslator : public BaseMessageTranslator {
 public:
-    BaseMessageTranslator(const QVariant &atomicMessage, WorkflowContext *initContext);
-    virtual ~BaseMessageTranslator();
+    MultipleAlignmentMessageTranslator( const QVariant &atomicMessage,
+        Workflow::WorkflowContext *initContext );
 
-    virtual QString getTranslation() const;
+    QString getTranslation( ) const;
 
 protected:
-    const QVariant source;
-    WorkflowContext *context;
+    MAlignment malignment;
 };
 
 } // namespace U2
 
-#endif // _U2_BASE_MESSAGE_TRANSLATOR_H_
+#endif // _U2_MULTIPLE_ALIGNMENT_MESSAGE_TRANSLATOR_H_
