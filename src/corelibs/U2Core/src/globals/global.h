@@ -116,6 +116,18 @@
 #define PATH_PREFIX_DATA "data"
 #define PATH_PREFIX_SCRIPTS "scripts"
 
+#if QT_VERSION >= QT_VERSION_CHECK( 4, 8, 0 )
+#define U2_LIKELY( x ) Q_LIKELY( x )
+#else
+#define U2_LIKELY( x ) ( x )
+#endif
+
+#if QT_VERSION >= QT_VERSION_CHECK( 4, 8, 0 )
+#define U2_UNLIKELY( x ) Q_UNLIKELY( x )
+#else
+#define U2_UNLIKELY( x ) ( x )
+#endif
+
 typedef QMap<QString, QString> QStrStrMap;
 typedef QPair<QString, QString> StringPair;
 

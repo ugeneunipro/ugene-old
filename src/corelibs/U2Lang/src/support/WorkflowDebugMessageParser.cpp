@@ -19,8 +19,6 @@
  * MA 02110-1301, USA.
  */
 
-#include <QtCore/QtGlobal>
-
 #include <U2Lang/Descriptor.h>
 #include <U2Lang/BaseSlots.h>
 #include <U2Lang/WorkflowContext.h>
@@ -44,7 +42,7 @@ WorkflowDebugMessageParser::WorkflowDebugMessageParser( )
 
 void WorkflowDebugMessageParser::setSourceData( const QQueue<Message> &initSource ) {
     sourceMessages.clear( );
-    if ( Q_UNLIKELY( possibleMessageTypes.isEmpty( ) ) ) {
+    if ( U2_UNLIKELY( possibleMessageTypes.isEmpty( ) ) ) {
         possibleMessageTypes << BaseSlots::DNA_SEQUENCE_SLOT( ).getId( );
         possibleMessageTypes << BaseSlots::MULTIPLE_ALIGNMENT_SLOT( ).getId( );
         possibleMessageTypes << BaseSlots::ANNOTATION_TABLE_SLOT( ).getId( );
