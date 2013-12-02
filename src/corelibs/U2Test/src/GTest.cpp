@@ -286,7 +286,11 @@ QList<GTestSuite*> GTestSuite::readTestSuiteList( const QString& url, QStringLis
     //QString dir = AppContext::getSettings()->getValue(SETTINGS_ROOT + "lastDir", QString()).toString();
     QString dir = QFileInfo(url).dir().absolutePath();
     if (suitListFile!=NULL){
-        suitListFile->open(QIODevice::ReadOnly | QIODevice::Text);
+        if(!suitListFile->open(QIODevice::ReadOnly | QIODevice::Text)){
+            printf("%s\n",tr("Can't load suite list %1").arg(url).toLatin1().constData());
+            errs << tr("Can't open suite list %1").arg(url);
+            return result;
+        }
         QString suiteFileContent = suitListFile->readAll();
         QStringList suiteNamesList = suiteFileContent.split(QRegExp("\\s+"));
         QString suiteName;
