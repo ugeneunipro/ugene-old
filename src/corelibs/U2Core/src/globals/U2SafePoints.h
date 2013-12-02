@@ -43,7 +43,7 @@
             use CHECK_OP instead
 */
 #define SAFE_POINT(condition, message, result)  \
-    if (!(condition)) { \
+    if (U2_UNLIKELY(!(condition))) { \
         coreLog.error(QString("Trying to recover from error: %1 at %2:%3").arg(message).arg(__FILE__).arg(__LINE__)); \
         assert(condition); \
         return result; \
@@ -60,7 +60,7 @@
 
 */
 #define SAFE_POINT_OP(os, result)  \
-    if (os.hasError()) { \
+    if (U2_UNLIKELY(os.hasError())) { \
         coreLog.error(QString("Trying to recover from error: %1 at %2:%3").arg(os.getError()).arg(__FILE__).arg(__LINE__)); \
         assert(0); \
         return result; \
@@ -76,7 +76,7 @@
             use CHECK_OP instead
 */
 #define SAFE_POINT_EXT(condition, extraOp, result)  \
-    if (!(condition)) { \
+    if (U2_UNLIKELY(!(condition))) { \
         assert(condition); \
         extraOp; \
         return result; \
