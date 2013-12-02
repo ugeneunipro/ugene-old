@@ -29,6 +29,7 @@ namespace U2 {
     class ImportAnnotationsToCsvFiller : public Filler {
     public:
         struct RoleParameter {
+            virtual ~RoleParameter() {}
             virtual void ke(){}
         };
 

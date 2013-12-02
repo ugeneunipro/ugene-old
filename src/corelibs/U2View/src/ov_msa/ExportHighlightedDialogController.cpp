@@ -37,20 +37,13 @@ namespace U2{
 
     int alignLength = msaui->getEditor()->getMSAObject()->getLength();
     QRect selection = msaui->getSequenceArea()->getSelection().getRect();
-    int rowNumber = msaui->getEditor()->getMSAObject()->getNumRows();
 
-    int startSeq = -1;
-    int endSeq = -1;
     int startPos = -1;
     int endPos = -1;
     if (selection.isNull()) {
         startPos = 1;
         endPos = alignLength;
-        startSeq = 0;
-        endSeq = rowNumber -1;
     } else {
-        startSeq = selection.y();
-        endSeq = selection.y() + selection.height() - 1;
         startPos = selection.x() + 1;
         endPos = selection.x() + selection.width();
     }

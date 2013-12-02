@@ -532,7 +532,6 @@ bool QueryScene::ajustPosForNewItem(QDElement *targetItem, QPointF &posToAjust){
     itemRect.moveTo(posToAjust);
     foreach(QDElement *el, getElements()){
         if(el == targetItem) continue;
-        QPointF elPos = el->pos();
         QRectF elRect = el->sceneBoundingRect(); 
         if( itemRect.intersects(elRect) ){
             float yy = elRect.bottomLeft().y();

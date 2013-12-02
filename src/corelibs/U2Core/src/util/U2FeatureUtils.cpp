@@ -657,7 +657,7 @@ bool U2FeatureUtils::featureMatchesType( const U2DataId &featureId, FeatureType 
     const bool isGroup = isGroupFeature( featureId, dbiRef, os );
     CHECK_OP( os, false );
 
-    return ( Any == type || Group == type && isGroup || Annotation == type && !isGroup );
+    return ( Any == type || (Group == type && isGroup) || (Annotation == type && !isGroup) );
 }
 
 } // namespace

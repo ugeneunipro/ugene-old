@@ -152,7 +152,7 @@ ExternalToolManager::ExternalToolState ExternalToolManagerImpl::getToolState(con
 }
 
 QString ExternalToolManagerImpl::addTool(ExternalTool* tool) {
-    SAFE_POINT(etRegistry, "The external tool registry is NULL", false);
+    SAFE_POINT(etRegistry, "The external tool registry is NULL", "");
     QString toolPath;
 
     if (tool->isValid()) {

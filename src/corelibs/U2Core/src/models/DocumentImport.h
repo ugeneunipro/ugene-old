@@ -51,6 +51,8 @@ protected:
 
 class ImportDialogFactory {
 public:
+    virtual ~ImportDialogFactory() {}
+
     virtual ImportDialog* getDialog(const QVariantMap& settings) const = 0;
 };
 

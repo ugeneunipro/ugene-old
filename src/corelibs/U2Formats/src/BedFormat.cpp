@@ -322,18 +322,13 @@ BedLineData BedFormat::parseAndValidateLine(const QString& line, int numOfFields
         parsedData.additionalFields[SCORE_QUALIFIER_NAME] = scoreStr;
 
         // Validate the value: it should be an integer value between 0 and 1000
-        // UPDATE: for MACS peaks its wrong, so validation is commented for now
+        // UPDATE: for MACS peaks its wrong, so validation is removed
         bool scoreIsOk;
-        double score = scoreStr.toInt(&scoreIsOk);
+        scoreStr.toInt(&scoreIsOk);
         if (!scoreIsOk) {
-            score = scoreStr.toDouble(&scoreIsOk);
+            scoreStr.toDouble(&scoreIsOk);
         }
-        if (scoreIsOk) {
-            //if (score < 0 || score > 1000) {
-            //    status.incorrectScore = true;
-            //}
-        }
-        else {
+        if (!scoreIsOk) {
             status.incorrectScore = true;
         }
     }

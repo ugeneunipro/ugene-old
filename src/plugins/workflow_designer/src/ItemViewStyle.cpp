@@ -301,7 +301,6 @@ void ExtendedProcStyle::paint(QPainter *painter,
     }
 
     painter->setPen(pen);
-    QColor color = pen.color();
     painter->drawRoundedRect(tb, MARGIN, MARGIN);
 }
 

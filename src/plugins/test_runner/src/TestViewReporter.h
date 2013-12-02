@@ -52,7 +52,7 @@ namespace U2 {
     virtual void setupViewMenu(QMenu* n);
  
  private:
-    const QString prepareHTMLText(QTreeWidget* tree=NULL,int runTime=NULL);
+    const QString prepareHTMLText(QTreeWidget* tree=NULL,int runTime=0);
      
     const QString getHTMLNoTests();
     const QString getHTMLHead();

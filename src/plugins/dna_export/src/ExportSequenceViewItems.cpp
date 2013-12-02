@@ -548,7 +548,7 @@ void ADVExportContext::prepareMAFromBlastAnnotations(MAlignment& ma, const QStri
 
         QByteArray rowSequence;
         AnnotationSelection::getAnnotationSequence(rowSequence, a, MAlignment_GapChar, seqRef,  
-            false, NULL, os);
+            NULL, NULL, os);
         CHECK_OP(os, );
 
         ma.addRow(rowName, rowSequence, os);

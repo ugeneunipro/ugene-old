@@ -58,6 +58,7 @@ public:
 
 class GenomeAlignerWriter {
 public:
+    virtual ~GenomeAlignerWriter() {}
     virtual void write(SearchQuery *seq, SAType offset) = 0;
     virtual void close() = 0;
     virtual void setReferenceName(const QString &refName) = 0;

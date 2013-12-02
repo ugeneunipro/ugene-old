@@ -174,7 +174,7 @@ U2ErrorType WorkflowElementFacade::getElementSlotIds( const QString &elementType
     QList<Workflow::PortDescriptor *> ports;
     CHECK( U2_OK == ( result = getElementPorts( elementType, ports ) ), result );
     foreach ( Workflow::PortDescriptor *port, ports ) {
-        if ( !( inputSlot ^ port->isInput( ) ) && portId.isEmpty( ) || portId == port->getId( ) ) {
+        if ( ( !( inputSlot ^ port->isInput( ) ) && portId.isEmpty( ) ) || portId == port->getId( ) ) {
             QList<Descriptor> slotList = port->getOwnTypeMap( ).keys( );
             foreach ( Descriptor slotDescriptor, slotList ) {
                 slotIds.append( slotDescriptor.getId( ) );

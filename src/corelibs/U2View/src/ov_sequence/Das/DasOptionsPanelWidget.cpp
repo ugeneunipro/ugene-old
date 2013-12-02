@@ -576,7 +576,7 @@ U2Region DasOptionsPanelWidget::getRegion() {
 
 bool DasOptionsPanelWidget::regionIsOk() const {
     bool result=false;
-    U2Region region = regionSelector->getRegion(&result);
+    regionSelector->getRegion(&result);
     return result;
 }
 

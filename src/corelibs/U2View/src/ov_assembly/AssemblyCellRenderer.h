@@ -57,6 +57,7 @@ protected:
 class AssemblyCellRendererFactory {
 public:
     AssemblyCellRendererFactory(const QString& _id, const QString& _name);
+    virtual ~AssemblyCellRendererFactory() {}
     virtual AssemblyCellRenderer* create() = 0;
 
     const QString& getId() const {return id;}

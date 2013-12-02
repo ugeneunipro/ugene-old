@@ -339,8 +339,8 @@ CollocationSearchTask::CollocationSearchTask(const QList<AnnotationTableObject*>
     foreach(AnnotationTableObject* ao, table) {
         foreach(Annotation* a, ao->getAnnotations()) {
             const QString& name = a->getAnnotationName();
-            if(a->getStrand().isDirect() && cfg.strand == StrandOption_ComplementOnly ||
-                a->getStrand().isCompementary() && cfg.strand == StrandOption_DirectOnly){
+            if((a->getStrand().isDirect() && cfg.strand == StrandOption_ComplementOnly) ||
+                (a->getStrand().isCompementary() && cfg.strand == StrandOption_DirectOnly)){
                     items.remove(name);
                     continue;
             }
@@ -367,8 +367,8 @@ CollocationSearchTask::CollocationSearchTask(const QList<SharedAnnotationData> &
     }
     foreach(SharedAnnotationData a, table) {
         const QString& name = a->name;
-        if(a->getStrand().isDirect() && cfg.strand == StrandOption_ComplementOnly ||
-           a->getStrand().isCompementary() && cfg.strand == StrandOption_DirectOnly){
+        if((a->getStrand().isDirect() && cfg.strand == StrandOption_ComplementOnly) ||
+           (a->getStrand().isCompementary() && cfg.strand == StrandOption_DirectOnly)){
                items.remove(name);
                continue;
         }

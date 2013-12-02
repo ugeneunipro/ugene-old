@@ -49,7 +49,7 @@ public:
     static bool lessThan(const GTAbstractGUIAction* lv, const GTAbstractGUIAction* rv) {
         return lv->priority > rv->priority;
     }
-    const Priority getPriority() const {
+    Priority getPriority() const {
         return priority;
     }
 protected:
