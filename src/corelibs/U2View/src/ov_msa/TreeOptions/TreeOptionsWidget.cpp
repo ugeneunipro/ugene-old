@@ -277,6 +277,7 @@ void TreeOptionsWidget::sl_onLabelsSettingsChanged() {
     labelsSettings.alignLabels = (Qt::Checked ==  alignLabelsCheck->checkState());
     labelsSettings.showNames = (Qt::Checked ==  showNamesCheck->checkState());
     labelsSettings.showDistances = (Qt::Checked ==  showDistancesCheck->checkState());
+    alignLabelsCheck->setEnabled(labelsSettings.showNames);
 
     getTreeViewer()->updateSettings(labelsSettings);
 }

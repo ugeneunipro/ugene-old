@@ -289,7 +289,7 @@ private:
     
     PhyTreeObject*      phyObject;
     GraphicsBranchItem* root;
-    int                 maxNameWidth;
+    qreal               maxNameWidth;
     qreal               verticalScale;
     qreal               horizontalScale;
     qreal               view_scale;

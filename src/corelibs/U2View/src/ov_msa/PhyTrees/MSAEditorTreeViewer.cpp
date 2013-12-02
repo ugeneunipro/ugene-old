@@ -342,7 +342,10 @@ QStringList* MSAEditorTreeViewerUI::getOrderedSeqNames() {
 }
 U2Region MSAEditorTreeViewerUI::getTreeSize() {
     QList<QGraphicsItem*> items = scene()->items();
-    QList<seqNameWithPos> namesAndHeights;
+
+    QRectF sceneRect = scene()->sceneRect();
+    qreal minYPos = sceneRect.top();
+    qreal maxYPos = sceneRect.bottom();
 
     foreach(QGraphicsItem* item, items) {
         GraphicsRectangularBranchItem *branchItem = dynamic_cast<GraphicsRectangularBranchItem*>(item);
@@ -354,13 +357,12 @@ U2Region MSAEditorTreeViewerUI::getTreeSize() {
             continue;
         }
         qreal y = branchItem->scenePos().y();
-        QString str = nameItem->text();
-        namesAndHeights.append(QPair<qreal, QString>(y, str));
+        minYPos = qMin(minYPos, y);
+        maxYPos = qMax(maxYPos, y);
     }
-    qSort(namesAndHeights.begin(), namesAndHeights.end());
 
-    int minH = mapFromScene(0, namesAndHeights.first().first).y();
-    int maxH = mapFromScene(0, namesAndHeights.last().first).y();
+    int minH = mapFromScene(0, minYPos).y();
+    int maxH = mapFromScene(0, maxYPos).y();
 
     return U2Region(minH, maxH - minH);
 }
@@ -565,18 +567,23 @@ void MSAEditorTreeViewerUI::sl_onVisibleRangeChanged(QStringList visibleSeqs, in
     QList<GraphicsBranchItem*> items = getListNodesOfTree();
     QRectF rect;
     zooming(1.0, 1.0/getVerticalZoom());
-    int itemsNumber = 0;
     foreach(GraphicsBranchItem* item, items) {
-        if(!item->isVisible()) {
+        QGraphicsSimpleTextItem* nameText = item->getNameText();
+        if(NULL == nameText) {
             continue;
         }
-        if(visibleSeqs.contains(item->getNameText()->text())) {
-          if(rect.isNull()) {
-                rect = item->getNameText()->sceneBoundingRect();
+        QGraphicsItem* parentItem = item->getParentItem();
+        //Check that node is not collapsed
+        if(NULL == parentItem || !parentItem->isVisible()) {
+            continue;
+        }
+
+        if(visibleSeqs.contains(nameText->text())) {
+            if(rect.isNull()) {
+                rect = nameText->sceneBoundingRect();
             }
             else {
-                rect = rect.united(item->getNameText()->sceneBoundingRect());
-                ++itemsNumber;
+                rect = rect.united(nameText->sceneBoundingRect());
             }
         }
     }

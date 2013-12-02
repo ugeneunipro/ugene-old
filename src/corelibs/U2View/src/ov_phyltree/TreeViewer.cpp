@@ -375,7 +375,7 @@ TreeViewerUI::TreeViewerUI(TreeViewer* treeViewer): phyObject(treeViewer->getPhy
     labelsSettings.alignLabels = false;
     labelsSettings.showDistances = true;
     labelsSettings.showNames = true;
-    maxNameWidth = 0;
+    maxNameWidth = 0.0;
     horizontalScale = 1.0;
     verticalScale = 1.0;
 
@@ -543,9 +543,18 @@ void TreeViewerUI::updateSettings(const TreeSettings &settings) {
 }
 
 void TreeViewerUI::updateSettings(const TreeLabelsSettings &settings) {
+    SAFE_POINT(NULL != curTreeViewer, "TreeViewer is NULL",);
+    QAction* contAction = curTreeViewer->getContAction();
+    QAction* showNamesAction = curTreeViewer->getNameLabelsAction();
+    QAction* showDistancesAction = curTreeViewer->getDistanceLabelsAction();
+
     sl_showNameLabelsTriggered(settings.showNames);
+    showNamesAction->setChecked(settings.showNames);
+    contAction->setEnabled(settings.showNames);
     sl_showDistanceLabelsTriggered(settings.showDistances);
-    sl_contTriggered(settings.alignLabels && settings.showNames);
+    showDistancesAction->setChecked(settings.showDistances);
+    sl_contTriggered(settings.alignLabels);
+    contAction->setChecked(settings.alignLabels);
 }
 
 void TreeViewerUI::sl_setSettingsTriggered() {
@@ -893,7 +902,7 @@ void TreeViewerUI::paint(QPainter &painter) {
 void TreeViewerUI::updateRect() {
     QRectF rect = root->visibleChildrenBoundingRect()|root->sceneBoundingRect();
     rect.setLeft(rect.left() - MARGIN);
-    rect.setRight(rect.right() - (labelsSettings.showNames ? 0 : maxNameWidth) + MARGIN);
+    rect.setRight(rect.right() + MARGIN);
     rect.setTop(rect.top() - MARGIN);
     rect.setBottom(rect.bottom() + legend->childrenBoundingRect().height() + MARGIN);
     legend->setPos(0, rect.bottom() - MARGIN);
@@ -1174,11 +1183,13 @@ void TreeViewerUI::showLabels(LabelTypes labelTypes) {
     if (root != rectRoot) {
         stack.push(rectRoot);
     }
+    maxNameWidth = 0.0;
     while (!stack.isEmpty()) {
         GraphicsBranchItem *node = stack.pop();
         if (labelTypes.testFlag(LabelType_SequnceName)) {
             if (node->getNameText() != NULL) {
-                node->getNameText()->setVisible(labelsSettings.showNames);
+                node->setVisible(labelsSettings.showNames);
+                maxNameWidth = qMax(maxNameWidth, node->getNameText()->sceneBoundingRect().width());
             }
         }
         if (labelTypes.testFlag(LabelType_Distance)) {
@@ -1197,21 +1208,11 @@ void TreeViewerUI::showLabels(LabelTypes labelTypes) {
 
 void TreeViewerUI::sl_showNameLabelsTriggered(bool on) {
     if (on != labelsSettings.showNames) {
+        labelsSettings.showNames = on;
+        showLabels(LabelType_SequnceName);
         QRectF rect = sceneRect();
         rect.setWidth(rect.width() + (on ? 1 : -1) * maxNameWidth);
         scene()->setSceneRect(rect);
-        labelsSettings.showNames = on;
-        showLabels(LabelType_SequnceName);
-        if(curTreeViewer){
-            curTreeViewer->getContAction()->setDisabled(!labelsSettings.showNames);
-            if(!labelsSettings.showNames){
-                sl_contTriggered(false);
-            }else{
-                if(curTreeViewer->getContAction()->isChecked()){
-                    sl_contTriggered(true);
-                }
-            }
-        }
     }
 }
 
@@ -1400,9 +1401,14 @@ void TreeViewerUI::updateLabelsAlignment(bool on)
         stack.push(rectRoot);
     }
 
+    if(!labelsSettings.showNames) {
+        return;
+    }
+
     while (!stack.empty()) {
         GraphicsBranchItem* item = stack.pop();
-        if (item->getNameText() == NULL) {
+        QGraphicsSimpleTextItem* nameText = item->getNameText();
+        if (nameText == NULL) {
             foreach (QGraphicsItem* citem, item->childItems()) {
                 GraphicsBranchItem* gbi = dynamic_cast<GraphicsBranchItem*>(citem);
                 if (gbi != NULL) {
@@ -1410,18 +1416,15 @@ void TreeViewerUI::updateLabelsAlignment(bool on)
                 }
             }
         } else {
-            qreal nWidth = 0;
+            qreal newWidth = 0;
             if(on){
-                qreal scW = scene()->sceneRect().width();
-                qreal scL = scene()->sceneRect().left();
-                qreal textScPosX = item->getNameText()->scenePos().x();
-                nWidth = scW + scL - textScPosX;
+                newWidth = scene()->sceneRect().right();
                 if (labelsSettings.showNames){
-                    qreal textBRW = item->getNameText()->boundingRect().width();
-                    nWidth -= textBRW + GraphicsBranchItem::TextSpace;
+                    qreal textRightPos = nameText->sceneBoundingRect().right();
+                    newWidth -= textRightPos + GraphicsBranchItem::TextSpace;
                 }
             }
-            item->setWidth(nWidth);
+            item->setWidth(newWidth);
         }
     }
     updateRect();
