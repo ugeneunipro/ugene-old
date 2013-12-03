@@ -60,6 +60,12 @@ WorkflowTabView::WorkflowTabView(WorkflowView *_parent)
     setTabPosition(QTabWidget::North);
     tabBar()->setShape(QTabBar::TriangularNorth);
     tabBar()->setMovable(true);
+    { // it is needed for QTBUG-21808 and UGENE-2486
+        QList<QToolButton*> scrollButtons = tabBar()->findChildren<QToolButton*>();
+        foreach (QToolButton *b, scrollButtons) {
+            b->setAutoFillBackground(true);
+        }
+    }
 
     setDocumentMode(true);
     ScanDashboardsDirTask *t = new ScanDashboardsDirTask();
