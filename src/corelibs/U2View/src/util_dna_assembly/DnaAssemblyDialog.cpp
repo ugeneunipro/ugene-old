@@ -57,7 +57,7 @@ bool DnaAssemblyDialog::samOutput = false;
 #define MATE_UPSTREAM           "Upstream"
 #define MATE_DOWNSTREAM         "Downstream"
 
-DnaAssemblyDialog::DnaAssemblyDialog(QWidget* p, const QStringList& /*shortReadsUrls*/, const QString& refSeqUrl)           // !!! check
+DnaAssemblyDialog::DnaAssemblyDialog(QWidget* p, const QStringList& shortReadsUrls, const QString& refSeqUrl)
 : QDialog(p),
   assemblyRegistry(AppContext::getDnaAssemblyAlgRegistry()),
   customGUI(NULL)
@@ -108,34 +108,11 @@ DnaAssemblyDialog::DnaAssemblyDialog(QWidget* p, const QStringList& /*shortReads
         }
     }
 
-
-    //TODO: deal with it later
-    /*QStringList activeShortReadsUrl = shortReadsUrls.isEmpty() ? lastShortReadsUrls : shortReadsUrls;
+    QStringList activeShortReadsUrl = shortReadsUrls.isEmpty() ? lastShortReadsUrls : shortReadsUrls;
     foreach(const QString& read, activeShortReadsUrl) {
-        shortReadsList->addItem(read);
-    }*/
-
-    /*
-
-    //TODO Delete this crap after 01.11.2012
-    
-    //HACK for testing UGENE-1092
-    refSeqEdit->setText("W:/chrY-trunc.fa");
-    samBox->setChecked(true);
-    sl_onSamBoxClicked();
-    QFile::remove("W:/chrY-trunc.sam");
-    buildResultUrl(GUrl("W:/chrY-trunc.fa"));
-    if (NULL != customGUI) {
-        QString error;
-        if (!customGUI->buildIndexUrl(GUrl("W:/chrY-trunc.fa"), prebuiltIndex, error)) {
-            QMessageBox::information(this, "DNA Assembly", error);
-        }
+        ShortReadsTableItem* item = new ShortReadsTableItem(shortReadsTable, read);
+        ShortReadsTableItem::addItemToTable(item, shortReadsTable);
     }
-
-    shortReadsList->clear();
-    shortReadsList->addItem(new QListWidgetItem(QString("W:\\chrY-trunc-reads.fasta")));
-    //KCAH!!
-    */
 }
 
 void DnaAssemblyDialog::updateState() {
