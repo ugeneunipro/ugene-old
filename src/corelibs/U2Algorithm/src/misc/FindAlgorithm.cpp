@@ -384,10 +384,8 @@ static void findInAmino_regExp(FindAlgorithmResultsListener* rl,
                               DNATranslation* complTT,
                               FindAlgorithmStrand strand,
                               const char* seq,
-                              qint64 /*seqLen*/,
                               const U2Region& range,
                               const char* pattern,
-                              int /*patternLen*/,
                               bool singleShot,
                               int maxRegExpResult,
                               int& stopFlag,
@@ -462,10 +460,8 @@ static void findRegExp(FindAlgorithmResultsListener* rl,
                        DNATranslation* complTT,
                        FindAlgorithmStrand strand,
                        const char* seq,
-                       qint64 seqLen,
                        const U2Region& range,
                        const char* pattern,
-                       int patternLen,
                        bool singleShot,
                        int maxRegExpResult,
                        int& stopFlag,
@@ -473,9 +469,8 @@ static void findRegExp(FindAlgorithmResultsListener* rl,
                        int& currentPos,
                        int currentLen)
 {
-
     if(aminoTT != NULL){
-        findInAmino_regExp(rl, aminoTT, complTT, strand, seq, seqLen, range, pattern, patternLen,
+        findInAmino_regExp(rl, aminoTT, complTT, strand, seq, range, pattern,
             singleShot,maxRegExpResult, stopFlag, percentsCompleted, currentPos,currentLen);
         return;
     }
@@ -650,7 +645,7 @@ void FindAlgorithm::find(
     assert(patternLen > maxErr);    
 
     if(patternSettings == FindAlgorithmPatternSettings_RegExp){
-        findRegExp(rl, aminoTT, complTT, strand, seq, seqLen, range, pattern, patternLen,
+        findRegExp(rl, aminoTT, complTT, strand, seq, range, pattern,
             singleShot,maxRegExpResult, stopFlag, percentsCompleted, currentPos,currentLen);
         return;
     }
