@@ -12,6 +12,9 @@ while [[ $# -gt 0 ]];
 do
     if [ "$1" = "-ui" ]; then
         appname=ugeneui
+        if `echo $DESKTOP_SESSION|grep -i kde >/dev/null 2>&1`; then
+            IS_KDE=1
+        fi
     else
         params+=("$1")
     fi
@@ -29,5 +32,8 @@ fi
 LD_LIBRARY_PATH=$dirname
 export LD_LIBRARY_PATH
 
- 
-$dirname/$appname "${params[@]}"
+if [ -z $IS_KDE ]; then
+    $dirname/$appname "${params[@]}"
+else
+    $dirname/$appname "${params[@]}" -style cleanlooks
+fi
