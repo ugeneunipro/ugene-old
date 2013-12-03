@@ -922,5 +922,66 @@ GUI_TEST_CLASS_DEFINITION(test_0012){
 //   Expected state: again, tree should have some width
 
 }
+
+GUI_TEST_CLASS_DEFINITION( test_0023 ) {
+    // 1. Open the file "data/CLUSTALW/COI.aln"
+    GTFileDialog::openFile( os, dataDir + "samples/CLUSTALW/", "COI.aln" );
+    GTGlobals::sleep( 1000 );
+
+    // 2. Open the "Tree settings" tab in the options panel
+    QWidget *optionsPanelWidget = GTWidget::findWidget( os, "OP_MSA_ADD_TREE_WIDGET" );
+    GTWidget::click( os, optionsPanelWidget );
+    GTGlobals::sleep( 1000 );
+
+    QWidget *optionsPanelContainer = GTWidget::findWidget( os, "AddTreeWidget" );
+
+    QWidget *openButton = GTWidget::findButtonByText( os, tr( "Open tree" ), optionsPanelContainer );
+    CHECK_SET_ERR( NULL != openButton, "The \"Open Tree\" button is not found" );
+
+    // 3. Press the first one
+    // Expected state: the "Select files to open..." dialog has appeared
+    // 4. Specify a path to the file "data/samples/Newick/COI.nwk", press the "Open" button
+    GTFileDialogUtils *ob = new GTFileDialogUtils( os, dataDir + "samples/Newick/", "COI.nwk" );
+    GTUtilsDialog::waitForDialog( os, ob );
+    GTWidget::click( os, openButton );
+    GTGlobals::sleep( 2000 );
+
+    // Expected state: tree view has appeared together with the alignment
+    QWidget *treeView = qobject_cast<QWidget *>( GTWidget::findWidget( os, "treeView" ) );
+    CHECK_SET_ERR( NULL != treeView, "Unable to find tree view" );
+
+    // 5. Close the tree view
+    GTUtilsMdi::click( os, GTGlobals::Close );
+    GTMouseDriver::click( os );
+
+    GTMouseDriver::moveTo( os, GTUtilsProjectTreeView::getItemCenter( os, "COI" ) );
+    GTMouseDriver::doubleClick( os );
+    GTGlobals::sleep( 1000 );
+
+    optionsPanelWidget = GTWidget::findWidget( os, "OP_MSA_ADD_TREE_WIDGET" );
+    GTWidget::click( os, optionsPanelWidget );
+
+    optionsPanelContainer = GTWidget::findWidget( os, "AddTreeWidget" );
+
+    QWidget *buildButton = GTWidget::findButtonByText( os, tr( "Build tree" ),
+        optionsPanelContainer );
+    CHECK_SET_ERR( NULL != buildButton, "The \"Build Tree\" button is not found" );
+
+    // 6. On the "Tree settings" tab press the "Build tree" button
+    // Expected state: the "Build Phylogenetic Tree" dialog has appeared
+    // 7. Press the "Build" button
+    QString outputDirPath( testDir + "_common_data/scenarios/sandbox" );
+    QDir outputDir( outputDirPath );
+    GTUtilsDialog::waitForDialog( os,
+        new BuildTreeDialogFiller( os, outputDir.absolutePath( ) + "/COI.nwk", 0, 0.0, true ) );
+    GTUtilsDialog::waitForDialog( os,new LicenseAgreemntDialogFiller( os ) );
+    GTWidget::click( os, buildButton );
+    GTGlobals::sleep( 500 );
+
+    // Expected state: a new file with tree has been created and has appeared along with the alignment
+    treeView = qobject_cast<QWidget *>( GTWidget::findWidget( os, "treeView" ) );
+    CHECK_SET_ERR( NULL != treeView, "Unable to find tree view" );
+}
+
 } // namespace GUITest_common_scenarios_tree_viewer
 } // namespace U2

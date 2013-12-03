@@ -374,6 +374,7 @@ void TreeOptionsWidget::updateShowPenOpLabel(QString newText) {
 AddTreeWidget::AddTreeWidget(MSAEditor* msa)
     : editor(msa), openTreeButton(NULL), buildTreeButton(NULL), addTreeHint(NULL) 
 {
+    setObjectName( "AddTreeWidget" );
     QVBoxLayout* mainLayout = initLayout(this);
     mainLayout->setSpacing(0);
 
@@ -388,6 +389,7 @@ AddTreeWidget::AddTreeWidget(MSAEditor* msa)
     openTreeButton = new QPushButton(QIcon(":ugene/images/advanced_open.png"), tr("Open tree"), this);
     openTreeButton->setMinimumWidth(20);
     buttonLayout->addWidget(openTreeButton);
+    openTreeButton->setObjectName( "OpenTreeButton" );
 
     QSpacerItem* horizontalSpacer = new QSpacerItem(20, 20, QSizePolicy::Fixed, QSizePolicy::Minimum);
     buttonLayout->addSpacerItem(horizontalSpacer);
@@ -395,6 +397,7 @@ AddTreeWidget::AddTreeWidget(MSAEditor* msa)
     buildTreeButton = new QPushButton(QIcon(":core/images/phylip.png"), tr("Build tree"), this);
     buildTreeButton->setMinimumWidth(20);
     buttonLayout->addWidget(buildTreeButton);
+    openTreeButton->setObjectName( "BuildTreeButton" );
 
     mainLayout->addLayout(buttonLayout);
 
