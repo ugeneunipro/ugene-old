@@ -377,8 +377,9 @@ void BowtieWidget::accept(WizardWidgetVisitor *visitor) {
     visitor->visit(this);
 }
 
-void BowtieWidget::validate(const QList<Actor*> &/*actors*/, U2OpStatus &/*os*/) const {
-    
+void BowtieWidget::validate(const QList<Actor*> &actors, U2OpStatus &os) const {
+    idxName.validate(actors, os);
+    idxDir.validate(actors, os);
 }
 
 } // U2
