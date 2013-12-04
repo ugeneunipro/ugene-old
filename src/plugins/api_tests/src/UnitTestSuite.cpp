@@ -6,7 +6,7 @@
 #include "core/dbi/assembly/AssemblyDbiUnitTests.h"
 #include "core/dbi/attribute/AttributeDbiUnitTests.h"
 #include "core/dbi/sequence/SequenceDbiUnitTests.h"
-#include "core/dbi/features/FeaturesTableObjectUnitTest.h"
+#include "core/gobjects/FeaturesTableObjectUnitTest.h"
 
 #include "core/format/sqlite_msa_dbi/MsaDbiSQLiteSpecificUnitTests.h"
 

@@ -60,7 +60,7 @@ public:
     /**
      * Removes features corresponding to @annotations from DB
      */
-    void removeAnnotations( const QList<__Annotation> &annotations );
+    void                    removeAnnotations( const QList<__Annotation> &annotations );
     /**
      * Reimplemented from GObject
      */

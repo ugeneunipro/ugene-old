@@ -144,21 +144,22 @@ AnnotationData U2FeatureUtils::getAnnotationDataFromFeature( const U2DataId &fea
     CHECK_OP( op, result );
 
     //copy data
-    U2Location location;
-    location->strand = feature.location.strand;
+    result.location->strand = feature.location.strand;
+
+    QVector<U2Region> regions;
     if ( feature.location.region == U2Region( ) ) {
         // join
         const QList<U2Feature> &subs = U2FeatureUtils::getSubFeatures( feature.id, dbiRef, op );
         foreach ( const U2Feature &f, subs ) {
-            location->regions.append( f.location.region );
+            regions << f.location.region;
          }
         CHECK_OP( op, result );
     } else {
         // single
-        location->regions.append( feature.location.region );
+        regions << feature.location.region;
     }
 
-    result.location = location;
+    result.location->regions = regions;
     result.name = feature.name;
 
     return result;
@@ -236,6 +237,7 @@ void U2FeatureUtils::addSubFeatures( const QVector<U2Region> &regions, const U2S
     SAFE_POINT( NULL != dbi, "Invalid DBI pointer encountered!", );
 
     foreach (const U2Region &reg, regions ) {
+        SAFE_POINT( !reg.isEmpty( ), "Attempting to assign annotation to an empty region!", );
         U2Feature sub;
         sub.location.region = reg;
         sub.location.strand = strand;
@@ -513,17 +515,33 @@ void U2FeatureUtils::updateFeatureLocation( const U2DataId &featureId,
     SAFE_POINT( NULL != dbi, "Invalid DBI pointer encountered!", );
 
     if ( isMultyRegion ) {
-        if ( !childrenExist ) {
-            U2FeatureLocation newLocation( location->strand, U2Region( ) );
-            dbi->updateLocation( featureId, newLocation, op );
-        }
+        U2FeatureLocation newLocation( location->strand, U2Region( ) );
+        dbi->updateLocation( featureId, newLocation, op );
+
         CHECK_OP( op, );
         U2FeatureUtils::addSubFeatures( location->regions, location->strand, featureId,
             dbiRef, op );
     } else {
         U2FeatureLocation newLocation( location->strand, location->regions.first( ) );
         dbi->updateLocation( featureId, newLocation, op );
-     }
+    }
+    // update location operator
+    const QList<U2FeatureKey> keys = dbi->getFeatureKeys( featureId, op );
+    CHECK_OP( op, );
+    U2FeatureKey locationOpKey;
+    foreach ( const U2FeatureKey &key, keys ) {
+        if ( key.name == U2FeatureKeyOperation ) {
+            locationOpKey = key;
+            break;
+        }
+    }
+    SAFE_POINT( locationOpKey.isValid( ), "Invalid annotation's location operator value!", );
+
+    const U2FeatureKey newOpKey = createFeatureKeyLocationOperator( location->op );
+    if ( newOpKey.value != locationOpKey.value ) {
+        dbi->updateKeyValue( featureId, newOpKey, op );
+        CHECK_OP( op, );
+    }
 }
 
 void U2FeatureUtils::addFeatureKey( const U2DataId &featureId, const U2FeatureKey& key,

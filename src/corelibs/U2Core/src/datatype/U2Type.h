@@ -223,20 +223,20 @@ public:
         Complementary = -1
     };
 
-    U2Strand() : value(Direct)  {}
-    U2Strand(Direction val) {value = val == Complementary ? Complementary : Direct;}
+    U2Strand( ) : value( Direct ) { }
+    U2Strand( Direction val ) : value( val ) { }
 
-    bool isDirect() const { return value == Direct;}
+    bool isDirect( ) const { return value == Direct; }
 
-    bool isCompementary() const { return value == Complementary;}
+    bool isCompementary( ) const { return value == Complementary; }
 
-    bool operator==(const U2Strand& s) const {return value == s.value;}
+    bool operator==( const U2Strand &s ) const { return value == s.value; }
 
-    bool operator!=(const U2Strand& s) const {return value != s.value;}
+    bool operator!=( const U2Strand &s ) const { return value != s.value; }
 
-    Direction getDirection() const {return (U2Strand::Direction)value;}
-    
-    int getDirectionValue() const {return value;}
+    Direction getDirection( ) const { return static_cast<U2Strand::Direction>( value ); }
+
+    int getDirectionValue( ) const { return value; }
 
 private:
     int value;

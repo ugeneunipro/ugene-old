@@ -26,6 +26,7 @@
 #include <U2Core/FeaturesTableObject.h>
 #include <U2Core/TextUtils.h>
 #include <U2Core/U2Assembly.h>
+#include <U2Core/U2FeatureKeys.h>
 #include <U2Core/U2FeatureUtils.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
@@ -163,6 +164,7 @@ QVector<U2Region> __Annotation::getRegions( ) const {
 }
 
 void __Annotation::updateRegions(const QVector<U2Region> &regions ) {
+    SAFE_POINT( !regions.isEmpty( ), "Attempting to assign the annotation to an empty region!", );
     U2OpStatusImpl os;
     const AnnotationData data = U2FeatureUtils::getAnnotationDataFromFeature( featureId,
         parentObject->getEntityRef( ).dbiRef, os );
@@ -179,7 +181,7 @@ void __Annotation::updateRegions(const QVector<U2Region> &regions ) {
 }
 
 void __Annotation::addLocationRegion( const U2Region &reg ) {
-    SAFE_POINT( !reg.isEmpty( ), "An empty region is to be annotated!", );
+    SAFE_POINT( !reg.isEmpty( ), "Attempting to annotate an empty region!", );
     U2OpStatusImpl os;
     const AnnotationData data = U2FeatureUtils::getAnnotationDataFromFeature( featureId,
         parentObject->getEntityRef( ).dbiRef, os );
@@ -193,6 +195,24 @@ void __Annotation::addLocationRegion( const U2Region &reg ) {
         SAFE_POINT_OP( os, );
         parentObject->setModified( true );
     }
+}
+
+QVector<U2Qualifier> __Annotation::getQualifiers( ) const {
+    U2OpStatusImpl os;
+    QList<U2FeatureKey> keys = U2FeatureUtils::getFeatureKeys( featureId,
+        parentObject->getEntityRef( ).dbiRef, os );
+
+    for ( int i = 0; i < keys.size( ); ++i ) {
+        if ( U2FeatureKeyOperation == keys[i].name ) {
+            keys.removeAt( i );
+        }
+    }
+
+    QVector<U2Qualifier> result;
+    foreach ( const U2FeatureKey &key, keys ) {
+        result << U2Qualifier( key.name, key.value );
+    }
+    return result;
 }
 
 void __Annotation::addQualifier( const U2Qualifier &q ) {
@@ -271,7 +291,7 @@ bool __Annotation::annotationLessThan( const __Annotation &first, const __Annota
         secondFeature.parentFeatureId, second.getGObject( )->getEntityRef( ).dbiRef, os );
     SAFE_POINT_OP( os, false );
 
-    return (firstFeatureGroup.name < secondFeatureGroup.name);
+    return ( firstFeatureGroup.name < secondFeatureGroup.name );
 }
 
 static QList<U2CigarToken> parceCigar( const QString &cigar) {

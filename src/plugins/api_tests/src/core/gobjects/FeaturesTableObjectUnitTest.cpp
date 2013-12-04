@@ -267,8 +267,6 @@ IMPLEMENT_TEST( FeatureTableObjectUnitTest, addFeatureSingleRegion ) {
 }
 
 IMPLEMENT_TEST( FeatureTableObjectUnitTest, getAnnotations ) {
-    FeaturesTableObjectTestData::getFeatureDbi( );
-
     const QString aname1 = "aname1";
     const QString aname2 = "aname2";
     const QString aname3 = "aname3";
@@ -310,8 +308,6 @@ IMPLEMENT_TEST( FeatureTableObjectUnitTest, getAnnotations ) {
 }
 
 IMPLEMENT_TEST( FeatureTableObjectUnitTest, getRootGroup ) {
-    FeaturesTableObjectTestData::getFeatureDbi( );
-
     const QString aname = "aname_single";
     const QString grname = "agroupename_single";
     const U2Region areg( 7, 2000 );
@@ -333,8 +329,6 @@ IMPLEMENT_TEST( FeatureTableObjectUnitTest, getRootGroup ) {
 }
 
 IMPLEMENT_TEST( FeatureTableObjectUnitTest, addAnnotationsToRootGroup ) {
-    FeaturesTableObjectTestData::getFeatureDbi( );
-
     const QString aname1 = "aname1";
     const QString aname2 = "aname2";
     const U2Region areg1( 7, 100 );
@@ -386,8 +380,6 @@ IMPLEMENT_TEST( FeatureTableObjectUnitTest, addAnnotationsToRootGroup ) {
 }
 
 IMPLEMENT_TEST( FeatureTableObjectUnitTest, addAnnotationsToSubgroup ) {
-    FeaturesTableObjectTestData::getFeatureDbi( );
-
     const QString aname1 = "aname1";
     const QString aname2 = "aname2";
     const QString grname = "subgroup1/subgroup2";
@@ -430,8 +422,6 @@ IMPLEMENT_TEST( FeatureTableObjectUnitTest, addAnnotationsToSubgroup ) {
 }
 
 IMPLEMENT_TEST( FeatureTableObjectUnitTest, removeAnnotation ) {
-    FeaturesTableObjectTestData::getFeatureDbi( );
-
     const QString aname1 = "aname1";
     const QString aname2 = "aname2";
     const QString grname = "subgroup";
@@ -480,8 +470,6 @@ IMPLEMENT_TEST( FeatureTableObjectUnitTest, removeAnnotation ) {
 }
 
 IMPLEMENT_TEST( FeatureTableObjectUnitTest, removeAnnotations ) {
-    FeaturesTableObjectTestData::getFeatureDbi( );
-
     const QString aname1 = "aname1";
     const QString aname2 = "aname2";
     const QString grname = "subgroup";
@@ -526,8 +514,6 @@ IMPLEMENT_TEST( FeatureTableObjectUnitTest, removeAnnotations ) {
 }
 
 IMPLEMENT_TEST( FeatureTableObjectUnitTest, clone ) {
-    FeaturesTableObjectTestData::getFeatureDbi( );
-
     const QString aname1 = "aname1";
     const QString aname2 = "aname2";
     const QString aname3 = "aname3";
@@ -584,8 +570,6 @@ IMPLEMENT_TEST( FeatureTableObjectUnitTest, clone ) {
 }
 
 IMPLEMENT_TEST( FeatureTableObjectUnitTest, getAnnotationsByName ) {
-    FeaturesTableObjectTestData::getFeatureDbi( );
-
     const QString aname1 = "aname1";
     const QString aname2 = "aname2";
     const QString grname = "subgroup";
@@ -621,8 +605,6 @@ IMPLEMENT_TEST( FeatureTableObjectUnitTest, getAnnotationsByName ) {
 }
 
 IMPLEMENT_TEST( FeatureTableObjectUnitTest, getAnnotatedRegions ) {
-    FeaturesTableObjectTestData::getFeatureDbi( );
-
     const QString aname1 = "aname1";
     const QString aname2 = "aname2";
     const U2Region areg1( 7, 100 );
@@ -662,8 +644,6 @@ IMPLEMENT_TEST( FeatureTableObjectUnitTest, getAnnotatedRegions ) {
 }
 
 IMPLEMENT_TEST( FeatureTableObjectUnitTest, getAnnotationsByRegion ) {
-    FeaturesTableObjectTestData::getFeatureDbi( );
-
     const QString aname1 = "aname1";
     const QString aname2 = "aname2";
     const U2Region areg1( 7, 100 );
@@ -702,8 +682,6 @@ IMPLEMENT_TEST( FeatureTableObjectUnitTest, getAnnotationsByRegion ) {
 }
 
 IMPLEMENT_TEST( FeatureTableObjectUnitTest, checkConstraints ) {
-    FeaturesTableObjectTestData::getFeatureDbi( );
-
     const QString aname1 = "aname1";
     const QString aname2 = "aname2";
     const U2Region areg1( 7, 100 );
@@ -740,5 +718,4 @@ IMPLEMENT_TEST( FeatureTableObjectUnitTest, checkConstraints ) {
     CHECK_TRUE( ft.checkConstraints( &constraints ), "unexpected constraint test result" );
 }
 
-}//namespace
- 
+} // namespace

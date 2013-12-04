@@ -72,13 +72,15 @@ public:
 
     void                    setLocation( const U2Location &location );
 
-    QVector<U2Region>         getRegions( ) const;
+    QVector<U2Region>       getRegions( ) const;
     /**
      * Replaces existing annotation region(s) with supplied @regions
      */
     void                    updateRegions(const QVector<U2Region> &regions );
 
     void                    addLocationRegion( const U2Region &reg );
+
+    QVector<U2Qualifier>    getQualifiers( ) const;
 
     void                    addQualifier( const U2Qualifier &q );
 
@@ -91,7 +93,7 @@ public:
     void                    findQualifiers( const QString &name, QList<U2Qualifier> &res ) const;
     /**
      * Returns the value of an arbitrary qualifier with the given @name.
-     * Null string returns if there is no qualifier was found.
+     * Null string returns if no qualifier was found.
      */
     QString                 findFirstQualifierValue( const QString &name ) const;
 
