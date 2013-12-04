@@ -256,6 +256,9 @@ void WizardController::saveDelegateTags() {
             continue;
         }
         Actor *actor = WorkflowUtils::actorById(currentActors, info.actorId);
+        if (NULL == actor->getEditor()) {
+            continue;
+        }
         PropertyDelegate *delegate = actor->getEditor()->getDelegate(info.attrId);
         if (NULL == delegate) {
             continue;

@@ -1145,7 +1145,7 @@ static void addUrlLocationParameter( Actor * actor ) {
     assert( NULL != actor );
     Attribute * urlAttr = actor->getParameter( BaseAttributes::URL_IN_ATTRIBUTE().getId() );
     Attribute * urlLocationAttr = actor->getParameter( BaseAttributes::URL_LOCATION_ATTRIBUTE().getId() );
-    if( NULL != urlAttr && NULL == urlLocationAttr ) {
+    if( NULL != urlAttr && NULL == urlLocationAttr && NULL != actor->getEditor() ) {
         actor->addParameter( BaseAttributes::URL_LOCATION_ATTRIBUTE().getId(), 
             new Attribute( BaseAttributes::URL_LOCATION_ATTRIBUTE(), BaseTypes::BOOL_TYPE(), false, true ) );
         SchemaRunModeDelegate * runModeDelegate = new SchemaRunModeDelegate();

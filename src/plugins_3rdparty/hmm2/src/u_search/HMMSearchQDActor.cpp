@@ -48,6 +48,7 @@ static const QString MAX_LEN("max-len");
 HMM2QDActor::HMM2QDActor( QDActorPrototype const* proto ) : QDActor(proto) {
     units["hmm"] = new QDSchemeUnit(this);
     cfg->setAnnotationKey("hmm_signal");
+    CHECK(NULL != proto->getEditor(), );
     PropertyDelegate* evpd = proto->getEditor()->getDelegate(DOM_E_ATTR);
     connect(evpd, SIGNAL(si_valueChanged(int)), SLOT(sl_evChanged(int)));
 }
@@ -125,6 +126,7 @@ void HMM2QDActor::sl_onTaskFinished(Task*) {
 }
 
 void HMM2QDActor::sl_evChanged(int i) {
+    CHECK(NULL != proto->getEditor(), );
     PropertyDelegate* pd = proto->getEditor()->getDelegate(DOM_E_ATTR);
     SpinBoxDelegate* evpd = qobject_cast<SpinBoxDelegate*>(pd);
     assert(evpd);

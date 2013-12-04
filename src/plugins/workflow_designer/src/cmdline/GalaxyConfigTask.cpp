@@ -769,6 +769,7 @@ bool GalaxyConfigTask::checkDocumentFormatAttribute( const ActorPrototype &eleme
 void GalaxyConfigTask::writeChangeFormatAttribute( const QString &aliasName, const ActorPrototype &element ) {
     galaxyConfigOutput.writeStartElement( CHANGE_FORMAT );
 
+    CHECK(NULL != element.getEditor(), );
     PropertyDelegate *pd = element.getEditor()->getDelegate( BaseAttributes::DOCUMENT_FORMAT_ATTRIBUTE().getId() );
     assert( NULL != pd );
 

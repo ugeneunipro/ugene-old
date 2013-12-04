@@ -136,8 +136,14 @@ QWidget * DefaultPropertyController::createGUI(U2OpStatus &os) {
 }
 
 PropertyWidget * DefaultPropertyController::createPropertyWidget(U2OpStatus &os) {
-    PropertyDelegate *delegate = actor->getEditor()->getDelegate(widget->getAttributeId());
     PropertyWidget *result = NULL;
+    PropertyDelegate *delegate = NULL;
+    {
+        ConfigurationEditor *editor = actor->getEditor();
+        if (NULL != editor) {
+            delegate = editor->getDelegate(widget->getAttributeId());
+        }
+    }
 
     if (NULL != delegate) {
         if (noDelegate) {
