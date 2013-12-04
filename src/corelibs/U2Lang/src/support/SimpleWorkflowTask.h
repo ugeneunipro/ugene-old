@@ -108,6 +108,7 @@ private:
     QString                     docName;
     SimpleMSAWorkflowTaskConfig conf;
     SimpleInOutWorkflowTask*    runWorkflowTask;
+    U2UseCommonUserModStep      *userModStep;
 };
 
 }    // namespace U2

@@ -167,10 +167,8 @@ class MuscleGObjectRunFromSchemaTask : public AlignGObjectTask {
     Q_OBJECT
 public:
     MuscleGObjectRunFromSchemaTask(MAlignmentObject * obj, const MuscleTaskSettings & config);
-    Task::ReportResult report();
 private:
     MuscleTaskSettings config;
-    U2UseCommonUserModStep  *userModStep;
 };
 
 

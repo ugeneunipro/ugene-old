@@ -589,15 +589,8 @@ MuscleGObjectRunFromSchemaTask::MuscleGObjectRunFromSchemaTask(MAlignmentObject 
     if (config.alignRegion) {
         conf.schemaArgs << QString("--range=%1").arg(QString("%1..%2").arg(config.regionToAlign.startPos + 1).arg(config.regionToAlign.endPos()));
     }
-    U2OpStatus2Log os;
-    userModStep = new U2UseCommonUserModStep(o->getEntityRef(), os);
-    addSubTask(new SimpleMSAWorkflow4GObjectTask(QString("Workflow wrapper '%1'").arg(tName), o, conf));
-}
 
-Task::ReportResult MuscleGObjectRunFromSchemaTask::report(){
-    delete userModStep;
-    userModStep = NULL;
-    return ReportResult_Finished;
+    addSubTask(new SimpleMSAWorkflow4GObjectTask(QString("Workflow wrapper '%1'").arg(tName), o, conf));
 }
 
 } //namespace

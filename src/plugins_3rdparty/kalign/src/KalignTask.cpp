@@ -235,15 +235,8 @@ KalignGObjectRunFromSchemaTask::KalignGObjectRunFromSchemaTask(MAlignmentObject 
     conf.schemaArgs<< QString("--gap-ext-penalty=%1").arg(config.gapExtenstionPenalty);
     conf.schemaArgs<< QString("--gap-open-penalty=%1").arg(config.gapOpenPenalty);
     conf.schemaArgs<< QString("--gap-terminal-penalty=%1").arg(config.termGapPenalty);
-    U2OpStatus2Log os;
-    userModStep = new U2UseCommonUserModStep(o->getEntityRef(), os);
-    addSubTask(new SimpleMSAWorkflow4GObjectTask(QString("Workflow wrapper '%1'").arg(tName), o, conf));
-}
 
-Task::ReportResult KalignGObjectRunFromSchemaTask::report(){
-    delete userModStep;
-    userModStep = NULL;
-    return ReportResult_Finished;
+    addSubTask(new SimpleMSAWorkflow4GObjectTask(QString("Workflow wrapper '%1'").arg(tName), o, conf));
 }
 
 

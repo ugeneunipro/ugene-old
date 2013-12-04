@@ -131,6 +131,8 @@ SimpleMSAWorkflow4GObjectTask::SimpleMSAWorkflow4GObjectTask(const QString& task
     SAFE_POINT(NULL != obj, "NULL MAlignmentObject!",);
 
     U2OpStatus2Log os;
+    userModStep = new U2UseCommonUserModStep(obj->getEntityRef(), os);
+
     MAlignment al = obj->getMAlignment();
     U2EntityRef msaRef = MAlignmentImporter::createAlignment(obj->getEntityRef().dbiRef, al, os);
     SAFE_POINT_OP(os,);
@@ -165,6 +167,11 @@ void SimpleMSAWorkflow4GObjectTask::prepare() {
 
 
 Task::ReportResult SimpleMSAWorkflow4GObjectTask::report() {
+    if (stateInfo.isCoR()) {
+        delete userModStep;
+        userModStep = NULL;
+    }
+
     if (lock != NULL) {
         if (!obj.isNull()) {
             obj->unlockState(lock);
@@ -177,6 +184,10 @@ Task::ReportResult SimpleMSAWorkflow4GObjectTask::report() {
     CHECK_EXT(!obj->isStateLocked(), setError(tr("Object '%1' is locked").arg(docName)), ReportResult_Finished);
 
     obj->setMAlignment(getResult());
+
+    delete userModStep;
+    userModStep = NULL;
+
     return ReportResult_Finished;
 }
 

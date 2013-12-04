@@ -113,10 +113,8 @@ class KalignGObjectRunFromSchemaTask : public AlignGObjectTask {
     Q_OBJECT
 public:
     KalignGObjectRunFromSchemaTask(MAlignmentObject * obj, const KalignTaskSettings & config);
-    Task::ReportResult report();
 private:
     KalignTaskSettings      config;
-    U2UseCommonUserModStep  *userModStep;
 };
 
 
