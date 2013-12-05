@@ -105,6 +105,20 @@ QList<__Annotation> __AnnotationGroup::getAnnotations( ) const {
     return resultAnnotations;
 }
 
+void __AnnotationGroup::addAnnotation( const __Annotation &a ) {
+    SAFE_POINT( a.getGObject( ) == parentObject, "Illegal object!", );
+    U2OpStatusImpl os;
+    SAFE_POINT( !U2FeatureUtils::isChild( a.getId( ), featureId,
+        parentObject->getEntityRef( ).dbiRef, os ), "Illegal annotation's group!", );
+    SAFE_POINT_OP( os, );
+
+    parentObject->setModified( true );
+
+    U2FeatureUtils::updateFeatureParent( a.getId( ), featureId,
+        parentObject->getEntityRef( ).dbiRef, os );
+    SAFE_POINT_OP( os, );
+}
+
 void __AnnotationGroup::removeAnnotation( const __Annotation &a ) {
     SAFE_POINT( a.getGObject( ) == parentObject,
         "Attempting to remove annotation belonging to different object!", );
