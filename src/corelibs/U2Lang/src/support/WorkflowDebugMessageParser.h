@@ -36,6 +36,7 @@ class Message;
 class U2LANG_EXPORT WorkflowDebugMessageParser {
 public:
                                         WorkflowDebugMessageParser( );
+    virtual                             ~WorkflowDebugMessageParser( );
 
     void                                setContext( Workflow::WorkflowContext *context );
     void                                setSourceData( const QQueue<Workflow::Message> &sourceData );

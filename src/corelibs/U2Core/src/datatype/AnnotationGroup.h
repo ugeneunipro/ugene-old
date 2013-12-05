@@ -35,12 +35,21 @@ public:
                             __AnnotationGroup( const U2DataId &featureId,
                                 FeaturesTableObject *parentObject );
                             ~__AnnotationGroup( );
-
+    /*
+     * Returning value specifies whether the @name may be used as an annotation name or not.
+     * @pathMode allows to take into account group path separation symbol (currently "/")
+     * I.e. if @pathMode is true then that symbol is allowed, otherwise it is not.
+     */
     static bool             isValidGroupName( const QString &name, bool pathMode );
-
+    /*
+     * After calling this function @set additionally contains all the distinct annotations
+     * belonging to the subtree of this annotation group
+     */
     void                    findAllAnnotationsInGroupSubTree( QList<__Annotation> &set ) const;
 
     QList<__Annotation>     getAnnotations( ) const;
+
+    void                    addAnnotation( const __Annotation &a );
 
     void                    removeAnnotation( const __Annotation &a );
 
@@ -59,18 +68,26 @@ public:
     FeaturesTableObject *   getGObject( ) const;
 
     U2DataId                getId( ) const;
-
+    /*
+     * Returns parent annotation group. Returns *this (i.e. the same group) for a top-level group
+     */
     __AnnotationGroup       getParentGroup( ) const;
-
+    /*
+     * Returns subgroup located in @path. @create specifies whether it's required to create
+     * a new group(s) accordingly to @path if they are not exist. If @create == false and
+     * there are no subgroups satisfying @path, then *this is returned.
+     */
     __AnnotationGroup       getSubgroup( const QString &path, bool create );
 
     void                    getSubgroupPaths( QStringList &res ) const;
     /**
-     * Removes all references to subgroups and annotations.
+     * Removes all references to subgroups and annotations
      */
     void                    clear( );
-
-    int                     getGroupDepth() const;
+    /**
+     * Returns the depth of a root subtree containing the feature. For top-level features depth is "1"
+     */
+    int                     getGroupDepth( ) const;
 
     bool                    isParentOf( const __AnnotationGroup &g ) const;
     /**

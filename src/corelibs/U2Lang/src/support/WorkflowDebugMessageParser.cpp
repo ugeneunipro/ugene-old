@@ -40,6 +40,10 @@ WorkflowDebugMessageParser::WorkflowDebugMessageParser( )
 
 }
 
+WorkflowDebugMessageParser::~WorkflowDebugMessageParser( ) {
+
+}
+
 void WorkflowDebugMessageParser::setSourceData( const QQueue<Message> &initSource ) {
     sourceMessages.clear( );
     if ( U2_UNLIKELY( possibleMessageTypes.isEmpty( ) ) ) {

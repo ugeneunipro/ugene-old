@@ -1,4 +1,9 @@
+<<<<<<< HEAD
 /** * UGENE - Integrated Bioinformatics Tools.
+=======
+/**
+ * UGENE - Integrated Bioinformatics Tools.
+>>>>>>> UGENE-2467 fixed, gcc warning fixed
  * Copyright (C) 2008-2013 UniPro <ugene@unipro.ru>
  * http://ugene.unipro.ru
  *
@@ -274,15 +279,25 @@ IMPLEMENT_TEST( AnnotationUnitTest, get_Group ) {
 
     QBitArray groupMatches( 2, false );
     foreach ( const __Annotation &ann, annotations ) {
+<<<<<<< HEAD
         if ( ann.getGroup( ).getName( ) == firstGroupName ) {
             groupMatches.setBit( 0, true );
         } else if ( ann.getGroup( ).getName( ) == secondGroupName ) {
+=======
+        if ( ann.getGroup( ).getName( ) == "subgroup" ) {
+            groupMatches.setBit( 0, true );
+        } else if ( ann.getGroup( ).getName( ) == "group2" ) {
+>>>>>>> UGENE-2467 fixed, gcc warning fixed
             groupMatches.setBit( 1, true );
         }
 
         const QList<__Annotation> anns = ann.getGroup( ).getAnnotations( );
         CHECK_EQUAL( 1, anns.size( ), "count of annotations" );
     }
+<<<<<<< HEAD
+=======
+    CHECK_EQUAL( 2, groupMatches.count( true ), "matching groups" );
+>>>>>>> UGENE-2467 fixed, gcc warning fixed
 
     CHECK_TRUE( __Annotation::annotationLessThan( annotations[1], annotations[0] ),
         "Unexpected annotations comparison result" );

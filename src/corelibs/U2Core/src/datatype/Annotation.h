@@ -103,6 +103,12 @@ public:
     static bool             annotationLessThan( const __Annotation &first,
                                 const __Annotation &second );
 
+    static bool             isValidAnnotationName( const QString &n );
+
+    static bool             isValidQualifierName( const QString &n );
+
+    static bool             isValidQualifierValue( const QString &v );
+
 private:
     U2DataId                featureId;
     FeaturesTableObject *   parentObject;
