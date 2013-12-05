@@ -117,7 +117,9 @@ Document *AbstractVariationFormat::loadDocument(IOAdapter *io, const U2DbiRef &d
         QString seqName;
 
         foreach (int columnNumber, columnRoles.keys()) {
-            assert(columns.size() > columnNumber);
+            CHECK_EXT(columns.size() > columnNumber, 
+                os.setError(L10N::tr("Incorrect number of columns in the file")),
+                NULL);
             const QString& columnData = columns.at(columnNumber);
             ColumnRole role = columnRoles.value(columnNumber);
             switch (role) {
