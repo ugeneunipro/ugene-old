@@ -3376,6 +3376,34 @@ GUI_TEST_CLASS_DEFINITION( test_2282 ) {
     GTUtilsProject::checkProject(os, GTUtilsProject::NotExists);
 }
 
+GUI_TEST_CLASS_DEFINITION( test_2284 ){
+    //1. Open COI.aln
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
+
+    //2. Press the "Switch on/off collapsing" button
+    GTWidget::click(os, GTToolbar::getWidgetForActionName(os, GTToolbar::getToolbar(os, "mwtoolbar_activemdi"), "Enable collapsing"));
+
+    //expected state: Mecopoda_elongata__Ishigaki__J and Mecopoda_elongata__Sumatra_ are collapsed
+    CHECK_SET_ERR( !GTUtilsMSAEditorSequenceArea::isSequenceVisible(os, QString("Mecopoda_elongata__Sumatra_")),
+        "Required sequence is not collapsed");
+
+    //3. Select the first base in last row
+    GTUtilsMSAEditorSequenceArea::selectArea( os, QPoint(0, 16 ), QPoint(0, 16 ) );
+
+    //4. In status bar search field type "AATT"
+    GTKeyboardDriver::keyClick( os, 'f', GTKeyboardDriver::key["ctrl"] );
+    GTGlobals::sleep(200);
+    GTKeyboardDriver::keySequence(os, "AATT");
+
+    //5. Press the "Find forward" button a few times until selection reaches the end of the alignment
+    //6. Press the button again
+    for(int i = 0; i < 11; i++) {
+        GTGlobals::sleep(200);
+        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
+    }
+}
+
+
 GUI_TEST_CLASS_DEFINITION( test_2306 ) {
     // 1. Open file "data/samples/CLUSTALW/COI.aln"
     GTFileDialog::openFile(os, dataDir+"samples/CLUSTALW/", "COI.aln");
