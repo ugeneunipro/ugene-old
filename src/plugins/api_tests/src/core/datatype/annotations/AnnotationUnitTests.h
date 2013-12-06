@@ -35,8 +35,11 @@ DECLARE_TEST( AnnotationUnitTest, getSet_Strand );
 DECLARE_TEST( AnnotationUnitTest, getSet_Location );
 DECLARE_TEST( AnnotationUnitTest, getSet_Regions );
 DECLARE_TEST( AnnotationUnitTest, getSet_Qualifiers );
+<<<<<<< HEAD
 DECLARE_TEST( AnnotationUnitTest, find_Qualifiers );
 DECLARE_TEST( AnnotationUnitTest, get_Group );
+=======
+>>>>>>> UGENE-2466 fixed
 
 } //namespace U2
 
@@ -47,7 +50,10 @@ DECLARE_METATYPE( AnnotationUnitTest, getSet_Strand )
 DECLARE_METATYPE( AnnotationUnitTest, getSet_Location )
 DECLARE_METATYPE( AnnotationUnitTest, getSet_Regions )
 DECLARE_METATYPE( AnnotationUnitTest, getSet_Qualifiers )
+<<<<<<< HEAD
 DECLARE_METATYPE( AnnotationUnitTest, find_Qualifiers )
 DECLARE_METATYPE( AnnotationUnitTest, get_Group )
+=======
+>>>>>>> UGENE-2466 fixed
 
 #endif //_U2_ANNOTATION_TESTS_H_

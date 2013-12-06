@@ -1,5 +1,9 @@
+<<<<<<< HEAD
 /**
  * UGENE - Integrated Bioinformatics Tools.
+=======
+/** * UGENE - Integrated Bioinformatics Tools.
+>>>>>>> UGENE-2466 fixed
  * Copyright (C) 2008-2013 UniPro <ugene@unipro.ru>
  * http://ugene.unipro.ru
  *
@@ -19,8 +23,11 @@
  * MA 02110-1301, USA.
  */
 
+<<<<<<< HEAD
 #include <QtCore/QBitArray>
 
+=======
+>>>>>>> UGENE-2466 fixed
 #include <U2Core/AnnotationData.h>
 #include <U2Core/FeaturesTableObject.h>
 #include <U2Core/U2FeatureDbi.h>
@@ -37,6 +44,11 @@ static U2DbiRef getDbiRef( ) {
 }
 
 static AnnotationData createTestAnnotationData( ) {
+<<<<<<< HEAD
+=======
+    const QString qualname = "aqualname_multy";
+    const QString qualval = "aqualvalue_multy";
+>>>>>>> UGENE-2466 fixed
     const U2Region areg1( 1, 2 );
     const U2Region areg2( 400, 10 );
     const U2Region areg3( 666, 666 );
@@ -44,6 +56,7 @@ static AnnotationData createTestAnnotationData( ) {
     AnnotationData anData;
     anData.location->regions << areg1 << areg2 << areg3;
     anData.name = "aname_multy";
+<<<<<<< HEAD
 
     anData.qualifiers.append( U2Qualifier( "aqualname_multy", "aqualvalue_multy" ) );
     anData.qualifiers.append( U2Qualifier( "1", "A" ) );
@@ -52,6 +65,9 @@ static AnnotationData createTestAnnotationData( ) {
     anData.qualifiers.append( U2Qualifier( "key", "value2" ) );
     anData.qualifiers.append( U2Qualifier( "key", "value3" ) );
     anData.qualifiers.append( U2Qualifier( "2", "B" ) );
+=======
+    anData.qualifiers.append( U2Qualifier( qualname, qualval ) );
+>>>>>>> UGENE-2466 fixed
 
     return anData;
 }
@@ -212,6 +228,7 @@ IMPLEMENT_TEST( AnnotationUnitTest, getSet_Qualifiers ) {
 
     CHECK_TRUE( annotation.getQualifiers( ) == initQuals, "Unexpected annotation's qualifiers" );
 
+<<<<<<< HEAD
     U2Qualifier supplementedQual( "New Key", "New Value" );
     annotation.addQualifier( supplementedQual );
 
@@ -288,6 +305,21 @@ IMPLEMENT_TEST( AnnotationUnitTest, get_Group ) {
 
     CHECK_TRUE( __Annotation::annotationLessThan( annotations[1], annotations[0] ),
         "Unexpected annotations comparison result" );
+=======
+    const U2Region supplementedRegion( 45, 434 );
+    annotation.addLocationRegion( supplementedRegion );
+
+    CHECK_TRUE( annotation.getRegions( )
+        == ( QVector<U2Region>( initRegions ) << supplementedRegion ),
+        "Unexpected annotation's regions" );
+
+    QVector<U2Region> newRegions( initRegions );
+    newRegions.remove( 0, 2 );
+    newRegions << U2Region( 45, 543 ) << U2Region( 434, 432 );
+    annotation.updateRegions( newRegions );
+
+    CHECK_TRUE( annotation.getRegions( ) == newRegions, "Unexpected annotation's regions" );
+>>>>>>> UGENE-2466 fixed
 }
 
 } // namespace U2

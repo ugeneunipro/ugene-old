@@ -4,7 +4,6 @@ include (api_tests.pri)
 HEADERS += \
     src/ApiTestsPlugin.h \
     src/unittest.h \
-    src/core/datatype/annotations/AnnotationGroupUnitTests.h \
     src/core/datatype/annotations/AnnotationUnitTests.h \
     src/core/datatype/msa/MAlignmentUnitTests.h \
     src/core/datatype/msa/MAlignmentRowUnitTests.h \
@@ -24,6 +23,7 @@ HEADERS += \
     src/core/format/sqlite_object_dbi/SQLiteObjectDbiUnitTests.h \
     src/core/gobjects/FeaturesTableObjectUnitTest.h \
     src/core/gobjects/MAlignmentObjectUnitTests.h \
+    src/core/gobjects/FeaturesTableObjectUnitTest.h \
     src/core/util/MAlignmentImporterExporterUnitTests.h \
     src/UnitTestSuite.h \  
     src/core/util/MsaDbiUtilsUnitTests.h \
@@ -32,7 +32,6 @@ HEADERS += \
     src/core/format/sqlite_sequence_dbi/SequenceDbiSQLiteSpecificUnitTests.h
 SOURCES += \
     src/ApiTestsPlugin.cpp \
-    src/core/datatype/annotations/AnnotationGroupUnitTests.cpp \
     src/core/datatype/annotations/AnnotationUnitTests.cpp \
     src/core/datatype/msa/MAlignmentUnitTests.cpp \
     src/core/datatype/msa/MAlignmentRowUnitTests.cpp \
@@ -51,6 +50,7 @@ SOURCES += \
     src/core/format/sqlite_object_dbi/SQLiteObjectDbiUnitTests.cpp \
     src/core/gobjects/FeaturesTableObjectUnitTest.cpp \
     src/core/gobjects/MAlignmentObjectUnitTests.cpp \
+    src/core/gobjects/FeaturesTableObjectUnitTest.cpp \
     src/core/util/MAlignmentImporterExporterUnitTests.cpp \
     src/UnitTestSuite.cpp \  
     src/core/util/MsaDbiUtilsUnitTests.cpp \
