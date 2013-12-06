@@ -54,6 +54,7 @@ public:
 
     static const QString testDir;
     static const QString dataDir;
+    static const QString sandBoxDir;
 
     virtual void run(U2OpStatus &os) = 0;
 private:

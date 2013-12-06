@@ -77,7 +77,7 @@ void UserActionsWriter::generateMouseMeassage(){
     QPoint p = mainWindow->mapFromGlobal(mainWindow->geometry().bottomRight());
     if(p!=windowSize){
         windowSize =p;
-        uiLog.trace(QString("WINDOW SIZE: %1x%2").arg(windowSize.x()).arg(windowSize.y()));
+        userActLog.trace(QString("WINDOW SIZE: %1x%2").arg(windowSize.x()).arg(windowSize.y()));
     }
 
     //coordinates
@@ -249,7 +249,7 @@ void UserActionsWriter::filterMouseMessages(){
         }
 
         if(counter!=0){
-            uiLog.trace(QString("pressed %1 times").arg(counter+1));
+            userActLog.trace(QString("pressed %1 times").arg(counter+1));
             counter = 0;
         }
 
@@ -291,7 +291,7 @@ void UserActionsWriter::filterKeyboardMessages(){
         }
 
         if(counter!=0){
-            uiLog.trace(QString("pressed %1 times").arg(counter+1));
+            userActLog.trace(QString("pressed %1 times").arg(counter+1));
             counter = 0;
         }
 

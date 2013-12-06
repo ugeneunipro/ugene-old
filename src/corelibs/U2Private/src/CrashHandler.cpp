@@ -322,7 +322,7 @@ void CrashHandler::setupHandler() {
     crashLogCache->filter.filters.append(LogFilterItem(ULOG_CAT_TASKS, LogLevel_TRACE));
     crashLogCache->filter.filters.append(LogFilterItem(ULOG_CAT_CORE_SERVICES, LogLevel_TRACE));
     crashLogCache->filter.filters.append(LogFilterItem(ULOG_CAT_IO, LogLevel_TRACE));
-    crashLogCache->filter.filters.append(LogFilterItem(ULOG_CAT_USER_INTERFACE, LogLevel_ERROR));
+    crashLogCache->filter.filters.append(LogFilterItem(ULOG_CAT_USER_INTERFACE, LogLevel_TRACE));
     crashLogCache->filter.filters.append(LogFilterItem(ULOG_CAT_ALGORITHM, LogLevel_TRACE));
     crashLogCache->filter.filters.append(LogFilterItem(ULOG_CAT_CONSOLE, LogLevel_ERROR));
     crashLogCache->filter.filters.append(LogFilterItem(ULOG_CAT_CORE_SERVICES, LogLevel_DETAILS));
