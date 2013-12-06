@@ -233,6 +233,27 @@ void __Annotation::removeQualifier( const U2Qualifier &q ) {
     parentObject->setModified( true );
 }
 
+bool __Annotation::isCaseAnnotation( ) const {
+    U2OpStatusImpl os;
+    const bool cased = U2FeatureUtils::isCaseAnnotation( featureId,
+        parentObject->getEntityRef( ).dbiRef, os );
+    SAFE_POINT_OP( os, false );
+    return cased;
+}
+
+void __Annotation::setCaseAnnotation( bool caseAnnotation ) {
+    U2OpStatusImpl os;
+    const bool cased = isCaseAnnotation( );
+    if ( caseAnnotation && !cased ) {
+        U2FeatureUtils::addFeatureKey( featureId, U2FeatureKey( U2FeatureKeyCase, QString( ) ),
+            parentObject->getEntityRef( ).dbiRef, os );
+    } else if ( !caseAnnotation && cased ) {
+        U2FeatureUtils::removeFeatureKey( featureId, U2FeatureKey( U2FeatureKeyCase, QString( ) ),
+            parentObject->getEntityRef( ).dbiRef, os );
+    }
+    SAFE_POINT_OP( os, );
+}
+
 __AnnotationGroup __Annotation::getGroup( ) const {
     U2OpStatusImpl os;
     const U2Feature feature = U2FeatureUtils::getFeatureById( featureId,
@@ -292,41 +313,6 @@ bool __Annotation::annotationLessThan( const __Annotation &first, const __Annota
     SAFE_POINT_OP( os, false );
 
     return ( firstFeatureGroup.name < secondFeatureGroup.name );
-<<<<<<< HEAD
-}
-
-bool __Annotation::isValidQualifierName( const QString &n ) {
-    return !n.isEmpty( ) && 20 > n.length( )
-        && TextUtils::fits( TextUtils::QUALIFIER_NAME_CHARS, n.toLocal8Bit( ).data( ), n.length( ) );
-}
-
-bool __Annotation::isValidQualifierValue( const QString & /*v*/ ) {
-    // todo: check whitespaces!
-    return true;
-}
-
-bool __Annotation::isValidAnnotationName( const QString &n ) {
-    if ( n.isEmpty( ) || 100 < n.length( ) ) {
-        return false;
-    }
-
-    QBitArray validChars = TextUtils::ALPHA_NUMS;
-    validChars['_'] = true;
-    validChars['-'] = true;
-    validChars[' '] = true;
-    validChars['\''] = true;
-    validChars['*']  = true;
-
-    QByteArray name = n.toLocal8Bit( );
-    if ( !TextUtils::fits( validChars, name.constData( ), name.size( ) ) ) {
-        return false;
-    }
-    if ( ' ' == name[0] || ' ' == name[name.size( ) - 1] ) {
-        return false;
-    }
-    return true;
-=======
->>>>>>> UGENE-2466 fixed
 }
 
 bool __Annotation::isValidQualifierName( const QString &n ) {

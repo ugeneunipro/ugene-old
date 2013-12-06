@@ -429,24 +429,17 @@ QList<U2Feature> U2FeatureUtils::getAnnotatingFeaturesByRegion( const U2DataId &
 bool U2FeatureUtils::isGroupFeature( const U2DataId &featureId, const U2DbiRef &dbiRef,
     U2OpStatus &os )
 {
-    SAFE_POINT( !featureId.isEmpty( ), "Invalid feature ID detected!", false );
-    SAFE_POINT( dbiRef.isValid( ), "Invalid DBI reference detected!", false );
+    return keyExists( featureId, U2FeatureKeyGrouping, dbiRef, os );
+}
 
-    DbiConnection connection;
-    connection.open( dbiRef, os );
-    CHECK_OP( os, false );
-    U2FeatureDbi *fDbi = connection.dbi->getFeatureDbi( );
-    SAFE_POINT( NULL != fDbi, "Invalid DBI pointer encountered!", false );
-
-    QList<U2FeatureKey> fKeys = fDbi->getFeatureKeys( featureId, os );
-    CHECK_OP( os, false );
-
-    foreach ( const U2FeatureKey &key, fKeys ) {
-        if ( U2FeatureKeyGrouping == key.name ) {
-            return true;
-        }
+bool U2FeatureUtils::isCaseAnnotation( const U2DataId &featureId, const U2DbiRef &dbiRef,
+    U2OpStatus &os )
+{
+    if ( isGroupFeature( featureId, dbiRef, os ) ) {
+        os.setError( "Illegal action with grouping feature!" );
     }
-    return false;
+    CHECK_OP( os, false );
+    return keyExists( featureId, U2FeatureKeyCase, dbiRef, os );
 }
 
 void U2FeatureUtils::updateFeatureParent( const U2DataId &featureId, const U2DataId &newParentId,
@@ -531,14 +524,10 @@ void U2FeatureUtils::updateFeatureLocation( const U2DataId &featureId,
     // update location operator
     const QList<U2FeatureKey> keys = dbi->getFeatureKeys( featureId, op );
     CHECK_OP( op, );
-    U2FeatureKey locationOpKey;
-    foreach ( const U2FeatureKey &key, keys ) {
-        if ( key.name == U2FeatureKeyOperation ) {
-            locationOpKey = key;
-            break;
-        }
-    }
-    SAFE_POINT( locationOpKey.isValid( ), "Invalid annotation's location operator value!", );
+    U2FeatureKey locationOpKey( U2FeatureKeyOperation, QString( ) );
+    const bool valueFound = dbi->getKeyValue( featureId, locationOpKey, op );
+    SAFE_POINT( valueFound && !locationOpKey.value.isEmpty( ),
+        "Invalid annotation's location operator value!", );
 
     const U2FeatureKey newOpKey = createFeatureKeyLocationOperator( location->op );
     if ( newOpKey.value != locationOpKey.value ) {
@@ -679,6 +668,22 @@ bool U2FeatureUtils::featureMatchesType( const U2DataId &featureId, FeatureType 
     CHECK_OP( os, false );
 
     return ( Any == type || (Group == type && isGroup) || (Annotation == type && !isGroup) );
+}
+
+bool U2FeatureUtils::keyExists( const U2DataId &featureId, const QString &keyName,
+    const U2DbiRef &dbiRef, U2OpStatus &os )
+{
+    SAFE_POINT( !featureId.isEmpty( ), "Invalid feature ID detected!", false );
+    SAFE_POINT( dbiRef.isValid( ), "Invalid DBI reference detected!", false );
+
+    DbiConnection connection;
+    connection.open( dbiRef, os );
+    CHECK_OP( os, false );
+    U2FeatureDbi *fDbi = connection.dbi->getFeatureDbi( );
+    SAFE_POINT( NULL != fDbi, "Invalid DBI pointer encountered!", false );
+
+    U2FeatureKey requestedKey( keyName, QString( ) );
+    return fDbi->getKeyValue( featureId, requestedKey, os );
 }
 
 } // namespace

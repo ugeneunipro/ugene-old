@@ -131,6 +131,11 @@ public:
     static bool                     isGroupFeature( const U2DataId &featureId,
                                         const U2DbiRef &dbiRef, U2OpStatus &os );
     /**
+     * Returning value specifies whether the annotation represented by the feature cased or not
+     */
+    static bool                     isCaseAnnotation( const U2DataId &featureId,
+                                        const U2DbiRef &dbiRef, U2OpStatus &os );
+    /**
      * Replaces parent feature reference with @newParentId for the feature having @featureId
      */
     static void                     updateFeatureParent( const U2DataId &featureId,
@@ -208,6 +213,9 @@ private:
 
     static bool                     featureMatchesType( const U2DataId &featureId,
                                         FeatureType type, const U2DbiRef &dbiRef, U2OpStatus &os );
+
+    static bool                     keyExists( const U2DataId &featureId, const QString &keyName,
+                                        const U2DbiRef &dbiRef, U2OpStatus &os );
 };
 
 } // namespace U2

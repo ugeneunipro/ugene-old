@@ -100,84 +100,107 @@ public:
     /**
      * Reads feature data by id
      */
-    virtual U2Feature getFeature(const U2DataId& featureId, U2OpStatus& os) = 0;
+    virtual U2Feature                   getFeature( const U2DataId &featureId, U2OpStatus &os ) = 0;
     /**
      * Counts features that matched the query.
      */
-    virtual qint64 countFeatures(const FeatureQuery& q, U2OpStatus& os) = 0;
+    virtual qint64                      countFeatures( const FeatureQuery &q, U2OpStatus &os ) = 0;
     /**
      * Returns features that matched the query. Returns NULL if error occurs
      */
-    virtual U2DbiIterator<U2Feature>* getFeatures(const FeatureQuery& q, U2OpStatus& os) = 0;
+    virtual U2DbiIterator<U2Feature> *  getFeatures( const FeatureQuery &q, U2OpStatus &os ) = 0;
     /**
      * Returns all keys of a specified feature
      */
-    virtual QList<U2FeatureKey> getFeatureKeys(const U2DataId& featureId, U2OpStatus& os) = 0;
+    virtual QList<U2FeatureKey>         getFeatureKeys( const U2DataId &featureId, U2OpStatus &os ) = 0;
     /**
-     * Creates new feature in database. Uses all fields in 'feature' param and assign database id to it as the result
+     * Creates new feature in database. Uses all fields in 'feature' param
+     * and assign database id to it as the result
      * Requires: U2DbiFeature_WriteFeature feature support
      */
-    virtual void createFeature(U2Feature& feature, const QList<U2FeatureKey>& keys, U2OpStatus& os) = 0;
+    virtual void                        createFeature( U2Feature &feature,
+                                            const QList<U2FeatureKey> &keys, U2OpStatus &os ) = 0;
     /**
      * Adds key to feature
      * Requires: U2DbiFeature_WriteFeature feature support
      */
-    virtual void addKey(const U2DataId& featureId, const U2FeatureKey& key, U2OpStatus& os) = 0;
+    virtual void                        addKey( const U2DataId &featureId, const U2FeatureKey &key,
+                                            U2OpStatus &os ) = 0;
     /**
      * Removes all feature keys with a specified name
      * Requires: U2DbiFeature_WriteFeature feature support
      */
-    virtual void removeAllKeys(const U2DataId& featureId, const QString& keyName, U2OpStatus& os) = 0;
+    virtual void                        removeAllKeys( const U2DataId &featureId,
+                                            const QString &keyName, U2OpStatus &os ) = 0;
     /**
      * Removes all feature keys with a specified name and value
      * Requires: U2DbiFeature_WriteFeature feature support
      */
-    virtual void removeAllKeys(const U2DataId& featureId, const U2FeatureKey& key, U2OpStatus& os) = 0;
+    virtual void                        removeAllKeys( const U2DataId &featureId,
+                                            const U2FeatureKey &key, U2OpStatus &os ) = 0;
     /**
      * Updates feature key.
      * Requires: U2DbiFeature_WriteFeature feature support
      */
-    virtual void updateKeyValue(const U2DataId& featureId, const U2FeatureKey& key, U2OpStatus& os) = 0;
+    virtual void                        updateKeyValue( const U2DataId &featureId,
+                                            const U2FeatureKey &key, U2OpStatus &os ) = 0;
+    /**
+     * After the invocation @key.value contains the value of a feature's key with name @key.name.
+     * Returning value specifies whether the key with name @key.name exists for a given feature.
+     */
+    virtual bool                        getKeyValue( const U2DataId &featureId, U2FeatureKey &key,
+                                            U2OpStatus &os ) = 0;
     /**
      * Updates feature location. Features with U2Region(0,0) have no specified location
      * Requires: U2DbiFeature_WriteFeature feature support
      */
-    virtual void updateLocation(const U2DataId& featureId, const U2FeatureLocation& location, U2OpStatus& os) = 0;
+    virtual void                        updateLocation( const U2DataId &featureId,
+                                            const U2FeatureLocation &location, U2OpStatus &os ) = 0;
     /**
      * Updates feature name
      * Requires: U2DbiFeature_WriteFeature feature support
      */
-    virtual void updateName(const U2DataId& featureId, const QString& newName, U2OpStatus& os) = 0;
+    virtual void                        updateName( const U2DataId &featureId,
+                                            const QString &newName, U2OpStatus &os ) = 0;
     /**
      * Updates feature parent
      * Requires: U2DbiFeature_WriteFeature feature support
      */
-    virtual void updateParentId(const U2DataId& featureId, const U2DataId& parentId, U2OpStatus& os) = 0;
+    virtual void                        updateParentId( const U2DataId &featureId,
+                                            const U2DataId &parentId, U2OpStatus &os ) = 0;
     /**
      * Updates feature sequence
      * Requires: U2DbiFeature_WriteFeature feature support
      */
-    virtual void updateSequenceId(const U2DataId& featureId, const U2DataId& seqId, U2OpStatus& os) = 0;
+    virtual void                        updateSequenceId( const U2DataId &featureId,
+                                            const U2DataId &seqId, U2OpStatus &os ) = 0;
     /**
      * Removes the feature from database
      * Requires: U2DbiFeature_WriteFeature feature support
      */
-    virtual void removeFeature(const U2DataId& featureId, U2OpStatus& os) = 0;
+    virtual void                        removeFeature( const U2DataId &featureId,
+                                            U2OpStatus &os ) = 0;
     /**
      * Returns features that matched the query. Returns NULL if error occurs
      */
-    virtual U2DbiIterator<U2Feature> * getFeaturesByRegion( const U2Region &reg,
-        const U2DataId &parentId, const QString &featureName, const U2DataId &seqId,
-        U2OpStatus &os, bool contains = false ) = 0;
+    virtual U2DbiIterator<U2Feature> *  getFeaturesByRegion( const U2Region &reg,
+                                            const U2DataId &parentId, const QString &featureName,
+                                            const U2DataId &seqId, U2OpStatus &os,
+                                            bool contains = false ) = 0;
 
-    virtual U2DbiIterator<U2Feature> * getSubFeatures( const U2DataId &parentId,
-        const QString &featureName, const U2DataId &seqId, U2OpStatus &os ) = 0;
+    virtual U2DbiIterator<U2Feature> *  getSubFeatures( const U2DataId &parentId,
+                                            const QString &featureName, const U2DataId &seqId,
+                                            U2OpStatus &os ) = 0;
 
-    virtual U2DbiIterator<U2Feature> * getFeaturesBySequence( const QString& featureName,
-        const U2DataId& seqId, U2OpStatus& os ) = 0;
+    virtual U2DbiIterator<U2Feature> *  getFeaturesBySequence( const QString &featureName,
+                                            const U2DataId &seqId, U2OpStatus &os ) = 0;
 
 protected:
-    U2FeatureDbi( U2Dbi *rootDbi ) : U2ChildDbi( rootDbi ) { }
+    U2FeatureDbi( U2Dbi *rootDbi )
+        : U2ChildDbi( rootDbi )
+    {
+
+    }
 };
 
 } //namespace

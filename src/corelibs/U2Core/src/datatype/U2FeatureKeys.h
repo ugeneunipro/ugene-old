@@ -50,6 +50,8 @@ const QString U2FeatureKeyOperationJoin =           "#~oj";
 
 const QString U2FeatureKeyGrouping =                "#~g";
 
+const QString U2FeatureKeyCase =                    "#~c";
+
 } //namespace
 
 #endif //_U2_FEATURE_KEYS_H_

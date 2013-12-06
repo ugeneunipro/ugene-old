@@ -100,6 +100,10 @@ public:
     QString                 getQualifiersTip( int maxRows, U2SequenceObject *seqObj = NULL,
                                 DNATranslation *complTT = NULL, DNATranslation *aminoTT = NULL) const;
 
+    bool                    isCaseAnnotation( ) const;
+
+    void                    setCaseAnnotation( bool caseAnnotation );
+
     static bool             annotationLessThan( const __Annotation &first,
                                 const __Annotation &second );
 

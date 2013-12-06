@@ -1,6 +1,5 @@
 /**
  * UGENE - Integrated Bioinformatics Tools.
->>>>>>> UGENE-2466 fixed
  * Copyright (C) 2008-2013 UniPro <ugene@unipro.ru>
  * http://ugene.unipro.ru
  *
@@ -38,7 +37,6 @@ static U2DbiRef getDbiRef( ) {
 }
 
 static AnnotationData createTestAnnotationData( ) {
->>>>>>> UGENE-2466 fixed
     const U2Region areg1( 1, 2 );
     const U2Region areg2( 400, 10 );
     const U2Region areg3( 666, 666 );
@@ -46,7 +44,6 @@ static AnnotationData createTestAnnotationData( ) {
     AnnotationData anData;
     anData.location->regions << areg1 << areg2 << areg3;
     anData.name = "aname_multy";
->>>>>>> UGENE-2466 fixed
 
     anData.qualifiers.append( U2Qualifier( "aqualname_multy", "aqualvalue_multy" ) );
     anData.qualifiers.append( U2Qualifier( "1", "A" ) );
@@ -228,7 +225,6 @@ IMPLEMENT_TEST( AnnotationUnitTest, getSet_Qualifiers ) {
 
     annotation.removeQualifier( removedQual );
     CHECK_TRUE( annotation.getQualifiers( ) == changedQuals, "Unexpected annotation's qualifiers" );
->>>>>>> UGENE-2466 fixed
 }
 
 IMPLEMENT_TEST( AnnotationUnitTest, find_Qualifiers ) {
@@ -292,6 +288,28 @@ IMPLEMENT_TEST( AnnotationUnitTest, get_Group ) {
 
     CHECK_TRUE( __Annotation::annotationLessThan( annotations[1], annotations[0] ),
         "Unexpected annotations comparison result" );
+}
+
+IMPLEMENT_TEST( AnnotationUnitTest, getSet_Case ) {
+    const U2DbiRef dbiRef( getDbiRef( ) );
+    AnnotationData anData = createTestAnnotationData( );
+
+    FeaturesTableObject ft( "ftable", dbiRef );
+    ft.addAnnotation( anData );
+
+    QList<__Annotation> annotations = ft.getAnnotations( );
+    CHECK_EQUAL( 1, annotations.size( ), "count of annotations" );
+
+    __Annotation annotation = annotations.first( );
+    CHECK_FALSE( annotation.isCaseAnnotation( ), "Unexpected annotation case!" );
+    annotation.setCaseAnnotation( false );
+    CHECK_FALSE( annotation.isCaseAnnotation( ), "Unexpected annotation case!" );
+    annotation.setCaseAnnotation( true );
+    CHECK_TRUE( annotation.isCaseAnnotation( ), "Unexpected annotation case!" );
+    annotation.setCaseAnnotation( true );
+    CHECK_TRUE( annotation.isCaseAnnotation( ), "Unexpected annotation case!" );
+    annotation.setCaseAnnotation( false );
+    CHECK_FALSE( annotation.isCaseAnnotation( ), "Unexpected annotation case!" );
 }
 
 } // namespace U2

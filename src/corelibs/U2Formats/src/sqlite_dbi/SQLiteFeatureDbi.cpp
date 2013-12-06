@@ -446,6 +446,26 @@ void SQLiteFeatureDbi::updateKeyValue(const U2DataId& featureId, const U2Feature
     q.execute();
 }
 
+bool SQLiteFeatureDbi::getKeyValue( const U2DataId &featureId, U2FeatureKey &key, U2OpStatus &os ) {
+    DBI_TYPE_CHECK( featureId, U2Type::Feature, os, false );
+
+    SQLiteTransaction t ( db, os );
+
+    static const QString queryString( "SELECT value FROM FeatureKey WHERE feature = ?1 AND name = ?2" );
+    QSharedPointer<SQLiteQuery> q = t.getPreparedQuery( queryString, db, os );
+    CHECK_OP( os, false );
+
+    q->bindDataId( 1, featureId );
+    q->bindString( 2, key.name );
+
+    if ( q->step( ) ) {
+        key.value = q->getCString( 0 );
+        return true;
+    } else {
+        return false;
+    }
+}
+
 void SQLiteFeatureDbi::updateLocation(const U2DataId& featureId, const U2FeatureLocation& location, U2OpStatus& os) {
     DBI_TYPE_CHECK(featureId, U2Type::Feature, os, );
 
