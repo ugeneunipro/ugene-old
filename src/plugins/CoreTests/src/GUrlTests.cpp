@@ -73,7 +73,7 @@ Task::ReportResult GTest_ConvertPath::report() {
 #define URL_ATTR "url"
 #define DATA_ATTR "data"
 #define EXISTS_ATTR "exists"
-void GTest_RemoveTmpDir::init(XMLTestFormat */*tf*/, const QDomElement &el) {
+void GTest_RemoveTmpDir::init(XMLTestFormat * /*tf*/, const QDomElement &el) {
     url = env->getVar( TEMP_DATA_DIR_ENV_ID ) + "/" + el.attribute(URL_ATTR);
 }
 
@@ -107,7 +107,7 @@ void GTest_RemoveTmpDir::removeDir(const QString &url) {
 /************************************************************************/
 /* GTest_RemoveTmpFile */
 /************************************************************************/
-void GTest_RemoveTmpFile::init(XMLTestFormat */*tf*/, const QDomElement &el) {
+void GTest_RemoveTmpFile::init(XMLTestFormat * /*tf*/, const QDomElement &el) {
     url = env->getVar( TEMP_DATA_DIR_ENV_ID ) + "/" + el.attribute(URL_ATTR);
 }
 
@@ -122,7 +122,7 @@ Task::ReportResult GTest_RemoveTmpFile::report() {
 /************************************************************************/
 /* GTest_CreateTmpFile */
 /************************************************************************/
-void GTest_CreateTmpFile::init(XMLTestFormat */*tf*/, const QDomElement &el) {
+void GTest_CreateTmpFile::init(XMLTestFormat * /*tf*/, const QDomElement &el) {
     url = env->getVar( TEMP_DATA_DIR_ENV_ID ) + "/" + el.attribute(URL_ATTR);
     data = el.attribute(DATA_ATTR);
 }
@@ -142,7 +142,7 @@ Task::ReportResult GTest_CreateTmpFile::report() {
 /************************************************************************/
 /* GTest_CheckTmpFile */
 /************************************************************************/
-void GTest_CheckTmpFile::init(XMLTestFormat */*tf*/, const QDomElement &el) {
+void GTest_CheckTmpFile::init(XMLTestFormat * /*tf*/, const QDomElement &el) {
     url = env->getVar( TEMP_DATA_DIR_ENV_ID ) + "/" + el.attribute(URL_ATTR);
     exists = bool(el.attribute(EXISTS_ATTR).toInt());
 }

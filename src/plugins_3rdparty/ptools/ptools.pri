@@ -6,4 +6,6 @@ PLUGIN_VENDOR=Unipro
 
 include( ../../ugene_plugin_common.pri )
 
-
+win32 {
+    QMAKE_CXXFLAGS += /wd4290 /wd4996
+}
