@@ -23,7 +23,7 @@
 #include "GraphicsButtonItem.h"
 #include "TreeViewerUtils.h"
 
-#include <QtGui/QGraphicsView>
+#include <QtGui/QPainter>
 #include <QtGui/QGraphicsScene>
 #include <QtCore/QStack>
 #include <U2Core/U2SafePoints.h>
@@ -324,10 +324,12 @@ void GraphicsBranchItem::paint(QPainter* painter,const QStyleOptionGraphicsItem*
     }
 }
 
-QRectF GraphicsBranchItem::visibleChildrenBoundingRect () const {
+QRectF GraphicsBranchItem::visibleChildrenBoundingRect (const QTransform& viewTransform) const {
     QRectF childsBoundingRect;
     QStack<const QGraphicsItem*> graphicsItems;
     graphicsItems.push(this);
+
+    QTransform invertedTransform = viewTransform.inverted();
     do {
         const QGraphicsItem* branchItem = graphicsItems.pop();
 
@@ -337,7 +339,12 @@ QRectF GraphicsBranchItem::visibleChildrenBoundingRect () const {
             if(!graphItem->isVisible()) {
                 continue;
             }
-            childsBoundingRect |= graphItem->sceneBoundingRect();
+            QRectF itemRect = graphItem->sceneBoundingRect();
+            if(graphItem->flags().testFlag(QGraphicsItem::ItemIgnoresTransformations)) {
+                QRectF transformedRect = invertedTransform.mapRect(itemRect);
+                itemRect.setWidth(transformedRect.width());
+            }
+            childsBoundingRect |= itemRect;
             graphicsItems.push(graphItem);
         }
     } while(!graphicsItems.isEmpty());

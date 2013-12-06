@@ -900,7 +900,9 @@ void TreeViewerUI::paint(QPainter &painter) {
 }
 
 void TreeViewerUI::updateRect() {
-    QRectF rect = root->visibleChildrenBoundingRect()|root->sceneBoundingRect();
+    SAFE_POINT(NULL != root, "Pointer to tree root is NULL",);
+    QTransform viewTransform = transform();
+    QRectF rect = root->visibleChildrenBoundingRect(viewTransform) | root->sceneBoundingRect();
     rect.setLeft(rect.left() - MARGIN);
     rect.setRight(rect.right() + MARGIN);
     rect.setTop(rect.top() - MARGIN);
@@ -1015,18 +1017,6 @@ void TreeViewerUI::sl_contTriggered(bool on) {
         TreeLayout curLayout = layout;
         QStack<GraphicsBranchItem*> stack;
        
-        if (on){
-            labelsSettings.alignLabels = false;
-            hide();                             //to remove blinking
-            sl_rectangularLayoutTriggered();
-            labelsSettings.alignLabels = true;
-            stack.push(rectRoot);
-        }else{
-            stack.push(root);
-            if (root != rectRoot) {
-                stack.push(rectRoot);
-            }
-        }
         updateLabelsAlignment(on);
 
         switch (curLayout)
@@ -1405,6 +1395,7 @@ void TreeViewerUI::updateLabelsAlignment(bool on)
         return;
     }
 
+    qreal sceneRightPos = scene()->sceneRect().right();
     while (!stack.empty()) {
         GraphicsBranchItem* item = stack.pop();
         QGraphicsSimpleTextItem* nameText = item->getNameText();
@@ -1418,11 +1409,14 @@ void TreeViewerUI::updateLabelsAlignment(bool on)
         } else {
             qreal newWidth = 0;
             if(on){
-                newWidth = scene()->sceneRect().right();
-                if (labelsSettings.showNames){
-                    qreal textRightPos = nameText->sceneBoundingRect().right();
-                    newWidth -= textRightPos + GraphicsBranchItem::TextSpace;
+                QRectF textRect= nameText->sceneBoundingRect();
+                qreal textRightPos = textRect.right();
+                if(nameText->flags().testFlag(QGraphicsItem::ItemIgnoresTransformations)) {
+                    QRectF transformedRect = transform().inverted().mapRect(textRect);
+                    textRect.setWidth(transformedRect.width());
+                    textRightPos = textRect.right();
                 }
+                newWidth = sceneRightPos - (textRightPos + GraphicsBranchItem::TextSpace);
             }
             item->setWidth(newWidth);
         }

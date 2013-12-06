@@ -221,6 +221,7 @@ protected:
     void zooming(qreal newZoom);
     void zooming(qreal horizontalZoom, qreal verticalZoom);
     void defaultZoom();
+    void updateRect();
 
     virtual void onLayoutChanged(const TreeLayout& ) {}
     virtual void updateTreeSettings(bool setDefaultZoom = true);
@@ -259,7 +260,6 @@ private:
     };
     typedef QFlags<LabelType> LabelTypes;
 
-    void updateRect();
     void paint(QPainter &painter);
     void showLabels(LabelTypes labelTypes);
     void addLegend(qreal scale);

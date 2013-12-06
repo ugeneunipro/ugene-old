@@ -104,7 +104,7 @@ public:
     void setLenghtCoef(int newCoef) {lengthCoef = newCoef;}
     int getLengthCoef() const {return lengthCoef;}
 
-    QRectF visibleChildrenBoundingRect () const;
+    QRectF visibleChildrenBoundingRect (const QTransform& viewTransform) const;
 };
 
 }//namespace;

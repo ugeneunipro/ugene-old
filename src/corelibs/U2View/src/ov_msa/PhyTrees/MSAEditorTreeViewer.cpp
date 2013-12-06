@@ -28,7 +28,7 @@
 #include <QtCore/QStack>
 #include <U2Core/PhyTree.h>
 #include <U2Core/U2SafePoints.h>
-#include <QDateTime>
+#include <QtCore/QDateTime>
 #include <U2View/MSAEditor.h>
 #include <U2View/MSAEditorSequenceArea.h>
 #include <U2View/MSAEditorNameList.h>
@@ -518,6 +518,7 @@ void MSAEditorTreeViewerUI::setSynchronizeMode(SynchronizationMode newSyncMode) 
             distanceText->setFlag(QGraphicsItem::ItemIgnoresTransformations, fullSync);
         }
     }
+    updateRect();
 }
 
 QList<GraphicsBranchItem*> MSAEditorTreeViewerUI::getListNodesOfTree() {
@@ -553,6 +554,7 @@ void MSAEditorTreeViewerUI::updateTreeSettings(bool setDefaultZoom) {
     MSAEditor* msa = curMSATreeViewer->getMsaEditor();
     CHECK(NULL != msa, );
     msa->getUI()->getSequenceArea()->onVisibleRangeChanged();
+    updateRect();
 }
 
 void MSAEditorTreeViewerUI::sl_rectLayoutRecomputed() {
