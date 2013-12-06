@@ -292,6 +292,7 @@ bool __Annotation::annotationLessThan( const __Annotation &first, const __Annota
     SAFE_POINT_OP( os, false );
 
     return ( firstFeatureGroup.name < secondFeatureGroup.name );
+<<<<<<< HEAD
 }
 
 bool __Annotation::isValidQualifierName( const QString &n ) {
@@ -324,6 +325,8 @@ bool __Annotation::isValidAnnotationName( const QString &n ) {
         return false;
     }
     return true;
+=======
+>>>>>>> UGENE-2466 fixed
 }
 
 static QList<U2CigarToken> parceCigar( const QString &cigar) {

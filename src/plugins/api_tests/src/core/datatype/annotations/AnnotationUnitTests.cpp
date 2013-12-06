@@ -23,11 +23,8 @@
  * MA 02110-1301, USA.
  */
 
-<<<<<<< HEAD
 #include <QtCore/QBitArray>
 
-=======
->>>>>>> UGENE-2466 fixed
 #include <U2Core/AnnotationData.h>
 #include <U2Core/FeaturesTableObject.h>
 #include <U2Core/U2FeatureDbi.h>
@@ -44,10 +41,6 @@ static U2DbiRef getDbiRef( ) {
 }
 
 static AnnotationData createTestAnnotationData( ) {
-<<<<<<< HEAD
-=======
-    const QString qualname = "aqualname_multy";
-    const QString qualval = "aqualvalue_multy";
 >>>>>>> UGENE-2466 fixed
     const U2Region areg1( 1, 2 );
     const U2Region areg2( 400, 10 );
@@ -56,7 +49,7 @@ static AnnotationData createTestAnnotationData( ) {
     AnnotationData anData;
     anData.location->regions << areg1 << areg2 << areg3;
     anData.name = "aname_multy";
-<<<<<<< HEAD
+>>>>>>> UGENE-2466 fixed
 
     anData.qualifiers.append( U2Qualifier( "aqualname_multy", "aqualvalue_multy" ) );
     anData.qualifiers.append( U2Qualifier( "1", "A" ) );
@@ -65,9 +58,6 @@ static AnnotationData createTestAnnotationData( ) {
     anData.qualifiers.append( U2Qualifier( "key", "value2" ) );
     anData.qualifiers.append( U2Qualifier( "key", "value3" ) );
     anData.qualifiers.append( U2Qualifier( "2", "B" ) );
-=======
-    anData.qualifiers.append( U2Qualifier( qualname, qualval ) );
->>>>>>> UGENE-2466 fixed
 
     return anData;
 }
@@ -228,7 +218,6 @@ IMPLEMENT_TEST( AnnotationUnitTest, getSet_Qualifiers ) {
 
     CHECK_TRUE( annotation.getQualifiers( ) == initQuals, "Unexpected annotation's qualifiers" );
 
-<<<<<<< HEAD
     U2Qualifier supplementedQual( "New Key", "New Value" );
     annotation.addQualifier( supplementedQual );
 
@@ -242,6 +231,7 @@ IMPLEMENT_TEST( AnnotationUnitTest, getSet_Qualifiers ) {
 
     annotation.removeQualifier( removedQual );
     CHECK_TRUE( annotation.getQualifiers( ) == changedQuals, "Unexpected annotation's qualifiers" );
+>>>>>>> UGENE-2466 fixed
 }
 
 IMPLEMENT_TEST( AnnotationUnitTest, find_Qualifiers ) {
@@ -292,34 +282,18 @@ IMPLEMENT_TEST( AnnotationUnitTest, get_Group ) {
 
     QBitArray groupMatches( 2, false );
     foreach ( const __Annotation &ann, annotations ) {
-        if ( ann.getGroup( ).getName( ) == "subgroup" ) {
+        if ( ann.getGroup( ).getName( ) == firstGroupName ) {
             groupMatches.setBit( 0, true );
-        } else if ( ann.getGroup( ).getName( ) == "group2" ) {
+        } else if ( ann.getGroup( ).getName( ) == secondGroupName ) {
             groupMatches.setBit( 1, true );
         }
 
         const QList<__Annotation> anns = ann.getGroup( ).getAnnotations( );
         CHECK_EQUAL( 1, anns.size( ), "count of annotations" );
     }
-    CHECK_EQUAL( 2, groupMatches.count( true ), "matching groups" );
 
     CHECK_TRUE( __Annotation::annotationLessThan( annotations[1], annotations[0] ),
         "Unexpected annotations comparison result" );
-=======
-    const U2Region supplementedRegion( 45, 434 );
-    annotation.addLocationRegion( supplementedRegion );
-
-    CHECK_TRUE( annotation.getRegions( )
-        == ( QVector<U2Region>( initRegions ) << supplementedRegion ),
-        "Unexpected annotation's regions" );
-
-    QVector<U2Region> newRegions( initRegions );
-    newRegions.remove( 0, 2 );
-    newRegions << U2Region( 45, 543 ) << U2Region( 434, 432 );
-    annotation.updateRegions( newRegions );
-
-    CHECK_TRUE( annotation.getRegions( ) == newRegions, "Unexpected annotation's regions" );
->>>>>>> UGENE-2466 fixed
 }
 
 } // namespace U2

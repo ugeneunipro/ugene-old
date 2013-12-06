@@ -36,6 +36,6 @@ RCC_DIR=_tmp/rcc
 
 # Special compiler flags for windows configuration
 win32 {
-    QMAKE_CXXFLAGS_WARN_ON = -W4
-    QMAKE_CFLAGS_WARN_ON = -W4
+    QMAKE_CXXFLAGS_WARN_ON = -W3
+    QMAKE_CFLAGS_WARN_ON = -W3
 }
