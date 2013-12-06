@@ -329,6 +329,38 @@ bool __Annotation::isValidAnnotationName( const QString &n ) {
 >>>>>>> UGENE-2466 fixed
 }
 
+bool __Annotation::isValidQualifierName( const QString &n ) {
+    return !n.isEmpty( ) && 20 > n.length( )
+        && TextUtils::fits( TextUtils::QUALIFIER_NAME_CHARS, n.toLocal8Bit( ).data( ), n.length( ) );
+}
+
+bool __Annotation::isValidQualifierValue( const QString & /*v*/ ) {
+    // todo: check whitespaces!
+    return true;
+}
+
+bool __Annotation::isValidAnnotationName( const QString &n ) {
+    if ( n.isEmpty( ) || 100 < n.length( ) ) {
+        return false;
+    }
+
+    QBitArray validChars = TextUtils::ALPHA_NUMS;
+    validChars['_'] = true;
+    validChars['-'] = true;
+    validChars[' '] = true;
+    validChars['\''] = true;
+    validChars['*']  = true;
+
+    QByteArray name = n.toLocal8Bit( );
+    if ( !TextUtils::fits( validChars, name.constData( ), name.size( ) ) ) {
+        return false;
+    }
+    if ( ' ' == name[0] || ' ' == name[name.size( ) - 1] ) {
+        return false;
+    }
+    return true;
+}
+
 static QList<U2CigarToken> parceCigar( const QString &cigar) {
     QList<U2CigarToken> cigarTokens;
 
