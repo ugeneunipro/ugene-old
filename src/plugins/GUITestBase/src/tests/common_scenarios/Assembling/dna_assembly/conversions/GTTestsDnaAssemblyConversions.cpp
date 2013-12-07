@@ -23,9 +23,11 @@
 #include "runnables/qt/MessageBoxFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/AlignShortReadsDialogFiller.h"
 #include "runnables/qt/MessageBoxFiller.h"
+#include "runnables/ugene/corelibs/U2Gui/ImportBAMFileDialogFiller.h"
 
 #include "GTTestsDnaAssemblyConversions.h"
 #include "GTUtilsLog.h"
+#include "GTUtilsTaskTreeView.h"
 #include "api/GTFile.h"
 
 namespace U2 {
@@ -134,7 +136,10 @@ GUI_TEST_CLASS_DEFINITION(test_0004) {
     CHECK_OP(os, );
     GTMenu::clickMenuItem(os, mainMenu, QStringList() << "Align to reference" << "Align short reads");
     CHECK_OP(os, );
-    GTGlobals::sleep(1000);
+    GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os,sandBoxDir + "resule.ugenedb"));
+//UGENE can hang up here
+    GTGlobals::sleep();
+    GTUtilsTaskTreeView::waitTaskFinidhed();
 
     CHECK_SET_ERR(!l.hasError( ), "Error message expected in log");
     GTFile::check(os, "_common_data/e_coli/e_coli_1000.gff.fasta");

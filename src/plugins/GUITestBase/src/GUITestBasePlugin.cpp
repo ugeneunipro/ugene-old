@@ -1004,7 +1004,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     //REGISTER_TEST(GUITest_common_scenarios_tree_viewer::test_0010);
     REGISTER_TEST(GUITest_common_scenarios_tree_viewer::test_0011);
     REGISTER_TEST(GUITest_common_scenarios_tree_viewer::test_0011_1);
-    REGISTER_TEST(GUITest_common_scenarios_tree_viewer::test_0011_2);
+    REGISTER_TEST_IGNORED(GUITest_common_scenarios_tree_viewer::test_0011_2, "https://ugene.unipro.ru/tracker/browse/UGENE-2538");
     REGISTER_TEST(GUITest_common_scenarios_tree_viewer::test_0012);
     REGISTER_TEST(GUITest_common_scenarios_tree_viewer::test_0023);
 

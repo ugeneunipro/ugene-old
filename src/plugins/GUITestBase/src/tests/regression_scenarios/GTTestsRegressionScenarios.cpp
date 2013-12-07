@@ -2695,8 +2695,10 @@ GUI_TEST_CLASS_DEFINITION(test_1986){
 //8. Select "fasta" output format
 
 //9. Press "OK"
-
-    GTMouseDriver::moveTo(os,GTUtilsProjectTreeView::getItemCenter(os, "XR_325540.fasta"));
+    GTUtilsTaskTreeView::waitTaskFinidhed();
+    QTreeWidget* treeWidget = GTUtilsProjectTreeView::getTreeWidget(os);
+    QList<QTreeWidgetItem*> treeItems = GTTreeWidget::getItems(treeWidget->invisibleRootItem());
+    CHECK_SET_ERR(treeItems.takeFirst()->text(0).contains(".fasta"),"No fasta file in project")
 
 //Expected state: the chosen sequence has been downloaded, saved in FASTA format and displayed in sequence view
 }

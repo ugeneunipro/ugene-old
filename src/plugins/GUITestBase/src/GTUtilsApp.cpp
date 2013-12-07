@@ -31,7 +31,9 @@ namespace U2 {
 #define GT_METHOD_NAME "checkUGENETitle"
 void GTUtilsApp::checkUGENETitle(U2OpStatus &os, const QString &title) {
 
-    QString ugeneTitle = AppContext::getMainWindow()->getQMainWindow()->windowTitle();
+    QMainWindow* w = AppContext::getMainWindow()->getQMainWindow();
+    GT_CHECK(w, "main window is NULL");
+    QString ugeneTitle = w->windowTitle();
     GT_CHECK(ugeneTitle == title, "UGENE title is <" + ugeneTitle + ">, not <" + title + ">");
 }
 #undef GT_METHOD_NAME

@@ -39,9 +39,8 @@ const QString GTUtilsTaskTreeView::widgetName = DOCK_TASK_TREE_VIEW;
 
 void GTUtilsTaskTreeView::waitTaskFinidhed(){
     TaskScheduler* scheduller = AppContext::getTaskScheduler();
-    GTGlobals::sleep(5000);
     while(!scheduller->getTopLevelTasks().isEmpty()){
-       GTGlobals::sleep();
+       GTGlobals::sleep(100);
     }
 }
 void GTUtilsTaskTreeView::openView(U2OpStatus& os) {

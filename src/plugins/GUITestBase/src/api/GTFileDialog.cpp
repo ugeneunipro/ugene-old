@@ -186,10 +186,10 @@ void GTFileDialogUtils::setPath()
 {
     QLineEdit* lineEdit = fileDialog->findChild<QLineEdit*>(FILE_NAME_LINE_EDIT);
     GT_CHECK(lineEdit != 0, QString("line edit \"1\" not found").arg(FILE_NAME_LINE_EDIT));
+    lineEdit->setCompleter(NULL);
     GTLineEdit::setText(os,lineEdit,path);
 
     GT_CHECK(lineEdit->text() == path, "Can't open file \"" + lineEdit->text() + "\"");
-    GTWidget::click(os,lineEdit);
 }
 #undef GT_METHOD_NAME
 
@@ -198,9 +198,9 @@ void GTFileDialogUtils::setName()
 {
     QLineEdit* lineEdit = fileDialog->findChild<QLineEdit*>(FILE_NAME_LINE_EDIT);
     GT_CHECK(lineEdit != 0, QString("line edit \"1\" not found").arg(FILE_NAME_LINE_EDIT));
+    lineEdit->setCompleter(NULL);
 
     GTLineEdit::setText(os, lineEdit,fileName);
-    GTWidget::click(os,lineEdit);
 }
 #undef GT_METHOD_NAME
 
