@@ -1576,6 +1576,25 @@ GUI_TEST_CLASS_DEFINITION( test_1886_2 )
         "--TGAA\n--CGAT\n--CGAT\n--CGAT" == selectionContent, "MSA changing is failed" );
 }
 
+GUI_TEST_CLASS_DEFINITION( test_1897 ) {
+    //1) Run UGENE
+    //2) Open data/samples/CLUSTALW/COI.aln
+    GTFileDialog::openFile( os, dataDir + "samples/CLUSTALW", "COI.aln" );
+
+    //3) Selected any region on alignment view using mouse or keyboard
+    GTUtilsMSAEditorSequenceArea::selectArea( os, QPoint( 40, 4 ), QPoint( 50, 12 ) );
+
+    //4) Choose Highlighting/Gaps action from context-menu
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList( ) << "Highlighting"
+        << "Gaps" ) );
+    GTMouseDriver::click( os, Qt::RightButton );
+
+    //5) Look at Hightlighting/Gaps action again
+    QAction *action = GTAction::findActionByText( os, "Gaps" );
+    //Expected state: It must be checked
+    CHECK_SET_ERR( action->isChecked( ), "Action has to be checked!" );
+}
+
 GUI_TEST_CLASS_DEFINITION( test_1919 )
 {
     //1) Create the WD scheme: File list -> File conversions.

@@ -181,6 +181,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_1884);
     REGISTER_TEST_IGNORED_MAC(GUITest_regression_scenarios::test_1886_1, "not for mac");
     REGISTER_TEST_IGNORED_MAC(GUITest_regression_scenarios::test_1886_2, "not for mac");
+    REGISTER_TEST(GUITest_regression_scenarios::test_1897);
 
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_1919, "incomplete(source url can not be set), incorrect until UGENE-2405 fixed");
     REGISTER_TEST(GUITest_regression_scenarios::test_1921);
