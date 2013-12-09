@@ -411,6 +411,16 @@ void GSequenceLineView::setCoherentRangeView(GSequenceLineView* _rangeView) {
 
 
 void GSequenceLineView::sl_onFrameRangeChanged() {
+    SAFE_POINT(frameView != NULL, "frameView is NULL", );
+    U2Region newRangeNC = frameView->getVisibleRange();
+    int len = ctx->getSequenceLength();
+    if(newRangeNC.endPos() > len){
+        newRangeNC.startPos = 0;
+        if(newRangeNC.length > len){
+            newRangeNC.length = len;
+        }
+        frameView->setVisibleRange(newRangeNC);
+    }
     //TODO: optimize and do not redraw frame if visual coords of the frame are not changed!
 #ifdef _DEBUG
     const U2Region& newRange = frameView->getVisibleRange();
