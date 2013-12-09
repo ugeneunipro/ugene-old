@@ -83,10 +83,12 @@ private slots:
     void sl_linkActivated(const QString& url);
     void sl_toolValidationStatusChanged(bool isValid);
     void sl_validationComplete();
+    void sl_onClickLink(const QUrl& url);
 
 private:
     QMap<QString, ExternalToolInfo> externalToolsInfo;
     QMap<QString, QTreeWidgetItem*> externalToolsItems;
+    QString getToolLink(const QString &toolName) const;
     mutable int buttonsWidth;
 
     static const QString INSTALLED;
