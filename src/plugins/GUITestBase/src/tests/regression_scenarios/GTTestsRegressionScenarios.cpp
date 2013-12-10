@@ -78,6 +78,7 @@
 #include "runnables/ugene/plugins/workflow_designer/WorkflowMetadialogFiller.h"
 #include "runnables/ugene/plugins/external_tools/TCoffeeDailogFiller.h"
 #include "runnables/ugene/plugins/workflow_designer/StartupDialogFiller.h"
+#include "runnables/ugene/plugins/workflow_designer/WizardFiller.h"
 #include "runnables/ugene/plugins_3rdparty/kalign/KalignDialogFiller.h"
 #include "runnables/ugene/plugins_3rdparty/umuscle/MuscleDialogFiller.h"
 #include "runnables/ugene/ugeneui/ConvertAceToSqliteDialogFiller.h"
@@ -4038,6 +4039,52 @@ GUI_TEST_CLASS_DEFINITION( test_2415 ) {
     // Expected state: the sequence is renamed.
     QTreeWidgetItem *item = GTUtilsProjectTreeView::findItem(os, "name");
     CHECK_SET_ERR(NULL != item, "Object is not renamed");
+}
+
+GUI_TEST_CLASS_DEFINITION( test_2475 ) {
+    //1. Open WD.
+    //2. Open Single-sample Tuxedo Pipeline (NGS samples).
+    //3. Set proper input data.
+    //4. Validate scheme.
+    //Expected state: validation passed.
+
+
+    class EscClicker : public Filler {
+    public:
+        EscClicker(U2OpStatus& _os) : Filler(_os, "Tuxedo Wizard"){}
+        virtual void run(){
+            GTGlobals::sleep();
+#ifdef Q_OS_MAC
+            GTKeyboardDriver::keyRelease(os, GTKeyboardDriver::key["shift"]);
+            GTKeyboardDriver::keyRelease(os, GTKeyboardDriver::key["cmd"]);
+            GTWidget::click(os,GTWidget::findWidget(os,"bttnCancel"));
+#else
+            GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["esc"]);
+#endif
+        }
+    };
+
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+
+    GTUtilsDialog::waitForDialog(os, new EscClicker(os));
+    GTUtilsDialog::waitForDialog(os, new ConfigureTuxedoWizardFiller(os,
+                                                                     ConfigureTuxedoWizardFiller::single_sample,
+                                                                     ConfigureTuxedoWizardFiller::singleReads));
+    GTUtilsWorkflowDesigner::addSample(os, "RNA-seq analysis with Tuxedo tools");
+    GTGlobals::sleep();
+
+    GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "Read RNA-seq Short Reads"));
+    GTMouseDriver::click(os);
+    GTUtilsWorkflowDesigner::setDatasetInputFile(os, testDir + "_common_data/bowtie2", "reads_1.fq");
+    GTUtilsWorkflowDesigner::setDatasetInputFile(os, testDir + "_common_data/bowtie2", "reads_2.fq");
+
+    GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "Find Splice Junctions with TopHat"));
+    GTMouseDriver::click(os);
+    GTUtilsWorkflowDesigner::setParameter(os, "Bowtie index directory", testDir + "_common_data/bowtie2/index", GTUtilsWorkflowDesigner::textValue);
+    GTUtilsWorkflowDesigner::setParameter(os, "Bowtie index basename", "human_T1_cutted", GTUtilsWorkflowDesigner::textValue);
+
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok));
+    GTWidget::click(os, GTAction::button(os,"Validate workflow"));
 }
 
 } // GUITest_regression_scenarios namespace
