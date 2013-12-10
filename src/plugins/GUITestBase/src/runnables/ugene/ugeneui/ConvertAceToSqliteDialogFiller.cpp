@@ -34,6 +34,8 @@ void ConvertAceToSqliteDialogFiller::run(){
     QString button;
     switch (action) {
         case NOT_SET:
+            button = "";
+            break;
         case REPLACE:
             button = "Replace";
             break;
@@ -46,7 +48,8 @@ void ConvertAceToSqliteDialogFiller::run(){
     }
     MessageBoxDialogFiller *mbf = new MessageBoxDialogFiller(os, button);
     if (NOT_SET == action) {
-        GTUtilsDialog::waitForDialogWhichMayRunOrNot(os, mbf);
+        //when launching filler 2 or more times messagebox is caught by wrong filler
+        //GTUtilsDialog::waitForDialogWhichMayRunOrNot(os, mbf);
     } else {
         GTUtilsDialog::waitForDialog(os, mbf);
     }

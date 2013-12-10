@@ -32,7 +32,7 @@ namespace U2 {
 
 class GTUtilsTaskTreeView {
 public:
-    static void waitTaskFinidhed();
+    static void waitTaskFinidhed(U2OpStatus &os, long timeout=120000);
     static void click(U2OpStatus &os, const QString &itemName, Qt::MouseButton b = Qt::LeftButton);
     static void openView(U2OpStatus& os);
     static void toggleView(U2OpStatus& os);
@@ -48,6 +48,14 @@ public:
 private:
     static QTreeWidgetItem* getTreeWidgetItem(QTreeWidget* tree, const QString &itemName);
     static QList<QTreeWidgetItem*> getTaskTreeViewItems(QTreeWidgetItem* root);
+
+};
+
+class FailResiever : public QObject{
+private slots:
+    void sl_fail(U2OpStatus &os){
+        os.setError("task run too long, shutting down");
+    }
 };
 
 } //ns

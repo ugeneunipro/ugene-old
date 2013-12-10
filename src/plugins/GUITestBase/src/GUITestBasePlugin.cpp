@@ -207,7 +207,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_2070);
     REGISTER_TEST_IGNORED_LINUX(GUITest_regression_scenarios::test_2089, "no forbidden folder characters on linux");
     REGISTER_TEST(GUITest_regression_scenarios::test_2077);
-    REGISTER_TEST(GUITest_regression_scenarios::test_2093_1);
+    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2093_1,"dashboards");
     REGISTER_TEST(GUITest_regression_scenarios::test_2093_2);
     REGISTER_TEST(GUITest_regression_scenarios::test_2100_1);
     REGISTER_TEST(GUITest_regression_scenarios::test_2100_2);
@@ -224,7 +224,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_2157);
     REGISTER_TEST(GUITest_regression_scenarios::test_2160);
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2163,"https://ugene.unipro.ru/tracker/browse/UGENE-2497");
-    REGISTER_TEST(GUITest_regression_scenarios::test_2164);
+    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2164,"https://ugene.unipro.ru/tracker/browse/UGENE-2497");
     REGISTER_TEST(GUITest_regression_scenarios::test_2165);
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2167,"https://ugene.unipro.ru/tracker/browse/UGENE-2497");
     REGISTER_TEST(GUITest_regression_scenarios::test_2169);
@@ -243,7 +243,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_2267_1);
     REGISTER_TEST(GUITest_regression_scenarios::test_2267_2);
     REGISTER_TEST(GUITest_regression_scenarios::test_2268);
-    REGISTER_TEST(GUITest_regression_scenarios::test_2282);
+    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2282, "https://ugene.unipro.ru/tracker/browse/UGENE-2454");
     REGISTER_TEST(GUITest_regression_scenarios::test_2284);
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2316,"https://ugene.unipro.ru/tracker/browse/UGENE-2316");
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2269, "impossible to catch expected error in opStatus without stopping test");

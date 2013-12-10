@@ -139,7 +139,7 @@ GUI_TEST_CLASS_DEFINITION(test_0004) {
     GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os,sandBoxDir + "resule.ugenedb"));
 //UGENE can hang up here
     GTGlobals::sleep();
-    GTUtilsTaskTreeView::waitTaskFinidhed();
+    GTUtilsTaskTreeView::waitTaskFinidhed(os);
 
     CHECK_SET_ERR(!l.hasError( ), "Error message expected in log");
     GTFile::check(os, "_common_data/e_coli/e_coli_1000.gff.fasta");

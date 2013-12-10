@@ -35,11 +35,23 @@ public:
     // backup file to the file with backupPostfix. fail the given file can't be opened
     static void backup(U2OpStatus &os, const QString&);
 
+    // backup directory to the file with backupPostfix
+    static void backupDir(U2OpStatus &os, const QString&);
+
     // copy file removing target file if exist
     static void copy(U2OpStatus &os, const QString& from, const QString& to);
 
+    // copy directory removing target file if exist
+    static void copyDir(U2OpStatus &os, const QString& dirToCopy, const QString& diToPaste);
+
+    // copy file removing target file if exist
+    static void removeDir(QString dirName);
+
     // restores file and deletes backup. fail if there is no backup or can't write to the given file
     static void restore(U2OpStatus &os, const QString&);
+
+    // restores file and deletes backup. fail if there is no backup or can't write to the given file
+    static void restoreDir(U2OpStatus &os, const QString&);
 
     // checks if file exists
     static bool check(U2OpStatus &os, const QString&);

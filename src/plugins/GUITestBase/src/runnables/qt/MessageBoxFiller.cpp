@@ -45,6 +45,7 @@ void MessageBoxDialogFiller::run() {
     if(buttonText!=""){
         QList<QAbstractButton*> list = messageBox->buttons();
         foreach(QAbstractButton* but, list){
+            QString s = but->text();
             if(but->text().contains(buttonText,Qt::CaseInsensitive)){
                 GTWidget::click(os, but);
                 return;

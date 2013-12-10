@@ -37,8 +37,7 @@ namespace GUITest_common_scenarios_workflow_estimating {
 GUI_TEST_CLASS_DEFINITION(test_0001) {
     //1. Open WD.
     //2. Open any NGS pipeline, e.g. Call Variants.
-    QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
-    GTMenu::clickMenuItem(os, menu, QStringList() << "Workflow Designer");
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
     GTUtilsWorkflowDesigner::addSample(os, "Call variants with SAMtools");
 
     //3. Click an "Estimate scheme" button on the toolbar.
@@ -51,8 +50,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
 GUI_TEST_CLASS_DEFINITION(test_0002) {
     //1. Open WD.
     //2. Open any NGS pipeline, e.g. Call Variants.
-    QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
-    GTMenu::clickMenuItem(os, menu, QStringList() << "Workflow Designer");
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
     GTUtilsWorkflowDesigner::addSample(os, "Call variants with SAMtools");
 //    3. Set valid input data.
     GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "read assembly"));

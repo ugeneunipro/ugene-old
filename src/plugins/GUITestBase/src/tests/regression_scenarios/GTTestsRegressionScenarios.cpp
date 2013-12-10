@@ -2332,7 +2332,7 @@ GUI_TEST_CLASS_DEFINITION(test_2093_1) {
 
     // We must click to the "Load schema" button on dashboard's toolbar.
     // The follow code is incorrect, it should be fixed.
-    QWidget* loadSchemaButton = GTWidget::findWidget(os, "Load schema");
+    QWidget* loadSchemaButton = GTWidget::findWidget(os, "Load work");
     CHECK_SET_ERR(loadSchemaButton, "Load schema button not found");
     GTWidget::click(os, loadSchemaButton);
 
@@ -2570,6 +2570,7 @@ GUI_TEST_CLASS_DEFINITION( test_2150 ){
     // 5. Run the workflow.
     GTWidget::click(os,GTAction::button(os,"Run workflow"));
     GTGlobals::sleep(1000);
+    //GTUtilsTaskTreeView::waitTaskFinidhed(os);
 
     // 6. During the workflow execution open the "Tasks" panel in the bottom, find in the task tree the "MUSCLE alignment" subtask and cancel it.
     GTUtilsTaskTreeView::cancelTask(os, "MUSCLE alignment");
@@ -2596,6 +2597,10 @@ GUI_TEST_CLASS_DEFINITION( test_2152 ){
 
     GTUtilsWorkflowDesigner::connect(os, fileList, fileCAP3);
 
+    GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "CAP3"));
+    GTMouseDriver::click(os);
+    GTUtilsWorkflowDesigner::setParameter(os,"Output file", sandBoxDir + "out.ace",GTUtilsWorkflowDesigner::textValue);
+
     GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "File List"));
     GTMouseDriver::click(os);
     GTUtilsWorkflowDesigner::setDatasetInputFile(os, testDir + "_common_data/cap3", "region1.fa");
@@ -2604,6 +2609,7 @@ GUI_TEST_CLASS_DEFINITION( test_2152 ){
     GTUtilsWorkflowDesigner::setDatasetInputFile(os, testDir + "_common_data/cap3", "region4.fa");
 
     GTWidget::click(os,GTAction::button(os,"Run workflow"));
+    GTUtilsTaskTreeView::waitTaskFinidhed(os);
 
     GTUtilsLog::check(os, l);
 }
@@ -2715,10 +2721,11 @@ GUI_TEST_CLASS_DEFINITION(test_1986){
 //8. Select "fasta" output format
 
 //9. Press "OK"
-    GTUtilsTaskTreeView::waitTaskFinidhed();
+    GTUtilsTaskTreeView::waitTaskFinidhed(os);
     QTreeWidget* treeWidget = GTUtilsProjectTreeView::getTreeWidget(os);
     QList<QTreeWidgetItem*> treeItems = GTTreeWidget::getItems(treeWidget->invisibleRootItem());
-    CHECK_SET_ERR(treeItems.takeFirst()->text(0).contains(".fasta"),"No fasta file in project")
+    QString text = treeItems.takeFirst()->text(0);
+    CHECK_SET_ERR(text.contains(".fasta"),text);
 
 //Expected state: the chosen sequence has been downloaded, saved in FASTA format and displayed in sequence view
 }
@@ -2829,6 +2836,7 @@ GUI_TEST_CLASS_DEFINITION( test_2165 ) {
     //4. Press the "Search" button
     GTWidget::click(os, GTWidget::findWidget(os, "btnSearch"));
     GTGlobals::sleep(500);
+    GTUtilsTaskTreeView::waitTaskFinidhed(os);
 
     //Expected: UGENE finds the sequence or shows a error message
     CHECK_SET_ERR(l.hasError() == true, "Error message expected in log");
@@ -3200,8 +3208,13 @@ GUI_TEST_CLASS_DEFINITION( test_2225_2 ){
     GTGlobals::sleep();
 }
 GUI_TEST_CLASS_DEFINITION( test_2259 ){
-    QMenu* menu=GTMenu::showMainMenu(os, MWMENU_SETTINGS);
-    GTMenu::clickMenuItem(os, menu, QStringList() << "action__settings");
+    MainWindow *mw = AppContext::getMainWindow();
+    CHECK_SET_ERR(mw != NULL, "MainWindow is NULL");
+    QMainWindow *mainWindow = mw->getQMainWindow();
+    CHECK_SET_ERR(mainWindow != NULL, "QMainWindow is NULL");
+
+    QAction *menu = mainWindow->findChild<QAction*>(MWMENU_SETTINGS);
+    CHECK_SET_ERR(menu->menu()->actions().size()==2, "wrong numder of actions");
 
     }
 GUI_TEST_CLASS_DEFINITION( test_2267_1 ){
@@ -3252,6 +3265,7 @@ GUI_TEST_CLASS_DEFINITION( test_2267_2 ){
 GUI_TEST_CLASS_DEFINITION( test_2268 ) {
 //    1. Forbid write access to the t-coffee directory (chmod 555 %t-coffee-dir%).
     // Permissions will be returned to the original state, if UGENE won't crash.
+    GTGlobals::sleep();
     ExternalToolRegistry* etRegistry = AppContext::getExternalToolRegistry();
     CHECK_SET_ERR(etRegistry, "External tool registry is NULL");
     ExternalTool* tCoffee = etRegistry->getByName("T-Coffee");
@@ -3393,6 +3407,7 @@ GUI_TEST_CLASS_DEFINITION( test_2282 ) {
     // 3. Delete "chrM.sorted.bam.ugenedb" from the file system (i.e. not from UGENE).
     bool deleteResult = QFile::remove(assFileName);
     CHECK(true == deleteResult, );
+    GTGlobals::sleep();
 
     // Expected state: the project has been removed.
     GTUtilsProject::checkProject(os, GTUtilsProject::NotExists);
@@ -3907,7 +3922,8 @@ GUI_TEST_CLASS_DEFINITION( test_2401 ) {
     GTFileDialog::openFile(os, testDir + "_common_data/ace/", "ace_test_11_(error).ace");
 
     // Expected: the file is not imported but "2401.ugenedb" still exists.
-    CHECK_SET_ERR(QFile::exists(GUrl(ugenedb).getURLString()), "ugenedb file does not exist");
+    QString s = GUrl(ugenedb).getURLString();
+    CHECK_SET_ERR(QFile::exists(s), "ugenedb file does not exist");
 
     // 9. Open the file "2401.ugenedb".
     GTFileDialog::openFile(os, sandbox, fileName);

@@ -21,6 +21,7 @@
 
 #include "GTFile.h"
 #include <QtCore/QFile>
+#include <QtCore/QDir>
 
 namespace U2 {
 
@@ -72,10 +73,89 @@ void GTFile::copy(U2OpStatus &os, const QString& from, const QString& to) {
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "copyDir"
+void GTFile::copyDir(U2OpStatus &os, const QString& dirToCopy, const QString& dirToPaste) {
+
+    QDir from;
+    from.setPath(dirToCopy);
+
+    QString pastePath = dirToPaste;
+    bool ok = QDir().mkpath(pastePath);
+    GT_CHECK(ok, "could not create directory: " + pastePath);
+
+    QFileInfoList list = from.entryInfoList();
+    foreach(QFileInfo info, list){
+        if(info.fileName()=="." || info.fileName()==".."){
+            continue;
+        }
+        if (info.isFile()){
+            copy(os, info.filePath(), pastePath  + '/' + info.fileName());
+        }else if(info.isDir()){
+            copyDir(os, info.filePath(), pastePath  + '/' + info.fileName());
+        }
+
+    }
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "removeDir"
+void GTFile::removeDir(QString dirName)
+{
+    QDir dir(dirName);
+
+
+    foreach (QFileInfo fileInfo, dir.entryInfoList()) {
+        QString fileName = fileInfo.fileName();
+        QString filePath = fileInfo.filePath();
+        if (fileName != "." && fileName != "..") {
+            if(QFile::remove(filePath))
+                continue;
+            else{
+                QDir dir(filePath);
+                if(dir.rmdir(filePath))
+                    continue;
+                else
+                    removeDir(filePath);
+            }
+
+        }
+    }dir.rmdir(dir.absoluteFilePath(dirName));
+}
+/*bool removeDir(const QString & dirName)
+{
+    bool result = true;
+    QDir dir(dirName);
+
+    if (dir.exists(dirName)) {
+        Q_FOREACH(QFileInfo info, dir.entryInfoList(QDir::NoDotAndDotDot | QDir::System | QDir::Hidden  | QDir::AllDirs | QDir::Files, QDir::DirsFirst)) {
+            if (info.isDir()) {
+                result = removeDir(info.absoluteFilePath());
+            }
+            else {
+                result = QFile::remove(info.absoluteFilePath());
+            }
+
+            if (!result) {
+                return result;
+            }
+        }
+        result = dir.rmdir(dirName);
+    }
+    return result;
+}*/
+#undef GT_METHOD_NAME
+
 #define GT_METHOD_NAME "backup"
 void GTFile::backup(U2OpStatus &os, const QString& path) {
 
     copy(os, path, path + backupPostfix);
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "backupDir"
+void GTFile::backupDir(U2OpStatus &os, const QString& path) {
+
+    copyDir(os, path, path + backupPostfix);
 }
 #undef GT_METHOD_NAME
 
@@ -95,6 +175,15 @@ void GTFile::restore(U2OpStatus &os, const QString& path) {
 
     bool renamed = backupFile.rename(path);
     GT_CHECK(renamed == true, "restore of <" + path + "> can't be done");
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "restoreDir"
+void GTFile::restoreDir(U2OpStatus &os, const QString& path) {
+    removeDir(QDir(path).absolutePath());
+    QDir target(path + backupPostfix);
+    copyDir(os, path + backupPostfix, path);
+    removeDir(target.absolutePath());
 }
 #undef GT_METHOD_NAME
 

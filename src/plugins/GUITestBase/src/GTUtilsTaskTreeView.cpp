@@ -28,6 +28,7 @@
 #include <U2Core/Task.h>
 #include <U2Gui/MainWindow.h>
 #include <U2Core/AppContext.h>
+#include <QtCore/QTimer>
 
 #include <QtGui/QTreeWidget>
 
@@ -37,8 +38,10 @@ namespace U2 {
 
 const QString GTUtilsTaskTreeView::widgetName = DOCK_TASK_TREE_VIEW;
 
-void GTUtilsTaskTreeView::waitTaskFinidhed(){
+
+void GTUtilsTaskTreeView::waitTaskFinidhed(U2OpStatus &os, long timeout){
     TaskScheduler* scheduller = AppContext::getTaskScheduler();
+    QTimer::singleShot(timeout, new FailResiever(), SLOT(sl_fail(os)));
     while(!scheduller->getTopLevelTasks().isEmpty()){
        GTGlobals::sleep(100);
     }
