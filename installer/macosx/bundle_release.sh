@@ -62,8 +62,8 @@ if [ -n "$MDQ_SUPPORT_EXE" ]; then
     MAC_DEPLOY_QT_ARGS='-executable='$TARGET_EXE_DIR'/ugenecl -executable='$TARGET_EXE_DIR'/ugenem'
     echo $MAC_DEPLOY_QT_ARGS
 else
-    changeQtInstallNames ${TARGET_EXE_DIR}/ugenecl
-    changeQtInstallNames ${TARGET_EXE_DIR}/ugenem
+    changeQtInstallNames ugenecl
+    changeQtInstallNames ugenem
 
     echo copying qt libraries - plugin dependencies
     cp $PATH_TO_QT/libQtOpenGL.4.dylib "${TARGET_EXE_DIR}/../Frameworks/libQtOpenGL.4.dylib"
