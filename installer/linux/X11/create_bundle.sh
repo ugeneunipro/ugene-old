@@ -114,6 +114,8 @@ cp -v "$PATH_TO_QT_LIBS/libQtOpenGL.so.4" "${TARGET_APP_DIR}"
 strip -v "${TARGET_APP_DIR}/libQtOpenGL.so.4"
 cp -v "$PATH_TO_QT_LIBS/libQtSvg.so.4" "${TARGET_APP_DIR}"
 strip -v "${TARGET_APP_DIR}/libQtSvg.so.4"
+cp -v "$PATH_TO_QT_LIBS/libQtDBus.so.4" "${TARGET_APP_DIR}"
+strip -v "${TARGET_APP_DIR}/libQtDBus.so.4"
 if [ ! -z "$PATH_TO_LIBPNG12" ]; then 
    cp -v "$PATH_TO_LIBPNG12/libpng12.so.0" "${TARGET_APP_DIR}"
    strip -v "${TARGET_APP_DIR}/libpng12.so.0"
