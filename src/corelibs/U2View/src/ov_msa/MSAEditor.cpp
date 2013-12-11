@@ -387,10 +387,11 @@ void MSAEditor::addExportMenu(QMenu* m) {
     em->addAction(saveScreenshotAction);
     em->addAction(saveSvgAction);
     em->addAction(exportHighlightedAction);
-    if(ui->getSequenceArea()->getCurrentHighlightingScheme()->getFactory()->isRefFree()){
-        exportHighlightedAction->setDisabled(true);
-    }else{
+    if(!ui->getSequenceArea()->getCurrentHighlightingScheme()->getFactory()->isRefFree() &&
+                getReferenceRowId() != MAlignmentRow::invalidRowId()){
         exportHighlightedAction->setEnabled(true);
+    }else{
+        exportHighlightedAction->setDisabled(true);
     }
 }
 
