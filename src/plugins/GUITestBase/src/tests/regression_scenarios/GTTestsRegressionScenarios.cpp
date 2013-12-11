@@ -3898,6 +3898,18 @@ GUI_TEST_CLASS_DEFINITION( test_2382_1 ) {
     CHECK_SET_ERR(NULL != assDoc, "Result document was not found!");
 }
 
+GUI_TEST_CLASS_DEFINITION( test_2392 ) {
+    // 1. Open file _common_data/genbank/multi.gb
+    // Expected state: Open dialog "Sequence reading options"
+    // 2. Select "Join sequences into alignment" option and press OK
+    GTUtilsDialog::waitForDialog(os, new SequenceReadingModeSelectorDialogFiller(os, SequenceReadingModeSelectorDialogFiller::Join));
+    GTFileDialog::openFile(os, testDir+"_common_data/genbank/", "multi.gb");
+
+    // Expected state: Document opened in MSA view
+    QStringList names = GTUtilsMSAEditorSequenceArea::getNameList(os);
+    CHECK_SET_ERR(2 == names.size(), "Wrong sequence count");
+}
+
 GUI_TEST_CLASS_DEFINITION( test_2401 ) {
     // 1. Open the file "_common_data/ace/ace_test_1.ace".
     // 2. Set the ugenedb path for import: "_common_data/scenarios/sandbox/2401.ugenedb".
