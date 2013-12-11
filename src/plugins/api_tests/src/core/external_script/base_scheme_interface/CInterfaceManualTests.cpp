@@ -43,7 +43,9 @@ IMPLEMENT_TEST( CInterfaceManualTests, basic_align ) {
     CHECK_U2_ERROR( error );
     error = addElementToScheme( scheme, L"muscle", MAX_ELEMENT_NAME_LENGTH, muscle );
     CHECK_U2_ERROR( error );
-    error = setSchemeElementAttribute( scheme, writeMsa, L"document-format", L"stockholm" );
+    error = setSchemeElementAttribute( scheme, writeMsa, L"document-format", L"clustal" );
+    CHECK_U2_ERROR( error );
+    error = setSchemeElementAttribute( scheme, writeMsa, L"url-out", L"muscle_alignment.aln" );
     CHECK_U2_ERROR( error );
 
     error = addFlowToScheme( scheme, readMsa, L"out-msa", muscle, L"in-msa" );
@@ -78,7 +80,11 @@ IMPLEMENT_TEST( CInterfaceManualTests, faqual2fastq ) {
     error = addElementToScheme( scheme, L"import-phred-qualities", MAX_ELEMENT_NAME_LENGTH,
         importPhredQualities );
     CHECK_U2_ERROR( error );
+    error = setSchemeElementAttribute( scheme, readSequence, L"url-in.dataset", L"Dataset 1" );
+    CHECK_U2_ERROR( error );
     error = setSchemeElementAttribute( scheme, writeSequence, L"document-format", L"fastq" );
+    CHECK_U2_ERROR( error );
+    error = setSchemeElementAttribute( scheme, writeSequence, L"url-out", L"qualified_sequence.fastq" );
     CHECK_U2_ERROR( error );
 
     error = addFlowToScheme( scheme, readSequence, L"out-sequence", importPhredQualities,
@@ -93,9 +99,6 @@ IMPLEMENT_TEST( CInterfaceManualTests, faqual2fastq ) {
     CHECK_U2_ERROR( error );
     error = addSchemeActorsBinding( scheme, importPhredQualities, L"sequence", writeSequence,
         L"in-sequence.sequence" );
-    CHECK_U2_ERROR( error );
-    error = addSchemeActorsBinding( scheme, readSequence, L"annotations", writeSequence,
-        L"in-sequence.annotations" );
     CHECK_U2_ERROR( error );
 
     U2OpStatusImpl stateInfo;
@@ -118,6 +121,8 @@ IMPLEMENT_TEST( CInterfaceManualTests, msa2clustal ) {
     error = setSchemeElementAttribute( scheme, writeMsa, L"document-format", L"clustal" );
     CHECK_U2_ERROR( error );
     error = setSchemeElementAttribute( scheme, writeMsa, L"write-mode", L"2" );
+    CHECK_U2_ERROR( error );
+    error = setSchemeElementAttribute( scheme, writeMsa, L"url-out", L"output.aln" );
     CHECK_U2_ERROR( error );
 
     error = addSchemeActorsBinding( scheme, readMsa, L"msa", writeMsa, L"in-msa.msa" );
@@ -179,6 +184,8 @@ IMPLEMENT_TEST( CInterfaceManualTests, query2alignment ) {
     CHECK_U2_ERROR( error );
     error = setSchemeElementAttribute( scheme, writeMsa, L"write-mode", L"2" );
     CHECK_U2_ERROR( error );
+    error = setSchemeElementAttribute( scheme, writeMsa, L"url-out", L"output.aln" );
+    CHECK_U2_ERROR( error );
 
     error = setSchemeElementAttribute( scheme, filterAnnotations, L"accept-or-filter", L"true" );
     CHECK_U2_ERROR( error );
@@ -230,6 +237,8 @@ IMPLEMENT_TEST( CInterfaceManualTests, seq2gen ) {
     CHECK_U2_ERROR( error );
     error = setSchemeElementAttribute( scheme, writeSequence, L"write-mode", L"2" );
     CHECK_U2_ERROR( error );
+    error = setSchemeElementAttribute( scheme, writeSequence, L"url-out", L"output.gb" );
+    CHECK_U2_ERROR( error );
 
     error = addSchemeActorsBinding( scheme, readSequence, L"annotations", writeSequence,
         L"in-sequence.annotations" );
@@ -271,6 +280,8 @@ IMPLEMENT_TEST( CInterfaceManualTests, tfbs ) {
     CHECK_U2_ERROR( error );
 
     error = setSchemeElementAttribute( scheme, writeSequence, L"document-format", L"genbank" );
+    CHECK_U2_ERROR( error );
+    error = setSchemeElementAttribute( scheme, writeSequence, L"url-out", L"tfbs.gb" );
     CHECK_U2_ERROR( error );
     error = setSchemeElementAttribute( scheme, siteconSearch, L"result-name", L"sitecon" );
     CHECK_U2_ERROR( error );
@@ -371,6 +382,8 @@ IMPLEMENT_TEST( CInterfaceManualTests, build_test_HMM ) {
 
     error = setSchemeElementAttribute( scheme, hmm2WriteProfile, L"write-mode", L"2" );
     CHECK_U2_ERROR( error );
+    error = setSchemeElementAttribute( scheme, hmm2WriteProfile, L"url-out", L"profile.hmm" );
+    CHECK_U2_ERROR( error );
 
     error = setSchemeElementAttribute( scheme, hmm2Search, L"e-val", L"-1" );
     CHECK_U2_ERROR( error );
@@ -386,6 +399,8 @@ IMPLEMENT_TEST( CInterfaceManualTests, build_test_HMM ) {
     error = setSchemeElementAttribute( scheme, writeSequence, L"accumulate", L"true" );
     CHECK_U2_ERROR( error );
     error = setSchemeElementAttribute( scheme, writeSequence, L"write-mode", L"2" );
+    CHECK_U2_ERROR( error );
+    error = setSchemeElementAttribute( scheme, writeSequence, L"url-out", L"output.gb" );
     CHECK_U2_ERROR( error );
 
     error = addSchemeActorsBinding( scheme, readMsa, L"msa", hmm2Build, L"in-msa.msa" );
@@ -454,6 +469,8 @@ IMPLEMENT_TEST( CInterfaceManualTests, search_HMM ) {
     CHECK_U2_ERROR( error );
     error = setSchemeElementAttribute( scheme, writeSequence, L"write-mode", L"2" );
     CHECK_U2_ERROR( error );
+    error = setSchemeElementAttribute( scheme, writeSequence, L"url-out", L"output.gb" );
+    CHECK_U2_ERROR( error );
 
     error = addSchemeActorsBinding( scheme, hmm2ReadProfile, L"hmm2-profile", hmm2Search,
         L"in-hmm2.hmm2-profile" );
@@ -506,6 +523,8 @@ IMPLEMENT_TEST( CInterfaceManualTests, search_TFBS ) {
     CHECK_U2_ERROR( error );
 
     error = setSchemeElementAttribute( scheme, writeSequence, L"document-format", L"genbank" );
+    CHECK_U2_ERROR( error );
+    error = setSchemeElementAttribute( scheme, writeSequence, L"url-out", L"output.gb" );
     CHECK_U2_ERROR( error );
     error = setSchemeElementAttribute( scheme, siteconSearch, L"strand", L"0" );
     CHECK_U2_ERROR( error );
@@ -1400,6 +1419,8 @@ IMPLEMENT_TEST( CInterfaceManualTests, find_sequences ) {
     CHECK_U2_ERROR( error );
     error = setSchemeElementAttribute( scheme, writeSequence, L"write-mode", L"0" );
     CHECK_U2_ERROR( error );
+    error = setSchemeElementAttribute( scheme, writeSequence, L"url-out", L"annotations.gb" );
+    CHECK_U2_ERROR( error );
 
     error = addFlowToScheme( scheme, search, L"out-annotations", writeSequence, L"in-sequence" );
     CHECK_U2_ERROR( error );
@@ -1446,6 +1467,10 @@ IMPLEMENT_TEST( CInterfaceManualTests, gene_by_gene_report ) {
     error = setSchemeElementAttribute( scheme, readSequence, L"url-in.dataset", L"Dataset" );
     CHECK_U2_ERROR( error );
     error = setSchemeElementAttribute( scheme, writeSequence, L"document-format", L"genbank" );
+    CHECK_U2_ERROR( error );
+    error = setSchemeElementAttribute( scheme, writeSequence, L"url-out", L"annotated_sequence.gb" );
+    CHECK_U2_ERROR( error );
+    error = setSchemeElementAttribute( scheme, geneByGeneReportId, L"output-file", L"report.txt" );
     CHECK_U2_ERROR( error );
 
     error = addFlowToScheme( scheme, blast, L"out-annotations", geneByGeneReportId, L"in-data" );
@@ -1504,6 +1529,8 @@ IMPLEMENT_TEST( CInterfaceManualTests, merge_sequence_annotation ) {
     error = setSchemeElementAttribute( scheme, readAnnotations, L"url-in.dataset", L"Dataset" );
     CHECK_U2_ERROR( error );
     error = setSchemeElementAttribute( scheme, writeSequence, L"document-format", L"genbank" );
+    CHECK_U2_ERROR( error );
+    error = setSchemeElementAttribute( scheme, writeSequence, L"url-out", L"merged.gb" );
     CHECK_U2_ERROR( error );
 
     error = addFlowToScheme( scheme, readAnnotations, L"out-annotations", multiplexer, L"input-data-1" );
