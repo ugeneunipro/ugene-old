@@ -47,14 +47,12 @@ unix {
 
 unix_not_mac() : LIBS += -lX11
 
-HEADERS += src/SendReportDialog.h \
-    src/UILogger.h
+HEADERS += src/SendReportDialog.h
 
 FORMS += src/ui/SendReportDialog.ui
 
 SOURCES += src/main.cpp \
-            src/SendReportDialog.cpp \
-    src/UILogger.cpp
+            src/SendReportDialog.cpp
 
 RESOURCES += ugenem.qrc
 
