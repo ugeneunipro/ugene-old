@@ -121,28 +121,6 @@ void GTFile::removeDir(QString dirName)
         }
     }dir.rmdir(dir.absoluteFilePath(dirName));
 }
-/*bool removeDir(const QString & dirName)
-{
-    bool result = true;
-    QDir dir(dirName);
-
-    if (dir.exists(dirName)) {
-        Q_FOREACH(QFileInfo info, dir.entryInfoList(QDir::NoDotAndDotDot | QDir::System | QDir::Hidden  | QDir::AllDirs | QDir::Files, QDir::DirsFirst)) {
-            if (info.isDir()) {
-                result = removeDir(info.absoluteFilePath());
-            }
-            else {
-                result = QFile::remove(info.absoluteFilePath());
-            }
-
-            if (!result) {
-                return result;
-            }
-        }
-        result = dir.rmdir(dirName);
-    }
-    return result;
-}*/
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "backup"
@@ -180,10 +158,20 @@ void GTFile::restore(U2OpStatus &os, const QString& path) {
 
 #define GT_METHOD_NAME "restoreDir"
 void GTFile::restoreDir(U2OpStatus &os, const QString& path) {
-    removeDir(QDir(path).absolutePath());
-    QDir target(path + backupPostfix);
-    copyDir(os, path + backupPostfix, path);
-    removeDir(target.absolutePath());
+    QDir backupDir(path + backupPostfix);
+    bool exists = backupDir.exists();
+    if(!exists){
+        return;
+    }
+
+    QDir dir(path);
+    exists = dir.exists();
+    if (exists) {
+        removeDir(dir.absolutePath());
+    }
+
+    bool renamed = backupDir.rename(path + backupPostfix, path);
+    GT_CHECK(renamed == true, "restore of <" + path + "> can't be done");
 }
 #undef GT_METHOD_NAME
 
