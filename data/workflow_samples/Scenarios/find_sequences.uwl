@@ -28,6 +28,7 @@ workflow "Find patterns"{
         name:"Write Sequence";
         document-format:genbank;
         write-mode:0;
+        url-out:annotations.gb;
     }
 
 
@@ -67,6 +68,64 @@ workflow "Find patterns"{
             }
             search.out-annotations->write-sequence.in-sequence {
                 text-pos:"-45 -37";
+            }
+        }
+        wizard {
+            name:"Find patterns Wizard";
+            page {
+                id:1;
+                next:2;
+                title:"Input sequence(s)";
+                parameters-area {
+                    read-sequence.url-in {
+                        type:datasets;
+                    }
+                }
+            }
+            page {
+                id:2;
+                next:3;
+                title:"Find Pattern";
+                parameters-area {
+                    group {
+                        title:"Find Pattern parameters";
+                        label-size:150;
+                        search.pattern_file {
+                            label:"Pattern";
+                        }
+                        search.result-name {
+                        }
+                        search.use-names {
+                        }
+                        search.max-mismatches-num {
+                        }
+                        search.allow-ins-del {
+                        }
+                        search.amino {
+                        }
+                        search.ambiguous {
+                        }
+                        search.pattern-name-qual {
+                            label:"Qualifier name";
+                        }
+                    }
+                }
+            }
+            page {
+                id:3;
+                title:"Output data";
+                parameters-area {
+                    group {
+                        title:"Output data";
+                        label-size:120;
+                        write-sequence.url-out {
+                            label:"Result file";
+                        }
+                        write-sequence.accumulate {
+                            label:"Accumulate results";
+                        }
+                    }
+                }
             }
         }
     }

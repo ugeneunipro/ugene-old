@@ -7,10 +7,16 @@
 #After running the schema, target fastq file will appear in the same folder as the source file, with the same name but diffrent extension.
 #
 
-workflow "Convert seq/qual pair to Fastq"{
+
+
+workflow "Convert seq/qual pair to FASTQ"{
+
     read-sequence {
         type:read-sequence;
         name:"Read sequence";
+        url-in {
+            dataset:"Dataset 1";
+        }
     }
     import-phred-qualities {
         type:import-phred-qualities;
@@ -20,6 +26,7 @@ workflow "Convert seq/qual pair to Fastq"{
         type:write-sequence;
         name:"Write sequence";
         document-format:fastq;
+        url-out:qualified_sequence.fastq;
     }
 
     .actor-bindings {
@@ -28,29 +35,25 @@ workflow "Convert seq/qual pair to Fastq"{
     }
 
     read-sequence.sequence->import-phred-qualities.in-sequence.sequence
-    read-sequence.annotations->write-sequence.in-sequence.annotations
     import-phred-qualities.sequence->write-sequence.in-sequence.sequence
 
     .meta {
         visual {
-            read-sequence {
-                pos:"-750 -645";
-                style:ext;
-                bg-color-ext:"0 128 128 64";
-                out-sequence.angle:360;
-            }
             import-phred-qualities {
-                pos:"-585 -645";
+                pos:"-570 -630";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 in-sequence.angle:180;
                 out-sequence.angle:360;
             }
-            read-sequence.out-sequence->import-phred-qualities.in-sequence {
-                text-pos:"-27.5 -24";
+            read-sequence {
+                pos:"-735 -630";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                out-sequence.angle:360;
             }
             write-sequence {
-                pos:"-285 -645";
+                pos:"-270 -630";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 in-sequence.angle:180;
@@ -58,6 +61,49 @@ workflow "Convert seq/qual pair to Fastq"{
             import-phred-qualities.out-sequence->write-sequence.in-sequence {
                 text-pos:"-45 -50";
             }
+            read-sequence.out-sequence->import-phred-qualities.in-sequence {
+                text-pos:"-27.5 -24";
+            }
+        }
+        wizard {
+            name:"Convert seq/qual pair to FASTQ Wizard";
+            page {
+                id:1;
+                next:2;
+                title:"Input sequence(s)";
+                parameters-area {
+                    read-sequence.url-in {
+                        type:datasets;
+                    }
+                }
+            }
+            page {
+                id:2;
+                title:"Convert seq/qual pairs to FASTQ";
+                parameters-area {
+                    group {
+                        title:"Import PHRED qualities";
+                        label-size:120;
+                        import-phred-qualities.url-in {
+                        }
+                        import-phred-qualities.quality-type {
+                        }
+                        import-phred-qualities.quality-format {
+                        }
+                    }
+                    group {
+                        title:"Output data";
+                        label-size:120;
+                        write-sequence.url-out {
+                            label:"Result file";
+                        }
+                        write-sequence.accumulate {
+                            label:"Accumulate results";
+                        }
+                    }
+                }
+            }
         }
     }
 }
+

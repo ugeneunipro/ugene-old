@@ -26,6 +26,7 @@ workflow "Search sequences with profile HMM"{
         name:"Write Genbank";
         accumulate:true;
         write-mode:2;
+        url-out:output.gb;
     }
 
     hmm2-read-profile.hmm2-profile->hmm2-search.in-hmm2.hmm2-profile
@@ -70,6 +71,53 @@ workflow "Search sequences with profile HMM"{
             }
             hmm2-search.out-annotations->write-genbank.in-sequence {
                 text-pos:"-45 -37";
+            }
+        }
+        wizard {
+            name:"Search sequences with profile HMM Wizard";
+            page {
+                id:1;
+                next:2;
+                title:"Input sequence(s)";
+                parameters-area {
+                    read-sequence.url-in {
+                        type:datasets;
+                    }
+                }
+            }
+            page {
+                id:2;
+                title:"HMM Search";
+                parameters-area {
+                    group {
+                        title:"Input HMM profile(s)";
+                        label-size:120;
+                        hmm2-read-profile.url-in {
+                            label:"HMM profile(s)";
+                        }
+                    }
+                    group {
+                        title:"HMM Search parameters";
+                        label-size:120;
+                        hmm2-search.result-name {
+                        }
+                        hmm2-search.seqs-num {
+                        }
+                        hmm2-search.e-val {
+                        }
+                        hmm2-search.score {
+                        }
+                    }
+                    group {
+                        title:"Output data";
+                        label-size:120;
+                        write-genbank.url-out {
+                            label:"Result Genbank file";
+                        }
+                        write-genbank.accumulate {
+                        }
+                    }
+                }
             }
         }
     }

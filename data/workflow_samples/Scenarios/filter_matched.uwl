@@ -38,6 +38,7 @@ workflow "Filter sequence that match a pattern"{
     write-annotations {
         type:write-annotations;
         name:"Write Annotations";
+        url-out:annotations.gb;
     }
 
     @mark-sequence.m1 {
@@ -115,6 +116,59 @@ workflow "Filter sequence that match a pattern"{
             }
             search.out-annotations->mark-sequence.in-sequence {
                 text-pos:"-45 -37";
+            }
+        }
+        wizard {
+            name:"Filter sequence that match a pattern Wizard";
+            page {
+                id:1;
+                next:2;
+                title:"Input sequence(s)";
+                parameters-area {
+                    read-sequence.url-in {
+                        type:datasets;
+                    }
+                }
+            }
+            page {
+                id:2;
+                next:3;
+                title:"Find Pattern";
+                parameters-area {
+                    group {
+                        title:"Find Pattern parameters";
+                        label-size:150;
+                        search.pattern_file {
+                            label:"Pattern";
+                        }
+                        search.use-names {
+                        }
+                        search.max-mismatches-num {
+                        }
+                        search.allow-ins-del {
+                        }
+                        search.amino {
+                        }
+                        search.ambiguous {
+                        }
+                        search.pattern-name-qual {
+                            label:"Qualifier name";
+                        }
+                    }
+                }
+            }
+            page {
+                id:3;
+                title:"Output data";
+                parameters-area {
+                    group {
+                        title:"Output data";
+                        label-size:120;
+                        write-annotations.url-out {
+                            label:"Result file";
+                        }
+                    }
+                }
             }
         }
     }

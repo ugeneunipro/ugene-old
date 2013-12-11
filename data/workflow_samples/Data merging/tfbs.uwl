@@ -17,6 +17,7 @@ workflow "Search for tfbs"{
         type:write-sequence;
         name:"Write Sequence";
         document-format:genbank;
+        url-out:tfbs.gb;
     }
     multiplexer {
         type:multiplexer;
@@ -142,6 +143,72 @@ workflow "Search for tfbs"{
             }
             wmatrix-read.out-wmatrix->wmatrix-search.in-wmatrix {
                 text-pos:"13.5 -11";
+            }
+        }
+        wizard {
+            name:"Search for tfbs Wizard";
+            page {
+                id:1;
+                next:2;
+                title:"Input sequence(s)";
+                parameters-area {
+                    read-sequence.url-in {
+                        type:datasets;
+                    }
+                }
+            }
+            page {
+                id:2;
+                next:3;
+                title:"Search for TFBS parameters";
+                parameters-area {
+                    group {
+                        title:"Weight Matrix parameters";
+                        label-size:120;
+                        wmatrix-read.url-in {
+                            label:"Weight Matrix";
+                        }
+                        wmatrix-search.result-name {
+                        }
+                        wmatrix-search.strand {
+                        }
+                        wmatrix-search.min-score {
+                        }
+                    }
+                    group {
+                        title:"SITECON parameters";
+                        label-size:120;
+                        sitecon-read.url-in {
+                            label:"SITECON Model";
+                        }
+                        sitecon-search.result-name {
+                        }
+                        sitecon-search.strand {
+                        }
+                        sitecon-search.min-score {
+                        }
+                        sitecon-search.err1 {
+                        }
+                        sitecon-search.err2 {
+                        }
+                    }
+                }
+            }
+            page {
+                id:3;
+                title:"Output data";
+                parameters-area {
+                    group {
+                        title:"Output data";
+                        label-size:120;
+                        write-sequence.url-out {
+                            label:"Result file";
+                        }
+                        write-sequence.accumulate {
+                            label:"Accumulate results";
+                        }
+                    }
+                }
             }
         }
     }

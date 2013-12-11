@@ -20,6 +20,7 @@ out_text=getName(in_sequence) + ": " + size(in_sequence);
         name:"Write plain text";
         accumulate:true;
         write-mode:2;
+        url-out:info.txt;
     }
 
     read-sequence.sequence->Script-Dump-sequence-info.in.sequence
@@ -51,6 +52,35 @@ out_text=getName(in_sequence) + ": " + size(in_sequence);
             }
             Script-Dump-sequence-info.out->write-text.in-text {
                 text-pos:"-32.5 -24";
+            }
+        }
+        wizard {
+            name:"Dump sequence info Wizard";
+            page {
+                id:1;
+                next:2;
+                title:"Input sequence(s)";
+                parameters-area {
+                    read-sequence.url-in {
+                        type:datasets;
+                    }
+                }
+            }
+            page {
+                id:2;
+                title:"Output data";
+                parameters-area {
+                    group {
+                        title:"Output data";
+                        label-size:120;
+                        write-text.url-out {
+                            label:"Result file";
+                        }
+                        write-text.accumulate {
+                            label:"Accumulate results";
+                        }
+                    }
+                }
             }
         }
     }

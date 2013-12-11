@@ -18,6 +18,7 @@ workflow "Convert sequence to Genbank"{
         name:"Write Genbank";
         accumulate:true;
         write-mode:2;
+        url-out:output.gb;
     }
 
     read-sequence.annotations->write-genbank.in-sequence.annotations
@@ -39,6 +40,35 @@ workflow "Convert sequence to Genbank"{
             }
             read-sequence.out-sequence->write-genbank.in-sequence {
                 text-pos:"-27.5 -24";
+            }
+        }
+        wizard {
+            name:"Convert sequence to Genbank Wizard";
+            page {
+                id:1;
+                next:2;
+                title:"Input sequence(s)";
+                parameters-area {
+                    read-sequence.url-in {
+                        type:datasets;
+                    }
+                }
+            }
+            page {
+                id:2;
+                title:"Output data";
+                parameters-area {
+                    group {
+                        title:"Output data";
+                        label-size:120;
+                        write-genbank.url-out {
+                            label:"Result Genbank file";
+                        }
+                        write-genbank.accumulate {
+                            label:"Accumulate results";
+                        }
+                    }
+                }
             }
         }
     }

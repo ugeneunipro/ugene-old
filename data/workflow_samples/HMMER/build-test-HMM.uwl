@@ -28,6 +28,7 @@ workflow "Build HMM from alignment and test it"{
         type:hmm2-write-profile;
         name:"Write HMM profile";
         write-mode:2;
+        url-out:profile.hmm;
     }
     hmm2-search {
         type:hmm2-search;
@@ -43,6 +44,7 @@ workflow "Build HMM from alignment and test it"{
         name:"Write Genbank";
         accumulate:true;
         write-mode:2;
+        url-out:output.gb;
     }
 
     read-msa.msa->hmm2-build.in-msa.msa
@@ -108,6 +110,100 @@ workflow "Build HMM from alignment and test it"{
             }
             hmm2-search.out-annotations->write-genbank.in-sequence {
                 text-pos:"-45 -37";
+            }
+        }
+        wizard {
+            name:"Build HMM from alignment and test it Wizard";
+            page {
+                id:1;
+                next:2;
+                title:"Input MSA(s)"
+                parameters-area {
+                    read-msa.url-in {
+                        type:datasets;
+                    }
+                }
+            }
+            page {
+                id:2;
+                next:3;
+                title:"Input sequence(s)";
+                parameters-area {
+                    read-sequence.url-in {
+                        type:datasets;
+                    }
+                }
+            }
+            page {
+                id:3;
+                next:4;
+                title:"HMM Build";
+                parameters-area {
+                    group {
+                        title:"Output data";
+                        label-size:120;
+                        hmm2-write-profile.url-out {
+                            label:"Output HMM profile";
+                        }
+                    }
+                    group {
+                        title:"HMM Build parameters";
+                        label-size:120;
+                        hmm2-build.strategy {
+                        }
+                        hmm2-build.profile-name {
+                        }
+                        hmm2-build.calibrate {
+                        }
+                    }
+                    group {
+                        title:"Additional";
+                        label-size:120;
+                        type:hideable;
+                        hmm2-build.calibration-threads {
+                        }
+                        hmm2-build.fix-samples-length {
+                            label:"Fixed length";
+                        }
+                        hmm2-build.mean-samples-length {
+                            label:"Mean length";
+                        }
+                        hmm2-build.samples-num {
+                        }
+                        hmm2-build.deviation {
+                        }
+                        hmm2-build.seed {
+                        }
+                    }
+                }
+            }
+            page {
+                id:4;
+                title:"HMM Search";
+                parameters-area {
+                    group {
+                        title:"Output data";
+                        label-size:120;
+                        write-genbank.url-out {
+                            label:"Output genbank";
+                        }
+                        write-genbank.accumulate {
+                            label:"Accumulate results";
+                        }
+                    }
+                    group {
+                        title:"HMM Search parameters";
+                        label-size:120;
+                        hmm2-search.result-name {
+                        }
+                        hmm2-search.seqs-num {
+                        }
+                        hmm2-search.e-val {
+                        }
+                        hmm2-search.score {
+                        }
+                    }
+                }
             }
         }
     }

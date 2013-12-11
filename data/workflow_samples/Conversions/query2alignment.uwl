@@ -38,6 +38,7 @@ workflow "Convert UQL schema results to alignment" {
         name:"Write alignment";
         document-format:clustal;
         write-mode:2;
+        url-out:output.aln;
     }
     filter-annotations {
         type:filter-annotations;
@@ -72,7 +73,7 @@ workflow "Convert UQL schema results to alignment" {
                 text-pos:"-27.5 -24";
             }
             extract-annotated-sequence {
-                pos:"-270 -795";
+                pos:"-255 -795";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 bounds:"-30 -30 116 105";
@@ -99,7 +100,7 @@ workflow "Convert UQL schema results to alignment" {
                 text-pos:"-43.5 -24";
             }
             filter-annotations {
-                pos:"-435 -795";
+                pos:"-475 -795";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 in-annotations.angle:180;
@@ -110,6 +111,53 @@ workflow "Convert UQL schema results to alignment" {
             }
             filter-annotations.out-annotations->extract-annotated-sequence.in-sequence {
                 text-pos:"-45 -37";
+            }
+        }
+        wizard {
+            name:"Convert UQL schema results to alignment Wizard";
+            page {
+                id:1;
+                next:2;
+                title:"Input sequence(s)";
+                parameters-area {
+                    read-sequence.url-in {
+                        type:datasets;
+                    }
+                }
+            }
+            page {
+                id:2;
+                title:"Annotate with UQL";
+                parameters-area {
+                    group {
+                        title:"UQL parameters";
+                        label-size:120;
+                        query.url-in {
+                            label:"UQL schema file";
+                        }
+                        query.merge {
+                        }
+                        query.offset {
+                        }
+                    }
+                    group {
+                        title:"Filter annotations parameters";
+                        label-size:120;
+                        filter-annotations.annotation-names {
+                        }
+                        filter-annotations.accept-or-filter {
+                        }
+                    }
+                    group {
+                        title:"Output data";
+                        label-size:120;
+                        write-msa.url-out {
+                            label:"Result file";
+                        }
+                        write-msa.document-format {
+                        }
+                    }
+                }
             }
         }
     }

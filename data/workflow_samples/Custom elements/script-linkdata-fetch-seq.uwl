@@ -48,5 +48,37 @@ out_sequence = sequenceFromText(LinkData.getObjects(workId,filename,subject,prop
                 text-pos:"-32.5 -24";
             }
         }
+        wizard {
+            name:"LinkData fetch Wizard";
+            page {
+                id:1;
+                title:"LinkData Fetch";
+                parameters-area {
+                    group {
+                        title:"LinkData Fetch";
+                        label-size:120;
+                        script-linkdata-fetch.workId {
+                            label:"Work ID";
+                        }
+                        script-linkdata-fetch.filename {
+                            label:"File name";
+                        }
+                        script-linkdata-fetch.subject {
+                            label:"Subject";
+                        }
+                        script-linkdata-fetch.property {
+                            label:"Property";
+                        }
+                    }
+                    group {
+                        title:"Output data";
+                        label-size:120;
+                        write-sequence.url-out {
+                            label:"Result sequence";
+                        }
+                    }
+                }
+            }
+        }
     }
 }

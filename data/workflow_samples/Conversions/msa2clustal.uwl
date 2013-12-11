@@ -16,6 +16,7 @@ workflow "Convert alignments to ClustalW"{
         document-format:clustal;
         name:"Write ClustalW";
         write-mode:2;
+        url-out:output.aln;
     }
 
     read-msa.msa->write-clustalw.in-msa.msa
@@ -36,6 +37,32 @@ workflow "Convert alignments to ClustalW"{
             }
             read-msa.out-msa->write-clustalw.in-msa {
                 text-pos:"-45 -50";
+            }
+        }
+        wizard {
+            name:"Convert alignments to ClustalW Wizard";
+            page {
+                id:1;
+                next:2;
+                title:"Input MSA(s)";
+                parameters-area {
+                    read-msa.url-in {
+                        type:datasets;
+                    }
+                }
+            }
+            page {
+                id:2;
+                title:"Output data";
+                parameters-area {
+                    group {
+                        title:"Output data";
+                        label-size:120;
+                        write-clustalw.url-out {
+                            label:"Result ClustalW file";
+                        }
+                    }
+                }
             }
         }
     }

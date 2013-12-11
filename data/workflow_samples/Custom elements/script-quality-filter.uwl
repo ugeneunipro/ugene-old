@@ -14,6 +14,7 @@ workflow "Quality filter"{
         accumulate:true;
 		document-format:fastq;
         write-mode:2;
+        url-out:filtered.fastq;
     }
     Script-Quality-filter-example {
         type:"Script-Quality Filter Example";
@@ -59,6 +60,42 @@ if (hasQuality(in_sequence)) {
             }
             Script-Quality-filter-example.out->write-fastq.in-sequence {
                 text-pos:"-32.5 -24";
+            }
+        }
+        wizard {
+            name:"Quality filter Wizard";
+            page {
+                id:1;
+                next:2;
+                title:"Input sequence(s)";
+                parameters-area {
+                    read-sequence.url-in {
+                        type:datasets;
+                    }
+                }
+            }
+            page {
+                id:2;
+                title:"Quality Filter";
+                parameters-area {
+                    group {
+                        title:"Filter parameters";
+                        label-size:120;
+                        Script-Quality-filter-example.quality {
+                            label:"Minimum quality value";
+                        }
+                    }
+                    group {
+                        title:"Output data";
+                        label-size:120;
+                        write-fastq.url-out {
+                            label:"Result FASTQ file";
+                        }
+                        write-fastq.accumulate {
+                            label:"Accumulate results";
+                        }
+                    }
+                }
             }
         }
     }

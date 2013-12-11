@@ -25,6 +25,7 @@ workflow "Search for transcription factor binding sites (TFBS) in genomic sequen
         type:write-sequence;
         name:"Write Genbank";
         document-format:genbank;
+        url-out:output.gb;
     }
     sitecon-read-1 {
         type:sitecon-read;
@@ -101,19 +102,19 @@ workflow "Search for transcription factor binding sites (TFBS) in genomic sequen
                 in-sequence.angle:180;
             }
             sitecon-read-1 {
-                pos:"-750 -315";
+                pos:"-750 -200";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 out-sitecon.angle:88.727;
             }
             sitecon-read-2 {
-                pos:"-540 -315";
+                pos:"-540 -200";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 out-sitecon.angle:85.486;
             }
             sitecon-read-3 {
-                pos:"-330 -315";
+                pos:"-330 -200";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 out-sitecon.angle:90;
@@ -138,6 +139,116 @@ workflow "Search for transcription factor binding sites (TFBS) in genomic sequen
             }
             sitecon-search-1.out-annotations->write-sequence-1.in-sequence {
                 text-pos:"-45 -37";
+            }
+        }
+        wizard {
+            name:"Search for transcription factor binding sites (TFBS) in genomic sequences Wizard";
+            page {
+                id:1;
+                next:2;
+                title:"Input sequence(s)";
+                parameters-area {
+                    read-sequence-1.url-in {
+                        type:datasets;
+                    }
+                }
+            }
+            page {
+                id:2;
+                next:3;
+                title:"Search for TFBS I";
+                parameters-area {
+                    group {
+                        title:"SITECON model I";
+                        label-size:120;
+                        sitecon-read-1.url-in {
+                        }
+                    }
+                    group {
+                        title:"Search for TFBS with SITECON I";
+                        label-size:120;
+                        sitecon-search-1.result-name {
+                        }
+                        sitecon-search-1.strand {
+                        }
+                        sitecon-search-1.min-score {
+                        }
+                        sitecon-search-1.err1 {
+                        }
+                        sitecon-search-1.err2 {
+                        }
+                    }
+                }
+            }
+            page {
+                id:3;
+                next:4;
+                title:"Search for TFBS II";
+                parameters-area {
+                    group {
+                        title:"SITECON model II";
+                        label-size:120;
+                        sitecon-read-2.url-in {
+                        }
+                    }
+                    group {
+                        title:"Search for TFBS with SITECON II";
+                        label-size:120;
+                        sitecon-search-2.result-name {
+                        }
+                        sitecon-search-2.strand {
+                        }
+                        sitecon-search-2.min-score {
+                        }
+                        sitecon-search-2.err1 {
+                        }
+                        sitecon-search-2.err2 {
+                        }
+                    }
+                }
+            }
+            page {
+                id:4;
+                next:5;
+                title:"Search for TFBS III";
+                parameters-area {
+                    group {
+                        title:"SITECON model III";
+                        label-size:120;
+                        sitecon-read-3.url-in {
+                        }
+                    }
+                    group {
+                        title:"Search for TFBS with SITECON III";
+                        label-size:120;
+                        sitecon-search-3.result-name {
+                        }
+                        sitecon-search-3.strand {
+                        }
+                        sitecon-search-3.min-score {
+                        }
+                        sitecon-search-3.err1 {
+                        }
+                        sitecon-search-3.err2 {
+                        }
+                    }
+                }
+            }
+            page {
+                id:5;
+                title:"Output data";
+                parameters-area {
+                    group {
+                        label-size:120;
+                        title:"Output data";
+                        write-sequence-1.url-out {
+                            label:"Result file";
+                        }
+                        write-sequence-1.accumulate {
+                            label:"Accumulate resuls";
+                        }
+                    }
+                }
             }
         }
     }

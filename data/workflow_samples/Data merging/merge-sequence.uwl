@@ -45,6 +45,7 @@ workflow "Merge sequences and shift corresponding annotations"{
     write-sequence {
         type:write-sequence;
         name:"Write Sequence";
+        url-out:merged.fa;
     }
 
     @mark-sequence.m1 {

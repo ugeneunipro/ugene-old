@@ -31,6 +31,7 @@ workflow "Merge sequences and annotations"{
         type:write-sequence;
         name:"Write Sequence";
         document-format:genbank;
+        url-out:merged.gb;
     }
 
 
@@ -81,6 +82,45 @@ workflow "Merge sequences and annotations"{
             }
             read-sequence.out-sequence->multiplexer.input-data-2 {
                 text-pos:"-27.5 -24";
+            }
+        }
+        wizard {
+            name:"Merge sequences and annotations Wizard";
+            page {
+                id:1;
+                next:2;
+                title:"Input sequence(s)";
+                parameters-area {
+                    read-sequence.url-in {
+                        type:datasets;
+                    }
+                }
+            }
+            page {
+                id:2;
+                next:3;
+                title:"Input annotation(s)";
+                parameters-area {
+                    read-annotations.url-in {
+                        type:datasets;
+                    }
+                }
+            }
+            page {
+                id:3;
+                title:"Output data";
+                parameters-area {
+                    group {
+                        title:"Output data";
+                        label-size:120;
+                        write-sequence.url-out {
+                            label:"Result file";
+                        }
+                        write-sequence.accumulate {
+                            label:"Accumulate results";
+                        }
+                    }
+                }
             }
         }
     }

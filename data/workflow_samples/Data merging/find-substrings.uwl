@@ -52,6 +52,8 @@ workflow "Find substrings in sequences"{
     write-sequence {
         type:write-sequence;
         name:"Write Sequence";
+        document-format:genbank;
+        url-out:substrings.gb;
     }
 
 
@@ -86,7 +88,7 @@ workflow "Find substrings in sequences"{
                 out-text.angle:45;
             }
             multiplexer {
-                pos:"-733 -669";
+                pos:"-733 -700";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 input-data-1.angle:43.2101;
@@ -130,6 +132,62 @@ workflow "Find substrings in sequences"{
             }
             grouper.output-data->write-sequence.in-sequence {
                 text-pos:"-109 -18";
+            }
+        }
+        wizard {
+            name:"Find substrings in sequences Wizard";
+            page {
+                id:1;
+                next:2;
+                title:"Input sequence(s)";
+                parameters-area {
+                    read-sequence.url-in {
+                        type:datasets;
+                    }
+                }
+            }
+            page {
+                id:2;
+                next:3;
+                title:"Input pattern(s)";
+                parameters-area {
+                    read-text.url-in {
+                        type:datasets;
+                    }
+                }
+            }
+            page {
+                id:3;
+                title:"Find substrings";
+                parameters-area {
+                    group {
+                        title:"Search parameters";
+                        label-size:150;
+                        search.result-name {
+                        }
+                        search.allow-ins-del {
+                        }
+                        search.amino {
+                        }
+                        search.ambiguous {
+                        }
+                        search.pattern-name-qual {
+                            label:"Qualifier name";
+                        }
+                        search.max-mismatches-num {
+                        }
+                    }
+                    group {
+                        title:"Output data";
+                        label-size:120;
+                        write-sequence.url-out {
+                            label:"Result file";
+                        }
+                        write-sequence.accumulate {
+                            label:"Accumulate results";
+                        }
+                    }
+                }
             }
         }
     }
