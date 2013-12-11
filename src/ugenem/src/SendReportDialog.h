@@ -46,16 +46,21 @@ private:
     QEventLoop loop;
 };
 
-class SendReportDialog:public QDialog, public Ui_Dialog{
+class SendReportDialog:public QDialog, public Ui_Dialog {
     Q_OBJECT
 public:
     SendReportDialog(const QString &report, QDialog *d = NULL);
-
+private:
+    void openUgene() const;
+    QString getCommandForRunUgene() const;
+    QString getUgeneName() const;
+    QStringList getParameters() const;
 private slots:
-        void sl_onOKclicked();
-        void sl_onMaximumMessageSizeReached();
+    void sl_onOkClicked();
+    void sl_onMaximumMessageSizeReached();
+    void sl_onCancelClicked();
 
-public:
+private:
     ReportSender sender;
 };
 

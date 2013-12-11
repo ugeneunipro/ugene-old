@@ -28,14 +28,15 @@
 #include <QtCore/QEventLoop>
 #include <QtCore/QProcess>
 #include <QtCore/QSysInfo>
+#include <QtCore/QFile>
+#include <QtCore/QProcess>
 
 #include <QtNetwork/QNetworkAccessManager>
 #include <QtNetwork/QNetworkProxy>
 #include <QtNetwork/QNetworkReply>
 #include <QtNetwork/QNetworkRequest>
 
-#include <QMessageBox>
-#include <QFile>
+#include <QtGui/QMessageBox>
 
 #ifdef Q_OS_WIN
 #include <intrin.h>
@@ -149,22 +150,36 @@ bool ReportSender::send(const QString &additionalInfo) {
     }
     return true;
 }
-void ReportSender::sl_replyFinished(QNetworkReply *){
+void ReportSender::sl_replyFinished(QNetworkReply *) {
     loop.exit();
 }
 
 SendReportDialog::SendReportDialog(const QString &report, QDialog *d): 
-QDialog(d){
+QDialog(d) {
     setupUi(this);
     sender.parse(report);
     errorEdit->setText(sender.getReport());
     connect(additionalInfoTextEdit,SIGNAL(textChanged()), 
 SLOT(sl_onMaximumMessageSizeReached()));
-    connect(sendButton, SIGNAL(clicked()), SLOT(sl_onOKclicked()));
-    connect(cancelButton, SIGNAL(clicked()), SLOT(reject()));
+    connect(sendButton, SIGNAL(clicked()), SLOT(sl_onClicked()));
+    connect(cancelButton, SIGNAL(clicked()), SLOT(sl_onCancelClicked()));
+
+    QFile file(getUgeneName());
+    if (!file.exists()) {
+        checkBox->hide();
+        checkBox->setChecked(false);
+    }
 }
-void SendReportDialog::sl_onMaximumMessageSizeReached(){
-    if(additionalInfoTextEdit->toPlainText().length() > 500 ){
+
+void SendReportDialog::sl_onCancelClicked() {
+    if (checkBox->isChecked()) {
+        openUgene();
+    }
+    this->reject();
+}
+
+void SendReportDialog::sl_onMaximumMessageSizeReached() {
+    if(additionalInfoTextEdit->toPlainText().length() > 500 ) {
         QMessageBox msgBox;
         msgBox.setWindowTitle(tr("Warning"));
         msgBox.setText(tr("The \"Additional information\" message is too long."));
@@ -176,18 +191,71 @@ void SendReportDialog::sl_onMaximumMessageSizeReached(){
         additionalInfoTextEdit->undo();
     }
 }
-void SendReportDialog::sl_onOKclicked() {
 
+QString SendReportDialog::getCommandForRunUgene() const {
+    QString command = getUgeneName();
+#if defined Q_OS_LINUX || defined Q_OS_MAC
+    command.prepend("./");
+#endif
+    return command;
+}
+
+QString SendReportDialog::getUgeneName() const {
+    QString name;
+    bool isWin = false;
+#ifdef Q_OS_LINUX
+    name = "ugene";
+#endif
+#ifdef Q_OS_WIN32
+    isWin = true;
+    name = "ugene.exe";
+#endif
+#ifdef Q_OS_MAC
+    name = "ugeneui";
+#endif
+#ifdef QT_DEBUG
+    if (isWin) {
+        name = "ugened.exe";
+    }else{
+        name.append("d");
+    }
+#endif
+    return name;
+}
+
+QStringList SendReportDialog::getParameters() const {
+    QStringList parameters;
+#ifdef Q_OS_LINUX
+    parameters << "-ui";
+#endif
+    return parameters;
+}
+
+void SendReportDialog::openUgene() const {
+    QString command = getCommandForRunUgene();
+    QStringList parameters = getParameters();
+    QProcess::startDetached(command, parameters);
+}
+
+void SendReportDialog::sl_onOkClicked() {
+    sendButton->setEnabled(false);
+    cancelButton->setEnabled(false);
+    checkBox->setEnabled(false);
     QString htmlReport = "";
-    if(!emailLineEdit->text().isEmpty()){
+    if(!emailLineEdit->text().isEmpty()) {
         htmlReport += "\nUser email: ";
         htmlReport += emailLineEdit->text() + "\n";
     }
 
-    if(!additionalInfoTextEdit->toPlainText().isEmpty()){
+    if(!additionalInfoTextEdit->toPlainText().isEmpty()) {
         htmlReport += "\nAdditional info: \n";
         htmlReport += additionalInfoTextEdit->toPlainText() + "\n";
     }
+
+    if (checkBox->isChecked()) {
+        openUgene();
+    }
+
     if(sender.send(htmlReport)) {
         accept();
     }
@@ -198,7 +266,7 @@ QString ReportSender::getOSVersion() {
     QString result;
 #if defined(Q_OS_WIN32)
     result = "Windows ";
-    switch (QSysInfo::WindowsVersion){
+    switch (QSysInfo::WindowsVersion) {
     case QSysInfo::WV_32s:
         result += "3.1 with Win 32s";
         break;
@@ -243,7 +311,7 @@ QString ReportSender::getOSVersion() {
     result = "Linux";
 #elif defined(Q_OS_MAC)
     result = "Mac ";
-    switch (QSysInfo::MacintoshVersion){
+    switch (QSysInfo::MacintoshVersion) {
     case QSysInfo::MV_9:
         result += "Mac OS 9 (unsupported)";
         break;
