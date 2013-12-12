@@ -164,6 +164,7 @@ void ADVSingleSequenceWidget::init() {
         QToolButton* button = addButtonWithActionToToolbar(ttMenu->menuAction(), hBar);
         SAFE_POINT(button, QString("ToolButton for %1 is NULL").arg(ttMenu->menuAction()->objectName()), );
         button->setPopupMode(QToolButton::InstantPopup);
+        button->setObjectName("AminoToolbarButton");
         buttonTabOrederedNames->append(ttMenu->menuAction()->objectName());
         hBar->addSeparator();
     } else {

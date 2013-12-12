@@ -2136,6 +2136,19 @@ GUI_TEST_CLASS_DEFINITION( test_2032 ) {
     CHECK_SET_ERR("b" == seq3->getSequenceObject()->getSequenceName(), "Unexpected sequence name!");
 }
 
+GUI_TEST_CLASS_DEFINITION( test_2049 )     {
+    
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+    
+    GTWidget::click(os, GTWidget::findWidget(os, "Codon table"));
+    GTGlobals::sleep(5000);
+    GTWidget::findWidget(os, "Codon table widget");
+
+    GTWidget::click(os, GTWidget::findWidget(os, "AminoToolbarButton"));
+    GTGlobals::sleep(500);
+
+    }
+
 GUI_TEST_CLASS_DEFINITION( test_2070 ){
     GTLogTracer lt;
     GTUtilsDialog::waitForDialog(os, new RemoteDBDialogFiller(os, "Q9IGQ6", 7));
@@ -3215,6 +3228,36 @@ GUI_TEST_CLASS_DEFINITION( test_2259 ){
 
     QAction *menu = mainWindow->findChild<QAction*>(MWMENU_SETTINGS);
     CHECK_SET_ERR(menu->menu()->actions().size()==2, "wrong numder of actions");
+
+    }
+
+GUI_TEST_CLASS_DEFINITION( test_2266_1 ){
+
+    GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os, true, testDir + "_common_data/scenarios/sandbox"));
+
+    QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
+    GTMenu::clickMenuItem(os, menu, QStringList() << "Workflow Designer");
+    GTUtilsWorkflowDesigner::addSample(os, "call variants");
+
+    GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "Read assembly"));
+    GTMouseDriver::click(os);
+    GTUtilsWorkflowDesigner::setDatasetInputFile(os, testDir + "_common_data/ugenedb/", "Klebsislla.sort.bam.ugenedb");
+
+    GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "Read sequence"));
+    GTMouseDriver::click(os);
+    GTUtilsWorkflowDesigner::setDatasetInputFile(os, testDir + "_common_data/ugenedb/", "Klebsislla_ref.fa");
+
+    GTWidget::click(os,GTAction::button(os,"Run workflow"));
+
+    GTGlobals::sleep(90000);
+
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/sandbox", "variations.vcf");
+
+    QTreeWidgetItem *seqDoc = GTUtilsProjectTreeView::findItem(os, "pkF70_variations");
+    QTreeWidgetItem *seqDoc1 = GTUtilsProjectTreeView::findItem(os, "pkf140_variations");
+
+    CHECK_SET_ERR(NULL != seqDoc, "Document not found!");
+    CHECK_SET_ERR(NULL != seqDoc1, "Document not found!");
 
     }
 GUI_TEST_CLASS_DEFINITION( test_2267_1 ){

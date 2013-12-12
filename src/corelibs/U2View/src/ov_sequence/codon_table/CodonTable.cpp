@@ -31,6 +31,7 @@ CodonTableView::CodonTableView(AnnotatedDNAView *view)
 {
     table = new QTableWidget(18, 10);
     table->setSelectionMode(QAbstractItemView::NoSelection);
+    table->setObjectName("Codon table widget");
 
     table->horizontalHeader()->hide();
     table->verticalHeader()->hide();
@@ -267,6 +268,7 @@ CodonTableAction::CodonTableAction(CodonTableView *_view)
     addToBar = true;
     connect(this, SIGNAL(triggered()), view, SLOT(sl_setVisible()));
     setToolTip("Codon table");
+    setObjectName("Codon table");
 }
 
 }

@@ -204,6 +204,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST_IGNORED_WINDOWS(GUITest_regression_scenarios::test_2026, "holding 'shift' does not work (at least on Windows)");
     REGISTER_TEST(GUITest_regression_scenarios::test_2030);
     REGISTER_TEST(GUITest_regression_scenarios::test_2032);
+    REGISTER_TEST(GUITest_regression_scenarios::test_2049);
     REGISTER_TEST(GUITest_regression_scenarios::test_2070);
     REGISTER_TEST_IGNORED_LINUX(GUITest_regression_scenarios::test_2089, "no forbidden folder characters on linux");
     REGISTER_TEST(GUITest_regression_scenarios::test_2077);
@@ -240,6 +241,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_2225_1);
     REGISTER_TEST(GUITest_regression_scenarios::test_2225_2);
     REGISTER_TEST(GUITest_regression_scenarios::test_2259);
+    REGISTER_TEST(GUITest_regression_scenarios::test_2266_1);
     REGISTER_TEST(GUITest_regression_scenarios::test_2267_1);
     REGISTER_TEST(GUITest_regression_scenarios::test_2267_2);
     REGISTER_TEST(GUITest_regression_scenarios::test_2268);
