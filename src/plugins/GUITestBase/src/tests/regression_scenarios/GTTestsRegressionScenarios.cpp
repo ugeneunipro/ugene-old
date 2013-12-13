@@ -1455,6 +1455,24 @@ GUI_TEST_CLASS_DEFINITION(test_1860) {
     GTMouseDriver::click(os);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1865) {
+    // 1) Open Workflow Designer
+    GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
+    QMenu *menu=GTMenu::showMainMenu( os, MWMENU_TOOLS );
+    GTMenu::clickMenuItem( os, menu, QStringList( ) << "Workflow Designer" );
+
+    const QString sequenceWriterName = "Write Sequence";
+
+    //2) Add elements: "Write sequence"
+    GTUtilsWorkflowDesigner::addAlgorithm( os, sequenceWriterName);
+
+    WorkflowProcessItem *sequenceWriter = GTUtilsWorkflowDesigner::getWorker( os, sequenceWriterName);
+
+    GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, sequenceWriterName));
+    GTMouseDriver::click(os);
+    
+    }
+
 GUI_TEST_CLASS_DEFINITION( test_1883 ){
 // 1. Open file "data/samples/CLUSTALW/COI.aln"
     GTFileDialog::openFile( os, testDir + "_common_data/scenarios/msa", "ma.aln" );
