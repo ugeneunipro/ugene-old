@@ -138,6 +138,7 @@ GUI_TEST_CLASS_DEFINITION(test_0006) {
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["esc"]);
     GTGlobals::sleep(100);
 
+    GTUtilsProject::checkProject(os, GTUtilsProject::NotExists);
     CHECK_SET_ERR(result == NULL, "Export menu item present in menu without any project created");
 }
 GUI_TEST_CLASS_DEFINITION(test_0007) {

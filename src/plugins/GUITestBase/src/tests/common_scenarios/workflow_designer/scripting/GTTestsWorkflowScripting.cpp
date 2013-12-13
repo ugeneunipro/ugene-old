@@ -70,8 +70,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
 //    3. Click OK button.
 
 //    GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
-    QMenu *menu = GTMenu::showMainMenu(os, MWMENU_TOOLS);
-    GTMenu::clickMenuItem(os, menu, QStringList() << "Workflow Designer");
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
     GTGlobals::sleep(500);
 
     GTUtilsDialog::waitForDialog(os, new CreateElementWithScriptDialogFiller(os, "123"));
@@ -115,8 +114,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0003) {
-    QMenu *menu = GTMenu::showMainMenu(os, MWMENU_TOOLS);
-    GTMenu::clickMenuItem(os, menu, QStringList() << "Workflow Designer");
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
     GTGlobals::sleep(500);
 
     GTUtilsWorkflowDesigner::addAlgorithm(os, "Read Sequence");

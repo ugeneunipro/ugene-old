@@ -2154,17 +2154,22 @@ GUI_TEST_CLASS_DEFINITION( test_2032 ) {
     CHECK_SET_ERR("b" == seq3->getSequenceObject()->getSequenceName(), "Unexpected sequence name!");
 }
 
-GUI_TEST_CLASS_DEFINITION( test_2049 )     {
+GUI_TEST_CLASS_DEFINITION( test_2049 ){
     
     GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
     
     GTWidget::click(os, GTWidget::findWidget(os, "Codon table"));
-    GTGlobals::sleep(5000);
-    GTWidget::findWidget(os, "Codon table widget");
+    GTGlobals::sleep(500);
+    QWidget* w = GTWidget::findWidget(os, "Codon table widget");
+    QPixmap pixmapBefore = QPixmap::grabWidget(w);
 
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<"3. The Yeast Mitochondrial Code"));
     GTWidget::click(os, GTWidget::findWidget(os, "AminoToolbarButton"));
     GTGlobals::sleep(500);
 
+    w = GTWidget::findWidget(os, "Codon table widget");
+    QPixmap pixmapAfter = QPixmap::grabWidget(w);
+    CHECK_SET_ERR(pixmapBefore.toImage() != pixmapAfter.toImage(), "codone table not changed");
     }
 
 GUI_TEST_CLASS_DEFINITION( test_2070 ){
@@ -2600,7 +2605,7 @@ GUI_TEST_CLASS_DEFINITION( test_2150 ){
 
     // 5. Run the workflow.
     GTWidget::click(os,GTAction::button(os,"Run workflow"));
-    GTGlobals::sleep(1000);
+    GTGlobals::sleep(5000);
     //GTUtilsTaskTreeView::waitTaskFinidhed(os);
 
     // 6. During the workflow execution open the "Tasks" panel in the bottom, find in the task tree the "MUSCLE alignment" subtask and cancel it.
@@ -3267,7 +3272,7 @@ GUI_TEST_CLASS_DEFINITION( test_2266_1 ){
 
     GTWidget::click(os,GTAction::button(os,"Run workflow"));
 
-    GTGlobals::sleep(90000);
+    GTUtilsTaskTreeView::waitTaskFinidhed(os);
 
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/sandbox", "variations.vcf");
 
@@ -3291,7 +3296,7 @@ GUI_TEST_CLASS_DEFINITION( test_2267_1 ){
     GTGlobals::sleep();
 //     3. Press Insert, press '1' key until there is no new symbols in lineedit
 // 
-    Runnable *filler = new EditQualifierFiller(os, "111111111111111111111111111111111111111111111111111111111111111111111111111111111", "val", GTGlobals::UseMouse, true);
+    Runnable *filler = new EditQualifierFiller(os, "111111111111111111111111111111111111111111111111111111111111111111111111111111111", "val", GTGlobals::UseMouse, true,true);
     GTUtilsDialog::waitForDialog(os, filler);
 
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_ADD << "add_qualifier_action"));
@@ -3441,6 +3446,7 @@ GUI_TEST_CLASS_DEFINITION( test_2292 ){
 
     QString destName = testDir + "_common_data/ugenedb/example-alignment.ugenedb";
     GTUtilsDialog::waitForDialog(os, new ConvertAceToSqliteDialogFiller(os, destName));
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok, "There is opened view with destination file"));
     GTFileDialog::openFile(os, testDir+"_common_data/ugenedb/", "example-alignment.ugenedb");
     GTFileDialog::openFile(os, dataDir+"samples/ACE", "K26.ace");
 
@@ -3747,11 +3753,13 @@ GUI_TEST_CLASS_DEFINITION( test_2364 ) {
     //3. Set the input sequence file: "data/samples/FASTA/human_T1.fa".
     GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "Read sequence"));
     GTMouseDriver::click(os);
+    GTGlobals::sleep(300);
     GTUtilsWorkflowDesigner::setDatasetInputFile(os, dataDir + "samples/FASTA", "human_T1.fa");
 
     //4. Set the output file: "out.fa".
     GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "Write sequence"));
     GTMouseDriver::click(os);
+    GTGlobals::sleep(300);
     GTUtilsWorkflowDesigner::setParameter(os, "Output file", "out.fa", GTUtilsWorkflowDesigner::textValue);
 
     //5. Validate the workflow.

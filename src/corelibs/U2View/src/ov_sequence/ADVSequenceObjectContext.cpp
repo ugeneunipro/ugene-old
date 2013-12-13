@@ -57,6 +57,7 @@ ADVSequenceObjectContext::ADVSequenceObjectContext(AnnotatedDNAView* v, U2Sequen
             const CodonTableView *ct = v->getCodonTableView();
             foreach(DNATranslation* t, aminoTs) {
                 QAction* a = translations->addAction(t->getTranslationName());
+                a->setObjectName(t->getTranslationName());
                 a->setCheckable(true);
                 a->setChecked(aminoTT == t);
                 a->setData(QVariant(t->getTranslationId()));

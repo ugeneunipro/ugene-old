@@ -348,6 +348,7 @@ QList<WorkflowProcessItem*> GTUtilsWorkflowDesigner::getWorkers(U2OpStatus &os){
 
 #define GT_METHOD_NAME "setDatasetInputFile"
 void GTUtilsWorkflowDesigner::setDatasetInputFile(U2OpStatus &os, QString filePath, QString fileName){
+    GTGlobals::sleep(200);
     QWidget* DatasetWidget = GTWidget::findWidget(os, "DatasetWidget");
     GT_CHECK(DatasetWidget, "DatasetWidget not found");
 

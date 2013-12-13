@@ -61,6 +61,12 @@ void ConvertAceToSqliteDialogFiller::run(){
     GTLineEdit::setText(os, leDest, leDestUrl);
 
     GTWidget::click(os, GTWidget::findButtonByText(os, "OK",dialog));
+    GTGlobals::sleep(300);
+
+    dialog = QApplication::activeModalWidget();
+    if(dialog!=NULL){
+        GTWidget::click(os, GTWidget::findButtonByText(os, "Cancel",dialog));
+    }
 
 }
 #undef GT_METHOD_NAME
