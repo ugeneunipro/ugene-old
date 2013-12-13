@@ -83,6 +83,12 @@ public:
     */
     U2DbiRef getSessionTmpDbiRef(U2OpStatus &os);
 
+    /**
+    * WARNING: must be used only in crash handler.
+    * Closes the session database connection and returns the path to the database file
+    */
+    QString shutdownSessionDbi(U2OpStatus &os);
+
 
 private:
     /** Creates the session connection and increases the counter for the dbi */

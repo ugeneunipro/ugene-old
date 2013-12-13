@@ -21,58 +21,28 @@
 
 #include <QtGui/QApplication>
 #include <QtGui/QMessageBox>
-#include <QtCore/QFile>
 #include <QtCore/QTextStream>
 #include "SendReportDialog.h"
 #ifdef Q_OS_LINUX
 #include <X11/Xlib.h>
 #endif
+#include "Utils.h"
 
 namespace {
-    const QString REPORT_FILE_ARG("-f");
-    const int MAX_FILE_SEZE = 512000; // 500 Kb
+    QString loadReport(int argc, char *argv[]) {
+        QCoreApplication app(argc, argv);
 
-    bool isLoadFromFile(int argc, char *argv[]) {
-        if (argc != 3) {
-            return false;
-        }
-        return (REPORT_FILE_ARG == argv[1]);
-    }
-
-    QString getFilePath(int argc, char *argv[]) {
-        if (argc != 3) {
-            return "";
-        }
-        return argv[2];
-    }
-
-    QString loadDataFromFile(const QString &filePath) {
-        QFile file(filePath);
-        if (!file.exists()) {
-            return "";
-        }
-        bool opened = file.open(QIODevice::ReadOnly);
-        if (!opened) {
-            return "";
-        }
-        QByteArray data = file.read(MAX_FILE_SEZE);
-        file.close();
-        file.remove();
-        return QString::fromUtf8(data);
-    }
-
-    QString loadData(int argc, char *argv[]) {
-        if (isLoadFromFile(argc, argv)) {
-            return loadDataFromFile(getFilePath(argc, argv));
+        if (Utils::hasReportUrl()) {
+            return Utils::loadReportFromUrl(Utils::getReportUrl());
         } else if (argc > 1) {
-            return QString::fromUtf8(QByteArray::fromBase64(argv[1]));
+            return QString::fromUtf8(QByteArray::fromBase64(argv[argc-1]));
         }
         return "";
     }
 }
 
 int main(int argc, char *argv[]){
-    QString message = loadData(argc, argv);
+    QString message = loadReport(argc, argv);
 #ifdef Q_OS_LINUX
     if(XOpenDisplay(NULL) == NULL) {
         QCoreApplication a(argc, argv);

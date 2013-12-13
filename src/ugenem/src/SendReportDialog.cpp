@@ -21,6 +21,8 @@
 
 #include "SendReportDialog.h"
 
+#include "Utils.h"
+
 #include <QtCore/QBuffer>
 #include <QtCore/QUrl>
 #include <QtCore/QTime>
@@ -48,7 +50,6 @@
 #define HOST_URL "http://ugene.unipro.ru"
 //#define HOST_URL "http://127.0.0.1"
 #define DESTINATION_URL_KEEPER_PAGE "/crash_reports_dest.html"
-
 
 void ReportSender::parse(const QString &htmlReport) {
     report = "Exception with code ";
@@ -228,6 +229,9 @@ QStringList SendReportDialog::getParameters() const {
 #ifdef Q_OS_LINUX
     parameters << "-ui";
 #endif
+    if (Utils::hasDatabaseUrl()) {
+        parameters << Utils::SESSION_DB_UGENE_ARG + "\"" + Utils::getDatabaseUrl() + "\"";
+    }
     return parameters;
 }
 

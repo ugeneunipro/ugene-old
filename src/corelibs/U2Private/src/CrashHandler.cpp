@@ -29,10 +29,12 @@
 #include <U2Core/TmpDirChecker.h>
 #include <U2Core/Log.h>
 #include <U2Core/Timer.h>
+#include <U2Core/U2DbiRegistry.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/Version.h>
 
 
+static const QString SESSION_DB_FILE_ARG("-d");
 static const QString REPORT_FILE_ARG("-f");
 static const int MAX_PLAIN_LOG = 70;
 static const int MAX_FILE_LOG = 500;
@@ -501,11 +503,13 @@ CrashHandlerArgsHelper::CrashHandlerArgsHelper()
 : useFile(false)
 {
     U2OpStatusImpl os;
-    filePath = findFilePathToWrite(os);
+    reportUrl = findFilePathToWrite(os);
     CHECK_OP(os, );
 
-    file.setFileName(filePath);
+    file.setFileName(reportUrl);
     useFile = file.open(QIODevice::WriteOnly);
+
+    shutdownSessionDatabase();
 }
 
 CrashHandlerArgsHelper::~CrashHandlerArgsHelper() {
@@ -523,8 +527,11 @@ int CrashHandlerArgsHelper::getMaxReportSize() const {
 
 QStringList CrashHandlerArgsHelper::getArguments() const {
     QStringList args;
+    if (!databaseUrl.isEmpty()) {
+        args << SESSION_DB_FILE_ARG << databaseUrl;
+    }
     if (useFile) {
-        args << REPORT_FILE_ARG << filePath;
+        args << REPORT_FILE_ARG << reportUrl;
     } else {
         args << report.toUtf8().toBase64();
     }
@@ -557,6 +564,17 @@ QString CrashHandlerArgsHelper::findFilePathToWrite(U2OpStatus &os) {
     CHECK_OP(os, "");
 
     return TmpDirChecker::getNewFilePath(dirPath, "crash_report");
+}
+
+void CrashHandlerArgsHelper::shutdownSessionDatabase() {
+    U2DbiRegistry *dbiReg = AppContext::getDbiRegistry();
+    CHECK(NULL != dbiReg, );
+
+    U2OpStatusImpl os;
+    const QString url = dbiReg->shutdownSessionDbi(os);
+    if (!os.hasError()) {
+        databaseUrl = url;
+    }
 }
 
 }

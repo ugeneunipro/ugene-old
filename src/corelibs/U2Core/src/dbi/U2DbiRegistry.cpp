@@ -145,6 +145,18 @@ U2DbiRef U2DbiRegistry::getSessionTmpDbiRef(U2OpStatus &os) {
     return dh.getDbiRef();
 }
 
+QString U2DbiRegistry::shutdownSessionDbi(U2OpStatus &os) {
+    QMutexLocker l(&lock);
+    CHECK_EXT(sessionDbiInitDone, os.setError("Session dbi is not initialized"), "");
+    CHECK_EXT(NULL != sessionDbiConnection, os.setError("No session dbi connection"), "");
+    CHECK_EXT(NULL != sessionDbiConnection->dbi, os.setError("No opened dbi"), "");
+
+    QString url = sessionDbiConnection->dbi->getDbiRef().dbiId;
+    delete sessionDbiConnection;
+    sessionDbiConnection = NULL;
+    return url;
+}
+
 void U2DbiRegistry::deallocateTmpDbi(const TmpDbiRef& ref, U2OpStatus& os) {
     QMutexLocker l(&lock);
 

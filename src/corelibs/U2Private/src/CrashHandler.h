@@ -140,12 +140,15 @@ public:
     void setReportData(const QString &data);
 
 private:
-    QString filePath;
+    QString reportUrl;
+    QString databaseUrl;
+    bool useFile;
     QFile file;
     QString report;
-    bool useFile;
 
 private:
+    void shutdownSessionDatabase();
+
     static QString findTempDir(U2OpStatus &os);
     static QString findFilePathToWrite(U2OpStatus &os);
 };
