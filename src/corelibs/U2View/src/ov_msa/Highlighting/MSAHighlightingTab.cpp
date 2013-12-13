@@ -121,7 +121,7 @@ MSAHighlightingTab::MSAHighlightingTab(MSAEditor* m):msa(m){
 
     connect(exportHighlightning, SIGNAL(clicked()), SLOT(sl_exportHighlightningClicked()));
 
-    exportHighlightning->setDisabled(true);
+    sl_updateHint();
 }
 
 void MSAHighlightingTab::initColorCB(){
