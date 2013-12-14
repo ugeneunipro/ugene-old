@@ -25,9 +25,9 @@ QString getDataDir(){
     int i = qgetenv("UGENE_GUI_TEST_SUITE_NUMBER").toInt(&ok);
 #ifdef Q_OS_MAC
     if ( ok && i>1 ){
-        return QString("../../data%1/").arg(i-1);
+        return QString("data%1/").arg(i-1);
     }else{
-        return QString("../../data/");
+        return QString("data/");
     }
 #else
     if ( ok && i>1){
