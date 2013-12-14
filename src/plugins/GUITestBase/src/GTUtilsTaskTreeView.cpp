@@ -41,9 +41,15 @@ const QString GTUtilsTaskTreeView::widgetName = DOCK_TASK_TREE_VIEW;
 
 void GTUtilsTaskTreeView::waitTaskFinidhed(U2OpStatus &os, long timeout){
     TaskScheduler* scheduller = AppContext::getTaskScheduler();
-    QTimer::singleShot(timeout, new FailResiever(), SLOT(sl_fail(os)));
+    int i = 0;
     while(!scheduller->getTopLevelTasks().isEmpty()){
        GTGlobals::sleep(100);
+       i++;
+       if(i > (timeout/100)){
+           Task* t = scheduller->getTopLevelTasks().at(0);
+           os.setError(QString("task __%1__ runs too long").arg(t->getTaskName()));
+           break;
+       }
     }
 }
 void GTUtilsTaskTreeView::openView(U2OpStatus& os) {

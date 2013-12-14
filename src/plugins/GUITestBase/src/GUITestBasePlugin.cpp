@@ -227,7 +227,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_2160);
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2163,"https://ugene.unipro.ru/tracker/browse/UGENE-2497");
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2164,"https://ugene.unipro.ru/tracker/browse/UGENE-2497");
-    REGISTER_TEST(GUITest_regression_scenarios::test_2165);
+    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2165, "https://ugene.unipro.ru/tracker/browse/UGENE-2165");
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2167,"https://ugene.unipro.ru/tracker/browse/UGENE-2497");
     REGISTER_TEST(GUITest_regression_scenarios::test_2169);
     REGISTER_TEST(GUITest_regression_scenarios::test_2171);
@@ -245,12 +245,12 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2266_1, "https://ugene.unipro.ru/tracker/browse/UGENE-2555");
     REGISTER_TEST(GUITest_regression_scenarios::test_2267_1);
     REGISTER_TEST(GUITest_regression_scenarios::test_2267_2);
-    REGISTER_TEST(GUITest_regression_scenarios::test_2268);
+    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2268, "https://ugene.unipro.ru/tracker/browse/UGENE-2579");
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2282, "https://ugene.unipro.ru/tracker/browse/UGENE-2454");
     REGISTER_TEST(GUITest_regression_scenarios::test_2284);
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2316,"https://ugene.unipro.ru/tracker/browse/UGENE-2316");
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2269, "impossible to catch expected error in opStatus without stopping test");
-    REGISTER_TEST(GUITest_regression_scenarios::test_2270);
+    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2270, "https://ugene.unipro.ru/tracker/browse/UGENE-2579");
     REGISTER_TEST(GUITest_regression_scenarios::test_2292);
     REGISTER_TEST(GUITest_regression_scenarios::test_2306);
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2281, "This test can't found hints. Check it.");
@@ -258,11 +258,11 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_2318);
     REGISTER_TEST(GUITest_regression_scenarios::test_2351);
     REGISTER_TEST(GUITest_regression_scenarios::test_2352);
-    REGISTER_TEST(GUITest_regression_scenarios::test_2364);
+    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2364,"https://ugene.unipro.ru/tracker/browse/UGENE-2497");
     REGISTER_TEST(GUITest_regression_scenarios::test_2375);
     REGISTER_TEST(GUITest_regression_scenarios::test_2377);
     REGISTER_TEST(GUITest_regression_scenarios::test_2378);
-    REGISTER_TEST(GUITest_regression_scenarios::test_2378_1);
+    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2378_1, "https://ugene.unipro.ru/tracker/browse/UGENE-2555");
     REGISTER_TEST(GUITest_regression_scenarios::test_2379);
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2382, "Failed because of https://ugene.unipro.ru/tracker/browse/UGENE-2477");
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2382_1, "Failed because of https://ugene.unipro.ru/tracker/browse/UGENE-2477");

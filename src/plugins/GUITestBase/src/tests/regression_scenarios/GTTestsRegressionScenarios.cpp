@@ -1330,7 +1330,8 @@ GUI_TEST_CLASS_DEFINITION( test_1813 )
     GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE),ACTION_PROJECTSUPPORT__ACCESS_REMOTE_DB, GTGlobals::UseKey);
 
     // Expected: the sequence view with I7G8J3 sequence is opened. UGENE does not crash.
-    GTGlobals::sleep(20000);
+    GTGlobals::sleep(5000);
+    GTUtilsTaskTreeView::waitTaskFinidhed(os);
     GTUtilsDocument::isDocumentLoaded(os, "I7G8J3_das.gb");
     GTUtilsDocument::checkDocument(os, "I7G8J3_das.gb", AnnotatedDNAViewFactory::ID);
 }
@@ -2177,8 +2178,8 @@ GUI_TEST_CLASS_DEFINITION( test_2070 ){
     GTUtilsDialog::waitForDialog(os, new RemoteDBDialogFiller(os, "Q9IGQ6", 7));
     GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE),ACTION_PROJECTSUPPORT__ACCESS_REMOTE_DB, GTGlobals::UseKey);
     GTGlobals::sleep();
+    GTUtilsTaskTreeView::waitTaskFinidhed(os);
 
-    GTGlobals::sleep(18000);
     GTUtilsDocument::isDocumentLoaded(os, "Q9IGQ6_das.gb");
     GTUtilsDocument::checkDocument(os, "Q9IGQ6_das.gb", AnnotatedDNAViewFactory::ID);
     
@@ -2605,8 +2606,8 @@ GUI_TEST_CLASS_DEFINITION( test_2150 ){
 
     // 5. Run the workflow.
     GTWidget::click(os,GTAction::button(os,"Run workflow"));
-    GTGlobals::sleep(5000);
-    //GTUtilsTaskTreeView::waitTaskFinidhed(os);
+    GTGlobals::sleep();
+    //GTUtilsTaskTreeView::waitTaskFinidhed(os,1000);
 
     // 6. During the workflow execution open the "Tasks" panel in the bottom, find in the task tree the "MUSCLE alignment" subtask and cancel it.
     GTUtilsTaskTreeView::cancelTask(os, "MUSCLE alignment");

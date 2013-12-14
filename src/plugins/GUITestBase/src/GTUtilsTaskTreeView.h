@@ -51,13 +51,6 @@ private:
 
 };
 
-class FailResiever : public QObject{
-private slots:
-    void sl_fail(U2OpStatus &os){
-        os.setError("task run too long, shutting down");
-    }
-};
-
 } //ns
 
 #endif
