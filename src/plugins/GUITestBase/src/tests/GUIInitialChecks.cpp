@@ -25,6 +25,7 @@
 #include "api/GTGlobals.h"
 #include "api/GTFile.h"
 #include "api/GTMenu.h"
+#include "GTUtilsTaskTreeView.h"
 #include "GTUtilsProject.h"
 #include "GTUtilsDialog.h"
 #include "GTUtilsProjectTreeView.h"
@@ -82,7 +83,13 @@ GUI_TEST_CLASS_DEFINITION(test_0004) {
     GTFile::backup(os, testDir + "_common_data/scenarios/project/proj4.uprj");
     GTFile::backup(os, testDir + "_common_data/scenarios/project/proj5.uprj");
     GTFile::backup(os, testDir + "_common_data/scenarios/assembly/example-alignment.ugenedb");
+#ifndef Q_OS_MAC
     GTFile::backupDir(os, dataDir + "workflow_samples");
+#endif
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0005){
+    GTUtilsTaskTreeView::waitTaskFinidhed(os);
 }
 
 GUI_TEST_CLASS_DEFINITION(post_test_0000) {
@@ -132,7 +139,9 @@ GUI_TEST_CLASS_DEFINITION(post_test_0002) {
     GTFile::restore(os, testDir + "_common_data/scenarios/project/proj4.uprj");
     GTFile::restore(os, testDir + "_common_data/scenarios/project/proj5.uprj");
     GTFile::restore(os, testDir + "_common_data/scenarios/assembly/example-alignment.ugenedb");
+#ifndef Q_OS_MAC
     GTFile::restoreDir(os, dataDir + "workflow_samples");
+#endif
     GTFile::removeDir(QDir().currentPath() + "/MSA_schemes");
 }
 
