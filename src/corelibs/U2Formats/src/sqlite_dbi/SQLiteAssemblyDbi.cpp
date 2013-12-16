@@ -74,7 +74,7 @@ void SQLiteAssemblyDbi::shutdown(U2OpStatus& os) {
 }
 
 AssemblyAdapter* SQLiteAssemblyDbi::getAdapter(const U2DataId& assemblyId, U2OpStatus& os) {
-    qint64 sqliteId = SQLiteUtils::toDbiId(assemblyId);
+    qint64 sqliteId = U2DbiUtils::toDbiId(assemblyId);
     AssemblyAdapter* res = adaptersById.value(sqliteId);
     if (res != NULL) {
         return res;

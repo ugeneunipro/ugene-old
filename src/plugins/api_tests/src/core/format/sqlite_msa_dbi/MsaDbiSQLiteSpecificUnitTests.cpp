@@ -23,13 +23,13 @@
 #include "core/util/MsaDbiUtilsUnitTests.h"
 
 #include <U2Core/DNAAlphabet.h>
+#include <U2Core/U2DbiPackUtils.h>
 #include <U2Core/U2MsaDbi.h>
 #include <U2Core/U2OpStatusUtils.h>
 
 #include <U2Formats/SQLiteDbi.h>
 #include <U2Formats/SQLiteObjectDbi.h>
 #include <U2Formats/SQLiteModDbi.h>
-#include <U2Formats/SQLitePackUtils.h>
 
 
 namespace U2 {
@@ -871,9 +871,9 @@ IMPLEMENT_TEST(MsaDbiSQLiteSpecificUnitTests, updateRowContent_undo) {
     CHECK_EQUAL(oldMsaVersion + 1, newVersion, "version");
 
     // Verify single modification steps
-    QString expectedSeqModDetails = SQLite::PackUtils::packSequenceDataDetails(U2_REGION_MAX, oldSeq, newSeq, QVariantMap());
-    QString expectedRowModDetails = SQLite::PackUtils::packRowInfoDetails(oldRow, newRow);
-    QString expectedGapModDetails = SQLite::PackUtils::packGapDetails(oldRow.rowId, oldRow.gaps, newRow.gaps);
+    QString expectedSeqModDetails = PackUtils::packSequenceDataDetails(U2_REGION_MAX, oldSeq, newSeq, QVariantMap());
+    QString expectedRowModDetails = PackUtils::packRowInfoDetails(oldRow, newRow);
+    QString expectedGapModDetails = PackUtils::packGapDetails(oldRow.rowId, oldRow.gaps, newRow.gaps);
 
     QList< QList<U2SingleModStep> > modSteps = sqliteDbi->getSQLiteModDbi()->getModSteps(msaId, oldMsaVersion, os);
     QList<U2SingleModStep> msaSingleModSteps;
@@ -987,9 +987,9 @@ IMPLEMENT_TEST(MsaDbiSQLiteSpecificUnitTests, updateRowContent_redo) {
     CHECK_EQUAL(oldMsaVersion + 1, redoVersion, "version after undo");
 
     // Verify single modification steps
-    QString expectedSeqModDetails = SQLite::PackUtils::packSequenceDataDetails(U2_REGION_MAX, oldSeq, newSeq, QVariantMap());
-    QString expectedRowModDetails = SQLite::PackUtils::packRowInfoDetails(oldRow, newRow);
-    QString expectedGapModDetails = SQLite::PackUtils::packGapDetails(oldRow.rowId, oldRow.gaps, newRow.gaps);
+    QString expectedSeqModDetails = PackUtils::packSequenceDataDetails(U2_REGION_MAX, oldSeq, newSeq, QVariantMap());
+    QString expectedRowModDetails = PackUtils::packRowInfoDetails(oldRow, newRow);
+    QString expectedGapModDetails = PackUtils::packGapDetails(oldRow.rowId, oldRow.gaps, newRow.gaps);
 
     QList< QList<U2SingleModStep> > modSteps = sqliteDbi->getSQLiteModDbi()->getModSteps(msaId, oldMsaVersion, os);
     QList<U2SingleModStep> msaSingleModSteps;

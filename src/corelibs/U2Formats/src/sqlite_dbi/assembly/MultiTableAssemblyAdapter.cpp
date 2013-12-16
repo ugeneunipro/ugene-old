@@ -359,7 +359,7 @@ U2DbiIterator<U2AssemblyRead>* MultiTableAssemblyAdapter::getReadsByName(const Q
 }
 
 int MultiTableAssemblyAdapter::getElenRangePosById(const U2DataId& id) const {
-    QByteArray extra = SQLiteUtils::toDbExtra(id);
+    QByteArray extra = U2DbiUtils::toDbExtra(id);
 
     SAFE_POINT(extra.size() == 4, QString("Illegal assembly read ID extra part! HEX: %1").arg(extra.toHex().constData()), -1);
 
@@ -383,7 +383,7 @@ int MultiTableAssemblyAdapter::getRowRangePosByRow(quint64 row) const {
 }
 
 int MultiTableAssemblyAdapter::getRowRangePosById(const U2DataId& id) const {
-    QByteArray extra = SQLiteUtils::toDbExtra(id);
+    QByteArray extra = U2DbiUtils::toDbExtra(id);
     
     SAFE_POINT(extra.size() == 4, QString("Extra part size of assembly read ID is not correct! HEX(Extra): %1").arg(extra.toHex().constData()), -1);
 
@@ -392,8 +392,8 @@ int MultiTableAssemblyAdapter::getRowRangePosById(const U2DataId& id) const {
 }
 
 static U2DataId addTable2Id(const U2DataId& id, const QByteArray& idExtra) {
-    assert(SQLiteUtils::toDbExtra(id).isEmpty());
-    U2DataId res = SQLiteUtils::toU2DataId(SQLiteUtils::toDbiId(id), U2Type::AssemblyRead, idExtra); 
+    assert(U2DbiUtils::toDbExtra(id).isEmpty());
+    U2DataId res = U2DbiUtils::toU2DataId(U2DbiUtils::toDbiId(id), U2Type::AssemblyRead, idExtra);
     return res;
 }
 
@@ -626,7 +626,7 @@ void MultiTablePackAlgorithmAdapter::assignProw(const U2DataId& readId, qint64 p
     }
 
     QVector<ReadTableMigrationData>& newTableData = migrations[newA];
-    newTableData.append(ReadTableMigrationData(SQLiteUtils::toDbiId(readId), oldA, prow));
+    newTableData.append(ReadTableMigrationData(U2DbiUtils::toDbiId(readId), oldA, prow));
     //TODO: add mem check here!
 }
 

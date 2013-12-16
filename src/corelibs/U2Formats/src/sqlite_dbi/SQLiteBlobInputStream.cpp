@@ -21,6 +21,7 @@
 
 #include <sqlite3.h>
 
+#include <U2Core/U2DbiUtils.h>
 #include <U2Core/U2SafePoints.h>
 
 #include "SQLiteBlobInputStream.h"
@@ -52,7 +53,7 @@ void SQLiteBlobStream::init(int accessType, DbRef *db, const QByteArray &tableId
         "main",
         tableId.constData(),
         columnId.constData(),
-        SQLiteUtils::toDbiId(rowId),
+        U2DbiUtils::toDbiId(rowId),
         accessType,
         &handle
     );

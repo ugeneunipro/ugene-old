@@ -19,15 +19,14 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_SQLITE_PACKUTILS_H_
-#define _U2_SQLITE_PACKUTILS_H_
+#ifndef _U2_DBI_PACKUTILS_H_
+#define _U2_DBI_PACKUTILS_H_
 
 #include <U2Core/U2Msa.h>
 
 namespace U2 {
-namespace SQLite {
 
-class U2FORMATS_EXPORT PackUtils {
+class U2CORE_EXPORT PackUtils {
 public:
     /** Pack utils version */
     static const QByteArray VERSION;
@@ -91,7 +90,6 @@ private:
     static const char SECOND_SEP;
 };
 
-} // SQLite
 } // U2
 
-#endif // _U2_SQLITE_PACKUTILS_H_
+#endif // _U2_DBI_PACKUTILS_H_

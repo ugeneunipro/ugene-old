@@ -276,7 +276,7 @@ void SQLiteDbi::internalInit(const QHash<QString, QString>& props, U2OpStatus& o
     features.insert(U2DbiFeature_ReadMsa);
     features.insert(U2DbiFeature_ReadAssembly);
     features.insert(U2DbiFeature_WriteSequence);
-    //features.insert(U2DbiFeature_WriteMsa);
+    features.insert(U2DbiFeature_WriteMsa);
     features.insert(U2DbiFeature_WriteAssembly);
     features.insert(U2DbiFeature_AssemblyReadsPacking);
     features.insert(U2DbiFeature_AssemblyCoverageStat);
@@ -435,7 +435,7 @@ QHash<QString, QString> SQLiteDbi::getDbiMetaInfo(U2OpStatus& ) {
 }
 
 U2DataType SQLiteDbi::getEntityTypeById(const U2DataId& id) const {
-    return SQLiteUtils::toType(id);
+    return U2DbiUtils::toType(id);
 }
 
 // SQLiteDbiFactory

@@ -155,7 +155,7 @@ U2DataType Dbi::getEntityTypeById(const U2DataId& id) const {
     if(id.isEmpty()) {
         return U2Type::Unknown;
     } else {
-        quint64 dbId = SQLiteUtils::toDbiId(id);
+        quint64 dbId = U2DbiUtils::toDbiId(id);
         if(dbId <= (quint64)assembliesCount) {
             return U2Type::Assembly;
         } else {
@@ -536,7 +536,7 @@ U2Assembly AssemblyDbi::getAssemblyObject(const U2DataId& id, U2OpStatus &os) {
         U2Assembly result;
         result.id = id;
         result.dbiId = dbi.getDbiId();
-        quint64 dbiDataId = SQLiteUtils::toDbiId(id);
+        quint64 dbiDataId = U2DbiUtils::toDbiId(id);
         result.visualName = reader.getHeader().getReferences()[dbiDataId - 1].getName();
         return result;
     } catch(const Exception &e) {
@@ -592,7 +592,7 @@ U2DbiIterator<U2AssemblyRead>* AssemblyDbi::getReads(const U2DataId& assemblyId,
             q.bindInt64(4, r.startPos);
 
             while(q.step()) {
-                rowIds.append(SQLiteUtils::toU2DataId(q.getInt64(0), U2Type::AssemblyRead));
+                rowIds.append(U2DbiUtils::toU2DataId(q.getInt64(0), U2Type::AssemblyRead));
                 packedRows.append(q.getInt64(1));
             }
             if(opStatus.hasError()) {
@@ -798,13 +798,13 @@ U2AssemblyRead AssemblyDbi::alignmentToRead(const Alignment &alignment) {
 }
 
 qint64 AssemblyDbi::getMaxReadLength(const U2DataId& assemblyId, const U2Region &/*r*/) {
-    qint64 dbDataId = SQLiteUtils::toDbiId(assemblyId);
+    qint64 dbDataId = U2DbiUtils::toDbiId(assemblyId);
     return maxReadLengths[dbDataId - 1];
 }
 
 U2AssemblyRead AssemblyDbi::getReadById(const U2DataId& rowId, qint64 packedRow, U2OpStatus &os) {
     try {
-        quint64 dbDataId = (quint64)SQLiteUtils::toDbiId(rowId);
+        quint64 dbDataId = (quint64)U2DbiUtils::toDbiId(rowId);
         reader.seek(VirtualOffset(dbDataId));
         U2AssemblyRead row = alignmentToRead(reader.readAlignment());
         row->id = rowId;

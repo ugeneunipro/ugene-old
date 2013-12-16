@@ -2,6 +2,7 @@
 
 #include <U2Core/U2AttributeDbi.h>
 #include <U2Core/DNAAlphabet.h>
+#include <U2Core/U2DbiUtils.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2ObjectDbi.h>
 #include <U2Core/U2SqlHelpers.h>
@@ -138,7 +139,7 @@ void AttributeTestData::testAttributesMatch(QList<U2IntegerAttribute>& expectedI
                          const QList<U2DataId>& attributes)
 {
     foreach(const U2DataId& attrId, attributes) {
-        U2DataType type = SQLiteUtils::toType(attrId);
+        U2DataType type = U2DbiUtils::toType(attrId);
         SAFE_POINT(U2Type::isAttributeType(type), "inncorrect attribute type", );
 
         U2OpStatusImpl os;
@@ -223,13 +224,13 @@ void AttributeDbiUnitTests_getAvailableAttributeNames::Test() {
 }
 
 void AttributeDbiUnitTests_getObjectAttributes::Test() {
-    const U2DataId& childId = SQLiteUtils::toU2DataId(2, U2Type::Assembly);
+    const U2DataId& childId = U2DbiUtils::toU2DataId(2, U2Type::Assembly);
     APITestData testData;
     
     // getObjectAttributes
     ObjectAttributesTestData oat;
     {
-        oat.objId = SQLiteUtils::toU2DataId(1, U2Type::Sequence);
+        oat.objId = U2DbiUtils::toU2DataId(1, U2Type::Sequence);
 
         {
             U2IntegerAttribute attr;
@@ -295,7 +296,7 @@ void AttributeDbiUnitTests_getObjectAttributesByName::Test() {
 
 void AttributeDbiUnitTests_getObjectPairAttributes::Test() {
      APITestData testData;
-    const U2DataId& childId = SQLiteUtils::toU2DataId(2, U2Type::Assembly);
+    const U2DataId& childId = U2DbiUtils::toU2DataId(2, U2Type::Assembly);
     testData.addValue<U2DataId>(OBJECT_ATTRIBUTES_CHILD_ID, childId);
     AttributeTestData::getObjectAttrsTest(testData, false, true);
 }
@@ -304,7 +305,7 @@ void AttributeDbiUnitTests_getObjectPairAttributesByName::Test() {
 
      APITestData testData;
     testData.addValue<QString>(OBJECT_ATTRIBUTES_NAME, "int2");
-    const U2DataId& childId = SQLiteUtils::toU2DataId(2, U2Type::Assembly);
+    const U2DataId& childId = U2DbiUtils::toU2DataId(2, U2Type::Assembly);
     testData.addValue<U2DataId>(OBJECT_ATTRIBUTES_CHILD_ID, childId);
     AttributeTestData::getObjectAttrsTest(testData, true, true);
 }

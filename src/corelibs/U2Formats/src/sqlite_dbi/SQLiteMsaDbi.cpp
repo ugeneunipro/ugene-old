@@ -21,15 +21,13 @@
 
 #include "SQLiteMsaDbi.h"
 #include "SQLiteModDbi.h"
-#include "SQLitePackUtils.h"
 #include "SQLiteSequenceDbi.h"
 
-#include <U2Core/U2SqlHelpers.h>
+#include <U2Core/U2DbiPackUtils.h>
 #include <U2Core/U2SafePoints.h>
+#include <U2Core/U2SqlHelpers.h>
 
 namespace U2 {
-
-using namespace SQLite;
 
 SQLiteMsaDbi::SQLiteMsaDbi(SQLiteDbi* dbi) : U2MsaDbi(dbi), SQLiteChildDBICommon(dbi) {
 }

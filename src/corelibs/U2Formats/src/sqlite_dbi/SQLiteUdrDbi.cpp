@@ -86,7 +86,7 @@ InputStream * SQLiteUdrDbi::createInputStream(const UdrRecordId &recordId, int f
     UdrSchema::FieldDesc field = getBlobField(recordId.schemaId, fieldNum, os);
     CHECK_OP(os, NULL);
 
-    return new SQLiteBlobInputStream(db, tableName(recordId.schemaId).toAscii(), field.name, recordId.recordId, os);
+    return new SQLiteBlobInputStream(db, tableName(recordId.schemaId).toAscii(), field.getName(), recordId.recordId, os);
 }
 
 OutputStream * SQLiteUdrDbi::createOutputStream(const UdrRecordId &recordId, int fieldNum, qint64 size, U2OpStatus &os) {
@@ -95,7 +95,7 @@ OutputStream * SQLiteUdrDbi::createOutputStream(const UdrRecordId &recordId, int
     UdrSchema::FieldDesc field = getBlobField(recordId.schemaId, fieldNum, os);
     CHECK_OP(os, NULL);
 
-    return new SQLiteBlobOutputStream(db, tableName(recordId.schemaId).toAscii(), field.name, recordId.recordId, (int)size, os);
+    return new SQLiteBlobOutputStream(db, tableName(recordId.schemaId).toAscii(), field.getName(), recordId.recordId, (int)size, os);
 }
 
 /************************************************************************/
@@ -193,8 +193,8 @@ QString SQLiteUdrDbi::tableStartDef(const UdrSchemaId &schemaId) {
 }
 
 QString SQLiteUdrDbi::fieldDef(const UdrSchema::FieldDesc &field) {
-    QString def = field.name + " ";
-    switch (field.dataType) {
+    QString def = field.getName() + " ";
+    switch (field.getDataType()) {
         case UdrSchema::INTEGER:
             def += "INTEGER";
             break;
@@ -222,7 +222,7 @@ QStringList SQLiteUdrDbi::fieldNames(const UdrSchema *schema, U2OpStatus &os, co
     foreach (int fieldNum, target) {
         UdrSchema::FieldDesc field = schema->getField(fieldNum, os);
         CHECK_OP(os, result);
-        result << field.name;
+        result << field.getName();
     }
     return result;
 }
@@ -234,9 +234,9 @@ QList< QStringList > SQLiteUdrDbi::indexes(const UdrSchema *schema, U2OpStatus &
     for (int i=0; i<schema->size(); i++) {
         UdrSchema::FieldDesc field = schema->getField(i, os);
         CHECK_OP(os, result);
-        if (UdrSchema::INDEXED == field.indexType) {
+        if (UdrSchema::INDEXED == field.getIndexType()) {
             QStringList index;
-            index << field.name;
+            index << field.getName();
             result << index;
         }
     }
@@ -256,7 +256,7 @@ void SQLiteUdrDbi::bindData(const QList<UdrValue> &data, const UdrSchema *schema
         UdrSchema::FieldDesc field = schema->getField(i, os);
         CHECK_OP(os, );
 
-        switch (field.dataType) {
+        switch (field.getDataType()) {
             case UdrSchema::INTEGER:
                 q.bindInt64(i+1, value.getInt(os));
                 break;
@@ -282,10 +282,10 @@ void SQLiteUdrDbi::retreiveData(QList<UdrValue> &data, const UdrSchema *schema, 
         UdrSchema::FieldDesc field = schema->getField(i, os);
         CHECK_OP(os, );
         int colNum = -1;
-        if (UdrSchema::BLOB != field.dataType) {
+        if (UdrSchema::BLOB != field.getDataType()) {
             colNum = fields.lastIndexOf(i) + 1;
         }
-        switch (field.dataType) {
+        switch (field.getDataType()) {
             case UdrSchema::INTEGER:
                 data << UdrValue(q.getInt64(colNum));
                 break;
@@ -308,7 +308,7 @@ QList<int> SQLiteUdrDbi::notBinary(const UdrSchema *schema, U2OpStatus &os) {
     for (int i=0; i<schema->size(); i++) {
         UdrSchema::FieldDesc field = schema->getField(i, os);
         CHECK_OP(os, result);
-        if (UdrSchema::BLOB != field.dataType) {
+        if (UdrSchema::BLOB != field.getDataType()) {
             result << i;
         }
     }
@@ -321,7 +321,7 @@ UdrSchema::FieldDesc SQLiteUdrDbi::getBlobField(const UdrSchemaId &schemaId, int
     UdrSchema::FieldDesc field = schema->getField(fieldNum, os);
     CHECK_OP(os, field);
 
-    if (UdrSchema::BLOB != field.dataType) {
+    if (UdrSchema::BLOB != field.getDataType()) {
         os.setError("Only BLOB fields can be used");
     }
     return field;

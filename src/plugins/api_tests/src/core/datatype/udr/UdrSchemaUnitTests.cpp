@@ -121,15 +121,15 @@ IMPLEMENT_TEST(UdrSchemaUnitTests, getField_Data) {
 
     UdrSchema::FieldDesc field1 = schema.getField(0, os);
     CHECK_NO_ERROR(os);
-    CHECK_TRUE("name1" == field1.name, "name 1");
-    CHECK_TRUE(UdrSchema::INTEGER == field1.dataType, "dataType 1");
-    CHECK_TRUE(UdrSchema::INDEXED == field1.indexType, "indexType 1");
+    CHECK_TRUE("name1" == field1.getName(), "name 1");
+    CHECK_TRUE(UdrSchema::INTEGER == field1.getDataType(), "dataType 1");
+    CHECK_TRUE(UdrSchema::INDEXED == field1.getIndexType(), "indexType 1");
 
     UdrSchema::FieldDesc field2 = schema.getField(1, os);
     CHECK_NO_ERROR(os);
-    CHECK_TRUE("name2" == field2.name, "name 2");
-    CHECK_TRUE(UdrSchema::BLOB == field2.dataType, "dataType 2");
-    CHECK_TRUE(UdrSchema::NOT_INDEXED == field2.indexType, "indexType 2");
+    CHECK_TRUE("name2" == field2.getName(), "name 2");
+    CHECK_TRUE(UdrSchema::BLOB == field2.getDataType(), "dataType 2");
+    CHECK_TRUE(UdrSchema::NOT_INDEXED == field2.getIndexType(), "indexType 2");
 }
 
 IMPLEMENT_TEST(UdrSchemaUnitTests, addMultiIndex_DuplicateField_1) {

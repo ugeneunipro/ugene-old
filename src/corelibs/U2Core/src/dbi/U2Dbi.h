@@ -137,7 +137,7 @@ enum U2DbiFeature {
     U2DbiFeature_AttributeSorting               = 400,
 
     /** DBI supports undo/redo of changing operations */
-    U2DbiFeature_UndoRedo                       = 500,
+    U2DbiFeature_UndoRedo                       = 500
 };
 
 
@@ -148,7 +148,7 @@ enum U2DbiFeature {
 class U2CORE_EXPORT U2DbiFactory {
 public:
     U2DbiFactory() {}
-    virtual ~U2DbiFactory(){};
+    virtual ~U2DbiFactory(){}
 
     /** Creates new DBI instance */
     virtual U2Dbi *createDbi() = 0;

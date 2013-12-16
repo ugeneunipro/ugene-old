@@ -31,6 +31,13 @@
 
 namespace U2 {
 
+#define DB_ID_OFFSET    0
+#define TYPE_OFFSET     8
+#define DB_EXTRA_OFFSET 10
+#define DATAID_MIN_LEN  10
+
+static U2DataId emptyId;
+
 void U2DbiUtils::logNotSupported(U2DbiFeature f, U2Dbi* dbi, U2OpStatus& os) {
     QString msg = tr("Feature is not supported: %1, dbi: %2").arg(int(f)).arg(dbi == NULL ? QString("<unknown>") : dbi->getDbiId());
     coreLog.error(msg);
@@ -51,6 +58,60 @@ U2DbiRef U2DbiUtils::toRef(U2Dbi* dbi) {
         return U2DbiRef();
     }
     return U2DbiRef(dbi->getFactoryId(), dbi->getDbiId());
+}
+
+void U2DbiUtils::addLimit(QString& sql, qint64 offset, qint64 count) {
+    if (count == -1) {
+        return;
+    }
+    sql = sql + QString(" LIMIT %1, %2").arg(offset).arg(count).toLatin1();
+}
+
+U2DataId U2DbiUtils::toU2DataId(qint64 id, U2DataType type, const QByteArray& dbExtra) {
+    if (id == 0) {
+        return emptyId;
+    }
+    assert(sizeof(U2DataType) == 2);
+    int extraLen = dbExtra.size();
+    int len = DATAID_MIN_LEN + extraLen;
+#if QT_VERSION >= QT_VERSION_CHECK(4, 7, 0)
+    QByteArray res(len, Qt::Uninitialized);
+#else
+    QByteArray res(len, (char)0);
+#endif
+    char* data = res.data();
+    ((qint64*)(data + DB_ID_OFFSET))[0] = id;
+    ((U2DataType*)(data + TYPE_OFFSET))[0] = type;
+    if (extraLen > 0) {
+        memcpy(data + DB_EXTRA_OFFSET, dbExtra.constData(), dbExtra.size());
+    }
+    return res;
+}
+
+quint64 U2DbiUtils::toDbiId(const U2DataId& id) {
+    if (id.size() < DATAID_MIN_LEN) {
+        return 0;
+    }
+    return *(qint64*)(id.constData() + DB_ID_OFFSET);
+}
+
+U2DataType U2DbiUtils::toType(const U2DataId& id) {
+    if (id.size() < DATAID_MIN_LEN) {
+        return 0;
+    }
+    return *(U2DataType*)(id.constData() + TYPE_OFFSET);
+}
+
+QByteArray U2DbiUtils::toDbExtra(const U2DataId& id) {
+    if (id.size() < DATAID_MIN_LEN) {
+        return emptyId;
+    }
+    return QByteArray(id.constData() + DB_EXTRA_OFFSET, id.length() - DB_EXTRA_OFFSET);
+}
+
+QString U2DbiUtils::text(const U2DataId& id) {
+    QString res = QString("[Id: %1, Type: %2, Extra: %3]").arg(toDbiId(id)).arg(int(toType(id))).arg(toDbExtra(id).constData());
+    return res;
 }
 
 //////////////////////////////////////////////////////////////////////////

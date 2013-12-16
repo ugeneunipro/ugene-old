@@ -21,10 +21,9 @@
 
 #include <U2Core/U2SafePoints.h>
 
-#include "SQLitePackUtils.h"
+#include "U2DbiPackUtils.h"
 
 namespace U2 {
-namespace SQLite {
 
 const QByteArray PackUtils::VERSION("0");
 const char PackUtils::SEP = '\t';
@@ -426,5 +425,4 @@ bool PackUtils::unpackSequenceDataHints(const QByteArray &str, QVariantMap &hint
     return true;
 }
 
-} // SQLite
 } // U2

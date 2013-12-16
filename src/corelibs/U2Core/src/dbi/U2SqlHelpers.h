@@ -60,25 +60,7 @@ public:
         Checks 'expectedRowCount' the same way as 'update' method
     */
     static qint64 remove(const QString& table, const QString& field, const U2DataId& id, qint64 expectedRows, DbRef* db, U2OpStatus& os);
-    
-    /** Converts internal database id to U2DataId*/
-    static U2DataId toU2DataId(qint64 id, U2DataType type, const QByteArray& dbExtra = QByteArray());
 
-    /** Converts U2DataId to internal database id*/
-    static quint64 toDbiId(const U2DataId& id);
-
-    /** Extracts type info from U2DataId */
-    static U2DataType toType(const U2DataId& id);
-
-    /** Extracts table info from U2DataId */
-    static QByteArray toDbExtra(const U2DataId& id);
-
-    /** Adds limit operator to the sql query */
-    static void addLimit(QString& sql, qint64 offset, qint64 count);
-
-    /** Return textual representation of the id */
-    static QString text(const U2DataId& id);
-    
     /** Checks if the table exists in database */
     static bool isTableExists(const QString& tableName, DbRef* db, U2OpStatus& os);
 
@@ -371,7 +353,7 @@ protected:
 
 #define DBI_TYPE_CHECK(dataId,  expectedType, os, res)\
     if (!dataId.isEmpty()) {\
-        U2DataType realType = SQLiteUtils::toType(dataId);\
+        U2DataType realType = U2DbiUtils::toType(dataId);\
         if (realType != expectedType) {\
             os.setError(QString("Illegal data type: %1, expected %2").arg(realType).arg(expectedType));\
             return res;\

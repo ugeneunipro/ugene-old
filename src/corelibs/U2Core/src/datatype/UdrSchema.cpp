@@ -36,6 +36,18 @@ UdrSchema::FieldDesc::FieldDesc(const QByteArray &name, UdrSchema::DataType data
 
 }
 
+const QByteArray UdrSchema::FieldDesc::getName() const {
+    return name;
+}
+
+UdrSchema::DataType UdrSchema::FieldDesc::getDataType() const {
+    return dataType;
+}
+
+UdrSchema::IndexType UdrSchema::FieldDesc::getIndexType() const {
+    return indexType;
+}
+
 UdrSchema::UdrSchema(const UdrSchemaId &id)
 : id(id)
 {
@@ -46,7 +58,7 @@ bool UdrSchema::contains(const QByteArray &name) const {
     CHECK(RECORD_ID_FIELD_NAME != name, true);
 
     foreach (const FieldDesc &field, fields) {
-        if (name == field.name) {
+        if (name == field.getName()) {
             return true;
         }
     }
@@ -54,11 +66,11 @@ bool UdrSchema::contains(const QByteArray &name) const {
 }
 
 void UdrSchema::addField(const FieldDesc &desc, U2OpStatus &os) {
-    CHECK_EXT(!contains(desc.name), os.setError("Duplicate name"), );
-    if (BLOB == desc.dataType) {
-        CHECK_EXT(NOT_INDEXED == desc.indexType, os.setError("BLOB data can not be indexed"), );
+    CHECK_EXT(!contains(desc.getName()), os.setError("Duplicate name"), );
+    if (BLOB == desc.getDataType()) {
+        CHECK_EXT(NOT_INDEXED == desc.getIndexType(), os.setError("BLOB data can not be indexed"), );
     }
-    CHECK_EXT(UdrSchemaRegistry::isCorrectName(desc.name), os.setError("Incorrect field name"), );
+    CHECK_EXT(UdrSchemaRegistry::isCorrectName(desc.getName()), os.setError("Incorrect field name"), );
     fields << desc;
 }
 
@@ -67,7 +79,7 @@ void UdrSchema::addMultiIndex(const QList<int> &multiIndex, U2OpStatus &os) {
     foreach (int fieldNum, multiIndex) {
         FieldDesc field = getField(fieldNum, os);
         CHECK_OP(os, );
-        CHECK_EXT(BLOB != field.dataType, os.setError("BLOB data can not be indexed"), );
+        CHECK_EXT(BLOB != field.getDataType(), os.setError("BLOB data can not be indexed"), );
     }
     CHECK_EXT(!multiIndexes.contains(multiIndex), os.setError("Duplicate multi index"), );
     multiIndexes << multiIndex;

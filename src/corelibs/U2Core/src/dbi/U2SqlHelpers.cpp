@@ -22,71 +22,16 @@
 #include "U2SqlHelpers.h"
 
 #include <U2Core/Log.h>
+#include <U2Core/U2DbiUtils.h>
 #include <U2Core/U2SafePoints.h>
 
 #include <sqlite3.h>
 
 namespace U2 {
 
-
-
-void SQLiteUtils::addLimit(QString& sql, qint64 offset, qint64 count) {
-    if (count == -1) {
-        return;
-    }
-    sql = sql + QString(" LIMIT %1, %2").arg(offset).arg(count).toLatin1();
-}
-
-#define DB_ID_OFFSET    0
-#define TYPE_OFFSET     8
-#define DB_EXTRA_OFFSET 10
-#define DATAID_MIN_LEN  10
-
 static U2DataId     emptyId;
 static QByteArray   emptyBlob;
 static QString      emptyString;
-
-U2DataId SQLiteUtils::toU2DataId(qint64 id, U2DataType type, const QByteArray& dbExtra) {
-    if (id == 0) {
-        return emptyId;
-    }
-    assert(sizeof(U2DataType)==2);
-    int extraLen = dbExtra.size();
-    int len = DATAID_MIN_LEN + extraLen;
-#if QT_VERSION >= QT_VERSION_CHECK(4, 7, 0)
-    QByteArray res(len, Qt::Uninitialized);
-#else
-    QByteArray res(len, (char)0);
-#endif
-    char* data = res.data();
-    ((qint64*)(data + DB_ID_OFFSET))[0] = id;
-    ((U2DataType*)(data + TYPE_OFFSET))[0] = type;
-    if (extraLen > 0) {
-        memcpy(data + DB_EXTRA_OFFSET, dbExtra.constData(), dbExtra.size());
-    }
-    return res;
-}
-
-quint64 SQLiteUtils::toDbiId(const U2DataId& id) {
-    if (id.size() < DATAID_MIN_LEN) {
-        return 0;
-    }
-    return *(qint64*)(id.constData() + DB_ID_OFFSET);
-}
-
-U2DataType SQLiteUtils::toType(const U2DataId& id) {
-    if (id.size() < DATAID_MIN_LEN) {
-        return 0;
-    }
-    return *(U2DataType*)(id.constData() + TYPE_OFFSET);
-}
-
-QByteArray SQLiteUtils::toDbExtra(const U2DataId& id) {
-    if (id.size() < DATAID_MIN_LEN) {
-        return emptyId;
-    }
-    return QByteArray(id.constData() + DB_EXTRA_OFFSET, id.length() - DB_EXTRA_OFFSET);
-}
 
 qint64 SQLiteUtils::remove(const QString& table, const QString& field, const U2DataId& id, qint64 expectedRows, DbRef* db, U2OpStatus& os) {
     QMutexLocker m(&db->lock); // lock db in order to retrieve valid row id for insert
@@ -94,12 +39,6 @@ qint64 SQLiteUtils::remove(const QString& table, const QString& field, const U2D
     SQLiteQuery q(QString("DELETE FROM %1 WHERE %2 = ?1").arg(table).arg(field), db, os);
     q.bindDataId(1, id);
     return q.update(expectedRows);
-}
-
-
-QString SQLiteUtils::text(const U2DataId& id) {
-    QString res = QString("[Id: %1, Type: %2, Extra: %3]").arg(toDbiId(id)).arg(int(toType(id))).arg(toDbExtra(id).constData());
-    return res;
 }
 
 bool SQLiteUtils::isTableExists(const QString& tableName, DbRef* db, U2OpStatus& os) {
@@ -161,7 +100,7 @@ SQLiteQuery::SQLiteQuery(const QString& _sql, DbRef* d, U2OpStatus& _os)
 SQLiteQuery::SQLiteQuery(const QString& _sql, qint64 offset, qint64 count, DbRef* d, U2OpStatus& _os)
 : db(d), os(&_os), st(NULL), sql(_sql)
 {
-    SQLiteUtils::addLimit(sql, offset, count);
+    U2DbiUtils::addLimit(sql, offset, count);
     prepare();
 
 #ifdef U2_TRACE_SQLITE_QUERIES
@@ -277,7 +216,7 @@ U2DataId SQLiteQuery::getDataId(int column, U2DataType type, const QByteArray& d
         return 0;
     }
     assert(st!=NULL);
-    U2DataId res = SQLiteUtils::toU2DataId(getInt64(column), type, dbExtra);
+    U2DataId res = U2DbiUtils::toU2DataId(getInt64(column), type, dbExtra);
     return res;
 }
 
@@ -291,7 +230,7 @@ U2DataId SQLiteQuery::getDataIdExt(int column) const {
         return emptyId;
     }
     QByteArray dbExtra = getBlob(column + 2);
-    U2DataId res = SQLiteUtils::toU2DataId(getInt64(column), type, dbExtra);
+    U2DataId res = U2DbiUtils::toU2DataId(getInt64(column), type, dbExtra);
     return res;
 }
 
@@ -336,7 +275,7 @@ QByteArray SQLiteQuery::getBlob(int column) const {
 
 // param binding methods
 void SQLiteQuery::bindDataId(int idx, const U2DataId& val) {
-    bindInt64(idx, SQLiteUtils::toDbiId(val));
+    bindInt64(idx, U2DbiUtils::toDbiId(val));
 }
 
 void SQLiteQuery::bindType(int idx, U2DataType type) {
@@ -467,7 +406,7 @@ U2DataId SQLiteQuery::insert(U2DataType type, const QByteArray& dbExtra) {
     if (hasError()) {
         return emptyId;
     }
-    return SQLiteUtils::toU2DataId(lastRowId, type, dbExtra);
+    return U2DbiUtils::toU2DataId(lastRowId, type, dbExtra);
 }
 
 
@@ -492,7 +431,7 @@ qint64 SQLiteQuery::selectInt64(qint64 defaultValue) {
 
 U2DataId SQLiteQuery::selectDataId(U2DataType type, const QByteArray& dbExtra) {
     if (step()) {
-        return SQLiteUtils::toU2DataId(getInt64(1), type, dbExtra);
+        return U2DbiUtils::toU2DataId(getInt64(1), type, dbExtra);
     }
     return emptyId;
 }

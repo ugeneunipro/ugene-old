@@ -257,7 +257,7 @@ void SQLiteSNPTablesDbi::createFilterTable( FilterTable& table, const QString& f
     table.filter = filterName.toAscii();
     SAFE_POINT_OP(os,);
 
-    QString filterTableString = QString("table_%1").arg(SQLiteUtils::toDbiId(table.id));
+    QString filterTableString = QString("table_%1").arg(U2DbiUtils::toDbiId(table.id));
 
     // Cache table to store filtered results
     // filterID - FilterTableNames ID
@@ -280,7 +280,7 @@ void SQLiteSNPTablesDbi::createFilterTable( FilterTable& table, const QString& f
 void SQLiteSNPTablesDbi::removeFilterTable( const FilterTable& table, U2OpStatus& os )
 {
     
-    QString filterTableString = QString("table_%1").arg(SQLiteUtils::toDbiId(table.id));
+    QString filterTableString = QString("table_%1").arg(U2DbiUtils::toDbiId(table.id));
     SQLiteQuery q1(QString("DROP TABLE IF EXISTS FilterTable_%1").arg(filterTableString), db, os);
     q1.execute();
     SAFE_POINT_OP(os,);
@@ -307,7 +307,7 @@ void SQLiteSNPTablesDbi::renameFilterTable (const U2DataId& fTable, const QStrin
 
 void SQLiteSNPTablesDbi::addVariantsToTable( const U2DataId& fTable, const U2DataId& track, VariantTrackType tType, const QString& visualSeqName, U2DbiIterator<U2Variant>* it, U2OpStatus& os )
 {
-    QString filterTableString = QString("table_%1").arg(SQLiteUtils::toDbiId(fTable));
+    QString filterTableString = QString("table_%1").arg(U2DbiUtils::toDbiId(fTable));
 
     //transform seqName
     QString seqName = toSortingChrName(visualSeqName);
@@ -375,7 +375,7 @@ public:
 
 
 U2DbiIterator<FilterTableItem>* SQLiteSNPTablesDbi::getVariantsRange( const U2DataId& fTable, VariantTrackType tType, int offset, int limit, int sortColumn, bool sortAscending, U2OpStatus& os ){
-    QString filterTableString = QString("table_%1").arg(SQLiteUtils::toDbiId(fTable));
+    QString filterTableString = QString("table_%1").arg(U2DbiUtils::toDbiId(fTable));
     QString queryS;
     if (TrackType_All == tType){
         queryS = QString("SELECT trackID, trackType, variantID, startPos, endPos, refData, obsData, publicId, seqName FROM FilterTable_%1 \
@@ -397,7 +397,7 @@ U2DbiIterator<FilterTableItem>* SQLiteSNPTablesDbi::getVariantsRange( const U2Da
 }
 */
 int SQLiteSNPTablesDbi::getVariantCount( const U2DataId& fTable, VariantTrackType tType, U2OpStatus& os ){
-    QString filterTableString = QString("table_%1").arg(SQLiteUtils::toDbiId(fTable));
+    QString filterTableString = QString("table_%1").arg(U2DbiUtils::toDbiId(fTable));
     QString queryS;
 
     if (tType == TrackType_All){
@@ -458,7 +458,7 @@ void SQLiteSNPTablesDbi::createAnnotationsMarkerIndex( U2OpStatus& os ){
 }
 
 void SQLiteSNPTablesDbi::createIndexForFilterTable( const U2DataId& fTable, U2OpStatus& os ){
-    QString filterTableString = QString("table_%1").arg(SQLiteUtils::toDbiId(fTable));
+    QString filterTableString = QString("table_%1").arg(U2DbiUtils::toDbiId(fTable));
 
     //for sorting by column
     SQLiteQuery(QString("CREATE INDEX IF NOT EXISTS FilterTableid1_%1 ON FilterTable_%1(startPos)").arg(filterTableString) ,db, os).execute();
@@ -477,7 +477,7 @@ void SQLiteSNPTablesDbi::createIndexForFilterTable( const U2DataId& fTable, U2Op
 }
 
 void SQLiteSNPTablesDbi::updateVariantFilterTable( const U2DataId& fTable, const U2DataId& varId, VariantTrackType tType, U2OpStatus& os ){
-    QString filterTableString = QString("table_%1").arg(SQLiteUtils::toDbiId(fTable));
+    QString filterTableString = QString("table_%1").arg(U2DbiUtils::toDbiId(fTable));
     QString q1 = QString("UPDATE FilterTable_%1 ").arg(filterTableString);
 
     SQLiteTransaction t(db, os);

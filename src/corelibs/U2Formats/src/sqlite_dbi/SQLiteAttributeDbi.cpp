@@ -209,7 +209,7 @@ void SQLiteAttributeDbi::removeAttributes(const QList<U2DataId>& attributeIds, U
         q->reset();
         q->bindDataId(1, id);
         q->execute();
-        U2DataType type = SQLiteUtils::toType(id);
+        U2DataType type = U2DbiUtils::toType(id);
         switch (type) {
             case U2Type::AttributeInteger:
                 removeAttribute(qi.data(), id);
@@ -251,10 +251,10 @@ qint64 SQLiteAttributeDbi::createAttribute(U2Attribute& attr, U2DataType type, S
     q->bindType(1, type);
     q->bindDataId(2, attr.objectId);
     q->bindDataId(3, attr.childId);
-    q->bindType(4, SQLiteUtils::toType(attr.objectId));
-    q->bindType(5, SQLiteUtils::toType(attr.childId));
-    q->bindBlob(6, SQLiteUtils::toDbExtra(attr.objectId));
-    q->bindBlob(7, SQLiteUtils::toDbExtra(attr.childId));
+    q->bindType(4, U2DbiUtils::toType(attr.objectId));
+    q->bindType(5, U2DbiUtils::toType(attr.childId));
+    q->bindBlob(6, U2DbiUtils::toDbExtra(attr.objectId));
+    q->bindBlob(7, U2DbiUtils::toDbExtra(attr.childId));
     q->bindInt64(8, attr.version);
     q->bindString(9, attr.name);
     
@@ -272,7 +272,7 @@ void SQLiteAttributeDbi::createIntegerAttribute(U2IntegerAttribute& a, U2OpStatu
     if (os.hasError()) {
         return;
     }
-    a.id = SQLiteUtils::toU2DataId(id, U2Type::AttributeInteger);
+    a.id = U2DbiUtils::toU2DataId(id, U2Type::AttributeInteger);
 
     static const QString queryString("INSERT INTO IntegerAttribute(attribute, value) VALUES(?1, ?2)");
     QSharedPointer<SQLiteQuery> q = t.getPreparedQuery(queryString, db, os);
@@ -292,7 +292,7 @@ void SQLiteAttributeDbi::createRealAttribute(U2RealAttribute& a, U2OpStatus& os)
     if (os.hasError()) {
         return;
     }
-    a.id = SQLiteUtils::toU2DataId(id, U2Type::AttributeReal);
+    a.id = U2DbiUtils::toU2DataId(id, U2Type::AttributeReal);
 
     static const QString queryString("INSERT INTO RealAttribute(attribute, value) VALUES(?1, ?2)");
     QSharedPointer<SQLiteQuery> q = t.getPreparedQuery(queryString, db, os);
@@ -312,7 +312,7 @@ void SQLiteAttributeDbi::createStringAttribute(U2StringAttribute& a, U2OpStatus&
     if (os.hasError()) {
         return;
     }
-    a.id = SQLiteUtils::toU2DataId(id, U2Type::AttributeString);
+    a.id = U2DbiUtils::toU2DataId(id, U2Type::AttributeString);
 
     static const QString queryString("INSERT INTO StringAttribute(attribute, value) VALUES(?1, ?2)");
     QSharedPointer<SQLiteQuery> q = t.getPreparedQuery(queryString, db, os);
@@ -332,7 +332,7 @@ void SQLiteAttributeDbi::createByteArrayAttribute(U2ByteArrayAttribute& a, U2OpS
     if (os.hasError()) {
         return;
     }
-    a.id = SQLiteUtils::toU2DataId(id, U2Type::AttributeByteArray);
+    a.id = U2DbiUtils::toU2DataId(id, U2Type::AttributeByteArray);
 
     static const QString queryString("INSERT INTO ByteArrayAttribute(attribute, value) VALUES(?1, ?2)");
     QSharedPointer<SQLiteQuery> q = t.getPreparedQuery(queryString, db, os);

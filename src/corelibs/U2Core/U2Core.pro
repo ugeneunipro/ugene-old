@@ -62,6 +62,7 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/dbi/U2AttributeDbi.h \
            src/dbi/U2CrossDatabaseReferenceDbi.h \
            src/dbi/U2Dbi.h \
+           src/dbi/U2DbiPackUtils.h \
            src/dbi/U2DbiRegistry.h \
            src/dbi/U2DbiUtils.h \
            src/dbi/U2FeatureDbi.h \
@@ -246,6 +247,7 @@ SOURCES += src/cmdline/CMDLineCoreOptions.cpp \
            src/datatype/UdrSchemaRegistry.cpp \
            src/datatype/Vector3D.cpp \
            src/dbi/DbiDocumentFormat.cpp \
+           src/dbi/U2DbiPackUtils.cpp \
            src/dbi/U2DbiRegistry.cpp \
            src/dbi/U2DbiUtils.cpp \
            src/dbi/U2SqlHelpers.cpp \

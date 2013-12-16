@@ -63,15 +63,20 @@ public:
          * The name of the field.
          * It must consist of Latin letters, digits (not first character) and "_" only.
          */
-        const QByteArray name;
+        const QByteArray getName() const;
         /**
          * The type of the field's data.
          */
-        const DataType dataType;
+        DataType getDataType() const;
         /**
          * Indexed field or not.
          */
-        const IndexType indexType;
+        IndexType getIndexType() const;
+
+    private:
+        QByteArray name;
+        DataType dataType;
+        IndexType indexType;
     };
 
 public:

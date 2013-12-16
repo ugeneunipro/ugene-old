@@ -69,7 +69,7 @@ void SQLiteKnownMutationsDbi::createKnownMutationsTrack( KnownMutationsTrack& mu
     // dbSnpId - identifier visible for user
     // scores in different dbs
     //gene position
-    QString knownTableString = QString("table_%1").arg(SQLiteUtils::toDbiId(mutationsTrack.id));
+    QString knownTableString = QString("table_%1").arg(U2DbiUtils::toDbiId(mutationsTrack.id));
 
     QString createMutString = QString("CREATE TABLE KnownMutation_%1 (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, track INTEGER, startPos INTEGER, "
         " refData BLOB NOT NULL, obsData BLOB NOT NULL, dbSnpId BLOB NOT NULL, "
@@ -86,7 +86,7 @@ void SQLiteKnownMutationsDbi::createKnownMutationsTrack( KnownMutationsTrack& mu
 }
 
 void SQLiteKnownMutationsDbi::removeKnownMutationsTrack( const KnownMutationsTrack& mutationsTrack, U2OpStatus& os ){
-    QString knownTableString = QString("table_%1").arg(SQLiteUtils::toDbiId(mutationsTrack.id));
+    QString knownTableString = QString("table_%1").arg(U2DbiUtils::toDbiId(mutationsTrack.id));
     SQLiteQuery q1(QString("DELETE FROM KnownMutation_%1").arg(knownTableString), db, os);
     q1.execute();
     SAFE_POINT_OP(os,);
@@ -111,7 +111,7 @@ KnownMutationsTrack SQLiteKnownMutationsDbi::getKnownMutationsTrack( int chrNumb
 
 void SQLiteKnownMutationsDbi::addKnownMutationsToTrack( const U2DataId& mTrack, U2DbiIterator<KnownMutation>* it, U2OpStatus& os ){
 
-    QString knownTableString = QString("table_%1").arg(SQLiteUtils::toDbiId(mTrack));
+    QString knownTableString = QString("table_%1").arg(U2DbiUtils::toDbiId(mTrack));
 
     SQLiteQuery q2(QString("INSERT INTO KnownMutation_%1(track, startPos, refData, obsData, dbSnpId, "
         " avSift, lrt, phylop, pp2, mt, genomes1000, segmentalDuplication, conserved, gerpConserved, allFreq, hapmap, gerpScore, genePosition) " 
@@ -170,7 +170,7 @@ public:
 };
 
 U2DbiIterator<KnownMutation>* SQLiteKnownMutationsDbi::getKnownMutations( const U2DataId& mTrack, U2OpStatus& os ){
-    QString knownTableString = QString("table_%1").arg(SQLiteUtils::toDbiId(mTrack));
+    QString knownTableString = QString("table_%1").arg(U2DbiUtils::toDbiId(mTrack));
     QSharedPointer<SQLiteQuery> q  (new SQLiteQuery(QString("SELECT startPos, refData, obsData, dbSnpId, "
         "avSift, lrt, phylop, pp2, mt, genomes1000, segmentalDuplication, conserved, gerpConserved, allFreq, hapmap, gerpScore, genePosition \
         FROM KnownMutation_%1 \
@@ -179,7 +179,7 @@ U2DbiIterator<KnownMutation>* SQLiteKnownMutationsDbi::getKnownMutations( const 
 }
 
 U2DbiIterator<KnownMutation>* SQLiteKnownMutationsDbi::getKnownMutations( const U2DataId& mTrack, qint64 startPos, U2OpStatus& os ){
-    QString knownTableString = QString("table_%1").arg(SQLiteUtils::toDbiId(mTrack));
+    QString knownTableString = QString("table_%1").arg(U2DbiUtils::toDbiId(mTrack));
     SQLiteTransaction t(db, os);
     QSharedPointer<SQLiteQuery> q = t.getPreparedQuery(QString("SELECT startPos, refData, obsData, dbSnpId, "
         "avSift, lrt, phylop, pp2, mt, genomes1000, segmentalDuplication, conserved, gerpConserved, allFreq, hapmap, gerpScore, genePosition \
@@ -190,7 +190,7 @@ U2DbiIterator<KnownMutation>* SQLiteKnownMutationsDbi::getKnownMutations( const 
 }
 
 int SQLiteKnownMutationsDbi::getKnownMutationsCount( const U2DataId& mTrack, U2OpStatus& os ){
-    QString knownTableString = QString("table_%1").arg(SQLiteUtils::toDbiId(mTrack));
+    QString knownTableString = QString("table_%1").arg(U2DbiUtils::toDbiId(mTrack));
     SQLiteQuery q(QString("SELECT COUNT(*) FROM KnownMutation_%1").arg(knownTableString) , db, os);
     if (!q.step()) {
         return -1;

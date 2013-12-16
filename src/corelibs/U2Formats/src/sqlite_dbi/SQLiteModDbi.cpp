@@ -205,8 +205,8 @@ void SQLiteModDbi::createModStep(const U2DataId &masterObjId, U2SingleModStep &s
     SAFE_POINT_OP(os, );
 
     qSingle.bindDataId(1, step.objectId);
-    qSingle.bindType(2, SQLiteUtils::toType(step.objectId));
-    qSingle.bindBlob(3, SQLiteUtils::toDbExtra(step.objectId));
+    qSingle.bindType(2, U2DbiUtils::toType(step.objectId));
+    qSingle.bindBlob(3, U2DbiUtils::toDbExtra(step.objectId));
     qSingle.bindInt64(4, step.version);
     qSingle.bindInt64(5, step.modType);
     qSingle.bindBlob(6, step.details);
@@ -465,8 +465,8 @@ void SQLiteModDbi::createUserModStep(const U2DataId &masterObjId, U2OpStatus &os
     SAFE_POINT_OP(os, );
 
     qUser.bindDataId(1, masterObjId);
-    qUser.bindType(2, SQLiteUtils::toType(masterObjId));
-    qUser.bindBlob(3, SQLiteUtils::toDbExtra(masterObjId));
+    qUser.bindType(2, U2DbiUtils::toType(masterObjId));
+    qUser.bindBlob(3, U2DbiUtils::toDbExtra(masterObjId));
     qUser.bindInt64(4, masterObjVersion);
 
     currentUserModStepId = qUser.insert();

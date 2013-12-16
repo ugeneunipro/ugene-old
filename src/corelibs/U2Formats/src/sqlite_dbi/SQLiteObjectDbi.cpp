@@ -21,19 +21,17 @@
 
 #include "SQLiteMsaDbi.h"
 #include "SQLiteObjectDbi.h"
-#include "SQLitePackUtils.h"
 
-#include <U2Core/U2SqlHelpers.h>
 #include <U2Core/U2AttributeDbi.h>
+#include <U2Core/U2DbiPackUtils.h>
 #include <U2Core/U2SafePoints.h>
+#include <U2Core/U2SqlHelpers.h>
 
 #include <U2Formats/SQLiteModDbi.h>
 #include <U2Formats/SQLiteSequenceDbi.h>
 
 
 namespace U2 {
-
-using namespace SQLite;
 
 SQLiteObjectDbi::SQLiteObjectDbi(SQLiteDbi* dbi) : U2ObjectDbi(dbi), SQLiteChildDBICommon(dbi) {
 
@@ -164,7 +162,7 @@ bool SQLiteObjectDbi::removeObjectImpl(const U2DataId& objectId, const QString& 
 
     U2DataType type = getRootDbi()->getEntityTypeById(objectId);
     if (!U2Type::isObjectType(type)) {
-        os.setError(SQLiteL10N::tr("Not an object! Id: %1, type: %2").arg(SQLiteUtils::text(objectId)).arg(type));
+        os.setError(SQLiteL10N::tr("Not an object! Id: %1, type: %2").arg(U2DbiUtils::text(objectId)).arg(type));
         return false;
     }
     if (folder.isEmpty()) {
@@ -248,7 +246,7 @@ bool SQLiteObjectDbi::removeObjectImpl(const U2DataId& objectId, const QString& 
             //TODO: removeCrossDatabaseReferenceObject(objectId.id);
             break;
         default:
-            os.setError(SQLiteL10N::tr("Unknown object type! Id: %1, type: %2").arg(SQLiteUtils::text(objectId)).arg(type));
+            os.setError(SQLiteL10N::tr("Unknown object type! Id: %1, type: %2").arg(U2DbiUtils::text(objectId)).arg(type));
     }
     CHECK_OP(os, false);
 

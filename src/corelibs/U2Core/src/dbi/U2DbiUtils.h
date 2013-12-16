@@ -156,6 +156,24 @@ public:
     template<class T> static QList<T> toList(U2DbiIterator<T>* it);
 
     static U2DbiRef toRef(U2Dbi* dbi);
+
+    /** Adds limit operator to the sql query */
+    static void addLimit(QString& sql, qint64 offset, qint64 count);
+
+    /** Converts internal database id to U2DataId*/
+    static U2DataId toU2DataId(qint64 id, U2DataType type, const QByteArray& dbExtra = QByteArray());
+
+    /** Converts U2DataId to internal database id*/
+    static quint64 toDbiId(const U2DataId& id);
+
+    /** Extracts type info from U2DataId */
+    static U2DataType toType(const U2DataId& id);
+
+    /** Extracts table info from U2DataId */
+    static QByteArray toDbExtra(const U2DataId& id);
+
+    /** Return textual representation of the id */
+    static QString text(const U2DataId& id);
 };
 
 /**

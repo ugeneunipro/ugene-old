@@ -43,7 +43,7 @@ RTreeAssemblyAdapter::RTreeAssemblyAdapter(SQLiteDbi* _dbi, const U2DataId& asse
 : AssemblyAdapter(assemblyId, compressor, db)
 {
     dbi = _dbi;
-    readsTable = QString("AssemblyRead_R%1").arg(SQLiteUtils::toDbiId(assemblyId));
+    readsTable = QString("AssemblyRead_R%1").arg(U2DbiUtils::toDbiId(assemblyId));
     indexTable = readsTable + "_RTree";
 }
 
@@ -177,7 +177,7 @@ void RTreeAssemblyAdapter::addReads(U2DbiIterator<U2AssemblyRead>* it, U2Assembl
 //#define U2_SQLITE_CHECK_RTREE_
 #ifdef U2_SQLITE_CHECK_RTREE_
 // Consistency check. To be removed after all known rtree issues are resolved
-        qint64 dbId = SQLiteUtils::toDbiId(read->id);
+        qint64 dbId = U2DbiUtils::toDbiId(read->id);
         SQLiteQuery cq("SELECT gstart, gend FROM " + indexTable + " WHERE id = " + QString::number(dbId), db, os);
         cq.step();
         qint64 cstart =  cq.getInt64(0);

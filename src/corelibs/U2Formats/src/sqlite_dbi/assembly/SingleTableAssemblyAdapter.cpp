@@ -54,7 +54,7 @@ SingleTableAssemblyAdapter::SingleTableAssemblyAdapter(SQLiteDbi* _dbi, const U2
 }
 
 QString SingleTableAssemblyAdapter::getReadsTableName(const U2DataId& assemblyId, char prefix, const QString& suffix) {
-    return QString("AssemblyRead_%1%2_%3").arg(prefix).arg(SQLiteUtils::toDbiId(assemblyId)).arg(suffix);;
+    return QString("AssemblyRead_%1%2_%3").arg(prefix).arg(U2DbiUtils::toDbiId(assemblyId)).arg(suffix);;
 }
 
 void SingleTableAssemblyAdapter::enableRangeTableMode(int minLen, int maxLen) {

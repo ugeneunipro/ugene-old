@@ -24,13 +24,13 @@
 
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/U2AbstractDbi.h>
+#include <U2Core/U2DbiPackUtils.h>
 #include <U2Core/U2MsaDbi.h>
 #include <U2Core/U2OpStatusUtils.h>
 
 #include <U2Formats/SQLiteDbi.h>
 #include <U2Formats/SQLiteModDbi.h>
 #include <U2Formats/SQLiteObjectDbi.h>
-#include <U2Formats/SQLitePackUtils.h>
 
 
 #define IMPLEMENT_MOD_TEST(suite, name) \
@@ -151,7 +151,7 @@ U2SingleModStep ModSQLiteSpecificTestData::prepareSingleStep(qint64 modVersion, 
     step.objectId = objId;
     step.version = modVersion;
     step.modType = U2ModType::objUpdatedName;
-    step.details = SQLite::PackUtils::packObjectNameDetails("Test object", "Test object");
+    step.details = PackUtils::packObjectNameDetails("Test object", "Test object");
 
     return step;
 }
@@ -993,14 +993,14 @@ IMPLEMENT_TEST(ModDbiSQLiteSpecificUnitTests, updateRowContent_severalSteps) {
         rowModStep.modType = U2ModType::msaUpdatedRowInfo;
         rowModStep.objectId = msaId;
         rowModStep.version = baseMsaVersion + i;
-        rowModStep.details = SQLite::PackUtils::packRowInfoDetails(rowInfoList[i], rowInfoList[i + 1]);
+        rowModStep.details = PackUtils::packRowInfoDetails(rowInfoList[i], rowInfoList[i + 1]);
         msaModSteps << rowModStep;
 
         U2SingleModStep gapModStep;
         gapModStep.modType = U2ModType::msaUpdatedGapModel;
         gapModStep.objectId = msaId;
         gapModStep.version = baseMsaVersion + i;
-        gapModStep.details = SQLite::PackUtils::packGapDetails(baseRows[rowNumber].rowId,
+        gapModStep.details = PackUtils::packGapDetails(baseRows[rowNumber].rowId,
                                                                rowInfoList[i].gaps,
                                                                rowInfoList[i + 1].gaps);
         msaModSteps << gapModStep;
@@ -1014,7 +1014,7 @@ IMPLEMENT_TEST(ModDbiSQLiteSpecificUnitTests, updateRowContent_severalSteps) {
         modStep.modType = U2ModType::sequenceUpdatedData;
         modStep.objectId = baseRows[rowNumber].sequenceId;
         modStep.version = baseSeqVersion + i;
-        modStep.details = SQLite::PackUtils::packSequenceDataDetails(U2_REGION_MAX,
+        modStep.details = PackUtils::packSequenceDataDetails(U2_REGION_MAX,
                                                                      seqDataList[i],
                                                                      seqDataList[i + 1],
                                                                      QVariantMap());
@@ -1141,14 +1141,14 @@ IMPLEMENT_TEST(ModDbiSQLiteSpecificUnitTests, updateRowContent_severalUndoThenAc
         rowModStep.modType = U2ModType::msaUpdatedRowInfo;
         rowModStep.objectId = msaId;
         rowModStep.version = baseMsaVersion + i;
-        rowModStep.details = SQLite::PackUtils::packRowInfoDetails(rowInfoList[i], rowInfoList[i + 1]);
+        rowModStep.details = PackUtils::packRowInfoDetails(rowInfoList[i], rowInfoList[i + 1]);
         msaModSteps << rowModStep;
 
         U2SingleModStep gapModStep;
         gapModStep.modType = U2ModType::msaUpdatedGapModel;
         gapModStep.objectId = msaId;
         gapModStep.version = baseMsaVersion + i;
-        gapModStep.details = SQLite::PackUtils::packGapDetails(baseRows[rowNumber].rowId,
+        gapModStep.details = PackUtils::packGapDetails(baseRows[rowNumber].rowId,
                                                                rowInfoList[i].gaps,
                                                                rowInfoList[i + 1].gaps);
         msaModSteps << gapModStep;
@@ -1161,7 +1161,7 @@ IMPLEMENT_TEST(ModDbiSQLiteSpecificUnitTests, updateRowContent_severalUndoThenAc
         modStep.modType = U2ModType::sequenceUpdatedData;
         modStep.objectId = baseRows[rowNumber].sequenceId;
         modStep.version = baseSeqVersion + i;
-        modStep.details = SQLite::PackUtils::packSequenceDataDetails(U2_REGION_MAX,
+        modStep.details = PackUtils::packSequenceDataDetails(U2_REGION_MAX,
                                                                      seqDataList[i],
                                                                      seqDataList[i + 1],
                                                                      QVariantMap());
@@ -1180,7 +1180,7 @@ IMPLEMENT_TEST(ModDbiSQLiteSpecificUnitTests, updateRowContent_severalUndoThenAc
     actionSeqModStep.modType = U2ModType::sequenceUpdatedData;
     actionSeqModStep.objectId = baseRows[rowNumber].sequenceId;
     actionSeqModStep.version = baseSeqVersion + expectedIndex;
-    actionSeqModStep.details = SQLite::PackUtils::packSequenceDataDetails(U2_REGION_MAX,
+    actionSeqModStep.details = PackUtils::packSequenceDataDetails(U2_REGION_MAX,
                                                                           seqDataList[expectedIndex],
                                                                           newSeqData,
                                                                           QVariantMap());
@@ -1188,13 +1188,13 @@ IMPLEMENT_TEST(ModDbiSQLiteSpecificUnitTests, updateRowContent_severalUndoThenAc
     actionRowModStep.modType = U2ModType::msaUpdatedRowInfo;
     actionRowModStep.objectId = msaId;
     actionRowModStep.version = baseMsaVersion + expectedIndex;
-    actionRowModStep.details = SQLite::PackUtils::packRowInfoDetails(rowInfoList[expectedIndex], newRow);
+    actionRowModStep.details = PackUtils::packRowInfoDetails(rowInfoList[expectedIndex], newRow);
 
     U2SingleModStep actionGapModStep;
     actionGapModStep.modType = U2ModType::msaUpdatedGapModel;
     actionGapModStep.objectId = msaId;
     actionGapModStep.version = baseMsaVersion + expectedIndex;
-    actionGapModStep.details = SQLite::PackUtils::packGapDetails(baseRows[rowNumber].rowId,
+    actionGapModStep.details = PackUtils::packGapDetails(baseRows[rowNumber].rowId,
                                                                  rowInfoList[expectedIndex].gaps,
                                                                  newRow.gaps);
 
