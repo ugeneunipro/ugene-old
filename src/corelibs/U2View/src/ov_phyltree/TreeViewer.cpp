@@ -444,7 +444,7 @@ TreeViewerUI::TreeViewerUI(TreeViewer* treeViewer): phyObject(treeViewer->getPhy
     buttonPopup->addMenu(cameraMenu);
 
     updateActionsState();
-    this->setObjectName("treeView");
+    setObjectName("treeView");
     updateTreeSettings();
 
     connect(rectRoot, SIGNAL(si_branchCollapsed(GraphicsRectangularBranchItem* )), SLOT(sl_onBranchCollapsed(GraphicsRectangularBranchItem*)));
@@ -572,9 +572,9 @@ void TreeViewerUI::sl_branchSettings() {
 }
 
 void TreeViewerUI::updateSettings() {
-    QList<QGraphicsItem*> updatingItems = this->scene()->selectedItems();
+    QList<QGraphicsItem*> updatingItems = scene()->selectedItems();
     if(updatingItems.isEmpty()){
-        updatingItems = this->items();
+        updatingItems = items();
 
         QGraphicsLineItem* legendLine = dynamic_cast<QGraphicsLineItem*>(legend);
         if(legendLine){
@@ -599,9 +599,9 @@ void TreeViewerUI::updateSettings() {
     
 }
 void TreeViewerUI::updateTextSettings(){
-    QList<QGraphicsItem*> updatingItems = this->scene()->selectedItems();
+    QList<QGraphicsItem*> updatingItems = scene()->selectedItems();
     if(updatingItems.isEmpty()){
-        updatingItems = this->items();
+        updatingItems = items();
 
         QList<QGraphicsItem*> legendChildItems = legend->children();
         if(!legendChildItems.isEmpty()){
@@ -768,7 +768,7 @@ QVariantMap TreeViewerUI::getSettingsState() const {
     QVariantMap m;
 
     int i=0;
-    foreach (QGraphicsItem *graphItem, this->items()) {
+    foreach (QGraphicsItem *graphItem, items()) {
         GraphicsBranchItem *branchItem = dynamic_cast<GraphicsBranchItem*>(graphItem);
         if (branchItem) {
             m[BRANCH_COLOR + i] = branchItem->getBranchSettings().branchColor;
@@ -783,7 +783,7 @@ QVariantMap TreeViewerUI::getSettingsState() const {
 void TreeViewerUI::setSettingsState(const QVariantMap& m) {
 
     int i=0;
-    foreach (QGraphicsItem *graphItem, this->items()) {
+    foreach (QGraphicsItem *graphItem, items()) {
         GraphicsBranchItem *branchItem = dynamic_cast<GraphicsBranchItem*>(graphItem);
         if (branchItem) {
             BranchSettings branchSettings = branchItem->getBranchSettings();
@@ -912,7 +912,7 @@ void TreeViewerUI::updateRect() {
 }
 
 void TreeViewerUI::sl_swapTriggered() {
-    foreach (QGraphicsItem *graphItem, this->items()) {
+    foreach (QGraphicsItem *graphItem, items()) {
         GraphicsButtonItem *buttonItem = dynamic_cast<GraphicsButtonItem*>(graphItem);
         if (buttonItem && buttonItem->isSelectedTop()) {
             buttonItem->swapSiblings();
@@ -949,19 +949,12 @@ void TreeViewerUI::sl_rerootTriggered() {
 void TreeViewerUI::collapseSelected() {
     phyObject->update();
 
-    QList<QGraphicsItem *> childItems = this->items();
+    QList<QGraphicsItem *> childItems = items();
     foreach (QGraphicsItem *graphItem, childItems) {
         GraphicsButtonItem *buttonItem = dynamic_cast<GraphicsButtonItem*>(graphItem);
 
         if (buttonItem && buttonItem->isSelectedTop()) {
             buttonItem->collapse();
-        }
-    }
-
-    foreach (QGraphicsItem *graphItem, childItems) {
-        GraphicsButtonItem *buttonItem = dynamic_cast<GraphicsButtonItem*>(graphItem);
-        if (buttonItem && buttonItem->isSelectedTop()) {
-            buttonItem->swapSiblings();
             break;
         }
     }
@@ -969,7 +962,7 @@ void TreeViewerUI::collapseSelected() {
 
 bool TreeViewerUI::isSelectedCollapsed(){
     phyObject->update();
-    foreach (QGraphicsItem *graphItem, this->items()) {
+    foreach (QGraphicsItem *graphItem, items()) {
         GraphicsButtonItem *buttonItem = dynamic_cast<GraphicsButtonItem*>(graphItem);
 
         if (buttonItem && buttonItem->isSelectedTop()) {
@@ -1264,7 +1257,7 @@ void TreeViewerUI::sl_treeSettingsTriggered(){
 }
 
 void TreeViewerUI::sl_zoomToSel(){
-    QList<QGraphicsItem*> selectedItems = this->scene()->selectedItems();
+    QList<QGraphicsItem*> selectedItems = scene()->selectedItems();
     if(selectedItems.isEmpty()){
          zooming(ZOOM_COEF); 
     }else{
@@ -1355,7 +1348,7 @@ void TreeViewerUI::updateActionsState(){
         collapseAction->setText(QObject::tr("Collapse"));
     }
 
-    QList<QGraphicsItem*> updatingItems = this->scene()->selectedItems();
+    QList<QGraphicsItem*> updatingItems = scene()->selectedItems();
 
     bool thereIsSelection = !updatingItems.isEmpty();
     bool rootIsSelected = root->isSelected();
