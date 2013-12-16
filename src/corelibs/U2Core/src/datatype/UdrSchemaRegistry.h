@@ -22,6 +22,8 @@
 #ifndef _U2_UDRSCHEMAREGISTRY_H_
 #define _U2_UDRSCHEMAREGISTRY_H_
 
+#include <QtCore/QMutex>
+
 #include <U2Core/UdrSchema.h>
 
 namespace U2 {
@@ -33,8 +35,8 @@ public:
     ~UdrSchemaRegistry();
 
     void registerSchema(const UdrSchema *schema, U2OpStatus &os);
-    QList<UdrSchemaId> getRegisteredSchemas() const;
-    const UdrSchema * getSchemaById(const UdrSchemaId &id) const;
+    QList<UdrSchemaId> getRegisteredSchemas();
+    const UdrSchema * getSchemaById(const UdrSchemaId &id);
 
     /**
      * Check the names of schemas and fields that they consist of
@@ -43,6 +45,7 @@ public:
     static bool isCorrectName(const QByteArray &name);
 
 private:
+    QMutex mutex;
     QHash<UdrSchemaId, const UdrSchema*> schemas;
 };
 

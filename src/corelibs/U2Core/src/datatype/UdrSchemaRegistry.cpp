@@ -36,6 +36,7 @@ UdrSchemaRegistry::~UdrSchemaRegistry() {
 }
 
 void UdrSchemaRegistry::registerSchema(const UdrSchema *schema, U2OpStatus &os) {
+    QMutexLocker lock(&mutex);
     CHECK_EXT(NULL != schema, os.setError("NULL schema"), );
     CHECK_EXT(isCorrectName(schema->getId()), os.setError("Incorrect schema id"), );
     CHECK_EXT(!schemas.contains(schema->getId()), os.setError("Duplicate schema id"), );
@@ -43,11 +44,13 @@ void UdrSchemaRegistry::registerSchema(const UdrSchema *schema, U2OpStatus &os) 
     schemas[schema->getId()] = schema;
 }
 
-QList<UdrSchemaId> UdrSchemaRegistry::getRegisteredSchemas() const {
+QList<UdrSchemaId> UdrSchemaRegistry::getRegisteredSchemas() {
+    QMutexLocker lock(&mutex);
     return schemas.keys();
 }
 
-const UdrSchema * UdrSchemaRegistry::getSchemaById(const UdrSchemaId &id) const {
+const UdrSchema * UdrSchemaRegistry::getSchemaById(const UdrSchemaId &id) {
+    QMutexLocker lock(&mutex);
     return schemas.value(id, NULL);
 }
 
