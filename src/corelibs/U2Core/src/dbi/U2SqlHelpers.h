@@ -161,6 +161,7 @@ public:
 
     /** Binds BLOB */
     void bindBlob(int idx, const QByteArray& blob, bool transient = true);
+    void bindZeroBlob(int idx, int reservedSize);
 
     
     //////////////////////////////////////////////////////////////////////////

@@ -6,8 +6,8 @@
 #include "core/dbi/assembly/AssemblyDbiUnitTests.h"
 #include "core/dbi/attribute/AttributeDbiUnitTests.h"
 #include "core/dbi/sequence/SequenceDbiUnitTests.h"
+#include "core/dbi/udr/UdrDbiUnitTests.h"
 #include "core/gobjects/FeaturesTableObjectUnitTest.h"
-
 #include "core/format/sqlite_msa_dbi/MsaDbiSQLiteSpecificUnitTests.h"
 
 
@@ -109,6 +109,7 @@ void UnitTestSuite::cleanup() {
     SequenceTestData::shutdown();
     FeaturesTableObjectTestData::shutdown();
     MsaSQLiteSpecificTestData::shutdown();
+    UdrTestData::shutdown();
 
     if (passed){
         taskLog.info("Test passed: " + QString::number(passed));

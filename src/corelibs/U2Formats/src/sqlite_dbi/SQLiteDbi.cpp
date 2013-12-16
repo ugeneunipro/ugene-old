@@ -30,6 +30,7 @@
 #include "SQLiteModDbi.h"
 #include "SQLiteSNPTablesDbi.h"
 #include "SQLiteKnownMutationsDbi.h"
+#include "SQLiteUdrDbi.h"
 
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/U2SqlHelpers.h>
@@ -58,11 +59,13 @@ SQLiteDbi::SQLiteDbi() : U2AbstractDbi (SQLiteDbiFactory::ID){
     operationsBlockTransaction = NULL;
     filterTableDbi = new SQLiteSNPTablesDbi(this);
     knownMutationsDbi = new SQLiteKnownMutationsDbi(this);
+    udrDbi = new SQLiteUdrDbi(this);
 }
 
 SQLiteDbi::~SQLiteDbi() {
     assert(db->handle == NULL);
 
+    delete udrDbi;
     delete objectDbi;
     delete sequenceDbi;
     delete msaDbi;
@@ -116,6 +119,10 @@ U2ModDbi* SQLiteDbi::getModDbi() {
     return modDbi;
 }
 
+UdrDbi* SQLiteDbi::getUdrDbi() {
+    return udrDbi;
+}
+
 SQLiteObjectDbi* SQLiteDbi::getSQLiteObjectDbi() const {
     return objectDbi;
 }
@@ -130,6 +137,10 @@ SQLiteSequenceDbi* SQLiteDbi::getSQLiteSequenceDbi() const {
 
 SQLiteModDbi* SQLiteDbi::getSQLiteModDbi() const {
     return modDbi;
+}
+
+SQLiteUdrDbi* SQLiteDbi::getSQLiteUdrDbi() const {
+    return udrDbi;
 }
 
 SNPTablesDbi* SQLiteDbi::getSNPTableDbi(){
@@ -228,6 +239,7 @@ void SQLiteDbi::populateDefaultSchema(U2OpStatus& os) {
     modDbi->initSqlSchema(os);
     filterTableDbi->initSqlSchema(os);
     knownMutationsDbi->initSqlSchema(os);
+    udrDbi->initSqlSchema(os);
 
     setProperty(SQLITE_DBI_OPTION_APP_VERSION, Version::appVersion().text, os);
 }
@@ -282,6 +294,8 @@ void SQLiteDbi::internalInit(const QHash<QString, QString>& props, U2OpStatus& o
     features.insert(U2DbiFeature_WriteFeatures);
     features.insert(U2DbiFeature_ReadModifications);
     features.insert(U2DbiFeature_WriteModifications);
+    features.insert(U2DbiFeature_ReadUdr);
+    features.insert(U2DbiFeature_WriteUdr);
 }
 
 void SQLiteDbi::setState(U2DbiState s) {
@@ -373,7 +387,8 @@ QVariantMap SQLiteDbi::shutdown(U2OpStatus& os) {
         os.setError(SQLiteL10N::tr("Illegal database state %1!").arg(state));
         return QVariantMap();
     }
-    
+
+    udrDbi->shutdown(os);
     objectDbi->shutdown(os);
     sequenceDbi->shutdown(os);
     msaDbi->shutdown(os);

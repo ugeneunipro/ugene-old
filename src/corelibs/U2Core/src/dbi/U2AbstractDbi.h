@@ -37,6 +37,7 @@
 #include <U2Core/U2ObjectDbi.h>
 #include <U2Core/U2VariantDbi.h>
 #include <U2Core/U2ModDbi.h>
+#include <U2Core/UdrDbi.h>
 
 #include <U2Core/SNPTablesDbi.h>
 #include <U2Core/KnownMutationsDbi.h>
@@ -88,7 +89,9 @@ public:
     virtual KnownMutationsDbi* getKnownMutationsDbi() {return NULL;}
     
     virtual U2CrossDatabaseReferenceDbi* getCrossDatabaseReferenceDbi()  {return NULL;}
-    
+
+    virtual UdrDbi* getUdrDbi() {return NULL;}
+
     virtual U2DataType getEntityTypeById(const U2DataId&) const {return U2Type::Unknown;}
 
     virtual QString getProperty(const QString&, const QString& defaultValue, U2OpStatus& os) {

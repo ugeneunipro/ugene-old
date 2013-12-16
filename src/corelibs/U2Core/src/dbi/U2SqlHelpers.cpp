@@ -423,6 +423,18 @@ void SQLiteQuery::bindBlob(int idx, const QByteArray& blob, bool transient) {
     }
 }
 
+void SQLiteQuery::bindZeroBlob(int idx, int reservedSize) {
+    if (hasError()) {
+        return;
+    }
+    assert(st!=NULL);
+    int rc = sqlite3_bind_zeroblob(st, idx, reservedSize);
+    if (rc != SQLITE_OK) {
+        setError(SQLiteL10n::tr("Error binding blob value! Query: '%1', idx: %2").arg(sql).arg(idx));
+        return;
+    }
+}
+
 void SQLiteQuery::execute() {
     update(-1);
 }

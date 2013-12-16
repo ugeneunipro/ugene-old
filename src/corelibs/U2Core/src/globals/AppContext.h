@@ -75,6 +75,7 @@ class DataBaseRegistry;
 class ExternalToolRegistry;
 class RepeatFinderTaskFactoryRegistry;
 class U2DbiRegistry;
+class UdrSchemaRegistry;
 class QDActorPrototypeRegistry;
 class StructuralAlignmentAlgorithmRegistry;
 class AutoAnnotationsSupport;
@@ -221,6 +222,8 @@ public:
 
     static U2DbiRegistry *getDbiRegistry() { return getInstance()->_getDbiRegistry(); }
 
+    static UdrSchemaRegistry *getUdrSchemaRegistry() { return getInstance()->_getUdrSchemaRegistry(); }
+
     static U2DataPathRegistry* getDataPathRegistry() {return getInstance()->_getDataPathRegistry();}
     
     static bool isGUIMode() {return getInstance()->_isGUIMode(); }
@@ -295,6 +298,7 @@ protected:
     virtual StructuralAlignmentAlgorithmRegistry* _getStructuralAlignmentAlgorithmRegistry() const = 0;
     virtual AutoAnnotationsSupport*     _getAutoAnnotationsSupport() const = 0;
     virtual U2DbiRegistry *             _getDbiRegistry() const = 0;
+    virtual UdrSchemaRegistry *         _getUdrSchemaRegistry() const = 0;
     virtual CDSearchFactoryRegistry* _getCDSFactoryRegistry() const = 0;
     virtual GUITestBase* _getGUITestBase() const = 0;
     virtual SplicedAlignmentTaskRegistry* _getSplicedAlignmentTaskRegistry() const = 0;

@@ -8,6 +8,7 @@ HEADERS += \
     src/core/datatype/annotations/AnnotationUnitTests.h \
     src/core/datatype/msa/MAlignmentUnitTests.h \
     src/core/datatype/msa/MAlignmentRowUnitTests.h \
+    src/core/datatype/udr/UdrSchemaUnitTests.h \
     src/core/dbi/DbiTest.h \
     src/core/dbi/assembly/AssemblyDbiTestUtil.h \
     src/core/dbi/assembly/AssemblyDbiUnitTests.h \
@@ -15,6 +16,7 @@ HEADERS += \
     src/core/dbi/attribute/AttributeDbiUnitTests.h \
     src/core/dbi/features/FeatureDbiUnitTests.h \
     src/core/dbi/msa/MsaDbiUnitTests.h \
+    src/core/dbi/udr/UdrDbiUnitTests.h \
     src/core/external_script/base_scheme_interface/CInterfaceManualTests.h \
     src/core/external_script/base_scheme_interface/CInterfaceSasTests.h \
     src/core/external_script/base_scheme_interface/SchemeSimilarityUtils.h \
@@ -36,12 +38,14 @@ SOURCES += \
     src/core/datatype/annotations/AnnotationUnitTests.cpp \
     src/core/datatype/msa/MAlignmentUnitTests.cpp \
     src/core/datatype/msa/MAlignmentRowUnitTests.cpp \
+    src/core/datatype/udr/UdrSchemaUnitTests.cpp \
     src/core/dbi/DbiTest.cpp \
     src/core/dbi/assembly/AssemblyDbiTestUtil.cpp \
     src/core/dbi/assembly/AssemblyDbiUnitTests.cpp \
     src/core/dbi/sequence/SequenceDbiUnitTests.cpp \
     src/core/dbi/attribute/AttributeDbiUnitTests.cpp \
     src/core/dbi/msa/MsaDbiUnitTests.cpp \
+    src/core/dbi/udr/UdrDbiUnitTests.cpp \
     src/core/external_script/base_scheme_interface/CInterfaceManualTests.cpp \
     src/core/external_script/base_scheme_interface/CInterfaceSasTests.cpp \
     src/core/external_script/base_scheme_interface/SchemeSimilarityUtils.cpp \

@@ -10,10 +10,8 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/datatype/AnnotationGroup.h \
            src/datatype/AnnotationSettings.h \
            src/datatype/BioStruct3D.h \
-           src/datatype/DASSource.h \
            src/datatype/DamageEffect.h \
-           src/datatype/Gene.h \
-           src/datatype/KnownMutations.h \
+           src/datatype/DASSource.h \
            src/datatype/DIProperties.h \
            src/datatype/DNAAlphabet.h \
            src/datatype/DNAAlphabetRegistryImpl.h \
@@ -25,6 +23,8 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/datatype/DNATranslation.h \
            src/datatype/DNATranslationImpl.h \
            src/datatype/FeatureColors.h \
+           src/datatype/Gene.h \
+           src/datatype/KnownMutations.h \
            src/datatype/MAlignment.h \
            src/datatype/MAlignmentInfo.h \
            src/datatype/Matrix44.h \
@@ -50,8 +50,13 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/datatype/U2Type.h \
            src/datatype/U2TypeIds.h \
            src/datatype/U2Variant.h \
+           src/datatype/UdrRecord.h \
+           src/datatype/UdrSchema.h \
+           src/datatype/UdrSchemaRegistry.h \
            src/datatype/Vector3D.h \
            src/dbi/DbiDocumentFormat.h \
+           src/dbi/KnownMutationsDbi.h \
+           src/dbi/SNPTablesDbi.h \
            src/dbi/U2AbstractDbi.h \
            src/dbi/U2AssemblyDbi.h \
            src/dbi/U2AttributeDbi.h \
@@ -68,8 +73,7 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/dbi/U2SqlHelpers.h \
            src/dbi/U2SQLiteTripleStore.h \
            src/dbi/U2VariantDbi.h \
-           src/dbi/KnownMutationsDbi.h \
-           src/dbi/SNPTablesDbi.h \
+           src/dbi/UdrDbi.h \
            src/globals/AppContext.h \
            src/globals/AppFileStorage.h \
            src/globals/AppGlobalObject.h \
@@ -103,6 +107,7 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/globals/Timer.h \
            src/globals/U2OpStatus.h \
            src/globals/U2SafePoints.h \
+           src/globals/UserActionsWriter.h \
            src/globals/UserApplicationsSettings.h \
            src/globals/Version.h \
            src/gobjects/AnnotationTableObject.h \
@@ -120,8 +125,10 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/gobjects/UnloadedObject.h \
            src/gobjects/VariantTrackObject.h \
            src/io/HttpFileAdapter.h \
+           src/io/InputStream.h \
            src/io/IOAdapter.h \
            src/io/LocalFileAdapter.h \
+           src/io/OutputStream.h \
            src/io/RingBuffer.h \
            src/io/StringAdapter.h \
            src/io/VFSAdapter.h \
@@ -148,6 +155,7 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/tasks/AddSequencesToAlignmentTask.h \
            src/tasks/BackgroundTaskRunner.h \
            src/tasks/CleanupFileStorageTask.h \
+           src/tasks/ConsoleShutdownTask.h \
            src/tasks/CopyDataTask.h \
            src/tasks/CopyDocumentTask.h \
            src/tasks/CreateAnnotationTask.h \
@@ -155,8 +163,8 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/tasks/ExternalToolRunTask.h \
            src/tasks/ExtractAnnotatedRegionTask.h \
            src/tasks/FailTask.h \
-           src/tasks/LoadDocumentTask.h \
            src/tasks/LoadDASDocumentTask.h \
+           src/tasks/LoadDocumentTask.h \
            src/tasks/LoadRemoteDocumentTask.h \
            src/tasks/ModifySequenceObjectTask.h \
            src/tasks/MultiTask.h \
@@ -167,19 +175,21 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/tasks/SaveDocumentStreamingTask.h \
            src/tasks/SaveDocumentTask.h \
            src/tasks/ScriptTask.h \
-           src/tasks/SequenceWalkerTask.h \
            src/tasks/SequenceDbiWalkerTask.h \
-           src/tasks/ConsoleShutdownTask.h \
+           src/tasks/SequenceWalkerTask.h \
            src/tasks/TaskSignalMapper.h \
            src/tasks/TaskStarter.h \
            src/tasks/TLSTask.h \
            src/tasks/TmpDirChecker.h \
+           src/tasks/UniprotBlastTask.h \
+           src/util/FeaturesQueryCache.h \
            src/util/FilesIterator.h \
            src/util/FileStorageUtils.h \
            src/util/FormatUtils.h \
            src/util/GAutoDeleteList.h \
            src/util/GUrlUtils.h \
            src/util/IOAdapterUtils.h \
+           src/util/KnownMutationsUtils.h \
            src/util/MAlignmentExporter.h \
            src/util/MAlignmentImporter.h \
            src/util/MsaDbiUtils.h \
@@ -187,6 +197,7 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/util/MSAUtils.h \
            src/util/QVariantUtils.h \
            src/util/SequenceUtils.h \
+           src/util/SNPTablesUtils.h \
            src/util/TextUtils.h \
            src/util/U1AnnotationUtils.h \
            src/util/U2AlphabetUtils.h \
@@ -194,16 +205,11 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/util/U2AssemblyUtils.h \
            src/util/U2AttributeUtils.h \
            src/util/U2Bits.h \
-           src/util/FeaturesQueryCache.h \
-           src/util/KnownMutationsUtils.h \
-           src/util/SNPTablesUtils.h \
-           src/util/VariationPropertiesUtils.h \
            src/util/U2FeatureUtils.h \
            src/util/U2OpStatusUtils.h \
            src/util/U2SequenceUtils.h \
            src/util/U2VariationUtils.h \
-           src/tasks/UniprotBlastTask.h \
-           src/globals/UserActionsWriter.h
+           src/util/VariationPropertiesUtils.h
 SOURCES += src/cmdline/CMDLineCoreOptions.cpp \
            src/cmdline/CMDLineRegistry.cpp \
            src/cmdline/CMDLineUtils.cpp \
@@ -223,8 +229,8 @@ SOURCES += src/cmdline/CMDLineCoreOptions.cpp \
            src/datatype/DNASequenceUtils.cpp \
            src/datatype/DNATranslation.cpp \
            src/datatype/DNATranslationImpl.cpp \
-           src/datatype/Gene.cpp \
            src/datatype/FeatureColors.cpp \
+           src/datatype/Gene.cpp \
            src/datatype/MAlignment.cpp \
            src/datatype/MAlignmentInfo.cpp \
            src/datatype/Matrix44.cpp \
@@ -235,12 +241,16 @@ SOURCES += src/cmdline/CMDLineCoreOptions.cpp \
            src/datatype/U2CoreAttributes.cpp \
            src/datatype/U2Mod.cpp \
            src/datatype/U2Region.cpp \
+           src/datatype/UdrRecord.cpp \
+           src/datatype/UdrSchema.cpp \
+           src/datatype/UdrSchemaRegistry.cpp \
            src/datatype/Vector3D.cpp \
            src/dbi/DbiDocumentFormat.cpp \
            src/dbi/U2DbiRegistry.cpp \
            src/dbi/U2DbiUtils.cpp \
            src/dbi/U2SqlHelpers.cpp \
            src/dbi/U2SQLiteTripleStore.cpp \
+           src/dbi/UdrDbi.cpp \
            src/globals/AppContext.cpp \
            src/globals/AppFileStorage.cpp \
            src/globals/AppGlobalObject.cpp \
@@ -265,6 +275,7 @@ SOURCES += src/cmdline/CMDLineCoreOptions.cpp \
            src/globals/ServiceModel.cpp \
            src/globals/Task.cpp \
            src/globals/Timer.cpp \
+           src/globals/UserActionsWriter.cpp \
            src/globals/UserApplicationsSettings.cpp \
            src/globals/Version.cpp \
            src/gobjects/AnnotationTableObject.cpp \
@@ -306,14 +317,15 @@ SOURCES += src/cmdline/CMDLineCoreOptions.cpp \
            src/tasks/AddSequencesToAlignmentTask.cpp \
            src/tasks/BackgroundTaskRunner.cpp \
            src/tasks/CleanupFileStorageTask.cpp \
+           src/tasks/ConsoleShutdownTask.cpp \
            src/tasks/CopyDataTask.cpp \
            src/tasks/CopyDocumentTask.cpp \
            src/tasks/CreateAnnotationTask.cpp \
            src/tasks/DocumentProviderTask.cpp \
            src/tasks/ExternalToolRunTask.cpp \
            src/tasks/ExtractAnnotatedRegionTask.cpp \
-           src/tasks/LoadDocumentTask.cpp \
            src/tasks/LoadDASDocumentTask.cpp \
+           src/tasks/LoadDocumentTask.cpp \
            src/tasks/LoadRemoteDocumentTask.cpp \
            src/tasks/ModifySequenceObjectTask.cpp \
            src/tasks/MultiTask.cpp \
@@ -324,19 +336,21 @@ SOURCES += src/cmdline/CMDLineCoreOptions.cpp \
            src/tasks/SaveDocumentStreamingTask.cpp \
            src/tasks/SaveDocumentTask.cpp \
            src/tasks/ScriptTask.cpp \
-           src/tasks/SequenceWalkerTask.cpp \
            src/tasks/SequenceDbiWalkerTask.cpp \
-           src/tasks/ConsoleShutdownTask.cpp \
+           src/tasks/SequenceWalkerTask.cpp \
            src/tasks/TaskSignalMapper.cpp \
            src/tasks/TaskStarter.cpp \
            src/tasks/TLSTask.cpp \
            src/tasks/TmpDirChecker.cpp \
+           src/tasks/UniprotBlastTask.cpp \
+           src/util/FeaturesQueryCache.cpp \
            src/util/FilesIterator.cpp \
            src/util/FileStorageUtils.cpp \
            src/util/FormatUtils.cpp \
            src/util/GAutoDeleteList.cpp \
            src/util/GUrlUtils.cpp \
            src/util/IOAdapterUtils.cpp \
+           src/util/KnownMutationsUtils.cpp \
            src/util/MAlignmentExporter.cpp \
            src/util/MAlignmentImporter.cpp \
            src/util/MsaDbiUtils.cpp \
@@ -344,6 +358,7 @@ SOURCES += src/cmdline/CMDLineCoreOptions.cpp \
            src/util/MSAUtils.cpp \
            src/util/QVariantUtils.cpp \
            src/util/SequenceUtils.cpp \
+           src/util/SNPTablesUtils.cpp \
            src/util/TextUtils.cpp \
            src/util/U1AnnotationUtils.cpp \
            src/util/U2AlphabetUtils.cpp \
@@ -351,15 +366,10 @@ SOURCES += src/cmdline/CMDLineCoreOptions.cpp \
            src/util/U2AssemblyUtils.cpp \
            src/util/U2AttributeUtils.cpp \
            src/util/U2Bits.cpp \
-           src/util/SNPTablesUtils.cpp \
            src/util/U2FeatureUtils.cpp \
-           src/util/FeaturesQueryCache.cpp \
-           src/util/KnownMutationsUtils.cpp \
-           src/util/VariationPropertiesUtils.cpp \
            src/util/U2SequenceUtils.cpp \
            src/util/U2VariationUtils.cpp \
-           src/tasks/UniprotBlastTask.cpp \
-           src/globals/UserActionsWriter.cpp
+           src/util/VariationPropertiesUtils.cpp
 TRANSLATIONS += transl/chinese.ts \
                 transl/czech.ts \
                 transl/english.ts \

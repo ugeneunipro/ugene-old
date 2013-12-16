@@ -30,6 +30,7 @@
 #include <U2Core/DocumentFormatConfigurators.h>
 #include <U2Core/ExternalToolRegistry.h>
 #include <U2Core/U2DbiRegistry.h>
+#include <U2Core/UdrSchemaRegistry.h>
 #include <U2Core/GObjectTypes.h>
 #include <U2Core/LoadRemoteDocumentTask.h>
 #include <U2Core/Log.h>
@@ -347,6 +348,9 @@ int main(int argc, char **argv)
     ExternalToolRegistry* etr = new ExternalToolRegistry();
     appContext->setExternalToolRegistry(etr);
 
+    UdrSchemaRegistry *schemaRegistry = new UdrSchemaRegistry();
+    appContext->setUdrSchemaRegistry(schemaRegistry);
+
     U2DbiRegistry *dbiRegistry = new U2DbiRegistry();
     appContext->setDbiRegistry(dbiRegistry);
     
@@ -566,6 +570,9 @@ int main(int argc, char **argv)
 
     delete dbiRegistry;
     appContext->setDbiRegistry(NULL);
+
+    delete schemaRegistry;
+    appContext->setUdrSchemaRegistry(NULL);
 
     delete ts;
     appContext->setTaskScheduler(NULL);

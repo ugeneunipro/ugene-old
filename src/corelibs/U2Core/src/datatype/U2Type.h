@@ -72,6 +72,7 @@ public:
     static const U2DataType VariantType  = 6;
     static const U2DataType FilterTableType  = 7;
     static const U2DataType KnownMutationsTrackType  = 8;
+    static const U2DataType UdrRecord                = 9;
     static const U2DataType CrossDatabaseReference    = 999;
 
     /** SCO (non-object, non-root) types */

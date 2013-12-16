@@ -82,6 +82,7 @@ public:
         appFileStorage = NULL;
         aaSupport = NULL;
         dbiRegistry = NULL;
+        udrSchemaRegistry = NULL;
         rfr = NULL;
         qdafr = NULL;
         cdsfr = NULL;
@@ -244,6 +245,11 @@ public:
         dbiRegistry = _dbiRegistry;
     }
 
+    void setUdrSchemaRegistry(UdrSchemaRegistry *_udrSchemaRegistry) {
+        assert((NULL == udrSchemaRegistry) || (NULL == _udrSchemaRegistry));
+        udrSchemaRegistry = _udrSchemaRegistry;
+    }
+
     void setCDSearchFactoryRegistry(CDSearchFactoryRegistry* _cdsfr) {
         assert((NULL == cdsfr) || (NULL == _cdsfr));
         cdsfr= _cdsfr;
@@ -357,6 +363,7 @@ protected:
     virtual AutoAnnotationsSupport*         _getAutoAnnotationsSupport() const { return aaSupport; }
     virtual CDSearchFactoryRegistry*        _getCDSFactoryRegistry() const { return cdsfr; }
     virtual U2DbiRegistry *                 _getDbiRegistry() const { return dbiRegistry; }
+    virtual UdrSchemaRegistry *             _getUdrSchemaRegistry() const { return udrSchemaRegistry; }
     virtual GUITestBase*                    _getGUITestBase() const {return tb;}
     virtual SplicedAlignmentTaskRegistry*   _getSplicedAlignmentTaskRegistry() const { return splicedAlignmentTaskRegistry; }
     virtual OPCommonWidgetFactoryRegistry*  _getOPCommonWidgetFactoryRegistry() const { return opCommonWidgetFactoryRegistry; }
@@ -428,6 +435,7 @@ private:
     StructuralAlignmentAlgorithmRegistry* saar;
     AutoAnnotationsSupport* aaSupport;
     U2DbiRegistry *dbiRegistry;
+    UdrSchemaRegistry *udrSchemaRegistry;
     GUITestBase *tb;
     SplicedAlignmentTaskRegistry* splicedAlignmentTaskRegistry;
     OPCommonWidgetFactoryRegistry* opCommonWidgetFactoryRegistry;

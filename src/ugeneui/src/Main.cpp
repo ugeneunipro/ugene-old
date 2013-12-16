@@ -31,6 +31,7 @@
 #include <U2Core/DataBaseRegistry.h>
 #include <U2Core/ExternalToolRegistry.h>
 #include <U2Core/U2DbiRegistry.h>
+#include <U2Core/UdrSchemaRegistry.h>
 #include <U2Core/CMDLineRegistry.h>
 #include <U2Core/CMDLineUtils.h>
 #include <U2Core/CMDLineCoreOptions.h>
@@ -415,6 +416,9 @@ int main(int argc, char **argv)
     GObjectViewFactoryRegistry* ovfr = new GObjectViewFactoryRegistry();
     appContext->setObjectViewFactoryRegistry(ovfr);
 
+    UdrSchemaRegistry *schemaRegistry = new UdrSchemaRegistry();
+    appContext->setUdrSchemaRegistry(schemaRegistry);
+
     U2DbiRegistry *dbiRegistry = new U2DbiRegistry();
     appContext->setDbiRegistry(dbiRegistry);
     
@@ -714,6 +718,9 @@ int main(int argc, char **argv)
 
     delete dbiRegistry;
     appContext->setDbiRegistry(NULL);
+
+    delete schemaRegistry;
+    appContext->setUdrSchemaRegistry(NULL);
 
     delete ts;
     appContext->setTaskScheduler(NULL);

@@ -50,6 +50,8 @@ HEADERS += src/ABIFormat.h \
            src/ace/ConvertAceToSqliteTask.h \
            src/sqlite_dbi/SQLiteAssemblyDbi.h \
            src/sqlite_dbi/SQLiteAttributeDbi.h \
+           src/sqlite_dbi/SQLiteBlobInputStream.h \
+           src/sqlite_dbi/SQLiteBlobOutputStream.h \
            src/sqlite_dbi/SQLiteDbi.h \
            src/sqlite_dbi/SQLiteFeatureDbi.h \
            src/sqlite_dbi/SQLiteKnownMutationsDbi.h \
@@ -59,6 +61,7 @@ HEADERS += src/ABIFormat.h \
            src/sqlite_dbi/SQLitePackUtils.h \
            src/sqlite_dbi/SQLiteSequenceDbi.h \
            src/sqlite_dbi/SQLiteSNPTablesDbi.h \
+           src/sqlite_dbi/SQLiteUdrDbi.h \
            src/sqlite_dbi/SQLiteVariantDbi.h \
            src/tasks/BgzipTask.h \
            src/tasks/ConvertAssemblyToSamTask.h \
@@ -115,6 +118,8 @@ SOURCES += src/ABIFormat.cpp \
            src/ace/ConvertAceToSqliteTask.cpp \
            src/sqlite_dbi/SQLiteAssemblyDbi.cpp \
            src/sqlite_dbi/SQLiteAttributeDbi.cpp \
+           src/sqlite_dbi/SQLiteBlobInputStream.cpp \
+           src/sqlite_dbi/SQLiteBlobOutputStream.cpp \
            src/sqlite_dbi/SQLiteDbi.cpp \
            src/sqlite_dbi/SQLiteFeatureDbi.cpp \
            src/sqlite_dbi/SQLiteKnownMutationsDbi.cpp \
@@ -124,6 +129,7 @@ SOURCES += src/ABIFormat.cpp \
            src/sqlite_dbi/SQLitePackUtils.cpp \
            src/sqlite_dbi/SQLiteSequenceDbi.cpp \
            src/sqlite_dbi/SQLiteSNPTablesDbi.cpp \
+           src/sqlite_dbi/SQLiteUdrDbi.cpp \
            src/sqlite_dbi/SQLiteVariantDbi.cpp \
            src/tasks/BgzipTask.cpp \
            src/tasks/ConvertAssemblyToSamTask.cpp \

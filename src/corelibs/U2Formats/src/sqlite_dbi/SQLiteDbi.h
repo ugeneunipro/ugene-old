@@ -41,6 +41,7 @@ class SQLiteFeatureDbi;
 class SQLiteModDbi;
 class SQLiteSNPTablesDbi;
 class SQLiteKnownMutationsDbi;
+class SQLiteUdrDbi;
 class DbRef;
 
 
@@ -129,6 +130,8 @@ public:
 
     virtual U2ModDbi*   getModDbi();
 
+    virtual UdrDbi* getUdrDbi();
+
 
     virtual SNPTablesDbi* getSNPTableDbi();
 
@@ -143,6 +146,8 @@ public:
     SQLiteSequenceDbi* getSQLiteSequenceDbi() const;
 
     SQLiteModDbi* getSQLiteModDbi() const;
+
+    SQLiteUdrDbi* getSQLiteUdrDbi() const;
 
     /** Returns properties used to initialized the database */
     virtual QHash<QString, QString> getInitProperties() const {return initProperties;}
@@ -181,9 +186,10 @@ private:
     SQLiteFeatureDbi*                   featureDbi;
     SQLiteModDbi*                       modDbi;
     SQLiteTransaction*                  operationsBlockTransaction;
-    SQLiteSNPTablesDbi*                  filterTableDbi;
+    SQLiteSNPTablesDbi*                 filterTableDbi;
     SQLiteKnownMutationsDbi*            knownMutationsDbi;
-    
+    SQLiteUdrDbi*                       udrDbi;
+
     friend class SQLiteObjectDbi;
     friend class SQLiteCrossDatabaseReferenceDbi;
     friend class SQLiteSequenceDbi;

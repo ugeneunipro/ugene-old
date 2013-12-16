@@ -51,6 +51,7 @@ class SNPTablesDbi;
 class KnownMutationsDbi;
 class U2OpStatus;
 class U2Dbi;
+class UdrDbi;
 
 /** A constant to retrieve all available data. */
 #define U2_DBI_NO_LIMIT -1
@@ -98,6 +99,8 @@ enum U2DbiFeature {
     U2DbiFeature_ReadProperties                 = 8,
     /** DBI supports reading of objects modification tracks */
     U2DbiFeature_ReadModifications              = 9,
+    /** DBI supports UDR reading methods */
+    U2DbiFeature_ReadUdr                        =10,
 
     /** DBI supports changing/storing sequences */
     U2DbiFeature_WriteSequence                  = 101,
@@ -117,6 +120,8 @@ enum U2DbiFeature {
     U2DbiFeature_WriteProperties                = 108,
     /** DBI supports changing/storing of objects modification tracks */
     U2DbiFeature_WriteModifications            = 109,
+    /** DBI supports changing/storing UDR */
+    U2DbiFeature_WriteUdr                      = 110,
 
     /** DBI supports removal of objects */
     U2DbiFeature_RemoveObjects                  = 200,
@@ -288,6 +293,12 @@ public:
         Not NULL only if U2DbiFeature_ReadModifications supported
     */
     virtual U2ModDbi* getModDbi()  = 0;
+
+    /**
+        UdrRecord related DBI routines 
+        Not NULL only if U2DbiFeature_ReadUdr supported
+    */
+    virtual UdrDbi* getUdrDbi() = 0;
 
     /** 
         Reads database global properties.
