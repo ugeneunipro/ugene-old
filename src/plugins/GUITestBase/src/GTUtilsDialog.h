@@ -35,14 +35,30 @@ public:
 class GUIDialogWaiter : public QObject {
     Q_OBJECT
 public:
-    enum DialogType {Modal, Popup};
+    enum DialogType {
+        Modal,
+        Popup
+    };
+    enum DialogDestiny {
+        MustBeRun,
+        MustNotBeRun,
+        NoMatter
+    };
 
     struct WaitSettings {
-        WaitSettings(const QString& _objectName="", DialogType _dialogType = GUIDialogWaiter::Modal, int _timeout = 120000) : dialogType(_dialogType), objectName(_objectName), timeout(_timeout){}
+        WaitSettings(const QString& _objectName = "",
+                     DialogType _dialogType = GUIDialogWaiter::Modal,
+                     int _timeout = 120000,
+                     DialogDestiny _destiny = MustBeRun) :
+            dialogType(_dialogType),
+            objectName(_objectName),
+            timeout(_timeout),
+            destiny(_destiny) {}
 
         DialogType dialogType;
         QString objectName;
         int timeout;
+        DialogDestiny destiny;
     };
 
     GUIDialogWaiter(U2OpStatus &os, Runnable* _r, const WaitSettings& settings = WaitSettings());
@@ -90,6 +106,8 @@ public:
     static void waitForDialog(U2OpStatus &os, Runnable *r, const GUIDialogWaiter::WaitSettings& settings);
 
     static void waitForDialog(U2OpStatus &os, Runnable *r);
+
+    static void waitForDialogWhichMustNotBeRunned(U2OpStatus &os, Runnable *r);
 
     static void waitForDialogWhichMayRunOrNot(U2OpStatus &os, Runnable *r);
 

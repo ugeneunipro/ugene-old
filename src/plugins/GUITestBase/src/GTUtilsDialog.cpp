@@ -126,6 +126,17 @@ void GTUtilsDialog::waitForDialog(U2OpStatus &os, Runnable *r) {
     waitForDialog(os, r, settings);
 }
 
+void GTUtilsDialog::waitForDialogWhichMustNotBeRunned(U2OpStatus &os, Runnable *r) {
+    GUIDialogWaiter::WaitSettings settings;
+    Filler* f = dynamic_cast<Filler*>(r);
+    if (f) {
+        settings = f->getSettings();
+    }
+
+    settings.destiny = GUIDialogWaiter::MustNotBeRun;
+    waitForDialog(os, r, settings);
+}
+
 void GTUtilsDialog::waitForDialogWhichMayRunOrNot(U2OpStatus &os, Runnable *r) {
     GUIDialogWaiter::WaitSettings settings;
     Filler* f = dynamic_cast<Filler*>(r);
@@ -133,15 +144,20 @@ void GTUtilsDialog::waitForDialogWhichMayRunOrNot(U2OpStatus &os, Runnable *r) {
         settings = f->getSettings();
     }
 
-    new GUIDialogWaiter(os, r, settings);
+    settings.destiny = GUIDialogWaiter::NoMatter;
+    waitForDialog(os, r, settings);
 }
 
 #define GT_METHOD_NAME "checkAllFinished"
 void GTUtilsDialog::checkAllFinished(U2OpStatus &os) {
+    Q_UNUSED(os);
 
     foreach(GUIDialogWaiter* w, pool) {
         GT_CHECK(w, "NULL GUIDialogWaiter");
-        GT_CHECK(w->hadRun, QString("%1 hadn't run").arg((w->getSettings().objectName)));
+        bool hasCorrectState = (w->hadRun && w->getSettings().destiny == GUIDialogWaiter::MustBeRun) ||
+                (!w->hadRun && w->getSettings().destiny == GUIDialogWaiter::MustNotBeRun) ||
+                (w->getSettings().destiny == GUIDialogWaiter::NoMatter);
+        GT_CHECK(hasCorrectState, QString("%1 has incorrect finish state").arg((w->getSettings().objectName)));
     }
 }
 #undef GT_METHOD_NAME

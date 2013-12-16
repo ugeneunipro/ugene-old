@@ -23,8 +23,24 @@
 #define _U2_GT_FILE_H_
 
 #include "api/GTGlobals.h"
+#include <QtCore/QFile>
 
 namespace U2 {
+
+class PermissionsSetter {
+    // If UGENE crash in the test, permissions won't be restored.
+public:
+    PermissionsSetter();
+    ~PermissionsSetter();
+
+    bool setPermissions(const QString& path, QFile::Permissions perm, bool recursive = true);
+
+private:
+    bool setRecursive(const QString& path, QFile::Permissions perm);
+    bool setOnce(const QString& path, QFile::Permissions perm);
+
+    QMap<QString, QFile::Permissions> previousState;
+};
 
 class GTFile {
 public:

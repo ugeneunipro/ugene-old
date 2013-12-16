@@ -20,10 +20,63 @@
  */
 
 #include "GTFile.h"
-#include <QtCore/QFile>
+#include <QtCore/QDir>
+#include <QtCore/QFileInfo>
 #include <QtCore/QDir>
 
 namespace U2 {
+
+PermissionsSetter::PermissionsSetter() {
+}
+
+PermissionsSetter::~PermissionsSetter() {
+    foreach (const QString& path, previousState.keys()) {
+        QFile file(path);
+        QFile::Permissions p = file.permissions();
+
+        p = previousState.value(path, p);
+        file.setPermissions(p);
+    }
+}
+
+bool PermissionsSetter::setPermissions(const QString& path, QFile::Permissions perm, bool recursive) {
+    if (recursive) {
+        return setRecursive(path, perm);
+    } else {
+        return setOnce(path, perm);
+    }
+}
+
+bool PermissionsSetter::setRecursive(const QString& path, QFile::Permissions perm) {
+    QFileInfo fileInfo(path);
+    CHECK(fileInfo.exists(), false);
+    CHECK(!fileInfo.isSymLink(), false);
+
+    if (fileInfo.isDir()) {
+        QDir dir(path);
+        foreach (const QString& entryPath, dir.entryList(QDir::Dirs | QDir::Files | QDir::NoDotAndDotDot | QDir::NoSymLinks)) {
+            bool res = setRecursive(path + "/" + entryPath, perm);
+            CHECK(res, res);
+        }
+    }
+
+    bool res = setOnce(path, perm);
+
+    return res;
+}
+
+bool PermissionsSetter::setOnce(const QString& path, QFile::Permissions perm) {
+    QFileInfo fileInfo(path);
+    CHECK(fileInfo.exists(), false);
+    CHECK(!fileInfo.isSymLink(), false);
+
+    QFile file(path);
+    QFile::Permissions p = file.permissions();
+    previousState.insert(path, p);
+
+    p &= perm;
+    return file.setPermissions(p);
+}
 
 #define GT_CLASS_NAME "GTFile"
 

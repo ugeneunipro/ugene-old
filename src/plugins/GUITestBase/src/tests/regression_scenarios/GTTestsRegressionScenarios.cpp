@@ -25,6 +25,7 @@
 #include "api/GTCheckBox.h"
 #include "api/GTClipboard.h"
 #include "api/GTComboBox.h"
+#include "api/GTFile.h"
 #include "api/GTFileDialog.h"
 #include "api/GTGlobals.h"
 #include "api/GTKeyboardDriver.h"
@@ -95,63 +96,6 @@
 #include <U2View/ADVSingleSequenceWidget.h>
 #include <U2View/AnnotatedDNAViewFactory.h>
 #include <U2View/MSAEditor.h>
-
-class PermissionsSetter {
-public:
-    PermissionsSetter() {}
-
-    ~PermissionsSetter() {
-        foreach (const QString& path, previousState.keys()) {
-            QFile file(path);
-            QFile::Permissions p = file.permissions();
-
-            p = previousState.value(path, p);
-            file.setPermissions(p);
-        }
-    }
-
-    bool setPermissions(const QString& path, QFile::Permissions perm, bool recursive = true) {
-        if (recursive) {
-            return setRecursive(path, perm);
-        } else {
-            return setOnce(path, perm);
-        }
-    }
-
-private:
-    bool setRecursive(const QString& path, QFile::Permissions perm) {
-        QFileInfo fileInfo(path);
-        CHECK(fileInfo.exists(), false);
-        CHECK(!fileInfo.isSymLink(), false);
-
-        if (fileInfo.isDir()) {
-            QDir dir(path);
-            foreach (const QString& entryPath, dir.entryList(QDir::Dirs | QDir::Files | QDir::NoDotAndDotDot | QDir::NoSymLinks)) {
-                bool res = setRecursive(path + "/" + entryPath, perm);
-                CHECK(res, res);
-            }
-        }
-
-        bool res = setOnce(path, perm);
-
-        return res;
-    }
-
-    bool setOnce(const QString& path, QFile::Permissions perm) {
-        QFileInfo fileInfo(path);
-        CHECK(fileInfo.exists(), false);
-        CHECK(!fileInfo.isSymLink(), false);
-
-        QFile file(path);
-        QFile::Permissions p = file.permissions();
-        previousState.insert(path, p);
-
-        p &= perm;
-        return file.setPermissions(p);
-    }
-
-    QMap<QString, QFile::Permissions> previousState;
-};
 
 namespace U2 {
 
@@ -3902,8 +3846,6 @@ GUI_TEST_CLASS_DEFINITION( test_2379 ) {
             QLineEdit *projectFileEdit = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "projectFileEdit", dialog));
             GTLineEdit::setText(os, projectFileEdit, projectFile);
 
-//            QAbstractButton *createButton = qobject_cast<QAbstractButton*>(GTWidget::findWidget(os, "createButton", dialog));
-//            GTWidget::setFocus(os, createButton);
             GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
 
             GTGlobals::sleep();
@@ -3916,12 +3858,13 @@ GUI_TEST_CLASS_DEFINITION( test_2379 ) {
     };
 
 //    0. Create a project that will be "existing" in the second step
-    QString projectName = "test_2379";
-    QString projectFolder = testDir + "_common_data/scenarios/sandbox";
-    QString projectFile = "test_2379";
+    const QString projectName = "test_2379";
+    const QString projectFolder = testDir + "_common_data/scenarios/sandbox";
+    const QString projectFile = "test_2379";
 
     GTUtilsDialog::waitForDialog(os, new CreateProjectFiller(os, projectName, projectFolder, projectFile));
     GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), ACTION_PROJECTSUPPORT__NEW_PROJECT);
+    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), ACTION_PROJECTSUPPORT__SAVE_PROJECT);
     GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), ACTION_PROJECTSUPPORT__CLOSE_PROJECT);
 
 //    1. Press "Create new project" button
@@ -3929,6 +3872,8 @@ GUI_TEST_CLASS_DEFINITION( test_2379 ) {
 //    3. Press "Create" button by using keyboard
 //    Expected state: only one dialog with warning message appeared
     GTUtilsDialog::waitForDialog(os, new CreateProjectFiller(os, projectName, projectFolder, projectFile));
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Yes, "Project file already exists"));
+
     GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), ACTION_PROJECTSUPPORT__NEW_PROJECT);
 }
 
