@@ -23,6 +23,7 @@
 
 #include <U2Gui/ShowHideSubgroupWidget.h>
 #include <U2Core/AppContext.h>
+#include <U2Core/L10n.h>
 #include <U2Core/MAlignmentObject.h>
 #include <U2Core/U2SafePoints.h>
 
@@ -352,7 +353,7 @@ void TreeOptionsWidget::updateButtonColor(QPushButton* button, const QColor& new
 }
 
 void TreeOptionsWidget::updateShowFontOpLabel(QString newText) {
-    newText = QString("<a href=\"%1\" style=\"color: palette(shadow)\">").arg(SHOW_FONT_OPTIONS_LINK)
+    newText = QString("<a href=\"%1\" style=\"color: palette(shadow)\">").arg(SHOW_FONT_OPTIONS_LINK)/*.arg(L10N::showMoreColorLabelStr())*/
         + newText
         + QString("</a>");
 
@@ -361,7 +362,7 @@ void TreeOptionsWidget::updateShowFontOpLabel(QString newText) {
 }
 
 void TreeOptionsWidget::updateShowPenOpLabel(QString newText) {
-    newText = QString("<a href=\"%1\" style=\"color: palette(shadow)\">").arg(SHOW_PEN_OPTIONS_LINK)
+    newText = QString("<a href=\"%1\" style=\"color: %2\">").arg(SHOW_PEN_OPTIONS_LINK).arg(L10N::showMoreColorLabelStr())
         + newText
         + QString("</a>");
 
