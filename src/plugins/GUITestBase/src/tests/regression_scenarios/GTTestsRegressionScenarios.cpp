@@ -67,6 +67,7 @@
 #include "runnables/ugene/corelibs/U2Gui/ImportBAMFileDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/PositionSelectorFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/RangeSelectionDialogFiller.h"
+#include "runnables/ugene/corelibs/U2Gui/RemovePartFromSequenceDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/util/ProjectTreeItemSelectorDialogBaseFiller.h"
 #include "runnables/ugene/corelibs/U2View/ov_msa/BuildTreeDialogFiller.h"
 #include "runnables/ugene/corelibs/U2View/ov_msa/ConsensusSelectorDialogFiller.h"
@@ -4128,6 +4129,31 @@ GUI_TEST_CLASS_DEFINITION( test_2475 ) {
 
     GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok));
     GTWidget::click(os, GTAction::button(os,"Validate workflow"));
+}
+
+GUI_TEST_CLASS_DEFINITION( test_2519 ) {
+    // 1. Open {data/samples/FASTA/human_T1.fa}.
+    GTFileDialog::openFile(os, dataDir+"samples/FASTA/", "human_T1.fa");
+
+    // 2. Go to position 20000.
+    GTUtilsDialog::waitForDialog(os, new GoToDialogFiller(os, 20000));
+    GTKeyboardDriver::keyClick(os, 'g', GTKeyboardDriver::key["ctrl"]);
+
+    // 3. Call context menu, select menu item {Edit sequence -> Remove subsequence...}.
+    // Expected state: a "Remove subsequence" dialog appears.
+    // 4. Set the region (1..190950), other settings should be default, click the "Remove" button.
+    // Expected state: UGENE doesn't crash.
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_EDIT << ACTION_EDIT_REMOVE_SUBSEQUENCE));
+    GTUtilsDialog::waitForDialog(os, new RemovePartFromSequenceDialogFiller(os, "1..190950"));
+    GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
+    GTGlobals::sleep(5000);
+
+    // 5. Call this dialog again, remove region (1..8999).
+    // Expected state: UGENE doesn't crash.
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_EDIT << ACTION_EDIT_REMOVE_SUBSEQUENCE));
+    GTUtilsDialog::waitForDialog(os, new RemovePartFromSequenceDialogFiller(os, "1..8999"));
+    GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
+    GTGlobals::sleep(5000);
 }
 
 } // GUITest_regression_scenarios namespace
