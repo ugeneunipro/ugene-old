@@ -530,7 +530,6 @@ void FindPatternWidget::connectSlots()
     connect(boxUseMaxResult, SIGNAL(stateChanged(int)), SLOT(sl_enableBoxMaxResult(int)));
     connect(editStart, SIGNAL(textEdited(QString)), SLOT(sl_onRegionValueEdited()));
     connect(editEnd, SIGNAL(textEdited(QString)), SLOT(sl_onRegionValueEdited()));
-    connect(spinMatch, SIGNAL(valueChanged(int)), SLOT(sl_onMatchPercentChanged(int)));
     connect(boxSeqTransl, SIGNAL(currentIndexChanged(int)), SLOT(sl_onSequenceTranslationChanged(int)));
     connect(btnSearch, SIGNAL(clicked()), SLOT(sl_onSearchClicked()));
 
@@ -663,12 +662,6 @@ void FindPatternWidget::sl_onRegionValueEdited()
     boxRegion->setCurrentIndex(boxRegion->findData(RegionSelectionIndex_CustomRegion));
 
     checkState();
-}
-
-
-void FindPatternWidget::sl_onMatchPercentChanged(int /*value*/)
-{
-    tunePercentBox();
 }
 
 
@@ -868,7 +861,6 @@ void FindPatternWidget::sl_onSearchPatternChanged()
         setCorrectPatternsString();
 
         checkState();
-        tunePercentBox();
         enableDisableMatchSpin();
 
         // Show a warning if the pattern alphabet doesn't match,
@@ -1079,32 +1071,6 @@ U2Region FindPatternWidget::getCompleteSearchRegion(bool& regionIsCorrect, qint6
 
 int FindPatternWidget::getMaxError( const QString& pattern ) const{
     return int((float)(1 - float(spinMatch->value()) / 100) * pattern.length());
-}
-
-
-void FindPatternWidget::tunePercentBox()
-{
-    int patternLength = qMax(1, textPattern->toPlainText().length());
-    int percentage = spinMatch->value();
-    int step = qMax(1, 100 / patternLength);
-    spinMatch->setSingleStep(step);
-
-    int diff = percentage % step;
-    if (diff == 0 || percentage == 100) {
-        return;
-    }
-
-    int newValue = percentage;
-    if (diff > step / 2) {
-        newValue = qMin(100, newValue + (step - diff));
-    }
-    else {
-        newValue -= step;
-    }
-    SAFE_POINT(newValue <= 100,
-        QString("Internal error: unexpected value during tuning of the match percentage value '%1.'").arg(newValue),);
-
-    spinMatch->setValue(newValue);
 }
 
 void FindPatternWidget::sl_onTabInPatternFieldPressed()
