@@ -20,6 +20,9 @@
  */
 
 #include "TaskSchedulerImpl.h"
+#ifdef Q_OS_MAC
+#include "SleepPreventerMac.h"
+#endif
 
 #include <U2Core/Log.h>
 #include <U2Core/AppResources.h>
@@ -82,11 +85,14 @@ TaskSchedulerImpl::TaskSchedulerImpl(AppResourcePool* rp) {
 
     stateChangesObserved = false;
     threadsResource = resourcePool->getResource(RESOURCE_THREAD);
+
+    createSleepPreventer();
 }
 
 TaskSchedulerImpl::~TaskSchedulerImpl() {
     assert(topLevelTasks.empty());
     assert(priorityQueue.isEmpty());
+    delete sleepPreventer;
 }
 
 
@@ -506,6 +512,8 @@ void TaskSchedulerImpl::registerTopLevelTask(Task* task) {
     topLevelTasks.append(task);
     emit si_topLevelTaskRegistered(task);
     newTasks.append(task);
+
+    sleepPreventer->capture();
 }
 
 bool TaskSchedulerImpl::addToPriorityQueue(Task* task, TaskInfo* pti) {
@@ -567,6 +575,8 @@ void TaskSchedulerImpl::unregisterTopLevelTask(Task* task) {
     if (!task->hasFlags(TaskFlag_NoAutoDelete)) {
         deleteTask(task);
     }
+
+    sleepPreventer->release();
 }
 
 void TaskSchedulerImpl::stopTask(Task* task) {
@@ -676,6 +686,19 @@ void TaskSchedulerImpl::checkSerialPromotion(TaskInfo* pti, Task* subtask) {
 #else
     Q_UNUSED(pti);
     Q_UNUSED(subtask);
+#endif
+}
+
+void TaskSchedulerImpl::createSleepPreventer() {
+#ifndef Q_OS_MAC
+    sleepPreventer = new SleepPreventer;
+#else
+    if (QSysInfo::MacintoshVersion >= QSysInfo::MV_10_6) {
+        // Some functions are available on Mac OS X version 10.6 and later
+        sleepPreventer = new SleepPreventerMac;
+    } else {
+        sleepPreventer = new SleepPreventer;
+    }
 #endif
 }
 

@@ -36,6 +36,17 @@ class TaskInfo;
 class AppResourcePool;
 class AppResource;
 
+/**
+ * Some systems can go to hibernation during UGENE work.
+ * This class prevents this behavior if top-level tasks exist.
+ */
+class SleepPreventer {
+public:
+    virtual ~SleepPreventer() {}
+    virtual void capture() {}
+    virtual void release() {}
+};
+
 class TaskThread : public QThread {
 public:
     TaskThread(TaskInfo* _ti);
@@ -158,6 +169,7 @@ private:
     void propagateStateToParent(Task* t);
     void updateOldTasksPriority();
     void checkSerialPromotion(TaskInfo* pti, Task* subtask);
+    void createSleepPreventer();
 
 private:
     QTimer                  timer;
@@ -171,6 +183,7 @@ private:
     AppResourcePool*        resourcePool;
     AppResource*            threadsResource;
     bool                    stateChangesObserved;
+    SleepPreventer*         sleepPreventer;
 };
 
 } //namespace

@@ -13,7 +13,7 @@ HEADERS += src/AppContextImpl.h \
            src/ServiceRegistryImpl.h \
            src/SettingsImpl.h \
            src/TaskSchedulerImpl.h \
-		   src/StackWalker.h 
+           src/StackWalker.h
 SOURCES += src/AppContextImpl.cpp \
            src/AppSettingsImpl.cpp \
            src/ConsoleLogDriver.cpp \
@@ -26,7 +26,7 @@ SOURCES += src/AppContextImpl.cpp \
            src/ServiceRegistryImpl.cpp \
            src/SettingsImpl.cpp \
            src/TaskSchedulerImpl.cpp \
-		   src/StackWalker.cpp
+           src/StackWalker.cpp
 
 CONFIG(x64) {
 	win32 : SOURCES += src/StackRollbackX64.asm
@@ -36,3 +36,9 @@ TRANSLATIONS += transl/chinese.ts \
                 transl/czech.ts \
                 transl/english.ts \
                 transl/russian.ts
+
+mac {
+    HEADERS += src/SleepPreventerMac.h
+    OBJECTIVE_SOURCES += src/SleepPreventerMac.mm
+    LIBS += -framework Foundation -framework IOKit
+}
