@@ -216,7 +216,7 @@ QMenu* ADVSequenceObjectContext::createTranslationsMenu() {
         connect(frames->addAction(QString("Show complementary only")), SIGNAL(triggered()), SLOT(sl_showComplOnly()));
         connect(frames->addAction(QString("Show all")), SIGNAL(triggered()), SLOT(sl_showShowAll()));
 
-
+        m->addAction( view->getShowCodonTableAction() );
         m->addMenu(frames);
         m->addSeparator();
 

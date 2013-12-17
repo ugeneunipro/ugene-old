@@ -262,13 +262,13 @@ QColor CodonTableView::getColor(DNACodonGroup gr) {
 
 // CodonTableAction
 CodonTableAction::CodonTableAction(CodonTableView *_view)
-    : ADVSequenceWidgetAction("codon_table_action", "CT"),
+    : ADVSequenceWidgetAction("codon_table_action", "Show codon table"),
       view(_view)
 {
     addToBar = true;
     connect(this, SIGNAL(triggered()), view, SLOT(sl_setVisible()));
-    setToolTip("Codon table");
     setObjectName("Codon table");
+    setCheckable(true);
 }
 
 }

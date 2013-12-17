@@ -155,6 +155,8 @@ public:
 
     const CodonTableView* getCodonTableView() const {return codonTableView; }
 
+    CodonTableAction* getShowCodonTableAction() const {return showCodonTableAction; }
+
 protected:
     virtual QWidget* createWidget();
     virtual bool onObjectRemoved(GObject* o);
@@ -216,7 +218,6 @@ private:
     void removeAutoAnnotations(ADVSequenceObjectContext* seqCtx);
     void cancelAutoAnnotationUpdates(AutoAnnotationObject* aaObj, bool* existsRemovedTasks = NULL);
     void addGraphs(ADVSequenceObjectContext* seqCtx);
-    void addCodonTable(ADVSequenceObjectContext* seqCtx);
     void importDocAnnotations(Document* doc);
 
     void seqWidgetMove(const QPoint& pos);

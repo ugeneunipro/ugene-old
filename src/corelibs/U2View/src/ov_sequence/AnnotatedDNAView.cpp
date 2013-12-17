@@ -106,7 +106,6 @@ AnnotatedDNAView::AnnotatedDNAView(const QString& viewName, const QList<U2Sequen
             codonTableView, SLOT(sl_onSequenceFocusChanged(ADVSequenceWidget*,ADVSequenceWidget*)));
     showCodonTableAction = new CodonTableAction(codonTableView);
     showCodonTableAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_T));
-    showCodonTableAction->setEnabled(false);
 
     createAnnotationAction = (new ADVAnnotationCreation(this))->getCreateAnnotationAction();
 
@@ -657,10 +656,6 @@ void AnnotatedDNAView::addSequenceWidget(ADVSequenceWidget* v) {
         c->addSequenceWidget(v);
         addAutoAnnotations(c);
         addGraphs(c);
-        if (c->getAminoTT() != NULL) {
-            addCodonTable(c);
-            showCodonTableAction->setEnabled(true);
-        }
     }
     scrolledWidgetLayout->addWidget(v);
     v->setVisible(true);
@@ -995,16 +990,6 @@ void AnnotatedDNAView::addGraphs(ADVSequenceObjectContext* seqCtx)
     {
         GraphMenuAction* graphMenuAction = new GraphMenuAction();
         seqWidget->addADVSequenceWidgetAction(graphMenuAction);
-    }
-}
-
-void AnnotatedDNAView::addCodonTable(ADVSequenceObjectContext *seqCtx) {
-    if (codonTableView == NULL) {
-        return;
-    }
-
-    foreach (ADVSequenceWidget* seqWidget, seqCtx->getSequenceWidgets()) {
-        seqWidget->addADVSequenceWidgetAction(showCodonTableAction);
     }
 }
 
