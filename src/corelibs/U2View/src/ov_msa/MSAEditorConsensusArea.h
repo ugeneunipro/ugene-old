@@ -40,7 +40,6 @@ class MAlignmentModInfo;
 class MSAEditorSelection;
 class MSAConsensusAlgorithm;
 class MSAConsensusAlgorithmFactory;
-class ConsensusSelectorDialogController;
 
 enum MSAEditorConsElement {
     MSAEditorConsElement_HISTOGRAM,
@@ -95,7 +94,6 @@ public:
 
 private:
     QString createToolTip(QHelpEvent* he) const;
-    void updateThresholdInfoInConsensusDialog();
     void restoreLastUsedConsensusThreshold();
     QString getLastUsedAlgoSettingsKey() const;
     QString getThresholdSettingsKey(const QString& factoryId) const;
@@ -129,9 +127,6 @@ private:
     QPixmap*            cachedView;
 
     QObject *childObject;
-    
-    //works in interactive mode with the view -> so we need to cache it
-    ConsensusSelectorDialogController* consensusDialog;
 };
 
 }//namespace

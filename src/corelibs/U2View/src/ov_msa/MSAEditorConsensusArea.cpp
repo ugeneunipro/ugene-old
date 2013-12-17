@@ -23,7 +23,7 @@
 #include "MSAEditor.h"
 #include "MSAEditorSequenceArea.h"
 #include "MSAEditorConsensusCache.h"
-#include "ConsensusSelectorDialogController.h"
+#include "General/MSAGeneralTabFactory.h"
 
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/AppContext.h>
@@ -31,6 +31,9 @@
 #include <U2Core/MAlignmentObject.h>
 #include <U2Gui/GraphUtils.h>
 #include <U2Gui/GUIUtils.h>
+#include <U2Gui/OPWidgetFactory.h>
+#include <U2Gui/OPWidgetFactoryRegistry.h>
+#include <U2Gui/OptionsPanel.h>
 #include <U2Algorithm/MSAConsensusAlgorithmRegistry.h>
 #include <U2Algorithm/BuiltInConsensusAlgorithms.h>
 #include <U2Algorithm/MSAConsensusUtils.h>
@@ -46,7 +49,6 @@ namespace U2 {
 
 MSAEditorConsensusArea::MSAEditorConsensusArea(MSAEditorUI* _ui) : editor(_ui->editor), ui(_ui) {
     assert(editor->getMSAObject());
-    consensusDialog = NULL;
     completeRedraw = true;
     curPos = -1;
     scribbling = false;
@@ -379,32 +381,12 @@ void MSAEditorConsensusArea::sl_copyConsensusSequenceWithGaps() {
 }
 
 void MSAEditorConsensusArea::sl_configureConsensusAction() {
-    assert(consensusDialog == NULL);
-    MSAConsensusAlgorithmFactory* algoFactory = consensusCache->getConsensusAlgorithm()->getFactory();
+    OptionsPanel* optionsPanel = editor->getOptionsPanel();
+    SAFE_POINT(NULL != optionsPanel, "Internal error: options panel is NULL"
+        " when msageneraltab opening was initiated!",);
 
-    const DNAAlphabet* al = editor->getMSAObject()->getAlphabet();
-    ConsensusSelectorDialogController cd(algoFactory->getId(),  MSAConsensusAlgorithmFactory::getAphabetFlags(al), this);
-    consensusDialog = &cd;
-    updateThresholdInfoInConsensusDialog();
-
-    connect(&cd, SIGNAL(si_algorithmChanged(const QString&)), SLOT(sl_changeConsensusAlgorithm(const QString&)));
-    connect(&cd, SIGNAL(si_thresholdChanged(int)), SLOT(sl_changeConsensusThreshold(int)));
-    int rc = cd.exec();
-    consensusDialog = NULL;
-    if (rc == QDialog::Accepted) {
-        //do nothing -> algo was set up in signal listener
-    } else { //restore original one
-        setConsensusAlgorithm(algoFactory);
-    }
-}
-
-void MSAEditorConsensusArea::updateThresholdInfoInConsensusDialog() {
-    const MSAConsensusAlgorithm* algo = getConsensusAlgorithm();
-    if (algo->supportsThreshold()) {
-        consensusDialog->enableThresholdSelector(algo->getMinThreshold(), algo->getMaxThreshold(), algo->getThreshold(), algo->getThresholdSuffix());
-    } else {
-        consensusDialog->disableThresholdSelector();
-    }
+    const QString& MSAGeneralTabFactoryId = MSAGeneralTabFactory::getGroupId();
+    optionsPanel->openGroupById(MSAGeneralTabFactoryId);
 }
 
 void MSAEditorConsensusArea::sl_changeConsensusAlgorithm(const QString& algoId) {
@@ -413,9 +395,6 @@ void MSAEditorConsensusArea::sl_changeConsensusAlgorithm(const QString& algoId) 
         assert(algoFactory!=NULL);
         setConsensusAlgorithm(algoFactory);
     } 
-    if (NULL != consensusDialog) {
-        updateThresholdInfoInConsensusDialog();
-    }
     emit si_consensusAlgorithmChanged(algoId);
 }
 

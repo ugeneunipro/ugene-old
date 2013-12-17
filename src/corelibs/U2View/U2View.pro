@@ -33,7 +33,6 @@ HEADERS += src/Init.h \
            src/ov_assembly/ExportConsensusVariationsTask.h \
            src/ov_assembly/ZoomableAssemblyOverview.h \
            src/ov_msa/AlignmentLogo.h \
-           src/ov_msa/ConsensusSelectorDialogController.h \
            src/ov_msa/CreateSubalignimentDialogController.h \
            src/ov_msa/DeleteGapsDialog.h \
            src/ov_msa/MSACollapsibleModel.h \
@@ -162,7 +161,6 @@ HEADERS += src/Init.h \
            src/ov_sequence/Das/DasOptionsPanelWidget.h
 FORMS += src/ov_assembly/ui/ExportConsensusDialog.ui \
          src/ov_assembly/ui/ExportReadsDialog.ui \
-         src/ov_msa/ui/ConsensusSelectorDialog.ui \
          src/ov_msa/ui/CreateSubalignimentDialog.ui \
          src/ov_msa/ui/DeleteGapsDialog.ui \
          src/ov_msa/ui/SaveSelectedSequenceFromMSADialog.ui \
@@ -228,7 +226,6 @@ SOURCES += src/Init.cpp \
            src/ov_assembly/ExportReadsDialog.cpp \
            src/ov_assembly/ZoomableAssemblyOverview.cpp \
            src/ov_msa/AlignmentLogo.cpp \
-           src/ov_msa/ConsensusSelectorDialogController.cpp \
            src/ov_msa/CreateSubalignimentDialogController.cpp \
            src/ov_msa/DeleteGapsDialog.cpp \
            src/ov_msa/MSACollapsibleModel.cpp \

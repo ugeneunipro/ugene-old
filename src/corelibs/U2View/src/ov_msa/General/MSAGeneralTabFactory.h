@@ -44,6 +44,8 @@ public:
 
     virtual OPGroupParameters getOPGroupParameters();
 
+    static const QString& getGroupId() { return GROUP_ID; }
+
 private:
     static const QString GROUP_ID;
     static const QString GROUP_ICON_STR;
