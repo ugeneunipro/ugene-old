@@ -33,6 +33,8 @@
 #include <U2Core/U2SafePoints.h>
 
 #include <U2Core/GObjectUtils.h>
+#include <U2Core/DNASequenceObject.h>
+#include <U2Core/DNAAlphabet.h>
 
 #include <U2Core/DocumentSelection.h>
 #include <U2Core/GObjectSelection.h>
@@ -120,11 +122,23 @@ void ETSProjectViewItemsContoller::sl_runFormatDBOnSelection(){
     ProjectView* pv = AppContext::getProjectView();
     assert(pv!=NULL);
 
-    MultiGSelection ms; ms.addSelection(pv->getGObjectSelection()); ms.addSelection(pv->getDocumentSelection());//???
+    MultiGSelection ms;
+    ms.addSelection(pv->getGObjectSelection());
+    ms.addSelection(pv->getDocumentSelection());
     FormatDBSupportTaskSettings settings;
     foreach(Document* doc,pv->getDocumentSelection()->getSelectedDocuments()){
         if(doc->getDocumentFormatId() == BaseDocumentFormats::FASTA){
             settings.inputFilesPath.append(doc->getURLString());
+
+            const QList<GObject*>& objects = doc->getObjects();
+            SAFE_POINT( 1 == objects.size( ), "FASTA document: sequence objects count error", );
+            U2SequenceObject *seqObj = dynamic_cast<U2SequenceObject*>(objects.first());
+            if ( NULL != seqObj ) {
+                SAFE_POINT(seqObj->getAlphabet() != NULL,
+                           QString("Alphabet for '%1' is not set").arg(seqObj->getGObjectName()), );
+                const DNAAlphabet* alphabet = seqObj->getAlphabet();
+                settings.isInputAmino = alphabet->isAmino();
+            }
         }
     }
     FormatDBSupportRunDialog formatDBRunDialog(s->getToolNames().at(0), settings, AppContext::getMainWindow()->getQMainWindow());

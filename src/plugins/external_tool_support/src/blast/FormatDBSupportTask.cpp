@@ -38,7 +38,7 @@ void FormatDBSupportTaskSettings::reset() {
     inputFilesPath=QList<QString>();
     outputPath="";
     databaseTitle="";
-    typeOfFile=true;
+    isInputAmino=true;
 }
 
 FormatDBSupportTask::FormatDBSupportTask(const QString& name, const FormatDBSupportTaskSettings& _settings) :
@@ -63,7 +63,7 @@ void FormatDBSupportTask::prepare(){
         arguments <<"-i"<< settings.inputFilesPath.join(" ");
         arguments <<"-l"<< settings.outputPath+"formatDB.log";
         arguments <<"-n"<< settings.outputPath;
-        arguments <<"-p"<< (settings.typeOfFile ? "T" : "F");
+        arguments <<"-p"<< (settings.isInputAmino ? "T" : "F");
     }else if (toolName == ET_MAKEBLASTDB){
         for(int i=0; i< settings.inputFilesPath.length(); i++){
             settings.inputFilesPath[i]="\""+settings.inputFilesPath[i]+"\"";
@@ -75,7 +75,7 @@ void FormatDBSupportTask::prepare(){
             return;
         }
         arguments <<"-out"<< settings.outputPath;
-        arguments <<"-dbtype"<< (settings.typeOfFile ? "prot" : "nucl");
+        arguments <<"-dbtype"<< (settings.isInputAmino ? "prot" : "nucl");
     }
 
     logParser=new ExternalToolLogParser();

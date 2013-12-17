@@ -85,7 +85,7 @@ public:
     /*-p  Type of file
             T - protein
             F - nucleotide*/
-    bool            typeOfFile;
+    bool            isInputAmino;
 };
 
 

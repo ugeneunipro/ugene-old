@@ -59,6 +59,9 @@ FormatDBSupportRunDialog::FormatDBSupportRunDialog(const QString &_name, FormatD
         inputDirRadioButton->setDisabled(true);
         inputDirToolButton->setDisabled(true);
     }
+    if (!settings.isInputAmino) {
+        nucleotideTypeRadioButton->setChecked(true);
+    }
 
     formatButton->setEnabled(false);
     connect(this->cancelButton,SIGNAL(clicked()),this,SLOT(reject()));
@@ -171,7 +174,7 @@ void FormatDBSupportRunDialog::sl_formatDB(){
     }else{
         settings.outputPath=databasePathLineEdit->text()+baseNamelineEdit->text();
     }
-    settings.typeOfFile=proteinTypeRadioButton->isChecked();
+    settings.isInputAmino=proteinTypeRadioButton->isChecked();
 
     accept();
 }
