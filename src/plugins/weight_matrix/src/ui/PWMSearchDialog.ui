@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>393</width>
-    <height>556</height>
+    <width>457</width>
+    <height>569</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -192,7 +192,7 @@
            <string>strand_complement_wit</string>
           </property>
           <property name="text">
-           <string>Complement strand</string>
+           <string>Reverse complement strand</string>
           </property>
           <property name="shortcut">
            <string/>
