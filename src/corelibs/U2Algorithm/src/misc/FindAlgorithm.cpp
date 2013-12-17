@@ -618,7 +618,8 @@ static void find_subst(
 }
 
 // value 12 - standart "out of memory" error code in linux
-const int FindAlgorithmResult::NOT_ENOUGH_MEMORY_ERROR = 12;
+// error in FindAlgorithmResult also means number of mismatches, therefore positive values can cause confusion
+const int FindAlgorithmResult::NOT_ENOUGH_MEMORY_ERROR = -12;
 
 void FindAlgorithm::find(
                          FindAlgorithmResultsListener* rl, 
