@@ -1412,8 +1412,6 @@ GUI_TEST_CLASS_DEFINITION(test_1865) {
     //2) Add elements: "Write sequence"
     GTUtilsWorkflowDesigner::addAlgorithm( os, sequenceWriterName);
 
-    WorkflowProcessItem *sequenceWriter = GTUtilsWorkflowDesigner::getWorker( os, sequenceWriterName);
-
     GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, sequenceWriterName));
     GTMouseDriver::click(os);
     
