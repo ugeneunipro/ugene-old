@@ -19,8 +19,11 @@
  * MA 02110-1301, USA.
  */
 
+#include "GTUtilsMsaEditorSequenceArea.h"
+
 #include "GTTestsCommonScenariousTreeviewer.h"
 
+#include "api/GTCheckBox.h"
 #include "api/GTMouseDriver.h"
 #include "api/GTKeyboardDriver.h"
 #include "api/GTKeyboardUtils.h"
@@ -981,6 +984,61 @@ GUI_TEST_CLASS_DEFINITION( test_0023 ) {
     // Expected state: a new file with tree has been created and has appeared along with the alignment
     treeView = qobject_cast<QWidget *>( GTWidget::findWidget( os, "treeView" ) );
     CHECK_SET_ERR( NULL != treeView, "Unable to find tree view" );
+}
+
+GUI_TEST_CLASS_DEFINITION( test_0024 ) {
+    //1. Open "data/samples/CLUSTALW/COI.aln"
+    GTFileDialog::openFile( os, dataDir + "samples/CLUSTALW/", "COI.aln" );
+    GTGlobals::sleep( 500 );
+
+    //2. Use context menu items { Tree -> Build tree }
+    //Expected: the "Build Phylogenetic Tree" dialog has appeared
+    //3. Press the "Build" button in the dialog
+    GTUtilsDialog::waitForDialog( os,
+        new PopupChooser( os, QStringList( ) << MSAE_MENU_TREES << "Build Tree" ) );
+    GTUtilsDialog::waitForDialog( os, new LicenseAgreemntDialogFiller( os ) );
+
+    QString outputDirPath( testDir + "_common_data/scenarios/sandbox" );
+    QDir outputDir( outputDirPath );
+    GTUtilsDialog::waitForDialog( os,
+        new BuildTreeDialogFiller( os, outputDir.absolutePath( ) + "/COI.nwk", 0, 0.0, true ) );
+
+    GTMenu::showContextMenu( os, GTUtilsMdi::activeWindow( os ) );
+    GTGlobals::sleep( 500 );
+
+    QGraphicsView *treeView = qobject_cast<QGraphicsView *>( GTWidget::findWidget( os, "treeView" ) );
+    CHECK_SET_ERR( NULL != treeView, "Unable to find tree view" );
+
+    //4. Open the "Tree Setting" option panel tab
+    // it does automatically
+
+    //5. Check the "Align labels" checkbox in the "Labels" section
+    QCheckBox *alignLabelsButton = dynamic_cast<QCheckBox *>(
+        GTWidget::findWidget( os, "alignLabelsCheck" ) );
+    CHECK_SET_ERR( NULL != alignLabelsButton, "The \"Align labels\" button is not found" );
+    GTCheckBox::setChecked(  os, alignLabelsButton, true );
+
+    const QList<QGraphicsItem *> treeViewItems = treeView->items( );
+    QMap<const QGraphicsItem *, QRectF> initialLocations;
+    foreach ( const QGraphicsItem *item, treeViewItems ) {
+        initialLocations[item] = item->boundingRect( );
+    }
+
+    //6. Check the "Show names" checkbox twice
+    QCheckBox *showNamesButton = dynamic_cast<QCheckBox *>(
+        GTWidget::findWidget( os, "showNamesCheck" ) );
+    CHECK_SET_ERR( NULL != showNamesButton, "The \"Show names\" button is not found" );
+    GTCheckBox::setChecked(  os, showNamesButton, false );
+    GTGlobals::sleep( 500 );
+
+    GTCheckBox::setChecked(  os, showNamesButton, true );
+    GTGlobals::sleep( 500 );
+
+    //Expected state: labels on the tree view have kept their location
+    foreach ( const QGraphicsItem *item, treeViewItems ) {
+        CHECK_SET_ERR( initialLocations[item] == item->boundingRect( ),
+            "Graphics item's position has changed!" );
+    }
 }
 
 } // namespace GUITest_common_scenarios_tree_viewer
