@@ -40,14 +40,28 @@ const QString GTUtilsTaskTreeView::widgetName = DOCK_TASK_TREE_VIEW;
 
 
 void GTUtilsTaskTreeView::waitTaskFinidhed(U2OpStatus &os, long timeout){
+    QMap<Task::State, QString> stateMap;
+    stateMap.insert(Task::State_New, "State_New");
+    stateMap.insert(Task::State_Prepared, "State_Prepared");
+    stateMap.insert(Task::State_Running, "State_Running");
+    stateMap.insert(Task::State_Finished, "State_Finished");
+
     TaskScheduler* scheduller = AppContext::getTaskScheduler();
     int i = 0;
+    QString errorMessage;
     while(!scheduller->getTopLevelTasks().isEmpty()){
        GTGlobals::sleep(100);
        i++;
        if(i > (timeout/100)){
-           Task* t = scheduller->getTopLevelTasks().at(0);
-           os.setError(QString("task __%1__ runs too long").arg(t->getTaskName()));
+           QList<Task*> toplevelList = scheduller->getTopLevelTasks();
+           Task* t = toplevelList.at(0);
+           errorMessage = QString("Toplevel taskt number: %1; task __%2__ runs too long").arg(toplevelList.count()).arg(t->getTaskName());
+           QList<Task*> subTaskList = t->getSubtasks();
+           foreach(Task* subTask, subTaskList){
+               errorMessage.append("subtaskName: " + subTask->getTaskName());
+               errorMessage.append(" subtask state: " + stateMap.value(subTask->getState()));
+           }
+           os.setError(errorMessage);
            break;
        }
     }
