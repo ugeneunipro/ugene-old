@@ -41,7 +41,7 @@ namespace U2 {
 class ReplyHandler : public QObject {
     Q_OBJECT
 public:
-    enum Step {
+    enum ReplyState {
         Ordered = 1,
         Waiting = 2,
         WaitingComplete = 3,
@@ -56,18 +56,24 @@ public:
 
 signals:
     void si_finish();
-    void si_step(int step);
+    void si_stateChanged(ReplyHandler::ReplyState state);
 
 private slots:
     void sl_replyFinished(QNetworkReply* reply);
     void sl_onError(QNetworkReply::NetworkError error);
     void sl_timerShouts();
+    void sl_timeout();
 
 private:
+    static void registerMetaType();
+    static bool isMetaRegistered;
+
     QNetworkAccessManager* networkManager;
     QString                url;                // url for the next request
     QByteArray             replyData;
     TaskStateInfo*         os;
+    QTimer                 timer;
+    int                    attemptNumber;
 
 
     static const QByteArray LOCATION;
@@ -211,7 +217,7 @@ public:
 
 public slots:
     void sl_exitLoop();
-    void sl_stateChanged(int step);
+    void sl_stateChanged(ReplyHandler::ReplyState state);
 
 private:
     QString generateUrl();
@@ -277,7 +283,6 @@ private:
     DASAnnotationData       dasData;
 
 };
-
 
 }   // namespace U2
 

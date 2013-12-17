@@ -32,6 +32,8 @@
 
 namespace U2 {
 
+bool ReplyHandler::isMetaRegistered = false;
+
 const QByteArray ReplyHandler::LOCATION = "Location";
 const QByteArray ReplyHandler::RETRY = "Retry-After";
 const QByteArray ReplyHandler::CONTENT_TYPE = "Content-Type";
@@ -41,13 +43,21 @@ const QByteArray ReplyHandler::RUNNING = "RUNNING";
 
 ReplyHandler::ReplyHandler(const QString& _url, TaskStateInfo* _os) :
     url(_url),
-    os(_os) {
+    os(_os),
+    attemptNumber(0)
+{
+    registerMetaType();
+
     networkManager = new QNetworkAccessManager();
     connect(networkManager, SIGNAL(finished(QNetworkReply*)), this, SLOT(sl_replyFinished(QNetworkReply*)));
     NetworkConfiguration* nc = AppContext::getAppSettings()->getNetworkConfiguration();
 
     QNetworkProxy proxy = nc->getProxyByUrl(url);
     networkManager->setProxy(proxy);
+
+    timer.setInterval(30000);
+    timer.setSingleShot(true);
+    connect(&timer, SIGNAL(timeout()), SLOT(sl_timeout()));
 }
 
 void ReplyHandler::sendRequest() {
@@ -57,10 +67,15 @@ void ReplyHandler::sendRequest() {
     QNetworkReply* reply = networkManager->get(request);
     connect(reply, SIGNAL(error(QNetworkReply::NetworkError)),
             this, SLOT(sl_onError(QNetworkReply::NetworkError)));
+
+    timer.start();
 }
 
 void ReplyHandler::sl_replyFinished(QNetworkReply *reply) {
     CHECK_EXT(!os->isCoR(), emit si_finish(), );
+
+    timer.stop();
+    attemptNumber = 0;
 
     replyData = reply->readAll();
     ioLog.trace(QString("Server reply received, request url=\'%1\'").arg(reply->url().toString()));
@@ -73,14 +88,14 @@ void ReplyHandler::sl_replyFinished(QNetworkReply *reply) {
             os->setError(tr("Can't receive result from the server: nothing to download"));
         }
 
-        emit si_step(DownloadingComplete);
+        emit si_stateChanged(DownloadingComplete);
         emit si_finish();
     }
 
     else if (reply->hasRawHeader(LOCATION)) {
         // Server set an ID to the blast job.
         // Results could be found on the special URL.
-        emit si_step(Ordered);
+        emit si_stateChanged(Ordered);
 
         url = reply->rawHeader(LOCATION);
         url += ".stat";
@@ -92,7 +107,7 @@ void ReplyHandler::sl_replyFinished(QNetworkReply *reply) {
 
     else if (replyData == COMPLETED) {
         //The blast job is done, we can dowload a xml file.
-        emit si_step(WaitingComplete);
+        emit si_stateChanged(WaitingComplete);
 
         url.chop(QString(".stat").length());
         url += ".xml";
@@ -102,7 +117,7 @@ void ReplyHandler::sl_replyFinished(QNetworkReply *reply) {
     } else if (replyData == RUNNING) {
         // The blast job is unfinished.
         // Please, wait.
-        emit si_step(Waiting);
+        emit si_stateChanged(Waiting);
 
         QByteArray waitFor = reply->rawHeader(RETRY);
         bool ok = false;
@@ -117,12 +132,14 @@ void ReplyHandler::sl_replyFinished(QNetworkReply *reply) {
 
     else {
         os->setError(tr("Unexpected server response"));
+        ioLog.trace("Reply data: " + replyData.left(200) + "...");
         emit si_finish();
     }
 }
 
 
 void ReplyHandler::sl_onError(QNetworkReply::NetworkError error) {
+    timer.stop();
     os->setError(tr("Network request error %1").arg(error));
     emit si_finish();
 }
@@ -130,6 +147,25 @@ void ReplyHandler::sl_onError(QNetworkReply::NetworkError error) {
 void ReplyHandler::sl_timerShouts() {
     // Look for results, if they are.
     sendRequest();
+}
+
+void ReplyHandler::sl_timeout() {
+    if (attemptNumber >= 3) {
+        ioLog.trace("Server doesn't respond: set error");
+        os->setError(tr("Remote server doesn't respond"));
+        emit si_finish();
+    }
+
+    ioLog.trace(QString("Server doesn't respond: attempt number %1").arg(QString::number(attemptNumber)));
+    attemptNumber++;
+    sendRequest();
+}
+
+void ReplyHandler::registerMetaType() {
+    if (!isMetaRegistered) {
+        qRegisterMetaType<ReplyHandler::ReplyState>("ReplyHandler::ReplyState");
+        isMetaRegistered = true;
+    }
 }
 
 const QString XmlUniprotParser::EBI_APPLICATION_RESULT = "EBIApplicationResult";
@@ -412,17 +448,17 @@ void UniprotBlastTask::run() {
 
     ReplyHandler replyHandler(url, &stateInfo);
     connect(&replyHandler, SIGNAL(si_finish()), SLOT(sl_exitLoop()));
-    connect(&replyHandler, SIGNAL(si_step(int)), SLOT(sl_stateChanged(int)));
+    connect(&replyHandler, SIGNAL(si_stateChanged(ReplyHandler::ReplyState)), SLOT(sl_stateChanged(ReplyHandler::ReplyState)));
 
     // Send the first request: ask to do blast search
     replyHandler.sendRequest();
 
     loop->exec();
-    ioLog.trace("Download finished.");
-
-    if (isCanceled()){
+    if (isCanceled() || hasError()){
         return;
     }
+
+    ioLog.trace("Download finished.");
     
     //parse output
     QByteArray replyData = replyHandler.getReplyData();
@@ -447,17 +483,24 @@ void UniprotBlastTask::sl_exitLoop() {
     loop->exit();
 }
 
-void UniprotBlastTask::sl_stateChanged(int step) {
-    if (step == ReplyHandler::Ordered) {
+void UniprotBlastTask::sl_stateChanged(ReplyHandler::ReplyState state) {
+    switch (state) {
+    case ReplyHandler::Ordered: {
         stateInfo.setProgress(15);
-    } else if (step == ReplyHandler::Waiting) {
+        break;
+    }
+    case ReplyHandler::Waiting: {
         stateInfo.setProgress(60);
-    } else if (step == ReplyHandler::WaitingComplete) {
+        break;
+    }
+    case ReplyHandler::WaitingComplete: {
         stateInfo.setProgress(85);
-    } else if (step == ReplyHandler::DownloadingComplete) {
+        break;
+    }
+    case ReplyHandler::DownloadingComplete: {
         stateInfo.setProgress(100);
-    } else {
-        FAIL("Unexpected step value", );
+        break;
+    }
     }
 }
 
