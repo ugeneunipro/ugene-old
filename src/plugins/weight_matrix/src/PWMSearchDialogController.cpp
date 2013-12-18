@@ -269,11 +269,13 @@ void PWMSearchDialogController::addToQueue() {
     QPair<PWMatrix, WeightMatrixSearchCfg> queueElement;
     queueElement.first = model;
     queueElement.second = cfg;
-    WeightMatrixQueueItem* item = new WeightMatrixQueueItem(cfg);
-    tasksTree->addTopLevelItem(item);
-    queue.append(queueElement);
-    model = PWMatrix();
-    intermediate = PFMatrix();
+    if(queue.contains(queueElement)){
+        QMessageBox::critical(this, L10N::errorTitle(), tr("Same model with same parameters already in the search queue"));
+    }else{
+        WeightMatrixQueueItem* item = new WeightMatrixQueueItem(cfg);
+        tasksTree->addTopLevelItem(item);
+        queue.append(queueElement);
+    }
 }
 
 void PWMSearchDialogController::reject() {

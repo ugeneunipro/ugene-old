@@ -47,6 +47,10 @@ public:
 
     QMap<QString, QString> getProperties() const;
 
+    bool operator == (const UniprobeInfo &i1) const {
+        return i1.properties == properties;
+    }
+
 private:
     QMap<QString, QString> properties;
 };
@@ -88,6 +92,14 @@ public:
     //get all UniPROBE properties
     QMap<QString, QString> getProperties() const;
 
+    bool operator == (const PWMatrix &m1) const {
+        return m1.data == data &&
+                m1.length == length &&
+                m1.type == type &&
+                m1.minSum == minSum &&
+                m1.maxSum == maxSum &&
+                m1.info == info;
+    };
 
 private:
     QVarLengthArray<float> data;

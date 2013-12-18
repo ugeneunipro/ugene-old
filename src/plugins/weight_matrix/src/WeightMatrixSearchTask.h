@@ -82,6 +82,13 @@ public:
     DNATranslation* complTT;
     bool complOnly; //FIXME use strand instead
     QString algo;
+
+    bool operator==(const WeightMatrixSearchCfg &c1) const {
+        return c1.minPSUM == minPSUM &&
+                c1.modelName == modelName &&
+                c1.complOnly == complOnly &&
+                c1.algo == algo;
+    }
 };
 
 class WeightMatrixSearchTask : public Task {
