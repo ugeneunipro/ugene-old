@@ -24,7 +24,7 @@
 #include "AnnotatedDNAView.h"
 
 #include <U2Core/AppContext.h>
-#include <U2Core/AnnotationTableObject.h>
+#include <U2Core/FeaturesTableObject.h>
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/DNASequenceSelection.h>
@@ -85,16 +85,16 @@ ADVSequenceObjectContext::ADVSequenceObjectContext(AnnotatedDNAView* v, U2Sequen
     }
 }
 
-void ADVSequenceObjectContext::guessAminoTT(const AnnotationTableObject* ao) {
-    const DNAAlphabet* al  = getAlphabet();
-    assert(al->isNucleic());
-    DNATranslation* res = NULL;    
+void ADVSequenceObjectContext::guessAminoTT( const FeaturesTableObject *ao ) {
+    const DNAAlphabet *al  = getAlphabet();
+    SAFE_POINT( al->isNucleic( ), "Unexpected DNA alphabet detected!", );
+    DNATranslation* res = NULL;
     DNATranslationRegistry* tr = AppContext::getDNATranslationRegistry();
     // try to guess relevant translation from a CDS feature (if any)
-    foreach(Annotation* ann, ao->getAnnotations()) {
-        if (ann->getAnnotationName() == "CDS") {
-            QVector<U2Qualifier> ql;
-            ann->findQualifiers("transl_table", ql);
+    foreach ( const __Annotation &ann, ao->getAnnotations( ) ) {
+        if ( ann.getName( ) == "CDS") {
+            QList<U2Qualifier> ql;
+            ann.findQualifiers( "transl_table", ql );
             if (ql.size() > 0) {
                 QString guess = "NCBI-GenBank #"+ql.first().value;
                 res = tr->lookupTranslation(al, DNATranslationType_NUCL_2_AMINO, guess);
@@ -127,10 +127,10 @@ U2EntityRef ADVSequenceObjectContext::getSequenceRef() const {
     return seqObj->getSequenceRef();
 }
 
-QList<GObject*> ADVSequenceObjectContext::getAnnotationGObjects() const {
-    QList<GObject*> res;
-    foreach(AnnotationTableObject* ao, annotations) {
-        res.append(ao);
+QList<GObject *> ADVSequenceObjectContext::getAnnotationGObjects( ) const {
+    QList<GObject *> res;
+    foreach ( FeaturesTableObject *ao, annotations ) {
+        res.append( ao );
     }
     return res;
 }
@@ -268,52 +268,54 @@ void ADVSequenceObjectContext::addSequenceWidget(ADVSequenceWidget* w) {
     seqWidgets.append(w);
 }
 
-void ADVSequenceObjectContext::addAnnotationObject(AnnotationTableObject* obj) {
-    assert(!annotations.contains(obj));
-    assert(obj->hasObjectRelation(seqObj, GObjectRelationRole::SEQUENCE));
-    annotations.insert(obj);
-    emit si_annotationObjectAdded(obj);
-    if (clarifyAminoTT) {
-        guessAminoTT(obj);
+void ADVSequenceObjectContext::addAnnotationObject( FeaturesTableObject *obj ) {
+    SAFE_POINT( !annotations.contains( obj ), "Unexpected annotation table!", );
+    SAFE_POINT( obj->hasObjectRelation( seqObj, GObjectRelationRole::SEQUENCE ),
+        "Annotation table relates to unexpected sequence!", );
+    annotations.insert( obj );
+    emit si_annotationObjectAdded( obj );
+    if ( clarifyAminoTT ) {
+        guessAminoTT( obj );
     }
 }
 
-void ADVSequenceObjectContext::removeAnnotationObject(AnnotationTableObject* obj) {
-    assert(annotations.contains(obj));
-    annotations.remove(obj);
-    emit si_annotationObjectRemoved(obj);
+void ADVSequenceObjectContext::removeAnnotationObject( FeaturesTableObject *obj ) {
+    SAFE_POINT( !annotations.contains( obj ), "Unexpected annotation table!", );
+    annotations.remove( obj );
+    emit si_annotationObjectRemoved( obj );
 }
 
-
-QList<Annotation*> ADVSequenceObjectContext::selectRelatedAnnotations(const QList<Annotation*>& alist) const {
-    QList<Annotation*> res;
-    foreach(Annotation* a, alist) {
-        AnnotationTableObject* o = a->getGObject();
-        if (annotations.contains(o) || autoAnnotations.contains(o)) {
-            res.append(a);
+QList<__Annotation> ADVSequenceObjectContext::selectRelatedAnnotations(
+    const QList<__Annotation> &alist) const
+{
+    QList<__Annotation> res;
+    foreach ( const __Annotation &a, alist) {
+        FeaturesTableObject* o = a.getGObject( );
+        if ( annotations.contains( o ) || autoAnnotations.contains( o ) ) {
+            res.append( a );
         }
     }
     return res;
 }
 
-
-GObject* ADVSequenceObjectContext::getSequenceGObject() const {
+GObject * ADVSequenceObjectContext::getSequenceGObject( ) const {
     return seqObj;
 }
 
-void ADVSequenceObjectContext::addAutoAnnotationObject( AnnotationTableObject* obj ){
-    autoAnnotations.insert(obj);
-    emit si_annotationObjectAdded(obj);
+void ADVSequenceObjectContext::addAutoAnnotationObject( FeaturesTableObject *obj ) {
+    autoAnnotations.insert( obj );
+    emit si_annotationObjectAdded( obj );
 }
 
-QSet<AnnotationTableObject*> ADVSequenceObjectContext::getAnnotationObjects(bool includeAutoAnnotations) const {
-    QSet<AnnotationTableObject*> result = annotations;
-    if (includeAutoAnnotations) {
+QSet<FeaturesTableObject *> ADVSequenceObjectContext::getAnnotationObjects(
+    bool includeAutoAnnotations ) const
+{
+    QSet<FeaturesTableObject *> result = annotations;
+    if ( includeAutoAnnotations ) {
         result += autoAnnotations;
     }
 
     return result;
-
 }
 
 void ADVSequenceObjectContext::sl_toggleTranslations(){
@@ -357,6 +359,7 @@ void ADVSequenceObjectContext::setTranslationsVisible(bool enable){
     }
     if(needUpdate){
         emit si_translationRowsChanged();
-    }  
+    }
 }
-}//namespace
+
+} // namespace U2

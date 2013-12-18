@@ -22,15 +22,14 @@
 #ifndef  _U2_PAN_VIEW_ROWS_H_
 #define  _U2_PAN_VIEW_ROWS_H_
 
-#include <U2Core/U2Region.h>
-
 #include <QtCore/QString>
 #include <QtCore/QMap>
 #include <QtCore/QList>
 
-namespace U2 {
+#include <U2Core/Annotation.h>
+#include <U2Core/U2Region.h>
 
-class Annotation;
+namespace U2 {
 
 class PVRowData {
 public:
@@ -41,17 +40,17 @@ public:
     QString key;
     //invariant: keep the ranges in ascending order
     QVector<U2Region> ranges;
-    QList<Annotation*> annotations;
+    QList<__Annotation> annotations;
 };
 
 class PVRowsManager {
-public:    
+public:
     PVRowsManager() {}
     ~PVRowsManager();
     void clear();
 
-    void addAnnotation(Annotation* f, const QString& key);
-    void removeAnnotation(Annotation* f);
+    void addAnnotation( const __Annotation &f, const QString &key );
+    void removeAnnotation( const __Annotation &f );
 
     bool contains(const QString& key) const;
     int getNumRows() const {return rows.size();}
@@ -60,16 +59,15 @@ public:
     /**
      * returns -1 if @a is not found
      */
-    int getAnnotationRowIdx(Annotation* a) const;
-    PVRowData* getAnnotationRow(Annotation* a) const {return rowByAnnotation.value(a, NULL);}
+    int getAnnotationRowIdx( const __Annotation &a ) const;
+    PVRowData* getAnnotationRow( const __Annotation &a ) const {return rowByAnnotation.value(a, NULL);}
     
     int getNumAnnotationsInRow(int rowNum) const;
 
 private:
     QList<PVRowData*> rows;
-    QMap<Annotation*, PVRowData*> rowByAnnotation;
+    QMap<__Annotation, PVRowData*> rowByAnnotation;
 };
-
 
 } // namespace
 

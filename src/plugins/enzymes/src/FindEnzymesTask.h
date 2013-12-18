@@ -27,19 +27,21 @@
 
 #include <limits>
 
+#include <U2Core/AnnotationData.h>
+#include <U2Core/FeaturesTableObject.h>
 #include <U2Core/Task.h>
 #include <U2Core/U2Region.h>
 #include <U2Core/DNASequence.h>
 #include <U2Core/SequenceDbiWalkerTask.h>
 #include <U2Core/AutoAnnotationsSupport.h>
 
-#include <U2Core/AnnotationTableObject.h>
-
 #include <QtCore/QObject>
 #include <QtCore/QList>
 #include <QtCore/QMutex>
 
 namespace U2 {
+
+class FeaturesTableObject;
 
 class FindEnzymesAlgResult {
 public:
@@ -68,7 +70,7 @@ struct FindEnzymesTaskConfig {
 class FindEnzymesToAnnotationsTask : public Task {
     Q_OBJECT
 public:
-    FindEnzymesToAnnotationsTask(AnnotationTableObject* aobj, const U2EntityRef& seqRef, 
+    FindEnzymesToAnnotationsTask(FeaturesTableObject *aobj, const U2EntityRef& seqRef,
         const QList<SEnzymeData>& enzymes, const FindEnzymesTaskConfig& cfg);
     void prepare();
     void run();
@@ -77,9 +79,9 @@ public:
 private:
     U2EntityRef                         dnaSeqRef;
     QList<SEnzymeData>                  enzymes;
-    QMap<QString,SharedAnnotationData>  resultMap;
+    QMap<QString, AnnotationData>       resultMap;
     U2Region                            seqRange;
-    QPointer<AnnotationTableObject>     aObj;
+    QPointer<FeaturesTableObject>       aObj;
     FindEnzymesTaskConfig               cfg;
     FindEnzymesTask*                    fTask;
 };
@@ -95,7 +97,7 @@ public:
 
     ReportResult report();
     
-    QList<SharedAnnotationData> getResultsAsAnnotations(const QString& enzymeId = QString()) const;
+    QList<AnnotationData> getResultsAsAnnotations(const QString& enzymeId = QString()) const;
 
     void cleanup();
 
@@ -109,7 +111,7 @@ private:
     QMutex                              resultsLock;
     
     QString                             group;
-    QPointer<AnnotationTableObject*>    aObj;
+    QPointer<FeaturesTableObject *>     aObj;
 };
 
 

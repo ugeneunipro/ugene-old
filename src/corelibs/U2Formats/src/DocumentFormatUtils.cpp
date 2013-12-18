@@ -22,7 +22,7 @@
 #include "DocumentFormatUtils.h"
 
 #include <U2Core/AnnotationSettings.h>
-#include <U2Core/AnnotationTableObject.h>
+#include <U2Core/FeaturesTableObject.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/BioStruct3D.h>
@@ -34,13 +34,13 @@
 #include <U2Core/MAlignment.h>
 #include <U2Core/MAlignmentObject.h>
 #include <U2Core/TextUtils.h>
+#include <U2Core/U2DbiRegistry.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/U2SequenceUtils.h>
 #include <U2Core/U2AlphabetUtils.h>
 #include <U2Core/U2OpStatusUtils.h>
 
 #include <U2Formats/GenbankFeatures.h>
-
 
 namespace U2 {
 
@@ -52,8 +52,9 @@ static int getIntSettings(const QVariantMap& fs, const char* sName, int defVal) 
     return v.toInt();
 }
 
-
-U2SequenceObject* DocumentFormatUtils::addSequenceObject(const U2DbiRef& dbiRef, const QString& name, const QByteArray& seq,  bool circular, const QVariantMap& hints, U2OpStatus& os) 
+U2SequenceObject * DocumentFormatUtils::addSequenceObject(const U2DbiRef& dbiRef,
+    const QString& name, const QByteArray& seq,  bool circular, const QVariantMap& hints,
+    U2OpStatus& os)
 {
     U2SequenceImporter importer;
     
@@ -73,36 +74,31 @@ U2SequenceObject* DocumentFormatUtils::addSequenceObject(const U2DbiRef& dbiRef,
 }
 
 
-AnnotationTableObject* DocumentFormatUtils::addAnnotationsForMergedU2Sequence(const GUrl& docUrl, const QStringList& contigNames, 
-                                                                        const U2Sequence& mergedSequence, 
-                                                                        const QVector<U2Region>& mergedMapping, 
-                                                                        U2OpStatus& os) 
+FeaturesTableObject * DocumentFormatUtils::addAnnotationsForMergedU2Sequence( const GUrl &docUrl,
+    const U2DbiRef& dbiRef, const QStringList &contigNames, const U2Sequence &mergedSequence,
+    const QVector<U2Region> &mergedMapping, U2OpStatus &os )
 {
-    Q_UNUSED(os);
-    AnnotationTableObject* ao = new AnnotationTableObject("Contigs");
+    Q_UNUSED( os );
+    FeaturesTableObject *ao = new FeaturesTableObject( "Contigs", dbiRef );
 
     //save relation if docUrl is not empty
-    if (!docUrl.isEmpty()) {
-        GObjectReference r(docUrl.getURLString(), mergedSequence.visualName, GObjectTypes::SEQUENCE);
-        ao->addObjectRelation(GObjectRelation(r, GObjectRelationRole::SEQUENCE));
+    if ( !docUrl.isEmpty( ) ) {
+        GObjectReference r( docUrl.getURLString( ), mergedSequence.visualName, GObjectTypes::SEQUENCE );
+        ao->addObjectRelation( GObjectRelation( r, GObjectRelationRole::SEQUENCE ) );
     }
 
     //save mapping info as annotations
-    QStringList::const_iterator it = contigNames.begin();
-    for (int i = 0; it != contigNames.end(); i++, it++) {
-        SharedAnnotationData d(new AnnotationData());
-        d->name = QString("contig");
-        d->location->regions << mergedMapping[i];
-        d->qualifiers << U2Qualifier("name", *it);
-        d->qualifiers << U2Qualifier("number", QString("%1").arg(i));
-        ao->addAnnotation(new Annotation(d), NULL);
+    QStringList::const_iterator it = contigNames.begin( );
+    for ( int i = 0; it != contigNames.end( ); i++, it++ ) {
+        AnnotationData d;
+        d.name = QString( "contig" );
+        d.location->regions << mergedMapping[i];
+        d.qualifiers << U2Qualifier( "name", *it );
+        d.qualifiers << U2Qualifier( "number", QString( "%1" ).arg( i ) );
+        ao->addAnnotation( d );
     }
     return ao;
 }
-
-
-
-
 
 class ExtComparator {
 public:
@@ -277,20 +273,20 @@ U2SequenceObject* DocumentFormatUtils::addMergedSequenceObjectDeprecated(const U
     SAFE_POINT(so != NULL, "DocumentFormatUtils::addSequenceObject returned NULL but didn't set error", NULL);
     
 
-    AnnotationTableObject* ao = new AnnotationTableObject("Annotations");
+    FeaturesTableObject *ao = new FeaturesTableObject( "Annotations", dbiRef );
 
     //save relation if docUrl is not empty
-    if (!docUrl.isEmpty()) {
-        GObjectReference r(docUrl.getURLString(), so->getGObjectName(), GObjectTypes::SEQUENCE);
-        ao->addObjectRelation(GObjectRelation(r, GObjectRelationRole::SEQUENCE));
+    if ( !docUrl.isEmpty( ) ) {
+        GObjectReference r( docUrl.getURLString( ), so->getGObjectName( ), GObjectTypes::SEQUENCE );
+        ao->addObjectRelation( GObjectRelation( r, GObjectRelationRole::SEQUENCE ) );
     }
 
     //save mapping info as annotations
-    for (int i = 0; i < contigNames.size(); i++) {
-        SharedAnnotationData d(new AnnotationData());
-        d->name = "contig";
-        d->location->regions << mergedMapping[i];
-        ao->addAnnotation(new Annotation(d), NULL);
+    for ( int i = 0; i < contigNames.size( ); i++ ) {
+        AnnotationData d;
+        d.name = "contig";
+        d.location->regions << mergedMapping[i];
+        ao->addAnnotation( d );
     }
     objects.append(ao);
     return so;

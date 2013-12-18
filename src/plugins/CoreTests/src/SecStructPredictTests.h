@@ -28,8 +28,7 @@
 namespace U2 {
 
 class SecStructPredictTask;
-class AnnotationTableObject;
-
+class FeaturesTableObject;
 
 class GTest_SecStructPredictAlgorithm : public GTest {
     Q_OBJECT
@@ -55,7 +54,7 @@ public:
 private:
     bool contextAdded;
     SecStructPredictTask* task;
-    AnnotationTableObject* aObj;
+    FeaturesTableObject* aObj;
     QString seqName;
     QString algName;
     QString resultsTableContextName;
@@ -66,9 +65,6 @@ class SecStructPredictTests {
 public:
     static QList<XMLTestFactory*> createTestFactories();
 };
-
-
-
 
 } //namespace
 #endif

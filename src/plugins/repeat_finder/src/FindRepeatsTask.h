@@ -129,7 +129,7 @@ public:
     FindRepeatsToAnnotationsTask(const FindRepeatsTaskSettings& s, const DNASequence& seq, 
                                 const QString& annName, const QString& groupName, const GObjectReference& annObjRef);
     
-    QList<Task*> onSubTaskFinished(Task* subTask);    
+    QList<Task*> onSubTaskFinished(Task* subTask);
     QList<SharedAnnotationData> importAnnotations();
 
 private:
@@ -145,7 +145,7 @@ class RevComplSequenceTask : public Task {
 public:
     RevComplSequenceTask(const DNASequence& s, const U2Region& reg);
     
-    void run();    
+    void run();
     void cleanup();
 
     DNASequence sequence;

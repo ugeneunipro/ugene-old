@@ -19,7 +19,7 @@
  * MA 02110-1301, USA.
  */
 
-#include <U2Core/AnnotationTableObject.h>
+#include <U2Core/FeaturesTableObject.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>
 #include <U2Core/BaseDocumentFormats.h>
@@ -76,13 +76,7 @@ void ConductGOTask::cleanup() {
         foreach(QString file, tmpDir.entryList()){
             tmpDir.remove(file);
         }
-        if(!tmpDir.rmdir(tmpDir.absolutePath())){
-            //stateInfo.setError(tr("Subdir for temporary files exists. Can not remove this directory."));
-            //return;
-        }
     }
-
-    
 }
 
 void ConductGOTask::prepare() {
@@ -103,7 +97,6 @@ void ConductGOTask::prepare() {
     
 }
 
-
 Document* ConductGOTask::createDoc( const QList<SharedAnnotationData>& annData, const QString& name){
     Document* doc = NULL;
 
@@ -117,15 +110,14 @@ Document* ConductGOTask::createDoc( const QList<SharedAnnotationData>& annData, 
     CHECK_OP(stateInfo, doc);
     doc->setDocumentOwnsDbiResources(false);
 
-    AnnotationTableObject *ato = new AnnotationTableObject(name);
+    FeaturesTableObject *ato = new FeaturesTableObject( name, doc->getDbiRef( ) );
     foreach (const SharedAnnotationData &sad, annData) {
-        ato->addAnnotation(new Annotation(sad), QString());
+        ato->addAnnotation( *sad, QString());
     }
-    doc->addObject(ato);   
+    doc->addObject(ato);
 
     return doc;
 }
-
 
 QList<Task*> ConductGOTask::onSubTaskFinished(Task* subTask) {
     QList<Task*> result;

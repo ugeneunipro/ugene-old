@@ -27,9 +27,7 @@
 #include <U2Core/AppContext.h>
 
 #include <U2Core/DNATranslationImpl.h>
-
 #include <U2Core/DNASequenceObject.h>
-#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/AnnotationSettings.h>
 #include <U2Core/U1AnnotationUtils.h>
 #include <U2Core/U2SafePoints.h>
@@ -46,7 +44,6 @@
 #include <QtGui/QApplication>
 #include <QtGui/QLayout>
 #include <QtGui/QMessageBox>
-
 
 namespace U2 {
 
@@ -312,14 +309,14 @@ void DetViewRenderArea::updateLines() {
     assert(numLines > 0);
 }
 
-U2Region DetViewRenderArea::getAnnotationYRange(Annotation* a, int region, const AnnotationSettings* as) const {
-    bool complement = a->getStrand().isCompementary() && getDetView()->hasComplementaryStrand();
+U2Region DetViewRenderArea::getAnnotationYRange( const __Annotation &a, int region, const AnnotationSettings* as) const {
+    bool complement = a.getStrand().isCompementary() && getDetView()->hasComplementaryStrand();
     TriState aminoState = TriState_Unknown; //a->getAminoFrame();
     if (aminoState == TriState_Unknown) {
         aminoState = as->amino ? TriState_Yes : TriState_No;
     }
     bool transl = getDetView()->hasTranslations() && aminoState == TriState_Yes;
-    int frame = U1AnnotationUtils::getRegionFrame(view->getSequenceLength(), a->getStrand(), a->isOrder(), region, a->getRegions());
+    int frame = U1AnnotationUtils::getRegionFrame(view->getSequenceLength(), a.getStrand(), a.isOrder(), region, a.getRegions());
     int line = -1;
     if (complement) {
         if (transl) {
@@ -437,8 +434,7 @@ void DetViewRenderArea::drawComplement(QPainter& p) {
 
 static QByteArray translate(DNATranslation* t, const char* seq, qint64 seqLen) {
     QByteArray res(seqLen / 3, 0);
-    /*qint64 n = */t->translate(seq, seqLen, res.data(), seqLen/3);
-//    assert(n == res.length()); Q_UNUSED(n);
+    t->translate(seq, seqLen, res.data(), seqLen/3);
     return res;
 }
 
@@ -487,8 +483,7 @@ void DetViewRenderArea::drawTranslations(QPainter& p) {
     QFont fontIS = sequenceFontSmall;
     fontIS.setItalic(true);
 
-    QList<Annotation*> annotationsInRange = detView->findAnnotationsInRange(visibleRange);
-
+    const QList<__Annotation> annotationsInRange = detView->findAnnotationsInRange(visibleRange);
 
     {//direct translations
         for(int i = 0; i < 3; i++) {
@@ -506,7 +501,7 @@ void DetViewRenderArea::drawTranslations(QPainter& p) {
                 for (int k=0; k < line; k++){
                     yOffset += (visibleRows[k]== true ? 0 : 1);
                 }
-                int y = getTextY(firstDirectTransLine + line - yOffset);//directLine++);
+                int y = getTextY(firstDirectTransLine + line - yOffset);
                 int dx = seqStartPos - visibleRange.startPos;//-1,0,1,2(if startPos==0)
                 for(int j = 0, n = amino.length(); j < n ; j++, seq += 3) {
                     char amin = amino[j];
@@ -593,7 +588,9 @@ void DetViewRenderArea::drawTranslations(QPainter& p) {
     p.setFont(sequenceFont);
 }
 
-bool DetViewRenderArea::deriveTranslationCharColor(qint64 pos, U2Strand strand, QList<Annotation*> annotationsInRange, QColor& result) {
+bool DetViewRenderArea::deriveTranslationCharColor(qint64 pos, U2Strand strand,
+    const QList<__Annotation> &annotationsInRange, QColor& result)
+{
     // logic:
     // no annotations found -> grey
     // found annotation that is on translation -> black
@@ -604,14 +601,14 @@ bool DetViewRenderArea::deriveTranslationCharColor(qint64 pos, U2Strand strand, 
     U2Region tripletRange = strand == U2Strand::Complementary ? U2Region(pos - 2, 2) : U2Region(pos, 2);
     AnnotationSettings* as = NULL;
     int sequenceLen = view->getSequenceLength();
-    foreach (Annotation* a, annotationsInRange) {
-        if (a->getStrand() != strand) {
-            continue;            
+    foreach ( const __Annotation &a, annotationsInRange ) {
+        if (a.getStrand() != strand) {
+            continue;
         }
         bool annotationOk = false;
         AnnotationSettings *tas = NULL;
-        bool order = a->isOrder();
-        const QVector<U2Region>& location = a->getRegions();
+        bool order = a.isOrder();
+        const QVector<U2Region>& location = a.getRegions();
         for (int i = 0, n = location.size(); i < n; i++) {
             const U2Region& r = location.at(i);
             if (!r.contains(tripletRange)) {
@@ -757,4 +754,4 @@ void DetViewRenderArea::updateSize()  {
     setFixedHeight(h); //todo: remove +5 and fix ruler drawing to fit its line
 }
 
-}//namespace
+} // namespace U2

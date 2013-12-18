@@ -48,19 +48,17 @@ public:
         return region == o.region && frame == o.frame;
     }
 
-    SharedAnnotationData toAnnotation(const QString& name) const {
-        SharedAnnotationData data;
-        data = new AnnotationData;
-        data->name = name;
-        data->location->regions << region;
+    AnnotationData toAnnotation(const QString& name) const {
+        AnnotationData data;
+        data.name = name;
+        data.location->regions << region;
         if(isJoined){
-            data->location->regions << joinedRegion;
+            data.location->regions << joinedRegion;
         }
-        data->setStrand(frame < 0 ? U2Strand::Complementary : U2Strand::Direct);
-        //data->qualifiers.append(U2Qualifier("frame", QString::number(frame)));
-        data->qualifiers.append(U2Qualifier("dna_len", QString::number(region.length)));
+        data.setStrand(frame < 0 ? U2Strand::Complementary : U2Strand::Direct);
+        data.qualifiers.append(U2Qualifier("dna_len", QString::number(region.length)));
         if (region.length >= 6) { // 3 bp - end codon
-            data->qualifiers.append(U2Qualifier("protein_len", QString::number(region.length/3)));
+            data.qualifiers.append(U2Qualifier("protein_len", QString::number(region.length/3)));
         }
         return data;
     }
@@ -74,7 +72,7 @@ public:
     {
         QList<SharedAnnotationData> list;
         foreach (const ORFFindResult& f, res) {
-            list.append(f.toAnnotation(name));
+            list.append( SharedAnnotationData( new AnnotationData( f.toAnnotation( name ) ) ) );
         }
         return list;
     }

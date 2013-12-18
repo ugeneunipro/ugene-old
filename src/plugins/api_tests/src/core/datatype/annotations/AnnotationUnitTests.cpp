@@ -153,7 +153,7 @@ IMPLEMENT_TEST( AnnotationUnitTest, getSet_Location ) {
     CHECK_EQUAL( 1, annotations.size( ), "count of annotations" );
     __Annotation &annotation = annotations.first( );
 
-    CHECK_TRUE( *anData.location.data( ) == *annotation.getLocation( ).data( ),
+    CHECK_TRUE( *anData.location == *annotation.getLocation( ),
         "Unexpected annotation's location" );
 
     U2Location newLocation( anData.location );
@@ -163,7 +163,7 @@ IMPLEMENT_TEST( AnnotationUnitTest, getSet_Location ) {
     newLocation->strand = U2Strand::Complementary;
     annotation.setLocation( newLocation );
 
-    CHECK_TRUE( *newLocation.data( ) == *annotation.getLocation( ).data( ),
+    CHECK_TRUE( *newLocation == *annotation.getLocation( ),
         "Unexpected annotation's location" );
 }
 

@@ -39,7 +39,6 @@ void SQLiteFeatureDbi::initSqlSchema(U2OpStatus& os) {
     }
     //nameHash is used for better indexing
     SQLiteQuery("CREATE TABLE Feature (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, parent INTEGER, nameHash INTEGER, name TEXT, sequence INTEGER NOT NULL, "
-        " rversion INTEGER NOT NULL DEFAULT 0, lversion INTEGER NOT NULL DEFAULT 0,"
         " strand INTEGER NOT NULL DEFAULT 0, start INTEGER NOT NULL DEFAULT 0, len INTEGER NOT NULL DEFAULT 0, "
         " FOREIGN KEY(sequence) REFERENCES Object(id))", db, os).execute();
 
@@ -58,7 +57,7 @@ void SQLiteFeatureDbi::initSqlSchema(U2OpStatus& os) {
     SQLiteQuery("CREATE INDEX IF NOT EXISTS FeatureKeyIndex ON FeatureKey(feature)" ,db, os).execute();
 }
 
-#define FDBI_FIELDS QString("f.id, f.parent, f.name, f.sequence, f.rversion, f.lversion, f.strand, f.start, f.len, f.nameHash ")
+#define FDBI_FIELDS QString("f.id, f.parent, f.name, f.sequence, f.strand, f.start, f.len, f.nameHash ")
 class SqlFeatureRSLoader : public SqlRSLoader<U2Feature> {
 public:
     U2Feature load(SQLiteQuery* q) {
@@ -67,16 +66,14 @@ public:
 
     static U2Feature loadStatic(SQLiteQuery* q) {
         U2Feature res;
-        //parent, name, sequence, rversion, lversion, strand, start, len
+        //parent, name, sequence, strand, start, len
         res.id = q->getDataId(0, U2Type::Feature);
         res.parentFeatureId = q->getDataId(1, U2Type::Feature);
         res.name = q->getString(2);
         res.sequenceId = q->getDataId(3, U2Type::Sequence);
-        res.treeVersion = q->getInt32(4);
-        res.version = q->getInt32(5);
-        res.location.strand = U2Strand(U2Strand::Direction(q->getInt32(6)));
-        res.location.region.startPos = q->getInt64(7);
-        res.location.region.length= q->getInt64(8);
+        res.location.strand = U2Strand(U2Strand::Direction(q->getInt32(4)));
+        res.location.region.startPos = q->getInt64(5);
+        res.location.region.length= q->getInt64(6);
         return res;
     }
 };

@@ -19,22 +19,24 @@
  * MA 02110-1301, USA.
  */
 
-#include "GFFFormat.h"
-#include "DocumentFormatUtils.h"
+#include <QtCore/QScopedArrayPointer>
 
 #include <U2Core/IOAdapter.h>
 #include <U2Core/U2OpStatus.h>
-#include <U2Core/AnnotationTableObject.h>
+#include <U2Core/FeaturesTableObject.h>
 #include <U2Core/TextUtils.h>
 #include <U2Core/Log.h>
 #include <U2Core/L10n.h>
-#include <U2Core/GAutoDeleteList.h>
 #include <U2Core/GObjectRelationRoles.h>
 #include <U2Core/GObjectReference.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/U1AnnotationUtils.h>
 #include <U2Core/U2DbiUtils.h>
 #include <U2Core/U2SequenceUtils.h>
+#include <U2Core/DNASequenceObject.h>
+
+#include "DocumentFormatUtils.h"
+#include "GFFFormat.h"
 
 namespace U2{
 
@@ -61,15 +63,15 @@ Document* GFFFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const Q
     return doc;
 }
 
-int readLongLine(QString &buffer, IOAdapter* io, gauto_array<char> &charbuff){
+int readLongLine( QString &buffer, IOAdapter* io, QScopedArrayPointer<char> &charbuff ) {
     int len;
-    buffer.clear();
+    buffer.clear( );
     do {
-        len = io->readLine(charbuff.data, READ_BUFF_SIZE -1);
-        charbuff.data[len] = '\0';
-        buffer.append(QString(charbuff.data));
-    }while (len == READ_BUFF_SIZE - 1);
-    return buffer.length();
+        len = io->readLine( charbuff.data( ), READ_BUFF_SIZE - 1 );
+        charbuff.data( )[len] = '\0';
+        buffer.append( QString( charbuff.data( ) ) );
+    } while ( READ_BUFF_SIZE - 1 == len );
+    return buffer.length( );
 }
 
 void validateHeader( QStringList words){
@@ -119,7 +121,9 @@ static QString fromEscapedString( const QString & val ) {
     return ret;
 }
 
-U2SequenceObject *importSequence(DNASequence &sequence, const QString &objName, QList<GObject*>& objects, U2SequenceImporter &seqImporter, const U2DbiRef& dbiRef, U2OpStatus& os) {
+U2SequenceObject *importSequence(DNASequence &sequence, const QString &objName,
+    QList<GObject*>& objects, U2SequenceImporter &seqImporter, const U2DbiRef& dbiRef, U2OpStatus& os)
+{
     seqImporter.startSequence(dbiRef, sequence.getName(), sequence.circular, os);
     CHECK_OP(os, NULL);
     seqImporter.addBlock(sequence.seq.constData(), sequence.seq.length(), os);
@@ -136,17 +140,19 @@ U2SequenceObject *importSequence(DNASequence &sequence, const QString &objName, 
     return seqObj;
 }
 
-void addAnnotations(QList<Annotation*> &annList, QList<GObject*>& objects, QSet<AnnotationTableObject*> &atoSet, const QString &seqName) {
-    if (!annList.isEmpty()) {
+void addAnnotations( QList<AnnotationData> &annList, QList<GObject *> &objects,
+    QSet<FeaturesTableObject *> &atoSet, const QString &seqName, const U2DbiRef &dbiRef )
+{
+    if ( !annList.isEmpty( ) ) {
         QString atoName = seqName + FEATURES_TAG;
-        AnnotationTableObject *ato = NULL;
-        foreach(GObject *ob, objects){
-            if(ob->getGObjectName() == atoName){
-                ato = (AnnotationTableObject *)ob;
+        FeaturesTableObject *ato = NULL;
+        foreach ( GObject *ob, objects ) {
+            if ( ob->getGObjectName( ) == atoName ) {
+                ato = dynamic_cast<FeaturesTableObject *>( ob );
             }
         }
-        if (NULL == ato) {
-            ato = new AnnotationTableObject(atoName);
+        if ( NULL == ato ) {
+            ato = new FeaturesTableObject( atoName, dbiRef );
             objects.append(ato);
             atoSet.insert(ato);
         }
@@ -194,13 +200,13 @@ void GFFFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, QList<GObject*>& obj
     Q_UNUSED(hints);
     DbiOperationsBlock opBlock(dbiRef, os);
     CHECK_OP(os, );
-    gauto_array<char> buff = new char[READ_BUFF_SIZE];
-    int len = io->readLine(buff.data, READ_BUFF_SIZE);
-    buff.data[len] = '\0';
-    QString qstrbuf(buff.data);
+    QScopedArrayPointer<char> buff( new char[READ_BUFF_SIZE] );
+    int len = io->readLine( buff.data( ), READ_BUFF_SIZE );
+    buff.data( )[len] = '\0';
+    QString qstrbuf( buff.data( ) );
     QStringList words = qstrbuf.split(QRegExp("\\s+"));
     bool isOk;
-    QSet <AnnotationTableObject*> atoSet;
+    QSet<FeaturesTableObject *> atoSet;
     QMap <QString, U2SequenceObject*> seqMap;
     //header validation
     validateHeader(words);
@@ -208,7 +214,7 @@ void GFFFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, QList<GObject*>& obj
     U2SequenceImporter seqImporter(hints, true);
 
     int lineNumber = 2;//because first line checked in method validateHeader above
-    QMap<QString,Annotation*> joinedAnnotations;
+    QMap<QString, AnnotationData> joinedAnnotations;
     bool fastaSectionStarts = false;
     QString headerName, objName;
     QByteArray seq;
@@ -217,7 +223,7 @@ void GFFFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, QList<GObject*>& obj
     while(!io->isEof()){
         len = readLongLine(qstrbuf, io, buff);
         //skip empty lines
-        if(TextUtils::remove(buff.data, len, TextUtils::WHITES) == 0){
+        if(TextUtils::remove(buff.data( ), len, TextUtils::WHITES) == 0){
             ioLog.info(GFFFormat::tr("Parsing error: file contains empty line %1, line skipped").arg(lineNumber));
             lineNumber++;
             continue;
@@ -239,7 +245,7 @@ void GFFFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, QList<GObject*>& obj
                 SAFE_POINT(seqObj != NULL, "DocumentFormatUtils::addSequenceObject returned NULL but didn't set error",);
                 dbiObjects.objects << seqObj->getSequenceRef().entityId;
                 seqMap.insert(objName, seqObj);
-                addAnnotations(seqImporter.getCaseAnnotations(), objects, atoSet, headerName);
+                addAnnotations( seqImporter.getCaseAnnotations( ), objects, atoSet, headerName, dbiRef );
                 headerName = words.join(" ").remove(">");
                 seq = "";
             } else {
@@ -278,8 +284,8 @@ void GFFFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, QList<GObject*>& obj
             QString groupName = words[2];
             QString annName = groupName; //by default annotation named as group
             //annotation's qualifiers from attributes
-            SharedAnnotationData d(new AnnotationData());
-            Annotation *a = NULL;
+            AnnotationData ad;
+            AnnotationData *existingAnnotation;
             bool newJoined = false;
             QString id;
             if(words[8] != "."){
@@ -288,23 +294,24 @@ void GFFFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, QList<GObject*>& obj
                     QStringList qual = splitGffAttributes(p, '=');
                     if(qual.size() == 1){
                         // save field as single attribute
-                        d->qualifiers.append( U2Qualifier("attr", qual.first()) );
+                        ad.qualifiers.append( U2Qualifier("attr", qual.first()) );
                     } else if (qual.size() == 2) {
                         qual[0] = fromEscapedString(qual[0]);
                         qual[1] = fromEscapedString(qual[1]);
                         if(qual[0] == "name"){
                             annName = qual[1];
                         }else{
-                            d->qualifiers.append(U2Qualifier(qual[0], qual[1]));
+                            ad.qualifiers.append(U2Qualifier(qual[0], qual[1]));
                             if(qual[0] == "ID"){
                                 id = qual[1];
-                                if(joinedAnnotations.contains(id)){
-                                    a = *(joinedAnnotations.find(id));
-                                    bool hasIntersections = range.findIntersectedRegion(a->getRegions())!=-1;
-                                    if(hasIntersections){
-                                        ioLog.info(tr("Wrong location for joined annotation at line %1. Line was skipped.").arg(lineNumber));
+                                if ( joinedAnnotations.contains( id ) ) {
+                                    existingAnnotation = &*( joinedAnnotations.find( id ) );
+                                    bool hasIntersections = ( -1 != range.findIntersectedRegion(
+                                        existingAnnotation->location->regions ) );
+                                    if ( hasIntersections ) {
+                                        ioLog.info( tr( "Wrong location for joined annotation at line %1. Line was skipped." ).arg( lineNumber ) );
                                     } else {
-                                        a->addLocationRegion(range);
+                                        existingAnnotation->location->regions << range;
                                     }
                                 }else{
                                     newJoined = true;
@@ -319,46 +326,45 @@ void GFFFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, QList<GObject*>& obj
             }
 
             //if annotation joined, don't rewrite it data
-            if(a == NULL){
-                a = new Annotation(d);
+            if ( NULL == existingAnnotation ) {
                 if(newJoined){
-                    joinedAnnotations.insert(id, a);
+                    joinedAnnotations.insert(id, ad);
                 }
-                a->addLocationRegion(range);
-                a->setAnnotationName(annName);
+                ad.location->regions << range;
+                ad.name = annName;
 
                 QString atoName = words[0] + FEATURES_TAG;
-                AnnotationTableObject *ato = NULL;
-                foreach(GObject *ob, objects){
-                    if(ob->getGObjectName() == atoName){
-                        ato = (AnnotationTableObject *)ob;
+                FeaturesTableObject *ato = NULL;
+                foreach ( GObject *ob, objects ) {
+                    if ( ob->getGObjectName( ) == atoName) {
+                        ato = dynamic_cast<FeaturesTableObject *>( ob );
                     }
                 }
                 if(!ato){
-                    ato = new AnnotationTableObject(atoName);
-                    objects.append(ato);
-                    atoSet.insert(ato);
+                    ato = new FeaturesTableObject( atoName, dbiRef );
+                    objects.append( ato );
+                    atoSet.insert( ato );
                 }
 
                 //qualifiers from columns
                 if(words[1] != "."){
-                    a->addQualifier("source", words[1]);
+                    ad.qualifiers << U2Qualifier( "source", words[1] );
                 }
 
                 if(words[5] != "."){
-                    a->addQualifier("score", words[5]);
+                    ad.qualifiers << U2Qualifier( "score", words[5] );
                 }
 
                 if(words[7] != "."){
-                    a->addQualifier("phase", words[7]);
+                    ad.qualifiers << U2Qualifier( "phase", words[7] );
                 }
 
                 //strand detection
                 if(words[6] == "-"){
-                    a->setStrand(U2Strand::Complementary);
+                    ad.setStrand( U2Strand::Complementary );
                 }
 
-                ato->addAnnotation(a, groupName);
+                ato->addAnnotation( ad, groupName );
             }
         }else{
             if(words[0].startsWith("##fasta", Qt::CaseInsensitive)){
@@ -385,11 +391,11 @@ void GFFFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, QList<GObject*>& obj
         SAFE_POINT(seqObj != NULL, "DocumentFormatUtils::addSequenceObject returned NULL but didn't set error",);
         seqMap.insert(objName, seqObj);
         dbiObjects.objects << seqObj->getSequenceRef().entityId;
-        addAnnotations(seqImporter.getCaseAnnotations(), objects, atoSet, headerName);
+        addAnnotations( seqImporter.getCaseAnnotations( ), objects, atoSet, headerName, dbiRef );
     }
     
     //linking annotation tables with corresponding sequences
-    foreach(AnnotationTableObject *ob, atoSet){
+    foreach ( FeaturesTableObject *ob, atoSet ) {
         QString objName = ob->getGObjectName();
         objName.replace(FEATURES_TAG, SEQUENCE_TAG);
         if(seqMap.contains(objName)){
@@ -434,7 +440,7 @@ FormatCheckResult GFFFormat::checkRawData(const QByteArray& rawData, const GUrl&
                     res = qMax(res, FormatDetection_HighSimilarity) ;
                 } else {
                     return FormatDetection_NotMatched;
-                }                
+                }
             }
         }
     }
@@ -491,39 +497,42 @@ void GFFFormat::storeDocument(Document* doc, IOAdapter* io, U2OpStatus& os){
     for(int i = 0; i != 9; i++){
         cleanRow.append(".");
     }
-    foreach(GObject *ato , atos){
-         QList<Annotation*> aList = (qobject_cast<AnnotationTableObject*>(ato))->getAnnotations();
+    foreach ( GObject *ato , atos ) {
+        FeaturesTableObject *annotationTable = dynamic_cast<FeaturesTableObject *>( ato );
+         QList<__Annotation> aList = annotationTable->getAnnotations( );
          //retrieving known IDs
-         foreach(const Annotation *ann, aList){
-             if(ann->isValidQualifierName("ID")){
-                knownIDs.insert(ann->findFirstQualifierValue("ID"));
+         foreach ( const __Annotation &ann, aList ) {
+             if ( __Annotation::isValidQualifierName( "ID" ) ) {
+                knownIDs.insert( ann.findFirstQualifierValue( "ID" ) );
              }
          }
-         foreach(const Annotation *ann, aList){
-            QString aName = ann->getAnnotationName();
+         foreach ( const __Annotation &ann, aList ) {
+            QString aName = ann.getName( );
             if (aName == U1AnnotationUtils::lowerCaseAnnotationName
                 || aName == U1AnnotationUtils::upperCaseAnnotationName) {
                 continue;
             }
             QStringList row = cleanRow;
-            QVector<U2Region> location = ann->getRegions();
-            QVector<U2Qualifier> qualVec = ann->getQualifiers();
+            QVector<U2Region> location = ann.getRegions( );
+            QVector<U2Qualifier> qualVec = ann.getQualifiers( );
             //generating unique ID for joined annotation
-            if((location.size() > 1) && !ann->isValidQualifierName("ID")){
-                for(;knownIDs.contains(QString::number(joinID));joinID++) {}
-                qualVec.append(U2Qualifier("ID", QString::number(joinID)));
+            if ( ( location.size( ) > 1 ) && !__Annotation::isValidQualifierName( "ID" ) ) {
+                for ( ;knownIDs.contains( QString::number( joinID ) ); joinID++ ) {
+    
+                }
+                qualVec.append( U2Qualifier( "ID", QString::number( joinID ) ) );
             }
             foreach(const U2Region r, location){
                 QString name = ato->getGObjectName();
                 row[0] = name.left(name.size() - QString(FEATURES_TAG).size()); //removing previously added tag
                 //filling strand field
-                if(ann->getStrand().isCompementary()){
+                if ( ann.getStrand( ).isCompementary( ) ) {
                     row[6] = "-";
                 }
                 //filling location fields
                 row[3] = QString::number(r.startPos + 1);
                 row[4] = QString::number(r.endPos());
-                row[2] = (ann->getGroups().first())->getGroupName();
+                row[2] = ann.getGroup( ).getName( );
                 QString additionalQuals = "name=" + escapeBadCharacters(aName);
                 //filling fields with qualifiers data
                 foreach(U2Qualifier q, qualVec){

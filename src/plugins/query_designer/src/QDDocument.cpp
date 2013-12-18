@@ -38,7 +38,7 @@ static const QString BLOCK_START = "{";
 static const QString BLOCK_END = "}";
 static const QString META_KEYWORD = ".meta";
 static const QString VISUAL_KEYWORD = "visual";
-    
+
 QString QDDocStatement::getAttribute(const QString& name) const {
     foreach(const StringAttribute& attr, attributes) {
         if (attr.first==name) {
@@ -47,7 +47,7 @@ QString QDDocStatement::getAttribute(const QString& name) const {
     }
     return QString();
 }
-    
+
 void QDDocStatement::setAttribute(const QString& name, const QString& value) {
     assert(!name.contains(' '));
     for (int i=0; i<attributes.size(); i++) {
@@ -60,7 +60,7 @@ void QDDocStatement::setAttribute(const QString& name, const QString& value) {
     QPair<QString,QString> newAttr = qMakePair(name, value);
     attributes.append(newAttr);
 }
-    
+
 QString QDDocStatement::toString() const {
     int strLen = evalStringLen();
     QString res;

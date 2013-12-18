@@ -23,6 +23,7 @@
 #define _U2_ANNOTATION_GROUP_H_
 
 #include <U2Core/Annotation.h>
+#include <U2Core/DbiIdBasedData.h>
 
 namespace U2 {
 
@@ -30,7 +31,7 @@ class FeaturesTableObject;
 
 // TODO: this class should replace U2::AnnotationGroup. It should implement the interface
 // defined below using U2::FeatureUtils
-class U2CORE_EXPORT __AnnotationGroup {
+class U2CORE_EXPORT __AnnotationGroup : public DbiIdBasedData {
 public:
                             __AnnotationGroup( const U2DataId &featureId,
                                 FeaturesTableObject *parentObject );
@@ -48,6 +49,8 @@ public:
     void                    findAllAnnotationsInGroupSubTree( QList<__Annotation> &set ) const;
 
     QList<__Annotation>     getAnnotations( ) const;
+
+    __Annotation            addAnnotation( const AnnotationData &a );
 
     void                    addAnnotation( const __Annotation &a );
 
@@ -67,7 +70,6 @@ public:
 
     FeaturesTableObject *   getGObject( ) const;
 
-    U2DataId                getId( ) const;
     /*
      * Returns parent annotation group. Returns *this (i.e. the same group) for a top-level group
      */
@@ -98,8 +100,7 @@ public:
     static const QString    ROOT_GROUP_NAME;
     static const QChar      GROUP_PATH_SEPARATOR;
 
- private:
-    U2DataId                featureId;
+private:
     FeaturesTableObject *   parentObject;
 };
 

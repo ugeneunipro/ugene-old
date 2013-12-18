@@ -19,7 +19,7 @@
  * MA 02110-1301, USA.
  */
 
-#include <U2Core/AnnotationTableObject.h>
+#include <U2Core/FeaturesTableObject.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>
 #include <U2Core/BaseDocumentFormats.h>
@@ -80,13 +80,7 @@ void Peak2GeneTask::cleanup() {
         foreach(QString file, tmpDir.entryList()){
             tmpDir.remove(file);
         }
-        if(!tmpDir.rmdir(tmpDir.absolutePath())){
-            //stateInfo.setError(tr("Subdir for temporary files exists. Can not remove this directory."));
-            //return;
-        }
     }
-
-    
 }
 
 void Peak2GeneTask::prepare() {
@@ -99,9 +93,7 @@ void Peak2GeneTask::prepare() {
 
     treatTask = new SaveDocumentTask(treatDoc);
     addSubTask(treatTask);
-    
 }
-
 
 Document* Peak2GeneTask::createDoc( const QList<SharedAnnotationData>& annData, const QString& name){
     Document* doc = NULL;
@@ -116,15 +108,14 @@ Document* Peak2GeneTask::createDoc( const QList<SharedAnnotationData>& annData, 
     CHECK_OP(stateInfo, doc);
     doc->setDocumentOwnsDbiResources(false);
 
-    AnnotationTableObject *ato = new AnnotationTableObject(name);
-    foreach (const SharedAnnotationData &sad, annData) {
-        ato->addAnnotation(new Annotation(sad), QString());
+    FeaturesTableObject *ato = new FeaturesTableObject( name, doc->getDbiRef( ) );
+    foreach ( const SharedAnnotationData &sad, annData ) {
+        ato->addAnnotation( *sad );
     }
-    doc->addObject(ato);   
+    doc->addObject(ato);
 
     return doc;
 }
-
 
 QList<Task*> Peak2GeneTask::onSubTaskFinished(Task* subTask) {
     QList<Task*> result;
@@ -186,11 +177,11 @@ QList<SharedAnnotationData> Peak2GeneTask::getGenes(){
 
     foreach(GObject* ao, objects) {
         if (ao->getGObjectType() == GObjectTypes::ANNOTATION_TABLE){
-            AnnotationTableObject* aobj = qobject_cast<AnnotationTableObject*>(ao);
+            FeaturesTableObject *aobj = qobject_cast<FeaturesTableObject *>(ao);
             if (ao){
-                const QList<Annotation* >& annots = aobj->getAnnotations();
-                foreach(Annotation* a, annots){
-                    res.append(a->data());
+                const QList<__Annotation> annots = aobj->getAnnotations();
+                foreach ( const __Annotation &a, annots ) {
+                    res.append( SharedAnnotationData( new AnnotationData( a.getData( ) ) ) );
                 }
             }
         }
@@ -209,11 +200,11 @@ QList<SharedAnnotationData> Peak2GeneTask::getPeaks(){
 
     foreach(GObject* ao, objects) {
         if (ao->getGObjectType() == GObjectTypes::ANNOTATION_TABLE){
-            AnnotationTableObject* aobj = qobject_cast<AnnotationTableObject*>(ao);
+            FeaturesTableObject *aobj = qobject_cast<FeaturesTableObject *>(ao);
             if (ao){
-                const QList<Annotation* >& annots = aobj->getAnnotations();
-                foreach(Annotation* a, annots){
-                    res.append(a->data());
+                const QList<__Annotation> annots = aobj->getAnnotations( );
+                foreach ( const __Annotation &a, annots ) {
+                    res.append( SharedAnnotationData( new AnnotationData( a.getData( ) ) ) );
                 }
             }
         }

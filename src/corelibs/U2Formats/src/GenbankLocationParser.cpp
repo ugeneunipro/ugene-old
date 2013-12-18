@@ -21,10 +21,12 @@
 
 #include "GenbankLocationParser.h"
 
+#include <U2Core/AnnotationData.h>
+#include <U2Core/Log.h>
 #include <U2Core/TextUtils.h>
-#include <U2Core/AnnotationTableObject.h>
 
 namespace U2 {
+
 namespace Genbank {
 
 namespace {

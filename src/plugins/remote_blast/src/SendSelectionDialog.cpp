@@ -21,15 +21,16 @@
 
 #include <U2Core/AppContext.h>
 #include <U2Core/Settings.h>
-
 #include <U2Core/GObjectReference.h>
 #include <U2Core/GObjectRelationRoles.h>
+#include <U2Core/FeaturesTableObject.h>
+#include <U2Core/U2DbiRegistry.h>
+#include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <QtGui/QMessageBox>
 
 #include "SendSelectionDialog.h"
-
-
 
 namespace U2 {
 
@@ -123,7 +124,7 @@ void SendSelectionDialog::alignComboBoxes() {
 
 SendSelectionDialog::SendSelectionDialog(const U2SequenceObject* dnaso, bool _isAminoSeq, QWidget *p):QDialog(p), translateToAmino(false), isAminoSeq(_isAminoSeq), extImported(false) {
     CreateAnnotationModel ca_m;
-    ca_m.data->name = "misc_feature";
+    ca_m.data.name = "misc_feature";
     ca_m.hideAnnotationName = true;
     ca_m.hideLocation = true;
     ca_m.sequenceObjectRef = GObjectReference(dnaso);
@@ -189,9 +190,12 @@ const CreateAnnotationModel *SendSelectionDialog::getModel() const {
     return &(ca_c->getModel());
 }
 
-AnnotationTableObject* SendSelectionDialog::getAnnotationObject() const {
+FeaturesTableObject * SendSelectionDialog::getAnnotationObject() const {
     if(ca_c->isNewObject()) {
-        AnnotationTableObject* aobj = new AnnotationTableObject("Annotations");
+        U2OpStatusImpl os;
+        const U2DbiRef dbiRef = AppContext::getDbiRegistry( )->getSessionTmpDbiRef( os );
+        SAFE_POINT_OP( os, NULL );
+        FeaturesTableObject *aobj = new FeaturesTableObject( "Annotations", dbiRef );
         aobj->addObjectRelation(GObjectRelation(ca_c->getModel().sequenceObjectRef, GObjectRelationRole::SEQUENCE));
         return aobj;
     }
@@ -210,8 +214,6 @@ QString SendSelectionDialog::getUrl() const{
     return ca_c->getModel().newDocUrl;
 }
 
-
-
 void SendSelectionDialog::setupDataBaseList() {
     //cannot analyze amino sequences using nucleotide databases
     if( isAminoSeq ) {
@@ -221,7 +223,6 @@ void SendSelectionDialog::setupDataBaseList() {
 
 void SendSelectionDialog::sl_scriptSelected( int index ) {
     Q_UNUSED(index);
-    //this->adjustSize();
     QString descr = "";
     if(dataBase->currentText()=="cdd") {
         optionsTab->setTabEnabled(1,0);

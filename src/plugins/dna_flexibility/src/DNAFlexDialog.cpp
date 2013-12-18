@@ -46,7 +46,7 @@ DNAFlexDialog::DNAFlexDialog(ADVSequenceObjectContext* _ctx)
     // Creating and initializing the annotation model
     CreateAnnotationModel annotModel;
     annotModel.hideLocation = true;  // hides location field and does not check it in validate()
-    annotModel.data->name = "dna_flex";
+    annotModel.data.name = "dna_flex";
     annotModel.sequenceObjectRef = ctx->getSequenceObject();
     annotModel.sequenceLen = sequenceLength;
 
@@ -98,7 +98,7 @@ void DNAFlexDialog::accept()
         return;
     }
     const CreateAnnotationModel& annotModel = annotController->getModel();
-    QString annotName = annotModel.data->name;
+    QString annotName = annotModel.data.name;
     QString annotGroup = annotModel.groupName;
 
     // Creating the task

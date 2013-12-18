@@ -25,6 +25,7 @@
 #include <U2Core/SaveDocumentTask.h>
 #include <U2Core/QVariantUtils.h>
 #include <U2Core/FailTask.h>
+#include <U2Core/FeaturesTableObject.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/IOAdapterUtils.h>
 #include <U2Core/DocumentUtils.h>
@@ -108,11 +109,11 @@ Task * WriteAnnotationsWorker::tick() {
             objName = ANNOTATIONS_NAME_DEF_VAL;
             coreLog.details(tr("Annotations name not specified. Default value used: '%1'").arg(objName));
         }
-        AnnotationTableObject * att = NULL;
+        FeaturesTableObject *att = NULL;
         if (annotationsByUrl.contains(filepath)) {
             att = annotationsByUrl.value(filepath);
         } else {
-            att = new AnnotationTableObject(objName);
+            att = new FeaturesTableObject( objName, context->getDataStorage( )->getDbiRef( ) );
             annotationsByUrl.insert(filepath, att);
         }
 
@@ -126,7 +127,7 @@ Task * WriteAnnotationsWorker::tick() {
                 seqNameQual.value = seqName;
                 ad->qualifiers.append(seqNameQual);
             }
-            att->addAnnotation(new Annotation(ad));
+            att->addAnnotation( *ad );
         }
     } // while
 
@@ -139,7 +140,7 @@ Task * WriteAnnotationsWorker::tick() {
     QList<Task*> taskList;
     QSet<QString> excludeFileNames = DocumentUtils::getNewDocFileNameExcludesHint();
     foreach (QString filepath, annotationsByUrl.keys()) {
-        AnnotationTableObject *att = annotationsByUrl.value(filepath);
+        FeaturesTableObject *att = annotationsByUrl.value(filepath);
 
         if(formatId == CSV_FORMAT_ID) {
             createdAnnotationObjects << att; // will delete in destructor

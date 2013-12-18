@@ -22,17 +22,18 @@
 #ifndef _U2_DET_VIEW_H_
 #define _U2_DET_VIEW_H_
 
-#include "GSequenceLineViewAnnotated.h"
+#include <QtGui/QFont>
+#include <QtGui/QAction>
 
 #include <U2Core/U2Location.h>
 
-#include <QtGui/QFont>
-#include <QtGui/QAction>
+#include "GSequenceLineViewAnnotated.h"
 
 class QActionGroup;
 
 namespace U2 {
 
+class __Annotation;
 class DNATranslation;
 
 class U2VIEW_EXPORT DetView : public GSequenceLineViewAnnotated {
@@ -89,7 +90,7 @@ public:
 
     DetView* getDetView() const {return static_cast<DetView*>(view);}
 
-    virtual U2Region getAnnotationYRange(Annotation* a, int region, const AnnotationSettings* as) const;
+    virtual U2Region getAnnotationYRange( const __Annotation &a, int region, const AnnotationSettings* as) const;
     
     void updateSize();
 
@@ -113,7 +114,7 @@ private:
 
     int posToComplTransLine(int p) const;
     int posToDirectTransLine(int p) const;
-    bool deriveTranslationCharColor(qint64 pos, U2Strand strand, QList<Annotation*> annotationsInRange, QColor& result);
+    bool deriveTranslationCharColor(qint64 pos, U2Strand strand, const QList<__Annotation> &annotationsInRange, QColor& result);
 
     int numLines;
     int rulerLine;
@@ -123,7 +124,6 @@ private:
     int firstComplTransLine;
 };
 
-
-}//namespace;
+} // namespace U2
 
 #endif

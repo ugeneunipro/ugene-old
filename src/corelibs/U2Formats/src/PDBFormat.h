@@ -30,7 +30,7 @@
 namespace U2 {
 
 class IOAdapter;
-class AnnotationTableObject;
+class FeaturesTableObject;
 class U2SequenceObject;
 class AtomData;
 typedef QSharedDataPointer<AtomData> SharedAtom;
@@ -62,7 +62,7 @@ private:
     
     void initUtilityMaps();
     void updateSecStructChainIndexes(BioStruct3D& biostruc);
-    void fillBioStruct3DAnnotationTable(AnnotationTableObject* ao, const BioStruct3D& bioStruct);
+    void fillBioStruct3DAnnotationTable(FeaturesTableObject *ao, const BioStruct3D& bioStruct);
 
 
     class PDBParser {

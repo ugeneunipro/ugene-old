@@ -26,17 +26,16 @@
 #include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/CreateAnnotationTask.h>
 #include <U2Core/DocumentModel.h>
+#include <U2Core/FeaturesTableObject.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/LoadDocumentTask.h>
 #include <U2Core/ProjectModel.h>
 #include <U2Core/U2SafePoints.h>
 
-
 namespace U2 {
 
-
 DNAFlexTask::DNAFlexTask(const HighFlexSettings& _settings,
-        AnnotationTableObject* _annotObject,
+        FeaturesTableObject *_annotObject,
         const QString& _annotName,
         const QString& _annotGroup,
         const DNASequence& _sequence)
@@ -74,7 +73,7 @@ QList<Task*> DNAFlexTask::onSubTaskFinished(Task* subTask)
         SAFE_POINT(findTask, "Failed to cast FindHighFlexRegions task!", QList<Task*>());
 
         QList<HighFlexResult> results = findTask->getResults();
-        QList<SharedAnnotationData> annots = getAnnotationsFromResults(results);
+        QList<AnnotationData> annots = getAnnotationsFromResults(results);
 
         if(!annots.isEmpty()) {
             resultsList.append(new CreateAnnotationsTask(annotObject, annotGroup, annots));
@@ -84,22 +83,21 @@ QList<Task*> DNAFlexTask::onSubTaskFinished(Task* subTask)
 }
 
 
-QList<SharedAnnotationData> DNAFlexTask::getAnnotationsFromResults(const QList<HighFlexResult>& results)
+QList<AnnotationData> DNAFlexTask::getAnnotationsFromResults(const QList<HighFlexResult>& results)
 {
-    QList<SharedAnnotationData> annotResults;
+    QList<AnnotationData> annotResults;
 
     foreach(const HighFlexResult& result, results) {
-        SharedAnnotationData annotData(new AnnotationData());
-        annotData->name = annotName;
-        annotData->location->regions << result.region;
+        AnnotationData annotData;
+        annotData.name = annotName;
+        annotData.location->regions << result.region;
 
-        annotData->qualifiers.append(
+        annotData.qualifiers.append(
             U2Qualifier("area_average_threshold", QString::number(result.averageThreshold, 'f', 3)));
-        annotData->qualifiers.append(
+        annotData.qualifiers.append(
             U2Qualifier("windows_number", QString::number(result.windowsNumber)));
-        annotData->qualifiers.append(
+        annotData.qualifiers.append(
             U2Qualifier("total_threshold", QString::number(result.totalThreshold, 'f', 3)));
-
 
         annotResults.append(annotData);
     }

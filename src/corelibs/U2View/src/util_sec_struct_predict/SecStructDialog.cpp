@@ -158,9 +158,9 @@ void SecStructDialog::sl_onTaskFinished(Task* t) {
     results = task->getResults();
 
     //shifting results according to startPos
-    for(QMutableListIterator<SharedAnnotationData> it_ad(results); it_ad.hasNext(); ) {
-        AnnotationData * ad = it_ad.next().data();
-        U2Region::shift(rangeStart, ad->location->regions);
+    for ( QMutableListIterator<AnnotationData> it_ad(results); it_ad.hasNext(); ) {
+        AnnotationData ad = it_ad.next();
+        U2Region::shift(rangeStart, ad.location->regions);
     }
     task = NULL;
     rangeStart = 0;
@@ -173,17 +173,15 @@ void SecStructDialog::showResults()
 {
     int rowIndex = 0;
     resultsTable->setRowCount(results.size());
-    foreach(SharedAnnotationData data, results) {
-        U2Region annRegion = data->getRegions().first();
+    foreach( const AnnotationData &data, results) {
+        U2Region annRegion = data.getRegions().first();
         QTableWidgetItem *locItem = new QTableWidgetItem( QString("[%1..%2]").arg(annRegion.startPos).
             arg(annRegion.endPos()) );
         resultsTable->setItem(rowIndex, 0, locItem);
-        QTableWidgetItem* nameItem = new QTableWidgetItem( QString(data->name));
+        QTableWidgetItem* nameItem = new QTableWidgetItem( QString(data.name));
         resultsTable->setItem(rowIndex, 1, nameItem);
         ++rowIndex;
     }
-    
-
 }
 
 #define SEC_STRUCT_ANNOTATION_GROUP_NAME "predicted"
@@ -194,7 +192,7 @@ void SecStructDialog::sl_onSaveAnnotations()
     m.sequenceObjectRef = ctx->getSequenceObject();
     m.hideLocation = true;
     m.hideAnnotationName = true;
-    m.data->name = SEC_STRUCT_ANNOTATION_GROUP_NAME;
+    m.data.name = SEC_STRUCT_ANNOTATION_GROUP_NAME;
     m.sequenceLen = ctx->getSequenceObject()->getSequenceLength();
     CreateAnnotationDialog d(this, m);
     int rc = d.exec();
@@ -205,9 +203,6 @@ void SecStructDialog::sl_onSaveAnnotations()
     AppContext::getTaskScheduler()->registerTopLevelTask(t);
 
     QDialog::accept();
-
-    
 }
-} // namespace
 
-
+} // namespace U2

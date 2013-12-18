@@ -33,7 +33,7 @@ namespace U2 {
 
 class U2CORE_EXPORT AnnotationData : public QSharedData {
 public:
-    AnnotationData() {location = new U2LocationData();}
+    AnnotationData() : caseAnnotation( false ) {location = new U2LocationData();}
 
     inline AnnotationData& operator= ( const AnnotationData & a );
 
@@ -62,6 +62,7 @@ public:
     QString                 name;
     U2Location              location;
     QVector<U2Qualifier>    qualifiers;
+    bool                    caseAnnotation;
 };
 
 typedef QSharedDataPointer<AnnotationData> SharedAnnotationData;

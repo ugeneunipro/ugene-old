@@ -21,7 +21,7 @@
 
 #include "ExternalToolRunTask.h"
 
-#include <U2Core/AnnotationTableObject.h>
+#include <U2Core/FeaturesTableObject.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>
 #include <U2Core/BaseDocumentFormats.h>
@@ -292,25 +292,24 @@ QString ExternalToolSupportUtils::createTmpDir(const QString& domain, U2OpStatus
     return createTmpDir(tmpDirPath, domain, os);
 }
 
-Document * ExternalToolSupportUtils::createAnnotationsDocument(const QString &filePath,
-                             const DocumentFormatId &format,
-                             const QList<SharedAnnotationData> &anns,
-                             U2OpStatus &os) {
+Document * ExternalToolSupportUtils::createAnnotationsDocument( const QString &filePath,
+    const DocumentFormatId &format,const QList<SharedAnnotationData> &anns, U2OpStatus &os )
+{
      Document *doc = NULL;
      { // create document
-         DocumentFormat *f = AppContext::getDocumentFormatRegistry()->getFormatById(format);
-         IOAdapterFactory *iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
-         doc = f->createNewLoadedDocument(iof, filePath, os);
-         CHECK_OP(os, NULL);
-         doc->setDocumentOwnsDbiResources(false);
+         DocumentFormat *f = AppContext::getDocumentFormatRegistry( )->getFormatById( format );
+         IOAdapterFactory *iof = AppContext::getIOAdapterRegistry( )->getIOAdapterFactoryById( BaseIOAdapters::LOCAL_FILE );
+         doc = f->createNewLoadedDocument( iof, filePath, os );
+         CHECK_OP( os, NULL );
+         doc->setDocumentOwnsDbiResources( false );
      }
 
      { // add annotations object
-         AnnotationTableObject *aobj = new AnnotationTableObject("anns");
-         foreach(const SharedAnnotationData& ann, anns) {
-             aobj->addAnnotation(new Annotation(ann));
+         FeaturesTableObject *aobj = new FeaturesTableObject( "anns", doc->getDbiRef( ) );
+         foreach ( const SharedAnnotationData &ann, anns ) {
+             aobj->addAnnotation( *ann.data( ) );
          }
-         doc->addObject(aobj);
+         doc->addObject( aobj );
      }
      return doc;
 }

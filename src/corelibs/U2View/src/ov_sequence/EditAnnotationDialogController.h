@@ -22,23 +22,25 @@
 #ifndef _U2_EDIT_ANNOTATION_DIALOG_CONTROLLER_H_
 #define _U2_EDIT_ANNOTATION_DIALOG_CONTROLLER_H_
 
+#include <U2Core/U2Location.h>
+#include <U2Core/U2Region.h>
+
 #include "ui/ui_EditAnnotationDialog.h"
 
-#include <U2Core/U2Region.h>
-#include <U2Core/AnnotationTableObject.h>
-
 namespace U2{
+
+class AnnotationData;
 
 class U2VIEW_EXPORT EditAnnotationDialogController : public QDialog, public Ui_EditAnnotationDialog {
     Q_OBJECT
 public:
-    EditAnnotationDialogController(Annotation* a, U2Region _seqRange, QWidget* p = NULL);
+    EditAnnotationDialogController( const AnnotationData &a, U2Region _seqRange, QWidget* p = NULL);
 
     virtual void accept ();
 
     QString getName() const {return currentName;}
     U2Location getLocation() const {return location;}
-    
+
 private slots:
     void sl_onTextChanged(const QString&);
     void sl_setPredefinedAnnotationName();
@@ -52,6 +54,6 @@ private:
     QString             currentName;
 };
 
-}//ns
+} // namespace U2
 
 #endif //_U2_EDIT_ANNOTATION_DIALOG_CONTROLLER_H_

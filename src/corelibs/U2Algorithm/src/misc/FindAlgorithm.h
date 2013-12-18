@@ -49,13 +49,12 @@ public:
         return region == o.region && err == o.err && strand == o.strand && translation == o.translation;
     }
 
-    SharedAnnotationData toAnnotation(const QString& name) const {
-        SharedAnnotationData data;
-        data = new AnnotationData;
-        data->name = name;
-        data->location->regions << region;
-        data->setStrand(strand);
-        data->qualifiers.append(U2Qualifier("mismatches", QString::number(err)));
+    AnnotationData toAnnotation(const QString& name) const {
+        AnnotationData data;
+        data.name = name;
+        data.location->regions << region;
+        data.setStrand(strand);
+        data.qualifiers.append(U2Qualifier("mismatches", QString::number(err)));
         return data;
     }
 
@@ -64,9 +63,9 @@ public:
     U2Strand    strand;
     int         err;
 
-    static QList<SharedAnnotationData> toTable(const QList<FindAlgorithmResult>& res, const QString& name)
+    static QList<AnnotationData> toTable(const QList<FindAlgorithmResult>& res, const QString& name)
     {
-        QList<SharedAnnotationData> list;
+        QList<AnnotationData> list;
         foreach (const FindAlgorithmResult& f, res) {
             list.append(f.toAnnotation(name));
         }

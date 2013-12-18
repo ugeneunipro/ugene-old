@@ -22,15 +22,15 @@
 #ifndef _U2_EXPORT_PROJECT_VIEW_ITEMS_H_
 #define _U2_EXPORT_PROJECT_VIEW_ITEMS_H_
 
-#include <U2Core/global.h>
-
 #include <QtGui/QAction>
 #include <QtGui/QMenu>
+
+#include <U2Core/global.h>
+#include <U2Core/Annotation.h>
 
 namespace U2 {
 
 class GUrl;
-class Annotation;
 
 class ExportProjectViewItemsContoller : public QObject {
     Q_OBJECT
@@ -50,7 +50,7 @@ private slots:
     void sl_exportSequenceQuality();
     // TODO : move the following function to some better place in order to use it
     // not only from Project View
-    void sl_exportAnnotations(QList<Annotation*> &annotations, const GUrl &dstUrl) const;
+    void sl_exportAnnotations( QList<__Annotation> &annotations, const GUrl &dstUrl) const;
 
 private:
     void addExportImportMenu(QMenu& m);
@@ -63,9 +63,8 @@ private:
     QAction* exportDNAChromatogramAction;
     QAction* exportAnnotations2CSV;
     QAction* exportSequenceQuality;
-
 };
 
-}//namespace
+} // namespace U2
 
 #endif

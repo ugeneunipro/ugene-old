@@ -265,15 +265,15 @@ void BlastPlusSupportContext::buildMenu(GObjectView* view, QMenu* m) {
 
     QString name;
     if(!dnaView->getAnnotationsSelection()->getSelection().isEmpty()) {
-        name = dnaView->getAnnotationsSelection()->getSelection().first().annotation->getAnnotationName();
+        name = dnaView->getAnnotationsSelection()->getSelection().first().annotation.getName();
     }
 
     foreach(const AnnotationSelectionData &sel, dnaView->getAnnotationsSelection()->getSelection()) {
-        if(name != sel.annotation->getAnnotationName()) {
+        if(name != sel.annotation.getName()) {
             name = "";
         }
         
-        QString id = sel.annotation->findFirstQualifierValue("id"); 
+        QString id = sel.annotation.findFirstQualifierValue("id");
         if(!id.isEmpty()) {
             isShowId = true;
             selectedId = id;

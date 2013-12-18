@@ -43,7 +43,7 @@ VariationTrackMessageTranslator::VariationTrackMessageTranslator( const QVariant
     SharedDbiDataHandler dbId = source.value<SharedDbiDataHandler>( );
     QScopedPointer<VariantTrackObject> variantTrackObject( StorageUtils::getVariantTrackObject(
         context->getDataStorage( ), dbId ) );
-    SAFE_POINT( NULL != variantTrackObject.data( ), "Couldn't obtain variant object", );
+    SAFE_POINT( !variantTrackObject.isNull( ), "Couldn't obtain variant object", );
     variantTrackRef = variantTrackObject->getEntityRef( );
 }
 

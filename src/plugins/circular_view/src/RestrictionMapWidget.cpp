@@ -21,9 +21,11 @@
 
 #include <QtGui/QVBoxLayout>
 
+#include <U2Core/Annotation.h>
+#include <U2Core/AnnotationGroup.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/Settings.h>
-#include <U2Core/AnnotationTableObject.h>
+#include <U2Core/FeaturesTableObject.h>
 #include <U2Core/AutoAnnotationsSupport.h>
 #include <U2Core/AnnotationSelection.h>
 #include <U2View/ADVSequenceObjectContext.h>
@@ -40,7 +42,7 @@ namespace U2 {
 //////////////////////////////////////////////////////////////////////////
 ///EnzymeItem
 
-EnzymeItem::EnzymeItem( const QString& location, Annotation* a ) 
+EnzymeItem::EnzymeItem( const QString& location, const __Annotation &a )
 : QTreeWidgetItem(QStringList(location), ENZYME_ITEM_TYPE), annotation(a)
 {
 
@@ -55,18 +57,18 @@ EnzymeFolderItem::EnzymeFolderItem( const QString& name )
 {
     setText(0, QString("%1 : %2 %3").arg(name).arg(0).arg("sites"));
 }
-void EnzymeFolderItem::addEnzymeItem( Annotation* enzAnn )
+void EnzymeFolderItem::addEnzymeItem( const __Annotation &enzAnn )
 {
-    QString location = Genbank::LocationParser::buildLocationString(enzAnn->data());
+    const AnnotationData data = enzAnn.getData( );
+    QString location = Genbank::LocationParser::buildLocationString( &data );
     addChild(new EnzymeItem(location, enzAnn) );
-    setIcon(0, QIcon(":circular_view/images/folder.png"));    
+    setIcon(0, QIcon(":circular_view/images/folder.png"));
     int count = childCount();
     QString site = count == 1 ? RestrctionMapWidget::tr("site") : RestrctionMapWidget::tr("sites");
     setText(0, QString("%1 : %2 %3").arg(getName()).arg(count).arg(site));
-
 }
 
-void EnzymeFolderItem::removeEnzymeItem( Annotation* enzAnn )
+void EnzymeFolderItem::removeEnzymeItem( const __Annotation &enzAnn )
 {
     int count = childCount();
     for (int i = 0; i < count; ++i) {
@@ -76,17 +78,12 @@ void EnzymeFolderItem::removeEnzymeItem( Annotation* enzAnn )
             QString site = --count == 1 ? RestrctionMapWidget::tr("site") : RestrctionMapWidget::tr("sites");
             setText(0, QString("%1 : %2 %3").arg(getName()).arg(count).arg(site));
             if (count == 0) {
-                setIcon(0, QIcon(":circular_view/images/empty_folder.png"));  
+                setIcon(0, QIcon(":circular_view/images/empty_folder.png"));
             }
             break;
         }
     }
-
-
-    
 }
-
-
 
 //////////////////////////////////////////////////////////////////////////
 ///RestrictionMapWidget
@@ -134,20 +131,19 @@ void RestrctionMapWidget::updateTreeWidget()
 
 void RestrctionMapWidget::registerAnnotationObjects()
 {
-    QSet<AnnotationTableObject*> aObjs = ctx->getAnnotationObjects(true);
-    foreach (AnnotationTableObject* ao, aObjs) {
-        connect(ao, SIGNAL(si_onAnnotationsAdded(const QList<Annotation*>&)), SLOT(sl_onAnnotationsAdded(const QList<Annotation*>&)));
-        connect(ao, SIGNAL(si_onAnnotationsRemoved(const QList<Annotation*>&)), SLOT(sl_onAnnotationsRemoved(const QList<Annotation*>&)));
-        connect(ao, SIGNAL(si_onAnnotationsInGroupRemoved(const QList<Annotation*>&, AnnotationGroup*)), SLOT(sl_onAnnotationsInGroupRemoved(const QList<Annotation*>&, AnnotationGroup*)));
-        connect(ao, SIGNAL(si_onGroupCreated(AnnotationGroup* )), SLOT(sl_onAnnotationsGroupCreated(AnnotationGroup*)));
-        
-    }   
+    QSet<FeaturesTableObject *> aObjs = ctx->getAnnotationObjects(true);
+    foreach ( const FeaturesTableObject *ao, aObjs ) {
+        connect(ao, SIGNAL(si_onAnnotationsAdded(const QList<__Annotation> &)), SLOT(sl_onAnnotationsAdded(const QList<__Annotation> &)));
+        connect(ao, SIGNAL(si_onAnnotationsRemoved(const QList<__Annotation> &)), SLOT(sl_onAnnotationsRemoved(const QList<__Annotation> &)));
+        connect(ao, SIGNAL(si_onAnnotationsInGroupRemoved(const QList<__Annotation> &, const __AnnotationGroup )),
+            SLOT(sl_onAnnotationsInGroupRemoved(const QList<__Annotation> &, const __AnnotationGroup &)));
+        connect(ao, SIGNAL(si_onGroupCreated( const __AnnotationGroup & )), SLOT(sl_onAnnotationsGroupCreated( const __AnnotationGroup &)));
+    }
 }
 
-void RestrctionMapWidget::sl_onAnnotationsAdded( const QList<Annotation*>& anns )
-{
-    foreach (Annotation* a, anns) {
-        QString aName = a->getAnnotationName();
+void RestrctionMapWidget::sl_onAnnotationsAdded( const QList<__Annotation> &anns ) {
+    foreach ( const __Annotation &a, anns ) {
+        QString aName = a.getName();
         EnzymeFolderItem* folderItem = findEnzymeFolderByName(aName);
         if (folderItem) {
                folderItem->addEnzymeItem(a);
@@ -157,18 +153,15 @@ void RestrctionMapWidget::sl_onAnnotationsAdded( const QList<Annotation*>& anns 
     //TODO: enable "intelligent" sorting by reimplementing custom AbstractModel
     // Take into account number of items in each enzymes folder
     treeWidget->sortItems(0, Qt::AscendingOrder);
-
 }
 
-void RestrctionMapWidget::sl_onAnnotationsRemoved( const QList<Annotation*>& anns )
-{
-    foreach (Annotation* a, anns) {
-        EnzymeFolderItem* folderItem = findEnzymeFolderByName(a->getAnnotationName());
+void RestrctionMapWidget::sl_onAnnotationsRemoved( const QList<__Annotation> &anns ) {
+    foreach ( const __Annotation &a, anns) {
+        EnzymeFolderItem* folderItem = findEnzymeFolderByName(a.getName());
         if (folderItem) {
             folderItem->removeEnzymeItem(a);
-        }        
-    }   
-
+        }
+    }
 }
 
 EnzymeFolderItem* RestrctionMapWidget::findEnzymeFolderByName( const QString& enzymeName )
@@ -200,40 +193,39 @@ void RestrctionMapWidget::sl_itemSelectionChanged()
 
 }
 
-void RestrctionMapWidget::sl_onAnnotationsGroupCreated( AnnotationGroup* g )
+void RestrctionMapWidget::sl_onAnnotationsGroupCreated( const __AnnotationGroup &g )
 {
-    if (g->getGroupName() == ANNOTATION_GROUP_ENZYME) {
+    if (g.getName() == ANNOTATION_GROUP_ENZYME) {
         updateTreeWidget();
     }
 }
 
 void RestrctionMapWidget::initTreeWidget()
 {
-    QSet<AnnotationTableObject*> aObjs = ctx->getAnnotationObjects(true);
-    foreach (AnnotationTableObject* obj, aObjs) {
-        QList<Annotation*> anns = obj->getAnnotations();
-        foreach(Annotation* a, anns){
-            QString aName = a->getAnnotationName();
-            EnzymeFolderItem* folderItem = findEnzymeFolderByName(aName);
+    QSet<FeaturesTableObject *> aObjs = ctx->getAnnotationObjects(true);
+    foreach (FeaturesTableObject *obj, aObjs) {
+        QList<__Annotation> anns = obj->getAnnotations();
+        foreach ( const __Annotation &a, anns ) {
+            QString aName = a.getName();
+            EnzymeFolderItem *folderItem = findEnzymeFolderByName(aName);
             if (folderItem) {
                 folderItem->addEnzymeItem(a);
-            }        
+            }
         }
     }
     treeWidget->sortItems(0, Qt::AscendingOrder);
 }
 
-void RestrctionMapWidget::sl_onAnnotationsInGroupRemoved( const QList<Annotation*>& anns, AnnotationGroup* group )
+void RestrctionMapWidget::sl_onAnnotationsInGroupRemoved( const QList<__Annotation> &anns, const __AnnotationGroup &group )
 {
-    if (group->getGroupName() == ANNOTATION_GROUP_ENZYME) {
-        foreach (Annotation* a, anns) {
-            EnzymeFolderItem* folderItem = findEnzymeFolderByName(a->getAnnotationName());
+    if (group.getName() == ANNOTATION_GROUP_ENZYME) {
+        foreach ( const __Annotation &a, anns ) {
+            EnzymeFolderItem* folderItem = findEnzymeFolderByName( a.getName());
             if (folderItem) {
                 folderItem->removeEnzymeItem(a);
-            }        
+            }
         }
     }
-    group->getGObject()->releaseLocker();
 }
 
 

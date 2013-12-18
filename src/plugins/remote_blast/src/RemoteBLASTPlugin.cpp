@@ -128,7 +128,7 @@ void RemoteBLASTViewContext::sl_showDialog() {
             cfg.aminoT = aminoT;
             cfg.complT = complT;
 
-            AnnotationTableObject* aobject = dlg.getAnnotationObject();
+            FeaturesTableObject *aobject = dlg.getAnnotationObject();
             if (aobject == NULL){
                 return;
             }

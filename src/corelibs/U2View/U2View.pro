@@ -29,7 +29,7 @@ HEADERS += src/Init.h \
            src/ov_assembly/ExportReadsDialog.h \
            src/ov_assembly/ExportConsensusDialog.h \
            src/ov_assembly/ExportConsensusTask.h \
-		   src/ov_assembly/ExportConsensusVariationsDialog.h \
+           src/ov_assembly/ExportConsensusVariationsDialog.h \
            src/ov_assembly/ExportConsensusVariationsTask.h \
            src/ov_assembly/ZoomableAssemblyOverview.h \
            src/ov_msa/AlignmentLogo.h \
@@ -52,22 +52,22 @@ HEADERS += src/Init.h \
            src/ov_msa/MSAEditorUndoFramework.h \
            src/ov_msa/SaveSelectedSequenceFromMSADialogController.h \
            src/ov_msa/ColorSchemaDialogController.h \
-		   src/ov_msa/ColorSchemaSettingsController.h \
+           src/ov_msa/ColorSchemaSettingsController.h \
            src/ov_msa/Common/RefSeqCommonWidget.h \
-		   src/ov_msa/SeqStatistics/SeqStatisticsWidget.h \
-		   src/ov_msa/SeqStatistics/SeqStatisticsWidgetFactory.h \   
-		   src/ov_msa/Display/MSADisplayTab.h \
-		   src/ov_msa/Display/MSADisplayTabFactory.h \
-		   src/ov_msa/General/MSAGeneralTab.h \
-		   src/ov_msa/General/MSAGeneralTabFactory.h \
-		   src/ov_msa/Highlighting/MSAHighlightingTab.h \
-		   src/ov_msa/Highlighting/MSAHighlightingTabFactory.h \
-                   src/ov_msa/TreeOptions/TreeOptionsWidget.h \
-                   src/ov_msa/TreeOptions/TreeOptionsWidgetFactory.h \
-                   src/ov_msa/PhyTrees/MSAEditorTreeViewer.h \
-                   src/ov_msa/PhyTrees/MSAEditorMultiTreeViewer.h \
-                   src/ov_msa/PhyTrees/MSAEditorTreeManager.h \
-		   src/ov_msa/SequenceSelectorWidgetController.h \	  
+           src/ov_msa/SeqStatistics/SeqStatisticsWidget.h \
+           src/ov_msa/SeqStatistics/SeqStatisticsWidgetFactory.h \
+           src/ov_msa/Display/MSADisplayTab.h \
+           src/ov_msa/Display/MSADisplayTabFactory.h \
+           src/ov_msa/General/MSAGeneralTab.h \
+           src/ov_msa/General/MSAGeneralTabFactory.h \
+           src/ov_msa/Highlighting/MSAHighlightingTab.h \
+           src/ov_msa/Highlighting/MSAHighlightingTabFactory.h \
+           src/ov_msa/TreeOptions/TreeOptionsWidget.h \
+           src/ov_msa/TreeOptions/TreeOptionsWidgetFactory.h \
+           src/ov_msa/PhyTrees/MSAEditorTreeViewer.h \
+           src/ov_msa/PhyTrees/MSAEditorMultiTreeViewer.h \
+           src/ov_msa/PhyTrees/MSAEditorTreeManager.h \
+           src/ov_msa/SequenceSelectorWidgetController.h \
            src/ov_msa/MsaEditorUserModStepController.h \
            src/ov_msa/ExportHighlightedDialogController.h \
            src/ov_phyltree/CreateBranchesTask.h \
@@ -98,15 +98,13 @@ HEADERS += src/Init.h \
            src/ov_sequence/AnnotatedDNAViewFactory.h \
            src/ov_sequence/AnnotatedDNAViewState.h \
            src/ov_sequence/AnnotatedDNAViewTasks.h \
-           src/ov_sequence/AnnotationsTreeModel.h \
            src/ov_sequence/AnnotationsTreeView.h \
-           src/ov_sequence/AnnotationsTreeViewL.h \
            src/ov_sequence/AutoAnnotationUtils.h \
            src/ov_sequence/CreateRulerDialogController.h \
            src/ov_sequence/DetView.h \
            src/ov_sequence/EditAnnotationDialogController.h \
-           src/ov_sequence/GraphLabelModel.h \ 
-           src/ov_sequence/GraphLabelsSelectDialog.h \ 
+           src/ov_sequence/GraphLabelModel.h \
+           src/ov_sequence/GraphLabelsSelectDialog.h \
            src/ov_sequence/GraphMenu.h \
            src/ov_sequence/GraphSettingsDialog.h \
            src/ov_sequence/GSequenceGraphView.h \
@@ -152,9 +150,9 @@ HEADERS += src/Init.h \
            src/util_sec_struct_predict/SecStructPredictUtils.h \
            src/util_smith_waterman/SmithWatermanDialog.h \
            src/util_smith_waterman/SmithWatermanDialogImpl.h \
-           src/util_smith_waterman/SubstMatrixDialog.h \ 
+           src/util_smith_waterman/SubstMatrixDialog.h \
            src/LicenseDialog.h \
-     	   src/ov_msa/PairAlign/PairAlignFactory.h \
+           src/ov_msa/PairAlign/PairAlignFactory.h \
            src/ov_msa/PairAlign/PairAlign.h \
            src/util_msa_align/PairwiseAlignmentGUIExtension.h \
            src/ov_sequence/Das/DasWidgetFactory.h \
@@ -169,7 +167,7 @@ FORMS += src/ov_assembly/ui/ExportConsensusDialog.ui \
          src/ov_msa/ui/CreateMSAScheme.ui \
          src/ov_msa/ui/TreeOptionsWidget.ui \
          src/ov_msa/ui/MSADistancesColumnSettingsWidget.ui \
-		 src/ov_msa/ui/SequenceSelectorWidget.ui \
+         src/ov_msa/ui/SequenceSelectorWidget.ui \
          src/ov_msa/ui/ExportHighlightedDialog.ui \
          src/ov_sequence/annot_highlight/ui/AnnotHighlightSettings.ui \
          src/ov_sequence/find_pattern/ui/FindPatternForm.ui \
@@ -189,11 +187,11 @@ FORMS += src/ov_assembly/ui/ExportConsensusDialog.ui \
          src/util_sec_struct_predict/ui/SecStructDialog.ui \
          src/util_smith_waterman/ui/SmithWatermanDialogBase.ui \
          src/util_smith_waterman/ui/SubstMatrixDialogBase.ui \
-    src/ui/LicenseDialog.ui \ 
-    src/ov_msa/ui/PairwiseAlignmentOptionsPanelWidget.ui \
-    src/ov_msa/ui/GeneralTabOptionsPanelWidget.ui \
-    src/ov_sequence/Das/ui/DasOptionsPanelWidget.ui \
-    src/ov_sequence/Das/ui/DasBlastSettingsWidget.ui
+         src/ui/LicenseDialog.ui \
+         src/ov_msa/ui/PairwiseAlignmentOptionsPanelWidget.ui \
+         src/ov_msa/ui/GeneralTabOptionsPanelWidget.ui \
+         src/ov_sequence/Das/ui/DasOptionsPanelWidget.ui \
+         src/ov_sequence/Das/ui/DasBlastSettingsWidget.ui
 SOURCES += src/Init.cpp \
            src/UndoRedoFramework.cpp \
            src/WebWindow.cpp \
@@ -221,7 +219,7 @@ SOURCES += src/Init.cpp \
            src/ov_assembly/CoveredRegionsManager.cpp \
            src/ov_assembly/ExportConsensusDialog.cpp \
            src/ov_assembly/ExportConsensusTask.cpp \
-		   src/ov_assembly/ExportConsensusVariationsDialog.cpp \
+           src/ov_assembly/ExportConsensusVariationsDialog.cpp \
            src/ov_assembly/ExportConsensusVariationsTask.cpp \
            src/ov_assembly/ExportReadsDialog.cpp \
            src/ov_assembly/ZoomableAssemblyOverview.cpp \
@@ -244,25 +242,25 @@ SOURCES += src/Init.cpp \
            src/ov_msa/MSAEditorTasks.cpp \
            src/ov_msa/MSAEditorUndoFramework.cpp \
            src/ov_msa/SaveSelectedSequenceFromMSADialogController.cpp \
-           src/ov_msa/ColorSchemaDialogController.cpp \           
+           src/ov_msa/ColorSchemaDialogController.cpp \
            src/ov_msa/ColorSchemaSettingsController.cpp \
            src/ov_msa/Common/RefSeqCommonWidget.cpp \
-		   src/ov_msa/SeqStatistics/SeqStatisticsWidget.cpp \
-		   src/ov_msa/SeqStatistics/SeqStatisticsWidgetFactory.cpp \    
-		   src/ov_msa/Display/MSADisplayTab.cpp \
-		   src/ov_msa/Display/MSADisplayTabFactory.cpp \
-		   src/ov_msa/General/MSAGeneralTab.cpp \
-		   src/ov_msa/General/MSAGeneralTabFactory.cpp \
-		   src/ov_msa/Highlighting/MSAHighlightingTab.cpp \
-		   src/ov_msa/Highlighting/MSAHighlightingTabFactory.cpp \
-                   src/ov_msa/TreeOptions/TreeOptionsWidget.cpp \
-                   src/ov_msa/TreeOptions/TreeOptionsWidgetFactory.cpp \
-                   src/ov_msa/PhyTrees/MSAEditorTreeViewer.cpp \
-                   src/ov_msa/PhyTrees/MSAEditorMultiTreeViewer.cpp \
-                   src/ov_msa/PhyTrees/MSAEditorTreeManager.cpp \
-		   src/ov_msa/SequenceSelectorWidgetController.cpp \	
+           src/ov_msa/SeqStatistics/SeqStatisticsWidget.cpp \
+           src/ov_msa/SeqStatistics/SeqStatisticsWidgetFactory.cpp \
+           src/ov_msa/Display/MSADisplayTab.cpp \
+           src/ov_msa/Display/MSADisplayTabFactory.cpp \
+           src/ov_msa/General/MSAGeneralTab.cpp \
+           src/ov_msa/General/MSAGeneralTabFactory.cpp \
+           src/ov_msa/Highlighting/MSAHighlightingTab.cpp \
+           src/ov_msa/Highlighting/MSAHighlightingTabFactory.cpp \
+           src/ov_msa/TreeOptions/TreeOptionsWidget.cpp \
+           src/ov_msa/TreeOptions/TreeOptionsWidgetFactory.cpp \
+           src/ov_msa/PhyTrees/MSAEditorTreeViewer.cpp \
+           src/ov_msa/PhyTrees/MSAEditorMultiTreeViewer.cpp \
+           src/ov_msa/PhyTrees/MSAEditorTreeManager.cpp \
+           src/ov_msa/SequenceSelectorWidgetController.cpp \
            src/ov_msa/MsaEditorUserModStepController.cpp \
-           src/ov_msa/ExportHighlightedDialogController.cpp \		   
+           src/ov_msa/ExportHighlightedDialogController.cpp \
            src/ov_phyltree/CreateCircularBranchesTask.cpp \
            src/ov_phyltree/CreateRectangularBranchesTask.cpp \
            src/ov_phyltree/CreateUnrootedBranchesTask.cpp \
@@ -289,15 +287,13 @@ SOURCES += src/Init.cpp \
            src/ov_sequence/AnnotatedDNAViewFactory.cpp \
            src/ov_sequence/AnnotatedDNAViewState.cpp \
            src/ov_sequence/AnnotatedDNAViewTasks.cpp \
-           src/ov_sequence/AnnotationsTreeModel.cpp \
            src/ov_sequence/AnnotationsTreeView.cpp \
-           src/ov_sequence/AnnotationsTreeViewL.cpp \
            src/ov_sequence/AutoAnnotationUtils.cpp \
            src/ov_sequence/CreateRulerDialogController.cpp \
            src/ov_sequence/DetView.cpp \
            src/ov_sequence/EditAnnotationDialogController.cpp \
-           src/ov_sequence/GraphLabelModel.cpp \ 
-           src/ov_sequence/GraphLabelsSelectDialog.cpp \ 
+           src/ov_sequence/GraphLabelModel.cpp \
+           src/ov_sequence/GraphLabelsSelectDialog.cpp \
            src/ov_sequence/GraphMenu.cpp \
            src/ov_sequence/GraphSettingsDialog.cpp \
            src/ov_sequence/GSequenceGraphView.cpp \
@@ -340,34 +336,14 @@ SOURCES += src/Init.cpp \
            src/util_sec_struct_predict/SecStructDialog.cpp \
            src/util_sec_struct_predict/SecStructPredictUtils.cpp \
            src/util_smith_waterman/SmithWatermanDialog.cpp \
-           src/util_smith_waterman/SubstMatrixDialog.cpp \ 
-    src/LicenseDialog.cpp \ 
-    src/ov_msa/PairAlign/PairAlignFactory.cpp \
-    src/ov_msa/PairAlign/PairAlign.cpp \
-    src/util_msa_align/PairwiseAlignmentGUIExtension.cpp \
-    src/ov_sequence/Das/DasWidgetFactory.cpp \
-    src/ov_sequence/Das/DasOptionsPanelWidget.cpp
+           src/util_smith_waterman/SubstMatrixDialog.cpp \
+           src/LicenseDialog.cpp \
+           src/ov_msa/PairAlign/PairAlignFactory.cpp \
+           src/ov_msa/PairAlign/PairAlign.cpp \
+           src/util_msa_align/PairwiseAlignmentGUIExtension.cpp \
+           src/ov_sequence/Das/DasWidgetFactory.cpp \
+           src/ov_sequence/Das/DasOptionsPanelWidget.cpp
 TRANSLATIONS += transl/chinese.ts \
                 transl/czech.ts \
                 transl/english.ts \
                 transl/russian.ts
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -38,7 +38,6 @@
 #include <QtXml/QDomDocument>
 
 #include <U2Core/CreateAnnotationTask.h>
-//#include <U2Core/AddDocumentTask.h>
 
 namespace U2 {
 
@@ -109,6 +108,7 @@ void BlastAllSupportTask::prepare(){
     saveTemporaryDocumentTask->setSubtaskProgressWeight(5);
     addSubTask(saveTemporaryDocumentTask);
 }
+
 QList<Task*> BlastAllSupportTask::onSubTaskFinished(Task* subTask) {
     QList<Task*> res;
     if(subTask->hasError()) {
@@ -228,9 +228,9 @@ QList<Task*> BlastAllSupportTask::onSubTaskFinished(Task* subTask) {
                     AppContext::getProject()->addDocument(d);
                 }
 
-                for(QMutableListIterator<SharedAnnotationData> it_ad(result); it_ad.hasNext(); ) {
-                    AnnotationData * ad = it_ad.next().data();
-                    U2Region::shift(settings.offsInGlobalSeq, ad->location->regions);
+                for(QMutableListIterator<AnnotationData> it_ad(result); it_ad.hasNext(); ) {
+                    AnnotationData ad = it_ad.next();
+                    U2Region::shift(settings.offsInGlobalSeq, ad.location->regions);
                 }
 
                 res.append(new CreateAnnotationsTask(settings.aobj, settings.groupName, result));
@@ -259,7 +259,7 @@ Task::ReportResult BlastAllSupportTask::report(){
 BlastTaskSettings BlastAllSupportTask::getSettings() const {
     return settings;
 }
-QList<SharedAnnotationData> BlastAllSupportTask::getResultedAnnotations() const {
+QList<AnnotationData> BlastAllSupportTask::getResultedAnnotations() const {
     return result;
 }
 
@@ -279,7 +279,7 @@ void BlastAllSupportTask::parseTabularResult() {
     file.close();
 }
 void BlastAllSupportTask::parseTabularLine(const QByteArray &line){
-    SharedAnnotationData ad(new AnnotationData());
+    AnnotationData ad;
     bool isOk;
     int from = -1,to = -1,align_len = -1,gaps = -1, identities = -1, hitFrom = -1,hitTo = -1;
     //Fields: Query id (0), Subject id(1), % identity(2), alignment length(3), mismatches(4), gap openings(5), q. start(6), q. end(7), s. start(8), s. end(9), e-value(10), bit score(11)
@@ -300,9 +300,9 @@ void BlastAllSupportTask::parseTabularLine(const QByteArray &line){
     }
     if( from != -1 && to != -1 ) {
         if(from <= to){
-            ad->location->regions << U2Region( from-1, to - from + 1);
+            ad.location->regions << U2Region( from-1, to - from + 1);
         }else{
-            ad->location->regions << U2Region( to-1, from - to + 1);
+            ad.location->regions << U2Region( to-1, from - to + 1);
         }
     } else {
         stateInfo.setError("Can't evaluate location");
@@ -321,15 +321,15 @@ void BlastAllSupportTask::parseTabularLine(const QByteArray &line){
     }
     if( hitFrom != -1 && hitTo != -1 ) {
         if(hitFrom <= hitTo){
-            ad->setStrand(U2Strand::Direct);
-            ad->qualifiers.push_back(U2Qualifier( "source_frame","direct"));
-            ad->qualifiers.push_back(U2Qualifier("hit-from", QString::number(hitFrom)));
-            ad->qualifiers.push_back(U2Qualifier("hit-to", QString::number(hitTo)));
+            ad.setStrand(U2Strand::Direct);
+            ad.qualifiers.push_back(U2Qualifier( "source_frame","direct"));
+            ad.qualifiers.push_back(U2Qualifier("hit-from", QString::number(hitFrom)));
+            ad.qualifiers.push_back(U2Qualifier("hit-to", QString::number(hitTo)));
         }else{
-            ad->setStrand(U2Strand::Complementary);
-            ad->qualifiers.push_back(U2Qualifier( "source_frame","complement"));
-            ad->qualifiers.push_back(U2Qualifier("hit-to", QString::number(hitFrom)));
-            ad->qualifiers.push_back(U2Qualifier("hit-from", QString::number(hitTo)));
+            ad.setStrand(U2Strand::Complementary);
+            ad.qualifiers.push_back(U2Qualifier( "source_frame","complement"));
+            ad.qualifiers.push_back(U2Qualifier("hit-to", QString::number(hitFrom)));
+            ad.qualifiers.push_back(U2Qualifier("hit-from", QString::number(hitTo)));
         }
     } else {
         stateInfo.setError("Can't evaluate hit location");
@@ -341,7 +341,7 @@ void BlastAllSupportTask::parseTabularLine(const QByteArray &line){
     }
     double bitScore = elem.toDouble(&isOk);
     if (isOk){
-        ad->qualifiers.push_back(U2Qualifier("bit-score", QString::number(bitScore)));
+        ad.qualifiers.push_back(U2Qualifier("bit-score", QString::number(bitScore)));
     }
 
     align_len = elements.at(3).toInt(&isOk);
@@ -363,23 +363,24 @@ void BlastAllSupportTask::parseTabularLine(const QByteArray &line){
         if( gaps != -1 ) {
             float percent = (float)gaps / (float)align_len * 100;
             QString str = QString::number(gaps) + "/" + QString::number(align_len) + " (" + QString::number(percent,'g',4) + "%)";
-            ad->qualifiers.push_back(U2Qualifier( "gaps", str ));
+            ad.qualifiers.push_back(U2Qualifier( "gaps", str ));
         }
         if( identitiesPercent != -1 ) {
             //float percent = (float)identities / (float)align_len * 100;
             identities=(float)align_len*identitiesPercent/100.;
             QString str = QString::number(identities) + '/' + QString::number(align_len) + " (" + QString::number(identitiesPercent,'g',4) + "%)";
-            ad->qualifiers.push_back(U2Qualifier( "identities", str ));
+            ad.qualifiers.push_back(U2Qualifier( "identities", str ));
         }
     }
     if(!elements.at(10).isEmpty()) {
-        ad->qualifiers.push_back(U2Qualifier("E-value", elements.at(10)));
+        ad.qualifiers.push_back(U2Qualifier("E-value", elements.at(10)));
     }
 
-    ad->qualifiers.push_back(U2Qualifier("id",elements.at(1)));
-    ad->name = "blast result";
+    ad.qualifiers.push_back(U2Qualifier("id",elements.at(1)));
+    ad.name = "blast result";
     result.append(ad);
 }
+
 void BlastAllSupportTask::parseXMLResult() {
 
     QDomDocument xmlDoc;
@@ -425,23 +426,23 @@ void BlastAllSupportTask::parseXMLHit(const QDomNode &xml) {
 }
 
 void BlastAllSupportTask::parseXMLHsp(const QDomNode &xml,const QString &id, const QString &def, const QString &accession) {
-    SharedAnnotationData ad(new AnnotationData());
+    AnnotationData ad;
     bool isOk;
     int from = -1,to = -1,align_len = -1,gaps = -1,identities = -1;
 
     QDomElement elem = xml.lastChildElement("Hsp_bit-score");
     if(!elem.isNull()) {
-        ad->qualifiers.push_back(U2Qualifier("bit-score", elem.text()));
+        ad.qualifiers.push_back(U2Qualifier("bit-score", elem.text()));
     }
 
     elem = xml.lastChildElement("Hsp_score");
     if(!elem.isNull()) {
-        ad->qualifiers.push_back(U2Qualifier("score", elem.text()));
+        ad.qualifiers.push_back(U2Qualifier("score", elem.text()));
     }
 
     elem = xml.lastChildElement("Hsp_evalue");
     if(!elem.isNull()) {
-        ad->qualifiers.push_back(U2Qualifier("E-value", elem.text()));
+        ad.qualifiers.push_back(U2Qualifier("E-value", elem.text()));
     }
 
     elem = xml.lastChildElement("Hsp_query-from");
@@ -461,12 +462,12 @@ void BlastAllSupportTask::parseXMLHsp(const QDomNode &xml,const QString &id, con
 
     elem = xml.lastChildElement("Hsp_hit-from");
     if(!elem.isNull()) {
-        ad->qualifiers.push_back(U2Qualifier("hit-from", elem.text()));
+        ad.qualifiers.push_back(U2Qualifier("hit-from", elem.text()));
     }
 
     elem = xml.lastChildElement("Hsp_hit-to");
     if(!elem.isNull()) {
-        ad->qualifiers.push_back(U2Qualifier("hit-to", elem.text()));
+        ad.qualifiers.push_back(U2Qualifier("hit-to", elem.text()));
     }
 
     elem = xml.lastChildElement("Hsp_hit-frame");
@@ -476,8 +477,8 @@ void BlastAllSupportTask::parseXMLHsp(const QDomNode &xml,const QString &id, con
         return;
     }
     QString frame_txt = (frame < 0) ? "complement" : "direct";
-    ad->qualifiers.push_back(U2Qualifier( "source_frame", frame_txt ));
-    ad->setStrand(frame < 0 ? U2Strand::Complementary :  U2Strand::Direct);
+    ad.qualifiers.push_back(U2Qualifier( "source_frame", frame_txt ));
+    ad.setStrand(frame < 0 ? U2Strand::Complementary :  U2Strand::Direct);
 
     elem = xml.lastChildElement("Hsp_identity");
     identities = elem.text().toInt(&isOk);
@@ -504,9 +505,9 @@ void BlastAllSupportTask::parseXMLHsp(const QDomNode &xml,const QString &id, con
 
     if( from != -1 && to != -1 ) {
         if(from <= to){
-            ad->location->regions << U2Region( from-1, to - from + 1);
+            ad.location->regions << U2Region( from-1, to - from + 1);
         }else{
-            ad->location->regions << U2Region( to-1, from - to + 1);
+            ad.location->regions << U2Region( to-1, from - to + 1);
         }
     } else {
         stateInfo.setError("Can't evaluate location");
@@ -517,13 +518,13 @@ void BlastAllSupportTask::parseXMLHsp(const QDomNode &xml,const QString &id, con
         if( gaps != -1 ) {
             float percent = (float)gaps / (float)align_len * 100;
             QString str = QString::number(gaps) + "/" + QString::number(align_len) + " (" + QString::number(percent,'g',4) + "%)";
-            ad->qualifiers.push_back(U2Qualifier( "gaps", str ));
+            ad.qualifiers.push_back(U2Qualifier( "gaps", str ));
         }
         if( identities != -1 ) {
             float percent = (float)identities / (float)align_len * 100;
             QString str = QString::number(identities) + '/' + QString::number(align_len) + " (" + QString::number(percent,'g',4) + "%)";
-            ad->qualifiers.push_back(U2Qualifier( "identities", str ));
-            ad->qualifiers.push_back(U2Qualifier( "identity_percent", QString::number(percent) ));
+            ad.qualifiers.push_back(U2Qualifier( "identities", str ));
+            ad.qualifiers.push_back(U2Qualifier( "identity_percent", QString::number(percent) ));
         }
     }
 
@@ -571,15 +572,15 @@ void BlastAllSupportTask::parseXMLHsp(const QDomNode &xml,const QString &id, con
             }
         }
 
-        ad->qualifiers.append( U2Qualifier("subj_seq", hSeq) );
-        ad->qualifiers.append( U2Qualifier("cigar", cigar) );
+        ad.qualifiers.append( U2Qualifier("subj_seq", hSeq) );
+        ad.qualifiers.append( U2Qualifier("cigar", cigar) );
 
     }
 
-    ad->qualifiers.push_back(U2Qualifier("id",id));
-    ad->qualifiers.push_back(U2Qualifier("def",def));
-    ad->qualifiers.push_back(U2Qualifier("accession",accession));
-    ad->name = "blast result";
+    ad.qualifiers.push_back(U2Qualifier("id",id));
+    ad.qualifiers.push_back(U2Qualifier("def",def));
+    ad.qualifiers.push_back(U2Qualifier("accession",accession));
+    ad.name = "blast result";
     result.append(ad);
 }
 ///////////////////////////////////////
@@ -614,12 +615,12 @@ QList<Task*> BlastAllSupportMultiTask::onSubTaskFinished(Task *subTask){
     if(s != NULL){
         BlastTaskSettings settings=s->getSettings();
         assert(settings.aobj!=NULL);
-        QList<SharedAnnotationData> result=s->getResultedAnnotations();
+        QList<AnnotationData> result=s->getResultedAnnotations();
         if(result.length()>0){
             doc->addObject(settings.aobj);
-            for(QMutableListIterator<SharedAnnotationData> it_ad(result); it_ad.hasNext(); ) {
-                AnnotationData * ad = it_ad.next().data();
-                U2Region::shift(settings.offsInGlobalSeq, ad->location->regions);
+            for(QMutableListIterator<AnnotationData> it_ad(result); it_ad.hasNext(); ) {
+                AnnotationData ad = it_ad.next();
+                U2Region::shift(settings.offsInGlobalSeq, ad.location->regions);
             }
             res.append(new CreateAnnotationsTask(settings.aobj, settings.groupName, result));
         }

@@ -23,9 +23,10 @@
 
 #include <U2Core/DNATranslation.h>
 #include <U2Core/TextUtils.h>
-#include <U2Core/AnnotationTableObject.h>
+#include <U2Core/FeaturesTableObject.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/AppContext.h>
+#include <U2Core/DNASequenceObject.h>
 #include <U2Core/GObjectRelationRoles.h>
 #include <U2Core/U2AlphabetUtils.h>
 #include <U2Core/U2SafePoints.h>
@@ -168,39 +169,40 @@ static U2SequenceObject* storeSequenceUseGenbankHeader(const QVariantMap& hints,
 }
 
 //TODO move to AnnotationUtils ?
-static void shiftAnnotations(AnnotationTableObject* newAnnObj, QList<AnnotationTableObject*> annObjects, const U2Region& contigReg){
-    SharedAnnotationData ad(new AnnotationData());
-    ad->name = "contig";
-    ad->location->regions << contigReg;
-    newAnnObj->addAnnotation(new Annotation(ad));
+static void shiftAnnotations( FeaturesTableObject *newAnnObj,
+    QList<FeaturesTableObject *> annObjects, const U2Region &contigReg )
+{
+    AnnotationData ad;
+    ad.name = "contig";
+    ad.location->regions << contigReg;
+    newAnnObj->addAnnotation( ad );
 
-    foreach(AnnotationTableObject* annObj, annObjects) {
-        foreach(Annotation* a, annObj->getAnnotations()) {
-            Annotation* newAnnotation = new Annotation(a->data());
-            U2Location newLocation = newAnnotation->getLocation();
-            U2Region::shift(contigReg.startPos, newLocation->regions);
-            newAnnotation->setLocation(newLocation);
-            QStringList groupNames;
-            foreach(AnnotationGroup* g, a->getGroups()) {
-                groupNames << g->getGroupName();
-            }
-            newAnnObj->addAnnotation(newAnnotation, groupNames);
+    foreach ( FeaturesTableObject *annObj, annObjects ) {
+        foreach ( const __Annotation &a, annObj->getAnnotations( ) ) {
+            AnnotationData newAnnotation = a.getData( );
+            U2Location newLocation = newAnnotation.location;
+            U2Region::shift( contigReg.startPos, newLocation->regions );
+            newAnnotation.location = newLocation;
+
+            newAnnObj->addAnnotation( newAnnotation, a.getGroup( ).getName( ) );
         }
     }    
 }
 
-static void importGroupSequences2newObject(const QList<U2SequenceObject*>& seqObjects, AnnotationTableObject* newAnnObj, int mergeGap, U2SequenceImporter& seqImport, 
-                                           const QHash< U2SequenceObject*, QList<AnnotationTableObject*> >& annotationsBySequenceObjectName, U2OpStatus& os)
+static void importGroupSequences2newObject( const QList<U2SequenceObject *> &seqObjects,
+    FeaturesTableObject *newAnnObj, int mergeGap, U2SequenceImporter &seqImport,
+    const QHash<U2SequenceObject *, QList<FeaturesTableObject *> >&annotationsBySequenceObjectName,
+    U2OpStatus &os )
 {
     qint64 currentSeqLen = 0;
 
-    foreach(U2SequenceObject* seqObj, seqObjects) {
-        if (currentSeqLen > 0) {
-            seqImport.addDefaultSymbolsBlock(mergeGap, os);
-            CHECK_OP(os, );
-            currentSeqLen+=mergeGap;
+    foreach( U2SequenceObject *seqObj, seqObjects ) {
+        if ( currentSeqLen > 0 ) {
+            seqImport.addDefaultSymbolsBlock( mergeGap, os );
+            CHECK_OP( os, );
+            currentSeqLen += mergeGap;
         }
-        U2Region contigReg(currentSeqLen, seqObj->getSequenceLength());
+        U2Region contigReg( currentSeqLen, seqObj->getSequenceLength( ) );
         currentSeqLen+=seqObj->getSequenceLength();
         seqImport.addSequenceBlock(seqObj->getSequenceRef(), U2_REGION_MAX, os);
         CHECK_OP(os, );
@@ -210,41 +212,42 @@ static void importGroupSequences2newObject(const QList<U2SequenceObject*>& seqOb
     }
 }
 
-void processOldObjects(const QList<GObject* > & objs, 
-                       QHash< U2SequenceObject*, QList<AnnotationTableObject*> >& annotationsBySequenceObjectName, 
-                       QMap<DNAAlphabetType, QList<U2SequenceObject*> >& mapObjects2Alphabets, const QString& url, const QString& fileName, const QVariantMap& hints, U2OpStatus& os)
+void processOldObjects( const QList<GObject *> &objs,
+    QHash<U2SequenceObject *, QList<FeaturesTableObject *> > &annotationsBySequenceObjectName,
+    QMap<DNAAlphabetType, QList<U2SequenceObject *> > &mapObjects2Alphabets, const QString &url,
+    const QString &fileName, const QVariantMap &hints, U2OpStatus &os )
 {
-    U2SequenceObject* seqObj = NULL;        
+    U2SequenceObject* seqObj = NULL;
     int currentObject = -1;
 
-    foreach(GObject* obj, objs) {
+    foreach ( GObject *obj, objs ) {
         currentObject++;
-        AnnotationTableObject* annObj = qobject_cast<AnnotationTableObject*>(obj);
-        if (annObj == NULL) {
-            seqObj = qobject_cast<U2SequenceObject*>(obj);
-            CHECK_EXT(seqObj != NULL, os.setError("No sequence and annotations are found"), );
-            const DNAAlphabet* seqAl = seqObj->getAlphabet(); 
-            mapObjects2Alphabets[seqAl->getType()].append(seqObj);
+        FeaturesTableObject* annObj = qobject_cast<FeaturesTableObject *>( obj );
+        if ( NULL == annObj ) {
+            seqObj = qobject_cast<U2SequenceObject *>( obj );
+            CHECK_EXT( NULL != seqObj, os.setError( "No sequence and annotations are found" ), );
+            const DNAAlphabet *seqAl = seqObj->getAlphabet( ); 
+            mapObjects2Alphabets[seqAl->getType( )].append( seqObj );
 
             continue;
         }
         // GENBANK without sequence but header have sequence length - made sequence with 'N' characters
-        if(currentObject == 0 && isGenbankHeaderUsed(hints, url)){ 
-            U2SequenceObject*  seqObj = storeSequenceUseGenbankHeader(hints, url, fileName, os);
-            GObjectReference sequenceRef(GObjectReference(url, "", GObjectTypes::SEQUENCE));
-            sequenceRef.objName = seqObj->getGObjectName();
-            annObj->addObjectRelation(GObjectRelation(sequenceRef, GObjectRelationRole::SEQUENCE));
+        if ( 0 == currentObject && isGenbankHeaderUsed( hints, url ) ) {
+            U2SequenceObject *seqObj = storeSequenceUseGenbankHeader( hints, url, fileName, os );
+            GObjectReference sequenceRef( GObjectReference( url, "", GObjectTypes::SEQUENCE ) );
+            sequenceRef.objName = seqObj->getGObjectName( );
+            annObj->addObjectRelation( GObjectRelation( sequenceRef, GObjectRelationRole::SEQUENCE ) );
 
-            const DNAAlphabet* seqAl = seqObj->getAlphabet();
-            mapObjects2Alphabets[seqAl->getType()].append(seqObj);
+            const DNAAlphabet *seqAl = seqObj->getAlphabet( );
+            mapObjects2Alphabets[seqAl->getType( )].append( seqObj );
         }
 
-        QList<GObjectRelation> seqRelations = annObj->findRelatedObjectsByRole(GObjectRelationRole::SEQUENCE);
-        foreach(const GObjectRelation& rel, seqRelations) {
-            const QString& relDocUrl = rel.getDocURL();
-            if (relDocUrl == url) {
-                QList<AnnotationTableObject*>& annObjs = annotationsBySequenceObjectName[seqObj];
-                if (!annObjs.contains(annObj)) {
+        QList<GObjectRelation> seqRelations = annObj->findRelatedObjectsByRole( GObjectRelationRole::SEQUENCE );
+        foreach ( const GObjectRelation &rel, seqRelations ) {
+            const QString &relDocUrl = rel.getDocURL( );
+            if ( relDocUrl == url ) {
+                QList<FeaturesTableObject *> &annObjs = annotationsBySequenceObjectName[seqObj];
+                if ( !annObjs.contains( annObj ) ) {
                     annObjs << annObj;
                 }
             }
@@ -252,64 +255,73 @@ void processOldObjects(const QList<GObject* > & objs,
     }
 }
 
-static QList<GObject*> createNewObjects(const QHash< U2SequenceObject*, QList<AnnotationTableObject*> >& annotationsBySequenceObjectName, 
-                                        const QMap<DNAAlphabetType, QList<U2SequenceObject*> >& mapObjects2Alpabets,
-                                        const U2DbiRef& ref, const GUrl& newUrl, QVariantMap& hints, int mergeGap, U2OpStatus& os)
+static QList<GObject *> createNewObjects(
+    const QHash< U2SequenceObject *, QList<FeaturesTableObject *> > &annotationsBySequenceObjectName,
+    const QMap<DNAAlphabetType, QList<U2SequenceObject *> > &mapObjects2Alpabets, const U2DbiRef &ref,
+    const GUrl &newUrl, QVariantMap &hints, int mergeGap, U2OpStatus &os )
 {
-    QList<GObject*> objects;
+    QList<GObject *> objects;
     // Creating sequence object for group sequence with the same alphabets. Amount of different alphabets = amount of sequence objects
     bool init = false;
-    for(QMap<DNAAlphabetType, QList<U2SequenceObject*> >::const_iterator it = mapObjects2Alpabets.begin(); it != mapObjects2Alpabets.end(); ++it){
+    for ( QMap<DNAAlphabetType, QList<U2SequenceObject *> >::const_iterator it
+        = mapObjects2Alpabets.begin( ); it != mapObjects2Alpabets.end( ); ++it )
+    {
         U2SequenceImporter seqImport;
-        QString seqName = newUrl.fileName() ;
-        if(mapObjects2Alpabets.size() > 1){
-            seqName += getSuffixByAlphabet(it.key());
-            if(!init){
-                hints[ProjectLoaderHint_MergeMode_DifferentAlphabets] = QString(QObject::tr("Loaded sequences have different alphabets. "
+        QString seqName = newUrl.fileName( );
+        if ( mapObjects2Alpabets.size() > 1 ) {
+            seqName += getSuffixByAlphabet( it.key( ) );
+            if ( !init ) {
+                hints[ProjectLoaderHint_MergeMode_DifferentAlphabets] = QString( QObject::tr( "Loaded sequences have different alphabets. "
                     "That's why several sequence objects are created, each for specified alphabet. All sequences at one object have the same alphabet "
-                    "and sequences from different objects have different alphabets."));
+                    "and sequences from different objects have different alphabets." ) );
                 init = true;
             }
         }
-        seqImport.startSequence(ref, seqName, false, os);
-        CHECK_OP(os, QList<GObject*>());
+        seqImport.startSequence( ref, seqName, false, os );
+        CHECK_OP( os, QList<GObject*>( ) );
 
-        AnnotationTableObject* newAnnObj = new AnnotationTableObject(seqName + " annotations");
-        QList<U2SequenceObject*> seqObjects = it.value();
-        importGroupSequences2newObject(seqObjects, newAnnObj, mergeGap, seqImport, annotationsBySequenceObjectName, os);
+        FeaturesTableObject *newAnnObj = new FeaturesTableObject( seqName + " annotations", ref );
+        QList<U2SequenceObject *> seqObjects = it.value( );
+        importGroupSequences2newObject( seqObjects, newAnnObj, mergeGap, seqImport,
+            annotationsBySequenceObjectName, os );
 
-        U2Sequence u2seq = seqImport.finalizeSequence(os);
-        CHECK_OP(os, QList<GObject*>());
+        U2Sequence u2seq = seqImport.finalizeSequence( os );
+        CHECK_OP( os, QList<GObject *>( ) );
 
-        if (!newUrl.getURLString().isEmpty()) {
-            GObjectReference r(newUrl.getURLString(), u2seq.visualName, GObjectTypes::SEQUENCE);
-            newAnnObj->addObjectRelation(GObjectRelation(r, GObjectRelationRole::SEQUENCE));
+        if ( !newUrl.getURLString( ).isEmpty( ) ) {
+            GObjectReference r( newUrl.getURLString( ), u2seq.visualName, GObjectTypes::SEQUENCE );
+            newAnnObj->addObjectRelation( GObjectRelation( r, GObjectRelationRole::SEQUENCE ) );
         }
 
-        U2SequenceObject* seqObj = new U2SequenceObject(u2seq.visualName, U2EntityRef(ref, u2seq.id));    
+        U2SequenceObject *seqObj = new U2SequenceObject( u2seq.visualName,
+            U2EntityRef( ref, u2seq.id ) );
         objects << seqObj << newAnnObj ;
     }
     return objects;
 }
 
-QList<GObject*> U1SequenceUtils::mergeSequences(const QList<Document*> docs, const U2DbiRef& ref, const QString& newStringUrl, QVariantMap& hints, U2OpStatus& os) {
+QList<GObject *> U1SequenceUtils::mergeSequences( const QList<Document *> docs, const U2DbiRef &ref,
+    const QString &newStringUrl, QVariantMap &hints, U2OpStatus &os)
+{
     // prepare  annotation object -> sequence object mapping first
     // and precompute resulted sequence size and alphabet
-    int mergeGap = hints[DocumentReadingMode_SequenceMergeGapSize].toInt();
-    assert(mergeGap >= 0);
-    QHash< U2SequenceObject*, QList<AnnotationTableObject*> > annotationsBySequenceObjectName;
-    GUrl newUrl(newStringUrl, GUrl_File);
+    int mergeGap = hints[DocumentReadingMode_SequenceMergeGapSize].toInt( );
+    SAFE_POINT( mergeGap >= 0, "Invalid gap value", QList<GObject *>( ) );
+    QHash<U2SequenceObject *, QList<FeaturesTableObject *> > annotationsBySequenceObjectName;
+    GUrl newUrl( newStringUrl, GUrl_File );
 
-    QMap<DNAAlphabetType, QList<U2SequenceObject*> > mapObjects2Alpabets;
+    QMap<DNAAlphabetType, QList<U2SequenceObject *> > mapObjects2Alpabets;
 
-    foreach(const Document* doc, docs){        
-        QList<GObject* > objs = doc->getObjects();
-        reorderingObjects(objs);        
-        processOldObjects(objs, annotationsBySequenceObjectName, mapObjects2Alpabets, doc->getURLString(), doc->getURL().fileName(), hints, os);        
-        CHECK_OP(os, QList<GObject*>());
+    foreach ( const Document *doc, docs ) {
+        QList<GObject *> objs = doc->getObjects( );
+        reorderingObjects( objs );
+        processOldObjects( objs, annotationsBySequenceObjectName, mapObjects2Alpabets,
+            doc->getURLString( ), doc->getURL( ).fileName( ), hints, os );
+        CHECK_OP( os, QList<GObject *>( ) );
     }
-    CHECK_OP(os, QList<GObject*>());
-    return createNewObjects(annotationsBySequenceObjectName, mapObjects2Alpabets, ref, newUrl, hints, mergeGap, os);            
+    CHECK_OP( os, QList<GObject *>( ) );
+    return createNewObjects( annotationsBySequenceObjectName, mapObjects2Alpabets, ref, newUrl,
+        hints, mergeGap, os);
 }
 
 QList<GObject*> U1SequenceUtils::mergeSequences(Document* doc, const U2DbiRef& ref, QVariantMap& hints, U2OpStatus& os){

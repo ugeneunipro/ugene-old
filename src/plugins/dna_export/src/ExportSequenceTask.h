@@ -22,6 +22,8 @@
 #ifndef _U2_EXPORT_SEQUENCE_PLUGIN_TASKS_H_
 #define _U2_EXPORT_SEQUENCE_PLUGIN_TASKS_H_
 
+#include <U2Core/AnnotationData.h>
+
 #include "ExportTasks.h"
 
 namespace U2 {

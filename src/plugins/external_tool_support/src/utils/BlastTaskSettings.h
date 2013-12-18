@@ -23,9 +23,10 @@
 #define _U2_BLAST_TASK_SETTINGS_H
 
 #include <U2Core/DNASequenceObject.h>
-#include <U2Core/AnnotationTableObject.h>
 
 namespace U2 {
+
+class FeaturesTableObject;
 
 /*Options for BlastAll
 blastall 2.2.21 not included arguments:
@@ -132,7 +133,7 @@ public:
     const DNAAlphabet*    alphabet;
     //settings for annotations
     bool                    needCreateAnnotations;
-    AnnotationTableObject*  aobj;
+    FeaturesTableObject *   aobj;
     QString                 groupName;
     int                     offsInGlobalSeq;
     TriState                directStrand;

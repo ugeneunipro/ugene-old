@@ -42,7 +42,7 @@ public:
 private:
     CreateAnnotationWidgetController* ac;
     U2SequenceObject*  seqObj;
-    QList<AnnotationTableObject*> relatedAnnotations;
+    QList<FeaturesTableObject *> relatedAnnotations;
     QSet<QString>  enzymesSelection;
     void setupAnnotationsWidget();
     DNAFragment dnaFragment;

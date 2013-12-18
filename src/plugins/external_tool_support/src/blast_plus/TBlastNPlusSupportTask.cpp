@@ -34,20 +34,16 @@
 #include <QtXml/QDomDocument>
 
 #include <U2Core/CreateAnnotationTask.h>
-//#include <U2Core/AddDocumentTask.h>
 
 namespace U2 {
 
 ExternalToolRunTask* TBlastNPlusSupportTask::createBlastPlusTask(){
 
     QStringList arguments;
-    //arguments <<"-p"<< settings.programName; //taskname
-//    if(!settings.filter.isEmpty()){
-//        arguments <<"-F"<<settings.filter;
-//    }
+
     arguments <<"-db"<< settings.databaseNameAndPath;
     arguments <<"-evalue"<< QString::number(settings.expectValue);
-//    arguments <<"-task"<< (settings.megablast ? "megablast" : "blastn");
+
     if(settings.wordSize <= 0){
         arguments <<"-word_size"<< "3";
     }else{
@@ -113,6 +109,7 @@ ExternalToolRunTask* TBlastNPlusSupportTask::createBlastPlusTask(){
     ExternalToolRunTask* runTask = new ExternalToolRunTask(ET_TBLASTN, arguments, logParser, workingDirectory);
     setListenerForTask(runTask);
     return runTask;
-    
 }
-}//namespace
+
+} // namespace U2
+

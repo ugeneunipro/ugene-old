@@ -20,7 +20,7 @@
  */
 
 #include <U2Core/AnnotationData.h>
-#include <U2Core/AnnotationTableObject.h>
+#include <U2Core/FeaturesTableObject.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/DocumentModel.h>
@@ -175,10 +175,9 @@ void RemoteDBFetcherWorker::sl_taskFinished() {
         QList<SharedAnnotationData> sads;
         if (!annotations.isEmpty())
         {
-            AnnotationTableObject *ato = qobject_cast<AnnotationTableObject*>(annotations.first());
-            foreach(Annotation *a, ato->getAnnotations())
-            {
-                sads << a->data();
+            FeaturesTableObject *ato = qobject_cast<FeaturesTableObject *>(annotations.first());
+            foreach ( const __Annotation &a, ato->getAnnotations( ) ) {
+                sads << SharedAnnotationData( new AnnotationData( a.getData( ) ) );
             }
         }
 
@@ -395,10 +394,9 @@ void FetchSequenceByIdFromAnnotationWorker::sl_taskFinished() {
         QList<SharedAnnotationData> sads;
         if (!annotations.isEmpty())
         {
-            AnnotationTableObject *ato = qobject_cast<AnnotationTableObject*>(annotations.first());
-            foreach(Annotation *a, ato->getAnnotations())
-            {
-                sads << a->data();
+            FeaturesTableObject *ato = qobject_cast<FeaturesTableObject *>( annotations.first( ) );
+            foreach ( const __Annotation &a, ato->getAnnotations( ) ) {
+                sads << SharedAnnotationData( new AnnotationData( a.getData( ) ) );
             }
         }
 
@@ -434,12 +432,6 @@ void FetchSequenceByIdFromAnnotationFactory::init()
     outputMap[ BaseSlots::DNA_SEQUENCE_SLOT() ] = BaseTypes::DNA_SEQUENCE_TYPE();
     outputMap[ BaseSlots::ANNOTATION_TABLE_SLOT() ] = BaseTypes::ANNOTATION_TABLE_TYPE();
 
-
-    //DataTypePtr inputType( new MapDataType(Descriptor(TYPE), inputMap) );
-    //DataTypeRegistry  *dr = WorkflowEnv::getDataTypeRegistry();
-    //assert(dr);
-    //dr->registerEntry(inputType);
-
     Descriptor desc(ACTOR_ID,
                     FetchSequenceByIdFromAnnotationWorker::tr("Fetch Sequences by ID from Annotation"),
                     FetchSequenceByIdFromAnnotationWorker::tr("Parses annotations to find any IDs and fetches corresponding sequences."));
@@ -457,10 +449,6 @@ void FetchSequenceByIdFromAnnotationFactory::init()
                            FetchSequenceByIdFromAnnotationWorker::tr("The downloaded sequences"));
         pds << new PortDescriptor(outDesc, DataTypePtr(new MapDataType("output.seqs", outputMap)),  false,  true);
     }
-
-    //RemoteDBRegistry &registry = RemoteDBRegistry::getRemoteDBRegistry();
-    //QStringList dataBases = registry.getDBs();
-    //QString defaultDB = dataBases.first();
 
     QList<Attribute*> attrs;
     {
@@ -506,12 +494,8 @@ void FetchSequenceByIdFromAnnotationFactory::init()
 
     DomainFactory *localDomain = WorkflowEnv::getDomainRegistry()->getById(LocalDomainFactory::ID);
     localDomain->registerEntry(new FetchSequenceByIdFromAnnotationFactory());
-
-
 }
 
-
-
-
 }   // namespace U2::LocalWorkflow
+
 }

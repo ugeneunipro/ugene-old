@@ -88,7 +88,7 @@ private:
 
     QList<DASSource> getFeatureSources();
     DASSource getSequenceSource();
-    void mergeFeatures(const QMap<QString, QList<SharedAnnotationData> >& newAnnotations);
+    void mergeFeatures(const QMap<QString, QList<AnnotationData> >& newAnnotations);
     void addAnnotations();
     U2Region getRegion();
     bool regionIsOk() const;
@@ -110,7 +110,7 @@ private:
 
     Task* getIdsTask; 
 
-    QMap<QString, QList<SharedAnnotationData> > annotationData;
+    QMap<QString, QList<AnnotationData> > annotationData;
 
     const static QString BLAST_SEARCH;
     const static QString ALGORITHM_SETTINGS;

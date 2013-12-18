@@ -26,7 +26,7 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/AppContext.h>
-#include <U2Core/AnnotationTableObject.h>
+#include <U2Core/FeaturesTableObject.h>
 #include <U2Core/AppSettings.h>
 
 #include "U2VariationUtils.h"
@@ -61,21 +61,20 @@ U2VariantTrack U2VariationUtils::createVariantTrack( const U2DbiRef &dbiRef, con
     return track;
 }
 
-Annotation* U2VariationUtils::variantToAnnotation( const U2Variant& var ){
-    SharedAnnotationData d( new AnnotationData());
-    Annotation* a = new Annotation(d);
+AnnotationData U2VariationUtils::variantToAnnotation( const U2Variant &var ) {
+    AnnotationData d;
 
     U2Region varRegion;
     varRegion.startPos = var.startPos;
-    varRegion.length = var.endPos == 0 ? 1 : (var.endPos - var.startPos);
+    varRegion.length = var.endPos == 0 ? 1 : ( var.endPos - var.startPos );
 
-    a->addLocationRegion(varRegion);
-    a->addQualifier("public_id", var.publicId);
-    a->addQualifier("ref_data", var.refData);
-    a->addQualifier("obs_data", var.obsData);
-    a->setAnnotationName("variation");
+    d.location->regions << varRegion;
+    d.qualifiers << U2Qualifier( "public_id", var.publicId );
+    d.qualifiers << U2Qualifier( "ref_data", var.refData );
+    d.qualifiers << U2Qualifier( "obs_data", var.obsData );
+    d.name = "variation";
 
-    return a;
+    return d;
 }
 
 U2Feature U2VariationUtils::variantToFeature( const U2Variant& var ){

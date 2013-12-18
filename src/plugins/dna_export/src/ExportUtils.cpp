@@ -19,7 +19,6 @@
  * MA 02110-1301, USA.
  */
 
-#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/SaveDocumentTask.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/IOAdapter.h>

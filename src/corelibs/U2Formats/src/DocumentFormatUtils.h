@@ -26,7 +26,7 @@
 
 #include <QtCore/QStringList>
 
-namespace U2  {
+namespace U2 {
 
 class Document;
 class DocumentFormat;
@@ -39,7 +39,7 @@ class U2Sequence;
 class GUrl;
 class AnnotationSettings;
 class U2OpStatus;
-class AnnotationTableObject;
+class FeaturesTableObject;
 class U2DbiRef;
 
 class U2FORMATS_EXPORT DocumentFormatUtils : public QObject {
@@ -58,24 +58,19 @@ public:
 
     static void updateFormatHints(QList<GObject*>& objects, QVariantMap& fs);
 
-
-
     static U2SequenceObject* addSequenceObject(const U2DbiRef& dbiRef, const QString& name, const QByteArray& seq, bool circular, const QVariantMap& hints, U2OpStatus& os);
 
     /** Doc URL here is used to set up sequence<->annotation relations */
-    static AnnotationTableObject* addAnnotationsForMergedU2Sequence(const GUrl& docUrl, const QStringList& contigs, 
-        const U2Sequence& mergedSequence, const QVector<U2Region>& mergedMapping, U2OpStatus& os);
+    static FeaturesTableObject * addAnnotationsForMergedU2Sequence( const GUrl& docUrl,
+        const U2DbiRef& dbiRef, const QStringList& contigs, const U2Sequence& mergedSequence,
+        const QVector<U2Region>& mergedMapping, U2OpStatus& os );
 
-
-    
     static U2SequenceObject* addSequenceObjectDeprecated(const U2DbiRef& dbiRef, const QString& seqObjName, 
         QList<GObject*>& objects, DNASequence& seq, U2OpStatus& os);
 
     /** if no docURL provided -> relations are not set*/
     static U2SequenceObject* addMergedSequenceObjectDeprecated(const U2DbiRef& dbiRef, QList<GObject*>& objects, const GUrl& docUrl, const QStringList& contigs, 
         QByteArray& mergedSequence, const QVector<U2Region>& mergedMapping, U2OpStatus& os);
-
-
 };
 
 }//namespace

@@ -19,21 +19,19 @@
  * MA 02110-1301, USA.
  */
 
-
-#include "FindPatternTask.h"
-
 #include <U2Core/AppContext.h>
 #include <U2Core/CreateAnnotationTask.h>
 #include <U2Core/Log.h>
 #include <U2Core/U2SafePoints.h>
 
+#include "FindPatternTask.h"
 
 namespace U2 {
 
 const float FindPatternTask::MAX_OVERLAP_K = 0.5F;
 
 FindPatternTask::FindPatternTask(const FindAlgorithmTaskSettings& _settings,
-    AnnotationTableObject* _annotObject,
+    FeaturesTableObject* _annotObject,
     const QString& _annotName,
     const QString& _annotGroup,
     bool _removeOverlaps)
@@ -73,7 +71,7 @@ QList<Task*> FindPatternTask::onSubTaskFinished(Task* subTask)
             removeOverlappedResults(results);
         }
 
-        QList<SharedAnnotationData> annots = FindAlgorithmResult::toTable(results, annotName);
+        QList<AnnotationData> annots = FindAlgorithmResult::toTable(results, annotName);
 
         if (!annots.isEmpty()) {
             resultsList.append(new CreateAnnotationsTask(annotObject, annotGroup, annots));
@@ -120,7 +118,6 @@ void FindPatternTask::removeOverlappedResults(QList<FindAlgorithmResult>& result
             else {
                 break;
             }
-
         }
     }
 

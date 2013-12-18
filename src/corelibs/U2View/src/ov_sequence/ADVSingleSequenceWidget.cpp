@@ -32,7 +32,7 @@
 #include <U2Core/DocumentModel.h>
 
 #include <U2Core/DNASequenceObject.h>
-#include <U2Core/AnnotationTableObject.h>
+#include <U2Core/FeaturesTableObject.h>
 #include <U2Core/GObjectRelationRoles.h>
 #include <U2Core/DNASequenceSelection.h>
 #include <U2Core/AnnotationSelection.h>
@@ -597,11 +597,11 @@ void ADVSingleSequenceWidget::sl_onSelectRange() {
 QVector<U2Region> ADVSingleSequenceWidget::getSelectedAnnotationRegions(int max) {
     ADVSequenceObjectContext* seqCtx = getSequenceContext();
     const QList<AnnotationSelectionData> selection = seqCtx->getAnnotatedDNAView()->getAnnotationsSelection()->getSelection();
-    const QSet<AnnotationTableObject*> myAnns = seqCtx->getAnnotationObjects(true);
+    const QSet<FeaturesTableObject *> myAnns = seqCtx->getAnnotationObjects(true);
 
     QVector<U2Region> res;
     foreach(const AnnotationSelectionData& sd, selection) {
-        AnnotationTableObject* aObj = sd.annotation->getGObject();
+        FeaturesTableObject *aObj = sd.annotation.getGObject();
         if (myAnns.contains(aObj)) {
             res << sd.getSelectedRegions();
             if (max > 0 && res.size() >= max) {
@@ -805,8 +805,8 @@ void ADVSingleSequenceWidget::sl_createCustomRuler() {
     U2SequenceObject * seqObj = getSequenceObject();
     int annOffset = INT_MAX;
     foreach(const AnnotationSelectionData & selectionData, annSelection->getSelection()) {
-        Annotation * ann = selectionData.annotation;
-        AnnotationTableObject * annObj = ann->getGObject();
+        const __Annotation &ann = selectionData.annotation;
+        FeaturesTableObject *annObj = ann.getGObject();
         if( !annObj->hasObjectRelation(seqObj, GObjectRelationRole::SEQUENCE) ) {
             continue;
         }

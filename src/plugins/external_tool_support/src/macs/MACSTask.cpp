@@ -19,7 +19,7 @@
  * MA 02110-1301, USA.
  */
 
-#include <U2Core/AnnotationTableObject.h>
+#include <U2Core/FeaturesTableObject.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>
 #include <U2Core/BaseDocumentFormats.h>
@@ -88,13 +88,7 @@ void MACSTask::cleanup() {
         foreach(QString file, tmpDir.entryList()){
             tmpDir.remove(file);
         }
-        if(!tmpDir.rmdir(tmpDir.absolutePath())){
-            //stateInfo.setError(tr("Subdir for temporary files exists. Can not remove this directory."));
-            //return;
-        }
     }
-
-    
 }
 
 void MACSTask::prepare() {
@@ -124,7 +118,6 @@ void MACSTask::prepare() {
     }
 }
 
-
 Document* MACSTask::createDoc( const QList<SharedAnnotationData>& annData, const QString& name){
     Document* doc = NULL;
 
@@ -138,11 +131,11 @@ Document* MACSTask::createDoc( const QList<SharedAnnotationData>& annData, const
     CHECK_OP(stateInfo, doc);
     doc->setDocumentOwnsDbiResources(false);
 
-    AnnotationTableObject *ato = new AnnotationTableObject(name);
+    FeaturesTableObject *ato = new FeaturesTableObject( name, doc->getDbiRef( ) );
     foreach (const SharedAnnotationData &sad, annData) {
-        ato->addAnnotation(new Annotation(sad), QString());
+        ato->addAnnotation( *sad, QString());
     }
-    doc->addObject(ato);   
+    doc->addObject(ato);
 
     return doc;
 }
@@ -161,15 +154,6 @@ QList<Task*> MACSTask::onSubTaskFinished(Task* subTask) {
         activeSubtasks--;
         if (canStartETTask()) {
             QStringList args = settings.getArguments(treatDoc->getURLString(), conAnn.isEmpty() ? "" : conDoc->getURLString());
-
-            //remove wiggle dir
-//             QString wiggleDirPath = getSettings().outDir + "/" + getSettings().fileNames+"_MACS_wiggle";
-//             QDir wiggleDir(wiggleDirPath);
-//             if(wiggleDir.exists()){
-//                 if(!wiggleDir.rmdir(wiggleDir.absolutePath())){
-//                     //
-//                 }
-//             }
 
             logParser = new MACSLogParser();
             etTask = new ExternalToolRunTask(ET_MACS, args, logParser, getSettings().outDir);
@@ -211,7 +195,7 @@ const MACSSettings& MACSTask::getSettings(){
     return settings;
 }
 
-QList<SharedAnnotationData> MACSTask::getPeaks(){
+QList<SharedAnnotationData> MACSTask::getPeaks( ) {
     QList<SharedAnnotationData> res;
 
     if (peaksDoc == NULL){
@@ -222,11 +206,11 @@ QList<SharedAnnotationData> MACSTask::getPeaks(){
 
     foreach(GObject* ao, objects) {
         if (ao->getGObjectType() == GObjectTypes::ANNOTATION_TABLE){
-            AnnotationTableObject* aobj = qobject_cast<AnnotationTableObject*>(ao);
-            if (ao){
-                const QList<Annotation* >& annots = aobj->getAnnotations();
-                foreach(Annotation* a, annots){
-                    res.append(a->data());
+            FeaturesTableObject *aobj = qobject_cast<FeaturesTableObject *>(ao);
+            if (ao) {
+                const QList<__Annotation> annots = aobj->getAnnotations();
+                foreach ( const __Annotation &a, annots ) {
+                    res.append( SharedAnnotationData( new AnnotationData( a.getData( ) ) ) );
                 }
             }
         }
@@ -245,11 +229,11 @@ QList<SharedAnnotationData> MACSTask::getPeakSummits(){
 
     foreach(GObject* ao, objects) {
         if (ao->getGObjectType() == GObjectTypes::ANNOTATION_TABLE){
-            AnnotationTableObject* aobj = qobject_cast<AnnotationTableObject*>(ao);
-            if (ao){
-                const QList<Annotation* >& annots = aobj->getAnnotations();
-                foreach(Annotation* a, annots){
-                    res.append(a->data());
+            FeaturesTableObject *aobj = qobject_cast<FeaturesTableObject *>(ao);
+            if ( ao ) {
+                const QList<__Annotation> &annots = aobj->getAnnotations();
+                foreach ( const __Annotation &a, annots ) {
+                    res.append( SharedAnnotationData( new AnnotationData( a.getData( ) ) ) );
                 }
             }
         }

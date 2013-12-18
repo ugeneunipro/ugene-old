@@ -21,6 +21,8 @@
 
 #include "LoadDASDocumentTests.h"
 
+#include <U2Core/DNASequenceObject.h>
+#include <U2Core/FeaturesTableObject.h>
 #include <U2Core/LoadDASDocumentTask.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/DocumentModel.h>
@@ -106,9 +108,9 @@ Task::ReportResult GTest_LoadDASDocumentTask::report(){
 
             QList<GObject*> annlist = doc->findGObjectByType(GObjectTypes::ANNOTATION_TABLE);
             
-            QList<AnnotationTableObject*> expectedAnnotations;
+            QList<FeaturesTableObject *> expectedAnnotations;
             foreach(GObject* at, annlist){
-                AnnotationTableObject* aobj = qobject_cast<AnnotationTableObject *>(at);
+                FeaturesTableObject *aobj = qobject_cast<FeaturesTableObject *>(at);
                 if (aobj){
                     expectedAnnotations.append(aobj);
                 }
@@ -134,9 +136,9 @@ Task::ReportResult GTest_LoadDASDocumentTask::report(){
 
             QList<GObject*> annlist_act = actDoc->findGObjectByType(GObjectTypes::ANNOTATION_TABLE);
 
-            QList<AnnotationTableObject*> actualAnnotations;
+            QList<FeaturesTableObject *> actualAnnotations;
             foreach(GObject* at, annlist_act){
-                AnnotationTableObject* aobj = qobject_cast<AnnotationTableObject *>(at);
+                FeaturesTableObject *aobj = qobject_cast<FeaturesTableObject *>(at);
                 if (aobj){
                     actualAnnotations.append(aobj);
                 }
@@ -150,17 +152,17 @@ Task::ReportResult GTest_LoadDASDocumentTask::report(){
             }
 
             //compare annotations
-            foreach(AnnotationTableObject* expObj, expectedAnnotations){
-                const QList<Annotation*>& expAnnoations = expObj->getAnnotations();
-                foreach(Annotation* expA, expAnnoations){
+            foreach ( const FeaturesTableObject *expObj, expectedAnnotations ) {
+                const QList<__Annotation> &expAnnoations = expObj->getAnnotations( );
+                foreach ( const __Annotation &expA, expAnnoations ) {
                     bool found = false;
-                    foreach(AnnotationTableObject* actObj, actualAnnotations){
+                    foreach ( const FeaturesTableObject *actObj, actualAnnotations ) {
                         if (found){
                             break;
                         }
-                        const QList<Annotation*>& actAnnoations = actObj->getAnnotations();
-                        foreach(Annotation* actA, actAnnoations){
-                            if (actA->getAnnotationName() == expA->getAnnotationName()){
+                        const QList<__Annotation> actAnnoations = actObj->getAnnotations( );
+                        foreach ( const __Annotation &actA, actAnnoations ) {
+                            if (actA.getName( ) == expA.getName( ) ){
                                 found = true;
                                 break;
                             }
@@ -169,7 +171,7 @@ Task::ReportResult GTest_LoadDASDocumentTask::report(){
                     if (!found){
                         stateInfo.setError(GTest::tr("Expected annotation %1 has not been found in the actual annotations. "
                             "If the test fails, please, load the sequence %2 with annotation from DAS, manually compare the annotations and update the test. "
-                            "There might be updates in the DAS databases.").arg(expA->getAnnotationName()).arg(expectedSequence->getSequenceName()));
+                            "There might be updates in the DAS databases.").arg(expA.getName()).arg(expectedSequence->getSequenceName()));
                         return ReportResult_Finished;
                     }
                 }
@@ -177,7 +179,7 @@ Task::ReportResult GTest_LoadDASDocumentTask::report(){
             }
 
         }
-        return ReportResult_Finished;		
+        return ReportResult_Finished;
     }
     return ReportResult_Finished;
 }

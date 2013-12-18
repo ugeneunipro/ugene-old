@@ -21,7 +21,7 @@
 
 #include <U2Core/AppContext.h>
 #include <U2Core/AppResources.h>
-#include <U2Core/AnnotationTableObject.h>
+#include <U2Core/FeaturesTableObject.h>
 #include <U2Core/DocumentUtils.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/IOAdapterUtils.h>
@@ -222,14 +222,14 @@ void ReadAnnotationsTask::run() {
     QList<SharedAnnotationData> dataList;
 
     foreach(GObject *go, annsObjList) {
-        AnnotationTableObject *annsObj = dynamic_cast<AnnotationTableObject*>(go);
+        FeaturesTableObject *annsObj = dynamic_cast<FeaturesTableObject *>(go);
         CHECK_EXT(NULL != annsObj, stateInfo.setError("NULL annotations object"), );
 
         if (!mergeAnnotations){
             dataList.clear();
         }
-        foreach(Annotation *a, annsObj->getAnnotations()) {
-            dataList << a->data();
+        foreach ( const __Annotation &a, annsObj->getAnnotations( ) ) {
+            dataList << SharedAnnotationData( new AnnotationData( a.getData( ) ) );
         }
        
         if (!mergeAnnotations){

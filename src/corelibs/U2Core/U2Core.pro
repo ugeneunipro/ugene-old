@@ -8,7 +8,9 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/datatype/Annotation.h \
            src/datatype/AnnotationData.h \
            src/datatype/AnnotationGroup.h \
+           src/datatype/AnnotationModification.h \
            src/datatype/AnnotationSettings.h \
+           src/datatype/AnnotationTableObjectConstraints.h \
            src/datatype/BioStruct3D.h \
            src/datatype/DamageEffect.h \
            src/datatype/DASSource.h \
@@ -22,6 +24,7 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/datatype/DNASequenceUtils.h \
            src/datatype/DNATranslation.h \
            src/datatype/DNATranslationImpl.h \
+           src/datatype/DbiIdBasedData.h \
            src/datatype/FeatureColors.h \
            src/datatype/Gene.h \
            src/datatype/KnownMutations.h \
@@ -111,7 +114,6 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/globals/UserActionsWriter.h \
            src/globals/UserApplicationsSettings.h \
            src/globals/Version.h \
-           src/gobjects/AnnotationTableObject.h \
            src/gobjects/AssemblyObject.h \
            src/gobjects/BioStruct3DObject.h \
            src/gobjects/DNAChromatogramObject.h \
@@ -217,7 +219,9 @@ SOURCES += src/cmdline/CMDLineCoreOptions.cpp \
            src/datatype/Annotation.cpp \
            src/datatype/AnnotationData.cpp \
            src/datatype/AnnotationGroup.cpp \
+           src/datatype/AnnotationModification.cpp \
            src/datatype/AnnotationSettings.cpp \
+           src/datatype/AnnotationTableObjectConstraints.cpp \
            src/datatype/BaseAlphabets.cpp \
            src/datatype/BaseTranslations.cpp \
            src/datatype/BioStruct3D.cpp \
@@ -232,6 +236,7 @@ SOURCES += src/cmdline/CMDLineCoreOptions.cpp \
            src/datatype/DNATranslationImpl.cpp \
            src/datatype/FeatureColors.cpp \
            src/datatype/Gene.cpp \
+           src/datatype/DbiIdBasedData.cpp \
            src/datatype/MAlignment.cpp \
            src/datatype/MAlignmentInfo.cpp \
            src/datatype/Matrix44.cpp \
@@ -280,7 +285,6 @@ SOURCES += src/cmdline/CMDLineCoreOptions.cpp \
            src/globals/UserActionsWriter.cpp \
            src/globals/UserApplicationsSettings.cpp \
            src/globals/Version.cpp \
-           src/gobjects/AnnotationTableObject.cpp \
            src/gobjects/AssemblyObject.cpp \
            src/gobjects/BioStruct3DObject.cpp \
            src/gobjects/DNAChromatogramObject.cpp \

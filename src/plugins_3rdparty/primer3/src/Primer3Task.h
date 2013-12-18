@@ -22,10 +22,10 @@
 #ifndef _PRIMER3_TASK_H_
 #define _PRIMER3_TASK_H_
 
-#include <memory>
+#include <QtCore/QScopedPointer>
 
+#include <U2Core/AnnotationData.h>
 #include <U2Core/Task.h>
-#include <U2Core/AnnotationTableObject.h>
 
 #include "Primer3TaskSettings.h"
 #include "FindExonRegionsTask.h"
@@ -33,6 +33,8 @@
 #include "primer3.h"
 
 namespace U2 {
+
+class FeaturesTableObject;
 
 class Primer
 {
@@ -90,9 +92,9 @@ public:
     bool operator<(const PrimerPair &pair)const;
 private:
     // don't forget to change copy constructor and assignment operator when changing this!
-    std::auto_ptr<Primer> leftPrimer;
-    std::auto_ptr<Primer> rightPrimer;
-    std::auto_ptr<Primer> internalOligo;
+    QScopedPointer<Primer> leftPrimer;
+    QScopedPointer<Primer> rightPrimer;
+    QScopedPointer<Primer> internalOligo;
     short complAny;
     short complEnd;
     int productSize;
@@ -148,7 +150,7 @@ class Primer3ToAnnotationsTask : public Task {
     Q_OBJECT
 public:
     Primer3ToAnnotationsTask( const Primer3TaskSettings &settings,
-        U2SequenceObject* seqObj_, AnnotationTableObject* aobj_, const QString & groupName_, const QString & annName_ );
+        U2SequenceObject* seqObj_, FeaturesTableObject* aobj_, const QString & groupName_, const QString & annName_ );
 
     void prepare();
     QList<Task*> onSubTaskFinished(Task *subTask);
@@ -157,11 +159,11 @@ public:
     Task::ReportResult report();
 
 private:
-    SharedAnnotationData oligoToAnnotation(QString title, const Primer &primer, int productSize, U2Strand strand);
+    AnnotationData oligoToAnnotation(QString title, const Primer &primer, int productSize, U2Strand strand);
 
     Primer3TaskSettings settings;
 
-    AnnotationTableObject * aobj;
+    FeaturesTableObject *aobj;
     U2SequenceObject* seqObj;
     QString groupName;
     QString annName;

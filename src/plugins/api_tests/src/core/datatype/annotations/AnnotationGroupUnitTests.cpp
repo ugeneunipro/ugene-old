@@ -302,31 +302,27 @@ IMPLEMENT_TEST( AnnotationGroupUnitTest, getSet_Subgroups ) {
     __AnnotationGroup subgroup1 = subgroups.first( );
     QList<__AnnotationGroup> subSubgroups = subgroup1.getSubgroups( );
     CHECK_EQUAL( 1, subSubgroups.size( ), "Count of subgroups" );
-    CHECK_TRUE( subgroup1.getParentGroup( ).getId( ) == rootGroup.getId( ),
-        "Unexpected parent group" );
+    CHECK_TRUE( subgroup1.getParentGroup( ) == rootGroup, "Unexpected parent group" );
 
     const __AnnotationGroup removedSubgroup = subSubgroups.first( );
-    CHECK_TRUE( removedSubgroup.getParentGroup( ).getId( ) == subgroup1.getId( ),
-        "Unexpected parent group" );
+    CHECK_TRUE( removedSubgroup.getParentGroup( ) == subgroup1, "Unexpected parent group" );
     subgroup1.removeSubgroup( subSubgroups.first( ) );
     subSubgroups = subgroup1.getSubgroups( );
     CHECK_TRUE( subSubgroups.isEmpty( ), "Unexpected subgroups" );
 
     __AnnotationGroup subgroup3 = subgroups.last( );
     QList<__AnnotationGroup> subSubgroups3 = subgroup3.getSubgroups( );
-    CHECK_TRUE( subgroup1.getParentGroup( ).getId( ) == rootGroup.getId( ),
-        "Unexpected parent group" );
+    CHECK_TRUE( subgroup1.getParentGroup( ) == rootGroup, "Unexpected parent group" );
     CHECK_TRUE( subSubgroups3.isEmpty( ), "Unexpected subgroups" );
 
     const __AnnotationGroup nonExistentGroup = subgroup3.getSubgroup( "123/456", false );
-    CHECK_TRUE( nonExistentGroup.getId( ) == subgroup3.getId( ), "Unexpected subgroup ID" );
+    CHECK_TRUE( nonExistentGroup == subgroup3, "Unexpected subgroup ID" );
     subSubgroups3 = subgroup3.getSubgroups( );
     CHECK_TRUE( subSubgroups3.isEmpty( ), "Unexpected subgroups" );
 
     const __AnnotationGroup newSubGroup = subgroup3.getSubgroup( "123/456", true );
     CHECK_EQUAL( "456", newSubGroup.getName( ), "Subgroup's name" );
-    CHECK_FALSE( newSubGroup.getParentGroup( ).getId( ) == subgroup3.getId( ),
-        "Unexpected parent group" );
+    CHECK_FALSE( newSubGroup.getParentGroup( ) == subgroup3, "Unexpected parent group" );
     subSubgroups3 = subgroup3.getSubgroups( );
     CHECK_EQUAL( 1, subSubgroups3.size( ), "Count of subgroups" );
 }

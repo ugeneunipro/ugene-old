@@ -532,12 +532,12 @@ void SWWorker::sl_taskFinished(Task* t) {
             // crop long names
             const QString qualifierName = actor->getParameter(PATTERN_NAME_QUAL_ATTR)
                 ->getAttributeValue<QString>(context).left( GBFeatureUtils::MAX_KEY_LEN );
-            foreach(SharedAnnotationData a, rcb->getAnotations()) {
+            foreach ( AnnotationData a, rcb->getAnotations( ) ) {
                 QString pattern = patterns.value(sub);
                 if(!patternNames[pattern].isEmpty()) {
-                    a->qualifiers.push_back(U2Qualifier(qualifierName, patternNames[pattern]));
+                    a.qualifiers.push_back(U2Qualifier(qualifierName, patternNames[pattern]));
                 }
-                annData << a;
+                annData << SharedAnnotationData( new AnnotationData( a ) );
             }
         }
         ptrns << patterns.value(sub);

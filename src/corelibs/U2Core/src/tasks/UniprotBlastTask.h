@@ -26,7 +26,7 @@
 #include <U2Core/Task.h>
 
 #include <U2Core/DASSource.h>
-#include <U2Core/AnnotationTableObject.h>
+#include <U2Core/FeaturesTableObject.h>
 
 #include <QtCore/QEventLoop>
 #include <QtCore/QTimer>
@@ -244,22 +244,21 @@ public:
     qint64 maxResults;
 };
 
-typedef QMap<QString, QList<SharedAnnotationData> > DASGroup;
+typedef QMap<QString, QList<AnnotationData> > DASGroup;
 
-class U2CORE_EXPORT DASAnnotationData{
+class U2CORE_EXPORT DASAnnotationData {
 public:
-    DASAnnotationData(qint64 _seqLen, qint64 _identityThreshold)
-        :seqLen(_seqLen)
-        ,identityThreshold(_identityThreshold){}
+    DASAnnotationData( qint64 _seqLen, qint64 _identityThreshold )
+        : seqLen( _seqLen ), identityThreshold( _identityThreshold ) { }
 
-    QStringList getAccessionNumbers();
-    DASGroup getDasGroup(const QString& accNumber);
-    void addDasGroup(const QString& accNumber, DASGroup dasGroup);
-    bool contains (const QString& accessionNumber);
-    QList<SharedAnnotationData> prepareResults();
+    QStringList getAccessionNumbers( );
+    DASGroup getDasGroup( const QString &accNumber );
+    void addDasGroup( const QString &accNumber, const DASGroup &dasGroup );
+    bool contains ( const QString &accessionNumber );
+    QList<AnnotationData> prepareResults( );
 
 private:
-    QMap<QString, DASGroup > dasData;
+    QMap<QString, DASGroup> dasData;
     qint64 seqLen;
     qint64 identityThreshold;
 };
@@ -267,12 +266,12 @@ private:
 class U2CORE_EXPORT UniprotBlastAndLoadDASAnnotations : public Task{
      Q_OBJECT
 public:
-    UniprotBlastAndLoadDASAnnotations (const DASAnnotationsSettings& _settings);
+    UniprotBlastAndLoadDASAnnotations( const DASAnnotationsSettings &_settings );
 
-    void prepare();
-    QList<Task*> onSubTaskFinished(Task* subTask);
-    QList<SharedAnnotationData> prepareResults();
-    QStringList getAccessionNumbers() {return dasData.getAccessionNumbers();}
+    void prepare( );
+    QList<Task *> onSubTaskFinished( Task *subTask );
+    QList<AnnotationData> prepareResults( );
+    QStringList getAccessionNumbers( ) { return dasData.getAccessionNumbers( ); }
 
 private:
     DASAnnotationsSettings  settings;
@@ -281,7 +280,6 @@ private:
     QList<Task*>            dasTasks;
 
     DASAnnotationData       dasData;
-
 };
 
 }   // namespace U2

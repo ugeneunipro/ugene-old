@@ -22,6 +22,7 @@
 #ifndef _U2_SEQUENCE_UTILS_H_
 #define _U2_SEQUENCE_UTILS_H_
 
+#include <U2Core/AnnotationData.h>
 #include <U2Core/FormatSettings.h>
 #include <U2Core/U2Sequence.h>
 #include <U2Core/U2DbiUtils.h>
@@ -78,7 +79,7 @@ public:
 
     void setCaseAnnotationsMode(CaseAnnotationsMode mode);
     bool isCaseAnnotationsModeOn() const;
-    QList<Annotation*> &getCaseAnnotations();
+    QList<AnnotationData> & getCaseAnnotations( );
 
     virtual qint64 getCurrentLength() const;
 
@@ -87,24 +88,24 @@ protected:
     void _addBlock2Db(const char* data, qint64 len, U2OpStatus& os);
     void _addBuffer2Db(U2OpStatus& os);
 
-    DbiConnection       con;
-    qint64              insertBlockSize;
-    
-    U2Sequence          sequence;
-    QByteArray          sequenceBuffer;
+    DbiConnection           con;
+    qint64                  insertBlockSize;
+
+    U2Sequence              sequence;
+    QByteArray              sequenceBuffer;
 
     // for lower case annotations
-    qint64              currentLength;
-    QList<Annotation*>  annList;
-    bool                isUnfinishedRegion;
-    U2Region            unfinishedRegion;
-    CaseAnnotationsMode caseAnnsMode;
+    qint64                  currentLength;
+    QList<AnnotationData>   annList;
+    bool                    isUnfinishedRegion;
+    U2Region                unfinishedRegion;
+    CaseAnnotationsMode     caseAnnsMode;
 
-    bool                lazyMode;
-    bool                singleThread;
+    bool                    lazyMode;
+    bool                    singleThread;
 
-    bool                sequenceCreated;
-    qint64              committedLength; // singleThread only
+    bool                    sequenceCreated;
+    qint64                  committedLength; // singleThread only
 
 };
 

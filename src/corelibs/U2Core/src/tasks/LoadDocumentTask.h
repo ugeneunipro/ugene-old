@@ -41,8 +41,13 @@ class LoadDocumentTask;
 //NOTE: the default impl can create only limited set of objects
 class U2CORE_EXPORT LDTObjectFactory : public QObject {
 public:
-    LDTObjectFactory(QObject* p) : QObject(p){}
-    virtual GObject* create(const GObjectReference& ref);
+    LDTObjectFactory( QObject *p )
+        : QObject( p )
+    {
+
+    }
+
+    virtual GObject * create( const GObjectReference &ref );
 };
 
 class U2CORE_EXPORT LoadDocumentTaskConfig {

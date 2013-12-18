@@ -21,7 +21,7 @@
 
 
 #include <U2Core/DNASequence.h>
-#include <U2Core/AnnotationTableObject.h>
+#include <U2Core/FeaturesTableObject.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/GObjectUtils.h>
 #include <U2Core/DNATranslation.h>
@@ -87,7 +87,7 @@ void ORFSettingsKeys::read(ORFAlgorithmSettings& cfg, const Settings* s) {
 //////////////////////////////////////////////////////////////////////////
 // find ORFS and save 2 annotations task
 
-FindORFsToAnnotationsTask::FindORFsToAnnotationsTask( AnnotationTableObject* aobj,const U2EntityRef& _entityRef, 
+FindORFsToAnnotationsTask::FindORFsToAnnotationsTask( FeaturesTableObject* aobj,const U2EntityRef& _entityRef, 
                                                      const ORFAlgorithmSettings& settings, const QString& gName )
   :  Task(tr("Find ORFs and save to annotations"), TaskFlags_FOSCOE), aObj(aobj), cfg(settings), groupName(gName), entityRef(_entityRef)
 {
@@ -107,7 +107,6 @@ void U2::FindORFsToAnnotationsTask::run()
 
 Task::ReportResult U2::FindORFsToAnnotationsTask::report()
 {
-    
     if (isCanceled() || hasError()) {
         return ReportResult_Finished;
     }
@@ -116,17 +115,11 @@ Task::ReportResult U2::FindORFsToAnnotationsTask::report()
         setError(tr("Annotation obj %1 is locked for modifications").arg(aObj->getGObjectName()));
         return ReportResult_Finished;
     }
-    
-    QList<Annotation*> annotations;
-    foreach (const SharedAnnotationData& data, aData) {
-        annotations.append(new Annotation(data));
-    }
 
     if (groupName.isEmpty()) {
         groupName = ORFAlgorithmSettings::ANNOTATION_GROUP_NAME;
     }
-    aObj->addAnnotations(annotations, groupName);
-    
+    aObj->addAnnotations( aData, groupName );
 
     return ReportResult_Finished;
 }
@@ -137,12 +130,12 @@ Task::ReportResult U2::FindORFsToAnnotationsTask::report()
 ORFAutoAnnotationsUpdater::ORFAutoAnnotationsUpdater()
 : AutoAnnotationsUpdater(tr("ORFs"), ORFAlgorithmSettings::ANNOTATION_GROUP_NAME)
 {
-    
+
 }
 
 Task* ORFAutoAnnotationsUpdater::createAutoAnnotationsUpdateTask( const AutoAnnotationObject* aa )
 {
-    AnnotationTableObject* aObj = aa->getAnnotationObject();
+    FeaturesTableObject *aObj = aa->getAnnotationObject();
     U2SequenceObject* dnaObj = aa->getSeqObject();
     
     ORFAlgorithmSettings cfg;
@@ -160,7 +153,6 @@ Task* ORFAutoAnnotationsUpdater::createAutoAnnotationsUpdateTask( const AutoAnno
     Task* task = new FindORFsToAnnotationsTask(aObj, dnaObj->getSequenceRef(), cfg );
 
     return task;
-    
 }
 
 bool ORFAutoAnnotationsUpdater::checkConstraints( const AutoAnnotationConstraints& constraints ) {
@@ -170,5 +162,4 @@ bool ORFAutoAnnotationsUpdater::checkConstraints( const AutoAnnotationConstraint
     return constraints.alphabet->isNucleic();
 }
 
-
-} //~namespace
+} // U2 namespace

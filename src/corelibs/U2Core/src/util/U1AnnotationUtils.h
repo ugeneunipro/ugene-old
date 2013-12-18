@@ -22,18 +22,20 @@
 #ifndef _U1_ANNOTATION_UTILS_H_
 #define _U1_ANNOTATION_UTILS_H_
 
-#include <U2Core/AnnotationTableObject.h>
-
+#include <U2Core/AnnotationData.h>
 
 namespace U2 {
 
-/**                                           
-    U2Annotation and related structures utility functions
-*/
-class U2CORE_EXPORT U1AnnotationUtils : public QObject {
-    Q_OBJECT
-private:
-    U1AnnotationUtils(){}
+class DNAAlphabet;
+class FeaturesTableObject;
+class GObject;
+class GObjectReference;
+class U2SequenceObject;
+
+/**
+ * U2Annotation and related structures utility functions
+ */
+class U2CORE_EXPORT U1AnnotationUtils {
 public:
 
     enum AnnotationStrategyForResize {
@@ -43,45 +45,51 @@ public:
         AnnotationStrategyForResize_Split_To_Separate
     };
 
-
-    /** Corrects annotation locations for a sequence. The passed list is original locations
-    The returned list contains set of regions. Each set is per 1 annotation.
-    If specified strategy is 'remove', removes all locations which intersect the modified region or fall inside it.
-    */
-    static QList< QVector<U2Region> > fixLocationsForReplacedRegion(const U2Region& region2Remove, qint64 region2InsertLength,  
-        const QVector<U2Region>& originalLoc, AnnotationStrategyForResize s );
-
-    /** returns translation frame[0,1,2] the region is placed on */
-    static int getRegionFrame(int sequenceLen, U2Strand strand, bool order, int region, const QVector<U2Region>& location);
-    
-    /** Returns true if annotation location is splitted by sequence "edges".
-    For example, location JOIN(N..SeqSize - 1, 0..M) is splitted. **/
-    static  bool isSplitted(const U2Location& location, const U2Region& seqRange);
-
+    /**
+     * Corrects annotation locations for a sequence. The passed list is original locations
+     * The returned list contains set of regions. Each set is per 1 annotation.
+     * If specified strategy is 'remove', removes all locations which intersect the modified region or fall inside it.
+     */
+    static QList<QVector<U2Region> > fixLocationsForReplacedRegion( const U2Region &region2Remove,
+        qint64 region2InsertLength, const QVector<U2Region> &originalLoc, AnnotationStrategyForResize s );
+    /**
+     * Returns translation frame[0,1,2] the region is placed on
+     */
+    static int getRegionFrame( int sequenceLen, const U2Strand &strand, bool order, int region,
+        const QVector<U2Region> &location );
+    /**
+     * Returns true if annotation location is splitted by sequence "edges".
+     * For example, location JOIN(N..SeqSize - 1, 0..M) is splitted.
+     */
+    static bool isSplitted( const U2Location &location, const U2Region &seqRange );
     /**
      * Return a list of lower/upper case annotations for @data sequence
      * If an annotation is placed from some symbol till the end of the sequence
      * then @isUnfinishedRegion == true and @unfinishedRegion keep this unfinished region
      */
-    static QList<Annotation*> getCaseAnnotations(const char *data, int dataLen, int globalOffset, bool &isUnfinishedRegion, U2Region &unfinishedRegion, bool isLowerCaseSearching);
+    static QList<AnnotationData> getCaseAnnotations( const char *data, int dataLen, int globalOffset,
+        bool &isUnfinishedRegion, U2Region &unfinishedRegion, bool isLowerCaseSearching );
 
-    static QList<Annotation*> finalizeUnfinishedRegion(bool isUnfinishedRegion, U2Region &unfinishedRegion, bool isLowerCaseSearching);
-
+    static QList<AnnotationData> finalizeUnfinishedRegion( bool isUnfinishedRegion,
+        U2Region &unfinishedRegion, bool isLowerCaseSearching );
     /**
      * If @annotationsObject is NULL then it creates a new annotation object
      */
-    static void addAnnotations(QList<GObject*> &objects, QList<Annotation*> &annList, const GObjectReference &sequenceRef, AnnotationTableObject *annotationsObject);
+    static void addAnnotations( QList<GObject *> &objects, const QList<AnnotationData> &annList,
+        const GObjectReference &sequenceRef, FeaturesTableObject *annotationsObject );
 
-    static QList<U2Region> getRelatedLowerCaseRegions(const U2SequenceObject *so, const QList<GObject*> &anns);
+    static QList<U2Region> getRelatedLowerCaseRegions( const U2SequenceObject *so,
+        const QList<GObject *> &anns );
 
-    static char *applyLowerCaseRegions(char *seq, qint64 first, qint64 len, qint64 globalOffset, const QList<U2Region> &regs);
-    static QString guessAminoTranslation(const AnnotationTableObject* ao, const DNAAlphabet* al);
+    static char * applyLowerCaseRegions( char *seq, qint64 first, qint64 len, qint64 globalOffset,
+        const QList<U2Region> &regs );
+
+    static QString guessAminoTranslation( FeaturesTableObject *ao, const DNAAlphabet *al );
 
     static QString lowerCaseAnnotationName;
     static QString upperCaseAnnotationName;
-
 };
 
-} //namespace
+} // namespace U2
 
 #endif

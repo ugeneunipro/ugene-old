@@ -24,6 +24,7 @@
 
 #include <U2Algorithm/FindAlgorithmTask.h>
 
+#include <U2Core/FeaturesTableObject.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/DNASequenceObject.h>
@@ -1258,7 +1259,7 @@ void FindPatternWidget::initFindPatternTask( const QString& pattern, const QStri
                 newPatternName = patternName.left(GBFeatureUtils::MAX_KEY_LEN);
             }
 
-            if (Annotation::isValidAnnotationName(newPatternName)){
+            if (__Annotation::isValidAnnotationName(newPatternName)){
                 annotName = newPatternName;
                 useAnnotationName = false;
             }
@@ -1266,13 +1267,13 @@ void FindPatternWidget::initFindPatternTask( const QString& pattern, const QStri
     }
     
     if(useAnnotationName){
-        annotName = annotModel.data->name;
+        annotName = annotModel.data.name;
     }
     
     QString annotGroup = annotModel.groupName;
 
-    AnnotationTableObject* aTableObj = annotModel.getAnnotationObject();
-    SAFE_POINT(aTableObj != NULL, "FindPatternWidget::AnnotationTableObject is NULL", );
+    FeaturesTableObject *aTableObj = annotModel.getAnnotationObject();
+    SAFE_POINT(aTableObj != NULL, "Invalid annotation table detected!", );
 
     // Creating and registering the task
     bool removeOverlaps = removeOverlapsBox->isChecked();

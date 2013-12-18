@@ -19,7 +19,7 @@
  * MA 02110-1301, USA.
  */
 
-    #include "SecStructPredictTask.h"
+#include "SecStructPredictTask.h"
 
 namespace U2 {
 
@@ -39,10 +39,4 @@ void SecStructPredictTask::prepare()
     }
 }
 
-
-
-
-} //namespace
-
-
-
+} // namespace U2

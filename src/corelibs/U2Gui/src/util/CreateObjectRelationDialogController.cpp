@@ -22,8 +22,9 @@
 #include "CreateObjectRelationDialogController.h"
 #include <ui/ui_CreateObjectRelationDialog.h>
 
+#include <U2Core/AnnotationTableObjectConstraints.h>
 #include <U2Core/DNASequenceObject.h>
-#include <U2Core/AnnotationTableObject.h>
+#include <U2Core/FeaturesTableObject.h>
 #include <U2Core/GObjectRelationRoles.h>
 #include <U2Core/GObjectTypes.h>
 
@@ -58,7 +59,7 @@ void CreateObjectRelationDialogController::accept() {
     GObject* selObj = objects[idx];
     if (role == GObjectRelationRole::SEQUENCE && assObj->getGObjectType() == GObjectTypes::ANNOTATION_TABLE) {
         U2SequenceObject* dnaObj = qobject_cast<U2SequenceObject*>(selObj);
-        AnnotationTableObject* ao = qobject_cast<AnnotationTableObject*>(assObj);
+        FeaturesTableObject *ao = qobject_cast<FeaturesTableObject *>(assObj);
         AnnotationTableObjectConstraints c;
         c.sequenceSizeToFit = dnaObj->getSequenceLength();
         bool res = ao->checkConstraints(&c);

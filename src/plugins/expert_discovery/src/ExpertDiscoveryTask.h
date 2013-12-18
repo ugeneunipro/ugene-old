@@ -33,7 +33,6 @@ class ExpertDiscoveryLoadPosNegTask: public Task{
     Q_OBJECT
 public:
     ExpertDiscoveryLoadPosNegTask(QString firstF, QString secondF, bool generateNeg, int negPerPositive);
-    ~ExpertDiscoveryLoadPosNegTask();
 
     void run(){};
     void prepare();
@@ -65,7 +64,6 @@ class ExpertDiscoveryLoadControlTask: public Task{
     Q_OBJECT
 public:
     ExpertDiscoveryLoadControlTask(QString firstF);
-    ~ExpertDiscoveryLoadControlTask();
 
     void run(){};
     void prepare();
@@ -103,9 +101,6 @@ private:
     Document* posDoc;
     Document* negDoc;
 
-    
-    //Document* loadFile(QString inFile);
-
 signals:
     void si_stateChanged(Task* task);
 };
@@ -123,8 +118,6 @@ private:
     QString firstFile;
     ExpertDiscoveryData& edData;
     Document* conDoc;
-
-    //Document* loadFile(QString inFile);
 
 signals:
     void si_stateChanged(Task* task);
@@ -153,24 +146,6 @@ signals:
     void si_newSignalReady(DDisc::Signal* signal, CSFolder* folder);
     void si_newFolder(const QString& folderName);
 };
-
-class ExpertDiscoveryCreateADVTask: public Task{
-    Q_OBJECT
-public:
-    ExpertDiscoveryCreateADVTask(const MultiGSelection& selObjects);
-
-    AnnotatedDNAView* getView() {return adv;}
-
-    void run();
-    void prepare() {};
-private:
-    const MultiGSelection& multiSelection;
-    AnnotatedDNAView* adv;
-
-signals:
-    void si_stateChanged(Task* task);
-};
-
 
 // error messages and dialogs
 class ExpertDiscoveryErrors: QObject {
@@ -229,7 +204,7 @@ private:
 class ExpertDiscoveryToAnnotationTask : public Task{
     Q_OBJECT
 public:
-    ExpertDiscoveryToAnnotationTask(AnnotationTableObject* aobj, const DNASequence& seq, ExpertDiscoveryData* d, const EDProcessedSignal* ps, QMutex& mut);
+    ExpertDiscoveryToAnnotationTask(FeaturesTableObject* aobj, const DNASequence& seq, ExpertDiscoveryData* d, const EDProcessedSignal* ps, QMutex& mut);
     void prepare();
     void run();
     ReportResult report();
@@ -243,9 +218,9 @@ private:
     const DNASequence&                      dna;
     ExpertDiscoveryData*                    edData;
     const EDProcessedSignal*                curPS;
-    QList<SharedAnnotationData>             resultList;
+    QList<AnnotationData>                   resultList;
     U2Region                                seqRange;
-    QPointer<AnnotationTableObject>         aObj;
+    QPointer<FeaturesTableObject>           aObj;
     RecognizationData                       recData;
     bool                                    hasRecData;
     bool                                    isControl;
@@ -340,23 +315,13 @@ class ExpertDiscoverySearchResult {
 public:
     ExpertDiscoverySearchResult() : strand(U2Strand::Direct), score(0){}
 
-    SharedAnnotationData toAnnotation(const QString& name) const {
-        SharedAnnotationData data;
-        data = new AnnotationData;
-        data->name = name;
-        data->location->regions << region;
-        data->setStrand(strand);
-        data->qualifiers.append(U2Qualifier("score", QString::number(score)));
+    AnnotationData toAnnotation(const QString& name) const {
+        AnnotationData data;
+        data.name = name;
+        data.location->regions << region;
+        data.setStrand(strand);
+        data.qualifiers.append(U2Qualifier("score", QString::number(score)));
         return data;
-    }
-
-    static QList<SharedAnnotationData> toTable(const QList<ExpertDiscoverySearchResult>& res, const QString& name)
-    {
-        QList<SharedAnnotationData> list;
-        foreach (const ExpertDiscoverySearchResult& f, res) {
-            list.append(f.toAnnotation(name));
-        }
-        return list;
     }
 
     U2Region region;
@@ -394,7 +359,6 @@ private:
     int                                 curLeft;
 };
 
-
 class ExpertDiscoveryExportSequences : public Task{
 public:
     ExpertDiscoveryExportSequences(const SequenceBase& base);
@@ -403,7 +367,6 @@ public:
 private:
     const SequenceBase& base;
     QString fileName;
-};   
+};
 
-        
-}//namespace
+} // namespace

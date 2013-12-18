@@ -22,11 +22,6 @@
 #ifndef _U2_ANNOTATIONS_TREE_VIEW_
 #define _U2_ANNOTATIONS_TREE_VIEW_
 
-#include <U2Core/global.h>
-#include <U2Core/Task.h>
-
-#include <U2View/SearchQualifierDialog.h>
-
 #include <QtCore/QFlags>
 #include <QtCore/QTimer>
 #include <QtGui/QTreeWidget>
@@ -35,13 +30,17 @@
 #include <QtCore/QQueue>
 #include <QtCore/QPair>
 
+#include <U2Core/Annotation.h>
+#include <U2Core/AnnotationGroup.h>
+#include <U2Core/global.h>
+#include <U2Core/Task.h>
+
+#include <U2View/SearchQualifierDialog.h>
 
 namespace U2 {
 
-class Annotation;
-class AnnotationGroup;
 class U2Qualifier;
-class AnnotationTableObject;
+class FeaturesTableObject;
 class AVItem;
 class AVGroupItem;
 class AVAnnotationItem;
@@ -60,7 +59,6 @@ enum ATVAnnUpdateFlag {
 };
 
 typedef QFlags<ATVAnnUpdateFlag> ATVAnnUpdateFlags;
-
 
 class U2VIEW_EXPORT AnnotationsTreeView : public QWidget {
     Q_OBJECT
@@ -88,24 +86,25 @@ public:
 
 private slots:
 
-    void sl_onAnnotationObjectAdded(AnnotationTableObject* obj);
-    void sl_onAnnotationObjectRemoved(AnnotationTableObject* obj);
+    void sl_onAnnotationObjectAdded( FeaturesTableObject *obj );
+    void sl_onAnnotationObjectRemoved( FeaturesTableObject *obj );
     void sl_onAnnotationObjectRenamed(const QString &oldName);
 
-    void sl_onAnnotationsAdded(const QList<Annotation*>&);
-    void sl_onAnnotationsRemoved(const QList<Annotation*>&);
-    void sl_onAnnotationsInGroupRemoved(const QList<Annotation*>&, AnnotationGroup*);
-    void sl_onAnnotationModified(const AnnotationModification& md);
-    void sl_annotationObjectModifiedStateChanged();
+    void sl_onAnnotationsAdded( const QList<__Annotation> & );
+    void sl_onAnnotationsRemoved( const QList<__Annotation> & );
+    void sl_onAnnotationModified( const AnnotationModification &md );
+    void sl_annotationObjectModifiedStateChanged( );
 
-    void sl_onGroupCreated(AnnotationGroup*);
-    void sl_onGroupRemoved(AnnotationGroup* parent, AnnotationGroup* removed);
-    void sl_onGroupRenamed(AnnotationGroup*, const QString& oldName);
+    void sl_onGroupCreated( const __AnnotationGroup & );
+    void sl_onGroupRemoved( const __AnnotationGroup &parent, const __AnnotationGroup &removed );
+    void sl_onGroupRenamed( const __AnnotationGroup & );
 
     void sl_onAnnotationSettingsChanged(const QStringList& changedSettings);
 
-    void sl_onAnnotationSelectionChanged(AnnotationSelection*, const QList<Annotation*>&, const QList<Annotation*>&);
-    void sl_onAnnotationGroupSelectionChanged(AnnotationGroupSelection*, const QList<AnnotationGroup*>&, const QList<AnnotationGroup*>&);
+    void sl_onAnnotationSelectionChanged( AnnotationSelection *, const QList<__Annotation> &,
+        const QList<__Annotation> & );
+    void sl_onAnnotationGroupSelectionChanged( AnnotationGroupSelection *,
+        const QList<__AnnotationGroup> &, const QList<__AnnotationGroup> & );
     void sl_onItemSelectionChanged();
     void sl_onAddAnnotationObjectToView();
     void sl_removeObjectFromView();
@@ -124,17 +123,12 @@ private slots:
     void sl_rename();
     void sl_edit();
     void sl_addQualifier();
-//    void sl_cutAnnotations();
-//    void sl_copyAnnotations();
-//    void sl_pasteAnnotations();
 
     void sl_itemEntered(QTreeWidgetItem * i, int column);
     void sl_itemClicked( QTreeWidgetItem * item, int column);
     void sl_itemDoubleClicked (QTreeWidgetItem * item, int column);
     void sl_itemExpanded(QTreeWidgetItem*);
-    
-    //TODO: deal with style()->styleHint(QStyle::SH_ItemView_ActivateItemOnSingleClick) correctly
-    //    void sl_itemActivated(QTreeWidgetItem*, int) {sl_edit();}
+
     void sl_sortTree();
 
 protected:
@@ -149,17 +143,17 @@ private:
     void moveDialogToItem(QTreeWidgetItem* item, QDialog& d);
     
     void adjustMenu(QMenu* m_) const;
-    AVGroupItem* buildGroupTree(AVGroupItem* parentGroup, AnnotationGroup* g);
-    AVAnnotationItem* buildAnnotationTree(AVGroupItem* parentGroup, Annotation* a);
+    AVGroupItem * buildGroupTree( AVGroupItem *parentGroup, const __AnnotationGroup &g);
+    AVAnnotationItem * buildAnnotationTree( AVGroupItem *parentGroup, const __Annotation &a );
     void populateAnnotationQualifiers(AVAnnotationItem* ai);
     void updateAllAnnotations(ATVAnnUpdateFlags flags);
-    QMenu* getAutoAnnotationsHighligtingMenu(AnnotationTableObject* aObj);
+    QMenu * getAutoAnnotationsHighligtingMenu( FeaturesTableObject *aObj );
 
-    AVGroupItem* findGroupItem(const AnnotationGroup* g) const;
-    AVAnnotationItem* findAnnotationItem(const AnnotationGroup* g, const Annotation* a) const;
-    AVAnnotationItem* findAnnotationItem(const AVGroupItem* gi, const Annotation* a) const;
+    AVGroupItem * findGroupItem( const __AnnotationGroup &g ) const;
+    AVAnnotationItem* findAnnotationItem( const __AnnotationGroup &g, const __Annotation &a ) const;
+    AVAnnotationItem* findAnnotationItem(const AVGroupItem* gi, const __Annotation &a ) const;
     // searches for annotation items that has not-null document added to the view
-    QList<AVAnnotationItem*> findAnnotationItems(const Annotation* a) const;
+    QList<AVAnnotationItem*> findAnnotationItems( const __Annotation &a ) const;
     
     void connectAnnotationSelection();
     void connectAnnotationGroupSelection();
@@ -184,10 +178,7 @@ private:
     QAction*            copyColumnTextAction;
     QAction*            copyColumnURLAction;
     QAction*            exportAutoAnnotationsGroup;
-//    QAction*            cutAnnotationsAction;
-//    QAction*            copyAnnotationsAction;
-//    QAction*            pasteAnnotationsAction;
-    
+
     QAction*            renameAction;       // action to rename active group/qualifier/annotation only
     QAction*            editAction;         // action to edit active item -> only for non-readonly
     QAction*            viewAction;         // action to view active item -> could be used both for readonly and not readonly
@@ -219,7 +210,7 @@ private:
     int                 dndHit;
 
     /** Dragged annotations, "static" for cross-view support */
-    static QList<Annotation*> dndAdded;
+    static QList<__Annotation> dndAdded;
 
     static AVGroupItem*     dropDestination;
     static const QString    annotationMimeType;
@@ -242,46 +233,46 @@ enum AVItemType {
 
 class AVItem : public QTreeWidgetItem {
 public:
-    AVItem(QTreeWidgetItem* parent, AVItemType _type) : QTreeWidgetItem(parent), type(_type) {}
-    const AVItemType type;
-    bool processLinks(const QString& qname, const QString& qval, int col);
-    bool isColumnLinked(int col) const;
-    QString buildLinkURL(int col) const;
-    QString getFileUrl(int col) const;
-    virtual bool isReadonly() const  {assert(parent()!=NULL); return (static_cast<AVItem*>(parent())->isReadonly());}
+                                    AVItem( QTreeWidgetItem *parent, AVItemType _type );
+    bool                            processLinks( const QString &qname, const QString &qval,
+                                        int col );
+    bool                            isColumnLinked( int col ) const;
+    QString                         buildLinkURL( int col ) const;
+    QString                         getFileUrl( int col ) const;
+    virtual bool                    isReadonly( ) const;
 
-    virtual AnnotationsTreeView* getAnnotationTreeView() const {assert(parent()!=NULL); return (static_cast<AVItem*>(parent())->getAnnotationTreeView());}
-    virtual AnnotationTableObject* getAnnotationTableObject() const {assert(parent()!=NULL); return (static_cast<AVItem*>(parent())->getAnnotationTableObject());}
-    virtual AnnotationGroup* getAnnotationGroup() const {assert(parent()!=NULL); return (static_cast<AVItem*>(parent())->getAnnotationGroup());}
+    virtual AnnotationsTreeView *   getAnnotationTreeView( ) const;
+    virtual FeaturesTableObject *   getAnnotationTableObject( ) const;
+    virtual __AnnotationGroup       getAnnotationGroup( ) const;
 
+    const AVItemType                type;
 };
 
 
 class AVGroupItem : public AVItem {
 public:
-    AVGroupItem(AnnotationsTreeView* atv, AVGroupItem* parent, AnnotationGroup* g);
-    ~AVGroupItem();
+    AVGroupItem( AnnotationsTreeView *atv, AVGroupItem *parent, const __AnnotationGroup &g );
 
-    void updateVisual();
-    void updateAnnotations(const QString& nameFilter, ATVAnnUpdateFlags flags);
-    void findAnnotationItems(QList<AVAnnotationItem*>& result, Annotation* a) const;
+    void updateVisual( );
+    void updateAnnotations( const QString &nameFilter, ATVAnnUpdateFlags flags );
+    void findAnnotationItems( QList<AVAnnotationItem *> &result, const __Annotation &a ) const;
 
-    static const QIcon& getGroupIcon();
-    static const QIcon& getDocumentIcon();
-    virtual AnnotationsTreeView* getAnnotationTreeView() const  {return atv;}
-    virtual bool isReadonly() const;
-    virtual AnnotationTableObject* getAnnotationTableObject() const;
-    virtual AnnotationGroup* getAnnotationGroup() const;
+    static const QIcon & getGroupIcon( );
+    static const QIcon & getDocumentIcon( );
+    virtual AnnotationsTreeView * getAnnotationTreeView() const { return atv; }
+    virtual bool isReadonly( ) const;
+    virtual FeaturesTableObject * getAnnotationTableObject( ) const;
+    virtual __AnnotationGroup getAnnotationGroup( ) const;
 
-    AnnotationGroup* group;
+    __AnnotationGroup group;
     AnnotationsTreeView* atv;
 };
 
 class AVAnnotationItem : public AVItem {
 public:
-    AVAnnotationItem(AVGroupItem* parent, Annotation* a);
-    ~AVAnnotationItem();
-    Annotation* annotation;
+    AVAnnotationItem( AVGroupItem *parent, const __Annotation &a );
+
+    __Annotation annotation;
     mutable QString locationString;
 
     virtual QVariant data ( int column, int role ) const;
@@ -305,26 +296,6 @@ public:
     //TODO: keep values in U2Qualifier struct
     const QString qName;
     const QString qValue;
-};
-
-class RemoveItemsTask: public Task  {
-public:
-    RemoveItemsTask(AnnotationsTreeView *_treeView, AnnotationTableObject *_aObj, const QList<Annotation *>& list, AnnotationGroup *gr):
-    Task("Remove items", TaskFlag_None), treeView(_treeView), aObj(_aObj), as(list), parentGroup(gr), parentGroupItem(NULL) {}
-    void prepare();
-    void run();
-    Task::ReportResult report();
-
-private:
-    AnnotationsTreeView *treeView;
-    AnnotationTableObject* aObj;
-    QList<Annotation *> as;
-    AnnotationGroup *parentGroup;
-
-    QSet<AVGroupItem*> groupsToUpdate;
-    AVGroupItem* parentGroupItem;
-    Qt::ItemFlags flags;
-    QList<AVAnnotationItem *> itemsToDelete;
 };
 
 class FindQualifierTaskSettings{

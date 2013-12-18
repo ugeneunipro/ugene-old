@@ -440,7 +440,7 @@ U2Sequence U2SequenceImporter::finalizeSequence(U2OpStatus& os) {
         annList << U1AnnotationUtils::finalizeUnfinishedRegion(isUnfinishedRegion, unfinishedRegion, LOWER_CASE == caseAnnsMode);
 
         if (1 == annList.size()) {
-            const QVector<U2Region> &regs = annList.first()->getRegions();
+            const QVector<U2Region> &regs = annList.first( ).getRegions( );
             if (1 == regs.size()) {
                 U2Region reg = regs.first();
                 if (0 == reg.startPos && sequence.length == reg.length) {
@@ -462,7 +462,7 @@ bool U2SequenceImporter::isCaseAnnotationsModeOn() const {
     return caseAnnsMode != NO_CASE_ANNS;
 }
 
-QList<Annotation*> &U2SequenceImporter::getCaseAnnotations() {
+QList<AnnotationData> & U2SequenceImporter::getCaseAnnotations( ) {
     return annList;
 }
 

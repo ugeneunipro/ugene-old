@@ -42,7 +42,7 @@ protected slots:
 class U2VIEW_EXPORT SecStructPredictUtils {
 public:
     static QString getStructNameForCharTag(char tag);
-    static QList<SharedAnnotationData> saveAlgorithmResultsAsAnnotations(const QByteArray& predicted, const QString& annotationName);
+    static QList<AnnotationData> saveAlgorithmResultsAsAnnotations(const QByteArray& predicted, const QString& annotationName);
 };
 
 

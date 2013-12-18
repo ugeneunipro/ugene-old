@@ -31,7 +31,6 @@
 #include <QtGui/QMainWindow>
 #include <QtGui/QTreeWidget>
 #include <U2View/AnnotationsTreeView.h>
-#include <U2Core/AnnotationTableObject.h>
 
 namespace U2 {
 
@@ -56,9 +55,8 @@ QString GTUtilsAnnotationsTreeView::getAVItemName(U2OpStatus &os, AVItem* avItem
                 AVAnnotationItem* avAnnotationItem = (AVAnnotationItem*)avItem;
                 GT_CHECK_RESULT(avAnnotationItem != NULL, "avAnnotationItem is NULL", "");
 
-                Annotation *annotation = avAnnotationItem->annotation;
-                GT_CHECK_RESULT(annotation != NULL, "avAnnotationItem->annotation is NULL", "");
-                return annotation->getAnnotationName();
+                const __Annotation annotation = avAnnotationItem->annotation;
+                return annotation.getName();
             }
             break;
 
@@ -67,9 +65,8 @@ QString GTUtilsAnnotationsTreeView::getAVItemName(U2OpStatus &os, AVItem* avItem
                 AVGroupItem* avGroupItem = (AVGroupItem*)avItem;
                 GT_CHECK_RESULT(avGroupItem!= NULL, "avAnnotationItem is NULL", "");
 
-                AnnotationGroup *group= avGroupItem->group;
-                GT_CHECK_RESULT(group != NULL, "avGroupItem->group is NULL", "");
-                return group->getGroupName();
+                const __AnnotationGroup group= avGroupItem->group;
+                return group.getName();
             }
             break;
 
@@ -115,13 +112,12 @@ bool GTUtilsAnnotationsTreeView::findRegion(U2OpStatus &os, const QString &itemN
 
     AVAnnotationItem* item = (AVAnnotationItem*)GTUtilsAnnotationsTreeView::findItem(os, itemName);
     CHECK_SET_ERR_RESULT(item != NULL, "Item " + itemName + " not found", false);
-    Annotation* ann = item->annotation;
-    CHECK_SET_ERR_RESULT(ann != NULL, "Annotation is NULL", false);
+    const __Annotation ann = item->annotation;
 
     U2Region neededRegion(r.startPos-1, r.length-r.startPos+1);
 
     bool found = false;
-    QVector<U2Region> regions = ann->getRegions();
+    QVector<U2Region> regions = ann.getRegions();
     foreach (const U2Region& r, regions) {
         if (r.contains(neededRegion)) {
             found = true;

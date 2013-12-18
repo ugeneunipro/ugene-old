@@ -30,7 +30,7 @@
 #include <U2Core/Settings.h>
 #include <U2Core/TextUtils.h>
 
-#include <U2Core/AnnotationTableObject.h>
+#include <U2Core/Annotation.h>
 
 #include <U2Gui/ScriptEditorDialog.h>
 #include <U2Gui/LastUsedDirHelper.h>
@@ -156,7 +156,7 @@ void ImportAnnotationsFromCSVDialog::accept() {
         QMessageBox::critical(this, L10N::errorTitle(), tr("Multiple columns are used as a name!"));
         return;
     }
-    if (!Annotation::isValidAnnotationName(defaultNameEdit->text())) {
+    if (!__Annotation::isValidAnnotationName(defaultNameEdit->text())) {
         QMessageBox::critical(this, L10N::errorTitle(), tr("Invalid default annotation name!"));
         defaultNameEdit->setFocus();
         return;

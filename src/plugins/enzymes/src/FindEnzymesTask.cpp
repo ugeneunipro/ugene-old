@@ -23,6 +23,7 @@
 #include "EnzymesIO.h"
 
 #include <U2Core/DNAAlphabet.h>
+#include <U2Core/DNASequenceObject.h>
 #include <U2Core/Log.h>
 #include <U2Core/Counter.h>
 #include <U2Core/ProjectModel.h>
@@ -40,7 +41,7 @@ namespace U2 {
 //////////////////////////////////////////////////////////////////////////
 // enzymes -> annotations
 
-FindEnzymesToAnnotationsTask::FindEnzymesToAnnotationsTask(AnnotationTableObject* aobj, const U2EntityRef& seqRef, 
+FindEnzymesToAnnotationsTask::FindEnzymesToAnnotationsTask(FeaturesTableObject* aobj, const U2EntityRef& seqRef, 
                                                            const QList<SEnzymeData>& _enzymes, const FindEnzymesTaskConfig& config)
 : Task(tr("Find and store enzymes"), TaskFlags_FOSCOE), dnaSeqRef(seqRef), enzymes(_enzymes), aObj(aobj), cfg(config)
 {
@@ -48,7 +49,6 @@ FindEnzymesToAnnotationsTask::FindEnzymesToAnnotationsTask(AnnotationTableObject
     U2SequenceObject dnaSeq("sequence",dnaSeqRef);
     seqRange = U2Region(0, dnaSeq.getSequenceLength());
 }
-
 
 void FindEnzymesToAnnotationsTask::prepare()
 {
@@ -60,7 +60,6 @@ void FindEnzymesToAnnotationsTask::prepare()
     addSubTask(fTask);
 }
 
-
 void FindEnzymesToAnnotationsTask::run() {
 
     if (isCanceled() || hasError()) {
@@ -68,24 +67,24 @@ void FindEnzymesToAnnotationsTask::run() {
     }
 
     if (aObj.isNull()) {
-        stateInfo.setError(  tr("Annotation table does not exist") );
+        stateInfo.setError( tr("Annotation table does not exist") );
         return;
     }
 
     if (aObj->isStateLocked()) {
-        stateInfo.setError(  tr("Annotation table is read-only") );
+        stateInfo.setError( tr("Annotation table is read-only") );
         return;
     }
     
     bool useSubgroups = enzymes.size() > 1 || cfg.groupName.isEmpty();
     bool useWholeSequenceRange = cfg.excludedRegions.isEmpty();
     foreach(const SEnzymeData& ed, enzymes) {
-        QList<SharedAnnotationData> anns = fTask->getResultsAsAnnotations(ed->id);
+        QList<AnnotationData> anns = fTask->getResultsAsAnnotations(ed->id);
         bool inRegion = false;
         if (!useWholeSequenceRange) {
             // filter 
-            foreach (const SharedAnnotationData& data, anns) {
-                const U2Region& annRegion = data->location->regions.first();
+            foreach (const AnnotationData& data, anns) {
+                const U2Region& annRegion = data.location->regions.first();
                 if (annRegion.findOverlappingRegion(cfg.excludedRegions) != -1) {
                     inRegion = true;
                     break;
@@ -98,14 +97,11 @@ void FindEnzymesToAnnotationsTask::run() {
         
         if(anns.size() >= cfg.minHitCount && anns.size() <= cfg.maxHitCount){
             QString group = useSubgroups ? cfg.groupName + "/" + ed->id : cfg.groupName;
-            foreach(const SharedAnnotationData& ad, anns) {
-                resultMap.insertMulti(group, ad);            
+            foreach(const AnnotationData& ad, anns) {
+                resultMap.insertMulti(group, ad);
             }
         }
     }
-
-   
-    
 }
 
 Task::ReportResult FindEnzymesToAnnotationsTask::report()
@@ -116,12 +112,8 @@ Task::ReportResult FindEnzymesToAnnotationsTask::report()
 
     const QSet<QString> groupNames = resultMap.keys().toSet();
     foreach (const QString& groupName, groupNames) {
-        QList<Annotation*> annotations;
-        QList<SharedAnnotationData> adata = resultMap.values(groupName);
-        foreach (const SharedAnnotationData& ad, adata) {
-            annotations.append(new Annotation(ad));
-        }
-        aObj->addAnnotations(annotations, groupName);
+        QList<AnnotationData> adata = resultMap.values(groupName);
+        aObj->addAnnotations( adata, groupName );
     }
  
     if (aObj->getAnnotations().isEmpty() && !cfg.isAutoAnnotationUpdateTask) {
@@ -144,10 +136,8 @@ Task::ReportResult FindEnzymesToAnnotationsTask::report()
         stateInfo.setError("Enzymes selection is not found");
     }
 
-    
     return ReportResult_Finished;
 }
-
 
 //////////////////////////////////////////////////////////////////////////
 // find multiple enzymes task
@@ -176,8 +166,8 @@ void FindEnzymesTask::onResult(int pos, const SEnzymeData& enzyme, const U2Stran
     results.append(FindEnzymesAlgResult(enzyme, pos, strand));
 }
 
-QList<SharedAnnotationData> FindEnzymesTask::getResultsAsAnnotations(const QString& enzymeId) const {
-    QList<SharedAnnotationData> res;
+QList<AnnotationData> FindEnzymesTask::getResultsAsAnnotations(const QString& enzymeId) const {
+    QList<AnnotationData> res;
     
     QString cutStr;
     QString dbxrefStr;
@@ -214,30 +204,30 @@ QList<SharedAnnotationData> FindEnzymesTask::getResultsAsAnnotations(const QStri
                 if (seqlen < r.pos) {
                     continue;
                 }
-                AnnotationData* ad = new AnnotationData();
-                ad->name = r.enzyme->id;
-                ad->location->regions << U2Region(r.pos, seqlen - r.pos);
-                ad->location->regions << U2Region(0, r.enzyme->seq.size() - (seqlen - r.pos));
-                ad->setStrand(r.strand);
+                AnnotationData ad;
+                ad.name = r.enzyme->id;
+                ad.location->regions << U2Region(r.pos, seqlen - r.pos);
+                ad.location->regions << U2Region(0, r.enzyme->seq.size() - (seqlen - r.pos));
+                ad.setStrand(r.strand);
                 if (!dbxrefStr.isEmpty()) {
-                    ad->qualifiers.append(U2Qualifier("db_xref", dbxrefStr));
+                    ad.qualifiers.append(U2Qualifier("db_xref", dbxrefStr));
                 }
                 if (!cutStr.isEmpty()) {
-                    ad->qualifiers.append(U2Qualifier(GBFeatureUtils::QUALIFIER_CUT, cutStr));
+                    ad.qualifiers.append(U2Qualifier(GBFeatureUtils::QUALIFIER_CUT, cutStr));
                 }
-                res.append(SharedAnnotationData(ad));
+                res.append( ad );
             } else {
-                AnnotationData* ad = new AnnotationData();
-                ad->name = r.enzyme->id;
-                ad->location->regions << U2Region(r.pos, r.enzyme->seq.size());
-                ad->setStrand(r.strand);
+                AnnotationData ad;
+                ad.name = r.enzyme->id;
+                ad.location->regions << U2Region(r.pos, r.enzyme->seq.size());
+                ad.setStrand(r.strand);
                 if (!dbxrefStr.isEmpty()) {
-                    ad->qualifiers.append(U2Qualifier("db_xref", dbxrefStr));
+                    ad.qualifiers.append(U2Qualifier("db_xref", dbxrefStr));
                 }
                 if (!cutStr.isEmpty()) {
-                    ad->qualifiers.append(U2Qualifier(GBFeatureUtils::QUALIFIER_CUT, cutStr));
+                    ad.qualifiers.append(U2Qualifier(GBFeatureUtils::QUALIFIER_CUT, cutStr));
                 }
-                res.append(SharedAnnotationData(ad));
+                res.append( ad );
             }
         }
     }
@@ -384,7 +374,7 @@ Task* FindEnzymesAutoAnnotationUpdater::createAutoAnnotationsUpdateTask( const A
         cfg.excludedRegions = excludedRegions;
     }
     
-    AnnotationTableObject* aObj = aa->getAnnotationObject();
+    FeaturesTableObject *aObj = aa->getAnnotationObject();
     const U2EntityRef& dnaRef = aa->getSeqObject()->getEntityRef();
     Task* task = new FindEnzymesToAnnotationsTask(aObj, dnaRef, selectedEnzymes, cfg );
 
@@ -400,7 +390,4 @@ bool FindEnzymesAutoAnnotationUpdater::checkConstraints( const AutoAnnotationCon
     return constraints.alphabet->isNucleic();
 }
 
-
-
-
-}//namespace
+} // namespace U2

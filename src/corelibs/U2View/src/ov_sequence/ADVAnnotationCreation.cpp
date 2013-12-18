@@ -26,16 +26,18 @@
 #include "AnnotationsTreeView.h"
 
 #include <U2Gui/CreateAnnotationDialog.h>
-#include <U2Gui/CreateAnnotationWidgetController.h>//for CreateAnnotationModel
+#include <U2Gui/CreateAnnotationWidgetController.h>
 #include <U2Core/CreateAnnotationTask.h>
 
+#include <U2Core/GObjectReference.h>
 #include <U2Core/GObjectUtils.h>
 #include <U2Core/AnnotationSelection.h>
 #include <U2Core/DNASequenceSelection.h>
 #include <U2Core/DNASequenceObject.h>
-#include <U2Core/AnnotationTableObject.h>
+#include <U2Core/FeaturesTableObject.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/Task.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <U2Core/LoadDocumentTask.h>
 
@@ -43,8 +45,8 @@
 
 namespace U2 {
 
-ADVCreateAnnotationsTask::ADVCreateAnnotationsTask(AnnotatedDNAView* _ctx, const GObjectReference& aobjRef, 
-                                                   const QString& group, const QList<SharedAnnotationData>& data)  
+ADVCreateAnnotationsTask::ADVCreateAnnotationsTask( AnnotatedDNAView *_ctx, const GObjectReference &aobjRef,
+                                                   const QString &group, const QList<AnnotationData> &data )
 : Task(tr("Create annotations task"), TaskFlags_NR_FOSCOE), ctx(_ctx)
 {
     LoadUnloadedDocumentTask::addLoadingSubtask(this, LoadDocumentTaskConfig(true, aobjRef, new LDTObjectFactory(this)));
@@ -52,22 +54,19 @@ ADVCreateAnnotationsTask::ADVCreateAnnotationsTask(AnnotatedDNAView* _ctx, const
     addSubTask(t);
 }
 
-Task::ReportResult ADVCreateAnnotationsTask::report() {
-    if (!hasError() && !ctx.isNull()) {
-        Annotation* a = t->getAnnotations().first();
-        assert(a!=NULL);
-
-        AnnotationTableObject* ao = a->getGObject();
-        if (!ctx->getAnnotationObjects().contains(ao)) { 
+Task::ReportResult ADVCreateAnnotationsTask::report( ) {
+    if ( !hasError( ) && !ctx.isNull( ) ) {
+        FeaturesTableObject *ao = t->getGObject( );
+        if ( !ctx->getAnnotationObjects( ).contains( ao ) ) { 
             //for documents loaded during annotation creation object is added here
-            QString err = ctx->addObject(ao);
-            if (!err.isEmpty()) {
-                setError(err);
+            QString err = ctx->addObject( ao );
+            if ( !err.isEmpty( ) ) {
+                setError( err );
             }
         }
-        if (!hasError()) {
-            ctx->getAnnotationsSelection()->clear();
-            ctx->getAnnotationsSelection()->addToSelection(a);
+        if ( !hasError( ) ) {
+            ctx->getAnnotationsSelection( )->clear( );
+            ctx->getAnnotationsSelection( )->addToSelection( ao->getAnnotations( ).last( ) );
         }
     }
     return ReportResult_Finished;
@@ -85,41 +84,41 @@ ADVAnnotationCreation::ADVAnnotationCreation(AnnotatedDNAView* c) : QObject(c) {
     connect(createAction, SIGNAL(triggered()), SLOT(sl_createAnnotation()));
 }
 
-void ADVAnnotationCreation::sl_createAnnotation() {
-    ADVSequenceObjectContext* seqCtx = ctx->getSequenceInFocus();
-    assert(seqCtx!=NULL);
+void ADVAnnotationCreation::sl_createAnnotation( ) {
+    ADVSequenceObjectContext *seqCtx = ctx->getSequenceInFocus( );
+    SAFE_POINT( NULL != seqCtx, "Invalid sequence context detected!", );
     CreateAnnotationModel m;
     m.useUnloadedObjects = true;
-    m.sequenceObjectRef = GObjectReference(seqCtx->getSequenceObject());
-    m.sequenceLen = seqCtx->getSequenceObject()->getSequenceLength();
-    if (!seqCtx->getSequenceSelection()->isEmpty()) {
-        m.data->location->regions << seqCtx->getSequenceSelection()->getSelectedRegions();
+    m.sequenceObjectRef = GObjectReference( seqCtx->getSequenceObject( ) );
+    m.sequenceLen = seqCtx->getSequenceObject( )->getSequenceLength( );
+    if ( !seqCtx->getSequenceSelection( )->isEmpty( ) ) {
+        m.data.location->regions << seqCtx->getSequenceSelection( )->getSelectedRegions( );
     }
     
     //setup default object and group if possible from AnnotationsTreeView
-    AnnotationsTreeView* tv = ctx->getAnnotationsView();
-    AVItem* ai = tv->currentItem();
-    if (ai!=NULL && !ai->isReadonly()) {
-        AnnotationTableObject* aobj = ai->getAnnotationTableObject();
-        if (seqCtx->getAnnotationGObjects().contains(aobj)) {
+    AnnotationsTreeView *tv = ctx->getAnnotationsView( );
+    AVItem *ai = tv->currentItem( );
+    if ( NULL != ai && !ai->isReadonly( ) ) {
+        FeaturesTableObject *aobj = ai->getAnnotationTableObject( );
+        if ( seqCtx->getAnnotationGObjects( ).contains( aobj ) ) {
             m.annotationObjectRef = aobj;
-            AnnotationGroup* ag = ai->getAnnotationGroup();
-            if (ag!=aobj->getRootGroup()) {
-                m.groupName = ag->getGroupPath();
+            __AnnotationGroup ag = ai->getAnnotationGroup( );
+            if ( ag != aobj->getRootGroup( ) ) {
+                m.groupName = ag.getGroupPath( );
             }
         }
     }
 
-    CreateAnnotationDialog d(ctx->getWidget(), m);
-    int rc = d.exec();
-    if (rc != QDialog::Accepted) {
+    CreateAnnotationDialog d( ctx->getWidget( ), m );
+    int rc = d.exec( );
+    if ( QDialog::Accepted != rc ) {
         return;
     }
 
-    QList<SharedAnnotationData> data;
+    QList<AnnotationData> data;
     data << m.data;
-    ADVCreateAnnotationsTask* t = new ADVCreateAnnotationsTask(ctx, m.annotationObjectRef, m.groupName, data);
-    AppContext::getTaskScheduler()->registerTopLevelTask(t);
+    ADVCreateAnnotationsTask *t = new ADVCreateAnnotationsTask( ctx, m.annotationObjectRef, m.groupName, data );
+    AppContext::getTaskScheduler( )->registerTopLevelTask( t );
 }
 
 } // namespace

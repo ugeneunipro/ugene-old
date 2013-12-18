@@ -39,7 +39,7 @@ namespace U2 {
 class ADVSequenceObjectContext;
 class U2SequenceObject;
 class CreateAnnotationWidgetController;
-class AnnotationTableObject;
+class FeaturesTableObject;
 
 class DigestSequenceDialog : public QDialog, public Ui_DigestSequenceDialog {
     Q_OBJECT
@@ -70,7 +70,7 @@ private:
 
     ADVSequenceObjectContext*           seqCtx;
     U2SequenceObject*                  dnaObj;
-    AnnotationTableObject*              sourceObj;
+    FeaturesTableObject *               sourceObj;
     EnzymesSelectorDialogHandler        enzymesSelectorHandler;
     CreateAnnotationWidgetController*   ac;
     QTimer*                             timer;
@@ -81,9 +81,7 @@ private:
     int                                 animationCounter;
     static const QString                WAIT_MESSAGE;
     static const QString                HINT_MESSAGE;
-    
 };
-
 
 } //namespace
 

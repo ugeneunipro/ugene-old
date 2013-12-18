@@ -31,7 +31,7 @@
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/DNAInfo.h>
 
-#include <U2Core/AnnotationTableObject.h>
+#include <U2Core/FeaturesTableObject.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/GObjectUtils.h>
 #include <U2Core/GObjectRelationRoles.h>
@@ -42,8 +42,6 @@
 
 #include <U2Core/TextUtils.h>
 #include <U2Core/QVariantUtils.h>
-
-#include <memory>
 
 namespace U2 {
 
@@ -226,8 +224,6 @@ bool GenbankPlainTextFormat::readIdLine(ParserState* st) {
     return true;
 }
 
-
-
 bool GenbankPlainTextFormat::readEntry(ParserState* st, U2SequenceImporter& seqImporter, int& sequenceLen,int& fullSequenceLen,bool merge, int gapSize, U2OpStatus& os) {
     U2OpStatus& si = st->si;
     QString lastTagName;
@@ -280,10 +276,7 @@ bool GenbankPlainTextFormat::readEntry(ParserState* st, U2SequenceImporter& seqI
                     || (st->hasValue() && st->buff[0] == ' '))){   //read until the end of the references record
                 ri.referencesRecord.append("\n" + QByteArray(st->buff, st->len));
             }
-//             while (st->readNextLine() && (st->hasValue() && st->buff[0] == ' '))
-//             {
-//                 //TODO
-//             }
+
             st->entry->tags.insertMulti(DNAInfo::REFERENCE, qVariantFromValue<DNAReferenceInfo>(ri));
             hasLine = true;
             continue;
@@ -500,23 +493,13 @@ void GenbankPlainTextFormat::storeEntry(IOAdapter *io, const QMap< GObjectType, 
     // write other keywords
     if (seq) {
         //header
-        io->writeBlock(gbHeader.toLocal8Bit());    
-
-        //             QList<StrPair> lst(formatKeywords(so));
-        //             foreach (const StrPair& p, lst) {
-        //                 if (!writeKeyword(io, os, p.first, p.second)) {
-        //                     return;
-        //                 }
-        //             }
+        io->writeBlock(gbHeader.toLocal8Bit());
     }
 
     //write tool mark
     QList<GObject*> annsAndSeqObjs; annsAndSeqObjs<<anns; if (seq!=NULL) {annsAndSeqObjs<<seq;}
     if (!annsAndSeqObjs.isEmpty()) {
         QString unimark = annsAndSeqObjs[0]->getGObjectName();
-        /*if(annsAndSeqObjs[0]->getGObjectType() == GObjectTypes::SEQUENCE && seqCounter > 1){
-            unimark += " sequence";
-        }*/
         if (!writeKeyword(io, os, UGENE_MARK, unimark, false)) {
             return;
         }
@@ -648,24 +631,23 @@ static void writeAnnotations(IOAdapter* io, QList<GObject*> aos, U2OpStatus& si)
 
     //write every feature
     const char* spaceLine = TextUtils::SPACE_LINE.data();
-//    const QByteArray& aminoQ = GBFeatureUtils::QUALIFIER_AMINO_STRAND;
-//    const QByteArray& aminoQYes = GBFeatureUtils::QUALIFIER_AMINO_STRAND_YES;
-//    const QByteArray& aminoQNo = GBFeatureUtils::QUALIFIER_AMINO_STRAND_NO;
     const QByteArray& nameQ = GBFeatureUtils::QUALIFIER_NAME;
     const QByteArray& groupQ = GBFeatureUtils::QUALIFIER_GROUP;
     const QString& defaultKey = GBFeatureUtils::DEFAULT_KEY;
 
-    QList<Annotation*> sortedAnnotations;
-    foreach(GObject* o, aos) {
-        AnnotationTableObject* ao = qobject_cast<AnnotationTableObject*>(o);
-        assert(ao);
-        sortedAnnotations += ao->getAnnotations();
+    QList<__Annotation> sortedAnnotations;
+    foreach ( GObject* o, aos ) {
+        FeaturesTableObject *ao = qobject_cast<FeaturesTableObject *>( o );
+        CHECK_EXT( NULL != ao, si.setError( "Invalid annotation table!" ), );
+        sortedAnnotations += ao->getAnnotations( );
     }
 
-    qStableSort(sortedAnnotations.begin(), sortedAnnotations.end(), annotationLessThanByRegion);
+    qStableSort( sortedAnnotations.begin( ), sortedAnnotations.end( ),
+        __Annotation::annotationLessThanByRegion );
+
     for(int i = 0; i < sortedAnnotations.size(); ++i) {
-        Annotation * a = sortedAnnotations.at(i); assert(a != NULL);
-        QString aName = a->getAnnotationName();
+        const __Annotation &a = sortedAnnotations.at( i );
+        QString aName = a.getName( );
 
         if (aName == U1AnnotationUtils::lowerCaseAnnotationName
             || aName == U1AnnotationUtils::upperCaseAnnotationName) {
@@ -695,7 +677,8 @@ static void writeAnnotations(IOAdapter* io, QList<GObject*> aos, U2OpStatus& si)
         }
 
         //write location
-        QString multiLineLocation = Genbank::LocationParser::buildLocationString(a->data());
+        const AnnotationData ad = a.getData( );
+        QString multiLineLocation = Genbank::LocationParser::buildLocationString( &ad );
         prepareMultiline(multiLineLocation, 21);
         len = io->writeBlock(multiLineLocation.toLocal8Bit());
         if (len != multiLineLocation.size()) {
@@ -704,7 +687,7 @@ static void writeAnnotations(IOAdapter* io, QList<GObject*> aos, U2OpStatus& si)
         }
 
         //write qualifiers
-        foreach (const U2Qualifier& q, a->getQualifiers()) {
+        foreach ( const U2Qualifier &q, a.getQualifiers( ) ) {
             writeQualifier(q.name, q.value, io, si, spaceLine);
             if (si.hasError()) {
                 return;
@@ -723,16 +706,11 @@ static void writeAnnotations(IOAdapter* io, QList<GObject*> aos, U2OpStatus& si)
         //}
 
         //write group
-        const QList<AnnotationGroup*>& groups = a->getGroups();
-        bool storeGroups = true;
-        if (groups.size() == 1) {
-            AnnotationGroup* ag = groups.first();
-            storeGroups = !ag->isTopLevelGroup() || ag->getGroupName()!=aName;
-        }
+        const __AnnotationGroup ag = a.getGroup( );
+        const bool storeGroups = !ag.isTopLevelGroup( ) || ag.getName( ) != aName;
+
         if (storeGroups) {
-            foreach(AnnotationGroup* ag, a->getGroups()) {
-                writeQualifier(groupQ, ag->getGroupPath(), io, si, spaceLine);
-            }
+            writeQualifier( groupQ, ag.getGroupPath( ), io, si, spaceLine );
         }
     }
 }

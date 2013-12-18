@@ -30,104 +30,112 @@ namespace U2 {
 
 class GObject;
 class GHints;
-class AnnotationTableObject;
+class FeaturesTableObject;
 class U2SequenceObject;
 class DNAAlphabet;
 class StateLock;
 
-// This object represents in-memory AnnotationTableObject.
-// Auto-annotations are used to represent temporary algorithm results,
-// such as for example restriction sites or ORFS.
-// Auto-annotations are controlled by AnnotatedDNAView.
-
 class AutoAnnotationsUpdater;
 class AutoAnnotationsSupport;
 
-class U2CORE_EXPORT AutoAnnotationObject : public QObject 
+/**
+ * This object represents in-memory FeaturesTableObject.
+ * Auto-annotations are used to represent temporary algorithm results,
+ * such as for example restriction sites or ORFS.
+ * Auto-annotations are controlled by AnnotatedDNAView.
+ */
+class U2CORE_EXPORT AutoAnnotationObject : public QObject
 {
     Q_OBJECT
 public:
-    static const QString AUTO_ANNOTATION_HINT;
-    AutoAnnotationObject(U2SequenceObject* obj, QObject* parent);
-    ~AutoAnnotationObject();
-    AnnotationTableObject* getAnnotationObject() const { return aobj; }
-    U2SequenceObject* getSeqObject() const {return dnaObj; }
-    void setGroupEnabled(const QString& groupName, bool enabled);
-    void update();
-    void updateGroup(const QString& groupName);
-    void emitStateChange(bool started);
+                                AutoAnnotationObject( U2SequenceObject *obj, QObject *parent );
+                                ~AutoAnnotationObject( );
+    FeaturesTableObject *       getAnnotationObject( ) const { return aobj; }
+    U2SequenceObject *          getSeqObject( ) const { return dnaObj; }
+    void                        setGroupEnabled( const QString &groupName, bool enabled );
+    void                        update( );
+    void                        updateGroup( const QString &groupName );
+    void                        emitStateChange( bool started );
+
+    static const QString        AUTO_ANNOTATION_HINT;
+
 signals:
-    void si_updateStarted();
-    void si_updateFinshed();
+    void                        si_updateStarted( );
+    void                        si_updateFinshed( );
+
 private:
-    void handleUpdate(QList<AutoAnnotationsUpdater*> updaters);
-    U2SequenceObject* dnaObj;
-    AnnotationTableObject*  aobj;
-    AutoAnnotationsSupport* aaSupport;
-    QSet<QString> enabledGroups;
+    void                        handleUpdate( QList<AutoAnnotationsUpdater *> updaters );
+
+    U2SequenceObject *          dnaObj;
+    FeaturesTableObject *       aobj;
+    AutoAnnotationsSupport *    aaSupport;
+    QSet<QString>               enabledGroups;
 };
 
 #define AUTO_ANNOTATION_SETTINGS "auto-annotations/"
 
-struct AutoAnnotationConstraints {
-    AutoAnnotationConstraints() : alphabet(NULL), hints(NULL) {}
-    const DNAAlphabet* alphabet;
-    GHints* hints;
+struct U2CORE_EXPORT AutoAnnotationConstraints {
+                            AutoAnnotationConstraints( );
+
+    const DNAAlphabet *     alphabet;
+    GHints *                hints;
 };
 
 class U2CORE_EXPORT AutoAnnotationsUpdater : public QObject {
     Q_OBJECT
-private:
-    QString groupName;
-    QString name;
-    bool checkedByDefault;
 public:
-    AutoAnnotationsUpdater(const QString& nm, const QString& gName);
-    virtual ~AutoAnnotationsUpdater();
-    const QString& getGroupName() { return groupName; }
-    const QString& getName() { return name; }
-    bool isCheckedByDefault() { return checkedByDefault; }
-    void setCheckedByDefault(bool checked) { checkedByDefault = checked; }
-    virtual bool checkConstraints(const AutoAnnotationConstraints& constraints) = 0;   
-    virtual Task* createAutoAnnotationsUpdateTask(const AutoAnnotationObject* aa) = 0;
+                        AutoAnnotationsUpdater( const QString &nm, const QString &gName );
+    virtual             ~AutoAnnotationsUpdater( );
+    const QString &     getGroupName( ) { return groupName; }
+    const QString &     getName( ) { return name; }
+    bool                isCheckedByDefault( ) { return checkedByDefault; }
+    void                setCheckedByDefault( bool checked ) { checkedByDefault = checked; }
+    virtual bool        checkConstraints( const AutoAnnotationConstraints &constraints ) = 0;
+    virtual Task *      createAutoAnnotationsUpdateTask( const AutoAnnotationObject *aa ) = 0;
+
+private:
+    QString             groupName;
+    QString             name;
+    bool                checkedByDefault;
 };
 
-class U2CORE_EXPORT AutoAnnotationsSupport : public QObject
-{
-    Q_OBJECT 
+class U2CORE_EXPORT AutoAnnotationsSupport : public QObject {
+    Q_OBJECT
 public:
-    ~AutoAnnotationsSupport();
-    void registerAutoAnnotationsUpdater(AutoAnnotationsUpdater* updater);
-    void unregisterAutoAnnotationsUpdater(AutoAnnotationsUpdater* updater);
-    QList<AutoAnnotationsUpdater*> getAutoAnnotationUpdaters();
-    AutoAnnotationsUpdater* findUpdaterByGroupName(const QString& groupName);
-    AutoAnnotationsUpdater* findUpdaterByName(const QString& name);
-    static bool isAutoAnnotation(const AnnotationTableObject* obj);
-    static bool isAutoAnnotation(const GObject* obj);
+                                        ~AutoAnnotationsSupport( );
+    void                                registerAutoAnnotationsUpdater( AutoAnnotationsUpdater *updater );
+    void                                unregisterAutoAnnotationsUpdater( AutoAnnotationsUpdater *updater );
+    QList<AutoAnnotationsUpdater *>     getAutoAnnotationUpdaters( );
+    AutoAnnotationsUpdater*             findUpdaterByGroupName( const QString& groupName );
+    AutoAnnotationsUpdater*             findUpdaterByName( const QString &name );
+    static bool                         isAutoAnnotation( const FeaturesTableObject *obj );
+    static bool                         isAutoAnnotation( const GObject *obj );
+
 private:
-    QList<AutoAnnotationsUpdater*> aaUpdaters;
+    QList<AutoAnnotationsUpdater *>     aaUpdaters;
 };
 
 class U2CORE_EXPORT AutoAnnotationsUpdateTask : public Task {
     Q_OBJECT
 public:
-    AutoAnnotationsUpdateTask(AutoAnnotationObject* aaObj, QList<Task*> subtasks); 
-    virtual ~AutoAnnotationsUpdateTask();
-    virtual void prepare();
-    virtual void cleanup();
-    ReportResult report();
-    void setAutoAnnotationInvalid() { aaObjectInvalid = true; }
-    AutoAnnotationObject* getAutoAnnotationObject() { return aa; }
-    static const QString NAME;
+                            AutoAnnotationsUpdateTask( AutoAnnotationObject *aaObj, QList<Task *> subtasks );
+    virtual                 ~AutoAnnotationsUpdateTask( );
+    virtual void            prepare( );
+    virtual void            cleanup( );
+    ReportResult            report( );
+    void                    setAutoAnnotationInvalid() { aaObjectInvalid = true; }
+    AutoAnnotationObject *  getAutoAnnotationObject( ) { return aa; }
+
+    static const QString    NAME;
+
 protected:
-    AutoAnnotationObject* aa;
-    U2SequenceObject* aaSeqObj;
-    StateLock* lock;
-    QList<Task*> subTasks;
-    bool aaObjectInvalid;
+    AutoAnnotationObject *  aa;
+    U2SequenceObject *      aaSeqObj;
+    StateLock *             lock;
+    QList<Task *>           subTasks;
+    bool                    aaObjectInvalid;
 };
 
-
-} // namespace
+} // namespace U2
 
 #endif

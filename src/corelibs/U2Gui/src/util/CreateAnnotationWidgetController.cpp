@@ -24,18 +24,21 @@
 #include "GObjectComboBoxController.h"
 #include <U2Gui/DialogUtils.h>
 
+#include <U2Core/Annotation.h>
+#include <U2Core/AnnotationGroup.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/IOAdapter.h>
+#include <U2Core/FeaturesTableObject.h>
 #include <U2Core/ProjectModel.h>
 #include <U2Core/Task.h>
 #include <U2Core/GObjectReference.h>
 #include <U2Core/GObjectRelationRoles.h>
 #include <U2Core/Settings.h>
 #include <U2Core/GObjectTypes.h>
+#include <U2Core/U2DbiRegistry.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
-
 
 #include <U2Formats/GenbankLocationParser.h>
 #include <U2Formats/GenbankFeatures.h>
@@ -61,19 +64,17 @@ namespace U2 {
 /* TRANSLATOR U2::CreateAnnotationWidgetController */
 
 CreateAnnotationModel::CreateAnnotationModel() : defaultIsNewDoc(false), hideLocation(false), hideAnnotationName(false) {
-    data = new AnnotationData();
     useUnloadedObjects = false;
     hideAutoAnnotationsOption = true;
     hideAnnotationParameters = false;
 }
 
-AnnotationTableObject* CreateAnnotationModel::getAnnotationObject() const {
-    GObject* res = GObjectUtils::selectObjectByReference(annotationObjectRef, UOF_LoadedOnly);
-    AnnotationTableObject* aobj = qobject_cast<AnnotationTableObject*>(res);
-    assert(aobj!=NULL);
+FeaturesTableObject * CreateAnnotationModel::getAnnotationObject( ) const {
+    GObject *res = GObjectUtils::selectObjectByReference( annotationObjectRef, UOF_LoadedOnly );
+    FeaturesTableObject *aobj = qobject_cast<FeaturesTableObject *>( res );
+    SAFE_POINT( NULL != aobj, "Invalid annotation table detected!", NULL );
     return aobj;
 }
-
 
 CreateAnnotationWidgetController::CreateAnnotationWidgetController(
     const CreateAnnotationModel& m,
@@ -180,8 +181,8 @@ void CreateAnnotationWidgetController::commonWidgetUpdate(const CreateAnnotation
     } 
 
     //default field values
-    if (!model.data->name.isEmpty()) {
-        annotationNameEdit->setText(model.data->name);
+    if ( !model.data.name.isEmpty( ) ) {
+        annotationNameEdit->setText( model.data.name );
     } else if (!model.hideAnnotationName) {
         //QString name = AppContext::getSettings()->getValue(SETTINGS_LAST_USED_ANNOTATION_NAME, QString("misc_feature")).toString();
         annotationNameEdit->setText("misc_feature");
@@ -189,8 +190,8 @@ void CreateAnnotationWidgetController::commonWidgetUpdate(const CreateAnnotation
     
     groupNameEdit->setText(model.groupName.isEmpty() ? GROUP_NAME_AUTO : model.groupName);
 
-    if (!model.data->location->isEmpty()) {
-        QString locationString = Genbank::LocationParser::buildLocationString(model.data);
+    if ( !model.data.location->isEmpty( ) ) {
+        QString locationString = Genbank::LocationParser::buildLocationString( &model.data );
         locationEdit->setText(locationString);
     }
 
@@ -222,7 +223,6 @@ void CreateAnnotationWidgetController::commonWidgetUpdate(const CreateAnnotation
         annotParamsWidget->show();
     }
 }
-
 
 void CreateAnnotationWidgetController::initLayout(AnnotationWidgetMode layoutMode)
 {
@@ -463,12 +463,12 @@ public:
         if (obj->isUnloaded()) {
             return !allowUnloaded;
         }
-        assert(qobject_cast<AnnotationTableObject*>(obj)!=NULL);
+        SAFE_POINT( NULL != qobject_cast<FeaturesTableObject *>( obj ),
+            "Invalid annotation table object!", false );
         return obj->isStateLocked();
     }
     bool allowUnloaded;
 };
-
 
 void CreateAnnotationWidgetController::sl_onLoadObjectsClicked() {
     ProjectTreeControllerModeSettings s;
@@ -504,17 +504,17 @@ QString CreateAnnotationWidgetController::validate() {
         }
     }
 
-    if (model.data->name.isEmpty() && !model.hideAnnotationName ) {
+    if (model.data.name.isEmpty() && !model.hideAnnotationName ) {
         annotationNameEdit->setFocus();
         return tr("Annotation name is empty");
     }
 
-    if (model.data->name.length() > GBFeatureUtils::MAX_KEY_LEN) {
+    if (model.data.name.length() > GBFeatureUtils::MAX_KEY_LEN) {
         annotationNameEdit->setFocus();
         return tr("Annotation name is too long!\nMaximum allowed size: %1 (Genbank format compatibility issue)").arg(GBFeatureUtils::MAX_KEY_LEN);
     }
 
-    if (!Annotation::isValidAnnotationName(model.data->name) && !model.hideAnnotationName) {
+    if (!__Annotation::isValidAnnotationName(model.data.name) && !model.hideAnnotationName) {
         annotationNameEdit->setFocus();
         return tr("Illegal annotation name");
     }
@@ -524,7 +524,7 @@ QString CreateAnnotationWidgetController::validate() {
         return tr("Group name is empty");
     }
 
-    if (!AnnotationGroup::isValidGroupName(model.groupName, true)) {
+    if (!__AnnotationGroup::isValidGroupName(model.groupName, true)) {
         groupNameEdit->setFocus();
         return tr("Illegal group name");
     }
@@ -532,39 +532,36 @@ QString CreateAnnotationWidgetController::validate() {
     
     static const QString INVALID_LOCATION = tr("Invalid location! Location must be in GenBank format.\nSimple examples:\n1..10\njoin(1..10,15..45)\ncomplement(5..15)");
     
-    if (!model.hideLocation && model.data->location->isEmpty()) {
+    if (!model.hideLocation && model.data.location->isEmpty()) {
         locationEdit->setFocus();
         return INVALID_LOCATION;
     }
     if (!model.hideLocation){
-        foreach(U2Region reg, model.data->getRegions()){
+        foreach ( const U2Region &reg, model.data.getRegions( ) ) {
             if( reg.endPos() > model.sequenceLen || reg.startPos < 0 || reg.endPos() < reg.startPos) {
                 return INVALID_LOCATION;
             }
         }
     }
-    
-//    AppContext::getSettings()->setValue(SETTINGS_LAST_USED_ANNOTATION_NAME, model.data->name);
 
     return QString::null;
 }
 
 
 void CreateAnnotationWidgetController::updateModel(bool forValidation) {
-    SAFE_POINT(model.data != NULL, "Model data is null", );
-
-    model.data->name = annotationNameEdit->text();
+    model.data.name = annotationNameEdit->text();
 
     model.groupName = groupNameEdit->text();
     if (model.groupName == GROUP_NAME_AUTO) {
-        model.groupName = model.data->name;
+        model.groupName = model.data.name;
     }
 
-    model.data->location->reset();
+    model.data.location->reset();
     
     if (!model.hideLocation) {
         QByteArray locEditText = locationEdit->text().toLatin1();
-        Genbank::LocationParser::parseLocation(	locEditText.constData(), locationEdit->text().length(), model.data->location, model.sequenceLen);
+        Genbank::LocationParser::parseLocation(	locEditText.constData(),
+            locationEdit->text().length(), model.data.location, model.sequenceLen);
     }
 
     if (existingObjectRB->isChecked()) {
@@ -590,7 +587,9 @@ bool CreateAnnotationWidgetController::prepareAnnotationObject() {
         U2OpStatus2Log os;
         Document* d = df->createNewLoadedDocument(iof, model.newDocUrl, os);
         CHECK_OP(os, false);
-        AnnotationTableObject* aobj = new AnnotationTableObject("Annotations");
+        const U2DbiRef dbiRef = AppContext::getDbiRegistry( )->getSessionTmpDbiRef( os );
+        SAFE_POINT_OP( os, false );
+        FeaturesTableObject *aobj = new FeaturesTableObject( "Annotations", dbiRef );
         aobj->addObjectRelation(GObjectRelation(model.sequenceObjectRef, GObjectRelationRole::SEQUENCE));
         d->addObject(aobj);
         AppContext::getProject()->addDocument(d);
@@ -634,15 +633,15 @@ void CreateAnnotationWidgetController::sl_setPredefinedAnnotationName() {
     annotationNameEdit->setText(text);
 }
 
-void CreateAnnotationWidgetController::sl_groupName() {
-    GObject* obj = occ->getSelectedObject();
+void CreateAnnotationWidgetController::sl_groupName( ) {
+    GObject* obj = occ->getSelectedObject( );
     QStringList groupNames; 
     groupNames << GROUP_NAME_AUTO;
-    if (obj != NULL && !obj->isUnloaded()) {
-        AnnotationTableObject* ao = qobject_cast<AnnotationTableObject*>(obj);
-        ao->getRootGroup()->getSubgroupPaths(groupNames);
+    if ( NULL != obj && !obj->isUnloaded( ) ) {
+        FeaturesTableObject* ao = qobject_cast<FeaturesTableObject *>( obj );
+        ao->getRootGroup( ).getSubgroupPaths( groupNames );
     }
-    assert(groupNames.size() >= 1);
+    SAFE_POINT( !groupNames.isEmpty( ), "Unable to find annotation groups!", );
     if (groupNames.size() == 1) {
         groupNameEdit->setText(groupNames.first());
         return;

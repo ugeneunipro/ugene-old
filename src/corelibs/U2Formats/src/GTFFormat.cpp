@@ -19,11 +19,9 @@
  * MA 02110-1301, USA.
  */
 
-#include "GTFFormat.h"
-#include "DocumentFormatUtils.h"
+#include <QtCore/QScopedArrayPointer>
 
-#include <U2Core/AnnotationTableObject.h>
-#include <U2Core/GAutoDeleteList.h>
+#include <U2Core/FeaturesTableObject.h>
 #include <U2Core/GObjectReference.h>
 #include <U2Core/GObjectRelationRoles.h>
 #include <U2Core/IOAdapter.h>
@@ -35,8 +33,8 @@
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/U2SequenceUtils.h>
 
-#include <memory>
-
+#include "DocumentFormatUtils.h"
+#include "GTFFormat.h"
 
 namespace U2 {
 
@@ -110,7 +108,6 @@ GTFFormat::GTFFormat(QObject* parent)
         << "exon" << "transcript" << "missing_data";
 }
 
-
 Document* GTFFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& hints, U2OpStatus& os)
 {
     Q_UNUSED(dbiRef);
@@ -119,55 +116,48 @@ Document* GTFFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const Q
     CHECK_EXT(io != NULL && io->isOpen(), os.setError(L10N::badArgument("IO adapter")), NULL);
     QList<GObject*> objects;
 
-    load(io, objects, os);
+    load( io, objects, dbiRef, os );
     CHECK_OP_EXT(os, qDeleteAll(objects), NULL);
 
     Document* doc = new Document(this, io->getFactory(), io->getURL(), dbiRef, objects);
     return doc;
 }
 
-
 #define READ_BUFF_SIZE 4096
-int readGTFLine(QString &buffer, IOAdapter* io, gauto_array<char>& charbuff) {
+int readGTFLine( QString &buffer, IOAdapter *io, QScopedArrayPointer<char> &charbuff ) {
     int len;
     buffer.clear();
     do {
-        len = io->readLine(charbuff.data, READ_BUFF_SIZE -1);
-        charbuff.data[len] = '\0';
-        buffer.append(QString(charbuff.data));
-    } while (len == READ_BUFF_SIZE - 1);
-    return buffer.length();
+        len = io->readLine( charbuff.data( ), READ_BUFF_SIZE - 1 );
+        charbuff.data( )[len] = '\0';
+        buffer.append( QString( charbuff.data( ) ) );
+    } while ( READ_BUFF_SIZE - 1 == len );
+    return buffer.length( );
 }
 
+QList<AnnotationData> GTFFormat::getAnnotData( IOAdapter *io, U2OpStatus &os ) {
+    GTFFormat gtfFormat( NULL );
+    QMap<QString, QList<AnnotationData> > annsMap = gtfFormat.parseDocument( io, os );
 
-QList<SharedAnnotationData> GTFFormat::getAnnotData(IOAdapter* io, U2OpStatus& os)
-{
-    std::auto_ptr<QObject> parent(new QObject());
-    GTFFormat gtfFormat(parent.get());
-    QMap<QString, SharedAnnotationList> annsMap = gtfFormat.parseDocument(io, os);
-
-    SharedAnnotationList result;
-    foreach(const SharedAnnotationList& annList, annsMap) {
+    QList<AnnotationData> result;
+    foreach ( const QList<AnnotationData> &annList, annsMap ) {
         result += annList;
     }
 
     return result;
 }
 
-
-QMap<QString,SharedAnnotationList> GTFFormat::parseDocument(IOAdapter* io, U2OpStatus& os)
-{
-    QMap<QString,SharedAnnotationList> result;
+QMap<QString, QList<AnnotationData> > GTFFormat::parseDocument( IOAdapter *io, U2OpStatus &os ) {
+    QMap<QString, QList<AnnotationData> > result;
 
     int length;
-    gauto_array<char> buff = new char[READ_BUFF_SIZE];
+    QScopedArrayPointer<char> buff( new char[READ_BUFF_SIZE] );
     QString qstrbuf;
     QStringList fields;
 
     bool fileIsValid = true;
     int lineNumber = 1;
-    while ((length = readGTFLine(qstrbuf, io, buff)) > 0) {
-
+    while ( ( length = readGTFLine( qstrbuf, io, buff ) ) > 0 ) {
         // Parse and validate the line
         GTFLineValidateFlags validationStatus;
         GTFLineData gtfLineData = parseAndValidateLine(qstrbuf, validationStatus);
@@ -203,16 +193,16 @@ QMap<QString,SharedAnnotationList> GTFFormat::parseDocument(IOAdapter* io, U2OpS
         // Create the annotation
         QString annotName = gtfLineData.feature;
 
-        SharedAnnotationData annotData(new AnnotationData());
-        annotData->name = annotName;
-        annotData->location->regions << gtfLineData.region;
+        AnnotationData annotData;
+        annotData.name = annotName;
+        annotData.location->regions << gtfLineData.region;
 
 
         // Add qualifiers
-        annotData->qualifiers << U2Qualifier(CHROMOSOME, gtfLineData.seqName);
+        annotData.qualifiers << U2Qualifier(CHROMOSOME, gtfLineData.seqName);
 
         if (NO_VALUE_STR != gtfLineData.source) {
-            annotData->qualifiers.push_back(U2Qualifier(SOURCE_QUALIFIER_NAME, gtfLineData.source));
+            annotData.qualifiers << U2Qualifier(SOURCE_QUALIFIER_NAME, gtfLineData.source);
         }
 
         if (validationStatus.isIncorrectScore()) {
@@ -221,16 +211,15 @@ QMap<QString,SharedAnnotationList> GTFFormat::parseDocument(IOAdapter* io, U2OpS
                 " value \"%1\" at line %2!").arg(gtfLineData.score).arg(lineNumber));
         }
         else if (NO_VALUE_STR != gtfLineData.score) {
-            annotData->qualifiers.push_back(U2Qualifier(SCORE_QUALIFIER_NAME, gtfLineData.score));
+            annotData.qualifiers << U2Qualifier(SCORE_QUALIFIER_NAME, gtfLineData.score);
         }
-
 
         if (validationStatus.isIncorrectFrame()) {
             ioLog.trace(tr("GTF parsing error: incorrect frame"
                 " value \"%1\" at line %2!").arg(gtfLineData.frame).arg(lineNumber));
         }
         else if (NO_VALUE_STR != gtfLineData.frame) {
-            annotData->qualifiers.push_back(U2Qualifier(FRAME_QUALIFIER_NAME, gtfLineData.frame));
+            annotData.qualifiers << U2Qualifier(FRAME_QUALIFIER_NAME, gtfLineData.frame);
         }
 
 
@@ -242,7 +231,7 @@ QMap<QString,SharedAnnotationList> GTFFormat::parseDocument(IOAdapter* io, U2OpS
 
             // If all qualifier are correct, add the qualifiers
             if (!validationStatus.isIncorrectFormatOfAttributes()) {
-                annotData->qualifiers.push_back(qualifier);
+                annotData.qualifiers << qualifier;
             }
         }
 
@@ -271,11 +260,11 @@ QMap<QString,SharedAnnotationList> GTFFormat::parseDocument(IOAdapter* io, U2OpS
                 " value \"%1\" at line %2!").arg(gtfLineData.strand).arg(lineNumber));
         }
         else if ("+" == gtfLineData.strand) {
-            annotData->qualifiers.push_back(U2Qualifier(STRAND_QUALIFIER_NAME, L10N::directStrandStr()));
+            annotData.qualifiers << U2Qualifier(STRAND_QUALIFIER_NAME, L10N::directStrandStr());
         }
         else if ("-" == gtfLineData.strand) {
-            annotData->setStrand(U2Strand::Complementary);
-            annotData->qualifiers.push_back(U2Qualifier(STRAND_QUALIFIER_NAME, L10N::complementStrandStr()));
+            annotData.setStrand(U2Strand::Complementary);
+            annotData.qualifiers << U2Qualifier(STRAND_QUALIFIER_NAME, L10N::complementStrandStr());
         }
 
         // Append the result
@@ -294,43 +283,42 @@ QMap<QString,SharedAnnotationList> GTFFormat::parseDocument(IOAdapter* io, U2OpS
 }
 
 
-void GTFFormat::load(IOAdapter* io, QList<GObject*>& objects, U2OpStatus& os)
+void GTFFormat::load( IOAdapter *io, QList<GObject *> &objects, const U2DbiRef &dbiRef,
+    U2OpStatus &os )
 {
-    QMultiMap<QString, SharedAnnotationList> annotationsMap = parseDocument(io, os);
+    QMultiMap<QString, QList<AnnotationData> > annotationsMap = parseDocument( io, os );
 
-    QMultiMap<QString, SharedAnnotationList>::const_iterator iter = annotationsMap.constBegin();
+    QMultiMap<QString, QList<AnnotationData> >::const_iterator iter = annotationsMap.constBegin();
     while (iter != annotationsMap.constEnd()) {
         const QString& sequenceName = iter.key();
        
         // Get or create the annotations table
         QString annotTableName = sequenceName + FEATURES_TAG;
-        AnnotationTableObject* annotTable = NULL;
-        foreach (GObject* object, objects) {
+        FeaturesTableObject *annotTable = NULL;
+        foreach ( GObject *object, objects ) {
             if (object->getGObjectName() == annotTableName) {
-                annotTable = (AnnotationTableObject*) object;
+                annotTable = dynamic_cast<FeaturesTableObject *>( object );
                 break;
             }
         }
         if (!annotTable) {
-            annotTable = new AnnotationTableObject(annotTableName);
+            annotTable = new FeaturesTableObject( annotTableName, dbiRef );
             objects.append(annotTable);
         }
 
-        const SharedAnnotationList& annotList = iter.value();
-        foreach( const SharedAnnotationData& annotData, annotList ) {
-            QString groupName = annotData->name; // Assume that the group name is the same as the annotation name
-            if (!AnnotationGroup::isValidGroupName(groupName, false)) {
+        const QList<AnnotationData> &annotList = iter.value( );
+        foreach( const AnnotationData &annotData, annotList ) {
+            QString groupName = annotData.name; // Assume that the group name is the same as the annotation name
+            if ( !__AnnotationGroup::isValidGroupName( groupName, false ) ) {
                 groupName = "Group"; // Or just a value if the name of the feature is not appropriate
             }
-            annotTable->addAnnotation(new Annotation(annotData), groupName);
+            annotTable->addAnnotation( annotData, groupName );
         }
         ++iter;
     }
 }
 
-
-FormatCheckResult GTFFormat::checkRawData(const QByteArray& rawData, const GUrl& /* = GUrl */) const
-{
+FormatCheckResult GTFFormat::checkRawData(const QByteArray &rawData, const GUrl & ) const {
     const char* data = rawData.constData();
     int size = rawData.size();
 
@@ -559,8 +547,7 @@ GTFLineData GTFFormat::parseAndValidateLine(QString line, GTFLineValidateFlags& 
 }
 
 
-void GTFFormat::storeDocument(Document* doc, IOAdapter* io, U2OpStatus& os)
-{
+void GTFFormat::storeDocument( Document *doc, IOAdapter *io, U2OpStatus &os ) {
     bool noErrorsDuringStoring = true;
     QList<GObject*> annotTables = doc->findGObjectByType(GObjectTypes::ANNOTATION_TABLE);
 
@@ -572,20 +559,20 @@ void GTFFormat::storeDocument(Document* doc, IOAdapter* io, U2OpStatus& os)
     QByteArray lineData;
 
     foreach (GObject* annotTable, annotTables) {
-        QList<Annotation*> annotationsList =
-            (qobject_cast<AnnotationTableObject*>(annotTable))->getAnnotations();
+        FeaturesTableObject *annTable = qobject_cast<FeaturesTableObject *>(annotTable);
+        QList<__Annotation> annotationsList = annTable->getAnnotations( );
 
-        foreach (const Annotation* annot, annotationsList) {
-            QString annotName = annot->getAnnotationName();
+        foreach ( const __Annotation &annot, annotationsList ) {
+            QString annotName = annot.getName( );
             if (annotName == U1AnnotationUtils::lowerCaseAnnotationName ||
                 annotName == U1AnnotationUtils::upperCaseAnnotationName)
             {
-                    continue;
+                continue;
             }
 
             QStringList lineFields = cleanFields;
-            QVector<U2Region> annotRegions = annot->getRegions();
-            QVector<U2Qualifier> annotQualifiers = annot->getQualifiers();
+            QVector<U2Region> annotRegions = annot.getRegions( );
+            QVector<U2Qualifier> annotQualifiers = annot.getQualifiers( );
 
             // Joined annotations are currently stored as other annotations (we do not store that they are joined)
             foreach (const U2Region region, annotRegions) {
@@ -671,5 +658,4 @@ void GTFFormat::storeDocument(Document* doc, IOAdapter* io, U2OpStatus& os)
     }
 }
 
-
-} // namespace
+} // namespace U2

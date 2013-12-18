@@ -148,24 +148,24 @@ PrimerPair::PrimerPair(const primer_pair &primerPair, int offset):
     quality(primerPair.pair_quality),
     complMeasure(primerPair.compl_measure)
 {
-    if(NULL != leftPrimer.get())
+    if ( !leftPrimer.isNull( ) )
     {
         leftPrimer->setStart(leftPrimer->getStart() + offset);
     }
-    if(NULL != rightPrimer.get())
+    if ( !rightPrimer.isNull( ) )
     {
         rightPrimer->setStart(rightPrimer->getStart() + offset);
     }
-    if(NULL != internalOligo.get())
+    if ( !internalOligo.isNull( ) )
     {
         internalOligo->setStart(internalOligo->getStart() + offset);
     }
 }
 
 PrimerPair::PrimerPair(const PrimerPair &primerPair):
-        leftPrimer((NULL == primerPair.leftPrimer.get())? NULL:new Primer(*primerPair.leftPrimer)),
-        rightPrimer((NULL == primerPair.rightPrimer.get())? NULL:new Primer(*primerPair.rightPrimer)),
-        internalOligo((NULL == primerPair.internalOligo.get())? NULL:new Primer(*primerPair.internalOligo)),
+        leftPrimer( ( primerPair.leftPrimer.isNull( ) ) ? NULL : new Primer( *primerPair.leftPrimer ) ),
+        rightPrimer( ( primerPair.rightPrimer.isNull( ) ) ? NULL : new Primer( *primerPair.rightPrimer ) ),
+        internalOligo( ( primerPair.internalOligo.isNull( ) ) ? NULL : new Primer( *primerPair.internalOligo ) ),
         complAny(primerPair.complAny),
         complEnd(primerPair.complEnd),
         productSize(primerPair.productSize),
@@ -176,9 +176,9 @@ PrimerPair::PrimerPair(const PrimerPair &primerPair):
 
 const PrimerPair &PrimerPair::operator=(const PrimerPair &primerPair)
 {
-    leftPrimer.reset((NULL == primerPair.leftPrimer.get())? NULL:new Primer(*primerPair.leftPrimer));
-    rightPrimer.reset((NULL == primerPair.rightPrimer.get())? NULL:new Primer(*primerPair.rightPrimer));
-    internalOligo.reset((NULL == primerPair.internalOligo.get())? NULL:new Primer(*primerPair.internalOligo));
+    leftPrimer.reset( ( primerPair.leftPrimer.isNull( ) ) ? NULL : new Primer( *primerPair.leftPrimer ) );
+    rightPrimer.reset( ( primerPair.rightPrimer.isNull( ) ) ? NULL : new Primer( *primerPair.rightPrimer ) );
+    internalOligo.reset( ( primerPair.internalOligo.isNull( ) ) ? NULL : new Primer( *primerPair.internalOligo ) );
     complAny = primerPair.complAny;
     complEnd = primerPair.complEnd;
     productSize = primerPair.productSize;
@@ -189,17 +189,17 @@ const PrimerPair &PrimerPair::operator=(const PrimerPair &primerPair)
 
 Primer *PrimerPair::getLeftPrimer()const
 {
-    return leftPrimer.get();
+    return leftPrimer.data( );
 }
 
 Primer *PrimerPair::getRightPrimer()const
 {
-    return rightPrimer.get();
+    return rightPrimer.data( );
 }
 
 Primer *PrimerPair::getInternalOligo()const
 {
-    return internalOligo.get();
+    return internalOligo.data( );
 }
 
 short PrimerPair::getComplAny()const
@@ -581,7 +581,7 @@ Task::ReportResult Primer3SWTask::report()
 ////Primer3ToAnnotationsTask
 
 Primer3ToAnnotationsTask::Primer3ToAnnotationsTask( const Primer3TaskSettings &settings, U2SequenceObject* so_,
-AnnotationTableObject * aobj_, const QString & groupName_, const QString & annName_ ) :
+FeaturesTableObject *aobj_, const QString & groupName_, const QString & annName_ ) :
 Task(tr("Search primers to annotations"), /*TaskFlags_NR_FOSCOE*/TaskFlags(TaskFlag_NoRun) | TaskFlag_ReportingIsSupported | TaskFlag_ReportingIsEnabled | TaskFlag_FailOnSubtaskError),
     settings(settings), seqObj(so_), aobj(aobj_),
     groupName(groupName_), annName(annName_), searchTask(NULL), findExonsTask(NULL)
@@ -701,7 +701,7 @@ Task::ReportResult Primer3ToAnnotationsTask::report()
     int index = 0;
     foreach(const PrimerPair& pair, bestPairs)
     {
-        QList<SharedAnnotationData> annotations;
+        QList<AnnotationData> annotations;
         if(NULL != pair.getLeftPrimer())
         {
             annotations.append(oligoToAnnotation("primer", *pair.getLeftPrimer(), pair.getProductSize(), U2Strand::Direct));
@@ -721,13 +721,13 @@ Task::ReportResult Primer3ToAnnotationsTask::report()
 
     if (settings.getTask() == pick_left_only || settings.getTask() == pick_right_only) {
         const QList<Primer> singlePrimers = searchTask->getSinglePrimers();
-        QList<SharedAnnotationData> annotations;
+        QList<AnnotationData> annotations;
         U2Strand s = settings.getTask() == pick_left_only ? U2Strand::Direct : U2Strand::Complementary; 
-        foreach (const Primer& p, singlePrimers ) {
-            annotations.append(oligoToAnnotation("primer", p, 0, s ));
+        foreach ( const Primer &p, singlePrimers ) {
+            annotations.append( oligoToAnnotation( "primer", p, 0, s ) );
         }
 
-        if (annotations.size() > 0) {
+        if ( !annotations.isEmpty( ) ) {
             AppContext::getTaskScheduler()->registerTopLevelTask(
                 new CreateAnnotationsTask(aobj, groupName, annotations));
         }
@@ -736,26 +736,24 @@ Task::ReportResult Primer3ToAnnotationsTask::report()
     return ReportResult_Finished;
 }
 
-SharedAnnotationData Primer3ToAnnotationsTask::oligoToAnnotation(QString title, const Primer &primer, int productSize, U2Strand strand)
+AnnotationData Primer3ToAnnotationsTask::oligoToAnnotation(QString title, const Primer &primer, int productSize, U2Strand strand)
 {
-    SharedAnnotationData annotationData(new AnnotationData());
-    annotationData->name = title;
+    AnnotationData annotationData;
+    annotationData.name = title;
     int start = primer.getStart();
     int length = primer.getLength();
     if (strand == U2Strand::Complementary) {
         start -= length - 1;
     }
-    annotationData->setStrand(strand);
-    annotationData->location->regions << U2Region(start, length);
-    annotationData->qualifiers.append(U2Qualifier("tm", QString::number(primer.getMeltingTemperature())));
-    annotationData->qualifiers.append(U2Qualifier("gc%", QString::number(primer.getGcContent())));
-    annotationData->qualifiers.append(U2Qualifier("any", QString::number(0.01*primer.getSelfAny())));
-    annotationData->qualifiers.append(U2Qualifier("3'", QString::number(0.01*primer.getSelfEnd())));
-    annotationData->qualifiers.append(U2Qualifier("product_size", QString::number(productSize)));
+    annotationData.setStrand(strand);
+    annotationData.location->regions << U2Region(start, length);
+    annotationData.qualifiers.append(U2Qualifier("tm", QString::number(primer.getMeltingTemperature())));
+    annotationData.qualifiers.append(U2Qualifier("gc%", QString::number(primer.getGcContent())));
+    annotationData.qualifiers.append(U2Qualifier("any", QString::number(0.01*primer.getSelfAny())));
+    annotationData.qualifiers.append(U2Qualifier("3'", QString::number(0.01*primer.getSelfEnd())));
+    annotationData.qualifiers.append(U2Qualifier("product_size", QString::number(productSize)));
 
     return annotationData;
 }
 
-
-
-} // namespace
+} // namespace U2

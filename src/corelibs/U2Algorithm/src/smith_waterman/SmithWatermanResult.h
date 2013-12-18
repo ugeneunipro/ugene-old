@@ -30,13 +30,12 @@
 namespace U2 {
 
 struct U2ALGORITHM_EXPORT SmithWatermanResult {
-    SharedAnnotationData toAnnotation(const QString& name) const {
-        SharedAnnotationData data;
-        data = new AnnotationData;
-        data->name = name;
-        data->location->regions << refSubseq;
-        data->setStrand(strand);
-        data->qualifiers.append(U2Qualifier("score", QString::number(score)));
+    AnnotationData toAnnotation( const QString &name ) const {
+        AnnotationData data;
+        data.name = name;
+        data.location->regions << refSubseq;
+        data.setStrand(strand);
+        data.qualifiers.append(U2Qualifier("score", QString::number(score)));
         return data;
     }
     bool operator<(const SmithWatermanResult& op1) const {

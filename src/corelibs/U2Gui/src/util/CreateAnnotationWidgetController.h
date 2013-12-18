@@ -22,10 +22,9 @@
 #ifndef _U2_CREATE_ANNOTATION_WIDGET_CONTROLLER_H_
 #define _U2_CREATE_ANNOTATION_WIDGET_CONTROLLER_H_
 
+#include <U2Core/AnnotationData.h>
 #include <U2Core/U2Region.h>
 #include <U2Core/DocumentModel.h>
-
-#include <U2Core/AnnotationTableObject.h>
 
 #include <QtGui/QMenu>
 #include <QtGui/QLineEdit>
@@ -40,7 +39,7 @@
 namespace U2 {
 
 class GObjectComboBoxController;
-
+class FeaturesTableObject;
 
 class U2GUI_EXPORT CreateAnnotationModel {
 public:
@@ -52,17 +51,17 @@ public:
     bool                    hideLocation;       // hides location field and does not check it in validate()
     bool                    hideAnnotationName; // hides annotation name field
     bool                    useUnloadedObjects;
-    QString					groupName;          // default groupname. If empty -> <auto> value is used (annotationObject->name value).
-    SharedAnnotationData	data;               // holds name and location of the annotation
+    QString                 groupName;          // default groupname. If empty -> <auto> value is used (annotationObject->name value).
+    AnnotationData          data;               // holds name and location of the annotation
 
     GObjectReference        annotationObjectRef; // the object to be loaded
     QString                 newDocUrl;        // the URL of new document with annotation table to be created
     qint64                  sequenceLen;        //length of target sequence for validation purposes
 
-    bool					hideAutoAnnotationsOption; // show automated highlighting for new annotation if possible
+    bool                    hideAutoAnnotationsOption; // show automated highlighting for new annotation if possible
     bool                    hideAnnotationParameters;   // hides annotation parameters groupbox
 
-    AnnotationTableObject*  getAnnotationObject() const;
+    FeaturesTableObject *   getAnnotationObject( ) const;
 };
 
 // Layout mode of the annotation widget
@@ -162,7 +161,6 @@ private:
     QCheckBox* usePatternNamesCheckBox;
 };
 
-
-} // namespace
+} // namespace U2
 
 #endif

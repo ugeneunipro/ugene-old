@@ -24,7 +24,6 @@
 #include "TreeViewerFactory.h"
 
 #include <U2Core/DocumentModel.h>
-#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/PhyTreeObject.h>
 #include <U2Core/DNASequenceSelection.h>
 

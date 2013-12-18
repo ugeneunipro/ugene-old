@@ -36,14 +36,14 @@
 namespace U2 {
 
 class CreateAnnotationWidgetController;
-class AnnotationTableObject;
+class FeaturesTableObject;
 
 class SendSelectionDialog: public QDialog, Ui_Dialog {
     Q_OBJECT
 public:
     SendSelectionDialog( const U2SequenceObject* dnaso, bool _isAminoSeq, QWidget *p = NULL );
     QString getGroupName() const;
-    AnnotationTableObject* getAnnotationObject() const;
+    FeaturesTableObject * getAnnotationObject() const;
     const CreateAnnotationModel *getModel() const;
     QString getUrl() const;
 private slots:

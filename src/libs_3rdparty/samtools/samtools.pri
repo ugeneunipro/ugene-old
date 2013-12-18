@@ -49,7 +49,6 @@ macx {
 win32 {
     QMAKE_CXXFLAGS_WARN_ON = -W3
     QMAKE_CFLAGS_WARN_ON = -W3
-    QMAKE_CXXFLAGS += /wd4996
 
     QMAKE_MSVC_PROJECT_NAME=lib_3rd_samtools
 }

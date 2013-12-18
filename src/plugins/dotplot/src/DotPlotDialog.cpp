@@ -28,6 +28,7 @@
 #include <U2Core/ProjectModel.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/DNAAlphabet.h>
+#include <U2Core/DNASequenceObject.h>
 
 #include <U2Gui/CreateAnnotationWidgetController.h>
 #include <U2Gui/LastUsedDirHelper.h>

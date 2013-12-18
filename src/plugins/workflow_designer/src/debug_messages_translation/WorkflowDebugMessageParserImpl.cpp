@@ -27,7 +27,7 @@
 #include <U2Core/AppSettings.h>
 #include <U2Core/UserApplicationsSettings.h>
 #include <U2Core/TextObject.h>
-#include <U2Core/AnnotationTableObject.h>
+#include <U2Core/FeaturesTableObject.h>
 
 #include <U2Gui/ExportObjectUtils.h>
 
@@ -128,12 +128,14 @@ void WorkflowDebugMessageParserImpl::convertMessagesToDocuments( const QString &
                 "Unable to convert annotation data!", );
             QList<SharedAnnotationData> annotations = annotationsData
                 .value<QList<SharedAnnotationData> >( );
-            QList<Annotation *> request;
+            QList<AnnotationData> request;
+            QScopedPointer<FeaturesTableObject> annotationTable( new FeaturesTableObject( "Annotations",
+                context->getDataStorage( )->getDbiRef( ) ) );
             foreach ( const SharedAnnotationData &annotation, annotations ) {
-                request << new Annotation( annotation );
+                request << *annotation;
             }
-            ExportObjectUtils::exportAnnotations( request, baseFileUrl );
-            qDeleteAll( request );
+            annotationTable->addAnnotations( request );
+            ExportObjectUtils::exportAnnotations( annotationTable->getAnnotations( ), baseFileUrl );
         } else {
             GObject *objectToWrite = fetchObjectFromMessage( messageType, mapData[convertedType] );
             if( U2_LIKELY( NULL != objectToWrite ) ) {

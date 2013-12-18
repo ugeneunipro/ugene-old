@@ -22,17 +22,15 @@
 #ifndef _U2_FIND_PATTERN_TASK_H_
 #define _U2_FIND_PATTERN_TASK_H_
 
+#include <QtCore/QPointer>
+
 #include <U2Algorithm/FindAlgorithmTask.h>
 
 #include <U2Core/AnnotationData.h>
+#include <U2Core/FeaturesTableObject.h>
 #include <U2Core/Task.h>
 
-#include <QPointer>
-
-
 namespace U2 {
-
-class AnnotationTableObject;
 
 class U2VIEW_EXPORT FindPatternTask : public Task
 {
@@ -40,7 +38,7 @@ class U2VIEW_EXPORT FindPatternTask : public Task
 
 public:
     FindPatternTask(const FindAlgorithmTaskSettings& settings,
-        AnnotationTableObject* annotObject,
+        FeaturesTableObject* annotObject,
         const QString& annotName,
         const QString& annotGroup,
         bool removeOverlaps);
@@ -51,7 +49,7 @@ private:
     void removeOverlappedResults(QList<FindAlgorithmResult>& results);
 
     FindAlgorithmTaskSettings           settings;
-    QPointer<AnnotationTableObject>     annotObject;
+    QPointer<FeaturesTableObject>       annotObject;
     QString                             annotName;
     QString                             annotGroup;
     bool                                removeOverlaps;

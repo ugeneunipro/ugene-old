@@ -23,7 +23,7 @@
 #include <QtCore/QDir>
 #include <QtCore/QScopedPointer>
 
-#include <U2Core/AnnotationTableObject.h>
+#include <U2Core/AnnotationTableObjectConstraints.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>

@@ -30,13 +30,13 @@
 #include <U2Core/DNATranslation.h>
 #include <U2Core/DNATranslationImpl.h>
 #include <U2Core/GObjectRelationRoles.h>
+#include <U2Core/FeaturesTableObject.h>
 #include <U2Core/TextUtils.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/L10n.h>
 #include <U2Core/SequenceUtils.h>
 #include <U2Core/U2SequenceUtils.h>
 #include <U2Core/U2SafePoints.h>
-
 
 namespace U2 {
 
@@ -226,11 +226,11 @@ void ExportSequenceTask::run() {
         bool annotationsSupported = resultDocument->checkConstraints(c);
         if (annotationsSupported && !ri.annotations.isEmpty()) {
             QString aName = ExportUtils::genUniqueName(usedNames, name + " annotations");
-            AnnotationTableObject *annObj = new AnnotationTableObject(aName);
+            FeaturesTableObject *annObj = new FeaturesTableObject( aName, resultDocument->getDbiRef( ) );
             usedNames.insert(aName);
-            QList<Annotation*> annotations;
-            foreach(const SharedAnnotationData& ad, ri.annotations) {
-                annotations.append(new Annotation(ad));
+            QList<AnnotationData> annotations;
+            foreach ( const SharedAnnotationData &ad, ri.annotations ) {
+                annotations.append( *ad );
             }
             annObj->addAnnotations(annotations);
             annObj->addObjectRelation(seqObj, GObjectRelationRole::SEQUENCE);

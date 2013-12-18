@@ -30,7 +30,7 @@
 namespace U2 {
 
 class Settings;
-class Annotation;
+class __Annotation;
 
 class U2CORE_EXPORT AnnotationSettings {
 public:
@@ -57,8 +57,8 @@ public:
     ~AnnotationSettingsRegistry();
 
     QStringList getAllSettings() const;
-    AnnotationSettings* getAnnotationSettings(const QString& name);
-    AnnotationSettings* getAnnotationSettings(Annotation* a);
+    AnnotationSettings * getAnnotationSettings( const QString &name );
+    AnnotationSettings * getAnnotationSettings( const __Annotation &a );
     
     // persistent==true -> save settings to file, ==false -> this session only
     void changeSettings(const QList<AnnotationSettings*>& settings, bool saveAsPersistent);

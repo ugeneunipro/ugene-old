@@ -32,7 +32,6 @@ class DNAAlphabet;
 class U2Region;
 class U2OpStatus;
 
-
 class U2CORE_EXPORT U2SequenceObject : public GObject {
     Q_OBJECT
 public:

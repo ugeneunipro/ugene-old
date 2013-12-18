@@ -29,6 +29,8 @@
 
 namespace U2 {
 
+class AnnotationModification;
+
 class U2CORE_EXPORT FeaturesTableObject : public GObject {
     Q_OBJECT
 public:
@@ -39,7 +41,7 @@ public:
     /**
      * Converts all the features stored in DB to annotations and returns the result
      */
-    QList<__Annotation>     getAnnotations( );
+    QList<__Annotation>     getAnnotations( ) const;
     /**
      * Returns root group
      */
@@ -47,11 +49,12 @@ public:
     /**
      * Adds to DB a set of features based on @a
      */
-    void                    addAnnotation( AnnotationData &a, const QString &groupName = QString( ) );
+    void                    addAnnotation( const AnnotationData &a,
+                                const QString &groupName = QString( ) );
     /**
      * Adds to DB a set of features based on @annotations
      */
-    void                    addAnnotations( QList<AnnotationData> &annotations,
+    void                    addAnnotations( const QList<AnnotationData> &annotations,
                                 const QString &groupName = QString( ) );
     /**
      * Removes features corresponding to @a from DB
@@ -97,16 +100,39 @@ public:
      */
     void                    addFeature( U2Feature &f, QList<U2FeatureKey> keys, U2OpStatus &os );
 
+    //////////////////////////////////////////////////////////////////////////
+    // Access to signals that drive GUI //////////////////////////////////////
+
+    void                    emit_onAnnotationsAdded( const QList<__Annotation> &l );
+    void                    emit_onAnnotationModified( const AnnotationModification &md );
+    void                    emit_onGroupCreated( const __AnnotationGroup &g );
+    void                    emit_onGroupRemoved( const __AnnotationGroup &p,
+                                const __AnnotationGroup &g );
+    void                    emit_onGroupRenamed( const __AnnotationGroup &g );
+    void                    emit_onAnnotationsInGroupRemoved( const QList<__Annotation> &l,
+                                const __AnnotationGroup &gr );
+
+signals:
+    void                    si_onAnnotationsAdded( const QList<__Annotation> &a );
+    void                    si_onAnnotationsRemoved( const QList<__Annotation> &a );
+    void                    si_onAnnotationsInGroupRemoved( const QList<__Annotation> &,
+                                const __AnnotationGroup & );
+    void                    si_onAnnotationModified( const AnnotationModification &md );
+    void                    si_onGroupCreated( const __AnnotationGroup & );
+    void                    si_onGroupRemoved( const __AnnotationGroup &p,
+                                const __AnnotationGroup &removed );
+    void                    si_onGroupRenamed( const __AnnotationGroup & );
+
 private:
     void                    removeAnnotationFromDb( const __Annotation &a );
     void                    copyFeaturesToObject( const U2Feature &feature,
                                 const U2DataId &newParentId, FeaturesTableObject *obj,
                                 U2OpStatus &os ) const;
-    QList<__Annotation>     convertFeaturesToAnnotations( const QList<U2Feature> &features );
+    QList<__Annotation>     convertFeaturesToAnnotations( const QList<U2Feature> &features ) const;
 
     U2DataId                rootFeatureId;
 };
 
-} // namespace
+} // namespace U2
 
 #endif

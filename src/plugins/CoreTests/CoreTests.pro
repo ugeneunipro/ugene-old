@@ -1,8 +1,7 @@
 include (CoreTests.pri)
 
 # Input
-HEADERS += src/AnnotationTableObjectTest.h \
-           src/AsnParserTests.h \
+HEADERS += src/AsnParserTests.h \
            src/BioStruct3DObjectTests.h \
            src/CMDLineTests.h \
            src/CoreTests.h \
@@ -25,8 +24,7 @@ HEADERS += src/AnnotationTableObjectTest.h \
            src/FindAlgorithmTests.h \
            src/PingRemoteServiceTests.h \
            src/FormatDetectionTests.h
-SOURCES += src/AnnotationTableObjectTest.cpp \
-           src/AsnParserTests.cpp \
+SOURCES += src/AsnParserTests.cpp \
            src/BioStruct3DObjectTests.cpp \
            src/CMDLineTests.cpp \
            src/CoreTests.cpp \

@@ -22,7 +22,7 @@
 #include "CSVColumnConfigurationDialog.h"
 
 #include <U2Core/L10n.h>
-#include <U2Core/AnnotationTableObject.h>
+#include <U2Core/Annotation.h>
 
 #include "QtGui/QMessageBox"
 
@@ -86,7 +86,7 @@ void CSVColumnConfigurationDialog::accept() {
     } else if (qualifierRB->isChecked()) {
         config.role = ColumnRole_Qualifier;
         config.qualifierName = qualifierNameEdit->text();
-        if (!Annotation::isValidQualifierName(config.qualifierName)) {
+        if (!__Annotation::isValidQualifierName(config.qualifierName)) {
             QMessageBox::critical(this, L10N::errorTitle(), tr("Invalid qualifier name!"));
             qualifierNameEdit->setFocus();
             return;

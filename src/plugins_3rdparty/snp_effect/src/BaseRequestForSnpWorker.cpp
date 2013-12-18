@@ -80,7 +80,7 @@ Task* BaseRequestForSnpWorker::tick( )
             SharedDbiDataHandler objId = data.value( BaseSlots::VARIATION_TRACK_SLOT( ).getId( ) )
                 .value<SharedDbiDataHandler>( );
             trackObj.reset( StorageUtils::getVariantTrackObject( context->getDataStorage( ), objId ) );
-            SAFE_POINT( NULL != trackObj.data( ), tr( "Can't get track object" ), NULL );
+            SAFE_POINT( !trackObj.isNull( ), tr( "Can't get track object" ), NULL );
 
         }
         U2VariantTrack track = trackObj->getVariantTrack( os );

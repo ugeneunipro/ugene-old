@@ -39,7 +39,6 @@
 #include <U2Core/GObjectTypes.h>
 #include <U2Core/GObjectUtils.h>
 #include <U2Core/GObjectRelationRoles.h>
-#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/LoadRemoteDocumentTask.h>
 #include <U2Core/LoadDASDocumentTask.h>
 

@@ -17,7 +17,6 @@
 #include <U2Core/SelectionUtils.h>
 #include <U2Core/DocumentSelection.h>
 
-#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/GObjectTypes.h>
 #include <U2Core/GObjectRelationRoles.h>
 #include <U2Core/GObjectUtils.h>

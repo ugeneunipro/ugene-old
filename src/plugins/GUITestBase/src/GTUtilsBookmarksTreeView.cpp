@@ -32,7 +32,6 @@
 #include <QtGui/QMainWindow>
 #include <QtGui/QTreeWidget>
 #include <U2View/AnnotationsTreeView.h>
-#include <U2Core/AnnotationTableObject.h>
 
 namespace U2 {
 

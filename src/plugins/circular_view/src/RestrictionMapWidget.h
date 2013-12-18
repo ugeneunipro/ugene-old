@@ -22,36 +22,33 @@
 #ifndef _U2_RESTRICTION_MAP_WIDGET_H_
 #define _U2_RESTRICTION_MAP_WIDGET_H_
 
-
 #include <QtGui/QTreeWidget>
+
+#include <U2Core/Annotation.h>
 
 namespace U2 {
 
+class __AnnotationGroup;
 class ADVSequenceObjectContext;
-class AnnotationTableObject;
-class AnnotationGroup;
-class Annotation;
 
 class EnzymeItem : public QTreeWidgetItem
 {
 public:
-    EnzymeItem(const QString& locationStr, Annotation* a);
-    Annotation* getEnzymeAnnotation() const {return annotation; }
+    EnzymeItem(const QString& locationStr, const __Annotation &a );
+    __Annotation getEnzymeAnnotation() const {return annotation; }
 private:
-    Annotation* annotation;
+    __Annotation annotation;
 };
-
 
 class EnzymeFolderItem : public QTreeWidgetItem
 {
     QString enzymeName;
 public:
     EnzymeFolderItem(const QString& name);
-    void addEnzymeItem(Annotation* enzAnn);
-    void removeEnzymeItem(Annotation* enzAnn);
+    void addEnzymeItem( const __Annotation &enzAnn);
+    void removeEnzymeItem( const __Annotation &enzAnn);
     const QString& getName() const { return enzymeName; } 
 };
-
 
 class RestrctionMapWidget : public QWidget
 {
@@ -60,10 +57,11 @@ public:
     RestrctionMapWidget(ADVSequenceObjectContext* ctx, QWidget *p);
     
 private slots:
-    void sl_onAnnotationsAdded(const QList<Annotation*>& anns);
-    void sl_onAnnotationsRemoved(const QList<Annotation*>& anns);
-    void sl_onAnnotationsInGroupRemoved(const QList<Annotation*>& anns, AnnotationGroup* group);
-    void sl_onAnnotationsGroupCreated(AnnotationGroup* g);
+    void sl_onAnnotationsAdded(const QList<__Annotation>& anns);
+    void sl_onAnnotationsRemoved(const QList<__Annotation>& anns);
+    void sl_onAnnotationsInGroupRemoved(const QList<__Annotation> &anns,
+        const __AnnotationGroup &group);
+    void sl_onAnnotationsGroupCreated( const __AnnotationGroup &g );
     void sl_itemSelectionChanged();
 private:
     ADVSequenceObjectContext* ctx;
@@ -72,11 +70,8 @@ private:
     void registerAnnotationObjects();
     void updateTreeWidget();
     void initTreeWidget();
-
 };
 
-
-} //namespace
-
+} //namespace U2
 
 #endif //  _U2_RESTRICTION_MAP_WIDGET_H_

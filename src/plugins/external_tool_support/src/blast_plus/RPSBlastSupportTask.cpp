@@ -52,7 +52,11 @@ LocalCDSearch::LocalCDSearch(const CDSearchSettings& settings) {
 }
 
 QList<SharedAnnotationData> LocalCDSearch::getCDSResults() const {
-    return task->getResultedAnnotations();
+    QList<SharedAnnotationData> res;
+    foreach ( const AnnotationData &data, task->getResultedAnnotations( ) ) {
+        res << SharedAnnotationData( new AnnotationData( data ) );
+    }
+    return res;
 }
 
 } //namespace

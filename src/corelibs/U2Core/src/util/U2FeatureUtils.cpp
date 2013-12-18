@@ -129,7 +129,7 @@ AnnotationData U2FeatureUtils::getAnnotationDataFromFeature( const U2DataId &fea
     foreach ( const U2FeatureKey &key, fKeys ) {
         SAFE_POINT( U2FeatureKeyGrouping != key.name,
             "Attempting conversion annotation group to annotation!", AnnotationData( ) );
-        if ( U2FeatureKeyOperation == key.name ) {
+        if ( U2_UNLIKELY( U2FeatureKeyOperation == key.name ) ) {
             if ( U2FeatureKeyOperationJoin == key.value ) {
                 result.setLocationOperator( U2LocationOperator_Join );
             } else if ( U2FeatureKeyOperationOrder == key.value ) {
@@ -138,6 +138,8 @@ AnnotationData U2FeatureUtils::getAnnotationDataFromFeature( const U2DataId &fea
                 CHECK_EXT( false, op.setError( "Unexpected feature operator value!" ),
                     result );
             }
+        } else if ( U2_UNLIKELY( U2FeatureKeyCase == key.name ) ) {
+            result.caseAnnotation = true;
         } else {
             result.qualifiers << U2Qualifier( key.name, key.value );
         }
@@ -623,6 +625,10 @@ void U2FeatureUtils::createFeatureEntityFromAnnotationData( const AnnotationData
     const U2FeatureKey locationOpKey = createFeatureKeyLocationOperator( annotation.location->op );
     if ( locationOpKey.isValid( ) ) {
         resFeatureKeys.append( locationOpKey );
+    }
+    // add case info
+    if ( annotation.caseAnnotation ) {
+        resFeatureKeys.append( U2FeatureKey( U2FeatureKeyCase, QString( ) ) );
     }
 }
 

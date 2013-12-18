@@ -23,7 +23,7 @@
 #define _U2_EDIT_QUALIFIER_DIALOG_H_
 
 #include <U2Core/global.h>
-#include <U2Core/AnnotationTableObject.h>
+#include <U2Core/U2Qualifier.h>
 
 #include <QtGui/QDialog>
 

@@ -25,13 +25,11 @@
 
 #include <U2Designer/DelegateEditors.h>
 #include <U2Core/TaskSignalMapper.h>
-#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/Log.h>
 #include <U2Lang/BaseTypes.h>
 
 namespace U2 {
 
-    
 static const QString LEFT_PRIMER_ID = "left";
 static const QString RIGHT_PRIMER_ID = "right";
 
@@ -45,7 +43,6 @@ static const QString MAX_TEMPLATE_MISPRIMING_ATTR("max_template_mispriming");
 static const QString STABILITY_ATTR("stability");
 static const QString PAIR_MAX_MISPRIMING_ATTR("pair_max_mispriming");
 static const QString PAIR_MAX_TEMPLATE_MISPRIMING_ATTR("pair_max_template_mispriming");
-
 
 QDPrimerActor::QDPrimerActor(QDActorPrototype const* proto) : QDActor(proto) {
     cfg->setAnnotationKey("top primers");
@@ -117,16 +114,6 @@ Task* QDPrimerActor::getAlgorithmTask(const QVector<U2Region>& /*location*/ ) {
     settings.setAlignProperty("PRIMER_PAIR_MAX_TEMPLATE_MISPRIMING", pairtemplateMispriming);
     assert(settings.getAlignPropertyList().contains("PRIMER_PAIR_MAX_TEMPLATE_MISPRIMING"));
 
-    /*int startCodon = cfg->getParameter(START_CODON_ATTR)->getAttributeValueWithoutScript<QString>().toInt(&ok);
-    if(ok) {
-        settings.setIntProperty("PRIMER_START_CODON_POSITION", startCodon);
-    }
-    else {
-        algoLog.error(tr("%1 invalid input. Start codon position must be int.")
-            .arg(cfg->getLabel()));
-        return NULL;
-    }*/
-
     t = new Primer3SWTask(settings);
     connect(new TaskSignalMapper(t), SIGNAL(si_taskFinished(Task*)), SLOT(sl_onAlgorithmTaskFinished(Task*)));
 
@@ -159,7 +146,7 @@ void QDPrimerActor::sl_onAlgorithmTaskFinished(Task* t) {
     }
 }
 
-void QDPrimerActor::setDefaultSettings() {    
+void QDPrimerActor::setDefaultSettings() {
     {
         QList<QPair<int, int> > sizeRange;
         sizeRange.append(qMakePair(150,250));

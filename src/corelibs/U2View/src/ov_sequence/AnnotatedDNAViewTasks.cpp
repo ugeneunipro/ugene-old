@@ -28,7 +28,6 @@
 
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/DNASequenceObject.h>
-#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/GObjectTypes.h>
 #include <U2Core/GObjectRelationRoles.h>
 #include <U2Core/GObjectUtils.h>
@@ -352,7 +351,5 @@ void UpdateAnnotatedDNAViewTask::update() {
     AnnotatedDNAViewState state(stateData);
     aview->updateState(state);
 }
-
-
 
 } // namespace

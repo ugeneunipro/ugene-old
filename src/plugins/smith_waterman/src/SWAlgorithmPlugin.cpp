@@ -31,7 +31,6 @@
 #include <U2Gui/GUIUtils.h>
 #include <U2View/AnnotatedDNAView.h>
 #include <U2View/ADVConstants.h>
-#include <U2Core/AnnotationTableObject.h>
 
 #include <U2View/MSAEditor.h>
 #include <U2Gui/OptionsPanel.h>

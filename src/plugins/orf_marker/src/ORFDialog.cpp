@@ -346,7 +346,7 @@ void ORFDialog::accept()
             return;
         }
         const CreateAnnotationModel& m = ac->getModel();
-        AnnotationTableObject* aObj = m.getAnnotationObject();
+        FeaturesTableObject *aObj = m.getAnnotationObject();
         FindORFsToAnnotationsTask* orfTask =
             new FindORFsToAnnotationsTask(aObj, ctx->getSequenceObject()->getEntityRef(),s, m.groupName);
         AppContext::getTaskScheduler()->registerTopLevelTask(orfTask);
@@ -413,7 +413,7 @@ void ORFDialog::createAnnotationWidget()
     acm.hideAnnotationName = true;
     acm.hideLocation = true;
     acm.hideAutoAnnotationsOption = false;
-    acm.data->name = ORFAlgorithmSettings::ANNOTATION_GROUP_NAME;
+    acm.data.name = ORFAlgorithmSettings::ANNOTATION_GROUP_NAME;
     acm.sequenceLen = seqObj->getSequenceLength();
     ac = new CreateAnnotationWidgetController(acm, this);
     QWidget* caw = ac->getWidget();

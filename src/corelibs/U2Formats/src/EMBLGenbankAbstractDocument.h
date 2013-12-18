@@ -26,9 +26,9 @@
 #include <U2Core/DocumentModel.h>
 
 #include <QtCore/QStringList>
-#include <U2Core/AnnotationTableObject.h>
-#include <U2Core/U2SequenceUtils.h>
 
+#include <U2Core/AnnotationData.h>
+#include <U2Core/U2SequenceUtils.h>
 
 namespace U2 {
 
@@ -54,7 +54,7 @@ public:
     static const QString LOCUS_TAG_CIRCULAR;
 
     // move to utils??
-    static QString	genObjectName(QSet<QString>& usedNames, const QString& name, const QVariantMap& info, int n, const GObjectType& t);
+    static QString genObjectName(QSet<QString>& usedNames, const QString& name, const QVariantMap& info, int n, const GObjectType& t);
 
 protected:
     virtual Document* loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, U2OpStatus& os);

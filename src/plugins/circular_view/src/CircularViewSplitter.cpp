@@ -28,7 +28,6 @@
 #include <U2Core/GObject.h>
 #include <U2Core/Settings.h>
 #include <U2Core/GObjectTypes.h>
-#include <U2Core/AnnotationTableObject.h>
 
 #include <U2Gui/HBar.h>
 #include <U2Gui/DialogUtils.h>

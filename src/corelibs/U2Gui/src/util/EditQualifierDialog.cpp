@@ -19,11 +19,13 @@
  * MA 02110-1301, USA.
  */
 
-#include "EditQualifierDialog.h"
-#include <ui/ui_EditQualifierDialog.h>
+#include <U2Core/Annotation.h>
 
 #include <QtGui/QMessageBox>
 #include <QtGui/QKeyEvent>
+
+#include <ui/ui_EditQualifierDialog.h>
+#include "EditQualifierDialog.h"
 
 namespace U2 {
 
@@ -84,11 +86,11 @@ void EditQualifierDialog::accept() {
     }
     QString name = simplify(ui->nameEdit->text());
     QString val = simplify(ui->valueEdit->toPlainText());
-    if (!Annotation::isValidQualifierName(name)) {
+    if (!__Annotation::isValidQualifierName(name)) {
         QMessageBox::critical(this, tr("Error!"), tr("Illegal qualifier name"));
         return;
     }
-    if (!Annotation::isValidQualifierValue(val)) {
+    if (!__Annotation::isValidQualifierValue(val)) {
         QMessageBox::critical(this, tr("Error!"), tr("Illegal qualifier value"));
         return;
     }

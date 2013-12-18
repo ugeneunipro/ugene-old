@@ -31,7 +31,7 @@
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/LoadDocumentTask.h>
 #include <U2Core/AddDocumentTask.h>
-#include <U2Core/AnnotationTableObject.h>
+#include <U2Core/FeaturesTableObject.h>
 
 #include <U2Formats/DocumentFormatUtils.h>
 
@@ -310,10 +310,7 @@ DotPlotLoadDocumentsTask::~DotPlotLoadDocumentsTask() {
             }
         }
 
-        // delete loaded but not added to the project documents
-//        qDeleteAll(docs);
         foreach (Document *doc, docs) {
-//            docs.removeAll(doc);
             delete doc;
         }
    }
@@ -344,14 +341,13 @@ void DotPlotFilterTask::run(){
         case All: 
             break;
         case Features:
-                    progressStep /= 2;
+            progressStep /= 2;
 
-                    createSuperRegionsList(sequenceX, SequenceX);
-                    //qSort(filteredResults->begin(), filteredResults->end(), DPResultLessThenX); //TODO: possible optimization
-                    filterForCurrentSuperRegions(SequenceX);
+            createSuperRegionsList(sequenceX, SequenceX);
+            filterForCurrentSuperRegions(SequenceX);
 
-                    createSuperRegionsList(sequenceY, SequenceY);
-                    filterForCurrentSuperRegions(SequenceY);
+            createSuperRegionsList(sequenceY, SequenceY);
+            filterForCurrentSuperRegions(SequenceY);
 
             break;
     }
@@ -385,21 +381,21 @@ void DotPlotFilterTask::createSuperRegionsList(ADVSequenceObjectContext* seq, Fi
         return;
     }
 
-    QSet<AnnotationTableObject*> aTableSet = seq->getAnnotationObjects(true);
-    QList<Annotation*> selectedAnnotations;
+    QSet<FeaturesTableObject*> aTableSet = seq->getAnnotationObjects(true);
+    QList<__Annotation> selectedAnnotations;
     QStringList cursequenceAnnotationNames = annotationNames.values(currentIntersParam);
     if(cursequenceAnnotationNames.isEmpty()){
         return;
     }
 
     foreach(const QString aName, cursequenceAnnotationNames){
-        foreach(AnnotationTableObject* at, aTableSet){
-            at->selectAnnotationsByName(aName, selectedAnnotations);
+        foreach(FeaturesTableObject* at, aTableSet){
+            selectedAnnotations << at->getAnnotationsByName( aName );
         }
     }
 
-    foreach(Annotation* a, selectedAnnotations){
-            superRegions += a->getRegions();
+    foreach ( const __Annotation &a, selectedAnnotations ) {
+            superRegions += a.getRegions();
     }
 
     superRegions = U2Region::join(superRegions);

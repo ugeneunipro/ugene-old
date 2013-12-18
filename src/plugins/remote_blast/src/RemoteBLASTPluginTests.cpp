@@ -19,12 +19,14 @@
  * MA 02110-1301, USA.
  */
 
-#include "RemoteBLASTPluginTests.h"
 #include <U2Core/DNASequenceObject.h>
-#include <U2Core/AnnotationTableObject.h>
+#include <U2Core/FeaturesTableObject.h>
+#include <U2Core/U2SafePoints.h>
+#include <U2Core/U2DbiRegistry.h>
+
+#include "RemoteBLASTPluginTests.h"
 
 namespace U2 {
-
 
 void GTest_RemoteBLAST::init(XMLTestFormat *tf, const QDomElement& el) {
     Q_UNUSED(tf);
@@ -188,7 +190,7 @@ void GTest_RemoteBLAST::init(XMLTestFormat *tf, const QDomElement& el) {
 
     QString simpleStr = el.attribute(SIMPLE_ATTR);
     if (simpleStr == "true") {
-        simple = true;        
+        simple = true;
     }else{
         simple = false;
     }
@@ -196,7 +198,9 @@ void GTest_RemoteBLAST::init(XMLTestFormat *tf, const QDomElement& el) {
 
 void GTest_RemoteBLAST::prepare() {
     QByteArray query(sequence.toLatin1());
-    ao = new AnnotationTableObject("aaa");
+    const U2DbiRef dbiRef = AppContext::getDbiRegistry( )->getSessionTmpDbiRef( stateInfo );
+    SAFE_POINT_OP( stateInfo, );
+    ao = new FeaturesTableObject( "aaa", dbiRef );
     RemoteBLASTTaskSettings cfg;
     cfg.dbChoosen = algoritm;
     cfg.aminoT = NULL;
@@ -210,7 +214,6 @@ void GTest_RemoteBLAST::prepare() {
     addSubTask(task);
 }
 
-
 Task::ReportResult GTest_RemoteBLAST::report() {
     QStringList result;
     if(task->hasError()) {
@@ -218,9 +221,9 @@ Task::ReportResult GTest_RemoteBLAST::report() {
         return ReportResult_Finished;
     }
     if (ao != NULL){
-        QList<Annotation*> alist(ao->getAnnotations());
-        foreach(Annotation *an, alist) {
-            foreach(U2Qualifier q, an->getQualifiers()){
+        QList<__Annotation> alist(ao->getAnnotations());
+        foreach ( const __Annotation &an, alist ) {
+            foreach ( const U2Qualifier q, an.getQualifiers( ) ) {
                 QString qual;
                 if(algoritm=="cdd") {
                     qual = "id";
@@ -237,8 +240,8 @@ Task::ReportResult GTest_RemoteBLAST::report() {
     }
 
     if(simple){
-        if(result.size() == 0){
-            stateInfo.setError(  QString("Simplified test retuns empty result"));
+        if ( result.isEmpty( ) ) {
+            stateInfo.setError( QString( "Simplified test retuns empty result" ) );
         }
         return ReportResult_Finished;
     }
@@ -271,6 +274,5 @@ void GTest_RemoteBLAST::cleanup() {
         ao = NULL;
     }
 }
-
 
 }

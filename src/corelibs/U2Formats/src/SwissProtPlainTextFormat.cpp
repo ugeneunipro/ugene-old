@@ -24,7 +24,6 @@
 #include "GenbankFeatures.h"
 #include "DocumentFormatUtils.h"
 
-#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/GObjectUtils.h>
 

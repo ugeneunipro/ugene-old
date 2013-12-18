@@ -24,7 +24,6 @@
 
 #include <U2Core/AppContext.h>
 #include <U2Core/U2VariantDbi.h>
-#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/U2DbiUtils.h>
 

@@ -22,19 +22,19 @@
 #ifndef _U2_ANNOT_HIGHLIGHT_WIDGET_H_
 #define _U2_ANNOT_HIGHLIGHT_WIDGET_H_
 
-#include "AnnotHighlightSettings.h"
-#include "AnnotHighlightTree.h"
-
-#include <U2Core/AnnotationTableObject.h>
-
 #include <QtGui/QtGui>
 
+#include <U2Core/Annotation.h>
+
+#include "AnnotHighlightSettings.h"
+#include "AnnotHighlightTree.h"
 
 namespace U2 {
 
 class ADVSequenceObjectContext;
 class ADVSequenceWidget;
 class AnnotatedDNAView;
+class FeaturesTableObject;
 
 /** Label that can be pressed with two states: show all types or types for sequence only */
 class ShowAllAnnotTypesLabel : public QLabel
@@ -69,14 +69,14 @@ private slots:
     void sl_storeNewColor(const QString& annotName, const QColor& newColor);
     void sl_storeNewSettings(AnnotationSettings* annotSettings);
     void sl_onSequenceModified(ADVSequenceObjectContext*);
-    void sl_onAnnotationsAddedRemoved(const QList<Annotation*>&);
-    void sl_onAnnotationModified(const AnnotationModification& annotModifs);
-    void sl_onAnnotationObjectAdded(AnnotationTableObject*);
-    void sl_onAnnotationObjectRemoved(AnnotationTableObject*);
+    void sl_onAnnotationsAddedRemoved( const QList<__Annotation> & );
+    void sl_onAnnotationModified( const AnnotationModification &annotModifs );
+    void sl_onAnnotationObjectAdded( FeaturesTableObject * );
+    void sl_onAnnotationObjectRemoved( FeaturesTableObject * );
     void sl_onNextAnnotationClick();
     void sl_onPrevAnnotationClick();
+
 private:
-    qint64 olololololo;
     void initLayout();
     /**
      * Annotation types tree and settings are not shown.
@@ -94,8 +94,8 @@ private:
     void setNoAnnotTypesLabelValue();
 
     void connectSlots();
-    void connectSlotsForAnnotTableObj(const AnnotationTableObject* annotTableObj);
-    void disconnectSlotsForAnnotTableObj(const AnnotationTableObject* annotTableObj);
+    void connectSlotsForAnnotTableObj( const FeaturesTableObject *annotTableObj );
+    void disconnectSlotsForAnnotTableObj( const FeaturesTableObject *annotTableObj );
 
     /**
      * Depending on the showAllLabel loads either annotations
@@ -119,17 +119,19 @@ private:
      */
     void findAllAnnotationsNamesInSettings();
 
-    Annotation* binSearch();
+    __Annotation binSearch();
 
     void annotationNavigate(bool isForward);
 
-    bool isValidIndex(const QList<Annotation*>& annotForNextPrev, int position);
+    bool isValidIndex(const QList<__Annotation> &annotForNextPrev, int position);
 
-    int searchAnnotWithEqualsStartPos(const QList<AnnotationTableObject*>& items, QList<Annotation*> &annotForNextPrev, const Annotation* prev, int currentPosition);
+    int searchAnnotWithEqualsStartPos( const QList<FeaturesTableObject *>& items,
+        QList<__Annotation> &annotForNextPrev, const __Annotation &prev, int currentPosition );
 
     bool isNext(bool isForward, qint64 startPos, qint64 endPos, qint64 minPos);
 
-    qint64 searchNextPosition(const QList<AnnotationTableObject*>& items, int endPos, bool isForward, qint64* currentPosition);
+    qint64 searchNextPosition( const QList<FeaturesTableObject *> &items, int endPos,
+        bool isForward, qint64 *currentPosition );
 
     AnnotatedDNAView* annotatedDnaView;
 

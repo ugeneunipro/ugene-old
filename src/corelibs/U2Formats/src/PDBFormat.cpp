@@ -28,7 +28,7 @@
 #include <U2Core/L10n.h>
 #include <U2Core/GObjectTypes.h>
 #include <U2Core/BioStruct3DObject.h>
-#include <U2Core/AnnotationTableObject.h>
+#include <U2Core/FeaturesTableObject.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/GObjectRelationRoles.h>
 #include <U2Core/GObjectUtils.h>
@@ -50,7 +50,6 @@ namespace U2 {
 
 QHash<QByteArray,int> PDBFormat::atomNumMap = createAtomNumMap();
 QHash<QByteArray, char> PDBFormat::acronymNameMap;
-
 
 PDBFormat::PDBFormat( QObject* p ) : DocumentFormat(p, DocumentFormatFlag(0), QStringList("pdb"))
 {
@@ -115,7 +114,6 @@ Document* PDBFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const Q
     return doc;
 }
 
-
 void PDBFormat::initUtilityMaps()
 {
     static bool initialized = false;
@@ -156,18 +154,15 @@ void PDBFormat::initUtilityMaps()
         acronymNameMap.insert("C", 'C'); 
         acronymNameMap.insert("U", 'U'); 
 
-
-
-        // now we've initialized utility maps   
+        // now we've initialized utility maps
         initialized = true;
     }
 }
 
 PDBFormat::PDBParser::PDBParser(IOAdapter* _io) : io(_io), currentPDBLine(""), currentChainIndex(' ') {
-
     currentChainIndex = 1;
     currentModelIndex = 0;
-    currentChainIndentifier = ' '; 
+    currentChainIndentifier = ' ';
     flagMultipleModels = false;
     flagAtomRecordPresent = false;
 }
@@ -458,7 +453,6 @@ void PDBFormat::PDBParser::parseSecondaryStructure( BioStruct3D& biostruct, U2Op
     }
     
     char startChainID = currentPDBLine.at(startChainIDIndex).toLatin1();
-//    char endChainID = currentPDBLine.at(endChainIDIndex).toLatin1();
 
     int startSequenceNumber = currentPDBLine.mid(startIndex, 4).toInt();
     int endSequenceNumber = currentPDBLine.mid(endIndex, 4).toInt();
@@ -470,109 +464,6 @@ void PDBFormat::PDBParser::parseSecondaryStructure( BioStruct3D& biostruct, U2Op
     secStruct->endSequenceNumber = endSequenceNumber;
     biostruct.secondaryStructures.append(secStruct);
 }
-
-// void PDBFormat::PDBParser::parseCompound(BioStruct3D& biostruct, U2OpStatus& ti) 
-// {
-//     /*
-//     Record Format
-//     
-//     COLUMNS DATA TYPE FIELD DEFINITION
-//     1 - 6   Record name "COMPND" 
-//     8 - 10  Continuation
-//     11 - 70 Description of the molecular components.
-//     */
-// 
-//     const char* idTag = "MOL_ID";
-//     const char* nameTag = "MOLECULE";
-//     const char* chainsTag = "CHAIN";
-// //  const char* engTag = "ENGINEERED";
-//     const char* savedTag = "SAVED_LINE";
-//     const char* delimiterTag = ";";
-//     const char* transitionTag = "-";
-//     QByteArray specLine = currentPDBLine.mid(10).trimmed().toLatin1();
-// 
-//     //Q_UNUSED(engTag);
-//     
-//     bool saveRequired = false;
-//     
-//     if (specLine == "NULL") {
-//         ti.setError(U2::PDBFormat::tr("compound_record_is_empty"));
-//         return;
-//     }
-// 
-//     if (currentMoleculeDescr.contains(savedTag)) {
-//         specLine.prepend(currentMoleculeDescr.value(savedTag).toString().toLatin1());
-//         currentMoleculeDescr.remove(savedTag);
-//     }
-//     
-//     if (specLine.endsWith(transitionTag)) {
-//         // look forward to guess if it is not an end of record
-//         // (it could be, for example 1V6C)
-//         QByteArray nextLine = getNextSpecLine();
-//         if (!nextLine.startsWith("COMPND")) {
-//             //end of record detected
-//             int lastCharIndex = specLine.length() - 1;
-//             specLine.remove(lastCharIndex,1);
-//         } else {
-//              int length = specLine.length();
-//             // omit transition tag when saving specLine
-//             currentMoleculeDescr.insert(savedTag, specLine.left(length - 1));
-//             return;
-//         }
-//     }
-// 
-//     if (!specLine.endsWith(delimiterTag)) {
-//         // look forward to guess if transition required
-//         QByteArray nextLine = getNextSpecLine();
-//         if (nextLine.startsWith("COMPND")) {
-//             // this is transition, save this line
-//             currentMoleculeDescr.insert(savedTag, specLine);
-//             return;
-//         }  else {
-//             saveRequired = true;
-//         }
-//     }
-// 
-//     if (specLine.startsWith(idTag) ) {      
-//         if (!currentMoleculeDescr.isEmpty()) {
-//             saveRequired = true;
-//         }
-//         QByteArray molId = getSpecValue(specLine, idTag);
-//         currentMoleculeDescr.insert(idTag, molId);
-//     } else if (specLine.startsWith(nameTag)) {
-//         QByteArray name = getSpecValue(specLine, nameTag);
-//         currentMoleculeDescr.insert(nameTag, name);
-//     } else if (specLine.startsWith(chainsTag)) {
-//         QByteArray chainIds = getSpecValue(specLine, chainsTag);
-//         currentMoleculeDescr.insert(chainsTag, chainIds);
-//     }
-// 
-//     if (saveRequired) {
-//         //TODO: Try to use this index from PDB Entry
-//         //int index = currentMoleculeDescr.value(idTag).toInt();
-//         //Q_UNUSED(index);
-//         QString name =  currentMoleculeDescr.value(nameTag).toString();
-//         QString buffer = currentMoleculeDescr.value(chainsTag).toString();
-//         for( int j = 0; j < buffer.length(); ++j) {
-//             QChar chainIdentifier = buffer.at(j);
-//             if (chainIdentifier.isLetterOrNumber()) {
-//                 int molId = chainIndexMap.size() + 1;
-//                 chainIndexMap.insert(chainIdentifier, molId);
-//                 MoleculeData* data = new MoleculeData();
-//                 data->name = name;
-//                 biostruct.moleculeMap.insert( molId, SharedMolecule(data) );
-//             }
-//         }
-//         Q_ASSERT(chainIndexMap.size() > 0);
-//         if (chainIndexMap.size() == 0) {
-//             ti.setError(U2::PDBFormat::tr("invalid_compound_record"));
-//             return;
-//         }
-//         currentMoleculeDescr.clear();
-//     }
-//  
-// }
-
 
 void PDBFormat::PDBParser::parseSequence( BioStruct3D& biostruct, U2OpStatus& ti )
 {
@@ -608,7 +499,7 @@ void PDBFormat::PDBParser::parseSequence( BioStruct3D& biostruct, U2OpStatus& ti
     foreach (QString name, residues ) {
         SharedResidue residue( new ResidueData );
         char acronym = PDBFormat::getAcronymByName(name.toLatin1());
-        sequencePart.append(acronym);        
+        sequencePart.append(acronym);
     }
     seqResMap[chainIdentifier].append(sequencePart);
 
@@ -630,43 +521,6 @@ int PDBFormat::getElementNumberByName( const QByteArray& elementName )
     else 
         return 0;
 }
-
-
-// void PDBFormat::PDBParser::parseDBRef( BioStruct3D& biostruct, U2OpStatus& ti )
-// {
-//     /* Record Format
-//      
-//     COLUMNS       DATA TYPE     FIELD              DEFINITION
-//     1 -  6       Record name   "DBREF "
-//     8 - 11       IDcode        idCode             ID code of this entry.
-//     13            Character     chainID            Chain  identifier.
-//     15 - 18       Integer       seqBegin           Initial sequence number of the PDB sequence segment.
-//     19            AChar         insertBegin        Initial  insertion code of the PDB  sequence segment.
-//     21 - 24       Integer       seqEnd             Ending sequence number of the PDB  sequence segment.
-//     25            AChar         insertEnd          Ending insertion code of the PDB  sequence segment.
-//     27 - 32       LString       database           Sequence database name. 
-//     34 - 41       LString       dbAccession        Sequence database accession code.
-//     43 - 54       LString       dbIdCode           Sequence  database identification code.
-//     56 - 60       Integer       dbseqBegin         Initial sequence number of the database segment.
-//     61            AChar         idbnsBeg           Insertion code of initial residue of the segment, if PDB is the reference.
-//     63 - 67       Integer       dbseqEnd           Ending sequence number of the database segment.
-//     68            AChar         dbinsEnd           Insertion code of the ending residue of the segment, if PDB is the reference.
-//     */
-// 
-//     Q_UNUSED(biostruct);
-//     Q_UNUSED(ti);
-//     QChar chainIdentifier = currentPDBLine.at(12);
-//     int chainIndex = getChainIndexByName(chainIdentifier);
-//     if (chainIndex == 0) {
-//         log.details(tr("Wanning: unknown chain index in dbref!"));
-//         return;
-//     } 
-// 
-// 
-//     int startIndex = currentPDBLine.mid(14,4).toInt();
-//     residueStartIndexMap.insert(chainIndex, startIndex);
-// 
-// }
 
 QByteArray PDBFormat::PDBParser::getNextSpecLine()
 {
@@ -730,12 +584,11 @@ char PDBFormat::getAcronymByName( const QByteArray& name )
 
 }
 
-void PDBFormat::fillBioStruct3DAnnotationTable( AnnotationTableObject* ao, const BioStruct3D& bioStruct )
-{
+void PDBFormat::fillBioStruct3DAnnotationTable( FeaturesTableObject *ao, const BioStruct3D& bioStruct ) {
     
     foreach (SharedAnnotationData sdata, bioStruct.annotations) {
-        ao->addAnnotation(new Annotation(sdata), bioStruct.pdbId);
-    } 
+        ao->addAnnotation( *sdata, bioStruct.pdbId );
+    }
 }
 
 static inline bool existsCovalentBond( double r1, double r2, double distance ) {
@@ -747,8 +600,6 @@ static inline bool existsCovalentBond( double r1, double r2, double distance ) {
 
     return false;
 }
-
-
 
 void PDBFormat::calculateBonds( BioStruct3D& bioStruct )
 {
@@ -796,11 +647,6 @@ void PDBFormat::calculateBonds( BioStruct3D& bioStruct )
     }
     clock_t t2 = clock();
     perfLog.trace("PDB bonds calculation time: " + QString::number((float)( t2 - t1)/ CLOCKS_PER_SEC ));
-    //perfLog.trace(QString("num comparisons: %1").arg(num_comps));
-    //perfLog.trace(QString("passed through first filter: %1").arg(firstFilter));
-    //perfLog.trace(QString("passed through second filter: %1").arg(secondFilter));
-
-   
 }
 
 QHash<QByteArray, int> PDBFormat::createAtomNumMap()
@@ -915,10 +761,11 @@ QHash<QByteArray, int> PDBFormat::createAtomNumMap()
     return atomNumMap;
 }
 
-Document* PDBFormat::createDocumentFromBioStruct3D(const U2DbiRef& dbiRef, BioStruct3D &bioStruct, DocumentFormat* format, IOAdapterFactory* iof, const GUrl& url, U2OpStatus& os, const QVariantMap& fs  )
+Document * PDBFormat::createDocumentFromBioStruct3D( const U2DbiRef &dbiRef, BioStruct3D &bioStruct,
+    DocumentFormat *format, IOAdapterFactory *iof, const GUrl &url, U2OpStatus &os, const QVariantMap &fs )
 {
     QList<GObject*> objects;
-    QMap< AnnotationTableObject*, U2SequenceObject*> relationsMap;
+    QMap<FeaturesTableObject *, U2SequenceObject *> relationsMap;
     QString objectName = bioStruct.pdbId.isEmpty() ? url.baseFileName() : bioStruct.pdbId;
 
     BioStruct3DObject* biostrucObj = new BioStruct3DObject(bioStruct, objectName);
@@ -941,9 +788,10 @@ Document* PDBFormat::createDocumentFromBioStruct3D(const U2DbiRef& dbiRef, BioSt
         }
         
         // create AnnnotationTableObject
-        AnnotationTableObject* aObj = new AnnotationTableObject(QString(bioStruct.pdbId) + QString(" chain %1 annotation").arg(key));
-        foreach (SharedAnnotationData sd, bioStruct.moleculeMap.value(key)->annotations) {
-            aObj->addAnnotation(new Annotation(sd), ""); 
+        FeaturesTableObject *aObj = new FeaturesTableObject( QString( bioStruct.pdbId )
+            + QString( " chain %1 annotation" ).arg( key ), dbiRef );
+        foreach ( SharedAnnotationData sd, bioStruct.moleculeMap.value( key )->annotations ) {
+            aObj->addAnnotation( *sd );
         }
         objects.append(aObj);
         relationsMap.insert(aObj, seqObj);
@@ -954,19 +802,16 @@ Document* PDBFormat::createDocumentFromBioStruct3D(const U2DbiRef& dbiRef, BioSt
     Document* doc = new Document(format, iof, url, dbiRef, objects, fs);
 
     // set object relations
-    QMap< AnnotationTableObject*, U2SequenceObject*>::const_iterator i;
+    QMap<FeaturesTableObject *, U2SequenceObject*>::const_iterator i;
     for (i = relationsMap.constBegin(); i != relationsMap.constEnd(); ++i) {
         U2SequenceObject* dnao = i.value();
-        AnnotationTableObject* ao = i.key();
+        FeaturesTableObject *ao = i.key();
         ao->addObjectRelation(dnao, GObjectRelationRole::SEQUENCE);
         biostrucObj->addObjectRelation(dnao, GObjectRelationRole::SEQUENCE);
         biostrucObj->addObjectRelation(ao, GObjectRelationRole::ANNOTATION_TABLE);
     }
 
     return doc;
-
 }
 
-
-
-} //namespace
+} // namespace U2

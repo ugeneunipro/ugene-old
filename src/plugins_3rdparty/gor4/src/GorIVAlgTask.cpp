@@ -67,7 +67,6 @@ void GorIVAlgTask::run()
     runGORIV(seqDb, strucDb, sequence.data(), sequence.size() - 1, output.data());
 
     results = SecStructPredictUtils::saveAlgorithmResultsAsAnnotations(output, GORIV_ANNOTATION_NAME);
-
 }
 
 

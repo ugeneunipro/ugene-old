@@ -20,7 +20,7 @@
  */
 
 #include <U2Core/DNASequenceObject.h>
-#include <U2Core/AnnotationTableObject.h>
+#include <U2Core/FeaturesTableObject.h>
 #include <U2Core/DNATranslation.h>
 #include <U2Core/TextUtils.h>
 #include <U2Core/DNASequenceSelection.h>
@@ -29,47 +29,48 @@
 
 namespace U2 {
 
-ReverseSequenceTask::ReverseSequenceTask( U2SequenceObject* dObj, QList<AnnotationTableObject*> annotations, DNASequenceSelection* s, DNATranslation* transl )
-:Task("ReverseSequenceTask", TaskFlags_NR_FOSCOE), seqObj(dObj), aObjs(annotations), selection(s), complTr(transl)
+ReverseSequenceTask::ReverseSequenceTask( U2SequenceObject *dObj,
+    const QList<FeaturesTableObject *> &annotations, DNASequenceSelection *s, DNATranslation *transl )
+    : Task( "ReverseSequenceTask", TaskFlags_NR_FOSCOE ), seqObj( dObj ), aObjs( annotations ),
+    selection( s ), complTr( transl )
 {
 
 }
 
-Task::ReportResult ReverseSequenceTask::report() {
-    DNASequence sequence = seqObj->getWholeSequence();
-    if(sequence.length() == 0) {
+Task::ReportResult ReverseSequenceTask::report( ) {
+    DNASequence sequence = seqObj->getWholeSequence( );
+    if ( sequence.seq.isEmpty( ) ) {
         return ReportResult_Finished;
     }
-    
-    char* data = sequence.seq.data(); 
-    int len = sequence.length();
-    if (complTr != NULL) {
-        complTr->translate(data, len);
+
+    char *data = sequence.seq.data( );
+    const int len = sequence.length( );
+    if ( NULL != complTr ) {
+        complTr->translate( data, len );
     }
-    TextUtils::reverse(data, len);
-    seqObj->setWholeSequence(sequence);
+    TextUtils::reverse( data, len );
+    seqObj->setWholeSequence( sequence );
 
     // mirror selection
-    if (selection != NULL) {
-        QVector<U2Region> regions = selection->getSelectedRegions();
-        U2Region::mirror(len, regions);
-        U2Region::reverse(regions);
-        selection->setSelectedRegions(regions);
+    if ( NULL != selection ) {
+        QVector<U2Region> regions = selection->getSelectedRegions( );
+        U2Region::mirror( len, regions );
+        U2Region::reverse( regions );
+        selection->setSelectedRegions( regions );
     }
     
     // fix annotation locations
-    foreach (AnnotationTableObject* aObj, aObjs) {
-        QList<Annotation*> annotations = aObj->getAnnotations();
-        foreach (Annotation* a, annotations) {
-            if (complTr != NULL) {
-                U2Strand strand = a->getStrand();
-                a->setStrand(strand == U2Strand::Direct ? U2Strand::Complementary : U2Strand::Direct);
-                
+    foreach ( FeaturesTableObject *aObj, aObjs ) {
+        foreach ( __Annotation a, aObj->getAnnotations( ) ) {
+            if ( NULL != complTr ) {
+                U2Strand strand = a.getStrand( );
+                a.setStrand( strand == U2Strand::Direct
+                    ? U2Strand::Complementary : U2Strand::Direct );
             }
-            U2Location location = a->getLocation();
-            U2Region::mirror(len, location->regions);
-            U2Region::reverse(location->regions);
-            a->setLocation(location);
+            U2Location location = a.getLocation( );
+            U2Region::mirror( len, location->regions );
+            U2Region::reverse( location->regions );
+            a.setLocation( location );
         }
     }
 

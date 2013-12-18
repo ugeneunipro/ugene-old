@@ -37,7 +37,7 @@
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/MAlignmentImporter.h>
 #include <U2Core/MAlignmentObject.h>
-#include <U2Core/AnnotationTableObject.h>
+#include <U2Core/FeaturesTableObject.h>
 #include <U2Core/MSAUtils.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/U2DbiRegistry.h>
@@ -339,9 +339,9 @@ void LoadSeqTask::run() {
             if (!annotations.isEmpty()) {
                 QList<SharedAnnotationData> l;
                 foreach(GObject * annGObj, annotations) {
-                    AnnotationTableObject* att = qobject_cast<AnnotationTableObject*>(annGObj);
-                    foreach(Annotation* a, att->getAnnotations()) {
-                        l << a->data();
+                    FeaturesTableObject *att = qobject_cast<FeaturesTableObject *>(annGObj);
+                    foreach ( const __Annotation &a, att->getAnnotations( ) ) {
+                        l << SharedAnnotationData( new AnnotationData( a.getData( ) ) );
                     }
                     annObjs.removeAll(annGObj);
                 }
@@ -352,15 +352,15 @@ void LoadSeqTask::run() {
 
         // if there are annotations that are not connected to a sequence -> put them  independently
         foreach(GObject * annObj, annObjs) {
-            AnnotationTableObject* att = qobject_cast<AnnotationTableObject*>(annObj);
+            FeaturesTableObject *att = qobject_cast<FeaturesTableObject *>(annObj);
             if(att->findRelatedObjectsByRole(GObjectRelationRole::SEQUENCE).isEmpty()) {
                 assert(att != NULL);
                 QVariantMap m;
                 m.insert(BaseSlots::URL_SLOT().getId(), url);
 
                 QList<SharedAnnotationData> l;
-                foreach(Annotation* a, att->getAnnotations()) {
-                    l << a->data();
+                foreach ( const __Annotation &a, att->getAnnotations( ) ) {
+                    l << SharedAnnotationData( new AnnotationData( a.getData( ) ) );
                 }
                 m.insert(BaseSlots::ANNOTATION_TABLE_SLOT().getId(), qVariantFromValue<QList<SharedAnnotationData> >(l));
                 results.append(m);

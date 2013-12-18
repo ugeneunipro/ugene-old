@@ -24,24 +24,22 @@
 #include "AnnotatedDNAViewFactory.h"
 #include "AnnotatedDNAViewState.h"
 
-#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/DNASequenceSelection.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/DNATranslation.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/GObjectTypes.h>
-
+#include <U2Core/FeaturesTableObject.h>
 
 namespace U2 {
-
 
 #define VIEW_ID                 QString("view_id")
 #define SEQUENCE_OBJECTS        QString("dna_obj_ref")
 #define ANNOTATION_OBJECTS      QString("ann_obj_ref")
 #define SEQUENCE_SELECTION      QString("dna_obj_sel")
 
-
 AnnotatedDNAViewState::AnnotatedDNAViewState() {
+
 }
 
 bool AnnotatedDNAViewState::isValid() const {

@@ -33,7 +33,6 @@
 #include <U2Core/DocumentSelection.h>
 
 #include <U2Core/DNASequenceObject.h>
-#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/GObjectTypes.h>
 #include <U2Core/GObjectRelationRoles.h>
 #include <U2Core/GObjectUtils.h>
@@ -102,14 +101,10 @@ Task* AnnotatedDNAViewFactory::createViewTask(const MultiGSelection& multiSelect
             objectsToOpen.append(obj);
         }
     }
-    //objectsToOpen.append(objectsWithSequenceRelation);
 
     const DocumentSelection* ds = qobject_cast<const DocumentSelection*>(multiSelection.findSelectionByType(GSelectionTypes::DOCUMENTS));
     if (ds != NULL) {
         foreach(Document* doc, ds->getSelectedDocuments()) {
-            /*objectsToOpen.append(doc->findGObjectByType(GObjectTypes::SEQUENCE, UOF_LoadedAndUnloaded));
-            objectsToOpen.append(GObjectUtils::selectObjectsWithRelation(doc->getObjects(), GObjectTypes::SEQUENCE, 
-                GObjectRelationRole::SEQUENCE, UOF_LoadedAndUnloaded, true));*/
             foreach(GObject* obj, doc->findGObjectByType(GObjectTypes::SEQUENCE, UOF_LoadedAndUnloaded)) {
                 if(!objectsToOpen.contains(obj)) {
                     objectsToOpen.append(obj);
@@ -170,8 +165,4 @@ Task* AnnotatedDNAViewFactory::createViewTask(const QString& viewName, const QVa
     return new OpenSavedAnnotatedDNAViewTask(viewName, stateData);
 }
 
-
-
-
 } // namespace
-

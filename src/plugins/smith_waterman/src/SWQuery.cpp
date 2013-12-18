@@ -194,11 +194,6 @@ Task* QDSWActor::getAlgorithmTask(const QVector<U2Region>& searchLocation) {
 
     settings.globalRegion = U2Region(0, dnaSeq.length());
 
-    //SmithWatermanReportCallbackImpl* rcb = new SmithWatermanReportCallbackImpl(NULL, resultName, QString()); //FIXME!!! where to delete?
-    //settings.resultCallback = rcb;
-    //settings.resultListener = new SmithWatermanResultListener(); //FIXME: where to delete??
-
-    //task = algo->getTaskInstance(settings, QDSWActor::tr("smith_waterman_task"));
     task = new Task(tr("SSearch"), TaskFlag_NoRun);
     foreach(const U2Region& r, searchLocation) {
         SmithWatermanSettings stngs(settings);
@@ -212,29 +207,23 @@ Task* QDSWActor::getAlgorithmTask(const QVector<U2Region>& searchLocation) {
         task->addSubTask(sub);
         callbacks.insert(sub, rcb);
     }
-    //callbacks.insert(task, rcb);
     connect(new TaskSignalMapper(task), SIGNAL(si_taskFinished(Task*)), SLOT(sl_onAlgorithmTaskFinished(Task*)));
     return task;
 }
 
 void QDSWActor::sl_onAlgorithmTaskFinished(Task*) {
-    /*SmithWatermanReportCallbackImpl* rcb = callbacks.take(t);
-    assert(rcb);*/
-    //const QList<SharedAnnotationData>& res = rcb->getAnotations();
-    QList<SharedAnnotationData> res;
+    QList<AnnotationData> res;
     QMapIterator<Task*, SmithWatermanReportCallbackAnnotImpl*> iter(callbacks);
     while (iter.hasNext()) {
         iter.next();
         res << iter.value()->getAnotations();
     }
 
-    //QDStrandOption schemaStrand = scheme->getStrand();
-
-    foreach(const SharedAnnotationData& ad, res) {
+    foreach ( const AnnotationData &ad, res ) {
         QDResultUnit ru(new QDResultUnitData);
-        ru->strand = ad->getStrand();
-        ru->quals = ad->qualifiers;
-        ru->region = ad->location->regions.first();
+        ru->strand = ad.getStrand();
+        ru->quals = ad.qualifiers;
+        ru->region = ad.location->regions.first();
         ru->owner = units.value("sw");
         QDResultGroup::buildGroupFromSingleResult(ru, results);
     }
@@ -276,15 +265,15 @@ SWQDActorFactory::SWQDActorFactory() {
     {
         QVariantMap m; m["minimum"] = 1; m["maximum"] = 100; m["suffix"] = "%";
         delegates[SCORE_ATTR] = new SpinBoxDelegate(m);
-    }    
+    }
     {
         QVariantMap m; m["maximum"] = -0.; m["minimum"]=-10000000.;
         delegates[GAPOPEN_ATTR] = new DoubleSpinBoxDelegate(m);
         m["maximum"] = -1.;
         delegates[GAPEXT_ATTR] = new DoubleSpinBoxDelegate(m);
-    }    
+    }
     {
-        QVariantMap m;   
+        QVariantMap m;
         foreach(const QString& n, filterLst) {
             m.insert(n,n);
         } 

@@ -20,9 +20,10 @@
  */
 
 #include "FindRepeatsDialog.h"
-//#include "FindRepeatsTask.h"
 
+#include <U2Core/Annotation.h>
 #include <U2Core/AppContext.h>
+#include <U2Core/FeaturesTableObject.h>
 #include <U2Core/Settings.h>
 #include <U2Core/L10n.h>
 
@@ -74,7 +75,7 @@ FindRepeatsDialog::FindRepeatsDialog(ADVSequenceObjectContext* _sc)
     
     CreateAnnotationModel m;
     m.hideLocation = true;
-    m.data->name = GBFeatureUtils::getKeyInfo(GBFeatureKey_repeat_unit).text;
+    m.data.name = GBFeatureUtils::getKeyInfo(GBFeatureKey_repeat_unit).text;
     m.sequenceObjectRef = sc->getSequenceObject();
     m.useUnloadedObjects = true;
     m.sequenceLen = sc->getSequenceObject()->getSequenceLength();
@@ -129,9 +130,7 @@ FindRepeatsDialog::FindRepeatsDialog(ADVSequenceObjectContext* _sc)
         prepareAMenu(annotationAroundKeepButton, annotationAroundKeepEdit, annotationNames);
         prepareAMenu(annotationAroundFilterButton, annotationAroundFilterEdit, annotationNames);
     }
-    
-//    connect(customRangeStartBox, SIGNAL(valueChanged(int)), SLOT(sl_startRangeChanged(int)));
-//    connect(customRangeEndBox, SIGNAL(valueChanged(int)), SLOT(sl_endRangeChanged(int)));
+
     connect(minDistBox, SIGNAL(valueChanged(int)), SLOT(sl_minDistChanged(int)));
     connect(maxDistBox, SIGNAL(valueChanged(int)), SLOT(sl_maxDistChanged(int)));
     connect(minDistCheck, SIGNAL(toggled(bool)), SLOT(sl_minMaxToggle(bool)));
@@ -157,11 +156,11 @@ void FindRepeatsDialog::prepareAMenu(QToolButton* tb, QLineEdit* le, const QStri
 
 QStringList FindRepeatsDialog::getAvailableAnnotationNames() const {
     QStringList res;
-    const QSet<AnnotationTableObject*>& objs = sc->getAnnotationObjects();
+    const QSet<FeaturesTableObject *>& objs = sc->getAnnotationObjects();
     QSet<QString> names;
-    foreach(AnnotationTableObject* o, objs) {
-        foreach(const Annotation* a, o->getAnnotations()) {
-            names.insert(a->getAnnotationName());
+    foreach ( FeaturesTableObject *o, objs ) {
+        foreach ( const __Annotation &a, o->getAnnotations( ) ) {
+            names.insert( a.getName( ) );
         }
     }
     res = names.toList();
@@ -200,11 +199,11 @@ bool FindRepeatsDialog::getRegions(QCheckBox* cb, QLineEdit* le, QVector<U2Regio
         return true;
     }
     QSet<QString> aNames = names.split(',', QString::SkipEmptyParts).toSet();
-    const QSet<AnnotationTableObject*> aObjs = sc->getAnnotationObjects();
-    foreach(AnnotationTableObject* obj, aObjs) {
-        foreach(Annotation* a, obj->getAnnotations()) {
-            if (aNames.contains(a->getAnnotationName())) {
-                res << a->getRegions();
+    const QSet<FeaturesTableObject *> aObjs = sc->getAnnotationObjects();
+    foreach ( FeaturesTableObject *obj, aObjs ) {
+        foreach ( const __Annotation &a, obj->getAnnotations( ) ) {
+            if ( aNames.contains( a.getName( ) ) ) {
+                res << a.getRegions( );
             }
         }
     }
@@ -254,7 +253,6 @@ void FindRepeatsDialog::accept() {
     settings.inverted = inverted;
     settings.maxDist = maxDist;
     settings.minDist = minDist;
-//     settings.seqRegion = range;
     settings.algo = algo;
     settings.filter = locFilter;
     settings.allowedRegions = fitRegions;
@@ -288,7 +286,7 @@ void FindRepeatsDialog::accept() {
     }
 
     FindRepeatsToAnnotationsTask* t = new FindRepeatsToAnnotationsTask(settings, seqPart, 
-        cam.data->name, cam.groupName, cam.annotationObjectRef);
+        cam.data.name, cam.groupName, cam.annotationObjectRef);
 
     AppContext::getTaskScheduler()->registerTopLevelTask(t);
     
@@ -347,11 +345,6 @@ int FindRepeatsDialog::estimateResultsCount() const {
 
 void FindRepeatsDialog::sl_minLenHeuristics() {
     identityBox->setValue(100);
-
-    // formula used here: nVariations / lenVariations = wantedResCount (==1000)
-    // where nVariations == area size
-    // lenVariations = 4^len where len is result
-    // so we have len = ln(nVariations/wantedResCount)/ln(4)
 
     double nVariations  = areaSize();
     double resCount = 1000;

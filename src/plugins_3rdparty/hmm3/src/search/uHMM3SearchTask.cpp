@@ -32,6 +32,7 @@
 #include <U2Core/Log.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/DNASequenceObject.h>
+#include <U2Core/FeaturesTableObject.h>
 
 #include <gobject/uHMMObject.h>
 #include <format/uHMMFormat.h>
@@ -517,7 +518,7 @@ void UHMM3SWSearchToAnnotationsTask::checkArgs() {
 }
 
 UHMM3SWSearchToAnnotationsTask::UHMM3SWSearchToAnnotationsTask( const QString & hmmf, const DNASequence & s,
-                                                                AnnotationTableObject * o, const QString & gr,
+                                                                FeaturesTableObject *o, const QString & gr,
                                                                 const QString & name, const UHMM3SearchTaskSettings & set )
 : Task( "", TaskFlags_NR_FOSCOE | TaskFlag_ReportingIsSupported | TaskFlag_ReportingIsEnabled ),
 hmmfile( hmmf ), sequence( s ), annotationObj( o ), agroup( gr ), aname( name ), searchSettings( set ),
@@ -538,7 +539,7 @@ loadSequenceTask( NULL ), searchTask( NULL ), createAnnotationsTask( NULL ) {
 }
 
 UHMM3SWSearchToAnnotationsTask::UHMM3SWSearchToAnnotationsTask( const QString & hmmf, const QString & seqFile,
-                                                                AnnotationTableObject * obj, const QString & gr,
+                                                                FeaturesTableObject *obj, const QString & gr,
                                                                 const QString & name,
                                                                 const UHMM3SearchTaskSettings & set )
 : Task( "", TaskFlags_NR_FOSCOE | TaskFlag_ReportingIsSupported | TaskFlag_ReportingIsEnabled ), 
@@ -579,7 +580,7 @@ QString UHMM3SWSearchToAnnotationsTask::generateReport() const {
     res += "<tr><td><b>" + tr("Result annotation group") + "</b></td><td>" + agroup + "</td></tr>";
     res += "<tr><td><b>" + tr("Result annotation name") +  "</b></td><td>" + aname + "</td></tr>";
     
-    int nResults = createAnnotationsTask == NULL ? 0 : createAnnotationsTask->getAnnotations().size();
+    int nResults = createAnnotationsTask == NULL ? 0 : createAnnotationsTask->getAnnotationCount( );
     res += "<tr><td><b>" + tr("Results count") +  "</b></td><td>" + QString::number( nResults )+ "</td></tr>";
     res += "</table>";
     return res;
@@ -630,7 +631,10 @@ QList< Task* > UHMM3SWSearchToAnnotationsTask::onSubTaskFinished( Task * subTask
         searchTask = new UHMM3SWSearchTask( hmmfile, sequence, searchSettings );
         res << searchTask;
     } else if( searchTask == subTask ) {
-        QList< SharedAnnotationData > annotations = searchTask->getResultsAsAnnotations( aname );
+        QList<AnnotationData> annotations;
+        foreach ( const SharedAnnotationData &data, searchTask->getResultsAsAnnotations( aname ) ) {
+            annotations << *data;
+        }
         if( annotations.isEmpty() ) {
             return res;
         }

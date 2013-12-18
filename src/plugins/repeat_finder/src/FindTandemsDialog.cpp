@@ -28,6 +28,7 @@
 
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/DNASequenceSelection.h>
+#include <U2Core/FeaturesTableObject.h>
 #include <U2Gui/CreateAnnotationWidgetController.h>
 #include <U2View/ADVSequenceObjectContext.h>
 #include <U2View/AnnotatedDNAView.h>
@@ -59,7 +60,7 @@ FindTandemsDialog::FindTandemsDialog(ADVSequenceObjectContext* _sc)
 
     CreateAnnotationModel m;
     m.hideLocation = true;
-    m.data->name = GBFeatureUtils::getKeyInfo(GBFeatureKey_repeat_unit).text;
+    m.data.name = GBFeatureUtils::getKeyInfo(GBFeatureKey_repeat_unit).text;
     m.sequenceObjectRef = sc->getSequenceObject();
     m.useUnloadedObjects = true;
     m.sequenceLen = sc->getSequenceObject()->getSequenceLength();
@@ -93,11 +94,11 @@ FindTandemsDialog::FindTandemsDialog(ADVSequenceObjectContext* _sc)
 
 QStringList FindTandemsDialog::getAvailableAnnotationNames() const {
     QStringList res;
-    const QSet<AnnotationTableObject*>& objs = sc->getAnnotationObjects();
+    const QSet<FeaturesTableObject *> objs = sc->getAnnotationObjects();
     QSet<QString> names;
-    foreach(AnnotationTableObject* o, objs) {
-        foreach(const Annotation* a, o->getAnnotations()) {
-            names.insert(a->getAnnotationName());
+    foreach ( const FeaturesTableObject *o, objs ) {
+        foreach ( const __Annotation &a, o->getAnnotations( ) ) {
+            names.insert( a.getName( ) );
         }
     }
     res = names.toList();
@@ -148,11 +149,11 @@ bool FindTandemsDialog::getRegions(QCheckBox* cb, QLineEdit* le, QVector<U2Regio
         return true;
     }
     QSet<QString> aNames = names.split(',', QString::SkipEmptyParts).toSet();
-    const QSet<AnnotationTableObject*> aObjs = sc->getAnnotationObjects();
-    foreach(AnnotationTableObject* obj, aObjs) {
-        foreach(Annotation* a, obj->getAnnotations()) {
-            if (aNames.contains(a->getAnnotationName())) {
-                res << a->getRegions();
+    const QSet<FeaturesTableObject *> aObjs = sc->getAnnotationObjects();
+    foreach ( FeaturesTableObject *obj, aObjs ) {
+        foreach ( const __Annotation &a, obj->getAnnotations( ) ) {
+            if ( aNames.contains( a.getName( ) ) ) {
+                res << a.getRegions( );
             }
         }
     }
@@ -208,7 +209,7 @@ void FindTandemsDialog::accept() {
     settings.seqRegion = U2Region(0, seq.length());
     settings.reportSeqShift = range.startPos;
 
-    FindTandemsToAnnotationsTask* t = new FindTandemsToAnnotationsTask(settings, seq, cam.data->name, cam.groupName, cam.annotationObjectRef);
+    FindTandemsToAnnotationsTask* t = new FindTandemsToAnnotationsTask(settings, seq, cam.data.name, cam.groupName, cam.annotationObjectRef);
     AppContext::getTaskScheduler()->registerTopLevelTask(t);
     
     QDialog::accept();

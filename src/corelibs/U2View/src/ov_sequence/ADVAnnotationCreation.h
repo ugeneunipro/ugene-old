@@ -23,13 +23,14 @@
 #define _U2_ADVANNOTATION_CREATION_H_
 
 #include <U2Core/Task.h>
-#include <U2Core/AnnotationTableObject.h>
+#include <U2Core/AnnotationData.h>
 
 #include <QtGui/QAction>
 #include <QtCore/QPointer>
 
 namespace U2 {
 
+class GObjectReference;
 class CreateAnnotationsTask;
 class AnnotatedDNAView;
 class U2SequenceObject;
@@ -53,9 +54,9 @@ private:
 class U2VIEW_EXPORT  ADVCreateAnnotationsTask : public Task {
     Q_OBJECT
 public:
-    ADVCreateAnnotationsTask(AnnotatedDNAView* _ctx, const GObjectReference& aobjRef, 
-                            const QString& group, const QList<SharedAnnotationData>& data);
-        
+    ADVCreateAnnotationsTask(AnnotatedDNAView* _ctx, const GObjectReference& aobjRef,
+                            const QString& group, const QList<AnnotationData> &data);
+
     ReportResult report();
 
 private:
@@ -63,9 +64,6 @@ private:
     CreateAnnotationsTask* t;
 };
 
-
-} // namespace
-
-
+} // namespace U2
 
 #endif

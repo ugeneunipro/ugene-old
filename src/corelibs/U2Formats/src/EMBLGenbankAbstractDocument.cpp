@@ -19,17 +19,12 @@
  * MA 02110-1301, USA.
  */
 
-
-#include "EMBLGenbankAbstractDocument.h"
-
-#include "GenbankLocationParser.h"
-#include "GenbankFeatures.h"
-#include "DocumentFormatUtils.h"
+#include <QtCore/QScopedPointer>
 
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/GObjectUtils.h>
 #include <U2Core/GObjectRelationRoles.h>
-
+#include <U2Core/FeaturesTableObject.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/U2OpStatus.h>
 #include <U2Core/DNAAlphabet.h>
@@ -47,14 +42,18 @@
 
 #include <U2Formats/GenbankFeatures.h>
 
-#include <memory>
+#include "GenbankLocationParser.h"
+#include "GenbankFeatures.h"
+#include "DocumentFormatUtils.h"
+
+#include "EMBLGenbankAbstractDocument.h"
 
 namespace U2 {
 
-/* TRANSLATOR U2::EMBLGenbankAbstractDocument */    
+/* TRANSLATOR U2::EMBLGenbankAbstractDocument */
 //TODO: local8bit or ascii??
 
-EMBLGenbankAbstractDocument::EMBLGenbankAbstractDocument(const DocumentFormatId& _id, const QString& _formatName, int mls, 
+EMBLGenbankAbstractDocument::EMBLGenbankAbstractDocument(const DocumentFormatId& _id, const QString& _formatName, int mls,
                                                          DocumentFormatFlags flags, QObject* p) 
 : DocumentFormat(p, flags), id(_id), formatName(_formatName), maxAnnotationLineLen(mls)
 {
@@ -95,7 +94,7 @@ void EMBLGenbankAbstractDocument::load(const U2DbiRef& dbiRef, IOAdapter* io, QL
     bool merge = gapSize!=-1;
 
     QByteArray  gapSequence((merge ? gapSize : 0), 0);
-    std::auto_ptr<AnnotationTableObject> mergedAnnotations(NULL);
+    QScopedPointer<FeaturesTableObject> mergedAnnotations( NULL );
     QStringList contigs;
     QVector<U2Region> mergedMapping;
 
@@ -152,25 +151,26 @@ void EMBLGenbankAbstractDocument::load(const U2DbiRef& dbiRef, IOAdapter* io, QL
         }
 
         toolMark = data.tags.contains(UGENE_MARK);
-        AnnotationTableObject* annotationsObject  = NULL;
+        FeaturesTableObject *annotationsObject = NULL;
 
         if (data.hasAnnotationObjectFlag) {
             QString annotationName = genObjectName(usedNames, data.name, data.tags, i+1, GObjectTypes::ANNOTATION_TABLE);
-            if (merge && mergedAnnotations.get() == NULL) {
-                mergedAnnotations.reset(new AnnotationTableObject(annotationName));
+            SAFE_POINT( NULL == mergedAnnotations.data( ), "Unexpected annotation table!", )
+            if ( merge ) {
+                mergedAnnotations.reset( new FeaturesTableObject( annotationName, dbiRef ) );
             }
-            annotationsObject = merge ? mergedAnnotations.get() : new AnnotationTableObject(annotationName);
+            annotationsObject = merge ? mergedAnnotations.data( )
+                : new FeaturesTableObject( annotationName, dbiRef );
 
             QStringList groupNames;
-            foreach(SharedAnnotationData d, data.features) {
-                groupNames.clear();
-                d->removeAllQualifiers(GBFeatureUtils::QUALIFIER_GROUP, groupNames);
+            foreach ( SharedAnnotationData d, data.features ) {
+                groupNames.clear( );
+                d->removeAllQualifiers( GBFeatureUtils::QUALIFIER_GROUP, groupNames );
                 if (groupNames.isEmpty()) {
-                    annotationsObject->addAnnotation(new Annotation(d));
+                    annotationsObject->addAnnotation( *d );
                 } else {
-                    Annotation* a = new Annotation(d);
                     foreach(const QString& gName, groupNames) {
-                        annotationsObject->getRootGroup()->getSubgroup(gName, true)->addAnnotation(a);
+                        annotationsObject->addAnnotation( *d, gName );
                     }
                 }
             }
@@ -260,15 +260,15 @@ void EMBLGenbankAbstractDocument::load(const U2DbiRef& dbiRef, IOAdapter* io, QL
     CHECK_OP(os,);
     U2SequenceObject* so = new U2SequenceObject(u2seq.visualName, U2EntityRef(dbiRef, u2seq.id));
     objects << so;
-    objects << DocumentFormatUtils::addAnnotationsForMergedU2Sequence(io->getURL(), contigs, u2seq, mergedMapping, os);
-    AnnotationTableObject * mergedAnnotationsPtr = mergedAnnotations.release();
-    if (mergedAnnotationsPtr!=NULL) {
+    objects << DocumentFormatUtils::addAnnotationsForMergedU2Sequence( io->getURL( ), dbiRef,
+        contigs, u2seq, mergedMapping, os );
+    FeaturesTableObject *mergedAnnotationsPtr = mergedAnnotations.take( );
+    if ( NULL != mergedAnnotationsPtr ) {
         sequenceRef.objName = so->getGObjectName();
         mergedAnnotationsPtr->addObjectRelation(GObjectRelation(sequenceRef, GObjectRelationRole::SEQUENCE));
         objects.append(mergedAnnotationsPtr);
     }
     U1AnnotationUtils::addAnnotations(objects, seqImporter.getCaseAnnotations(), sequenceRef, mergedAnnotationsPtr);
-
 }
 
 DNASequence* EMBLGenbankAbstractDocument::loadSequence(IOAdapter* io, U2OpStatus& os) {
@@ -730,7 +730,7 @@ bool ParserState::readNextLine(bool emptyOK) {
     return (len > 0 || (emptyOK && ok));
 }
 
-QString ParserState::key() const {   
+QString ParserState::key() const {
     //assert(len > 0);
     return QString::fromLocal8Bit(buff, qMin(valOffset - 1, len));
 }

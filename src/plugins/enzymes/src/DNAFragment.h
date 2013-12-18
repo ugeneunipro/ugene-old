@@ -24,18 +24,16 @@
 
 #include <QtCore/QList>
 
-
+#include <U2Core/AnnotationData.h>
 #include <U2Core/U2Region.h>
-
 
 namespace U2 {
 
 class U2SequenceObject;
 class DNAAlphabet;
-class AnnotationTableObject;
+class FeaturesTableObject;
 class Annotation;
 class GObject;
-
 
 struct DNAFragmentTerm {
     DNAFragmentTerm(const QString& eId, const QByteArray& seq, bool directStrand) 
@@ -50,12 +48,12 @@ struct DNAFragmentTerm {
 class DNAFragment {
 private:
     // Contains fragment region and cuts info
-    Annotation* annotatedFragment;
+    AnnotationData annotatedFragment;
     // Parent sequence of the fragment
     U2SequenceObject* dnaObj;
     // Annotations associated with parent sequence
     // When ligate or export fragments they must be saved
-    QList<AnnotationTableObject*> relatedAnnotations;
+    QList<FeaturesTableObject *> relatedAnnotations;
     // reverse complement
     bool reverseCompl;
     void updateTerms();
@@ -67,11 +65,11 @@ private:
     DNAFragmentTerm leftTerm, rightTerm;
 
 public:
-    DNAFragment() : annotatedFragment(NULL), dnaObj(NULL), reverseCompl(false) {}
-    DNAFragment(Annotation* fragment, U2SequenceObject* sObj, const QList<AnnotationTableObject*> relatedAnns);
+    DNAFragment( ) : dnaObj(NULL), reverseCompl(false) {}
+    DNAFragment( const AnnotationData &fragment, U2SequenceObject* sObj, const QList<FeaturesTableObject *> relatedAnns);
     DNAFragment( const DNAFragment& other );
     DNAFragment& operator=(const DNAFragment& other);
-    bool isEmpty() const { return annotatedFragment == NULL || dnaObj == NULL; }
+    bool isEmpty() const { return annotatedFragment == AnnotationData( ) || dnaObj == NULL; }
     QString getName() const;
     QString getSequenceName() const;
     QString getSequenceDocName() const;
@@ -91,15 +89,12 @@ public:
     void setLeftOverhangStrand( bool direct);
     void setRightOverhangStrand(bool direct);
 
-    const QList<AnnotationTableObject*>& getRelatedAnnotations() const { return relatedAnnotations; }
-    
+    const QList<FeaturesTableObject *> & getRelatedAnnotations() const { return relatedAnnotations; }
+
     static QList<DNAFragment> findAvailableFragments();
     static QList<DNAFragment> findAvailableFragments(const QList<GObject*>& aObjects, const QList<GObject*>& sObjects);
-   
 };
 
-
-
-} //namespace
+} //namespace U2o
 
 #endif // _U2_DNA_FRAGMENT_H_

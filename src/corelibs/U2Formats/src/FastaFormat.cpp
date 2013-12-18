@@ -19,10 +19,6 @@
  * MA 02110-1301, USA.
  */
 
-#include "FastaFormat.h"
-
-#include "DocumentFormatUtils.h"
-
 #include <U2Core/Task.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/DNAAlphabet.h>
@@ -30,7 +26,7 @@
 
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/MAlignmentObject.h>
-#include <U2Core/AnnotationTableObject.h>
+#include <U2Core/FeaturesTableObject.h>
 #include <U2Core/GObjectTypes.h>
 #include <U2Core/TextUtils.h>
 #include <U2Core/AppContext.h>
@@ -40,6 +36,10 @@
 #include <U2Core/U2AttributeDbi.h>
 #include <U2Core/U1AnnotationUtils.h>
 #include <U2Core/AppResources.h>
+
+#include "DocumentFormatUtils.h"
+
+#include "FastaFormat.h"
 
 namespace U2 {
 
@@ -265,7 +265,8 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, Q
 
     U1AnnotationUtils::addAnnotations(objects, seqImporter.getCaseAnnotations(), sequenceRef, NULL);
     objects << new U2SequenceObject(seq.visualName, U2EntityRef(dbiRef, seq.id));
-    objects << DocumentFormatUtils::addAnnotationsForMergedU2Sequence(docUrl, headers, seq, mergedMapping, os);
+    objects << DocumentFormatUtils::addAnnotationsForMergedU2Sequence( docUrl, dbiRef, headers,
+        seq, mergedMapping, os );
     if (headers.size() > 1) {
         writeLockReason = DocumentFormat::MERGED_SEQ_LOCK;
     }

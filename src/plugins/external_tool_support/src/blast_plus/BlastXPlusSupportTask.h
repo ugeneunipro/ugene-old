@@ -34,7 +34,6 @@
 #include "utils/ExportTasks.h"
 
 #include <U2Core/DNASequenceObject.h>
-#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/ExternalToolRunTask.h>
 
 #include "BlastPlusSupportCommonTask.h"

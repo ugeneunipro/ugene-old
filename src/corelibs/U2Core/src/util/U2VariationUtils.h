@@ -22,6 +22,7 @@
 #ifndef _U2_VARIATION_UTILS_H_
 #define _U2_VARIATION_UTILS_H_
 
+#include <U2Core/AnnotationData.h>
 #include <U2Core/FormatSettings.h>
 #include <U2Core/U2Variant.h>
 #include <U2Core/U2Feature.h>
@@ -29,11 +30,9 @@
 
 namespace U2 {
 
-class Annotation;
-    
-/**                                           
-    U2Variant and related structures utility functions
-*/
+/**
+ * U2Variant and related structures utility functions
+ */
 
 enum CallVariationsMode{
     Mode_Variations = 0,
@@ -41,23 +40,20 @@ enum CallVariationsMode{
     Mode_All
 };
 
-class U2CORE_EXPORT U2VariationUtils : public QObject {
-    Q_OBJECT
-private:
-    U2VariationUtils (){}
+class U2CORE_EXPORT U2VariationUtils {
 public:
-
     //track manipulations
-    static void addVariationsToTrack(const U2EntityRef& ref, const QList<U2Variant>& variants, U2OpStatus& os);
-    static U2VariantTrack createVariantTrack(const U2DbiRef &dbiRef, const QString& seqName, U2OpStatus& os);
-    
+    static void addVariationsToTrack( const U2EntityRef &ref, const QList<U2Variant> &variants,
+        U2OpStatus &os );
+    static U2VariantTrack createVariantTrack( const U2DbiRef &dbiRef, const QString &seqName,
+        U2OpStatus &os );
     //convertors
-    static Annotation* variantToAnnotation (const U2Variant& var);
-    static U2Feature variantToFeature (const U2Variant& var);
-
+    static AnnotationData variantToAnnotation( const U2Variant &var );
+    static U2Feature variantToFeature (const U2Variant &var);
     //variations revealing
-    static QList<U2Variant> getSNPFromSequences(const QByteArray& refSeq, const QByteArray& varSeq, CallVariationsMode mode = Mode_Variations, bool ignoreGaps = false, 
-                                                const QString& namePrefix = QString(), int nameStartIdx = 0);
+    static QList<U2Variant> getSNPFromSequences( const QByteArray &refSeq, const QByteArray &varSeq,
+        CallVariationsMode mode = Mode_Variations, bool ignoreGaps = false,
+        const QString &namePrefix = QString( ), int nameStartIdx = 0 );
 };
 
 } //namespace

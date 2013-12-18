@@ -19,7 +19,7 @@ namespace U2 {
 
 class CreateAnnotationWidgetController;
 class CreateAnnotationModel;
-class AnnotationTableObject;
+class FeaturesTableObject;
 class CreateAnnotationsTask;
 class LoadUnloadedDocumentTask;
 class DNATranslation;
@@ -49,7 +49,7 @@ private:
     DNASequence                         dnaSequence;
     Task*                               searchTask;
     CreateAnnotationWidgetController*   createController;
-};    
+};
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -58,15 +58,15 @@ private:
 class HMMSearchToAnnotationsTask : public Task {
     Q_OBJECT
 public:
-    
-    HMMSearchToAnnotationsTask(const QString& hmmFile, const DNASequence& s, AnnotationTableObject* aobj,
+    HMMSearchToAnnotationsTask(const QString& hmmFile, const DNASequence& s, FeaturesTableObject* aobj,
         const QString& group, const QString& aname, 
         const UHMMSearchSettings& settings);
 
     virtual QList<Task*> onSubTaskFinished(Task* subTask);
     QString generateReport() const;
+
 private:
-   
+
     QString                     hmmFile;
     DNASequence                 dnaSequence;
     QString                     agroup;
@@ -76,10 +76,9 @@ private:
     HMMReadTask*                readHMMTask;
     HMMSearchTask*              searchTask;
     CreateAnnotationsTask*      createAnnotationsTask;
-    QPointer<AnnotationTableObject> aobj;
+    QPointer<FeaturesTableObject> aobj;
 };
 
+} // namespace U2
 
-
-}//namespace
 #endif

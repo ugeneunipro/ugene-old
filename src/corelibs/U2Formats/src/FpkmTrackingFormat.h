@@ -118,14 +118,14 @@ public:
     virtual FormatCheckResult checkRawData(const QByteArray& rawData, const GUrl& = GUrl()) const;
 
     /** Gets annotation data from a file in FPKM Tracking Format, but doesn't create an annotation table, etc. */
-    static QList<SharedAnnotationData> getAnnotData(IOAdapter* io, U2OpStatus& os);
+    static QList<AnnotationData> getAnnotData(IOAdapter* io, U2OpStatus& os);
 
 protected:
     virtual Document* loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& hints, U2OpStatus& os);
 
-    QList<SharedAnnotationData> parseDocument(IOAdapter* io, QString& seqName, QString annotName, U2OpStatus& os);
+    QList<AnnotationData> parseDocument(IOAdapter* io, QString& seqName, QString annotName, U2OpStatus& os);
 
-    void load(IOAdapter* io, QList<GObject*>& objects, U2OpStatus& os);
+    void load(IOAdapter* io, QList<GObject*>& objects, const U2DbiRef& dbiRef, U2OpStatus& os);
 
 private:
     FpkmTrackingLineData parseAndValidateLine(QString line, QStringList columns, FpkmTrackingLineValidateFlags& status) const;
@@ -163,7 +163,7 @@ private:
     */
     QStringList writeHeader(QList<GObject*> annotTables, Document* doc, IOAdapter* io, U2OpStatus& os);
 
-    void addQualifierIfValuePresent(SharedAnnotationData& annotData, QString name, QString val);
+    void addQualifierIfValuePresent( AnnotationData &annotData, QString name, QString val );
 };
 
 

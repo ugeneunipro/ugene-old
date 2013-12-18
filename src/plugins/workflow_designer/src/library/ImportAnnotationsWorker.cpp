@@ -25,7 +25,7 @@
 #include <U2Core/MultiTask.h>
 #include <U2Core/TaskSignalMapper.h>
 #include <U2Core/DocumentModel.h>
-#include <U2Core/AnnotationTableObject.h>
+#include <U2Core/FeaturesTableObject.h>
 #include <U2Core/QVariantUtils.h>
 #include <U2Core/FailTask.h>
 #include <U2Core/L10n.h>
@@ -102,14 +102,12 @@ static QList<SharedAnnotationData> getAnnsFromDoc(Document* doc) {
     }
     QList<GObject*> objs = doc->findGObjectByType(GObjectTypes::ANNOTATION_TABLE);
     foreach(GObject* obj, objs) {
-        AnnotationTableObject * annObj = qobject_cast<AnnotationTableObject*>(obj);
+        FeaturesTableObject *annObj = qobject_cast<FeaturesTableObject *>(obj);
         if(NULL == annObj) {
             continue;
         }
-        foreach(Annotation * a, annObj->getAnnotations()) {
-            if(a != NULL) {
-                ret << a->data();
-            }
+        foreach ( const __Annotation &a, annObj->getAnnotations( ) ) {
+            ret << SharedAnnotationData( new AnnotationData( a.getData( ) ) );
         }
     }
     return ret;

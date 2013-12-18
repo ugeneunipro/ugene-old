@@ -34,9 +34,8 @@ namespace U2 {
 class BaseIOAdapters;
 class BaseDocumentFormats;
 
-
 RemoteBLASTToAnnotationsTask::RemoteBLASTToAnnotationsTask( const RemoteBLASTTaskSettings & _cfg, int _qoffs, 
-                                AnnotationTableObject* _ao, const QString &_url,const QString & _group):
+                                FeaturesTableObject* _ao, const QString &_url,const QString & _group):
 Task( tr("RemoteBLASTTask"), TaskFlags_NR_FOSCOE ), offsInGlobalSeq(_qoffs), aobj(_ao), group(_group), url(_url) {
     GCOUNTER( cvar, tvar, "RemoteBLASTToAnnotationsTask" );
     
@@ -65,13 +64,10 @@ QList<Task*> RemoteBLASTToAnnotationsTask::onSubTaskFinished(Task* subTask) {
         //shift annotations according to offset first
         
         RemoteBLASTTask * rrTask = qobject_cast<RemoteBLASTTask *>(queryTask);
-        assert( rrTask );
-        
+        SAFE_POINT( NULL != rrTask, "Invalid remote BLAST task!", res );
         QList<SharedAnnotationData> anns = rrTask->getResultedAnnotations();
 
-        if(!anns.isEmpty()) {		
-           // Document* d = AppContext::getProject()->findDocumentByURL(url);
-            //assert(d==NULL);
+        if(!anns.isEmpty()) {
             if(!url.isEmpty()) {
                 Document *d = AppContext::getProject()->findDocumentByURL(url);
                 if(d==NULL) {
@@ -86,13 +82,14 @@ QList<Task*> RemoteBLASTToAnnotationsTask::onSubTaskFinished(Task* subTask) {
                     return res;
                 }
             }
-            
+            QList<AnnotationData> annotations;
             for(QMutableListIterator<SharedAnnotationData> it_ad(anns); it_ad.hasNext(); ) {
                 AnnotationData * ad = it_ad.next().data();
                 U2Region::shift(offsInGlobalSeq, ad->location->regions);
+                annotations << *ad;
             }
 
-            res.append(new CreateAnnotationsTask(aobj, group, anns));
+            res.append(new CreateAnnotationsTask(aobj, group, annotations));
         }
     }
     return res;

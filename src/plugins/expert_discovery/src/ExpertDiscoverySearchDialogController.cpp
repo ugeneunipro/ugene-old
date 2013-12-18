@@ -162,8 +162,8 @@ void ExpertDiscoverySearchDialogController::sl_onSaveAnnotations() {
     if (rc != QDialog::Accepted) {
         return;
     }
-    const QString& name = m.data->name;
-    QList<SharedAnnotationData> list;
+    const QString& name = m.data.name;
+    QList<AnnotationData> list;
     for (int i=0, n = resultsTree->topLevelItemCount(); i<n; ++i) {
         ExpertDiscoveryResultItem* item = static_cast<ExpertDiscoveryResultItem* >(resultsTree->topLevelItem(i));
         list.append(item->res.toAnnotation(name));

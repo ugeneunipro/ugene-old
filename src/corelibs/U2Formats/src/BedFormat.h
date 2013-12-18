@@ -27,9 +27,7 @@
 #include <U2Core/DocumentModel.h>
 #include <U2Core/U2Region.h>
 
-
 namespace U2 {
-
 
 /** Validates a line from a BED file */
 class BEDLineValidateFlags
@@ -126,7 +124,7 @@ protected:
     QHash<QString, QList<SharedAnnotationData> > parseDocument(IOAdapter* io, const QString& defaultAnnotName, U2OpStatus& os);
 
 private:
-    void load(IOAdapter* io, QList<GObject*>& objects, U2OpStatus& os);
+    void load(IOAdapter* io, QList<GObject*>& objects, const U2DbiRef& dbiRef, U2OpStatus& os);
     inline void addToResults(QHash<QString, QList<SharedAnnotationData> > & resHash, QList<SharedAnnotationData>& result, const QString& seqName );
 
     static const QString FORMAT_NAME;

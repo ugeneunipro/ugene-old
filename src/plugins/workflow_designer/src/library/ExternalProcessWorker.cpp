@@ -27,7 +27,7 @@
 #include <U2Core/UserApplicationsSettings.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/DNASequenceObject.h>
-#include <U2Core/AnnotationTableObject.h>
+#include <U2Core/FeaturesTableObject.h>
 #include <U2Core/MAlignmentImporter.h>
 #include <U2Core/MAlignmentObject.h>
 #include <U2Core/IOAdapter.h>
@@ -89,16 +89,16 @@ namespace {
         return seqObj;
     }
 
-    static AnnotationTableObject * toAnotations(const QVariantMap &data, U2OpStatus &os) {
+    static FeaturesTableObject * toAnotations(const QVariantMap &data, WorkflowContext *context, U2OpStatus &os) {
         QString slot = BaseSlots::ANNOTATION_TABLE_SLOT().getId();
         if (!data.contains(slot)) {
             os.setError(QObject::tr("Empty annotations slot"));
             return NULL;
         }
         QList<SharedAnnotationData> anns = data[slot].value< QList<SharedAnnotationData> >();
-        AnnotationTableObject *annsObj = new AnnotationTableObject("anns");
-        foreach(const SharedAnnotationData &ann, anns) {
-            annsObj->addAnnotation(new Annotation(ann));
+        FeaturesTableObject *annsObj = new FeaturesTableObject( "anns", context->getDataStorage( )->getDbiRef( ) );
+        foreach ( const SharedAnnotationData &ann, anns ) {
+            annsObj->addAnnotation( *ann );
         }
         return annsObj;
     }
@@ -178,7 +178,7 @@ namespace {
             CHECK_OP(os, );
             d->addObject(seqObj);
         } else if (dataCfg.isAnnotations()) {
-            AnnotationTableObject *annsObj = toAnotations(data, os);
+            FeaturesTableObject *annsObj = toAnotations(data, context, os);
             CHECK_OP(os, );
             d->addObject(annsObj);
         } else if (dataCfg.isAlignment()) {
@@ -189,7 +189,7 @@ namespace {
             U2SequenceObject *seqObj = toSequence(data, context, os);
             CHECK_OP(os, );
             d->addObject(seqObj);
-            AnnotationTableObject *annsObj = toAnotations(data, os);
+            FeaturesTableObject *annsObj = toAnotations(data, context, os);
             CHECK_OP(os, );
             d->addObject(annsObj);
 
@@ -318,14 +318,14 @@ QList<SharedAnnotationData> getAnnotations(Document *d, U2OpStatus &os) {
     GObject *obj = getObject(d, GObjectTypes::ANNOTATION_TABLE, os);
     CHECK_OP(os, QList<SharedAnnotationData>());
 
-    AnnotationTableObject *annsObj = static_cast<AnnotationTableObject *>(obj);
-    if (NULL == annsObj) {
+    FeaturesTableObject *annsObj = static_cast<FeaturesTableObject *>(obj);
+    if ( NULL == annsObj ) {
         os.setError(QObject::tr("Error with annotations object"));
         return QList<SharedAnnotationData>();
     }
     QList<SharedAnnotationData> anns;
-    foreach(Annotation* a, annsObj->getAnnotations()) {
-        anns << a->data();
+    foreach ( const __Annotation &a, annsObj->getAnnotations( ) ) {
+        anns << SharedAnnotationData( new AnnotationData( a.getData( ) ) );
     }
     return anns;
 }

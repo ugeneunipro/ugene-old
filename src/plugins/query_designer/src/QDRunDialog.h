@@ -29,14 +29,13 @@
 #include <U2Core/U2Region.h>
 #include <U2Gui/RegionSelector.h>
 
-
 namespace U2 {
 
 class QDScheme;
 class Document;
 class QDScheduler;
 class SaveDocumentTask;
-class AnnotationTableObject;
+class FeaturesTableObject;
 class DocumentProviderTask;
 
 class QDRunDialogTask : public Task {
@@ -59,7 +58,7 @@ private:
     DocumentProviderTask*   loadTask;
     QDScheduler*            scheduler;
     Document*               docWithSequence;
-    AnnotationTableObject*  annObj;
+    FeaturesTableObject *   annObj;
 };
 
 class QueryViewController;

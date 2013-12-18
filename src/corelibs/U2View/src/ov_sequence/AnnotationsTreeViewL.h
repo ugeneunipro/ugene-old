@@ -39,10 +39,8 @@
 
 namespace U2 {
 
-class Annotation;
-class AnnotationGroup;
 class U2Qualifier;
-class AnnotationTableObject;
+class FeaturesTableObject;
 class AVItemL;
 class AVGroupItemL;
 class AVAnnotationItemL;
@@ -107,9 +105,9 @@ public:
 
     AVItemL *getNextItemDown(AVItemL * bottom);
     AVItemL *getNextItemUp();
-    AVItemL *getLastItemInSubtree(AnnotationGroup *gr, AnnotationsTreeViewL *view);
+    AVItemL *getLastItemInSubtree( const __AnnotationGroup &gr, AnnotationsTreeViewL *view );
     int getExpandedNumber(AVItemL *item);
-    int getExpandedNumber(AnnotationGroup *gr);
+    int getExpandedNumber( const __AnnotationGroup &gr );
     void updateItem(QTreeWidgetItem *item);
     void setLineHeight(int height);
 
@@ -182,25 +180,25 @@ public:
 
 private slots:
 
-    void sl_onAnnotationObjectAdded(AnnotationTableObject* obj);
-    void sl_onAnnotationObjectRemoved(AnnotationTableObject* obj);
+    void sl_onAnnotationObjectAdded( FeaturesTableObject *obj );
+    void sl_onAnnotationObjectRemoved( FeaturesTableObject *obj );
 
-    void sl_onAnnotationsAdded(const QList<Annotation*>&);
-    void sl_onAnnotationsRemoved(const QList<Annotation*>&);
-    void sl_onAnnotationsInGroupRemoved(const QList<Annotation*>& as, AnnotationGroup* group);
-    void sl_onAnnotationModified(const AnnotationModification& md);
-    void sl_onAnnotationObjectModifiedStateChanged();
-    void sl_onAnnotationObjectRenamed(const QString& oldName);
+    void sl_onAnnotationsAdded( const QList<__Annotation> & );
+    void sl_onAnnotationsRemoved( const QList<__Annotation> & );
+    void sl_onAnnotationsInGroupRemoved( const QList<__Annotation>& as, const __AnnotationGroup &group );
+    void sl_onAnnotationModified( const AnnotationModification &md );
+    void sl_onAnnotationObjectModifiedStateChanged( );
+    void sl_onAnnotationObjectRenamed( const QString &oldName );
 
 
-    void sl_onGroupCreated(AnnotationGroup*);
-    void sl_onGroupRemoved(AnnotationGroup* parent, AnnotationGroup* removed);
-    void sl_onGroupRenamed(AnnotationGroup*, const QString& oldName);
+    void sl_onGroupCreated( const __AnnotationGroup & );
+    void sl_onGroupRemoved( const __AnnotationGroup &parent, const __AnnotationGroup &removed);
+    void sl_onGroupRenamed( const __AnnotationGroup & );
 
-   /* void sl_onAnnotationSettingsChanged(const QStringList& changedSettings);*/
-
-    void sl_onAnnotationSelectionChanged(AnnotationSelection*, const QList<Annotation*>&, const QList<Annotation*>&);
-    void sl_onAnnotationGroupSelectionChanged(AnnotationGroupSelection*, const QList<AnnotationGroup*>&, const QList<AnnotationGroup*>&);
+    void sl_onAnnotationSelectionChanged( AnnotationSelection*, const QList<__Annotation> &,
+        const QList<__Annotation> & );
+    void sl_onAnnotationGroupSelectionChanged( AnnotationGroupSelection *, const QList<__AnnotationGroup> &,
+        const QList<__AnnotationGroup> & );
     void sl_onItemSelectionChanged();
     void sl_onAddAnnotationObjectToView();
     void sl_removeObjectFromView();
@@ -216,19 +214,12 @@ private slots:
     void sl_rename();
     void sl_edit();
     void sl_addQualifier();
-//    void sl_cutAnnotations();
-//    void sl_copyAnnotations();
-//    void sl_pasteAnnotations();
 
     void sl_itemEntered(QTreeWidgetItem * i, int column);
     void sl_itemClicked( QTreeWidgetItem * item, int column);
     void sl_itemDoubleClicked (QTreeWidgetItem * item, int column);
     void sl_itemExpanded(QTreeWidgetItem*);
     void sl_itemCollapsed(QTreeWidgetItem*);
-    
-    //TODO: deal with style()->styleHint(QStyle::SH_ItemView_ActivateItemOnSingleClick) correctly
-    //    void sl_itemActivated(QTreeWidgetItem*, int) {sl_edit();}
-    //void sl_sortTree();
 
 protected:
     bool eventFilter(QObject* o, QEvent* e);
@@ -242,8 +233,9 @@ private:
     void moveDialogToItem(QTreeWidgetItem* item, QDialog& d);
     
     void adjustMenu(QMenu* m_) const;
-    AVGroupItemL* createGroupItem(AVGroupItemL* parentGroup, AnnotationGroup* g);
-    AVAnnotationItemL* createAnnotationItem(AVGroupItemL* parentGroup, Annotation* a, bool removeLast = true);
+    AVGroupItemL* createGroupItem(AVGroupItemL* parentGroup, const __AnnotationGroup &g);
+    AVAnnotationItemL* createAnnotationItem(AVGroupItemL* parentGroup, const __Annotation &a,
+        bool removeLast = true);
     void updateAllAnnotations(ATVAnnUpdateFlags flags);
     void destroyTree(QTreeWidgetItem* qi);
     void focusOnItem(Annotation* a);
@@ -276,10 +268,7 @@ private:
     QAction*            removeColumnByHeaderClickAction;
     QAction*            copyColumnTextAction;
     QAction*            copyColumnURLAction;
-//    QAction*            cutAnnotationsAction;
-//    QAction*            copyAnnotationsAction;
-//    QAction*            pasteAnnotationsAction;
-    
+
     QAction*            renameAction;       // action to rename active group/qualifier/annotation only
     QAction*            editAction;         // action to edit active item -> only for non-readonly
     QAction*            viewAction;         // action to view active item -> could be used both for readonly and not readonly

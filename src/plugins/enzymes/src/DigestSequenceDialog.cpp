@@ -22,12 +22,14 @@
 #include <QtGui/QMessageBox>
 #include <QtGui/QDialogButtonBox>
 
+#include <U2Core/AnnotationGroup.h>
 #include <U2Core/Log.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/AutoAnnotationsSupport.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/GObjectUtils.h>
 #include <U2Core/GObjectRelationRoles.h>
+#include <U2Core/FeaturesTableObject.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/Settings.h>
 #include <U2View/ADVSequenceObjectContext.h>
@@ -39,8 +41,6 @@
 #include "CloningUtilTasks.h"
 #include "FindEnzymesDialog.h"
 #include "DigestSequenceDialog.h"
-
-#include <memory>
 
 namespace U2 {
 
@@ -90,8 +90,6 @@ DigestSequenceDialog::DigestSequenceDialog( ADVSequenceObjectContext* ctx, QWidg
             timer->start(400);
         }
     }
-        
-
 }
 
 QList<SEnzymeData> DigestSequenceDialog::findEnzymeDataById( const QString& id )
@@ -106,15 +104,12 @@ QList<SEnzymeData> DigestSequenceDialog::findEnzymeDataById( const QString& id )
     return result;
 }
 
-
-
-
 void DigestSequenceDialog::accept()
 {
 
     if (selectedEnzymes.isEmpty()) {
         QMessageBox::information(this, windowTitle(), tr("No enzymes are selected! Please select enzymes."));
-        return;        
+        return;
     }
     
     bool ok = loadEnzymesFile();
@@ -141,8 +136,8 @@ void DigestSequenceDialog::accept()
         return;
     }
     const CreateAnnotationModel& m = ac->getModel();
-    AnnotationTableObject* aObj = m.getAnnotationObject();
-    assert(aObj != NULL);
+    FeaturesTableObject *aObj = m.getAnnotationObject();
+    SAFE_POINT(aObj != NULL, "Invalid annotation table detected!", );
 
     DigestSequenceTaskConfig cfg;
     cfg.enzymeData = resultEnzymes;
@@ -178,49 +173,46 @@ void DigestSequenceDialog::addAnnotationWidget()
     acm.hideAnnotationName = true;
     acm.hideLocation = true;
     acm.sequenceLen = dnaObj->getSequenceLength();
-    acm.data->name = ANNOTATION_GROUP_FRAGMENTS;
+    acm.data.name = ANNOTATION_GROUP_FRAGMENTS;
     ac = new CreateAnnotationWidgetController(acm, this);
-    QWidget* caw = ac->getWidget();    
+    QWidget* caw = ac->getWidget();
     QVBoxLayout* l = new QVBoxLayout(this);
     l->setMargin(0);
     l->addWidget(caw);
     annotationsArea->setLayout(l);
     annotationsArea->setMinimumSize(caw->layout()->minimumSize());
-
 }
 
 void DigestSequenceDialog::searchForAnnotatedEnzymes(ADVSequenceObjectContext* ctx)
 {
-    QSet<AnnotationTableObject*> relatedAnns = ctx->getAnnotationObjects(true);
+    QSet<FeaturesTableObject *> relatedAnns = ctx->getAnnotationObjects(true);
 
-    foreach (AnnotationTableObject* a, relatedAnns ) {
-        AnnotationGroup* grp = a->getRootGroup()->getSubgroup(ANNOTATION_GROUP_ENZYME, false);
-        if (grp == NULL) {
+    foreach (FeaturesTableObject *a, relatedAnns ) {
+        const __AnnotationGroup grp = a->getRootGroup().getSubgroup(ANNOTATION_GROUP_ENZYME, false);
+        if ( grp == a->getRootGroup( ) ) {
             continue;
         }
         sourceObj = a;
-        QSet<Annotation*> reSites;
-        grp->findAllAnnotationsInGroupSubTree(reSites);
-        foreach (Annotation* a, reSites) {
-            QString enzymeId = a->getAnnotationName();
+        QList<__Annotation> reSites;
+        grp.findAllAnnotationsInGroupSubTree( reSites );
+        foreach ( const __Annotation &a, reSites ) {
+            QString enzymeId = a.getName();
             bool isDublicate = false;
             if (annotatedEnzymes.contains(enzymeId)) {
                 QList<U2Region> regions = annotatedEnzymes.values(enzymeId);
                 foreach( U2Region region, regions) {
-                    if (region == a->getRegions().first()) {
+                    if (region == a.getRegions().first()) {
                         isDublicate = true;
                         break;
                     }
                 }
             }
             if (!isDublicate) {
-                annotatedEnzymes.insertMulti(enzymeId, a->getRegions().first() );
+                annotatedEnzymes.insertMulti(enzymeId, a.getRegions().first() );
                 availableEnzymes.insert(enzymeId);
             }
         }
-
     }
-    
 }
 
 void DigestSequenceDialog::updateAvailableEnzymeWidget()
@@ -246,7 +238,6 @@ void DigestSequenceDialog::updateAvailableEnzymeWidget()
     }
 }
 
-
 void DigestSequenceDialog::updateSelectedEnzymeWidget()
 {
     selectedEnzymeWidget->clear();
@@ -255,7 +246,6 @@ void DigestSequenceDialog::updateSelectedEnzymeWidget()
         selectedEnzymeWidget->addItem(enzymeId);
     }
 }
-
 
 void DigestSequenceDialog::sl_addPushButtonClicked()
 {
@@ -266,7 +256,6 @@ void DigestSequenceDialog::sl_addPushButtonClicked()
     }
     
     updateSelectedEnzymeWidget();
-
 }
 
 void DigestSequenceDialog::sl_addAllPushButtonClicked()
@@ -289,7 +278,6 @@ void DigestSequenceDialog::sl_removePushButtonClicked()
     }
     updateSelectedEnzymeWidget();
 }
-   
 
 void DigestSequenceDialog::sl_clearPushButtonClicked()
 {
@@ -297,10 +285,8 @@ void DigestSequenceDialog::sl_clearPushButtonClicked()
    updateSelectedEnzymeWidget();
 }
 
-
 bool DigestSequenceDialog::loadEnzymesFile( )
 {
-    
     enzymesBase = EnzymesIO::getDefaultEnzymesList();
     return !enzymesBase.isEmpty();
 }
@@ -316,8 +302,6 @@ void DigestSequenceDialog::sl_timerUpdate()
     QString dots;
     dots.fill('.', animationCounter);
     hintLabel->setText(WAIT_MESSAGE + dots);
-
-
 }
 
 void DigestSequenceDialog::sl_taskStateChanged()
@@ -348,12 +332,13 @@ void DigestSequenceDialog::sl_addAnnBtnClicked()
     dlg.setWindowTitle(tr("Select annotations"));
     QVBoxLayout* layout = new QVBoxLayout(&dlg);
     QListWidget* listWidget(new QListWidget(&dlg));
-    QSet<AnnotationTableObject*> aObjs = seqCtx->getAnnotationObjects(false);
-    foreach(AnnotationTableObject* aObj, aObjs) {
-        QList<Annotation*> anns = aObj->getAnnotations();
-        foreach(Annotation* a, anns) {
-            listWidget->addItem( QString("%1 %2").arg(a->getAnnotationName())
-                .arg(Genbank::LocationParser::buildLocationString(a->data())) );
+    QSet<FeaturesTableObject *> aObjs = seqCtx->getAnnotationObjects(false);
+    foreach ( FeaturesTableObject *aObj, aObjs ) {
+        QList<__Annotation> anns = aObj->getAnnotations();
+        foreach ( const __Annotation &a, anns ) {
+            const AnnotationData d = a.getData( );
+            listWidget->addItem( QString("%1 %2").arg( a.getName( ) )
+                .arg( Genbank::LocationParser::buildLocationString( &d ) ) );
         }
     }
     listWidget->setSelectionMode(QAbstractItemView::ExtendedSelection);
@@ -391,11 +376,4 @@ void DigestSequenceDialog::sl_removeAllAnnsBtnClicked()
     conservedAnnsWidget->clear();
 }
 
-
-
-
-
-
-
-
-} // U2
+} // namespace U2

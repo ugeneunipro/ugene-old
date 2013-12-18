@@ -32,9 +32,8 @@
 #include <U2Core/ProjectModel.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/LoadDocumentTask.h>
-#include <U2Core/AnnotationTableObject.h>
+#include <U2Core/FeaturesTableObject.h>
 #include <U2Core/U2SafePoints.h>
-
 
 namespace U2 {
 //QDScheduler
@@ -90,7 +89,7 @@ QList<Task*> QDScheduler::onSubTaskFinished(Task* subTask) {
     }
     
     if (subTask == loadTask) {
-        settings.annotationsObj = qobject_cast<AnnotationTableObject*>(loadTask->getDocument()->findGObjectByName(settings.annotationsObjRef.objName));
+        settings.annotationsObj = qobject_cast<FeaturesTableObject *>(loadTask->getDocument()->findGObjectByName(settings.annotationsObjRef.objName));
         return subs;
     }
     if (settings.annotationsObj == NULL) {
@@ -533,18 +532,17 @@ void QDResultLinker::createAnnotations(const QString& groupPrefix) {
             .arg(groupPrefix)
             .arg(QString::number(++counter));
 
-        QList<Annotation*> groupAnns;
+        QList<AnnotationData> groupAnns;
         
         foreach(const QDResultUnit& res, candidate->getResultsList()) {
-            Annotation* a = result2annotation.value(res, NULL);
-            if (a == NULL) {
-                SharedAnnotationData ad(new AnnotationData());
-                ad->name = prepareAnnotationName(res);
-                ad->setStrand(res->strand);
-                ad->location->regions.append(res->region);
-                ad->qualifiers = res->quals;
-                a = new Annotation(ad);
-                result2annotation[res] = a;
+            AnnotationData a = result2annotation.value( res, AnnotationData( ) );
+            if ( a == AnnotationData( ) ) {
+                AnnotationData ad;
+                ad.name = prepareAnnotationName(res);
+                ad.setStrand(res->strand);
+                ad.location->regions.append(res->region);
+                ad.qualifiers = res->quals;
+                result2annotation[res] = ad;
             }
             groupAnns.append(a);
         }
@@ -558,7 +556,7 @@ void QDResultLinker::createMergedAnnotations(const QString& groupPrefix) {
     const QDRunSettings& settings = sched->getSettings();
     int offset = settings.offset;
     U2Region seqRange(0, scheme->getSequence().length());
-    QList<Annotation*> anns;
+    QList<AnnotationData> anns;
     foreach(QDResultGroup* candidate, candidates) {
         if (sched->isCanceled()) {
             return;
@@ -574,10 +572,10 @@ void QDResultLinker::createMergedAnnotations(const QString& groupPrefix) {
         endPos = qMin(seqRange.endPos(), endPos + offset);
         U2Region r(startPos, endPos-startPos);
 
-        SharedAnnotationData ad(new AnnotationData());
-        ad->name = groupPrefix;
-        ad->location->regions.append(r);
-        anns.append(new Annotation(ad));
+        AnnotationData ad;
+        ad.name = groupPrefix;
+        ad.location->regions.append( r );
+        anns.append( ad );
         delete candidate;
     }
     candidates.clear();
@@ -586,25 +584,23 @@ void QDResultLinker::createMergedAnnotations(const QString& groupPrefix) {
 
 void QDResultLinker::pushToTable() {
     const QDRunSettings& settings = sched->getSettings();
-    AnnotationTableObject* ao = settings.annotationsObj;
-    assert(ao != NULL);
+    FeaturesTableObject* ao = settings.annotationsObj;
+    SAFE_POINT( NULL != ao, "Invalid annotation table detected!", );
 
-    AnnotationGroup* root = ao->getRootGroup();
+    __AnnotationGroup root = ao->getRootGroup( );
     if (!settings.groupName.isEmpty()) {
-        root = root->getSubgroup(settings.groupName, true);
+        root = root.getSubgroup(settings.groupName, true);
     }
 
-    QMapIterator< QString, QList<Annotation*> > iter(annotations);
-    while (iter.hasNext()) {
+    QMapIterator< QString, QList<AnnotationData> > iter(annotations);
+    while ( iter.hasNext( ) ) {
         iter.next();
-        AnnotationGroup* ag = NULL;
-        if (iter.key().isEmpty()) {
-            ag = root;
-        } else {
-            ag = root->getSubgroup(iter.key(), true);
+        __AnnotationGroup ag = root;
+        if ( !iter.key( ).isEmpty( ) ) {
+            ag = root.getSubgroup( iter.key( ), true );
         }
-        foreach(Annotation* a, iter.value()) {
-            ag->addAnnotation(a);
+        foreach( const AnnotationData &a, iter.value( ) ) {
+            ag.addAnnotation( a );
         }
     }
 }
@@ -631,22 +627,7 @@ void QDStep::initTotalMap() {
             if (sharedConstraints.isEmpty()) {
                 const QList<QDPath*>& paths = scheme->findPaths(srcSu, dstSu);
                 //use only paths containing no linked units except source(destination)
-                /*QList<QDPath*> allowedPaths = paths;
-                foreach(QDPath* path, paths) {
-                    const QList<QDSchemeUnit*>& pathUnits = path->getSchemeUnits();
-                    bool containsLinked = false;
-                    foreach(QDSchemeUnit* su, linkedUnits) {
-                        if (pathUnits.contains(su)) {
-                            if (containsLinked) {
-                                allowedPaths.removeOne(path);
-                                break;
-                            } else {
-                                containsLinked = true;
-                            }
-                        }
-                    }
-                }*/
-                QList<QDPath*> allowedPaths = paths;//
+                QList<QDPath*> allowedPaths = paths;
                 //remove paths containing optional items
                 QMutableListIterator<QDPath*> i(allowedPaths);
                 while(i.hasNext()) {
@@ -669,7 +650,6 @@ void QDStep::initTotalMap() {
                     for (int i=1, n=allowedPaths.size(); i<n; i++) {
                         QDPath* curPath = allowedPaths.at(i);
                         QDDistanceConstraint* curDc = curPath->toConstraint();
-                        //assert(curDc->distanceType()==overallConstraint->distanceType());
                         
                         if (curDc->getSource()!=overallConstraint->getSource()) {
                             curDc->invert();
@@ -693,7 +673,6 @@ void QDStep::initTotalMap() {
 QList<QDConstraint*> QDStep::getConstraints(QDSchemeUnit* subj, QDSchemeUnit* linked) const {    
     const QPair<QDSchemeUnit*, QDSchemeUnit*>& pair = qMakePair(subj, linked);
     assert(constraintsMap.contains(pair));
-    //assert(actor->getSchemeUnits().contains(subj));
     return constraintsMap.value(pair);
 }
 

@@ -22,8 +22,9 @@
 #ifndef _U2_SPLICED_ALIGNMENT_TASK_H_
 #define _U2_SPLICED_ALIGNMENT_TASK_H_
 
-#include <U2Core/AnnotationTableObject.h>
+#include <U2Core/AnnotationData.h>
 #include <U2Core/DNASequenceObject.h>
+#include <U2Core/Task.h>
 
 namespace U2 {
 
@@ -43,8 +44,7 @@ private:
     QVariantMap customOptions;
 };
 
-// The task perfroms mRNA to genomic sequence alignment
-
+// The task performs mRNA to genomic sequence alignment
 
 class U2ALGORITHM_EXPORT SplicedAlignmentTask : public Task
 {
@@ -52,7 +52,7 @@ class U2ALGORITHM_EXPORT SplicedAlignmentTask : public Task
 public:
     SplicedAlignmentTask(const SplicedAlignmentTaskConfig& cfg);
     SplicedAlignmentTask(const QString& taskName, TaskFlags flags, const SplicedAlignmentTaskConfig& cfg);
-    virtual QList<Annotation*> getAlignmentResult() = 0;
+    virtual QList<AnnotationData> getAlignmentResult( ) = 0;
 protected:
     SplicedAlignmentTaskConfig config;
 };

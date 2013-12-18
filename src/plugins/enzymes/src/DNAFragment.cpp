@@ -21,25 +21,24 @@
 
 #include <U2Core/DocumentModel.h>
 
-#include <U2Core/AnnotationTableObject.h>
+#include <U2Core/FeaturesTableObject.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/GObjectUtils.h>
 #include <U2Core/GObjectRelationRoles.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/TextUtils.h>
 #include <U2Core/DNATranslation.h>
-
+#include <U2Core/U2SafePoints.h>
 
 #include <U2Algorithm/EnzymeModel.h>
 #include "DNAFragment.h"
 
 namespace U2 {
 
-DNAFragment::DNAFragment( Annotation* fragment, U2SequenceObject* sObj, const QList<AnnotationTableObject*> relatedAnns )
+DNAFragment::DNAFragment( const AnnotationData &fragment, U2SequenceObject* sObj, const QList<FeaturesTableObject *> relatedAnns )
     : annotatedFragment(fragment), dnaObj(sObj), relatedAnnotations(relatedAnns), reverseCompl(false)
 {   
-    assert(fragment != NULL);
-    assert(sObj != NULL);
+    SAFE_POINT(sObj != NULL, "Invalid sequence object detected!", );
     updateTerms();
 }
 
@@ -64,9 +63,9 @@ DNAFragment& DNAFragment::operator=( const DNAFragment& other )
 }
 
 
-bool static isDNAFragment( const Annotation* a )
+bool static isDNAFragment( const __Annotation &a )
 {
-    QString aName = a->getAnnotationName();
+    QString aName = a.getName();
     if (aName.startsWith("Fragment")) {
         return true;
     } else {
@@ -86,10 +85,9 @@ QList<DNAFragment> DNAFragment::findAvailableFragments( const QList<GObject*>& a
 {
     QList<DNAFragment> fragments;
     foreach (GObject* obj , aObjects) {
-        AnnotationTableObject* aObj = qobject_cast<AnnotationTableObject*>(obj);
+        FeaturesTableObject* aObj = qobject_cast<FeaturesTableObject*>(obj);
         assert(aObj != NULL);
-        QList<Annotation*> annotations = aObj->getAnnotations();
-        foreach (Annotation* a, annotations) {
+        foreach ( const __Annotation &a, aObj->getAnnotations( ) ) {
             if (isDNAFragment(a)) {
                 // Find related sequence object
                 U2SequenceObject* dnaObj = NULL;
@@ -105,14 +103,15 @@ QList<DNAFragment> DNAFragment::findAvailableFragments( const QList<GObject*>& a
                     continue;
                 }
                 // Find related annotation tables 
-                QList<GObject*> relatedAnns = GObjectUtils::findObjectsRelatedToObjectByRole(dnaObj, GObjectTypes::ANNOTATION_TABLE, GObjectRelationRole::SEQUENCE, aObjects, UOF_LoadedOnly);
+                QList<GObject*> relatedAnns = GObjectUtils::findObjectsRelatedToObjectByRole(dnaObj,
+                    GObjectTypes::ANNOTATION_TABLE, GObjectRelationRole::SEQUENCE, aObjects, UOF_LoadedOnly);
                 // Add fragment
                 DNAFragment fragment;
-                fragment.annotatedFragment = a;
+                fragment.annotatedFragment = a.getData( );
                 fragment.dnaObj = dnaObj;
-                foreach(GObject* relAnn, relatedAnns) {
-                    AnnotationTableObject* related = qobject_cast<AnnotationTableObject*>(relAnn);
-                    fragment.relatedAnnotations.append(related);    
+                foreach ( GObject *relAnn, relatedAnns ) {
+                    FeaturesTableObject *related = qobject_cast<FeaturesTableObject *>(relAnn);
+                    fragment.relatedAnnotations.append(related);
                 }
                 fragments.append(fragment);
             }
@@ -124,13 +123,13 @@ QList<DNAFragment> DNAFragment::findAvailableFragments( const QList<GObject*>& a
 QVector<U2Region> DNAFragment::getFragmentRegions() const
 {
     assert(!isEmpty());
-    return annotatedFragment->getRegions();
+    return annotatedFragment.getRegions();
 }
 
 QString DNAFragment::getName() const
 {
     assert(!isEmpty());
-    return annotatedFragment->getAnnotationName();
+    return annotatedFragment.name;
 }
 
 const DNAAlphabet* DNAFragment::getAlphabet() const
@@ -148,7 +147,7 @@ QByteArray DNAFragment::getSequence() const
 {
     assert(!isEmpty());
     QByteArray seq;
-    const U2Location& location = annotatedFragment->getLocation();
+    const U2Location& location = annotatedFragment.location;
     foreach (const U2Region& region, location->regions) {
         seq += dnaObj->getSequenceData(region);
     }
@@ -164,7 +163,6 @@ QByteArray DNAFragment::getSequence() const
 
     return seq;
 }
-
 
 QString DNAFragment::getSequenceDocName() const
 {
@@ -270,13 +268,13 @@ QByteArray DNAFragment::getSourceSequence() const {
 }
 
 void DNAFragment::updateTerms() {
-    if (annotatedFragment == NULL) {
+    if ( annotatedFragment == AnnotationData( ) ) {
         return;
     }
     updateLeftTerm();
     updateRightTerm();
     
-    QString buf = annotatedFragment->findFirstQualifierValue(QUALIFIER_INVERTED);
+    QString buf = annotatedFragment.findFirstQualifierValue(QUALIFIER_INVERTED);
     reverseCompl = buf == "yes" ? true : false;
 
     if (reverseCompl) {
@@ -290,23 +288,22 @@ void DNAFragment::updateTerms() {
 
 void DNAFragment::updateLeftTerm()
 {
-    assert(annotatedFragment != NULL);
-    leftTerm.enzymeId = annotatedFragment->findFirstQualifierValue(QUALIFIER_LEFT_TERM).toLatin1();
-    leftTerm.overhang = annotatedFragment->findFirstQualifierValue(QUALIFIER_LEFT_OVERHANG).toLatin1();
-    leftTerm.type = annotatedFragment->findFirstQualifierValue(QUALIFIER_LEFT_TYPE).toLatin1();
+    assert( !( annotatedFragment == AnnotationData( ) ) );
+    leftTerm.enzymeId = annotatedFragment.findFirstQualifierValue(QUALIFIER_LEFT_TERM).toLatin1();
+    leftTerm.overhang = annotatedFragment.findFirstQualifierValue(QUALIFIER_LEFT_OVERHANG).toLatin1();
+    leftTerm.type = annotatedFragment.findFirstQualifierValue(QUALIFIER_LEFT_TYPE).toLatin1();
     leftTerm.isDirect = 
-        annotatedFragment->findFirstQualifierValue(QUALIFIER_LEFT_STRAND) == OVERHANG_STRAND_DIRECT;
+        annotatedFragment.findFirstQualifierValue(QUALIFIER_LEFT_STRAND) == OVERHANG_STRAND_DIRECT;
 }
 
 void DNAFragment::updateRightTerm()
 {
-    assert(annotatedFragment != NULL);
-    rightTerm.enzymeId = annotatedFragment->findFirstQualifierValue(QUALIFIER_RIGHT_TERM).toLatin1();
-    rightTerm.overhang = annotatedFragment->findFirstQualifierValue(QUALIFIER_RIGHT_OVERHANG).toLatin1();
-    rightTerm.type = annotatedFragment->findFirstQualifierValue(QUALIFIER_RIGHT_TYPE).toLatin1();
+    assert( !( annotatedFragment == AnnotationData( ) ) );
+    rightTerm.enzymeId = annotatedFragment.findFirstQualifierValue(QUALIFIER_RIGHT_TERM).toLatin1();
+    rightTerm.overhang = annotatedFragment.findFirstQualifierValue(QUALIFIER_RIGHT_OVERHANG).toLatin1();
+    rightTerm.type = annotatedFragment.findFirstQualifierValue(QUALIFIER_RIGHT_TYPE).toLatin1();
     rightTerm.isDirect = 
-        annotatedFragment->findFirstQualifierValue(QUALIFIER_RIGHT_STRAND) == OVERHANG_STRAND_DIRECT;
-
+        annotatedFragment.findFirstQualifierValue(QUALIFIER_RIGHT_STRAND) == OVERHANG_STRAND_DIRECT;
 }
 
 void DNAFragment::toRevCompl( QByteArray& seq )
@@ -316,10 +313,5 @@ void DNAFragment::toRevCompl( QByteArray& seq )
     transl->translate(seq.data(), seq.size());
     TextUtils::reverse(seq.data(), seq.size());
 }
-
-
-
-
-
 
 } // namespace

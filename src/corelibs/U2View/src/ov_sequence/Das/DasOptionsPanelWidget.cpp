@@ -31,6 +31,7 @@
 #include <U2Core/DocumentModel.h>
 #include <U2Core/DNASequenceSelection.h>
 #include <U2Core/DNAAlphabet.h>
+#include <U2Core/DNASequenceObject.h>
 #include <U2Core/Settings.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/GUrlUtils.h>
@@ -371,7 +372,7 @@ void DasOptionsPanelWidget::initialize() {
     // Annotations widget
     CreateAnnotationModel cm;
     cm.hideLocation = true;
-    cm.sequenceObjectRef = ctx->getSequenceObject();
+    cm.sequenceObjectRef = ctx->getSequenceObject( );
     cm.sequenceLen = ctx->getSequenceLength();
     cm.hideAnnotationParameters = true;
     annotationsWidgetController = new CreateAnnotationWidgetController(cm, this, optPanel);
@@ -506,13 +507,13 @@ DASSource DasOptionsPanelWidget::getSequenceSource() {
     return refSource;
 }
 
-void DasOptionsPanelWidget::mergeFeatures(const QMap<QString, QList<SharedAnnotationData> >& newAnnotations) {
+void DasOptionsPanelWidget::mergeFeatures(const QMap<QString, QList<AnnotationData> >& newAnnotations) {
     const QStringList& keys =  newAnnotations.keys();
     foreach (const QString& key, keys) {
         if (annotationData.contains(key)) {
-            const QList<SharedAnnotationData>& curList = annotationData[key];
-            const QList<SharedAnnotationData>& tomergeList = newAnnotations[key];
-            foreach (SharedAnnotationData d, tomergeList) {
+            const QList<AnnotationData>& curList = annotationData[key];
+            const QList<AnnotationData>& tomergeList = newAnnotations[key];
+            foreach ( const AnnotationData &d, tomergeList ) {
                 if (!curList.contains(d)) {
                     annotationData[key].append(d);
                 }
@@ -535,28 +536,25 @@ void DasOptionsPanelWidget::addAnnotations() {
     SAFE_POINT(annObjectIsOk, "Cannot create an annotation object. Please check settings", );
 
     const CreateAnnotationModel& cm = annotationsWidgetController->getModel();
-    AnnotationTableObject* annotationTableObject = cm.getAnnotationObject();
+    FeaturesTableObject *annotationTableObject = cm.getAnnotationObject();
 
     foreach (const QString& grname, annotationData.keys()) {
-        const QList<SharedAnnotationData> sdata = annotationData[grname];
+        const QList<AnnotationData> sdata = annotationData[grname];
         if (!sdata.isEmpty()) {
-            foreach (SharedAnnotationData d, sdata) {
-                Annotation* a = new Annotation(d);
-                
-                const U2Location& location = a->getLocation();
-                if (location->isSingleRegion() && location->regions.first() == U2_REGION_MAX) {
+            foreach ( AnnotationData d, sdata ) {
+                if ( d.location->isSingleRegion( ) && d.location->regions.first( ) == U2_REGION_MAX ) {
                     //setRegion for full region sequence
-                    U2Location newLoc = location;
-                    newLoc->regions.clear();
-                    newLoc->regions.append(U2Region(0, ctx->getSequenceLength()));
-                    a->setLocation(newLoc);
-                }else{
+                    U2Location newLoc = d.location;
+                    newLoc->regions.clear( );
+                    newLoc->regions.append( U2Region( 0, ctx->getSequenceLength( ) ) );
+                    d.location = newLoc;
+                } else {
                     //cut annotations with the start position out of the current sequence
-                    if (location->regions.size() > 0 && location->regions.first().startPos >= seqLength){
+                    if ( !d.location->regions.isEmpty( ) && d.location->regions.first().startPos >= seqLength){
                         continue;
                     }
                 }
-                annotationTableObject->getRootGroup()->getSubgroup(grname, true)->addAnnotation(a);
+                annotationTableObject->getRootGroup().getSubgroup(grname, true).addAnnotation( d );
             }
         }
     }
@@ -660,5 +658,4 @@ void DasOptionsPanelWidget::sl_idDoubleClicked( const QModelIndex & ){
     sl_loadAnnotations();
 }
 
-
-}   // namespace
+} // namespace U2

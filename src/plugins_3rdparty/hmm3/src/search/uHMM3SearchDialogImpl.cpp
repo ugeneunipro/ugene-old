@@ -60,7 +60,7 @@ UHMM3SearchDialogImpl::UHMM3SearchDialogImpl( const U2SequenceObject * seqObj, Q
     CreateAnnotationModel annModel;
     annModel.hideLocation = true;
     annModel.sequenceObjectRef = seqObj;
-    annModel.data->name = ANNOTATIONS_DEFAULT_NAME;
+    annModel.data.name = ANNOTATIONS_DEFAULT_NAME;
     annModel.sequenceLen = seqObj->getSequenceLength();
     annotationsWidgetController = new CreateAnnotationWidgetController( annModel, this );
     QWidget * firstTab = tabWidget->widget( 0 );
@@ -171,7 +171,7 @@ void UHMM3SearchDialogImpl::sl_okButtonClicked() {
     }
     const CreateAnnotationModel & annModel = annotationsWidgetController->getModel();
     UHMM3SWSearchToAnnotationsTask * searchTask = new UHMM3SWSearchToAnnotationsTask( model.hmmfile, model.sequence,
-        annModel.getAnnotationObject(), annModel.groupName, annModel.data->name, model.searchSettings );
+        annModel.getAnnotationObject(), annModel.groupName, annModel.data.name, model.searchSettings );
     AppContext::getTaskScheduler()->registerTopLevelTask( searchTask );
     
     QDialog::accept();

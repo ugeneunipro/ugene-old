@@ -38,7 +38,7 @@ public:
     void cleanup();
     Task::ReportResult report();
 private:
-    AnnotationTableObject *ao;
+    FeaturesTableObject *ao;
     RemoteBLASTToAnnotationsTask *task;
     int minLength;
     int maxLength;

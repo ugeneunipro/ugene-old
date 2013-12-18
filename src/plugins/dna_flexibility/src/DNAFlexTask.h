@@ -32,12 +32,10 @@
 
 #include <QPointer>
 
-
 namespace U2 {
 
-class AnnotationTableObject;
+class FeaturesTableObject;
 class DNASequence;
-
 
 /**
  * The main DNA Flexibility task: launches a task to search for high
@@ -46,20 +44,19 @@ class DNASequence;
 class DNAFlexTask : public Task
 {
     Q_OBJECT
-
 public:
     DNAFlexTask(const HighFlexSettings& settings,
-        AnnotationTableObject* annotObject,
+        FeaturesTableObject *annotObject,
         const QString& annotName,
         const QString& annotGroup,
         const DNASequence& sequence);
 
     QList<Task*> onSubTaskFinished(Task* subTask);
-    QList<SharedAnnotationData> getAnnotationsFromResults(const QList<HighFlexResult>& results);
+    QList<AnnotationData> getAnnotationsFromResults(const QList<HighFlexResult>& results);
 
 private:
     HighFlexSettings                    settings;
-    QPointer<AnnotationTableObject>     annotObject;
+    QPointer<FeaturesTableObject>       annotObject;
     QString                             annotName;
     QString                             annotGroup;
     DNASequence                         sequence;

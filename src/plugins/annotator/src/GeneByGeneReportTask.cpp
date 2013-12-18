@@ -57,21 +57,18 @@ const QString GeneByGeneCompareResult::IDENTICAL_NO = "No";
 
 #define BLAST_IDENT "identities"
 #define BLAST_GAPS "gaps"
-GeneByGeneCompareResult GeneByGeneComparator::compareGeneAnnotation( const DNASequence& seq, const QList<SharedAnnotationData>& annData, const QString& annName, float identity ){
+GeneByGeneCompareResult GeneByGeneComparator::compareGeneAnnotation( const DNASequence& seq, const QList<SharedAnnotationData> &annData, const QString& annName, float identity ){
     GeneByGeneCompareResult result;
 
     float maxIdentity = -1.0F;
-    foreach(const SharedAnnotationData& adata, annData){
-        if(adata->name == annName){
+    foreach ( const SharedAnnotationData &adata, annData ) {
+        if ( adata->name == annName ) {
             U2Location location = adata->location;
             if(location->isSingleRegion()){
                 int reglen = location->regions.first().length;
                 float lenRatio  = reglen * 100 /static_cast<float>(seq.length()); 
                 maxIdentity = qMax(maxIdentity, lenRatio);
                 if(lenRatio >= identity){ //check length ratio
-    
-
-                    
                     QString ident = adata->findFirstQualifierValue(BLAST_IDENT);
                     if (!ident.isEmpty()){
                         //create BLAST string  YES/identity/gaps
@@ -96,7 +93,6 @@ GeneByGeneCompareResult GeneByGeneComparator::compareGeneAnnotation( const DNASe
                     }
                 }
             }
-            
             break;
         }
     }
@@ -120,9 +116,7 @@ float GeneByGeneComparator::parseBlastQual( const QString& ident ){
         if (v2 != 0){
             res = v1 *100 / static_cast<float>(v2);
         }
-        
     }
-
     return res;
 }
 
@@ -153,9 +147,7 @@ GeneByGeneReportIO::~GeneByGeneReportIO(){
         delete io;
         io = NULL;
     }
-
 }
-
 
 void GeneByGeneReportIO::prepareOutputFile( U2OpStatus& os ){
     if(QFile::exists(outFile)){

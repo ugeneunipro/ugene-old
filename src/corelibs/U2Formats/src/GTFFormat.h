@@ -27,9 +27,7 @@
 #include <U2Core/DocumentModel.h>
 #include <U2Core/U2Region.h>
 
-
 namespace U2 {
-
 
 /** Validates a line from a GTF file */
 class GTFLineValidateFlags
@@ -111,8 +109,6 @@ enum GTFLineFieldsIndeces {GTF_SEQ_NAME_INDEX = 0, GTF_SOURCE_INDEX = 1, GTF_FEA
 
 class IOAdapter;
 
-typedef QList<SharedAnnotationData> SharedAnnotationList;
-
 /**
  * The following GTF specification was used: http://mblab.wustl.edu/GTF22.html
  * Unlike GFF, we assume that there is no embedded sequence in a GTF file, only annotations (not joined)
@@ -133,7 +129,7 @@ public:
     virtual FormatCheckResult checkRawData(const QByteArray& rawData, const GUrl& = GUrl()) const;
 
     /** Gets annotation data from a GTF file, but doesn't create an annotation table, etc. */
-    static QList<SharedAnnotationData> getAnnotData(IOAdapter* io, U2OpStatus& os);
+    static QList<AnnotationData> getAnnotData(IOAdapter* io, U2OpStatus& os);
 
 protected:
     virtual Document* loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& hints, U2OpStatus& os);
@@ -145,9 +141,9 @@ private:
     * A common method for parsing and validating an input GTF file.
     * It is used during loading the file or just getting the annotations data from it.
     */
-    QMap<QString,SharedAnnotationList> parseDocument(IOAdapter* io, U2OpStatus& os);
+    QMap<QString, QList<AnnotationData> > parseDocument(IOAdapter* io, U2OpStatus& os);
 
-    void load(IOAdapter* io, QList<GObject*>& objects, U2OpStatus& os);
+    void load(IOAdapter* io, QList<GObject*>& objects, const U2DbiRef& dbiRef, U2OpStatus& os);
 
     static const QString FORMAT_NAME;
 

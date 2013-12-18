@@ -27,7 +27,7 @@
 #include "PanView.h"
 
 #include <U2Core/DNASequenceSelection.h>
-#include <U2Core/AnnotationTableObject.h>
+#include <U2Core/FeaturesTableObject.h>
 
 namespace U2 {
 
@@ -375,11 +375,12 @@ int ADVSyncViewManager::offsetByAnnSel(ADVSingleSequenceWidget* w) const {
 
 int ADVSyncViewManager::findSelectedAnnotationPos(ADVSingleSequenceWidget* w) const {
     AnnotationSelection* as = w->getSequenceContext()->getAnnotationsSelection();
-    const QSet<AnnotationTableObject*>& objs = w->getSequenceContext()->getAnnotationObjects(true);
+    const QSet<FeaturesTableObject *> &objs = w->getSequenceContext()->getAnnotationObjects(true);
     foreach(const AnnotationSelectionData& d , as->getSelection()) {
-        AnnotationTableObject* obj = d.annotation->getGObject();
+        FeaturesTableObject *obj = d.annotation.getGObject( );
         if (objs.contains(obj)) {
-            return d.annotation->getStrand().isCompementary() ? d.getSelectedRegions().last().endPos() : d.getSelectedRegions().first().startPos;
+            return d.annotation.getStrand().isCompementary()
+                ? d.getSelectedRegions().last().endPos() : d.getSelectedRegions().first().startPos;
         }
     }
     return -1;
@@ -434,7 +435,7 @@ void ADVSyncViewManager::sl_updateVisualMode() {
 void ADVSyncViewManager::sl_toggleVisualMode() {
     //if have at least 1 visible -> hide all
     bool haveVisibleNav= false;
-    bool haveVisiblePan = false;    
+    bool haveVisiblePan = false;
     bool haveVisibleDet = false;
     bool haveVisibleView = false;
     

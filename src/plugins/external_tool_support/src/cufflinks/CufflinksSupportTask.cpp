@@ -234,7 +234,8 @@ QStringList CufflinksSupportTask::getOutputFiles() const {
 }
 
 QList<SharedAnnotationData> CufflinksSupportTask::getAnnotationsFromFile(const QString &filePath,
-    const DocumentFormatId &format, const QString &toolName, U2OpStatus &os) {
+    const DocumentFormatId &format, const QString &toolName, U2OpStatus &os)
+{
     QList<SharedAnnotationData> result;
 
     IOAdapterFactory *iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
@@ -254,15 +255,21 @@ QList<SharedAnnotationData> CufflinksSupportTask::getAnnotationsFromFile(const Q
         return result;
     }
 
+    QList<AnnotationData> tmpResult;
     if (BaseDocumentFormats::FPKM_TRACKING_FORMAT == format) {
-        return FpkmTrackingFormat::getAnnotData(io.data(), os);
+        tmpResult = FpkmTrackingFormat::getAnnotData(io.data(), os);
     } else if (BaseDocumentFormats::GTF == format) {
-        return GTFFormat::getAnnotData(io.data(), os);
+        tmpResult = GTFFormat::getAnnotData(io.data(), os);
     } else if (BaseDocumentFormats::DIFF == format) {
-        return DifferentialFormat::getAnnotationData(io.data(), os);
+        tmpResult = DifferentialFormat::getAnnotationData(io.data(), os);
     } else {
         FAIL(QObject::tr("Internal error: unexpected format of the %1 output!").arg(toolName), result);
     }
+
+    foreach ( const AnnotationData &d, tmpResult ) {
+        result << SharedAnnotationData( new AnnotationData( d ) );
+    }
+    return result;
 }
 
 } // namespace U2

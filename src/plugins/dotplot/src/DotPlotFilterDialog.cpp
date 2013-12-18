@@ -24,7 +24,7 @@
 #include <U2View/ADVSequenceObjectContext.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/GObject.h>
-#include <U2Core/AnnotationTableObject.h>
+#include <U2Core/FeaturesTableObject.h>
 #include <U2Core/AnnotationSettings.h>
 #include <U2Core/AppContext.h>
 #include <U2Gui/GUIUtils.h>
@@ -99,13 +99,13 @@ DotPlotFilterDialog::DotPlotFilterDialog(QWidget *parent, ADVSequenceObjectConte
 
 QSet<QString> DotPlotFilterDialog::getUniqueAnnotationNames(ADVSequenceObjectContext *seq){
     QSet<QString> uniqueAnnotationNames;
-    CHECK(seq!=NULL, uniqueAnnotationNames);
+    CHECK ( seq!=NULL, uniqueAnnotationNames );
 
-    QSet<AnnotationTableObject*> annotationObjects = seq->getAnnotationObjects(true);
-    foreach(AnnotationTableObject* atObj, annotationObjects){
-        QList<Annotation*> annotations = atObj->getAnnotations();
-        foreach(Annotation* a, annotations){
-            uniqueAnnotationNames.insert(a->getAnnotationName());
+    QSet<FeaturesTableObject *> annotationObjects = seq->getAnnotationObjects(true);
+    foreach ( FeaturesTableObject *atObj, annotationObjects ) {
+        QList<__Annotation> annotations = atObj->getAnnotations();
+        foreach ( const __Annotation &a, annotations ) {
+            uniqueAnnotationNames.insert( a.getName( ) );
         }
     }
     return uniqueAnnotationNames;
@@ -156,7 +156,7 @@ void DotPlotFilterDialog::sl_filterTypeChanged(int id){
     switch (curType){
     case All:
         intersectionParams->setEnabled(false);
-    	break;
+        break;
     case Features:
         intersectionParams->setEnabled(true);
         break;

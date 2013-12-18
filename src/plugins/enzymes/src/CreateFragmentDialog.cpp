@@ -26,8 +26,10 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/Settings.h>
 #include <U2Core/DNASequenceSelection.h>
+#include <U2Core/DNASequenceObject.h>
 #include <U2Core/GObjectUtils.h>
 #include <U2Core/GObjectRelationRoles.h>
+#include <U2Core/FeaturesTableObject.h>
 #include <U2Core/U2AlphabetUtils.h>
 
 #include <U2Gui/CreateAnnotationWidgetController.h>
@@ -59,7 +61,7 @@ CreateFragmentDialog::CreateFragmentDialog( ADVSequenceObjectContext* ctx,  QWid
 }
 
 CreateFragmentDialog::CreateFragmentDialog( U2SequenceObject* obj, const U2Region& region, QWidget* p )
-: QDialog(p)
+    : QDialog(p)
 {
     setupUi(this);
     seqObj = obj;
@@ -69,7 +71,7 @@ CreateFragmentDialog::CreateFragmentDialog( U2SequenceObject* obj, const U2Regio
         GObjectRelationRole::SEQUENCE, aObjects, UOF_LoadedOnly);
     
     foreach (GObject* obj, related) {
-        AnnotationTableObject* aObj = qobject_cast<AnnotationTableObject*>(obj);
+        FeaturesTableObject *aObj = qobject_cast<FeaturesTableObject *>(obj);
         assert(aObj != NULL);
         relatedAnnotations.append(aObj);
     }
@@ -79,12 +81,10 @@ CreateFragmentDialog::CreateFragmentDialog( U2SequenceObject* obj, const U2Regio
     rangeSelectorLayout->addWidget(rs);
 
     setupAnnotationsWidget();
-
 }
 
 void CreateFragmentDialog::accept()
 {
-    
     QString leftOverhang, rightOverhang;
 
     if (leftEndBox->isChecked()) {
@@ -126,59 +126,54 @@ void CreateFragmentDialog::accept()
         return;
     }
     const CreateAnnotationModel& m = ac->getModel();
-    AnnotationTableObject* obj = m.getAnnotationObject();
+    FeaturesTableObject *obj = m.getAnnotationObject();
     QString groupName = m.groupName;
-    assert(!groupName.isEmpty() && obj!=NULL);
+    SAFE_POINT( !groupName.isEmpty( ) && obj != NULL, "Invalid annotation data!", );
 
-    AnnotationData* ad = new AnnotationData();
-    
-    ad->location->regions.append(reg);
+    AnnotationData ad;
+    ad.location->regions.append(reg);
 
-    ad->qualifiers.append(U2Qualifier(QUALIFIER_LEFT_TERM, QString()));
-    ad->qualifiers.append(U2Qualifier(QUALIFIER_RIGHT_TERM, QString()));
-    ad->qualifiers.append(U2Qualifier(QUALIFIER_LEFT_OVERHANG, leftOverhang) );
-    ad->qualifiers.append(U2Qualifier(QUALIFIER_RIGHT_OVERHANG, rightOverhang) );
+    ad.qualifiers.append(U2Qualifier(QUALIFIER_LEFT_TERM, QString()));
+    ad.qualifiers.append(U2Qualifier(QUALIFIER_RIGHT_TERM, QString()));
+    ad.qualifiers.append(U2Qualifier(QUALIFIER_LEFT_OVERHANG, leftOverhang) );
+    ad.qualifiers.append(U2Qualifier(QUALIFIER_RIGHT_OVERHANG, rightOverhang) );
     QString leftOverhangStrand = OVERHANG_STRAND_DIRECT;
     if (lComplButton->isChecked() && !leftOverhang.isEmpty()) {
         leftOverhangStrand = OVERHANG_STRAND_COMPL; 
     }
-    ad->qualifiers.append(U2Qualifier(QUALIFIER_LEFT_STRAND, leftOverhangStrand) );
+    ad.qualifiers.append(U2Qualifier(QUALIFIER_LEFT_STRAND, leftOverhangStrand) );
     QString rightOverhangStrand = OVERHANG_STRAND_DIRECT;
     if (rComplButton->isChecked() && !rightOverhang.isEmpty()) {
         rightOverhangStrand = OVERHANG_STRAND_COMPL;
     }
-    ad->qualifiers.append(U2Qualifier(QUALIFIER_RIGHT_STRAND, rightOverhangStrand) );
+    ad.qualifiers.append(U2Qualifier(QUALIFIER_RIGHT_STRAND, rightOverhangStrand) );
     QString leftOverhangType = leftOverhang.isEmpty() ? OVERHANG_TYPE_BLUNT : OVERHANG_TYPE_STICKY;
-    ad->qualifiers.append(U2Qualifier(QUALIFIER_LEFT_TYPE, leftOverhangType) );
+    ad.qualifiers.append(U2Qualifier(QUALIFIER_LEFT_TYPE, leftOverhangType) );
     QString rightOverhangType = rightOverhang.isEmpty() ? OVERHANG_TYPE_BLUNT : OVERHANG_TYPE_STICKY;
-    ad->qualifiers.append(U2Qualifier(QUALIFIER_RIGHT_TYPE, rightOverhangType) );
-    ad->qualifiers.append(U2Qualifier(QUALIFIER_SOURCE, seqObj->getGObjectName()));
-    ad->name = QString("Fragment (%1-%2)").arg(reg.startPos+1).arg(reg.endPos());
+    ad.qualifiers.append(U2Qualifier(QUALIFIER_RIGHT_TYPE, rightOverhangType) );
+    ad.qualifiers.append(U2Qualifier(QUALIFIER_SOURCE, seqObj->getGObjectName()));
+    ad.name = QString("Fragment (%1-%2)").arg(reg.startPos+1).arg(reg.endPos());
 
-    Annotation* annotatedFragment = new Annotation(SharedAnnotationData(ad));
-    obj->addAnnotation(annotatedFragment,groupName);
-    
-    dnaFragment = DNAFragment(annotatedFragment,seqObj, relatedAnnotations);
+    obj->addAnnotation( ad, groupName );
+    dnaFragment = DNAFragment( ad, seqObj, relatedAnnotations );
 
     QDialog::accept();
 }
-
 
 void CreateFragmentDialog::setupAnnotationsWidget() {
     CreateAnnotationModel acm;
     acm.sequenceObjectRef = GObjectReference(seqObj);
     acm.hideAnnotationName = true;
     acm.hideLocation = true;
-    acm.data->name = ANNOTATION_GROUP_FRAGMENTS;
+    acm.data.name = ANNOTATION_GROUP_FRAGMENTS;
     acm.sequenceLen = seqObj->getSequenceLength();
     ac = new CreateAnnotationWidgetController(acm, this);
-    QWidget* caw = ac->getWidget();    
+    QWidget* caw = ac->getWidget();
     QVBoxLayout* l = new QVBoxLayout();
     l->setMargin(0);
     l->addWidget(caw);
     annotationsWidget->setLayout(l);
     annotationsWidget->setMinimumSize(caw->layout()->minimumSize());
 }
-
 
 } // namespace

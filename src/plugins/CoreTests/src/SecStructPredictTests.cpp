@@ -19,11 +19,13 @@
  * MA 02110-1301, USA.
  */
 
-
 #include <U2Core/AppContext.h>
+#include <U2Core/U2DbiRegistry.h>
 #include <U2Algorithm/SecStructPredictAlgRegistry.h>
 #include <U2Core/DNASequenceObject.h>
-#include <U2Core/AnnotationTableObject.h>
+#include <U2Core/FeaturesTableObject.h>
+#include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/U2SafePoints.h>
 
 #include "SecStructPredictTests.h"
 #include <U2Algorithm/SecStructPredictTask.h>
@@ -132,10 +134,13 @@ Task::ReportResult GTest_SecStructPredictTask::report()
     if (task!=NULL && task->hasError()) {
         stateInfo.setError( task->getError());
     } else if (!resultsTableContextName.isEmpty()) {
-        QList<SharedAnnotationData> results = task->getResults();
-        aObj = new AnnotationTableObject(resultsTableContextName);
-        foreach(SharedAnnotationData sd, results) {
-            aObj->addAnnotation(new Annotation(sd));
+        QList<AnnotationData> results = task->getResults();
+        U2OpStatusImpl os;
+        const U2DbiRef dbiRef = AppContext::getDbiRegistry( )->getSessionTmpDbiRef( os );
+        SAFE_POINT_OP( os, ReportResult_Finished );
+        aObj = new FeaturesTableObject( resultsTableContextName, dbiRef );
+        foreach ( const AnnotationData &d, results) {
+            aObj->addAnnotation( d );
         }
         addContext(resultsTableContextName, aObj);
         contextAdded = true;

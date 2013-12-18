@@ -33,7 +33,7 @@
 namespace U2 {
 
 class DNATranslation;
-class AnnotationTableObject;
+class FeaturesTableObject;
 
 enum SendSelectionAlphabet
 {
@@ -49,9 +49,9 @@ enum FilterResult {
 };
 
 struct RemoteBLASTTaskSettings {
-    QString				dbChoosen;
-    QString				params;
-    int					retries;
+    QString             dbChoosen;
+    QString             params;
+    int                 retries;
     DNATranslation *    aminoT;
     DNATranslation *    complT;
     QByteArray          query;
@@ -63,16 +63,16 @@ struct RemoteBLASTTaskSettings {
 class RemoteBLASTToAnnotationsTask : public Task {
     Q_OBJECT
 public:
-    RemoteBLASTToAnnotationsTask( const RemoteBLASTTaskSettings &cfg, int qoffs, AnnotationTableObject* ao, const QString &url, const QString & group );
+    RemoteBLASTToAnnotationsTask( const RemoteBLASTTaskSettings &cfg, int qoffs, FeaturesTableObject *ao, const QString &url, const QString & group );
 
     QList<Task*> onSubTaskFinished(Task* subTask);
 
 private:
     int                 offsInGlobalSeq;
-    QPointer<AnnotationTableObject>  aobj;
+    QPointer<FeaturesTableObject>  aobj;
     QString             group;
     Task*               queryTask;
-    QString				url;
+    QString             url;
 };
 
 class RemoteBLASTTask : public Task {

@@ -21,7 +21,7 @@
 
 #include <QtCore/QScopedPointer>
 
-#include <U2Core/AnnotationTableObject.h>
+#include <U2Core/FeaturesTableObject.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/Counter.h>
 #include <U2Core/DNATranslation.h>
@@ -35,7 +35,7 @@
 
 namespace U2 {
 
-ExportAnnotations2CSVTask::ExportAnnotations2CSVTask( const QList<Annotation *> &annotations,
+ExportAnnotations2CSVTask::ExportAnnotations2CSVTask( const QList<__Annotation> &annotations,
     const QByteArray &sequence, const QString &_seqName,
     const DNATranslation *complementTranslation, bool exportSequence, bool _exportSeqName,
     const QString &url, bool apnd, const QString &sep )
@@ -101,8 +101,8 @@ void ExportAnnotations2CSVTask::run( ) {
     if ( exportSequence ) {
         columnNames << tr( "Sequence" );
     }
-    foreach ( const Annotation *annotation, annotations ) {
-        foreach ( const U2Qualifier &qualifier, annotation->getQualifiers( ) ) {
+    foreach ( const __Annotation &annotation, annotations ) {
+        foreach ( const U2Qualifier &qualifier, annotation.getQualifiers( ) ) {
             const QString &qName = qualifier.name;
             if ( !columnIndices.contains( qName ) ) {
                 columnIndices.insert( qName, columnNames.size( ) );
@@ -113,22 +113,24 @@ void ExportAnnotations2CSVTask::run( ) {
     writeCSVLine( columnNames, ioAdapter.data( ), separator, stateInfo );
     CHECK_OP( stateInfo, );
 
-    foreach ( const Annotation *annotation, annotations ) {
-        foreach( const U2Region &region, annotation->getRegions( ) ) {
+    foreach ( const __Annotation &annotation, annotations ) {
+        foreach( const U2Region &region, annotation.getRegions( ) ) {
             QStringList values;
-            values << annotation->getGroups( ).last( )->getGroupPath( );
-            values << annotation->getAnnotationName( );
+            values << annotation.getGroup( ).getGroupPath( );
+            values << annotation.getName( );
             values << QString::number( region.startPos + 1 );
             values << QString::number( region.startPos + region.length );
             values << QString::number( region.length );
-            values << ( ( annotation->getStrand().isCompementary( ) ) ? tr( "yes" ) : tr( "no" ) );
+
+            const bool isComplementary = annotation.getStrand( ).isCompementary( );
+            values << ( ( isComplementary ) ? tr( "yes" ) : tr( "no" ) );
 
             if ( exportSequenceName ) {
                 values << seqName.toLatin1( );
             }
             if ( exportSequence ) {
                 QByteArray sequencePart = sequence.mid( region.startPos, region.length );
-                if ( annotation->getStrand( ).isCompementary( ) ) {
+                if ( isComplementary ) {
                     complementTranslation->translate( sequencePart.data( ), sequencePart.size( ) );
                     TextUtils::reverse( sequencePart.data( ), sequencePart.size( ) );
                 }
@@ -140,13 +142,13 @@ void ExportAnnotations2CSVTask::run( ) {
                 values << QString();
             }
 
-            foreach(const U2Qualifier& qualifier, annotation->getQualifiers()) {
+            foreach ( const U2Qualifier& qualifier, annotation.getQualifiers( ) ) {
                 int qualifiedIndex = columnIndices[qualifier.name];
-                SAFE_POINT(qualifiedIndex > 0 && qualifiedIndex < values.length(), "Invalid qualifier index", );
+                SAFE_POINT( qualifiedIndex > 0 && qualifiedIndex < values.length( ), "Invalid qualifier index", );
                 values[qualifiedIndex] = qualifier.value;
             }
-            writeCSVLine(values, ioAdapter.data( ), separator, stateInfo);
-            CHECK_OP(stateInfo, );
+            writeCSVLine( values, ioAdapter.data( ), separator, stateInfo );
+            CHECK_OP( stateInfo, );
         }
     }
 }

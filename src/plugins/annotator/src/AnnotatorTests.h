@@ -26,7 +26,7 @@
 #include <U2Core/GObject.h>
 #include <QtXml/QDomElement>
 #include <U2Core/U2Region.h>
-#include <U2Core/AnnotationTableObject.h>
+#include <U2Core/FeaturesTableObject.h>
 #include <U2View/AnnotatedDNAView.h>
 #include "CollocationsDialogController.h"
 #include "GeneByGeneReportTask.h"
@@ -65,8 +65,8 @@ private:
     bool expected;
     float identity;
     GeneByGeneCompareResult result;
-
 };
 
-} //namespace
+} //namespace U2
+
 #endif

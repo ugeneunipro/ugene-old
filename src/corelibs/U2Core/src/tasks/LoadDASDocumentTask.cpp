@@ -26,6 +26,8 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>
 #include <U2Core/DNAAlphabet.h>
+#include <U2Core/DNASequenceObject.h>
+#include <U2Core/FeaturesTableObject.h>
 #include <U2Core/U2AlphabetUtils.h>
 #include <U2Core/U2SequenceUtils.h>
 #include <U2Core/GObjectRelationRoles.h>
@@ -85,105 +87,105 @@ QString LoadDASDocumentTask::getFileName(){
     return "";
 }
 
-QList<Task*> LoadDASDocumentTask::onSubTaskFinished( Task* subTask ){
-    QList<Task*> subTasks;
+QList<Task*> LoadDASDocumentTask::onSubTaskFinished( Task *subTask ){
+    QList<Task *> subTasks;
 
-    if(subTask == loadDocumentTask){
-        if (subTask->hasError()){
-            setError(tr("Cannot load cached document: %1").arg(accNumber));
+    if ( subTask == loadDocumentTask ) {
+        if ( subTask->hasError( ) ) {
+            setError( tr( "Cannot load cached document: %1" ).arg( accNumber ) );
             return subTasks;
         }
-        resultDocument = loadDocumentTask->takeDocument();
-    }else if (subTask == saveDocumentTask){
-        if (saveDocumentTask->hasError()){
-            setError(tr("Cannot save document: %1").arg(accNumber));
+        resultDocument = loadDocumentTask->takeDocument( );
+    } else if ( subTask == saveDocumentTask ) {
+        if ( saveDocumentTask->hasError( ) ) {
+            setError( tr( "Cannot save document: %1" ).arg( accNumber ) );
             return subTasks;
         }
-        if (!subTask->isCanceled()) {
-            RecentlyDownloadedCache * cache = AppContext::getRecentlyDownloadedCache();
-            if(cache != NULL) {
-                cache->append(fullPath);
+        if ( !subTask->isCanceled( ) ) {
+            RecentlyDownloadedCache * cache = AppContext::getRecentlyDownloadedCache( );
+            if ( NULL != cache ) {
+                cache->append( fullPath );
             }
         }
-    }else{
-        if (subTask == loadSequenceTask){
-            if (loadSequenceTask->hasError()){
-                setError(tr("Cannot find DAS reference sequence: %1").arg(accNumber));
+    } else {
+        if ( subTask == loadSequenceTask ) {
+            if ( loadSequenceTask->hasError( ) ) {
+                setError( tr( "Cannot find DAS reference sequence: %1" ).arg( accNumber ) );
                 return subTasks;
             }
-            if (!isCanceled()){
-                seq = loadSequenceTask->getSequence();
+            if ( !isCanceled( ) ) {
+                seq = loadSequenceTask->getSequence( );
             }
 
             loadSequenceTask = NULL;
-
-        }else{ 
-            LoadDASObjectTask* ftask = qobject_cast<LoadDASObjectTask*>(subTask);
-            if (ftask != NULL && loadFeaturesTasks.contains(ftask)){
-                int idx = loadFeaturesTasks.indexOf(ftask);
-                if(idx == -1){
+        } else {
+            LoadDASObjectTask *ftask = qobject_cast<LoadDASObjectTask *>( subTask );
+            if ( NULL != ftask && loadFeaturesTasks.contains( ftask ) ) {
+                const int idx = loadFeaturesTasks.indexOf( ftask );
+                if ( idx == -1 ) {
                     return subTasks;
                 }
 
-                loadFeaturesTasks.removeAt(idx);
+                loadFeaturesTasks.removeAt( idx );
 
-                if(ftask->hasError()){
-                    ioLog.error(tr("Cannot find DAS features for: %1").arg(accNumber));
-                }else{
+                if ( ftask->hasError( ) ) {
+                    ioLog.error( tr( "Cannot find DAS features for: %1" ).arg( accNumber ) );
+                } else {
                     //merge features
-                    if (!isCanceled()){
-                        mergeFeatures(ftask->getAnnotationData());
+                    if ( !isCanceled( ) ) {
+                        mergeFeatures( ftask->getAnnotationData( ) );
                     }
                 }
             }
         }
 
-        if (isAllDataLoaded()){
-            AnnotationTableObject* annotationTableObject = NULL;
-            if (!annotationData.isEmpty()){
-                annotationTableObject = new AnnotationTableObject("das_annotations");
+        if ( isAllDataLoaded( ) ) {
+            FeaturesTableObject *annotationTableObject = NULL;
+            if ( !annotationData.isEmpty( ) ) {
+                annotationTableObject = new FeaturesTableObject( "das_annotations", resultDocument->getDbiRef( ) );
                 
-                foreach(const QString& grname, annotationData.keys()){
-                    const QList<SharedAnnotationData> sdata = annotationData[grname];
-                    if (!sdata.isEmpty()){
-                        foreach(SharedAnnotationData d, sdata){
-                            Annotation* a = new Annotation(d);
+                foreach ( const QString &grname, annotationData.keys( ) ) {
+                    const QList<AnnotationData> sdata = annotationData[grname];
+                    if ( !sdata.isEmpty( ) ) {
+                        foreach ( AnnotationData d, sdata ) {
                             //setRegion
-                            if (seq!=NULL){
-                                const U2Location& location = a->getLocation();
-                                if (location->isSingleRegion() && location->regions.first() == U2_REGION_MAX){
-                                    U2Location newLoc = location;
-                                    newLoc->regions.clear();
-                                    newLoc->regions.append(U2Region(0, seq->length()));
-                                    a->setLocation(newLoc);
+                            if ( NULL != seq ) {
+                                if ( d.location->isSingleRegion( )
+                                    && d.location->regions.first() == U2_REGION_MAX)
+                                {
+                                    U2Location newLoc = d.location;
+                                    newLoc->regions.clear( );
+                                    newLoc->regions.append( U2Region( 0, seq->length( ) ) );
+                                    d.location = newLoc;
                                 }
                             }
-                            annotationTableObject->getRootGroup()->getSubgroup(grname, true)->addAnnotation(a);
+                            annotationTableObject->addAnnotation( d, grname );
                         }
                     }
                 }
             }
-            if(seq != NULL){
-                createLoadedDocument();
-                if (resultDocument == NULL){
+            if ( NULL != seq ) {
+                createLoadedDocument( );
+                if ( NULL == resultDocument ) {
                     return subTasks;
                 }
                 
-                U2EntityRef seqRef = U2SequenceUtils::import(resultDocument->getDbiRef(), *seq, stateInfo);
-                if (stateInfo.isCoR()) {
+                U2EntityRef seqRef = U2SequenceUtils::import( resultDocument->getDbiRef( ), *seq, stateInfo );
+                if ( stateInfo.isCoR( ) ) {
                     return subTasks;
                 } 
-                U2SequenceObject* danseqob = new U2SequenceObject(seq->getName(), seqRef);
-                resultDocument->addObject(danseqob);
+                U2SequenceObject *danseqob = new U2SequenceObject( seq->getName( ), seqRef );
+                resultDocument->addObject( danseqob );
 
-                if (annotationTableObject != NULL){
-                    annotationTableObject->addObjectRelation(GObjectRelation(danseqob, GObjectRelationRole::SEQUENCE));
-                    resultDocument->addObject(annotationTableObject);
+                if ( NULL != annotationTableObject ) {
+                    annotationTableObject->addObjectRelation( GObjectRelation( danseqob,
+                        GObjectRelationRole::SEQUENCE ) );
+                    resultDocument->addObject( annotationTableObject );
                     
                 }
 
-                saveDocumentTask = new SaveDocumentTask(resultDocument);
-                subTasks.append(saveDocumentTask);
+                saveDocumentTask = new SaveDocumentTask( resultDocument );
+                subTasks.append( saveDocumentTask );
             }
          }
     }
@@ -191,26 +193,23 @@ QList<Task*> LoadDASDocumentTask::onSubTaskFinished( Task* subTask ){
 
 }
 
-bool LoadDASDocumentTask::isAllDataLoaded(){
-    if (loadSequenceTask == NULL && loadFeaturesTasks.isEmpty()){
-        return true;
-    }
-    return false;
+bool LoadDASDocumentTask::isAllDataLoaded( ) {
+    return ( NULL == loadSequenceTask && loadFeaturesTasks.isEmpty( ) );
 }
 
-void LoadDASDocumentTask::mergeFeatures( const QMap<QString, QList<SharedAnnotationData> >& newAnnotations ){
-    const QStringList& keys =  newAnnotations.keys();
-    foreach(const QString& key, keys){
-        if (annotationData.contains(key)){
-            const QList<SharedAnnotationData>& curList = annotationData[key];
-            const QList<SharedAnnotationData>& tomergeList = newAnnotations[key];
-            foreach(SharedAnnotationData d, tomergeList){
-                if (!curList.contains(d)){
-                    annotationData[key].append(d);
+void LoadDASDocumentTask::mergeFeatures( const QMap<QString, QList<AnnotationData> > &newAnnotations ) {
+    const QStringList &keys =  newAnnotations.keys( );
+    foreach ( const QString &key, keys ) {
+        if ( annotationData.contains(key ) ) {
+            const QList<AnnotationData> &curList = annotationData[key];
+            const QList<AnnotationData> &tomergeList = newAnnotations[key];
+            foreach ( const AnnotationData &d, tomergeList ) {
+                if ( !curList.contains(d ) ) {
+                    annotationData[key].append( d );
                 }
             }
-        }else{
-            annotationData.insert(key, newAnnotations[key]);
+        } else {
+            annotationData.insert( key, newAnnotations[key] );
         }
     }
 
@@ -406,7 +405,7 @@ void XMLDASSequenceParser::parse( const QByteArray& data ){
 
 //////////////////////////////////////////////////////////////////////////
 //XMLDASFeaturesParser
-XMLDASFeaturesParser::XMLDASFeaturesParser(){
+XMLDASFeaturesParser::XMLDASFeaturesParser( ) {
 
 }
 
@@ -560,14 +559,13 @@ void XMLDASFeaturesParser::parse( const QByteArray& data ){
 
                 featureSegment = featureSegment.nextSibling();
 
-                SharedAnnotationData data;
-                data = new AnnotationData;
-                data->name = featureId.simplified();
+                AnnotationData data;
+                data.name = featureId.simplified( );
                 U2Region reg; //1-based start
 
                 
                 if (startPos == -1 || endPos == -1){//non-positional
-                    data->qualifiers.append(U2Qualifier("non-positional", "yes"));
+                    data.qualifiers.append(U2Qualifier("non-positional", "yes"));
                     if ((start == 0 && stop == 0) || (start > stop)){
                         reg = U2_REGION_MAX;
                     }else{
@@ -580,46 +578,46 @@ void XMLDASFeaturesParser::parse( const QByteArray& data ){
                         reg = U2Region(startPos - 1, endPos - startPos + 1);
                     }
                 }
-                data->location->regions << reg;
-                data->setStrand(complemented ? U2Strand::Complementary : U2Strand::Direct);
+                data.location->regions << reg;
+                data.setStrand(complemented ? U2Strand::Complementary : U2Strand::Direct);
 
                 if (!methodQual.isEmpty()){
-                    data->qualifiers.append(U2Qualifier("method", methodQual.simplified()));
+                    data.qualifiers.append(U2Qualifier("method", methodQual.simplified()));
                 }
 
                 if (score != -1.0f){
-                    data->qualifiers.append(U2Qualifier("score", QString::number(score)));
+                    data.qualifiers.append(U2Qualifier("score", QString::number(score)));
                 }
 
                 if (!note.isEmpty()){
-                    data->qualifiers.append(U2Qualifier("note", note.simplified()));
+                    data.qualifiers.append(U2Qualifier("note", note.simplified()));
                 }
 
                 if (!link.isEmpty()){
-                    data->qualifiers.append(U2Qualifier("link", link.simplified()));
+                    data.qualifiers.append(U2Qualifier("link", link.simplified()));
                 }
 
                 if (!target.isEmpty()){
-                    data->qualifiers.append(U2Qualifier("target", target.simplified()));
+                    data.qualifiers.append(U2Qualifier("target", target.simplified()));
                 }
 
                 if (!sequenceId.isEmpty()){
-                    data->qualifiers.append(U2Qualifier("seq_id", sequenceId.simplified()));
+                    data.qualifiers.append(U2Qualifier("seq_id", sequenceId.simplified()));
                 }
 
                 if (groupName.isEmpty()){
                     groupName = "das_features";
                 }
 
-                data->qualifiers.append(U2Qualifier("type", groupName.simplified()));
+                data.qualifiers.append(U2Qualifier("type", groupName.simplified()));
 
                 if (!groupId.isEmpty()){
-                    data->qualifiers.append(U2Qualifier("type_id", groupId.simplified()));
+                    data.qualifiers.append(U2Qualifier("type_id", groupId.simplified()));
                 }
 
-                data->qualifiers.append(U2Qualifier("feature_id", featureId.simplified()));
+                data.qualifiers.append(U2Qualifier("feature_id", featureId.simplified()));
                 if (!featureLabel.isEmpty()){
-                    data->qualifiers.append(U2Qualifier("feature_label", featureLabel.simplified()));
+                    data.qualifiers.append(U2Qualifier("feature_label", featureLabel.simplified()));
                 }
                 
                 annotationData[groupName].append(data);

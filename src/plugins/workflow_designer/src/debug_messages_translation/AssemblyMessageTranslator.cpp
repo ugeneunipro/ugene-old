@@ -43,7 +43,7 @@ AssemblyMessageTranslator::AssemblyMessageTranslator( const QVariant &atomicMess
     SharedDbiDataHandler dbId = source.value<SharedDbiDataHandler>( );
     QScopedPointer<AssemblyObject> assemblyObject( StorageUtils::getAssemblyObject(
         context->getDataStorage( ), dbId ) );
-    SAFE_POINT( NULL != assemblyObject.data( ), "Couldn't obtain assembly object", );
+    SAFE_POINT( !assemblyObject.isNull( ), "Couldn't obtain assembly object", );
     assemblyRef = assemblyObject->getEntityRef( );
 }
 

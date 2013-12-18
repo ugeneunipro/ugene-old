@@ -19,24 +19,23 @@
  * MA 02110-1301, USA.
  */
 
-#include "FpkmTrackingFormat.h"
+#include <QtCore/QScopedArrayPointer>
 
-#include <U2Core/AnnotationTableObject.h>
-#include <U2Core/GAutoDeleteList.h>
+#include <U2Core/AppContext.h>
+#include <U2Core/FeaturesTableObject.h>
 #include <U2Core/GObjectReference.h>
 #include <U2Core/GObjectRelationRoles.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/L10n.h>
 #include <U2Core/TextUtils.h>
 #include <U2Core/U1AnnotationUtils.h>
+#include <U2Core/U2DbiRegistry.h>
 #include <U2Core/U2OpStatus.h>
 #include <U2Core/U2SafePoints.h>
 
-#include <memory>
-
+#include "FpkmTrackingFormat.h"
 
 namespace U2 {
-
 
 //-------------------------------------------------------------------
 // FpkmTrackingLineValidateFlags
@@ -103,7 +102,7 @@ Document* FpkmTrackingFormat::loadDocument(IOAdapter* io, const U2DbiRef&  dbiRe
     CHECK_EXT(io != NULL && io->isOpen(), os.setError(L10N::badArgument("IO adapter")), NULL);
     QList<GObject*> objects;
 
-    load(io, objects, os);
+    load(io, objects, dbiRef, os);
     CHECK_OP_EXT(os, qDeleteAll(objects), NULL);
 
     Document* doc = new Document(this, io->getFactory(), io->getURL(), dbiRef, objects);
@@ -112,44 +111,43 @@ Document* FpkmTrackingFormat::loadDocument(IOAdapter* io, const U2DbiRef&  dbiRe
 
 
 #define READ_BUFF_SIZE 4096
-int readFpkmTrLine(QString &buffer, IOAdapter* io, gauto_array<char>& charbuff) {
+int readFpkmTrLine( QString &buffer, IOAdapter* io, QScopedArrayPointer<char> &charbuff ) {
     int len;
-    buffer.clear();
+    buffer.clear( );
     do {
-        len = io->readLine(charbuff.data, READ_BUFF_SIZE -1);
-        charbuff.data[len] = '\0';
-        buffer.append(QString(charbuff.data));
-    } while (len == READ_BUFF_SIZE - 1);
-    return buffer.length();
+        len = io->readLine( charbuff.data( ), READ_BUFF_SIZE - 1 );
+        charbuff.data( )[len] = '\0';
+        buffer.append( QString( charbuff.data( ) ) );
+    } while ( READ_BUFF_SIZE - 1 == len );
+    return buffer.length( );
 }
 
-void FpkmTrackingFormat::addQualifierIfValuePresent(SharedAnnotationData& annotData, QString name, QString val)
+void FpkmTrackingFormat::addQualifierIfValuePresent( AnnotationData& annotData, QString name,
+    QString val)
 {
     if (NO_VALUE_STR != val) {
         U2Qualifier qual(name, val);
         SAFE_POINT(qual.isValid(), tr("Internal error: qualifier with name '%1' and"
             " '%2' can't be added").arg(name).arg(val), );
-        annotData->qualifiers.push_back(qual);
+        annotData.qualifiers.push_back(qual);
     }
 }
 
 
-QList<SharedAnnotationData> FpkmTrackingFormat::getAnnotData(IOAdapter* io, U2OpStatus& os)
-{
-    std::auto_ptr<QObject> parent(new QObject());
-    FpkmTrackingFormat fpkmTrackingFormat(parent.get());
+QList<AnnotationData> FpkmTrackingFormat::getAnnotData(IOAdapter* io, U2OpStatus& os) {
+    FpkmTrackingFormat fpkmTrackingFormat( NULL );
     QString seqName;
     QString annotName = "misc_feature";
     return fpkmTrackingFormat.parseDocument(io, seqName, annotName, os);
 }
 
-
-QList<SharedAnnotationData> FpkmTrackingFormat::parseDocument(IOAdapter* io, QString& seqName, QString annotName, U2OpStatus& os)
+QList<AnnotationData> FpkmTrackingFormat::parseDocument(IOAdapter* io, QString& seqName,
+    QString annotName, U2OpStatus &os )
 {
-    QList<SharedAnnotationData> result;
+    QList<AnnotationData> result;
 
     int length;
-    gauto_array<char> buff = new char[READ_BUFF_SIZE];
+    QScopedArrayPointer<char> buff( new char[READ_BUFF_SIZE] );
     QString qstrbuf;
 
     // Validate the header
@@ -203,9 +201,9 @@ QList<SharedAnnotationData> FpkmTrackingFormat::parseDocument(IOAdapter* io, QSt
         }
 
         // Create the annotation
-        SharedAnnotationData annotData(new AnnotationData());
-        annotData->name = annotName;
-        annotData->location->regions << fpkmTrLineData.region;
+        AnnotationData annotData;
+        annotData.name = annotName;
+        annotData.location->regions << fpkmTrLineData.region;
 
         // Add qualifiers
         if (validationStatus.isEmptyTrackingId()) {
@@ -213,11 +211,11 @@ QList<SharedAnnotationData> FpkmTrackingFormat::parseDocument(IOAdapter* io, QSt
             ioLog.trace(tr("FPKM Tracking Format parsing error: tracking ID"
                 " value is empty at line %1!").arg(lineNumber));
         } else {
-            annotData->qualifiers.push_back(
+            annotData.qualifiers.push_back(
                 U2Qualifier(TRACKING_ID_COLUMN, fpkmTrLineData.trackingId));
         }
 
-        annotData->qualifiers.push_back(U2Qualifier(LOCUS_COLUMN, fpkmTrLineData.locus));
+        annotData.qualifiers.push_back(U2Qualifier(LOCUS_COLUMN, fpkmTrLineData.locus));
 
         addQualifierIfValuePresent(annotData, CLASS_CODE_COLUMN, fpkmTrLineData.classCode);
         addQualifierIfValuePresent(annotData, NEAREST_REF_ID_COLUMN, fpkmTrLineData.nearestRefId);
@@ -257,36 +255,35 @@ QList<SharedAnnotationData> FpkmTrackingFormat::parseDocument(IOAdapter* io, QSt
     return result;
 }
 
-
-void FpkmTrackingFormat::load(IOAdapter* io, QList<GObject*>& objects, U2OpStatus& os)
+void FpkmTrackingFormat::load(IOAdapter* io, QList<GObject*>& objects, const U2DbiRef& dbiRef,
+    U2OpStatus& os)
 {
     QString sequenceName;
     QString annotName = "misc_feature";
-    QList<SharedAnnotationData> annotations = parseDocument(io, sequenceName, annotName, os);
+    QList<AnnotationData> annotations = parseDocument(io, sequenceName, annotName, os);
 
-    foreach (SharedAnnotationData annotData, annotations) {
+    foreach ( const AnnotationData &annotData, annotations ) {
         QString annotTableName = sequenceName + FEATURES_TAG;
-        AnnotationTableObject* annotTable = NULL;
+        FeaturesTableObject *annotTable = NULL;
         foreach (GObject* object, objects) {
             if (object->getGObjectName() == annotTableName) {
-                annotTable = (AnnotationTableObject*) object;
+                annotTable = dynamic_cast<FeaturesTableObject *>( object );
             }
         }
         if (!annotTable) {
-            annotTable = new AnnotationTableObject(annotTableName);
+            annotTable = new FeaturesTableObject( annotTableName, dbiRef );
             objects.append(annotTable);
         }
 
         // Assume that the group name is the same as the annotation name
         QString groupName = annotName;
-        if (!AnnotationGroup::isValidGroupName(groupName, false)) {
+        if ( !__AnnotationGroup::isValidGroupName( groupName, false ) ) {
             groupName = "Group"; // or set this name if the annotation name is not appropriate
         }
 
-        annotTable->addAnnotation(new Annotation(annotData), groupName);
+        annotTable->addAnnotation( annotData, groupName );
     }
 }
-
 
 bool FpkmTrackingFormat::parseHeader(const QString& headerLine, QStringList& columns) const
 {
@@ -425,7 +422,6 @@ FpkmTrackingLineData FpkmTrackingFormat::parseAndValidateLine(QString line, QStr
     return parsedData;
 }
 
-
 FormatCheckResult FpkmTrackingFormat::checkRawData(const QByteArray& rawData, const GUrl& /* = GUrl */) const
 {
     const char* data = rawData.constData();
@@ -485,18 +481,18 @@ QStringList FpkmTrackingFormat::writeHeader(QList<GObject*> annotTables, Documen
         << COVERAGE_COLUMN;
     
     foreach (GObject* annotTable, annotTables) {
-        QList<Annotation*> annotationsList =
-            (qobject_cast<AnnotationTableObject*>(annotTable))->getAnnotations();
+        FeaturesTableObject *annTable = dynamic_cast<FeaturesTableObject *>( annotTable );
+        QList<__Annotation> annotationsList = annTable->getAnnotations( );
 
-        foreach (const Annotation* annot, annotationsList) {
-            QString annotName = annot->getAnnotationName();
+        foreach (const __Annotation &annot, annotationsList) {
+            QString annotName = annot.getName( );
             if (annotName == U1AnnotationUtils::lowerCaseAnnotationName ||
                 annotName == U1AnnotationUtils::upperCaseAnnotationName)
             {
                 continue;
             }
 
-            QVector<U2Qualifier> annotQualifiers = annot->getQualifiers();
+            QVector<U2Qualifier> annotQualifiers = annot.getQualifiers( );
             foreach (U2Qualifier qualifier, annotQualifiers) {
                 if (!columns.contains(qualifier.name)) {
                     QString qualName = qualifier.name;
@@ -572,25 +568,25 @@ void FpkmTrackingFormat::storeDocument(Document* doc, IOAdapter* io, U2OpStatus&
         }
 
         // Get the annotations
-        QList<Annotation*> annotationsList =
-            (qobject_cast<AnnotationTableObject*>(annotTable))->getAnnotations();
+        FeaturesTableObject *annTable = dynamic_cast<FeaturesTableObject *>( annotTable );
+        QList<__Annotation> annotationsList = annTable->getAnnotations( );
 
-        foreach (const Annotation* annot, annotationsList) {
-            QString annotName = annot->getAnnotationName();
+        foreach ( const __Annotation &annot, annotationsList ) {
+            QString annotName = annot.getName( );
             if (annotName == U1AnnotationUtils::lowerCaseAnnotationName ||
                 annotName == U1AnnotationUtils::upperCaseAnnotationName)
             {
                 continue;
             }
 
-            QVector<U2Region> annotRegions = annot->getRegions();
+            QVector<U2Region> annotRegions = annot.getRegions( );
 
             foreach (const U2Region& region, annotRegions) {
 
                 // Fill in the values from the annotation qualifiers
                 QStringList lineFields;
-                foreach (QString columnName, columns) {
-                    QString columnValue = annot->findFirstQualifierValue(columnName);
+                foreach ( const QString &columnName, columns) {
+                    QString columnValue = annot.findFirstQualifierValue( columnName );
 
                     // Also, validate some fields
                     if ((TRACKING_ID_COLUMN == columnName) && (columnValue.isEmpty())) {
@@ -665,5 +661,4 @@ void FpkmTrackingFormat::storeDocument(Document* doc, IOAdapter* io, U2OpStatus&
     }
 }
 
-
-} // namespace
+} // namespace U2

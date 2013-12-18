@@ -31,8 +31,6 @@
 #include <U2View/ADVSequenceObjectContext.h>
 #include <U2View/ADVUtils.h>
 
-#include <U2Core/AnnotationTableObject.h>
-
 #include <QtGui/QMenu>
 #include <QtCore/QMap>
 #include <QtGui/QAction>
@@ -49,24 +47,11 @@ namespace U2 {
 
 extern "C" Q_DECL_EXPORT Plugin* U2_PLUGIN_INIT_FUNC() {
     Primer3Plugin * plug = new Primer3Plugin();
-	return plug;
+    return plug;
 }
 
 Primer3Plugin::Primer3Plugin() : Plugin(tr("Primer3"), tr("Integrated tool for PCR primers design.")), viewCtx(NULL)
 {
-    //if (AppContext::getMainWindow()) {
-    //    ctxADV = new Primer3ADVContext(this);
-    //    ctxADV->init();
-
-    //    QAction* buildAction = new QAction(tr("primer3"), this);
-    //    connect(buildAction, SIGNAL(triggered()), SLOT(sl_make_base()));
-
-
-    //    QMenu* tools = AppContext::getMainWindow()->getTopLevelMenu(MWMENU_TOOLS);
-    //    QMenu* toolsSubmenu = tools->addMenu(QIcon(":/sitecon/images/sitecon.png"), tr("primer3_menu"));
-
-    //    toolsSubmenu->addAction(buildAction);
-    //}
     if (AppContext::getMainWindow()) {
         viewCtx = new Primer3ADVContext(this);
         viewCtx->init();
@@ -90,40 +75,15 @@ Primer3Plugin::Primer3Plugin() : Plugin(tr("Primer3"), tr("Integrated tool for P
         Q_UNUSED(res);
         assert(res);
     }
-     
-     
 }
 
 Primer3Plugin::~Primer3Plugin() {
 }
 
-//void Primer3Plugin::sl_make_base() {
-//    Primer3DialogController d(this);
-//    d.exec();
-//}
-
-
 Primer3ADVContext::Primer3ADVContext(QObject* p) : GObjectViewWindowContext(p, ANNOTATED_DNA_VIEW_FACTORY_ID)
 {
 
 }
-
-//void Primer3ADVContext::initViewContext(GObjectView* view) {
-//    AnnotatedDNAView* av = qobject_cast<AnnotatedDNAView*>(view);
-//    ADVSequenceObjectContext* seqCtx = av->getSequenceInFocus();
-//}
-//
-//void Primer3ADVContext::makeBaseMenu(GObjectView* v, QMenu* m) {
-//    QList<GObjectViewAction*> list = getViewActions(v);
-//    if (list.isEmpty()) { 
-//        return;
-//    }
-//    assert(list.size()==1);
-//    GObjectViewAction* a = list.first();  
-//    QMenu* aMenu = GUIUtils::findSubMenu(m, ADV_MENU_ANALYSE);
-//    SAFE_POINT(aMenu != NULL, "aMenu", );
-//    aMenu->addAction(a);
-//}
 
 void Primer3ADVContext::initViewContext(GObjectView* v) {
     AnnotatedDNAView* av = qobject_cast<AnnotatedDNAView*>(v);

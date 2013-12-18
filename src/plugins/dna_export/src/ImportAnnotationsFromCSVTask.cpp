@@ -19,17 +19,18 @@
  * MA 02110-1301, USA.
  */
 
-#include "ImportAnnotationsFromCSVTask.h" 
+#include <QtCore/QScopedPointer>
 
 #include <U2Core/AppContext.h>
 #include <U2Core/Counter.h>
+#include <U2Core/DNASequenceObject.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/IOAdapterUtils.h>
 #include <U2Core/ProjectModel.h>
 #include <U2Core/L10n.h>
 #include <U2Core/Log.h>
 #include <U2Core/U2SafePoints.h>
-#include <U2Core/AnnotationTableObject.h>
+#include <U2Core/FeaturesTableObject.h>
 #include <U2Core/GObjectRelationRoles.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/AddDocumentTask.h>
@@ -42,8 +43,7 @@
 
 #include <U2View/AnnotatedDNAView.h>
 
-
-#include <memory>
+#include "ImportAnnotationsFromCSVTask.h" 
 
 namespace U2 {
 
@@ -60,7 +60,7 @@ config(_config), readTask(NULL), writeTask(NULL), addTask(NULL)
 }
 
 
-static void adjustRelations(AnnotationTableObject* ao) {
+static void adjustRelations(FeaturesTableObject *ao) {
     if (!ao->findRelatedObjectsByType(GObjectRelationRole::SEQUENCE).isEmpty()) {
         return; //nothing to adjust -> already has relation
     }
@@ -78,8 +78,8 @@ static void adjustRelations(AnnotationTableObject* ao) {
     foreach(U2SequenceObject *seqObj, seqView->getSequenceObjectsWithContexts()){
         U2Region seqRegion(0, seqObj->getSequenceLength());
         bool outOfRange = false;
-        foreach(const Annotation* ann, ao->getAnnotations()) {
-            const QVector<U2Region>& locations = ann->getRegions();
+        foreach ( const __Annotation &ann, ao->getAnnotations()) {
+            const QVector<U2Region>& locations = ann.getRegions();
             if (!seqRegion.contains(locations.last())) {
                 outOfRange = true;
                 break;
@@ -108,7 +108,7 @@ QList<Task*> ImportAnnotationsFromCSVTask::onSubTaskFinished(Task* subTask) {
 
     if (doc.isNull() && projDoc != NULL) {
         doc = projDoc;;
-    } 
+    }
     if (doc.isNull()) { //document is null -> save it and add to the project
         assert(subTask == readTask);
         doc = prepareNewDocument(prepareAnnotations());
@@ -134,42 +134,44 @@ QList<Task*> ImportAnnotationsFromCSVTask::onSubTaskFinished(Task* subTask) {
                 return result;
             }
             QList<GObject*> objs = doc->findGObjectByType(GObjectTypes::ANNOTATION_TABLE);
-            AnnotationTableObject* ao = objs.isEmpty() ? NULL : qobject_cast<AnnotationTableObject*>(objs.first());
-            if (ao == NULL) {
-                ao = new AnnotationTableObject("Annotations");
-                adjustRelations(ao);
+            FeaturesTableObject *ao = objs.isEmpty( ) ? NULL
+                : qobject_cast<FeaturesTableObject *>(objs.first());
+            if ( ao == NULL ) {
+                ao = new FeaturesTableObject( "Annotations", doc->getDbiRef( ) );
+                adjustRelations( ao );
             }
-            assert(ao != NULL);
-            QMap< QString, QList<Annotation*> > groups = prepareAnnotations();
-            foreach (const QString &groupName, groups.keys()) {
-                ao->addAnnotations(groups[groupName], groupName);
+            SAFE_POINT(ao != NULL, "Invalid annotation table", result );
+            QMap<QString, QList<AnnotationData> > groups = prepareAnnotations();
+            foreach ( const QString &groupName, groups.keys( ) ) {
+                ao->addAnnotations( groups[groupName], groupName );
             }
         }
     }
     return result;
 }
 
-QMap< QString, QList<Annotation*> > ImportAnnotationsFromCSVTask::prepareAnnotations() const {
-    assert(readTask != NULL && readTask->isFinished());
-    QMap< QString, QList<SharedAnnotationData> > datas = readTask->getResult();
-    QMap< QString, QList<Annotation*> > result;
-    foreach (const QString &groupName, datas.keys()) {
-        foreach (const SharedAnnotationData& d, datas[groupName]) {
-            Annotation* a = new Annotation(d);
-            result[groupName] << a;
+QMap<QString, QList<AnnotationData> > ImportAnnotationsFromCSVTask::prepareAnnotations() const {
+    QMap<QString, QList<AnnotationData> > result;
+
+    SAFE_POINT(readTask != NULL && readTask->isFinished(), "Invalid read annotations task!",
+        result );
+    QMap<QString, QList<AnnotationData> > datas = readTask->getResult();
+    foreach ( const QString &groupName, datas.keys( ) ) {
+        foreach (const AnnotationData &d, datas[groupName] ) {
+            result[groupName] << d;
         }
     }
     return result;
 }
 
-Document* ImportAnnotationsFromCSVTask::prepareNewDocument(const QMap< QString, QList<Annotation*> > &groups) const {
+Document * ImportAnnotationsFromCSVTask::prepareNewDocument(const QMap<QString, QList<AnnotationData> > &groups) const {
     IOAdapterId ioId = IOAdapterUtils::url2io(config.dstFile);
     IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(ioId);
     U2OpStatus2Log os;
     Document* result = config.df->createNewLoadedDocument(iof, config.dstFile, os);
     CHECK_OP(os, NULL);
-    AnnotationTableObject* ao = new AnnotationTableObject("Annotations");
-    foreach (const QString &groupName, groups.keys()) {
+    FeaturesTableObject* ao = new FeaturesTableObject( "Annotations", result->getDbiRef( ) );
+    foreach ( const QString &groupName, groups.keys( ) ) {
         ao->addAnnotations(groups[groupName], groupName);
     }
     ao->setModified(false);
@@ -193,7 +195,7 @@ void ReadCSVAsAnnotationsTask::run() {
     GUrl url(file);
     IOAdapterId ioId = IOAdapterUtils::url2io(url);
     IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(ioId);
-    std::auto_ptr<IOAdapter> io(iof->createIOAdapter());
+    QScopedPointer<IOAdapter> io(iof->createIOAdapter());
     
     if (!io->open(url, IOAdapterMode_Read)) {
         setError(L10N::errorOpeningFileRead(url));
@@ -216,7 +218,7 @@ void ReadCSVAsAnnotationsTask::run() {
     QList<QStringList> parsedLines = parseLinesIntoTokens(text, config, maxColumns, stateInfo);
     
     foreach(QStringList lineTokens, parsedLines) {
-        SharedAnnotationData a(new AnnotationData());
+        AnnotationData a;
         bool ok = true;
         QString error;
         int startPos = -1;
@@ -234,13 +236,13 @@ void ReadCSVAsAnnotationsTask::run() {
             switch(columnConf.role) {
                 case ColumnRole_Qualifier: 
                     assert(!columnConf.qualifierName.isEmpty());
-                    a->qualifiers.append(U2Qualifier(columnConf.qualifierName, token));
+                    a.qualifiers.append(U2Qualifier(columnConf.qualifierName, token));
                     break;
                 case ColumnRole_Name:
-                    a->name = token.isEmpty() ? config.defaultAnnotationName : token;
-                    ok = Annotation::isValidAnnotationName(a->name);
+                    a.name = token.isEmpty() ? config.defaultAnnotationName : token;
+                    ok = __Annotation::isValidAnnotationName(a.name);
                     if (!ok) {
-                        error = tr("Invalid annotation name: '%1'").arg(a->name);
+                        error = tr("Invalid annotation name: '%1'").arg(a.name);
                     }
                     break;
                 case ColumnRole_StartPos:
@@ -266,7 +268,7 @@ void ReadCSVAsAnnotationsTask::run() {
                     }
                     break;
                 case ColumnRole_ComplMark:
-                    a->location->strand = (columnConf.complementMark.isEmpty() || token == columnConf.complementMark) ? U2Strand::Complementary : U2Strand::Direct;
+                    a.location->strand = (columnConf.complementMark.isEmpty() || token == columnConf.complementMark) ? U2Strand::Complementary : U2Strand::Direct;
                     break;
                 case ColumnRole_Group:
                     groupName = token;
@@ -279,8 +281,8 @@ void ReadCSVAsAnnotationsTask::run() {
         //add annotation
         if (ok) {
             //set up default name
-            if (a->name.isEmpty()) {
-                a->name = config.defaultAnnotationName;
+            if (a.name.isEmpty()) {
+                a.name = config.defaultAnnotationName;
             }
             //set up location
             U2Region location;
@@ -303,7 +305,7 @@ void ReadCSVAsAnnotationsTask::run() {
                 algoLog.details(tr("Invalid location: start: %1  len: %2, in line :%3, ignoring")
                     .arg(QString::number(location.startPos)).arg(QString::number(location.length)).arg(lineTokens.join(config.splitToken)));
             } else {
-                a->location->regions.append(location);
+                a.location->regions.append(location);
                 result[groupName] << a;
             }
         } else {

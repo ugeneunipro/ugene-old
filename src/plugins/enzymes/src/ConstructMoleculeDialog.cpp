@@ -19,11 +19,13 @@
  * MA 02110-1301, USA.
  */
 
-#include "ConstructMoleculeDialog.h"
-#include "EditFragmentDialog.h"
-#include "CreateFragmentDialog.h"
+#include <QtCore/QScopedPointer>
+
+#include <QtGui/QFileDialog>
+#include <QtGui/QMessageBox>
 
 #include <U2Core/AppContext.h>
+#include <U2Core/DNASequenceObject.h>
 #include <U2Core/GUrlUtils.h>
 #include <U2Core/DocumentUtils.h>
 
@@ -31,13 +33,11 @@
 #include <U2Gui/ProjectTreeItemSelectorDialog.h>
 #include <U2Gui/LastUsedDirHelper.h>
 
-#include <QtGui/QFileDialog>
-#include <QtGui/QMessageBox>
-
-#include <memory>
+#include "ConstructMoleculeDialog.h"
+#include "EditFragmentDialog.h"
+#include "CreateFragmentDialog.h"
 
 namespace U2 {
-
 
 ConstructMoleculeDialog::ConstructMoleculeDialog(const QList<DNAFragment>& fragmentList,  QWidget* p )
 : QDialog(p), fragments(fragmentList)
@@ -339,9 +339,9 @@ void ConstructMoleculeDialog::sl_onAddFromProjectButtonClicked()
 {
     ProjectTreeControllerModeSettings settings;
     settings.objectTypesToShow.append(GObjectTypes::SEQUENCE);
-    std::auto_ptr<U2SequenceObjectConstraints> seqConstraints(new U2SequenceObjectConstraints());
+    QScopedPointer<U2SequenceObjectConstraints> seqConstraints(new U2SequenceObjectConstraints());
     seqConstraints->alphabetType = DNAAlphabet_NUCL;
-    settings.objectConstraints.append(seqConstraints.get());
+    settings.objectConstraints.append(seqConstraints.data());
 
     QList<GObject*> objects = ProjectTreeItemSelectorDialog::selectObjects(settings,this);
 
@@ -362,9 +362,7 @@ void ConstructMoleculeDialog::sl_onAddFromProjectButtonClicked()
                     fragments.append(frag);
                     fragmentListWidget->addItem(fragItem);
                     break;
-                }    
-
-
+                }
             }
         }
     }    

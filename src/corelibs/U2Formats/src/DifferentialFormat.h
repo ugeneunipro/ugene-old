@@ -48,7 +48,7 @@ public:
         const GUrl &url = GUrl()) const;
 
 public:
-    static QList<SharedAnnotationData> getAnnotationData(IOAdapter *io, U2OpStatus &os);
+    static QList<AnnotationData> getAnnotationData(IOAdapter *io, U2OpStatus &os);
 
 protected:
     Document * loadDocument(IOAdapter *io, const U2DbiRef &targetDb,
@@ -57,16 +57,16 @@ protected:
 private:
     QList<ColumnDataParser::Column> getColumns() const;
     QString getAnnotationName() const;
-    QList<SharedAnnotationData> parseAnnotations(IOAdapter *io, U2OpStatus &os);
-    QList<SharedAnnotationData> parseAnnotations(const ColumnDataParser &parser,
-        IOAdapter *io, QByteArray &buffer, U2OpStatus &os);
+    QList<AnnotationData> parseAnnotations(IOAdapter *io, U2OpStatus &os);
+    QList<AnnotationData> parseAnnotations(const ColumnDataParser &parser, IOAdapter *io,
+        QByteArray &buffer, U2OpStatus &os);
     QList<ColumnDataParser::Column> getHeaderColumns(const QList<GObject*> &anns, U2OpStatus &os);
     void writeHeader(IOAdapter *io, const QList<ColumnDataParser::Column> &columns);
 
     static QString readLine(IOAdapter *io, QByteArray &buffer, U2OpStatus &os);
-    static bool parseLocus(const QString &locus, SharedAnnotationData &data, U2OpStatus &os);
-    static QString createLocus(SharedAnnotationData data, U2OpStatus &os);
-    static QString createValue(SharedAnnotationData data, const ColumnDataParser::Column &column, U2OpStatus &os);
+    static bool parseLocus(const QString &locus, AnnotationData &data, U2OpStatus &os);
+    static QString createLocus( const AnnotationData &data, U2OpStatus &os);
+    static QString createValue( const AnnotationData &data, const ColumnDataParser::Column &column, U2OpStatus &os);
 
 private:
     QString formatName;

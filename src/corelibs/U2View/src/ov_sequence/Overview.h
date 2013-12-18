@@ -22,10 +22,13 @@
 #ifndef _U2_OVERVIEW_H_
 #define _U2_OVERVIEW_H_
 
+#include <QtGui/QToolButton>
+
+#include <U2Core/Annotation.h>
+#include <U2Core/AnnotationGroup.h>
+
 #include "GSequenceLineView.h"
 #include "ADVSequenceObjectContext.h"
-
-#include <QToolButton>
 
 namespace U2 {
 
@@ -33,7 +36,7 @@ class PanView;
 class DetView;
 class OverviewRenderArea;
 class AnnotationModification;
-class AnnotationGroup;
+class FeaturesTableObject;
 
 class Overview : public GSequenceLineView {
     Q_OBJECT
@@ -43,13 +46,13 @@ public:
 protected slots:
     void sl_visibleRangeChanged();
     void sl_tbToggled();
-    void sl_annotationsAdded(const QList<Annotation*>& a);
-    void sl_annotationsRemoved(const QList<Annotation*>& a);
-    void sl_onAnnotationsInGroupRemoved(const QList<Annotation*>&, AnnotationGroup*);
+    void sl_annotationsAdded(const QList<__Annotation> &a);
+    void sl_annotationsRemoved(const QList<__Annotation> &a);
+    void sl_onAnnotationsInGroupRemoved(const QList<__Annotation> &, const __AnnotationGroup & );
     void sl_annotationModified(const AnnotationModification& md);
     void sl_onAnnotationSettingsChanged(const QStringList& changedSettings);
-    void sl_annotationObjectAdded(AnnotationTableObject* obj);
-    void sl_annotationObjectRemoved(AnnotationTableObject* obj);
+    void sl_annotationObjectAdded(FeaturesTableObject *obj);
+    void sl_annotationObjectRemoved(FeaturesTableObject *obj);
     void sl_sequenceChanged();
 protected:
     void pack();

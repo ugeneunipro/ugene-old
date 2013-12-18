@@ -26,7 +26,6 @@
 #include <U2Core/GObject.h>
 #include <QtXml/QDomElement>
 #include <U2Core/U2Region.h>
-#include <U2Core/AnnotationTableObject.h>
 #include <U2View/AnnotatedDNAView.h>
 #include <U2Algorithm/ORFAlgorithmTask.h>
 
@@ -65,7 +64,6 @@ private:
     const U2SequenceObject* seq;
     DNATranslation* complTransl;
     DNATranslation* aminoTransl;
-
 };
 
 } //namespace

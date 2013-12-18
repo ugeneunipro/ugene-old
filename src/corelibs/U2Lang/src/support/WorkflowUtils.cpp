@@ -36,7 +36,7 @@
 #include <U2Lang/URLAttribute.h>
 #include <U2Lang/WorkflowSettings.h>
 
-#include <U2Core/AnnotationTableObject.h>
+#include <U2Core/FeaturesTableObject.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/DocumentModel.h>
@@ -607,15 +607,16 @@ static void data2text(WorkflowContext *context, DocumentFormatId formatId, GObje
 
 void WorkflowUtils::print(const QString &slotString, const QVariant &data, DataTypePtr type, WorkflowContext *context) {
     QString text = slotString + ":\n";
+    Workflow::DbiDataStorage *storage = context->getDataStorage( );
     if ("string" == type->getId()
         || BaseTypes::STRING_LIST_TYPE() == type) {
         text += data.toString();
     } else if (BaseTypes::DNA_SEQUENCE_TYPE() == type) {
-        U2SequenceObject *obj = StorageUtils::getSequenceObject(context->getDataStorage(), data.value<SharedDbiDataHandler>());
+        U2SequenceObject *obj = StorageUtils::getSequenceObject( storage, data.value<SharedDbiDataHandler>( ) );
         CHECK(NULL != obj, );
         data2text(context, BaseDocumentFormats::FASTA, obj, text);
     } else if (BaseTypes::MULTIPLE_ALIGNMENT_TYPE() == type) {
-        MAlignmentObject *obj = StorageUtils::getMsaObject(context->getDataStorage(), data.value<SharedDbiDataHandler>());
+        MAlignmentObject *obj = StorageUtils::getMsaObject( storage, data.value<SharedDbiDataHandler>( ) );
         CHECK(NULL != obj, );
         data2text(context, BaseDocumentFormats::CLUSTAL_ALN, obj, text);
     } else if (BaseTypes::ANNOTATION_TABLE_TYPE() == type
@@ -626,9 +627,9 @@ void WorkflowUtils::print(const QString &slotString, const QVariant &data, DataT
         } else {
             anns = QVariantUtils::var2ftl(data.toList());
         }
-        AnnotationTableObject *obj = new AnnotationTableObject("Slot annotations");
-        foreach(SharedAnnotationData d, anns) {
-            obj->addAnnotation(new Annotation(d));
+        FeaturesTableObject *obj = new FeaturesTableObject( "Slot annotations", storage->getDbiRef( ) );
+        foreach ( const SharedAnnotationData &d, anns ) {
+            obj->addAnnotation( *d );
         }
         data2text(context, BaseDocumentFormats::PLAIN_GENBANK, obj, text);
     } else {

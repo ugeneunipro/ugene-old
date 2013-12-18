@@ -25,9 +25,9 @@
 #include "DotPlotFilterDialog.h"
 
 #include <U2Core/Counter.h>
+#include <U2Core/DNASequenceObject.h>
 #include <U2Core/MultiTask.h>
 #include <U2Core/AppContext.h>
-#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/DNASequenceSelection.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/DNATranslation.h>

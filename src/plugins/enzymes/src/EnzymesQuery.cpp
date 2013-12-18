@@ -87,13 +87,13 @@ Task* QDEnzymesActor::getAlgorithmTask(const QVector<U2Region>& location) {
 void QDEnzymesActor::sl_onAlgorithmTaskFinished() {
     foreach(FindEnzymesTask* st, enzymesTasks) {
         foreach(const QString& id, ids) {
-            QList<SharedAnnotationData> dataz = st->getResultsAsAnnotations(id);
-            foreach(const SharedAnnotationData& ad, dataz) {
+            QList<AnnotationData> dataz = st->getResultsAsAnnotations(id);
+            foreach ( const AnnotationData &ad, dataz ) {
                 QDResultUnit ru(new QDResultUnitData);
-                ru->strand = ad->getStrand();
-                ru->quals = ad->qualifiers;
+                ru->strand = ad.getStrand();
+                ru->quals = ad.qualifiers;
                 ru->quals.append(U2Qualifier("id", id));
-                ru->region = ad->location->regions[0];
+                ru->region = ad.location->regions[0];
                 ru->owner = units.value("enzyme");
                 QDResultGroup* g = new QDResultGroup(QDStrand_Both);
                 g->add(ru);

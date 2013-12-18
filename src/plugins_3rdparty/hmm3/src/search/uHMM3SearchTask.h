@@ -30,11 +30,12 @@
 #include <U2Core/CreateAnnotationTask.h>
 #include <U2Core/DNASequence.h>
 #include <U2Core/DNATranslation.h>
-#include <U2Core/AnnotationTableObject.h>
 
 #include "uhmm3search.h"
 
 namespace U2 {
+
+class FeaturesTableObject;
 
 /**************************************
 * General hmmer3 search task.
@@ -172,10 +173,10 @@ private:
 class UHMM3SWSearchToAnnotationsTask : public Task {
     Q_OBJECT
 public:
-    UHMM3SWSearchToAnnotationsTask( const QString & hmmfile, const DNASequence & seq, AnnotationTableObject * obj,
+    UHMM3SWSearchToAnnotationsTask( const QString & hmmfile, const DNASequence & seq, FeaturesTableObject *obj,
         const QString & group, const QString & aname, const UHMM3SearchTaskSettings & settings );
     
-    UHMM3SWSearchToAnnotationsTask( const QString & hmmfile, const QString & seqFile, AnnotationTableObject * obj,
+    UHMM3SWSearchToAnnotationsTask( const QString & hmmfile, const QString & seqFile, FeaturesTableObject *obj,
         const QString & group, const QString & aname, const UHMM3SearchTaskSettings & settings );
     
     QList< Task* > onSubTaskFinished( Task * subTask );
@@ -192,7 +193,7 @@ private:
     QString                             agroup;
     QString                             aname;
     UHMM3SearchTaskSettings             searchSettings;
-    QPointer< AnnotationTableObject >   annotationObj;
+    QPointer<FeaturesTableObject>       annotationObj;
     LoadDocumentTask *                  loadSequenceTask;
     UHMM3SWSearchTask *                 searchTask;
     CreateAnnotationsTask *             createAnnotationsTask;

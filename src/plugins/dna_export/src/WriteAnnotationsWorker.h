@@ -22,11 +22,13 @@
 #ifndef __WRITE_ANNOTATIONS_WORKER_H_
 #define __WRITE_ANNOTATIONS_WORKER_H_
 
-#include <U2Core/AnnotationTableObject.h>
 #include <U2Lang/WorkflowUtils.h>
 #include <U2Lang/LocalDomain.h>
 
 namespace U2 {
+
+class FeaturesTableObject;
+
 namespace LocalWorkflow {
 
 class WriteAnnotationsPrompter : public PrompterBase<WriteAnnotationsPrompter> {
@@ -51,8 +53,8 @@ public:
     
 private:
     IntegralBus * annotationsPort;
-    QList<AnnotationTableObject*> createdAnnotationObjects;
-    QMap<QString, AnnotationTableObject*> annotationsByUrl;
+    QList<FeaturesTableObject *> createdAnnotationObjects;
+    QMap<QString, FeaturesTableObject *> annotationsByUrl;
     
 }; // WriteAnnotationsWorker
 

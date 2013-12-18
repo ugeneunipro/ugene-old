@@ -28,7 +28,6 @@
 #include <U2Core/Task.h>
 #include <U2Core/U2Region.h>
 #include <U2Core/AnnotationData.h>
-//#include "gobjects/AnnotationTableObject.h"
 
 #include <QtCore/QTimer>
 #include <QtCore/QMutex>
@@ -37,9 +36,9 @@
 
 namespace U2 {
 
+class FeaturesTableObject;
 class ADVSequenceObjectContext;
 class CollocationSearchTask;
-class AnnotationTableObject;
 
 //TODO: listen for allocation add/remove to the view
 class CollocationsDialogController : public QDialog, Ui_FindAnnotationCollocationsDialog {
@@ -87,7 +86,7 @@ public:
 class CollocationSearchTask : public Task , public CollocationsAlgorithmListener{
     Q_OBJECT
 public:
-    CollocationSearchTask(const QList<AnnotationTableObject*> &table, const QSet<QString>& names, const CollocationsAlgorithmSettings& cfg);
+    CollocationSearchTask(const QList<FeaturesTableObject*> &table, const QSet<QString>& names, const CollocationsAlgorithmSettings& cfg);
     CollocationSearchTask(const QList<SharedAnnotationData> &table, const QSet<QString>& names, const CollocationsAlgorithmSettings& cfg, bool keepSourceAnns = false);
     void run();
 

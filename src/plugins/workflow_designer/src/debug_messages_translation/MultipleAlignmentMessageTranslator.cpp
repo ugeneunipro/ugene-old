@@ -45,7 +45,7 @@ MultipleAlignmentMessageTranslator::MultipleAlignmentMessageTranslator(
     SharedDbiDataHandler malignmentId = source.value<SharedDbiDataHandler>( );
     QScopedPointer<MAlignmentObject> malignmentObject( StorageUtils::getMsaObject(
         context->getDataStorage( ), malignmentId ) );
-    SAFE_POINT( NULL != malignmentObject.data( ), "Invalid MSA object detected!", );
+    SAFE_POINT( !malignmentObject.isNull( ), "Invalid MSA object detected!", );
     malignment = malignmentObject->getMAlignment( );
 }
 

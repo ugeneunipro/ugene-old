@@ -31,15 +31,14 @@
 #include <U2Core/U2Region.h>
 #include <U2Core/GUrl.h>
 
-#include <U2Core/AnnotationTableObject.h>
-
 #include <QtCore/QObject>
 #include <QtCore/QList>
 #include <QtCore/QMutex>
 
 namespace U2 {
 
-
+class Document;
+class FeaturesTableObject;
 class U2SequenceObject;
 
 struct DigestSequenceTaskConfig {
@@ -62,8 +61,8 @@ struct GenomicPosition {
 class DigestSequenceTask : public Task {
     Q_OBJECT
 public:
-    DigestSequenceTask(U2SequenceObject* dnaObj, AnnotationTableObject* destTable, 
-        AnnotationTableObject* sourceTable, const DigestSequenceTaskConfig& cfg);
+    DigestSequenceTask(U2SequenceObject* dnaObj, FeaturesTableObject *destTable, 
+        FeaturesTableObject *sourceTable, const DigestSequenceTaskConfig& cfg);
     virtual void prepare();
     virtual void run();
     virtual QString generateReport() const;
@@ -73,16 +72,16 @@ private:
    
     void findCutSites(); 
     void saveResults();
-    AnnotationData* createFragment( int pos1, const DNAFragmentTerm& leftTerm,
+    AnnotationData createFragment( int pos1, const DNAFragmentTerm& leftTerm,
                                     int pos2, const DNAFragmentTerm& rightTerm );
     void checkForConservedAnnotations();
     bool isCircular;
     U2Region seqRange;
-    AnnotationTableObject *sourceObj, *destObj;
-    U2SequenceObject*  dnaObj;
+    FeaturesTableObject *sourceObj, *destObj;
+    U2SequenceObject *dnaObj;
     DigestSequenceTaskConfig cfg;
     QMap<GenomicPosition, SEnzymeData> cutSiteMap;
-    QList<SharedAnnotationData> results;
+    QList<AnnotationData> results;
 
 };
 
@@ -97,7 +96,6 @@ struct LigateFragmentsTaskConfig {
     bool addDocToProject;
     bool openView;
     bool saveDoc;
-   
 };
 
 class DNAAlphabet;
@@ -108,27 +106,23 @@ public:
     LigateFragmentsTask(const QList<DNAFragment>& fragments, const LigateFragmentsTaskConfig& cfg );
     Document* getResultDocument() {return resultDoc; }
     void prepare(); 
-    void cleanup();
 
 private:
-    static QList<Annotation*> cloneAnnotationsInRegion(const U2Region& region, AnnotationTableObject* source, int globalOffset);
-    static QList<Annotation*> cloneAnnotationsInFragmentRegion(const DNAFragment& fragment, AnnotationTableObject* source, int globalOffset);
-    static Annotation* createSourceAnnotation(int regLen);
-    static Annotation* createFragmentAnnotation(const DNAFragment&, int startPos);
-    void createDocument(const QByteArray& seq, const QList<Annotation*> annotations);
+    static QList<AnnotationData> cloneAnnotationsInRegion(const U2Region& region, FeaturesTableObject* source, int globalOffset);
+    static QList<AnnotationData> cloneAnnotationsInFragmentRegion(const DNAFragment& fragment, FeaturesTableObject* source, int globalOffset);
+    static AnnotationData createSourceAnnotation(int regLen);
+    static AnnotationData createFragmentAnnotation(const DNAFragment&, int startPos);
+    void createDocument(const QByteArray& seq, const QList<AnnotationData> &annotations);
     void processOverhangs(const DNAFragment& leftFragment, const DNAFragment& rightFragment, QByteArray& overhangAddition);
     bool overhangsAreConsistent(const DNAFragmentTerm& leftTerm, const DNAFragmentTerm& rightTerm);
 
     QList<DNAFragment> fragmentList;
-    QList<Annotation*> annotations;
+    QList<AnnotationData> annotations;
     LigateFragmentsTaskConfig cfg;
     Document* resultDoc;
     const DNAAlphabet* resultAlphabet;
-    QMap<Annotation*,int> offsetMap;
-    
-
+    QMap<AnnotationData,int> offsetMap;
 };
-
 
 } //namespace
 

@@ -28,6 +28,7 @@
 #include <U2Core/AppSettings.h>
 #include <U2Core/AppResources.h>
 #include <U2Core/DNAAlphabet.h>
+#include <U2Core/FeaturesTableObject.h>
 #include <U2Core/GObjectReference.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/IOAdapterUtils.h>
@@ -37,6 +38,8 @@
 #include <U2Core/LoadDocumentTask.h>
 #include <U2Core/MultiTask.h>
 #include <U2Core/ProjectService.h>
+#include <U2Core/U2DbiRegistry.h>
+#include <U2Core/U2OpStatusUtils.h>
 
 #include <U2Gui/AppSettingsGUI.h>
 #include <U2Gui/DialogUtils.h>
@@ -56,7 +59,7 @@ BlastPlusSupportRunDialog::BlastPlusSupportRunDialog(U2SequenceObject* _dnaso, Q
         BlastRunCommonDialog(_parent), dnaso(_dnaso), lastDBPath(_lastDBPath), lastDBName(_lastDBName)
 {
     CreateAnnotationModel ca_m;
-    ca_m.data->name = "misc_feature";
+    ca_m.data.name = "misc_feature";
     ca_m.hideAnnotationName = true;
     ca_m.hideLocation = true;
     ca_m.sequenceObjectRef = GObjectReference(dnaso);
@@ -178,7 +181,10 @@ void BlastPlusSupportRunDialog::sl_runQuery(){
     }
     settings.outputResFile=ca_c->getModel().newDocUrl;
     if(ca_c->isNewObject()) {
-        settings.aobj = new AnnotationTableObject("Annotations");
+        U2OpStatusImpl os;
+        const U2DbiRef dbiRef = AppContext::getDbiRegistry( )->getSessionTmpDbiRef( os );
+        SAFE_POINT_OP( os, );
+        settings.aobj = new FeaturesTableObject( "Annotations", dbiRef );
         settings.aobj->addObjectRelation(GObjectRelation(ca_c->getModel().sequenceObjectRef, GObjectRelationRole::SEQUENCE));
     }
     else {
@@ -338,7 +344,7 @@ void BlastPlusWithExtFileSpecifySupportRunDialog::sl_inputFileLoadTaskStateChang
 
         //U2SequenceObject* seq=(U2SequenceObject*)sequencesRefList[0];
         CreateAnnotationModel ca_m;
-        ca_m.data->name = "misc_feature";
+        ca_m.data.name = "misc_feature";
         ca_m.hideAnnotationName = true;
         ca_m.hideLocation = true;
         ca_m.sequenceObjectRef = sequencesRefList[0];//GObjectReference(seq);//not needed, it unused
@@ -437,12 +443,13 @@ void BlastPlusWithExtFileSpecifySupportRunDialog::sl_runQuery(){
     for(int i=0; i<settingsList.length();i++){
         settingsList[i].outputResFile=ca_c->getModel().newDocUrl;
         if(ca_c->isNewObject()) {
-            settingsList[i].aobj = new AnnotationTableObject(sequencesRefList[i].objName+" annotations");
+            U2OpStatusImpl os;
+            const U2DbiRef dbiRef = AppContext::getDbiRegistry( )->getSessionTmpDbiRef( os );
+            SAFE_POINT_OP( os, );
+            settingsList[i].aobj = new FeaturesTableObject(sequencesRefList[i].objName+" annotations", dbiRef);
             settingsList[i].aobj->addObjectRelation(GObjectRelation(sequencesRefList[i], GObjectRelationRole::SEQUENCE));
         } else {
             assert(NULL);//always created new document for annotations
-//            ca_c->prepareAnnotationObject();
-//            settings.aobj = caControllers.at(i)->getModel().getAnnotationObject();
         }
         settingsList[i].groupName=ca_c->getModel().groupName;
 

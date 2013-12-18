@@ -451,12 +451,14 @@ void BlastAllWorker::sl_taskFinished() {
     }
 
     if(output) {
-        QList<SharedAnnotationData> res = t->getResultedAnnotations();
+        QList<AnnotationData> tmpRes = t->getResultedAnnotations( );
         QString annName = actor->getParameter(BLASTALL_GROUP_NAME)->getAttributeValue<QString>(context);
-        if(!annName.isEmpty()) {
-            for(int i = 0; i<res.count();i++) {
-                res[i]->name = annName;
+        QList<SharedAnnotationData> res;
+        for(int i = 0; i < tmpRes.count();i++) {
+            if ( !annName.isEmpty( ) ) {
+                tmpRes[i].name = annName;
             }
+            res << SharedAnnotationData( new AnnotationData( tmpRes[i] ) );
         }
         QVariant v = qVariantFromValue<QList<SharedAnnotationData> >(res);
         output->put(Message(BaseTypes::ANNOTATION_TABLE_TYPE(), v));

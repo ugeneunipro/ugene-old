@@ -30,7 +30,7 @@
 
 namespace U2 {
 
-class AnnotationTableObject;
+class FeaturesTableObject;
 class Settings;
 class DNASequence;
 
@@ -56,15 +56,15 @@ public:
  class FindORFsToAnnotationsTask: public Task {
     Q_OBJECT
  public:
-    FindORFsToAnnotationsTask(AnnotationTableObject* aobj,const U2EntityRef& entityRef,
+    FindORFsToAnnotationsTask(FeaturesTableObject* aobj,const U2EntityRef& entityRef,
          const ORFAlgorithmSettings& settings, const QString& groupName = QString());
 
     void run();
     ReportResult report();
      
  private:
-    QList<SharedAnnotationData>         aData;
-    QPointer<AnnotationTableObject>     aObj;
+    QList<AnnotationData>               aData;
+    QPointer<FeaturesTableObject>       aObj;
     ORFFindTask*                        fTask;
     ORFAlgorithmSettings                cfg;
     QString                             groupName;
@@ -79,8 +79,6 @@ public:
      Task* createAutoAnnotationsUpdateTask(const AutoAnnotationObject* aa);
      bool checkConstraints(const AutoAnnotationConstraints& constraints);
 };
-
-
 
 } //namespace
 

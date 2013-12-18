@@ -22,6 +22,8 @@
 #ifndef _U2_ANNOTATION_H_
 #define _U2_ANNOTATION_H_
 
+#include <U2Core/AnnotationData.h>
+#include <U2Core/DbiIdBasedData.h>
 #include <U2Core/U2Location.h>
 #include <U2Core/U2Qualifier.h>
 #include <U2Core/U2Type.h>
@@ -31,22 +33,20 @@ const QString QUALIFIER_NAME_SUBJECT = "subj_seq";
 
 namespace U2 {
 
-class AnnotationData;
+class __AnnotationGroup;
+class AnnotationModification;
 class DNATranslation;
 class FeaturesTableObject;
 class U2SequenceObject;
-class __AnnotationGroup;
 
 // TODO: this class should replace U2::Annotation. It should implement the interface defined below
 // using U2::FeatureUtils
-class U2CORE_EXPORT __Annotation {
+class U2CORE_EXPORT __Annotation : public DbiIdBasedData {
 public:
                             __Annotation( const U2DataId &featureId,
                                 FeaturesTableObject *parentObject );
 
                             ~__Annotation( );
-
-    U2DataId                getId( ) const;
 
     FeaturesTableObject *   getGObject( ) const;
 
@@ -76,7 +76,7 @@ public:
     /**
      * Replaces existing annotation region(s) with supplied @regions
      */
-    void                    updateRegions(const QVector<U2Region> &regions );
+    void                    updateRegions( const QVector<U2Region> &regions );
 
     void                    addLocationRegion( const U2Region &reg );
 
@@ -93,7 +93,7 @@ public:
     void                    findQualifiers( const QString &name, QList<U2Qualifier> &res ) const;
     /**
      * Returns the value of an arbitrary qualifier with the given @name.
-     * Null string returns if no qualifier was found.
+     * Null string is returned if no qualifier was found.
      */
     QString                 findFirstQualifierValue( const QString &name ) const;
 
@@ -107,6 +107,9 @@ public:
     static bool             annotationLessThan( const __Annotation &first,
                                 const __Annotation &second );
 
+    static bool             annotationLessThanByRegion( const __Annotation &first,
+                                const __Annotation &second );
+
     static bool             isValidAnnotationName( const QString &n );
 
     static bool             isValidQualifierName( const QString &n );
@@ -114,7 +117,6 @@ public:
     static bool             isValidQualifierValue( const QString &v );
 
 private:
-    U2DataId                featureId;
     FeaturesTableObject *   parentObject;
 };
 

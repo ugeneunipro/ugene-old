@@ -28,11 +28,11 @@
 #include <U2Core/LoadDocumentTask.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/MAlignment.h>
-#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/DocumentProviderTask.h>
 
-
 namespace U2 {
+
+class DNATranslation;
 
 /** A task to adds exported document to project and open view*/
 //TODO: make this task a general purpose routine
@@ -119,9 +119,6 @@ private:
     ExportChromatogramTaskSettings settings;
     LoadDocumentTask* loadTask;
 };
-
-
-
 
 }//namespace
 

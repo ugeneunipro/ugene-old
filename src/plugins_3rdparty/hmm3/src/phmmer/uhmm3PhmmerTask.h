@@ -26,7 +26,6 @@
 #include <QtCore/QMutex>
 
 #include <U2Core/Task.h>
-#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/DNASequence.h>
 #include <U2Core/LoadDocumentTask.h>
 #include <U2Core/CreateAnnotationTask.h>
@@ -36,6 +35,8 @@
 #include "uhmm3phmmer.h"
 
 namespace U2 {
+
+class FeaturesTableObject;
 
 /**************************************
  * General hmmer3 phmmer task.
@@ -123,7 +124,7 @@ private:
 class UHMM3PhmmerToAnnotationsTask : public Task {
     Q_OBJECT
 public:
-    UHMM3PhmmerToAnnotationsTask( const QString & querySeqfile, const DNASequence & dbSeq, AnnotationTableObject * obj,
+    UHMM3PhmmerToAnnotationsTask( const QString & querySeqfile, const DNASequence & dbSeq, FeaturesTableObject *obj,
         const QString & group, const QString & name, const UHMM3PhmmerSettings & setings );
     
     QList< Task* > onSubTaskFinished( Task * subTask );
@@ -139,7 +140,7 @@ private:
     QString                             annGroup;
     QString                             annName;
     UHMM3PhmmerSettings                 settings;
-    QPointer< AnnotationTableObject >   annotationObj;
+    QPointer<FeaturesTableObject>       annotationObj;
     UHMM3SWPhmmerTask *                 phmmerTask;
     CreateAnnotationsTask *             createAnnotationsTask;
     

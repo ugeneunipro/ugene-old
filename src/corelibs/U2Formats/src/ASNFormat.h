@@ -36,7 +36,6 @@ class IOAdapter;
 class BioStruct3D;
 class MoleculeData;
 class ResidueData;
-class AnnotationTableObject;
 class U2SequenceObject;
 class AtomData;
 typedef QSharedDataPointer<AtomData> SharedAtom;

@@ -27,7 +27,7 @@
 #include <U2Core/LoadRemoteDocumentTask.h>
 #include <U2Core/DASSource.h>
 #include <U2Core/DNASequence.h>
-#include <U2Core/AnnotationTableObject.h>
+#include <U2Core/AnnotationData.h>
 #include <U2Core/SaveDocumentTask.h>
 
 #include <QtCore/QEventLoop>
@@ -40,34 +40,31 @@ class ConvertDasIdTask;
 
 class XMLDASSequenceParser{
 public:
-    XMLDASSequenceParser();
-    void parse(const QByteArray& data);
+                    XMLDASSequenceParser( );
+    void            parse( const QByteArray &data );
 
-    QString getError() const { return error; }
-    void setError(const QString& val) { error = val; }
+    QString         getError( ) const { return error; }
+    void            setError( const QString &val ) { error = val; }
 
-    DNASequence* getSequence(){return seq;}
+    DNASequence *   getSequence( ) { return seq; }
 private:
     QString         error;
     DNASequence*    seq;
-    
 };
-
-
 
 class XMLDASFeaturesParser{
 public:
-    XMLDASFeaturesParser();
-    void parse(const QByteArray& data);
+    XMLDASFeaturesParser( );
+    void parse( const QByteArray &data );
 
     QString getError() const { return error; }
-    void setError(const QString& val) { error = val; }
+    void setError( const QString &val ) { error = val; }
 
-    QMap<QString, QList<SharedAnnotationData> > getAnnotationData(){return annotationData;}
+    QMap<QString, QList<AnnotationData> > getAnnotationData( ) { return annotationData; }
 private:
     QString error;
 
-    QMap<QString, QList<SharedAnnotationData> > annotationData;
+    QMap<QString, QList<AnnotationData> > annotationData;
 
 };
 
@@ -81,7 +78,7 @@ public:
 
     DNASequence*    getSequence(){return seq;}
     QString         getAccession(){return accNumber;}
-    QMap<QString, QList<SharedAnnotationData> >    getAnnotationData(){return annotationData;}
+    QMap<QString, QList<AnnotationData> >    getAnnotationData( ) { return annotationData; }
 public slots:
     void sl_replyFinished(QNetworkReply* reply);
     void sl_onError(QNetworkReply::NetworkError error);
@@ -98,7 +95,7 @@ private:
 
     DNASequence*            seq;
 
-    QMap<QString, QList<SharedAnnotationData> > annotationData;
+    QMap<QString, QList<AnnotationData> > annotationData;
 };
 
 class U2CORE_EXPORT LoadDASDocumentTask : public BaseLoadRemoteDocumentTask{
@@ -118,7 +115,7 @@ protected:
     bool isAllDataLoaded();
 
 private:
-    void mergeFeatures(const QMap<QString, QList<SharedAnnotationData> >& newAnnotations);
+    void mergeFeatures(const QMap<QString, QList<AnnotationData> >& newAnnotations);
 
 private:
     QString                 accNumber;
@@ -131,7 +128,7 @@ private:
     SaveDocumentTask*               saveDocumentTask;
 
     DNASequence*                   seq;
-    QMap<QString, QList<SharedAnnotationData> > annotationData;
+    QMap<QString, QList<AnnotationData> > annotationData;
 }; 
 
 class U2CORE_EXPORT ConvertIdAndLoadDASDocumentTask : public Task {

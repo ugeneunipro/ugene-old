@@ -462,9 +462,13 @@ QList<Task*> FindRepeatsToAnnotationsTask::onSubTaskFinished(Task* subTask) {
     }
 
     if (subTask == findTask && annObjRef.isValid()) {
-        QList<SharedAnnotationData> annotations = importAnnotations();
-        if (!annotations.isEmpty()) {
-            algoLog.info(tr("Found %1 repeat regions").arg(annotations.size()));
+        QList<SharedAnnotationData> sharedAnnotations = importAnnotations();
+        if (!sharedAnnotations.isEmpty()) {
+            algoLog.info( tr( "Found %1 repeat regions" ).arg( sharedAnnotations.size( ) ) );
+            QList<AnnotationData> annotations;
+            foreach ( const SharedAnnotationData &data, sharedAnnotations ) {
+                annotations << *data;
+            }
             Task* createTask = new CreateAnnotationsTask(annObjRef, annGroup, annotations);
             createTask->setSubtaskProgressWeight(0);
             res.append(createTask);

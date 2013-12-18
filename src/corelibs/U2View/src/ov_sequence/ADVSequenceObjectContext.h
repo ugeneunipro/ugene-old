@@ -22,7 +22,8 @@
 #ifndef _U2_ADV_SEQUENCE_OBJECT_CONTEXT_H_
 #define _U2_ADV_SEQUENCE_OBJECT_CONTEXT_H_
 
-#include  <U2Core/U2Type.h>
+#include <U2Core/Annotation.h>
+#include <U2Core/U2Type.h>
 
 #include <QtCore/QSet>
 #include <QtGui/QWidget>
@@ -36,7 +37,7 @@ class DNAAlphabet;
 class DNATranslation;
 class DNASequenceSelection;
 class ADVSequenceWidget;
-class AnnotationTableObject;
+class FeaturesTableObject;
 class AnnotationSelection;
 class GObject;
 class Annotation;
@@ -57,28 +58,28 @@ public:
     const DNAAlphabet* getAlphabet() const;
     QByteArray getSequenceData(const U2Region& r) const;
     U2EntityRef getSequenceRef() const;
-    bool        isRowChoosed()   ;
+    bool        isRowChoosed();
 
     DNASequenceSelection*   getSequenceSelection() const {return selection;}
     
-    QSet<AnnotationTableObject*> getAnnotationObjects(bool includeAutoAnnotations = false) const;
-    QSet<AnnotationTableObject*> getAutoAnnotationObjects() const { return autoAnnotations; }
+    QSet<FeaturesTableObject *> getAnnotationObjects(bool includeAutoAnnotations = false) const;
+    QSet<FeaturesTableObject *> getAutoAnnotationObjects() const { return autoAnnotations; }
     QList<GObject*> getAnnotationGObjects() const;
     
     QMenu* createTranslationsMenu();
     void setAminoTranslation(const QString& tid);
 
-    void addAnnotationObject(AnnotationTableObject* obj);
-    void addAutoAnnotationObject(AnnotationTableObject* obj);
-    void removeAnnotationObject(AnnotationTableObject* obj);
+    void addAnnotationObject(FeaturesTableObject *obj);
+    void addAutoAnnotationObject(FeaturesTableObject *obj);
+    void removeAnnotationObject(FeaturesTableObject *obj);
 
-    AnnotationSelection* getAnnotationsSelection() const;
+    AnnotationSelection * getAnnotationsSelection() const;
     
     const QList<ADVSequenceWidget*>& getSequenceWidgets() const {return seqWidgets;}
     void addSequenceWidget(ADVSequenceWidget* w);
     void removeSequenceWidget(ADVSequenceWidget* w);
 
-    QList<Annotation*> selectRelatedAnnotations(const QList<Annotation*>& alist) const;
+    QList<__Annotation> selectRelatedAnnotations(const QList<__Annotation> &alist) const;
     QVector<bool> getTranslationRowsVisibleStatus();
     void setTranslationsVisible(bool enable);
 
@@ -90,12 +91,12 @@ private slots:
     void sl_showShowAll();
 signals:
     void si_aminoTranslationChanged();
-    void si_annotationObjectAdded(AnnotationTableObject* obj);
-    void si_annotationObjectRemoved(AnnotationTableObject* obj);
+    void si_annotationObjectAdded(FeaturesTableObject *obj);
+    void si_annotationObjectRemoved(FeaturesTableObject *obj);
     void si_translationRowsChanged();
 
 private:
-    void guessAminoTT(const AnnotationTableObject* ao);
+    void guessAminoTT(const FeaturesTableObject *ao);
 
 
     AnnotatedDNAView*               view;
@@ -107,11 +108,10 @@ private:
     QActionGroup*                   visibleFrames;
     QVector<QAction*>               translationRowsStatus;
     QList<ADVSequenceWidget*>       seqWidgets;
-    QSet<AnnotationTableObject*>    annotations;
-    QSet<AnnotationTableObject*>    autoAnnotations;
+    QSet<FeaturesTableObject *>     annotations;
+    QSet<FeaturesTableObject *>     autoAnnotations;
     bool                            clarifyAminoTT;
     bool                            rowChoosed;
-
 };
 
 } //namespace

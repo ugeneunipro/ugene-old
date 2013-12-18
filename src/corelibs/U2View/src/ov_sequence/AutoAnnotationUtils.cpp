@@ -21,7 +21,8 @@
 
 #include <U2Core/AppContext.h>
 #include <U2Core/AutoAnnotationsSupport.h>
-#include <U2Core/AnnotationTableObject.h>
+#include <U2Core/FeaturesTableObject.h>
+#include <U2Core/DNASequenceObject.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Gui/MainWindow.h>
 #include <U2Gui/ObjectViewModel.h>
@@ -31,7 +32,6 @@
 #include "AnnotatedDNAView.h"
 #include "AutoAnnotationUtils.h"
 
-
 namespace U2 {
 
 const QString AutoAnnotationsADVAction::ACTION_NAME("AutoAnnotationUpdateAction");
@@ -39,8 +39,8 @@ const QString AutoAnnotationsADVAction::ACTION_NAME("AutoAnnotationUpdateAction"
 #define AUTO_ANNOTATION_GROUP_NAME "AutoAnnotatationGroupName"
 
 AutoAnnotationsADVAction::AutoAnnotationsADVAction(ADVSequenceWidget* v, 
-                                                   AutoAnnotationObject* obj) 
-: ADVSequenceWidgetAction(ACTION_NAME, tr("Automatic Annotations Highlighting")), aaObj(obj),  updatesCount(0)
+                                                   AutoAnnotationObject* obj)
+: ADVSequenceWidgetAction(ACTION_NAME, tr("Automatic Annotations Highlighting")), aaObj(obj), updatesCount(0)
 {
     seqWidget = v;
     addToBar = true;
@@ -146,7 +146,6 @@ void AutoAnnotationsADVAction::sl_onDeselectAll()
         }
     }
 }
-
 
 AutoAnnotationsADVAction::~AutoAnnotationsADVAction()
 {
@@ -307,30 +306,28 @@ QList<QAction*> AutoAnnotationUtils::getAutoAnnotationToggleActions( ADVSequence
 
 //////////////////////////////////////////////////////////////////////////
 
-
-ExportAutoAnnotationsGroupTask::ExportAutoAnnotationsGroupTask( AnnotationGroup* ag, GObjectReference& ref, ADVSequenceObjectContext* ctx)
-:Task("ExportAutoAnnotationsGroupTask", TaskFlags_NR_FOSCOE), aGroup(ag), aRef(ref), seqCtx(ctx)
+ExportAutoAnnotationsGroupTask::ExportAutoAnnotationsGroupTask( const __AnnotationGroup &ag,
+    GObjectReference& ref, ADVSequenceObjectContext* ctx)
+    : Task("ExportAutoAnnotationsGroupTask", TaskFlags_NR_FOSCOE), aGroup(ag), aRef(ref), seqCtx(ctx)
 {
 
 }
 
-
 void ExportAutoAnnotationsGroupTask::prepare() {
-    QSet<Annotation*> annsToExport;
-    aGroup->findAllAnnotationsInGroupSubTree(annsToExport);
+    QList<__Annotation> annsToExport;
+    aGroup.findAllAnnotationsInGroupSubTree(annsToExport);
 
-    QList<SharedAnnotationData> aData;
-    foreach(Annotation* a, annsToExport) {
-        aData.append(a->data());
+    QList<AnnotationData> aData;
+    foreach ( const __Annotation &a, annsToExport ) {
+        aData.append( a.getData( ) );
     }
 
-    SAFE_POINT(aData.size() > 0, "No auto-annotations to export!", );
+    SAFE_POINT(!aData.isEmpty( ), "No auto-annotations to export!", );
 
-        createTask =  new ADVCreateAnnotationsTask(seqCtx->getAnnotatedDNAView(), aRef, aGroup->getGroupName(), aData );
+    createTask =  new ADVCreateAnnotationsTask(seqCtx->getAnnotatedDNAView(), aRef, aGroup.getName(), aData );
 
     addSubTask(createTask);
 }
-
 
 QList<Task*> ExportAutoAnnotationsGroupTask::onSubTaskFinished( Task* subTask ) {
     QList<Task*> res;
@@ -340,14 +337,13 @@ QList<Task*> ExportAutoAnnotationsGroupTask::onSubTaskFinished( Task* subTask ) 
     }
 
     if (subTask == createTask) {
-        QAction* toggleAction =  AutoAnnotationUtils::findAutoAnnotationsToggleAction(seqCtx, aGroup->getGroupName());
+        QAction* toggleAction =  AutoAnnotationUtils::findAutoAnnotationsToggleAction(seqCtx, aGroup.getName());
         if (toggleAction != NULL && toggleAction->isChecked()) {
             toggleAction->trigger();
         }
     }
 
     return res;
-
 }
 
 } //namespace

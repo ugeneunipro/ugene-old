@@ -30,7 +30,7 @@
 #include <U2Core/ProjectModel.h>
 #include <U2Core/GObjectTypes.h>
 #include <U2Core/DNASequenceObject.h>
-#include <U2Core/AnnotationTableObject.h>
+#include <U2Core/FeaturesTableObject.h>
 #include <U2Core/GObjectRelationRoles.h>
 #include <U2Core/GObjectUtils.h>
 #include <U2Core/DocumentUtils.h>
@@ -206,7 +206,7 @@ QList<Task*> QDRunDialogTask::init() {
     return res;
 }
 
-void QDRunDialogTask::setupQuery() {
+void QDRunDialogTask::setupQuery( ) {
     const QList<GObject*>& objs = docWithSequence->findGObjectByType(GObjectTypes::SEQUENCE);
     CHECK_EXT(!objs.isEmpty(), setError(tr("Sequence not found, document: %1").arg(docWithSequence->getURLString())), );
 
@@ -218,7 +218,8 @@ void QDRunDialogTask::setupQuery() {
     settings.region = U2Region(0, seqObj->getSequenceLength());
     settings.scheme = scheme;
     settings.dnaSequence = sequence;
-    settings.annotationsObj = new AnnotationTableObject(GObjectTypes::getTypeInfo(GObjectTypes::ANNOTATION_TABLE).name);
+    settings.annotationsObj = new FeaturesTableObject(
+        GObjectTypes::getTypeInfo( GObjectTypes::ANNOTATION_TABLE ).name, docWithSequence->getDbiRef( ) );
     settings.annotationsObj->addObjectRelation(seqObj, GObjectRelationRole::SEQUENCE);
     scheduler = new QDScheduler(settings);
     connect(scheduler, SIGNAL(si_progressChanged()), SLOT(sl_updateProgress()));
@@ -293,7 +294,7 @@ void QDDialog::addAnnotationsWidget() {
     acm.sequenceObjectRef = GObjectReference(dnaso);
     acm.hideAnnotationName = true;
     acm.hideLocation = true;
-    acm.data->name = "Query_results";
+    acm.data.name = "Query_results";
     acm.useUnloadedObjects = true;
     acm.sequenceLen = dnaso->getSequenceLength();
     cawc = new CreateAnnotationWidgetController(acm, this);
@@ -402,7 +403,7 @@ void QDDialog::sl_okBtnClicked() {
     scheme->setEntityRef(seqObj->getSequenceRef());
     QDRunSettings settings;
     GObject* ao = GObjectUtils::selectObjectByReference(m.annotationObjectRef, UOF_LoadedOnly);
-    settings.annotationsObj = qobject_cast<AnnotationTableObject*>(ao);
+    settings.annotationsObj = qobject_cast<FeaturesTableObject *>(ao);
     settings.annotationsObjRef = m.annotationObjectRef;
     settings.groupName = m.groupName;
     settings.scheme = scheme;

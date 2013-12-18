@@ -27,7 +27,7 @@
 #include <U2Core/AppContext.h>
 
 #include <U2Core/DNASequenceObject.h>
-#include <U2Core/AnnotationTableObject.h>
+#include <U2Core/FeaturesTableObject.h>
 #include <U2Core/AnnotationSettings.h>
 #include <U2Core/U1AnnotationUtils.h>
 #include <U2View/ADVSequenceWidget.h>
@@ -59,8 +59,8 @@ const int CircularView::graduation = 16;
 CircularView::CircularView(QWidget* p, ADVSequenceObjectContext* ctx)
 : GSequenceLineViewAnnotated(p, ctx), clockwise(true), holdSelection(false)
 {
-    QSet<AnnotationTableObject*> anns = ctx->getAnnotationObjects(true);
-    foreach(AnnotationTableObject* obj, anns ) {
+    QSet<FeaturesTableObject*> anns = ctx->getAnnotationObjects(true);
+    foreach(FeaturesTableObject* obj, anns ) {
         registerAnnotations(obj->getAnnotations());
     }
 
@@ -223,10 +223,11 @@ void CircularView::setAngle(int angle) {
     renderArea->update();
 }
 
-void CircularView::sl_onAnnotationSelectionChanged(AnnotationSelection* selection, const QList<Annotation*>& added, const QList<Annotation*>& removed) {
-    
-    foreach (Annotation* a, added) {
-        bool splitted =  U1AnnotationUtils::isSplitted(a->getLocation(), U2Region(0, ctx->getSequenceLength()));
+void CircularView::sl_onAnnotationSelectionChanged(AnnotationSelection* selection,
+    const QList<__Annotation>& added, const QList<__Annotation>& removed)
+{
+    foreach ( const __Annotation &a, added ) {
+        bool splitted =  U1AnnotationUtils::isSplitted(a.getLocation(), U2Region(0, ctx->getSequenceLength()));
         int locationIdx = selection->getAnnotationData(a)->locationIdx;
         if (splitted && locationIdx != -1) {
             // set locationIdx = -1 to make sure whole annotation region is selected
@@ -273,7 +274,7 @@ QSize CircularView::sizeHint() const {
     return ra->size();
 }
 
-const QMap<Annotation*,CircularAnnotationItem*>& CircularView::getCircularItems() const {
+const QMap<__Annotation,CircularAnnotationItem*>& CircularView::getCircularItems() const {
     return ra->circItems;
 }
 
@@ -412,10 +413,10 @@ circularView(d), rotationDegree(0), mouseAngle(0), oldYlevel(0) {
   
     //build annotation items to get number of region levels for proper resize
     AnnotationSettingsRegistry* asr = AppContext::getAnnotationsSettingsRegistry();
-    QSet<AnnotationTableObject*> anns = ctx->getAnnotationObjects(true);
-    foreach(AnnotationTableObject* ao, anns) {
-        foreach(Annotation* a, ao->getAnnotations()) {
-            AnnotationSettings* as = asr->getAnnotationSettings(a->getAnnotationName());
+    QSet<FeaturesTableObject *> anns = ctx->getAnnotationObjects(true);
+    foreach ( FeaturesTableObject *ao, anns) {
+        foreach ( const __Annotation &a, ao->getAnnotations( ) ) {
+            AnnotationSettings* as = asr->getAnnotationSettings(a.getName());
             buildAnnotationItem(DrawAnnotationPass_DrawFill, a, false, as);
         }
     }
@@ -507,7 +508,7 @@ void CircularViewRenderArea::drawAnnotationsSelection(QPainter& p) {
         item->setSelected(false);
     }
     foreach(const AnnotationSelectionData& asd, ctx->getAnnotationsSelection()->getSelection()) {
-        AnnotationTableObject* o = asd.annotation->getGObject();
+        FeaturesTableObject *o = asd.annotation.getGObject();
         if (ctx->getAnnotationObjects(true).contains(o)) {
             if(circItems.contains(asd.annotation)) {
                 CircularAnnotationItem* item = circItems[asd.annotation];
@@ -751,9 +752,9 @@ void CircularViewRenderArea::drawAnnotations(QPainter& p) {
     AnnotationSettingsRegistry* asr = AppContext::getAnnotationsSettingsRegistry();
     //for(QSet<AnnotationTableObject*>::const_iterator i = ctx->getAnnotationObjects().begin(); i != ctx->getAnnotationGObjects().constEnd(); i++) {
     //TODO: there need const order of annotation tables
-    QSet<AnnotationTableObject*> anns = ctx->getAnnotationObjects(true);   
-    foreach(AnnotationTableObject* ao, anns) {
-        foreach(Annotation* a, ao->getAnnotations()) {
+    QSet<FeaturesTableObject *> anns = ctx->getAnnotationObjects(true);   
+    foreach ( FeaturesTableObject *ao, anns ) {
+        foreach ( const __Annotation &a, ao->getAnnotations( ) ) {
             AnnotationSettings* as = asr->getAnnotationSettings(a);
             buildAnnotationItem(DrawAnnotationPass_DrawFill, a, false, as);
             buildAnnotationLabel(p.font(), a, as);
@@ -773,7 +774,9 @@ void CircularViewRenderArea::drawAnnotations(QPainter& p) {
 }
 
 #define REGION_MIN_LEN 3
-void CircularViewRenderArea::buildAnnotationItem(DrawAnnotationPass pass, Annotation* a, bool selected /* = false */, const AnnotationSettings* as /* = NULL */) {
+void CircularViewRenderArea::buildAnnotationItem(DrawAnnotationPass pass, const __Annotation &a,
+    bool selected /* = false */, const AnnotationSettings* as /* = NULL */)
+{
     if (!as->visible && (pass == DrawAnnotationPass_DrawFill || !selected)) {
         return;
     }
@@ -782,7 +785,7 @@ void CircularViewRenderArea::buildAnnotationItem(DrawAnnotationPass pass, Annota
 
     int seqLen = ctx->getSequenceLength();
 
-    const QVector<U2Region>& location = a->getRegions();
+    const QVector<U2Region>& location = a.getRegions();
 
     U2Region generalLocation(location.first().startPos, location.last().startPos - location.first().startPos + location.last().length);
 
@@ -812,7 +815,7 @@ void CircularViewRenderArea::buildAnnotationItem(DrawAnnotationPass pass, Annota
 
     QList<CircurlarAnnotationRegionItem*> regions;
 
-    bool splitted = U1AnnotationUtils::isSplitted(a->getLocation(), U2Region(0, ctx->getSequenceLength()));
+    bool splitted = U1AnnotationUtils::isSplitted(a.getLocation(), U2Region(0, ctx->getSequenceLength()));
     bool splittedItemIsReady = false;
 
     foreach(const U2Region& r, location) {
@@ -860,7 +863,7 @@ void CircularViewRenderArea::buildAnnotationItem(DrawAnnotationPass pass, Annota
             path.arcTo(innerRect, -startAngle-spanAngle, spanAngle);
             path.closeSubpath();
         } else {
-            if(a->getStrand().isCompementary()) {
+            if(a.getStrand().isCompementary()) {
                 path.moveTo(outerRect.width()/2 * cos((startAngle + dAlpha) / 180.0 * PI),
                     outerRect.height()/2 * sin((startAngle + dAlpha) / 180.0 * PI));
                 path.lineTo((outerRect.width()/2 + arrowHeightDelta) * cos((startAngle + dAlpha) / 180.0 * PI),
@@ -890,7 +893,7 @@ void CircularViewRenderArea::buildAnnotationItem(DrawAnnotationPass pass, Annota
     circItems[a] = item;
 }
 
-void CircularViewRenderArea::buildAnnotationLabel(const QFont& font, Annotation* a, const AnnotationSettings* as) {
+void CircularViewRenderArea::buildAnnotationLabel(const QFont& font, const __Annotation &a, const AnnotationSettings* as) {
 
     if (!as->visible) {
         return;
@@ -902,10 +905,10 @@ void CircularViewRenderArea::buildAnnotationLabel(const QFont& font, Annotation*
 
     ADVSequenceObjectContext* ctx = view->getSequenceContext();
     U2Region seqReg(0, ctx->getSequenceLength());
-    bool splitted = U1AnnotationUtils::isSplitted(a->getLocation(), seqReg);
+    bool splitted = U1AnnotationUtils::isSplitted(a.getLocation(), seqReg);
 
     int seqLen = seqReg.length;
-    const QVector<U2Region>& location = a->getRegions();
+    const QVector<U2Region>& location = a.getRegions();
     for(int r = 0; r < location.count(); r++) {
         if (splitted && r != 0) {
             break;
@@ -917,7 +920,7 @@ void CircularViewRenderArea::buildAnnotationLabel(const QFont& font, Annotation*
     }
 }
 
-U2Region CircularViewRenderArea::getAnnotationYRange(Annotation*, int, const AnnotationSettings*) const{
+U2Region CircularViewRenderArea::getAnnotationYRange( const __Annotation &, int, const AnnotationSettings*) const{
     return U2Region(0,0);
 }
 
@@ -974,9 +977,6 @@ void CircularViewRenderArea::evaluateLabelPositions() {
     int cw = fm.width('O');
 
     int areaHeight = height();
-    
-    /*int minAreaHeight = outerEllipseSize + ellipseDelta*lvlsNum;
-    areaHeight = qMax(areaHeight, minAreaHeight);*/
 
     int z0 = -areaHeight/2 + labelHeight;
     int z1 = areaHeight/2 - labelHeight;

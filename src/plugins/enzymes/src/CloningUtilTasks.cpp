@@ -35,6 +35,7 @@
 #include <U2Core/GObjectUtils.h>
 #include <U2Core/GObjectRelationRoles.h>
 #include <U2Core/DNASequenceObject.h>
+#include <U2Core/FeaturesTableObject.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/U2AlphabetUtils.h>
 #include <U2Core/U2SequenceUtils.h>
@@ -52,8 +53,8 @@ bool operator<(const GenomicPosition& left, const GenomicPosition& right) {
 }
 
 
-DigestSequenceTask::DigestSequenceTask( U2SequenceObject* so, AnnotationTableObject* source, 
-                                       AnnotationTableObject* dest, const DigestSequenceTaskConfig& config)
+DigestSequenceTask::DigestSequenceTask( U2SequenceObject* so, FeaturesTableObject *source, 
+                                       FeaturesTableObject *dest, const DigestSequenceTaskConfig& config)
                                        :   Task("DigestSequenceTask", TaskFlags_FOSCOE | TaskFlag_ReportingIsSupported | TaskFlag_ReportingIsEnabled),
                                         sourceObj(source), destObj(dest), dnaObj(so), cfg(config)
 {
@@ -66,18 +67,6 @@ DigestSequenceTask::DigestSequenceTask( U2SequenceObject* so, AnnotationTableObj
 
 }
 
-/*DigestSequenceTask::DigestSequenceTask( const U2SequenceObject* so, AnnotationTableObject* aobj, 
-                                       const QList<SEnzymeData>& cutSites )
-:   Task("DigestSequenceTask", TaskFlags_FOSCOE | TaskFlag_ReportingIsSupported | TaskFlag_ReportingIsEnabled),
-    searchForRestrictionSites(true), sourceObj(aobj), destObj(aobj), dnaObj(so), enzymeData(cutSites)
-{
-    GCOUNTER(cvar,tvar,"DigestSequenceIntoFragments");
-    
-    assert(sourceObj != NULL);
-    assert(destObj != NULL);
-    assert(dnaObj != NULL);
-}*/
-
 void DigestSequenceTask::prepare() {
     seqRange = U2Region(0, dnaObj->getSequenceLength());
     isCircular = dnaObj->isCircular() || cfg.forceCircular;
@@ -89,42 +78,40 @@ void DigestSequenceTask::prepare() {
         feCfg.groupName = ANNOTATION_GROUP_ENZYME;
         Task* t = new FindEnzymesToAnnotationsTask(sourceObj, dnaObj->getSequenceRef(), cfg.enzymeData, feCfg);
         addSubTask(t);
-    }  
-        
+    }
 }
 
-AnnotationData* DigestSequenceTask::createFragment( int pos1, const DNAFragmentTerm& leftTerm, 
+AnnotationData DigestSequenceTask::createFragment( int pos1, const DNAFragmentTerm& leftTerm, 
                                                    int pos2, const DNAFragmentTerm& rightTerm )
 {
-    AnnotationData* ad = new AnnotationData();
+    AnnotationData ad;
     if (pos1  < pos2) {
-        ad->location->regions.append(U2Region(pos1, pos2 - pos1 ));
+        ad.location->regions.append(U2Region(pos1, pos2 - pos1 ));
     } else {
-        ad->location->regions.append(U2Region(pos1, seqRange.endPos() - pos1 ));
-        ad->location->regions.append(U2Region(seqRange.startPos, pos2 - seqRange.startPos ));
+        ad.location->regions.append(U2Region(pos1, seqRange.endPos() - pos1 ));
+        ad.location->regions.append(U2Region(seqRange.startPos, pos2 - seqRange.startPos ));
     }
     
-    ad->qualifiers.append(U2Qualifier(QUALIFIER_LEFT_TERM, leftTerm.enzymeId));
-    ad->qualifiers.append(U2Qualifier(QUALIFIER_RIGHT_TERM, rightTerm.enzymeId));
+    ad.qualifiers.append(U2Qualifier(QUALIFIER_LEFT_TERM, leftTerm.enzymeId));
+    ad.qualifiers.append(U2Qualifier(QUALIFIER_RIGHT_TERM, rightTerm.enzymeId));
     
-    ad->qualifiers.append(U2Qualifier(QUALIFIER_LEFT_OVERHANG, leftTerm.overhang));
-    ad->qualifiers.append(U2Qualifier(QUALIFIER_RIGHT_OVERHANG, rightTerm.overhang));
+    ad.qualifiers.append(U2Qualifier(QUALIFIER_LEFT_OVERHANG, leftTerm.overhang));
+    ad.qualifiers.append(U2Qualifier(QUALIFIER_RIGHT_OVERHANG, rightTerm.overhang));
     
     QString leftOverhangStrand = leftTerm.isDirect ? OVERHANG_STRAND_DIRECT : OVERHANG_STRAND_COMPL;
-    ad->qualifiers.append(U2Qualifier(QUALIFIER_LEFT_STRAND, leftOverhangStrand));
+    ad.qualifiers.append(U2Qualifier(QUALIFIER_LEFT_STRAND, leftOverhangStrand));
     QString rightOverhangStrand = rightTerm.isDirect ? OVERHANG_STRAND_DIRECT : OVERHANG_STRAND_COMPL;
-    ad->qualifiers.append(U2Qualifier(QUALIFIER_RIGHT_STRAND, rightOverhangStrand));
+    ad.qualifiers.append(U2Qualifier(QUALIFIER_RIGHT_STRAND, rightOverhangStrand));
     
     QString leftOverhangType = leftTerm.enzymeId.isEmpty() || leftTerm.overhang.isEmpty() ? OVERHANG_TYPE_BLUNT : OVERHANG_TYPE_STICKY;
-    ad->qualifiers.append(U2Qualifier(QUALIFIER_LEFT_TYPE, leftOverhangType) );
+    ad.qualifiers.append(U2Qualifier(QUALIFIER_LEFT_TYPE, leftOverhangType) );
     QString rightOverhangType = rightTerm.enzymeId.isEmpty() || rightTerm.overhang.isEmpty() ? OVERHANG_TYPE_BLUNT : OVERHANG_TYPE_STICKY;
-    ad->qualifiers.append(U2Qualifier(QUALIFIER_RIGHT_TYPE, rightOverhangType) );
+    ad.qualifiers.append(U2Qualifier(QUALIFIER_RIGHT_TYPE, rightOverhangType) );
 
-    ad->qualifiers.append(U2Qualifier(QUALIFIER_SOURCE, dnaObj->getGObjectName()));
+    ad.qualifiers.append(U2Qualifier(QUALIFIER_SOURCE, dnaObj->getGObjectName()));
     
     return ad;
 }
-
 
 Task::ReportResult DigestSequenceTask::report()
 {
@@ -148,9 +135,9 @@ void DigestSequenceTask::findCutSites()
             return;
         }
 
-        QList<Annotation*> anns;
-        foreach (Annotation* a, sourceObj->getAnnotations()) {
-            if (a->getAnnotationName() == enzyme->id) {
+        QList<__Annotation> anns;
+        foreach ( const __Annotation &a, sourceObj->getAnnotations( ) ) {
+            if (a.getName() == enzyme->id) {
                 anns.append(a);
             }
         }
@@ -160,10 +147,10 @@ void DigestSequenceTask::findCutSites()
             continue;
         }
         
-        foreach (Annotation * a, anns) {
-            const QVector<U2Region>& location = a->getRegions();
+        foreach ( const __Annotation &a, anns ) {
+            const QVector<U2Region> &location = a.getRegions();
             int cutPos = location.first().startPos;
-            cutSiteMap.insertMulti(GenomicPosition(cutPos, a->getStrand().isDirect()), enzyme);
+            cutSiteMap.insertMulti(GenomicPosition(cutPos, a.getStrand().isDirect()), enzyme);
         }
 
     }
@@ -244,9 +231,9 @@ void DigestSequenceTask::run()
             int leftCutPos = rightOverhangStart - seqLen;
             rightTerm.overhang  += dnaObj->getSequenceData(U2Region(0, leftCutPos));
         }
-        AnnotationData* ad = createFragment(leftCutPos, leftTerm,  rightCutPos, rightTerm);
-        ad->name = QString("Fragment %1").arg(count);
-        results.append(SharedAnnotationData(ad));
+        AnnotationData ad = createFragment(leftCutPos, leftTerm,  rightCutPos, rightTerm);
+        ad.name = QString("Fragment %1").arg(count);
+        results.append( ad );
         ++count;
         ++prev;
 
@@ -282,36 +269,34 @@ void DigestSequenceTask::run()
         QByteArray leftOverhang = dnaObj->getSequenceData(U2Region(leftOverhangStart, seqLen - leftOverhangStart)) 
             + dnaObj->getSequenceData(U2Region(0, leftCutPos));
         QByteArray rightOverhang = first == prev ? leftOverhang : firstRightOverhang;
-        AnnotationData* ad1 = createFragment(leftCutPos, DNAFragmentTerm(lastCutter->id, leftOverhang, leftOverhangIsDirect), 
+        AnnotationData ad1 = createFragment(leftCutPos, DNAFragmentTerm(lastCutter->id, leftOverhang, leftOverhangIsDirect), 
             firstCutPos, DNAFragmentTerm(firstCutter->id, rightOverhang, rightOverhangIsDirect) );
-        ad1->name = QString("Fragment 1");
-        results.append(SharedAnnotationData(ad1));
+        ad1.name = QString("Fragment 1");
+        results.append( ad1 );
     } else {
         QByteArray lastLeftOverhang = dnaObj->getSequenceData(U2Region(leftOverhangStart, lastCutPos - leftOverhangStart));
         if (isCircular) {
-            AnnotationData* ad = createFragment(lastCutPos, DNAFragmentTerm(lastCutter->id, lastLeftOverhang, leftOverhangIsDirect), 
+            AnnotationData ad = createFragment(lastCutPos, DNAFragmentTerm(lastCutter->id, lastLeftOverhang, leftOverhangIsDirect), 
                 firstCutPos, DNAFragmentTerm(firstCutter->id, firstRightOverhang,rightOverhangIsDirect) );
-            ad->name = QString("Fragment 1");
-            results.append(SharedAnnotationData(ad));
+            ad.name = QString("Fragment 1");
+            results.append( ad );
         } else {
-            AnnotationData* ad1 = createFragment(seqRange.startPos, DNAFragmentTerm(), 
+            AnnotationData ad1 = createFragment(seqRange.startPos, DNAFragmentTerm(), 
                 firstCutPos, DNAFragmentTerm(firstCutter->id, firstRightOverhang, rightOverhangIsDirect) );
-            AnnotationData* ad2 = createFragment(lastCutPos, DNAFragmentTerm(lastCutter->id, lastLeftOverhang, leftOverhangIsDirect), 
+            AnnotationData ad2 = createFragment(lastCutPos, DNAFragmentTerm(lastCutter->id, lastLeftOverhang, leftOverhangIsDirect), 
                 seqRange.endPos(), DNAFragmentTerm() );
-            ad1->name = QString("Fragment 1");
-            ad2->name = QString("Fragment %1").arg(count);
-            results.append(SharedAnnotationData(ad1));
-            results.append(SharedAnnotationData(ad2));
+            ad1.name = QString("Fragment 1");
+            ad2.name = QString("Fragment %1").arg(count);
+            results.append( ad1 );
+            results.append( ad2 );
         }
     }
-
 }
-
 
 void DigestSequenceTask::saveResults()
 {
-    foreach (const SharedAnnotationData& data, results) {
-        destObj->addAnnotation(new Annotation(data), ANNOTATION_GROUP_FRAGMENTS);
+    foreach (const AnnotationData &data, results) {
+        destObj->addAnnotation( data, ANNOTATION_GROUP_FRAGMENTS );
     }
 }
 
@@ -327,17 +312,17 @@ QString DigestSequenceTask::generateReport() const
     res+= tr("<h3><br>Digest into fragments %1 (%2)</h3>").arg(dnaObj->getDocument()->getName()).arg(topology);
     res+=tr("<br>Generated %1 fragments.").arg(results.count());
     int counter = 1;
-    foreach (const SharedAnnotationData& sdata, results) {
-        int startPos = sdata->location->regions.first().startPos + 1;
-        int endPos = sdata->location->regions.last().endPos();
+    foreach ( const AnnotationData &sdata, results ) {
+        const int startPos = sdata.location->regions.first().startPos + 1;
+        const int endPos = sdata.location->regions.last().endPos();
         int len = 0;
-        foreach (const U2Region& r, sdata->location->regions) {
+        foreach ( const U2Region& r, sdata.location->regions ) {
             len += r.endPos() - r.startPos;
         }
         res+=tr("<br><br>&nbsp;&nbsp;&nbsp;&nbsp;%1:&nbsp;&nbsp;&nbsp;&nbsp;From %3 (%2) To %5 (%4) - %6 bp ").arg(counter)
-                  .arg(startPos).arg(sdata->findFirstQualifierValue(QUALIFIER_LEFT_TERM))
-                  .arg(endPos).arg(sdata->findFirstQualifierValue(QUALIFIER_RIGHT_TERM))
-                   .arg(len);   
+                  .arg(startPos).arg(sdata.findFirstQualifierValue(QUALIFIER_LEFT_TERM))
+                  .arg(endPos).arg(sdata.findFirstQualifierValue(QUALIFIER_RIGHT_TERM))
+                   .arg(len);
         ++counter;
     }
 
@@ -351,8 +336,8 @@ void DigestSequenceTask::checkForConservedAnnotations()
     for( ; it != cfg.conservedRegions.constEnd(); ++it) {
         bool found = false;
         U2Region annRegion = it.value();
-        foreach (const SharedAnnotationData& data, results) {
-            U2Region resRegion = data->location->regions.first();
+        foreach ( const AnnotationData &data, results ) {
+            const U2Region resRegion = data.location->regions.first();
             if (resRegion.contains(annRegion)) {
                 found = true;
                 break;
@@ -366,7 +351,6 @@ void DigestSequenceTask::checkForConservedAnnotations()
         }
     }
 }
-
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -404,9 +388,7 @@ void LigateFragmentsTask::processOverhangs( const DNAFragment& prevFragment, con
     } else {
         assert(0);
     }
-
 }
-
 
 bool LigateFragmentsTask::overhangsAreConsistent( const DNAFragmentTerm& curTerm, const DNAFragmentTerm& prevTerm )
 {
@@ -462,13 +444,13 @@ void LigateFragmentsTask::prepare()
         
         // handle fragment annotations
         int resultLen = resultSeq.length() + overhangAddition.length();
-        foreach (AnnotationTableObject* aObj, dnaFragment.getRelatedAnnotations()) {
-            QList<Annotation*> toSave = cloneAnnotationsInFragmentRegion(dnaFragment, aObj, resultLen);
+        foreach ( FeaturesTableObject *aObj, dnaFragment.getRelatedAnnotations( ) ) {
+            QList<AnnotationData> toSave = cloneAnnotationsInFragmentRegion( dnaFragment, aObj, resultLen );
             annotations.append(toSave);
         }
         
         if (cfg.annotateFragments) {
-            Annotation* a = createFragmentAnnotation(dnaFragment, resultLen);
+            AnnotationData a = createFragmentAnnotation(dnaFragment, resultLen);
             annotations.append(a);
         }
 
@@ -488,7 +470,7 @@ void LigateFragmentsTask::prepare()
     }
 
     // create comment
-    Annotation* sourceAnnot = createSourceAnnotation(resultSeq.length());
+    AnnotationData sourceAnnot = createSourceAnnotation(resultSeq.length());
     annotations.append(sourceAnnot);
 
     createDocument(resultSeq,annotations);
@@ -509,41 +491,36 @@ void LigateFragmentsTask::prepare()
 
     Task* multiTask = new MultiTask(tr("Add constructed molecule"), tasks );
     addSubTask(multiTask);
-    
-
 }
 
-
-Annotation* LigateFragmentsTask::createSourceAnnotation( int regLen )
+AnnotationData LigateFragmentsTask::createSourceAnnotation( int regLen )
 {
     Version v = Version::appVersion();
-    SharedAnnotationData sd( new AnnotationData);
-    sd->name = "source";
-    sd->location->regions << U2Region(0, regLen);
-    sd->qualifiers.append( U2Qualifier("comment", QString("Molecule is created with Unipro UGENE v%1.%2").arg(v.major).arg(v.minor)) );
-    return  new Annotation(sd);
-
+    AnnotationData d;
+    d.name = "source";
+    d.location->regions << U2Region(0, regLen);
+    d.qualifiers.append( U2Qualifier("comment", QString("Molecule is created with Unipro UGENE v%1.%2").arg(v.major).arg(v.minor)) );
+    return d;
 }
 
-Annotation* LigateFragmentsTask::createFragmentAnnotation( const DNAFragment& fragment, int startPos )
+AnnotationData LigateFragmentsTask::createFragmentAnnotation( const DNAFragment& fragment, int startPos )
 {
-    SharedAnnotationData sd( new AnnotationData);
-    sd->name = QString("%1 %2").arg(fragment.getSequenceName()).arg(fragment.getName());
-    sd->location->regions << U2Region(startPos, fragment.getLength());
-    sd->qualifiers.append(U2Qualifier("source_doc", fragment.getSequenceDocName()));
+    AnnotationData d;
+    d.name = QString("%1 %2").arg(fragment.getSequenceName()).arg(fragment.getName());
+    d.location->regions << U2Region(startPos, fragment.getLength());
+    d.qualifiers.append(U2Qualifier("source_doc", fragment.getSequenceDocName()));
 
-    return  new Annotation(sd);
+    return d;
 }
 
-QList<Annotation*> LigateFragmentsTask::cloneAnnotationsInRegion( const U2Region& fragmentRegion, AnnotationTableObject* source, int globalOffset )
+QList<AnnotationData> LigateFragmentsTask::cloneAnnotationsInRegion( const U2Region& fragmentRegion, FeaturesTableObject* source, int globalOffset )
 {
-    QList<Annotation*> results;
-    
+    QList<AnnotationData> results;
     // TODO: allow to cut annotations
-    
-    foreach(Annotation* a, source->getAnnotations()) {
+    // TODO: consider optimizing the code below using FeaturesTableObject::getAnnotationsByRegion( )
+    foreach ( const __Annotation &a, source->getAnnotations( ) ) {
         bool ok = true;
-        const QVector<U2Region>& location = a->getRegions();
+        const QVector<U2Region>& location = a.getRegions();
         foreach(const U2Region& region, location) {
             if (!fragmentRegion.contains(region) || fragmentRegion == region) {
                 ok = false;
@@ -552,21 +529,19 @@ QList<Annotation*> LigateFragmentsTask::cloneAnnotationsInRegion( const U2Region
         }
         if (ok) {
             int newPos = globalOffset + location.first().startPos - fragmentRegion.startPos;
-            Annotation* cloned = new Annotation(a->data());
+            AnnotationData cloned = a.getData( );
             QVector<U2Region> newLocation;
-            foreach (const U2Region& region, a->getRegions()) {
+            foreach ( const U2Region &region, a.getRegions( ) ) {
                 U2Region newRegion(region);
                 newRegion.startPos = newPos;
                 newLocation.append(newRegion);
             }
-            cloned->replaceRegions(newLocation);
+            cloned.location->regions = newLocation;
             results.append(cloned);
         }
-
     }
 
     return results;
-
 }
 
 static bool fragmentContainsRegion(const DNAFragment& fragment, const U2Region region) {
@@ -579,17 +554,13 @@ static bool fragmentContainsRegion(const DNAFragment& fragment, const U2Region r
             result = true;
             break;
         }
-
     }
     
     return result;
-
-} 
-
+}
 
 static int getRelativeStartPos(const DNAFragment& fragment, const U2Region region)
 {
-    
     QVector<U2Region> fragmentRegions = fragment.getFragmentRegions();
 
     int offset = 0;
@@ -604,18 +575,16 @@ static int getRelativeStartPos(const DNAFragment& fragment, const U2Region regio
     return -1;
 }
 
-
-
-QList<Annotation*> LigateFragmentsTask::cloneAnnotationsInFragmentRegion( const DNAFragment& fragment, AnnotationTableObject* source, int globalOffset )
+QList<AnnotationData> LigateFragmentsTask::cloneAnnotationsInFragmentRegion( const DNAFragment& fragment,
+    FeaturesTableObject *source, int globalOffset )
 {
-    QList<Annotation*> results;
+    QList<AnnotationData> results;
 
     // TODO: allow to remove annotations
 
-    foreach(Annotation* a, source->getAnnotations()) {
-        QVector<U2Region> location = a->getRegions();
-        
-        if (a->getAnnotationName().startsWith("Fragment")) {
+    foreach ( const __Annotation &a, source->getAnnotations( ) ) {
+        QVector<U2Region> location = a.getRegions();
+        if (a.getName().startsWith("Fragment")) {
             continue;
         }
 
@@ -629,17 +598,17 @@ QList<Annotation*> LigateFragmentsTask::cloneAnnotationsInFragmentRegion( const 
         }
 
         if (ok) {
-            Annotation* cloned = new Annotation(a->data());
+            AnnotationData cloned = a.getData( );
             QVector<U2Region> newLocation;
             foreach (const U2Region& region, location) {
                 int startPos = getRelativeStartPos(fragment, region);
                 if (fragment.isInverted()) {
                     startPos = fragment.getLength() - startPos - region.length;
-                    U2Strand strand = cloned->getStrand();
+                    U2Strand strand = cloned.getStrand();
                     if (strand.isDirect()) {
-                        cloned->setStrand(U2Strand::Complementary);
+                        cloned.setStrand(U2Strand::Complementary);
                     } else {
-                        cloned->setStrand(U2Strand::Direct);
+                        cloned.setStrand(U2Strand::Direct);
                     } 
                 }
                 assert(startPos != -1);
@@ -649,19 +618,17 @@ QList<Annotation*> LigateFragmentsTask::cloneAnnotationsInFragmentRegion( const 
                 newLocation.append(newRegion);
             }
             
-            cloned->replaceRegions(newLocation);
+            cloned.location->regions = newLocation;
             results.append(cloned);
         }
-
     }
 
     return results;
 }
 
 
-void LigateFragmentsTask::createDocument( const QByteArray& seq, const QList<Annotation*> annotations )
+void LigateFragmentsTask::createDocument( const QByteArray& seq, const QList<AnnotationData> &annotations )
 {
-    
     DocumentFormat* df = AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::PLAIN_GENBANK);
     IOAdapterFactory * iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
     QList<GObject*> objects;
@@ -683,7 +650,6 @@ void LigateFragmentsTask::createDocument( const QByteArray& seq, const QList<Ann
                     
     dna.info.insert(DNAInfo::LOCUS, qVariantFromValue<DNALocusInfo>(loi));
 
-    
     resultDoc = df->createNewLoadedDocument(iof, cfg.docUrl, stateInfo);
     CHECK_OP(stateInfo, );
     
@@ -693,28 +659,13 @@ void LigateFragmentsTask::createDocument( const QByteArray& seq, const QList<Ann
     U2SequenceObject* dnaObj = new U2SequenceObject(seqName, seqRef);
     resultDoc->addObject(dnaObj);
 
-    AnnotationTableObject* aObj = new AnnotationTableObject(QString("%1 annotations").arg(seqName));
+    FeaturesTableObject *aObj = new FeaturesTableObject( QString( "%1 annotations" ).arg( seqName ),
+        resultDoc->getDbiRef( ) );
     aObj->addAnnotations(annotations);
     resultDoc->addObject(aObj);
 
     aObj->addObjectRelation(dnaObj,GObjectRelationRole::SEQUENCE);
-    
-
-    
 }
-
-void LigateFragmentsTask::cleanup()
-{
-    if (stateInfo.hasError()) {
-        qDeleteAll(annotations);    
-    }
-}
-
-
-
-
-
-
 
 } // U2
 

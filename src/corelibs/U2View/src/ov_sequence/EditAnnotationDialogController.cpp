@@ -19,28 +19,31 @@
  * MA 02110-1301, USA.
  */
 
-#include "EditAnnotationDialogController.h"
+#include <QtGui/QMessageBox>
 
-#include <qmessagebox.h>
+#include <U2Core/Annotation.h>
+#include <U2Core/AnnotationData.h>
 
 #include <U2Formats/GenbankLocationParser.h>
 #include <U2Formats/GenbankFeatures.h>
 
 #include <U2Gui/CreateAnnotationWidgetController.h>
 
+#include "EditAnnotationDialogController.h"
+
 /* TRANSLATOR U2::EditAnnotationDialogController */
 
 namespace U2 {
 
-EditAnnotationDialogController::EditAnnotationDialogController( Annotation* a, U2Region _seqRange, QWidget* p)
+EditAnnotationDialogController::EditAnnotationDialogController( const AnnotationData &a, U2Region _seqRange, QWidget* p)
 : QDialog(p), seqRange(_seqRange)
 {
 
     setupUi(this);
 
-    nameEdit->setText(a->getAnnotationName());
-    locationEdit->setText(Genbank::LocationParser::buildLocationString(a->data()));
-    location = a->getLocation();
+    nameEdit->setText(a.name);
+    locationEdit->setText(Genbank::LocationParser::buildLocationString(&a));
+    location = a.location;
     
     QMenu* menu = EditAnnotationDialogController::createAnnotationNamesMenu(this, this);
     showNameGroupsButton->setMenu(menu);
@@ -79,7 +82,7 @@ void EditAnnotationDialogController::accept(){
     U2Region cRegion = U2Region::containingRegion(location->regions);
     bool validRegions = seqRange.contains(cRegion);
 
-    if (!Annotation::isValidAnnotationName(nameEdit->text())) {
+    if (!__Annotation::isValidAnnotationName(nameEdit->text())) {
         QMessageBox::critical( this, tr( "Error!" ), tr( "Wrong annotation name!" ) );
         QDialog::reject();
     }else if (!validRegions){

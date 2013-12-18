@@ -50,7 +50,7 @@ UHMM3PhmmerDialogImpl::UHMM3PhmmerDialogImpl( const U2SequenceObject * seqObj, Q
     CreateAnnotationModel annModel;
     annModel.hideLocation = true;
     annModel.sequenceObjectRef = seqObj;
-    annModel.data->name = ANNOTATIONS_DEFAULT_NAME;
+    annModel.data.name = ANNOTATIONS_DEFAULT_NAME;
     annModel.sequenceLen = seqObj->getSequenceLength();
     annotationsWidgetController = new CreateAnnotationWidgetController( annModel, this );
     QWidget * firstTab = mainTabWidget->widget( 0 );
@@ -165,7 +165,7 @@ void UHMM3PhmmerDialogImpl::sl_okButtonClicked() {
     }
     const CreateAnnotationModel & annModel = annotationsWidgetController->getModel();
     UHMM3PhmmerToAnnotationsTask * phmmerTask = new UHMM3PhmmerToAnnotationsTask( model.queryfile, model.dbSequence,
-        annModel.getAnnotationObject(), annModel.groupName, annModel.data->name, model.phmmerSettings );
+        annModel.getAnnotationObject(), annModel.groupName, annModel.data.name, model.phmmerSettings );
     AppContext::getTaskScheduler()->registerTopLevelTask( phmmerTask );
     
     QDialog::accept();

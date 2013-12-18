@@ -40,7 +40,7 @@
 #include <U2Core/ProjectModel.h>
 #include <U2Core/DNATranslation.h>
 #include <U2Core/DNAAlphabet.h>
-
+#include <U2Core/FeaturesTableObject.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/GObjectUtils.h>
 #include <U2Core/MAlignmentObject.h>
@@ -238,8 +238,7 @@ void ExportProjectViewItemsContoller::sl_saveSequencesToSequenceFormat() {
     ExportSequencesDialog d(allowMerge, allowComplement, allowTranslate, allowBackTranslate,
         defaultFileName, fileBaseName, BaseDocumentFormats::FASTA,
         AppContext::getMainWindow()->getQMainWindow());
-    
-    //d.setWindowTitle(exportSequencesToSequenceFormatAction->text());
+
     int rc = d.exec();
     if (rc == QDialog::Rejected) {
         return;
@@ -259,9 +258,9 @@ void ExportProjectViewItemsContoller::sl_saveSequencesToSequenceFormat() {
         if (s.saveAnnotations) {
             foreach(GObject* aObj, allAnnotationTables) {
                 if (aObj->hasObjectRelation(so, GObjectRelationRole::SEQUENCE)) {
-                    AnnotationTableObject* annObj = qobject_cast<AnnotationTableObject*>(aObj);
-                    foreach(const Annotation* ann, annObj->getAnnotations()) {
-                        anns.append(ann->data());
+                    FeaturesTableObject *annObj = qobject_cast<FeaturesTableObject *>(aObj);
+                    foreach ( const __Annotation &ann, annObj->getAnnotations( ) ) {
+                        anns.append( SharedAnnotationData( new AnnotationData( ann.getData( ) ) ) );
                     }
                 }
             }
@@ -295,7 +294,7 @@ void ExportProjectViewItemsContoller::sl_saveSequencesAsAlignment() {
     GUrl defaultUrl = GUrlUtils::rollFileName(seqUrl.dirPath() + "/" + seqUrl.baseFileName() + "." + fileExt, DocumentUtils::getNewDocFileNameExcludesHint());
     
     ExportSequences2MSADialog d(AppContext::getMainWindow()->getQMainWindow(), defaultUrl.getURLString());
-    //d.setWindowTitle(exportSequencesAsAlignmentAction->text());
+
     int rc = d.exec();
     if (rc != QDialog::Accepted) {
         return;
@@ -342,7 +341,7 @@ void ExportProjectViewItemsContoller::sl_saveAlignmentAsSequences() {
     MAlignmentObject* maObject = qobject_cast<MAlignmentObject*>(obj);
     const MAlignment& ma = maObject->getMAlignment();
     ExportMSA2SequencesDialog d(AppContext::getMainWindow()->getQMainWindow());
-    //d.setWindowTitle(exportAlignmentAsSequencesAction->text());
+
     int rc = d.exec();
     if (rc == QDialog::Rejected) {
         return;
@@ -352,7 +351,7 @@ void ExportProjectViewItemsContoller::sl_saveAlignmentAsSequences() {
 }
 
 void ExportProjectViewItemsContoller::sl_exportNucleicAlignmentToAmino() {
-    ProjectView* pv = AppContext::getProjectView();    
+    ProjectView* pv = AppContext::getProjectView();
     assert(pv!=NULL);
 
     MultiGSelection ms; ms.addSelection(pv->getGObjectSelection()); ms.addSelection(pv->getDocumentSelection());
@@ -373,8 +372,7 @@ void ExportProjectViewItemsContoller::sl_exportNucleicAlignmentToAmino() {
     GUrl defaultUrl = GUrlUtils::rollFileName(msaUrl.dirPath() + "/" + msaUrl.baseFileName() + "_transl." + fileExt, DocumentUtils::getNewDocFileNameExcludesHint());
 
     ExportMSA2MSADialog d(defaultUrl.getURLString(), BaseDocumentFormats::CLUSTAL_ALN, true, AppContext::getMainWindow()->getQMainWindow());
-    
-    //d.setWindowTitle(exportAlignmentAsSequencesAction->text());
+
     int rc = d.exec();
     if (rc == QDialog::Rejected) {
         return;
@@ -448,22 +446,22 @@ void ExportProjectViewItemsContoller::sl_exportAnnotations() {
     }
     
     GObject* obj = set.first();
-    AnnotationTableObject* aObj = qobject_cast<AnnotationTableObject*>(obj);
-    assert(aObj != NULL);
-    QList<Annotation*> annotations = aObj->getAnnotations();
+    FeaturesTableObject *aObj = qobject_cast<FeaturesTableObject *>(obj);
+    SAFE_POINT( NULL != aObj, "Invalid annotation table detected!", );
+    QList<__Annotation> annotations = aObj->getAnnotations( );
     if(!annotations.isEmpty()) {
-        assert(NULL != aObj->getDocument());
-        sl_exportAnnotations(annotations, aObj->getDocument()->getURL());
+        SAFE_POINT( NULL != aObj->getDocument( ), "Invalid document detected!", );
+        sl_exportAnnotations( annotations, aObj->getDocument( )->getURL( ) );
         return;
     }
-    QMessageBox::warning(QApplication::activeWindow(), exportAnnotations2CSV->text(),
-        tr(NO_ANNOTATIONS_MESSAGE));
+    QMessageBox::warning( QApplication::activeWindow( ), exportAnnotations2CSV->text( ),
+        tr( NO_ANNOTATIONS_MESSAGE ) );
 }
 
-void ExportProjectViewItemsContoller::sl_exportAnnotations(QList<Annotation*> &annotations,
+void ExportProjectViewItemsContoller::sl_exportAnnotations( QList<__Annotation> &annotations,
     const GUrl &dstUrl) const
 {
-    if (annotations.size() == 0 ) {
+    if ( annotations.isEmpty( ) ) {
         QMessageBox::warning(QApplication::activeWindow(), exportAnnotations2CSV->text(),
             tr(NO_ANNOTATIONS_MESSAGE));
         return;
@@ -473,7 +471,7 @@ void ExportProjectViewItemsContoller::sl_exportAnnotations(QList<Annotation*> &a
         DocumentUtils::getNewDocFileNameExcludesHint());
 
     ExportAnnotationsDialog d(fileName, QApplication::activeWindow());
-    d.setExportSequenceVisible(false);    
+    d.setExportSequenceVisible(false);
 
     if (QDialog::Accepted != d.exec()) {
         return;
@@ -481,7 +479,7 @@ void ExportProjectViewItemsContoller::sl_exportAnnotations(QList<Annotation*> &a
 
     // TODO: lock documents or use shared-data objects
     // same as in ADVExportContext::sl_saveSelectedAnnotations()
-    qStableSort(annotations.begin(), annotations.end(), Annotation::annotationLessThan);
+    qStableSort( annotations.begin( ), annotations.end( ), __Annotation::annotationLessThan );
 
     // run task
     Task * t = NULL;

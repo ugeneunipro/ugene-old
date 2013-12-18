@@ -34,8 +34,16 @@ namespace U2 {
 /** Feature location */
 class U2CORE_EXPORT U2FeatureLocation {
 public:
-    U2FeatureLocation() {}
-    U2FeatureLocation(U2Strand strand_, const U2Region & region_) : strand(strand_), region(region_) {}
+    U2FeatureLocation( )
+    {
+
+    }
+
+    U2FeatureLocation( const U2Strand &strand_, const U2Region & region_ )
+        : strand( strand_ ), region( region_ )
+    {
+
+    }
 
     /**  Strand of the location. */
     U2Strand    strand;
@@ -53,66 +61,74 @@ inline bool U2FeatureLocation::operator==(const U2FeatureLocation& l) const {
     return res;
 }
 
-/** 
-    Sequence annotation. Used to annotate set of sequence regions
-*/
+/**
+ * Sequence annotation. Used to annotate set of sequence regions
+ */
 class U2CORE_EXPORT U2Feature: public U2Entity {
 public:
-    U2Feature( ) : version( 0 ), treeVersion( 0 ) { }
-
     bool operator== ( const U2Feature &f ) const { return f.id == id; }
     bool operator!= ( const U2Feature &f ) const { return !( *this == f ); }
-
-    /** Sequence this annotation is related to */
+    /**
+     * Sequence this annotation is related to
+     */
     U2DataId                    sequenceId;
-
-    /** Parent feature id */
+    /**
+     * Parent feature id
+     */
     U2DataId                    parentFeatureId;
-
-    /** Name of the feature. Not a FeatureKey, because in that case can be features with no name */
+    /**
+     * Name of the feature. Not a FeatureKey, because in that case can be features with no name
+     */
     QString                     name;
-
-    /** Annotation location */
+    /**
+     * Annotation location
+     */
     U2FeatureLocation           location;
-
-    /** Version of the feature. Same as modification count */
-    qint64                      version;
-
-    /** Version of the feature sub-tree. Same as modification count for subtree*/
-    qint64                      treeVersion;
 };
-
 
 /**
-    Feature key
-*/
+ * Feature key
+ */
 class U2CORE_EXPORT U2FeatureKey {
 public:
-    /** Feature key name*/
+    /**
+     * Constructs new empty (and invalid) key
+     */
+    U2FeatureKey( )
+    {
+
+    }
+    /**
+     * Constructs new feature key instance with key and value set
+     */
+    U2FeatureKey( const QString &_name, const QString &_value)
+        : name( _name ), value( _value )
+    {
+
+    }
+    /**
+     * Feature key is valid if  its name is not empty
+     */
+    bool isValid( ) const { return !name.isEmpty( ); }
+    /**
+     * Any two keys are equal if their names & values are equal
+     */
+    bool operator== ( const U2FeatureKey &k ) const { return k.name == name && k.value == value; }
+    /**
+     * Any two keys are not equal if either their names or values are  not equal
+     */
+    bool operator!= ( const U2FeatureKey &k ) const { return !( *this == k ); }
+
+    /**
+     * Feature key name
+     */
     QString name;
-
-    /** Feature key value */
+    /**
+     * Feature key value
+     */
     QString value;
-
-
-    /** Constructs new empty (and invalid) key */
-    U2FeatureKey(){}
-    
-    /** Constructs new feature key instance with key and value set */
-    U2FeatureKey(const QString& _name, const QString& _value) : name(_name), value(_value){}
-
-    /** feature key is valid if  its name is not empty */
-    bool isValid() const {return !name.isEmpty();}
-
-    /** Any two keys are equal if their names & values are equal */
-    bool operator== ( const U2FeatureKey & k ) const { return k.name == name && k.value == value; }
-    
-    /** Any two keys are not equal if either their names or values are  not equal */
-    bool operator!= ( const U2FeatureKey & k ) const { return !(*this == k); }
-
 };
 
-
-} //namespace
+} // namespace U2
 
 #endif

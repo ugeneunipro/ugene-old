@@ -24,6 +24,7 @@
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/AppResources.h>
 #include <U2Core/DocumentModel.h>
+#include <U2Core/FeaturesTableObject.h>
 #include <U2Core/L10n.h>
 #include <U2Core/Counter.h>
 #include <U2Core/Log.h>
@@ -42,7 +43,6 @@
 using namespace U2;
 
 namespace U2 {
-
 
 static int countPhmmerMemInMB( qint64 dbLen, int queryLen ) {
     assert( 0 < dbLen && 0 < queryLen );
@@ -320,8 +320,6 @@ SequenceWalkerTask * UHMM3SWPhmmerTask::getSWSubtask() {
     config.complTrans           = complTranslation;
     config.strandToWalk         = complTranslation == NULL ? StrandOption_DirectOnly : StrandOption_Both;
     config.aminoTrans           = aminoTranslation;
-    /*config.overlapSize          = 2 * querySeq.length();
-    config.chunkSize            = qMax(searchChunkSize, 6 * querySeq.length());*/
     config.overlapSize          = 0;
     config.chunkSize            = config.seqSize;
     config.lastChunkExtraLen    = config.chunkSize / 2;
@@ -420,12 +418,12 @@ void UHMM3PhmmerToAnnotationsTask::checkArgs() {
 }
 
 UHMM3PhmmerToAnnotationsTask::UHMM3PhmmerToAnnotationsTask( const QString & qfile, const DNASequence & db,
-                                                            AnnotationTableObject * o, const QString & gr, 
+                                                            FeaturesTableObject *o, const QString & gr, 
                                                             const QString & name, const UHMM3PhmmerSettings & set )
-: Task( "HMM Phmmer task", TaskFlags_NR_FOSCOE | TaskFlag_ReportingIsSupported | TaskFlag_ReportingIsEnabled ), 
+    : Task( "HMM Phmmer task", TaskFlags_NR_FOSCOE | TaskFlag_ReportingIsSupported | TaskFlag_ReportingIsEnabled ),
 queryfile( qfile ), dbSeq( db ), annotationObj( o ), annGroup( gr ), annName( name ), settings( set ),
-phmmerTask( NULL ), createAnnotationsTask( NULL ) {
-    
+phmmerTask( NULL ), createAnnotationsTask( NULL )
+{
     checkArgs();
     if( hasError() ) {
         return;
@@ -452,7 +450,10 @@ QList< Task* > UHMM3PhmmerToAnnotationsTask::onSubTaskFinished( Task * subTask )
     }
     
     if( phmmerTask == subTask ) {
-        QList< SharedAnnotationData > annotations = phmmerTask->getResultsAsAnnotations( annName );
+        QList<AnnotationData> annotations;
+        foreach ( const SharedAnnotationData &data, phmmerTask->getResultsAsAnnotations( annName ) ) {
+            annotations << *data;
+        }
         if( annotations.isEmpty() ) {
             return res;
         }
@@ -480,7 +481,7 @@ QString UHMM3PhmmerToAnnotationsTask::generateReport() const {
     res += "<tr><td><b>" + tr("Result annotation group") + "</b></td><td>" + annGroup + "</td></tr>";
     res += "<tr><td><b>" + tr("Result annotation name") +  "</b></td><td>" + annName + "</td></tr>";
     
-    int nResults = createAnnotationsTask == NULL ? 0 : createAnnotationsTask->getAnnotations().size();
+    int nResults = createAnnotationsTask == NULL ? 0 : createAnnotationsTask->getAnnotationCount( );
     res += "<tr><td><b>" + tr("Results count") +  "</b></td><td>" + QString::number( nResults )+ "</td></tr>";
     res += "</table>";
     return res;

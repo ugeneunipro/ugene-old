@@ -9,6 +9,7 @@
 #include <U2Core/AppResources.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/LoadDocumentTask.h>
+#include <U2Core/FeaturesTableObject.h>
 #include <U2Core/CreateAnnotationTask.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/GObjectUtils.h>
@@ -31,10 +32,10 @@ HMMSearchDialogController::HMMSearchDialogController(const U2SequenceObject* seq
     CreateAnnotationModel cm;
     cm.hideLocation = true;
     cm.sequenceObjectRef = seqObj;
-    cm.data->name = "hmm_signal";
+    cm.data.name = "hmm_signal";
     cm.sequenceLen = seqObj->getSequenceLength();
     createController = new CreateAnnotationWidgetController(cm, this);
-    
+
     QWidget* w = createController->getWidget();
     QVBoxLayout* l = qobject_cast<QVBoxLayout*>(layout());
     l->insertWidget(1, w);
@@ -53,12 +54,12 @@ HMMSearchDialogController::HMMSearchDialogController(const U2SequenceObject* seq
 }
 
 void HMMSearchDialogController::sl_expSpinBoxValueChanged(int i){
-	if(i>=0){
-		domEvalueCuttofBox->setPrefix("1E+");
-	}
-	else {
-		domEvalueCuttofBox->setPrefix("1E");
-	}
+    if(i>=0){
+        domEvalueCuttofBox->setPrefix("1E+");
+    }
+    else {
+        domEvalueCuttofBox->setPrefix("1E");
+    }
 }
 
 void HMMSearchDialogController::reject() {
@@ -93,12 +94,12 @@ void HMMSearchDialogController::sl_okClicked() {
     
     UHMMSearchSettings s;
     if (expertOptionsBox->isChecked() && errMsg.isEmpty()) {
-		s.domE = pow(10,(float) domEvalueCuttofBox->value());
-		s.domT = (float) minScoreBox->value();
+        s.domE = pow(10,(float) domEvalueCuttofBox->value());
+        s.domT = (float) minScoreBox->value();
         s.eValueNSeqs = evalueAsNSeqBox->value();
     }
     s.alg = HMMSearchAlgo( algoCombo->itemData( algoCombo->currentIndex() ).toInt() );
-	
+
     if (errMsg.isEmpty()) {
         errMsg = createController->validate();
     }
@@ -115,7 +116,7 @@ void HMMSearchDialogController::sl_okClicked() {
     }
     
     const CreateAnnotationModel& cm = createController->getModel();
-    QString annotationName = cm.data->name;
+    QString annotationName = cm.data.name;
     searchTask = new HMMSearchToAnnotationsTask(hmmFile, dnaSequence, cm.getAnnotationObject(), cm.groupName, annotationName, s);
     searchTask->setReportingEnabled(true);
     connect(searchTask, SIGNAL(si_stateChanged()), SLOT(sl_onStateChanged()));
@@ -155,12 +156,11 @@ void HMMSearchDialogController::sl_onProgressChanged() {
     statusLabel->setText(tr("progress_%1%").arg(qMax(0, searchTask->getProgress())));
 }
 
-    
 //////////////////////////////////////////////////////////////////////////
 // TASKS
 
 HMMSearchToAnnotationsTask::HMMSearchToAnnotationsTask(const QString& _hmmFile, const DNASequence& s, 
-                                                       AnnotationTableObject* ao, const QString& _agroup, const QString& _aname,
+                                                       FeaturesTableObject *ao, const QString& _agroup, const QString& _aname,
                                                        const UHMMSearchSettings& _settings)
 : Task("", TaskFlags_NR_FOSCOE | TaskFlag_ReportingIsSupported), 
 hmmFile(_hmmFile), dnaSequence(s), agroup(_agroup), aname(_aname), settings(_settings), 
@@ -202,16 +202,18 @@ QList<Task*> HMMSearchToAnnotationsTask::onSubTaskFinished(Task* subTask) {
         res.append(searchTask);
     } else if (createAnnotationsTask == NULL){
         assert(searchTask->isFinished() && !searchTask->hasError());
-        QList<SharedAnnotationData> annotations = searchTask->getResultsAsAnnotations(aname);
+        QList<AnnotationData> annotations;
+        foreach ( const SharedAnnotationData &data, searchTask->getResultsAsAnnotations( aname ) ) {
+            annotations << *data;
+        }
         if (!annotations.isEmpty()) {
-            createAnnotationsTask = new CreateAnnotationsTask(aobj, agroup, annotations);
+            createAnnotationsTask = new CreateAnnotationsTask( aobj, agroup, annotations );
             createAnnotationsTask->setSubtaskProgressWeight(0);
             res.append(createAnnotationsTask);
         }
     }
     return res;
 }
-
 
 QString HMMSearchToAnnotationsTask::generateReport() const {
     QString res;
@@ -228,7 +230,7 @@ QString HMMSearchToAnnotationsTask::generateReport() const {
     res+="<tr><td><b>" + tr("Result annotation group") + "</b></td><td>" + agroup + "</td></tr>";
     res+="<tr><td><b>" + tr("Result annotation name") +  "</b></td><td>" + aname + "</td></tr>";
 
-    int nResults = createAnnotationsTask == NULL ? 0 : createAnnotationsTask->getAnnotations().size();
+    int nResults = createAnnotationsTask == NULL ? 0 : createAnnotationsTask->getAnnotationCount( );
     res+="<tr><td><b>" + tr("Results count") +  "</b></td><td>" + QString::number(nResults)+ "</td></tr>";
     res+="</table>";
     return res;

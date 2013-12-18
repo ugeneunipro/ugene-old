@@ -19,7 +19,7 @@
  * MA 02110-1301, USA.
  */
 
-#include <U2Core/AnnotationTableObject.h>
+#include <U2Core/AnnotationTableObjectConstraints.h>
 #include <U2Core/Timer.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
@@ -49,7 +49,7 @@ FeaturesTableObject::~FeaturesTableObject( ) {
     SAFE_POINT_OP( os, );
 }
 
-QList<__Annotation> FeaturesTableObject::getAnnotations( ) {
+QList<__Annotation> FeaturesTableObject::getAnnotations( ) const {
     QList<__Annotation> results;
     U2OpStatusImpl os;
     QList<U2Feature> features = U2FeatureUtils::getSubAnnotations( rootFeatureId, entityRef.dbiRef,
@@ -63,20 +63,19 @@ __AnnotationGroup FeaturesTableObject::getRootGroup( ) {
     return __AnnotationGroup( rootFeatureId, this );
 }
 
-void FeaturesTableObject::addAnnotation( AnnotationData &a, const QString &groupName ) {
+void FeaturesTableObject::addAnnotation( const AnnotationData &a, const QString &groupName ) {
     U2OpStatusImpl os;
     __AnnotationGroup rootGroup( rootFeatureId, this );
     __AnnotationGroup subgroup = rootGroup.getSubgroup( groupName.isEmpty( )
         ? a.name : groupName, true );
 
-    const U2Feature feature = U2FeatureUtils::exportAnnotationDataToFeatures( a, subgroup.getId( ),
-        entityRef.dbiRef, os );
-    SAFE_POINT_OP( os, );
+    const __Annotation ann = subgroup.addAnnotation( a );
 
     setModified( true );
+    emit si_onAnnotationsAdded( QList<__Annotation>( ) << ann );
 }
 
-void FeaturesTableObject::addAnnotations( QList<AnnotationData> &annotations,
+void FeaturesTableObject::addAnnotations( const QList<AnnotationData> &annotations,
     const QString &groupName )
 {
     if ( annotations.isEmpty( ) ) {
@@ -85,7 +84,8 @@ void FeaturesTableObject::addAnnotations( QList<AnnotationData> &annotations,
     GTIMER( c1, t1, "FeaturesTableObject::addAnnotations [populate data tree]" );
     __AnnotationGroup rootGroup( rootFeatureId, this );
     __AnnotationGroup group( rootGroup );
- 
+    QList<__Annotation> resultAnnotations;
+
     U2OpStatusImpl os;
     const U2Feature rootFeature = U2FeatureUtils::getFeatureById( rootFeatureId, entityRef.dbiRef,
         os );
@@ -103,6 +103,7 @@ void FeaturesTableObject::addAnnotations( QList<AnnotationData> &annotations,
             const U2Feature feature = U2FeatureUtils::exportAnnotationDataToFeatures( a,
                 group.getId( ), entityRef.dbiRef, os );
             SAFE_POINT_OP( os, );
+            resultAnnotations << __Annotation( feature.id, this );
         }
     } else {
         group = rootGroup.getSubgroup( groupName, true );
@@ -110,6 +111,7 @@ void FeaturesTableObject::addAnnotations( QList<AnnotationData> &annotations,
             const U2Feature feature = U2FeatureUtils::exportAnnotationDataToFeatures( a,
                 group.getId( ), entityRef.dbiRef, os );
             SAFE_POINT_OP( os, );
+            resultAnnotations << __Annotation( feature.id, this );
         }
      }
 
@@ -117,15 +119,18 @@ void FeaturesTableObject::addAnnotations( QList<AnnotationData> &annotations,
     setModified( true );
 
     GTIMER( c2, t2, "FeaturesTableObject::addAnnotations [notify]" );
+    emit si_onAnnotationsAdded( resultAnnotations );
 }
 
-void FeaturesTableObject::removeAnnotation( const __Annotation &a )
-{
-    removeAnnotationFromDb( a );
+void FeaturesTableObject::removeAnnotation( const __Annotation &a ) {
     setModified( true );
+    emit si_onAnnotationsRemoved( QList<__Annotation>( ) << a );
+
+    removeAnnotationFromDb( a );
 }
 
 void FeaturesTableObject::removeAnnotations( const QList<__Annotation> &annotations ) {
+    emit si_onAnnotationsRemoved( annotations );
     foreach ( const __Annotation &a, annotations ) {
         removeAnnotationFromDb( a );
     }
@@ -277,7 +282,7 @@ void FeaturesTableObject::copyFeaturesToObject( const U2Feature &feature,
 }
 
 QList<__Annotation> FeaturesTableObject::convertFeaturesToAnnotations(
-    const QList<U2Feature> &features )
+    const QList<U2Feature> &features ) const
 {
     QList<__Annotation> results;
     U2OpStatusImpl os;
@@ -286,10 +291,38 @@ QList<__Annotation> FeaturesTableObject::convertFeaturesToAnnotations(
         if ( !U2FeatureUtils::isGroupFeature( feature.id, entityRef.dbiRef, os )
             && !feature.name.isEmpty( ) )
         { // this case corresponds to complete annotations, not to partial (e.g. joins, orders)
-            results << __Annotation( feature.id, this );
+            results << __Annotation( feature.id, const_cast<FeaturesTableObject *>( this ) );
         }
     }
     return results;
 }
 
-} // namespace
+void FeaturesTableObject::emit_onAnnotationsAdded( const QList<__Annotation> &l ) {
+    emit si_onAnnotationsAdded( l );
+}
+
+void FeaturesTableObject::emit_onAnnotationModified( const AnnotationModification &md ) {
+    emit si_onAnnotationModified( md );
+}
+
+void FeaturesTableObject::emit_onGroupCreated( const __AnnotationGroup &g ) {
+    emit si_onGroupCreated( g );
+}
+
+void FeaturesTableObject::emit_onGroupRemoved( const __AnnotationGroup &p,
+    const __AnnotationGroup &g )
+{
+    emit si_onGroupRemoved( p, g );
+}
+
+void FeaturesTableObject::emit_onGroupRenamed( const __AnnotationGroup &g ) {
+    emit si_onGroupRenamed( g );
+}
+
+void FeaturesTableObject::emit_onAnnotationsInGroupRemoved( const QList<__Annotation> &l,
+    const __AnnotationGroup &gr )
+{
+    emit si_onAnnotationsInGroupRemoved( l, gr );
+}
+
+} // namespace U2

@@ -19,7 +19,7 @@
  * MA 02110-1301, USA.
  */
 
-#include <U2Core/AnnotationTableObject.h>
+#include <U2Core/FeaturesTableObject.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>
 #include <U2Core/BaseDocumentFormats.h>
@@ -99,9 +99,7 @@ void SeqPosTask::prepare() {
 
     treatTask = new SaveDocumentTask(treatDoc);
     addSubTask(treatTask);
-    
 }
-
 
 Document* SeqPosTask::createDoc( const QList<SharedAnnotationData>& annData, const QString& name){
     Document* doc = NULL;
@@ -116,15 +114,14 @@ Document* SeqPosTask::createDoc( const QList<SharedAnnotationData>& annData, con
     CHECK_OP(stateInfo, doc);
     doc->setDocumentOwnsDbiResources(false);
 
-    AnnotationTableObject *ato = new AnnotationTableObject(name);
+    FeaturesTableObject *ato = new FeaturesTableObject( name, doc->getDbiRef( ) );
     foreach (const SharedAnnotationData &sad, annData) {
-        ato->addAnnotation(new Annotation(sad), QString());
+        ato->addAnnotation( *sad );
     }
-    doc->addObject(ato);   
+    doc->addObject(ato);
 
     return doc;
 }
-
 
 QList<Task*> SeqPosTask::onSubTaskFinished(Task* subTask) {
     QList<Task*> result;

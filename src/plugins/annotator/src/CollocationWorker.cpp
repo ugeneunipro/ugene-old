@@ -252,9 +252,9 @@ void CollocationWorker::sl_taskFinished() {
     if (output) {
         QVariant v = qVariantFromValue<QList<SharedAnnotationData> >(list);
         output->put(Message(BaseTypes::ANNOTATION_TABLE_TYPE(), v));
-        //algoLog.info(tr("Found %1 collocations").arg(res.size()));
     }
 }
 
 } //namespace LocalWorkflow
+
 } //namespace U2

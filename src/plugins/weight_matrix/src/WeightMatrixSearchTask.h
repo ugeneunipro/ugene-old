@@ -39,20 +39,19 @@ public:
         qual = QMap<QString, QString>();
     }
 
-    SharedAnnotationData toAnnotation(const QString& name) const {
-        SharedAnnotationData data;
-        data = new AnnotationData;
-        data->name = name;
-        data->location->regions << region;
-        data->setStrand(strand);
+    AnnotationData toAnnotation(const QString& name) const {
+        AnnotationData data;
+        data.name = name;
+        data.location->regions << region;
+        data.setStrand(strand);
         if (!modelInfo.isEmpty()) {
-            data->qualifiers.append(U2Qualifier("Weight_matrix_model", modelInfo));
+            data.qualifiers.append(U2Qualifier("Weight_matrix_model", modelInfo));
         }
-        data->qualifiers.append(U2Qualifier("Score", QString::number(score)));
+        data.qualifiers.append(U2Qualifier("Score", QString::number(score)));
         QMapIterator<QString, QString> iter(qual);
         while (iter.hasNext()) {
             iter.next();
-            data->qualifiers.append(U2Qualifier(iter.key(), iter.value()));
+            data.qualifiers.append(U2Qualifier(iter.key(), iter.value()));
         }
         return data;
     }
@@ -61,7 +60,7 @@ public:
     {
         QList<SharedAnnotationData> list;
         foreach (const WeightMatrixSearchResult& f, res) {
-            list.append(f.toAnnotation(name));
+            list.append( SharedAnnotationData( new AnnotationData( f.toAnnotation( name ) ) ) );
         }
         return list;
     }

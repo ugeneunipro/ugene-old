@@ -30,7 +30,6 @@
 
 #include <U2Core/GObjectTypes.h>
 #include <U2Core/BioStruct3DObject.h>
-#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/GObjectRelationRoles.h>
 #include <U2Core/GObjectUtils.h>

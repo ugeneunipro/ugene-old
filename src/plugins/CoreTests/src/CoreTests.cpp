@@ -29,7 +29,6 @@
 #include "EditSequenceTests.h"
 #include "DocumentModelTests.h"
 #include "DNASequenceObjectTests.h"
-#include "AnnotationTableObjectTest.h"
 #include "DNATranslationImplTests.h"
 #include "BioStruct3DObjectTests.h"
 #include "TaskTests.h"
@@ -97,9 +96,6 @@ void CoreTests::registerFactories() {
 
     //DNATranslationImplTests Tests
     registerFactory<DNATranslationImplTests>(xmlTestFormat);
-
-    //Annotation Table Object Test
-    registerFactory<AnnotationTableObjectTest>(xmlTestFormat);
 
     //Sequence Walker Test
     registerFactory<SequenceWalkerTests>(xmlTestFormat);

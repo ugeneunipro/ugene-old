@@ -22,6 +22,7 @@
 #ifndef _U2_PDW_FORMAT_H_
 #define _U2_PDW_FORMAT_H_
 
+#include <U2Core/AnnotationData.h>
 #include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/DocumentModel.h>
 
@@ -29,36 +30,39 @@ namespace U2 {
 
 class IOAdapter;
 class Annotation;
-class AnnotationTableObject;
+class FeaturesTableObject;
 class U2SequenceObject;
 
-class U2FORMATS_EXPORT  PDWFormat : public DocumentFormat {
+class U2FORMATS_EXPORT PDWFormat : public DocumentFormat {
     Q_OBJECT
 public:
-    PDWFormat(QObject* p);
+                                    PDWFormat( QObject *p );
 
-    virtual DocumentFormatId getFormatId() const {return BaseDocumentFormats::PDW;}
+    virtual DocumentFormatId        getFormatId( ) const { return BaseDocumentFormats::PDW; }
 
-    virtual const QString& getFormatName() const {return formatName;}
+    virtual const QString &         getFormatName( ) const { return formatName; }
 
-    virtual FormatCheckResult checkRawData(const QByteArray& rawData, const GUrl& = GUrl()) const;
+    virtual FormatCheckResult       checkRawData( const QByteArray &rawData,
+                                        const GUrl & = GUrl( ) ) const;
 
 protected:
-    virtual Document* loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, U2OpStatus& os);
+    virtual Document *              loadDocument( IOAdapter *io, const U2DbiRef &dbiRef,
+                                        const QVariantMap &fs, U2OpStatus &os );
 
 private:
-    
-    static QByteArray parseSequence(IOAdapter* io, U2OpStatus& ti);
+    static QByteArray               parseSequence( IOAdapter *io, U2OpStatus &ti );
 
-    static Annotation* parseAnnotation(IOAdapter* io, U2OpStatus& ti);
+    static AnnotationData           parseAnnotation( IOAdapter *io, U2OpStatus &ti );
 
-    static QByteArray readPdwValue(const QByteArray& readBuf, const QByteArray& valueName);
+    static QByteArray               readPdwValue( const QByteArray &readBuf,
+                                        const QByteArray &valueName );
 
-    void load(IOAdapter* io, const U2DbiRef& ref, const QVariantMap& fs, const GUrl& docUrl, QList<GObject*>& objects, U2OpStatus& ti, 
-        U2SequenceObject*& dnaObj, AnnotationTableObject*& aObj);
-    
-    QString formatName;
+    void                            load( IOAdapter *io, const U2DbiRef &ref,
+                                        const QVariantMap &fs, const GUrl &docUrl,
+                                        QList<GObject *> &objects, U2OpStatus &ti,
+                                        U2SequenceObject *&dnaObj, FeaturesTableObject *&aObj );
 
+    QString                         formatName;
 };
 
 }//namespace

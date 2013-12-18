@@ -26,12 +26,13 @@
 #include <U2Core/DocumentModel.h>
 #include <U2Core/MAlignmentObject.h>
 #include <U2Core/DNASequenceObject.h>
-#include <U2Core/AnnotationTableObject.h>
 
 namespace U2 {
+
 class IOAdapter;
+
 class U2FORMATS_EXPORT ACEFormat : public DocumentFormat {
-Q_OBJECT
+    Q_OBJECT
 public:
     ACEFormat(QObject* p);
 

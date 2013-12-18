@@ -46,7 +46,7 @@
 
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/MAlignmentObject.h>
-#include <U2Core/AnnotationTableObject.h>
+#include <U2Core/FeaturesTableObject.h>
 #include <U2Core/MSAUtils.h>
 #include <U2Core/SequenceUtils.h>
 #include <U2Core/BaseDocumentFormats.h>
@@ -592,9 +592,13 @@ QString LoadDocumentTask::getURLString() const {
     return url.getURLString();
 }
 
-GObject* LDTObjectFactory::create(const GObjectReference& ref) {
-    assert(ref.objType == GObjectTypes::ANNOTATION_TABLE); //TODO: handle other core types
-    return new AnnotationTableObject(ref.objName);
+GObject * LDTObjectFactory::create( const GObjectReference &ref ) {
+    // TODO: handle other core types
+    SAFE_POINT( ref.objType == GObjectTypes::ANNOTATION_TABLE, "Invalid object type!", NULL );
+    U2OpStatusImpl os;
+    const U2DbiRef dbiRef = AppContext::getDbiRegistry( )->getSessionTmpDbiRef( os );
+    SAFE_POINT_OP( os, NULL );
+    return new FeaturesTableObject( ref.objName, dbiRef );
 }
 
 }//namespace

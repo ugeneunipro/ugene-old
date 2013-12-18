@@ -33,7 +33,7 @@
 #include "utils/ExportTasks.h"
 
 #include <U2Core/DNASequenceObject.h>
-#include <U2Core/AnnotationTableObject.h>
+#include <U2Core/AnnotationData.h>
 #include <U2Core/ExternalToolRunTask.h>
 
 #include "utils/BlastTaskSettings.h"
@@ -52,7 +52,7 @@ public:
 
     Task::ReportResult report();
 
-    QList<SharedAnnotationData> getResultedAnnotations() const;
+    QList<AnnotationData>       getResultedAnnotations() const;
     BlastTaskSettings           getSettings() const;
 private:
     ExternalToolLogParser*      logParser;
@@ -62,10 +62,10 @@ private:
     ExternalToolRunTask*        blastAllTask;
     BlastTaskSettings           settings;
 
-    U2SequenceObject*          sequenceObject;
+    U2SequenceObject*           sequenceObject;
     Document*                   tmpDoc;
 
-    QList<SharedAnnotationData> result;
+    QList<AnnotationData>       result;
 
     void parseTabularResult();
     void parseTabularLine(const QByteArray &line);

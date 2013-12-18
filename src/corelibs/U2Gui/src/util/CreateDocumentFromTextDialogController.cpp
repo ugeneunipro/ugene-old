@@ -19,12 +19,14 @@
  * MA 02110-1301, USA.
  */
 
-#include "CreateDocumentFromTextDialogController.h"
-#include "ui/ui_CreateDocumentFromTextDialog.h"
+#include <QtGui/QFileDialog>
+#include <QtGui/QMessageBox>
+#include <QtGui/QMessageBox>
 
 #include <U2Core/IOAdapter.h>
 #include <U2Core/IOAdapterUtils.h>
 #include <U2Core/AppContext.h>
+#include <U2Core/DNASequenceObject.h>
 #include <U2Core/Task.h>
 #include <U2Core/ProjectModel.h>
 #include <U2Core/DocumentSelection.h>
@@ -47,9 +49,8 @@
 #include <U2Gui/MainWindow.h>
 #include <U2Gui/LastUsedDirHelper.h>
 
-#include <QtGui/QFileDialog>
-#include <QtGui/QMessageBox>
-#include <QtGui/QMessageBox>
+#include "ui/ui_CreateDocumentFromTextDialog.h"
+#include "CreateDocumentFromTextDialogController.h"
 
 namespace U2{
 
@@ -58,7 +59,7 @@ CreateDocumentFromTextDialogController::CreateDocumentFromTextDialogController(Q
     ui->setupUi(this);
 
     //TODO: use format name here 
-	ui->formatBox->addItem("FASTA", BaseDocumentFormats::FASTA);
+    ui->formatBox->addItem("FASTA", BaseDocumentFormats::FASTA);
     ui->formatBox->addItem("Genbank", BaseDocumentFormats::PLAIN_GENBANK);
 
     connect(ui->browseButton, SIGNAL(clicked()), SLOT(sl_browseButtonClicked()));
@@ -157,9 +158,9 @@ void CreateDocumentFromTextDialogController::acceptWithExistingProject() {
     DNASequence seq = w->getSequence();
     seq.setName(ui->nameEdit->text());
     QList<GObject*> objs;
-    U2SequenceObject* seqObj = DocumentFormatUtils::addSequenceObjectDeprecated(doc->getDbiRef(), seq.getName(), objs, seq, os);
+    U2SequenceObject *seqObj = DocumentFormatUtils::addSequenceObjectDeprecated(doc->getDbiRef(), seq.getName(), objs, seq, os);
     CHECK_OP_EXT(os, delete doc, );
-    doc->addObject(seqObj);
+    doc->addObject( seqObj );
 
     p->addDocument(doc);
     if(ui->saveImmediatelyBox->isChecked()){

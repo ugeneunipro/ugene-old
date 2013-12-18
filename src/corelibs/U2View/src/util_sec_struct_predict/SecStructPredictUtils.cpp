@@ -104,22 +104,22 @@ QString SecStructPredictUtils::getStructNameForCharTag( char tag )
     return BioStruct3D::getSecStructTypeName(type);
 }
 
-QList<SharedAnnotationData> SecStructPredictUtils::saveAlgorithmResultsAsAnnotations( const QByteArray& predicted, const QString& annotationName )
+QList<AnnotationData> SecStructPredictUtils::saveAlgorithmResultsAsAnnotations( const QByteArray& predicted, const QString& annotationName )
 {
     char emptyCoil = 'C';
 
     int numAcronyms = predicted.length();
-    QList<SharedAnnotationData> predictedStructures;
+    QList<AnnotationData> predictedStructures;
     char prevChar = predicted.at(0);
     int lastRecordedPos = 0;
     for (int i = 1; i < numAcronyms; ++i) {
         char curChar = predicted.at(i);
         if ( (curChar != prevChar) || (i == numAcronyms - 1)) {
             if ( prevChar != emptyCoil ) {
-                SharedAnnotationData sd( new AnnotationData);
-                sd->name = annotationName;
-                sd->location->regions.append(U2Region(lastRecordedPos, i - lastRecordedPos));
-                sd->qualifiers.append(U2Qualifier(BioStruct3D::SecStructTypeQualifierName, getStructNameForCharTag(prevChar)));
+                AnnotationData sd;
+                sd.name = annotationName;
+                sd.location->regions.append(U2Region(lastRecordedPos, i - lastRecordedPos));
+                sd.qualifiers.append(U2Qualifier(BioStruct3D::SecStructTypeQualifierName, getStructNameForCharTag(prevChar)));
                 predictedStructures.append(sd);
             }
             lastRecordedPos = i;

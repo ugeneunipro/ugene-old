@@ -1,9 +1,32 @@
+/**
+ * UGENE - Integrated Bioinformatics Tools.
+ * Copyright (C) 2008-2013 UniPro <ugene@unipro.ru>
+ * http://ugene.unipro.ru
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301, USA.
+ */
+
 #include <QtCore/QFile>
 
 #include <U2Core/AppContext.h>
 #include <U2Core/Counter.h>
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/DNATranslation.h>
+#include <U2Core/FeaturesTableObject.h>
+
 #include <U2View/FindPatternTask.h>
 
 #include "CustomPatternAnnotationTask.h"
@@ -13,7 +36,7 @@ namespace U2 {
 //////////////////////////////////////////////////////////////////////////
 // CustomPatternAnnotationTask
 
-CustomPatternAnnotationTask::CustomPatternAnnotationTask(AnnotationTableObject* aObj, const U2::U2EntityRef &entityRef, const SharedFeatureStore &store)
+CustomPatternAnnotationTask::CustomPatternAnnotationTask(FeaturesTableObject* aObj, const U2::U2EntityRef &entityRef, const SharedFeatureStore &store)
     : Task(tr("Custom pattern annotation"), TaskFlags_NR_FOSCOE), aTableObj(aObj), seqRef(entityRef),  featureStore(store)
 {
     GCOUNTER( cvar, tvar, "CustomPatternAnnotationTask" );
@@ -53,13 +76,10 @@ void CustomPatternAnnotationTask::prepare()
         QString annotGroup = featureStore->getName();
 
         // Creating and registering the task
-        FindPatternTask* task = new FindPatternTask(settings,  aTableObj,   annotName, annotGroup, false);
+        FindPatternTask* task = new FindPatternTask(settings,  aTableObj, annotName, annotGroup, false);
 
         addSubTask(task);
-
     }
-
-
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -87,10 +107,9 @@ bool FeatureStore::load()
         pattern.second = lineItems[2].toUpper();
 
         features.append(pattern);
-
     }
 
-    return features.size() > 0;
+    return !features.isEmpty( );
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -105,7 +124,7 @@ CustomPatternAutoAnnotationUpdater::CustomPatternAutoAnnotationUpdater(const Sha
 
 Task* CustomPatternAutoAnnotationUpdater::createAutoAnnotationsUpdateTask( const AutoAnnotationObject* aa )
 {
-    AnnotationTableObject* aObj = aa->getAnnotationObject();
+    FeaturesTableObject *aObj = aa->getAnnotationObject();
     const U2EntityRef& dnaRef = aa->getSeqObject()->getEntityRef();
     Task* task = new CustomPatternAnnotationTask(aObj, dnaRef, featureStore );
 
@@ -121,5 +140,4 @@ bool CustomPatternAutoAnnotationUpdater::checkConstraints( const AutoAnnotationC
     return constraints.alphabet->isNucleic();
 }
 
-
-}
+} // namespace U2

@@ -37,24 +37,18 @@ class U2OpStatus;
 class U2CORE_EXPORT U1SequenceUtils : public QObject {
     Q_OBJECT
 public:
-    
-    
     /** Extract sequence parts marked by the regions
         Note: the order of complemented regions is also reversed
     */
     static QList<QByteArray> extractRegions(const QByteArray& seq, const QVector<U2Region>& regions, 
         DNATranslation* complTT, DNATranslation* aminoTT = NULL, bool circular = false, bool join = false);
 
-
     /** Joins sequence parts into a single sequence */
     static QByteArray joinRegions(const QList<QByteArray>& parts);
-
 
     /** Translates sequence parts, if  join == true -> joins parts before translation is started
     */
     static QList<QByteArray> translateRegions(const QList<QByteArray>& origParts, DNATranslation* aminoTT, bool join);
-
-    
 
     /** Returns regions locations as if they were joined */
     static QVector<U2Region> getJoinedMapping(const QList<QByteArray>& seqParts);

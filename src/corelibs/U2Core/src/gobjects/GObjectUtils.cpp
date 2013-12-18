@@ -21,13 +21,12 @@
 
 #include "GObjectUtils.h"
 
-#include "AnnotationTableObject.h"
-
 #include <U2Core/AppContext.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/ProjectModel.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/DNATranslation.h>
+#include <U2Core/FeaturesTableObject.h>
 #include <U2Core/GHints.h>
 #include <U2Core/GUrl.h>
 #include <U2Core/DNAAlphabet.h>
@@ -37,7 +36,6 @@
 #include <U2Core/U2SafePoints.h>
 
 namespace U2 {
-
 
 QList<GObject*> GObjectUtils::select(const QList<GObject*>& objs, GObjectType t, UnloadedObjectFilter f) {
     QList<GObject*> res;
@@ -240,21 +238,24 @@ void GObjectUtils::updateRelationsURL(GObject* o, const QString& fromURL, const 
     }
 }
 
-void GObjectUtils::replaceAnnotationQualfier( Annotation* a, const QString& name, const QString& newVal, bool create )
+void GObjectUtils::replaceAnnotationQualfier( AnnotationData &a, const QString &name,
+    const QString &newVal, bool create )
 {
     QVector<U2Qualifier> quals;
-    a->findQualifiers(name, quals);
+    a.findQualifiers( name, quals );
     
-    foreach (const U2Qualifier& q, quals) {
-        a->removeQualifier(q);
+    foreach ( const U2Qualifier &q, quals ) {
+        for ( int i = 0; i < quals.size( ); ++i ) {
+            if ( a.qualifiers[i] == q ) {
+                a.qualifiers.remove( i );
+                --i;
+            }
+        }
     }
 
-    if (create || quals.size() > 0) {
-        a->addQualifier(name, newVal);
+    if ( create || !quals.isEmpty( ) ) {
+        a.qualifiers << U2Qualifier( name, newVal );
     }
 }
 
-
-
-} //namespace
-
+} // namespace U2

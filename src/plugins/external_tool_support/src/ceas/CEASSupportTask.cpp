@@ -19,13 +19,13 @@
  * MA 02110-1301, USA.
  */
 
-#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>
 #include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/DocumentUtils.h>
 #include <U2Core/ExternalToolRunTask.h>
+#include <U2Core/FeaturesTableObject.h>
 #include <U2Core/GUrlUtils.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/IOAdapterUtils.h>
@@ -121,9 +121,6 @@ void CEASSupportTask::prepare() {
     createBedDoc();
     CHECK_OP(stateInfo, );
 
-//     createWigDoc();
-//     CHECK_OP(stateInfo, );
-
     if (bedDoc){
         bedTask = new SaveDocumentTask(bedDoc);
         addSubTask(bedTask);
@@ -131,11 +128,6 @@ void CEASSupportTask::prepare() {
     }else{
         addSubTask(createETTask());
     }
-    
-
-//     wigTask = new SaveDocumentTask(wigDoc);
-//     addSubTask(wigTask);
-//     activeSubtasks++;
 }
 
 void CEASSupportTask::createBedDoc() {
@@ -152,9 +144,9 @@ void CEASSupportTask::createBedDoc() {
         CHECK_OP(stateInfo, );
         bedDoc->setDocumentOwnsDbiResources(false);
 
-        AnnotationTableObject *ato = new AnnotationTableObject("bed_anns");
+        FeaturesTableObject *ato = new FeaturesTableObject( "bed_anns", bedDoc->getDbiRef( ) );
         foreach (const SharedAnnotationData &sad, settings.getBedData()) {
-            ato->addAnnotation(new Annotation(sad), QString());
+            ato->addAnnotation( *sad );
         }
         bedDoc->addObject(ato);
     }
@@ -295,6 +287,5 @@ void CEASLogParser::parseErrOutput( const QString& partOfLog ){
         }
     }
 }
-
 
 } // U2

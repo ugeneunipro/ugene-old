@@ -258,47 +258,38 @@ void EnzymesADVContext::buildMenu( GObjectView* v, QMenu* m )
     m->insertMenu(exportMenuAction, cloningMenu);
 
     if(!av->getAnnotationsSelection()->getSelection().isEmpty()) {
-        QString annName = av->getAnnotationsSelection()->getSelection().first().annotation->getAnnotationName();
+        QString annName = av->getAnnotationsSelection()->getSelection().first().annotation.getName();
         
         if (annName == PRIMER_ANNOTATION_NAME) {
-            cloningMenu->addAction( createPCRProductAction );    
+            cloningMenu->addAction( createPCRProductAction );
         }
     }
-        
-
 }
-
 
 void EnzymesADVContext::sl_createPCRProduct()
 {
     GObjectViewAction* action = qobject_cast<GObjectViewAction*>(sender());
-    assert(action!=NULL);
+    SAFE_POINT( action != NULL, "Invalid action object!", );
     AnnotatedDNAView* av = qobject_cast<AnnotatedDNAView*>(action->getObjectView());
-    assert(av!=NULL);
-    
-    Annotation* a = av->getAnnotationsSelection()->getSelection().first().annotation;
-    const QList<AnnotationGroup*> groups = a->getGroups();
-    foreach( AnnotationGroup* group, groups) {
-        if (group->getGroupName().startsWith(PRIMER_ANNOTATION_GROUP_NAME) ) {
-            assert(group->getAnnotations().size() == 2);
-            if (group->getAnnotations().size() == 2) {
-                Annotation* a1 = group->getAnnotations().at(0);
-                Annotation* a2 = group->getAnnotations().at(1);
-                int startPos = a1->getLocation()->regions.at(0).startPos;
-                assert(a2->getLocation()->strand == U2Strand::Complementary);
-                int endPos = a2->getLocation()->regions.at(0).endPos();
-                
-                U2SequenceObject* seqObj = av->getSequenceInFocus()->getSequenceObject();
-                U2Region region(startPos, endPos - startPos );
-                CreateFragmentDialog dlg(seqObj, region, av->getSequenceWidgetInFocus() );
-                dlg.setWindowTitle("Create PCR product");
-                dlg.exec();
-            }
-        }
+    SAFE_POINT( av != NULL, "Invalid DNA view!", );
+
+    const __Annotation a = av->getAnnotationsSelection()->getSelection().first().annotation;
+    const __AnnotationGroup group = a.getGroup();
+    if (group.getName().startsWith(PRIMER_ANNOTATION_GROUP_NAME) ) {
+        SAFE_POINT( group.getAnnotations( ).size( ) == 2, "Invalid selected annotation count!", );
+
+        const __Annotation a1 = group.getAnnotations().at(0);
+        const __Annotation a2 = group.getAnnotations().at(1);
+        int startPos = a1.getLocation()->regions.at(0).startPos;
+        SAFE_POINT( a2.getLocation( )->strand == U2Strand::Complementary, "Invalid annotation's strand!", );
+        int endPos = a2.getLocation()->regions.at(0).endPos();
+
+        U2SequenceObject* seqObj = av->getSequenceInFocus()->getSequenceObject();
+        U2Region region(startPos, endPos - startPos );
+        CreateFragmentDialog dlg(seqObj, region, av->getSequenceWidgetInFocus() );
+        dlg.setWindowTitle("Create PCR product");
+        dlg.exec();
     }
-
-
 }
-
 
 } //namespace

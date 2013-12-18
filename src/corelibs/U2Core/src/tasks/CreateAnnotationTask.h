@@ -22,36 +22,36 @@
 #ifndef _U2_CREATE_ANNOTATION_TASK_H_
 #define _U2_CREATE_ANNOTATION_TASK_H_
 
+#include <U2Core/AnnotationData.h>
+#include <U2Core/FeaturesTableObject.h>
 #include <U2Core/Task.h>
 
-#include <U2Core/AnnotationTableObject.h>
-
 namespace U2 {
-
-class AnnotationTableObject;
-class AnnotationData;
 
 class U2CORE_EXPORT CreateAnnotationsTask : public Task {
     Q_OBJECT
 public:
     // Adds annotations to the object. Waits object to be unlocked if needed
     // Works only in a context of active project
-    CreateAnnotationsTask(AnnotationTableObject* o, const QString& group, SharedAnnotationData data);
-    CreateAnnotationsTask(AnnotationTableObject* o, const QString& group, QList<SharedAnnotationData> data);
-    CreateAnnotationsTask(const GObjectReference& ref, const QString& group, QList<SharedAnnotationData> data);
+                                    CreateAnnotationsTask( FeaturesTableObject *o,
+                                        const QString &group, const AnnotationData &data );
+                                    CreateAnnotationsTask( FeaturesTableObject *o,
+                                        const QString &group, const QList<AnnotationData> &data );
+                                    CreateAnnotationsTask( const GObjectReference &ref,
+                                        const QString &group, const QList<AnnotationData> &data );
 
-    ReportResult report();
-    const QList<Annotation*>& getAnnotations() const {return annotations;}
+    ReportResult                    report( );
+    FeaturesTableObject *           getGObject( ) const;
+    int                             getAnnotationCount( ) const;
 
 private:
-    GObjectReference            aRef;
-    QPointer<AnnotationTableObject>  aobj;
-    QString                     groupName;
-    QList<SharedAnnotationData> aData;
-    QList<Annotation*>          annotations;
-    int                         pos;
+    GObjectReference                aRef;
+    QPointer<FeaturesTableObject>   aobj;
+    QString                         groupName;
+    QList<AnnotationData>           aData;
+    int                             pos;
 };
 
-}//namespace
+} //namespace U2
 
 #endif

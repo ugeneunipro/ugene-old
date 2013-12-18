@@ -25,6 +25,7 @@
 #include <U2Core/CreateAnnotationTask.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/LoadDocumentTask.h>
+#include <U2Core/DNASequenceObject.h>
 
 #include <QtGui/QMessageBox>
 
@@ -35,7 +36,7 @@ SaveGraphCutoffsDialogController::SaveGraphCutoffsDialogController( GSequenceGra
     setupUi(this);
     CreateAnnotationModel m;
     m.hideLocation = true;
-    m.data->name = QString("graph_cutoffs");
+    m.data.name = QString("graph_cutoffs");
     m.sequenceObjectRef = ctx->getSequenceObject();
     m.useUnloadedObjects = false;
     m.sequenceLen = ctx->getSequenceObject()->getSequenceLength();
@@ -102,7 +103,7 @@ void SaveGraphCutoffsDialogController::accept(){
                 it--;
                 if((prevAccepetedPos + step) == curPos){            //expand if accepted values in a row
                     it->length += step;
-                }else{                                          //remove prevous empty region, and add new region to list
+                }else{                                          //remove previous empty region, and add new region to list
                     resultRegions.append(U2Region(curPos - startOffset, window));
                 }
             }
@@ -111,14 +112,14 @@ void SaveGraphCutoffsDialogController::accept(){
         curPos += step;
     }
 
-    QList<SharedAnnotationData> data;
-    foreach(U2Region r, resultRegions){
-        SharedAnnotationData d(new AnnotationData());
-        d->location->regions.append(r);
-        d->name = mm.data->name;
+    QList<AnnotationData> data;
+    foreach ( const U2Region &r, resultRegions ) {
+        AnnotationData d;
+        d.location->regions.append(r);
+        d.name = mm.data.name;
         data.append(d);
     }
-    AnnotationTableObject* aobj = mm.getAnnotationObject();
+    FeaturesTableObject *aobj = mm.getAnnotationObject( );
     Task *t  = new CreateAnnotationsTask(aobj, mm.groupName, data);
     AppContext::getTaskScheduler()->registerTopLevelTask(t) ;
     QDialog::accept();

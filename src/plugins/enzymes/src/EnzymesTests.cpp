@@ -25,10 +25,13 @@
 #include "FindEnzymesTask.h"
 #include "CloningUtilTasks.h"
 
+#include <U2Core/U2DbiRegistry.h>
 #include <U2Core/DNASequenceObject.h>
-#include <U2Core/AnnotationTableObject.h>
+#include <U2Core/FeaturesTableObject.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/GObjectRelationRoles.h>
+#include <U2Core/U2OpStatusUtils.h>
+
 #include <U2Formats/GenbankLocationParser.h>
 
 namespace U2 {
@@ -48,10 +51,11 @@ void GTest_FindEnzymes::init(XMLTestFormat *tf, const QDomElement& el) {
         aObjName = "annotations"; 
     }
 
-    aObj = new AnnotationTableObject(aObjName);
+    U2OpStatusImpl os;
+    const U2DbiRef dbiRef = AppContext::getDbiRegistry( )->getSessionTmpDbiRef( os );
+    SAFE_POINT_OP( os, );
+    aObj = new FeaturesTableObject( aObjName, dbiRef );
     aObj->setParent(this);
-
-
 
     QString buf = el.attribute("minHits");
     bool ok;
@@ -144,7 +148,6 @@ void GTest_FindEnzymes::prepare() {
     addSubTask(loadTask);
 }
 
-
 QList<Task*> GTest_FindEnzymes::onSubTaskFinished(Task* subTask) {
     QList<Task*> res;
     if (hasError() || isCanceled()) {
@@ -182,19 +185,19 @@ Task::ReportResult GTest_FindEnzymes::report() {
     //for each enzyme from resultsPerEnzyme check that all annotations are present
     foreach(const QString& enzymeId, resultsPerEnzyme.keys()) {
         QList<U2Region> regions = resultsPerEnzyme.values(enzymeId);
-        AnnotationGroup* ag = aObj->getRootGroup()->getSubgroup(enzymeId, false);
-        if (ag == NULL) {
+        __AnnotationGroup &ag = aObj->getRootGroup().getSubgroup(enzymeId, false);
+        if ( ag == aObj->getRootGroup() ) {
             stateInfo.setError(  QString("Group not found %1").arg(enzymeId) );
             break;
         }
-        const QList<Annotation*> anns = ag->getAnnotations();
+        const QList<__Annotation> anns = ag.getAnnotations();
         if (anns.size() != regions.size()) {
             stateInfo.setError( QString("Number of results not matched for :%1, results: %2, expected %3")
-                .arg(enzymeId).arg(anns.size()).arg(regions.size()) );    
+                .arg(enzymeId).arg(anns.size()).arg(regions.size()) );
             break;
         }
-        foreach(const Annotation* a, anns) {
-            U2Region r = a->getRegions().first();
+        foreach ( const __Annotation &a, anns ) {
+            U2Region r = a.getRegions().first();
             if (!regions.contains(r)) {
                 stateInfo.setError( QString("Illegal region! Enzyme :%1, region %2..%3")
                     .arg(enzymeId).arg(r.startPos + 1).arg(r.endPos()) );    
@@ -208,7 +211,6 @@ Task::ReportResult GTest_FindEnzymes::report() {
 
     return Task::ReportResult_Finished;
 }
-
 
 void GTest_FindEnzymes::cleanup() {
     if (aObj != NULL) {
@@ -256,9 +258,6 @@ void GTest_DigestIntoFragments::init(XMLTestFormat *tf, const QDomElement& el) {
         stateInfo.setError(  QString("Invalid enzyme names: '%1'").arg(ensymesStr) );
         return;
     }
-
-
-    
 }
 
 void GTest_DigestIntoFragments::prepare() {
@@ -273,7 +272,7 @@ void GTest_DigestIntoFragments::prepare() {
         return;
     }
 
-    aObj = getContext<AnnotationTableObject>(this, aObjCtx);
+    aObj = getContext<FeaturesTableObject>(this, aObjCtx);
     if (aObj == NULL) {
         stateInfo.setError(  QString("Annotation context not found %1").arg(aObjCtx) );
         return;
@@ -282,7 +281,6 @@ void GTest_DigestIntoFragments::prepare() {
     loadTask = new LoadEnzymeFileTask(enzymesUrl);
     addSubTask(loadTask);
 }
-
 
 QList<Task*> GTest_DigestIntoFragments::onSubTaskFinished(Task* subTask) {
     QList<Task*> res;
@@ -311,7 +309,6 @@ QList<Task*> GTest_DigestIntoFragments::onSubTaskFinished(Task* subTask) {
     res.append(t);
     return res;
 }
-
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -365,14 +362,14 @@ void GTest_LigateFragments::prepare() {
     foreach (const QString& seqObjCtx, seqObjNames ) {
         GObject* seqObj = getContext<U2SequenceObject>(this, seqObjCtx);
         if (seqObj == NULL) {
-            stateInfo.setError(  QString("Sequence objext context not found %1").arg(seqObjCtx) );
+            stateInfo.setError(  QString("Sequence object context not found %1").arg(seqObjCtx) );
             return;
         }
         sObjs.append(seqObj);
     }
 
     foreach (const QString& aObjCtx, annObjNames ) {
-        GObject* aObj = getContext<AnnotationTableObject>(this, aObjCtx);
+        GObject* aObj = getContext<FeaturesTableObject>(this, aObjCtx);
         if (aObj == NULL) {
             stateInfo.setError(  QString("Annotation context not found %1").arg(aObjCtx) );
             return;
@@ -396,10 +393,8 @@ void GTest_LigateFragments::prepare() {
     cfg.addDocToProject = false;
     cfg.annotateFragments = true;
     
-    
     ligateTask = new LigateFragmentsTask(targetFragments, cfg);
     addSubTask(ligateTask);
-
 }
 
 void GTest_LigateFragments::prepareFragmentsList()
@@ -426,7 +421,6 @@ void GTest_LigateFragments::prepareFragmentsList()
             stateInfo.setError(QString("%1 %2 is not found. ").arg(fName).arg(fDoc) );
         }
     }
-
 }
 
 Task::ReportResult GTest_LigateFragments::report()

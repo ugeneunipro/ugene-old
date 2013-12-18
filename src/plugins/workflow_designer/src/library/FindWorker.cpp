@@ -39,7 +39,7 @@
 #include <U2Algorithm/FindAlgorithmTask.h>
 #include <U2Designer/DelegateEditors.h>
 #include <U2Formats/GenbankFeatures.h>
-#include <U2Core/AnnotationTableObject.h>
+#include <U2Core/FeaturesTableObject.h>
 
 #include "CoreLib.h"
 #include "util/RequiredSlotsValidator.h"
@@ -472,18 +472,18 @@ void FindWorker::sl_taskFinished(Task* t) {
                 QString patternName = filePatterns.value( findTask ).first;
                 if ( !patternName.isEmpty( ) ) {
                     patternName = patternName.left( GBFeatureUtils::MAX_KEY_LEN );
-                    if ( !Annotation::isValidAnnotationName( patternName ) ) {
+                    if ( !__Annotation::isValidAnnotationName( patternName ) ) {
                         patternName = resultName;
                     }
                 }
-                const QList<SharedAnnotationData> tmpResult = FindAlgorithmResult::toTable(
+                const QList<AnnotationData> tmpResult = FindAlgorithmResult::toTable(
                     findTask->popResults( ), useNames ? patternName : resultName );
-                foreach ( SharedAnnotationData annotation, tmpResult ) {
+                foreach ( AnnotationData annotation, tmpResult ) {
                     if ( !patternName.isEmpty( ) ) {
                         const U2Qualifier patternNameQual( patternNameQualName, patternName );
-                        annotation->qualifiers.push_back( patternNameQual );
+                        annotation.qualifiers.push_back( patternNameQual );
                     }
-                    result << annotation;
+                    result << SharedAnnotationData( new AnnotationData( annotation ) );
                 }
                 foreach ( SharedAnnotationData annotation, result ) {
                     foreach ( U2Qualifier qual, annotation->qualifiers ) {
@@ -506,7 +506,9 @@ void FindWorker::sl_taskFinished(Task* t) {
     }
     if(output) {
         if ( result.isEmpty( ) ) {
-            result = FindAlgorithmResult::toTable(annData, resultName);
+            foreach ( const AnnotationData &data, FindAlgorithmResult::toTable(annData, resultName) ) {
+                result << SharedAnnotationData( new AnnotationData( data ) );
+            }
         }
         QVariant v = qVariantFromValue<QList<SharedAnnotationData> >(result);
         output->put(Message(BaseTypes::ANNOTATION_TABLE_TYPE(), v));

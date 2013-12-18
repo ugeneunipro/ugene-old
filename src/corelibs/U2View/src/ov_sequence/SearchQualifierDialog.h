@@ -33,7 +33,6 @@ class Ui_SearchQualifierDialog;
 
 namespace U2 {
 
-class AnnotationTableObject;
 class AnnotationsTreeView;
 class AVItem;
 

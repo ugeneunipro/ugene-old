@@ -26,7 +26,7 @@
 #include "CufflinksSettings.h"
 #include "CufflinksSupport.h"
 
-#include <U2Core/AnnotationTableObject.h>
+#include <U2Core/AnnotationData.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/ExternalToolRunTask.h>
 #include <U2Core/Task.h>
@@ -55,8 +55,7 @@ public:
     QList<SharedAnnotationData> getIsoformAnnots() const { return isoformLevelAnnots; }
     QStringList getOutputFiles() const;
 
-    static QList<SharedAnnotationData> getAnnotationsFromFile(
-        const QString &filePath,
+    static QList<SharedAnnotationData> getAnnotationsFromFile( const QString &filePath,
         const DocumentFormatId &format,
         const QString &toolName,
         U2OpStatus &os);

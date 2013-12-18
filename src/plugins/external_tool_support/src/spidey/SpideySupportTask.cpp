@@ -32,138 +32,123 @@
 
 namespace U2 {
 
-
 //////////////////////////////////////////////////////////////////////////
 ////SpideySupportTask
 
-SpideyAlignmentTask::SpideyAlignmentTask(const SplicedAlignmentTaskConfig& settings) :
-        SplicedAlignmentTask("SpideySupportTask", TaskFlags_NR_FOSCOE, settings)
+SpideyAlignmentTask::SpideyAlignmentTask( const SplicedAlignmentTaskConfig &settings )
+    : SplicedAlignmentTask( "SpideySupportTask", TaskFlags_NR_FOSCOE, settings )
 {
     GCOUNTER( cvar, tvar, "SpideySupportTask" );
-    setMaxParallelSubtasks(1);
+    setMaxParallelSubtasks( 1 );
     logParser = NULL;
     spideyTask = NULL;
     prepareDataForSpideyTask = NULL;
-
 }
 
-
-void SpideyAlignmentTask::prepare(){
-
+void SpideyAlignmentTask::prepare( ) {
     //Add new subdir for temporary files
-    
-    tmpDirUrl = ExternalToolSupportUtils::createTmpDir(SPIDEY_TMP_DIR, stateInfo);
-    CHECK_OP(stateInfo, );
-
+    tmpDirUrl = ExternalToolSupportUtils::createTmpDir( SPIDEY_TMP_DIR, stateInfo );
+    CHECK_OP( stateInfo, );
 
     prepareDataForSpideyTask =
-            new PrepareInputForSpideyTask(config.getGenomicSequence(), config.getCDnaSequence(),
-                                                             tmpDirUrl);
-    addSubTask(prepareDataForSpideyTask);
-
+            new PrepareInputForSpideyTask( config.getGenomicSequence( ), config.getCDnaSequence( ),
+                                                             tmpDirUrl );
+    addSubTask( prepareDataForSpideyTask );
 }
 
-QList<Task*> SpideyAlignmentTask::onSubTaskFinished(Task* subTask) {
-    QList<Task*> res;
-    
-    propagateSubtaskError();
-    
-    if(hasError() || isCanceled()) {
+QList<Task *> SpideyAlignmentTask::onSubTaskFinished( Task *subTask ) {
+    QList<Task *> res;
+
+    propagateSubtaskError( );
+
+    if ( hasError( ) || isCanceled( ) ) {
         return res;
     }
     
-    if (subTask == prepareDataForSpideyTask) {
+    if ( subTask == prepareDataForSpideyTask ) {
+        SAFE_POINT( !prepareDataForSpideyTask->getResultPath( ).isEmpty( ), "Invalid result path!",
+            res );
 
-        assert(!prepareDataForSpideyTask->getResultPath().isEmpty());
+        tmpOutputUrl = prepareDataForSpideyTask->getResultPath( );
+        const QStringList &arguments = prepareDataForSpideyTask->getArgumentsList( );
 
-        tmpOutputUrl = prepareDataForSpideyTask->getResultPath();
-        const QStringList& arguments = prepareDataForSpideyTask->getArgumentsList();
-
-        logParser = new SpideyLogParser();
-        spideyTask = new ExternalToolRunTask(ET_SPIDEY, arguments, logParser);
-        spideyTask->setSubtaskProgressWeight(95);
-        res.append(spideyTask);
-
-    } else if (subTask == spideyTask){
-
-        if(!QFile::exists(tmpOutputUrl)){
-            if(AppContext::getExternalToolRegistry()->getByName(ET_SPIDEY)->isValid()){
-                stateInfo.setError(tr("Output file not found"));
-            }else{
-                stateInfo.setError(tr("Output file not found. May be %1 tool path '%2' not valid?")
-                                   .arg(AppContext::getExternalToolRegistry()->getByName(ET_SPIDEY)->getName())
-                                   .arg(AppContext::getExternalToolRegistry()->getByName(ET_SPIDEY)->getPath()));
+        logParser = new SpideyLogParser( );
+        spideyTask = new ExternalToolRunTask( ET_SPIDEY, arguments, logParser );
+        spideyTask->setSubtaskProgressWeight( 95 );
+        res.append( spideyTask );
+    } else if ( subTask == spideyTask ) {
+        if ( !QFile::exists(tmpOutputUrl ) ) {
+            if ( AppContext::getExternalToolRegistry( )->getByName( ET_SPIDEY )->isValid( ) ) {
+                stateInfo.setError( tr( "Output file not found" ) );
+            } else {
+                ExternalTool *spideyTool = AppContext::getExternalToolRegistry( )->getByName( ET_SPIDEY );
+                SAFE_POINT( NULL != spideyTool, "Invalid Spidey tool!", res );
+                stateInfo.setError(
+                    tr( "Output file not found. May be %1 tool path '%2' not valid?" )
+                    .arg( spideyTool->getName( ) ).arg( spideyTool->getPath( ) ) );
             }
             return res;
         }
-        
+
         // parse result
 
-        QFile resultFile(tmpOutputUrl);
+        QFile resultFile( tmpOutputUrl );
 
-        if (!resultFile.open(QFile::ReadOnly)) {
-            setError(tr("Failed to open result file %1").arg(tmpOutputUrl));
+        if ( !resultFile.open( QFile::ReadOnly ) ) {
+            setError( tr( "Failed to open result file %1" ).arg( tmpOutputUrl ) );
             return res;
         }
 
-        QTextStream inStream(&resultFile);
+        QTextStream inStream( &resultFile );
         bool strandDirect = true;
 
         U2Location location;
         location->op = U2LocationOperator_Join;
 
-        while (!inStream.atEnd()) {
-            QByteArray buf = inStream.readLine().toLatin1();
-            if (buf.startsWith("Strand")) {
-                strandDirect = buf.contains("plus");
+        while ( !inStream.atEnd( ) ) {
+            QByteArray buf = inStream.readLine( ).toLatin1( );
+            if ( buf.startsWith("Strand" ) ) {
+                strandDirect = buf.contains( "plus" );
             }
-            if (buf.startsWith("Exon")) {
+            if ( buf.startsWith( "Exon" ) ) {
                 // TODO: better to use reg exp here
-                int startPos = buf.indexOf(":") + 1;
-                int endPos = buf.indexOf("(gen)");
-                if (startPos == -1 || endPos == -1 ) {
+                int startPos = buf.indexOf( ":" ) + 1;
+                int endPos = buf.indexOf( "(gen)" );
+                if ( startPos == -1 || endPos == -1 ) {
                     continue;
                 }
-                QByteArray loc = buf.mid(startPos, endPos - startPos).trimmed();
-                QList<QByteArray> loci = loc.split('-');
-                if (loci.size() < 2) {
+                QByteArray loc = buf.mid( startPos, endPos - startPos ).trimmed( );
+                QList<QByteArray> loci = loc.split( '-' );
+                if ( loci.size() < 2 ) {
                     continue;
                 }
-                int start = QString(loci.at(0)).toInt();
-                int finish = QString(loci.at(1)).toInt();
+                int start = QString( loci.at( 0 ) ).toInt( );
+                int finish = QString( loci.at( 1 ) ).toInt( );
 
-                if (start == finish) {
+                if ( start == finish ) {
                     continue;
                 }
 
-               location->regions.append(U2Region(start - 1,finish - start + 1));
-
+               location->regions.append( U2Region( start - 1, finish - start + 1 ) );
             }
-
         }
 
-        if (!location->isEmpty()) {
-            SharedAnnotationData  data(new AnnotationData);
-            data->location = location;
-            data->setStrand(U2Strand(strandDirect ? U2Strand::Direct : U2Strand::Complementary));
-            data->name = "exon";
-            resultAnnotations.append(new Annotation(data));
+        if ( !location->isEmpty( ) ) {
+            AnnotationData  data;
+            data.location = location;
+            data.setStrand( U2Strand( strandDirect ? U2Strand::Direct : U2Strand::Complementary ) );
+            data.name = "exon";
+            resultAnnotations.append( data );
         }
-
-
     }
 
-
-
-
     return res;
-
 }
 
 
-Task::ReportResult SpideyAlignmentTask::report() {
+Task::ReportResult SpideyAlignmentTask::report( ) {
     U2OpStatus2Log os;
-    ExternalToolSupportUtils::removeTmpDir(tmpDirUrl,os);
+    ExternalToolSupportUtils::removeTmpDir( tmpDirUrl, os );
 
     return ReportResult_Finished;
 }
@@ -171,29 +156,22 @@ Task::ReportResult SpideyAlignmentTask::report() {
 //////////////////////////////////////////
 ////SpideyLogParser
 
-SpideyLogParser::SpideyLogParser() {
+SpideyLogParser::SpideyLogParser( ) {
+
 }
 
-int SpideyLogParser::getProgress() {
+int SpideyLogParser::getProgress( ) {
     return 0;
 }
-
 
 //////////////////////////////////////////
 ////PrepareInput
 
-PrepareInputForSpideyTask::PrepareInputForSpideyTask(const U2SequenceObject* dna, const U2SequenceObject* mRna,
-                          const QString& outputDirPath)
-    :Task("PrepareInputForSpideyTask", TaskFlags_FOSCOE),
-      dnaObj(dna), mRnaObj(mRna),  outputDir(outputDirPath)
+PrepareInputForSpideyTask::PrepareInputForSpideyTask( const U2SequenceObject *dna,
+    const U2SequenceObject *mRna, const QString& outputDirPath )
+    : Task( "PrepareInputForSpideyTask", TaskFlags_FOSCOE ), dnaObj( dna ), mRnaObj( mRna ),
+    outputDir( outputDirPath )
 {
-
-
-}
-
-void PrepareInputForSpideyTask::prepare() {
-    
-
 
 }
 
@@ -201,90 +179,79 @@ void PrepareInputForSpideyTask::prepare() {
 #define DNA_NAME "genomic.fa"
 #define MRNA_NAME "mrna.fa"
 
-void PrepareInputForSpideyTask::run()
-{
-    if ( hasError() || isCanceled() ) {
+void PrepareInputForSpideyTask::run( ) {
+    if ( hasError( ) || isCanceled( ) ) {
         return;
     }
     // writing DNA
 
-    QString dnaPath = outputDir + "/" + DNA_NAME;
+    const QString dnaPath = outputDir + "/" + DNA_NAME;
     StreamShortReadWriter dnaWriter;
-    dnaWriter.init(dnaPath);
-    if (!dnaWriter.writeNextSequence(dnaObj)) {
-        setError(tr("Failed to write DNA sequence  %1").arg(dnaObj->getSequenceName()));
+    dnaWriter.init( dnaPath );
+    if ( !dnaWriter.writeNextSequence( dnaObj ) ) {
+        setError( tr( "Failed to write DNA sequence  %1" ).arg( dnaObj->getSequenceName( ) ) );
         return;
     }
-    dnaWriter.close();
-    argumentList.append("-i");
-    argumentList.append(dnaPath);
+    dnaWriter.close( );
+    argumentList.append( "-i" );
+    argumentList.append( dnaPath );
 
     //writing mRNA
 
-    QString mRnaPath = outputDir + "/" + MRNA_NAME;
+    const QString mRnaPath = outputDir + "/" + MRNA_NAME;
     StreamShortReadWriter mRnaWriter;
-    mRnaWriter.init(mRnaPath);
-    if (!mRnaWriter.writeNextSequence(mRnaObj)) {
-       setError(tr("Failed to write DNA sequence  %1").arg(mRnaObj->getSequenceName()));
+    mRnaWriter.init( mRnaPath );
+    if ( !mRnaWriter.writeNextSequence( mRnaObj ) ) {
+       setError( tr( "Failed to write DNA sequence  %1" ).arg( mRnaObj->getSequenceName( ) ) );
        return;
     }
-    mRnaWriter.close();
-    argumentList.append("-m");
-    argumentList.append(mRnaPath);
-
+    mRnaWriter.close( );
+    argumentList.append( "-m" );
+    argumentList.append( mRnaPath );
 
     // adding additional arguments
 
-    resultPath = QString("%1/%2").arg(outputDir).arg(SPIDEY_SUMMARY);
-    argumentList.append("-p");
-    argumentList.append("1");
-    argumentList.append("-o");
-    argumentList.append(resultPath);
-
-
-
+    resultPath = QString( "%1/%2" ).arg( outputDir ).arg( SPIDEY_SUMMARY );
+    argumentList.append( "-p" );
+    argumentList.append( "1" );
+    argumentList.append( "-o" );
+    argumentList.append( resultPath );
 }
 
 //////////////////////////////////////////
 ////SpideySupportTask
 
-SpideySupportTask::SpideySupportTask(const SplicedAlignmentTaskConfig &cfg, AnnotationTableObject* ao)
-    :Task("SpideySupportTask", TaskFlags_NR_FOSCOE), spideyAlignmentTask(new SpideyAlignmentTask(cfg)), aObj(ao)
+SpideySupportTask::SpideySupportTask( const SplicedAlignmentTaskConfig &cfg,
+    FeaturesTableObject *ao )
+    : Task( "SpideySupportTask", TaskFlags_NR_FOSCOE ),
+    spideyAlignmentTask( new SpideyAlignmentTask( cfg ) ), aObj( ao )
 {
 
 }
 
-void SpideySupportTask::prepare()
-{
-    addSubTask(spideyAlignmentTask);
+void SpideySupportTask::prepare( ) {
+    addSubTask( spideyAlignmentTask );
 }
 
-QList<Task *> SpideySupportTask::onSubTaskFinished(Task *subTask)
-{
-    QList<Task*> res;
+QList<Task *> SpideySupportTask::onSubTaskFinished( Task *subTask ) {
+    QList<Task *> res;
 
-    if (hasError() || isCanceled()) {
+    if ( hasError( ) || isCanceled( ) ) {
         return res;
     }
 
-    if (subTask == spideyAlignmentTask) {
-        QList<Annotation*> results = spideyAlignmentTask->getAlignmentResult();
-        if (results.isEmpty()) {
-            setError(tr("Failed to align mRNA to genomic sequence: no alignment is found."));
-            DocumentUtils::removeDocumentsContainigGObjectFromProject(aObj);
+    if ( subTask == spideyAlignmentTask ) {
+        QList<AnnotationData> results = spideyAlignmentTask->getAlignmentResult( );
+        if ( results.isEmpty( ) ) {
+            setError( tr( "Failed to align mRNA to genomic sequence: no alignment is found." ) );
+            DocumentUtils::removeDocumentsContainigGObjectFromProject( aObj );
             aObj = NULL;
         } else {
-            aObj->addAnnotations(results);
+            aObj->addAnnotations( results );
         }
     }
 
     return res;
-
-
 }
 
-
-
-
-
-}//namespace
+} //namespace U2

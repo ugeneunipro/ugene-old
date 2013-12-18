@@ -236,7 +236,6 @@ VariantTrackObject *StorageUtils::getVariantTrackObject(DbiDataStorage *storage,
 
 AssemblyObject *StorageUtils::getAssemblyObject(DbiDataStorage *storage, const SharedDbiDataHandler &handler) {
     CHECK(NULL != handler.constData(), NULL);
-    //QScopedPointer<U2Assembly> track(dynamic_cast<U2Assembly*>(storage->getObject(handler, U2Type::Assembly)));
     QScopedPointer<U2Assembly> assembly(dynamic_cast<U2Assembly*>(storage->getObject(handler, 4)));
     CHECK(NULL != assembly.data(), NULL);
 

@@ -22,13 +22,13 @@
 #ifndef _U2_CREATE_DOCUMENT_FROM_TEXT_DIALOG_CONTROLLER_H_
 #define _U2_CREATE_DOCUMENT_FROM_TEXT_DIALOG_CONTROLLER_H_
 
-#include "SeqPasterWidgetController.h"
+#include <QtGui/QDialog>
 
 #include <U2Core/global.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Gui/DialogUtils.h>
 
-#include <QtGui/QDialog>
+#include "SeqPasterWidgetController.h"
 
 class Ui_CreateDocumentFromTextDialog;
 

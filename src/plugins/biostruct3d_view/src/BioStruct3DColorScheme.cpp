@@ -25,9 +25,9 @@
 #include <U2Core/BioStruct3DObject.h>
 #include <U2Core/AnnotationSettings.h>
 #include <U2Core/DocumentModel.h>
-#include <U2Core/AnnotationTableObject.h>
+#include <U2Core/FeaturesTableObject.h>
 #include <U2Core/FeatureColors.h>
-
+#include <U2Core/U2SafePoints.h>
 #include <U2Core/GObjectRelationRoles.h>
 #include <U2Core/GObjectUtils.h>
 
@@ -182,14 +182,14 @@ const QMap<int, QColor> ChainsColorScheme::getChainColors(const BioStruct3DObjec
         } 
 
         foreach (GObject* obj, aObjs ) {
-            AnnotationTableObject* ao = qobject_cast<AnnotationTableObject*>(obj);
-            assert(ao);
+            FeaturesTableObject* ao = qobject_cast<FeaturesTableObject *>(obj);
+            SAFE_POINT( NULL != ao, "Invalid annotation table!", colorMap );
 
-            foreach(Annotation* a, ao->getAnnotations()) {
-                QString name = a->getAnnotationName();
+            foreach ( const __Annotation &a, ao->getAnnotations( ) ) {
+                const QString name = a.getName();
                 if (name.startsWith(BioStruct3D::MoleculeAnnotationTag)) {
                     bool ok = false;
-                    int chainId = a->findFirstQualifierValue(BioStruct3D::ChainIdQualifierName).toInt(&ok);
+                    int chainId = a.findFirstQualifierValue(BioStruct3D::ChainIdQualifierName).toInt(&ok);
                     assert(ok && chainId != 0);
                     QColor color = FeatureColors::genLightColor(QString("chain_%1").arg(chainId));
                     colorMap.insert(chainId, color);
@@ -235,13 +235,13 @@ const QMap<QString, QColor> SecStructColorScheme::getSecStructAnnotationColors(c
     Document *doc = biostruct->getDocument();
     if (doc) {
         foreach (GObject* obj, doc->findGObjectByType(GObjectTypes::ANNOTATION_TABLE) ) {
-            AnnotationTableObject *ao = qobject_cast<AnnotationTableObject*>(obj);
-            assert(ao);
+            FeaturesTableObject *ao = qobject_cast<FeaturesTableObject *>(obj);
+            SAFE_POINT( NULL != ao, "Invalid annotation table!", colors );
 
-            foreach(Annotation *a, ao->getAnnotations()) {
-                QString name = a->getAnnotationName();
+            foreach ( const __Annotation &a, ao->getAnnotations( ) ) {
+                const QString name = a.getName();
                 if (name == BioStruct3D::SecStructAnnotationTag) {
-                    QString ssName = a->getQualifiers().first().value;
+                    QString ssName = a.getQualifiers().first().value;
                     AnnotationSettings* as = asr->getAnnotationSettings(ssName);
                     colors.insert(ssName, as->color);
                 }

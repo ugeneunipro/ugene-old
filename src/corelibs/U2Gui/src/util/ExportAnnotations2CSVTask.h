@@ -22,17 +22,17 @@
 #ifndef _U2_EXPORT_ANNOTATIONS_2_CSV_TASK_H_
 #define _U2_EXPORT_ANNOTATIONS_2_CSV_TASK_H_
 
+#include <U2Core/Annotation.h>
 #include <U2Core/Task.h>
 
 namespace U2 {
 
-class Annotation;
 class DNATranslation;
 
 class U2GUI_EXPORT ExportAnnotations2CSVTask : public Task {
     Q_OBJECT
 public:
-                            ExportAnnotations2CSVTask( const QList<Annotation *> &annotations,
+                            ExportAnnotations2CSVTask( const QList<__Annotation> &annotations,
                                 const QByteArray &sequence, const QString &seqName,
                                 const DNATranslation *complementTranslation, bool exportSequence,
                                 bool exportSequenceName, const QString &url, bool append = false,
@@ -40,7 +40,7 @@ public:
 
     void                    run( );
 private:
-    QList<Annotation*>      annotations;
+    QList<__Annotation>      annotations;
     QByteArray              sequence;
     QString                 seqName;
     const DNATranslation *  complementTranslation;

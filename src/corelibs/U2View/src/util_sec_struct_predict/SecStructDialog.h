@@ -48,7 +48,7 @@ private slots:
 private:
     int rangeStart;
     int rangeEnd;
-    QList<SharedAnnotationData> results;
+    QList<AnnotationData> results;
     ADVSequenceObjectContext* ctx;
     SecStructPredictTask* task;
     SecStructPredictAlgRegistry* sspr;

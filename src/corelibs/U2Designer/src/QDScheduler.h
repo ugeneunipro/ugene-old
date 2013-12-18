@@ -27,11 +27,11 @@
 #include <U2Core/Task.h>
 #include <U2Core/GObjectReference.h>
 #include <U2Core/DNASequence.h>
-
+#include <U2Core/AnnotationData.h>
 
 namespace U2 {
 
-class AnnotationTableObject;
+class FeaturesTableObject;
 class LoadUnloadedDocumentTask;
 
 class QDRunSettings {
@@ -40,7 +40,7 @@ public:
     offset(0), outputType(Group) {}
 
     DNASequence             dnaSequence;
-    AnnotationTableObject*  annotationsObj;
+    FeaturesTableObject *   annotationsObj;
     GObjectReference        annotationsObjRef;
     QString                 groupName;
     U2Region                region;
@@ -71,7 +71,6 @@ private:
 };
 
 class QDScheduler;
-class Annotation;
 
 class QDResultLinker {
 public:
@@ -102,13 +101,13 @@ private:
     QDStep* currentStep;
     bool needInit;
     QList<QDResultGroup*> candidates;
-    QMap< QDResultUnit, Annotation* > result2annotation;
+    QMap< QDResultUnit, AnnotationData > result2annotation;
 
     QList<QDResultGroup*> currentResults;
     QMap< QDActor*, QList<QDResultGroup*> > currentGroupResults;
 
 
-    QMap< QString, QList<Annotation*> > annotations;
+    QMap< QString, QList<AnnotationData> > annotations;
 };
 
 class QDFindLocationTask : public Task {

@@ -24,7 +24,7 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/Settings.h>
 #include <U2Core/FeatureColors.h>
-#include <U2Core/AnnotationTableObject.h>
+#include <U2Core/FeaturesTableObject.h>
 
 #include <QtCore/QSet>
 
@@ -68,10 +68,10 @@ QStringList AnnotationSettingsRegistry::getAllSettings() const {
     return (persistentMap.keys() + transientMap.keys()).toSet().toList();
 }
 
-AnnotationSettings* AnnotationSettingsRegistry::getAnnotationSettings(Annotation* a) {
-    AnnotationSettings* s = getAnnotationSettings(a->getAnnotationName());
+AnnotationSettings * AnnotationSettingsRegistry::getAnnotationSettings( const __Annotation &a ) {
+    AnnotationSettings *s = getAnnotationSettings( a.getName( ) );
     //don't show non-positional features that span the whole sequence
-    if (a->findFirstQualifierValue("non-positional") != QString::null){
+    if ( a.findFirstQualifierValue( "non-positional" ) != QString::null ) {
         s->visible = false;
     }
     return s;

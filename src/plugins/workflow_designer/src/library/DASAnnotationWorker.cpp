@@ -344,7 +344,11 @@ void DASAnnotationWorker::sl_taskFinished() {
          return;
      }
      if (output) {
-         QVariant v = qVariantFromValue<QList<SharedAnnotationData> >(t->prepareResults());
+         QList<SharedAnnotationData> outputList;
+         foreach ( const AnnotationData &d, t->prepareResults( ) ) {
+             outputList << SharedAnnotationData( new AnnotationData( d ) );
+         }
+         QVariant v = qVariantFromValue<QList<SharedAnnotationData> >( outputList );
          QStringList ids = t->getAccessionNumbers();
          algoLog.trace(tr("Number of similar sequences: %1.").arg(ids.size()) + (ids.size() == 0 ? tr(" IDs: ").arg(ids.join(",")) : ""));
          output->put(Message(BaseTypes::ANNOTATION_TABLE_TYPE(), v));

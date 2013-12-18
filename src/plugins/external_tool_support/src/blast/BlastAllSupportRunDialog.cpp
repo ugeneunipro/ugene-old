@@ -19,11 +19,12 @@
  * MA 02110-1301, USA.
  */
 
-#include "BlastAllSupportRunDialog.h"
 #include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>
 #include <U2Core/AppResources.h>
+#include <U2Core/U2DbiRegistry.h>
 #include <U2Core/DNAAlphabet.h>
+#include <U2Core/FeaturesTableObject.h>
 #include <U2Core/GObjectReference.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/IOAdapterUtils.h>
@@ -35,12 +36,15 @@
 #include <U2Core/LoadDocumentTask.h>
 #include <U2Core/MultiTask.h>
 #include <U2Core/ProjectService.h>
+#include <U2Core/U2OpStatusUtils.h>
 
 #include <U2Gui/GUIUtils.h>
 
 #include <QtGui/QFileDialog>
 #include <QtGui/QToolButton>
 #include <QtGui/QMessageBox>
+
+#include "BlastAllSupportRunDialog.h"
 
 namespace U2 {
 
@@ -50,7 +54,7 @@ BlastAllSupportRunDialog::BlastAllSupportRunDialog(U2SequenceObject* _dnaso, QSt
         BlastRunCommonDialog(_parent), dnaso(_dnaso), lastDBPath(_lastDBPath), lastDBName(_lastDBName)
 {
     CreateAnnotationModel ca_m;
-    ca_m.data->name = "misc_feature";
+    ca_m.data.name = "misc_feature";
     ca_m.hideAnnotationName = true;
     ca_m.hideLocation = true;
     ca_m.sequenceObjectRef = GObjectReference(dnaso);
@@ -69,7 +73,6 @@ BlastAllSupportRunDialog::BlastAllSupportRunDialog(U2SequenceObject* _dnaso, QSt
         settings.isNucleotideSeq=false;
     }else{
         programName->removeItem(1);//blastp
-        //programName->removeItem(1);//cuda-blastp
         programName->removeItem(2);//tblastn
         settings.isNucleotideSeq=true;
     }
@@ -103,7 +106,10 @@ void BlastAllSupportRunDialog::sl_runQuery(){
     }
     settings.outputResFile=ca_c->getModel().newDocUrl;
     if(ca_c->isNewObject()) {
-        settings.aobj = new AnnotationTableObject("Annotations");
+        U2OpStatusImpl os;
+        const U2DbiRef dbiRef = AppContext::getDbiRegistry( )->getSessionTmpDbiRef( os );
+        SAFE_POINT_OP( os, );
+        settings.aobj = new FeaturesTableObject( "Annotations", dbiRef );
         settings.aobj->addObjectRelation(GObjectRelation(ca_c->getModel().sequenceObjectRef, GObjectRelationRole::SEQUENCE));
     }
     else {
@@ -197,8 +203,6 @@ void BlastAllWithExtFileSpecifySupportRunDialog::sl_inputFileLineEditChanged(con
             c.rawData = IOAdapterUtils::readFileHeader(str);
             QList<DocumentFormatId> formats = AppContext::getDocumentFormatRegistry()->selectFormats(c);
             if (formats.isEmpty()) {
-                //stateInfo.setError(tr("input_format_error"));
-                //show error message
                 return;
             }
             DocumentFormatId df = formats.first();
@@ -245,9 +249,8 @@ void BlastAllWithExtFileSpecifySupportRunDialog::sl_inputFileLoadTaskStateChange
             }
         }
 
-        //U2SequenceObject* seq=(U2SequenceObject*)sequencesRefList[0];
         CreateAnnotationModel ca_m;
-        ca_m.data->name = "misc_feature";
+        ca_m.data.name = "misc_feature";
         ca_m.hideAnnotationName = true;
         ca_m.hideLocation = true;
         ca_m.sequenceObjectRef = sequencesRefList[0];//GObjectReference(seq);//not needed, it unused
@@ -275,13 +278,14 @@ void BlastAllWithExtFileSpecifySupportRunDialog::sl_runQuery(){
     for(int i=0; i<settingsList.length();i++){
         settingsList[i].outputResFile=ca_c->getModel().newDocUrl;
         if(ca_c->isNewObject()) {
-            settingsList[i].aobj = new AnnotationTableObject(sequencesRefList[i].objName+" annotations");
+            U2OpStatusImpl os;
+            const U2DbiRef dbiRef = AppContext::getDbiRegistry( )->getSessionTmpDbiRef( os );
+            SAFE_POINT_OP( os, );
+            settingsList[i].aobj = new FeaturesTableObject( sequencesRefList[i].objName+" annotations", dbiRef );
             settingsList[i].aobj->addObjectRelation(GObjectRelation(sequencesRefList[i], GObjectRelationRole::SEQUENCE));
         }
         else {
             assert(NULL);//allways created new document for annotations
-//            ca_c->prepareAnnotationObject();
-//            settings.aobj = caControllers.at(i)->getModel().getAnnotationObject();
         }
         settingsList[i].groupName=ca_c->getModel().groupName;
 

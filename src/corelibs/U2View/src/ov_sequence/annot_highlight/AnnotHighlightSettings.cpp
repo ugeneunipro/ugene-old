@@ -19,13 +19,12 @@
  * MA 02110-1301, USA.
  */
 
-#include "AnnotHighlightSettings.h"
-
 #include <U2Core/AnnotationSettings.h>
-#include <U2Core/AnnotationTableObject.h>
+#include <U2Core/FeaturesTableObject.h>
 #include <U2Core/L10n.h>
 #include <U2Core/U2SafePoints.h>
 
+#include "AnnotHighlightSettings.h"
 
 namespace U2 {
 
@@ -85,7 +84,7 @@ void AnnotHighlightSettingsWidget::sl_onEditQualifiersChanged(const QString& inp
 
     // Validate the input
     foreach (QString qualifierName, qualifierNames) {
-        if (!Annotation::isValidQualifierName(qualifierName)) {
+        if (!__Annotation::isValidQualifierName(qualifierName)) {
             setIncorrectState();
             return;
         }

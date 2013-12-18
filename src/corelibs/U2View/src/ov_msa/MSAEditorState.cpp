@@ -24,7 +24,6 @@
 #include "MSAEditorFactory.h"
 
 #include <U2Core/DocumentModel.h>
-#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/MAlignmentObject.h>
 #include <U2Core/DNASequenceSelection.h>
 
@@ -102,5 +101,4 @@ QVariantMap MSAEditorState::saveState(MSAEditor* v) {
     return ss.stateData;
 }
 
-
-} // namespace
+} // namespace U2
