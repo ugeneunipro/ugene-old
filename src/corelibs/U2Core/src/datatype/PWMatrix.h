@@ -93,8 +93,14 @@ public:
     QMap<QString, QString> getProperties() const;
 
     bool operator == (const PWMatrix &m1) const {
-        return m1.data == data &&
-                m1.length == length &&
+        //FIXME: for some reasons QT == operator didn't work for gcc compiler
+        if (m1.data.size() != data.size())
+            return false;
+        for (int i = 0; i < m1.data.size(); i++) {
+            if (m1.data.at(i) != data.at(i))
+                return false;
+        }
+        return  m1.length == length &&
                 m1.type == type &&
                 m1.minSum == minSum &&
                 m1.maxSum == maxSum &&
