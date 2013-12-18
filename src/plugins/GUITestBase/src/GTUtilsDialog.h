@@ -96,7 +96,15 @@ protected:
     GUIDialogWaiter::WaitSettings settings;
 };
 
-class GTUtilsDialog {
+class TimerLauncher : public QObject{
+    Q_OBJECT
+public slots:
+    void checkDialog();
+};
+
+class GTUtilsDialog{
+    friend class TimerLauncher;
+    friend class GUIDialogWaiter;
 public:
     enum CleanupSettings {
         FailOnUnfinished, NoFailOnUnfinished
@@ -117,6 +125,9 @@ private:
     static void checkAllFinished(U2OpStatus &os);
 
     static QList<GUIDialogWaiter*> pool;
+    static TimerLauncher* launcher;
+    static QTimer* timer;
+    static const int timerPeriod = 100;
 };
 
 } // namespace

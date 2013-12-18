@@ -723,8 +723,15 @@ void test_13(U2OpStatus &os, int comboVal, int SpinVal, QString ExpectedCons){
     QWidget* seq=GTWidget::findWidget(os, "msa_editor_sequence_area");
 
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os,QStringList()<<"Consensus mode",GTGlobals::UseMouse));
-    GTUtilsDialog::waitForDialog(os, new ConsensusSelectionDialogFiller(os,comboVal,SpinVal));
     GTMenu::showContextMenu(os,seq);
+
+    QComboBox *consensusCombo=qobject_cast<QComboBox*>(GTWidget::findWidget(os,"consensusType"));
+    CHECK_SET_ERR(consensusCombo!=NULL, "consensusCombo is NULL");
+    GTComboBox::setCurrentIndex(os,consensusCombo, comboVal);
+
+    QSpinBox *thresholdSpinBox=qobject_cast<QSpinBox*>(GTWidget::findWidget(os,"thresholdSpinBox"));
+    CHECK_SET_ERR(thresholdSpinBox!=NULL, "consensusCombo is NULL");
+    GTSpinBox::setValue(os,thresholdSpinBox,SpinVal,GTGlobals::UseKeyBoard);
 
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os,QStringList()<<"MSAE_MENU_COPY" << "Copy consensus",GTGlobals::UseMouse));
     GTMenu::showContextMenu(os,seq);

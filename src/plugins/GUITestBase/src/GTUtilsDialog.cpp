@@ -34,10 +34,10 @@ GUIDialogWaiter::GUIDialogWaiter(U2OpStatus &_os, Runnable* _r, const WaitSettin
     static int totalWaiterCount = 0;
     waiterId = totalWaiterCount++;
 
-    timer = new QTimer();
+    /*timer = new QTimer();
 
     timer->connect(timer, SIGNAL(timeout()), this, SLOT(checkDialog()));
-    timer->start(timerPeriod);
+    timer->start(timerPeriod);*/
 }
 
 GUIDialogWaiter::~GUIDialogWaiter() {
@@ -81,7 +81,11 @@ void GUIDialogWaiter::checkDialog() {
     }
 
     if (widget && !hadRun && isExpectedName(widget->objectName(), settings.objectName)) {
-        timer->stop();
+        GTUtilsDialog::pool.removeOne(this);
+        if (widget->objectName() == "RemovePartFromSequenceDialog"){
+            uiLog.trace("-------------------------");
+        }
+        //timer->stop();
         uiLog.trace("-------------------------");
         uiLog.trace("GUIDialogWaiter::wait Id = " + QString::number(waiterId) + ", going to RUN");
         uiLog.trace("-------------------------");
@@ -109,11 +113,21 @@ void GUIDialogWaiter::checkDialog() {
 #define GT_CLASS_NAME "GTUtilsDialog"
 
 QList<GUIDialogWaiter*> GTUtilsDialog::pool = QList<GUIDialogWaiter*>();
+TimerLauncher* GTUtilsDialog::launcher = new TimerLauncher();
+QTimer* GTUtilsDialog::timer = new QTimer();
 
 void GTUtilsDialog::waitForDialog(U2OpStatus &os, Runnable *r, const GUIDialogWaiter::WaitSettings& settings)
 {
     GUIDialogWaiter *waiter = new GUIDialogWaiter(os, r, settings);
     pool.append(waiter);
+
+    if(pool.count()==1){
+        timer = new QTimer();
+        TimerLauncher* launcher = new TimerLauncher();
+        //QObject::connect(timer, SIGNAL(timeout()), launcher, SLOT(GTUtilsDialog::checkDialog()));
+        timer->connect(timer, SIGNAL(timeout()), launcher, SLOT(checkDialog()));
+        timer->start(timerPeriod);
+    }
 }
 
 void GTUtilsDialog::waitForDialog(U2OpStatus &os, Runnable *r) {
@@ -170,6 +184,12 @@ void GTUtilsDialog::cleanup(U2OpStatus &os, CleanupSettings s) {
 
     qDeleteAll(pool);
     pool.clear();
+}
+
+void TimerLauncher::checkDialog(){
+    foreach(GUIDialogWaiter* waiter, GTUtilsDialog::pool){
+        waiter->checkDialog();
+    }
 }
 
 #undef GT_CLASS_NAME

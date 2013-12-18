@@ -23,6 +23,7 @@
 #include "GTMouseDriver.h"
 #include "GTKeyboardDriver.h"
 #include "api/GTGlobals.h"
+#include "api/GTWidget.h"
 
 #include <U2Core/AppContext.h>
 #include <U2Core/Log.h>
@@ -80,24 +81,13 @@ QMenu* GTMenu::showMainMenu(U2OpStatus &os, const QString &menuName, GTGlobals::
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "showContextMenu"
-QMenu* GTMenu::showContextMenu(U2OpStatus &os, const QWidget *ground, GTGlobals::UseMethod m)
+QMenu* GTMenu::showContextMenu(U2OpStatus &os, QWidget *ground, GTGlobals::UseMethod m)
 {
     GT_CHECK_RESULT(ground != NULL, "ground widget is NULL", NULL);
 
-    QPoint mouse_pos;
-    QRect ground_widget;
-
     switch(m) {
     case GTGlobals::UseMouse:
-        mouse_pos = QCursor::pos();
-        ground_widget = ground->geometry();
-        ground_widget = QRect(ground->mapToGlobal(ground_widget.topLeft()), ground->mapToGlobal(ground_widget.bottomRight()));
-
-        if (! ground_widget.contains(mouse_pos)) {
-            GTMouseDriver::moveTo(os, ground_widget.center());
-        }
-
-        GTMouseDriver::click(os, Qt::RightButton);
+        GTWidget::click(os, ground, Qt::RightButton);
         break;
 
     case GTGlobals::UseKey:

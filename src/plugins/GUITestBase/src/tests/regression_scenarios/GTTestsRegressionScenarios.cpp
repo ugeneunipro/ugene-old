@@ -1136,8 +1136,15 @@ GUI_TEST_CLASS_DEFINITION(test_1689){
     GTFileDialog::openFile(os, dataDir+"samples/CLUSTALW/", "COI.aln");
 //2. Select "Consensus mode..." in the context menu on MSA area
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os,QStringList()<<"Consensus mode",GTGlobals::UseMouse));
-    GTUtilsDialog::waitForDialog(os, new ConsensusSelectionDialogFiller(os,1,10));
     GTMenu::showContextMenu(os,GTUtilsMdi::activeWindow(os));
+
+    QComboBox *consensusCombo=qobject_cast<QComboBox*>(GTWidget::findWidget(os,"consensusType"));
+    CHECK_SET_ERR(consensusCombo!=NULL, "consensusCombo is NULL");
+    GTComboBox::setCurrentIndex(os,consensusCombo, 1);
+
+    QSpinBox *thresholdSpinBox=qobject_cast<QSpinBox*>(GTWidget::findWidget(os,"thresholdSpinBox"));
+    CHECK_SET_ERR(thresholdSpinBox!=NULL, "consensusCombo is NULL");
+    GTSpinBox::setValue(os,thresholdSpinBox,10,GTGlobals::UseKeyBoard);
 //3. Remember current threshold value (by default: 100% for the default algorithm)
 
 //4. Change threshold value with spinbox: delete one zero. New value is 10%
@@ -4172,7 +4179,7 @@ GUI_TEST_CLASS_DEFINITION( test_2519 ) {
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_EDIT << ACTION_EDIT_REMOVE_SUBSEQUENCE));
     GTUtilsDialog::waitForDialog(os, new RemovePartFromSequenceDialogFiller(os, "1..190950"));
     GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
-    GTGlobals::sleep(5000);
+    GTGlobals::sleep(2000);
 
     // 5. Call this dialog again, remove region (1..8999).
     // Expected state: UGENE doesn't crash.
