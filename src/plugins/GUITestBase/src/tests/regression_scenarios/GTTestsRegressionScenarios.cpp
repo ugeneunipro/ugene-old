@@ -4083,6 +4083,34 @@ GUI_TEST_CLASS_DEFINITION( test_2415 ) {
     CHECK_SET_ERR(NULL != item, "Object is not renamed");
 }
 
+GUI_TEST_CLASS_DEFINITION( test_2460 ) {
+    //1. Open "COI.aln".
+    //2. Remove all sequences except the first one.
+    //3. Align the result one-line-msa by kalign with default values.
+    //Expected state: Kalign task finishes with error. Redo button is disabled.
+
+    GTLogTracer l;
+    GTFileDialog::openFile(os, dataDir+"samples/CLUSTALW/", "COI.aln");
+
+    QStringList list = GTUtilsMSAEditorSequenceArea::getNameList(os);
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(-5, 1), QPoint(-5, list.size() - 1));
+    GTKeyboardDriver::keyPress(os, GTKeyboardDriver::key["delete"]);
+
+    GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(-5, 0));
+
+    GTUtilsDialog::waitForDialog(os, new KalignDialogFiller(os));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_ALIGN << "align_with_kalign"));
+    GTMouseDriver::click(os, Qt::RightButton);
+
+    GTGlobals::sleep();
+
+    CHECK_SET_ERR( l.hasError() == true, "There is no error in the log");
+
+    QAbstractButton *redo= GTAction::button(os,"msa_action_redo");
+    CHECK_SET_ERR( NULL != redo, "There is no REDO button");
+    CHECK_SET_ERR( redo->isEnabled() == false, "REDO button is enabled");
+}
+
 GUI_TEST_CLASS_DEFINITION( test_2475 ) {
     //1. Open WD.
     //2. Open Single-sample Tuxedo Pipeline (NGS samples).
