@@ -26,7 +26,7 @@
 #include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/CreateAnnotationTask.h>
 #include <U2Core/DocumentModel.h>
-#include <U2Core/FeaturesTableObject.h>
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/LoadDocumentTask.h>
 #include <U2Core/ProjectModel.h>
@@ -35,7 +35,7 @@
 namespace U2 {
 
 DNAFlexTask::DNAFlexTask(const HighFlexSettings& _settings,
-        FeaturesTableObject *_annotObject,
+        AnnotationTableObject *_annotObject,
         const QString& _annotName,
         const QString& _annotGroup,
         const DNASequence& _sequence)

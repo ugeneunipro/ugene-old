@@ -309,7 +309,7 @@ void DetViewRenderArea::updateLines() {
     assert(numLines > 0);
 }
 
-U2Region DetViewRenderArea::getAnnotationYRange( const __Annotation &a, int region, const AnnotationSettings* as) const {
+U2Region DetViewRenderArea::getAnnotationYRange( const Annotation &a, int region, const AnnotationSettings* as) const {
     bool complement = a.getStrand().isCompementary() && getDetView()->hasComplementaryStrand();
     TriState aminoState = TriState_Unknown; //a->getAminoFrame();
     if (aminoState == TriState_Unknown) {
@@ -483,7 +483,7 @@ void DetViewRenderArea::drawTranslations(QPainter& p) {
     QFont fontIS = sequenceFontSmall;
     fontIS.setItalic(true);
 
-    const QList<__Annotation> annotationsInRange = detView->findAnnotationsInRange(visibleRange);
+    const QList<Annotation> annotationsInRange = detView->findAnnotationsInRange(visibleRange);
 
     {//direct translations
         for(int i = 0; i < 3; i++) {
@@ -589,7 +589,7 @@ void DetViewRenderArea::drawTranslations(QPainter& p) {
 }
 
 bool DetViewRenderArea::deriveTranslationCharColor(qint64 pos, U2Strand strand,
-    const QList<__Annotation> &annotationsInRange, QColor& result)
+    const QList<Annotation> &annotationsInRange, QColor& result)
 {
     // logic:
     // no annotations found -> grey
@@ -601,7 +601,7 @@ bool DetViewRenderArea::deriveTranslationCharColor(qint64 pos, U2Strand strand,
     U2Region tripletRange = strand == U2Strand::Complementary ? U2Region(pos - 2, 2) : U2Region(pos, 2);
     AnnotationSettings* as = NULL;
     int sequenceLen = view->getSequenceLength();
-    foreach ( const __Annotation &a, annotationsInRange ) {
+    foreach ( const Annotation &a, annotationsInRange ) {
         if (a.getStrand() != strand) {
             continue;
         }

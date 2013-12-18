@@ -22,7 +22,7 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/GObjectRelationRoles.h>
 #include <U2Core/GObjectUtils.h>
-#include <U2Core/FeaturesTableObject.h>
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/TextUtils.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/DNATranslation.h>
@@ -263,14 +263,14 @@ QList<AnnotationData> U1AnnotationUtils::finalizeUnfinishedRegion( bool isUnfini
 
 void U1AnnotationUtils::addAnnotations( QList<GObject *> &objects,
     const QList<AnnotationData> &annList, const GObjectReference &sequenceRef,
-    FeaturesTableObject *annotationsObject )
+    AnnotationTableObject *annotationsObject )
 {
     if ( !annList.isEmpty( ) ) {
         if ( NULL == annotationsObject ) {
             U2OpStatusImpl os;
             const U2DbiRef dbiRef = AppContext::getDbiRegistry( )->getSessionTmpDbiRef( os );
             SAFE_POINT_OP( os, );
-            annotationsObject = new FeaturesTableObject( sequenceRef.objName + " features", dbiRef );
+            annotationsObject = new AnnotationTableObject( sequenceRef.objName + " features", dbiRef );
             annotationsObject->addObjectRelation(
                 GObjectRelation( sequenceRef, GObjectRelationRole::SEQUENCE ) );
         }
@@ -295,8 +295,8 @@ QList<U2Region> U1AnnotationUtils::getRelatedLowerCaseRegions( const U2SequenceO
     QList<U2Region> lowerCaseRegs;
     QList<U2Region> upperCaseRegs;
     foreach ( GObject *o, aos ) {
-        FeaturesTableObject *ato = dynamic_cast<FeaturesTableObject *>( o );
-        foreach ( const __Annotation &a, ato->getAnnotations( ) ) {
+        AnnotationTableObject *ato = dynamic_cast<AnnotationTableObject *>( o );
+        foreach ( const Annotation &a, ato->getAnnotations( ) ) {
             if ( a.getName( ) == lowerCaseAnnotationName ) {
                 lowerCaseRegs << a.getRegions( ).toList( );
             } else if ( a.getName( ) == upperCaseAnnotationName ) {
@@ -340,13 +340,13 @@ char * U1AnnotationUtils::applyLowerCaseRegions( char *seq, qint64 first, qint64
     return seq;
 }
 
-QString U1AnnotationUtils::guessAminoTranslation( FeaturesTableObject *ao, const DNAAlphabet *al ) {
+QString U1AnnotationUtils::guessAminoTranslation( AnnotationTableObject *ao, const DNAAlphabet *al ) {
     DNATranslation *res = NULL;
     DNATranslationRegistry *tr = AppContext::getDNATranslationRegistry( );
 
     if ( NULL != ao && NULL != al ) {
         if ( al->isNucleic( ) ) {
-            foreach ( const __Annotation &ann, ao->getAnnotations( ) ) {
+            foreach ( const Annotation &ann, ao->getAnnotations( ) ) {
                 if ( ann.getName( ) == "CDS" ) {
                     QList<U2Qualifier> ql;
                     ann.findQualifiers( "transl_table", ql );

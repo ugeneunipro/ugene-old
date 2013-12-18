@@ -34,7 +34,7 @@
 
 namespace U2 {
 
-class FeaturesTableObject;
+class AnnotationTableObject;
 
 class Primer
 {
@@ -150,7 +150,7 @@ class Primer3ToAnnotationsTask : public Task {
     Q_OBJECT
 public:
     Primer3ToAnnotationsTask( const Primer3TaskSettings &settings,
-        U2SequenceObject* seqObj_, FeaturesTableObject* aobj_, const QString & groupName_, const QString & annName_ );
+        U2SequenceObject* seqObj_, AnnotationTableObject* aobj_, const QString & groupName_, const QString & annName_ );
 
     void prepare();
     QList<Task*> onSubTaskFinished(Task *subTask);
@@ -163,7 +163,7 @@ private:
 
     Primer3TaskSettings settings;
 
-    FeaturesTableObject *aobj;
+    AnnotationTableObject *aobj;
     U2SequenceObject* seqObj;
     QString groupName;
     QString annName;

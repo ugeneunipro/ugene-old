@@ -26,7 +26,7 @@
 
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/MAlignmentObject.h>
-#include <U2Core/FeaturesTableObject.h>
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/GObjectTypes.h>
 #include <U2Core/TextUtils.h>
 #include <U2Core/AppContext.h>

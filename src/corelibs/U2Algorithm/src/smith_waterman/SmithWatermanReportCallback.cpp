@@ -50,7 +50,7 @@ namespace U2 {
 // SmithWatermanReportCallbackAnnotImpl realization //////////////////////////////////////////////////////////////////////////
 
 SmithWatermanReportCallbackAnnotImpl::SmithWatermanReportCallbackAnnotImpl(
-    FeaturesTableObject *_aobj, const QString &_annotationName, const QString &_annotationGroup,
+    AnnotationTableObject *_aobj, const QString &_annotationName, const QString &_annotationGroup,
     bool _addPatternSubseqToQual, QObject *pOwn )
     : QObject( pOwn ), annotationName( _annotationName ), annotationGroup( _annotationGroup ),
     aObj( _aobj ), autoReport( _aobj != NULL ), addPatternSubseqToQual( _addPatternSubseqToQual )

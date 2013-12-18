@@ -33,22 +33,20 @@ const QString QUALIFIER_NAME_SUBJECT = "subj_seq";
 
 namespace U2 {
 
-class __AnnotationGroup;
+class AnnotationGroup;
 class AnnotationModification;
 class DNATranslation;
-class FeaturesTableObject;
+class AnnotationTableObject;
 class U2SequenceObject;
 
-// TODO: this class should replace U2::Annotation. It should implement the interface defined below
-// using U2::FeatureUtils
-class U2CORE_EXPORT __Annotation : public DbiIdBasedData {
+class U2CORE_EXPORT Annotation : public DbiIdBasedData {
 public:
-                            __Annotation( const U2DataId &featureId,
-                                FeaturesTableObject *parentObject );
+                            Annotation( const U2DataId &featureId,
+                                AnnotationTableObject *parentObject );
 
-                            ~__Annotation( );
+                            ~Annotation( );
 
-    FeaturesTableObject *   getGObject( ) const;
+    AnnotationTableObject *   getGObject( ) const;
 
     AnnotationData          getData( ) const;
 
@@ -86,7 +84,7 @@ public:
 
     void                    removeQualifier( const U2Qualifier &q );
 
-    __AnnotationGroup       getGroup( ) const;
+    AnnotationGroup       getGroup( ) const;
     /** 
      * Appends to @res all existing qualifiers with the given @name
      */
@@ -104,11 +102,11 @@ public:
 
     void                    setCaseAnnotation( bool caseAnnotation );
 
-    static bool             annotationLessThan( const __Annotation &first,
-                                const __Annotation &second );
+    static bool             annotationLessThan( const Annotation &first,
+                                const Annotation &second );
 
-    static bool             annotationLessThanByRegion( const __Annotation &first,
-                                const __Annotation &second );
+    static bool             annotationLessThanByRegion( const Annotation &first,
+                                const Annotation &second );
 
     static bool             isValidAnnotationName( const QString &n );
 
@@ -117,7 +115,7 @@ public:
     static bool             isValidQualifierValue( const QString &v );
 
 private:
-    FeaturesTableObject *   parentObject;
+    AnnotationTableObject *   parentObject;
 };
 
 } // namespace U2

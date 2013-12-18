@@ -24,7 +24,7 @@
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/AppResources.h>
 #include <U2Core/DocumentModel.h>
-#include <U2Core/FeaturesTableObject.h>
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/L10n.h>
 #include <U2Core/Counter.h>
 #include <U2Core/Log.h>
@@ -418,7 +418,7 @@ void UHMM3PhmmerToAnnotationsTask::checkArgs() {
 }
 
 UHMM3PhmmerToAnnotationsTask::UHMM3PhmmerToAnnotationsTask( const QString & qfile, const DNASequence & db,
-                                                            FeaturesTableObject *o, const QString & gr, 
+                                                            AnnotationTableObject *o, const QString & gr, 
                                                             const QString & name, const UHMM3PhmmerSettings & set )
     : Task( "HMM Phmmer task", TaskFlags_NR_FOSCOE | TaskFlag_ReportingIsSupported | TaskFlag_ReportingIsEnabled ),
 queryfile( qfile ), dbSeq( db ), annotationObj( o ), annGroup( gr ), annName( name ), settings( set ),

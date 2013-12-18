@@ -27,15 +27,13 @@
 
 namespace U2 {
 
-class FeaturesTableObject;
+class AnnotationTableObject;
 
-// TODO: this class should replace U2::AnnotationGroup. It should implement the interface
-// defined below using U2::FeatureUtils
-class U2CORE_EXPORT __AnnotationGroup : public DbiIdBasedData {
+class U2CORE_EXPORT AnnotationGroup : public DbiIdBasedData {
 public:
-                            __AnnotationGroup( const U2DataId &featureId,
-                                FeaturesTableObject *parentObject );
-                            ~__AnnotationGroup( );
+                            AnnotationGroup( const U2DataId &featureId,
+                                AnnotationTableObject *parentObject );
+                            ~AnnotationGroup( );
     /*
      * Returning value specifies whether the @name may be used as an annotation name or not.
      * @pathMode allows to take into account group path separation symbol (currently "/")
@@ -46,21 +44,21 @@ public:
      * After calling this function @set additionally contains all the distinct annotations
      * belonging to the subtree of this annotation group
      */
-    void                    findAllAnnotationsInGroupSubTree( QList<__Annotation> &set ) const;
+    void                    findAllAnnotationsInGroupSubTree( QList<Annotation> &set ) const;
 
-    QList<__Annotation>     getAnnotations( ) const;
+    QList<Annotation>     getAnnotations( ) const;
 
-    __Annotation            addAnnotation( const AnnotationData &a );
+    Annotation            addAnnotation( const AnnotationData &a );
 
-    void                    addAnnotation( const __Annotation &a );
+    void                    addAnnotation( const Annotation &a );
 
-    void                    removeAnnotation( const __Annotation &a );
+    void                    removeAnnotation( const Annotation &a );
 
-    void                    removeAnnotations( const QList<__Annotation> &annotations );
+    void                    removeAnnotations( const QList<Annotation> &annotations );
 
-    QList<__AnnotationGroup> getSubgroups( ) const;
+    QList<AnnotationGroup> getSubgroups( ) const;
 
-    void                    removeSubgroup( __AnnotationGroup &g );
+    void                    removeSubgroup( AnnotationGroup &g );
 
     QString                 getName( ) const;
 
@@ -68,18 +66,18 @@ public:
 
     QString                 getGroupPath( ) const;
 
-    FeaturesTableObject *   getGObject( ) const;
+    AnnotationTableObject *   getGObject( ) const;
 
     /*
      * Returns parent annotation group. Returns *this (i.e. the same group) for a top-level group
      */
-    __AnnotationGroup       getParentGroup( ) const;
+    AnnotationGroup       getParentGroup( ) const;
     /*
      * Returns subgroup located in @path. @create specifies whether it's required to create
      * a new group(s) accordingly to @path if they are not exist. If @create == false and
      * there are no subgroups satisfying @path, then *this is returned.
      */
-    __AnnotationGroup       getSubgroup( const QString &path, bool create );
+    AnnotationGroup       getSubgroup( const QString &path, bool create );
 
     void                    getSubgroupPaths( QStringList &res ) const;
     /**
@@ -91,7 +89,7 @@ public:
      */
     int                     getGroupDepth( ) const;
 
-    bool                    isParentOf( const __AnnotationGroup &g ) const;
+    bool                    isParentOf( const AnnotationGroup &g ) const;
     /**
      * Returns "true" if the parent of the group is root group
      */
@@ -101,7 +99,7 @@ public:
     static const QChar      GROUP_PATH_SEPARATOR;
 
 private:
-    FeaturesTableObject *   parentObject;
+    AnnotationTableObject *   parentObject;
 };
 
 } // namespace U2

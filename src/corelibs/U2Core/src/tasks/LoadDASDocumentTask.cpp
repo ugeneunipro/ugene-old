@@ -27,7 +27,7 @@
 #include <U2Core/AppSettings.h>
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/DNASequenceObject.h>
-#include <U2Core/FeaturesTableObject.h>
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/U2AlphabetUtils.h>
 #include <U2Core/U2SequenceUtils.h>
 #include <U2Core/GObjectRelationRoles.h>
@@ -140,9 +140,9 @@ QList<Task*> LoadDASDocumentTask::onSubTaskFinished( Task *subTask ){
         }
 
         if ( isAllDataLoaded( ) ) {
-            FeaturesTableObject *annotationTableObject = NULL;
+            AnnotationTableObject *annotationTableObject = NULL;
             if ( !annotationData.isEmpty( ) ) {
-                annotationTableObject = new FeaturesTableObject( "das_annotations", resultDocument->getDbiRef( ) );
+                annotationTableObject = new AnnotationTableObject( "das_annotations", resultDocument->getDbiRef( ) );
                 
                 foreach ( const QString &grname, annotationData.keys( ) ) {
                     const QList<AnnotationData> sdata = annotationData[grname];

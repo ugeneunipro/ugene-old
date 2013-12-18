@@ -40,7 +40,7 @@ public:
     QString key;
     //invariant: keep the ranges in ascending order
     QVector<U2Region> ranges;
-    QList<__Annotation> annotations;
+    QList<Annotation> annotations;
 };
 
 class PVRowsManager {
@@ -49,8 +49,8 @@ public:
     ~PVRowsManager();
     void clear();
 
-    void addAnnotation( const __Annotation &f, const QString &key );
-    void removeAnnotation( const __Annotation &f );
+    void addAnnotation( const Annotation &f, const QString &key );
+    void removeAnnotation( const Annotation &f );
 
     bool contains(const QString& key) const;
     int getNumRows() const {return rows.size();}
@@ -59,14 +59,14 @@ public:
     /**
      * returns -1 if @a is not found
      */
-    int getAnnotationRowIdx( const __Annotation &a ) const;
-    PVRowData* getAnnotationRow( const __Annotation &a ) const {return rowByAnnotation.value(a, NULL);}
+    int getAnnotationRowIdx( const Annotation &a ) const;
+    PVRowData* getAnnotationRow( const Annotation &a ) const {return rowByAnnotation.value(a, NULL);}
     
     int getNumAnnotationsInRow(int rowNum) const;
 
 private:
     QList<PVRowData*> rows;
-    QMap<__Annotation, PVRowData*> rowByAnnotation;
+    QMap<Annotation, PVRowData*> rowByAnnotation;
 };
 
 } // namespace

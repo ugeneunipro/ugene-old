@@ -29,7 +29,7 @@
 #include <U2View/AnnotatedDNAView.h>
 #include <U2View/ADVConstants.h>
 #include <U2View/ADVUtils.h>
-#include <U2Core/FeaturesTableObject.h>
+#include <U2Core/AnnotationTableObject.h>
 
 #include <QtGui/QMenu>
 #include <QtGui/QMessageBox>
@@ -106,8 +106,8 @@ void AnnotatorViewContext::sl_showCollocationDialog() {
 
     QSet<QString> allNames;
 
-    foreach ( FeaturesTableObject *ao, av->getAnnotationObjects()) {
-        foreach ( const __Annotation &a, ao->getAnnotations( ) ) {
+    foreach ( AnnotationTableObject *ao, av->getAnnotationObjects()) {
+        foreach ( const Annotation &a, ao->getAnnotations( ) ) {
             allNames.insert( a.getName( ) );
         }
     }

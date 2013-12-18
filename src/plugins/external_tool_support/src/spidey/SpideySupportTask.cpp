@@ -222,7 +222,7 @@ void PrepareInputForSpideyTask::run( ) {
 ////SpideySupportTask
 
 SpideySupportTask::SpideySupportTask( const SplicedAlignmentTaskConfig &cfg,
-    FeaturesTableObject *ao )
+    AnnotationTableObject *ao )
     : Task( "SpideySupportTask", TaskFlags_NR_FOSCOE ),
     spideyAlignmentTask( new SpideyAlignmentTask( cfg ) ), aObj( ao )
 {

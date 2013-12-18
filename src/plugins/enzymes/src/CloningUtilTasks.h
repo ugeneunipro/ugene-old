@@ -38,7 +38,7 @@
 namespace U2 {
 
 class Document;
-class FeaturesTableObject;
+class AnnotationTableObject;
 class U2SequenceObject;
 
 struct DigestSequenceTaskConfig {
@@ -61,8 +61,8 @@ struct GenomicPosition {
 class DigestSequenceTask : public Task {
     Q_OBJECT
 public:
-    DigestSequenceTask(U2SequenceObject* dnaObj, FeaturesTableObject *destTable, 
-        FeaturesTableObject *sourceTable, const DigestSequenceTaskConfig& cfg);
+    DigestSequenceTask(U2SequenceObject* dnaObj, AnnotationTableObject *destTable, 
+        AnnotationTableObject *sourceTable, const DigestSequenceTaskConfig& cfg);
     virtual void prepare();
     virtual void run();
     virtual QString generateReport() const;
@@ -77,7 +77,7 @@ private:
     void checkForConservedAnnotations();
     bool isCircular;
     U2Region seqRange;
-    FeaturesTableObject *sourceObj, *destObj;
+    AnnotationTableObject *sourceObj, *destObj;
     U2SequenceObject *dnaObj;
     DigestSequenceTaskConfig cfg;
     QMap<GenomicPosition, SEnzymeData> cutSiteMap;
@@ -108,8 +108,8 @@ public:
     void prepare(); 
 
 private:
-    static QList<AnnotationData> cloneAnnotationsInRegion(const U2Region& region, FeaturesTableObject* source, int globalOffset);
-    static QList<AnnotationData> cloneAnnotationsInFragmentRegion(const DNAFragment& fragment, FeaturesTableObject* source, int globalOffset);
+    static QList<AnnotationData> cloneAnnotationsInRegion(const U2Region& region, AnnotationTableObject* source, int globalOffset);
+    static QList<AnnotationData> cloneAnnotationsInFragmentRegion(const DNAFragment& fragment, AnnotationTableObject* source, int globalOffset);
     static AnnotationData createSourceAnnotation(int regLen);
     static AnnotationData createFragmentAnnotation(const DNAFragment&, int startPos);
     void createDocument(const QByteArray& seq, const QList<AnnotationData> &annotations);

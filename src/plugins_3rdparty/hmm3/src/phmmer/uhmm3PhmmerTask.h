@@ -36,7 +36,7 @@
 
 namespace U2 {
 
-class FeaturesTableObject;
+class AnnotationTableObject;
 
 /**************************************
  * General hmmer3 phmmer task.
@@ -124,7 +124,7 @@ private:
 class UHMM3PhmmerToAnnotationsTask : public Task {
     Q_OBJECT
 public:
-    UHMM3PhmmerToAnnotationsTask( const QString & querySeqfile, const DNASequence & dbSeq, FeaturesTableObject *obj,
+    UHMM3PhmmerToAnnotationsTask( const QString & querySeqfile, const DNASequence & dbSeq, AnnotationTableObject *obj,
         const QString & group, const QString & name, const UHMM3PhmmerSettings & setings );
     
     QList< Task* > onSubTaskFinished( Task * subTask );
@@ -140,7 +140,7 @@ private:
     QString                             annGroup;
     QString                             annName;
     UHMM3PhmmerSettings                 settings;
-    QPointer<FeaturesTableObject>       annotationObj;
+    QPointer<AnnotationTableObject>       annotationObj;
     UHMM3SWPhmmerTask *                 phmmerTask;
     CreateAnnotationsTask *             createAnnotationsTask;
     

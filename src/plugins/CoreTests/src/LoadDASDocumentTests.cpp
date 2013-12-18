@@ -22,7 +22,7 @@
 #include "LoadDASDocumentTests.h"
 
 #include <U2Core/DNASequenceObject.h>
-#include <U2Core/FeaturesTableObject.h>
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/LoadDASDocumentTask.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/DocumentModel.h>
@@ -108,9 +108,9 @@ Task::ReportResult GTest_LoadDASDocumentTask::report(){
 
             QList<GObject*> annlist = doc->findGObjectByType(GObjectTypes::ANNOTATION_TABLE);
             
-            QList<FeaturesTableObject *> expectedAnnotations;
+            QList<AnnotationTableObject *> expectedAnnotations;
             foreach(GObject* at, annlist){
-                FeaturesTableObject *aobj = qobject_cast<FeaturesTableObject *>(at);
+                AnnotationTableObject *aobj = qobject_cast<AnnotationTableObject *>(at);
                 if (aobj){
                     expectedAnnotations.append(aobj);
                 }
@@ -136,9 +136,9 @@ Task::ReportResult GTest_LoadDASDocumentTask::report(){
 
             QList<GObject*> annlist_act = actDoc->findGObjectByType(GObjectTypes::ANNOTATION_TABLE);
 
-            QList<FeaturesTableObject *> actualAnnotations;
+            QList<AnnotationTableObject *> actualAnnotations;
             foreach(GObject* at, annlist_act){
-                FeaturesTableObject *aobj = qobject_cast<FeaturesTableObject *>(at);
+                AnnotationTableObject *aobj = qobject_cast<AnnotationTableObject *>(at);
                 if (aobj){
                     actualAnnotations.append(aobj);
                 }
@@ -152,16 +152,16 @@ Task::ReportResult GTest_LoadDASDocumentTask::report(){
             }
 
             //compare annotations
-            foreach ( const FeaturesTableObject *expObj, expectedAnnotations ) {
-                const QList<__Annotation> &expAnnoations = expObj->getAnnotations( );
-                foreach ( const __Annotation &expA, expAnnoations ) {
+            foreach ( const AnnotationTableObject *expObj, expectedAnnotations ) {
+                const QList<Annotation> &expAnnoations = expObj->getAnnotations( );
+                foreach ( const Annotation &expA, expAnnoations ) {
                     bool found = false;
-                    foreach ( const FeaturesTableObject *actObj, actualAnnotations ) {
+                    foreach ( const AnnotationTableObject *actObj, actualAnnotations ) {
                         if (found){
                             break;
                         }
-                        const QList<__Annotation> actAnnoations = actObj->getAnnotations( );
-                        foreach ( const __Annotation &actA, actAnnoations ) {
+                        const QList<Annotation> actAnnoations = actObj->getAnnotations( );
+                        foreach ( const Annotation &actA, actAnnoations ) {
                             if (actA.getName( ) == expA.getName( ) ){
                                 found = true;
                                 break;

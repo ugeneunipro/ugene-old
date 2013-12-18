@@ -29,7 +29,7 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/IOAdapter.h>
-#include <U2Core/FeaturesTableObject.h>
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/ProjectModel.h>
 #include <U2Core/Task.h>
 #include <U2Core/GObjectReference.h>
@@ -69,9 +69,9 @@ CreateAnnotationModel::CreateAnnotationModel() : defaultIsNewDoc(false), hideLoc
     hideAnnotationParameters = false;
 }
 
-FeaturesTableObject * CreateAnnotationModel::getAnnotationObject( ) const {
+AnnotationTableObject * CreateAnnotationModel::getAnnotationObject( ) const {
     GObject *res = GObjectUtils::selectObjectByReference( annotationObjectRef, UOF_LoadedOnly );
-    FeaturesTableObject *aobj = qobject_cast<FeaturesTableObject *>( res );
+    AnnotationTableObject *aobj = qobject_cast<AnnotationTableObject *>( res );
     SAFE_POINT( NULL != aobj, "Invalid annotation table detected!", NULL );
     return aobj;
 }
@@ -463,7 +463,7 @@ public:
         if (obj->isUnloaded()) {
             return !allowUnloaded;
         }
-        SAFE_POINT( NULL != qobject_cast<FeaturesTableObject *>( obj ),
+        SAFE_POINT( NULL != qobject_cast<AnnotationTableObject *>( obj ),
             "Invalid annotation table object!", false );
         return obj->isStateLocked();
     }
@@ -514,7 +514,7 @@ QString CreateAnnotationWidgetController::validate() {
         return tr("Annotation name is too long!\nMaximum allowed size: %1 (Genbank format compatibility issue)").arg(GBFeatureUtils::MAX_KEY_LEN);
     }
 
-    if (!__Annotation::isValidAnnotationName(model.data.name) && !model.hideAnnotationName) {
+    if (!Annotation::isValidAnnotationName(model.data.name) && !model.hideAnnotationName) {
         annotationNameEdit->setFocus();
         return tr("Illegal annotation name");
     }
@@ -524,7 +524,7 @@ QString CreateAnnotationWidgetController::validate() {
         return tr("Group name is empty");
     }
 
-    if (!__AnnotationGroup::isValidGroupName(model.groupName, true)) {
+    if (!AnnotationGroup::isValidGroupName(model.groupName, true)) {
         groupNameEdit->setFocus();
         return tr("Illegal group name");
     }
@@ -589,7 +589,7 @@ bool CreateAnnotationWidgetController::prepareAnnotationObject() {
         CHECK_OP(os, false);
         const U2DbiRef dbiRef = AppContext::getDbiRegistry( )->getSessionTmpDbiRef( os );
         SAFE_POINT_OP( os, false );
-        FeaturesTableObject *aobj = new FeaturesTableObject( "Annotations", dbiRef );
+        AnnotationTableObject *aobj = new AnnotationTableObject( "Annotations", dbiRef );
         aobj->addObjectRelation(GObjectRelation(model.sequenceObjectRef, GObjectRelationRole::SEQUENCE));
         d->addObject(aobj);
         AppContext::getProject()->addDocument(d);
@@ -638,7 +638,7 @@ void CreateAnnotationWidgetController::sl_groupName( ) {
     QStringList groupNames; 
     groupNames << GROUP_NAME_AUTO;
     if ( NULL != obj && !obj->isUnloaded( ) ) {
-        FeaturesTableObject* ao = qobject_cast<FeaturesTableObject *>( obj );
+        AnnotationTableObject* ao = qobject_cast<AnnotationTableObject *>( obj );
         ao->getRootGroup( ).getSubgroupPaths( groupNames );
     }
     SAFE_POINT( !groupNames.isEmpty( ), "Unable to find annotation groups!", );

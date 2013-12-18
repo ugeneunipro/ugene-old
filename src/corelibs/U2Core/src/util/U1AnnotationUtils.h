@@ -27,7 +27,7 @@
 namespace U2 {
 
 class DNAAlphabet;
-class FeaturesTableObject;
+class AnnotationTableObject;
 class GObject;
 class GObjectReference;
 class U2SequenceObject;
@@ -76,7 +76,7 @@ public:
      * If @annotationsObject is NULL then it creates a new annotation object
      */
     static void addAnnotations( QList<GObject *> &objects, const QList<AnnotationData> &annList,
-        const GObjectReference &sequenceRef, FeaturesTableObject *annotationsObject );
+        const GObjectReference &sequenceRef, AnnotationTableObject *annotationsObject );
 
     static QList<U2Region> getRelatedLowerCaseRegions( const U2SequenceObject *so,
         const QList<GObject *> &anns );
@@ -84,7 +84,7 @@ public:
     static char * applyLowerCaseRegions( char *seq, qint64 first, qint64 len, qint64 globalOffset,
         const QList<U2Region> &regs );
 
-    static QString guessAminoTranslation( FeaturesTableObject *ao, const DNAAlphabet *al );
+    static QString guessAminoTranslation( AnnotationTableObject *ao, const DNAAlphabet *al );
 
     static QString lowerCaseAnnotationName;
     static QString upperCaseAnnotationName;

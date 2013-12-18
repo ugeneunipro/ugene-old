@@ -27,7 +27,7 @@
 
 namespace U2 {
 
-class FeaturesTableObject;
+class AnnotationTableObject;
 
 namespace LocalWorkflow {
 
@@ -53,8 +53,8 @@ public:
     
 private:
     IntegralBus * annotationsPort;
-    QList<FeaturesTableObject *> createdAnnotationObjects;
-    QMap<QString, FeaturesTableObject *> annotationsByUrl;
+    QList<AnnotationTableObject *> createdAnnotationObjects;
+    QMap<QString, AnnotationTableObject *> annotationsByUrl;
     
 }; // WriteAnnotationsWorker
 

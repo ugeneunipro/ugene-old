@@ -30,7 +30,7 @@
 #include <U2Core/DNATranslation.h>
 #include <U2Core/DNATranslationImpl.h>
 #include <U2Core/GObjectRelationRoles.h>
-#include <U2Core/FeaturesTableObject.h>
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/TextUtils.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/L10n.h>
@@ -226,7 +226,7 @@ void ExportSequenceTask::run() {
         bool annotationsSupported = resultDocument->checkConstraints(c);
         if (annotationsSupported && !ri.annotations.isEmpty()) {
             QString aName = ExportUtils::genUniqueName(usedNames, name + " annotations");
-            FeaturesTableObject *annObj = new FeaturesTableObject( aName, resultDocument->getDbiRef( ) );
+            AnnotationTableObject *annObj = new AnnotationTableObject( aName, resultDocument->getDbiRef( ) );
             usedNames.insert(aName);
             QList<AnnotationData> annotations;
             foreach ( const SharedAnnotationData &ad, ri.annotations ) {

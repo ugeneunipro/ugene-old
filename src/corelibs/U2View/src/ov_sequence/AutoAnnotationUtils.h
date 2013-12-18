@@ -63,12 +63,12 @@ class ADVCreateAnnotationsTask;
 
 class ExportAutoAnnotationsGroupTask : public Task {
 public:
-    ExportAutoAnnotationsGroupTask( const __AnnotationGroup &ag, GObjectReference& aRef,
+    ExportAutoAnnotationsGroupTask( const AnnotationGroup &ag, GObjectReference& aRef,
         ADVSequenceObjectContext* seqCtx);
     virtual void prepare();
     virtual QList<Task*> onSubTaskFinished(Task* subTask);
 private:
-    __AnnotationGroup aGroup;
+    AnnotationGroup aGroup;
     GObjectReference aRef;
     AnnotatedDNAView* view;
     ADVSequenceObjectContext* seqCtx;

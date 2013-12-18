@@ -39,7 +39,7 @@ namespace U2 {
 class AnnotatedDNAView;
 class AnnotatedDNAViewState;
 class U2SequenceObject;
-class FeaturesTableObject;
+class AnnotationTableObject;
 class Annotation;
 class GSequenceLineView;
 class AnnotationsTreeView;
@@ -86,7 +86,7 @@ public:
     
     QList<GObject*> getSequenceGObjectsWithContexts() const;
 
-    QList<FeaturesTableObject *> getAnnotationObjects( bool includeAutoAnnotations = false) const;
+    QList<AnnotationTableObject *> getAnnotationObjects( bool includeAutoAnnotations = false) const;
 
     AnnotationSelection*        getAnnotationsSelection() const {return annotationSelection;}
     
@@ -108,7 +108,7 @@ public:
 
     void saveWidgetState();
 
-    ADVSequenceObjectContext* getSequenceContext(FeaturesTableObject *obj) const;
+    ADVSequenceObjectContext* getSequenceContext(AnnotationTableObject *obj) const;
 
     ADVSequenceObjectContext* getSequenceContext(U2SequenceObject*) const;
     
@@ -145,7 +145,7 @@ public:
      * Returns "true" in case of an error.
      * Otherwise, returns "false", i.e. the method returns "false", even if an annotation intersects a sequence only partially.
      */
-    bool areAnnotationsInRange(const QList<__Annotation> &toCheck);
+    bool areAnnotationsInRange(const QList<Annotation> &toCheck);
 
     /**
      * Tries to add object to the view. Uses GUI functions to ask user if some data if needed
@@ -180,8 +180,8 @@ signals:
     void si_sequenceAdded(ADVSequenceObjectContext* c);
     void si_sequenceRemoved(ADVSequenceObjectContext* c);
 
-    void si_annotationObjectAdded( FeaturesTableObject *obj );
-    void si_annotationObjectRemoved( FeaturesTableObject *obj );
+    void si_annotationObjectAdded( AnnotationTableObject *obj );
+    void si_annotationObjectRemoved( AnnotationTableObject *obj );
 
     void si_sequenceWidgetAdded(ADVSequenceWidget* w);
     void si_sequenceWidgetRemoved(ADVSequenceWidget* w);
@@ -248,7 +248,7 @@ private:
     PositionSelector*   posSelector;
     
     QList<ADVSequenceObjectContext*>    seqContexts;
-    QList<FeaturesTableObject*>         annotations;
+    QList<AnnotationTableObject*>         annotations;
     QList<ADVObjectHandler*>            handlers; 
     QList<ADVGlobalAction*>             advActions;
     

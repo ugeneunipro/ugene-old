@@ -37,7 +37,7 @@
 
 #include <U2Core/AnnotationSelection.h>
 #include <U2Core/AnnotationSettings.h>
-#include <U2Core/FeaturesTableObject.h>
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/AutoAnnotationsSupport.h>
 #include <U2Core/BaseDocumentFormats.h>
@@ -404,7 +404,7 @@ bool AnnotatedDNAView::onCloseEvent() {
 
 bool AnnotatedDNAView::onObjectRemoved(GObject* o) {
     if (o->getGObjectType() == GObjectTypes::ANNOTATION_TABLE) {
-        FeaturesTableObject *ao = qobject_cast<FeaturesTableObject *>( o );
+        AnnotationTableObject *ao = qobject_cast<AnnotationTableObject *>( o );
         annotationSelection->removeObjectAnnotations( ao );
         foreach ( ADVSequenceObjectContext *seqCtx, seqContexts ) {
             if ( seqCtx->getAnnotationObjects( ).contains( ao ) ) {
@@ -421,8 +421,8 @@ bool AnnotatedDNAView::onObjectRemoved(GObject* o) {
             foreach ( ADVSequenceWidget *w, seqCtx->getSequenceWidgets( ) ) {
                 removeSequenceWidget( w );
             }
-            QSet<FeaturesTableObject *> aObjs = seqCtx->getAnnotationObjects( );
-            foreach ( FeaturesTableObject *ao, aObjs ) {
+            QSet<AnnotationTableObject *> aObjs = seqCtx->getAnnotationObjects( );
+            foreach ( AnnotationTableObject *ao, aObjs ) {
                 removeObject( ao );
             }
             seqContexts.removeOne( seqCtx );
@@ -716,7 +716,7 @@ void AnnotatedDNAView::sl_onContextMenuRequested( const QPoint &scrollAreaPos ) 
     m.addSeparator( )->setObjectName( ADV_MENU_SECTION2_SEP );
 
     if ( annotationSelection->getSelection( ).size( ) == 1 ) {
-        const __Annotation a = annotationSelection->getSelection().first().annotation;
+        const Annotation a = annotationSelection->getSelection().first().annotation;
         QString name = a.getName( );
         AnnotationSettings *as = AppContext::getAnnotationsSettingsRegistry( )->getAnnotationSettings( a );
         if ( as->visible ) {
@@ -754,7 +754,7 @@ void AnnotatedDNAView::sl_toggleHL( ) {
     if ( annotationSelection->isEmpty( ) ) {
         return;
     }
-    const __Annotation a= annotationSelection->getSelection( ).first( ).annotation;
+    const Annotation a= annotationSelection->getSelection( ).first( ).annotation;
     QString name = a.getName( );
     AnnotationSettings *as = AppContext::getAnnotationsSettingsRegistry( )->getAnnotationSettings( a );
     as->visible = !as->visible;
@@ -819,7 +819,7 @@ QString AnnotatedDNAView::addObject( GObject *o ) {
         addRelatedAnnotations( sc );
         emit si_sequenceAdded( sc );
     } else if ( o->getGObjectType( ) == GObjectTypes::ANNOTATION_TABLE ) {
-        FeaturesTableObject *ao = qobject_cast<FeaturesTableObject *>( o );
+        AnnotationTableObject *ao = qobject_cast<AnnotationTableObject *>( o );
         SAFE_POINT( NULL != ao, "Invalid annotation table!", QString::null );
         annotations.append( ao );
         foreach ( ADVSequenceObjectContext *sc, rCtx ) {
@@ -874,11 +874,11 @@ void AnnotatedDNAView::unregisterSplitWidget(ADVSplitWidget* splitWidget) {
     splitWidgets.removeOne(splitWidget);
 }
 
-ADVSequenceObjectContext* AnnotatedDNAView::getSequenceContext( FeaturesTableObject *obj ) const {
+ADVSequenceObjectContext* AnnotatedDNAView::getSequenceContext( AnnotationTableObject *obj ) const {
     SAFE_POINT( getAnnotationObjects( true ).contains( obj ),
         "Unexpected annotation table detected!", NULL );
     foreach ( ADVSequenceObjectContext *seqCtx, seqContexts ) {
-        QSet<FeaturesTableObject *> aObjs = seqCtx->getAnnotationObjects( true );
+        QSet<AnnotationTableObject *> aObjs = seqCtx->getAnnotationObjects( true );
         if ( aObjs.contains(obj ) ) {
             return seqCtx;
         }
@@ -923,7 +923,7 @@ void AnnotatedDNAView::addRelatedAnnotations( ADVSequenceObjectContext *seqCtx )
 
     foreach ( GObject *ao, annotations ) {
         if ( objects.contains( ao ) ) {
-            seqCtx->addAnnotationObject( qobject_cast<FeaturesTableObject *>( ao ) );
+            seqCtx->addAnnotationObject( qobject_cast<AnnotationTableObject *>( ao ) );
         } else {
             addObject( ao );
         }
@@ -1184,8 +1184,8 @@ void AnnotatedDNAView::sl_removeSelectedSequenceObject() {
     removeObject(so);
 }
 
-QList<FeaturesTableObject *> AnnotatedDNAView::getAnnotationObjects( bool includeAutoAnnotations ) const {
-    QList<FeaturesTableObject *> result = annotations;
+QList<AnnotationTableObject *> AnnotatedDNAView::getAnnotationObjects( bool includeAutoAnnotations ) const {
+    QList<AnnotationTableObject *> result = annotations;
     if ( includeAutoAnnotations ) {
         foreach ( AutoAnnotationObject *aa, autoAnnotationsMap.values( ) ) {
             result += aa->getAnnotationObject( );
@@ -1251,7 +1251,7 @@ void AnnotatedDNAView::onObjectRenamed(GObject* obj, const QString& oldName) {
 void AnnotatedDNAView::sl_reverseSequence( ) {
     ADVSequenceObjectContext *seqCtx = getSequenceInFocus( );
     U2SequenceObject *seqObj = seqCtx->getSequenceObject( );
-    QList<FeaturesTableObject *> annotations = seqCtx->getAnnotationObjects( false ).toList( );
+    QList<AnnotationTableObject *> annotations = seqCtx->getAnnotationObjects( false ).toList( );
 
     DNATranslation *complTr = NULL;
     if ( seqObj->getAlphabet( )->isNucleic( ) ) {
@@ -1263,8 +1263,8 @@ void AnnotatedDNAView::sl_reverseSequence( ) {
     connect( t, SIGNAL( si_stateChanged( ) ), SLOT( sl_sequenceModifyTaskStateChanged( ) ) );
 }
 
-bool AnnotatedDNAView::areAnnotationsInRange( const QList<__Annotation> &toCheck ) {
-    foreach ( const __Annotation &a, toCheck ) {
+bool AnnotatedDNAView::areAnnotationsInRange( const QList<Annotation> &toCheck ) {
+    foreach ( const Annotation &a, toCheck ) {
         QList<ADVSequenceObjectContext *> relatedSeqObjects
             = findRelatedSequenceContexts( a.getGObject( ) );
 

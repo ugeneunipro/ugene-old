@@ -20,7 +20,7 @@
  */
 
 #include <U2Core/AnnotationData.h>
-#include <U2Core/FeaturesTableObject.h>
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/DocumentModel.h>
@@ -208,8 +208,8 @@ void DASFetcherWorker::sl_taskFinished() {
         QList<SharedAnnotationData> sads;
         if (!annotations.isEmpty())
         {
-            FeaturesTableObject *ato = qobject_cast<FeaturesTableObject *>(annotations.first());
-            foreach ( const __Annotation &a, ato->getAnnotations( ) ) {
+            AnnotationTableObject *ato = qobject_cast<AnnotationTableObject *>(annotations.first());
+            foreach ( const Annotation &a, ato->getAnnotations( ) ) {
                 sads << SharedAnnotationData( new AnnotationData( a.getData( ) ) );
             }
         }

@@ -21,7 +21,7 @@
 
 #include <QtCore/QScopedArrayPointer>
 
-#include <U2Core/FeaturesTableObject.h>
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/GObjectReference.h>
 #include <U2Core/GObjectRelationRoles.h>
 #include <U2Core/IOAdapter.h>
@@ -294,22 +294,22 @@ void GTFFormat::load( IOAdapter *io, QList<GObject *> &objects, const U2DbiRef &
        
         // Get or create the annotations table
         QString annotTableName = sequenceName + FEATURES_TAG;
-        FeaturesTableObject *annotTable = NULL;
+        AnnotationTableObject *annotTable = NULL;
         foreach ( GObject *object, objects ) {
             if (object->getGObjectName() == annotTableName) {
-                annotTable = dynamic_cast<FeaturesTableObject *>( object );
+                annotTable = dynamic_cast<AnnotationTableObject *>( object );
                 break;
             }
         }
         if (!annotTable) {
-            annotTable = new FeaturesTableObject( annotTableName, dbiRef );
+            annotTable = new AnnotationTableObject( annotTableName, dbiRef );
             objects.append(annotTable);
         }
 
         const QList<AnnotationData> &annotList = iter.value( );
         foreach( const AnnotationData &annotData, annotList ) {
             QString groupName = annotData.name; // Assume that the group name is the same as the annotation name
-            if ( !__AnnotationGroup::isValidGroupName( groupName, false ) ) {
+            if ( !AnnotationGroup::isValidGroupName( groupName, false ) ) {
                 groupName = "Group"; // Or just a value if the name of the feature is not appropriate
             }
             annotTable->addAnnotation( annotData, groupName );
@@ -559,10 +559,10 @@ void GTFFormat::storeDocument( Document *doc, IOAdapter *io, U2OpStatus &os ) {
     QByteArray lineData;
 
     foreach (GObject* annotTable, annotTables) {
-        FeaturesTableObject *annTable = qobject_cast<FeaturesTableObject *>(annotTable);
-        QList<__Annotation> annotationsList = annTable->getAnnotations( );
+        AnnotationTableObject *annTable = qobject_cast<AnnotationTableObject *>(annotTable);
+        QList<Annotation> annotationsList = annTable->getAnnotations( );
 
-        foreach ( const __Annotation &annot, annotationsList ) {
+        foreach ( const Annotation &annot, annotationsList ) {
             QString annotName = annot.getName( );
             if (annotName == U1AnnotationUtils::lowerCaseAnnotationName ||
                 annotName == U1AnnotationUtils::upperCaseAnnotationName)

@@ -31,7 +31,7 @@
 
 #include <U2Core/BioStruct3D.h>
 #include <U2Core/AnnotationSettings.h>
-#include <U2Core/FeaturesTableObject.h>
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/BioStruct3DObject.h>
 #include <U2Core/GObjectRelationRoles.h>

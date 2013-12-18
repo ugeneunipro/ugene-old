@@ -20,7 +20,7 @@
  */
 
 #include <U2Core/DNASequenceObject.h>
-#include <U2Core/FeaturesTableObject.h>
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/DNATranslation.h>
 #include <U2Core/TextUtils.h>
 #include <U2Core/DNASequenceSelection.h>
@@ -30,7 +30,7 @@
 namespace U2 {
 
 ReverseSequenceTask::ReverseSequenceTask( U2SequenceObject *dObj,
-    const QList<FeaturesTableObject *> &annotations, DNASequenceSelection *s, DNATranslation *transl )
+    const QList<AnnotationTableObject *> &annotations, DNASequenceSelection *s, DNATranslation *transl )
     : Task( "ReverseSequenceTask", TaskFlags_NR_FOSCOE ), seqObj( dObj ), aObjs( annotations ),
     selection( s ), complTr( transl )
 {
@@ -60,8 +60,8 @@ Task::ReportResult ReverseSequenceTask::report( ) {
     }
     
     // fix annotation locations
-    foreach ( FeaturesTableObject *aObj, aObjs ) {
-        foreach ( __Annotation a, aObj->getAnnotations( ) ) {
+    foreach ( AnnotationTableObject *aObj, aObjs ) {
+        foreach ( Annotation a, aObj->getAnnotations( ) ) {
             if ( NULL != complTr ) {
                 U2Strand strand = a.getStrand( );
                 a.setStrand( strand == U2Strand::Direct

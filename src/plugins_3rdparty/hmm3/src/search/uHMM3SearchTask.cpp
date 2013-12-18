@@ -32,7 +32,7 @@
 #include <U2Core/Log.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/DNASequenceObject.h>
-#include <U2Core/FeaturesTableObject.h>
+#include <U2Core/AnnotationTableObject.h>
 
 #include <gobject/uHMMObject.h>
 #include <format/uHMMFormat.h>
@@ -518,7 +518,7 @@ void UHMM3SWSearchToAnnotationsTask::checkArgs() {
 }
 
 UHMM3SWSearchToAnnotationsTask::UHMM3SWSearchToAnnotationsTask( const QString & hmmf, const DNASequence & s,
-                                                                FeaturesTableObject *o, const QString & gr,
+                                                                AnnotationTableObject *o, const QString & gr,
                                                                 const QString & name, const UHMM3SearchTaskSettings & set )
 : Task( "", TaskFlags_NR_FOSCOE | TaskFlag_ReportingIsSupported | TaskFlag_ReportingIsEnabled ),
 hmmfile( hmmf ), sequence( s ), annotationObj( o ), agroup( gr ), aname( name ), searchSettings( set ),
@@ -539,7 +539,7 @@ loadSequenceTask( NULL ), searchTask( NULL ), createAnnotationsTask( NULL ) {
 }
 
 UHMM3SWSearchToAnnotationsTask::UHMM3SWSearchToAnnotationsTask( const QString & hmmf, const QString & seqFile,
-                                                                FeaturesTableObject *obj, const QString & gr,
+                                                                AnnotationTableObject *obj, const QString & gr,
                                                                 const QString & name,
                                                                 const UHMM3SearchTaskSettings & set )
 : Task( "", TaskFlags_NR_FOSCOE | TaskFlag_ReportingIsSupported | TaskFlag_ReportingIsEnabled ), 

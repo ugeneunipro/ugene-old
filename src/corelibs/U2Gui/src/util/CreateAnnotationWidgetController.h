@@ -39,7 +39,7 @@
 namespace U2 {
 
 class GObjectComboBoxController;
-class FeaturesTableObject;
+class AnnotationTableObject;
 
 class U2GUI_EXPORT CreateAnnotationModel {
 public:
@@ -61,7 +61,7 @@ public:
     bool                    hideAutoAnnotationsOption; // show automated highlighting for new annotation if possible
     bool                    hideAnnotationParameters;   // hides annotation parameters groupbox
 
-    FeaturesTableObject *   getAnnotationObject( ) const;
+    AnnotationTableObject *   getAnnotationObject( ) const;
 };
 
 // Layout mode of the annotation widget

@@ -25,7 +25,7 @@
 #include <U2Core/BioStruct3DObject.h>
 #include <U2Core/AnnotationSettings.h>
 #include <U2Core/DocumentModel.h>
-#include <U2Core/FeaturesTableObject.h>
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/FeatureColors.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/GObjectRelationRoles.h>
@@ -182,10 +182,10 @@ const QMap<int, QColor> ChainsColorScheme::getChainColors(const BioStruct3DObjec
         } 
 
         foreach (GObject* obj, aObjs ) {
-            FeaturesTableObject* ao = qobject_cast<FeaturesTableObject *>(obj);
+            AnnotationTableObject* ao = qobject_cast<AnnotationTableObject *>(obj);
             SAFE_POINT( NULL != ao, "Invalid annotation table!", colorMap );
 
-            foreach ( const __Annotation &a, ao->getAnnotations( ) ) {
+            foreach ( const Annotation &a, ao->getAnnotations( ) ) {
                 const QString name = a.getName();
                 if (name.startsWith(BioStruct3D::MoleculeAnnotationTag)) {
                     bool ok = false;
@@ -235,10 +235,10 @@ const QMap<QString, QColor> SecStructColorScheme::getSecStructAnnotationColors(c
     Document *doc = biostruct->getDocument();
     if (doc) {
         foreach (GObject* obj, doc->findGObjectByType(GObjectTypes::ANNOTATION_TABLE) ) {
-            FeaturesTableObject *ao = qobject_cast<FeaturesTableObject *>(obj);
+            AnnotationTableObject *ao = qobject_cast<AnnotationTableObject *>(obj);
             SAFE_POINT( NULL != ao, "Invalid annotation table!", colors );
 
-            foreach ( const __Annotation &a, ao->getAnnotations( ) ) {
+            foreach ( const Annotation &a, ao->getAnnotations( ) ) {
                 const QString name = a.getName();
                 if (name == BioStruct3D::SecStructAnnotationTag) {
                     QString ssName = a.getQualifiers().first().value;

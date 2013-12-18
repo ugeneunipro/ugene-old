@@ -21,7 +21,7 @@
 
 #include "CufflinksSupport.h"
 
-#include <U2Core/FeaturesTableObject.h>
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/AssemblyObject.h>
 #include <U2Core/BaseDocumentFormats.h>
@@ -209,7 +209,7 @@ void CuffdiffSupportTask::createTranscriptDoc() {
 }
 
 void CuffdiffSupportTask::addTranscriptObject() {
-    FeaturesTableObject *aobj = new FeaturesTableObject( "anns", transcriptDoc->getDbiRef( ) );
+    AnnotationTableObject *aobj = new AnnotationTableObject( "anns", transcriptDoc->getDbiRef( ) );
     bool first = true;
     foreach ( const SharedAnnotationData& ann, settings.transcript ) {
         if (first) {

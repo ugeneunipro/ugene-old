@@ -22,7 +22,7 @@
 #include <QtCore/QScopedArrayPointer>
 
 #include <U2Core/AppContext.h>
-#include <U2Core/FeaturesTableObject.h>
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/GObjectReference.h>
 #include <U2Core/GObjectRelationRoles.h>
 #include <U2Core/IOAdapter.h>
@@ -264,20 +264,20 @@ void FpkmTrackingFormat::load(IOAdapter* io, QList<GObject*>& objects, const U2D
 
     foreach ( const AnnotationData &annotData, annotations ) {
         QString annotTableName = sequenceName + FEATURES_TAG;
-        FeaturesTableObject *annotTable = NULL;
+        AnnotationTableObject *annotTable = NULL;
         foreach (GObject* object, objects) {
             if (object->getGObjectName() == annotTableName) {
-                annotTable = dynamic_cast<FeaturesTableObject *>( object );
+                annotTable = dynamic_cast<AnnotationTableObject *>( object );
             }
         }
         if (!annotTable) {
-            annotTable = new FeaturesTableObject( annotTableName, dbiRef );
+            annotTable = new AnnotationTableObject( annotTableName, dbiRef );
             objects.append(annotTable);
         }
 
         // Assume that the group name is the same as the annotation name
         QString groupName = annotName;
-        if ( !__AnnotationGroup::isValidGroupName( groupName, false ) ) {
+        if ( !AnnotationGroup::isValidGroupName( groupName, false ) ) {
             groupName = "Group"; // or set this name if the annotation name is not appropriate
         }
 
@@ -481,10 +481,10 @@ QStringList FpkmTrackingFormat::writeHeader(QList<GObject*> annotTables, Documen
         << COVERAGE_COLUMN;
     
     foreach (GObject* annotTable, annotTables) {
-        FeaturesTableObject *annTable = dynamic_cast<FeaturesTableObject *>( annotTable );
-        QList<__Annotation> annotationsList = annTable->getAnnotations( );
+        AnnotationTableObject *annTable = dynamic_cast<AnnotationTableObject *>( annotTable );
+        QList<Annotation> annotationsList = annTable->getAnnotations( );
 
-        foreach (const __Annotation &annot, annotationsList) {
+        foreach (const Annotation &annot, annotationsList) {
             QString annotName = annot.getName( );
             if (annotName == U1AnnotationUtils::lowerCaseAnnotationName ||
                 annotName == U1AnnotationUtils::upperCaseAnnotationName)
@@ -568,10 +568,10 @@ void FpkmTrackingFormat::storeDocument(Document* doc, IOAdapter* io, U2OpStatus&
         }
 
         // Get the annotations
-        FeaturesTableObject *annTable = dynamic_cast<FeaturesTableObject *>( annotTable );
-        QList<__Annotation> annotationsList = annTable->getAnnotations( );
+        AnnotationTableObject *annTable = dynamic_cast<AnnotationTableObject *>( annotTable );
+        QList<Annotation> annotationsList = annTable->getAnnotations( );
 
-        foreach ( const __Annotation &annot, annotationsList ) {
+        foreach ( const Annotation &annot, annotationsList ) {
             QString annotName = annot.getName( );
             if (annotName == U1AnnotationUtils::lowerCaseAnnotationName ||
                 annotName == U1AnnotationUtils::upperCaseAnnotationName)

@@ -39,7 +39,7 @@ class U2Sequence;
 class GUrl;
 class AnnotationSettings;
 class U2OpStatus;
-class FeaturesTableObject;
+class AnnotationTableObject;
 class U2DbiRef;
 
 class U2FORMATS_EXPORT DocumentFormatUtils : public QObject {
@@ -61,7 +61,7 @@ public:
     static U2SequenceObject* addSequenceObject(const U2DbiRef& dbiRef, const QString& name, const QByteArray& seq, bool circular, const QVariantMap& hints, U2OpStatus& os);
 
     /** Doc URL here is used to set up sequence<->annotation relations */
-    static FeaturesTableObject * addAnnotationsForMergedU2Sequence( const GUrl& docUrl,
+    static AnnotationTableObject * addAnnotationsForMergedU2Sequence( const GUrl& docUrl,
         const U2DbiRef& dbiRef, const QStringList& contigs, const U2Sequence& mergedSequence,
         const QVector<U2Region>& mergedMapping, U2OpStatus& os );
 

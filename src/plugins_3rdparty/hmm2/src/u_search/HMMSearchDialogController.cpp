@@ -9,7 +9,7 @@
 #include <U2Core/AppResources.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/LoadDocumentTask.h>
-#include <U2Core/FeaturesTableObject.h>
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/CreateAnnotationTask.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/GObjectUtils.h>
@@ -160,7 +160,7 @@ void HMMSearchDialogController::sl_onProgressChanged() {
 // TASKS
 
 HMMSearchToAnnotationsTask::HMMSearchToAnnotationsTask(const QString& _hmmFile, const DNASequence& s, 
-                                                       FeaturesTableObject *ao, const QString& _agroup, const QString& _aname,
+                                                       AnnotationTableObject *ao, const QString& _agroup, const QString& _aname,
                                                        const UHMMSearchSettings& _settings)
 : Task("", TaskFlags_NR_FOSCOE | TaskFlag_ReportingIsSupported), 
 hmmFile(_hmmFile), dnaSequence(s), agroup(_agroup), aname(_aname), settings(_settings), 

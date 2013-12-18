@@ -32,7 +32,7 @@ class DNATranslation;
 class U2GUI_EXPORT ExportAnnotations2CSVTask : public Task {
     Q_OBJECT
 public:
-                            ExportAnnotations2CSVTask( const QList<__Annotation> &annotations,
+                            ExportAnnotations2CSVTask( const QList<Annotation> &annotations,
                                 const QByteArray &sequence, const QString &seqName,
                                 const DNATranslation *complementTranslation, bool exportSequence,
                                 bool exportSequenceName, const QString &url, bool append = false,
@@ -40,7 +40,7 @@ public:
 
     void                    run( );
 private:
-    QList<__Annotation>      annotations;
+    QList<Annotation>      annotations;
     QByteArray              sequence;
     QString                 seqName;
     const DNATranslation *  complementTranslation;

@@ -23,7 +23,7 @@
 
 #include <U2Core/AnnotationSettings.h>
 #include <U2Core/DNASequenceObject.h>
-#include <U2Core/FeaturesTableObject.h>
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/GObjectUtils.h>
 #include <U2Core/U2SafePoints.h>
 
@@ -192,7 +192,7 @@ void CollocationsDialogController::sl_searchClicked() {
     CollocationsAlgorithmSettings cfg;
     cfg.distance = regionSpin->value();
     assert(task == NULL);
-    const QList<FeaturesTableObject*>& aObjects = ctx->getAnnotationObjects().toList();
+    const QList<AnnotationTableObject*>& aObjects = ctx->getAnnotationObjects().toList();
     cfg.searchRegion = U2Region(0, ctx->getSequenceLength());
     if (!wholeAnnotationsBox->isChecked()) {
         cfg.st = CollocationsAlgorithm::PartialSearch;
@@ -310,7 +310,7 @@ CDCResultItem::CDCResultItem(const U2Region& _r) : r(_r) {
 
 //////////////////////////////////////////////////////////////////////////
 // task
-CollocationSearchTask::CollocationSearchTask(const QList<FeaturesTableObject*> &table, const QSet<QString>& names,
+CollocationSearchTask::CollocationSearchTask(const QList<AnnotationTableObject*> &table, const QSet<QString>& names,
                                              const CollocationsAlgorithmSettings& cfg) 
 : Task(tr("collocation_search_task"), TaskFlag_None), cfg(cfg), lock(QMutex::Recursive), keepSourceAnns(false)
 {
@@ -320,8 +320,8 @@ CollocationSearchTask::CollocationSearchTask(const QList<FeaturesTableObject*> &
     foreach(const QString& name, names) {
         getItem(name);
     }
-    foreach(FeaturesTableObject* ao, table) {
-        foreach(const __Annotation &a, ao->getAnnotations()) {
+    foreach(AnnotationTableObject* ao, table) {
+        foreach(const Annotation &a, ao->getAnnotations()) {
             const QString& name = a.getName();
             if((a.getStrand().isDirect() && cfg.strand == StrandOption_ComplementOnly) ||
                 (a.getStrand().isCompementary() && cfg.strand == StrandOption_DirectOnly)){

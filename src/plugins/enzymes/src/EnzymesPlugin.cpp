@@ -273,13 +273,13 @@ void EnzymesADVContext::sl_createPCRProduct()
     AnnotatedDNAView* av = qobject_cast<AnnotatedDNAView*>(action->getObjectView());
     SAFE_POINT( av != NULL, "Invalid DNA view!", );
 
-    const __Annotation a = av->getAnnotationsSelection()->getSelection().first().annotation;
-    const __AnnotationGroup group = a.getGroup();
+    const Annotation a = av->getAnnotationsSelection()->getSelection().first().annotation;
+    const AnnotationGroup group = a.getGroup();
     if (group.getName().startsWith(PRIMER_ANNOTATION_GROUP_NAME) ) {
         SAFE_POINT( group.getAnnotations( ).size( ) == 2, "Invalid selected annotation count!", );
 
-        const __Annotation a1 = group.getAnnotations().at(0);
-        const __Annotation a2 = group.getAnnotations().at(1);
+        const Annotation a1 = group.getAnnotations().at(0);
+        const Annotation a2 = group.getAnnotations().at(1);
         int startPos = a1.getLocation()->regions.at(0).startPos;
         SAFE_POINT( a2.getLocation( )->strand == U2Strand::Complementary, "Invalid annotation's strand!", );
         int endPos = a2.getLocation()->regions.at(0).endPos();

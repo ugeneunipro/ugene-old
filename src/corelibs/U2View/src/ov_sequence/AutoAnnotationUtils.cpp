@@ -21,7 +21,7 @@
 
 #include <U2Core/AppContext.h>
 #include <U2Core/AutoAnnotationsSupport.h>
-#include <U2Core/FeaturesTableObject.h>
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Gui/MainWindow.h>
@@ -306,7 +306,7 @@ QList<QAction*> AutoAnnotationUtils::getAutoAnnotationToggleActions( ADVSequence
 
 //////////////////////////////////////////////////////////////////////////
 
-ExportAutoAnnotationsGroupTask::ExportAutoAnnotationsGroupTask( const __AnnotationGroup &ag,
+ExportAutoAnnotationsGroupTask::ExportAutoAnnotationsGroupTask( const AnnotationGroup &ag,
     GObjectReference& ref, ADVSequenceObjectContext* ctx)
     : Task("ExportAutoAnnotationsGroupTask", TaskFlags_NR_FOSCOE), aGroup(ag), aRef(ref), seqCtx(ctx)
 {
@@ -314,11 +314,11 @@ ExportAutoAnnotationsGroupTask::ExportAutoAnnotationsGroupTask( const __Annotati
 }
 
 void ExportAutoAnnotationsGroupTask::prepare() {
-    QList<__Annotation> annsToExport;
+    QList<Annotation> annsToExport;
     aGroup.findAllAnnotationsInGroupSubTree(annsToExport);
 
     QList<AnnotationData> aData;
-    foreach ( const __Annotation &a, annsToExport ) {
+    foreach ( const Annotation &a, annsToExport ) {
         aData.append( a.getData( ) );
     }
 

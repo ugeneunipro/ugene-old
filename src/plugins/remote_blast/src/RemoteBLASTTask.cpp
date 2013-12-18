@@ -35,7 +35,7 @@ class BaseIOAdapters;
 class BaseDocumentFormats;
 
 RemoteBLASTToAnnotationsTask::RemoteBLASTToAnnotationsTask( const RemoteBLASTTaskSettings & _cfg, int _qoffs, 
-                                FeaturesTableObject* _ao, const QString &_url,const QString & _group):
+                                AnnotationTableObject* _ao, const QString &_url,const QString & _group):
 Task( tr("RemoteBLASTTask"), TaskFlags_NR_FOSCOE ), offsInGlobalSeq(_qoffs), aobj(_ao), group(_group), url(_url) {
     GCOUNTER( cvar, tvar, "RemoteBLASTToAnnotationsTask" );
     

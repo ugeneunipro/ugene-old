@@ -30,7 +30,7 @@ namespace U2 {
 
 class GObject;
 class GHints;
-class FeaturesTableObject;
+class AnnotationTableObject;
 class U2SequenceObject;
 class DNAAlphabet;
 class StateLock;
@@ -39,7 +39,7 @@ class AutoAnnotationsUpdater;
 class AutoAnnotationsSupport;
 
 /**
- * This object represents in-memory FeaturesTableObject.
+ * This object represents in-memory AnnotationTableObject.
  * Auto-annotations are used to represent temporary algorithm results,
  * such as for example restriction sites or ORFS.
  * Auto-annotations are controlled by AnnotatedDNAView.
@@ -50,7 +50,7 @@ class U2CORE_EXPORT AutoAnnotationObject : public QObject
 public:
                                 AutoAnnotationObject( U2SequenceObject *obj, QObject *parent );
                                 ~AutoAnnotationObject( );
-    FeaturesTableObject *       getAnnotationObject( ) const { return aobj; }
+    AnnotationTableObject *       getAnnotationObject( ) const { return aobj; }
     U2SequenceObject *          getSeqObject( ) const { return dnaObj; }
     void                        setGroupEnabled( const QString &groupName, bool enabled );
     void                        update( );
@@ -67,7 +67,7 @@ private:
     void                        handleUpdate( QList<AutoAnnotationsUpdater *> updaters );
 
     U2SequenceObject *          dnaObj;
-    FeaturesTableObject *       aobj;
+    AnnotationTableObject *       aobj;
     AutoAnnotationsSupport *    aaSupport;
     QSet<QString>               enabledGroups;
 };
@@ -108,7 +108,7 @@ public:
     QList<AutoAnnotationsUpdater *>     getAutoAnnotationUpdaters( );
     AutoAnnotationsUpdater*             findUpdaterByGroupName( const QString& groupName );
     AutoAnnotationsUpdater*             findUpdaterByName( const QString &name );
-    static bool                         isAutoAnnotation( const FeaturesTableObject *obj );
+    static bool                         isAutoAnnotation( const AnnotationTableObject *obj );
     static bool                         isAutoAnnotation( const GObject *obj );
 
 private:

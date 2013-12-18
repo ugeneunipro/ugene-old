@@ -25,7 +25,7 @@
 #include <U2Core/AnnotationSettings.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/DNAAlphabet.h>
-#include <U2Core/FeaturesTableObject.h>
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/U2SafePoints.h>
 
 #include <U2View/ADVSequenceObjectContext.h>
@@ -136,20 +136,20 @@ void AnnotHighlightWidget::initLayout()
     setLayout(mainLayout);
 }
 
-bool AnnotHighlightWidget::isValidIndex(const QList<__Annotation> &annotForNextPrev,
+bool AnnotHighlightWidget::isValidIndex(const QList<Annotation> &annotForNextPrev,
     int position)
 {
     return !annotForNextPrev.empty() && position >= 0 && position < annotForNextPrev.size();
 }
 
-int AnnotHighlightWidget::searchAnnotWithEqualsStartPos(const QList<FeaturesTableObject *> &items,
-    QList<__Annotation> &annotForNextPrev, const __Annotation &prev, int currentPosition)
+int AnnotHighlightWidget::searchAnnotWithEqualsStartPos(const QList<AnnotationTableObject *> &items,
+    QList<Annotation> &annotForNextPrev, const Annotation &prev, int currentPosition)
 {
     int qurIdx = -1;
     int currentIdx = qurIdx;
-    foreach ( FeaturesTableObject *aTable, items ) {
+    foreach ( AnnotationTableObject *aTable, items ) {
         SAFE_POINT( NULL != aTable, "Invalid annotation table!", -1 );
-        foreach ( const __Annotation &annotation, aTable->getAnnotations( ) ) {
+        foreach ( const Annotation &annotation, aTable->getAnnotations( ) ) {
             const U2LocationData *locData = annotation.getLocation( ).data( );
             SAFE_POINT( NULL != locData, "Invalid location data!", -1 );
             foreach ( const U2Region &curPos, locData->regions ) {
@@ -173,7 +173,7 @@ bool AnnotHighlightWidget::isNext( bool isForward, qint64 startPos, qint64 endPo
     return startPos < endPos && startPos > minPos;
 }
 
-qint64 AnnotHighlightWidget::searchNextPosition( const QList<FeaturesTableObject *> &items,
+qint64 AnnotHighlightWidget::searchNextPosition( const QList<AnnotationTableObject *> &items,
     int endPos, bool isForward, qint64* currentPosition)
 {
     int locIdx = 0;
@@ -181,9 +181,9 @@ qint64 AnnotHighlightWidget::searchNextPosition( const QList<FeaturesTableObject
     if (!isForward) {
         minPos = -1;
     }
-    foreach ( const FeaturesTableObject *aTable, items) {
+    foreach ( const AnnotationTableObject *aTable, items) {
         SAFE_POINT(aTable != NULL, "Invalid annotation table!", -1);
-        foreach ( const __Annotation &annotation, aTable->getAnnotations( ) ) {
+        foreach ( const Annotation &annotation, aTable->getAnnotations( ) ) {
             int locateIdx = 0;
             const U2LocationData* locData = annotation.getLocation().data();
             SAFE_POINT(locData != NULL, "Invalid location data!", -1);
@@ -212,7 +212,7 @@ void AnnotHighlightWidget::annotationNavigate(bool isForward) {
         return;
     }
 
-    const __Annotation *prev = NULL;
+    const Annotation *prev = NULL;
     //get selected annotation
     if (!as->getSelection().empty()){
         prev = &as->getSelection()[0].annotation;
@@ -234,7 +234,7 @@ void AnnotHighlightWidget::annotationNavigate(bool isForward) {
         locIdx = 0;
     }
 
-    const __Annotation *tmp = prev;
+    const Annotation *tmp = prev;
     qint64 minPos = 0;
     if ( NULL != prev ) {
         SAFE_POINT(locIdx < prev->getRegions().size(), "locIdx is not valid", );
@@ -244,11 +244,11 @@ void AnnotHighlightWidget::annotationNavigate(bool isForward) {
     as->disconnect(this);
     as->clear();
 
-    const QList<FeaturesTableObject *> items = annotatedDnaView->getAnnotationObjects(true);
+    const QList<AnnotationTableObject *> items = annotatedDnaView->getAnnotationObjects(true);
 
     qint64 currentIdx = 0;
 
-    QList<__Annotation> annotForNextPrev;
+    QList<Annotation> annotForNextPrev;
     currentIdx = searchAnnotWithEqualsStartPos(items, annotForNextPrev, *prev, currentPosition);
     currentIdx += 2 * isForward - 1;
 
@@ -329,34 +329,34 @@ void AnnotHighlightWidget::connectSlots()
         this, SLOT(sl_onSequenceModified(ADVSequenceObjectContext*)));
 
     // An annotation object has been added/removed - connect/disconnect slots
-    connect(annotatedDnaView, SIGNAL(si_annotationObjectAdded(FeaturesTableObject*)),
-        SLOT(sl_onAnnotationObjectAdded(FeaturesTableObject*)));
-    connect(annotatedDnaView, SIGNAL(si_annotationObjectRemoved(FeaturesTableObject*)),
-        SLOT(sl_onAnnotationObjectRemoved(FeaturesTableObject*)));
+    connect(annotatedDnaView, SIGNAL(si_annotationObjectAdded(AnnotationTableObject*)),
+        SLOT(sl_onAnnotationObjectAdded(AnnotationTableObject*)));
+    connect(annotatedDnaView, SIGNAL(si_annotationObjectRemoved(AnnotationTableObject*)),
+        SLOT(sl_onAnnotationObjectRemoved(AnnotationTableObject*)));
 
     // An annotation has been added/removed/modified
-    QList<FeaturesTableObject *> seqAnnotTableObjs = annotatedDnaView->getAnnotationObjects(true); // "true" to include auto-annotations
-    foreach ( const FeaturesTableObject *annotTableObj, seqAnnotTableObjs ) {
+    QList<AnnotationTableObject *> seqAnnotTableObjs = annotatedDnaView->getAnnotationObjects(true); // "true" to include auto-annotations
+    foreach ( const AnnotationTableObject *annotTableObj, seqAnnotTableObjs ) {
         connectSlotsForAnnotTableObj(annotTableObj);
     }
 }
 
-void AnnotHighlightWidget::connectSlotsForAnnotTableObj(const FeaturesTableObject *annotTableObj)
+void AnnotHighlightWidget::connectSlotsForAnnotTableObj(const AnnotationTableObject *annotTableObj)
 {
-    connect(annotTableObj, SIGNAL(si_onAnnotationsAdded(const QList<__Annotation> &)),
-        SLOT(sl_onAnnotationsAddedRemoved(const QList<__Annotation> &)));
-    connect(annotTableObj, SIGNAL(si_onAnnotationsRemoved(const QList<__Annotation> &)),
-        SLOT(sl_onAnnotationsAddedRemoved(const QList<__Annotation> &)));
+    connect(annotTableObj, SIGNAL(si_onAnnotationsAdded(const QList<Annotation> &)),
+        SLOT(sl_onAnnotationsAddedRemoved(const QList<Annotation> &)));
+    connect(annotTableObj, SIGNAL(si_onAnnotationsRemoved(const QList<Annotation> &)),
+        SLOT(sl_onAnnotationsAddedRemoved(const QList<Annotation> &)));
     connect(annotTableObj, SIGNAL(si_onAnnotationModified(const AnnotationModification &)),
         SLOT(sl_onAnnotationModified(const AnnotationModification &)));
 }
 
-void AnnotHighlightWidget::disconnectSlotsForAnnotTableObj(const FeaturesTableObject *annotTableObj)
+void AnnotHighlightWidget::disconnectSlotsForAnnotTableObj(const AnnotationTableObject *annotTableObj)
 {
-    disconnect(annotTableObj, SIGNAL(si_onAnnotationsAdded(const QList<__Annotation> &)),
-        this, SLOT(sl_onAnnotationsAddedRemoved(const QList<__Annotation> &)));
-    disconnect(annotTableObj, SIGNAL(si_onAnnotationsRemoved(const QList<__Annotation> &)),
-        this, SLOT(sl_onAnnotationsAddedRemoved(const QList<__Annotation>&)));
+    disconnect(annotTableObj, SIGNAL(si_onAnnotationsAdded(const QList<Annotation> &)),
+        this, SLOT(sl_onAnnotationsAddedRemoved(const QList<Annotation> &)));
+    disconnect(annotTableObj, SIGNAL(si_onAnnotationsRemoved(const QList<Annotation> &)),
+        this, SLOT(sl_onAnnotationsAddedRemoved(const QList<Annotation>&)));
     disconnect(annotTableObj, SIGNAL(si_onAnnotationModified(const AnnotationModification&)),
         this, SLOT(sl_onAnnotationModified(const AnnotationModification&)));
 }
@@ -386,12 +386,12 @@ void AnnotHighlightWidget::findAllAnnotationsNamesForSequence()
         const DNAAlphabet* seqAlphabet = seqContext->getAlphabet();
         bool isAminoSeq = seqAlphabet->isAmino();
 
-        QSet<FeaturesTableObject *> seqAnnotTableObjects = seqContext->getAnnotationObjects(true);
+        QSet<AnnotationTableObject *> seqAnnotTableObjects = seqContext->getAnnotationObjects(true);
 
-        foreach ( FeaturesTableObject *annotTableObj, seqAnnotTableObjects) {
-            const QList<__Annotation> annotations = annotTableObj->getAnnotations();
+        foreach ( AnnotationTableObject *annotTableObj, seqAnnotTableObjects) {
+            const QList<Annotation> annotations = annotTableObj->getAnnotations();
 
-            foreach ( const __Annotation &annot, annotations) {
+            foreach ( const Annotation &annot, annotations) {
                 const QString annotName = annot.getName();
 
                 // If the annotation was found on a nucleotide sequence
@@ -504,7 +504,7 @@ void AnnotHighlightWidget::sl_onSequenceModified(ADVSequenceObjectContext* /* se
     loadAnnotTypes();
 }
 
-void AnnotHighlightWidget::sl_onAnnotationsAddedRemoved(const QList<__Annotation>& /* annotations */)
+void AnnotHighlightWidget::sl_onAnnotationsAddedRemoved(const QList<Annotation>& /* annotations */)
 {
     loadAnnotTypes();
 }
@@ -514,13 +514,13 @@ void AnnotHighlightWidget::sl_onAnnotationModified(const AnnotationModification&
     loadAnnotTypes();
 }
 
-void AnnotHighlightWidget::sl_onAnnotationObjectAdded(FeaturesTableObject *annotTableObj)
+void AnnotHighlightWidget::sl_onAnnotationObjectAdded(AnnotationTableObject *annotTableObj)
 {
     connectSlotsForAnnotTableObj(annotTableObj);
     loadAnnotTypes();
 }
 
-void AnnotHighlightWidget::sl_onAnnotationObjectRemoved(FeaturesTableObject *annotTableObj)
+void AnnotHighlightWidget::sl_onAnnotationObjectRemoved(AnnotationTableObject *annotTableObj)
 {
     disconnectSlotsForAnnotTableObj(annotTableObj);
     loadAnnotTypes();

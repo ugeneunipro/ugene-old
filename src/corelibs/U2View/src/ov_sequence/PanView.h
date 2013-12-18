@@ -117,9 +117,9 @@ protected:
     virtual void onVisibleRangeChanged(bool signal = true);
     virtual void pack();
 
-    virtual void registerAnnotations(const QList<__Annotation> &l);
-    virtual void unregisterAnnotations(const QList<__Annotation> &l);
-    virtual void ensureVisible( const __Annotation &a, int locationIdx );
+    virtual void registerAnnotations(const QList<Annotation> &l);
+    virtual void unregisterAnnotations(const QList<Annotation> &l);
+    virtual void ensureVisible( const Annotation &a, int locationIdx );
 protected slots:
     virtual void sl_sequenceChanged();
     void sl_onAnnotationsModified(const AnnotationModification& md);
@@ -196,7 +196,7 @@ public:
     int getRowLinesOffset() const {return rowLinesOffset;}
     void setRowLinesOffset(int r);
 
-    virtual U2Region getAnnotationYRange( const __Annotation &a, int region, const AnnotationSettings* as) const;
+    virtual U2Region getAnnotationYRange( const Annotation &a, int region, const AnnotationSettings* as) const;
 
     bool updateNumVisibleRows();
     bool canIncreaseLines();

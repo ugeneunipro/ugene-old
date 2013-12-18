@@ -34,7 +34,7 @@
 #include <U2Core/AddDocumentTask.h>
 #include <U2Core/SaveDocumentTask.h>
 
-#include <U2Core/FeaturesTableObject.h>
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/GObjectRelationRoles.h>
 #include <U2Core/GObjectUtils.h>
 #include <U2Core/U1AnnotationUtils.h>
@@ -110,9 +110,9 @@ void ModifySequenceContentTask::fixAnnotations( ) {
     foreach ( Document *d, docs ) {
         QList<GObject *> annotationTablesList = d->findGObjectByType( GObjectTypes::ANNOTATION_TABLE );
         foreach ( GObject *table, annotationTablesList ) {
-            FeaturesTableObject *ato = qobject_cast<FeaturesTableObject *>( table );
+            AnnotationTableObject *ato = qobject_cast<AnnotationTableObject *>( table );
             if ( ato->hasObjectRelation( seqObj, GObjectRelationRole::SEQUENCE ) ){
-                foreach ( __Annotation an, ato->getAnnotations( ) ) {
+                foreach ( Annotation an, ato->getAnnotations( ) ) {
                     QVector<U2Region> locs = an.getRegions( );
 
                     QList<QVector<U2Region> > newRegions
@@ -161,7 +161,7 @@ void ModifySequenceContentTask::cloneSequenceAndAnnotations( ) {
         GObjectTypes::ANNOTATION_TABLE ) )
     {
         if ( mergeAnnotations ) {
-            FeaturesTableObject *newDocAto = new FeaturesTableObject( "Annotations",
+            AnnotationTableObject *newDocAto = new AnnotationTableObject( "Annotations",
                 newDoc->getDbiRef( ) );
             newDocAto->addObjectRelation( seqObj, GObjectRelationRole::SEQUENCE );
 
@@ -169,9 +169,9 @@ void ModifySequenceContentTask::cloneSequenceAndAnnotations( ) {
                 QList<GObject *> annotationTablesList
                     = d->findGObjectByType( GObjectTypes::ANNOTATION_TABLE );
                 foreach ( GObject *table, annotationTablesList ) {
-                    FeaturesTableObject *ato = qobject_cast<FeaturesTableObject *>( table );
+                    AnnotationTableObject *ato = qobject_cast<AnnotationTableObject *>( table );
                     if ( ato->hasObjectRelation( oldSeqObj, GObjectRelationRole::SEQUENCE ) ) {
-                        foreach ( const __Annotation &ann, ato->getAnnotations( ) ) {
+                        foreach ( const Annotation &ann, ato->getAnnotations( ) ) {
                             newDocAto->addAnnotation( ann.getData( ), ann.getGroup( ).getName( ) );
                         }
                     }
@@ -182,7 +182,7 @@ void ModifySequenceContentTask::cloneSequenceAndAnnotations( ) {
         } else {
             // use only sequence-doc annotations
             foreach ( GObject *o, curDoc->getObjects( ) ){
-                FeaturesTableObject* aObj = qobject_cast<FeaturesTableObject *>( o );
+                AnnotationTableObject* aObj = qobject_cast<AnnotationTableObject *>( o );
                 if ( NULL == aObj ) {
                     continue;
                 }

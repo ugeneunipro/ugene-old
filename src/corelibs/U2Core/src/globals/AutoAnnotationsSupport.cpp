@@ -21,7 +21,7 @@
 
 #include <U2Core/AppContext.h>
 #include <U2Core/DNASequenceObject.h>
-#include <U2Core/FeaturesTableObject.h>
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/Settings.h>
 #include <U2Core/RemoveAnnotationsTask.h>
@@ -81,7 +81,7 @@ AutoAnnotationsSupport::~AutoAnnotationsSupport( ) {
     qDeleteAll( aaUpdaters );
 }
 
-bool AutoAnnotationsSupport::isAutoAnnotation( const FeaturesTableObject *obj ) {
+bool AutoAnnotationsSupport::isAutoAnnotation( const AnnotationTableObject *obj ) {
     return obj->getGHintsMap( ).value( AutoAnnotationObject::AUTO_ANNOTATION_HINT ).toBool( );
 }
 
@@ -100,7 +100,7 @@ AutoAnnotationObject::AutoAnnotationObject( U2SequenceObject *obj, QObject *pare
     hints.insert(AUTO_ANNOTATION_HINT, true);
     const QString tableName = AutoAnnotationsSupport::tr( "Auto-annotations [%1 | %2]" )
         .arg( obj->getDocument( )->getName( ) ).arg( obj->getGObjectName( ) );
-    aobj = new FeaturesTableObject( tableName, obj->getEntityRef( ).dbiRef, hints );
+    aobj = new AnnotationTableObject( tableName, obj->getEntityRef( ).dbiRef, hints );
     aobj->addObjectRelation( dnaObj, GObjectRelationRole::SEQUENCE );
     aaSupport = AppContext::getAutoAnnotationsSupport( );
 }
@@ -137,8 +137,8 @@ void AutoAnnotationObject::handleUpdate( QList<AutoAnnotationsUpdater *> updater
         }
 
         // cleanup
-        __AnnotationGroup root = aobj->getRootGroup( );
-        __AnnotationGroup sub = root.getSubgroup( updater->getGroupName( ), false );
+        AnnotationGroup root = aobj->getRootGroup( );
+        AnnotationGroup sub = root.getSubgroup( updater->getGroupName( ), false );
         if ( sub != root ) {
             Task *t = new RemoveAnnotationsTask( aobj, updater->getGroupName( ) );
             subTasks.append( t );

@@ -26,7 +26,7 @@
 #include <U2Core/DNAAlphabet.h>
 
 #include <QObject>
-#include <U2Core/FeaturesTableObject.h>
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/U2Msa.h>
 #include <U2Core/U2DbiUtils.h>
 
@@ -45,7 +45,7 @@ class U2ALGORITHM_EXPORT SmithWatermanReportCallbackAnnotImpl : public QObject,
     Q_OBJECT
 public:
                                         SmithWatermanReportCallbackAnnotImpl(
-                                            FeaturesTableObject *_aobj,
+                                            AnnotationTableObject *_aobj,
                                             const QString &_annotationName,
                                             const QString &_annotationGroup,
                                             bool _addPatternSubseqToQual, QObject *pOwn = 0 );
@@ -56,7 +56,7 @@ public:
 private:
     QString                             annotationName;
     QString                             annotationGroup;
-    QPointer<FeaturesTableObject>       aObj;
+    QPointer<AnnotationTableObject>       aObj;
     QList<AnnotationData>               anns;
     bool                                autoReport;
     bool                                addPatternSubseqToQual;

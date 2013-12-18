@@ -41,7 +41,7 @@ namespace U2 {
 //////////////////////////////////////////////////////////////////////////
 // enzymes -> annotations
 
-FindEnzymesToAnnotationsTask::FindEnzymesToAnnotationsTask(FeaturesTableObject* aobj, const U2EntityRef& seqRef, 
+FindEnzymesToAnnotationsTask::FindEnzymesToAnnotationsTask(AnnotationTableObject* aobj, const U2EntityRef& seqRef, 
                                                            const QList<SEnzymeData>& _enzymes, const FindEnzymesTaskConfig& config)
 : Task(tr("Find and store enzymes"), TaskFlags_FOSCOE), dnaSeqRef(seqRef), enzymes(_enzymes), aObj(aobj), cfg(config)
 {
@@ -374,7 +374,7 @@ Task* FindEnzymesAutoAnnotationUpdater::createAutoAnnotationsUpdateTask( const A
         cfg.excludedRegions = excludedRegions;
     }
     
-    FeaturesTableObject *aObj = aa->getAnnotationObject();
+    AnnotationTableObject *aObj = aa->getAnnotationObject();
     const U2EntityRef& dnaRef = aa->getSeqObject()->getEntityRef();
     Task* task = new FindEnzymesToAnnotationsTask(aObj, dnaRef, selectedEnzymes, cfg );
 

@@ -27,7 +27,7 @@
 #include <U2Core/AppContext.h>
 
 #include <U2Core/DNASequenceObject.h>
-#include <U2Core/FeaturesTableObject.h>
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/AnnotationSettings.h>
 #include <U2Core/U1AnnotationUtils.h>
 #include <U2View/ADVSequenceWidget.h>
@@ -59,8 +59,8 @@ const int CircularView::graduation = 16;
 CircularView::CircularView(QWidget* p, ADVSequenceObjectContext* ctx)
 : GSequenceLineViewAnnotated(p, ctx), clockwise(true), holdSelection(false)
 {
-    QSet<FeaturesTableObject*> anns = ctx->getAnnotationObjects(true);
-    foreach(FeaturesTableObject* obj, anns ) {
+    QSet<AnnotationTableObject*> anns = ctx->getAnnotationObjects(true);
+    foreach(AnnotationTableObject* obj, anns ) {
         registerAnnotations(obj->getAnnotations());
     }
 
@@ -224,9 +224,9 @@ void CircularView::setAngle(int angle) {
 }
 
 void CircularView::sl_onAnnotationSelectionChanged(AnnotationSelection* selection,
-    const QList<__Annotation>& added, const QList<__Annotation>& removed)
+    const QList<Annotation>& added, const QList<Annotation>& removed)
 {
-    foreach ( const __Annotation &a, added ) {
+    foreach ( const Annotation &a, added ) {
         bool splitted =  U1AnnotationUtils::isSplitted(a.getLocation(), U2Region(0, ctx->getSequenceLength()));
         int locationIdx = selection->getAnnotationData(a)->locationIdx;
         if (splitted && locationIdx != -1) {
@@ -274,7 +274,7 @@ QSize CircularView::sizeHint() const {
     return ra->size();
 }
 
-const QMap<__Annotation,CircularAnnotationItem*>& CircularView::getCircularItems() const {
+const QMap<Annotation,CircularAnnotationItem*>& CircularView::getCircularItems() const {
     return ra->circItems;
 }
 
@@ -413,9 +413,9 @@ circularView(d), rotationDegree(0), mouseAngle(0), oldYlevel(0) {
   
     //build annotation items to get number of region levels for proper resize
     AnnotationSettingsRegistry* asr = AppContext::getAnnotationsSettingsRegistry();
-    QSet<FeaturesTableObject *> anns = ctx->getAnnotationObjects(true);
-    foreach ( FeaturesTableObject *ao, anns) {
-        foreach ( const __Annotation &a, ao->getAnnotations( ) ) {
+    QSet<AnnotationTableObject *> anns = ctx->getAnnotationObjects(true);
+    foreach ( AnnotationTableObject *ao, anns) {
+        foreach ( const Annotation &a, ao->getAnnotations( ) ) {
             AnnotationSettings* as = asr->getAnnotationSettings(a.getName());
             buildAnnotationItem(DrawAnnotationPass_DrawFill, a, false, as);
         }
@@ -508,7 +508,7 @@ void CircularViewRenderArea::drawAnnotationsSelection(QPainter& p) {
         item->setSelected(false);
     }
     foreach(const AnnotationSelectionData& asd, ctx->getAnnotationsSelection()->getSelection()) {
-        FeaturesTableObject *o = asd.annotation.getGObject();
+        AnnotationTableObject *o = asd.annotation.getGObject();
         if (ctx->getAnnotationObjects(true).contains(o)) {
             if(circItems.contains(asd.annotation)) {
                 CircularAnnotationItem* item = circItems[asd.annotation];
@@ -752,9 +752,9 @@ void CircularViewRenderArea::drawAnnotations(QPainter& p) {
     AnnotationSettingsRegistry* asr = AppContext::getAnnotationsSettingsRegistry();
     //for(QSet<AnnotationTableObject*>::const_iterator i = ctx->getAnnotationObjects().begin(); i != ctx->getAnnotationGObjects().constEnd(); i++) {
     //TODO: there need const order of annotation tables
-    QSet<FeaturesTableObject *> anns = ctx->getAnnotationObjects(true);   
-    foreach ( FeaturesTableObject *ao, anns ) {
-        foreach ( const __Annotation &a, ao->getAnnotations( ) ) {
+    QSet<AnnotationTableObject *> anns = ctx->getAnnotationObjects(true);   
+    foreach ( AnnotationTableObject *ao, anns ) {
+        foreach ( const Annotation &a, ao->getAnnotations( ) ) {
             AnnotationSettings* as = asr->getAnnotationSettings(a);
             buildAnnotationItem(DrawAnnotationPass_DrawFill, a, false, as);
             buildAnnotationLabel(p.font(), a, as);
@@ -774,7 +774,7 @@ void CircularViewRenderArea::drawAnnotations(QPainter& p) {
 }
 
 #define REGION_MIN_LEN 3
-void CircularViewRenderArea::buildAnnotationItem(DrawAnnotationPass pass, const __Annotation &a,
+void CircularViewRenderArea::buildAnnotationItem(DrawAnnotationPass pass, const Annotation &a,
     bool selected /* = false */, const AnnotationSettings* as /* = NULL */)
 {
     if (!as->visible && (pass == DrawAnnotationPass_DrawFill || !selected)) {
@@ -893,7 +893,7 @@ void CircularViewRenderArea::buildAnnotationItem(DrawAnnotationPass pass, const 
     circItems[a] = item;
 }
 
-void CircularViewRenderArea::buildAnnotationLabel(const QFont& font, const __Annotation &a, const AnnotationSettings* as) {
+void CircularViewRenderArea::buildAnnotationLabel(const QFont& font, const Annotation &a, const AnnotationSettings* as) {
 
     if (!as->visible) {
         return;
@@ -920,7 +920,7 @@ void CircularViewRenderArea::buildAnnotationLabel(const QFont& font, const __Ann
     }
 }
 
-U2Region CircularViewRenderArea::getAnnotationYRange( const __Annotation &, int, const AnnotationSettings*) const{
+U2Region CircularViewRenderArea::getAnnotationYRange( const Annotation &, int, const AnnotationSettings*) const{
     return U2Region(0,0);
 }
 

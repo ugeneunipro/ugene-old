@@ -22,7 +22,7 @@
 #include <QtCore/QBitArray>
 
 #include <U2Core/AnnotationData.h>
-#include <U2Core/FeaturesTableObject.h>
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/U2FeatureDbi.h>
 #include <U2Core/U2FeatureUtils.h>
 #include <U2Core/U2OpStatusUtils.h>
@@ -60,12 +60,12 @@ IMPLEMENT_TEST( AnnotationUnitTest, get_IdObjectData ) {
     const U2DbiRef dbiRef( getDbiRef( ) );
     AnnotationData anData = createTestAnnotationData( );
 
-    FeaturesTableObject ft( "aname_table_multy", dbiRef );
+    AnnotationTableObject ft( "aname_table_multy", dbiRef );
     ft.addAnnotation( anData );
 
-    const QList<__Annotation> annotations = ft.getAnnotations( );
+    const QList<Annotation> annotations = ft.getAnnotations( );
     CHECK_EQUAL( 1, annotations.size( ), "count of annotations" );
-    const __Annotation &annotation = annotations.first( );
+    const Annotation &annotation = annotations.first( );
 
     CHECK_TRUE( &ft == annotation.getGObject( ),
         "Unexpected value of annotation's parent object" );
@@ -82,12 +82,12 @@ IMPLEMENT_TEST( AnnotationUnitTest, getSet_Name ) {
     const U2DbiRef dbiRef( getDbiRef( ) );
     AnnotationData anData = createTestAnnotationData( );
 
-    FeaturesTableObject ft( "aname_table_multy", dbiRef );
+    AnnotationTableObject ft( "aname_table_multy", dbiRef );
     ft.addAnnotation( anData );
 
-    QList<__Annotation> annotations = ft.getAnnotations( );
+    QList<Annotation> annotations = ft.getAnnotations( );
     CHECK_EQUAL( 1, annotations.size( ), "count of annotations" );
-    __Annotation &annotation = annotations.first( );
+    Annotation &annotation = annotations.first( );
 
     CHECK_EQUAL( annotation.getName( ), anData.name, "Annotation's name" );
 
@@ -101,12 +101,12 @@ IMPLEMENT_TEST( AnnotationUnitTest, getSet_LocationOperator ) {
     const U2DbiRef dbiRef( getDbiRef( ) );
     AnnotationData anData = createTestAnnotationData( );
 
-    FeaturesTableObject ft( "aname_table_multy", dbiRef );
+    AnnotationTableObject ft( "aname_table_multy", dbiRef );
     ft.addAnnotation( anData );
 
-    QList<__Annotation> annotations = ft.getAnnotations( );
+    QList<Annotation> annotations = ft.getAnnotations( );
     CHECK_EQUAL( 1, annotations.size( ), "count of annotations" );
-    __Annotation &annotation = annotations.first( );
+    Annotation &annotation = annotations.first( );
 
     CHECK_TRUE( annotation.isJoin( ), "Unexpected location op" );
     CHECK_EQUAL( annotation.getLocationOperator( ), anData.getLocationOperator( ),
@@ -123,12 +123,12 @@ IMPLEMENT_TEST( AnnotationUnitTest, getSet_Strand ) {
     const U2DbiRef dbiRef( getDbiRef( ) );
     AnnotationData anData = createTestAnnotationData( );
 
-    FeaturesTableObject ft( "aname_table_multy", dbiRef );
+    AnnotationTableObject ft( "aname_table_multy", dbiRef );
     ft.addAnnotation( anData );
 
-    QList<__Annotation> annotations = ft.getAnnotations( );
+    QList<Annotation> annotations = ft.getAnnotations( );
     CHECK_EQUAL( 1, annotations.size( ), "count of annotations" );
-    __Annotation &annotation = annotations.first( );
+    Annotation &annotation = annotations.first( );
 
     CHECK_TRUE( annotation.getStrand( ).isDirect( ), "Unexpected annotation's direction" );
     CHECK_EQUAL( annotation.getStrand( ).getDirectionValue( ),
@@ -146,12 +146,12 @@ IMPLEMENT_TEST( AnnotationUnitTest, getSet_Location ) {
     const U2DbiRef dbiRef( getDbiRef( ) );
     AnnotationData anData = createTestAnnotationData( );
 
-    FeaturesTableObject ft( "aname_table_multy", dbiRef );
+    AnnotationTableObject ft( "aname_table_multy", dbiRef );
     ft.addAnnotation( anData );
 
-    QList<__Annotation> annotations = ft.getAnnotations( );
+    QList<Annotation> annotations = ft.getAnnotations( );
     CHECK_EQUAL( 1, annotations.size( ), "count of annotations" );
-    __Annotation &annotation = annotations.first( );
+    Annotation &annotation = annotations.first( );
 
     CHECK_TRUE( *anData.location == *annotation.getLocation( ),
         "Unexpected annotation's location" );
@@ -171,12 +171,12 @@ IMPLEMENT_TEST( AnnotationUnitTest, getSet_Regions ) {
     const U2DbiRef dbiRef( getDbiRef( ) );
     AnnotationData anData = createTestAnnotationData( );
 
-    FeaturesTableObject ft( "aname_table_multy", dbiRef );
+    AnnotationTableObject ft( "aname_table_multy", dbiRef );
     ft.addAnnotation( anData );
 
-    QList<__Annotation> annotations = ft.getAnnotations( );
+    QList<Annotation> annotations = ft.getAnnotations( );
     CHECK_EQUAL( 1, annotations.size( ), "count of annotations" );
-    __Annotation &annotation = annotations.first( );
+    Annotation &annotation = annotations.first( );
 
     const QVector<U2Region> initRegions = anData.getRegions( );
 
@@ -201,12 +201,12 @@ IMPLEMENT_TEST( AnnotationUnitTest, getSet_Qualifiers ) {
     const U2DbiRef dbiRef( getDbiRef( ) );
     AnnotationData anData = createTestAnnotationData( );
 
-    FeaturesTableObject ft( "aname_table_multy", dbiRef );
+    AnnotationTableObject ft( "aname_table_multy", dbiRef );
     ft.addAnnotation( anData );
 
-    QList<__Annotation> annotations = ft.getAnnotations( );
+    QList<Annotation> annotations = ft.getAnnotations( );
     CHECK_EQUAL( 1, annotations.size( ), "count of annotations" );
-    __Annotation &annotation = annotations.first( );
+    Annotation &annotation = annotations.first( );
 
     const QVector<U2Qualifier> initQuals = anData.qualifiers;
 
@@ -231,12 +231,12 @@ IMPLEMENT_TEST( AnnotationUnitTest, find_Qualifiers ) {
     const U2DbiRef dbiRef( getDbiRef( ) );
     AnnotationData anData = createTestAnnotationData( );
 
-    FeaturesTableObject ft( "aname_table_multy", dbiRef );
+    AnnotationTableObject ft( "aname_table_multy", dbiRef );
     ft.addAnnotation( anData );
 
-    QList<__Annotation> annotations = ft.getAnnotations( );
+    QList<Annotation> annotations = ft.getAnnotations( );
     CHECK_EQUAL( 1, annotations.size( ), "count of annotations" );
-    __Annotation &annotation = annotations.first( );
+    Annotation &annotation = annotations.first( );
 
     QList<U2Qualifier> qualifiers1;
     annotation.findQualifiers( "key", qualifiers1 );
@@ -266,27 +266,27 @@ IMPLEMENT_TEST( AnnotationUnitTest, get_Group ) {
     const QString firstGroupName = "group1/subgroup";
     const QString secondGroupName = "group2";
 
-    FeaturesTableObject ft( "aname_table_multy", dbiRef );
+    AnnotationTableObject ft( "aname_table_multy", dbiRef );
     ft.addAnnotation( anData, firstGroupName );
     ft.addAnnotation( anData, secondGroupName );
 
-    QList<__Annotation> annotations = ft.getAnnotations( );
+    QList<Annotation> annotations = ft.getAnnotations( );
     CHECK_EQUAL( 2, annotations.size( ), "count of annotations" );
 
     QBitArray groupMatches( 2, false );
-    foreach ( const __Annotation &ann, annotations ) {
+    foreach ( const Annotation &ann, annotations ) {
         if ( ann.getGroup( ).getName( ) == "subgroup" ) {
             groupMatches.setBit( 0, true );
         } else if ( ann.getGroup( ).getName( ) == "group2" ) {
             groupMatches.setBit( 1, true );
         }
 
-        const QList<__Annotation> anns = ann.getGroup( ).getAnnotations( );
+        const QList<Annotation> anns = ann.getGroup( ).getAnnotations( );
         CHECK_EQUAL( 1, anns.size( ), "count of annotations" );
     }
     CHECK_EQUAL( 2, groupMatches.count( true ), "matching groups" );
 
-    CHECK_TRUE( __Annotation::annotationLessThan( annotations[1], annotations[0] ),
+    CHECK_TRUE( Annotation::annotationLessThan( annotations[1], annotations[0] ),
         "Unexpected annotations comparison result" );
 }
 
@@ -294,13 +294,13 @@ IMPLEMENT_TEST( AnnotationUnitTest, getSet_Case ) {
     const U2DbiRef dbiRef( getDbiRef( ) );
     AnnotationData anData = createTestAnnotationData( );
 
-    FeaturesTableObject ft( "ftable", dbiRef );
+    AnnotationTableObject ft( "ftable", dbiRef );
     ft.addAnnotation( anData );
 
-    QList<__Annotation> annotations = ft.getAnnotations( );
+    QList<Annotation> annotations = ft.getAnnotations( );
     CHECK_EQUAL( 1, annotations.size( ), "count of annotations" );
 
-    __Annotation annotation = annotations.first( );
+    Annotation annotation = annotations.first( );
     CHECK_FALSE( annotation.isCaseAnnotation( ), "Unexpected annotation case!" );
     annotation.setCaseAnnotation( false );
     CHECK_FALSE( annotation.isCaseAnnotation( ), "Unexpected annotation case!" );

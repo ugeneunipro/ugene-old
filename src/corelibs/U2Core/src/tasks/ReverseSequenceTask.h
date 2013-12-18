@@ -28,7 +28,7 @@
 namespace U2 {
 
 class U2SequenceObject;
-class FeaturesTableObject;
+class AnnotationTableObject;
 class DNATranslation;
 class DNASequenceSelection;
 
@@ -37,13 +37,13 @@ class U2CORE_EXPORT ReverseSequenceTask : public Task
     Q_OBJECT
 public:
                                     ReverseSequenceTask( U2SequenceObject *dnaObj,
-                                        const QList<FeaturesTableObject *> &annotations,
+                                        const QList<AnnotationTableObject *> &annotations,
                                         DNASequenceSelection *selection, DNATranslation *complTT );
     ReportResult                    report( );
 
 private:
     U2SequenceObject *              seqObj;
-    QList<FeaturesTableObject *>    aObjs;
+    QList<AnnotationTableObject *>    aObjs;
     DNASequenceSelection *          selection;
     DNATranslation *                complTr;
 

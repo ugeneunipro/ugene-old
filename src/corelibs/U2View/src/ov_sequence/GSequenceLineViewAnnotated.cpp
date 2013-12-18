@@ -27,7 +27,7 @@
 #include <U2Core/AnnotationModification.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/Timer.h>
-#include <U2Core/FeaturesTableObject.h>
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/AnnotationSettings.h>
 #include <U2Core/U1AnnotationUtils.h>
 #include <U2Core/DNASequenceObject.h>
@@ -50,16 +50,16 @@ namespace U2 {
 GSequenceLineViewAnnotated::GSequenceLineViewAnnotated(QWidget* p, ADVSequenceObjectContext* ctx) 
 : GSequenceLineView(p, ctx)
 {
-    const QSet<FeaturesTableObject*> aObjs = ctx->getAnnotationObjects(true);
-    foreach ( const FeaturesTableObject *ao, aObjs ) {
+    const QSet<AnnotationTableObject*> aObjs = ctx->getAnnotationObjects(true);
+    foreach ( const AnnotationTableObject *ao, aObjs ) {
         connectAnnotationObject( ao );
     }
     connect(ctx->getAnnotationsSelection(),
-        SIGNAL(si_selectionChanged(AnnotationSelection*, const QList<__Annotation>&, const QList<__Annotation>& )),
-        SLOT(sl_onAnnotationSelectionChanged(AnnotationSelection*, const QList<__Annotation>&, const QList<__Annotation>&)));
+        SIGNAL(si_selectionChanged(AnnotationSelection*, const QList<Annotation>&, const QList<Annotation>& )),
+        SLOT(sl_onAnnotationSelectionChanged(AnnotationSelection*, const QList<Annotation>&, const QList<Annotation>&)));
 
-    connect(ctx, SIGNAL(si_annotationObjectAdded(FeaturesTableObject *)), SLOT(sl_onAnnotationObjectAdded(FeaturesTableObject *)));
-    connect(ctx, SIGNAL(si_annotationObjectRemoved(FeaturesTableObject *)), SLOT(sl_onAnnotationObjectRemoved(FeaturesTableObject *)));
+    connect(ctx, SIGNAL(si_annotationObjectAdded(AnnotationTableObject *)), SLOT(sl_onAnnotationObjectAdded(AnnotationTableObject *)));
+    connect(ctx, SIGNAL(si_annotationObjectRemoved(AnnotationTableObject *)), SLOT(sl_onAnnotationObjectRemoved(AnnotationTableObject *)));
     
     connect(AppContext::getAnnotationsSettingsRegistry(),
         SIGNAL(si_annotationSettingsChanged(const QStringList&)),
@@ -67,11 +67,11 @@ GSequenceLineViewAnnotated::GSequenceLineViewAnnotated(QWidget* p, ADVSequenceOb
 
 }
 
-void GSequenceLineViewAnnotated::connectAnnotationObject( const FeaturesTableObject *ao ) {
-    connect(ao, SIGNAL(si_onAnnotationsAdded(const QList<__Annotation> &)), SLOT(sl_onAnnotationsAdded(const QList<__Annotation> &)));
-    connect(ao, SIGNAL(si_onAnnotationsRemoved(const QList<__Annotation>&)), SLOT(sl_onAnnotationsRemoved(const QList<__Annotation> &)));
-    connect(ao, SIGNAL(si_onAnnotationsInGroupRemoved(const QList<__Annotation>&, AnnotationGroup*)), 
-        SLOT(sl_onAnnotationsInGroupRemoved(const QList<__Annotation>&, AnnotationGroup*)));
+void GSequenceLineViewAnnotated::connectAnnotationObject( const AnnotationTableObject *ao ) {
+    connect(ao, SIGNAL(si_onAnnotationsAdded(const QList<Annotation> &)), SLOT(sl_onAnnotationsAdded(const QList<Annotation> &)));
+    connect(ao, SIGNAL(si_onAnnotationsRemoved(const QList<Annotation>&)), SLOT(sl_onAnnotationsRemoved(const QList<Annotation> &)));
+    connect(ao, SIGNAL(si_onAnnotationsInGroupRemoved(const QList<Annotation>&, AnnotationGroup*)), 
+        SLOT(sl_onAnnotationsInGroupRemoved(const QList<Annotation>&, AnnotationGroup*)));
     connect(ao, SIGNAL(si_onAnnotationModified(const AnnotationModification&)), SLOT(sl_onAnnotationsModified(const AnnotationModification&)));
 }
 
@@ -80,32 +80,32 @@ void GSequenceLineViewAnnotated::sl_onAnnotationSettingsChanged(const QStringLis
     update();
 }
 
-void GSequenceLineViewAnnotated::sl_onAnnotationObjectAdded( const FeaturesTableObject *o) {
+void GSequenceLineViewAnnotated::sl_onAnnotationObjectAdded( const AnnotationTableObject *o) {
     connectAnnotationObject(o);
     sl_onAnnotationsAdded(o->getAnnotations());
 }
 
-void GSequenceLineViewAnnotated::sl_onAnnotationObjectRemoved( FeaturesTableObject *o ) {
+void GSequenceLineViewAnnotated::sl_onAnnotationObjectRemoved( AnnotationTableObject *o ) {
     o->disconnect(this);
     sl_onAnnotationsRemoved(o->getAnnotations());
 }
 
 
-void GSequenceLineViewAnnotated::sl_onAnnotationsAdded(const QList<__Annotation> &l) {
+void GSequenceLineViewAnnotated::sl_onAnnotationsAdded(const QList<Annotation> &l) {
     GTIMER(c2,t2,"GSequenceLineViewAnnotated::sl_onAnnotationsAdded");
     registerAnnotations(l);
     addUpdateFlags(GSLV_UF_AnnotationsChanged);
     update();
 }
 
-void GSequenceLineViewAnnotated::sl_onAnnotationsRemoved(const QList<__Annotation> &l) {
+void GSequenceLineViewAnnotated::sl_onAnnotationsRemoved(const QList<Annotation> &l) {
     unregisterAnnotations(l);
     addUpdateFlags(GSLV_UF_AnnotationsChanged);
     update();
 }
 
-void GSequenceLineViewAnnotated::sl_onAnnotationsInGroupRemoved(const QList<__Annotation> &l, const __AnnotationGroup & ) {
-    FeaturesTableObject *aobj = static_cast<FeaturesTableObject *>(sender());
+void GSequenceLineViewAnnotated::sl_onAnnotationsInGroupRemoved(const QList<Annotation> &l, const AnnotationGroup & ) {
+    AnnotationTableObject *aobj = static_cast<AnnotationTableObject *>(sender());
     ClearAnnotationsTask *task = new ClearAnnotationsTask(l, aobj, this);
     AppContext::getTaskScheduler()->registerTopLevelTask(task);
 }
@@ -121,16 +121,16 @@ Task::ReportResult ClearAnnotationsTask::report() {
 }
 
 void GSequenceLineViewAnnotated::sl_onAnnotationSelectionChanged( AnnotationSelection* as,
-    const QList<__Annotation> &_added, const QList<__Annotation> &_removed )
+    const QList<Annotation> &_added, const QList<Annotation> &_removed )
 {
-    const QSet<FeaturesTableObject *> aos = ctx->getAnnotationObjects(true);
+    const QSet<AnnotationTableObject *> aos = ctx->getAnnotationObjects(true);
 
     bool changed = false;
-    QList<__Annotation> added = ctx->selectRelatedAnnotations(_added);
-    QList<__Annotation> removed = ctx->selectRelatedAnnotations(_removed);
+    QList<Annotation> added = ctx->selectRelatedAnnotations(_added);
+    QList<Annotation> removed = ctx->selectRelatedAnnotations(_removed);
 
     if (added.size() == 1) {
-        const __Annotation &a = added.first();
+        const Annotation &a = added.first();
         if (aos.contains(a.getGObject())) {
             const AnnotationSelectionData* asd = as->getAnnotationData(a);
             ensureVisible(a, asd->locationIdx);
@@ -139,14 +139,14 @@ void GSequenceLineViewAnnotated::sl_onAnnotationSelectionChanged( AnnotationSele
     }
 
     if (!changed) {
-        foreach( const __Annotation &a, added) {
+        foreach( const Annotation &a, added) {
             if (aos.contains(a.getGObject()) && isAnnotationVisible(a)) {
                 changed = true;
                 break;
             }
         }
         if (!changed) {
-            foreach( const __Annotation &a, removed) {
+            foreach( const Annotation &a, removed) {
                 if (aos.contains(a.getGObject()) && isAnnotationVisible(a)) {
                     changed = true;
                     break;
@@ -161,7 +161,7 @@ void GSequenceLineViewAnnotated::sl_onAnnotationSelectionChanged( AnnotationSele
     }
 }
 
-bool GSequenceLineViewAnnotated::isAnnotationVisible( const __Annotation &a) const  {
+bool GSequenceLineViewAnnotated::isAnnotationVisible( const Annotation &a) const  {
     foreach (const U2Region &r, a.getRegions()) {
         if (visibleRange.intersects(r)) {
             return true;
@@ -182,9 +182,9 @@ QList<AnnotationSelectionData> GSequenceLineViewAnnotated::selectAnnotationByCoo
         assert(dPos < seqLen);
     }
     U2Region reg(pos-dPos, 1 + 2*dPos);
-    const QSet<FeaturesTableObject *> aObjs = ctx->getAnnotationObjects(true);
-    foreach ( FeaturesTableObject *ao, aObjs ) {
-        foreach ( const __Annotation &a, ao->getAnnotations( ) ) {
+    const QSet<AnnotationTableObject *> aObjs = ctx->getAnnotationObjects(true);
+    foreach ( AnnotationTableObject *ao, aObjs ) {
+        foreach ( const Annotation &a, ao->getAnnotations( ) ) {
             QVector<U2Region> location = a.getRegions();
             for (int i = 0, n = location.size(); i < n; i++) {
                 const U2Region& l = location[i];
@@ -257,8 +257,8 @@ void GSequenceLineViewAnnotated::mousePressEvent(QMouseEvent * me) {
                 if (expandAnnotationSelectionToSequence) {
                     U2Region regionToSelect;
                     foreach(const AnnotationSelectionData& asd, asel->getSelection()) {
-                        FeaturesTableObject *aobj = asd.annotation.getGObject();
-                        const QSet<FeaturesTableObject *> aObjs = ctx->getAnnotationObjects(true);
+                        AnnotationTableObject *aobj = asd.annotation.getGObject();
+                        const QSet<AnnotationTableObject *> aObjs = ctx->getAnnotationObjects(true);
                         if (!aObjs.contains(aobj)) {
                             continue;
                         }
@@ -282,7 +282,7 @@ void GSequenceLineViewAnnotated::mousePressEvent(QMouseEvent * me) {
     ignoreMouseSelectionEvents = false;
 }
 
-QString GSequenceLineViewAnnotated::prepareAnnotationText(const __Annotation &a, const AnnotationSettings* as) {
+QString GSequenceLineViewAnnotated::prepareAnnotationText(const Annotation &a, const AnnotationSettings* as) {
     if ((as->showNameQuals == false) || as->nameQuals.isEmpty()) {
         return a.getName();
     }
@@ -298,11 +298,11 @@ QString GSequenceLineViewAnnotated::prepareAnnotationText(const __Annotation &a,
     return a.getName();
 }
 
-QList<__Annotation> GSequenceLineViewAnnotated::findAnnotationsInRange(const U2Region& range) {
-    QList<__Annotation> result;
-    const QSet<FeaturesTableObject *> aObjs = ctx->getAnnotationObjects(true);
-    foreach ( FeaturesTableObject *ao, aObjs) {
-        foreach ( const __Annotation &a, ao->getAnnotations( ) ) {
+QList<Annotation> GSequenceLineViewAnnotated::findAnnotationsInRange(const U2Region& range) {
+    QList<Annotation> result;
+    const QSet<AnnotationTableObject *> aObjs = ctx->getAnnotationObjects(true);
+    foreach ( AnnotationTableObject *ao, aObjs) {
+        foreach ( const Annotation &a, ao->getAnnotations( ) ) {
             if (range.intersects(a.getRegions())) {
                 result.append(a);
             }
@@ -349,8 +349,8 @@ void GSequenceLineViewAnnotatedRenderArea::drawAnnotations(QPainter& p) {
     QPen pen1(Qt::SolidLine);
     pen1.setWidth(1);
 
-    foreach ( const FeaturesTableObject *ao, ctx->getAnnotationObjects(true)) {
-        foreach ( const __Annotation &a, ao->getAnnotations()) {
+    foreach ( const AnnotationTableObject *ao, ctx->getAnnotationObjects(true)) {
+        foreach ( const Annotation &a, ao->getAnnotations()) {
             AnnotationSettingsRegistry* asr = AppContext::getAnnotationsSettingsRegistry();
             AnnotationSettings* as = asr->getAnnotationSettings(a);
             drawAnnotation(p, DrawAnnotationPass_DrawFill, a, pen1, false, as);
@@ -383,7 +383,7 @@ void static addArrowPath(QPainterPath& path, const QRect& rect, bool leftArrow) 
     path = path.united(arrowPath);
 }
 
-void GSequenceLineViewAnnotatedRenderArea::drawAnnotation(QPainter& p, DrawAnnotationPass pass, const __Annotation &a, const QPen& borderPen, bool selected, 
+void GSequenceLineViewAnnotatedRenderArea::drawAnnotation(QPainter& p, DrawAnnotationPass pass, const Annotation &a, const QPen& borderPen, bool selected, 
                                                           const AnnotationSettings* as, U2Region predefinedy)
 {
     if (as == NULL) {
@@ -487,7 +487,7 @@ void GSequenceLineViewAnnotatedRenderArea::drawAnnotationsSelection(QPainter& p)
     pen2.setWidth(2);
 
     foreach(const AnnotationSelectionData& asd, ctx->getAnnotationsSelection()->getSelection()) {
-        FeaturesTableObject *o = asd.annotation.getGObject();
+        AnnotationTableObject *o = asd.annotation.getGObject();
         if (ctx->getAnnotationObjects(true).contains(o)) {
             if (annotationsCanOverlap) {
                 drawAnnotation(p, DrawAnnotationPass_DrawFill,   asd.annotation, pen1, true);
@@ -551,7 +551,7 @@ void GSequenceLineViewAnnotatedRenderArea::drawCutSite(QPainter& p, const QRect&
 
 #define MAX_VIRTUAL_RANGE 10000
 
-void GSequenceLineViewAnnotatedRenderArea::drawAnnotationConnections(QPainter& p, const __Annotation &a, const AnnotationSettings* as) {
+void GSequenceLineViewAnnotatedRenderArea::drawAnnotationConnections(QPainter& p, const Annotation &a, const AnnotationSettings* as) {
     if (a.getLocation()->isSingleRegion()) {
         return;
     }
@@ -604,7 +604,7 @@ void GSequenceLineViewAnnotatedRenderArea::drawAnnotationConnections(QPainter& p
     }
 }
 
-void GSequenceLineViewAnnotated::ensureVisible( const __Annotation &a, int locationIdx) {
+void GSequenceLineViewAnnotated::ensureVisible( const Annotation &a, int locationIdx) {
     QVector<U2Region> location = a.getRegions();
     assert(locationIdx < location.size());
     if (locationIdx == -1) {
@@ -681,7 +681,7 @@ void GSequenceLineViewAnnotated::sl_onAnnotationsModified( const AnnotationModif
     }
 }
 bool GSequenceLineViewAnnotatedRenderArea::isAnnotationSelectionInVisibleRange() const {
-    const QSet<FeaturesTableObject*> aos = view->getSequenceContext()->getAnnotationObjects(true);
+    const QSet<AnnotationTableObject*> aos = view->getSequenceContext()->getAnnotationObjects(true);
     AnnotationSelection* as = view->getSequenceContext()->getAnnotationsSelection();
     foreach(const AnnotationSelectionData& asd, as->getSelection()) {
         if (!aos.contains(asd.annotation.getGObject())) {

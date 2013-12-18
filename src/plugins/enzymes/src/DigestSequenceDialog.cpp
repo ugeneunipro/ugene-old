@@ -29,7 +29,7 @@
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/GObjectUtils.h>
 #include <U2Core/GObjectRelationRoles.h>
-#include <U2Core/FeaturesTableObject.h>
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/Settings.h>
 #include <U2View/ADVSequenceObjectContext.h>
@@ -136,7 +136,7 @@ void DigestSequenceDialog::accept()
         return;
     }
     const CreateAnnotationModel& m = ac->getModel();
-    FeaturesTableObject *aObj = m.getAnnotationObject();
+    AnnotationTableObject *aObj = m.getAnnotationObject();
     SAFE_POINT(aObj != NULL, "Invalid annotation table detected!", );
 
     DigestSequenceTaskConfig cfg;
@@ -185,17 +185,17 @@ void DigestSequenceDialog::addAnnotationWidget()
 
 void DigestSequenceDialog::searchForAnnotatedEnzymes(ADVSequenceObjectContext* ctx)
 {
-    QSet<FeaturesTableObject *> relatedAnns = ctx->getAnnotationObjects(true);
+    QSet<AnnotationTableObject *> relatedAnns = ctx->getAnnotationObjects(true);
 
-    foreach (FeaturesTableObject *a, relatedAnns ) {
-        const __AnnotationGroup grp = a->getRootGroup().getSubgroup(ANNOTATION_GROUP_ENZYME, false);
+    foreach (AnnotationTableObject *a, relatedAnns ) {
+        const AnnotationGroup grp = a->getRootGroup().getSubgroup(ANNOTATION_GROUP_ENZYME, false);
         if ( grp == a->getRootGroup( ) ) {
             continue;
         }
         sourceObj = a;
-        QList<__Annotation> reSites;
+        QList<Annotation> reSites;
         grp.findAllAnnotationsInGroupSubTree( reSites );
-        foreach ( const __Annotation &a, reSites ) {
+        foreach ( const Annotation &a, reSites ) {
             QString enzymeId = a.getName();
             bool isDublicate = false;
             if (annotatedEnzymes.contains(enzymeId)) {
@@ -332,10 +332,10 @@ void DigestSequenceDialog::sl_addAnnBtnClicked()
     dlg.setWindowTitle(tr("Select annotations"));
     QVBoxLayout* layout = new QVBoxLayout(&dlg);
     QListWidget* listWidget(new QListWidget(&dlg));
-    QSet<FeaturesTableObject *> aObjs = seqCtx->getAnnotationObjects(false);
-    foreach ( FeaturesTableObject *aObj, aObjs ) {
-        QList<__Annotation> anns = aObj->getAnnotations();
-        foreach ( const __Annotation &a, anns ) {
+    QSet<AnnotationTableObject *> aObjs = seqCtx->getAnnotationObjects(false);
+    foreach ( AnnotationTableObject *aObj, aObjs ) {
+        QList<Annotation> anns = aObj->getAnnotations();
+        foreach ( const Annotation &a, anns ) {
             const AnnotationData d = a.getData( );
             listWidget->addItem( QString("%1 %2").arg( a.getName( ) )
                 .arg( Genbank::LocationParser::buildLocationString( &d ) ) );

@@ -19,7 +19,7 @@
  * MA 02110-1301, USA.
  */
 
-#include <U2Core/FeaturesTableObject.h>
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>
 #include <U2Core/BaseDocumentFormats.h>
@@ -125,7 +125,7 @@ Document* ConservationPlotTask::createDoc( const QList<SharedAnnotationData>& an
     CHECK_OP(stateInfo, doc);
     doc->setDocumentOwnsDbiResources(false);
 
-    FeaturesTableObject *ato = new FeaturesTableObject( name, doc->getDbiRef( ) );
+    AnnotationTableObject *ato = new AnnotationTableObject( name, doc->getDbiRef( ) );
     foreach (const SharedAnnotationData &sad, annData) {
         ato->addAnnotation( *sad, QString());
     }

@@ -25,7 +25,7 @@
 #include <U2Core/Counter.h>
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/DNATranslation.h>
-#include <U2Core/FeaturesTableObject.h>
+#include <U2Core/AnnotationTableObject.h>
 
 #include <U2View/FindPatternTask.h>
 
@@ -36,7 +36,7 @@ namespace U2 {
 //////////////////////////////////////////////////////////////////////////
 // CustomPatternAnnotationTask
 
-CustomPatternAnnotationTask::CustomPatternAnnotationTask(FeaturesTableObject* aObj, const U2::U2EntityRef &entityRef, const SharedFeatureStore &store)
+CustomPatternAnnotationTask::CustomPatternAnnotationTask(AnnotationTableObject* aObj, const U2::U2EntityRef &entityRef, const SharedFeatureStore &store)
     : Task(tr("Custom pattern annotation"), TaskFlags_NR_FOSCOE), aTableObj(aObj), seqRef(entityRef),  featureStore(store)
 {
     GCOUNTER( cvar, tvar, "CustomPatternAnnotationTask" );
@@ -124,7 +124,7 @@ CustomPatternAutoAnnotationUpdater::CustomPatternAutoAnnotationUpdater(const Sha
 
 Task* CustomPatternAutoAnnotationUpdater::createAutoAnnotationsUpdateTask( const AutoAnnotationObject* aa )
 {
-    FeaturesTableObject *aObj = aa->getAnnotationObject();
+    AnnotationTableObject *aObj = aa->getAnnotationObject();
     const U2EntityRef& dnaRef = aa->getSeqObject()->getEntityRef();
     Task* task = new CustomPatternAnnotationTask(aObj, dnaRef, featureStore );
 

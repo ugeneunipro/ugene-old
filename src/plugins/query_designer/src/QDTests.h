@@ -30,7 +30,7 @@
 
 namespace U2 {
 
-class FeaturesTableObject;
+class AnnotationTableObject;
 class U2SequenceObject;
 class QDScheduler;
 class QDScheme;
@@ -49,8 +49,8 @@ private:
     QString schemaUri;
     QString expectedResName;
     U2SequenceObject* seqObj;
-    FeaturesTableObject* expectedResult;
-    FeaturesTableObject* result;
+    AnnotationTableObject* expectedResult;
+    AnnotationTableObject* result;
     QDScheme* schema;
     QDScheduler* sched;
 };
@@ -63,15 +63,15 @@ public:
 class CompareAnnotationGroupsTask : public Task {
     Q_OBJECT
 public:
-    CompareAnnotationGroupsTask(const QList<__AnnotationGroup> &_grp1,
-        const QList<__AnnotationGroup> &_grp2)
+    CompareAnnotationGroupsTask(const QList<AnnotationGroup> &_grp1,
+        const QList<AnnotationGroup> &_grp2)
         : Task(tr("Compare annotation tables task"), TaskFlag_None),
         grps1(_grp1), grps2(_grp2), equal(false) {}
 
     virtual void run();
     bool areEqual() const { assert(isFinished()); return equal; }
 private:
-    QList<__AnnotationGroup> grps1, grps2;
+    QList<AnnotationGroup> grps1, grps2;
     bool equal;
 };
 

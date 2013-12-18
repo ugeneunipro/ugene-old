@@ -34,7 +34,7 @@
 #include <U2Core/AnnotationSelection.h>
 #include <U2Core/DNASequenceSelection.h>
 #include <U2Core/DNASequenceObject.h>
-#include <U2Core/FeaturesTableObject.h>
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/Task.h>
 #include <U2Core/U2SafePoints.h>
@@ -56,7 +56,7 @@ ADVCreateAnnotationsTask::ADVCreateAnnotationsTask( AnnotatedDNAView *_ctx, cons
 
 Task::ReportResult ADVCreateAnnotationsTask::report( ) {
     if ( !hasError( ) && !ctx.isNull( ) ) {
-        FeaturesTableObject *ao = t->getGObject( );
+        AnnotationTableObject *ao = t->getGObject( );
         if ( !ctx->getAnnotationObjects( ).contains( ao ) ) { 
             //for documents loaded during annotation creation object is added here
             QString err = ctx->addObject( ao );
@@ -99,10 +99,10 @@ void ADVAnnotationCreation::sl_createAnnotation( ) {
     AnnotationsTreeView *tv = ctx->getAnnotationsView( );
     AVItem *ai = tv->currentItem( );
     if ( NULL != ai && !ai->isReadonly( ) ) {
-        FeaturesTableObject *aobj = ai->getAnnotationTableObject( );
+        AnnotationTableObject *aobj = ai->getAnnotationTableObject( );
         if ( seqCtx->getAnnotationGObjects( ).contains( aobj ) ) {
             m.annotationObjectRef = aobj;
-            __AnnotationGroup ag = ai->getAnnotationGroup( );
+            AnnotationGroup ag = ai->getAnnotationGroup( );
             if ( ag != aobj->getRootGroup( ) ) {
                 m.groupName = ag.getGroupPath( );
             }

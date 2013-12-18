@@ -27,7 +27,7 @@
 
 #include <U2Core/AnnotationModification.h>
 #include <U2Core/AnnotationSettings.h>
-#include <U2Core/FeaturesTableObject.h>
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/DNASequenceSelection.h>
@@ -173,7 +173,7 @@ PanView::PanView(QWidget* p, ADVSequenceObjectContext* ctx) : GSequenceLineViewA
     syncOffset = 0;
 
     //can't move to the GSequenceLineViewAnnotated -> virtual calls does not work in  constructor
-    foreach( FeaturesTableObject *obj, ctx->getAnnotationObjects( true ) ) {
+    foreach( AnnotationTableObject *obj, ctx->getAnnotationObjects( true ) ) {
         registerAnnotations( obj->getAnnotations( ) );
     }
 
@@ -203,10 +203,10 @@ PanView::~PanView() {
     delete rowsManager;
 }
 
-void PanView::registerAnnotations(const QList<__Annotation> &l) {
+void PanView::registerAnnotations(const QList<Annotation> &l) {
     GTIMER(c1,t1,"PanView::registerAnnotations");
     AnnotationSettingsRegistry* asr = AppContext::getAnnotationsSettingsRegistry();
-    foreach ( const __Annotation &a, l ) {
+    foreach ( const Annotation &a, l ) {
         AnnotationSettings* as = asr->getAnnotationSettings(a);
         if (as->visible) {
             rowsManager->addAnnotation(a, a.getName());
@@ -215,9 +215,9 @@ void PanView::registerAnnotations(const QList<__Annotation> &l) {
     updateRows();
 }
 
-void PanView::unregisterAnnotations(const QList<__Annotation> &l) {
+void PanView::unregisterAnnotations(const QList<Annotation> &l) {
     AnnotationSettingsRegistry* asr = AppContext::getAnnotationsSettingsRegistry();
-    foreach ( const __Annotation &a, l ) {
+    foreach ( const Annotation &a, l ) {
         AnnotationSettings* as = asr->getAnnotationSettings(a);
         if (as->visible) {
             rowsManager->removeAnnotation(a);
@@ -283,7 +283,7 @@ void PanView::sl_onRowBarMoved(int v) {
 }
 
 void PanView::sl_onAnnotationsModified(const AnnotationModification& md) {
-    QList<__Annotation> modified;
+    QList<Annotation> modified;
     modified << md.annotation;
     unregisterAnnotations(modified);
     registerAnnotations(modified);
@@ -301,14 +301,14 @@ void PanView::sl_onAnnotationSettingsChanged(const QStringList& changedSettings)
         if (as->visible == hasRow) {
             continue;
         }
-        QList<__Annotation> changed;
-        foreach ( FeaturesTableObject *ao, ctx->getAnnotationObjects( true ) ) {
+        QList<Annotation> changed;
+        foreach ( AnnotationTableObject *ao, ctx->getAnnotationObjects( true ) ) {
             changed << ao->getAnnotationsByName( name );
         }
         if (changed.isEmpty()) {
             continue;
         }
-        foreach ( const __Annotation &a, changed ) {
+        foreach ( const Annotation &a, changed ) {
             if (as->visible) {
                 rowsManager->addAnnotation(a, a.getName());
             } else  {
@@ -456,7 +456,7 @@ void PanView::setVisibleRange(const U2Region& newRange, bool signal) {
 }
 
 
-void PanView::ensureVisible( const __Annotation &a, int locationIdx) {
+void PanView::ensureVisible( const Annotation &a, int locationIdx) {
     AnnotationSettingsRegistry* asr = AppContext::getAnnotationsSettingsRegistry();
     AnnotationSettings* as = asr->getAnnotationSettings(a);
     if (as->visible) {
@@ -735,7 +735,7 @@ void PanViewRenderArea::drawCustomRulers(GraphUtils::RulerConfig c,  QPainter& p
     }
 }
 
-U2Region PanViewRenderArea::getAnnotationYRange( const __Annotation &a, int, const AnnotationSettings* as) const {
+U2Region PanViewRenderArea::getAnnotationYRange( const Annotation &a, int, const AnnotationSettings* as) const {
     if (!as->visible) {
         return U2Region(-1, 0);
     }
@@ -778,7 +778,7 @@ void PanViewRenderArea::drawAnnotations(QPainter& p) {
                 QPen pen1(Qt::SolidLine);
                 pen1.setWidth(1);
                 U2Region yr(lineY + 2, lineHeight - 4);
-                foreach ( const __Annotation &a, rData->annotations ) {
+                foreach ( const Annotation &a, rData->annotations ) {
                     drawAnnotation(p, DrawAnnotationPass_DrawFill, a, pen1, false, as, yr);
                     drawAnnotation(p, DrawAnnotationPass_DrawBorder, a, pen1, false, as, yr);
                 }

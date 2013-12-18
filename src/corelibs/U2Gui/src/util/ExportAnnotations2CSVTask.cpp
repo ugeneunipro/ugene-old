@@ -21,7 +21,7 @@
 
 #include <QtCore/QScopedPointer>
 
-#include <U2Core/FeaturesTableObject.h>
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/Counter.h>
 #include <U2Core/DNATranslation.h>
@@ -35,7 +35,7 @@
 
 namespace U2 {
 
-ExportAnnotations2CSVTask::ExportAnnotations2CSVTask( const QList<__Annotation> &annotations,
+ExportAnnotations2CSVTask::ExportAnnotations2CSVTask( const QList<Annotation> &annotations,
     const QByteArray &sequence, const QString &_seqName,
     const DNATranslation *complementTranslation, bool exportSequence, bool _exportSeqName,
     const QString &url, bool apnd, const QString &sep )
@@ -101,7 +101,7 @@ void ExportAnnotations2CSVTask::run( ) {
     if ( exportSequence ) {
         columnNames << tr( "Sequence" );
     }
-    foreach ( const __Annotation &annotation, annotations ) {
+    foreach ( const Annotation &annotation, annotations ) {
         foreach ( const U2Qualifier &qualifier, annotation.getQualifiers( ) ) {
             const QString &qName = qualifier.name;
             if ( !columnIndices.contains( qName ) ) {
@@ -113,7 +113,7 @@ void ExportAnnotations2CSVTask::run( ) {
     writeCSVLine( columnNames, ioAdapter.data( ), separator, stateInfo );
     CHECK_OP( stateInfo, );
 
-    foreach ( const __Annotation &annotation, annotations ) {
+    foreach ( const Annotation &annotation, annotations ) {
         foreach( const U2Region &region, annotation.getRegions( ) ) {
             QStringList values;
             values << annotation.getGroup( ).getGroupPath( );

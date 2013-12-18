@@ -24,7 +24,7 @@
 #include <U2Core/LoadDocumentTask.h>
 #include <U2Core/U2AlphabetUtils.h>
 #include <U2Core/AppContext.h>
-#include <U2Core/FeaturesTableObject.h>
+#include <U2Core/AnnotationTableObject.h>
 
 namespace U2{
 #define DOC_NAME_ATTR "doc_name"
@@ -125,8 +125,8 @@ Task::ReportResult GTest_AddPartToSequenceTask::report(){
             Document* loadedDocument = getContext<Document>(this, docName);
             QList<GObject*> annotationTablesList = loadedDocument->findGObjectByType(GObjectTypes::ANNOTATION_TABLE);
             foreach(GObject *table, annotationTablesList){
-                FeaturesTableObject *ato = dynamic_cast<FeaturesTableObject *>(table);
-                foreach ( const __Annotation &curentAnnotation, ato->getAnnotations( ) ){
+                AnnotationTableObject *ato = dynamic_cast<AnnotationTableObject *>(table);
+                foreach ( const Annotation &curentAnnotation, ato->getAnnotations( ) ){
                     if ( curentAnnotation.getName( ) == annotationName ) {
                         int i=0;
                         if ( curentAnnotation.getRegions().size() != expectedRegions.size()) {
@@ -148,8 +148,8 @@ Task::ReportResult GTest_AddPartToSequenceTask::report(){
             Document* loadedDocument = getContext<Document>(this, docName);
             QList<GObject*> annotationTablesList = loadedDocument->findGObjectByType(GObjectTypes::ANNOTATION_TABLE);
             foreach(GObject *table, annotationTablesList){
-                FeaturesTableObject *ato = dynamic_cast<FeaturesTableObject *>( table );
-                foreach ( const __Annotation &curentAnnotation, ato->getAnnotations( ) ) {
+                AnnotationTableObject *ato = dynamic_cast<AnnotationTableObject *>( table );
+                foreach ( const Annotation &curentAnnotation, ato->getAnnotations( ) ) {
                     if (curentAnnotation.getName( ) == annotationName){
                         foreach ( const U2Region &curRegion, curentAnnotation.getRegions( ) ) {
                             if (!expectedRegions.contains(curRegion)) {
@@ -254,8 +254,8 @@ Task::ReportResult GTest_RemovePartFromSequenceTask::report(){
         Document* loadedDocument = getContext<Document>(this, docName);
         QList<GObject*> annotationTablesList = loadedDocument->findGObjectByType(GObjectTypes::ANNOTATION_TABLE);
         foreach(GObject *table, annotationTablesList){
-            FeaturesTableObject *ato = dynamic_cast<FeaturesTableObject *>( table );
-            foreach ( const __Annotation &curentAnnotation, ato->getAnnotations( ) ) {
+            AnnotationTableObject *ato = dynamic_cast<AnnotationTableObject *>( table );
+            foreach ( const Annotation &curentAnnotation, ato->getAnnotations( ) ) {
                 if ( curentAnnotation.getName( ) == annotationName ) {
                     int i=0;
                     if ( curentAnnotation.getRegions( ).size( ) != expectedRegions.size( ) ){
@@ -379,8 +379,8 @@ Task::ReportResult GTest_ReplacePartOfSequenceTask::report(){
         Document* loadedDocument = getContext<Document>(this, docName);
         QList<GObject*> annotationTablesList = loadedDocument->findGObjectByType(GObjectTypes::ANNOTATION_TABLE);
         foreach(GObject *table, annotationTablesList){
-            FeaturesTableObject *ato = dynamic_cast<FeaturesTableObject *>( table );
-            foreach ( const __Annotation &curentAnnotation, ato->getAnnotations( ) ) {
+            AnnotationTableObject *ato = dynamic_cast<AnnotationTableObject *>( table );
+            foreach ( const Annotation &curentAnnotation, ato->getAnnotations( ) ) {
                 if (curentAnnotation.getName() == annotationName ) {
                     int i=0;
                     if(curentAnnotation.getRegions().size() != expectedRegions.size()){

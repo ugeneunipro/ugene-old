@@ -22,7 +22,7 @@
 #include <U2Core/LoadDocumentTask.h>
 
 #include <U2Core/GObjectTypes.h>
-#include <U2Core/FeaturesTableObject.h>
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/TextObject.h>
 #include <U2Test/GTestFrameworkComponents.h>
@@ -235,7 +235,7 @@ void GTest_uHMMERSearch::prepare() {
     assert(aDoc == NULL);
     aDoc = df->createNewLoadedDocument(iof, url, stateInfo);
     CHECK_OP(stateInfo, );
-    FeaturesTableObject *ao = new FeaturesTableObject( "Annotations", aDoc->getDbiRef( ) );
+    AnnotationTableObject *ao = new AnnotationTableObject( "Annotations", aDoc->getDbiRef( ) );
     aDoc->addObject(ao);
     DNASequence dnaSequence = mySequence->getWholeSequence();
     searchTask = new HMMSearchToAnnotationsTask(env->getVar("COMMON_DATA_DIR")+"/"+hmmFileName, dnaSequence, ao, annotationName, annotationName, s);

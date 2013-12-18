@@ -28,7 +28,7 @@
 
 namespace U2 {
 
-class FeaturesTableObject;
+class AnnotationTableObject;
 
 typedef QPair<QByteArray,QByteArray> FeaturePattern;
 
@@ -48,12 +48,12 @@ class CustomPatternAnnotationTask :  public Task
 {
     Q_OBJECT
 public:
-    CustomPatternAnnotationTask(FeaturesTableObject* aobj, const U2EntityRef& entityRef, const SharedFeatureStore& store );
+    CustomPatternAnnotationTask(AnnotationTableObject* aobj, const U2EntityRef& entityRef, const SharedFeatureStore& store );
 
     void prepare();
 
 private:
-    FeaturesTableObject* aTableObj;
+    AnnotationTableObject* aTableObj;
     U2EntityRef seqRef;
     SharedFeatureStore featureStore;
 };

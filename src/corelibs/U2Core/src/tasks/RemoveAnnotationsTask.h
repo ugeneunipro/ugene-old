@@ -24,7 +24,7 @@
 
 #include <U2Core/Annotation.h>
 #include <U2Core/AnnotationGroup.h>
-#include <U2Core/FeaturesTableObject.h>
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/Task.h>
 
 namespace U2 {
@@ -34,13 +34,13 @@ class U2CORE_EXPORT RemoveAnnotationsTask : public Task {
 public:
     // Removes annotations of specified group, handles multiple annotations ( > 10 000).
     // Also handles situations with locked objects.
-                                    RemoveAnnotationsTask( FeaturesTableObject *ao,
+                                    RemoveAnnotationsTask( AnnotationTableObject *ao,
                                         const QString &groupName );
 
     ReportResult                    report( );
 
 private:
-    QPointer<FeaturesTableObject>   aobj;
+    QPointer<AnnotationTableObject>   aobj;
     QString                         groupName;
 };
 

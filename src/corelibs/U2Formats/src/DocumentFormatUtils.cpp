@@ -22,7 +22,7 @@
 #include "DocumentFormatUtils.h"
 
 #include <U2Core/AnnotationSettings.h>
-#include <U2Core/FeaturesTableObject.h>
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/BioStruct3D.h>
@@ -74,12 +74,12 @@ U2SequenceObject * DocumentFormatUtils::addSequenceObject(const U2DbiRef& dbiRef
 }
 
 
-FeaturesTableObject * DocumentFormatUtils::addAnnotationsForMergedU2Sequence( const GUrl &docUrl,
+AnnotationTableObject * DocumentFormatUtils::addAnnotationsForMergedU2Sequence( const GUrl &docUrl,
     const U2DbiRef& dbiRef, const QStringList &contigNames, const U2Sequence &mergedSequence,
     const QVector<U2Region> &mergedMapping, U2OpStatus &os )
 {
     Q_UNUSED( os );
-    FeaturesTableObject *ao = new FeaturesTableObject( "Contigs", dbiRef );
+    AnnotationTableObject *ao = new AnnotationTableObject( "Contigs", dbiRef );
 
     //save relation if docUrl is not empty
     if ( !docUrl.isEmpty( ) ) {
@@ -273,7 +273,7 @@ U2SequenceObject* DocumentFormatUtils::addMergedSequenceObjectDeprecated(const U
     SAFE_POINT(so != NULL, "DocumentFormatUtils::addSequenceObject returned NULL but didn't set error", NULL);
     
 
-    FeaturesTableObject *ao = new FeaturesTableObject( "Annotations", dbiRef );
+    AnnotationTableObject *ao = new AnnotationTableObject( "Annotations", dbiRef );
 
     //save relation if docUrl is not empty
     if ( !docUrl.isEmpty( ) ) {

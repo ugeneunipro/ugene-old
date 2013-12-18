@@ -29,15 +29,15 @@
 
 namespace U2 {
 
-RemoveAnnotationsTask::RemoveAnnotationsTask( FeaturesTableObject *ao, const QString &gName )
+RemoveAnnotationsTask::RemoveAnnotationsTask( AnnotationTableObject *ao, const QString &gName )
     : Task( "Remove Annotations Task",TaskFlag_NoRun ), aobj( ao ), groupName( gName )
 {
     SAFE_POINT( !aobj.isNull( ), "Invalid annotation table detected!", );
 }
 
 Task::ReportResult RemoveAnnotationsTask::report( ) {
-    __AnnotationGroup rootGroup = aobj->getRootGroup( );
-    __AnnotationGroup subGroup = rootGroup.getSubgroup( groupName, false );
+    AnnotationGroup rootGroup = aobj->getRootGroup( );
+    AnnotationGroup subGroup = rootGroup.getSubgroup( groupName, false );
     if ( subGroup == rootGroup ) { // subgroup having @groupName does not exist
         return ReportResult_Finished;
     }

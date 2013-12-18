@@ -31,21 +31,21 @@ namespace U2 {
 
 class AnnotationModification;
 
-class U2CORE_EXPORT FeaturesTableObject : public GObject {
+class U2CORE_EXPORT AnnotationTableObject : public GObject {
     Q_OBJECT
 public:
-                            FeaturesTableObject( const QString &objectName, const U2DbiRef &dbiRef,
+                            AnnotationTableObject( const QString &objectName, const U2DbiRef &dbiRef,
                                 const QVariantMap &hintsMap = QVariantMap( ) );
-     virtual                ~FeaturesTableObject( );
+     virtual                ~AnnotationTableObject( );
 
     /**
      * Converts all the features stored in DB to annotations and returns the result
      */
-    QList<__Annotation>     getAnnotations( ) const;
+    QList<Annotation>     getAnnotations( ) const;
     /**
      * Returns root group
      */
-    __AnnotationGroup       getRootGroup( );
+    AnnotationGroup       getRootGroup( );
     /**
      * Adds to DB a set of features based on @a
      */
@@ -59,11 +59,11 @@ public:
     /**
      * Removes features corresponding to @a from DB
      */
-    void                    removeAnnotation( const __Annotation &a );
+    void                    removeAnnotation( const Annotation &a );
     /**
      * Removes features corresponding to @annotations from DB
      */
-    void                    removeAnnotations( const QList<__Annotation> &annotations );
+    void                    removeAnnotations( const QList<Annotation> &annotations );
     /**
      * Reimplemented from GObject
      */
@@ -71,7 +71,7 @@ public:
     /**
      * Returns list of annotations having @name
      */
-    QList<__Annotation>     getAnnotationsByName( const QString &name );
+    QList<Annotation>     getAnnotationsByName( const QString &name );
     /**
      * Returns list containing all annotation regions
      */
@@ -81,7 +81,7 @@ public:
      * whether the result set should include only annotations that has no region or its part
      * beyond the @region or each annotation that intersects it.
      */
-    QList<__Annotation>     getAnnotationsByRegion( const U2Region &region,
+    QList<Annotation>     getAnnotationsByRegion( const U2Region &region,
                                 bool contains = false );
     /**
      * Reimplemented from GObject
@@ -103,32 +103,32 @@ public:
     //////////////////////////////////////////////////////////////////////////
     // Access to signals that drive GUI //////////////////////////////////////
 
-    void                    emit_onAnnotationsAdded( const QList<__Annotation> &l );
+    void                    emit_onAnnotationsAdded( const QList<Annotation> &l );
     void                    emit_onAnnotationModified( const AnnotationModification &md );
-    void                    emit_onGroupCreated( const __AnnotationGroup &g );
-    void                    emit_onGroupRemoved( const __AnnotationGroup &p,
-                                const __AnnotationGroup &g );
-    void                    emit_onGroupRenamed( const __AnnotationGroup &g );
-    void                    emit_onAnnotationsInGroupRemoved( const QList<__Annotation> &l,
-                                const __AnnotationGroup &gr );
+    void                    emit_onGroupCreated( const AnnotationGroup &g );
+    void                    emit_onGroupRemoved( const AnnotationGroup &p,
+                                const AnnotationGroup &g );
+    void                    emit_onGroupRenamed( const AnnotationGroup &g );
+    void                    emit_onAnnotationsInGroupRemoved( const QList<Annotation> &l,
+                                const AnnotationGroup &gr );
 
 signals:
-    void                    si_onAnnotationsAdded( const QList<__Annotation> &a );
-    void                    si_onAnnotationsRemoved( const QList<__Annotation> &a );
-    void                    si_onAnnotationsInGroupRemoved( const QList<__Annotation> &,
-                                const __AnnotationGroup & );
+    void                    si_onAnnotationsAdded( const QList<Annotation> &a );
+    void                    si_onAnnotationsRemoved( const QList<Annotation> &a );
+    void                    si_onAnnotationsInGroupRemoved( const QList<Annotation> &,
+                                const AnnotationGroup & );
     void                    si_onAnnotationModified( const AnnotationModification &md );
-    void                    si_onGroupCreated( const __AnnotationGroup & );
-    void                    si_onGroupRemoved( const __AnnotationGroup &p,
-                                const __AnnotationGroup &removed );
-    void                    si_onGroupRenamed( const __AnnotationGroup & );
+    void                    si_onGroupCreated( const AnnotationGroup & );
+    void                    si_onGroupRemoved( const AnnotationGroup &p,
+                                const AnnotationGroup &removed );
+    void                    si_onGroupRenamed( const AnnotationGroup & );
 
 private:
-    void                    removeAnnotationFromDb( const __Annotation &a );
+    void                    removeAnnotationFromDb( const Annotation &a );
     void                    copyFeaturesToObject( const U2Feature &feature,
-                                const U2DataId &newParentId, FeaturesTableObject *obj,
+                                const U2DataId &newParentId, AnnotationTableObject *obj,
                                 U2OpStatus &os ) const;
-    QList<__Annotation>     convertFeaturesToAnnotations( const QList<U2Feature> &features ) const;
+    QList<Annotation>     convertFeaturesToAnnotations( const QList<U2Feature> &features ) const;
 
     U2DataId                rootFeatureId;
 };

@@ -204,7 +204,7 @@ private:
 class ExpertDiscoveryToAnnotationTask : public Task{
     Q_OBJECT
 public:
-    ExpertDiscoveryToAnnotationTask(FeaturesTableObject* aobj, const DNASequence& seq, ExpertDiscoveryData* d, const EDProcessedSignal* ps, QMutex& mut);
+    ExpertDiscoveryToAnnotationTask(AnnotationTableObject* aobj, const DNASequence& seq, ExpertDiscoveryData* d, const EDProcessedSignal* ps, QMutex& mut);
     void prepare();
     void run();
     ReportResult report();
@@ -220,7 +220,7 @@ private:
     const EDProcessedSignal*                curPS;
     QList<AnnotationData>                   resultList;
     U2Region                                seqRange;
-    QPointer<FeaturesTableObject>           aObj;
+    QPointer<AnnotationTableObject>           aObj;
     RecognizationData                       recData;
     bool                                    hasRecData;
     bool                                    isControl;

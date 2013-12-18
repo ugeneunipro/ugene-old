@@ -471,7 +471,7 @@ void SmithWatermanDialog::sl_bttnRun()
                 return;
             }
             const CreateAnnotationModel& m = annotationController->getModel();
-            FeaturesTableObject *obj = m.getAnnotationObject();
+            AnnotationTableObject *obj = m.getAnnotationObject();
             QString annotationName = m.data.name;
             QString annotationGroup = m.groupName;
 

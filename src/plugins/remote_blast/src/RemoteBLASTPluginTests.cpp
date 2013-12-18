@@ -20,7 +20,7 @@
  */
 
 #include <U2Core/DNASequenceObject.h>
-#include <U2Core/FeaturesTableObject.h>
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/U2DbiRegistry.h>
 
@@ -200,7 +200,7 @@ void GTest_RemoteBLAST::prepare() {
     QByteArray query(sequence.toLatin1());
     const U2DbiRef dbiRef = AppContext::getDbiRegistry( )->getSessionTmpDbiRef( stateInfo );
     SAFE_POINT_OP( stateInfo, );
-    ao = new FeaturesTableObject( "aaa", dbiRef );
+    ao = new AnnotationTableObject( "aaa", dbiRef );
     RemoteBLASTTaskSettings cfg;
     cfg.dbChoosen = algoritm;
     cfg.aminoT = NULL;
@@ -221,8 +221,8 @@ Task::ReportResult GTest_RemoteBLAST::report() {
         return ReportResult_Finished;
     }
     if (ao != NULL){
-        QList<__Annotation> alist(ao->getAnnotations());
-        foreach ( const __Annotation &an, alist ) {
+        QList<Annotation> alist(ao->getAnnotations());
+        foreach ( const Annotation &an, alist ) {
             foreach ( const U2Qualifier q, an.getQualifiers( ) ) {
                 QString qual;
                 if(algoritm=="cdd") {

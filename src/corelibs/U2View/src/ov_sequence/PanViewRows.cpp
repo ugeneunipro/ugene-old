@@ -21,7 +21,7 @@
 
 #include "PanViewRows.h"
 
-#include <U2Core/FeaturesTableObject.h>
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/U2SafePoints.h>
 #include <QtCore/QVarLengthArray>
 
@@ -81,7 +81,7 @@ inline bool compare_rows(PVRowData* x, PVRowData* y) {
     return  x->key.compare(y->key) > 0;
 }
 
-void PVRowsManager::addAnnotation( const __Annotation &a, const QString& key ) {
+void PVRowsManager::addAnnotation( const Annotation &a, const QString& key ) {
     SAFE_POINT(!rowByAnnotation.contains(a), "Annotation has been already added", );
     QVector<U2Region> location = a.getRegions();
     foreach(PVRowData* row, rows) {
@@ -100,7 +100,7 @@ void PVRowsManager::addAnnotation( const __Annotation &a, const QString& key ) {
     qStableSort(rows.begin(), rows.end(), compare_rows);
 }
 
-void PVRowsManager::removeAnnotation( const __Annotation &a ) {
+void PVRowsManager::removeAnnotation( const Annotation &a ) {
     PVRowData* row = rowByAnnotation.value(a, NULL);
     SAFE_POINT(row != NULL, "Now row by annotation", );
     rowByAnnotation.remove(a);
@@ -112,7 +112,7 @@ void PVRowsManager::removeAnnotation( const __Annotation &a ) {
     }
 }
 
-int PVRowsManager::getAnnotationRowIdx( const __Annotation &a ) const {
+int PVRowsManager::getAnnotationRowIdx( const Annotation &a ) const {
     PVRowData* row = rowByAnnotation.value(a, NULL);
     if (NULL == row) {
         return -1;

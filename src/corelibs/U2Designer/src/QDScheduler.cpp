@@ -32,7 +32,7 @@
 #include <U2Core/ProjectModel.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/LoadDocumentTask.h>
-#include <U2Core/FeaturesTableObject.h>
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/U2SafePoints.h>
 
 namespace U2 {
@@ -89,7 +89,7 @@ QList<Task*> QDScheduler::onSubTaskFinished(Task* subTask) {
     }
     
     if (subTask == loadTask) {
-        settings.annotationsObj = qobject_cast<FeaturesTableObject *>(loadTask->getDocument()->findGObjectByName(settings.annotationsObjRef.objName));
+        settings.annotationsObj = qobject_cast<AnnotationTableObject *>(loadTask->getDocument()->findGObjectByName(settings.annotationsObjRef.objName));
         return subs;
     }
     if (settings.annotationsObj == NULL) {
@@ -584,10 +584,10 @@ void QDResultLinker::createMergedAnnotations(const QString& groupPrefix) {
 
 void QDResultLinker::pushToTable() {
     const QDRunSettings& settings = sched->getSettings();
-    FeaturesTableObject* ao = settings.annotationsObj;
+    AnnotationTableObject* ao = settings.annotationsObj;
     SAFE_POINT( NULL != ao, "Invalid annotation table detected!", );
 
-    __AnnotationGroup root = ao->getRootGroup( );
+    AnnotationGroup root = ao->getRootGroup( );
     if (!settings.groupName.isEmpty()) {
         root = root.getSubgroup(settings.groupName, true);
     }
@@ -595,7 +595,7 @@ void QDResultLinker::pushToTable() {
     QMapIterator< QString, QList<AnnotationData> > iter(annotations);
     while ( iter.hasNext( ) ) {
         iter.next();
-        __AnnotationGroup ag = root;
+        AnnotationGroup ag = root;
         if ( !iter.key( ).isEmpty( ) ) {
             ag = root.getSubgroup( iter.key( ), true );
         }

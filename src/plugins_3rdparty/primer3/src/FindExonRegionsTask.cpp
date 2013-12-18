@@ -27,7 +27,7 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/GObjectUtils.h>
 #include <U2Core/GObjectRelationRoles.h>
-#include <U2Core/FeaturesTableObject.h>
+#include <U2Core/AnnotationTableObject.h>
 
 #include "FindExonRegionsTask.h"
 
@@ -98,8 +98,8 @@ Task::ReportResult FindExonRegionsTask::report( ) {
         QList<GObject *> relAnns = GObjectUtils::findObjectsRelatedToObjectByRole( dnaObj,
             GObjectTypes::ANNOTATION_TABLE, GObjectRelationRole::SEQUENCE,
             dnaObj->getDocument( )->getObjects( ), UOF_LoadedOnly );
-        FeaturesTableObject *att = relAnns.isEmpty( ) ? NULL
-            : qobject_cast<FeaturesTableObject *>( relAnns.first( ) );
+        AnnotationTableObject *att = relAnns.isEmpty( ) ? NULL
+            : qobject_cast<AnnotationTableObject *>( relAnns.first( ) );
         
         if ( NULL != att ) {
             setError( tr( "Failed to search for exon annotations. "
@@ -108,9 +108,9 @@ Task::ReportResult FindExonRegionsTask::report( ) {
             return ReportResult_Finished;
         }
 
-        const QList<__Annotation> anns = att->getAnnotations( );
+        const QList<Annotation> anns = att->getAnnotations( );
 
-        foreach ( const __Annotation &ann, anns ) {
+        foreach ( const Annotation &ann, anns ) {
             if ( ann.getName( ) == "exon" ) {
                 foreach ( const U2Region &r, ann.getRegions( ) ) {
                     exonRegions.append( r );

@@ -19,7 +19,7 @@
  * MA 02110-1301, USA.
  */
 
-#include <U2Core/FeaturesTableObject.h>
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/U2OpStatusUtils.h>
@@ -196,7 +196,7 @@ Document * DifferentialFormat::loadDocument( IOAdapter *io, const U2DbiRef &targ
     QList<AnnotationData> anns = parseAnnotations(io, os);
     CHECK_OP(os, NULL);
 
-    FeaturesTableObject *obj = new FeaturesTableObject( getAnnotationName( ), targetDb );
+    AnnotationTableObject *obj = new AnnotationTableObject( getAnnotationName( ), targetDb );
     foreach ( const AnnotationData &data, anns ) {
         obj->addAnnotation( data );
     }
@@ -272,7 +272,7 @@ QList<ColumnDataParser::Column> DifferentialFormat::getHeaderColumns(
         return getColumns();
     }
 
-    FeaturesTableObject *annObj = dynamic_cast<FeaturesTableObject *>( annObjs.first( ) );
+    AnnotationTableObject *annObj = dynamic_cast<AnnotationTableObject *>( annObjs.first( ) );
     if ( NULL == annObj ) {
         os.setError( "NULL annotation object" );
         return result;
@@ -282,7 +282,7 @@ QList<ColumnDataParser::Column> DifferentialFormat::getHeaderColumns(
         return getColumns();
     }
 
-    const __Annotation ann = annObj->getAnnotations( ).first( );
+    const Annotation ann = annObj->getAnnotations( ).first( );
     foreach ( const ColumnDataParser::Column &c, getColumns( ) ) {
         if (LOCUS_COLUMN == c.name) {
             result << c;
@@ -309,9 +309,9 @@ void DifferentialFormat::storeDocument( Document *d, IOAdapter *io, U2OpStatus &
     CHECK_OP( os, );
     writeHeader( io, columns );
     foreach ( GObject *obj, anns ) {
-        FeaturesTableObject *annObj = dynamic_cast<FeaturesTableObject *>( obj );
+        AnnotationTableObject *annObj = dynamic_cast<AnnotationTableObject *>( obj );
         SAFE_POINT( NULL != annObj, "NULL annotation object", );
-        foreach ( const __Annotation &ann, annObj->getAnnotations( ) ) {
+        foreach ( const Annotation &ann, annObj->getAnnotations( ) ) {
             bool first = true;
             QString line;
             U2OpStatus2Log logOs;

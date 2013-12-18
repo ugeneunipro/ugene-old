@@ -27,7 +27,7 @@
 #include "PanView.h"
 
 #include <U2Core/DNASequenceSelection.h>
-#include <U2Core/FeaturesTableObject.h>
+#include <U2Core/AnnotationTableObject.h>
 
 namespace U2 {
 
@@ -375,9 +375,9 @@ int ADVSyncViewManager::offsetByAnnSel(ADVSingleSequenceWidget* w) const {
 
 int ADVSyncViewManager::findSelectedAnnotationPos(ADVSingleSequenceWidget* w) const {
     AnnotationSelection* as = w->getSequenceContext()->getAnnotationsSelection();
-    const QSet<FeaturesTableObject *> &objs = w->getSequenceContext()->getAnnotationObjects(true);
+    const QSet<AnnotationTableObject *> &objs = w->getSequenceContext()->getAnnotationObjects(true);
     foreach(const AnnotationSelectionData& d , as->getSelection()) {
-        FeaturesTableObject *obj = d.annotation.getGObject( );
+        AnnotationTableObject *obj = d.annotation.getGObject( );
         if (objs.contains(obj)) {
             return d.annotation.getStrand().isCompementary()
                 ? d.getSelectedRegions().last().endPos() : d.getSelectedRegions().first().startPos;

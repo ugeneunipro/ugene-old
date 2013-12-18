@@ -86,8 +86,8 @@ U2Feature U2FeatureUtils::exportAnnotationGroupToFeature( const QString &name,
     const U2DataId &parentFeatureId, const U2DbiRef &dbiRef, U2OpStatus &op )
 {
     U2Feature result;
-    SAFE_POINT( !name.isEmpty( ) && ( !name.contains( __AnnotationGroup::GROUP_PATH_SEPARATOR )
-        || name == __AnnotationGroup::ROOT_GROUP_NAME ), "Invalid annotation group detected!",
+    SAFE_POINT( !name.isEmpty( ) && ( !name.contains( AnnotationGroup::GROUP_PATH_SEPARATOR )
+        || name == AnnotationGroup::ROOT_GROUP_NAME ), "Invalid annotation group detected!",
         result );
     // @parentFeatureId is not checked because it may be empty for top level features
     SAFE_POINT( dbiRef.isValid( ), "Invalid DBI reference detected!", result );

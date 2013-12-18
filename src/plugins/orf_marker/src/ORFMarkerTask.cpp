@@ -21,7 +21,7 @@
 
 
 #include <U2Core/DNASequence.h>
-#include <U2Core/FeaturesTableObject.h>
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/GObjectUtils.h>
 #include <U2Core/DNATranslation.h>
@@ -87,7 +87,7 @@ void ORFSettingsKeys::read(ORFAlgorithmSettings& cfg, const Settings* s) {
 //////////////////////////////////////////////////////////////////////////
 // find ORFS and save 2 annotations task
 
-FindORFsToAnnotationsTask::FindORFsToAnnotationsTask( FeaturesTableObject* aobj,const U2EntityRef& _entityRef, 
+FindORFsToAnnotationsTask::FindORFsToAnnotationsTask( AnnotationTableObject* aobj,const U2EntityRef& _entityRef, 
                                                      const ORFAlgorithmSettings& settings, const QString& gName )
   :  Task(tr("Find ORFs and save to annotations"), TaskFlags_FOSCOE), aObj(aobj), cfg(settings), groupName(gName), entityRef(_entityRef)
 {
@@ -135,7 +135,7 @@ ORFAutoAnnotationsUpdater::ORFAutoAnnotationsUpdater()
 
 Task* ORFAutoAnnotationsUpdater::createAutoAnnotationsUpdateTask( const AutoAnnotationObject* aa )
 {
-    FeaturesTableObject *aObj = aa->getAnnotationObject();
+    AnnotationTableObject *aObj = aa->getAnnotationObject();
     U2SequenceObject* dnaObj = aa->getSeqObject();
     
     ORFAlgorithmSettings cfg;

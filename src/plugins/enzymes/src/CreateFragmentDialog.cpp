@@ -29,7 +29,7 @@
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/GObjectUtils.h>
 #include <U2Core/GObjectRelationRoles.h>
-#include <U2Core/FeaturesTableObject.h>
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/U2AlphabetUtils.h>
 
 #include <U2Gui/CreateAnnotationWidgetController.h>
@@ -71,7 +71,7 @@ CreateFragmentDialog::CreateFragmentDialog( U2SequenceObject* obj, const U2Regio
         GObjectRelationRole::SEQUENCE, aObjects, UOF_LoadedOnly);
     
     foreach (GObject* obj, related) {
-        FeaturesTableObject *aObj = qobject_cast<FeaturesTableObject *>(obj);
+        AnnotationTableObject *aObj = qobject_cast<AnnotationTableObject *>(obj);
         assert(aObj != NULL);
         relatedAnnotations.append(aObj);
     }
@@ -126,7 +126,7 @@ void CreateFragmentDialog::accept()
         return;
     }
     const CreateAnnotationModel& m = ac->getModel();
-    FeaturesTableObject *obj = m.getAnnotationObject();
+    AnnotationTableObject *obj = m.getAnnotationObject();
     QString groupName = m.groupName;
     SAFE_POINT( !groupName.isEmpty( ) && obj != NULL, "Invalid annotation data!", );
 

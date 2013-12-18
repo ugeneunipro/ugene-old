@@ -21,7 +21,7 @@
 
 #include <U2Core/DocumentModel.h>
 
-#include <U2Core/FeaturesTableObject.h>
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/GObjectUtils.h>
 #include <U2Core/GObjectRelationRoles.h>
@@ -35,7 +35,7 @@
 
 namespace U2 {
 
-DNAFragment::DNAFragment( const AnnotationData &fragment, U2SequenceObject* sObj, const QList<FeaturesTableObject *> relatedAnns )
+DNAFragment::DNAFragment( const AnnotationData &fragment, U2SequenceObject* sObj, const QList<AnnotationTableObject *> relatedAnns )
     : annotatedFragment(fragment), dnaObj(sObj), relatedAnnotations(relatedAnns), reverseCompl(false)
 {   
     SAFE_POINT(sObj != NULL, "Invalid sequence object detected!", );
@@ -63,7 +63,7 @@ DNAFragment& DNAFragment::operator=( const DNAFragment& other )
 }
 
 
-bool static isDNAFragment( const __Annotation &a )
+bool static isDNAFragment( const Annotation &a )
 {
     QString aName = a.getName();
     if (aName.startsWith("Fragment")) {
@@ -85,9 +85,9 @@ QList<DNAFragment> DNAFragment::findAvailableFragments( const QList<GObject*>& a
 {
     QList<DNAFragment> fragments;
     foreach (GObject* obj , aObjects) {
-        FeaturesTableObject* aObj = qobject_cast<FeaturesTableObject*>(obj);
+        AnnotationTableObject* aObj = qobject_cast<AnnotationTableObject*>(obj);
         assert(aObj != NULL);
-        foreach ( const __Annotation &a, aObj->getAnnotations( ) ) {
+        foreach ( const Annotation &a, aObj->getAnnotations( ) ) {
             if (isDNAFragment(a)) {
                 // Find related sequence object
                 U2SequenceObject* dnaObj = NULL;
@@ -110,7 +110,7 @@ QList<DNAFragment> DNAFragment::findAvailableFragments( const QList<GObject*>& a
                 fragment.annotatedFragment = a.getData( );
                 fragment.dnaObj = dnaObj;
                 foreach ( GObject *relAnn, relatedAnns ) {
-                    FeaturesTableObject *related = qobject_cast<FeaturesTableObject *>(relAnn);
+                    AnnotationTableObject *related = qobject_cast<AnnotationTableObject *>(relAnn);
                     fragment.relatedAnnotations.append(related);
                 }
                 fragments.append(fragment);

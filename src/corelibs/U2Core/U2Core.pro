@@ -114,11 +114,11 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/globals/UserActionsWriter.h \
            src/globals/UserApplicationsSettings.h \
            src/globals/Version.h \
+           src/gobjects/AnnotationTableObject.h \
            src/gobjects/AssemblyObject.h \
            src/gobjects/BioStruct3DObject.h \
            src/gobjects/DNAChromatogramObject.h \
            src/gobjects/DNASequenceObject.h \
-           src/gobjects/FeaturesTableObject.h \
            src/gobjects/GObjectRelationRoles.h \
            src/gobjects/GObjectTypes.h \
            src/gobjects/GObjectUtils.h \
@@ -285,11 +285,11 @@ SOURCES += src/cmdline/CMDLineCoreOptions.cpp \
            src/globals/UserActionsWriter.cpp \
            src/globals/UserApplicationsSettings.cpp \
            src/globals/Version.cpp \
+           src/gobjects/AnnotationTableObject.cpp \
            src/gobjects/AssemblyObject.cpp \
            src/gobjects/BioStruct3DObject.cpp \
            src/gobjects/DNAChromatogramObject.cpp \
            src/gobjects/DNASequenceObject.cpp \
-           src/gobjects/FeaturesTableObject.cpp \
            src/gobjects/GObjectRelationRoles.cpp \
            src/gobjects/GObjectTypes.cpp \
            src/gobjects/GObjectUtils.cpp \

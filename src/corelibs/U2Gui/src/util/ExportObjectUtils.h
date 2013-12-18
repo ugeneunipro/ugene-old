@@ -33,13 +33,13 @@ class Task;
 
 class U2GUI_EXPORT ExportObjectUtils {
 public:
-    static void            exportAnnotations( const QList<__Annotation> &annotations, const GUrl &dstUrl );
+    static void            exportAnnotations( const QList<Annotation> &annotations, const GUrl &dstUrl );
     static void            exportObject2Document( GObject *object, const QString &url = QString( ),
                         bool tracePath = true );
     static void            export2Document( ExportDocumentDialogController &dialog,
                         bool tracePath = true );
     static Task *          saveAnnotationsTask(const QString &filepath, const DocumentFormatId & format,
-                        const QList<__Annotation> &annList );
+                        const QList<Annotation> &annList );
 };
 
 } // namespace U2

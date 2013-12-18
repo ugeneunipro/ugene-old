@@ -17,7 +17,7 @@
 #include <U2Core/MAlignmentObject.h>
 #include <U2Core/MSAUtils.h>
 
-#include <U2Core/FeaturesTableObject.h>
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/GObjectTypes.h>
 #include <U2Core/GObjectRelationRoles.h>
 #include <U2Core/GObjectUtils.h>
@@ -447,10 +447,10 @@ bool ExpertDiscoveryLoadPosNegMrkTask::loadAnnotationFromUgeneDocument(MarkingBa
                 allSeqAnnotations, UOF_LoadedOnly);
 
             foreach(GObject* ao, annotations) {
-                FeaturesTableObject *atobj = qobject_cast<FeaturesTableObject *>(ao);
+                AnnotationTableObject *atobj = qobject_cast<AnnotationTableObject *>(ao);
                 if(atobj){
-                    const QList<__Annotation> annotations =  atobj->getAnnotations();
-                    foreach ( const __Annotation &a, annotations ) {
+                    const QList<Annotation> annotations =  atobj->getAnnotations();
+                    foreach ( const Annotation &a, annotations ) {
                        const QVector<U2Region>& regions = a.getRegions();
                        foreach ( const U2Region &reg, regions ) {
                            if (reg.endPos() >= reg.startPos && reg.startPos >= 0) {
@@ -769,7 +769,7 @@ Task* ExpertDiscoverySignalsAutoAnnotationUpdater::createAutoAnnotationsUpdateTa
         return NULL;
     }
 
-    FeaturesTableObject *aObj = aa->getAnnotationObject();
+    AnnotationTableObject *aObj = aa->getAnnotationObject();
     const DNASequence& dna = aa->getSeqObject()->getWholeSequence();
     Task* task = new ExpertDiscoveryToAnnotationTask(aObj, dna, edData, curPS, *mutex);
     return task;
@@ -792,7 +792,7 @@ bool ExpertDiscoverySignalsAutoAnnotationUpdater::checkConstraints(const AutoAnn
     return constraints.alphabet->isNucleic() && edEnabled;
 }
 
-ExpertDiscoveryToAnnotationTask::ExpertDiscoveryToAnnotationTask(FeaturesTableObject *aobj,
+ExpertDiscoveryToAnnotationTask::ExpertDiscoveryToAnnotationTask(AnnotationTableObject *aobj,
     const DNASequence &seq, ExpertDiscoveryData* d, const EDProcessedSignal* ps, QMutex& mut)
     :Task(tr("Find and store expert discovery signals on a sequence"), TaskFlags_FOSCOE), dna(seq),
     edData(d), aObj(aobj), curPS(ps), mutex(mut), recDataTask(NULL)

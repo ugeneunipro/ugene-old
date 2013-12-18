@@ -28,7 +28,7 @@
 namespace U2 {
 
 class SecStructPredictTask;
-class FeaturesTableObject;
+class AnnotationTableObject;
 
 class GTest_SecStructPredictAlgorithm : public GTest {
     Q_OBJECT
@@ -54,7 +54,7 @@ public:
 private:
     bool contextAdded;
     SecStructPredictTask* task;
-    FeaturesTableObject* aObj;
+    AnnotationTableObject* aObj;
     QString seqName;
     QString algName;
     QString resultsTableContextName;

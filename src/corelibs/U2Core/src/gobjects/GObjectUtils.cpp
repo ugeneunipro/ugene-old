@@ -26,7 +26,7 @@
 #include <U2Core/ProjectModel.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/DNATranslation.h>
-#include <U2Core/FeaturesTableObject.h>
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/GHints.h>
 #include <U2Core/GUrl.h>
 #include <U2Core/DNAAlphabet.h>

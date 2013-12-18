@@ -24,7 +24,7 @@
 
 #include <U2Algorithm/FindAlgorithmTask.h>
 
-#include <U2Core/FeaturesTableObject.h>
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/DNASequenceObject.h>
@@ -1259,7 +1259,7 @@ void FindPatternWidget::initFindPatternTask( const QString& pattern, const QStri
                 newPatternName = patternName.left(GBFeatureUtils::MAX_KEY_LEN);
             }
 
-            if (__Annotation::isValidAnnotationName(newPatternName)){
+            if (Annotation::isValidAnnotationName(newPatternName)){
                 annotName = newPatternName;
                 useAnnotationName = false;
             }
@@ -1272,7 +1272,7 @@ void FindPatternWidget::initFindPatternTask( const QString& pattern, const QStri
     
     QString annotGroup = annotModel.groupName;
 
-    FeaturesTableObject *aTableObj = annotModel.getAnnotationObject();
+    AnnotationTableObject *aTableObj = annotModel.getAnnotationObject();
     SAFE_POINT(aTableObj != NULL, "Invalid annotation table detected!", );
 
     // Creating and registering the task

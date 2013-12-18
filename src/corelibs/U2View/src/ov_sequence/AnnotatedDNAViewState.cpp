@@ -29,7 +29,7 @@
 #include <U2Core/DNATranslation.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/GObjectTypes.h>
-#include <U2Core/FeaturesTableObject.h>
+#include <U2Core/AnnotationTableObject.h>
 
 namespace U2 {
 

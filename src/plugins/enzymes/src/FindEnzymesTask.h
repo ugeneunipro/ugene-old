@@ -28,7 +28,7 @@
 #include <limits>
 
 #include <U2Core/AnnotationData.h>
-#include <U2Core/FeaturesTableObject.h>
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/Task.h>
 #include <U2Core/U2Region.h>
 #include <U2Core/DNASequence.h>
@@ -41,7 +41,7 @@
 
 namespace U2 {
 
-class FeaturesTableObject;
+class AnnotationTableObject;
 
 class FindEnzymesAlgResult {
 public:
@@ -70,7 +70,7 @@ struct FindEnzymesTaskConfig {
 class FindEnzymesToAnnotationsTask : public Task {
     Q_OBJECT
 public:
-    FindEnzymesToAnnotationsTask(FeaturesTableObject *aobj, const U2EntityRef& seqRef,
+    FindEnzymesToAnnotationsTask(AnnotationTableObject *aobj, const U2EntityRef& seqRef,
         const QList<SEnzymeData>& enzymes, const FindEnzymesTaskConfig& cfg);
     void prepare();
     void run();
@@ -81,7 +81,7 @@ private:
     QList<SEnzymeData>                  enzymes;
     QMap<QString, AnnotationData>       resultMap;
     U2Region                            seqRange;
-    QPointer<FeaturesTableObject>       aObj;
+    QPointer<AnnotationTableObject>       aObj;
     FindEnzymesTaskConfig               cfg;
     FindEnzymesTask*                    fTask;
 };
@@ -111,7 +111,7 @@ private:
     QMutex                              resultsLock;
     
     QString                             group;
-    QPointer<FeaturesTableObject *>     aObj;
+    QPointer<AnnotationTableObject *>     aObj;
 };
 
 

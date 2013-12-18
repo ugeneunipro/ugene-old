@@ -22,7 +22,7 @@
 #include <QtGui/QApplication>
 #include <QtGui/QMessageBox>
 
-#include <U2Core/FeaturesTableObject.h>
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/DocumentUtils.h>
 #include <U2Core/GUrlUtils.h>
@@ -42,8 +42,8 @@
 
 namespace U2 {
 
-void ExportObjectUtils::exportAnnotations( const QList<__Annotation> &inputAnnotations, const GUrl &dstUrl ) {
-    QList<__Annotation> annotations = inputAnnotations; // copy for further modification
+void ExportObjectUtils::exportAnnotations( const QList<Annotation> &inputAnnotations, const GUrl &dstUrl ) {
+    QList<Annotation> annotations = inputAnnotations; // copy for further modification
     if ( annotations.isEmpty( ) ) {
         QMessageBox::warning( QApplication::activeWindow( ), QObject::tr( "Export annotations..." ),
             QObject::tr( "Selected object doesn't have annotations" ) );
@@ -62,7 +62,7 @@ void ExportObjectUtils::exportAnnotations( const QList<__Annotation> &inputAnnot
 
     // TODO: lock documents or use shared-data objects
     // same as in ADVExportContext::sl_saveSelectedAnnotations()
-    qStableSort( annotations.begin( ), annotations.end( ), __Annotation::annotationLessThan );
+    qStableSort( annotations.begin( ), annotations.end( ), Annotation::annotationLessThan );
 
     // run task
     Task * t = NULL;
@@ -141,7 +141,7 @@ void ExportObjectUtils::export2Document( ExportDocumentDialogController &dialog,
 }
 
 Task * ExportObjectUtils::saveAnnotationsTask(const QString &filepath, const DocumentFormatId &format,
-    const QList<__Annotation> &annList )
+    const QList<Annotation> &annList )
 {
     SaveDocFlags fl( SaveDoc_Roll );
     fl |= SaveDoc_DestroyAfter;
@@ -159,10 +159,10 @@ Task * ExportObjectUtils::saveAnnotationsTask(const QString &filepath, const Doc
     // object and annotations will be deleted when savedoc task will delete doc
     const U2DbiRef dbiRef = AppContext::getDbiRegistry( )->getSessionTmpDbiRef( os );
     CHECK_OP( os, NULL );
-    FeaturesTableObject *att = new FeaturesTableObject( "exported_annotations", dbiRef );
+    AnnotationTableObject *att = new AnnotationTableObject( "exported_annotations", dbiRef );
     bool setAttName = false;
-    foreach ( const __Annotation &a, annList ) {
-        const FeaturesTableObject *parentObject = a.getGObject( );
+    foreach ( const Annotation &a, annList ) {
+        const AnnotationTableObject *parentObject = a.getGObject( );
         if ( !setAttName && NULL != parentObject ) {
             const QString newName = parentObject->getGObjectName( );
             SAFE_POINT( !newName.isEmpty( ), "Empty annotation name detected!", NULL );

@@ -23,7 +23,7 @@
 #define _U2_CREATE_ANNOTATION_TASK_H_
 
 #include <U2Core/AnnotationData.h>
-#include <U2Core/FeaturesTableObject.h>
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/Task.h>
 
 namespace U2 {
@@ -33,20 +33,20 @@ class U2CORE_EXPORT CreateAnnotationsTask : public Task {
 public:
     // Adds annotations to the object. Waits object to be unlocked if needed
     // Works only in a context of active project
-                                    CreateAnnotationsTask( FeaturesTableObject *o,
+                                    CreateAnnotationsTask( AnnotationTableObject *o,
                                         const QString &group, const AnnotationData &data );
-                                    CreateAnnotationsTask( FeaturesTableObject *o,
+                                    CreateAnnotationsTask( AnnotationTableObject *o,
                                         const QString &group, const QList<AnnotationData> &data );
                                     CreateAnnotationsTask( const GObjectReference &ref,
                                         const QString &group, const QList<AnnotationData> &data );
 
     ReportResult                    report( );
-    FeaturesTableObject *           getGObject( ) const;
+    AnnotationTableObject *           getGObject( ) const;
     int                             getAnnotationCount( ) const;
 
 private:
     GObjectReference                aRef;
-    QPointer<FeaturesTableObject>   aobj;
+    QPointer<AnnotationTableObject>   aobj;
     QString                         groupName;
     QList<AnnotationData>           aData;
     int                             pos;

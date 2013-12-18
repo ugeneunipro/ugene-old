@@ -20,7 +20,7 @@
  */
 
 #include <U2Core/AnnotationSettings.h>
-#include <U2Core/FeaturesTableObject.h>
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/L10n.h>
 #include <U2Core/U2SafePoints.h>
 
@@ -84,7 +84,7 @@ void AnnotHighlightSettingsWidget::sl_onEditQualifiersChanged(const QString& inp
 
     // Validate the input
     foreach (QString qualifierName, qualifierNames) {
-        if (!__Annotation::isValidQualifierName(qualifierName)) {
+        if (!Annotation::isValidQualifierName(qualifierName)) {
             setIncorrectState();
             return;
         }

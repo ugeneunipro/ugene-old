@@ -30,7 +30,7 @@
 #include <U2Algorithm/SplicedAlignmentTask.h>
 
 
-#include <U2Core/FeaturesTableObject.h>
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/ExternalToolRunTask.h>
 #include <U2Gui/CreateAnnotationWidgetController.h>
@@ -91,12 +91,12 @@ class SpideySupportTask : public Task {
     Q_OBJECT
 public:
                                 SpideySupportTask( const SplicedAlignmentTaskConfig &cfg,
-                                    FeaturesTableObject *aobj );
+                                    AnnotationTableObject *aobj );
     void                        prepare( );
     QList<Task *>               onSubTaskFinished( Task *subTask );
 private:
     SpideyAlignmentTask *       spideyAlignmentTask;
-    FeaturesTableObject *       aObj;
+    AnnotationTableObject *       aObj;
 };
 
 }//namespace

@@ -31,7 +31,7 @@
 #include <U2Core/GObjectRelationRoles.h>
 #include <U2Core/U2AlphabetUtils.h>
 #include <U2Core/DNASequenceObject.h>
-#include <U2Core/FeaturesTableObject.h>
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/GObjectTypes.h>
 #include <U2Core/TextUtils.h>
 #include <U2Core/U1AnnotationUtils.h>
@@ -74,7 +74,7 @@ FormatCheckResult PDWFormat::checkRawData(const QByteArray& rawData, const GUrl&
 
 #define READ_BUFF_SIZE  4096
 void PDWFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, const GUrl& docUrl, QList<GObject*>& objects, U2OpStatus& os, 
-                     U2SequenceObject*& seqObj, FeaturesTableObject*& annObj)
+                     U2SequenceObject*& seqObj, AnnotationTableObject*& annObj)
 {
     DbiOperationsBlock opBlock(dbiRef, os);
     CHECK_OP(os, );
@@ -139,7 +139,7 @@ void PDWFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& f
     }
     
     if ( !annotations.isEmpty( ) ) {
-        annObj = new FeaturesTableObject( QString("%1 annotations").arg(seqName), dbiRef );
+        annObj = new AnnotationTableObject( QString("%1 annotations").arg(seqName), dbiRef );
         annObj->addAnnotations( annotations );
         objects.append( annObj );
     }
@@ -153,7 +153,7 @@ Document * PDWFormat::loadDocument( IOAdapter *io, const U2DbiRef &dbiRef, const
     U2OpStatus &os )
 {
     U2SequenceObject* seqObj = NULL;
-    FeaturesTableObject *annObj = NULL;
+    AnnotationTableObject *annObj = NULL;
     CHECK_EXT( NULL != io && io->isOpen( ), os.setError( L10N::badArgument( "IO adapter" ) ),
         NULL );
     QVariantMap fs = _fs;

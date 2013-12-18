@@ -39,7 +39,7 @@
 #include <U2Algorithm/FindAlgorithmTask.h>
 #include <U2Designer/DelegateEditors.h>
 #include <U2Formats/GenbankFeatures.h>
-#include <U2Core/FeaturesTableObject.h>
+#include <U2Core/AnnotationTableObject.h>
 
 #include "CoreLib.h"
 #include "util/RequiredSlotsValidator.h"
@@ -472,7 +472,7 @@ void FindWorker::sl_taskFinished(Task* t) {
                 QString patternName = filePatterns.value( findTask ).first;
                 if ( !patternName.isEmpty( ) ) {
                     patternName = patternName.left( GBFeatureUtils::MAX_KEY_LEN );
-                    if ( !__Annotation::isValidAnnotationName( patternName ) ) {
+                    if ( !Annotation::isValidAnnotationName( patternName ) ) {
                         patternName = resultName;
                     }
                 }

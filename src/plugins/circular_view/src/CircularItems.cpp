@@ -33,7 +33,7 @@ namespace U2 {
 /* CircularAnnotationItem                                               */
 /************************************************************************/
 
-CircularAnnotationItem::CircularAnnotationItem( const __Annotation &ann, CircurlarAnnotationRegionItem* region, CircularViewRenderArea* _ra)
+CircularAnnotationItem::CircularAnnotationItem( const Annotation &ann, CircurlarAnnotationRegionItem* region, CircularViewRenderArea* _ra)
     : ra(_ra), annotation( ann )
 {
     assert(region->parent == NULL);
@@ -43,7 +43,7 @@ CircularAnnotationItem::CircularAnnotationItem( const __Annotation &ann, Circurl
     isSelected = false;
 }
 
-CircularAnnotationItem::CircularAnnotationItem( const __Annotation &ann, QList<CircurlarAnnotationRegionItem*>& _regions, CircularViewRenderArea* _ra)
+CircularAnnotationItem::CircularAnnotationItem( const Annotation &ann, QList<CircurlarAnnotationRegionItem*>& _regions, CircularViewRenderArea* _ra)
     : regions(_regions), ra(_ra), annotation( ann )
 {
     isSelected = false;
@@ -80,7 +80,7 @@ QRectF CircularAnnotationItem::boundingRect() const{
     return _boundingRect;
 }
 
-__Annotation CircularAnnotationItem::getAnnotation() const
+Annotation CircularAnnotationItem::getAnnotation() const
 {
     return annotation;
 }
@@ -170,7 +170,7 @@ static bool labelLengthLessThan(CircularAnnotationLabel* l1, CircularAnnotationL
     return length1 < length2;
 }
 
-CircularAnnotationLabel::CircularAnnotationLabel( const __Annotation &ann, int _region,
+CircularAnnotationLabel::CircularAnnotationLabel( const Annotation &ann, int _region,
     int sequenceLength, const QFont& font, CircularViewRenderArea* renderArea )
     : annotation( ann ), labelFont(font), region(_region), ra(renderArea), hasPosition(false),
     inner(false), seqLen(sequenceLength)
@@ -407,7 +407,7 @@ void CircularAnnotationLabel::paint( QPainter *p,const QStyleOptionGraphicsItem 
     p->setPen(pen);
 }
 
-__Annotation CircularAnnotationLabel::getAnnotation() const {
+Annotation CircularAnnotationLabel::getAnnotation() const {
     return annotation;
 }
 

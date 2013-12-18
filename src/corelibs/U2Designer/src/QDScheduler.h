@@ -31,7 +31,7 @@
 
 namespace U2 {
 
-class FeaturesTableObject;
+class AnnotationTableObject;
 class LoadUnloadedDocumentTask;
 
 class QDRunSettings {
@@ -40,7 +40,7 @@ public:
     offset(0), outputType(Group) {}
 
     DNASequence             dnaSequence;
-    FeaturesTableObject *   annotationsObj;
+    AnnotationTableObject *   annotationsObj;
     GObjectReference        annotationsObjRef;
     QString                 groupName;
     U2Region                region;

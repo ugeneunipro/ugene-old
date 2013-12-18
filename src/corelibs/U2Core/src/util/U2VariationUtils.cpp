@@ -26,7 +26,7 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/AppContext.h>
-#include <U2Core/FeaturesTableObject.h>
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/AppSettings.h>
 
 #include "U2VariationUtils.h"

@@ -24,7 +24,7 @@
 #include <U2View/ADVSequenceObjectContext.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/GObject.h>
-#include <U2Core/FeaturesTableObject.h>
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/AnnotationSettings.h>
 #include <U2Core/AppContext.h>
 #include <U2Gui/GUIUtils.h>
@@ -101,10 +101,10 @@ QSet<QString> DotPlotFilterDialog::getUniqueAnnotationNames(ADVSequenceObjectCon
     QSet<QString> uniqueAnnotationNames;
     CHECK ( seq!=NULL, uniqueAnnotationNames );
 
-    QSet<FeaturesTableObject *> annotationObjects = seq->getAnnotationObjects(true);
-    foreach ( FeaturesTableObject *atObj, annotationObjects ) {
-        QList<__Annotation> annotations = atObj->getAnnotations();
-        foreach ( const __Annotation &a, annotations ) {
+    QSet<AnnotationTableObject *> annotationObjects = seq->getAnnotationObjects(true);
+    foreach ( AnnotationTableObject *atObj, annotationObjects ) {
+        QList<Annotation> annotations = atObj->getAnnotations();
+        foreach ( const Annotation &a, annotations ) {
             uniqueAnnotationNames.insert( a.getName( ) );
         }
     }

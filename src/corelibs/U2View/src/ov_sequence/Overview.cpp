@@ -27,7 +27,7 @@
 #include <U2Core/AnnotationModification.h>
 #include <U2Core/AnnotationSettings.h>
 #include <U2Core/DNASequenceObject.h>
-#include <U2Core/FeaturesTableObject.h>
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/DNASequenceSelection.h>
 
@@ -60,17 +60,17 @@ Overview::Overview(QWidget *p, ADVSequenceObjectContext *ctx) : GSequenceLineVie
     connect(panView, SIGNAL(si_visibleRangeChanged()), SLOT(sl_visibleRangeChanged()));
     connect(detView, SIGNAL(si_visibleRangeChanged()), SLOT(sl_visibleRangeChanged()));
     connect(tb, SIGNAL(pressed()), SLOT(sl_tbToggled()));
-    connect(ctx, SIGNAL(si_annotationObjectAdded(FeaturesTableObject*)),
-        SLOT(sl_annotationObjectAdded(FeaturesTableObject*)));
-    connect(ctx, SIGNAL(si_annotationObjectRemoved(FeaturesTableObject*)),
-        SLOT(sl_annotationObjectRemoved(FeaturesTableObject*)));
-    foreach ( FeaturesTableObject *at, ctx->getAnnotationObjects( true ) ) {
-        connect(at, SIGNAL(si_onAnnotationsAdded(const QList<__Annotation> &)),
-            SLOT(sl_annotationsAdded(const QList<__Annotation> &)));
-        connect(at, SIGNAL(si_onAnnotationsRemoved(const QList<__Annotation> &)),
-            SLOT(sl_annotationsRemoved(const QList<__Annotation> &)));
-        connect(at, SIGNAL(si_onAnnotationsInGroupRemoved(const QList<__Annotation> &, const __AnnotationGroup &)),
-            SLOT(sl_onAnnotationsInGroupRemoved(const QList<__Annotation> &, const __AnnotationGroup &)));
+    connect(ctx, SIGNAL(si_annotationObjectAdded(AnnotationTableObject*)),
+        SLOT(sl_annotationObjectAdded(AnnotationTableObject*)));
+    connect(ctx, SIGNAL(si_annotationObjectRemoved(AnnotationTableObject*)),
+        SLOT(sl_annotationObjectRemoved(AnnotationTableObject*)));
+    foreach ( AnnotationTableObject *at, ctx->getAnnotationObjects( true ) ) {
+        connect(at, SIGNAL(si_onAnnotationsAdded(const QList<Annotation> &)),
+            SLOT(sl_annotationsAdded(const QList<Annotation> &)));
+        connect(at, SIGNAL(si_onAnnotationsRemoved(const QList<Annotation> &)),
+            SLOT(sl_annotationsRemoved(const QList<Annotation> &)));
+        connect(at, SIGNAL(si_onAnnotationsInGroupRemoved(const QList<Annotation> &, const AnnotationGroup &)),
+            SLOT(sl_onAnnotationsInGroupRemoved(const QList<Annotation> &, const AnnotationGroup &)));
         connect(at, SIGNAL(si_onAnnotationModified(const AnnotationModification &)),
             SLOT(sl_annotationModified(const AnnotationModification &)));
         connect(AppContext::getAnnotationsSettingsRegistry(),
@@ -83,39 +83,39 @@ Overview::Overview(QWidget *p, ADVSequenceObjectContext *ctx) : GSequenceLineVie
     pack();
 }
 
-void Overview::sl_annotationObjectAdded(FeaturesTableObject *obj) {
-    connect(obj, SIGNAL(si_onAnnotationsAdded(const QList<__Annotation> &)),
-        SLOT(sl_annotationsAdded(const QList<__Annotation> &)));
-    connect(obj, SIGNAL(si_onAnnotationsRemoved(const QList<__Annotation> &)),
-        SLOT(sl_annotationsRemoved(const QList<__Annotation> &)));
+void Overview::sl_annotationObjectAdded(AnnotationTableObject *obj) {
+    connect(obj, SIGNAL(si_onAnnotationsAdded(const QList<Annotation> &)),
+        SLOT(sl_annotationsAdded(const QList<Annotation> &)));
+    connect(obj, SIGNAL(si_onAnnotationsRemoved(const QList<Annotation> &)),
+        SLOT(sl_annotationsRemoved(const QList<Annotation> &)));
     connect(obj, SIGNAL(si_onAnnotationModified(const AnnotationModification &)),
         SLOT(sl_annotationModified(const AnnotationModification &)));
     addUpdateFlags(GSLV_UF_AnnotationsChanged);
     update();
 }
 
-void Overview::sl_annotationObjectRemoved( FeaturesTableObject *obj ) {
+void Overview::sl_annotationObjectRemoved( AnnotationTableObject *obj ) {
     Q_UNUSED(obj);
 
     addUpdateFlags(GSLV_UF_AnnotationsChanged);
     update();
 }
 
-void Overview::sl_annotationsAdded(const QList<__Annotation> &a) {
+void Overview::sl_annotationsAdded(const QList<Annotation> &a) {
     Q_UNUSED(a);
 
     addUpdateFlags(GSLV_UF_AnnotationsChanged);
     update();
 }
 
-void Overview::sl_annotationsRemoved(const QList<__Annotation> &a) {
+void Overview::sl_annotationsRemoved(const QList<Annotation> &a) {
     Q_UNUSED(a);
 
     addUpdateFlags(GSLV_UF_AnnotationsChanged);
     update();
 }
 
-void Overview::sl_onAnnotationsInGroupRemoved(const QList<__Annotation> &, const __AnnotationGroup & ) {
+void Overview::sl_onAnnotationsInGroupRemoved(const QList<Annotation> &, const AnnotationGroup & ) {
     addUpdateFlags(GSLV_UF_AnnotationsChanged);
     update();
 }
@@ -423,9 +423,9 @@ void OverviewRenderArea::setAnnotationsOnPos() {
     annotationsOnPos.resize(len);
     U2Region sequenceRange(0, ctx->getSequenceObject()->getSequenceLength());
     AnnotationSettingsRegistry* asr = AppContext::getAnnotationsSettingsRegistry();
-    QSet<FeaturesTableObject *> aObjs = ctx->getAnnotationObjects(true);
-    foreach ( FeaturesTableObject *at, aObjs ) {
-        foreach ( const __Annotation &a, at->getAnnotations( ) ) {
+    QSet<AnnotationTableObject *> aObjs = ctx->getAnnotationObjects(true);
+    foreach ( AnnotationTableObject *at, aObjs ) {
+        foreach ( const Annotation &a, at->getAnnotations( ) ) {
             AnnotationSettings* as = asr->getAnnotationSettings(a);
             if(as->visible) {
                 foreach ( const U2Region& r, a.getRegions( ) ) {

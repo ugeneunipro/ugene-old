@@ -28,16 +28,16 @@
 
 namespace U2 {
 
-class __AnnotationGroup;
+class AnnotationGroup;
 class ADVSequenceObjectContext;
 
 class EnzymeItem : public QTreeWidgetItem
 {
 public:
-    EnzymeItem(const QString& locationStr, const __Annotation &a );
-    __Annotation getEnzymeAnnotation() const {return annotation; }
+    EnzymeItem(const QString& locationStr, const Annotation &a );
+    Annotation getEnzymeAnnotation() const {return annotation; }
 private:
-    __Annotation annotation;
+    Annotation annotation;
 };
 
 class EnzymeFolderItem : public QTreeWidgetItem
@@ -45,8 +45,8 @@ class EnzymeFolderItem : public QTreeWidgetItem
     QString enzymeName;
 public:
     EnzymeFolderItem(const QString& name);
-    void addEnzymeItem( const __Annotation &enzAnn);
-    void removeEnzymeItem( const __Annotation &enzAnn);
+    void addEnzymeItem( const Annotation &enzAnn);
+    void removeEnzymeItem( const Annotation &enzAnn);
     const QString& getName() const { return enzymeName; } 
 };
 
@@ -57,11 +57,11 @@ public:
     RestrctionMapWidget(ADVSequenceObjectContext* ctx, QWidget *p);
     
 private slots:
-    void sl_onAnnotationsAdded(const QList<__Annotation>& anns);
-    void sl_onAnnotationsRemoved(const QList<__Annotation>& anns);
-    void sl_onAnnotationsInGroupRemoved(const QList<__Annotation> &anns,
-        const __AnnotationGroup &group);
-    void sl_onAnnotationsGroupCreated( const __AnnotationGroup &g );
+    void sl_onAnnotationsAdded(const QList<Annotation>& anns);
+    void sl_onAnnotationsRemoved(const QList<Annotation>& anns);
+    void sl_onAnnotationsInGroupRemoved(const QList<Annotation> &anns,
+        const AnnotationGroup &group);
+    void sl_onAnnotationsGroupCreated( const AnnotationGroup &g );
     void sl_itemSelectionChanged();
 private:
     ADVSequenceObjectContext* ctx;

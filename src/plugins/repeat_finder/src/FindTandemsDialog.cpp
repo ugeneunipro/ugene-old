@@ -28,7 +28,7 @@
 
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/DNASequenceSelection.h>
-#include <U2Core/FeaturesTableObject.h>
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Gui/CreateAnnotationWidgetController.h>
 #include <U2View/ADVSequenceObjectContext.h>
 #include <U2View/AnnotatedDNAView.h>
@@ -94,10 +94,10 @@ FindTandemsDialog::FindTandemsDialog(ADVSequenceObjectContext* _sc)
 
 QStringList FindTandemsDialog::getAvailableAnnotationNames() const {
     QStringList res;
-    const QSet<FeaturesTableObject *> objs = sc->getAnnotationObjects();
+    const QSet<AnnotationTableObject *> objs = sc->getAnnotationObjects();
     QSet<QString> names;
-    foreach ( const FeaturesTableObject *o, objs ) {
-        foreach ( const __Annotation &a, o->getAnnotations( ) ) {
+    foreach ( const AnnotationTableObject *o, objs ) {
+        foreach ( const Annotation &a, o->getAnnotations( ) ) {
             names.insert( a.getName( ) );
         }
     }
@@ -149,9 +149,9 @@ bool FindTandemsDialog::getRegions(QCheckBox* cb, QLineEdit* le, QVector<U2Regio
         return true;
     }
     QSet<QString> aNames = names.split(',', QString::SkipEmptyParts).toSet();
-    const QSet<FeaturesTableObject *> aObjs = sc->getAnnotationObjects();
-    foreach ( FeaturesTableObject *obj, aObjs ) {
-        foreach ( const __Annotation &a, obj->getAnnotations( ) ) {
+    const QSet<AnnotationTableObject *> aObjs = sc->getAnnotationObjects();
+    foreach ( AnnotationTableObject *obj, aObjs ) {
+        foreach ( const Annotation &a, obj->getAnnotations( ) ) {
             if ( aNames.contains( a.getName( ) ) ) {
                 res << a.getRegions( );
             }

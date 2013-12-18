@@ -31,7 +31,7 @@ namespace U2 {
 
 class U2SequenceObject;
 class DNAAlphabet;
-class FeaturesTableObject;
+class AnnotationTableObject;
 class Annotation;
 class GObject;
 
@@ -53,7 +53,7 @@ private:
     U2SequenceObject* dnaObj;
     // Annotations associated with parent sequence
     // When ligate or export fragments they must be saved
-    QList<FeaturesTableObject *> relatedAnnotations;
+    QList<AnnotationTableObject *> relatedAnnotations;
     // reverse complement
     bool reverseCompl;
     void updateTerms();
@@ -66,7 +66,7 @@ private:
 
 public:
     DNAFragment( ) : dnaObj(NULL), reverseCompl(false) {}
-    DNAFragment( const AnnotationData &fragment, U2SequenceObject* sObj, const QList<FeaturesTableObject *> relatedAnns);
+    DNAFragment( const AnnotationData &fragment, U2SequenceObject* sObj, const QList<AnnotationTableObject *> relatedAnns);
     DNAFragment( const DNAFragment& other );
     DNAFragment& operator=(const DNAFragment& other);
     bool isEmpty() const { return annotatedFragment == AnnotationData( ) || dnaObj == NULL; }
@@ -89,7 +89,7 @@ public:
     void setLeftOverhangStrand( bool direct);
     void setRightOverhangStrand(bool direct);
 
-    const QList<FeaturesTableObject *> & getRelatedAnnotations() const { return relatedAnnotations; }
+    const QList<AnnotationTableObject *> & getRelatedAnnotations() const { return relatedAnnotations; }
 
     static QList<DNAFragment> findAvailableFragments();
     static QList<DNAFragment> findAvailableFragments(const QList<GObject*>& aObjects, const QList<GObject*>& sObjects);

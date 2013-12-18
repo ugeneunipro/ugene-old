@@ -25,7 +25,7 @@
 #include <U2Core/DocumentModel.h>
 #include <U2Core/DocumentUtils.h>
 #include <U2Core/ExternalToolRunTask.h>
-#include <U2Core/FeaturesTableObject.h>
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/GUrlUtils.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/IOAdapterUtils.h>
@@ -144,7 +144,7 @@ void CEASSupportTask::createBedDoc() {
         CHECK_OP(stateInfo, );
         bedDoc->setDocumentOwnsDbiResources(false);
 
-        FeaturesTableObject *ato = new FeaturesTableObject( "bed_anns", bedDoc->getDbiRef( ) );
+        AnnotationTableObject *ato = new AnnotationTableObject( "bed_anns", bedDoc->getDbiRef( ) );
         foreach (const SharedAnnotationData &sad, settings.getBedData()) {
             ato->addAnnotation( *sad );
         }

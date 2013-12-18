@@ -26,7 +26,7 @@
 #include <U2Core/Task.h>
 
 #include <U2Core/DASSource.h>
-#include <U2Core/FeaturesTableObject.h>
+#include <U2Core/AnnotationTableObject.h>
 
 #include <QtCore/QEventLoop>
 #include <QtCore/QTimer>

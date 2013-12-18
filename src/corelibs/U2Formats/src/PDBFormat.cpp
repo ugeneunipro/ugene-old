@@ -28,7 +28,7 @@
 #include <U2Core/L10n.h>
 #include <U2Core/GObjectTypes.h>
 #include <U2Core/BioStruct3DObject.h>
-#include <U2Core/FeaturesTableObject.h>
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/GObjectRelationRoles.h>
 #include <U2Core/GObjectUtils.h>
@@ -584,7 +584,7 @@ char PDBFormat::getAcronymByName( const QByteArray& name )
 
 }
 
-void PDBFormat::fillBioStruct3DAnnotationTable( FeaturesTableObject *ao, const BioStruct3D& bioStruct ) {
+void PDBFormat::fillBioStruct3DAnnotationTable( AnnotationTableObject *ao, const BioStruct3D& bioStruct ) {
     
     foreach (SharedAnnotationData sdata, bioStruct.annotations) {
         ao->addAnnotation( *sdata, bioStruct.pdbId );
@@ -765,7 +765,7 @@ Document * PDBFormat::createDocumentFromBioStruct3D( const U2DbiRef &dbiRef, Bio
     DocumentFormat *format, IOAdapterFactory *iof, const GUrl &url, U2OpStatus &os, const QVariantMap &fs )
 {
     QList<GObject*> objects;
-    QMap<FeaturesTableObject *, U2SequenceObject *> relationsMap;
+    QMap<AnnotationTableObject *, U2SequenceObject *> relationsMap;
     QString objectName = bioStruct.pdbId.isEmpty() ? url.baseFileName() : bioStruct.pdbId;
 
     BioStruct3DObject* biostrucObj = new BioStruct3DObject(bioStruct, objectName);
@@ -788,7 +788,7 @@ Document * PDBFormat::createDocumentFromBioStruct3D( const U2DbiRef &dbiRef, Bio
         }
         
         // create AnnnotationTableObject
-        FeaturesTableObject *aObj = new FeaturesTableObject( QString( bioStruct.pdbId )
+        AnnotationTableObject *aObj = new AnnotationTableObject( QString( bioStruct.pdbId )
             + QString( " chain %1 annotation" ).arg( key ), dbiRef );
         foreach ( SharedAnnotationData sd, bioStruct.moleculeMap.value( key )->annotations ) {
             aObj->addAnnotation( *sd );
@@ -802,10 +802,10 @@ Document * PDBFormat::createDocumentFromBioStruct3D( const U2DbiRef &dbiRef, Bio
     Document* doc = new Document(format, iof, url, dbiRef, objects, fs);
 
     // set object relations
-    QMap<FeaturesTableObject *, U2SequenceObject*>::const_iterator i;
+    QMap<AnnotationTableObject *, U2SequenceObject*>::const_iterator i;
     for (i = relationsMap.constBegin(); i != relationsMap.constEnd(); ++i) {
         U2SequenceObject* dnao = i.value();
-        FeaturesTableObject *ao = i.key();
+        AnnotationTableObject *ao = i.key();
         ao->addObjectRelation(dnao, GObjectRelationRole::SEQUENCE);
         biostrucObj->addObjectRelation(dnao, GObjectRelationRole::SEQUENCE);
         biostrucObj->addObjectRelation(ao, GObjectRelationRole::ANNOTATION_TABLE);

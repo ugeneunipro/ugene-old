@@ -82,7 +82,7 @@ void EditAnnotationDialogController::accept(){
     U2Region cRegion = U2Region::containingRegion(location->regions);
     bool validRegions = seqRange.contains(cRegion);
 
-    if (!__Annotation::isValidAnnotationName(nameEdit->text())) {
+    if (!Annotation::isValidAnnotationName(nameEdit->text())) {
         QMessageBox::critical( this, tr( "Error!" ), tr( "Wrong annotation name!" ) );
         QDialog::reject();
     }else if (!validRegions){

@@ -21,7 +21,7 @@
 
 #include "ExternalToolRunTask.h"
 
-#include <U2Core/FeaturesTableObject.h>
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>
 #include <U2Core/BaseDocumentFormats.h>
@@ -305,7 +305,7 @@ Document * ExternalToolSupportUtils::createAnnotationsDocument( const QString &f
      }
 
      { // add annotations object
-         FeaturesTableObject *aobj = new FeaturesTableObject( "anns", doc->getDbiRef( ) );
+         AnnotationTableObject *aobj = new AnnotationTableObject( "anns", doc->getDbiRef( ) );
          foreach ( const SharedAnnotationData &ann, anns ) {
              aobj->addAnnotation( *ann.data( ) );
          }

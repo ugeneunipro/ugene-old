@@ -536,7 +536,7 @@ void DasOptionsPanelWidget::addAnnotations() {
     SAFE_POINT(annObjectIsOk, "Cannot create an annotation object. Please check settings", );
 
     const CreateAnnotationModel& cm = annotationsWidgetController->getModel();
-    FeaturesTableObject *annotationTableObject = cm.getAnnotationObject();
+    AnnotationTableObject *annotationTableObject = cm.getAnnotationObject();
 
     foreach (const QString& grname, annotationData.keys()) {
         const QList<AnnotationData> sdata = annotationData[grname];

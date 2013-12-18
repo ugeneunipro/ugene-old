@@ -34,7 +34,7 @@
 
 namespace U2 {
 
-class FeaturesTableObject;
+class AnnotationTableObject;
 class DNASequence;
 
 /**
@@ -46,7 +46,7 @@ class DNAFlexTask : public Task
     Q_OBJECT
 public:
     DNAFlexTask(const HighFlexSettings& settings,
-        FeaturesTableObject *annotObject,
+        AnnotationTableObject *annotObject,
         const QString& annotName,
         const QString& annotGroup,
         const DNASequence& sequence);
@@ -56,7 +56,7 @@ public:
 
 private:
     HighFlexSettings                    settings;
-    QPointer<FeaturesTableObject>       annotObject;
+    QPointer<AnnotationTableObject>       annotObject;
     QString                             annotName;
     QString                             annotGroup;
     DNASequence                         sequence;

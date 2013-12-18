@@ -35,7 +35,7 @@ class QDScheme;
 class Document;
 class QDScheduler;
 class SaveDocumentTask;
-class FeaturesTableObject;
+class AnnotationTableObject;
 class DocumentProviderTask;
 
 class QDRunDialogTask : public Task {
@@ -58,7 +58,7 @@ private:
     DocumentProviderTask*   loadTask;
     QDScheduler*            scheduler;
     Document*               docWithSequence;
-    FeaturesTableObject *   annObj;
+    AnnotationTableObject *   annObj;
 };
 
 class QueryViewController;

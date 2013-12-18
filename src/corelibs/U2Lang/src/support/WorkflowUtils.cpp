@@ -36,7 +36,7 @@
 #include <U2Lang/URLAttribute.h>
 #include <U2Lang/WorkflowSettings.h>
 
-#include <U2Core/FeaturesTableObject.h>
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/DocumentModel.h>
@@ -627,7 +627,7 @@ void WorkflowUtils::print(const QString &slotString, const QVariant &data, DataT
         } else {
             anns = QVariantUtils::var2ftl(data.toList());
         }
-        FeaturesTableObject *obj = new FeaturesTableObject( "Slot annotations", storage->getDbiRef( ) );
+        AnnotationTableObject *obj = new AnnotationTableObject( "Slot annotations", storage->getDbiRef( ) );
         foreach ( const SharedAnnotationData &d, anns ) {
             obj->addAnnotation( *d );
         }

@@ -31,7 +31,7 @@
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/DNAInfo.h>
 
-#include <U2Core/FeaturesTableObject.h>
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/GObjectUtils.h>
 #include <U2Core/GObjectRelationRoles.h>
@@ -635,18 +635,18 @@ static void writeAnnotations(IOAdapter* io, QList<GObject*> aos, U2OpStatus& si)
     const QByteArray& groupQ = GBFeatureUtils::QUALIFIER_GROUP;
     const QString& defaultKey = GBFeatureUtils::DEFAULT_KEY;
 
-    QList<__Annotation> sortedAnnotations;
+    QList<Annotation> sortedAnnotations;
     foreach ( GObject* o, aos ) {
-        FeaturesTableObject *ao = qobject_cast<FeaturesTableObject *>( o );
+        AnnotationTableObject *ao = qobject_cast<AnnotationTableObject *>( o );
         CHECK_EXT( NULL != ao, si.setError( "Invalid annotation table!" ), );
         sortedAnnotations += ao->getAnnotations( );
     }
 
     qStableSort( sortedAnnotations.begin( ), sortedAnnotations.end( ),
-        __Annotation::annotationLessThanByRegion );
+        Annotation::annotationLessThanByRegion );
 
     for(int i = 0; i < sortedAnnotations.size(); ++i) {
-        const __Annotation &a = sortedAnnotations.at( i );
+        const Annotation &a = sortedAnnotations.at( i );
         QString aName = a.getName( );
 
         if (aName == U1AnnotationUtils::lowerCaseAnnotationName
@@ -706,7 +706,7 @@ static void writeAnnotations(IOAdapter* io, QList<GObject*> aos, U2OpStatus& si)
         //}
 
         //write group
-        const __AnnotationGroup ag = a.getGroup( );
+        const AnnotationGroup ag = a.getGroup( );
         const bool storeGroups = !ag.isTopLevelGroup( ) || ag.getName( ) != aName;
 
         if (storeGroups) {

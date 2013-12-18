@@ -26,7 +26,7 @@
 
 namespace U2 {
 
-class FeaturesTableObject;
+class AnnotationTableObject;
 
 /*Options for BlastAll
 blastall 2.2.21 not included arguments:
@@ -133,7 +133,7 @@ public:
     const DNAAlphabet*    alphabet;
     //settings for annotations
     bool                    needCreateAnnotations;
-    FeaturesTableObject *   aobj;
+    AnnotationTableObject *   aobj;
     QString                 groupName;
     int                     offsInGlobalSeq;
     TriState                directStrand;

@@ -24,7 +24,7 @@
 #include <U2Core/AppResources.h>
 #include <U2Core/U2DbiRegistry.h>
 #include <U2Core/DNAAlphabet.h>
-#include <U2Core/FeaturesTableObject.h>
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/GObjectReference.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/IOAdapterUtils.h>
@@ -109,7 +109,7 @@ void BlastAllSupportRunDialog::sl_runQuery(){
         U2OpStatusImpl os;
         const U2DbiRef dbiRef = AppContext::getDbiRegistry( )->getSessionTmpDbiRef( os );
         SAFE_POINT_OP( os, );
-        settings.aobj = new FeaturesTableObject( "Annotations", dbiRef );
+        settings.aobj = new AnnotationTableObject( "Annotations", dbiRef );
         settings.aobj->addObjectRelation(GObjectRelation(ca_c->getModel().sequenceObjectRef, GObjectRelationRole::SEQUENCE));
     }
     else {
@@ -281,7 +281,7 @@ void BlastAllWithExtFileSpecifySupportRunDialog::sl_runQuery(){
             U2OpStatusImpl os;
             const U2DbiRef dbiRef = AppContext::getDbiRegistry( )->getSessionTmpDbiRef( os );
             SAFE_POINT_OP( os, );
-            settingsList[i].aobj = new FeaturesTableObject( sequencesRefList[i].objName+" annotations", dbiRef );
+            settingsList[i].aobj = new AnnotationTableObject( sequencesRefList[i].objName+" annotations", dbiRef );
             settingsList[i].aobj->addObjectRelation(GObjectRelation(sequencesRefList[i], GObjectRelationRole::SEQUENCE));
         }
         else {

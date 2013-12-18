@@ -24,7 +24,7 @@
 
 #include <U2Core/AppContext.h>
 #include <U2Core/U2SafePoints.h>
-#include <U2Core/FeaturesTableObject.h>
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/TextUtils.h>
 
 #include <QtGui/QMessageBox>
@@ -70,8 +70,8 @@ SearchQualifierDialog::SearchQualifierDialog(QWidget* p, AnnotationsTreeView * _
              }
      }
      QString groupName = groupToSearchIn->getAnnotationGroup().getName();
-     if (groupName == __AnnotationGroup::ROOT_GROUP_NAME) {
-         FeaturesTableObject *aObj = groupToSearchIn->getAnnotationTableObject();
+     if (groupName == AnnotationGroup::ROOT_GROUP_NAME) {
+         AnnotationTableObject *aObj = groupToSearchIn->getAnnotationTableObject();
          groupName = aObj->getGObjectName();
      }
      ui->groupLabel->setText(groupName);
@@ -149,7 +149,7 @@ void SearchQualifierDialog::search( bool searchAll /*= false*/ ){
         QMessageBox::critical(this, tr("Error!"), tr("Illegal qualifier name"));
         return;
     }
-    if (!__Annotation::isValidQualifierValue(val)) {
+    if (!Annotation::isValidQualifierValue(val)) {
         QMessageBox::critical(this, tr("Error!"), tr("Illegal qualifier value"));
         return;
     }

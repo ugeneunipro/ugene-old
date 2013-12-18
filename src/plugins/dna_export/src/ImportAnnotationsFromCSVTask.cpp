@@ -30,7 +30,7 @@
 #include <U2Core/L10n.h>
 #include <U2Core/Log.h>
 #include <U2Core/U2SafePoints.h>
-#include <U2Core/FeaturesTableObject.h>
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/GObjectRelationRoles.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/AddDocumentTask.h>
@@ -60,7 +60,7 @@ config(_config), readTask(NULL), writeTask(NULL), addTask(NULL)
 }
 
 
-static void adjustRelations(FeaturesTableObject *ao) {
+static void adjustRelations(AnnotationTableObject *ao) {
     if (!ao->findRelatedObjectsByType(GObjectRelationRole::SEQUENCE).isEmpty()) {
         return; //nothing to adjust -> already has relation
     }
@@ -78,7 +78,7 @@ static void adjustRelations(FeaturesTableObject *ao) {
     foreach(U2SequenceObject *seqObj, seqView->getSequenceObjectsWithContexts()){
         U2Region seqRegion(0, seqObj->getSequenceLength());
         bool outOfRange = false;
-        foreach ( const __Annotation &ann, ao->getAnnotations()) {
+        foreach ( const Annotation &ann, ao->getAnnotations()) {
             const QVector<U2Region>& locations = ann.getRegions();
             if (!seqRegion.contains(locations.last())) {
                 outOfRange = true;
@@ -134,10 +134,10 @@ QList<Task*> ImportAnnotationsFromCSVTask::onSubTaskFinished(Task* subTask) {
                 return result;
             }
             QList<GObject*> objs = doc->findGObjectByType(GObjectTypes::ANNOTATION_TABLE);
-            FeaturesTableObject *ao = objs.isEmpty( ) ? NULL
-                : qobject_cast<FeaturesTableObject *>(objs.first());
+            AnnotationTableObject *ao = objs.isEmpty( ) ? NULL
+                : qobject_cast<AnnotationTableObject *>(objs.first());
             if ( ao == NULL ) {
-                ao = new FeaturesTableObject( "Annotations", doc->getDbiRef( ) );
+                ao = new AnnotationTableObject( "Annotations", doc->getDbiRef( ) );
                 adjustRelations( ao );
             }
             SAFE_POINT(ao != NULL, "Invalid annotation table", result );
@@ -170,7 +170,7 @@ Document * ImportAnnotationsFromCSVTask::prepareNewDocument(const QMap<QString, 
     U2OpStatus2Log os;
     Document* result = config.df->createNewLoadedDocument(iof, config.dstFile, os);
     CHECK_OP(os, NULL);
-    FeaturesTableObject* ao = new FeaturesTableObject( "Annotations", result->getDbiRef( ) );
+    AnnotationTableObject* ao = new AnnotationTableObject( "Annotations", result->getDbiRef( ) );
     foreach ( const QString &groupName, groups.keys( ) ) {
         ao->addAnnotations(groups[groupName], groupName);
     }
@@ -240,7 +240,7 @@ void ReadCSVAsAnnotationsTask::run() {
                     break;
                 case ColumnRole_Name:
                     a.name = token.isEmpty() ? config.defaultAnnotationName : token;
-                    ok = __Annotation::isValidAnnotationName(a.name);
+                    ok = Annotation::isValidAnnotationName(a.name);
                     if (!ok) {
                         error = tr("Invalid annotation name: '%1'").arg(a.name);
                     }

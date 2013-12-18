@@ -31,7 +31,7 @@ namespace U2 {
 const float FindPatternTask::MAX_OVERLAP_K = 0.5F;
 
 FindPatternTask::FindPatternTask(const FindAlgorithmTaskSettings& _settings,
-    FeaturesTableObject* _annotObject,
+    AnnotationTableObject* _annotObject,
     const QString& _annotName,
     const QString& _annotGroup,
     bool _removeOverlaps)

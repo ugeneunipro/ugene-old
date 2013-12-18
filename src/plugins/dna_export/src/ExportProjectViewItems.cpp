@@ -40,7 +40,7 @@
 #include <U2Core/ProjectModel.h>
 #include <U2Core/DNATranslation.h>
 #include <U2Core/DNAAlphabet.h>
-#include <U2Core/FeaturesTableObject.h>
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/GObjectUtils.h>
 #include <U2Core/MAlignmentObject.h>
@@ -258,8 +258,8 @@ void ExportProjectViewItemsContoller::sl_saveSequencesToSequenceFormat() {
         if (s.saveAnnotations) {
             foreach(GObject* aObj, allAnnotationTables) {
                 if (aObj->hasObjectRelation(so, GObjectRelationRole::SEQUENCE)) {
-                    FeaturesTableObject *annObj = qobject_cast<FeaturesTableObject *>(aObj);
-                    foreach ( const __Annotation &ann, annObj->getAnnotations( ) ) {
+                    AnnotationTableObject *annObj = qobject_cast<AnnotationTableObject *>(aObj);
+                    foreach ( const Annotation &ann, annObj->getAnnotations( ) ) {
                         anns.append( SharedAnnotationData( new AnnotationData( ann.getData( ) ) ) );
                     }
                 }
@@ -446,9 +446,9 @@ void ExportProjectViewItemsContoller::sl_exportAnnotations() {
     }
     
     GObject* obj = set.first();
-    FeaturesTableObject *aObj = qobject_cast<FeaturesTableObject *>(obj);
+    AnnotationTableObject *aObj = qobject_cast<AnnotationTableObject *>(obj);
     SAFE_POINT( NULL != aObj, "Invalid annotation table detected!", );
-    QList<__Annotation> annotations = aObj->getAnnotations( );
+    QList<Annotation> annotations = aObj->getAnnotations( );
     if(!annotations.isEmpty()) {
         SAFE_POINT( NULL != aObj->getDocument( ), "Invalid document detected!", );
         sl_exportAnnotations( annotations, aObj->getDocument( )->getURL( ) );
@@ -458,7 +458,7 @@ void ExportProjectViewItemsContoller::sl_exportAnnotations() {
         tr( NO_ANNOTATIONS_MESSAGE ) );
 }
 
-void ExportProjectViewItemsContoller::sl_exportAnnotations( QList<__Annotation> &annotations,
+void ExportProjectViewItemsContoller::sl_exportAnnotations( QList<Annotation> &annotations,
     const GUrl &dstUrl) const
 {
     if ( annotations.isEmpty( ) ) {
@@ -479,7 +479,7 @@ void ExportProjectViewItemsContoller::sl_exportAnnotations( QList<__Annotation> 
 
     // TODO: lock documents or use shared-data objects
     // same as in ADVExportContext::sl_saveSelectedAnnotations()
-    qStableSort( annotations.begin( ), annotations.end( ), __Annotation::annotationLessThan );
+    qStableSort( annotations.begin( ), annotations.end( ), Annotation::annotationLessThan );
 
     // run task
     Task * t = NULL;

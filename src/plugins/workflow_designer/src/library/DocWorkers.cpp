@@ -25,7 +25,7 @@
 #include "GenericReadWorker.h"
 
 #include <U2Core/AnnotationData.h>
-#include <U2Core/FeaturesTableObject.h>
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/DNASequence.h>
 #include <U2Core/DocumentModel.h>
@@ -468,19 +468,19 @@ void GenbankWriter::data2document(Document* doc, const QVariantMap& data, Workfl
         QList<SharedAnnotationData> atl = QVariantUtils::var2ftl(annsVar.toList());
 
         if (!atl.isEmpty()) {
-            FeaturesTableObject *att = NULL;
+            AnnotationTableObject *att = NULL;
             if (dna) {
                 QList<GObject*> relAnns = GObjectUtils::findObjectsRelatedToObjectByRole(dna, GObjectTypes::ANNOTATION_TABLE, GObjectRelationRole::SEQUENCE, doc->getObjects(), UOF_LoadedOnly);
-                att = relAnns.isEmpty() ? NULL : qobject_cast<FeaturesTableObject *>(relAnns.first());
+                att = relAnns.isEmpty() ? NULL : qobject_cast<AnnotationTableObject *>(relAnns.first());
             }
             if (!att) {
                 if (annotationName.isEmpty()) {
                     int featuresNum = doc->findGObjectByType(GObjectTypes::ANNOTATION_TABLE).size();
                     annotationName = QString("unknown features %1").arg(featuresNum);
                 }
-                att = qobject_cast<FeaturesTableObject *>(doc->findGObjectByName(annotationName));
+                att = qobject_cast<AnnotationTableObject *>(doc->findGObjectByName(annotationName));
                 if (NULL == att) {
-                    doc->addObject( att = new FeaturesTableObject( annotationName,
+                    doc->addObject( att = new AnnotationTableObject( annotationName,
                         context->getDataStorage( )->getDbiRef( ) ) );
                     if (dna) {
                         att->addObjectRelation(dna, GObjectRelationRole::SEQUENCE);
@@ -523,7 +523,7 @@ void GenbankWriter::streamingStoreEntry(DocumentFormat* format, IOAdapter *io, c
             if (annotationName.isEmpty()) {
                 annotationName = QString("unknown features %1").arg(entryNum);
             }
-            FeaturesTableObject* att = new FeaturesTableObject( annotationName,
+            AnnotationTableObject* att = new AnnotationTableObject( annotationName,
                 context->getDataStorage( )->getDbiRef( ) );
             anObjList << att;
             foreach ( SharedAnnotationData sad, atl ) {
@@ -587,19 +587,19 @@ void GFFWriter::data2document(Document* doc, const QVariantMap& data, WorkflowCo
         const QVariant &annsVar = data[BaseSlots::ANNOTATION_TABLE_SLOT().getId()];
         QList<SharedAnnotationData> atl = QVariantUtils::var2ftl(annsVar.toList());
         if (!atl.isEmpty()) {
-            FeaturesTableObject *att = NULL;
+            AnnotationTableObject *att = NULL;
             if (dna) {
                 QList<GObject*> relAnns = GObjectUtils::findObjectsRelatedToObjectByRole(dna, GObjectTypes::ANNOTATION_TABLE, GObjectRelationRole::SEQUENCE, doc->getObjects(), UOF_LoadedOnly);
-                att = relAnns.isEmpty() ? NULL : qobject_cast<FeaturesTableObject *>(relAnns.first());
+                att = relAnns.isEmpty() ? NULL : qobject_cast<AnnotationTableObject *>(relAnns.first());
             }
             if (!att) {
                 if (annotationName.isEmpty()) {
                     int featuresNum = doc->findGObjectByType(GObjectTypes::ANNOTATION_TABLE).size();
                     annotationName = QString("unknown features %1").arg(featuresNum);
                 }
-                att = qobject_cast<FeaturesTableObject *>(doc->findGObjectByName(annotationName));
+                att = qobject_cast<AnnotationTableObject *>(doc->findGObjectByName(annotationName));
                 if (NULL == att) {
-                    doc->addObject( att = new FeaturesTableObject( annotationName,
+                    doc->addObject( att = new AnnotationTableObject( annotationName,
                         context->getDataStorage( )->getDbiRef( ) ) );
                     if (dna) {
                         att->addObjectRelation(dna, GObjectRelationRole::SEQUENCE);

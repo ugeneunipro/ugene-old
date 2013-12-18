@@ -34,7 +34,7 @@
 namespace U2 {
 
 class LoadEnzymeFileTask;
-class FeaturesTableObject;
+class AnnotationTableObject;
 class U2SequenceObject;
 
 //cppcheck-suppress noConstructor
@@ -56,7 +56,7 @@ private:
     U2SequenceObject*       seqObj;
     QVector<U2Region>       excludedRegions;
     QStringList             enzymeNames;
-    FeaturesTableObject*    aObj;
+    AnnotationTableObject*    aObj;
     LoadEnzymeFileTask*     loadTask;
     bool                    contextIsAdded;
     QMultiMap<QString, U2Region> resultsPerEnzyme;
@@ -76,7 +76,7 @@ private:
     QString                 enzymesUrl;
     QStringList             enzymeNames;
     bool                    searchForEnzymes;
-    FeaturesTableObject*    aObj;
+    AnnotationTableObject*    aObj;
     U2SequenceObject*       seqObj;
     LoadEnzymeFileTask*     loadTask;
 };

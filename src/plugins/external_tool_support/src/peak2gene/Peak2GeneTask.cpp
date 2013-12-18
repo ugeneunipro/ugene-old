@@ -19,7 +19,7 @@
  * MA 02110-1301, USA.
  */
 
-#include <U2Core/FeaturesTableObject.h>
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>
 #include <U2Core/BaseDocumentFormats.h>
@@ -108,7 +108,7 @@ Document* Peak2GeneTask::createDoc( const QList<SharedAnnotationData>& annData, 
     CHECK_OP(stateInfo, doc);
     doc->setDocumentOwnsDbiResources(false);
 
-    FeaturesTableObject *ato = new FeaturesTableObject( name, doc->getDbiRef( ) );
+    AnnotationTableObject *ato = new AnnotationTableObject( name, doc->getDbiRef( ) );
     foreach ( const SharedAnnotationData &sad, annData ) {
         ato->addAnnotation( *sad );
     }
@@ -177,10 +177,10 @@ QList<SharedAnnotationData> Peak2GeneTask::getGenes(){
 
     foreach(GObject* ao, objects) {
         if (ao->getGObjectType() == GObjectTypes::ANNOTATION_TABLE){
-            FeaturesTableObject *aobj = qobject_cast<FeaturesTableObject *>(ao);
+            AnnotationTableObject *aobj = qobject_cast<AnnotationTableObject *>(ao);
             if (ao){
-                const QList<__Annotation> annots = aobj->getAnnotations();
-                foreach ( const __Annotation &a, annots ) {
+                const QList<Annotation> annots = aobj->getAnnotations();
+                foreach ( const Annotation &a, annots ) {
                     res.append( SharedAnnotationData( new AnnotationData( a.getData( ) ) ) );
                 }
             }
@@ -200,10 +200,10 @@ QList<SharedAnnotationData> Peak2GeneTask::getPeaks(){
 
     foreach(GObject* ao, objects) {
         if (ao->getGObjectType() == GObjectTypes::ANNOTATION_TABLE){
-            FeaturesTableObject *aobj = qobject_cast<FeaturesTableObject *>(ao);
+            AnnotationTableObject *aobj = qobject_cast<AnnotationTableObject *>(ao);
             if (ao){
-                const QList<__Annotation> annots = aobj->getAnnotations( );
-                foreach ( const __Annotation &a, annots ) {
+                const QList<Annotation> annots = aobj->getAnnotations( );
+                foreach ( const Annotation &a, annots ) {
                     res.append( SharedAnnotationData( new AnnotationData( a.getData( ) ) ) );
                 }
             }

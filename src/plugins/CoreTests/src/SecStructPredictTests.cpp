@@ -23,7 +23,7 @@
 #include <U2Core/U2DbiRegistry.h>
 #include <U2Algorithm/SecStructPredictAlgRegistry.h>
 #include <U2Core/DNASequenceObject.h>
-#include <U2Core/FeaturesTableObject.h>
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
 
@@ -138,7 +138,7 @@ Task::ReportResult GTest_SecStructPredictTask::report()
         U2OpStatusImpl os;
         const U2DbiRef dbiRef = AppContext::getDbiRegistry( )->getSessionTmpDbiRef( os );
         SAFE_POINT_OP( os, ReportResult_Finished );
-        aObj = new FeaturesTableObject( resultsTableContextName, dbiRef );
+        aObj = new AnnotationTableObject( resultsTableContextName, dbiRef );
         foreach ( const AnnotationData &d, results) {
             aObj->addAnnotation( d );
         }

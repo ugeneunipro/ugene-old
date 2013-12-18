@@ -37,7 +37,7 @@
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/MAlignmentImporter.h>
 #include <U2Core/MAlignmentObject.h>
-#include <U2Core/FeaturesTableObject.h>
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/MSAUtils.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/U2DbiRegistry.h>
@@ -339,8 +339,8 @@ void LoadSeqTask::run() {
             if (!annotations.isEmpty()) {
                 QList<SharedAnnotationData> l;
                 foreach(GObject * annGObj, annotations) {
-                    FeaturesTableObject *att = qobject_cast<FeaturesTableObject *>(annGObj);
-                    foreach ( const __Annotation &a, att->getAnnotations( ) ) {
+                    AnnotationTableObject *att = qobject_cast<AnnotationTableObject *>(annGObj);
+                    foreach ( const Annotation &a, att->getAnnotations( ) ) {
                         l << SharedAnnotationData( new AnnotationData( a.getData( ) ) );
                     }
                     annObjs.removeAll(annGObj);
@@ -352,14 +352,14 @@ void LoadSeqTask::run() {
 
         // if there are annotations that are not connected to a sequence -> put them  independently
         foreach(GObject * annObj, annObjs) {
-            FeaturesTableObject *att = qobject_cast<FeaturesTableObject *>(annObj);
+            AnnotationTableObject *att = qobject_cast<AnnotationTableObject *>(annObj);
             if(att->findRelatedObjectsByRole(GObjectRelationRole::SEQUENCE).isEmpty()) {
                 assert(att != NULL);
                 QVariantMap m;
                 m.insert(BaseSlots::URL_SLOT().getId(), url);
 
                 QList<SharedAnnotationData> l;
-                foreach ( const __Annotation &a, att->getAnnotations( ) ) {
+                foreach ( const Annotation &a, att->getAnnotations( ) ) {
                     l << SharedAnnotationData( new AnnotationData( a.getData( ) ) );
                 }
                 m.insert(BaseSlots::ANNOTATION_TABLE_SLOT().getId(), qVariantFromValue<QList<SharedAnnotationData> >(l));

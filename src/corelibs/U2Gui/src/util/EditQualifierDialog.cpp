@@ -86,11 +86,11 @@ void EditQualifierDialog::accept() {
     }
     QString name = simplify(ui->nameEdit->text());
     QString val = simplify(ui->valueEdit->toPlainText());
-    if (!__Annotation::isValidQualifierName(name)) {
+    if (!Annotation::isValidQualifierName(name)) {
         QMessageBox::critical(this, tr("Error!"), tr("Illegal qualifier name"));
         return;
     }
-    if (!__Annotation::isValidQualifierValue(val)) {
+    if (!Annotation::isValidQualifierValue(val)) {
         QMessageBox::critical(this, tr("Error!"), tr("Illegal qualifier value"));
         return;
     }

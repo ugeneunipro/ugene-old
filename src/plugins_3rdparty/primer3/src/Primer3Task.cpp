@@ -581,7 +581,7 @@ Task::ReportResult Primer3SWTask::report()
 ////Primer3ToAnnotationsTask
 
 Primer3ToAnnotationsTask::Primer3ToAnnotationsTask( const Primer3TaskSettings &settings, U2SequenceObject* so_,
-FeaturesTableObject *aobj_, const QString & groupName_, const QString & annName_ ) :
+AnnotationTableObject *aobj_, const QString & groupName_, const QString & annName_ ) :
 Task(tr("Search primers to annotations"), /*TaskFlags_NR_FOSCOE*/TaskFlags(TaskFlag_NoRun) | TaskFlag_ReportingIsSupported | TaskFlag_ReportingIsEnabled | TaskFlag_FailOnSubtaskError),
     settings(settings), seqObj(so_), aobj(aobj_),
     groupName(groupName_), annName(annName_), searchTask(NULL), findExonsTask(NULL)

@@ -46,7 +46,7 @@
 
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/MAlignmentObject.h>
-#include <U2Core/FeaturesTableObject.h>
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/MSAUtils.h>
 #include <U2Core/SequenceUtils.h>
 #include <U2Core/BaseDocumentFormats.h>
@@ -598,7 +598,7 @@ GObject * LDTObjectFactory::create( const GObjectReference &ref ) {
     U2OpStatusImpl os;
     const U2DbiRef dbiRef = AppContext::getDbiRegistry( )->getSessionTmpDbiRef( os );
     SAFE_POINT_OP( os, NULL );
-    return new FeaturesTableObject( ref.objName, dbiRef );
+    return new AnnotationTableObject( ref.objName, dbiRef );
 }
 
 }//namespace

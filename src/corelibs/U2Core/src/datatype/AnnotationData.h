@@ -38,6 +38,7 @@ public:
     inline AnnotationData& operator= ( const AnnotationData & a );
 
     inline bool operator== (const AnnotationData &other) const;
+    inline bool operator!= (const AnnotationData &other) const;
 
     inline void removeAllQualifiers(const QString& name, QStringList& values);
 
@@ -100,6 +101,10 @@ bool AnnotationData::operator== (const AnnotationData &other) const {
     }
 
     return true;
+}
+
+bool AnnotationData::operator!= (const AnnotationData &other) const {
+    return !( *this == other );
 }
 
 void AnnotationData::removeAllQualifiers(const QString& name, QStringList& values) {

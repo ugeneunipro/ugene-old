@@ -27,7 +27,7 @@
 
 #include <U2Core/U2DbiRegistry.h>
 #include <U2Core/DNASequenceObject.h>
-#include <U2Core/FeaturesTableObject.h>
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/GObjectRelationRoles.h>
 #include <U2Core/U2OpStatusUtils.h>
@@ -54,7 +54,7 @@ void GTest_FindEnzymes::init(XMLTestFormat *tf, const QDomElement& el) {
     U2OpStatusImpl os;
     const U2DbiRef dbiRef = AppContext::getDbiRegistry( )->getSessionTmpDbiRef( os );
     SAFE_POINT_OP( os, );
-    aObj = new FeaturesTableObject( aObjName, dbiRef );
+    aObj = new AnnotationTableObject( aObjName, dbiRef );
     aObj->setParent(this);
 
     QString buf = el.attribute("minHits");
@@ -185,18 +185,18 @@ Task::ReportResult GTest_FindEnzymes::report() {
     //for each enzyme from resultsPerEnzyme check that all annotations are present
     foreach(const QString& enzymeId, resultsPerEnzyme.keys()) {
         QList<U2Region> regions = resultsPerEnzyme.values(enzymeId);
-        __AnnotationGroup &ag = aObj->getRootGroup().getSubgroup(enzymeId, false);
+        AnnotationGroup &ag = aObj->getRootGroup().getSubgroup(enzymeId, false);
         if ( ag == aObj->getRootGroup() ) {
             stateInfo.setError(  QString("Group not found %1").arg(enzymeId) );
             break;
         }
-        const QList<__Annotation> anns = ag.getAnnotations();
+        const QList<Annotation> anns = ag.getAnnotations();
         if (anns.size() != regions.size()) {
             stateInfo.setError( QString("Number of results not matched for :%1, results: %2, expected %3")
                 .arg(enzymeId).arg(anns.size()).arg(regions.size()) );
             break;
         }
-        foreach ( const __Annotation &a, anns ) {
+        foreach ( const Annotation &a, anns ) {
             U2Region r = a.getRegions().first();
             if (!regions.contains(r)) {
                 stateInfo.setError( QString("Illegal region! Enzyme :%1, region %2..%3")
@@ -272,7 +272,7 @@ void GTest_DigestIntoFragments::prepare() {
         return;
     }
 
-    aObj = getContext<FeaturesTableObject>(this, aObjCtx);
+    aObj = getContext<AnnotationTableObject>(this, aObjCtx);
     if (aObj == NULL) {
         stateInfo.setError(  QString("Annotation context not found %1").arg(aObjCtx) );
         return;
@@ -369,7 +369,7 @@ void GTest_LigateFragments::prepare() {
     }
 
     foreach (const QString& aObjCtx, annObjNames ) {
-        GObject* aObj = getContext<FeaturesTableObject>(this, aObjCtx);
+        GObject* aObj = getContext<AnnotationTableObject>(this, aObjCtx);
         if (aObj == NULL) {
             stateInfo.setError(  QString("Annotation context not found %1").arg(aObjCtx) );
             return;

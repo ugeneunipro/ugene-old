@@ -24,7 +24,7 @@
 
 #include <core/dbi/DbiTest.h>
 
-#include <U2Core/FeaturesTableObject.h>
+#include <U2Core/AnnotationTableObject.h>
 
 #include <unittest.h>
 

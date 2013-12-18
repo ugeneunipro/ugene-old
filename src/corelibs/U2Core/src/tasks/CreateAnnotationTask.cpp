@@ -25,13 +25,13 @@
 
 #include <U2Core/DocumentModel.h>
 #include <U2Core/Timer.h>
-#include <U2Core/FeaturesTableObject.h>
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/GObjectUtils.h>
 #include <U2Core/U2SafePoints.h>
 
 namespace U2 {
 
-CreateAnnotationsTask::CreateAnnotationsTask( FeaturesTableObject *_ao, const QString &_g,
+CreateAnnotationsTask::CreateAnnotationsTask( AnnotationTableObject *_ao, const QString &_g,
     const AnnotationData &_data )
     : Task( tr( "Create annotations" ), TaskFlag_NoRun ), aobj( _ao ), groupName( _g ), pos( 0 )
 {
@@ -40,7 +40,7 @@ CreateAnnotationsTask::CreateAnnotationsTask( FeaturesTableObject *_ao, const QS
     tpm = Progress_Manual;
 }
 
-CreateAnnotationsTask::CreateAnnotationsTask( FeaturesTableObject *_ao, const QString &_g,
+CreateAnnotationsTask::CreateAnnotationsTask( AnnotationTableObject *_ao, const QString &_g,
     const QList<AnnotationData> &_data )
     : Task( tr( "Create annotations" ), TaskFlag_NoRun ), aobj( _ao ), groupName( _g ), pos( 0 )
 {
@@ -66,7 +66,7 @@ Task::ReportResult CreateAnnotationsTask::report( ) {
     if ( hasError( ) || isCanceled( ) || aData.isEmpty( ) ) {
         return ReportResult_Finished;
     }
-    FeaturesTableObject *ao = getGObject( );
+    AnnotationTableObject *ao = getGObject( );
     if ( NULL == ao ) {
         stateInfo.setError( tr( "Annotation object '%1' not found in active project: %2" )
             .arg( aRef.objName ).arg( aRef.docUrl ) );
@@ -90,12 +90,12 @@ Task::ReportResult CreateAnnotationsTask::report( ) {
     return ReportResult_Finished;
 }
 
-FeaturesTableObject * CreateAnnotationsTask::getGObject( ) const {
-    FeaturesTableObject *result = NULL;
+AnnotationTableObject * CreateAnnotationsTask::getGObject( ) const {
+    AnnotationTableObject *result = NULL;
     if ( aRef.isValid( ) ) {
         SAFE_POINT( aobj.isNull( ), "Unexpected annotation table object content!",
             NULL );
-        result = qobject_cast<FeaturesTableObject *>( GObjectUtils::selectObjectByReference( aRef,
+        result = qobject_cast<AnnotationTableObject *>( GObjectUtils::selectObjectByReference( aRef,
             UOF_LoadedOnly ) );
     } else {
         result = aobj.data( );

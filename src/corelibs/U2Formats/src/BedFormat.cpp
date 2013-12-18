@@ -23,7 +23,7 @@
 #include <QtCore/QScopedPointer>
 
 #include <U2Core/AppContext.h>
-#include <U2Core/FeaturesTableObject.h>
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/GObjectReference.h>
 #include <U2Core/GObjectRelationRoles.h>
 #include <U2Core/IOAdapter.h>
@@ -122,20 +122,20 @@ void BedFormat::load(IOAdapter* io, QList<GObject*>& objects, const U2DbiRef& db
 
     foreach ( const QString &sequenceName, annotationsHash.keys( ) ) {
         const QString annotTableName = sequenceName + FEATURES_TAG;
-        FeaturesTableObject *annotTable = NULL;
+        AnnotationTableObject *annotTable = NULL;
         foreach (GObject* object, objects) {
             if (object->getGObjectName() == annotTableName) {
-                annotTable = dynamic_cast<FeaturesTableObject *>( object );
+                annotTable = dynamic_cast<AnnotationTableObject *>( object );
             }
         }
         if (!annotTable) {
-            annotTable = new FeaturesTableObject( annotTableName, dbiRef );
+            annotTable = new AnnotationTableObject( annotTableName, dbiRef );
             objects.append(annotTable);
         }
 
         // Assume that the group name is the same as the annotation name
         QString groupName = defaultAnnotName;
-        if (__AnnotationGroup::isValidGroupName(groupName, false)) {
+        if (AnnotationGroup::isValidGroupName(groupName, false)) {
             groupName = "Group"; // or set this name if the annotation name is not appropriate
         }
 
@@ -765,10 +765,10 @@ void BedFormat::storeDocument(Document* doc, IOAdapter* io, U2OpStatus& os)
     bool firstLine = true;
 
     foreach (GObject* annotTable, annotTables) {
-        QList<__Annotation> annotationsList =
-            ( qobject_cast<FeaturesTableObject *>( annotTable ) )->getAnnotations( );
+        QList<Annotation> annotationsList =
+            ( qobject_cast<AnnotationTableObject *>( annotTable ) )->getAnnotations( );
 
-        foreach (const __Annotation &annot, annotationsList) {
+        foreach (const Annotation &annot, annotationsList) {
             QString annotName = annot.getName( );
             if (annotName == U1AnnotationUtils::lowerCaseAnnotationName ||
                 annotName == U1AnnotationUtils::upperCaseAnnotationName)

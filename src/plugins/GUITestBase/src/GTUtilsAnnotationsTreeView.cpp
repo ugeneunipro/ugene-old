@@ -55,7 +55,7 @@ QString GTUtilsAnnotationsTreeView::getAVItemName(U2OpStatus &os, AVItem* avItem
                 AVAnnotationItem* avAnnotationItem = (AVAnnotationItem*)avItem;
                 GT_CHECK_RESULT(avAnnotationItem != NULL, "avAnnotationItem is NULL", "");
 
-                const __Annotation annotation = avAnnotationItem->annotation;
+                const Annotation annotation = avAnnotationItem->annotation;
                 return annotation.getName();
             }
             break;
@@ -65,7 +65,7 @@ QString GTUtilsAnnotationsTreeView::getAVItemName(U2OpStatus &os, AVItem* avItem
                 AVGroupItem* avGroupItem = (AVGroupItem*)avItem;
                 GT_CHECK_RESULT(avGroupItem!= NULL, "avAnnotationItem is NULL", "");
 
-                const __AnnotationGroup group= avGroupItem->group;
+                const AnnotationGroup group= avGroupItem->group;
                 return group.getName();
             }
             break;
@@ -112,7 +112,7 @@ bool GTUtilsAnnotationsTreeView::findRegion(U2OpStatus &os, const QString &itemN
 
     AVAnnotationItem* item = (AVAnnotationItem*)GTUtilsAnnotationsTreeView::findItem(os, itemName);
     CHECK_SET_ERR_RESULT(item != NULL, "Item " + itemName + " not found", false);
-    const __Annotation ann = item->annotation;
+    const Annotation ann = item->annotation;
 
     U2Region neededRegion(r.startPos-1, r.length-r.startPos+1);
 

@@ -23,7 +23,7 @@
 
 #include <U2Core/Annotation.h>
 #include <U2Core/AppContext.h>
-#include <U2Core/FeaturesTableObject.h>
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/Settings.h>
 #include <U2Core/L10n.h>
 
@@ -156,10 +156,10 @@ void FindRepeatsDialog::prepareAMenu(QToolButton* tb, QLineEdit* le, const QStri
 
 QStringList FindRepeatsDialog::getAvailableAnnotationNames() const {
     QStringList res;
-    const QSet<FeaturesTableObject *>& objs = sc->getAnnotationObjects();
+    const QSet<AnnotationTableObject *>& objs = sc->getAnnotationObjects();
     QSet<QString> names;
-    foreach ( FeaturesTableObject *o, objs ) {
-        foreach ( const __Annotation &a, o->getAnnotations( ) ) {
+    foreach ( AnnotationTableObject *o, objs ) {
+        foreach ( const Annotation &a, o->getAnnotations( ) ) {
             names.insert( a.getName( ) );
         }
     }
@@ -199,9 +199,9 @@ bool FindRepeatsDialog::getRegions(QCheckBox* cb, QLineEdit* le, QVector<U2Regio
         return true;
     }
     QSet<QString> aNames = names.split(',', QString::SkipEmptyParts).toSet();
-    const QSet<FeaturesTableObject *> aObjs = sc->getAnnotationObjects();
-    foreach ( FeaturesTableObject *obj, aObjs ) {
-        foreach ( const __Annotation &a, obj->getAnnotations( ) ) {
+    const QSet<AnnotationTableObject *> aObjs = sc->getAnnotationObjects();
+    foreach ( AnnotationTableObject *obj, aObjs ) {
+        foreach ( const Annotation &a, obj->getAnnotations( ) ) {
             if ( aNames.contains( a.getName( ) ) ) {
                 res << a.getRegions( );
             }

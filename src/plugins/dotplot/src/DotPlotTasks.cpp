@@ -31,7 +31,7 @@
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/LoadDocumentTask.h>
 #include <U2Core/AddDocumentTask.h>
-#include <U2Core/FeaturesTableObject.h>
+#include <U2Core/AnnotationTableObject.h>
 
 #include <U2Formats/DocumentFormatUtils.h>
 
@@ -381,20 +381,20 @@ void DotPlotFilterTask::createSuperRegionsList(ADVSequenceObjectContext* seq, Fi
         return;
     }
 
-    QSet<FeaturesTableObject*> aTableSet = seq->getAnnotationObjects(true);
-    QList<__Annotation> selectedAnnotations;
+    QSet<AnnotationTableObject*> aTableSet = seq->getAnnotationObjects(true);
+    QList<Annotation> selectedAnnotations;
     QStringList cursequenceAnnotationNames = annotationNames.values(currentIntersParam);
     if(cursequenceAnnotationNames.isEmpty()){
         return;
     }
 
     foreach(const QString aName, cursequenceAnnotationNames){
-        foreach(FeaturesTableObject* at, aTableSet){
+        foreach(AnnotationTableObject* at, aTableSet){
             selectedAnnotations << at->getAnnotationsByName( aName );
         }
     }
 
-    foreach ( const __Annotation &a, selectedAnnotations ) {
+    foreach ( const Annotation &a, selectedAnnotations ) {
             superRegions += a.getRegions();
     }
 

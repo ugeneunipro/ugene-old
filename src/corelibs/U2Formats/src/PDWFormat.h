@@ -30,7 +30,7 @@ namespace U2 {
 
 class IOAdapter;
 class Annotation;
-class FeaturesTableObject;
+class AnnotationTableObject;
 class U2SequenceObject;
 
 class U2FORMATS_EXPORT PDWFormat : public DocumentFormat {
@@ -60,7 +60,7 @@ private:
     void                            load( IOAdapter *io, const U2DbiRef &ref,
                                         const QVariantMap &fs, const GUrl &docUrl,
                                         QList<GObject *> &objects, U2OpStatus &ti,
-                                        U2SequenceObject *&dnaObj, FeaturesTableObject *&aObj );
+                                        U2SequenceObject *&dnaObj, AnnotationTableObject *&aObj );
 
     QString                         formatName;
 };

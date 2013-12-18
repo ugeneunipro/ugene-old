@@ -24,7 +24,7 @@
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/GObjectUtils.h>
 #include <U2Core/GObjectRelationRoles.h>
-#include <U2Core/FeaturesTableObject.h>
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/U2OpStatus.h>
 #include <U2Core/DNAAlphabet.h>
@@ -94,7 +94,7 @@ void EMBLGenbankAbstractDocument::load(const U2DbiRef& dbiRef, IOAdapter* io, QL
     bool merge = gapSize!=-1;
 
     QByteArray  gapSequence((merge ? gapSize : 0), 0);
-    QScopedPointer<FeaturesTableObject> mergedAnnotations( NULL );
+    QScopedPointer<AnnotationTableObject> mergedAnnotations( NULL );
     QStringList contigs;
     QVector<U2Region> mergedMapping;
 
@@ -151,16 +151,16 @@ void EMBLGenbankAbstractDocument::load(const U2DbiRef& dbiRef, IOAdapter* io, QL
         }
 
         toolMark = data.tags.contains(UGENE_MARK);
-        FeaturesTableObject *annotationsObject = NULL;
+        AnnotationTableObject *annotationsObject = NULL;
 
         if (data.hasAnnotationObjectFlag) {
             QString annotationName = genObjectName(usedNames, data.name, data.tags, i+1, GObjectTypes::ANNOTATION_TABLE);
             SAFE_POINT( NULL == mergedAnnotations.data( ), "Unexpected annotation table!", )
             if ( merge ) {
-                mergedAnnotations.reset( new FeaturesTableObject( annotationName, dbiRef ) );
+                mergedAnnotations.reset( new AnnotationTableObject( annotationName, dbiRef ) );
             }
             annotationsObject = merge ? mergedAnnotations.data( )
-                : new FeaturesTableObject( annotationName, dbiRef );
+                : new AnnotationTableObject( annotationName, dbiRef );
 
             QStringList groupNames;
             foreach ( SharedAnnotationData d, data.features ) {
@@ -262,7 +262,7 @@ void EMBLGenbankAbstractDocument::load(const U2DbiRef& dbiRef, IOAdapter* io, QL
     objects << so;
     objects << DocumentFormatUtils::addAnnotationsForMergedU2Sequence( io->getURL( ), dbiRef,
         contigs, u2seq, mergedMapping, os );
-    FeaturesTableObject *mergedAnnotationsPtr = mergedAnnotations.take( );
+    AnnotationTableObject *mergedAnnotationsPtr = mergedAnnotations.take( );
     if ( NULL != mergedAnnotationsPtr ) {
         sequenceRef.objName = so->getGObjectName();
         mergedAnnotationsPtr->addObjectRelation(GObjectRelation(sequenceRef, GObjectRelationRole::SEQUENCE));

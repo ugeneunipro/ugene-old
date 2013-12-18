@@ -29,7 +29,7 @@
 
 namespace U2 {
 
-class FeaturesTableObject;
+class AnnotationTableObject;
 class U2FeatureDbi;
 class U2OpStatus;
 

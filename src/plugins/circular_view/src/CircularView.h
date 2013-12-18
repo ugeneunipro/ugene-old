@@ -66,7 +66,7 @@ public:
 
     static qreal coordToAngle(const QPoint point);
 
-    const QMap<__Annotation,CircularAnnotationItem*>& getCircularItems() const;
+    const QMap<Annotation,CircularAnnotationItem*>& getCircularItems() const;
     const QList<CircularAnnotationLabel*>& getLabelList() const;
 
     bool isCircularTopology() { return true; }
@@ -93,7 +93,7 @@ public slots:
     void sl_onSequenceObjectRenamed(const QString& oldName);
 
 protected slots: 
-    virtual void sl_onAnnotationSelectionChanged(AnnotationSelection*, const QList<__Annotation>& added, const QList<__Annotation>& removed);
+    virtual void sl_onAnnotationSelectionChanged(AnnotationSelection*, const QList<Annotation>& added, const QList<Annotation>& removed);
     virtual void sl_onDNASelectionChanged(LRegionsSelection* thiz, const QVector<U2Region>& added, const QVector<U2Region>& removed);
 
 protected:
@@ -124,7 +124,7 @@ public:
     CircularViewRenderArea(CircularView* d);
     ~CircularViewRenderArea();
 
-    int getAnnotationYLevel (const __Annotation &a) const { return annotationYLevel.value(a); }
+    int getAnnotationYLevel (const Annotation &a) const { return annotationYLevel.value(a); }
     void adaptNumberOfLabels(int h);
 
     static const int MIDDLE_ELLIPSE_SIZE;
@@ -132,11 +132,11 @@ public:
 protected:
     void resizeEvent(QResizeEvent *e);
     virtual void drawAll(QPaintDevice* pd);
-    virtual U2Region getAnnotationYRange( const __Annotation &a, int ri, const AnnotationSettings* as) const;
-    void buildAnnotationItem(DrawAnnotationPass pass, const __Annotation &a, bool selected = false, const AnnotationSettings* as = NULL);
+    virtual U2Region getAnnotationYRange( const Annotation &a, int ri, const AnnotationSettings* as) const;
+    void buildAnnotationItem(DrawAnnotationPass pass, const Annotation &a, bool selected = false, const AnnotationSettings* as = NULL);
     virtual void drawAnnotations(QPainter& p);
     void paintContent(QPainter& p);
-    void buildAnnotationLabel(const QFont& font, const __Annotation &a, const AnnotationSettings* as);
+    void buildAnnotationLabel(const QFont& font, const Annotation &a, const AnnotationSettings* as);
     void drawSequenceName(QPainter& p);
     void drawRuler(QPainter& p);
     void drawRulerNotches(QPainter& p, int start, int span, int seqLen);
@@ -175,10 +175,10 @@ private:
 
     CircularView* circularView;
     QList< QVector<U2Region> > regionY;
-    QMap<__Annotation, CircularAnnotationItem* > circItems;
+    QMap<Annotation, CircularAnnotationItem* > circItems;
     TextItem* seqNameItem;
     TextItem* seqLenItem;
-    QMap<__Annotation, int> annotationYLevel;
+    QMap<Annotation, int> annotationYLevel;
     QList<CircularAnnotationLabel*> labelList;
     qreal rotationDegree;
     qreal mouseAngle;

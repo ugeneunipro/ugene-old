@@ -27,7 +27,7 @@
 #include <U2Core/DocumentModel.h>
 #include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/GObject.h>
-#include <U2Core/FeaturesTableObject.h>
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/GObjectTypes.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Test/GTestFrameworkComponents.h>
@@ -139,12 +139,12 @@ void GTest_AnnotatorSearch::prepare() {
         stateInfo.setError(  QString("error can't cast to sequence from GObject") );
         return;
     }
-    FeaturesTableObject *ao =  getContext<FeaturesTableObject>(this, seqName);
+    AnnotationTableObject *ao =  getContext<AnnotationTableObject>(this, seqName);
     if ( NULL == ao ) {
         stateInfo.setError(  QString("context not found %1").arg(seqName) );
         return;
     }
-    QList<FeaturesTableObject *> aoList;
+    QList<AnnotationTableObject *> aoList;
     aoList.append(ao);
     CollocationsAlgorithmSettings cfg;
     cfg.distance = regionSize;
@@ -251,16 +251,16 @@ void GTest_GeneByGeneApproach::prepare() {
         stateInfo.setError(  QString("error can't cast to sequence from GObject") );
         return;
     }
-    FeaturesTableObject *ao =  getContext<FeaturesTableObject>(this, seqName);
+    AnnotationTableObject *ao =  getContext<AnnotationTableObject>(this, seqName);
     if(ao==NULL){
         stateInfo.setError(  QString("context not found %1").arg(seqName) );
         return;
     }
-    const QList<__Annotation> &annotations = ao->getAnnotations( );
+    const QList<Annotation> &annotations = ao->getAnnotations( );
 
     QList<SharedAnnotationData> annData;
 
-    foreach ( const __Annotation &a, annotations ) {
+    foreach ( const Annotation &a, annotations ) {
         annData.append( SharedAnnotationData( new AnnotationData( a.getData( ) ) ) );
     }
 

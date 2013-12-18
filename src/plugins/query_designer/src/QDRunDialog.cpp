@@ -30,7 +30,7 @@
 #include <U2Core/ProjectModel.h>
 #include <U2Core/GObjectTypes.h>
 #include <U2Core/DNASequenceObject.h>
-#include <U2Core/FeaturesTableObject.h>
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/GObjectRelationRoles.h>
 #include <U2Core/GObjectUtils.h>
 #include <U2Core/DocumentUtils.h>
@@ -218,7 +218,7 @@ void QDRunDialogTask::setupQuery( ) {
     settings.region = U2Region(0, seqObj->getSequenceLength());
     settings.scheme = scheme;
     settings.dnaSequence = sequence;
-    settings.annotationsObj = new FeaturesTableObject(
+    settings.annotationsObj = new AnnotationTableObject(
         GObjectTypes::getTypeInfo( GObjectTypes::ANNOTATION_TABLE ).name, docWithSequence->getDbiRef( ) );
     settings.annotationsObj->addObjectRelation(seqObj, GObjectRelationRole::SEQUENCE);
     scheduler = new QDScheduler(settings);
@@ -403,7 +403,7 @@ void QDDialog::sl_okBtnClicked() {
     scheme->setEntityRef(seqObj->getSequenceRef());
     QDRunSettings settings;
     GObject* ao = GObjectUtils::selectObjectByReference(m.annotationObjectRef, UOF_LoadedOnly);
-    settings.annotationsObj = qobject_cast<FeaturesTableObject *>(ao);
+    settings.annotationsObj = qobject_cast<AnnotationTableObject *>(ao);
     settings.annotationsObjRef = m.annotationObjectRef;
     settings.groupName = m.groupName;
     settings.scheme = scheme;

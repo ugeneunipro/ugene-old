@@ -23,7 +23,7 @@
 #include <U2Core/Settings.h>
 #include <U2Core/GObjectReference.h>
 #include <U2Core/GObjectRelationRoles.h>
-#include <U2Core/FeaturesTableObject.h>
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/U2DbiRegistry.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
@@ -190,12 +190,12 @@ const CreateAnnotationModel *SendSelectionDialog::getModel() const {
     return &(ca_c->getModel());
 }
 
-FeaturesTableObject * SendSelectionDialog::getAnnotationObject() const {
+AnnotationTableObject * SendSelectionDialog::getAnnotationObject() const {
     if(ca_c->isNewObject()) {
         U2OpStatusImpl os;
         const U2DbiRef dbiRef = AppContext::getDbiRegistry( )->getSessionTmpDbiRef( os );
         SAFE_POINT_OP( os, NULL );
-        FeaturesTableObject *aobj = new FeaturesTableObject( "Annotations", dbiRef );
+        AnnotationTableObject *aobj = new AnnotationTableObject( "Annotations", dbiRef );
         aobj->addObjectRelation(GObjectRelation(ca_c->getModel().sequenceObjectRef, GObjectRelationRole::SEQUENCE));
         return aobj;
     }

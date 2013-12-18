@@ -156,7 +156,7 @@ void ImportAnnotationsFromCSVDialog::accept() {
         QMessageBox::critical(this, L10N::errorTitle(), tr("Multiple columns are used as a name!"));
         return;
     }
-    if (!__Annotation::isValidAnnotationName(defaultNameEdit->text())) {
+    if (!Annotation::isValidAnnotationName(defaultNameEdit->text())) {
         QMessageBox::critical(this, L10N::errorTitle(), tr("Invalid default annotation name!"));
         defaultNameEdit->setFocus();
         return;
