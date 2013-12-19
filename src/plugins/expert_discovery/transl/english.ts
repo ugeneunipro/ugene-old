@@ -214,6 +214,10 @@ The more sequences you provide the better will be the result</source>
         <source>Next</source>
         <translation></translation>
     </message>
+    <message>
+        <source>Negatives per positive amount:</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>ExpertDiscoveryPosNegMrkDialog</name>
@@ -623,6 +627,10 @@ Load markup for your sequences in specified XML format or genbank format.</sourc
         <source>Add signal to markup</source>
         <translation></translation>
     </message>
+    <message>
+        <source>Export Sequences</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>U2::ExpertDiscoveryAdvSetDialog</name>
@@ -753,6 +761,25 @@ Load markup for your sequences in specified XML format or genbank format.</sourc
     </message>
 </context>
 <context>
+    <name>U2::ExpertDiscoveryExportSequences</name>
+    <message>
+        <source>Export Sequences Task</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Fasta Files (*.fa *.fasta)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Report generation failed</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>U2::ExpertDiscoveryExtSigWiz</name>
     <message>
         <source>No predicates</source>
@@ -796,6 +823,10 @@ Load markup for your sequences in specified XML format or genbank format.</sourc
     <message>
         <source>ExpertDiscovery loading</source>
         <translation></translation>
+    </message>
+    <message>
+        <source>Error</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1058,6 +1089,10 @@ Load markup for your sequences in specified XML format or genbank format.</sourc
     <message>
         <source>Search for regions with ExpertDiscovery</source>
         <translation></translation>
+    </message>
+    <message>
+        <source>Load control sequences markup</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

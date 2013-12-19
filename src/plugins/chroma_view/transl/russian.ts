@@ -25,34 +25,44 @@
 <context>
     <name>U2::ChromatogramView</name>
     <message>
-        <location filename="../src/ChromatogramView.cpp" line="94"/>
+        <location filename="../src/ChromatogramView.cpp" line="71"/>
+        <source>Show all</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ChromatogramView.cpp" line="74"/>
+        <source>Show/hide trace</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ChromatogramView.cpp" line="105"/>
         <source>add_new_seq</source>
         <translation>Редактировать новую последовательность</translation>
     </message>
     <message>
-        <location filename="../src/ChromatogramView.cpp" line="97"/>
+        <location filename="../src/ChromatogramView.cpp" line="108"/>
         <source>add_exist_seq</source>
         <translation>Редактировать существующую последовательность</translation>
     </message>
     <message>
-        <location filename="../src/ChromatogramView.cpp" line="100"/>
+        <location filename="../src/ChromatogramView.cpp" line="111"/>
         <source>remove_editable_sequence</source>
         <translation>Удалить редактируемую последовательность</translation>
     </message>
     <message>
-        <location filename="../src/ChromatogramView.cpp" line="103"/>
+        <location filename="../src/ChromatogramView.cpp" line="114"/>
         <source>remove_changes</source>
         <translation>Отменить изменения</translation>
     </message>
     <message>
-        <location filename="../src/ChromatogramView.cpp" line="200"/>
-        <location filename="../src/ChromatogramView.cpp" line="331"/>
+        <location filename="../src/ChromatogramView.cpp" line="212"/>
+        <location filename="../src/ChromatogramView.cpp" line="343"/>
         <source>error</source>
         <translation>Внимание</translation>
     </message>
     <message>
-        <location filename="../src/ChromatogramView.cpp" line="200"/>
-        <location filename="../src/ChromatogramView.cpp" line="331"/>
+        <location filename="../src/ChromatogramView.cpp" line="212"/>
+        <location filename="../src/ChromatogramView.cpp" line="343"/>
         <source>sequence_object_was_locked</source>
         <translation>Последовательность заблокирована</translation>
     </message>
@@ -65,12 +75,12 @@
 <context>
     <name>U2::ChromatogramViewRenderArea</name>
     <message>
-        <location filename="../src/ChromatogramView.cpp" line="445"/>
+        <location filename="../src/ChromatogramView.cpp" line="508"/>
         <source>selection_is_too_big</source>
         <translation>Хроматограмма (приближайте масштаб)</translation>
     </message>
     <message>
-        <location filename="../src/ChromatogramView.cpp" line="657"/>
+        <location filename="../src/ChromatogramView.cpp" line="730"/>
         <source>original</source>
         <translation>Исходная последовательность</translation>
     </message>

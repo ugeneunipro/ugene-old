@@ -2227,7 +2227,7 @@ void WorkflowView::hideDashboards() {
 }
 
 void WorkflowView::showDashboards() {
-    toggleDashboard->setIconText("Return to Workflow");
+    toggleDashboard->setIconText("To Workflow Designer");
     toggleDashboard->setIcon(getToolbarIcon("wd.png"));
     toggleDashboard->setToolTip(tr("Show workflow"));
     splitter->setVisible(false);

@@ -4,27 +4,27 @@
 <context>
     <name>DistMatrixModel</name>
     <message>
-        <location filename="../src/ui/DistMatrixModel.ui" line="47"/>
+        <location filename="../src/ui/DistMatrixModel.ui" line="44"/>
         <source>Distance Matrix</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ui/DistMatrixModel.ui" line="55"/>
+        <location filename="../src/ui/DistMatrixModel.ui" line="58"/>
         <source>Distance matrix model</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ui/DistMatrixModel.ui" line="69"/>
+        <location filename="../src/ui/DistMatrixModel.ui" line="75"/>
         <source>Gamma distributed rates across sites</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ui/DistMatrixModel.ui" line="79"/>
+        <location filename="../src/ui/DistMatrixModel.ui" line="85"/>
         <source>Coefficient of variation of substitution rate among sites</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ui/DistMatrixModel.ui" line="125"/>
+        <location filename="../src/ui/DistMatrixModel.ui" line="134"/>
         <source>Transition/transversion ratio</source>
         <translation></translation>
     </message>
@@ -32,27 +32,27 @@
 <context>
     <name>SeqBootModel</name>
     <message>
-        <location filename="../src/ui/SeqBootModel.ui" line="41"/>
+        <location filename="../src/ui/SeqBootModel.ui" line="38"/>
         <source>Bootstrapping and Consensus Tree</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ui/SeqBootModel.ui" line="60"/>
+        <location filename="../src/ui/SeqBootModel.ui" line="66"/>
         <source>Number of replicates</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ui/SeqBootModel.ui" line="90"/>
+        <location filename="../src/ui/SeqBootModel.ui" line="99"/>
         <source>Seed (must be odd)</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ui/SeqBootModel.ui" line="120"/>
+        <location filename="../src/ui/SeqBootModel.ui" line="132"/>
         <source>Consensus type</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ui/SeqBootModel.ui" line="141"/>
+        <location filename="../src/ui/SeqBootModel.ui" line="156"/>
         <source>Fraction</source>
         <translation></translation>
     </message>

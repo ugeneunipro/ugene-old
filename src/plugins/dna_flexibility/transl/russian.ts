@@ -83,6 +83,20 @@
     </message>
 </context>
 <context>
+    <name>U2::DNAFlexDialog</name>
+    <message>
+        <location filename="../src/DNAFlexDialog.cpp" line="92"/>
+        <location filename="../src/DNAFlexDialog.cpp" line="97"/>
+        <source>Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/DNAFlexDialog.cpp" line="97"/>
+        <source>Cannot create an annotation object. Please check settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>U2::DNAFlexGraphFactory</name>
     <message>
         <location filename="../src/DNAFlexGraph.cpp" line="40"/>

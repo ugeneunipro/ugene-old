@@ -285,82 +285,82 @@
 <context>
     <name>U2::DotPlotDialogs</name>
     <message>
-        <location filename="../src/DotPlotClasses.cpp" line="161"/>
+        <location filename="../src/DotPlotClasses.cpp" line="170"/>
         <source>Task is already running</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/DotPlotClasses.cpp" line="161"/>
+        <location filename="../src/DotPlotClasses.cpp" line="170"/>
         <source>Build or Load DotPlot task is already running</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/DotPlotClasses.cpp" line="167"/>
+        <location filename="../src/DotPlotClasses.cpp" line="176"/>
         <source>Save dot-plot</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/DotPlotClasses.cpp" line="167"/>
+        <location filename="../src/DotPlotClasses.cpp" line="176"/>
         <source>Save dot-plot data before closing?</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/DotPlotClasses.cpp" line="173"/>
+        <location filename="../src/DotPlotClasses.cpp" line="182"/>
         <source>File opening error</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/DotPlotClasses.cpp" line="173"/>
+        <location filename="../src/DotPlotClasses.cpp" line="182"/>
         <source>Error opening file %1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/DotPlotClasses.cpp" line="179"/>
+        <location filename="../src/DotPlotClasses.cpp" line="188"/>
         <source>Error</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/DotPlotClasses.cpp" line="179"/>
+        <location filename="../src/DotPlotClasses.cpp" line="188"/>
         <source>Error opening files</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/DotPlotClasses.cpp" line="185"/>
+        <location filename="../src/DotPlotClasses.cpp" line="194"/>
         <source>Sequences are different</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/DotPlotClasses.cpp" line="185"/>
+        <location filename="../src/DotPlotClasses.cpp" line="194"/>
         <source>Current and loading sequences are different. Continue loading dot-plot anyway?</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/DotPlotClasses.cpp" line="191"/>
+        <location filename="../src/DotPlotClasses.cpp" line="200"/>
         <source>Wrong dot-plot file format, loading aborted</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/DotPlotClasses.cpp" line="203"/>
+        <location filename="../src/DotPlotClasses.cpp" line="212"/>
         <source>Too many results. Try to increase minimum repeat length</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/DotPlotClasses.cpp" line="191"/>
+        <location filename="../src/DotPlotClasses.cpp" line="200"/>
         <source>Wrong format</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/DotPlotClasses.cpp" line="197"/>
+        <location filename="../src/DotPlotClasses.cpp" line="206"/>
         <source>Wrong alphabet types</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/DotPlotClasses.cpp" line="197"/>
+        <location filename="../src/DotPlotClasses.cpp" line="206"/>
         <source>Both sequence must have the same alphabet</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/DotPlotClasses.cpp" line="203"/>
+        <location filename="../src/DotPlotClasses.cpp" line="212"/>
         <source>Too many results</source>
         <translation></translation>
     </message>
@@ -490,66 +490,66 @@
     <name>U2::DotPlotViewContext</name>
     <message>
         <location filename="../src/DotPlotPlugin.cpp" line="79"/>
-        <location filename="../src/DotPlotPlugin.cpp" line="223"/>
-        <source>Build dotplot</source>
-        <translation></translation>
+        <location filename="../src/DotPlotPlugin.cpp" line="224"/>
+        <source>Build dotplot...</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>U2::DotPlotWidget</name>
     <message>
-        <location filename="../src/DotPlotWidget.cpp" line="120"/>
+        <location filename="../src/DotPlotWidget.cpp" line="124"/>
         <source>Parameters</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/DotPlotWidget.cpp" line="123"/>
+        <location filename="../src/DotPlotWidget.cpp" line="127"/>
         <source>Save as image</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/DotPlotWidget.cpp" line="126"/>
+        <location filename="../src/DotPlotWidget.cpp" line="130"/>
         <source>Save</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/DotPlotWidget.cpp" line="129"/>
+        <location filename="../src/DotPlotWidget.cpp" line="133"/>
         <source>Load</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/DotPlotWidget.cpp" line="132"/>
+        <location filename="../src/DotPlotWidget.cpp" line="136"/>
         <source>Remove</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/DotPlotWidget.cpp" line="135"/>
+        <location filename="../src/DotPlotWidget.cpp" line="140"/>
         <source>Filter Results</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/DotPlotWidget.cpp" line="201"/>
+        <location filename="../src/DotPlotWidget.cpp" line="215"/>
         <source>Save/Load</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/DotPlotWidget.cpp" line="942"/>
+        <location filename="../src/DotPlotWidget.cpp" line="992"/>
         <source> (min length %1, identity %2%)</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/DotPlotWidget.cpp" line="200"/>
+        <location filename="../src/DotPlotWidget.cpp" line="212"/>
         <source>Dotplot</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/DotPlotWidget.cpp" line="484"/>
+        <location filename="../src/DotPlotWidget.cpp" line="528"/>
         <source>Save Dotplot</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/DotPlotWidget.cpp" line="484"/>
-        <location filename="../src/DotPlotWidget.cpp" line="530"/>
+        <location filename="../src/DotPlotWidget.cpp" line="528"/>
+        <location filename="../src/DotPlotWidget.cpp" line="575"/>
         <source>Dotplot files (*.dpt)</source>
         <translation></translation>
     </message>
@@ -558,7 +558,7 @@
         <translation type="obsolete">Dotplot files (*.dpt)</translation>
     </message>
     <message>
-        <location filename="../src/DotPlotWidget.cpp" line="530"/>
+        <location filename="../src/DotPlotWidget.cpp" line="575"/>
         <source>Load Dotplot</source>
         <translation></translation>
     </message>

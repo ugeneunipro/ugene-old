@@ -181,37 +181,35 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/FindTandemsDialog.ui" line="220"/>
         <source>Repeats  identity</source>
-        <translation>Repeats identity</translation>
+        <translation type="obsolete">Repeats identity</translation>
     </message>
     <message>
-        <location filename="../src/ui/FindTandemsDialog.ui" line="264"/>
         <source>%</source>
-        <translation>%</translation>
+        <translation type="obsolete">%</translation>
     </message>
     <message>
-        <location filename="../src/ui/FindTandemsDialog.ui" line="280"/>
+        <location filename="../src/ui/FindTandemsDialog.ui" line="296"/>
         <source>Algorithm</source>
         <translation>Algorithm</translation>
     </message>
     <message>
-        <location filename="../src/ui/FindTandemsDialog.ui" line="310"/>
+        <location filename="../src/ui/FindTandemsDialog.ui" line="253"/>
         <source>Minimum tandem size</source>
         <translation>Minimum tandem size</translation>
     </message>
     <message>
-        <location filename="../src/ui/FindTandemsDialog.ui" line="343"/>
+        <location filename="../src/ui/FindTandemsDialog.ui" line="316"/>
         <source>Minimum repeat count</source>
         <translation>Minimum repeat count</translation>
     </message>
     <message>
-        <location filename="../src/ui/FindTandemsDialog.ui" line="363"/>
+        <location filename="../src/ui/FindTandemsDialog.ui" line="233"/>
         <source>x</source>
         <translation>x</translation>
     </message>
     <message>
-        <location filename="../src/ui/FindTandemsDialog.ui" line="376"/>
+        <location filename="../src/ui/FindTandemsDialog.ui" line="246"/>
         <source>Show overlapped tandems</source>
         <translation type="unfinished"></translation>
     </message>
@@ -243,12 +241,12 @@
         <translation type="obsolete">Custom range</translation>
     </message>
     <message>
-        <location filename="../src/ui/FindTandemsDialog.ui" line="432"/>
+        <location filename="../src/ui/FindTandemsDialog.ui" line="372"/>
         <source>Start</source>
         <translation>Start</translation>
     </message>
     <message>
-        <location filename="../src/ui/FindTandemsDialog.ui" line="442"/>
+        <location filename="../src/ui/FindTandemsDialog.ui" line="382"/>
         <source>Cancel</source>
         <translation>Cancel</translation>
     </message>
@@ -256,7 +254,7 @@
 <context>
     <name>U2::ExactSizedTandemFinder</name>
     <message>
-        <location filename="../src/RF_SArray_TandemFinder.cpp" line="266"/>
+        <location filename="../src/RF_SArray_TandemFinder.cpp" line="269"/>
         <source>Find %1-period tandems</source>
         <translation>Find %1-period tandems</translation>
     </message>
@@ -296,7 +294,8 @@
     <message>
         <location filename="../src/FindRepeatsDialog.cpp" line="213"/>
         <location filename="../src/FindRepeatsDialog.cpp" line="235"/>
-        <location filename="../src/FindRepeatsDialog.cpp" line="252"/>
+        <location filename="../src/FindRepeatsDialog.cpp" line="268"/>
+        <location filename="../src/FindRepeatsDialog.cpp" line="275"/>
         <source>Error</source>
         <translation></translation>
     </message>
@@ -306,17 +305,32 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/FindRepeatsDialog.cpp" line="252"/>
+        <location filename="../src/FindRepeatsDialog.cpp" line="268"/>
+        <source>Not enough memory error ocurred while preparing data. Try to set smaller region.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/FindRepeatsDialog.cpp" line="275"/>
         <source>Cannot create an annotation object. Please check settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/FindRepeatsDialog.cpp" line="357"/>
+        <location filename="../src/FindRepeatsDialog.cpp" line="283"/>
+        <source>Warning</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/FindRepeatsDialog.cpp" line="284"/>
+        <source>Search with given identity %1% and length more then 80m bps can take very long time. Approximate repeat searching time for 80m bp with 95% identity is 40 minutes on Intel Core 2 Quad Q9500. Do you want to continue?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/FindRepeatsDialog.cpp" line="375"/>
         <source>Estimated repeats count: %1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/FindRepeatsDialog.cpp" line="358"/>
+        <location filename="../src/FindRepeatsDialog.cpp" line="376"/>
         <source>Estimated repeats count hint is based on the active settings and random sequence model</source>
         <translation></translation>
     </message>
@@ -367,12 +381,12 @@
 <context>
     <name>U2::FindRepeatsToAnnotationsTask</name>
     <message>
-        <location filename="../src/FindRepeatsTask.cpp" line="444"/>
+        <location filename="../src/FindRepeatsTask.cpp" line="447"/>
         <source>Find repeats to annotations</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/FindRepeatsTask.cpp" line="464"/>
+        <location filename="../src/FindRepeatsTask.cpp" line="467"/>
         <source>Found %1 repeat regions</source>
         <translation></translation>
     </message>
@@ -380,60 +394,60 @@
 <context>
     <name>U2::FindTandemsDialog</name>
     <message>
-        <location filename="../src/FindTandemsDialog.cpp" line="81"/>
+        <location filename="../src/FindTandemsDialog.cpp" line="75"/>
         <source>Suffix array</source>
         <translation>Suffix array</translation>
     </message>
     <message>
-        <location filename="../src/FindTandemsDialog.cpp" line="82"/>
+        <location filename="../src/FindTandemsDialog.cpp" line="76"/>
         <source>Suffix array (optimized)</source>
         <translation>Suffix array (optimized)</translation>
     </message>
     <message>
-        <location filename="../src/FindTandemsDialog.cpp" line="85"/>
+        <location filename="../src/FindTandemsDialog.cpp" line="79"/>
         <source>All</source>
         <translation>All</translation>
     </message>
     <message>
-        <location filename="../src/FindTandemsDialog.cpp" line="86"/>
+        <location filename="../src/FindTandemsDialog.cpp" line="80"/>
         <source>Micro-satellites</source>
         <translation>Micro-satellites</translation>
     </message>
     <message>
-        <location filename="../src/FindTandemsDialog.cpp" line="87"/>
+        <location filename="../src/FindTandemsDialog.cpp" line="81"/>
         <source>Mini-satellites</source>
         <translation>Mini-satellites</translation>
     </message>
     <message>
-        <location filename="../src/FindTandemsDialog.cpp" line="88"/>
+        <location filename="../src/FindTandemsDialog.cpp" line="82"/>
         <source>Big-period tandems</source>
         <translation>Big-period tandems</translation>
     </message>
     <message>
-        <location filename="../src/FindTandemsDialog.cpp" line="89"/>
+        <location filename="../src/FindTandemsDialog.cpp" line="83"/>
         <source>Custom</source>
         <translation>Custom</translation>
     </message>
     <message>
-        <location filename="../src/FindTandemsDialog.cpp" line="189"/>
-        <location filename="../src/FindTandemsDialog.cpp" line="213"/>
-        <location filename="../src/FindTandemsDialog.cpp" line="219"/>
-        <location filename="../src/FindTandemsDialog.cpp" line="224"/>
+        <location filename="../src/FindTandemsDialog.cpp" line="161"/>
+        <location filename="../src/FindTandemsDialog.cpp" line="184"/>
+        <location filename="../src/FindTandemsDialog.cpp" line="190"/>
+        <location filename="../src/FindTandemsDialog.cpp" line="195"/>
         <source>Error</source>
         <translation>Error</translation>
     </message>
     <message>
-        <location filename="../src/FindTandemsDialog.cpp" line="189"/>
+        <location filename="../src/FindTandemsDialog.cpp" line="161"/>
         <source>No annotations found: %1</source>
         <translation>&quot;No annotations found: %1</translation>
     </message>
     <message>
-        <location filename="../src/FindTandemsDialog.cpp" line="219"/>
-        <source>Not enough memory error ocurred while preparing data.</source>
+        <location filename="../src/FindTandemsDialog.cpp" line="190"/>
+        <source>Not enough memory error ocurred while preparing data. Try to set smaller region.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/FindTandemsDialog.cpp" line="224"/>
+        <location filename="../src/FindTandemsDialog.cpp" line="195"/>
         <source>Cannot create an annotation object. Please check settings</source>
         <translation type="unfinished"></translation>
     </message>
@@ -463,7 +477,7 @@
 <context>
     <name>U2::LargeSizedTandemFinder</name>
     <message>
-        <location filename="../src/RF_SArray_TandemFinder.cpp" line="461"/>
+        <location filename="../src/RF_SArray_TandemFinder.cpp" line="469"/>
         <source>Find big-period tandems</source>
         <translation>Find big-period tandems</translation>
     </message>
@@ -471,27 +485,27 @@
 <context>
     <name>U2::LocalWorkflow::RepeatPrompter</name>
     <message>
-        <location filename="../src/RepeatWorker.cpp" line="161"/>
+        <location filename="../src/RepeatWorker.cpp" line="186"/>
         <source>unset</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/RepeatWorker.cpp" line="162"/>
+        <location filename="../src/RepeatWorker.cpp" line="187"/>
         <source> from &lt;u&gt;%1&lt;/u&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/RepeatWorker.cpp" line="166"/>
+        <location filename="../src/RepeatWorker.cpp" line="191"/>
         <source>inverted</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/RepeatWorker.cpp" line="166"/>
+        <location filename="../src/RepeatWorker.cpp" line="191"/>
         <source>direct</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/RepeatWorker.cpp" line="168"/>
+        <location filename="../src/RepeatWorker.cpp" line="193"/>
         <source>For each sequence%1, find &lt;u&gt;%2&lt;/u&gt; repeats.&lt;br&gt;Detect &lt;u&gt;%3% identical&lt;/u&gt; repeats &lt;u&gt;not shorter than %4 bps&lt;/u&gt;.&lt;br&gt;Output the list of found regions annotated as &lt;u&gt;%5&lt;/u&gt;.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -499,164 +513,180 @@
 <context>
     <name>U2::LocalWorkflow::RepeatWorker</name>
     <message>
-        <location filename="../src/RepeatWorker.cpp" line="72"/>
+        <location filename="../src/RepeatWorker.cpp" line="74"/>
         <source>Input sequences</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/RepeatWorker.cpp" line="73"/>
+        <location filename="../src/RepeatWorker.cpp" line="75"/>
         <source>A nucleotide sequence to search repeats in.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/RepeatWorker.cpp" line="74"/>
+        <location filename="../src/RepeatWorker.cpp" line="76"/>
         <source>Repeat annotations</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/RepeatWorker.cpp" line="75"/>
+        <location filename="../src/RepeatWorker.cpp" line="77"/>
         <source>A set of annotations marking repeats found in the sequence.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/RepeatWorker.cpp" line="84"/>
+        <location filename="../src/RepeatWorker.cpp" line="86"/>
         <source>Annotate as</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/RepeatWorker.cpp" line="84"/>
+        <location filename="../src/RepeatWorker.cpp" line="86"/>
         <source>Name of the result annotations marking found repeats.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/RepeatWorker.cpp" line="85"/>
+        <location filename="../src/RepeatWorker.cpp" line="87"/>
         <source>Identity</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/RepeatWorker.cpp" line="85"/>
+        <location filename="../src/RepeatWorker.cpp" line="87"/>
         <source>Repeats identity.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/RepeatWorker.cpp" line="86"/>
+        <location filename="../src/RepeatWorker.cpp" line="88"/>
         <source>Min length</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/RepeatWorker.cpp" line="86"/>
+        <location filename="../src/RepeatWorker.cpp" line="88"/>
         <source>Minimum length of repeats.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/RepeatWorker.cpp" line="87"/>
+        <location filename="../src/RepeatWorker.cpp" line="89"/>
         <source>Min distance</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/RepeatWorker.cpp" line="87"/>
+        <location filename="../src/RepeatWorker.cpp" line="89"/>
         <source>Minimum distance between repeats.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/RepeatWorker.cpp" line="88"/>
+        <location filename="../src/RepeatWorker.cpp" line="90"/>
         <source>Max distance</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/RepeatWorker.cpp" line="88"/>
+        <location filename="../src/RepeatWorker.cpp" line="90"/>
         <source>Maximum distance between repeats.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/RepeatWorker.cpp" line="89"/>
+        <location filename="../src/RepeatWorker.cpp" line="91"/>
         <source>Inverted</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/RepeatWorker.cpp" line="89"/>
+        <location filename="../src/RepeatWorker.cpp" line="91"/>
         <source>Search for inverted repeats.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/RepeatWorker.cpp" line="90"/>
+        <location filename="../src/RepeatWorker.cpp" line="92"/>
         <source>Filter algorithm</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/RepeatWorker.cpp" line="90"/>
-        <source>Filter nested repeats algorithm.</source>
+        <location filename="../src/RepeatWorker.cpp" line="92"/>
+        <source>Filter repeats algorithm.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/RepeatWorker.cpp" line="91"/>
+        <location filename="../src/RepeatWorker.cpp" line="93"/>
         <source>Algorithm</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/RepeatWorker.cpp" line="91"/>
+        <location filename="../src/RepeatWorker.cpp" line="93"/>
         <source>Control over variations of algorithm.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/RepeatWorker.cpp" line="92"/>
+        <location filename="../src/RepeatWorker.cpp" line="94"/>
         <source>Parallel threads</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/RepeatWorker.cpp" line="92"/>
+        <location filename="../src/RepeatWorker.cpp" line="94"/>
         <source>Number of parallel threads used for the task.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/RepeatWorker.cpp" line="93"/>
+        <location filename="../src/RepeatWorker.cpp" line="95"/>
         <source>Exclude tandems</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/RepeatWorker.cpp" line="93"/>
+        <location filename="../src/RepeatWorker.cpp" line="95"/>
         <source>Exclude tandems areas before find repeat task is run.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/RepeatWorker.cpp" line="108"/>
+        <location filename="../src/RepeatWorker.cpp" line="96"/>
+        <source>Apply &apos;Max distance&apos; attribute</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/RepeatWorker.cpp" line="96"/>
+        <location filename="../src/RepeatWorker.cpp" line="97"/>
+        <source>Apply &apos;Max distance&apos; attribute.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/RepeatWorker.cpp" line="97"/>
+        <source>Apply &apos;Min distance&apos; attribute</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/RepeatWorker.cpp" line="135"/>
         <source>Find Repeats</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/RepeatWorker.cpp" line="109"/>
+        <location filename="../src/RepeatWorker.cpp" line="136"/>
         <source>Finds repeats in each supplied sequence, stores found regions as annotations.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/RepeatWorker.cpp" line="118"/>
+        <location filename="../src/RepeatWorker.cpp" line="143"/>
         <source>Any</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/RepeatWorker.cpp" line="211"/>
+        <location filename="../src/RepeatWorker.cpp" line="244"/>
         <source>result name is empty, default name used</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/RepeatWorker.cpp" line="214"/>
-        <location filename="../src/RepeatWorker.cpp" line="215"/>
+        <location filename="../src/RepeatWorker.cpp" line="247"/>
+        <location filename="../src/RepeatWorker.cpp" line="248"/>
         <source>Incorrect value: identity value must be between 0 and 100</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/RepeatWorker.cpp" line="226"/>
-        <location filename="../src/RepeatWorker.cpp" line="227"/>
+        <location filename="../src/RepeatWorker.cpp" line="259"/>
+        <location filename="../src/RepeatWorker.cpp" line="260"/>
         <source>Incorrect value: minimal distance must be greater then zero</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/RepeatWorker.cpp" line="231"/>
+        <location filename="../src/RepeatWorker.cpp" line="264"/>
         <source>Sequence alphabet is not nucleic!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/RepeatWorker.cpp" line="256"/>
+        <location filename="../src/RepeatWorker.cpp" line="291"/>
         <source>Found %1 repeats</source>
         <translation></translation>
     </message>
@@ -895,7 +925,7 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/RFBase.cpp" line="139"/>
+        <location filename="../src/RFBase.cpp" line="144"/>
         <source>Repeat length is too large: %1, sequence size: %2</source>
         <translation></translation>
     </message>
@@ -911,7 +941,7 @@
 <context>
     <name>U2::RFSArrayWKAlgorithm</name>
     <message>
-        <location filename="../src/RFSArrayWK.cpp" line="57"/>
+        <location filename="../src/RFSArrayWK.cpp" line="59"/>
         <source>Memory allocation error, size: %1</source>
         <translation></translation>
     </message>
@@ -919,7 +949,7 @@
 <context>
     <name>U2::RFSArrayWKSubtask</name>
     <message>
-        <location filename="../src/RFSArrayWK.cpp" line="200"/>
+        <location filename="../src/RFSArrayWK.cpp" line="210"/>
         <source>Find repeats subtask (suffixWK)</source>
         <translation></translation>
     </message>
@@ -927,7 +957,7 @@
 <context>
     <name>U2::RFSArrayWSubtask</name>
     <message>
-        <location filename="../src/RFSArray.cpp" line="395"/>
+        <location filename="../src/RFSArray.cpp" line="401"/>
         <source>Find repeats subtask (suffix)</source>
         <translation></translation>
     </message>
@@ -981,13 +1011,13 @@
 <context>
     <name>U2::TandemFinder</name>
     <message>
-        <location filename="../src/RF_SArray_TandemFinder.cpp" line="143"/>
+        <location filename="../src/RF_SArray_TandemFinder.cpp" line="146"/>
         <source>Find tandems finished %1</source>
         <translation>Find tandems finished %1</translation>
     </message>
     <message>
-        <location filename="../src/RF_SArray_TandemFinder.cpp" line="106"/>
-        <location filename="../src/RF_SArray_TandemFinder.cpp" line="136"/>
+        <location filename="../src/RF_SArray_TandemFinder.cpp" line="109"/>
+        <location filename="../src/RF_SArray_TandemFinder.cpp" line="139"/>
         <source>Find tandems</source>
         <translation>Find tandems</translation>
     </message>
@@ -995,7 +1025,7 @@
 <context>
     <name>U2::TandemFinder_Region</name>
     <message>
-        <location filename="../src/RF_SArray_TandemFinder.h" line="123"/>
+        <location filename="../src/RF_SArray_TandemFinder.h" line="125"/>
         <source>Find tandems in %1 region</source>
         <translation>Find tandems in %1 region</translation>
     </message>

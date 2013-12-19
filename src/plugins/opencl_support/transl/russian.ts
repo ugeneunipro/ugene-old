@@ -39,12 +39,12 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/OpenCLSupportPlugin.cpp" line="213"/>
+        <location filename="../src/OpenCLSupportPlugin.cpp" line="228"/>
         <source>Registering OpenCL-enabled GPU: %1, global mem: %2 Mb,                              local mem: %3 Kb, max compute units: %4,                              max work group size: %5, max frequency: %6 Hz</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/OpenCLSupportPlugin.cpp" line="231"/>
+        <location filename="../src/OpenCLSupportPlugin.cpp" line="246"/>
         <source>OpenCL error code (%1)</source>
         <translation type="unfinished"></translation>
     </message>

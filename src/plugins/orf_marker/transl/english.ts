@@ -56,10 +56,6 @@
         <translation></translation>
     </message>
     <message>
-        <source>Specifies that each ORF found must start with the start codon.</source>
-        <translation></translation>
-    </message>
-    <message>
         <source>Allow overlaps</source>
         <translation></translation>
     </message>
@@ -85,10 +81,6 @@
     </message>
     <message>
         <source>Length</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>Find Open Reading Frames in sequence.</source>
         <translation></translation>
     </message>
     <message>
@@ -142,6 +134,30 @@ Ignore boundary ORFs which last beyond the search region
     </message>
     <message>
         <source>Circular Search</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Find Open Reading Frames in sequence</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ignore ORFs shorter than the specified length</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specifies that each ORF found must start with the start codon</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Max result</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Output</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -293,6 +309,22 @@ Ignore boundary ORFs which last beyond the search region
         <source>ORF Marker</source>
         <translation></translation>
     </message>
+    <message>
+        <source>Max result</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Find results not achieved by specified count.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Limit results</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The amount of results will be limited id that option is setted.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>U2::ORFAutoAnnotationsUpdater</name>
@@ -334,6 +366,14 @@ Ignore boundary ORFs which last beyond the search region
     <message>
         <source>Progress %1%</source>
         <translation></translation>
+    </message>
+    <message>
+        <source>Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot create an annotation object. Please check settings</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -431,6 +471,26 @@ Ignore boundary ORFs which last beyond the search region
     <message>
         <source>Require stop codon</source>
         <translation></translation>
+    </message>
+    <message>
+        <source>Require stop codon.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Max result</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Find results not achieved by specified count.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Limit results</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The amount of results will be limited id that option is setted</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>

@@ -160,6 +160,22 @@ Ignore boundary ORFs which last beyond the search region
         <source>Circular Search</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Max result</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Output</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ignore ORFs shorter than the specified length.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>U2::FindORFsToAnnotationsTask</name>
@@ -235,7 +251,7 @@ Ignore boundary ORFs which last beyond the search region
     </message>
     <message>
         <source>Name of the result annotations marking found ORFs</source>
-        <translation>Имя аннотации для разметки найденных ORF</translation>
+        <translation type="obsolete">Имя аннотации для разметки найденных ORF</translation>
     </message>
     <message>
         <source>Genetic code</source>
@@ -259,7 +275,7 @@ Ignore boundary ORFs which last beyond the search region
     </message>
     <message>
         <source>The result annotation will includes stop codon if this option is set</source>
-        <translation>В аннотацию будет включен стоп-кодон</translation>
+        <translation type="obsolete">В аннотацию будет включен стоп-кодон</translation>
     </message>
     <message>
         <source>ORF: result name is empty, default name used</source>
@@ -312,6 +328,30 @@ Ignore boundary ORFs which last beyond the search region
         <source>ORF Marker</source>
         <translation>Поиск открытых рамок считывания</translation>
     </message>
+    <message>
+        <source>Name of the result annotations marking found ORFs.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The result annotation will includes stop codon if this option is set.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Max result</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Find results not achieved by specified count.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Limit results</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The amount of results will be limited id that option is setted.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>U2::ORFAutoAnnotationsUpdater</name>
@@ -353,6 +393,14 @@ Ignore boundary ORFs which last beyond the search region
     <message>
         <source>Progress %1%</source>
         <translation>Прогресс %1</translation>
+    </message>
+    <message>
+        <source>Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot create an annotation object. Please check settings</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -450,6 +498,26 @@ Ignore boundary ORFs which last beyond the search region
     <message>
         <source>Require stop codon</source>
         <translation>Стоп-кодон обязателен</translation>
+    </message>
+    <message>
+        <source>Require stop codon.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Max result</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Find results not achieved by specified count.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Limit results</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The amount of results will be limited id that option is setted</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>

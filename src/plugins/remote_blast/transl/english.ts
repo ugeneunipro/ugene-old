@@ -124,15 +124,6 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteBLASTDialog.ui" line="236"/>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../src/ui/RemoteBLASTDialog.ui" line="265"/>
         <source>Search timeout</source>
         <translation></translation>
@@ -143,67 +134,67 @@ p, li { white-space: pre-wrap; }
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteBLASTDialog.ui" line="597"/>
+        <location filename="../src/ui/RemoteBLASTDialog.ui" line="607"/>
         <source>Filter results</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteBLASTDialog.ui" line="605"/>
+        <location filename="../src/ui/RemoteBLASTDialog.ui" line="615"/>
         <source>Filter by</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteBLASTDialog.ui" line="612"/>
+        <location filename="../src/ui/RemoteBLASTDialog.ui" line="622"/>
         <source>accession</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteBLASTDialog.ui" line="619"/>
+        <location filename="../src/ui/RemoteBLASTDialog.ui" line="629"/>
         <source>def (filter by definition of annotations)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteBLASTDialog.ui" line="626"/>
+        <location filename="../src/ui/RemoteBLASTDialog.ui" line="636"/>
         <source>id</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteBLASTDialog.ui" line="633"/>
+        <location filename="../src/ui/RemoteBLASTDialog.ui" line="643"/>
         <source>Select result by</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteBLASTDialog.ui" line="640"/>
+        <location filename="../src/ui/RemoteBLASTDialog.ui" line="650"/>
         <source>EValue</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteBLASTDialog.ui" line="650"/>
+        <location filename="../src/ui/RemoteBLASTDialog.ui" line="660"/>
         <source>Score</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteBLASTDialog.ui" line="720"/>
+        <location filename="../src/ui/RemoteBLASTDialog.ui" line="730"/>
         <source>Search</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteBLASTDialog.ui" line="334"/>
+        <location filename="../src/ui/RemoteBLASTDialog.ui" line="321"/>
         <source>3</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteBLASTDialog.ui" line="339"/>
+        <location filename="../src/ui/RemoteBLASTDialog.ui" line="326"/>
         <source>7</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteBLASTDialog.ui" line="344"/>
+        <location filename="../src/ui/RemoteBLASTDialog.ui" line="331"/>
         <source>11</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteBLASTDialog.ui" line="349"/>
+        <location filename="../src/ui/RemoteBLASTDialog.ui" line="336"/>
         <source>15</source>
         <translation></translation>
     </message>
@@ -268,6 +259,15 @@ p, li { white-space: pre-wrap; }
         <translation></translation>
     </message>
     <message>
+        <location filename="../src/ui/RemoteBLASTDialog.ui" line="236"/>
+        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../src/ui/RemoteBLASTDialog.ui" line="379"/>
         <source>5 2</source>
         <translation></translation>
@@ -308,37 +308,42 @@ p, li { white-space: pre-wrap; }
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteBLASTDialog.ui" line="483"/>
+        <location filename="../src/ui/RemoteBLASTDialog.ui" line="506"/>
+        <source>Entrez query</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/RemoteBLASTDialog.ui" line="516"/>
         <source>Service</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteBLASTDialog.ui" line="491"/>
+        <location filename="../src/ui/RemoteBLASTDialog.ui" line="537"/>
         <source>plain</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteBLASTDialog.ui" line="496"/>
+        <location filename="../src/ui/RemoteBLASTDialog.ui" line="542"/>
         <source>psi</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteBLASTDialog.ui" line="501"/>
+        <location filename="../src/ui/RemoteBLASTDialog.ui" line="547"/>
         <source>phi</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteBLASTDialog.ui" line="578"/>
+        <location filename="../src/ui/RemoteBLASTDialog.ui" line="588"/>
         <source>Mask for lookup table only</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteBLASTDialog.ui" line="585"/>
+        <location filename="../src/ui/RemoteBLASTDialog.ui" line="595"/>
         <source>Mask lower case letters</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteBLASTDialog.ui" line="512"/>
+        <location filename="../src/ui/RemoteBLASTDialog.ui" line="486"/>
         <source>PHI pattern</source>
         <translation></translation>
     </message>
@@ -348,7 +353,7 @@ p, li { white-space: pre-wrap; }
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteBLASTDialog.ui" line="317"/>
+        <location filename="../src/ui/RemoteBLASTDialog.ui" line="350"/>
         <source>Word size</source>
         <translation></translation>
     </message>
@@ -358,27 +363,27 @@ p, li { white-space: pre-wrap; }
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteBLASTDialog.ui" line="549"/>
+        <location filename="../src/ui/RemoteBLASTDialog.ui" line="559"/>
         <source>Filters</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteBLASTDialog.ui" line="555"/>
+        <location filename="../src/ui/RemoteBLASTDialog.ui" line="565"/>
         <source>Low complexity filter</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteBLASTDialog.ui" line="562"/>
+        <location filename="../src/ui/RemoteBLASTDialog.ui" line="572"/>
         <source>Human repeats filter</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteBLASTDialog.ui" line="572"/>
+        <location filename="../src/ui/RemoteBLASTDialog.ui" line="582"/>
         <source>Masks</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteBLASTDialog.ui" line="727"/>
+        <location filename="../src/ui/RemoteBLASTDialog.ui" line="737"/>
         <source>Cancel</source>
         <translation></translation>
     </message>
@@ -386,34 +391,18 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../src/HttpRequestCDD.cpp" line="58"/>
-        <location filename="../src/HttpRequestCDD.cpp" line="93"/>
-        <source>Cannot load page</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../src/HttpRequestCDD.cpp" line="100"/>
-        <source>The database did not respond</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../src/HttpRequestCDD.cpp" line="106"/>
-        <source>Incorrect query</source>
-        <translation></translation>
-    </message>
-    <message>
         <location filename="../src/HttpRequestBLAST.cpp" line="41"/>
         <location filename="../src/HttpRequestBLAST.cpp" line="130"/>
         <location filename="../src/HttpRequestCDD.cpp" line="38"/>
-        <location filename="../src/HttpRequestCDD.cpp" line="72"/>
+        <location filename="../src/HttpRequestCDD.cpp" line="73"/>
         <source>Cannot open the IO adapter</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../src/HttpRequestBLAST.cpp" line="60"/>
         <location filename="../src/HttpRequestBLAST.cpp" line="151"/>
-        <source>Cannot load a page</source>
-        <translation></translation>
+        <source>Cannot load a page. %1</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/HttpRequestBLAST.cpp" line="66"/>
@@ -469,25 +458,31 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../src/HttpRequestBLAST.cpp" line="317"/>
-        <location filename="../src/HttpRequestCDD.cpp" line="177"/>
+        <location filename="../src/HttpRequestCDD.cpp" line="162"/>
         <source>Cannot evaluate the location</source>
         <translation></translation>
+    </message>
+    <message>
+        <location filename="../src/HttpRequestCDD.cpp" line="58"/>
+        <location filename="../src/HttpRequestCDD.cpp" line="91"/>
+        <source>Cannot load page. %1</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>U2::LocalWorkflow::RemoteBLASTPrompter</name>
     <message>
-        <location filename="../src/RemoteBLASTWorker.cpp" line="134"/>
+        <location filename="../src/RemoteBLASTWorker.cpp" line="168"/>
         <source>unset</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/RemoteBLASTWorker.cpp" line="135"/>
+        <location filename="../src/RemoteBLASTWorker.cpp" line="169"/>
         <source> from &lt;u&gt;%1&lt;/u&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/RemoteBLASTWorker.cpp" line="137"/>
+        <location filename="../src/RemoteBLASTWorker.cpp" line="171"/>
         <source>For sequence %1 find annotations in database &lt;u&gt;%2&lt;/u&gt;.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -495,112 +490,142 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::LocalWorkflow::RemoteBLASTWorker</name>
     <message>
-        <location filename="../src/RemoteBLASTWorker.cpp" line="58"/>
+        <location filename="../src/RemoteBLASTWorker.cpp" line="60"/>
         <source>Input sequence</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/RemoteBLASTWorker.cpp" line="59"/>
+        <location filename="../src/RemoteBLASTWorker.cpp" line="61"/>
         <source>The sequence to search the annotations for</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/RemoteBLASTWorker.cpp" line="60"/>
+        <location filename="../src/RemoteBLASTWorker.cpp" line="62"/>
         <source>Annotations</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/RemoteBLASTWorker.cpp" line="61"/>
+        <location filename="../src/RemoteBLASTWorker.cpp" line="63"/>
         <source>Found annotations</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/RemoteBLASTWorker.cpp" line="70"/>
+        <location filename="../src/RemoteBLASTWorker.cpp" line="72"/>
         <source>Database</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/RemoteBLASTWorker.cpp" line="71"/>
-        <source>Select the database to search through. Available databases are blastn, blastp and cdd</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/RemoteBLASTWorker.cpp" line="72"/>
+        <location filename="../src/RemoteBLASTWorker.cpp" line="74"/>
         <source>Expected value</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/RemoteBLASTWorker.cpp" line="73"/>
+        <location filename="../src/RemoteBLASTWorker.cpp" line="75"/>
         <source>This parameter specifies the statistical significance threshold of reporting matches against the database sequences.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/RemoteBLASTWorker.cpp" line="74"/>
+        <location filename="../src/RemoteBLASTWorker.cpp" line="76"/>
         <source>Max hits</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/RemoteBLASTWorker.cpp" line="75"/>
+        <location filename="../src/RemoteBLASTWorker.cpp" line="77"/>
         <source>Maximum number of hits.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/RemoteBLASTWorker.cpp" line="76"/>
+        <location filename="../src/RemoteBLASTWorker.cpp" line="78"/>
         <source>Short sequence</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/RemoteBLASTWorker.cpp" line="77"/>
+        <location filename="../src/RemoteBLASTWorker.cpp" line="79"/>
         <source>Optimize search for short sequences.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/RemoteBLASTWorker.cpp" line="78"/>
+        <location filename="../src/RemoteBLASTWorker.cpp" line="82"/>
         <source>Annotate as</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/RemoteBLASTWorker.cpp" line="79"/>
-        <source>Name for annotations</source>
+        <location filename="../src/RemoteBLASTWorker.cpp" line="73"/>
+        <source>Select the database to search through. Available databases are blastn, blastp and cdd.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/RemoteBLASTWorker.cpp" line="80"/>
-        <source>BLAST output</source>
+        <source>Entrez query</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/RemoteBLASTWorker.cpp" line="81"/>
+        <source>Enter an Entrez query to limit search.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/RemoteBLASTWorker.cpp" line="83"/>
+        <source>Name for annotations.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/RemoteBLASTWorker.cpp" line="84"/>
+        <source>BLAST output</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/RemoteBLASTWorker.cpp" line="85"/>
         <source>Location of BLAST output file. This parameter insignificant for cdd search.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../src/RemoteBLASTWorker.cpp" line="87"/>
+        <source>Gap costs</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/RemoteBLASTWorker.cpp" line="88"/>
+        <source>Cost to create and extend a gap in an alignment.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/RemoteBLASTWorker.cpp" line="89"/>
+        <source>Match scores</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../src/RemoteBLASTWorker.cpp" line="90"/>
+        <source>Reward and penalty for matching and mismatching bases.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/RemoteBLASTWorker.cpp" line="110"/>
         <source>Remote BLAST</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/RemoteBLASTWorker.cpp" line="91"/>
+        <location filename="../src/RemoteBLASTWorker.cpp" line="111"/>
         <source>Finds annotations for DNA sequence in remote database.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/RemoteBLASTWorker.cpp" line="153"/>
+        <location filename="../src/RemoteBLASTWorker.cpp" line="183"/>
         <source>Annotations name is empty, default name used</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/RemoteBLASTWorker.cpp" line="167"/>
+        <location filename="../src/RemoteBLASTWorker.cpp" line="202"/>
         <source>Incorrect value for &apos;e-value&apos; parameter, default value passed to schema</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/RemoteBLASTWorker.cpp" line="211"/>
+        <location filename="../src/RemoteBLASTWorker.cpp" line="250"/>
         <source>Selected nucleotide database</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/RemoteBLASTWorker.cpp" line="217"/>
+        <location filename="../src/RemoteBLASTWorker.cpp" line="256"/>
         <source>Selected amino acid database</source>
         <translation type="unfinished"></translation>
     </message>
@@ -729,12 +754,18 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::SendSelectionDialog</name>
     <message>
-        <location filename="../src/SendSelectionDialog.cpp" line="297"/>
+        <location filename="../src/SendSelectionDialog.cpp" line="201"/>
+        <location filename="../src/SendSelectionDialog.cpp" line="304"/>
         <source>Error</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/SendSelectionDialog.cpp" line="376"/>
+        <location filename="../src/SendSelectionDialog.cpp" line="201"/>
+        <source>Cannot create an annotation object. Please check settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/SendSelectionDialog.cpp" line="386"/>
         <source>You chose to search nucleotide sequence in protein database. This sequence will be converted into 6 sequences(3 translations for both strands).Therefore this search may take some time. Continue?</source>
         <translation type="unfinished"></translation>
     </message>

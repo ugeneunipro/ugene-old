@@ -98,17 +98,17 @@
 <context>
     <name>U2::UHMM3ADVContext</name>
     <message>
-        <location filename="../src/uHMM3Plugin.cpp" line="247"/>
+        <location filename="../src/uHMM3Plugin.cpp" line="252"/>
         <source>Search HMM signals with HMMER3...</source>
         <translation type="unfinished">HMMER3: поиск сигналов хмм-модели...</translation>
     </message>
     <message>
-        <location filename="../src/uHMM3Plugin.cpp" line="256"/>
+        <location filename="../src/uHMM3Plugin.cpp" line="261"/>
         <source>error</source>
         <translation type="unfinished">Ошибка</translation>
     </message>
     <message>
-        <location filename="../src/uHMM3Plugin.cpp" line="256"/>
+        <location filename="../src/uHMM3Plugin.cpp" line="261"/>
         <source>No sequence in focus found</source>
         <translation type="unfinished">Не найдено открытой последовательности</translation>
     </message>
@@ -346,7 +346,7 @@
         <translation type="obsolete">Построить хмм-модель HMMER3</translation>
     </message>
     <message>
-        <location filename="../src/uHMM3Plugin.cpp" line="204"/>
+        <location filename="../src/uHMM3Plugin.cpp" line="208"/>
         <source>Build HMMER3 profile</source>
         <translation type="unfinished"></translation>
     </message>
@@ -427,87 +427,97 @@
         <source>Error: bad arguments!</source>
         <translation type="unfinished">Ошибка: неверные входные параметры!</translation>
     </message>
+    <message>
+        <location filename="../src/phmmer/uHMM3PhmmerDialogImpl.cpp" line="163"/>
+        <source>Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/phmmer/uHMM3PhmmerDialogImpl.cpp" line="163"/>
+        <source>Cannot create an annotation object. Please check settings</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>U2::UHMM3PhmmerTask</name>
     <message>
-        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="56"/>
-        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="72"/>
-        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="98"/>
+        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="57"/>
+        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="73"/>
+        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="99"/>
         <source>HMM Phmmer task</source>
         <translation type="unfinished">Поиск phmmer</translation>
     </message>
     <message>
-        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="59"/>
+        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="60"/>
         <source>query_sequence</source>
         <translation type="unfinished">Входная последовательность-запрос</translation>
     </message>
     <message>
-        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="63"/>
-        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="104"/>
+        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="64"/>
+        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="105"/>
         <source>sequence_to_search_in</source>
         <translation type="unfinished">Последовательность в которой производить поиск</translation>
     </message>
     <message>
-        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="66"/>
-        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="107"/>
+        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="67"/>
+        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="108"/>
         <source>HMM Phmmer search %1 sequence in %2 database</source>
         <translation type="unfinished">Phmmer-поиск последовательности %1 в последовательности %2</translation>
     </message>
     <message>
-        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="74"/>
-        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="100"/>
+        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="75"/>
+        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="101"/>
         <source>query_sequence_filename</source>
         <translation type="unfinished">Путь до файла последовательности-запроса</translation>
     </message>
     <message>
-        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="78"/>
+        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="79"/>
         <source>db_sequence_to_search_in</source>
         <translation type="unfinished">Путь до файла последовательности в которой производить поиск</translation>
     </message>
     <message>
-        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="81"/>
+        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="82"/>
         <source>HMM Phmmer search %1 sequence with %2 database</source>
         <translation type="unfinished">Phmmer-поиск последовательности %1 в последовательности %2</translation>
     </message>
     <message>
-        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="85"/>
-        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="111"/>
+        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="86"/>
+        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="112"/>
         <source>cannot_create_load_query_doc_task</source>
         <translation type="unfinished">Ошибка открытия файла последовательности-запроса</translation>
     </message>
     <message>
-        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="91"/>
+        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="92"/>
         <source>cannot_create_load_db_doc_task</source>
         <translation type="unfinished">Ошибка открытия файла последовательности, в которой производится поиск</translation>
     </message>
     <message>
-        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="128"/>
+        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="129"/>
         <source>cannot load document from:</source>
         <translation type="unfinished">Ошибка загрузки файла последовательности</translation>
     </message>
     <message>
-        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="134"/>
+        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="135"/>
         <source>no_dna_sequence_objects_in_document</source>
         <translation type="unfinished">В документе не найдено последовательностей</translation>
     </message>
     <message>
-        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="139"/>
+        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="140"/>
         <source>cannot_cast_to_dna_object</source>
         <translation type="unfinished">Невозможно создать DNA-объект</translation>
     </message>
     <message>
-        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="144"/>
+        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="145"/>
         <source>empty_sequence_given</source>
         <translation type="unfinished">Из файла загружена пустая последовательность</translation>
     </message>
     <message>
-        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="165"/>
+        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="166"/>
         <source>query sequence</source>
         <translation type="unfinished">Входная последовательность-запрос</translation>
     </message>
     <message>
-        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="171"/>
+        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="172"/>
         <source>db sequence</source>
         <translation type="unfinished">Последовательность, по которой производится поиск</translation>
     </message>
@@ -519,67 +529,67 @@
         <translation type="obsolete">Путь до файла последовательности-запроса</translation>
     </message>
     <message>
-        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="398"/>
+        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="401"/>
         <source>querySeq sequence file path</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="402"/>
+        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="405"/>
         <source>db sequence</source>
         <translation type="unfinished">последовательность, в которой производится поиск</translation>
     </message>
     <message>
-        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="406"/>
+        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="409"/>
         <source>annotation object</source>
         <translation type="unfinished">Объект аннотаций</translation>
     </message>
     <message>
-        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="410"/>
+        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="413"/>
         <source>annotation name</source>
         <translation type="unfinished">Имя аннотаций</translation>
     </message>
     <message>
-        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="414"/>
+        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="417"/>
         <source>annotation group</source>
         <translation type="unfinished">Группа аннотаций</translation>
     </message>
     <message>
-        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="430"/>
+        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="433"/>
         <source>HMM Phmmer search %1 sequence with %2 database</source>
         <translation type="unfinished">Phmmer-поиск последовательности %1 в последовательности %2</translation>
     </message>
     <message>
-        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="447"/>
+        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="450"/>
         <source>Annotation object removed</source>
         <translation type="unfinished">Выбранный объект аннотаций удалён</translation>
     </message>
     <message>
-        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="468"/>
+        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="471"/>
         <source>Query sequence</source>
         <translation type="unfinished">Входная последовательность-запрос</translation>
     </message>
     <message>
-        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="471"/>
+        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="474"/>
         <source>Task was not finished</source>
         <translation type="unfinished">Задание завершено с ошибкой</translation>
     </message>
     <message>
-        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="476"/>
+        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="479"/>
         <source>Result annotation table</source>
         <translation type="unfinished">Таблица аннотаций результата</translation>
     </message>
     <message>
-        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="477"/>
+        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="480"/>
         <source>Result annotation group</source>
         <translation type="unfinished">Группа аннотаций результата</translation>
     </message>
     <message>
-        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="478"/>
+        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="481"/>
         <source>Result annotation name</source>
         <translation type="unfinished">Имя аннотаций результата</translation>
     </message>
     <message>
-        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="481"/>
+        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="484"/>
         <source>Results count</source>
         <translation type="unfinished">Количество результатов</translation>
     </message>
@@ -597,17 +607,17 @@
         <translation type="unfinished">Инструменты работы с HMM профайлами. Модуль основан на пакете HMMER3.0b3: анализ биологических последовательностей при помощи скрытых марковских моделей (HMM). Домашняя страница проекта: http://hmmer.janelia.org/</translation>
     </message>
     <message>
-        <location filename="../src/uHMM3Plugin.cpp" line="104"/>
+        <location filename="../src/uHMM3Plugin.cpp" line="105"/>
         <source>Build HMM3 profile</source>
         <translation>Построить профайл с помощью HMM3</translation>
     </message>
     <message>
-        <location filename="../src/uHMM3Plugin.cpp" line="108"/>
+        <location filename="../src/uHMM3Plugin.cpp" line="110"/>
         <source>Search with HMM3</source>
         <translation>Искать сигналы HMM3</translation>
     </message>
     <message>
-        <location filename="../src/uHMM3Plugin.cpp" line="112"/>
+        <location filename="../src/uHMM3Plugin.cpp" line="115"/>
         <source>Search with HMM3 phmmer</source>
         <translation>Искать сигналы HMM3 phmmer</translation>
     </message>
@@ -638,14 +648,14 @@
         <translation type="obsolete">Поиск phmmer</translation>
     </message>
     <message>
-        <location filename="../src/uHMM3Plugin.cpp" line="169"/>
-        <location filename="../src/uHMM3Plugin.cpp" line="180"/>
+        <location filename="../src/uHMM3Plugin.cpp" line="173"/>
+        <location filename="../src/uHMM3Plugin.cpp" line="184"/>
         <source>Error!</source>
         <translation type="unfinished">Ошибка!</translation>
     </message>
     <message>
-        <location filename="../src/uHMM3Plugin.cpp" line="169"/>
-        <location filename="../src/uHMM3Plugin.cpp" line="180"/>
+        <location filename="../src/uHMM3Plugin.cpp" line="173"/>
+        <location filename="../src/uHMM3Plugin.cpp" line="184"/>
         <source>Target sequence not selected: no opened annotated dna view</source>
         <translation type="unfinished">Не открыта последовательность для поиска!</translation>
     </message>
@@ -883,37 +893,37 @@
 <context>
     <name>U2::UHMM3SWPhmmerTask</name>
     <message>
-        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="226"/>
+        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="227"/>
         <source>HMM Phmmer search %1 sequence in %2 database</source>
         <translation type="unfinished">Phmmer-поиск последовательности %1 в последовательности %2</translation>
     </message>
     <message>
-        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="238"/>
+        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="239"/>
         <source>cannot_create_load_query_doc_task</source>
         <translation type="unfinished">Ошибка открытия файла последовательности-запроса</translation>
     </message>
     <message>
-        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="255"/>
+        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="256"/>
         <source>querySeq sequence</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="268"/>
+        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="270"/>
         <source>Invalid db sequence alphabet: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="272"/>
+        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="275"/>
         <source>Invalid query sequence alphabet: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="295"/>
+        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="298"/>
         <source>Cannot search for nucleic query in amino sequence</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="326"/>
+        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="329"/>
         <source>HMMER3 phmmer sequence walker search task</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1124,6 +1134,16 @@
         <translation type="unfinished">Ошибка: неверные входные параметры!</translation>
     </message>
     <message>
+        <location filename="../src/search/uHMM3SearchDialogImpl.cpp" line="169"/>
+        <source>Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/search/uHMM3SearchDialogImpl.cpp" line="169"/>
+        <source>Cannot create an annotation object. Please check settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Selecting machines error!</source>
         <translation type="obsolete">Ошибка выбора удаленных машин!</translation>
     </message>
@@ -1136,7 +1156,7 @@
         <translation type="obsolete">Распределенный запуск на нескольких машинах в данный пока не поддерживается. Выберите одну машину</translation>
     </message>
     <message>
-        <location filename="../src/search/uHMM3SearchDialogImpl.cpp" line="216"/>
+        <location filename="../src/search/uHMM3SearchDialogImpl.cpp" line="219"/>
         <source>Select query HMM profile</source>
         <translation type="unfinished">Выберите HMM профайл</translation>
     </message>
@@ -1665,162 +1685,162 @@
 <context>
     <name>UHMM3PhmmerDialog</name>
     <message>
-        <location filename="../src/phmmer/ui/UHMM3PhmmerDialog.ui" line="13"/>
+        <location filename="../src/phmmer/ui/UHMM3PhmmerDialog.ui" line="14"/>
         <source>Dialog</source>
         <translation type="unfinished">Поиск phmmer</translation>
     </message>
     <message>
-        <location filename="../src/phmmer/ui/UHMM3PhmmerDialog.ui" line="31"/>
+        <location filename="../src/phmmer/ui/UHMM3PhmmerDialog.ui" line="24"/>
         <source>input and output</source>
         <translation type="unfinished">Ввод и вывод</translation>
     </message>
     <message>
-        <location filename="../src/phmmer/ui/UHMM3PhmmerDialog.ui" line="45"/>
+        <location filename="../src/phmmer/ui/UHMM3PhmmerDialog.ui" line="38"/>
         <source>Query sequence file:</source>
         <translation type="unfinished">Файл последовательности</translation>
     </message>
     <message>
-        <location filename="../src/phmmer/ui/UHMM3PhmmerDialog.ui" line="55"/>
+        <location filename="../src/phmmer/ui/UHMM3PhmmerDialog.ui" line="48"/>
         <source>...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/phmmer/ui/UHMM3PhmmerDialog.ui" line="94"/>
+        <location filename="../src/phmmer/ui/UHMM3PhmmerDialog.ui" line="87"/>
         <source>search</source>
         <translation type="unfinished">Искать</translation>
     </message>
     <message>
-        <location filename="../src/phmmer/ui/UHMM3PhmmerDialog.ui" line="101"/>
+        <location filename="../src/phmmer/ui/UHMM3PhmmerDialog.ui" line="94"/>
         <source>cancel</source>
         <translation type="unfinished">Отмена</translation>
     </message>
     <message>
-        <location filename="../src/phmmer/ui/UHMM3PhmmerDialog.ui" line="121"/>
+        <location filename="../src/phmmer/ui/UHMM3PhmmerDialog.ui" line="106"/>
         <source>reporting tresholds</source>
         <translation type="unfinished">Допустимые результаты</translation>
     </message>
     <message>
-        <location filename="../src/phmmer/ui/UHMM3PhmmerDialog.ui" line="137"/>
+        <location filename="../src/phmmer/ui/UHMM3PhmmerDialog.ui" line="122"/>
         <source>report domains &lt;= this E-value threshold:</source>
         <translation type="unfinished">Сохранять результаты c величиной E-value менее</translation>
     </message>
     <message>
-        <location filename="../src/phmmer/ui/UHMM3PhmmerDialog.ui" line="147"/>
+        <location filename="../src/phmmer/ui/UHMM3PhmmerDialog.ui" line="132"/>
         <source>1E+</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/phmmer/ui/UHMM3PhmmerDialog.ui" line="176"/>
+        <location filename="../src/phmmer/ui/UHMM3PhmmerDialog.ui" line="161"/>
         <source>report domains &gt;= this score treshold:</source>
         <translation type="unfinished">Сохранять результаты с итоговой суммой более</translation>
     </message>
     <message>
-        <location filename="../src/phmmer/ui/UHMM3PhmmerDialog.ui" line="200"/>
+        <location filename="../src/phmmer/ui/UHMM3PhmmerDialog.ui" line="185"/>
         <source> set number of significant seqs, for domain E-value calculation:</source>
         <translation type="unfinished">Число значимых последовательностей для подсчета E-value домена</translation>
     </message>
     <message>
-        <location filename="../src/phmmer/ui/UHMM3PhmmerDialog.ui" line="243"/>
+        <location filename="../src/phmmer/ui/UHMM3PhmmerDialog.ui" line="220"/>
         <source>scoring system</source>
         <translation type="unfinished">Оценка пропусков</translation>
     </message>
     <message>
-        <location filename="../src/phmmer/ui/UHMM3PhmmerDialog.ui" line="259"/>
+        <location filename="../src/phmmer/ui/UHMM3PhmmerDialog.ui" line="236"/>
         <source>gap open probability:</source>
         <translation type="unfinished">Вероятность открытия пропуска</translation>
     </message>
     <message>
-        <location filename="../src/phmmer/ui/UHMM3PhmmerDialog.ui" line="289"/>
+        <location filename="../src/phmmer/ui/UHMM3PhmmerDialog.ui" line="266"/>
         <source>gap extend probability:</source>
         <translation type="unfinished">Вероятность продления пропуска</translation>
     </message>
     <message>
-        <location filename="../src/phmmer/ui/UHMM3PhmmerDialog.ui" line="335"/>
+        <location filename="../src/phmmer/ui/UHMM3PhmmerDialog.ui" line="304"/>
         <source>acceleration heuristics</source>
         <translation type="unfinished">Производительность</translation>
     </message>
     <message>
-        <location filename="../src/phmmer/ui/UHMM3PhmmerDialog.ui" line="347"/>
+        <location filename="../src/phmmer/ui/UHMM3PhmmerDialog.ui" line="316"/>
         <source> turn off composition bias filter</source>
         <translation type="unfinished">Выключить composition bias фильтр</translation>
     </message>
     <message>
-        <location filename="../src/phmmer/ui/UHMM3PhmmerDialog.ui" line="360"/>
+        <location filename="../src/phmmer/ui/UHMM3PhmmerDialog.ui" line="329"/>
         <source>turn off biased composition score corrections</source>
         <translation type="unfinished">Выключить biased composition коррекцию итоговой суммы</translation>
     </message>
     <message>
-        <location filename="../src/phmmer/ui/UHMM3PhmmerDialog.ui" line="373"/>
+        <location filename="../src/phmmer/ui/UHMM3PhmmerDialog.ui" line="342"/>
         <source>Turn all heuristic filters off (less speed, more power)</source>
         <translation type="unfinished">Отключить все эвристические фильтры (более точно, менее производительно)</translation>
     </message>
     <message>
-        <location filename="../src/phmmer/ui/UHMM3PhmmerDialog.ui" line="388"/>
+        <location filename="../src/phmmer/ui/UHMM3PhmmerDialog.ui" line="357"/>
         <source>Viterbi filter treshold:</source>
         <translation type="unfinished">Порог фильтрации Viterbi</translation>
     </message>
     <message>
-        <location filename="../src/phmmer/ui/UHMM3PhmmerDialog.ui" line="418"/>
+        <location filename="../src/phmmer/ui/UHMM3PhmmerDialog.ui" line="387"/>
         <source>MSV filter treshold:</source>
         <translation type="unfinished">Порог фильтрации MSV</translation>
     </message>
     <message>
-        <location filename="../src/phmmer/ui/UHMM3PhmmerDialog.ui" line="451"/>
+        <location filename="../src/phmmer/ui/UHMM3PhmmerDialog.ui" line="420"/>
         <source>Forward filter treshold:</source>
         <translation type="unfinished">Порог фильтрации Forward</translation>
     </message>
     <message>
-        <location filename="../src/phmmer/ui/UHMM3PhmmerDialog.ui" line="495"/>
+        <location filename="../src/phmmer/ui/UHMM3PhmmerDialog.ui" line="456"/>
         <source>e-value calibration</source>
         <translation type="unfinished">Калибрация E-value</translation>
     </message>
     <message>
-        <location filename="../src/phmmer/ui/UHMM3PhmmerDialog.ui" line="514"/>
+        <location filename="../src/phmmer/ui/UHMM3PhmmerDialog.ui" line="475"/>
         <source>length of sequences for MSV Gumbel mu fit:</source>
         <translation type="unfinished">Длина последовательностей для MSV Gumbel mu fit</translation>
     </message>
     <message>
-        <location filename="../src/phmmer/ui/UHMM3PhmmerDialog.ui" line="550"/>
+        <location filename="../src/phmmer/ui/UHMM3PhmmerDialog.ui" line="511"/>
         <source>number of sequences for MSV Gumbel mu fit:</source>
         <translation type="unfinished">Число последовательностей для MSV Gumbel mu fit</translation>
     </message>
     <message>
-        <location filename="../src/phmmer/ui/UHMM3PhmmerDialog.ui" line="583"/>
+        <location filename="../src/phmmer/ui/UHMM3PhmmerDialog.ui" line="544"/>
         <source>length of sequences for Viterbi Gumbel mu fit:</source>
         <translation type="unfinished">Длина последовательностей для Viterbi Gumbel mu fit</translation>
     </message>
     <message>
-        <location filename="../src/phmmer/ui/UHMM3PhmmerDialog.ui" line="613"/>
+        <location filename="../src/phmmer/ui/UHMM3PhmmerDialog.ui" line="574"/>
         <source>number of sequences for Viterbi Gumbel mu fit:</source>
         <translation type="unfinished">Число последовательностей для Viterbi Gumbel mu fit</translation>
     </message>
     <message>
-        <location filename="../src/phmmer/ui/UHMM3PhmmerDialog.ui" line="643"/>
+        <location filename="../src/phmmer/ui/UHMM3PhmmerDialog.ui" line="604"/>
         <source>length of sequences for Forward exp tail mu fit:</source>
         <translation type="unfinished">Длина последовательностей для Forward exp tail mu fit</translation>
     </message>
     <message>
-        <location filename="../src/phmmer/ui/UHMM3PhmmerDialog.ui" line="673"/>
+        <location filename="../src/phmmer/ui/UHMM3PhmmerDialog.ui" line="634"/>
         <source>number of sequences for Forward exp tail mu fit:</source>
         <translation type="unfinished">Число последовательностей для Forward exp tail mu fit</translation>
     </message>
     <message>
-        <location filename="../src/phmmer/ui/UHMM3PhmmerDialog.ui" line="703"/>
+        <location filename="../src/phmmer/ui/UHMM3PhmmerDialog.ui" line="664"/>
         <source>tail mass for Forward exponential tail mu fit:</source>
         <translation type="unfinished">Tail mass for Forward exponential tail mu fit</translation>
     </message>
     <message>
-        <location filename="../src/phmmer/ui/UHMM3PhmmerDialog.ui" line="752"/>
+        <location filename="../src/phmmer/ui/UHMM3PhmmerDialog.ui" line="705"/>
         <source>other</source>
         <translation type="unfinished">Разное</translation>
     </message>
     <message>
-        <location filename="../src/phmmer/ui/UHMM3PhmmerDialog.ui" line="768"/>
+        <location filename="../src/phmmer/ui/UHMM3PhmmerDialog.ui" line="721"/>
         <source>random generator seed:</source>
         <translation type="unfinished">Затравка генератора случайных чисел</translation>
     </message>
     <message>
-        <location filename="../src/phmmer/ui/UHMM3PhmmerDialog.ui" line="811"/>
+        <location filename="../src/phmmer/ui/UHMM3PhmmerDialog.ui" line="764"/>
         <source>* if 0: one-time arbitrary seed used</source>
         <translation type="unfinished">0 - выбирать произвольно</translation>
     </message>

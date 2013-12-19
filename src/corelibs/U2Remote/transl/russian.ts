@@ -436,47 +436,47 @@ Please check your plugin list.</source>
         <translation type="unfinished">Некорректные настройки удалённой машины</translation>
     </message>
     <message>
-        <location filename="../src/RemoteWorkflowRunTask.cpp" line="114"/>
+        <location filename="../src/RemoteWorkflowRunTask.cpp" line="102"/>
         <source>Started remote workflow task</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/RemoteWorkflowRunTask.cpp" line="118"/>
+        <location filename="../src/RemoteWorkflowRunTask.cpp" line="106"/>
         <source>Cannot create remote machine from remote machine settings: %1</source>
         <translation type="unfinished">Не удалось создать удаленную машину на основе следующих настроек:%1</translation>
     </message>
     <message>
-        <location filename="../src/RemoteWorkflowRunTask.cpp" line="250"/>
+        <location filename="../src/RemoteWorkflowRunTask.cpp" line="229"/>
         <source>Task</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/RemoteWorkflowRunTask.cpp" line="250"/>
+        <location filename="../src/RemoteWorkflowRunTask.cpp" line="229"/>
         <source>Status</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/RemoteWorkflowRunTask.cpp" line="250"/>
+        <location filename="../src/RemoteWorkflowRunTask.cpp" line="229"/>
         <source>Details</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/RemoteWorkflowRunTask.cpp" line="252"/>
+        <location filename="../src/RemoteWorkflowRunTask.cpp" line="231"/>
         <source>Failed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/RemoteWorkflowRunTask.cpp" line="252"/>
+        <location filename="../src/RemoteWorkflowRunTask.cpp" line="231"/>
         <source>Canceled</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/RemoteWorkflowRunTask.cpp" line="252"/>
+        <location filename="../src/RemoteWorkflowRunTask.cpp" line="231"/>
         <source>Finished</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/RemoteWorkflowRunTask.cpp" line="263"/>
+        <location filename="../src/RemoteWorkflowRunTask.cpp" line="242"/>
         <source>Output files:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -595,17 +595,17 @@ Please check your plugin list.</source>
 <context>
     <name>U2::UpdateActiveTasks</name>
     <message>
-        <location filename="../src/DistributedComputingUtil.cpp" line="96"/>
+        <location filename="../src/DistributedComputingUtil.cpp" line="97"/>
         <source>Updating active tasks...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/DistributedComputingUtil.cpp" line="121"/>
+        <location filename="../src/DistributedComputingUtil.cpp" line="122"/>
         <source>Found active task: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/DistributedComputingUtil.cpp" line="125"/>
+        <location filename="../src/DistributedComputingUtil.cpp" line="126"/>
         <source>Active tasks update finished!</source>
         <translation type="unfinished"></translation>
     </message>
@@ -614,7 +614,7 @@ Please check your plugin list.</source>
         <translation type="obsolete">Начато обновление активных задач...</translation>
     </message>
     <message>
-        <location filename="../src/DistributedComputingUtil.cpp" line="100"/>
+        <location filename="../src/DistributedComputingUtil.cpp" line="101"/>
         <source>Cannot create remote machine from remote machine settings: %1</source>
         <translation>Не удалось создать удаленную машину на основе следующих настроек:%1</translation>
     </message>

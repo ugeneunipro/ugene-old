@@ -38,13 +38,13 @@
         <translation type="obsolete">Этот плагин содержит набор контекстных графиков для DNA последовательностей</translation>
     </message>
     <message>
-        <location filename="../src/DNAGraphPackPlugin.cpp" line="51"/>
-        <source>DNA Graph Package</source>
+        <location filename="../src/DNAGraphPackPlugin.cpp" line="52"/>
+        <source>DNA/RNA Graph Package</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/DNAGraphPackPlugin.cpp" line="52"/>
-        <source>Contains a set of graphs for DNA sequences.</source>
+        <location filename="../src/DNAGraphPackPlugin.cpp" line="53"/>
+        <source>Contains a set of graphs for DNA/RNA sequences.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

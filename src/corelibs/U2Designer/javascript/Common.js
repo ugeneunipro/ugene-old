@@ -40,7 +40,7 @@ function hideLoadBtnHint() {
  */
 function showLoadButton(showHint) {
     var menuLine = document.getElementsByClassName("dash-menu-line")[0];
-    var btnDef = "<button class='btn load-btn' onclick='agent.loadSchema()' title='Load schema'><div /></button>";
+    var btnDef = "<button class='btn load-btn' onclick='agent.loadSchema()' title='Load dashboard workflow'><div /></button>";
     menuLine.insertAdjacentHTML('beforeend', btnDef);
 
     if (showHint == true) {

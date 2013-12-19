@@ -2,6 +2,14 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="en_US">
 <context>
+    <name>MatrixAndLogoWidget</name>
+    <message>
+        <location filename="../src/ui/MatrixAndLogoWidget.ui" line="20"/>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>PWMBuildDialog</name>
     <message>
         <location filename="../src/ui/PWMBuildDialog.ui" line="14"/>
@@ -81,16 +89,12 @@
     </message>
     <message>
         <location filename="../src/WeightMatrixBuildWorker.cpp" line="82"/>
-        <location filename="../src/WeightMatrixBuildWorker.cpp" line="277"/>
         <source>algo_tip</source>
         <translation>Different weight algorithms uses different functions to build weight matrices. It allows us to get better precision on different data sets. Log-odds, NLG and Match algorithms are sensitive to input matrices with zero values, so some of them may not work on those matrices.</translation>
     </message>
     <message>
-        <location filename="../src/WeightMatrixBuildWorker.cpp" line="88"/>
-        <location filename="../src/WeightMatrixBuildWorker.cpp" line="188"/>
-        <location filename="../src/WeightMatrixBuildWorker.cpp" line="282"/>
         <source>type_tip</source>
-        <translation>Dinucleic matrices are more detailed, while mononucleic one are more useful for small input data sets.</translation>
+        <translation type="obsolete">Dinucleic matrices are more detailed, while mononucleic one are more useful for small input data sets.</translation>
     </message>
 </context>
 <context>
@@ -253,8 +257,8 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WMQuery.cpp" line="184"/>
         <location filename="../src/WeightMatrixSearchWorker.cpp" line="80"/>
+        <location filename="../src/WMQuery.cpp" line="184"/>
         <source>min_err_tip</source>
         <translation>Minimum score to detect transcription factor binding site</translation>
     </message>
@@ -356,46 +360,40 @@
 <context>
     <name>U2::LocalWorkflow::PFMatrixBuildPrompter</name>
     <message>
-        <location filename="../src/WeightMatrixBuildWorker.cpp" line="214"/>
-        <source>For each MSA from &lt;u&gt;%1&lt;/u&gt;,</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../src/WeightMatrixBuildWorker.cpp" line="215"/>
-        <source>%1 build frequency matrix.</source>
-        <translatorcomment>%1 построить частотную матрицу.</translatorcomment>
-        <translation></translation>
+        <location filename="../src/WeightMatrixBuildWorker.cpp" line="210"/>
+        <source>For each MSA from &lt;u&gt;%1&lt;/u&gt;, build Frequency Matrix.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>U2::LocalWorkflow::PFMatrixBuildWorker</name>
     <message>
-        <location filename="../src/WeightMatrixBuildWorker.cpp" line="173"/>
+        <location filename="../src/WeightMatrixBuildWorker.cpp" line="172"/>
         <source>Input alignment</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WeightMatrixBuildWorker.cpp" line="174"/>
+        <location filename="../src/WeightMatrixBuildWorker.cpp" line="173"/>
         <source>Input multiple sequence alignment for building statistical model.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WeightMatrixBuildWorker.cpp" line="178"/>
+        <location filename="../src/WeightMatrixBuildWorker.cpp" line="177"/>
         <source>Frequency matrix</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WeightMatrixBuildWorker.cpp" line="179"/>
+        <location filename="../src/WeightMatrixBuildWorker.cpp" line="178"/>
         <source>Produced statistical model of specified TFBS data.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WeightMatrixBuildWorker.cpp" line="192"/>
+        <location filename="../src/WeightMatrixBuildWorker.cpp" line="190"/>
         <source>Build Frequency Matrix</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WeightMatrixBuildWorker.cpp" line="193"/>
+        <location filename="../src/WeightMatrixBuildWorker.cpp" line="191"/>
         <source>Builds frequency matrix. Frequency matrices are used for probabilistic recognition of transcription factor binding sites.</source>
         <translation></translation>
     </message>
@@ -403,45 +401,40 @@
 <context>
     <name>U2::LocalWorkflow::PFMatrixConvertPrompter</name>
     <message>
-        <location filename="../src/WeightMatrixBuildWorker.cpp" line="317"/>
-        <source>For each frequency matrix from &lt;u&gt;%1&lt;/u&gt;,</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../src/WeightMatrixBuildWorker.cpp" line="318"/>
-        <source>%1 build weight matrix.</source>
-        <translation></translation>
+        <location filename="../src/WeightMatrixBuildWorker.cpp" line="314"/>
+        <source>For each frequency matrix from &lt;u&gt;%1&lt;/u&gt;, build weight matrix.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>U2::LocalWorkflow::PFMatrixConvertWorker</name>
     <message>
-        <location filename="../src/WeightMatrixBuildWorker.cpp" line="268"/>
+        <location filename="../src/WeightMatrixBuildWorker.cpp" line="267"/>
         <source>Weight matrix</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WeightMatrixBuildWorker.cpp" line="264"/>
+        <location filename="../src/WeightMatrixBuildWorker.cpp" line="263"/>
         <source>Frequency matrix to convert.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WeightMatrixBuildWorker.cpp" line="263"/>
+        <location filename="../src/WeightMatrixBuildWorker.cpp" line="262"/>
         <source>Frequency matrix</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/WeightMatrixBuildWorker.cpp" line="269"/>
+        <location filename="../src/WeightMatrixBuildWorker.cpp" line="268"/>
         <source>Produced statistical model of specified TFBS data.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WeightMatrixBuildWorker.cpp" line="286"/>
+        <location filename="../src/WeightMatrixBuildWorker.cpp" line="285"/>
         <source>Convert Frequency Matrix</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WeightMatrixBuildWorker.cpp" line="287"/>
+        <location filename="../src/WeightMatrixBuildWorker.cpp" line="286"/>
         <source>Converts frequency matrix to weight matrix. Weight matrices are used for probabilistic recognition of transcription factor binding sites.</source>
         <translation></translation>
     </message>
@@ -449,7 +442,7 @@
 <context>
     <name>U2::LocalWorkflow::PFMatrixReadPrompter</name>
     <message>
-        <location filename="../src/WeightMatrixIOWorkers.cpp" line="410"/>
+        <location filename="../src/WeightMatrixIOWorkers.cpp" line="420"/>
         <source>Read model(s) from &lt;u&gt;%1&lt;/u&gt;.</source>
         <translation></translation>
     </message>
@@ -457,7 +450,7 @@
 <context>
     <name>U2::LocalWorkflow::PFMatrixReader</name>
     <message>
-        <location filename="../src/WeightMatrixIOWorkers.cpp" line="450"/>
+        <location filename="../src/WeightMatrixIOWorkers.cpp" line="459"/>
         <source>Loaded frequency matrix from %1</source>
         <translation></translation>
     </message>
@@ -465,12 +458,7 @@
 <context>
     <name>U2::LocalWorkflow::PFMatrixWritePrompter</name>
     <message>
-        <location filename="../src/WeightMatrixIOWorkers.cpp" line="416"/>
-        <source>unset</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/WeightMatrixIOWorkers.cpp" line="419"/>
+        <location filename="../src/WeightMatrixIOWorkers.cpp" line="429"/>
         <source>Save the profile(s) from &lt;u&gt;%1&lt;/u&gt; to %2.</source>
         <translation></translation>
     </message>
@@ -478,12 +466,12 @@
 <context>
     <name>U2::LocalWorkflow::PFMatrixWriter</name>
     <message>
-        <location filename="../src/WeightMatrixIOWorkers.cpp" line="470"/>
+        <location filename="../src/WeightMatrixIOWorkers.cpp" line="484"/>
         <source>Unspecified URL for writing frequency matrix</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WeightMatrixIOWorkers.cpp" line="485"/>
+        <location filename="../src/WeightMatrixIOWorkers.cpp" line="500"/>
         <source>Writing frequency matrix to %1</source>
         <translation></translation>
     </message>
@@ -491,14 +479,9 @@
 <context>
     <name>U2::LocalWorkflow::PWMatrixBuildPrompter</name>
     <message>
-        <location filename="../src/WeightMatrixBuildWorker.cpp" line="123"/>
-        <source>For each MSA from &lt;u&gt;%1&lt;/u&gt;,</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../src/WeightMatrixBuildWorker.cpp" line="124"/>
-        <source>%1 build weight matrix.</source>
-        <translation></translation>
+        <location filename="../src/WeightMatrixBuildWorker.cpp" line="120"/>
+        <source>For each MSA from &lt;u&gt;%1&lt;/u&gt;, build weight matrix.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -525,32 +508,44 @@
     </message>
     <message>
         <location filename="../src/WeightMatrixBuildWorker.cpp" line="81"/>
-        <location filename="../src/WeightMatrixBuildWorker.cpp" line="277"/>
+        <location filename="../src/WeightMatrixBuildWorker.cpp" line="276"/>
         <source>Weight algorithm</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../src/WeightMatrixBuildWorker.cpp" line="87"/>
-        <location filename="../src/WeightMatrixBuildWorker.cpp" line="187"/>
-        <location filename="../src/WeightMatrixBuildWorker.cpp" line="282"/>
+        <location filename="../src/WeightMatrixBuildWorker.cpp" line="186"/>
+        <location filename="../src/WeightMatrixBuildWorker.cpp" line="281"/>
         <source>Matrix type</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WeightMatrixBuildWorker.cpp" line="92"/>
+        <location filename="../src/WeightMatrixBuildWorker.cpp" line="87"/>
+        <location filename="../src/WeightMatrixBuildWorker.cpp" line="186"/>
+        <location filename="../src/WeightMatrixBuildWorker.cpp" line="281"/>
+        <source>Dinucleic matrices are more detailed, while mononucleic one are more useful for small input data sets.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/WeightMatrixBuildWorker.cpp" line="91"/>
         <source>Build Weight Matrix</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WeightMatrixBuildWorker.cpp" line="93"/>
+        <location filename="../src/WeightMatrixBuildWorker.cpp" line="92"/>
         <source>Builds weight matrix. Weight matrices are used for probabilistic recognition of transcription factor binding sites.</source>
         <translation></translation>
+    </message>
+    <message>
+        <location filename="../src/WeightMatrixBuildWorker.cpp" line="276"/>
+        <source>Different weight algorithms uses different functions to build weight matrices. It allows us to get better precision on different data sets. Log-odds, NLG and Match algorithms are sensitive to input matrices with zero values, so some of them may not work on those matrices.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>U2::LocalWorkflow::PWMatrixReadPrompter</name>
     <message>
-        <location filename="../src/WeightMatrixIOWorkers.cpp" line="195"/>
+        <location filename="../src/WeightMatrixIOWorkers.cpp" line="196"/>
         <source>Read model(s) from &lt;u&gt;%1&lt;/u&gt;.</source>
         <translation></translation>
     </message>
@@ -659,17 +654,17 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WeightMatrixSearchWorker.cpp" line="194"/>
+        <location filename="../src/WeightMatrixSearchWorker.cpp" line="214"/>
         <source>Search TFBS in %1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WeightMatrixSearchWorker.cpp" line="198"/>
+        <location filename="../src/WeightMatrixSearchWorker.cpp" line="218"/>
         <source>Bad sequence supplied to Weight Matrix Search: %1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WeightMatrixSearchWorker.cpp" line="222"/>
+        <location filename="../src/WeightMatrixSearchWorker.cpp" line="239"/>
         <source>Found %1 TFBS</source>
         <translation></translation>
     </message>
@@ -677,12 +672,7 @@
 <context>
     <name>U2::LocalWorkflow::PWMatrixWritePrompter</name>
     <message>
-        <location filename="../src/WeightMatrixIOWorkers.cpp" line="201"/>
-        <source>unset</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/WeightMatrixIOWorkers.cpp" line="204"/>
+        <location filename="../src/WeightMatrixIOWorkers.cpp" line="205"/>
         <source>Save the profile(s) from &lt;u&gt;%1&lt;/u&gt; to %2.</source>
         <translation></translation>
     </message>
@@ -690,40 +680,49 @@
 <context>
     <name>U2::LocalWorkflow::PWMatrixWriter</name>
     <message>
-        <location filename="../src/WeightMatrixIOWorkers.cpp" line="255"/>
+        <location filename="../src/WeightMatrixIOWorkers.cpp" line="260"/>
         <source>Unspecified URL for writing weight matrix</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WeightMatrixIOWorkers.cpp" line="270"/>
+        <location filename="../src/WeightMatrixIOWorkers.cpp" line="276"/>
         <source>Writing weight matrix to %1</source>
         <translation></translation>
     </message>
 </context>
 <context>
+    <name>U2::MatrixViewController</name>
+    <message>
+        <location filename="../src/ViewMatrixDialogController.cpp" line="187"/>
+        <location filename="../src/ViewMatrixDialogController.cpp" line="195"/>
+        <source>Matrix viewer</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>U2::PFMatrixBuildTask</name>
     <message>
-        <location filename="../src/PWMBuildDialogController.cpp" line="343"/>
+        <location filename="../src/PWMBuildDialogController.cpp" line="352"/>
         <source>Build Frequency Matrix</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/PWMBuildDialogController.cpp" line="351"/>
-        <source>Alignment has gaps</source>
-        <translation></translation>
+        <location filename="../src/PWMBuildDialogController.cpp" line="360"/>
+        <source>Sequences in alignment have various lengths</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/PWMBuildDialogController.cpp" line="355"/>
+        <location filename="../src/PWMBuildDialogController.cpp" line="364"/>
         <source>Alignment is empty</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/PWMBuildDialogController.cpp" line="359"/>
+        <location filename="../src/PWMBuildDialogController.cpp" line="368"/>
         <source>Alignment is not nucleic</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/PWMBuildDialogController.cpp" line="362"/>
+        <location filename="../src/PWMBuildDialogController.cpp" line="371"/>
         <source>Calculating frequencies of nucleotids</source>
         <translation></translation>
     </message>
@@ -731,29 +730,42 @@
 <context>
     <name>U2::PFMatrixBuildToFileTask</name>
     <message>
-        <location filename="../src/PWMBuildDialogController.cpp" line="376"/>
+        <location filename="../src/PWMBuildDialogController.cpp" line="385"/>
         <source>Build Weight Matrix</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/PWMBuildDialogController.cpp" line="387"/>
+        <location filename="../src/PWMBuildDialogController.cpp" line="396"/>
         <source>Input format error</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/PWMBuildDialogController.cpp" line="412"/>
+        <location filename="../src/PWMBuildDialogController.cpp" line="421"/>
         <source>Loading alignment</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/PWMBuildDialogController.cpp" line="442"/>
+        <location filename="../src/PWMBuildDialogController.cpp" line="454"/>
         <source>Wrong sequence alphabet</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/PWMBuildDialogController.cpp" line="452"/>
+        <location filename="../src/PWMBuildDialogController.cpp" line="461"/>
         <source>No alignments or sequences found</source>
         <translation></translation>
+    </message>
+</context>
+<context>
+    <name>U2::PFMatrixFormat</name>
+    <message>
+        <location filename="../src/PMatrixFormat.cpp" line="45"/>
+        <source>Position frequency matrix</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/PMatrixFormat.cpp" line="47"/>
+        <source>Position frequency matrix file.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -762,6 +774,19 @@
         <location filename="../src/WeightMatrixIO.h" line="62"/>
         <source>Read Frequency Matrix</source>
         <translation></translation>
+    </message>
+</context>
+<context>
+    <name>U2::PFMatrixViewFactory</name>
+    <message>
+        <location filename="../src/PMatrixFormat.cpp" line="121"/>
+        <source>Open multiple views</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/PMatrixFormat.h" line="79"/>
+        <source>PFM Viewer</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -775,93 +800,103 @@
 <context>
     <name>U2::PWMBuildDialogController</name>
     <message>
-        <location filename="../src/PWMBuildDialogController.cpp" line="77"/>
+        <location filename="../src/PWMBuildDialogController.cpp" line="78"/>
         <source>Select file with alignment</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/PWMBuildDialogController.cpp" line="130"/>
+        <location filename="../src/PWMBuildDialogController.cpp" line="110"/>
+        <source>Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/PWMBuildDialogController.cpp" line="110"/>
+        <source>Could not detect format of the file. Files must be in supported malignment or sequence formats.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/PWMBuildDialogController.cpp" line="138"/>
         <source>Wrong sequence alphabet</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/PWMBuildDialogController.cpp" line="146"/>
+        <location filename="../src/PWMBuildDialogController.cpp" line="153"/>
         <source>Zero length matrix is not allowed</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/PWMBuildDialogController.cpp" line="202"/>
+        <location filename="../src/PWMBuildDialogController.cpp" line="211"/>
         <source>Select file to save frequency matrix to...</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/PWMBuildDialogController.cpp" line="204"/>
+        <location filename="../src/PWMBuildDialogController.cpp" line="213"/>
         <source>Select file to save weight matrix to...</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/PWMBuildDialogController.cpp" line="231"/>
+        <location filename="../src/PWMBuildDialogController.cpp" line="240"/>
         <source>Overwrite existing file</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/PWMBuildDialogController.cpp" line="232"/>
+        <location filename="../src/PWMBuildDialogController.cpp" line="241"/>
         <source>File with this name already exists.
 Do you want to write over this file?</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/PWMBuildDialogController.cpp" line="254"/>
+        <location filename="../src/PWMBuildDialogController.cpp" line="263"/>
         <source>Illegal input file name</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/PWMBuildDialogController.cpp" line="261"/>
+        <location filename="../src/PWMBuildDialogController.cpp" line="270"/>
         <source>Illegal output file name</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/PWMBuildDialogController.cpp" line="291"/>
+        <location filename="../src/PWMBuildDialogController.cpp" line="300"/>
         <source>Counting frequency statistics</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/PWMBuildDialogController.cpp" line="294"/>
+        <location filename="../src/PWMBuildDialogController.cpp" line="303"/>
         <source>Hide</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/PWMBuildDialogController.cpp" line="295"/>
+        <location filename="../src/PWMBuildDialogController.cpp" line="304"/>
         <source>Cancel</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/PWMBuildDialogController.cpp" line="308"/>
+        <location filename="../src/PWMBuildDialogController.cpp" line="317"/>
         <source>Build finished with errors: %1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/PWMBuildDialogController.cpp" line="311"/>
+        <location filename="../src/PWMBuildDialogController.cpp" line="320"/>
         <source>Build canceled</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/PWMBuildDialogController.cpp" line="314"/>
+        <location filename="../src/PWMBuildDialogController.cpp" line="323"/>
         <source>Build finished successfuly</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/PWMBuildDialogController.cpp" line="317"/>
+        <location filename="../src/PWMBuildDialogController.cpp" line="326"/>
         <source>Start</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/PWMBuildDialogController.cpp" line="318"/>
+        <location filename="../src/PWMBuildDialogController.cpp" line="327"/>
         <source>Close</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/PWMBuildDialogController.cpp" line="324"/>
+        <location filename="../src/PWMBuildDialogController.cpp" line="333"/>
         <source>Running state %1 progress %2%</source>
         <translation></translation>
     </message>
@@ -894,46 +929,46 @@ Do you want to write over this file?</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/PWMSearchDialogController.cpp" line="311"/>
-        <location filename="../src/PWMSearchDialogController.cpp" line="536"/>
+        <location filename="../src/PWMSearchDialogController.cpp" line="310"/>
+        <location filename="../src/PWMSearchDialogController.cpp" line="532"/>
         <source>Zero length or corrupted model
 Maybe model data is not enough for selected algorithm</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/PWMSearchDialogController.cpp" line="334"/>
-        <location filename="../src/PWMSearchDialogController.cpp" line="442"/>
+        <location filename="../src/PWMSearchDialogController.cpp" line="333"/>
+        <location filename="../src/PWMSearchDialogController.cpp" line="441"/>
         <source>Model not selected</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/PWMSearchDialogController.cpp" line="340"/>
+        <location filename="../src/PWMSearchDialogController.cpp" line="339"/>
         <source>Load file with list of matrices</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/PWMSearchDialogController.cpp" line="340"/>
-        <location filename="../src/PWMSearchDialogController.cpp" line="380"/>
+        <location filename="../src/PWMSearchDialogController.cpp" line="339"/>
+        <location filename="../src/PWMSearchDialogController.cpp" line="379"/>
         <source>CSV files (*.csv)</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/PWMSearchDialogController.cpp" line="380"/>
+        <location filename="../src/PWMSearchDialogController.cpp" line="379"/>
         <source>Save file with list of matrices</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/PWMSearchDialogController.cpp" line="407"/>
+        <location filename="../src/PWMSearchDialogController.cpp" line="406"/>
         <source>Select directory with frequency or weight matrices</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/PWMSearchDialogController.cpp" line="557"/>
+        <location filename="../src/PWMSearchDialogController.cpp" line="553"/>
         <source>Complementary strand</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/PWMSearchDialogController.cpp" line="557"/>
+        <location filename="../src/PWMSearchDialogController.cpp" line="553"/>
         <source>Direct strand</source>
         <translation></translation>
     </message>
@@ -943,7 +978,7 @@ Maybe model data is not enough for selected algorithm</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/PWMSearchDialogController.cpp" line="452"/>
+        <location filename="../src/PWMSearchDialogController.cpp" line="451"/>
         <source>Range is too small</source>
         <translation></translation>
     </message>
@@ -951,28 +986,28 @@ Maybe model data is not enough for selected algorithm</source>
 <context>
     <name>U2::PWMatrixBuildTask</name>
     <message>
-        <location filename="../src/PWMBuildDialogController.cpp" line="464"/>
-        <location filename="../src/PWMBuildDialogController.cpp" line="471"/>
+        <location filename="../src/PWMBuildDialogController.cpp" line="473"/>
+        <location filename="../src/PWMBuildDialogController.cpp" line="480"/>
         <source>Build Weight Matrix</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/PWMBuildDialogController.cpp" line="480"/>
+        <location filename="../src/PWMBuildDialogController.cpp" line="489"/>
         <source>Can&apos;t convert mononucleotide matrix to dinucleotide one</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/PWMBuildDialogController.cpp" line="492"/>
-        <source>Alignment has gaps</source>
-        <translation></translation>
+        <location filename="../src/PWMBuildDialogController.cpp" line="501"/>
+        <source>Sequences in alignment have various lengths</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/PWMBuildDialogController.cpp" line="496"/>
+        <location filename="../src/PWMBuildDialogController.cpp" line="505"/>
         <source>Alignment is empty</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/PWMBuildDialogController.cpp" line="500"/>
+        <location filename="../src/PWMBuildDialogController.cpp" line="509"/>
         <source>Alignment is not nucleic</source>
         <translation></translation>
     </message>
@@ -980,29 +1015,42 @@ Maybe model data is not enough for selected algorithm</source>
 <context>
     <name>U2::PWMatrixBuildToFileTask</name>
     <message>
-        <location filename="../src/PWMBuildDialogController.cpp" line="523"/>
+        <location filename="../src/PWMBuildDialogController.cpp" line="532"/>
         <source>Build Weight Matrix</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/PWMBuildDialogController.cpp" line="534"/>
+        <location filename="../src/PWMBuildDialogController.cpp" line="543"/>
         <source>Input format error</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/PWMBuildDialogController.cpp" line="542"/>
+        <location filename="../src/PWMBuildDialogController.cpp" line="551"/>
         <source>Loading alignment</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/PWMBuildDialogController.cpp" line="572"/>
+        <location filename="../src/PWMBuildDialogController.cpp" line="583"/>
         <source>Wrong sequence alphabet</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/PWMBuildDialogController.cpp" line="582"/>
+        <location filename="../src/PWMBuildDialogController.cpp" line="592"/>
         <source>No alignments or sequences found</source>
         <translation></translation>
+    </message>
+</context>
+<context>
+    <name>U2::PWMatrixFormat</name>
+    <message>
+        <location filename="../src/PMatrixFormat.cpp" line="168"/>
+        <source>Position weight matrix</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/PMatrixFormat.cpp" line="170"/>
+        <source>Position weight matrix file.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1011,6 +1059,19 @@ Maybe model data is not enough for selected algorithm</source>
         <location filename="../src/WeightMatrixIO.h" line="75"/>
         <source>Read Weight Matrix</source>
         <translation></translation>
+    </message>
+</context>
+<context>
+    <name>U2::PWMatrixViewFactory</name>
+    <message>
+        <location filename="../src/PMatrixFormat.cpp" line="251"/>
+        <source>Open multiple views</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/PMatrixFormat.h" line="140"/>
+        <source>PWM Viewer</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1060,7 +1121,7 @@ Maybe model data is not enough for selected algorithm</source>
 <context>
     <name>U2::WeightMatrixADVContext</name>
     <message>
-        <location filename="../src/WeightMatrixPlugin.cpp" line="100"/>
+        <location filename="../src/WeightMatrixPlugin.cpp" line="111"/>
         <source>Search TFBS with matrices...</source>
         <translation></translation>
     </message>
@@ -1106,88 +1167,88 @@ Maybe model data is not enough for selected algorithm</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WeightMatrixIOWorkers.cpp" line="68"/>
-        <location filename="../src/WeightMatrixIOWorkers.cpp" line="74"/>
-        <location filename="../src/WeightMatrixIOWorkers.cpp" line="76"/>
-        <location filename="../src/WeightMatrixIOWorkers.cpp" line="145"/>
-        <location filename="../src/WeightMatrixIOWorkers.cpp" line="154"/>
-        <location filename="../src/WeightMatrixIOWorkers.cpp" line="291"/>
+        <location filename="../src/WeightMatrixIOWorkers.cpp" line="69"/>
+        <location filename="../src/WeightMatrixIOWorkers.cpp" line="75"/>
+        <location filename="../src/WeightMatrixIOWorkers.cpp" line="77"/>
+        <location filename="../src/WeightMatrixIOWorkers.cpp" line="146"/>
+        <location filename="../src/WeightMatrixIOWorkers.cpp" line="155"/>
+        <location filename="../src/WeightMatrixIOWorkers.cpp" line="301"/>
         <source>Weight matrix</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WeightMatrixIOWorkers.cpp" line="139"/>
-        <location filename="../src/WeightMatrixIOWorkers.cpp" line="354"/>
+        <location filename="../src/WeightMatrixIOWorkers.cpp" line="140"/>
+        <location filename="../src/WeightMatrixIOWorkers.cpp" line="364"/>
         <source>Location</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WeightMatrixIOWorkers.cpp" line="139"/>
-        <location filename="../src/WeightMatrixIOWorkers.cpp" line="354"/>
+        <location filename="../src/WeightMatrixIOWorkers.cpp" line="140"/>
+        <location filename="../src/WeightMatrixIOWorkers.cpp" line="364"/>
         <source>Location hint for the target file.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WeightMatrixIOWorkers.cpp" line="145"/>
+        <location filename="../src/WeightMatrixIOWorkers.cpp" line="146"/>
         <source>Input weight matrix</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WeightMatrixIOWorkers.cpp" line="147"/>
+        <location filename="../src/WeightMatrixIOWorkers.cpp" line="148"/>
         <source>Write Weight Matrix</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WeightMatrixIOWorkers.cpp" line="147"/>
+        <location filename="../src/WeightMatrixIOWorkers.cpp" line="148"/>
         <source>Saves all input weight matrices to specified location.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WeightMatrixIOWorkers.cpp" line="154"/>
-        <location filename="../src/WeightMatrixIOWorkers.cpp" line="369"/>
+        <location filename="../src/WeightMatrixIOWorkers.cpp" line="155"/>
+        <location filename="../src/WeightMatrixIOWorkers.cpp" line="379"/>
         <source>Loaded weight matrices data.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WeightMatrixIOWorkers.cpp" line="160"/>
+        <location filename="../src/WeightMatrixIOWorkers.cpp" line="161"/>
         <source>Read Weight Matrix</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WeightMatrixIOWorkers.cpp" line="160"/>
+        <location filename="../src/WeightMatrixIOWorkers.cpp" line="161"/>
         <source>Reads weight matrices from file(s). The files can be local or Internet URLs.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WeightMatrixIOWorkers.cpp" line="283"/>
-        <location filename="../src/WeightMatrixIOWorkers.cpp" line="289"/>
-        <location filename="../src/WeightMatrixIOWorkers.cpp" line="360"/>
-        <location filename="../src/WeightMatrixIOWorkers.cpp" line="369"/>
+        <location filename="../src/WeightMatrixIOWorkers.cpp" line="293"/>
+        <location filename="../src/WeightMatrixIOWorkers.cpp" line="299"/>
+        <location filename="../src/WeightMatrixIOWorkers.cpp" line="370"/>
+        <location filename="../src/WeightMatrixIOWorkers.cpp" line="379"/>
         <source>Frequency matrix</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WeightMatrixIOWorkers.cpp" line="360"/>
+        <location filename="../src/WeightMatrixIOWorkers.cpp" line="370"/>
         <source>Input frequency matrix</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WeightMatrixIOWorkers.cpp" line="362"/>
+        <location filename="../src/WeightMatrixIOWorkers.cpp" line="372"/>
         <source>Write Frequency Matrix</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WeightMatrixIOWorkers.cpp" line="362"/>
+        <location filename="../src/WeightMatrixIOWorkers.cpp" line="372"/>
         <source>Saves all input frequency matrices to specified location.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WeightMatrixIOWorkers.cpp" line="375"/>
+        <location filename="../src/WeightMatrixIOWorkers.cpp" line="385"/>
         <source>Read Frequency Matrix</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WeightMatrixIOWorkers.cpp" line="375"/>
+        <location filename="../src/WeightMatrixIOWorkers.cpp" line="385"/>
         <source>Reads frequency matrices from file(s). The files can be local or Internet URLs.</source>
         <translation></translation>
     </message>
@@ -1195,18 +1256,18 @@ Maybe model data is not enough for selected algorithm</source>
 <context>
     <name>U2::WeightMatrixPlugin</name>
     <message>
-        <location filename="../src/WeightMatrixPlugin.cpp" line="53"/>
-        <location filename="../src/WeightMatrixPlugin.cpp" line="63"/>
+        <location filename="../src/WeightMatrixPlugin.cpp" line="54"/>
+        <location filename="../src/WeightMatrixPlugin.cpp" line="65"/>
         <source>Weight matrix</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WeightMatrixPlugin.cpp" line="53"/>
+        <location filename="../src/WeightMatrixPlugin.cpp" line="54"/>
         <source>Search for TFBS with weight matrices</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WeightMatrixPlugin.cpp" line="59"/>
+        <location filename="../src/WeightMatrixPlugin.cpp" line="60"/>
         <source>Build Weight Matrix</source>
         <translation></translation>
     </message>
@@ -1245,7 +1306,7 @@ Maybe model data is not enough for selected algorithm</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ui/ViewMatrixDialog.ui" line="84"/>
+        <location filename="../src/ui/ViewMatrixDialog.ui" line="44"/>
         <source>Close</source>
         <translation></translation>
     </message>

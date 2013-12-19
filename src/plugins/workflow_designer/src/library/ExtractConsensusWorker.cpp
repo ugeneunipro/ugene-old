@@ -246,10 +246,10 @@ void ExtractConsensusWorkerFactory::init() {
     {
         const Descriptor algoDesc(ALGO_ATTR_ID,
             QObject::tr("Algorithm"),
-            QObject::tr("The algorithm of consensus extracting"));
+            QObject::tr("The algorithm of consensus extracting."));
         const Descriptor gapsDesc(GAPS_ATTR_ID,
             QObject::tr("Keep gaps"),
-            QObject::tr("Set this parameter if the result consensus must keep the gaps"));
+            QObject::tr("Set this parameter if the result consensus must keep the gaps."));
         attrs << new Attribute(algoDesc, BaseTypes::STRING_TYPE(), true, BuiltInAssemblyConsensusAlgorithms::DEFAULT_ALGO);
         attrs << new Attribute(gapsDesc, BaseTypes::BOOL_TYPE(), true, true);
     }

@@ -107,12 +107,12 @@
 <context>
     <name>U2::LocalWorkflow::MusclePrompter</name>
     <message>
-        <location filename="../src/MuscleWorker.cpp" line="124"/>
+        <location filename="../src/MuscleWorker.cpp" line="125"/>
         <source> from %1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/MuscleWorker.cpp" line="132"/>
+        <location filename="../src/MuscleWorker.cpp" line="133"/>
         <source>Aligns each MSA supplied &lt;u&gt;%1&lt;/u&gt; with MUSCLE using &quot;&lt;u&gt;%2&lt;/u&gt;&quot; mode.</source>
         <translation></translation>
     </message>
@@ -120,92 +120,92 @@
 <context>
     <name>U2::LocalWorkflow::MuscleWorker</name>
     <message>
-        <location filename="../src/MuscleWorker.cpp" line="62"/>
+        <location filename="../src/MuscleWorker.cpp" line="63"/>
         <source>Input MSA</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/MuscleWorker.cpp" line="64"/>
+        <location filename="../src/MuscleWorker.cpp" line="65"/>
         <source>Multiple sequence alignment</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/MuscleWorker.cpp" line="73"/>
+        <location filename="../src/MuscleWorker.cpp" line="74"/>
         <source>Mode</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/MuscleWorker.cpp" line="76"/>
+        <location filename="../src/MuscleWorker.cpp" line="77"/>
         <source>Stable order</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/MuscleWorker.cpp" line="63"/>
-        <source>Multiple sequence alignment to be processed.</source>
-        <translation></translation>
+        <location filename="../src/MuscleWorker.cpp" line="82"/>
+        <source>Maximum number of iterations.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/MuscleWorker.cpp" line="58"/>
-        <source>Region should be set as &apos;start..end&apos;, start should be less than end, e.g. &apos;1..100&apos;</source>
+        <location filename="../src/MuscleWorker.cpp" line="176"/>
+        <source>An empty MSA &apos;%1&apos; has been supplied to MUSCLE.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/MuscleWorker.cpp" line="64"/>
+        <source>Multiple sequence alignment to be processed.</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../src/MuscleWorker.cpp" line="59"/>
+        <source>Region should be set as &apos;start..end&apos;, start should be less than end, e.g. &apos;1..100&apos;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/MuscleWorker.cpp" line="65"/>
         <source>Result of alignment.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/MuscleWorker.cpp" line="80"/>
+        <location filename="../src/MuscleWorker.cpp" line="81"/>
         <source>Max iterations</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/MuscleWorker.cpp" line="81"/>
-        <source>Maximum number of iterations</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/MuscleWorker.cpp" line="82"/>
+        <location filename="../src/MuscleWorker.cpp" line="83"/>
         <source>Region to align</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/MuscleWorker.cpp" line="83"/>
+        <location filename="../src/MuscleWorker.cpp" line="84"/>
         <source>Whole alignment or column range e.g. &lt;b&gt;1..100&lt;/b&gt;.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/MuscleWorker.cpp" line="90"/>
+        <location filename="../src/MuscleWorker.cpp" line="91"/>
         <source>Align with MUSCLE</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/MuscleWorker.cpp" line="91"/>
+        <location filename="../src/MuscleWorker.cpp" line="92"/>
         <source>MUSCLE is public domain multiple alignment software for protein and nucleotide sequences.&lt;p&gt;&lt;dfn&gt;MUSCLE stands for MUltiple Sequence Comparison by Log-Expectation.&lt;/dfn&gt;&lt;/p&gt;</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/MuscleWorker.cpp" line="175"/>
-        <source>An empty MSA has been supplied to MUSCLE.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/MuscleWorker.cpp" line="199"/>
+        <location filename="../src/MuscleWorker.cpp" line="200"/>
         <source>Region end position should be greater than start position</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/MuscleWorker.cpp" line="226"/>
+        <location filename="../src/MuscleWorker.cpp" line="234"/>
         <source>Aligned %1 with MUSCLE</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/MuscleWorker.cpp" line="74"/>
+        <location filename="../src/MuscleWorker.cpp" line="75"/>
         <source>Selector of preset configurations, that give you the choice of optimizing accuracy, speed, or some compromise between the two. The default favors accuracy.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/MuscleWorker.cpp" line="77"/>
+        <location filename="../src/MuscleWorker.cpp" line="78"/>
         <source>Do not rearrange aligned sequences (-stable switch of MUSCLE). &lt;p&gt;Otherwise, MUSCLE re-arranges sequences so that similar sequences are adjacent in the output file. This makes the alignment easier to evaluate by eye. </source>
         <translation></translation>
     </message>
@@ -213,37 +213,37 @@
 <context>
     <name>U2::LocalWorkflow::ProfileToProfileWorker</name>
     <message>
-        <location filename="../src/ProfileToProfileWorker.cpp" line="112"/>
+        <location filename="../src/ProfileToProfileWorker.cpp" line="115"/>
         <source>Aligned profile to profile with MUSCLE</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ProfileToProfileWorker.cpp" line="204"/>
+        <location filename="../src/ProfileToProfileWorker.cpp" line="211"/>
         <source>Master profile</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ProfileToProfileWorker.cpp" line="205"/>
+        <location filename="../src/ProfileToProfileWorker.cpp" line="212"/>
         <source>The main alignment which will be aligned on.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ProfileToProfileWorker.cpp" line="207"/>
+        <location filename="../src/ProfileToProfileWorker.cpp" line="214"/>
         <source>Second profile</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ProfileToProfileWorker.cpp" line="208"/>
+        <location filename="../src/ProfileToProfileWorker.cpp" line="215"/>
         <source>Alignment which will be aligned to the master alignment.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ProfileToProfileWorker.cpp" line="221"/>
+        <location filename="../src/ProfileToProfileWorker.cpp" line="228"/>
         <source>Align Profile to Profile With MUSCLE</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ProfileToProfileWorker.cpp" line="222"/>
+        <location filename="../src/ProfileToProfileWorker.cpp" line="229"/>
         <source>Aligns second profile to master profile with MUSCLE aligner.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -251,51 +251,59 @@
 <context>
     <name>U2::MuscleAdapter</name>
     <message>
-        <location filename="../src/MuscleAdapter.cpp" line="73"/>
+        <location filename="../src/MuscleAdapter.cpp" line="77"/>
         <source>No sequences in input file</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/MuscleAdapter.cpp" line="100"/>
+        <location filename="../src/MuscleAdapter.cpp" line="104"/>
         <source>alignment_is_empty</source>
         <translation>Alignment is empty</translation>
     </message>
     <message>
         <location filename="../src/MuscleAdapter.cpp" line="51"/>
-        <location filename="../src/MuscleAdapter.cpp" line="199"/>
-        <location filename="../src/MuscleAdapter.cpp" line="284"/>
-        <location filename="../src/MuscleAdapter.cpp" line="465"/>
+        <location filename="../src/MuscleAdapter.cpp" line="203"/>
+        <location filename="../src/MuscleAdapter.cpp" line="292"/>
+        <location filename="../src/MuscleAdapter.cpp" line="477"/>
         <source>Internal MUSCLE error: %1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/MuscleAdapter.cpp" line="277"/>
+        <location filename="../src/MuscleAdapter.cpp" line="55"/>
+        <location filename="../src/MuscleAdapter.cpp" line="207"/>
+        <location filename="../src/MuscleAdapter.cpp" line="296"/>
+        <location filename="../src/MuscleAdapter.cpp" line="481"/>
+        <source>Undefined internal MUSCLE error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/MuscleAdapter.cpp" line="285"/>
         <source>Invalid input alignment</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/MuscleAdapter.cpp" line="292"/>
-        <location filename="../src/MuscleAdapter.cpp" line="473"/>
+        <location filename="../src/MuscleAdapter.cpp" line="304"/>
+        <location filename="../src/MuscleAdapter.cpp" line="489"/>
         <source>Incompatible alphabets</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/MuscleAdapter.cpp" line="320"/>
+        <location filename="../src/MuscleAdapter.cpp" line="332"/>
         <source>Aligning profiles</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/MuscleAdapter.cpp" line="323"/>
+        <location filename="../src/MuscleAdapter.cpp" line="335"/>
         <source>Building output</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/MuscleAdapter.cpp" line="498"/>
+        <location filename="../src/MuscleAdapter.cpp" line="514"/>
         <source>Aligning sequence %1 of %2</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/MuscleAdapter.cpp" line="530"/>
+        <location filename="../src/MuscleAdapter.cpp" line="546"/>
         <source>Merging results: %1 of %2</source>
         <translation></translation>
     </message>
@@ -308,12 +316,12 @@
 <context>
     <name>U2::MuscleAddSequencesToProfileTask</name>
     <message>
-        <location filename="../src/MuscleTask.cpp" line="263"/>
+        <location filename="../src/MuscleTask.cpp" line="264"/>
         <source>MUSCLE align profiles &apos;%1&apos; vs &apos;%2&apos;</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/MuscleTask.cpp" line="265"/>
+        <location filename="../src/MuscleTask.cpp" line="266"/>
         <source>MUSCLE align &apos;%2&apos; by profile &apos;%1&apos;</source>
         <translation></translation>
     </message>
@@ -322,17 +330,17 @@
         <translation type="obsolete">Can&apos;t detect file format</translation>
     </message>
     <message>
-        <location filename="../src/MuscleTask.cpp" line="321"/>
+        <location filename="../src/MuscleTask.cpp" line="307"/>
         <source>Sequences in file have different alphabets %1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/MuscleTask.cpp" line="340"/>
+        <location filename="../src/MuscleTask.cpp" line="326"/>
         <source>No sequences found in file %1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/MuscleTask.cpp" line="342"/>
+        <location filename="../src/MuscleTask.cpp" line="328"/>
         <source>No alignment found in file %1</source>
         <translation></translation>
     </message>
@@ -449,12 +457,12 @@
 <context>
     <name>U2::MuscleGObjectRunFromSchemaTask</name>
     <message>
-        <location filename="../src/MuscleTask.cpp" line="580"/>
+        <location filename="../src/MuscleTask.cpp" line="572"/>
         <source>MUSCLE align &apos;%1&apos;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/MuscleTask.cpp" line="583"/>
+        <location filename="../src/MuscleTask.cpp" line="575"/>
         <source>MUSCLE refine &apos;%1&apos;</source>
         <translation type="unfinished"></translation>
     </message>
@@ -462,33 +470,33 @@
 <context>
     <name>U2::MuscleGObjectTask</name>
     <message>
-        <location filename="../src/MuscleTask.cpp" line="372"/>
+        <location filename="../src/MuscleTask.cpp" line="358"/>
         <source>MUSCLE align &apos;%1&apos;</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/MuscleTask.cpp" line="375"/>
+        <location filename="../src/MuscleTask.cpp" line="361"/>
         <source>MUSCLE refine &apos;%1&apos;</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/MuscleTask.cpp" line="378"/>
+        <location filename="../src/MuscleTask.cpp" line="364"/>
         <source>MUSCLE add to profile &apos;%1&apos;</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/MuscleTask.cpp" line="381"/>
+        <location filename="../src/MuscleTask.cpp" line="367"/>
         <source>MUSCLE align profiles</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/MuscleTask.cpp" line="396"/>
+        <location filename="../src/MuscleTask.cpp" line="382"/>
         <source>object_removed</source>
         <translation>Object was removed</translation>
     </message>
     <message>
-        <location filename="../src/MuscleTask.cpp" line="400"/>
-        <location filename="../src/MuscleTask.cpp" line="423"/>
+        <location filename="../src/MuscleTask.cpp" line="386"/>
+        <location filename="../src/MuscleTask.cpp" line="409"/>
         <source>object_is_state_locked</source>
         <translation>Object is locked</translation>
     </message>
@@ -533,17 +541,19 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/MusclePlugin.cpp" line="155"/>
+        <location filename="../src/MusclePlugin.cpp" line="156"/>
         <source>Align profile to profile with MUSCLE...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/MusclePlugin.cpp" line="226"/>
+        <location filename="../src/MusclePlugin.cpp" line="229"/>
+        <location filename="../src/MusclePlugin.cpp" line="232"/>
         <source>Select file with sequences</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/MusclePlugin.cpp" line="243"/>
+        <location filename="../src/MusclePlugin.cpp" line="254"/>
+        <location filename="../src/MusclePlugin.cpp" line="258"/>
         <source>Select file with alignment</source>
         <translation></translation>
     </message>
@@ -645,22 +655,22 @@
 <context>
     <name>U2::MuscleTask</name>
     <message>
-        <location filename="../src/MuscleTask.cpp" line="75"/>
+        <location filename="../src/MuscleTask.cpp" line="76"/>
         <source>MUSCLE alignment</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/MuscleTask.cpp" line="82"/>
+        <location filename="../src/MuscleTask.cpp" line="83"/>
         <source>MUSCLE alignment started</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/MuscleTask.cpp" line="128"/>
+        <location filename="../src/MuscleTask.cpp" line="129"/>
         <source>Performing MUSCLE alignment...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/MuscleTask.cpp" line="150"/>
+        <location filename="../src/MuscleTask.cpp" line="151"/>
         <source>MUSCLE alignment successfully finished</source>
         <translation type="unfinished"></translation>
     </message>
@@ -668,7 +678,7 @@
 <context>
     <name>U2::MuscleWithExtFileSpecifySupportTask</name>
     <message>
-        <location filename="../src/MuscleTask.cpp" line="488"/>
+        <location filename="../src/MuscleTask.cpp" line="497"/>
         <source>input_format_error</source>
         <translation type="unfinished">Can&apos;t detect file format</translation>
     </message>

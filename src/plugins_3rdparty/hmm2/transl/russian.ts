@@ -440,17 +440,17 @@
 <context>
     <name>U2::HMMADVContext</name>
     <message>
-        <location filename="../src/uHMMPlugin.cpp" line="259"/>
+        <location filename="../src/uHMMPlugin.cpp" line="265"/>
         <source>Search with HMM model...</source>
         <translation>HMMER2: поиск сигналов хмм-модели...</translation>
     </message>
     <message>
-        <location filename="../src/uHMMPlugin.cpp" line="276"/>
+        <location filename="../src/uHMMPlugin.cpp" line="282"/>
         <source>error</source>
         <translation>Внимание</translation>
     </message>
     <message>
-        <location filename="../src/uHMMPlugin.cpp" line="276"/>
+        <location filename="../src/uHMMPlugin.cpp" line="282"/>
         <source>no_sequence_found</source>
         <translation>Не выбрана последовательность</translation>
     </message>
@@ -458,72 +458,72 @@
 <context>
     <name>U2::HMMBuildDialogController</name>
     <message>
-        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="75"/>
+        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="76"/>
         <source>incorrect_ali_file</source>
         <translation>Некорректный файл выравнивания</translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="80"/>
+        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="81"/>
         <source>incorrect_hmm_file</source>
         <translation>Укажите файл с HMM профайлом</translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="96"/>
+        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="97"/>
         <source>error</source>
         <translation>Ошибка</translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="105"/>
+        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="106"/>
         <source>starting_build_process</source>
         <translation>Начинается построение</translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="108"/>
+        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="109"/>
         <source>back_button</source>
         <translation>Скрыть</translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="132"/>
+        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="133"/>
         <source>build_finished_with_errors_%1</source>
         <translation>Построение HMM профайла завершилось с ошибкой: %1</translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="136"/>
+        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="137"/>
         <source>build_finished_successfuly</source>
         <translation>HMM профайл успешно построен</translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="138"/>
+        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="139"/>
         <source>ok_button</source>
         <translation>Построить</translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="148"/>
+        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="149"/>
         <source>progress_%1%</source>
         <translation>Прогресс %1%</translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="109"/>
+        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="110"/>
         <source>cancel_button</source>
         <translation>Отменить</translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="139"/>
+        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="140"/>
         <source>close_button</source>
         <translation>Закрыть</translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="134"/>
+        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="135"/>
         <source>build_canceled</source>
         <translation>Построение HMM профайла отменено</translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="43"/>
+        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="44"/>
         <source>select_file_with_alignment</source>
         <translation>Выберете файл с выравниванием</translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="55"/>
+        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="56"/>
         <source>Select file with HMM profile</source>
         <translation>Выберете файл с HMM профайлом</translation>
     </message>
@@ -531,12 +531,12 @@
 <context>
     <name>U2::HMMBuildTask</name>
     <message>
-        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="304"/>
+        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="305"/>
         <source>multiple_alignment_is_empty</source>
         <translation>Выравнивание не содержит данных</translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="308"/>
+        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="309"/>
         <source>multiple_alignment_is_0_len</source>
         <translation>Выравнивание длины 0</translation>
     </message>
@@ -545,17 +545,17 @@
         <translation type="obsolete">Выравнивание не нормализовано</translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="313"/>
+        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="314"/>
         <source>only_amino_and_nucl_alphabets_are_supported</source>
         <translation>Неподдерживаемый тип алфавита</translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="321"/>
+        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="322"/>
         <source>error_creating_msa</source>
         <translation>Недостаточно памяти для построения выравнивания</translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="287"/>
+        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="288"/>
         <source>Build HMM profile &apos;%1&apos;</source>
         <translation>Построение HMM профала &apos;%1&apos;</translation>
     </message>
@@ -563,57 +563,57 @@
 <context>
     <name>U2::HMMBuildToFileTask</name>
     <message>
-        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="218"/>
+        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="219"/>
         <source>alignment_object_not_found</source>
         <translation>Объект выравнивания не найден</translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="272"/>
+        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="273"/>
         <source>none</source>
         <translation>нет</translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="171"/>
+        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="172"/>
         <source>input_format_error</source>
         <translation>Не могу определить тип файла</translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="159"/>
+        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="160"/>
         <source>Build HMM profile &apos;%1&apos; -&gt; &apos;%2&apos;</source>
         <translation>Построение HMM профайла &apos;%1&apos;-&gt;&apos;%2&apos;</translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="188"/>
+        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="189"/>
         <source>Build HMM profile to &apos;%1&apos;</source>
         <translation>Построение HMM профайла &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="213"/>
+        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="214"/>
         <source>Incorrect input file</source>
         <translation>Неправильный входной файл</translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="260"/>
+        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="261"/>
         <source>Source alignment</source>
         <translation>Исходное выравнивание</translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="261"/>
+        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="262"/>
         <source>Profile name</source>
         <translation>Имя профайла</translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="263"/>
+        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="264"/>
         <source>Task was not finished</source>
         <translation>Задача была не завершена</translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="268"/>
+        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="269"/>
         <source>Profile file</source>
         <translation>Файл</translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="269"/>
+        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="270"/>
         <source>Expert options</source>
         <translation>Дополнительные опции</translation>
     </message>
@@ -865,7 +865,7 @@
         <translation type="obsolete">Построить HMM профайл ...</translation>
     </message>
     <message>
-        <location filename="../src/uHMMPlugin.cpp" line="217"/>
+        <location filename="../src/uHMMPlugin.cpp" line="222"/>
         <source>Build HMMER2 profile</source>
         <translation></translation>
     </message>
@@ -896,42 +896,52 @@
         <translation>Внимание</translation>
     </message>
     <message>
-        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="120"/>
+        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="113"/>
+        <source>Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="113"/>
+        <source>Cannot create an annotation object. Please check settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="124"/>
         <source>starting_search_process</source>
         <translation>Начинается поиск</translation>
     </message>
     <message>
-        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="123"/>
+        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="127"/>
         <source>back_button</source>
         <translation>Скрыть</translation>
     </message>
     <message>
-        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="139"/>
+        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="143"/>
         <source>search_finished_with_errors_%1</source>
         <translation>Поиск завершен с ошибкой: %1</translation>
     </message>
     <message>
-        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="141"/>
+        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="145"/>
         <source>search_finished_successfuly</source>
         <translation>Поиск успешно завершен</translation>
     </message>
     <message>
-        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="143"/>
+        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="147"/>
         <source>ok_button</source>
         <translation>Искать</translation>
     </message>
     <message>
-        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="151"/>
+        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="155"/>
         <source>progress_%1%</source>
         <translation>Прогресс %1%</translation>
     </message>
     <message>
-        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="124"/>
+        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="128"/>
         <source>cancel_button</source>
         <translation>Отменить</translation>
     </message>
     <message>
-        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="144"/>
+        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="148"/>
         <source>close_button</source>
         <translation>Закрыть</translation>
     </message>
@@ -987,47 +997,47 @@
 <context>
     <name>U2::HMMSearchToAnnotationsTask</name>
     <message>
-        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="172"/>
+        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="176"/>
         <source>raw_alphabet_not_supported</source>
         <translation>Неправильный алфавит последовательности</translation>
     </message>
     <message>
-        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="188"/>
+        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="192"/>
         <source>annotation_obj_removed</source>
         <translation>Объект аннотаций был удалён</translation>
     </message>
     <message>
-        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="166"/>
+        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="170"/>
         <source>HMM search, file &apos;%1&apos;</source>
         <translation>HMM поиск, файл &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="215"/>
+        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="219"/>
         <source>HMM profile used</source>
         <translation>Использованный HMM профайл</translation>
     </message>
     <message>
-        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="218"/>
+        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="222"/>
         <source>Task was not finished</source>
         <translation>Задача была не завершена</translation>
     </message>
     <message>
-        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="223"/>
+        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="227"/>
         <source>Result annotation table</source>
         <translation>Таблица аннотаций результата</translation>
     </message>
     <message>
-        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="224"/>
+        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="228"/>
         <source>Result annotation group</source>
         <translation>Группа аннотаций результата</translation>
     </message>
     <message>
-        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="225"/>
+        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="229"/>
         <source>Result annotation name</source>
         <translation>Имя аннотаций результата</translation>
     </message>
     <message>
-        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="228"/>
+        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="232"/>
         <source>Results count</source>
         <translation>Количество найденных регионов</translation>
     </message>
@@ -1071,12 +1081,12 @@
 <context>
     <name>U2::LocalWorkflow::HMMBuildWorker</name>
     <message>
-        <location filename="../src/u_build/HMMBuildWorker.cpp" line="263"/>
+        <location filename="../src/u_build/HMMBuildWorker.cpp" line="288"/>
         <source>Built HMM profile</source>
         <translation>Построен профайл HMM</translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildWorker.cpp" line="269"/>
+        <location filename="../src/u_build/HMMBuildWorker.cpp" line="294"/>
         <source>Calibrated HMM profile</source>
         <translation>Откалиброван профайл HMM.</translation>
     </message>
@@ -1096,9 +1106,19 @@
         <translation>Стратегия HMM</translation>
     </message>
     <message>
+        <location filename="../src/u_build/HMMBuildWorker.cpp" line="75"/>
+        <source>Specifies kind of alignments you want to allow.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../src/u_build/HMMBuildWorker.cpp" line="76"/>
         <source>Profile name</source>
         <translation>Имя профайла</translation>
+    </message>
+    <message>
+        <location filename="../src/u_build/HMMBuildWorker.cpp" line="76"/>
+        <source>Descriptive name of the HMM profile.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/u_build/HMMBuildWorker.cpp" line="83"/>
@@ -1136,13 +1156,13 @@
         <translation>Затравка</translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildWorker.cpp" line="207"/>
-        <location filename="../src/u_build/HMMBuildWorker.cpp" line="208"/>
+        <location filename="../src/u_build/HMMBuildWorker.cpp" line="210"/>
+        <location filename="../src/u_build/HMMBuildWorker.cpp" line="211"/>
         <source>Incorrect value for seed parameter</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildWorker.cpp" line="221"/>
+        <location filename="../src/u_build/HMMBuildWorker.cpp" line="229"/>
         <source>Schema name not specified. Using default value: &apos;%1&apos;</source>
         <translation></translation>
     </message>
@@ -1162,14 +1182,12 @@
         <translation>Произведённый профайл HMM</translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildWorker.cpp" line="75"/>
         <source>Specifies kind of alignments you want to allow</source>
-        <translation>Выбор типа искомого выравнивания.</translation>
+        <translation type="obsolete">Выбор типа искомого выравнивания.</translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildWorker.cpp" line="76"/>
         <source>Descriptive name of the HMM profile</source>
-        <translation>Описательное имя целевого профайла HMM.</translation>
+        <translation type="obsolete">Описательное имя целевого профайла HMM.</translation>
     </message>
     <message>
         <location filename="../src/u_build/HMMBuildWorker.cpp" line="83"/>
@@ -1258,15 +1276,19 @@
 <context>
     <name>U2::LocalWorkflow::HMMReadPrompter</name>
     <message>
-        <location filename="../src/HMMIOWorker.cpp" line="169"/>
         <source>Read HMM profile(s) from %1.</source>
-        <translation>Загрузить HMM профайл(ы) из %1</translation>
+        <translation type="obsolete">Загрузить HMM профайл(ы) из %1</translation>
+    </message>
+    <message>
+        <location filename="../src/HMMIOWorker.cpp" line="169"/>
+        <source>Read HMM profile(s) from %1</source>
+        <translation type="unfinished">Загрузить HMM профайл(ы) из %1 {1?}</translation>
     </message>
 </context>
 <context>
     <name>U2::LocalWorkflow::HMMReader</name>
     <message>
-        <location filename="../src/HMMIOWorker.cpp" line="233"/>
+        <location filename="../src/HMMIOWorker.cpp" line="236"/>
         <source>Loaded HMM profile from %1</source>
         <translation>Загружен HMM профайл из %1</translation>
     </message>
@@ -1302,12 +1324,12 @@
 <context>
     <name>U2::LocalWorkflow::HMMSearchWorker</name>
     <message>
-        <location filename="../src/u_search/HMMSearchWorker.cpp" line="196"/>
+        <location filename="../src/u_search/HMMSearchWorker.cpp" line="208"/>
         <source>Bad sequence supplied to input: %1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/u_search/HMMSearchWorker.cpp" line="221"/>
+        <location filename="../src/u_search/HMMSearchWorker.cpp" line="230"/>
         <source>Found %1 HMM signals</source>
         <translation>Найдено %1 сигналов HMM</translation>
     </message>
@@ -1362,7 +1384,7 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/u_search/HMMSearchWorker.cpp" line="192"/>
+        <location filename="../src/u_search/HMMSearchWorker.cpp" line="204"/>
         <source>Search HMM signals in %1</source>
         <translation>Поиск HMM сигналов в последовательности &apos;%1&apos;</translation>
     </message>
@@ -1408,17 +1430,17 @@
 <context>
     <name>U2::LocalWorkflow::HMMWriter</name>
     <message>
-        <location filename="../src/HMMIOWorker.cpp" line="253"/>
+        <location filename="../src/HMMIOWorker.cpp" line="260"/>
         <source>Empty HMM passed for writing to %1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/HMMIOWorker.cpp" line="253"/>
+        <location filename="../src/HMMIOWorker.cpp" line="260"/>
         <source>Unspecified URL for writing HMM</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/HMMIOWorker.cpp" line="268"/>
+        <location filename="../src/HMMIOWorker.cpp" line="276"/>
         <source>Writing HMM profile to %1</source>
         <translation>Запись HMM профайла &apos;%1&apos;</translation>
     </message>
@@ -1463,32 +1485,32 @@
         <translation>Построить профайл с помощью HMM2</translation>
     </message>
     <message>
-        <location filename="../src/uHMMPlugin.cpp" line="86"/>
+        <location filename="../src/uHMMPlugin.cpp" line="87"/>
         <source>Calibrate profile with HMM2</source>
         <translation>Калибровать профайл с помощью HMM2</translation>
     </message>
     <message>
-        <location filename="../src/uHMMPlugin.cpp" line="89"/>
+        <location filename="../src/uHMMPlugin.cpp" line="91"/>
         <source>Search with HMM2</source>
         <translation>Искать сигналы HMM2</translation>
     </message>
     <message>
-        <location filename="../src/uHMMPlugin.cpp" line="95"/>
+        <location filename="../src/uHMMPlugin.cpp" line="98"/>
         <source>HMMER tools</source>
         <translation>HMMER (Скрытые модели Маркова)</translation>
     </message>
     <message>
-        <location filename="../src/uHMMPlugin.cpp" line="196"/>
+        <location filename="../src/uHMMPlugin.cpp" line="201"/>
         <source>error</source>
         <translation>Внимание</translation>
     </message>
     <message>
-        <location filename="../src/uHMMPlugin.cpp" line="196"/>
+        <location filename="../src/uHMMPlugin.cpp" line="201"/>
         <source>neither_annotatedview_nor_pv_selection_found</source>
         <translation>Сначала выберите последовательность</translation>
     </message>
     <message>
-        <location filename="../src/uHMMPlugin.cpp" line="99"/>
+        <location filename="../src/uHMMPlugin.cpp" line="103"/>
         <source>HMMER2 tools</source>
         <translation>HMMER2 (Скрытые Модели Маркова)</translation>
     </message>

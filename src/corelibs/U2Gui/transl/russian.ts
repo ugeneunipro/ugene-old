@@ -77,44 +77,36 @@
 <context>
     <name>AnnotationSettingsDialog</name>
     <message>
-        <location filename="../src/util/ui/AnnotationSettingsDialog.ui" line="13"/>
         <source>Visualization settings for annotations</source>
-        <translation>Настройки визуализации аннотаций</translation>
+        <translation type="obsolete">Настройки визуализации аннотаций</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/AnnotationSettingsDialog.ui" line="26"/>
         <source>Name</source>
-        <translation>Имя</translation>
+        <translation type="obsolete">Имя</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/AnnotationSettingsDialog.ui" line="31"/>
         <source>Color</source>
-        <translation>Цвет</translation>
+        <translation type="obsolete">Цвет</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/AnnotationSettingsDialog.ui" line="36"/>
         <source>Amino</source>
-        <translation>Амино</translation>
+        <translation type="obsolete">Амино</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/AnnotationSettingsDialog.ui" line="41"/>
         <source>Highlight</source>
-        <translation>Маркировка</translation>
+        <translation type="obsolete">Маркировка</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/AnnotationSettingsDialog.ui" line="69"/>
         <source>OK</source>
-        <translation>Готово</translation>
+        <translation type="obsolete">Готово</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/AnnotationSettingsDialog.ui" line="82"/>
         <source>Cancel</source>
-        <translation>Отмена</translation>
+        <translation type="obsolete">Отмена</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/AnnotationSettingsDialog.ui" line="46"/>
         <source>Visual Qualifier</source>
-        <translation>Визуальный квалификатор</translation>
+        <translation type="obsolete">Визуальный квалификатор</translation>
     </message>
 </context>
 <context>
@@ -151,6 +143,34 @@
     </message>
 </context>
 <context>
+    <name>BreakpointConditionEditDialog</name>
+    <message>
+        <location filename="../src/util/ui/BreakpointConditionEditDialog.ui" line="14"/>
+        <source>Breakpoint Condition</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util/ui/BreakpointConditionEditDialog.ui" line="26"/>
+        <source>When the breakpoint location is reached, the expression is evaluated and&lt;br&gt;the breakpoint is hit only if the expression is true or has changed.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util/ui/BreakpointConditionEditDialog.ui" line="36"/>
+        <source>Condition</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util/ui/BreakpointConditionEditDialog.ui" line="48"/>
+        <source>Is true</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util/ui/BreakpointConditionEditDialog.ui" line="61"/>
+        <source>Has changed</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>CopyDocumentDialog</name>
     <message>
         <source>Copy Document</source>
@@ -165,119 +185,83 @@
         <translation type="obsolete">Формат</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/CopyDocumentDialog.ui" line="14"/>
         <source>Save a copy</source>
-        <translation>Сохранить копию документа</translation>
+        <translation type="obsolete">Сохранить копию документа</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/CopyDocumentDialog.ui" line="25"/>
         <source>Save to file</source>
-        <translation>Сохранить в файл</translation>
+        <translation type="obsolete">Сохранить в файл</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/CopyDocumentDialog.ui" line="32"/>
         <source>File format</source>
-        <translation>Формат файла</translation>
+        <translation type="obsolete">Формат файла</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/CopyDocumentDialog.ui" line="52"/>
         <source>Add to project</source>
-        <translation>Добавить в проект</translation>
+        <translation type="obsolete">Добавить в проект</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/CopyDocumentDialog.ui" line="45"/>
-        <source>...</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../src/util/ui/CopyDocumentDialog.ui" line="62"/>
         <source>Compress file</source>
-        <translation>Применить компрессию gzip</translation>
+        <translation type="obsolete">Применить компрессию gzip</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/CopyDocumentDialog.ui" line="89"/>
         <source>Save</source>
-        <translation>Сохранить</translation>
+        <translation type="obsolete">Сохранить</translation>
     </message>
     <message>
         <source>Create</source>
         <translation type="obsolete">Создать</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/CopyDocumentDialog.ui" line="96"/>
         <source>Cancel</source>
-        <translation>Отмена</translation>
+        <translation type="obsolete">Отмена</translation>
     </message>
 </context>
 <context>
     <name>CreateAnnotationWidget</name>
     <message>
-        <location filename="../src/util/ui/CreateAnnotationWidget.ui" line="54"/>
-        <location filename="../src/util/ui/CreateAnnotationWidget.ui" line="82"/>
-        <location filename="../src/util/ui/CreateAnnotationWidget.ui" line="117"/>
-        <location filename="../src/util/ui/CreateAnnotationWidget.ui" line="185"/>
-        <source>...</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../src/util/ui/CreateAnnotationWidget.ui" line="26"/>
         <source>Create annotations</source>
-        <translation>Создание аннотации</translation>
+        <translation type="obsolete">Создание аннотации</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/CreateAnnotationWidget.ui" line="35"/>
         <source>Save annotation(s) to</source>
-        <translation>Сохранить результат(ы) в</translation>
+        <translation type="obsolete">Сохранить результат(ы) в</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/CreateAnnotationWidget.ui" line="41"/>
         <source>Existing annotation table</source>
-        <translation>Существующую таблицу</translation>
+        <translation type="obsolete">Существующую таблицу</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/CreateAnnotationWidget.ui" line="65"/>
         <source>Create new table</source>
-        <translation>Новую таблицу</translation>
+        <translation type="obsolete">Новую таблицу</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/CreateAnnotationWidget.ui" line="92"/>
         <source>Annotation parameters</source>
-        <translation>Параметры аннотирования</translation>
+        <translation type="obsolete">Параметры аннотирования</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/CreateAnnotationWidget.ui" line="104"/>
         <source>Group name</source>
-        <translation>Имя группы</translation>
+        <translation type="obsolete">Имя группы</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/CreateAnnotationWidget.ui" line="114"/>
-        <source>Predefined group names</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../src/util/ui/CreateAnnotationWidget.ui" line="134"/>
         <source>Annotation name</source>
-        <translation>Имя аннотации</translation>
+        <translation type="obsolete">Имя аннотации</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/CreateAnnotationWidget.ui" line="168"/>
         <source>Location</source>
-        <translation>Позиция</translation>
+        <translation type="obsolete">Позиция</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/CreateAnnotationWidget.ui" line="148"/>
         <source>Predefined annotation names</source>
-        <translation>Стандартные имена аннотаций</translation>
+        <translation type="obsolete">Стандартные имена аннотаций</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/CreateAnnotationWidget.ui" line="175"/>
         <source>Annotation location in GenBank format</source>
-        <translation>Местоположение аннотации (в формате GenBank)</translation>
+        <translation type="obsolete">Местоположение аннотации (в формате GenBank)</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/CreateAnnotationWidget.ui" line="182"/>
         <source>Add/remove complement flag</source>
-        <translation>Добавить/снять флаг комплементарности</translation>
+        <translation type="obsolete">Добавить/снять флаг комплементарности</translation>
     </message>
 </context>
 <context>
@@ -388,7 +372,7 @@
 <context>
     <name>DownloadRemoteFileDialog</name>
     <message>
-        <location filename="../src/util/ui/DownloadRemoteFileDialog.ui" line="14"/>
+        <location filename="../src/util/ui/DownloadRemoteFileDialog.ui" line="26"/>
         <source>Fetch Data from Remote Database</source>
         <translation>Получить данные из удаленной базы</translation>
     </message>
@@ -397,47 +381,50 @@
         <translation type="obsolete">Введите идентификатор и выберите базу данных.</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/DownloadRemoteFileDialog.ui" line="22"/>
+        <location filename="../src/util/ui/DownloadRemoteFileDialog.ui" line="43"/>
         <source>Resource ID:</source>
         <translation>Идентификатор:</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/DownloadRemoteFileDialog.ui" line="32"/>
+        <location filename="../src/util/ui/DownloadRemoteFileDialog.ui" line="66"/>
         <source>Database:</source>
         <translation>База данных:</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/DownloadRemoteFileDialog.ui" line="49"/>
+        <location filename="../src/util/ui/DownloadRemoteFileDialog.ui" line="79"/>
         <source>Save to directory:</source>
         <translation>Сохранить в директорию:</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/DownloadRemoteFileDialog.ui" line="61"/>
+        <location filename="../src/util/ui/DownloadRemoteFileDialog.ui" line="104"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/DownloadRemoteFileDialog.ui" line="90"/>
-        <source>Hint</source>
-        <translation>Подсказка</translation>
-    </message>
-    <message>
-        <location filename="../src/util/ui/DownloadRemoteFileDialog.ui" line="97"/>
-        <source>Use database unique identifier.</source>
-        <translation>Использовать уникальный идентификатор базы данных.</translation>
-    </message>
-    <message>
-        <location filename="../src/util/ui/DownloadRemoteFileDialog.ui" line="104"/>
-        <source>You can download multiple items by separting IDs with space or semicolon.</source>
+        <location filename="../src/util/ui/DownloadRemoteFileDialog.ui" line="123"/>
+        <source>Output format:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util/ui/DownloadRemoteFileDialog.ui" line="142"/>
+        <location filename="../src/util/ui/DownloadRemoteFileDialog.ui" line="147"/>
+        <source>DAS features</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Hint</source>
+        <translation type="obsolete">Подсказка</translation>
+    </message>
+    <message>
+        <source>Use database unique identifier.</source>
+        <translation type="obsolete">Использовать уникальный идентификатор базы данных.</translation>
+    </message>
+    <message>
+        <location filename="../src/util/ui/DownloadRemoteFileDialog.ui" line="224"/>
         <source>OK</source>
         <translation>ОК</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/DownloadRemoteFileDialog.ui" line="149"/>
+        <location filename="../src/util/ui/DownloadRemoteFileDialog.ui" line="237"/>
         <source>Cancel</source>
         <translation>Отмена</translation>
     </message>
@@ -507,37 +494,130 @@
         <translation type="unfinished">Позиция для вставки</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/EditSequenceDialog.ui" line="91"/>
+        <location filename="../src/util/ui/EditSequenceDialog.ui" line="72"/>
+        <source>Press to insert before the start of the sequence</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util/ui/EditSequenceDialog.ui" line="75"/>
+        <source>start</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util/ui/EditSequenceDialog.ui" line="89"/>
+        <source>Press to insert to the end of the sequence</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util/ui/EditSequenceDialog.ui" line="92"/>
+        <source>end</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util/ui/EditSequenceDialog.ui" line="112"/>
+        <source>Selection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util/ui/EditSequenceDialog.ui" line="118"/>
+        <source>Press to insert before the selection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util/ui/EditSequenceDialog.ui" line="121"/>
+        <source>before</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util/ui/EditSequenceDialog.ui" line="128"/>
+        <source>Press to insert after the selection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util/ui/EditSequenceDialog.ui" line="131"/>
+        <source>after</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util/ui/EditSequenceDialog.ui" line="138"/>
+        <source>To change the regsion select it on a sequence</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util/ui/EditSequenceDialog.ui" line="159"/>
         <source>Save to new file</source>
         <translation type="unfinished">Сохранить в новый файл</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/EditSequenceDialog.ui" line="105"/>
+        <location filename="../src/util/ui/EditSequenceDialog.ui" line="173"/>
         <source>Document location:</source>
         <translation type="unfinished">Адрес документа:</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/EditSequenceDialog.ui" line="115"/>
+        <location filename="../src/util/ui/EditSequenceDialog.ui" line="183"/>
         <source>...</source>
         <translation type="unfinished">...</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/EditSequenceDialog.ui" line="122"/>
+        <location filename="../src/util/ui/EditSequenceDialog.ui" line="190"/>
         <source>Document format:</source>
         <translation type="unfinished">Формат:</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/EditSequenceDialog.ui" line="134"/>
+        <location filename="../src/util/ui/EditSequenceDialog.ui" line="202"/>
         <source>Merge annotations to this file</source>
         <translation type="unfinished">Сохранить связанные аннотации</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/EditSequenceDialog.ui" line="159"/>
+        <location filename="../src/util/ui/EditSequenceDialog.ui" line="227"/>
         <source>OK</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util/ui/EditSequenceDialog.ui" line="166"/>
+        <location filename="../src/util/ui/EditSequenceDialog.ui" line="234"/>
+        <source>Cancel</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>ExportDocumentDialog</name>
+    <message>
+        <location filename="../src/util/ui/ExportDocumentDialog.ui" line="14"/>
+        <source>Export Document</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util/ui/ExportDocumentDialog.ui" line="25"/>
+        <source>Save to file</source>
+        <translation type="unfinished">Сохранить в файл</translation>
+    </message>
+    <message>
+        <location filename="../src/util/ui/ExportDocumentDialog.ui" line="32"/>
+        <source>File format</source>
+        <translation type="unfinished">Формат файла</translation>
+    </message>
+    <message>
+        <location filename="../src/util/ui/ExportDocumentDialog.ui" line="45"/>
+        <source>...</source>
+        <translation type="unfinished">...</translation>
+    </message>
+    <message>
+        <location filename="../src/util/ui/ExportDocumentDialog.ui" line="52"/>
+        <source>Add to project</source>
+        <translation type="unfinished">Добавить в проект</translation>
+    </message>
+    <message>
+        <location filename="../src/util/ui/ExportDocumentDialog.ui" line="62"/>
+        <source>Compress file</source>
+        <translation type="unfinished">Применить компрессию gzip</translation>
+    </message>
+    <message>
+        <location filename="../src/util/ui/ExportDocumentDialog.ui" line="89"/>
+        <source>Export</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util/ui/ExportDocumentDialog.ui" line="96"/>
         <source>Cancel</source>
         <translation type="unfinished"></translation>
     </message>
@@ -666,6 +746,70 @@
     </message>
 </context>
 <context>
+    <name>RangeSelectionDialog</name>
+    <message>
+        <location filename="../src/util/ui/RangeSelectionDialog.ui" line="14"/>
+        <source>Region Selection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util/ui/RangeSelectionDialog.ui" line="31"/>
+        <source>    Region:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util/ui/RangeSelectionDialog.ui" line="41"/>
+        <source>Single Range Selection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util/ui/RangeSelectionDialog.ui" line="44"/>
+        <location filename="../src/util/ui/RangeSelectionDialog.ui" line="54"/>
+        <source>buttonGroup</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util/ui/RangeSelectionDialog.ui" line="51"/>
+        <source>Multiple Range Selection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util/ui/RangeSelectionDialog.ui" line="70"/>
+        <source>-</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util/ui/RangeSelectionDialog.ui" line="86"/>
+        <source>    Multi Region:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util/ui/RangeSelectionDialog.ui" line="96"/>
+        <source>Input Format: 1..10,50..60</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util/ui/RangeSelectionDialog.ui" line="116"/>
+        <source>Min</source>
+        <translation type="unfinished">Мин</translation>
+    </message>
+    <message>
+        <location filename="../src/util/ui/RangeSelectionDialog.ui" line="123"/>
+        <source>Max</source>
+        <translation type="unfinished">Макс</translation>
+    </message>
+    <message>
+        <location filename="../src/util/ui/RangeSelectionDialog.ui" line="147"/>
+        <source>Go</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util/ui/RangeSelectionDialog.ui" line="157"/>
+        <source>Cancel</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>RemovePartFromSequenceDialog</name>
     <message>
         <location filename="../src/util/ui/RemovePartFromSequenceDialog.ui" line="14"/>
@@ -732,53 +876,116 @@
         <translation>Редактор скрипта</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/ScriptEditorDialog.ui" line="22"/>
+        <location filename="../src/util/ui/ScriptEditorDialog.ui" line="20"/>
         <source>Used script</source>
         <translation>Используемый скрипт</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/ScriptEditorDialog.ui" line="32"/>
+        <location filename="../src/util/ui/ScriptEditorDialog.ui" line="30"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/ScriptEditorDialog.ui" line="41"/>
+        <location filename="../src/util/ui/ScriptEditorDialog.ui" line="55"/>
         <source>Script text</source>
         <translation>Текст скрипта</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/ScriptEditorDialog.ui" line="59"/>
+        <location filename="../src/util/ui/ScriptEditorDialog.ui" line="71"/>
         <source>Check syntax</source>
         <translation>Проверить синтаксис</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/ScriptEditorDialog.ui" line="66"/>
+        <location filename="../src/util/ui/ScriptEditorDialog.ui" line="85"/>
         <source>Save</source>
         <translation>Сохранить</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/ScriptEditorDialog.ui" line="86"/>
+        <location filename="../src/util/ui/ScriptEditorDialog.ui" line="78"/>
         <source>Clear</source>
         <translation>Очистить</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/ScriptEditorDialog.ui" line="93"/>
+        <location filename="../src/util/ui/ScriptEditorDialog.ui" line="64"/>
         <source>Save as..</source>
         <translation>Сохранить как...</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/ScriptEditorDialog.ui" line="100"/>
+        <location filename="../src/util/ui/ScriptEditorDialog.ui" line="92"/>
         <source>Done</source>
         <translation>Готово</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/ScriptEditorDialog.ui" line="107"/>
+        <location filename="../src/util/ui/ScriptEditorDialog.ui" line="119"/>
         <source>Cancel</source>
         <translation>Отмена</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/ScriptEditorDialog.ui" line="114"/>
+        <location filename="../src/util/ui/ScriptEditorDialog.ui" line="99"/>
         <source>Line:</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>SearchGenbankSequenceDialog</name>
+    <message>
+        <location filename="../src/util/ui/SearchGenbankSequenceDialog.ui" line="14"/>
+        <source>NCBI Sequence Search</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util/ui/SearchGenbankSequenceDialog.ui" line="30"/>
+        <source>Database:</source>
+        <translation type="unfinished">База данных:</translation>
+    </message>
+    <message>
+        <location filename="../src/util/ui/SearchGenbankSequenceDialog.ui" line="55"/>
+        <source>Search query:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util/ui/SearchGenbankSequenceDialog.ui" line="93"/>
+        <source>History...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util/ui/SearchGenbankSequenceDialog.ui" line="102"/>
+        <source>Results:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util/ui/SearchGenbankSequenceDialog.ui" line="119"/>
+        <source>ID</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util/ui/SearchGenbankSequenceDialog.ui" line="124"/>
+        <source>Desc</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util/ui/SearchGenbankSequenceDialog.ui" line="129"/>
+        <source>Size</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util/ui/SearchGenbankSequenceDialog.ui" line="152"/>
+        <source>Result limit:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util/ui/SearchGenbankSequenceDialog.ui" line="173"/>
+        <source>Search</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util/ui/SearchGenbankSequenceDialog.ui" line="196"/>
+        <source>Download</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util/ui/SearchGenbankSequenceDialog.ui" line="203"/>
+        <source>Close</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -810,23 +1017,22 @@
         <translation>Вставьте текст:</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/SeqPasterWidget.ui" line="43"/>
-        <location filename="../src/util/ui/SeqPasterWidget.ui" line="53"/>
+        <location filename="../src/util/ui/SeqPasterWidget.ui" line="46"/>
         <source>Custom settings</source>
         <translation>Дополнительные опции</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/SeqPasterWidget.ui" line="59"/>
+        <location filename="../src/util/ui/SeqPasterWidget.ui" line="61"/>
         <source>Alphabet:</source>
         <translation>Алфавит:</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/SeqPasterWidget.ui" line="69"/>
+        <location filename="../src/util/ui/SeqPasterWidget.ui" line="71"/>
         <source>Skip unknown symbols</source>
         <translation>Пропускать неизвестные символы</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/SeqPasterWidget.ui" line="79"/>
+        <location filename="../src/util/ui/SeqPasterWidget.ui" line="81"/>
         <source>Replace unknown symbols with</source>
         <translation>Заменять незивестные символы:</translation>
     </message>
@@ -834,17 +1040,37 @@
 <context>
     <name>SeqPasterWidgetController</name>
     <message>
-        <location filename="../src/util/SeqPasterWidgetController.cpp" line="79"/>
+        <location filename="../src/util/SeqPasterWidgetController.cpp" line="80"/>
         <source>Input sequence is empty</source>
         <translation type="unfinished">Входная последовательность пуста</translation>
     </message>
     <message>
-        <location filename="../src/util/SeqPasterWidgetController.cpp" line="83"/>
+        <location filename="../src/util/SeqPasterWidgetController.cpp" line="102"/>
         <source>Replace symbol is empty</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util/SeqPasterWidgetController.cpp" line="99"/>
+        <location filename="../src/util/SeqPasterWidgetController.cpp" line="106"/>
+        <source>Replace symbol is not belongs to selected alphabet</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util/SeqPasterWidgetController.cpp" line="114"/>
+        <source>Some of symbols, which doesn&apos;t match alphabet has been </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util/SeqPasterWidgetController.cpp" line="116"/>
+        <source>replaced</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util/SeqPasterWidgetController.cpp" line="118"/>
+        <source>removed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util/SeqPasterWidgetController.cpp" line="96"/>
         <source>Alphabet not detected</source>
         <translation type="unfinished">Алфавит не определён</translation>
     </message>
@@ -875,8 +1101,8 @@
 <context>
     <name>U2::AddDocumentAndOpenViewTask</name>
     <message>
-        <location filename="../src/OpenViewTask.cpp" line="270"/>
-        <location filename="../src/OpenViewTask.cpp" line="277"/>
+        <location filename="../src/OpenViewTask.cpp" line="284"/>
+        <location filename="../src/OpenViewTask.cpp" line="291"/>
         <source>Opening view for document: %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -972,39 +1198,8 @@ does not exist!</source>
 <context>
     <name>U2::AnnotationSettingsDialogImpl</name>
     <message>
-        <location filename="../src/util/AnnotationSettingsDialogImpl.cpp" line="59"/>
         <source>Annotation name</source>
-        <translation>Имя аннотации</translation>
-    </message>
-    <message>
-        <location filename="../src/util/AnnotationSettingsDialogImpl.cpp" line="60"/>
-        <source>A color used to highlight annotation</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/util/AnnotationSettingsDialogImpl.cpp" line="61"/>
-        <source>If checked the annotation will be shown on amino strand</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/util/AnnotationSettingsDialogImpl.cpp" line="62"/>
-        <source>If unchecked the annotation will not be highlighted with color</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/util/AnnotationSettingsDialogImpl.cpp" line="63"/>
-        <source>A comma-separated list of qualifier names.&lt;br&gt; The value of qualifiers will be shown instead of the annotation names in PanView</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/util/AnnotationSettingsDialogImpl.cpp" line="159"/>
-        <source>Visual qualifiers for %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/util/AnnotationSettingsDialogImpl.cpp" line="160"/>
-        <source>Please enter a comma-separated list of qualifier names.&lt;br&gt; &lt;i&gt;The value of qualifiers (with list priority) will be shown instead of the annotation names in PanView&lt;/i&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Имя аннотации</translation>
     </message>
 </context>
 <context>
@@ -1040,8 +1235,14 @@ does not exist!</source>
     </message>
     <message>
         <location filename="../src/util/CreateAnnotationDialog.cpp" line="75"/>
+        <location filename="../src/util/CreateAnnotationDialog.cpp" line="80"/>
         <source>Error</source>
         <translation>Ошибка валидации</translation>
+    </message>
+    <message>
+        <location filename="../src/util/CreateAnnotationDialog.cpp" line="80"/>
+        <source>Cannot create an annotation object. Please check settings</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/util/CreateAnnotationDialog.cpp" line="69"/>
@@ -1052,37 +1253,122 @@ does not exist!</source>
 <context>
     <name>U2::CreateAnnotationWidgetController</name>
     <message>
-        <location filename="../src/util/CreateAnnotationWidgetController.cpp" line="122"/>
+        <location filename="../src/util/CreateAnnotationWidgetController.cpp" line="176"/>
         <source>&lt;auto&gt;</source>
         <translation>&lt;авто&gt;</translation>
     </message>
     <message>
-        <location filename="../src/util/CreateAnnotationWidgetController.cpp" line="168"/>
+        <location filename="../src/util/CreateAnnotationWidgetController.cpp" line="246"/>
+        <source>Create Annotations</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util/CreateAnnotationWidgetController.cpp" line="253"/>
+        <source>Chose a file to store the annotations</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util/CreateAnnotationWidgetController.cpp" line="254"/>
+        <source>Save annotation(s) to</source>
+        <translation type="unfinished">Сохранить результат(ы) в</translation>
+    </message>
+    <message>
+        <location filename="../src/util/CreateAnnotationWidgetController.cpp" line="261"/>
+        <source>Existing table</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util/CreateAnnotationWidgetController.cpp" line="278"/>
+        <source>Create new table</source>
+        <translation type="unfinished">Новую таблицу</translation>
+    </message>
+    <message>
+        <location filename="../src/util/CreateAnnotationWidgetController.cpp" line="286"/>
+        <source>Use auto-annotations table</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util/CreateAnnotationWidgetController.cpp" line="324"/>
+        <source>Annotation parameters</source>
+        <translation type="unfinished">Параметры аннотирования</translation>
+    </message>
+    <message>
+        <location filename="../src/util/CreateAnnotationWidgetController.cpp" line="343"/>
+        <source>Predefined group names</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util/CreateAnnotationWidgetController.cpp" line="359"/>
+        <source>Predefined annotation names</source>
+        <translation type="unfinished">Стандартные имена аннотаций</translation>
+    </message>
+    <message>
+        <location filename="../src/util/CreateAnnotationWidgetController.cpp" line="367"/>
+        <source>Annotation location in GenBank format</source>
+        <translation type="unfinished">Местоположение аннотации (в формате GenBank)</translation>
+    </message>
+    <message>
+        <location filename="../src/util/CreateAnnotationWidgetController.cpp" line="372"/>
+        <source>Add/remove complement flag</source>
+        <translation type="unfinished">Добавить/снять флаг комплементарности</translation>
+    </message>
+    <message>
+        <location filename="../src/util/CreateAnnotationWidgetController.cpp" line="377"/>
+        <source>Group name</source>
+        <translation type="unfinished">Имя группы</translation>
+    </message>
+    <message>
+        <location filename="../src/util/CreateAnnotationWidgetController.cpp" line="378"/>
+        <source>Annotation name</source>
+        <translation type="unfinished">Имя аннотации</translation>
+    </message>
+    <message>
+        <location filename="../src/util/CreateAnnotationWidgetController.cpp" line="379"/>
+        <source>Location</source>
+        <translation type="unfinished">Позиция</translation>
+    </message>
+    <message>
+        <location filename="../src/util/CreateAnnotationWidgetController.cpp" line="392"/>
+        <source>Group name:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util/CreateAnnotationWidgetController.cpp" line="393"/>
+        <source>Annotation name:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util/CreateAnnotationWidgetController.cpp" line="394"/>
+        <source>Location:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util/CreateAnnotationWidgetController.cpp" line="428"/>
         <source>Save file</source>
         <translation>Создание документа</translation>
     </message>
     <message>
-        <location filename="../src/util/CreateAnnotationWidgetController.cpp" line="215"/>
+        <location filename="../src/util/CreateAnnotationWidgetController.cpp" line="474"/>
         <source>Select annotation saving parameters</source>
         <translation>Не выбран объект для размещения аннотации</translation>
     </message>
     <message>
-        <location filename="../src/util/CreateAnnotationWidgetController.cpp" line="218"/>
+        <location filename="../src/util/CreateAnnotationWidgetController.cpp" line="477"/>
         <source>Document is already added to the project: &apos;%1&apos;</source>
         <translation type="unfinished">Документ уже существует: %1</translation>
     </message>
     <message>
-        <location filename="../src/util/CreateAnnotationWidgetController.cpp" line="224"/>
+        <location filename="../src/util/CreateAnnotationWidgetController.cpp" line="483"/>
         <source>Illegal folder: %1</source>
         <translation>Не найден путь: %1</translation>
     </message>
     <message>
-        <location filename="../src/util/CreateAnnotationWidgetController.cpp" line="230"/>
+        <location filename="../src/util/CreateAnnotationWidgetController.cpp" line="489"/>
         <source>Annotation name is empty</source>
         <translation>Не указано имя аннотации</translation>
     </message>
     <message>
-        <location filename="../src/util/CreateAnnotationWidgetController.cpp" line="235"/>
+        <location filename="../src/util/CreateAnnotationWidgetController.cpp" line="494"/>
         <source>Annotation name is too long!
 Maximum allowed size: %1 (Genbank format compatibility issue)</source>
         <translation type="unfinished"></translation>
@@ -1092,22 +1378,22 @@ Maximum allowed size: %1 (Genbank format compatibility issue)</source>
         <translation type="obsolete">Слишком длинное имя аннотации</translation>
     </message>
     <message>
-        <location filename="../src/util/CreateAnnotationWidgetController.cpp" line="240"/>
+        <location filename="../src/util/CreateAnnotationWidgetController.cpp" line="499"/>
         <source>Illegal annotation name</source>
         <translation>Нелегальные символы в имени аннотации. Допустимы только цифры, буквы и подчёркивания</translation>
     </message>
     <message>
-        <location filename="../src/util/CreateAnnotationWidgetController.cpp" line="245"/>
+        <location filename="../src/util/CreateAnnotationWidgetController.cpp" line="504"/>
         <source>Group name is empty</source>
         <translation>Не указано имя группы</translation>
     </message>
     <message>
-        <location filename="../src/util/CreateAnnotationWidgetController.cpp" line="250"/>
+        <location filename="../src/util/CreateAnnotationWidgetController.cpp" line="509"/>
         <source>Illegal group name</source>
         <translation>Нелегальные символы в имени группы</translation>
     </message>
     <message>
-        <location filename="../src/util/CreateAnnotationWidgetController.cpp" line="254"/>
+        <location filename="../src/util/CreateAnnotationWidgetController.cpp" line="513"/>
         <source>Invalid location! Location must be in GenBank format.
 Simple examples:
 1..10
@@ -1199,24 +1485,21 @@ complement(5..15)</translation>
 <context>
     <name>U2::DialogUtils</name>
     <message>
-        <location filename="../src/util/DialogUtils.cpp" line="68"/>
+        <location filename="../src/util/DialogUtils.cpp" line="44"/>
         <source>Error</source>
         <translation>Ошибка</translation>
     </message>
     <message>
-        <location filename="../src/util/DialogUtils.cpp" line="68"/>
+        <location filename="../src/util/DialogUtils.cpp" line="44"/>
         <source>Project is locked</source>
         <translation>Проект заблокирован</translation>
     </message>
     <message>
-        <location filename="../src/util/DialogUtils.cpp" line="85"/>
-        <location filename="../src/util/DialogUtils.cpp" line="123"/>
-        <location filename="../src/util/DialogUtils.cpp" line="140"/>
         <source>All files</source>
-        <translation>Все файлы</translation>
+        <translation type="obsolete">Все файлы</translation>
     </message>
     <message>
-        <location filename="../src/util/DialogUtils.cpp" line="159"/>
+        <location filename="../src/util/DialogUtils.cpp" line="75"/>
         <source>Export alignment image</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1240,7 +1523,7 @@ complement(5..15)</translation>
         <translation type="obsolete">Укажите сохраняемый файл</translation>
     </message>
     <message>
-        <location filename="../src/util/DownloadRemoteFileDialog.cpp" line="78"/>
+        <location filename="../src/util/DownloadRemoteFileDialog.cpp" line="129"/>
         <source>Select directory to save</source>
         <translation>Папка для сохранения</translation>
     </message>
@@ -1249,14 +1532,29 @@ complement(5..15)</translation>
         <translation type="obsolete">Ошибка!</translation>
     </message>
     <message>
-        <location filename="../src/util/DownloadRemoteFileDialog.cpp" line="115"/>
+        <location filename="../src/util/DownloadRemoteFileDialog.cpp" line="170"/>
         <source>Resource id is empty!</source>
         <translation>Идентификатор ресурса пуст!</translation>
     </message>
     <message>
-        <location filename="../src/util/DownloadRemoteFileDialog.cpp" line="121"/>
+        <location filename="../src/util/DownloadRemoteFileDialog.cpp" line="176"/>
         <source>No directory selected for saving file!</source>
         <translation>Не задана директория для сохранения файла!</translation>
+    </message>
+    <message>
+        <location filename="../src/util/DownloadRemoteFileDialog.cpp" line="287"/>
+        <source>Hint: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util/DownloadRemoteFileDialog.cpp" line="288"/>
+        <source>Use database unique identifier.</source>
+        <translation type="unfinished">Использовать уникальный идентификатор базы данных.</translation>
+    </message>
+    <message>
+        <location filename="../src/util/DownloadRemoteFileDialog.cpp" line="290"/>
+        <source>You can download multiple items by separating IDs with space or semicolon.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Directory doesn&apos;t exists</source>
@@ -1304,32 +1602,32 @@ Do you wish to create this directory?</source>
 <context>
     <name>U2::EditSequenceDialogController</name>
     <message>
-        <location filename="../src/util/EditSequenceDialogController.cpp" line="51"/>
+        <location filename="../src/util/EditSequenceDialogController.cpp" line="87"/>
         <source>Insert sequence</source>
         <translation type="unfinished">Вставить последовательность</translation>
     </message>
     <message>
-        <location filename="../src/util/EditSequenceDialogController.cpp" line="53"/>
+        <location filename="../src/util/EditSequenceDialogController.cpp" line="93"/>
         <source>Replace sequence</source>
         <translation type="unfinished">Заменить последовательность</translation>
     </message>
     <message>
-        <location filename="../src/util/EditSequenceDialogController.cpp" line="87"/>
+        <location filename="../src/util/EditSequenceDialogController.cpp" line="135"/>
         <source>Directory to save is not exists</source>
         <translation type="unfinished">Директория не существует</translation>
     </message>
     <message>
-        <location filename="../src/util/EditSequenceDialogController.cpp" line="91"/>
+        <location filename="../src/util/EditSequenceDialogController.cpp" line="139"/>
         <source>Entered path is empty</source>
         <translation type="unfinished">Не задан путь</translation>
     </message>
     <message>
-        <location filename="../src/util/EditSequenceDialogController.cpp" line="95"/>
+        <location filename="../src/util/EditSequenceDialogController.cpp" line="143"/>
         <source>Filename is empty</source>
         <translation type="unfinished">Не задано имя файла</translation>
     </message>
     <message>
-        <location filename="../src/util/EditSequenceDialogController.cpp" line="113"/>
+        <location filename="../src/util/EditSequenceDialogController.cpp" line="161"/>
         <source>Select file to save...</source>
         <translation type="unfinished">Сохранение файла</translation>
     </message>
@@ -1362,7 +1660,7 @@ Do you wish to create this directory?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util/ExportImageDialog.cpp" line="248"/>
+        <location filename="../src/util/ExportImageDialog.cpp" line="250"/>
         <source>Save image to...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1370,8 +1668,8 @@ Do you wish to create this directory?</source>
 <context>
     <name>U2::FileLineEdit</name>
     <message>
-        <location filename="../src/util/DialogUtils.cpp" line="172"/>
-        <location filename="../src/util/DialogUtils.cpp" line="178"/>
+        <location filename="../src/util/DialogUtils.cpp" line="88"/>
+        <location filename="../src/util/DialogUtils.cpp" line="94"/>
         <source>Select file(s)</source>
         <translation>Выберите файл(ы)</translation>
     </message>
@@ -1383,12 +1681,12 @@ Do you wish to create this directory?</source>
 <context>
     <name>U2::GObjectView</name>
     <message>
-        <location filename="../src/ObjectViewModel.cpp" line="109"/>
+        <location filename="../src/ObjectViewModel.cpp" line="112"/>
         <source>Object is already added to view %1!</source>
         <translation>Объект уже добавлен в окно &quot;%1&quot;</translation>
     </message>
     <message>
-        <location filename="../src/ObjectViewModel.cpp" line="123"/>
+        <location filename="../src/ObjectViewModel.cpp" line="126"/>
         <source>Can&apos;t add object: %1</source>
         <translation>Не удалось добавить объект: %1</translation>
     </message>
@@ -1396,24 +1694,24 @@ Do you wish to create this directory?</source>
 <context>
     <name>U2::GUIUtils</name>
     <message>
-        <location filename="../src/util/GUIUtils.cpp" line="120"/>
-        <location filename="../src/util/GUIUtils.cpp" line="130"/>
-        <location filename="../src/util/GUIUtils.cpp" line="148"/>
+        <location filename="../src/util/GUIUtils.cpp" line="139"/>
+        <location filename="../src/util/GUIUtils.cpp" line="149"/>
+        <location filename="../src/util/GUIUtils.cpp" line="167"/>
         <source>Error!</source>
         <translation>Ошибка</translation>
     </message>
     <message>
-        <location filename="../src/util/GUIUtils.cpp" line="120"/>
+        <location filename="../src/util/GUIUtils.cpp" line="139"/>
         <source>Document URL is empty!</source>
         <translation type="unfinished">Пустая ссылка</translation>
     </message>
     <message>
-        <location filename="../src/util/GUIUtils.cpp" line="130"/>
+        <location filename="../src/util/GUIUtils.cpp" line="149"/>
         <source>Unable to launch default web browser.</source>
         <translation>Не удалось запустить стандартный браузер Интернет</translation>
     </message>
     <message>
-        <location filename="../src/util/GUIUtils.cpp" line="148"/>
+        <location filename="../src/util/GUIUtils.cpp" line="167"/>
         <source>Please specify the browser executable</source>
         <translation>Не указано приложение браузера</translation>
     </message>
@@ -1432,15 +1730,23 @@ Do you wish to create this directory?</source>
     </message>
 </context>
 <context>
+    <name>U2::LoadDASDocumentsAndOpenViewTask</name>
+    <message>
+        <location filename="../src/OpenViewTask.cpp" line="313"/>
+        <source>Load DAS documents and open view</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>U2::LoadRemoteDocumentAndOpenViewTask</name>
     <message>
-        <location filename="../src/OpenViewTask.cpp" line="233"/>
+        <location filename="../src/OpenViewTask.cpp" line="240"/>
         <source>Cannot find %1 in %2 database</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/OpenViewTask.cpp" line="197"/>
         <location filename="../src/OpenViewTask.cpp" line="203"/>
+        <location filename="../src/OpenViewTask.cpp" line="209"/>
         <source>Load remote document and open view</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1448,7 +1754,7 @@ Do you wish to create this directory?</source>
 <context>
     <name>U2::LoadUnloadedDocumentAndOpenViewTask</name>
     <message>
-        <location filename="../src/OpenViewTask.cpp" line="64"/>
+        <location filename="../src/OpenViewTask.cpp" line="66"/>
         <source>Load document: &apos;%1&apos;</source>
         <translation>Загрузка документа: %1</translation>
     </message>
@@ -1456,42 +1762,42 @@ Do you wish to create this directory?</source>
 <context>
     <name>U2::LogViewWidget</name>
     <message>
-        <location filename="../src/util/logview/LogView.cpp" line="68"/>
+        <location filename="../src/util/logview/LogView.cpp" line="74"/>
         <source>Log</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util/logview/LogView.cpp" line="73"/>
+        <location filename="../src/util/logview/LogView.cpp" line="81"/>
         <source>Settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util/logview/LogView.cpp" line="77"/>
+        <location filename="../src/util/logview/LogView.cpp" line="85"/>
         <source>Dump performance counters</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util/logview/LogView.cpp" line="80"/>
+        <location filename="../src/util/logview/LogView.cpp" line="88"/>
         <source>Append separator</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util/logview/LogView.cpp" line="82"/>
+        <location filename="../src/util/logview/LogView.cpp" line="90"/>
         <source>Clear log</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util/logview/LogView.cpp" line="118"/>
+        <location filename="../src/util/logview/LogView.cpp" line="126"/>
         <source>Copy</source>
         <translation type="unfinished">Копировать</translation>
     </message>
     <message>
-        <location filename="../src/util/logview/LogView.cpp" line="196"/>
+        <location filename="../src/util/logview/LogView.cpp" line="191"/>
         <source>logview_set_case</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util/logview/LogView.cpp" line="199"/>
+        <location filename="../src/util/logview/LogView.cpp" line="194"/>
         <source>logview_use_regexp</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1507,12 +1813,12 @@ Do you wish to create this directory?</source>
 <context>
     <name>U2::Notification</name>
     <message>
-        <location filename="../src/Notification.cpp" line="146"/>
+        <location filename="../src/Notification.cpp" line="151"/>
         <source>Remove notification after closing</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/Notification.cpp" line="161"/>
+        <location filename="../src/Notification.cpp" line="166"/>
         <source>Detailed message</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1538,27 +1844,27 @@ Do you wish to create this directory?</source>
 <context>
     <name>U2::ObjectViewTreeController</name>
     <message>
-        <location filename="../src/util/ObjectViewTreeController.cpp" line="55"/>
+        <location filename="../src/util/ObjectViewTreeController.cpp" line="56"/>
         <source>Activate view</source>
         <translation>Переключиться на окно</translation>
     </message>
     <message>
-        <location filename="../src/util/ObjectViewTreeController.cpp" line="60"/>
+        <location filename="../src/util/ObjectViewTreeController.cpp" line="62"/>
         <source>Add bookmark</source>
         <translation>Добавить закладку</translation>
     </message>
     <message>
-        <location filename="../src/util/ObjectViewTreeController.cpp" line="64"/>
+        <location filename="../src/util/ObjectViewTreeController.cpp" line="67"/>
         <source>Remove bookmark</source>
         <translation>Удалить закладку</translation>
     </message>
     <message>
-        <location filename="../src/util/ObjectViewTreeController.cpp" line="70"/>
+        <location filename="../src/util/ObjectViewTreeController.cpp" line="74"/>
         <source>Rename bookmark</source>
         <translation>Переименовать закладку</translation>
     </message>
     <message>
-        <location filename="../src/util/ObjectViewTreeController.cpp" line="350"/>
+        <location filename="../src/util/ObjectViewTreeController.cpp" line="391"/>
         <source>New bookmark</source>
         <translation>Закладка</translation>
     </message>
@@ -1567,7 +1873,7 @@ Do you wish to create this directory?</source>
     <name>U2::PositionSelector</name>
     <message>
         <location filename="../src/util/PositionSelector.cpp" line="40"/>
-        <location filename="../src/util/PositionSelector.cpp" line="85"/>
+        <location filename="../src/util/PositionSelector.cpp" line="88"/>
         <source>Go!</source>
         <translation>Перейти!</translation>
     </message>
@@ -1577,12 +1883,12 @@ Do you wish to create this directory?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util/PositionSelector.cpp" line="71"/>
+        <location filename="../src/util/PositionSelector.cpp" line="74"/>
         <source>Position</source>
         <translation>Позиция</translation>
     </message>
     <message>
-        <location filename="../src/util/PositionSelector.cpp" line="90"/>
+        <location filename="../src/util/PositionSelector.cpp" line="94"/>
         <source>Cancel</source>
         <translation>Отмена</translation>
     </message>
@@ -1630,124 +1936,150 @@ Do you wish to create this directory?</source>
 <context>
     <name>U2::ProjectTreeController</name>
     <message>
-        <location filename="../src/util/ProjectTreeController.cpp" line="94"/>
+        <location filename="../src/util/ProjectTreeController.cpp" line="99"/>
         <source>Remove selected documents</source>
         <translation>Удалить выбранные документы</translation>
     </message>
     <message>
-        <location filename="../src/util/ProjectTreeController.cpp" line="103"/>
-        <location filename="../src/util/ProjectTreeController.cpp" line="577"/>
+        <location filename="../src/util/ProjectTreeController.cpp" line="108"/>
+        <location filename="../src/util/ProjectTreeController.cpp" line="617"/>
         <source>Load selected documents</source>
         <translation>Загрузить выбранные документы</translation>
     </message>
     <message>
-        <location filename="../src/util/ProjectTreeController.cpp" line="500"/>
+        <location filename="../src/util/ProjectTreeController.cpp" line="525"/>
         <source>Add</source>
         <translation>Добавить</translation>
     </message>
     <message>
-        <location filename="../src/util/ProjectTreeController.cpp" line="510"/>
         <source>Remove</source>
-        <translation>Удалить</translation>
+        <translation type="obsolete">Удалить</translation>
     </message>
     <message>
-        <location filename="../src/util/ProjectTreeController.cpp" line="1225"/>
-        <location filename="../src/util/ProjectTreeController.cpp" line="1297"/>
+        <location filename="../src/util/ProjectTreeController.cpp" line="1284"/>
+        <location filename="../src/util/ProjectTreeController.cpp" line="1363"/>
         <source>[loading %1%]</source>
         <translation>[прочитано %1%]</translation>
     </message>
     <message>
-        <location filename="../src/util/ProjectTreeController.cpp" line="497"/>
+        <location filename="../src/util/ProjectTreeController.cpp" line="522"/>
         <source>Existing document</source>
         <translation>Существующий документ</translation>
     </message>
     <message>
-        <location filename="../src/util/ProjectTreeController.cpp" line="115"/>
+        <location filename="../src/util/ProjectTreeController.cpp" line="123"/>
         <source>Unload selected document</source>
         <translation>Выгрузить выбранные документы</translation>
     </message>
     <message>
-        <location filename="../src/util/ProjectTreeController.cpp" line="1241"/>
+        <location filename="../src/util/ProjectTreeController.cpp" line="445"/>
+        <source>The name must be not empty and not longer than %1 characters</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util/ProjectTreeController.cpp" line="449"/>
+        <source>Duplicate object names are not allowed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util/ProjectTreeController.cpp" line="453"/>
+        <source>The name can&apos;t contain any of the following characters: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util/ProjectTreeController.cpp" line="724"/>
+        <source>Warning</source>
+        <translation type="unfinished">Внимание</translation>
+    </message>
+    <message>
+        <location filename="../src/util/ProjectTreeController.cpp" line="725"/>
+        <source>This action requires changing file:
+%1
+You don&apos;t have enough rights to change file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util/ProjectTreeController.cpp" line="1156"/>
+        <source>No object to add to view</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util/ProjectTreeController.cpp" line="1162"/>
+        <source>No object to remove from view</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util/ProjectTreeController.cpp" line="1300"/>
         <source>Locks:</source>
         <translation>Блокировки:</translation>
     </message>
     <message>
-        <location filename="../src/util/ProjectTreeController.cpp" line="1244"/>
+        <location filename="../src/util/ProjectTreeController.cpp" line="1303"/>
         <source>Project is locked</source>
         <translation>Проект заблокирован</translation>
     </message>
     <message>
-        <location filename="../src/util/ProjectTreeController.cpp" line="121"/>
+        <location filename="../src/util/ProjectTreeController.cpp" line="130"/>
         <source>Group by document</source>
         <translation>Группировать по файлам</translation>
     </message>
     <message>
-        <location filename="../src/util/ProjectTreeController.cpp" line="90"/>
+        <location filename="../src/util/ProjectTreeController.cpp" line="95"/>
         <source>Add object to document</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util/ProjectTreeController.cpp" line="100"/>
+        <location filename="../src/util/ProjectTreeController.cpp" line="105"/>
         <source>Remove object from document</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util/ProjectTreeController.cpp" line="118"/>
+        <location filename="../src/util/ProjectTreeController.cpp" line="126"/>
         <source>Rename...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util/ProjectTreeController.cpp" line="127"/>
+        <location filename="../src/util/ProjectTreeController.cpp" line="136"/>
         <source>Group by type</source>
         <translation>Группировать по типам</translation>
     </message>
     <message>
-        <location filename="../src/util/ProjectTreeController.cpp" line="133"/>
+        <location filename="../src/util/ProjectTreeController.cpp" line="142"/>
         <source>No groups</source>
         <translation>Не группировать</translation>
     </message>
     <message>
-        <location filename="../src/util/ProjectTreeController.cpp" line="239"/>
+        <location filename="../src/util/ProjectTreeController.cpp" line="252"/>
         <source>Unloaded object refers to unloaded type: %1</source>
         <translation>Выгруженный объект %1 ссылается на неизвестный тип</translation>
     </message>
     <message>
-        <location filename="../src/util/ProjectTreeController.cpp" line="424"/>
-        <source>The name should be not empty and not longer than %1 characters</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/util/ProjectTreeController.cpp" line="429"/>
-        <source>Duplicate names are not allowed</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/util/ProjectTreeController.cpp" line="505"/>
+        <location filename="../src/util/ProjectTreeController.cpp" line="531"/>
         <source>Edit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util/ProjectTreeController.cpp" line="578"/>
+        <location filename="../src/util/ProjectTreeController.cpp" line="618"/>
         <source>Unload selected documents</source>
         <translation>Выгрузить выбранные документы</translation>
     </message>
     <message>
-        <location filename="../src/util/ProjectTreeController.cpp" line="580"/>
+        <location filename="../src/util/ProjectTreeController.cpp" line="620"/>
         <source>Load selected objects</source>
         <translation>Загрузить выбранные объекты</translation>
     </message>
     <message>
-        <location filename="../src/util/ProjectTreeController.cpp" line="581"/>
+        <location filename="../src/util/ProjectTreeController.cpp" line="621"/>
         <source>Unload selected objects</source>
         <translation>Выгрузить выбранные объекты</translation>
     </message>
     <message>
-        <location filename="../src/util/ProjectTreeController.cpp" line="109"/>
+        <location filename="../src/util/ProjectTreeController.cpp" line="115"/>
         <source>Lock document for editing</source>
         <translation>Заблокировать внесение изменений</translation>
     </message>
     <message>
-        <location filename="../src/util/ProjectTreeController.cpp" line="112"/>
+        <location filename="../src/util/ProjectTreeController.cpp" line="119"/>
         <source>Unlock document for editing</source>
         <translation>Снять блокировку изменений</translation>
     </message>
@@ -1755,33 +2087,33 @@ Do you wish to create this directory?</source>
 <context>
     <name>U2::RangeSelector</name>
     <message>
-        <location filename="../src/util/RangeSelector.cpp" line="74"/>
+        <location filename="../src/util/RangeSelector.cpp" line="89"/>
         <source>Min</source>
         <translation>Мин</translation>
     </message>
     <message>
-        <location filename="../src/util/RangeSelector.cpp" line="78"/>
+        <location filename="../src/util/RangeSelector.cpp" line="93"/>
         <source>Max</source>
         <translation>Макс</translation>
     </message>
     <message>
-        <location filename="../src/util/RangeSelector.cpp" line="96"/>
+        <location filename="../src/util/RangeSelector.cpp" line="109"/>
         <source>Range:</source>
         <translation>Регион:</translation>
     </message>
     <message>
-        <location filename="../src/util/RangeSelector.cpp" line="108"/>
+        <location filename="../src/util/RangeSelector.cpp" line="121"/>
         <source>-</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util/RangeSelector.cpp" line="40"/>
-        <location filename="../src/util/RangeSelector.cpp" line="119"/>
+        <location filename="../src/util/RangeSelector.cpp" line="53"/>
+        <location filename="../src/util/RangeSelector.cpp" line="142"/>
         <source>Ok</source>
         <translation>Перейти</translation>
     </message>
     <message>
-        <location filename="../src/util/RangeSelector.cpp" line="125"/>
+        <location filename="../src/util/RangeSelector.cpp" line="148"/>
         <source>Cancel</source>
         <translation>Отменить</translation>
     </message>
@@ -1789,59 +2121,59 @@ Do you wish to create this directory?</source>
 <context>
     <name>U2::RegionSelector</name>
     <message>
-        <location filename="../src/util/RegionSelector.cpp" line="63"/>
+        <location filename="../src/util/RegionSelector.cpp" line="51"/>
         <source>Whole sequence</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util/RegionSelector.cpp" line="65"/>
+        <location filename="../src/util/RegionSelector.cpp" line="58"/>
         <source>Selected</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util/RegionSelector.cpp" line="68"/>
-        <source>Custom</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/util/RegionSelector.cpp" line="71"/>
-        <source>Set minimum</source>
+        <location filename="../src/util/RegionSelector.cpp" line="75"/>
+        <source>Custom region</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/util/RegionSelector.cpp" line="80"/>
+        <source>Set minimum</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util/RegionSelector.cpp" line="89"/>
         <source>Set maximum</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util/RegionSelector.cpp" line="92"/>
-        <location filename="../src/util/RegionSelector.cpp" line="110"/>
+        <location filename="../src/util/RegionSelector.cpp" line="101"/>
+        <location filename="../src/util/RegionSelector.cpp" line="119"/>
         <source>Region</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util/RegionSelector.cpp" line="97"/>
-        <location filename="../src/util/RegionSelector.cpp" line="117"/>
+        <location filename="../src/util/RegionSelector.cpp" line="106"/>
+        <location filename="../src/util/RegionSelector.cpp" line="126"/>
         <source>-</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util/RegionSelector.cpp" line="248"/>
+        <location filename="../src/util/RegionSelector.cpp" line="230"/>
         <source>Invalid sequence region!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util/RegionSelector.cpp" line="254"/>
+        <location filename="../src/util/RegionSelector.cpp" line="236"/>
         <source>Invalid Start position of region</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util/RegionSelector.cpp" line="261"/>
+        <location filename="../src/util/RegionSelector.cpp" line="243"/>
         <source>Invalid End position of region</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util/RegionSelector.cpp" line="267"/>
+        <location filename="../src/util/RegionSelector.cpp" line="249"/>
         <source>Start position is greater than End position</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1898,101 +2230,116 @@ Do you wish to create this directory?</source>
 <context>
     <name>U2::ScriptEditorDialog</name>
     <message>
-        <location filename="../src/util/ScriptEditorDialog.cpp" line="88"/>
+        <location filename="../src/util/ScriptEditorDialog.cpp" line="89"/>
         <source>File is too large %1</source>
         <translation>Файл &quot;%1&quot; слишком большой</translation>
     </message>
     <message>
-        <location filename="../src/util/ScriptEditorDialog.cpp" line="105"/>
+        <location filename="../src/util/ScriptEditorDialog.cpp" line="106"/>
         <source>Select script to open</source>
         <translation>Выберите скрипт</translation>
     </message>
     <message>
-        <location filename="../src/util/ScriptEditorDialog.cpp" line="124"/>
+        <location filename="../src/util/ScriptEditorDialog.cpp" line="125"/>
         <source>Script is empty!</source>
         <translation>Скрипт пуст!</translation>
     </message>
     <message>
-        <location filename="../src/util/ScriptEditorDialog.cpp" line="128"/>
+        <location filename="../src/util/ScriptEditorDialog.cpp" line="129"/>
         <source>Save script to file</source>
         <translation>Сохранить скрипт в файл</translation>
     </message>
     <message>
-        <location filename="../src/util/ScriptEditorDialog.cpp" line="148"/>
+        <location filename="../src/util/ScriptEditorDialog.cpp" line="149"/>
         <source>Script files</source>
         <translation>Файлы скрипта</translation>
     </message>
     <message>
-        <location filename="../src/util/ScriptEditorDialog.cpp" line="159"/>
+        <location filename="../src/util/ScriptEditorDialog.cpp" line="160"/>
         <source>Script syntax check failed! Line: %1, error: %2</source>
         <translation>Проверка синтаксиса скрипта не удалась! В строке: %1 обнаружена ошибка: %2</translation>
     </message>
     <message>
-        <location filename="../src/util/ScriptEditorDialog.cpp" line="160"/>
-        <location filename="../src/util/ScriptEditorDialog.cpp" line="162"/>
+        <location filename="../src/util/ScriptEditorDialog.cpp" line="161"/>
+        <location filename="../src/util/ScriptEditorDialog.cpp" line="163"/>
         <source>Check result</source>
         <translation>Результат проверки</translation>
     </message>
     <message>
-        <location filename="../src/util/ScriptEditorDialog.cpp" line="162"/>
+        <location filename="../src/util/ScriptEditorDialog.cpp" line="163"/>
         <source>Syntax is OK!</source>
         <translation>Проверка синтаксиса удачна!</translation>
     </message>
 </context>
 <context>
+    <name>U2::SearchGenbankSequenceDialogController</name>
+    <message>
+        <location filename="../src/util/SearchGenbankSequenceDialogController.cpp" line="113"/>
+        <source>No results found corresponding to the query</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>U2::UnloadDocumentTask</name>
     <message>
-        <location filename="../src/UnloadDocumentTask.cpp" line="47"/>
+        <location filename="../src/UnloadDocumentTask.cpp" line="48"/>
         <source>Unload document task: %1</source>
         <translation>Выгрузка документа: %1</translation>
     </message>
     <message>
-        <location filename="../src/UnloadDocumentTask.cpp" line="61"/>
+        <location filename="../src/UnloadDocumentTask.cpp" line="62"/>
         <source>Document &apos;%1&apos; can&apos;t be unloaded: </source>
         <translation>Документ &quot;%1&quot; не может быть выгружен</translation>
     </message>
     <message>
-        <location filename="../src/UnloadDocumentTask.cpp" line="64"/>
+        <location filename="../src/UnloadDocumentTask.cpp" line="65"/>
         <source>save failed!</source>
         <translation>Сохранение провалилось</translation>
     </message>
     <message>
-        <location filename="../src/UnloadDocumentTask.cpp" line="75"/>
+        <location filename="../src/UnloadDocumentTask.cpp" line="76"/>
         <source>unexpected error</source>
         <translation>неизвестная ошибка</translation>
     </message>
     <message>
-        <location filename="../src/UnloadDocumentTask.cpp" line="103"/>
+        <location filename="../src/UnloadDocumentTask.cpp" line="94"/>
+        <location filename="../src/UnloadDocumentTask.cpp" line="117"/>
         <source>Question?</source>
         <translation>Подтверждение</translation>
     </message>
     <message>
-        <location filename="../src/UnloadDocumentTask.cpp" line="103"/>
+        <location filename="../src/UnloadDocumentTask.cpp" line="94"/>
+        <source>Close views for document: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/UnloadDocumentTask.cpp" line="117"/>
         <source>Save document: %1</source>
         <translation>%1 был изменён, сохранить документ? </translation>
     </message>
     <message>
-        <location filename="../src/UnloadDocumentTask.cpp" line="122"/>
+        <location filename="../src/UnloadDocumentTask.cpp" line="136"/>
         <source>Failed to unload document</source>
         <translation>Не удалось выгрузить документ</translation>
     </message>
     <message>
-        <location filename="../src/UnloadDocumentTask.cpp" line="126"/>
+        <location filename="../src/UnloadDocumentTask.cpp" line="140"/>
         <source>Failed to unload document: %1, error: %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/UnloadDocumentTask.cpp" line="135"/>
+        <location filename="../src/UnloadDocumentTask.cpp" line="91"/>
+        <location filename="../src/UnloadDocumentTask.cpp" line="149"/>
         <source>There is an active view with document content</source>
         <translation>Документ используется в открытых окнах</translation>
     </message>
     <message>
-        <location filename="../src/UnloadDocumentTask.cpp" line="140"/>
+        <location filename="../src/UnloadDocumentTask.cpp" line="154"/>
         <source>Document is locked by some algorithm and cannot be unloaded</source>
         <translation>Документ был заблокирован одним из алгоритмов и не может быть выгружен</translation>
     </message>
     <message>
-        <location filename="../src/UnloadDocumentTask.cpp" line="128"/>
+        <location filename="../src/UnloadDocumentTask.cpp" line="142"/>
         <source>Warning</source>
         <translation>Внимание</translation>
     </message>

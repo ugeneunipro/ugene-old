@@ -12,26 +12,28 @@
         <translation type="obsolete">Допустимо несоответствий</translation>
     </message>
     <message>
-        <location filename="../src/ui/BuildSuffixArraySettings.ui" line="20"/>
+        <location filename="../src/ui/BuildSuffixArraySettings.ui" line="32"/>
         <source>Reference fragmentation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/BuildSuffixArraySettings.ui" line="28"/>
+        <location filename="../src/ui/BuildSuffixArraySettings.ui" line="40"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;his parameter influences on the amount of parts the reference will be divided. It is better to make it bigger, but it influences on the amount of memory used during the aligning.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;This parameter influences the number of parts the
+             reference will be divided. It is better to make it bigger, but it influences the
+             amount of memory used during the alignment.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/BuildSuffixArraySettings.ui" line="81"/>
+        <location filename="../src/ui/BuildSuffixArraySettings.ui" line="100"/>
         <source>Total memory usage:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/BuildSuffixArraySettings.ui" line="124"/>
+        <location filename="../src/ui/BuildSuffixArraySettings.ui" line="130"/>
         <source>System memory size:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -48,59 +50,59 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Параметры</translation>
     </message>
     <message>
-        <location filename="../src/ui/GenomeAlignerSettings.ui" line="30"/>
+        <location filename="../src/ui/GenomeAlignerSettings.ui" line="36"/>
         <source>Chech this box if mismatches between the reference sequence and the reads are allowed.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/GenomeAlignerSettings.ui" line="33"/>
+        <location filename="../src/ui/GenomeAlignerSettings.ui" line="39"/>
         <source>Mismatches allowed</source>
         <translation type="unfinished">Допустимо несоответствий</translation>
     </message>
     <message>
-        <location filename="../src/ui/GenomeAlignerSettings.ui" line="47"/>
-        <location filename="../src/ui/GenomeAlignerSettings.ui" line="73"/>
+        <location filename="../src/ui/GenomeAlignerSettings.ui" line="53"/>
+        <location filename="../src/ui/GenomeAlignerSettings.ui" line="79"/>
         <source>Select the number of mismatched nucleotides allowed.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/GenomeAlignerSettings.ui" line="86"/>
-        <location filename="../src/ui/GenomeAlignerSettings.ui" line="112"/>
+        <location filename="../src/ui/GenomeAlignerSettings.ui" line="92"/>
+        <location filename="../src/ui/GenomeAlignerSettings.ui" line="118"/>
         <source>Select the percentage of mismatches allowed. Note, that absolute number of mismatches can vary for different reads.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/GenomeAlignerSettings.ui" line="50"/>
+        <location filename="../src/ui/GenomeAlignerSettings.ui" line="56"/>
         <source>Mismatches number</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/GenomeAlignerSettings.ui" line="24"/>
+        <location filename="../src/ui/GenomeAlignerSettings.ui" line="30"/>
         <source>Common parameters</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/GenomeAlignerSettings.ui" line="89"/>
+        <location filename="../src/ui/GenomeAlignerSettings.ui" line="95"/>
         <source>Percentage of mismatches</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/GenomeAlignerSettings.ui" line="136"/>
+        <location filename="../src/ui/GenomeAlignerSettings.ui" line="148"/>
         <source>Set short reads aligning options.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/GenomeAlignerSettings.ui" line="150"/>
+        <location filename="../src/ui/GenomeAlignerSettings.ui" line="171"/>
         <source>Use both the read and its reverse complement during aligning.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/GenomeAlignerSettings.ui" line="153"/>
+        <location filename="../src/ui/GenomeAlignerSettings.ui" line="174"/>
         <source>Align reverse complement reads</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/GenomeAlignerSettings.ui" line="163"/>
+        <location filename="../src/ui/GenomeAlignerSettings.ui" line="184"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -109,76 +111,57 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/GenomeAlignerSettings.ui" line="170"/>
+        <location filename="../src/ui/GenomeAlignerSettings.ui" line="191"/>
         <source>Use &quot;best&quot;-mode during the alignment</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/GenomeAlignerSettings.ui" line="225"/>
+        <location filename="../src/ui/GenomeAlignerSettings.ui" line="246"/>
         <source>Use an openCL-enabled GPU during the aligning.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/GenomeAlignerSettings.ui" line="228"/>
+        <location filename="../src/ui/GenomeAlignerSettings.ui" line="249"/>
         <source>Use GPU-optimization</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/GenomeAlignerSettings.ui" line="254"/>
+        <location filename="../src/ui/GenomeAlignerSettings.ui" line="275"/>
         <source>Advanced parameters</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/GenomeAlignerSettings.ui" line="260"/>
+        <location filename="../src/ui/GenomeAlignerSettings.ui" line="281"/>
         <source>Maximum memory for short reads</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/GenomeAlignerSettings.ui" line="268"/>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Allows one to decrease the load on the computer on one side and to increase the computation speed of the task on the other side.
-          &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/GenomeAlignerSettings.ui" line="321"/>
+        <location filename="../src/ui/GenomeAlignerSettings.ui" line="343"/>
         <source>Total memory usage:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/GenomeAlignerSettings.ui" line="364"/>
+        <location filename="../src/ui/GenomeAlignerSettings.ui" line="386"/>
         <source>System memory size:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/GenomeAlignerSettings.ui" line="406"/>
+        <location filename="../src/ui/GenomeAlignerSettings.ui" line="428"/>
         <source>Index parameters</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/GenomeAlignerSettings.ui" line="412"/>
+        <location filename="../src/ui/GenomeAlignerSettings.ui" line="434"/>
         <source>Reference fragmentation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/GenomeAlignerSettings.ui" line="420"/>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;This parameter influences on the amount of parts the reference will be divided. It is better to make it bigger, but it influences on the amount of memory used during the aligning.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/GenomeAlignerSettings.ui" line="470"/>
+        <location filename="../src/ui/GenomeAlignerSettings.ui" line="494"/>
         <source>Index memory usage size:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/GenomeAlignerSettings.ui" line="501"/>
+        <location filename="../src/ui/GenomeAlignerSettings.ui" line="525"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -187,28 +170,49 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/GenomeAlignerSettings.ui" line="540"/>
+        <location filename="../src/ui/GenomeAlignerSettings.ui" line="564"/>
         <source>Directory for index files:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/GenomeAlignerSettings.ui" line="180"/>
-        <location filename="../src/ui/GenomeAlignerSettings.ui" line="206"/>
+        <location filename="../src/ui/GenomeAlignerSettings.ui" line="201"/>
+        <location filename="../src/ui/GenomeAlignerSettings.ui" line="227"/>
         <source>Omit reads with qualities lower than the specified value. Reads that have no qualities are not omited.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/GenomeAlignerSettings.ui" line="530"/>
+        <location filename="../src/ui/GenomeAlignerSettings.ui" line="289"/>
+        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Allows one to decrease the load on the computer on one side and to increase the computation speed of the task on the other side.
+                 &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/GenomeAlignerSettings.ui" line="442"/>
+        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;This parameter influences the number of parts the
+                 reference will be divided. It is better to make it bigger, but it influences the
+                 amount of memory used during the alignment.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/GenomeAlignerSettings.ui" line="554"/>
         <source>Specify an index to build during execution of the selected short reads aligning algorithm. If this option is selected, the value is &lt;b&gt;required&lt;/b&gt;.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/GenomeAlignerSettings.ui" line="523"/>
+        <location filename="../src/ui/GenomeAlignerSettings.ui" line="547"/>
         <source>...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/GenomeAlignerSettings.ui" line="139"/>
+        <location filename="../src/ui/GenomeAlignerSettings.ui" line="151"/>
         <source>Align options</source>
         <translation type="unfinished"></translation>
     </message>
@@ -217,7 +221,7 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Сборка по обращённым последовательностям</translation>
     </message>
     <message>
-        <location filename="../src/ui/GenomeAlignerSettings.ui" line="183"/>
+        <location filename="../src/ui/GenomeAlignerSettings.ui" line="204"/>
         <source>Omit reads with qualities lower than</source>
         <translation type="unfinished"></translation>
     </message>
@@ -227,9 +231,27 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>GenomeAlignerSettingsWidget</name>
+    <message>
+        <location filename="../src/ui/GenomeAlignerSettingsWidget.ui" line="14"/>
+        <source>Genome aligner settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/GenomeAlignerSettingsWidget.ui" line="20"/>
+        <source>Directories</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/GenomeAlignerSettingsWidget.ui" line="26"/>
+        <source>Directory for built indexes</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>U2</name>
     <message>
-        <location filename="../src/GenomeAlignerTask.cpp" line="53"/>
+        <location filename="../src/GenomeAlignerTask.cpp" line="55"/>
         <source>UGENE Genome Aligner</source>
         <translation type="unfinished">Модуль сборки контигов UGENE</translation>
     </message>
@@ -237,132 +259,119 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::GenomeAlignerCMDLineTask</name>
     <message>
-        <location filename="../src/GenomeAlignerCMDLineTask.cpp" line="50"/>
+        <location filename="../src/GenomeAlignerCMDLineTask.cpp" line="49"/>
         <source>Run genome aligner from command line</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/GenomeAlignerCMDLineTask.cpp" line="122"/>
+        <location filename="../src/GenomeAlignerCMDLineTask.cpp" line="116"/>
         <source>Finished parsing genome aligner options.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/GenomeAlignerCMDLineTask.cpp" line="134"/>
+        <location filename="../src/GenomeAlignerCMDLineTask.cpp" line="128"/>
         <source>Path to reference sequence is not set.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/GenomeAlignerCMDLineTask.cpp" line="140"/>
+        <location filename="../src/GenomeAlignerCMDLineTask.cpp" line="134"/>
         <source>Short reads list is empty.</source>
         <translation type="unfinished">Список считываемых последовательностей пуст.</translation>
     </message>
     <message>
-        <location filename="../src/GenomeAlignerCMDLineTask.cpp" line="144"/>
+        <location filename="../src/GenomeAlignerCMDLineTask.cpp" line="138"/>
         <source>Reference (index or sequence) is not set.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/GenomeAlignerCMDLineTask.cpp" line="187"/>
+        <location filename="../src/GenomeAlignerCMDLineTask.cpp" line="182"/>
         <source>  --%1    Use this flag to only build index for reference sequence.
 
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/GenomeAlignerCMDLineTask.cpp" line="188"/>
+        <location filename="../src/GenomeAlignerCMDLineTask.cpp" line="183"/>
         <source>  --%1    Path to reference genome sequence
 
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/GenomeAlignerCMDLineTask.cpp" line="189"/>
+        <location filename="../src/GenomeAlignerCMDLineTask.cpp" line="184"/>
         <source>  --%1    Path to short-reads data in FASTA or FASTQ format
 
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/GenomeAlignerCMDLineTask.cpp" line="190"/>
+        <location filename="../src/GenomeAlignerCMDLineTask.cpp" line="185"/>
         <source>  --%1    Path to prebuilt index (base file name or with .idx extension). If not set, index is searched in system temporary directory. If --build-index option is applied, index will be saved to specified path.
 
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/GenomeAlignerCMDLineTask.cpp" line="191"/>
+        <location filename="../src/GenomeAlignerCMDLineTask.cpp" line="186"/>
         <source>  --%1    Path to output alignment in UGENEDB or SAM format (see --%2)
 
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/GenomeAlignerCMDLineTask.cpp" line="192"/>
+        <location filename="../src/GenomeAlignerCMDLineTask.cpp" line="187"/>
         <source>  --%1    Memory size (in Mbs) reserved for short-reads. The bigger value the faster algorithm works. Default value depends on available system memory.
 
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/GenomeAlignerCMDLineTask.cpp" line="193"/>
+        <location filename="../src/GenomeAlignerCMDLineTask.cpp" line="188"/>
         <source>  --%1    Index fragmentation size (in Mbs). Small fragments better fit into RAM, allowing to load more short reads. Default value is 10.
 
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/GenomeAlignerCMDLineTask.cpp" line="194"/>
+        <location filename="../src/GenomeAlignerCMDLineTask.cpp" line="189"/>
         <source>  --%1    Absolute amount of allowed mismatches per every short-read (mutually exclusive with --%2). Default value is 0.
 
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/GenomeAlignerCMDLineTask.cpp" line="195"/>
+        <location filename="../src/GenomeAlignerCMDLineTask.cpp" line="190"/>
         <source>  --%1    Percentage amount of allowed mismatches per every short-read (mutually exclusive with --%2). Default value is 0.
 
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/GenomeAlignerCMDLineTask.cpp" line="196"/>
+        <location filename="../src/GenomeAlignerCMDLineTask.cpp" line="191"/>
         <source>  --%1    Use both the read and its reverse complement during the aligning.
 
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/GenomeAlignerCMDLineTask.cpp" line="197"/>
+        <location filename="../src/GenomeAlignerCMDLineTask.cpp" line="192"/>
         <source>  --%1    Report only about best alignments (in terms of mismatches).
 
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/GenomeAlignerCMDLineTask.cpp" line="198"/>
+        <location filename="../src/GenomeAlignerCMDLineTask.cpp" line="193"/>
         <source>  --%1    Omit reads with qualities lower than the specified value. Reads which have no qualities are not omitted. Default value is 0.
 
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/GenomeAlignerCMDLineTask.cpp" line="199"/>
+        <location filename="../src/GenomeAlignerCMDLineTask.cpp" line="194"/>
         <source>  --%1    Output aligned reads in SAM format. Default value is false.
 
 </source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>U2::GenomeAlignerFindTask</name>
-    <message>
-        <location filename="../src/SuffixSearchCUDA.cpp" line="170"/>
-        <source>The CUDA optimization is not included into this bundle.        Please make sure to set UGENE_CUDA_DECTECTED=1 when building UGENE</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/SuffixSearchCUDA.cpp" line="221"/>
-        <source>The CUDA optimization is not included into this bundle.                                            Please make sure to set UGENE_CUDA_DECTECTED=1 when building UGENE</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -375,7 +384,7 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/GenomeAlignerIndexTask.cpp" line="181"/>
+        <location filename="../src/GenomeAlignerIndexTask.cpp" line="182"/>
         <source>Can not init short reads loader. %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -383,22 +392,22 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::GenomeAlignerPlugin</name>
     <message>
-        <location filename="../src/GenomeAlignerPlugin.cpp" line="71"/>
+        <location filename="../src/GenomeAlignerPlugin.cpp" line="72"/>
         <source>UGENE Genome Aligner</source>
         <translation type="unfinished">Модуль сборки контигов UGENE</translation>
     </message>
     <message>
-        <location filename="../src/GenomeAlignerPlugin.cpp" line="71"/>
+        <location filename="../src/GenomeAlignerPlugin.cpp" line="72"/>
         <source>Assembly DNA to reference sequence</source>
         <translation type="unfinished">Сборка контигов по последовательности</translation>
     </message>
     <message>
-        <location filename="../src/GenomeAlignerPlugin.cpp" line="111"/>
+        <location filename="../src/GenomeAlignerPlugin.cpp" line="119"/>
         <source>UGENE Short Reads Aligner</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/GenomeAlignerPlugin.cpp" line="112"/>
+        <location filename="../src/GenomeAlignerPlugin.cpp" line="120"/>
         <source>UGENE Genome Aligner is an efficient and fast tool for short read alignment.It has 2 work modes: build index and align short reads (default mode).
 If there is no index available for reference sequence it will be built on the fly.
 
@@ -421,15 +430,31 @@ ugene --genome-aligner --reference=/path/to/ref --short-reads=/path/to/reads --r
     </message>
 </context>
 <context>
+    <name>U2::GenomeAlignerSettingsPageController</name>
+    <message>
+        <location filename="../src/GenomeAlignerSettingsController.cpp" line="55"/>
+        <source>Genome Aligner</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>U2::GenomeAlignerSettingsPageWidget</name>
+    <message>
+        <location filename="../src/GenomeAlignerSettingsController.cpp" line="94"/>
+        <source>Choose Directory</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>U2::GenomeAlignerSettingsWidget</name>
     <message>
-        <location filename="../src/GenomeAlignerSettingsWidget.cpp" line="102"/>
-        <location filename="../src/GenomeAlignerSettingsWidget.cpp" line="163"/>
+        <location filename="../src/GenomeAlignerSettingsWidget.cpp" line="112"/>
+        <location filename="../src/GenomeAlignerSettingsWidget.cpp" line="174"/>
         <source>This index file is corrupted. Please, load a valid index file.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/GenomeAlignerSettingsWidget.cpp" line="157"/>
+        <location filename="../src/GenomeAlignerSettingsWidget.cpp" line="168"/>
         <source>The index directory has already contain the prebuilt index. But its reference fragmentation parameter is %1 and it doesn&apos;t equal to the parameter you have chosen (%2).
 
 Press &quot;Ok&quot; to delete this index file and create a new during the aligning.
@@ -437,7 +462,7 @@ Press &quot;Cancel&quot; to change this parameter or the index directory.</sourc
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/GenomeAlignerSettingsWidget.cpp" line="173"/>
+        <location filename="../src/GenomeAlignerSettingsWidget.cpp" line="184"/>
         <source>Set index files directory</source>
         <translation type="unfinished"></translation>
     </message>
@@ -453,58 +478,57 @@ Press &quot;Cancel&quot; to change this parameter or the index directory.</sourc
         <translation type="obsolete">Модуль сборки контигов UGENE</translation>
     </message>
     <message>
-        <location filename="../src/GenomeAlignerTask.cpp" line="112"/>
+        <location filename="../src/GenomeAlignerTask.cpp" line="115"/>
         <source>Genome Aligner settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/GenomeAlignerTask.cpp" line="113"/>
+        <location filename="../src/GenomeAlignerTask.cpp" line="116"/>
         <source>Index file name: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/GenomeAlignerTask.cpp" line="114"/>
+        <location filename="../src/GenomeAlignerTask.cpp" line="117"/>
         <source>Use prebuilt index: %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/GenomeAlignerTask.cpp" line="166"/>
+        <location filename="../src/GenomeAlignerTask.cpp" line="172"/>
         <source>Can not init short reads loader.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/GenomeAlignerTask.cpp" line="293"/>
+        <location filename="../src/GenomeAlignerTask.cpp" line="303"/>
         <source>The aligning is finished.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/GenomeAlignerTask.cpp" line="294"/>
+        <location filename="../src/GenomeAlignerTask.cpp" line="304"/>
         <source>Whole working time = %1.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/GenomeAlignerTask.cpp" line="296"/>
-        <location filename="../src/GenomeAlignerTask.cpp" line="300"/>
+        <location filename="../src/GenomeAlignerTask.cpp" line="305"/>
         <source>%1% reads aligned.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/GenomeAlignerTask.cpp" line="297"/>
+        <location filename="../src/GenomeAlignerTask.cpp" line="307"/>
         <source>Short-reads loading time = %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/GenomeAlignerTask.cpp" line="298"/>
+        <location filename="../src/GenomeAlignerTask.cpp" line="308"/>
         <source>Results writing time = %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/GenomeAlignerTask.cpp" line="302"/>
+        <location filename="../src/GenomeAlignerTask.cpp" line="310"/>
         <source>Index loading time = %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/GenomeAlignerTask.cpp" line="303"/>
+        <location filename="../src/GenomeAlignerTask.cpp" line="311"/>
         <source>Short-reads IO time = %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -512,7 +536,7 @@ Press &quot;Cancel&quot; to change this parameter or the index directory.</sourc
 <context>
     <name>U2::LocalWorkflow::GenomeAlignerBuildPrompter</name>
     <message>
-        <location filename="../src/GenomeAlignerWorker.cpp" line="317"/>
+        <location filename="../src/GenomeAlignerWorker.cpp" line="322"/>
         <source>Build genome aligner index from %1 and send it url to output.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -520,57 +544,57 @@ Press &quot;Cancel&quot; to change this parameter or the index directory.</sourc
 <context>
     <name>U2::LocalWorkflow::GenomeAlignerBuildWorker</name>
     <message>
-        <location filename="../src/GenomeAlignerWorker.cpp" line="236"/>
+        <location filename="../src/GenomeAlignerWorker.cpp" line="241"/>
         <source>Reference</source>
         <translation type="unfinished">Референсная последовательность</translation>
     </message>
     <message>
-        <location filename="../src/GenomeAlignerWorker.cpp" line="237"/>
+        <location filename="../src/GenomeAlignerWorker.cpp" line="242"/>
         <source>Reference sequence url. The short reads will be aligned to this reference genome.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/GenomeAlignerWorker.cpp" line="238"/>
+        <location filename="../src/GenomeAlignerWorker.cpp" line="243"/>
         <source>Genome aligner index builder</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/GenomeAlignerWorker.cpp" line="239"/>
+        <location filename="../src/GenomeAlignerWorker.cpp" line="244"/>
         <source>GenomeAlignerBuild builds an index from a set of DNA sequences. GenomeAlignerBuild outputs a set of 3 files with suffixes .idx, .ref, .sarr. These files together constitute the index: they are all that is needed to align reads to that reference.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/GenomeAlignerWorker.cpp" line="240"/>
+        <location filename="../src/GenomeAlignerWorker.cpp" line="245"/>
         <source>Index</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/GenomeAlignerWorker.cpp" line="241"/>
+        <location filename="../src/GenomeAlignerWorker.cpp" line="246"/>
         <source>Output index url.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/GenomeAlignerWorker.cpp" line="242"/>
+        <location filename="../src/GenomeAlignerWorker.cpp" line="247"/>
         <source>Reference fragmentation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/GenomeAlignerWorker.cpp" line="243"/>
+        <location filename="../src/GenomeAlignerWorker.cpp" line="248"/>
         <source>Reference fragmentation size</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/GenomeAlignerWorker.cpp" line="279"/>
+        <location filename="../src/GenomeAlignerWorker.cpp" line="284"/>
         <source>Reference sequence URL is empty</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/GenomeAlignerWorker.cpp" line="283"/>
+        <location filename="../src/GenomeAlignerWorker.cpp" line="288"/>
         <source>Result index URL is empty</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/GenomeAlignerWorker.cpp" line="306"/>
+        <location filename="../src/GenomeAlignerWorker.cpp" line="311"/>
         <source>Genome aligner index building finished. Result name is %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -578,7 +602,7 @@ Press &quot;Cancel&quot; to change this parameter or the index directory.</sourc
 <context>
     <name>U2::LocalWorkflow::GenomeAlignerIndexReaderPrompter</name>
     <message>
-        <location filename="../src/GenomeAlignerWorker.cpp" line="391"/>
+        <location filename="../src/GenomeAlignerWorker.cpp" line="396"/>
         <source>Read genome aligner index from %1 and send it url to output.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -586,42 +610,42 @@ Press &quot;Cancel&quot; to change this parameter or the index directory.</sourc
 <context>
     <name>U2::LocalWorkflow::GenomeAlignerIndexReaderWorker</name>
     <message>
-        <location filename="../src/GenomeAlignerWorker.cpp" line="327"/>
+        <location filename="../src/GenomeAlignerWorker.cpp" line="332"/>
         <source>Genome aligner index</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/GenomeAlignerWorker.cpp" line="327"/>
+        <location filename="../src/GenomeAlignerWorker.cpp" line="332"/>
         <source>Result of genome aligner index builder.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/GenomeAlignerWorker.cpp" line="333"/>
+        <location filename="../src/GenomeAlignerWorker.cpp" line="338"/>
         <source>Genome aligner index reader</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/GenomeAlignerWorker.cpp" line="334"/>
+        <location filename="../src/GenomeAlignerWorker.cpp" line="339"/>
         <source>Read a set of several files with extensions .idx, .ref, .X.sarr. These files together constitute the index: they are all that is needed to align reads to that reference.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/GenomeAlignerWorker.cpp" line="335"/>
+        <location filename="../src/GenomeAlignerWorker.cpp" line="340"/>
         <source>Index</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/GenomeAlignerWorker.cpp" line="336"/>
+        <location filename="../src/GenomeAlignerWorker.cpp" line="341"/>
         <source>Select an index file with the .idx extension</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/GenomeAlignerWorker.cpp" line="367"/>
+        <location filename="../src/GenomeAlignerWorker.cpp" line="372"/>
         <source>Index URL is empty</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/GenomeAlignerWorker.cpp" line="380"/>
+        <location filename="../src/GenomeAlignerWorker.cpp" line="385"/>
         <source>Reading genome aligner index finished. Result name is %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -629,13 +653,13 @@ Press &quot;Cancel&quot; to change this parameter or the index directory.</sourc
 <context>
     <name>U2::LocalWorkflow::GenomeAlignerPrompter</name>
     <message>
-        <location filename="../src/GenomeAlignerWorker.cpp" line="216"/>
-        <location filename="../src/GenomeAlignerWorker.cpp" line="217"/>
+        <location filename="../src/GenomeAlignerWorker.cpp" line="221"/>
+        <location filename="../src/GenomeAlignerWorker.cpp" line="222"/>
         <source> from &lt;u&gt;%1&lt;/u&gt;</source>
         <translation type="unfinished"> из &lt;u&gt;%1&lt;/u&gt;</translation>
     </message>
     <message>
-        <location filename="../src/GenomeAlignerWorker.cpp" line="219"/>
+        <location filename="../src/GenomeAlignerWorker.cpp" line="224"/>
         <source>Align short reads %1 to the reference genome %2 and send it to output.</source>
         <translation type="unfinished">Собрать контигы из считываемых последовательностей %1 по референсному геному%2 и направить их на вывод.</translation>
     </message>
@@ -782,6 +806,22 @@ Press &quot;Cancel&quot; to change this parameter or the index directory.</sourc
     <message>
         <source>Genome aligner finished. Result name is %1</source>
         <translation type="obsolete">Сборка контигов завершена. Имя результата: &quot;%1&quot;</translation>
+    </message>
+</context>
+<context>
+    <name>U2::ShortReadAlignerCPU</name>
+    <message>
+        <location filename="../src/GenomeAlignerFindTask.cpp" line="203"/>
+        <source>[%1] Index size for part %2/%3 is zero, skipping it.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>U2::ShortReadAlignerOpenCL</name>
+    <message>
+        <location filename="../src/GenomeAlignerFindTask.cpp" line="290"/>
+        <source>Index size for part %1/%2 is zero, skipping it.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>

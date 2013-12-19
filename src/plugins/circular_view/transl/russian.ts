@@ -4,7 +4,7 @@
 <context>
     <name>U2::CircularViewAction</name>
     <message>
-        <location filename="../src/CircularViewPlugin.cpp" line="201"/>
+        <location filename="../src/CircularViewPlugin.cpp" line="259"/>
         <source>Show circular view</source>
         <translation>Показать круговой вид</translation>
     </message>
@@ -12,17 +12,22 @@
 <context>
     <name>U2::CircularViewContext</name>
     <message>
-        <location filename="../src/CircularViewPlugin.cpp" line="72"/>
+        <location filename="../src/CircularViewPlugin.cpp" line="76"/>
         <source>Save circular view as image</source>
         <translation>Сохранить круговой вид как изображение</translation>
     </message>
     <message>
-        <location filename="../src/CircularViewPlugin.cpp" line="177"/>
+        <location filename="../src/CircularViewPlugin.cpp" line="89"/>
+        <source>Toggle circular views</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/CircularViewPlugin.cpp" line="211"/>
         <source>Remove circular view</source>
         <translation>Удалить круговой вид</translation>
     </message>
     <message>
-        <location filename="../src/CircularViewPlugin.cpp" line="186"/>
+        <location filename="../src/CircularViewPlugin.cpp" line="221"/>
         <source>Show circular view</source>
         <translation>Показать круговой вид</translation>
     </message>
@@ -41,12 +46,12 @@
 <context>
     <name>U2::CircularViewPlugin</name>
     <message>
-        <location filename="../src/CircularViewPlugin.cpp" line="55"/>
+        <location filename="../src/CircularViewPlugin.cpp" line="59"/>
         <source>CircularView</source>
         <translation>Круговой вид</translation>
     </message>
     <message>
-        <location filename="../src/CircularViewPlugin.cpp" line="55"/>
+        <location filename="../src/CircularViewPlugin.cpp" line="59"/>
         <source>Enables drawing of DNA sequences using circular representation</source>
         <translation>Круговой вид ДНК последовательности</translation>
     </message>
@@ -54,7 +59,7 @@
 <context>
     <name>U2::CircularViewRenderArea</name>
     <message>
-        <location filename="../src/CircularView.cpp" line="443"/>
+        <location filename="../src/CircularView.cpp" line="435"/>
         <source>circular view size %1 %2</source>
         <translation type="unfinished"></translation>
     </message>

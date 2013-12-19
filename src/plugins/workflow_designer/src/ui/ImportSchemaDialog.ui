@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Import schema to element</string>
+   <string>Import workflow to element</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>

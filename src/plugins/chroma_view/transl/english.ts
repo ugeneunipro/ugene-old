@@ -33,34 +33,44 @@
         <translation type="obsolete">+</translation>
     </message>
     <message>
-        <location filename="../src/ChromatogramView.cpp" line="94"/>
+        <location filename="../src/ChromatogramView.cpp" line="71"/>
+        <source>Show all</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ChromatogramView.cpp" line="74"/>
+        <source>Show/hide trace</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ChromatogramView.cpp" line="105"/>
         <source>add_new_seq</source>
         <translation>Edit new sequence</translation>
     </message>
     <message>
-        <location filename="../src/ChromatogramView.cpp" line="97"/>
+        <location filename="../src/ChromatogramView.cpp" line="108"/>
         <source>add_exist_seq</source>
         <translation>Edit existing sequence</translation>
     </message>
     <message>
-        <location filename="../src/ChromatogramView.cpp" line="100"/>
+        <location filename="../src/ChromatogramView.cpp" line="111"/>
         <source>remove_editable_sequence</source>
         <translation>Remove edited sequence</translation>
     </message>
     <message>
-        <location filename="../src/ChromatogramView.cpp" line="103"/>
+        <location filename="../src/ChromatogramView.cpp" line="114"/>
         <source>remove_changes</source>
         <translation>Undo changes</translation>
     </message>
     <message>
-        <location filename="../src/ChromatogramView.cpp" line="200"/>
-        <location filename="../src/ChromatogramView.cpp" line="331"/>
+        <location filename="../src/ChromatogramView.cpp" line="212"/>
+        <location filename="../src/ChromatogramView.cpp" line="343"/>
         <source>error</source>
         <translation>Error</translation>
     </message>
     <message>
-        <location filename="../src/ChromatogramView.cpp" line="200"/>
-        <location filename="../src/ChromatogramView.cpp" line="331"/>
+        <location filename="../src/ChromatogramView.cpp" line="212"/>
+        <location filename="../src/ChromatogramView.cpp" line="343"/>
         <source>sequence_object_was_locked</source>
         <translation>Sequence is  locked</translation>
     </message>
@@ -73,12 +83,12 @@
 <context>
     <name>U2::ChromatogramViewRenderArea</name>
     <message>
-        <location filename="../src/ChromatogramView.cpp" line="445"/>
+        <location filename="../src/ChromatogramView.cpp" line="508"/>
         <source>selection_is_too_big</source>
         <translation>Chromatogram view (zoom in to see base calls)</translation>
     </message>
     <message>
-        <location filename="../src/ChromatogramView.cpp" line="657"/>
+        <location filename="../src/ChromatogramView.cpp" line="730"/>
         <source>original</source>
         <translation>original sequence</translation>
     </message>

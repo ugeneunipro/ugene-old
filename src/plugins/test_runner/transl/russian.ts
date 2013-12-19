@@ -86,42 +86,42 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/TestViewController.cpp" line="902"/>
+        <location filename="../src/TestViewController.cpp" line="914"/>
         <source>info</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/TestViewController.cpp" line="910"/>
+        <location filename="../src/TestViewController.cpp" line="922"/>
         <source>env_mb_title</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/TestViewController.cpp" line="1103"/>
+        <location filename="../src/TestViewController.cpp" line="1115"/>
         <source>passed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/TestViewController.cpp" line="1106"/>
+        <location filename="../src/TestViewController.cpp" line="1118"/>
         <source>failed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/TestViewController.cpp" line="1108"/>
+        <location filename="../src/TestViewController.cpp" line="1120"/>
         <source>not_run</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/TestViewController.cpp" line="1142"/>
+        <location filename="../src/TestViewController.cpp" line="1154"/>
         <source>state: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/TestViewController.cpp" line="1144"/>
+        <location filename="../src/TestViewController.cpp" line="1156"/>
         <source>fail_desc: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/TestViewController.cpp" line="1147"/>
+        <location filename="../src/TestViewController.cpp" line="1159"/>
         <source>source_file:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -219,7 +219,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/TestViewController.cpp" line="902"/>
+        <location filename="../src/TestViewController.cpp" line="914"/>
         <source>No environment variables found</source>
         <translation type="unfinished"></translation>
     </message>
