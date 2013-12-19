@@ -677,6 +677,11 @@ void FindAlgorithm::find(
     int width =  patternLen + maxErr;
     int height = patternLen;
 
+    if ( width > INT_MAX / height ) {
+        const FindAlgorithmResult result(FindAlgorithmResult::NOT_ENOUGH_MEMORY_ERROR);
+        rl->onResult( result );
+        return;
+    }
 
     try {
         StrandContext context[] = {
