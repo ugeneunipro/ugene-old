@@ -185,7 +185,7 @@ Task::ReportResult GTest_FindEnzymes::report() {
     //for each enzyme from resultsPerEnzyme check that all annotations are present
     foreach(const QString& enzymeId, resultsPerEnzyme.keys()) {
         QList<U2Region> regions = resultsPerEnzyme.values(enzymeId);
-        AnnotationGroup &ag = aObj->getRootGroup().getSubgroup(enzymeId, false);
+        AnnotationGroup ag = aObj->getRootGroup().getSubgroup(enzymeId, false);
         if ( ag == aObj->getRootGroup() ) {
             stateInfo.setError(  QString("Group not found %1").arg(enzymeId) );
             break;
