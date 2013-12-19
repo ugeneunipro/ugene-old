@@ -325,7 +325,11 @@ QString ExternalToolSupportSettingsPageWidget::getToolStateDescription(ExternalT
         QStringList dependencies = tool->getDependencies();
         foreach (const QString& masterName, dependencies) {
             if (ExternalToolManager::Valid != etManager->getToolState(masterName)) {
-                invalidDependencies << getToolLink(masterName);
+                if (tool->getName() != masterName && tool->getToolKitName() != masterName) {
+                    invalidDependencies << getToolLink(masterName);
+                }else {
+                    invalidDependencies << masterName;
+                }
             }
         }
         result = warn(text + invalidDependencies.join(", ")) + "<br><br>";
@@ -354,8 +358,11 @@ void ExternalToolSupportSettingsPageWidget::setDescription(ExternalTool* tool) {
 
     if (tool) {
         desc = getToolStateDescription(tool);
-        desc += tool->getDescription();
-
+        if (desc.size() == 0){
+            desc = tool->getDescription();
+        }else{
+            desc += tool->getDescription();
+        }
         if (tool->isValid()) {
             desc += tr("<br><br>Version: ");
             if (!externalToolsInfo[tool->getName()].version.isEmpty()) {
@@ -370,7 +377,7 @@ void ExternalToolSupportSettingsPageWidget::setDescription(ExternalTool* tool) {
             desc += externalToolsInfo[tool->getName()].path;
         }
     }
-    descriptionTextBrowser->setText(desc);
+    descriptionTextBrowser->setText(desc + "<a href='1'></a>");
 }
 
 QString ExternalToolSupportSettingsPageWidget::warn(const QString& text) const {
