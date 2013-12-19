@@ -23,22 +23,12 @@
 #define _U2_GRAPHICS_BRANCH_ITEM_H_
 
 #include <QtGui/QAbstractGraphicsShapeItem>
+#include "TreeSettings.h"
 
 namespace U2 {
 
 class PhyNode;
 class GraphicsButtonItem;
-
-class BranchSettings {
-public:
-    BranchSettings();
-
-    QColor branchColor;
-    int branchThickness;
-
-    static QColor defaultColor;
-    static int defaultThickness;
-};
 
 class GraphicsBranchItem: public QAbstractGraphicsShapeItem {
 public:

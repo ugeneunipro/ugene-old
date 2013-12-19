@@ -23,20 +23,10 @@
 #define _U2_PHYLTREE_BUTTON_SETTINGS_DIALOG_H_
 
 #include <ui/ui_ButtonSettingsDialog.h>
+#include "ov_phyltree/TreeSettings.h"
 #include <QtGui/QDialog>
 
 namespace U2 {
-
-class ButtonSettings {
-public:
-    ButtonSettings();
-
-    QColor col;
-    int radius;
-
-    static QColor defaultColor;
-    static int defaultRadius;
-};
 
 class ButtonSettingsDialog : public QDialog, public Ui_ButtonSettingsDialog{
     Q_OBJECT
@@ -44,13 +34,14 @@ public:
     ButtonSettingsDialog(QWidget *parent, const ButtonSettings& buttonSettings);
 
     virtual void accept();
-    ButtonSettings getSettings() const;
+    const ButtonSettings& getSettings() const;
 
 protected slots:
     void sl_colorButton();
 
 private:
-    ButtonSettings settings, changedSettings;
+    ButtonSettings settings;
+    ButtonSettings changedSettings;
 
     void updateColorButton();
 };

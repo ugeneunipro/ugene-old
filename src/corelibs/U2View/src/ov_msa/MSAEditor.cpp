@@ -32,7 +32,7 @@
 #include "MSAEditorDataList.h"
 #include "ExportHighlightedDialogController.h"
 
-#include <ov_phyltree/TreeViewerTasks.h>
+#include "ov_phyltree/TreeViewerTasks.h"
 
 #include <U2Core/MAlignmentObject.h>
 #include <U2Core/DNASequenceObject.h>
@@ -80,11 +80,11 @@
 #include <QtSvg/QSvgGenerator>
 
 
-#include <U2View/CreatePhyTreeDialogController.h>
-#include <U2View/TreeViewer.h>
-#include <U2View/MSAEditorMultiTreeViewer.h>
-#include <U2View/MSAEditorTreeViewer.h>
-#include <U2View/TreeOptionsWidgetFactory.h>
+#include "phyltree/CreatePhyTreeDialogController.h"
+#include "ov_phyltree/TreeViewer.h"
+#include "PhyTrees/MSAEditorMultiTreeViewer.h"
+#include "PhyTrees/MSAEditorTreeViewer.h"
+#include "ov_msa/TreeOptions//TreeOptionsWidgetFactory.h"
 #include <U2View/UndoRedoFramework.h>
 #include <U2View/MSAColorScheme.h>
 

@@ -37,7 +37,7 @@
 #include <U2View/SeqStatisticsWidgetFactory.h>
 #include <U2View/MSAGeneralTabFactory.h>
 #include <U2View/MSAHighlightingTabFactory.h>
-#include <U2View/TreeOptionsWidgetFactory.h>
+#include "ov_msa/TreeOptions/TreeOptionsWidgetFactory.h"
 #include <U2View/DasWidgetFactory.h>
 
 

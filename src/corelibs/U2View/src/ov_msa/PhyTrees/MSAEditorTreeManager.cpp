@@ -36,11 +36,11 @@
 #include <U2Core/LoadDocumentTask.h>
 #include <U2Core/TaskSignalMapper.h>
 
-#include <U2View/CreatePhyTreeDialogController.h>
-#include <U2View/TreeViewer.h>
-#include <U2View/MSAEditorMultiTreeViewer.h>
-#include <U2View/TreeOptionsWidgetFactory.h>
-#include <U2View/GraphicsRectangularBranchItem.h>
+#include "phyltree/CreatePhyTreeDialogController.h"
+#include "ov_phyltree/TreeViewer.h"
+#include "ov_msa/PhyTrees/MSAEditorMultiTreeViewer.h"
+#include "ov_msa/TreeOptions/TreeOptionsWidgetFactory.h"
+#include "ov_phyltree/GraphicsRectangularBranchItem.h"
 #include <U2View/MSAEditor.h>
 #include <U2View/MSAEditorSequenceArea.h>
 #include <U2View/MSAEditorNameList.h>
@@ -60,7 +60,7 @@
 #include <U2Algorithm/MSADistanceAlgorithmRegistry.h>
 #include <U2Algorithm/MSADistanceAlgorithm.h>
 
-#include <ov_phyltree/TreeViewerTasks.h>
+#include "ov_phyltree/TreeViewerTasks.h"
 
 namespace U2 {
 MSAEditorTreeManager::MSAEditorTreeManager(MSAEditor* _editor )

@@ -23,17 +23,14 @@
 #define _U2_TREE_OPTIONS_WIDGET_H_
 
 #include <QtGui/QtGui>
-#include <U2View/MSAEditor.h>
-#include <U2View/TreeSettingsDialog.h>
-#include <U2View/TextSettingsDialog.h>
-#include <ov_phyltree/GraphicsBranchItem.h>
-#include <U2View/MSAEditorTreeViewer.h>
+#include "ov_phyltree/TreeSettings.h"
+#include "ov_msa/MSAEditor.h"
+#include "ov_msa/PhyTrees/MSAEditorTreeViewer.h"
 #include "ui/ui_TreeOptionsWidget.h"
 
 
 namespace U2 {
 
-class TreeViewerUI;
 class SimilarityStatisticsSettings;
 class ShowHideSubgroupWidget;
 
@@ -70,12 +67,13 @@ private slots:
     void sl_branchSettingsChanged();
 
     void sl_onLblLinkActivated(const QString& link);
-    void sl_onSettingsChanged();
+    void sl_onSettingsChanged(TreeSettingsType settingsType);
 private:
     void createGroups();
     void createGeneralSettingsWidgets();
     void updateGeneralSettingsWidgets();
     void updateLabelsSettingsWidgets();
+    void updateFormatSettings();
     void updateBranchSettings();
     void updateAllWidgets();
     void connectSlots();

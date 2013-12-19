@@ -22,7 +22,7 @@
 #ifndef _U2_PHYLTREE_BRANCH_SETTINGS_DIALOG_H_
 #define _U2_PHYLTREE_BRANCH_SETTINGS_DIALOG_H_
 
-#include <U2View/GraphicsBranchItem.h>
+#include "ov_phyltree/TreeSettings.h"
 #include <QtGui/QDialog>
 #include <ui/ui_BranchSettingsDialog.h>
 
@@ -34,13 +34,14 @@ public:
     BranchSettingsDialog(QWidget *parent, const BranchSettings& branchSettings);
 
     virtual void accept();
-    BranchSettings getSettings() const;
+    const BranchSettings& getSettings() const;
 
 protected slots:
     void sl_colorButton();
 
 private:
-    BranchSettings settings, changedSettings;
+    BranchSettings settings;
+    BranchSettings changedSettings;
 
     void updateColorButton();
 };

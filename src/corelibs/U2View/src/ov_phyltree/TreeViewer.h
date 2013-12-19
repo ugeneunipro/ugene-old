@@ -36,10 +36,7 @@
 #include <U2Algorithm/CreatePhyTreeSettings.h>
 #include <U2Gui/ObjectViewModel.h>
 
-#include <U2View/BranchSettingsDialog.h>
-#include <U2View/ButtonSettingsDialog.h>
-#include <U2View/TextSettingsDialog.h>
-#include <U2View/TreeSettingsDialog.h>
+#include "TreeSettings.h"
 
 #include <QtGui/QTransform>
 
@@ -51,16 +48,6 @@ class GraphicsBranchItem;
 class GraphicsButtonItem;
 class GraphicsRectangularBranchItem;
 class CreateBranchesTask;
-
-struct TreeLabelsSettings {
-public:
-    TreeLabelsSettings()
-        : showNames(true), showDistances(true), alignLabels(false) {}
-
-    bool showNames;
-    bool showDistances;
-    bool alignLabels;
-};
 
 class TreeViewer: public GObjectView {
     Q_OBJECT
@@ -172,11 +159,11 @@ public:
     static const int MARGIN;
     static const qreal SIZE_COEF;
 
-    BranchSettings getBranchSettings() const;
-    ButtonSettings getButtonSettings() const;
-    TextSettings getTextSettings() const;
-    TreeSettings getTreeSettings() const;
-    TreeLabelsSettings getLabelsSettings() const;
+    const BranchSettings& getBranchSettings() const;
+    const ButtonSettings& getButtonSettings() const;
+    const TextSettings& getTextSettings() const;
+    const TreeSettings& getTreeSettings() const;
+    const TreeLabelsSettings& getLabelsSettings() const;
 
     void updateSettings(const BranchSettings &settings);
     void updateSettings(const ButtonSettings &settings);
@@ -226,7 +213,7 @@ protected:
     virtual void onLayoutChanged(const TreeLayout& ) {}
     virtual void updateTreeSettings(bool setDefaultZoom = true);
 signals:
-    void si_settingsChanged();
+    void si_settingsChanged(TreeSettingsType settingsType );
 protected slots:
     virtual void sl_swapTriggered();
     virtual void sl_collapseTriggered();
@@ -286,6 +273,11 @@ private:
     void determineBranchLengths();
 
     int getBranchLength();
+
+    void changeLayout(TreeLayout newLayout);
+    void changeNamesDisplay(bool showNames);
+    void changeDistancesDisplay(bool showDistances);
+    void changeAlignmentSettings(bool alignLabels);
     
     PhyTreeObject*      phyObject;
     GraphicsBranchItem* root;

@@ -30,15 +30,6 @@
 
 namespace U2 {
 
-QColor BranchSettings::defaultColor = QColor(0, 0, 0);
-int BranchSettings::defaultThickness = 1;
-
-BranchSettings::BranchSettings() {
-
-    branchColor = defaultColor;
-    branchThickness = defaultThickness;
-}
-
 const int GraphicsBranchItem::TextSpace = 8;
 const int GraphicsBranchItem::SelectedPenWidth = 1;
 

@@ -20,19 +20,9 @@
  */
 
 #include "TextSettingsDialog.h"
-#include "U2View/TreeViewerUtils.h"
 #include <QtGui/QColorDialog>
 
 namespace U2 {
-
-QColor TextSettings::defaultColor = QColor(Qt::gray);
-QFont TextSettings::defaultFont = TreeViewerUtils::getFont();
-
-TextSettings::TextSettings() {
-
-    textColor = defaultColor;
-    textFont = defaultFont;
-}
 
 TextSettingsDialog::TextSettingsDialog(QWidget *parent, const TextSettings &textSettings)
 : QDialog(parent), settings(textSettings), changedSettings(textSettings) {
@@ -82,8 +72,7 @@ void TextSettingsDialog::accept() {
     QDialog::accept();
 }
 
-TextSettings TextSettingsDialog::getSettings() const {
-
+const TextSettings& TextSettingsDialog::getSettings() const {
     return settings;
 }
 

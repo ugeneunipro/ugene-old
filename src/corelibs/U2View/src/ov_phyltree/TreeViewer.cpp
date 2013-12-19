@@ -52,7 +52,13 @@
 #include <U2Gui/DialogUtils.h>
 #include <U2Gui/OptionsPanel.h>
 #include <U2Gui/OPWidgetFactoryRegistry.h>
-#include <U2View/CreatePhyTreeDialogController.h>
+#include "phyltree/CreatePhyTreeDialogController.h"
+
+#include "phyltree/BranchSettingsDialog.h"
+#include "phyltree/ButtonSettingsDialog.h"
+#include "phyltree/TextSettingsDialog.h"
+#include "phyltree/TreeSettingsDialog.h"
+
 #include <U2Algorithm/PhyTreeGeneratorRegistry.h>
 
 #include <QtCore/QStack>
@@ -455,49 +461,41 @@ TreeViewerUI::~TreeViewerUI() {
 }
 
 
-BranchSettings TreeViewerUI::getBranchSettings() const {
+const BranchSettings& TreeViewerUI::getBranchSettings() const {
 
     return branchSettings;
 }
 
-ButtonSettings TreeViewerUI::getButtonSettings() const {
+const ButtonSettings& TreeViewerUI::getButtonSettings() const {
 
     return buttonSettings;
 }
 
-TextSettings TreeViewerUI::getTextSettings() const {
-
+const TextSettings& TreeViewerUI::getTextSettings() const {
     return textSettings;
 }
 
-TreeSettings TreeViewerUI::getTreeSettings() const {
+const TreeSettings& TreeViewerUI::getTreeSettings() const {
 
     return treeSettings;
 }
-TreeLabelsSettings TreeViewerUI::getLabelsSettings() const {
+const TreeLabelsSettings& TreeViewerUI::getLabelsSettings() const {
     return labelsSettings;
 }
 
 void TreeViewerUI::setTreeLayout(TreeLayout newLayout) {
-    QMenu* layoutMenu = curTreeViewer->getRectangularLayoutAction()->menu();
     switch(newLayout) {
         case TreeLayout_Rectangular:
-            if(layoutMenu) {
-                layoutMenu->setActiveAction(curTreeViewer->getRectangularLayoutAction());
-            }
-            sl_rectangularLayoutTriggered();
+            curTreeViewer->getRectangularLayoutAction()->setChecked(true);
+            changeLayout(TreeLayout_Rectangular);
             break;
         case TreeLayout_Circular:
-            if(layoutMenu) {
-                layoutMenu->setActiveAction(curTreeViewer->getCircularLayoutAction());
-            }
-            sl_circularLayoutTriggered();
+            curTreeViewer->getCircularLayoutAction()->setChecked(true);
+            changeLayout(TreeLayout_Circular);
             break;
         case TreeLayout_Unrooted:
-            if(layoutMenu) {
-                layoutMenu->setActiveAction(curTreeViewer->getUnrootedLayoutAction());
-            }
-            sl_unrootedLayoutTriggered();
+            curTreeViewer->getUnrootedLayoutAction()->setChecked(true);
+            changeLayout(TreeLayout_Unrooted);
             break;
     }
 }
@@ -527,7 +525,6 @@ void TreeViewerUI::updateSettings(const ButtonSettings &settings) {
 }
 
 void TreeViewerUI::updateSettings(const TextSettings &settings) {
-
     textSettings = settings;
     updateTextSettings();
 }
@@ -548,12 +545,11 @@ void TreeViewerUI::updateSettings(const TreeLabelsSettings &settings) {
     QAction* showNamesAction = curTreeViewer->getNameLabelsAction();
     QAction* showDistancesAction = curTreeViewer->getDistanceLabelsAction();
 
-    sl_showNameLabelsTriggered(settings.showNames);
+    changeNamesDisplay(settings.showNames);
     showNamesAction->setChecked(settings.showNames);
-    contAction->setEnabled(settings.showNames);
-    sl_showDistanceLabelsTriggered(settings.showDistances);
+    changeDistancesDisplay(settings.showDistances);
     showDistancesAction->setChecked(settings.showDistances);
-    sl_contTriggered(settings.alignLabels);
+    changeAlignmentSettings(settings.alignLabels);
     contAction->setChecked(settings.alignLabels);
 }
 
@@ -567,7 +563,7 @@ void TreeViewerUI::sl_branchSettings() {
     BranchSettingsDialog d(this, getBranchSettings());
     if (d.exec()) {
         updateSettings( d.getSettings() );
-        emit si_settingsChanged();
+        emit si_settingsChanged(BRANCHES_SETTINGS);
     }
 }
 
@@ -1005,79 +1001,88 @@ void TreeViewerUI::sl_exportTriggered() {
 
 void TreeViewerUI::sl_contTriggered(bool on) {
     if (on != labelsSettings.alignLabels) {
-        labelsSettings.alignLabels = on;
-        //emit si_settingsChanged();
-        TreeLayout curLayout = layout;
-        QStack<GraphicsBranchItem*> stack;
-       
-        updateLabelsAlignment(on);
+        changeAlignmentSettings(on);
+        emit si_settingsChanged(LABELS_SETTINGS);
+    }
+}
 
-        switch (curLayout)
-        {
-        case TreeLayout_Circular:
-            sl_circularLayoutTriggered();
-            fitInView(scene()->sceneRect(), Qt::KeepAspectRatio);
-            break;
+void TreeViewerUI::changeAlignmentSettings(bool alignLabels) {
+    labelsSettings.alignLabels = alignLabels;
+    TreeLayout curLayout = layout;
+    QStack<GraphicsBranchItem*> stack;
 
-        case TreeLayout_Unrooted:
-            sl_unrootedLayoutTriggered();
-            fitInView(scene()->sceneRect(), Qt::KeepAspectRatio);
-            break;
-        case TreeLayout_Rectangular:
-            show();
-            break;
-        }
+    updateLabelsAlignment(alignLabels);
+
+    switch (curLayout)
+    {
+    case TreeLayout_Circular:
+        changeLayout(TreeLayout_Circular);
+        fitInView(scene()->sceneRect(), Qt::KeepAspectRatio);
+        break;
+
+    case TreeLayout_Unrooted:
+        changeLayout(TreeLayout_Unrooted);
+        fitInView(scene()->sceneRect(), Qt::KeepAspectRatio);
+        break;
+    case TreeLayout_Rectangular:
+        //Do nothing
+        show();
+        break;
     }
 }
 
 void TreeViewerUI::sl_rectangularLayoutTriggered() {
-    if (layout != TreeLayout_Rectangular) {
-        root->setSelectedRecurs(false, true); // clear selection
-
-        layout = TreeLayout_Rectangular;
-        emit si_settingsChanged();
-        scene()->removeItem(root);
-        if(!rectRoot){
-            redrawRectangularLayout();
-        }
-        root = rectRoot;
-        scene()->addItem(root);
-        defaultZoom();
-        updateRect();
-        updateTreeSettings();
-        fitInView(scene()->sceneRect(), Qt::KeepAspectRatio);
-        onLayoutChanged(layout);
-    }
+    changeLayout(TreeLayout_Rectangular);
+    emit si_settingsChanged(GENERAL_SETTINGS);
 }
 
 void TreeViewerUI::sl_circularLayoutTriggered() {
-    if (layout != TreeLayout_Circular) {
-        root->setSelectedRecurs(false, true); // clear selection
-
-        layout = TreeLayout_Circular;
-        emit si_settingsChanged();
-        updateTreeSettings();
-        if(getScale() <= GraphicsRectangularBranchItem::DEFAULT_WIDTH){
-            layoutTask = new CreateCircularBranchesTask(rectRoot, true);
-        }else{
-            layoutTask = new CreateCircularBranchesTask(rectRoot);
-        }
-        connect(layoutTask, SIGNAL(si_stateChanged()), SLOT(sl_layoutRecomputed()));
-        TaskScheduler* scheduler = AppContext::getTaskScheduler();
-        scheduler->registerTopLevelTask(layoutTask);
-        onLayoutChanged(layout);
-    }
+    changeLayout(TreeLayout_Circular);
+    emit si_settingsChanged(GENERAL_SETTINGS);
 }
 
 void TreeViewerUI::sl_unrootedLayoutTriggered() {
-    if (layout != TreeLayout_Unrooted) {
-        root->setSelectedRecurs(false, true); // clear selection
+    changeLayout(TreeLayout_Unrooted);
+    emit si_settingsChanged(GENERAL_SETTINGS);
+}
 
-        layout = TreeLayout_Unrooted;
-        emit si_settingsChanged();
-        updateTreeSettings();
-        layoutTask = new CreateUnrootedBranchesTask(rectRoot);
-        connect(layoutTask, SIGNAL(si_stateChanged()), SLOT(sl_layoutRecomputed()));
+void TreeViewerUI::changeLayout(TreeLayout newLayout) {
+    if(layout == newLayout) {
+        return;
+    }
+
+    root->setSelectedRecurs(false, true); // clear selection
+    layout = newLayout;
+    updateTreeSettings();
+
+    switch(layout) {
+        case TreeLayout_Rectangular:
+            scene()->removeItem(root);
+            if(!rectRoot){
+                redrawRectangularLayout();
+            }
+            root = rectRoot;
+            scene()->addItem(root);
+            defaultZoom();
+            updateRect();
+            updateTreeSettings();
+            fitInView(scene()->sceneRect(), Qt::KeepAspectRatio);
+            onLayoutChanged(layout);
+            break;
+        case TreeLayout_Circular:
+            if(getScale() <= GraphicsRectangularBranchItem::DEFAULT_WIDTH){
+                layoutTask = new CreateCircularBranchesTask(rectRoot, true);
+            }else{
+                layoutTask = new CreateCircularBranchesTask(rectRoot);
+            }
+            connect(layoutTask, SIGNAL(si_stateChanged()), SLOT(sl_layoutRecomputed()));
+            break;
+        case TreeLayout_Unrooted:
+            layoutTask = new CreateUnrootedBranchesTask(rectRoot);
+            connect(layoutTask, SIGNAL(si_stateChanged()), SLOT(sl_layoutRecomputed()));
+            break;
+    }
+    if(layout != TreeViewerUI::TreeLayout_Rectangular) {
         TaskScheduler* scheduler = AppContext::getTaskScheduler();
         scheduler->registerTopLevelTask(layoutTask);
         onLayoutChanged(layout);
@@ -1098,13 +1103,13 @@ void TreeViewerUI::sl_rectLayoutRecomputed() {
     {
     case TreeLayout_Circular:
         layout = TreeViewerUI::TreeLayout_Rectangular;
-        sl_circularLayoutTriggered();
+        changeLayout(TreeLayout_Circular);
         fitInView(scene()->sceneRect(), Qt::KeepAspectRatio);
         break;
 
     case TreeLayout_Unrooted:
         layout = TreeViewerUI::TreeLayout_Rectangular;
-        sl_unrootedLayoutTriggered();
+        changeLayout(TreeLayout_Unrooted);
         fitInView(scene()->sceneRect(), Qt::KeepAspectRatio);
         break;
     case TreeLayout_Rectangular:
@@ -1191,20 +1196,32 @@ void TreeViewerUI::showLabels(LabelTypes labelTypes) {
 
 void TreeViewerUI::sl_showNameLabelsTriggered(bool on) {
     if (on != labelsSettings.showNames) {
-        labelsSettings.showNames = on;
-        showLabels(LabelType_SequnceName);
-        QRectF rect = sceneRect();
-        rect.setWidth(rect.width() + (on ? 1 : -1) * maxNameWidth);
-        scene()->setSceneRect(rect);
+        changeNamesDisplay(on);
+        emit si_settingsChanged(LABELS_SETTINGS);
     }
+}
+
+void TreeViewerUI::changeNamesDisplay(bool showNames) {
+    QAction* contAction = curTreeViewer->getContAction();
+    contAction->setEnabled(showNames);
+
+    labelsSettings.showNames = showNames;
+    showLabels(LabelType_SequnceName);
+    QRectF rect = sceneRect();
+    rect.setWidth(rect.width() + (showNames ? 1 : -1) * maxNameWidth);
+    scene()->setSceneRect(rect);
 }
 
 void TreeViewerUI::sl_showDistanceLabelsTriggered(bool on) {
     if (on != labelsSettings.showDistances) {
-        labelsSettings.showDistances = on;
-        showLabels(LabelType_Distance);
-        //emit si_settingsChanged();
+        changeDistancesDisplay(on);
+        emit si_settingsChanged(LABELS_SETTINGS);
     }
+}
+
+void TreeViewerUI::changeDistancesDisplay(bool showDistances) {
+    labelsSettings.showDistances = showDistances;
+    showLabels(LabelType_Distance);
 }
 
 void TreeViewerUI::sl_printTriggered() {
@@ -1240,11 +1257,11 @@ void TreeViewerUI::sl_textSettingsTriggered(){
                      item->setWidth(0);
                  }
              }
-            updateRect();
-            labelsSettings.alignLabels = false;
-            sl_contTriggered(true);
-            emit si_settingsChanged();
+             updateRect();
+             labelsSettings.alignLabels = false;
+             changeAlignmentSettings(true);
          }
+         emit si_settingsChanged(TEXT_FORMAT);
     }
 }
 
@@ -1252,7 +1269,7 @@ void TreeViewerUI::sl_treeSettingsTriggered(){
     TreeSettingsDialog dialog(this, getTreeSettings(), layout == TreeLayout_Rectangular);
     if(dialog.exec()){
         updateSettings(dialog.getSettings());
-        emit si_settingsChanged();
+        emit si_settingsChanged(GENERAL_SETTINGS);
     }
 }
 
@@ -1365,10 +1382,10 @@ void TreeViewerUI::updateLayout()
     layout = TreeLayout_Rectangular;
     switch(tmpL){
         case TreeLayout_Circular:
-            sl_circularLayoutTriggered();
+            changeLayout(TreeLayout_Circular);
             break;
         case TreeLayout_Unrooted:
-            sl_unrootedLayoutTriggered();
+            changeLayout(TreeLayout_Unrooted);
             break;
         case TreeLayout_Rectangular:
             //here to please compiler

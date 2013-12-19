@@ -31,9 +31,10 @@
 #include <QtGui/QScrollBar>
 #include <QtGui/QRubberBand>
 
-#include <U2View/MSAEditorTreeViewer.h>
+#include "PhyTrees/MSAEditorTreeViewer.h"
 
 namespace U2 {
+
 
 class MSAEditor;
 class MSAEditorUI;

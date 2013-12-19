@@ -22,7 +22,7 @@
 #ifndef _U2_MSAEditor_TREE_VIEWER_H_
 #define _U2_MSAEditor_TREE_VIEWER_H_
 
-#include <U2View/TreeViewer.h>
+#include "U2View/TreeViewer.h"
 #include <U2Algorithm/CreatePhyTreeSettings.h>
 #include <QtGui/QGraphicsLineItem>
 #include <QtCore/QMap>

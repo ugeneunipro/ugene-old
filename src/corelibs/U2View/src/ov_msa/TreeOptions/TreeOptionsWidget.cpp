@@ -28,9 +28,10 @@
 #include <U2Core/U2SafePoints.h>
 
 #include <U2Algorithm/MSADistanceAlgorithmRegistry.h>
-#include "U2View/MSAEditorDataList.h"
-#include <U2View/TreeViewer.h>
-#include <U2View/MSAEditorMultiTreeViewer.h>
+#include "ov_msa/MSAEditorDataList.h"
+#include "ov_phyltree/TreeViewer.h"
+#include "ov_msa/PhyTrees/MSAEditorMultiTreeViewer.h"
+#include "phyltree/TreeSettingsDialog.h"
 
 namespace U2 {
 
@@ -113,6 +114,7 @@ void TreeOptionsWidget::updateAllWidgets()
     showPenSettings = viewSettings.showPenSettings;
     createGeneralSettingsWidgets();
     updateLabelsSettingsWidgets();
+    updateFormatSettings();
     updateBranchSettings();
 
     updateShowFontOpLabel("Show font settings");
@@ -130,9 +132,8 @@ void TreeOptionsWidget::connectSlots()
     // General settings widgets
     connect(treeViewCombo, SIGNAL(currentIndexChanged(int)), SLOT(sl_onGeneralSettingsChanged()));
     connect(layoutCombo,   SIGNAL(currentIndexChanged(int)), SLOT(sl_onLayoutChanged(int)));
-    if(NULL != msa) {
-        connect(getTreeViewer(), SIGNAL(si_settingsChanged()), SLOT(sl_onSettingsChanged()));
-    }
+    
+    connect(getTreeViewer(), SIGNAL(si_settingsChanged(TreeSettingsType)), SLOT(sl_onSettingsChanged(TreeSettingsType)));
 
     //Labels settings widgets
     connect(showNamesCheck,      SIGNAL(stateChanged(int)), SLOT(sl_onLabelsSettingsChanged()));
@@ -202,11 +203,12 @@ void TreeOptionsWidget::updateLabelsSettingsWidgets() {
     alignLabelsCheck->setCheckState(labelsSettings.alignLabels ? Qt::Checked : Qt::Unchecked);
 
     textSettings = getTreeViewer()->getTextSettings();
+}
 
+void TreeOptionsWidget::updateFormatSettings() {
     //Update labels format settings widgets
     updateButtonColor(labelsColorButton, textSettings.textColor);
 
-    fontComboBox->setCurrentFont(textSettings.textFont);
     fontSizeSpinBox->setValue(textSettings.textFont.pointSize());
 
     boltAttrButton->setCheckable(true);
@@ -216,6 +218,8 @@ void TreeOptionsWidget::updateLabelsSettingsWidgets() {
     boltAttrButton->setChecked(textSettings.textFont.bold());
     italicAttrButton->setChecked(textSettings.textFont.italic());
     underlineAttrButton->setChecked(textSettings.textFont.underline());
+
+    fontComboBox->setCurrentFont(textSettings.textFont);
 }
 
 void TreeOptionsWidget::updateBranchSettings() {
@@ -264,23 +268,30 @@ void TreeOptionsWidget::sl_onGeneralSettingsChanged()
 }
 
 void TreeOptionsWidget::sl_textSettingsChanged() {
-    textSettings.textFont = fontComboBox->currentFont();
-    textSettings.textFont.setPointSize(fontSizeSpinBox->value());
+    QFont newFont = fontComboBox->currentFont();
+    newFont.setPointSize(fontSizeSpinBox->value());
 
-    textSettings.textFont.setBold(boltAttrButton->isChecked());
-    textSettings.textFont.setItalic(italicAttrButton->isChecked());
-    textSettings.textFont.setUnderline(underlineAttrButton->isChecked());
+    newFont.setBold(boltAttrButton->isChecked());
+    newFont.setItalic(italicAttrButton->isChecked());
+    newFont.setUnderline(underlineAttrButton->isChecked());
 
-    getTreeViewer()->updateSettings(textSettings);
+    if(newFont != textSettings.textFont) {
+        textSettings.textFont = newFont;
+        getTreeViewer()->updateSettings(textSettings);
+    }
 }
 
 void TreeOptionsWidget::sl_onLabelsSettingsChanged() {
-    labelsSettings.alignLabels = (Qt::Checked ==  alignLabelsCheck->checkState());
-    labelsSettings.showNames = (Qt::Checked ==  showNamesCheck->checkState());
-    labelsSettings.showDistances = (Qt::Checked ==  showDistancesCheck->checkState());
-    alignLabelsCheck->setEnabled(labelsSettings.showNames);
+    TreeLabelsSettings newSettings;
+    newSettings.alignLabels = (Qt::Checked ==  alignLabelsCheck->checkState());
+    newSettings.showNames = (Qt::Checked ==  showNamesCheck->checkState());
+    newSettings.showDistances = (Qt::Checked ==  showDistancesCheck->checkState());
+    if(labelsSettings != newSettings) {
+        labelsSettings = newSettings;
+        alignLabelsCheck->setEnabled(labelsSettings.showNames);
 
-    getTreeViewer()->updateSettings(labelsSettings);
+        getTreeViewer()->updateSettings(labelsSettings);
+    }
 }
 
 void TreeOptionsWidget::sl_onLayoutChanged(int index) {
@@ -340,12 +351,32 @@ void TreeOptionsWidget::sl_onLblLinkActivated(const QString& link) {
     }
 }
 
-void TreeOptionsWidget::sl_onSettingsChanged() {
-    treeSettings = getTreeViewer()->getTreeSettings();
-    updateGeneralSettingsWidgets();
-    updateLabelsSettingsWidgets();
-    updateBranchSettings();
-    updateButtonColor(branchesColorButton, branchSettings.branchColor);
+void TreeOptionsWidget::sl_onSettingsChanged(TreeSettingsType settingsType) {
+    TreeViewerUI* treeViewer = getTreeViewer();
+    CHECK(NULL != treeViewer,);
+    switch(settingsType) {
+        case GENERAL_SETTINGS:
+            treeSettings = treeViewer->getTreeSettings();
+            updateGeneralSettingsWidgets();
+            updateBranchSettings();
+            break;
+        case LABELS_SETTINGS:
+            labelsSettings = treeViewer->getLabelsSettings();
+            updateLabelsSettingsWidgets();
+            break;
+        case TEXT_FORMAT:
+            textSettings = treeViewer->getTextSettings();
+            updateFormatSettings();
+            break;
+        case BRANCHES_SETTINGS:
+            branchSettings = treeViewer->getBranchSettings();
+            updateBranchSettings();
+            updateButtonColor(branchesColorButton, branchSettings.branchColor);
+            break;
+        default:
+            //Can not change this type of settings
+            break;
+    }
 }
 
 void TreeOptionsWidget::updateButtonColor(QPushButton* button, const QColor& newColor ) {

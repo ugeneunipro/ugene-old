@@ -79,6 +79,7 @@ HEADERS += src/Init.h \
            src/ov_phyltree/GraphicsCircularBranchItem.h \
            src/ov_phyltree/GraphicsRectangularBranchItem.h \
            src/ov_phyltree/GraphicsUnrootedBranchItem.h \
+           src/ov_phyltree/TreeSettings.h \
            src/ov_phyltree/TreeViewer.h \
            src/ov_phyltree/TreeViewerFactory.h \
            src/ov_phyltree/TreeViewerState.h \
@@ -269,6 +270,7 @@ SOURCES += src/Init.cpp \
            src/ov_phyltree/GraphicsCircularBranchItem.cpp \
            src/ov_phyltree/GraphicsRectangularBranchItem.cpp \
            src/ov_phyltree/GraphicsUnrootedBranchItem.cpp \
+           src/ov_phyltree/TreeSettings.cpp \
            src/ov_phyltree/TreeViewer.cpp \
            src/ov_phyltree/TreeViewerFactory.cpp \
            src/ov_phyltree/TreeViewerState.cpp \

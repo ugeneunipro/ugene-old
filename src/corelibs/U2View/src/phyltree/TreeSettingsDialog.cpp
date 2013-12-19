@@ -24,17 +24,11 @@
 
 namespace U2 {
 
-int TreeSettings::default_width_coef = 1;
-int TreeSettings::default_height_coef = 1;
-
-TreeSettings::TreeSettings() {
-    width_coef = default_width_coef;
-    height_coef = default_height_coef;
-    type = DEFAULT;
-}
-
-TreeSettingsDialog::TreeSettingsDialog(QWidget *parent, const TreeSettings &treeSettings, bool isRectLayout)
-: QDialog(parent), settings(treeSettings), changedSettings(treeSettings) {
+TreeSettingsDialog::TreeSettingsDialog(QWidget *parent, const TreeSettings &treeSettings, bool isRectLayout) : 
+    QDialog(parent),
+    settings(treeSettings),
+    changedSettings(treeSettings)
+{
 
     setupUi(this);
 
@@ -86,8 +80,7 @@ void TreeSettingsDialog::accept() {
     QDialog::accept();
 }
 
-TreeSettings TreeSettingsDialog::getSettings() const {
-
+const TreeSettings& TreeSettingsDialog::getSettings() const {
     return settings;
 }
 

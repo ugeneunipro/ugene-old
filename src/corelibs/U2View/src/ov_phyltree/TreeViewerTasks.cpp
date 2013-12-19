@@ -38,9 +38,9 @@
 #include <U2Core/GObjectTypes.h>
 #include <U2Core/U2SafePoints.h>
 
-#include <U2View/MSAEditorTreeViewer.h>
-#include <U2View/MSAEditor.h>
-#include <U2View/MSAEditorTreeManager.h>
+#include "ov_msa/PhyTrees/MSAEditorTreeViewer.h"
+#include "ov_msa/MSAEditor.h"
+#include "ov_msa/PhyTrees/MSAEditorTreeManager.h"
 
 #include <QtCore/QSet>
 

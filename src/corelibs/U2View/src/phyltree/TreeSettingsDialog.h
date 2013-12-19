@@ -22,24 +22,10 @@
 #pragma once
 
 #include <ui/ui_TreeSettingsDialog.h>
+#include "ov_phyltree/TreeSettings.h"
 #include <QtGui/QDialog>
 
 namespace U2 {
-
-struct TreeSettings
-{
-public:
-    TreeSettings();
-
-    enum TREE_TYPE { PHYLOGRAM, CLADOGRAM, DEFAULT };
-
-    TREE_TYPE type;
-    int width_coef;
-    int height_coef;
-
-    static int default_width_coef;
-    static int default_height_coef;
-};
 
 class TreeSettingsDialog : public QDialog, public Ui_TreeSettingsDialog{
     Q_OBJECT
@@ -47,7 +33,7 @@ public:
     TreeSettingsDialog(QWidget *parent, const TreeSettings &treeSettings, bool isRectLayout);
     
     virtual void accept();
-    TreeSettings getSettings() const;
+    const TreeSettings& getSettings() const;
 
     static QString treeDefaultText() { return tr("Default"); }
     static QString treePhylogramText() { return tr("Phylogram"); }
@@ -58,7 +44,8 @@ protected slots:
 
 private:
 
-    TreeSettings settings, changedSettings;
+    TreeSettings settings;
+    TreeSettings changedSettings;
 
 };
 

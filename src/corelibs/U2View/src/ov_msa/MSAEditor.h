@@ -38,7 +38,7 @@
 #include <QtGui/QMenu>
 #include <QtGui/QSplitter>
 #include <QtGui/QTabWidget>
-#include <U2View/MSAEditorTreeManager.h>
+#include "PhyTrees/MSAEditorTreeManager.h"
 
 namespace U2 {
 

@@ -22,7 +22,7 @@
 #include "TreeOptionsWidgetFactory.h"
 
 #include <U2Core/U2SafePoints.h>
-#include <U2View/TreeViewer.h>
+#include "ov_phyltree/TreeViewer.h"
 
 #include <QObject>
 
