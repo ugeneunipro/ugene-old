@@ -99,7 +99,8 @@ Document* DocumentFormat::loadDocument(IOAdapterFactory* iof, const GUrl& url, c
     const QSet<GObjectType> &types = getSupportedObjectTypes();
     bool useTmpDbi = types.contains(GObjectTypes::SEQUENCE)
                   || types.contains(GObjectTypes::VARIANT_TRACK)
-                  || types.contains(GObjectTypes::MULTIPLE_ALIGNMENT);
+                  || types.contains(GObjectTypes::MULTIPLE_ALIGNMENT)
+                  || types.contains(GObjectTypes::ANNOTATION_TABLE);
     if (useTmpDbi) {
         U2DbiRef dbiRef;
         if (hints.contains(DBI_REF_HINT)) {

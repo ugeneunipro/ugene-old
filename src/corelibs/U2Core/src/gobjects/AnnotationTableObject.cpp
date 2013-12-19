@@ -32,7 +32,7 @@ namespace U2 {
 
 AnnotationTableObject::AnnotationTableObject( const QString &objectName, const U2DbiRef &dbiRef,
     const QVariantMap &hintsMap)
-    : GObject( GObjectTypes::ANNOTATION_TABLE, objectName + "_features", hintsMap )
+    : GObject( GObjectTypes::ANNOTATION_TABLE, objectName, hintsMap )
 {
     U2OpStatusImpl os;
     const U2Feature rootFeature = U2FeatureUtils::exportAnnotationGroupToFeature(
