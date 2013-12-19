@@ -146,7 +146,7 @@ void TreeOptionsWidget::connectSlots()
     connect(italicAttrButton,    SIGNAL(clicked(bool)), SLOT(sl_textSettingsChanged()));
     connect(underlineAttrButton, SIGNAL(clicked(bool)), SLOT(sl_textSettingsChanged()));
     connect(fontSizeSpinBox,     SIGNAL(valueChanged(int)), SLOT(sl_textSettingsChanged()));
-    connect(fontComboBox,        SIGNAL(currentIndexChanged(int)), SLOT(sl_textSettingsChanged()));
+    connect(fontComboBox,        SIGNAL(currentFontChanged(const QFont &)), SLOT(sl_textSettingsChanged()));
 
     //Branches settings widgets
     connect(widthSlider,   SIGNAL(valueChanged(int)), SLOT(sl_onGeneralSettingsChanged()));
