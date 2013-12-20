@@ -617,7 +617,7 @@ float GSequenceGraphDrawer::calculateLabelValue(int nPoints, const PairVector &p
     float prevValue = value;
     int prevX;
     for(prevX = xcoordInRect; isUnknownValue(prevValue); prevX--) {
-        if (prevX <= 0) {
+        if (prevX < 0) {
             label->hide();
             return 2 * globalMax;
         }
