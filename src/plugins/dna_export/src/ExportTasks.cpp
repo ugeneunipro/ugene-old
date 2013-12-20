@@ -153,7 +153,7 @@ ExportMSA2MSATask::ExportMSA2MSATask(const MAlignment& _ma, int _offset, int _le
 ma(_ma), offset(_offset), len(_len), url(_url), format(_format), aminoTranslations(_aminoTranslations)
 {
     GCOUNTER( cvar, tvar, "ExportMSA2MSATask" );
-    CHECK_EXT(ma.isEmpty(), setError(tr("Nothing to export: multiple alignment is empty")), );
+    CHECK_EXT( !ma.isEmpty(), setError(tr("Nothing to export: multiple alignment is empty")), );
     setVerboseLogMode(true);
 }
 
