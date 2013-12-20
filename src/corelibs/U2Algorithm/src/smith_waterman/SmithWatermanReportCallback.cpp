@@ -341,7 +341,7 @@ QString SmithWatermanReportCallbackMAImpl::planFor_MSA_Alignment_InCurrentWindow
         && ( secondSequenceRef.dbiRef ==sourceMsaRef.dbiRef ),
         tr( "Sequences aren't stored in the source msa dbi" ), 0 );
 
-    SAFE_POINT( !( 0 == pairAlignSeqs.ptrnSubseq.startPos == 0
+    SAFE_POINT( !( 0 == pairAlignSeqs.ptrnSubseq.startPos
         && 0 == pairAlignSeqs.ptrnSubseq.length ) &&!( 0 == pairAlignSeqs.refSubseq.startPos
         && pairAlignSeqs.refSubseq.length == 0 ), "Invalid SW algorithm result detected!",
         QString::null );

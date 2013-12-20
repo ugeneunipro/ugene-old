@@ -40,6 +40,7 @@ class CircurlarAnnotationRegionItem;
 /************************************************************************/
 
 class CircularAnnotationItem : public QGraphicsItem {
+    Q_DISABLE_COPY(CircularAnnotationItem)
 friend class CircurlarAnnotationRegionItem;
 friend class CircularAnnotationLabel;
 public:

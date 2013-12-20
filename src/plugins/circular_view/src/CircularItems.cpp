@@ -34,7 +34,7 @@ namespace U2 {
 /************************************************************************/
 
 CircularAnnotationItem::CircularAnnotationItem( const Annotation &ann, CircurlarAnnotationRegionItem* region, CircularViewRenderArea* _ra)
-    : ra(_ra), annotation( ann )
+    : annotation( ann ), ra(_ra)
 {
     assert(region->parent == NULL);
     region->parent = this;
@@ -44,7 +44,7 @@ CircularAnnotationItem::CircularAnnotationItem( const Annotation &ann, Circurlar
 }
 
 CircularAnnotationItem::CircularAnnotationItem( const Annotation &ann, QList<CircurlarAnnotationRegionItem*>& _regions, CircularViewRenderArea* _ra)
-    : regions(_regions), ra(_ra), annotation( ann )
+    : annotation( ann ), regions(_regions), ra(_ra)
 {
     isSelected = false;
     QPainterPath path;

@@ -1842,7 +1842,7 @@ bool AVItem::isReadonly( ) const  {
 }
 
 AnnotationsTreeView * AVItem::getAnnotationTreeView( ) const {
-    SAFE_POINT( parent( ) != NULL, "Invalid annotation parent item!", false );
+    SAFE_POINT( parent( ) != NULL, "Invalid annotation parent item!", NULL );
     return ( static_cast<AVItem *>( parent( ) )->getAnnotationTreeView( ) );
 }
 

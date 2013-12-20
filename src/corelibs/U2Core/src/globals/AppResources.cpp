@@ -145,6 +145,7 @@ size_t AppResourcePool::getCurrentAppMemory() {
 
 #ifdef Q_OS_LINUX
     struct proc_t usage;
+    usage.vsize = 0;    // delete it after uncommenting the next line
     //look_up_our_self(&usage);
     return usage.vsize;
 #endif

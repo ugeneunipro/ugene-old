@@ -204,6 +204,7 @@ QString SendReportDialog::getCommandForRunUgene() const {
 QString SendReportDialog::getUgeneName() const {
     QString name;
     bool isWin = false;
+    Q_UNUSED(isWin);
 #ifdef Q_OS_LINUX
     name = "ugene";
 #endif
