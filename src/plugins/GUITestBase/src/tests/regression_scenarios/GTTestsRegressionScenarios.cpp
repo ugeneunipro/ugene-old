@@ -1256,6 +1256,34 @@ GUI_TEST_CLASS_DEFINITION(test_1720){
 //Expected state: project view with document "D11266.gb", no error messages in log appear
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1808) {
+    QDir outputDir(testDir + "_common_data/scenarios/sandbox");
+    const QString outputFilePath = outputDir.absolutePath( ) + "/test_1808.gb";
+
+    // 1.Open WD
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+
+    // 2.Create schema "Read Annotations"->"Write annotations"
+    GTUtilsWorkflowDesigner::addAlgorithm(os, "Read Annotations");
+    GTUtilsWorkflowDesigner::addAlgorithm(os, "Write annotations");
+    WorkflowProcessItem *read = GTUtilsWorkflowDesigner::getWorker(os, "Read Annotations");
+    WorkflowProcessItem *write = GTUtilsWorkflowDesigner::getWorker(os, "Write annotations");
+    GTUtilsWorkflowDesigner::connect(os, read, write);
+
+    // 3.Select any input and output file
+    GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "Read Annotations"));
+    GTMouseDriver::click(os);
+    GTUtilsWorkflowDesigner::setDatasetInputFile(os, dataDir + "samples/Genbank", "sars.gb");
+    GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "Write Annotations"));
+    GTMouseDriver::click(os);
+    GTUtilsWorkflowDesigner::setParameter(os, "Output file", outputFilePath, GTUtilsWorkflowDesigner::textValue);
+
+    // 4.Validate schema
+    // Expected state: No warning about empty input sequence slot
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok, "Well done!"));
+    GTWidget::click( os,GTAction::button( os,"Validate workflow" ) );
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1811) {
     GTUtilsDialog::waitForDialog(os, new RemoteDBDialogFiller(os, "Q9IGQ6", 8));
     GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), ACTION_PROJECTSUPPORT__ACCESS_REMOTE_DB, GTGlobals::UseKey);
