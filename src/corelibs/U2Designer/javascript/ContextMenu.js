@@ -54,9 +54,7 @@ function copySelected(e, element) {
 function copyElementContent(e, element) {
     var menuObj = document.getElementById(element.getAttribute("menuId"));
     var targetObj = document.getElementById(menuObj.getAttribute("target"));
-    var content = targetObj.textContent;
-    content = content.replace(/<br>/g, '\n');
-    agent.setClipboardText(content);
+    agent.setClipboardText(targetObj.innerText);
     e.stopPropagation();
     menuObj.hide();
 }
