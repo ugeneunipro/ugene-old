@@ -87,6 +87,7 @@ void AnnotHighlightWidget::initLayout()
     mainLayout->setSpacing(10);
 
     noAnnotTypesLabel = new QLabel("");
+    noAnnotTypesLabel->setWordWrap(true);
     setNoAnnotTypesLabelValue();
     noAnnotTypesLabel->setStyleSheet("margin-left: 2px;");
 
@@ -115,17 +116,21 @@ void AnnotHighlightWidget::initLayout()
     settingsLayout->addWidget(settingsTitle);
     settingsLayout->addWidget(annotSettingsWidget);
 
-    QGridLayout* buttonsLayout = new QGridLayout();
+    QHBoxLayout* buttonsLayout = new QHBoxLayout();
     buttonsLayout->setContentsMargins(0, 0, 0, 0);
     buttonsLayout->setSpacing(0);
 
-    nextAnnotation = new QPushButton(tr("Go to next"));
-    QObject::connect(nextAnnotation, SIGNAL(clicked()),this, SLOT(sl_onNextAnnotationClick()));
-    buttonsLayout->addWidget(nextAnnotation, 0, 1);
-
     prevAnnotation = new QPushButton(tr("Go to previous"));
+    prevAnnotation->setMinimumWidth(20);
     QObject::connect(prevAnnotation, SIGNAL(clicked()),this, SLOT(sl_onPrevAnnotationClick()));
-    buttonsLayout->addWidget(prevAnnotation, 0, 0);
+    buttonsLayout->addWidget(prevAnnotation);
+
+    buttonsLayout->addSpacerItem(new QSpacerItem(20, 0));
+
+    nextAnnotation = new QPushButton(tr("Go to next"));
+    nextAnnotation->setMinimumWidth(20);
+    QObject::connect(nextAnnotation, SIGNAL(clicked()),this, SLOT(sl_onNextAnnotationClick()));
+    buttonsLayout->addWidget(nextAnnotation);
 
     // Init main layout
     mainLayout->addWidget(noAnnotTypesLabel);
@@ -283,10 +288,10 @@ void AnnotHighlightWidget::setNoAnnotTypesLabelValue()
     QList<ADVSequenceObjectContext*> seqContexts = annotatedDnaView->getSequenceContexts();
 
     if (1 == seqContexts.count()) {
-        noAnnotTypesLabel->setText(tr("The sequence doesn't have any\nannotations."));
+        noAnnotTypesLabel->setText(tr("The sequence doesn't have any annotations."));
     }
     else {
-        noAnnotTypesLabel->setText(tr("The sequences do not have any\nannotations."));
+        noAnnotTypesLabel->setText(tr("The sequences do not have any annotations."));
     }
 }
 

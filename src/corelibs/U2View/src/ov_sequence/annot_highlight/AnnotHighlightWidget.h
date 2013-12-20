@@ -22,8 +22,6 @@
 #ifndef _U2_ANNOT_HIGHLIGHT_WIDGET_H_
 #define _U2_ANNOT_HIGHLIGHT_WIDGET_H_
 
-#include <QtGui/QtGui>
-
 #include <U2Core/Annotation.h>
 
 #include "AnnotHighlightSettings.h"
