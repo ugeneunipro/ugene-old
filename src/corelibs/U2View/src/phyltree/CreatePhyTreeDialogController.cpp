@@ -13,6 +13,7 @@
 #include <U2Core/Settings.h>
 #include <U2Core/AppResources.h>
 #include <U2Core/PluginModel.h>
+#include <U2Core/TmpDirChecker.h>
 
 #include <U2Algorithm/SubstMatrixRegistry.h>
 #include <U2Algorithm/PhyTreeGeneratorRegistry.h>
@@ -89,16 +90,22 @@ void CreatePhyTreeDialogController::sl_okClicked(){
         }
     }
 
-    if (ui->fileNameEdit->text().isEmpty()) {
+    QString fileName = ui->fileNameEdit->text();
+    if (fileName.isEmpty()) {
         QMessageBox::warning(this, tr("Warning"), tr("Please, input the file name."));
         ui->fileNameEdit->setFocus();
         return;
     }
-    settings.fileUrl = ui->fileNameEdit->text();
-    
+    settings.fileUrl = fileName;
+    QFileInfo fileInfo(fileName);
+    if(!TmpDirChecker::checkWritePermissions(fileInfo.path())) {
+        QMessageBox::warning(this, tr("Warning"), tr("You don't have permission to write to the folder"));
+        ui->fileNameEdit->setFocus();
+        return;
+    }
+
     settings.displayWithAlignmentEditor = ui->displayWithAlignmentEditor->isChecked();
-
-
+    
     foreach (CreatePhyTreeWidget* widget, childWidgets) {
         widget->fillSettings(settings);
     }
