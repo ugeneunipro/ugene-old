@@ -24,6 +24,8 @@
 
 namespace U2 {
 
+#ifdef MAC_OS_X_VERSION_10_6
+
 class SleepPreventerMac::Private {
 public:
     IOReturn doCapture() {
@@ -69,5 +71,7 @@ void SleepPreventerMac::release() {
         isActive = false;
     }
 }
+
+#endif
 
 }   // namespace U2

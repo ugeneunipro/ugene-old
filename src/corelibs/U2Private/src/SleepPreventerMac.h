@@ -26,6 +26,8 @@
 
 namespace U2 {
 
+#ifdef MAC_OS_X_VERSION_10_6
+
 class SleepPreventerMac : public SleepPreventer {
 public:
     SleepPreventerMac();
@@ -40,6 +42,8 @@ private:
     int refCount;
     bool isActive;
 };
+
+#endif
 
 }   // namespace U2
 
