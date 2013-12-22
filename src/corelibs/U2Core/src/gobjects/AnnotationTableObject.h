@@ -41,11 +41,11 @@ public:
     /**
      * Converts all the features stored in DB to annotations and returns the result
      */
-    QList<Annotation>     getAnnotations( ) const;
+    QList<Annotation>       getAnnotations( ) const;
     /**
      * Returns root group
      */
-    AnnotationGroup       getRootGroup( );
+    AnnotationGroup         getRootGroup( );
     /**
      * Adds to DB a set of features based on @a
      */

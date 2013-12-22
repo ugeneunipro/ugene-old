@@ -214,7 +214,9 @@ void GFFFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, QList<GObject*>& obj
     U2SequenceImporter seqImporter(hints, true);
 
     int lineNumber = 2;//because first line checked in method validateHeader above
-    QMap<QString, AnnotationData> joinedAnnotations;
+    QMap<QString, AnnotationData *> joinedAnnotations;
+    QMap<AnnotationData *, QString> annotationGroups;
+    QMap<AnnotationData *, AnnotationTableObject *> annotationTables;
     bool fastaSectionStarts = false;
     QString headerName, objName;
     QByteArray seq;
@@ -284,8 +286,8 @@ void GFFFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, QList<GObject*>& obj
             QString groupName = words[2];
             QString annName = groupName; //by default annotation named as group
             //annotation's qualifiers from attributes
-            AnnotationData ad;
-            AnnotationData *existingAnnotation;
+            AnnotationData *ad = new AnnotationData;
+            AnnotationData *existingAnnotation = NULL;
             bool newJoined = false;
             QString id;
             if(words[8] != "."){
@@ -294,18 +296,18 @@ void GFFFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, QList<GObject*>& obj
                     QStringList qual = splitGffAttributes(p, '=');
                     if(qual.size() == 1){
                         // save field as single attribute
-                        ad.qualifiers.append( U2Qualifier("attr", qual.first()) );
+                        ad->qualifiers.append( U2Qualifier("attr", qual.first()) );
                     } else if (qual.size() == 2) {
                         qual[0] = fromEscapedString(qual[0]);
                         qual[1] = fromEscapedString(qual[1]);
                         if(qual[0] == "name"){
                             annName = qual[1];
                         }else{
-                            ad.qualifiers.append(U2Qualifier(qual[0], qual[1]));
+                            ad->qualifiers.append(U2Qualifier(qual[0], qual[1]));
                             if(qual[0] == "ID"){
                                 id = qual[1];
                                 if ( joinedAnnotations.contains( id ) ) {
-                                    existingAnnotation = &*( joinedAnnotations.find( id ) );
+                                    existingAnnotation = *( joinedAnnotations.find( id ) );
                                     bool hasIntersections = ( -1 != range.findIntersectedRegion(
                                         existingAnnotation->location->regions ) );
                                     if ( hasIntersections ) {
@@ -330,8 +332,8 @@ void GFFFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, QList<GObject*>& obj
                 if(newJoined){
                     joinedAnnotations.insert(id, ad);
                 }
-                ad.location->regions << range;
-                ad.name = annName;
+                ad->location->regions << range;
+                ad->name = annName;
 
                 QString atoName = words[0] + FEATURES_TAG;
                 AnnotationTableObject *ato = NULL;
@@ -348,30 +350,40 @@ void GFFFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, QList<GObject*>& obj
 
                 //qualifiers from columns
                 if(words[1] != "."){
-                    ad.qualifiers << U2Qualifier( "source", words[1] );
+                    ad->qualifiers << U2Qualifier( "source", words[1] );
                 }
 
                 if(words[5] != "."){
-                    ad.qualifiers << U2Qualifier( "score", words[5] );
+                    ad->qualifiers << U2Qualifier( "score", words[5] );
                 }
 
                 if(words[7] != "."){
-                    ad.qualifiers << U2Qualifier( "phase", words[7] );
+                    ad->qualifiers << U2Qualifier( "phase", words[7] );
                 }
 
                 //strand detection
                 if(words[6] == "-"){
-                    ad.setStrand( U2Strand::Complementary );
+                    ad->setStrand( U2Strand::Complementary );
                 }
 
-                ato->addAnnotation( ad, groupName );
+                annotationGroups.insert( ad, groupName );
+                annotationTables.insert( ad, ato );
+            } else {
+                delete ad;
             }
-        }else{
+        } else {
             if(words[0].startsWith("##fasta", Qt::CaseInsensitive)){
                 fastaSectionStarts = true;
             }
         }
         lineNumber++;
+    }
+
+    // add annotation data to annotation table
+    foreach ( AnnotationData *ann, annotationGroups.keys( ) ) {
+        SAFE_POINT( annotationGroups.contains( ann ) && annotationTables.contains( ann ), "Unexpected annotation!", );
+        annotationTables[ann]->addAnnotation( *ann, annotationGroups[ann] );
+        delete ann;
     }
 
     //handling last fasta sequence
