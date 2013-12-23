@@ -68,7 +68,8 @@ HEADERS += src/AppSettingsGUI.h \
            src/util/TextEditorDialog.h \
            src/util/TreeWidgetUtils.h \
            src/util/logview/LogView.h \
-           src/util/ImportDialogs/AceImportDialog.h
+           src/util/ImportDialogs/AceImportDialog.h \
+		   src/util/HelpButton.h 
 FORMS += src/util/ui/AddNewDocumentDialog.ui \
          src/util/ui/AuthentificationDialog.ui \
          src/util/ui/BreakpointConditionEditDialog.ui \
@@ -152,7 +153,8 @@ SOURCES += src/MainWindow.cpp \
            src/util/TextEditorDialog.cpp \
            src/util/TreeWidgetUtils.cpp \
            src/util/logview/LogView.cpp \
-           src/util/ImportDialogs/AceImportDialog.cpp
+           src/util/ImportDialogs/AceImportDialog.cpp \
+		   src/util/HelpButton.cpp
 RESOURCES += U2Gui.qrc
 TRANSLATIONS += transl/chinese.ts \
                 transl/czech.ts \
