@@ -280,7 +280,7 @@ void ADVSequenceObjectContext::addAnnotationObject( AnnotationTableObject *obj )
 }
 
 void ADVSequenceObjectContext::removeAnnotationObject( AnnotationTableObject *obj ) {
-    SAFE_POINT( !annotations.contains( obj ), "Unexpected annotation table!", );
+    SAFE_POINT( annotations.contains( obj ), "Unexpected annotation table!", );
     annotations.remove( obj );
     emit si_annotationObjectRemoved( obj );
 }
