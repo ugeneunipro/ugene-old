@@ -43,6 +43,7 @@ public:
     QString getDocumentURL() const;
     
     bool getAddToProjectFlag() const;
+    void setAddToProjectFlag(bool checked);
 
     DocumentFormatId getDocumentFormatId() const;
 

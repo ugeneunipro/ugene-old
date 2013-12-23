@@ -121,6 +121,11 @@ bool ExportDocumentDialogController::getAddToProjectFlag() const
     return ui->addToProjCheck->isChecked();
 }
 
+void ExportDocumentDialogController::setAddToProjectFlag(bool checked)
+{
+    ui->addToProjCheck->setChecked(checked);
+}
+
 Document *ExportDocumentDialogController::getSourceDoc() const {
     return sourceDoc;
 }

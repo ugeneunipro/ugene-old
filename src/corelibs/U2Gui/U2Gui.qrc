@@ -1,5 +1,5 @@
 <RCC>
-    <qresource prefix="core/" >
+    <qresource prefix="/core">
         <file>images/add_existing_document.png</file>
         <file>images/arrow_down.png</file>
         <file>images/arrow_right.png</file>
@@ -120,5 +120,7 @@
         <file>images/close_small.png</file>
         <file>images/refresh.png</file>
         <file>images/regions.png</file>
+        <file>images/save.png</file>
+        <file>images/save_as.png</file>
     </qresource>
 </RCC>

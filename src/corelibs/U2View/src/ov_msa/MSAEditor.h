@@ -179,6 +179,8 @@ signals:
     void si_sizeChanged(int newHeight, bool isMinimumSize, bool isMaximumSize);
 
 protected slots:
+    void sl_saveAlignment();
+    void sl_saveAlignmentAs();
     void sl_onContextMenuRequested(const QPoint & pos);
     void sl_zoomIn(); 
     void sl_zoomOut(); 
@@ -223,6 +225,8 @@ private:
     float             zoomFactor;
     float             fontPixelToPointSize;  
 
+    QAction*          saveAlignmentAction;
+    QAction*          saveAlignmentAsAction;
     QAction*          zoomInAction;
     QAction*          zoomOutAction;
     QAction*          zoomToSelectionAction;

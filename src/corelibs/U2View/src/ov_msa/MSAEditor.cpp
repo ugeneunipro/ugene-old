@@ -65,6 +65,8 @@
 #include <U2Gui/DialogUtils.h>
 #include <U2Gui/OptionsPanel.h>
 #include <U2Gui/OPWidgetFactoryRegistry.h>
+#include <U2Gui/ExportDocumentDialogController.h>
+#include <U2Gui/ExportObjectUtils.h>
 
 #include <QtGui/QLabel>
 #include <QtGui/QPainter>
@@ -130,6 +132,14 @@ MSAEditor::MSAEditor(const QString& viewName, GObject* obj)
     U2OpStatus2Log os;
     msaObject->setTrackMod(TrackOnUpdate, os);
 
+    saveAlignmentAction = new QAction(QIcon(":core/images/todo.png"), tr("Save alignment"), this);
+    saveAlignmentAction->setObjectName("Save alignment");
+    connect(saveAlignmentAction, SIGNAL(triggered()), SLOT(sl_saveAlignment()));
+
+    saveAlignmentAsAction = new QAction(QIcon(":core/images/save_as.png"), tr("Save alignment as"), this);
+    saveAlignmentAsAction->setObjectName("Save alignment as");
+    connect(saveAlignmentAsAction, SIGNAL(triggered()), SLOT(sl_saveAlignmentAs()));
+
     zoomInAction = new QAction(QIcon(":core/images/zoom_in.png"), tr("Zoom In"), this);
     zoomInAction->setObjectName("Zoom In");
     connect(zoomInAction, SIGNAL(triggered()), SLOT(sl_zoomIn()));
@@ -193,6 +203,26 @@ int MSAEditor::getColumnWidth() const {
     
     return width;
     
+}
+
+void MSAEditor::sl_saveAlignment(){
+    AppContext::getTaskScheduler()->registerTopLevelTask(new SaveDocumentTask(msaObject->getDocument()));
+}
+
+void MSAEditor::sl_saveAlignmentAs(){
+
+    Document* srcDoc = msaObject->getDocument();
+    if (srcDoc == NULL) {
+        return;
+    }
+    if (!srcDoc->isLoaded()) {
+        return;
+    }
+
+    ExportDocumentDialogController dialog(srcDoc, ui);
+    dialog.setAddToProjectFlag(true);
+    dialog.setWindowTitle(tr("Save alignment"));
+    ExportObjectUtils::export2Document(dialog);
 }
 
 void MSAEditor::sl_zoomIn() {
@@ -339,6 +369,8 @@ MSAEditor::~MSAEditor() {
 }
 
 void MSAEditor::buildStaticToolbar(QToolBar* tb) {
+    tb->addAction(saveAlignmentAction);
+    tb->addAction(saveAlignmentAsAction);
     tb->addAction(zoomInAction);
     tb->addAction(zoomOutAction);
     tb->addAction(zoomToSelectionAction);
