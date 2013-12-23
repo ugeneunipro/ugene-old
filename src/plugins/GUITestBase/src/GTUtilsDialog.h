@@ -72,6 +72,7 @@ public:
 
 public slots:
     void checkDialog();
+    void checkDialogPool();
 
 private:
     U2OpStatus &os;
@@ -94,12 +95,6 @@ public:
 protected:
     U2OpStatus &os;
     GUIDialogWaiter::WaitSettings settings;
-};
-
-class TimerLauncher : public QObject{
-    Q_OBJECT
-public slots:
-    void checkDialog();
 };
 
 class GTUtilsDialog{
@@ -125,8 +120,6 @@ private:
     static void checkAllFinished(U2OpStatus &os);
 
     static QList<GUIDialogWaiter*> pool;
-    static TimerLauncher* launcher;
-    static QTimer* timer;
     static const int timerPeriod = 100;
 };
 
