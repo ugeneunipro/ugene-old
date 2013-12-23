@@ -51,12 +51,12 @@ AnnotationTableObject::~AnnotationTableObject( ) {
 
 QList<Annotation> AnnotationTableObject::getAnnotations( ) const {
     QList<Annotation> results;
-    U2OpStatusImpl os;
-    QList<U2Feature> features = U2FeatureUtils::getSubAnnotations( rootFeatureId, entityRef.dbiRef,
-        os );
-    SAFE_POINT_OP( os, results );
-
-    return convertFeaturesToAnnotations( features );
+    AnnotationGroup rootGroup( rootFeatureId, const_cast<AnnotationTableObject *>( this ) );
+    const QList<AnnotationGroup> subgroups = rootGroup.getSubgroups( );
+    foreach ( const AnnotationGroup &sub, subgroups ) {
+        results << sub.getAnnotations( );
+    }
+    return results;
 }
 
 AnnotationGroup AnnotationTableObject::getRootGroup( ) {

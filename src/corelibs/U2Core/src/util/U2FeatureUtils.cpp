@@ -276,14 +276,8 @@ QList<U2Feature> U2FeatureUtils::getSubFeatures( const U2DataId &parentFeatureId
         }
         CHECK_OP( os, result );
         if ( resursive ) {
-            QList<U2Feature> sublist = getSubFeatures( feature.id, dbiRef, os, true, type );
+            result << getSubFeatures( feature.id, dbiRef, os, true, type );
             CHECK_OP( os, result );
-            foreach ( const U2Feature &f, sublist ) {
-                if ( featureMatchesType( f.id, type, dbiRef, os ) ) {
-                    result.append( f );
-                }
-                CHECK_OP( os, result );
-            }
         }
     }
     return result;

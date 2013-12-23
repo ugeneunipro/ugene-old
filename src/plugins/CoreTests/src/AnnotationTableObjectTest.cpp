@@ -787,27 +787,23 @@ Task::ReportResult GTest_CheckAnnotationsQualifiersInTwoObjects::report() {
             }
 //////////////////////////////////////////////////////////
             const QList<Annotation> annList = myAnnotation->getAnnotations();
-            const QList<Annotation> annList2 = myAnnotation2->getAnnotations();
+            QList<Annotation> annList2 = myAnnotation2->getAnnotations();
 
-            for(int n=0;(n != annList.size())&&(n != annList2.size());n++){
-                Annotation an1 = annList.at(n);
-                QString ann1name = an1.getName();
-                Annotation an2 = annList2.at(n);
-                QString ann2name = an2.getName();
-                foreach ( const U2Qualifier &qualifier, annList.at(n).getQualifiers()) {
-                    QString qualName = qualifier.name;
-                    QString qualValue = qualifier.value;
+            for ( int i = 0; i < annList.size( ); ++i ) {
+                bool qualsMatched = false;
+                const QVector<U2Qualifier> refQuals = annList[ i ].getQualifiers( );
+                for ( int j = 0; j < annList2.size( ); ++j ) {
+                    if ( annList2[ j ].getQualifiers(  ) == refQuals ) {
+                        qualsMatched = true;
+                        annList2.removeAt( j );
+                        --j;
+                    }
                 }
-                foreach ( const U2Qualifier &qualifier, annList2.at(n).getQualifiers()) {
-                    QString qualName = qualifier.name;
-                    QString qualValue = qualifier.value;
-                }
-                if(annList.at(n).getQualifiers() != annList2.at(n).getQualifiers()){
-                    stateInfo.setError(QString("annotations qualifiers  in position %1 not matched").arg(n));
+                if ( !qualsMatched ) {
+                    stateInfo.setError( tr( "annotations qualifiers  in position %1 not matched" ).arg( i ) );
                     return ReportResult_Finished;
                 }
             }
-
 //////////////////////////////////////////////////////////
         }
 
