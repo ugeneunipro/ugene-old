@@ -85,7 +85,7 @@ void URLListWidget::addUrlItem(UrlItem *urlItem) {
 }
 
 void URLListWidget::sl_addFileButton() {
-    LastUsedDirHelper lod("dataset_file");
+    LastUsedDirHelper lod;
     QStringList files = QFileDialog::getOpenFileNames(NULL, tr("Select file"), lod.dir);
     foreach (const QString &file, files) {
         lod.url = file;
@@ -94,7 +94,7 @@ void URLListWidget::sl_addFileButton() {
 }
 
 void URLListWidget::sl_addDirButton() {
-    LastUsedDirHelper lod("dataset_dir");
+    LastUsedDirHelper lod;
     QString dir = QFileDialog::getExistingDirectory(NULL, tr("Select a directory"), lod.dir);
     if (!dir.isEmpty()) {
         lod.dir = dir;
