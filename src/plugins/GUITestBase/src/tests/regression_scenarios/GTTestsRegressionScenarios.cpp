@@ -1172,6 +1172,41 @@ GUI_TEST_CLASS_DEFINITION(test_1689){
 //Expected state: the threshold is 100%
 }
 
+GUI_TEST_CLASS_DEFINITION( test_1701 ) {
+    //1. Open 2 PDB files("_common_data/pdb/1A5H.pdb" and "_common_data/pdb/1CF7.pdb")
+    //2. In each of them set {Render style -> Ball and Stick}
+    //3. Close one of the views
+    //Expected state: UGENE works fine. The opened view is displayed correctly(no black screen instead of molecule).
+
+    GTFileDialog::openFile( os, testDir + "_common_data/pdb", "1A5H.pdb");
+    GTFileDialog::openFile( os, testDir + "_common_data/pdb", "1CF7.pdb");
+
+    QWidget* pdb1 = GTWidget::findWidget(os, "1-1A5H");
+    QWidget* pdb2 = GTWidget::findWidget(os, "2-1CF7");
+    CHECK_SET_ERR( NULL != pdb1, "No 1A5H view");
+    CHECK_SET_ERR( NULL != pdb2, "No 1CF7 view");
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<< "Render Style"<< "Ball-and-Stick"));
+    GTMenu::showContextMenu(os, pdb2);
+
+    GTGlobals::sleep(500);
+    QPixmap before = QPixmap::grabWidget(pdb2, pdb2->rect());
+
+    GTMouseDriver::moveTo( os, GTUtilsProjectTreeView::getItemCenter(os, "1A5H.pdb"));
+    GTMouseDriver::doubleClick(os);
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<< "Render Style"<< "Ball-and-Stick"));
+    GTMenu::showContextMenu(os, pdb1);
+
+    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_ACTIONS), "Close active view", GTGlobals::UseKey);
+
+    GTGlobals::sleep(500);
+    QPixmap after = QPixmap::grabWidget(pdb2, pdb2->rect());
+
+    GTGlobals::sleep(500);
+    CHECK_SET_ERR( before.toImage() == after.toImage(), "The view has changed");
+}
+
 GUI_TEST_CLASS_DEFINITION( test_1703 )
 {
     // 1. Open document "ma.aln"

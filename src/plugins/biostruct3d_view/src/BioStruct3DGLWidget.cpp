@@ -720,6 +720,7 @@ void BioStruct3DGLWidget::createActions()
     foreach(const QString &key, BioStruct3DGLRendererRegistry::factoriesNames()) {
         action  = new QAction(key, rendererActions);
         action->setCheckable(true);
+        action->setObjectName(action->text());
     }
 
     colorSchemeActions = new QActionGroup(this);
@@ -791,6 +792,7 @@ void BioStruct3DGLWidget::createMenus()
     // Renderer selection
     selectRendererMenu = new QMenu(tr("Render Style"));
     selectRendererMenu->addActions(rendererActions->actions());
+    selectRendererMenu->menuAction()->setObjectName("Render Style");
 
     // Color scheme selection
     selectColorSchemeMenu = new QMenu(tr("Coloring Scheme"));
