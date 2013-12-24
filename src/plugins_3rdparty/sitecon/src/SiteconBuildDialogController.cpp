@@ -61,8 +61,6 @@ SiteconBuildDialogController::SiteconBuildDialogController(SiteconPlugin* pl, QW
     connect(inputButton, SIGNAL(clicked()), SLOT(sl_inFileButtonClicked()));
     connect(outputButton, SIGNAL(clicked()), SLOT(sl_outFileButtonClicked()));
     connect(okButton, SIGNAL(clicked()), SLOT(sl_okButtonClicked()));
-
-    HelpButton *hb = new HelpButton(this, "http://ugene.unipro.ru/documentation/manual/command_line/sitecon_build.html", "horizontalLayout");
 }
 
 

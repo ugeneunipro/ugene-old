@@ -106,7 +106,6 @@ ORFDialog::ORFDialog(ADVSequenceObjectContext* _ctx)
     sl_translationChanged();
 
     createAnnotationWidget();
-    HelpButton *hb = new HelpButton(this, "http://ugene.unipro.ru/documentation/manual/plugins/orf_marker.html", "horizontalLayout_5");
 }
 
 static QString triplet2str(const Triplet& t) {

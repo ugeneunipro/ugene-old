@@ -23,13 +23,14 @@
 
 #include <QWidget>
 #include <QString>
+#include <QDialogButtonBox>
 
 namespace U2{
 
 class U2GUI_EXPORT HelpButton: public QObject {
     Q_OBJECT
 public:
-    HelpButton(QWidget *target, QString lnk, QString layoutName);
+    HelpButton(QWidget *target, QDialogButtonBox *b, QString lnk);
 private slots:
     void sl_buttonClicked();
 private:

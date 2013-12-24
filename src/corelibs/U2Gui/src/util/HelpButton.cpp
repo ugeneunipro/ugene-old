@@ -28,20 +28,10 @@
 
 namespace U2{
 
-HelpButton::HelpButton(QWidget *target, QString lnk, QString layoutName):QObject(target), link(lnk){
-    QList<QHBoxLayout*> layouts = target->findChildren<QHBoxLayout*>();
-    QHBoxLayout *bl = NULL;
-    foreach(QHBoxLayout *layout, layouts){
-        if(layout->objectName() == layoutName){
-            bl = layout;
-            break;
-        }
-    }
-    if(bl != NULL){
-        QPushButton *hb = new QPushButton(tr("Help"));
-        bl->insertWidget(0, hb);
-        connect(hb, SIGNAL(clicked()), SLOT(sl_buttonClicked()));
-    }    
+HelpButton::HelpButton(QWidget *target ,QDialogButtonBox *b, QString lnk):QObject(target), link(lnk){
+    QPushButton *hb = new QPushButton(tr("Help"));
+    connect(hb, SIGNAL(clicked()), SLOT(sl_buttonClicked()));
+    b->addButton(hb, QDialogButtonBox::HelpRole);
 }
 
 void HelpButton::sl_buttonClicked(){
