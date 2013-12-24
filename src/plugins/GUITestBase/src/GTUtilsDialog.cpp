@@ -36,7 +36,7 @@ GUIDialogWaiter::GUIDialogWaiter(U2OpStatus &_os, Runnable* _r, const WaitSettin
 
     timer = new QTimer();
 
-    timer->connect(timer, SIGNAL(timeout()), this, SLOT(checkDialogPool()));
+    timer->connect(timer, SIGNAL(timeout()), this, SLOT(checkDialog()));
     timer->start(timerPeriod);
 }
 
@@ -87,6 +87,7 @@ void GUIDialogWaiter::checkDialog() {
     }
 
     if (widget && !hadRun && isExpectedName(widget->objectName(), settings.objectName)) {
+        GTUtilsDialog::pool.removeOne(this);
         timer->stop();
         uiLog.trace("-------------------------");
         uiLog.trace("GUIDialogWaiter::wait Id = " + QString::number(waiterId) + ", going to RUN");
