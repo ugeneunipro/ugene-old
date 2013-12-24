@@ -19,18 +19,19 @@
  * MA 02110-1301, USA.
  */
 
+#include "U2Core/global.h"
+
 #include <QWidget>
 #include <QString>
 
 namespace U2{
 
-class HelpButton: public QObject {
+class U2GUI_EXPORT HelpButton: public QObject {
     Q_OBJECT
 public:
-    HelpButton():QObject(){};
-    void addButton(QWidget *targetWidget, QString lnk, QString layoutName);
-    private slots:
-        void sl_buttonClicked();
+    HelpButton(QWidget *target, QString lnk, QString layoutName);
+private slots:
+    void sl_buttonClicked();
 private:
     QString link;
 };

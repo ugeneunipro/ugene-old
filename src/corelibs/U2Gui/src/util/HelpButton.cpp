@@ -28,9 +28,8 @@
 
 namespace U2{
 
-void HelpButton::addButton(QWidget *targetWidget, QString lnk, QString layoutName){
-    link = lnk;
-    QList<QHBoxLayout*> layouts = targetWidget->findChildren<QHBoxLayout*>();
+HelpButton::HelpButton(QWidget *target, QString lnk, QString layoutName):QObject(target), link(lnk){
+    QList<QHBoxLayout*> layouts = target->findChildren<QHBoxLayout*>();
     QHBoxLayout *bl = NULL;
     foreach(QHBoxLayout *layout, layouts){
         if(layout->objectName() == layoutName){
@@ -39,7 +38,7 @@ void HelpButton::addButton(QWidget *targetWidget, QString lnk, QString layoutNam
         }
     }
     if(bl != NULL){
-        QPushButton *hb = new QPushButton("Help");                      
+        QPushButton *hb = new QPushButton(tr("Help"));
         bl->insertWidget(0, hb);
         connect(hb, SIGNAL(clicked()), SLOT(sl_buttonClicked()));
     }    

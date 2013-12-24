@@ -42,6 +42,7 @@
 #include <U2View/PanView.h>
 #include <U2Gui/CreateAnnotationDialog.h>
 #include <U2Gui/CreateAnnotationWidgetController.h>
+#include <U2Gui/HelpButton.h>
 
 #include <assert.h>
 
@@ -105,7 +106,7 @@ ORFDialog::ORFDialog(ADVSequenceObjectContext* _ctx)
     sl_translationChanged();
 
     createAnnotationWidget();
-
+    HelpButton *hb = new HelpButton(this, "http://ugene.unipro.ru/documentation/manual/plugins/orf_marker.html", "horizontalLayout_5");
 }
 
 static QString triplet2str(const Triplet& t) {
