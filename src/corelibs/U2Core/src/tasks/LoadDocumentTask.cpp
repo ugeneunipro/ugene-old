@@ -519,6 +519,7 @@ Document* LoadDocumentTask::createCopyRestructuredWithHints(Document* doc, U2OpS
         QList<U2SequenceObject*> seqObjects;
 
         MAlignmentObject* maObj = MSAUtils::seqObjs2msaObj(doc->getObjects(), os);
+        CHECK(maObj != NULL, resultDoc);
         QList<GObject*> objects;
         objects << maObj;
 

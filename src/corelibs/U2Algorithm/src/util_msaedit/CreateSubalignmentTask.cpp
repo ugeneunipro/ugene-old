@@ -52,7 +52,11 @@ void CreateSubalignmentTask::prepare() {
 
     IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(cfg.url));
     if (createCopy) {
-        resultDocument = dfd->createNewLoadedDocument(iof, cfg.url, stateInfo, origDoc->getGHintsMap());
+        QVariantMap hints = origDoc->getGHintsMap();
+        if(hints.value(DocumentReadingMode_SequenceAsAlignmentHint).toBool()){
+            hints[DocumentReadingMode_SequenceAsAlignmentHint] = false;
+        }
+        resultDocument = dfd->createNewLoadedDocument(iof, cfg.url, stateInfo, hints);
         CHECK_OP(stateInfo, );
 
         MAlignment msa = origMAObj->getMAlignment();
