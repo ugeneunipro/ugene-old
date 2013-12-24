@@ -408,8 +408,7 @@ void URLWidget::activate() {
 }
 
 void URLWidget::sl_browse() {
-    bool useOutDir = WorkflowSettings::isUseWorkflowOutputDirectory();
-    if (!useOutDir || !urlLine->saveFile) {
+    if (!urlLine->saveFile) {
         urlLine->sl_onBrowse();
         return;
     }

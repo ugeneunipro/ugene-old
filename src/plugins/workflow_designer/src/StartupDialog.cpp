@@ -33,11 +33,11 @@ StartupDialog::StartupDialog(QWidget *parent)
 : QDialog(parent)
 {
     setupUi(this);
-    outDirWidget = new OutputDirectoryWidget(this);
+    outDirWidget = new OutputDirectoryWidget(this, false /*don't commitOnHide*/);
     QVBoxLayout *l = new QVBoxLayout(box);
     l->setMargin(3);
     l->addWidget(outDirWidget);
-    buttons->addButton(tr("Don't use the directory"), QDialogButtonBox::RejectRole);
+
     connect(buttons, SIGNAL(accepted()), this, SLOT(sl_accepted()));
 
 #ifdef Q_OS_WIN
@@ -59,6 +59,7 @@ void StartupDialog::sl_accepted(){
     }
     file.close();
     file.remove();
+    outDirWidget->commit();
     QDialog::accept();
 }
 

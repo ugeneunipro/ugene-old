@@ -37,9 +37,10 @@ namespace U2 {
 class U2DESIGNER_EXPORT OutputDirectoryWidget : public QWidget {
     Q_OBJECT
 public:
-    OutputDirectoryWidget(QWidget *parent);
+    OutputDirectoryWidget(QWidget *parent, bool commitOnHide);
 
     QString getChoosenDir(){return pathEdit->text();};
+    void commit();
     static const QString INFO;
 
 signals:
@@ -52,6 +53,7 @@ protected:
     void hideEvent(QHideEvent *event);
 
 private:
+    bool commitOnHide;
     QLabel *label;
     QLineEdit *pathEdit;
     QPushButton *browseButton;

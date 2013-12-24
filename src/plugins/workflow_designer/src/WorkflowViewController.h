@@ -64,6 +64,7 @@ class ExternalToolLogParser;
 
 class WorkflowScene : public QGraphicsScene {
     Q_OBJECT
+    Q_DISABLE_COPY(WorkflowScene)
 public:
     WorkflowScene(WorkflowView *parent = 0);
     virtual ~WorkflowScene();
@@ -129,8 +130,13 @@ class WorkflowView : public MWMDIWindow, public SchemaConfig {
     friend class DashboardManagerHelper;
     friend class WorkflowScene;
     Q_OBJECT
-public:
+    Q_DISABLE_COPY(WorkflowView)
+
     WorkflowView(WorkflowGObject* go);
+    static void createInstance(WorkflowGObject *go);
+
+public:
+    static void openWD(WorkflowGObject *go);
     ~WorkflowView();
 
     WorkflowEditor* getPropertyEditor() const { return propertyEditor; }
@@ -284,7 +290,6 @@ private:
     void setupMainSplitter();
     void loadSceneFromObject();
     void loadUiSettings();
-    void checkOutputDir();
 
     // dashboards
     void setupActions();

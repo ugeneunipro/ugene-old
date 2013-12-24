@@ -37,12 +37,12 @@ namespace U2 {
 
 const QString OutputDirectoryWidget::INFO = QObject::tr(
     "The Workflow Output Directory is a common directory that is used to store all output files in the Workflow Designer."
-    " If this directory is used, then a separate subdirectory of the directory is created for each run of a workflow."
+    " A separate subdirectory of the directory is created for each run of a workflow."
     "\n\nSet up the directory:"
     );
 
-OutputDirectoryWidget::OutputDirectoryWidget(QWidget *parent)
-: QWidget(parent)
+OutputDirectoryWidget::OutputDirectoryWidget(QWidget *parent, bool commitOnHide)
+: QWidget(parent), commitOnHide(commitOnHide)
 {
     QVBoxLayout *l = new QVBoxLayout(this);
     l->setContentsMargins(3, 3, 3, 3);
@@ -78,8 +78,14 @@ void OutputDirectoryWidget::sl_browse() {
     emit si_browsed();
 }
 
-void OutputDirectoryWidget::hideEvent(QHideEvent *event) {
+void OutputDirectoryWidget::commit() {
     WorkflowSettings::setWorkflowOutputDirectory(pathEdit->text());
+}
+
+void OutputDirectoryWidget::hideEvent(QHideEvent *event) {
+    if (commitOnHide) {
+        commit();
+    }
     QWidget::hideEvent(event);
 }
 

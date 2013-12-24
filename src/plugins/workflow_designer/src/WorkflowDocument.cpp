@@ -189,9 +189,7 @@ void OpenWorkflowViewTask::open() {
     foreach(QPointer<GObject> po, selectedObjects) {
         WorkflowGObject* o = qobject_cast<WorkflowGObject*>(po);
         assert(o && !o->getView());
-        WorkflowView* view = new WorkflowView(o);
-        AppContext::getMainWindow()->getMDIManager()->addMDIWindow(view);
-        AppContext::getMainWindow()->getMDIManager()->activateWindow(view);
+        WorkflowView::openWD(o);
     }
 }
 

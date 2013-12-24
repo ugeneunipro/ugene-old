@@ -236,20 +236,6 @@ void WorkflowDesignerService::serviceStateChangedCallback(ServiceState , bool en
         } else {
             sl_startWorkflowPlugin();
         }
-
-        /*designerAction = new QAction(getName(), this);
-        connect(designerAction, SIGNAL(triggered()), SLOT(sl_showDesignerWindow()));
-
-        //managerAction = new QAction(tr("Workflow Manager"), this);
-        //connect(designerAction, SIGNAL(triggered()), SLOT(sl_showManagerWindow()));
-
-        AppContext::getMainWindow()->getTopLevelMenu(MWMENU_TOOLS)->addAction(designerAction);
-        //AppContext::getMainWindow()->getTopLevelMenu(MWMENU_TOOLS)->addAction(managerAction);
-
-        //FIXME refactor
-        if (AppContext::getSettings()->getValue(PLUGIN_SETTINGS + "isVisible", false).toBool()) {
-            sl_showDesignerWindow();
-        }*/
     } else {
         delete designerAction;
         designerAction = NULL;
@@ -264,16 +250,7 @@ void WorkflowDesignerService::sl_startWorkflowPlugin() {
 #endif
     connect(designerAction, SIGNAL(triggered()), SLOT(sl_showDesignerWindow()));
 
-    //managerAction = new QAction(tr("Workflow Manager"), this);
-    //connect(designerAction, SIGNAL(triggered()), SLOT(sl_showManagerWindow()));
-
     AppContext::getMainWindow()->getTopLevelMenu(MWMENU_TOOLS)->addAction(designerAction);
-    //AppContext::getMainWindow()->getTopLevelMenu(MWMENU_TOOLS)->addAction(managerAction);
-
-    //FIXME refactor
-    if (AppContext::getSettings()->getValue(PLUGIN_SETTINGS + "isVisible", false).toBool()) {
-        sl_showDesignerWindow();
-    }
 }
 
 bool WorkflowDesignerService::closeViews() {
@@ -292,10 +269,7 @@ bool WorkflowDesignerService::closeViews() {
 
 void WorkflowDesignerService::sl_showDesignerWindow() {
     assert(isEnabled());
-    WorkflowView* view = new WorkflowView(NULL); //FIXME
-    view->setWindowIcon(QIcon(":/workflow_designer/images/wd.png"));
-    AppContext::getMainWindow()->getMDIManager()->addMDIWindow(view);
-    AppContext::getMainWindow()->getMDIManager()->activateWindow(view);
+    WorkflowView::openWD(NULL); //FIXME
 }
 
 void WorkflowDesignerService::sl_showManagerWindow() {

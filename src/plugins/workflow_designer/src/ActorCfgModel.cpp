@@ -351,9 +351,6 @@ bool ActorCfgModel::canSetData(Attribute *attr, const QVariant &value) {
     bool isOutUrlAttr = RFSUtils::isOutUrlAttribute(attr, subject, dir);
     CHECK(isOutUrlAttr, true);
 
-    bool useOutDir = WorkflowSettings::isUseWorkflowOutputDirectory();
-    CHECK(useOutDir, true);
-
     RunFileSystem *rfs = schemaConfig->getRFS();
     return rfs->canAdd(value.toString(), dir);
 }

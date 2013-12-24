@@ -288,6 +288,28 @@ void DashboardManagerHelper::sl_removeTaskFinished() {
 /********************************
 * WorkflowView
 ********************************/
+void WorkflowView::createInstance(WorkflowGObject *go) {
+    MWMDIManager *mdiManager = AppContext::getMainWindow()->getMDIManager();
+    SAFE_POINT(NULL != mdiManager, "NULL MDI manager", );
+
+    WorkflowView *view = new WorkflowView(go);
+    view->setWindowIcon(QIcon(":/workflow_designer/images/wd.png"));
+    mdiManager->addMDIWindow(view);
+    mdiManager->activateWindow(view);
+}
+
+void WorkflowView::openWD(WorkflowGObject *go) {
+    if (WorkflowSettings::isOutputDirectorySet()) {
+        createInstance(go);
+        return;
+    }
+
+    StartupDialog d(AppContext::getMainWindow()->getQMainWindow());
+    if (QDialog::Accepted == d.exec()) {
+        createInstance(go);
+    }
+}
+
 WorkflowView::WorkflowView(WorkflowGObject* go) 
 : MWMDIWindow(tr("Workflow Designer")), running(false), sceneRecreation(false), go(go), currentProto(NULL), currentActor(NULL),
 pasteCount(0), debugInfo(new WorkflowDebugStatus(this)), debugActions()
@@ -321,7 +343,6 @@ pasteCount(0), debugInfo(new WorkflowDebugStatus(this)), debugActions()
     }
 
     propertyEditor->reset();
-    checkOutputDir();
 }
 
 WorkflowView::~WorkflowView() {
@@ -495,13 +516,6 @@ void WorkflowView::setupMainSplitter() {
         SLOT(sl_breakpointDisabled(const ActorId &)));
     connect(debugInfo, SIGNAL(si_breakpointIsReached(const U2::ActorId &)),
         SLOT(sl_breakpointIsReached(const U2::ActorId &)));
-}
-
-void WorkflowView::checkOutputDir() {
-    CHECK(!WorkflowSettings::isOutputDirectorySet(), );
-
-    StartupDialog d(this);
-    WorkflowSettings::setUseWorkflowOutputDirectory(d.exec());
 }
 
 void WorkflowView::sl_breakpointIsReached(const U2::ActorId &actor) {

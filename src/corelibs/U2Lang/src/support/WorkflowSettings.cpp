@@ -48,7 +48,6 @@ namespace U2 {
 #define SCRIPT_MODE                 SETTINGS + "scriptMode"
 #define EXTERNAL_TOOL_WORKER_PATH   SETTINGS + "externalToolWorkerPath"
 #define INCLUDED_WORKER_PATH        SETTINGS + "includedWorkerPath"
-#define USE_WORKFLOW_OUTPUT_PATH    SETTINGS + "useWorkflowOutputPath"
 #define WORKFLOW_OUTPUT_PATH        SETTINGS + "workflowOutputPath"
 #define SHOW_LOAD_BUTTON_HINT       SETTINGS + "showLoadButtonHint"
 
@@ -144,17 +143,7 @@ void WorkflowSettings::setUserDirectory(const QString &newDir) {
 
 bool WorkflowSettings::isOutputDirectorySet() {
     Settings *s = AppContext::getSettings();
-    return s->contains(USE_WORKFLOW_OUTPUT_PATH);
-}
-
-bool WorkflowSettings::isUseWorkflowOutputDirectory() {
-    Settings *s = AppContext::getSettings();
-    return s->getValue(USE_WORKFLOW_OUTPUT_PATH, true).toBool();
-}
-
-void  WorkflowSettings::setUseWorkflowOutputDirectory(bool value) {
-    Settings *s = AppContext::getSettings();
-    s->setValue(USE_WORKFLOW_OUTPUT_PATH, value);
+    return s->contains(WORKFLOW_OUTPUT_PATH);
 }
 
 void WorkflowSettings::setWorkflowOutputDirectory(const QString &newDir) {

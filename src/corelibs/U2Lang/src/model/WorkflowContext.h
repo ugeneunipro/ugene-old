@@ -22,7 +22,7 @@
 #ifndef _U2_WORKFLOW_CONTEXT_H_
 #define _U2_WORKFLOW_CONTEXT_H_
 
-#include <QMutex>
+#include <QtCore/QMutex>
 
 #include <U2Core/AppFileStorage.h>
 
@@ -40,6 +40,7 @@ class WorkflowMonitor;
  * Contains a common data for whole workflow running process
  */
 class U2LANG_EXPORT WorkflowContext {
+    Q_DISABLE_COPY(WorkflowContext)
 public:
     WorkflowContext(const QList<Actor*> &procs, WorkflowMonitor *monitor);
     virtual ~WorkflowContext();
@@ -63,8 +64,6 @@ public:
     const WorkflowProcess &getWorkflowProcess() const;
     WorkflowProcess &getWorkflowProcess();
 
-    // working directory
-    bool hasWorkingDir() const;
     QString workingDir() const;
     QString absolutePath(const QString &relative) const;
 
@@ -82,24 +81,15 @@ private:
 
 private:
     QString _workingDir;
-    bool _hasWorkingDir;
 };
 
-class U2LANG_EXPORT WorkflowContextCMDLine {
+class WorkflowContextCMDLine {
 public:
-    static const QString DEFAULT_OUTPUT_DIR;
-    static const QString OUTPUT_DIR;
-    static const QString ROLL_OUTPUT;
-
     static QString getOutputDirectory(U2OpStatus &os);
     static QString createSubDirectoryForRun(const QString &root, U2OpStatus &os);
-    static bool useWorkingDir();
+    static bool useOutputDir();
     static bool useSubDirs();
     static void saveRunInfo(const QString &dir);
-
-private:
-    static bool useSettings();
-
 };
 
 } // Workflow

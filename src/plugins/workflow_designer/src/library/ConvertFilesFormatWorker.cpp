@@ -153,13 +153,7 @@ void ConvertFilesFormatWorker::init() {
 }
 
 void ConvertFilesFormatWorker::getWorkingDir( QString &workingDir ) {
-    QString workingDirPath;
-    if( context->hasWorkingDir() ) {
-        workingDirPath.append( context->workingDir() );
-    } else {
-        QString tempDir = AppContext::getAppSettings()->getUserAppsSettings()->getCurrentProcessTemporaryDirPath();
-        workingDirPath.append( tempDir );
-    }
+    QString workingDirPath = context->workingDir();
     if( !workingDirPath.endsWith("/") ) {
         workingDirPath.append("/");
     }

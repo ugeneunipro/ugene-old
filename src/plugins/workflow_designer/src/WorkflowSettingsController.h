@@ -58,7 +58,6 @@ public:
     QString workflowOutputDir;
     QColor color;
     bool showEmptyPorts;
-    bool useWorkflowOutputDir;
 };
 
 

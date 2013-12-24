@@ -41,10 +41,6 @@
 namespace U2 {
 namespace Workflow {
 
-const QString WorkflowContextCMDLine::DEFAULT_OUTPUT_DIR("default-output-dir");
-const QString WorkflowContextCMDLine::OUTPUT_DIR("output-dir");
-const QString WorkflowContextCMDLine::ROLL_OUTPUT("roll-output");
-
 static QString getWorkflowId(WorkflowContext *ctx) {
     qint64 pid = QApplication::applicationPid();
     QString wId = QByteArray::number(pid) + "_" + QByteArray::number(qint64(ctx));
@@ -139,10 +135,6 @@ WorkflowProcess & WorkflowContext::getWorkflowProcess() {
     return process;
 }
 
-bool WorkflowContext::hasWorkingDir() const {
-    return _hasWorkingDir;
-}
-
 QString WorkflowContext::workingDir() const {
     return _workingDir;
 }
@@ -153,16 +145,11 @@ QString WorkflowContext::absolutePath(const QString &relative) const {
     if (info.isAbsolute()) {
         return relative;
     }
-    if (hasWorkingDir()) {
-        return workingDir() + relative;
-    }
-    return info.absoluteFilePath();
+
+    return workingDir() + relative;
 }
 
 bool WorkflowContext::initWorkingDir() {
-    _hasWorkingDir = WorkflowContextCMDLine::useWorkingDir();
-    CHECK(hasWorkingDir(), true);
-
     U2OpStatus2Log os;
 
     QString root = WorkflowContextCMDLine::getOutputDirectory(os);
@@ -190,23 +177,13 @@ bool WorkflowContext::initWorkingDir() {
 /************************************************************************/
 /* WorkflowContextCMDLine */
 /************************************************************************/
-bool WorkflowContextCMDLine::useSettings() {
-    if (AppContext::isGUIMode()) {
-        return true;
-    }
-    CMDLineRegistry *reg = AppContext::getCMDLineRegistry();
-    return reg->hasParameter(DEFAULT_OUTPUT_DIR);
-}
-
 QString WorkflowContextCMDLine::getOutputDirectory(U2OpStatus &os) {
     CMDLineRegistry *reg = AppContext::getCMDLineRegistry();
 
     // 1. Detect directory
     QString root;
-    if (useSettings()) {
+    if (useOutputDir()) {
         root = WorkflowSettings::getWorkflowOutputDirectory();
-    } else if (reg->hasParameter(OUTPUT_DIR)) {
-        root = reg->getParameterValue(OUTPUT_DIR);
     } else {
         root = QDir::currentPath();
     }
@@ -246,23 +223,12 @@ QString WorkflowContextCMDLine::createSubDirectoryForRun(const QString &root, U2
     return dirName;
 }
 
-bool WorkflowContextCMDLine::useWorkingDir() {
-    if (AppContext::isGUIMode()) {
-        return true;
-    }
-    if (useSettings()) {
-        return WorkflowSettings::isUseWorkflowOutputDirectory();
-    }
-    return true;
+bool WorkflowContextCMDLine::useOutputDir() {
+    return AppContext::isGUIMode();
 }
 
 bool WorkflowContextCMDLine::useSubDirs() {
-    CMDLineRegistry *reg = AppContext::getCMDLineRegistry();
-    if (useSettings()) {
-        return true;
-    }
-
-    return reg->hasParameter(ROLL_OUTPUT);
+    return useOutputDir();
 }
 
 void WorkflowContextCMDLine::saveRunInfo(const QString &dir) {

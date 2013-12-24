@@ -49,7 +49,6 @@ AppSettingsGUIPageState* WorkflowSettingsPageController::getSavedState() {
     state->color = WorkflowSettings::getBGColor();
     state->externalToolCfgDir = WorkflowSettings::getExternalToolDirectory();
     state->includedElementsDir = WorkflowSettings::getIncludedElementsDirectory();
-    state->useWorkflowOutputDir = WorkflowSettings::isUseWorkflowOutputDirectory();
     state->workflowOutputDir = WorkflowSettings::getWorkflowOutputDirectory();
     return state;
 }
@@ -60,14 +59,12 @@ void WorkflowSettingsPageController::saveState(AppSettingsGUIPageState* s) {
     WorkflowSettings::setSnap2Grid(state->snap2grid);
     WorkflowSettings::setMonitorRun(state->lockRun);
     WorkflowSettings::setDebuggerEnabled(state->enableDebugger);
-    //WorkflowSettings::setFailFast(state->failFast);
     WorkflowSettings::setDefaultStyle(state->style);
     WorkflowSettings::setDefaultFont(state->font);
     WorkflowSettings::setUserDirectory(state->path);
     WorkflowSettings::setBGColor(state->color);
     WorkflowSettings::setExternalToolDirectory(state->externalToolCfgDir);
     WorkflowSettings::setIncludedElementsDirectory(state->includedElementsDir);
-    WorkflowSettings::setUseWorkflowOutputDirectory(state->useWorkflowOutputDir);
     WorkflowSettings::setWorkflowOutputDirectory(state->workflowOutputDir);
 }
 
@@ -140,7 +137,6 @@ void WorkflowSettingsPageWidget::setState(AppSettingsGUIPageState* s) {
     extToolDirEdit->setText(state->externalToolCfgDir);
     includedlDirEdit->setText(state->includedElementsDir);
     workflowOutputEdit->setText(state->workflowOutputDir);
-    workflowOutputBox->setChecked(state->useWorkflowOutputDir);
 }
 
 AppSettingsGUIPageState* WorkflowSettingsPageWidget::getState(QString& ) const {
@@ -155,7 +151,6 @@ AppSettingsGUIPageState* WorkflowSettingsPageWidget::getState(QString& ) const {
     state->color = colorWidget->palette().color(colorWidget->backgroundRole());
     state->externalToolCfgDir = extToolDirEdit->text();
     state->includedElementsDir = includedlDirEdit->text();
-    state->useWorkflowOutputDir = workflowOutputBox->isChecked();
     state->workflowOutputDir = workflowOutputEdit->text();
     return state;
 }

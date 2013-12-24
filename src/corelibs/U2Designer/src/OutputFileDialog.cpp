@@ -19,10 +19,10 @@
  * MA 02110-1301, USA.
  */
 
-#include <QFileDialog>
-#include <QMenu>
-#include <QPushButton>
-#include <QWidgetAction>
+#include <QtGui/QFileDialog>
+#include <QtGui/QMenu>
+#include <QtGui/QPushButton>
+#include <QtGui/QWidgetAction>
 
 #include <U2Core/U2SafePoints.h>
 
@@ -76,7 +76,7 @@ OutputFileDialog::OutputFileDialog(RunFileSystem *_rfs, bool _saveDir, Completio
 
 void OutputFileDialog::setupSettings() {
     QMenu *m = new QMenu(this);
-    OutputDirectoryWidget *odw = new OutputDirectoryWidget(m);
+    OutputDirectoryWidget *odw = new OutputDirectoryWidget(m, true /*commitOnHide*/);
     connect(odw, SIGNAL(si_browsed()), settingsButton, SLOT(click()));
     odw->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::MinimumExpanding);
 
