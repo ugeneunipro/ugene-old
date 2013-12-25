@@ -1131,6 +1131,18 @@ GUI_TEST_CLASS_DEFINITION( test_1622 )
         "Undo works wrong. Found text is: " + undoneContent );
 }
 
+GUI_TEST_CLASS_DEFINITION( test_1688 ) {
+    // 1) Open file "_common_data/scenarios/_regression/1688/sr100.000.fa"
+    // Expected state: UGENE show error, not crashed
+    GTLogTracer l;
+
+    GTUtilsDialog::waitForDialog( os, new SequenceReadingModeSelectorDialogFiller( os,
+        SequenceReadingModeSelectorDialogFiller::Separate ) );
+    GTFileDialog::openFile( os, testDir + "_common_data/scenarios/_regression/1688/", "sr100.000.fa");
+    GTGlobals::sleep( 60000 );
+    GTUtilsLog::check( os, l );
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1689){
 //1. Open "data/samples/CLUSTALW/COI.aln"
     GTFileDialog::openFile(os, dataDir+"samples/CLUSTALW/", "COI.aln");
