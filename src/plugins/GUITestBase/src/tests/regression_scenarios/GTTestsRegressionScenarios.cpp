@@ -4167,6 +4167,40 @@ GUI_TEST_CLASS_DEFINITION( test_2415 ) {
     CHECK_SET_ERR(NULL != item, "Object is not renamed");
 }
 
+GUI_TEST_CLASS_DEFINITION( test_2424 ) {
+//     1. Open WD. Add Read Sequence, Write sequence and Filter quality (custm element with script section) workers. Make sure Fitler Quality worker's script text is empty.
+    QString workflowOutputDirPath( testDir + "_common_data/scenarios/sandbox" );
+    QDir workflowOutputDir( workflowOutputDirPath );
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+
+    GTUtilsWorkflowDesigner::addAlgorithm( os, "Read Sequence" );
+    GTUtilsWorkflowDesigner::addAlgorithm( os, "Write Sequence" );
+    GTUtilsWorkflowDesigner::addAlgorithm( os, "Quality filter example" );
+
+    WorkflowProcessItem *seqReader = GTUtilsWorkflowDesigner::getWorker( os, "Read Sequence" );
+    WorkflowProcessItem *seqWriter = GTUtilsWorkflowDesigner::getWorker( os, "Write Sequence" );
+    WorkflowProcessItem *qualFilter = GTUtilsWorkflowDesigner::getWorker( os, "Quality filter example" );
+
+    GTUtilsWorkflowDesigner::connect(os, seqReader, qualFilter);
+    GTUtilsWorkflowDesigner::connect(os, qualFilter, seqWriter);
+    //     2. Connect workers into schema, set input data and output data (for example eas.fastq from samples)
+    GTMouseDriver::moveTo( os, GTUtilsWorkflowDesigner::getItemCenter( os, "Read Sequence" ) );
+    GTMouseDriver::click( os );
+    QString dirPath = dataDir + "samples/FASTA/";
+    GTUtilsWorkflowDesigner::setDatasetInputFile( os, dirPath, "human_T1.fa" );
+
+    const QString outputFilePath = workflowOutputDir.absolutePath( ) + "/test.gb";
+
+    GTMouseDriver::moveTo( os, GTUtilsWorkflowDesigner::getItemCenter( os, "Write Sequence" ) );
+    GTMouseDriver::click( os );
+    GTUtilsWorkflowDesigner::setParameter( os, "Output file", outputFilePath, GTUtilsWorkflowDesigner::textValue );
+    //     3. Launch the schema. 
+    //     Expected state: schema didnt start, error "Quality filter example"
+    GTWidget::click( os,GTAction::button( os,"Run workflow" ) );
+    GTGlobals::sleep( );
+    GTUtilsWorkflowDesigner::checkErrorList(os, "Quality Filter Example: Empty script text");
+}
+
 GUI_TEST_CLASS_DEFINITION( test_2460 ) {
     //1. Open "COI.aln".
     //2. Remove all sequences except the first one.

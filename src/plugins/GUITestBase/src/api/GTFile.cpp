@@ -130,6 +130,7 @@ void GTFile::copy(U2OpStatus &os, const QString& from, const QString& to) {
 void GTFile::copyDir(U2OpStatus &os, const QString& dirToCopy, const QString& dirToPaste) {
 
     QDir from;
+    from.setFilter(QDir::Hidden | QDir::AllDirs | QDir::Files);
     from.setPath(dirToCopy);
 
     QString pastePath = dirToPaste;
@@ -155,24 +156,23 @@ void GTFile::copyDir(U2OpStatus &os, const QString& dirToCopy, const QString& di
 void GTFile::removeDir(QString dirName)
 {
     QDir dir(dirName);
-
+    dir.setFilter(QDir::Hidden | QDir::AllDirs | QDir::Files);
 
     foreach (QFileInfo fileInfo, dir.entryInfoList()) {
         QString fileName = fileInfo.fileName();
         QString filePath = fileInfo.filePath();
         if (fileName != "." && fileName != "..") {
-            if(QFile::remove(filePath))
-                continue;
-            else{
+            QFile file(filePath);
+            file.setPermissions(QFile::ReadOther | QFile::WriteOther);
+            if(!file.remove(filePath)){
                 QDir dir(filePath);
-                if(dir.rmdir(filePath))
-                    continue;
-                else
+                if(!dir.rmdir(filePath)){
                     removeDir(filePath);
+                }
             }
-
         }
-    }dir.rmdir(dir.absoluteFilePath(dirName));
+    }
+    dir.rmdir(dir.absoluteFilePath(dirName));
 }
 #undef GT_METHOD_NAME
 
