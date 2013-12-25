@@ -796,7 +796,7 @@ Task::ReportResult GTest_CheckAnnotationsQualifiersInTwoObjects::report() {
                     if ( annList2[ j ].getQualifiers(  ) == refQuals ) {
                         qualsMatched = true;
                         annList2.removeAt( j );
-                        --j;
+                        break;
                     }
                 }
                 if ( !qualsMatched ) {

@@ -49,12 +49,21 @@ AnnotationTableObject::~AnnotationTableObject( ) {
     SAFE_POINT_OP( os, );
 }
 
+static QList<Annotation> getAllSubAnnotations( const AnnotationGroup &group ) {
+    QList<Annotation> result;
+    result << group.getAnnotations( );
+    foreach ( const AnnotationGroup &sub, group.getSubgroups( ) ) {
+        result << getAllSubAnnotations( sub );
+    }
+    return result;
+}
+
 QList<Annotation> AnnotationTableObject::getAnnotations( ) const {
     QList<Annotation> results;
     AnnotationGroup rootGroup( rootFeatureId, const_cast<AnnotationTableObject *>( this ) );
     const QList<AnnotationGroup> subgroups = rootGroup.getSubgroups( );
     foreach ( const AnnotationGroup &sub, subgroups ) {
-        results << sub.getAnnotations( );
+        results << getAllSubAnnotations( sub );
     }
     return results;
 }
@@ -99,19 +108,12 @@ void AnnotationTableObject::addAnnotations( const QList<AnnotationData> &annotat
                 group = rootGroup.getSubgroup( groupName, true );
                 previousGroupName = groupName;
             }
-
-            const U2Feature feature = U2FeatureUtils::exportAnnotationDataToFeatures( a,
-                group.getId( ), entityRef.dbiRef, os );
-            SAFE_POINT_OP( os, );
-            resultAnnotations << Annotation( feature.id, this );
+            resultAnnotations << group.addAnnotation( a );
         }
     } else {
         group = rootGroup.getSubgroup( groupName, true );
         foreach ( const AnnotationData &a, annotations ) {
-            const U2Feature feature = U2FeatureUtils::exportAnnotationDataToFeatures( a,
-                group.getId( ), entityRef.dbiRef, os );
-            SAFE_POINT_OP( os, );
-            resultAnnotations << Annotation( feature.id, this );
+            resultAnnotations << group.addAnnotation( a );
         }
      }
 

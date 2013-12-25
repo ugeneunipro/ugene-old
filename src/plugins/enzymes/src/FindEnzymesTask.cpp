@@ -111,11 +111,12 @@ Task::ReportResult FindEnzymesToAnnotationsTask::report()
     }
 
     const QSet<QString> groupNames = resultMap.keys().toSet();
+
     foreach (const QString& groupName, groupNames) {
         QList<AnnotationData> adata = resultMap.values(groupName);
         aObj->addAnnotations( adata, groupName );
     }
- 
+
     if (aObj->getAnnotations().isEmpty() && !cfg.isAutoAnnotationUpdateTask) {
         // no results found -> delete empty annotation document
         Project* proj = AppContext::getProject();
