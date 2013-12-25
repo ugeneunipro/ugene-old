@@ -1291,6 +1291,20 @@ GUI_TEST_CLASS_DEFINITION(test_1720){
 //Expected state: project view with document "D11266.gb", no error messages in log appear
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1786){
+    // 1. Use menu {File->Access remote database...}
+    // 2. Select database UniProt(DAS)
+    // 3. Fill resource id: 1CRN. Press ok
+    GTUtilsDialog::waitForDialog(os, new RemoteDBDialogFiller(os, "1CRN", 7));
+    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE),ACTION_PROJECTSUPPORT__ACCESS_REMOTE_DB, GTGlobals::UseKey);
+    GTGlobals::sleep(8000);
+    // Expected state: document P01542_das.gb appeared in project
+    QTreeWidgetItem *documentItem = GTUtilsProjectTreeView::findItemByText(os,
+        GTUtilsProjectTreeView::getTreeWidget(os),
+        "P01542_das.gb",
+        GTGlobals::FindOptions(true));
+    }
+
 GUI_TEST_CLASS_DEFINITION(test_1808) {
     QDir outputDir(testDir + "_common_data/scenarios/sandbox");
     const QString outputFilePath = outputDir.absolutePath( ) + "/test_1808.gb";
