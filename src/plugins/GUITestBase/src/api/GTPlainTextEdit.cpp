@@ -34,6 +34,9 @@ namespace U2 {
 void GTPlainTextEdit::setPlainText(U2OpStatus& os, QPlainTextEdit* plainTextEdit, const QString &text) {
 
     GT_CHECK(plainTextEdit != NULL, "plainTextEdit is NULL");
+    if(plainTextEdit->toPlainText() == text){
+        return;
+    }
     
     GTWidget::setFocus(os, plainTextEdit);
 

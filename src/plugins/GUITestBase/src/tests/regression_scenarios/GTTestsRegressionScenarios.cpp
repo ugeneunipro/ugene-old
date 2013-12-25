@@ -1369,7 +1369,7 @@ GUI_TEST_CLASS_DEFINITION( test_1821 ) {
     QString workflowOutputDirPath( testDir + "_common_data/scenarios/sandbox" );
     QDir workflowOutputDir( workflowOutputDirPath );
 
-    GTUtilsDialog::waitForDialog( os, new StartupDialogFiller( os, true,
+    GTUtilsDialog::waitForDialog( os, new StartupDialogFiller( os,
         workflowOutputDir.absolutePath( ) ) );
 
     //1. Open WD
@@ -2253,7 +2253,7 @@ GUI_TEST_CLASS_DEFINITION( test_2077 ){
 GUI_TEST_CLASS_DEFINITION( test_2089 )
 {
     // 1. Start UGENE with a new *.ini file.
-    GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os, true, "!@#$%^&*()_+\";:?/", false));
+    GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os, "!@#$%^&*()_+\";:?/", false));
 
     // 2. Open WD
     // 3. Set any folder without write access as workflow output directory. Click OK.
@@ -3179,7 +3179,7 @@ GUI_TEST_CLASS_DEFINITION( test_2202 )
     QDir workflowOutputDir(testDir + "_common_data/scenarios/sandbox/regression_test_2202/1/2/3/4/");
     CHECK_SET_ERR(!workflowOutputDir.exists(), "Dir already exists");
 
-    GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os, true, workflowOutputDir.absolutePath()));
+    GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os, workflowOutputDir.absolutePath()));
     QMenu* menu = GTMenu::showMainMenu(os, MWMENU_TOOLS);
 
     GTMenu::clickMenuItem(os, menu, QStringList() << "Workflow Designer");
@@ -3284,7 +3284,7 @@ GUI_TEST_CLASS_DEFINITION( test_2259 ){
 
 GUI_TEST_CLASS_DEFINITION( test_2266_1 ){
 
-    GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os, true, testDir + "_common_data/scenarios/sandbox"));
+    GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os, testDir + "_common_data/scenarios/sandbox"));
 
     QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
     GTMenu::clickMenuItem(os, menu, QStringList() << "Workflow Designer");
@@ -3400,7 +3400,7 @@ GUI_TEST_CLASS_DEFINITION( test_2268 ) {
 }
 
 GUI_TEST_CLASS_DEFINITION( test_2316 ) {
-    GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os, true));
+    GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
     GTFileDialog::openFile(os, dataDir+"samples/../workflow_samples/Alignment", "basic_align.uwl");
 
     GTGlobals::sleep(5000);
@@ -3830,7 +3830,7 @@ GUI_TEST_CLASS_DEFINITION( test_2375 ) {
 GUI_TEST_CLASS_DEFINITION( test_2377 ) {
     GTLogTracer l;
 
-    GTUtilsDialog::waitForDialog( os, new StartupDialogFiller( os, true ) );
+    GTUtilsDialog::waitForDialog( os, new StartupDialogFiller( os ) );
 
     QMenu *menu=GTMenu::showMainMenu( os, MWMENU_TOOLS );
     GTMenu::clickMenuItem( os, menu, QStringList( ) << "Workflow Designer" );

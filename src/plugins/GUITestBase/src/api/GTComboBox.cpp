@@ -34,13 +34,18 @@ void GTComboBox::setCurrentIndex(U2OpStatus& os, QComboBox *comboBox, int index)
 
     GT_CHECK(comboBox != NULL, "QComboBox* == NULL");
 
+    if(comboBox->currentIndex() == index){
+        return;
+    }
+
     int comboCount = comboBox->count();
     GT_CHECK(index>=0 && index<comboCount, "invalid index");
 
+    GTWidget::setFocus(os, comboBox);
+    GTGlobals::sleep();
     int currIndex = comboBox->currentIndex() == -1 ? 0 : comboBox->currentIndex();
     QString directionKey = index > currIndex ? "down" : "up";
 
-    GTWidget::setFocus(os, comboBox);
     int pressCount = qAbs(index-currIndex);
     for (int i=0; i<pressCount; i++) {
         GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key[directionKey]);

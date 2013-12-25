@@ -34,6 +34,10 @@ namespace U2 {
 void GTLineEdit::setText(U2OpStatus& os, QLineEdit* lineEdit, const QString &str, bool noCheck /*= false*/) {
 
     GT_CHECK(lineEdit != NULL, "lineEdit is NULL");
+    if(lineEdit->text() == str){
+        return;
+    }
+
     GTWidget::setFocus(os, lineEdit);
     if (lineEdit->text() == str) {
         return;

@@ -515,7 +515,7 @@ GUI_TEST_CLASS_DEFINITION(test_0016){
 GUI_TEST_CLASS_DEFINITION(test_0017){
     //Test for UGENE-2202
     GTLogTracer l;
-    GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os, true, testDir + "_common_data/scenarios/sandbox/somedir"));
+    GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os, testDir + "_common_data/scenarios/sandbox/somedir"));
     //1. Open Workflow Designer
     QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
     GTMenu::clickMenuItem(os, menu, QStringList() << "Workflow Designer");

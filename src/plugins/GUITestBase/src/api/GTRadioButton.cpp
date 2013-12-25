@@ -35,6 +35,9 @@ namespace U2 {
 #define GT_METHOD_NAME "click"
 void GTRadioButton::click(U2OpStatus& os, QRadioButton *radioButton) {
     GT_CHECK(radioButton != NULL, "RadioButton is NULL");
+    if(radioButton->isChecked() == true){
+        return;
+    }
 
     QPoint buttonPos = radioButton->mapToGlobal(radioButton->rect().topLeft());
     buttonPos = QPoint(buttonPos.x() + 10, buttonPos.y() + 10); // moved to clickable area

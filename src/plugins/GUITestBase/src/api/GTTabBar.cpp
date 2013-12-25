@@ -35,6 +35,10 @@ void GTTabBar::setCurrentIndex(U2OpStatus& os, QTabBar *tabBar, int index) {
 
     GT_CHECK(tabBar != NULL, "QTabWidget* == NULL");
 
+    if(tabBar->currentIndex() == index){
+        return;
+    }
+
     int tabsCount = tabBar->count();
     GT_CHECK(index>=0 && index<tabsCount, "invalid index");
 

@@ -31,7 +31,6 @@ namespace U2 {
 
 class GTGraphicsItem {
 public:
-    GTGraphicsItem(){}
     static QRect getGraphicsItemRect(U2OpStatus &os, QGraphicsItem *it);
     static QPoint getItemCenter(U2OpStatus &os, QGraphicsItem *it);
 };

@@ -37,6 +37,7 @@
 #include "GTUtilsMdi.h"
 #include "GTUtilsLog.h"
 #include "GTUtilsBookmarksTreeView.h"
+#include "GTUtilsPhyTree.h"
 #include "runnables/qt/PopupChooser.h"
 #include "runnables/qt/MessageBoxFiller.h"
 #include "runnables/ugene/corelibs/U2View/ov_msa/BuildTreeDialogFiller.h"
@@ -392,7 +393,7 @@ int getCoord(U2OpStatus &os, QGraphicsSimpleTextItem *node){
     QPoint globalCoord = treeView->mapToGlobal(sceneCoord.toPoint());
     return globalCoord.y();
 }
-/*GUI_TEST_CLASS_DEFINITION(test_0006){
+GUI_TEST_CLASS_DEFINITION(test_0006){
 //    Tree layouts test
 //    1. Open file _common_data/scenario/tree_view/COI.nwk
 //    Expected state: philogenetic tree appears
@@ -402,7 +403,15 @@ int getCoord(U2OpStatus &os, QGraphicsSimpleTextItem *node){
     //GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<"Circular"));
     //GTWidget::click(os,GTWidget::findWidget(os,"Layout"));
 //    Expected state: tree view type changed to circular
-    QGraphicsView* treeView = qobject_cast<QGraphicsView*>(GTWidget::findWidget(os, "treeView"));
+    QList<QGraphicsItem*> list = GTUtilsPhyTree::getNodes(os);
+    //QList<QGraphicsSimpleTextItem*> labelsList = GTUtilsPhyTree::getLabels(os);
+    QStringList labelList = GTUtilsPhyTree::getLabelsText(os);
+    //QList<QGraphicsSimpleTextItem*> distancesList = GTUtilsPhyTree::getDistances(os);
+    QList<double> dList = GTUtilsPhyTree::getDistancesValues(os);
+    GTGlobals::sleep(500);
+
+
+    /*QGraphicsView* treeView = qobject_cast<QGraphicsView*>(GTWidget::findWidget(os, "treeView"));
     QList<QGraphicsItem*> list = treeView->scene()->items();
 
     QString s;
@@ -426,8 +435,8 @@ int getCoord(U2OpStatus &os, QGraphicsSimpleTextItem *node){
     s.append("\n" + lowestNode->text() + "  " + QString().setNum(getCoord(os, lowestNode)));
     os.setError(s);
 //    4. Click on {Layout->Rectangular layout} button on toolbar
-//    Expected state: tree view type changed to rectangular
-}*/
+//    Expected state: tree view type changed to rectangular*/
+}
 
 GUI_TEST_CLASS_DEFINITION(test_0007){
 //Labels aligniment test

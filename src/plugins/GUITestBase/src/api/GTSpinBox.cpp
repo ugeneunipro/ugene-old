@@ -32,6 +32,10 @@ namespace U2 {
 #define GT_METHOD_NAME "setValue"
 void GTSpinBox::setValue(U2OpStatus& os, QSpinBox *spinBox, int v, GTGlobals::UseMethod useMethod) {
     GT_CHECK(spinBox != NULL, "spinBox is NULL");
+    if(spinBox->value() == v){
+        return;
+    }
+
     GT_CHECK(v <= spinBox->maximum(), QString("value for this spinbox cannot be more then %1").arg(spinBox->maximum()));
     GT_CHECK(v >= spinBox->minimum(), QString("value for this spinbox cannot be less then %1").arg(spinBox->minimum()));
 

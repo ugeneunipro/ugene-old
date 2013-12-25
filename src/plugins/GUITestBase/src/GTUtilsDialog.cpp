@@ -87,7 +87,7 @@ void GUIDialogWaiter::checkDialog() {
     }
 
     if (widget && !hadRun && isExpectedName(widget->objectName(), settings.objectName)) {
-        GTUtilsDialog::pool.removeOne(this);
+        //GTUtilsDialog::pool.removeOne(this);
         timer->stop();
         uiLog.trace("-------------------------");
         uiLog.trace("GUIDialogWaiter::wait Id = " + QString::number(waiterId) + ", going to RUN");

@@ -32,8 +32,8 @@ namespace U2{
 #define GT_CLASS_NAME "GTUtilsDialog::StartupDialogFiller"
 #define GT_METHOD_NAME "run"
 
-StartupDialogFiller::StartupDialogFiller(U2OpStatus &os, bool _ok, QString _path, bool _isPathValid)
-    : Filler(os,"StartupDialog"), ok(_ok), path(_path), isPathValid(_isPathValid)
+StartupDialogFiller::StartupDialogFiller(U2OpStatus &os, QString _path, bool _isPathValid)
+    : Filler(os,"StartupDialog"), path(_path), isPathValid(_isPathValid)
 {
 
 }
@@ -43,12 +43,7 @@ void StartupDialogFiller::run(){
     QWidget* dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog, "activeModalWidget is NULL");
 
-    if (!ok) {
-        dontUse(dialog);
-        return;
-    }
-
-    if (!path.isEmpty()) {
+    if (path != GUITest::sandBoxDir) {
         QLineEdit *pathEdit = getPathEdit(dialog);
         CHECK(NULL != pathEdit, );
         QString rightPath = pathEdit->text();
@@ -62,6 +57,7 @@ void StartupDialogFiller::run(){
             pathEdit->setText(rightPath);
         }
     }
+
     use(dialog);
 }
 
@@ -76,10 +72,6 @@ void StartupDialogFiller::clickButton(QWidget *dialog, const QString &text) {
         }
     }
     GT_CHECK(clicked, "Can not find a button: " + text);
-}
-
-void StartupDialogFiller::dontUse(QWidget *dialog) {
-    clickButton(dialog, "Don't use the directory");
 }
 
 void StartupDialogFiller::use(QWidget *dialog) {

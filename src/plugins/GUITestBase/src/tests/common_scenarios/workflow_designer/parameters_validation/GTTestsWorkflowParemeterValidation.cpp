@@ -210,7 +210,7 @@ GUI_TEST_CLASS_DEFINITION(test_0005){
     QDir d(testDir + "_common_data/scenarios/sandbox/permDir");
     bool sucsess = d.mkpath(d.absolutePath());
     CHECK_SET_ERR(sucsess,QString("Can't create a new directory: '%1'").arg(d.absolutePath()));
-    GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os, true, testDir + "_common_data/scenarios/sandbox/permDir"));
+    GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os, testDir + "_common_data/scenarios/sandbox/permDir"));
     // 1. Open WD sample "Align Sequences with MUSCLE
     QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
     GTMenu::clickMenuItem(os, menu, QStringList() << "Workflow Designer");

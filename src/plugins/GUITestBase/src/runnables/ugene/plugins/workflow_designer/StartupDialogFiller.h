@@ -23,6 +23,7 @@
 #define STARTUPDIALOGFILLER_H
 
 #include "GTUtilsDialog.h"
+#include <U2Test/GUITest.h>
 
 class QLineEdit;
 class QWidget;
@@ -32,11 +33,10 @@ namespace U2 {
 class StartupDialogFiller : public Filler
 {
 public:
-    StartupDialogFiller(U2OpStatus &os, bool ok = false, QString path = "", bool isPathValid = true);
+    StartupDialogFiller(U2OpStatus &os, QString path = GUITest::sandBoxDir, bool isPathValid = true);
     void run();
 
 private:
-    bool ok;
     QString path;
     bool isPathValid;
 

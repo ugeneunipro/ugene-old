@@ -32,6 +32,9 @@ namespace U2 {
 #define GT_METHOD_NAME "setValue"
 void GTDoubleSpinbox::setValue(U2OpStatus& os, QDoubleSpinBox *spinBox, double v, GTGlobals::UseMethod useMethod) {
     GT_CHECK(spinBox != NULL, "spinBox is NULL");
+    if(spinBox->value() == v){
+        return;
+    }
 
     QPoint arrowPos;
     QRect spinBoxRect;

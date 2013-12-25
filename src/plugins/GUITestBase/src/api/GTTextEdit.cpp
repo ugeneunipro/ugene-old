@@ -33,6 +33,10 @@ void GTTextEdit::setText(U2OpStatus& os, QTextEdit* textEdit, const QString &tex
 
     GT_CHECK(textEdit != NULL, "plainTextEdit is NULL");
 
+    if(textEdit->toPlainText() == text){
+        return;
+    }
+
     clear(os, textEdit);
     GTWidget::setFocus(os, textEdit);
 

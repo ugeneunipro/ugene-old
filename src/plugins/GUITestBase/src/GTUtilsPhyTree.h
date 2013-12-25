@@ -19,35 +19,28 @@
  * MA 02110-1301, USA.
  */
 
-#include "GTCheckBox.h"
-#include "GTWidget.h"
+#ifndef GTUTILSPHYTREE_H
+#define GTUTILSPHYTREE_H
 
-#include "GTMouseDriver.h"
-#include "GTKeyboardDriver.h"
+#include "api/GTGlobals.h"
+#include "U2View/TreeViewer.h"
 
-namespace U2 {
+namespace U2{
 
-#define GT_CLASS_NAME "GTCheckBox"
+class GTUtilsPhyTree
+{
+public:
+    static QList<QGraphicsItem *> getSelectedNodes(U2OpStatus& os);
+    static QList<QGraphicsItem *> getUnselectedNodes(U2OpStatus& os);
+    static QList<QGraphicsItem *> getNodes(U2OpStatus& os);
 
-#define GT_METHOD_NAME "setChecked"
-void GTCheckBox::setChecked(U2OpStatus& os, QCheckBox *checkBox, bool checked) {
-    GT_CHECK(checkBox != NULL, "QCheckBox == NULL");
-    if(checkBox->isChecked() == checked){
-        return;
-    }
-    GT_CHECK(checkBox->isEnabled(), "QcheckBox is disabled");
-
-    bool checkBoxState = checkBox->isChecked();
-    if (checked != checkBoxState) {
-        QPoint p = QPoint(5, checkBox->rect().height()/2);
-        GTWidget::click(os, checkBox, Qt::LeftButton, p);
-    }
-    GTGlobals::sleep(500);
-
-    GT_CHECK(checked == checkBox->isChecked(), "Can't set checked state");
+    static QList<QGraphicsSimpleTextItem*> getLabels(U2OpStatus& os);
+    static QList<QGraphicsSimpleTextItem*> getDistances(U2OpStatus& os);
+    static QStringList getLabelsText(U2OpStatus& os);
+    static QList<double> getDistancesValues(U2OpStatus& os);
+    static QPoint getGlobalCoord(U2OpStatus& os, QGraphicsItem* item);
+private:
+    static QList<QGraphicsItem *> getNodes(U2OpStatus& os, int width);
+};
 }
-#undef GT_METHOD_NAME
-
-#undef GT_CLASS_NAME
-
-}
+#endif // GTUTILSPHYTREE_H

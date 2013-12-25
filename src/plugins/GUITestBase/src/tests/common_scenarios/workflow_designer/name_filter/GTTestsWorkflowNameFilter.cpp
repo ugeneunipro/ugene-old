@@ -32,7 +32,7 @@ namespace U2 {
 namespace GUITest_common_scenarios_workflow_name_filter {
 
 GUI_TEST_CLASS_DEFINITION( test_0001 ) {
-    GTUtilsDialog::waitForDialog( os, new StartupDialogFiller( os, true ) );
+    GTUtilsDialog::waitForDialog( os, new StartupDialogFiller( os ) );
 
     // 1. Open WD.
     QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
@@ -70,7 +70,7 @@ GUI_TEST_CLASS_DEFINITION( test_0001 ) {
 }
 
 GUI_TEST_CLASS_DEFINITION( test_0002 ) {
-    GTUtilsDialog::waitForDialog( os, new StartupDialogFiller( os, true ) );
+    GTUtilsDialog::waitForDialog( os, new StartupDialogFiller( os ) );
 
     // 1. Open WD.
     QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
@@ -131,7 +131,7 @@ GUI_TEST_CLASS_DEFINITION( test_0002 ) {
 }
 
 GUI_TEST_CLASS_DEFINITION( test_0003 ) {
-    GTUtilsDialog::waitForDialog( os, new StartupDialogFiller( os, true ) );
+    GTUtilsDialog::waitForDialog( os, new StartupDialogFiller( os ) );
 
     // 1. Open WD.
     QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
