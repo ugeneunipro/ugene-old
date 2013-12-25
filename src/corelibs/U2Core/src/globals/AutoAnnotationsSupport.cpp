@@ -34,10 +34,10 @@ namespace U2 {
 
 const QString AutoAnnotationObject::AUTO_ANNOTATION_HINT( "auto-annotation object" );
 
-AutoAnnotationsUpdater::AutoAnnotationsUpdater( const QString &nm, const QString &gName )
-    : groupName( gName ), name( nm )
+AutoAnnotationsUpdater::AutoAnnotationsUpdater( const QString &nm, const QString &gName, bool alwaysOff )
+    : groupName( gName ), name( nm ), alwaysOffByDefault(alwaysOff)
 {
-    checkedByDefault = AppContext::getSettings( )
+    checkedByDefault = alwaysOffByDefault ? false : AppContext::getSettings( )
         ->getValue( AUTO_ANNOTATION_SETTINGS + groupName, false, true ).toBool( );
 }
 

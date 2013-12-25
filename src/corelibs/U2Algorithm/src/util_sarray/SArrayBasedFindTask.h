@@ -54,7 +54,8 @@ public:
     SArrayBasedFindTask(SArrayIndex* i, const SArrayBasedSearchSettings& s, bool onlyFirstMatch = false);
     virtual void run();
     virtual void cleanup();
-    const QList<int> getResults() const { return results; }
+    const QList<int>& getResults() const { return results; }
+    const QByteArray& getQuery() const { return config->query; }
 
 private:
     void runSearch();

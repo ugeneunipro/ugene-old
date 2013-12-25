@@ -26,8 +26,9 @@
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/DNATranslation.h>
 #include <U2Core/AnnotationTableObject.h>
-
-#include <U2View/FindPatternTask.h>
+#include <U2Core/CreateAnnotationTask.h>
+#include <U2Algorithm/SArrayIndex.h>
+#include <U2Core/TextUtils.h>
 
 #include "CustomPatternAnnotationTask.h"
 
@@ -45,41 +46,77 @@ CustomPatternAnnotationTask::CustomPatternAnnotationTask(AnnotationTableObject* 
 
 void CustomPatternAnnotationTask::prepare()
 {
-    // what if circular sequence?
+    // TODO: support circular sequence by adding an overhang of max pattern size 
+
     U2SequenceObject dnaObj("ref", seqRef);
-    QByteArray sequence = dnaObj.getWholeSequenceData();
+    sequence = dnaObj.getWholeSequenceData();
 
     const QList<FeaturePattern>& patterns = featureStore->getFeatures();
 
+    if (patterns.length() == 0) {
+        return;
+    }
+    char unknownChar = 'N';
+    index = QSharedPointer<SArrayIndex>( new SArrayIndex(sequence.constData(), sequence.length(), 
+        featureStore->getMinFeatureSize(), stateInfo, unknownChar) );
+    
+    if (hasError()) {
+        return;
+    }
+    
+    DNATranslation* complTT = AppContext::getDNATranslationRegistry()->lookupComplementTranslation( dnaObj.getAlphabet() );
+    assert(complTT);
 
     foreach (const FeaturePattern& pattern, patterns) {
-        // check alphabet?
-        FindAlgorithmTaskSettings settings;
-
-        settings.sequence = sequence;
-        settings.pattern = pattern.second;
-        settings.patternSettings = FindAlgorithmPatternSettings_Exact;
-        settings.searchRegion = U2Region(0,dnaObj.getSequenceLength());
-
-        // strand
-        DNATranslation* compTT = AppContext::getDNATranslationRegistry()->lookupComplementTranslation( dnaObj.getAlphabet() );
-        if (compTT) {
-            settings.strand = FindAlgorithmStrand_Both;
-            settings.complementTT = compTT;
-        } else {
-            settings.strand = FindAlgorithmStrand_Direct;
+        
+        if (pattern.sequence.length() > sequence.length()) {
+            continue;
         }
+        
+        SArrayBasedSearchSettings settings;
+        settings.unknownChar = unknownChar;
+        settings.query = pattern.sequence;
 
-        //TODO: circular?
-
-        QString annotName = pattern.first;
-        QString annotGroup = featureStore->getName();
-
-        // Creating and registering the task
-        FindPatternTask* task = new FindPatternTask(settings,  aTableObj, annotName, annotGroup, false);
-
+        SArrayBasedFindTask* task = new SArrayBasedFindTask(index.data(), settings);
+        taskFeatureNames.insert(task, PatternInfo(pattern.name, true) );
         addSubTask(task);
+        
+        complTT->translate( settings.query.data( ), settings.query.size() );
+        TextUtils::reverse( settings.query.data( ), settings.query.size( ) );
+
+        SArrayBasedFindTask* revComplTask = new SArrayBasedFindTask(index.data(), settings);
+        taskFeatureNames.insert(revComplTask, PatternInfo(pattern.name, false) );
+        addSubTask(revComplTask);
     }
+}
+
+
+QList<Task*> CustomPatternAnnotationTask::onSubTaskFinished(Task* subTask) {
+    QList<Task*> subTasks;
+    
+    if (!taskFeatureNames.contains(subTask)) {
+        return subTasks;
+    }
+
+    SArrayBasedFindTask* task = static_cast<SArrayBasedFindTask*> (subTask);
+    const QList<int>& results = task->getResults();
+    PatternInfo info = taskFeatureNames.take(task);
+    foreach (int pos, results) {
+        AnnotationData data;
+        data.name = info.name;
+        U2Strand strand = info.forwardStrand ? U2Strand::Direct : U2Strand::Complementary;
+        data.setStrand(strand);
+        U2Region region(pos - 1, task->getQuery().length() );
+        data.location->regions << region;
+        annotations.append(data);
+    }
+
+    if (taskFeatureNames.isEmpty() && annotations.size() > 0) {
+        subTasks.append( new CreateAnnotationsTask( aTableObj, featureStore->getName(), annotations) );
+    }
+
+    return subTasks;
+
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -92,21 +129,35 @@ bool FeatureStore::load()
     if (!inputFile.open(QIODevice::ReadOnly | QIODevice::Text) ) {
         return false;
     }
+    
+    int minPatternSize = INT_MAX;
 
     while (!inputFile.atEnd()) {
         QByteArray line = inputFile.readLine().trimmed();
         QList<QByteArray> lineItems = line.split('\t');
+        
+        if (line.startsWith("#")) {
+            continue;
+        }
 
+        assert( lineItems.size() == 3 );
         if (lineItems.size() != 3) {
             break;
         }
 
         FeaturePattern pattern;
 
-        pattern.first = lineItems[0];
-        pattern.second = lineItems[2].toUpper();
+        pattern.name = lineItems[0];
+        pattern.sequence = lineItems[2].toUpper();
+        if (pattern.sequence.length() < minPatternSize) {
+            minPatternSize = pattern.sequence.length();
+        }
 
         features.append(pattern);
+    }
+
+    if (minPatternSize != INT_MAX) {
+        minFeatureSize = minPatternSize;
     }
 
     return !features.isEmpty( );
@@ -116,7 +167,7 @@ bool FeatureStore::load()
 // CustomPatternAutoAnnotationUpdater
 
 CustomPatternAutoAnnotationUpdater::CustomPatternAutoAnnotationUpdater(const SharedFeatureStore& store )
-    : AutoAnnotationsUpdater(tr("Custom annotations"), store->getName() ), featureStore(store)
+    : AutoAnnotationsUpdater(tr("Plasmid features"), store->getName(), true ), featureStore(store)
 {
     assert(featureStore);
 }

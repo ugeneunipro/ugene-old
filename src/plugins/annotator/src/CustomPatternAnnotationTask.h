@@ -22,22 +22,31 @@
 #ifndef _U2_CUSTOM_PATTERN_ANNOTATION_TASK_H_
 #define _U2_CUSTOM_PATTERN_ANNOTATION_TASK_H_
 
+#include <QtCore/QSharedPointer>
+
 #include <U2Core/Task.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/AutoAnnotationsSupport.h>
+#include <U2Algorithm/SArrayBasedFindTask.h>
+#include <U2Core/AnnotationData.h>
 
 namespace U2 {
 
 class AnnotationTableObject;
 
-typedef QPair<QByteArray,QByteArray> FeaturePattern;
+struct FeaturePattern {
+    QString name;
+    QByteArray sequence;
+};
 
 class FeatureStore {
     QList<FeaturePattern> features;
     QString name, path;
+    int minFeatureSize;
 public:
-    FeatureStore(const QString& storeName, const QString& filePath) : name(storeName), path(filePath) {}
+    FeatureStore(const QString& storeName, const QString& filePath) : name(storeName), path(filePath), minFeatureSize(0) {}
     bool load();
+    int getMinFeatureSize() const { return minFeatureSize; }
     const QString& getName() const { return name; }
     const QList<FeaturePattern>& getFeatures() const { return features; }
 };
@@ -51,10 +60,22 @@ public:
     CustomPatternAnnotationTask(AnnotationTableObject* aobj, const U2EntityRef& entityRef, const SharedFeatureStore& store );
 
     void prepare();
+    QList<Task*> onSubTaskFinished(Task* subTask);
+    
+    struct PatternInfo {
+        QString name;
+        bool forwardStrand;
+        PatternInfo() : forwardStrand(true) {}
+        PatternInfo(const QString& nm, bool isForward) : name(nm), forwardStrand(isForward) {}
+    };
 
 private:
+    QSharedPointer<SArrayIndex> index;
+    QMap<Task*, PatternInfo> taskFeatureNames;
+    QList<AnnotationData> annotations;
     AnnotationTableObject* aTableObj;
     U2EntityRef seqRef;
+    QByteArray sequence;
     SharedFeatureStore featureStore;
 };
 

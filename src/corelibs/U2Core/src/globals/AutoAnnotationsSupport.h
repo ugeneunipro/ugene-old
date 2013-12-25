@@ -84,12 +84,12 @@ struct U2CORE_EXPORT AutoAnnotationConstraints {
 class U2CORE_EXPORT AutoAnnotationsUpdater : public QObject {
     Q_OBJECT
 public:
-                        AutoAnnotationsUpdater( const QString &nm, const QString &gName );
+    AutoAnnotationsUpdater( const QString &nm, const QString &gName, bool offByDefault = false );
     virtual             ~AutoAnnotationsUpdater( );
     const QString &     getGroupName( ) { return groupName; }
     const QString &     getName( ) { return name; }
     bool                isCheckedByDefault( ) { return checkedByDefault; }
-    void                setCheckedByDefault( bool checked ) { checkedByDefault = checked; }
+    void                setCheckedByDefault( bool checked )  { checkedByDefault = alwaysOffByDefault ? false : checked; }
     virtual bool        checkConstraints( const AutoAnnotationConstraints &constraints ) = 0;
     virtual Task *      createAutoAnnotationsUpdateTask( const AutoAnnotationObject *aa ) = 0;
 
@@ -97,6 +97,7 @@ private:
     QString             groupName;
     QString             name;
     bool                checkedByDefault;
+    bool                alwaysOffByDefault;
 };
 
 class U2CORE_EXPORT AutoAnnotationsSupport : public QObject {
