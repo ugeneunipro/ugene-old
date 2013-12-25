@@ -321,4 +321,26 @@ void MSAUtils::copyRowFromSequence(MAlignmentObject *msaObj, U2SequenceObject *s
     con.dbi->getMsaDbi()->addRow(entityRef.entityId, -1, row, os);
 }
 
+MAlignment MSAUtils::setUniqueRowNames(const MAlignment &ma) {
+    MAlignment res = ma;
+    int rowNumber = res.getNumRows();
+    for (int i = 0; i < rowNumber; i++) {
+        res.renameRow(i, QString::number(i));
+    }
+    return res;
+}
+
+bool MSAUtils::restoreRowNames(MAlignment &ma, const QStringList &names) {
+    int rowNumber = ma.getNumRows();
+    CHECK( rowNumber == names.size(), false);
+
+    QStringList oldNames = ma.getRowNames();
+    for (int i = 0; i < rowNumber; i++) {
+        int idx = oldNames[i].toInt();
+        CHECK( 0 <= idx && idx <= rowNumber, false);
+        ma.renameRow(i, names[idx]);
+    }
+    return true;
+}
+
 }//namespace

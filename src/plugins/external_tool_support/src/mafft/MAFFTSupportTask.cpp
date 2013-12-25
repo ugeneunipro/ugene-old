@@ -104,7 +104,7 @@ void MAFFTSupportTask::prepare(){
         return;
     }
 
-    saveTemporaryDocumentTask=new SaveMSA2SequencesTask(inputMsa, url, false, BaseDocumentFormats::FASTA);
+    saveTemporaryDocumentTask=new SaveMSA2SequencesTask( MSAUtils::setUniqueRowNames(inputMsa), url, false, BaseDocumentFormats::FASTA);
     saveTemporaryDocumentTask->setSubtaskProgressWeight(5);
     addSubTask(saveTemporaryDocumentTask);
 }
@@ -178,6 +178,8 @@ QList<Task*> MAFFTSupportTask::onSubTaskFinished(Task* subTask) {
             emit si_stateChanged(); //TODO: task can't emit this signal!
             return res;
         }
+        bool renamed = MSAUtils::restoreRowNames(resultMA, inputMsa.getRowNames());
+        SAFE_POINT( renamed, "Failed to restore initial row names!", res);
 
         // If an alignment object has been specified, save the result to it
         if (objRef.isValid()) {

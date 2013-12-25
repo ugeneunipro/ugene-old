@@ -53,6 +53,7 @@ public:
 
 class TCoffeeSupportTask : public ExternalToolSupportTask {
     Q_OBJECT
+    Q_DISABLE_COPY(TCoffeeSupportTask)
 public:
     TCoffeeSupportTask(const MAlignment& _inputMsa, const GObjectReference& _objRef, const TCoffeeSupportTaskSettings& _settings);
     ~TCoffeeSupportTask();
@@ -80,6 +81,7 @@ class MAlignmentObject;
 
 class TCoffeeWithExtFileSpecifySupportTask : public Task {
     Q_OBJECT
+    Q_DISABLE_COPY(TCoffeeWithExtFileSpecifySupportTask)
 public:
     TCoffeeWithExtFileSpecifySupportTask(const TCoffeeSupportTaskSettings& settings);
     ~TCoffeeWithExtFileSpecifySupportTask();

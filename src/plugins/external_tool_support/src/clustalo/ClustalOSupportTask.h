@@ -95,6 +95,7 @@ public:
 
 class ClustalOSupportTask : public ExternalToolSupportTask {
     Q_OBJECT
+    Q_DISABLE_COPY(ClustalOSupportTask)
 public:
     ClustalOSupportTask(const MAlignment& _inputMsa, const GObjectReference& _objRef, const ClustalOSupportTaskSettings& settings);
     ~ClustalOSupportTask();
@@ -120,6 +121,7 @@ private:
 
 class ClustalOWithExtFileSpecifySupportTask : public Task {
     Q_OBJECT
+    Q_DISABLE_COPY(ClustalOWithExtFileSpecifySupportTask)
 public:
     ClustalOWithExtFileSpecifySupportTask(const ClustalOSupportTaskSettings& settings);
     ~ClustalOWithExtFileSpecifySupportTask();

@@ -74,6 +74,15 @@ public:
     static QList<qint64> compareRowsAfterAlignment(const MAlignment& origMsa, MAlignment& newMsa, U2OpStatus& os);
     static void copyRowFromSequence(MAlignmentObject *msaObj, U2SequenceObject *seqObj, U2OpStatus &os);
     static U2MsaRow copyRowFromSequence(U2SequenceObject *seqObj, const U2DbiRef &dstDbi, U2OpStatus &os);
+
+    static MAlignment setUniqueRowNames(const MAlignment& ma);
+    /**
+      * Renames rows in the 'ma' to 'names' according to the following assumptions:
+      *   1) 'ma' row names are integers from [0..n - 1] interval,
+      *      where n is equal to row number of 'ma';
+      *   2) Row name 'i' will be renamed to 'names[i]' value;
+      **/
+    static bool restoreRowNames(MAlignment& ma, const QStringList& names);
 };
 
 

@@ -114,7 +114,7 @@ void ClustalWSupportTask::prepare(){
         return;
     }
 
-    saveTemporaryDocumentTask = new SaveAlignmentTask(inputMsa, url, BaseDocumentFormats::CLUSTAL_ALN);
+    saveTemporaryDocumentTask = new SaveAlignmentTask( MSAUtils::setUniqueRowNames(inputMsa), url, BaseDocumentFormats::CLUSTAL_ALN);
     saveTemporaryDocumentTask->setSubtaskProgressWeight(5);
     addSubTask(saveTemporaryDocumentTask);
 }
@@ -201,11 +201,8 @@ QList<Task*> ClustalWSupportTask::onSubTaskFinished(Task* subTask) {
         SAFE_POINT(newMAligmentObject!=NULL, "newDocument->getObjects().first() is not a MAlignmentObject", res);
 
         resultMA=newMAligmentObject->getMAlignment();
-
-        QStringList rowNames = inputMsa.getRowNames();
-        for (int i = 0; i < rowNames.length(); i++) {
-            resultMA.renameRow(i, rowNames[i]);
-        }
+        bool renamed = MSAUtils::restoreRowNames(resultMA, inputMsa.getRowNames());
+        SAFE_POINT( renamed, "Failed to restore initial row names!", res);
 
         // If an alignment object has been specified, save the result to it
         if (objRef.isValid()) {

@@ -80,6 +80,7 @@ public:
 
 class ClustalWSupportTask : public ExternalToolSupportTask {
     Q_OBJECT
+    Q_DISABLE_COPY(ClustalWSupportTask)
 public:
     ClustalWSupportTask(const MAlignment& _inputMsa, const GObjectReference& _objRef, const ClustalWSupportTaskSettings& _settings);
     ~ClustalWSupportTask();
@@ -108,6 +109,7 @@ class MAlignmentObject;
 
 class ClustalWWithExtFileSpecifySupportTask : public Task {
     Q_OBJECT
+    Q_DISABLE_COPY(ClustalWWithExtFileSpecifySupportTask)
 public:
     ClustalWWithExtFileSpecifySupportTask(const ClustalWSupportTaskSettings& settings);
     ~ClustalWWithExtFileSpecifySupportTask();

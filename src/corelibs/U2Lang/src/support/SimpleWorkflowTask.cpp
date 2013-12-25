@@ -27,6 +27,7 @@
 #include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/MAlignmentImporter.h>
 #include <U2Core/MAlignmentObject.h>
+#include <U2Core/MSAUtils.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/U2DbiUtils.h>
 #include <U2Core/U2OpStatusUtils.h>
@@ -133,7 +134,8 @@ SimpleMSAWorkflow4GObjectTask::SimpleMSAWorkflow4GObjectTask(const QString& task
     U2OpStatus2Log os;
     userModStep = new U2UseCommonUserModStep(obj->getEntityRef(), os);
 
-    MAlignment al = obj->getMAlignment();
+    MAlignment al = MSAUtils::setUniqueRowNames( obj->getMAlignment() );
+
     U2EntityRef msaRef = MAlignmentImporter::createAlignment(obj->getEntityRef().dbiRef, al, os);
     SAFE_POINT_OP(os,);
 
@@ -183,7 +185,9 @@ Task::ReportResult SimpleMSAWorkflow4GObjectTask::report() {
     CHECK_EXT(!obj.isNull(), setError(tr("Object '%1' removed").arg(docName)), ReportResult_Finished);
     CHECK_EXT(!obj->isStateLocked(), setError(tr("Object '%1' is locked").arg(docName)), ReportResult_Finished);
 
-    obj->setMAlignment(getResult());
+    MAlignment res = getResult();
+    MSAUtils::restoreRowNames( res, obj->getMAlignment().getRowNames());
+    obj->setMAlignment(res);
 
     delete userModStep;
     userModStep = NULL;
