@@ -1311,7 +1311,7 @@ GUI_TEST_CLASS_DEFINITION(test_1786){
     GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE),ACTION_PROJECTSUPPORT__ACCESS_REMOTE_DB, GTGlobals::UseKey);
     GTGlobals::sleep(8000);
     // Expected state: document P01542_das.gb appeared in project
-    QTreeWidgetItem *documentItem = GTUtilsProjectTreeView::findItemByText(os,
+    GTUtilsProjectTreeView::findItemByText(os,
         GTUtilsProjectTreeView::getTreeWidget(os),
         "P01542_das.gb",
         GTGlobals::FindOptions(true));

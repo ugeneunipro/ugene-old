@@ -178,8 +178,6 @@ bool WorkflowContext::initWorkingDir() {
 /* WorkflowContextCMDLine */
 /************************************************************************/
 QString WorkflowContextCMDLine::getOutputDirectory(U2OpStatus &os) {
-    CMDLineRegistry *reg = AppContext::getCMDLineRegistry();
-
     // 1. Detect directory
     QString root;
     if (useOutputDir()) {
