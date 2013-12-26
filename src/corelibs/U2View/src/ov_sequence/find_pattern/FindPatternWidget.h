@@ -97,6 +97,7 @@ private slots:
     void sl_onFileSelectorClicked();
     void sl_onFileSelectorToggled(bool on);
     void sl_loadPatternTaskStateChanged();
+    void sl_findPatrernTaskStateChanged();
 
 
     /**
@@ -164,7 +165,7 @@ private:
 
     U2Region getCompleteSearchRegion(bool& regionIsCorrect, qint64 maxLen) const;
 
-    void initFindPatternTask(const QString& pattern, const QString& patternName = QString());
+    void initFindPatternTask(const QList< QPair<QString, QString> >& patterns);
 
     /** Checks if there are several patterns in textPattern which are separated by new line symbol,
     parse them out and returns with their names (if they're exist). */

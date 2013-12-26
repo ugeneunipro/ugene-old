@@ -24,6 +24,8 @@
 #include <U2Core/Log.h>
 #include <U2Core/U2SafePoints.h>
 
+#include <U2Formats/GenbankFeatures.h>
+
 #include "FindPatternTask.h"
 
 namespace U2 {
@@ -40,7 +42,8 @@ FindPatternTask::FindPatternTask(const FindAlgorithmTaskSettings& _settings,
       annotObject(_annotObject),
       annotName(_annotName),
       annotGroup(_annotGroup),
-      removeOverlaps(_removeOverlaps)
+      removeOverlaps(_removeOverlaps),
+      noResults(false)
 {
     // Note that even if the subtask has been canceled, the already calculated results are
     // saved anyway. This mechanism is used to limit the number of results.
@@ -75,6 +78,8 @@ QList<Task*> FindPatternTask::onSubTaskFinished(Task* subTask)
 
         if (!annots.isEmpty()) {
             resultsList.append(new CreateAnnotationsTask(annotObject, annotGroup, annots));
+        } else {
+            noResults = true;
         }
     }
 
@@ -123,6 +128,83 @@ void FindPatternTask::removeOverlappedResults(QList<FindAlgorithmResult>& result
 
     int removed = numberBefore - results.count();
     coreLog.info(tr("Removed %1 overlapped results.").arg(removed));
+}
+
+
+FindPatternListTask::FindPatternListTask(const FindAlgorithmTaskSettings &_settings,
+                                         const QList<NamePattern> &patterns,
+                                         AnnotationTableObject *_annotObject,
+                                         const QString &_annotName,
+                                         const QString &_annotGroup,
+                                         bool _removeOverlaps,
+                                         int _match,
+                                         bool useAnnotName)
+    : Task(tr("Searching patterns in sequence task"), TaskFlags_FOSE_COSC),
+      settings(_settings),
+      annotObject(_annotObject),
+      annotName(_annotName),
+      annotGroup(_annotGroup),
+      removeOverlaps(_removeOverlaps),
+      match(_match),
+      noResults(true)
+{
+
+    setNotificationReport(true);
+    foreach (const NamePattern& pattern, patterns) {
+        if (pattern.second.isEmpty()) {
+            uiLog.error(tr("Empty pattern"));
+            continue;
+        }
+        FindAlgorithmTaskSettings subTaskSettings = settings;
+        subTaskSettings.pattern = pattern.second.toLocal8Bit().toUpper();
+        QString subAnnotName = annotName;
+        if (useAnnotName) {
+            QString newPatternName = pattern.first;
+            if (newPatternName.length() >= GBFeatureUtils::MAX_KEY_LEN){
+                newPatternName = pattern.first.left(GBFeatureUtils::MAX_KEY_LEN);
+            }
+            if (Annotation::isValidAnnotationName(newPatternName)){
+                subAnnotName = newPatternName;
+            }
+        }
+
+        FindPatternTask* task = new FindPatternTask(subTaskSettings,
+                                                    annotObject,
+                                                    subAnnotName,
+                                                    annotGroup,
+                                                    removeOverlaps);
+        addSubTask(task);
+    }
+}
+
+
+QList<Task*> FindPatternListTask::onSubTaskFinished(Task *subTask) {
+    QList<Task*> res;
+    FindPatternTask* task = qobject_cast<FindPatternTask*>(subTask);
+    SAFE_POINT(NULL != task, "Failed to cast FindPatternTask!", QList<Task*>());
+    if (!task->hasNoResults()) {
+        noResults = false;
+        setNotificationReport(false);
+    }
+    return res;
+}
+
+
+QString FindPatternListTask::generateReport() const {
+    if (noResults) {
+        QString message = tr("No results found.");
+        taskLog.info(tr("Searching patterns in sequence task: ") + message);
+        return message;
+    }
+    return QString();
+}
+
+
+int FindPatternListTask::getMaxError( const QString& pattern ) const {
+    if (settings.patternSettings == FindAlgorithmPatternSettings_Exact) {
+        return 0;
+    }
+    return int((float)(1 - float(match) / 100) * pattern.length());
 }
 
 } // namespace

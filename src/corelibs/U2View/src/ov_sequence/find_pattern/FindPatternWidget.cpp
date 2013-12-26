@@ -34,6 +34,7 @@
 #include <U2Core/ProjectModel.h>
 #include <U2Core/TextUtils.h>
 #include <U2Core/U2SafePoints.h>
+#include <U2Core/AnnotationData.h>
 
 #include <U2View/ADVSequenceObjectContext.h>
 #include <U2View/AnnotatedDNAView.h>
@@ -313,8 +314,6 @@ private:
     }
 };
 
-
-typedef QPair<QString, QString> NamePattern;
 
 FindPatternEventFilter::FindPatternEventFilter(QObject* parent)
     : QObject(parent)
@@ -1071,6 +1070,9 @@ U2Region FindPatternWidget::getCompleteSearchRegion(bool& regionIsCorrect, qint6
 }
 
 int FindPatternWidget::getMaxError( const QString& pattern ) const{
+    if (selectedAlgorithm == FindAlgorithmPatternSettings_Exact) {
+        return 0;
+    }
     return int((float)(1 - float(spinMatch->value()) / 100) * pattern.length());
 }
 
@@ -1105,14 +1107,10 @@ void FindPatternWidget::sl_onSearchClicked()
     } else {
         U2OpStatus2Log os;
         const QList <NamePattern >& patterns = getPatternsFromTextPatternField(os);
-        foreach(const NamePattern& pattern, patterns) {
-            if (pattern.second.isEmpty()) {
-                uiLog.error(tr("Empty pattern"));
-                continue;
-            }
-            initFindPatternTask(pattern.second, pattern.first);
-            updateAnnotationsWidget();
-        }
+
+        initFindPatternTask(patterns);
+        updateAnnotationsWidget();
+
         annotModelPrepared = false;
     }
 }
@@ -1167,13 +1165,12 @@ void FindPatternWidget::sl_onFileSelectorToggled(bool on)
     checkState();
 }
 
-void FindPatternWidget::initFindPatternTask( const QString& pattern, const QString& patternName){
+void FindPatternWidget::initFindPatternTask( const QList<NamePattern>& patterns){
     ADVSequenceObjectContext* activeContext = annotatedDnaView->getSequenceInFocus();
     SAFE_POINT(NULL != activeContext, "Internal error: there is no sequence in focus!",);
 
     FindAlgorithmTaskSettings settings;
     settings.sequence = activeContext->getSequenceObject()->getWholeSequenceData();
-    settings.pattern = pattern.toLocal8Bit().toUpper();
 
     // Strand
     if (isAminoSequenceSelected) {
@@ -1230,7 +1227,9 @@ void FindPatternWidget::initFindPatternTask( const QString& pattern, const QStri
 
     // Algorithm settings
     settings.patternSettings = static_cast<FindAlgorithmPatternSettings>(selectedAlgorithm);
-    settings.maxErr = getMaxError(pattern);
+
+    settings.maxErr = 0;
+
     settings.useAmbiguousBases = useAmbiguousBasesBox->isChecked();
     settings.maxRegExpResult = boxUseMaxResultLen->isChecked() ?
         boxMaxResultLen->value() :
@@ -1238,7 +1237,7 @@ void FindPatternWidget::initFindPatternTask( const QString& pattern, const QStri
 
     // Preparing the annotations object and other annotations parameters
     if (!annotModelPrepared){
-        
+
         bool objectPrepared = annotController->prepareAnnotationObject();
         SAFE_POINT(objectPrepared, "Cannot create an annotation object. Please check settings", );
         annotModelPrepared = true;
@@ -1248,28 +1247,6 @@ void FindPatternWidget::initFindPatternTask( const QString& pattern, const QStri
     SAFE_POINT(v.isEmpty(), "Annotation names are invalid", );
 
     const CreateAnnotationModel& annotModel = annotController->getModel();
-    QString annotName;
-    
-    bool useAnnotationName = true;
-    if (usePatternNamesCheckBox->isChecked()){
-        if(!patternName.isEmpty()){
-
-            QString newPatternName = patternName;
-            if (newPatternName.length() >= GBFeatureUtils::MAX_KEY_LEN){
-                newPatternName = patternName.left(GBFeatureUtils::MAX_KEY_LEN);
-            }
-
-            if (Annotation::isValidAnnotationName(newPatternName)){
-                annotName = newPatternName;
-                useAnnotationName = false;
-            }
-        }
-    }
-    
-    if(useAnnotationName){
-        annotName = annotModel.data.name;
-    }
-    
     QString annotGroup = annotModel.groupName;
 
     AnnotationTableObject *aTableObj = annotModel.getAnnotationObject();
@@ -1277,14 +1254,18 @@ void FindPatternWidget::initFindPatternTask( const QString& pattern, const QStri
 
     // Creating and registering the task
     bool removeOverlaps = removeOverlapsBox->isChecked();
-    FindPatternTask* task = new FindPatternTask(settings,
+
+    FindPatternListTask* task = new FindPatternListTask(settings,
+        patterns,
         aTableObj,
-        annotName,
+        annotModel.data.name,
         annotGroup,
-        removeOverlaps);
+        removeOverlaps,
+        spinMatch->value(),
+        usePatternNamesCheckBox->isChecked());
+    connect(task, SIGNAL(si_progressChanged()), SLOT(sl_findPatrernTaskStateChanged()));
 
     AppContext::getTaskScheduler()->registerTopLevelTask(task);
-
 }
 
 void FindPatternWidget::sl_loadPatternTaskStateChanged(){
@@ -1303,17 +1284,7 @@ void FindPatternWidget::sl_loadPatternTaskStateChanged(){
     bool noBadAlphabet = true;
 
     const QList<NamePattern>& namesPatterns = loadTask->getNamesPatterns();
-    foreach(const NamePattern& namePattern, namesPatterns){
-        //check
-        bool isAlphabetOk = checkAlphabet(namePattern.second);
-        bool isRegionOk = checkPatternRegion(namePattern.second);
-        //initTask
-        if(isAlphabetOk && isRegionOk ){
-            initFindPatternTask(namePattern.second, namePattern.first);
-        }
-        noBadRegion &= isRegionOk;
-        noBadAlphabet &= isAlphabetOk;
-    }
+    initFindPatternTask(namesPatterns);
 
     if(!noBadAlphabet){
         showHideMessage(true, PatternsWithBadAlphabetInFile);
@@ -1322,6 +1293,20 @@ void FindPatternWidget::sl_loadPatternTaskStateChanged(){
         showHideMessage(true, PatternsWithBadRegionInFile);
     }
     annotModelPrepared = false;
+    updateAnnotationsWidget();
+}
+
+void FindPatternWidget::sl_findPatrernTaskStateChanged() {
+    FindPatternListTask* findTask = qobject_cast<FindPatternListTask*>(sender());
+    if (!findTask) {
+        return;
+    }
+    if(!findTask->isFinished() || findTask->isCanceled()){
+        return;
+    }
+    if (findTask->hasError()){
+        return;
+    }
     updateAnnotationsWidget();
 }
 

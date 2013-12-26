@@ -44,6 +44,7 @@ public:
         bool removeOverlaps);
 
     QList<Task*> onSubTaskFinished(Task* subTask);
+    bool hasNoResults() { return noResults; }
 
 private:
     void removeOverlappedResults(QList<FindAlgorithmResult>& results);
@@ -54,8 +55,40 @@ private:
     QString                             annotGroup;
     bool                                removeOverlaps;
     FindAlgorithmTask*                  findAlgorithmTask;
+    bool                                noResults;
 
     static const float MAX_OVERLAP_K;
+};
+
+typedef QPair<QString, QString> NamePattern;
+
+class U2VIEW_EXPORT FindPatternListTask : public Task {
+    Q_OBJECT
+public:
+    FindPatternListTask(const FindAlgorithmTaskSettings& settings,
+                        const QList<NamePattern>& patterns,
+                        AnnotationTableObject* annotObject,
+                        const QString& annotName,
+                        const QString& annotGroup,
+                        bool removeOverlaps,
+                        int match,
+                        bool useAnnotName = false);
+    QList<Task*> onSubTaskFinished(Task* subTask);
+    QString generateReport() const;
+
+private:
+    FindAlgorithmTaskSettings settings;
+
+    QPointer<AnnotationTableObject>     annotObject;
+    QString                             annotName;
+    QString                             annotGroup;
+    bool                                removeOverlaps;
+    int                                 match;
+    bool                                noResults;
+
+    static const float MAX_OVERLAP_K;
+
+    int getMaxError(const QString& pattern) const;
 };
 
 } // namespace
