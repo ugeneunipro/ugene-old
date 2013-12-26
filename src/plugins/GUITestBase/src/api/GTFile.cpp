@@ -153,6 +153,7 @@ void GTFile::copyDir(U2OpStatus &os, const QString& dirToCopy, const QString& di
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "removeDir"
+#ifdef Q_OS_WIN
 void GTFile::removeDir(QString dirName)
 {
     QDir dir(dirName);
@@ -174,6 +175,34 @@ void GTFile::removeDir(QString dirName)
     }
     dir.rmdir(dir.absoluteFilePath(dirName));
 }
+#else
+void GTFile::removeDir(QString dirName)
+{
+    QDir dir(dirName);
+
+
+
+    foreach (QFileInfo fileInfo, dir.entryInfoList()) {
+        QString fileName = fileInfo.fileName();
+        QString filePath = fileInfo.filePath();
+        if (fileName != "." && fileName != "..") {
+            if(QFile::remove(filePath))
+                continue;
+            else{
+                QDir dir(filePath);
+                if(dir.rmdir(filePath))
+                    continue;
+                else
+                    removeDir(filePath);
+
+            }
+
+        }
+    }dir.rmdir(dir.absoluteFilePath(dirName));
+
+}
+#endif
+
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "backup"
