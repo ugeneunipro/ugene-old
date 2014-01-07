@@ -115,7 +115,6 @@ Annotation AnnotationGroup::addAnnotation( const AnnotationData &a ) {
     SAFE_POINT_OP( os, result );
 
     parentObject->setModified( true );
-    parentObject->emit_onAnnotationsAdded( QList<Annotation>( ) << result );
 
     return result;
 }
@@ -156,9 +155,7 @@ void AnnotationGroup::removeAnnotation( const Annotation &a ) {
 }
 
 void AnnotationGroup::removeAnnotations( const QList<Annotation> &annotations ) {
-    foreach ( const Annotation &a, annotations ) {
-        removeAnnotation( a );
-    }
+    parentObject->removeAnnotations( annotations );
 }
 
 QList<AnnotationGroup> AnnotationGroup::getSubgroups( ) const {
@@ -310,17 +307,14 @@ void AnnotationGroup::getSubgroupPaths( QStringList &res ) const {
 }
 
 void AnnotationGroup::clear( ) {
-    U2OpStatusImpl os;
-    QList<U2Feature> subfeatures = U2FeatureUtils::getSubAnnotations( dbId,
-        parentObject->getEntityRef( ).dbiRef, os, false );
-    SAFE_POINT_OP( os, );
-    subfeatures << U2FeatureUtils::getSubGroups( dbId,
-        parentObject->getEntityRef( ).dbiRef, os, false );
-    SAFE_POINT_OP( os, );
+    const QList<Annotation> subAnns = getAnnotations( );
+    if ( !subAnns.isEmpty( ) ) {
+        removeAnnotations( subAnns );
+    }
 
-    foreach ( const U2Feature &sub, subfeatures ) {
-        U2FeatureUtils::removeFeature( sub.id, parentObject->getEntityRef( ).dbiRef, os );
-        SAFE_POINT_OP( os, );
+    const QList<AnnotationGroup> subGroups = getSubgroups( );
+    foreach ( AnnotationGroup sub, subGroups ) {
+        removeSubgroup( sub );
     }
 }
 

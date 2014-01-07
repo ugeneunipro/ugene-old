@@ -58,8 +58,10 @@ GSequenceLineViewAnnotated::GSequenceLineViewAnnotated(QWidget* p, ADVSequenceOb
         SIGNAL(si_selectionChanged(AnnotationSelection*, const QList<Annotation>&, const QList<Annotation>& )),
         SLOT(sl_onAnnotationSelectionChanged(AnnotationSelection*, const QList<Annotation>&, const QList<Annotation>&)));
 
-    connect(ctx, SIGNAL(si_annotationObjectAdded(AnnotationTableObject *)), SLOT(sl_onAnnotationObjectAdded(AnnotationTableObject *)));
-    connect(ctx, SIGNAL(si_annotationObjectRemoved(AnnotationTableObject *)), SLOT(sl_onAnnotationObjectRemoved(AnnotationTableObject *)));
+    connect( ctx, SIGNAL( si_annotationObjectAdded( AnnotationTableObject * ) ),
+        SLOT( sl_onAnnotationObjectAdded( AnnotationTableObject * ) ) );
+    connect( ctx, SIGNAL( si_annotationObjectRemoved( AnnotationTableObject * ) ),
+        SLOT( sl_onAnnotationObjectRemoved( AnnotationTableObject * ) ) );
     
     connect(AppContext::getAnnotationsSettingsRegistry(),
         SIGNAL(si_annotationSettingsChanged(const QStringList&)),
@@ -68,11 +70,14 @@ GSequenceLineViewAnnotated::GSequenceLineViewAnnotated(QWidget* p, ADVSequenceOb
 }
 
 void GSequenceLineViewAnnotated::connectAnnotationObject( const AnnotationTableObject *ao ) {
-    connect(ao, SIGNAL(si_onAnnotationsAdded(const QList<Annotation> &)), SLOT(sl_onAnnotationsAdded(const QList<Annotation> &)));
-    connect(ao, SIGNAL(si_onAnnotationsRemoved(const QList<Annotation>&)), SLOT(sl_onAnnotationsRemoved(const QList<Annotation> &)));
-    connect(ao, SIGNAL(si_onAnnotationsInGroupRemoved(const QList<Annotation>&, AnnotationGroup*)), 
-        SLOT(sl_onAnnotationsInGroupRemoved(const QList<Annotation>&, AnnotationGroup*)));
-    connect(ao, SIGNAL(si_onAnnotationModified(const AnnotationModification&)), SLOT(sl_onAnnotationsModified(const AnnotationModification&)));
+    connect( ao, SIGNAL(si_onAnnotationsAdded( const QList<Annotation> & ) ),
+        SLOT( sl_onAnnotationsAdded( const QList<Annotation> & ) ) );
+    connect( ao, SIGNAL( si_onAnnotationsRemoved( const QList<Annotation> & ) ),
+        SLOT( sl_onAnnotationsRemoved( const QList<Annotation> & ) ) );
+    connect( ao, SIGNAL( si_onAnnotationsInGroupRemoved( const QList<Annotation> &, const AnnotationGroup & ) ),
+        SLOT( sl_onAnnotationsInGroupRemoved( const QList<Annotation> &, const AnnotationGroup & ) ) );
+    connect( ao, SIGNAL( si_onAnnotationModified( const AnnotationModification & ) ),
+        SLOT( sl_onAnnotationsModified( const AnnotationModification & ) ) );
 }
 
 void GSequenceLineViewAnnotated::sl_onAnnotationSettingsChanged(const QStringList&) {
@@ -80,7 +85,7 @@ void GSequenceLineViewAnnotated::sl_onAnnotationSettingsChanged(const QStringLis
     update();
 }
 
-void GSequenceLineViewAnnotated::sl_onAnnotationObjectAdded( const AnnotationTableObject *o) {
+void GSequenceLineViewAnnotated::sl_onAnnotationObjectAdded( AnnotationTableObject *o ) {
     connectAnnotationObject(o);
     sl_onAnnotationsAdded(o->getAnnotations());
 }

@@ -5,7 +5,7 @@
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 
+ * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
@@ -322,15 +322,15 @@ QList<AVAnnotationItem *> AnnotationsTreeView::findAnnotationItems( const Annota
 }
 
 void AnnotationsTreeView::connectAnnotationSelection() {
-    connect(ctx->getAnnotationsSelection(), 
-        SIGNAL(si_selectionChanged(AnnotationSelection*, const QList<Annotation*>&, const QList<Annotation*>& )), 
-        SLOT(sl_onAnnotationSelectionChanged(AnnotationSelection*, const QList<Annotation*>&, const QList<Annotation*>&)));
+    connect( ctx->getAnnotationsSelection( ),
+        SIGNAL( si_selectionChanged( AnnotationSelection *, const QList<Annotation> &, const QList<Annotation> & ) ),
+        SLOT( sl_onAnnotationSelectionChanged( AnnotationSelection *, const QList<Annotation> &, const QList<Annotation> & ) ) );
 }
 
-void AnnotationsTreeView::connectAnnotationGroupSelection() {
-    connect(ctx->getAnnotationsGroupSelection(), 
-        SIGNAL(si_selectionChanged(AnnotationGroupSelection*, const QList<AnnotationGroup*>&, const QList<AnnotationGroup*>& )), 
-        SLOT(sl_onAnnotationGroupSelectionChanged(AnnotationGroupSelection*, const QList<AnnotationGroup*>&, const QList<AnnotationGroup*>&)));
+void AnnotationsTreeView::connectAnnotationGroupSelection( ) {
+    connect( ctx->getAnnotationsGroupSelection( ),
+        SIGNAL( si_selectionChanged( AnnotationGroupSelection *, const QList<AnnotationGroup> &, const QList<AnnotationGroup> & ) ),
+        SLOT( sl_onAnnotationGroupSelectionChanged( AnnotationGroupSelection *, const QList<AnnotationGroup> &, const QList<AnnotationGroup> & ) ) );
 }
 
 void AnnotationsTreeView::sl_onItemSelectionChanged() {
@@ -447,6 +447,8 @@ void AnnotationsTreeView::sl_onAnnotationObjectAdded( AnnotationTableObject *obj
         SLOT( sl_onAnnotationsAdded( const QList<Annotation> & ) ) );
     connect( obj, SIGNAL( si_onAnnotationsRemoved( const QList<Annotation> & ) ),
         SLOT( sl_onAnnotationsRemoved( const QList<Annotation> & ) ) );
+    connect( obj, SIGNAL( si_onAnnotationModified( const AnnotationModification & ) ),
+        SLOT( sl_onAnnotationModified( const AnnotationModification & ) ) );
 
     connect( obj, SIGNAL( si_onGroupCreated( const AnnotationGroup & ) ),
         SLOT( sl_onGroupCreated( const AnnotationGroup & ) ) );
@@ -813,13 +815,15 @@ void AnnotationsTreeView::sl_onBuildPopupMenu(GObjectView*, QMenu* m) {
 
     //Add active context actions to the top level menu
     QList<QAction*> contextActions;
-    contextActions << copyQualifierAction << copyQualifierURLAction 
-        << toggleQualifierColumnAction << copyColumnTextAction 
-        << copyColumnURLAction << editAction;
-    
+    contextActions << toggleQualifierColumnAction << editAction;
+
+    QList<QAction *> copySubmenuActions;
+    copySubmenuActions << copyQualifierAction << copyQualifierURLAction << copyColumnTextAction
+        << copyColumnURLAction;
+
     QMenu* copyMenu = GUIUtils::findSubMenu(m, ADV_MENU_COPY);
     SAFE_POINT(copyMenu != NULL, "copyMenu", );
-    foreach(QAction* a, contextActions) {
+    foreach(QAction* a, copySubmenuActions) {
         if (a->isEnabled()) {
             copyMenu->addAction(a);
         }
@@ -1542,9 +1546,9 @@ void AnnotationsTreeView::sl_onRemoveColumnByHeaderClick() {
     removeQualifierColumn(qColumns[lastClickedColumn-2]);
 }
 
-void AnnotationsTreeView::sl_searchQualifier(){
-    SearchQualifierDialog d(this, this);
-     d.exec();    
+void AnnotationsTreeView::sl_searchQualifier( ) {
+    SearchQualifierDialog d( this, this );
+     d.exec( );
 }
 
 void AnnotationsTreeView::sl_invertSelection(){

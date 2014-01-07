@@ -36,11 +36,11 @@ EditQualifierDialog::EditQualifierDialog(QWidget* p, const U2Qualifier& q, bool 
     ui->setupUi(this);
     
     if(true == ro){
-        this->setWindowTitle(tr("View qualifier"));
+        this->setWindowTitle(tr("View Qualifier"));
     }
 
     if( !existingQualifier ) { // adding new qualifier
-        setWindowTitle("Add new qualifier");
+        setWindowTitle("Add New Qualifier");
     }
     
     ui->nameEdit->setReadOnly(ro);

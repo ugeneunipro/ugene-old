@@ -139,7 +139,8 @@ FindPatternListTask::FindPatternListTask(const FindAlgorithmTaskSettings &_setti
                                          bool _removeOverlaps,
                                          int _match,
                                          bool useAnnotName)
-    : Task(tr("Searching patterns in sequence task"), TaskFlags_FOSE_COSC),
+    : Task( tr( "Searching patterns in sequence task" ), TaskFlags_FOSE_COSC | TaskFlag_NoRun
+    | TaskFlag_ReportingIsSupported | TaskFlag_ReportingIsEnabled ),
       settings(_settings),
       annotObject(_annotObject),
       annotName(_annotName),
@@ -148,7 +149,6 @@ FindPatternListTask::FindPatternListTask(const FindAlgorithmTaskSettings &_setti
       match(_match),
       noResults(true)
 {
-
     setNotificationReport(true);
     foreach (const NamePattern& pattern, patterns) {
         if (pattern.second.isEmpty()) {

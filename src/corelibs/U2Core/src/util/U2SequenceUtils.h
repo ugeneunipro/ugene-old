@@ -127,7 +127,7 @@ private:
     U2Sequence finalizeSequence(U2OpStatus& os);
     void setCaseAnnotationsMode(CaseAnnotationsMode mode);
     bool isCaseAnnotationsModeOn() const;
-    QList<Annotation*> &getCaseAnnotations();
+    QList<AnnotationData> & getCaseAnnotations();
 
     QByteArray &sequenceData;
 };

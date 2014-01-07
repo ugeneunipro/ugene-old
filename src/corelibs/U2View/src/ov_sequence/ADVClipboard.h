@@ -54,7 +54,7 @@ public:
 public slots:
     
     void sl_onDNASelectionChanged(LRegionsSelection* s, const QVector<U2Region>& added, const QVector<U2Region>& removed);
-    void sl_onAnnotationSelectionChanged(AnnotationSelection* s, const QList<Annotation*>& added, const QList<Annotation*>& removed);
+    void sl_onAnnotationSelectionChanged( AnnotationSelection *s, const QList<Annotation> &added, const QList<Annotation> &removed );
     void sl_onFocusedSequenceWidgetChanged(ADVSequenceWidget*, ADVSequenceWidget*);
 
     void sl_copySequence();

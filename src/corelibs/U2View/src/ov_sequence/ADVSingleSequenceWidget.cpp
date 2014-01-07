@@ -74,9 +74,9 @@ ADVSingleSequenceWidget::ADVSingleSequenceWidget(ADVSequenceObjectContext* seqCt
     toggleOverviewAction = new QAction(this);
     connect(toggleOverviewAction, SIGNAL(triggered()), SLOT(sl_toggleOverview()));
 
-    connect(seqCtx->getAnnotatedDNAView()->getAnnotationsSelection(), 
-        SIGNAL(si_selectionChanged(AnnotationSelection* , const QList<Annotation*>&, const QList<Annotation*>&)),
-        SLOT(sl_onAnnotationSelectionChanged(AnnotationSelection* , const QList<Annotation*>&, const QList<Annotation*>&)));
+    connect( seqCtx->getAnnotatedDNAView( )->getAnnotationsSelection( ),
+        SIGNAL( si_selectionChanged( AnnotationSelection *, const QList<Annotation> &, const QList<Annotation> & ) ),
+        SLOT( sl_onAnnotationSelectionChanged( AnnotationSelection *, const QList<Annotation> &, const QList<Annotation> & ) ) );
 
     selectRangeAction1 = new QAction(QIcon(":/core/images/select_region.png"), tr("Select sequence region..."), this);
     selectRangeAction1->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_A));
@@ -839,14 +839,17 @@ void ADVSingleSequenceWidget::sl_removeCustomRuler() {
     panView->removeCustomRuler(rulerName);
 }
 
-void ADVSingleSequenceWidget::sl_onAnnotationSelectionChanged(AnnotationSelection* s, const QList<Annotation*>&, const QList<Annotation*>&) {
+void ADVSingleSequenceWidget::sl_onAnnotationSelectionChanged( AnnotationSelection *s,
+    const QList<Annotation> &, const QList<Annotation> & )
+{
     // make sequence selection to match external annotation bounds
-    QVector<U2Region> annotatedRegions = s->getSelectedLocations(getSequenceContext()->getAnnotationObjects(true));
-    if (!annotatedRegions.isEmpty()) {
-        QVector<U2Region> joinedRegions = U2Region::join(annotatedRegions);
-        getSequenceContext()->getSequenceSelection()->setSelectedRegions(joinedRegions);
+    const QSet<AnnotationTableObject *> objs = getSequenceContext( )->getAnnotationObjects( true );
+    QVector<U2Region> annotatedRegions = s->getSelectedLocations( objs );
+    if ( !annotatedRegions.isEmpty( ) ) {
+        QVector<U2Region> joinedRegions = U2Region::join( annotatedRegions );
+        getSequenceContext( )->getSequenceSelection( )->setSelectedRegions( joinedRegions );
     }
-    updateSelectionActions();
+    updateSelectionActions( );
 }
 
 void ADVSingleSequenceWidget::updateSelectionActions() {

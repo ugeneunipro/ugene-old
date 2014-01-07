@@ -94,17 +94,19 @@ void ADVClipboard::connectSequence(ADVSequenceObjectContext* sCtx) {
       SIGNAL(si_selectionChanged(LRegionsSelection*, const QVector<U2Region>&, const QVector<U2Region>&)), 
       SLOT(sl_onDNASelectionChanged(LRegionsSelection*, const QVector<U2Region>& , const QVector<U2Region>&)));
 
-    connect(sCtx->getAnnotatedDNAView()->getAnnotationsSelection(), 
-      SIGNAL(si_selectionChanged(AnnotationSelection* , const QList<Annotation*>&, const QList<Annotation*>&)),
-      SLOT(sl_onAnnotationSelectionChanged(AnnotationSelection* , const QList<Annotation*>&, const QList<Annotation*>&)));
+    connect( sCtx->getAnnotatedDNAView( )->getAnnotationsSelection( ),
+      SIGNAL( si_selectionChanged( AnnotationSelection *, const QList<Annotation> &, const QList<Annotation> & ) ),
+      SLOT( sl_onAnnotationSelectionChanged( AnnotationSelection *, const QList<Annotation> &, const QList<Annotation> & ) ) );
 }
 
 void ADVClipboard::sl_onDNASelectionChanged(LRegionsSelection*, const QVector<U2Region>&, const QVector<U2Region>&) {
     updateActions();
 }
 
-void ADVClipboard::sl_onAnnotationSelectionChanged(AnnotationSelection*, const QList<Annotation*>&, const QList<Annotation*>&) {
-    updateActions();
+void ADVClipboard::sl_onAnnotationSelectionChanged( AnnotationSelection *,
+    const QList<Annotation> &, const QList<Annotation> & )
+{
+    updateActions( );
 }
 
 void ADVClipboard::copySequenceSelection(bool complement, bool amino) {

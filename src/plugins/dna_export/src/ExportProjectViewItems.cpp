@@ -108,8 +108,6 @@ ExportProjectViewItemsContoller::ExportProjectViewItemsContoller(QObject* p) : Q
     ProjectView* pv = AppContext::getProjectView();
     assert(pv!=NULL);
     connect(pv, SIGNAL(si_onDocTreePopupMenuRequested(QMenu&)), SLOT(sl_addToProjectViewMenu(QMenu&)));
-    connect(pv, SIGNAL(si_annotationsExportRequested(QList<Annotation*> &, const GUrl &)),
-        SLOT(sl_exportAnnotations(QList<Annotation*> &, const GUrl &)));
 }
 
 
@@ -451,44 +449,11 @@ void ExportProjectViewItemsContoller::sl_exportAnnotations() {
     QList<Annotation> annotations = aObj->getAnnotations( );
     if(!annotations.isEmpty()) {
         SAFE_POINT( NULL != aObj->getDocument( ), "Invalid document detected!", );
-        sl_exportAnnotations( annotations, aObj->getDocument( )->getURL( ) );
+        ExportObjectUtils::exportAnnotations( annotations, aObj->getDocument( )->getURL( ) );
         return;
     }
     QMessageBox::warning( QApplication::activeWindow( ), exportAnnotations2CSV->text( ),
         tr( NO_ANNOTATIONS_MESSAGE ) );
-}
-
-void ExportProjectViewItemsContoller::sl_exportAnnotations( QList<Annotation> &annotations,
-    const GUrl &dstUrl) const
-{
-    if ( annotations.isEmpty( ) ) {
-        QMessageBox::warning(QApplication::activeWindow(), exportAnnotations2CSV->text(),
-            tr(NO_ANNOTATIONS_MESSAGE));
-        return;
-    }
-
-    QString fileName = GUrlUtils::rollFileName(dstUrl.dirPath() + "/" + dstUrl.baseFileName() + "_annotations.csv", 
-        DocumentUtils::getNewDocFileNameExcludesHint());
-
-    ExportAnnotationsDialog d(fileName, QApplication::activeWindow());
-    d.setExportSequenceVisible(false);
-
-    if (QDialog::Accepted != d.exec()) {
-        return;
-    }
-
-    // TODO: lock documents or use shared-data objects
-    // same as in ADVExportContext::sl_saveSelectedAnnotations()
-    qStableSort( annotations.begin( ), annotations.end( ), Annotation::annotationLessThan );
-
-    // run task
-    Task * t = NULL;
-    if(d.fileFormat() == ExportAnnotationsDialog::CSV_FORMAT_ID) {
-        t = new ExportAnnotations2CSVTask(annotations, QByteArray(), QString(), NULL, false, false, d.filePath());
-    } else {
-        t = ExportObjectUtils::saveAnnotationsTask(d.filePath(), d.fileFormat(), annotations);
-    }
-    AppContext::getTaskScheduler()->registerTopLevelTask(t);
 }
 
 void ExportProjectViewItemsContoller::sl_exportSequenceQuality() {

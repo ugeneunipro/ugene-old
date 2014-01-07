@@ -146,7 +146,8 @@ protected slots:
     void sl_createCustomRuler();
     void sl_removeCustomRuler();
     
-    void sl_onAnnotationSelectionChanged(AnnotationSelection* thiz, const QList<Annotation*>& added, const QList<Annotation*>& removed);
+    void sl_onAnnotationSelectionChanged( AnnotationSelection *thiz,
+        const QList<Annotation> &added, const QList<Annotation> &removed );
 
 // QT 4.5.0 bug workaround
 public slots:

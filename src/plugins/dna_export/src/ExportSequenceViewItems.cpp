@@ -148,9 +148,9 @@ ADVExportContext::ADVExportContext(AnnotatedDNAView* v) : view(v) {
     blastResultToAlignmentAction = new QAction(tr("Export BLAST result to alignment..."), this);
     connect(blastResultToAlignmentAction, SIGNAL(triggered()), SLOT(sl_exportBlastResultToAlignment()));
 
-    connect(view->getAnnotationsSelection(), 
-        SIGNAL(si_selectionChanged(AnnotationSelection*, const QList<Annotation*>&, const QList<Annotation*>& )), 
-        SLOT(sl_onAnnotationSelectionChanged(AnnotationSelection*, const QList<Annotation*>&, const QList<Annotation*>&)));
+    connect( view->getAnnotationsSelection( ),
+        SIGNAL( si_selectionChanged( AnnotationSelection *, const QList<Annotation> &, const QList<Annotation> & ) ),
+        SLOT( sl_onAnnotationSelectionChanged( AnnotationSelection *, const QList<Annotation> &, const QList<Annotation> & ) ) );
 
     connect(view, SIGNAL(si_sequenceAdded(ADVSequenceObjectContext*)), SLOT(sl_onSequenceContextAdded(ADVSequenceObjectContext*)));
     connect(view, SIGNAL(si_sequenceRemoved(ADVSequenceObjectContext*)), SLOT(sl_onSequenceContextRemoved(ADVSequenceObjectContext*)));
@@ -172,8 +172,10 @@ void ADVExportContext::sl_onSequenceContextRemoved(ADVSequenceObjectContext* c) 
     updateActions();
 }
 
-void ADVExportContext::sl_onAnnotationSelectionChanged(AnnotationSelection* , const QList<Annotation*>& , const QList<Annotation*>&) {
-    updateActions();
+void ADVExportContext::sl_onAnnotationSelectionChanged( AnnotationSelection *,
+    const QList<Annotation> &, const QList<Annotation> & )
+{
+    updateActions( );
 }
 
 void ADVExportContext::sl_onSequenceSelectionChanged(LRegionsSelection* , const QVector<U2Region>& , const QVector<U2Region>& ) {

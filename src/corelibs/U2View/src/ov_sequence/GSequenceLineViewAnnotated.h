@@ -71,7 +71,7 @@ protected:
 protected slots:
     virtual void sl_onAnnotationSettingsChanged(const QStringList& changedSettings);
 
-    void sl_onAnnotationObjectAdded( const AnnotationTableObject *);
+    void sl_onAnnotationObjectAdded( AnnotationTableObject * );
     void sl_onAnnotationObjectRemoved( AnnotationTableObject *);
     void sl_onAnnotationsInGroupRemoved( const QList<Annotation> &, const AnnotationGroup & );
     void sl_onAnnotationsAdded(const QList<Annotation>&);

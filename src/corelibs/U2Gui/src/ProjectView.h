@@ -54,7 +54,6 @@ public:
 
 signals:
     void si_onDocTreePopupMenuRequested(QMenu& m);
-    void si_annotationsExportRequested(QList<Annotation*> &, const GUrl &);
 };
 
 }//namespace

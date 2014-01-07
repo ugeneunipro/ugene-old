@@ -48,9 +48,6 @@ private slots:
     void sl_exportChromatogramToSCF();
     void sl_exportAnnotations();
     void sl_exportSequenceQuality();
-    // TODO : move the following function to some better place in order to use it
-    // not only from Project View
-    void sl_exportAnnotations( QList<Annotation> &annotations, const GUrl &dstUrl) const;
 
 private:
     void addExportImportMenu(QMenu& m);
