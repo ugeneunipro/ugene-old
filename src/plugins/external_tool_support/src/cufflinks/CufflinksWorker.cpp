@@ -389,8 +389,10 @@ void CufflinksWorker::sl_cufflinksTaskFinished() {
         SAFE_POINT(0 != outputMapDataType, "Internal error: can't get DataTypePtr for output map!",);
 
         QVariantMap messageData;
+        const SharedDbiDataHandler tableId = context->getDataStorage( )
+            ->putAnnotationTable( cufflinksSupportTask->getIsoformAnnots( ) );
         messageData[CufflinksWorkerFactory::ISO_LEVEL_SLOT_DESCR_ID] =
-            qVariantFromValue< QList<SharedAnnotationData> >(cufflinksSupportTask->getIsoformAnnots());
+            qVariantFromValue<SharedDbiDataHandler>( tableId );
 
         output->put(Message(outputMapDataType, messageData));
         foreach (const QString &url, cufflinksSupportTask->getOutputFiles()) {

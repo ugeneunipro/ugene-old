@@ -19,6 +19,9 @@
  * MA 02110-1301, USA.
  */
 
+#include <QtCore/QScopedPointer>
+
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/QVariantUtils.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
@@ -92,8 +95,8 @@ bool GrouperActionUtils::equalData(const QString &groupOp, const QVariant &data1
         }
         
         U2OpStatusImpl os;
-        std::auto_ptr<U2SequenceObject> seqObj1(StorageUtils::getSequenceObject(context->getDataStorage(), seqId1));
-        std::auto_ptr<U2SequenceObject> seqObj2(StorageUtils::getSequenceObject(context->getDataStorage(), seqId2));
+        QScopedPointer<U2SequenceObject> seqObj1(StorageUtils::getSequenceObject(context->getDataStorage(), seqId1));
+        QScopedPointer<U2SequenceObject> seqObj2(StorageUtils::getSequenceObject(context->getDataStorage(), seqId2));
         QString name1 = seqObj1->getSequenceName();
         QString name2 = seqObj2->getSequenceName();
 
@@ -113,11 +116,11 @@ bool GrouperActionUtils::equalData(const QString &groupOp, const QVariant &data1
         SharedDbiDataHandler alId1 = data1.value<SharedDbiDataHandler>();
         SharedDbiDataHandler alId2 = data2.value<SharedDbiDataHandler>();
 
-        std::auto_ptr<MAlignmentObject> alObj1(StorageUtils::getMsaObject(context->getDataStorage(), alId1));
-        SAFE_POINT(NULL != alObj1.get(), "NULL MSA Object!", NULL);
+        QScopedPointer<MAlignmentObject> alObj1(StorageUtils::getMsaObject(context->getDataStorage(), alId1));
+        SAFE_POINT(NULL != alObj1.data(), "NULL MSA Object!", NULL);
 
-        std::auto_ptr<MAlignmentObject> alObj2(StorageUtils::getMsaObject(context->getDataStorage(), alId2));
-        SAFE_POINT(NULL != alObj2.get(), "NULL MSA Object!", NULL);
+        QScopedPointer<MAlignmentObject> alObj2(StorageUtils::getMsaObject(context->getDataStorage(), alId2));
+        SAFE_POINT(NULL != alObj2.data(), "NULL MSA Object!", NULL);
 
 
         MAlignment al1 = alObj1->getMAlignment();
@@ -221,7 +224,7 @@ MergeSequencePerformer::MergeSequencePerformer(const QString &outSlot, const Gro
 bool MergeSequencePerformer::applyAction(const QVariant &newData) {
     U2OpStatusImpl os;
     SharedDbiDataHandler seqId = newData.value<SharedDbiDataHandler>();
-    std::auto_ptr<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
+    QScopedPointer<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
 
     if (!started) {
         QString name;
@@ -270,8 +273,8 @@ Sequence2MSAPerformer::Sequence2MSAPerformer(const QString &outSlot, const Group
 
 bool Sequence2MSAPerformer::applyAction(const QVariant &newData) {
     SharedDbiDataHandler seqId = newData.value<SharedDbiDataHandler>();
-    std::auto_ptr<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
-    if (NULL == seqObj.get()) {
+    QScopedPointer<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
+    if (NULL == seqObj.data()) {
         return false;
     }
 
@@ -323,8 +326,8 @@ MergerMSAPerformer::MergerMSAPerformer(const QString &outSlot, const GrouperSlot
 
 bool MergerMSAPerformer::applyAction(const QVariant &newData) {
     SharedDbiDataHandler newAlId = newData.value<SharedDbiDataHandler>();
-    std::auto_ptr<MAlignmentObject> newAlObj(StorageUtils::getMsaObject(context->getDataStorage(), newAlId));
-    SAFE_POINT(NULL != newAlObj.get(), "NULL MSA Object!", false);
+    QScopedPointer<MAlignmentObject> newAlObj(StorageUtils::getMsaObject(context->getDataStorage(), newAlId));
+    SAFE_POINT(NULL != newAlObj.data(), "NULL MSA Object!", false);
     MAlignment newAl = newAlObj->getMAlignment();
 
     if (!started) {
@@ -393,41 +396,41 @@ MergeAnnotationPerformer::MergeAnnotationPerformer(const QString &outSlot, const
     started = true;
 }
 
-static void shiftAnns(QList<SharedAnnotationData> &newAnns, qint64 offset) {
-    QList<SharedAnnotationData> res;
-    foreach (SharedAnnotationData d, newAnns) {
-        U2Region::shift(offset, d->location->regions);
+static void shiftAnns( QList<AnnotationData> &newAnns, qint64 offset ) {
+    QList<AnnotationData> res;
+    foreach (AnnotationData d, newAnns ) {
+        U2Region::shift(offset, d.location->regions);
         res << d;
     }
     newAnns = res;
 }
 
-bool MergeAnnotationPerformer::applyAction(const QVariant &newData) {
-    QList<SharedAnnotationData> newAnns;
-    if (newData.canConvert< QList<SharedAnnotationData> >()) {
-        newAnns << newData.value< QList<SharedAnnotationData> >();
-    } else if (newData.canConvert<SharedAnnotationData>()) {
-        newAnns << newData.value<SharedAnnotationData>();
-    } else {
-        coreLog.error("Grouper: can not get annotations from QVariant");
-    }
+bool MergeAnnotationPerformer::applyAction( const QVariant &newData ) {
+    SharedDbiDataHandler newAnnTableId = newData.value<SharedDbiDataHandler>( );
+    QScopedPointer<AnnotationTableObject> newAnnTableObj( StorageUtils::getAnnotationTableObject(
+        context->getDataStorage( ), newAnnTableId ) );
+    SAFE_POINT( NULL != newAnnTableObj.data( ), "Invalid annotation table object!", false );
 
+    QList<AnnotationData> newAnns;
+    foreach ( const Annotation &a, newAnnTableObj->getAnnotations( ) ) {
+        newAnns << a.getData( );
+    }
 
     bool unique = false;
-    if (action.hasParameter(ActionParameters::UNIQUE)) {
-        unique = action.getParameterValue(ActionParameters::UNIQUE).toBool();
+    if ( action.hasParameter( ActionParameters::UNIQUE ) ) {
+        unique = action.getParameterValue( ActionParameters::UNIQUE ).toBool( );
     }
 
-    if (offset > 0) {
-        shiftAnns(newAnns, offset);
+    if ( offset > 0 ) {
+        shiftAnns( newAnns, offset );
         offset = 0;
     }
 
-    if (unique) {
-        foreach (SharedAnnotationData newD, newAnns) {
+    if ( unique ) {
+        foreach ( AnnotationData newD, newAnns ) {
             bool found = false;
-            foreach (SharedAnnotationData d, result) {
-                if (*(newD.data()) == *(d.data())) {
+            foreach ( AnnotationData d, result ) {
+                if ( newD == d ) {
                     found = true;
                     break;
                 }
@@ -444,7 +447,8 @@ bool MergeAnnotationPerformer::applyAction(const QVariant &newData) {
 }
 
 QVariant MergeAnnotationPerformer::finishAction(U2OpStatus &) {
-    return qVariantFromValue<QList<SharedAnnotationData> >(result);
+    const SharedDbiDataHandler tableId = context->getDataStorage( )->putAnnotationTable( result );
+    return qVariantFromValue<SharedDbiDataHandler>( tableId );
 }
 
 QString MergeAnnotationPerformer::PARENT_SEQUENCE_SLOT = QString("parent-seq-slot");

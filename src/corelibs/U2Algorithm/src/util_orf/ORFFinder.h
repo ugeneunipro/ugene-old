@@ -68,11 +68,10 @@ public:
     int frame;
     bool isJoined;
 
-    static QList<SharedAnnotationData> toTable(const QList<ORFFindResult>& res, const QString& name)
-    {
-        QList<SharedAnnotationData> list;
-        foreach (const ORFFindResult& f, res) {
-            list.append( SharedAnnotationData( new AnnotationData( f.toAnnotation( name ) ) ) );
+    static QList<AnnotationData> toTable(const QList<ORFFindResult>& res, const QString& name) {
+        QList<AnnotationData> list;
+        foreach ( const ORFFindResult &f, res ) {
+            list << f.toAnnotation( name );
         }
         return list;
     }

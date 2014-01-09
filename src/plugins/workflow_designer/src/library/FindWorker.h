@@ -72,12 +72,12 @@ public:
 class FindAllRegionsTask : public Task { //FIXME this is temporary solution until FindAlgorithmTask moved to SequenceWalker
     Q_OBJECT
 public:
-    FindAllRegionsTask(const FindAlgorithmTaskSettings& s, const QList<SharedAnnotationData>&);
+    FindAllRegionsTask(const FindAlgorithmTaskSettings& s, const QList<AnnotationData> &);
     virtual void prepare();
     QList<FindAlgorithmResult> getResult();
 private:
-    FindAlgorithmTaskSettings cfg; 
-    QList<SharedAnnotationData> regions;
+    FindAlgorithmTaskSettings cfg;
+    QList<AnnotationData> regions;
 };
 
 } // Workflow namespace

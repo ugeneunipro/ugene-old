@@ -117,18 +117,18 @@ void HttpRequestCDD::parseResult(ResponseBuffer &buf) {
 }
 
 void HttpRequestCDD::parseHit(QByteArray &b,ResponseBuffer &buf) {
-    SharedAnnotationData ad(new AnnotationData());
+    AnnotationData ad;
     QString str(b);
     str = str.split("<div>").last();
     str = str.split("</div>")[0];
 
-    ad->qualifiers.push_back(U2Qualifier("Description",str.split(",").last()));
+    ad.qualifiers.push_back(U2Qualifier("Description",str.split(",").last()));
     b = buf.readLine();
-    ad->qualifiers.push_back(U2Qualifier("PssmId",extractText(b)));
+    ad.qualifiers.push_back(U2Qualifier("PssmId",extractText(b)));
     b = buf.readLine();
-    ad->qualifiers.push_back(U2Qualifier("MultiDom",extractText(b)));
+    ad.qualifiers.push_back(U2Qualifier("MultiDom",extractText(b)));
     b = buf.readLine();
-    ad->qualifiers.push_back(U2Qualifier("E-Value",extractText(b)));
+    ad.qualifiers.push_back(U2Qualifier("E-Value",extractText(b)));
     buf.readLine();
     buf.readLine();
     b = buf.readLine();
@@ -137,11 +137,11 @@ void HttpRequestCDD::parseHit(QByteArray &b,ResponseBuffer &buf) {
     QByteArray t;
     for(int i = ind;b[i]!='&';i++)
         t[i-ind] = b[i];
-    ad->qualifiers.push_back(U2Qualifier("cd_length",QString(t)));
+    ad.qualifiers.push_back(U2Qualifier("cd_length",QString(t)));
     ind = b.indexOf("Bit Score: </b>") + 15;
     for(int i = ind;b[i]!='&';i++)
         t[i-ind] = b[i];
-    ad->qualifiers.push_back(U2Qualifier("bit_score",QString(t)));
+    ad.qualifiers.push_back(U2Qualifier("bit_score",QString(t)));
     
     int begLoc = 1000000;
     int endLoc = 0;
@@ -175,10 +175,10 @@ void HttpRequestCDD::parseHit(QByteArray &b,ResponseBuffer &buf) {
         }
         id = QString(t);
     }
-    ad->location->regions << U2Region( begLoc-1, endLoc - begLoc + 1);
-    ad->qualifiers.push_back(U2Qualifier("id",QString(t)));
+    ad.location->regions << U2Region( begLoc-1, endLoc - begLoc + 1);
+    ad.qualifiers.push_back(U2Qualifier("id",QString(t)));
 
-    ad->name = "CDD result";
+    ad.name = "CDD result";
     result.append(ad);
 }
 

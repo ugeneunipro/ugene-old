@@ -296,15 +296,16 @@ void RemoteBLASTWorker::sl_taskFinished() {
             }
         }
 
-        QList<SharedAnnotationData> res = t->getResultedAnnotations();
-        QString annName = actor->getParameter(ANNOTATION_NAME)->getAttributeValue<QString>(context);
-        if(!annName.isEmpty()) {
-            for(int i = 0; i<res.count();i++) {
-                res[i]->name = annName;
+        QList<AnnotationData> res = t->getResultedAnnotations( );
+        const QString annName = actor->getParameter( ANNOTATION_NAME )->getAttributeValue<QString>( context );
+        if ( !annName.isEmpty( ) ) {
+            for ( int i = 0; i < res.count( ); i++ ) {
+                res[i].name = annName;
             }
         }
-        QVariant v = qVariantFromValue<QList<SharedAnnotationData> >(res);
-        output->put(Message(BaseTypes::ANNOTATION_TABLE_TYPE(), v));
+        const SharedDbiDataHandler tableId = context->getDataStorage( )->putAnnotationTable( res );
+        const QVariant v = qVariantFromValue<SharedDbiDataHandler>( tableId );
+        output->put( Message( BaseTypes::ANNOTATION_TABLE_TYPE( ), v ) );
     }
 }
 

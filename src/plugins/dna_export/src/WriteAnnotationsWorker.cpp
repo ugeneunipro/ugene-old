@@ -19,6 +19,8 @@
  * MA 02110-1301, USA.
  */
 
+#include <QtCore/QScopedPointer>
+
 #include <U2Core/DocumentModel.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/BaseDocumentFormats.h>
@@ -97,9 +99,9 @@ Task * WriteAnnotationsWorker::tick() {
         }
         filepath = context->absolutePath(filepath);
         SharedDbiDataHandler seqId = inputMessage.getData().toMap().value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<SharedDbiDataHandler>();
-        std::auto_ptr<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
+        QScopedPointer<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
         
-        if (NULL != seqObj.get()) {
+        if (NULL != seqObj.data()) {
             seqName = seqObj->getSequenceName();
         }
         QStringList exts = formatId == CSV_FORMAT_ID ? QStringList("csv") : format->getSupportedDocumentFileExtensions();
@@ -117,17 +119,20 @@ Task * WriteAnnotationsWorker::tick() {
             annotationsByUrl.insert(filepath, att);
         }
 
-        QList<SharedAnnotationData> atl = QVariantUtils::var2ftl(inputMessage.getData().toMap().
-            value(BaseSlots::ANNOTATION_TABLE_SLOT().getId()).toList());
+        SharedDbiDataHandler annTableId = inputMessage.getData().toMap()
+            .value(BaseSlots::ANNOTATION_TABLE_SLOT().getId()).value<SharedDbiDataHandler>();
+        QScopedPointer<AnnotationTableObject> annsObj(StorageUtils::getAnnotationTableObject(
+            context->getDataStorage(), annTableId));
         bool isWriteNames = getValue<bool>(WRITE_NAMES);
-        foreach(SharedAnnotationData ad, atl) {
-            if(isWriteNames){
+        foreach ( const Annotation &a, annsObj->getAnnotations( ) ) {
+            AnnotationData ad = a.getData( );
+            if ( isWriteNames ) {
                 U2Qualifier seqNameQual;
                 seqNameQual.name = "Sequence Name";
                 seqNameQual.value = seqName;
-                ad->qualifiers.append(seqNameQual);
+                ad.qualifiers.append( seqNameQual );
             }
-            att->addAnnotation( *ad );
+            att->addAnnotation( ad );
         }
     } // while
 

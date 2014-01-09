@@ -19,6 +19,8 @@
  * MA 02110-1301, USA.
  */
 
+#include <QtCore/QScopedPointer>
+
 #include <U2Core/AppContext.h>
 #include <U2Core/AppResources.h>
 #include <U2Core/AnnotationTableObject.h>
@@ -69,7 +71,7 @@ void ReadAnnotationsWorker::init() {
 
 Task * ReadAnnotationsWorker::createReadTask(const QString &url, const QString &datasetName) {
     bool mergeAnnotations = (mode != ReadAnnotationsProto::SPLIT);
-    return new ReadAnnotationsTask(url, datasetName, mergeAnnotations);
+    return new ReadAnnotationsTask(url, datasetName, context, mergeAnnotations);
 }
 
 void ReadAnnotationsWorker::onTaskFinished(Task *task) {
@@ -84,12 +86,23 @@ void ReadAnnotationsWorker::onTaskFinished(Task *task) {
 
 void ReadAnnotationsWorker::sl_datasetEnded() {
     CHECK(datasetData.size() > 0, );
-    QList<SharedAnnotationData> anns;
+    QList<SharedDbiDataHandler> annTableIds;
     foreach (const QVariantMap &m, datasetData) {
-        anns << m[BaseSlots::ANNOTATION_TABLE_SLOT().getId()].value< QList<SharedAnnotationData> >();
+        annTableIds << m[BaseSlots::ANNOTATION_TABLE_SLOT().getId()].value<SharedDbiDataHandler>();
     }
     QVariantMap m;
-    m[BaseSlots::ANNOTATION_TABLE_SLOT().getId()] = qVariantFromValue< QList<SharedAnnotationData> >(anns);
+
+    QList<AnnotationData> allInputAnns;
+    foreach ( const SharedDbiDataHandler &tableId, annTableIds ) {
+        QScopedPointer<AnnotationTableObject> annotationTable(
+            StorageUtils::getAnnotationTableObject( context->getDataStorage( ), tableId ) );
+        foreach ( const Annotation &a, annotationTable->getAnnotations( ) ) {
+            allInputAnns << a.getData( );
+        }
+    }
+    const SharedDbiDataHandler resultTableId = context->getDataStorage( )->putAnnotationTable( allInputAnns );
+
+    m[BaseSlots::ANNOTATION_TABLE_SLOT().getId()] = qVariantFromValue<SharedDbiDataHandler>(resultTableId);
     m[BaseSlots::DATASET_SLOT().getId()] = datasetData.first()[BaseSlots::DATASET_SLOT().getId()];
 
     sendData(QList<QVariantMap>() << m);
@@ -166,10 +179,12 @@ Worker * ReadAnnotationsWorkerFactory::createWorker(Actor *a) {
 /************************************************************************/
 /* Task */
 /************************************************************************/
-ReadAnnotationsTask::ReadAnnotationsTask(const QString &_url, const QString &_datasetName, bool _mergeAnnotations)
-: Task(tr("Read annotations from %1").arg(_url), TaskFlag_None), url(_url), datasetName(_datasetName), mergeAnnotations(_mergeAnnotations)
+ReadAnnotationsTask::ReadAnnotationsTask( const QString &_url, const QString &_datasetName,
+    WorkflowContext *_context, bool _mergeAnnotations )
+    : Task( tr( "Read annotations from %1" ).arg( _url ), TaskFlag_None ), url( _url ),
+    datasetName( _datasetName ), mergeAnnotations( _mergeAnnotations ), context( _context )
 {
-
+    SAFE_POINT( NULL != context, "Invalid workflow context encountered!", );
 }
 
 const QString & ReadAnnotationsTask::getDatasetName() const {
@@ -193,54 +208,62 @@ void ReadAnnotationsTask::prepare() {
     }
 }
 
-void ReadAnnotationsTask::run() {
-    QFileInfo fi(url);
-    CHECK_EXT(fi.exists(), stateInfo.setError(tr("File '%1' does not exist").arg(url)), );
+void ReadAnnotationsTask::run( ) {
+    QFileInfo fi( url );
+    CHECK_EXT( fi.exists( ), stateInfo.setError( tr( "File '%1' does not exist" ).arg( url ) ), );
 
     DocumentFormat *format = NULL;
-    QList<DocumentFormat*> fs = DocumentUtils::toFormats(DocumentUtils::detectFormat(url));
-    foreach(DocumentFormat *f, fs) {
-        if (f->getSupportedObjectTypes().contains(GObjectTypes::ANNOTATION_TABLE)) {
+    QList<DocumentFormat *> fs = DocumentUtils::toFormats( DocumentUtils::detectFormat( url ) );
+    foreach ( DocumentFormat *f, fs ) {
+        if ( f->getSupportedObjectTypes( ).contains( GObjectTypes::ANNOTATION_TABLE ) ) {
             format = f;
             break;
         }
     }
-    CHECK_EXT(NULL != format, stateInfo.setError(tr("Unsupported document format: %1").arg(url));, );
+    CHECK_EXT( NULL != format, stateInfo.setError( tr( "Unsupported document format: %1" )
+        .arg( url ) ), );
 
-    ioLog.info(tr("Reading annotations from %1 [%2]").arg(url).arg(format->getFormatName()));
-    IOAdapterFactory *iof = AppContext::getIOAdapterRegistry()->
-        getIOAdapterFactoryById(IOAdapterUtils::url2io(url));
-    std::auto_ptr<Document> doc(format->loadDocument(iof, url, QVariantMap(), stateInfo));
-    CHECK_OP(stateInfo, );
+    ioLog.info( tr( "Reading annotations from %1 [%2]" ).arg( url ).arg( format->getFormatName( ) ) );
+    IOAdapterFactory *iof = AppContext::getIOAdapterRegistry( )->
+        getIOAdapterFactoryById( IOAdapterUtils::url2io( url ) );
+    QScopedPointer<Document> doc(format->loadDocument( iof, url, QVariantMap( ), stateInfo ) );
+    CHECK_OP( stateInfo, );
 
-    QList<GObject*> annsObjList = doc->findGObjectByType(GObjectTypes::ANNOTATION_TABLE);
+    QList<GObject *> annsObjList = doc->findGObjectByType( GObjectTypes::ANNOTATION_TABLE );
 
     QVariantMap m;
-    m[BaseSlots::URL_SLOT().getId()] = url;
-    m[BaseSlots::DATASET_SLOT().getId()] = datasetName;
+    m[BaseSlots::URL_SLOT( ).getId( )] = url;
+    m[BaseSlots::DATASET_SLOT( ).getId( )] = datasetName;
 
-    QList<SharedAnnotationData> dataList;
+    QList<AnnotationData> dataList;
 
-    foreach(GObject *go, annsObjList) {
-        AnnotationTableObject *annsObj = dynamic_cast<AnnotationTableObject *>(go);
-        CHECK_EXT(NULL != annsObj, stateInfo.setError("NULL annotations object"), );
+    foreach ( GObject *go, annsObjList ) {
+        AnnotationTableObject *annsObj = dynamic_cast<AnnotationTableObject *>( go );
+        CHECK_EXT( NULL != annsObj, stateInfo.setError( "NULL annotations object" ), );
 
-        if (!mergeAnnotations){
-            dataList.clear();
-        }
-        foreach ( const Annotation &a, annsObj->getAnnotations( ) ) {
-            dataList << SharedAnnotationData( new AnnotationData( a.getData( ) ) );
-        }
-       
-        if (!mergeAnnotations){
-            m[BaseSlots::ANNOTATION_TABLE_SLOT().getId()] = qVariantFromValue<QList<SharedAnnotationData> >(dataList);
-            results.append(m);
+        if ( !mergeAnnotations ) {
+            dataList.clear( );
+            foreach ( const Annotation &a, annsObj->getAnnotations( ) ) {
+                dataList << a.getData( );
+            }
+            const SharedDbiDataHandler tableId
+                = context->getDataStorage( )->putAnnotationTable( dataList );
+            m[BaseSlots::ANNOTATION_TABLE_SLOT( ).getId( )]
+                = qVariantFromValue<SharedDbiDataHandler>( tableId );
+            results.append( m );
+        } else {
+            foreach ( const Annotation &a, annsObj->getAnnotations( ) ) {
+                dataList << a.getData( );
+            }
         }
     }
 
-    if (mergeAnnotations && !annsObjList.isEmpty()){
-        m[BaseSlots::ANNOTATION_TABLE_SLOT().getId()] = qVariantFromValue<QList<SharedAnnotationData> >(dataList);
-        results.append(m);
+    if ( mergeAnnotations && !annsObjList.isEmpty( ) ) {
+        const SharedDbiDataHandler tableId
+            = context->getDataStorage( )->putAnnotationTable( dataList );
+        m[BaseSlots::ANNOTATION_TABLE_SLOT( ).getId( )]
+            = qVariantFromValue<SharedDbiDataHandler>( tableId );
+        results.append( m );
     }
 }
 

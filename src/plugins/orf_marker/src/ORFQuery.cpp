@@ -165,15 +165,15 @@ void QDORFActor::sl_onAlgorithmTaskFinished(Task*) {
     foreach(ORFFindTask* oft, orfTasks) {
         res << oft->popResults();
     }
-    QList<SharedAnnotationData> dataList = ORFFindResult::toTable(res, "1");
-    foreach(const SharedAnnotationData& ad, dataList) {
-        const U2Region& first = ad->location->regions[0];
+    QList<AnnotationData> dataList = ORFFindResult::toTable(res, "1");
+    foreach(const AnnotationData& ad, dataList) {
+        const U2Region& first = ad.location->regions[0];
         if (first.length > getMaxResultLen()) {
             continue;
         }
         QDResultUnit ru(new QDResultUnitData);
-        ru->strand = ad->getStrand();
-        ru->quals = ad->qualifiers;
+        ru->strand = ad.getStrand();
+        ru->quals = ad.qualifiers;
         ru->region = first;
         ru->owner = units.value("orf");
         QDResultGroup::buildGroupFromSingleResult(ru, results);

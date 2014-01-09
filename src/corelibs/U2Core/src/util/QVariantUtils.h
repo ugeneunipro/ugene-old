@@ -62,14 +62,6 @@ public:
         return var2String(QVariant(map));
     }
 
-    static QList<SharedAnnotationData> var2ftl(const QVariantList& lst) {
-        QList<SharedAnnotationData> atl;
-        foreach(QVariant v, lst) {
-            atl += v.value<QList<SharedAnnotationData> >();
-        }
-        return atl;
-    }
-
     static QVariant addStr2List(const QVariant& v, const QString& s) {
         if (v.canConvert(QVariant::StringList)) {
             QStringList l = v.toStringList();

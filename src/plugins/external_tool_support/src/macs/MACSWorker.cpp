@@ -19,6 +19,9 @@
  * MA 02110-1301, USA.
  */
 
+#include <QtCore/QScopedPointer>
+
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/FailTask.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
@@ -119,8 +122,21 @@ Task *MACSWorker::tick() {
         if (data.contains(CONTROL_SLOT_ID)) {
             conVar = data[CONTROL_SLOT_ID];
         }
-        const QList<SharedAnnotationData>& treatData = QVariantUtils::var2ftl(treatVar.toList());
-        const QList<SharedAnnotationData>& conData = conVar.value<QList<SharedAnnotationData> >();
+        SharedDbiDataHandler treatTableId = treatVar.value<SharedDbiDataHandler>( );
+        QScopedPointer<AnnotationTableObject> treatTableObj( StorageUtils::getAnnotationTableObject(
+            context->getDataStorage(), treatTableId ) );
+        QList<AnnotationData> treatData;
+        foreach ( const Annotation &a, treatTableObj->getAnnotations( ) ) {
+            treatData << a.getData( );
+        }
+
+        SharedDbiDataHandler conTableId = conVar.value<SharedDbiDataHandler>( );
+        QScopedPointer<AnnotationTableObject> conTableObj( StorageUtils::getAnnotationTableObject(
+            context->getDataStorage(), conTableId ) );
+        QList<AnnotationData> conData;
+        foreach ( const Annotation &a, conTableObj->getAnnotations( ) ) {
+            conData << a.getData( );
+        }
 
         MACSSettings settings = createMACSSettings(os);
         if (os.hasError()) {
@@ -149,8 +165,12 @@ void MACSWorker::sl_taskFinished() {
     }
 
     QVariantMap data;
-    data[PEAK_REGIONS_SLOT_ID] = qVariantFromValue<QList<SharedAnnotationData> >(t->getPeaks());
-    data[PEAK_SUMMITS_SLOT_ID] = qVariantFromValue<QList<SharedAnnotationData> >(t->getPeakSummits());
+    const SharedDbiDataHandler peaksTableId = context->getDataStorage( )
+        ->putAnnotationTable( t->getPeaks( ) );
+    data[PEAK_REGIONS_SLOT_ID] = qVariantFromValue<SharedDbiDataHandler>( peaksTableId );
+    const SharedDbiDataHandler peakSummitsTableId = context->getDataStorage( )
+        ->putAnnotationTable( t->getPeakSummits( ) );
+    data[PEAK_SUMMITS_SLOT_ID] = qVariantFromValue<SharedDbiDataHandler>( peakSummitsTableId );
     if (t->getSettings().wiggleOut){
         data[WIGGLE_TREAT_SLOT_ID] = qVariantFromValue<QString>(t->getWiggleUrl());
     }else{

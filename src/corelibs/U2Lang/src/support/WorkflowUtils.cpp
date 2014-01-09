@@ -19,7 +19,11 @@
  * MA 02110-1301, USA.
  */
 
-#include "WorkflowUtils.h"
+#include <QtCore/QScopedPointer>
+#include <QtCore/QDir>
+#include <QtCore/QFileInfo>
+#include <QtCore/QUrl>
+#include <QtGui/QListWidgetItem>
 
 #include <U2Lang/BaseTypes.h>
 #include <U2Lang/CoreLibConstants.h>
@@ -55,10 +59,7 @@
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
 
-#include <QtCore/QDir>
-#include <QtCore/QFileInfo>
-#include <QtCore/QUrl>
-#include <QtGui/QListWidgetItem>
+#include "WorkflowUtils.h"
 
 namespace U2 {
 
@@ -271,7 +272,6 @@ namespace {
 
 bool WorkflowUtils::validate(const Schema &schema, ProblemList &problemList) {
     bool good = true;
-    std::auto_ptr<WorkflowScriptEngine> engine(new WorkflowScriptEngine(NULL));
     foreach (Actor *a, schema.getProcesses()) {
         good &= validatePorts(a, problemList);
         if (a->getProto()->isScriptFlagSet()) {
@@ -588,13 +588,13 @@ static void data2text(WorkflowContext *context, DocumentFormatId formatId, GObje
 
     IOAdapterFactory *iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::STRING);
     DocumentFormat *df = AppContext::getDocumentFormatRegistry()->getFormatById(formatId);
-    std::auto_ptr<Document> d(new Document(df, iof, GUrl(), context->getDataStorage()->getDbiRef(), objList));
+    QScopedPointer<Document> d(new Document(df, iof, GUrl(), context->getDataStorage()->getDbiRef(), objList));
     d->setDocumentOwnsDbiResources(false);
     StringAdapter *io = dynamic_cast<StringAdapter*>(iof->createIOAdapter());
     io->open(GUrl(), IOAdapterMode_Write);
     U2OpStatusImpl os;
 
-    df->storeDocument(d.get(), io, os);
+    df->storeDocument(d.data(), io, os);
 
     text += io->getBuffer();
     io->close();
@@ -620,17 +620,10 @@ void WorkflowUtils::print(const QString &slotString, const QVariant &data, DataT
         CHECK(NULL != obj, );
         data2text(context, BaseDocumentFormats::CLUSTAL_ALN, obj, text);
     } else if (BaseTypes::ANNOTATION_TABLE_TYPE() == type
-        || BaseTypes::ANNOTATION_TABLE_LIST_TYPE() == type) {
-        QList<SharedAnnotationData> anns;
-        if (BaseTypes::ANNOTATION_TABLE_TYPE() == type) {
-            anns = data.value<QList<SharedAnnotationData> >();
-        } else {
-            anns = QVariantUtils::var2ftl(data.toList());
-        }
-        AnnotationTableObject *obj = new AnnotationTableObject( "Slot annotations", storage->getDbiRef( ) );
-        foreach ( const SharedAnnotationData &d, anns ) {
-            obj->addAnnotation( *d );
-        }
+        || BaseTypes::ANNOTATION_TABLE_LIST_TYPE() == type)
+    {
+        AnnotationTableObject *obj = StorageUtils::getAnnotationTableObject( storage, data.value<SharedDbiDataHandler>( ) );
+        CHECK( NULL != obj, );
         data2text(context, BaseDocumentFormats::PLAIN_GENBANK, obj, text);
     } else {
         text += "Can not print data of this type: " + type->getDisplayName();

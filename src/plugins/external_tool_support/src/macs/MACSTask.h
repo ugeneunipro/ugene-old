@@ -37,18 +37,18 @@ class LoadDocumentTask;
 class MACSTask : public ExternalToolSupportTask {
     Q_OBJECT
 public:
-    MACSTask(const MACSSettings& _settings, const QList<SharedAnnotationData>& _treatAnn, const QList<SharedAnnotationData>& _conAnn);
+    MACSTask(const MACSSettings &_settings, const QList<AnnotationData> &_treatAnn, const QList<AnnotationData> &_conAnn);
     virtual ~MACSTask();
 
     virtual void prepare();
-    virtual QList<Task*> onSubTaskFinished(Task* subTask);
+    virtual QList<Task *> onSubTaskFinished(Task *subTask);
     virtual void run();
     virtual void cleanup();
 
     const MACSSettings & getSettings();
 
-    QList<SharedAnnotationData> getPeaks();
-    QList<SharedAnnotationData> getPeakSummits();
+    QList<AnnotationData> getPeaks();
+    QList<AnnotationData> getPeakSummits();
     QString getWiggleUrl();
     QStringList getOutputFiles();
 
@@ -56,8 +56,8 @@ private:
     MACSSettings settings;
     QString workingDir;
 
-    QList<SharedAnnotationData> treatAnn;
-    QList<SharedAnnotationData> conAnn;
+    QList<AnnotationData> treatAnn;
+    QList<AnnotationData> conAnn;
 
     Document *treatDoc;
     Document *conDoc;
@@ -81,7 +81,7 @@ private:
     static const QString CON_NAME;
 
 private:
-    Document* createDoc(const QList<SharedAnnotationData>& annData, const QString& name);
+    Document* createDoc(const QList<AnnotationData> &annData, const QString &name);
     bool canStartETTask() const;
 };
 

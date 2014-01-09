@@ -86,7 +86,7 @@ public:
     void resetProgress() {stateInfo.progress = 0; emit si_progressChanged();}
     QByteArray getOutputFile() const {return httpRequest.first()->getOutputFile();}
 
-    QList<SharedAnnotationData> getResultedAnnotations() const;
+    QList<AnnotationData> getResultedAnnotations() const;
     bool timeout;
 
 private slots:
@@ -102,11 +102,11 @@ private:
     };
     void  prepareQueries();
     void  createAnnotations(const Query & q,HttpRequest *t);
-    QList<SharedAnnotationData>  filterAnnotations(QList<SharedAnnotationData> annotations);
+    QList<AnnotationData>  filterAnnotations(QList<AnnotationData> annotations);
 
     RemoteBLASTTaskSettings cfg;
     QList<Query>        queries;
-    QList<SharedAnnotationData> resultAnnotations;
+    QList<AnnotationData> resultAnnotations;
     QList<HttpRequest*> httpRequest;
     
     QTimer timer;
@@ -119,7 +119,7 @@ public:
     RemoteCDSearch(const CDSearchSettings& settings);
 
     virtual Task* getTask() const { return task; }
-    virtual QList<SharedAnnotationData> getCDSResults() const { return task->getResultedAnnotations(); }
+    virtual QList<AnnotationData> getCDSResults() const { return task->getResultedAnnotations(); }
 private:
     RemoteBLASTTask* task;
 };

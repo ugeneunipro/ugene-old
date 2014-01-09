@@ -98,6 +98,22 @@ public:
 class U2FeatureDbi : public U2ChildDbi {
 public:
     /**
+     * Creates a DB representation of AnnotationTableObject.
+     * @table has to be fully initialized except of the id field.
+     */
+    virtual void                    createAnnotationTableObject( U2AnnotationTable &table,
+                                        const QString &folder, U2OpStatus &os ) = 0;
+    /**
+     * Returns a DB representation of AnnotationTableObject having supplied @tableId.
+     */
+    virtual U2AnnotationTable       getAnnotationTableObject( const U2DataId &tableId,
+                                        U2OpStatus &os ) = 0;
+    /**
+     * Renames a DB representation of AnnotationTableObject having supplied @tableId.
+     */
+    virtual void                    renameAnnotationTableObject( const U2DataId &tableId,
+                                        const QString &name, U2OpStatus &os ) = 0;
+    /**
      * Reads feature data by id
      */
     virtual U2Feature                   getFeature( const U2DataId &featureId, U2OpStatus &os ) = 0;

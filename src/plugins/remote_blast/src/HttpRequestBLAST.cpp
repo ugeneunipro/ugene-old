@@ -100,22 +100,15 @@ void HttpRequestBLAST::sendRequest(const QString &params,const QString &query) {
     }
     request = host + "CMD=Get&FORMAT_TYPE=XML&RID=";
     request.append(requestID);
-//    algoLog.trace("Request 2:"+request);
     buf.close();
     RemoteBLASTTask *rTask = qobject_cast<RemoteBLASTTask*>(task);
     int progr,timeout;
-    /*if(rTask->isTranslated()) { //if 3 requests, then progress increases only to 30%
-        progr = 30;
-        timeout = (rtoe + 5) * 30;
-    }
-    else*/ 
     progr = 50;
     timeout = (rtoe + 5) * 20;
     int slowdown = 1;
     rTask->resetProgress();
 
     do {
-        //rTask->resetProgress();
         for(int i = 0;i< (progr / slowdown); i++) {
             if(rTask->isCanceled())
                 return;
@@ -223,23 +216,23 @@ void HttpRequestBLAST::parseHit(const QDomNode &xml) {
 }
 
 void HttpRequestBLAST::parseHsp(const QDomNode &xml,const QString &id, const QString &def, const QString &accession) {
-    SharedAnnotationData ad(new AnnotationData());
+    AnnotationData ad;
     bool isOk;
     int from = -1,to = -1,align_len = -1,gaps = -1,identities = -1;	
 
     QDomElement elem = xml.lastChildElement("Hsp_bit-score");
     if(!elem.isNull()) {
-        ad->qualifiers.push_back(U2Qualifier("bit-score", elem.text()));
+        ad.qualifiers.push_back(U2Qualifier("bit-score", elem.text()));
     }
     
     elem = xml.lastChildElement("Hsp_score");
     if(!elem.isNull()) {
-        ad->qualifiers.push_back(U2Qualifier("score", elem.text()));
+        ad.qualifiers.push_back(U2Qualifier("score", elem.text()));
     }
 
     elem = xml.lastChildElement("Hsp_evalue");
     if(!elem.isNull()) {
-        ad->qualifiers.push_back(U2Qualifier("E-value", elem.text()));
+        ad.qualifiers.push_back(U2Qualifier("E-value", elem.text()));
     }
 
     elem = xml.lastChildElement("Hsp_query-from");
@@ -261,12 +254,12 @@ void HttpRequestBLAST::parseHsp(const QDomNode &xml,const QString &id, const QSt
 
     elem = xml.lastChildElement("Hsp_hit-from");
     if(!elem.isNull()) {
-        ad->qualifiers.push_back(U2Qualifier("hit-from", elem.text()));
+        ad.qualifiers.push_back(U2Qualifier("hit-from", elem.text()));
     }
 
     elem = xml.lastChildElement("Hsp_hit-to");
     if(!elem.isNull()) {
-        ad->qualifiers.push_back(U2Qualifier("hit-to", elem.text()));
+        ad.qualifiers.push_back(U2Qualifier("hit-to", elem.text()));
     }
 
     elem = xml.lastChildElement("Hsp_hit-frame");
@@ -277,8 +270,8 @@ void HttpRequestBLAST::parseHsp(const QDomNode &xml,const QString &id, const QSt
         return;
     }
     QString frame_txt = (frame < 0) ? "complement" : "direct";
-    ad->qualifiers.push_back(U2Qualifier( "source_frame", frame_txt ));
-    ad->setStrand(frame < 0 ? U2Strand::Complementary : U2Strand::Direct);
+    ad.qualifiers.push_back(U2Qualifier( "source_frame", frame_txt ));
+    ad.setStrand(frame < 0 ? U2Strand::Complementary : U2Strand::Direct);
 
     elem = xml.lastChildElement("Hsp_identity");
     identities = elem.text().toInt(&isOk);
@@ -306,11 +299,11 @@ void HttpRequestBLAST::parseHsp(const QDomNode &xml,const QString &id, const QSt
 
     if( from != -1 && to != -1 ) {
         if (to > from){ //direct
-            ad->location->regions << U2Region( from-1, to - from + 1);
-            ad->setStrand(U2Strand::Direct);
+            ad.location->regions << U2Region( from-1, to - from + 1);
+            ad.setStrand(U2Strand::Direct);
         } else { //complement
-            ad->location->regions << U2Region( to-1, from - to + 1);
-            ad->setStrand(U2Strand::Complementary);
+            ad.location->regions << U2Region( to-1, from - to + 1);
+            ad.setStrand(U2Strand::Complementary);
         }
     } else {
         connectionError = true; 
@@ -322,19 +315,19 @@ void HttpRequestBLAST::parseHsp(const QDomNode &xml,const QString &id, const QSt
         if( gaps != -1 ) {
             float percent = (float)gaps / (float)align_len * 100.;
             QString str = QString::number(gaps) + "/" + QString::number(align_len) + " (" + QString::number(percent,'g',4) + "%)";
-            ad->qualifiers.push_back(U2Qualifier( "gaps", str ));
+            ad.qualifiers.push_back(U2Qualifier( "gaps", str ));
         }
         if( identities != -1 ) {
             float percent = (float)identities / (float)align_len * 100.;
             QString str = QString::number(identities) + '/' + QString::number(align_len) + " (" + QString::number(percent,'g',4) + "%)";
-            ad->qualifiers.push_back(U2Qualifier( "identities", str ));
+            ad.qualifiers.push_back(U2Qualifier( "identities", str ));
         }
     }
 
-    ad->qualifiers.push_back(U2Qualifier("id",id));
-    ad->qualifiers.push_back(U2Qualifier("def",def));
-    ad->qualifiers.push_back(U2Qualifier("accession",accession));
-    ad->name = "blast result";
+    ad.qualifiers.push_back(U2Qualifier("id",id));
+    ad.qualifiers.push_back(U2Qualifier("def",def));
+    ad.qualifiers.push_back(U2Qualifier("accession",accession));
+    ad.name = "blast result";
     result.append(ad);
 }
 

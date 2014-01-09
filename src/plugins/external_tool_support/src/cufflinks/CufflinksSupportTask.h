@@ -52,17 +52,17 @@ public:
     QList<Task*> onSubTaskFinished(Task* subTask);
     Task::ReportResult report();
 
-    QList<SharedAnnotationData> getIsoformAnnots() const { return isoformLevelAnnots; }
+    QList<AnnotationData> getIsoformAnnots() const { return isoformLevelAnnots; }
     QStringList getOutputFiles() const;
 
-    static QList<SharedAnnotationData> getAnnotationsFromFile( const QString &filePath,
+    static QList<AnnotationData> getAnnotationsFromFile( const QString &filePath,
         const DocumentFormatId &format,
         const QString &toolName,
         U2OpStatus &os);
 
 private:
     // "fileName" is the file name relatively to the working directory
-    QList<SharedAnnotationData> getAnnotationsFromFile(QString fileName, CufflinksOutputFormat format);
+    QList<AnnotationData> getAnnotationsFromFile(QString fileName, CufflinksOutputFormat format);
 
     CufflinksSettings                   settings;
 
@@ -74,7 +74,7 @@ private:
     ConvertAssemblyToSamTask*           convertAssToSamTask;
     ExternalToolRunTask*                cufflinksExtToolTask;
 
-    QList<SharedAnnotationData>         isoformLevelAnnots;
+    QList<AnnotationData>         isoformLevelAnnots;
     QStringList                         outputFiles;
 
     static const QString outSubDirBaseName;

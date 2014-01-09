@@ -258,10 +258,10 @@ void GTest_GeneByGeneApproach::prepare() {
     }
     const QList<Annotation> &annotations = ao->getAnnotations( );
 
-    QList<SharedAnnotationData> annData;
+    QList<AnnotationData> annData;
 
     foreach ( const Annotation &a, annotations ) {
-        annData.append( SharedAnnotationData( new AnnotationData( a.getData( ) ) ) );
+        annData << a.getData( );
     }
 
     result = GeneByGeneComparator::compareGeneAnnotation(mySequence->getWholeSequence(), annData, annName, identity);

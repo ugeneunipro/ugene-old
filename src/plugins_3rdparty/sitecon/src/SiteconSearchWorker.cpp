@@ -261,19 +261,22 @@ Task* SiteconSearchWorker::tick() {
     return NULL;
 }
 
-void SiteconSearchWorker::sl_taskFinished(Task* t) {
-    QList<SharedAnnotationData> res;
+void SiteconSearchWorker::sl_taskFinished( Task *t ) {
+    QList<AnnotationData> res;
     SAFE_POINT( NULL != t, "Invalid task is encountered", );
     if ( t->isCanceled( ) ) {
         return;
     }
-    foreach(Task* sub, t->getSubtasks()) {
-        SiteconSearchTask* sst = qobject_cast<SiteconSearchTask*>(sub);
-        res += SiteconSearchResult::toTable(sst->takeResults(), resultName);
-        sst->cleanup();
+    foreach ( Task* sub, t->getSubtasks( ) ) {
+        SiteconSearchTask *sst = qobject_cast<SiteconSearchTask *>( sub );
+        res += SiteconSearchResult::toTable( sst->takeResults( ), resultName );
+        sst->cleanup( );
     }
-    QVariant v = qVariantFromValue<QList<SharedAnnotationData> >(res);
-    output->put(Message(BaseTypes::ANNOTATION_TABLE_TYPE(), v));
+
+    const SharedDbiDataHandler tableId = context->getDataStorage( )->putAnnotationTable( res );
+    output->put( Message( BaseTypes::ANNOTATION_TABLE_TYPE( ),
+        qVariantFromValue<SharedDbiDataHandler>( tableId ) ) );
+
     algoLog.info(tr("Found %1 TFBS").arg(res.size())); //TODO set task description for report
 }
 

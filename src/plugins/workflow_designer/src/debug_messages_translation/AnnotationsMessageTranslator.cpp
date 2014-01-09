@@ -21,6 +21,7 @@
 
 #include <QtCore/QVariant>
 
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Lang/WorkflowContext.h>
 
 #include "AnnotationsMessageTranslator.h"
@@ -38,19 +39,23 @@ AnnotationsMessageTranslator::AnnotationsMessageTranslator( const QVariant &atom
     WorkflowContext *initContext )
     : BaseMessageTranslator( atomicMessage, initContext )
 {
-    SAFE_POINT( source.canConvert<QList<SharedAnnotationData> >( ), "Invalid annotation data detected!", );
-    annotations = source.value<QList<SharedAnnotationData> >( );
+    SAFE_POINT( source.canConvert<SharedDbiDataHandler>( ), "Invalid annotation data detected!", );
+    SharedDbiDataHandler annTableId = source.value<SharedDbiDataHandler>( );
+    annTableObject = StorageUtils::getAnnotationTableObject( context->getDataStorage( ), annTableId );
+    SAFE_POINT( NULL != annTableObject, "Invalid sequence object!", );
 }
 
 QString AnnotationsMessageTranslator::getTranslation( ) const {
+    const QList<Annotation> annotations = annTableObject->getAnnotations( );
     QString result = QObject::tr( ANNOTATIONS_COUNT_LABEL ) + QString::number( annotations.size( ) )
         + INFO_TAGS_SEPARATOR + NEW_LINE_SYMBOL;
     quint32 annotationsCounter = 1;
-    foreach( const SharedAnnotationData &annotation, annotations ) {
+    foreach( const Annotation &annotation, annotations ) {
+        const AnnotationData data = annotation.getData( );
         result += " " + QString::number( annotationsCounter ) + ". "
-            + QObject::tr( ANNOTATION_NAME_LABEL ) + "'" + annotation->name + "'"
+            + QObject::tr( ANNOTATION_NAME_LABEL ) + "'" + data.name + "'"
             + INFO_FEATURES_SEPARATOR;
-        QVector<U2Region> annotatedRegions = annotation->getRegions( );
+        QVector<U2Region> annotatedRegions = data.getRegions( );
         if ( !annotatedRegions.isEmpty( ) ) {
             result += QObject::tr( REGION_LIST_LABEL );
             foreach ( const U2Region &region, annotatedRegions ) {

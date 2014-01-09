@@ -19,8 +19,7 @@
  * MA 02110-1301, USA.
  */
 
-#include "CufflinksSupport.h"
-
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>
 #include <U2Core/L10n.h>
@@ -39,6 +38,7 @@
 #include <U2Lang/WorkflowEnv.h>
 #include <U2Lang/WorkflowMonitor.h>
 
+#include "CufflinksSupport.h"
 #include "CuffdiffWorker.h"
 
 namespace U2 {
@@ -400,12 +400,19 @@ CuffdiffSettings CuffdiffWorker::takeSettings() {
     QVariantMap data = m.getData().toMap();
     SAFE_POINT(data.contains(BaseSlots::ANNOTATION_TABLE_SLOT().getId()),
         "No annotations in a message", result);
-    QVariant annsVar = data[BaseSlots::ANNOTATION_TABLE_SLOT().getId()];
+    const QVariant annsVar = data[BaseSlots::ANNOTATION_TABLE_SLOT().getId()];
+    const SharedDbiDataHandler annTableId = annsVar.value<SharedDbiDataHandler>();
+    QScopedPointer<AnnotationTableObject> annotationTable(
+        StorageUtils::getAnnotationTableObject( context->getDataStorage( ), annTableId ) );
+    QList<AnnotationData> anns;
+    foreach ( const Annotation &a, annotationTable->getAnnotations( ) ) {
+        anns << a.getData( );
+    }
 
     result.fromFiles = fromFiles;
     result.assemblyUrls = assemblyUrls;
     result.assemblies = assemblies;
-    result.transcript = annsVar.value<QList<SharedAnnotationData> >();
+    result.transcript = anns;
     result.storage = context->getDataStorage();
 
     return result;

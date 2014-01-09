@@ -45,7 +45,7 @@ namespace U2 {
 const QString Peak2GeneTask::BASE_DIR_NAME("peak2gene_tmp");
 const QString Peak2GeneTask::TREAT_NAME("treatment");
 
-Peak2GeneTask::Peak2GeneTask(const Peak2GeneSettings& _settings, const QList<SharedAnnotationData>& _treatAnn)
+Peak2GeneTask::Peak2GeneTask(const Peak2GeneSettings& _settings, const QList<AnnotationData>& _treatAnn)
 : ExternalToolSupportTask("Peak2gene annotation", TaskFlag_None)
 , settings(_settings)
 , treatAnn(_treatAnn)
@@ -95,7 +95,7 @@ void Peak2GeneTask::prepare() {
     addSubTask(treatTask);
 }
 
-Document* Peak2GeneTask::createDoc( const QList<SharedAnnotationData>& annData, const QString& name){
+Document* Peak2GeneTask::createDoc( const QList<AnnotationData>& annData, const QString& name){
     Document* doc = NULL;
 
     QString docUrl = workingDir + "/" + name +".bed";
@@ -109,9 +109,7 @@ Document* Peak2GeneTask::createDoc( const QList<SharedAnnotationData>& annData, 
     doc->setDocumentOwnsDbiResources(false);
 
     AnnotationTableObject *ato = new AnnotationTableObject( name, doc->getDbiRef( ) );
-    foreach ( const SharedAnnotationData &sad, annData ) {
-        ato->addAnnotation( *sad );
-    }
+    ato->addAnnotations( annData );
     doc->addObject(ato);
 
     return doc;
@@ -166,8 +164,8 @@ const Peak2GeneSettings& Peak2GeneTask::getSettings(){
     return settings;
 }
 
-QList<SharedAnnotationData> Peak2GeneTask::getGenes(){
-    QList<SharedAnnotationData> res;
+QList<AnnotationData> Peak2GeneTask::getGenes(){
+    QList<AnnotationData> res;
 
     if (geneDoc == NULL){
         return res;
@@ -181,7 +179,7 @@ QList<SharedAnnotationData> Peak2GeneTask::getGenes(){
             if (ao){
                 const QList<Annotation> annots = aobj->getAnnotations();
                 foreach ( const Annotation &a, annots ) {
-                    res.append( SharedAnnotationData( new AnnotationData( a.getData( ) ) ) );
+                    res << a.getData( );
                 }
             }
         }
@@ -190,8 +188,8 @@ QList<SharedAnnotationData> Peak2GeneTask::getGenes(){
     return res;
 }
 
-QList<SharedAnnotationData> Peak2GeneTask::getPeaks(){
-    QList<SharedAnnotationData> res;
+QList<AnnotationData> Peak2GeneTask::getPeaks(){
+    QList<AnnotationData> res;
 
     if (peaksDoc == NULL){
         return res;
@@ -204,7 +202,7 @@ QList<SharedAnnotationData> Peak2GeneTask::getPeaks(){
             if (ao){
                 const QList<Annotation> annots = aobj->getAnnotations( );
                 foreach ( const Annotation &a, annots ) {
-                    res.append( SharedAnnotationData( new AnnotationData( a.getData( ) ) ) );
+                    res << a.getData( );
                 }
             }
         }

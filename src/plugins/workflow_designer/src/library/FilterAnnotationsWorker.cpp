@@ -21,6 +21,7 @@
 
 #include "FilterAnnotationsWorker.h"
 
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/TaskSignalMapper.h>
 
 #include <U2Lang/ConfigurationEditor.h>
@@ -62,8 +63,15 @@ Task* FilterAnnotationsWorker::tick() {
             output->transit();
             return NULL;
         }
+
         QVariantMap qm = inputMessage.getData().toMap();
-        inputAnns = qVariantValue<QList<SharedAnnotationData> >( qm.value(BaseSlots::ANNOTATION_TABLE_SLOT().getId()) );
+        const QVariant annsVar = qm[BaseSlots::ANNOTATION_TABLE_SLOT().getId()];
+        const SharedDbiDataHandler annTableId = annsVar.value<SharedDbiDataHandler>();
+        QScopedPointer<AnnotationTableObject> annotationTable(
+            StorageUtils::getAnnotationTableObject( context->getDataStorage( ), annTableId ) );
+        foreach ( const Annotation &a, annotationTable->getAnnotations( ) ) {
+            inputAnns << a.getData( );
+        }
 
         bool accept = actor->getParameter( WHICH_FILTER_ATTR )->getAttributeValue<bool>(context);
         QString namesStr = actor->getParameter( FILTER_NAMES_ATTR )->getAttributeValue<QString>(context);
@@ -82,7 +90,9 @@ void FilterAnnotationsWorker::sl_taskFinished(Task *t) {
     if(t->isCanceled() || t->hasError() || t->hasError()){
         return;
     }
-    output->put( Message(BaseTypes::ANNOTATION_TABLE_TYPE(), qVariantFromValue(inputAnns)) );
+    const SharedDbiDataHandler tableId = context->getDataStorage( )->putAnnotationTable( inputAnns );
+    output->put( Message( BaseTypes::ANNOTATION_TABLE_TYPE( ),
+        qVariantFromValue<SharedDbiDataHandler>( tableId ) ) );
 }
 
 void FilterAnnotationsWorker::cleanup() {
@@ -144,15 +154,15 @@ void FilterAnnotationsTask::run() {
         names = names_.split( QRegExp("\\s+"), QString::SkipEmptyParts ); //split by whitespace
     }
 
-    QMutableListIterator<SharedAnnotationData> i(annotations_);
+    QMutableListIterator<AnnotationData> i(annotations_);
     while (i.hasNext()) {
-        SharedAnnotationData ad = i.next();
+        AnnotationData ad = i.next();
         if (accept_) {
-            if (!names.contains(ad->name)) {
+            if (!names.contains(ad.name)) {
                 i.remove();
             }
         } else {
-            if (names.contains(ad->name)) {
+            if (names.contains(ad.name)) {
                 i.remove();
             }
         }

@@ -61,36 +61,36 @@ typedef QString U2DbiId;
 class U2CORE_EXPORT U2Type {
 public:
     /** Type is unknown. Default value. */
-    static const U2DataType Unknown     = 0;
+    static const U2DataType Unknown                 = 0;
 
     /** Object types */
-    static const U2DataType Sequence    = 1;
-    static const U2DataType Msa         = 2;
-    static const U2DataType PhyTree     = 3;
-    static const U2DataType Assembly    = 4;
-    static const U2DataType VariantTrack = 5;
-    static const U2DataType VariantType  = 6;
-    static const U2DataType FilterTableType  = 7;
-    static const U2DataType KnownMutationsTrackType  = 8;
-    static const U2DataType UdrRecord                = 9;
-    static const U2DataType CrossDatabaseReference    = 999;
+    static const U2DataType Sequence                = 1;
+    static const U2DataType Msa                     = 2;
+    static const U2DataType PhyTree                 = 3;
+    static const U2DataType Assembly                = 4;
+    static const U2DataType VariantTrack            = 5;
+    static const U2DataType VariantType             = 6;
+    static const U2DataType FilterTableType         = 7;
+    static const U2DataType KnownMutationsTrackType = 8;
+    static const U2DataType UdrRecord               = 9;
+    static const U2DataType AnnotationTable         = 10;
+    static const U2DataType CrossDatabaseReference  = 999;
 
     /** SCO (non-object, non-root) types */
     static const U2DataType Annotation              = 1000;
     static const U2DataType AnnotationGroup         = 1001;
-    
+
     /**  Assembly read */
     static const U2DataType AssemblyRead            = 1100;
 
     /** Sequence feature */
     static const U2DataType Feature                 = 1300;
 
-
     /**  Attribute types */
-    static const U2DataType AttributeInteger          = 2001;
-    static const U2DataType AttributeReal             = 2002;
-    static const U2DataType AttributeString           = 2003;
-    static const U2DataType AttributeByteArray        = 2004;
+    static const U2DataType AttributeInteger        = 2001;
+    static const U2DataType AttributeReal           = 2002;
+    static const U2DataType AttributeString         = 2003;
+    static const U2DataType AttributeByteArray      = 2004;
 
     static bool isObjectType(U2DataType type) {return type > 0 && type < 999;}
 

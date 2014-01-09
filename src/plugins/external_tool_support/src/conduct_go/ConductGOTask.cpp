@@ -47,7 +47,7 @@ const QString ConductGOTask::BASE_DIR_NAME("ConductGO_tmp");
 const QString ConductGOTask::BASE_SUBDIR_NAME("ConductGO");
 const QString ConductGOTask::TREAT_NAME("treatment");
 
-ConductGOTask::ConductGOTask(const ConductGOSettings& _settings, const QList<SharedAnnotationData>& _treatAnn)
+ConductGOTask::ConductGOTask(const ConductGOSettings& _settings, const QList<AnnotationData>& _treatAnn)
 : ExternalToolSupportTask("ConductGO annotation", TaskFlag_None)
 , settings(_settings)
 , treatAnn(_treatAnn)
@@ -97,7 +97,7 @@ void ConductGOTask::prepare() {
     
 }
 
-Document* ConductGOTask::createDoc( const QList<SharedAnnotationData>& annData, const QString& name){
+Document* ConductGOTask::createDoc( const QList<AnnotationData>& annData, const QString& name){
     Document* doc = NULL;
 
     QString docUrl = workingDir + "/" + name +".bed";
@@ -111,8 +111,8 @@ Document* ConductGOTask::createDoc( const QList<SharedAnnotationData>& annData, 
     doc->setDocumentOwnsDbiResources(false);
 
     AnnotationTableObject *ato = new AnnotationTableObject( name, doc->getDbiRef( ) );
-    foreach (const SharedAnnotationData &sad, annData) {
-        ato->addAnnotation( *sad, QString());
+    foreach (const AnnotationData &ad, annData) {
+        ato->addAnnotation( ad, QString( ) );
     }
     doc->addObject(ato);
 

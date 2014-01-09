@@ -40,7 +40,7 @@ public:
 
 class DNAAlphabet;
 
-class U2ALGORITHM_EXPORT CDSearchSettings {        
+class U2ALGORITHM_EXPORT CDSearchSettings {
 public:
     CDSearchSettings() : ev(0.01f), alp(NULL) {}
     float ev;
@@ -55,7 +55,7 @@ class Task;
 class U2ALGORITHM_EXPORT CDSearchResultListener {
 public:
     virtual ~CDSearchResultListener() {}
-    virtual QList<SharedAnnotationData> getCDSResults() const = 0;
+    virtual QList<AnnotationData> getCDSResults() const = 0;
     virtual Task* getTask() const = 0;
 };
 

@@ -19,8 +19,9 @@
  * MA 02110-1301, USA.
  */
 
-#include <QFile>
+#include <QtCore/QFile>
 
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>
 #include <U2Core/U2AssemblyDbi.h>
@@ -152,6 +153,22 @@ SharedDbiDataHandler DbiDataStorage::putAlignment(const MAlignment &al) {
     return handler;
 }
 
+SharedDbiDataHandler DbiDataStorage::putAnnotationTable( const QList<AnnotationData> &anns ) {
+    SAFE_POINT( NULL != dbiHandle, "Invalid DBI handle!", SharedDbiDataHandler( ) );
+
+    AnnotationTableObject obj( "Annotations", dbiHandle->getDbiRef( ) );
+    U2EntityRef ent = obj.getEntityRef( );
+
+    U2OpStatusImpl os;
+    DbiConnection *connection = this->getConnection( dbiHandle->getDbiRef( ), os );
+    SAFE_POINT_OP( os, SharedDbiDataHandler( ) );
+
+    SharedDbiDataHandler handler( new DbiDataHandler( ent, connection->dbi->getObjectDbi( ),
+        true ) );
+
+    return handler;
+}
+
 bool DbiDataStorage::deleteObject(const U2DataId &, const U2DataType &) {
     assert(NULL != dbiHandle);
     return true;
@@ -255,6 +272,20 @@ MAlignmentObject *StorageUtils::getMsaObject(DbiDataStorage *storage, const Shar
     QString objName = msa->visualName;
 
     return new MAlignmentObject(objName, msaRef);
+}
+
+AnnotationTableObject * StorageUtils::getAnnotationTableObject( DbiDataStorage *storage,
+    const SharedDbiDataHandler &handler )
+{
+    CHECK( NULL != handler.constData( ), NULL );
+    U2Object *dbObject = storage->getObject( handler, U2Type::AnnotationTable );
+    QScopedPointer<U2AnnotationTable> table( dynamic_cast<U2AnnotationTable *>( dbObject ) );
+    CHECK( NULL != table.data( ), NULL );
+
+    U2EntityRef tableRef( handler->getDbiRef( ), table->id );
+    QString objName = table->visualName;
+
+    return new AnnotationTableObject( objName, tableRef );
 }
 
 } // Workflow

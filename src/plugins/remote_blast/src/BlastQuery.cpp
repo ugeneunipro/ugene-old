@@ -104,17 +104,17 @@ Task* QDCDDActor::getAlgorithmTask(const QVector<U2Region>& location) {
 }
 
 void QDCDDActor::sl_onAlgorithmTaskFinished() {
-    QList<SharedAnnotationData> res;
+    QList<AnnotationData> res;
     QMapIterator<RemoteBLASTTask*, int> iter(offsetMap);
     while (iter.hasNext()) {
         iter.next();
         RemoteBLASTTask* rqt = iter.key();
-        QList<SharedAnnotationData> annotations = rqt->getResultedAnnotations();
+        QList<AnnotationData> annotations = rqt->getResultedAnnotations();
         //shift by offset
         int offset = offsetMap.value(rqt);
-        QMutableListIterator<SharedAnnotationData> annIter(annotations);
+        QMutableListIterator<AnnotationData> annIter(annotations);
         while (annIter.hasNext()) {
-            QVector<U2Region>& location = annIter.next()->location->regions;
+            QVector<U2Region>& location = annIter.next().location->regions;
             U2Region::shift(offset, location);
         }
         res << annotations;
@@ -124,16 +124,16 @@ void QDCDDActor::sl_onAlgorithmTaskFinished() {
     int minLen = cfg->getParameter(MIN_RES_LEN)->getAttributeValueWithoutScript<int>();
     int maxLen = cfg->getParameter(MAX_RES_LEN)->getAttributeValueWithoutScript<int>();
     const QString& qualVal = cfg->getParameter(QUAL_ATTR)->getAttributeValueWithoutScript<QString>();
-    foreach(const SharedAnnotationData& ad, res) {
-        const U2Region& reg = ad->location->regions.first();
+    foreach(const AnnotationData& ad, res) {
+        const U2Region& reg = ad.location->regions.first();
         if (reg.length < minLen || reg.length > maxLen) {
             continue;
         }
-        foreach(const U2Qualifier& qual, ad->qualifiers) {
+        foreach(const U2Qualifier& qual, ad.qualifiers) {
             if (qual.value.contains(qualVal)) {
                 QDResultUnit ru(new QDResultUnitData);
-                ru->strand = ad->getStrand();
-                ru->quals = ad->qualifiers;
+                ru->strand = ad.getStrand();
+                ru->quals = ad.qualifiers;
                 ru->region = reg;
                 ru->owner = units.values().first();
                 QDResultGroup* g = new QDResultGroup(QDStrand_Both);

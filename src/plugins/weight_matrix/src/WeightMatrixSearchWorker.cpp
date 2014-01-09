@@ -224,19 +224,20 @@ Task* PWMatrixSearchWorker::tick() {
     return NULL;
 }
 
-void PWMatrixSearchWorker::sl_taskFinished(Task* t) {
-    QList<SharedAnnotationData> res;
+void PWMatrixSearchWorker::sl_taskFinished( Task *t ) {
+    QList<AnnotationData> res;
     SAFE_POINT( NULL != t, "Invalid task is encountered", );
     if ( t->isCanceled( ) ) {
         return;
     }
-    foreach(Task* sub, t->getSubtasks()) {
-        WeightMatrixSingleSearchTask* sst = qobject_cast<WeightMatrixSingleSearchTask*>(sub);
-        res += WeightMatrixSearchResult::toTable(sst->takeResults(), resultName);
+    foreach ( Task *sub, t->getSubtasks( ) ) {
+        WeightMatrixSingleSearchTask *sst = qobject_cast<WeightMatrixSingleSearchTask *>( sub );
+        res += WeightMatrixSearchResult::toTable( sst->takeResults( ), resultName );
     }
-    QVariant v = qVariantFromValue<QList<SharedAnnotationData> >(res);
-    output->put(Message(BaseTypes::ANNOTATION_TABLE_TYPE(), v));
-    algoLog.info(tr("Found %1 TFBS").arg(res.size())); //TODO set task description for report
+    const SharedDbiDataHandler tableId = context->getDataStorage( )->putAnnotationTable( res );
+    const QVariant v = qVariantFromValue<SharedDbiDataHandler>( tableId );
+    output->put( Message( BaseTypes::ANNOTATION_TABLE_TYPE( ), v ) );
+    algoLog.info( tr( "Found %1 TFBS" ).arg( res.size( ) ) ); //TODO set task description for report
 }
 
 } //namespace LocalWorkflow

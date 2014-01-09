@@ -87,11 +87,11 @@ class CollocationSearchTask : public Task , public CollocationsAlgorithmListener
     Q_OBJECT
 public:
     CollocationSearchTask(const QList<AnnotationTableObject*> &table, const QSet<QString>& names, const CollocationsAlgorithmSettings& cfg);
-    CollocationSearchTask(const QList<SharedAnnotationData> &table, const QSet<QString>& names, const CollocationsAlgorithmSettings& cfg, bool keepSourceAnns = false);
+    CollocationSearchTask(const QList<AnnotationData> &table, const QSet<QString>& names, const CollocationsAlgorithmSettings& cfg, bool keepSourceAnns = false);
     void run();
 
     QVector<U2Region> popResults();
-    QList<SharedAnnotationData> popResultAnnotations();
+    QList<AnnotationData> popResultAnnotations();
 
     virtual void onResult(const U2Region& r);
 
@@ -106,7 +106,7 @@ private:
     QMutex          lock;
 
     const bool keepSourceAnns;
-    QList<SharedAnnotationData> sourceAnns;
+    QList<AnnotationData> sourceAnns;
 };
 
 }//namespace

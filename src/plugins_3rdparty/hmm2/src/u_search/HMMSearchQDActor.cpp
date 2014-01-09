@@ -106,17 +106,17 @@ Task* HMM2QDActor::getAlgorithmTask( const QVector<U2Region>& location ) {
 void HMM2QDActor::sl_onTaskFinished(Task*) {
     QString aname = cfg->getAnnotationKey();
     foreach(HMMSearchTask* t, offsets.keys()) {
-        QList<SharedAnnotationData> annotations = t->getResultsAsAnnotations(aname);
+        QList<AnnotationData> annotations = t->getResultsAsAnnotations(aname);
         int offset = offsets.value(t);
-        foreach(SharedAnnotationData d, annotations) {
-            U2Region r = d->location->regions.first();
+        foreach(const AnnotationData &d, annotations) {
+            U2Region r = d.location->regions.first();
             if (r.length < getMinResultLen() || r.length > getMaxResultLen()) {
                 continue;
             }
             r.startPos+=offset;
             QDResultUnit ru(new QDResultUnitData);
-            ru->strand = d->getStrand();
-            ru->quals = d->qualifiers;
+            ru->strand = d.getStrand();
+            ru->quals = d.qualifiers;
             ru->region = r;
             ru->owner = units.value("hmm");
             QDResultGroup::buildGroupFromSingleResult(ru, results);

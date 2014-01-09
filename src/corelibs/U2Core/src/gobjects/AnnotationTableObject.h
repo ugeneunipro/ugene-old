@@ -34,10 +34,18 @@ class AnnotationModification;
 class U2CORE_EXPORT AnnotationTableObject : public GObject {
     Q_OBJECT
 public:
+    /**
+     * This constructor is intended for interaction with Document. It encapsulates creation of
+     * annotation table entity in DB.
+     */
                             AnnotationTableObject( const QString &objectName, const U2DbiRef &dbiRef,
                                 const QVariantMap &hintsMap = QVariantMap( ) );
-     virtual                ~AnnotationTableObject( );
-
+    /**
+     * This constructor works with existed annotation table entity available via @tableRef.
+     */
+                            AnnotationTableObject( const QString &objectName,
+                                const U2EntityRef &tableRef,
+                                const QVariantMap &hintsMap = QVariantMap( ) );
     /**
      * Converts all the features stored in DB to annotations and returns the result
      */
@@ -67,11 +75,11 @@ public:
     /**
      * Reimplemented from GObject
      */
-    virtual GObject *       clone( const U2DbiRef &ref, U2OpStatus &os ) const;
+    GObject *               clone( const U2DbiRef &ref, U2OpStatus &os ) const;
     /**
      * Returns list of annotations having @name
      */
-    QList<Annotation>     getAnnotationsByName( const QString &name );
+    QList<Annotation>       getAnnotationsByName( const QString &name );
     /**
      * Returns list containing all annotation regions
      */
@@ -81,12 +89,13 @@ public:
      * whether the result set should include only annotations that has no region or its part
      * beyond the @region or each annotation that intersects it.
      */
-    QList<Annotation>     getAnnotationsByRegion( const U2Region &region,
+    QList<Annotation>       getAnnotationsByRegion( const U2Region &region,
                                 bool contains = false );
     /**
      * Reimplemented from GObject
      */
     bool                    checkConstraints( const GObjectConstraints *c ) const;
+    void                    setGObjectName( const QString &newName );
 
     //////////////////////////////////////////////////////////////////////////
     // Direct features interface (without sync with annotations) /////////////

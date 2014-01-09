@@ -31,6 +31,26 @@
 
 namespace U2 {
 
+class U2CORE_EXPORT U2AnnotationTable : public U2Object {
+public:
+    U2AnnotationTable( )
+    {
+
+    }
+
+    U2AnnotationTable( const U2DataId &id, const QString &dbId, qint64 version )
+        : U2Object( id, dbId, version )
+    {
+
+    }
+
+    /** Root feature's id */
+    U2DataId    rootFeature;
+
+    // implement U2Object
+    U2DataType getType() { return U2Type::AnnotationTable; }
+};
+
 /** Feature location */
 class U2CORE_EXPORT U2FeatureLocation {
 public:

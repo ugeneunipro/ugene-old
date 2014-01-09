@@ -45,7 +45,7 @@ namespace U2 {
 
 const QString ConservationPlotTask::BASE_DIR_NAME("ConservationPlot_tmp");
 
-ConservationPlotTask::ConservationPlotTask(const ConservationPlotSettings& _settings, const QList<QList<SharedAnnotationData> >& _plotData)
+ConservationPlotTask::ConservationPlotTask(const ConservationPlotSettings& _settings, const QList<QList<AnnotationData> >& _plotData)
 : ExternalToolSupportTask("ConservationPlot annotation", TaskFlag_None)
 , settings(_settings)
 , treatDoc(NULL)
@@ -80,8 +80,6 @@ void ConservationPlotTask::cleanup() {
             //return;
         }
     }
-
-    
 }
 
 void ConservationPlotTask::prepare() {
@@ -89,7 +87,7 @@ void ConservationPlotTask::prepare() {
     workingDir = appSettings->createCurrentProcessTemporarySubDir(stateInfo, BASE_DIR_NAME);
     CHECK_OP(stateInfo, );
 
-    foreach(const QList<SharedAnnotationData>& bedData, plotData){
+    foreach(const QList<AnnotationData>& bedData, plotData){
         Document *bedDoc = NULL;
         SaveDocumentTask *saveTask = NULL;
 
@@ -108,11 +106,9 @@ void ConservationPlotTask::prepare() {
         activeSubtasks++;
         addSubTask(saveTask);
     }
-    
 }
 
-
-Document* ConservationPlotTask::createDoc( const QList<SharedAnnotationData>& annData, const QString& name){
+Document* ConservationPlotTask::createDoc( const QList<AnnotationData>& annData, const QString& name){
     Document* doc = NULL;
 
     QString docUrl = workingDir + "/" + name +".bed";
@@ -126,14 +122,13 @@ Document* ConservationPlotTask::createDoc( const QList<SharedAnnotationData>& an
     doc->setDocumentOwnsDbiResources(false);
 
     AnnotationTableObject *ato = new AnnotationTableObject( name, doc->getDbiRef( ) );
-    foreach (const SharedAnnotationData &sad, annData) {
-        ato->addAnnotation( *sad, QString());
+    foreach (const AnnotationData &ad, annData) {
+        ato->addAnnotation( ad, QString( ) );
     }
     doc->addObject(ato);
 
     return doc;
 }
-
 
 QList<Task*> ConservationPlotTask::onSubTaskFinished(Task* subTask) {
     QList<Task*> result;
@@ -150,25 +145,23 @@ QList<Task*> ConservationPlotTask::onSubTaskFinished(Task* subTask) {
 
     if (containsTask) {
         activeSubtasks--;
-                        
-            if (activeSubtasks == 0){
-                QList<QString> docNames;
-                foreach(Document* bedDoc, docTaskMap.keys()){
-                    docNames.append(bedDoc->getURLString());
-                }
-
-                QStringList args = settings.getArguments(docNames);
-
-                logParser = new ConservationPlotLogParser();
-                ExternalTool* rTool = AppContext::getExternalToolRegistry()->getByName(ET_R);
-                SAFE_POINT(NULL != rTool, "R script tool wasn't found in the registry", result);
-
-
-                etTask = new ExternalToolRunTask(ET_CONSERVATION_PLOT, args, logParser, workingDir, QStringList() << rTool->getPath());
-                setListenerForTask(etTask);
-                result << etTask;
+        if (activeSubtasks == 0){
+            QList<QString> docNames;
+            foreach(Document* bedDoc, docTaskMap.keys()){
+                docNames.append(bedDoc->getURLString());
             }
-            
+
+            QStringList args = settings.getArguments(docNames);
+
+            logParser = new ConservationPlotLogParser();
+            ExternalTool* rTool = AppContext::getExternalToolRegistry()->getByName(ET_R);
+            SAFE_POINT(NULL != rTool, "R script tool wasn't found in the registry", result);
+
+
+            etTask = new ExternalToolRunTask(ET_CONSERVATION_PLOT, args, logParser, workingDir, QStringList() << rTool->getPath());
+            setListenerForTask(etTask);
+            result << etTask;
+        }
     }
     return result;
 }

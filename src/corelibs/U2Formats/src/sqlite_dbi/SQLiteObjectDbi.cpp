@@ -24,6 +24,7 @@
 
 #include <U2Core/U2AttributeDbi.h>
 #include <U2Core/U2DbiPackUtils.h>
+#include <U2Core/U2FeatureUtils.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/U2SqlHelpers.h>
 
@@ -234,6 +235,14 @@ bool SQLiteObjectDbi::removeObjectImpl(const U2DataId& objectId, const QString& 
                 }
                 // Remove the MSA record
                 SQLiteUtils::remove("Msa", "object", objectId, 1, db, os);
+            }
+            break;
+        case U2Type::AnnotationTable :
+            {
+                U2EntityRef tableRef( dbi->getDbiRef( ), objectId );
+                U2AnnotationTable table = U2FeatureUtils::getAnnotationTable( tableRef, os );
+                CHECK_OP( os, false );
+                U2FeatureUtils::removeFeature( table.rootFeature, tableRef.dbiRef, os );
             }
             break;
         case U2Type::PhyTree:

@@ -36,7 +36,7 @@ namespace U2 {
 class HttpRequest {
 public:
     virtual void sendRequest(const QString &program,const QString &query) = 0;
-    virtual QList<SharedAnnotationData> getAnnotations() {return result;}
+    virtual QList<AnnotationData> getAnnotations() {return result;}
     virtual QString getError() { return error; }
     virtual QByteArray getOutputFile() {return NULL;}
     virtual ~HttpRequest() {};
@@ -44,7 +44,7 @@ public:
 protected:
     HttpRequest(Task *_task):connectionError(false),error(""),task(_task){};
     QString error;
-    QList<SharedAnnotationData> result;	
+    QList<AnnotationData> result;
     Task *task;
 };
 

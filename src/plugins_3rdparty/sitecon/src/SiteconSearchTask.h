@@ -36,26 +36,26 @@ class SiteconSearchResult {
 public:
     SiteconSearchResult() : strand(U2Strand::Direct), psum(-1), err1(0), err2(1){}
 
-    SharedAnnotationData toAnnotation(const QString& name) const {
-        SharedAnnotationData data;
-        data = new AnnotationData;
-        data->name = name;
-        data->location->regions << region;
-        data->setStrand(strand);
+    AnnotationData toAnnotation( const QString &name ) const {
+        AnnotationData data;
+        data.name = name;
+        data.location->regions << region;
+        data.setStrand(strand);
         if (!modelInfo.isEmpty()) {
-            data->qualifiers.append(U2Qualifier("sitecon_model", modelInfo));
+            data.qualifiers.append(U2Qualifier("sitecon_model", modelInfo));
         }
-        data->qualifiers.append(U2Qualifier("psum", QString::number(psum)));
-        data->qualifiers.append(U2Qualifier("error_1", QString::number(err1, 'g', 4)));
-        data->qualifiers.append(U2Qualifier("error_2", QString::number(err2, 'g', 4)));
+        data.qualifiers.append(U2Qualifier("psum", QString::number(psum)));
+        data.qualifiers.append(U2Qualifier("error_1", QString::number(err1, 'g', 4)));
+        data.qualifiers.append(U2Qualifier("error_2", QString::number(err2, 'g', 4)));
         return data;
     }
 
-    static QList<SharedAnnotationData> toTable(const QList<SiteconSearchResult>& res, const QString& name)
+    static QList<AnnotationData> toTable( const QList<SiteconSearchResult> &res,
+        const QString &name)
     {
-        QList<SharedAnnotationData> list;
-        foreach (const SiteconSearchResult& f, res) {
-            list.append(f.toAnnotation(name));
+        QList<AnnotationData> list;
+        foreach ( const SiteconSearchResult &f, res ) {
+            list.append( f.toAnnotation( name ) );
         }
         return list;
     }

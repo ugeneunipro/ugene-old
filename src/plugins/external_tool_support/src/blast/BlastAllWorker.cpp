@@ -444,28 +444,28 @@ Task* BlastAllWorker::tick() {
     return NULL;
 }
 
-void BlastAllWorker::sl_taskFinished() {
-    BlastAllSupportTask* t = qobject_cast<BlastAllSupportTask*>(sender());
-    if (t->getState() != Task::State_Finished || t->isCanceled() || t->hasError()){
+void BlastAllWorker::sl_taskFinished( ) {
+    BlastAllSupportTask *t = qobject_cast<BlastAllSupportTask *>( sender( ) );
+    if ( t->getState( ) != Task::State_Finished || t->isCanceled( ) || t->hasError( ) ) {
         return;
     }
 
-    if(output) {
-        QList<AnnotationData> tmpRes = t->getResultedAnnotations( );
-        QString annName = actor->getParameter(BLASTALL_GROUP_NAME)->getAttributeValue<QString>(context);
-        QList<SharedAnnotationData> res;
-        for(int i = 0; i < tmpRes.count();i++) {
-            if ( !annName.isEmpty( ) ) {
-                tmpRes[i].name = annName;
+    if ( NULL != output ) {
+        QList<AnnotationData> res = t->getResultedAnnotations( );
+        QString annName = actor->getParameter( BLASTALL_GROUP_NAME )->getAttributeValue<QString>( context );
+        if ( !annName.isEmpty( ) ) {
+            for ( int i = 0; i < res.count( ); i++ ) {
+                res[i].name = annName;
             }
-            res << SharedAnnotationData( new AnnotationData( tmpRes[i] ) );
         }
-        QVariant v = qVariantFromValue<QList<SharedAnnotationData> >(res);
-        output->put(Message(BaseTypes::ANNOTATION_TABLE_TYPE(), v));
+        const SharedDbiDataHandler tableId = context->getDataStorage( )->putAnnotationTable( res );
+        const QVariant v = qVariantFromValue<SharedDbiDataHandler>( tableId );
+        output->put( Message( BaseTypes::ANNOTATION_TABLE_TYPE( ), v ) );
     }
 }
 
-void BlastAllWorker::cleanup() {
+void BlastAllWorker::cleanup( ) {
+
 }
 
 } //namespace LocalWorkflow

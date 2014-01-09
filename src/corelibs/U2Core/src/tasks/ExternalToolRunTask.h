@@ -127,9 +127,7 @@ public:
      */
     static QString createTmpDir(const QString &prePath, const QString &domain, U2OpStatus &os);
     static Document * createAnnotationsDocument(const QString &filePath,
-        const DocumentFormatId &format,
-        const QList<SharedAnnotationData> &anns,
-        U2OpStatus &os);
+        const DocumentFormatId &format, const QList<AnnotationData> &anns, U2OpStatus &os);
     static void appendExistingFile(const QString &path, QStringList &files);
     static bool startExternalProcess(QProcess *process, const QString &program, const QStringList &arguments);
     static ProcessRun prepareProcess(const QString &toolName, const QStringList &arguments, const QString &workingDirectory, const QStringList &additionalPaths, U2OpStatus &os, ExternalToolListener* listener);

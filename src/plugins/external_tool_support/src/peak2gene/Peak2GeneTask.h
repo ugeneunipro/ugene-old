@@ -37,7 +37,7 @@ class LoadDocumentTask;
 class Peak2GeneTask : public ExternalToolSupportTask {
     Q_OBJECT
 public:
-    Peak2GeneTask(const Peak2GeneSettings& _settings, const QList<SharedAnnotationData>& _treatAnn);
+    Peak2GeneTask(const Peak2GeneSettings& _settings, const QList<AnnotationData>& _treatAnn);
     virtual ~Peak2GeneTask();
 
     virtual void prepare();
@@ -47,14 +47,14 @@ public:
 
     const Peak2GeneSettings & getSettings();
 
-    QList<SharedAnnotationData> getGenes();
-    QList<SharedAnnotationData> getPeaks();
+    QList<AnnotationData> getGenes();
+    QList<AnnotationData> getPeaks();
 
 private:
     Peak2GeneSettings settings;
     QString workingDir;
 
-    QList<SharedAnnotationData> treatAnn;
+    QList<AnnotationData> treatAnn;
 
     Document *treatDoc;
 
@@ -73,7 +73,7 @@ private:
     static const QString TREAT_NAME;
 
 private:
-    Document* createDoc(const QList<SharedAnnotationData>& annData, const QString& name);
+    Document* createDoc(const QList<AnnotationData>& annData, const QString& name);
 };
 
 class Peak2GeneLogParser : public ExternalToolLogParser {

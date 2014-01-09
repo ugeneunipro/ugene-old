@@ -95,11 +95,11 @@ namespace {
             os.setError(QObject::tr("Empty annotations slot"));
             return NULL;
         }
-        QList<SharedAnnotationData> anns = data[slot].value< QList<SharedAnnotationData> >();
-        AnnotationTableObject *annsObj = new AnnotationTableObject( "anns", context->getDataStorage( )->getDbiRef( ) );
-        foreach ( const SharedAnnotationData &ann, anns ) {
-            annsObj->addAnnotation( *ann );
-        }
+        const QVariant annotationsData = data[slot];
+        const SharedDbiDataHandler annTableId = annotationsData.value<SharedDbiDataHandler>();
+        AnnotationTableObject *annsObj = StorageUtils::getAnnotationTableObject(
+            context->getDataStorage( ), annTableId );
+
         return annsObj;
     }
 
@@ -314,21 +314,19 @@ static SharedDbiDataHandler getAlignment(Document *d, WorkflowContext *context, 
     return context->getDataStorage()->getDataHandler(msaObj->getEntityRef());
 }
 
-QList<SharedAnnotationData> getAnnotations(Document *d, U2OpStatus &os) {
-    GObject *obj = getObject(d, GObjectTypes::ANNOTATION_TABLE, os);
-    CHECK_OP(os, QList<SharedAnnotationData>());
+static SharedDbiDataHandler getAnnotations( Document *d, WorkflowContext *context, U2OpStatus &os )
+{
+    GObject *obj = getObject( d, GObjectTypes::ANNOTATION_TABLE, os );
+    CHECK_OP( os, SharedDbiDataHandler( ) );
 
-    AnnotationTableObject *annsObj = static_cast<AnnotationTableObject *>(obj);
+    AnnotationTableObject *annsObj = static_cast<AnnotationTableObject *>( obj );
     if ( NULL == annsObj ) {
-        os.setError(QObject::tr("Error with annotations object"));
-        return QList<SharedAnnotationData>();
+        os.setError( QObject::tr( "Error with annotations object" ) );
+        return SharedDbiDataHandler( );
     }
-    QList<SharedAnnotationData> anns;
-    foreach ( const Annotation &a, annsObj->getAnnotations( ) ) {
-        anns << SharedAnnotationData( new AnnotationData( a.getData( ) ) );
-    }
-    return anns;
+    return context->getDataStorage( )->getDataHandler( annsObj->getEntityRef( ) );
 }
+
 } // namespace
 
 void ExternalProcessWorker::sl_onTaskFinishied() {
@@ -383,10 +381,10 @@ void ExternalProcessWorker::sl_onTaskFinishied() {
                 DataTypePtr dataType = WorkflowEnv::getDataTypeRegistry()->getById(cfg.type);
                 v[WorkflowUtils::getSlotDescOfDatatype(dataType).getId()] = qVariantFromValue<SharedDbiDataHandler>(msaId);
             } else if (cfg.isAnnotations()) {
-                QList<SharedAnnotationData> anns = getAnnotations(d.data(), os);
+                const SharedDbiDataHandler annTableId = getAnnotations(d.data(), context, os);
                 CHECK_OP_EXT(os, reportError(os.getError()), );
                 DataTypePtr dataType = WorkflowEnv::getDataTypeRegistry()->getById(cfg.type);
-                v[WorkflowUtils::getSlotDescOfDatatype(dataType).getId()] = qVariantFromValue(anns);
+                v[WorkflowUtils::getSlotDescOfDatatype(dataType).getId()] = qVariantFromValue<SharedDbiDataHandler>(annTableId);
             } else if (cfg.isAnnotatedSequence()) {
                 if(!d->findGObjectByType(GObjectTypes::SEQUENCE, UOF_LoadedAndUnloaded).isEmpty()) {
                     U2SequenceObject *seqObj = static_cast<U2SequenceObject *>(d->findGObjectByType(GObjectTypes::SEQUENCE, UOF_LoadedAndUnloaded).first());
@@ -396,10 +394,11 @@ void ExternalProcessWorker::sl_onTaskFinishied() {
                     v[BaseSlots::DNA_SEQUENCE_SLOT().getId()] = qVariantFromValue<SharedDbiDataHandler>(seqId);
                 }
                 U2OpStatusImpl os;
-                QList<SharedAnnotationData> anns = getAnnotations(d.data(), os);
+
+                const SharedDbiDataHandler annTableId = getAnnotations(d.data(), context, os);
                 if (!os.hasError()) {
                     DataTypePtr dataType = WorkflowEnv::getDataTypeRegistry()->getById(cfg.type);
-                    v[BaseSlots::ANNOTATION_TABLE_SLOT().getId()] = qVariantFromValue(anns);
+                    v[BaseSlots::ANNOTATION_TABLE_SLOT().getId()] = qVariantFromValue<SharedDbiDataHandler>(annTableId);
                 }
             } else if (cfg.isText()) {
                 if(!d->findGObjectByType(GObjectTypes::TEXT, UOF_LoadedAndUnloaded).isEmpty()) {

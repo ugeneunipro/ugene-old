@@ -47,7 +47,7 @@ const QString MACSTask::BASE_SUBDIR_NAME("macs");
 const QString MACSTask::TREAT_NAME("treatment");
 const QString MACSTask::CON_NAME("control");
 
-MACSTask::MACSTask(const MACSSettings& _settings, const QList<SharedAnnotationData>& _treatAnn, const QList<SharedAnnotationData>& _conAnn)
+MACSTask::MACSTask(const MACSSettings &_settings, const QList<AnnotationData> &_treatAnn, const QList<AnnotationData> &_conAnn)
 : ExternalToolSupportTask("MACS peak calling", TaskFlag_None)
 , settings(_settings)
 , treatAnn(_treatAnn)
@@ -118,28 +118,26 @@ void MACSTask::prepare() {
     }
 }
 
-Document* MACSTask::createDoc( const QList<SharedAnnotationData>& annData, const QString& name){
-    Document* doc = NULL;
+Document * MACSTask::createDoc( const QList<AnnotationData> &annData, const QString &name ) {
+    Document *doc = NULL;
 
-    QString docUrl = workingDir + "/" + name +".bed";
+    const QString docUrl = workingDir + "/" + name +".bed";
 
-    DocumentFormat *bedFormat = AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::BED);
-    CHECK_EXT(NULL != bedFormat, stateInfo.setError("NULL bed format"), doc);
+    DocumentFormat *bedFormat = AppContext::getDocumentFormatRegistry( )
+        ->getFormatById( BaseDocumentFormats::BED );
+    CHECK_EXT( NULL != bedFormat, stateInfo.setError( "NULL bed format" ), doc );
 
     doc = bedFormat->createNewLoadedDocument(
-        IOAdapterUtils::get(BaseIOAdapters::LOCAL_FILE), docUrl, stateInfo);
-    CHECK_OP(stateInfo, doc);
-    doc->setDocumentOwnsDbiResources(false);
+        IOAdapterUtils::get( BaseIOAdapters::LOCAL_FILE ), docUrl, stateInfo );
+    CHECK_OP( stateInfo, doc );
+    doc->setDocumentOwnsDbiResources( false );
 
     AnnotationTableObject *ato = new AnnotationTableObject( name, doc->getDbiRef( ) );
-    foreach (const SharedAnnotationData &sad, annData) {
-        ato->addAnnotation( *sad, QString());
-    }
-    doc->addObject(ato);
+    ato->addAnnotations( annData );
+    doc->addObject( ato );
 
     return doc;
 }
-
 
 bool MACSTask::canStartETTask() const {
     return (0 == activeSubtasks);
@@ -195,22 +193,22 @@ const MACSSettings& MACSTask::getSettings(){
     return settings;
 }
 
-QList<SharedAnnotationData> MACSTask::getPeaks( ) {
-    QList<SharedAnnotationData> res;
+QList<AnnotationData> MACSTask::getPeaks( ) {
+    QList<AnnotationData> res;
 
-    if (peaksDoc == NULL){
+    if ( NULL == peaksDoc ) {
         return res;
     }
 
-    const QList<GObject*> objects = peaksDoc->getObjects();
+    const QList<GObject *> objects = peaksDoc->getObjects( );
 
-    foreach(GObject* ao, objects) {
-        if (ao->getGObjectType() == GObjectTypes::ANNOTATION_TABLE){
-            AnnotationTableObject *aobj = qobject_cast<AnnotationTableObject *>(ao);
-            if (ao) {
-                const QList<Annotation> annots = aobj->getAnnotations();
+    foreach ( GObject *ao, objects ) {
+        if ( ao->getGObjectType( ) == GObjectTypes::ANNOTATION_TABLE ) {
+            AnnotationTableObject *aobj = qobject_cast<AnnotationTableObject *>( ao );
+            if ( NULL != ao ) {
+                const QList<Annotation> annots = aobj->getAnnotations( );
                 foreach ( const Annotation &a, annots ) {
-                    res.append( SharedAnnotationData( new AnnotationData( a.getData( ) ) ) );
+                    res << a.getData( );
                 }
             }
         }
@@ -219,21 +217,21 @@ QList<SharedAnnotationData> MACSTask::getPeaks( ) {
     return res;
 }
 
-QList<SharedAnnotationData> MACSTask::getPeakSummits(){
-    QList<SharedAnnotationData> res;
+QList<AnnotationData> MACSTask::getPeakSummits( ) {
+    QList<AnnotationData> res;
 
-    if (summitsDoc == NULL){
+    if ( NULL == summitsDoc ) {
         return res;
     }
-    const QList<GObject*> objects = summitsDoc->getObjects();
+    const QList<GObject *> objects = summitsDoc->getObjects( );
 
-    foreach(GObject* ao, objects) {
-        if (ao->getGObjectType() == GObjectTypes::ANNOTATION_TABLE){
-            AnnotationTableObject *aobj = qobject_cast<AnnotationTableObject *>(ao);
-            if ( ao ) {
-                const QList<Annotation> &annots = aobj->getAnnotations();
+    foreach ( GObject *ao, objects ) {
+        if ( ao->getGObjectType( ) == GObjectTypes::ANNOTATION_TABLE ) {
+            AnnotationTableObject *aobj = qobject_cast<AnnotationTableObject *>( ao );
+            if ( NULL != ao ) {
+                const QList<Annotation> &annots = aobj->getAnnotations( );
                 foreach ( const Annotation &a, annots ) {
-                    res.append( SharedAnnotationData( new AnnotationData( a.getData( ) ) ) );
+                    res << a.getData( );
                 }
             }
         }

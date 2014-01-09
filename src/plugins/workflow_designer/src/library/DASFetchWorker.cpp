@@ -205,19 +205,19 @@ void DASFetcherWorker::sl_taskFinished() {
                                                                                      allLoadedAnnotations,
                                                                                      UOF_LoadedOnly);
 
-        QList<SharedAnnotationData> sads;
-        if (!annotations.isEmpty())
-        {
+        QList<AnnotationData> ads;
+        if (!annotations.isEmpty()) {
             AnnotationTableObject *ato = qobject_cast<AnnotationTableObject *>(annotations.first());
             foreach ( const Annotation &a, ato->getAnnotations( ) ) {
-                sads << SharedAnnotationData( new AnnotationData( a.getData( ) ) );
+                ads << a.getData( );
             }
         }
 
         QVariantMap messageData;
         SharedDbiDataHandler seqId = context->getDataStorage()->putSequence(dnao->getWholeSequence());
         messageData[ BaseSlots::DNA_SEQUENCE_SLOT().getId() ] = qVariantFromValue<SharedDbiDataHandler>(seqId);
-        messageData[ BaseSlots::ANNOTATION_TABLE_SLOT().getId() ] = qVariantFromValue(sads);
+        SharedDbiDataHandler tableId = context->getDataStorage()->putAnnotationTable(ads);
+        messageData[ BaseSlots::ANNOTATION_TABLE_SLOT().getId() ] = qVariantFromValue<SharedDbiDataHandler>(tableId);
 
         DataTypePtr messageType = WorkflowEnv::getDataTypeRegistry()->getById(TYPE);
 

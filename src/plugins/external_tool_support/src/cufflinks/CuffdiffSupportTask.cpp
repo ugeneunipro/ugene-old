@@ -211,13 +211,13 @@ void CuffdiffSupportTask::createTranscriptDoc() {
 void CuffdiffSupportTask::addTranscriptObject() {
     AnnotationTableObject *aobj = new AnnotationTableObject( "anns", transcriptDoc->getDbiRef( ) );
     bool first = true;
-    foreach ( const SharedAnnotationData& ann, settings.transcript ) {
+    foreach ( const AnnotationData& ann, settings.transcript ) {
         if (first) {
-            aobj->setGObjectName( ann->name );
+            aobj->setGObjectName( ann.name );
             first = false;
         }
         QStringList list;
-        aobj->addAnnotation( *ann );
+        aobj->addAnnotation( ann );
     }
     transcriptDoc->addObject(aobj);
 }

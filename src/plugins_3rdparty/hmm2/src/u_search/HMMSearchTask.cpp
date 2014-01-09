@@ -203,13 +203,13 @@ Task::ReportResult HMMSearchTask::report() {
     return ReportResult_Finished;
 }
 
-QList<SharedAnnotationData> HMMSearchTask::getResultsAsAnnotations(const QString& name) const {
-    QList<SharedAnnotationData>  annotations;
-    foreach(const HMMSearchTaskResult& hmmRes, results) {
-        AnnotationData* a = new AnnotationData();
-        a->name = name;
-        a->setStrand(hmmRes.onCompl ? U2Strand::Complementary : U2Strand::Direct);
-        a->location->regions << hmmRes.r;
+QList<AnnotationData> HMMSearchTask::getResultsAsAnnotations(const QString& name) const {
+    QList<AnnotationData>  annotations;
+    foreach ( const HMMSearchTaskResult &hmmRes, results ) {
+        AnnotationData a;
+        a.name = name;
+        a.setStrand(hmmRes.onCompl ? U2Strand::Complementary : U2Strand::Direct);
+        a.location->regions << hmmRes.r;
 
         QString str; /*add zeros at begin of evalue exponent part, so exponent part must contains 3 numbers*/
         str.sprintf("%.2g", ((double) hmmRes.evalue));
@@ -226,12 +226,12 @@ QList<SharedAnnotationData> HMMSearchTask::getResultsAsAnnotations(const QString
             info += QString().sprintf("\n%s", hmm->desc);
         }
         if (!info.isEmpty()) {
-            a->qualifiers.append(U2Qualifier("HMM-model", info));
+            a.qualifiers.append(U2Qualifier("HMM-model", info));
         }
         //a->qualifiers.append(U2Qualifier("E-value", QString().sprintf("%.2lg", ((double) hmmRes.evalue))));
-        a->qualifiers.append(U2Qualifier("E-value", str));
-        a->qualifiers.append(U2Qualifier("Score", QString().sprintf("%.1f", hmmRes.score)));
-        annotations.append(SharedAnnotationData(a));
+        a.qualifiers.append(U2Qualifier("E-value", str));
+        a.qualifiers.append(U2Qualifier("Score", QString().sprintf("%.1f", hmmRes.score)));
+        annotations.append( a );
     }
     return annotations;
 }

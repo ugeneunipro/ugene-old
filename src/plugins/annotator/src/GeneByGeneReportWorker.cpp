@@ -19,6 +19,9 @@
  * MA 02110-1301, USA.
  */
 
+#include <QtCore/QScopedPointer>
+
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/FailTask.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
@@ -84,19 +87,25 @@ Task *GeneByGeneReportWorker::tick() {
         if (data.contains(ANNOT_SLOT_ID)){
             annVar = data[ANNOT_SLOT_ID];
         }
-        
+        SharedDbiDataHandler annTableId = annVar.value<SharedDbiDataHandler>( );
+        QScopedPointer<AnnotationTableObject> annTableObj(StorageUtils::getAnnotationTableObject(context->getDataStorage(), annTableId));
+        if (NULL == annTableObj.data()) {
+            return NULL;
+        }
 
-        const QList<SharedAnnotationData>& annData = QVariantUtils::var2ftl(annVar.toList());
+        QList<AnnotationData> annData;
+        foreach ( const Annotation &a, annTableObj->getAnnotations( ) ) {
+            annData << a.getData( );
+        }
 
         SharedDbiDataHandler seqId = data.value(SEQ_SLOT_ID).value<SharedDbiDataHandler>();
-        std::auto_ptr<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
-        if (NULL == seqObj.get()) {
+        QScopedPointer<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
+        if (NULL == seqObj.data()) {
             return NULL;
         }
         DNASequence seq = seqObj->getWholeSequence();
 
         geneData.insert(seqObj->getSequenceName(), qMakePair(seq,annData));
-
     }
 
     if (!inChannel->isEnded()) {

@@ -19,14 +19,13 @@
  * MA 02110-1301, USA.
  */
 
-#include "SQLiteFeatureDbi.h"
+#include <QtCore/QQueue>
 
 #include <U2Core/U2SqlHelpers.h>
 #include <U2Core/U2SafePoints.h>
 
-#include <QQueue>
-
-#include <memory>
+#include "SQLiteObjectDbi.h"
+#include "SQLiteFeatureDbi.h"
 
 namespace U2 {
 
@@ -37,6 +36,11 @@ void SQLiteFeatureDbi::initSqlSchema(U2OpStatus& os) {
     if (os.hasError()) {
         return;
     }
+    // annotation table object
+    SQLiteQuery( "CREATE TABLE AnnotationTable (object INTEGER UNIQUE, rootId INTEGER NOT NULL DEFAULT 0, "
+        "FOREIGN KEY(object) REFERENCES Object(id), "
+        "FOREIGN KEY(rootId) REFERENCES Feature(id) )", db, os ).execute( );
+
     //nameHash is used for better indexing
     SQLiteQuery("CREATE TABLE Feature (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, parent INTEGER, nameHash INTEGER, name TEXT, sequence INTEGER NOT NULL, "
         " strand INTEGER NOT NULL DEFAULT 0, start INTEGER NOT NULL DEFAULT 0, len INTEGER NOT NULL DEFAULT 0, "
@@ -96,6 +100,53 @@ private:
     U2DataId seqId;
 
 };
+
+void SQLiteFeatureDbi::createAnnotationTableObject( U2AnnotationTable &table,
+    const QString &folder, U2OpStatus &os )
+{
+    SQLiteTransaction t( db, os );
+    dbi->getSQLiteObjectDbi( )->createObject( table, folder, SQLiteDbiObjectRank_TopLevel, os );
+    CHECK_OP( os, );
+
+    static const QString queryString( "INSERT INTO AnnotationTable (object, rootId) VALUES(?1, ?2)" );
+    QSharedPointer<SQLiteQuery> q = t.getPreparedQuery( queryString, db, os );
+    CHECK_OP( os, );
+    q->bindDataId( 1, table.id );
+    q->bindDataId( 2, table.rootFeature );
+    q->insert( );
+    SAFE_POINT( !os.hasError( ), "Error on Feature DB insertion!", );
+}
+
+U2AnnotationTable SQLiteFeatureDbi::getAnnotationTableObject( const U2DataId &tableId,
+    U2OpStatus &os )
+{
+    U2AnnotationTable result;
+
+    DBI_TYPE_CHECK( tableId, U2Type::AnnotationTable, os, result );
+    dbi->getSQLiteObjectDbi( )->getObject( result, tableId, os );
+    CHECK_OP( os, result );
+
+    SQLiteQuery q( "SELECT rootId FROM AnnotationTable WHERE object = ?1", db, os );
+    q.bindDataId( 1, tableId );
+    if ( q.step( ) ) {
+        result.rootFeature = q.getDataId( 0, U2Type::Feature );
+        q.ensureDone( );
+    } else if ( !os.hasError( ) ) {
+        os.setError( SQLiteL10N::tr( "Annotation table object not found." ) );
+    }
+    return result;
+}
+
+void SQLiteFeatureDbi::renameAnnotationTableObject( const U2DataId &tableId,
+    const QString &name, U2OpStatus &os )
+{
+    SQLiteTransaction t( db, os );
+    U2Object tableObj;
+    dbi->getSQLiteObjectDbi( )->getObject( tableObj, tableId, os );
+    CHECK_OP( os, );
+
+    SQLiteObjectDbiUtils::renameObject( dbi, tableObj, name, os );
+}
 
 U2Feature SQLiteFeatureDbi::getFeature(const U2DataId& featureId, U2OpStatus& os) {
     U2Feature res;

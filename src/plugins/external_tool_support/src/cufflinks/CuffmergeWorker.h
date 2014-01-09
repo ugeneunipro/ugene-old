@@ -61,7 +61,7 @@ protected:
     IntegralBus *input;
     IntegralBus *output;
 
-    QList< QList<SharedAnnotationData> > anns;
+    QList<QList<AnnotationData> > anns;
 
 private:
     CuffmergeSettings scanParameters() const;

@@ -65,7 +65,7 @@ QList<Task*> RemoteBLASTToAnnotationsTask::onSubTaskFinished(Task* subTask) {
         
         RemoteBLASTTask * rrTask = qobject_cast<RemoteBLASTTask *>(queryTask);
         SAFE_POINT( NULL != rrTask, "Invalid remote BLAST task!", res );
-        QList<SharedAnnotationData> anns = rrTask->getResultedAnnotations();
+        QList<AnnotationData> anns = rrTask->getResultedAnnotations();
 
         if(!anns.isEmpty()) {
             if(!url.isEmpty()) {
@@ -83,10 +83,10 @@ QList<Task*> RemoteBLASTToAnnotationsTask::onSubTaskFinished(Task* subTask) {
                 }
             }
             QList<AnnotationData> annotations;
-            for(QMutableListIterator<SharedAnnotationData> it_ad(anns); it_ad.hasNext(); ) {
-                AnnotationData * ad = it_ad.next().data();
-                U2Region::shift(offsInGlobalSeq, ad->location->regions);
-                annotations << *ad;
+            for(QMutableListIterator<AnnotationData> it_ad(anns); it_ad.hasNext(); ) {
+                AnnotationData &ad = it_ad.next();
+                U2Region::shift(offsInGlobalSeq, ad.location->regions);
+                annotations << ad;
             }
 
             res.append(new CreateAnnotationsTask(aobj, group, annotations));
@@ -168,12 +168,12 @@ void RemoteBLASTTask::run() {
     }
 }
 
-QList<SharedAnnotationData> RemoteBLASTTask::getResultedAnnotations() const {
+QList<AnnotationData> RemoteBLASTTask::getResultedAnnotations() const {
     return resultAnnotations;
 }
 
 void RemoteBLASTTask::createAnnotations(const Query &q, HttpRequest *t) {
-    QList<SharedAnnotationData> annotations = t->getAnnotations();
+    QList<AnnotationData> annotations = t->getAnnotations();
     {
         QRegExp regExp("&" + ReqParams::hits + "=([^&]*)");
         if(cfg.params.contains(regExp)) {
@@ -191,14 +191,14 @@ void RemoteBLASTTask::createAnnotations(const Query &q, HttpRequest *t) {
     }
 
     for (int i = 0; i < annotations.size(); i++) {
-        SharedAnnotationData & d = annotations[i];
-        for( QVector<U2Region>::iterator jt = d->location->regions.begin(), eend = d->location->regions.end(); eend != jt; ++jt ) {
+        AnnotationData &d = annotations[i];
+        for( QVector<U2Region>::iterator jt = d.location->regions.begin(), eend = d.location->regions.end(); eend != jt; ++jt ) {
             qint64& s = jt->startPos;
             qint64& l = jt->length;
 
             if( q.complement ) {
                 s = q.seq.size() - s - l;
-                d->setStrand(d->getStrand().isCompementary() ? U2Strand::Direct : U2Strand::Complementary);
+                d.setStrand(d.getStrand().isCompementary() ? U2Strand::Direct : U2Strand::Complementary);
             }
             if( q.amino ) {
                 s = s * 3 + (q.complement ? 2 - q.offs : q.offs);
@@ -210,20 +210,20 @@ void RemoteBLASTTask::createAnnotations(const Query &q, HttpRequest *t) {
     resultAnnotations << annotations;
 }
 
-QList<SharedAnnotationData> RemoteBLASTTask::filterAnnotations(QList<SharedAnnotationData> annotations) {
+QList<AnnotationData> RemoteBLASTTask::filterAnnotations(QList<AnnotationData> annotations) {
     QString selectiveQual = cfg.useEval ? "e-value" : "score";
-    QList<SharedAnnotationData> resultList;
+    QList<AnnotationData> resultList;
 
     if(cfg.filterResult & FilterResultByAccession) {
         QStringList accessions;
-        foreach(const SharedAnnotationData &ann, annotations) {
-            QString acc = ann->findFirstQualifierValue("accession");
+        foreach(const AnnotationData &ann, annotations) {
+            QString acc = ann.findFirstQualifierValue("accession");
             if(accessions.contains(acc)) {
-                QString eval = ann->findFirstQualifierValue(selectiveQual);
-                foreach(const SharedAnnotationData &a, resultList) {
-                    if(a->findFirstQualifierValue("accession") == acc) {
-                        if(cfg.useEval ? a->findFirstQualifierValue(selectiveQual).toDouble() < eval.toDouble() :
-                        a->findFirstQualifierValue(selectiveQual).toDouble() > eval.toDouble()) {
+                QString eval = ann.findFirstQualifierValue(selectiveQual);
+                foreach(const AnnotationData &a, resultList) {
+                    if(a.findFirstQualifierValue("accession") == acc) {
+                        if(cfg.useEval ? a.findFirstQualifierValue(selectiveQual).toDouble() < eval.toDouble() :
+                        a.findFirstQualifierValue(selectiveQual).toDouble() > eval.toDouble()) {
                             resultList.removeOne(a);
                             resultList << ann;
                         }
@@ -241,14 +241,14 @@ QList<SharedAnnotationData> RemoteBLASTTask::filterAnnotations(QList<SharedAnnot
     if(cfg.filterResult & FilterResultByDef) {
         resultList.clear();
         QStringList defs;
-        foreach(const SharedAnnotationData &ann, annotations) {
-            QString def = ann->findFirstQualifierValue("def");
+        foreach(const AnnotationData &ann, annotations) {
+            QString def = ann.findFirstQualifierValue("def");
             if(defs.contains(def)) {
-                QString eval = ann->findFirstQualifierValue(selectiveQual);
-                foreach(const SharedAnnotationData &a, resultList) {
-                    if(a->findFirstQualifierValue("def") == def) {
-                        if(cfg.useEval ? a->findFirstQualifierValue(selectiveQual).toDouble() < eval.toDouble() :
-                        a->findFirstQualifierValue(selectiveQual).toDouble() > eval.toDouble()) {
+                QString eval = ann.findFirstQualifierValue(selectiveQual);
+                foreach(const AnnotationData &a, resultList) {
+                    if(a.findFirstQualifierValue("def") == def) {
+                        if(cfg.useEval ? a.findFirstQualifierValue(selectiveQual).toDouble() < eval.toDouble() :
+                        a.findFirstQualifierValue(selectiveQual).toDouble() > eval.toDouble()) {
                             resultList.removeOne(a);
                             resultList << ann;
                         }
@@ -266,14 +266,14 @@ QList<SharedAnnotationData> RemoteBLASTTask::filterAnnotations(QList<SharedAnnot
     if(cfg.filterResult & FilterResultById) {
         resultList.clear();
         QStringList ids;
-        foreach(const SharedAnnotationData &ann, annotations) {
-            QString id = ann->findFirstQualifierValue("id");
+        foreach(const AnnotationData &ann, annotations) {
+            QString id = ann.findFirstQualifierValue("id");
             if(ids.contains(id)) {
-                QString eval = ann->findFirstQualifierValue(selectiveQual);
-                foreach(const SharedAnnotationData &a, resultList) {
-                    if(a->findFirstQualifierValue("id") == id) {
-                        if(cfg.useEval ? a->findFirstQualifierValue(selectiveQual).toDouble() < eval.toDouble() :
-                        a->findFirstQualifierValue(selectiveQual).toDouble() > eval.toDouble()) {
+                QString eval = ann.findFirstQualifierValue(selectiveQual);
+                foreach(const AnnotationData &a, resultList) {
+                    if(a.findFirstQualifierValue("id") == id) {
+                        if(cfg.useEval ? a.findFirstQualifierValue(selectiveQual).toDouble() < eval.toDouble() :
+                        a.findFirstQualifierValue(selectiveQual).toDouble() > eval.toDouble()) {
                             resultList.removeOne(a);
                             resultList << ann;
                         }

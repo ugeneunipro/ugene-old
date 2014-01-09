@@ -51,7 +51,7 @@ private slots:
     void sl_taskFinished(Task *t);
 private:
     IntegralBus *input, *output;
-    QList<SharedAnnotationData> inputAnns;
+    QList<AnnotationData> inputAnns;
 }; 
 
 class FilterAnnotationsWorkerFactory : public DomainFactory {
@@ -65,7 +65,7 @@ public:
 class FilterAnnotationsTask : public Task {
     Q_OBJECT
 public:
-    FilterAnnotationsTask(QList<SharedAnnotationData>& annotations, const QString& names, bool accept)
+    FilterAnnotationsTask(QList<AnnotationData>& annotations, const QString& names, bool accept)
         : Task(tr("Filter annotations task"), TaskFlag_None), annotations_(annotations), names_(names), accept_(accept) {}
     void run();
 
@@ -73,7 +73,7 @@ private:
     QStringList readAnnotationNames();
     
 private:
-    QList<SharedAnnotationData>& annotations_;
+    QList<AnnotationData>& annotations_;
     QString names_;
     bool accept_;
 };

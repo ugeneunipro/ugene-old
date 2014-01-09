@@ -1,4 +1,25 @@
-#include "StatisticWorkers.h"
+/**
+ * UGENE - Integrated Bioinformatics Tools.
+ * Copyright (C) 2008-2013 UniPro <ugene@unipro.ru>
+ * http://ugene.unipro.ru
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301, USA.
+ */
+
+#include <QtCore/QScopedPointer>
 
 #include <U2Lang/ConfigurationEditor.h>
 #include <U2Lang/WorkflowEnv.h>
@@ -13,6 +34,8 @@
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/AnnotationData.h>
 #include <U2Core/FailTask.h>
+
+#include "StatisticWorkers.h"
 
 namespace U2 {
 namespace LocalWorkflow {
@@ -84,8 +107,8 @@ Task* DNAStatWorker::tick() {
         }
         QVariantMap qm = inputMessage.getData().toMap();
         SharedDbiDataHandler seqId = qm.value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<SharedDbiDataHandler>();
-        std::auto_ptr<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
-        if (NULL == seqObj.get()) {
+        QScopedPointer<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
+        if (NULL == seqObj.data()) {
             return NULL;
         }
         DNASequence dna = seqObj->getWholeSequence();
@@ -94,39 +117,40 @@ Task* DNAStatWorker::tick() {
             return new FailTask(tr("Sequence must be nucleotide"));
         }
 
-        QList<SharedAnnotationData> res;
-        SharedAnnotationData gcAnn(new AnnotationData());
-        gcAnn->name = "statistics";
-        gcAnn->location->regions << U2Region( 0, dna.seq.size());
+        QList<AnnotationData> res;
+        AnnotationData gcAnn;
+        gcAnn.name = "statistics";
+        gcAnn.location->regions << U2Region( 0, dna.seq.size());
 
         if(actor->getParameter(GCCONTENT)->getAttributeValue<bool>(context)) {
             float gcContent = calcGCContent(dna.seq);
-            gcAnn->qualifiers.push_back(U2Qualifier("gc-content", QString::number(gcContent*100) + "%"));
+            gcAnn.qualifiers.push_back(U2Qualifier("gc-content", QString::number(gcContent*100) + "%"));
         }
 
         if(actor->getParameter(GC1CONTENT)->getAttributeValue<bool>(context)) {
             float gc1Content = calcGC1Content(dna.seq);
-            gcAnn->qualifiers.push_back(U2Qualifier("gc1-content", QString::number(gc1Content*100) + "%"));
+            gcAnn.qualifiers.push_back(U2Qualifier("gc1-content", QString::number(gc1Content*100) + "%"));
         }
 
         if(actor->getParameter(GC2CONTENT)->getAttributeValue<bool>(context)) {
             float gc2Content = calcGC2Content(dna.seq);
-            gcAnn->qualifiers.push_back(U2Qualifier("gc2-content", QString::number(gc2Content*100) + "%"));
+            gcAnn.qualifiers.push_back(U2Qualifier("gc2-content", QString::number(gc2Content*100) + "%"));
         }
 
         if(actor->getParameter(GC3CONTENT)->getAttributeValue<bool>(context)) {
             float gc3Content = calcGC3Content(dna.seq);
-            gcAnn->qualifiers.push_back(U2Qualifier("gc3-content", QString::number(gc3Content*100) + "%"));
+            gcAnn.qualifiers.push_back(U2Qualifier("gc3-content", QString::number(gc3Content*100) + "%"));
         }
 
-        if(gcAnn->qualifiers.isEmpty()) {
+        if(gcAnn.qualifiers.isEmpty()) {
             return new FailTask(tr("No statistics was selected"));
         }
 
         res << gcAnn;
 
-        QVariant v = qVariantFromValue<QList<SharedAnnotationData> >(res);
-        output->put( Message(BaseTypes::ANNOTATION_TABLE_TYPE(), v) );
+        const SharedDbiDataHandler tableId = context->getDataStorage( )->putAnnotationTable( res );
+        const QVariant v = qVariantFromValue<SharedDbiDataHandler>( tableId );
+        output->put( Message( BaseTypes::ANNOTATION_TABLE_TYPE( ), v ) );
     }
     if (input->isEnded()) {
         setDone();

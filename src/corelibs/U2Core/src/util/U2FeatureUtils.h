@@ -36,6 +36,20 @@ class U2OpStatus;
 class U2CORE_EXPORT U2FeatureUtils {
 public:
     /**
+     * Creates DB representation of AnnotationTableObject
+     */
+    static U2AnnotationTable createAnnotationTable( const QString &tableName, const U2DbiRef &dbiRef, U2OpStatus &os );
+    /**
+     * Sets @name as a name of DB representation of AnnotationTableObject.
+     * Sets error to @os if @name is an empty string
+     */
+    static void                     renameAnnotationTable( const U2EntityRef &tableRef,
+                                        const QString &name, U2OpStatus &os );
+    /**
+     *
+     */
+    static U2AnnotationTable        getAnnotationTable( const U2EntityRef &tableRef, U2OpStatus &os );
+    /**
      * Returns feature based on the DB content corresponding to the given @id
      */
     static U2Feature                getFeatureById( const U2DataId &id, const U2DbiRef &dbiRef,

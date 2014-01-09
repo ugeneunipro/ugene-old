@@ -37,7 +37,7 @@ class LoadDocumentTask;
 class ConductGOTask : public ExternalToolSupportTask {
     Q_OBJECT
 public:
-    ConductGOTask(const ConductGOSettings& _settings, const QList<SharedAnnotationData>& _treatAnn);
+    ConductGOTask(const ConductGOSettings& _settings, const QList<AnnotationData>& _treatAnn);
     virtual ~ConductGOTask();
 
     virtual void prepare();
@@ -53,7 +53,7 @@ private:
     ConductGOSettings settings;
     QString workingDir;
 
-    QList<SharedAnnotationData> treatAnn;
+    QList<AnnotationData> treatAnn;
 
     Document *treatDoc;
 
@@ -67,7 +67,7 @@ private:
     static const QString TREAT_NAME;
 
 private:
-    Document* createDoc(const QList<SharedAnnotationData>& annData, const QString& name);
+    Document* createDoc(const QList<AnnotationData>& annData, const QString& name);
     bool copyFile(const QString &src, const QString &dst);
 };
 

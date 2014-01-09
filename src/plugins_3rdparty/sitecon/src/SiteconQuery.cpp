@@ -146,11 +146,11 @@ void QDSiteconActor::sl_onAlgorithmTaskFinished(Task* t) {
     QDSiteconTask* st = qobject_cast<QDSiteconTask*>(t);
     assert(st);
     foreach(const SiteconSearchResult& res, st->getResults()) {
-        const SharedAnnotationData& ad = res.toAnnotation("");
+        const AnnotationData ad = res.toAnnotation("");
         QDResultUnit ru(new QDResultUnitData);
-        ru->strand = ad->getStrand();
-        ru->quals = ad->qualifiers;
-        ru->region = ad->location->regions.first();
+        ru->strand = ad.getStrand();
+        ru->quals = ad.qualifiers;
+        ru->region = ad.location->regions.first();
         ru->owner = units.values().first();
         QDResultGroup::buildGroupFromSingleResult(ru, results);
     }

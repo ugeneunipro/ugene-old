@@ -19,6 +19,8 @@
  * MA 02110-1301, USA.
  */
 
+#include <QtCore/QScopedPointer>
+
 #include <U2Core/GObjectTypes.h>
 #include <U2Core/DNASequence.h>
 #include <U2Core/LoadDocumentTask.h>
@@ -87,52 +89,61 @@ Task * ImportAnnotationsWorker::tick() {
     return NULL;
 }
 
-void ImportAnnotationsWorker::addTaskAnnotations(const QVariant &data, Task *t) {
-    QVariantMap dataMap = data.toMap();
-    if (dataMap.contains(BaseSlots::ANNOTATION_TABLE_SLOT().getId())) {
-        QVariantList annsList = dataMap[BaseSlots::ANNOTATION_TABLE_SLOT().getId()].toList();
-        annsMap[t] = QVariantUtils::var2ftl(annsList);
+void ImportAnnotationsWorker::addTaskAnnotations( const QVariant &data, Task *t ) {
+    QVariantMap dataMap = data.toMap( );
+    if ( dataMap.contains( BaseSlots::ANNOTATION_TABLE_SLOT( ).getId( ) ) ) {
+        SharedDbiDataHandler tableId = dataMap[BaseSlots::ANNOTATION_TABLE_SLOT( ).getId( )]
+            .value<SharedDbiDataHandler>( );
+        QScopedPointer<AnnotationTableObject> annTable( StorageUtils::getAnnotationTableObject(
+            context->getDataStorage( ), tableId ) );
+        QList<AnnotationData> result;
+        foreach ( const Annotation &ann, annTable->getAnnotations( ) ) {
+            result << ann.getData( );
+        }
+        annsMap[t] = result;
     }
 }
 
-static QList<SharedAnnotationData> getAnnsFromDoc(Document* doc) {
-    QList<SharedAnnotationData> ret;
-    if(doc == NULL) {
+static QList<AnnotationData> getAnnsFromDoc( Document *doc ) {
+    QList<AnnotationData> ret;
+    if ( NULL == doc ) {
         return ret;
     }
-    QList<GObject*> objs = doc->findGObjectByType(GObjectTypes::ANNOTATION_TABLE);
-    foreach(GObject* obj, objs) {
-        AnnotationTableObject *annObj = qobject_cast<AnnotationTableObject *>(obj);
-        if(NULL == annObj) {
+    QList<GObject *> objs = doc->findGObjectByType( GObjectTypes::ANNOTATION_TABLE );
+    foreach ( GObject *obj, objs ) {
+        AnnotationTableObject *annObj = qobject_cast<AnnotationTableObject *>( obj );
+        if ( NULL == annObj ) {
             continue;
         }
         foreach ( const Annotation &a, annObj->getAnnotations( ) ) {
-            ret << SharedAnnotationData( new AnnotationData( a.getData( ) ) );
+            ret << a.getData( );
         }
     }
     return ret;
 }
 
-void ImportAnnotationsWorker::sl_docsLoaded(Task* ta) {
-    MultiTask * t = qobject_cast<MultiTask*>(ta);
-    if(t == NULL || t->hasError()) {
+void ImportAnnotationsWorker::sl_docsLoaded( Task *ta ) {
+    MultiTask *t = qobject_cast<MultiTask *>( ta );
+    if ( NULL == t || t->hasError( ) ) {
         return;
     }
-    
-    QList<SharedAnnotationData> anns = annsMap.value(t);
-    QList<Task*> loadSubs = t->getTasks();
-    foreach(Task * s, loadSubs) {
-        LoadDocumentTask * sub = qobject_cast<LoadDocumentTask*>(s);
-        if(sub == NULL || sub->hasError()) {
+
+    QList<AnnotationData> anns = annsMap.value( t );
+    QList<Task *> loadSubs = t->getTasks( );
+    foreach ( Task *s, loadSubs ) {
+        LoadDocumentTask *sub = qobject_cast<LoadDocumentTask *>( s );
+        if ( NULL == sub || sub->hasError( ) ) {
             continue;
         }
-        anns.append(getAnnsFromDoc(sub->getDocument()));
+        anns.append( getAnnsFromDoc( sub->getDocument( ) ) );
     }
-    QVariant v = qVariantFromValue<QList<SharedAnnotationData> >(anns);
-    outPort->put(Message(BaseTypes::ANNOTATION_TABLE_TYPE(), v));
+    const SharedDbiDataHandler tableId = context->getDataStorage( )->putAnnotationTable( anns );
+    outPort->put( Message( BaseTypes::ANNOTATION_TABLE_TYPE( ),
+        qVariantFromValue<SharedDbiDataHandler>( tableId ) ) );
 }
 
-void ImportAnnotationsWorker::cleanup() {
+void ImportAnnotationsWorker::cleanup( ) {
+
 }
 
 /*********************************

@@ -465,12 +465,21 @@ void GenbankWriter::data2document(Document* doc, const QVariantMap& data, Workfl
 
     if (data.contains(BaseSlots::ANNOTATION_TABLE_SLOT().getId())) {
         const QVariant &annsVar = data[BaseSlots::ANNOTATION_TABLE_SLOT().getId()];
-        QList<SharedAnnotationData> atl = QVariantUtils::var2ftl(annsVar.toList());
+        const SharedDbiDataHandler annTableId = annsVar.value<SharedDbiDataHandler>();
+        QScopedPointer<AnnotationTableObject> tableObject(
+            StorageUtils::getAnnotationTableObject( context->getDataStorage( ), annTableId ) );
+        SAFE_POINT( NULL != tableObject.data( ), "Invalid annotation table encountered!", );
+
+        QList<AnnotationData> atl;
+        foreach ( const Annotation &a, tableObject->getAnnotations( ) ) {
+            atl << a.getData( );
+        }
 
         if (!atl.isEmpty()) {
             AnnotationTableObject *att = NULL;
             if (dna) {
-                QList<GObject*> relAnns = GObjectUtils::findObjectsRelatedToObjectByRole(dna, GObjectTypes::ANNOTATION_TABLE, GObjectRelationRole::SEQUENCE, doc->getObjects(), UOF_LoadedOnly);
+                QList<GObject*> relAnns = GObjectUtils::findObjectsRelatedToObjectByRole(dna,
+                    GObjectTypes::ANNOTATION_TABLE, GObjectRelationRole::SEQUENCE, doc->getObjects(), UOF_LoadedOnly);
                 att = relAnns.isEmpty() ? NULL : qobject_cast<AnnotationTableObject *>(relAnns.first());
             }
             if (!att) {
@@ -488,8 +497,8 @@ void GenbankWriter::data2document(Document* doc, const QVariantMap& data, Workfl
                 }
                 algoLog.trace(QString("Adding features [%1] to GB doc %2").arg(annotationName).arg(doc->getURLString()));
             }
-            foreach ( const SharedAnnotationData &sad, atl ) {
-                att->addAnnotation( *sad, QString( ) );
+            foreach ( const AnnotationData &sad, atl ) {
+                att->addAnnotation( sad, QString( ) );
             }
         }
     }
@@ -518,7 +527,16 @@ void GenbankWriter::streamingStoreEntry(DocumentFormat* format, IOAdapter *io, c
     QList<GObject*> anObjList;
     if (data.contains(BaseSlots::ANNOTATION_TABLE_SLOT().getId())) {
         const QVariant &annsVar = data[BaseSlots::ANNOTATION_TABLE_SLOT().getId()];
-        QList<SharedAnnotationData> atl = QVariantUtils::var2ftl(annsVar.toList());
+        const SharedDbiDataHandler annTableId = annsVar.value<SharedDbiDataHandler>();
+        QScopedPointer<AnnotationTableObject> tableObject(
+            StorageUtils::getAnnotationTableObject( context->getDataStorage( ), annTableId ) );
+        SAFE_POINT( NULL != tableObject.data( ), "Invalid annotation table encountered!", );
+
+        QList<AnnotationData> atl;
+        foreach ( const Annotation &a, tableObject->getAnnotations( ) ) {
+            atl << a.getData( );
+        }
+
         if (!atl.isEmpty()) {
             if (annotationName.isEmpty()) {
                 annotationName = QString("unknown features %1").arg(entryNum);
@@ -526,8 +544,8 @@ void GenbankWriter::streamingStoreEntry(DocumentFormat* format, IOAdapter *io, c
             AnnotationTableObject* att = new AnnotationTableObject( annotationName,
                 context->getDataStorage( )->getDbiRef( ) );
             anObjList << att;
-            foreach ( SharedAnnotationData sad, atl ) {
-                att->addAnnotation( *sad, QString( ) );
+            foreach ( const AnnotationData &ad, atl ) {
+                att->addAnnotation( ad, QString( ) );
             }
         }
     }
@@ -585,7 +603,15 @@ void GFFWriter::data2document(Document* doc, const QVariantMap& data, WorkflowCo
 
     if (data.contains(BaseSlots::ANNOTATION_TABLE_SLOT().getId())) {
         const QVariant &annsVar = data[BaseSlots::ANNOTATION_TABLE_SLOT().getId()];
-        QList<SharedAnnotationData> atl = QVariantUtils::var2ftl(annsVar.toList());
+        const SharedDbiDataHandler annTableId = annsVar.value<SharedDbiDataHandler>();
+        QScopedPointer<AnnotationTableObject> tableObject(
+            StorageUtils::getAnnotationTableObject( context->getDataStorage( ), annTableId ) );
+        SAFE_POINT( NULL != tableObject.data( ), "Invalid annotation table encountered!", );
+
+        QList<AnnotationData> atl;
+        foreach ( const Annotation &a, tableObject->getAnnotations( ) ) {
+            atl << a.getData( );
+        }
         if (!atl.isEmpty()) {
             AnnotationTableObject *att = NULL;
             if (dna) {
@@ -607,8 +633,8 @@ void GFFWriter::data2document(Document* doc, const QVariantMap& data, WorkflowCo
                 }
                 algoLog.trace(QString("Adding features [%1] to GFF doc %2").arg(annotationName).arg(doc->getURLString()));
             }
-            foreach(SharedAnnotationData sad, atl) {
-                att->addAnnotation( *sad, QString( ) );
+            foreach( const AnnotationData &ad, atl ) {
+                att->addAnnotation( ad, QString( ) );
             }
         }
     }

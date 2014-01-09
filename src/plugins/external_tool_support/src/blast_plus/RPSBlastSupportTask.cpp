@@ -51,12 +51,8 @@ LocalCDSearch::LocalCDSearch(const CDSearchSettings& settings) {
     task = new RPSBlastSupportTask(stngs);
 }
 
-QList<SharedAnnotationData> LocalCDSearch::getCDSResults() const {
-    QList<SharedAnnotationData> res;
-    foreach ( const AnnotationData &data, task->getResultedAnnotations( ) ) {
-        res << SharedAnnotationData( new AnnotationData( data ) );
-    }
-    return res;
+QList<AnnotationData> LocalCDSearch::getCDSResults() const {
+    return task->getResultedAnnotations( );
 }
 
 } //namespace

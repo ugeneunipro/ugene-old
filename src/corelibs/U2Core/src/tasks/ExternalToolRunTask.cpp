@@ -293,7 +293,7 @@ QString ExternalToolSupportUtils::createTmpDir(const QString& domain, U2OpStatus
 }
 
 Document * ExternalToolSupportUtils::createAnnotationsDocument( const QString &filePath,
-    const DocumentFormatId &format,const QList<SharedAnnotationData> &anns, U2OpStatus &os )
+    const DocumentFormatId &format,const QList<AnnotationData> &anns, U2OpStatus &os )
 {
      Document *doc = NULL;
      { // create document
@@ -306,9 +306,7 @@ Document * ExternalToolSupportUtils::createAnnotationsDocument( const QString &f
 
      { // add annotations object
          AnnotationTableObject *aobj = new AnnotationTableObject( "anns", doc->getDbiRef( ) );
-         foreach ( const SharedAnnotationData &ann, anns ) {
-             aobj->addAnnotation( *ann.data( ) );
-         }
+         aobj->addAnnotations( anns );
          doc->addObject( aobj );
      }
      return doc;

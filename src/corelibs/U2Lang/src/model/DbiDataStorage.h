@@ -22,6 +22,7 @@
 #ifndef _WORKFLOW_DBI_DATA_STORAGE_H_
 #define _WORKFLOW_DBI_DATA_STORAGE_H_
 
+#include <U2Core/AnnotationData.h>
 #include <U2Core/AssemblyObject.h>
 #include <U2Core/DNASequence.h>
 #include <U2Core/DNASequenceObject.h>
@@ -34,6 +35,8 @@
 #include <memory>
 
 namespace U2 {
+
+class AnnotationTableObject;
 
 namespace Workflow {
 
@@ -49,6 +52,7 @@ public:
     virtual U2Object *getObject(const SharedDbiDataHandler &handler, const U2DataType &type);
     virtual SharedDbiDataHandler putSequence(const DNASequence &sequence);
     virtual SharedDbiDataHandler putAlignment(const MAlignment &al);
+    virtual SharedDbiDataHandler putAnnotationTable( const QList<AnnotationData> &anns );
     virtual bool deleteObject(const U2DataId &objectId, const U2DataType &type);
 
     /* If @useGC is true then the data will be removed from the database by GC */
@@ -77,6 +81,8 @@ public:
     static AssemblyObject *getAssemblyObject(DbiDataStorage *storage, const SharedDbiDataHandler &handler);
     /* NOTE: deallocate memory! */
     static MAlignmentObject *getMsaObject(DbiDataStorage *storage, const SharedDbiDataHandler &handler);
+    /* NOTE: deallocate memory! */
+    static AnnotationTableObject * getAnnotationTableObject( DbiDataStorage *storage, const SharedDbiDataHandler &handler );
 };
     
 } // Workflow

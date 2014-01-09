@@ -37,7 +37,7 @@ class LoadDocumentTask;
 class ConservationPlotTask : public ExternalToolSupportTask {
     Q_OBJECT
 public:
-    ConservationPlotTask(const ConservationPlotSettings& _settings, const QList<QList<SharedAnnotationData> >& plotData);
+    ConservationPlotTask(const ConservationPlotSettings& _settings, const QList<QList<AnnotationData> >& plotData);
     virtual ~ConservationPlotTask();
 
     virtual void prepare();
@@ -56,7 +56,7 @@ private:
 
     QMap<Document* , SaveDocumentTask* > docTaskMap;
 
-    QList<QList<SharedAnnotationData> > plotData;
+    QList<QList<AnnotationData> > plotData;
 
 
     int activeSubtasks;
@@ -69,7 +69,7 @@ private:
     static const QString TREAT_NAME;
 
 private:
-    Document* createDoc(const QList<SharedAnnotationData>& annData, const QString& name);
+    Document* createDoc(const QList<AnnotationData>& annData, const QString& name);
     bool copyFile(const QString &src, const QString &dst);
 };
 

@@ -43,9 +43,9 @@ public:
 
     virtual void onRegion(SequenceWalkerSubtask* t, TaskStateInfo& stateInfo);
 
-	Task::ReportResult report();
+    Task::ReportResult report();
 
-    QList<SharedAnnotationData> getResultsAsAnnotations(const QString& name) const;
+    QList<AnnotationData> getResultsAsAnnotations(const QString &name) const;
 
     QList< Task* > onSubTaskFinished( Task* subTask );
 
@@ -60,7 +60,7 @@ private:
     DNATranslation*                     complTrans;
     DNATranslation*                     aminoTrans;
     QList<HMMSearchTaskResult>          results;
-	QList<HMMSearchTaskResult>          overlaps;
+    QList<HMMSearchTaskResult>          overlaps;
     QString                             fName;
     QMutex                              lock;
     HMMReadTask*                        readHMMTask;

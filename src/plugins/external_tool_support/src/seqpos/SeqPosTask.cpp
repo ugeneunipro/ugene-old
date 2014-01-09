@@ -47,7 +47,7 @@ const QString SeqPosTask::BASE_DIR_NAME("SeqPos_tmp");
 const QString SeqPosTask::BASE_SUBDIR_NAME("SeqPos");
 const QString SeqPosTask::TREAT_NAME("treatment");
 
-SeqPosTask::SeqPosTask(const SeqPosSettings& _settings, const QList<SharedAnnotationData>& _treatAnn)
+SeqPosTask::SeqPosTask(const SeqPosSettings& _settings, const QList<AnnotationData>& _treatAnn)
 : ExternalToolSupportTask("SeqPos annotation", TaskFlag_None)
 , settings(_settings)
 , treatAnn(_treatAnn)
@@ -101,7 +101,7 @@ void SeqPosTask::prepare() {
     addSubTask(treatTask);
 }
 
-Document* SeqPosTask::createDoc( const QList<SharedAnnotationData>& annData, const QString& name){
+Document* SeqPosTask::createDoc( const QList<AnnotationData>& annData, const QString& name){
     Document* doc = NULL;
 
     QString docUrl = workingDir + "/" + name +".bed";
@@ -115,8 +115,8 @@ Document* SeqPosTask::createDoc( const QList<SharedAnnotationData>& annData, con
     doc->setDocumentOwnsDbiResources(false);
 
     AnnotationTableObject *ato = new AnnotationTableObject( name, doc->getDbiRef( ) );
-    foreach (const SharedAnnotationData &sad, annData) {
-        ato->addAnnotation( *sad );
+    foreach (const AnnotationData &ad, annData) {
+        ato->addAnnotation( ad );
     }
     doc->addObject(ato);
 

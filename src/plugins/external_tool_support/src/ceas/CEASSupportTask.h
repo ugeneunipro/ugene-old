@@ -36,12 +36,12 @@ class SaveDocumentTask;
 class CEASTaskSettings {
 public:
     CEASTaskSettings();
-    CEASTaskSettings(const CEASSettings &ceas, const QList<SharedAnnotationData> &bedData, const QString &wigData);
+    CEASTaskSettings(const CEASSettings &ceas, const QList<AnnotationData> &bedData, const QString &wigData);
 
     CEASSettings & getCeasSettings();
     const CEASSettings & getCeasSettings() const;
 
-    const QList<SharedAnnotationData> & getBedData() const;
+    const QList<AnnotationData> & getBedData() const;
     const QString & getWigData() const;
 
     static const QString PDF_FORMAT;
@@ -49,7 +49,7 @@ public:
 
 private:
     CEASSettings ceas;
-    QList<SharedAnnotationData> bedData;
+    QList<AnnotationData> bedData;
     QString wigData;
 
     QString outFilePath;

@@ -52,7 +52,7 @@ CEASTaskSettings::CEASTaskSettings() {
 
 }
     
-CEASTaskSettings::CEASTaskSettings(const CEASSettings &_ceas, const QList<SharedAnnotationData> &_bedData,
+CEASTaskSettings::CEASTaskSettings(const CEASSettings &_ceas, const QList<AnnotationData> &_bedData,
                                    const QString &_wigData)
 : ceas(_ceas), bedData(_bedData), wigData(_wigData)
 {
@@ -67,7 +67,7 @@ const CEASSettings & CEASTaskSettings::getCeasSettings() const {
     return ceas;
 }
 
-const QList<SharedAnnotationData> & CEASTaskSettings::getBedData() const {
+const QList<AnnotationData> & CEASTaskSettings::getBedData() const {
     return bedData;
 }
 
@@ -145,8 +145,8 @@ void CEASSupportTask::createBedDoc() {
         bedDoc->setDocumentOwnsDbiResources(false);
 
         AnnotationTableObject *ato = new AnnotationTableObject( "bed_anns", bedDoc->getDbiRef( ) );
-        foreach (const SharedAnnotationData &sad, settings.getBedData()) {
-            ato->addAnnotation( *sad );
+        foreach (const AnnotationData &ad, settings.getBedData( ) ) {
+            ato->addAnnotation( ad );
         }
         bedDoc->addObject(ato);
     }

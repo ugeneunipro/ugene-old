@@ -515,7 +515,7 @@ Task* SWWorker::tick() {
 }
 
 void SWWorker::sl_taskFinished(Task* t) {
-    QList<SharedAnnotationData> annData;
+    QList<AnnotationData> annData;
     MultiTask * multiSw = qobject_cast<MultiTask*>(t);
     SAFE_POINT( NULL != t, "Invalid task is encountered", );
     QList<Task*> subs = multiSw->getTasks();
@@ -537,17 +537,19 @@ void SWWorker::sl_taskFinished(Task* t) {
                 if(!patternNames[pattern].isEmpty()) {
                     a.qualifiers.push_back(U2Qualifier(qualifierName, patternNames[pattern]));
                 }
-                annData << SharedAnnotationData( new AnnotationData( a ) );
+                annData << a;
             }
         }
         ptrns << patterns.value(sub);
     }
 
     assert(output != NULL);
-    if(output) {
-        QVariant v = qVariantFromValue<QList<SharedAnnotationData> >(annData);
-        output->put(Message(BaseTypes::ANNOTATION_TABLE_TYPE(), v));
-        algoLog.info(tr("Found %1 matches of pattern '%2'").arg(annData.size()).arg(ptrns.join(PATTERN_DELIMITER)));
+    if ( NULL != output ) {
+        const SharedDbiDataHandler tableId = context->getDataStorage( )->putAnnotationTable( annData );
+        const QVariant v = qVariantFromValue<SharedDbiDataHandler>( tableId );
+        output->put( Message( BaseTypes::ANNOTATION_TABLE_TYPE( ), v ) );
+        algoLog.info( tr( "Found %1 matches of pattern '%2'" )
+            .arg( annData.size( ) ).arg( ptrns.join( PATTERN_DELIMITER ) ) );
     }
 }
 

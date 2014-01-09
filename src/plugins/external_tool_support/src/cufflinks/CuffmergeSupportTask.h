@@ -38,7 +38,7 @@ struct CuffmergeSettings {
     QString outDir;
     QString workingDir;
 
-    QList< QList<SharedAnnotationData> > anns;
+    QList< QList<AnnotationData> > anns;
 };
 
 class CuffmergeSupportTask : public ExternalToolSupportTask {
@@ -53,7 +53,7 @@ public:
     ReportResult report();
     QStringList getOutputFiles() const;
 
-    QList<SharedAnnotationData> takeResult();
+    QList<AnnotationData> takeResult();
 
 private:
     CuffmergeSettings settings;
@@ -63,14 +63,14 @@ private:
     QList<Document*> docs;
     QList<Task*> writeTasks;
     ExternalToolRunTask *mergeTask;
-    QList<SharedAnnotationData> result;
+    QList<AnnotationData> result;
     QScopedPointer<ExternalToolLogParser> logParser;
     QStringList outputFiles;
 
     static const QString outSubDirBaseName;
 
 private:
-    Task * createWriteTask(const QList<SharedAnnotationData> &anns, const QString &filePath);
+    Task * createWriteTask(const QList<AnnotationData> &anns, const QString &filePath);
     Task * createCuffmergeTask();
     QString getAnnsFilePath();
     void setupWorkingDirPath();

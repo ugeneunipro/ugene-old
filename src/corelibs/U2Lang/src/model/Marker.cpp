@@ -342,26 +342,30 @@ Marker *SequenceMarker::clone() {
 /************************************************************************/
 /* QualifierMarker */
 /************************************************************************/
-QString QualifierMarker::getMarkingResult(const QVariant &object) {
-    QList<SharedAnnotationData> anns = QVariantUtils::var2ftl(object.toList());
+QString QualifierMarker::getMarkingResult( const QVariant &object ) {
+    QList<AnnotationData> anns;
+    foreach ( const QVariant &ann, object.toList( ) ) {
+        SAFE_POINT( ann.canConvert<AnnotationData>( ), "Invalid annotation data encountered!",
+            QString( ) );
+        anns << ann.value<AnnotationData>( );
+    }
 
-    foreach (SharedAnnotationData ann, anns) {
-        foreach (U2Qualifier qual, ann->qualifiers) {
-            if (qual.name == qualName) {
+    foreach ( const AnnotationData &ann, anns ) {
+        foreach ( const U2Qualifier &qual, ann.qualifiers ) {
+            if ( qual.name == qualName ) {
                 bool ok = false;
                 QVariant value;
-                if (MarkerTypes::QUAL_INT_VALUE_MARKER_ID == type) {
-                    value = qVariantFromValue(qual.value.toInt(&ok));
-                } else if (MarkerTypes::QUAL_FLOAT_VALUE_MARKER_ID == type) {
-                    value = qVariantFromValue(qual.value.toFloat(&ok));
-                } else if (MarkerTypes::QUAL_TEXT_VALUE_MARKER_ID == type) {
-                    value = qVariantFromValue(qual.value);
+                if ( MarkerTypes::QUAL_INT_VALUE_MARKER_ID == type ) {
+                    value = qVariantFromValue( qual.value.toInt( &ok ) );
+                } else if ( MarkerTypes::QUAL_FLOAT_VALUE_MARKER_ID == type ) {
+                    value = qVariantFromValue( qual.value.toFloat( &ok ) );
+                } else if ( MarkerTypes::QUAL_TEXT_VALUE_MARKER_ID == type ) {
+                    value = qVariantFromValue( qual.value );
                     ok = true;
                 } else {
-                    assert(0);
-                    return values.value(MarkerUtils::REST_OPERATION);
+                    FAIL( "Unexpected marker type!", values.value( MarkerUtils::REST_OPERATION ) );
                 }
-                assert(ok);
+                SAFE_POINT( ok, "Variant conversion error!", QString( ) );
                 return Marker::getMarkingResult(value);
             }
         }
@@ -402,15 +406,20 @@ QString QualifierMarker::getAdditionalParameterName() {
 /* AnnotationMarker */
 /************************************************************************/
 QString AnnotationMarker::getMarkingResult(const QVariant &object) {
-    QList<SharedAnnotationData> anns = QVariantUtils::var2ftl(object.toList());
+    QList<AnnotationData> anns;
+    foreach ( const QVariant &ann, object.toList( ) ) {
+        SAFE_POINT( ann.canConvert<AnnotationData>( ), "Invalid annotation data encountered!",
+            QString( ) );
+        anns << ann.value<AnnotationData>( );
+    }
 
     if (MarkerTypes::ANNOTATION_COUNT_MARKER_ID == type) {
         int count = 0;
         if (annName.isEmpty()) {
             count = anns.size();
         } else {
-            foreach (SharedAnnotationData ann, anns) {
-                if (ann->name == annName) {
+            foreach ( const AnnotationData &ann, anns ) {
+                if (ann.name == annName) {
                     count++;
                 }
             }

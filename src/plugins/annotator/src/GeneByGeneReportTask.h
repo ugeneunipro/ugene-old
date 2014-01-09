@@ -70,7 +70,7 @@ class GeneByGeneComparator{
 public:
     GeneByGeneComparator(){}
 
-    static GeneByGeneCompareResult compareGeneAnnotation(const DNASequence &seq, const QList<SharedAnnotationData> &annData, const QString &annName, float identity);
+    static GeneByGeneCompareResult compareGeneAnnotation(const DNASequence &seq, const QList<AnnotationData> &annData, const QString &annName, float identity);
 
     static float parseBlastQual (const QString& ident);
 };
@@ -105,7 +105,7 @@ private:
 class GeneByGeneReportTask : public Task {
     Q_OBJECT
 public:
-    GeneByGeneReportTask(const GeneByGeneReportSettings& _settings, const QMap<QString, QPair<DNASequence, QList<SharedAnnotationData> > >& _geneData);
+    GeneByGeneReportTask(const GeneByGeneReportSettings& _settings, const QMap<QString, QPair<DNASequence, QList<AnnotationData> > >& _geneData);
     virtual ~GeneByGeneReportTask();
 
     virtual void run();
@@ -114,7 +114,7 @@ public:
 
 private:
     GeneByGeneReportSettings settings;
-    QMap<QString, QPair<DNASequence, QList<SharedAnnotationData> > > geneData;
+    QMap<QString, QPair<DNASequence, QList<AnnotationData> > > geneData;
     
 };
 

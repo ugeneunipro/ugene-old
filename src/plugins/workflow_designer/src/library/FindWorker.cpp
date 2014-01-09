@@ -19,6 +19,8 @@
  * MA 02110-1301, USA.
  */
 
+#include <QtCore/QScopedPointer>
+
 #include <U2Lang/IntegralBusModel.h>
 #include <U2Lang/WorkflowEnv.h>
 #include <U2Lang/ActorPrototypeRegistry.h>
@@ -362,8 +364,8 @@ Task* FindWorker::tick() {
         // sequence
         QVariantMap qm = inputMessage.getData().toMap();
         SharedDbiDataHandler seqId = qm.value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<SharedDbiDataHandler>();
-        std::auto_ptr<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
-        if (NULL == seqObj.get()) {
+        QScopedPointer<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
+        if (NULL == seqObj.data()) {
             return NULL;
         }
         DNASequence seq = seqObj->getWholeSequence();
@@ -447,18 +449,18 @@ Task* FindWorker::tick() {
     return NULL;
 }
 
-void FindWorker::sl_taskFinished(Task* t) {
-    MultiTask * multiFind = qobject_cast<MultiTask*>(t);
-    assert(multiFind != NULL);
-    QList<Task*> subs = multiFind->getTasks();
-    assert(!subs.isEmpty());
+void FindWorker::sl_taskFinished( Task *t ) {
+    MultiTask *multiFind = qobject_cast<MultiTask *>( t );
+    SAFE_POINT( NULL != multiFind, "Invalid task encountered!", );
+    QList<Task *> subs = multiFind->getTasks( );
+    SAFE_POINT( !subs.isEmpty( ), "No subtasks found!", );
     QStringList ptrns;
     QList<FindAlgorithmResult> annData;
-    QList<SharedAnnotationData> result;
-    foreach(Task * sub, subs) {
-        FindAlgorithmTask * findTask = qobject_cast<FindAlgorithmTask*>(sub);
-        if(findTask != NULL){
-            if (findTask->isCanceled() || findTask->hasError()){
+    QList<AnnotationData> result;
+    foreach ( Task *sub, subs ) {
+        FindAlgorithmTask *findTask = qobject_cast<FindAlgorithmTask *>( sub );
+        if ( NULL != findTask ) {
+            if ( findTask->isCanceled( ) || findTask->hasError( ) ) {
                 return;
             }
             //parameters pattern
@@ -483,55 +485,57 @@ void FindWorker::sl_taskFinished(Task* t) {
                         const U2Qualifier patternNameQual( patternNameQualName, patternName );
                         annotation.qualifiers.push_back( patternNameQual );
                     }
-                    result << SharedAnnotationData( new AnnotationData( annotation ) );
+                    result << annotation;
                 }
-                foreach ( SharedAnnotationData annotation, result ) {
-                    foreach ( U2Qualifier qual, annotation->qualifiers ) {
-                        qDebug( ) << annotation->name << "---" << qual.name << " : " << qual.value;
+                foreach ( AnnotationData annotation, result ) {
+                    foreach ( U2Qualifier qual, annotation.qualifiers ) {
+                        qDebug( ) << annotation.name << "---" << qual.name << " : " << qual.value;
                     }
                 }
-                if (output){
+                if ( NULL != output ) {
                     algoLog.info( tr( "Found %1 matches of pattern '%2'" ).arg( result.size( ) )
                         .arg( QString( filePatterns.value( findTask ).second ) ) );
                 }
             }
             
         } else {
-            LoadPatternsFileTask * loadTask = qobject_cast<LoadPatternsFileTask*>(sub);
-            if (loadTask != NULL) {
-                namesPatterns = loadTask->getNamesPatterns();
+            LoadPatternsFileTask *loadTask = qobject_cast<LoadPatternsFileTask *>( sub );
+            if ( NULL != loadTask ) {
+                namesPatterns = loadTask->getNamesPatterns( );
             }
             return;
         }
     }
-    if(output) {
+    if ( NULL != output ) {
         if ( result.isEmpty( ) ) {
-            foreach ( const AnnotationData &data, FindAlgorithmResult::toTable(annData, resultName) ) {
-                result << SharedAnnotationData( new AnnotationData( data ) );
-            }
+            result << FindAlgorithmResult::toTable( annData, resultName );
         }
-        QVariant v = qVariantFromValue<QList<SharedAnnotationData> >(result);
-        output->put(Message(BaseTypes::ANNOTATION_TABLE_TYPE(), v));
+
+        const SharedDbiDataHandler tableId = context->getDataStorage( )->putAnnotationTable( result );
+        output->put( Message( BaseTypes::ANNOTATION_TABLE_TYPE( ),
+            qVariantFromValue<SharedDbiDataHandler>( tableId ) ) );
+
         if ( !ptrns.isEmpty( ) ) {
-            algoLog.info(tr("Found %1 matches of pattern '%2'").arg(result.size())
-                .arg(ptrns.join(PATTERN_DELIMITER)));
+            algoLog.info( tr( "Found %1 matches of pattern '%2'" ).arg( result.size( ) )
+                .arg( ptrns.join( PATTERN_DELIMITER ) ) );
         }
     }
 }
 
-void FindWorker::cleanup() {
+void FindWorker::cleanup( ) {
+
 }
 
 
 /***************************
  * FindAllRegionsTask
  ***************************/
-FindAllRegionsTask::FindAllRegionsTask(const FindAlgorithmTaskSettings& s, const QList<SharedAnnotationData>& l) :
+FindAllRegionsTask::FindAllRegionsTask(const FindAlgorithmTaskSettings& s, const QList<AnnotationData>& l) :
 Task(tr("FindAllRegionsTask"), TaskFlag_NoRun), cfg(s), regions(l) {}
 
 void FindAllRegionsTask::prepare() {
-    foreach(SharedAnnotationData sd, regions) {
-        foreach(U2Region lr, sd->getRegions()) {
+    foreach(AnnotationData d, regions) {
+        foreach(U2Region lr, d.getRegions()) {
             cfg.searchRegion = lr;
             addSubTask(new FindAlgorithmTask(cfg));
         }

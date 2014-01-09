@@ -35,18 +35,22 @@ AnnotationTableObject::AnnotationTableObject( const QString &objectName, const U
     : GObject( GObjectTypes::ANNOTATION_TABLE, objectName, hintsMap )
 {
     U2OpStatusImpl os;
-    const U2Feature rootFeature = U2FeatureUtils::exportAnnotationGroupToFeature(
-        AnnotationGroup::ROOT_GROUP_NAME, U2DataId( ), dbiRef, os );
-    rootFeatureId = rootFeature.id;
-
-    CHECK_OP( os, );
-    entityRef = U2EntityRef( dbiRef, rootFeature.id );
+    U2AnnotationTable table = U2FeatureUtils::createAnnotationTable( objectName, dbiRef, os );
+    SAFE_POINT_OP( os, );
+    entityRef = U2EntityRef( dbiRef, table.id );
+    rootFeatureId = table.rootFeature;
 }
 
-AnnotationTableObject::~AnnotationTableObject( ) {
+AnnotationTableObject::AnnotationTableObject( const QString &objectName,
+    const U2EntityRef &tableRef, const QVariantMap &hintsMap )
+    : GObject( GObjectTypes::ANNOTATION_TABLE, objectName, hintsMap )
+{
+    entityRef = tableRef;
+
     U2OpStatusImpl os;
-    U2FeatureUtils::removeFeature( rootFeatureId, entityRef.dbiRef, os );
+    U2AnnotationTable table = U2FeatureUtils::getAnnotationTable( tableRef, os );
     SAFE_POINT_OP( os, );
+    rootFeatureId = table.rootFeature;
 }
 
 static QList<Annotation> getAllSubAnnotations( const AnnotationGroup &group ) {
@@ -228,6 +232,14 @@ bool AnnotationTableObject::checkConstraints( const GObjectConstraints *c ) cons
     }
 
     return true;
+}
+
+void AnnotationTableObject::setGObjectName( const QString &newName ) {
+    U2OpStatusImpl os;
+    U2FeatureUtils::renameAnnotationTable( entityRef, newName, os );
+    SAFE_POINT_OP( os, );
+
+    GObject::setGObjectName( newName );
 }
 
 //////////////////////////////////////////////////////////////////////////

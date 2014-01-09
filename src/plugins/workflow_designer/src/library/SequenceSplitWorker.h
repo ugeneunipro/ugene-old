@@ -57,7 +57,7 @@ protected:
 
 private:
     QList<Task *> ssTasks;
-    QList<SharedAnnotationData> inputAnns;
+    QList<AnnotationData> inputAnns;
 
     QStringList acceptedNames;
     QStringList filteredNames;

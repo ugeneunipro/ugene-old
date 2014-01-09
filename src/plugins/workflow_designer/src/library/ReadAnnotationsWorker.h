@@ -75,7 +75,8 @@ public:
 class ReadAnnotationsTask : public Task {
     Q_OBJECT
 public:
-    ReadAnnotationsTask(const QString &url, const QString &datasetName, bool mergeAnnotations);
+    ReadAnnotationsTask(const QString &url, const QString &datasetName, WorkflowContext *context,
+        bool mergeAnnotations);
     virtual void prepare();
     virtual void run();
     virtual void cleanup();
@@ -87,6 +88,7 @@ private:
     QString url;
     QString datasetName;
     bool mergeAnnotations;
+    WorkflowContext *context;
 
     QList<QVariantMap> results;
 };

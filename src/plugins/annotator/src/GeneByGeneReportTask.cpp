@@ -57,19 +57,19 @@ const QString GeneByGeneCompareResult::IDENTICAL_NO = "No";
 
 #define BLAST_IDENT "identities"
 #define BLAST_GAPS "gaps"
-GeneByGeneCompareResult GeneByGeneComparator::compareGeneAnnotation( const DNASequence& seq, const QList<SharedAnnotationData> &annData, const QString& annName, float identity ){
+GeneByGeneCompareResult GeneByGeneComparator::compareGeneAnnotation( const DNASequence& seq, const QList<AnnotationData> &annData, const QString& annName, float identity ){
     GeneByGeneCompareResult result;
 
     float maxIdentity = -1.0F;
-    foreach ( const SharedAnnotationData &adata, annData ) {
-        if ( adata->name == annName ) {
-            U2Location location = adata->location;
+    foreach ( const AnnotationData &adata, annData ) {
+        if ( adata.name == annName ) {
+            U2Location location = adata.location;
             if(location->isSingleRegion()){
                 int reglen = location->regions.first().length;
                 float lenRatio  = reglen * 100 /static_cast<float>(seq.length()); 
                 maxIdentity = qMax(maxIdentity, lenRatio);
                 if(lenRatio >= identity){ //check length ratio
-                    QString ident = adata->findFirstQualifierValue(BLAST_IDENT);
+                    QString ident = adata.findFirstQualifierValue(BLAST_IDENT);
                     if (!ident.isEmpty()){
                         //create BLAST string  YES/identity/gaps
                         float blastIdent = parseBlastQual(ident);
@@ -77,7 +77,7 @@ GeneByGeneCompareResult GeneByGeneComparator::compareGeneAnnotation( const DNASe
                             result.identical = true;
                             result.identityString = GeneByGeneCompareResult::IDENTICAL_YES;
                             result.identityString.append(QString("\\%1").arg(blastIdent));
-                            QString gaps = adata->findFirstQualifierValue(BLAST_GAPS);
+                            QString gaps = adata.findFirstQualifierValue(BLAST_GAPS);
                             if (!gaps.isEmpty()){
                                 float blastGaps = parseBlastQual(gaps);
                                 if (blastGaps!=1.0f){
@@ -235,8 +235,6 @@ void GeneByGeneReportIO::readMergedTable( const QString& filePath, U2OpStatus& o
             }
             mergedTable.insert(geneName, identities);
         }
-
-        
     }
 
     if (mergedTable.isEmpty()){
@@ -288,7 +286,7 @@ void GeneByGeneReportIO::writeRow( const QList<QString>& rowData ){
 
 //////////////////////////////////////////////////////////////////////////
 //GeneByGeneReportTask
-GeneByGeneReportTask::GeneByGeneReportTask( const GeneByGeneReportSettings& _settings, const QMap<QString, QPair<DNASequence, QList<SharedAnnotationData> > >& _geneData )
+GeneByGeneReportTask::GeneByGeneReportTask( const GeneByGeneReportSettings& _settings, const QMap<QString, QPair<DNASequence, QList<AnnotationData> > >& _geneData )
 :Task("Generating gene-by-gene approach report", TaskFlag_None)
 ,settings(_settings)
 ,geneData(_geneData)
@@ -324,7 +322,7 @@ void GeneByGeneReportTask::run(){
         }
 
         {
-            const QPair<DNASequence, QList<SharedAnnotationData> >& seqAnnData = geneData[key];
+            const QPair<DNASequence, QList<AnnotationData> >& seqAnnData = geneData[key];
             const GeneByGeneCompareResult& res = GeneByGeneComparator::compareGeneAnnotation(seqAnnData.first, seqAnnData.second, settings.annName, settings.identity);
             io.writeTableItem(key, res.identityString, stateInfo);
             if (stateInfo.hasError()){

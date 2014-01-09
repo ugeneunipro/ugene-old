@@ -262,12 +262,7 @@ Task* RepeatWorker::tick() {
         
         if (!seq.alphabet->isNucleic()) {
             QString err = tr("Sequence alphabet is not nucleic!");
-            //if (failFast) {
-                return new FailTask(err);
-            /*} else {
-                algoLog.error(err);
-                return NULL;
-            }*/
+            return new FailTask(err);
         }
         Task* t = new FindRepeatsToAnnotationsTask(cfg, seq, resultName, QString(), GObjectReference());
         connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
@@ -279,16 +274,17 @@ Task* RepeatWorker::tick() {
     return NULL;
 }
 
-void RepeatWorker::sl_taskFinished() {
-    FindRepeatsToAnnotationsTask* t = qobject_cast<FindRepeatsToAnnotationsTask*>(sender());
-    if (t->getState() != Task::State_Finished || t->hasError() || t->isCanceled()){
+void RepeatWorker::sl_taskFinished( ) {
+    FindRepeatsToAnnotationsTask *t = qobject_cast<FindRepeatsToAnnotationsTask *>( sender( ) );
+    if ( t->getState( ) != Task::State_Finished || t->hasError( ) || t->isCanceled( ) ) {
         return;
     }
-    if (output) {
-        const QList<SharedAnnotationData>& res = t->importAnnotations();
-        QVariant v = qVariantFromValue<QList<SharedAnnotationData> >(res);
-        output->put(Message(BaseTypes::ANNOTATION_TABLE_TYPE(), v));
-        algoLog.info(tr("Found %1 repeats").arg(res.size()));
+    if ( NULL != output ) {
+        const QList<AnnotationData> res = t->importAnnotations( );
+        const SharedDbiDataHandler tableId = context->getDataStorage( )->putAnnotationTable( res );
+        const QVariant v = qVariantFromValue<SharedDbiDataHandler>( tableId );
+        output->put( Message( BaseTypes::ANNOTATION_TABLE_TYPE( ), v ) );
+        algoLog.info( tr( "Found %1 repeats" ).arg( res.size( ) ) );
     }
 }
 

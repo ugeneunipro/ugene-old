@@ -63,7 +63,7 @@ struct CuffdiffSettings {
     bool fromFiles;
     QStringList assemblyUrls;
     QList<Workflow::SharedDbiDataHandler> assemblies;
-    QList<SharedAnnotationData> transcript;
+    QList<AnnotationData> transcript;
     Workflow::DbiDataStorage *storage;
     QString workingDir;
 };

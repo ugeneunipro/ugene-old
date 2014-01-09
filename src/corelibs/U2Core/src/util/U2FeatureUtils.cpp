@@ -33,6 +33,54 @@
 
 namespace U2 {
 
+U2AnnotationTable U2FeatureUtils::createAnnotationTable( const QString &tableName, const U2DbiRef &dbiRef, U2OpStatus &os )
+{
+    U2AnnotationTable result;
+
+    const U2Feature rootFeature = U2FeatureUtils::exportAnnotationGroupToFeature(
+        AnnotationGroup::ROOT_GROUP_NAME, U2DataId( ), dbiRef, os );
+    CHECK_OP( os, result );
+
+    DbiConnection connection;
+    connection.open( dbiRef, os );
+    CHECK_OP( os, result );
+
+    U2FeatureDbi *dbi = connection.dbi->getFeatureDbi( );
+    SAFE_POINT( NULL != dbi, "Feature DBI is not initialized!", result );
+
+    result.visualName = tableName;
+    result.rootFeature = rootFeature.id;
+    dbi->createAnnotationTableObject( result, QString( ), os );
+
+    return result;
+}
+
+void U2FeatureUtils::renameAnnotationTable( const U2EntityRef &tableRef, const QString &name,
+    U2OpStatus &os )
+{
+    if ( name.isEmpty( ) ) {
+        os.setError( "Annotation table cannot have an empty name!" );
+    }
+
+    DbiConnection con( tableRef.dbiRef, os );
+    CHECK_OP( os, );
+    U2FeatureDbi *featureDbi = con.dbi->getFeatureDbi( );
+    SAFE_POINT( NULL != featureDbi, "Feature DBI is not initialized!", );
+
+    featureDbi->renameAnnotationTableObject( tableRef.entityId, name, os );
+}
+
+U2AnnotationTable U2FeatureUtils::getAnnotationTable( const U2EntityRef &tableRef,
+    U2OpStatus &os )
+{
+    DbiConnection con( tableRef.dbiRef, os );
+    CHECK_OP( os, U2AnnotationTable( ) );
+    U2FeatureDbi *featureDbi = con.dbi->getFeatureDbi( );
+    SAFE_POINT( NULL != featureDbi, "Feature DBI is not initialized!", U2AnnotationTable( ) );
+
+    return featureDbi->getAnnotationTableObject( tableRef.entityId, os );
+}
+
 U2Feature U2FeatureUtils::getFeatureById( const U2DataId &id, const U2DbiRef &dbiRef,
     U2OpStatus &op )
 {

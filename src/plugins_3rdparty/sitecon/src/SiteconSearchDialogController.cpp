@@ -245,7 +245,7 @@ void SiteconSearchDialogController::sl_onSaveAnnotations() {
     QList<AnnotationData> list;
     for (int i=0, n = resultsTree->topLevelItemCount(); i<n; ++i) {
         SiteconResultItem* item = static_cast<SiteconResultItem* >(resultsTree->topLevelItem(i));
-        list.append( *( item->res.toAnnotation( name ) ) );
+        list.append( item->res.toAnnotation( name ) );
     }
 
     CreateAnnotationsTask* t = new CreateAnnotationsTask(m.getAnnotationObject(), m.groupName, list);

@@ -197,23 +197,25 @@ Task* CDSearchWorker::tick() {
     return NULL;
 }
 
-void CDSearchWorker::sl_taskFinished(Task* t) {
+void CDSearchWorker::sl_taskFinished( Task *t ) {
     SAFE_POINT( NULL != t, "Invalid task is encountered", );
     if ( t->isCanceled( ) ) {
         return;
     }
-    if(output) {
-        QList<SharedAnnotationData> res = cds->getCDSResults();
-        QString annName = actor->getParameter(ANNOTATION_ATTR)->getAttributeValue<QString>(context);
-        if(!annName.isEmpty()) {
-            for(int i = 0; i<res.count();i++) {
-                res[i]->name = annName;
+    if ( NULL != output ) {
+        QList<AnnotationData> res = cds->getCDSResults( );
+        QString annName = actor->getParameter( ANNOTATION_ATTR )->getAttributeValue<QString>( context );
+        if ( !annName.isEmpty( ) ) {
+            for ( int i = 0; i < res.count( ); i++ ) {
+                res[i].name = annName;
             }
         }
-        QVariant v = qVariantFromValue<QList<SharedAnnotationData> >(res);
-        output->put(Message(BaseTypes::ANNOTATION_TABLE_TYPE(), v));
+        const SharedDbiDataHandler tableId = context->getDataStorage( )->putAnnotationTable( res );
+        output->put( Message( BaseTypes::ANNOTATION_TABLE_TYPE( ),
+            qVariantFromValue<SharedDbiDataHandler>( tableId ) ) );
     }
-    delete cds; cds = NULL;
+    delete cds;
+    cds = NULL;
 }
 
 } // Workflow

@@ -19,12 +19,14 @@
  * MA 02110-1301, USA.
  */
 
+#include <QtCore/QScopedPointer>
+
 #include "SequenceSplitWorker.h"
 #include "GenericReadActor.h"
 
 #include <U2Core/AppContext.h>
 
-#include <U2Core/AnnotationData.h>
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/DNASequence.h>
 
 #include <U2Core/TaskSignalMapper.h>
@@ -133,15 +135,20 @@ Task * SequenceSplitWorker::tick() {
         QVariantMap qm = inputMessage.getData().toMap();
         
         SharedDbiDataHandler seqId = qm.value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<SharedDbiDataHandler>();
-        std::auto_ptr<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
-        if (NULL == seqObj.get()) {
-            return NULL;
-        }
+        QScopedPointer<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
+        CHECK( NULL != seqObj.data(), NULL );
         DNASequence inputSeq = seqObj->getWholeSequence();
-        inputAnns = qVariantValue<QList<SharedAnnotationData> >( qm.value(BaseSlots::ANNOTATION_TABLE_SLOT().getId()) );
-        
+
+        SharedDbiDataHandler annTableId = qm.value(BaseSlots::ANNOTATION_TABLE_SLOT().getId()).value<SharedDbiDataHandler>();
+        QScopedPointer<AnnotationTableObject> annTableObj(StorageUtils::getAnnotationTableObject(context->getDataStorage(), annTableId));
+        if ( NULL != annTableObj.data( ) ) {
+            foreach ( const Annotation &a, annTableObj->getAnnotations( ) ) {
+                inputAnns << a.getData( );
+            }
+        }
+
         bool noSeq = inputSeq.isNull();
-        bool noAnns = inputAnns.isEmpty();
+        bool noAnns = ( NULL == annTableObj.data( ) ) || inputAnns.isEmpty();
         if( noSeq || noAnns ) {
             if( noSeq ) {
                 coreLog.info(tr("No sequence provided to split worker"));
@@ -157,7 +164,7 @@ Task * SequenceSplitWorker::tick() {
 
         ssTasks.clear();
 
-        foreach( SharedAnnotationData ann, inputAnns ) {   
+        foreach( const AnnotationData &ann, inputAnns ) {
             Task * t = new ExtractAnnotatedRegionTask( inputSeq, ann, cfg );
             ssTasks.push_back(t);
         }
@@ -185,18 +192,18 @@ void SequenceSplitWorker::sl_onTaskFinished( Task * ) {
         assert( ssT );
 
         DNASequence resSeq = ssT->getResultedSequence();
-        SharedAnnotationData resAnn = ssT->getResultedAnnotation();
-        QString name = resSeq.getName() + "|" + resAnn->name + "|" + Genbank::LocationParser::buildLocationString(resAnn.data());
+        AnnotationData resAnn = ssT->getResultedAnnotation();
+        QString name = resSeq.getName() + "|" + resAnn.name + "|" + Genbank::LocationParser::buildLocationString( &resAnn );
         resSeq.info[DNAInfo::ID] = name;
 
-        QList<SharedAnnotationData> annToPut;
-        annToPut.push_back( resAnn );
-        QVariant vAnns = qVariantFromValue<QList<SharedAnnotationData> >(annToPut);
+        QList<AnnotationData> annToPut;
+        annToPut << resAnn;
 
         QVariantMap messageData;
         SharedDbiDataHandler seqId = context->getDataStorage()->putSequence(resSeq);
         messageData[ BaseSlots::DNA_SEQUENCE_SLOT().getId() ] = qVariantFromValue<SharedDbiDataHandler>(seqId);
-        messageData[ BaseSlots::ANNOTATION_TABLE_SLOT().getId() ] = vAnns;
+        const SharedDbiDataHandler tableId = context->getDataStorage( )->putAnnotationTable( annToPut );
+        messageData[ BaseSlots::ANNOTATION_TABLE_SLOT( ).getId( ) ] = qVariantFromValue<SharedDbiDataHandler>( tableId );
 
         DataTypePtr messageType = WorkflowEnv::getDataTypeRegistry()->getById( REGIONED_SEQ_TYPE );
         if( outPort ) {

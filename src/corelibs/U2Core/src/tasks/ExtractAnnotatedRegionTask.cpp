@@ -29,7 +29,7 @@
 
 namespace U2{ 
 
-ExtractAnnotatedRegionTask::ExtractAnnotatedRegionTask( const DNASequence & sequence_, SharedAnnotationData sd_, const ExtractAnnotatedRegionTaskSettings & cfg_ ) :
+ExtractAnnotatedRegionTask::ExtractAnnotatedRegionTask( const DNASequence & sequence_, const AnnotationData &sd_, const ExtractAnnotatedRegionTaskSettings & cfg_ ) :
 Task( tr("Extract annotated regions"), TaskFlag_None ), inputSeq(sequence_), inputAnn(sd_), cfg(cfg_), complT(0), aminoT(0)
 {
 }
@@ -47,7 +47,7 @@ void ExtractAnnotatedRegionTask::prepareTranslations() {
     if (aminoSeq) {
         return;
     }
-    if (cfg.complement && inputAnn->getStrand().isCompementary()) {
+    if (cfg.complement && inputAnn.getStrand().isCompementary()) {
         DNATranslation* compTT = AppContext::getDNATranslationRegistry()->
             lookupComplementTranslation( inputSeq.alphabet);
         if (compTT != NULL) {
@@ -65,7 +65,7 @@ void ExtractAnnotatedRegionTask::prepareTranslations() {
 }
 
 void ExtractAnnotatedRegionTask::run() {
-    QVector<U2Region> safeLocation = inputAnn->getRegions();
+    QVector<U2Region> safeLocation = inputAnn.getRegions();
     U2Region::bound(0, inputSeq.length(), safeLocation);
     QList<QByteArray> resParts = U1SequenceUtils::extractRegions(inputSeq.seq, safeLocation, complT, NULL, inputSeq.circular);
     if (aminoT == NULL) { // extension does not work for translated annotations
@@ -94,13 +94,13 @@ void ExtractAnnotatedRegionTask::run() {
             }
         }
     } else {
-        resParts = U1SequenceUtils::translateRegions(resParts, aminoT, inputAnn->isJoin());
+        resParts = U1SequenceUtils::translateRegions(resParts, aminoT, inputAnn.isJoin());
     }
     resultedSeq.seq = resParts.size() == 1 ? resParts.first() : U1SequenceUtils::joinRegions(resParts);
     resultedAnn = inputAnn;
-    resultedAnn->location->regions = safeLocation;
-    resultedAnn->setStrand(U2Strand::Direct);
-    resultedAnn->setLocationOperator(inputAnn->getLocationOperator());
+    resultedAnn.location->regions = safeLocation;
+    resultedAnn.setStrand(U2Strand::Direct);
+    resultedAnn.setLocationOperator(inputAnn.getLocationOperator());
 }
 
 

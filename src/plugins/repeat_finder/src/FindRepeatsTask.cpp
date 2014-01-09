@@ -462,13 +462,9 @@ QList<Task*> FindRepeatsToAnnotationsTask::onSubTaskFinished(Task* subTask) {
     }
 
     if (subTask == findTask && annObjRef.isValid()) {
-        QList<SharedAnnotationData> sharedAnnotations = importAnnotations();
-        if (!sharedAnnotations.isEmpty()) {
-            algoLog.info( tr( "Found %1 repeat regions" ).arg( sharedAnnotations.size( ) ) );
-            QList<AnnotationData> annotations;
-            foreach ( const SharedAnnotationData &data, sharedAnnotations ) {
-                annotations << *data;
-            }
+        QList<AnnotationData> annotations = importAnnotations();
+        if (!annotations.isEmpty()) {
+            algoLog.info( tr( "Found %1 repeat regions" ).arg( annotations.size( ) ) );
             Task* createTask = new CreateAnnotationsTask(annObjRef, annGroup, annotations);
             createTask->setSubtaskProgressWeight(0);
             res.append(createTask);
@@ -477,26 +473,26 @@ QList<Task*> FindRepeatsToAnnotationsTask::onSubTaskFinished(Task* subTask) {
     return res;
 }
 
-QList<SharedAnnotationData> FindRepeatsToAnnotationsTask::importAnnotations() {
-    QList<SharedAnnotationData> res;
-    foreach(const RFResult& r, findTask->getResults()) {
-        SharedAnnotationData ad(new AnnotationData());
-        ad->name = annName;
+QList<AnnotationData> FindRepeatsToAnnotationsTask::importAnnotations( ) {
+    QList<AnnotationData> res;
+    foreach ( const RFResult &r, findTask->getResults( ) ) {
+        AnnotationData ad;
+        ad.name = annName;
         U2Region l1(r.x + settings.reportSeqShift, r.l);
         U2Region l2(r.y + settings.reportSeq2Shift, r.l);
         if (l1.startPos <= l2.startPos) {
-            ad->location->regions << l1 << l2;
+            ad.location->regions << l1 << l2;
         } else {
-            ad->location->regions << l2 << l1;
+            ad.location->regions << l2 << l1;
         }
         int dist = qAbs(r.x - r.y) - r.l;
         if (findTask->getSettings().inverted) {
-            ad->qualifiers.append(U2Qualifier("rpt_type", "inverted"));
+            ad.qualifiers.append(U2Qualifier("rpt_type", "inverted"));
         }
-        ad->qualifiers.append(U2Qualifier("repeat_len", QString::number(r.l)));
-            ad->qualifiers.append(U2Qualifier("repeat_dist", QString::number(dist)));
-            ad->qualifiers.append(U2Qualifier("repeat_homology(%)", QString::number(settings.getIdentity(r.l - r.c))));
-        
+        ad.qualifiers.append(U2Qualifier("repeat_len", QString::number(r.l)));
+            ad.qualifiers.append(U2Qualifier("repeat_dist", QString::number(dist)));
+            ad.qualifiers.append(U2Qualifier("repeat_homology(%)", QString::number(settings.getIdentity(r.l - r.c))));
+
         res.append(ad);
     }
     return res;

@@ -54,7 +54,7 @@ void CuffmergeSupportTask::prepare() {
                 "_", stateInfo);
     CHECK_OP(stateInfo, );
 
-    foreach (const QList<SharedAnnotationData> &anns, settings.anns) {
+    foreach (const QList<AnnotationData> &anns, settings.anns) {
         Task *t = createWriteTask(anns, getAnnsFilePath());
         CHECK_OP(stateInfo, );
         addSubTask(t);
@@ -108,7 +108,7 @@ QString CuffmergeSupportTask::getAnnsFilePath() {
     return filePath;
 }
 
-Task * CuffmergeSupportTask::createWriteTask(const QList<SharedAnnotationData> &anns, const QString &filePath) {
+Task * CuffmergeSupportTask::createWriteTask(const QList<AnnotationData> &anns, const QString &filePath) {
     Document *doc = ExternalToolSupportUtils::createAnnotationsDocument(
         filePath, BaseDocumentFormats::GTF, anns, stateInfo);
     CHECK_OP(stateInfo, NULL);
@@ -171,13 +171,13 @@ Task * CuffmergeSupportTask::createCuffmergeTask() {
     return mergeTask;
 }
 
-QList<SharedAnnotationData> CuffmergeSupportTask::takeResult() {
-    QList<SharedAnnotationData> ret = result;
-    result.clear();
+QList<AnnotationData> CuffmergeSupportTask::takeResult( ) {
+    QList<AnnotationData> ret = result;
+    result.clear( );
     return ret;
 }
 
-QStringList CuffmergeSupportTask::getOutputFiles() const {
+QStringList CuffmergeSupportTask::getOutputFiles( ) const {
     return outputFiles;
 }
 

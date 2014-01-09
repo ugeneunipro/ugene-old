@@ -37,9 +37,24 @@ public:
                                     SQLiteFeatureDbi( SQLiteDbi *dbi );
 
     void                            initSqlSchema( U2OpStatus &os );
-
     /**
-     * Reads feature data by id 
+     * Creates a DB representation of AnnotationTableObject
+     * @table has to be fully initialized except of the id field.
+     */
+    void                            createAnnotationTableObject( U2AnnotationTable &table,
+                                        const QString &folder, U2OpStatus &os );
+    /**
+     * Returns a DB representation of AnnotationTableObject having supplied @tableId.
+     */
+    U2AnnotationTable               getAnnotationTableObject( const U2DataId &tableId,
+                                        U2OpStatus &os );
+    /**
+     * Renames a DB representation of AnnotationTableObject having supplied @tableId.
+     */
+    void                            renameAnnotationTableObject( const U2DataId &tableId,
+                                        const QString &name, U2OpStatus &os );
+    /**
+     * Reads feature data by id
      */
     U2Feature                       getFeature( const U2DataId &featureId, U2OpStatus &os );
     /**

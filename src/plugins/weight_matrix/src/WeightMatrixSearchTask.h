@@ -56,11 +56,11 @@ public:
         return data;
     }
 
-    static QList<SharedAnnotationData> toTable(const QList<WeightMatrixSearchResult>& res, const QString& name)
+    static QList<AnnotationData> toTable(const QList<WeightMatrixSearchResult>& res, const QString& name)
     {
-        QList<SharedAnnotationData> list;
+        QList<AnnotationData> list;
         foreach (const WeightMatrixSearchResult& f, res) {
-            list.append( SharedAnnotationData( new AnnotationData( f.toAnnotation( name ) ) ) );
+            list.append( f.toAnnotation( name ) );
         }
         return list;
     }

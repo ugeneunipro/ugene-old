@@ -19,6 +19,7 @@
  * MA 02110-1301, USA.
  */
 
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/FailTask.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
@@ -90,13 +91,19 @@ Task *ConservationPlotWorker::tick() {
 
         treatVar = data[ANNOT_SLOT_ID];
 
-        const QList<SharedAnnotationData>& treatData = QVariantUtils::var2ftl(treatVar.toList());
+        const SharedDbiDataHandler annTableId = treatVar.value<SharedDbiDataHandler>();
+        QScopedPointer<AnnotationTableObject> tableObject(
+            StorageUtils::getAnnotationTableObject( context->getDataStorage( ), annTableId ) );
+        SAFE_POINT( NULL != tableObject.data( ), "Invalid annotation table encountered!", NULL );
+
+        QList<AnnotationData> treatData;
+        foreach ( const Annotation &a, tableObject->getAnnotations( ) ) {
+            treatData << a.getData( );
+        }
 
         plotData.append(treatData);
-
-        
     }
-    
+
     if (!inChannel->isEnded()) {
         return NULL;
     }

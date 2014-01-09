@@ -19,7 +19,7 @@
  * MA 02110-1301, USA.
  */
 
-#include "CollocationWorker.h"
+#include <QtCore/QScopedPointer>
 
 #include <U2Lang/IntegralBusModel.h>
 #include <U2Lang/WorkflowEnv.h>
@@ -32,7 +32,7 @@
 #include <U2Designer/DelegateEditors.h>
 #include <U2Lang/CoreLibConstants.h>
 
-#include <U2Core/AnnotationData.h>
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/DNASequence.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/DNATranslation.h>
@@ -43,6 +43,7 @@
 
 #include "CollocationsSearchAlgorithm.h"
 #include "CollocationsDialogController.h"
+#include "CollocationWorker.h"
 
 /* TRANSLATOR U2::LocalWorkflow::CollocationWorker */
 
@@ -81,8 +82,6 @@ void CollocationWorkerFactory::init() {
 
     QMap<Descriptor, DataTypePtr> m;
     {
-        //Descriptor sd(DNA_SEQUENCE_SLOT, CollocationWorker::tr("sequence-slot"), CollocationWorker::tr("seq-slot-doc"));
-        //Descriptor fd(ANNOTATION_TABLE_SLOT, CollocationWorker::tr("feature-table"), CollocationWorker::tr("feature-table-doc"));
         m[BaseSlots::DNA_SEQUENCE_SLOT()] = BaseTypes::DNA_SEQUENCE_TYPE();
         m[BaseSlots::ANNOTATION_TABLE_SLOT()] = BaseTypes::ANNOTATION_TABLE_LIST_TYPE();
     }
@@ -102,12 +101,16 @@ void CollocationWorkerFactory::init() {
 
     static const QString newAnnsStr = CollocationWorker::tr("Create new annotations");
     {
-        //U2Region             searchRegion;
-        Descriptor nd(NAME_ATTR, CollocationWorker::tr("Result annotation"), CollocationWorker::tr("Name of the result annotations to mark found collocations."));
-        Descriptor ad(ANN_ATTR, CollocationWorker::tr("Group of annotations"), CollocationWorker::tr("A list of annotation names to search. Found regions will contain all the named annotations."));
-        Descriptor ld(LEN_ATTR, CollocationWorker::tr("Region size"), CollocationWorker::tr("Effectively this is the maximum allowed distance between the interesting annotations in a group."));
-        Descriptor fd(FIT_ATTR, CollocationWorker::tr("Must fit into region"), CollocationWorker::tr("Whether the interesting annotations should entirely fit into the specified region to form a group."));
-        Descriptor td(TYPE_ATTR, CollocationWorker::tr("Result type"), CollocationWorker::tr("Copy original annotations or annotate found regions with new ones."));
+        Descriptor nd(NAME_ATTR, CollocationWorker::tr("Result annotation"),
+            CollocationWorker::tr("Name of the result annotations to mark found collocations."));
+        Descriptor ad(ANN_ATTR, CollocationWorker::tr("Group of annotations"),
+            CollocationWorker::tr("A list of annotation names to search. Found regions will contain all the named annotations."));
+        Descriptor ld(LEN_ATTR, CollocationWorker::tr("Region size"),
+            CollocationWorker::tr("Effectively this is the maximum allowed distance between the interesting annotations in a group."));
+        Descriptor fd(FIT_ATTR, CollocationWorker::tr("Must fit into region"),
+            CollocationWorker::tr("Whether the interesting annotations should entirely fit into the specified region to form a group."));
+        Descriptor td(TYPE_ATTR, CollocationWorker::tr("Result type"),
+            CollocationWorker::tr("Copy original annotations or annotate found regions with new ones."));
         Descriptor id(INC_BOUNDARY_ATTR, CollocationWorker::tr("Include boundaries"),
             CollocationWorker::tr("Include most left and most right boundary annotations regions into result or exclude them."));
         Attribute *nameAttr = new Attribute(nd, BaseTypes::STRING_TYPE(), true, QVariant("misc_feature"));
@@ -217,10 +220,19 @@ Task* CollocationWorker::tick() {
         cfg.includeBoundaries = actor->getParameter(INC_BOUNDARY_ATTR)->getAttributeValue<bool>(context);
 
         SharedDbiDataHandler seqId = qm.value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<SharedDbiDataHandler>();
-        std::auto_ptr<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
-        CHECK(NULL != seqObj.get(), NULL);
-        
-        QList<SharedAnnotationData> atl = QVariantUtils::var2ftl(qm.value(FEATURE_TABLE_SLOT).toList());
+        QScopedPointer<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
+        CHECK(NULL != seqObj.data(), NULL);
+
+        SharedDbiDataHandler annTableId = qm.value(FEATURE_TABLE_SLOT).value<SharedDbiDataHandler>( );
+        QScopedPointer<AnnotationTableObject> annTableObj(
+            StorageUtils::getAnnotationTableObject(context->getDataStorage(), annTableId));
+        CHECK(NULL != annTableObj.data( ), NULL);
+
+        QList<AnnotationData> atl;
+        foreach ( const Annotation &a, annTableObj->getAnnotations( ) ) {
+            atl << a.getData( );
+        }
+
         qint64 seqLength = seqObj->getSequenceLength();
         if ((0 != seqLength) && !atl.isEmpty()) {
             cfg.searchRegion.length = seqLength;
@@ -243,15 +255,16 @@ Task* CollocationWorker::tick() {
     return NULL;
 }
 
-void CollocationWorker::sl_taskFinished() {
-    CollocationSearchTask* t = qobject_cast<CollocationSearchTask*>(sender());
-    if (t->getState() != Task::State_Finished || t->isCanceled() || t->hasError()){
+void CollocationWorker::sl_taskFinished( ) {
+    CollocationSearchTask *t = qobject_cast<CollocationSearchTask *>( sender( ) );
+    if ( t->getState( ) != Task::State_Finished || t->isCanceled( ) || t->hasError( ) ){
         return;
     }
-    QList<SharedAnnotationData> list = t->popResultAnnotations();
-    if (output) {
-        QVariant v = qVariantFromValue<QList<SharedAnnotationData> >(list);
-        output->put(Message(BaseTypes::ANNOTATION_TABLE_TYPE(), v));
+    QList<AnnotationData> list = t->popResultAnnotations( );
+    if ( NULL != output ) {
+        const SharedDbiDataHandler tableId = context->getDataStorage( )->putAnnotationTable( list );
+        output->put( Message( BaseTypes::ANNOTATION_TABLE_TYPE( ),
+            qVariantFromValue<SharedDbiDataHandler>( tableId ) ) );
     }
 }
 

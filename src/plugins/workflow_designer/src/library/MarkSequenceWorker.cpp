@@ -19,6 +19,8 @@
  * MA 02110-1301, USA.
  */
 
+#include <QtCore/QScopedPointer>
+
 #include <U2Designer/DelegateEditors.h>
 #include <U2Designer/MarkerEditor.h>
 
@@ -33,6 +35,7 @@
 #include <U2Lang/WorkflowEnv.h>
 #include <U2Core/Log.h>
 
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/QVariantUtils.h>
 #include <U2Core/DNASequence.h>
 
@@ -71,12 +74,18 @@ Task *MarkSequenceWorker::tick() {
         }
         QVariantMap data = inputMessage.getData().toMap();
         SharedDbiDataHandler seqId = data.value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<SharedDbiDataHandler>();
-        std::auto_ptr<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
-        if (NULL == seqObj.get()) {
+        QScopedPointer<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
+        if (NULL == seqObj.data()) {
             return NULL;
         }
         DNASequence seq = seqObj->getWholeSequence();
-        QList<SharedAnnotationData> anns = QVariantUtils::var2ftl(data.value(BaseSlots::ANNOTATION_TABLE_SLOT().getId()).toList());
+
+        SharedDbiDataHandler annTableId = data.value(BaseSlots::ANNOTATION_TABLE_SLOT().getId()).value<SharedDbiDataHandler>();
+        QScopedPointer<AnnotationTableObject> annTableObj(StorageUtils::getAnnotationTableObject(context->getDataStorage(), annTableId));
+        QVariantList anns;
+        foreach ( const Annotation &a, annTableObj->getAnnotations( ) ) {
+            anns << QVariant::fromValue( a.getData( ) );
+        }
 
         MarkerAttribute *attr = dynamic_cast<MarkerAttribute*>(actor->getParameter(MARKER_ATTR_ID));
         QVariantMap m;
@@ -85,7 +94,7 @@ Task *MarkSequenceWorker::tick() {
             if (SEQUENCE == marker->getGroup()) {
                 res = marker->getMarkingResult(qVariantFromValue<DNASequence>(seq));
             } else if (QUALIFIER == marker->getGroup() || ANNOTATION == marker->getGroup()) {
-                res = marker->getMarkingResult(data.value(BaseSlots::ANNOTATION_TABLE_SLOT().getId()));
+                res = marker->getMarkingResult(QVariant(anns));
             } else if (TEXT == marker->getGroup()) {
                 res = marker->getMarkingResult(data.value(BaseSlots::URL_SLOT().getId()));
             }

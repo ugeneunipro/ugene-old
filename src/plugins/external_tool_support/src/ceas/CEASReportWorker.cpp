@@ -19,6 +19,7 @@
  * MA 02110-1301, USA.
  */
 
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/FailTask.h>
 #include <U2Core/QVariantUtils.h>
 #include <U2Core/U2OpStatusUtils.h>
@@ -116,7 +117,7 @@ CEASTaskSettings CEASReportWorker::createTaskSettings(U2OpStatus &os) {
     Message m = getMessageAndSetupScriptValues(inChannel);
     QVariantMap data = m.getData().toMap();
 
-    QList<SharedAnnotationData> bedData;
+    QList<AnnotationData> bedData;
     QString wigData = "";
 
     if (!(data.contains(BED_SLOT_ID) || data.contains(WIG_SLOT_ID))) {
@@ -124,7 +125,14 @@ CEASTaskSettings CEASReportWorker::createTaskSettings(U2OpStatus &os) {
         return CEASTaskSettings();
     }else{
         if (data.contains(BED_SLOT_ID)){
-            bedData = QVariantUtils::var2ftl(data[BED_SLOT_ID].toList());
+            const SharedDbiDataHandler annTableId = data[BED_SLOT_ID].value<SharedDbiDataHandler>();
+            QScopedPointer<AnnotationTableObject> tableObject(
+                StorageUtils::getAnnotationTableObject( context->getDataStorage( ), annTableId ) );
+            SAFE_POINT( NULL != tableObject.data( ), "Invalid annotation table encountered!", CEASTaskSettings( ) );
+
+            foreach ( const Annotation &a, tableObject->getAnnotations( ) ) {
+                bedData << a.getData( );
+            }
         }
 
         if (data.contains(WIG_SLOT_ID)){

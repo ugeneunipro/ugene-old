@@ -21,6 +21,7 @@
 
 #include "CufflinksSupport.h"
 
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/L10n.h>
 #include <U2Core/QVariantUtils.h>
 #include <U2Core/U2SafePoints.h>
@@ -217,26 +218,28 @@ Task * CuffmergeWorker::tick() {
     return NULL;
 }
 
-void CuffmergeWorker::sl_taskFinished() {
-    CuffmergeSupportTask *t = dynamic_cast<CuffmergeSupportTask*>(sender());
-    if (!t->isFinished() || t->isCanceled() || t->hasError()) {
+void CuffmergeWorker::sl_taskFinished( ) {
+    CuffmergeSupportTask *t = dynamic_cast<CuffmergeSupportTask *>( sender( ) );
+    if ( !t->isFinished( ) || t->isCanceled( ) || t->hasError( ) ) {
         return;
     }
 
     QVariantMap data;
-    data[BaseSlots::ANNOTATION_TABLE_SLOT().getId()] =
-        qVariantFromValue<QList<SharedAnnotationData> >(t->takeResult());
-    Message m(output->getBusType(), data);
-    output->put(m);
-    output->setEnded();
-    foreach (const QString &url, t->getOutputFiles()) {
-        context->getMonitor()->addOutputFile(url, getActor()->getId());
+    const SharedDbiDataHandler tableId = context->getDataStorage( )
+        ->putAnnotationTable( t->takeResult( ) );
+    data[BaseSlots::ANNOTATION_TABLE_SLOT( ).getId( )]
+        = qVariantFromValue<SharedDbiDataHandler>( tableId );
+    Message m( output->getBusType( ), data );
+    output->put( m );
+    output->setEnded( );
+    foreach ( const QString &url, t->getOutputFiles( ) ) {
+        context->getMonitor( )->addOutputFile( url, getActor( )->getId( ) );
     }
-    setDone();
+    setDone( );
 }
 
-void CuffmergeWorker::cleanup() {
-    anns.clear();
+void CuffmergeWorker::cleanup( ) {
+    anns.clear( );
 }
 
 void CuffmergeWorker::takeAnnotations() {
@@ -244,8 +247,17 @@ void CuffmergeWorker::takeAnnotations() {
     QVariantMap data = m.getData().toMap();
     SAFE_POINT(data.contains(BaseSlots::ANNOTATION_TABLE_SLOT().getId()),
         "No annotations in a message", );
-    QVariant annsVar = data[BaseSlots::ANNOTATION_TABLE_SLOT().getId()];
-    anns << QVariantUtils::var2ftl(annsVar.toList());
+
+    SharedDbiDataHandler annTableId = data[BaseSlots::ANNOTATION_TABLE_SLOT().getId()].value<SharedDbiDataHandler>();
+    QScopedPointer<AnnotationTableObject> annsObj(StorageUtils::getAnnotationTableObject(
+        context->getDataStorage(), annTableId));
+    SAFE_POINT( NULL != annsObj.data( ), "Invalid annotation table!", );
+
+    anns << QList<AnnotationData>( );
+    QList<AnnotationData> &targetList = anns.last( );
+    foreach ( const Annotation &a, annsObj->getAnnotations( ) ) {
+        targetList << a.getData( );
+    }
 }
 
 CuffmergeSettings CuffmergeWorker::scanParameters() const {

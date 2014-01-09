@@ -19,9 +19,8 @@
  * MA 02110-1301, USA.
  */
 
-#include "CufflinksSupport.h"
-#include "CufflinksSupportTask.h"
-#include "../ExternalToolSupportL10N.h"
+#include <QtCore/QCoreApplication>
+#include <QtCore/QDir>
 
 #include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>
@@ -40,9 +39,9 @@
 #include <U2Formats/FpkmTrackingFormat.h>
 #include <U2Formats/GTFFormat.h>
 
-#include <QCoreApplication>
-#include <QDir>
-
+#include "CufflinksSupport.h"
+#include "../ExternalToolSupportL10N.h"
+#include "CufflinksSupportTask.h"
 
 namespace U2 {
 
@@ -56,8 +55,8 @@ CufflinksSupportTask::CufflinksSupportTask(const CufflinksSettings& _settings)
       convertAssToSamTask(NULL),
       cufflinksExtToolTask(NULL)
 {
-}
 
+}
 
 CufflinksSupportTask::~CufflinksSupportTask()
 {
@@ -204,18 +203,22 @@ QList<Task*> CufflinksSupportTask::onSubTaskFinished(Task* subTask)
 }
 
 
-QList<SharedAnnotationData> CufflinksSupportTask::getAnnotationsFromFile(QString fileName, CufflinksOutputFormat format)
+QList<AnnotationData> CufflinksSupportTask::getAnnotationsFromFile( QString fileName,
+    CufflinksOutputFormat format )
 {
-    QList<SharedAnnotationData> res;
-    QString filePath = settings.outDir + "/" + fileName;
+    const QString filePath = settings.outDir + "/" + fileName;
     DocumentFormatId formatId;
-    if (CufflinksOutputFpkm == format) {
+    switch ( format ) {
+    case CufflinksOutputFpkm :
         formatId = BaseDocumentFormats::FPKM_TRACKING_FORMAT;
-    } else if (CufflinksOutputGtf == format) {
+        break;
+    case CufflinksOutputGtf :
         formatId = BaseDocumentFormats::GTF;
-    } else {
-        FAIL("Internal error: unexpected format of the Cufflinks output!", res);
+        break;
+    default:
+        FAIL( "Internal error: unexpected format of the Cufflinks output!", QList<AnnotationData>( ) );
     }
+
     return getAnnotationsFromFile(filePath, formatId, ET_CUFFLINKS, stateInfo);
 }
 
@@ -233,10 +236,10 @@ QStringList CufflinksSupportTask::getOutputFiles() const {
     return outputFiles;
 }
 
-QList<SharedAnnotationData> CufflinksSupportTask::getAnnotationsFromFile(const QString &filePath,
+QList<AnnotationData> CufflinksSupportTask::getAnnotationsFromFile(const QString &filePath,
     const DocumentFormatId &format, const QString &toolName, U2OpStatus &os)
 {
-    QList<SharedAnnotationData> result;
+    QList<AnnotationData> result;
 
     IOAdapterFactory *iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
     if (NULL == iof) {
@@ -255,20 +258,16 @@ QList<SharedAnnotationData> CufflinksSupportTask::getAnnotationsFromFile(const Q
         return result;
     }
 
-    QList<AnnotationData> tmpResult;
-    if (BaseDocumentFormats::FPKM_TRACKING_FORMAT == format) {
-        tmpResult = FpkmTrackingFormat::getAnnotData(io.data(), os);
-    } else if (BaseDocumentFormats::GTF == format) {
-        tmpResult = GTFFormat::getAnnotData(io.data(), os);
-    } else if (BaseDocumentFormats::DIFF == format) {
-        tmpResult = DifferentialFormat::getAnnotationData(io.data(), os);
+    if ( BaseDocumentFormats::FPKM_TRACKING_FORMAT == format ) {
+        result = FpkmTrackingFormat::getAnnotData(io.data(), os);
+    } else if ( BaseDocumentFormats::GTF == format ) {
+        result = GTFFormat::getAnnotData(io.data(), os);
+    } else if ( BaseDocumentFormats::DIFF == format ) {
+        result = DifferentialFormat::getAnnotationData(io.data(), os);
     } else {
         FAIL(QObject::tr("Internal error: unexpected format of the %1 output!").arg(toolName), result);
     }
 
-    foreach ( const AnnotationData &d, tmpResult ) {
-        result << SharedAnnotationData( new AnnotationData( d ) );
-    }
     return result;
 }
 

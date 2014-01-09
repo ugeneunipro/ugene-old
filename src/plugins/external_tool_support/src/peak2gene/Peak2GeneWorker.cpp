@@ -19,6 +19,7 @@
  * MA 02110-1301, USA.
  */
 
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/FailTask.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
@@ -95,8 +96,13 @@ Task *Peak2GeneWorker::tick() {
         }
 
         treatVar = data[TREAT_SLOT_ID];
-
-        const QList<SharedAnnotationData>& treatData = QVariantUtils::var2ftl(treatVar.toList());
+        SharedDbiDataHandler treatTableId = treatVar.value<SharedDbiDataHandler>( );
+        QScopedPointer<AnnotationTableObject> treatTableObj( StorageUtils::getAnnotationTableObject(
+            context->getDataStorage(), treatTableId ) );
+        QList<AnnotationData> treatData;
+        foreach ( const Annotation &a, treatTableObj->getAnnotations( ) ) {
+            treatData << a.getData( );
+        }
 
         Peak2GeneSettings settings = createPeak2GeneSettings(os);
         if (os.hasError()) {
@@ -125,8 +131,10 @@ void Peak2GeneWorker::sl_taskFinished() {
     }
 
     QVariantMap data;
-    data[GENE_ANNOTATION] = qVariantFromValue<QList<SharedAnnotationData> >(t->getGenes());
-    data[PEAK_ANNOTATION] = qVariantFromValue<QList<SharedAnnotationData> >(t->getPeaks());
+    const SharedDbiDataHandler geneTableId = context->getDataStorage( )->putAnnotationTable( t->getGenes( ) );
+    data[GENE_ANNOTATION] = qVariantFromValue<SharedDbiDataHandler>( geneTableId );
+    const SharedDbiDataHandler peakTableId = context->getDataStorage( )->putAnnotationTable( t->getPeaks( ) );
+    data[PEAK_ANNOTATION] = qVariantFromValue<SharedDbiDataHandler>( peakTableId );
 
     output->put(Message(output->getBusType(), data));
 
