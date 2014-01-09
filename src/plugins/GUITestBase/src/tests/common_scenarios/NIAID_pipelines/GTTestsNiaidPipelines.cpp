@@ -116,7 +116,7 @@ private:
 GUI_TEST_CLASS_DEFINITION(test_0001){
     GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
     QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
-    GTMenu::clickMenuItem(os, menu, QStringList() << "Workflow Designer");
+    GTMenu::clickMenuItemByName(os, menu, QStringList() << "Workflow Designer");
 
     GTUtilsWorkflowDesigner::addSample(os,"call variants");
     GTUtilsDialog::waitForDialog(os, new WizardFiller0001(os,"BED or position list file"));
@@ -167,7 +167,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002){
 //    1. Open WD
     GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
     QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
-    GTMenu::clickMenuItem(os, menu, QStringList() << "Workflow Designer");
+    GTMenu::clickMenuItemByName(os, menu, QStringList() << "Workflow Designer");
 //    2. Open tuxedo pipeline from samples
     GTUtilsDialog::waitForDialog(os, new WizardFiller0002(os));
     GTUtilsDialog::waitForDialog(os,new ConfigureTuxedoWizardFiller(os,ConfigureTuxedoWizardFiller::full

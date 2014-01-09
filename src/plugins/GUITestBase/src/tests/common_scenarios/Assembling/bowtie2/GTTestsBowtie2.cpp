@@ -47,7 +47,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
                                             testDir + "_common_data/scenarios/sandbox/",
                                             "human_T1_cutted"));
 
-    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_TOOLS),
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_TOOLS),
                           QStringList() << "Align to reference" << "Build index" );
 
     // Expected state: there are six files as result:
@@ -115,7 +115,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002){
 
     QMenu* mainMenu = GTMenu::showMainMenu(os, MWMENU_TOOLS);
     CHECK_OP(os, );
-    GTMenu::clickMenuItem(os, mainMenu, QStringList() << "Align to reference" << "Align short reads");
+    GTMenu::clickMenuItemByName(os, mainMenu, QStringList() << "Align to reference" << "Align short reads");
     CHECK_OP(os, );
 
     ImportBAMFileFiller* importBAMFileFiller = new ImportBAMFileFiller(os);
@@ -181,7 +181,7 @@ GUI_TEST_CLASS_DEFINITION(test_0003) {
 
     QMenu* mainMenu = GTMenu::showMainMenu(os, MWMENU_TOOLS);
     CHECK_OP(os, );
-    GTMenu::clickMenuItem(os, mainMenu, QStringList() << "Align to reference" << "Align short reads");
+    GTMenu::clickMenuItemByName(os, mainMenu, QStringList() << "Align to reference" << "Align short reads");
     CHECK_OP(os, );
 
     ImportBAMFileFiller* importBAMFileFiller = new ImportBAMFileFiller(os);
@@ -255,7 +255,7 @@ GUI_TEST_CLASS_DEFINITION(test_0004) {
 
     QMenu* mainMenu = GTMenu::showMainMenu(os, MWMENU_TOOLS);
     CHECK_OP(os, );
-    GTMenu::clickMenuItem(os, mainMenu, QStringList() << "Align to reference" << "Align short reads");
+    GTMenu::clickMenuItemByName(os, mainMenu, QStringList() << "Align to reference" << "Align short reads");
     CHECK_OP(os, );
 
     ImportBAMFileFiller* importBAMFileFiller = new ImportBAMFileFiller(os,
@@ -274,7 +274,7 @@ GUI_TEST_CLASS_DEFINITION(test_0005) {
     bowtie2Parameters.prebuiltIndex = true;
     GTUtilsDialog::waitForDialog(os, new AlignShortReadsFiller(os, &bowtie2Parameters));
 
-    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_TOOLS), QStringList() << "Align to reference" << "Align short reads");
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_TOOLS), QStringList() << "Align to reference" << "Align short reads");
 
     GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os));
     GTGlobals::sleep(20000);

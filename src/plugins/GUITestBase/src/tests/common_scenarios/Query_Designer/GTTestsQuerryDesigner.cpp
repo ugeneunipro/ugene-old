@@ -46,7 +46,7 @@ void test1(U2OpStatus &os, QString s="") {
 //Bug: QD: Crash while resizing and deleting elements (0002402)
 //1. Open Query Designer
     QMenu *menu = GTMenu::showMainMenu(os, MWMENU_TOOLS);
-    GTMenu::clickMenuItem(os, menu, QStringList() << "Query Designer");
+    GTMenu::clickMenuItemByName(os, menu, QStringList() << "Query Designer");
     GTGlobals::sleep(500);
     QString array[] = {"CDD", "Base Content","HMM2","HMM3","ORF"};
     QPoint p;

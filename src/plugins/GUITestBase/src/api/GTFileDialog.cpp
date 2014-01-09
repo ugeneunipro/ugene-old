@@ -169,7 +169,7 @@ void GTFileDialogUtils::openFileDialog()
     switch(method) {
     case GTGlobals::UseMouse:
         menu = GTMenu::showMainMenu(os, MWMENU_FILE, method);
-        GTMenu::clickMenuItem(os, menu, itemPath);
+        GTMenu::clickMenuItemByName(os, menu, itemPath);
         break;
 
     case GTGlobals::UseKey:

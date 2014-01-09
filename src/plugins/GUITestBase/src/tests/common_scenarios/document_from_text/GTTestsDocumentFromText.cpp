@@ -56,7 +56,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
     GTGlobals::sleep();
 
     GTGlobals::sleep();
-    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), "NewDocumentFromText", GTGlobals::UseKey);
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<"NewDocumentFromText", GTGlobals::UseKey);
     GTGlobals::sleep();
 
     GTUtilsDocument::checkDocument(os, "result");
@@ -79,7 +79,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001_1) {
     GTGlobals::sleep();
 
     GTGlobals::sleep();
-    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), "NewDocumentFromText", GTGlobals::UseKey);
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<"NewDocumentFromText", GTGlobals::UseKey);
     GTGlobals::sleep();
 
     GTUtilsDocument::checkDocument(os, "result");
@@ -103,7 +103,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001_2) {
     GTGlobals::sleep();
 
     GTGlobals::sleep();
-    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), "NewDocumentFromText", GTGlobals::UseKey);
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<"NewDocumentFromText", GTGlobals::UseKey);
     GTGlobals::sleep();
 
     GTUtilsDocument::checkDocument(os, "result.gb");
@@ -125,7 +125,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
     GTGlobals::sleep();
 
     GTGlobals::sleep();
-    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), "NewDocumentFromText", GTGlobals::UseKey);
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<"NewDocumentFromText", GTGlobals::UseKey);
     GTGlobals::sleep();
 
     GTUtilsDocument::checkDocument(os, "result.gb");
@@ -147,7 +147,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002_1) {
     GTGlobals::sleep();
 
     GTGlobals::sleep();
-    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), "NewDocumentFromText", GTGlobals::UseKey);
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<"NewDocumentFromText", GTGlobals::UseKey);
     GTGlobals::sleep();
 
     GTUtilsDocument::checkDocument(os, "result.gb");
@@ -170,7 +170,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002_2) {
     GTGlobals::sleep();
 
     GTGlobals::sleep();
-    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), "NewDocumentFromText", GTGlobals::UseKey);
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<"NewDocumentFromText", GTGlobals::UseKey);
     GTGlobals::sleep();
 
     GTUtilsDocument::checkDocument(os, "result.gb");
@@ -192,7 +192,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002_2) {
     GTGlobals::sleep();
 
     GTGlobals::sleep();
-    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), "NewDocumentFromText", GTGlobals::UseKey);
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<"NewDocumentFromText", GTGlobals::UseKey);
     GTGlobals::sleep();
 
     GTUtilsDocument::checkDocument(os, "result_new.gb");
@@ -212,7 +212,7 @@ GUI_TEST_CLASS_DEFINITION(test_0003) {
     GTUtilsDialog::waitForDialog(os, filler);
     GTGlobals::sleep();
 
-    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), "NewDocumentFromText", GTGlobals::UseKey);
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<"NewDocumentFromText", GTGlobals::UseKey);
     GTGlobals::sleep();
 
     GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok));
@@ -235,7 +235,7 @@ GUI_TEST_CLASS_DEFINITION(test_0003_1) {
     GTUtilsDialog::waitForDialog(os, filler);
     GTGlobals::sleep();
 
-    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), "NewDocumentFromText", GTGlobals::UseKey);
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<"NewDocumentFromText", GTGlobals::UseKey);
     GTGlobals::sleep();
 
     GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok));
@@ -258,7 +258,7 @@ GUI_TEST_CLASS_DEFINITION(test_0003_2) {
     GTUtilsDialog::waitForDialog(os, filler);
     GTGlobals::sleep();
 
-    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), "NewDocumentFromText", GTGlobals::UseKey);
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<"NewDocumentFromText", GTGlobals::UseKey);
     GTGlobals::sleep();
 
     GTUtilsDocument::checkDocument(os, "result");
@@ -278,7 +278,7 @@ GUI_TEST_CLASS_DEFINITION(test_0004) {
     GTUtilsDialog::waitForDialog(os, filler);
     GTGlobals::sleep();
 
-    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), "NewDocumentFromText", GTGlobals::UseKey);
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<"NewDocumentFromText", GTGlobals::UseKey);
     GTGlobals::sleep();
 
     GTUtilsDocument::checkDocument(os, "result");
@@ -298,7 +298,7 @@ GUI_TEST_CLASS_DEFINITION(test_0004_1) {
     GTUtilsDialog::waitForDialog(os, filler);
     GTGlobals::sleep();
 
-    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), "NewDocumentFromText", GTGlobals::UseKey);
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<"NewDocumentFromText", GTGlobals::UseKey);
     GTGlobals::sleep();
 
     GTUtilsDocument::checkDocument(os, "result.gb");
@@ -318,7 +318,7 @@ GUI_TEST_CLASS_DEFINITION(test_0004_2) {
     GTUtilsDialog::waitForDialog(os, filler);
     GTGlobals::sleep();
 
-    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), "NewDocumentFromText", GTGlobals::UseKey);
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<"NewDocumentFromText", GTGlobals::UseKey);
     GTGlobals::sleep();
 
     GTUtilsDocument::checkDocument(os, "result");
@@ -338,7 +338,7 @@ GUI_TEST_CLASS_DEFINITION(test_0005) {
     GTUtilsDialog::waitForDialog(os, filler);
     GTGlobals::sleep();
 
-    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), "NewDocumentFromText", GTGlobals::UseKey);
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<"NewDocumentFromText", GTGlobals::UseKey);
     GTGlobals::sleep();
 
     GTUtilsDocument::checkDocument(os, "result");
@@ -358,7 +358,7 @@ GUI_TEST_CLASS_DEFINITION(test_0005_1) {
     GTUtilsDialog::waitForDialog(os, filler);
     GTGlobals::sleep();
 
-    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), "NewDocumentFromText", GTGlobals::UseKey);
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<"NewDocumentFromText", GTGlobals::UseKey);
     GTGlobals::sleep();
 
     GTUtilsDocument::checkDocument(os, "result.gb");
@@ -378,7 +378,7 @@ GUI_TEST_CLASS_DEFINITION(test_0005_2) {
     GTUtilsDialog::waitForDialog(os, filler);
     GTGlobals::sleep();
 
-    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), "NewDocumentFromText", GTGlobals::UseKey);
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<"NewDocumentFromText", GTGlobals::UseKey);
     GTGlobals::sleep();
 
     GTUtilsDocument::checkDocument(os, "result");
@@ -397,7 +397,7 @@ GUI_TEST_CLASS_DEFINITION(test_0006) {
     GTUtilsDialog::waitForDialog(os, filler);
     GTGlobals::sleep();
 
-    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), "NewDocumentFromText", GTGlobals::UseKey);
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<"NewDocumentFromText", GTGlobals::UseKey);
     GTGlobals::sleep();
 
     GTUtilsDocument::checkDocument(os, "result");
@@ -417,7 +417,7 @@ GUI_TEST_CLASS_DEFINITION(test_0006_1) {
     GTUtilsDialog::waitForDialog(os, filler);
     GTGlobals::sleep();
 
-    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), "NewDocumentFromText", GTGlobals::UseKey);
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<"NewDocumentFromText", GTGlobals::UseKey);
     GTGlobals::sleep();
 
     GTUtilsDocument::checkDocument(os, "result.gb");
@@ -437,7 +437,7 @@ GUI_TEST_CLASS_DEFINITION(test_0006_2) {
     GTUtilsDialog::waitForDialog(os, filler);
     GTGlobals::sleep();
 
-    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), "NewDocumentFromText", GTGlobals::UseKey);
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<"NewDocumentFromText", GTGlobals::UseKey);
     GTGlobals::sleep();
 
     GTUtilsDocument::checkDocument(os, "result");
@@ -457,7 +457,7 @@ GUI_TEST_CLASS_DEFINITION(test_0007) {
     GTUtilsDialog::waitForDialog(os, filler);
     GTGlobals::sleep();
 
-    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), "NewDocumentFromText", GTGlobals::UseKey);
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<"NewDocumentFromText", GTGlobals::UseKey);
     GTGlobals::sleep();
 
     GTUtilsDocument::checkDocument(os, "result");
@@ -477,7 +477,7 @@ GUI_TEST_CLASS_DEFINITION(test_0007_1) {
     GTUtilsDialog::waitForDialog(os, filler);
     GTGlobals::sleep();
 
-    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), "NewDocumentFromText", GTGlobals::UseKey);
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<"NewDocumentFromText", GTGlobals::UseKey);
     GTGlobals::sleep();
 
     GTUtilsDocument::checkDocument(os, "result.gb");
@@ -497,7 +497,7 @@ GUI_TEST_CLASS_DEFINITION(test_0007_2) {
     GTUtilsDialog::waitForDialog(os, filler);
     GTGlobals::sleep();
 
-    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), "NewDocumentFromText", GTGlobals::UseKey);
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<"NewDocumentFromText", GTGlobals::UseKey);
     GTGlobals::sleep();
 
     GTUtilsDocument::checkDocument(os, "result");
@@ -517,7 +517,7 @@ GUI_TEST_CLASS_DEFINITION(test_0008) {
     GTUtilsDialog::waitForDialog(os, filler);
     GTGlobals::sleep();
 
-    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), "NewDocumentFromText", GTGlobals::UseKey);
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<"NewDocumentFromText", GTGlobals::UseKey);
     GTGlobals::sleep();
 
     GTUtilsDocument::checkDocument(os, "result");
@@ -537,7 +537,7 @@ GUI_TEST_CLASS_DEFINITION(test_0008_1) {
     GTUtilsDialog::waitForDialog(os, filler);
     GTGlobals::sleep();
 
-    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), "NewDocumentFromText", GTGlobals::UseKey);
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<"NewDocumentFromText", GTGlobals::UseKey);
     GTGlobals::sleep();
 
     GTUtilsDocument::checkDocument(os, "result.gb");
@@ -557,7 +557,7 @@ GUI_TEST_CLASS_DEFINITION(test_0008_2) {
     GTUtilsDialog::waitForDialog(os, filler);
     GTGlobals::sleep();
 
-    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), "NewDocumentFromText", GTGlobals::UseKey);
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<"NewDocumentFromText", GTGlobals::UseKey);
     GTGlobals::sleep();
 
     GTUtilsDocument::checkDocument(os, "result");
@@ -577,7 +577,7 @@ GUI_TEST_CLASS_DEFINITION(test_0009) {
     GTUtilsDialog::waitForDialog(os, filler);
     GTGlobals::sleep();
 
-    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), "NewDocumentFromText", GTGlobals::UseKey);
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<"NewDocumentFromText", GTGlobals::UseKey);
     GTGlobals::sleep();
 
     GTUtilsDocument::checkDocument(os, "result");
@@ -597,7 +597,7 @@ GUI_TEST_CLASS_DEFINITION(test_0009_1) {
     GTUtilsDialog::waitForDialog(os, filler);
     GTGlobals::sleep();
 
-    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), "NewDocumentFromText", GTGlobals::UseKey);
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<"NewDocumentFromText", GTGlobals::UseKey);
     GTGlobals::sleep();
 
     GTUtilsDocument::checkDocument(os, "result.gb");
@@ -617,7 +617,7 @@ GUI_TEST_CLASS_DEFINITION(test_0009_2) {
     GTUtilsDialog::waitForDialog(os, filler);
     GTGlobals::sleep();
 
-    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), "NewDocumentFromText", GTGlobals::UseKey);
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<"NewDocumentFromText", GTGlobals::UseKey);
     GTGlobals::sleep();
 
     GTUtilsDocument::checkDocument(os, "result");
@@ -649,7 +649,7 @@ GUI_TEST_CLASS_DEFINITION(test_0010) {
     GTUtilsDialog::waitForDialog(os, filler);
     GTGlobals::sleep();
 
-    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), "NewDocumentFromText", GTGlobals::UseKey);
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<"NewDocumentFromText", GTGlobals::UseKey);
     GTGlobals::sleep();
 
 //  3. Click Create button
@@ -689,7 +689,7 @@ GUI_TEST_CLASS_DEFINITION(test_0010_1) {
     GTUtilsDialog::waitForDialog(os, filler);
     GTGlobals::sleep();
 
-    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), "NewDocumentFromText", GTGlobals::UseKey);
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<"NewDocumentFromText", GTGlobals::UseKey);
     GTGlobals::sleep();
 
     //  3. Click Create button
@@ -729,7 +729,7 @@ GUI_TEST_CLASS_DEFINITION(test_0010_2) {
     GTUtilsDialog::waitForDialog(os, filler);
     GTGlobals::sleep();
 
-    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), "NewDocumentFromText", GTGlobals::UseMouse);
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<"NewDocumentFromText", GTGlobals::UseMouse);
     GTGlobals::sleep();
 
     //  3. Click Create button
@@ -768,7 +768,7 @@ GUI_TEST_CLASS_DEFINITION(test_0011) {
     GTUtilsDialog::waitForDialog(os, filler);
     GTGlobals::sleep();
 
-    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), "NewDocumentFromText", GTGlobals::UseKey);
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<"NewDocumentFromText", GTGlobals::UseKey);
     GTGlobals::sleep();
 
     //  3. Click Create button
@@ -808,7 +808,7 @@ GUI_TEST_CLASS_DEFINITION(test_0011_1) {
     GTUtilsDialog::waitForDialog(os, filler);
     GTGlobals::sleep();
 
-    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), "NewDocumentFromText", GTGlobals::UseKey);
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<"NewDocumentFromText", GTGlobals::UseKey);
     GTGlobals::sleep();
 
     //  3. Click Create button
@@ -847,7 +847,7 @@ GUI_TEST_CLASS_DEFINITION(test_0011_2) {
     GTUtilsDialog::waitForDialog(os, filler);
     GTGlobals::sleep();
 
-    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), "NewDocumentFromText", GTGlobals::UseMouse);
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<"NewDocumentFromText", GTGlobals::UseMouse);
     GTGlobals::sleep();
 
     //  3. Click Create button
@@ -874,14 +874,14 @@ GUI_TEST_CLASS_DEFINITION(test_0012) {
     GTUtilsDialog::waitForDialog(os, filler);
     GTGlobals::sleep();
 
-    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), "NewDocumentFromText", GTGlobals::UseKey);
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<"NewDocumentFromText", GTGlobals::UseKey);
     GTGlobals::sleep();
 
     GTUtilsDocument::checkDocument(os, "result.fa");
     GTGlobals::sleep();
 
     GTUtilsDialog::waitForDialog(os, new SaveProjectDialogFiller(os, QDialogButtonBox::No));
-    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), ACTION_PROJECTSUPPORT__CLOSE_PROJECT);
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<ACTION_PROJECTSUPPORT__CLOSE_PROJECT);
     GTGlobals::sleep();
 
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/sandbox/" , "result.fa");
@@ -900,14 +900,14 @@ GUI_TEST_CLASS_DEFINITION(test_0012_1) {
     GTUtilsDialog::waitForDialog(os, filler);
     GTGlobals::sleep();
 
-    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), "NewDocumentFromText", GTGlobals::UseKey);
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<"NewDocumentFromText", GTGlobals::UseKey);
     GTGlobals::sleep();
 
     GTUtilsDocument::checkDocument(os, "result.gb");
     GTGlobals::sleep();
 
     GTUtilsDialog::waitForDialog(os, new SaveProjectDialogFiller(os, QDialogButtonBox::No));
-    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), ACTION_PROJECTSUPPORT__CLOSE_PROJECT);
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<ACTION_PROJECTSUPPORT__CLOSE_PROJECT);
     GTGlobals::sleep();
 
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/sandbox/" , "result.gb");
@@ -925,14 +925,14 @@ GUI_TEST_CLASS_DEFINITION(test_0012_2) {
     GTUtilsDialog::waitForDialog(os, filler);
     GTGlobals::sleep();
 
-    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), "NewDocumentFromText", GTGlobals::UseKey);
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<"NewDocumentFromText", GTGlobals::UseKey);
     GTGlobals::sleep();
 
     GTUtilsDocument::checkDocument(os, "result.fa");
     GTGlobals::sleep();
 
     GTUtilsDialog::waitForDialog(os, new SaveProjectDialogFiller(os, QDialogButtonBox::No));
-    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), ACTION_PROJECTSUPPORT__CLOSE_PROJECT);
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<ACTION_PROJECTSUPPORT__CLOSE_PROJECT);
     GTGlobals::sleep();
 
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/sandbox/" , "result.fa");
@@ -950,7 +950,7 @@ GUI_TEST_CLASS_DEFINITION(test_0013) {
     GTUtilsDialog::waitForDialog(os, filler);
     GTGlobals::sleep();
 
-    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), "NewDocumentFromText", GTGlobals::UseKey);
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<"NewDocumentFromText", GTGlobals::UseKey);
     GTGlobals::sleep();
     GTUtilsDocument::checkDocument(os, "result.fa");
     GTGlobals::sleep();
@@ -974,7 +974,7 @@ GUI_TEST_CLASS_DEFINITION(test_0013_1) {
     GTUtilsDialog::waitForDialog(os, filler);
     GTGlobals::sleep();
 
-    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), "NewDocumentFromText", GTGlobals::UseKey);
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<"NewDocumentFromText", GTGlobals::UseKey);
     GTGlobals::sleep();
     GTUtilsDocument::checkDocument(os, "result.gb");
     GTGlobals::sleep();
@@ -997,7 +997,7 @@ GUI_TEST_CLASS_DEFINITION(test_0013_2) {
     GTUtilsDialog::waitForDialog(os, filler);
     GTGlobals::sleep();
 
-    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), "NewDocumentFromText", GTGlobals::UseKey);
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE),QStringList()<< "NewDocumentFromText", GTGlobals::UseKey);
     GTGlobals::sleep();
     GTUtilsDocument::checkDocument(os, "result.fa");
     GTGlobals::sleep();
@@ -1021,7 +1021,7 @@ GUI_TEST_CLASS_DEFINITION(test_0014) {
     GTUtilsDialog::waitForDialog(os, filler);
     GTGlobals::sleep();
 
-    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), "NewDocumentFromText", GTGlobals::UseKey);
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<"NewDocumentFromText", GTGlobals::UseKey);
     GTGlobals::sleep();
 
     GTUtilsProject::checkProject(os, GTUtilsProject::NotExists);
@@ -1041,7 +1041,7 @@ GUI_TEST_CLASS_DEFINITION(test_0014_1) {
     GTUtilsDialog::waitForDialog(os, filler);
     GTGlobals::sleep();
 
-    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), "NewDocumentFromText", GTGlobals::UseKey);
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<"NewDocumentFromText", GTGlobals::UseKey);
     GTGlobals::sleep();
 
     GTUtilsProject::checkProject(os, GTUtilsProject::NotExists);
@@ -1060,7 +1060,7 @@ GUI_TEST_CLASS_DEFINITION(test_0014_2) {
     GTUtilsDialog::waitForDialog(os, filler);
     GTGlobals::sleep();
 
-    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), "NewDocumentFromText", GTGlobals::UseKey);
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<"NewDocumentFromText", GTGlobals::UseKey);
     GTGlobals::sleep();
 
     GTUtilsProject::checkProject(os, GTUtilsProject::Exists);
@@ -1080,7 +1080,7 @@ GUI_TEST_CLASS_DEFINITION(test_0015) {
     GTUtilsDialog::waitForDialog(os, filler);
     GTGlobals::sleep();
 
-    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), "NewDocumentFromText", GTGlobals::UseKey);
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<"NewDocumentFromText", GTGlobals::UseKey);
     GTGlobals::sleep();
 
     GTGlobals::sleep();
@@ -1123,7 +1123,7 @@ GUI_TEST_CLASS_DEFINITION(test_0015_1) {
     GTUtilsDialog::waitForDialog(os, filler);
     GTGlobals::sleep();
 
-    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), "NewDocumentFromText", GTGlobals::UseKey);
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<"NewDocumentFromText", GTGlobals::UseKey);
     GTGlobals::sleep();
 
     GTGlobals::sleep();
@@ -1166,7 +1166,7 @@ GUI_TEST_CLASS_DEFINITION(test_0015_2) {
     GTUtilsDialog::waitForDialog(os, filler);
     GTGlobals::sleep();
 
-    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), "NewDocumentFromText", GTGlobals::UseKey);
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<"NewDocumentFromText", GTGlobals::UseKey);
     GTGlobals::sleep();
 
     GTGlobals::sleep();

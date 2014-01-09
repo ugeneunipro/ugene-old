@@ -33,7 +33,15 @@ void PopupChooser::run()
     GTGlobals::sleep(1000);
     GTMouseDriver::release(os);
     QMenu* activePopupMenu = qobject_cast<QMenu*>(QApplication::activePopupWidget());
-    GTMenu::clickMenuItem(os, activePopupMenu, namePath, useMethod);
+    GTMenu::clickMenuItemByName(os, activePopupMenu, namePath, useMethod);
+}
+
+void PopupChooserbyText::run()
+{
+    GTGlobals::sleep(1000);
+    GTMouseDriver::release(os);
+    QMenu* activePopupMenu = qobject_cast<QMenu*>(QApplication::activePopupWidget());
+    GTMenu::clickMenuItemByName(os, activePopupMenu, namePath, useMethod);
 }
 
 }

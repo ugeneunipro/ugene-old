@@ -50,7 +50,7 @@ GUI_TEST_CLASS_DEFINITION( test_0001 ) {
 
     QMenu *mainMenu = GTMenu::showMainMenu( os, MWMENU_TOOLS );
     CHECK_OP( os, );
-    GTMenu::clickMenuItem( os, mainMenu, QStringList( ) << "Align to reference"
+    GTMenu::clickMenuItemByName( os, mainMenu, QStringList( ) << "Align to reference"
         << "Align short reads" );
     CHECK_OP( os, );
     GTGlobals::sleep( 5000 );
@@ -77,7 +77,7 @@ GUI_TEST_CLASS_DEFINITION( test_0002 ) {
 
     QMenu *mainMenu = GTMenu::showMainMenu( os, MWMENU_TOOLS );
     CHECK_OP( os, );
-    GTMenu::clickMenuItem( os, mainMenu, QStringList( ) << "Align to reference"
+    GTMenu::clickMenuItemByName( os, mainMenu, QStringList( ) << "Align to reference"
         << "Align short reads" );
     CHECK_OP( os, );
     GTGlobals::sleep( 5000 );
@@ -108,7 +108,7 @@ GUI_TEST_CLASS_DEFINITION( test_0003 ) {
     CHECK_OP( os, );
     QMenu *mainMenu = GTMenu::showMainMenu( os, MWMENU_TOOLS );
     CHECK_OP( os, );
-    GTMenu::clickMenuItem( os, mainMenu, QStringList( ) << "Align to reference"
+    GTMenu::clickMenuItemByName( os, mainMenu, QStringList( ) << "Align to reference"
         << "Align short reads" );
     CHECK_OP( os, );
     GTGlobals::sleep( 5000 );
@@ -134,7 +134,7 @@ GUI_TEST_CLASS_DEFINITION(test_0004) {
 
     QMenu *mainMenu = GTMenu::showMainMenu(os, MWMENU_TOOLS);
     CHECK_OP(os, );
-    GTMenu::clickMenuItem(os, mainMenu, QStringList() << "Align to reference" << "Align short reads");
+    GTMenu::clickMenuItemByName(os, mainMenu, QStringList() << "Align to reference" << "Align short reads");
     CHECK_OP(os, );
     GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os,sandBoxDir + "resule.ugenedb"));
 //UGENE can hang up here

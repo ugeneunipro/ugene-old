@@ -55,7 +55,7 @@ void GTUtilsWorkflowDesigner::openWorkflowDesigner(U2OpStatus &os){
     GTUtilsDialog::waitForDialogWhichMayRunOrNot(os, new StartupDialogFiller(os));
 
     QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
-    GTMenu::clickMenuItem(os, menu, QStringList() << "Workflow Designer");
+    GTMenu::clickMenuItemByName(os, menu, QStringList() << "Workflow Designer");
     GTGlobals::sleep(500);
 }
 #undef GT_METHOD_NAME

@@ -146,7 +146,7 @@ GUI_TEST_CLASS_DEFINITION(test_0003) {
         false
     );
     GTUtilsDialog::waitForDialog(os, filler);
-    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_ACTIONS), QStringList() <<  ADV_MENU_EDIT << ACTION_EDIT_INSERT_SUBSEQUENCE, GTGlobals::UseKey);
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_ACTIONS), QStringList() <<  ADV_MENU_EDIT << ACTION_EDIT_INSERT_SUBSEQUENCE, GTGlobals::UseKey);
     GTGlobals::sleep();
 
     GTUtilsDocument::checkDocument(os, "result.fa");
@@ -174,7 +174,7 @@ GUI_TEST_CLASS_DEFINITION(test_0004) {
         false
     );
     GTUtilsDialog::waitForDialog(os, filler);
-    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_ACTIONS), QStringList() <<  ADV_MENU_EDIT << ACTION_EDIT_INSERT_SUBSEQUENCE, GTGlobals::UseKey);
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_ACTIONS), QStringList() <<  ADV_MENU_EDIT << ACTION_EDIT_INSERT_SUBSEQUENCE, GTGlobals::UseKey);
     GTGlobals::sleep();
 
     GTUtilsDocument::checkDocument(os, "result.gb");

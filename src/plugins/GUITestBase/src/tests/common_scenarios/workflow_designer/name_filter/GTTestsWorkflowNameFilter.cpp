@@ -36,7 +36,7 @@ GUI_TEST_CLASS_DEFINITION( test_0001 ) {
 
     // 1. Open WD.
     QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
-    GTMenu::clickMenuItem(os, menu, QStringList() << "Workflow Designer");
+    GTMenu::clickMenuItemByName(os, menu, QStringList() << "Workflow Designer");
 
     // 2. Open the samples tab.
     GTWidget::click(os, GTWidget::findWidget(os, "samples"));
@@ -74,7 +74,7 @@ GUI_TEST_CLASS_DEFINITION( test_0002 ) {
 
     // 1. Open WD.
     QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
-    GTMenu::clickMenuItem(os, menu, QStringList() << "Workflow Designer");
+    GTMenu::clickMenuItemByName(os, menu, QStringList() << "Workflow Designer");
 
     // 2. Open the samples tab.
     GTWidget::click(os, GTWidget::findWidget(os, "samples"));
@@ -135,7 +135,7 @@ GUI_TEST_CLASS_DEFINITION( test_0003 ) {
 
     // 1. Open WD.
     QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
-    GTMenu::clickMenuItem(os, menu, QStringList() << "Workflow Designer");
+    GTMenu::clickMenuItemByName(os, menu, QStringList() << "Workflow Designer");
 
     // 2. Open the samples tab.
     GTWidget::click(os, GTWidget::findWidget(os, "samples"));

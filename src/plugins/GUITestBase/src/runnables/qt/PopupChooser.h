@@ -35,6 +35,16 @@ namespace U2 {
         QStringList namePath;
         GTGlobals::UseMethod useMethod;
     };
+
+    class PopupChooserbyText : public Filler {
+    public:
+        PopupChooserbyText(U2OpStatus &_os, const QStringList &_namePath, GTGlobals::UseMethod _useMethod = GTGlobals::UseKey) //UseKey need for Ubuntu
+            :Filler(_os, GUIDialogWaiter::WaitSettings(QString(), GUIDialogWaiter::Popup)), namePath(_namePath), useMethod(_useMethod){}
+        virtual void run();
+    protected:
+        QStringList namePath;
+        GTGlobals::UseMethod useMethod;
+    };
 }
 
 #endif

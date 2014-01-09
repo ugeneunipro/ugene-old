@@ -253,7 +253,7 @@ GUI_TEST_CLASS_DEFINITION(test_0005){
     GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
 //1. Open WD
     QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
-    GTMenu::clickMenuItem(os, menu, QStringList() << "Workflow Designer");
+    GTMenu::clickMenuItemByName(os, menu, QStringList() << "Workflow Designer");
 //2. Press button Validate schema
     GTUtilsDialog::waitForDialog(os,new MessageBoxDialogFiller(os, QMessageBox::Ok,"Nothing to run: empty workflow"));
     GTWidget::click(os,GTAction::button(os,"Validate workflow"));
@@ -267,14 +267,14 @@ GUI_TEST_CLASS_DEFINITION(test_0006){
 //1. Do menu Settings->Prefrences
     GTUtilsDialog::waitForDialog(os,new AppSettingsDialogFiller(os,AppSettingsDialogFiller::minimal));
     QMenu* menu=GTMenu::showMainMenu(os, MWMENU_SETTINGS);
-    GTMenu::clickMenuItem(os, menu, QStringList() << "action__settings");
+    GTMenu::clickMenuItemByName(os, menu, QStringList() << "action__settings");
 //2. Open WD settings
 //3. Change Default visualization Item style from Extended to Minimal.
 //4. Click OK button
 
 //5. Open WD
     menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
-    GTMenu::clickMenuItem(os, menu, QStringList() << "Workflow Designer");
+    GTMenu::clickMenuItemByName(os, menu, QStringList() << "Workflow Designer");
 //6. Load any scheme from samples tab
     GTUtilsWorkflowDesigner::addAlgorithm(os,"read alignment");
 //Expected state: item style on loaded schema must be Minimal
@@ -295,14 +295,14 @@ GUI_TEST_CLASS_DEFINITION(test_0006_1){
 //1. Do menu Settings->Prefrences
     GTUtilsDialog::waitForDialog(os,new AppSettingsDialogFiller(os,AppSettingsDialogFiller::extended));
     QMenu* menu=GTMenu::showMainMenu(os, MWMENU_SETTINGS);
-    GTMenu::clickMenuItem(os, menu, QStringList() << "action__settings");
+    GTMenu::clickMenuItemByName(os, menu, QStringList() << "action__settings");
 //2. Open WD settings
 //3. Change Default visualization Item style from Extended to Minimal.
 //4. Click OK button
 
 //5. Open WD
     menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
-    GTMenu::clickMenuItem(os, menu, QStringList() << "Workflow Designer");
+    GTMenu::clickMenuItemByName(os, menu, QStringList() << "Workflow Designer");
 //6. Load any scheme from samples tab
     GTUtilsWorkflowDesigner::addAlgorithm(os,"read alignment");
 //Expected state: item style on loaded schema must be Minimal
@@ -323,12 +323,12 @@ GUI_TEST_CLASS_DEFINITION(test_0007){
 //1. Do menu {Settings->Prefrences}
     GTUtilsDialog::waitForDialog(os,new AppSettingsDialogFiller(os,255,0,0));
     QMenu* menu=GTMenu::showMainMenu(os, MWMENU_SETTINGS);
-    GTMenu::clickMenuItem(os, menu, QStringList() << "action__settings");
+    GTMenu::clickMenuItemByName(os, menu, QStringList() << "action__settings");
 //2. Activate WD prefrences page. Change Backgrounf color for workers.
 
 //3. Open WD and place any worker on working area.
     menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
-    GTMenu::clickMenuItem(os, menu, QStringList() << "Workflow Designer");
+    GTMenu::clickMenuItemByName(os, menu, QStringList() << "Workflow Designer");
 //Expected state: workers background color must be same as in prefrences
     GTUtilsWorkflowDesigner::addAlgorithm(os,"read alignment");
     QPoint p(GTUtilsWorkflowDesigner::getItemLeft(os,"read alignment")+20,
@@ -347,7 +347,7 @@ GUI_TEST_CLASS_DEFINITION(test_0009){
     GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
 //    1. Open schema from examples
     QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
-    GTMenu::clickMenuItem(os, menu, QStringList() << "Workflow Designer");
+    GTMenu::clickMenuItemByName(os, menu, QStringList() << "Workflow Designer");
     GTUtilsWorkflowDesigner::addSample(os, "call variants");
 //    2. Clear dashboard (select all + del button)
     GTGlobals::sleep(500);
@@ -383,7 +383,7 @@ GUI_TEST_CLASS_DEFINITION(test_0010){
     GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
 //    1. Open WD
     QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
-    GTMenu::clickMenuItem(os, menu, QStringList() << "Workflow Designer");
+    GTMenu::clickMenuItemByName(os, menu, QStringList() << "Workflow Designer");
 //    2. Place 3 HMM build workflow elements on scheme
     GTUtilsWorkflowDesigner::addAlgorithm(os, "read sequence");
     GTUtilsWorkflowDesigner::addAlgorithm(os,"write sequence");
@@ -412,7 +412,7 @@ GUI_TEST_CLASS_DEFINITION(test_0013){
     GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
 //    1. Load any sample in WD
     QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
-    GTMenu::clickMenuItem(os, menu, QStringList() << "Workflow Designer");
+    GTMenu::clickMenuItemByName(os, menu, QStringList() << "Workflow Designer");
     GTUtilsWorkflowDesigner::addSample(os, "call variants");
 //    2. Select output port.
     WorkflowProcessItem* gr = GTUtilsWorkflowDesigner::getWorker(os,"call variants with");
@@ -450,7 +450,7 @@ GUI_TEST_CLASS_DEFINITION(test_0015){
     GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
 //    1. open WD.
     QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
-    GTMenu::clickMenuItem(os, menu, QStringList() << "Workflow Designer");
+    GTMenu::clickMenuItemByName(os, menu, QStringList() << "Workflow Designer");
 //    2. Select any worker on palette.
     GTUtilsWorkflowDesigner::addSample(os,"call variants");
     GTMouseDriver::moveTo(os,GTUtilsWorkflowDesigner::getItemCenter(os,"call variants with"));
@@ -484,7 +484,7 @@ GUI_TEST_CLASS_DEFINITION(test_0016){
     GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
 //    1. open WD.
     QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
-    GTMenu::clickMenuItem(os, menu, QStringList() << "Workflow Designer");
+    GTMenu::clickMenuItemByName(os, menu, QStringList() << "Workflow Designer");
 
 //    2. Place Read align element on schema
     GTUtilsWorkflowDesigner::addAlgorithm(os, "read alignment");
@@ -518,7 +518,7 @@ GUI_TEST_CLASS_DEFINITION(test_0017){
     GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os, testDir + "_common_data/scenarios/sandbox/somedir"));
     //1. Open Workflow Designer
     QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
-    GTMenu::clickMenuItem(os, menu, QStringList() << "Workflow Designer");
+    GTMenu::clickMenuItemByName(os, menu, QStringList() << "Workflow Designer");
     //2. Write the path to the directory which does not exist(in the StartupDialogFiller).
     //3. Click OK(in the StartupDialogFiller).
     CHECK_SET_ERR(!l.hasError(), "There are error messages about write access in WD directory");

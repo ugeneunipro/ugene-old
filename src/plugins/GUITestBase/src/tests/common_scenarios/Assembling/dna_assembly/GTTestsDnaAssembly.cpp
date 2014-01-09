@@ -44,7 +44,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
 
     QMenu *mainMenu = GTMenu::showMainMenu(os, MWMENU_TOOLS);
     CHECK_OP(os, );
-    GTMenu::clickMenuItem(os, mainMenu, QStringList() << "Align to reference" << "Align short reads");
+    GTMenu::clickMenuItemByName(os, mainMenu, QStringList() << "Align to reference" << "Align short reads");
     CHECK_OP(os, );
 
     GTGlobals::sleep(5000);

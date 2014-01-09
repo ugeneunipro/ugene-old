@@ -673,7 +673,7 @@ GUI_TEST_CLASS_DEFINITION(test_1093) {
     GTUtilsDialog::waitForDialog(os, new AlignShortReadsFiller(os, &parameters)) ;
     GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok));
 
-    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_TOOLS), QStringList() << "Align to reference" << "Align short reads");
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_TOOLS), QStringList() << "Align to reference" << "Align short reads");
 
     GTGlobals::sleep(5000);
 //The short reads can't be mapped to the reference sequence!
@@ -686,7 +686,7 @@ GUI_TEST_CLASS_DEFINITION(test_1107){//commit GUIInitionalChecks
 //2) Menu File->Close Project
 //3) Press No in the Save current project dialog
     GTUtilsDialog::waitForDialog(os, new SaveProjectDialogFiller(os, QDialogButtonBox::No));
-    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), ACTION_PROJECTSUPPORT__CLOSE_PROJECT);
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<ACTION_PROJECTSUPPORT__CLOSE_PROJECT);
 //Expected state: UGENE not crashes
 }
 GUI_TEST_CLASS_DEFINITION(test_1113){//commit AboutDialogController.cpp
@@ -770,7 +770,7 @@ GUI_TEST_CLASS_DEFINITION(test_1113_1){//commit AboutDialogController.cpp
 
     GTUtilsDialog::waitForDialog(os, new EscClicker(os));
     QMenu *menu = GTMenu::showMainMenu(os, MWMENU_HELP);
-    GTMenu::clickMenuItem(os, menu, QStringList() << ACTION__ABOUT);
+    GTMenu::clickMenuItemByName(os, menu, QStringList() << ACTION__ABOUT);
     GTGlobals::sleep(1000);
 //Expected state: About dialog appeared, shown info includes platform info (32/64)
 
@@ -858,7 +858,7 @@ GUI_TEST_CLASS_DEFINITION(test_1190){//add AlignShortReadsFiller
     QMenu *menu = GTMenu::showMainMenu(os, MWMENU_TOOLS);
     GTLogTracer l;
 
-    GTMenu::clickMenuItem(os, menu, QStringList() << "Align to reference" << "Align short reads");
+    GTMenu::clickMenuItemByName(os, menu, QStringList() << "Align to reference" << "Align short reads");
 
     GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os,QMessageBox::Ok));
     GTGlobals::sleep(10000);
@@ -1210,7 +1210,7 @@ GUI_TEST_CLASS_DEFINITION( test_1701 ) {
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<< "Render Style"<< "Ball-and-Stick"));
     GTMenu::showContextMenu(os, pdb1);
 
-    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_ACTIONS), "Close active view", GTGlobals::UseKey);
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_ACTIONS), QStringList()<<"Close active view", GTGlobals::UseKey);
 
     GTGlobals::sleep(500);
     QPixmap after = QPixmap::grabWidget(pdb2, pdb2->rect());
@@ -1257,7 +1257,7 @@ GUI_TEST_CLASS_DEFINITION(test_1708){
                         "TAAG-CTTAC");
 
     //2. Align with KAlign
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<MSAE_MENU_ALIGN<<"align_with_kalign", GTGlobals::UseMouse));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<MSAE_MENU_ALIGN<<"align_with_kalign", GTGlobals::UseKey));
     GTUtilsDialog::waitForDialog(os, new KalignDialogFiller(os,10));
     GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
 #ifdef Q_OS_MAC
@@ -1286,7 +1286,7 @@ GUI_TEST_CLASS_DEFINITION(test_1708){
 GUI_TEST_CLASS_DEFINITION(test_1720){
 //1. Use menu {File->Access remote database...}
     GTUtilsDialog::waitForDialog(os, new RemoteDBDialogFiller(os, "D11266", 0));
-    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE),ACTION_PROJECTSUPPORT__ACCESS_REMOTE_DB, GTGlobals::UseKey);
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<ACTION_PROJECTSUPPORT__ACCESS_REMOTE_DB, GTGlobals::UseKey);
 
     GTLogTracer l;
     GTGlobals::sleep(8000);//some time needed for request
@@ -1294,7 +1294,7 @@ GUI_TEST_CLASS_DEFINITION(test_1720){
 
 //3. Use menu {File->Access remote database...}
     GTUtilsDialog::waitForDialog(os, new RemoteDBDialogFiller(os, "D11266", 0));
-    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE),ACTION_PROJECTSUPPORT__ACCESS_REMOTE_DB, GTGlobals::UseKey);
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<ACTION_PROJECTSUPPORT__ACCESS_REMOTE_DB, GTGlobals::UseKey);
 
     GTGlobals::sleep(8000);
 //4. Fill field "Resource ID" with value D11266. Click "OK"
@@ -1308,7 +1308,7 @@ GUI_TEST_CLASS_DEFINITION(test_1786){
     // 2. Select database UniProt(DAS)
     // 3. Fill resource id: 1CRN. Press ok
     GTUtilsDialog::waitForDialog(os, new RemoteDBDialogFiller(os, "1CRN", 7));
-    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE),ACTION_PROJECTSUPPORT__ACCESS_REMOTE_DB, GTGlobals::UseKey);
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<ACTION_PROJECTSUPPORT__ACCESS_REMOTE_DB, GTGlobals::UseKey);
     GTGlobals::sleep(8000);
     // Expected state: document P01542_das.gb appeared in project
     GTUtilsProjectTreeView::findItemByText(os,
@@ -1347,14 +1347,14 @@ GUI_TEST_CLASS_DEFINITION(test_1808) {
 
 GUI_TEST_CLASS_DEFINITION(test_1811) {
     GTUtilsDialog::waitForDialog(os, new RemoteDBDialogFiller(os, "Q9IGQ6", 8));
-    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), ACTION_PROJECTSUPPORT__ACCESS_REMOTE_DB, GTGlobals::UseKey);
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<ACTION_PROJECTSUPPORT__ACCESS_REMOTE_DB, GTGlobals::UseKey);
 
     GTGlobals::sleep(8000);//some time needed for request
 }
 GUI_TEST_CLASS_DEFINITION(test_1811_1) {
     GTUtilsDialog::waitForDialog(os, new RemoteDBDialogFiller(os, "A0N8V2", 5));
     GTUtilsDialog::waitForDialog(os, new SelectDocumentFormatDialogFiller(os));
-    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), ACTION_PROJECTSUPPORT__ACCESS_REMOTE_DB, GTGlobals::UseKey);
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<ACTION_PROJECTSUPPORT__ACCESS_REMOTE_DB, GTGlobals::UseKey);
 
     GTGlobals::sleep(10000);//some time needed for request
     GTUtilsDocument::isDocumentLoaded(os, "A0N8V2.txt");
@@ -1368,7 +1368,7 @@ GUI_TEST_CLASS_DEFINITION( test_1813 )
     //      Database: UniProt (DAS)
     // 3) Press "OK"
     GTUtilsDialog::waitForDialog(os, new RemoteDBDialogFiller(os, "I7G8J3", 7));
-    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE),ACTION_PROJECTSUPPORT__ACCESS_REMOTE_DB, GTGlobals::UseKey);
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<ACTION_PROJECTSUPPORT__ACCESS_REMOTE_DB, GTGlobals::UseMouse);
 
     // Expected: the sequence view with I7G8J3 sequence is opened. UGENE does not crash.
     GTGlobals::sleep(5000);
@@ -1386,7 +1386,7 @@ GUI_TEST_CLASS_DEFINITION( test_1821 ) {
 
     //1. Open WD
     QMenu* menu=GTMenu::showMainMenu( os, MWMENU_TOOLS );
-    GTMenu::clickMenuItem( os, menu, QStringList( ) << "Workflow Designer" );
+    GTMenu::clickMenuItemByName( os, menu, QStringList( ) << "Workflow Designer" );
     GTGlobals::sleep( 500 );
 
     //2. Select "Align sequences with MUSCLE"
@@ -1401,7 +1401,7 @@ GUI_TEST_CLASS_DEFINITION( test_1821 ) {
     //4. Store the scheme to some file using "Save scheme as" button
     GTUtilsDialog::waitForDialog( os, new WorkflowMetaDialogFiller( os,
         workflowOutputDir.absolutePath( ) + "/" + "test.uwl", "Scheme") );
-    GTMenu::clickMenuItem( os, GTMenu::showMainMenu( os, MWMENU_ACTIONS ),
+    GTMenu::clickMenuItemByName( os, GTMenu::showMainMenu( os, MWMENU_ACTIONS ),
         QStringList( ) <<  "Save workflow action", GTGlobals::UseKey );
 
     //5. Close WD
@@ -1473,7 +1473,7 @@ GUI_TEST_CLASS_DEFINITION(test_1860) {
     // 1) Open Workflow Designer
     GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
     QMenu *menu=GTMenu::showMainMenu( os, MWMENU_TOOLS );
-    GTMenu::clickMenuItem( os, menu, QStringList( ) << "Workflow Designer" );
+    GTMenu::clickMenuItemByName( os, menu, QStringList( ) << "Workflow Designer" );
 
     const QString textReaderName = "Read Plain Text";
     const QString textWriterName = "Write Plain Text";
@@ -1501,7 +1501,7 @@ GUI_TEST_CLASS_DEFINITION(test_1865) {
     // 1) Open Workflow Designer
     GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
     QMenu *menu=GTMenu::showMainMenu( os, MWMENU_TOOLS );
-    GTMenu::clickMenuItem( os, menu, QStringList( ) << "Workflow Designer" );
+    GTMenu::clickMenuItemByName( os, menu, QStringList( ) << "Workflow Designer" );
 
     const QString sequenceWriterName = "Write Sequence";
 
@@ -1665,7 +1665,7 @@ GUI_TEST_CLASS_DEFINITION( test_1919 )
     GTLogTracer l;
 
     QMenu *menu=GTMenu::showMainMenu( os, MWMENU_TOOLS );
-    GTMenu::clickMenuItem( os, menu, QStringList() << "Workflow Designer" );
+    GTMenu::clickMenuItemByName( os, menu, QStringList() << "Workflow Designer" );
 
     GTUtilsWorkflowDesigner::addAlgorithm( os, "File List" );
     GTUtilsWorkflowDesigner::addAlgorithm( os, "File Format Conversion" );
@@ -2215,7 +2215,7 @@ GUI_TEST_CLASS_DEFINITION( test_2049 ){
 GUI_TEST_CLASS_DEFINITION( test_2070 ){
     GTLogTracer lt;
     GTUtilsDialog::waitForDialog(os, new RemoteDBDialogFiller(os, "Q9IGQ6", 7));
-    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE),ACTION_PROJECTSUPPORT__ACCESS_REMOTE_DB, GTGlobals::UseKey);
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<ACTION_PROJECTSUPPORT__ACCESS_REMOTE_DB, GTGlobals::UseKey);
     GTGlobals::sleep();
     GTUtilsTaskTreeView::waitTaskFinidhed(os);
 
@@ -2270,7 +2270,7 @@ GUI_TEST_CLASS_DEFINITION( test_2089 )
     // 2. Open WD
     // 3. Set any folder without write access as workflow output directory. Click OK.
     QMenu *menu = GTMenu::showMainMenu(os, MWMENU_TOOLS);
-    GTMenu::clickMenuItem(os, menu, QStringList() << "Workflow Designer");
+    GTMenu::clickMenuItemByName(os, menu, QStringList() << "Workflow Designer");
 }
 
 GUI_TEST_CLASS_DEFINITION( test_2100_1 ){
@@ -2586,7 +2586,7 @@ GUI_TEST_CLASS_DEFINITION( test_2140 )
 
     GTLogTracer l;
     GTUtilsDialog::waitForDialog(os, new ConvertAssemblyToSAMDialogFiller(os, dataDir + "samples/FASTA/", "human_T1.fa"));
-    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_TOOLS),
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_TOOLS),
                           QStringList() << "DNA assembly" << "Convert UGENE Assembly data base to SAM format");
 
     CHECK_SET_ERR(l.hasError() == true, "There is no error message in log");
@@ -2623,7 +2623,7 @@ GUI_TEST_CLASS_DEFINITION( test_2144 )
 GUI_TEST_CLASS_DEFINITION( test_2150 ){
     // 1. Open Workflow Designer.
     QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
-    GTMenu::clickMenuItem(os, menu, QStringList() << "Workflow Designer");
+    GTMenu::clickMenuItemByName(os, menu, QStringList() << "Workflow Designer");
     // 2. Open the "Align sequences with MUSCLE" sample scheme.
     GTUtilsWorkflowDesigner::addSample(os, "Align sequences with MUSCLE");
 
@@ -2756,7 +2756,7 @@ GUI_TEST_CLASS_DEFINITION( test_1924 )
         "atcgtac"
         );
     GTUtilsDialog::waitForDialog(os, filler);
-    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_ACTIONS), QStringList() <<  ADV_MENU_EDIT << ACTION_EDIT_INSERT_SUBSEQUENCE, GTGlobals::UseKey);
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_ACTIONS), QStringList() <<  ADV_MENU_EDIT << ACTION_EDIT_INSERT_SUBSEQUENCE, GTGlobals::UseKey);
     GTGlobals::sleep();
 
     //4. Click OK
@@ -2776,7 +2776,7 @@ GUI_TEST_CLASS_DEFINITION(test_1986){
 //2. Use main toolbar { File -> Search NCBI Genbank }
     GTUtilsDialog::waitForDialog(os, new NCBISearchDialogFiller(os, "human", false,5));
 
-    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), ACTION_PROJECTSUPPORT__SEARCH_GENBANK);
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<ACTION_PROJECTSUPPORT__SEARCH_GENBANK);
     GTGlobals::sleep();
 //Expected state: the "NCBI Sequence Search" dialog has appeared
 
@@ -3194,7 +3194,7 @@ GUI_TEST_CLASS_DEFINITION( test_2202 )
     GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os, workflowOutputDir.absolutePath()));
     QMenu* menu = GTMenu::showMainMenu(os, MWMENU_TOOLS);
 
-    GTMenu::clickMenuItem(os, menu, QStringList() << "Workflow Designer");
+    GTMenu::clickMenuItemByName(os, menu, QStringList() << "Workflow Designer");
 
     GTGlobals::sleep();
     CHECK_SET_ERR(workflowOutputDir.exists(), "Dir wasn't created");
@@ -3271,7 +3271,7 @@ GUI_TEST_CLASS_DEFINITION( test_2225_1 ){
 
     GTUtilsDialog::waitForDialog(os, filler);
 
-    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), ACTION_PROJECTSUPPORT__SEARCH_GENBANK, GTGlobals::UseKey);
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<ACTION_PROJECTSUPPORT__SEARCH_GENBANK, GTGlobals::UseKey);
     GTGlobals::sleep();
 }
 
@@ -3280,7 +3280,7 @@ GUI_TEST_CLASS_DEFINITION( test_2225_2 ){
 
     GTUtilsDialog::waitForDialog(os, filler);
 
-    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), ACTION_PROJECTSUPPORT__SEARCH_GENBANK, GTGlobals::UseKey);
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<ACTION_PROJECTSUPPORT__SEARCH_GENBANK, GTGlobals::UseKey);
     GTGlobals::sleep();
 }
 GUI_TEST_CLASS_DEFINITION( test_2259 ){
@@ -3299,7 +3299,7 @@ GUI_TEST_CLASS_DEFINITION( test_2266_1 ){
     GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os, testDir + "_common_data/scenarios/sandbox"));
 
     QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
-    GTMenu::clickMenuItem(os, menu, QStringList() << "Workflow Designer");
+    GTMenu::clickMenuItemByName(os, menu, QStringList() << "Workflow Designer");
     GTUtilsWorkflowDesigner::addSample(os, "call variants");
 
     GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "Read assembly"));
@@ -3436,7 +3436,7 @@ GUI_TEST_CLASS_DEFINITION( test_2269 ){
     parameters.seedLength = 33;
 
     GTUtilsDialog::waitForDialog(os, new AlignShortReadsFiller(os, &parameters));
-    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_TOOLS), QStringList() << "Align to reference" << "Align short reads");
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_TOOLS), QStringList() << "Align to reference" << "Align short reads");
 
     CHECK_SET_ERR( !os.hasError(), "Uncorrect value is available");
 }
@@ -3455,7 +3455,7 @@ GUI_TEST_CLASS_DEFINITION( test_2281 ){
     //GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
     // 1. Open WD sample "Align Sequences with MUSCLE
     QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
-    GTMenu::clickMenuItem(os, menu, QStringList() << "Workflow Designer");
+    GTMenu::clickMenuItemByName(os, menu, QStringList() << "Workflow Designer");
    // GTUtilsWorkflowDesigner::addSample(os, "Align sequences with MUSCLE");
     GTGlobals::sleep(500);
     QGraphicsView* sceneView = qobject_cast<QGraphicsView*>(GTWidget::findWidget(os,"sceneView"));
@@ -3757,7 +3757,7 @@ GUI_TEST_CLASS_DEFINITION( test_2352 ) {
     GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok));
 
     QMenu *menu=GTMenu::showMainMenu( os, MWMENU_TOOLS );
-    GTMenu::clickMenuItem( os, menu, QStringList( ) << "Build dotplot" );
+    GTMenu::clickMenuItemByName( os, menu, QStringList( ) << "Build dotplot" );
 
     GTGlobals::sleep();
 }
@@ -3780,8 +3780,7 @@ GUI_TEST_CLASS_DEFINITION( test_2360 ) {
 
 GUI_TEST_CLASS_DEFINITION( test_2364 ) {
     //1. Open WD.'
-    QMenu *menu=GTMenu::showMainMenu( os, MWMENU_TOOLS );
-    GTMenu::clickMenuItem( os, menu, QStringList( ) << "Workflow Designer" );
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
 
     //2. Create a workflow: Read sequence -> Write sequence.
     GTUtilsWorkflowDesigner::addAlgorithm(os, "Read sequence");
@@ -3845,7 +3844,7 @@ GUI_TEST_CLASS_DEFINITION( test_2377 ) {
     GTUtilsDialog::waitForDialog( os, new StartupDialogFiller( os ) );
 
     QMenu *menu=GTMenu::showMainMenu( os, MWMENU_TOOLS );
-    GTMenu::clickMenuItem( os, menu, QStringList( ) << "Workflow Designer" );
+    GTMenu::clickMenuItemByName( os, menu, QStringList( ) << "Workflow Designer" );
 
     const QString assemblyReaderName = "Read Assembly";
     const QString assemblyWriterName = "Write Assembly";
@@ -3958,9 +3957,9 @@ GUI_TEST_CLASS_DEFINITION( test_2379 ) {
     const QString projectFile = "test_2379";
 
     GTUtilsDialog::waitForDialog(os, new CreateProjectFiller(os, projectName, projectFolder, projectFile));
-    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), ACTION_PROJECTSUPPORT__NEW_PROJECT);
-    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), ACTION_PROJECTSUPPORT__SAVE_PROJECT);
-    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), ACTION_PROJECTSUPPORT__CLOSE_PROJECT);
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<ACTION_PROJECTSUPPORT__NEW_PROJECT);
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<ACTION_PROJECTSUPPORT__SAVE_PROJECT);
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<ACTION_PROJECTSUPPORT__CLOSE_PROJECT);
 
 //    1. Press "Create new project" button
 //    2. Specify the path to an existing project
@@ -3969,7 +3968,7 @@ GUI_TEST_CLASS_DEFINITION( test_2379 ) {
     GTUtilsDialog::waitForDialog(os, new CreateProjectFiller(os, projectName, projectFolder, projectFile));
     GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Yes, "Project file already exists"));
 
-    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), ACTION_PROJECTSUPPORT__NEW_PROJECT);
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<ACTION_PROJECTSUPPORT__NEW_PROJECT);
 }
 
 GUI_TEST_CLASS_DEFINITION( test_2382 ) {
