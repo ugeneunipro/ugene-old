@@ -3963,7 +3963,7 @@ You could also reset the dialog to the initial state.</source>
     <message>
         <location filename="../src/WorkflowDesignerPlugin.cpp" line="180"/>
         <source>Creates new Galaxy tool config.</source>
-        <translation>Создает новую конфигурацию для Galaxy инструмента</translation>
+        <translation>Создает новую конфигурацию Galaxy-инструмента</translation>
     </message>
     <message>
         <location filename="../src/WorkflowDesignerPlugin.cpp" line="181"/>
