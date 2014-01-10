@@ -92,13 +92,14 @@ Task * WriteAnnotationsWorker::tick() {
             continue;
         }
 
+        const QVariantMap qm = inputMessage.getData().toMap();
         QString filepath = getValue<QString>(BaseAttributes::URL_OUT_ATTRIBUTE().getId());
-        filepath = filepath.isEmpty() ? inputMessage.getData().toMap().value(BaseSlots::URL_SLOT().getId()).value<QString>() : filepath;
+        filepath = filepath.isEmpty() ? qm.value(BaseSlots::URL_SLOT().getId()).value<QString>() : filepath;
         if (filepath.isEmpty()) {
             return new FailTask(tr("Unspecified URL to write %1").arg(formatId));
         }
         filepath = context->absolutePath(filepath);
-        SharedDbiDataHandler seqId = inputMessage.getData().toMap().value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<SharedDbiDataHandler>();
+        SharedDbiDataHandler seqId = qm.value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<SharedDbiDataHandler>();
         QScopedPointer<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
         
         if (NULL != seqObj.data()) {
@@ -119,10 +120,20 @@ Task * WriteAnnotationsWorker::tick() {
             annotationsByUrl.insert(filepath, att);
         }
 
-        SharedDbiDataHandler annTableId = inputMessage.getData().toMap()
-            .value(BaseSlots::ANNOTATION_TABLE_SLOT().getId()).value<SharedDbiDataHandler>();
+        const QVariant annVar = qm[BaseSlots::ANNOTATION_TABLE_SLOT().getId()];
+        SharedDbiDataHandler annTableId;
+        if ( annVar.canConvert<QVariantList>( ) ) {
+            const QVariantList annObjsList = annVar.toList();
+            CHECK( !annObjsList.isEmpty( ), NULL );
+            annTableId = annObjsList.first( ).value<SharedDbiDataHandler>( );
+        } else if ( annVar.canConvert<SharedDbiDataHandler>( ) ) {
+            annTableId = annVar.value<SharedDbiDataHandler>( );
+        }
+
         QScopedPointer<AnnotationTableObject> annsObj(StorageUtils::getAnnotationTableObject(
             context->getDataStorage(), annTableId));
+        SAFE_POINT( NULL != annsObj.data( ), "Invalid annotation table object encountered!", NULL );
+
         bool isWriteNames = getValue<bool>(WRITE_NAMES);
         foreach ( const Annotation &a, annsObj->getAnnotations( ) ) {
             AnnotationData ad = a.getData( );

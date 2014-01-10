@@ -30,6 +30,7 @@
 #include <U2Core/GUrlUtils.h>
 #include <U2Core/MAlignmentImporter.h>
 #include <U2Core/U2DbiRegistry.h>
+#include <U2Core/U2FeatureDbi.h>
 #include <U2Core/U2MsaDbi.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
@@ -117,6 +118,13 @@ U2Object *DbiDataStorage::getObject(const SharedDbiDataHandler &handler, const U
         SAFE_POINT_OP(os, NULL);
 
         return new U2Assembly(assembly);
+    //} else if (U2Type::AnnotationTable == type) {
+    } else if ( 10 == type ) {
+        U2FeatureDbi *dbi = connection->dbi->getFeatureDbi();
+        U2AnnotationTable annTable = dbi->getAnnotationTableObject(objectId, os);
+        SAFE_POINT_OP(os, NULL);
+
+        return new U2AnnotationTable(annTable);
     } else {
         assert(0);
     }
@@ -278,7 +286,7 @@ AnnotationTableObject * StorageUtils::getAnnotationTableObject( DbiDataStorage *
     const SharedDbiDataHandler &handler )
 {
     CHECK( NULL != handler.constData( ), NULL );
-    U2Object *dbObject = storage->getObject( handler, U2Type::AnnotationTable );
+    U2Object *dbObject = storage->getObject( handler, 10 );
     QScopedPointer<U2AnnotationTable> table( dynamic_cast<U2AnnotationTable *>( dbObject ) );
     CHECK( NULL != table.data( ), NULL );
 
