@@ -50,6 +50,10 @@ void CustomPatternAnnotationTask::prepare()
 
     U2SequenceObject dnaObj("ref", seqRef);
     sequence = dnaObj.getWholeSequenceData();
+    
+    if (dnaObj.isCircular()) {
+        sequence += sequence;
+    }
 
     const QList<FeaturePattern>& patterns = featureStore->getFeatures();
 
@@ -101,14 +105,39 @@ QList<Task*> CustomPatternAnnotationTask::onSubTaskFinished(Task* subTask) {
     SArrayBasedFindTask* task = static_cast<SArrayBasedFindTask*> (subTask);
     const QList<int>& results = task->getResults();
     PatternInfo info = taskFeatureNames.take(task);
+    
+    U2SequenceObject dnaObj("ref", seqRef);
+    qint64 seqLen = dnaObj.getSequenceLength();
+
     foreach (int pos, results) {
+    
+        
+        if (pos > dnaObj.getSequenceLength() ) {
+            continue;
+        } 
+
+        int endPos = pos + task->getQuery().length() - 1;
+
         AnnotationData data;
         data.name = info.name;
         U2Strand strand = info.forwardStrand ? U2Strand::Direct : U2Strand::Complementary;
         data.setStrand(strand);
-        U2Region region(pos - 1, task->getQuery().length() );
-        data.location->regions << region;
+
+        if (dnaObj.isCircular() && endPos > seqLen) {
+            
+            int outerLen = endPos - seqLen;
+            int innerLen = task->getQuery().length() - outerLen;
+            U2Region region1(pos - 1, innerLen);
+            U2Region region2(0, outerLen);
+            data.location->regions << region1 << region2;
+            data.setLocationOperator(U2LocationOperator_Join);
+        } else {
+            U2Region region(pos - 1, task->getQuery().length() );
+            data.location->regions << region;
+        }
+
         annotations.append(data);
+
     }
 
     if (taskFeatureNames.isEmpty() && annotations.size() > 0) {
