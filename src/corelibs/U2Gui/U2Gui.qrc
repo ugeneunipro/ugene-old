@@ -122,5 +122,7 @@
         <file>images/regions.png</file>
         <file>images/save.png</file>
         <file>images/save_as.png</file>
+		<file>images/forward.png</file>
+		<file>images/backward.png</file>
     </qresource>
 </RCC>

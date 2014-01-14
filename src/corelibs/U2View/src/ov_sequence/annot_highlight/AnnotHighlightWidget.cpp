@@ -120,15 +120,15 @@ void AnnotHighlightWidget::initLayout()
     buttonsLayout->setContentsMargins(0, 0, 0, 0);
     buttonsLayout->setSpacing(0);
 
-    prevAnnotation = new QPushButton(tr("Go to previous"));
-    prevAnnotation->setMinimumWidth(20);
+    prevAnnotation = new QPushButton(QIcon(":core/images/backward.png"), "");
+    prevAnnotation->setFixedSize(32,32);
     QObject::connect(prevAnnotation, SIGNAL(clicked()),this, SLOT(sl_onPrevAnnotationClick()));
     buttonsLayout->addWidget(prevAnnotation);
 
-    buttonsLayout->addSpacerItem(new QSpacerItem(20, 0));
+    buttonsLayout->addSpacerItem(new QSpacerItem(0,0, QSizePolicy::Expanding, QSizePolicy::Minimum));
 
-    nextAnnotation = new QPushButton(tr("Go to next"));
-    nextAnnotation->setMinimumWidth(20);
+    nextAnnotation = new QPushButton(QIcon(":core/images/forward.png"), "");
+    nextAnnotation->setFixedSize(32,32);
     QObject::connect(nextAnnotation, SIGNAL(clicked()),this, SLOT(sl_onNextAnnotationClick()));
     buttonsLayout->addWidget(nextAnnotation);
 
